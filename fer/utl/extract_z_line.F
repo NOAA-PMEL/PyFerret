@@ -1,6 +1,7 @@
-	SUBROUTINE EXTRACT_Z_LINE( block, bad_flag, i, j, l,
+	SUBROUTINE EXTRACT_Z_LINE( block, bad_flag, i, j, l, m, n,
      .		cxloz, cxhiz,
-     .		slox, shix, sloy, shiy, sloz, shiz, slot, shit,
+     .		slox, shix, sloy, shiy, sloz, shiz, 
+     .		slot, shit, sloe, shie, slof, shif,
      .		zline, klo, khi )
 
 *
@@ -47,12 +48,14 @@
 
 * V450:  11/12/97
 * V491:  16/4/98 - added cx_lo/hiz to limit extraction by context limits
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 * calling argument declarations:
 	INTEGER slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		i, j, l, klo, khi, cxloz, cxhiz
+     .		sloe, shie, slof, shif, i, j, l, m, n, 
+     .		klo, khi, cxloz, cxhiz
 	REAL    bad_flag,
-     .		block( slox:shix,sloy:shiy,sloz:shiz,slot:shit ),
+     .		block( slox:shix,sloy:shiy,sloz:shiz,slot:shit,sloe:shie,slof:shif ),
      .		zline(shiz-sloz+1)
 
 * internal variable declarations:
@@ -71,17 +74,17 @@
 
 * ... skip invalid values at start of line
 	   IF ( searching_for_valid ) THEN
-	      searching_for_valid = block(i,j,k,l) .EQ. bad_flag
+	      searching_for_valid = block(i,j,k,l,m,n) .EQ. bad_flag
 	      IF (searching_for_valid) GOTO 100
 	      klo = k
 * ... terminate if invalid point encountered after valid points
-	   ELSEIF ( block(i,j,k,l) .EQ. bad_flag ) THEN
+	   ELSEIF ( block(i,j,k,l,m,n) .EQ. bad_flag ) THEN
 	      khi = k-1
 	      GOTO 300
 	   ENDIF
 
 * ... transfer point to output
-	   zline(k-klo+1) = block(i,j,k,l)
+	   zline(k-klo+1) = block(i,j,k,l,m,n)
 
  100	CONTINUE
 	khi = cxhiz

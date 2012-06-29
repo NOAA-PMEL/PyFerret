@@ -37,32 +37,17 @@
 /*
  * Init gui dependent code
  * JS 3.99
+ *
+ *
+ *  *acm*  1/12 Ferret 6.8 ifdef double_p for double-precision ferret. Define dp_gui_get_memory
+ *  *kms*  3/12 Removed XWindow GUI code which is no longer used.
  */
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/*  *acm*  1/12     - Ferret 6.8 ifdef double_p for double-precision ferret. Define dp_gui_get_memory */
-
-#include <wchar.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "ferret.h"
-/*---------------------------------------------------- 
- * UxXt.h needs to be included only when compiling a 
- * stand-alone application. 
- *---------------------------------------------------*/
 #define __globalDefs
 #include "ferret_shared_buffer.h"
-#include "ferret.h"
-#ifdef LINK_GUI_AS_MAIN
-#include <X11/Intrinsic.h>
-#include <X11/StringDefs.h>
-#include <X11/Xlib.h>
-#include "ferret_structures.h"
-#include "JC_Utility.h" /* for windows[] and window_count in the SGI_POPUPS section */
-#ifndef DESIGN_TIME
-#include "UxXt.h"
-#endif /* DESIGN_TIME */
-#endif
 #undef __globalDefs
 
 static void do_gui_init() {
@@ -78,7 +63,6 @@ static void do_gui_init() {
   }
 }
 
-#ifndef LINK_GUI_AS_MAIN
 int gui_init() {
   return 0;
 }
@@ -94,171 +78,3 @@ double **dp_gui_get_memory() {
 void gui_run(int *argc, char **argv){
 }
 
-#else
-
-XtAppContext	UxAppContext;
-Widget		UxTopLevel;
-Display		*UxDisplay;
-
-int		UxScreen;
-char init_command[128];
-extern void SetInitialState(void);
-
-/*----------------------------------------------
- * Insert application global declarations here
- *---------------------------------------------*/
-/*
- * BEGIN of "FerretMain_mycode_1.c"
- *
- * Here are the contents of the file "FerretMain_mycode_1.c"
- * which was previously included as a separate file.
- */
-
-/* .................... Function Definitions .................... */
-
-void help_text(void);
-static void TimeOutCB(XtPointer cd, XtIntervalId *id);
-
-/* .................... Function Declarations .................... */
-
-static void TimeOutCB(XtPointer cd, XtIntervalId *id)
-{
-  XtAppAddTimeOut((XtAppContext)cd, (unsigned long)2000, TimeOutCB, cd);
-  
-  FORTRAN(xgks_x_events)();
-
-}
-
-int gui_init() {
-  int rval = 1;
-  do_gui_init();
-  return rval;
-}
-
-				/* Global variable in ferret_shared.h */
-DFTYPE **gui_get_memory() {
-  return &memory;
-}
-
-void gui_run(int *argc, char **argv){
-
-
-  char tText[128], quote='"';
-  extern void SetInitialState(void);
-
-  /*-----------------------------------------------------------
-   * Declarations.
-   * The default identifier - mainIface will only be declared 
-   * if the interface function is global and of type swidget.
-   * To change the identifier to a different name, modify the
-   * string mainIface in the file "xtmain.dat". If "mainIface"
-   * is declared, it will be used below where the return value
-   * of  PJ_INTERFACE_FUNCTION_CALL will be assigned to it.
-   *----------------------------------------------------------*/ 
-
-  Widget mainIface;
-
-  /*---------------------------------
-   * Interface function declaration
-   *--------------------------------*/	
-
-  Widget  create_FerretMainWd(swidget UxParent);
-  swidget UxParent = NULL;
-
-
-  /*------------------------------------------------------
-   * Declare the fallback resources (added by JC 9.13.96)
-   *-----------------------------------------------------*/
-
-#include "fallback_resources.c"
-
-#ifdef XOPEN_CATALOG
-  if (XSupportsLocale()) {
-    XtSetLanguageProc(NULL,(XtLanguageProc)NULL,NULL);
-  }
-#endif
-
-  /*
-   * ==>> place FERRET under GUI control here  <<== 
-   */
-  FORTRAN(mode_gui_on)();
-
-  /*UxTopLevel = XtAppInitialize(&UxAppContext, "Ferret",
-      NULL, 0, &argc, argv, NULL, NULL, 0);*/
-
-  UxTopLevel = XtVaAppInitialize(&UxAppContext, "Ferret",
-				 NULL, 0, argc, argv, fallbacks, NULL);
-
-  UxDisplay = XtDisplay(UxTopLevel);
-  UxScreen = XDefaultScreen(UxDisplay);
-
-  /*
-     * We set the geometry of UxTopLevel so that dialogShells
-     * that are parented on it will get centered on the screen
-     * (if defaultPosition is true).
-     */
-
-  XtVaSetValues(UxTopLevel,
-		XtNx, 0,
-		XtNy, 0,
-		XtNwidth, DisplayWidth(UxDisplay, UxScreen),
-		XtNheight, DisplayHeight(UxDisplay, UxScreen),
-		NULL);
-
-  /*-------------------------------------------------------
-     * Insert initialization code for your application here 
-     *------------------------------------------------------*/
-	
-    /*----------------------------------------------------------------
-     * Create and popup the first window of the interface.  The 	 
-     * return value can be used in the popdown or destroy functions.
-     * The Widget return value of  PJ_INTERFACE_FUNCTION_CALL will 
-     * be assigned to "mainIface" from  PJ_INTERFACE_RETVAL_TYPE. 
-     *---------------------------------------------------------------*/
-
-  mainIface = create_FerretMainWd(UxParent);
-
-  SetInitialState();
-  UxPopupInterface(mainIface, no_grab);
-
-#ifdef X_REFRESH
-  XtAppAddTimeOut(UxAppContext, 2000, TimeOutCB, UxAppContext);
-#endif
-
-#ifdef SGI_POPUPS
-  /* NB__ UxTopLevel is declared external in UxXt.h */
-  windows[window_count++] = XtWindow(UxTopLevel);
-  XSetWMColormapWindows(XtDisplay(UxTopLevel), XtWindow(UxTopLevel),
-			windows, window_count);
-#endif /* SGI_POPUPS */
-
-  /*-----------------------
-     * Enter the event loop 
-     *----------------------*/
-  {
-
-    XEvent event;
-
-    for (;;)
-      {
-	XtAppNextEvent(UxAppContext, &event);
-
-	if (event.type == ClientMessage) {
-	  ;
-	}
-	switch (event.type)
-	  {
-
-	    /*---------------------------------------------------
-	     * Insert code here to handle any events that you do
-	     * not wish to be handled by the interface.
-	     *---------------------------------------------------*/
-	  default:
-	    XtDispatchEvent(&event);
-	    break;
-	  }
-      }
-
-  } /* event loop block */
-}
-#endif /* LINK_GUI_AS_MAIN */

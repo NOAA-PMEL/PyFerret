@@ -36,36 +36,31 @@
 
 
 
-/* wgif.c - containing 
+/*
+ * wgif.c - containing 
+ *
+ *   void wGIF(FILE *fp, XImage *image,int r[],int g[], int b[]);
+ * and
+ *   GIFEncode( fp, GHeight, GWidth, GInterlace, Background,
+ *              BitsPerPixel, Red, Green, Blue, GetPixel )
+ *
+ * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+ *
+ * Nov. '94 - Kevin O'Brien based on xpaint
+ *
+ * *kob* 5/96 - modified slightly to change declaration of data array from
+ *              character to unsigned character.  This solved a problem that
+ *              occurred when attempting to save a gif file when hi pixel/color
+ *              values were required (ie, if using a lot of colors
+ * 
+ * *kob* 6/12/96 - explicit cast of image->data to eliminate compiler complaints
+ * *acm* 6/18/07 - renamed compress to wcompress because of conflict under x86-64_linux 
+ *                 with /usr/lib64/libz.a(compress.o)
+ * 
+ *  Routine for writing out GIF files, using pd GIFEncode routine
+ */
 
-   void wGIF(FILE *fp, XImage *image,int r[],int g[], int b[]);
-and
-  GIFEncode( fp, GHeight, GWidth, GInterlace, Background,
-             BitsPerPixel, Red, Green, Blue, GetPixel )
-   
-
-Note: for **unknown reasons** this routine will not compile using the stock
-"cc" command on SunOS.  We use gcc instead.
-
-    gcc -g -c wgif.c
-
- NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-
- Nov. '94 - Kevin O'Brien based on xpaint
-
-*kob* 5/96 - modified slightly to change declaration of data array from
-             character to unsigned character.  This solved a problem that
-	     occurred when attempting to save a gif file when hi pixel/color
-	     values were required (ie, if using a lot of colors
-
-*kob* 6/12/96 - explicit cast of image->data to eliminate compiler complaints
-*acm* 6/18/07 - renamed compress to wcompress because of conflict under x86-64_linux 
-                with /usr/lib64/libz.a(compress.o)
-
- Routine for writing out GIF files, using pd GIFEncode routine */
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
+#include <X11/Xlib.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -74,7 +69,6 @@ Note: for **unknown reasons** this routine will not compile using the stock
 #ifdef MEMDBG
 #include <mnemosyne.h>
 #endif
-#include <X11/Xlib.h>
 
 typedef int code_int;                   /* must be able to hold values -1 to 2**BITS */
  
@@ -97,9 +91,9 @@ typedef        unsigned char   char_type;
 #define BITS    12
 #define HSIZE  5003            /* 80% occupancy */
 /**************************************************************************/
-/* static char_type			*data; */
-static char_type			*data;
-static int				iwidth, iheight, image_offset;
+/* static char_type	*data; */
+static char_type	*data;
+static int		iwidth, iheight, image_offset;
 /**************************************************************************/
 typedef int (* ifunptr)();                              /* Pointer to function returning an int */
  
@@ -164,60 +158,57 @@ static int Interlace;
  
 static BumpPixel() /* Bump the 'curx' and 'cury' to point to the next pixel */
 {
-        curx++;                 /* Bump the current X position */
+    curx++;         /* Bump the current X position */
  
 /* If we are at the end of a scan line, set curx back to the beginning.
-        If we are interlaced, bump the cury to the appropriate spot,
-        otherwise, just increment it.
+    If we are interlaced, bump the cury to the appropriate spot,
+    otherwise, just increment it.
 */
  
-        if( curx == Width )
-                {
-                        curx = 0;
+    if( curx == Width )
+    {
+        curx = 0;
  
-                        if( !Interlace )
-                                cury++;
-                        else
-                                {
-                                        switch( Pass )
-                                                {
-                                                        case 0:
-                                                                cury += 8;
-                                                                if( cury >= Height )
-                                                                        {
-                                                                                Pass++;
-                                                                                cury = 4;
-                                                                        }
-                                                                break;
+        if( !Interlace )
+        cury++;
+        else
+        {
+            switch( Pass )
+            {
+                case 0:
+                cury += 8;
+                if( cury >= Height )
+                    {
+                    Pass++;
+                    cury = 4;
+                    }
+                break;
  
-                                                        case 1:
-                                                                cury += 8;
-                                                                if( cury >= Height )
-                                                                        {
-                                                                                Pass++;
-                                                                                cury = 2;
-                                                                        }
-                                                                break;
+                case 1:
+                cury += 8;
+                if( cury >= Height )
+                    {
+                    Pass++;
+                    cury = 2;
+                    }
+                break;
  
-                                                        case 2:
-                                                                cury += 4;
-                                                                if( cury >= Height )
-                                                                        {
-                                                                                Pass++;
-                                                                                cury = 1;
-                                                                        }
-                                                                break;
+                case 2:
+                cury += 4;
+                if( cury >= Height )
+                    {
+                    Pass++;
+                    cury = 1;
+                    }
+                break;
  
-                                                        case 3:
-                                                                cury += 2;
-                                                                break;
-                                                }
-                                }
-                }
+                case 3:
+                cury += 2;
+                break;
+            }
+        }
+    }
 }
- 
- 
- 
  
  
 GIFGetPixel( getpixel )                        /* Return the next pixel from the image */

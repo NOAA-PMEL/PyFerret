@@ -56,9 +56,9 @@
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 
 #ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'gfdl.parm'
-        include 'tmap_dims.parm'
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xcontext.cmn'

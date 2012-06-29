@@ -59,24 +59,19 @@
 * V230: 8/11/92 - double load of /PERMANENT got subscript error
 * V312: 5/94 - array "memory" as a calling argument
 * V530: *sh* 9/00 - added initial data type support in get_cmnd_data 
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * local parameter definitions:
 	INTEGER	slash_perm, slash_temp, slash_name
 	PARAMETER     ( slash_temp = 1,		! (default)
      .			slash_perm = 2,
-     .			slash_name = 12 )
+     .			slash_name = 16 )
 
 * calling argument declarations:
 	REAL	memory(*)

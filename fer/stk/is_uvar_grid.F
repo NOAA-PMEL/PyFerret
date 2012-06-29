@@ -104,6 +104,7 @@
 * V615 11/08*acm*   For linux, pass dummy status flag to DEALLO_UNFORMED_GRID. 
 *                   The status flag that is passed back must remain set to 
 *                   non-ferr_ok to exit properly from the command.
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 * calling argument declarations:
 	INTEGER	status
@@ -113,7 +114,7 @@
 
 * internal variable declarations:
 	LOGICAL	ITSA_GCVAR, its_dynamic, its_gc, need_another_pass,
-     .		saved_ifthen_type, do_err
+     .		saved_ifthen_type, do_err, agg_has_uvar
 	INTEGER KNOWN_GRID, STR_SAME,
      .		TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR, 
      .		 hi_cx, lo_cx, big_cx, start, end, grid,
@@ -121,12 +122,12 @@
      .		var, len_name, pass_number, cx_save, this_dset,
      .		ifthen_data_type, varid, alen, attype, attlen,
      .          attoutflag, attid, bracket, dot, dsloc, endbracket,
-     .          status_deallo
+     .          status_deallo, agg_grid, agg_line, agg_len, agg_dset,
+     .		imemb, fer_uvar, memb_dset, memb_grid, iline, nv
 
 	CHARACTER VAR_CODE*4, name*512, buff*2048, varname*512, 
      .            attname*128, aname*128, newname*512
 
-        include 'netcdf.decl'
 #include "netcdf.inc"
 	include	'tmap_errors.parm'
 	include 'tmap_dims.parm'
@@ -266,7 +267,7 @@
 	IF ( cx_category(hi_cx) .EQ. cat_user_var ) THEN
 * ... 12/95: inherit the pseudo-variable flag from any component that has it
 	   var = cx_variable(hi_cx)
-	   DO 350 idim = 1, 4
+	   DO 350 idim = 1, nferdims
 	      IF (uvar_mod_pseudo(idim,var))
      .			uvar_mod_pseudo(idim,uvar) = .TRUE.
  350	   CONTINUE
@@ -276,6 +277,35 @@
 	   ELSE
 	      GOTO 500	! uvar grid known --> merge it
 	   ENDIF
+
+C What other cx info do we have here? Is the dataset the agg_dataset? Should be able to get the
+C lo and hi of the ensemble axis if so, and get all the grids.
+	ELSEIF ( cx_category(hi_cx).EQ. cat_aggregate_var  ) THEN
+
+	   agg_dset = dset
+	   status = NCF_GET_AGG_COUNT (agg_dset, agg_len)
+
+	   var = cx_variable(hi_cx)
+	   uv_grd = KNOWN_GRID( agg_dset, cat_aggregate_var, var )
+	   IF ( uv_grd .NE. unspecified_int4 ) THEN
+	      uvar_dset(uvar) = 0  ! now its a datset variable not user var
+	      GOTO 500	! uvar grid known --> merge it
+	   ENDIF
+
+	   DO 355 imemb = 1, agg_len
+	      CALL CD_GET_AGG_VAR_INFO (agg_dset, name, imemb, 
+     .            fer_uvar, memb_dset, memb_grid, iline, nv, status)
+	      IF (fer_uvar .EQ. cat_user_var) agg_has_uvar = .TRUE.
+ 355	   CONTINUE
+
+	   IF (agg_has_uvar) GOTO 990
+
+	   IF ( cx_grid(hi_cx) .NE. unspecified_int4 ) THEN
+	      GOTO 500	! know grid --> merge it
+	   ELSE
+	      GOTO 9000	! err: grid for non-user agg vars should always be known
+	   ENDIF
+
 	ELSEIF ( cx_grid(hi_cx) .NE. unspecified_int4 ) THEN
 	   GOTO 500	! know grid --> merge it
 	ELSEIF ( cx_category(hi_cx) .EQ. cat_calc_var ) THEN
@@ -472,7 +502,7 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 	GOTO 100
 
 * create, initialize buffer to receive the grid
- 500	IF ( is_sum(isp) .EQ. isalg_transfer ) THEN
+ 500	IF ( is_sum(isp) .EQ. isalg_transfer) THEN
 	   grid = cx_grid(big_cx)
 	   CALL INIT_EMPTY_CONTEXT( big_cx)
 	   CALL INIT_GRID(grid, 'UVAR', mnormal)
@@ -522,6 +552,7 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 	      cx_stack_ptr = cx_stack_ptr - 1
 	   ENDIF
 	ENDIF
+	 
 	GOTO 100
 
 * deal with G=uvar with target grid not yet known -- get the target grid (8/99)
@@ -565,6 +596,21 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 	is_cx   ( isp ) = hi_cx
 	is_uvar ( isp ) = cx_variable( hi_cx )
 	is_act  ( isp ) = isact_get_grid	! temp diagnostic
+	RETURN 1
+
+* grid for this aggregate dataset is not known.  Back to get_uvar_grid and call
+* is_aggregate_grid to get it
+* ... repeat this phase again when we get back
+ 990	is_phase(isp) = is_phase(isp) - 1
+* load the new variable info onto the IS stack
+	CALL PUSH_INTERP_STACK( isp, status )
+	IF ( status .NE. ferr_ok ) RETURN
+c	is_sum( isp ) = isalg_merge_n
+
+	is_cx   ( isp ) = hi_cx
+	is_uvar ( isp ) = cx_variable( hi_cx )
+	is_act  ( isp ) = isact_get_agg_grid	! get aggregate grid on return.
+
 	RETURN 1
 	
 ***  DONE - clean up
@@ -647,7 +693,7 @@ c        ENDIF
  2000	IF ( need_another_pass ) THEN 
 * ... uvar_grid and data set info are NOT re-initialized
 	   IF ( pass_number .GT. 1 ) GOTO 9000	! caught in a loop ...
-	   DO 1110 i = 1, 4
+	   DO 1110 i = 1, nferdims
  1110	   uvar_given(i,uvar) = uvlim_irrelevant
 	   uvar_grid( uvar, this_dset ) = unspecified_int4 ! 10/00
 	   uvar_data_type(uvar, this_dset) =  unspecified_int4 ! housekeeping
@@ -665,7 +711,7 @@ c        ENDIF
 * ... release the use-count hold that the temporary grid has on the axes
 *	since it will be re-asserted on the second pass
 *	We need to retain the grid, itself, because it is used on pass 2
-	   DO 1120 i = 1, 4
+	   DO 1120 i = 1, nferdims
 	      CALL TM_DEALLO_DYN_LINE(grid_line(i,grid))
  1120	   CONTINUE
 	   IF ( mode_diagnostic ) THEN

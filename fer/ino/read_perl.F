@@ -1,3 +1,5 @@
+
+
 	SUBROUTINE READ_PERL ( memory, cx, mr, status )
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -43,7 +45,8 @@
 * 9/99 *js*  First version hacked from read_binary
 * V552 *acm* 4/03- up VAR_CODE  to 128
 * v604 *acm* 7/07 increase length of ds_name
-* V63  *acm* 10/09 Changes for gfortran build
+* V63  *acm* 10/09 Changes for 1 build
+*       *acm* 3/12 cleanup old VMS ifdef
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -68,13 +71,15 @@
 	INTEGER PL_OPEN, PL_READ_VAR
 
 * internal variable declarations:
+	INTEGER		nferdimsp1 
+	PARAMETER	(nferdimsp1 = nferdims+1)
 	INTEGER 	CGRID_SIZE, 
      .			idim, ask_var, category, data_set, grid, ivar,
      .			fvar, nvar20, the_var, nleft, 
      .			cx0, cx1, cx20(20), mr20(20),
      .			mr1, rec1, 
      .			rec_to_read, nrepeat, columns, num_names, buffblk
-	INTEGER         lengths(5)
+	INTEGER         lengths(nferdimsp1)
 	LOGICAL         firstTime
 	CHARACTER	VAR_CODE*128
 	CHARACTER*256   cerrmsg,ferrmsg
@@ -128,7 +133,7 @@
 		    cx_variable( cx_stack_ptr ) = fvar
 		    cx_grid( cx_stack_ptr ) = ds_grid_number( fvar )
 		    cx_bad_data( cx_stack_ptr ) = ds_bad_flag( fvar ) ! 12/93 add'n
-		    DO idim = 1, 4
+		    DO idim = 1, nferdims
 		       cx_lo_ss( cx_stack_ptr, idim ) = ds_grid_start( idim, fvar )
 		       cx_hi_ss( cx_stack_ptr, idim ) = ds_grid_end  ( idim, fvar )
 		       cx_by_ss( idim, cx_stack_ptr ) = .TRUE.
@@ -200,7 +205,7 @@
 * the data region obtained may be inadequate for the request
 * ("cx" is request, "cx1" is available)
 	cx1 = cx20(the_var)
-	DO 900 idim = 1, 4
+	DO 900 idim = 1, nferdims
 	   IF ( cx_hi_ss(cx,idim) .GT. cx_hi_ss(cx1,idim) ) THEN
 	      IF ( cx_hi_ss(cx_last,idim) .NE. unspecified_int4
      .	     .OR.  cx_given(idim,cx) ) THEN

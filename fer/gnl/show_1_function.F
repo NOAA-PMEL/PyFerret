@@ -52,13 +52,18 @@
 *                 function for other arg types, if it exists.
 * V664  9/10 *kms* Increase slen and size of ef_descr to 128 to match
 *                  the size of gfcn_descr and gfcn_arg_descr
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V6.8  acm  6/12 Implement mode_6d_lab, set by default. If cancelled, the 
+*                 various SHOW commnands will not list info for E,F dimensions.
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'grid_chg_fcns.parm'
 	include	'xalgebra.cmn'
 	include	'xgrid_chg_fcns.cmn'
 	include	'xtext_info.cmn'
 	include	'xrisc.cmn'
+	include 'xprog_state.cmn'
 
 * calling argument declarations:
 	LOGICAL	its_gc, brief, detail
@@ -67,11 +72,11 @@
 * local variable declarations:
 	LOGICAL	its_reshape
 	INTEGER TM_LENSTR, TM_LENSTR1, GCF_ARG_TYPE, GCF_FIND_FCN,
-     .		ll, ll2, llsave, itype, narg, i, iarg, iarg2, idim
+     .		ll, ll2, llsave, itype, narg, i, iarg, iarg2, idim, listdims
 	CHARACTER units*40, gcf_name*40, ef_arg_name*40, ef_descr*128, 
      .		ef_units*40, ax_remark*64, alt_name*40
 	INTEGER EFCN_SCAN, EFCN_GET_NUM_REQD_ARGS, EFCN_GATHER_INFO,
-     .		axis_will_be(4), ifcn_alt
+     .		axis_will_be(6), ifcn_alt
 
 * local parameter definitions
 	CHARACTER*4 indent
@@ -88,6 +93,12 @@
 * initialize
 	len_rbuff = LEN(risc_buff)	! maximum length
 	its_reshape = ifcn .EQ. p_reshape
+
+* If mode 6d_lab has been cancelled, we will list info only for 
+* the first 4 dimensions.
+
+	listdims = nferdims
+	IF ( .NOT. mode_6d_lab) listdims = 4
 
 * 1st line -- function name with args in parens
 * ... name
@@ -177,12 +188,12 @@
 	   CALL SPLIT_LIST( pttmode_explct, lun,
      .		'        Axes of result:', 23)
 	   IF ( ifcn .LE. gfcn_num_internal ) THEN
-	      DO 210 idim = 1, 4
+	      DO 210 idim = 1, listdims
  210          axis_will_be(idim) = gfcn_axis_will_be(idim,ifcn)
 	   ELSE
 	      CALL EFCN_GET_AXIS_WILL_BE(ifcn, axis_will_be)
 	   ENDIF
-	   DO 220 idim = 1,4
+	   DO 220 idim = 1, listdims
 	      IF (its_reshape) THEN
 	         ax_remark = 'inferred from argument B'
 	      ELSEIF (axis_will_be(idim) .EQ. pgc_axis_is_abstract) THEN
@@ -266,7 +277,7 @@
 	   CALL SPLIT_LIST( pttmode_explct, lun,
      .			'        Influence on output axes:', 0)
 	   CALL GCF_GET_AXIS_SRCS(ifcn, i, axis_will_be)
-	   DO 420 idim = 1,4
+	   DO 420 idim = 1, listdims
 	      IF (its_reshape) THEN
 	         IF (i .EQ. 1) THEN
 	            ax_remark =

@@ -42,8 +42,10 @@
 
 * 8/2003
 * *kob* bug fix - remove ";" at end of status assingment line.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 
+	include 'tmap_dims.parm'
 	INCLUDE 'xprog_state.cmn'
 
         INTEGER status

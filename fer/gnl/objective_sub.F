@@ -1,3 +1,5 @@
+
+
 	SUBROUTINE OBJECTIVE_SUB(  memory,
      .			     mr_list, cx_list,  nx, ny, npts,
      .			     cay, nrng, fname, fmt,
@@ -56,7 +58,9 @@
 * Linux Port 5/97 *kob* - had to add ifdef F90_OPEN_FILE_APPEND because f90
 *			  uses "POSITION" instead of "ACCESS" to specify 
 *			  opening a file for append.
-#ifdef unix
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
@@ -64,15 +68,6 @@
 	include 'xprog_state.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'          ! 12/94 SPLIT_LIST BUFFER
-#endif
 
 * calling argument declarations:
 	INTEGER	mr_list(3), cx_list(3), nx, ny, npts, nrng, status, ios
@@ -136,14 +131,14 @@
 	   OPEN( UNIT        = default_list_lun,
      .           FILE        = fname,
      .           FORM        = 'UNFORMATTED',
-#ifdef NO_ACCESS_APPEND
-#else
-#ifdef F90_OPEN_FILE_APPEND
-     .		 POSITION    = 'APPEND',
-#else
+
+
+
+
+
      .           ACCESS      = 'APPEND',
-#endif
-#endif
+
+
      .           STATUS      = 'UNKNOWN',
      .           ERR         = 5100 )
 	   WRITE (risc_buff, 3000) 'binary', fname
@@ -152,14 +147,14 @@
 	   OPEN( UNIT        = default_list_lun,
      .           FILE        = fname,
      .           FORM        = 'FORMATTED',
-#ifdef NO_ACCESS_APPEND
-#else
-#ifdef F90_OPEN_FILE_APPEND
-     .		 POSITION    = 'APPEND',
-#else
+
+
+
+
+
      .           ACCESS      = 'APPEND',
-#endif
-#endif
+
+
      .           STATUS      = 'UNKNOWN',
      .           ERR         = 5100 )
 	   WRITE (risc_buff, 3000) 'ASCII', fname
@@ -183,14 +178,14 @@
  500	   WRITE (default_list_lun,ERR=5100) result(i,j)
 	ELSE
 	   DO 510 j = 1, ny
-#ifdef DEC_FORTRAN
-* on DEC compilers a field too small for the value generates an ERR= branch
-	      WRITE (default_list_lun,fmt,IOSTAT=ios) (result(i,j),i=1,nx)
-              IF ( ios.NE.0 .AND. ios.NE.63 ) GOTO 5100  ! 63 = fmt conv err
- 510	   CONTINUE
-#else
+
+
+
+
+
+
  510	   WRITE (default_list_lun,fmt,ERR=5100) (result(i,j),i=1,nx)
-#endif
+
 	ENDIF
 
  4900	CLOSE( UNIT=default_list_lun, ERR = 5000 )

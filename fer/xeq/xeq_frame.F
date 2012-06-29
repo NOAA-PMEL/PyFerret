@@ -56,7 +56,9 @@
 * V602: *acm* 1/07 Changes for metafile-batch mode: Ignore FRAME in 
 *                  batch mode, except when in batch GIF mode.
 * V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT[=color]
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'slash.parm'

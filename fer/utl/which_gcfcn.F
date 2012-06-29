@@ -38,6 +38,8 @@
 * which grid-changing fuction is used by the indicated GC variable?
 
 * V450: 1/97
+* 2/12 *acm* 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations
 	INTEGER	uvar
@@ -45,13 +47,9 @@
 * internal variable declarations
 	INTEGER GCF_FIND_FCN, item
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 
 * in reverse Polish order the final item of a grid changing variable will

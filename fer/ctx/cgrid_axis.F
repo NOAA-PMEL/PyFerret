@@ -44,19 +44,13 @@
 * revision 0.0 - 6/3/86
 * Unix/RISC port - 1/91 - cant use "/star" in documentation
 * V420 11/95 - documentation change and clean-up
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 	INTEGER	idim, cx
 

@@ -48,20 +48,14 @@
 *       10/26/94 - changed "STAT" to "VAR_STAT" for IBM/AIX
 * V420	 2/7/96  - added STAT/BRIEF
 * V530: *sh* 9/00 - added initial data type support in get_cmnd_data 
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'slash.parm'
 	include 'xvariables.cmn'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	REAL	memory( mem_blk_size, max_mem_blks )
@@ -83,7 +77,8 @@
 	   cx = is_cx( istat )
 	   CALL NON_ARRAY_SUBSC( mv, 1 )
 	   CALL VAR_STAT( memory(1, mr_blk1(mv)), mv, cx,
-     .			  ttout_lun, full )
+     .			  ttout_lun, full, status )
+           IF (status .NE. ferr_ok) GOTO 5000
  400	CONTINUE
 
 	RETURN

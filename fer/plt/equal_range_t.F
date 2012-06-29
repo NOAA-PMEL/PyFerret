@@ -50,6 +50,9 @@
 * V3.00  20/10/93 - *sh*
 * V522 7/00 *sh* - added add'l argument to EQUAL_RANGE
 * V5.3 *ACM* 3/01  send cal_id to EQUAL_RANGE_T
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
+*                  dimension is now an arg to SECS_TO_TSTEP.
 
 * calling argument declarations
 	INTEGER		idim, grid, cal_id, status
@@ -64,28 +67,24 @@
 	LOGICAL         range_rqd
 	PARAMETER     ( range_rqd = .TRUE. )
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 * first get EQUAL_RANGE to convert the data normally
 	CALL EQUAL_RANGE( string, idim, lo, hi, delta,
      .			  formatted,  range_rqd, cal_id, status )
 	IF ( status .NE. ferr_OK ) RETURN
 
-	IF ( idim .EQ. t_dim ) THEN
+	IF ( idim .EQ. t_dim .OR. idim .EQ. f_dim ) THEN
 * if the time was given as a date convert it to a tstep
+
 	   IF ( formatted ) THEN
-	      lo = SECS_TO_TSTEP( grid, lo )
-	      hi = SECS_TO_TSTEP( grid, hi )
+	      lo = SECS_TO_TSTEP( grid, idim, lo )
+	      hi = SECS_TO_TSTEP( grid, idim, hi )
 	   ENDIF		
 
 * if MODE CALENDAR is TRUE in FERRET make sure the times are ordered
-	   IF ( GEOG_LABEL(t_dim,grid)
+	   IF ( GEOG_LABEL(idim,grid)
      .    .AND. lo .GT. hi		 ) THEN 
 	      tmp = lo
 	      lo = hi

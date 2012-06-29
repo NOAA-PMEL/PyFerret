@@ -1,4 +1,4 @@
-      SUBROUTINE modscat (ax, nax, nscat, scatm)
+      SUBROUTINE modscat(axmin, axmax, axmod, nscat, scatm)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -26,48 +26,58 @@
 *  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
 *  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
-*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY
+*  SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 * 
 * ACM 11/00
-*  Called by scat2gridlaplace* gridding functions.
+*  Called by scat2grid* gridding functions.
 *  If there is a modulo axis, apply modulo-ness to the coordinates in that 
 *  direction of the scattered points.
+*
+* *kms* 4/2012 Modified to pass the min, max, and modulo for the axis
+*              If axmin and axmax are same location after modulo, axmax
+*              values will be returned as axmin.
+*
+*  axmin        minimum value for the modulo axis
+*  axmax        maximum value for the modulo axis
+*  axmod        modulo length for the modulo axis
+*  nscat        number of scattered points
+*  scatm        input: scattered points coordinate array for the modulo axis
+*               output: updated coordinates in the modulo range (if possible)
 
-*  ax           modulo axis
-*  nax          number of points in the modulo axis
-*  nscat        input: number of scattered points, output: updated number.
-*  scatm        scattered points coordinate array in the direction of the 
-*               modulo axis
+*  Input arguments
+      REAL*8 axmin, axmax, axmod
+      INTEGER nscat
 
+*  Input/output arguments
       REAL scatm(*)
-      REAL*8 ax(*)
-      INTEGER nscat, i, nax
-      REAL ax1, axf, scatpt, diff, range
 
-      ax1 = ax(1)
-      axf = ax(nax)
-      range = axf - ax1
-      IF (range .EQ. 0.) RETURN  ! else the WHILE loops are infinite !
+*  Local variables
+      INTEGER idx
+      REAL*8 val
 
-      DO 100 i = 1, nscat
-         scatpt = scatm(i)
-         diff = scatpt - axf
-         DO WHILE (diff .GE. 0)
-            scatpt = scatpt - range
-            diff = scatpt - axf
+* Check this is a valid modulo axis
+      IF ( (axmin .GE. axmax) .OR. (axmod .LE. 0.0D0) ) THEN
+         RETURN
+      ENDIF
+
+* Convert values
+      DO 100 idx = 1, nscat
+*        Do the conversion in double precision
+         val = scatm(idx)
+         DO WHILE ( val .GE. axmax )
+            val = val - axmod
          ENDDO
-
-         diff = scatpt - ax1 
-         DO WHILE (diff .LT. 0.)
-            scatpt = scatpt + range
-            diff = scatpt - ax1
+         DO WHILE ( val .LT. axmin )
+            val = val + axmod
          ENDDO
-
-         scatm(i) = scatpt
+*        Save the new value if in range
+         IF ( (val .GE. axmin) .AND. (val .LE. axmax) ) THEN
+            scatm(idx) = val
+         ENDIF
   100 CONTINUE
 
       RETURN

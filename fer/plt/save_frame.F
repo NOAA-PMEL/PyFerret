@@ -51,6 +51,7 @@
 * 1/03 *kob* g77 port - requires use of risc_buff for concats
 *
 * V6.2  *jli* 5/08 pass background color and transparent to put_frame_batch()
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations:
 	INTEGER		status
@@ -64,6 +65,7 @@
 
 	include 'errmsg.parm'
 	include 'movies.parm'
+	include 'tmap_dims.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
 	include 'xrisc_buff.cmn'

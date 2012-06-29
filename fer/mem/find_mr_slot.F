@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -44,24 +44,20 @@
 *
 * revision 0.0 - 7/21/88
 * V200:  6/12/89 - delete priorities handled through linked lists
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
-	INTEGER		cx, mr, status
+	INTEGER cx, mr, status
 
 * internal variable declarations:
-	INTEGER		HASH_cx, pile, head
+	INTEGER HASH_cx, pile, head
 
 * is there a slot in the free slot list ?
  100	IF ( mv_flink( 0 ) . EQ. 0 ) THEN

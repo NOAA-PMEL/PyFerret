@@ -52,12 +52,9 @@
 *	 1/99 - allow strings in quoble quotes (as fcn args)
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead 
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include	'ferret.parm'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declaration:
 	CHARACTER*1	ctr

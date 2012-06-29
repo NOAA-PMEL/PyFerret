@@ -50,18 +50,13 @@
 * V230:  7/21/92 - improved error message for unknown GFDL diagnostic var
 * V510:  8/99 *sh* - bug uncovered allowing DEFINE GRID/LIKE=user_var
 *		     if GET_UVAR_GRID is called the dset returned may be 0
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xvariables.cmn'
 	include	'xalgebra.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	data_set, category, variable, status

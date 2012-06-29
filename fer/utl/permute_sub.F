@@ -1,6 +1,8 @@
 	SUBROUTINE PERMUTE_SUB( src_cx, perm,
-     .		src, slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit )
+     .		src, slox, shix, sloy, shiy, sloz, shiz, 
+     .		slot, shit, sloe, shie, slof, shif,
+     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, 
+     .		dlot, dhit, dloe, dhie, dlof, dhif )
 
 *
 *
@@ -49,56 +51,71 @@
 *
 * v541: 3/02 - *kob* need to replace ifdef 0 because IRIX preprocessor
 *                    didn't like it
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*	           restore code that was ifdef'd out due to a DEC compiler error
+
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 
 * calling argument declarations:
-	INTEGER src_cx, perm(4),
-     .		slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit
-	REAL    src( slox:shix,sloy:shiy,sloz:shiz,slot:shit ),
-     .		dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit )
+	INTEGER src_cx, perm(nferdims),
+     .		slox, shix, sloy, shiy, sloz, shiz,
+     .		slot, shit, sloe, shie, slof, shif,
+     .		dlox, dhix, dloy, dhiy, dloz, dhiz, 
+     .		dlot, dhit, dloe, dhie, dlof, dhif
+
+	REAL    src( slox:shix,sloy:shiy,sloz:shiz,slot:shit,sloe:shie,slof:shif ),
+     .		dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit,dloe:dhie,dlof:dhif )
 
 * internal variable declarations:
-	INTEGER	loi, loj, lok, lol, hii, hij, hik, hil, i, j, k, l, idim
-	INTEGER	lo(4), hi(4), ii(4)
+	INTEGER	loi, loj, lok, lol, lom, lon, hii, hij, 
+     .		hik, hil, him, hin, i, j, k, l, m, n, idim
+	INTEGER	lo(nferdims), hi(nferdims), ii(nferdims)
 	EQUIVALENCE
      .		(lo(1), loi), (hi(1), hii),
      .		(lo(2), loj), (hi(2), hij),
      .		(lo(3), lok), (hi(3), hik),
-     .		(lo(4), lol), (hi(4), hil)
+     .		(lo(4), lol), (hi(4), hil),
+     .		(lo(5), lom), (hi(5), him),
+     .		(lo(6), lon), (hi(6), hin)
 
 * local parameter declarations
-	INTEGER	i_ax, j_ax, k_ax, l_ax
-	PARAMETER  (i_ax=1, j_ax=2, k_ax=3, l_ax=4)
+	INTEGER	i_ax, j_ax, k_ax, l_ax, m_ax, n_ax
+	PARAMETER  (i_ax=1, j_ax=2, k_ax=3, l_ax=4, m_ax=5, n_ax=6)
 
 * 1/00 *kob* -  the below code was used to upgrade permute_sub.F for
 *		v5.30.  However, a bug in the DEC optimizer caused the
 *		loop to be unrolled incorrectly, leading to improper
 *		results.  It's in included here so as not to lose it, 
-*		but stuck in this ifdef which shouldn't be accessed.
-
+*		but stuck in an ifdef which shouldn't be accessed.
+* 3/12 * resurrect this code. Much simpler than the replacement code.
 
 	EQUIVALENCE
      .		(ii(1), i),
      .		(ii(2), j),
      .		(ii(3), k),
-     .		(ii(4), l)
-
+     .		(ii(4), l),
+     .		(ii(5), m),
+     .		(ii(6), n)
 
 * initialize - save loop limits as unsubscripted variables
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   lo(idim) = cx_lo_ss(src_cx,idim)
 	   hi(idim) = cx_hi_ss(src_cx,idim)
  100	CONTINUE
 
+	DO 200  n = lon, hin
+	DO 200  m = lom, him
 	DO 200  l = lol, hil
 	DO 200  k = lok, hik
 	DO 200  j = loj, hij
 	DO 200  i = loi, hii
-	   dst(ii(perm(1)),ii(perm(2)),ii(perm(3)),ii(perm(4))) =
-     .		src(i,j,k,l)
+	   dst(ii(perm(1)),ii(perm(2)),ii(perm(3)),ii(perm(4)),
+     .	       ii(perm(5)),ii(perm(6))) =
+     .		src(i,j,k,l,m,n)
  200	CONTINUE
+
 	RETURN
 	END 

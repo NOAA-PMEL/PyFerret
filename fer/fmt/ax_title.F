@@ -44,21 +44,14 @@
 * V320: 12/19/94 - recognize millibars and decibars as special axes
 *		(kludge: use "m" for meters instead of exact unit string.
 *			This because of "METERS" in the old grid files around.)
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'xunits.cmn_text'
 	include 'ferret.parm'
 	include 'xtext_info.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN_TEXT'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	idim, grid, len

@@ -55,6 +55,7 @@
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01  remove VMS include statements
 * v604 *acm* 7/07 increase length of ds_name
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
         include 'tmap_dims.parm'
 #        include "tmap_dset.parm"
@@ -186,8 +187,8 @@
 	GOTO 4999
 
 * GRID dset variable
-* 4-axis description of grid for given variable
-* 5 records back: grid name and 4 axis names with flags
+* n-axis description of grid for given variable
+* 5 records back: grid name and axis names with flags
  500	CONTINUE
 	IF ( num_args .NE. 3 ) GOTO 5050
 * ... identify the data set, then variable, then its grid
@@ -206,7 +207,7 @@
      .			grid_name(grid)(1:TM_LENSTR1(grid_name(grid)))
 	CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 * ... return the names of the axes and an inner/outer flag
-	DO 510 dim = 1, 4
+	DO 510 dim = 1, nferdims
 	   axis = grid_line( dim, grid )
 	   IF ( axis .EQ. munknown ) THEN
 	      CALL SPLIT_LIST(pttmode_explct, chout, 'UNKNOWN O', 9)
@@ -336,9 +337,9 @@
 	GOTO 4999
 
 * SPAN  dset variable
-* return 5 records:
+* return nferdims+1 records:
 * 1 - the grid name for this variable
-* 2-5 the subssript, world coords, and world text limits along each axis
+* 2-n the subssript, world coords, and world text limits along each axis
  2000	CONTINUE
 	IF ( num_args .NE. 3 ) GOTO 5050
 * ... identify the data set, then variable, then its grid
@@ -359,7 +360,7 @@
 	CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 	risc_buff = ' '
 * ... return the subscript span along each axis
-	DO 2010 dim = 1, 4
+	DO 2010 dim = 1, nferdims
 	   axis = grid_line( dim, grid )
 	   IF ( axis .EQ. munknown
      .     .OR. axis .EQ. mnormal ) THEN
@@ -389,7 +390,7 @@
 	IF ( num_args .NE. 3 ) GOTO 5210
 	grid = TM_GET_GRIDNUM( cmnd_buff(arg_start(2):arg_end(2)) )
 	IF ( grid .EQ. unspecified_int4 ) GOTO 5930
-	DO 2110 dim = 1, 4
+	DO 2110 dim = 1, nferdims
 	  istat = STR_CASE_BLIND_COMPARE( ww_dim_name(dim),
      .				cmnd_buff(arg_start(3):arg_end(3)) )
 	  IF ( istat .EQ. vms_str_success ) GOTO 2120
@@ -443,7 +444,7 @@
 	IF ( num_args .NE. 3 ) GOTO 5220
 	grid = TM_GET_GRIDNUM( cmnd_buff(arg_start(2):arg_end(2)) )
 	IF ( grid .EQ. unspecified_int4 ) GOTO 5930
-	DO 2210 dim = 1, 4
+	DO 2210 dim = 1, nferdims
 	  istat = STR_CASE_BLIND_COMPARE( ww_dim_name(dim),
      .					 cmnd_buff(arg_start(3):arg_end(3)) )
 	  IF ( istat .EQ. vms_str_success ) GOTO 2220
@@ -474,7 +475,7 @@
 	IF ( num_args .NE. 5 ) GOTO 5230
 	grid = TM_GET_GRIDNUM( cmnd_buff(arg_start(2):arg_end(2)) )
 	IF ( grid .EQ. unspecified_int4 ) GOTO 5930
-	DO 2310 dim = 1, 4 ! match orientation against X,Y,Z,T
+	DO 2310 dim = 1, nferdims ! match orientation against X,Y,Z,T,E,F
 	  istat = STR_CASE_BLIND_COMPARE( ww_dim_name(dim),
      .				cmnd_buff(arg_start(3):arg_end(3)) )
 	  IF ( istat .EQ. vms_str_success ) THEN
@@ -482,7 +483,7 @@
 	     GOTO 2320
 	  ENDIF
  2310	CONTINUE
-	DO 2315 dim = 1, 4 ! match orientation against I,J,K,L
+	DO 2315 dim = 1, nferdims ! match orientation against I,J,K,L,M,N
 	  istat = STR_CASE_BLIND_COMPARE( ss_dim_name(dim),
      .				cmnd_buff(arg_start(3):arg_end(3)) )
 	  IF ( istat .EQ. vms_str_success ) THEN
@@ -531,7 +532,7 @@
 	IF ( num_args .NE. 5 ) GOTO 5240
 	grid = TM_GET_GRIDNUM( cmnd_buff(arg_start(2):arg_end(2)) )
 	IF ( grid .EQ. unspecified_int4 ) GOTO 5930
-	DO 2410 dim = 1, 4   ! match orientation against X,Y,Z,T
+	DO 2410 dim = 1, nferdims   ! match orientation against X,Y,Z,T
 	  istat = STR_CASE_BLIND_COMPARE( ww_dim_name(dim),
      .				cmnd_buff(arg_start(3):arg_end(3)) )
 	  IF ( istat .EQ. vms_str_success ) THEN
@@ -539,7 +540,7 @@
 	      GOTO 2420
 	  ENDIF
  2410	CONTINUE
-	DO 2415 dim = 1, 4     ! match orientation against I,J,K,L
+	DO 2415 dim = 1, nferdims     ! match orientation against I,J,K,L,M,N
 	  istat = STR_CASE_BLIND_COMPARE( ss_dim_name(dim),
      .				cmnd_buff(arg_start(3):arg_end(3)) )
 	  IF ( istat .EQ. vms_str_success ) THEN
@@ -617,14 +618,14 @@
  5060	CALL ERRMSG( ferr_invalid_command, status,
      .		     'QUERY AXIS needs axis name as argument', *5000)
  5210	CALL ERRMSG( ferr_invalid_command, status,
-     .		     'usage: QUERY GAXIS grid_name X_Y_ZorT', *5000)
+     .		     'usage: QUERY GAXIS grid_name X_Y_Z_T_EorF', *5000)
  5220	CALL ERRMSG( ferr_invalid_command, status,
-     .		     'usage: QUERY GCOORDS grid_name X_Y_ZorT', *5000)
+     .		     'usage: QUERY GCOORDS grid_name X_Y_Z_T_EorF', *5000)
  5230	CALL ERRMSG( ferr_invalid_command, status,
-     .		     'usage: QUERY SSPOINT grid_name X_Y_ZorT delta index'
+     .		     'usage: QUERY SSPOINT grid_name X_Y_Z_T_EorF delta index'
      .	             , *5000)
  5240	CALL ERRMSG( ferr_invalid_command, status,
-     .		     'usage: QUERY WWPOINT grid_name X_Y_ZorT delta coord'
+     .		     'usage: QUERY WWPOINT grid_name X_Y_Z_T_EorF delta coord'
      .	             , *5000)
  5304	CALL ERRMSG( ferr_erreq, status,
      .		     cmnd_buff(arg_start(4):arg_end(4)), *5000 )

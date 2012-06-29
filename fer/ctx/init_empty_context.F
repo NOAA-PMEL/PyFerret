@@ -40,14 +40,11 @@
 * V450: 1/97 - part of changes to accomodate grid-changing functions
 * 9/97 *kob* - initialize cx_calendar as well
 * V530:  8/00 *sh* - initialize data type to unspecified
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER cx
@@ -56,7 +53,7 @@
 	INTEGER	idim
 
 * all contexts contain axis region information
-	DO 100 idim = 1,4
+	DO 100 idim = 1,nferdims
 	   cx_lo_ss ( cx, idim )   = unspecified_int4
 	   cx_hi_ss ( cx, idim )   = unspecified_int4
 	   cx_lo_ww ( idim, cx )   = unspecified_val8

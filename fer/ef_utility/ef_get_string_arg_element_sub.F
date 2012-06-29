@@ -36,25 +36,28 @@
 *
 * This returns an element of the string array which was passed as an argument
 * to the function.  
+*
+* Inside this subroutine arg is an array of pointers (cast as real*8),
+* and we can call GET_STRING_ELEMENT to get a string element.
+*
+*       3/12 *kms* Added E and F dimensions
 
-* Inside this subroutine arg is a 4-D real*8 array of pointers, and
-* we can call GET_STRING_ELEMENT to get a string element.
+      SUBROUTINE EF_GET_STRING_ARG_ELEMENT_SUB( lox, hix, loy, hiy,
+     .                  loz, hiz, lot, hit, loe, hie, lof, hif, arg,
+     .                  i, j, k, l, m, n, max_line_len, slen, text )
 
-      SUBROUTINE ef_get_string_arg_element_sub (lox, hix, loy, hiy,
-     .                     loz, hiz, lot, hit, arg, i, j, k, l, 
-     .			   max_line_len, slen, text )
-
-      INTEGER i, j, k, l, lox, hix, loy, hiy, loz, hiz, lot, hit, 
-     .  slen, max_line_len
+      INTEGER i, j, k, l, m, n,
+     .        lox, hix, loy, hiy, loz, hiz, 
+     .        lot, hit, loe, hie, lof, hif,
+     .        slen, max_line_len
       CHARACTER*(*) text
-      REAL*8 arg(lox:hix, loy:hiy, loz:hiz, lot:hit)
+      REAL*8 arg(lox:hix, loy:hiy, loz:hiz, lot:hit, loe:hie, lof:hif)
 
-      CHARACTER	GET_STRING_ELEMENT*512
-    
+      CHARACTER GET_STRING_ELEMENT*512
 
-      text = GET_STRING_ELEMENT (lox, hix, loy, hiy, loz, hiz, lot, hit,
-     .			         arg, i, j, k, l, max_line_len, slen)
+      text = GET_STRING_ELEMENT(lox, hix, loy, hiy, loz, hiz,
+     .                          lot, hit, loe, hie, lof, hif, arg,
+     .                          i, j, k, l, m, n, max_line_len, slen)
 
       RETURN
-
       END

@@ -50,9 +50,11 @@ c
 
       SUBROUTINE EF_BAIL_OUT(id, text)
 
+      IMPLICIT NONE
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'
-      INCLUDE 'EF_Util.parm'	
+      INCLUDE 'EF_Util.parm'
       INCLUDE 'xerrmsg_text.cmn'
 
 
@@ -62,7 +64,7 @@ c
 c     internal parameter declarations:
       INTEGER      slen
       PARAMETER  ( slen = ef_max_description )
-      CHARACTER*40 GCF_NAME  ! EF_MAX_NAME_LENGTH is 40 
+      CHARACTER*(EF_MAX_NAME_LENGTH) GCF_NAME
 
 #ifdef sun
       BYTE      fhol(slen)      ! c-type Hollerith string buffer
@@ -85,7 +87,7 @@ c     call the external functions library routine to see if it is external
       ef_errtext = text
       len_eftext = llen
 
-      CALL ef_err_bail_out( id, fhol )
-      
+      CALL EF_ERR_BAIL_OUT( id, fhol )
+
       RETURN 
       END

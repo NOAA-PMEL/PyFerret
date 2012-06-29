@@ -46,6 +46,7 @@
 *	 1/11/90 - added @LOC
 *	  2/7/90 - corrected error detect bug for transforms without args
 * V400:  5/30/95 - increased arbitrary argument limit of 1000 to 32766
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling arguments
 	INTEGER	idim, cx, status
@@ -54,17 +55,11 @@
 	INTEGER	i, ktrans
 	REAL	arg
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'	
 	include 'errmsg.parm'	
 	include 'xcontext.cmn'
 	include 'xalgebra.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'	
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XALGEBRA.CMN'
-#endif
 
 * initialize
 	ktrans = cx_trans( idim, cx )

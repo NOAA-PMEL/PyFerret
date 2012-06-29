@@ -57,8 +57,9 @@
 *	          - also fixed apparent bug in loop over num_uvars_in_cmnd
 * V533: *sh* 6/01 - include CGRID_SIZE in determination of axis buffer sizes
 *	            only if PLOT/VS
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'slash.parm'
@@ -66,13 +67,6 @@
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 	
 * calling argument declarations:
 	INTEGER	ax1_blks, ax1_start, ax2_blks, ax2_start, status
@@ -81,7 +75,7 @@
 * internal variable declarations:
 	LOGICAL plot_vs
 	INTEGER	MR_DIM_LEN, CX_DIM_LEN, CGRID_SIZE,
-     .		idim, ndim, dim(4), mr1, ax_len, cx, ivar,
+     .		idim, ndim, dim(nferdims), mr1, ax_len, cx, ivar,
      .		factor, loc
 	CHARACTER buff*4
 

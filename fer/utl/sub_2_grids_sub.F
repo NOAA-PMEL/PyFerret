@@ -1,7 +1,10 @@
 	SUBROUTINE SUB_2_GRIDS_SUB (
-     .		plus, plox, phix, ploy, phiy, ploz, phiz, plot, phit, bad_plus,
-     .		mnus, mlox, mhix, mloy, mhiy, mloz, mhiz, mlot, mhit, bad_mnus,
-     .		rslt, rlox, rhix, rloy, rhiy, rloz, rhiz, rlot, rhit, bad_rslt )
+     .		plus, plox, phix, ploy, phiy, ploz, phiz, plot, phit, 
+     .		ploe, phie, plof, phif, bad_plus,
+     .		mnus, mlox, mhix, mloy, mhiy, mloz, mhiz, mlot, mhit, 
+     .		mloe, mhie, mlof, mhif, bad_mnus,
+     .		rslt, rlox, rhix, rloy, rhiy, rloz, rhiz, rlot, rhit, 
+     .		rloe, rhie, rlof, rhif, bad_rslt )
 
 *
 *
@@ -45,40 +48,43 @@
 * written for VAX computer under VMS operating system
 *
 * V200: 10/12/89
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
-	INTEGER	plox, phix, ploy, phiy, ploz, phiz, plot, phit,
-     .		mlox, mhix, mloy, mhiy, mloz, mhiz, mlot, mhit,
-     .		rlox, rhix, rloy, rhiy, rloz, rhiz, rlot, rhit
-	REAL    plus( plox:phix,ploy:phiy,ploz:phiz,plot:phit ),
-     .		mnus( mlox:mhix,mloy:mhiy,mloz:mhiz,mlot:mhit ),
-     .		rslt( rlox:rhix,rloy:rhiy,rloz:rhiz,rlot:rhit )
+	INTEGER	plox, phix, ploy, phiy, ploz, phiz, plot, phit, 
+     .		ploe, phie, plof, phif,
+     .		mlox, mhix, mloy, mhiy, mloz, mhiz, mlot, mhit, 
+     .		mloe, mhie, mlof, mhif,
+     .		rlox, rhix, rloy, rhiy, rloz, rhiz, rlot, rhit, 
+     .		rloe, rhie, rlof, rhif
+	REAL    plus( plox:phix,ploy:phiy,ploz:phiz,plot:phit,ploe:phie,plof:phif ),
+     .		mnus( mlox:mhix,mloy:mhiy,mloz:mhiz,mlot:mhit,mloe:mhie,mlof:mhif ),
+     .		rslt( rlox:rhix,rloy:rhiy,rloz:rhiz,rlot:rhit,rloe:rhie,rlof:rhif )
 	REAL	bad_plus, bad_mnus, bad_rslt
 
 * internal variable declarations:
-	INTEGER	i, j, k, l
+	INTEGER	i, j, k, l, m, n
 
 * --- end of introductory code ---
 
+	DO 100 n = rlof, rhif
+	DO 100 m = rloe, rhie
 	DO 100 l = rlot, rhit
 	DO 100 k = rloz, rhiz
 	DO 100 j = rloy, rhiy
 	DO 100 i = rlox, rhix
 
-	   IF (  plus(i,j,k,l) .NE. bad_plus
-     .	   .AND. mnus(i,j,k,l) .NE. bad_mnus ) THEN
+	   IF (  plus(i,j,k,l,m,n) .NE. bad_plus
+     .	   .AND. mnus(i,j,k,l,m,n) .NE. bad_mnus ) THEN
 
-	      rslt(i,j,k,l) = plus(i,j,k,l) - mnus(i,j,k,l)
+	      rslt(i,j,k,l,m,n) = plus(i,j,k,l,m,n) - mnus(i,j,k,l,m,n)
 
 	   ELSE
 
-	      rslt(i,j,k,l) = bad_rslt
+	      rslt(i,j,k,l,m,n) = bad_rslt
 
 	   ENDIF
 

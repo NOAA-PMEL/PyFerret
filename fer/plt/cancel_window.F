@@ -52,8 +52,10 @@
 *		gui_window_reported
 * *js* 12.12.97 Don't allow windows to be canceled when running in batch mode
 * *kob* 1.29.97 changed "can\'t" to cannot for compiler reasons
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+        include 'tmap_dims.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
@@ -62,16 +64,6 @@
 	include	'PLTCOM.DAT'	! with sizing data, etc.
 	include	'gkscm1_inc.decl'	! with gks common
 	include	'GKSCM1.INC'	! with gks common
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XGUI.CMN'
-	INCLUDE	'TMAP_PPLV11INC:PLTCOM_DAT.DECL/LIST'	! with sizing data, etc.
-	INCLUDE	'PPLV11INC:PLTCOM.DAT/LIST'	! with sizing data, etc.
-	INCLUDE	'TMAP_PPLV11INC:GKSCM1_INC.DECL/LIST'	! with GKS common
-	INCLUDE	'PPLV11INC:GKSCM1.INC/LIST'	! with GKS common
-#endif
 	
 * calling argument declarations:
 	INTEGER		status

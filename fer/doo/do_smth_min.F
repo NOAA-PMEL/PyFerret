@@ -7,7 +7,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -44,31 +44,30 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V622: 5/2010
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'interp_stack.parm'
+	include	'xprog_state.cmn'
 
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
 	REAL	arg, work(*), com(*), res(*)
 
 * internal variable declarations
-	INTEGER	i, wlen, status
-	REAL	weight
-
-	include	'ferret.parm'
-	include	'errmsg.parm'
-	include	'interp_stack.parm'
-	include	'xprog_state.cmn'
+	INTEGER	wlen
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
-     .				( 'doing',isact_class_trans, res_cx, idim )
+     .				( 'doing', isact_class_trans, res_cx, idim )
 
 * initialize
 	wlen = arg	! length of smoother
 
-* create weights array to be convolved with data
-	weight = 1. 
-
-* now convolve this along the desired axis of the grid
+* now smooth this along the desired axis of the grid
 	CALL MINSMOOTHER( idim, wlen,
      .			com, com_mr, com_cx,
      .			res, res_mr, res_cx, work )
@@ -76,9 +75,5 @@
 * success
 	DO_SMTH_MIN = ferr_ok
 	RETURN
-
-* error
- 5000	DO_SMTH_MIN = status
-	RETURN
-	END	
+	END
 

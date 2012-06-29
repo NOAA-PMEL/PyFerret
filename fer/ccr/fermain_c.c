@@ -36,16 +36,11 @@
 
 
 
-/*	PROGRAM FERRET - C version of MAIN program with reconfigurable memory */
-
-/* compile this with:
-   cc -c [-g] -Iferret_cmn fermain_c.c
-         (and use -D_NO_PROTO for non-ANSI compilers)
-*/
-
 /*
+*	PROGRAM FERRET - C version of MAIN program with reconfigurable memory
+*
 * TMAP interactive data analysis program
-
+*
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 */
@@ -77,11 +72,8 @@
 *                          (using IBM-portable TMAP libs)
 *|*|*|*|*|*|*|*|*|*|*|*|
 *
-*/
-
-/*
-   revision history for MAIN program unit:
-      11/16/94 - changed to a c version of ferret_dispatch_c
+*  revision history for MAIN program unit:
+*     11/16/94 - changed to a c version of ferret_dispatch_c
 * FERRET 4.0     - 7/94 - using a C main program with dynamic memory
 *                - 6/95 - *kob* had to add ifdef checks for 
 *		  	  NO_ENTRY_NAME_UNDERSCORES for hp port, as hp
@@ -143,7 +135,6 @@
 *					 definition of macro DFTYPE in ferret.h. ppl_memory remains float.
 */
 
-#include <wchar.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -164,19 +155,19 @@ static void command_line_run(DFTYPE **memory);
 void help_text()
 {
   printf(
-	 "Usage:  ferret [-memsize Mwords] [-batch [outfile]] [-server] [-secure] [-gif] [-gui] [-unmapped] [-help] [-nojnl] [-noverify] [-script [args]]\n\
--memsize:  specify the memory cache size in megawords (default 3.2)\n\
--batch:  output directly to metafile \"outfile\" w/out X windows\n\
--unmapped:  use invisible output windows (superceded by -batch)\n\
--gif:  output to GIF file w/o X windows only w/ FRAME command\n\
--gui:  to start Ferret in point and click mode (not available on all platforms)\n\
--secure:  run securely -- don't allow system commands\n\
--server:  run in server mode -- don't stop on message commands\n\
--help:  obtain this listing\n\
--nojnl:  on startup don't open a journal file (can be turned on later with SET MODE JOURNAL\n\
--noverify:  on startup turn off verify mode (can be turned on later with SET MODE VERIFY\n\
--script scriptname [arguments]: execute the specified script and exit: SPECIFY THIS LAST\n\
--version lists the version number of Ferret and stops. \n");
+	 "Usage:  ferret [-memsize Mwords] [-batch [outfile]] [-server] [-secure] [-gif] [-gui] [-unmapped] [-help] [-nojnl] [-noverify] [-script [args]]\n"
+         "   -memsize:  specify the memory cache size in megawords (default 3.2)\n"
+         "   -batch:  output directly to metafile \"outfile\" w/out X windows\n"
+         "   -unmapped:  use invisible output windows (superceded by -batch)\n"
+         "   -gif:  output to GIF file w/o X windows only w/ FRAME command\n"
+         "   -gui:  to start Ferret in point and click mode (not available on all platforms)\n"
+         "   -secure:  run securely -- don't allow system commands\n"
+         "   -server:  run in server mode -- don't stop on message commands\n"
+         "   -help:  obtain this listing\n"
+         "   -nojnl:  on startup don't open a journal file (can be turned on later with SET MODE JOURNAL\n"
+         "   -noverify:  on startup turn off verify mode (can be turned on later with SET MODE VERIFY\n"
+         "   -script scriptname [arguments]: execute the specified script and exit: SPECIFY THIS LAST\n"
+         "   -version lists the version number of Ferret and stops. \n");
   exit(0);
 }
 

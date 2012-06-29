@@ -47,12 +47,9 @@
 * V200:  2/27/90 - allowed unspecified limits as "???"
 * V230:  2/10/92 - SUN port: must use a temporary string, strbuf, instead of
 *                  routine name LOHI_STRING internally.
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include	'ferret.parm'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations
 	INTEGER	idim, grid, ndec, slen

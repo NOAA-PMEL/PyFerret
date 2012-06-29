@@ -102,6 +102,8 @@
 * V6.63 *acm* 7/10 Save symbols PPL_VEC_XSKIP, PPL_VEC_YSKIP containing the 
 *                  Vector XSKIP and YSKIP values. (PPL_VECLEN is saved in vecfld)
 * V6.63 *acm* 7/10 Add VECTOR/KEY to force key even if /NOLAB
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*                  A time axis may be a T axis or F axis
 
 
 	include 'tmap_dims.parm'
@@ -171,8 +173,8 @@
 	   axes = .FALSE.
 	ENDIF
 	flows     = qual_given( slash_vect_flowline  ).GT.0
-	is_logh   = qual_given( slash_is_logh        ).GT.0  ! Not valid quals
-	is_logv   = qual_given( slash_is_logv        ).GT.0  ! for vector
+	is_logh   = .FALSE.  ! Not valid quals
+	is_logv   = .FALSE.  ! for vector
 
 	no_key = .FALSE.
         IF (no_labels) no_key = .TRUE.
@@ -191,8 +193,9 @@
 
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
 * ... default orientation for YT and ZT VECTORs has time on horizontal
-	IF ( plot_axis(2).EQ.t_dim .AND. plot_axis(1).NE.x_dim )
-     .							transpz = .NOT.transpz
+	IF ( (plot_axis(2).EQ.t_dim .OR. plot_axis(2).EQ.f_dim) .AND. 
+     .		plot_axis(1).NE.x_dim ) transpz = .NOT.transpz
+
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 

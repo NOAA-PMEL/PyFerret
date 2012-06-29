@@ -1,4 +1,4 @@
-* EF_mem_subsc.CMN - COMMON/ EF_MEM_SUBSC /
+* EF_mem_subsc.cmn - COMMON/ EF_MEM_SUBSC /
 *
 * Jonathan Callahan
 * September, 1998
@@ -13,6 +13,8 @@
 * to the "mem" values before calling the external function's '_compute'
 * routine.  The "wrk" values will also be filled in at this time.
 *
+* 2/12 *kms* add E and F dimensions
+*            moved to EF_mem_subsc.defcmn so EF_mem_subsc is the external declaration
 
 
 *************************************************************************
@@ -31,8 +33,13 @@
      .		mem7loz, mem8loz, mem9loz, mem10loz, mem11loz, mem12loz,
      .		mem1lot, mem2lot, mem3lot, mem4lot,  mem5lot,  mem6lot,
      .		mem7lot, mem8lot, mem9lot, mem10lot, mem11lot, mem12lot,
+     .		mem1loe, mem2loe, mem3loe, mem4loe,  mem5loe,  mem6loe,
+     .		mem7loe, mem8loe, mem9loe, mem10loe, mem11loe, mem12loe,
+     .		mem1lof, mem2lof, mem3lof, mem4lof,  mem5lof,  mem6lof,
+     .		mem7lof, mem8lof, mem9lof, mem10lof, mem11lof, mem12lof,
      .
-     .      memreslox, memresloy, memresloz, memreslot,
+     .      memreslox, memresloy, memresloz,
+     .      memreslot, memresloe, memreslof,
      .
      .		mem1hix, mem2hix, mem3hix, mem4hix,  mem5hix,  mem6hix,
      .		mem7hix, mem8hix, mem9hix, mem10hix, mem11hix, mem12hix,
@@ -42,8 +49,13 @@
      .		mem7hiz, mem8hiz, mem9hiz, mem10hiz, mem11hiz, mem12hiz,
      .		mem1hit, mem2hit, mem3hit, mem4hit,  mem5hit,  mem6hit,
      .		mem7hit, mem8hit, mem9hit, mem10hit, mem11hit, mem12hit,
+     .		mem1hie, mem2hie, mem3hie, mem4hie,  mem5hie,  mem6hie,
+     .		mem7hie, mem8hie, mem9hie, mem10hie, mem11hie, mem12hie,
+     .		mem1hif, mem2hif, mem3hif, mem4hif,  mem5hif,  mem6hif,
+     .		mem7hif, mem8hif, mem9hif, mem10hif, mem11hif, mem12hif,
      .
-     .      memreshix, memreshiy, memreshiz, memreshit,
+     .      memreshix, memreshiy, memreshiz,
+     .      memreshit, memreshie, memreshif,
      .
      .		wrk1lox, wrk2lox, wrk3lox, wrk4lox,  wrk5lox,  wrk6lox,
      .		wrk7lox, wrk8lox, wrk9lox, wrk10lox, wrk11lox, wrk12lox,
@@ -53,6 +65,10 @@
      .		wrk7loz, wrk8loz, wrk9loz, wrk10loz, wrk11loz, wrk12loz,
      .		wrk1lot, wrk2lot, wrk3lot, wrk4lot,  wrk5lot,  wrk6lot,
      .		wrk7lot, wrk8lot, wrk9lot, wrk10lot, wrk11lot, wrk12lot,
+     .		wrk1loe, wrk2loe, wrk3loe, wrk4loe,  wrk5loe,  wrk6loe,
+     .		wrk7loe, wrk8loe, wrk9loe, wrk10loe, wrk11loe, wrk12loe,
+     .		wrk1lof, wrk2lof, wrk3lof, wrk4lof,  wrk5lof,  wrk6lof,
+     .		wrk7lof, wrk8lof, wrk9lof, wrk10lof, wrk11lof, wrk12lof,
      .
      .		wrk1hix, wrk2hix, wrk3hix, wrk4hix,  wrk5hix,  wrk6hix,
      .		wrk7hix, wrk8hix, wrk9hix, wrk10hix, wrk11hix, wrk12hix,
@@ -61,7 +77,11 @@
      .		wrk1hiz, wrk2hiz, wrk3hiz, wrk4hiz,  wrk5hiz,  wrk6hiz,
      .		wrk7hiz, wrk8hiz, wrk9hiz, wrk10hiz, wrk11hiz, wrk12hiz,
      .		wrk1hit, wrk2hit, wrk3hit, wrk4hit,  wrk5hit,  wrk6hit,
-     .		wrk7hit, wrk8hit, wrk9hit, wrk10hit, wrk11hit, wrk12hit
+     .		wrk7hit, wrk8hit, wrk9hit, wrk10hit, wrk11hit, wrk12hit,
+     .		wrk1hie, wrk2hie, wrk3hie, wrk4hie,  wrk5hie,  wrk6hie,
+     .		wrk7hie, wrk8hie, wrk9hie, wrk10hie, wrk11hie, wrk12hie,
+     .		wrk1hif, wrk2hif, wrk3hif, wrk4hif,  wrk5hif,  wrk6hif,
+     .		wrk7hif, wrk8hif, wrk9hif, wrk10hif, wrk11hif, wrk12hif
 
 	INTEGER
      .		mem1lox, mem2lox, mem3lox, mem4lox,  mem5lox,  mem6lox,
@@ -72,8 +92,13 @@
      .		mem7loz, mem8loz, mem9loz, mem10loz, mem11loz, mem12loz,
      .		mem1lot, mem2lot, mem3lot, mem4lot,  mem5lot,  mem6lot,
      .		mem7lot, mem8lot, mem9lot, mem10lot, mem11lot, mem12lot,
+     .		mem1loe, mem2loe, mem3loe, mem4loe,  mem5loe,  mem6loe,
+     .		mem7loe, mem8loe, mem9loe, mem10loe, mem11loe, mem12loe,
+     .		mem1lof, mem2lof, mem3lof, mem4lof,  mem5lof,  mem6lof,
+     .		mem7lof, mem8lof, mem9lof, mem10lof, mem11lof, mem12lof,
      .
-     .      memreslox, memresloy, memresloz, memreslot,
+     .      memreslox, memresloy, memresloz,
+     .      memreslot, memresloe, memreslof,
      .
      .		mem1hix, mem2hix, mem3hix, mem4hix,  mem5hix,  mem6hix,
      .		mem7hix, mem8hix, mem9hix, mem10hix, mem11hix, mem12hix,
@@ -83,8 +108,13 @@
      .		mem7hiz, mem8hiz, mem9hiz, mem10hiz, mem11hiz, mem12hiz,
      .		mem1hit, mem2hit, mem3hit, mem4hit,  mem5hit,  mem6hit,
      .		mem7hit, mem8hit, mem9hit, mem10hit, mem11hit, mem12hit,
+     .		mem1hie, mem2hie, mem3hie, mem4hie,  mem5hie,  mem6hie,
+     .		mem7hie, mem8hie, mem9hie, mem10hie, mem11hie, mem12hie,
+     .		mem1hif, mem2hif, mem3hif, mem4hif,  mem5hif,  mem6hif,
+     .		mem7hif, mem8hif, mem9hif, mem10hif, mem11hif, mem12hif,
      .
-     .      memreshix, memreshiy, memreshiz, memreshit,
+     .      memreshix, memreshiy, memreshiz,
+     .      memreshit, memreshie, memreshif,
      .
      .		wrk1lox, wrk2lox, wrk3lox, wrk4lox,  wrk5lox,  wrk6lox,
      .		wrk7lox, wrk8lox, wrk9lox, wrk10lox, wrk11lox, wrk12lox,
@@ -94,6 +124,10 @@
      .		wrk7loz, wrk8loz, wrk9loz, wrk10loz, wrk11loz, wrk12loz,
      .		wrk1lot, wrk2lot, wrk3lot, wrk4lot,  wrk5lot,  wrk6lot,
      .		wrk7lot, wrk8lot, wrk9lot, wrk10lot, wrk11lot, wrk12lot,
+     .		wrk1loe, wrk2loe, wrk3loe, wrk4loe,  wrk5loe,  wrk6loe,
+     .		wrk7loe, wrk8loe, wrk9loe, wrk10loe, wrk11loe, wrk12loe,
+     .		wrk1lof, wrk2lof, wrk3lof, wrk4lof,  wrk5lof,  wrk6lof,
+     .		wrk7lof, wrk8lof, wrk9lof, wrk10lof, wrk11lof, wrk12lof,
      .
      .		wrk1hix, wrk2hix, wrk3hix, wrk4hix,  wrk5hix,  wrk6hix,
      .		wrk7hix, wrk8hix, wrk9hix, wrk10hix, wrk11hix, wrk12hix,
@@ -102,5 +136,9 @@
      .		wrk1hiz, wrk2hiz, wrk3hiz, wrk4hiz,  wrk5hiz,  wrk6hiz,
      .		wrk7hiz, wrk8hiz, wrk9hiz, wrk10hiz, wrk11hiz, wrk12hiz,
      .		wrk1hit, wrk2hit, wrk3hit, wrk4hit,  wrk5hit,  wrk6hit,
-     .		wrk7hit, wrk8hit, wrk9hit, wrk10hit, wrk11hit, wrk12hit
+     .		wrk7hit, wrk8hit, wrk9hit, wrk10hit, wrk11hit, wrk12hit,
+     .		wrk1hie, wrk2hie, wrk3hie, wrk4hie,  wrk5hie,  wrk6hie,
+     .		wrk7hie, wrk8hie, wrk9hie, wrk10hie, wrk11hie, wrk12hie,
+     .		wrk1hif, wrk2hif, wrk3hif, wrk4hif,  wrk5hif,  wrk6hif,
+     .		wrk7hif, wrk8hif, wrk9hif, wrk10hif, wrk11hif, wrk12hif
 

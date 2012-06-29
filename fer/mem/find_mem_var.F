@@ -2,7 +2,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -95,28 +95,31 @@
 * of another.) 
 * Some of the internal grid-changing functions (e.g. RESHAPE) require
 * slightly different rules for setting uvar_given -- see gcf_impose_axes.F
+*
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-
-	include 'tmap_dims.parm'
-	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
+	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
 	include 'xprog_state.cmn'
 
 * calling argument declarations:
-	INTEGER		cx, mr
-	LOGICAL		by_value
+	INTEGER cx, mr
+	LOGICAL by_value
 
 * internal variable declarations:
-	LOGICAL		has_trans, itsa_uvar, normal(4), non_modulo(4)
-	INTEGER		HASH_CX, line,
-     .			mv, defining_grid, idim, var
-        REAL*8          TM_WORLD, ww_hi_bound
+	LOGICAL has_trans, itsa_uvar,
+     .          normal(nferdims), non_modulo(nferdims)
+	INTEGER HASH_CX, line,
+     .		mv, defining_grid, idim, var
+        REAL*8  TM_WORLD, ww_hi_bound
 
-* in "STUPID" mode the program can't find anything in memory
+* in "STUPID" mode the program cannot find anything in memory
 *  (4/99) if mode_arg is 1 we are are using "weak_cache", so do not skip out
 	IF (mode_stupid .AND. mode_arg(pmode_stupid,1).NE.1) GOTO 5000
 
@@ -139,12 +142,12 @@
 
 * do we need special checks for transforms ?
 	has_trans = .FALSE.
-	DO 200 idim = 1, 4
+	DO 200 idim = 1, nferdims
  200    has_trans = has_trans
      .        .OR. (cx_trans(idim,cx).NE.trans_no_transform)
 
 * flag the normal axes so we can bypass checks on them quickly
-	DO 210 idim = 1, 4
+	DO 210 idim = 1, nferdims
 	   line = grid_line(idim,defining_grid)
 	   IF (line .EQ. mnormal) THEN
 	      normal(idim) = .TRUE.
@@ -168,7 +171,7 @@
 	IF ( mr_variable ( mv ) .NE. cx_variable(cx)
      .	.OR. mr_category ( mv ) .NE. cx_category(cx)
      .	.OR. mr_data_set ( mv ) .NE. cx_data_set(cx)
-     .	.OR. mr_grid ( mv ) .NE. defining_grid	     )		GOTO 100
+     .	.OR. mr_grid ( mv ) .NE. defining_grid       ) GOTO 100
 
 * check variable type
 	IF ( mr_type(mv) .NE. cx_type(cx) ) GOTO 100
@@ -177,24 +180,25 @@
 	IF ( itsa_uvar ) THEN
 
 * * * * * LOOK FOR A USER-DEFINED VARIABLE BASED ON COORDINATE VALUES  * * * * 
-	   DO 40 idim = 1,4
+	   DO 40 idim = 1,nferdims
 
 	      IF ( normal(idim) ) GOTO 40
 
 * transformation correct ?
-	      IF ( mr_trans(idim,mv) .NE. cx_trans(idim,cx) )	GOTO 100
+	      IF ( mr_trans(idim,mv) .NE. cx_trans(idim,cx) ) GOTO 100
 
 * limits specified in uvar expression ? -->  no match necessary
-* 11/95 - since modulo isn't stripped until after FIND_MEM_VAR is called
+* 11/95 - since modulo is not stripped until after FIND_MEM_VAR is called
 *	  we cannot bypass this on modulo axes.
 *		e.g. x1 has I=1:10; let xgap=x1[i=3:7]
 *		then list xgap[i=1:15] should not "find" the i=3:7 result
 * 12/99 - if uvlim_gvn_xact then modulo is never stripped in INTERP_STACK
 *	(note: when is it ever stripped for uvlim_gvn_*?. This logic looks
 *		out of date. Maybe the non_modulo restriction can be lifted)
-	      IF ( uvar_given(idim,var) .EQ. uvlim_gvn_xact 
-     .		  .OR. (uvar_given(idim,var) .LT. uvlim_gvn_xact 
-     .		        .AND. non_modulo(idim)) 		) GOTO 40
+
+	      IF ( (uvar_given(idim,var) .EQ. uvlim_gvn_xact) .OR.
+     .		   ( (uvar_given(idim,var) .LT. uvlim_gvn_xact) .AND.
+     .		      non_modulo(idim) )  ) GOTO 40
 
 * insist that the  grid stored in memory encompasses the requested data
 	      IF ( mr_lo_ww(idim,mv) .GT. cx_lo_ww(idim,cx)
@@ -209,16 +213,16 @@
 	ELSEIF ( by_value ) THEN
 
 * * * * * * LOOK FOR A VARIABLE BASED ON COORDINATE VALUES * * * * * * * * 
-	   DO 50 idim = 1,4
+	   DO 50 idim = 1,nferdims
 
 	      IF ( normal(idim) ) GOTO 50
 
 * transformation correct ?
-	      IF ( mr_trans(idim,mv) .NE. cx_trans(idim,cx) )	GOTO 100
+	      IF ( mr_trans(idim,mv) .NE. cx_trans(idim,cx) ) GOTO 100
 
 * insist that the  grid stored in memory encompasses the requested data
 	      IF ( mr_lo_ww(idim, mv) .GT. cx_lo_ww(idim, cx)
-     .        .OR. mr_hi_ww(idim, mv) .LT. cx_hi_ww(idim, cx))	GOTO 100
+     .        .OR. mr_hi_ww(idim, mv) .LT. cx_hi_ww(idim, cx)) GOTO 100
 
 * insist that the delta values match
 	      IF ( mr_delta(idim,mv) .NE. cx_delta(idim,cx) ) GOTO 100
@@ -228,20 +232,20 @@
 	ELSE		! by subscript
 
 * * * * * * LOOK FOR A VARIABLE BASED ON SUBSCRIPT VALUES * * * * * * * * *
-	   DO 60 idim = 1,4
+	   DO 60 idim = 1,nferdims
 
 	      IF ( normal(idim) ) GOTO 60
 
 * transformation correct ?
-	      IF ( mr_trans(idim,mv) .NE. trans_no_transform )	GOTO 100
-	      IF ( cx_trans(idim,cx) .NE. trans_no_transform ) STOP 
-     .				'find_by_ss_trans'	! temp diagnostic
+	      IF ( mr_trans(idim,mv) .NE. trans_no_transform ) GOTO 100
+	      IF ( cx_trans(idim,cx) .NE. trans_no_transform ) 
+     .		 STOP 'find_by_ss_trans'	! temp diagnostic
 
 * insist that the  grid stored in memory encompasses the requested data
 * ... this is an adequate test because the grids looked for by subscript are
 * ... always untransformed --> normal axes always have a span on 1 point
 	      IF ( mr_lo_ss(mv, idim) .GT. cx_lo_ss(cx, idim)
-     .	      .OR. mr_hi_ss(mv, idim) .LT. cx_hi_ss(cx, idim))	GOTO 100
+     .	      .OR. mr_hi_ss(mv, idim) .LT. cx_hi_ss(cx, idim)) GOTO 100
 
 * insist that the delta values match
 	      IF ( mr_delta(idim,mv) .NE. cx_delta(idim,cx) ) GOTO 100
@@ -250,7 +254,7 @@
 	ENDIF
 
 * make sure it is completed
-	IF ( mr_protected( mv ) .EQ. mr_in_progress )		GOTO 100
+	IF ( mr_protected( mv ) .EQ. mr_in_progress ) GOTO 100
 
 * special tests left for last to keep the main loop simple and fast
 * ... special limit requirements for indefinite integrals:
@@ -259,13 +263,14 @@
 *     we are looking for must have upper endpoint on a grid box boundary
 *     ( to avoid errors of partial grid boxes )
 * fixed logic bug: 8/92 using ww_hi_bound
-* was:            IF ( mr_hi_ww(idim,mv).NE.cx_hi_ww(idim,cx)
-*     .          .AND. mr_hi_ss(mv,idim).EQ.cx_hi_ss(cx,idim) )  GOTO 100
+** was:            IF ( mr_hi_ww(idim,mv).NE.cx_hi_ww(idim,cx)
+**     .          .AND. mr_hi_ss(mv,idim).EQ.cx_hi_ss(cx,idim) ) GOTO 100
+*
 	IF ( has_trans ) THEN
-	   DO 70 idim = 1, 4
+	   DO 70 idim = 1, nferdims
 	      IF ( normal(idim) ) GOTO 70
 	      IF ( cx_trans( idim, cx ) .EQ. trans_integ_indef ) THEN
-	         IF ( mr_lo_ww(idim,mv).NE.cx_lo_ww(idim,cx) )	GOTO 100
+	         IF ( mr_lo_ww(idim,mv).NE.cx_lo_ww(idim,cx) ) GOTO 100
                  IF ( mr_hi_ww(idim,mv).NE.cx_hi_ww(idim,cx) ) THEN
                     ww_hi_bound = TM_WORLD( cx_hi_ss(cx,idim),
      .                         defining_grid, idim, box_hi_lim ) 
@@ -276,25 +281,25 @@
 	ENDIF
 
 	IF ( has_trans ) THEN
-	   DO 80 idim = 1, 4
+	   DO 80 idim = 1, nferdims
 	      IF ( normal(idim) ) GOTO 80
 * ... argument of transform must be right
 * ... and transforms that compress to a point must have exact limits
 	      IF ( cx_trans_arg(idim,cx).NE.mr_trans_arg(idim,mv) ) GOTO 100
 	      IF ( cx_trans(idim,cx) .GT. trans_compress_code ) THEN
-	         IF ( mr_lo_ww(idim,mv).NE.cx_lo_ww(idim,cx) )	GOTO 100
-	         IF ( mr_hi_ww(idim,mv).NE.cx_hi_ww(idim,cx) )	GOTO 100
+	         IF ( mr_lo_ww(idim,mv).NE.cx_lo_ww(idim,cx) ) GOTO 100
+	         IF ( mr_hi_ww(idim,mv).NE.cx_hi_ww(idim,cx) ) GOTO 100
 	      ENDIF
 * ... @RSUM must match lower subscript exactly (1/92)
 * ... @EVNT ditto (6/01)
 	      IF ( cx_trans( idim, cx ) .EQ. trans_run_sum
      .        .OR. cx_trans( idim, cx ) .EQ. trans_event_mask ) THEN
-                 IF ( mr_lo_ss(mv,idim).NE.cx_lo_ss(cx,idim) )  GOTO 100
+                 IF ( mr_lo_ss(mv,idim).NE.cx_lo_ss(cx,idim) ) GOTO 100
               ENDIF
 * ... @WEQ must match both hi and lo subscripts (1/92)
 	      IF ( cx_trans( idim, cx ) .EQ. trans_wgted_eq ) THEN
                  IF ( mr_lo_ss(mv,idim).NE.cx_lo_ss(cx,idim)
-     .           .OR. mr_hi_ss(mv,idim).NE.cx_hi_ss(cx,idim) )  GOTO 100
+     .           .OR. mr_hi_ss(mv,idim).NE.cx_hi_ss(cx,idim) ) GOTO 100
               ENDIF
 
  80	   CONTINUE
@@ -302,16 +307,16 @@
 
 * ... if regridded then regridding transforms must be right
 	IF ( cx_unstand_grid( cx ) ) THEN
-	   DO 90 idim = 1, 4
+	   DO 90 idim = 1, nferdims
 	      IF ( normal(idim) ) GOTO 90
 	      IF ( cx_regrid_trans( idim, cx ) .NE.
-     .		   mr_regrid_trans( idim, mv   )		) GOTO 100
+     .		   mr_regrid_trans( idim, mv   ) ) GOTO 100
  90	   CONTINUE
 	ENDIF
 
 * ... if user-defined then watch out for special limit match requirements
 	IF ( itsa_uvar ) THEN
-	   DO 92 idim = 1, 4
+	   DO 92 idim = 1, nferdims
 	      IF ( normal(idim) ) GOTO 92
 	      IF ( uvar_given(idim,var) .EQ. uvlim_need_xact
      .        .OR. uvar_given(idim,var) .EQ. uvlim_need_lohi ) THEN

@@ -30,42 +30,46 @@
 *        7/99 *sh* check ststus on retun from efvn_compute
 * V510: *sh* 3/00 - bug fix: com_mr was passed instead of mr_perm to the EFs
 *                 - eliminated old code as marked by jon
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include 'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	fcn, num_com, com_mr(10), com_cx(9), status,
      .       mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, mres
         REAL memory( mem_blk_size, max_mem_blks )
-	REAL com1( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .       com2( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
-     .       com3( m3lox:m3hix,m3loy:m3hiy,m3loz:m3hiz,m3lot:m3hit ),
-     .       com4( m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,m4lot:m4hit ),
-     .       com5( m5lox:m4hix,m5loy:m5hiy,m5loz:m5hiz,m5lot:m5hit ),
-     .       com6( m6lox:m4hix,m6loy:m6hiy,m6loz:m6hiz,m6lot:m6hit ),
-     .       com7( m7lox:m4hix,m7loy:m7hiy,m7loz:m7hiz,m7lot:m7hit ),
-     .       com8( m8lox:m4hix,m8loy:m8hiy,m8loz:m8hiz,m8lot:m8hit ),
-     .       com9( m9lox:m4hix,m9loy:m9hiy,m9loz:m9hiz,m9lot:m9hit ),
-     .       res( m10lox:m10hix,m10loy:m10hiy,
-     .       m10loz:m10hiz,m10lot:m10hit )
+	REAL com1( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .             m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .       com2( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .             m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
+     .       com3( m3lox:m3hix,m3loy:m3hiy,m3loz:m3hiz,
+     .             m3lot:m3hit,m3loe:m3hie,m3lof:m3hif ),
+     .       com4( m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,
+     .             m4lot:m4hit,m4loe:m4hie,m4lof:m4hif ),
+     .       com5( m5lox:m4hix,m5loy:m5hiy,m5loz:m5hiz,
+     .             m5lot:m5hit,m5loe:m5hie,m5lof:m5hif ),
+     .       com6( m6lox:m4hix,m6loy:m6hiy,m6loz:m6hiz,
+     .             m6lot:m6hit,m6loe:m6hie,m6lof:m6hif ),
+     .       com7( m7lox:m4hix,m7loy:m7hiy,m7loz:m7hiz,
+     .             m7lot:m7hit,m7loe:m7hie,m7lof:m7hif ),
+     .       com8( m8lox:m4hix,m8loy:m8hiy,m8loz:m8hiz,
+     .             m8lot:m8hit,m8loe:m8hie,m8lof:m8hif ),
+     .       com9( m9lox:m4hix,m9loy:m9hiy,m9loz:m9hiz,
+     .             m9lot:m9hit,m9loe:m9hie,m9lof:m9hif ),
+     .       res( m10lox:m10hix,m10loy:m10hiy,m10loz:m10hiz,
+     .            m10lot:m10hit,m10loe:m10hie,m10lof:m10hif )
 
 * internal variable declarations:
         INTEGER mr_arg_offset_array(10)
         REAL bad_flag_array(10)
 
-        INTEGER i, mr, perm(4), mr_perm(9)
+        INTEGER i, mr, perm(nferdims), mr_perm(9)
 
 * internal parameter declarations:
 	REAL*8          pdays_by_1900
@@ -88,7 +92,7 @@
 * Otherwise, cached variables will be passed through without being 
 * pared down to the desired context.
 
-       DO 10 i=1, 4
+       DO 10 i=1, nferdims
           perm(i) = i
  10    CONTINUE
 

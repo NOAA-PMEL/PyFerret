@@ -57,6 +57,7 @@
 * out	mres	- memory variable number of requested result
 
 #ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'instance_table.parm'

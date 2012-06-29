@@ -7,7 +7,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -61,7 +61,7 @@
 * V440: 8/23/96 - added cos_factor, was not applying COS(lat) to XZ calcs
 * V450: 5/97 -  only apply COS(y) if X integration is involved and Y axis
 *		limits are valid (abstract expressions like Z[G=temp] can
-*		have a geog Y axis that isn't actually used
+*		have a geog Y axis that is not actually used
 * 3/06 - apply Andrew*s suggested correction for XY integ., bug1348
 * 6/06 - Fix to Andrew*s correction for XY integ., bug1348
 * 4/10 - Fix #1735; For averages other than in Y direction the above fix 
@@ -69,65 +69,80 @@
 * 8/10 - One further fix to #1735
 * 2/11 - One further fix to #1348: @DIN over 1 grid cell in Y
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-* internal variable declarations:
-	LOGICAL GEOG_COS_FACTOR, point, yes_ax(4), no_ax(4),
-     .		at_ave, at_var, at_din, at_nbd, at_ngd, at_sum, short_comp,
-     .		need_cos, one_y
-	INTEGER idim, i, j, ir, jr, kr, lr, ic, jc, kc, lc, grid, nbd, ngd,
-     .		com_lo(4), com_hi(4), box_offset(4), offset, ind_lo, ind_hi,
-     .		cos_offset
-	REAL	BOX_SIZE, unit, bad_com, bad_res, box, mean, diff,
-     .		xbox, ybox, zbox, tbox, yc, yh, yh_2, bb, ybxlo, ybxhi,
-     .          box1
-	REAL*8	TM_WORLD, dsum, bsum
-
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'interp_stack.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
-	include 'tmap_dims.parm'
 	include 'xunits.cmn_text'
 	external xunits_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 
+* internal variable declarations:
+	LOGICAL GEOG_COS_FACTOR, point, yes_ax(nferdims), no_ax(nferdims),
+     .		at_ave, at_var, at_din, at_nbd, at_ngd, at_sum, short_comp,
+     .		need_cos, one_y
+	INTEGER idim, i, j, ir, jr, kr, lr, mr, nr, ic, jc, kc, lc, mc, nc,
+     .		grid, nbd, ngd, com_lo(nferdims), com_hi(nferdims),
+     .		box_offset(nferdims), offset, ind_lo, ind_hi, cos_offset
+	REAL	BOX_SIZE, unit, bad_com, bad_res, box, mean, diff,
+     .		xbox, ybox, zbox, tbox, ebox, fbox,
+     .		yc, yh, yh_2, bb, ybxlo, ybxhi
+	REAL*8	TM_WORLD, dsum, bsum
 
 * calling argument declarations:
 	INTEGER	action, com_mr, com_cx, res_mr, res_cx
-	REAL    com ( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		res ( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
+	REAL    com ( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .                m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          res ( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .                m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
      .		boxes(*)
 
 * equivalences
-	LOGICAL  yes_xax, yes_yax, yes_zax, yes_tax,
-     .		 no_xax,  no_yax,  no_zax,  no_tax
+	LOGICAL yes_xax, yes_yax, yes_zax,
+     .          yes_tax, yes_eax, yes_fax,
+     .          no_xax,  no_yax,  no_zax,
+     .          no_tax,  no_eax,  no_fax
 
-     	INTEGER	ioffset, joffset, koffset, loffset,
-     .		i_lo, j_lo, k_lo, l_lo,
-     .		i_hi, j_hi, k_hi, l_hi
+     	INTEGER	ioffset, joffset, koffset, loffset, moffset, noffset,
+     .		i_lo, j_lo, k_lo, l_lo, m_lo, n_lo,
+     .		i_hi, j_hi, k_hi, l_hi, m_hi, n_hi
 
 	EQUIVALENCE ( yes_ax(1), yes_xax ),
      .		    ( yes_ax(2), yes_yax ),
      .		    ( yes_ax(3), yes_zax ),
      .		    ( yes_ax(4), yes_tax ),
+     .		    ( yes_ax(5), yes_eax ),
+     .		    ( yes_ax(6), yes_fax ),
      .		    (  no_ax(1),  no_xax ),
      .		    (  no_ax(2),  no_yax ),
      .		    (  no_ax(3),  no_zax ),
      .		    (  no_ax(4),  no_tax ),
+     .		    (  no_ax(5),  no_eax ),
+     .		    (  no_ax(6),  no_fax ),
      .		    ( box_offset(1), ioffset ),
      .		    ( box_offset(2), joffset ),
      .		    ( box_offset(3), koffset ),
      .		    ( box_offset(4), loffset ),
+     .		    ( box_offset(5), moffset ),
+     .		    ( box_offset(6), noffset ),
      .		    (  com_lo(1),  i_lo ),
      .		    (  com_lo(2),  j_lo ),
      .		    (  com_lo(3),  k_lo ),
      .		    (  com_lo(4),  l_lo ),
+     .		    (  com_lo(5),  m_lo ),
+     .		    (  com_lo(6),  n_lo ),
      .		    (  com_hi(1),  i_hi ),
      .		    (  com_hi(2),  j_hi ),
      .		    (  com_hi(3),  k_hi ),
-     .		    (  com_hi(4),  l_hi )
+     .		    (  com_hi(4),  l_hi ),
+     .		    (  com_hi(5),  m_hi ),
+     .		    (  com_hi(6),  n_hi )
 
 * --- end of introductory code ---
 
@@ -147,7 +162,7 @@
 	short_comp = at_ngd .OR. at_nbd	.OR. at_sum	! for speed, only
 
 * determine the axes to be transformed
-	DO 10 idim = 1, 4
+	DO 10 idim = 1, nferdims
 	  yes_ax(idim) = cx_trans(idim,res_cx) .EQ. action
 	  no_ax (idim) = .NOT.yes_ax(idim)
  10	CONTINUE
@@ -159,7 +174,7 @@
 
       IF (.NOT. short_comp) THEN  ! boxes are not needed for ngd, nbd, sum.
 	offset = 0
-	DO 90 idim = 1, 4
+	DO 90 idim = 1, nferdims
 	  IF (yes_ax(idim)) THEN
 	    box_offset(idim) = offset - cx_lo_ss(com_cx,idim) + 1 ! pre-comp'ed
 	    offset = offset + 
@@ -172,7 +187,7 @@
 	cos_offset = offset - cx_lo_s2(com_cx) + 1
 
 * ... save the box sizes
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	  ind_lo = cx_lo_ss(com_cx,idim)
 	  ind_hi = cx_hi_ss(com_cx,idim)
 	  offset = box_offset(idim)
@@ -230,14 +245,14 @@ C (Unless there is just one grid cell in the y direction.)
 
 #ifdef double_p
 	      ybxlo = deg2rad* 
-     .                (TM_WORLD(j, grid, y_dim, box_lo_lim) )
+     .                TM_WORLD(j, grid, y_dim, box_lo_lim)
 	      ybxhi = deg2rad* 
-     .                (TM_WORLD(j, grid, y_dim, box_hi_lim) )
+     .                TM_WORLD(j, grid, y_dim, box_hi_lim)
 #else
 	      ybxlo = deg2rad* 
-     .                SNGL(TM_WORLD(j, grid, y_dim, box_lo_lim) )
+     .                SNGL( TM_WORLD(j, grid, y_dim, box_lo_lim) )
 	      ybxhi = deg2rad* 
-     .                SNGL(TM_WORLD(j, grid, y_dim, box_hi_lim) )
+     .                SNGL( TM_WORLD(j, grid, y_dim, box_hi_lim) )
 #endif
 	      IF (j .EQ. cx_lo_s2(com_cx) .AND. .NOT.one_y)
      .                ybxlo = deg2rad* cx_lo_ww(y_dim,res_cx)
@@ -260,11 +275,11 @@ C (Unless there is just one grid cell in the y direction.)
 #ifdef double_p
 	      IF ( at_din .AND. no_ax(y_dim))
      .           boxes(j+cos_offset) = COS( deg2rad * 
-     .           ( TM_WORLD(j,grid,y_dim,box_middle)) )
+     .             TM_WORLD(j,grid,y_dim,box_middle) )
 #else
 	      IF ( at_din .AND. no_ax(y_dim))
      .           boxes(j+cos_offset) = COS( deg2rad * 
-     .           SNGL( TM_WORLD(j,grid,y_dim,box_middle)) )
+     .           SNGL( TM_WORLD(j,grid,y_dim,box_middle) ) )
 #endif
  120       CONTINUE
 	ELSE
@@ -282,7 +297,7 @@ C (Unless there is just one grid cell in the y direction.)
 * "r" refers to result, "c" refers to component
 
 * Set the range of loop indices for the component data on the transformed axes
-	DO 150 idim = 1, 4
+	DO 150 idim = 1, nferdims
 	  IF (yes_ax(idim)) THEN
 	    com_lo(idim) = cx_lo_ss(com_cx,idim)
 	    com_hi(idim) = cx_hi_ss(com_cx,idim)
@@ -295,10 +310,22 @@ C (Unless there is just one grid cell in the y direction.)
 	ybox = 1.0
 	zbox = 1.0
 	tbox = 1.0
+	ebox = 1.0
+	fbox = 1.0
 
 * LOOP OVER THE FULL RANGE OF THE RESULT
 * ... also set up loop indices for non-transformed axes
 *     (component loop to include only the single result point on "no" axes)
+	DO 300 nr = cx_lo_s6(res_cx), cx_hi_s6(res_cx)
+	IF (no_fax) THEN
+	   n_lo = nr
+	   n_hi = nr
+	ENDIF
+	DO 300 mr = cx_lo_s5(res_cx), cx_hi_s5(res_cx)
+	IF (no_eax) THEN
+	   m_lo = mr
+	   m_hi = mr
+	ENDIF
 	DO 300 lr = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
 	IF (no_tax) THEN
 	   l_lo = lr
@@ -322,20 +349,22 @@ C (Unless there is just one grid cell in the y direction.)
 
 * pathological case: world coordinate range of zero along an xform axis
 
-          lc = l_lo
-          kc = k_lo
-          jc = j_lo
-          ic = i_lo
-
           IF ( point ) THEN    ! 8/92
+            nc = n_lo
+            mc = m_lo
+            lc = l_lo
+            kc = k_lo
+            jc = j_lo
+            ic = i_lo
+
 	    IF (at_din) THEN
-               IF (com(ic,jc,kc,lc) .EQ. bad_com) THEN
-                  res(ir,jr,kr,lr) = bad_res
+               IF (com(ic,jc,kc,lc,mc,nc) .EQ. bad_com) THEN
+                  res(ir,jr,kr,lr,mr,nr) = bad_res
                ELSE
-                  res(ir,jr,kr,lr) = 0.0
+                  res(ir,jr,kr,lr,mr,nr) = 0.0
 	       ENDIF
             ELSE
-               res(ir,jr,kr,lr) = bad_res
+               res(ir,jr,kr,lr,mr,nr) = bad_res
             ENDIF
             GOTO 300
           ENDIF
@@ -352,22 +381,28 @@ C (Unless there is just one grid cell in the y direction.)
 
 	  IF (short_comp) THEN
 
+	    DO 210 nc = n_lo, n_hi
+	    DO 210 mc = m_lo, m_hi
 	    DO 210 lc = l_lo, l_hi
 	    DO 210 kc = k_lo, k_hi
 	    DO 210 jc = j_lo, j_hi
 	    DO 210 ic = i_lo, i_hi
 
-	      IF ( com(ic,jc,kc,lc) .EQ. bad_com ) THEN
+	      IF ( com(ic,jc,kc,lc,mc,nc) .EQ. bad_com ) THEN
 	        nbd = nbd + 1
 	      ELSE
 	        ngd = ngd + 1
-		IF (at_sum) dsum = dsum + com(ic,jc,kc,lc)
+		IF (at_sum) dsum = dsum + com(ic,jc,kc,lc,mc,nc)
 	      ENDIF
 
  210	    CONTINUE
 
 	  ELSE
 
+	    DO 220 nc = n_lo, n_hi
+	    IF (yes_fax) fbox = boxes(nc+noffset)
+	    DO 220 mc = m_lo, m_hi
+	    IF (yes_eax) ebox = boxes(mc+moffset)
 	    DO 220 lc = l_lo, l_hi
 	    IF (yes_tax) tbox = boxes(lc+loffset)
 	    DO 220 kc = k_lo, k_hi
@@ -377,12 +412,11 @@ C (Unless there is just one grid cell in the y direction.)
 	    DO 220 ic = i_lo, i_hi
 	    IF (yes_xax) xbox = boxes(ic+ioffset)
 
-	      IF ( com(ic,jc,kc,lc) .NE. bad_com ) THEN
-	        box = xbox * ybox * zbox * tbox
-	        box1 = box
+	      IF ( com(ic,jc,kc,lc,mc,nc) .NE. bad_com ) THEN
+	        box = xbox * ybox * zbox * tbox * ebox * fbox
 	        IF (need_cos) box = box * boxes(jc+cos_offset)
 	        bsum = bsum + box
-	        dsum = dsum + box*com(ic,jc,kc,lc)
+	        dsum = dsum + box*com(ic,jc,kc,lc,mc,nc)
 	      ENDIF
 
  220	    CONTINUE
@@ -392,6 +426,10 @@ C (Unless there is just one grid cell in the y direction.)
 	      IF (bsum .NE. 0.0D0) THEN
 	        mean = dsum / bsum
 	        dsum = 0.0D0
+	        DO 230 nc = n_lo, n_hi
+	        IF (yes_fax) fbox = boxes(nc+noffset)
+	        DO 230 mc = m_lo, m_hi
+	        IF (yes_eax) ebox = boxes(mc+moffset)
 	        DO 230 lc = l_lo, l_hi
 	        IF (yes_tax) tbox = boxes(lc+loffset)
 	        DO 230 kc = k_lo, k_hi
@@ -401,10 +439,10 @@ C (Unless there is just one grid cell in the y direction.)
 	        DO 230 ic = i_lo, i_hi
 	        IF (yes_xax) xbox = boxes(ic+ioffset)
 
-	          IF ( com(ic,jc,kc,lc) .NE. bad_com ) THEN
-	            box = xbox * ybox * zbox * tbox
+	          IF ( com(ic,jc,kc,lc,mc,nc) .NE. bad_com ) THEN
+	            box = xbox * ybox * zbox * tbox * ebox * fbox
 	            IF (need_cos) box = box * boxes(jc+cos_offset)
-	            diff = com(ic,jc,kc,lc) - mean
+	            diff = com(ic,jc,kc,lc,mc,nc) - mean
 	            dsum = dsum + box*diff*diff
 	          ENDIF
 
@@ -415,24 +453,23 @@ C (Unless there is just one grid cell in the y direction.)
 	  ENDIF
 
 * compute result from accumulators
-          res(ir,jr,kr,lr) = bad_res
 	  IF (at_ngd) THEN
-	     res(ir,jr,kr,lr) = ngd
+	     res(ir,jr,kr,lr,mr,nr) = ngd
 	  ELSEIF (at_nbd) THEN
-	     res(ir,jr,kr,lr) = nbd
+	     res(ir,jr,kr,lr,mr,nr) = nbd
 	  ELSEIF (at_sum .AND. ngd.GT.0) THEN
-	     res(ir,jr,kr,lr) = dsum
+	     res(ir,jr,kr,lr,mr,nr) = dsum
           ELSEIF ( bsum .EQ. 0.0D0 ) THEN
-	     res(ir,jr,kr,lr) = bad_res
+	     res(ir,jr,kr,lr,mr,nr) = bad_res
 	  ELSEIF (at_din) THEN
-	     res(ir,jr,kr,lr) = dsum
-	  ELSE	
-	     res(ir,jr,kr,lr) = dsum/bsum	! average or variance
+	     res(ir,jr,kr,lr,mr,nr) = dsum
+	  ELSE
+	     res(ir,jr,kr,lr,mr,nr) = dsum/bsum	! average or variance
 	  ENDIF
 
  300	CONTINUE
 
 	RETURN
 
-	END	
+	END
 

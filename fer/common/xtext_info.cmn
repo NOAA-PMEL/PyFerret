@@ -1,27 +1,29 @@
 * XTEXT_INFO.CMN
 * pre-defined text strings for Program GFDL
 * 11/21/88 axis_orients moved to TMAP_FORMAT:XTM_GRID.CMN
+*   2/12 *kms* Add E and F dimensions to ww_dim_name, ss_dim_name,
+*              axis_title, and axis_title_len (set to nferdims)
 
 	INTEGER		num_reqd_file_vars
 	PARAMETER     ( num_reqd_file_vars = 9 )
 
-	CHARACTER*1	ww_dim_name( 4 ),
-     .			ss_dim_name( 4 )
+	CHARACTER*1	ww_dim_name( nferdims ),
+     .			ss_dim_name( nferdims )
 	CHARACTER*4	fvar_name_code( num_reqd_file_vars )
-	CHARACTER*9	axis_title( 4 )
-	INTEGER		axis_title_len( 4 )
+	CHARACTER*9	axis_title( nferdims )
+	INTEGER		axis_title_len( nferdims )
 	CHARACTER*8	date_labels ( 6 )
 	INTEGER		date_str_len( 6 )
 	CHARACTER*16	unit_text   ( 15 )
 	CHARACTER*8	verify_modes( 3 )
 
 	COMMON /XTEXT_INFO/
+     .		axis_title_len,
+     .		date_str_len,
      .		ww_dim_name,
      .		ss_dim_name,
      .		fvar_name_code,
      .		axis_title,
-     .		axis_title_len,
      .		date_labels,
-     .		date_str_len,
      .		unit_text,
      .		verify_modes

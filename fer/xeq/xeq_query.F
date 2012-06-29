@@ -45,8 +45,8 @@
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
 * V66   *kms* 5/10 LIB_GET_LUN is a subroutine, not a function
- 
-#ifdef unix
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+
         include 'tmap_dims.parm'
 #       include "tmap_dset.parm"
         include 'xdset_info.cmn_text'
@@ -59,18 +59,6 @@
 	include 'xprog_state.cmn'
 	include 'xcommand.cmn'
 	include 'xgui.cmn'
-#else
-        INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCOMMAND.CMN'
-	INCLUDE 'FERRET_CMN:XGUI.CMN'
-#endif
 
 * local parameter declarations:
 	INTEGER	    slash_all, slash_file, slash_ignore

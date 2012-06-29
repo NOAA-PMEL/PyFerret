@@ -44,12 +44,11 @@
 * written for VAX computer under VMS operating system
 *
 * V200: 10/12/89
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* TODO: what changes to make for 6D Ferret?
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER slox, shix, sloy, shiy,             slot, shit,

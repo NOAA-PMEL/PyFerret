@@ -41,6 +41,7 @@
 
 * V450: 12/96
 *       97.07.16 *jc* adding code to query external functions
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations
 	INTEGER		ifcn
@@ -48,13 +49,9 @@
 
 * internal variable declarations
 
-#ifdef unix
+	include	'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xgrid_chg_fcns.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
-#endif
 
 	IF ( ifcn .GT. gfcn_num_internal ) THEN
 

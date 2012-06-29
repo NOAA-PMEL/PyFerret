@@ -64,6 +64,8 @@
 * V53 *acm* - 3/01 calendar axes:  pass in calendar ID
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead 
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
 * possible formats:
 * for subscript values ( subscript .EQ. .TRUE. ) :
@@ -74,17 +76,12 @@
 *   z coord:  #  
 *   t coord:  #  or dd-mmm-$_@hh:mm:ss  eg 14-JAN-1986@11:15
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'errmsg.parm'
 	include 'ferret.parm'
 	include 'xrisc.cmn'
 	include 'calendar.decl'
 	include 'calendar.cmn'
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'
-#endif
 
 * calling argument declarations:
 	CHARACTER*(*)	string
@@ -172,15 +169,15 @@
 	   IF ( formatted ) end_pos = end_pos - 1
 	   READ ( buff,* , ERR=5000 ) answer
 
-	ELSEIF ( idim .NE. t_dim ) THEN
+	ELSEIF ( idim .EQ. x_dim .OR. idim .EQ. y_dim .OR. idim .EQ. e_dim) THEN
 
-* /X and /Y
+* /X and /Y and /E
 	   CALL TRANSLATE_LAT_LONG ( buff(:slen), idim,
      .				     answer, formatted,status )
 	   IF ( status .NE. ferr_ok ) GOTO 5900
 
 	ELSE
-* /T
+* /T or /F
 * date/time string ?
            IF ( TM_DATE( buff(:slen) ) ) THEN
 * ... time step cannot be evaluated until we know what axis this is on

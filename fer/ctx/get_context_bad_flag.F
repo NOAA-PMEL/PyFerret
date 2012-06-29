@@ -44,25 +44,21 @@
 * revision 0.0 - 4/1/87
 
 * V510 5/00 *sh* - user variables with settable bad flags
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
-#ifdef unix
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
 	external xdset_info_data
 	include	'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 	INTEGER cx
 
 
-	IF     ( cx_category( cx ) .EQ. cat_file_var ) THEN
+	IF     ( cx_category( cx ) .EQ. cat_file_var .OR.
+     .           cx_category( cx ) .EQ. cat_aggregate_var ) THEN
 
 	   cx_bad_data( cx ) = ds_bad_flag( cx_variable( cx ) )
 

@@ -2,7 +2,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -52,6 +52,7 @@
 * V63  *acm* 10/09 Changes for gfortran build
 * V54+: *acm*5/08 - added transparent (from xplot_setup)
 
+        IMPLICIT NONE
 	include	'ferret.parm'
 	include	'xplot_state.cmn'
 

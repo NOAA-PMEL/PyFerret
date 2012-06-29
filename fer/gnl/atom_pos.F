@@ -44,12 +44,9 @@
 *
 * revision 0.0 - 10/23/86
 * revision 0.1 - 3/23/88  - bypass embedded quotated strings during search
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'ferret.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
 	CHARACTER*(*)	string

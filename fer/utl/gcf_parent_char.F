@@ -48,6 +48,7 @@
 *    whose definition is "v1+v2"
 
 * V510: *sh* 1/00
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations
 	INTEGER		start, child_uvar
@@ -55,13 +56,9 @@
 * internal variable declarations
 	INTEGER   uvar, c, offset
 
-#ifdef unix
+	include	'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * initialize
 	uvar = child_uvar

@@ -2,9 +2,10 @@
 * temporary storage for delta limits given in the form "/DX=val", etc.
 
 * V200:   5/2/90
+*          2/12 *kms* added E and F dimensions (set to nferdims)
 
-	REAL*8		dcx_lo(4), dcx_hi(4)
-	LOGICAL		dcx_given(4), dcx_by_ss(4)
+	REAL*8		dcx_lo(nferdims), dcx_hi(nferdims)
+	LOGICAL		dcx_given(nferdims), dcx_by_ss(nferdims)
 
 	COMMON / XDELTA_CONTEXT /
      .		dcx_lo, dcx_hi,

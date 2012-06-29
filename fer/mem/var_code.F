@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -52,23 +52,17 @@
 * V320:  2/22/95 - added support for reverse-axis variables: cat_file_rev
 * V500: 12/98 *sh* - added cat_const_var ... of the form "{1,3,5}"
 *	 1/99 *sh8 ... and cat_string
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
-#ifdef unix
-	include	'tmap_dims.parm'
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include	'ferret.parm'
 	include	'xdset_info.cmn_text'
 	external xdset_info_data
-	include	'ferret.parm'
 	include	'xvariables.cmn'
 	include	'xcalc_vars.cmn'
 	include	'xalgebra.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XCALC_VARS.CMN'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER category, variable
@@ -77,7 +71,8 @@
 	INTEGER 	uvar, item, start, end
 
 	IF     ( category .EQ. cat_file_var 
-     . .OR.	 category .EQ. cat_file_rev ) THEN
+     . .OR.	 category .EQ. cat_file_rev 
+     . .OR.	 category .EQ. cat_aggregate_var ) THEN
 
 	   VAR_CODE = ds_var_code( variable )
 

@@ -47,14 +47,12 @@
 * V200: 12/20/89
 * RISC/Ultrix port *sh* 5/91:  allow tcp/ip addresses, too 
 * V230:  5/14/92 - REMOTE_X mode was replaced by the REFRESH mode
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 	
 * calling argument declarations:
 	INTEGER		wsid

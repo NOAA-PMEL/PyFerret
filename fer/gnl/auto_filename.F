@@ -38,10 +38,10 @@
 * create a string describing the data set, region, transformations and variable
 * that is suitable for a filename for listed output
 
-* format is Wdddddddvvvv.iiiiijjjjjkkkkklllll
+* format is Wdddddddvvvv.iiiiijjjjjkkkkklllllmmmmmnnnnn
 * where ddddd is the data set id
 * 	vvvv identifies the variable or expression
-* and	iiiii,jjjjj,kkkkk,lllll identify the axis regions and transformations
+* and	iiiii,jjjjj,kkkkk,lllll,mmmmm,nnnnn identify the axis regions and transformations
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
@@ -57,22 +57,15 @@
 * V230:  6/9/92 - distinct requirements for netCDF: "F" leadin character and
 *                 extension ".cdf"
 *               - also added protections against name overflowing buffer
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 	include 'xtext_info.cmn'
 	include 'xprog_state.cmn'
         include 'xrisc.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-        INCLUDE 'FERRET_CMN:XRISC.CMN'
-#endif
 
 * calling argument declarations
 	CHARACTER*(*)	coding
@@ -83,7 +76,7 @@
 	PARAMETER( no_decims = .FALSE. )
 
 * local variable declarations:
-	LOGICAL	  include_dset, include_vcode, include_axis(4)
+	LOGICAL	  include_dset, include_vcode, include_axis(nferdims)
 	CHARACTER LOHI_WORLD*24, LEGAL_CHARS*24, CX_DIM_STR*24,
      .		  LEFINT*4, SANITARY_VAR_CODE*4
 	INTEGER TM_LENSTR,
@@ -94,13 +87,13 @@
 	IF ( minus .EQ. 0 ) THEN
 	   include_dset  = .TRUE.
 	   include_vcode = .TRUE.
-	   DO 10 idim = 1, 4
+	   DO 10 idim = 1, nferdims
  10	   include_axis( idim ) = .TRUE.
 	ELSE
 	   mp = minus + 1
 	   include_dset  = INDEX(coding(mp:), 'D' ) .EQ. 0
 	   include_vcode = INDEX(coding(mp:), 'V' ) .EQ. 0
-	   DO 20 idim = 1, 4
+	   DO 20 idim = 1, nferdims
 	   include_axis( idim ) = 
      .			INDEX(coding(mp:), ww_dim_name(idim) ) .EQ. 0
      .		  .AND. INDEX(coding(mp:), ss_dim_name(idim) ) .EQ. 0
@@ -108,7 +101,7 @@
 	ENDIF
 
 * don't include information on axes that are irrelevant
-	DO 30 idim = 1, 4
+	DO 30 idim = 1, nferdims
 	  IF ( cx_lo_ww(idim,cx) .EQ. unspecified_val8 )
      .						include_axis(idim) = .FALSE.
  30	CONTINUE
@@ -158,7 +151,7 @@
 	   risc_buff( flen:flen ) = '.'
 
 * all relevant axis limits
-	   DO 100 idim = 1, 4
+	   DO 100 idim = 1, nferdims
 	      IF ( include_axis( idim ) 
      .	  .   AND. cx_lo_ss( cx, idim ) .NE. unspecified_int4 ) THEN
 	         risc_buff( flen+1:) = LEGAL_CHARS(

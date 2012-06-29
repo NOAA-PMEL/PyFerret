@@ -1,3 +1,5 @@
+
+
 	SUBROUTINE DISTRIB_MSG ( )
 
 *
@@ -43,14 +45,11 @@
 * V200:  7/12/91 for Unix version
 * V230: 5/4/92 - modified text for politeness
 * V312: 5/19/94 - call PROCLAIM from here to simplify the MAIN program
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'xprog_state.cmn'
         include 'xrevision.cmn'
-#else
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-        INCLUDE 'FERRET_CMN:XREVISION.CMN'
-#endif
 
 * calling argument declarations:
 

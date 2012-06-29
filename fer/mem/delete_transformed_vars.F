@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -43,16 +43,13 @@
 *
 * revision 0.0 - 1/10/89
 * V200:  6/9/89 - deleted variables flagged in mr_protected
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	status
@@ -65,12 +62,12 @@
 	   IF ( mr_protected(mr) .EQ. mr_deleted ) GOTO 100
 
 * transforms ?
-	   DO 50 idim = 1,4
+	   DO 50 idim = 1,nferdims
   50	   IF ( mr_trans(idim,mr) .NE. trans_no_transform ) GOTO 60
 * regridded ?
 	   IF ( .NOT.mr_unstand_grid(mr) ) GOTO 100
 
-* delete it if it's not permanent
+* delete it if it is not permanent
   60	   IF ( mr_protected( mr ) .EQ. mr_perm_protected ) THEN
 	      CALL ERRMSG( ferr_perm_var, status,
      .			'use SHOW MEMORY/PERM', *5000 )

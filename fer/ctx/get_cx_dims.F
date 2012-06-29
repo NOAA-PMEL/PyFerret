@@ -51,8 +51,9 @@
 * written for VAX computer under VMS operating system
 
 * V200:  5/18/89 - complete re-write from GET_CONTEXT_PLANE
-	
-#ifdef unix
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+
 	include	'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -61,29 +62,20 @@
 	include	'xprog_state.cmn'
 	include	'xcontext.cmn'
 	include	'xtext_info.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations:
-	INTEGER cx, ndim, dim(4)
+	INTEGER cx, ndim, dim(nferdims)
 
 * local variable declarations:
-	INTEGER	CX_DIM_LEN, idim, ii, clen(4)
+	INTEGER	CX_DIM_LEN, idim, ii, clen(nferdims)
 
 * initialize
 	ndim = 0
-	DO 10 idim = 1, 4
+	DO 10 idim = 1, nferdims
  10	clen(idim) = CX_DIM_LEN( idim, cx )
 
 * find the axes with a range of values
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   IF ( clen(idim) .GT. 1 ) THEN
 	      ndim = ndim + 1
 	      dim(ndim) = idim
@@ -92,7 +84,7 @@
 
 * find the axes where the context is a single point
 	ii = ndim
-	DO 200 idim = 1, 4
+	DO 200 idim = 1, nferdims
 	   IF ( clen(idim) .EQ. 1 ) THEN
 	      ii = ii + 1
 	      dim(ii) = idim

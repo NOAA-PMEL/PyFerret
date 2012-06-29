@@ -53,6 +53,7 @@
 * V450 - 7/22/97 - minor reordering of "#includes" for Solaris compiler bug
 
 #ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'gfdl.parm'		! parameter definitions
 

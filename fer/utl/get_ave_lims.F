@@ -48,14 +48,11 @@
 * V312:	 6/7/94 - use TDST_WORLD for simpler, faster date conversions
 * V510: *sh* 1/00 - modify axis end point behavior so that partially filled
 *		destination cells also get processed
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER src_lo, src_hi, dst_lo, dst_hi, src_grid, dst_grid, idim
@@ -66,11 +63,11 @@
 	REAL*8	TM_WORLD, TDEST_WORLD, xdst, xmin, xmax
 
 * initialize
-	IF ( idim .EQ. t_dim ) THEN
+	IF ( idim .EQ. t_dim .OR. idim .EQ. f_dim ) THEN
 *	  TDST_WORLD gives dates from the source axis as they would be
 *	  encoded on the destination axis 
 *   ==>	  ALL TIME/DATE CALCULATIONS ARE DONE IN THE SOURCE AXIS ENCODING
-	   CALL TDEST_WORLD_INIT ( dst_grid, src_grid, status ) ! src<->dst
+	   CALL TDEST_WORLD_INIT ( dst_grid, src_grid, idim, status ) ! src<->dst
 	   IF ( status .NE. ferr_ok ) RETURN   ! note - status not passed!!!
 	ENDIF
 	xmin = TM_WORLD( src_lo, src_grid, idim, box_lo_lim )

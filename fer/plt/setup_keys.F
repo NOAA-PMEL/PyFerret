@@ -47,8 +47,11 @@
 *	  	they didn't end up centered
 * V540: *sh* 9/01 - do not adjust Y axis origin of PLOT command if user
 *			specifies not to
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
+	include	'slash.parm'
 	include	'plot_setup.parm'
 	include	'command.parm'
 	include	'xplot_setup.cmn'
@@ -64,10 +67,6 @@
 	LOGICAL	change_yorg, change_ysize, yadjust
 	INTEGER	nrow, idim
 	REAL	ysqueeze, yspace_needed, yspace_avail
-
-* local parameter declarations
-	INTEGER     slash_plot_noyadjust
-	PARAMETER ( slash_plot_noyadjust = 1+26 )
 
 * how many columns of keys can fit on the plot ?
 	key_ncolmn  = MAX( 1, INT((xlen - key_xorigin)/key_xspace0) )
@@ -145,7 +144,7 @@
 
 * how many labels in the upper left corner?
 	ul_nlabs = 0
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   ul_dolab(idim) = cx_lo_ww(idim,cx_plot).NE.unspecified_val8
      . 		      .AND. cx_lo_ww(idim,cx_plot).NE.unspec_val8_2
 	   IF ( ul_dolab(idim) ) ul_nlabs = ul_nlabs + 1	

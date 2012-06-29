@@ -45,7 +45,10 @@
 * V313:  31/10/94 - commas are mandatory in FORMAT statement on IBM/AIX
 *		    changed format 3000 for all cases
 * V540:  11/01 - allow for the possibility of non-positive (modulo) subscripts 
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 
@@ -72,9 +75,10 @@
  100	CONTINUE	      
 
 * what precision is needed to represent this delta and world range ?
-	date_str = idim .EQ. t_dim .AND. GEOG_LABEL(t_dim,grid) 
+	date_str = (idim .EQ. t_dim .OR. idim .EQ. f_dim) .AND.
+     .		     GEOG_LABEL(idim,grid) 
 	IF ( date_str ) THEN
-	   decimal = DATE_PREC( grid, small )
+	   decimal = DATE_PREC( grid, idim, small )
 	ELSE
 	   CALL GET_PREC_DIGITS(	cx_lo_ww(idim,cx),
      .					cx_hi_ww(idim,cx),

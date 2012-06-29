@@ -64,13 +64,15 @@
 * V554 1/04 *acm* - add category cat_counter_var
 * V600: 9/05 *acm* - add category cat_attrib_val
 * V611 5/08 *acm* Fix bug 1578; dataset specifiers applied correctly var[d=1].attname
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xprog_state.cmn'
 	include	'xcontext.cmn'
-        include 'netcdf.decl'
 #include "netcdf.inc"
 
 * calling argument declarations:
@@ -167,7 +169,7 @@
 * apply those context mods that don't need to know the grid
 * apply them now, before looking for the variable name, because the data set is
 * needed in the name search
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
  100	cx_given(idim,var_cx) = .FALSE.			! *sh* 4/90 bug fix
 	CALL APPLY_CONTEXT_MODS ( mods_cx, var_cx, nest_context, status )
 	IF ( status .NE. ferr_ok ) GOTO 5900
@@ -184,6 +186,8 @@
 * set the data type of the variable
 	IF ( cx_category(var_cx) .EQ. cat_file_var ) THEN
 	   cx_type(var_cx) = ptype_float   ! TO BE GENERALIZED LATER (8/00)
+	ELSEIF ( cx_category(var_cx) .EQ. cat_aggregate_var ) THEN
+	   cx_type(var_cx) = ptype_float   
 	ELSEIF (cx_category(var_cx) .EQ. cat_calc_var ) THEN
 	   cx_type(var_cx) = ptype_float
 	ELSEIF (cx_category(var_cx) .EQ. cat_counter_var ) THEN

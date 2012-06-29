@@ -47,12 +47,9 @@
 
 * V200:	  2/2/90
 * V230:  7/22/92 - added overlay argument to ADDL_CX_DOC
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include	'ferret.parm'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations
 	LOGICAL	flags(0:10)

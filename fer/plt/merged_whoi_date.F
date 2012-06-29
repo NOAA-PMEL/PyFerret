@@ -1,4 +1,4 @@
-	CHARACTER*14 FUNCTION MERGED_WHOI_DATE( cx_list, ncx )
+	CHARACTER*14 FUNCTION MERGED_WHOI_DATE( cx_list, idim, ncx )
 
 *
 *
@@ -43,24 +43,18 @@
 
 * V420: 11/27/95 - 4-digit YEARS!!
 * V530:  1/01 *acm* cal_id for alternative calendar axis types
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*                  A time axis may be a T axis or F axis.
 
-*#ifdef unix
-*#	include 'ferret.parm'
-*#	include 'xcontext.cmn'
-
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations
-	INTEGER	ncx, cx_list(ncx)
+	INTEGER	ncx, cx_list(ncx), idim
 
 * internal variable declarations
 	INTEGER 	yr100, yr, mon, day, hr, mn, sec,
@@ -78,14 +72,14 @@
 	   cx = cx_list(i)
 	   grid = cx_grid(cx)
 	   IF ( i .EQ. 1 ) THEN
-	      bcsecs = TSTEP_TO_SECS( grid, cx_lo_ww(t_dim,cx) )
+	      bcsecs = TSTEP_TO_SECS( grid, idim, cx_lo_ww(idim,cx) )
 	   ELSE
 	      bcsecs = MIN( bcsecs,
-     .		       TSTEP_TO_SECS( grid, cx_lo_ww(t_dim,cx) ) )
+     .		       TSTEP_TO_SECS( grid, idim, cx_lo_ww(idim,cx) ) )
 	   ENDIF
 
 * Convert to date
-          axis = grid_line ( t_dim, grid)
+          axis = grid_line ( idim, grid)
           cal_id = TM_GET_CALENDAR_ID(line_cal_name(axis) )
 
 * arbitrarily subtract a year -- needed cuz PLOT* rounds down the "tmin" value

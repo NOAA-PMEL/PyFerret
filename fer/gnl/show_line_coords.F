@@ -35,7 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* describe the 4 axes of a grid and then give coordinate data about those
+* describe the axes of a grid and then give coordinate data about those
 * axes as indicated in cx
 
 * programmer - steve hankin
@@ -52,6 +52,9 @@
 * V601 *acm*  3/08 Allow more figs when writing values with negative exponents.
 * V650  Write to show_lun which may be set to a file unit number rather than std out
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+*       *acm* 3/12 6D Ferret, changed a comment only
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
+*                  dimension is now an arg to SECS_TO_TSTEP.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -84,7 +87,6 @@
 	INTEGER		sig_figs
 	PARAMETER     ( sig_figs = 7 )   ! was 5 1/95
 
-
 * initialize
 	line = grid_line( idim, grid )
 
@@ -92,7 +94,7 @@
 	IF ( line .EQ. munknown
      .  .OR. line .EQ. mnormal ) RETURN
 
-	calendar = idim .EQ. t_dim .AND. GEOG_LABEL( idim, grid )	
+	calendar = (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. GEOG_LABEL( idim, grid )	
 	IF ( calendar ) THEN
 	   extra = 'TSTEP ('//line_units(line)
 	   extra = extra(:TM_LENSTR(extra))//')'
@@ -125,9 +127,9 @@
 * cx_lo_ww was set without knowledge of the axis, so if this is a non-std calendar
 * need to reset according to the actual calendar type
 
-	   IF ( idim.EQ.t_dim .AND. cx_calendar(cx) ) THEN
+	   IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. cx_calendar(cx) ) THEN
 
-              axis = grid_line(t_dim, grid)
+              axis = grid_line(idim, grid)
               cal_id = TM_GET_CALENDAR_ID(line_cal_name(axis))
               cx_cal_id(cx) = cal_id
 
@@ -135,7 +137,7 @@
 	      end   = cx_hi_ww(idim,cx)
               prev_cal_id = 1
 
-	      IF ( idim .EQ. t_dim  .AND.  cal_id .NE. prev_cal_id .AND.
+	      IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim)  .AND.  cal_id .NE. prev_cal_id .AND.
      .             start .LT. 0. .AND. start .NE. unspecified_val8.AND.
      .             end   .LT. 0. .AND. end   .NE. unspecified_val8) THEN
 	         CALL RESET_SECS_FROM_BC (-start, new_ww, prev_cal_id, 
@@ -148,7 +150,7 @@
 
 	         cx_hi_ww(idim,cx) = new_ww
 
-              ELSE IF ( idim .EQ. t_dim  .AND. 
+              ELSE IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim)  .AND. 
      .              cal_id .EQ. prev_cal_id .AND.
      .             start .LT. 0. .AND. start .NE. unspecified_val8.AND.
      .             end   .LT. 0. .AND. end   .NE. unspecified_val8) THEN
@@ -157,9 +159,9 @@
               ENDIF
 
               cx_lo_ww(idim,cx) =
-     .            SECS_TO_TSTEP( grid, cx_lo_ww(idim,cx) )
+     .            SECS_TO_TSTEP( grid, idim, cx_lo_ww(idim,cx) )
               cx_hi_ww(idim,cx) =
-     .		   SECS_TO_TSTEP( grid, cx_hi_ww(idim,cx) )
+     .		   SECS_TO_TSTEP( grid, idim, cx_hi_ww(idim,cx) )
  
 
 * reset cx_calendar now that cx_lo/hi_ww have been converted

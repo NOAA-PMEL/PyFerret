@@ -42,7 +42,9 @@
 * V554 1/04 *acm* - additions for /RANGE repeat loop control
 
 * V554 3/04 *acm* - fix error messages
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'	
 	include 'errmsg.parm'	
 	include 'rpn.parm'

@@ -212,6 +212,9 @@
 * V68 *acm* 1/12   Use the same micro-adjusting scheme as we are implementing for 
 *                  reading netCDF files (ticket 1910). Reset micro-adjust size if needed.
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
+* V68  *acm* 5/12  Add DEFINE DATA/AGGREGATE
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -266,22 +269,28 @@
      .              slash_dset,
      .              slash_output,
      .              slash_def_ax_quiet,
-     .              slash_pyfunc_name
+     .              slash_pyfunc_name,
+     .              slash_def_aggregate,
+     .              slash_def_agg_title,
+     .              slash_def_agg_quiet,
+     .              slash_def_agg_e
 
 	LOGICAL	    explct_defn
-	PARAMETER ( slash_dflt   = 9,
-     .		    slash_file   = 1 + 4,
-     .		    slash_like   = 1 + 5,
-     .		    slash_units  = 1 + 5,
+	PARAMETER ( slash_dflt   = 1 + 12,
+     .		    slash_file   = 1 + 6,
+     .		    slash_like   = 1 + 7,
+     .		    slash_units  = 1 + 7,
      .		    slash_x0     = 0,	! slash_x minus 1
-     .		    slash_t0     = 1 + 6,
-     .		    slash_name	 = 1 + 7,
-     .		    slash_from	 = 1 + 8,
-     .		    slash_depth	 = 1 + 9,
-     .		    slash_modulo = 1 + 10,
-     .		    slash_npoints= 1 + 11,
-     .		    slash_edges  = 1 + 12,
-     .		    slash_calendar = 1 + 13,
+     .		    slash_t0     = 1 + 8,
+     .		    slash_name	 = 1 + 9,
+     .		    slash_from	 = 1 + 10,
+     .		    slash_depth	 = 1 + 11,
+     .		    slash_modulo = 1 + 12,
+     .		    slash_npoints= 1 + 13,
+     .		    slash_edges  = 1 + 14,
+     .		    slash_calendar = 1 + 15,
+     .              slash_bounds     = 1+16,
+     .              slash_def_ax_quiet = 1+17,
      .              slash_text   = 1 + 0,
      .		    slash_xlimits= 1 + 1,
      .		    slash_ylimits= 1 + 2,
@@ -294,12 +303,14 @@
      .		    slash_let_dset   = 1 + 3,
      .		    slash_let_bad    = 1 + 4,
      .		    slash_define_vp_by_ax = 1 + 6,
-     .              slash_bounds     = 1+14,
      .              slash_type       = 1+1,
      .              slash_dset       = 1+0,
-     .              slash_output     = 1+2.,
-     .              slash_def_ax_quiet = 1+15,
+     .              slash_output     = 1+2,
      .              slash_pyfunc_name = 1,
+     .              slash_def_aggregate = 1 + 0,
+     .              slash_def_agg_e     = 1 + 5,
+     .              slash_def_agg_title = 1 + 7,
+     .              slash_def_agg_quiet = 1 + 8,
      .		    explct_defn  = .FALSE. )
 
 * calling argument declarations:
@@ -308,10 +319,10 @@
 * local variable declarations:
 	LOGICAL	  TM_DIGIT, TM_LEGAL_NAME, TM_LINE_MATCH, TM_GRID_MATCH,
      .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, MATCH_NAME,
-     .            NC_GET_ATTRIB, TM_LENSTR,
+     .            NC_GET_ATTRIB, TM_LENSTR, TM_LEGAL_NAME_OP,
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
-     .            new_att, new_att_modulo, got_it
+     .            new_att, new_att_modulo, got_it, orient_t, agg_quiet, agg_e
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1,
@@ -322,7 +333,7 @@
      .		  status, idim, vax_code, islot, iunit, iline, cat, var,
      .		  orient, mods_cx, cx, mr, n, i1, i2, i3, i4, i5, i6, pos,
      .		  grid, iqual, ax_grid, ivp, qp, iseg, uvar, dset, slen, s1,
-     .		  old_line, old_grid, frst_pt, dim(4), ndim, natom,
+     .		  old_line, old_grid, frst_pt, dim(nferdims), ndim, natom,
      .		  at_type  (maxatoms), at_id  (maxatoms),
      .		  at_start (maxatoms), at_end (maxatoms), cal_id, 
      .            dflt_cal_id, nmonths, ndays, d_before_mon(12), 
@@ -343,7 +354,7 @@
 	CHARACTER TM_FMT*16, 
      .            reg_name*24, buff1*128, buff2*128, buff3*128, 
      .            buff30*30, cal_name*32, buff*512,
-     .            basic_orients(4)*2, err_string*2048, replmsg*24,
+     .            basic_orients(nferdims)*2, err_string*2048, replmsg*24,
      .		  mon_names(12)*3, varname*512, attname*128, t2*2,
      .            new_att_units*128, new_att_calendar*128,
      .            new_att_t0*128, dcode*2, axdir*1, t0string*128, 
@@ -356,16 +367,15 @@
 	PARAMETER     ( tab = CHAR(9))
 #endif
 
-	DATA	  basic_orients / 'WE','SN','UD','TI' /,
+	DATA	  basic_orients / 'WE','SN','UD','TI','E','F' /,
      .		  replmsg/'Replacing definition of '/
-
 * statement function - value between 0 and 1
 	REAL x, vx, vy
 	LOGICAL OUTSIDE_0_1
 	OUTSIDE_0_1( x ) = x.LT.0.0 .OR. x.GT.1.0
 
 * select subcommand
-	GOTO ( 100,200,300,400,500,600,700,800,900,1000 ) subcmnd_num
+	GOTO ( 100,200,300,400,500,600,700,800,900,1000,1100 ) subcmnd_num
 
 * DEFINE  '    ' - (no action)
 * arrival at this point usually means an illegal subcommand was given
@@ -394,7 +404,7 @@
         create = islot .EQ. unspecified_int4
 
 * delta context specifiers (DX=,DY=, etc), if any
-	CALL GET_DELTA_CONTEXT( 10, delta_given, status )
+	CALL GET_DELTA_CONTEXT( 14, delta_given, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 	IF ( delta_given .AND. .NOT.create ) THEN
@@ -429,7 +439,7 @@
 *     that are defined
  245       IF ( num_qualifiers .EQ. 0 
      .     .OR. qual_given( slash_dflt ) .GT. 0 ) THEN
-	      DO 210 idim = 1, 4
+	      DO 210 idim = 1, nferdims
 	         IF (cx_by_ss(idim,cx_buff)
      .		   .AND. cx_lo_ss(cx_buff,idim) .NE. unspecified_int4
      .	        .OR..NOT.cx_by_ss(idim,cx_buff)
@@ -441,7 +451,7 @@
 	ENDIF
 
 * all unmodified axes must be set to unspecified
-	DO 230 idim = 1, 4
+	DO 230 idim = 1, nferdims
  230	IF ( .NOT.cx_given(idim,cx_buff) ) CALL DEL_CX_DIM( idim, cx_buff )
 
 * LET-defined variables may involve now-redefined @regions so wipe out
@@ -458,7 +468,7 @@
 
 **************************************************************************
 * DEFINE GRID
-* ... DEFINE GRID/FILE=fname
+* ... DEFINE GRID/X/Y/Z/T/E/F /FILE /LIKE
  300	iqual = qual_given( slash_file )
 	IF ( iqual .GT. 0 ) THEN
 * ... note "err_string" is used to save space - this is not an error
@@ -490,7 +500,7 @@
 	   IF ( status .NE. ferr_ok ) RETURN
 	   CALL TM_COPY_GRID( grid, mgrid_buff )
 	ELSE
-	   DO 310 idim = 1, 4
+	   DO 310 idim = 1, nferdims
 	      grid_line    (idim, mgrid_buff) = mnormal
               grid_out_prod(idim, mgrid_buff) = .TRUE.
  310	   CONTINUE	
@@ -498,7 +508,7 @@
 	ENDIF
 
 * axes named with /X=line_grid_or_var, /Y= ...
-	DO 320 idim = 1, 4
+	DO 320 idim = 1, nferdims
 	   iqual = qual_given( idim )
 	   IF ( iqual .GT. 0 ) THEN
 	      CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
@@ -507,11 +517,11 @@
 	      iline = TM_GET_LINENUM( buff1 )
 	      IF ( iline .NE. unspecified_int4 ) THEN
 * ... line given by name - don't allow inappropriate units
-	         iunit = line_unit_code( iline )
+ 	         orient_t = orient.EQ.t_dim .OR. orient.EQ.f_dim
  	         IF ( iunit.NE.0 ) THEN
- 	            IF ( (  idim.EQ.t_dim .AND.
+ 	            IF ( (  orient_t .AND.
      .		     (iunit.LT.pun_1st_time .OR. iunit.GT.pun_last_time) )
-     .	            .OR. (  idim.NE.t_dim .AND.
+     .	            .OR. (  (.NOT.orient_t) .AND.
      .		     (iunit.LT.pun_1st_len  .OR. iunit.GT.pun_last_len ) )
      .	            .OR. (  idim.EQ.z_dim .AND.
      .	              iunit.EQ.pun_degrees )     ) GOTO 5330
@@ -551,7 +561,7 @@
 	   CALL PURGE_MR_GRID( old_grid, status )
 	   IF ( status .NE. merr_ok ) GOTO 5000
 * ... deallocate dynamic axes used in previous definition of this grid
-	   DO 350 idim = 1,4
+	   DO 350 idim = 1,nferdims
 	      CALL TM_DEALLO_DYN_LINE( grid_line(idim,old_grid) )
  350	   CONTINUE
 	   grid_name( old_grid ) = char_init16
@@ -570,6 +580,7 @@
 	IF ( status .NE. ferr_ok )  GOTO 5000
 	IF ( pos .EQ. 0 ) GOTO 5400
 	IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5410
+	IF ( .NOT.TM_LEGAL_NAME_OP(buff1) ) GOTO 5430
         IF ( TM_LENSTR1(buff1) .GT. 128 ) GOTO 5410
 	CALL FIND_VAR_NAME ( pdset_irrelevant, buff1, cat, var )
 	IF (  var .NE. munknown_var_name
@@ -770,7 +781,7 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 	old_line = TM_GET_LINENUM( buff3(s1:slen) )
 	dup_name = old_line .NE. unspecified_int4
 
-* get the X,Y,Z,T regions
+* get the X,Y,Z,T,E,F regions
 	CALL STACK_PTR_UP ( cx_stack_ptr, max_context, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	mods_cx = cx_stack_ptr
@@ -787,9 +798,10 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * orientation must be uniquely defined
+
 	orient = unspecified_int4
-	DO 510 idim = 1, 4
-	   IF ( qual_given(slash_x0+idim) .GT. 0 ) THEN
+	DO 510 idim = 1, nferdims
+	   IF ( qual_given(slash_x0+idim) .GT. 0 ) THEN   !!!!!!!!
 	      IF ( orient .NE. unspecified_int4 ) GOTO 5510
 	      orient = idim
 	   ENDIF
@@ -805,9 +817,10 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 * if orientation is unclear then assume it is X
 	IF ( orient .EQ. unspecified_int4 ) THEN
 	   CALL WARN (
-     .	     "Orientation not specified via /X,/Y,/Z, or /T. X assumed.")
+     .	     "Orientation not specified via /X,/Y,/Z,/T,/E, or /F. X assumed.")
 	   orient = x_dim
 	ENDIF
+	orient_t = orient.EQ.t_dim .OR. orient.EQ.f_dim
 
 * release context stack space
 	CALL STACK_PTR_DN ( cx_stack_ptr, cx_stack_ptr_base, status )
@@ -833,7 +846,7 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 	ELSEIF ( cx_formatted(orient)
      .	   .AND. (orient.EQ.x_dim .OR. orient.EQ.y_dim) ) THEN
 	   buff1 = 'degrees'	! infer from input like "X=130E:80W"
-	ELSEIF ( orient .EQ. t_dim
+	ELSEIF ( orient_t
 * 8/97 *kob* use cx_calender to check if time is date rather than time step
      .  .AND.  (     qual_given(slash_T0) .GT. 0
      .		.OR. cx_calendar(mods_cx))) THEN
@@ -843,7 +856,7 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 	ENDIF
 
 * is it a calendar axis definition?
-	its_calendar =  orient.EQ.t_dim .AND. cx_calendar(mods_cx)
+	its_calendar =  orient_t .AND. cx_calendar(mods_cx)
 
 * *acm* other calendar names* /CALENDAR = GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP
 *       Gregorian is the default, also may be called STANDARD.
@@ -926,9 +939,9 @@ C /units=months  is 1/12 of the length of the year
 	   ELSE
 * ... Issue warning for inappropriate units like HOURS on X ax
 *     and render the units unconvertible
- 	      IF ( (  orient.EQ.t_dim .AND.
+ 	      IF ( (  orient_t .AND.
      .		   ( iunit.LT.pun_1st_time .OR. iunit.GT.pun_last_time ) )
-     .	      .OR. (  orient.NE.t_dim .AND.
+     .	      .OR. (  .NOT.orient_t .AND.
      .		   ( iunit.LT.pun_1st_len  .OR. iunit.GT.pun_last_len  ) )
      .	      .OR. (  orient.EQ.z_dim .AND.
      .	             iunit.EQ.pun_degrees )  ) THEN	! 7/96
@@ -1254,7 +1267,7 @@ C /units=months  is 1/12 of the length of the year
            prev_cal_id = cx_cal_id(mods_cx)
            IF (prev_cal_id .EQ. unspecified_int4) prev_cal_id = 1
 
-	   IF ( orient .EQ. t_dim  .AND.  cal_id .NE. prev_cal_id .AND.
+	   IF ( orient_t  .AND.  cal_id .NE. prev_cal_id .AND.
      .          start .LT. 0.  .AND.  start .NE. unspecified_val8.AND.
      .          end   .LT. 0.  .AND.  end   .NE. unspecified_val8) THEN
 	      CALL RESET_SECS_FROM_BC (-start, new_ww, prev_cal_id, 
@@ -1345,7 +1358,7 @@ C /units=months  is 1/12 of the length of the year
 * Combine new attribute units and/or time origin to express
 * the units attribute as units since time-origin
 
-        IF (orient .EQ. t_dim) THEN
+        IF (orient_t) THEN
            IF (new_att_units .NE. ' ') THEN
               i1 = TM_LENSTR1(new_att_units)
               IF (new_att_t0 .NE. ' ') 
@@ -1361,7 +1374,7 @@ C /units=months  is 1/12 of the length of the year
 	line_cal_name ( iline ) = cal_name
 	line_unit_code( iline ) = iunit
 	line_direction( iline ) = 'NA'
-	IF ( orient .EQ. t_dim ) line_tunit(iline) = un_convert( iunit )
+	IF ( orient_t ) line_tunit(iline) = un_convert( iunit )
 
 * is it a formattable axis ?
 	IF ( orient .EQ. x_dim ) THEN
@@ -1385,8 +1398,22 @@ C /units=months  is 1/12 of the length of the year
 	      line_direction( iline ) = 'DU'
            ENDIF
 
+	ELSEIF ( orient .EQ. e_dim ) THEN
+           line_direction( iline ) = 'EE'
+
+* TODO: let  F axes have time units
+	ELSEIF ( orient .EQ. f_dim ) THEN
+           line_direction( iline ) = 'FF'
+	   IF (.NOT.irreg  .AND. its_calendar ) THEN
+	      line_direction(iline) = 'FI'
+	      bc_to_t0 = SECS_FROM_BC( line_t0(iline), cal_id, status)
+	      line_dim  (iline) = (start-end) / (line_tunit(iline)*delta) + 1.9999
+	      line_start(iline) = (-line_start(iline)-bc_to_t0)/line_tunit(iline)
+	   ENDIF
+	   IF ( qual_given(slash_T0).GT.0 ) line_direction(iline) = 'FI'
+
 * ... time axis specified as date strings  (ELSEIF mod 11/93 *sh*)
-	ELSEIF ( .NOT.irreg  .AND. its_calendar ) THEN
+	ELSEIF (.NOT.irreg  .AND. its_calendar ) THEN
 	   line_direction(iline) = 'TI'
 	   bc_to_t0 = SECS_FROM_BC( line_t0(iline), cal_id, status)
 	   line_dim  (iline) = (start-end) / (line_tunit(iline)*delta) + 1.9999
@@ -1419,7 +1446,8 @@ C /units=months  is 1/12 of the length of the year
 
 	  ENDIF
 *  automatic calendar modulo
-	ELSEIF (line_direction(iline) .EQ. 'TI' ) THEN
+	ELSEIF (line_direction(iline) .EQ. 'TI' .OR.
+     .          line_direction(iline) .EQ. 'FI' ) THEN
 	  secsperyear = cals_yeardays(cal_id) * (24 * 60 * 60)
 	  bc_to_t0 = SECS_FROM_BC( line_t0(iline), cal_id, status)
 	  CALL TM_WW_AX_1_N(iline, start, end)
@@ -1496,6 +1524,8 @@ C /units=months  is 1/12 of the length of the year
            IF (dcode .EQ. 'YY' .OR. dcode .EQ. 'SN') dir = 2
            IF (dcode .EQ. 'ZZ' .OR. dcode .EQ. 'UD' .OR. dcode .EQ. 'DU') dir = 3
            IF (dcode .EQ. 'TT' .OR. dcode .EQ. 'TI') dir = 4
+           IF (dcode .EQ. 'EE') dir = 5
+           IF (dcode .EQ. 'FF' .OR. dcode .EQ. 'FI') dir = 6
 
            attname = 'point_spacing'
            attype = NCCHAR
@@ -1522,6 +1552,8 @@ C /units=months  is 1/12 of the length of the year
            IF (dcode .EQ. 'ZZ' .OR. dcode .EQ. 'UD' .OR. 
      .                              dcode .EQ. 'DU') axdir = 'Z'
            IF (dcode .EQ. 'TT' .OR. dcode .EQ. 'TI') axdir = 'T'
+           IF (dcode .EQ. 'EE') axdir = 'E'
+           IF (dcode .EQ. 'FF' .OR. dcode .EQ. 'FI') axdir = 'F'
            attlen = 1
            CALL CD_PUT_NEW_ATTR (dset_to_add, varid, attname, 
      .           attype, attlen, attoutflag, axdir, dummy, status) 
@@ -1533,6 +1565,8 @@ C /units=months  is 1/12 of the length of the year
            IF (axdir .EQ. 'Y') dir = 2
            IF (axdir .EQ. 'Z') dir = 3
            IF (axdir .EQ. 'T') dir = 4
+           IF (axdir .EQ. 'E') dir = 5
+           IF (axdir .EQ. 'F') dir = 6
            CALL CD_SET_ATT_AXDIR (dset_to_add, varid, dir, status)
 
 * Bounds on irregular axis output by default.
@@ -1581,7 +1615,8 @@ C /units=months  is 1/12 of the length of the year
      .           attype, attlen, attoutflag, 'up', dummy, status) 
            ENDIF
 
-           IF (line_direction(iline)(1:1) .EQ. 'T') THEN
+           IF (line_direction(iline)(1:1) .EQ. 'T' .OR.
+     .         line_direction(iline)(1:1) .EQ. 'F') THEN
               IF (its_calendar) THEN
                  attname = 'calendar'
                  attype = NCCHAR
@@ -1959,8 +1994,8 @@ C /units=months  is 1/12 of the length of the year
         IF (iline .NE. unspecified_int4) THEN
            slen = TM_LENSTR1(attname)
            IF (MATCH_NAME (attname,  slen, 'TIME_ORIGIN', 11)  .AND.
-     .            ( line_direction(iline) .EQ. 'TI' .OR.
-     .             line_direction(iline) .EQ. 'TT' ) ) THEN
+     .            ( line_direction(iline)(1:1) .EQ. 'T' .OR.
+     .              line_direction(iline)(1:1) .EQ. 'F' ) ) THEN
               CALL CD_GET_VAR_ATT_ID (dset, varid, 'UNITS', attid, status)
               IF (status .NE. ferr_ok) GOTO 5960
               got_it = NC_GET_ATTRIB ( dset, varid, 'units',
@@ -1990,8 +2025,8 @@ C /units=months  is 1/12 of the length of the year
            
            slen = TM_LENSTR1(attname)
            IF (MATCH_NAME (attname,  slen, 'UNITS', 5)  .AND.
-     .        ( line_direction(iline) .EQ. 'TI' .OR.
-     .          line_direction(iline) .EQ. 'TT' ) ) THEN
+     .        ( line_direction(iline)(1:1) .EQ. 'T' .OR.
+     .          line_direction(iline)(1:1) .EQ. 'F' ) ) THEN
               CALL CD_GET_VAR_ATT_ID (dset, varid, 'TIME_ORIGIN', 
      .                 attid, status)
               IF (status .EQ. ferr_ok) THEN 
@@ -2064,6 +2099,58 @@ C /units=months  is 1/12 of the length of the year
 
         RETURN
 
+	
+**************************************************************************
+* DEFINE DATA /AGGREGATE /TITLE= /QUIET
+* find name to define
+* DEFINE DATA/AGGREGATE/TITLE ENSNAME=D1,D2,D3
+* where D1,D2 can be already-open Ferret dataset numbers, or dataset specs
+* that would allow Ferret to open the datset.
+
+1100	IF ( num_args .LT. 1 ) GOTO 5300
+
+
+* define data valid only with /AGGREGATE
+	iqual = qual_given( slash_def_aggregate )
+        IF ( iqual .EQ. 0 ) GOTO 6100
+
+* Did they say /QUIET
+
+	iqual = qual_given( slash_def_agg_quiet )
+        agg_quiet = ( iqual .GT. 0 )
+
+* Is there a /TITLE ?
+	iqual = qual_given( slash_def_agg_title )
+	buff2 = char_init
+	IF ( iqual .GT. 0 ) THEN
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .			      buff2, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	ENDIF
+
+* Is there a /E ? (later other directions)
+* This is NOT YET passed around to routines that need it.
+	iqual = qual_given( slash_def_agg_e )
+        agg_e = ( iqual .GT. 0 )
+	IF (agg_e) agg_dim = 5
+
+* Get the name of the dataset we are creating
+	CALL NAME_EQUAL_STRING( buff1, pos, status )
+
+	IF ( status .NE. ferr_ok )  GOTO 5000
+	IF ( pos .EQ. 0 ) GOTO 5400
+	IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5410
+	IF ( .NOT.TM_LEGAL_NAME_OP(buff1) ) GOTO 5430
+        IF ( TM_LENSTR1(buff1) .GT. 128 ) GOTO 5410
+
+	CALL INIT_AGGREGATE_DSET (buff1, buff2, dset, agg_quiet, status)
+	
+	IF (status .EQ. ferr_ok) cx_data_set( cx_last )	=  dset
+	IF (status .NE. ferr_ok) GOTO 6110
+
+	RETURN
+**************************************************************************
+
 * error exit
  5000	RETURN
  5100 	CALL ERRMSG( ferr_syntax,status,'illegal name: '//buff3,*5000 )
@@ -2081,6 +2168,8 @@ C /units=months  is 1/12 of the length of the year
      .			buff1(:TM_LENSTR1(buff1))//' = ???', *5000 )
  5410   CALL ERRMSG( ferr_syntax,status,'illegal name: '//buff1,*5000 )
  5420   CALL ERRMSG( ferr_syntax,status,'cannot define: '//buff1,*5000 )
+ 5430   CALL ERRMSG( ferr_syntax,status,'illegal name, matches an operator: '
+     .			//buff1,*5000 )
  5440	CALL ERRMSG( ferr_syntax, status,
      .			cmnd_buff(pos:len_cmnd)//pCR//err_string, *5000 )
  5470	CALL ERRMSG( ferr_unknown_data_set, status,
@@ -2203,5 +2292,11 @@ C /units=months  is 1/12 of the length of the year
  6020 CALL ERRMSG(ferr_syntax, status, 'illegal name: '//buff1, *5000)
 
  6030 CALL ERRMSG(ferr_invalid_command,status,err_string(1:slen),*5000)
+
+ 6100 CALL ERRMSG(ferr_syntax, status, 
+     .    'DEFINE DATA valid only with /AGGREGATE: ', *5000)
+
+ 6110 CALL ERRMSG(ferr_syntax, status, 
+     .    'Aggregate dataset not defined', *5000)
 
 	END

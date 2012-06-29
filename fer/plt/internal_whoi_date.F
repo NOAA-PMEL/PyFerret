@@ -1,4 +1,4 @@
-	CHARACTER*14 FUNCTION INTERNAL_WHOI_DATE( grid, tstep )
+	CHARACTER*14 FUNCTION INTERNAL_WHOI_DATE( grid, idim, tstep )
 
 *
 *
@@ -47,17 +47,12 @@
 *		   but produce the same WHOI dates)
 * V420: 11/27/95 - 4-digit YEARS!!
 * v530  12/19/00 *acm* cal_id for non-standard calendar types.
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations
 	INTEGER	grid
@@ -72,11 +67,12 @@
 	REAL*8		SECS_FROM_BC
 
 * get the axis number
-	axis = grid_line( t_dim, grid )
+	axis = grid_line( idim, grid )
 	IF ( axis .EQ. mnormal .OR. axis .EQ. munknown ) THEN
 	   INTERNAL_WHOI_DATE = '00000000000000'
 	   RETURN
-	ELSEIF ( line_direction(axis) .NE. 'TI' ) THEN
+	ELSEIF ( line_direction(axis) .NE. 'TI' .AND. 
+     .           line_direction(axis) .NE. 'FI' ) THEN
 	   INTERNAL_WHOI_DATE = '00000000000000'
 	   RETURN
 	ENDIF

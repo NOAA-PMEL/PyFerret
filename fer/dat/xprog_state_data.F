@@ -2,7 +2,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -102,7 +102,17 @@
 * V6.2  *acm*  5/09 - new default number levels is 30 pmode_nlevels
 *                If this is changed, also change it in ppl/plot/ppldata.F
 * V6.7  *kms* 8/11 - moved one_cmnd_mode here since needed outside ferret_dispatch.F
+*       *kms*  2/12 Add pmode_ensemble_lab, pmode_forecast_lab,
+*                   mode_ensemble_lab, and mode_forecast_lab;
+*                   include tmap_dims.parm for nferdims needed by xprog_state.cmn
+*       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
+*       *acm* 4/12 Remove MODE FOURDEE, using _E, _F, _M, _N instead, throughout.
+* V6.8  acm  6/12 Instead of mode_ensemble_lab, mode_forecast_lab, use mode_6d_lab, 
+*                 which will be on by default. If canceled, the various SHOW and 
+*                 LIST commands, etc, will not list info for E,F dimensions.
 
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'movies.parm'
 	include 'xprog_state.cmn'
@@ -122,7 +132,6 @@
      .		len_last_cmnd/1/
 
 * I/O logical unit numbers
-#ifdef unix
 	DATA	ttin_lun	/ 5	/,	! Unix standard input
      .		ttout_lun	/ 6	/,	! Unix standard output
      .		list_lun	/ 6	/,	! same as ttout to start
@@ -133,14 +142,6 @@
      .		err_lun		/ 0	/,	! Unix standard error
 #endif
      .		cmnd_lun	/ 21	/
-#else
-	DATA	ttin_lun	/ 5	/,
-     .		ttout_lun	/ 18	/,
-     .		list_lun	/ 18	/,	! same as ttout to start
-     .		jrnl_lun	/ 20	/,
-     .		err_lun		/ 18	/,	! same as ttout (to start)
-     .		cmnd_lun	/ 21	/
-#endif
 
 * for SET REDIRECT
         DATA    redirect_stdout_flags  / redirect_none /,
@@ -166,6 +167,8 @@
      .		(mode_state( pmode_depth_lab   ,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.TRUE.    /,
      .		(mode_state( pmode_time_lab    ,i), i=1,mode_stack_size)
+     .					/ mode_stack_size*.TRUE.    /,
+     .		(mode_state( pmode_6d_lab      ,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.TRUE.    /
 	DATA	(mode_state( pmode_font_ascii  ,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.TRUE.    /,
@@ -213,6 +216,7 @@
      .		mode_name ( pmode_lat_lab     )	/ 'LATIT_LABEL'  /,
      .		mode_name ( pmode_depth_lab   )	/ 'DEPTH_LABEL'  /,
      .		mode_name ( pmode_time_lab    )	/ 'CALENDAR'     /,
+     .		mode_name ( pmode_6d_lab)	/ '6D_LAB'       /,
      .		mode_name ( pmode_font_ascii  )	/ 'ASCII_FONT'   /,
      .		mode_name ( pmode_segment     )	/ 'SEGMENT'      /,
      .		mode_name ( pmode_wait        )	/ 'WAIT'         /,
@@ -231,8 +235,9 @@
      .		mode_name ( pmode_upcase_output)/ 'UPCASE_OUTPUT'/,
      .		mode_name ( pmode_nlevels     ) / 'NLEVELS' /,
      .		mode_name ( pmode_nodata_lab  ) / 'NODATA_LAB' /,
-     .		mode_name ( 29     ) / pmode_unused /,
-     .		mode_name ( 30     ) / pmode_unused /
+     .		mode_name ( 30     ) / pmode_unused /,
+     .		mode_name ( 31     ) / pmode_unused /,
+     .		mode_name ( 32     ) / pmode_unused /
 c	DATA  
 c     .	( mode_name(i),i=pmode_nodata_lab+1,max_modes )/pmode_unused/
 
@@ -255,7 +260,9 @@ c     .	( mode_name(i),i=pmode_nodata_lab+1,max_modes )/pmode_unused/
      .		(mode_arg  ( pmode_depth_lab   ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*-4 /, ! 4 sig. digs. less 0's
      .		(mode_arg  ( pmode_time_lab    ,i), i=1,mode_stack_size)
-     .				/ mode_stack_size*-5 /	! dd-mmm-yyyy:hh:mm
+     .				/ mode_stack_size*-5 /, ! dd-mmm-yyyy:hh:mm
+     .		(mode_arg  ( pmode_6d_lab     ,i), i=1,mode_stack_size)
+     .				/ mode_stack_size*unspecified_int4 / 
 	DATA	(mode_arg  ( pmode_font_ascii  ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_segment     ,i), i=1,mode_stack_size)
@@ -293,7 +300,7 @@ c     .	( mode_name(i),i=pmode_nodata_lab+1,max_modes )/pmode_unused/
      .		(mode_arg  ( pmode_nodata_lab,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /
 
-* If the value of nlevels is changed, also change it in plot/ppldata.F
+* If the value of nlevels is changed, also change NLEV in plot/ppldata.F
 
 
 * for MODE WAIT
@@ -317,11 +324,7 @@ c     .	( mode_name(i),i=pmode_nodata_lab+1,max_modes )/pmode_unused/
         DATA    frame_compress    / 'RLE' /  ! matching pframe_hdf_runlen
 
 * other filenames
-#ifdef unix
 	DATA	journal_file	  / 'ferret.jnl'  /
-#else
-	DATA	journal_file	  / 'FERRET_JOURNAL'  /
-#endif
 	DATA	ppllist_file	  / 'ppllist.out' /
 
 * stack pointer for nested IF statements

@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -46,23 +46,15 @@
 *	 2/26/90 - CAIR requires only one component in the 4D version 2.00
 * Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
+*         2/12 *kms* Add the E and F dimensions
 
-#ifdef unix
+        IMPLICIT NONE
 #include "tmap_dset.parm"
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'	! .cmn_text has an external
-!	external xgt_grid_data	! xtm_grid --> xgt  (DEC f77 3.2 not allowed)
 	include 'ferret.parm'
 	include 'instance_table.parm'
 	include 'xcalc_vars.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'	! .CMN has an EXTERNAL
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:INSTANCE_TABLE.PARM'
-	INCLUDE 'FERRET_CMN:XCALC_VARS.CMN'
-#endif
 
 	INTEGER	i
 
@@ -586,6 +578,10 @@
 	DATA cv_hi_d3  (to_qcdz+1)/ 1		/
 	DATA cv_lo_d4  (to_qcdz+1)/ 0		/
 	DATA cv_hi_d4  (to_qcdz+1)/ 0		/
+	DATA cv_lo_d5  (to_qcdz+1)/ 0		/
+	DATA cv_hi_d5  (to_qcdz+1)/ 0		/
+	DATA cv_lo_d6  (to_qcdz+1)/ 0		/
+	DATA cv_hi_d6  (to_qcdz+1)/ 0		/
 
 	DATA cv_category (to_qcdz+2)/ cat_file_var	/
 	DATA cv_variable (to_qcdz+2)/ pv		/
@@ -597,6 +593,10 @@
 	DATA cv_hi_d3  (to_qcdz+2)/ 1		/
 	DATA cv_lo_d4  (to_qcdz+2)/ 0		/
 	DATA cv_hi_d4  (to_qcdz+2)/ 0		/
+	DATA cv_lo_d5  (to_qcdz+2)/ 0		/
+	DATA cv_hi_d5  (to_qcdz+2)/ 0		/
+	DATA cv_lo_d6  (to_qcdz+2)/ 0		/
+	DATA cv_hi_d6  (to_qcdz+2)/ 0		/
 
 	DATA cv_category (to_qcdz+3)/ cat_calc_var	/
 	DATA cv_variable (to_qcdz+3)/ prho0 		/
@@ -608,9 +608,13 @@
 	DATA cv_hi_d3  (to_qcdz+3)/ 1		/
 	DATA cv_lo_d4  (to_qcdz+3)/ 0		/
 	DATA cv_hi_d4  (to_qcdz+3)/ 0		/
+	DATA cv_lo_d5  (to_qcdz+3)/ 0		/
+	DATA cv_hi_d5  (to_qcdz+3)/ 0		/
+	DATA cv_lo_d6  (to_qcdz+3)/ 0		/
+	DATA cv_hi_d6  (to_qcdz+3)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_pcdz+1)/ cat_file_var	/
 	DATA cv_variable (to_pcdz+1)/ pu		/
 	DATA cv_lo_d1  (to_pcdz+1)/ 0		/
@@ -621,6 +625,10 @@
 	DATA cv_hi_d3  (to_pcdz+1)/ 1		/
 	DATA cv_lo_d4  (to_pcdz+1)/ 0		/
 	DATA cv_hi_d4  (to_pcdz+1)/ 0		/
+	DATA cv_lo_d5  (to_pcdz+1)/ 0		/
+	DATA cv_hi_d5  (to_pcdz+1)/ 0		/
+	DATA cv_lo_d6  (to_pcdz+1)/ 0		/
+	DATA cv_hi_d6  (to_pcdz+1)/ 0		/
 
 	DATA cv_category (to_pcdz+2)/ cat_file_var	/
 	DATA cv_variable (to_pcdz+2)/ pv		/
@@ -632,6 +640,10 @@
 	DATA cv_hi_d3  (to_pcdz+2)/ 1		/
 	DATA cv_lo_d4  (to_pcdz+2)/ 0		/
 	DATA cv_hi_d4  (to_pcdz+2)/ 0		/
+	DATA cv_lo_d5  (to_pcdz+2)/ 0		/
+	DATA cv_hi_d5  (to_pcdz+2)/ 0		/
+	DATA cv_lo_d6  (to_pcdz+2)/ 0		/
+	DATA cv_hi_d6  (to_pcdz+2)/ 0		/
 
 	DATA cv_category (to_pcdz+3)/ cat_calc_var	/
 	DATA cv_variable (to_pcdz+3)/ prho0 		/
@@ -643,9 +655,13 @@
 	DATA cv_hi_d3  (to_pcdz+3)/ 1		/
 	DATA cv_lo_d4  (to_pcdz+3)/ 0		/
 	DATA cv_hi_d4  (to_pcdz+3)/ 0		/
+	DATA cv_lo_d5  (to_pcdz+3)/ 0		/
+	DATA cv_hi_d5  (to_pcdz+3)/ 0		/
+	DATA cv_lo_d6  (to_pcdz+3)/ 0		/
+	DATA cv_hi_d6  (to_pcdz+3)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_rho0+1)/ cat_file_var	/
 	DATA cv_variable (to_rho0+1)/ ptemp		/
 	DATA cv_lo_d1  (to_rho0+1)/ 0		/
@@ -656,7 +672,11 @@
 	DATA cv_hi_d3  (to_rho0+1)/ 0		/
 	DATA cv_lo_d4  (to_rho0+1)/ 0		/
 	DATA cv_hi_d4  (to_rho0+1)/ 0		/
-	
+	DATA cv_lo_d5  (to_rho0+1)/ 0		/
+	DATA cv_hi_d5  (to_rho0+1)/ 0		/
+	DATA cv_lo_d6  (to_rho0+1)/ 0		/
+	DATA cv_hi_d6  (to_rho0+1)/ 0		/
+
 	DATA cv_category (to_rho0+2)/ cat_file_var	/
 	DATA cv_variable (to_rho0+2)/ psalt		/
 	DATA cv_lo_d1  (to_rho0+2)/ 0		/
@@ -667,9 +687,13 @@
 	DATA cv_hi_d3  (to_rho0+2)/ 0		/
 	DATA cv_lo_d4  (to_rho0+2)/ 0		/
 	DATA cv_hi_d4  (to_rho0+2)/ 0		/
+	DATA cv_lo_d5  (to_rho0+2)/ 0		/
+	DATA cv_hi_d5  (to_rho0+2)/ 0		/
+	DATA cv_lo_d6  (to_rho0+2)/ 0		/
+	DATA cv_hi_d6  (to_rho0+2)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_qdfz+1)/ cat_file_var	/
 	DATA cv_variable (to_qdfz+1)/ ptemp		/
 	DATA cv_lo_d1  (to_qdfz+1)/ 0		/
@@ -680,6 +704,10 @@
 	DATA cv_hi_d3  (to_qdfz+1)/ +1		/
 	DATA cv_lo_d4  (to_qdfz+1)/ ptstep_1hr_b4	/
 	DATA cv_hi_d4  (to_qdfz+1)/ ptstep_1hr_b4	/
+	DATA cv_lo_d5  (to_qdfz+1)/ 0		/
+	DATA cv_hi_d5  (to_qdfz+1)/ 0		/
+	DATA cv_lo_d6  (to_qdfz+1)/ 0		/
+	DATA cv_hi_d6  (to_qdfz+1)/ 0		/
 
 	DATA cv_category (to_qdfz+2)/ cat_calc_var	/
 	DATA cv_variable (to_qdfz+2)/ pqcdz		/
@@ -691,6 +719,10 @@
 	DATA cv_hi_d3  (to_qdfz+2)/ 0		/
 	DATA cv_lo_d4  (to_qdfz+2)/ ptstep_1hr_b4	/
 	DATA cv_hi_d4  (to_qdfz+2)/ ptstep_1hr_b4	/
+	DATA cv_lo_d5  (to_qdfz+2)/ 0		/
+	DATA cv_hi_d5  (to_qdfz+2)/ 0		/
+	DATA cv_lo_d6  (to_qdfz+2)/ 0		/
+	DATA cv_hi_d6  (to_qdfz+2)/ 0		/
 
 	DATA cv_category (to_qdfz+3)/ cat_calc_var	/
 	DATA cv_variable (to_qdfz+3)/ pqflx		/
@@ -702,9 +734,13 @@
 	DATA cv_hi_d3  (to_qdfz+3)/ 0		/
 	DATA cv_lo_d4  (to_qdfz+3)/ ptstep_1hr_b4	/
 	DATA cv_hi_d4  (to_qdfz+3)/ ptstep_1hr_b4	/
+	DATA cv_lo_d5  (to_qdfz+3)/ 0		/
+	DATA cv_hi_d5  (to_qdfz+3)/ 0		/
+	DATA cv_lo_d6  (to_qdfz+3)/ 0		/
+	DATA cv_hi_d6  (to_qdfz+3)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_qdfh+1)/ cat_file_var	/
 	DATA cv_variable (to_qdfh+1)/ ptemp		/
 	DATA cv_lo_d1  (to_qdfh+1)/ -1		/
@@ -715,9 +751,13 @@
 	DATA cv_hi_d3  (to_qdfh+1)/ 0		/
 	DATA cv_lo_d4  (to_qdfh+1)/ ptstep_1hr_b4	/
 	DATA cv_hi_d4  (to_qdfh+1)/ ptstep_1hr_b4	/
+	DATA cv_lo_d5  (to_qdfh+1)/ 0		/
+	DATA cv_hi_d5  (to_qdfh+1)/ 0		/
+	DATA cv_lo_d6  (to_qdfh+1)/ 0		/
+	DATA cv_hi_d6  (to_qdfh+1)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_qadx+1)/ cat_file_var	/
 	DATA cv_variable (to_qadx+1)/ ptemp		/
 	DATA cv_lo_d1  (to_qadx+1)/ -1		/
@@ -728,6 +768,10 @@
 	DATA cv_hi_d3  (to_qadx+1)/ 0		/
 	DATA cv_lo_d4  (to_qadx+1)/ 0		/
 	DATA cv_hi_d4  (to_qadx+1)/ 0		/
+	DATA cv_lo_d5  (to_qadx+1)/ 0		/
+	DATA cv_hi_d5  (to_qadx+1)/ 0		/
+	DATA cv_lo_d6  (to_qadx+1)/ 0		/
+	DATA cv_hi_d6  (to_qadx+1)/ 0		/
 
 	DATA cv_category (to_qadx+2)/ cat_file_var	/
 	DATA cv_variable (to_qadx+2)/ pu		/
@@ -739,9 +783,13 @@
 	DATA cv_hi_d3  (to_qadx+2)/ 0		/
 	DATA cv_lo_d4  (to_qadx+2)/ 0		/
 	DATA cv_hi_d4  (to_qadx+2)/ 0		/
+	DATA cv_lo_d5  (to_qadx+2)/ 0		/
+	DATA cv_hi_d5  (to_qadx+2)/ 0		/
+	DATA cv_lo_d6  (to_qadx+2)/ 0		/
+	DATA cv_hi_d6  (to_qadx+2)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_qady+1)/ cat_file_var	/
 	DATA cv_variable (to_qady+1)/ ptemp		/
 	DATA cv_lo_d1  (to_qady+1)/ 0		/
@@ -752,6 +800,10 @@
 	DATA cv_hi_d3  (to_qady+1)/ 0		/
 	DATA cv_lo_d4  (to_qady+1)/ 0		/
 	DATA cv_hi_d4  (to_qady+1)/ 0		/
+	DATA cv_lo_d5  (to_qady+1)/ 0		/
+	DATA cv_hi_d5  (to_qady+1)/ 0		/
+	DATA cv_lo_d6  (to_qady+1)/ 0		/
+	DATA cv_hi_d6  (to_qady+1)/ 0		/
 
 	DATA cv_category (to_qady+2)/ cat_file_var	/
 	DATA cv_variable (to_qady+2)/ pv		/
@@ -763,9 +815,13 @@
 	DATA cv_hi_d3  (to_qady+2)/ 0		/
 	DATA cv_lo_d4  (to_qady+2)/ 0		/
 	DATA cv_hi_d4  (to_qady+2)/ 0		/
+	DATA cv_lo_d5  (to_qady+2)/ 0		/
+	DATA cv_hi_d5  (to_qady+2)/ 0		/
+	DATA cv_lo_d6  (to_qady+2)/ 0		/
+	DATA cv_hi_d6  (to_qady+2)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_qadz+1)/ cat_file_var	/
 	DATA cv_variable (to_qadz+1)/ ptemp		/
 	DATA cv_lo_d1  (to_qadz+1)/ 0		/
@@ -776,6 +832,10 @@
 	DATA cv_hi_d3  (to_qadz+1)/ +1		/
 	DATA cv_lo_d4  (to_qadz+1)/ 0		/
 	DATA cv_hi_d4  (to_qadz+1)/ 0		/
+	DATA cv_lo_d5  (to_qadz+1)/ 0		/
+	DATA cv_hi_d5  (to_qadz+1)/ 0		/
+	DATA cv_lo_d6  (to_qadz+1)/ 0		/
+	DATA cv_hi_d6  (to_qadz+1)/ 0		/
 
 	DATA cv_category (to_qadz+2)/ cat_file_var	/
 	DATA cv_variable (to_qadz+2)/ pw		/
@@ -787,9 +847,13 @@
 	DATA cv_hi_d3  (to_qadz+2)/ 0		/
 	DATA cv_lo_d4  (to_qadz+2)/ 0		/
 	DATA cv_hi_d4  (to_qadz+2)/ 0		/
+	DATA cv_lo_d5  (to_qadz+2)/ 0		/
+	DATA cv_hi_d5  (to_qadz+2)/ 0		/
+	DATA cv_lo_d6  (to_qadz+2)/ 0		/
+	DATA cv_hi_d6  (to_qadz+2)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_qad +1)/ cat_calc_var	/
 	DATA cv_variable (to_qad +1)/ pqadx		/
 	DATA cv_lo_d1  (to_qad +1)/ 0		/
@@ -800,6 +864,10 @@
 	DATA cv_hi_d3  (to_qad +1)/ 0		/
 	DATA cv_lo_d4  (to_qad +1)/ 0		/
 	DATA cv_hi_d4  (to_qad +1)/ 0		/
+	DATA cv_lo_d5  (to_qad +1)/ 0		/
+	DATA cv_hi_d5  (to_qad +1)/ 0		/
+	DATA cv_lo_d6  (to_qad +1)/ 0		/
+	DATA cv_hi_d6  (to_qad +1)/ 0		/
 
 	DATA cv_category (to_qad +2)/ cat_calc_var	/
 	DATA cv_variable (to_qad +2)/ pqady		/
@@ -811,6 +879,10 @@
 	DATA cv_hi_d3  (to_qad +2)/ 0		/
 	DATA cv_lo_d4  (to_qad +2)/ 0		/
 	DATA cv_hi_d4  (to_qad +2)/ 0		/
+	DATA cv_lo_d5  (to_qad +2)/ 0		/
+	DATA cv_hi_d5  (to_qad +2)/ 0		/
+	DATA cv_lo_d6  (to_qad +2)/ 0		/
+	DATA cv_hi_d6  (to_qad +2)/ 0		/
 
 	DATA cv_category (to_qad +3)/ cat_calc_var	/
 	DATA cv_variable (to_qad +3)/ pqadz		/
@@ -822,9 +894,13 @@
 	DATA cv_hi_d3  (to_qad +3)/ 0		/
 	DATA cv_lo_d4  (to_qad +3)/ 0		/
 	DATA cv_hi_d4  (to_qad +3)/ 0		/
+	DATA cv_lo_d5  (to_qad +3)/ 0		/
+	DATA cv_hi_d5  (to_qad +3)/ 0		/
+	DATA cv_lo_d6  (to_qad +3)/ 0		/
+	DATA cv_hi_d6  (to_qad +3)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_qdf +1)/ cat_calc_var	/
 	DATA cv_variable (to_qdf +1)/ pqdfh		/
 	DATA cv_lo_d1  (to_qdf +1)/ 0		/
@@ -835,6 +911,10 @@
 	DATA cv_hi_d3  (to_qdf +1)/ 0		/
 	DATA cv_lo_d4  (to_qdf +1)/ 0		/
 	DATA cv_hi_d4  (to_qdf +1)/ 0		/
+	DATA cv_lo_d5  (to_qdf +1)/ 0		/
+	DATA cv_hi_d5  (to_qdf +1)/ 0		/
+	DATA cv_lo_d6  (to_qdf +1)/ 0		/
+	DATA cv_hi_d6  (to_qdf +1)/ 0		/
 
 	DATA cv_category (to_qdf +2)/ cat_calc_var	/
 	DATA cv_variable (to_qdf +2)/ pqdfz		/
@@ -846,9 +926,13 @@
 	DATA cv_hi_d3  (to_qdf +2)/ 0		/
 	DATA cv_lo_d4  (to_qdf +2)/ 0		/
 	DATA cv_hi_d4  (to_qdf +2)/ 0		/
+	DATA cv_lo_d5  (to_qdf +2)/ 0		/
+	DATA cv_hi_d5  (to_qdf +2)/ 0		/
+	DATA cv_lo_d6  (to_qdf +2)/ 0		/
+	DATA cv_hi_d6  (to_qdf +2)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_qeva+1)/ cat_calc_var	/
 	DATA cv_variable (to_qeva+1)/ ptau		/
 	DATA cv_lo_d1  (to_qeva+1)/ 0		/
@@ -859,6 +943,10 @@
 	DATA cv_hi_d3  (to_qeva+1)/ 0		/
 	DATA cv_lo_d4  (to_qeva+1)/ 0		/
 	DATA cv_hi_d4  (to_qeva+1)/ 0		/
+	DATA cv_lo_d5  (to_qeva+1)/ 0		/
+	DATA cv_hi_d5  (to_qeva+1)/ 0		/
+	DATA cv_lo_d6  (to_qeva+1)/ 0		/
+	DATA cv_hi_d6  (to_qeva+1)/ 0		/
 
 	DATA cv_category (to_qeva+2)/ cat_file_var	/
 	DATA cv_variable (to_qeva+2)/ ptemp 		/
@@ -870,6 +958,10 @@
 	DATA cv_hi_d3  (to_qeva+2)/ 0		/
 	DATA cv_lo_d4  (to_qeva+2)/ 0		/
 	DATA cv_hi_d4  (to_qeva+2)/ 0		/
+	DATA cv_lo_d5  (to_qeva+2)/ 0		/
+	DATA cv_hi_d5  (to_qeva+2)/ 0		/
+	DATA cv_lo_d6  (to_qeva+2)/ 0		/
+	DATA cv_hi_d6  (to_qeva+2)/ 0		/
 
 	DATA cv_category (to_qeva+3)/ cat_calc_var	/
 	DATA cv_variable (to_qeva+3)/ pair		/
@@ -881,9 +973,13 @@
 	DATA cv_hi_d3  (to_qeva+3)/ 0		/
 	DATA cv_lo_d4  (to_qeva+3)/ 0		/
 	DATA cv_hi_d4  (to_qeva+3)/ 0		/
+	DATA cv_lo_d5  (to_qeva+3)/ 0		/
+	DATA cv_hi_d5  (to_qeva+3)/ 0		/
+	DATA cv_lo_d6  (to_qeva+3)/ 0		/
+	DATA cv_hi_d6  (to_qeva+3)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_tau +1)/ cat_file_var	/
 	DATA cv_variable (to_tau +1)/ ptaux		/
 	DATA cv_lo_d1  (to_tau +1)/ -1		/
@@ -894,6 +990,10 @@
 	DATA cv_hi_d3  (to_tau +1)/ 0		/
 	DATA cv_lo_d4  (to_tau +1)/ 0		/
 	DATA cv_hi_d4  (to_tau +1)/ 0		/
+	DATA cv_lo_d5  (to_tau +1)/ 0		/
+	DATA cv_hi_d5  (to_tau +1)/ 0		/
+	DATA cv_lo_d6  (to_tau +1)/ 0		/
+	DATA cv_hi_d6  (to_tau +1)/ 0		/
 
 	DATA cv_category (to_tau +2)/ cat_file_var	/
 	DATA cv_variable (to_tau +2)/ ptauy		/
@@ -905,9 +1005,13 @@
 	DATA cv_hi_d3  (to_tau +2)/ 0		/
 	DATA cv_lo_d4  (to_tau +2)/ 0		/
 	DATA cv_hi_d4  (to_tau +2)/ 0		/
+	DATA cv_lo_d5  (to_tau +2)/ 0		/
+	DATA cv_hi_d5  (to_tau +2)/ 0		/
+	DATA cv_lo_d6  (to_tau +2)/ 0		/
+	DATA cv_hi_d6  (to_tau +2)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_qsen+1)/ cat_calc_var	/
 	DATA cv_variable (to_qsen+1)/ ptau 		/
 	DATA cv_lo_d1  (to_qsen+1)/ 0		/
@@ -918,6 +1022,10 @@
 	DATA cv_hi_d3  (to_qsen+1)/ 0		/
 	DATA cv_lo_d4  (to_qsen+1)/ 0		/
 	DATA cv_hi_d4  (to_qsen+1)/ 0		/
+	DATA cv_lo_d5  (to_qsen+1)/ 0		/
+	DATA cv_hi_d5  (to_qsen+1)/ 0		/
+	DATA cv_lo_d6  (to_qsen+1)/ 0		/
+	DATA cv_hi_d6  (to_qsen+1)/ 0		/
 
 	DATA cv_category (to_qsen+2)/ cat_file_var	/
 	DATA cv_variable (to_qsen+2)/ ptemp		/
@@ -929,6 +1037,10 @@
 	DATA cv_hi_d3  (to_qsen+2)/ 0		/
 	DATA cv_lo_d4  (to_qsen+2)/ 0		/
 	DATA cv_hi_d4  (to_qsen+2)/ 0		/
+	DATA cv_lo_d5  (to_qsen+2)/ 0		/
+	DATA cv_hi_d5  (to_qsen+2)/ 0		/
+	DATA cv_lo_d6  (to_qsen+2)/ 0		/
+	DATA cv_hi_d6  (to_qsen+2)/ 0		/
 
 	DATA cv_category (to_qsen+3)/ cat_calc_var	/
 	DATA cv_variable (to_qsen+3)/ pair		/
@@ -940,6 +1052,10 @@
 	DATA cv_hi_d3  (to_qsen+3)/ 0		/
 	DATA cv_lo_d4  (to_qsen+3)/ 0		/
 	DATA cv_hi_d4  (to_qsen+3)/ 0		/
+	DATA cv_lo_d5  (to_qsen+3)/ 0		/
+	DATA cv_hi_d5  (to_qsen+3)/ 0		/
+	DATA cv_lo_d6  (to_qsen+3)/ 0		/
+	DATA cv_hi_d6  (to_qsen+3)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -953,9 +1069,13 @@
 	DATA cv_hi_d3  (to_qrad+1)/ 0		/	! SST
 	DATA cv_lo_d4  (to_qrad+1)/ 0		/
 	DATA cv_hi_d4  (to_qrad+1)/ 0		/
+	DATA cv_lo_d5  (to_qrad+1)/ 0		/
+	DATA cv_hi_d5  (to_qrad+1)/ 0		/
+	DATA cv_lo_d6  (to_qrad+1)/ 0		/
+	DATA cv_hi_d6  (to_qrad+1)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_qflx+1)/ cat_calc_var	/
 	DATA cv_variable (to_qflx+1)/ pqeva		/
 	DATA cv_lo_d1  (to_qflx+1)/ 0		/
@@ -966,6 +1086,10 @@
 	DATA cv_hi_d3  (to_qflx+1)/ 0		/
 	DATA cv_lo_d4  (to_qflx+1)/ 0		/
 	DATA cv_hi_d4  (to_qflx+1)/ 0		/
+	DATA cv_lo_d5  (to_qflx+1)/ 0		/
+	DATA cv_hi_d5  (to_qflx+1)/ 0		/
+	DATA cv_lo_d6  (to_qflx+1)/ 0		/
+	DATA cv_hi_d6  (to_qflx+1)/ 0		/
 
 	DATA cv_category (to_qflx+2)/ cat_calc_var	/
 	DATA cv_variable (to_qflx+2)/ pqsen		/
@@ -977,6 +1101,10 @@
 	DATA cv_hi_d3  (to_qflx+2)/ 0		/
 	DATA cv_lo_d4  (to_qflx+2)/ 0		/
 	DATA cv_hi_d4  (to_qflx+2)/ 0		/
+	DATA cv_lo_d5  (to_qflx+2)/ 0		/
+	DATA cv_hi_d5  (to_qflx+2)/ 0		/
+	DATA cv_lo_d6  (to_qflx+2)/ 0		/
+	DATA cv_hi_d6  (to_qflx+2)/ 0		/
 
 	DATA cv_category (to_qflx+3)/ cat_calc_var	/
 	DATA cv_variable (to_qflx+3)/ pqrad		/
@@ -988,9 +1116,13 @@
 	DATA cv_hi_d3  (to_qflx+3)/ 0		/
 	DATA cv_lo_d4  (to_qflx+3)/ 0		/
 	DATA cv_hi_d4  (to_qflx+3)/ 0		/
+	DATA cv_lo_d5  (to_qflx+3)/ 0		/
+	DATA cv_hi_d5  (to_qflx+3)/ 0		/
+	DATA cv_lo_d6  (to_qflx+3)/ 0		/
+	DATA cv_hi_d6  (to_qflx+3)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_rho +1)/ cat_file_var	/
 	DATA cv_variable (to_rho +1)/ ptemp		/
 	DATA cv_lo_d1  (to_rho +1)/ 0		/
@@ -1001,7 +1133,11 @@
 	DATA cv_hi_d3  (to_rho +1)/ 0		/
 	DATA cv_lo_d4  (to_rho +1)/ 0		/
 	DATA cv_hi_d4  (to_rho +1)/ 0		/
-	
+	DATA cv_lo_d5  (to_rho +1)/ 0		/
+	DATA cv_hi_d5  (to_rho +1)/ 0		/
+	DATA cv_lo_d6  (to_rho +1)/ 0		/
+	DATA cv_hi_d6  (to_rho +1)/ 0		/
+
 	DATA cv_category (to_rho +2)/ cat_file_var	/
 	DATA cv_variable (to_rho +2)/ psalt		/
 	DATA cv_lo_d1  (to_rho +2)/ 0		/
@@ -1012,6 +1148,10 @@
 	DATA cv_hi_d3  (to_rho +2)/ 0		/
 	DATA cv_lo_d4  (to_rho +2)/ 0		/
 	DATA cv_hi_d4  (to_rho +2)/ 0		/
+	DATA cv_lo_d5  (to_rho +2)/ 0		/
+	DATA cv_hi_d5  (to_rho +2)/ 0		/
+	DATA cv_lo_d6  (to_rho +2)/ 0		/
+	DATA cv_hi_d6  (to_rho +2)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -1025,9 +1165,13 @@
 	DATA cv_hi_d3  (to_dpdx+1)/ 0		/
 	DATA cv_lo_d4  (to_dpdx+1)/ 0		/
 	DATA cv_hi_d4  (to_dpdx+1)/ 0		/
+	DATA cv_lo_d5  (to_dpdx+1)/ 0		/
+	DATA cv_hi_d5  (to_dpdx+1)/ 0		/
+	DATA cv_lo_d6  (to_dpdx+1)/ 0		/
+	DATA cv_hi_d6  (to_dpdx+1)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_dpdy+1)/ cat_calc_var	/
 	DATA cv_variable (to_dpdy+1)/ prho		/
 	DATA cv_lo_d1  (to_dpdy+1)/ 0		/
@@ -1038,6 +1182,10 @@
 	DATA cv_hi_d3  (to_dpdy+1)/ 0		/
 	DATA cv_lo_d4  (to_dpdy+1)/ 0		/
 	DATA cv_hi_d4  (to_dpdy+1)/ 0		/
+	DATA cv_lo_d5  (to_dpdy+1)/ 0		/
+	DATA cv_hi_d5  (to_dpdy+1)/ 0		/
+	DATA cv_lo_d6  (to_dpdy+1)/ 0		/
+	DATA cv_hi_d6  (to_dpdy+1)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -1051,7 +1199,11 @@
 	DATA cv_hi_d3  (to_w_u +1)/ 0		/
 	DATA cv_lo_d4  (to_w_u +1)/ 0		/
 	DATA cv_hi_d4  (to_w_u +1)/ 0		/
-	
+	DATA cv_lo_d5  (to_w_u +1)/ 0		/
+	DATA cv_hi_d5  (to_w_u +1)/ 0		/
+	DATA cv_lo_d6  (to_w_u +1)/ 0		/
+	DATA cv_hi_d6  (to_w_u +1)/ 0		/
+
 	DATA cv_category (to_w_u +2)/ cat_calc_var	/
 	DATA cv_variable (to_w_u +2)/ pfvn		/
 	DATA cv_lo_d1  (to_w_u +2)/ 0		/
@@ -1062,9 +1214,13 @@
 	DATA cv_hi_d3  (to_w_u +2)/ 0		/
 	DATA cv_lo_d4  (to_w_u +2)/ 0		/
 	DATA cv_hi_d4  (to_w_u +2)/ 0		/
+	DATA cv_lo_d5  (to_w_u +2)/ 0		/
+	DATA cv_hi_d5  (to_w_u +2)/ 0		/
+	DATA cv_lo_d6  (to_w_u +2)/ 0		/
+	DATA cv_hi_d6  (to_w_u +2)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_uavz+1)/ cat_file_var	/
 	DATA cv_variable (to_uavz+1)/ ppsi		/
 	DATA cv_lo_d1  (to_uavz+1)/ 0		/
@@ -1075,9 +1231,13 @@
 	DATA cv_hi_d3  (to_uavz+1)/ 0		/
 	DATA cv_lo_d4  (to_uavz+1)/ 0		/
 	DATA cv_hi_d4  (to_uavz+1)/ 0		/
+	DATA cv_lo_d5  (to_uavz+1)/ 0		/
+	DATA cv_hi_d5  (to_uavz+1)/ 0		/
+	DATA cv_lo_d6  (to_uavz+1)/ 0		/
+	DATA cv_hi_d6  (to_uavz+1)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_vavz+1)/ cat_file_var	/
 	DATA cv_variable (to_vavz+1)/ ppsi		/
 	DATA cv_lo_d1  (to_vavz+1)/ 0		/
@@ -1088,9 +1248,13 @@
 	DATA cv_hi_d3  (to_vavz+1)/ 0		/
 	DATA cv_lo_d4  (to_vavz+1)/ 0		/
 	DATA cv_hi_d4  (to_vavz+1)/ 0		/
+	DATA cv_lo_d5  (to_vavz+1)/ 0		/
+	DATA cv_hi_d5  (to_vavz+1)/ 0		/
+	DATA cv_lo_d6  (to_vavz+1)/ 0		/
+	DATA cv_hi_d6  (to_vavz+1)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_fuw +1)/ cat_file_var	/
 	DATA cv_variable (to_fuw +1)/ ppsi		/
 	DATA cv_lo_d1  (to_fuw +1)/ -1		/	! extra for UAVZ
@@ -1101,7 +1265,11 @@
 	DATA cv_hi_d3  (to_fuw +1)/ 0		/
 	DATA cv_lo_d4  (to_fuw +1)/ 0		/
 	DATA cv_hi_d4  (to_fuw +1)/ 0		/
-	
+	DATA cv_lo_d5  (to_fuw +1)/ 0		/
+	DATA cv_hi_d5  (to_fuw +1)/ 0		/
+	DATA cv_lo_d6  (to_fuw +1)/ 0		/
+	DATA cv_hi_d6  (to_fuw +1)/ 0		/
+
 	DATA cv_category (to_fuw +2)/ cat_calc_var	/
 	DATA cv_variable (to_fuw +2)/ puavz		/
 	DATA cv_lo_d1  (to_fuw +2)/ -1		/
@@ -1112,6 +1280,10 @@
 	DATA cv_hi_d3  (to_fuw +2)/ 0		/
 	DATA cv_lo_d4  (to_fuw +2)/ 0		/
 	DATA cv_hi_d4  (to_fuw +2)/ 0		/
+	DATA cv_lo_d5  (to_fuw +2)/ 0		/
+	DATA cv_hi_d5  (to_fuw +2)/ 0		/
+	DATA cv_lo_d6  (to_fuw +2)/ 0		/
+	DATA cv_hi_d6  (to_fuw +2)/ 0		/
 
 	DATA cv_category (to_fuw +3)/ cat_file_var	/
 	DATA cv_variable (to_fuw +3)/ pu		/
@@ -1123,9 +1295,13 @@
 	DATA cv_hi_d3  (to_fuw +3)/ 0		/
 	DATA cv_lo_d4  (to_fuw +3)/ 0		/
 	DATA cv_hi_d4  (to_fuw +3)/ 0		/
+	DATA cv_lo_d5  (to_fuw +3)/ 0		/
+	DATA cv_hi_d5  (to_fuw +3)/ 0		/
+	DATA cv_lo_d6  (to_fuw +3)/ 0		/
+	DATA cv_hi_d6  (to_fuw +3)/ 0		/
 
 ***************************************************************************
-	
+
 	DATA cv_category (to_fvn +1)/ cat_file_var	/
 	DATA cv_variable (to_fvn +1)/ ppsi		/
 	DATA cv_lo_d1  (to_fvn +1)/ 0		/
@@ -1136,7 +1312,11 @@
 	DATA cv_hi_d3  (to_fvn +1)/ 0		/
 	DATA cv_lo_d4  (to_fvn +1)/ 0		/
 	DATA cv_hi_d4  (to_fvn +1)/ 0		/
-	
+	DATA cv_lo_d5  (to_fvn +1)/ 0		/
+	DATA cv_hi_d5  (to_fvn +1)/ 0		/
+	DATA cv_lo_d6  (to_fvn +1)/ 0		/
+	DATA cv_hi_d6  (to_fvn +1)/ 0		/
+
 	DATA cv_category (to_fvn +2)/ cat_calc_var	/
 	DATA cv_variable (to_fvn +2)/ pvavz		/
 	DATA cv_lo_d1  (to_fvn +2)/ 0		/
@@ -1147,6 +1327,10 @@
 	DATA cv_hi_d3  (to_fvn +2)/ 0		/
 	DATA cv_lo_d4  (to_fvn +2)/ 0		/
 	DATA cv_hi_d4  (to_fvn +2)/ 0		/
+	DATA cv_lo_d5  (to_fvn +2)/ 0		/
+	DATA cv_hi_d5  (to_fvn +2)/ 0		/
+	DATA cv_lo_d6  (to_fvn +2)/ 0		/
+	DATA cv_hi_d6  (to_fvn +2)/ 0		/
 
 	DATA cv_category (to_fvn +3)/ cat_file_var	/
 	DATA cv_variable (to_fvn +3)/ pv		/
@@ -1158,9 +1342,13 @@
 	DATA cv_hi_d3  (to_fvn +3)/ 0		/
 	DATA cv_lo_d4  (to_fvn +3)/ 0		/
 	DATA cv_hi_d4  (to_fvn +3)/ 0		/
+	DATA cv_lo_d5  (to_fvn +3)/ 0		/
+	DATA cv_hi_d5  (to_fvn +3)/ 0		/
+	DATA cv_lo_d6  (to_fvn +3)/ 0		/
+	DATA cv_hi_d6  (to_fvn +3)/ 0		/
 
 *****************************************************************************
-	
+
 	DATA cv_category (to_uadx+1)/ cat_calc_var	/
 	DATA cv_variable (to_uadx+1)/ pfuw		/
 	DATA cv_lo_d1  (to_uadx+1)/ 0		/
@@ -1171,7 +1359,11 @@
 	DATA cv_hi_d3  (to_uadx+1)/ 0		/
 	DATA cv_lo_d4  (to_uadx+1)/ 0		/
 	DATA cv_hi_d4  (to_uadx+1)/ 0		/
-	
+	DATA cv_lo_d5  (to_uadx+1)/ 0		/
+	DATA cv_hi_d5  (to_uadx+1)/ 0		/
+	DATA cv_lo_d6  (to_uadx+1)/ 0		/
+	DATA cv_hi_d6  (to_uadx+1)/ 0		/
+
 	DATA cv_category (to_uadx+2)/ cat_file_var	/
 	DATA cv_variable (to_uadx+2)/ pu		/
 	DATA cv_lo_d1  (to_uadx+2)/ -1		/
@@ -1182,9 +1374,13 @@
 	DATA cv_hi_d3  (to_uadx+2)/ 0		/
 	DATA cv_lo_d4  (to_uadx+2)/ 0		/
 	DATA cv_hi_d4  (to_uadx+2)/ 0		/
+	DATA cv_lo_d5  (to_uadx+2)/ 0		/
+	DATA cv_hi_d5  (to_uadx+2)/ 0		/
+	DATA cv_lo_d6  (to_uadx+2)/ 0		/
+	DATA cv_hi_d6  (to_uadx+2)/ 0		/
 
 *****************************************************************************
-	
+
 	DATA cv_category (to_uady+1)/ cat_calc_var	/
 	DATA cv_variable (to_uady+1)/ pfvn		/
 	DATA cv_lo_d1  (to_uady+1)/ 0		/
@@ -1195,7 +1391,11 @@
 	DATA cv_hi_d3  (to_uady+1)/ 0		/
 	DATA cv_lo_d4  (to_uady+1)/ 0		/
 	DATA cv_hi_d4  (to_uady+1)/ 0		/
-	
+	DATA cv_lo_d5  (to_uady+1)/ 0		/
+	DATA cv_hi_d5  (to_uady+1)/ 0		/
+	DATA cv_lo_d6  (to_uady+1)/ 0		/
+	DATA cv_hi_d6  (to_uady+1)/ 0		/
+
 	DATA cv_category (to_uady+2)/ cat_file_var	/
 	DATA cv_variable (to_uady+2)/ pu		/
 	DATA cv_lo_d1  (to_uady+2)/ 0		/
@@ -1206,9 +1406,13 @@
 	DATA cv_hi_d3  (to_uady+2)/ 0		/
 	DATA cv_lo_d4  (to_uady+2)/ 0		/
 	DATA cv_hi_d4  (to_uady+2)/ 0		/
+	DATA cv_lo_d5  (to_uady+2)/ 0		/
+	DATA cv_hi_d5  (to_uady+2)/ 0		/
+	DATA cv_lo_d6  (to_uady+2)/ 0		/
+	DATA cv_hi_d6  (to_uady+2)/ 0		/
 
 *****************************************************************************
-	
+
 	DATA cv_category (to_uadz+1)/ cat_file_var	/
 	DATA cv_variable (to_uadz+1)/ pu		/
 	DATA cv_lo_d1  (to_uadz+1)/ 0		/
@@ -1219,7 +1423,11 @@
 	DATA cv_hi_d3  (to_uadz+1)/ +1		/
 	DATA cv_lo_d4  (to_uadz+1)/ 0		/
 	DATA cv_hi_d4  (to_uadz+1)/ 0		/
-	
+	DATA cv_lo_d5  (to_uadz+1)/ 0		/
+	DATA cv_hi_d5  (to_uadz+1)/ 0		/
+	DATA cv_lo_d6  (to_uadz+1)/ 0		/
+	DATA cv_hi_d6  (to_uadz+1)/ 0		/
+
 	DATA cv_category (to_uadz+2)/ cat_calc_var	/
 	DATA cv_variable (to_uadz+2)/ pw_u		/
 	DATA cv_lo_d1  (to_uadz+2)/ 0		/
@@ -1230,9 +1438,13 @@
 	DATA cv_hi_d3  (to_uadz+2)/ 0		/
 	DATA cv_lo_d4  (to_uadz+2)/ 0		/
 	DATA cv_hi_d4  (to_uadz+2)/ 0		/
+	DATA cv_lo_d5  (to_uadz+2)/ 0		/
+	DATA cv_hi_d5  (to_uadz+2)/ 0		/
+	DATA cv_lo_d6  (to_uadz+2)/ 0		/
+	DATA cv_hi_d6  (to_uadz+2)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_vadx+1)/ cat_calc_var	/
 	DATA cv_variable (to_vadx+1)/ pfuw		/
 	DATA cv_lo_d1  (to_vadx+1)/ 0		/
@@ -1243,7 +1455,11 @@
 	DATA cv_hi_d3  (to_vadx+1)/ 0		/
 	DATA cv_lo_d4  (to_vadx+1)/ 0		/
 	DATA cv_hi_d4  (to_vadx+1)/ 0		/
-	
+	DATA cv_lo_d5  (to_vadx+1)/ 0		/
+	DATA cv_hi_d5  (to_vadx+1)/ 0		/
+	DATA cv_lo_d6  (to_vadx+1)/ 0		/
+	DATA cv_hi_d6  (to_vadx+1)/ 0		/
+
 	DATA cv_category (to_vadx+2)/ cat_file_var	/
 	DATA cv_variable (to_vadx+2)/ pv		/
 	DATA cv_lo_d1  (to_vadx+2)/ -1		/
@@ -1254,9 +1470,13 @@
 	DATA cv_hi_d3  (to_vadx+2)/ 0		/
 	DATA cv_lo_d4  (to_vadx+2)/ 0		/
 	DATA cv_hi_d4  (to_vadx+2)/ 0		/
+	DATA cv_lo_d5  (to_vadx+2)/ 0		/
+	DATA cv_hi_d5  (to_vadx+2)/ 0		/
+	DATA cv_lo_d6  (to_vadx+2)/ 0		/
+	DATA cv_hi_d6  (to_vadx+2)/ 0		/
 
 *****************************************************************************
-	
+
 	DATA cv_category (to_vady+1)/ cat_calc_var	/
 	DATA cv_variable (to_vady+1)/ pfvn		/
 	DATA cv_lo_d1  (to_vady+1)/ 0		/
@@ -1267,7 +1487,11 @@
 	DATA cv_hi_d3  (to_vady+1)/ 0		/
 	DATA cv_lo_d4  (to_vady+1)/ 0		/
 	DATA cv_hi_d4  (to_vady+1)/ 0		/
-	
+	DATA cv_lo_d5  (to_vady+1)/ 0		/
+	DATA cv_hi_d5  (to_vady+1)/ 0		/
+	DATA cv_lo_d6  (to_vady+1)/ 0		/
+	DATA cv_hi_d6  (to_vady+1)/ 0		/
+
 	DATA cv_category (to_vady+2)/ cat_file_var	/
 	DATA cv_variable (to_vady+2)/ pv		/
 	DATA cv_lo_d1  (to_vady+2)/ 0		/
@@ -1278,9 +1502,13 @@
 	DATA cv_hi_d3  (to_vady+2)/ 0		/
 	DATA cv_lo_d4  (to_vady+2)/ 0		/
 	DATA cv_hi_d4  (to_vady+2)/ 0		/
+	DATA cv_lo_d5  (to_vady+2)/ 0		/
+	DATA cv_hi_d5  (to_vady+2)/ 0		/
+	DATA cv_lo_d6  (to_vady+2)/ 0		/
+	DATA cv_hi_d6  (to_vady+2)/ 0		/
 
 *****************************************************************************
-	
+
 	DATA cv_category (to_vadz+1)/ cat_file_var	/
 	DATA cv_variable (to_vadz+1)/ pv		/
 	DATA cv_lo_d1  (to_vadz+1)/ 0		/
@@ -1291,7 +1519,11 @@
 	DATA cv_hi_d3  (to_vadz+1)/ +1		/
 	DATA cv_lo_d4  (to_vadz+1)/ 0		/
 	DATA cv_hi_d4  (to_vadz+1)/ 0		/
-	
+	DATA cv_lo_d5  (to_vadz+1)/ 0		/
+	DATA cv_hi_d5  (to_vadz+1)/ 0		/
+	DATA cv_lo_d6  (to_vadz+1)/ 0		/
+	DATA cv_hi_d6  (to_vadz+1)/ 0		/
+
 	DATA cv_category (to_vadz+2)/ cat_calc_var	/
 	DATA cv_variable (to_vadz+2)/ pw_u		/
 	DATA cv_lo_d1  (to_vadz+2)/ 0		/
@@ -1302,9 +1534,13 @@
 	DATA cv_hi_d3  (to_vadz+2)/ 0		/
 	DATA cv_lo_d4  (to_vadz+2)/ 0		/
 	DATA cv_hi_d4  (to_vadz+2)/ 0		/
+	DATA cv_lo_d5  (to_vadz+2)/ 0		/
+	DATA cv_hi_d5  (to_vadz+2)/ 0		/
+	DATA cv_lo_d6  (to_vadz+2)/ 0		/
+	DATA cv_hi_d6  (to_vadz+2)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_udfh+1)/ cat_file_var	/
 	DATA cv_variable (to_udfh+1)/ pu		/
 	DATA cv_lo_d1  (to_udfh+1)/ -1		/
@@ -1315,7 +1551,11 @@
 	DATA cv_hi_d3  (to_udfh+1)/ 0		/
 	DATA cv_lo_d4  (to_udfh+1)/ ptstep_1hr_b4	/
 	DATA cv_hi_d4  (to_udfh+1)/ 0		/
-	
+	DATA cv_lo_d5  (to_udfh+1)/ 0		/
+	DATA cv_hi_d5  (to_udfh+1)/ 0		/
+	DATA cv_lo_d6  (to_udfh+1)/ 0		/
+	DATA cv_hi_d6  (to_udfh+1)/ 0		/
+
 	DATA cv_category (to_udfh+2)/ cat_file_var	/
 	DATA cv_variable (to_udfh+2)/ pv		/
 	DATA cv_lo_d1  (to_udfh+2)/ -1		/
@@ -1326,9 +1566,13 @@
 	DATA cv_hi_d3  (to_udfh+2)/ 0		/
 	DATA cv_lo_d4  (to_udfh+2)/ 0		/
 	DATA cv_hi_d4  (to_udfh+2)/ 0		/
-	
+	DATA cv_lo_d5  (to_udfh+2)/ 0		/
+	DATA cv_hi_d5  (to_udfh+2)/ 0		/
+	DATA cv_lo_d6  (to_udfh+2)/ 0		/
+	DATA cv_hi_d6  (to_udfh+2)/ 0		/
+
 **************************************************************************
-	
+
 	DATA cv_category (to_udfz+1)/ cat_calc_var	/
 	DATA cv_variable (to_udfz+1)/ ppcdz		/
 	DATA cv_lo_d1  (to_udfz+1)/ 0		/
@@ -1339,7 +1583,11 @@
 	DATA cv_hi_d3  (to_udfz+1)/ 0		/
 	DATA cv_lo_d4  (to_udfz+1)/ ptstep_1hr_b4	/
 	DATA cv_hi_d4  (to_udfz+1)/ ptstep_1hr_b4	/
-	
+	DATA cv_lo_d5  (to_udfz+1)/ 0		/
+	DATA cv_hi_d5  (to_udfz+1)/ 0		/
+	DATA cv_lo_d6  (to_udfz+1)/ 0		/
+	DATA cv_hi_d6  (to_udfz+1)/ 0		/
+
 	DATA cv_category (to_udfz+2)/ cat_file_var	/
 	DATA cv_variable (to_udfz+2)/ pu		/
 	DATA cv_lo_d1  (to_udfz+2)/ 0		/
@@ -1350,6 +1598,10 @@
 	DATA cv_hi_d3  (to_udfz+2)/ +1		/
 	DATA cv_lo_d4  (to_udfz+2)/ ptstep_1hr_b4	/
 	DATA cv_hi_d4  (to_udfz+2)/ ptstep_1hr_b4	/
+	DATA cv_lo_d5  (to_udfz+2)/ 0		/
+	DATA cv_hi_d5  (to_udfz+2)/ 0		/
+	DATA cv_lo_d6  (to_udfz+2)/ 0		/
+	DATA cv_hi_d6  (to_udfz+2)/ 0		/
 
 	DATA cv_category (to_udfz+3)/ cat_calc_var	/
 	DATA cv_variable (to_udfz+3)/ pubwi		/
@@ -1361,9 +1613,13 @@
 	DATA cv_hi_d3  (to_udfz+3)/ 0		/
 	DATA cv_lo_d4  (to_udfz+3)/ ptstep_1hr_b4	/
 	DATA cv_hi_d4  (to_udfz+3)/ ptstep_1hr_b4	/
+	DATA cv_lo_d5  (to_udfz+3)/ 0		/
+	DATA cv_hi_d5  (to_udfz+3)/ 0		/
+	DATA cv_lo_d6  (to_udfz+3)/ 0		/
+	DATA cv_hi_d6  (to_udfz+3)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_vdfh+1)/ cat_file_var	/
 	DATA cv_variable (to_vdfh+1)/ pv		/
 	DATA cv_lo_d1  (to_vdfh+1)/ -1		/
@@ -1374,6 +1630,10 @@
 	DATA cv_hi_d3  (to_vdfh+1)/ 0		/
 	DATA cv_lo_d4  (to_vdfh+1)/ ptstep_1hr_b4	/
 	DATA cv_hi_d4  (to_vdfh+1)/ 0		/
+	DATA cv_lo_d5  (to_vdfh+1)/ 0		/
+	DATA cv_hi_d5  (to_vdfh+1)/ 0		/
+	DATA cv_lo_d6  (to_vdfh+1)/ 0		/
+	DATA cv_hi_d6  (to_vdfh+1)/ 0		/
 
 	DATA cv_category (to_vdfh+2)/ cat_file_var	/
 	DATA cv_variable (to_vdfh+2)/ pu		/
@@ -1385,9 +1645,13 @@
 	DATA cv_hi_d3  (to_vdfh+2)/ 0		/
 	DATA cv_lo_d4  (to_vdfh+2)/ 0		/
 	DATA cv_hi_d4  (to_vdfh+2)/ 0		/
-	
+	DATA cv_lo_d5  (to_vdfh+2)/ 0		/
+	DATA cv_hi_d5  (to_vdfh+2)/ 0		/
+	DATA cv_lo_d6  (to_vdfh+2)/ 0		/
+	DATA cv_hi_d6  (to_vdfh+2)/ 0		/
+
 **************************************************************************
-	
+
 	DATA cv_category (to_vdfz+1)/ cat_calc_var	/
 	DATA cv_variable (to_vdfz+1)/ ppcdz		/
 	DATA cv_lo_d1  (to_vdfz+1)/ 0		/
@@ -1398,7 +1662,11 @@
 	DATA cv_hi_d3  (to_vdfz+1)/ 0		/
 	DATA cv_lo_d4  (to_vdfz+1)/ ptstep_1hr_b4	/
 	DATA cv_hi_d4  (to_vdfz+1)/ ptstep_1hr_b4	/
-	
+	DATA cv_lo_d5  (to_vdfz+1)/ 0		/
+	DATA cv_hi_d5  (to_vdfz+1)/ 0		/
+	DATA cv_lo_d6  (to_vdfz+1)/ 0		/
+	DATA cv_hi_d6  (to_vdfz+1)/ 0		/
+
 	DATA cv_category (to_vdfz+2)/ cat_file_var	/
 	DATA cv_variable (to_vdfz+2)/ pv		/
 	DATA cv_lo_d1  (to_vdfz+2)/ 0		/
@@ -1409,6 +1677,10 @@
 	DATA cv_hi_d3  (to_vdfz+2)/ +1		/
 	DATA cv_lo_d4  (to_vdfz+2)/ ptstep_1hr_b4	/
 	DATA cv_hi_d4  (to_vdfz+2)/ ptstep_1hr_b4	/
+	DATA cv_lo_d5  (to_vdfz+2)/ 0		/
+	DATA cv_hi_d5  (to_vdfz+2)/ 0		/
+	DATA cv_lo_d6  (to_vdfz+2)/ 0		/
+	DATA cv_hi_d6  (to_vdfz+2)/ 0		/
 
 	DATA cv_category (to_vdfz+3)/ cat_calc_var	/
 	DATA cv_variable (to_vdfz+3)/ pvbwi		/
@@ -1420,9 +1692,13 @@
 	DATA cv_hi_d3  (to_vdfz+3)/ 0		/
 	DATA cv_lo_d4  (to_vdfz+3)/ ptstep_1hr_b4	/
 	DATA cv_hi_d4  (to_vdfz+3)/ ptstep_1hr_b4	/
+	DATA cv_lo_d5  (to_vdfz+3)/ 0		/
+	DATA cv_hi_d5  (to_vdfz+3)/ 0		/
+	DATA cv_lo_d6  (to_vdfz+3)/ 0		/
+	DATA cv_hi_d6  (to_vdfz+3)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_ucoi+1)/ cat_file_var	/
 	DATA cv_variable (to_ucoi+1)/ ptemp		/
 	DATA cv_lo_d1  (to_ucoi+1)/ 0		/
@@ -1433,9 +1709,13 @@
 	DATA cv_hi_d3  (to_ucoi+1)/ 0		/
 	DATA cv_lo_d4  (to_ucoi+1)/ 0		/
 	DATA cv_hi_d4  (to_ucoi+1)/ 0		/
-	
+	DATA cv_lo_d5  (to_ucoi+1)/ 0		/
+	DATA cv_hi_d5  (to_ucoi+1)/ 0		/
+	DATA cv_lo_d6  (to_ucoi+1)/ 0		/
+	DATA cv_hi_d6  (to_ucoi+1)/ 0		/
+
 **************************************************************************
-	
+
 	DATA cv_category (to_vcoi+1)/ cat_file_var	/
 	DATA cv_variable (to_vcoi+1)/ ptemp		/
 	DATA cv_lo_d1  (to_vcoi+1)/ 0		/
@@ -1446,9 +1726,13 @@
 	DATA cv_hi_d3  (to_vcoi+1)/ 0		/
 	DATA cv_lo_d4  (to_vcoi+1)/ 0		/
 	DATA cv_hi_d4  (to_vcoi+1)/ 0		/
+	DATA cv_lo_d5  (to_vcoi+1)/ 0		/
+	DATA cv_hi_d5  (to_vcoi+1)/ 0		/
+	DATA cv_lo_d6  (to_vcoi+1)/ 0		/
+	DATA cv_hi_d6  (to_vcoi+1)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_ubpi+1)/ cat_calc_var	/
 	DATA cv_variable (to_ubpi+1)/ pdpdx		/
 	DATA cv_lo_d1  (to_ubpi+1)/ 0		/
@@ -1459,9 +1743,13 @@
 	DATA cv_hi_d3  (to_ubpi+1)/ 0		/
 	DATA cv_lo_d4  (to_ubpi+1)/ 0		/
 	DATA cv_hi_d4  (to_ubpi+1)/ 0		/
+	DATA cv_lo_d5  (to_ubpi+1)/ 0		/
+	DATA cv_hi_d5  (to_ubpi+1)/ 0		/
+	DATA cv_lo_d6  (to_ubpi+1)/ 0		/
+	DATA cv_hi_d6  (to_ubpi+1)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_vbpi+1)/ cat_calc_var	/
 	DATA cv_variable (to_vbpi+1)/ pdpdy		/
 	DATA cv_lo_d1  (to_vbpi+1)/ 0		/
@@ -1472,9 +1760,13 @@
 	DATA cv_hi_d3  (to_vbpi+1)/ 0		/
 	DATA cv_lo_d4  (to_vbpi+1)/ 0		/
 	DATA cv_hi_d4  (to_vbpi+1)/ 0		/
+	DATA cv_lo_d5  (to_vbpi+1)/ 0		/
+	DATA cv_hi_d5  (to_vbpi+1)/ 0		/
+	DATA cv_lo_d6  (to_vbpi+1)/ 0		/
+	DATA cv_hi_d6  (to_vbpi+1)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_ubwi+1)/ cat_file_var	/
 	DATA cv_variable (to_ubwi+1)/ ptaux		/
 	DATA cv_lo_d1  (to_ubwi+1)/ 0		/
@@ -1485,9 +1777,13 @@
 	DATA cv_hi_d3  (to_ubwi+1)/ 0		/
 	DATA cv_lo_d4  (to_ubwi+1)/ 0		/
 	DATA cv_hi_d4  (to_ubwi+1)/ 0		/
+	DATA cv_lo_d5  (to_ubwi+1)/ 0		/
+	DATA cv_hi_d5  (to_ubwi+1)/ 0		/
+	DATA cv_lo_d6  (to_ubwi+1)/ 0		/
+	DATA cv_hi_d6  (to_ubwi+1)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_vbwi+1)/ cat_file_var	/
 	DATA cv_variable (to_vbwi+1)/ ptauy		/
 	DATA cv_lo_d1  (to_vbwi+1)/ 0		/
@@ -1498,9 +1794,13 @@
 	DATA cv_hi_d3  (to_vbwi+1)/ 0		/
 	DATA cv_lo_d4  (to_vbwi+1)/ 0		/
 	DATA cv_hi_d4  (to_vbwi+1)/ 0		/
+	DATA cv_lo_d5  (to_vbwi+1)/ 0		/
+	DATA cv_hi_d5  (to_vbwi+1)/ 0		/
+	DATA cv_lo_d6  (to_vbwi+1)/ 0		/
+	DATA cv_hi_d6  (to_vbwi+1)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_ucoe+1)/ cat_file_var	/
 	DATA cv_variable (to_ucoe+1)/ pu		/
 	DATA cv_lo_d1  (to_ucoe+1)/ 0		/
@@ -1511,7 +1811,11 @@
 	DATA cv_hi_d3  (to_ucoe+1)/ 0		/
 	DATA cv_lo_d4  (to_ucoe+1)/ 0		/
 	DATA cv_hi_d4  (to_ucoe+1)/ 0		/
-	
+	DATA cv_lo_d5  (to_ucoe+1)/ 0		/
+	DATA cv_hi_d5  (to_ucoe+1)/ 0		/
+	DATA cv_lo_d6  (to_ucoe+1)/ 0		/
+	DATA cv_hi_d6  (to_ucoe+1)/ 0		/
+
 	DATA cv_category (to_ucoe+2)/ cat_file_var	/
 	DATA cv_variable (to_ucoe+2)/ pv		/
 	DATA cv_lo_d1  (to_ucoe+2)/ 0		/
@@ -1522,9 +1826,13 @@
 	DATA cv_hi_d3  (to_ucoe+2)/ 0		/
 	DATA cv_lo_d4  (to_ucoe+2)/ 0		/
 	DATA cv_hi_d4  (to_ucoe+2)/ 0		/
+	DATA cv_lo_d5  (to_ucoe+2)/ 0		/
+	DATA cv_hi_d5  (to_ucoe+2)/ 0		/
+	DATA cv_lo_d6  (to_ucoe+2)/ 0		/
+	DATA cv_hi_d6  (to_ucoe+2)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_vcoe+1)/ cat_file_var	/
 	DATA cv_variable (to_vcoe+1)/ pu		/
 	DATA cv_lo_d1  (to_vcoe+1)/ 0		/
@@ -1535,7 +1843,11 @@
 	DATA cv_hi_d3  (to_vcoe+1)/ 0		/
 	DATA cv_lo_d4  (to_vcoe+1)/ 0		/
 	DATA cv_hi_d4  (to_vcoe+1)/ 0		/
-	
+	DATA cv_lo_d5  (to_vcoe+1)/ 0		/
+	DATA cv_hi_d5  (to_vcoe+1)/ 0		/
+	DATA cv_lo_d6  (to_vcoe+1)/ 0		/
+	DATA cv_hi_d6  (to_vcoe+1)/ 0		/
+
 	DATA cv_category (to_vcoe+2)/ cat_file_var	/
 	DATA cv_variable (to_vcoe+2)/ pv		/
 	DATA cv_lo_d1  (to_vcoe+2)/ 0		/
@@ -1546,9 +1858,13 @@
 	DATA cv_hi_d3  (to_vcoe+2)/ 0		/
 	DATA cv_lo_d4  (to_vcoe+2)/ 0		/
 	DATA cv_hi_d4  (to_vcoe+2)/ 0		/
+	DATA cv_lo_d5  (to_vcoe+2)/ 0		/
+	DATA cv_hi_d5  (to_vcoe+2)/ 0		/
+	DATA cv_lo_d6  (to_vcoe+2)/ 0		/
+	DATA cv_hi_d6  (to_vcoe+2)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_uad +1)/ cat_calc_var	/
 	DATA cv_variable (to_uad +1)/ puadx		/
 	DATA cv_lo_d1  (to_uad +1)/ 0		/
@@ -1559,7 +1875,11 @@
 	DATA cv_hi_d3  (to_uad +1)/ 0		/
 	DATA cv_lo_d4  (to_uad +1)/ 0		/
 	DATA cv_hi_d4  (to_uad +1)/ 0		/
-	
+	DATA cv_lo_d5  (to_uad +1)/ 0		/
+	DATA cv_hi_d5  (to_uad +1)/ 0		/
+	DATA cv_lo_d6  (to_uad +1)/ 0		/
+	DATA cv_hi_d6  (to_uad +1)/ 0		/
+
 	DATA cv_category (to_uad +2)/ cat_calc_var	/
 	DATA cv_variable (to_uad +2)/ puady		/
 	DATA cv_lo_d1  (to_uad +2)/ 0		/
@@ -1570,6 +1890,10 @@
 	DATA cv_hi_d3  (to_uad +2)/ 0		/
 	DATA cv_lo_d4  (to_uad +2)/ 0		/
 	DATA cv_hi_d4  (to_uad +2)/ 0		/
+	DATA cv_lo_d5  (to_uad +2)/ 0		/
+	DATA cv_hi_d5  (to_uad +2)/ 0		/
+	DATA cv_lo_d6  (to_uad +2)/ 0		/
+	DATA cv_hi_d6  (to_uad +2)/ 0		/
 
 	DATA cv_category (to_uad +3)/ cat_calc_var	/
 	DATA cv_variable (to_uad +3)/ puadz		/
@@ -1581,9 +1905,13 @@
 	DATA cv_hi_d3  (to_uad +3)/ 0		/
 	DATA cv_lo_d4  (to_uad +3)/ 0		/
 	DATA cv_hi_d4  (to_uad +3)/ 0		/
+	DATA cv_lo_d5  (to_uad +3)/ 0		/
+	DATA cv_hi_d5  (to_uad +3)/ 0		/
+	DATA cv_lo_d6  (to_uad +3)/ 0		/
+	DATA cv_hi_d6  (to_uad +3)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_vad +1)/ cat_calc_var	/
 	DATA cv_variable (to_vad +1)/ pvadx		/
 	DATA cv_lo_d1  (to_vad +1)/ 0		/
@@ -1594,7 +1922,11 @@
 	DATA cv_hi_d3  (to_vad +1)/ 0		/
 	DATA cv_lo_d4  (to_vad +1)/ 0		/
 	DATA cv_hi_d4  (to_vad +1)/ 0		/
-	
+	DATA cv_lo_d5  (to_vad +1)/ 0		/
+	DATA cv_hi_d5  (to_vad +1)/ 0		/
+	DATA cv_lo_d6  (to_vad +1)/ 0		/
+	DATA cv_hi_d6  (to_vad +1)/ 0		/
+
 	DATA cv_category (to_vad +2)/ cat_calc_var	/
 	DATA cv_variable (to_vad +2)/ pvady		/
 	DATA cv_lo_d1  (to_vad +2)/ 0		/
@@ -1605,6 +1937,10 @@
 	DATA cv_hi_d3  (to_vad +2)/ 0		/
 	DATA cv_lo_d4  (to_vad +2)/ 0		/
 	DATA cv_hi_d4  (to_vad +2)/ 0		/
+	DATA cv_lo_d5  (to_vad +2)/ 0		/
+	DATA cv_hi_d5  (to_vad +2)/ 0		/
+	DATA cv_lo_d6  (to_vad +2)/ 0		/
+	DATA cv_hi_d6  (to_vad +2)/ 0		/
 
 	DATA cv_category (to_vad +3)/ cat_calc_var	/
 	DATA cv_variable (to_vad +3)/ pvadz		/
@@ -1616,9 +1952,13 @@
 	DATA cv_hi_d3  (to_vad +3)/ 0		/
 	DATA cv_lo_d4  (to_vad +3)/ 0		/
 	DATA cv_hi_d4  (to_vad +3)/ 0		/
+	DATA cv_lo_d5  (to_vad +3)/ 0		/
+	DATA cv_hi_d5  (to_vad +3)/ 0		/
+	DATA cv_lo_d6  (to_vad +3)/ 0		/
+	DATA cv_hi_d6  (to_vad +3)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_udf +1)/ cat_calc_var	/
 	DATA cv_variable (to_udf +1)/ pudfh		/
 	DATA cv_lo_d1  (to_udf +1)/ 0		/
@@ -1629,7 +1969,11 @@
 	DATA cv_hi_d3  (to_udf +1)/ 0		/
 	DATA cv_lo_d4  (to_udf +1)/ 0		/
 	DATA cv_hi_d4  (to_udf +1)/ 0		/
-	
+	DATA cv_lo_d5  (to_udf +1)/ 0		/
+	DATA cv_hi_d5  (to_udf +1)/ 0		/
+	DATA cv_lo_d6  (to_udf +1)/ 0		/
+	DATA cv_hi_d6  (to_udf +1)/ 0		/
+
 	DATA cv_category (to_udf +2)/ cat_calc_var	/
 	DATA cv_variable (to_udf +2)/ pudfz		/
 	DATA cv_lo_d1  (to_udf +2)/ 0		/
@@ -1640,9 +1984,13 @@
 	DATA cv_hi_d3  (to_udf +2)/ 0		/
 	DATA cv_lo_d4  (to_udf +2)/ 0		/
 	DATA cv_hi_d4  (to_udf +2)/ 0		/
+	DATA cv_lo_d5  (to_udf +2)/ 0		/
+	DATA cv_hi_d5  (to_udf +2)/ 0		/
+	DATA cv_lo_d6  (to_udf +2)/ 0		/
+	DATA cv_hi_d6  (to_udf +2)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_vdf +1)/ cat_calc_var	/
 	DATA cv_variable (to_vdf +1)/ pvdfh		/
 	DATA cv_lo_d1  (to_vdf +1)/ 0		/
@@ -1653,7 +2001,11 @@
 	DATA cv_hi_d3  (to_vdf +1)/ 0		/
 	DATA cv_lo_d4  (to_vdf +1)/ 0		/
 	DATA cv_hi_d4  (to_vdf +1)/ 0		/
-	
+	DATA cv_lo_d5  (to_vdf +1)/ 0		/
+	DATA cv_hi_d5  (to_vdf +1)/ 0		/
+	DATA cv_lo_d6  (to_vdf +1)/ 0		/
+	DATA cv_hi_d6  (to_vdf +1)/ 0		/
+
 	DATA cv_category (to_vdf +2)/ cat_calc_var	/
 	DATA cv_variable (to_vdf +2)/ pvdfz		/
 	DATA cv_lo_d1  (to_vdf +2)/ 0		/
@@ -1664,9 +2016,13 @@
 	DATA cv_hi_d3  (to_vdf +2)/ 0		/
 	DATA cv_lo_d4  (to_vdf +2)/ 0		/
 	DATA cv_hi_d4  (to_vdf +2)/ 0		/
+	DATA cv_lo_d5  (to_vdf +2)/ 0		/
+	DATA cv_hi_d5  (to_vdf +2)/ 0		/
+	DATA cv_lo_d6  (to_vdf +2)/ 0		/
+	DATA cv_hi_d6  (to_vdf +2)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_dudt+1)/ cat_file_var	/
 	DATA cv_variable (to_dudt+1)/ pu   		/
 	DATA cv_lo_d1  (to_dudt+1)/ 0		/
@@ -1677,9 +2033,13 @@
 	DATA cv_hi_d3  (to_dudt+1)/ 0		/
 	DATA cv_lo_d4  (to_dudt+1)/ -1		/
 	DATA cv_hi_d4  (to_dudt+1)/ +1		/
-	
+	DATA cv_lo_d5  (to_dudt+1)/ 0		/
+	DATA cv_hi_d5  (to_dudt+1)/ 0		/
+	DATA cv_lo_d6  (to_dudt+1)/ 0		/
+	DATA cv_hi_d6  (to_dudt+1)/ 0		/
+
 **************************************************************************
-	
+
 	DATA cv_category (to_dvdt+1)/ cat_file_var	/
 	DATA cv_variable (to_dvdt+1)/ pv   		/
 	DATA cv_lo_d1  (to_dvdt+1)/ 0		/
@@ -1690,9 +2050,13 @@
 	DATA cv_hi_d3  (to_dvdt+1)/ 0		/
 	DATA cv_lo_d4  (to_dvdt+1)/ -1		/
 	DATA cv_hi_d4  (to_dvdt+1)/ +1		/
-	
+	DATA cv_lo_d5  (to_dvdt+1)/ 0		/
+	DATA cv_hi_d5  (to_dvdt+1)/ 0		/
+	DATA cv_lo_d6  (to_dvdt+1)/ 0		/
+	DATA cv_hi_d6  (to_dvdt+1)/ 0		/
+
 **************************************************************************
-	
+
 	DATA cv_category (to_dwdt+1)/ cat_file_var	/
 	DATA cv_variable (to_dwdt+1)/ pw   		/
 	DATA cv_lo_d1  (to_dwdt+1)/ 0		/
@@ -1703,9 +2067,13 @@
 	DATA cv_hi_d3  (to_dwdt+1)/ 0		/
 	DATA cv_lo_d4  (to_dwdt+1)/ -1		/
 	DATA cv_hi_d4  (to_dwdt+1)/ +1		/
-	
+	DATA cv_lo_d5  (to_dwdt+1)/ 0		/
+	DATA cv_hi_d5  (to_dwdt+1)/ 0		/
+	DATA cv_lo_d6  (to_dwdt+1)/ 0		/
+	DATA cv_hi_d6  (to_dwdt+1)/ 0		/
+
 **************************************************************************
-	
+
 	DATA cv_category (to_dtdt+1)/ cat_file_var	/
 	DATA cv_variable (to_dtdt+1)/ ptemp		/
 	DATA cv_lo_d1  (to_dtdt+1)/ 0		/
@@ -1716,9 +2084,13 @@
 	DATA cv_hi_d3  (to_dtdt+1)/ 0		/
 	DATA cv_lo_d4  (to_dtdt+1)/ -1		/
 	DATA cv_hi_d4  (to_dtdt+1)/ +1		/
-	
+	DATA cv_lo_d5  (to_dtdt+1)/ 0		/
+	DATA cv_hi_d5  (to_dtdt+1)/ 0		/
+	DATA cv_lo_d6  (to_dtdt+1)/ 0		/
+	DATA cv_hi_d6  (to_dtdt+1)/ 0		/
+
 **************************************************************************
-	
+
 	DATA cv_category (to_ubps+1)/ cat_calc_var	/
 	DATA cv_variable (to_ubps+1)/ pudf		/
 	DATA cv_lo_d1  (to_ubps+1)/ 0		/
@@ -1729,7 +2101,11 @@
 	DATA cv_hi_d3  (to_ubps+1)/ 0		/
 	DATA cv_lo_d4  (to_ubps+1)/ 0		/
 	DATA cv_hi_d4  (to_ubps+1)/ 0		/
-	
+	DATA cv_lo_d5  (to_ubps+1)/ 0		/
+	DATA cv_hi_d5  (to_ubps+1)/ 0		/
+	DATA cv_lo_d6  (to_ubps+1)/ 0		/
+	DATA cv_hi_d6  (to_ubps+1)/ 0		/
+
 	DATA cv_category (to_ubps+2)/ cat_calc_var	/
 	DATA cv_variable (to_ubps+2)/ puad		/
 	DATA cv_lo_d1  (to_ubps+2)/ 0		/
@@ -1740,6 +2116,10 @@
 	DATA cv_hi_d3  (to_ubps+2)/ 0		/
 	DATA cv_lo_d4  (to_ubps+2)/ 0		/
 	DATA cv_hi_d4  (to_ubps+2)/ 0		/
+	DATA cv_lo_d5  (to_ubps+2)/ 0		/
+	DATA cv_hi_d5  (to_ubps+2)/ 0		/
+	DATA cv_lo_d6  (to_ubps+2)/ 0		/
+	DATA cv_hi_d6  (to_ubps+2)/ 0		/
 
 	DATA cv_category (to_ubps+3)/ cat_calc_var	/
 	DATA cv_variable (to_ubps+3)/ pucoe		/
@@ -1751,6 +2131,10 @@
 	DATA cv_hi_d3  (to_ubps+3)/ 0		/
 	DATA cv_lo_d4  (to_ubps+3)/ 0		/
 	DATA cv_hi_d4  (to_ubps+3)/ 0		/
+	DATA cv_lo_d5  (to_ubps+3)/ 0		/
+	DATA cv_hi_d5  (to_ubps+3)/ 0		/
+	DATA cv_lo_d6  (to_ubps+3)/ 0		/
+	DATA cv_hi_d6  (to_ubps+3)/ 0		/
 
 	DATA cv_category (to_ubps+4)/ cat_calc_var	/
 	DATA cv_variable (to_ubps+4)/ pubpi		/
@@ -1762,6 +2146,10 @@
 	DATA cv_hi_d3  (to_ubps+4)/ 0		/
 	DATA cv_lo_d4  (to_ubps+4)/ 0		/
 	DATA cv_hi_d4  (to_ubps+4)/ 0		/
+	DATA cv_lo_d5  (to_ubps+4)/ 0		/
+	DATA cv_hi_d5  (to_ubps+4)/ 0		/
+	DATA cv_lo_d6  (to_ubps+4)/ 0		/
+	DATA cv_hi_d6  (to_ubps+4)/ 0		/
 
 	DATA cv_category (to_ubps+5)/ cat_calc_var	/
 	DATA cv_variable (to_ubps+5)/ pdudt		/
@@ -1773,9 +2161,13 @@
 	DATA cv_hi_d3  (to_ubps+5)/ 0		/
 	DATA cv_lo_d4  (to_ubps+5)/ 0		/
 	DATA cv_hi_d4  (to_ubps+5)/ 0		/
+	DATA cv_lo_d5  (to_ubps+5)/ 0		/
+	DATA cv_hi_d5  (to_ubps+5)/ 0		/
+	DATA cv_lo_d6  (to_ubps+5)/ 0		/
+	DATA cv_hi_d6  (to_ubps+5)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_vbps+1)/ cat_calc_var	/
 	DATA cv_variable (to_vbps+1)/ pvdf		/
 	DATA cv_lo_d1  (to_vbps+1)/ 0		/
@@ -1786,7 +2178,11 @@
 	DATA cv_hi_d3  (to_vbps+1)/ 0		/
 	DATA cv_lo_d4  (to_vbps+1)/ 0		/
 	DATA cv_hi_d4  (to_vbps+1)/ 0		/
-	
+	DATA cv_lo_d5  (to_vbps+1)/ 0		/
+	DATA cv_hi_d5  (to_vbps+1)/ 0		/
+	DATA cv_lo_d6  (to_vbps+1)/ 0		/
+	DATA cv_hi_d6  (to_vbps+1)/ 0		/
+
 	DATA cv_category (to_vbps+2)/ cat_calc_var	/
 	DATA cv_variable (to_vbps+2)/ pvad		/
 	DATA cv_lo_d1  (to_vbps+2)/ 0		/
@@ -1797,6 +2193,10 @@
 	DATA cv_hi_d3  (to_vbps+2)/ 0		/
 	DATA cv_lo_d4  (to_vbps+2)/ 0		/
 	DATA cv_hi_d4  (to_vbps+2)/ 0		/
+	DATA cv_lo_d5  (to_vbps+2)/ 0		/
+	DATA cv_hi_d5  (to_vbps+2)/ 0		/
+	DATA cv_lo_d6  (to_vbps+2)/ 0		/
+	DATA cv_hi_d6  (to_vbps+2)/ 0		/
 
 	DATA cv_category (to_vbps+3)/ cat_calc_var	/
 	DATA cv_variable (to_vbps+3)/ pvcoe		/
@@ -1808,6 +2208,10 @@
 	DATA cv_hi_d3  (to_vbps+3)/ 0		/
 	DATA cv_lo_d4  (to_vbps+3)/ 0		/
 	DATA cv_hi_d4  (to_vbps+3)/ 0		/
+	DATA cv_lo_d5  (to_vbps+3)/ 0		/
+	DATA cv_hi_d5  (to_vbps+3)/ 0		/
+	DATA cv_lo_d6  (to_vbps+3)/ 0		/
+	DATA cv_hi_d6  (to_vbps+3)/ 0		/
 
 	DATA cv_category (to_vbps+4)/ cat_calc_var	/
 	DATA cv_variable (to_vbps+4)/ pvbpi		/
@@ -1819,6 +2223,10 @@
 	DATA cv_hi_d3  (to_vbps+4)/ 0		/
 	DATA cv_lo_d4  (to_vbps+4)/ 0		/
 	DATA cv_hi_d4  (to_vbps+4)/ 0		/
+	DATA cv_lo_d5  (to_vbps+4)/ 0		/
+	DATA cv_hi_d5  (to_vbps+4)/ 0		/
+	DATA cv_lo_d6  (to_vbps+4)/ 0		/
+	DATA cv_hi_d6  (to_vbps+4)/ 0		/
 
 	DATA cv_category (to_vbps+5)/ cat_calc_var	/
 	DATA cv_variable (to_vbps+5)/ pdvdt		/
@@ -1830,9 +2238,13 @@
 	DATA cv_hi_d3  (to_vbps+5)/ 0		/
 	DATA cv_lo_d4  (to_vbps+5)/ 0		/
 	DATA cv_hi_d4  (to_vbps+5)/ 0		/
+	DATA cv_lo_d5  (to_vbps+5)/ 0		/
+	DATA cv_hi_d5  (to_vbps+5)/ 0		/
+	DATA cv_lo_d6  (to_vbps+5)/ 0		/
+	DATA cv_hi_d6  (to_vbps+5)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_sali+1)/ cat_file_var	/
 	DATA cv_variable (to_sali+1)/ psalt		/
 	DATA cv_lo_d1  (to_sali+1)/ 0		/
@@ -1843,9 +2255,13 @@
 	DATA cv_hi_d3  (to_sali+1)/ 0		/
 	DATA cv_lo_d4  (to_sali+1)/ 0		/
 	DATA cv_hi_d4  (to_sali+1)/ 0		/
+	DATA cv_lo_d5  (to_sali+1)/ 0		/
+	DATA cv_hi_d5  (to_sali+1)/ 0		/
+	DATA cv_lo_d6  (to_sali+1)/ 0		/
+	DATA cv_hi_d6  (to_sali+1)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_dens+1)/ cat_file_var	/
 	DATA cv_variable (to_dens+1)/ ptemp		/
 	DATA cv_lo_d1  (to_dens+1)/ 0		/
@@ -1856,6 +2272,10 @@
 	DATA cv_hi_d3  (to_dens+1)/ 0		/
 	DATA cv_lo_d4  (to_dens+1)/ 0		/
 	DATA cv_hi_d4  (to_dens+1)/ 0		/
+	DATA cv_lo_d5  (to_dens+1)/ 0		/
+	DATA cv_hi_d5  (to_dens+1)/ 0		/
+	DATA cv_lo_d6  (to_dens+1)/ 0		/
+	DATA cv_hi_d6  (to_dens+1)/ 0		/
 
 	DATA cv_category (to_dens+2)/ cat_file_var	/
 	DATA cv_variable (to_dens+2)/ psalt		/
@@ -1867,9 +2287,13 @@
 	DATA cv_hi_d3  (to_dens+2)/ 0		/
 	DATA cv_lo_d4  (to_dens+2)/ 0		/
 	DATA cv_hi_d4  (to_dens+2)/ 0		/
+	DATA cv_lo_d5  (to_dens+2)/ 0		/
+	DATA cv_hi_d5  (to_dens+2)/ 0		/
+	DATA cv_lo_d6  (to_dens+2)/ 0		/
+	DATA cv_hi_d6  (to_dens+2)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_ubp +1)/ cat_calc_var	/
 	DATA cv_variable (to_ubp +1)/ pubpi		/
 	DATA cv_lo_d1  (to_ubp +1)/ 0		/
@@ -1880,7 +2304,11 @@
 	DATA cv_hi_d3  (to_ubp +1)/ 0	/
 	DATA cv_lo_d4  (to_ubp +1)/ 0		/
 	DATA cv_hi_d4  (to_ubp +1)/ 0		/
-	
+	DATA cv_lo_d5  (to_ubp +1)/ 0		/
+	DATA cv_hi_d5  (to_ubp +1)/ 0		/
+	DATA cv_lo_d6  (to_ubp +1)/ 0		/
+	DATA cv_hi_d6  (to_ubp +1)/ 0		/
+
 	DATA cv_category (to_ubp +2)/ cat_calc_var	/
 	DATA cv_variable (to_ubp +2)/ pubps		/
 	DATA cv_lo_d1  (to_ubp +2)/ 0		/
@@ -1891,9 +2319,13 @@
 	DATA cv_hi_d3  (to_ubp +2)/ 0		/
 	DATA cv_lo_d4  (to_ubp +2)/ 0		/
 	DATA cv_hi_d4  (to_ubp +2)/ 0		/
+	DATA cv_lo_d5  (to_ubp +2)/ 0		/
+	DATA cv_hi_d5  (to_ubp +2)/ 0		/
+	DATA cv_lo_d6  (to_ubp +2)/ 0		/
+	DATA cv_hi_d6  (to_ubp +2)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_vbp +1)/ cat_calc_var	/
 	DATA cv_variable (to_vbp +1)/ pvbpi		/
 	DATA cv_lo_d1  (to_vbp +1)/ 0		/
@@ -1904,7 +2336,11 @@
 	DATA cv_hi_d3  (to_vbp +1)/ 0	/
 	DATA cv_lo_d4  (to_vbp +1)/ 0		/
 	DATA cv_hi_d4  (to_vbp +1)/ 0		/
-	
+	DATA cv_lo_d5  (to_vbp +1)/ 0		/
+	DATA cv_hi_d5  (to_vbp +1)/ 0		/
+	DATA cv_lo_d6  (to_vbp +1)/ 0		/
+	DATA cv_hi_d6  (to_vbp +1)/ 0		/
+
 	DATA cv_category (to_vbp +2)/ cat_calc_var	/
 	DATA cv_variable (to_vbp +2)/ pvbps		/
 	DATA cv_lo_d1  (to_vbp +2)/ 0		/
@@ -1915,9 +2351,13 @@
 	DATA cv_hi_d3  (to_vbp +2)/ 0		/
 	DATA cv_lo_d4  (to_vbp +2)/ 0		/
 	DATA cv_hi_d4  (to_vbp +2)/ 0		/
+	DATA cv_lo_d5  (to_vbp +2)/ 0		/
+	DATA cv_hi_d5  (to_vbp +2)/ 0		/
+	DATA cv_lo_d6  (to_vbp +2)/ 0		/
+	DATA cv_hi_d6  (to_vbp +2)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_cmsk+1)/ cat_file_var	/
 	DATA cv_variable (to_cmsk+1)/ ptemp		/
 	DATA cv_lo_d1  (to_cmsk+1)/ 0		/
@@ -1928,6 +2368,10 @@
 	DATA cv_hi_d3  (to_cmsk+1)/ +1		/
 	DATA cv_lo_d4  (to_cmsk+1)/ 0		/
 	DATA cv_hi_d4  (to_cmsk+1)/ 0		/
+	DATA cv_lo_d5  (to_cmsk+1)/ 0		/
+	DATA cv_hi_d5  (to_cmsk+1)/ 0		/
+	DATA cv_lo_d6  (to_cmsk+1)/ 0		/
+	DATA cv_hi_d6  (to_cmsk+1)/ 0		/
 
 	DATA cv_category (to_cmsk+2)/ cat_file_var	/
 	DATA cv_variable (to_cmsk+2)/ psalt		/
@@ -1939,9 +2383,13 @@
 	DATA cv_hi_d3  (to_cmsk+2)/ +1		/
 	DATA cv_lo_d4  (to_cmsk+2)/ 0 		/
 	DATA cv_hi_d4  (to_cmsk+2)/ 0 		/
+	DATA cv_lo_d5  (to_cmsk+2)/ 0		/
+	DATA cv_hi_d5  (to_cmsk+2)/ 0		/
+	DATA cv_lo_d6  (to_cmsk+2)/ 0		/
+	DATA cv_hi_d6  (to_cmsk+2)/ 0		/
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	
+
 	DATA cv_category (to_w_t +1)/ cat_file_var	/
 	DATA cv_variable (to_w_t +1)/ pu		/
 	DATA cv_lo_d1  (to_w_t +1)/ -1		/
@@ -1952,6 +2400,10 @@
 	DATA cv_hi_d3  (to_w_t +1)/ 0		/
 	DATA cv_lo_d4  (to_w_t +1)/ 0		/
 	DATA cv_hi_d4  (to_w_t +1)/ 0		/
+	DATA cv_lo_d5  (to_w_t +1)/ 0		/
+	DATA cv_hi_d5  (to_w_t +1)/ 0		/
+	DATA cv_lo_d6  (to_w_t +1)/ 0		/
+	DATA cv_hi_d6  (to_w_t +1)/ 0		/
 
 	DATA cv_category (to_w_t +2)/ cat_file_var	/
 	DATA cv_variable (to_w_t +2)/ pv		/
@@ -1963,9 +2415,13 @@
 	DATA cv_hi_d3  (to_w_t +2)/ 0		/
 	DATA cv_lo_d4  (to_w_t +2)/ 0		/
 	DATA cv_hi_d4  (to_w_t +2)/ 0		/
+	DATA cv_lo_d5  (to_w_t +2)/ 0		/
+	DATA cv_hi_d5  (to_w_t +2)/ 0		/
+	DATA cv_lo_d6  (to_w_t +2)/ 0		/
+	DATA cv_hi_d6  (to_w_t +2)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_cair+1)/ cat_file_var	/
 	DATA cv_variable (to_cair+1)/ pairt_special	/
 	DATA cv_lo_d1  (to_cair+1)/ 0		/
@@ -1976,9 +2432,13 @@
 	DATA cv_hi_d3  (to_cair+1)/ 0		/
 	DATA cv_lo_d4  (to_cair+1)/ 0		/
 	DATA cv_hi_d4  (to_cair+1)/ 0		/
+	DATA cv_lo_d5  (to_cair+1)/ 0		/
+	DATA cv_hi_d5  (to_cair+1)/ 0		/
+	DATA cv_lo_d6  (to_cair+1)/ 0		/
+	DATA cv_hi_d6  (to_cair+1)/ 0		/
 
 **************************************************************************
-	
+
 	DATA cv_category (to_air +1)/ cat_file_var	/
 	DATA cv_variable (to_air +1)/ ptemp		/
 	DATA cv_lo_d1  (to_air +1)/ 0		/
@@ -1989,6 +2449,10 @@
 	DATA cv_hi_d3  (to_air +1)/ 0		/
 	DATA cv_lo_d4  (to_air +1)/ 0		/
 	DATA cv_hi_d4  (to_air +1)/ 0		/
+	DATA cv_lo_d5  (to_air +1)/ 0		/
+	DATA cv_hi_d5  (to_air +1)/ 0		/
+	DATA cv_lo_d6  (to_air +1)/ 0		/
+	DATA cv_hi_d6  (to_air +1)/ 0		/
 
 	DATA cv_category (to_air +2)/ cat_calc_var	/
 	DATA cv_variable (to_air +2)/ pcair_special	/
@@ -2000,5 +2464,9 @@
 	DATA cv_hi_d3  (to_air +2)/ 0		/
 	DATA cv_lo_d4  (to_air +2)/ 0		/
 	DATA cv_hi_d4  (to_air +2)/ 0		/
+	DATA cv_lo_d5  (to_air +2)/ 0		/
+	DATA cv_hi_d5  (to_air +2)/ 0		/
+	DATA cv_lo_d6  (to_air +2)/ 0		/
+	DATA cv_hi_d6  (to_air +2)/ 0		/
 
 	END

@@ -46,6 +46,7 @@
 * revision 0.1 -  9/8/88 - explicit check for digit so words beginning with T
 *			   aren't treated as .TRUE. by VAX Fortran 
 * V420: 10/95 - need to buffer "READ(*)" for AIX bort
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * calling argument declarations
 	INTEGER		status
@@ -59,13 +60,8 @@
 	CHARACTER	buff*64
 #endif
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 * initialize
 	slen	  = LEN( string )

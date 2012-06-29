@@ -122,6 +122,7 @@
 *                   abstract time axis.  Fix for bug 1722.
 * V671 *acm*  5/11  For the 1D form of polygon plots, the check for adequate 
 *                   PLOT+ memory was not adequate - we need x,y, and variable 
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
 
 	include 'tmap_dims.parm'
@@ -178,12 +179,12 @@
      .			slen, slen2, x_lab, y_lab, nline_in_mem, i,
      .			npoly, ncolor, ipoly, xrow, yrow, start, end,
      .			npts, idim, color_dim, coord_dim,
-     .			style, justify, ndim, dims(4), nfdim, fdims(4),
-     .			plot_mem_used, pxlim, pylim, ptitl,
+     .			style, justify, ndim, dims(nferdims), nfdim,
+     .			fdims(nferdims), plot_mem_used, pxlim, pylim, ptitl,
      .			cx_buff_x, cx_buff_y,
      .			phlim, pvlim, pxdenig, pydenig,
      .                  cal_id, tax, x_axtyp, y_axtyp, n,
-     .                  ss_x_save, ss_y_save
+     .                  ss_x_save, ss_y_save, hblk1, mvh_temp
 
 	REAL		x_len, y_len, lo, hi, lox, hix, loy, hiy,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -199,6 +200,7 @@
 	LOGICAL		range_rqd
 	PARAMETER     ( range_rqd = .TRUE. )
 	PARAMETER     ( epsilon = 1.E-45 )
+
 
 * signal that plot set-up has begun
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
@@ -659,7 +661,8 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 *  (but only for 2-D polygon form; 1-D polygon data are
 *  just lists on abstract axis.)
 *  If the axis is 7 (abstract) then dont do the check either.
-                 tax = grid_line(t_dim,cx_grid(cx_x ))
+                 tax = grid_line(f_dim,cx_grid(cx_x ))
+                 IF (tax.EQ.mnormal) tax = grid_line(t_dim,cx_grid(cx_x ))
 		 IF (STR_SAME(line_name(tax),'ABSTRACT') .NE. 0) THEN 
                     cal_name = line_cal_name(tax)
                     cal_id = TM_GET_CALENDAR_ID ( cal_name )
@@ -896,7 +899,8 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF
-              tax = grid_line(t_dim,cx_grid(cx_x ))
+              tax = grid_line(f_dim,cx_grid(cx_x ))
+              IF (tax.EQ.mnormal) tax = grid_line(t_dim,cx_grid(cx_x ))
               cal_name = line_cal_name(tax)
               cal_id = TM_GET_CALENDAR_ID ( cal_name )
 	      CALL EQUAL_RANGE( 
@@ -959,7 +963,8 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF
-              tax = grid_line(t_dim,cx_grid(cx_x ))
+              tax = grid_line(f_dim,cx_grid(cx_x ))
+              IF (tax.EQ.mnormal) tax = grid_line(t_dim,cx_grid(cx_x ))
               cal_name = line_cal_name(tax)
               cal_id = TM_GET_CALENDAR_ID ( cal_name )
 	      CALL EQUAL_RANGE( 

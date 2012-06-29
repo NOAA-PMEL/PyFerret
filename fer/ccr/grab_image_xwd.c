@@ -107,26 +107,20 @@
  *%  color can be supported.
 %*/
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
-#include <wchar.h>
+#include <X11/Xos.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#ifndef NO_WIN_UTIL_H
+#include <X11/Xmu/WinUtil.h>
+#endif
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h> 
 #include <errno.h>
-/* #include <endian.h> */
-
-#include <X11/Xos.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
 
 /*add include for signal for sunOS benefit *kob*/
 #include <signal.h>
 
-#ifdef NO_WIN_UTIL_H
-#else
-#include <X11/Xmu/WinUtil.h>
-#endif
 
 
 typedef unsigned long Pixel;

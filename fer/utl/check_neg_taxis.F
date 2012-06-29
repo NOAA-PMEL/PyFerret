@@ -49,6 +49,7 @@
 *      7/20/92 - don't issue warning unless T0 is valid
 *              - (cleaned up unused variables)
 * V530  1/01 *acm* cal_id for alternative calendar axis types
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * calling argument declarations:
 	INTEGER	dset
@@ -59,19 +60,12 @@
         INTEGER TM_GET_CALENDAR_ID, cal_id
 	DOUBLE PRECISION TM_WORLD
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 
 * base it on first variable in data set
 	DO 100 i = 1, maxvars

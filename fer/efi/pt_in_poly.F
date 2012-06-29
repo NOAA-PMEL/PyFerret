@@ -81,11 +81,13 @@ C            1 IF THE POINT IS INSIDE OF THE POLYGON.
 
       SUBROUTINE pt_in_poly_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
 
       CHARACTER*100 fcn_desc
+
       WRITE (fcn_desc, 10)
    10 FORMAT 
      . ('Return -1 outside, 0 if on edge, 1 if inside polygon')
@@ -93,29 +95,33 @@ C            1 IF THE POINT IS INSIDE OF THE POLYGON.
 
       CALL ef_set_num_args(id, 3)
       CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                NORMAL,          NORMAL,
+     .                                NORMAL,          NORMAL)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
       CALL ef_set_num_work_arrays(id, 4)
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_desc(id, arg, 
      .  'Variable on the XY grid and region to be tested')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, NO, NO, NO, NO)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'XVERT')
       CALL ef_set_arg_desc(id, arg, 
      .   'X-coordinates of vertices of polygon')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'YVERT')
       CALL ef_set_arg_desc(id, arg, 
      .   'Y-coordinates of vertices of polygon')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
       RETURN 
       END
@@ -127,19 +133,23 @@ C            1 IF THE POINT IS INSIDE OF THE POLYGON.
 
       SUBROUTINE pt_in_poly_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
 *
-* Set the work array X/Y/Z/T dimensions
+* Set the work array X/Y/Z/T/E/F dimensions
+* ef_set_work_array_dims_6d(id, array #,
+*                           xlo, ylo, zlo, tlo, elo, flo,
+*                           xhi, yhi, zhi, thi, ehi, fhi)
 
       INTEGER array_num, nx, ny, nv
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
 * These are going to be a double precision array, to contain axis 
 * coordinates so allocate 2* the size of the axes
@@ -148,9 +158,14 @@ C            1 IF THE POINT IS INSIDE OF THE POLYGON.
       ny = 2*( arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1) + 1 )
 
       array_num = 1
-      CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, nx,1,1,1)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .                                1, 1, 1, 1, 1, 1,
+     .                               nx, 1, 1, 1, 1, 1)
+
       array_num = 2
-      CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, ny,1,1,1)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .                                1, 1, 1, 1, 1, 1,
+     .                               ny, 1, 1, 1, 1, 1)
 
 * Set two arrays the size of the number of vertices.
 
@@ -158,10 +173,16 @@ C            1 IF THE POINT IS INSIDE OF THE POLYGON.
       nv = MAX(nv, arg_hi_ss(Y_AXIS,ARG2) - arg_lo_ss(Y_AXIS,ARG2) + 1 )
       nv = MAX(nv, arg_hi_ss(Z_AXIS,ARG2) - arg_lo_ss(Z_AXIS,ARG2) + 1 )
       nv = MAX(nv, arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1 )
+
       array_num = 3
-      CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, nv,1,1,1)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .                                1, 1, 1, 1, 1, 1,
+     .                               nv, 1, 1, 1, 1, 1)
+
       array_num = 4
-      CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, nv,1,1,1)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .                                1, 1, 1, 1, 1, 1,
+     .                               nv, 1, 1, 1, 1, 1)
 
       RETURN 
       END
@@ -193,36 +214,48 @@ C   POINT IS INSIDE OF THE POLYGON.
 C 
 C .................................................................. 
 C 
-      
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
-      REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
-     .           mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, 
-     .           mem2loz:mem2hiz, mem2lot:mem2hit)
-      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, 
-     .           mem3loz:mem3hiz, mem3lot:mem3hit)
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
+     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
+     .           mem3lot:mem3hit, mem3loe:mem3hie, mem3lof:mem3hif)
+
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
-     .            memresloz:memreshiz, memreslot:memreshit)
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
+
       REAL*8 xcoords(wrk1lox:wrk1hix)
       REAL*8 ycoords(wrk2lox:wrk2hix)
       REAL workx(wrk3lox:wrk3hix)
       REAL worky(wrk4lox:wrk4hix)
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
+* After initialization, the 'res_' arrays contain indexing information 
+* for the result axes.  The 'arg_' arrays will contain the indexing 
+* information for each variable''s axes. 
 
-      INTEGER n, i,j,k,l, i1,j1, ii,jj, iarg
-      LOGICAL MX,MY,NX,NY 
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
+
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, ii, jj, iarg, inout, nv
+      REAL xvmin, xvmax, yvmin, yvmax, px, py
+
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
 * Get the x and y coordinates of the input variable
@@ -252,30 +285,32 @@ C
 
 * Loop over all points, checking if they are inside or outside the polygon.
 
-      k = res_lo_ss(Z_AXIS)
+      n = res_lo_ss(F_AXIS)
+      m = res_lo_ss(E_AXIS)
       l = res_lo_ss(T_AXIS)
+      k = res_lo_ss(Z_AXIS)
 
-      i1 = arg_lo_ss(X_AXIS,ARG1)
-      DO 200 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-         PX = xcoords(i1) 
+      j1 = arg_lo_ss(Y_AXIS,ARG1)
+      DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+         py = ycoords(j1)
 
-         j1 = arg_lo_ss(Y_AXIS,ARG1)
-         DO 100 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-            PY = ycoords(j1)
+         i1 = arg_lo_ss(X_AXIS,ARG1)
+         DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+            px = xcoords(i1) 
 
             IF (px .GE. xvmin .AND. px .LE. xvmax .AND.
      .          py .GE. yvmin .AND. py .LE. yvmax ) THEN
                CALL PNPOLY (px, py, arg_2, arg_3, nv, 
      .                      workx, worky, inout )
-               result(i,j,k,l)= FLOAT(inout)
+               result(i,j,k,l,m,n)= FLOAT(inout)
             ELSE
-               result(i,j,k,l) = -1
+               result(i,j,k,l,m,n) = -1
             ENDIF
 
-      j1 = j1 + arg_incr(Y_AXIS,ARG1)
- 100  CONTINUE
+            i1 = i1 + arg_incr(X_AXIS,ARG1)
+ 100     CONTINUE
 
-      i1 = i1 + arg_incr(X_AXIS,ARG1)
+         j1 = j1 + arg_incr(Y_AXIS,ARG1)
  200  CONTINUE
 
       RETURN 
@@ -305,49 +340,6 @@ C ..................................................................
       RETURN
       END
 
-
-C .................................................................. 
-	LOGICAL FUNCTION PP_FPEQ ( a, b )
-*
-*************
-* This is a copy of the Ferret function TM_FPEQ. It is included here
-* so that the function is a stand-alone function. When and if this
-* External Function is statically linked into the Ferret executable,
-* We can rename calls to PP_FPEQ back to TM_FPEQ and remove this subroutine.
-*************
-*
-* test to see if REAL*4 floating point numbers are equal to within
-* "reasonable" accuracy
-* REAL*4 (F_floating) machine error on the VAX is "approximately one part in
-* 2**23" or 1.2E-7.  Allow 4.E-7 as machine error after many typical roundoffs.
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* revision 0.00 - 11/21/85
-* revision 0.10 - 10/23/87 - all variables explicitly declared
-*
-* calling arguments:
-	REAL	a, b
-
-* local parameters
-	REAL	   VAX_epsilon
-	PARAMETER (VAX_epsilon = 4.E-7)
-
-* treat relative error case (non-zero) separate fron zero case
-
-	IF  (a.NE.0.0   .AND.  b.NE.0.0 )  THEN
-
-	   PP_FPEQ =  ABS(a-b) .LE. ABS(b)*VAX_epsilon		! relative error
-
-	ELSE
-
-	   PP_FPEQ =	ABS(a) .LT. VAX_epsilon
-     .		.AND.   ABS(b) .LT. VAX_epsilon			! absolute error
-
-	ENDIF
-	RETURN
-	END
 
 C .................................................................. 
 C 
@@ -397,10 +389,10 @@ C
 C .................................................................. 
 C 
       SUBROUTINE PNPOLY(PX,PY,XX,YY,N,X,Y,INOUT) 
-      REAL PX,X(*),Y(*),XX(*),YY(*) 
+      REAL PX,PY,X(*),Y(*),XX(*),YY(*) 
       INTEGER N, INOUT
 
-      LOGICAL PP_FPEQ, MX,MY,NX,NY, b
+      LOGICAL TM_FPEQ, MX,MY,NX,NY, b
       INTEGER I, J, INOUT1, INOUT2
       INOUT1 = 0
       INOUT2 = 0
@@ -419,21 +411,21 @@ C
       MY=Y(I).GE.0.0 
       NY=Y(J).GE.0.0 
 
-      IF (PP_FPEQ(X(J),0.) .AND. PP_FPEQ(Y(J),0.)) GOTO 4
+      IF (TM_FPEQ(X(J),0.) .AND. TM_FPEQ(Y(J),0.)) GOTO 4
 
       IF(.NOT.((MY.OR.NY).AND.(MX.OR.NX)).OR.(MX.AND.NX)) GO TO 2 
       IF(.NOT.(MY.AND.NY.AND.(MX.OR.NX).AND..NOT.(MX.AND.NX))) GO TO 3 
       INOUT1=-INOUT1 
       GO TO 2
     3 CONTINUE
-      IF ( PP_FPEQ(X(J),Y(J)) ) THEN
-         IF(PP_FPEQ((Y(I)*X(J)-X(I)*Y(J)),0.)) THEN  
+      IF ( TM_FPEQ(X(J),Y(J)) ) THEN
+         IF(TM_FPEQ((Y(I)*X(J)-X(I)*Y(J)),0.)) THEN  
             INOUT1 = 0
             INOUT2 = 0
             GOTO 50
          ENDIF
       ENDIF
-      IF( PP_FPEQ((Y(I)*X(J)-X(I)*Y(J))/(X(J)-X(I)), 0.) ) GOTO 4
+      IF( TM_FPEQ((Y(I)*X(J)-X(I)*Y(J))/(X(J)-X(I)), 0.) ) GOTO 4
       IF((Y(I)*X(J)-X(I)*Y(J))/(X(J)-X(I))) 2,4,5 
     4 INOUT1 = 0
       INOUT2 = 0
@@ -456,21 +448,21 @@ C
       MY=Y(I).GE.0.0 
       NY=Y(J).GE.0.0 
 
-      IF (PP_FPEQ(X(J),0.) .AND. PP_FPEQ(Y(J),0.)) GOTO 14
+      IF (TM_FPEQ(X(J),0.) .AND. TM_FPEQ(Y(J),0.)) GOTO 14
 
       IF(.NOT.((MY.OR.NY).AND.(MX.OR.NX)).OR.(MX.AND.NX)) GO TO 12 
       IF(.NOT.(MY.AND.NY.AND.(MX.OR.NX).AND..NOT.(MX.AND.NX))) GO TO 13 
       INOUT2=-INOUT2 
       GO TO 12
    13 CONTINUE
-      IF ( PP_FPEQ(X(J),Y(J)) ) THEN
-         IF(PP_FPEQ(Y(I)*X(J)-X(I)*Y(J), 0.)) THEN  
+      IF ( TM_FPEQ(X(J),Y(J)) ) THEN
+         IF(TM_FPEQ(Y(I)*X(J)-X(I)*Y(J), 0.)) THEN  
             INOUT1 = 0
             INOUT2 = 0
             GOTO 50
          ENDIF
       ENDIF
-      IF( PP_FPEQ((Y(I)*X(J)-X(I)*Y(J))/(X(J)-X(I)), 0.) ) GOTO 14
+      IF( TM_FPEQ((Y(I)*X(J)-X(I)*Y(J))/(X(J)-X(I)), 0.) ) GOTO 14
       IF((Y(I)*X(J)-X(I)*Y(J))/(X(J)-X(I))) 12,14,15 
    14 INOUT1 = 0
       INOUT2 = 0

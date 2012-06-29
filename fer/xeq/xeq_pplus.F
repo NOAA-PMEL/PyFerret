@@ -48,8 +48,8 @@
 * Unix/RISC port - 10/9/91 - check to see if user changes ylen or yorg
 * V500 *sh* 6/99 - for commands %LABEL and %WHERE define PLOT+ symbols
 *			mode verify output, and journal file comments
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'plot_setup.parm'
@@ -59,15 +59,6 @@
         include 'axis_inc.decl'  ! added 10/9/91 for ylen,yorg
         include 'AXIS.INC'            ! added 10/9/91 for ylen,yorg
 	include 'xgrinpt.cmn'	! 6/99 w/ mouse input
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE 'XPLOT_SETUP.CMN'    ! added 10/9/91
-        INCLUDE 'PPLV11INC:AXIS.INC'            ! added 10/9/91 for ylen,yorg
-        INCLUDE 'PPLV11INC:AXIS.INC'            ! added 10/9/91 for ylen,yorg
-#endif
 	
 * local variable declarations:
 	LOGICAL	ver_out, jnl_out
@@ -95,11 +86,7 @@
 	   CALL PPLCMD (' ',' ',0,cmnd_buff(arg_start(1):len_cmnd),1,1)
 	ELSE
 * ... enter PPLUS interactively
-#ifdef unix
 	   CALL PPLCMD ( '/dev/tty', ' ', 0, ' ', 1, 0 )
-#else
-	   CALL PPLCMD ( 'TT:', ' ', 0, ' ', 1, 0 )
-#endif
 	   ppl_interrupted = .FALSE.			! since interactive
 	ENDIF
 

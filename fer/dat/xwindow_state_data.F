@@ -3,7 +3,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -36,11 +36,8 @@
 *
 * *kob* New routine for Linux/f90 port
 
-#ifdef unix
+        IMPLICIT NONE
         include 'xwindow_state.cmn'
-#else
-        INCLUDE 'FERRET_CMN:XWINDOW_STATE.CMN'
-#endif
 
 *               ==> COMMON XWINDOW_STATE has been created **temporarily**
 *                   with the intention that it will be expanded in future

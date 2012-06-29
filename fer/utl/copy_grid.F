@@ -33,7 +33,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* copy data from one grid to another (using limits of dstination grid)
+* copy data from one grid to another (using limits of destination grid)
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
@@ -44,7 +44,9 @@
 * V530:  8/00 *sh* - handle C string arrays, too
 * V530:  8/00 *sh* - if input grid uses strides then copy based upon output
 *	             grid limits -- the axes MUST BE the same length
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include	'xvariables.cmn'
@@ -55,11 +57,11 @@
 
 * internal variable declarations
 	INTEGER	MGRID_SIZE
-	INTEGER idim, lo_ss(4), hi_ss(4)
+	INTEGER idim, lo_ss(nferdims), hi_ss(nferdims)
 
 * set-up modified source limits wherever delta is significant
 * cuz the FORTRAN dimensioned size can only have delta of 1 
-	DO idim = 1,4
+	DO idim = 1, nferdims
 	  IF (mr_delta(idim,msrc) .NE. unspecified_val8) THEN
 	    lo_ss(idim) = mr_lo_ss(mdst,idim)
 	    hi_ss(idim) = mr_hi_ss(mdst,idim)
@@ -82,10 +84,14 @@
      .			       lo_ss(2), hi_ss(2),
      .			       lo_ss(3), hi_ss(3),
      .			       lo_ss(4), hi_ss(4),
+     .			       lo_ss(5), hi_ss(5),
+     .			       lo_ss(6), hi_ss(6),
      .			  dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
      .			       mr_lo_s2(mdst), mr_hi_s2(mdst),
      .			       mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .			       mr_lo_s4(mdst), mr_hi_s4(mdst) )
+     .			       mr_lo_s4(mdst), mr_hi_s4(mdst),
+     .			       mr_lo_s5(mdst), mr_hi_s5(mdst),
+     .			       mr_lo_s6(mdst), mr_hi_s6(mdst) )
 
 	ELSE
 
@@ -94,11 +100,15 @@
      .			       lo_ss(2), hi_ss(2),
      .			       lo_ss(3), hi_ss(3),
      .			       lo_ss(4), hi_ss(4),
+     .			       lo_ss(5), hi_ss(5),
+     .			       lo_ss(6), hi_ss(6),
      .			       mr_bad_data( msrc ),
      .			  dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
      .			       mr_lo_s2(mdst), mr_hi_s2(mdst),
      .			       mr_lo_s3(mdst), mr_hi_s3(mdst),
      .			       mr_lo_s4(mdst), mr_hi_s4(mdst),
+     .			       mr_lo_s5(mdst), mr_hi_s5(mdst),
+     .			       mr_lo_s6(mdst), mr_hi_s6(mdst),
      .			       mr_bad_data( mdst )			)
 
 	ENDIF

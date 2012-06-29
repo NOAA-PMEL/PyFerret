@@ -39,6 +39,11 @@
 *
 *  Return index value in LIST for each grids point in V, or a
 *  missing value wherever there is no match)
+*
+*   3/12 *kms* Give index into unraveled arg_2 instead of just I index of arg_2;
+*              increased max string length compared from 20 to 128;
+*              add check for string lengths .GT. 0;
+*              and add E and F dimensions
 
 *
 *
@@ -79,6 +84,7 @@
 
       SUBROUTINE element_index_str_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -87,7 +93,9 @@
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
+
       CHARACTER*100 fcn_desc
+
       WRITE (fcn_desc, 10)
    10 FORMAT (
      .'Return index value in ARG2 for each string in ARG1 ',
@@ -96,21 +104,24 @@
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'VAR')
       CALL ef_set_arg_desc(id, arg, 'string data to mask')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, YES, YES, YES, YES)
       CALL ef_set_arg_type (id, arg, STRING_ARG)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'STRINGS')
       CALL ef_set_arg_desc(id, arg, 'list of strings to match')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
       CALL ef_set_arg_type (id, arg, STRING_ARG)
 
 *                                                                     ^
@@ -126,6 +137,7 @@
 *
       SUBROUTINE element_index_str_compute(id, arg_1, arg_2, result)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -136,85 +148,91 @@
       PARAMETER (strdf = 2)
 #endif
 
-      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
+      INTEGER id
 
-*  string args need to be twice the length.
+      REAL arg_1(strdf,
+     .           mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(strdf,
+     .           mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
+     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
 
-      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
-     .     mem1lot:mem1hit)
-      REAL arg_2(strdf,mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
-     .     mem2lot:mem2hit)
- 
-      REAL result(memreslox:memreshix, memresloy:memreshiy,
-     .      memresloz:memreshiz, memreslot:memreshit)
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
+* information for each variable''s axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 ***********************************************************************
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
-      INTEGER id, arg
-      INTEGER i, j, k, l
-      INTEGER i2, j2, k2, l2
+      INTEGER arg, ndx
+      INTEGER i, j, k, l, m, n
+      INTEGER i2, j2, k2, l2, m2, n2
       INTEGER slen1, slen2
       INTEGER STR_UPCASE, status
-      CHARACTER text1*20, text2*20
-      CHARACTER text1up*20, text2up*20
+      CHARACTER text1*128, text2*128
+      CHARACTER text1up*128, text2up*128
 
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
 C  Check for strings matching arg2
+C  Assumes result and arg_1 have same array dimension limits
 
-      DO 410 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-      DO 310 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 210 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-      DO 110 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+      DO 300 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+      DO 300 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+      DO 300 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+      DO 300 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+      DO 300 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      DO 300 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-         result(i,j,k,l) = bad_flag_result
-         
          arg = 1
-         CALL ef_get_string_arg_element(id, arg, arg_1, 
-     .                                  i,j,k,l, slen1, text1)
+         CALL ef_get_string_arg_element_6d(id, arg, arg_1, 
+     .                      i, j, k, l, m, n, slen1, text1)
 
-         DO 400 i2=arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS, ARG2)
-         DO 300 j2=arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS, ARG2)
-         DO 200 k2=arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS, ARG2)
-         DO 100 l2=arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS, ARG2)
-
+         ndx = 1
+         DO 100 n2=arg_lo_ss(F_AXIS,ARG2), arg_hi_ss(F_AXIS,ARG2)
+         DO 100 m2=arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS,ARG2)
+         DO 100 l2=arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS,ARG2)
+         DO 100 k2=arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS,ARG2)
+         DO 100 j2=arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
+         DO 100 i2=arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
             arg = 2
-            CALL ef_get_string_arg_element(id, arg, arg_2, 
-     .                                     i2,j2,k2,l2, slen2, text2)
-
-            IF (slen1 .EQ. slen2) THEN
-              status = STR_UPCASE(text1up,text1)
-              status = STR_UPCASE(text2up,text2)
-              IF (text1up(:slen1) .EQ. text2up(:slen2)) THEN
-                 result(i,j,k,l) = i2
-                 GO TO 9000
-              ENDIF
+            CALL ef_get_string_arg_element_6d(id, arg, arg_2, 
+     .                         i2, j2, k2, l2, m2, n2, slen2, text2)
+            IF ( slen1 .GT. 0 .AND.
+     .           slen2 .GT. 0 .AND.
+     .           slen1 .EQ. slen2 ) THEN
+               status = STR_UPCASE(text1up,text1)
+               status = STR_UPCASE(text2up,text2)
+               IF ( text1up(:slen1) .EQ. text2up(:slen2) ) THEN
+                  result(i,j,k,l,m,n) = ndx
+                  GO TO 200
+               ENDIF
             ENDIF
-
+            ndx = ndx + 1
  100     CONTINUE
+
+C        If we got here it was not found
+         result(i,j,k,l,m,n) = bad_flag_result
+
  200     CONTINUE
- 300     CONTINUE
- 400     CONTINUE
 
-9000     CONTINUE
-
- 110  CONTINUE
- 210  CONTINUE
- 310  CONTINUE
- 410  CONTINUE
+ 300  CONTINUE
  
       RETURN
       END

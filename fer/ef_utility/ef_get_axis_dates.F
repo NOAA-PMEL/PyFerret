@@ -8,7 +8,7 @@ c*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -49,12 +49,12 @@ c*
 
       SUBROUTINE EF_GET_AXIS_DATES(id, iarg, tax, numtimes, datebuf )
 
+      IMPLICIT NONE
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'xcontext.cmn'
       INCLUDE 'EF_Util.parm'
-      INCLUDE 'tmap_dims.parm'
       INCLUDE 'xtm_grid.cmn_text'
-
 
       INTEGER id, iarg, numtimes
       REAL*8 tax(*)
@@ -94,15 +94,16 @@ c* to be accessible to the external function.
 *	grid	 - grid containing a time axis
 *	tstep    - time step
 *	precision- precision (1 to 6 for day,mon,yr,hr,min,sec, respectively )
-*			(use ABS(precision) - neg. indicates truncate left 0's)
+*			(use ABS(precision) - neg. indicates truncate left 0s)
 *	date	 - returned string containing date in ASCII form
 *
+
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
 	include 'xtext_info.cmn'
-
 
 * calling argument declarations
 	CHARACTER*(*)	date
@@ -159,7 +160,7 @@ c* to be accessible to the external function.
 	this_secs = start_secs + offset_secs
 
 * round off date instead of truncating 
-* ( people don't normally view dates this way )
+* ( people do not normally view dates this way )
 !	this_secs = ( DNINT(this_secs/prec_fact(prec)) + 0.5 ) * prec_fact(prec)
 
 * Convert to date

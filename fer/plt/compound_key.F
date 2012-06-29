@@ -41,7 +41,8 @@
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
-*
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+
 * V200:   1/4/89
 
 * calling argument declarations:
@@ -51,11 +52,7 @@
 	CHARACTER*200	KEY_STRING
 	INTEGER		slen, maxlen, i
 
-#ifdef unix
 	include 'ferret.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * maximum title length
 	maxlen = LEN( COMPOUND_KEY )

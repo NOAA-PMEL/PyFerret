@@ -44,20 +44,14 @@
 * revision 0.0 -  1/10/89 - based on SHOW_DATA_SET 0.2
 * Unix/RISC port 3/91 *sh* - cannot use function in WRITE list
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include	'ferret.parm'
 	include	'xdset_parms.cmn'
 	include	'xrisc.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XDSET_PARMS.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	lun, dset

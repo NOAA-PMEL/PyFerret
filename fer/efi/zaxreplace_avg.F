@@ -86,6 +86,7 @@
 
       SUBROUTINE zaxreplace_avg_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -94,48 +95,52 @@
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
+
       CHARACTER*100 fcn_desc
 
       WRITE (fcn_desc, 10)
-   10 FORMAT 
-     .  ('regrid V onto Z axis of ZAX based on Z values in ZVALS ',
-     .    'using weighted average' )
+   10 FORMAT('regrid V onto Z axis of ZAX based on Z values in ZVALS ',
+     .       'using weighted average')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 3)
       CALL ef_set_has_vari_args(id, NO)
-
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-      CALL ef_set_piecemeal_ok(id, YES, YES, YES, NO)
-
-      CALL ef_set_num_work_arrays(id, 8)
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
+      CALL ef_set_num_work_arrays(id, 7)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'V')
-      CALL ef_set_arg_desc(id, arg, 
-     .        'Variable on native z axis')
-      CALL ef_set_axis_influence(id, arg, YES, YES, NO, YES)
+      CALL ef_set_arg_desc(id, arg,
+     .        'Variable on native Z axis')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, NO, YES, YES, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'ZVALS')
-      CALL ef_set_arg_desc(id, arg, 
+      CALL ef_set_arg_desc(id, arg,
      .        'Destination Z axis values as a fcn of source Z axis')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'ZAX')
-      CALL ef_set_arg_desc(id, arg, 
-     .'Variable with desired z (depth) axis points')
-      CALL ef_set_axis_influence(id, arg, NO, NO, YES, NO)
+      CALL ef_set_arg_desc(id, arg,
+     .        'Variable with desired Z (depth) axis points')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, YES, NO, NO, NO)
 
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
 ***********************************************************************
 
-      RETURN 
+      RETURN
       END
+
 
 *
 * In this subroutine we request an amount of storage to be supplied
@@ -143,8 +148,8 @@
 *
       SUBROUTINE zaxreplace_avg_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -154,342 +159,338 @@
 *                                                                      V
 
 *
-* Set the work arrays,  X/Y/Z/T dimensions
+* Set the work arrays, X/Y/Z/T/E/F dimensions
 *
-* ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+* ef_set_work_array_dims_6d(id, array #,
+*                           xlo, ylo, zlo, tlo, elo, flo,
+*                           xhi, yhi, zhi, thi, ehi, fhi)
 *
+
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
       INTEGER mz2, mz3
-
       INTEGER iwork
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
 *  Allocate double the dimension of the input arguments for work arrays
 *  which will be REAL*8
-
       mz2 = 1 + ABS(arg_hi_ss(Z_AXIS,ARG2) - arg_lo_ss(Z_AXIS,ARG2))
+      mz2 = 2 * mz2
       mz3 = 1 + ABS(arg_hi_ss(Z_AXIS,ARG3) - arg_lo_ss(Z_AXIS,ARG3))
-
-      mz2 = 2* mz2
-      mz3 = 2* mz3
+      mz3 = 2 * mz3
 
 *  zaxsrc
       iwork = 1
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   1, 1, mz2, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                              mz2, 1, 1, 1, 1, 1)
 
 *  sbox_lo_lim
       iwork = 2
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   1, 1, mz2, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                              mz2, 1, 1, 1, 1, 1)
 
 *  sbox_hi_lim
       iwork = 3
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   1, 1, mz2, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                              mz2, 1, 1, 1, 1, 1)
 
 *  sbox_lo_new
       iwork = 4
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   1, 1, mz2, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                              mz2, 1, 1, 1, 1, 1)
 
 *  sbox_hi_new
       iwork = 5
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   1, 1, mz2, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                              mz2, 1, 1, 1, 1, 1)
 
 *  dbox_lo_lim
       iwork = 6
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   1, 1, mz3, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                              mz3, 1, 1, 1, 1, 1)
 
 *  dbox_hi_lim
       iwork = 7
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   1, 1, mz3, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                              mz3, 1, 1, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
 * **********************************************************************
 
-      RETURN 
+      RETURN
       END
 
 
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE zaxreplace_avg_compute(id, arg_1, arg_2, arg_3, 
-     .     result, zaxsrc, sbox_lo_lim, sbox_hi_lim, sbox_lo_new, 
-     .     sbox_hi_new, dbox_lo_lim, dbox_hi_lim)
+      SUBROUTINE zaxreplace_avg_compute(id, arg_1, arg_2, arg_3,
+     .                                  result, zaxsrc,
+     .                                  sbox_lo_lim, sbox_hi_lim,
+     .                                  sbox_lo_new, sbox_hi_new,
+     .                                  dbox_lo_lim, dbox_hi_lim)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz,
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz,
+     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz,
+     .           mem3lot:mem3hit, mem3loe:mem3hie, mem3lof:mem3hif)
+
+      REAL result(memreslox:memreshix, memresloy:memreshiy,
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
+
+* Ignore the Y/Z/T/E/F dimensions in the work arrays since
+* they are not used and Fortran is column major
+      REAL*8 zaxsrc     (wrk1lox:wrk1hix/2)
+      REAL*8 sbox_lo_lim(wrk2lox:wrk2hix/2)
+      REAL*8 sbox_hi_lim(wrk3lox:wrk3hix/2)
+      REAL*8 sbox_lo_new(wrk4lox:wrk4hix/2)
+      REAL*8 sbox_hi_new(wrk5lox:wrk5hix/2)
+      REAL*8 dbox_lo_lim(wrk6lox:wrk6hix/2)
+      REAL*8 dbox_hi_lim(wrk7lox:wrk7hix/2)
+
+* After initialization, the 'res_' arrays contain indexing information
+* for the result axes.  The 'arg_' arrays will contain the indexing
+* information for each variable''s axes.
+
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
-     .     mem1lot:mem1hit)
-      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
-     .     mem2lot:mem2hit)
-      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
-     .     mem3lot:mem3hit)
-      REAL result(memreslox:memreshix, memresloy:memreshiy, 
-     .     memresloz:memreshiz, memreslot:memreshit)
-
-* After initialization, the 'res_' arrays contain indexing information 
-* for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
-
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
-
 
 ***********************************************************************
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
 
-      INTEGER i, j, k, l
-      INTEGER i1, j1, l1, i2, j2, l2, i3, j3, l3
-      INTEGER ifirst, iw, nbox, nsrc
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, l1, m1, n1
+      INTEGER i2, j2, l2, m2, n2
+      INTEGER i3, j3, l3, m3, n3
+      INTEGER nbox, nsrc
       INTEGER nsrc_lo, nsrc_hi
       REAL frac, xsrc_min, xsrc_max, xsrc_lo, xsrc_hi, xsrcdiff
       REAL wtd, arg1_val, arg1_val_last, wtd_last
       REAL*8 sum, wtdsum
       REAL dbox_lo, dbox_hi
-c      CHARACTER*132 err_msg
 
-*  Dimension work arrays
-
-      REAL*8 zaxsrc(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
-     .               wrk1loz:wrk1hiz/2, wrk1lot:wrk1hit)
-      REAL*8 sbox_lo_lim(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
-     .               wrk2loz:wrk2hiz/2, wrk2lot:wrk2hit)
-      REAL*8 sbox_hi_lim(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
-     .               wrk3loz:wrk3hiz/2, wrk3lot:wrk3hit)
-      REAL*8 sbox_lo_new(wrk4lox:wrk4hix, wrk4loy:wrk4hiy,
-     .               wrk4loz:wrk4hiz/2, wrk4lot:wrk4hit)
-      REAL*8 sbox_hi_new(wrk5lox:wrk5hix, wrk5loy:wrk5hiy,
-     .               wrk5loz:wrk5hiz/2, wrk5lot:wrk5hit)
-      REAL*8 dbox_lo_lim(wrk6lox:wrk6hix, wrk6loy:wrk6hiy,
-     .               wrk6loz:wrk6hiz/2, wrk6lot:wrk6hit)
-      REAL*8 dbox_hi_lim(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
-     .               wrk7loz:wrk7hiz/2, wrk7lot:wrk7hit)
-
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
+      CALL ef_get_coordinates(id, ARG2, Z_AXIS,
+     .        arg_lo_ss(Z_AXIS, ARG2), arg_hi_ss(Z_AXIS, ARG2), zaxsrc)
 
-      CALL ef_get_coordinates(id, ARG2, Z_AXIS, 
-     .   arg_lo_ss(Z_AXIS, ARG2), arg_hi_ss(Z_AXIS, ARG2), zaxsrc)
+      CALL ef_get_box_limits(id, ARG2, Z_AXIS, arg_lo_ss(Z_AXIS, ARG2),
+     .        arg_hi_ss(Z_AXIS, ARG2), sbox_lo_lim, sbox_hi_lim)
 
-      CALL ef_get_box_limits(id, ARG2, Z_AXIS, arg_lo_ss(Z_AXIS, ARG2), 
-     .   arg_hi_ss(Z_AXIS, ARG2), sbox_lo_lim, sbox_hi_lim)
+      CALL ef_get_box_limits(id, ARG3, Z_AXIS, arg_lo_ss(Z_AXIS, ARG3),
+     .        arg_hi_ss(Z_AXIS, ARG3), dbox_lo_lim, dbox_hi_lim)
 
-
-      CALL ef_get_box_limits(id, ARG3, Z_AXIS, arg_lo_ss(Z_AXIS, ARG3), 
-     .   arg_hi_ss(Z_AXIS, ARG3), dbox_lo_lim, dbox_hi_lim)
-
-* 
-*  Loop over x,y,t of the input fields
 *
-      ifirst = 1
-      iw = 0
+*  Loop over x,y,t,e,f of the input fields
+*
+      n1 = arg_lo_ss(F_AXIS,ARG1)
+      n2 = arg_lo_ss(F_AXIS,ARG2)
+      n3 = arg_lo_ss(F_AXIS,ARG3)
+      DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+
+      m1 = arg_lo_ss(E_AXIS,ARG1)
+      m2 = arg_lo_ss(E_AXIS,ARG2)
+      m3 = arg_lo_ss(E_AXIS,ARG3)
+      DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+
+      l1 = arg_lo_ss(T_AXIS,ARG1)
+      l2 = arg_lo_ss(T_AXIS,ARG2)
+      l3 = arg_lo_ss(T_AXIS,ARG3)
+      DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+
+      j1 = arg_lo_ss(Y_AXIS,ARG1)
+      j2 = arg_lo_ss(Y_AXIS,ARG2)
+      j3 = arg_lo_ss(Y_AXIS,ARG3)
+      DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
       i1 = arg_lo_ss(X_AXIS,ARG1)
       i2 = arg_lo_ss(X_AXIS,ARG2)
       i3 = arg_lo_ss(X_AXIS,ARG3)
-      DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-
-         j1 = arg_lo_ss(Y_AXIS,ARG1)
-         j2 = arg_lo_ss(Y_AXIS,ARG2)
-         j3 = arg_lo_ss(Y_AXIS,ARG3)
-         DO 300 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-
-            l1 = arg_lo_ss(T_AXIS,ARG1)
-            l2 = arg_lo_ss(T_AXIS,ARG2)
-            l3 = arg_lo_ss(T_AXIS,ARG3)
-            DO 200 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+      DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
 *
-
 * -ACM- Note: need to think about backwards and forwards z axes: ht vs depth ?
-
+*
 
 *  Translate the source boxes to the new axis units.
 
-               DO 500 k = arg_lo_ss(Z_AXIS,ARG1), 
-     .                    arg_hi_ss(Z_AXIS,ARG1)
+         DO 310 k = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
 
 *  Find the point on the source axis just below the box limit.  Interpolate
 *  to get the box limit in new units.
+            nbox = 1
+            DO WHILE ( zaxsrc(nbox) .LT. sbox_lo_lim(k) )
+               nbox = nbox + 1
+            ENDDO
+            IF ( nbox .EQ. 1 ) THEN
+               sbox_lo_new(k) = arg_2(i2,j2,nbox,l2,m2,n2)
+            ELSE
+               frac = ( sbox_lo_lim(k) - zaxsrc(nbox-1) ) /
+     .                ( zaxsrc(nbox)   - zaxsrc(nbox-1) )
+               sbox_lo_new(k) = arg_2(i2,j2,nbox-1,l2,m2,n2) +
+     .                          frac * ( arg_2(i2,j2,nbox,  l2,m2,n2) -
+     .                                   arg_2(i2,j2,nbox-1,l2,m2,n2) )
+            ENDIF
 
-                  nbox = 1
+            nbox = 1
+            DO WHILE ( zaxsrc(nbox) .LT. sbox_hi_lim(k) .AND.
+     .                 nbox .LT. arg_hi_ss(Z_AXIS,ARG1) )
+               nbox = nbox + 1
+            ENDDO
+            IF ( nbox .EQ. 1 ) THEN
+               sbox_hi_new(k) = arg_2(i2,j2,nbox,l2,m2,n2)
+            ELSE
+               frac = ( sbox_hi_lim(k) - zaxsrc(nbox-1) ) /
+     .                ( zaxsrc(nbox)   - zaxsrc(nbox-1) )
+               sbox_hi_new(k) = arg_2(i2,j2,nbox-1,l2,m2,n2) +
+     .                          frac * ( arg_2(i2,j2,nbox,  l2,m2,n2) -
+     .                                   arg_2(i2,j2,nbox-1,l2,m2,n2) )
+            ENDIF
 
-                  DO WHILE (zaxsrc(1,1,nbox,1) .LT. 
-     .                      sbox_lo_lim(1,1,k,1) )
-                     nbox = nbox + 1
-                  ENDDO
-
-                  IF (nbox .eq. 1) THEN 
-                     sbox_lo_new(1,1,k,1) = arg_2(i2,j2,nbox,l2)
-                  ELSE
-                     frac = (sbox_lo_lim(1,1,k,1) - 
-     .                      zaxsrc(1,1,nbox-1,1))/
-     .                   (zaxsrc(1,1,nbox,1) - zaxsrc(1,1,nbox-1,1)) 
-                     sbox_lo_new(1,1,k,1) = arg_2(i2,j2,nbox-1,l2) + 
-     .                      frac* 
-     .                  (arg_2(i2,j2,nbox,l2) - arg_2(i2,j2,nbox-1,l2))
-                  ENDIF
-
-
-                  nbox = 1
-
-                  DO WHILE (zaxsrc(1,1,nbox,1) .LT. sbox_hi_lim(1,1,k,1)
-     .                      .AND.
-     .                  nbox .lt. arg_hi_ss(Z_AXIS,ARG1))
-                     nbox = nbox + 1
-                  ENDDO
-
-                  IF (nbox .eq. 1) THEN 
-                     sbox_hi_new(1,1,k,1) = arg_2(i2,j2,nbox,l2) 
-                  ELSE
-                     frac = (sbox_hi_lim(1,1,k,1) - 
-     .                       zaxsrc(1,1,nbox-1,1))/
-     .                  (zaxsrc(1,1,nbox,1) - zaxsrc(1,1,nbox-1,1)) 
-                     sbox_hi_new(1,1,k,1) = arg_2(i2,j2,nbox-1,l2) + 
-     .                      frac* 
-     .                   (arg_2(i2,j2,nbox,l2) - arg_2(i2,j2,nbox-1,l2))
-                  ENDIF
-
-
-  500          CONTINUE 
+  310    CONTINUE
 
 * For each z line accumulate weighted source points and weights to get
 * the average value.   Loop through the each destination grid box.
 
-
-               sum = 0.
-               wtdsum = 0.
-               DO 100 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+         sum = 0.
+         wtdsum = 0.
+         DO 390 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
 *  Find the first and last source point in this destination box
-
-                  nsrc_lo = 1
-                  nsrc_hi = 1
-
-                  DO WHILE 
-     .                  (sbox_lo_new(1,1,nsrc_lo,1) .LT. 
-     .                      dbox_lo_lim(1,1,k,1) )
-                     nsrc_lo = nsrc_lo + 1
-                     IF (nsrc_lo .GT. arg_hi_ss(Z_AXIS, ARG2)) GO TO 11
-                  ENDDO
-  11              CONTINUE
+            nsrc_lo = 1
+            DO WHILE ( sbox_lo_new(nsrc_lo) .LT. dbox_lo_lim(k) )
+               nsrc_lo = nsrc_lo + 1
+               IF ( nsrc_lo .GT. arg_hi_ss(Z_AXIS, ARG2) ) GO TO 320
+            ENDDO
+  320       CONTINUE
 
 *  Find any portion of the source box lying in the destination box.
+            nsrc_hi = 1
+            DO WHILE ( sbox_lo_new(nsrc_hi) .LE. dbox_hi_lim(k) )
+               nsrc_hi = nsrc_hi + 1
+               IF ( nsrc_hi .GT. arg_hi_ss(Z_AXIS, ARG2) ) GO TO 330
+            ENDDO
+  330       CONTINUE
+            nsrc_hi = nsrc_hi - 1
 
-                  DO WHILE 
-     .                  (sbox_lo_new(1,1,nsrc_hi,1) .LE. 
-     .                      dbox_hi_lim(1,1,k,1) )
-                     nsrc_hi = nsrc_hi + 1
-                     IF (nsrc_hi .GT. arg_hi_ss(Z_AXIS, ARG2)) GO TO 22
-                  ENDDO
-  22              CONTINUE
-
-                  nsrc_hi = nsrc_hi - 1
-
+            IF ( nsrc_hi .LT. nsrc_lo ) THEN
 *  No source boxes within this destination box.
+               IF ( wtdsum .NE. 0. ) THEN
+                  result(i,j,k,l,m,n) = sum / wtdsum
+                  sum = 0.
+                  wtdsum = 0.
+               ELSE
+                  result(i,j,k,l,m,n) = bad_flag_result
+               ENDIF
+*  Done with this Z result; go to the next one
+               GOTO 390
+            ENDIF
 
-                  IF (nsrc_hi .LT. nsrc_lo) THEN
-                     IF (wtdsum .NE. 0.) THEN
-                        result(i,j,k,l) = sum / wtdsum
-                        sum = 0.
-                        wtdsum = 0.
-                     ELSE
-                        result(i,j,k,l) = bad_flag_result
-                     ENDIF
-                     GO TO 160
-                  ENDIF
+            DO 340 nsrc = nsrc_lo, nsrc_hi
 
-                  DO 90 nsrc = nsrc_lo, nsrc_hi
+*  Get fraction of this source box lying within the destination box.
+               xsrc_min = sbox_lo_new(nsrc)
+               xsrc_max = sbox_hi_new(nsrc)
 
-*  Get fraction of this source box lying within the destination box. 
+               dbox_hi = dbox_hi_lim(k)
+               dbox_lo = dbox_lo_lim(k)
 
-	               xsrc_min = sbox_lo_new(1,1,nsrc,1)
-	               xsrc_max = sbox_hi_new(1,1,nsrc,1)
+               xsrc_lo = MAX(xsrc_min, dbox_lo)
+               xsrc_hi = MIN(xsrc_max, dbox_hi)
 
-                       dbox_hi = dbox_hi_lim(1,1,k,1)
-                       dbox_lo = dbox_lo_lim(1,1,k,1)
+               xsrcdiff = xsrc_max - xsrc_min
+               wtd = 0.
+               IF ( xsrcdiff .NE. 0. )
+     .            wtd = (xsrc_hi - xsrc_lo) / xsrcdiff
+               arg1_val = arg_1(i1,j1,nsrc,l1,m1,n1)
+               IF ( arg1_val .NE. bad_flag(ARG1) ) THEN
+                  sum  = sum + wtd * arg1_val
+                  wtdsum = wtdsum + wtd
+                  arg1_val_last = arg1_val
+                  wtd_last = wtd
+               ENDIF
 
-	               xsrc_lo = MAX(xsrc_min, dbox_lo)
-	               xsrc_hi = MIN(xsrc_max, dbox_hi)
+  340       CONTINUE
 
-                       xsrcdiff = xsrc_max - xsrc_min
-                       wtd = 0.
-                       IF (xsrcdiff .NE. 0.) 
-     .                     wtd = (xsrc_hi - xsrc_lo)/xsrcdiff
-
-                       arg1_val = arg_1(i1,j1,nsrc,l1)
-                       IF (arg1_val .ne. bad_flag(ARG1)) THEN
-	                  sum   = sum  + wtd * arg1_val
-                          wtdsum  = wtdsum + wtd
-
-                          arg1_val_last = arg1_val
-                          wtd_last = wtd
-
-                       ENDIF
-  
-  90              CONTINUE
+            IF ( wtdsum .NE. 0. ) THEN
 
 * If we had any good data, calculate the average.
+               result(i,j,k,l,m,n) = sum / wtdsum
 
-                  IF (wtdsum .NE. 0.) THEN
-                     result(i,j,k,l) = sum / wtdsum
+*  Start next average with remaining weighted part of the last box
+*  which was not within the destination box.
+               sum = (1.- wtd_last) * arg1_val_last
+               wtdsum = 1. - wtd_last
 
-*  Start next average with remaining weighted part of the last box with
-*  was not within the destination box.
+            ELSE
 
-                     sum = (1.- wtd_last)* arg1_val_last
-                     wtdsum = 1.- wtd_last
-                  ELSE 
-                     result(i,j,k,l) = bad_flag_result
-                     sum = 0.
-                     wtdsum = 0.
-                  ENDIF
+               result(i,j,k,l,m,n) = bad_flag_result
+               sum = 0.
+               wtdsum = 0.
 
- 160              CONTINUE
+            ENDIF
 
- 100           CONTINUE
-
-               l1 = l1 + arg_incr(T_AXIS,ARG1)
-               l2 = l2 + arg_incr(T_AXIS,ARG2)
-               l3 = l3 + arg_incr(T_AXIS,ARG3)
- 200        CONTINUE
-
-            j1 = j1 + arg_incr(Y_AXIS,ARG1)
-            j2 = j2 + arg_incr(Y_AXIS,ARG2)
-            j3 = j3 + arg_incr(Y_AXIS,ARG3)
- 300     CONTINUE
+ 390     CONTINUE
 
          i1 = i1 + arg_incr(X_AXIS,ARG1)
          i2 = i2 + arg_incr(X_AXIS,ARG2)
          i3 = i3 + arg_incr(X_AXIS,ARG3)
+ 100  CONTINUE
+
+         j1 = j1 + arg_incr(Y_AXIS,ARG1)
+         j2 = j2 + arg_incr(Y_AXIS,ARG2)
+         j3 = j3 + arg_incr(Y_AXIS,ARG3)
+ 200  CONTINUE
+
+         l1 = l1 + arg_incr(T_AXIS,ARG1)
+         l2 = l2 + arg_incr(T_AXIS,ARG2)
+         l3 = l3 + arg_incr(T_AXIS,ARG3)
  400  CONTINUE
 
-      
+         m1 = m1 + arg_incr(E_AXIS,ARG1)
+         m2 = m2 + arg_incr(E_AXIS,ARG2)
+         m3 = m3 + arg_incr(E_AXIS,ARG3)
+ 500  CONTINUE
+
+         n1 = n1 + arg_incr(F_AXIS,ARG1)
+         n2 = n2 + arg_incr(F_AXIS,ARG2)
+         n3 = n3 + arg_incr(F_AXIS,ARG3)
+ 600  CONTINUE
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
 ***********************************************************************
 
-      RETURN 
+      RETURN
       END
-
-

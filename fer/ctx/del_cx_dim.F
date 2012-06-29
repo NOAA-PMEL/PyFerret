@@ -44,13 +44,11 @@
 * revision 0.0 - 9/23/87
 * V200:  5/19/89 - reordered _ss dims
 * 9/97 *kob* - eliminate newly create cx_calendar
-#ifdef unix
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER	cx, idim

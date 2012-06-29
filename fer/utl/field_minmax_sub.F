@@ -1,6 +1,6 @@
 	SUBROUTINE FIELD_MINMAX_SUB ( arr, cx,
      .		slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		bad, lo, hi )
+     .		sloe, shie, slof, shif, bad, lo, hi )
 
 *
 *
@@ -43,22 +43,20 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V450: 3/97
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include	'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
-	INTEGER cx, slox, shix, sloy, shiy, sloz, shiz, slot, shit
-	REAL    arr( slox:shix,sloy:shiy,sloz:shiz,slot:shit ),
+	INTEGER cx, slox, shix, sloy, shiy, sloz, shiz, 
+     .		slot, shit, sloe, shie, slof, shif
+	REAL    arr( slox:shix,sloy:shiy,sloz:shiz,slot:shit,sloe:shie,slof:shif ),
      .		bad, lo, hi
 
 * internal variable declarations:
-	INTEGER	i, j, k, l
+	INTEGER	i, j, k, l, m, n
 
 * --- end of introductory code ---
 
@@ -66,14 +64,16 @@
 	hi = arbitrary_small_val4
 	lo = arbitrary_large_val4
 
+	DO 100 n = cx_lo_s6(cx), cx_hi_s6(cx)
+	DO 100 m = cx_lo_s5(cx), cx_hi_s5(cx)
 	DO 100 l = cx_lo_s4(cx), cx_hi_s4(cx)
 	DO 100 k = cx_lo_s3(cx), cx_hi_s3(cx)
 	DO 100 j = cx_lo_s2(cx), cx_hi_s2(cx)
 	DO 100 i = cx_lo_s1(cx), cx_hi_s1(cx)
 
-	   IF (arr(i,j,k,l) .NE. bad) THEN
-	      IF (arr(i,j,k,l) .LT. lo) lo = arr(i,j,k,l)
-	      IF (arr(i,j,k,l) .GT. hi) hi = arr(i,j,k,l)
+	   IF (arr(i,j,k,l,m,n) .NE. bad) THEN
+	      IF (arr(i,j,k,l,m,n) .LT. lo) lo = arr(i,j,k,l,m,n)
+	      IF (arr(i,j,k,l,m,n) .GT. hi) hi = arr(i,j,k,l,m,n)
 	   ENDIF
 	   
  100	CONTINUE

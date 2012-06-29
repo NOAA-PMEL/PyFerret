@@ -170,6 +170,10 @@
 *       *kms* 2/11 return "mem_blk_size" instead of "mem_size" in reconfig
 * V68   *acm* 1/12 Implement micro-adjusting of repeated coordinates (ticket 1910).
 *                  To keep the previous behavior the user may specify USE/STRICT.
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
+*       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
+*       *acm* 4/12 Remove MODE FOURDEE, using _E, _F, _M, _N instead, throughout.
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -220,7 +224,7 @@
      .			FIND_DSET_NUMBER, STR_UPCASE, STR_SAME, 
      .                  equal_pos, colon_pos, dset_num, ich, status,
      .			tmap_status, mode, idim, iarg, item, lp, iv, 
-     .			cx, i, grid, axis, loc, perm(4), buff_len, 
+     .			cx, i, grid, axis, loc, perm(nferdims), buff_len, 
      .                  cal_id, day, month, year, hour, minute, second,
      .                  units, since_t0, len_test, len_mchars, slen, 
      .                  len, attype_spec, pos, mr, varid, uvar, cat, 
@@ -246,7 +250,7 @@
      .                  coordvar, new_att_modulo, batch, its_gif, 
      .                  got_it, redir_stdout, redir_stderr, redir_tee,
      .                  redir_journal, redir_append, redir_clobber, 
-     .                  fexist, use_strict
+     .                  fexist, use_strict, is_nc
 
 * local parameter declarations:
 	INTEGER		slash_set_last
@@ -292,7 +296,7 @@
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * apply delta context specifiers (DX=,DY=, etc) if any
-	CALL GET_DELTA_CONTEXT( 10, any_delta, status )
+	CALL GET_DELTA_CONTEXT( 14, any_delta, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	IF ( any_delta ) THEN
 	   CALL APPLY_DELTA_CONTEXT( cx_buff, 'DEFAULT', status )
@@ -300,7 +304,7 @@
 	ENDIF
 
 * illegal delta given ?
-	DO 310 idim = 1, 4
+	DO 310 idim = 1, nferdims
  310	IF ( cx_given(idim,cx_buff)
      . .AND. cx_delta(idim,cx_buff) .NE. unspecified_val8 ) GOTO 5320
 
@@ -447,7 +451,7 @@ c *kob* 4/97
 	use_strict = loc .GT. 0
 
 * interpret the /ORDER permutation qualifier for a non-EZ data set
-	DO 720 idim = 1,4
+	DO 720 idim = 1, nferdims
  720	perm(idim) = unspecified_int4 ! set default
         loc = qual_given(slash_set_data_order )
         IF ( loc .GT. 0 ) THEN
@@ -672,11 +676,6 @@ c *kob* 4/97
      .                  UNIT=lttout,
      .                  STATUS='UNKNOWN',
      .                  ERR = 5850 )
-* ... mode GUI requires the reply pipe to be opened
-              ELSEIF ( mode .EQ. pmode_gui ) THEN
-	         alt_messages = .TRUE.   	! TMAP COMMON for error msgs
-!                    CALL GUI_PIPE_OPEN( status )
-!	             IF ( status .NE. ferr_ok ) GOTO 5000
 * ... mode grat sets graticules on, and saves argument
               ELSEIF ( mode .EQ. pmode_grat ) THEN
 	         grat_on = .TRUE.
@@ -872,7 +871,8 @@ c *kob* 4/97
         new_att_calendar = ' '
 	loc = qual_given(slash_set_axis_calendar) 
         IF (loc .GT. 0) THEN
-           IF ( line_direction(axis) .EQ. 'TI' ) THEN
+           IF ( line_direction(axis) .EQ. 'TI' .OR. 
+     .          line_direction(axis) .EQ. 'FI' ) THEN
 
 	      CALL EQUAL_STRING(
      .                   cmnd_buff(qual_start(loc):qual_end(loc)),
@@ -929,8 +929,8 @@ c *kob* 4/97
         new_att_t0 = ' '
 	loc = qual_given(slash_set_axis_t0) 
         IF (loc .GT. 0 ) THEN
-           IF ( line_direction(axis) .EQ. 'TI' .OR.
-     .          line_direction(axis) .EQ. 'TT' ) THEN
+           IF ( line_direction(iline)(1:1) .EQ. 'T' .OR.
+     .          line_direction(iline)(1:1) .EQ. 'F' ) THEN
 
 	      CALL EQUAL_STRING(
      .                cmnd_buff(qual_start(loc):qual_end(loc)),
@@ -942,7 +942,10 @@ c *kob* 4/97
               IF ( status .NE. ferr_ok ) GOTO 6420
               line_t0(axis) = buff1
               new_att_t0 = buff1
-              line_direction(axis) = 'TI'
+              IF (line_direction(iline)(1:1) .EQ. 'T') 
+     .          line_direction(axis) = 'TI'
+              IF (line_direction(iline)(1:1) .EQ. 'F') 
+     .          line_direction(axis) = 'FI'
 
            ENDIF
 
@@ -1065,14 +1068,23 @@ c *kob* 4/97
                  CALL WARN ('They will not be convertible')
               ENDIF
            ENDIF
+           IF (line_direction(axis) .EQ. 'FI' .OR. 
+     .         line_direction(axis) .EQ. 'FF' ) THEN
+              IF ( units .GE. 0 ) THEN 
+                 line_direction(axis) = 'FF'
+                 CALL WARN ('Units  not recognized for F axis: '
+     .                 //line_units(axis))
+                 CALL WARN ('They will not be convertible')
+              ENDIF
+           ENDIF
 
         ENDIF  ! set axis/units
 
 * Combine new attribute units and/or time origin to express the units
 * attribute as units since time-origin
 
-           IF (line_direction(axis) .EQ. 'TI' .OR. 
-     .         line_direction(axis) .EQ. 'TT' ) THEN
+           IF (line_direction(iline)(1:1) .EQ. 'T' .OR. 
+     .         line_direction(iline)(1:1) .EQ. 'F' ) THEN
               IF (new_att_units .NE. ' ') THEN
               i1 = TM_LENSTR1(new_att_units)
               new_att_units = new_att_units(1:i1)//' since ' 
@@ -1150,7 +1162,7 @@ c *kob* 4/97
 
             igrd=0
  6300      CALL TM_NEXT_DYN_GRID( igrd, *6399)
-              DO 6301 i=1,4
+              DO 6301 i=1, nferdims
                  IF ( grid_line(i, igrd) .EQ. axis ) THEN
                     idim=i
                  ENDIF
@@ -1169,7 +1181,9 @@ c *kob* 4/97
 *       loop through all of the file variables
                  DO 6010 i = 1, maxvars
                     IF (ds_grid_number(i) .EQ. igrd) THEN 
-                       IF (ds_type(ds_var_setnum(i)) .NE. 'CDF')  
+		       is_nc = (ds_type(ds_var_setnum(i)).EQ.'CDF') .OR.
+     .                         (ds_type(ds_var_setnum(i)).EQ.'AGG')
+                       IF (.NOT. is_nc)  
      .                   GOTO 6088
                     ENDIF
  6010            CONTINUE
@@ -1538,8 +1552,8 @@ c *kob* 4/97
            IF (axis .NE. unspecified_int4) THEN
               slen = TM_LENSTR1(attname)
               IF ( MATCH_NAME (attname,  slen, 'TIME_ORIGIN', 11) .AND.
-     .            ( line_direction(axis) .EQ. 'TI' .OR.
-     .             line_direction(axis) .EQ. 'TT' ) ) THEN
+     .            ( line_direction(iline)(1:1) .EQ. 'T' .OR.
+     .              line_direction(iline)(1:1) .EQ. 'F' ) ) THEN
                  CALL CD_GET_VAR_ATT_ID (dset_num, varid, 'UNITS', attid, status)
                  IF (status .NE. ferr_ok) GOTO 5950
    
@@ -1570,8 +1584,8 @@ c *kob* 4/97
            
               slen = TM_LENSTR1(attname)
               IF (MATCH_NAME (attname,  slen, 'units', 5)  .AND.
-     .            ( line_direction(axis) .EQ. 'TI' .OR.
-     .             line_direction(axis) .EQ. 'TT' ) ) THEN
+     .            ( line_direction(iline)(1:1) .EQ. 'T' .OR.
+     .              line_direction(iline)(1:1) .EQ. 'F' ) ) THEN
                  CALL CD_GET_VAR_ATT_ID (dset_num, varid, 'time_origin', 
      .                 attid, status)
                  IF (status .EQ. ferr_ok) THEN 

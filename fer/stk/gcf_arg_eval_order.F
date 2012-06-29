@@ -60,7 +60,7 @@
 	next = item
 
 	IF ( ifcn .GE. p_samplei
-     . .AND. ifcn .LE. p_samplel ) THEN		! SAMPLE*
+     . .AND. ifcn .LE. p_samplen ) THEN		! SAMPLE*
 	   IF (item .EQ. 1) THEN
 	      next = 2			! get index list first
 	   ELSEIF (item .EQ. 2) THEN

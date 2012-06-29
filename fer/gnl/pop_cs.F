@@ -59,11 +59,13 @@
 *                   computing world coordinates; restore cx_cal_id
 *                   along with  the rest of the context after a REPEAT
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * internal variable declarations:
 	INTEGER	LIB_FREE_LUN,stat,axis,ivar,cvar
         INTEGER j, num_indices
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'command.parm'
 	include 'errmsg.parm'

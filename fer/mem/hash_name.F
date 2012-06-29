@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -42,6 +42,8 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 4/7/87
+
+        IMPLICIT NONE
 
 * calling argument declarations
 	INTEGER		npiles

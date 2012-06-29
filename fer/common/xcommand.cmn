@@ -38,6 +38,7 @@
 *       *kms* 7/10 add OPEN alias for SET DATA /BROWSE
 * V664  8/10 *kms* Add DEFINE PYFUNC /NAME=<alias> python.module.name
 * V6.8  *acm* 1/12 Add SET DATA/STRICT 
+* V68 *acm* 5/12   Add DEFINE DATA/AGGREGATE/TITLE/QUIET
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -97,7 +98,7 @@
 	PARAMETER    (	nsub1   =20, nsub_at2   = nsub_at1   + nsub1,
      .			nqual1a = 0, nqual_at1b = nqual_at1a + nqual1a,	!'    '
      .			nqual1b = 6, nqual_at1c = nqual_at1b + nqual1b,	!'WIND'
-     .			nqual1c =18, nqual_at1d = nqual_at1c + nqual1c,	!'REGI'
+     .			nqual1c =27, nqual_at1d = nqual_at1c + nqual1c,	!'REGI'
      .			nqual1d = 1, nqual_at1e = nqual_at1d + nqual1d,	!'VIEW'
      .			nqual1e = 0, nqual_at1f = nqual_at1e + nqual1e,	!'EXPR'
      .			nqual1f =15, nqual_at1g = nqual_at1f + nqual1f,	!'LIST'
@@ -146,7 +147,7 @@
      .			nqual2a = 1, nqual_at2b = nqual_at2a + nqual2a,	!'    '
      .			nqual2b = 1, nqual_at2c = nqual_at2b + nqual2b,	!'WIND'
      .			nqual2c = 1, nqual_at2d = nqual_at2c + nqual2c,	!'REGI'
-     .			nqual2d =16, nqual_at2e = nqual_at2d + nqual2d,	!'AXIS'
+     .			nqual2d =20, nqual_at2e = nqual_at2d + nqual2d,	!'AXIS'
      .			nqual2e = 1, nqual_at2f = nqual_at2e + nqual2e,	!'EXPR'
      .			nqual2f = 1, nqual_at2g = nqual_at2f + nqual2f,	!'LIST'
      .			nqual2g =10, nqual_at2h = nqual_at2g + nqual2g,	!'DATA'
@@ -155,7 +156,7 @@
      .			nqual2j = 8, nqual_at2k = nqual_at2j + nqual2j,	!'VARI'
      .			nqual2k = 1, nqual_at2l = nqual_at2k + nqual2k,	!'COMM'
      .			nqual2l = 5, nqual_at2m = nqual_at2l + nqual2l,	!'MEMO'
-     .			nqual2m =15, nqual_at2n = nqual_at2m + nqual2m,	!'GRID'
+     .			nqual2m =20, nqual_at2n = nqual_at2m + nqual2m,	!'GRID'
      .			nqual2n = 3, nqual_at2o = nqual_at2n + nqual2n,	!'VIEW'
      .			nqual2o = 1, nqual_at2p = nqual_at2o + nqual2o,	!'TRAN'
      .			nqual2p = 1, nqual_at2q = nqual_at2p + nqual2p,	!'ALIA'
@@ -192,7 +193,7 @@
 	PARAMETER    (	nsub3   =20, nsub_at4   = nsub_at3   + nsub3,
      .			nqual3a = 0, nqual_at3b = nqual_at3a + nqual3a,	!'    '
      .			nqual3b = 1, nqual_at3c = nqual_at3b + nqual3b,	!'WIND'
-     .			nqual3c = 9, nqual_at3d = nqual_at3c + nqual3c,	!'REGI'
+     .			nqual3c =13, nqual_at3d = nqual_at3c + nqual3c,	!'REGI'
      .			nqual3d = 3, nqual_at3e = nqual_at3d + nqual3d,	!'MEMO'
      .			nqual3e = 1, nqual_at3f = nqual_at3e + nqual3e,	!'EXPR'
      .			nqual3f = 6, nqual_at3g = nqual_at3f + nqual3f,	!'LIST'
@@ -216,19 +217,19 @@
 	INTEGER		nsub4      , nsub_at5 ,
      .			nqual4a    ,nqual_at5a
 	PARAMETER    (	nsub4   = 1, nsub_at5   = nsub_at4   + nsub4,
-     .			nqual4a = 43,nqual_at5a = nqual_at4a + nqual4a  )
+     .			nqual4a = 45,nqual_at5a = nqual_at4a + nqual4a  )
 
 * LIST		 - commmand # 5
 	INTEGER		nsub5      , nsub_at6  ,
      .			nqual5a    , nqual_at6a
 	PARAMETER    (	nsub5   = 1, nsub_at6   = nsub_at5   + nsub5,
-     .			nqual5a =45, nqual_at6a = nqual_at5a + nqual5a  )
+     .			nqual5a =52, nqual_at6a = nqual_at5a + nqual5a  )
 
 * PLOT	 	- commmand # 6
 	INTEGER		nsub6      , nsub_at7  ,
      .			nqual6a    , nqual_at7a
 	PARAMETER    (	nsub6   = 1, nsub_at7   = nsub_at6   + nsub6,
-     .			nqual6a =38, nqual_at7a = nqual_at6a + nqual6a  )
+     .			nqual6a =43, nqual_at7a = nqual_at6a + nqual6a  )
 
 * GO		 - commmand # 7
 	INTEGER		nsub7      , nsub_at8   ,
@@ -246,7 +247,7 @@
 	INTEGER		nsub9      , nsub_at10  ,
      .			nqual9a    , nqual_at10a
 	PARAMETER    (	nsub9   = 1, nsub_at10   = nsub_at9   + nsub9,
-     .			nqual9a =15, nqual_at10a = nqual_at9a + nqual9a  )
+     .			nqual9a =16, nqual_at10a = nqual_at9a + nqual9a  )
 
 * DEFINE	 - commmand # 10
 	INTEGER		nsub10      , nsub_at11  ,
@@ -263,7 +264,7 @@
      .			nqual10k    , nqual_at11a
 	PARAMETER    (	nsub10   =11, nsub_at11   = nsub_at10   + nsub10,
      .			nqual10a = 0, nqual_at10b = nqual_at10a + nqual10a,!'  '
-     .			nqual10b =18, nqual_at10c = nqual_at10b + nqual10b,!REGI
+     .			nqual10b =26, nqual_at10c = nqual_at10b + nqual10b,!REGI
      .			nqual10c =11, nqual_at10d = nqual_at10c + nqual10c,!GRID
      .			nqual10d = 6, nqual_at10e = nqual_at10d + nqual10d,!VARI
      .			nqual10e =20, nqual_at10f = nqual_at10e + nqual10e,!AXIS
@@ -272,7 +273,7 @@
      .			nqual10h = 2, nqual_at10i = nqual_at10h + nqual10h,!SYMB
      .			nqual10i = 4, nqual_at10j = nqual_at10i + nqual10i,!ATTR
      .			nqual10j = 2, nqual_at10k = nqual_at10j + nqual10j,!PYFUNC
-     .			nqual10k = 2, nqual_at11a = nqual_at10k + nqual10k !****
+     .			nqual10k =10, nqual_at11a = nqual_at10k + nqual10k !DATA
      .		      )
 * EXIT		 - commmand # 11
 	INTEGER		nsub11      , nsub_at12  ,
@@ -290,7 +291,7 @@
 	INTEGER		nsub13       , nsub_at14 ,
      .			nqual13a     ,nqual_at14a
 	PARAMETER    (	nsub13   = 1, nsub_at14    = nsub_at13   + nsub13,
-     .			nqual13a = 38,nqual_at14a  = nqual_at13a + nqual13a  )
+     .			nqual13a = 40,nqual_at14a  = nqual_at13a + nqual13a  )
 
 * PPLUS		 - commmand # 14
 	INTEGER		nsub14      , nsub_at15 ,
@@ -320,7 +321,7 @@
 	INTEGER		nsub18       , nsub_at19 ,
      .			nqual18a     ,nqual_at19a
 	PARAMETER    (	nsub18   = 1, nsub_at19    = nsub_at18   + nsub18,
-     .			nqual18a = 34,nqual_at19a  = nqual_at18a + nqual18a  )
+     .			nqual18a = 38,nqual_at19a  = nqual_at18a + nqual18a  )
 
 * SPAWN			 - commmand # 19
 	INTEGER		nsub19       , nsub_at20 ,
@@ -338,7 +339,7 @@
 	INTEGER		nsub21       , nsub_at22 ,
      .			nqual21a     ,nqual_at22a
 	PARAMETER    (	nsub21   = 1, nsub_at22    = nsub_at21   + nsub21,
-     .			nqual21a = 25,nqual_at22a  = nqual_at21a + nqual21a  )
+     .			nqual21a = 27,nqual_at22a  = nqual_at21a + nqual21a  )
 
 * QUERY/FILE/****/**** - command number 22
 	INTEGER		nsub22       , nsub_at23 ,
@@ -374,7 +375,7 @@
 	INTEGER		nsub27       , nsub_at28 ,
      .			nqual27a     ,nqual_at28a
 	PARAMETER    (	nsub27   = 1, nsub_at28    = nsub_at27   + nsub27,
-     .			nqual27a = 40,nqual_at28a  = nqual_at27a + nqual27a  )
+     .			nqual27a = 44,nqual_at28a  = nqual_at27a + nqual27a  )
 
 * ****/****/**** - command number 28
 	INTEGER		nsub28       , nsub_at29 ,

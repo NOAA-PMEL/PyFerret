@@ -112,7 +112,8 @@
 * v62  *acm*11/08  Fix bug 1608: semicolon inside double quotes.
 * V68  *acm* 3/12  For double-precision Ferret, let the precision of grave-accent 
 *                  expressions increase to 14.
-
+*      *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -145,6 +146,7 @@
      .			num_args,arg_start(max_words),arg_end(max_words),
      .			err_lun,status
 
+	include	'tmap_dims.parm'
 	include	'errmsg.parm'
 	include	'ferret.parm'
 	include	'command.parm'
@@ -177,11 +179,11 @@
 	INTEGER		grave_digits
 	CHARACTER*1	tab
 #ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011', 
+	PARAMETER     ( tab = o'011' )
 #else
-	PARAMETER     ( tab = CHAR(9),
+	PARAMETER     ( tab = CHAR(9) )
 #endif
-     .			grave_digits = 14 )
+        PARAMETER ( grave_digits = 14 )
 
 * intialize
 	grave_start	= 1

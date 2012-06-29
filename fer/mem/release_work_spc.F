@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -43,11 +43,8 @@
 *
 * revision 0.0 - 2/19/87
 
-#ifdef unix
+        IMPLICIT NONE
 	include 'xwork_space.cmn'
-#else
-	INCLUDE 'FERRET_CMN:XWORK_SPACE.CMN'
-#endif
 
 	IF ( sp_last_size .GT. 0 ) THEN
 	   CALL FREE_MEMORY( sp_start_block, sp_num_blocks )

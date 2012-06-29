@@ -47,19 +47,13 @@
 *		- actual bug was that i1 is improperly set in branches to 10
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xvariables.cmn'
-        include 'tmap_dims.parm'
         include 'xdset_info.cmn_text'
         external xdset_info_data
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-        INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-#endif
 
 * calling argument declarations
 	CHARACTER*(*) orig

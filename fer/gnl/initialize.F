@@ -79,8 +79,8 @@
 *                  Use pseudo-dataset of user-defined axes to keep track of attributes.
 * V65   2/10 *acm*- Changes for CLOCK symbols that work with gfortran as well as g77.
 *                   see special_symbol.F
-* V68  *acm* 1/12  declarations changes for double-precision ferret.
-
+* V68   1/12 *acm* declarations changes for double-precision ferret.
+*       3/12 *acm* cleanup ifdefs and unnecessary include files
 
         include 'tmap_errors.parm'  ! error codes
 	include 'tmap_dims.parm'
@@ -108,19 +108,11 @@
 
 
 *************** I/O ************************************************************
-# ifdef unix
 	interactive = .TRUE.
-#else
-* determine VMS mode (BATCH, etc.)
-	CALL GET_VMS_MODE( vms_mode )
-	interactive = vms_mode .EQ. JPI_K_INTERACTIVE 
-#endif
 
 * determine default GKS usage based on system logon device
 	mode_GKS = GKS_WINDOWS()
 	mode_wait = .NOT.mode_GKS	! no wait after plot on window device
-
-#ifdef unix
 
 * turn on segment-based screen refresh or screen updates dont always work
 #ifdef X_REFRESH
@@ -130,23 +122,6 @@
       mode_state( pmode_xwindows, 1 ) = .FALSE.
 #endif
         CONTINUE
-#else
-* console output with long records
-	OPEN (	FILE='SYS_OUTPUT:',
-     .		UNIT=ttout_lun,
-     .		RECL = 255,
-     .		STATUS='OLD' )
-* listing file - by default uses ttout log. unit
-
-* special VMS set-up for last 20 line recall
-	vax_code = smg_create_virtual_keyboard ( vms_kbd_id )
-	IF ( vax_code .NE. vms_smg_success ) WRITE ( ttout_lun, * )
-     .		'err-->smg_create_virt_key:',vax_code
-	vax_code = smg_create_key_table ( vms_kbd_tbl )
-	IF ( vax_code .NE. vms_smg_success ) WRITE ( ttout_lun, * )
-     .		'err-->smg_create_key_tabl:',vax_code
-
-#endif
 
 * set up special grids
 	CALL DEFINE_SPECIAL_GRIDS   ! label 1000 moved here 9/91 *sh*
@@ -195,7 +170,6 @@
         CALL ncf_init_uvar_dset( iset )
         iset  = -2;
         CALL ncf_init_uax_dset( iset )
-
 
 *************** STATE VARIABLES ************************************************
 * see BLOCK DATA initialization of COMMON/ XPROG_STATE /

@@ -52,10 +52,12 @@
 *                  space for the transformation specifier)
 * V581: 3/05 *acm* Fix bug 1207: CDB, CIB, CDA, CIA are one-sided: return
 *                  offset only in one direction.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations:
 	INTEGER idim, cx, lo_off, hi_off, status
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xcontext.cmn'

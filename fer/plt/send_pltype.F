@@ -46,6 +46,7 @@
 * V230:  2/11/92 - (SUN port) fixed bug that "WS=DEFAULT" was sent to PPLUS
 *        11/9/92 - eliminate device dependence (no WS=, no META=)
 * V310:  12/4/94 - use mode_GKS to determine what PLTYPE to send
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations:
 	LOGICAL meta
@@ -53,17 +54,11 @@
 * local veriable declarations:
 	INTEGER	TM_LENSTR1
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'plot_setup.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_setup.cmn'
 	include 'xgks_devices.cmn'
-#else
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'
-	INCLUDE 'FERRET_CMN:XGKS_DEVICES.CMN'
-#endif
 
 * command format: "PLTYPE 3 META"
 	IF ( mode_gks ) THEN

@@ -36,7 +36,7 @@
 *
 *
 * order the axes X,Y,Z and T into array ds_ax_speed with the fastest (axis of
-* records) in position 1, the slowest in position 4, and the others
+* records) in position 1, the slowest in position 6, and the others
 * ordered from fast to slow if possible.
 * normal axes will be regarded as fast (but slower than the record axis)
 
@@ -48,6 +48,10 @@
 *
 * V200:  6/8/89
 * V230:  3/2/92  - netCDF support
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 removing use of old GT and TS data formats
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
 * calling argument declarations:
 	INTEGER	dset
@@ -55,59 +59,36 @@
 * internal variable declarations:
 	INTEGER	idim, i, slowdim, igrid, ivar, nexdim
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
 	include 'ferret.parm'
 	include 'xax_speed.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'XTM_GRID.CMN_TEXT'
-	INCLUDE 'FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XAX_SPEED.CMN'
-#endif
 
 * insert default assumptions
-	DO 100 idim = 1,4
+	DO 100 idim = 1, nferdims
  100	ds_ax_speed( idim, dset ) = idim
 
-* GT formatted:
-	IF ( ds_type(dset) .EQ. 'GT' ) THEN
-* ... base it on first variable in data set
-	   DO 200 i = 1, maxvars
- 200	   IF ( ds_var_setnum(i) .EQ. dset ) GOTO 210
-	   RETURN	! no vars in set
- 210	   DO 220 idim = 1, 3
- 220	   ds_ax_speed( idim, dset ) = ABS( ds_ordering(idim,i) )
-
-* TS formatted
-	ELSEIF( ds_type(dset) .EQ. 'TS' ) THEN
-* ... always the same (at the time of this writing)
-	   ds_ax_speed(1,dset) = 4
-	   DO 300 idim = 1,3
- 300	   ds_ax_speed(idim+1,dset) = idim	   
-
 * netCDF
-	ELSEIF( ds_type(dset) .EQ. 'CDF' ) THEN
+	IF( ds_type(dset) .EQ. 'CDF' .OR. 
+     .      ds_type(dset) .EQ. 'AGG') THEN
 * ... "record" axis is slowest (stored in ds_time_axis)
 * ... locate it in a grid to see what role it plays
            IF (ds_time_axis(dset) .EQ. unspecified_int4) RETURN
            DO 410 ivar = 1, maxvars
               IF ( ds_var_setnum(ivar) .NE. dset ) GOTO 410
               igrid = ds_grid_number(ivar)
-              DO 400 idim = 1, 4
+              DO 400 idim = 1, nferdims
  400          IF (grid_line(idim,igrid).EQ.ds_time_axis(dset)) GOTO 450
  410       CONTINUE
            RETURN
 
 * ... we found the record axis in a grid
  450       slowdim = idim
-           ds_ax_speed(4,dset) = slowdim
+           ds_ax_speed(6,dset) = slowdim
            nexdim = 1
-	   DO 460 idim = 1,3
+	   DO 460 idim = 1, nferdims-1
               IF ( idim .EQ. slowdim ) nexdim = nexdim + 1
               ds_ax_speed(idim,dset) = nexdim
               nexdim = nexdim + 1

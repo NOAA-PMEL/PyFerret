@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -50,14 +50,16 @@
 * V510 4/00 *sh* - netCDF data sets using dynamic grids, too
 * V541 6/02 *acm*  call PACK_LINE_STORAGE to recover line_mem storage when irregular
 *                  axis is cancelled.
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-	include	'tmap_dims.parm'
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 #	include	"tmap_dset.parm"
+	include	'ferret.parm'
+	include	'errmsg.parm'
 	include	'tmap_errors.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include	'ferret.parm'
-	include	'errmsg.parm'
 
 * calling argument declaration:
 	INTEGER	old_axis, new_axis, status
@@ -78,7 +80,7 @@
 	DO 100 grid = 1, max_dyn_grids
 	  IF (grid_name(grid) .EQ. char_init16) GOTO 100
 
-	  DO 50 idim = 1, 4
+	  DO 50 idim = 1, nferdims
 	     IF ( grid_line(idim,grid) .EQ. old_axis ) THEN
 	         CALL PURGE_MR_GRID( grid, status ) 
 	         IF ( status .NE. ferr_ok ) RETURN
@@ -88,13 +90,13 @@
 
  100	CONTINUE
 
-* now we're safe from errors: replace the old axis with the new one
+* now we are safe from errors: replace the old axis with the new one
 * 4/00: - check among dynamic grids, too -- though there would at present never
 *	be a replacement of one of these axes
 	DO 250 grid = 1, max_dyn_grids
 	  IF (grid_name(grid) .EQ. char_init16) GOTO 250
 
-	  DO 200 idim = 1, 4
+	  DO 200 idim = 1, nferdims
 	     IF ( grid_line(idim,grid) .EQ. old_axis ) THEN
 	         grid_line(idim,grid) = new_axis
 	     ENDIF

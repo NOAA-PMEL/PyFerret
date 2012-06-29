@@ -50,7 +50,9 @@
 * V320:12/94 - increased the output field size for /COLUMNS=xxxx
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
-#ifdef unix
+*           *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
@@ -62,16 +64,6 @@
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	lun, dset
@@ -96,6 +88,7 @@
 
 * nothing to show for netCDF files (4/94)
         ELSEIF (ds_type(dset) .EQ. 'CDF'
+     .    .OR.  ds_type(dset) .EQ. 'AGG'
      .    .OR.  ds_type(dset) .EQ. 'ECDF') THEN
 	   RETURN
 	ENDIF

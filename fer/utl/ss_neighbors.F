@@ -57,6 +57,7 @@
 *		 direct use of line_mem
 * V541 - *sh* 2/02 - added support for subspan modulo axes
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'

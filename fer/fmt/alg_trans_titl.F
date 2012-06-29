@@ -42,6 +42,8 @@
 *
 * revision 0.0 - 4/28/87
 * V430: 7/96 if a 4D transformation then pre-pend the axes involved
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations:
 	INTEGER	trans, cx
@@ -50,17 +52,11 @@
 	INTEGER	i, i4d, ndim, tcode
 	CHARACTER prefix*5
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xtext_info.cmn'
 	include 'xalgebra.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * identify the code from known codes
 	DO 100 tcode = 1, num_transforms

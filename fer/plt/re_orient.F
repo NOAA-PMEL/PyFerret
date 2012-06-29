@@ -57,6 +57,7 @@
 *12/06 - Fix to cos_factor calculation was STILL wrong. Try VEC/ASPECT plots 
 *        to see the error.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * procedure:	at each point
 *	   x --> xprime = A * x
@@ -78,6 +79,7 @@
 *	    B = { (1 + tan**2) / (s**2 + tan**2) } **.5
 *	    A = s * B
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xvariables.cmn'
 	include 'xcontext.cmn'

@@ -1,5 +1,5 @@
-      SUBROUTINE ef_get_string_arg_element_len 
-     .            (id, iarg, arg, i,j,k,l, slen)
+      SUBROUTINE EF_GET_STRING_ARG_ELEMENT_LEN
+     .            (id, iarg, arg, i, j, k, l, slen)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -34,74 +34,48 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-*  acm 12/03  
-*
 * This returns the length of the I,J,K,L-th element of the string array which 
 * was passed as an argument to the external function.
 *
+* 4D subroutine version which calls the 6D subroutine version and
+* checks the E and F dimensions are unused
+*
 
-      INCLUDE 'ferret.parm'
-      INCLUDE 'errmsg.parm'
-      INCLUDE 'xvariables.cmn'
+      IMPLICIT NONE
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'EF_Util.parm'
 
+* argument declarations - 4D
       INTEGER id, iarg, slen, i, j, k, l
       REAL arg(*)
 
-      INTEGER max_line_len, mr, lox, hix, loy, hiy, loz, hiz, lot, hit
-      INTEGER mr_list(EF_MAX_ARGS)
-      CHARACTER buff*32
-      PARAMETER (max_line_len = 512)
-      
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
+* local variables
+      INTEGER ndx, m, n,
+     .        arg_lo_ss(nferdims,EF_MAX_ARGS),
+     .        arg_hi_ss(nferdims,EF_MAX_ARGS),
+     .        arg_incr (nferdims,EF_MAX_ARGS)
+      CHARACTER*128 buff
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+* get the dimensions so m and n can be checked and assigned
+      CALL EF_GET_ARG_SUBSCRIPTS_6D(id, arg_lo_ss, arg_hi_ss, arg_incr)
  
-* The memory resident list was cached by Ferret and must be retrieved
-* to be accessible to the external function.
+* make sure the E and F dimensions are not used
+      DO 100 ndx = 5, nferdims
+         IF ( arg_lo_ss(ndx, iarg) .NE.
+     .        arg_hi_ss(ndx, iarg) ) THEN
+            WRITE (buff,50) ndx, iarg
+ 50         FORMAT ('Dimension ', I1, ' of argument ', I2,
+     .        ' is used; use EF_GET_STRING_ARG_ELEMENT_LEN_6D instead')
+            CALL EF_BAIL_OUT(id, buff)
+            STOP 'EF_BAIL_OUT returned in EF_GET_STRING_ARG_ELEMENT_LEN'
+         ENDIF
+ 100  CONTINUE
 
-      CALL EF_GET_MR_LIST(mr_list)
-      mr = mr_list(iarg)
-      
-      IF ( mr .EQ. 0 ) THEN
-* Don't call during custom axis creation time
-          buff = 
-     .     'Use ef_get_string_arg_element_len in the compute phase'
-          GOTO 5000
-
-* Here's how you check the variable type.
-* (this should never happen as checks against it are made previously) 
-        ELSE IF (mr_type(mr) .NE. ptype_string) THEN
-           WRITE (buff,4000) iarg
- 4000      FORMAT ('Argument',I3,' is not a string')
-           GOTO 5000
-        ELSE
-
-           lox = arg_lo_ss(X_AXIS,iarg)
-           hix = arg_hi_ss(X_AXIS,iarg)
-           loy = arg_lo_ss(Y_AXIS,iarg)
-           hiy = arg_hi_ss(Y_AXIS,iarg)
-           loz = arg_lo_ss(Z_AXIS,iarg)
-           hiz = arg_hi_ss(Z_AXIS,iarg)
-           lot = arg_lo_ss(T_AXIS,iarg)
-           hit = arg_hi_ss(T_AXIS,iarg)
-
-
-* Inside ef_get_string_arg_elem_len_sub, arg is a real*8 array of pointers, and
-* we can call GET_STRING_ELEMENT to get the length of a string element.
-
-           CALL ef_get_string_arg_elem_len_sub (
-     .                              lox, hix, loy, hiy,
-     .                              loz, hiz, lot, hit,
-     .			            arg, i, j, k, l, 
-     .			            max_line_len, slen)
-
-      ENDIF
+* call the 6D routine with the appropriate m and n
+      m = arg_lo_ss(5, iarg)
+      n = arg_lo_ss(6, iarg)
+      CALL EF_GET_STRING_ARG_ELEMENT_LEN_6D(id, iarg, arg,
+     .                       i, j, k, l, m, n, slen)
 
       RETURN
-
-* return an error message     
- 5000 CALL EF_BAIL_OUT(id, buff)
-
       END

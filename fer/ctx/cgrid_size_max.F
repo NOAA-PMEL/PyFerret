@@ -49,30 +49,27 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V420: 11/95 - from CGRID_SIZE
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	cx
 
 * internal variable declarations:
-	INTEGER	CX_DIM_LEN, CAXIS_LEN, CGRID_AXIS, idim, i4d, axlen
+	INTEGER	CX_DIM_LEN, CAXIS_LEN, CGRID_AXIS, idim, i6d, axlen
 
 * to accomodate the ABSTRACT axis
 * (inefficient -- "mline_abstract" should be saved by DEFINE_SPECIAL_GRIDS)
 
 * initialize
-	i4d = 1
+	i6d = 1
 
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   IF (cx_lo_ss(cx,idim) .NE. unspecified_int4) THEN
-	      i4d = i4d * CX_DIM_LEN(idim,cx)
+	      i6d = i6d * CX_DIM_LEN(idim,cx)
 	   ELSE
 	      axlen = CAXIS_LEN(idim,cx)
 	      IF ( axlen .EQ. 9999999 ) THEN
@@ -80,11 +77,11 @@
 	      ELSEIF ( axlen .GT. 5000 ) THEN
 	         axlen = 5000	! kludge 
 	      ENDIF
-	      i4d = i4d * axlen
+	      i6d = i6d * axlen
 	   ENDIF
  100	CONTINUE
 
-	CGRID_SIZE_MAX = i4d
+	CGRID_SIZE_MAX = i6d
 
 	RETURN
 	END

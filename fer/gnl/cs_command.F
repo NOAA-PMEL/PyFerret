@@ -1,3 +1,5 @@
+
+
 	SUBROUTINE CS_COMMAND( cmnd_line, * )
 
 *
@@ -69,6 +71,7 @@
 *                   don't animate if it's not set
 * V554 1/04 *acm* - add cs_repeatname for named /RANGE loop control
 * V600 5/06 *acm* - the call to new_gks_window needs window_title.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations:
 	CHARACTER*(*)	cmnd_line
@@ -82,6 +85,7 @@
         REAL    val
         LOGICAL range
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'command.parm'

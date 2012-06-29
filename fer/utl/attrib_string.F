@@ -40,6 +40,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 
 * V600 8/18/05
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations
 	INTEGER		cx, mr, status
@@ -56,6 +57,8 @@
         INTEGER       maxlen  ! length of buff to store string value
         PARAMETER     ( maxlen = 2048)
 
+
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'gfdl_vms.parm'

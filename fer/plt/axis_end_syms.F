@@ -42,14 +42,10 @@
 * written for VAX computer under VMS operating system
 
 * V500 - *sh* drawn from AXIS_ENDS
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'plot_setup.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-#endif
 
 * calling argument declarations:
 	CHARACTER*1	plot_ax		! X (horiz) or Y (vert) axis of plot

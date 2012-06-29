@@ -36,42 +36,34 @@
 
 
 
-/* put_frame( ws_id, filename, status )
-* dump an XGKS window as a GIF file
+/*
+ * put_frame( ws_id, filename, status )
+ * dump an XGKS window as a GIF file
+ *
+ * programmer - steve hankin
+ * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+ *
+ * revision 0.0 - 8/03/94
+ * 
+ * *kob* 5/25/95 replaced defunct ifdef confition AIX_XLF with current 
+ *               NO_ENTRY_NAME_UNDERSCORES
+ * *js* 9.97 added put_frame_batch 
+ *
+ * *jli* 5/08 changed the parameters of put_frame_batch() for making 
+ *            transparent images
+ *
+ * *acm*  1/12 - Ferret 6.8 ifdef double_p for double-precision ferret,
+ *               see the definition of macro DFTYPE in ferret.h
+ */
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-
-* revision 0.0 - 8/03/94
-* 
-* *kob* 5/25/95 replaced defunct ifdef confition AIX_XLF with current 
-                NO_ENTRY_NAME_UNDERSCORES
-compile with these flags to locate the include files:
-        -I$TMAP_LOCAL/src/xgks-2.5.5/port \
-        -I$TMAP_LOCAL/src/xgks-2.5.5/src/lib \
-        -I$TMAP_LOCAL/src/xgks-2.5.5/src/lib/gksm
-
-and optionally (non-ANSI cc compilers) with    -DNO_CC_PROTOTYPES
-* *js* 9.97 added put_frame_batch 
-
-* *jli* 5/08 changed the parameters of put_frame_batch() for making 
-* transparent images
-*/
-
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm*  1/12 - Ferret 6.8 ifdef double_p for double-precision ferret, see the
-/*              definition of macro DFTYPE in ferret.h */
-
-#include <wchar.h>
-#include "gks_implem.h" /* ditto */
-#include "wslist.h"
-#include "cgm/cgm.h"		/* for public, API details */
-#include "cgm/cgm_implem.h"		/* for implementation details */
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <stdio.h>
 #include <string.h>
+#include "gks_implem.h"
+#include "wslist.h"
+#include "cgm/cgm.h"
+#include "cgm/cgm_implem.h"
 #include "ferret.h"
 
 FORTRAN(put_frame)( ws_id, filename, errstr, format, status )

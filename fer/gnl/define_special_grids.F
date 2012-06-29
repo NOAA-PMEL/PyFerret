@@ -48,6 +48,7 @@
 * V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
 * V62 *acm*  2/09 - Save original upper/lowercase spelling of axis names 
 *                   in line_name_orig for CANCEL MODE UPCASE
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 	include	'tmap_dims.parm'
 	include	'tmap_errors.parm'
@@ -88,8 +89,8 @@
 	status = TM_FIND_GRID_SLOT( igrid )
 	IF ( status .NE. merr_ok ) GOTO 5000
 
-* make grid with 4 abstract axes
-	DO 100 idim = 1, 4
+* make grid with nferdims abstract axes
+	DO 100 idim = 1, nferdims
 	   grid_line    (idim, igrid) = iline_abstract
            grid_out_prod(idim, igrid) = .TRUE.
  100	CONTINUE	
@@ -126,7 +127,7 @@
 	IF ( status .NE. merr_ok ) GOTO 5000
 
 * make grid with 1 axis, only
-	DO 200 idim = 1, 4
+	DO 200 idim = 1, nferdims
 	   grid_line    (idim, igrid) = mnormal
            grid_out_prod(idim, igrid) = .TRUE.
  200	CONTINUE	
@@ -144,7 +145,7 @@
 	IF ( status .NE. merr_ok ) GOTO 5000
 
 * make grid with 1 abstract axis
-	DO 300 idim = 1, 4
+	DO 300 idim = 1, nferdims
 	   grid_line    (idim, igrid) = mnormal
            grid_out_prod(idim, igrid) = .TRUE.
  300	CONTINUE
@@ -161,7 +162,7 @@
 	IF ( status .NE. merr_ok ) GOTO 5000
 
 * make grid with 1 abstract axis
-	DO 400 idim = 1, 4
+	DO 400 idim = 1, nferdims
 	   grid_line    (idim, igrid) = mnormal
            grid_out_prod(idim, igrid) = .TRUE.
  400	CONTINUE
@@ -179,7 +180,7 @@
 	IF ( status .NE. merr_ok ) GOTO 5000
 
 * make grid with 1 abstract axis
-	DO 500 idim = 1, 4
+	DO 500 idim = 1, nferdims
 	   grid_line    (idim, igrid) = mnormal
            grid_out_prod(idim, igrid) = .TRUE.
  500	CONTINUE
@@ -196,7 +197,7 @@
 	IF ( status .NE. merr_ok ) GOTO 5000
 
 * make grid with 1 abstract axis
-	DO 600 idim = 1, 4
+	DO 600 idim = 1, nferdims
 	   grid_line    (idim, igrid) = mnormal
            grid_out_prod(idim, igrid) = .TRUE.
  600	CONTINUE
@@ -206,6 +207,44 @@
 
 * save pointer to grid
 	mgrid_tabstract = igrid
+
+
+
+* "EABSTRACT" grid
+* find a space to catalog it
+	status = TM_FIND_GRID_SLOT( igrid )
+	IF ( status .NE. merr_ok ) GOTO 5000
+
+* make grid with 1 abstract axis
+	DO 700 idim = 1, nferdims
+	   grid_line    (idim, igrid) = mnormal
+           grid_out_prod(idim, igrid) = .TRUE.
+ 700	CONTINUE
+	grid_line(e_dim, igrid) = iline_abstract
+	grid_rotation( igrid ) = 0.0
+	grid_name    ( igrid ) = 'EABSTRACT'
+
+* save pointer to grid
+	mgrid_eabstract = igrid
+
+
+
+* "FABSTRACT" grid
+* find a space to catalog it
+	status = TM_FIND_GRID_SLOT( igrid )
+	IF ( status .NE. merr_ok ) GOTO 5000
+
+* make grid with 1 abstract axis
+	DO 800 idim = 1, nferdims
+	   grid_line    (idim, igrid) = mnormal
+           grid_out_prod(idim, igrid) = .TRUE.
+ 800	CONTINUE
+	grid_line(f_dim, igrid) = iline_abstract
+	grid_rotation( igrid ) = 0.0
+	grid_name    ( igrid ) = 'FABSTRACT'
+
+* save pointer to grid
+	mgrid_fabstract = igrid
 
 
 

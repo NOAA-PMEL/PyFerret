@@ -1,4 +1,4 @@
-	CHARACTER*(*) FUNCTION CX_SIZE_STR( cx,slen )
+	CHARACTER*(*) FUNCTION CX_SIZE_STR( cx,listdims,slen )
 
 *
 *
@@ -35,24 +35,24 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* create a string describing the size of a 4D region
+* create a string describing the size of a 4D or 6D region
 * for example: 160*100*27*12
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V230:  8/28/92
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
+*                 various SHOW commands will not list info for E,F dimensions.
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations
-	INTEGER	cx, slen
+	INTEGER	cx, listdims, slen
 
 * local variable declarations:
 	INTEGER CX_DIM_LEN, TM_LENSTR, idim, axlen, llen
@@ -63,7 +63,7 @@
 	CX_SIZE_STR = LEFINT( axlen, slen )
 
 * loop through the other dimensions
-        DO 100 idim = 2, 4
+        DO 100 idim = 2, listdims
            axlen = CX_DIM_LEN ( idim, cx )
            CX_SIZE_STR = CX_SIZE_STR(1:slen)//'*'//LEFINT( axlen, llen )
            slen = TM_LENSTR( CX_SIZE_STR )

@@ -98,7 +98,8 @@
 	var = cx_variable( cx )
 	cat = cx_category( cx )
 
-	IF     ( cat .EQ. cat_file_var ) THEN
+	IF     ( cat .EQ. cat_file_var .OR. 
+     .		 cat .EQ. cat_aggregate_var) THEN
 
 	   IF ( ds_var_title( var )(1:1) .NE. ' ' ) THEN
 	      var_title = ds_var_title( var )

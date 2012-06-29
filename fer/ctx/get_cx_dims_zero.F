@@ -52,6 +52,8 @@
 
 * V200:  5/18/89 - complete re-write from GET_CONTEXT_PLANE
 * 10/2004 *acm*
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+
 * For disp_init and extract_line, distinguish between axes which really 
 * have one point, and those for which the hi and lo subscripts on the axes 
 * are undefined. When undefined return zero from CX_DIM_LEN_ZERO. These axes 
@@ -69,18 +71,18 @@
 	include	'xtext_info.cmn'
 
 * calling argument declarations:
-	INTEGER cx, ndim, dim(4)
+	INTEGER cx, ndim, dim(nferdims)
 
 * local variable declarations:
-	INTEGER	CX_DIM_LEN_ZERO, idim, ii, clen(4)
+	INTEGER	CX_DIM_LEN_ZERO, idim, ii, clen(nferdims)
 
 * initialize
 	ndim = 0
-	DO 10 idim = 1, 4
+	DO 10 idim = 1, nferdims
  10	clen(idim) = CX_DIM_LEN_ZERO( idim, cx )
 
 * find the axes with a range of values
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   IF ( clen(idim) .GT. 1 ) THEN
 	      ndim = ndim + 1
 	      dim(ndim) = idim
@@ -89,7 +91,7 @@
 
 * find the axes where the context is a single point
 	ii = ndim
-	DO 200 idim = 1, 4
+	DO 200 idim = 1, nferdims
 	   IF ( clen(idim) .EQ. 1) THEN
 	      ii = ii + 1
 	      dim(ii) = idim
@@ -98,7 +100,7 @@
 
 * find the axes where the context is no points
 
-	DO 300 idim = 1, 4
+	DO 300 idim = 1, nferdims
 	   IF ( clen(idim) .EQ. 0 ) THEN
 	      ii = ii + 1
 	      dim(ii) = idim

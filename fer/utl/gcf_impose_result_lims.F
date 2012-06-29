@@ -61,11 +61,14 @@
 *       1/00 *sh* - RESHAPE behavior to inherit explicit cx lims from arg 2
 * V530: 10/00 *sh* - added return status to efcn_get_result_lims
 * V533: 7/01 *sh* - added SPAWN function
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V6.8  *acm* 5/12 Add EUNRAVEL, FUNRAVEL
 
 * debug declarations for TIMES2
 !	INTEGER	n_com1, n_grid, com1_grid
 !	REAL*8	TM_WORLD, dlo_com1, dlo_grid, dhi_com1, dhi_grid
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'grid_chg_fcns.parm'
@@ -78,12 +81,12 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations
-	LOGICAL fix_me(4)
+	LOGICAL fix_me(nferdims)
 	INTEGER	CGRID_SIZE, CAXIS_LEN, CGRID_AXIS, CX_DIM_LEN,
      .		com1_cx, com2_cx, idim, filled, size, uvar,
-     .		res_grd, outlen(4), accum(2:4),
-     .		lo_off(4),  hi_off(4), action(4),
-     .		axis_will_be(4), lo_lim, hi_lim
+     .		res_grd, outlen(nferdims), accum(2:nferdims),
+     .		lo_off(nferdims),  hi_off(nferdims), action(nferdims),
+     .		axis_will_be(nferdims), lo_lim, hi_lim
 
 * initialize
 	uvar = cx_variable(res_cx)
@@ -102,7 +105,7 @@
 *     then result lims are assumed BY DEFAULT to fill the limits of that axis
 * The function itself may over-ride this assumption and impose other limits
 *     or detect an error.
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   IF (gcfcn .LE. gfcn_num_internal ) THEN
 * ... internal function imposing custom axis?
 	     IF (  gfcn_axis_will_be(idim,gcfcn)
@@ -170,6 +173,27 @@
 	   CALL FLESH_OUT_AXIS( t_dim, res_cx, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 
+* *** ESEQUENCE function ***
+	ELSEIF ( gcfcn .EQ. p_eunravel ) THEN
+* E axis is imposed as ABSTRACT
+* size of output on E is total size of input of component
+	   com1_cx = cx_list(1) 	! only one argument to function
+	   cx_lo_ss(res_cx,e_dim) = 1
+	   cx_hi_ss(res_cx,e_dim) = CGRID_SIZE(com1_cx)
+	   cx_by_ss(e_dim, res_cx) = .TRUE.
+	   CALL FLESH_OUT_AXIS( e_dim, res_cx, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+
+* *** FSEQUENCE function ***
+	ELSEIF ( gcfcn .EQ. p_funravel ) THEN
+* F axis is imposed as ABSTRACT
+* size of output on F is total size of input of component
+	   com1_cx = cx_list(1) 	! only one argument to function
+	   cx_lo_ss(res_cx,f_dim) = 1
+	   cx_hi_ss(res_cx,f_dim) = CGRID_SIZE(com1_cx)
+	   cx_by_ss(f_dim, res_cx) = .TRUE.
+	   CALL FLESH_OUT_AXIS( f_dim, res_cx, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
 
 * *** SPAWN function ***
 	ELSEIF ( gcfcn .EQ. p_spawn ) THEN
@@ -186,7 +210,7 @@
 
 * *** SAMPLE* functions ***
 	ELSEIF ( gcfcn .GE. p_samplei 
-     .    .AND.  gcfcn .LE. p_samplel ) THEN
+     .    .AND.  gcfcn .LE. p_samplen ) THEN
 * specified axis is imposed as ABSTRACT
 * size of output on that axis is total size of component 1, the index list
 	   com1_cx = cx_list(1) 	! only one argument to function
@@ -245,7 +269,7 @@
 
 * ... determine the size of the output "container"
 	   com2_cx = cx_list(2) 	! the reshaping grid
-	   DO 310 idim = 1, 4
+	   DO 310 idim = 1, nferdims
               IF ( action(idim) .EQ. ppass_along ) THEN
 	         outlen(idim) = CX_DIM_LEN(idim, com1_cx)
 	      ELSE
@@ -256,7 +280,7 @@
         
 
 * set default limits: full ax len or match com1 depending on "action"
-	   DO 320 idim = 1, 4
+	   DO 320 idim = 1, nferdims
 	      fix_me(idim) = CGRID_AXIS(idim, res_cx) .NE. mnormal
 	      IF ( fix_me(idim) ) THEN
 	        IF ( action(idim) .EQ. ppass_along ) THEN
@@ -276,9 +300,9 @@
 
 * accumulate the axis lengths to help with calculation
 * Note: this can cause integer overflow for grid with ABSTRACT axes
-*	a checp fix (7/97) checks for size above 9999999
+*	a cheap fix (7/97) checks for size above 9999999
 	   accum(2) = outlen(1)
-	   DO 330 idim = 3, 4
+	   DO 330 idim = 3, nferdims
 	      IF (accum(idim-1) .GE. 9999999
      .	     .OR. outlen(idim-1) .GE. 9999999 ) THEN
 	         accum(idim) = 9999999
@@ -290,7 +314,7 @@
 * Note that the input data may not fit into an integer number of output
 * rows and columns. If not, round up to allow room, and fill bad flags in
 * DO_INTERNAL_GC_FCN, to complete the unfinished rows.
-	   DO 340 idim = 4, 2, -1
+	   DO 340 idim = nferdims, 2, -1
 	      filled = size/accum(idim)   ! integer arithmatic
 	      IF ( filled.GT.0 .AND. fix_me(idim) ) THEN
 	         IF ( size .GT. filled*accum(idim) ) filled = filled + 1
@@ -302,7 +326,7 @@
 	      ENDIF
  340	   CONTINUE
 * ... it all fits into the lowest order row (which may not be the X axis)
-	   DO 350 idim = 1, 4
+	   DO 350 idim = 1, nferdims
 	      IF (fix_me(idim)) THEN
 	         cx_hi_ss(res_cx,idim) = cx_lo_ss(res_cx,idim) - 1
      .				       + size
@@ -311,7 +335,7 @@
  350	   CONTINUE
 
 * flesh out the axes
- 360       DO 370 idim = 1, 4
+ 360       DO 370 idim = 1, nferdims
               CALL CONFINE_AXIS( idim, res_cx, status )
               IF ( status .NE. ferr_ok ) GOTO 5000  ! added 10/98 *sh*
 	      cx_by_ss(idim, res_cx) = .TRUE.
@@ -332,14 +356,16 @@
            IF (axis_will_be(1) .EQ. pgc_axis_is_abstract
      .          .OR. axis_will_be(2) .EQ. pgc_axis_is_abstract
      .          .OR. axis_will_be(3) .EQ. pgc_axis_is_abstract
-     .          .OR. axis_will_be(4) .EQ. pgc_axis_is_abstract)	THEN
+     .          .OR. axis_will_be(4) .EQ. pgc_axis_is_abstract
+     .          .OR. axis_will_be(5) .EQ. pgc_axis_is_abstract
+     .          .OR. axis_will_be(6) .EQ. pgc_axis_is_abstract)	THEN
               CALL EFCN_GET_RESULT_LIMITS(gcfcn, memory, mr_list, 
      .             cx_list, status)
               IF (status .NE. ferr_ok) CALL ERRMSG
      .                          ( status, status,' ', *5000 )
            ENDIF
 
-	   DO 450 idim = 1, 4
+	   DO 450 idim = 1, nferdims
 
 
 * If the axis is abstract ... 

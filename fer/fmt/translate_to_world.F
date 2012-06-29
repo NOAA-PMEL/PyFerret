@@ -66,6 +66,7 @@
 *                   If the calling sequence asks for more precision, allow it.
 * V581 *acm*  3/05  axis-independent time coordinates are calculated with default 
 *                   calendar, so do not get cal_id when converting to date string
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -101,16 +102,7 @@
         val4_orig  = val4
 	code	   = ' '
 	fancy	   = GEOG_LABEL( idim, grid )
-        line       = grid_line( t_dim, grid )
 
-! removed next line 8/97 *kob* - use fancy as set above
-!        IF ( idim .EQ. t_dim .AND. val .LT. 0.0 ) fancy = .TRUE.  ! 2/3/93
-!removed        IF ( idim .EQ. t_dim .AND. .NOT.fancy ) THEN
-!2/3/93   * ... force date labelling if it is possible (why?? 7/92  )
-!      	           line = grid_line( idim, grid )
-!                  fancy = val .LT. 0.0D0 .AND. 
-!     .                     TM_DATE_OK( line_t0(line)) 
-!               ENDIF
 ! Note (2/3/93): GEOG_LABEL contains the removed logic
 
 * adjust precision to fit into field if necessary
@@ -164,12 +156,12 @@
               IF ( val .LT. -47335449600D0 ) THEN
 ! HACK! negatives time steps are formatted as valid times unless they
 ! would be negative seconds from BC for dates later than 1-jan-1500
-                 line       = grid_line( t_dim, grid )
+                 line       = grid_line( idim, grid )
 !                 cal_id = TM_GET_CALENDAR_ID ( line_cal_name(line))
                  cal_id = 1  ! axis-independent dates were calculated with dflt calendar
                  string = SECS_TO_DATE( -val, cal_id )
               ELSE
-                 CALL TSTEP_TO_DATE( grid, val, decim, string )
+                 CALL TSTEP_TO_DATE( grid, idim, val, decim, string )
               ENDIF
 	      RETURN
 	   ENDIF

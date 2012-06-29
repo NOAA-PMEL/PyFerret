@@ -41,14 +41,11 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V450: 
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include	'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER mr, cx
@@ -59,6 +56,8 @@
      .				mr_lo_s2(mr), mr_hi_s2(mr),
      .				mr_lo_s3(mr), mr_hi_s3(mr),
      .				mr_lo_s4(mr), mr_hi_s4(mr),
+     .				mr_lo_s5(mr), mr_hi_s5(mr),
+     .				mr_lo_s6(mr), mr_hi_s6(mr),
      .				mr_bad_data(mr), lo, hi )
 
 

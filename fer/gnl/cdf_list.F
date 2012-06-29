@@ -105,8 +105,12 @@
 *                   missing and FillValue flags which werent correct.)
 * V65  *acm*  1/10  Data from some datasets get a mismatch between _FillValue and 
 *                   data on output. Fix this.
+*       *acm* 3/12  Add E and F dimensions (use nferdims in tmap_dims.parm)
+*       *acm* 4/12  The record axis must be the last (slowest varying) axis. If a 
+*                   time axis is written, and an E or F axis is written, then write 
+*                   in /RIGID mode, with no record axis.
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
-        include 'netcdf.decl'
 #include "netcdf.inc"
         include 'tmap_errors.parm'
         include 'cd_lib.parm'
@@ -144,7 +148,8 @@
      .                  lbuff, cdfstat, idim, i, loc, errloc,
      .                  recdim, cat, var, cat1, var1, iaxis,
      .			final_status, type, maxstrlen, 
-     .			write_lo(4), write_hi(4), make_lo(4), make_hi(4),
+     .			write_lo(nferdims), write_hi(nferdims), 
+     .			make_lo(nferdims), make_hi(nferdims),
      .                  dset_last, dset_num, attid
 
 * *kob* 3/99- up SANITARY_VAR_CODE and local variable varcode to 64 chars
@@ -160,6 +165,10 @@
 	REAL*8		user_lo, user_hi, delta, loest_ww, hiest_ww,
      .                  miss_in, fill_in
 
+* local parameter declarations:
+        LOGICAL    already_warned
+	DATA    already_warned       / .FALSE. /
+
 * For error messages
       CHARACTER*9 typnam(6)
       DATA typnam/'NC_BYTE', 'NC_CHAR', 'NC_SHORT', 'NC_INT', 
@@ -169,28 +178,21 @@
 * "BYTE" isnt supported on DECstation)
 * reorder loop logic because linux cpp didnt like it *kob* 10/96
 
-#ifdef unix
 #   ifdef sun
       BYTE cd_data_type(maxvars)
 #   else
       INTEGER*1 cd_data_type(maxvars)
 #   endif
-#else
-      BYTE cd_data_type(maxvars)
-#endif
 
 	EQUIVALENCE ( ds_precision, cd_data_type )
 
 * internal equivalence so to match data types for F90
-#ifdef unix
 #   ifdef sun
       BYTE ibuff1
 #   else
       INTEGER*1 ibuff1
 #   endif
-#else
-      BYTE ibuff1
-#endif
+
 	REAL*4		rbuff4
 	REAL		vals(100), bad
         REAL*8          dvals(100), scalefac, addoff
@@ -211,8 +213,8 @@
      .                  do_warn, coordvar
 
         PARAMETER     ( buff_size = 2048,
-     .			sslimits0 = 1+19-1,
-     .			wwlimits0 = 1+23-1,
+     .			sslimits0 = 1+23-1,
+     .			wwlimits0 = 1+29-1,
      .                  full_precision = .TRUE.,
      .			range_not_rqd = .FALSE. )
 	CHARACTER	cal_name*32 , attname*128, buff1*128, buff2*128
@@ -225,7 +227,6 @@
 	 final_status = ferr_ok  ! innocent unless proven guilty
 	 DODS_cache = mode .EQ. pcdf_mode_cache
          do_warn = .TRUE.
-
 
          CALL CD_DEFER_COORD_WRITE(0,0,0,0,0,pcd_defer_init)
 
@@ -272,7 +273,8 @@
 	cx  = cx_list(1)
         dset = cx_data_set( cx )
         IF (dset .GE. 1) THEN
-          IF (ds_type(dset) .EQ. 'CDF' .OR. ds_type(dset) .EQ. ' MC')
+          IF (ds_type(dset) .EQ. 'CDF' .OR. ds_type(dset) .EQ. ' MC' 
+     .        .OR. ds_type(dset) .EQ. 'AGG')
      .       CALL CDF_LIST_GLOBAL_ATTS (dset, cdfid, status)
         ENDIF
         dset_last = dset
@@ -290,7 +292,8 @@
            IF (dset_last .NE. dset) THEN
               IF (dset .GE. 1) THEN
                  IF (ds_type(dset) .EQ. 'CDF' .OR. 
-     .               ds_type(dset) .EQ. ' MC')
+     .               ds_type(dset) .EQ. ' MC' .OR. 
+     .               ds_type(dset) .EQ. 'AGG')
      .          CALL CDF_LIST_GLOBAL_ATTS (dset, cdfid, status)
               ENDIF
               dset_last = dset
@@ -310,7 +313,7 @@
 * is it in the linked-list for dset. If so get attr info, including original 
 * upper/lowercase form of the name. If mode upcase_output is set, then upcase 
 * the variable name.
-
+ 
 * For user-defined variables, with double-precision Ferret, write as double-precision
 * unless the user has requested otherwise.
 
@@ -325,7 +328,7 @@
               varcode = varname
               IF (mode_upcase_output) CALL STR_UPCASE( varcode, varname)
               IF (dset .EQ. -1) THEN  !for user vars type not known in attrib structure
-                 vartype = 6
+                 vartype = 6  ! netcdf nf_double
                  IF (itsa_string) vartype = 2
               ENDIF
               outtype = vartype
@@ -333,10 +336,12 @@
               IF (outtype .EQ. 0) outtype = vartype
            ENDIF
 
-           IF ( cat .EQ. cat_pseudo_var ) varcode =
-     .                            varcode(:TM_LENSTR1(varcode))//"_"
+           IF ( cat .EQ. cat_pseudo_var )THEN
+	      varcode = varcode(:TM_LENSTR1(varcode))//"_"
+	      IF (varcode(1:1) .EQ. "_") varcode = varcode(2:TM_LENSTR1(varcode))
+	   ENDIF
 
-           tax = grid_line(t_dim,grid)
+	   tax = grid_line(t_dim,grid)
            cal_name = line_cal_name(tax)
            cal_id = TM_GET_CALENDAR_ID ( cal_name )
 
@@ -355,7 +360,7 @@
 	   ENDIF
 
 * get slab limits to use for writing the values of this variable
-           DO 50 idim = 1, 4
+           DO 50 idim = 1, nferdims
 * ... limits within which to write variable data
               write_lo(idim) = cx_lo_ss(cx,idim)
               write_hi(idim) = cx_hi_ss(cx,idim)
@@ -407,6 +412,18 @@
      .		    .OR. make_hi(idim) .LT. write_hi(idim) ) 	GOTO 5310
 	         ENDIF
 	      ENDIF
+
+* ... if a time axis is written, and an E or F axis is written,
+*     then write in /RIGID mode, with no record axis.
+	      IF (idim .GT. t_dim .AND.
+     .	          make_lo(t_dim) .NE. unspecified_int4 .AND.
+     .	          make_lo(idim) .NE. unspecified_int4) THEN
+                 crecdim = 'N'
+		 IF (.NOT.already_warned) CALL WARN (
+     .	          'Saving E or F axis with time axis uses /RIGID in time')
+                 already_warned = .TRUE.
+	      ENDIF
+
  50        CONTINUE
 
 * determine the netCDF "record dimension" to use
@@ -739,7 +756,7 @@
 * ..."compressing" transforms and limits not given in definitions
 	      buff = ' '
 	      lbuff = 1
-              DO 60 idim = 1, 4
+              DO 60 idim = 1, nferdims
                  need_doc =  cx_trans(idim,cx) .GT. trans_compress_code
                  IF ( itsa_uvar ) need_doc = need_doc
      .                    .OR. uvar_given(idim,var) .GT. uvlim_needed
@@ -959,7 +976,7 @@
            cat = cx_category(cx)
            var = cx_variable(cx)
            varcode = SANITARY_VAR_CODE( cat, var )
-           
+
            itsa_uvar = cat .EQ. cat_user_var
            CALL CD_GET_VAR_ID (dset, varcode, varid, status)  ! is it in the linked-list for dset
            IF (status .NE. ferr_ok .AND. itsa_uvar ) THEN
@@ -977,12 +994,14 @@
               varcode = varname
               IF (mode_upcase_output) CALL STR_UPCASE( varcode, varname)
            ENDIF
-
-           IF ( cat .EQ. cat_pseudo_var ) varcode =
-     .                            varcode(:TM_LENSTR1(varcode))//"_"
+     
+           IF ( cat .EQ. cat_pseudo_var )THEN
+	      varcode = varcode(:TM_LENSTR1(varcode))//"_"
+	      IF (varcode(1:1) .EQ. "_") varcode = varcode(2:TM_LENSTR1(varcode))
+	   ENDIF
 
 * get slab limits to use for writing the values of this variable
-           DO 450 idim = 1, 4
+           DO 450 idim = 1, nferdims
               write_lo(idim) = cx_lo_ss(cx,idim)
               write_hi(idim) = cx_hi_ss(cx,idim)
  450        CONTINUE

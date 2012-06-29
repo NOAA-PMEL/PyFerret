@@ -43,17 +43,12 @@
 * V300: 10/93 *sh*  most of the code lifted from WHOI_DATE
 * V420: 11/27/95 - 4-digit YEARS!!
 * v530: 1/01  *acm*  calendar ID passed in for alternative calendar types
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations
 	REAL*8	secsfrombc

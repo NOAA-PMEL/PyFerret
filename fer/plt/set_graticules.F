@@ -49,7 +49,9 @@
 *                    need to initialize buff.
 * V6.2  *acm& 2/09 Fix choice of color settings with /PEN and /THICK when we have 
 *                  increased the num of colors with MODE linecolors
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'command.parm'

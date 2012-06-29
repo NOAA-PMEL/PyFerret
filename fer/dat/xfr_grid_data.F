@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -43,13 +43,9 @@
 *
 * V200:  7/13/89
 
-#ifdef unix
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'xfr_grid.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'
-#endif
 
 	DATA	grd_stk_ptr / max_grids /
 

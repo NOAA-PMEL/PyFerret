@@ -46,11 +46,10 @@
 
       SUBROUTINE tax_tstep_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
-
-      CALL ef_version_test(ef_version)
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
@@ -58,30 +57,29 @@
 *                                                                      V
 
       CALL ef_set_desc(id,
-     . 'Returns time step values based on the new time origin' )
-   
+     .        'Returns time step values based on the new time origin')
       CALL ef_set_num_args(id, 2)
-
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
-
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
       CALL ef_set_num_work_arrays(id, 1)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
-
       CALL ef_set_arg_desc(id, arg, 'variable with reference time axis')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, YES, YES, YES, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'B')
       CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_type(id, arg, STRING_ARG)
-
       CALL ef_set_arg_desc(id, arg, 'desired time origin')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
 *                                                                      ^
 *                                                                      |
@@ -90,21 +88,16 @@
 
       RETURN 
       END
+
+
 *
 * In this subroutine we request an amount of storage to be supplied
 * by Ferret and passed as an additional argument.
 *
       SUBROUTINE tax_tstep_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
-
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
       INTEGER id
 
@@ -114,27 +107,29 @@
 *                                                                      V
 
 *
-* Set the work arrays,  X/Y/Z/T dimensions
+* Set the work arrays, X/Y/Z/T/E/F dimensions
 *
-* ef_set_work_array_lens(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+* ef_set_work_array_dims_6d(id, array #,
+*                           xlo, ylo, zlo, tlo, elo, flo,
+*                           xhi, yhi, zhi, thi, ehi, fhi)
 *
+
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
       INTEGER mth, mtl
 
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
-
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
 *  Allocate double the length of the axes for REAL*8 work array.
-
       mtl = arg_lo_ss(T_AXIS,ARG1)
-
       mth = mtl + 
-     .     2* (arg_hi_ss(T_AXIS,ARG1)  - arg_lo_ss(T_AXIS,ARG1) + 1)
+     .        2 * (arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1) + 1)
 
 *  taxdat
-      CALL ef_set_work_array_dims (id, 1, mtl, 1, 1, 1, mth, 1, 1, 1)
-
+      CALL ef_set_work_array_dims_6d(id, 1,
+     .                              mtl, 1, 1, 1, 1, 1,
+     .                              mth, 1, 1, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -143,12 +138,14 @@
 
       RETURN 
       END
+
 
 *
 * In this subroutine we compute the result
 *
       SUBROUTINE tax_tstep_compute(id, arg_1, arg_2, result, taxdat)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -161,140 +158,118 @@
 
       INTEGER id
 
-      REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
-     .           mem1loz:mem1hiz, mem1lot:mem1hit)
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
       REAL arg_2(strdf, mem2lox:mem2hix, mem2loy:mem2hiy,
-     .           mem2loz:mem2hiz, mem2lot:mem2hit)
+     .                  mem2loz:mem2hiz, mem2lot:mem2hit,
+     .                  mem2loe:mem2hie, mem2lof:mem2hif)
 
-      REAL result(memreslox:memreshix, memresloy:memreshiy,
-     .            memresloz:memreshiz, memreslot:memreshit)
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
+
+* Ignore the Y/Z/T/E/F dimensions in the work arrays since
+* they are not used and Fortran is column major
+      REAL*8 taxdat(wrk1lox:wrk1lox+(wrk1hix-wrk1lox)/2)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
+* information for each variable''s axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
+
       INTEGER STR_SAME
       CHARACTER*20 datebuf
-
-      INTEGER iyear, dayofmon, hour, minute, second
-      CHARACTER*3 cmon
-      CHARACTER*80 err_msg
-      
-      CHARACTER*20 instring,t0string
-      INTEGER t0year, t0day, slen
-      CHARACTER*3 t0mon
-
+      CHARACTER*20 instring, t0string
+      INTEGER slen
       REAL*8 ddate
-
-      CHARACTER*16 axname(4), axunits(4)
-      LOGICAL bkw1(4), mod1(4), reg1(4)
+      CHARACTER*16 axname(6), axunits(6)
+      LOGICAL bkw1(6), mod1(6), reg1(6)
       CHARACTER*16 tunit
-
       REAL timesincet0
+      INTEGER i, j, k, l, m, n
+      INTEGER l1
 
-      INTEGER i,j,k,l
-      INTEGER i1, j1, k1, l1
-      INTEGER i2, j2, k2, l2
-
-*  Declare work array
-
-      REAL*8 taxdat(wrk1lox:wrk1lox+(wrk1hix-wrk1lox)/2,wrk1loy:wrk1hiy,
-     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
       CALL ef_get_coordinates(id, ARG1, T_AXIS,
-     .   arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), taxdat)
+     .        arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), taxdat)
 
 *     Get the new time origin (t0) string
-      i2 = arg_lo_ss(X_AXIS, ARG2)
-      j2 = arg_lo_ss(Y_AXIS, ARG2)
-      k2 = arg_lo_ss(Z_AXIS, ARG2)
-      l2 = arg_lo_ss(T_AXIS, ARG2)
- 
-*     Get the desired time origin
-      CALL ef_get_string_arg_element(id, ARG2, arg_2,
-     .     i2, j2, k2, l2, slen, instring)
+      i = arg_lo_ss(X_AXIS, ARG2)
+      j = arg_lo_ss(Y_AXIS, ARG2)
+      k = arg_lo_ss(Z_AXIS, ARG2)
+      l = arg_lo_ss(T_AXIS, ARG2)
+      m = arg_lo_ss(E_AXIS, ARG2)
+      n = arg_lo_ss(F_AXIS, ARG2)
+      CALL ef_get_string_arg_element_6d(id, ARG2, arg_2,
+     .                       i, j, k, l, m, n, slen, instring)
 
 * Allow them to input the date w/o a leading 0 so that either
 * 1-jan-2000 or 01-jan-0000 is ok
 
-      IF ( STR_SAME(instring(2:2), '-') .EQ. 0) THEN
-         WRITE (t0string, 120) instring
- 120     FORMAT ('0', a19)
+      IF ( STR_SAME(instring(2:2), '-') .EQ. 0 ) THEN
+         WRITE (t0string, 20) instring
+  20     FORMAT ('0', a19)
       ELSE
          t0string = instring
       ENDIF
 
 *     Get time axis unit
-      CALL ef_get_axis_info(id, ARG1, axname, axunits, bkw1, mod1, reg1)
+      CALL ef_get_axis_info_6d(id, ARG1, axname, axunits,
+     .                         bkw1, mod1, reg1)
+      tunit = axunits(T_AXIS)
 
-      i1 = arg_lo_ss(X_AXIS,ARG1)
-      DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      l1 = arg_lo_ss(T_AXIS,ARG1)
+      DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
-         j1 = arg_lo_ss(Y_AXIS,ARG1)
-         DO 300 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+*        Get the time axis value for this step
+         ddate = taxdat(l1)
+*        Get the date string corresponding to time ddate
+         CALL ef_get_axis_dates(id, ARG1, ddate, 1, datebuf)
+*        Convert to time from the new origin
+         CALL time_since_t0(t0string, datebuf, tunit, timesincet0)
 
-           k1 = arg_lo_ss(Z_AXIS,ARG1)
-           DO 200 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+*        Assign this time from the new origin to the results
+         DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+         DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+         DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+         DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+         DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-              l1 = arg_lo_ss(T_AXIS,ARG1)
-              DO 100 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            result(i,j,k,l,m,n) = timesincet0
 
-                ddate = taxdat(l1,1,1,1)
-                IF (ddate .NE. bad_flag(ARG1)) THEN
-
-*     Get the string-date for each time
-                   CALL ef_get_axis_dates(id,ARG1,ddate,1,datebuf)
-                   tunit = axunits(4)
-                   CALL time_since_t0(t0string,datebuf,tunit,timesincet0)
- 
-                   result(i,j,k,l) = timesincet0
-
-                ELSE
-                   result(i,j,k,l) = bad_flag_result
-                ENDIF
-
-                l1 = l1 + arg_incr(T_AXIS,ARG1)
- 100          CONTINUE
-
-               k1 = k1 + arg_incr(Z_AXIS,ARG1)
- 200        CONTINUE
-
-            j1 = j1 + arg_incr(Y_AXIS,ARG1)
+ 100     CONTINUE
+ 200     CONTINUE
  300     CONTINUE
+ 500     CONTINUE
+ 600     CONTINUE
 
-         i1 = i1 + arg_incr(X_AXIS,ARG1)
+         l1 = l1 + arg_incr(T_AXIS,ARG1)
  400  CONTINUE
-
- 110  FORMAT (i2, 1x, a3, 1x, i4)
 
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
 * **********************************************************************
 
-      RETURN 
-
- 800  CONTINUE
-      WRITE (err_msg,*)
-     .  'Error for reading t0string in tax_tstep ',
-     .  t0string
-
       RETURN
-
       END
+
 
 *********************************************************************
 *

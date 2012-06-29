@@ -47,6 +47,9 @@
 *			checks here are bypassed altogether
 * V530: 11/00 *sh* - return "modified" flag
 * V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+
+	include 'tmap_dims.parm'
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -75,7 +78,7 @@
 	category = cx_category( cx )
 	variable = cx_variable( cx )
 
-	DO 10 idim = 1, 4
+	DO 10 idim = 1, nferdims
 	   IF ( cx_lo_ss(cx,idim) .EQ. unspecified_int4 ) GOTO 10
 	   CALL VAR_SS_LIMS( idim, cx, lolim, hilim )
 	   IF ( lolim .EQ. unspecified_int4 ) GOTO 10

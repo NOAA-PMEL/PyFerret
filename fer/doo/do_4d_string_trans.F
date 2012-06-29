@@ -6,7 +6,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -43,6 +43,14 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * From DO_4D_NBD
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'interp_stack.parm'
+	include	'xprog_state.cmn'
 
 * calling argument declarations:
 	INTEGER	trans, com_mr, com_cx, res_mr, res_cx
@@ -51,17 +59,11 @@
 
 * internal variable declarations:
         LOGICAL at_ok
-	INTEGER	CX_DIM_LEN
-
-	include	'ferret.parm'
-	include	'errmsg.parm'
-	include	'interp_stack.parm'
-	include	'xprog_state.cmn'
-
+	INTEGER	CX_DIM_LEN, idim, status
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
-     .				( 'doing',isact_class_trans, res_cx, idim )
+     .				( 'doing', isact_class_trans, res_cx, idim )
 
 * determine the type of transform requested
 	
@@ -82,4 +84,4 @@
  5010	DO_4D_STRING_TRANS = ferr_data_type
         CALL ERRMSG( ferr_data_type, status, 
      .  'Only NGD or NBD transforms allowed for string data', *5000 )
-	END	
+	END

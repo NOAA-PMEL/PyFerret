@@ -39,6 +39,7 @@
 
 * V450: 12/96
 *       97.07.16 *jc* adding code to allow call to efcn_get_id()
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations
 	CHARACTER name*(*)
@@ -58,6 +59,7 @@
 #endif
 
  
+	include	'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xgrid_chg_fcns.cmn'
 

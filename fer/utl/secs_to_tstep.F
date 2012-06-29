@@ -1,4 +1,4 @@
-	DOUBLE PRECISION FUNCTION SECS_TO_TSTEP( grid, secs )
+	DOUBLE PRECISION FUNCTION SECS_TO_TSTEP( grid, idim, secs )
 
 *
 *
@@ -44,20 +44,17 @@
 *
 * revision 0.0 - 7/27/88
 * V530: *acm* 12/00 add calendar types; cal_id
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
+*                  dimension is now an arg to SECS_TO_TSTEP.
 
-#ifdef unix
 	include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'
 	external xgt_grid_data
         include 'ferret.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-        INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
-	INTEGER	grid
+	INTEGER	grid, idim
 	REAL*8	secs
 
 * internal variable declarations:
@@ -66,10 +63,11 @@
 	REAL*8		SECS_FROM_BC, bc_to_t0
 
 * determine time axis of grid
-	axis = grid_line( t_dim, grid )
+	axis = grid_line( idim, grid )
 
 * valid time axis ?
-	IF ( line_direction( axis ) .EQ. 'TI' ) THEN
+	IF ( line_direction( axis ) .EQ. 'TI' .OR. 
+     .       line_direction( axis ) .EQ. 'FI' ) THEN
 
 * get calendar type
 

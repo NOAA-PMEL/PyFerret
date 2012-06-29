@@ -1,6 +1,8 @@
 	SUBROUTINE COPY_GRID_SUB (
-     .		src, slox, shix, sloy, shiy, sloz, shiz, slot, shit, bad_src,
-     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit, bad_dst )
+     .		src, slox, shix, sloy, shiy, sloz, shiz, 
+     .		slot, shit, sloe, shie, slof, shif, bad_src,
+     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, 
+     .		dlot, dhit, dloe, dhie, dlof, dhif, bad_dst )
 
 *
 *
@@ -44,42 +46,45 @@
 * written for VAX computer under VMS operating system
 *
 * V200: 10/12/89
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
 	include 'ferret.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
-	INTEGER slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit
-	REAL    src( slox:shix,sloy:shiy,sloz:shiz,slot:shit ),
-     .		dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit )
+	INTEGER slox, shix, sloy, shiy, sloz, shiz, 
+     .		slot, shit, sloe, shie, slof, shif,
+     .		dlox, dhix, dloy, dhiy, dloz, dhiz, 
+     .		dlot, dhit, dloe, dhie, dlof, dhif
+	REAL    src( slox:shix,sloy:shiy,sloz:shiz,slot:shit,sloe:shie,slof:shif ),
+     .		dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit,dloe:dhie,dlof:dhif )
 	REAL	bad_src, bad_dst
 
 * internal variable declarations:
-	INTEGER	i, j, k, l
+	INTEGER	i, j, k, l, m, n
 
 * --- end of introductory code ---
 
+	DO 100 n = dlof, dhif
+	DO 100 m = dloe, dhie
 	DO 100 l = dlot, dhit
 	DO 100 k = dloz, dhiz
 	DO 100 j = dloy, dhiy
 	DO 100 i = dlox, dhix
 
-	   dst(i,j,k,l) = src(i,j,k,l)
+	   dst(i,j,k,l,m,n) = src(i,j,k,l,m,n)
 
  100	CONTINUE
 
 * check for differing bad data flags in an efficient way ...
 	IF ( bad_src .NE. bad_dst ) THEN
+	   DO 200 n = dlof, dhif
+	   DO 200 m = dloe, dhie
 	   DO 200 l = dlot, dhit
 	   DO 200 k = dloz, dhiz
 	   DO 200 j = dloy, dhiy
 	   DO 200 i = dlox, dhix
 
-	      IF ( src(i,j,k,l) .EQ. bad_src ) dst(i,j,k,l) = bad_dst
+	      IF ( src(i,j,k,l,m,n) .EQ. bad_src ) dst(i,j,k,l,m,n) = bad_dst
 
  200	   CONTINUE
 	ENDIF

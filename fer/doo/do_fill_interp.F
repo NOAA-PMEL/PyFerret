@@ -5,7 +5,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -47,7 +47,9 @@
 * V402:   8/9/95 - bug fix: T=@FLN had "lo_coord = coords(k-pos0)"
 * V550 *sh* 8/2/02 - support for modulo lengths. ensure that filling 
 *		    does not operate acros the subspan modulo void point
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -62,14 +64,17 @@
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
 	REAL	arg, coords(*),
-     .		com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
+     .          com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * internal variable declarations:
 	LOGICAL	TM_ITS_SUBSPAN_MODULO,
      .		modulo_axis, modulo, no_lo_val, has_mod_void
 	INTEGER TM_MODULO_LINE_DIM, CGRID_AXIS,
-     .		i, j, k, l, ii, jj, kk, ll, lo_sub(4), hi_sub(4),
+     .		i, j, k, l, m, n, ii, jj, kk, ll, mm, nn,
+     .          lo_sub(nferdims), hi_sub(nferdims),
      .		lo_edge, hi_edge, pos0, edge, lo_index, hi_index,
      .		lo_com, hi_com, line, axdim, look,
      .		coord_lo_ss, coord_hi_ss, next_hi_ss
@@ -78,11 +83,14 @@
 	REAL*8	TM_MODULO_AXLEN
 
 * internal (convenience) equivalences
-	INTEGER	lo_s1, lo_s2, lo_s3, lo_s4, hi_s1, hi_s2, hi_s3, hi_s4
+	INTEGER	lo_s1, lo_s2, lo_s3, lo_s4, lo_s5, lo_s6,
+     .          hi_s1, hi_s2, hi_s3, hi_s4, hi_s5, hi_s6
 	EQUIVALENCE (lo_s1, lo_sub(1)) , (lo_s2, lo_sub(2)),
      .		    (lo_s3, lo_sub(3)) , (lo_s4, lo_sub(4)),
+     .		    (lo_s5, lo_sub(5)) , (lo_s6, lo_sub(6)),
      .		    (hi_s1, hi_sub(1)) , (hi_s2, hi_sub(2)),
-     .		    (hi_s3, hi_sub(3)) , (hi_s4, hi_sub(4))
+     .		    (hi_s3, hi_sub(3)) , (hi_s4, hi_sub(4)),
+     .		    (hi_s5, hi_sub(5)) , (hi_s6, hi_sub(6))
 
 * local parameter declarations
 	INTEGER     no_point
@@ -90,7 +98,7 @@
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
-     .				( 'doing',isact_class_trans, res_cx, idim )
+     .				( 'doing', isact_class_trans, res_cx, idim )
 
 * initialize
 	bad_res = mr_bad_data( com_mr )
@@ -118,7 +126,7 @@
 	ENDIF
 
 * save the desired result region
-	DO 10 ii = 1, 4
+	DO 10 ii = 1, nferdims
 	   lo_sub(ii) = cx_lo_ss(res_cx,ii)
 	   hi_sub(ii) = cx_hi_ss(res_cx,ii)
  10	CONTINUE
@@ -141,6 +149,8 @@
 
 * FILL ALONG X AXIS
 	IF ( idim .EQ. x_dim ) THEN
+	   DO 110 n = lo_s6, hi_s6
+	   DO 110 m = lo_s5, hi_s5
 	   DO 110 l = lo_s4, hi_s4
 	   DO 110 k = lo_s3, hi_s3
 	   DO 110 j = lo_s2, hi_s2
@@ -154,8 +164,8 @@
 	      ELSE
 	         look = i
 	      ENDIF
-              IF ( com(look,j,k,l) .NE. bad_res ) THEN
-                 lo_val = com(look,j,k,l)
+              IF ( com(look,j,k,l,m,n) .NE. bad_res ) THEN
+                 lo_val = com(look,j,k,l,m,n)
 	         lo_index = look
 	         lo_coord = coords(look-pos0)
 	         IF ( modulo ) THEN
@@ -168,9 +178,9 @@
  101       CONTINUE
 * ... process the requested line in X
  102	   DO 110 i = lo_s1, hi_s1
-	      IF ( com(i,j,k,l) .NE. bad_res ) THEN
-	         res(i,j,k,l) = com(i,j,k,l)
-                 lo_val = com(i,j,k,l)
+	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
+	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
+                 lo_val = com(i,j,k,l,m,n)
 	         lo_index = i
 	         lo_coord = coords(i-pos0)
                  no_lo_val = .FALSE.
@@ -179,7 +189,7 @@
 * ... need to fill a point
               IF (no_lo_val) THEN
 * ... no lower valid point
-                 res(i,j,k,l) = bad_res
+                 res(i,j,k,l,m,n) = bad_res
 	         GOTO 110
               ELSEIF ( next_hi_ss .LT. i ) THEN
 * ... look forward from current position for next valid point
@@ -190,9 +200,9 @@
 	            ELSE
 	               look = ii
 	            ENDIF
-                    IF ( com(look,j,k,l) .NE. bad_res ) THEN
+                    IF ( com(look,j,k,l,m,n) .NE. bad_res ) THEN
                        next_hi_ss = look
-                       hi_val = com(look,j,k,l)
+                       hi_val = com(look,j,k,l,m,n)
 	               hi_index = look
 	               hi_coord = coords(next_hi_ss-pos0)
 		       IF ( modulo ) THEN
@@ -203,23 +213,26 @@
                     ENDIF
  104             CONTINUE
 * ... no higher valid point
-                 res(i,j,k,l) = bad_res
+                 res(i,j,k,l,m,n) = bad_res
                  GOTO 110
               ENDIF
 * ... fill in interpolating value
  108	      coord    = coords(i-pos0)
-              res(i,j,k,l) = ( hi_val*(coord-lo_coord)
-     .                     +   lo_val*(hi_coord-coord) )
-     .                     / (hi_coord - lo_coord)
+              res(i,j,k,l,m,n) = ( hi_val*(coord-lo_coord)
+     .                         +   lo_val*(hi_coord-coord) )
+     .                         / (hi_coord - lo_coord)
 * ... bad if this interp crosses or lands on the void of a subspan modulo axis 
 	      IF (has_mod_void) THEN
-	        IF ( lo_index/axdim .NE. hi_index/axdim
-     .	       .OR.   MOD(i,axdim)  .EQ. 0 )  res(i,j,k,l) = bad_res
+	        IF ( (lo_index/axdim .NE. hi_index/axdim)
+     .	             .OR. (MOD(i,axdim) .EQ. 0) )
+     .            res(i,j,k,l,m,n) = bad_res
 	      ENDIF
  110	   CONTINUE
 
 * FILL ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
+	   DO 210 n = lo_s6, hi_s6
+	   DO 210 m = lo_s5, hi_s5
 	   DO 210 l = lo_s4, hi_s4
 	   DO 210 k = lo_s3, hi_s3
 	   DO 210 i = lo_s1, hi_s1
@@ -233,8 +246,8 @@
               ELSE
                  look = j
               ENDIF
-              IF ( com(i,look,k,l) .NE. bad_res ) THEN
-                 lo_val = com(i,look,k,l)
+              IF ( com(i,look,k,l,m,n) .NE. bad_res ) THEN
+                 lo_val = com(i,look,k,l,m,n)
 	         lo_index = look
 	         lo_coord = coords(look-pos0)
 	         IF ( modulo ) THEN
@@ -247,9 +260,9 @@
  201       CONTINUE
 * ... process the requested line in Y
  202	   DO 210 j = lo_s2, hi_s2
-	      IF ( com(i,j,k,l) .NE. bad_res ) THEN
-	         res(i,j,k,l) = com(i,j,k,l)
-                 lo_val = com(i,j,k,l)
+	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
+	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
+                 lo_val = com(i,j,k,l,m,n)
 	         lo_index = j
                  lo_coord = coords(j-pos0)
                  no_lo_val = .FALSE.
@@ -258,7 +271,7 @@
 * ... need to fill a point
               IF (no_lo_val) THEN
 * ... no lower valid point
-                 res(i,j,k,l) = bad_res
+                 res(i,j,k,l,m,n) = bad_res
                  GOTO 210
               ELSEIF ( next_hi_ss .LT. j ) THEN
 * ... look forward from current position for next valid point
@@ -269,9 +282,9 @@
                     ELSE
                        look = jj
                     ENDIF
-                    IF ( com(i,look,k,l) .NE. bad_res ) THEN
+                    IF ( com(i,look,k,l,m,n) .NE. bad_res ) THEN
                        next_hi_ss = look
-                       hi_val = com(i,look,k,l)
+                       hi_val = com(i,look,k,l,m,n)
 	               hi_index = look
 		       hi_coord = coords(next_hi_ss-pos0)
 		       IF ( modulo ) THEN
@@ -282,23 +295,26 @@
                     ENDIF
  204             CONTINUE
 * ... no higher valid point
-                 res(i,j,k,l) = bad_res
+                 res(i,j,k,l,m,n) = bad_res
                  GOTO 210
               ENDIF
 * ... fill in interpolating value
  208          coord    = coords(j-pos0)
-              res(i,j,k,l) = ( hi_val*(coord-lo_coord)
-     .                     +   lo_val*(hi_coord-coord) )
-     .                     / (hi_coord - lo_coord)
+              res(i,j,k,l,m,n) = ( hi_val*(coord-lo_coord)
+     .                         +   lo_val*(hi_coord-coord) )
+     .                         / (hi_coord - lo_coord)
 * ... bad if this interp crosses or lands on the void of a subspan modulo axis 
 	      IF (has_mod_void) THEN
-	        IF ( lo_index/axdim .NE. hi_index/axdim
-     .	       .OR.   MOD(j,axdim)  .EQ. 0 )  res(i,j,k,l) = bad_res
+	        IF ( (lo_index/axdim .NE. hi_index/axdim)
+     .	             .OR. (MOD(j,axdim) .EQ. 0) )
+     .            res(i,j,k,l,m,n) = bad_res
 	      ENDIF
  210	   CONTINUE
 
 * FILL ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
+	   DO 310 n = lo_s6, hi_s6
+	   DO 310 m = lo_s5, hi_s5
 	   DO 310 l = lo_s4, hi_s4
 	   DO 310 j = lo_s2, hi_s2
 	   DO 310 i = lo_s1, hi_s1
@@ -312,8 +328,8 @@
               ELSE
                  look = k
               ENDIF
-              IF ( com(i,j,look,l) .NE. bad_res ) THEN
-                 lo_val = com(i,j,look,l)
+              IF ( com(i,j,look,l,m,n) .NE. bad_res ) THEN
+                 lo_val = com(i,j,look,l,m,n)
 	         lo_index = look
 	         lo_coord = coords(look-pos0)
 	         IF ( modulo ) THEN
@@ -326,9 +342,9 @@
  301       CONTINUE
 * ... process the requested line in Z
  302	   DO 310 k = lo_s3, hi_s3
-	      IF ( com(i,j,k,l) .NE. bad_res ) THEN
-	         res(i,j,k,l) = com(i,j,k,l)
-                 lo_val = com(i,j,k,l)
+	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
+	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
+                 lo_val = com(i,j,k,l,m,n)
 	         lo_index = k
                  lo_coord = coords(k-pos0)
                  no_lo_val = .FALSE.
@@ -337,7 +353,7 @@
 * ... need to fill a point
               IF (no_lo_val) THEN
 * ... no lower valid point
-                 res(i,j,k,l) = bad_res
+                 res(i,j,k,l,m,n) = bad_res
                  GOTO 310
               ELSEIF ( next_hi_ss .LT. k ) THEN
 * ... look forward from current position for next valid point
@@ -348,9 +364,9 @@
                     ELSE
                        look = kk
                     ENDIF
-                    IF ( com(i,j,look,l) .NE. bad_res ) THEN
+                    IF ( com(i,j,look,l,m,n) .NE. bad_res ) THEN
                        next_hi_ss = kk
-                       hi_val = com(i,j,look,l)
+                       hi_val = com(i,j,look,l,m,n)
 	               hi_index = look
                        hi_coord = coords(next_hi_ss-pos0)
 		       IF ( modulo ) THEN
@@ -361,23 +377,26 @@
                     ENDIF
  304             CONTINUE
 * ... no higher valid point
-                 res(i,j,k,l) = bad_res
+                 res(i,j,k,l,m,n) = bad_res
                  GOTO 310
               ENDIF
 * ... fill in interpolating value
  308          coord    = coords(k-pos0)
-              res(i,j,k,l) = ( hi_val*(coord-lo_coord)
-     .                     +   lo_val*(hi_coord-coord) )
-     .                     / (hi_coord - lo_coord)
+              res(i,j,k,l,m,n) = ( hi_val*(coord-lo_coord)
+     .                         +   lo_val*(hi_coord-coord) )
+     .                         / (hi_coord - lo_coord)
 * ... bad if this interp crosses or lands on the void of a subspan modulo axis 
 	      IF (has_mod_void) THEN
-	        IF ( lo_index/axdim .NE. hi_index/axdim
-     .	       .OR.   MOD(k,axdim)  .EQ. 0 )  res(i,j,k,l) = bad_res
+	        IF ( (lo_index/axdim .NE. hi_index/axdim)
+     .	             .OR. (MOD(k,axdim) .EQ. 0) )
+     .            res(i,j,k,l,m,n) = bad_res
 	      ENDIF
  310	   CONTINUE
 
 * FILL ALONG T AXIS
-	ELSE
+	ELSEIF ( idim .EQ. t_dim ) THEN
+	   DO 410 n = lo_s6, hi_s6
+	   DO 410 m = lo_s5, hi_s5
 	   DO 410 k = lo_s3, hi_s3
 	   DO 410 j = lo_s2, hi_s2
 	   DO 410 i = lo_s1, hi_s1
@@ -391,8 +410,8 @@
               ELSE
                  look = l
               ENDIF
-              IF ( com(i,j,k,look) .NE. bad_res ) THEN
-                 lo_val = com(i,j,k,look)
+              IF ( com(i,j,k,look,m,n) .NE. bad_res ) THEN
+                 lo_val = com(i,j,k,look,m,n)
 	         lo_index = look
 	         lo_coord = coords(look-pos0)
 	         IF ( modulo ) THEN
@@ -405,9 +424,9 @@
  401       CONTINUE
 * ... process the requested line in T
  402	   DO 410 l = lo_s4, hi_s4
-	      IF ( com(i,j,k,l) .NE. bad_res ) THEN
-	         res(i,j,k,l) = com(i,j,k,l)
-                 lo_val = com(i,j,k,l)
+	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
+	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
+                 lo_val = com(i,j,k,l,m,n)
 	         lo_index = l
                  lo_coord = coords(l-pos0)	! fixed 8/95
                  no_lo_val = .FALSE.
@@ -416,7 +435,7 @@
 * ... need to fill a point
               IF (no_lo_val) THEN
 * ... no lower valid point
-                 res(i,j,k,l) = bad_res
+                 res(i,j,k,l,m,n) = bad_res
                  GOTO 410
               ELSEIF ( next_hi_ss .LT. l ) THEN
 * ... look forward from current position for next valid point
@@ -427,9 +446,9 @@
                     ELSE
                        look = ll
                     ENDIF
-                    IF ( com(i,j,k,look) .NE. bad_res ) THEN
+                    IF ( com(i,j,k,look,m,n) .NE. bad_res ) THEN
                        next_hi_ss = look
-                       hi_val = com(i,j,k,look)
+                       hi_val = com(i,j,k,look,m,n)
 	               hi_index = look
                        hi_coord = coords(next_hi_ss-pos0)
 		       IF ( modulo ) THEN
@@ -440,24 +459,195 @@
                     ENDIF
  404             CONTINUE
 * ... no higher valid point
-                 res(i,j,k,l) = bad_res
+                 res(i,j,k,l,m,n) = bad_res
                  GOTO 410
               ENDIF
 * ... fill in interpolating value
  408          coord    = coords(l-pos0)
-              res(i,j,k,l) = ( hi_val*(coord-lo_coord)
-     .                     +   lo_val*(hi_coord-coord) )
-     .                     / (hi_coord - lo_coord)
+              res(i,j,k,l,m,n) = ( hi_val*(coord-lo_coord)
+     .                         +   lo_val*(hi_coord-coord) )
+     .                         / (hi_coord - lo_coord)
 * ... bad if this interp crosses or lands on the void of a subspan modulo axis 
 	      IF (has_mod_void) THEN
-	        IF ( lo_index/axdim .NE. hi_index/axdim
-     .	       .OR.   MOD(l,axdim)  .EQ. 0 )  res(i,j,k,l) = bad_res
+	        IF ( (lo_index/axdim .NE. hi_index/axdim)
+     .	             .OR. (MOD(l,axdim) .EQ. 0) )
+     .            res(i,j,k,l,m,n) = bad_res
 	      ENDIF
  410	   CONTINUE
+
+* FILL ALONG E AXIS
+	ELSEIF ( idim .EQ. e_dim ) THEN
+	   DO 510 n = lo_s6, hi_s6
+	   DO 510 l = lo_s4, hi_s4
+	   DO 510 k = lo_s3, hi_s3
+	   DO 510 j = lo_s2, hi_s2
+	   DO 510 i = lo_s1, hi_s1
+           no_lo_val = .TRUE.
+           next_hi_ss = no_point
+* ... find the closest off-scale low interpolation point in case we need it
+           DO 501 m = lo_s5, lo_edge, -1
+              modulo = modulo_axis .AND. n.LT.coord_lo_ss
+              IF ( modulo ) THEN
+                 look = MOD(m+axdim-coord_lo_ss,axdim) + coord_lo_ss
+              ELSE
+                 look = m
+              ENDIF
+              IF ( com(i,j,k,l,look,n) .NE. bad_res ) THEN
+                 lo_val = com(i,j,k,l,look,n)
+	         lo_index = look
+	         lo_coord = coords(look-pos0)
+	         IF ( modulo ) THEN
+	            lo_index = lo_index - axdim
+	            lo_coord = lo_coord - axlen
+	         ENDIF
+                 no_lo_val = .FALSE.
+	         GOTO 502
+              ENDIF
+ 501       CONTINUE
+* ... process the requested line in E
+ 502	   DO 510 m = lo_s5, hi_s5
+	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
+	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
+                 lo_val = com(i,j,k,l,m,n)
+	         lo_index = m
+                 lo_coord = coords(m-pos0)	! fixed 8/95
+                 no_lo_val = .FALSE.
+	         GOTO 510
+	      ENDIF
+* ... need to fill a point
+              IF (no_lo_val) THEN
+* ... no lower valid point
+                 res(i,j,k,l,m,n) = bad_res
+                 GOTO 510
+              ELSEIF ( next_hi_ss .LT. m ) THEN
+* ... look forward from current position for next valid point
+                 DO 504 mm = m+1, hi_edge
+                    modulo = modulo_axis .AND. mm.GT.coord_hi_ss
+                    IF ( modulo ) THEN
+		       look = MOD(mm+axdim-coord_lo_ss,axdim) + coord_lo_ss
+                    ELSE
+                       look = mm
+                    ENDIF
+                    IF ( com(i,j,k,l,look,n) .NE. bad_res ) THEN
+                       next_hi_ss = look
+                       hi_val = com(i,j,k,l,look,n)
+	               hi_index = look
+                       hi_coord = coords(next_hi_ss-pos0)
+		       IF ( modulo ) THEN
+	                  hi_index = hi_index + (mm/axdim)*axdim
+	                  hi_coord = hi_coord + (mm/axdim)*axlen
+	               ENDIF
+                       GOTO 508
+                    ENDIF
+ 504             CONTINUE
+* ... no higher valid point
+                 res(i,j,k,l,m,n) = bad_res
+                 GOTO 510
+              ENDIF
+* ... fill in interpolating value
+ 508          coord    = coords(m-pos0)
+              res(i,j,k,l,m,n) = ( hi_val*(coord-lo_coord)
+     .                         +   lo_val*(hi_coord-coord) )
+     .                         / (hi_coord - lo_coord)
+* ... bad if this interp crosses or lands on the void of a subspan modulo axis 
+	      IF (has_mod_void) THEN
+	        IF ( (lo_index/axdim .NE. hi_index/axdim)
+     .	             .OR. (MOD(m,axdim) .EQ. 0) )
+     .            res(i,j,k,l,m,n) = bad_res
+	      ENDIF
+ 510	   CONTINUE
+
+* FILL ALONG F AXIS
+	ELSEIF ( idim .EQ. f_dim ) THEN
+	   DO 610 m = lo_s5, hi_s5
+	   DO 610 l = lo_s4, hi_s4
+	   DO 610 k = lo_s3, hi_s3
+	   DO 610 j = lo_s2, hi_s2
+	   DO 610 i = lo_s1, hi_s1
+           no_lo_val = .TRUE.
+           next_hi_ss = no_point
+* ... find the closest off-scale low interpolation point in case we need it
+           DO 601 n = lo_s6, lo_edge, -1
+              modulo = modulo_axis .AND. n.LT.coord_lo_ss
+              IF ( modulo ) THEN
+                 look = MOD(n+axdim-coord_lo_ss,axdim) + coord_lo_ss
+              ELSE
+                 look = n
+              ENDIF
+              IF ( com(i,j,k,l,m,look) .NE. bad_res ) THEN
+                 lo_val = com(i,j,k,l,m,look)
+	         lo_index = look
+	         lo_coord = coords(look-pos0)
+	         IF ( modulo ) THEN
+	            lo_index = lo_index - axdim
+	            lo_coord = lo_coord - axlen
+	         ENDIF
+                 no_lo_val = .FALSE.
+	         GOTO 602
+              ENDIF
+ 601       CONTINUE
+* ... process the requested line in E
+ 602	   DO 610 n = lo_s6, hi_s6
+	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
+	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
+                 lo_val = com(i,j,k,l,m,n)
+	         lo_index = n
+                 lo_coord = coords(n-pos0)	! fixed 8/95
+                 no_lo_val = .FALSE.
+	         GOTO 610
+	      ENDIF
+* ... need to fill a point
+              IF (no_lo_val) THEN
+* ... no lower valid point
+                 res(i,j,k,l,m,n) = bad_res
+                 GOTO 610
+              ELSEIF ( next_hi_ss .LT. n ) THEN
+* ... look forward from current position for next valid point
+                 DO 604 nn = n+1, hi_edge
+                    modulo = modulo_axis .AND. nn.GT.coord_hi_ss
+                    IF ( modulo ) THEN
+		       look = MOD(nn+axdim-coord_lo_ss,axdim) + coord_lo_ss
+                    ELSE
+                       look = nn
+                    ENDIF
+                    IF ( com(i,j,k,l,m,look) .NE. bad_res ) THEN
+                       next_hi_ss = look
+                       hi_val = com(i,j,k,l,m,look)
+	               hi_index = look
+                       hi_coord = coords(next_hi_ss-pos0)
+		       IF ( modulo ) THEN
+	                  hi_index = hi_index + (nn/axdim)*axdim
+	                  hi_coord = hi_coord + (nn/axdim)*axlen
+	               ENDIF
+                       GOTO 608
+                    ENDIF
+ 604             CONTINUE
+* ... no higher valid point
+                 res(i,j,k,l,m,n) = bad_res
+                 GOTO 610
+              ENDIF
+* ... fill in interpolating value
+ 608          coord    = coords(n-pos0)
+              res(i,j,k,l,m,n) = ( hi_val*(coord-lo_coord)
+     .                         +   lo_val*(hi_coord-coord) )
+     .                         / (hi_coord - lo_coord)
+* ... bad if this interp crosses or lands on the void of a subspan modulo axis 
+	      IF (has_mod_void) THEN
+	        IF ( (lo_index/axdim .NE. hi_index/axdim)
+     .	             .OR. (MOD(n,axdim) .EQ. 0) )
+     .            res(i,j,k,l,m,n) = bad_res
+	      ENDIF
+ 610	   CONTINUE
+
+* TODO: fill along E and F axes?
+
+* FILL ALONG UNSUPPORTED AXIS
+	ELSE
+           STOP '**ERROR: DO_FILL_INTERP on unsupported axis'
 	ENDIF
 
 * always success
 	DO_FILL_INTERP = ferr_ok
 	RETURN
 
-	END	
+	END

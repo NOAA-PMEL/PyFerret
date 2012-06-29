@@ -90,7 +90,10 @@
 * V510: *sh* 12/99 - support for uvlim_hiddef (EF caching)
 * V530:  8/00 *sh* - added cx_type support
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars 
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
@@ -118,7 +121,7 @@
 	cx_type( cx ) = mr_type( mr )
 	
 * axis limits and subscripts:
-	DO 100 idim = 1,4
+	DO 100 idim = 1, nferdims
 
 * error checks:
 	   IF ( cx_given(idim,cx) ) THEN
@@ -176,7 +179,7 @@
 	      cx_lo_ww(idim,cx) = unspecified_val8
 	      cx_hi_ww(idim,cx) = unspecified_val8
 * 9/97 *kob* cx_calendar must reflect these changes as well	  
-	      IF (idim .eq. t_dim) 
+	      IF (idim .EQ. t_dim .OR. idim .EQ. f_dim) 
      .                cx_calendar(cx) = .FALSE.
 
 * context limits unspecified but untransformed data limits available anyway

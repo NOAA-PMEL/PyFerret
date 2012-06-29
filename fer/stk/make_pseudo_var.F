@@ -45,18 +45,16 @@
 * revision 0.0 - 3/2/87
 * V200:  6/20/89 - 4D-symmetrical version
 * V530   1/01 - *sh* - added XBOXLO, XBOXHI and family ...
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*       *acm*      more 4s that should have been nferdims
+*      *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
+	include	'xalgebra.cmn'
 
 * calling argument declarations:
 	INTEGER	cx, mr, idim, lo_ss, hi_ss
@@ -72,32 +70,33 @@
 * defining grid for output data
 	grid = cx_grid( cx )
 
-	pv = (mr_variable(mr)-1) / 4  + 1
-	IF ( pv .GT. 5 )  STOP 'MK_PSEUDO_VAR'	! diag
+	pv = (mr_variable(mr)-1) / nferdims  + 1
+
+	IF ( pv .GT. nferdims+1 )  STOP 'MK_PSEUDO_VAR'	! diag
 
 	GOTO (  100, 200, 300, 400, 500 ) pv
 
-* "I", "J", "K", "L"
+* "I", "J", "K", "L", "M", "N"
  100	DO 110 i = lo_ss, hi_ss
  110	pvar( i ) = i
 	RETURN
 
-* "X", "Y", "Z", "T"
+* "X", "Y", "Z", "T", "E", "F"
  200	DO 210 i = lo_ss, hi_ss
  210	pvar( i ) = TM_WORLD( i,grid,idim,box_middle )
 	RETURN
 
-* "XBOX", "YBOX", "ZBOX", "TBOX"
+* "XBOX", "YBOX", "ZBOX", "TBOX", "EBOX", "FBOX"
  300	DO 310 i = lo_ss, hi_ss
  310	pvar( i ) = BOX_SIZE( i, grid, idim )
 	RETURN
 
-* "XBOX", "YBOX", "ZBOX", "TBOX"
+* "XBOXLO", "YBOXLO", "ZBOXLO", "TBOXLO", "EBOXLO", "FBOXLO"
  400	DO 410 i = lo_ss, hi_ss
  410	pvar( i ) =  TM_WORLD( i,grid,idim,box_lo_lim )
 	RETURN
 
-* "XBOX", "YBOX", "ZBOX", "TBOX"
+* "XBOXHI", "YBOXHI", "ZBOXHI", "TBOXHI", "EBOXHI", "FBOXHI"
  500	DO 510 i = lo_ss, hi_ss
  510	pvar( i ) =  TM_WORLD( i,grid,idim,box_hi_lim )
 	RETURN

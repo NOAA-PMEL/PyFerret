@@ -1,6 +1,8 @@
 	SUBROUTINE PERMUTE_PTR_SUB( src_cx, perm,
-     .		src, slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit )
+     .		src, slox, shix, sloy, shiy, sloz, shiz, 
+     .		slot, shit, sloe, shie, slof, shif,
+     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, 
+     .		dlot, dhit, dloe, dhie, dlof, dhif )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -44,41 +46,52 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V533: 6/01 *sh*
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 
 * calling argument declarations:
-	INTEGER src_cx, perm(4),
-     .		slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit
-	REAL*8  src( slox:shix,sloy:shiy,sloz:shiz,slot:shit ),
-     .		dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit )
+	INTEGER src_cx, perm(nferdims),
+     .		slox, shix, sloy, shiy, sloz, shiz, 
+     .		slot, shit, sloe, shie, slof, shif,
+     .		dlox, dhix, dloy, dhiy, dloz, dhiz, 
+     .		dlot, dhit, dloe, dhie, dlof, dhif
+	REAL*8  src( slox:shix,sloy:shiy,sloz:shiz,slot:shit,sloe:shie,slof:shif ),
+     .		dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit,dloe:dhie,dlof:dhif )
 
 * internal variable declarations:
-	INTEGER	loi, loj, lok, lol, hii, hij, hik, hil, i, j, k, l, idim
-	INTEGER	lo(4), hi(4), ii(4)
+	INTEGER	loi, loj, lok, lol, lom, lon, 
+     .		hii, hij, hik, hil, him, hin, 
+     .		i, j, k, l, m, n, idim
+	INTEGER	lo(nferdims), hi(nferdims), ii(nferdims)
 	EQUIVALENCE
      .		(lo(1), loi), (hi(1), hii), (ii(1), i),
      .		(lo(2), loj), (hi(2), hij), (ii(2), j),
      .		(lo(3), lok), (hi(3), hik), (ii(3), k),
-     .		(lo(4), lol), (hi(4), hil), (ii(4), l)
+     .		(lo(4), lol), (hi(4), hil), (ii(4), l),
+     .		(lo(5), lom), (hi(5), him), (ii(5), m),
+     .		(lo(6), lon), (hi(6), hin), (ii(6), n)
 
 * --- end of introductory code ---
 
 * initialize - save loop limits as unsubscripted variables
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   lo(idim) = cx_lo_ss(src_cx,idim)
 	   hi(idim) = cx_hi_ss(src_cx,idim)
  100	CONTINUE
 
+	DO 200  n = lon, hin
+	DO 200  m = lom, him
 	DO 200  l = lol, hil
 	DO 200  k = lok, hik
 	DO 200  j = loj, hij
 	DO 200  i = loi, hii
-	   CALL COPY_C_STRING( src(i,j,k,l),
-     .		dst(ii(perm(1)),ii(perm(2)),ii(perm(3)),ii(perm(4))))
+	   CALL COPY_C_STRING( src(i,j,k,l,m,n),
+     .		dst(ii(perm(1)),ii(perm(2)),ii(perm(3)),ii(perm(4)),
+     .		ii(perm(5)),ii(perm(6))))
  200	CONTINUE
 
 	RETURN

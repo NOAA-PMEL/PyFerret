@@ -42,192 +42,138 @@
  * function unique_str2int
  */
 
-
-#include <wchar.h>
-#include <unistd.h>		/* for convenience */
-#include <stdlib.h>		/* for convenience */
-#include <stdio.h>		/* for convenience */
-#include <string.h>		/* for convenience */
-#include <fcntl.h>		/* for fcntl() */
-#include <assert.h>
-#include <sys/types.h>	        /* required for some of our prototypes */
-#include <sys/stat.h>
-#include <sys/errno.h>
-
+#include <stdio.h>
+#include <string.h>
 #include "list.h"  /* locally added list library */
-#include "us2i_compare_string_list.h"
 
-/* ................ Global Variables ................ */
+/* max length of a path */
+#define MAX_NAME 512
 
-static LIST  *GLOBAL_unique_us2i_List;
-static int us2i_list_initialized = FALSE;
+/* define structure used locally */
+typedef struct  {
+    char astring[MAX_NAME];
+    int seq;
+} strngs;
 
-/* ............. Function Declarations .............. */
-/*
- * Note that all routines called directly from Ferret,
- * ie. directly from Fortran, should be all lower case,
- * be of type 'void', pass by reference and should end with 
- * an underscore.
- */
-
+#ifdef NO_ENTRY_NAME_UNDERSCORES
+#define FORTRAN(a) a
+#else
+#define FORTRAN(a) a##_
+#endif
 
 /* .... Functions called by Fortran .... */
-int FORTRAN(us2i_compare_string_list) (char *, int *);
-int FORTRAN(init_us2i_list)(char *);
-int FORTRAN(end_us2i_list);
+void FORTRAN(us2i_compare_string_list)(char *, int *);
 void FORTRAN(us2i_str_cmp)(char *, char *, int *);
 
+/* .... Static Variables ............... */
+static LIST *GLOBAL_unique_us2i_List;
+static int us2i_list_initialized = 0;
+
 /* .... Functions called internally .... */
+static int add_us2i_string(char *);
+static int ListTraverse_FoundString( char *, char * );
 
-int (add_us2i_string)(char *);
-
-int ListTraverse_FoundString( char *, char * );
-void list_free(LIST *, int ); 
-
-/* ----
- * Initialize new list of strings, GLOBAL_unique_us2i_List
- */
-
-int FORTRAN(init_us2i_list)(char *str1)
-
-{
-  strngs this_string; 
-  int iseq;
-  static int return_val=3; /* static because it needs to exist after the return statement */
-
-/* Add string to global string linked list*/ 
-  if (!us2i_list_initialized) {
-    if ( (GLOBAL_unique_us2i_List = list_init()) == NULL ) {
-      fprintf(stderr, "ERROR: unique_str2int: Unable to initialize GLOBAL_unique_us2i_List.\n");
-      return_val = -1;
-      return return_val; 
-	}
-    us2i_list_initialized = TRUE;
-  }
-
-  strcpy(this_string.astring, str1);
-  iseq = 1;
-  this_string.seq = iseq;
-
-  list_insert_after(GLOBAL_unique_us2i_List, &this_string, sizeof(strngs));
-  return_val = 3;
-  return return_val;
-  }
 
 /* ----
  * Deallocate GLOBAL_unique_us2i_List
+ *
+ *
+ * int FORTRAN(end_us2i_list)
+ * {
+ *    list_free(GLOBAL_unique_us2i_List, LIST_DEALLOC);
+ *    us2i_list_initialized = 0;
+ * }
  */
-/*  */
-/* int FORTRAN(end_us2i_list) */
-/*  */
-/* { */
-/*  */
-/*   static int return_val=3; /* static because it needs to exist after the return statement */
-/*  */
-/*   list_free(GLOBAL_unique_us2i_List, LIST_DEALLOC); */
-/*   return return_val;  */
-/*   } */
-
-/* ----
- * Add a string to GLOBAL_unique_us2i_List
- */
-
-int add_us2i_string(char addstring[])
-
-{
-  strngs this_string;
-  int iseq;
-  strngs *str_ptr=NULL;
-  
-  int isize;
-
-  static int return_val=3; /* static because it needs to exist after the return statement */
-
-
-	/* Add to global linked list*/ 
-  if (!us2i_list_initialized) {
-    if ( (GLOBAL_unique_us2i_List = list_init()) == NULL ) {
-      fprintf(stderr, "ERROR: unique_str2int: Unable to initialize GLOBAL_unique_us2i_List.\n");
-      return_val = -1;
-      return return_val; 
-		}
-    us2i_list_initialized = TRUE;
-  }
-  
-  isize = list_size(GLOBAL_unique_us2i_List);
-  iseq = 1 + isize;
-
-  this_string.seq = iseq;
-  strcpy(this_string.astring, addstring);
-
-  list_insert_after(GLOBAL_unique_us2i_List, &this_string, sizeof(this_string));
-  
-  return return_val;
-}
 
 
 /* ----
  * Call C strcmp function.
  */
 void FORTRAN(us2i_str_cmp)(char *str1, char *str2, int *ival)
-
 {
-  static int return_val=0;
-  *ival = strcmp(str1, str2);
-
-  return;
+   *ival = strcmp(str1, str2);
 }
 
+
 /* ----
- * Find a string in the list. If it is not in the list, add it to the list.
- * If it is in the list, return its sequence number.
+ * Find a string in the list, initializing the list if this is the
+ * first search. If the string is not in the list, add it to the list.
+ * Return the sequence number of the string in the (resulting) list.
+ * If an error occurs, a sequence number of zero is assigned.
  */
- int FORTRAN(us2i_compare_string_list) (char* compare_string, int *str_seq)
-
+void FORTRAN(us2i_compare_string_list)(char* compare_string, int *str_seq)
 {
-  strngs *str_ptr=NULL;
-  int status=LIST_OK;
-  int return_val;
-  LIST *dummy;
+   strngs *str_ptr;
+   int status;
+
+   if ( ! us2i_list_initialized ) {
+      /*
+       * no list yet; initialize the list and add the string to it;
+       * send back the new sequence number of this string
+       */
+      *str_seq = add_us2i_string(compare_string);
+      return;
+   }
+
+   /* check the existing list for this string */
+   status = list_traverse(GLOBAL_unique_us2i_List, compare_string, 
+                          ListTraverse_FoundString, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+   if ( status != LIST_OK ) {
+      /* string not found; add it to the list and send back the new sequence number */
+      *str_seq = add_us2i_string(compare_string); 
+      return;
+   }
+
+   /* String found; get and send back its sequence number in the list */
+   str_ptr = (strngs *) list_curr(GLOBAL_unique_us2i_List); 
+   *str_seq = str_ptr->seq;
+}
 
 
-   /*
-   * Check the list of strings for this string.  If not found, add it, and
-   * send back the sequence number.
-   */  
-	   
-  status = list_traverse(GLOBAL_unique_us2i_List, compare_string, ListTraverse_FoundString, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) {
-    add_us2i_string(compare_string); 
-	  status = list_traverse(GLOBAL_unique_us2i_List, compare_string, ListTraverse_FoundString, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-	  str_ptr = (strngs *)list_curr(GLOBAL_unique_us2i_List);
-	  *str_seq = str_ptr->seq;
+/* ----
+ * Add a string to GLOBAL_unique_us2i_List, initializing the list if necessary.
+ * Returns the sequence number of this new string, or 0 if an error occurs.
+ */
+static int add_us2i_string(char addstring[])
+{
+   strngs this_string;
+   int isize;
+   int iseq;
 
-    return return_val;
-  }
+   /* Create the list if required */
+   if ( ! us2i_list_initialized ) {
+      GLOBAL_unique_us2i_List = list_init();
+      if ( GLOBAL_unique_us2i_List == NULL ) {
+         fprintf(stderr, "ERROR: unique_str2int: Unable to initialize GLOBAL_unique_us2i_List.\n");
+         return 0;
+      }
+      us2i_list_initialized = 1;
+   }
 
+   /* Add to global linked list*/ 
+   isize = list_size(GLOBAL_unique_us2i_List);
+   iseq = 1 + isize;
 
-   /*
-   * If found, Send back the corresponding sequence number.
-   */  
+   this_string.seq = iseq;
+   strcpy(this_string.astring, addstring);
 
-  str_ptr = (strngs *)list_curr(GLOBAL_unique_us2i_List); 
-  *str_seq = str_ptr->seq;
-  return_val = 3;
-  return return_val;
+   list_insert_after(GLOBAL_unique_us2i_List, (char *) &this_string, sizeof(this_string));
+
+   return iseq;
 }
 
 
 /* ---- 
- * See if the incoming string matches the string in the list at 
- * curr. Ferret always capitalizes everything so be case INsensitive.
+ * See if the incoming string matches the string in the list at curr.
+ * Case sensitive.
  */
-int ListTraverse_FoundString( char *data, char *curr )
+static int ListTraverse_FoundString(char *data, char *curr)
 {
-  strngs *str_ptr=(strngs *)curr; 
+   strngs *str_ptr = (strngs *) curr; 
 
-  if ( !strcmp(data, str_ptr->astring) ) {
-    return FALSE; /* found match */
-  } else
-    return TRUE;
+   if ( strcmp(data, str_ptr->astring) == 0 ) {
+      return 0; /* found match */
+   }
+   return 1;
 }
+

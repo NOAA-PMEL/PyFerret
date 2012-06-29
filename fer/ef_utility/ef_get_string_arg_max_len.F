@@ -1,8 +1,8 @@
-      SUBROUTINE ef_get_string_arg_max_len (id, iarg, str_arg, smax)
+      SUBROUTINE EF_GET_STRING_ARG_MAX_LEN(id, iarg, str_arg, smax)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -34,10 +34,12 @@
 *
 *  acm 12/03  
 *
-* This returns the length of the I,J,K,L-th element of the string array which 
-* was passed as an argument to the external function.
+* This returns the maximum length of the string elements of a string array
+* which was passed as an argument to the external function.
 *
 
+      IMPLICIT NONE
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'
       INCLUDE 'xvariables.cmn'
@@ -46,25 +48,28 @@
       INTEGER id, iarg, smax
       REAL str_arg(*)
 
-      INTEGER max_line_len, mr, i, j, k, l, slen,
-     .        lox, hix, loy, hiy, loz, hiz, lot, hit
+      INTEGER max_line_len, mr, slen,
+     .        i, j, k, l, m, n, 
+     .        lox, hix, loy, hiy, loz, hiz,
+     .        lot, hit, loe, hie, lof, hif
       INTEGER mr_list(EF_MAX_ARGS)
-      CHARACTER buff*32
+      CHARACTER buff*64
       PARAMETER (max_line_len = 512)
       
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
+      INTEGER arg_lo_ss(nferdims,EF_MAX_ARGS),
+     .        arg_hi_ss(nferdims,EF_MAX_ARGS),
+     .        arg_incr (nferdims,EF_MAX_ARGS)
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL EF_GET_ARG_SUBSCRIPTS(id, arg_lo_ss, arg_hi_ss, arg_incr)
  
 * The memory resident list was cached by Ferret and must be retrieved
 * to be accessible to the external function.
 
       CALL EF_GET_MR_LIST(mr_list)
       mr = mr_list(iarg)
-      
+
       IF ( mr .EQ. 0 ) THEN
-* Don't call during custom axis creation time
+* Do not call during custom axis creation time
           buff = 
      .     'Use ef_get_string_arg_element_len in the compute phase'
           GOTO 5000
@@ -84,23 +89,26 @@
          hiz = arg_hi_ss(Z_AXIS,iarg)
          lot = arg_lo_ss(T_AXIS,iarg)
          hit = arg_hi_ss(T_AXIS,iarg)
+         loe = arg_lo_ss(E_AXIS,iarg)
+         hie = arg_hi_ss(E_AXIS,iarg)
+         lof = arg_lo_ss(F_AXIS,iarg)
+         hif = arg_hi_ss(F_AXIS,iarg)
 
 
-* Inside ef_get_string_arg_elem_len_sub, str_arg is a real*8 array of pointers, and
-* we can call GET_STRING_ELEMENT to get the length of a string element. 
+* Inside ef_get_string_arg_elem_len_sub, str_arg is an array of pointers (cast as REAL*8),
+* and we can call GET_STRING_ELEMENT to get the length of a string element. 
 
           smax = 0
-	  DO 100 l = lot, hit
-	  DO 100 k = loz, hiz
-	  DO 100 j = loy, hiy
-	  DO 100 i = lox, hix
-             CALL ef_get_string_arg_elem_len_sub (
-     .                              lox, hix, loy, hiy,
-     .                              loz, hiz, lot, hit,
-     .			            str_arg, i, j, k, l, 
-     .			            max_line_len, slen)
+          DO 100 n = lof, hif
+          DO 100 m = loe, hie
+          DO 100 l = lot, hit
+          DO 100 k = loz, hiz
+          DO 100 j = loy, hiy
+          DO 100 i = lox, hix
+             CALL EF_GET_STRING_ARG_ELEM_LEN_SUB(lox, hix, loy, hiy,
+     .                   loz, hiz, lot, hit, loe, hie, lof, hif,
+     .                   str_arg, i, j, k, l, m, n, max_line_len, slen)
              smax = MAX(slen, smax)
-              
  100      CONTINUE
 
       ENDIF
@@ -109,5 +117,6 @@
 
 * return an error message     
  5000 CALL EF_BAIL_OUT(id, buff)
+      STOP 'EF_BAIL_OUT returned in EF_GET_STRING_ARG_MAX_LEN'
 
       END

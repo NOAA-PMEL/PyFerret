@@ -5,7 +5,7 @@
      .				tmask,		! temperature, salinity mask
      .				kmt,		! bottom topography on t grid
      .				kmu		! bottom topography on u grid
-#ifdef ACCEPTS_BYTE_DECLARATION
+#ifdef NEED_BYTE
 	 BYTE      umask(im,jm), tmask(im,jm), kmt(im,jm), kmu(im,jm)
 #else
 	 INTEGER*1 umask(im,jm), tmask(im,jm), kmt(im,jm), kmu(im,jm)

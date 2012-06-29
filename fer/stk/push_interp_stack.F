@@ -43,16 +43,12 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 2/19/87
-
-#ifdef unix
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+ 
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		level, status

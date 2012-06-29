@@ -1,5 +1,6 @@
 	SUBROUTINE EXTRACT_LINE_SUB( cx, line,
-     .		src, slox, shix, sloy, shiy, sloz, shiz, slot, shit )
+     .		src, slox, shix, sloy, shiy, sloz, shiz, 
+     .		slot, shit, sloe, shie, slof, shif )
 
 *
 *
@@ -44,32 +45,32 @@
 * written for VAX computer under VMS operating system
 *
 * V200:  10/16/89 - based on EXTRACT_LINE
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
-	INTEGER	cx, slox, shix, sloy, shiy, sloz, shiz, slot, shit
-	REAL    src( slox:shix,sloy:shiy,sloz:shiz,slot:shit ),
+	INTEGER	cx, slox, shix, sloy, shiy, sloz, shiz, 
+     .		slot, shit, sloe, shie, slof, shif
+	REAL    src( slox:shix,sloy:shiy,sloz:shiz,slot:shit,sloe:shie,slof:shif ),
      .		line(*)
 
 * internal variable declarations:
-	INTEGER	i, j, k, l, iout
+	INTEGER	i, j, k, l, m, n, iout
 
 * extract the line
 	iout = 0
+	DO 200 n = cx_lo_s6(cx), cx_hi_s6(cx)
+	DO 200 m = cx_lo_s5(cx), cx_hi_s5(cx)
 	DO 200 l = cx_lo_s4(cx), cx_hi_s4(cx)
 	DO 200 k = cx_lo_s3(cx), cx_hi_s3(cx)
 	DO 200 j = cx_lo_s2(cx), cx_hi_s2(cx)
 	DO 200 i = cx_lo_s1(cx), cx_hi_s1(cx)
 
 	   iout = iout + 1
-	   line( iout ) = src( i,j,k,l )
+	   line( iout ) = src( i,j,k,l,m,n )
 
  200	CONTINUE
 

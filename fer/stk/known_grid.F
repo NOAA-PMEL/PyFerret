@@ -45,8 +45,10 @@
 * V200:   7/6/89 - based on IGRID
 * V230:  7/21/92 - check for unspecified data set on calc_var
 * v554: 1/04 *acm* Counter variables for REPEAT/RANGE=/NAME=
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
 	include	'tmap_dims.parm'
+#       include "tmap_dset.parm"
 	include	'xdset_info.cmn_text'
 	external xdset_info_data
 	include	'ferret.parm'
@@ -65,6 +67,11 @@
 
 	   KNOWN_GRID = ds_grid_number( variable )
 
+	ELSEIF ( category .EQ. cat_aggregate_var ) THEN
+
+	   KNOWN_GRID = ds_grid_number( variable )
+	   IF (ds_grid_number( variable ) .EQ. int4_init) 
+     .	      KNOWN_GRID = unspecified_int4
 
 	ELSEIF ( category .EQ. cat_calc_var ) THEN
 

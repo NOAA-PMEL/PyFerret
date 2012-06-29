@@ -49,6 +49,7 @@
 *	10/11/89 - array declarations using XMEM_SUBSC.CMN (reordered args)
 
 #ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'gfdl.parm'		! parameter definitions
 	include	'xvariables.cmn'

@@ -47,8 +47,8 @@
 *	note: this addition was made YEARS after the logic here was developed
 *	      there are uncertainties whether special circumstances in FERRET
 *	      may lead to problem behavior
+*       *acm* 3/12 cleanup old VMS ifdef
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
@@ -58,20 +58,12 @@
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
 	include	'xfr_grid.cmn'	! 10/93
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	include	'FERRET_CMN:XFR_GRID.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER idim, cx, lo_ss, hi_ss
 
 * internal variable declarations
+	LOGICAL is_file_var
 	INTEGER dset, cat, var, grid, line, status
 	INTEGER TM_GET_GRIDNUM		! 10/93
 
@@ -95,7 +87,8 @@
 * ... end of 10/93 additions
 
 * cannot return answer under several conditions
-	IF ( cat  .NE. cat_file_var
+	is_file_var = cat.EQ.cat_file_var .OR. cat.EQ.cat_aggregate_var
+	IF ( (.NOT.is_file_var)
      .  .OR. dset .EQ. unspecified_int4
      .  .OR. line .EQ. mnormal
      .  .OR. cx_unstand_grid(cx)	 ) THEN

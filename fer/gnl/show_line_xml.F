@@ -52,6 +52,7 @@
 * V650  Write to show_lun which may be set to a file unit number rather than std out
 * V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -102,7 +103,7 @@ C New form for attribute output, list values separately.
 
 * determine orientation
 
-	DO 100 idim = 1, 5
+	DO 100 idim = 1, nferdim+1
 	   IF ( line_direction(line) .EQ. axis_orients( idim ) ) THEN
 	      orient = idim
 	      GOTO 110
@@ -123,15 +124,25 @@ C New form for attribute output, list values separately.
            idim = 4
            GOTO 110
         ENDIF
+        IF (line_direction(line) .EQ. 'EE') THEN  !! ??
+           orient = 5
+           idim = 5
+           GOTO 110
+        ENDIF
+        IF (line_direction(line) .EQ. 'FF') THEN
+           orient = 6
+           idim = 6
+           GOTO 110
+        ENDIF
 
 	orient = 0
 	idim   = 1			! use X slot for non-oriented
- 110	IF ( idim .EQ. 5 ) idim = 3	! DU --> UD on Z axis
+ 110	IF ( idim .EQ. 7 ) idim = 3	! DU --> UD on Z axis
 
         ! Oriengation still not defined. Look for the axis in the grids
         IF (orient .EQ. 0) THEN
 	   DO 130 igrid = 1, max_dyn_grids
-	   DO 120 idim = 1, 4
+	   DO 120 idim = 1, nferdims
 	      IF ( line .EQ. grid_line(idim,igrid) ) THEN
 	         orient = idim
 	         GOTO 140

@@ -77,6 +77,8 @@
 *                   incorrectly specifies LIST/I=1:100:0 VAR
 * V68  *acm* 1/12  explicit single-precision calculations for consistent results in
 *		   for double-precision ferret
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
+*                  dimension is now an arg to SECS_TO_TSTEP.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -136,7 +138,13 @@
 	   cx_delta( idim, cx ) = unspecified_val8
 	   cx_trans( idim, cx ) = trans_no_transform
 * kob 9/97 - need to reset cx_calendar as well
-	   IF (idim .eq. t_dim) 
+
+c  What to do with multiple time axes? If f_axis is normal, dont wipe out
+c  a valid calendar setting for time axis. Need cx_calendar(idim,cx) ??
+c	   IF (idim.EQ.t_dim .OR. idim.EQ.f_dim)
+c     .                cx_calendar(cx) = .FALSE.
+
+	   IF (idim.EQ.t_dim)
      .                cx_calendar(cx) = .FALSE.
 
 * axes with fully "given" regions will have their regions determined via
@@ -175,7 +183,7 @@
 	   cx_delta( idim, cx ) = unspecified_val8
 	   cx_trans( idim, cx ) = trans_no_transform
 * kob 9/97 - need to reset cx_calendar as well
-	   IF (idim .eq. t_dim) THEN
+	   IF (idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
               cx_calendar(cx) = .FALSE.
               cx_cal_id(cx) = unspecified_int4
            ENDIF
@@ -207,7 +215,7 @@
 	   cx_hi_ww(idim, cx) = TM_WORLD( cx_hi_ss( cx,idim),
      .					  grid, idim, box_hi_lim )
 
-	   IF ( idim.EQ.t_dim .AND. cx_calendar(cx) ) THEN
+	   IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. cx_calendar(cx) ) THEN
              cal_id = TM_GET_CALENDAR_ID (line_cal_name(axis))
              cx_cal_id(cx) = cal_id
            ENDIF
@@ -233,13 +241,13 @@
 * convert times given as seconds from BC to time step values
 * *kob* 8/97 - use cx_calender instead of cx_lo_ww
 
-	   IF ( idim.EQ.t_dim .AND. cx_calendar(cx) ) THEN
+	   IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. cx_calendar(cx) ) THEN
              cal_id = TM_GET_CALENDAR_ID (line_cal_name(axis))
              IF ( TM_DATE_OK( line_t0(axis), cal_id ) ) THEN
 	         cx_lo_ww(idim,cx) =
-     .                SECS_TO_TSTEP( grid, -cx_lo_ww(idim,cx) )
+     .                SECS_TO_TSTEP( grid, idim, -cx_lo_ww(idim,cx) )
 	         cx_hi_ww(idim,cx) =
-     .                SECS_TO_TSTEP( grid, -cx_hi_ww(idim,cx) )
+     .                SECS_TO_TSTEP( grid, idim, -cx_hi_ww(idim,cx) )
 		 cx_calendar(cx) = .FALSE.
                  cx_cal_id(cx) = cal_id
               ENDIF

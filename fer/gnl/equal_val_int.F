@@ -41,6 +41,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * based on equal_val for real numbers
 *
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+
 
 * calling argument declarations
 	INTEGER		status, ival
@@ -53,13 +55,8 @@
 	CHARACTER	buff*64
 #endif
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 * initialize
 	slen	  = LEN( string )

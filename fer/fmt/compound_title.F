@@ -60,11 +60,7 @@
 	CHARACTER*200	FULL_VAR_TITLE
 	INTEGER		slen, maxlen, i
 
-#ifdef unix
 	include 'ferret.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * maximum title length
 	maxlen = LEN( COMPOUND_TITLE )

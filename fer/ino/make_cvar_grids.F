@@ -48,7 +48,8 @@
 * Unix/RISC port - 1/91 - cant use "/star" in comments on Unix
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
-#ifdef unix
+*       *acm* 3/12 changes for 6D Ferret
+
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
@@ -60,17 +61,6 @@
 	include	'xvariables.cmn'
 	include	'xcalc_vars.cmn'
 	include	'xdset_parms.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XCALC_VARS.CMN'
-	INCLUDE	'FERRET_CMN:XDSET_PARMS.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER	dset, status

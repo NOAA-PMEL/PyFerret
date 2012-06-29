@@ -41,6 +41,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
 *
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations:
 	CHARACTER*(*)	reg_name
@@ -48,16 +50,10 @@
 * internal variable declarations:
 	INTEGER	STR_CASE_BLIND_COMPARE, ict, vax_code
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'gfdl_vms.parm'
 	include 'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:GFDL_VMS.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
-
 * revision 0.0 - 6/25/86
 
 * search the predefined context names

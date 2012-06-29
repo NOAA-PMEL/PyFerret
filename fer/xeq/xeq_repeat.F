@@ -60,7 +60,10 @@
 *                   user attempts to use a pseudo-variables for /NAME=
 *      6/04 ywei  - changed MATCH_NAME to allow optimization
 * V57  6/04 *acm* - clean up declarations
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'command.parm'
 	include 'errmsg.parm'
@@ -116,7 +119,7 @@
      .          qual_start(loc) - 1
 
 
-* Did they specify /RANGE and also /I/J/K/L/X/Y/Z/T ?
+* Did they specify /RANGE and also /I/J/K/L/M/N/X/Y/Z/T/E/F ?
 	   report_unknown = .FALSE.
 	   limits_cx = cx_stack_ptr_base + 1
 	   CALL INIT_CONTEXT_MODS ( limits_cx )
@@ -130,7 +133,7 @@
      .				report_unknown,
      .				status	)
 	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   DO 100 i = 1,4
+	   DO 100 i = 1, nferdims
 	      IF ( cx_given(i,limits_cx) ) GOTO 5300
  100	   CONTINUE
 
@@ -146,26 +149,13 @@
              IF ( status .NE. ferr_ok ) GOTO 5000
 
 * Check for legal name: not already defined, not a pseudo-var
-* Only check for pseudo_vars I,J,K,L, X,Y,Z,T.  These cannot
+* Only check for pseudo_vars I,J,K,L,M,N, X,Y,Z,T,E,F.  These cannot
 * be used as counter vars.
 
              cat = 0
 	     CALL FIND_VAR_NAME ( pdset_irrelevant, counter_name, 
      .                            cat, var )
              IF ( cat .EQ. cat_pseudo_var   ) THEN
-*                len_test = TM_LENSTR(counter_name(1:LEN(counter_name)))
-*                DO var = 1, 9
-*                  len_mchars = TM_LENSTR(alg_pvar(var))
-*                  IF (MATCH_NAME(counter_name, len_test, 
-*     .                alg_pvar(var),len_mchars ) )
-*     .                 GOTO 5200
-*                ENDDO
-*                DO var = 10, num_pseudo_vars
-*                  len_mchars = TM_LENSTR(alg_pvar(var))
-*                  IF (MATCH_NAME(counter_name, len_test,
-*     .                alg_pvar(var),len_mchars ) )
-*     .                 GOTO 5250
-*                ENDDO
 
 	         CALL string_array_find(alg_pvar_head,
      .                           counter_name,
@@ -301,7 +291,7 @@
 
 * determine the (unique) axis of REPEATing
 	   idim = unspecified_int4
-	   DO 200 i = 1,4
+	   DO 200 i = 1, nferdims
 	      IF ( cx_given(i,limits_cx) ) THEN
 	         IF ( idim .EQ. unspecified_int4 ) THEN
 	            idim = i
@@ -360,7 +350,7 @@
 * stored as negative seconds since 1-jan-0000:00:00:00
 * 8/97 *kob* use cx_calender to check if time is date rather than time step
 * 12/97 *kob* set new logical cs_is_calendar now as well
-	   by_date = ( idim .EQ. t_dim )
+	   by_date = ( idim .EQ. t_dim .OR. idim .EQ. f_dim )
      .	   .AND. ( .NOT.cx_by_ss(idim,limits_cx) )
      .	   .AND. ( cx_calendar(limits_cx) )
 * ... delta value in hours: hours-->seconds (to add to secs from BC)

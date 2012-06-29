@@ -66,7 +66,9 @@
 *              gets transfered
 * *acm* v580 11/04 Transfer cx_cal_id, the calendar ID used when computing 
 *                  world coordinates
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'errmsg.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
@@ -100,11 +102,11 @@
 	   cx_grid( dest_cx ) = cx_grid( mods_cx )
 	ENDIF
 * ... apply regrid transform to each axis (some may be "unspecified")
-	DO 50 idim = 1, 4
+	DO 50 idim = 1, nferdims
  50	cx_regrid_trans(idim,dest_cx) = cx_regrid_trans(idim,mods_cx)
 
 * apply modifications for each axis ( except normal axes, of course )
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   IF ( .NOT.cx_given( idim, mods_cx )	   )	GOTO 100
 
 * ... "given" flag on dest context to represent limits (not transform) given
@@ -121,7 +123,7 @@
 	         cx_lo_ww( idim,dest_cx ) = unspecified_val8
 	         cx_hi_ww( idim,dest_cx ) = unspecified_val8
 * kob 9/97 - need to reset cx_calendar as well
-		 IF (idim .eq. t_dim) THEN
+		 IF (idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
                     cx_calendar(dest_cx) = .FALSE.
                     cx_cal_id(dest_cx) = unspecified_int4
                  ENDIF
@@ -131,7 +133,7 @@
 	         cx_lo_ss( dest_cx ,idim) = unspecified_int4
 	         cx_hi_ss( dest_cx ,idim) = unspecified_int4
 * kob 9/97 - need to transfer cx_calendar as well
-		 IF (idim .eq. t_dim) THEN
+		 IF (idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
                     cx_calendar(dest_cx) = cx_calendar(mods_cx)
                     cx_cal_id(dest_cx) = cx_cal_id(mods_cx)
                  ENDIF

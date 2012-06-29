@@ -50,7 +50,9 @@
 * V500: *sh* added POLYGON command
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'command.parm'
 	include	'slash.parm'
@@ -77,7 +79,7 @@
      . .OR.  cmnd_num .EQ. cmnd_vector ) THEN
            ndim = nplot_axis + 1
            DO 200 ifix = ndim, 2
-              DO 150 idim = 1, 4
+              DO 150 idim = 1, nferdims
 * axis already included in nplot_axis ?
                  DO 100 pdim = 1, nplot_axis
                     IF ( idim .EQ. plot_axis(pdim) ) GOTO 150

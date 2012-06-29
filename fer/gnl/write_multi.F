@@ -46,14 +46,12 @@
 * V300: adapted for output to GUI displa
 * V314: 8/22/94 *kob* IBM port - need to use risc buff for char. concat 
 * V320: 2/28/95 - SPLIT_GUI_MESSAGE --> TM_SPLIT_MESSAGE
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 #ifdef NO_PASSED_CONCAT
 	include 'xrisc.cmn'
-#endif
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
 #endif
 
 * calling argument declarations:

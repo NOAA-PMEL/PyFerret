@@ -56,21 +56,24 @@ c* called since the stacks would get re-initialized and the {,,,} would need
 c* to be parsed
 c*
 
-      SUBROUTINE ef_get_one_arg_string(id, iarg, text)
+      SUBROUTINE EF_GET_ONE_ARG_STRING(id, iarg, text)
 
+      IMPLICIT NONE
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'
+      INCLUDE 'EF_Util.parm'
       INCLUDE 'xvariables.cmn'
       INCLUDE 'xcontext.cmn'
-      INCLUDE 'EF_Util.parm'
 
       INTEGER id, iarg, mr
       CHARACTER*(*) text
 
-      INTEGER  GET_OFFSET_C_STRING_LEN, slen, flen, cx, uv,
-     .         item, start, end
-      INTEGER mr_list(EF_MAX_ARGS)
-      CHARACTER buff*32
+      INTEGER   GET_OFFSET_C_STRING_LEN,
+     .          slen, flen, cx, uv, item, start, end
+      INTEGER   mr_list(EF_MAX_ARGS)
+      INTEGER*2 int_buff(1024)
+      CHARACTER buff*64
  
 c The memory resident list was cached by Ferret and must be retrieved
 c to be accessible to the external function.
@@ -105,22 +108,17 @@ c to be accessible to the external function.
 
 c Here's how you check the variable type.
 * (this should never happen as checks against it are made previously) 
-        IF (mr_type(mr) .NE. ptype_string) WRITE (6,19) iarg
- 19     FORMAT(' ERR: non-string passed as string arg', I2)
+        IF (mr_type(mr) .NE. ptype_string) GOTO 5000
 
-* get the string
+* get the a string (up to the size in bytes of int_buff)
+        CALL GET_OFFSET_C_STRING(mr_c_pointer(mr), 0, int_buff, 2048)
+        
+* and the string length
         slen = GET_OFFSET_C_STRING_LEN(mr_c_pointer(mr), 0)
+        IF ( slen .GT. 2048 ) slen = 2048
 
-* get the a null-terminated C string
-        CALL GET_OFFSET_C_STRING(mr_c_pointer(mr), 0,
-     .                  int_buff, 2048)
-        
-* the longest length we can use ...
-        flen = MIN(slen, size_ibuff)
-        flen = MIN(flen, LEN(text))
-        
 * copy it into the FORTRAN string
-        CALL TM_CTOF_STRNG (int_buff, text, flen)
+        CALL TM_CTOF_STRNG(int_buff, text, slen)
 
       ENDIF
 
@@ -130,6 +128,7 @@ c* return a ststus word to the calling C program
  5000 WRITE (buff, 3000) iarg
  3000 FORMAT ('Argument',I3,' is not a string')
       CALL EF_BAIL_OUT(id, buff)
+      STOP 'EF_BAIL_OUT returned in EF_GET_ONE_ARG_STRING'
 
       END
 

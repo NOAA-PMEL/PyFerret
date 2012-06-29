@@ -6,7 +6,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -50,6 +50,7 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 * calling argument declarations:
+        IMPLICIT NONE
 	REAL*8 date0_days
 	INTEGER year, month, day
         REAL rdum

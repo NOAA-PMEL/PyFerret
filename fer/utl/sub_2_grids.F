@@ -44,14 +44,11 @@
 * revision 0.0 - 6/25/87
 * V200:  7/26/89 - 4D symmetrical version
 *	10/12/89 - use ..._SUB - avoid adjustable dimensioning with array
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER mplus, mmnus, mrslt
@@ -64,16 +61,22 @@
      .				mr_lo_s2(mplus), mr_hi_s2(mplus),
      .				mr_lo_s3(mplus), mr_hi_s3(mplus),
      .				mr_lo_s4(mplus), mr_hi_s4(mplus),
+     .				mr_lo_s5(mplus), mr_hi_s5(mplus),
+     .				mr_lo_s6(mplus), mr_hi_s6(mplus),
      .				mr_bad_data( mplus ),
      .			  mnus, mr_lo_s1(mmnus), mr_hi_s1(mmnus),
      .				mr_lo_s2(mmnus), mr_hi_s2(mmnus),
      .				mr_lo_s3(mmnus), mr_hi_s3(mmnus),
      .				mr_lo_s4(mmnus), mr_hi_s4(mmnus),
+     .				mr_lo_s5(mmnus), mr_hi_s5(mmnus),
+     .				mr_lo_s6(mmnus), mr_hi_s6(mmnus),
      .				mr_bad_data( mmnus ),
      .			  rslt, mr_lo_s1(mrslt), mr_hi_s1(mrslt),
      .				mr_lo_s2(mrslt), mr_hi_s2(mrslt),
      .				mr_lo_s3(mrslt), mr_hi_s3(mrslt),
      .				mr_lo_s4(mrslt), mr_hi_s4(mrslt),
+     .				mr_lo_s5(mrslt), mr_hi_s5(mrslt),
+     .				mr_lo_s6(mrslt), mr_hi_s6(mrslt),
      .				mr_bad_data( mrslt )			)
 
 

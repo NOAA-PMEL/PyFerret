@@ -2,7 +2,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -78,7 +78,7 @@
 * V530   1/01 - *sh* - added XBOXLO, XBOXHI and family ...
 *	 3/01 - *sh* - adde g=ax@nrst
 * V533   6/01 - *sh* - added transformation @EVNT
-* 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+* 2/03 *kob* - g77 port - g77 will not allow intrinsic functions in PARAMETER
 *                         statements.  use character constant instead
 * V554 1/04  *acm* - additions for /RANGE repeat loop control; alg_cvar, countervar_name
 * V603 5/07  *acm* - added MODNBD modulo regridding statistic
@@ -88,7 +88,11 @@
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid. 
+*      2/12  *kms* Add M, N, E, F, EBOX, FBOX, EBOXLO, FBOXLO, EBOXHI, and FBOXHI
+*                  pseudo-variables
+*       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 
+        IMPLICIT NONE
 	include	'ferret.parm'
 	include	'xalgebra.cmn'
 
@@ -373,28 +377,53 @@
      .	     alg_punct(  3 ) / ')' /
 
 * pseudo_variables:
+* Keep the classic 4D variables together, then the
+* ones for 6D. Lets us set mode fourdee to use M,N etc as
+* user variables.
+
         DATA alg_pvar_head     / 0 /
         DATA alg_pvar_padding  / 0 /
 	DATA alg_pvar	(  1 ) / 'I       ' /,
      .       alg_pvar	(  2 ) / 'J       ' /,
      .       alg_pvar	(  3 ) / 'K       ' /,
      .       alg_pvar	(  4 ) / 'L       ' /,
-     .       alg_pvar	(  5 ) / 'X       ' /,
-     .       alg_pvar	(  6 ) / 'Y       ' /,
-     .       alg_pvar	(  7 ) / 'Z       ' /,
-     .       alg_pvar	(  8 ) / 'T       ' /,
-     .       alg_pvar	(  9 ) / 'XBOX    ' /
-	DATA alg_pvar	( 10 ) / 'YBOX    ' /,
-     .       alg_pvar	( 11 ) / 'ZBOX    ' /,
-     .       alg_pvar	( 12 ) / 'TBOX    ' /,
-     .       alg_pvar	( 13 ) / 'XBOXLO  ' /,
-     .       alg_pvar	( 14 ) / 'YBOXLO  ' /,
-     .       alg_pvar	( 15 ) / 'ZBOXLO  ' /,
-     .       alg_pvar	( 16 ) / 'TBOXLO  ' /,
-     .       alg_pvar	( 17 ) / 'XBOXHI  ' /,
-     .       alg_pvar	( 18 ) / 'YBOXHI  ' /,
-     .       alg_pvar	( 19 ) / 'ZBOXHI  ' /,
-     .       alg_pvar	( 20 ) / 'TBOXHI  ' /
+     .       alg_pvar	(  5 ) / '_M      ' /,
+     .       alg_pvar	(  6 ) / '_N      ' /,
+     .       alg_pvar	(  7 ) / 'X       ' /,
+     .       alg_pvar	(  8 ) / 'Y       ' /,
+     .       alg_pvar	(  9 ) / 'Z       ' /,
+     .       alg_pvar	( 10 ) / 'T       ' /,
+     .       alg_pvar	( 11 ) / '_E      ' /,
+     .       alg_pvar	( 12 ) / '_F      ' /
+     .       alg_pvar	( 13 ) / 'XBOX    ' /,
+     .       alg_pvar	( 14 ) / 'YBOX    ' /,
+     .       alg_pvar	( 15 ) / 'ZBOX    ' /,
+     .       alg_pvar	( 16 ) / 'TBOX    ' /,
+     .       alg_pvar	( 17 ) / 'EBOX    ' /,
+     .       alg_pvar	( 18 ) / 'FBOX    ' /,
+     .       alg_pvar	( 19 ) / 'XBOXLO  ' /,
+     .       alg_pvar	( 20 ) / 'YBOXLO  ' /,
+     .       alg_pvar	( 21 ) / 'ZBOXLO  ' /,
+     .       alg_pvar	( 22 ) / 'TBOXLO  ' /,
+     .       alg_pvar	( 23 ) / 'EBOXLO  ' /,
+     .       alg_pvar	( 24 ) / 'FBOXLO  ' /,
+     .       alg_pvar	( 25 ) / 'XBOXHI  ' /,
+     .       alg_pvar	( 26 ) / 'YBOXHI  ' /,
+     .       alg_pvar	( 27 ) / 'ZBOXHI  ' /,
+     .       alg_pvar	( 28 ) / 'TBOXHI  ' /,
+     .       alg_pvar	( 29 ) / 'EBOXHI  ' /,
+     .       alg_pvar	( 30 ) / 'FBOXHI  ' /
+! allow _I,_J,_K,_L,_X,_Y,_Z,_T which will be translated to just I,J,...Z,T.
+	DATA alg_pvar	( 31 ) / '_I       ' /,
+     .       alg_pvar	( 32 ) / '_J       ' /,
+     .       alg_pvar	( 33 ) / '_K       ' /,
+     .       alg_pvar	( 34 ) / '_L       ' /,
+     .       alg_pvar	( 35 ) / '_M      ' /,
+     .       alg_pvar	( 36 ) / '_N      ' /,
+     .       alg_pvar	( 37 ) / '_X       ' /,
+     .       alg_pvar	( 38 ) / '_Y       ' /,
+     .       alg_pvar	( 39 ) / '_Z       ' /,
+     .       alg_pvar	( 40 ) / '_T       ' /
         DATA alg_cvar        /60*unspecified_name4/
         DATA countervar_name_head / 0 /
         DATA countervar_name_padding / 0 /

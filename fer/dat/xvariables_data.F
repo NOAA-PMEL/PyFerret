@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -58,21 +58,15 @@
 * V312: 5/94 - array "memory" no longer a COMMON variable
 * Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
+*       2/12 *kms* Add E and F dimensions (set to nferdims in tmap_dims.parm)
 
-#ifdef unix
-#	include "tmap_dset.parm"
+        IMPLICIT NONE
+#include "tmap_dset.parm"
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'	! .cmn_text has an external
 !	external xgt_grid_data	! xtm_grid --> xgt  (DEC f77 3.2 not allowed)
 	include 'ferret.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'	! .CMN has an EXTERNAL
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 	INTEGER	    max_mrm1
 	PARAMETER ( max_mrm1 = max_mrs - 1 )
@@ -81,18 +75,18 @@
 
 * dummy stored memory variable
 	DATA mr_protected	( dummy_mr ) / mr_perm_protected /
-	DATA mr_blk1		( dummy_mr ) / 1			/
-	DATA mr_nblks		( dummy_mr ) / 0			/
+	DATA mr_blk1		( dummy_mr ) / 1		/
+	DATA mr_nblks		( dummy_mr ) / 0		/
 	DATA mr_data_set	( dummy_mr ) / unspecified_int4	/
 	DATA mr_category	( dummy_mr ) / cat_dummy_var	/
 	DATA mr_variable	( dummy_mr ) / unspecified_int4	/
 	DATA mr_grid		( dummy_mr ) / unspecified_int4	/
 	DATA mr_bad_data	( dummy_mr ) / bad_val4		/
-	DATA (mr_lo_ww(i,dummy_mr),i=1,4)/ 4*unspecified_val8	/
-	DATA (mr_hi_ww(i,dummy_mr),i=1,4)/ 4*unspecified_val8	/
-	DATA (mr_trans(i,dummy_mr),i=1,4)/ 4*trans_no_transform /
-	DATA (mr_lo_ss(dummy_mr,i),i=1,4)/ 4*1 / ! usable dimension
-	DATA (mr_hi_ss(dummy_mr,i),i=1,4)/ 4*1 / ! usable dimension
+	DATA (mr_lo_ww(i,dummy_mr),i=1,nferdims)/ nferdims*unspecified_val8 /
+	DATA (mr_hi_ww(i,dummy_mr),i=1,nferdims)/ nferdims*unspecified_val8 /
+	DATA (mr_trans(i,dummy_mr),i=1,nferdims)/ nferdims*trans_no_transform /
+	DATA (mr_lo_ss(dummy_mr,i),i=1,nferdims)/ nferdims*1 / ! usable dimension
+	DATA (mr_hi_ss(dummy_mr,i),i=1,nferdims)/ nferdims*1 / ! usable dimension
 
 * interp stack pointer at stack base
 	DATA isp / 1 /

@@ -3,7 +3,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -37,17 +37,20 @@ C  ACM
 C  Find sequential day of the year corresponding to month, day, year. 
 C  Return sequential day in variable ada.
 C  4/2001  *ACM* add error message
+C   3/12   *kms* remove leap day from appropriate century years
 
       REAL daymo(12)           ! Number of days in each month
-      DATA daymo/31,28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31/
+      DATA daymo/31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31/
       REAL amo, ada, ayr
       INTEGER iyr, imo, i, status
       CHARACTER*(*) err_msg
 
       status = 0
       iyr = ayr
-      IF (MOD(iyr, 4) .EQ. 0) THEN
-        daymo(2) = 29
+      IF ( (MOD(iyr, 400) .EQ. 0) .OR.
+     .     ( (MOD(iyr, 4) .EQ. 0) .AND. 
+     .       (MOD(iyr, 100) .NE. 0) ) ) THEN
+         daymo(2) = 29
       ENDIF
 
       imo = amo
@@ -57,13 +60,13 @@ C  4/2001  *ACM* add error message
       ENDIF
 
       IF (ada .LT. 0  .OR. ada .GT. daymo(imo)) THEN
-	 WRITE (err_msg,10) ada, imo
-   10	 FORMAT ('Day ', F4.0, ' out of range for month', I3)
+         WRITE (err_msg,10) ada, imo
+   10    FORMAT ('Day ', F4.0, ' out of range for month', I3)
          GO TO 1000
       ENDIF
 
       DO 100 i = 1, imo-1
-       ada = ada + daymo(i)
+         ada = ada + daymo(i)
   100 CONTINUE
 
       daymo(2) = 28  ! value otherwise incorrectly saved

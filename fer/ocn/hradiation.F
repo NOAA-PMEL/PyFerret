@@ -50,9 +50,9 @@
 *	SW-LW (C5) is short wave down less long wave up
 
 #ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'gfdl.parm'
-	include 'tmap_dims.parm'
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xcontext.cmn'

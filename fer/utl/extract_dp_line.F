@@ -1,4 +1,4 @@
-	SUBROUTINE EXTRACT_DP_LINE( cx, grid_data, dp_line, idim, n )
+	SUBROUTINE EXTRACT_DP_LINE( cx, grid_data, dp_line, idim, nout )
 
 *
 *
@@ -43,38 +43,34 @@
 * written for VAX computer under VMS operating system
 *
 * V200:  9/20/89 - 4D symmetrical
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
 	include 'xmem_subsc.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XMEM_SUBSC.CMN'
-#endif
 
 * calling argument declarations:
-	INTEGER	cx, mv, idim, n
-	REAL    grid_data( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit )
-	REAL*8	dp_line(n)
+	INTEGER	cx, mv, idim, nout
+	REAL grid_data( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit,m1loe:m1hie,m1lof:m1hif )
+	REAL*8	dp_line(nout)
 
 * internal variable declarations:
-	INTEGER	iout, i, j, k, l
+	INTEGER	iout, i, j, k, l, m, n
 
 * extract the line
 	iout = 0
+	DO 200 n = cx_lo_s6(cx), cx_hi_s6(cx)
+	DO 200 m = cx_lo_s5(cx), cx_hi_s5(cx)
 	DO 200 l = cx_lo_s4(cx), cx_hi_s4(cx)
 	DO 200 k = cx_lo_s3(cx), cx_hi_s3(cx)
 	DO 200 j = cx_lo_s2(cx), cx_hi_s2(cx)
 	DO 200 i = cx_lo_s1(cx), cx_hi_s1(cx)
 
 	   iout = iout + 1
-	   dp_line( iout ) = grid_data( i,j,k,l )
+	   dp_line( iout ) = grid_data( i,j,k,l,m,n )
 
  200	CONTINUE
 

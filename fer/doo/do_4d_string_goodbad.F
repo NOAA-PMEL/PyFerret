@@ -6,7 +6,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -50,70 +50,83 @@
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
-* 11/2008 - based on DO_4d_string_goodbad
-* 
 * Compute NGD NBD for string variables.
+*
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-
-* internal variable declarations:
-	LOGICAL point, yes_ax(4), no_ax(4),
-     .		at_ave, at_var, at_din, at_nbd, at_ngd
-	INTEGER idim, i, j, ir, jr, kr, lr, ic, jc, kc, lc, nbd, ngd,
-     .		com_lo(4), com_hi(4), ind_lo, ind_hi
-	REAL	bad_com, bad_res
-
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'interp_stack.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
-	include 'tmap_dims.parm'
 
+* internal variable declarations:
+	LOGICAL point, yes_ax(nferdims), no_ax(nferdims),
+     .	        at_ave, at_var, at_din, at_nbd, at_ngd
+	INTEGER idim, i, j, ir, jr, kr, lr, mr, nr,
+     .	        ic, jc, kc, lc, mc, nc, nbd, ngd,
+     .	        com_lo(nferdims), com_hi(nferdims),
+     .	        ind_lo, ind_hi
+	REAL    bad_com, bad_res
 
 * calling argument declarations:
-	INTEGER	trans, com_mr, com_cx, res_mr, res_cx
-	REAL*8  com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit )
-	REAL	res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
+	INTEGER trans, com_mr, com_cx, res_mr, res_cx
+	REAL*8  com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif )
+	REAL    arg,
+     .          res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * equivalences
-	LOGICAL  yes_xax, yes_yax, yes_zax, yes_tax,
-     .		 no_xax,  no_yax,  no_zax,  no_tax
+	LOGICAL yes_xax, yes_yax, yes_zax,
+     .          yes_tax, yes_eax, yes_fax,
+     .          no_xax,  no_yax,  no_zax,
+     .          no_tax,  no_eax,  no_fax
 
 	INTEGER GET_C_STRING_LEN, slen, 
-     .		i_lo, j_lo, k_lo, l_lo,
-     .		i_hi, j_hi, k_hi, l_hi
+     .		i_lo, j_lo, k_lo, l_lo, m_lo, n_lo,
+     .		i_hi, j_hi, k_hi, l_hi, m_hi, n_hi
 
 	EQUIVALENCE ( yes_ax(1), yes_xax ),
      .		    ( yes_ax(2), yes_yax ),
      .		    ( yes_ax(3), yes_zax ),
      .		    ( yes_ax(4), yes_tax ),
+     .		    ( yes_ax(5), yes_eax ),
+     .		    ( yes_ax(6), yes_fax ),
      .		    (  no_ax(1),  no_xax ),
      .		    (  no_ax(2),  no_yax ),
      .		    (  no_ax(3),  no_zax ),
      .		    (  no_ax(4),  no_tax ),
+     .		    (  no_ax(5),  no_eax ),
+     .		    (  no_ax(6),  no_fax ),
      .		    (  com_lo(1),  i_lo ),
      .		    (  com_lo(2),  j_lo ),
      .		    (  com_lo(3),  k_lo ),
      .		    (  com_lo(4),  l_lo ),
+     .		    (  com_lo(5),  m_lo ),
+     .		    (  com_lo(6),  n_lo ),
      .		    (  com_hi(1),  i_hi ),
      .		    (  com_hi(2),  j_hi ),
      .		    (  com_hi(3),  k_hi ),
-     .		    (  com_hi(4),  l_hi )
+     .		    (  com_hi(4),  l_hi ),
+     .		    (  com_hi(5),  m_hi ),
+     .		    (  com_hi(6),  n_hi )
 
 * --- end of introductory code ---
 
 * initialize
 	bad_com = mr_bad_data( com_mr )
 	bad_res = mr_bad_data( res_mr )
-        point = .FALSE.
 
 	at_nbd = trans .EQ. trans_4d_bad_pt
 	at_ngd = trans .EQ. trans_4d_good_pt
 
 * determine the axes to be transforomed
-	DO 10 idim = 1, 4
+	DO 10 idim = 1, nferdims
 	  yes_ax(idim) = cx_trans(idim,res_cx) .EQ. trans
-	  no_ax (idim) = .NOT.yes_ax(idim)
+	  no_ax (idim) = .NOT. yes_ax(idim)
  10	CONTINUE
 
 * do the transformation:  ngood, nbad only
@@ -133,7 +146,7 @@
 * "r" refers to result, "c" refers to component
 
 * Set the range of loop indices for the component data on the transformed axes
-	DO 150 idim = 1, 4
+	DO 150 idim = 1, nferdims
 	  IF (yes_ax(idim)) THEN
 	    com_lo(idim) = cx_lo_ss(com_cx,idim)
 	    com_hi(idim) = cx_hi_ss(com_cx,idim)
@@ -144,6 +157,16 @@
 * LOOP OVER THE FULL RANGE OF THE RESULT
 * ... also set up loop indices for non-transformed axes
 *     (component loop to include only the single result point on "no" axes)
+	DO 300 nr = cx_lo_s6(res_cx), cx_hi_s6(res_cx)
+	IF (no_fax) THEN
+	   n_lo = nr
+	   n_hi = nr
+	ENDIF
+	DO 300 mr = cx_lo_s5(res_cx), cx_hi_s5(res_cx)
+	IF (no_eax) THEN
+	   m_lo = mr
+	   m_hi = mr
+	ENDIF
 	DO 300 lr = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
 	IF (no_tax) THEN
 	   l_lo = lr
@@ -165,20 +188,6 @@
 	  i_hi = ir
 	ENDIF
 
-* pathological case: world coordinate range of zero along an xform axis
-          IF ( point ) THEN    ! 8/92
-	    IF (at_din) THEN
-               IF (com(ic,jc,kc,lc) .EQ. bad_com) THEN
-                  res(ir,jr,kr,lr) = bad_res
-               ELSE
-                  res(ir,jr,kr,lr) = 0.0
-	       ENDIF
-            ELSE
-               res(ir,jr,kr,lr) = bad_res
-            ENDIF
-            GOTO 300
-          ENDIF
-
 * initialize the inner loop accumulators
 
 	  ngd  = 0
@@ -186,11 +195,13 @@
 
 * now loop over the component data accumulating results along relevant axes
 
+	  DO 210 nc = n_lo, n_hi
+	  DO 210 mc = m_lo, m_hi
 	  DO 210 lc = l_lo, l_hi
 	  DO 210 kc = k_lo, k_hi
 	  DO 210 jc = j_lo, j_hi
 	  DO 210 ic = i_lo, i_hi
-             slen = GET_C_STRING_LEN(com(ic,jc,kc,lc))
+             slen = GET_C_STRING_LEN(com(ic,jc,kc,lc,mc,nc))
              IF ( slen .GT. 0 ) THEN
                 ngd = ngd + 1
              ELSE
@@ -200,14 +211,14 @@
 
 * compute result from accumulators
 	  IF (at_ngd) THEN
-	     res(ir,jr,kr,lr) = ngd
+	     res(ir,jr,kr,lr,mr,nr) = ngd
 	  ELSEIF (at_nbd) THEN
-	     res(ir,jr,kr,lr) = nbd
+	     res(ir,jr,kr,lr,mr,nr) = nbd
 	  ENDIF
 
  300	CONTINUE
 
 	RETURN
  
-	END	
+	END
 

@@ -41,7 +41,9 @@
 
 * V510 5/00 *sh* set the bad value flag for the merged context
 * V533 7/01 *sh* - set the data type of the result
-	
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include	'xcontext.cmn'
@@ -76,7 +78,7 @@
 	CALL KNOWN_DATA_TYPE(cx)
 
 * wipe out any transformations from first component of merged context
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   cx_trans    ( idim, cx ) = trans_no_transform
 	   cx_trans_arg( idim, cx ) = bad_val4
  100	CONTINUE

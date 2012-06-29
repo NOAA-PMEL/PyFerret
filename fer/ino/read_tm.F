@@ -53,6 +53,9 @@
 * v552: 4/03 - *acm* up VAR_CODE and local var variable_code to 128 chars
 * V556  4/04 - *acm* stride/modulo fixes: use NINT to convert REAL*8 to integer
 * v602  8/06 - *jli* native strides  replace cx_delta logic by the line_delta
+*       *acm* 3/12 cleanup old VMS ifdef
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -71,13 +74,14 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
-	LOGICAL	has_a_stride, has_strides(4)
+	LOGICAL	has_a_stride, has_strides(nferdims)
 	INTEGER MGRID_SIZE,
      .			idim, variable, category, data_set, grid,
-     .			sf_num, tmap_status, lo_ss(4), hi_ss(4),
-     .			lo_s1, lo_s2, lo_s3, lo_s4, 
-     .			hi_s1, hi_s2, hi_s3, hi_s4,
-     .			stride(4), lo_ss_ds,hi_ss_ds, line
+     .			sf_num, tmap_status, 
+     .			lo_ss(nferdims), hi_ss(nferdims),
+     .			lo_s1, lo_s2, lo_s3, lo_s4, lo_s5, lo_s6, 
+     .			hi_s1, hi_s2, hi_s3, hi_s4, hi_s5, hi_s6,
+     .			stride(nferdims), lo_ss_ds,hi_ss_ds, line
 * V500 *kob* 3/99- up VAR_CODE and local var variable_code to 64 chars
 	CHARACTER*128	VAR_CODE, variable_code
 
@@ -86,8 +90,10 @@
 
 	EQUIVALENCE	(lo_ss(1),lo_s1), (lo_ss(2),lo_s2),
      .			(lo_ss(3),lo_s3), (lo_ss(4),lo_s4),
+     .			(lo_ss(5),lo_s5), (lo_ss(6),lo_s6),
      .			(hi_ss(1),hi_s1), (hi_ss(2),hi_s2),
-     .			(hi_ss(3),hi_s3), (hi_ss(4),hi_s4)
+     .			(hi_ss(3),hi_s3), (hi_ss(4),hi_s4),
+     .			(hi_ss(5),hi_s5), (hi_ss(6),hi_s6)
 
 * --- end of introductory code ---
 
@@ -109,34 +115,6 @@
 * strides indicated in cx_delta e.g. SST[I=110:180:10] ?
 * If so, transfer this info to the stride array
 	has_a_stride = .FALSE.
-!	DO 100 idim = 1, 4
-!	   has_strides(idim) =  cx_delta(idim,cx) .NE. unspecified_val8
-!     .			 .AND.  cx_delta(idim,cx) .NE. 1 
-!           line = grid_line(idim, grid)
-!           print *, line_parent(line)
-!	   IF (has_strides(idim)) THEN
-!	      stride(idim) = NINT(cx_delta(idim,cx))
-!              print *, '00000', stride(idim)
-!	      has_a_stride = .TRUE.
-!	   ELSE
-!	      stride(idim) = 1
-!	   ENDIF
-! 100	CONTINUE
-
-! not required 6/01 when CREATE_MEM_VAR became sensitive to cx_delta
-!* if strides are invloved the memory requirement is less ...
-!	CALL TRANSFER_CONTEXT(cx, cx_buff)
-!	IF (has_a_stride) THEN
-!	   DO 200 idim = 1, 4
-!	      IF  (has_strides(idim)) THEN
-!	         cx_lo_ss( cx_buff, idim ) = 1 
-!	         cx_hi_ss( cx_buff, idim ) = 
-!     .				(cx_hi_ss(cx,idim) - cx_lo_ss(cx,idim))
-!     .		              / INT(cx_delta(idim,cx))  + 1
-!	         cx_delta(idim,cx_buff) = unspecified_val8
-!	      ENDIF
-! 200      CONTINUE
-!	ENDIF
 
 * reserve and catalog space for the result
 	CALL CREATE_MEM_VAR( cx, mr, status )
@@ -153,7 +131,7 @@
 !	IF ( has_a_stride ) CALL UN_CACHE( mr )   ! since lo:hi are "fake"
 
 * set up array of subscripts
-	DO 300 idim = 1, 4
+	DO 300 idim = 1, nferdims
 *<jli
            line = grid_line(idim, grid)
 
@@ -183,8 +161,6 @@
 *             For strides specified in SET AXIS/STRIDE
 *             Use line_delta logic
 
-!             has_a_stride = .FALSE.
-!             line = grid_line(idim, grid) 
               has_strides(idim) = .TRUE.
 
 	      IF ( grid_line( idim, grid ) .EQ. mnormal ) THEN
@@ -204,8 +180,6 @@
 !                get size of the native axis
                  CALL VAR_SS_LIMS(idim, cx,lo_ss_ds,hi_ss_ds)
 
-!                 lo_ss(idim) = (cx_lo_ss( cx, idim )-1)*stride(idim) +1
-!                  hi_ss(idim) = (cx_hi_ss( cx, idim )-1)*stride(idim) +1
                  lo_ss(idim) = (cx_lo_ss( cx, idim )-1)*stride(idim) + 
      .                         line_offset(line)
 
@@ -268,10 +242,11 @@
 	ENDIF
 
 * read the data
+
 	CALL TM_READ  ( data_set,
      .			variable_code,
-     .			lo_s1, lo_s2, lo_s3, lo_s4,
-     .			hi_s1, hi_s2, hi_s3, hi_s4,
+     .			lo_s1, lo_s2, lo_s3, lo_s4, lo_s5, lo_s6, 
+     .			hi_s1, hi_s2, hi_s3, hi_s4, hi_s5, hi_s6,
      .			lo_ss,
      .			hi_ss,
      .			stride,

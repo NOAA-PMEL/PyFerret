@@ -48,11 +48,12 @@
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars and VAR_TITLE to 128
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars and name to 256 (ds_name)
 * V67  *acm* 3/11- fix ticket 1821
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xtext_info.cmn'
-	include	'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include	'xdset_info.cmn_text'
@@ -106,7 +107,7 @@
 	ENDIF
 
 * document each axis (and it's transformation) that's requested
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 * ... all keys in world coordinates
 	   save_by_ss = cx_by_ss( idim, cx )
 	   cx_by_ss( idim, cx ) = .FALSE.

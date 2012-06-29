@@ -55,6 +55,7 @@
 *	 3/13/90 - fixed bug at k.eq.km
 
 #ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'gfdl.parm'		! parameter definitions
 	include	'xvariables.cmn'

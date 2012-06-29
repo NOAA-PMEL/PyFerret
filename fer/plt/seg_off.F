@@ -42,6 +42,8 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 6/30/88
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations:
 * ...
@@ -49,16 +51,10 @@
 * local variable declarations:
 * ...
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'xprog_state.cmn'		! with mode_segment
 	include 'pltcom_dat.decl'	! with gksopn
 	include 'PLTCOM.DAT'	! with gksopn
-#else
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'		! with mode_segment
-	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL/LIST'	! with gksopn
-	INCLUDE 'PPLV11INC:PLTCOM.DAT/LIST'	! with gksopn
-#endif
-
 
 	IF ( .NOT. mode_segment			! not using segments
      .	.OR. .NOT. gksopn	) RETURN	! not a VAXstation

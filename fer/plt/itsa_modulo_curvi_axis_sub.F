@@ -43,6 +43,7 @@
 *       NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 *       V450: 4/97
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 *
 *       ... ---> DISP_SET_UP ---> LOAD_CURVILINEAR
@@ -68,15 +69,10 @@
 *       stored in xcurvilinear.cmn.  These contain the X- and Y-axis maximum and minimum
 *       page positions (in user coordinates).
 
-
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'
-	include 'xcurvilinear.cmn'
-#else   
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif  
+	include 'xcurvilinear.cmn'  
 
 *       calling argument declarations:
 c *kob* 8/97 had to move the continuation marker to col 5 - it was in col 8

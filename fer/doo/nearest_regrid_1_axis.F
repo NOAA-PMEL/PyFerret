@@ -5,7 +5,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -73,7 +73,11 @@
 *                  stems from using GET_LINEAR_COEF; linear interp of one
 *                  point to a multi-point axis doesnt make sense, but can
 *                  define the @NRST regridding.
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
@@ -82,15 +86,17 @@
 
 
 * CALLING ARGUMENT DECLARATIONS:
-	INTEGER	  cx_lims, axis, dst_lo, dst_hi, msrc, mdst
-	INTEGER   ss12(	dst_lo:dst_hi )
-	REAL    src( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
+	INTEGER cx_lims, axis, dst_lo, dst_hi, msrc, mdst
+	INTEGER ss12( dst_lo:dst_hi )
+	REAL    src( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
      .          coef( dst_lo:dst_hi )
 
 * INTERNAL VARIABLE DECLARATIONS:
 	LOGICAL	found1, ok_neg111
-	INTEGER i, j, k, l, ii, status,
+	INTEGER i, j, k, l, m, n, ii, status,
      .		ss, src_lo, src_hi, src_grd, dst_grd
 	REAL	bad_src, bad_dst
 	REAL*8	TM_WORLD, TDEST_WORLD, xsrc, xdst, xmin, xmax
@@ -98,7 +104,6 @@
 
 
 ******************************************************************************
-
 * LIMITS FOR CALCULATION
         src_lo = mr_lo_ss(msrc,axis)
         src_hi = mr_hi_ss(msrc,axis)
@@ -137,53 +142,53 @@
 	
 * ... If there is just one source point, all of the data is "nearest". 
 	IF (src_lo .EQ. src_hi) THEN
-	   DO i = dst_lo, dst_hi
+	   DO 20 i = dst_lo, dst_hi
 	      ss12(i) = src_lo
-	   ENDDO
+ 20        CONTINUE
 	ENDIF
 
 * ... . See if the axes overlap - if so can define the subscripts for the transform.
 	IF (.NOT.found1) THEN
 
 * initialize
-	   IF ( axis .EQ. t_dim ) THEN
+	   IF ( axis .EQ. t_dim .OR. axis .EQ. f_dim) THEN
 *             TDST_WORLD gives dates from the source axis as they would be
 *	      encoded on the destination axis 
 *      ==>    ALL TIME/DATE CALCULATIONS ARE DONE IN THE SOURCE AXIS ENCODING
-	      CALL TDEST_WORLD_INIT ( dst_grd, src_grd, status ) ! src<->dst
+	      CALL TDEST_WORLD_INIT ( dst_grd, src_grd, axis, status ) ! src<->dst
 	      IF ( status .NE. ferr_ok ) RETURN  ! note - status not passed !!
    	   ENDIF
 
            xmin = TM_WORLD( src_lo, src_grd, axis, box_middle )
            xmax = TM_WORLD( src_hi, src_grd, axis, box_middle )
-	   DO i = dst_lo, dst_hi
+	   DO 30 i = dst_lo, dst_hi
 	      ii = i
               xdst = TDEST_WORLD( i, dst_grd, axis, box_middle )
 	      IF (xdst .LT. xmin) ss12(i) = src_lo
 	      IF (xdst .GT. xmax) ss12(i) = src_hi
-	   ENDDO
+ 30        CONTINUE
 	ENDIF
 
+        IF ( .NOT. ok_neg111 ) THEN
 * ... fill upper end of subscript list with highest available source ss
-	found1 = .FALSE.
-	DO i = dst_lo, dst_hi
-	   IF (ss12(i) .NE. unspecified_int4 .OR. 
-     .          ss12(i) .EQ. unspecified_int4 .AND. ok_neg111) found1 = .TRUE.
-	   IF ( found1 ) THEN
-	      IF (ss12(i) .EQ. unspecified_int4 .AND.
-     .            .NOT. ok_neg111) ss12(i) = src_hi
-	   ENDIF
-	ENDDO
+           found1 = .FALSE.
+           DO 40 i = dst_lo, dst_hi
+              IF ( ss12(i) .NE. unspecified_int4 ) THEN
+                 found1 = .TRUE.
+              ELSEIF ( found1 ) THEN
+                 ss12(i) = src_hi
+              ENDIF
+ 40        CONTINUE
 * ... fill lower end of subscript list with lowest available source ss
-	found1 = .FALSE.
-	DO i = dst_hi, dst_lo, -1
-	   IF (ss12(i) .NE. unspecified_int4 .OR. 
-     .          ss12(i) .EQ. unspecified_int4 .AND. ok_neg111) found1 = .TRUE.
-	   IF ( found1 ) THEN
-	      IF (ss12(i) .EQ. unspecified_int4 .AND.
-     .            .NOT. ok_neg111) ss12(i) = src_lo
-	   ENDIF
-	ENDDO
+           found1 = .FALSE.
+           DO 50 i = dst_hi, dst_lo, -1
+              IF ( ss12(i) .NE. unspecified_int4 ) THEN
+                 found1 = .TRUE.
+              ELSEIF ( found1 ) THEN
+                 ss12(i) = src_lo
+              ENDIF
+ 50        CONTINUE
+        ENDIF
 
 * transfer THE map-able DATA TO dst_grd
 	IF ( axis .EQ. x_dim ) THEN
@@ -193,16 +198,19 @@
 
 	      IF ( ss .NE. unspecified_int4 .OR. 
      .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
+	         DO 100 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO 100 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
 	         DO 100 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 100 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 100 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-		    dst(i,j,k,l) = src(ss,j,k,l)
- 100	         CONTINUE
+ 100		 dst(i,j,k,l,m,n) = src(ss,j,k,l,m,n)
 	      ELSE
+	         DO 102 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO 102 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
 	         DO 102 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 102 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 102 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
- 102		 dst(i,j,k,l) = bad_dst
+ 102		 dst(i,j,k,l,m,n) = bad_dst
 	      ENDIF
 
  110	   CONTINUE
@@ -214,15 +222,19 @@
 
 	      IF ( ss .NE. unspecified_int4 .OR. 
      .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
+	         DO 200 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO 200 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
 	         DO 200 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 200 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 200 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 200	         dst(i,j,k,l) = src(i,ss,k,l)
+ 200	         dst(i,j,k,l,m,n) = src(i,ss,k,l,m,n)
 	      ELSE
+	         DO 202 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO 202 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
 	         DO 202 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 202 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 202 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 202		 dst(i,j,k,l) = bad_dst
+ 202		 dst(i,j,k,l,m,n) = bad_dst
 	      ENDIF
 
  210	   CONTINUE
@@ -234,15 +246,19 @@
 
 	      IF ( ss .NE. unspecified_int4 .OR. 
      .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
+	         DO 300 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO 300 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
 	         DO 300 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 300 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 	         DO 300 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 300	         dst(i,j,k,l) = src(i,j,ss,l)
+ 300	         dst(i,j,k,l,m,n) = src(i,j,ss,l,m,n)
 	      ELSE
+	         DO 302 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO 302 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
 	         DO 302 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 302 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 	         DO 302 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 302		 dst(i,j,k,l) = bad_dst
+ 302		 dst(i,j,k,l,m,n) = bad_dst
 	      ENDIF
 
  310	   CONTINUE
@@ -254,18 +270,72 @@
 
 	      IF ( ss .NE. unspecified_int4 .OR. 
      .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
+	         DO 400 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO 400 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
 	         DO 400 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 400 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 	         DO 400 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 400	         dst(i,j,k,l) = src(i,j,k,ss)
+ 400	         dst(i,j,k,l,m,n) = src(i,j,k,ss,m,n)
 	      ELSE
+	         DO 402 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO 402 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
 	         DO 402 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 402 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 	         DO 402 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 402		 dst(i,j,k,l) = bad_dst
+ 402		 dst(i,j,k,l,m,n) = bad_dst
 	      ENDIF
 
  410	   CONTINUE
+
+	ELSEIF ( axis .EQ. e_dim ) THEN
+	   DO 510 m = dst_lo, dst_hi
+
+	      ss = ss12(m)
+
+	      IF ( ss .NE. unspecified_int4 .OR. 
+     .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
+	         DO 500 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO 500 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO 500 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO 500 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO 500 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+ 500	         dst(i,j,k,l,m,n) = src(i,j,k,l,ss,n)
+	      ELSE
+	         DO 502 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO 502 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO 502 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO 502 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO 502 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+ 502		 dst(i,j,k,l,m,n) = bad_dst
+	      ENDIF
+
+ 510	   CONTINUE
+
+	ELSEIF ( axis .EQ. f_dim ) THEN
+	   DO 610 n = dst_lo, dst_hi
+
+	      ss = ss12(n)
+
+	      IF ( ss .NE. unspecified_int4 .OR. 
+     .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
+	         DO 600 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO 600 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO 600 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO 600 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO 600 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+ 600	         dst(i,j,k,l,m,n) = src(i,j,k,l,m,ss)
+	      ELSE
+	         DO 602 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO 602 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO 602 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO 602 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO 602 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+ 602		 dst(i,j,k,l,m,n) = bad_dst
+	      ENDIF
+
+ 610	   CONTINUE
+
+
 	ENDIF
 
 	RETURN

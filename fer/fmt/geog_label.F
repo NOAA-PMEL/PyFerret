@@ -51,8 +51,11 @@
 *                       a crash if REPEAT command doesn't have fully 
 *                       mature context to work with.
 * V530: *acm* 12/00 alternative calendar types; cal_id
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*                  Allow for F to be a time axis.
 
-#ifdef unix
+
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
         include 'tmap_errors.parm'
@@ -62,15 +65,6 @@
 	include 'ferret.parm'
 	include 'xtext_info.cmn'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-        INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		idim, grid
@@ -117,7 +111,7 @@
 
 *  1/01 addition: cal_id
            cal_id = TM_GET_CALENDAR_ID (line_cal_name(line))
-           GEOG_LABEL = line_code        .EQ. 'TI'
+           GEOG_LABEL = (line_code.EQ.'TI' .OR. line_code.EQ.'FI')
      .            .AND. TM_DATE_OK( line_t0(line), cal_id )
         ENDIF
 

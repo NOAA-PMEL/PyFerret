@@ -1,3 +1,5 @@
+
+
 	SUBROUTINE FINALIZE
 
 *
@@ -36,8 +38,8 @@
 *
 *
 * initialize run-time variables and I/O in preparation to begin execution
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
         include 'tmap_errors.parm'  ! error codes
 	include 'tmap_dims.parm'
 	include 'xio.cmn_text'
@@ -54,28 +56,6 @@
         include 'xalgebra.cmn'
 	include 'xvariables.cmn'
 	include 'xtoday.cmn'
-#else
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'  ! error codes
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN_TEXT'
-	INCLUDE 'TMAP_FORMAT:XIO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:GFDL_VMS.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:GFDL.PARM'			! from Phil/Sieg
-	INCLUDE	'FERRET_CMN:XONEDIM.CMN'		! from Phil.Sieg
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-        INCLUDE 'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XTODAY.CMN'
-	INCLUDE '($SSDEF)'				! LIB_ return status
-	INCLUDE '($JPIDEF)'				! for VMS mode code
-
-	INTEGER	SMG$CREATE_VIRTUAL_KEYBOARD, SMG$CREATE_KEY_TABLE,
-     .		LIB$SYS_TRNLOG
-	INTEGER	vax_code, vms_mode
-#endif
 
         CALL string_array_clear(alg_pvar_head)
 

@@ -56,8 +56,8 @@
 *	 9/11/90 - corrected bug: IF test treated cx_buff as a stored region
 * V300:   2/3/93 - the 9/11/90 bug fix prevents the default region for being
 *                  formatted
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -66,15 +66,7 @@
 	include 'xprog_state.cmn'
 	include 'xvariables.cmn'		! added 3/90
 	include 'xfr_grid.cmn'		! added 3/90
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'		! added 3/90
-	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'		! added 3/90
-#endif
+
 
 * calling argument declarations
 	LOGICAL	full_prec

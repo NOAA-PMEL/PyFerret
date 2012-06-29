@@ -1,6 +1,8 @@
 	SUBROUTINE COPY_GRID_TRANS_SUB( md1, md2,
-     .		src, slox, shix, sloy, shiy, sloz, shiz, slot, shit, bad_src,
-     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit, bad_dst )
+     .		src, slox, shix, sloy, shiy, sloz, shiz, 
+     .		slot, shit, sloe, shie, slof, shif, bad_src,
+     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, 
+     .		dlot, dhit, dloe, dhie, dlof, dhif, bad_dst )
 
 *
 *
@@ -41,38 +43,38 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
 * V200:	10/16/89 - from COPY_GRID_TRANS
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
 	include 'ferret.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
 * note: dst has dimensions transposed
 	INTEGER md1, md2,
-     .		slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit
-	REAL    src( slox:shix,sloy:shiy,sloz:shiz,slot:shit ),
+     .		slox, shix, sloy, shiy, sloz, shiz, 
+     .		slot, shit, sloe, shie, slof, shif,
+     .		dlox, dhix, dloy, dhiy, dloz, dhiz, 
+     .		dlot, dhit, dloe, dhie, dlof, dhif
+	REAL    src( slox:shix,sloy:shiy,sloz:shiz,slot:shit,sloe:shie,slof:shif ),
      .		dst( md2, md1 )
 	REAL	bad_src, bad_dst
 
 * internal variable declarations:
-	INTEGER	ii, jj, i, j, k, l
+	INTEGER	ii, jj, i, j, k, l, m, n 
 
 * --- end of introductory code ---
 
 	ii = 1
 	jj = 1
+	DO 100 n = dlof, dhif
+	DO 100 m = dloe, dhie
 	DO 100 l = dlot, dhit
 	DO 100 k = dloz, dhiz
 	DO 100 j = dloy, dhiy
 	DO 100 i = dlox, dhix
 
-	   dst(jj,ii) = src(i,j,k,l)
+	   dst(jj,ii) = src(i,j,k,l,m,n)
 
 	   ii = ii + 1
 	   IF ( ii .GT. md1 ) THEN

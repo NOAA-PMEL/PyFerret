@@ -42,6 +42,7 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 10/20/87
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * calling argument declarations:
 	INTEGER		n
@@ -50,13 +51,8 @@
 * internal variable declarations:
 	INTEGER		STR_CASE_BLIND_COMPARE, i, vax_code
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'gfdl_vms.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:GFDL_VMS.PARM'
-#endif
 
 * look through the list of possibilities
 	DO 100 i = 1, n

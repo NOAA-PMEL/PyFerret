@@ -46,6 +46,8 @@
 * V200: 10/27/89
 *	  5/2/90 - half extracted to APPLY_DELTA_CONTEXT
 * V420 (IBM/AIX port of V411): 10/5/95 - buffer for "READ(var,*"
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 * specifiers may give coordinate in subscript units (/DI,/DJ,/DK,/DL) or
 * may give coordinate in "world" units (/DX,/DY,/DZ,/DT)
@@ -53,19 +55,12 @@
 *	/q=val			specifies a single delta
 *	/q=val_1:val_2		specifies a separate delta for lowe and upper
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'errmsg.parm'	
 	include 'ferret.parm'	
 	include 'xcontext.cmn'
 	include 'xdelta_context.cmn'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	
-	INCLUDE 'FERRET_CMN:FERRET.PARM'	
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XDELTA_CONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling arguments:
 	LOGICAL		delta_given
@@ -77,12 +72,12 @@
 
 * initialize
 	delta_given = .FALSE.
-	DO 10 idim = 1, 4
+	DO 10 idim = 1, nferdims
  10	dcx_given( idim ) = .FALSE.
 
 * decode the delta qualifiers
-	DO 200 wworss = 0, 7, 4
-	DO 100 idim = 1, 4
+	DO 200 wworss = 0, (nferdims+1), nferdims
+	DO 100 idim = 1, nferdims
 
 	   iqual = slash_dx0 + wworss + idim
 	   loc = qual_given( iqual )
@@ -110,7 +105,7 @@
 	   ENDIF
 
 * is it ww or ss ?
-	   dcx_by_ss(idim) = wworss .EQ. 4
+	   dcx_by_ss(idim) = wworss .EQ. nferdims
 
  100	CONTINUE
  200	CONTINUE

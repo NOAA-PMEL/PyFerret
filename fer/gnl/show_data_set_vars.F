@@ -1,4 +1,4 @@
-	SUBROUTINE SHOW_DATA_SET_VARS( lun, dset, full )
+	SUBROUTINE SHOW_DATA_SET_VARS( lun, dset, full, status )
 
 *
 *
@@ -70,6 +70,9 @@
 * V600  *acm* 1/06  prevent values of LOG10(0.0) 
 * V68   *acm* 12/11 Fix ticket 1905. Axis-lengths that need more than 6 characters
 *                   were being cut off.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
+*                 various SHOW commnands will not list info for E,F dimensions.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -78,6 +81,7 @@
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+	include 'errmsg.parm'
 	include 'xez_info.cmn_text'
 	external xez_info_data
 	include	'ferret.parm'
@@ -90,19 +94,20 @@
 
 * calling argument declarations:
 	LOGICAL	full
-	INTEGER	lun, dset
+	INTEGER	lun, dset, status
 	
 * local variable declarations:
-	LOGICAL		first_time, its_delimited
+	LOGICAL		first_time, its_delimited, is_undetermined
 	INTEGER 	TM_LENSTR1, TM_LENSTR, TM_GET_CALENDAR_ID, 
-     .			ivar, i, dlen, len, grid, taxis, slen(4), tlen, 
+     .			ivar, i, dlen, len, grid, taxis, slen(nferdims), tlen, 
      .			nfields, kvar, field_types(maxezvars), 
-     .			cal_id, len_cal, j, num_indices, rlen(4), iok
+     .			cal_id, len_cal, j, num_indices, rlen(nferdims), iok,
+     .			listdims
 	CHARACTER	LEFINT*16, LOHI_STRING*48, TM_FMT*14, 
      .			TM_GET_CAL*32, 
      .			line*255, cal_name*32
 	REAL*8		TM_WORLD, lo, hi
-        CHARACTER       rbuff(8)*8, short*6, long*16, delims*128, c*1
+        CHARACTER       rbuff(12)*8, short*6, long*16, delims*128, c*1
 
 * internal parameter declarations:
         CHARACTER*1     tab
@@ -122,9 +127,21 @@
      .				   ds_file_info_ptr(dset) )
 	ENDIF
 
+* If mode 6d_lab has been canceled, we will list only the first 4 dimensions.
+
+	listdims = nferdims
+	IF ( .NOT. mode_6d_lab) listdims = 4
+	status = ferr_ok
+
 * describe the variables in the set
+
 	risc_buff = ' '
-	WRITE ( risc_buff, 3200 )
+	IF (listdims .EQ. nferdims) THEN
+           WRITE ( risc_buff, 3200 )
+	ELSE
+           WRITE ( risc_buff, 3210 )
+	ENDIF
+
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
 	kvar = 0
 	DO 400 ivar = 1, maxvars
@@ -132,20 +149,28 @@
 	   kvar = kvar + 1
            IF ( ds_var_code(ivar) .EQ. '-' ) GOTO 400  
 * ... output variable code, title and subscript bounds within grid
-           DO 100 i = 1, 4
-              WRITE( rbuff(i+4),'(I8)' ) ds_grid_start(i,ivar)
-              IF (FLOAT(ds_grid_start(i,ivar)) .EQ. 0.0) THEN
-                 slen(i) = 1
-              ELSE
-                 slen(i)  = LOG10( FLOAT(ds_grid_start(i,ivar)) )
-              ENDIF
-              slen(i)  = MIN( 6, 8-slen(i) )   ! last few characters in buffer
-              long = LEFINT(ds_grid_end(i,ivar),dlen)
-              rlen(i) = dlen
-              short = LEFINT(ds_grid_end(i,ivar),dlen)
-              rbuff(i) = short
- 100       CONTINUE
-           line = ds_var_code(ivar)
+
+	   is_undetermined = .FALSE.
+	   IF (ds_grid_start(1,ivar) .EQ. int4_init) THEN
+	      is_undetermined = .TRUE. 
+	      
+	   ELSE
+              DO 100 i = 1, listdims
+                 WRITE( rbuff(i+listdims),'(I8)' ) ds_grid_start(i,ivar)
+                 IF (FLOAT(ds_grid_start(i,ivar)) .EQ. 0.0) THEN
+                    slen(i) = 1
+                 ELSE
+                    slen(i)  = LOG10( FLOAT(ds_grid_start(i,ivar)) )
+                 ENDIF
+                 slen(i)  = MIN( 6, 8-slen(i) )   ! last few characters in buffer
+                 long = LEFINT(ds_grid_end(i,ivar),dlen)
+                 rlen(i) = dlen
+                 short = LEFINT(ds_grid_end(i,ivar),dlen)
+                 rbuff(i) = short
+ 100          CONTINUE
+           ENDIF
+
+	   line = ds_var_code(ivar)
 * ... separate into two lines if variable code is too long (11/92)
            IF ( TM_LENSTR1( line ) .GT. 8 ) THEN
 	      risc_buff = ' '
@@ -153,24 +178,33 @@
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
               line = ' '
            ENDIF
-	   WRITE ( risc_buff, 4010 )	line,
+	   IF (is_undetermined) THEN 
+	      WRITE ( risc_buff, 4011 )	line,
      .				        ds_var_title(ivar),
-     .		(rbuff(i+4)(slen(i):),rbuff(i)(:6),i=1,4)
- 4010	   FORMAT( 1X,A8,1X,A31,T42,4(A,':',A) )
+     .				        '... Aggregate grid undetermined' 
+           ELSE
+	      WRITE ( risc_buff, 4010 )	line,
+     .				        ds_var_title(ivar),
+     .	     (rbuff(i+listdims)(slen(i):),rbuff(i)(:6),i=1,listdims)
+
+ 4010	      FORMAT( 1X,A8,1X,A31,T42,6(A,':',A) )
+ 4011	      FORMAT( 1X,A8,1X,A31,T42,A )
 * *kob* 3/99 check for NORMAL Axis and insert ... rather than 1:1 
-           DO 150 i = 1, 4
-	      IF ( grid_line(i,ds_grid_number(ivar)) .EQ. mnormal) THEN
-		 tlen = 34 + (i*10)
-		 risc_buff(tlen:tlen+2) = '...'
-	      ENDIF
- 150	   CONTINUE
+              DO 150 i = 1, listdims
+	         IF ( grid_line(i,ds_grid_number(ivar)) .EQ. mnormal) THEN
+		    tlen = 34 + (i*10)
+		    risc_buff(tlen:tlen+2) = '...'
+	         ENDIF
+ 150	      CONTINUE
+
+           ENDIF
 
 * See if any axis lengths were too long for the standard formatting.
 * Do a more brute-force formatting which may or may not line up 
 * all variables perfectly
 
            iok = 1
-           DO 160 i = 1, 4
+           DO 160 i = 1, listdims
 	      IF (rlen(i) .GT. 6) iok = 0
  160	   CONTINUE
 
@@ -190,7 +224,7 @@
 	   risc_buff(tlen+1:tlen+2) = '  ' 
            tlen = tlen + 2
 
-           DO 170 i = 1, 4
+           DO 170 i = 1, listdims
 	      IF ( grid_line(i,ds_grid_number(ivar)) .EQ. mnormal) THEN
 		 risc_buff(tlen:tlen+8) = '   ...   '
 		 tlen = tlen + 9
@@ -210,8 +244,9 @@
  170	   CONTINUE
 	   ENDIF ! iok
 
- 3200	FORMAT(' name',T11,'title',T45,'I',T55,'J',T65,'K',T75,'L')
-! in V220: 4010 FORMAT( 1X,A8,1X,A29,T40,3(I5,':',A4),(I5,':',A5) )
+ 3200	FORMAT(' name',T11,'title',T45,'I',T55,'J',T65,'K',T75,'L',T85,'M',T95,'N')
+ 3210	FORMAT(' name',T11,'title',T45,'I',T55,'J',T65,'K',T75,'L')
+
 * ... write to array first to avoid line wraps due to blanks at end
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
 
@@ -271,20 +306,25 @@
 * ... world coordinate limits
 	      line = ' '
 	      len = 1
-	      DO 300 i = 1, 3
+	      DO 300 i = 1, listdims
 	         IF ( grid_line(i,grid) .NE. mnormal ) THEN
-	            lo = TM_WORLD( ds_grid_start(i,ivar), grid, i, box_lo_lim )
-	            hi = TM_WORLD( ds_grid_end  (i,ivar), grid, i, box_hi_lim )
+
+	            IF (i .NE. 4) THEN  ! Skip time dim
+
+	               lo = TM_WORLD( ds_grid_start(i,ivar), grid, i, box_lo_lim )
+	               hi = TM_WORLD( ds_grid_end  (i,ivar), grid, i, box_hi_lim )
 #ifdef NO_PREPEND_STRING
-	            risc_buff = line(:len)
- 	            len_rbuff = len
-		    line = risc_buff(:len_rbuff)// ww_dim_name(i) // '=' //
+	               risc_buff = line(:len)
+ 	               len_rbuff = len
+		       line = risc_buff(:len_rbuff)// ww_dim_name(i) // '=' //
 #else
-		    line = line(:len) // ww_dim_name(i) // '=' //
+		       line = line(:len) // ww_dim_name(i) // '=' //
 #endif
-     .			LOHI_STRING( lo,hi,i,grid,':',ax_dec_pt(i),dlen )
-     .			// '  '
-	            len = MIN( 64, len+4+dlen )
+     .			 LOHI_STRING( lo,hi,i,grid,':',ax_dec_pt(i),dlen )
+     .			 // '  '
+	               len = MIN( 64, len+4+dlen )  ! ??
+	            ENDIF ! Skip time dim
+
 	         ENDIF
  300	      CONTINUE
 	      CALL SPLIT_LIST(pttmode_explct, lun,
@@ -309,7 +349,7 @@
 	   len = line_dim( ds_time_axis(dset) )
 	   lo = TM_WORLD( 1,   grid, t_dim, box_middle )
 	   hi = TM_WORLD( len, grid, t_dim, box_middle )
-	   line = LOHI_STRING( lo,hi,t_dim,grid,' to ',ax_dec_pt(i),dlen )
+	   line = LOHI_STRING( lo,hi,t_dim,grid,' to ',ax_dec_pt(t_dim),dlen )
 	   CALL SPLIT_LIST(pttmode_explct, lun, ' ', 1)
 
 * calendar name?  only if not Gregorian.
@@ -391,5 +431,9 @@
      .			  ' /DELIMITERS="'//line(:len)//'"', len+15) 
 	ENDIF
 
-	RETURN
+5000    RETURN
+5100	CALL ERRMSG( ferr_invalid_command, status,
+     .		     'variable has more than 4 dimensions. Set mode 6D_LAB'
+     .		     //pCR//cmnd_buff(:len_cmnd),
+     .			*5000 )
 	END

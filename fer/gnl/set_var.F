@@ -78,6 +78,7 @@
 *                    converting to Double from another data type, but only if the
 *                    attribute isnt already there.
 * V64  10/09 *acm* longer string length for grid_name
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -188,6 +189,7 @@
            IF (dset .EQ. unspecified_int4) GOTO 5700
 	   ncfile = (TM_HAS_STRING(ds_type(dset), 'CDF') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'MC') .OR.
+     .               TM_HAS_STRING(ds_type(dset), 'AGG') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'GT')  )
 	   IF ( .NOT. ncfile ) GOTO 5700
 
@@ -207,6 +209,7 @@
            IF (dset .EQ. unspecified_int4) GOTO 5700
 	   ncfile = (TM_HAS_STRING(ds_type(dset), 'CDF') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'MC') .OR.
+     .               TM_HAS_STRING(ds_type(dset), 'AGG') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'GT')  )
 	   IF ( .NOT. ncfile ) GOTO 5800
 

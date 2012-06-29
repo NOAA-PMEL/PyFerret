@@ -1,3 +1,5 @@
+
+
 	SUBROUTINE OBJECTIVE( memory, xpts, ypts, zpts,
      .			      mr_list, cx_list, nvars,
      .			      opt1_string, opt2_string,
@@ -53,23 +55,17 @@
 * v314:  8/22/94 Ibm Port *kob* - need to use risc buff for inherited 
 *				  length string concats
 * V320: 2/95 - allow nrng to be zero
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
 	include 'xprog_state.cmn'
-#ifdef NO_PASSED_CONCAT	
+
 	include 'xrisc.cmn'
-#endif
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
+
 
 * calling argument declarations:
 	INTEGER	nvars, mr_list(nvars), cx_list(nvars), lun, status
@@ -167,18 +163,18 @@
 
 * error exits
  5000	RETURN
-#ifdef NO_PASSED_CONCAT	
+
 	risc_buff = opt1_string(1:slen)
  5100	CALL ERRMSG( ferr_invalid_command, status,
      .		    '/OPT1="'//risc_buff//'"'//
      .		    ' is not xlo:xhi:xdel,ylo:yhi:ydel,[cay],[rng]',
      .		    *5000 )
-#else
- 5100	CALL ERRMSG( ferr_invalid_command, status,
-     .		    '/OPT1="'//opt1_string(1:slen)//'"'//
-     .		    ' is not xlo:xhi:xdel,ylo:yhi:ydel,[cay],[rng]',
-     .		    *5000 )
-#endif
+
+
+
+
+
+
  5200	CALL ERRMSG( ferr_invalid_command, status,
      .		    'must be 3 arrays with equal # of points', *5000 )
  5300	CALL ERRMSG( ferr_prog_limit, status,

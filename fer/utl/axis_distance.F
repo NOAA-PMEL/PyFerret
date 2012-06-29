@@ -45,20 +45,14 @@
 * revision 0.0 - 1/12/87
 * revision 0.1 - 6/3/87  - changed km --> m as standard unit
 * revision 0.2 - 4/18/88 - passed grid to get unit conversion factor
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include	'xunits.cmn_text'
 	external xunits_data
 	include	'ferret.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'TMAP_FORMAT:XUNITS.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
 	REAL*8	lo_val, hi_val

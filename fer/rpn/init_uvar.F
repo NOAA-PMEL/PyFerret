@@ -91,7 +91,9 @@
 *                  names to init_uvar_sub; name to be saved in the attribute structure, for 
 *                  use when writing out user-defined variables when MODE UPCASE_OUTPUT 
 *                  is cancelled.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'	
 	include 'errmsg.parm'	
 	include 'rpn.parm'

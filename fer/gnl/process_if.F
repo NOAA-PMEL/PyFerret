@@ -54,6 +54,7 @@
 * 12/05 *acm*  Fix bug 1368. if skipping commands, also skip one-line if-then-condition
 * V6.01 10/06 *acm*  Fix bug 1446 in the loop DO 200 when testing for a tab character, the
 *              index should be i not ic1. The perils of cut-and-pasting text from elsewhere!
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations:
 	INTEGER		slen
@@ -66,6 +67,7 @@
         INTEGER STR_UPCASE, i, end_then, cmnd_len
 	LOGICAL its_endif, its_else, its_elif, its_if, one_liner
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'command.parm'

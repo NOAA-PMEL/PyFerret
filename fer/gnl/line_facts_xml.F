@@ -52,6 +52,7 @@
 * V631 11/09 *acm* For XML-formatted output check for and replace the strings < > and &
 *                  with &lt; etc.
 * V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -80,14 +81,12 @@
      .            attname*128, attbuff*2048, buff*20, outstring*2048,
      .            atype*10, axis_name*128
 
-        CHARACTER*1 idir(4)
 	REAL*8	TM_WORLD, lo_val8, hi_val8
 	REAL      vals(100)
 
 * local parameter declarations:
 	INTEGER		sig_figs
 	PARAMETER     ( sig_figs = 5 )
-        DATA idir/'I', 'J', 'K', 'L'/
 
  2010	FORMAT ( '<axis name="', A8, 5x, A1, '">' )
  2020	FORMAT ( '<axis name="', A, '">' )
@@ -129,7 +128,7 @@
 
 * direction I,J,K, or L
 
-           buff = idir(idim)
+           buff = ss_dim_name(idim)
            CALL ESCAPE_FOR_XML(buff, outstring, slen)
            WRITE ( risc_buff, 2030 ) 'direction'
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)

@@ -46,6 +46,7 @@
 
 * V400: 11/94 
 
+	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'xprog_state.cmn'
 

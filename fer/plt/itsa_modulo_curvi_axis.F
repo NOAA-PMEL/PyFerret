@@ -42,22 +42,15 @@
 *       NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 *       V420: 04/97
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
-	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
 	include 'xtm_grid.cmn_text'
 	include 'xcurvilinear.cmn'
-#else   
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
-#endif  
 
 *       calling argument declarations:
 	LOGICAL ITSA_MODULO_CURVI_AXIS_SUB

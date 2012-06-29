@@ -64,8 +64,10 @@
 * V491:  3/98 - crash due to boolean operator precedence error
 * V530:  8/00 *sh* - added support for cat_string
 * V533:  6/01 *sh* - added transformation @EVNT
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 
-#ifdef unix
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
 	external xdset_info_data
@@ -77,17 +79,6 @@
 	include	'xalgebra.cmn'
 	include	'xtext_info.cmn'
 	include	'xdset_parms.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:INSTANCE_TABLE.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE	'FERRET_CMN:XDSET_PARMS.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER cx
@@ -139,6 +130,28 @@
 	   ELSE
 	      var_title_mod = var_title_mod(:mlen) //
      .			     'dt='//TM_FMT( cx_trans_arg(t_dim,cx), 4, 8, slen )
+	      mlen = MIN( maxlen, mlen+3+slen )
+	   ENDIF
+	ENDIF
+
+	trans = cx_trans( f_dim, cx )
+	IF ( trans .EQ. trans_no_transform 
+     . .AND. cx_trans_arg(f_dim,cx) .NE. bad_val4
+     . .AND. categ .EQ. cat_calc_var
+     . .AND. ( var .EQ. pubps  .OR.  var .EQ. pvbps
+     .		.OR.  (pdudt.LE. var .AND. var.LE.pdtdt) ) ) THEN
+	   IF ( add_on ) THEN
+	      var_title_mod = var_title_mod(:mlen) //' - '
+	      mlen = MIN( maxlen, mlen + 3 )
+	   ELSE
+	      add_on = .TRUE.
+	   ENDIF
+	   IF ( cx_trans_arg(f_dim,cx) .EQ. bad_val4 ) THEN
+	      var_title_mod = var_title_mod(:mlen) //'irregular dt'
+	      mlen = MIN( maxlen, mlen+12 )
+	   ELSE
+	      var_title_mod = var_title_mod(:mlen) //
+     .			     'dt='//TM_FMT( cx_trans_arg(f_dim,cx), 4, 8, slen )
 	      mlen = MIN( maxlen, mlen+3+slen )
 	   ENDIF
 	ENDIF
@@ -222,12 +235,12 @@
 
 * add axis name to pseudo variables
 	IF ( categ .EQ. cat_pseudo_var ) THEN
-	   idim = MOD( var-1, 4 ) + 1
+	   idim = MOD( var-1, 6 ) + 1
 	   var_title_mod = 'axis '//line_name(grid_line(idim, cx_grid(cx)))
 	ENDIF
 
 * add remarks about in-plane transformations
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   trans = cx_trans( idim, cx )
 	   IF ( trans .NE. trans_no_transform
      .	  .AND. trans .LT. trans_compress_code 

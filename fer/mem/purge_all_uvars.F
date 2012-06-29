@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -41,22 +41,19 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V200:  6/29/89
-* Unix/RISC port - 11/91 - bug fix: re-initialization of uvars wasn't complete
+* Unix/RISC port - 11/91 - bug fix: re-initialization of uvars was not complete
 *                          for redetermination of grid
 
 * V420 - use new routine DEALLO_UVAR_GRIDS to both deallocate dynamic
 *	 grids associated with a uvar and clean out any memory-cached 
 *	 results that may depend on this grid
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * internal variable declarations:
 	INTEGER	uvar, i, j, num_indices
@@ -81,7 +78,7 @@
         uvar_need_dset( uvar ) = .TRUE.
 
 * by default assume that all limits are irrelevant
-        DO 320 i = 1, 4
+        DO 320 i = 1, nferdims
  320           uvar_given(i,uvar) = uvlim_irrelevant
 * end of bug fix: 11/91 *************
 

@@ -48,7 +48,9 @@
 * V200:	  2/2/90
 * V301:  11/5/93 - define PLOT+ symbol "LABKEY" with the key string
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'plot_setup.parm'
 	include	'xplot_setup.cmn'

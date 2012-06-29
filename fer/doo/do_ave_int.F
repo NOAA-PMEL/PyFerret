@@ -7,7 +7,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -51,29 +51,33 @@
 *       8/10/92 - weights were wrong for integration within a single box
 *                 added "IF (point)" logic
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-* internal variable declarations:
-	LOGICAL	GEOG_COS_FACTOR, need_cos, integrate, point
-	INTEGER i, j, k, l, grid, pt, lo, hi, axis
-	REAL	BOX_SIZE, unit, bad_com, bad_res, cos_factor,
-     .          ybxlo, ybxhi, bx
-	REAL*8	TM_WORLD, dsum, bsum
-
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'interp_stack.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
-	include 'tmap_dims.parm'
 	include 'xunits.cmn_text'
 	external xunits_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 
+* internal variable declarations:
+	LOGICAL	GEOG_COS_FACTOR, need_cos, integrate, point
+	INTEGER i, j, k, l, m, n, grid, pt, lo, hi, axis
+	REAL	BOX_SIZE, unit, bad_com, bad_res, cos_factor,
+     .          ybxlo, ybxhi, bx
+	REAL*8	TM_WORLD, dsum, bsum
+
 * calling argument declarations:
 	INTEGER	action, idim, com_lo, com_hi, com_mr, com_cx, res_mr, res_cx
-	REAL    com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
+	REAL    com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
      .		box( com_lo:com_hi )
 
 * --- end of introductory code ---
@@ -113,7 +117,7 @@
 * AVERAGE/INTEGRATE
 * (is double precision summing necessary ? *sh* 6/89)
 * ALONG X AXIS
-* (note: X integration is a special case 'cuz it requires COSINE(lat) )
+* (note: X integration is a special case because it requires COSINE(lat) )
 	IF ( idim .EQ. x_dim ) THEN
 	   need_cos = GEOG_COS_FACTOR( idim, grid )
      .                .AND. cx_lo_s2(com_cx).NE.unspecified_int4
@@ -121,151 +125,224 @@
 	   IF ( need_cos ) THEN
 #ifdef double_p
 	      cos_factor = COS( deg2rad *       
-     .             ( TM_WORLD( j, grid, y_dim, box_middle )) ) 
+     .             TM_WORLD(j, grid, y_dim, box_middle) ) 
               ybxlo = deg2rad* 
-     .          ( TM_WORLD(j,grid,y_dim,box_lo_lim) )
+     .             TM_WORLD(j,grid,y_dim,box_lo_lim)
               ybxhi = deg2rad* 
-     .          ( TM_WORLD(j,grid,y_dim,box_hi_lim) )
+     .             TM_WORLD(j,grid,y_dim,box_hi_lim)
 #else
 	      cos_factor = COS( deg2rad *       
-     .             SNGL( TM_WORLD( j, grid, y_dim, box_middle )) ) 
+     .             SNGL( TM_WORLD(j, grid, y_dim, box_middle) ) ) 
               ybxlo = deg2rad* 
-     .          SNGL( TM_WORLD(j,grid,y_dim,box_lo_lim) )
+     .             SNGL( TM_WORLD(j,grid,y_dim,box_lo_lim) )
               ybxhi = deg2rad* 
-     .          SNGL( TM_WORLD(j,grid,y_dim,box_hi_lim) )
+     .             SNGL( TM_WORLD(j,grid,y_dim,box_hi_lim) )
 #endif
               bx = ABS(ybxhi - ybxlo)
 	      cos_factor = ABS( SIN(ybxhi) - SIN(ybxlo) )/ bx
 	   ENDIF
+	   DO 210 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 210 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 210 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 210 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
               IF ( point ) THEN  ! 8/92
-                 IF ( com(lo,j,k,l) .EQ. bad_com ) THEN
-                    res(pt,j,k,l) = bad_res
+                 IF ( com(lo,j,k,l,m,n) .EQ. bad_com ) THEN
+                    res(pt,j,k,l,m,n) = bad_res
                  ELSEIF ( integrate ) THEN
-                    res(pt,j,k,l) = 0.0
+                    res(pt,j,k,l,m,n) = 0.0
                  ELSE
-                    res(pt,j,k,l) = com(lo,j,k,l)
+                    res(pt,j,k,l,m,n) = com(lo,j,k,l,m,n)
                  ENDIF
                  GOTO 210
               ENDIF
 	      dsum = 0.0D0	! data
 	      bsum = 0.0D0	! boxes
 	      DO 200 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-	         IF ( com(i,j,k,l) .EQ. bad_com ) GOTO 200
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 200
 	         bsum = bsum + box(i)
-	         dsum = dsum + box(i)*com(i,j,k,l)
+	         dsum = dsum + box(i)*com(i,j,k,l,m,n)
  200	      CONTINUE
 	      IF ( bsum .EQ. 0.0D0 ) THEN
-	         res(pt,j,k,l) = bad_res
+	         res(pt,j,k,l,m,n) = bad_res
 	      ELSEIF (integrate) THEN
 	         IF ( need_cos ) THEN
-	            res(pt,j,k,l) = dsum * cos_factor
+	            res(pt,j,k,l,m,n) = dsum * cos_factor
 	         ELSE
-	            res(pt,j,k,l) = dsum
-	         ENDIF	
+	            res(pt,j,k,l,m,n) = dsum
+	         ENDIF
 	      ELSE
-	         res(pt,j,k,l) = dsum/bsum
+	         res(pt,j,k,l,m,n) = dsum/bsum
 	      ENDIF
  210	   CONTINUE
 
 * ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
+	   DO 310 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 310 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 310 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 310 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 310 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               IF ( point ) THEN   ! 8/92
-                 IF ( com(i,lo,k,l) .EQ. bad_com ) THEN
-                    res(i,pt,k,l) = bad_res
+                 IF ( com(i,lo,k,l,m,n) .EQ. bad_com ) THEN
+                    res(i,pt,k,l,m,n) = bad_res
                  ELSEIF ( integrate ) THEN
-                    res(i,pt,k,l) = 0.0
+                    res(i,pt,k,l,m,n) = 0.0
                  ELSE
-                    res(i,pt,k,l) = com(i,lo,k,l)
+                    res(i,pt,k,l,m,n) = com(i,lo,k,l,m,n)
                  ENDIF
                  GOTO 310
               ENDIF
 	      dsum = 0.0D0	! data
 	      bsum = 0.0D0	! boxes
 	      DO 300 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	         IF ( com(i,j,k,l) .EQ. bad_com ) GOTO 300
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 300
 	         bsum = bsum + box(j)
-	         dsum = dsum + box(j)*com(i,j,k,l)
+	         dsum = dsum + box(j)*com(i,j,k,l,m,n)
  300	      CONTINUE
 	      IF ( bsum .EQ. 0.0D0 ) THEN
-	         res(i,pt,k,l) = bad_res
+	         res(i,pt,k,l,m,n) = bad_res
 	      ELSEIF (integrate) THEN
-	         res(i,pt,k,l) = dsum
+	         res(i,pt,k,l,m,n) = dsum
 	      ELSE
-	         res(i,pt,k,l) = dsum/bsum
+	         res(i,pt,k,l,m,n) = dsum/bsum
 	      ENDIF
  310	   CONTINUE
 
 * ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
+	   DO 410 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 410 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 410 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 410 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 410 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               IF ( point ) THEN    ! 8/92
-                 IF ( com(i,j,lo,l) .EQ. bad_com ) THEN
-                    res(i,j,pt,l) = bad_res
+                 IF ( com(i,j,lo,l,m,n) .EQ. bad_com ) THEN
+                    res(i,j,pt,l,m,n) = bad_res
                  ELSEIF ( integrate ) THEN
-                    res(i,j,pt,l) = 0.0
+                    res(i,j,pt,l,m,n) = 0.0
                  ELSE
-                    res(i,j,pt,l) = com(i,j,lo,l)
+                    res(i,j,pt,l,m,n) = com(i,j,lo,l,m,n)
                  ENDIF
                  GOTO 410
 	      ENDIF
 	      dsum = 0.0D0	! data
 	      bsum = 0.0D0	! boxes
 	      DO 400 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	         IF ( com(i,j,k,l) .EQ. bad_com ) GOTO 400
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 400
 	         bsum = bsum + box(k)
-	         dsum = dsum + box(k)*com(i,j,k,l)
+	         dsum = dsum + box(k)*com(i,j,k,l,m,n)
  400	      CONTINUE
               IF ( bsum .EQ. 0.0D0 ) THEN
-	      res(i,j,pt,l) = bad_res
+	         res(i,j,pt,l,m,n) = bad_res
 	      ELSEIF (integrate) THEN
-	         res(i,j,pt,l) = dsum
+	         res(i,j,pt,l,m,n) = dsum
 	      ELSE
-	         res(i,j,pt,l) = dsum/bsum
+	         res(i,j,pt,l,m,n) = dsum/bsum
 	      ENDIF
  410	   CONTINUE
 
 * ALONG T AXIS
-	ELSE
+	ELSEIF ( idim .EQ. t_dim ) THEN
+	   DO 510 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 510 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 510 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 510 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 510 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               IF ( point ) THEN
-                 IF ( com(i,j,k,lo) .EQ. bad_com ) THEN
-                    res(i,j,k,pt) = bad_res
+                 IF ( com(i,j,k,lo,m,n) .EQ. bad_com ) THEN
+                    res(i,j,k,pt,m,n) = bad_res
                  ELSEIF ( integrate ) THEN
-                    res(i,j,k,pt) = 0.0
+                    res(i,j,k,pt,m,n) = 0.0
                  ELSE
-                    res(i,j,k,pt) = com(i,j,k,lo)
+                    res(i,j,k,pt,m,n) = com(i,j,k,lo,m,n)
                  ENDIF
                  GOTO 510
               ENDIF
 	      dsum = 0.0D0	! data
 	      bsum = 0.0D0	! boxes
 	      DO 500 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	         IF ( com(i,j,k,l) .EQ. bad_com ) GOTO 500
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 500
 	         bsum = bsum + box(l)
-	         dsum = dsum + box(l)*com(i,j,k,l)
+	         dsum = dsum + box(l)*com(i,j,k,l,m,n)
  500	      CONTINUE
 	      IF ( bsum .EQ. 0.0D0 ) THEN
-	         res(i,j,k,pt) = bad_res
+	         res(i,j,k,pt,m,n) = bad_res
 	      ELSEIF (integrate) THEN
-	         res(i,j,k,pt) = dsum
+	         res(i,j,k,pt,m,n) = dsum
 	      ELSE
-	         res(i,j,k,pt) = dsum/bsum
+	         res(i,j,k,pt,m,n) = dsum/bsum
 	      ENDIF
  510	   CONTINUE
+
+
+* ALONG E AXIS
+	ELSEIF ( idim .EQ. e_dim ) THEN
+	   DO 610 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 610 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO 610 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO 610 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO 610 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+              IF ( point ) THEN
+                 IF ( com(i,j,k,l,lo,n) .EQ. bad_com ) THEN
+                    res(i,j,k,pt,m,n) = bad_res
+                 ELSEIF ( integrate ) THEN
+                    res(i,j,k,l,pt,n) = 0.0
+                 ELSE
+                    res(i,j,k,l,pt,n) = com(i,j,k,l,lo,n)
+                 ENDIF
+                 GOTO 610
+              ENDIF
+	      dsum = 0.0D0	! data
+	      bsum = 0.0D0	! boxes
+	      DO 600 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 600
+	         bsum = bsum + box(m)
+	         dsum = dsum + box(m)*com(i,j,k,l,m,n)
+ 600	      CONTINUE
+	      IF ( bsum .EQ. 0.0D0 ) THEN
+	         res(i,j,k,l,pt,n) = bad_res
+	      ELSEIF (integrate) THEN
+	         res(i,j,k,l,pt,n) = dsum
+	      ELSE
+	         res(i,j,k,l,pt,n) = dsum/bsum
+	      ENDIF
+ 610	   CONTINUE
+
+
+* ALONG F AXIS
+	ELSEIF ( idim .EQ. f_dim ) THEN
+	   DO 710 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO 710 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO 710 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO 710 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO 710 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+              IF ( point ) THEN
+                 IF ( com(i,j,k,l,m,lo) .EQ. bad_com ) THEN
+                    res(i,j,k,l,m,pt) = bad_res
+                 ELSEIF ( integrate ) THEN
+                    res(i,j,k,l,m,pt) = 0.0
+                 ELSE
+                    res(i,j,k,l,m,pt) = com(i,j,k,l,m,lo)
+                 ENDIF
+                 GOTO 710
+              ENDIF
+	      dsum = 0.0D0	! data
+	      bsum = 0.0D0	! boxes
+	      DO 700 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 700
+	         bsum = bsum + box(n)
+	         dsum = dsum + box(n)*com(i,j,k,l,m,n)
+ 700	      CONTINUE
+	      IF ( bsum .EQ. 0.0D0 ) THEN
+	         res(i,j,k,l,m,pt) = bad_res
+	      ELSEIF (integrate) THEN
+	         res(i,j,k,l,m,pt) = dsum
+	      ELSE
+	         res(i,j,k,l,m,pt) = dsum/bsum
+	      ENDIF
+ 710	   CONTINUE
+
 	ENDIF
 
-* success
 	RETURN
-
-* error exit
-! 5000	RETURN
-	END	
+	END

@@ -44,6 +44,7 @@
 * written for VAX computer under VMS operating system
 *
 * V200: revision 0.0 - 3/12/91 - for Unix/RISC port - based on EQUAL_SRING
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * calling argument declarations
 	INTEGER		status
@@ -52,13 +53,8 @@
 * internal variable declarations
 	INTEGER	TM_LENSTR1, equal_pos, slen, strt
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 * initialize
 	slen	  = TM_LENSTR1( string )

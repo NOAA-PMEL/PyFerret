@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -43,18 +43,15 @@
 * revision 0.00 - 02/07/86
 * Linux Port 1/97 *kob* - Added a preprocessor include for xgfdl_masks.cmn
 *			  because it needed a preprocessor.
+        IMPLICIT NONE
 	INTEGER	   im    , jm    , km   ,ijsize, i
 	PARAMETER (im=160, jm=100, km=27)
 	PARAMETER (ijsize = im*jm)
 
 * COMMON/XGFDL_MASKS...define grid variables
-#ifdef unix
 
-#	include "xgfdl_masks.cmn"
+#include "xgfdl_masks.cmn"
 
-#else
-	INCLUDE 'FERRET_CMN:XGFDL_MASKS.CMN/LIST'
-#endif
 
 * fill bottom topography masks (flat bottom ocean)
       DATA kmt /ijsize*km/

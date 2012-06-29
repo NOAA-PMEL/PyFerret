@@ -44,12 +44,9 @@
 *
 * revision 0.0 - 3/2/88
 * revision 0.1 - 9/22/88 - bug fix.  start at subscript 1
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include	'ferret.parm'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER	npts

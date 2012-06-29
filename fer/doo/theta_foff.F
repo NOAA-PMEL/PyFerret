@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -58,6 +58,8 @@ C--FROM FOFONOFF,N.,AND R.C.MILLARD,1983,DRAFT. LJM
 
 *************************
 
+      IMPLICIT NONE
+
 * calling argument declarations:
       REAL S, TO, PO, PR
 
@@ -85,38 +87,40 @@ C--FROM FOFONOFF,N.,AND R.C.MILLARD,1983,DRAFT. LJM
 
 * **************************************************
         REAL FUNCTION ATG (salinity, temperature, pressure) 
-    
+
 *    Reference:  Bryden, H., 1973, Deep Sea Res., 20, 401-408.
-*    
+*
 *    Units:
-*    
+*
 *    	Pressure:		P			decibars
 *    	Temperature:		T			degrees Celcius
 *    	Salinity:		S			psu (IPSS-78)
 *    	Adiabatic:		ATG			deg. C/decibar
-*    	
-*    	
+*
+*
 *    Check value:
 *    		ATG = 3.255796E-4 C/dbar for S = 40 (psu), T = 40 deg. C, 
 *    		P = 10000 decibars.
+
+        IMPLICIT NONE
 
 * calling argument declarations:
         REAL salinity, temperature, pressure
 
 * internal variable declarations:
 	REAL S, T, p
-	
+
 * initialize
 	S = salinity - 35.
 	T = temperature
 	p = pressure
-	
+
 	ATG = (((-2.1687e-16 * T + 1.8676e-14) * T - 4.6206e-13) * p
      .	      + ((2.7759e-12 * T - 1.1351e-10) * S + ((-5.4481e-14 * T
      .	      + 8.733e-12) * T - 6.7795e-10) * T + 1.8741e-08)) * p
      .	      + (-4.2393e-08 * T + 1.8932e-06) * S
      .	      + ((6.6228e-10 * T - 6.836e-08) * T + 8.5258e-06) * T
      .	      + 3.5803e-05
-	
+
         RETURN
         END

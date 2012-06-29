@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -55,22 +55,27 @@
 *		Unix version requires implicit DO loops to be spelled out to
 *		avoid duplicate initialization
 *                   9/24/91 - fixed errors introduced by the above: pre-defined
-*                             regions "W", "T", etc. not properly init'd
+*                             regions "W", "T", etc. not properly initialized
 *                            (Arguably better to do this in a ferret_init file)
 * V230:  1/30/92: Sun port - fixed cx_name data initialization
 * V420: 9/8/95 - added initializations for implicit grid creation
 * V580: 11/04  - new cx_cal_id 
+*        2/12 *kms* Add the E and F dimensions (set to nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 
-	INTEGER	    n4cx, n4neg, num_cx_undefined, num_cx_predefined, 
-     .              all_undefined
-	PARAMETER ( n4cx  = 4 * max_cx,
-     .		    num_cx_predefined = 3, ! 0, -1 and -2 are named cx's T,W&N
+	INTEGER	    ndcx, ndneg, num_cx_undefined, num_cx_predefined, 
+     .              all_undefined, ndm2t3, ndt3
+	PARAMETER ( ndcx  = nferdims * max_cx,
+     .		    num_cx_predefined = 3, ! 0, -1 and -2 are named cx's T,W,N
      .		    num_cx_undefined = max_cx_predefined - num_cx_predefined,
-     .		    n4neg = 4 * num_cx_undefined, 
-     .              all_undefined = max_cx+max_cx_predefined)
+     .		    ndneg = nferdims * num_cx_undefined, 
+     .              all_undefined = max_cx+max_cx_predefined,
+     .              ndm2t3 = (nferdims - 2) * 3,
+     .              ndt3 = nferdims * 3 )
 	INTEGER	    i, j
 
 	DATA	cx_stack_ptr	/ cx_stack_ptr_base /
@@ -82,39 +87,39 @@
      .		cx_has_impl_grid/ max_cx*.FALSE.		/
 
 * initialize positive subscripts
-	DATA	((cx_lo_ww(i,j),i=1,4),j=1,max_cx)/ n4cx *unspecified_val8 /
-	DATA	((cx_hi_ww(i,j),i=1,4),j=1,max_cx)/ n4cx *unspecified_val8 /
-	DATA	((cx_lo_ss(i,j),i=1,max_cx),j=1,4)/ n4cx *unspecified_int4 /
-	DATA	((cx_hi_ss(i,j),i=1,max_cx),j=1,4)/ n4cx *unspecified_int4 /
-	DATA	cx_delta	/ n4cx*unspecified_val8		/
-	DATA	((cx_trans(i,j),i=1,4),j=1,max_cx)
-     .                                  / n4cx *trans_no_transform /
-	DATA	((cx_trans_arg(i,j),i=1,4),j=1,max_cx)/ n4cx *bad_val4	 /
-	DATA	((cx_by_ss(i,j),i=1,4),j=1,max_cx)/ n4cx *.FALSE.	 /
-	DATA	((cx_given(i,j),i=1,4),j=1,max_cx)/ n4cx *.FALSE.	 /
+	DATA	((cx_lo_ww(i,j),i=1,nferdims),j=1,max_cx)/ ndcx *unspecified_val8 /
+	DATA	((cx_hi_ww(i,j),i=1,nferdims),j=1,max_cx)/ ndcx *unspecified_val8 /
+	DATA	((cx_lo_ss(i,j),i=1,max_cx),j=1,nferdims)/ ndcx *unspecified_int4 /
+	DATA	((cx_hi_ss(i,j),i=1,max_cx),j=1,nferdims)/ ndcx *unspecified_int4 /
+	DATA	cx_delta	/ ndcx*unspecified_val8		/
+	DATA	((cx_trans(i,j),i=1,nferdims),j=1,max_cx)
+     .                                  / ndcx *trans_no_transform /
+	DATA	((cx_trans_arg(i,j),i=1,nferdims),j=1,max_cx)/ ndcx *bad_val4	 /
+	DATA	((cx_by_ss(i,j),i=1,nferdims),j=1,max_cx)/ ndcx *.FALSE.	 /
+	DATA	((cx_given(i,j),i=1,nferdims),j=1,max_cx)/ ndcx *.FALSE.	 /
 
 * initialize undefined negative subscripts
-	DATA	((cx_lo_ww(i,j),i=1,4),j=min_context,-3)
-     .					/ n4neg *unspecified_val8 /
-	DATA	((cx_hi_ww(i,j),i=1,4),j=min_context,-3)
-     .					/ n4neg *unspecified_val8 /
-	DATA	((cx_lo_ss(i,j),i=min_context,-3),j=1,4)
-     .					/ n4neg *unspecified_int4 /
-	DATA	((cx_hi_ss(i,j),i=min_context,-3),j=1,4)
-     .					/ n4neg *unspecified_int4 /
-	DATA	((cx_trans(i,j),i=1,4),j=min_context,-3)
-     .					/ n4neg *trans_no_transform /
-	DATA	((cx_trans_arg(i,j),i=1,4),j=min_context,-3)
-     .					/ n4neg *bad_val4	 /
-	DATA	((cx_by_ss(i,j),i=1,4),j=min_context,-3)
-     .					/ n4neg *.FALSE.	 /
-	DATA	((cx_given(i,j),i=1,4),j=min_context,-3)
-     .					/ n4neg *.FALSE.	 /
+	DATA	((cx_lo_ww(i,j),i=1,nferdims),j=min_context,-3)
+     .					/ ndneg *unspecified_val8 /
+	DATA	((cx_hi_ww(i,j),i=1,nferdims),j=min_context,-3)
+     .					/ ndneg *unspecified_val8 /
+	DATA	((cx_lo_ss(i,j),i=min_context,-3),j=1,nferdims)
+     .					/ ndneg *unspecified_int4 /
+	DATA	((cx_hi_ss(i,j),i=min_context,-3),j=1,nferdims)
+     .					/ ndneg *unspecified_int4 /
+	DATA	((cx_trans(i,j),i=1,nferdims),j=min_context,-3)
+     .					/ ndneg *trans_no_transform /
+	DATA	((cx_trans_arg(i,j),i=1,nferdims),j=min_context,-3)
+     .					/ ndneg *bad_val4	 /
+	DATA	((cx_by_ss(i,j),i=1,nferdims),j=min_context,-3)
+     .					/ ndneg *.FALSE.	 /
+	DATA	((cx_given(i,j),i=1,nferdims),j=min_context,-3)
+     .					/ ndneg *.FALSE.	 /
 
 
 	DATA
      .		cx_unstand_grid	/ max_cx*.FALSE.		/,
-     .		cx_regrid_trans	/ n4cx*unspecified_int4	/
+     .		cx_regrid_trans	/ ndcx*unspecified_int4	/
 
 	DATA	cx_ovsiz(cx_last)/ ovsiz_off /
 
@@ -125,22 +130,22 @@
 	DATA	(cx_name(i),i=min_context,-3)/
      .		num_cx_undefined*unspecified_name4 /
 
-* pre-initialize subscripts and ZT axes of "W", "T", and "N" regions
+* pre-initialize subscripts and axes of "W", "T", and "N" regions
 * (added 9/91 for Ultrix port)
-	DATA	((cx_lo_ww(i,j),i=3,4),j=-2,0)
-     .					/ 6*unspecified_val8 /
-	DATA	((cx_hi_ww(i,j),i=3,4),j=-2,0)
-     .					/ 6*unspecified_val8 /
-	DATA	((cx_lo_ss(i,j),i=-2,0),j=1,4)
-     .					/ 12*unspecified_int4 /
-	DATA	((cx_hi_ss(i,j),i=-2,0),j=1,4)
-     .					/ 12*unspecified_int4 /
-	DATA	((cx_trans(i,j),i=3,4),j=-2,0)
-     .					/ 6*trans_no_transform /
-	DATA	((cx_trans_arg(i,j),i=3,4),j=-2,0)
-     .					/ 6*bad_val4	 /
-	DATA	((cx_by_ss(i,j),i=3,4),j=-2,0)
-     .					/ 6*.FALSE.	 /
+	DATA	((cx_lo_ww(i,j),i=3,nferdims),j=-2,0)
+     .					/ ndm2t3*unspecified_val8 /
+	DATA	((cx_hi_ww(i,j),i=3,nferdims),j=-2,0)
+     .					/ ndm2t3*unspecified_val8 /
+	DATA	((cx_lo_ss(i,j),i=-2,0),j=1,nferdims)
+     .					/ ndt3*unspecified_int4 /
+	DATA	((cx_hi_ss(i,j),i=-2,0),j=1,nferdims)
+     .					/ ndt3*unspecified_int4 /
+	DATA	((cx_trans(i,j),i=3,nferdims),j=-2,0)
+     .					/ ndm2t3*trans_no_transform /
+	DATA	((cx_trans_arg(i,j),i=3,nferdims),j=-2,0)
+     .					/ ndm2t3*bad_val4	 /
+	DATA	((cx_by_ss(i,j),i=3,nferdims),j=-2,0)
+     .					/ ndm2t3*.FALSE.	 /
 
 	DATA	cx_name(0)		/ 'W    ' /	!"W"hole GFDL region
 	DATA	cx_lo_ww( x_dim, 0 )	/ 130.	/,
@@ -156,7 +161,9 @@
      .		cx_given( x_dim, 0 )	/ .TRUE.  /,
      .		cx_given( y_dim, 0 )	/ .TRUE.  /,
      .		cx_given( z_dim, 0 )	/ .FALSE. /,
-     .		cx_given( t_dim, 0 )	/ .FALSE. /
+     .		cx_given( t_dim, 0 )	/ .FALSE. /,
+     .		cx_given( e_dim, 0 )	/ .FALSE. /,
+     .		cx_given( f_dim, 0 )	/ .FALSE. /
 
 	DATA	cx_name(-1)		/ 'T    ' /	! "T"ropical Pacific
 	DATA	cx_lo_ww( x_dim,-1 )	/ 130.	/,
@@ -172,7 +179,9 @@
      .		cx_given( x_dim,-1 )	/ .TRUE.  /,
      .		cx_given( y_dim,-1 )	/ .TRUE.  /,
      .		cx_given( z_dim,-1 )	/ .FALSE. /,
-     .		cx_given( t_dim,-1 )	/ .FALSE. /
+     .		cx_given( t_dim,-1 )	/ .FALSE. /,
+     .		cx_given( e_dim,-1 )	/ .FALSE. /,
+     .		cx_given( f_dim,-1 )	/ .FALSE. /
 
 	DATA	cx_name(-2)		/ 'N    '/	! "N"arrow tropical slab
 	DATA	cx_lo_ww( x_dim,-2 )	/ 130.	/,
@@ -188,7 +197,9 @@
      .		cx_given( x_dim,-2 )	/ .TRUE.  /,
      .		cx_given( y_dim,-2 )	/ .TRUE.  /,
      .		cx_given( z_dim,-2 )	/ .FALSE. /,
-     .		cx_given( t_dim,-2 )	/ .FALSE. /
+     .		cx_given( t_dim,-2 )	/ .FALSE. /,
+     .		cx_given( e_dim,-2 )	/ .FALSE. /,
+     .		cx_given( f_dim,-2 )	/ .FALSE. /
 
 
 	END

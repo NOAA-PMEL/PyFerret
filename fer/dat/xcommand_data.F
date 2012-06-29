@@ -2,7 +2,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -102,7 +102,7 @@
 *       3/99 *jd* - more qualifs for POLYGON and fixed num_qualifs bug for it
 *       3/99 *jc* - added /INTERNAL to SHOW FUNCTION command
 *       4/99 *sh* - added PAUSE alias
-*	     *sh* - added DEFINE AXIS/EDGES and SHOW AXIS/X/Y/Z/T/IJ/K/L 
+*	     *sh* - added DEFINE AXIS/EDGES and SHOW AXIS/X/Y/Z/T/E/F/IJ/K/L 
 *	     *sh* - added SET AXIS/DEPTH
 *	6/99 *sh* - added WHERE alias
 * V510  3/00 *sh* - added SET DATA/REGULAR_T
@@ -147,7 +147,7 @@
 * V554: 10/03 *acm* - add SHOW AXIS/EDGES/DODS for binary output of axis coordinates
 * V554:  1/04 *acm* - add REPEAT/RANGE=/NAME= qualifiers
 * V554:  2/04 *acm* - add /HGRAT=/VGRAT qualifiers to plot commands, setting 
-*                     graticule lines at tic marks
+*                     GRATICULE lines at tic marks
 * V570:  5/04 *acm* - Add DEFINE AXIS/BOUNDS 
 *                     and LIST/EDGES, LIST/BOUNDS (for NetCDF output only)
 *       *acm* 6/05 - add SET AXIS/CALENDAR /T0 /UNITS
@@ -193,7 +193,9 @@
 *                  but just re-enter the loop if not under pfyrret
 *                  Add DEFINE PYFUNC /NAME=<alias> python.module.name
 * V68 *acm* 1/12   Add USE/STRICT; see ticket 1910.
+* V68 *acm* 5/12   Add DEFINE DATA /AGGREGATE /NAME= /QUIET
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'xcommand.cmn'
 
@@ -224,25 +226,34 @@
 	   DATA subcommands      (nsub_at1 + 2)	/ 'REGION'	/
 	   DATA num_qualifs      (nsub_at1 + 2)	/ nqual1c	/
 	   DATA qualifier_pointer(nsub_at1 + 2)	/ nqual_at1c	/
-* SET REGION/I/J/K/L/X/Y/Z/T
+* SET REGION/I/J/K/L/M/N/X/Y/Z/T/E/F/DX/DY/DZ/DT/DE/DF/DI/DJ/DK/DL/DM/DN
 		DATA qualifiers  (nqual_at1c+0)	/ 'I'	/
 		DATA qualifiers  (nqual_at1c+1)	/ 'J'	/
 		DATA qualifiers  (nqual_at1c+2)	/ 'K'	/
 		DATA qualifiers  (nqual_at1c+3)	/ 'L'	/
-		DATA qualifiers  (nqual_at1c+4)	/ 'X'	/
-		DATA qualifiers  (nqual_at1c+5)	/ 'Y'	/
-		DATA qualifiers  (nqual_at1c+6)	/ 'Z'	/
-		DATA qualifiers  (nqual_at1c+7)	/ 'T'	/
-		DATA qualifiers  (nqual_at1c+8) / '****'/
-		DATA qualifiers  (nqual_at1c+9) / '****'/
-		DATA qualifiers  (nqual_at1c+10)/ 'DX'/
-		DATA qualifiers  (nqual_at1c+11)/ 'DY'/
-		DATA qualifiers  (nqual_at1c+12)/ 'DZ'/
-		DATA qualifiers  (nqual_at1c+13)/ 'DT'/
-		DATA qualifiers  (nqual_at1c+14)/ 'DI'/
-		DATA qualifiers  (nqual_at1c+15)/ 'DJ'/
-		DATA qualifiers  (nqual_at1c+16)/ 'DK'/
-		DATA qualifiers  (nqual_at1c+17)/ 'DL'/
+		DATA qualifiers  (nqual_at1c+4)	/ 'M'	/
+		DATA qualifiers  (nqual_at1c+5)	/ 'N'	/
+		DATA qualifiers  (nqual_at1c+6)	/ 'X'	/
+		DATA qualifiers  (nqual_at1c+7)	/ 'Y'	/
+		DATA qualifiers  (nqual_at1c+8)	/ 'Z'	/
+		DATA qualifiers  (nqual_at1c+9)	/ 'T'	/
+		DATA qualifiers  (nqual_at1c+10)/ 'E'/
+		DATA qualifiers  (nqual_at1c+11)/ 'F'/
+		DATA qualifiers  (nqual_at1c+12)/ '****'/   ! need this for alignment
+		DATA qualifiers  (nqual_at1c+13)/ '****'/   ! in get_delta_context
+		DATA qualifiers  (nqual_at1c+14)/ 'DX'/
+		DATA qualifiers  (nqual_at1c+15)/ 'DY'/
+		DATA qualifiers  (nqual_at1c+16)/ 'DZ'/
+		DATA qualifiers  (nqual_at1c+17)/ 'DT'/
+		DATA qualifiers  (nqual_at1c+18)/ 'DE'/
+		DATA qualifiers  (nqual_at1c+19)/ 'DF'/
+		DATA qualifiers  (nqual_at1c+20)/ 'DI'/
+		DATA qualifiers  (nqual_at1c+21)/ 'DJ'/
+		DATA qualifiers  (nqual_at1c+22)/ 'DK'/
+		DATA qualifiers  (nqual_at1c+23)/ 'DL'/
+		DATA qualifiers  (nqual_at1c+24)/ 'DM'/
+		DATA qualifiers  (nqual_at1c+25)/ 'DN'/
+		DATA qualifiers  (nqual_at1c+26)/ '****'/
 * SET VIEWPORT
 	   DATA subcommands      (nsub_at1 + 3)	/ 'VIEWPORT'	/
 	   DATA num_qualifs      (nsub_at1 + 3)	/ nqual1d	/
@@ -259,7 +270,7 @@
 	   DATA qualifier_pointer(nsub_at1 + 5)	/ nqual_at1f	/
 * SET LIST/PRECISION=#digits, /FILE=filename, /FORMAT=list_format, /APPEND, 
 * (for netcdf4 /NCFORMAT= /ENDIAN=, /DEFLATE=, /SHUFFLE=,  /XCHUNK...
-		DATA qualifiers  (nqual_at1f+0)	/ 'PRECISON'	/
+		DATA qualifiers  (nqual_at1f+0)	/ 'PRECISION'	/
 		DATA qualifiers  (nqual_at1f+1)	/ 'FILE'	/
 		DATA qualifiers  (nqual_at1f+2)	/ 'FORMAT'	/
 		DATA qualifiers  (nqual_at1f+3)	/ 'APPEND'	/
@@ -272,8 +283,8 @@
 		DATA qualifiers  (nqual_at1f+10)/ 'YCHUNK'	/
 		DATA qualifiers  (nqual_at1f+11)/ 'ZCHUNK'	/
 		DATA qualifiers  (nqual_at1f+12)/ 'TCHUNK'	/
-		DATA qualifiers  (nqual_at1f+13)/ '****'	/
-		DATA qualifiers  (nqual_at1f+14)/ '****'	/
+		DATA qualifiers  (nqual_at1f+13)/ 'ECHUNK'	/
+		DATA qualifiers  (nqual_at1f+14)/ 'FCHUNK'	/
 * SET DATA_SET
 	   DATA subcommands      (nsub_at1 + 6)	/ 'DATA'	/
 	   DATA num_qualifs      (nsub_at1 + 6)	/ nqual1g	/
@@ -292,7 +303,7 @@
 		DATA qualifiers  (nqual_at1g+10) / 'TYPE'       / 
 		DATA qualifiers  (nqual_at1g+11) / 'SWAP'       / 
 		DATA qualifiers  (nqual_at1g+12) / 'REGULART'   /
-		DATA qualifiers  (nqual_at1g+13) / 'DELIMITER'  /
+		DATA qualifiers  (nqual_at1g+13) / 'DELIMITE'  /
 		DATA qualifiers  (nqual_at1g+14) / 'BROWSE'     /
 		DATA qualifiers  (nqual_at1g+15) / 'STRICT'     /
 		DATA qualifiers  (nqual_at1g+16) / '****'       /
@@ -350,7 +361,7 @@
 		DATA qualifiers  (nqual_at1l+5)	/ 'STRIDE'	/
 		DATA qualifiers  (nqual_at1l+6)	/ 'OFFSET'	/
 		DATA qualifiers  (nqual_at1l+7)	/ 'REGULAR'	/
-* SET MEMORY							
+* SET MEMORY
 	   DATA subcommands      (nsub_at1 +12)	/ 'MEMORY'	/
 	   DATA num_qualifs      (nsub_at1 +12)	/ nqual1m	/
 	   DATA qualifier_pointer(nsub_at1 +12)	/ nqual_at1m	/
@@ -358,7 +369,7 @@
 		DATA qualifiers  (nqual_at1m+0)	/ 'SIZE'	/
 		DATA qualifiers  (nqual_at1m+1)	/ '****'	/
 * SET ATTRIBUTE
-	   DATA subcommands      (nsub_at1 +13)	/ 'ATTRIBUTE'	/
+	   DATA subcommands      (nsub_at1 +13)	/ 'ATTRIBUT'	/
 	   DATA num_qualifs      (nsub_at1 +13)	/ nqual1n	/
 	   DATA qualifier_pointer(nsub_at1 +13)	/ nqual_at1n	/
 * SET ATRR /TYPE /DATASET /OUTPUT /LIKE 
@@ -395,13 +406,10 @@
 	   DATA subcommands      (nsub_at1 +16)	/ 'GIFFILE'	/
 	   DATA num_qualifs      (nsub_at1 +16)	/ nqual1q	/
 	   DATA qualifier_pointer(nsub_at1 +16)	/ nqual_at1q	/
-* SET **** / ****
-		DATA qualifiers  (nqual_at1q+0)	/ '****'	/
-		DATA qualifiers  (nqual_at1q+1)	/ '****'	/
 * SET ****							  ! unused (r)
 	   DATA subcommands      (nsub_at1 +17)	/ '****'	/
 	   DATA num_qualifs      (nsub_at1 +17)	/ nqual1r	/
-	   DATA qualifier_pointer(nsub_at1 +17)	/ nqual_at1s	/
+	   DATA qualifier_pointer(nsub_at1 +17)	/ nqual_at1r	/
 * SET **** / ****
 		DATA qualifiers  (nqual_at1r+0)	/ '****'	/
 		DATA qualifiers  (nqual_at1r+1)	/ '****'	/
@@ -451,23 +459,27 @@
 	   DATA subcommands      (nsub_at2 + 3)	/ 'AXIS'	/
 	   DATA num_qualifs      (nsub_at2 + 3)	/ nqual2d	/
 	   DATA qualifier_pointer(nsub_at2 + 3)	/ nqual_at2d	/
-* SHOW AXIS /ALL/I/J/K/L/X/Y/Z/T/XML/OUTFILE/APPEND/CLOBBER
+* SHOW AXIS /ALL/I/J/K/L/M/N/X/Y/Z/T/E/F/XML/OUTFILE/APPEND/CLOBBER
 		DATA qualifiers  (nqual_at2d+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at2d+1)	/ 'I'	/
 		DATA qualifiers  (nqual_at2d+2)	/ 'J'	/
 		DATA qualifiers  (nqual_at2d+3)	/ 'K'	/
 		DATA qualifiers  (nqual_at2d+4)	/ 'L'	/
-		DATA qualifiers  (nqual_at2d+5)	/ 'X'	/
-		DATA qualifiers  (nqual_at2d+6)	/ 'Y'	/
-		DATA qualifiers  (nqual_at2d+7)	/ 'Z'	/
-		DATA qualifiers  (nqual_at2d+8)	/ 'T'	/
-		DATA qualifiers  (nqual_at2d+9)	/ 'XML'/
-		DATA qualifiers  (nqual_at2d+10)/ 'OUTFILE'/
-		DATA qualifiers  (nqual_at2d+11)/ 'APPEND'/
-		DATA qualifiers  (nqual_at2d+12)/ 'CLOBBER'/
-		DATA qualifiers  (nqual_at2d+13)/ '****'/
-		DATA qualifiers  (nqual_at2d+14)/ '****'/
-		DATA qualifiers  (nqual_at2d+15)/ '****'/
+		DATA qualifiers  (nqual_at2d+5)	/ 'M'	/
+		DATA qualifiers  (nqual_at2d+6)	/ 'N'	/
+		DATA qualifiers  (nqual_at2d+7)	/ 'X'	/
+		DATA qualifiers  (nqual_at2d+8)	/ 'Y'	/
+		DATA qualifiers  (nqual_at2d+9)	/ 'Z'	/
+		DATA qualifiers  (nqual_at2d+10)/ 'T'	/
+		DATA qualifiers  (nqual_at2d+11)/ 'E'	/
+		DATA qualifiers  (nqual_at2d+12)/ 'F'	/
+		DATA qualifiers  (nqual_at2d+13)/ 'XML'/
+		DATA qualifiers  (nqual_at2d+14)/ 'OUTFILE'/
+		DATA qualifiers  (nqual_at2d+15)/ 'APPEND'/
+		DATA qualifiers  (nqual_at2d+16)/ 'CLOBBER'/
+		DATA qualifiers  (nqual_at2d+17)/ '****'/
+		DATA qualifiers  (nqual_at2d+18)/ '****'/
+		DATA qualifiers  (nqual_at2d+19)/ '****'/
 
 * SHOW EXPRSIONION
 	   DATA subcommands      (nsub_at2 + 4)	/ 'EXPRSION'	/
@@ -541,22 +553,27 @@
 	   DATA subcommands      (nsub_at2 +12)	/ 'GRID'	/
 	   DATA num_qualifs      (nsub_at2 +12)	/ nqual2m	/
 	   DATA qualifier_pointer(nsub_at2 +12)	/ nqual_at2m	/
-* SHOW GRID /ALL/I/J/K/L/X/Y/Z/T/D/XML/OUTFILE/APPEND/CLOBBER 
+* SHOW GRID /ALL/I/J/K/L/M/N/X/Y/Z/T/E/F/D/XML/OUTFILE/APPEND/CLOBBER 
 		DATA qualifiers  (nqual_at2m+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at2m+1)	/ 'I   '	/
 		DATA qualifiers  (nqual_at2m+2)	/ 'J   '	/
 		DATA qualifiers  (nqual_at2m+3)	/ 'K   '	/
 		DATA qualifiers  (nqual_at2m+4)	/ 'L   '	/
-		DATA qualifiers  (nqual_at2m+5)	/ 'X   '	/
-		DATA qualifiers  (nqual_at2m+6)	/ 'Y   '	/
-		DATA qualifiers  (nqual_at2m+7)	/ 'Z   '	/
-		DATA qualifiers  (nqual_at2m+8)	/ 'T   '	/
-		DATA qualifiers  (nqual_at2m+9)	/ 'DYNAMIC'	/
-		DATA qualifiers  (nqual_at2m+10)/ 'XML'	/
-		DATA qualifiers  (nqual_at2m+11)/ 'OUTFILE'	/
-		DATA qualifiers  (nqual_at2m+12)/ 'APPEND'	/
-		DATA qualifiers  (nqual_at2m+13)/ 'CLOBBER'	/
-		DATA qualifiers  (nqual_at2m+14)/ '****'	/
+		DATA qualifiers  (nqual_at2m+5)	/ 'M   '	/
+		DATA qualifiers  (nqual_at2m+6)	/ 'N   '	/
+		DATA qualifiers  (nqual_at2m+7)	/ 'X   '	/
+		DATA qualifiers  (nqual_at2m+8)	/ 'Y   '	/
+		DATA qualifiers  (nqual_at2m+9)	/ 'Z   '	/
+		DATA qualifiers  (nqual_at2m+10)/ 'T   '	/
+		DATA qualifiers  (nqual_at2m+11)/ 'E   '	/
+		DATA qualifiers  (nqual_at2m+12)/ 'F   '	/
+		DATA qualifiers  (nqual_at2m+13)/ 'DYNAMIC'	/
+		DATA qualifiers  (nqual_at2m+14)/ 'XML'	/
+		DATA qualifiers  (nqual_at2m+15)/ 'OUTFILE'	/
+		DATA qualifiers  (nqual_at2m+16)/ 'APPEND'	/
+		DATA qualifiers  (nqual_at2m+17)/ 'CLOBBER'	/
+		DATA qualifiers  (nqual_at2m+18)/ '****'	/
+		DATA qualifiers  (nqual_at2m+19)/ '****'	/
 * SHOW VIEW
 	   DATA subcommands      (nsub_at2 +13)	/ 'VIEWPORT'	/
 	   DATA num_qualifs      (nsub_at2 +13)	/ nqual2n	/
@@ -572,7 +589,7 @@
 	   DATA qualifier_pointer(nsub_at2 +14)	/ nqual_at2o	/
 * SHOW TRANS / ALL
 		DATA qualifiers  (nqual_at2o+0)	/ 'ALL'		/
-* SHOW ALIAS				
+* SHOW ALIAS
 	   DATA subcommands      (nsub_at2 +15)	/ 'ALIAS'	/
 	   DATA num_qualifs      (nsub_at2 +15)	/ nqual2p	/
 	   DATA qualifier_pointer(nsub_at2 +15)	/ nqual_at2p	/
@@ -585,7 +602,7 @@
 * SHOW SYMBOL / ALL
 		DATA qualifiers  (nqual_at2q+0)	/ 'ALL'		/
 * SHOW ATTRIBUTE
-	   DATA subcommands      (nsub_at2 +17)	/ 'ATTRIBUTE'	/
+	   DATA subcommands      (nsub_at2 +17)	/ 'ATTRIBUT'	/
 	   DATA num_qualifs      (nsub_at2 +17)	/ nqual2r	/
 	   DATA qualifier_pointer(nsub_at2 +17)	/ nqual_at2r	/
 * SHOW ATTRIBUTE / ALL /DATASET /OUTPUT
@@ -644,16 +661,20 @@
 	   DATA subcommands      (nsub_at3 + 2)	/ 'REGION'	/
 	   DATA num_qualifs      (nsub_at3 + 2)	/ nqual3c	/
 	   DATA qualifier_pointer(nsub_at3 + 2)	/ nqual_at3c	/
-* CANCEL REGIONS /ALL/I/J/K/L/X/Y/Z/T
+* CANCEL REGIONS /ALL/I/J/K/L/M/N/X/Y/Z/T/E/F
 		DATA qualifiers  (nqual_at3c+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at3c+1)	/ 'I   '	/
 		DATA qualifiers  (nqual_at3c+2)	/ 'J   '	/
 		DATA qualifiers  (nqual_at3c+3)	/ 'K   '	/
 		DATA qualifiers  (nqual_at3c+4)	/ 'L   '	/
-		DATA qualifiers  (nqual_at3c+5)	/ 'X   '	/
-		DATA qualifiers  (nqual_at3c+6)	/ 'Y   '	/
-		DATA qualifiers  (nqual_at3c+7)	/ 'Z   '	/
-		DATA qualifiers  (nqual_at3c+8)	/ 'T   '	/
+		DATA qualifiers  (nqual_at3c+5)	/ 'M   '	/
+		DATA qualifiers  (nqual_at3c+6)	/ 'N   '	/
+		DATA qualifiers  (nqual_at3c+7)	/ 'X   '	/
+		DATA qualifiers  (nqual_at3c+8)	/ 'Y   '	/
+		DATA qualifiers  (nqual_at3c+9)	/ 'Z   '	/
+		DATA qualifiers  (nqual_at3c+10)/ 'T   '	/
+		DATA qualifiers  (nqual_at3c+11)/ 'E   '	/
+		DATA qualifiers  (nqual_at3c+12)/ 'F   '	/
 * CANCEL MEMORY
 	   DATA subcommands      (nsub_at3 + 3)	/ 'MEMORY'	/
 	   DATA num_qualifs      (nsub_at3 + 3)	/ nqual3d	/
@@ -674,7 +695,7 @@
 	   DATA qualifier_pointer(nsub_at3 + 5)	/ nqual_at3f	/
 * CANCEL LIST /ALL, /PRECISION, /FILE, /FORMAT
 		DATA qualifiers  (nqual_at3f+0)	/ 'ALL '	/
-		DATA qualifiers  (nqual_at3f+1)	/ 'PRECSION'	/
+		DATA qualifiers  (nqual_at3f+1)	/ 'PRECISION'	/
 		DATA qualifiers  (nqual_at3f+2)	/ 'FILE'	/
 		DATA qualifiers  (nqual_at3f+3)	/ 'FORMAT'	/
 		DATA qualifiers  (nqual_at3f+4)	/ 'HEADING'	/
@@ -710,7 +731,7 @@
 		DATA qualifiers  (nqual_at3k+0)	/ 'ALL ' /
 		DATA qualifiers  (nqual_at3k+1)	/ 'DATASET' /
 		DATA qualifiers  (nqual_at3k+2)	/ '****' /
-* CANCEL AXIS							
+* CANCEL AXIS
 	   DATA subcommands      (nsub_at3 +11)	/ 'AXIS'	/
 	   DATA num_qualifs      (nsub_at3 +11)	/ nqual3l	/
 	   DATA qualifier_pointer(nsub_at3 +11)	/ nqual_at3l	/
@@ -724,7 +745,7 @@
 	   DATA qualifier_pointer(nsub_at3 +12)	/ nqual_at3m	/
 		DATA qualifiers  (nqual_at3m+0)	/ '****'	/
 * CANCEL ATTRIBUTE /OUTPUT /DATA
-	   DATA subcommands      (nsub_at3 +13)	/ 'ATTRIBUTE'	/
+	   DATA subcommands      (nsub_at3 +13)	/ 'ATTRIBUT'	/
 	   DATA num_qualifs      (nsub_at3 +13)	/ nqual3n	/
 	   DATA qualifier_pointer(nsub_at3 +13)	/ nqual_at3n	/
 		DATA qualifiers  (nqual_at3n+0)	/ 'OUTPUT'	/
@@ -773,50 +794,52 @@
 	   DATA subcommands      (nsub_at4 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at4 + 0)	/ nqual4a	/
 	   DATA qualifier_pointer(nsub_at4 + 0)	/ nqual_at4a	/
-* CONTOUR/I/J/K/L/X/Y/Z/T/D/OVERLAY/SET_UP/FRAME/TRANSPOSE
+* CONTOUR/I/J/K/L/M/N/X/Y/Z/T/E/F/D/OVERLAY/SET_UP/FRAME/TRANSPOSE
 		DATA qualifiers  (nqual_at4a+0)	/ 'I'	/
 		DATA qualifiers  (nqual_at4a+1)	/ 'J'	/
 		DATA qualifiers  (nqual_at4a+2)	/ 'K'	/
 		DATA qualifiers  (nqual_at4a+3)	/ 'L'	/
-		DATA qualifiers  (nqual_at4a+4)	/ 'X'	/
-		DATA qualifiers  (nqual_at4a+5)	/ 'Y'	/
-		DATA qualifiers  (nqual_at4a+6)	/ 'Z'	/
-		DATA qualifiers  (nqual_at4a+7)	/ 'T'	/
-		DATA qualifiers  (nqual_at4a+8)	/ 'OVERLAY'/	!/overlays
-		DATA qualifiers  (nqual_at4a+9)	/ 'SET_UP'/	!/set_up
-		DATA qualifiers  (nqual_at4a+10)/ 'FRAME'/	!/frame
-		DATA qualifiers  (nqual_at4a+11)/ 'D'   /	!/data_set
-		DATA qualifiers  (nqual_at4a+12)/ 'TRANPOSE'/	!/transpose
-		DATA qualifiers  (nqual_at4a+13)/ 'FILL'/	!
-		DATA qualifiers  (nqual_at4a+14)/ 'LINE'/	!
-		DATA qualifiers  (nqual_at4a+15)/ 'NOLABEL'/	!/nolabel
-		DATA qualifiers  (nqual_at4a+16)/ 'LEVELS'/	!/levels_same
-		DATA qualifiers  (nqual_at4a+17)/ 'KEY' /	!
-		DATA qualifiers  (nqual_at4a+18)/ 'NOKEY'/	!
-		DATA qualifiers  (nqual_at4a+19)/ 'PALETTE'/	!
-		DATA qualifiers  (nqual_at4a+20)/ 'XLIMITS'/	!/xlimits
-		DATA qualifiers  (nqual_at4a+21)/ 'YLIMITS'/	!/ylimits
-		DATA qualifiers  (nqual_at4a+22)/ 'TITLE'/	!/title
-		DATA qualifiers  (nqual_at4a+23)/ 'COLOR'/	!/color
-		DATA qualifiers  (nqual_at4a+24)/ 'NOAXES'/	!/noaxes
-		DATA qualifiers  (nqual_at4a+25)/ 'PATTERN'/	!/pattern=
-		DATA qualifiers  (nqual_at4a+26)/ 'SIZE'/	!/size
-		DATA qualifiers  (nqual_at4a+27)/ 'SPACING'/	!/spacing
-		DATA qualifiers  (nqual_at4a+28)/ 'SIGDIG'/	!/sigdig
-		DATA qualifiers  (nqual_at4a+29)/ 'PEN'/	!/pen (denig!!)
-		DATA qualifiers  (nqual_at4a+30)/ 'HLIMITS'/	! horiz
-		DATA qualifiers  (nqual_at4a+31)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at4a+32)/ '****'/	! HLOG (place holder, not implemented for contuor) 
-		DATA qualifiers  (nqual_at4a+33)/ '****'/	! VLOG (place holder)
-		DATA qualifiers  (nqual_at4a+34)/ 'AXES'/	! /axes[=...]
-		DATA qualifiers  (nqual_at4a+35)/ 'HGRATICULE'/	! tic liness, dash or line
-		DATA qualifiers  (nqual_at4a+36)/ 'VGRATICULE'/	! tic liness, color or pen#
-		DATA qualifiers  (nqual_at4a+37)/ 'GRATICULE'/	! 
-		DATA qualifiers  (nqual_at4a+38)/  'MODULO'/	! modulo for curvilinear plots
-		DATA qualifiers  (nqual_at4a+39)/ '****'/	! 
-		DATA qualifiers  (nqual_at4a+40)/ '****'/	! 
-		DATA qualifiers  (nqual_at4a+41)/ '****'/	! 
-		DATA qualifiers  (nqual_at4a+42)/ '****'/	! 
+		DATA qualifiers  (nqual_at4a+4)	/ 'M'	/
+		DATA qualifiers  (nqual_at4a+5)	/ 'N'	/
+		DATA qualifiers  (nqual_at4a+6)	/ 'X'	/
+		DATA qualifiers  (nqual_at4a+7)	/ 'Y'	/
+		DATA qualifiers  (nqual_at4a+8)	/ 'Z'	/
+		DATA qualifiers  (nqual_at4a+9)	/ 'T'	/
+		DATA qualifiers  (nqual_at4a+10)/ 'E'	/
+		DATA qualifiers  (nqual_at4a+11)/ 'F'	/
+		DATA qualifiers  (nqual_at4a+12)/ 'OVERLAY'/	!/overlays
+		DATA qualifiers  (nqual_at4a+13)/ 'SET_UP'/	!/set_up
+		DATA qualifiers  (nqual_at4a+14)/ 'FRAME'/	!/frame
+		DATA qualifiers  (nqual_at4a+15)/ 'D'   /	!/data_set
+		DATA qualifiers  (nqual_at4a+16)/ 'TRANPOSE'/	!/transpose
+		DATA qualifiers  (nqual_at4a+17)/ 'FILL'/	!
+		DATA qualifiers  (nqual_at4a+18)/ 'LINE'/	!
+		DATA qualifiers  (nqual_at4a+19)/ 'NOLABEL'/	!/nolabel
+		DATA qualifiers  (nqual_at4a+20)/ 'LEVELS'/	!/levels_same
+		DATA qualifiers  (nqual_at4a+21)/ 'KEY' /	!
+		DATA qualifiers  (nqual_at4a+22)/ 'NOKEY'/	!
+		DATA qualifiers  (nqual_at4a+23)/ 'PALETTE'/	!
+		DATA qualifiers  (nqual_at4a+24)/ 'XLIMITS'/	!/xlimits
+		DATA qualifiers  (nqual_at4a+25)/ 'YLIMITS'/	!/ylimits
+		DATA qualifiers  (nqual_at4a+26)/ 'TITLE'/	!/title
+		DATA qualifiers  (nqual_at4a+27)/ 'COLOR'/	!/color
+		DATA qualifiers  (nqual_at4a+28)/ 'NOAXES'/	!/noaxes
+		DATA qualifiers  (nqual_at4a+29)/ 'PATTERN'/	!/pattern=
+		DATA qualifiers  (nqual_at4a+30)/ 'SIZE'/	!/size
+		DATA qualifiers  (nqual_at4a+31)/ 'SPACING'/	!/spacing
+		DATA qualifiers  (nqual_at4a+32)/ 'SIGDIG'/	!/sigdig
+		DATA qualifiers  (nqual_at4a+33)/ 'PEN'/	!/pen (denig!!)
+		DATA qualifiers  (nqual_at4a+34)/ 'HLIMITS'/	! horiz
+		DATA qualifiers  (nqual_at4a+35)/ 'VLIMITS'/	! vertical
+		DATA qualifiers  (nqual_at4a+36)/ '****'/	! HLOG (place holder, not implemented for contuor) 
+		DATA qualifiers  (nqual_at4a+37)/ '****'/	! VLOG (place holder)
+		DATA qualifiers  (nqual_at4a+38)/ 'AXES'/	! /axes[=...]
+		DATA qualifiers  (nqual_at4a+39)/ 'HGRATICU'/	! tic liness, dash or line
+		DATA qualifiers  (nqual_at4a+40)/ 'VGRATICU'/	! tic liness, color or pen#
+		DATA qualifiers  (nqual_at4a+41)/ 'GRATICUL'/	! 
+		DATA qualifiers  (nqual_at4a+42)/  'MODULO'/	! modulo for curvilinear plots
+		DATA qualifiers  (nqual_at4a+43)/ '****'/	! 
+		DATA qualifiers  (nqual_at4a+44)/ '****'/	! 
 
 * LIST	 - command # 5
 	DATA commands(5)			/ 'LIST'	/
@@ -827,52 +850,59 @@
 	   DATA subcommands      (nsub_at5 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at5 + 0)	/ nqual5a	/
 	   DATA qualifier_pointer(nsub_at5 + 0)	/ nqual_at5a	/
-* LIST/I/J/K/L/X/Y/Z/T/D /HEAD /NOHEAD /G /FILE /APPEND /ORDER /FORMAT /QUIET 
+* LIST/I/J/K/L/M/N/X/Y/Z/T/E/F/D /HEAD /NOHEAD /G /FILE /APPEND /ORDER /FORMAT /QUIET 
 		DATA qualifiers  (nqual_at5a+0)	/ 'I'	/
 		DATA qualifiers  (nqual_at5a+1)	/ 'J'	/
 		DATA qualifiers  (nqual_at5a+2)	/ 'K'	/
 		DATA qualifiers  (nqual_at5a+3)	/ 'L'	/
-		DATA qualifiers  (nqual_at5a+4)	/ 'X'	/
-		DATA qualifiers  (nqual_at5a+5)	/ 'Y'	/
-		DATA qualifiers  (nqual_at5a+6)	/ 'Z'	/
-		DATA qualifiers  (nqual_at5a+7)	/ 'T'	/
-		DATA qualifiers  (nqual_at5a+8)	/ 'D'	/
-		DATA qualifiers  (nqual_at5a+9)	/ 'HEADING'/
-		DATA qualifiers  (nqual_at5a+10)/ 'NOHEAD'/
-		DATA qualifiers  (nqual_at5a+11)/ 'SINGLE'/
-		DATA qualifiers  (nqual_at5a+12)/ 'FILE'/
-		DATA qualifiers  (nqual_at5a+13)/ 'APPEND'/
-		DATA qualifiers  (nqual_at5a+14)/ 'ORDER'/
-		DATA qualifiers  (nqual_at5a+15)/ 'FORMAT'/
-		DATA qualifiers  (nqual_at5a+16)/ 'TITLE'/
-		DATA qualifiers  (nqual_at5a+17)/ 'PRECISN'/ !used to be EPKEY 
-		DATA qualifiers  (nqual_at5a+18)/ 'RIGID'/ ! /RIGID (CDF)
-		DATA qualifiers  (nqual_at5a+19)/ 'ILIMITS'/ 
-		DATA qualifiers  (nqual_at5a+20)/ 'JLIMITS'/
-		DATA qualifiers  (nqual_at5a+21)/ 'KLIMITS'/
-		DATA qualifiers  (nqual_at5a+22)/ 'LLIMITS'/
-		DATA qualifiers  (nqual_at5a+23)/ 'XLIMITS'/
-		DATA qualifiers  (nqual_at5a+24)/ 'YLIMITS'/
-		DATA qualifiers  (nqual_at5a+25)/ 'ZLIMITS'/
-		DATA qualifiers  (nqual_at5a+26)/ 'TLIMITS'/
-		DATA qualifiers  (nqual_at5a+27)/ 'CLOBBER'/
-		DATA qualifiers  (nqual_at5a+28)/ 'QUIET'/
-		DATA qualifiers  (nqual_at5a+29)/ 'WIDTH'/
-		DATA qualifiers  (nqual_at5a+30)/ 'EDGES'/
-		DATA qualifiers  (nqual_at5a+31)/ 'BOUNDS'/
-		DATA qualifiers  (nqual_at5a+32)/ 'NOROWLAB'/
-		DATA qualifiers  (nqual_at5a+33)/ 'KEEP_AXISNAMES'/
-		DATA qualifiers  (nqual_at5a+34)/ 'NCFORMAT'/
-		DATA qualifiers  (nqual_at5a+35)/ 'XCHUNK'/
-		DATA qualifiers  (nqual_at5a+36)/ 'YCHUNK'/
-		DATA qualifiers  (nqual_at5a+37)/ 'ZCHUNK'/
-		DATA qualifiers  (nqual_at5a+38)/ 'TCHUNK'/
-		DATA qualifiers  (nqual_at5a+39)/ 'DEFLATE'/
-		DATA qualifiers  (nqual_at5a+40)/ 'SHUFFLE'/
-		DATA qualifiers  (nqual_at5a+41)/ 'ENDIAN'/
-		DATA qualifiers  (nqual_at5a+42)/ '****'/
-		DATA qualifiers  (nqual_at5a+43)/ '****'/
-		DATA qualifiers  (nqual_at5a+44)/ '****'/
+		DATA qualifiers  (nqual_at5a+4)	/ 'M'	/
+		DATA qualifiers  (nqual_at5a+5)	/ 'N'	/
+		DATA qualifiers  (nqual_at5a+6)	/ 'X'	/
+		DATA qualifiers  (nqual_at5a+7)	/ 'Y'	/
+		DATA qualifiers  (nqual_at5a+8)	/ 'Z'	/
+		DATA qualifiers  (nqual_at5a+9)	/ 'T'	/
+		DATA qualifiers  (nqual_at5a+10)/ 'E'	/
+		DATA qualifiers  (nqual_at5a+11)/ 'F'	/
+		DATA qualifiers  (nqual_at5a+12)/ 'D'	/
+		DATA qualifiers  (nqual_at5a+13)/ 'HEADING'/
+		DATA qualifiers  (nqual_at5a+14)/ 'NOHEAD'/
+		DATA qualifiers  (nqual_at5a+15)/ 'SINGLE'/
+		DATA qualifiers  (nqual_at5a+16)/ 'FILE'/
+		DATA qualifiers  (nqual_at5a+17)/ 'APPEND'/
+		DATA qualifiers  (nqual_at5a+18)/ 'ORDER'/
+		DATA qualifiers  (nqual_at5a+19)/ 'FORMAT'/
+		DATA qualifiers  (nqual_at5a+20)/ 'TITLE'/
+		DATA qualifiers  (nqual_at5a+21)/ 'PRECISION'/ !used to be EPKEY 
+		DATA qualifiers  (nqual_at5a+22)/ 'RIGID'/ ! /RIGID (CDF)
+		DATA qualifiers  (nqual_at5a+23)/ 'ILIMITS'/ 
+		DATA qualifiers  (nqual_at5a+24)/ 'JLIMITS'/
+		DATA qualifiers  (nqual_at5a+25)/ 'KLIMITS'/
+		DATA qualifiers  (nqual_at5a+26)/ 'LLIMITS'/
+		DATA qualifiers  (nqual_at5a+27)/ 'MLIMITS'/
+		DATA qualifiers  (nqual_at5a+28)/ 'NLIMITS'/
+		DATA qualifiers  (nqual_at5a+29)/ 'XLIMITS'/
+		DATA qualifiers  (nqual_at5a+30)/ 'YLIMITS'/
+		DATA qualifiers  (nqual_at5a+31)/ 'ZLIMITS'/
+		DATA qualifiers  (nqual_at5a+32)/ 'TLIMITS'/
+		DATA qualifiers  (nqual_at5a+33)/ 'ELIMITS'/
+		DATA qualifiers  (nqual_at5a+34)/ 'FLIMITS'/
+		DATA qualifiers  (nqual_at5a+35)/ 'CLOBBER'/
+		DATA qualifiers  (nqual_at5a+36)/ 'QUIET'/
+		DATA qualifiers  (nqual_at5a+37)/ 'WIDTH'/
+		DATA qualifiers  (nqual_at5a+38)/ 'EDGES'/
+		DATA qualifiers  (nqual_at5a+39)/ 'BOUNDS'/
+		DATA qualifiers  (nqual_at5a+40)/ 'NOROWLAB'/
+		DATA qualifiers  (nqual_at5a+41)/ 'KEEP_AXI'/
+		DATA qualifiers  (nqual_at5a+42)/ 'NCFORMAT'/
+		DATA qualifiers  (nqual_at5a+43)/ 'XCHUNK'/
+		DATA qualifiers  (nqual_at5a+44)/ 'YCHUNK'/
+		DATA qualifiers  (nqual_at5a+45)/ 'ZCHUNK'/
+		DATA qualifiers  (nqual_at5a+46)/ 'TCHUNK'/
+		DATA qualifiers  (nqual_at5a+47)/ 'ECHUNK'/
+		DATA qualifiers  (nqual_at5a+48)/ 'FCHUNK'/
+		DATA qualifiers  (nqual_at5a+49)/ 'DEFLATE'/
+		DATA qualifiers  (nqual_at5a+50)/ 'SHUFFLE'/
+		DATA qualifiers  (nqual_at5a+51)/ 'ENDIAN'/
 
 * PLOT - command # 6
 	DATA commands(6)			/ 'PLOT'	/
@@ -883,45 +913,50 @@
 	   DATA subcommands      (nsub_at6 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at6 + 0)	/ nqual6a	/
 	   DATA qualifier_pointer(nsub_at6 + 0)	/ nqual_at6a	/
-* PLOT/I/J/K/L/X/Y/Z/T/D/OVERLAY/SET_UP/FRAME/TRANSPOSE/VS
+* PLOT/I/J/K/L/M/N/X/Y/Z/T/E/F/D/OVERLAY/SET_UP/FRAME/TRANSPOSE/VS
 		DATA qualifiers  (nqual_at6a+0)	/ 'I'	/
 		DATA qualifiers  (nqual_at6a+1)	/ 'J'	/
 		DATA qualifiers  (nqual_at6a+2)	/ 'K'	/
 		DATA qualifiers  (nqual_at6a+3)	/ 'L'	/
-		DATA qualifiers  (nqual_at6a+4)	/ 'X'	/
-		DATA qualifiers  (nqual_at6a+5)	/ 'Y'	/
-		DATA qualifiers  (nqual_at6a+6)	/ 'Z'	/
-		DATA qualifiers  (nqual_at6a+7)	/ 'T'	/
-		DATA qualifiers  (nqual_at6a+8)	/ 'OVERLAY'/	!/overlays
-		DATA qualifiers  (nqual_at6a+9)	/ 'SET_UP'/	!/set_up
-		DATA qualifiers  (nqual_at6a+10)/ 'FRAME'/	!/frame
-		DATA qualifiers  (nqual_at6a+11)/ 'D'   /	!/data_set
-		DATA qualifiers  (nqual_at6a+12)/ 'TRANPOSE'/	!/transpose
-		DATA qualifiers  (nqual_at6a+13)/ 'VS  '/	!/versus
-		DATA qualifiers  (nqual_at6a+14)/ 'SYMBOL'/	!/symbol
-		DATA qualifiers  (nqual_at6a+15)/ 'NOLABEL'/	!/nolabel
-		DATA qualifiers  (nqual_at6a+16)/ 'LINE'/	!/line
-		DATA qualifiers  (nqual_at6a+17)/ 'COLOR'/	!/color
-		DATA qualifiers  (nqual_at6a+18)/ 'THICKNESS'/	!/thickness
-		DATA qualifiers  (nqual_at6a+19)/ 'SIZE'/	!/size
-		DATA qualifiers  (nqual_at6a+20)/ 'XLIMITS'/	!/xlimits
-		DATA qualifiers  (nqual_at6a+21)/ 'YLIMITS'/	!/ylimits
-		DATA qualifiers  (nqual_at6a+22)/ 'TITLE'/	!/title
-		DATA qualifiers  (nqual_at6a+23)/ 'STEP'/	!/step
-		DATA qualifiers  (nqual_at6a+24)/ 'NOAXES'/	!/noaxes
-		DATA qualifiers  (nqual_at6a+25)/ 'DASH'/	!/dash
-		DATA qualifiers  (nqual_at6a+26)/ 'NOYADJUST'/	!/noyadjust
-		DATA qualifiers  (nqual_at6a+27)/ 'AXES'/	!/axes[=]
-		DATA qualifiers  (nqual_at6a+28)/ 'HGRATICULE'/	!horiz tic lines
-		DATA qualifiers  (nqual_at6a+29)/ 'VGRATICULE'/	!vert tic lines
-		DATA qualifiers  (nqual_at6a+30)/ 'HLIMITS'/	! horiz
-		DATA qualifiers  (nqual_at6a+31)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at6a+32)/ 'HLOG'/	! log axis horiz
-		DATA qualifiers  (nqual_at6a+33)/ 'VLOG'/	! log axis vert
-		DATA qualifiers  (nqual_at6a+34)/ 'GRATICULE'/	! tic lines
-		DATA qualifiers  (nqual_at6a+35)/ 'NOKEY'/	! /nokey
-		DATA qualifiers  (nqual_at6a+36)/ '****'/	! 
-		DATA qualifiers  (nqual_at6a+37)/ '****'/	! 
+		DATA qualifiers  (nqual_at6a+4)	/ 'M'	/
+		DATA qualifiers  (nqual_at6a+5)	/ 'N'	/
+		DATA qualifiers  (nqual_at6a+6)	/ 'X'	/
+		DATA qualifiers  (nqual_at6a+7)	/ 'Y'	/
+		DATA qualifiers  (nqual_at6a+8)	/ 'Z'	/
+		DATA qualifiers  (nqual_at6a+9) / 'T'	/
+		DATA qualifiers  (nqual_at6a+10)/ 'E'	/
+		DATA qualifiers  (nqual_at6a+11)/ 'F'	/
+		DATA qualifiers  (nqual_at6a+12)/ '****'/
+		DATA qualifiers  (nqual_at6a+13)/ 'OVERLAY'/	!/overlays
+		DATA qualifiers  (nqual_at6a+14)/ 'SET_UP'/	!/set_up
+		DATA qualifiers  (nqual_at6a+15)/ 'FRAME'/	!/frame
+		DATA qualifiers  (nqual_at6a+16)/ 'D'   /	!/data_set
+		DATA qualifiers  (nqual_at6a+17)/ 'TRANPOSE'/	!/transpose
+		DATA qualifiers  (nqual_at6a+18)/ 'VS  '/	!/versus
+		DATA qualifiers  (nqual_at6a+19)/ 'SYMBOL'/	!/symbol
+		DATA qualifiers  (nqual_at6a+20)/ 'NOLABEL'/	!/nolabel
+		DATA qualifiers  (nqual_at6a+21)/ 'LINE'/	!/line
+		DATA qualifiers  (nqual_at6a+22)/ 'COLOR'/	!/color
+		DATA qualifiers  (nqual_at6a+23)/ 'THICKNES'/	!/thickness
+		DATA qualifiers  (nqual_at6a+24)/ 'XLIMITS'/	!/xlimits
+		DATA qualifiers  (nqual_at6a+25)/ 'YLIMITS'/	!/ylimits
+		DATA qualifiers  (nqual_at6a+26)/ 'TITLE'/	!/title
+		DATA qualifiers  (nqual_at6a+27)/ 'SIZE'/	!/size
+		DATA qualifiers  (nqual_at6a+28)/ 'NOAXES'/	!/noaxes
+		DATA qualifiers  (nqual_at6a+29)/ 'STEP'/	!/step
+		DATA qualifiers  (nqual_at6a+30)/ 'DASH'/	!/dash
+		DATA qualifiers  (nqual_at6a+31)/ 'AXES'/	!/axes[=]
+		DATA qualifiers  (nqual_at6a+32)/ 'HGRATICU'/	!horiz tic lines
+		DATA qualifiers  (nqual_at6a+33)/ 'VGRATICU'/	!vert tic lines
+		DATA qualifiers  (nqual_at6a+34)/ 'HLIMITS'/	! horiz
+		DATA qualifiers  (nqual_at6a+35)/ 'VLIMITS'/	! vertical
+		DATA qualifiers  (nqual_at6a+36)/ 'HLOG'/	! log axis horiz
+		DATA qualifiers  (nqual_at6a+37)/ 'VLOG'/	! log axis vert
+		DATA qualifiers  (nqual_at6a+38)/ 'GRATICUL'/	! tic lines
+		DATA qualifiers  (nqual_at6a+39)/ 'NOKEY'/	! nokey
+		DATA qualifiers  (nqual_at6a+40)/ 'NOYADJUS'/	! noyadjust
+		DATA qualifiers  (nqual_at6a+41)/ '****'/	! 
+		DATA qualifiers  (nqual_at6a+42)/ '****'/	! 
 
 
 * GO	 - command # 7
@@ -963,22 +998,23 @@
 	   DATA subcommands      (nsub_at9 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at9 + 0)	/ nqual9a	/
 	   DATA qualifier_pointer(nsub_at9 + 0)	/ nqual_at9a	/
-* LOAD /TEMPORARY /PERMANENT /I/J/K/L/X/Y/Z/T/D /NAME
+* LOAD /TEMPORARY /PERMANENT /I/J/K/L/M/N/X/Y/Z/T/E/F/D /NAME
 		DATA qualifiers  (nqual_at9a+0)	/ 'TEMPORY'/
 		DATA qualifiers  (nqual_at9a+1)	/ 'PERMANT'/
 		DATA qualifiers  (nqual_at9a+2)	/ 'I'	/
 		DATA qualifiers  (nqual_at9a+3)	/ 'J'	/
 		DATA qualifiers  (nqual_at9a+4)	/ 'K'	/
 		DATA qualifiers  (nqual_at9a+5)	/ 'L'	/
-		DATA qualifiers  (nqual_at9a+6)	/ 'X'	/
-		DATA qualifiers  (nqual_at9a+7)	/ 'Y'	/
-		DATA qualifiers  (nqual_at9a+8)	/ 'Z'	/
-		DATA qualifiers  (nqual_at9a+9)	/ 'T'	/
-		DATA qualifiers  (nqual_at9a+10)/ 'D'	/
-		DATA qualifiers  (nqual_at9a+11)/ 'NAME'/
-		DATA qualifiers  (nqual_at9a+12)/ '****'/
-		DATA qualifiers  (nqual_at9a+13)/ '****'/
-		DATA qualifiers  (nqual_at9a+14)/ '****'/
+		DATA qualifiers  (nqual_at9a+6)	/ 'M'	/
+		DATA qualifiers  (nqual_at9a+7)	/ 'N'	/
+		DATA qualifiers  (nqual_at9a+8)	/ 'X'	/
+		DATA qualifiers  (nqual_at9a+9)	/ 'Y'	/
+		DATA qualifiers  (nqual_at9a+10)/ 'Z'	/
+		DATA qualifiers  (nqual_at9a+11)/ 'T'	/
+		DATA qualifiers  (nqual_at9a+12)/ 'E'	/
+		DATA qualifiers  (nqual_at9a+13)/ 'F'	/
+		DATA qualifiers  (nqual_at9a+14)/ 'D'	/
+		DATA qualifiers  (nqual_at9a+15)/ 'NAME'/
 
 * DEFINE - command # 10
 	DATA commands(10)			/ 'DEFINE'	/
@@ -993,38 +1029,46 @@
 	   DATA subcommands      (nsub_at10 + 1)/ 'REGION'	/
 	   DATA num_qualifs      (nsub_at10 + 1)/ nqual10b	/
 	   DATA qualifier_pointer(nsub_at10 + 1)/ nqual_at10b	/
-* DEFINE REGION /I/J/K/L/X/Y/Z/T /DEFAULT / ****
+* DEFINE REGION /I/J/K/L/M/N/X/Y/Z/T/E/F /DEFAULT / ****
 		DATA qualifiers  (nqual_at10b+0)/ 'I'	/
 		DATA qualifiers  (nqual_at10b+1)/ 'J'	/
 		DATA qualifiers  (nqual_at10b+2)/ 'K'	/
 		DATA qualifiers  (nqual_at10b+3)/ 'L'	/
-		DATA qualifiers  (nqual_at10b+4)/ 'X'	/
-		DATA qualifiers  (nqual_at10b+5)/ 'Y'	/
-		DATA qualifiers  (nqual_at10b+6)/ 'Z'	/
-		DATA qualifiers  (nqual_at10b+7)/ 'T'	/
-		DATA qualifiers  (nqual_at10b+8)/ 'DEFAULT'/
-		DATA qualifiers  (nqual_at10b+9)/ '****'/
-		DATA qualifiers  (nqual_at10b+10)/ 'DX'/
-		DATA qualifiers  (nqual_at10b+11)/ 'DY'/
-		DATA qualifiers  (nqual_at10b+12)/ 'DZ'/
-		DATA qualifiers  (nqual_at10b+13)/ 'DT'/
-		DATA qualifiers  (nqual_at10b+14)/ 'DI'/
-		DATA qualifiers  (nqual_at10b+15)/ 'DJ'/
-		DATA qualifiers  (nqual_at10b+16)/ 'DK'/
-		DATA qualifiers  (nqual_at10b+17)/ 'DL'/
+		DATA qualifiers  (nqual_at10b+4)/ 'M'	/
+		DATA qualifiers  (nqual_at10b+5)/ 'N'	/
+		DATA qualifiers  (nqual_at10b+6)/ 'X'	/
+		DATA qualifiers  (nqual_at10b+7)/ 'Y'	/
+		DATA qualifiers  (nqual_at10b+8)/ 'Z'	/
+		DATA qualifiers  (nqual_at10b+9)/ 'T'	/
+		DATA qualifiers  (nqual_at10b+10)/ 'E'	/
+		DATA qualifiers  (nqual_at10b+11)/ 'F'	/
+		DATA qualifiers  (nqual_at10b+12)/ 'DEFAULT'/
+		DATA qualifiers  (nqual_at10b+13)/ '****'/
+		DATA qualifiers  (nqual_at10b+14)/ 'DX'/
+		DATA qualifiers  (nqual_at10b+15)/ 'DY'/
+		DATA qualifiers  (nqual_at10b+16)/ 'DZ'/
+		DATA qualifiers  (nqual_at10b+17)/ 'DT'/
+		DATA qualifiers  (nqual_at10b+18)/ 'DE'/
+		DATA qualifiers  (nqual_at10b+19)/ 'DF'/
+		DATA qualifiers  (nqual_at10b+20)/ 'DI'/
+		DATA qualifiers  (nqual_at10b+21)/ 'DJ'/
+		DATA qualifiers  (nqual_at10b+22)/ 'DK'/
+		DATA qualifiers  (nqual_at10b+23)/ 'DL'/
+		DATA qualifiers  (nqual_at10b+24)/ 'DM'/
+		DATA qualifiers  (nqual_at10b+25)/ 'DN'/
 * DEFINE GRID
 	   DATA subcommands      (nsub_at10 + 2)/ 'GRID'	/
 	   DATA num_qualifs      (nsub_at10 + 2)/ nqual10c	/
 	   DATA qualifier_pointer(nsub_at10 + 2)/ nqual_at10c	/
-* DEFINE GRID /X/Y/Z/T /FILE /LIKE
+* DEFINE GRID /X/Y/Z/T/E/F /FILE /LIKE
 		DATA qualifiers  (nqual_at10c+ 0)/ 'X'	  /
 		DATA qualifiers  (nqual_at10c+ 1)/ 'Y'	  /
 		DATA qualifiers  (nqual_at10c+ 2)/ 'Z'	  /
 		DATA qualifiers  (nqual_at10c+ 3)/ 'T'	  /
-		DATA qualifiers  (nqual_at10c+ 4)/ 'FILE' /
-		DATA qualifiers  (nqual_at10c+ 5)/ 'LIKE' /
-		DATA qualifiers  (nqual_at10c+ 6)/ '****' /
-		DATA qualifiers  (nqual_at10c+ 7)/ '****' /
+		DATA qualifiers  (nqual_at10c+ 4)/ 'E'	  /
+		DATA qualifiers  (nqual_at10c+ 5)/ 'F'	  /
+		DATA qualifiers  (nqual_at10c+ 6)/ 'FILE' /
+		DATA qualifiers  (nqual_at10c+ 7)/ 'LIKE' /
 		DATA qualifiers  (nqual_at10c+ 8)/ '****' /
 		DATA qualifiers  (nqual_at10c+ 9)/ '****' /
 		DATA qualifiers  (nqual_at10c+10)/ '****' /
@@ -1043,25 +1087,25 @@
 	   DATA subcommands      (nsub_at10 + 4)/ 'AXIS'	/
 	   DATA num_qualifs      (nsub_at10 + 4)/ nqual10e	/
 	   DATA qualifier_pointer(nsub_at10 + 4)/ nqual_at10e	/
-* DEFINE AXIS /X/Y/Z/T /FILE /UNITS /QUIET ...
+* DEFINE AXIS /X/Y/Z/T/E/F /FILE /UNITS /QUIET ...
 		DATA qualifiers  (nqual_at10e+ 0)/ 'X'	  /
 		DATA qualifiers  (nqual_at10e+ 1)/ 'Y'	  /
 		DATA qualifiers  (nqual_at10e+ 2)/ 'Z'	  /
 		DATA qualifiers  (nqual_at10e+ 3)/ 'T'	  /
-		DATA qualifiers  (nqual_at10e+ 4)/ 'FILE' /
-		DATA qualifiers  (nqual_at10e+ 5)/ 'UNITS' /
-		DATA qualifiers  (nqual_at10e+ 6)/ 'T0' /
-		DATA qualifiers  (nqual_at10e+ 7)/ 'NAME' /
-		DATA qualifiers  (nqual_at10e+ 8)/ 'FROMDATA' /
-		DATA qualifiers  (nqual_at10e+ 9)/ 'DEPTH' /
-		DATA qualifiers  (nqual_at10e+ 10)/ 'MODULO' /
-		DATA qualifiers  (nqual_at10e+ 11)/ 'NPOINTS' /
-		DATA qualifiers  (nqual_at10e+ 12)/ 'EDGES' /
-		DATA qualifiers  (nqual_at10e+ 13)/ 'CALENDAR' /
-		DATA qualifiers  (nqual_at10e+ 14)/ 'BOUNDS' /
-		DATA qualifiers  (nqual_at10e+ 15)/ 'QUIET' /
-		DATA qualifiers  (nqual_at10e+ 16)/ '****' /
-		DATA qualifiers  (nqual_at10e+ 17)/ '****' /
+		DATA qualifiers  (nqual_at10e+ 4)/ 'E'	  /
+		DATA qualifiers  (nqual_at10e+ 5)/ 'F'	  /
+		DATA qualifiers  (nqual_at10e+ 6)/ 'FILE' /
+		DATA qualifiers  (nqual_at10e+ 7)/ 'UNITS' /
+		DATA qualifiers  (nqual_at10e+ 8)/ 'T0' /
+		DATA qualifiers  (nqual_at10e+ 9)/ 'NAME' /
+		DATA qualifiers  (nqual_at10e+ 10)/ 'FROMDATA' /
+		DATA qualifiers  (nqual_at10e+ 11)/ 'DEPTH' /
+		DATA qualifiers  (nqual_at10e+ 12)/ 'MODULO' /
+		DATA qualifiers  (nqual_at10e+ 13)/ 'NPOINTS' /
+		DATA qualifiers  (nqual_at10e+ 14)/ 'EDGES' /
+		DATA qualifiers  (nqual_at10e+ 15)/ 'CALENDAR' /
+		DATA qualifiers  (nqual_at10e+ 16)/ 'BOUNDS' /
+		DATA qualifiers  (nqual_at10e+ 17)/ 'QUIET' /
 		DATA qualifiers  (nqual_at10e+ 18)/ '****' /
 		DATA qualifiers  (nqual_at10e+ 19)/ '****' /
 * DEFINE VIEW
@@ -1092,7 +1136,7 @@
 		DATA qualifiers  (nqual_at10h+ 0)/ '****' /
 		DATA qualifiers  (nqual_at10h+ 1)/ '****' /
 * DEFINE ATTRIBUTE
-	   DATA subcommands      (nsub_at10 + 8)/ 'ATTRIBUTE'	/
+	   DATA subcommands      (nsub_at10 + 8)/ 'ATTRIBUT'	/
 	   DATA num_qualifs      (nsub_at10 + 8)/ nqual10i	/
 	   DATA qualifier_pointer(nsub_at10 + 8)/ nqual_at10i	/
 * DEFINE ATTRIBUTE /D /TYPE /OUTPUT ****
@@ -1107,13 +1151,21 @@
 * DEFINE PYFUNC /NAME ****
 		DATA qualifiers  (nqual_at10j+ 0)/ 'NAME' /
 		DATA qualifiers  (nqual_at10j+ 1)/ '****' /
-* DEFINE ****							  ! unused(k)
-	   DATA subcommands      (nsub_at10 + 10)/ '****'	/
+* DEFINE DATA
+	   DATA subcommands      (nsub_at10 + 10)/ 'DATA'	/
 	   DATA num_qualifs      (nsub_at10 + 10)/ nqual10k	/
 	   DATA qualifier_pointer(nsub_at10 + 10)/ nqual_at10k	/
-* DEFINE **** / ****
-		DATA qualifiers  (nqual_at10k+ 0)/ '****' /
-		DATA qualifiers  (nqual_at10k+ 1)/ '****' /
+* DEFINE DATA / AGGREGATE / TITLE /E 
+		DATA qualifiers  (nqual_at10k+ 0)/ 'AGGREGATE' /
+		DATA qualifiers  (nqual_at10k+ 1)/ '****' / ! reserved for x
+		DATA qualifiers  (nqual_at10k+ 2)/ '****' / ! y
+		DATA qualifiers  (nqual_at10k+ 3)/ '****' / ! z
+		DATA qualifiers  (nqual_at10k+ 4)/ '****' / ! t
+		DATA qualifiers  (nqual_at10k+ 5)/ 'E'    /
+		DATA qualifiers  (nqual_at10k+ 6)/ '****' / ! f
+		DATA qualifiers  (nqual_at10k+ 7)/ 'TITLE' /
+		DATA qualifiers  (nqual_at10k+ 8)/ 'QUIET' /
+		DATA qualifiers  (nqual_at10k+ 9)/ '****' /
 
 * EXIT	 - command # 11
 	DATA commands(11)			/ 'EXIT'	/
@@ -1162,45 +1214,47 @@
 	   DATA subcommands      (nsub_at13 + 0)/ '    '	/
 	   DATA num_qualifs      (nsub_at13 + 0)/ nqual13a	/
 	   DATA qualifier_pointer(nsub_at13 + 0)/ nqual_at13a	/
-* VECTOR/I/J/K/L/X/Y/Z/T/D/OVERLAY/SET_UP/FRAME/TRANSPOSE
+* VECTOR/I/J/K/L/M/N/X/Y/Z/T/E/F/D/OVERLAY/SET_UP/FRAME/TRANSPOSE
 		DATA qualifiers  (nqual_at13a+0)/ 'I'	/
 		DATA qualifiers  (nqual_at13a+1)/ 'J'	/
 		DATA qualifiers  (nqual_at13a+2)/ 'K'	/
 		DATA qualifiers  (nqual_at13a+3)/ 'L'	/
-		DATA qualifiers  (nqual_at13a+4)/ 'X'	/
-		DATA qualifiers  (nqual_at13a+5)/ 'Y'	/
-		DATA qualifiers  (nqual_at13a+6)/ 'Z'	/
-		DATA qualifiers  (nqual_at13a+7)/ 'T'	/
-		DATA qualifiers  (nqual_at13a+8)/ 'OVERLAY'/	!/overlays
-		DATA qualifiers  (nqual_at13a+9)/ 'SET_UP'/	!/set_up
-		DATA qualifiers  (nqual_at13a+10)/ 'FRAME'/	!/frame
-		DATA qualifiers  (nqual_at13a+11)/ 'D'   /	!/data_set
-		DATA qualifiers  (nqual_at13a+12)/ 'TRANPOSE'/	!/transpose
-		DATA qualifiers  (nqual_at13a+13)/ '****'/	!
-		DATA qualifiers  (nqual_at13a+14)/ 'ASPECT'/	!/aspect
-		DATA qualifiers  (nqual_at13a+15)/ 'NOLABEL'/	!/nolabel
-		DATA qualifiers  (nqual_at13a+16)/ 'LENGTH'/	!/length_same
-		DATA qualifiers  (nqual_at13a+17)/ 'XSKIP'/	!/xskip
-		DATA qualifiers  (nqual_at13a+18)/ 'YSKIP'/	!/yskip
-		DATA qualifiers  (nqual_at13a+19)/ 'THICK'/	!/thick
-		DATA qualifiers  (nqual_at13a+20)/ 'XLIMITS'/	!/xlimits
-		DATA qualifiers  (nqual_at13a+21)/ 'YLIMITS'/	!/ylimits
-		DATA qualifiers  (nqual_at13a+22)/ 'TITLE'/	!/title
-		DATA qualifiers  (nqual_at13a+23)/ 'COLOR'/	!/color
-		DATA qualifiers  (nqual_at13a+24)/ 'NOAXES'/	!/noaxes
-		DATA qualifiers  (nqual_at13a+25)/ 'FLOWLINE'/	!/flowline
-		DATA qualifiers  (nqual_at13a+26)/ 'DENSITY'/	!/density=
-		DATA qualifiers  (nqual_at13a+27)/ 'AXES'/	!/axes[=]
-		DATA qualifiers  (nqual_at13a+28)/ 'NOKEY'/	!/nokey
-		DATA qualifiers  (nqual_at13a+29)/ 'PEN'/	! pen (denigr!)
-		DATA qualifiers  (nqual_at13a+30)/ 'HLIMITS'/	! horiz
-		DATA qualifiers  (nqual_at13a+31)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at13a+32)/ '****'/	! 
-		DATA qualifiers  (nqual_at13a+33)/ '****'/	! 
-		DATA qualifiers  (nqual_at13a+34)/ 'HGRATICULE'/	! horiz tic lines
-		DATA qualifiers  (nqual_at13a+35)/ 'VGRATICULE'/	! vert tic lines
-		DATA qualifiers  (nqual_at13a+36)/ 'GRATICULE'/
-		DATA qualifiers  (nqual_at13a+37)/ 'KEY'/   !KEY 
+		DATA qualifiers  (nqual_at13a+4)/ 'M'	/
+		DATA qualifiers  (nqual_at13a+5)/ 'N'	/
+		DATA qualifiers  (nqual_at13a+6)/ 'X'	/
+		DATA qualifiers  (nqual_at13a+7)/ 'Y'	/
+		DATA qualifiers  (nqual_at13a+8)/ 'Z'	/
+		DATA qualifiers  (nqual_at13a+9)/ 'T'	/
+		DATA qualifiers  (nqual_at13a+10)/ 'E'	/
+		DATA qualifiers  (nqual_at13a+11)/ 'F'	/
+		DATA qualifiers  (nqual_at13a+12)/ 'OVERLAY'/	!/overlays
+		DATA qualifiers  (nqual_at13a+13)/ 'SET_UP'/	!/set_up
+		DATA qualifiers  (nqual_at13a+14)/ 'FRAME'/	!/frame
+		DATA qualifiers  (nqual_at13a+15)/ 'D'   /	!/data_set
+		DATA qualifiers  (nqual_at13a+16)/ 'TRANPOSE'/	!/transpose
+		DATA qualifiers  (nqual_at13a+17)/ '****'/	!
+		DATA qualifiers  (nqual_at13a+18)/ 'ASPECT'/	!/aspect
+		DATA qualifiers  (nqual_at13a+19)/ 'NOLABEL'/	!/nolabel
+		DATA qualifiers  (nqual_at13a+20)/ 'LENGTH'/	!/length_same
+		DATA qualifiers  (nqual_at13a+21)/ 'XSKIP'/	!/xskip
+		DATA qualifiers  (nqual_at13a+22)/ 'YSKIP'/	!/yskip
+		DATA qualifiers  (nqual_at13a+23)/ 'THICK'/	!/thick
+		DATA qualifiers  (nqual_at13a+24)/ 'XLIMITS'/	!/xlimits
+		DATA qualifiers  (nqual_at13a+25)/ 'YLIMITS'/	!/ylimits
+		DATA qualifiers  (nqual_at13a+26)/ 'TITLE'/	!/title
+		DATA qualifiers  (nqual_at13a+27)/ 'COLOR'/	!/color
+		DATA qualifiers  (nqual_at13a+28)/ 'NOAXES'/	!/noaxes
+		DATA qualifiers  (nqual_at13a+29)/ 'NOKEY'/	!/nokey
+		DATA qualifiers  (nqual_at13a+30)/ 'FLOWLINE'/	!/flowline
+		DATA qualifiers  (nqual_at13a+31)/ 'DENSITY'/	!/density=
+		DATA qualifiers  (nqual_at13a+32)/ 'AXES'/	!/axes[=]
+		DATA qualifiers  (nqual_at13a+33)/ 'PEN'/	! pen (denigr!)
+		DATA qualifiers  (nqual_at13a+34)/ 'HLIMITS'/	! horiz
+		DATA qualifiers  (nqual_at13a+35)/ 'VLIMITS'/	! vertical
+		DATA qualifiers  (nqual_at13a+36)/ 'HGRATICU'/	! horiz tic lines
+		DATA qualifiers  (nqual_at13a+37)/ 'VGRATICU'/	! vert tic lines
+		DATA qualifiers  (nqual_at13a+38)/ 'GRATICUL'/
+		DATA qualifiers  (nqual_at13a+39)/ 'KEY'/   !KEY 
 
 * PPLUS	 - command # 14
 	DATA commands(14)			/ 'PPLUS'	/
@@ -1227,7 +1281,7 @@
 * FRAME/FORMAT=GIF_or_HDF/FILE=filename/TRANSPARENT[=color]
 		DATA qualifiers  (nqual_at15a+0)/ 'FORMAT'	/
 		DATA qualifiers  (nqual_at15a+1)/ 'FILE'	/
-		DATA qualifiers  (nqual_at15a+2)/ 'TRANSPARENT'	/
+		DATA qualifiers  (nqual_at15a+2)/ 'TRANSPAR'	/
 		DATA qualifiers  (nqual_at15a+3)/ '****'	/
 
 * REPEAT - command # 16
@@ -1239,24 +1293,24 @@
 	   DATA subcommands      (nsub_at16 + 0)/ '    '	/
 	   DATA num_qualifs      (nsub_at16 + 0)/ nqual16a	/
 	   DATA qualifier_pointer(nsub_at16 + 0)/ nqual_at16a	/
-* REPEAT/I/J/K/L/X/Y/Z/T/ANIMATE/LOOP=[N]
+* REPEAT/I/J/K/L/M/N/X/Y/Z/T/E/F/ANIMATE/LOOP=[N]
 		DATA qualifiers  (nqual_at16a+0)/ 'I'	/
 		DATA qualifiers  (nqual_at16a+1)/ 'J'	/
 		DATA qualifiers  (nqual_at16a+2)/ 'K'	/
 		DATA qualifiers  (nqual_at16a+3)/ 'L'	/
-		DATA qualifiers  (nqual_at16a+4)/ 'X'	/
-		DATA qualifiers  (nqual_at16a+5)/ 'Y'	/
-		DATA qualifiers  (nqual_at16a+6)/ 'Z'	/
-		DATA qualifiers  (nqual_at16a+7)/ 'T'	/
-		DATA qualifiers  (nqual_at16a+8)/ '*****' /   ! future "QUIET"
-		DATA qualifiers  (nqual_at16a+9)/ 'ANIMATE'  /
-		DATA qualifiers  (nqual_at16a+10)/ 'LOOP' /   
-		DATA qualifiers  (nqual_at16a+11)/ 'RANGE' /   
-		DATA qualifiers  (nqual_at16a+12)/ 'NAME' /   
-		DATA qualifiers  (nqual_at16a+13)/ '*****' /   
-		DATA qualifiers  (nqual_at16a+14)/ '*****' /   
-		DATA qualifiers  (nqual_at16a+15)/ '*****' /   
-		DATA qualifiers  (nqual_at16a+16)/ '*****' /   
+		DATA qualifiers  (nqual_at16a+4)/ 'M'	/
+		DATA qualifiers  (nqual_at16a+5)/ 'N'	/
+		DATA qualifiers  (nqual_at16a+6)/ 'X'	/
+		DATA qualifiers  (nqual_at16a+7)/ 'Y'	/
+		DATA qualifiers  (nqual_at16a+8)/ 'Z'	/
+		DATA qualifiers  (nqual_at16a+9)/ 'T'	/
+		DATA qualifiers  (nqual_at16a+10)/ 'E'	/
+		DATA qualifiers  (nqual_at16a+11)/ 'F'	/
+		DATA qualifiers  (nqual_at16a+12)/ '*****' /   ! future "QUIET"
+		DATA qualifiers  (nqual_at16a+13)/ 'ANIMATE'  /
+		DATA qualifiers  (nqual_at16a+14)/ 'LOOP' /   
+		DATA qualifiers  (nqual_at16a+15)/ 'RANGE' /   
+		DATA qualifiers  (nqual_at16a+16)/ 'NAME' /  
 
 * STATISTICS - command # 17
 	DATA commands(17)			/ 'STAT'	/
@@ -1267,22 +1321,22 @@
 	   DATA subcommands      (nsub_at17 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at17 + 0)	/ nqual17a	/
 	   DATA qualifier_pointer(nsub_at17 + 0)	/ nqual_at17a	/
-* STAT /I/J/K/L/X/Y/Z/T/D/G
+* STAT /I/J/K/L/M/N/X/Y/Z/T/E/F/D/G
 		DATA qualifiers  (nqual_at17a+0)	/ 'BRIEF'/
 		DATA qualifiers  (nqual_at17a+1)	/ '****'/
 		DATA qualifiers  (nqual_at17a+2)	/ 'I'	/
 		DATA qualifiers  (nqual_at17a+3)	/ 'J'	/
 		DATA qualifiers  (nqual_at17a+4)	/ 'K'	/
 		DATA qualifiers  (nqual_at17a+5)	/ 'L'	/
-		DATA qualifiers  (nqual_at17a+6)	/ 'X'	/
-		DATA qualifiers  (nqual_at17a+7)	/ 'Y'	/
-		DATA qualifiers  (nqual_at17a+8)	/ 'Z'	/
-		DATA qualifiers  (nqual_at17a+9)	/ 'T'	/
-		DATA qualifiers  (nqual_at17a+10)	/ 'D'	/
-		DATA qualifiers  (nqual_at17a+11)	/ '****'/
-		DATA qualifiers  (nqual_at17a+12)	/ '****'/
-		DATA qualifiers  (nqual_at17a+13)	/ '****'/
-		DATA qualifiers  (nqual_at17a+14)	/ '****'/
+		DATA qualifiers  (nqual_at17a+6)	/ 'M'	/
+		DATA qualifiers  (nqual_at17a+7)	/ 'N'	/
+		DATA qualifiers  (nqual_at17a+8)	/ 'X'	/
+		DATA qualifiers  (nqual_at17a+9)	/ 'Y'	/
+		DATA qualifiers  (nqual_at17a+10)	/ 'Z'	/
+		DATA qualifiers  (nqual_at17a+11)	/ 'T'	/
+		DATA qualifiers  (nqual_at17a+12)	/ 'E'	/
+		DATA qualifiers  (nqual_at17a+13)	/ 'F'	/
+		DATA qualifiers  (nqual_at17a+14)	/ 'D'	/
 		DATA qualifiers  (nqual_at17a+15)	/ '****'/
 
 * SHADE - command # 18
@@ -1294,41 +1348,45 @@
 	   DATA subcommands      (nsub_at18 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at18 + 0)	/ nqual18a	/
 	   DATA qualifier_pointer(nsub_at18 + 0)	/ nqual_at18a	/
-* SHADE/I/J/K/L/X/Y/Z/T/D/OVERLAY/SET_UP/FRAME/TRANSPOSE/TRIM
+* SHADE/I/J/K/L/M/N/X/Y/Z/T/E/F/D/OVERLAY/SET_UP/FRAME/TRANSPOSE/TRIM
 		DATA qualifiers  (nqual_at18a+0)/ 'I'	/
 		DATA qualifiers  (nqual_at18a+1)/ 'J'	/
 		DATA qualifiers  (nqual_at18a+2)/ 'K'	/
 		DATA qualifiers  (nqual_at18a+3)/ 'L'	/
-		DATA qualifiers  (nqual_at18a+4)/ 'X'	/
-		DATA qualifiers  (nqual_at18a+5)/ 'Y'	/
-		DATA qualifiers  (nqual_at18a+6)/ 'Z'	/
-		DATA qualifiers  (nqual_at18a+7)/ 'T'	/
-		DATA qualifiers  (nqual_at18a+8)/ 'OVERLAY'/	!/overlays
-		DATA qualifiers  (nqual_at18a+9)/ 'SET_UP'/	!/set_up
-		DATA qualifiers  (nqual_at18a+10)/ 'FRAME'/	!/frame
-		DATA qualifiers  (nqual_at18a+11)/ 'D'   /	!/data_set
-		DATA qualifiers  (nqual_at18a+12)/ 'TRANPOSE'/	!/transpose
-		DATA qualifiers  (nqual_at18a+13)/ 'TRIM'/	!/trim
-		DATA qualifiers  (nqual_at18a+14)/ 'LINE'/	!/lines
-		DATA qualifiers  (nqual_at18a+15)/ 'NOLABEL'/	!/nolabel
-		DATA qualifiers  (nqual_at18a+16)/ 'LEVELS'/	!/levels_same
-		DATA qualifiers  (nqual_at18a+17)/ 'KEY' /	!/key
-		DATA qualifiers  (nqual_at18a+18)/ 'NOKEY'/	!/nokey
-		DATA qualifiers  (nqual_at18a+19)/ 'PALETTE'/	!/palette=
-		DATA qualifiers  (nqual_at18a+20)/ 'XLIMITS'/	!/xlimits
-		DATA qualifiers  (nqual_at18a+21)/ 'YLIMITS'/	!/ylimits
-		DATA qualifiers  (nqual_at18a+22)/ 'TITLE'/	!/title
-		DATA qualifiers  (nqual_at18a+23)/ 'AXES'/	!/axes[=]
-		DATA qualifiers  (nqual_at18a+24)/ 'NOAXES'/	!/noaxes
-		DATA qualifiers  (nqual_at18a+25)/ 'PATTERN'/   !/pattern=
-		DATA qualifiers  (nqual_at18a+26)/ 'HGRATICULE'/!tic lines, dash or line
-		DATA qualifiers  (nqual_at18a+27)/ 'VGRATICULE'/!vert tic lines
-		DATA qualifiers  (nqual_at18a+28)/ 'GRATICULE'/	!
-		DATA qualifiers  (nqual_at18a+29)/ 'MODULO'/	! modulo for curvilinear plots
-		DATA qualifiers  (nqual_at18a+30)/ 'HLIMITS'/	! horiz
-		DATA qualifiers  (nqual_at18a+31)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at18a+32)/ '****'/	! 
-		DATA qualifiers  (nqual_at18a+33)/ '****'/	! 
+		DATA qualifiers  (nqual_at18a+4)/ 'M'	/
+		DATA qualifiers  (nqual_at18a+5)/ 'N'	/
+		DATA qualifiers  (nqual_at18a+6)/ 'X'	/
+		DATA qualifiers  (nqual_at18a+7)/ 'Y'	/
+		DATA qualifiers  (nqual_at18a+8)/ 'Z'	/
+		DATA qualifiers  (nqual_at18a+9)/ 'T'	/
+		DATA qualifiers  (nqual_at18a+10)/ 'E'	/
+		DATA qualifiers  (nqual_at18a+11)/ 'F'	/
+		DATA qualifiers  (nqual_at18a+12)/ 'OVERLAY'/	!/overlays
+		DATA qualifiers  (nqual_at18a+13)/ 'SET_UP'/	!/set_up
+		DATA qualifiers  (nqual_at18a+14)/ 'FRAME'/	!/frame
+		DATA qualifiers  (nqual_at18a+15)/ 'D'   /	!/data_set
+		DATA qualifiers  (nqual_at18a+16)/ 'TRANPOSE'/	!/transpose
+		DATA qualifiers  (nqual_at18a+17)/ 'TRIM'/	!/trim
+		DATA qualifiers  (nqual_at18a+18)/ 'LINE'/	!/lines
+		DATA qualifiers  (nqual_at18a+19)/ 'NOLABEL'/	!/nolabel
+		DATA qualifiers  (nqual_at18a+20)/ 'LEVELS'/	!/levels_same
+		DATA qualifiers  (nqual_at18a+21)/ 'KEY' /	!/key
+		DATA qualifiers  (nqual_at18a+22)/ 'NOKEY'/	!/nokey
+		DATA qualifiers  (nqual_at18a+23)/ 'PALETTE'/	!/palette=
+		DATA qualifiers  (nqual_at18a+24)/ 'XLIMITS'/	!/xlimits
+		DATA qualifiers  (nqual_at18a+25)/ 'YLIMITS'/	!/ylimits
+		DATA qualifiers  (nqual_at18a+26)/ 'TITLE'/	!/title
+		DATA qualifiers  (nqual_at18a+27)/ 'AXES'/	!/axes[=]
+		DATA qualifiers  (nqual_at18a+28)/ 'NOAXES'/	!/noaxes
+		DATA qualifiers  (nqual_at18a+29)/ 'PATTERN'/   !/pattern=
+		DATA qualifiers  (nqual_at18a+30)/ 'HGRATICU'/!tic lines, dash or line
+		DATA qualifiers  (nqual_at18a+31)/ 'VGRATICU'/!vert tic lines
+		DATA qualifiers  (nqual_at18a+32)/ 'GRATICUL'/	!
+		DATA qualifiers  (nqual_at18a+33)/ 'MODULO'/	! modulo for curvilinear plots
+		DATA qualifiers  (nqual_at18a+34)/ 'HLIMITS'/	! horiz
+		DATA qualifiers  (nqual_at18a+35)/ 'VLIMITS'/	! vertical
+		DATA qualifiers  (nqual_at18a+36)/ '****'/	! 
+		DATA qualifiers  (nqual_at18a+37)/ '****'/	! 
 
 * SPAWN - command # 19
 	DATA commands(19)			/ 'SPAWN'	/
@@ -1374,32 +1432,34 @@
 	   DATA subcommands      (nsub_at21 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at21 + 0)	/ nqual21a	/
 	   DATA qualifier_pointer(nsub_at21 + 0)	/ nqual_at21a	/
-* WIRE/I/J/K/L/X/Y/Z/T/D/OVERLAY/SET_UP/FRAME/TRANSPOSE
+* WIRE/I/J/K/L/M/N/X/Y/Z/T/E/F/D/OVERLAY/SET_UP/FRAME/TRANSPOSE
 		DATA qualifiers  (nqual_at21a+0) / 'I'	/
 		DATA qualifiers  (nqual_at21a+1) / 'J'	/
 		DATA qualifiers  (nqual_at21a+2) / 'K'	/
 		DATA qualifiers  (nqual_at21a+3) / 'L'	/
-		DATA qualifiers  (nqual_at21a+4) / 'X'	/
-		DATA qualifiers  (nqual_at21a+5) / 'Y'	/
-		DATA qualifiers  (nqual_at21a+6) / 'Z'	/
-		DATA qualifiers  (nqual_at21a+7) / 'T'	/
-		DATA qualifiers  (nqual_at21a+8) / 'OVERLAY'/ 
-		DATA qualifiers  (nqual_at21a+9) / 'SET_UP'/  
-		DATA qualifiers  (nqual_at21a+10)/ 'FRAME'/	
-		DATA qualifiers  (nqual_at21a+11)/ 'D'   /	
-		DATA qualifiers  (nqual_at21a+12)/ 'VIEWPOIN'/	
-		DATA qualifiers  (nqual_at21a+13)/ 'ZLIMITS'/	
-		DATA qualifiers  (nqual_at21a+14)/ 'TRANPOSE'/  
-		DATA qualifiers  (nqual_at21a+15)/ 'NOLABEL'/   
-		DATA qualifiers  (nqual_at21a+16)/ 'ZSCALE'/ 
-		DATA qualifiers  (nqual_at21a+17)/ '****'/ 
-		DATA qualifiers  (nqual_at21a+18)/ '****'/ 
-		DATA qualifiers  (nqual_at21a+19)/ '****'/
-		DATA qualifiers  (nqual_at21a+20)/ '****'/
+		DATA qualifiers  (nqual_at21a+4) / 'M'	/
+		DATA qualifiers  (nqual_at21a+5) / 'N'	/
+		DATA qualifiers  (nqual_at21a+6) / 'X'	/
+		DATA qualifiers  (nqual_at21a+7) / 'Y'	/
+		DATA qualifiers  (nqual_at21a+8) / 'Z'	/
+		DATA qualifiers  (nqual_at21a+9) / 'T'	/
+		DATA qualifiers  (nqual_at21a+10) / 'E'	/
+		DATA qualifiers  (nqual_at21a+11) / 'F'	/
+		DATA qualifiers  (nqual_at21a+12) / 'OVERLAY'/ 
+		DATA qualifiers  (nqual_at21a+13) / 'SET_UP'/  
+		DATA qualifiers  (nqual_at21a+14)/ 'FRAME'/
+		DATA qualifiers  (nqual_at21a+15)/ 'D'   /
+		DATA qualifiers  (nqual_at21a+16)/ 'VIEWPOIN'/
+		DATA qualifiers  (nqual_at21a+17)/ 'ZLIMITS'/
+		DATA qualifiers  (nqual_at21a+18)/ 'TRANPOSE'/  
+		DATA qualifiers  (nqual_at21a+19)/ 'NOLABEL'/   
+		DATA qualifiers  (nqual_at21a+20)/ 'ZSCALE'/
 		DATA qualifiers  (nqual_at21a+21)/ '****'/
-		DATA qualifiers  (nqual_at21a+22)/ 'TITLE'/
+		DATA qualifiers  (nqual_at21a+22)/ '****'/
 		DATA qualifiers  (nqual_at21a+23)/ '****'/
 		DATA qualifiers  (nqual_at21a+24)/ '****'/
+		DATA qualifiers  (nqual_at21a+25)/ '****'/
+		DATA qualifiers  (nqual_at21a+26)/ 'TITLE'/
 
 * QUERY - command # 22
 	DATA commands(22)			/ 'QUERY'	/
@@ -1476,54 +1536,58 @@
 	   DATA subcommands      (nsub_at27 + 0)/ '    '	/
 	   DATA num_qualifs      (nsub_at27 + 0)/ nqual27a	/
 	   DATA qualifier_pointer(nsub_at27 + 0)/ nqual_at27a	/
-* POLYGON/I/J/K/L/X/Y/Z/T/D/OVERLAY/SET_UP/FRAME/TRANSPOSE/COORD_AX
+* POLYGON/I/J/K/L/M/N/X/Y/Z/T/E/F/D/OVERLAY/SET_UP/FRAME/TRANSPOSE/COORD_AX
 		DATA qualifiers  (nqual_at27a+0)/ 'I'	/
 		DATA qualifiers  (nqual_at27a+1)/ 'J'	/
 		DATA qualifiers  (nqual_at27a+2)/ 'K'	/
 		DATA qualifiers  (nqual_at27a+3)/ 'L'	/
-		DATA qualifiers  (nqual_at27a+4)/ 'X'	/
-		DATA qualifiers  (nqual_at27a+5)/ 'Y'	/
-		DATA qualifiers  (nqual_at27a+6)/ 'Z'	/
-		DATA qualifiers  (nqual_at27a+7)/ 'T'	/
-		DATA qualifiers  (nqual_at27a+8)/ 'OVERLAY'/	!/overlays
-		DATA qualifiers  (nqual_at27a+9)/ 'SET_UP'/	!/set_up
-		DATA qualifiers  (nqual_at27a+10)/ 'FRAME'/	!/frame
-		DATA qualifiers  (nqual_at27a+11)/ 'D'   /	!/data_set
-		DATA qualifiers  (nqual_at27a+12)/ 'TRANPOSE'/	!/transpose
-		DATA qualifiers  (nqual_at27a+13)/ 'COORD_AX'/	!/coord_ax
-		DATA qualifiers  (nqual_at27a+14)/ '****'/	!/unused
-		DATA qualifiers  (nqual_at27a+15)/ 'NOLABEL'/	!/nolabel
-		DATA qualifiers  (nqual_at27a+16)/ 'LEVELS'/	!/levels_same
-		DATA qualifiers  (nqual_at27a+17)/ 'LINE'/	!/line
-		DATA qualifiers  (nqual_at27a+18)/ 'COLOR'/	!/color
-		DATA qualifiers  (nqual_at27a+19)/ 'PALETTE'/	!/palette=
-		DATA qualifiers  (nqual_at27a+20)/ 'XLIMITS'/	!/xlimits
-		DATA qualifiers  (nqual_at27a+21)/ 'YLIMITS'/	!/ylimits
-		DATA qualifiers  (nqual_at27a+22)/ 'TITLE'/	!/title
-		DATA qualifiers  (nqual_at27a+23)/ 'THICKNES'/	!/thickness
-		DATA qualifiers  (nqual_at27a+24)/ 'NOAXES'/	!/noaxes
-	        DATA qualifiers  (nqual_at27a+25)/ 'PATTERN'/   !/pattern=
-		DATA qualifiers  (nqual_at27a+26)/ 'FILL'/	!/fill
-		DATA qualifiers  (nqual_at27a+27)/ 'KEY'/	!/key
-		DATA qualifiers  (nqual_at27a+28)/ 'NOKEY'/	!/nokey
-		DATA qualifiers  (nqual_at27a+29)/ 'AXES'/	!/axes[=]
-		DATA qualifiers  (nqual_at27a+30)/ 'HLIMITS'/	! horizontal
-		DATA qualifiers  (nqual_at27a+31)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at27a+32)/ 'HLOG'/	!log axis horiz
-		DATA qualifiers  (nqual_at27a+33)/ 'VLOG'/	!log axis vert
-		DATA qualifiers  (nqual_at27a+34)/ 'HGRATICULE'/	!tic lines, dash or line
-		DATA qualifiers  (nqual_at27a+35)/ 'VGRATICULE'/	!vert tic lines
-		DATA qualifiers  (nqual_at27a+36)/ 'GRATICULE'/
-		DATA qualifiers  (nqual_at27a+37)/ '****'/
-		DATA qualifiers  (nqual_at27a+38)/ '****'/
-		DATA qualifiers  (nqual_at27a+39)/ '****'/
+		DATA qualifiers  (nqual_at27a+4)/ 'M'	/
+		DATA qualifiers  (nqual_at27a+5)/ 'N'	/
+		DATA qualifiers  (nqual_at27a+6)/ 'X'	/
+		DATA qualifiers  (nqual_at27a+7)/ 'Y'	/
+		DATA qualifiers  (nqual_at27a+8)/ 'Z'	/
+		DATA qualifiers  (nqual_at27a+9)/ 'T'	/
+		DATA qualifiers  (nqual_at27a+10)/ 'E'	/
+		DATA qualifiers  (nqual_at27a+11)/ 'F'	/
+		DATA qualifiers  (nqual_at27a+12)/ 'OVERLAY'/	!/overlays
+		DATA qualifiers  (nqual_at27a+13)/ 'SET_UP'/	!/set_up
+		DATA qualifiers  (nqual_at27a+14)/ 'FRAME'/	!/frame
+		DATA qualifiers  (nqual_at27a+15)/ 'D'   /	!/data_set
+		DATA qualifiers  (nqual_at27a+16)/ 'TRANPOSE'/	!/transpose
+		DATA qualifiers  (nqual_at27a+17)/ 'COORD_AX'/	!/coord_ax
+		DATA qualifiers  (nqual_at27a+18)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at27a+19)/ 'NOLABEL'/	!/nolabel
+		DATA qualifiers  (nqual_at27a+20)/ 'LEVELS'/	!/levels_same
+		DATA qualifiers  (nqual_at27a+21)/ 'LINE'/	!/line
+		DATA qualifiers  (nqual_at27a+22)/ 'COLOR'/	!/color
+		DATA qualifiers  (nqual_at27a+23)/ 'PALETTE'/	!/palette=
+		DATA qualifiers  (nqual_at27a+24)/ 'XLIMITS'/	!/xlimits
+		DATA qualifiers  (nqual_at27a+25)/ 'YLIMITS'/	!/ylimits
+		DATA qualifiers  (nqual_at27a+26)/ 'TITLE'/	!/title
+		DATA qualifiers  (nqual_at27a+27)/ 'THICKNES'/	!/thickness
+		DATA qualifiers  (nqual_at27a+28)/ 'NOAXES'/	!/noaxes
+	        DATA qualifiers  (nqual_at27a+29)/ 'PATTERN'/   !/pattern=
+		DATA qualifiers  (nqual_at27a+30)/ 'FILL'/	!/fill
+		DATA qualifiers  (nqual_at27a+31)/ 'KEY'/	!/key
+		DATA qualifiers  (nqual_at27a+32)/ 'NOKEY'/	!/nokey
+		DATA qualifiers  (nqual_at27a+33)/ 'AXES'/	!/axes[=]
+		DATA qualifiers  (nqual_at27a+34)/ 'HLIMITS'/	! horizontal
+		DATA qualifiers  (nqual_at27a+35)/ 'VLIMITS'/	! vertical
+		DATA qualifiers  (nqual_at27a+36)/ 'HLOG'/	!log axis horiz
+		DATA qualifiers  (nqual_at27a+37)/ 'VLOG'/	!log axis vert
+		DATA qualifiers  (nqual_at27a+38)/ 'HGRATICU'/	!tic lines, dash or line
+		DATA qualifiers  (nqual_at27a+39)/ 'VGRATICU'/	!vert tic lines
+		DATA qualifiers  (nqual_at27a+40)/ 'GRATICUL'/
+		DATA qualifiers  (nqual_at27a+41)/ '****'/
+		DATA qualifiers  (nqual_at27a+42)/ '****'/
+		DATA qualifiers  (nqual_at27a+43)/ '****'/
 
 * **** - command # 28
 	DATA commands(28)			/ '****'	/
         DATA its_action_command(28)             / .FALSE.       /
 	DATA num_subcommands(28)		/ nsub28	/
 	DATA subcommand_pointer(28)		/ nsub_at28	/
-* **** '   
+* **** '    '
 	   DATA subcommands      (nsub_at28 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at28 + 0)	/ nqual28a	/
 	   DATA qualifier_pointer(nsub_at28 + 0)	/ nqual_at28a	/
@@ -1656,13 +1720,4 @@
 	DATA num_queries /0/   ! unused
 
 	END
-
-
-
-
-
-
-
-
-
 

@@ -36,30 +36,23 @@
 
 
 
-/*	ferret_query - C routine to query state information from FERRET 
-
+/*
+*	ferret_query - C routine to query state information from FERRET 
+*
 * TMAP interactive data analysis program
-
+*
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 */
 
 /*
 * revision history:
-   11/16/94 - updated to use macro declarations from ferret_shared_buffer.h
-   
-   05/25/95 - added ifdef check for trailing underscores not needed on HP *kob*
-
+*   11/16/94 - updated to use macro declarations from ferret_shared_buffer.h
+*   
+*   05/25/95 - added ifdef check for trailing underscores not needed on HP *kob*
+*
 */
 
-/*
-compile this with
-   cc -c -I/home/rascal/oz/Ferret_gui ferret_query.c
-   (and use -D_NO_PROTO for non-ANSI compilers)
-*/ 
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -127,10 +120,11 @@ int ferret_query(int query, smPtr sBuffer,
 /* all arguments must be pointers for FORTRAN */
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
-  ferret_query_f( &query, sBuffer->flags, &flag_buff_size,
+  ferret_query_f
 #else
-  ferret_query_f_( &query, sBuffer->flags, &flag_buff_size,
+  ferret_query_f_
 #endif
+                 ( &query, sBuffer->flags, &flag_buff_size,
 		   sBuffer->text, &TEXTLENGTH_size,
 		   &(sBuffer->numStrings), &(sBuffer->numNumbers),
 		   &(sBuffer->nums[0]), &NUMDOUBLES_size,

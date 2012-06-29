@@ -63,6 +63,8 @@
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use character constant instead
 *            - Need to use risc_buff for arbitrary concatenations
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+
 * calling argument declarations:
 	LOGICAL   did_sub
 	INTEGER	  lencmnd, status
@@ -90,16 +92,10 @@
         PARAMETER     ( sing_quote = CHAR(39) )
 #endif
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'gfdl_vms.parm'
 	include 'xrisc.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:GFDL_VMS.PARM'
-#endif
 
 * initialize
 	nexchar = 1

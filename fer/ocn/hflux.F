@@ -70,9 +70,9 @@
 *	where	eeh(1)   = 1/(dz(1)*dzz(1))
 
 #ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'gfdl.parm'
-	include 'tmap_dims.parm'
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xonedim.cmn'	! geometric constants

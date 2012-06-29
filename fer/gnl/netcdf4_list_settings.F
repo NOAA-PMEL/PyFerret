@@ -1,3 +1,5 @@
+
+
 	SUBROUTINE NETCDF4_LIST_SETTINGS (status)
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -39,10 +41,12 @@
 * NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
 *
 * revision 0.0 - 1/13/2010
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * Read info from qualilifiers for LIST netCDF4: NCFORMAT,
-* XCHUNK,YCHUNK,ZCHUNK,TCHUNK,DEFLATE,SHUFFLE,ENDIAN
+* XCHUNK,YCHUNK,ZCHUNK,TCHUNK,ECHUNK,FCHUNK,DEFLATE,SHUFFLE,ENDIAN
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'slash.parm'
 	include 'xcontext.cmn'
@@ -66,6 +70,8 @@
 	ychunk_size  = ychunk_size_set
 	zchunk_size  = zchunk_size_set
 	tchunk_size  = tchunk_size_set
+	echunk_size  = echunk_size_set
+	fchunk_size  = fchunk_size_set
 	deflate_lev  = deflate_lev_set
 	shuffle_flag = shuffle_flag_set
 	endian_code  = endian_code_set
@@ -96,7 +102,7 @@
 	   ENDIF
 	ENDIF
 
-* /XCHUNK,YCHUNK,ZCHUNK,TCHUNK for netCDF4 chunking?
+* /XCHUNK,YCHUNK,ZCHUNK,TCHUNK,ECHUNK,FCHUNK for netCDF4 chunking?
 
 	loc = qual_given( slash_list_xchunk )
 	IF (loc .GT. 0) THEN 
@@ -135,6 +141,26 @@
            IF ( status .NE. ferr_ok ) GOTO 5000
            READ (buff, *) tchunk_size
 	   IF (tchunk_size .LE. 0) GOTO 5200
+	ENDIF
+	
+        loc = qual_given( slash_list_echunk )
+	IF (loc .GT. 0) THEN 
+	   CALL EQUAL_STRING(
+     .                   cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                   buff, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+           READ (buff, *) echunk_size
+	   IF (echunk_size .LE. 0) GOTO 5200
+	ENDIF
+	
+        loc = qual_given( slash_list_fchunk )
+	IF (loc .GT. 0) THEN 
+	   CALL EQUAL_STRING(
+     .                   cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                   buff, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+           READ (buff, *) fchunk_size
+	   IF (fchunk_size .LE. 0) GOTO 5200
 	ENDIF
 
 * DEFLATE 
@@ -220,11 +246,14 @@
 	   ENDIF
 
 	   IF (xchunk_size .NE. 0 .OR. ychunk_size .NE. 0 .OR. 
-     .         zchunk_size .NE. 0 .OR. tchunk_size .NE. 0) THEN
+     .         zchunk_size .NE. 0 .OR. tchunk_size .NE. 0.OR. 
+     .         echunk_size .NE. 0 .OR. fchunk_size .NE. 0) THEN
 	      xchunk_size = 0
 	      ychunk_size = 0
 	      zchunk_size = 0
 	      tchunk_size = 0
+	      echunk_size = 0
+	      fchunk_size = 0
 	      CALL WARN(
      . buff(:slen)//' style cannot set chunking, ignoring /*CHUNK')
 	   ENDIF

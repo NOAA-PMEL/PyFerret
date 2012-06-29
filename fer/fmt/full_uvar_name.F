@@ -43,6 +43,7 @@
 
 * V402:
 * V420:  4/96 - document "(/D default)" on pdset_irrelevant variables
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * calling argument declarations:
 	INTEGER	uvar
@@ -50,18 +51,11 @@
 * local variable declarations:
 	INTEGER TM_LENSTR1, len, len2
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'ferret.parm'
 	include	'xvariables.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN_TEXT'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * variable name and definition
 *	len = TM_LENSTR1(uvar_name_code(uvar))

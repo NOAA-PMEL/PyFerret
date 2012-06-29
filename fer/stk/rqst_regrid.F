@@ -68,6 +68,10 @@
 * v580 *acm* 11/04 Store cal_id in cx_cal_id, the calendar ID used when  
 *                  computing world coordinates
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
+*                  dimension is now an arg to SECS_TO_TSTEP. Note the input 
+*                  argument "axis" in this routine is a dimension, 1, 2, ... 
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -76,15 +80,8 @@
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
 	include 'xrisc.cmn'
-
-!	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#ifdef unix
 	include	'xalgebra.cmn'
 	include	'xtext_info.cmn'
-#else
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations:
 	LOGICAL strides
@@ -98,7 +95,7 @@
      .		src_min_ss, src_max_ss, line, src_line,
      .		dst_lo_ss, dst_hi_ss, where_loest, where_hiest, rgrd_trans,
      .	        dst_taxis, src_taxis, dst_cal_id, src_cal_id, dlen, slen
-	REAL*8	TWORLD, SECS_TO_TSTEP, TSTEP_TO_SECS,
+	REAL*8	TWORLD, SECS_TO_TSTEP,
      .		src_lo_ww, src_hi_ww, dst_lo_ww, dst_hi_ww,
      .          tmp_lo_ww, tmp_hi_ww, d2s_lo_ww, d2s_hi_ww
 	CHARACTER	VAR_CODE*128, TM_SECS_TO_DATE*20, pdate*20
@@ -118,9 +115,10 @@
 * to regrid between calendar and non-calendar axes.  
 * 3/01 *acm* If calendar axis, get calendar id for dest and source calendars.
 
-	IF ( rgrd_trans.NE.prgrd_associate .AND. axis.EQ.t_dim ) THEN
-	   calendar = GEOG_LABEL(t_dim,dst_grid)
-	   IF (GEOG_LABEL(t_dim,src_grid).NEQV.calendar) GOTO 5010
+	IF ( rgrd_trans.NE.prgrd_associate .AND. 
+     .       (axis.EQ.t_dim .OR. axis.EQ.f_dim) ) THEN
+	   calendar = GEOG_LABEL(axis,dst_grid)
+	   IF (GEOG_LABEL(axis,src_grid).NEQV.calendar) GOTO 5010
 	   IF (calendar) THEN
 	      src_taxis = grid_line(axis, src_grid)
 	      src_cal_id = TM_GET_CALENDAR_ID (line_cal_name(src_taxis) )
@@ -134,9 +132,10 @@
 
 * If this is a regridding between different calendars trap illegal attempts
 * to regrid with anything except @lin, @asn, or @near
-	IF ( calendar ) THEN
-	   dst_taxis = grid_line(t_dim, dst_grid )
-	   src_taxis = grid_line(t_dim, src_grid )
+	IF ( calendar  .AND. 
+     .      (axis.EQ.t_dim .OR. axis.EQ.f_dim) ) THEN
+	   dst_taxis = grid_line(axis, dst_grid ) 
+	   src_taxis = grid_line(axis, src_grid )
 
 	   dst_cal_id = TM_GET_CALENDAR_ID (line_cal_name(dst_taxis))
 	   src_cal_id = TM_GET_CALENDAR_ID (line_cal_name(src_taxis))
@@ -249,8 +248,7 @@
 	ENDIF
 
 * which source grid boxes contain the destination region
-* 	(not necessarily adequate for regridding)
-!	IF ( axis .EQ. t_dim ) THEN	! pre-8/95
+
 * 9/97 *kob* convert time in secs since BC to time position on the 
 *             *source* time axis then call ISUBSCRIPT
 	IF ( calendar ) THEN
@@ -268,8 +266,8 @@
 	      d2s_hi_ww = dst_hi_ww
 	   ENDIF
 
-	   tmp_lo_ww = SECS_TO_TSTEP( src_grid, d2s_lo_ww)
-	   tmp_hi_ww = SECS_TO_TSTEP( src_grid, d2s_hi_ww)
+	   tmp_lo_ww = SECS_TO_TSTEP( src_grid, axis, d2s_lo_ww)
+	   tmp_hi_ww = SECS_TO_TSTEP( src_grid, axis, d2s_hi_ww)
 
 	   src_lo_ss = ISUBSCRIPT( tmp_lo_ww,src_grid,axis,round_dn )
 	   src_hi_ss = ISUBSCRIPT( tmp_hi_ww,src_grid,axis,round_up )
@@ -335,7 +333,7 @@
 	cx_hi_ww( axis, src_cx )	= unspecified_val8
 	cx_given( axis, src_cx )	= .FALSE.
 * 9/97 *kob* - cx_calendar needs to also reflect these changes
-	IF (axis .eq. t_dim) THEN
+	IF (axis .eq. t_dim .OR. axis .eq. f_dim) THEN
            cx_calendar(src_cx) = .FALSE.
            cx_cal_id(src_cx) = unspecified_int4
         ENDIF

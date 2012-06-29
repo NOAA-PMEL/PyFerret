@@ -42,18 +42,12 @@
 * written for VAX computer under VMS operating system
 *
 * V200: 12/20/89
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'pltcom_dat.decl'   ! with gksopn
 	include 'PLTCOM.DAT'   ! with gksopn
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL/LIST'   ! with gksopn
-	INCLUDE 'PPLV11INC:PLTCOM.DAT/LIST'   ! with gksopn
-#endif
 
 	external errmsg
 

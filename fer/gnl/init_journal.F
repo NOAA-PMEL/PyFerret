@@ -1,3 +1,5 @@
+
+
 	SUBROUTINE INIT_JOURNAL( status )
 
 *
@@ -44,20 +46,13 @@
 * V312:  5/94 - insert "PROCLAIM" output from here instead of from INITIALIZE
 * V320: 12/29/94 - use WARN to avoid direct tty output (for GUI)
 * V66   *kms* 5/10 LIB_GET_LUN is a subroutine, not a function
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'  ! error codes
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'  ! error codes
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE '($SSDEF)'				! LIB_ return status
-	INCLUDE '($JPIDEF)'				! for VMS mode code
-#endif
 
 * calling argument declarations:
 	INTEGER status
@@ -69,24 +64,12 @@
 	CALL LIB_GET_LUN( jrnl_lun )
 
 *  rename last journal file by this name to old version
-#ifdef unix
         CALL TM_PARK_LAST_VERSION( journal_file, status )
         IF ( status .NE. merr_ok ) GOTO 9000
 	OPEN (	FILE=journal_file,
      .		UNIT=jrnl_lun,
      .		STATUS='NEW',
      .		ERR = 9000 )
-#else
-* VMS ... make sure "FERRET_JOURNAL" has been defined
-!	status = LIB$SYS_TRNLOG( jrnl_file, ,jrnl_trans )
-!	IF ( status .EQ. ss$_notran ) STOP 'FERRET_JOURNAL must be defined'
-	OPEN (	FILE=journal_file,
-     .		UNIT=jrnl_lun,
-     .		CARRIAGECONTROL = 'LIST',
-     .		RECL = 255,
-     .		STATUS='NEW',
-     .		ERR = 9000 )
-#endif
 
 * put introductory remarks into journal file
 	CALL PROCLAIM ( jrnl_lun, '! ' )

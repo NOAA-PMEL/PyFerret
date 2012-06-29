@@ -45,6 +45,8 @@
 * V450	11/96
 
 * V600 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
+*       *acm* 3/12 cleanup old VMS ifdef
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
         include 'tmap_errors.parm'
         include 'tmap_dims.parm'
@@ -80,6 +82,7 @@
 	dset = cx_data_set(cx_cmnd)
 	IF ( dset .EQ. unspecified_int4 ) GOTO 5100
 	IF ( ds_type(dset) .NE. 'CDF' )   GOTO 5200
+	IF ( ds_type(dset) .NE. 'AGG' )   GOTO 5200
 	IF ( .NOT.TM_HAS_STRING(ds_des_name(dset)(:8), 'http://') )
      .					  GOTO 5200
 
@@ -129,7 +132,7 @@
         cx0 = cx_stack_ptr
         cx_data_set(cx0) = dset
         cx_category(cx0) = cat_file_var
-        DO 20 idim = 1, 4
+        DO 20 idim = 1, nferdims
           cx_lo_ss(cx0,idim) = 1
           cx_hi_ss(cx0,idim) = 1
           cx_by_ss(idim,cx0) = .TRUE.
@@ -151,7 +154,7 @@
            cx_variable(cx) = ivar
 	   cx_grid(cx)     = ds_grid_number(ivar)
 	   cx_bad_data(cx) = ds_bad_flag( ivar )
-	   DO 110 idim = 1, 4
+	   DO 110 idim = 1, nferdims
 	      CALL FLESH_OUT_AXIS( idim, cx, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
  110	   CONTINUE

@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -44,20 +44,18 @@
 * written for VAX computer under VMS operating system
 *
 * V200:  6/12/89
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
-	include		'ferret.parm'
-	include 	'xvariables.cmn'
-#else
-	INCLUDE		'FERRET_CMN:FERRET.PARM'
-	INCLUDE 	'FERRET_CMN:XVARIABLES.CMN'
-#endif
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include 'ferret.parm'
+	include 'xvariables.cmn'
 
 * calling argument declarations:
-	INTEGER		mr
+	INTEGER mr
 
 * internal variable declarations:
-	INTEGER		last_head
+	INTEGER last_head
 
 	IF ( mr_protected(mr) .GT. mr_not_protected )
      .		mr_protected(mr) = mr_protected(mr) - 1

@@ -73,7 +73,9 @@
 * V63  *acm* 10/09 Changes for gfortran build
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid. 
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'	
 	include 'errmsg.parm'	
 	include 'rpn.parm'
@@ -91,7 +93,7 @@
 
 * internal variable declarations:
 	LOGICAL inquote
-	INTEGER	        TM_LENSTR1, TM_LENSTR, STR_SAME, i, 
+	INTEGER	        TM_LENSTR1, TM_LENSTR, STR_SAME, i, idim,
      .                  natom_rpn, rpn_order(maxatoms), i2, quote_type,
      .                  dset_to_add, slen, iat, varid, type, coordvar
 	CHARACTER	err_string*255, c*1, attname*128
@@ -244,18 +246,18 @@ c* copy title, units, dset, and missing flag into buffers
 	uvar_need_dset( uvar ) = .TRUE.
 
 * by default assume that all limits are irrelevant
-	DO 320 i = 1, 4
-	   uvar_lo_ss ( uvar, i )  = unspecified_int4
-	   uvar_hi_ss ( uvar, i )  = unspecified_int4
-	   uvar_lo_ww ( i, uvar )  = unspecified_val8
-	   uvar_hi_ww ( i, uvar )  = unspecified_val8
-	   uvar_by_ss ( i, uvar )  = .FALSE.             !for bookkeeping
-  	   uvar_given ( i, uvar )  = uvlim_irrelevant
+	DO 320 idim = 1, nferdims
+	   uvar_lo_ss ( uvar, idim )  = unspecified_int4
+	   uvar_hi_ss ( uvar, idim )  = unspecified_int4
+	   uvar_lo_ww ( idim, uvar )  = unspecified_val8
+	   uvar_hi_ww ( idim, uvar )  = unspecified_val8
+	   uvar_by_ss ( idim, uvar )  = .FALSE.             !for bookkeeping
+  	   uvar_given ( idim, uvar )  = uvlim_irrelevant
  320	CONTINUE
 
 * by default assume that there are no pseudo-variables involved
-	DO 330 i = 1, 4
- 330	uvar_mod_pseudo(i,uvar) = .FALSE.
+	DO 330 idim = 1, nferdims
+ 330	uvar_mod_pseudo(idim,uvar) = .FALSE.
 
 * set grid to unknown (to be determined at "run time") for all data sets
 * and clear all references in memory to any associated dynamic grids

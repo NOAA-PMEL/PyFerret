@@ -46,19 +46,16 @@
 * written for VAX computer under VMS operating system
 
 * V300: 4/22/93
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * calling argument declarations:
 
 * internal variable declarations:
 	INTEGER i
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * reset the command common to look like a single big argument
 

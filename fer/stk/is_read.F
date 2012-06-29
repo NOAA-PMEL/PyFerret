@@ -60,6 +60,7 @@
 *	        because it needed a preprocessor.
 *  7/98 *js*  - Hacked to add support for permuted binary file reads
 * V530: *sh* 11/00 - delimited file reading added
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 * calling argument declarations:
 	INTEGER	status
@@ -96,7 +97,7 @@
 	cx_category(cx) = cat_file_var
 
 * ensure that all needed limits are known
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   IF ( cx_lo_ss( cx, idim ) .NE. unspecified_int4 ) GOTO 100
 	   IF ( CGRID_AXIS( idim, cx ) .EQ. mnormal ) GOTO 100
 	   IF ( reprimand ) THEN

@@ -46,10 +46,11 @@ c*
       SUBROUTINE EF_GET_AXIS_CALENDAR(id, iarg, calname, yrdays, 
      .               mnths, d_in_month)
 
+      IMPLICIT NONE
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'xcontext.cmn'
       INCLUDE 'EF_Util.parm'
-      INCLUDE 'tmap_dims.parm'
       INCLUDE 'xtm_grid.cmn_text'
       INCLUDE 'calendar.decl'
       INCLUDE 'calendar.cmn'
@@ -57,7 +58,6 @@ c*
 * argument declarations
       INTEGER id, iarg
       INTEGER grid, axis, idim
-
       CHARACTER*(*) calname
       REAL yrdays
       INTEGER mnths, d_in_month(*)
@@ -75,7 +75,7 @@ c*
 c* The context list was cached by Ferret and must be retrieved
 c* to be accessible to the external function.
 
-      CALL ef_get_cx_list(cx_list)
+      CALL EF_GET_CX_LIST(cx_list)
 
 * Get the grid and if it has a time axis get the calendar info
 
@@ -100,7 +100,6 @@ c* to be accessible to the external function.
 110      CONTINUE
 
       ENDIF
-
 
       RETURN 
       END

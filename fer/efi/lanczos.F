@@ -53,11 +53,10 @@
 
       SUBROUTINE lanczos_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
-
-      CALL ef_version_test(ef_version)
 
 ! **********************************************************************
 !                                            USER CONFIGURABLE PORTION |
@@ -68,40 +67,42 @@
      .      'Bandpass filters data in time using a Lanczos filter' )
 
       CALL ef_set_num_args(id, 4)
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .      IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
-
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
       CALL ef_set_num_work_arrays(id, 1)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
-
       CALL ef_set_arg_desc(id, arg, 
-     .      'Data to be filtered in time (may also vary in x,y,z)')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+     .      'Data to be filtered in time (may also vary in x,y,z,e,f)')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, YES, YES, YES, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'F1')
       CALL ef_set_arg_unit(id, arg, ' ')
-
       CALL ef_set_arg_desc(id, arg,'Low frequency cutoff')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F2')
       CALL ef_set_arg_unit(id, arg, ' ')
-
       CALL ef_set_arg_desc(id, arg,'High frequency cutoff')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
       arg = 4
       CALL ef_set_arg_name(id, arg, 'N')
       CALL ef_set_arg_unit(id, arg, ' ')
-
       CALL ef_set_arg_desc(id, arg,'Number of weights (must be odd)')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
+
 !                                                                      ^
 !                                                                      |
 !                                            USER CONFIGURABLE PORTION |
@@ -116,8 +117,8 @@
 *
       SUBROUTINE lanczos_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -126,26 +127,27 @@
 *                                                                      |
 *                                                                      V
 *
-* Set the work array X/Y/Z/T dimensions
+* Set the work array X/Y/Z/T/E/F dimensions
 *
-* ef_set_work_array_lens(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+* ef_set_work_array_dims_6d(id, array #,
+*                           xlo, ylo, zlo, tlo, elo, flo,
+*                           xhi, yhi, zhi, thi, ehi, fhi)
 *
+
       INTEGER array_num, arg, nn
       REAL val
-
 
       arg = 4
       CALL ef_get_one_val(id, arg, val)  
 
       nn = val
-
       array_num = 1
 
 ! dimensions for weight array: nn = arg4
 
-      CALL ef_set_work_array_dims(id, array_num,
-     .     0, 0, 0, 0, 
-     .     nn, 0, 0, 0)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .                                0, 0, 0, 0, 0, 0, 
+     .                               nn, 0, 0, 0, 0, 0)
 
 
 *                                                                      ^
@@ -161,48 +163,55 @@
       SUBROUTINE lanczos_compute(id, arg_1, arg_2, arg_3, arg_4, 
      .                           result, weight)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
-      REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
-     .       mem1loz:mem1hiz, mem1lot:mem1hit),     
-     .      arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, 
-     .       mem2loz:mem2hiz, mem2lot:mem2hit),     
-     .      arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, 
-     .       mem3loz:mem3hiz, mem3lot:mem3hit),     
-     .      arg_4(mem4lox:mem4hix, mem4loy:mem4hiy, 
-     .       mem4loz:mem4hiz, mem4lot:mem4hit)
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
+     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
+     .           mem3lot:mem3hit, mem3loe:mem3hie, mem3lof:mem3hif)
+      REAL arg_4(mem4lox:mem4hix, mem4loy:mem4hiy, mem4loz:mem4hiz, 
+     .           mem4lot:mem4hit, mem4loe:mem4hie, mem4lof:mem4hif)
+
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
-     .        memresloz:memreshiz, memreslot:memreshit)
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
       REAL weight(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
-     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-     
-! After initialization, the 'res_' arrays contain indexing information 
-! for the result axes.  The 'arg_' arrays will contain the indexing 
-! information for each variable's axes. 
+     .            wrk1loz:wrk1hiz, wrk1lot:wrk1hit,
+     .            wrk1loe:wrk1hie, wrk1lof:wrk1hif)
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS), 
-     .        arg_incr(4,1:EF_MAX_ARGS)
+* After initialization, the 'res_' arrays contain indexing information 
+* for the result axes.  The 'arg_' arrays will contain the indexing 
+* information for each variable''s axes. 
+
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 ! **********************************************************************
 !                                            USER CONFIGURABLE PORTION |
 !                                                                      |
 !                                                                      V
-      INTEGER i,j,k,l
-      INTEGER i1, j1, k1, l1
-      integer m,nn
-      real aa,bb,f1,f2,pi,pik,sigma
-      real da
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, k1, l1, m1, n1
+      INTEGER mm, nn
+      REAL aa, bb, da, f1, f2, pi, pik, sigma
 
       pi  = acos(-1.)
 
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
 ! Get the counter values to cycle through, nw=2*nn+1...
@@ -210,10 +219,12 @@
       j = arg_lo_ss(Y_AXIS,ARG4)
       k = arg_lo_ss(Z_AXIS,ARG4)
       l = arg_lo_ss(T_AXIS,ARG4)
-      if( mod(int(arg_4(i,j,k,l)),2) .EQ. 0 ) then
+      m = arg_lo_ss(E_AXIS,ARG4)
+      n = arg_lo_ss(F_AXIS,ARG4)
+      if( mod(int(arg_4(i,j,k,l,m,n)),2) .EQ. 0 ) then
          CALL EF_BAIL_OUT(id,'The number of weights must be odd.')
       else
-         nn = ( arg_4(i,j,k,l)-1 )/2
+         nn = ( arg_4(i,j,k,l,m,n)-1 )/2
       endif
 
 ! Calculate the weights...
@@ -222,22 +233,26 @@
       j  = arg_lo_ss(Y_AXIS,ARG2)
       k  = arg_lo_ss(Z_AXIS,ARG2)
       l  = arg_lo_ss(T_AXIS,ARG2)
-      f1 = arg_2(i,j,k,l)
+      m  = arg_lo_ss(E_AXIS,ARG2)
+      n  = arg_lo_ss(F_AXIS,ARG2)
+      f1 = arg_2(i,j,k,l,m,n)
 
       i  = arg_lo_ss(X_AXIS,ARG3)
       j  = arg_lo_ss(Y_AXIS,ARG3)
       k  = arg_lo_ss(Z_AXIS,ARG3)
       l  = arg_lo_ss(T_AXIS,ARG3)
-      f2 = arg_3(i,j,k,l)
+      m  = arg_lo_ss(E_AXIS,ARG3)
+      n  = arg_lo_ss(F_AXIS,ARG3)
+      f2 = arg_3(i,j,k,l,m,n)
 
-      weight(0,0,0,0)  = 2.*(f2-f1)
+      weight(0,0,0,0,0,0)  = 2.*(f2-f1)
       do k = 1,nn
          pik   = pi*k
          aa    = pik/nn
          sigma = sin(aa)/aa
          aa    = 2.*pik*f1
          bb    = 2.*pik*f2
-         weight( k,0,0,0) = ( sin(bb)/pik - sin(aa)/pik )*sigma
+         weight(k,0,0,0,0,0) = ( sin(bb)/pik - sin(aa)/pik )*sigma
       end do
 
 ! For testing, calculate the response function...
@@ -259,53 +274,67 @@ c      end do
       endif
 
 ! Apply the weights to the data...
-! NOTE:  The array indexes are setup inefficiently, but that's 
-!        how the Ferret folks set it up.
-      i1 = arg_lo_ss(X_AXIS,ARG1)
-      DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      n1 = arg_lo_ss(F_AXIS,ARG1)
+      DO 600 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
 
-         j1 = arg_lo_ss(Y_AXIS,ARG1)
-         DO 300 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      m1 = arg_lo_ss(E_AXIS,ARG1)
+      DO 500 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
 
-            k1 = arg_lo_ss(Z_AXIS,ARG1)
-            DO 200 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+      k1 = arg_lo_ss(Z_AXIS,ARG1)
+      DO 300 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-             do l=res_lo_ss(T_AXIS),res_lo_ss(T_AXIS)+nn-1
-                result(i,j,k,l) = bad_flag_result
-             end do
-             do l=res_hi_ss(T_AXIS)-nn+1,res_hi_ss(T_AXIS)
-                result(i,j,k,l) = bad_flag_result
-             end do
+      j1 = arg_lo_ss(Y_AXIS,ARG1)
+      DO 200 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-             DO 100 l=res_lo_ss(T_AXIS)+nn, res_hi_ss(T_AXIS)-nn
-                if( arg_1(i1,j1,k1,l) .EQ. bad_flag(1) ) then
-                   result(i,j,k,l) = bad_flag_result
-                   GOTO 100
-                end if
-                result(i,j,k,l) = weight(0,0,0,0)*arg_1(i1,j1,k1,l)
+         i1 = arg_lo_ss(X_AXIS,ARG1)
+         DO 100 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-                do m = 1,nn
-                   if( arg_1(i1,j1,k1,l-m) .EQ. bad_flag(1) 
-     .                   .or. arg_1(i1,j1,k1,l+m) .EQ. bad_flag(1))then
-                       result(i,j,k,l) = bad_flag_result
-                    GOTO 110
-                   end if
-                   result(i,j,k,l) = result(i,j,k,l) + weight(m,0,0,0)* 
-     .                   ( arg_1(i1,j1,k1,l-m) + arg_1(i1,j1,k1,l+m) )
-                end do
-110             continue
+            do l=res_lo_ss(T_AXIS),res_lo_ss(T_AXIS)+nn-1
+               result(i,j,k,l,m,n) = bad_flag_result
+            end do
+            do l=res_hi_ss(T_AXIS)-nn+1,res_hi_ss(T_AXIS)
+               result(i,j,k,l,m,n) = bad_flag_result
+            end do
 
-100          end do
+* Assumes result and arg_1 has same T axis dimension limits
+            DO 400 l=res_lo_ss(T_AXIS)+nn, res_hi_ss(T_AXIS)-nn
 
-             k1 = k1 + arg_incr(Z_AXIS,ARG1)
-200        end do
+               IF ( arg_1(i1,j1,k1,l,m1,n1) .EQ. bad_flag(1) ) then
+                  result(i,j,k,l,m,n) = bad_flag_result
+                  GOTO 400
+               ENDIF
+               result(i,j,k,l,m,n) = weight(0,0,0,0,0,0) *
+     .                               arg_1(i1,j1,k1,l,m1,n1)
 
-           j1 = j1 + arg_incr(Y_AXIS,ARG1)
-300      end do
+               do mm = 1,nn
+                  IF (arg_1(i1,j1,k1,l-mm,m1,n1) .EQ. bad_flag(1) .OR.
+     .                arg_1(i1,j1,k1,l+mm,m1,n1) .EQ. bad_flag(1)) THEN
+                     result(i,j,k,l,m,n) = bad_flag_result
+                     GOTO 400
+                  ENDIF
+                  result(i,j,k,l,m,n) = result(i,j,k,l,m,n) + 
+     .                                  weight(mm,0,0,0,0,0) * 
+     .                                  ( arg_1(i1,j1,k1,l-mm,m1,n1) +
+     .                                    arg_1(i1,j1,k1,l+mm,m1,n1) )
+               end do
 
-         i1 = i1 + arg_incr(X_AXIS,ARG1)
-400   end do
-     
+ 400        CONTINUE
+
+            i1 = i1 + arg_incr(X_AXIS,ARG1)
+ 100     CONTINUE
+
+         j1 = j1 + arg_incr(Y_AXIS,ARG1)
+ 200  CONTINUE
+
+      k1 = k1 + arg_incr(Z_AXIS,ARG1)
+ 300  CONTINUE
+
+      m1 = m1 + arg_incr(E_AXIS,ARG1)
+ 500  CONTINUE
+
+      n1 = n1 + arg_incr(F_AXIS,ARG1)
+ 600  CONTINUE
+
 !                                                                      ^
 !                                                                      |
 !                                            USER CONFIGURABLE PORTION |

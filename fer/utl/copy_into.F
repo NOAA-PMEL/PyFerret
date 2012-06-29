@@ -44,7 +44,9 @@
 * V533:  *sh* 6/01 - allow for the possibility that there is a delta value
 *		   - support for string arrays
 * 560: *acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
@@ -55,14 +57,14 @@
 
 * internal variable declarations
 	INTEGER idim, soffset, doffset, mdel,
-     .		smlo(4), smhi(4),
-     .		dmlo(4), dmhi(4),
-     .		cxlo(4), cxhi(4)
+     .		smlo(nferdims), smhi(nferdims),
+     .		dmlo(nferdims), dmhi(nferdims),
+     .		cxlo(nferdims), cxhi(nferdims)
 
 * set-up modified limits wherever delta is significant
 * cuz the FORTRAN dimensioned size can only have delta of 1 
 
-	DO idim = 1,4
+	DO idim = 1,nferdims
 	  IF (mr_delta(idim,msrc) .NE. unspecified_val8) THEN
             mdel = NINT(mr_delta(idim,msrc))
 
@@ -101,20 +103,28 @@
      .				 smlo(2), smhi(2),
      .				 smlo(3), smhi(3),
      .				 smlo(4), smhi(4),
+     .				 smlo(5), smhi(5),
+     .				 smlo(6), smhi(6),
      .			    dst, dmlo(1), dmhi(1),
      .				 dmlo(2), dmhi(2),
      .				 dmlo(3), dmhi(3),
-     .				 dmlo(4), dmhi(4) )
+     .				 dmlo(4), dmhi(4),
+     .				 dmlo(5), dmhi(5),
+     .				 dmlo(6), dmhi(6) )
 	ELSE
 	   CALL COPY_INTO_SUB( cxlo, cxhi,
      .			    src, smlo(1), smhi(1),
      .				 smlo(2), smhi(2),
      .				 smlo(3), smhi(3),
      .				 smlo(4), smhi(4),
+     .				 smlo(5), smhi(5),
+     .				 smlo(6), smhi(6),
      .			    dst, dmlo(1), dmhi(1),
      .				 dmlo(2), dmhi(2),
      .				 dmlo(3), dmhi(3),
-     .				 dmlo(4), dmhi(4) )
+     .				 dmlo(4), dmhi(4),
+     .				 dmlo(5), dmhi(5),
+     .				 dmlo(6), dmhi(6) )
 	ENDIF
 
 	RETURN

@@ -50,19 +50,14 @@
 	INTEGER	ivp
         INTEGER TM_LENSTR,len_test,len_mchars
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'gfdl_vms.parm'
 	include 'xplot_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:GFDL_VMS.PARM'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-#endif
 
 * revision 0.0 - 8/31/88
 * V200: 10/29/89 - viewport 0 not find-able
 *	  5/8/90 - bug: MATCH4 --> MATCH_NAME ("OV" doesn't match "OVER")
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * search the viewport_names
         len_test = TM_LENSTR(view_name)

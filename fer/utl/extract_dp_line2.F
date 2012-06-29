@@ -1,4 +1,4 @@
-	SUBROUTINE EXTRACT_DP_LINE2( cx, grid_data, dp_line, idim, n )
+	SUBROUTINE EXTRACT_DP_LINE2( cx, grid_data, dp_line, idim, nout )
 
 *
 *
@@ -43,7 +43,9 @@
 * from extract_dp_line.F
 *
 * V570 - reading 2nd line for bounds on a DEFINE AXIS/BOUNDS
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
@@ -51,22 +53,24 @@
 	include 'xmem_subsc.cmn'
 
 * calling argument declarations:
-	INTEGER	cx, mv, idim, n
-	REAL    grid_data( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
-	REAL*8	dp_line(n)
+	INTEGER	cx, mv, idim, nout
+	REAL    grid_data( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit,m1loe:m1hie,m1lof:m1hif )
+	REAL*8	dp_line(nout)
 
 * internal variable declarations:
-	INTEGER	iout, i, j, k, l
+	INTEGER	iout, i, j, k, l, m, n
 
 * extract the line
 	iout = 0
+	DO 200 n = cx_lo_s6(cx), cx_hi_s6(cx)
+	DO 200 m = cx_lo_s5(cx), cx_hi_s5(cx)
 	DO 200 l = cx_lo_s4(cx), cx_hi_s4(cx)
 	DO 200 k = cx_lo_s3(cx), cx_hi_s3(cx)
 	DO 200 j = cx_lo_s2(cx), cx_hi_s2(cx)
 	DO 200 i = cx_lo_s1(cx), cx_hi_s1(cx)
 
 	   iout = iout + 1
-	   dp_line( iout ) = grid_data( i,j,k,l )
+	   dp_line( iout ) = grid_data( i,j,k,l,m,n )
 
  200	CONTINUE
 

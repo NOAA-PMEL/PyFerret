@@ -1,3 +1,5 @@
+
+
         SUBROUTINE GET_DATASET_NAME_FROM_BROWSER(status)
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -35,8 +37,12 @@
 *
 * Get the name of a dataset for a SET DATA /BROWSE command
 *
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+
+
         INTEGER status
 
+	include 'tmap_dims.parm'
         include 'errmsg.parm'
         include 'ferret.parm'
         include 'slash.parm'

@@ -99,13 +99,18 @@
  100	CALL IS_GRID_MODE( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
+	IF (is_act( isp ) .EQ. isact_get_agg_grid) THEN
+	   CALL IS_AGGREGATE_GRID (uvar, dset, is_cx(isp), status)
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	ENDIF
+
 * evaluate the grid by merging component grids
 *  ... exit 100 is to evaluate the grid for a component uvar
 *  ... exit 300 means that a grid has been obtained
 *  ... "normal" return indicates an error has occurred
  200	CALL IS_UVAR_GRID( *100, *300, status )
 	GOTO 5000
-
+ 
 * a grid has been obtained.  Are we done ?
  300	IF ( isp .EQ. isp_orig ) THEN
 * ... yes - clean up and go home

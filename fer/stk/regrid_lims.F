@@ -75,6 +75,7 @@
 *                   got turned into a regrid instead of a stride. Change the test
 *                   for may_have_strides.
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -95,7 +96,7 @@
      .		xy_regrid, last_axis, may_have_strides, has_strides,
      .		unacceptable_modulo
 	INTEGER	KNOWN_GRID, CAXIS_MODLEN, TM_AXIS_STRIDE, CX_DIM_LEN,
-     .		idim, axis_list(4), naxis, var_grid, src_grid, dst_grid,
+     .		idim, axis_list(nferdims), naxis, var_grid, src_grid, dst_grid,
      .		next_axis, dst_axis, var_axis, i, axlen, i1
 	REAL	fraction
 	CHARACTER VAR_CODE*128, dtype*4
@@ -114,7 +115,7 @@
      .			  cx_variable(src_cx)	)
 
 * initially select a single axis for regridding
-	DO 10 axis = 1, 4
+	DO 10 axis = 1, nferdims
  10	IF (grid_line(axis,dst_grid).NE.grid_line(axis,var_grid)) GOTO 20
 * ... signal calling routine that there's nothing to regrid
 	cx_unstand_grid( dst_cx ) = .FALSE.
@@ -164,7 +165,7 @@
 	   naxis = 2
 	   axis_list(2) = y_dim
 	ELSEIF ( may_have_strides ) THEN
-	  DO 100 idim = axis, 4
+	  DO 100 idim = axis, nferdims
 	    dst_axis = grid_line(idim,dst_grid)
 	    var_axis = grid_line(idim,var_grid)
 	    IF (dst_axis.EQ.var_axis) GOTO 100
@@ -187,7 +188,7 @@
 * will there be more axes to regrid after this/these?
 	next_axis = axis_list(naxis) + 1
 	last_axis = .TRUE.
-	DO 200 idim = next_axis, 4
+	DO 200 idim = next_axis, nferdims
  200	IF ( grid_line(idim,dst_grid) .NE. grid_line(idim,var_grid) )
      .							last_axis = .FALSE.
 	IF (.NOT.last_axis) has_strides = .FALSE.  ! (can never happen)

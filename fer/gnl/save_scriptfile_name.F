@@ -37,10 +37,12 @@
 *
 *        Ansley Manke PMEL/TMAP
 *        8/2003  (based on save_metafile_name)
-*
+**       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+
 * Put script file name into common, for running with the comand line option
 *  ferret -script 
 
+        INCLUDE 'tmap_dims.parm'
         INCLUDE 'errmsg.parm'
         INCLUDE 'tmap_errors.parm'
         INCLUDE 'xprog_state.cmn'

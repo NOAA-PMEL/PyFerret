@@ -1,4 +1,4 @@
-	SUBROUTINE SHOW_GRID( grid, cx )
+	SUBROUTINE SHOW_GRID( grid, cx, status )
 
 *
 *
@@ -35,7 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* describe the 4 axes of a grid and then give coordinate data about those
+* describe the axes of a grid and then give coordinate data about those
 * axes as indicated in cx
 
 * programmer - steve hankin
@@ -64,37 +64,49 @@
 *               ISUBSCR_CX
 * V500 - *sh* 4/99 - extracted guts of code to SHOW_LINE_COORDS to be shared
 *		by the SHOW AXIS command
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
+*                 various SHOW commnands will not list info for E,F dimensions.
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
+	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
 	include	'slash.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
 	include 'xrisc.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations
-	INTEGER grid, cx
+	INTEGER grid, cx, status
 
 * local variable declarations:
-	INTEGER idim
+	INTEGER idim, listdims
 
-* list and describe the 4 axes of the grid
+* If mode 6d_lab has been cancelled, we will list only the first 4 dimensions.
+* But if the grid has E or F axes, thats an error.
+
+	listdims = nferdims
+	IF ( .NOT. mode_6d_lab) listdims = 4
+	
+	status = ferr_ok
+	IF (listdims .LT. nferdims) THEN
+	   DO 90 i = listdims+1,nferdims
+	      IF ( grid_line(i,grid) .NE. mnormal) GOTO 5100
+  90	   CONTINUE
+	ENDIF
+
+* list and describe the axes of the grid
 	risc_buff = ' '
 	WRITE ( risc_buff, 3000 )
 	CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
-	DO 110 idim = 1, 4
+	DO 110 idim = 1, listdims
 	   CALL LINE_FACTS( ttout_lun, idim, grid, idim )
  110	CONTINUE
 
 * list the data on any axis that has been especially requested
 *		via (eg.) /X=lo:hi or /X alone
-	DO 130 idim = 1, 4
+	DO 130 idim = 1, listdims
 	   IF ( qual_given( slash_show_grid_x0+idim ) .GT. 0
      .	  .OR.  qual_given( slash_show_grid_i0+idim ) .GT. 0 ) THEN
 	     CALL SHOW_LINE_COORDS( grid, cx, idim )
@@ -107,5 +119,9 @@
  3000	FORMAT (T2,'name',T13,'axis',T31,'# pts',T39,'start',T60,
      .          'end' )
 
+5000    RETURN
+5100	CALL ERRMSG( ferr_invalid_command, status,
+     .		     'variable has more than 4 dimensions. Set mode 6D_LAB'
+     .		     //pCR//cmnd_buff(:len_cmnd),
+     .			*5000 )
 	END
-

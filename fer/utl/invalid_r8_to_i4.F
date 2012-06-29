@@ -45,12 +45,10 @@
 * V230:  6/26/92 - changed vax_machine.parm to accomodate limitations
 *                  of Macintosh Language Systems FORTRAN:  DBLE cannot be used
 *                  in a parameter definition
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include	'vax_machine.parm'
-#else
-	INCLUDE	'FERRET_CMN:VAX_MACHINE.PARM'
-#endif
+
 
 	REAL*8	value
 

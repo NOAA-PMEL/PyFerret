@@ -50,18 +50,13 @@
 * V200:  6/20/89 - re-worked user defined variable logic 
 * V300: ifdef to work around "*" bug in READ (buff,*) in DEC f77 3.2.2
 * V420 (IBM/AIX port of V411): 10/5/95 - buffer "READ(var,*"
-	
-#ifdef unix
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+
+	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
 	include	'xalgebra.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		default_cx, const_cx, status
@@ -91,7 +86,7 @@
 	cx_value( const_cx ) = const_buff
 
 * flesh out context by removing all axes limits
-	DO 200 idim = 1, 4
+	DO 200 idim = 1, nferdims
  200	CALL DEL_CX_DIM( idim, const_cx )
 
 	RETURN

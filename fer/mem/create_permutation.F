@@ -5,7 +5,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -52,20 +52,24 @@
 *		("table only")
 *v580  *acm* 11/04 transfer cx_cal_id, the calendar ID used when  
 *                  computing world coordinates
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
 
 * calling argument declarations:
-	INTEGER	cx, msrc, perm(4), mdst, status
+	INTEGER	cx, msrc, perm(nferdims), mdst, status
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	LOGICAL	table_entry_only
 	INTEGER nsrc, ndst, idim, dim, prm,
-     .		src_len(4), dst_len(4), src_ax(4), dst_ax(4)
+     .		src_len(nferdims), dst_len(nferdims),
+     .          src_ax(nferdims),  dst_ax(nferdims)
 
 * initialize
 	table_entry_only = .FALSE.
@@ -78,7 +82,7 @@
 * Compute src_len and dst_len - the non-unity axis lengths in the source and
 * destination data
 	nsrc = 0
-	DO 200 idim = 1, 4
+	DO 200 idim = 1, nferdims
 	   dim = mr_hi_ss(msrc,idim) - mr_lo_ss(msrc,idim)
 	   IF ( dim .GT. 0 ) THEN
 	      nsrc = nsrc + 1
@@ -87,7 +91,7 @@
 	   ENDIF
  200	CONTINUE
 	ndst = 0
-	DO 210 idim = 1, 4
+	DO 210 idim = 1, nferdims
 	   prm = perm(idim)
 	   dim = cx_hi_ss(cx,prm) - cx_lo_ss(cx,prm)
 	   IF ( dim .GT. 0 ) THEN
@@ -107,14 +111,14 @@
 
 * no actual permutation of values is necessary
 * see if a dummy mr table entry is needed to represent the permutation
-	DO 300 idim = 1, 4
+	DO 300 idim = 1, nferdims
 	   IF ( perm(idim) .NE. idim ) THEN
 	      table_entry_only = .TRUE.
 	      GOTO 500
 	   ENDIF
  300	CONTINUE
 
-* dimensions havn't been permuted nor are context region sizes < stored data
+* dimensions have not been permuted nor are context region sizes < stored data
 	status = ferr_ok
 	mdst = msrc
 	RETURN
@@ -122,7 +126,7 @@
 * need a dummy entry
 
 * create a permuted context
- 500	DO 510 idim = 1,4
+ 500	DO 510 idim = 1,nferdims
 	   prm = perm(idim)
 	   cx_lo_ss ( cx_buff, idim )   = cx_lo_ss ( cx, prm )
 	   cx_hi_ss ( cx_buff, idim )   = cx_hi_ss ( cx, prm )
@@ -167,9 +171,4 @@
 	ENDIF
 
 	RETURN
-
-* error exits
-! 5000	RETURN
-! 5100	CALL ERRMSG( ferr_invalid_command, status,
-!     .				'axis order not possible', *5000 )
 	END

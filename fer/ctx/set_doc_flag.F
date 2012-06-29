@@ -45,11 +45,9 @@
 * V200:	  2/2/90
 * V314: 8/24/94 *kob* IBM port - variable flag should be declared as logical and
 *				 not integer...caught by AIX xlf compiler
-#ifdef unix
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+
 	include	'ferret.parm'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations
 * move flags variable from integer to logical declaration *kob* 8/94

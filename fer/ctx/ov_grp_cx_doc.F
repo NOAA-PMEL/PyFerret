@@ -45,16 +45,12 @@
 
 * V200:	  2/2/90
 * V230:  7/22/92 - added overlay argument to ADDL_CX_DOC
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xplot_setup.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XPLOT_SETUP.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER ncx, ov_cx(ncx)

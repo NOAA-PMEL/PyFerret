@@ -2,7 +2,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -49,7 +49,7 @@
 * V420 - major changes
 * V430 - added IF-THEN tests and wildcards
 * V440 - 8/29/96 linked with GUI
-* V441 - 10/15/96 identical to 4.40 but Sun and OSF V4.40's went out in debug
+* V441 - 10/15/96 identical to 4.40 but Sun and OSF V4.40 went out in debug
 *		mode. This is to differentiate from them.
 * V442 - 12/06/96 *kob* - gui bug fixes and quality control checks
 * V445 - 1/14/97 *sh* - more gui bug fixes and uniform version numbering
@@ -105,11 +105,12 @@
 * V6.65  10/01/10
 * V6.74   4/2011  to GFDL: double precision, netCDF4.2, fix ticket 1391 
 
+        IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.731   /
+	DATA revision_level	/  6.8    /
 
 ! Note we can put a debug title in the Ferret startup header lines
 ! by putting a title into the Makefile: $(MAKE) "DEBUG_TITLE=beta" update

@@ -92,6 +92,8 @@
 *                 before call to parse_command
 * V6.7 *kms* 8/11 add check for one-command mode before prompting
 *                 user for the next command
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 #ifdef MIXING_NAG_F90_AND_C
 	USE F90_UNIX
@@ -114,6 +116,7 @@
 #else
         PARAMETER ( backslash = char(92) )
 #endif
+	include 'tmap_dims.parm'
 	include 'errmsg.parm'
 	include 'ferret.parm'
 	include 'command.parm'
@@ -176,7 +179,6 @@
 	   double_eof = double_eof + 1
 	   IF (double_eof .GT. 2) STOP       ! 1/18/95
 
-#ifdef unix
 * ... gnu readline with a FORTRAN jacket
 	   IF ( has_continuation_cmnd ) THEN
               CALL TM_FRIENDLY_READ('...? ',cmnd_buff,*20)
@@ -185,15 +187,7 @@
 	   ENDIF
 	   cmnd_len = TM_LENSTR( cmnd_buff )
 	   double_eof = 0	! in case comment or blank line returns here
-#else
-* ... special call to recall and allow editing of past commands
-	   vax_code = SMG_READ_COMPOSED_LINE(	vms_kbd_id,
-     .						vms_kbd_tbl,
-     .						cmnd_buff,
-     .						prompt(:prompt_len),
-     .						cmnd_len )
-	   IF ( vax_code .eq. %LOC(SMG$_EOF) ) GOTO 20
-#endif
+
 	ENDIF
 
 * echo command line to journal file

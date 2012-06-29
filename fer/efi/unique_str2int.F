@@ -46,35 +46,37 @@
 
       SUBROUTINE unique_str2int_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
-      CHARACTER*100 descrip
-
-      CALL ef_version_test(ef_version)
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
 
+      CHARACTER*100 descrip
+
       WRITE (descrip, 100)
-      CALL ef_set_desc(id, descrip)
   100 FORMAT ('Returns an ID number for each unique string',
      .        'in the input array of strings (case sensitive)')
+      CALL ef_set_desc(id, descrip)
 
       CALL ef_set_num_args(id, 1)
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_type (id, arg, STRING_ARG)
-
       CALL ef_set_arg_desc(id, arg, 'Array of Strings')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, YES, YES, YES, YES)
 
 *                                                                      ^
 *                                                                      |
@@ -89,6 +91,7 @@
 *
       SUBROUTINE unique_str2int_compute(id, arg_1, result)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -101,97 +104,130 @@
 
       INTEGER id
 
-      REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy, 
-     .           mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL result(memreslox:memreshix, memresloy:memreshiy,
-     .            memresloz:memreshiz, memreslot:memreshit)
+      REAL arg_1(strdf, mem1lox:mem1hix, mem1loy:mem1hiy,
+     .                  mem1loz:mem1hiz, mem1lot:mem1hit, 
+     .                  mem1loe:mem1hie, mem1lof:mem1hif)
+
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
+* information for each variable''s axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
 
-      INTEGER INIT_US2I_LIST, US2I_COMPARE_STRING_LIST
-      INTEGER i,j,k,l, i1,j1,k1,l1, flen, b1len, status, isame, 
-     .        icmp, ifirst
-      CHARACTER*512 buff1
-      REAL result_last
-
-      PARAMETER (flen=512)
-      INTEGER*1 fhol(flen), ghol(flen)      ! c-type Hollerith string buffer
-
-
 * Routine US2I_COMPARE_STRING_LIST creates and maintains a 
 * list of unique names and their sequence numbers.
+*
+* Future calls to this function will return the same indices for strings
+* given in this call because the above functions maintains a static list
+* of strings which is initialized once and never released.
 
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      INTEGER flen
+      PARAMETER (flen=512)
+
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, k1, l1, m1, n1
+      INTEGER b1len, status, isame, icmp, ifirst, istr
+      CHARACTER*512 buff1
+      REAL result_last
+      INTEGER*1 fhol(flen), hol_last(flen)      ! c-type Hollerith string buffer
+
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
       ifirst = 1
 
-      i = 1   ! res_lo_ss(X_AXIS)
-      DO 400 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+* These loops are intentionally left in un-optimal order since
+* contiguous identical strings are most likely at a location
+* through all time/ensemble/forecast periods.
 
-         j = res_lo_ss(Y_AXIS)
-         DO 300 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+      i = res_lo_ss(X_AXIS)
+      DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
 
-            k = res_lo_ss(Z_AXIS)
-            DO 200 k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
+      j = res_lo_ss(Y_AXIS)
+      DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
 
-               l = res_lo_ss(T_AXIS)
-               DO 100 l1 = arg_lo_ss(T_AXIS,ARG1),arg_hi_ss(T_AXIS,ARG1)
+      k = res_lo_ss(Z_AXIS)
+      DO 300 k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
 
-                   CALL EF_GET_STRING_ARG_ELEMENT(id, ARG1, arg_1,
-     .                       i1,j1,k1,l1, b1len, buff1)
-                  
-                   isame = 0
-		   IF ( ifirst .EQ. 1) THEN
-                      CALL TM_FTOC_STRNG( buff1(1:b1len), fhol, flen )
-		      status = INIT_US2I_LIST(fhol)
-		      result(i,j,k,l) = 1.
-		      ifirst = 0
-		   ELSE
-		      CALL TM_FTOC_STRNG( buff1(1:b1len), fhol, flen )
-		      CALL US2I_STR_CMP(fhol, ghol, icmp)
-		      IF (icmp .EQ. 0) THEN
-		         result(i,j,k,l) = result_last
-		         isame = 1
-		      ELSE
-		         istr = 0
-		         status = US2I_COMPARE_STRING_LIST (fhol, istr)
-		         result(i,j,k,l) = FLOAT(istr)
-		      ENDIF
-		   ENDIF
+      l = res_lo_ss(T_AXIS)
+      DO 400 l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
 
-                   IF (isame .NE. 1) THEN
-                      DO m = 1, b1len
-		         ghol(m) = fhol(m)
-		      ENDDO
-		   ENDIF
-		   result_last = result(i,j,k,l)
+      m = res_lo_ss(E_AXIS)
+      DO 500 m1 = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
 
-                  l = l + res_incr(T_AXIS)
- 100           CONTINUE
+      n = res_lo_ss(F_AXIS)
+      DO 600 n1 = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
 
-               k = k + res_incr(Z_AXIS)
- 200        CONTINUE
+         CALL EF_GET_STRING_ARG_ELEMENT_6D(id, ARG1, arg_1,
+     .                          i1, j1, k1, l1, m1, n1, b1len, buff1)
 
-            j = j + res_incr(Y_AXIS)
- 300     CONTINUE
+         CALL TM_FTOC_STRNG(buff1(1:b1len), fhol, flen)
+         isame = 0
+         IF ( ifirst .EQ. 0 ) THEN
+*           hol_last is assigned from the last search, so first
+*           check the common case of contiguous identical strings
+            CALL US2I_STR_CMP(fhol, hol_last, icmp)
+            IF ( icmp .EQ. 0 ) THEN
+               result(i,j,k,l,m,n) = result_last
+               isame = 1
+            ENDIF
+         ENDIF
+         IF ( isame .EQ. 0 ) THEN
+*           Search for the string in the whole list
+*           (initializing the list if needed)
+            CALL US2I_COMPARE_STRING_LIST(fhol, istr)
+            IF ( istr .EQ. 0 ) THEN
+               buff1 = 'Problems initializing the list of strings'
+               GOTO 999
+            ENDIF
+            result(i,j,k,l,m,n) = FLOAT(istr)
+*           Copy the string and the result for the next compare
+            DO istr = 1, b1len
+               hol_last(istr) = fhol(istr)
+            ENDDO
+            result_last = result(i,j,k,l,m,n)
+            ifirst = 0
+         ENDIF
+
+         n = n + res_incr(F_AXIS)
+ 600  CONTINUE
+
+         m = m + res_incr(E_AXIS)
+ 500  CONTINUE
+
+         l = l + res_incr(T_AXIS)
+ 400  CONTINUE
+
+         k = k + res_incr(Z_AXIS)
+ 300  CONTINUE
+
+         j = j + res_incr(Y_AXIS)
+ 200  CONTINUE
 
          i = i + res_incr(X_AXIS)
- 400  CONTINUE
-      
+ 100  CONTINUE
+
+      RETURN
+
+ 999  CALL EF_BAIL_OUT(id, buff1)
+
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |

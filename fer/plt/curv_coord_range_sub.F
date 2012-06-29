@@ -48,8 +48,10 @@
 *               use loop over the indices used in the projection; minss_dim1
 *               minss_dim2 etc. 
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include	'xvariables.cmn'

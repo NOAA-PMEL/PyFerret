@@ -1,3 +1,5 @@
+
+
 	SUBROUTINE CHECK_MEMORY ( lun )
 
 *
@@ -54,19 +56,13 @@
 * 12/96 *kob* - Linux Port - had to move variable assignments off of
 *               declaration line.
 * V510: 10/99 *sh* - make checks on 
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	lun

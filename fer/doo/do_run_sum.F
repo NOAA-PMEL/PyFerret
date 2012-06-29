@@ -7,7 +7,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -45,28 +45,23 @@
 * written for VAX computer under VMS operating system
 *
 * V230:  1/27/92 - based on DO_INT_INDEF
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-* calling argument declarations:
-	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
-	REAL	arg, box(*), com(*), res(*)
-
-#ifdef unix
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
 	include	'xprog_state.cmn'
 	include	'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
+
+* calling argument declarations:
+	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
+	REAL	arg, box(*), com(*), res(*)
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
-     .				( 'doing',isact_class_trans, res_cx, idim )
+     .				( 'doing', isact_class_trans, res_cx, idim )
 
 * forward and backwards derivatives are identical except for a shift 
 	CALL DO_RUN_SUM_SUB(	idim, arg,
@@ -78,4 +73,4 @@
 	DO_RUN_SUM = ferr_ok
 
 	RETURN
-	END	
+	END

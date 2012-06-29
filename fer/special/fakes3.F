@@ -1,13 +1,10 @@
 * V530 10/00 *sh* - added COMPLEX declarations to force link FORTRAN complex
 * variable code for use in external functions
-   
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+
 	subroutine fakes
 
-#ifdef unix
 	include	'errmsg.parm'
-#else
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 	INTEGER status
 	COMPLEX a

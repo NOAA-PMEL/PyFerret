@@ -45,6 +45,7 @@
 * revision 0.1 1/18/89 - BREAK_DATE --> TM_BREAK_DATE
 * V300: 2/93 - return **something** even if error exit (caught by f77 3.2)
 * V530: *acm* 12/00 add calendar types; cal_id
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * Calling argument declarations:
 	INTEGER		cal_id, status
@@ -54,13 +55,9 @@
 	INTEGER		year, month, day, hour, minute, second
 	REAL*8		TM_SECS_FROM_BC
 
-#ifdef unix
+	include	'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 * Break up the date string to it's various components
 

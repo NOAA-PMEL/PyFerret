@@ -34,7 +34,6 @@
 */
 
 
-
 /* EF_InternalUtil.c
  *
  * Jonathan Callahan
@@ -87,14 +86,16 @@
 *      *kms* 11/10 Check for libpyefcn.so in $FER_LIBS instead of $FER_DIR/lib
 * *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
 *					 definition of macro DFTYPE in ferret.h
+*      *kms*  3/12 Add E and F dimensions 
 */
 
 
 /* .................... Includes .................... */
  
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
-#include <wchar.h>
+#include <sys/types.h>	        /* required for some of our prototypes */
+#include <sys/stat.h>
+#include <sys/errno.h>
+
 #include <unistd.h>		/* for convenience */
 #include <stdlib.h>		/* for convenience */
 #include <stdio.h>		/* for convenience */
@@ -103,10 +104,6 @@
 #include <dlfcn.h>		/* for dynamic linking */
 #include <signal.h>             /* for signal() */
 #include <setjmp.h>             /* required for jmp_buf */
-
-#include <sys/types.h>	        /* required for some of our prototypes */
-#include <sys/stat.h>
-#include <sys/errno.h>
 
 #include "ferret.h"
 #include "EF_Util.h"
@@ -119,14 +116,17 @@
  * and cached whenever they are passed into one of the "efcn_" functions.
  * These pointers can be accessed by the utility functions in efn_ext/.
  * This way the EF writer does not need to see these pointers.
+ *
+ * This is the instantiation of these values.
  */
 
-static LIST  *GLOBAL_ExternalFunctionList;
 DFTYPE *GLOBAL_memory_ptr;
-int   *GLOBAL_mr_list_ptr;
-int   *GLOBAL_cx_list_ptr;
-int   *GLOBAL_mres_ptr;
+int    *GLOBAL_mr_list_ptr;
+int    *GLOBAL_cx_list_ptr;
+int    *GLOBAL_mres_ptr;
 DFTYPE *GLOBAL_bad_flag_ptr;
+
+static LIST *STATIC_ExternalFunctionList;
 
 /*
  * The jumpbuffer is used by setjmp() and longjmp().
@@ -140,6 +140,20 @@ DFTYPE *GLOBAL_bad_flag_ptr;
 static jmp_buf jumpbuffer;
 static sigjmp_buf sigjumpbuffer;
 static volatile sig_atomic_t canjump;
+
+/*
+ * Prototype of internal_dlsym defined at end of this module.
+ * Accepts a string naming a function and returns a pointer
+ * to the function.  Prototyped as return (void *) since the
+ * functions returned have different signatures.
+ */
+static void *internal_dlsym(char *name);
+
+/*
+ * libpyefcn.so no longer created; PyFerret has everything
+ * wrapped combined in _pyferret.so.  Thus, all the
+ * pyefcn_* stuff not used in traditional Ferret.
+ */
 
 /* handle returned from dlopen of $FER_LIBS/libpyefcn.so */
 static void *pyefcn_handle = NULL;
@@ -165,11 +179,14 @@ static void (*pyefcn_result_limits_func)(int, char [], char []) = NULL;
 /*
  * pointer to the function in libpyefcn.so:
  *     void pyefcn_compute(int id, char modname[], DFTYPE *arrays[], int numarrays,
- *                         int memlo[][4], int memhi[][4],
- *                         int steplo[][4], int stephi[][4], int incr[][4],
+ *                         int memlo[][NFERDIMS], int memhi[][NFERDIMS],
+ *                         int steplo[][NFERDIMS], int stephi[][NFERDIMS], int incr[][NFERDIMS],
  *                         DFTYPE badvals[], char errmsg[])
  */
-static void (*pyefcn_compute_func)(int, char [], DFTYPE *[], int, int [][4], int [][4], int [][4], int [][4], int [][4], DFTYPE [], char []) = NULL;
+static void (*pyefcn_compute_func)(int, char [], DFTYPE *[], int, 
+                                   int [][NFERDIMS], int [][NFERDIMS],
+                                   int [][NFERDIMS], int [][NFERDIMS], int [][NFERDIMS],
+                                   DFTYPE [], char []) = NULL;
 
 static int I_have_scanned_already = FALSE;
 static int I_have_warned_already = TRUE; /* Warning turned off Jan '98 */
@@ -189,7 +206,8 @@ static int I_have_warned_already = TRUE; /* Warning turned off Jan '98 */
 int  FORTRAN(efcn_scan)( int * );
 int  FORTRAN(efcn_already_have_internals)( int * );
 
-void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenpymod, char errstring[], int *lenerrstring);
+void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenpymod,
+                            char errstring[], int *lenerrstring);
 
 int  FORTRAN(efcn_gather_info)( int * );
 void FORTRAN(efcn_get_custom_axes)( int *, int *, int * );
@@ -227,10 +245,11 @@ int  FORTRAN(efcn_get_rtn_type)( int *);
 
 /* Fortran routines from the efn/ directory */
 void FORTRAN(efcn_copy_array_dims)(void);
-void FORTRAN(efcn_set_work_array_dims)(int *, int *, int *, int *, int *, int *, int *, int *, int *);
+void FORTRAN(efcn_set_work_array_dims)(int *, int *, int *, int *, int *, int *, int *,
+                                              int *, int *, int *, int *, int *, int *);
 void FORTRAN(efcn_get_workspace_addr)(DFTYPE *, int *, DFTYPE *);
 
-static void EF_signal_handler(int);
+static void EF_signal_handler(int signo);
 static void (*fpe_handler)(int);      /* function pointers */
 static void (*segv_handler)(int);
 static void (*int_handler)(int);
@@ -474,6 +493,32 @@ void FORTRAN(sortl_str_work_size)(int *);
 void FORTRAN(sortl_str_compute)(int *, char *, DFTYPE *, 
       char *, DFTYPE *);
 
+
+void FORTRAN(sortm_init)(int *);
+void FORTRAN(sortm_result_limits)(int *);
+void FORTRAN(sortm_work_size)(int *);
+void FORTRAN(sortm_compute)(int *, DFTYPE *, DFTYPE *, 
+      DFTYPE *, DFTYPE *);
+
+void FORTRAN(sortm_str_init)(int *);
+void FORTRAN(sortm_str_result_limits)(int *);
+void FORTRAN(sortm_str_work_size)(int *);
+void FORTRAN(sortm_str_compute)(int *, char *, DFTYPE *, 
+      char *, DFTYPE *);
+
+
+void FORTRAN(sortn_init)(int *);
+void FORTRAN(sortn_result_limits)(int *);
+void FORTRAN(sortn_work_size)(int *);
+void FORTRAN(sortn_compute)(int *, DFTYPE *, DFTYPE *, 
+      DFTYPE *, DFTYPE *);
+
+void FORTRAN(sortn_str_init)(int *);
+void FORTRAN(sortn_str_result_limits)(int *);
+void FORTRAN(sortn_str_work_size)(int *);
+void FORTRAN(sortn_str_compute)(int *, char *, DFTYPE *, 
+      char *, DFTYPE *);
+
 void FORTRAN(tauto_cor_init)(int *);
 void FORTRAN(tauto_cor_result_limits)(int *);
 void FORTRAN(tauto_cor_work_size)(int *);
@@ -523,6 +568,14 @@ void FORTRAN(compressl_init)(int *);
 void FORTRAN(compressl_result_limits)(int *);
 void FORTRAN(compressl_compute)(int *, DFTYPE *, DFTYPE *);
 
+void FORTRAN(compressm_init)(int *);
+void FORTRAN(compressm_result_limits)(int *);
+void FORTRAN(compressm_compute)(int *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(compressn_init)(int *);
+void FORTRAN(compressn_result_limits)(int *);
+void FORTRAN(compressn_compute)(int *, DFTYPE *, DFTYPE *);
+
 void FORTRAN(compressi_by_init)(int *);
 void FORTRAN(compressi_by_result_limits)(int *);
 void FORTRAN(compressi_by_compute)(int *, DFTYPE *, DFTYPE *);
@@ -539,6 +592,14 @@ void FORTRAN(compressl_by_init)(int *);
 void FORTRAN(compressl_by_result_limits)(int *);
 void FORTRAN(compressl_by_compute)(int *, DFTYPE *, DFTYPE *);
 
+void FORTRAN(compressm_by_init)(int *);
+void FORTRAN(compressm_by_result_limits)(int *);
+void FORTRAN(compressm_by_compute)(int *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(compressn_by_init)(int *);
+void FORTRAN(compressn_by_result_limits)(int *);
+void FORTRAN(compressn_by_compute)(int *, DFTYPE *, DFTYPE *);
+
 void FORTRAN(labwid_init)(int *);
 void FORTRAN(labwid_result_limits)(int *);
 void FORTRAN(labwid_compute)(int *, DFTYPE *, DFTYPE *);
@@ -554,6 +615,12 @@ void FORTRAN(convolvek_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(convolvel_init)(int *);
 void FORTRAN(convolvel_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(convolvem_init)(int *);
+void FORTRAN(convolvem_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(convolven_init)(int *);
+void FORTRAN(convolven_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(curv_range_init)(int *);
 void FORTRAN(curv_range_result_limits)(int *);
@@ -746,6 +813,22 @@ void FORTRAN(tcat_str_init)(int *);
 void FORTRAN(tcat_str_result_limits)(int *);
 void FORTRAN(tcat_str_compute)(int *, char *, char *, char *);
 
+void FORTRAN(ecat_init)(int *);
+void FORTRAN(ecat_result_limits)(int *);
+void FORTRAN(ecat_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(ecat_str_init)(int *);
+void FORTRAN(ecat_str_result_limits)(int *);
+void FORTRAN(ecat_str_compute)(int *, char *, char *, char *);
+
+void FORTRAN(fcat_init)(int *);
+void FORTRAN(fcat_result_limits)(int *);
+void FORTRAN(fcat_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(fcat_str_init)(int *);
+void FORTRAN(fcat_str_result_limits)(int *);
+void FORTRAN(fcat_str_compute)(int *, char *, char *, char *);
+
 void FORTRAN(xreverse_init)(int *);
 void FORTRAN(xreverse_result_limits)(int *);
 void FORTRAN(xreverse_compute)(int *, DFTYPE *, DFTYPE *);
@@ -761,6 +844,14 @@ void FORTRAN(zreverse_compute)(int *, DFTYPE *, DFTYPE *);
 void FORTRAN(treverse_init)(int *);
 void FORTRAN(treverse_result_limits)(int *);
 void FORTRAN(treverse_compute)(int *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(ereverse_init)(int *);
+void FORTRAN(ereverse_result_limits)(int *);
+void FORTRAN(ereverse_compute)(int *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(freverse_init)(int *);
+void FORTRAN(freverse_result_limits)(int *);
+void FORTRAN(freverse_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(zaxreplace_avg_init)(int *);
 void FORTRAN(zaxreplace_avg_work_size)(int *);
@@ -788,7 +879,6 @@ void FORTRAN(nco_attr_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 void FORTRAN(nco_init)(int *);
 void FORTRAN(nco_result_limits)(int *);
 void FORTRAN(nco_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
-
 
 void FORTRAN(tax_datestring_init)(int *);
 void FORTRAN(tax_datestring_work_size)(int *);
@@ -916,7 +1006,7 @@ void FORTRAN(write_webrow_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *
  * Find all of the ~.so files in directories listed in the
  * FER_EXTERNAL_FUNCTIONS environment variable and add all 
  * the names and associated directory information to the 
- * GLOBAL_ExternalFunctionList.
+ * STATIC_ExternalFunctionList.
  */
 int FORTRAN(efcn_scan)( int *gfcn_num_internal )
 {
@@ -938,12 +1028,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-  /*  *******NOTE******
-      *kob*  6/01 -  The below initialization code should really be in
-      it's own, separate c routine.  So, the next time and internal 
-      external function is added, please move the code to it's own routine */
-
-#define N_INTEF 132
+#define N_INTEF 148
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -952,135 +1037,152 @@ struct {
    strcpy(I_EFnames[0].funcname, "ave_scat2grid_t");
    strcpy(I_EFnames[1].funcname, "bin_index_wt");
    strcpy(I_EFnames[2].funcname, "compressi");
-   strcpy(I_EFnames[3].funcname, "compressj");
-   strcpy(I_EFnames[4].funcname, "compressk");
-   strcpy(I_EFnames[5].funcname, "compressl");
-   strcpy(I_EFnames[6].funcname, "compressi_by");
-   strcpy(I_EFnames[7].funcname, "compressj_by");
-   strcpy(I_EFnames[8].funcname, "compressk_by");
+   strcpy(I_EFnames[3].funcname, "compressi_by");
+   strcpy(I_EFnames[4].funcname, "compressj");
+   strcpy(I_EFnames[5].funcname, "compressj_by");
+   strcpy(I_EFnames[6].funcname, "compressk");
+   strcpy(I_EFnames[7].funcname, "compressk_by");
+   strcpy(I_EFnames[8].funcname, "compressl");
    strcpy(I_EFnames[9].funcname, "compressl_by");
-   strcpy(I_EFnames[10].funcname, "convolvei");
-   strcpy(I_EFnames[11].funcname, "convolvej");
-   strcpy(I_EFnames[12].funcname, "convolvek");
-   strcpy(I_EFnames[13].funcname, "convolvel");
-   strcpy(I_EFnames[14].funcname, "curv_range");
-   strcpy(I_EFnames[15].funcname, "curv_to_rect_map");
-   strcpy(I_EFnames[16].funcname, "curv_to_rect");
-   strcpy(I_EFnames[17].funcname, "date1900");
-   strcpy(I_EFnames[18].funcname, "days1900toymdhms");
-   strcpy(I_EFnames[19].funcname, "element_index");
-   strcpy(I_EFnames[20].funcname, "element_index_str");
-   strcpy(I_EFnames[21].funcname, "element_index_str_n");
-   strcpy(I_EFnames[22].funcname, "eof_stat");
-   strcpy(I_EFnames[23].funcname, "eof_tfunc");
-   strcpy(I_EFnames[24].funcname, "eof_space");
-   strcpy(I_EFnames[25].funcname, "expndi_by");
-   strcpy(I_EFnames[26].funcname, "expndi_by_t");
-   strcpy(I_EFnames[27].funcname, "expndi_by_z");
-   strcpy(I_EFnames[28].funcname, "ffta");
-   strcpy(I_EFnames[29].funcname, "fftp");
-   strcpy(I_EFnames[30].funcname, "fft_im");
-   strcpy(I_EFnames[31].funcname, "fft_inverse");
-   strcpy(I_EFnames[32].funcname, "fft_re");
-   strcpy(I_EFnames[33].funcname, "fill_xy");
-   strcpy(I_EFnames[34].funcname, "findhi");
-   strcpy(I_EFnames[35].funcname, "findlo");
-   strcpy(I_EFnames[36].funcname, "floatstr");
-   strcpy(I_EFnames[37].funcname, "is_element_of");
-   strcpy(I_EFnames[38].funcname, "is_element_of_str");
-   strcpy(I_EFnames[39].funcname, "is_element_of_str_n");
-   strcpy(I_EFnames[40].funcname, "labwid");
-   strcpy(I_EFnames[41].funcname, "lanczos");
-   strcpy(I_EFnames[42].funcname, "lsl_lowpass");
-   strcpy(I_EFnames[43].funcname, "minmax");
-   strcpy(I_EFnames[44].funcname, "minutes24");
-   strcpy(I_EFnames[45].funcname, "nco");
-   strcpy(I_EFnames[46].funcname, "nco_attr");
-   strcpy(I_EFnames[47].funcname, "pt_in_poly");
-   strcpy(I_EFnames[48].funcname, "rect_to_curv");
-   strcpy(I_EFnames[49].funcname, "sampleij");
-   strcpy(I_EFnames[50].funcname, "samplet_date");
-   strcpy(I_EFnames[51].funcname, "samplexy");
-   strcpy(I_EFnames[52].funcname, "samplexyt");
-   strcpy(I_EFnames[53].funcname, "samplexy_closest");
-   strcpy(I_EFnames[54].funcname, "samplexy_curv");
-   strcpy(I_EFnames[55].funcname, "samplexy_curv_avg");
-   strcpy(I_EFnames[56].funcname, "samplexy_curv_nrst");
-   strcpy(I_EFnames[57].funcname, "samplexz");
-   strcpy(I_EFnames[58].funcname, "sampleyz");
-   strcpy(I_EFnames[59].funcname, "scat2ddups");
-   strcpy(I_EFnames[60].funcname, "scat2grid_bin_xy");
-   strcpy(I_EFnames[61].funcname, "scat2grid_bin_xyt");
-   strcpy(I_EFnames[62].funcname, "scat2grid_nbin_xy");
-   strcpy(I_EFnames[63].funcname, "scat2grid_nbin_xyt");
-   strcpy(I_EFnames[64].funcname, "scat2grid_t");
-   strcpy(I_EFnames[65].funcname, "scat2gridgauss_xy");
-   strcpy(I_EFnames[66].funcname, "scat2gridgauss_xz");
-   strcpy(I_EFnames[67].funcname, "scat2gridgauss_yz");
-   strcpy(I_EFnames[68].funcname, "scat2gridgauss_xt");
-   strcpy(I_EFnames[69].funcname, "scat2gridgauss_yt");
-   strcpy(I_EFnames[70].funcname, "scat2gridgauss_zt");
-   strcpy(I_EFnames[71].funcname, "scat2gridgauss_xy_v0");
-   strcpy(I_EFnames[72].funcname, "scat2gridgauss_xz_v0");
-   strcpy(I_EFnames[73].funcname, "scat2gridgauss_yz_v0");
-   strcpy(I_EFnames[74].funcname, "scat2gridgauss_xt_v0");
-   strcpy(I_EFnames[75].funcname, "scat2gridgauss_yt_v0");
-   strcpy(I_EFnames[76].funcname, "scat2gridgauss_zt_v0");
-   strcpy(I_EFnames[77].funcname, "scat2gridlaplace_xy");
-   strcpy(I_EFnames[78].funcname, "scat2gridlaplace_xz");
-   strcpy(I_EFnames[79].funcname, "scat2gridlaplace_yz");
-   strcpy(I_EFnames[80].funcname, "scat2gridlaplace_xt");
-   strcpy(I_EFnames[81].funcname, "scat2gridlaplace_yt");
-   strcpy(I_EFnames[82].funcname, "scat2gridlaplace_zt");
-   strcpy(I_EFnames[83].funcname, "scat2grid_nobs_xy");
-   strcpy(I_EFnames[84].funcname, "scat2grid_nobs_xyt");
-   strcpy(I_EFnames[85].funcname, "sorti");
-   strcpy(I_EFnames[86].funcname, "sorti_str");
-   strcpy(I_EFnames[87].funcname, "sortj");
-   strcpy(I_EFnames[88].funcname, "sortj_str");
-   strcpy(I_EFnames[89].funcname, "sortk");
-   strcpy(I_EFnames[90].funcname, "sortk_str");
-   strcpy(I_EFnames[91].funcname, "sortl");
-   strcpy(I_EFnames[92].funcname, "sortl_str");
-   strcpy(I_EFnames[93].funcname, "tauto_cor");
-   strcpy(I_EFnames[94].funcname, "tax_datestring");
-   strcpy(I_EFnames[95].funcname, "tax_day");
-   strcpy(I_EFnames[96].funcname, "tax_dayfrac");
-   strcpy(I_EFnames[97].funcname, "tax_jday1900");
-   strcpy(I_EFnames[98].funcname, "tax_jday");
-   strcpy(I_EFnames[99].funcname, "tax_month");
-   strcpy(I_EFnames[100].funcname, "tax_times");
-   strcpy(I_EFnames[101].funcname, "tax_tstep");
-   strcpy(I_EFnames[102].funcname, "tax_units");
-   strcpy(I_EFnames[103].funcname, "tax_year");
-   strcpy(I_EFnames[104].funcname, "tax_yearfrac");
-   strcpy(I_EFnames[105].funcname, "tcat");
-   strcpy(I_EFnames[106].funcname, "tcat_str");
-   strcpy(I_EFnames[107].funcname, "test_opendap");
-   strcpy(I_EFnames[108].funcname, "treverse");
-   strcpy(I_EFnames[109].funcname, "transpose_xt");
-   strcpy(I_EFnames[110].funcname, "transpose_xy");
-   strcpy(I_EFnames[111].funcname, "transpose_xz");
-   strcpy(I_EFnames[112].funcname, "transpose_yt");
-   strcpy(I_EFnames[113].funcname, "transpose_yz");
-   strcpy(I_EFnames[114].funcname, "transpose_zt");
-   strcpy(I_EFnames[115].funcname, "unique_str2int");
-   strcpy(I_EFnames[116].funcname, "xauto_cor");
-   strcpy(I_EFnames[117].funcname, "xcat");
-   strcpy(I_EFnames[118].funcname, "xcat_str");
-   strcpy(I_EFnames[119].funcname, "xreverse");
-   strcpy(I_EFnames[120].funcname, "ycat");
-   strcpy(I_EFnames[121].funcname, "ycat_str");
-   strcpy(I_EFnames[122].funcname, "yreverse");
-   strcpy(I_EFnames[123].funcname, "zaxreplace_avg");
-   strcpy(I_EFnames[124].funcname, "zaxreplace_bin");
-   strcpy(I_EFnames[125].funcname, "zaxreplace_rev");
-   strcpy(I_EFnames[126].funcname, "zaxreplace_zlev");
-   strcpy(I_EFnames[127].funcname, "zcat");
-   strcpy(I_EFnames[128].funcname, "zcat_str");
-   strcpy(I_EFnames[129].funcname, "zreverse");
-   strcpy(I_EFnames[130].funcname, "list_value_xml");
-   strcpy(I_EFnames[131].funcname, "write_webrow");
+   strcpy(I_EFnames[10].funcname, "compressm");
+   strcpy(I_EFnames[11].funcname, "compressm_by");
+   strcpy(I_EFnames[12].funcname, "compressn");
+   strcpy(I_EFnames[13].funcname, "compressn_by");
+   strcpy(I_EFnames[14].funcname, "convolvei");
+   strcpy(I_EFnames[15].funcname, "convolvej");
+   strcpy(I_EFnames[16].funcname, "convolvek");
+   strcpy(I_EFnames[17].funcname, "convolvel");
+   strcpy(I_EFnames[18].funcname, "convolvem");
+   strcpy(I_EFnames[19].funcname, "convolven");
+   strcpy(I_EFnames[20].funcname, "curv_range");
+   strcpy(I_EFnames[21].funcname, "curv_to_rect");
+   strcpy(I_EFnames[22].funcname, "curv_to_rect_map");
+   strcpy(I_EFnames[23].funcname, "date1900");
+   strcpy(I_EFnames[24].funcname, "days1900toymdhms");
+   strcpy(I_EFnames[25].funcname, "ecat");
+   strcpy(I_EFnames[26].funcname, "ecat_str");
+   strcpy(I_EFnames[27].funcname, "element_index");
+   strcpy(I_EFnames[28].funcname, "element_index_str");
+   strcpy(I_EFnames[29].funcname, "element_index_str_n");
+   strcpy(I_EFnames[30].funcname, "eof_space");
+   strcpy(I_EFnames[31].funcname, "eof_stat");
+   strcpy(I_EFnames[32].funcname, "eof_tfunc");
+   strcpy(I_EFnames[33].funcname, "ereverse");
+   strcpy(I_EFnames[34].funcname, "expndi_by");
+   strcpy(I_EFnames[35].funcname, "expndi_by_t");
+   strcpy(I_EFnames[36].funcname, "expndi_by_z");
+   strcpy(I_EFnames[37].funcname, "fcat");
+   strcpy(I_EFnames[38].funcname, "fcat_str");
+   strcpy(I_EFnames[39].funcname, "ffta");
+   strcpy(I_EFnames[40].funcname, "fft_im");
+   strcpy(I_EFnames[41].funcname, "fft_inverse");
+   strcpy(I_EFnames[42].funcname, "fftp");
+   strcpy(I_EFnames[43].funcname, "fft_re");
+   strcpy(I_EFnames[44].funcname, "fill_xy");
+   strcpy(I_EFnames[45].funcname, "findhi");
+   strcpy(I_EFnames[46].funcname, "findlo");
+   strcpy(I_EFnames[47].funcname, "floatstr");
+   strcpy(I_EFnames[48].funcname, "freverse");
+   strcpy(I_EFnames[49].funcname, "is_element_of");
+   strcpy(I_EFnames[50].funcname, "is_element_of_str");
+   strcpy(I_EFnames[51].funcname, "is_element_of_str_n");
+   strcpy(I_EFnames[52].funcname, "labwid");
+   strcpy(I_EFnames[53].funcname, "lanczos");
+   strcpy(I_EFnames[54].funcname, "list_value_xml");
+   strcpy(I_EFnames[55].funcname, "lsl_lowpass");
+   strcpy(I_EFnames[56].funcname, "minmax");
+   strcpy(I_EFnames[57].funcname, "minutes24");
+   strcpy(I_EFnames[58].funcname, "nco");
+   strcpy(I_EFnames[59].funcname, "nco_attr");
+   strcpy(I_EFnames[60].funcname, "pt_in_poly");
+   strcpy(I_EFnames[61].funcname, "rect_to_curv");
+   strcpy(I_EFnames[62].funcname, "sampleij");
+   strcpy(I_EFnames[63].funcname, "samplet_date");
+   strcpy(I_EFnames[64].funcname, "samplexy");
+   strcpy(I_EFnames[65].funcname, "samplexy_closest");
+   strcpy(I_EFnames[66].funcname, "samplexy_curv");
+   strcpy(I_EFnames[67].funcname, "samplexy_curv_avg");
+   strcpy(I_EFnames[68].funcname, "samplexy_curv_nrst");
+   strcpy(I_EFnames[69].funcname, "samplexyt");
+   strcpy(I_EFnames[70].funcname, "samplexz");
+   strcpy(I_EFnames[71].funcname, "sampleyz");
+   strcpy(I_EFnames[72].funcname, "scat2ddups");
+   strcpy(I_EFnames[73].funcname, "scat2grid_bin_xy");
+   strcpy(I_EFnames[74].funcname, "scat2grid_bin_xyt");
+   strcpy(I_EFnames[75].funcname, "scat2gridgauss_xt");
+   strcpy(I_EFnames[76].funcname, "scat2gridgauss_xt_v0");
+   strcpy(I_EFnames[77].funcname, "scat2gridgauss_xy");
+   strcpy(I_EFnames[78].funcname, "scat2gridgauss_xy_v0");
+   strcpy(I_EFnames[79].funcname, "scat2gridgauss_xz");
+   strcpy(I_EFnames[80].funcname, "scat2gridgauss_xz_v0");
+   strcpy(I_EFnames[81].funcname, "scat2gridgauss_yt");
+   strcpy(I_EFnames[82].funcname, "scat2gridgauss_yt_v0");
+   strcpy(I_EFnames[83].funcname, "scat2gridgauss_yz");
+   strcpy(I_EFnames[84].funcname, "scat2gridgauss_yz_v0");
+   strcpy(I_EFnames[85].funcname, "scat2gridgauss_zt");
+   strcpy(I_EFnames[86].funcname, "scat2gridgauss_zt_v0");
+   strcpy(I_EFnames[87].funcname, "scat2gridlaplace_xt");
+   strcpy(I_EFnames[88].funcname, "scat2gridlaplace_xy");
+   strcpy(I_EFnames[89].funcname, "scat2gridlaplace_xz");
+   strcpy(I_EFnames[90].funcname, "scat2gridlaplace_yt");
+   strcpy(I_EFnames[91].funcname, "scat2gridlaplace_yz");
+   strcpy(I_EFnames[92].funcname, "scat2gridlaplace_zt");
+   strcpy(I_EFnames[93].funcname, "scat2grid_nbin_xy");
+   strcpy(I_EFnames[94].funcname, "scat2grid_nbin_xyt");
+   strcpy(I_EFnames[95].funcname, "scat2grid_nobs_xy");
+   strcpy(I_EFnames[96].funcname, "scat2grid_nobs_xyt");
+   strcpy(I_EFnames[97].funcname, "scat2grid_t");
+   strcpy(I_EFnames[98].funcname, "sorti");
+   strcpy(I_EFnames[99].funcname, "sorti_str");
+   strcpy(I_EFnames[100].funcname, "sortj");
+   strcpy(I_EFnames[101].funcname, "sortj_str");
+   strcpy(I_EFnames[102].funcname, "sortk");
+   strcpy(I_EFnames[103].funcname, "sortk_str");
+   strcpy(I_EFnames[104].funcname, "sortl");
+   strcpy(I_EFnames[105].funcname, "sortl_str");
+   strcpy(I_EFnames[106].funcname, "sortm");
+   strcpy(I_EFnames[107].funcname, "sortm_str");
+   strcpy(I_EFnames[108].funcname, "sortn");
+   strcpy(I_EFnames[109].funcname, "sortn_str");
+   strcpy(I_EFnames[110].funcname, "tauto_cor");
+   strcpy(I_EFnames[111].funcname, "tax_datestring");
+   strcpy(I_EFnames[112].funcname, "tax_day");
+   strcpy(I_EFnames[113].funcname, "tax_dayfrac");
+   strcpy(I_EFnames[114].funcname, "tax_jday");
+   strcpy(I_EFnames[115].funcname, "tax_jday1900");
+   strcpy(I_EFnames[116].funcname, "tax_month");
+   strcpy(I_EFnames[117].funcname, "tax_times");
+   strcpy(I_EFnames[118].funcname, "tax_tstep");
+   strcpy(I_EFnames[119].funcname, "tax_units");
+   strcpy(I_EFnames[120].funcname, "tax_year");
+   strcpy(I_EFnames[121].funcname, "tax_yearfrac");
+   strcpy(I_EFnames[122].funcname, "tcat");
+   strcpy(I_EFnames[123].funcname, "tcat_str");
+   strcpy(I_EFnames[124].funcname, "test_opendap");
+   strcpy(I_EFnames[125].funcname, "transpose_xt");
+   strcpy(I_EFnames[126].funcname, "transpose_xy");
+   strcpy(I_EFnames[127].funcname, "transpose_xz");
+   strcpy(I_EFnames[128].funcname, "transpose_yt");
+   strcpy(I_EFnames[129].funcname, "transpose_yz");
+   strcpy(I_EFnames[130].funcname, "transpose_zt");
+   strcpy(I_EFnames[131].funcname, "treverse");
+   strcpy(I_EFnames[132].funcname, "unique_str2int");
+   strcpy(I_EFnames[133].funcname, "write_webrow");
+   strcpy(I_EFnames[134].funcname, "xauto_cor");
+   strcpy(I_EFnames[135].funcname, "xcat");
+   strcpy(I_EFnames[136].funcname, "xcat_str");
+   strcpy(I_EFnames[137].funcname, "xreverse");
+   strcpy(I_EFnames[138].funcname, "ycat");
+   strcpy(I_EFnames[139].funcname, "ycat_str");
+   strcpy(I_EFnames[140].funcname, "yreverse");
+   strcpy(I_EFnames[141].funcname, "zaxreplace_avg");
+   strcpy(I_EFnames[142].funcname, "zaxreplace_bin");
+   strcpy(I_EFnames[143].funcname, "zaxreplace_rev");
+   strcpy(I_EFnames[144].funcname, "zaxreplace_zlev");
+   strcpy(I_EFnames[145].funcname, "zcat");
+   strcpy(I_EFnames[146].funcname, "zcat_str");
+   strcpy(I_EFnames[147].funcname, "zreverse");
+
 /*    
  *  ------------------------------------ 
  */
@@ -1088,12 +1190,12 @@ struct {
 
 
   if ( I_have_scanned_already ) {
-    return_val = list_size(GLOBAL_ExternalFunctionList);
+    return_val = list_size(STATIC_ExternalFunctionList);
     return return_val;
   }
 
-  if ( (GLOBAL_ExternalFunctionList = list_init()) == NULL ) {
-    fprintf(stderr, "ERROR: efcn_scan: Unable to initialize GLOBAL_ExternalFunctionList.\n");
+  if ( (STATIC_ExternalFunctionList = list_init()) == NULL ) {
+    fputs("**ERROR: efcn_scan: Unable to initialize STATIC_ExternalFunctionList.\n", stderr);
     return_val = -1;
     return return_val;
   }
@@ -1102,7 +1204,7 @@ struct {
   /*
    * Get internally linked external functions;  and add all 
    * the names and associated directory information to the 
-   * GLOBAL_ExternalFunctionList.
+   * STATIC_ExternalFunctionList.
    */
 
 
@@ -1116,7 +1218,7 @@ struct {
 	      ef.id = *gfcn_num_internal + ++count; /* pre-increment because F arrays start at 1 */
 	      ef.already_have_internals = NO;
 	      ef.internals_ptr = NULL;
-	      list_insert_after(GLOBAL_ExternalFunctionList, &ef, sizeof(ExternalFunction));
+	      list_insert_after(STATIC_ExternalFunctionList, (char *) &ef, sizeof(ExternalFunction));
 
       }
 
@@ -1132,8 +1234,8 @@ struct {
 
   if ( !getenv("FER_EXTERNAL_FUNCTIONS") ) {
     if ( !I_have_warned_already ) {
-      fprintf(stderr, "\
-\nWARNING: environment variable FER_EXTERNAL_FUNCTIONS not defined.\n\n");
+      fprintf(stderr, "\n"
+                      "WARNING: environment variable FER_EXTERNAL_FUNCTIONS not defined.\n\n");
       I_have_warned_already = TRUE;
     }
     /* *kob* v5.32 - the return val was set to 0 below but that was wrong. 
@@ -1153,8 +1255,8 @@ struct {
 
   if ( path_ptr == NULL ) {
  
-    fprintf(stderr, "\
-\nWARNING:No paths were found in the environment variable FER_EXTERNAL_FUNCTIONS.\n\n");
+    fprintf(stderr, "\n"
+                    "WARNING:No paths were found in the environment variable FER_EXTERNAL_FUNCTIONS.\n\n");
 
     return_val = 0;
     return return_val;
@@ -1172,7 +1274,7 @@ struct {
 
       /* Open a pipe to the "ls" command */
       if ( (file_ptr = popen(cmd, "r")) == (FILE *) NULL ) {
-	    fprintf(stderr, "\nERROR: Cannot open pipe.\n\n");
+	    fputs("**ERROR: Cannot open pipe.\n", stderr);
 	    return_val = -1;
 	    return return_val;
       }
@@ -1194,7 +1296,7 @@ struct {
 	      ef.id = *gfcn_num_internal + ++count; /* pre-increment because F arrays start at 1 */
 	      ef.already_have_internals = NO;
 	      ef.internals_ptr = NULL;
-	      list_insert_after(GLOBAL_ExternalFunctionList, &ef, sizeof(ExternalFunction));
+	      list_insert_after(STATIC_ExternalFunctionList, (char *) &ef, sizeof(ExternalFunction));
 	    }
 
       }
@@ -1220,18 +1322,15 @@ struct {
  */
 int FORTRAN(efcn_already_have_internals)( int *id_ptr )
 {
-  ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
+  ExternalFunction *ef_ptr;
+  int return_val;
 
-  static int return_val=0; /* static because it needs to exist after the return statement */
-
-
-  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return return_val; }
-
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
+  ef_ptr = ef_ptr_from_id_ptr(id_ptr);
+  if ( ef_ptr == NULL ) {
+     return 0;
+  }
 
   return_val = ef_ptr->already_have_internals;
-
   return return_val;
 }
 
@@ -1261,7 +1360,8 @@ int FORTRAN(efcn_already_have_internals)( int *id_ptr )
  *        they are not listed here since unused; also permits saying the strings 
  *        are simple arrays in Fortran)
  */
-void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenpymod, char errstring[], int *lenerrstring)
+void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenpymod,
+                            char errstring[], int *lenerrstring)
 {
     ExternalFunction ef; 
     ExternalFunction *ef_ptr; 
@@ -1317,7 +1417,7 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
      * (The IDs do not match the size of the list.)
      */
     ef.handle = NULL;
-    ef_ptr = (ExternalFunction *) list_rear(GLOBAL_ExternalFunctionList);
+    ef_ptr = (ExternalFunction *) list_rear(STATIC_ExternalFunctionList);
     ef.id = ef_ptr->id + 1;
     strncpy(ef.name, fname, *lenfname);
     ef.name[*lenfname] = '\0';
@@ -1327,8 +1427,8 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
     ef.internals_ptr = NULL;
 
     /* Add a copy of this ExternalFunction to the end of the global list of external functions */
-    list_mvrear(GLOBAL_ExternalFunctionList);
-    ef_ptr = (ExternalFunction *)list_insert_after(GLOBAL_ExternalFunctionList, &ef, sizeof(ExternalFunction));
+    list_mvrear(STATIC_ExternalFunctionList);
+    ef_ptr = (ExternalFunction *)list_insert_after(STATIC_ExternalFunctionList, (char *) &ef, sizeof(ExternalFunction));
 
     /* Allocate and initialize the internals data for this ExternalFunction in the list */
     if ( EF_New(ef_ptr) != 0 ) {
@@ -1346,7 +1446,7 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
      * (for the "bail out" utility function).
      */   
     if ( EF_Util_setsig("create_pyefcn")) {
-        list_remove_rear(GLOBAL_ExternalFunctionList);
+        list_remove_rear(STATIC_ExternalFunctionList);
         free(ef_ptr->internals_ptr);
         free(ef_ptr);
         strcpy(errstring, "Unable to set signal handlers in create_pyefcn");
@@ -1354,7 +1454,7 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
         return;
     }
     if (sigsetjmp(sigjumpbuffer, 1) != 0) {
-        list_remove_rear(GLOBAL_ExternalFunctionList);
+        list_remove_rear(STATIC_ExternalFunctionList);
         free(ef_ptr->internals_ptr);
         free(ef_ptr);
         strcpy(errstring, "Signal caught in create_pyefcn");
@@ -1362,7 +1462,7 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
         return;
     }
     if (setjmp(jumpbuffer) != 0) {
-        list_remove_rear(GLOBAL_ExternalFunctionList);
+        list_remove_rear(STATIC_ExternalFunctionList);
         free(ef_ptr->internals_ptr);
         free(ef_ptr);
         strcpy(errstring, "ef_bail_out called in create_pyefcn");
@@ -1378,7 +1478,7 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
 
     *lenerrstring = strlen(errstring);
     if ( *lenerrstring > 0 ) {
-        list_remove_rear(GLOBAL_ExternalFunctionList);
+        list_remove_rear(STATIC_ExternalFunctionList);
         free(ef_ptr->internals_ptr);
         free(ef_ptr);
     }
@@ -1397,137 +1497,110 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
  */
 int FORTRAN(efcn_gather_info)( int *id_ptr )
 {
-  ExternalFunction *ef_ptr=NULL;
-  ExternalFunctionInternals *i_ptr=NULL;
-  int i=0, j=0;
-  char ef_object[1024]="", tempText[EF_MAX_NAME_LENGTH]="", *c;
-  int internally_linked = FALSE;
-
-  static int return_val=0; /* static because it needs to exist after the return statement */
-
-  
-  void *handle;
+  ExternalFunction *ef_ptr;
+  int internally_linked;
+  char tempText[1024];
+  ExternalFunctionInternals *i_ptr;
   void (*f_init_ptr)(int *);
 
-  /* internal_dlsym() is declared to accept a char pointer (aka string)
-   * and return a pointer to void (aka function pointer who's return type
-   * is void).
-   */
-  void *internal_dlsym(char *);
-
-
-  /*
-   * Find the external function.
-   */
-
-  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return return_val; }
-
-  if (ef_ptr->already_have_internals)  { return return_val; }
-
-  if ( (!strcmp(ef_ptr->path,"internally_linked")) ) {internally_linked = TRUE; }
-
-  /*
-   * Get a handle for the shared object.
-   */
-  if (!internally_linked) {
-    strcat(ef_object, ef_ptr->path);
-    strcat(ef_object, ef_ptr->name);
-    strcat(ef_object, ".so");
-
-    if ( (ef_ptr->handle = dlopen(ef_object, RTLD_LAZY)) == NULL ) {
-      fprintf(stderr, "\n"
-                      "   ERROR in External Function %s:\n"
-                      "   Dynamic linking call dlopen() returns --\n"
-                      "   \"%s\".\n", ef_ptr->name, dlerror());
+   /*
+    * Find the external function.
+    */
+   ef_ptr = ef_ptr_from_id_ptr(id_ptr);
+   if ( ef_ptr == NULL ) {
+      fprintf(stderr, "**ERROR: No external function of id %d was found.\n", *id_ptr);
       return -1;
-    }
-  }  /* not internally_linked  */
+   }
+   /* Check if this has already been done */
+   if (ef_ptr->already_have_internals)  {
+      return 0;
+   }
+   /* Check if this is an internal function */
+   if ( strcmp(ef_ptr->path,"internally_linked") == 0 )
+      internally_linked = TRUE;
+   else
+      internally_linked = FALSE;
 
-  
-  /*
-   * Allocate and default initialize the internal information.
-   * If anything went wrong, return the return_val.
-   */
-
-  return_val = EF_New(ef_ptr);
-
-  if ( return_val != 0) {
-    return return_val;
-  }
-
-  /*
-   * Call the external function to really initialize the internal information.
-   */
-  i_ptr = ef_ptr->internals_ptr;
-
-  if ( i_ptr->language == EF_F ) {
-
-
-    /*
-     * Prepare for bailout possibilities by setting a signal handler for
-     * SIGFPE, SIGSEGV, SIGINT and SIGBUS and then by cacheing the stack 
-     * environment with sigsetjmp (for the signal handler) and setjmp 
-     * (for the "bail out" utility function).
-     */   
-
-    if ( EF_Util_setsig("efcn_gather_info")) {
-       return -1;
-    }
-
-    /*
-     * Set the signal return location and process jumps
-     */
-    if (sigsetjmp(sigjumpbuffer, 1) != 0) {
-      return -1;
-    }
-
-    /*
-     * Set the bail out return location and process jumps
-     */
-    if (setjmp(jumpbuffer) != 0) {
-      return -1;
-    }
-    
-    canjump = 1;
-
-    /* Information about the overall function */
-
-
-      sprintf(tempText, "");
+   /* Get a handle for the shared object if not internally linked */
+   if ( ! internally_linked ) {
+      strcat(tempText, ef_ptr->path);
       strcat(tempText, ef_ptr->name);
-      strcat(tempText, "_init_");
+      strcat(tempText, ".so");
 
-      if (!internally_linked) {
-         f_init_ptr = (void (*)(int *))dlsym(ef_ptr->handle, tempText);
-      } else {
-        f_init_ptr = (void (*)(int *))internal_dlsym(tempText);
+      if ( (ef_ptr->handle = dlopen(tempText, RTLD_LAZY)) == NULL ) {
+         fprintf(stderr, "**ERROR in External Function %s:\n"
+                         "  Dynamic linking call dlopen() returns --\n"
+                         "  \"%s\".\n", ef_ptr->name, dlerror());
+         return -1;
+      }
+   }
+
+   /* Allocate and default initialize the internal information. */
+   if ( EF_New(ef_ptr) != 0 )
+      return -1;
+
+   /* Call the external function initialization routine */
+   i_ptr = ef_ptr->internals_ptr;
+
+   if ( i_ptr->language == EF_F ) {
+
+      /*
+       * Prepare for bailout possibilities by setting a signal handler for
+       * SIGFPE, SIGSEGV, SIGINT and SIGBUS and then by cacheing the stack 
+       * environment with sigsetjmp (for the signal handler) and setjmp 
+       * (for the "bail out" utility function).
+       */   
+      if ( EF_Util_setsig("efcn_gather_info")) {
+         return -1;
       }
 
-      if (f_init_ptr == NULL) {
-        fprintf(stderr, "ERROR in efcn_gather_info(): %s is not found.\n", tempText);
-        fprintf(stderr, "  dlerror: %s\n", dlerror());
-        return -1;
-    }
+      /* Set the signal return location and process jumps */
+      if ( sigsetjmp(sigjumpbuffer, 1) != 0 ) {
+         /* Must have come from bailing out */
+         return -1;
+      }
+      /* Set the bail out return location and process jumps */
+      if ( setjmp(jumpbuffer) != 0 ) {
+         /* Must have come from bailing out */
+         return -1;
+      }
+      canjump = 1;
 
-    (*f_init_ptr)(id_ptr);
+      /* Get the pointer to external function initialization routine */
+      sprintf(tempText, "%s_init_", ef_ptr->name);
+      if ( ! internally_linked ) {
+         f_init_ptr = (void (*)(int *))dlsym(ef_ptr->handle, tempText);
+      } else {
+         f_init_ptr = (void (*)(int *))internal_dlsym(tempText);
+      }
+      if ( f_init_ptr == NULL ) {
+         fprintf(stderr, "**ERROR in efcn_gather_info(): %s is not found.\n", tempText);
+         if ( ! internally_linked )
+            fprintf(stderr, "  dlerror: \"%s\"\n", dlerror());
+         EF_Util_ressig("efcn_gather_info");
+         return -1;
+      }
 
-    ef_ptr->already_have_internals = TRUE;
+      /*
+       * Call the initialization routine.  If it bails out,
+       * this will jump back to one of the setjmp methods, returning non-zero.
+       */
+      (*f_init_ptr)(id_ptr);
+      ef_ptr->already_have_internals = TRUE;
 
-    /*
-     * Restore the old signal handlers.
-     */
-    if ( EF_Util_ressig("efcn_gather_info")) {
-       return -1;
-    }
+      /* Restore the old signal handlers. */
+      if ( EF_Util_ressig("efcn_gather_info") ) {
+         return -1;
+      }
 
-  }
-  else {
-    /* Note: Python-backed external functions get initialized when added, so no support here for them */
-    fprintf(stderr, "\nERROR: unsupported language (%d) for efcn_gather_info.\n\n", i_ptr->language);
-    return -1;
-  }
-  
-  return 0;
+   }
+   else {
+      /* Note: Python-backed external functions get initialized when added, so no support here for them */
+      fprintf(stderr, "**ERROR: unsupported language (%d) for efcn_gather_info.\n", i_ptr->language);
+      return -1;
+   }
+
+   return 0;
 }
 
 
@@ -1543,7 +1616,6 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
   int internally_linked = FALSE;
 
   void (*fptr)(int *);
-  void *internal_dlsym(char *);
 
   /*
    * Initialize the status
@@ -1620,14 +1692,14 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
       if ( pyefcn_custom_axes_func == NULL ) {
           /* pyefcn_handle should never be NULL if we got here, but just in case... */
           if ( pyefcn_handle == NULL ) {
-              fputs("Python-backed external functions not supported \n"
+              fputs("**ERROR: Python-backed external functions not supported \n"
                     "(handle for $FER_LIBS/libpyefcn.so not assigned in efcn_get_custom_axes)", stderr);
               *status = FERR_EF_ERROR;
               return;
           }
           pyefcn_custom_axes_func = (void (*)(int, char[], char[])) dlsym(pyefcn_handle, "pyefcn_custom_axes");
           if ( pyefcn_custom_axes_func == NULL ) {
-              fprintf(stderr, "Python-backed external functions not supported \n"
+              fprintf(stderr, "**ERROR: Python-backed external functions not supported \n"
                               "(unable to find pyefcn_custom_axes in $FER_LIBS/libpyefcn.so: %s)", dlerror());
               *status = FERR_EF_ERROR;
               return;
@@ -1669,7 +1741,7 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
   }
   else {
     *status = FERR_EF_ERROR;
-    fprintf(stderr, "\nERROR: unsupported language (%d) for efcn_get_custom_axes.\n\n", ef_ptr->internals_ptr->language);
+    fprintf(stderr, "**ERROR: unsupported language (%d) for efcn_get_custom_axes.\n", ef_ptr->internals_ptr->language);
   }
 
   return;
@@ -1688,7 +1760,6 @@ void FORTRAN(efcn_get_result_limits)( int *id_ptr, DFTYPE *memory, int *mr_list_
   int internally_linked = FALSE;
 
   void (*fptr)(int *);
-  void *internal_dlsym(char *);
 
   /*
    * Initialize the status
@@ -1769,14 +1840,14 @@ void FORTRAN(efcn_get_result_limits)( int *id_ptr, DFTYPE *memory, int *mr_list_
       if ( pyefcn_result_limits_func == NULL ) {
           /* pyefcn_handle should never be NULL if we got here, but just in case... */
           if ( pyefcn_handle == NULL ) {
-              fputs("Python-backed external functions not supported \n"
+              fputs("**ERROR: Python-backed external functions not supported \n"
                     "(handle for $FER_LIBS/libpyefcn.so not assigned in efcn_get_result_limits)", stderr);
               *status = FERR_EF_ERROR;
               return;
           }
           pyefcn_result_limits_func = (void (*)(int, char[], char[])) dlsym(pyefcn_handle, "pyefcn_result_limits");
           if ( pyefcn_result_limits_func == NULL ) {
-              fprintf(stderr, "Python-backed external functions not supported \n"
+              fprintf(stderr, "**ERROR: Python-backed external functions not supported \n"
                               "(unable to find pyefcn_result_limits in $FER_LIBS/libpyefcn.so: %s)", dlerror());
               *status = FERR_EF_ERROR;
               return;
@@ -1818,7 +1889,7 @@ void FORTRAN(efcn_get_result_limits)( int *id_ptr, DFTYPE *memory, int *mr_list_
   }
   else {
     *status = FERR_EF_ERROR;
-    fprintf(stderr, "\nERROR: unsupported language (%d) for efcn_get_result_limits.\n\n", ef_ptr->internals_ptr->language);
+    fprintf(stderr, "**ERROR: unsupported language (%d) for efcn_get_result_limits.\n", ef_ptr->internals_ptr->language);
   }
 
   return;
@@ -1840,8 +1911,6 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
   int size=0;
   char tempText[EF_MAX_NAME_LENGTH]="";
   int internally_linked = FALSE;
-  void *internal_dlsym(char *);
-
 
   /*
    * Prototype all the functions needed for varying numbers of
@@ -1902,7 +1971,7 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
    * Find the external function.
    */
   if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) {
-    fprintf(stderr, "\nERROR in efcn_compute() finding external function: id = [%d]\n", *id_ptr);
+    fprintf(stderr, "**ERROR in efcn_compute() finding external function: id = [%d]\n", *id_ptr);
     *status = FERR_EF_ERROR;
     return;
   }
@@ -1935,17 +2004,17 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
      */
     if (i_ptr->num_work_arrays > EF_MAX_WORK_ARRAYS) {
 
-	  fprintf(stderr, "\n\
-ERROR specifying number of work arrays in ~_init subroutine of external function %s\n\
-\tnum_work_arrays[=%d] exceeds maximum[=%d].\n\n", ef_ptr->name, i_ptr->num_work_arrays, EF_MAX_WORK_ARRAYS);
+	  fprintf(stderr, "**ERROR specifying number of work arrays in ~_init subroutine of external function %s\n"
+                          "\tnum_work_arrays[=%d] exceeds maximum[=%d].\n\n",
+                          ef_ptr->name, i_ptr->num_work_arrays, EF_MAX_WORK_ARRAYS);
 	  *status = FERR_EF_ERROR;
 	  return;
 
     } else if (i_ptr->num_work_arrays < 0) {
 
-	  fprintf(stderr, "\n\
-ERROR specifying number of work arrays in ~_init subroutine of external function %s\n\
-\tnum_work_arrays[=%d] must be a positive number.\n\n", ef_ptr->name, i_ptr->num_work_arrays);
+	  fprintf(stderr, "**ERROR specifying number of work arrays in ~_init subroutine of external function %s\n"
+                          "\tnum_work_arrays[=%d] must be a positive number.\n\n",
+                          ef_ptr->name, i_ptr->num_work_arrays);
 	  *status = FERR_EF_ERROR;
 	  return;
 
@@ -1962,8 +2031,7 @@ ERROR specifying number of work arrays in ~_init subroutine of external function
       }
 
       if (fptr == NULL) {
-	fprintf(stderr, "\n\
-ERROR in efcn_compute() accessing %s\n", tempText);
+	fprintf(stderr, "**ERROR in efcn_compute() accessing %s\n", tempText);
 	*status = FERR_EF_ERROR;
         return;
       }
@@ -1974,26 +2042,33 @@ ERROR in efcn_compute() accessing %s\n", tempText);
 
       for (j=0; j<i_ptr->num_work_arrays; i++, j++) {
 
-        int iarray,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi;
+        int iarray, xlo, ylo, zlo, tlo, elo, flo,
+                    xhi, yhi, zhi, thi, ehi, fhi;
         iarray = j+1;
         xlo = i_ptr->work_array_lo[j][0];
         ylo = i_ptr->work_array_lo[j][1];
         zlo = i_ptr->work_array_lo[j][2];
         tlo = i_ptr->work_array_lo[j][3];
+        elo = i_ptr->work_array_lo[j][4];
+        flo = i_ptr->work_array_lo[j][5];
         xhi = i_ptr->work_array_hi[j][0];
         yhi = i_ptr->work_array_hi[j][1];
         zhi = i_ptr->work_array_hi[j][2];
         thi = i_ptr->work_array_hi[j][3];
+        ehi = i_ptr->work_array_hi[j][4];
+        fhi = i_ptr->work_array_hi[j][5];
 
-        FORTRAN(efcn_set_work_array_dims)(&iarray,&xlo,&ylo,&zlo,&tlo,&xhi,&yhi,&zhi,&thi);
+        FORTRAN(efcn_set_work_array_dims)(&iarray, &xlo, &ylo, &zlo, &tlo, &elo, &flo,
+                                                   &xhi, &yhi, &zhi, &thi, &ehi, &fhi);
 
-        size = sizeof(DFTYPE) * (xhi-xlo+1) * (yhi-ylo+1) * (zhi-zlo+1) * (thi-tlo+1);
+        size = sizeof(DFTYPE) * (xhi-xlo+1) * (yhi-ylo+1) * (zhi-zlo+1) 
+                              * (thi-tlo+1) * (ehi-elo+1) * (fhi-flo+1);
 
-        if ( (arg_ptr[i] = (DFTYPE *)malloc(size)) == NULL ) { 
-          fprintf(stderr, "\n\
-ERROR in efcn_compute() allocating %d bytes of memory\n\
-      work array %d:  X=%d:%d, Y=%d:%d, Z=%d:%d, T=%d:%d\n", 
-      size,iarray,xlo,xhi,ylo,yhi,zlo,zhi,tlo,thi);
+        arg_ptr[i] = (DFTYPE *)malloc(size);
+        if ( arg_ptr[i] == NULL ) { 
+          fprintf(stderr, "**ERROR in efcn_compute() allocating %d bytes of memory\n"
+                          "\twork array %d:  X=%d:%d, Y=%d:%d, Z=%d:%d, T=%d:%d, E=%d:%d, F=%d:%d\n", 
+                          size, iarray, xlo, xhi, ylo, yhi, zlo, zhi, tlo, thi, elo, ehi, flo, fhi);
 	  *status = FERR_EF_ERROR;
 	  return;
         }
@@ -2301,8 +2376,8 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
 
     default:
-      fprintf(stderr, "\n\
-ERROR: External functions with more than %d arguments are not implemented yet.\n\n", EF_MAX_ARGS);
+      fprintf(stderr, "**ERROR: External functions with more than %d arguments are not implemented.\n",
+                      EF_MAX_ARGS);
       *status = FERR_EF_ERROR;
       return;
       break;
@@ -2329,23 +2404,27 @@ ERROR: External functions with more than %d arguments are not implemented yet.\n
     /* Success for EF_F */
   }
   else if ( i_ptr->language == EF_PYTHON ) {
-      int   memlo[EF_MAX_COMPUTE_ARGS][4], memhi[EF_MAX_COMPUTE_ARGS][4],
-            steplo[EF_MAX_COMPUTE_ARGS][4], stephi[EF_MAX_COMPUTE_ARGS][4], incr[EF_MAX_COMPUTE_ARGS][4];
+      int   memlo[EF_MAX_COMPUTE_ARGS][NFERDIMS], memhi[EF_MAX_COMPUTE_ARGS][NFERDIMS],
+            steplo[EF_MAX_COMPUTE_ARGS][NFERDIMS], stephi[EF_MAX_COMPUTE_ARGS][NFERDIMS],
+            incr[EF_MAX_COMPUTE_ARGS][NFERDIMS];
       DFTYPE badflags[EF_MAX_COMPUTE_ARGS];
       char  errstring[2048];
 
       if ( pyefcn_compute_func == NULL ) {
           /* pyefcn_handle should never be NULL if we got here, but just in case... */
           if ( pyefcn_handle == NULL ) {
-              fputs("Python-backed external functions not supported \n"
+              fputs("**ERROR: Python-backed external functions not supported \n"
                     "(handle for $FER_LIBS/libpyefcn.so not assigned in efcn_compute)", stderr);
               *status = FERR_EF_ERROR;
               return;
           }
-          pyefcn_compute_func = (void (*)(int, char [], DFTYPE *[], int, int [][4], int [][4], int [][4], int [][4], int [][4], DFTYPE[], char []))
+          pyefcn_compute_func = (void (*)(int, char [], DFTYPE *[], int,
+                                          int [][NFERDIMS], int [][NFERDIMS],
+                                          int [][NFERDIMS], int [][NFERDIMS], int [][NFERDIMS],
+                                          DFTYPE[], char []))
                                 dlsym(pyefcn_handle, "pyefcn_compute");
           if ( pyefcn_compute_func == NULL ) {
-              fprintf(stderr, "Python-backed external functions not supported \n"
+              fprintf(stderr, "**ERROR: Python-backed external functions not supported \n"
                               "(unable to find pyefcn_compute in $FER_LIBS/libpyefcn.so: %s)", dlerror());
               *status = FERR_EF_ERROR;
               return;
@@ -2367,7 +2446,7 @@ ERROR: External functions with more than %d arguments are not implemented yet.\n
 
       /* Reset zero increments to +1 or -1 for pyefcn_compute */
       for (i = 0; i <= i_ptr->num_reqd_args; i++) {
-          for (j = 0; j < 4; j++) {
+          for (j = 0; j < NFERDIMS; j++) {
               if ( incr[i][j] == 0 ) {
                   if ( steplo[i][j] <= stephi[i][j] )
                       incr[i][j] = 1;
@@ -2398,7 +2477,8 @@ ERROR: External functions with more than %d arguments are not implemented yet.\n
       canjump = 1;
 
       /* Call pyefcn_compute which in turn calls the ferret_compute method in the python module */
-      (*pyefcn_compute_func)(*id_ptr, ef_ptr->path, arg_ptr, (i_ptr->num_reqd_args)+1, memlo, memhi, steplo, stephi, incr, badflags, errstring);
+      (*pyefcn_compute_func)(*id_ptr, ef_ptr->path, arg_ptr, (i_ptr->num_reqd_args)+1,
+                             memlo, memhi, steplo, stephi, incr, badflags, errstring);
       if ( strlen(errstring) > 0 ) {
           /* (In effect) call ef_bail_out_ to process the error in a standard way */
           ef_err_bail_out_(id_ptr, errstring);
@@ -2411,7 +2491,7 @@ ERROR: External functions with more than %d arguments are not implemented yet.\n
       /* Success for EF_PYTHON */
   }
   else {
-    fprintf(stderr, "\nERROR: unsupported language (%d) for efcn_compute.\n\n", i_ptr->language);
+    fprintf(stderr, "**ERROR: unsupported language (%d) for efcn_compute.\n", i_ptr->language);
     *status = FERR_EF_ERROR;
   }
 
@@ -2423,39 +2503,49 @@ ERROR: External functions with more than %d arguments are not implemented yet.\n
  * A signal handler for SIGFPE, SIGSEGV, SIGINT and SIGBUS signals generated
  * while executing an external function.  See "Advanced Programming
  * in the UNIX Environment" p. 299 ff for details.
+ *
+ * This routine should never return since a signal was raised indicating a
+ * problem.  The siglongjump rewinds back to where sigsetjmp was called with
+ * the current sigjumpbuffer.
  */
-static void EF_signal_handler(int signo) {
+static void EF_signal_handler(int signo)
+{
+   if ( canjump == 0 ) {
+      fprintf(stderr, "EF_signal_handler invoked with signal %d but canjump = 0", signo);
+      fflush(stderr);
+      abort();
+   }
 
-  if (canjump == 0) return; /* unexpected signal, ignore */
+   /*
+    * Restore the old signal handlers.
+    */
+   if ( EF_Util_ressig("efcn_compute")) {
+      /* error message already printed */
+      fflush(stderr);
+      abort();
+   }
 
-  /*
-   * Restore the old signal handlers.
-   */
-  if ( EF_Util_ressig("efcn_compute")) {
-    return;
-  }
-
-  if (signo == SIGFPE) {
-    fprintf(stderr, "\n\nERROR in external function: DFTYPEing Point Error\n");
-    canjump = 0;
-    siglongjmp(sigjumpbuffer, 1);
-  } else if (signo == SIGSEGV) {
-    fprintf(stderr, "\n\nERROR in external function: Segmentation Violation\n");
-    canjump = 0;
-    siglongjmp(sigjumpbuffer, 1);
-  } else if (signo == SIGINT) {
-    fprintf(stderr, "\n\nExternal function halted with Control-C\n");
-    canjump = 0;
-    siglongjmp(sigjumpbuffer, 1);
-  } else if (signo == SIGBUS) {
-    fprintf(stderr, "\n\nERROR in external function: Hardware Fault\n");
-    canjump = 0;
-    siglongjmp(sigjumpbuffer, 1);
-  } else {
-    fprintf(stderr, "\n\nERROR in external function: signo = %d\n", signo);
-    canjump = 0;
-    siglongjmp(sigjumpbuffer, 1);
-  }
+   if (signo == SIGFPE) {
+      fprintf(stderr, "**ERROR in external function: Floating Point Error\n");
+      canjump = 0;
+      siglongjmp(sigjumpbuffer, 1);
+   } else if (signo == SIGSEGV) {
+      fprintf(stderr, "**ERROR in external function: Segmentation Violation\n");
+      canjump = 0;
+      siglongjmp(sigjumpbuffer, 1);
+   } else if (signo == SIGINT) {
+      fprintf(stderr, "**External function halted with Control-C\n");
+      canjump = 0;
+      siglongjmp(sigjumpbuffer, 1);
+   } else if (signo == SIGBUS) {
+      fprintf(stderr, "**ERROR in external function: Hardware Fault\n");
+      canjump = 0;
+      siglongjmp(sigjumpbuffer, 1);
+   } else {
+      fprintf(stderr, "**ERROR in external function: signo = %d\n", signo);
+      canjump = 0;
+      siglongjmp(sigjumpbuffer, 1);
+   }
 
 }
 
@@ -2475,7 +2565,8 @@ int FORTRAN(efcn_get_id)( char name[] )
    * Find the external function.
    */
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, name, EF_ListTraverse_FoundName, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(STATIC_ExternalFunctionList, name, EF_ListTraverse_FoundName,
+                         (LIST_FRNT | LIST_FORW | LIST_ALTR));
 
   /*
    * If the search failed, set the id_ptr to ATOM_NOT_FOUND.
@@ -2485,7 +2576,7 @@ int FORTRAN(efcn_get_id)( char name[] )
     return return_val;
   }
 
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
+  ef_ptr=(ExternalFunction *)list_curr(STATIC_ExternalFunctionList); 
 
   return_val = ef_ptr->id;
 
@@ -2664,6 +2755,8 @@ void FORTRAN(efcn_get_axis_will_be)( int *id_ptr, int *array_ptr )
   array_ptr[Y_AXIS] = ef_ptr->internals_ptr->axis_will_be[Y_AXIS];
   array_ptr[Z_AXIS] = ef_ptr->internals_ptr->axis_will_be[Z_AXIS];
   array_ptr[T_AXIS] = ef_ptr->internals_ptr->axis_will_be[T_AXIS];
+  array_ptr[E_AXIS] = ef_ptr->internals_ptr->axis_will_be[E_AXIS];
+  array_ptr[F_AXIS] = ef_ptr->internals_ptr->axis_will_be[F_AXIS];
 
   return;
 }
@@ -2683,6 +2776,8 @@ void FORTRAN(efcn_get_axis_reduction)( int *id_ptr, int *array_ptr )
   array_ptr[Y_AXIS] = ef_ptr->internals_ptr->axis_reduction[Y_AXIS];
   array_ptr[Z_AXIS] = ef_ptr->internals_ptr->axis_reduction[Z_AXIS];
   array_ptr[T_AXIS] = ef_ptr->internals_ptr->axis_reduction[T_AXIS];
+  array_ptr[E_AXIS] = ef_ptr->internals_ptr->axis_reduction[E_AXIS];
+  array_ptr[F_AXIS] = ef_ptr->internals_ptr->axis_reduction[F_AXIS];
 
   return;
 }
@@ -2704,7 +2799,9 @@ void FORTRAN(efcn_get_piecemeal_ok)( int *id_ptr, int *array_ptr )
   array_ptr[Y_AXIS] = ef_ptr->internals_ptr->piecemeal_ok[Y_AXIS];
   array_ptr[Z_AXIS] = ef_ptr->internals_ptr->piecemeal_ok[Z_AXIS];
   array_ptr[T_AXIS] = ef_ptr->internals_ptr->piecemeal_ok[T_AXIS];
-  
+  array_ptr[E_AXIS] = ef_ptr->internals_ptr->piecemeal_ok[E_AXIS];
+  array_ptr[F_AXIS] = ef_ptr->internals_ptr->piecemeal_ok[F_AXIS];
+
   return;
 }
 
@@ -2726,8 +2823,9 @@ void FORTRAN(efcn_get_axis_implied_from)( int *id_ptr, int *iarg_ptr, int *array
   array_ptr[Y_AXIS] = ef_ptr->internals_ptr->axis_implied_from[index][Y_AXIS];
   array_ptr[Z_AXIS] = ef_ptr->internals_ptr->axis_implied_from[index][Z_AXIS];
   array_ptr[T_AXIS] = ef_ptr->internals_ptr->axis_implied_from[index][T_AXIS];
-  
-  
+  array_ptr[E_AXIS] = ef_ptr->internals_ptr->axis_implied_from[index][E_AXIS];
+  array_ptr[F_AXIS] = ef_ptr->internals_ptr->axis_implied_from[index][F_AXIS];
+
   return;
 }
 
@@ -2749,7 +2847,9 @@ void FORTRAN(efcn_get_axis_extend_lo)( int *id_ptr, int *iarg_ptr, int *array_pt
   array_ptr[Y_AXIS] = ef_ptr->internals_ptr->axis_extend_lo[index][Y_AXIS];
   array_ptr[Z_AXIS] = ef_ptr->internals_ptr->axis_extend_lo[index][Z_AXIS];
   array_ptr[T_AXIS] = ef_ptr->internals_ptr->axis_extend_lo[index][T_AXIS];
-  
+  array_ptr[E_AXIS] = ef_ptr->internals_ptr->axis_extend_lo[index][E_AXIS];
+  array_ptr[F_AXIS] = ef_ptr->internals_ptr->axis_extend_lo[index][F_AXIS];
+
   return;
 }
 
@@ -2771,7 +2871,9 @@ void FORTRAN(efcn_get_axis_extend_hi)( int *id_ptr, int *iarg_ptr, int *array_pt
   array_ptr[Y_AXIS] = ef_ptr->internals_ptr->axis_extend_hi[index][Y_AXIS];
   array_ptr[Z_AXIS] = ef_ptr->internals_ptr->axis_extend_hi[index][Z_AXIS];
   array_ptr[T_AXIS] = ef_ptr->internals_ptr->axis_extend_hi[index][T_AXIS];
-  
+  array_ptr[E_AXIS] = ef_ptr->internals_ptr->axis_extend_hi[index][E_AXIS];
+  array_ptr[F_AXIS] = ef_ptr->internals_ptr->axis_extend_hi[index][F_AXIS];
+
   return;
 }
 
@@ -2804,10 +2906,10 @@ void FORTRAN(efcn_get_axis_limits)( int *id_ptr, int *axis_ptr, int *lo_ptr, int
 int FORTRAN(efcn_get_arg_type)( int *id_ptr, int *iarg_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
-  static int return_val=0; /* static because it needs to exist after the return statement */
+  int return_val=0;
   int index = *iarg_ptr - 1; /* C indices are 1 less than Fortran */ 
 
-  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return return_val; }
   
   return_val = ef_ptr->internals_ptr->arg_type[index];
   
@@ -2825,7 +2927,7 @@ int FORTRAN(efcn_get_rtn_type)( int *id_ptr )
   ExternalFunction *ef_ptr=NULL;
   static int return_val=0; /* static because it needs to exist after the return statement */
 
-  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return return_val; }
   
   return_val = ef_ptr->internals_ptr->return_type;
   
@@ -2879,7 +2981,7 @@ void FORTRAN(efcn_get_arg_unit)( int *id_ptr, int *iarg_ptr, char *string )
 
   if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
   
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
+  ef_ptr=(ExternalFunction *)list_curr(STATIC_ExternalFunctionList); 
   
   strcpy(string, ef_ptr->internals_ptr->arg_unit[index]);
 
@@ -2905,17 +3007,40 @@ void FORTRAN(efcn_get_arg_desc)( int *id_ptr, int *iarg_ptr, char *string )
 
 
 
+/*
+ * This function should never return since there was a user-detected
+ * error of some sort.  The call to longjump rewinds back to where
+ * setjmp was called with the current jumpbuffer.
+ */
 void FORTRAN(ef_err_bail_out)(int *id_ptr, char *text)
 {
-  ExternalFunction *ef_ptr=NULL;
+   ExternalFunction *ef_ptr=NULL;
 
-  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+   ef_ptr = ef_ptr_from_id_ptr(id_ptr);
+   if ( ef_ptr == NULL ) {
+      fprintf(stderr, "Unknown external function ID of %d in ef_err_bail_out", *id_ptr);
+      fflush(stderr);
+      abort();
+   }
+   if ( canjump == 0 ) {
+      fputs("ef_err_bail_out called with canjump = 0", stderr);
+      fflush(stderr);
+      abort();
+   }
+   /*
+    * Restore the old signal handlers.
+    */
+   if ( EF_Util_ressig("efcn_compute")) {
+      /* error message already printed */
+      fflush(stderr);
+      abort();
+   }
 
-  fprintf(stderr, "\n\
-Bailing out of external function \"%s\":\n\
-\t%s\n", ef_ptr->name, text);
+   fprintf(stderr, "\n"
+                   "Bailing out of external function \"%s\":\n"
+                   "\t%s\n", ef_ptr->name, text);
 
-  longjmp(jumpbuffer, 1);
+   longjmp(jumpbuffer, 1);
 }
 
 
@@ -2948,7 +3073,7 @@ int EF_New( ExternalFunction *this )
   i_ptr = this->internals_ptr;
 
   if ( i_ptr == NULL ) {
-    fprintf(stderr, "ERROR in EF_New(): cannot allocate ExternalFunctionInternals.\n");
+    fprintf(stderr, "**ERROR in EF_New(): cannot allocate ExternalFunctionInternals.\n");
     return_val = -1;
     return return_val;
   }
@@ -2967,7 +3092,7 @@ int EF_New( ExternalFunction *this )
   i_ptr->has_vari_args = NO;
   i_ptr->num_work_arrays = 0;
   i_ptr->return_type = FLOAT_RETURN;
-  for (i=0; i<4; i++) {
+  for (i=0; i<NFERDIMS; i++) {
     for (j=0; j<EF_MAX_WORK_ARRAYS; j++) {
       i_ptr->work_array_lo[j][i] = 1;
       i_ptr->work_array_hi[j][i] = 1;
@@ -2980,7 +3105,7 @@ int EF_New( ExternalFunction *this )
   /* Information specific to each argument of the function */
 
   for (i=0; i<EF_MAX_ARGS; i++) {
-    for (j=0; j<4; j++) {
+    for (j=0; j<NFERDIMS; j++) {
       i_ptr->axis_implied_from[i][j] = YES;
       i_ptr->axis_extend_lo[i][j] = 0;
       i_ptr->axis_extend_hi[i][j] = 0;
@@ -2996,7 +3121,7 @@ int EF_New( ExternalFunction *this )
 }
 
 
-/* .... UtilityFunctions for dealing with GLOBAL_ExternalFunctionList .... */
+/* .... UtilityFunctions for dealing with STATIC_ExternalFunctionList .... */
 
 /*
  * Store the global values which will be needed by utility routines
@@ -3017,43 +3142,42 @@ void EF_store_globals(DFTYPE *memory_ptr, int *mr_list_ptr, int *cx_list_ptr,
 
 
 /*
- * Find an external function based on an integer id and return
- * the ef_ptr.
+ * Find an external function based on an integer id
+ * and return the pointer to the function.
+ * Returns NULL if it fails.
  */
 ExternalFunction *ef_ptr_from_id_ptr(int *id_ptr)
 {
-  static ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
+   ExternalFunction *ef_ptr;
+   int status;
 
-  /* Check if the list has been created to avoid a seg fault if called indiscriminately */
-  if ( GLOBAL_ExternalFunctionList == NULL )
-    return NULL;
+   /* Check if the list has been created to avoid a seg fault if called indiscriminately */
+   if ( STATIC_ExternalFunctionList == NULL ) {
+      return NULL;
+   }
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+   /* Search the list for the function ID */
+   status = list_traverse(STATIC_ExternalFunctionList, (char *) id_ptr, EF_ListTraverse_FoundID,
+                          (LIST_FRNT | LIST_FORW | LIST_ALTR));
+   if ( status != LIST_OK ) {
+      return NULL;
+   }
 
-  /*
-   * If the search failed, print a warning message and return.
-   */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nERROR: in ef_ptr_from_id_ptr: No external function of id %d was found.\n\n", *id_ptr);
-    return NULL;
-  }
-
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
-  
-  return ef_ptr;
+   /* Get the pointer to the function from the list */
+   ef_ptr = (ExternalFunction *) list_curr(STATIC_ExternalFunctionList); 
+   return ef_ptr;
 }
 
 
 int EF_ListTraverse_fprintf( char *data, char *curr )
 {
-  FILE *File_ptr=(FILE *)data;
-  ExternalFunction *ef_ptr=(ExternalFunction *)curr; 
-     
-  fprintf(stderr, "path = \"%s\", name = \"%s\", id = %d, internals_ptr = %d\n",
-	  ef_ptr->path, ef_ptr->name, ef_ptr->id, ef_ptr->internals_ptr);
+   FILE *File_ptr=(FILE *)data;
+   ExternalFunction *ef_ptr=(ExternalFunction *)curr; 
 
-  return TRUE;
+   fprintf(stderr, "path = \"%s\", name = \"%s\", id = %d, internals_ptr = %d\n",
+	   ef_ptr->path, ef_ptr->name, ef_ptr->id, ef_ptr->internals_ptr);
+
+   return TRUE;
 }
  
 
@@ -3158,19 +3282,19 @@ int EF_Util_setsig(char fcn_name[])
      */   
 
     if ( (fpe_handler = signal(SIGFPE, EF_signal_handler)) == SIG_ERR ) {
-      fprintf(stderr, "\nERROR in %s() catching SIGFPE.\n", fcn_name);
+      fprintf(stderr, "**ERROR in %s() catching SIGFPE.\n", fcn_name);
       return 1;
     }
     if ( (segv_handler = signal(SIGSEGV, EF_signal_handler)) == SIG_ERR ) {
-      fprintf(stderr, "\nERROR in %s() catching SIGSEGV.\n", fcn_name);
+      fprintf(stderr, "**ERROR in %s() catching SIGSEGV.\n", fcn_name);
       return 1;
     }
     if ( (int_handler = signal(SIGINT, EF_signal_handler)) == SIG_ERR ) {
-      fprintf(stderr, "\nERROR in %s() catching SIGINT.\n", fcn_name);
+      fprintf(stderr, "**ERROR in %s() catching SIGINT.\n", fcn_name);
       return 1;
     }
     if ( (bus_handler = signal(SIGBUS, EF_signal_handler)) == SIG_ERR ) {
-      fprintf(stderr, "\nERROR in %s() catching SIGBUS.\n", fcn_name);
+      fprintf(stderr, "**ERROR in %s() catching SIGBUS.\n", fcn_name);
       return 1;
     }
 
@@ -3189,19 +3313,19 @@ int EF_Util_ressig(char fcn_name[])
      * Restore the old signal handlers.
      */
     if (signal(SIGFPE, (*fpe_handler)) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in %s() restoring default SIGFPE handler.\n", fcn_name);
+      fprintf(stderr, "**ERROR in %s() restoring default SIGFPE handler.\n", fcn_name);
       return 1;
     }
     if (signal(SIGSEGV, (*segv_handler)) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in %s() restoring default SIGSEGV handler.\n", fcn_name);
+      fprintf(stderr, "**ERROR in %s() restoring default SIGSEGV handler.\n", fcn_name);
       return 1;
     }
     if (signal(SIGINT, (*int_handler)) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in %s() restoring default SIGINT handler.\n", fcn_name);
+      fprintf(stderr, "**ERROR in %s() restoring default SIGINT handler.\n", fcn_name);
       return 1;
     }
     if (signal(SIGBUS, (*bus_handler)) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in %s() restoring default SIGBUS handler.\n", fcn_name);
+      fprintf(stderr, "**ERROR in %s() restoring default SIGBUS handler.\n", fcn_name);
       return 1;
     }
     return 0;
@@ -3221,7 +3345,7 @@ int EF_Util_ressig(char fcn_name[])
  *   ACM 2-25-00 Solaris and OSF both have the trailing
  *   underscore for statically-linked routines. */
 
-void *internal_dlsym(char *name) {
+static void *internal_dlsym(char *name) {
 
 /* ffta.F */
 if ( !strcmp(name,"ffta_init_") ) return (void *)FORTRAN(ffta_init);
@@ -3484,6 +3608,30 @@ else if ( !strcmp(name,"sortl_str_result_limits_") ) return (void *)FORTRAN(sort
 else if ( !strcmp(name,"sortl_str_work_size_") ) return (void *)FORTRAN(sortl_str_work_size);
 else if ( !strcmp(name,"sortl_str_compute_") ) return (void *)FORTRAN(sortl_str_compute);
 
+/* sortm.F */
+else if ( !strcmp(name,"sortm_init_") ) return (void *)FORTRAN(sortm_init);
+else if ( !strcmp(name,"sortm_result_limits_") ) return (void *)FORTRAN(sortm_result_limits);
+else if ( !strcmp(name,"sortm_work_size_") ) return (void *)FORTRAN(sortm_work_size);
+else if ( !strcmp(name,"sortm_compute_") ) return (void *)FORTRAN(sortm_compute);
+
+/* sortm_str.F */
+else if ( !strcmp(name,"sortm_str_init_") ) return (void *)FORTRAN(sortm_str_init);
+else if ( !strcmp(name,"sortm_str_result_limits_") ) return (void *)FORTRAN(sortm_str_result_limits);
+else if ( !strcmp(name,"sortm_str_work_size_") ) return (void *)FORTRAN(sortm_str_work_size);
+else if ( !strcmp(name,"sortm_str_compute_") ) return (void *)FORTRAN(sortm_str_compute);
+
+/* sortn.F */
+else if ( !strcmp(name,"sortn_init_") ) return (void *)FORTRAN(sortn_init);
+else if ( !strcmp(name,"sortn_result_limits_") ) return (void *)FORTRAN(sortn_result_limits);
+else if ( !strcmp(name,"sortn_work_size_") ) return (void *)FORTRAN(sortn_work_size);
+else if ( !strcmp(name,"sortn_compute_") ) return (void *)FORTRAN(sortn_compute);
+
+/* sortn_str.F */
+else if ( !strcmp(name,"sortn_str_init_") ) return (void *)FORTRAN(sortn_str_init);
+else if ( !strcmp(name,"sortn_str_result_limits_") ) return (void *)FORTRAN(sortn_str_result_limits);
+else if ( !strcmp(name,"sortn_str_work_size_") ) return (void *)FORTRAN(sortn_str_work_size);
+else if ( !strcmp(name,"sortn_str_compute_") ) return (void *)FORTRAN(sortn_str_compute);
+
 /* tauto_cor.F */
 else if ( !strcmp(name,"tauto_cor_init_") ) return (void *)FORTRAN(tauto_cor_init);
 else if ( !strcmp(name,"tauto_cor_result_limits_") ) return (void *)FORTRAN(tauto_cor_result_limits);
@@ -3534,6 +3682,16 @@ else if ( !strcmp(name,"compressl_init_") ) return (void *)FORTRAN(compressl_ini
 else if ( !strcmp(name,"compressl_result_limits_") ) return (void *)FORTRAN(compressl_result_limits);
 else if ( !strcmp(name,"compressl_compute_") ) return (void *)FORTRAN(compressl_compute);
 
+/* compressm.F */
+else if ( !strcmp(name,"compressm_init_") ) return (void *)FORTRAN(compressm_init);
+else if ( !strcmp(name,"compressm_result_limits_") ) return (void *)FORTRAN(compressm_result_limits);
+else if ( !strcmp(name,"compressm_compute_") ) return (void *)FORTRAN(compressm_compute);
+
+/* compressn.F */
+else if ( !strcmp(name,"compressn_init_") ) return (void *)FORTRAN(compressn_init);
+else if ( !strcmp(name,"compressn_result_limits_") ) return (void *)FORTRAN(compressn_result_limits);
+else if ( !strcmp(name,"compressn_compute_") ) return (void *)FORTRAN(compressn_compute);
+
 /* compressi_by.F */
 else if ( !strcmp(name,"compressi_by_init_") ) return (void *)FORTRAN(compressi_by_init);
 else if ( !strcmp(name,"compressi_by_result_limits_") ) return (void *)FORTRAN(compressi_by_result_limits);
@@ -3553,6 +3711,16 @@ else if ( !strcmp(name,"compressk_by_compute_") ) return (void *)FORTRAN(compres
 else if ( !strcmp(name,"compressl_by_init_") ) return (void *)FORTRAN(compressl_by_init);
 else if ( !strcmp(name,"compressl_by_result_limits_") ) return (void *)FORTRAN(compressl_by_result_limits);
 else if ( !strcmp(name,"compressl_by_compute_") ) return (void *)FORTRAN(compressl_by_compute);
+
+/* compressm_by.F */
+else if ( !strcmp(name,"compressm_by_init_") ) return (void *)FORTRAN(compressm_by_init);
+else if ( !strcmp(name,"compressm_by_result_limits_") ) return (void *)FORTRAN(compressm_by_result_limits);
+else if ( !strcmp(name,"compressm_by_compute_") ) return (void *)FORTRAN(compressm_by_compute);
+
+/* compressn_by.F */
+else if ( !strcmp(name,"compressn_by_init_") ) return (void *)FORTRAN(compressn_by_init);
+else if ( !strcmp(name,"compressn_by_result_limits_") ) return (void *)FORTRAN(compressn_by_result_limits);
+else if ( !strcmp(name,"compressn_by_compute_") ) return (void *)FORTRAN(compressn_by_compute);
 
 /* labwid.F */
 else if ( !strcmp(name,"labwid_init_") ) return (void *)FORTRAN(labwid_init);
@@ -3574,6 +3742,14 @@ else if ( !strcmp(name,"convolvek_compute_") ) return (void *)FORTRAN(convolvek_
 /* convolvel.F */
 else if ( !strcmp(name,"convolvel_init_") ) return (void *)FORTRAN(convolvel_init);
 else if ( !strcmp(name,"convolvel_compute_") ) return (void *)FORTRAN(convolvel_compute);
+
+/* convolvem.F */
+else if ( !strcmp(name,"convolvem_init_") ) return (void *)FORTRAN(convolvem_init);
+else if ( !strcmp(name,"convolvem_compute_") ) return (void *)FORTRAN(convolvem_compute);
+
+/* convolven.F */
+else if ( !strcmp(name,"convolven_init_") ) return (void *)FORTRAN(convolven_init);
+else if ( !strcmp(name,"convolven_compute_") ) return (void *)FORTRAN(convolven_compute);
 
 /* curv_range.F */
 else if ( !strcmp(name,"curv_range_init_") ) return (void *)FORTRAN(curv_range_init);
@@ -3759,6 +3935,26 @@ else if ( !strcmp(name,"tcat_str_init_") ) return (void *)FORTRAN(tcat_str_init)
 else if ( !strcmp(name,"tcat_str_result_limits_") ) return (void *)FORTRAN(tcat_str_result_limits);
 else if ( !strcmp(name,"tcat_str_compute_") ) return (void *)FORTRAN(tcat_str_compute);
 
+/* ecat.F */
+else if ( !strcmp(name,"ecat_init_") ) return (void *)FORTRAN(ecat_init);
+else if ( !strcmp(name,"ecat_result_limits_") ) return (void *)FORTRAN(ecat_result_limits);
+else if ( !strcmp(name,"ecat_compute_") ) return (void *)FORTRAN(ecat_compute);
+
+/* ecat_str.F */
+else if ( !strcmp(name,"ecat_str_init_") ) return (void *)FORTRAN(ecat_str_init);
+else if ( !strcmp(name,"ecat_str_result_limits_") ) return (void *)FORTRAN(ecat_str_result_limits);
+else if ( !strcmp(name,"ecat_str_compute_") ) return (void *)FORTRAN(ecat_str_compute);
+
+/* fcat.F */
+else if ( !strcmp(name,"fcat_init_") ) return (void *)FORTRAN(fcat_init);
+else if ( !strcmp(name,"fcat_result_limits_") ) return (void *)FORTRAN(fcat_result_limits);
+else if ( !strcmp(name,"fcat_compute_") ) return (void *)FORTRAN(fcat_compute);
+
+/* fcat_str.F */
+else if ( !strcmp(name,"fcat_str_init_") ) return (void *)FORTRAN(fcat_str_init);
+else if ( !strcmp(name,"fcat_str_result_limits_") ) return (void *)FORTRAN(fcat_str_result_limits);
+else if ( !strcmp(name,"fcat_str_compute_") ) return (void *)FORTRAN(fcat_str_compute);
+
 /* xreverse.F */
 else if ( !strcmp(name,"xreverse_init_") ) return (void *)FORTRAN(xreverse_init);
 else if ( !strcmp(name,"xreverse_result_limits_") ) return (void *)FORTRAN(xreverse_result_limits);
@@ -3778,6 +3974,16 @@ else if ( !strcmp(name,"zreverse_compute_") ) return (void *)FORTRAN(zreverse_co
 else if ( !strcmp(name,"treverse_init_") ) return (void *)FORTRAN(treverse_init);
 else if ( !strcmp(name,"treverse_result_limits_") ) return (void *)FORTRAN(treverse_result_limits);
 else if ( !strcmp(name,"treverse_compute_") ) return (void *)FORTRAN(treverse_compute);
+
+/* ereverse.F */
+else if ( !strcmp(name,"ereverse_init_") ) return (void *)FORTRAN(ereverse_init);
+else if ( !strcmp(name,"ereverse_result_limits_") ) return (void *)FORTRAN(ereverse_result_limits);
+else if ( !strcmp(name,"ereverse_compute_") ) return (void *)FORTRAN(ereverse_compute);
+
+/* freverse.F */
+else if ( !strcmp(name,"freverse_init_") ) return (void *)FORTRAN(freverse_init);
+else if ( !strcmp(name,"freverse_result_limits_") ) return (void *)FORTRAN(freverse_result_limits);
+else if ( !strcmp(name,"freverse_compute_") ) return (void *)FORTRAN(freverse_compute);
 
 /* zaxreplace_avg.F */
 else if ( !strcmp(name,"zaxreplace_avg_init_") ) return (void *)FORTRAN(zaxreplace_avg_init);
@@ -3884,6 +4090,7 @@ else if ( !strcmp(name,"write_webrow_init_") ) return (void *)FORTRAN(write_webr
 else if ( !strcmp(name,"write_webrow_result_limits_") ) return (void *)FORTRAN(write_webrow_result_limits);
 else if ( !strcmp(name,"write_webrow_compute_") ) return (void *)FORTRAN(write_webrow_compute);
 
+return NULL;
  }
 /*  End of function pointer list for internally-linked External Functions
  *  ------------------------------------ */

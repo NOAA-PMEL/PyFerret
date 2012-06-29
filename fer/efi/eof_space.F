@@ -97,6 +97,7 @@
 
       SUBROUTINE eof_space_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -109,25 +110,28 @@
 
       CALL ef_set_num_args(id, 2)
 
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .      IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, ABSTRACT)
-
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
-
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, ABSTRACT,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
       CALL ef_set_num_work_arrays(id, 9)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
-      CALL ef_set_arg_desc(id, arg,'Variable in x,y,t; may be fcn of z')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, NO)
+      CALL ef_set_arg_desc(id, arg,
+     .                     'Variable in x,y,t; may be fcn of z,e,f')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, YES, NO, YES, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'frac_timeser')
       CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_desc(id, arg,
      . 'Use only those time series with this fraction valid data')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -148,12 +152,14 @@
 
       SUBROUTINE eof_space_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
 * **********************************************************************
 *                                           USER CONFIGURABLE PORTION |
@@ -167,7 +173,7 @@
 *     Use utility functions to get context information about the 
 *     1st argument, to set the abstract axis lo and hi indices.
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       nx = arg_hi_ss(X_AXIS, ARG1) - arg_lo_ss(X_AXIS, ARG1) + 1
       ny = arg_hi_ss(Y_AXIS, ARG1) - arg_lo_ss(Y_AXIS, ARG1) + 1
@@ -191,6 +197,7 @@
 *
       SUBROUTINE eof_space_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -202,18 +209,21 @@
 *                                                                      V
 
 *
-* Set the work arrays,  X/Y/Z/T dimensions
+* Set the work arrays, X/Y/Z/T/E/F dimensions
 *
-* ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+* ef_set_work_array_dims_6d(id, array #,
+*                           xlo, ylo, zlo, tlo, elo, flo,
+*                           xhi, yhi, zhi, thi, ehi, fhi)
 *
       COMMON /EOFXYSTOR/ mx
       INTEGER mx1, my1, mt1, mx, mxmt, mxmx
 
       INTEGER iwork
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       mx1 = 1 + arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1)
       my1 = 1 + arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1)
@@ -221,52 +231,61 @@
 
       mx = mx1 * my1 + 10
       mxmt = mx * mt1 + 10
-      mxmx = mx* mx + 10
+      mxmx = mx * mx + 10
 
 *  val
       iwork = 1
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   mx, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                               mx, 1, 1, 1, 1, 1)
 
 *  taf
       iwork = 2
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   mxmt, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                             mxmt, 1, 1, 1, 1, 1)
 
 *  pct
       iwork = 3
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   mx, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                               mx, 1, 1, 1, 1, 1)
 
 *  vec
       iwork = 4
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   mxmx, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                             mxmx, 1, 1, 1, 1, 1)
 
 *  c
       iwork = 5
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   mxmx, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                             mxmx, 1, 1, 1, 1, 1)
 
 *  ddat_1d
       iwork = 6
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   mxmt, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                             mxmt, 1, 1, 1, 1, 1)
 
 *  isave_jsave
       iwork = 7
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   mx, 2, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                               mx, 2, 1, 1, 1, 1)
 
 *  ok
       iwork = 8
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   mx1, my1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1,   1, 1, 1, 1, 1,
+     .                              mx1, my1, 1, 1, 1, 1)
 
 *  eofwork
       iwork = 9
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   mx, 10, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1,  1, 1, 1, 1, 1,
+     .                               mx, 10, 1, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -298,7 +317,7 @@
 *  eofwork	used by QRSYM and other solver routines; replaces
 *		original ALPHA, BETA, BB, and P arrays.
 
-
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -307,63 +326,73 @@
       COMMON /EOFXYSTOR/ mx
       INTEGER mx
 
-      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
-     .     mem1lot:mem1hit)
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
       REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
-     .     mem2lot:mem2hit)
+     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
-     .     memresloz:memreshiz, memreslot:memreshit)
-
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
 *  Dimension the work arrays.
 
       REAL val(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
-     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
+     .         wrk1loz:wrk1hiz, wrk1lot:wrk1hit,
+     .         wrk1loe:wrk1hie, wrk1lof:wrk1hif)
       REAL taf(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
-     .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
+     .         wrk2loz:wrk2hiz, wrk2lot:wrk2hit,
+     .         wrk2loe:wrk2hie, wrk2lof:wrk2hif)
       REAL pct(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
-     .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
+     .         wrk3loz:wrk3hiz, wrk3lot:wrk3hit,
+     .         wrk3loe:wrk3hie, wrk3lof:wrk3hif)
       REAL vec(wrk4lox:wrk4hix, wrk4loy:wrk4hiy,
-     .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
+     .         wrk4loz:wrk4hiz, wrk4lot:wrk4hit,
+     .         wrk4loe:wrk4hie, wrk4lof:wrk4hif)
       REAL c(wrk5lox:wrk5hix, wrk5loy:wrk5hiy,
-     .               wrk5loz:wrk5hiz, wrk5lot:wrk5hit)
-
+     .       wrk5loz:wrk5hiz, wrk5lot:wrk5hit,
+     .       wrk5loe:wrk5hie, wrk5lof:wrk5hif)
       REAL ddat_1d(wrk6lox:wrk6hix, wrk6loy:wrk6hiy,
-     .               wrk6loz:wrk6hiz, wrk6lot:wrk6hit)
+     .             wrk6loz:wrk6hiz, wrk6lot:wrk6hit,
+     .             wrk6loe:wrk6hie, wrk6lof:wrk6hif)
       REAL isave_jsave(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
-     .               wrk7loz:wrk7hiz, wrk7lot:wrk7hit)
+     .                 wrk7loz:wrk7hiz, wrk7lot:wrk7hit,
+     .                 wrk7loe:wrk7hie, wrk7lof:wrk7hif)
       REAL ok(wrk8lox:wrk8hix, wrk8loy:wrk8hiy,
-     .               wrk8loz:wrk8hiz, wrk8lot:wrk8hit)
+     .        wrk8loz:wrk8hiz, wrk8lot:wrk8hit,
+     .        wrk8loe:wrk8hie, wrk8lof:wrk8hif)
       REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
-     .               wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
+     .             wrk9loz:wrk9hiz, wrk9lot:wrk9hit,
+     .             wrk9loe:wrk9hie, wrk9lof:wrk9hif)
 
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
+* information for each variable''s axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 ************************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
 
-      INTEGER neof, max_neof, ier
+      INTEGER neof, ier
       CHARACTER*255 err_msg, err_out
 
-      INTEGER nx, ny, nt, i, j, k, l, k1, iw, jw, kw, lw
+      INTEGER nx, ny, nt, k, m, n, k1, m1, n1,
+     .        iw, jw, kw, lw, mw, nw
       REAL frac_timeser
 
-c      DATA max_neof/4000/        ! size of work arrays within the EOF solver
-
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
 *  get array sizes
@@ -375,79 +404,104 @@ c      DATA max_neof/4000/        ! size of work arrays within the EOF solver
 *  Get time percent parameter.
 
       frac_timeser = arg_2(arg_lo_ss(X_AXIS,ARG2), 
-     .            arg_lo_ss(Y_AXIS,ARG2), arg_lo_ss(Z_AXIS,ARG2), 
-     .            arg_lo_ss(T_AXIS,ARG2))
+     .                     arg_lo_ss(Y_AXIS,ARG2),
+     .                     arg_lo_ss(Z_AXIS,ARG2), 
+     .                     arg_lo_ss(T_AXIS,ARG2),
+     .                     arg_lo_ss(E_AXIS,ARG2),
+     .                     arg_lo_ss(F_AXIS,ARG2))
 
+*  Compute EOF for each depth, ensemble, forecast
 
-*  Compute EOF for each depth
+      n1 = arg_lo_ss(F_AXIS,ARG1)
+      DO 300 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+
+      m1 = arg_lo_ss(E_AXIS,ARG1)
+      DO 200 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
 
       k1 = arg_lo_ss(Z_AXIS,ARG1)
       DO 100 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-
 *  Initialize work arrays.
 
-         DO 701 iw = wrk1lox,wrk1hix
-         DO 701 jw = wrk1loy,wrk1hiy
-         DO 701 kw = wrk1loz,wrk1hiz 
+         DO 701 nw = wrk1lof,wrk1hif
+         DO 701 mw = wrk1loe,wrk1hie
          DO 701 lw = wrk1lot,wrk1hit
-            val(iw,jw,kw,lw) = 0.
+         DO 701 kw = wrk1loz,wrk1hiz 
+         DO 701 jw = wrk1loy,wrk1hiy
+         DO 701 iw = wrk1lox,wrk1hix
+            val(iw,jw,kw,lw,mw,nw) = 0.
   701    CONTINUE
 
-         DO 702 iw = wrk2lox,wrk2hix
-         DO 702 jw = wrk2loy,wrk2hiy
-         DO 702 kw = wrk2loz,wrk2hiz 
+         DO 702 nw = wrk2lof,wrk2hif
+         DO 702 mw = wrk2loe,wrk2hie
          DO 702 lw = wrk2lot,wrk2hit
-            taf(iw,jw,kw,lw) = 0.
+         DO 702 kw = wrk2loz,wrk2hiz 
+         DO 702 jw = wrk2loy,wrk2hiy
+         DO 702 iw = wrk2lox,wrk2hix
+            taf(iw,jw,kw,lw,mw,nw) = 0.
   702    CONTINUE
 
-         DO 703 iw = wrk3lox,wrk3hix
-         DO 703 jw = wrk3loy,wrk3hiy
-         DO 703 kw = wrk3loz,wrk3hiz 
+         DO 703 nw = wrk3lof,wrk3hif
+         DO 703 mw = wrk3loe,wrk3hie
          DO 703 lw = wrk3lot,wrk3hit
-            pct(iw,jw,kw,lw) = 0.
+         DO 703 kw = wrk3loz,wrk3hiz 
+         DO 703 jw = wrk3loy,wrk3hiy
+         DO 703 iw = wrk3lox,wrk3hix
+            pct(iw,jw,kw,lw,mw,nw) = 0.
   703    CONTINUE
 
-         DO 704 iw = wrk4lox,wrk4hix
-         DO 704 jw = wrk4loy,wrk4hiy
-         DO 704 kw = wrk4loz,wrk4hiz 
+         DO 704 nw = wrk4lof,wrk4hif
+         DO 704 mw = wrk4loe,wrk4hie
          DO 704 lw = wrk4lot,wrk4hit
-            vec(iw,jw,kw,lw) = 0.
+         DO 704 kw = wrk4loz,wrk4hiz 
+         DO 704 jw = wrk4loy,wrk4hiy
+         DO 704 iw = wrk4lox,wrk4hix
+            vec(iw,jw,kw,lw,mw,nw) = 0.
   704    CONTINUE
 
-         DO 705 iw = wrk5lox,wrk5hix
-         DO 705 jw = wrk5loy,wrk5hiy
-         DO 705 kw = wrk5loz,wrk5hiz 
+         DO 705 nw = wrk5lof,wrk5hif
+         DO 705 mw = wrk5loe,wrk5hie
          DO 705 lw = wrk5lot,wrk5hit
-            c(iw,jw,kw,lw) = 0.
+         DO 705 kw = wrk5loz,wrk5hiz 
+         DO 705 jw = wrk5loy,wrk5hiy
+         DO 705 iw = wrk5lox,wrk5hix
+            c(iw,jw,kw,lw,mw,nw) = 0.
   705    CONTINUE
 
-         DO 706 iw = wrk6lox,wrk6hix
-         DO 706 jw = wrk6loy,wrk6hiy
-         DO 706 kw = wrk6loz,wrk6hiz 
+         DO 706 nw = wrk6lof,wrk6hif
+         DO 706 mw = wrk6loe,wrk6hie
          DO 706 lw = wrk6lot,wrk6hit
-            ddat_1d(iw,jw,kw,lw) = 0.
+         DO 706 kw = wrk6loz,wrk6hiz 
+         DO 706 jw = wrk6loy,wrk6hiy
+         DO 706 iw = wrk6lox,wrk6hix
+            ddat_1d(iw,jw,kw,lw,mw,nw) = 0.
   706    CONTINUE
 
-         DO 707 iw = wrk7lox,wrk7hix
-         DO 707 jw = wrk7loy,wrk7hiy
-         DO 707 kw = wrk7loz,wrk7hiz 
+         DO 707 nw = wrk7lof,wrk7hif
+         DO 707 mw = wrk7loe,wrk7hie
          DO 707 lw = wrk7lot,wrk7hit
-            isave_jsave(iw,jw,kw,lw) = 0.
+         DO 707 kw = wrk7loz,wrk7hiz 
+         DO 707 jw = wrk7loy,wrk7hiy
+         DO 707 iw = wrk7lox,wrk7hix
+            isave_jsave(iw,jw,kw,lw,mw,nw) = 0.
   707    CONTINUE
 
-         DO 708 iw = wrk8lox,wrk8hix
-         DO 708 jw = wrk8loy,wrk8hiy
-         DO 708 kw = wrk8loz,wrk8hiz 
+         DO 708 nw = wrk8lof,wrk8hif
+         DO 708 mw = wrk8loe,wrk8hie
          DO 708 lw = wrk8lot,wrk8hit
-            ok(iw,jw,kw,lw) = 0.
+         DO 708 kw = wrk8loz,wrk8hiz 
+         DO 708 jw = wrk8loy,wrk8hiy
+         DO 708 iw = wrk8lox,wrk8hix
+            ok(iw,jw,kw,lw,mw,nw) = 0.
   708    CONTINUE
 
-         DO 709 iw = wrk9lox,wrk9hix
-         DO 709 jw = wrk9loy,wrk9hiy
-         DO 709 kw = wrk9loz,wrk9hiz 
+         DO 709 nw = wrk9lof,wrk9hif
+         DO 709 mw = wrk9loe,wrk9hie
          DO 709 lw = wrk9lot,wrk9hit
-            eofwork(iw,jw,kw,lw) = 0.
+         DO 709 kw = wrk9loz,wrk9hiz 
+         DO 709 jw = wrk9loy,wrk9hiy
+         DO 709 iw = wrk9lox,wrk9hix
+            eofwork(iw,jw,kw,lw,mw,nw) = 0.
   709    CONTINUE
 
 
@@ -457,118 +511,118 @@ c      DATA max_neof/4000/        ! size of work arrays within the EOF solver
 *  working around continental boundaries or other areas where 
 *  entire time series are missing)
 
-         CALL count_neof (id, arg_1, neof, ok, nx, ny,  k1, nt, mx, 
-     .       bad_flag(ARG1), frac_timeser, err_msg, ier)
-
-c         IF (neof .GT. max_neof) THEN
-c            WRITE (err_msg, 5600) neof, max_neof 
-c 5600       FORMAT ('Number of EOFs too large:', I8, 
-c     .              ' Reduce NX*NY. Max is', i5)
-c            ier = 1
-c         ENDIF
-
+         CALL count_neof (arg_1, neof, ok, nx, ny, nt, k1, m1, n1,
+     .                    arg_lo_ss, arg_hi_ss, arg_incr, mx,
+     .                    bad_flag(ARG1), frac_timeser, err_msg, ier)
          IF (ier .NE. 0) then
             GOTO 5010
          ENDIF
 
 *  Put the data into the array ddat_1d(neof,nt) 
 
-         CALL pack_ef (id, arg_1, ddat_1d, isave_jsave, neof,  
-     .                 ok, frac_timeser, nx, ny,  k1, nt)
+         CALL pack_ef (arg_1, ddat_1d, isave_jsave, neof,  
+     .                 ok, frac_timeser, nx, ny, nt, k1, m1, n1,
+     .                 arg_lo_ss, arg_hi_ss, arg_incr)
 
 *  Solve for the EOF's: eigenvectors, time functions, percent variance explained.
 
-         CALL solve_eof_space (ddat_1d, neof, nt, k, val, vec, 
-     .      taf, pct, c, result, isave_jsave, eofwork, bad_flag(ARG1),
-     .      bad_flag_result, frac_timeser, err_msg, ier)
-         IF (ier .ne. 0) GOTO 5020
+         CALL solve_eof_space (ddat_1d, neof, nt, k, m, n, val, vec, 
+     .            taf, pct, c, result, isave_jsave, eofwork, res_lo_ss,
+     .            res_hi_ss, res_incr, bad_flag(ARG1), bad_flag_result,
+     .            frac_timeser, err_msg, ier)
+         IF (ier .NE. 0) GOTO 5020
 
          k1 = k1 + arg_incr(Z_AXIS,ARG1)
   100 CONTINUE
-
+         m1 = m1 + arg_incr(E_AXIS,ARG1)
+  200 CONTINUE
+         n1 = n1 + arg_incr(F_AXIS,ARG1)
+  300 CONTINUE
 
       RETURN
 
  5010 CALL ef_bail_out (id, err_msg)
       RETURN
 
- 5020 WRITE (err_out, 5500) k1, err_msg 
- 5500 FORMAT ('k=', I3, A250)
+ 5020 WRITE (err_out, 5500) k, m, n, err_msg 
+ 5500 FORMAT ('k,m,n=', 3I3, A250)
       CALL ef_bail_out (id, err_out)
       RETURN
 
       END
 
-      SUBROUTINE solve_eof_space (ddat_1d, neof, nt, k, val, vec, 
-     .      taf, pct, c, result, isave_jsave, eofwork, bad_flag_dat, 
-     .      bad_flag_result, frac_timeser, err_msg, ier)
+***********************************************************************
 
+      SUBROUTINE solve_eof_space (ddat_1d, neof, nt, k, m, n, val, vec, 
+     .            taf, pct, c, result, isave_jsave, eofwork, res_lo_ss,
+     .            res_hi_ss, res_incr, bad_flag_dat, bad_flag_result, 
+     .            frac_timeser, err_msg, ier)
+
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER id
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-
-      REAL result(memreslox:memreshix, memresloy:memreshiy, 
-     .     memresloz:memreshiz, memreslot:memreshit)
-
-      REAL bad_flag_dat, bad_flag_result, frac_timeser
-      INTEGER neof, nt, ier
-      INTEGER i, j, k, l, n, m, is, js
-
-      REAL isave_jsave(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
-     .               wrk7loz:wrk7hiz, wrk7lot:wrk7hit)
-      REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
-     .               wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
-
+* arguments
+      INTEGER neof, nt, k, m, n
+      REAL ddat_1d(neof,nt)
       REAL val(*)
+      REAL vec(neof, neof)
       REAL taf(neof, nt)
       REAL pct(*)
-      REAL vec(neof, neof)
       REAL c(neof, neof)
-
-      REAL ddat_1d(neof,nt)
-
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
+      REAL isave_jsave(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
+     .                 wrk7loz:wrk7hiz, wrk7lot:wrk7hit,
+     .                 wrk7loe:wrk7hie, wrk7lof:wrk7hif)
+      REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
+     .             wrk9loz:wrk9hiz, wrk9lot:wrk9hit,
+     .             wrk9loe:wrk9hie, wrk9lof:wrk9hif)
+      INTEGER res_lo_ss(6), res_hi_ss(6), res_incr(6)
+      REAL bad_flag_dat, bad_flag_result, frac_timeser
       CHARACTER*(*) err_msg
+      INTEGER ier
 
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
+* local variables
+      INTEGER i, j, l, mm, nn, is, js
 
       IF (frac_timeser .LT. 1.) THEN
          CALL EOFIN_CHEL_GAP (ddat_1d, neof, nt, val, vec, taf, pct, c, 
-     .      eofwork, bad_flag_dat, bad_flag_result, err_msg, ier)
+     .            eofwork, bad_flag_dat, bad_flag_result, err_msg, ier)
+         IF (ier .NE. 0) RETURN
       ELSE
-	 CALL EOFIN(ddat_1d,neof,NT,VAL,VEC,TAF,PCT,C,eofwork)
+         CALL EOFIN(ddat_1d, neof, nt, val, vec, taf, pct, c, eofwork)
       ENDIF
 
 *  Result is the eigenvectors.
 
-      DO 130 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-         DO 120 j =  res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-            DO 100 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-               result(i,j,k,l) = bad_flag_result
-  100       CONTINUE
+      DO 130 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+         DO 120 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+            DO 110 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+               result(i,j,k,l,m,n) = bad_flag_result
+  110       CONTINUE
   120    CONTINUE
   130 CONTINUE
 
+      DO 220 nn = 1, neof
+         DO 210 mm = 1, neof
+            IF (res_lo_ss(X_AXIS) .EQ. ef_unspecified_int4) THEN
+               is = ef_unspecified_int4
+            ELSE
+               is = res_lo_ss(X_AXIS) + isave_jsave(mm,1,1,1,1,1) - 1
+            ENDIF
 
-      DO 400 n = 1, neof
-         DO 300 m = 1, neof
-            is = res_lo_ss(X_AXIS) + isave_jsave(m,1,1,1) - 1
-            IF (res_lo_ss(X_AXIS) .EQ. ef_unspecified_int4)
-     .        is = ef_unspecified_int4
+            IF (res_lo_ss(Y_AXIS) .EQ. ef_unspecified_int4) THEN
+               js = ef_unspecified_int4
+            ELSE
+               js = res_lo_ss(Y_AXIS) + isave_jsave(mm,2,1,1,1,1) - 1
+            ENDIF
 
-            js = res_lo_ss(Y_AXIS) + isave_jsave(m,2,1,1) - 1
-            IF (res_lo_ss(Y_AXIS) .EQ. ef_unspecified_int4)
-     .        js = ef_unspecified_int4
+            result(is,js,k,nn,m,n) = vec(mm,nn)
 
-            result(is,js,k,n) = vec(m,n)
-
-  300    CONTINUE
-  400 CONTINUE
+  210    CONTINUE
+  220 CONTINUE
 
       RETURN
-      
-  999 CONTINUE
-      RETURN
-
       END

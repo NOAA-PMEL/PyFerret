@@ -7,7 +7,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -46,8 +46,10 @@
 *
 * V200:  6/1/89
 *	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -55,24 +57,17 @@
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
 	REAL	arg, buff(*),
-     .		com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
+     .          com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * internal variable declarations:
-	INTEGER i, j, k, l, pt
+	INTEGER i, j, k, l, m, n, pt
 	REAL	bad_res, minmum
 
 * internal parameter declaration
@@ -81,7 +76,7 @@
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
-     .				( 'doing',isact_class_trans, res_cx, idim )
+     .				( 'doing', isact_class_trans, res_cx, idim )
 
 * initialize
 	pt   = cx_lo_ss( res_cx, idim )
@@ -89,75 +84,127 @@
 
 * ALONG X AXIS
 	IF ( idim .EQ. x_dim ) THEN
+	   DO 110 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 110 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 110 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 110 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 110 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	      minmum = too_large
 	      DO 100 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-	         IF ( com(i,j,k,l) .EQ. bad_res ) GOTO 100
-	         IF ( com(i,j,k,l) .LT. minmum ) minmum = com(i,j,k,l)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 100
+	         IF ( com(i,j,k,l,m,n) .LT. minmum )
+     .              minmum = com(i,j,k,l,m,n)
  100	      CONTINUE
 	      IF ( minmum .EQ. too_large ) THEN
-	         res(pt,j,k,l) = bad_res
+	         res(pt,j,k,l,m,n) = bad_res
 	      ELSE
-	         res(pt,j,k,l) = minmum
+	         res(pt,j,k,l,m,n) = minmum
 	      ENDIF
  110	   CONTINUE
 
 * ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
+	   DO 210 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 210 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 210 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 210 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 210 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	      minmum = too_large
 	      DO 200 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	         IF ( com(i,j,k,l) .EQ. bad_res ) GOTO 200
-	         IF ( com(i,j,k,l) .LT. minmum ) minmum = com(i,j,k,l)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 200
+	         IF ( com(i,j,k,l,m,n) .LT. minmum )
+     .              minmum = com(i,j,k,l,m,n)
  200	      CONTINUE
 	      IF ( minmum .EQ. too_large ) THEN
-	         res(i,pt,k,l) = bad_res
+	         res(i,pt,k,l,m,n) = bad_res
 	      ELSE
-	         res(i,pt,k,l) = minmum
+	         res(i,pt,k,l,m,n) = minmum
 	      ENDIF
  210	   CONTINUE
 
 * ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
+	   DO 310 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 310 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 310 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 310 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 310 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	      minmum = too_large
 	      DO 300 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	         IF ( com(i,j,k,l) .EQ. bad_res ) GOTO 300
-	         IF ( com(i,j,k,l) .LT. minmum ) minmum = com(i,j,k,l)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 300
+	         IF ( com(i,j,k,l,m,n) .LT. minmum )
+     .              minmum = com(i,j,k,l,m,n)
  300	      CONTINUE
 	      IF ( minmum .EQ. too_large ) THEN
-	         res(i,j,pt,l) = bad_res
+	         res(i,j,pt,l,m,n) = bad_res
 	      ELSE
-	         res(i,j,pt,l) = minmum
+	         res(i,j,pt,l,m,n) = minmum
 	      ENDIF
  310	   CONTINUE
 
 * ALONG T AXIS
-	ELSE
+	ELSEIF ( idim .EQ. t_dim ) THEN
+	   DO 410 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 410 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 410 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 410 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 410 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	      minmum = too_large
 	      DO 400 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	         IF ( com(i,j,k,l) .EQ. bad_res ) GOTO 400
-	         IF ( com(i,j,k,l) .LT. minmum ) minmum = com(i,j,k,l)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 400
+	         IF ( com(i,j,k,l,m,n) .LT. minmum )
+     .              minmum = com(i,j,k,l,m,n)
  400	      CONTINUE
 	      IF ( minmum .EQ. too_large ) THEN
-	         res(i,j,k,pt) = bad_res
+	         res(i,j,k,pt,m,n) = bad_res
 	      ELSE
-	         res(i,j,k,pt) = minmum
+	         res(i,j,k,pt,m,n) = minmum
 	      ENDIF
  410	   CONTINUE
+
+* ALONG E AXIS
+	ELSEIF ( idim .EQ. e_dim ) THEN
+	   DO 510 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 510 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO 510 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO 510 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO 510 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	      minmum = too_large
+	      DO 500 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 500
+	         IF ( com(i,j,k,l,m,n) .LT. minmum )
+     .              minmum = com(i,j,k,l,m,n)
+ 500	      CONTINUE
+	      IF ( minmum .EQ. too_large ) THEN
+	         res(i,j,k,l,pt,n) = bad_res
+	      ELSE
+	         res(i,j,k,l,pt,n) = minmum
+	      ENDIF
+ 510	   CONTINUE
+
+* ALONG F AXIS
+	ELSEIF ( idim .EQ. f_dim ) THEN
+	   DO 610 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO 610 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO 610 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO 610 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO 610 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	      minmum = too_large
+	      DO 600 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx) 
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 600
+	         IF ( com(i,j,k,l,m,n) .LT. minmum )
+     .              minmum = com(i,j,k,l,m,n)
+ 600	      CONTINUE
+	      IF ( minmum .EQ. too_large ) THEN
+	         res(i,j,k,l,m,pt) = bad_res
+	      ELSE
+	         res(i,j,k,l,m,pt) = minmum
+	      ENDIF
+ 610	   CONTINUE
 
 	ENDIF
 
 	DO_MIN = ferr_ok
 
 	RETURN
-	END	
+	END

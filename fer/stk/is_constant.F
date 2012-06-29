@@ -47,7 +47,9 @@
 *	11/30/89 - added diagnostic output
 * V312: 5/94 - array "memory" as a calling argument
 * V554  1/04 - *acm* remove VAX common statements.
-
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+ 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'

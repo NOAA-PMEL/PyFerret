@@ -77,6 +77,7 @@
 
       SUBROUTINE date1900_init (id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -91,10 +92,11 @@
 
       CALL ef_set_num_args(id, 1)
 
-      CALL ef_set_axis_inheritance(id,  NORMAL, NORMAL, 
-     .                                  NORMAL,   NORMAL)
-
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                NORMAL, NORMAL,
+     .                                NORMAL, NORMAL,
+     .                                NORMAL, NORMAL)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
       CALL ef_set_num_work_arrays(id, 0)
 
@@ -105,7 +107,8 @@
       CALL ef_set_arg_unit(id, arg, 'none')
       CALL ef_set_arg_desc(id, arg,
      .         'dd-MMM-yy or dd-MMM-yyyy  (e.g. "20-Dec-00")')
-      CALL ef_set_axis_influence (id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
 *                                                                      ^
 *                                                                      |
@@ -129,6 +132,7 @@
 
       SUBROUTINE date1900_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id
@@ -153,6 +157,7 @@
 *
       SUBROUTINE date1900_compute (id, arg_1, result)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -164,21 +169,16 @@
 #endif
 
       INTEGER id
-      REAL bad_flag_result
-      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
-     .     mem1lot:mem1hit)
+
+      REAL arg_1(strdf,
+     .           mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
-     .     memresloz:memreshiz, memreslot:memreshit)
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
-* After initialization, the 'res_' arrays contain indexing information 
-* for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
-
-!      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-!      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-!     .     arg_incr(4,EF_MAX_ARGS)
- 
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 ************************************************************************
 *                                            USER CONFIGURABLE PORTION |
@@ -187,25 +187,23 @@
 
         INTEGER slen
         CHARACTER str_date*12
-c        REAL DATE_DECODE, res
         REAL res
         INTEGER TM_LENSTR1
 
-* NOTE: THIS ROUTINE NEEDS TO BE UPDATES WHEN FERRET SUPPORTS GRIDS OF STRINGS
+        CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
         CALL ef_get_arg_string(id, 1, str_date)
 
 * make it a null-terminated string
         slen = MIN(TM_LENSTR1(str_date)+1,12)
         str_date(slen:slen) = CHAR(0)
 
-c        res = DATE_DECODE(str_date)
         CALL DATE_DECODE(str_date, res)
         IF ( res .EQ. -1E34 ) THEN
-          result(memreslox,memresloy,memresloz,memreslot) =
-     .                  bad_flag_result
+          result(memreslox, memresloy, memresloz,
+     .           memreslot, memresloe, memreslof) = bad_flag_result
         ELSE
-          result(memreslox,memresloy,memresloz,memreslot) =
-     .                  res
+          result(memreslox, memresloy, memresloz,
+     .           memreslot, memresloe, memreslof) = res
         ENDIF
 
 *                                                                      ^

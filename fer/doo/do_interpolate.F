@@ -7,7 +7,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -50,8 +50,10 @@
 *
 * V200:  6/1/89
 *	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -59,30 +61,23 @@
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	axis, com_mr, com_cx, res_mr, res_cx
 	REAL	arg, work(*),
-     .		com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
+     .          com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * internal variable declarations:
-	INTEGER i, j, k, l, ss, ss_lo, ss_hi
+	INTEGER i, j, k, l, m, n, ss, ss_lo, ss_hi
 	REAL	bad, delta, c_lo, c_hi, z_lo, z_hi
 	REAL*8	TM_WORLD, ww, ww_lo, ww_hi
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
-     .				( 'doing',isact_class_trans, res_cx, axis )
+     .				( 'doing', isact_class_trans, res_cx, axis )
 
 * flags for bad/missing data
         bad = mr_bad_data(res_mr)
@@ -109,82 +104,133 @@
 * ( separate loops for each axis )
 	IF ( axis .EQ. x_dim ) THEN
 
+	   DO 100 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 100 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 100 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 100 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 100 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 
 * source data points
-	      z_lo = com(ss_lo,j,k,l)
-	      z_hi = com(ss_hi,j,k,l)
+	      z_lo = com(ss_lo,j,k,l,m,n)
+	      z_hi = com(ss_hi,j,k,l,m,n)
 
 * interpolate
 	      IF (z_lo .EQ. bad .OR. z_hi .EQ. bad ) THEN
-	         res(ss,j,k,l) = bad
+	         res(ss,j,k,l,m,n) = bad
 	      ELSE
-	         res(ss,j,k,l) = c_lo*z_lo + c_hi*z_hi
+	         res(ss,j,k,l,m,n) = c_lo*z_lo + c_hi*z_hi
 	      ENDIF
 
  100	   CONTINUE
 
 	ELSEIF ( axis .EQ. y_dim ) THEN
 
+	   DO 200 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 200 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 200 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 200 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 200 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 
 * source data points
-	      z_lo = com(i,ss_lo,k,l)
-	      z_hi = com(i,ss_hi,k,l)
+	      z_lo = com(i,ss_lo,k,l,m,n)
+	      z_hi = com(i,ss_hi,k,l,m,n)
 
 * interpolate
 	      IF (z_lo .EQ. bad .OR. z_hi .EQ. bad ) THEN
-	         res(i,ss,k,l) = bad
+	         res(i,ss,k,l,m,n) = bad
 	      ELSE
-	         res(i,ss,k,l) = c_lo*z_lo + c_hi*z_hi
+	         res(i,ss,k,l,m,n) = c_lo*z_lo + c_hi*z_hi
 	      ENDIF
 
  200	   CONTINUE
 
 	ELSEIF ( axis .EQ. z_dim ) THEN
 
+	   DO 300 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 300 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 300 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 300 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 300 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 
 * source data points
-	      z_lo = com(i,j,ss_lo,l)
-	      z_hi = com(i,j,ss_hi,l)
+	      z_lo = com(i,j,ss_lo,l,m,n)
+	      z_hi = com(i,j,ss_hi,l,m,n)
 
 * interpolate
 	      IF (z_lo .EQ. bad .OR. z_hi .EQ. bad ) THEN
-	         res(i,j,ss,l) = bad
+	         res(i,j,ss,l,m,n) = bad
 	      ELSE
-	         res(i,j,ss,l) = c_lo*z_lo + c_hi*z_hi
+	         res(i,j,ss,l,m,n) = c_lo*z_lo + c_hi*z_hi
 	      ENDIF
 
  300	   CONTINUE
 
 	ELSEIF ( axis .EQ. t_dim ) THEN
 
+	   DO 400 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 400 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 400 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 400 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 400 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 
 * source data points
-	      z_lo = com(i,j,k,ss_lo)
-	      z_hi = com(i,j,k,ss_hi)
+	      z_lo = com(i,j,k,ss_lo,m,n)
+	      z_hi = com(i,j,k,ss_hi,m,n)
 
 * interpolate
 	      IF (z_lo .EQ. bad .OR. z_hi .EQ. bad ) THEN
-	         res(i,j,k,ss) = bad
+	         res(i,j,k,ss,m,n) = bad
 	      ELSE
-	         res(i,j,k,ss) = c_lo*z_lo + c_hi*z_hi
+	         res(i,j,k,ss,m,n) = c_lo*z_lo + c_hi*z_hi
 	      ENDIF
 
  400	   CONTINUE
+
+	ELSEIF ( axis .EQ. e_dim ) THEN
+
+	   DO 500 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 500 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO 500 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO 500 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO 500 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+
+* source data points
+	      z_lo = com(i,j,k,l,ss_lo,n)
+	      z_hi = com(i,j,k,l,ss_hi,n)
+
+* interpolate
+	      IF (z_lo .EQ. bad .OR. z_hi .EQ. bad ) THEN
+	         res(i,j,k,l,ss,n) = bad
+	      ELSE
+	         res(i,j,k,l,ss,n) = c_lo*z_lo + c_hi*z_hi
+	      ENDIF
+
+ 500	   CONTINUE
+
+	ELSEIF ( axis .EQ. f_dim ) THEN
+
+	   DO 600 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO 600 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO 600 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO 600 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO 600 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+
+* source data points
+	      z_lo = com(i,j,k,l,m,ss_lo)
+	      z_hi = com(i,j,k,l,m,ss_hi)
+
+* interpolate
+	      IF (z_lo .EQ. bad .OR. z_hi .EQ. bad ) THEN
+	         res(i,j,k,l,m,ss) = bad
+	      ELSE
+	         res(i,j,k,l,m,ss) = c_lo*z_lo + c_hi*z_hi
+	      ENDIF
+
+ 600	   CONTINUE
+
 	ENDIF
 
 	DO_INTERPOLATE = ferr_ok
 
 	RETURN
-	END	
+	END

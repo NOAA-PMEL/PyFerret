@@ -46,8 +46,9 @@
 * V230:  11/4/92 - expanded user variable name length
 * V500 *kob* 3/99- up VAR_CODE and vcode decl's from 8 to 64 chars
 * V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xvariables.cmn'
 

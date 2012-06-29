@@ -52,24 +52,18 @@
 * for FERRET version 4.00 8/94  *sh*
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+
 * Arguments
 	INTEGER*4	islot
 *
 * Parameters and commons
-#ifdef unix
 	include	'tmap_dims.parm'
 #	include	"tmap_dset.parm"
 	include	'tmap_errors.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include	'xfr_grid.cmn'			! fr200
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'			! FR200
-#endif
 *
 * Local declarations
 	CHARACTER*13	TM_STRING

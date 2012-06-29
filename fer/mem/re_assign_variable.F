@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -46,24 +46,20 @@
 * V200:  6/20/89 - improved deletion priority scheme
 *		 - variable is assumed NOT to be in deletion chain
 *		 - use ASSIGN_MR_CX
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
-	INTEGER		mr, new_cx
+	INTEGER mr, new_cx
 
 * internal variable declarations:
-	INTEGER		HASH_CX, prev, next, pile, head
+	INTEGER HASH_CX, prev, next, pile, head
 
 * flag the variable as "in progress"
 	mr_protected(mr) = mr_in_progress

@@ -39,8 +39,8 @@
 * The axes of this grid were never allocated, so it is an "unformed" grid
 
 * V520 *sh* 6/00 - new based on DEALLO_GRID
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include	'xtm_grid.cmn_text'
@@ -48,14 +48,6 @@
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xfr_grid.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER	status
@@ -64,7 +56,7 @@
 	INTEGER	idim
 
 * clean out the grid deallocating any dynamic lines that this used
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   grid_line(idim,grd_stk_ptr) = unspecified_int4
  100	CONTINUE
 	grid_name(grd_stk_ptr) = char_init16

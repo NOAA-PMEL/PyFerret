@@ -72,7 +72,9 @@
 *			  opening a file for append.
 * v552  4/03 *acm* up VAR_TRANS to 150 characters (variables are up to 128, plus
 *                  space for the transformation specifier)
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'

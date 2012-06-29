@@ -65,16 +65,12 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V312:  6/2/94
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xregrid.cmn'
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:REGRID.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	subsc, grid, idim, where_in_box
@@ -88,7 +84,7 @@
 	TDEST_WORLD = ww
 
 * special treatment of calendar time axis
-	IF ( idim .EQ. t_dim ) THEN
+	IF ( idim .EQ. t_dim .OR. idim .EQ. f_dim ) THEN
            IF ( tcnvrt_ok  ) THEN
 	      IF ( grid .NE. cnvrt_src_grid ) THEN
 	         CALL ERRMSG( ferr_internal, status,

@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -52,26 +52,28 @@
 * V301:    1/94 - changed MODE VERIFY "FILES" to MODE VERIFY "DEFAULT" 
 * Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
+*            2/12 *kms* Add E, F, M, N, ENSEMBLE, and FORECAST;
+*                       include tmap_dims.parm for nferdims needed by xtext_info.cmn
 
-#ifdef unix
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 	include	'ferret.parm'
 	include	'xtext_info.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 	DATA	ww_dim_name( x_dim )	/ 'X' /,
      .		ww_dim_name( y_dim )	/ 'Y' /,
      .		ww_dim_name( z_dim )	/ 'Z' /,
-     .		ww_dim_name( t_dim )	/ 'T' /
+     .		ww_dim_name( t_dim )	/ 'T' /,
+     .		ww_dim_name( e_dim )	/ 'E' /,
+     .		ww_dim_name( f_dim )	/ 'F' /
 
 	DATA	ss_dim_name( x_dim )	/ 'I' /,
      .		ss_dim_name( y_dim )	/ 'J' /,
      .		ss_dim_name( z_dim )	/ 'K' /,
-     .		ss_dim_name( t_dim )	/ 'L' /
+     .		ss_dim_name( t_dim )	/ 'L' /,
+     .		ss_dim_name( e_dim )	/ 'M' /,
+     .		ss_dim_name( f_dim )	/ 'N' /
 
 * pre-defined file variables
 	DATA	fvar_name_code	( ptemp ) / 'TEMP'	/,
@@ -85,14 +87,18 @@
      .		fvar_name_code	( pairt ) / 'AIRT'	/
 
 * axis names used to document outputs
-	DATA	axis_title(x_dim)	/'LONGITUDE'/,	
+	DATA	axis_title(x_dim)	/'LONGITUDE'/,
      .		axis_title_len(x_dim)	/9/,
      .		axis_title(y_dim)	/'LATITUDE' /,
      .		axis_title_len(y_dim)	/8/,
      .		axis_title(z_dim)	/'DEPTH'    /,
      .		axis_title_len(z_dim)	/5/,
-     .		axis_title(t_dim)	/'TIME'     /,	
-     .		axis_title_len(t_dim)	/4/
+     .		axis_title(t_dim)	/'TIME'     /,
+     .		axis_title_len(t_dim)	/4/,
+     .		axis_title(e_dim)	/'ENSEMBLE' /,
+     .		axis_title_len(e_dim)	/8/,
+     .		axis_title(f_dim)	/'FORECAST' /,
+     .		axis_title_len(f_dim)	/8/
 
 * label formatting information
 	DATA	date_labels ( 1 )	/ 'years'   /,

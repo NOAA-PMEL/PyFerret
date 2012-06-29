@@ -54,13 +54,13 @@
 *	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
 
 #ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'gfdl.parm'		! parameter definitions
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xonedim.cmn'	! geometric constants
 	include 'xcontext.cmn'
-	include 'tmap_dims.parm'	! with maxdsets
 	include 'xdset_parms.cmn'	! with am_factor
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'

@@ -55,7 +55,9 @@
 * V5.6  3/2004 - update help to point only to web resources and SHOW commands
 * V606  8/07 *acm* Send informational and error messages that are returned from 
 *                  commands via SPLIT_LIST to std error rather than std out.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
         include 'ferret.parm'
         include 'xprog_state.cmn'
 

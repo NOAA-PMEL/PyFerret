@@ -19,6 +19,8 @@ i1mach.F\
 init_random_seed.F\
 interp_context.F\
 interp_stack.F\
+is_aggregate_gather.F\
+is_aggregate_grid.F\
 is_algebra.F\
 is_calc.F\
 is_attrib_val.F\

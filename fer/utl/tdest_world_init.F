@@ -1,4 +1,4 @@
-	SUBROUTINE TDEST_WORLD_INIT ( src_grid, dst_grid, status )
+	SUBROUTINE TDEST_WORLD_INIT ( src_grid, dst_grid, idim, status )
 
 *
 *
@@ -48,6 +48,8 @@
 *             return source and dest cal_ids for get_linear_coef
 * V673: *acm*  2/12 see ticket 1915. All computations of these factors need 
 *             to be done in DOUBLE prcision.
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
+
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -58,7 +60,7 @@
 	include 'xregrid.cmn'
 
 * calling argument declarations:
-	INTEGER	src_grid, dst_grid, status
+	INTEGER	src_grid, dst_grid, idim, status
 
 * internal variable declarations:
 	LOGICAL TM_DATE_OK
@@ -77,8 +79,8 @@
 	IF ( src_grid .EQ. unspecified_int4
      .	.OR. dst_grid .EQ. unspecified_int4 ) STOP 'TDEST_WORLD_INIT'
 
-	src_line = grid_line( t_dim, src_grid )
-	dst_line = grid_line( t_dim, dst_grid )
+	src_line = grid_line( idim, src_grid )
+	dst_line = grid_line( idim, dst_grid )
 
         src_cal_id = TM_GET_CALENDAR_ID ( line_cal_name(src_line) )
         dst_cal_id = TM_GET_CALENDAR_ID ( line_cal_name(dst_line) )
@@ -89,7 +91,10 @@
      .		CALL ERRMSG( ferr_internal, status,
      .				'date regrid on missing T axis', *5000 )
 	IF ( line_direction(src_line) .NE. 'TI'
-     .	.OR. line_direction(dst_line) .NE. 'TI' ) RETURN
+     .	.OR. line_direction(dst_line) .NE. 'TI' ) THEN
+	   IF ( line_direction(src_line) .NE. 'FI'
+     .	   .OR. line_direction(dst_line) .NE. 'FI' ) RETURN
+        ENDIF
 
 	IF ( .NOT. (TM_DATE_OK(line_t0(src_line), src_cal_id) 
      .	       .AND.TM_DATE_OK(line_t0(dst_line), dst_cal_id)) ) RETURN

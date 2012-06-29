@@ -33,21 +33,16 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-
+*
 * *kob* 12/00 - c routine to set up unmapping of double buffered animation
 *               window
-
-* */
-
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
-#include "gks_implem.h"
-#include "wslist.h"
+*
+*/
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <stdio.h>
+#include "gks_implem.h"
+#include "wslist.h"
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 unmap_animate_window()
@@ -56,8 +51,6 @@ unmap_animate_window_()
 #endif
 
 {
-
   WindowMapping(0);
-
 }
 

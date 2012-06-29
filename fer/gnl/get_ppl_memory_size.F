@@ -39,10 +39,9 @@
 * programmer - Ansley Manke
 *
 * V533: 9/02 *acm* 
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'PPLDAT.INC'
-#endif
 
 * calling argument declarations:
 	INTEGER outsize

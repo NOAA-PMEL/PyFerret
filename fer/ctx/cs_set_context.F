@@ -48,10 +48,12 @@
 * 12/97 *kob* - and set  cx_calendar to true if they are used....
 * *acm* v580 11/04 Introducing cx_cal_id, saves the calendar ID used 
 *                  when computing world coordinates
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * internal variable declarations:
 	INTEGER	idim
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xcontrol.cmn'

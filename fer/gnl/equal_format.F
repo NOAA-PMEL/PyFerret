@@ -54,6 +54,8 @@
 * V554   9/03 *acm* - add output in /DODS binary format
 * V602 *jli* 8/06 - add plist_xml
 * V602 *acm* 1/07 - use risc_buff rather than local variable buff, for solution to bug 1482
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*                  Do not use GT format
 
 * calling argument declarations
 	INTEGER		status
@@ -63,6 +65,7 @@
 	INTEGER	STR_UPCASE, vax_code
 	CHARACTER upcase3*3
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
@@ -84,9 +87,9 @@
         ELSEIF ( upcase3 .EQ. 'EPI' ) THEN
            list_fmt_type = plist_epic
         ELSEIF ( upcase3 .EQ. 'TMA' ) THEN
-           list_fmt_type = plist_gt
+           GOTO 5010
         ELSEIF ( upcase3 .EQ. 'GT' ) THEN
-           list_fmt_type = plist_gt
+           GOTO 5010
         ELSEIF ( upcase3 .EQ. 'CDF' ) THEN
            list_fmt_type = plist_cdf
         ELSEIF ( upcase3 .EQ. 'STR' ) THEN
@@ -115,5 +118,8 @@
 	RETURN
 
 * syntax error
-! 5000	RETURN
+ 5000	RETURN
+ 5010   CALL ERRMSG( ferr_invalid_subcmnd, status,
+     .          'File type no longer supported '//upcase3, *5000 )
+
 	END

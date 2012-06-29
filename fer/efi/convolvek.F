@@ -78,6 +78,7 @@
 
       SUBROUTINE convolvek_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -86,7 +87,9 @@
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
+
       CHARACTER*100 fcn_desc
+
       WRITE (fcn_desc, 10)
    10 FORMAT ('Convolve K component of variable with weight function')
 
@@ -94,21 +97,25 @@
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'COM')
       CALL ef_set_arg_desc(id, arg, 
-     .  'Variable in Z (and perhaps X,Y,T) to convolve')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+     .  'Variable in Z (and perhaps X,Y,T,E,F) to convolve')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, YES, YES, YES, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'WEIGHT')
       CALL ef_set_arg_desc(id, arg, 'Weight function')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
@@ -120,7 +127,7 @@
 *
 * In this subroutine we compute the result
 *
-	SUBROUTINE convolvek_compute (id, arg_1, arg_2, result )
+      SUBROUTINE convolvek_compute (id, arg_1, arg_2, result )
 
 *
 *
@@ -129,33 +136,40 @@
 * convolve the component grid, com, with the weight function, wt
 * along axis idim
 * note: the component context may not be of adequate size for the full
-*	calculation.  Missing data flags will be inserted where computation is
-*	impossible
+*       calculation.  Missing data flags will be inserted where computation is
+*       impossible
 * also: when bad data points are encountered in the component data all
-*	result data depending on it are flagged as bad, too
+*       result data depending on it are flagged as bad, too
 
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
-      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
+
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
-     .     mem1lot:mem1hit)
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
       REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
-     .     mem2lot:mem2hit)
-     .     
-      REAL result(memreslox:memreshix, memresloy:memreshiy,
-     .      memresloz:memreshiz, memreslot:memreshit)
+     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
+
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
+* information for each variable''s axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 
 ***********************************************************************
@@ -163,14 +177,14 @@
 *                                                                     |
 *                                                                     V
       REAL comp, sum, weight
-      integer i, j, k, l
-      INTEGER xlen, ylen, zlen, tlen, kk
-      INTEGER i1, j1, k1, l1
-      INTEGER i2, j2, k2, l2
+      integer i, j, k, l, m, n, kk
+      INTEGER xlen, ylen, zlen, tlen, elen, flen
+      INTEGER i1, j1, k1, l1, m1, n1
+      INTEGER i2, j2, k2, l2, m2, n2
       INTEGER wlen, hlo, hhi
 
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
       
 * CONVOLVE ALONG Z AXIS (arg_1) using weights (arg_2)
@@ -181,67 +195,83 @@
       ylen = (arg_hi_ss(Y_AXIS,ARG2) - arg_lo_ss(Y_AXIS,ARG2) + 1) 
       zlen = (arg_hi_ss(Z_AXIS,ARG2) - arg_lo_ss(Z_AXIS,ARG2) + 1) 
       tlen = (arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1) 
+      elen = (arg_hi_ss(E_AXIS,ARG2) - arg_lo_ss(E_AXIS,ARG2) + 1) 
+      flen = (arg_hi_ss(F_AXIS,ARG2) - arg_lo_ss(F_AXIS,ARG2) + 1) 
 
-      wlen = max(xlen, ylen, zlen, tlen)
+      wlen = MAX(xlen, ylen, zlen, tlen, elen, flen)
       hhi = wlen / 2
       hlo = (-1) * hhi
       IF ( MOD(wlen,2) .EQ. 0 ) hlo = hlo + 1
 
-      i1 = arg_lo_ss(X_AXIS,ARG1)
-      DO 500 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-
-         j1 = arg_lo_ss(Y_AXIS,ARG1)
-         DO 400 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-
+      n1 = arg_lo_ss(F_AXIS,ARG1)
+      DO 700 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+       
+         m1 = arg_lo_ss(E_AXIS,ARG1)
+         DO 600 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+       
             l1 = arg_lo_ss(T_AXIS,ARG1)
-            DO 300 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            DO 500 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
        
                k1 = arg_lo_ss(Z_AXIS,ARG1)
-               DO 200 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS) 
+               DO 400 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-                  sum = 0.0
-                  i2 = arg_lo_ss(X_AXIS,ARG2)
-                  j2 = arg_lo_ss(Y_AXIS,ARG2)
-                  k2 = arg_lo_ss(Z_AXIS,ARG2)
-                  l2 = arg_lo_ss(T_AXIS,ARG2)
+                  j1 = arg_lo_ss(Y_AXIS,ARG1)
+                  DO 300 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-                  DO 100 kk = hlo, hhi
+                     i1 = arg_lo_ss(X_AXIS,ARG1)
+                     DO 200 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS) 
 
-                     IF (k1+kk .LT. arg_lo_ss(Z_AXIS,ARG1)  .OR.
-     .                   k1+kk .GT. arg_hi_ss(Z_AXIS,ARG1) ) THEN
-                        comp = bad_flag(ARG1)
-                        GOTO 110
-                     ELSE
-                        comp = arg_1(i1,j1,k1+kk,l1)
-                        weight = arg_2(i2,j2,k2,l2)
+                        sum = 0.0
+                        i2 = arg_lo_ss(X_AXIS,ARG2)
+                        j2 = arg_lo_ss(Y_AXIS,ARG2)
+                        k2 = arg_lo_ss(Z_AXIS,ARG2)
+                        l2 = arg_lo_ss(T_AXIS,ARG2)
+                        m2 = arg_lo_ss(E_AXIS,ARG2)
+                        n2 = arg_lo_ss(F_AXIS,ARG2)
 
-                        IF ( comp .EQ. bad_flag(ARG1)) 
-     .                     GOTO 110  
-                        sum = sum + comp* weight
-                     ENDIF
+                        DO 100 kk = hlo, hhi
 
-                     i2 = i2 + arg_incr(X_AXIS,ARG2)
-                     j2 = j2 + arg_incr(Y_AXIS,ARG2)
-                     k2 = k2 + arg_incr(Z_AXIS,ARG2)
-                     l2 = l2 + arg_incr(T_AXIS,ARG2)
+                           IF (k1+kk .LT. arg_lo_ss(Z_AXIS,ARG1)  .OR.
+     .                         k1+kk .GT. arg_hi_ss(Z_AXIS,ARG1) ) THEN
+                              result(i,j,k,l,m,n) = bad_flag_result
+                              GOTO 190
+                           ELSE
+                              comp = arg_1(i1,j1,k1+kk,l1,m1,n1)
+                              IF ( comp .EQ. bad_flag(ARG1) ) THEN
+                                 result(i,j,k,l,m,n) = bad_flag_result
+                                 GOTO 190                  
+                              ENDIF
+                              weight = arg_2(i2,j2,k2,l2,m2,n2)
+                              sum = sum + comp * weight
+                           ENDIF
 
- 100                 CONTINUE
-                     result(i,j,k,l) = sum
+                           i2 = i2 + arg_incr(X_AXIS,ARG2)
+                           j2 = j2 + arg_incr(Y_AXIS,ARG2)
+                           k2 = k2 + arg_incr(Z_AXIS,ARG2)
+                           l2 = l2 + arg_incr(T_AXIS,ARG2)
+                           m2 = m2 + arg_incr(E_AXIS,ARG2)
+                           n2 = n2 + arg_incr(F_AXIS,ARG2)
 
- 110                 IF (comp .EQ. bad_flag(ARG1)) 
-     .		        result(i,j,k,l) = bad_flag_result
+ 100                    CONTINUE
+                        result(i,j,k,l,m,n) = sum
 
-                     k1 = k1 + arg_incr(Z_AXIS,ARG1)
- 200              CONTINUE
+ 190                    i1 = i1 + arg_incr(X_AXIS,ARG1)
+ 200                 CONTINUE
 
-                  l1 = l1 + arg_incr(T_AXIS,ARG1)
- 300           CONTINUE
+                     j1 = j1 + arg_incr(Y_AXIS,ARG1)
+ 300              CONTINUE
 
-            j1 = j1 + arg_incr(Y_AXIS,ARG1)
- 400     CONTINUE
+                  k1 = k1 + arg_incr(Z_AXIS,ARG1)
+ 400           CONTINUE
 
-         i1 = i1 + arg_incr(X_AXIS,ARG1)
- 500  CONTINUE
+               l1 = l1 + arg_incr(T_AXIS,ARG1)
+ 500        CONTINUE
+
+            m1 = m1 + arg_incr(E_AXIS,ARG1)
+ 600     CONTINUE
+
+         n1 = n1 + arg_incr(F_AXIS,ARG1)
+ 700  CONTINUE
 
       RETURN
-      END	
+      END

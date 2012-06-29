@@ -44,6 +44,7 @@
 * V230:  11/4/92 - expanded user variable name length
 * V500 *kob* 3/99- up VAR_CODE and local variable var to 64 chars
 * V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations:
 	INTEGER	idim, cx, out_len
@@ -53,15 +54,10 @@
 	CHARACTER VAR_CODE*128, CX_DIM_STR*48,
      .            var*128, out_buff*80, dim_str*48
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xtext_info.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * internal parameter declarations:
 	LOGICAL     full_precision

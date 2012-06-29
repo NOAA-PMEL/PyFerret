@@ -51,17 +51,14 @@
 * V230:  7/20/92 - bug in error trapping fixed
 * *kob* 11/96   - Linux port.  Linux didn't like tabs between "include"
 *                 and what was being included.  removed them
-#ifdef unix
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xcontext.cmn'
 	include 'xtext_info.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	cx, status
@@ -69,7 +66,7 @@
 * internal variable declarations:
 	INTEGER	idim
 
-	DO 500 idim = 1, 4
+	DO 500 idim = 1, nferdims
     	   CALL CONFINE_AXIS( idim, cx, status )
            IF ( status .NE. ferr_ok ) RETURN      ! 7/92 bug fix
  500    CONTINUE

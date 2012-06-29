@@ -61,18 +61,8 @@
 * which should pass the XY limits of "temp4d" downstream to the result "a".
 
 * V450: 2/97
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-* calling argument declarations
-	INTEGER	gcfcn, arg, cx_arg, res_grd,
-     .		lo_off(4),  hi_off(4), action(4), status
-
-* internal variable declarations
-	LOGICAL implied_lims(4)
-	INTEGER	CGRID_AXIS, TM_LENSTR1,
-     .		idim, res_ax, axis_source(4), nlen, mabstract
-	CHARACTER GCF_NAME*40, name*40
-
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -82,17 +72,16 @@
 	include 'xgrid_chg_fcns.cmn'
 	include 'xfr_grid.cmn'       ! w/ mgrid_abstract
 	include 'xtext_info.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:GRID_CHG_FCNS.PARM'
-	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
-	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'       ! W/ MGRID_ABSTRACT
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
+* calling argument declarations
+	INTEGER	gcfcn, arg, cx_arg, res_grd,
+     .		lo_off(*),  hi_off(*), action(*), status
+
+* internal variable declarations
+	LOGICAL implied_lims(nferdims)
+	INTEGER	CGRID_AXIS, TM_LENSTR1,
+     .		idim, res_ax, axis_source(nferdims), nlen, mabstract
+	CHARACTER GCF_NAME*40, name*40
 
 * get the axis number for the abstract axis
 	mabstract = grid_line( x_dim, mgrid_abstract )
@@ -107,7 +96,7 @@ c	CALL GCF_GET_AXIS_SRCS( gcfcn, 1, axis_source )
      .			(gcfcn, arg, lo_off,  hi_off, implied_lims)
 
 * loop through the axes
-	DO 500 idim = 1,4
+	DO 500 idim = 1,nferdims
 
 	   res_ax  = grid_line(idim,res_grd)
 

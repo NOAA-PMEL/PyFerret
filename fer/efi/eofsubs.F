@@ -2,7 +2,7 @@ C eofsubs.F
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -52,7 +52,7 @@ C	   Change INCLUDE statements to remove directory spec.
 C
 
 C v5.41 *kob* 6/02 - remove unneeded ferret_cmn from INCLUDE lines - 
-C                    cygwin doesn't like them for some reason
+C                    cygwin does not like them for some reason
 C
 c Date: Thu, 18 Jan 2001 16:44:10 -0800 (PST)
 c From: kessler@pmel.noaa.gov (Billy Kessler)
@@ -78,7 +78,7 @@ c TRIDIN	! find eigenvectors of tridiagonal matrix
 c BACKS		! does something
 c 
 c * Actually, either EOFIN or EOFIN2 produces exactly the same
-c result (but see note 1). These two routines don't care about 
+c result (but see note 1). These two routines do not care about 
 c zero eigenvalues, so there is really no restriction at all on 
 c their use. However, EOFIN2 will be faster if there are more 
 c locations than times. So a possible choice for this whole mess 
@@ -99,7 +99,7 @@ c the higher eigenvalues/vectors, as the values of the eigenvalues
 c come down towards the computational noise and slight differences
 c in cutoff values hardwired into the routines. These are iterative
 c search routines and I have not tried to make the cutoffs (when the
-c routine decides it's found a value) consistent. This should not 
+c routine decides it has found a value) consistent. This should not 
 c matter for geophysical work.
 c 
 c Note 4: Odd results can occur in SVDEOF for input fields that do
@@ -142,17 +142,13 @@ c	pct(nx)		O	% variance represented by each EOF.
 		
 	SUBROUTINE EOFIN(DATA,NX,NT,VAL,VEC,TAF,PCT,C,eofwork)
 
+        IMPLICIT NONE
+
 C  Calling argument declarations.
 
         INTEGER   NX, NT
 	REAL      DATA(NX,*),PCT(*),VAL(*),VEC(NX,*),TAF(NX,*),C(NX,*)
-
-
-	INCLUDE 'EF_Util.cmn'
-	INCLUDE 'EF_mem_subsc.cmn'
-
-	REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
-     .               wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
+	REAL eofwork(*)
 
 C  Internal declarations
 
@@ -285,6 +281,8 @@ C---------------------------------------------------------------------
       SUBROUTINE EOFIN_CHEL_GAP (DATA,NX,NT,VAL,VEC,TAF,PCT,C, 
      +      eofwork, bad_flag_dat, bad_flag_result, err_msg, ier)
 
+        IMPLICIT NONE
+
         INTEGER nx
 	REAL DATA(NX,*), PCT(*), VAL(*), VEC(NX,*),
      +            TAF(NX,*), C(NX,*)
@@ -295,11 +293,7 @@ C---------------------------------------------------------------------
      .        ic, is
       REAL ct, eps, sumljgji, beta, tvar
 
-      INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
-
-      REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
-     .               wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
+      REAL eofwork(*)
       REAL bad_flag_dat, bad_flag_result
 
 C---------------------------------------------------------------------
@@ -532,35 +526,42 @@ C------------------------------------------------------------------------
 C************************************************************************
       SUBROUTINE QRSYM (A,N,E,X, eofwork)
 
-      INTEGER N
-      REAL A(N,*),E(*),X(N,*)
-c      DIMENSION ALPHA(4000),BETA(4000),BB(4000)
-*  
-* 5/99 ACM  Use a work array eofwork rather than explicitly dimensioned
-*           arrays ALPHA, BETA, BB, and P (originally declared in HOUSEH)
-
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
-     .               wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
+      INTEGER N
+      REAL A(N,*),E(*),X(N,*)
+
+* No need to declare Z,T,E,F dimensions since they are not used
+* and Fortran arrays are column major
+      REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy)
+
+*  
+* 5/99 ACM  Use a work array eofwork rather than explicitly dimensioned
+*           arrays ALPHA, BETA, BB, and P (originally declared in HOUSEH)
+c      DIMENSION ALPHA(4000),BETA(4000),BB(4000)
 
       INTEGER nb
       REAL rnorm, eps
+      REAL macheps
 
       nb=n
 
-      CALL HOUSEH(A,N,eofwork(1,1,1,1),eofwork(1,2,1,1),NB,
-     .            eofwork(1,4,1,1))
-      CALL QRSTD (eofwork(1,1,1,1),eofwork(1,2,1,1),N,E,
-     .            eofwork(1,3,1,1),RNORM,EPS)
+      CALL HOUSEH(A,N,eofwork(1,1),eofwork(1,2),NB,
+     .            eofwork(1,4))
+      CALL QRSTD (eofwork(1,1),eofwork(1,2),N,E,
+     .            eofwork(1,3),RNORM,EPS)
 
-      CALL TRIDIN(eofwork(1,1,1,1),eofwork(1,2,1,1),N,E,RNORM,
-     .            N,2.0**(-48),X,NB,eofwork(1,5,1,1),eofwork(1,6,1,1),
-     .            eofwork(1,7,1,1),eofwork(1,8,1,1),eofwork(1,9,1,1),
-     .            eofwork(1,10,1,1) )
+* assign 2**(-48) to a variable so it is the correct size REAL
+      macheps = 2.0
+      macheps = macheps**(-48)
+      CALL TRIDIN(eofwork(1,1),eofwork(1,2),N,E,RNORM,
+     .            N,macheps,X,NB,eofwork(1,5),eofwork(1,6),
+     .            eofwork(1,7),eofwork(1,8),eofwork(1,9),
+     .            eofwork(1,10) )
 
-      CALL BACKS(eofwork(1,2,1,1),A,N,X,N,EPS,NB)
+      CALL BACKS(eofwork(1,2),A,N,X,N,EPS,NB)
 
 c      nb=n
 c      CALL HOUSEH(A,N,ALPHA,BETA,NB)
@@ -756,6 +757,7 @@ C 368-376 (1962)
 *           arrays M, P, Q, R, INT, and X
 
 c      REAL M(4000),P(4000),Q(4000),R(4000),INT(4000),X(4002)
+
       INTEGER N,M1
       REAL NORM,MACHEPS
 
@@ -834,11 +836,11 @@ c      REAL BI,BI1,Z1,LAMBDA,U,S,V,H,EPS,ETA
       GO TO 81
    80 X(I)=U/P(I)
 C   81 H=H+X(I)**2
-81	IF (X(I).GT.1.E10) THEN
-		H=1.E20
-	ELSE
-		H=H+X(I)**2
-	ENDIF
+ 81   IF (X(I).GT.1.E10) THEN
+        H=1.E20
+      ELSE
+        H=H+X(I)**2
+      ENDIF
    82 CONTINUE
       H=SQRT(H)
 C STORE VECTORS AS COLUMNS
@@ -878,52 +880,57 @@ C BACKTRANSFORMATION
       RETURN
       END
 
-      SUBROUTINE count_neof (id, arg_1, neof, ok, nx, ny, iz, nt, mx, 
-     .      flag, frac_timeser, err_msg, ier)
+************************************************************************
+
+      SUBROUTINE count_neof (arg_1, neof, ok, nx, ny, nt, k1, m1, n1,
+     .                       arg_lo_ss, arg_hi_ss, arg_incr, mx, 
+     .                       flag, frac_timeser, err_msg, ier)
 
 *  Find number of time series with valid data.  This will be neof.
 *  Set array OK to mark which (x,y) have some good data.
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER id
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
-
-      INTEGER nt, i, j, n, nx, ny, iz, i1, j1
-      INTEGER mx, neof, ier
-
+* arguments
+      INTEGER neof, nx, ny, nt, k1, m1, n1, mx, ier
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
-     .     mem1lot:mem1hit)
-      REAL flag, a_nt, frac_timeser
-
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
       REAL ok(nx,ny)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+      REAL flag, frac_timeser
       CHARACTER*(*) err_msg
 
-*  Set array ok = 1 if frac_timeser fraction of valid data exists at the point.
+* local variables
+      INTEGER i, j, i1, j1, l1
+      REAL a_nt
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+*  Set array ok = 1 if frac_timeser fraction of valid data exists at the point.
 
       a_nt = float(nt)
 
       neof = 0
       j1 = arg_lo_ss(Y_AXIS,ARG1)
-      DO j = 1, ny
+      DO 30 j = 1, ny
          i1 = arg_lo_ss(X_AXIS,ARG1)
-         DO i = 1, nx
+         DO 20 i = 1, nx
+
             ok(i,j) = 0.
-            DO n = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
-               IF (arg_1(i1,j1,iz,n) .ne. flag) then
+            DO 10 l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+               IF (arg_1(i1,j1,k1,l1,m1,n1) .ne. flag) then
                   ok(i,j) = ok(i,j) + 1.
                endif
-            ENDDO
-            ok(i,j) = ok(i,j)/ a_nt
-            IF (ok(i,j) .ge. frac_timeser) neof = neof + 1 
+  10        CONTINUE
+            ok(i,j) = ok(i,j) / a_nt
+            IF (ok(i,j) .GE. frac_timeser) neof = neof + 1 
+
             i1 = i1 + arg_incr(X_AXIS,ARG1) 
-         ENDDO
+  20     CONTINUE
          j1 = j1 + arg_incr(Y_AXIS,ARG1) 
-      ENDDO
+  30  CONTINUE
 
       ier = 0
       IF (neof .gt. mx) then
@@ -937,55 +944,56 @@ C BACKTRANSFORMATION
       END
 
 ************************************************************************
-      SUBROUTINE pack_ef (id, arg_1, ddat_1d, isave_jsave, neof,  
-     .                 ok, frac_timeser, nx, ny, iz, nt)
+
+      SUBROUTINE pack_ef (arg_1, ddat_1d, isave_jsave, neof,  
+     .                    ok, frac_timeser, nx, ny, nt, k1, m1, n1,
+     .                    arg_lo_ss, arg_hi_ss, arg_incr)
 
 *  put arg_1(x,y,t) into one list ddat_1d(neof,nt)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
-      INTEGER id
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
 
-      INTEGER nt, i, j, n, nx, ny, iz, i1, j1, l1
-      INTEGER ipack, neof
-
+      INTEGER neof, nx, ny, nt, k1, m1, n1
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
-     .     mem1lot:mem1hit)
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
       REAL ddat_1d(neof,nt)
-
       REAL isave_jsave(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
-     .               wrk7loz:wrk7hiz, wrk7lot:wrk7hit)
-
-      REAL frac_timeser
+     .                 wrk7loz:wrk7hiz, wrk7lot:wrk7hit,
+     .                 wrk7loe:wrk7hie, wrk7lof:wrk7hif)
       REAL ok(nx,ny)
+      REAL frac_timeser
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      INTEGER i, j, l, i1, j1, l1
+      INTEGER ipack
 
       ipack = 0
 
       j1 = arg_lo_ss(Y_AXIS,ARG1)
-      DO j = 1, ny
+      DO 130 j = 1, ny
          i1 = arg_lo_ss(X_AXIS,ARG1)
-         DO i = 1, nx
+         DO 120 i = 1, nx
             IF (ok(i,j) .GE. frac_timeser) THEN
                ipack = ipack + 1
  
-               isave_jsave(ipack,1,1,1) = i
-               isave_jsave(ipack,2,1,1) = j
+               isave_jsave(ipack,1,1,1,1,1) = i
+               isave_jsave(ipack,2,1,1,1,1) = j
  
                l1 = arg_lo_ss(T_AXIS,ARG1)
-               DO n = 1, nt
-                  ddat_1d(ipack, n) = arg_1(i1,j1,iz,l1)
+               DO 110 l = 1, nt
+                  ddat_1d(ipack, l) = arg_1(i1,j1,k1,l1,m1,n1)
                   l1 = l1 + arg_incr(T_AXIS,ARG1) 
-               ENDDO
+ 110           CONTINUE
 
              ENDIF
              i1 = i1 + arg_incr(X_AXIS,ARG1) 
-         ENDDO
+ 120     CONTINUE
          j1 = j1 + arg_incr(Y_AXIS,ARG1) 
-      ENDDO
+ 130  CONTINUE
 
       RETURN
       END

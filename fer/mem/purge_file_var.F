@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -42,14 +42,12 @@
 * written for VAX computer under VMS operating system
 *
 * V200: 10/23/89 - based on PURGE_USER_V*
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
-	include		'ferret.parm'
-	include 	'xvariables.cmn'
-#else
-	INCLUDE		'FERRET_CMN:FERRET.PARM'
-	INCLUDE 	'FERRET_CMN:XVARIABLES.CMN'
-#endif
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include 'ferret.parm'
+	include 'xvariables.cmn'
 
 * calling argument declaration:
 	INTEGER	fvar
@@ -60,11 +58,11 @@
 	DO 100 mr = 1, max_mrs
 	   IF ( mr_protected( mr ) .EQ. mr_deleted ) GOTO 100
 	   IF ( mr_variable ( mr ) .NE. fvar
-     .	   .OR. mr_category ( mr ) .NE. cat_file_var )    GOTO 100
+     .	   .OR. mr_category ( mr ) .NE. cat_file_var ) GOTO 100
 
 	   IF (  mr_protected( mr ) .NE. mr_not_protected
      .	   .AND. mr_protected( mr ) .NE. mr_perm_protected )
-     .						STOP 'var prot err --> FVAR'
+     .		STOP 'var prot err --> FVAR'
 
 	   CALL DELETE_VARIABLE( mr )
 

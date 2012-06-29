@@ -149,6 +149,7 @@
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -212,7 +213,7 @@ C plus those starting w/ xbox_bounds:
      .			ctx, cty, xblk1, yblk1, plot_mem_used, nvars,
      .			lo1, lo2, hi1, hi2, size1, size2, size,
      .			n1_regrid, n2_regrid, grid, slen, pxlim, pylim,
-     .			style, justify, ipen, ndim, dims(4), ptitl,
+     .			style, justify, ipen, ndim, dims(nferdims), ptitl,
      .			arg_xpos, cx_xpos, cx_ypos, mr_xpos, mr_ypos,
      .			phlim, pvlim, slen2, cal_id, tax,
      .			x_axtyp, y_axtyp, iscl, siz, nsiz, 
@@ -497,11 +498,12 @@ C   set up memory for the flag grid
 
 * set up the axis formats (use exact limits, if given by /HLIMITS or /VLIMITS)
 	IF ( .NOT.overlay ) THEN
-           time_axis = GEOG_LABEL( dim1, grid )  .AND. (dim1 .EQ. 4) 
+           time_axis = GEOG_LABEL( dim1, grid )  .AND. 
+     .                 (dim1.EQ.t_dim .OR. dim1.EQ.f_dim) 
 
 	   has_time_axis = time_axis	! save for PLOT/VS/OVERLAY (6/99)
            IF (time_axis) THEN
-              tax = grid_line(t_dim, grid)
+              tax = grid_line(dim1, grid)
               cal_id = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
 	      IF(overlay .AND. cal_id .NE. saved_calendar_id) GO TO 5660
 	      ppl_buff = ' '
@@ -517,7 +519,8 @@ C   set up memory for the flag grid
 	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF
-              tax = grid_line(t_dim, grid)
+              tax = grid_line(f_dim, grid)
+              IF (tax .EQ. 0) tax = grid_line(f_dim, grid)
               cal_id = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
 	      CALL EQUAL_RANGE_T( cmnd_buff(qual_start(pxlim):qual_end(pxlim)),
      .				dim1, grid, xaxlo, xaxhi, delta,
@@ -549,11 +552,12 @@ C   set up memory for the flag grid
 	   haxlo = xaxlo	! save limits so overlays
 	   haxhi = xaxhi	! will know them
 
-	   time_axis = GEOG_LABEL( dim1, grid )  .AND. (dim1 .EQ. 4) 
+	   time_axis = GEOG_LABEL( dim1, grid )  .AND. 
+     .                  (dim1.EQ.t_dim .OR. dim1.EQ.f_dim) 
 
 	   has_time_axis = time_axis	! save for PLOT/VS/OVERLAY (6/99)
            IF (time_axis) THEN
-              tax = grid_line(t_dim, grid)
+              tax = grid_line(dim1, grid)
               cal_id = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
 	      IF(overlay .AND. cal_id .NE. saved_calendar_id) GO TO 5660
 	      ppl_buff = ' '
@@ -574,14 +578,14 @@ C   set up memory for the flag grid
      .						curvilinear, cx_xpos,
      .						time_axis,xstyle,no_labels)
 
-	   time_axis = GEOG_LABEL( dim2, grid )
-	   time_axis = GEOG_LABEL( dim2, grid )  .AND. (dim2 .EQ. 4) 
+	   time_axis = GEOG_LABEL( dim2, grid )  .AND. 
+     .                  (dim2.EQ.t_dim .OR. dim2.EQ.f_dim)
 
 	   has_time_axis = has_time_axis .OR. time_axis ! 6/99
 
 C ACM added 8/2001 save cal id if vertical time axis
            IF (time_axis) THEN
-              tax = grid_line(t_dim, grid)
+              tax = grid_line(dim2, grid)
               cal_id = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
 	      IF(overlay .AND. cal_id .NE. saved_calendar_id) GO TO 5660
 	      ppl_buff = ' '
@@ -767,11 +771,18 @@ C ACM added 8/2001 save cal id if vertical time axis
 * ... see if a "year" label is required
 	   year = unspecified_name4
 	   IF (dim1.EQ.t_dim.AND.(xstyle.EQ.'MON'.OR.xstyle.EQ.'DAY')) THEN
-	      CALL TSTEP_TO_DATE( grid, xaxlo, ptime_yr, ppl_buff )
+	      CALL TSTEP_TO_DATE( grid, t_dim, xaxlo, ptime_yr, ppl_buff )
+	      year = ppl_buff(:4)
+	   ELSEIF (dim1.EQ.f_dim.AND.(xstyle.EQ.'MON'.OR.xstyle.EQ.'DAY')) THEN
+	      CALL TSTEP_TO_DATE( grid, f_dim, xaxlo, ptime_yr, ppl_buff )
 	      year = ppl_buff(:4)
 	   ELSEIF (dim2.EQ.t_dim.AND.
      .                  (ystyle.EQ.'MON'.OR.ystyle.EQ.'DAY')) THEN
-	      CALL TSTEP_TO_DATE( grid, yaxlo, ptime_yr, ppl_buff )
+	      CALL TSTEP_TO_DATE( grid, t_dim, yaxlo, ptime_yr, ppl_buff )
+	      year = ppl_buff(:4)
+	   ELSEIF (dim2.EQ.f_dim.AND.
+     .                  (ystyle.EQ.'MON'.OR.ystyle.EQ.'DAY')) THEN
+	      CALL TSTEP_TO_DATE( grid, f_dim, yaxlo, ptime_yr, ppl_buff )
 	      year = ppl_buff(:4)
 	   ENDIF
 * ... put on the basic position and data set labels

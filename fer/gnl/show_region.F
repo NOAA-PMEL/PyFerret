@@ -51,7 +51,11 @@
 *       *ACM*11/02- Did NOT need the above change with TM_LENSTR1.
 * v554: *acm* 11/03 call SPLIT_LIST with open string length; region names now up to 24 long.
 * V650  Write to show_lun which may be set to a file unit number rather than std out
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V6.8  acm  6/12 Implement mode_6d_lab, set by default. If cancelled, the 
+*                 various SHOW commnands will not list info for E,F dimensions.
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
@@ -66,8 +70,15 @@
 	PARAMETER ( full_precision = .TRUE. )
 
 * local variable declarations:
-	INTEGER  idim, slen
+	INTEGER  idim, slen, listdims
 	CHARACTER cx_DIM_STR*48
+
+* If mode 6d_lab has been cancelled, we will list info only for 
+* the first 4 dimensions. (If they've set an E or F region, just
+* don't show it.)
+
+	listdims = nferdims
+	IF ( .NOT. mode_6d_lab) listdims = 4
 
 * write region name
 	IF ( cx .EQ. cx_last ) THEN
@@ -79,7 +90,7 @@
 	ENDIF
 
 * describe each axis - produce lines as complex as:"X=lo:hi@xxx:nn (transform)"
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, listdims
 * axis unspecified ?
 	   IF (  cx_by_ss(idim,cx)
      .	        .AND. cx_lo_ss (cx,idim) .EQ. unspecified_int4

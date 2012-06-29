@@ -45,6 +45,8 @@ c
 
       SUBROUTINE EF_SET_ARG_NAME(id, arg, text)
 
+      IMPLICIT NONE
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'
       INCLUDE 'EF_Util.parm'
@@ -70,7 +72,7 @@ c     call the external functions library to set the value
       
       llen = TM_LENSTR1( text )
       CALL TM_FTOC_STRNG( text(:llen), fhol, slen )
-      call ef_set_arg_name_sub( id, arg, fhol )
+      CALL EF_SET_ARG_NAME_SUB( id, arg, fhol )
       
       RETURN 
       END

@@ -46,6 +46,7 @@
 *                  Use /DYNAMIC/ALL to see them.
 * V532 5/01 *sh* - bug fix: ignore deleted static grids when chking axis usage
 * V650  Write to show_lun which may be set to a file unit number rather than std out
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -57,13 +58,14 @@
 	include 'xvariables.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
         include 'xfr_grid.cmn'   ! w/ mgrid_abstract
+	include 'errmsg.parm'
 
 * calling argument declarations:
 	INTEGER mods_cx
 
 * local variable declarations:
         LOGICAL show_all, shown
-	INTEGER grid, line, dset, var, count, i, slash_all
+	INTEGER grid, line, dset, var, count, i, slash_all, status
 	CHARACTER sanity_msg*24
 
 * local parameter declarations
@@ -116,7 +118,8 @@
 * *kob* 4/99 shorten dynamic grid name on output statment
  3000	   FORMAT ( 4X,A,1X,A16,16X, 'use count:',I4,5x,A)
 	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
-	   CALL SHOW_GRID(grid, mods_cx)
+	   CALL SHOW_GRID(grid, mods_cx, status)
+	   IF (status .NE. ferr_ok) GOTO 5000
            shown = .TRUE.
 	   grid = grid_flink(grid)
 	ENDIF
@@ -146,7 +149,7 @@
 * ... in use by static grids
 	   DO 225 grid = 1, max_grids-1
               IF ( grid_name(grid) .NE. char_init16 ) THEN
-	        DO 220 i = 1, 4
+	        DO 220 i = 1, nferdims
 	           IF ( grid_line(i,grid) .EQ. line ) count = count + 1
  220	        CONTINUE
               ENDIF
@@ -154,7 +157,7 @@
 * ... in use by dynamic grids
 	   grid = grid_flink(max_grids)
  230	   IF ( grid .NE. max_grids ) THEN
-	      DO 232 i = 1, 4
+	      DO 232 i = 1, nferdims
 	         IF ( grid_line(i,grid) .EQ. line ) count = count + 1
  232	      CONTINUE
 	      grid = grid_flink(grid)
@@ -183,7 +186,7 @@
         IF (.NOT.shown)  CALL SPLIT_LIST(pttmode_explct, show_lun,
      .					'    no implicit axes',20)
 
-	RETURN
+ 5000	RETURN
 	END
 
 

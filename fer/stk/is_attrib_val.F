@@ -45,8 +45,9 @@
 
 * V600 8/18/05
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
-
-        include 'netcdf.decl'
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+ 
+        include 'tmap_dims.parm'
 #include "netcdf.inc"
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -342,7 +343,7 @@
              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
      .          attid, aname, attype, attlen, attoutflag, status )
 
-             IF (status .EQ. ferr_ok) GOTO 900
+             IF (status .EQ. ferr_ok) GOTO 1000
 
            ELSE
 

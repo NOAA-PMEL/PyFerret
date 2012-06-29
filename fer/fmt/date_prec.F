@@ -1,4 +1,4 @@
-	INTEGER FUNCTION DATE_PREC( grid, dt )
+	INTEGER FUNCTION DATE_PREC( grid, idim, dt )
 
 *
 *
@@ -43,20 +43,16 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 3/18/88
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include	'ferret.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations
-	INTEGER	grid
+	INTEGER	grid, idim
 	REAL	dt
 
 * internal variable declarations:
@@ -69,7 +65,7 @@
      .		convert(5)/ 12. /	! mon --> year
 
 * get the dt interval expressed in seconds
-	delta = dt * line_tunit( grid_line(t_dim,grid) )
+	delta = dt * line_tunit( grid_line(idim,grid) )
 
 * see how big it is
 	DO 100 i = 1, 5

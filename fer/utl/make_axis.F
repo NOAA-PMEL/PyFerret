@@ -44,12 +44,9 @@
 *
 * revision 0.0 - 9/20/88
 * revision 0.1 -11/28/88 - new TM IO library: WORLD --> TM_WORLD
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'ferret.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER	grid, idim, lo_ss, hi_ss

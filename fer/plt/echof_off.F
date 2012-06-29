@@ -35,7 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 * *acm* V6.08 10/07 Turn off the flag echof for batch mode, so we can set metafile
-* names without writing spurious stiff to fort.23
+* names without writing spurious stuff to fort.23
 
 	include	'system_inc.decl'	! with echof
 	include	'SYSTEM.INC'	        ! with echof

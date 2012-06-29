@@ -102,16 +102,16 @@
 * V615 11/08 *acm* - fixing bug 1523. If the variable contains a grid-changing 
 *                    function, we will do a full evaluation to get its size
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-        include 'netcdf.decl'
 #include "netcdf.inc"
+	include 'tmap_dims.parm'
         include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
 	include 'xrisc.cmn'
 	include 'xcontext.cmn'
 	include 'xtext_info.cmn'
-	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
@@ -359,7 +359,7 @@
 * NOTE THE POTENTIAL FOR WRONG RESULTS WITH OPERATIONS SUCH AS MATRIX
 * TRANSPOSE - ALL "IMPOSED" AXES PRESENT THE RISK OF WRONG RESULTS
 
-                 DO 190 idim = 1, 4
+                 DO 190 idim = 1, nferdims
 		    do_eval = ( cx_hi_ww(idim, cx) .EQ. unspecified_val8
      .	                        .AND. CGRID_AXIS(idim, cx) .NE. mnormal )
 	            IF ( do_eval .OR. has_uvar_gc) THEN
@@ -387,7 +387,7 @@
  200	   IF ( repl .EQ. "SHAPE" ) THEN
 	      repl = ' '
 	      str_len = 0
-	      DO 210 idim = 1, 4
+	      DO 210 idim = 1, nferdims
 	         IF ( CX_DIM_LEN( idim, cx ) .GT. 1 ) THEN
 	            str_len = str_len + 1
 	            repl(str_len:str_len) = ww_dim_name(idim)
@@ -643,8 +643,8 @@
 
 * ... RETURN=*SIZE, *START, *END, *UNITS, *AXIS
 	   ELSE	
-* ... axis specific requests - must start with i,j,k,l or x,y,z,t
-	      DO 220 idim = 1, 4
+* ... axis specific requests - must start with i,j,k,l,m,n or x,y,z,t,e,f
+	      DO 220 idim = 1, nferdims
 	         IF ( repl(1:1) .EQ. ss_dim_name(idim) ) THEN
 	            itsa_subsc = .TRUE.
 	            GOTO 221
@@ -728,9 +728,12 @@
      .				mr_lo_s2(mr_temp), mr_hi_s2(mr_temp),
      .				mr_lo_s3(mr_temp), mr_hi_s3(mr_temp),
      .				mr_lo_s4(mr_temp), mr_hi_s4(mr_temp),
+     .				mr_lo_s5(mr_temp), mr_hi_s5(mr_temp),
+     .				mr_lo_s6(mr_temp), mr_hi_s6(mr_temp),
      .				memory(1, mr_blk1(mr_temp)),
      .				cx_lo_s1(cx), cx_lo_s2(cx),
      .				cx_lo_s3(cx), cx_lo_s4(cx),
+     .				cx_lo_s5(cx), cx_lo_s6(cx),
      .				max_len, str_len)
 	   ELSE
 

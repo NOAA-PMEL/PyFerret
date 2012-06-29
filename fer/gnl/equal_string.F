@@ -46,6 +46,7 @@
 * revision 0.0 - 6/27/88 - based on EQUAL_VAL
 * V200:   7/7/89 -  remove leading blanks, process quotation marks
 *	  9/22/89 - fixed bug for NAME="" (close quotes)
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * calling argument declarations
 	INTEGER		status
@@ -54,13 +55,8 @@
 * internal variable declarations
 	INTEGER	TM_LENSTR1, STR_UPCASE, equal_pos, slen, strt, vax_code
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 * initialize
 	slen	  = TM_LENSTR1( string )

@@ -1,4 +1,4 @@
-	SUBROUTINE SHOW_line( line, brief )
+	SUBROUTINE SHOW_LINE( line, brief )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -49,6 +49,7 @@
 *            and restore original t0 on output
 * V650  Write to show_lun which may be set to a file unit number rather than std out
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -73,7 +74,7 @@
 	REAL*8		TM_WW_AXLEN
 
 * determine orientation
-	DO 100 idim = 1, 5
+	DO 100 idim = 1, nferdims+1
 	   IF ( line_direction(line) .EQ. axis_orients( idim ) ) THEN
 	      orient = idim
 	      GOTO 110
@@ -94,10 +95,20 @@
            idim = 4
            GOTO 110
         ENDIF
+        IF (line_direction(line) .EQ. 'EE') THEN
+           orient = 5
+           idim = 5
+           GOTO 110
+        ENDIF
+        IF (line_direction(line) .EQ. 'FF') THEN
+           orient = 6
+           idim = 6
+           GOTO 110
+        ENDIF
 
 	orient = 0
-	idim   = 1			! use X slot for non-oriented
- 110	IF ( idim .EQ. 5 ) idim = 3	! DU --> UD on Z axis
+	idim   = 1				! use X slot for non-oriented
+ 110	IF ( idim .EQ. nferdims+1 ) idim = 3	! DU --> UD on Z axis
 
 * create a dummy grid with this axis
 * (kludge to use existing code that works with grids)

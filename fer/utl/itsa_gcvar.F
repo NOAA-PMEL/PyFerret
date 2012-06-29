@@ -38,19 +38,16 @@
 * is the indicated variable one which is contains a grid changing function?
 
 * V450: 1/97
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations
 	INTEGER	uvar
 
 * internal variable declarations
 
-#ifdef unix
+	include	'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 
 * in reverse Polish order the final item of a grid changing variable will

@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -54,21 +54,24 @@
 *                  end of this routine is 0 or > 0.  This messes up 
 *                  the linked lists for variables in memory. Use uvar 
 *                  for these types of vars so HASH_CX is always negative.
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'	! for pmv_npiles
 	include 'xcontext.cmn'
 
 * calling argument declarations:
-	INTEGER		cx
+	INTEGER cx
 
 * internal variable declarations:
-	INTEGER		idim, nsum, cat, uvar
+	INTEGER idim, nsum, cat, uvar
 
 * initialize
 	cat = cx_category( cx )
 
-* special Q&D sol'n for temporary variables, etc.
+* special Q&D solution for temporary variables, etc.
 	IF ( cat .EQ. cat_constant 
      .  .OR. cat .EQ. cat_temp_var
      .  .OR. cat .EQ. cat_pseudo_var ) THEN
@@ -77,7 +80,7 @@
 	ELSEIF ( cat .EQ. cat_work_mr ) THEN
 	   HASH_CX = pmv_work_var_pile
 	   RETURN
-	ENDIF	   
+	ENDIF
 	
 * arbitrary number generated from context information
         uvar = cx_variable( cx )
@@ -87,9 +90,9 @@
 	nsum = cx_data_set( cx )
      .	     + uvar * 7
      .	     + cat * 13
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   IF ( cx_trans( idim, cx ) .NE. trans_no_transform )
-     .							nsum = nsum + idim*idim	
+     .	      nsum = nsum + idim*idim
  100	CONTINUE
 
 * randomize the number and return a NEGATIVE pile number

@@ -43,16 +43,17 @@ c* This subroutine extracts a single value from a memory block.
 c*
 c* Currently, no checking is done.
 c*
-c JC_TODO: This is not general!!! Fix it!!!!!!!
 
-      subroutine ef_get_one_val_sub_sub(data, 
-     .     lox, hix, loy, hiy, loz, hiz, lot, hit, value, status)
+      SUBROUTINE EF_GET_ONE_VAL_SUB_SUB(data, lox, hix, loy, hiy,
+     .                    loz, hiz, lot, hit, loe, hie, lof, hif, 
+     .                    value, status)
 
-      integer status, lox, hix, loy, hiy, loz, hiz, lot, hit
-      real data(lox:hix, loy:hiy, loz:hiz, lot:hit)
-      real value
+      INTEGER status, lox, hix, loy, hiy, loz, hiz,
+     .                lot, hit, loe, hie, lof, hif
+      REAL data(lox:hix, loy:hiy, loz:hiz, lot:hit, loe:hie, lof:hif)
+      REAL value
 
-      value = data(lox, loy, loz, lot)
+      value = data(lox, loy, loz, lot, loe, lof)
 
-      return
-      end
+      RETURN
+      END

@@ -43,12 +43,9 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 2/23/87
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'ferret.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER		n

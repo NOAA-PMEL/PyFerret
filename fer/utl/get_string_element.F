@@ -1,11 +1,12 @@
 	CHARACTER*(*) FUNCTION GET_STRING_ELEMENT(
-     .				lox,hix,loy,hiy,loz,hiz,lot,hit,
-     .				ptr_array, i, j, k, l,
-     .				maxlen, slen)
+     .			lox,hix,loy,hiy,loz,hiz,
+     .			lot,hit,loe,hie,lof,hif,
+     .			ptr_array, i, j, k, l, m, n,
+     .			maxlen, slen)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -35,7 +36,7 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* Return the string stored at the indicated i,j,k,l, subscript
+* Return the string stored at the indicated i,j,k,l,m,n, subscript
 * The horse-pucky about the lo:hi subscripts is required because the pointer
 * array needs to be dimensioned as 8-byte quantities
 
@@ -46,25 +47,31 @@
 *                    size_rbuff with int_buff and size_ibuff which is 
 *                    pulled from EF_Util.parm.
 * V553: 9/03 *kob* - increase locbuff to 512 from 100 - it was cutting strings
-*                    short
+*                    short*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*       3/12 *kms*   int_buff and size_ibuff declared locally
 
+        IMPLICIT NONE
+	include	'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'EF_Util.parm'
 
 * calling argument declarations
-	INTEGER  lox,hix,loy,hiy,loz,hiz,lot,hit,
-     .		 i, j, k, l, maxlen, slen
-	REAL*8	 ptr_array(lox:hix,loy:hiy,loz:hiz,lot:hit)
+	INTEGER  lox,hix,loy,hiy,loz,hiz,lot,hit,loe,hie,lof,hif,
+     .		 i, j, k, l, m, n, maxlen, slen
+	REAL*8	 ptr_array(lox:hix,loy:hiy,loz:hiz,lot:hit,loe:hie,lof:hif)
 
 * internal variable declarations
 	INTEGER  GET_C_STRING_LEN, flen
 	CHARACTER*512 locbuff
+        INTEGER size_ibuff
+        PARAMETER ( size_ibuff = 2048 )
+        INTEGER*2 int_buff(size_ibuff/2)
 
 * get the string
-        slen = GET_C_STRING_LEN(ptr_array(i,j,k,l))
+        slen = GET_C_STRING_LEN(ptr_array(i,j,k,l,m,n))
 
 * get the a null-terminated C string
-        CALL GET_C_STRING(ptr_array(i,j,k,l), int_buff, slen+1)
+        CALL GET_C_STRING(ptr_array(i,j,k,l,m,n), int_buff, slen+1)
 
 * the longest length we can use ...
         flen = MIN(slen, size_ibuff)

@@ -54,14 +54,12 @@
 *                  @WEQ - exaxt limits required but a range of data
 *                - also added @RSUM (like @IIN)
 * V533: *sh* 6/01 - added trans_event_mask
-	
-#ifdef unix
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER	idim, cx

@@ -1,3 +1,5 @@
+
+
 	SUBROUTINE EQUAL_PERMUTE(string,fill,v_ok,neg_ok,perm,status )
 
 *
@@ -35,8 +37,8 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* from a string of the form "perm=XYZT", return array perm with the ordering
-* expressed as integerd
+* from a string of the form "perm=XYZTEF", return array perm with the ordering
+* expressed as integers
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
@@ -51,43 +53,43 @@
 *	       neg_ok for acceptable minus signs
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+
+      IMPLICIT NONE
+
+* includes
+      include 'tmap_dims.parm'
 
 * calling argument declarations
 	LOGICAL		fill, v_ok, neg_ok
-	INTEGER		perm(5), status
+	INTEGER		perm(*), status
 	CHARACTER*(*)	string
 
 * internal variable declarations
 	INTEGER	TM_LENSTR1, STR_UPCASE, equal_pos, slen, pos, vax_code,
-     .		idim, ndim, i, rev, pmax
+     .		idim, ndim, i, j, rev, pmax
 	CHARACTER*1	ax
 
 * internal parameter declarations:
 	CHARACTER*1	tab
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
-	PARAMETER     ( tab = CHAR(9))
-#endif
 
-#ifdef unix
+
+
+	PARAMETER     ( tab = CHAR(9))
+
+
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xtext_info.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * initialize
 	slen	  = TM_LENSTR1( string )
 	equal_pos = INDEX( string, '=' )
 	IF ( equal_pos .EQ. 0 .OR. equal_pos .EQ. slen ) GOTO 5100
 	IF (v_ok) THEN
-	   pmax = 5
+	   pmax = nferdims+1
 	ELSE
-	   pmax = 4
+	   pmax = nferdims
 	ENDIF
 
 * skip blanks and tabs
@@ -108,11 +110,11 @@
 	   vax_code = STR_UPCASE( ax, string(pos:pos) )
 	   IF ( v_ok .AND. ax .EQ. 'V') THEN   ! Variable name permutation
 	      ndim = ndim + 1
-	      perm(ndim) = 5
+	      perm(ndim) = nferdims+1
 	   ELSEIF ( neg_ok .AND. ax .EQ. '-' ) THEN
 	      rev = -1
 	   ELSE
-	      DO 220 idim = 1, 4
+	      DO 220 idim = 1, nferdims
 	         IF ( ax .EQ. ss_dim_name(idim)
      .	         .OR. ax .EQ. ww_dim_name(idim) ) THEN
 	            IF (ndim .EQ. pmax) GOTO 5100
@@ -132,11 +134,11 @@
 
 * fill in any missing dimensions (e.g. "perm=YX" is interpreted as YXZT)
 	IF (fill) THEN
-	  DO 350 ndim = ndim+1, 5
-	     DO 320 idim = 1, 5
-	        DO 310 i = 1, ndim-1   ! slots already set (4/92 bug fix)
- 310	        IF ( perm(i) .EQ. idim ) GOTO 320
-	        perm(ndim) = idim
+	  DO 350 j = ndim+1, nferdims+1
+	     DO 320 idim = 1, nferdims+1
+	        DO 310 i = 1, j-1   ! slots already set (4/92 bug fix)
+ 310	        IF ( idim .EQ. ABS(perm(i)) ) GOTO 320
+	        perm(j) = idim
 	        GOTO 350
  320	     CONTINUE
  350	  CONTINUE

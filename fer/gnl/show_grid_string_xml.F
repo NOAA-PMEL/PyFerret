@@ -44,6 +44,7 @@
 * V580 *acm* 11/4/04 add <axes> tags
 * v6.5 *acm* 3/10 Cleanup - remove commented-out includes
 * V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -64,10 +65,9 @@
 	CHARACTER*(*) stringdimname
 
 * local variable declarations:
-	INTEGER TM_LENSTR1, TM_LENSTR, idim, slen, line
-        CHARACTER*1 axdir(4)
+	INTEGER TM_LENSTR1, TM_LENSTR, STR_DNCASE, idim, slen, line, status
+        CHARACTER*1 axdir
 	CHARACTER*2048 outstring
-        DATA axdir/ 'x', 'y', 'z', 't'/
 	CHARACTER TM_FMT*16, show_str*16
 
  2020   FORMAT ('<grid name="',A,'">' )
@@ -93,15 +93,15 @@
      .           outstring(1:slen),  'd'
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-	DO 110 idim = 1, 4
+	DO 110 idim = 1, nferdims
            line = grid_line(idim, grid)
            slen = TM_LENSTR(line_name(line))
+	   status = STR_DNCASE(ww_dim_name(idim), axdir)
 
            IF (line .GT. 0  .AND.  slen .GT. 0 .AND.
      .         cx_expr .EQ. unspecified_int4) THEN
               CALL ESCAPE_FOR_XML (line_name(line), outstring, slen)
-              WRITE (risc_buff, 2040 ) axdir(idim),
-     .           outstring(1:slen), axdir(idim)
+              WRITE (risc_buff, 2040 ) axdir, outstring(1:slen), axdir
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ENDIF
 
@@ -111,8 +111,8 @@
               IF ( cx_hi_ss(cx_expr,idim).NE.unspecified_int4 .AND. 
      .	           cx_lo_ss(cx_expr,idim).NE.unspecified_int4 ) THEN
                  slen = TM_LENSTR1(line_name(line))
-                 WRITE (risc_buff, 2040 ) axdir(idim),
-     .              line_name(line)(1:slen), axdir(idim)
+                 WRITE (risc_buff, 2040 ) axdir,
+     .              line_name(line)(1:slen), axdir
 	         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
               ENDIF
            ENDIF

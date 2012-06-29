@@ -1,0 +1,41 @@
+! err672_dset_cx.jnl
+! Ticket 1951: The dataset specified in list x[gx=a[d=1,i=1:3]] is not applied.
+! 
+
+let a = x[gx=0:2:1]; save/clob/file=a1.nc a
+sho grid/x a
+
+let a = x[gx=1:3:1]; save/clob/file=a2.nc a
+sho grid/x a
+
+can var/all; can dat/all
+
+! It's already strange that the first axis is named AX002 and the second AX001, 
+! but oh well. Let's use the first dataset, and list the axis values in two ways 
+! that give identical answers. No problem here.
+
+use a1
+list x[gx=a[d=1]]
+list x[gx=a[d=1,i=1:3]]
+
+! Next we use the second dataset, and repeat the exact same commands as above -- 
+! note that we are again listing the variables from the first dataset, not the 
+! second one. Our results shouldn't have changed, since they explicitly refer to 
+! dataset 1 -- but one of them does change!
+
+use a2
+
+list x[gx=a[d=1]]
+
+! The bug was that this listed 1,2,3 rather than 0,1,2
+list x[gx=a[d=1,i=1:3]]
+
+! The second LIST has somehow associated variable A from the first file 
+! with AX001 from the second file!
+! 
+! The only thing that the second USE should have changed about Ferret's state, 
+! was that it brought a new dataset into memory and made it the default. Why should 
+! that have affected the second evaluation of the variable from dataset 1?
+
+! Why is the following different?
+list x[gx=a[d=1],i=1:3]

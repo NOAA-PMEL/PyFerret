@@ -36,6 +36,8 @@
 * 4/2012 *acm*
 * taken out of xeq_show.F, execute SHOW DATA
 * v675  *acm  4/12 Fix ticket 1934, simpler SHOW ATTRIBUTE syntax.
+* V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
+*                 various SHOW commnands will not list info for E,F dimensions.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -72,6 +74,7 @@
 * initialize
 	show_lun = ttout_lun
 	sxml = .FALSE.
+	status = ferr_ok
 
    	sbrief = qual_given( slash_brief ) .GT. 0 
 	sfull  = qual_given( slash_full  ) .GT. 0
@@ -167,7 +170,7 @@
 	      IF ( svars       ) CALL SHOW_DATA_SET_PARAMS 
      .                             (show_lun, iset)
 	      IF ( .NOT.sbrief ) CALL SHOW_DATA_SET_VARS
-     .                             (show_lun, iset, svars)
+     .                             (show_lun, iset, svars, status)
 	      IF ( sfile       ) CALL SHOW_DATA_FILES      
      .                             (ttout_lun, iset)
 	      IF ( sattr       ) CALL SHOW_DATA_SET_ATTRS      
@@ -177,6 +180,7 @@
               risc_buff = '</dataset>'
               CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
            ENDIF
+	   IF (status .NE. ferr_ok) GOTO 5000
  790	CONTINUE
 
         IF (sxml) THEN

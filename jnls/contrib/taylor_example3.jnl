@@ -1,0 +1,17 @@
+
+set window 1
+
+! Plot an accurate taylor frame with Correlation from 0.9 to 1.0
+go taylor_frame_accurate
+
+let a=xsequence({2.4, 0.8, 2.3 })
+let b=xsequence({0.96, 0.93, 0.98})
+let c=xsequence({"Mod1","Mod2","Mod3"})
+
+list a,b,c
+
+! Translate correlation values to classic correlation values from 0.0 to 1.0
+let b1=(b-0.9)*10.
+
+repeat/i=1:`a[i=@ngd]` (go taylor_polymark a b1 /line/fill/pal=red;  go taylor_label a b1 "_<NL>`c`")
+

@@ -82,10 +82,10 @@
 * internal variable declarations:
 	CHARACTER	SECS_TO_DATE*20, TM_FMT*24, code*1, xtra*16
 	INTEGER		FIELD_WIDTH, TM_GET_CALENDAR_ID, min_width, width, 
-     .                  decim, numbers, n2, cal_id
+     .                  decim, numbers, n2, cal_id, iv
 	LOGICAL		GEOG_LABEL, fancy, use_sig_fig,
      .                  modulo
-	REAL		val4, val4_orig
+	REAL		val4, val4_orig, v2
 
 * valid inputs ?  (bug fix 11/91)
         IF ( val .EQ. unspecified_val8 ) THEN
@@ -123,7 +123,10 @@
 	   IF ( idim .EQ. x_dim ) THEN
 * x - longitude E/W
 * ... restrict degrees to a precision of .001
-              IF (ndec .LE. 3) val4 = INT(val4 * 1000.)/1000.
+c (The following doesnt always compute the correct value in double precision
+c on 32-bit linux (.145 comes back as .146). Use NINT instead.)
+c	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.D0)/1000.D0
+	      IF (ndec .LE. 3) val4 = NINT(val4 * 1000.D0)/1000.D0
 	      val4 = MOD( val4, 360. )
 	      IF ( val4 .LT. 0.0 ) val4 = val4 + 360.	! 1/27
               modulo = val4 .NE. val4_orig
@@ -137,7 +140,10 @@
 	   ELSEIF ( idim .EQ. y_dim ) THEN
 * y - latitude N/S
 * ... restrict degrees to a precision of .001
-	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.)/1000.
+c (The following doesnt always compute the correct value in double precision
+c on 32-bit linux (.145 comes back as .146). Use NINT instead.)
+c	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.D0)/1000.D0
+	      IF (ndec .LE. 3) val4 = NINT(val4 * 1000.D0)/1000.D0
  	      IF     ( val4 .LT. 0.0 ) THEN
 	         val4 = -val4
 	         code    = 'S'			! degS

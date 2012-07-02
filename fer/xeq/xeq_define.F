@@ -1448,7 +1448,7 @@ C /units=months  is 1/12 of the length of the year
 *  automatic calendar modulo
 	ELSEIF (line_direction(iline) .EQ. 'TI' .OR.
      .          line_direction(iline) .EQ. 'FI' ) THEN
-	  secsperyear = cals_yeardays(cal_id) * (24 * 60 * 60)
+	  secsperyear = DBLE(cals_yeardays(cal_id)) * (24.D0 * 60.D0 * 60.D0)
 	  bc_to_t0 = SECS_FROM_BC( line_t0(iline), cal_id, status)
 	  CALL TM_WW_AX_1_N(iline, start, end)
 	  secs2start = bc_to_t0 + start*line_tunit(iline)

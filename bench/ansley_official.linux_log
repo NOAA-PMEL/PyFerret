@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 42484995 Jul  2 15:12 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 42484995 Jul  2 16:05 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: v6.8 with fix in computing axis-length (precision of cals_yeardays) in xeq_define; small tweak for ascii listings in translate_to_world
+Note: fixes to scriptsfor double-precision Ferret: err64_packed_data bn_regrid_transforms_6d
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -21,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Mon Jul 2 15:16:32 PDT 2012
+Beginning at Mon Jul 2 17:28:00 PDT 2012
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10442,12 +10442,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2 of Apr 23 2012 16:36:47 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = " 2-Jul-12"
-SESSION_TIME = "15:16"
-SESSION_PID = "4891"
-DELTA_CPU = "5.40618"
-CLOCK_SECS = "7.946"
+SESSION_TIME = "17:28"
+SESSION_PID = "15374"
+DELTA_CPU = "5.40518"
+CLOCK_SECS = "7.46"
 CURRENT_DATE = " 2-Jul-12"
-CURRENT_TIME = "15:16:40"
+CURRENT_TIME = "17:28:08"
 N_OPEN_DSETS = "0"
  
 ! define some symbols ... syntax variations
@@ -10470,12 +10470,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2 of Apr 23 2012 16:36:47 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = " 2-Jul-12"
-SESSION_TIME = "15:16"
-SESSION_PID = "4891"
+SESSION_TIME = "17:28"
+SESSION_PID = "15374"
 DELTA_CPU = "0.001"
-CLOCK_SECS = "7.946"
+CLOCK_SECS = "7.461"
 CURRENT_DATE = " 2-Jul-12"
-CURRENT_TIME = "15:16:40"
+CURRENT_TIME = "17:28:08"
 N_OPEN_DSETS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10485,8 +10485,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = " 2-Jul-12"
-SESSION_TIME = "15:16"
-SESSION_PID = "4891"
+SESSION_TIME = "17:28"
+SESSION_PID = "15374"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10497,14 +10497,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = " 2-Jul-12"
-SESSION_TIME = "15:16"
-SESSION_PID = "4891"
+SESSION_TIME = "17:28"
+SESSION_PID = "15374"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = " 2-Jul-12"
-SESSION_TIME = "15:16"
-SESSION_PID = "4891"
+SESSION_TIME = "17:28"
+SESSION_PID = "15374"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10538,7 +10538,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.8"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "02-JUL-2012 15:16:40"
+LAB3 = "02-JUL-2012 17:28:08"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10639,12 +10639,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2 of Apr 23 2012 16:36:47 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = " 2-Jul-12"
-SESSION_TIME = "15:16"
-SESSION_PID = "4891"
-DELTA_CPU = "0.009998"
-CLOCK_SECS = "7.956"
+SESSION_TIME = "17:28"
+SESSION_PID = "15374"
+DELTA_CPU = "0.009999"
+CLOCK_SECS = "7.471"
 CURRENT_DATE = " 2-Jul-12"
-CURRENT_TIME = "15:16:40"
+CURRENT_TIME = "17:28:08"
 N_OPEN_DSETS = "0"
  
  
@@ -10695,7 +10695,6 @@ LIST/ORDER=XYZT $1" |*>/FORMAT=*" $2
  ---- K:3 Z:   25
 1.5S,27.6518,27.4892
 1.167S,27.51,27.3501
-pause
 LIST/ORDER=XYTZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XYTZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
@@ -11210,7 +11209,6 @@ LIST/ORDER=XYZT $1" |*>/FORMAT=*" $2
  ---- K:3 Z:   25
 1.5S,27.2481,27.1248
 1.167S,27.1293,27.011
-pause
 LIST/ORDER=XYTZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XYTZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
@@ -11654,7 +11652,6 @@ LIST/ORDER=XYZT $1" |*>/FORMAT=*" $2
    135.5W   ,134.5W   
 1.5S,27.3346,27.2218
 1.167S,27.2382,27.1246
-pause
 LIST/ORDER=XYTZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XYTZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
@@ -25608,7 +25605,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Mon Jul  2 15:16:47 PDT 2012
+Mon Jul  2 17:28:15 PDT 2012
  
 GO bn_reset
 cancel mode verify
@@ -47683,7 +47680,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS02-JUL-2012 15:17:18
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS02-JUL-2012 17:28:45
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -49110,7 +49107,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "2-Jul-12:15:16"
+WIN_TITLE = "2-Jul-12:17:28"
  
 set win/title="set the title"
 sho sym win_title
@@ -49128,7 +49125,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 2-Jul-12:15:16"
+ !-> set win/title=" 2-Jul-12:17:28"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -49139,14 +49136,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date =  2-Jul-12
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 15:16
+ !-> DEFINE SYMBOL the_time = 17:28
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="2-Jul-12:15:16"
+ !-> SET WIN/TITLE="2-Jul-12:17:28"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "2-Jul-12:15:16"
+WIN_TITLE = "2-Jul-12:17:28"
  
 GO bn_reset
 cancel mode verify
@@ -59288,10 +59285,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "38.2982"
-CLOCK_SECS = "70.913"
+DELTA_CPU = "38.2762"
+CLOCK_SECS = "64.195"
 CURRENT_DATE = " 2-Jul-12"
-CURRENT_TIME = "15:17:43"
+CURRENT_TIME = "17:29:05"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -59300,8 +59297,8 @@ CURRENT_TIME = "15:17:43"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.034995"
-CLOCK_SECS = "70.977"
+DELTA_CPU = "0.032996"
+CLOCK_SECS = "64.25"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -59315,60 +59312,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.298954
+ !-> DEFINE VARIABLE ten_plots = 0.293955
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "71.659"
+CLOCK_SECS = "64.856"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "71.66"
+CLOCK_SECS = "64.856"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.031996
- !-> DEFINE VARIABLE sumcpu =0.031996
+ !-> DEFINE VARIABLE dt = 0.028995
+ !-> DEFINE VARIABLE sumcpu =0.028995
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.063991
+ !-> DEFINE VARIABLE dt = 0.030995
+ !-> DEFINE VARIABLE sumcpu =0.05999
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.096986
+ !-> DEFINE VARIABLE dt = 0.029997
+ !-> DEFINE VARIABLE sumcpu =0.089987
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.032994
- !-> DEFINE VARIABLE sumcpu =0.12998
+ !-> DEFINE VARIABLE dt = 0.029995
+ !-> DEFINE VARIABLE sumcpu =0.119982
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.028997
- !-> DEFINE VARIABLE sumcpu =0.158977
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.153977
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.026995
+ !-> DEFINE VARIABLE dt = 0.031995
  !-> DEFINE VARIABLE sumcpu =0.185972
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.027996
- !-> DEFINE VARIABLE sumcpu =0.213968
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.217967
 !-> REPEAT: K=8
  !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.246963
+ !-> DEFINE VARIABLE sumcpu =0.250962
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.029995
- !-> DEFINE VARIABLE sumcpu =0.276958
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.282957
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.029995
- !-> DEFINE VARIABLE sumcpu =0.306953
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.314952
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.306953
-0.306953
+ !-> MESSAGE/CONTINUE 0.314952
+0.314952
 sh sym CLOCK_SECS
-CLOCK_SECS = "72.695"
+CLOCK_SECS = "65.727"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = " 2-Jul-12"
-SESSION_TIME = "15:16"
+SESSION_TIME = "17:28"
 CURRENT_DATE = " 2-Jul-12"
-CURRENT_TIME = "15:17:45"
+CURRENT_TIME = "17:29:06"
  
  
 ! ******** V6.3 Additions below ***********
@@ -61255,12 +61252,18 @@ list/i=1:15 sst
 ! we can write the data out - saving the scaling to re-pack.
 set att/output sst.scale_factor
 set att/output sst.add_offset
+ 
+! With double-precision Ferret, need to write as float,
+! or the FillValue cant be represnted.
+ 
+set var/outtype=float sst
+ 
 save/clobber/file=mypack.nc/i=1:15 sst
 can data/all; use mypack.nc
 sh att/all sst
      attributes for dataset: ./mypack.nc
  SST.missing_value = 1.E+20
- SST._FillValue = -32768
+ SST._FillValue = 1.E+20
  SST.long_name = sea surface temperature [degc] 
  SST.history = From ghrsst_global 
  SST.scale_factor = -0.0001263447
@@ -61275,21 +61278,21 @@ list/i=1:15 sst
              TIME     : APR-2006
                      0.03S  
                       1
- 179.972W  /  1:  27.49979
- 179.922W  /  2:  27.47983
- 179.872W  /  3:  27.46984
- 179.822W  /  4:  27.46984
- 179.772W  /  5:  27.44976
- 179.722W  /  6:  27.42979
- 179.672W  /  7:  27.42979
- 179.622W  /  8:  27.42979
- 179.572W  /  9:  27.44976
- 179.522W  / 10:  27.45986
- 179.472W  / 11:  27.46984
- 179.422W  / 12:  27.45986
- 179.372W  / 13:  27.46984
- 179.322W  / 14:  27.47983
- 179.272W  / 15:  27.48981
+ 179.972W  /  1:  27.49991
+ 179.922W  /  2:  27.47995
+ 179.872W  /  3:  27.46997
+ 179.822W  /  4:  27.46997
+ 179.772W  /  5:  27.44988
+ 179.722W  /  6:  27.42992
+ 179.672W  /  7:  27.42992
+ 179.622W  /  8:  27.42992
+ 179.572W  /  9:  27.44988
+ 179.522W  / 10:  27.45999
+ 179.472W  / 11:  27.46997
+ 179.422W  / 12:  27.45999
+ 179.372W  / 13:  27.46997
+ 179.322W  / 14:  27.47995
+ 179.272W  / 15:  27.48993
  
  
 GO bn_reset
@@ -63252,7 +63255,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.8  "                                                           
  3    /  3:" ! Linux 2.6.18-308.8.1.el5PAE 32-bit - 07/02/12"                           
- 4    /  4:" !  2-Jul-12 15:16     "                                                    
+ 4    /  4:" !  2-Jul-12 17:28     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -65841,42 +65844,42 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.2473
- 2   / 2:  0.7564
- 3   / 3:  0.7586
- 4   / 4:  0.8768
- 5   / 5:  0.2472
+ 1   / 1:  0.1567
+ 2   / 2:  0.4053
+ 3   / 3:  0.6756
+ 4   / 4:  0.1548
+ 5   / 5:  0.3799
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.7983
- 2   / 2:  0.5506
- 3   / 3:  0.9513
- 4   / 4:  0.5450
- 5   / 5:  0.9447
+ 1   / 1:  0.9802
+ 2   / 2:  0.0202
+ 3   / 3:  0.6544
+ 4   / 4:  0.4779
+ 5   / 5:  0.0294
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.3913
- 2   / 2:  0.0996
- 3   / 3:  0.4026
- 4   / 4:  0.1125
- 5   / 5:  0.9338
- 6   / 6:  0.2148
+ 1   / 1:  0.7122
+ 2   / 2:  0.1409
+ 3   / 3:  0.7935
+ 4   / 4:  0.5512
+ 5   / 5:  0.1895
+ 6   / 6:  0.6973
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.3451
- 2   / 2:  0.2334
- 3   / 3:  0.6772
- 4   / 4:  0.3408
- 5   / 5:  0.7113
- 6   / 6:  0.2516
+ 1   / 1:  0.2520
+ 2   / 2:  0.3789
+ 3   / 3:  0.0236
+ 4   / 4:  0.6155
+ 5   / 5:  0.0129
+ 6   / 6:  0.5948
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
@@ -65908,42 +65911,42 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1: -1.338
- 2   / 2: -0.231
- 3   / 3:  0.540
- 4   / 4: -0.572
- 5   / 5:  0.094
+ 1   / 1:  1.254
+ 2   / 2:  0.568
+ 3   / 3:  0.029
+ 4   / 4:  1.297
+ 5   / 5: -0.259
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.891
- 2   / 2:  0.098
- 3   / 3: -2.405
- 4   / 4: -0.218
- 5   / 5: -0.363
+ 1   / 1: -2.229
+ 2   / 2: -1.603
+ 3   / 3:  0.363
+ 4   / 4: -0.463
+ 5   / 5:  0.394
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1: -0.636
- 2   / 2: -1.529
- 3   / 3:  0.901
- 4   / 4: -1.385
- 5   / 5: -0.983
- 6   / 6:  0.456
+ 1   / 1:  0.279
+ 2   / 2:  0.358
+ 3   / 3:  0.898
+ 4   / 4:  1.592
+ 5   / 5:  1.344
+ 6   / 6:  1.279
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1: -0.283
- 2   / 2: -1.283
- 3   / 3: -0.661
- 4   / 4: -1.627
- 5   / 5:  0.566
- 6   / 6: -0.438
+ 1   / 1: -0.548
+ 2   / 2: -0.355
+ 3   / 3: -2.233
+ 4   / 4:  0.437
+ 5   / 5:  1.160
+ 6   / 6:  0.643
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
@@ -65979,14 +65982,14 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
             VAR2   VAR2    VAR2
-0     / 1:  1.919  1.919  0.6147
-20    / 2:  1.487  1.487  0.6147
-40    / 3:  0.615  0.615  0.2838
-60    / 4:  0.284  0.284  0.2838
-80    / 5: -0.611 -0.611  0.2838
-100   / 6: -0.808 -0.611  0.2838
-120   / 7:  0.215  0.157  0.2838
-140   / 8:  0.157  0.215  0.2838
+0     / 1:  1.103  1.103  0.3094
+20    / 2:  0.988  0.988  0.3094
+40    / 3:  0.309  0.309  0.1231
+60    / 4:  0.123  0.123  0.3094
+80    / 5: -0.804 -0.804  0.3094
+100   / 6: -0.959 -0.804  0.3094
+120   / 7: -0.404 -0.404  0.3094
+140   / 8:  0.591  0.591  0.5914
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -71968,9 +71971,9 @@ GO bn_regrid_transforms_6d
 use gtsa056_1_ef
 set mode diag
  
-define axis/f=15-jan-1982:15-mar-1984:120/unit=hour fax5day
+define axis/f=23-jan-1982:30-jan-1982:20/unit=hour fax20
 define axis/x=120e:60w:10/unit=degrees xax10
-define grid/like=temp/f=fax5day g5day
+define grid/like=temp/f=fax20 g5day
  getgrid EX#1     C:  6 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GGR1            PSXT      PSYT5_89  PSZT1_2   TIME21
  dealloc  dynamic grid GGR1            PSXT      PSYT5_89  PSZT1_2   TIME21
@@ -71979,80 +71982,16 @@ set reg/x=130w:125w/y=0:1.5/e=1:2/f=23-JAN-1982:24-jan-1982/t=21-JAN-1982/z=5
  
 use gtsa056_1_ef    	!kob 4/99
  
-! valid syntax tests
-load temp
+stat temp[g=g5day] - temp[g=g5day@ave]
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GGR1            PSXT      PSYT5_89  PSZT1_2   TIME21
  strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
  eval    EX#1     C:  5 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
+ strip regrid on F: TEMP --> G5DAY            @LIN
  reading TEMP     M:120 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
- doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
-load temp[g=g5day]
- dealloc  dynamic grid GGR1            PSXT      PSYT5_89  PSZT1_2   TIME21
- getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
- eval    EX#1     C:  5 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- strip regrid on F: TEMP --> G5DAY            @LIN
- reading TEMP     M:114 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    2    2
- regrid  TEMP     M:104 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
-load temp[g=g5day@lin]
- dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M:104 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- -DELETE TEMP     M:112 dset:   1 I:  101  105  J:   41   46  K:    1    1  L: -999 -999  M:    1    2  N:    3    3
- getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
- eval    EX#1     C:  5 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- strip regrid on F: TEMP --> G5DAY            @LIN
- reading TEMP     M:112 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    2    2
- regrid  TEMP     M:104 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
-load temp[g=g5day@ave]
- dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M:102 dset:   1 I:  101  105  J:   41   46  K:    1    1  L: -999 -999  M:    1    2  N:    3    3
- -DELETE TEMP     M:104 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
- eval    EX#1     C:  5 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
+ regrid  TEMP     M:118 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
  strip regrid on F: TEMP --> G5DAY            @AVE
- reading TEMP     M:104 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    3
- regrid  TEMP     M:102 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
-load temp[g=g5day@lin]
- dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 96 dset:   1 I:  101  105  J:   41   46  K:    1    1  L: -999 -999  M:    1    2  N:    3    3
- -DELETE TEMP     M:102 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
- eval    EX#1     C:  5 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- strip regrid on F: TEMP --> G5DAY            @LIN
- reading TEMP     M:102 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    2    2
- regrid  TEMP     M: 96 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
-load temp[g=g5day]
- dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 96 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- -DELETE TEMP     M:110 dset:   1 I:  101  105  J:   41   46  K:    1    1  L: -999 -999  M:    1    2  N:    3    3
- getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
- eval    EX#1     C:  5 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- strip regrid on F: TEMP --> G5DAY            @LIN
- reading TEMP     M:110 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    2    2
- regrid  TEMP     M: 96 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
-stat temp[g=g5day] - temp[g=g5day@ave]
- dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 86 dset:   1 I:  101  105  J:   41   46  K:    1    1  L: -999 -999  M:    1    2  N:    3    3
- -DELETE TEMP     M: 96 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
- eval    EX#1     C:  5 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- strip regrid on F: TEMP --> G5DAY            @LIN
- reading TEMP     M: 96 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    2    2
- regrid  TEMP     M: 86 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- strip regrid on F: TEMP --> G5DAY            @AVE
- reading TEMP     M: 90 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    3
- regrid  TEMP     M: 58 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
+ reading TEMP     M:114 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
+ regrid  TEMP     M:104 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
  doing --> EX#1[T=21-JAN-198200:00@ITP,D=1]
  
              TEMP[G=G5DAY] - TEMP[G=G5DAY@AVE]
@@ -72061,184 +72000,125 @@ stat temp[g=g5day] - temp[g=g5day@ave]
              DEPTH (m): 5
              TIME: 21-JAN-1982 00:00 (interpolated)
              E: 1 to 2
-             FORECAST: 25-JAN-1982 00:00:00
+             FORECAST: 23-JAN-1982 00:00:00 to 24-JAN-1982 00:0
              DATA SET: ./gtsa056_1_ef.nc
  
- Total # of data points: 60 (5*6*1*1*2*1)
- # flagged as bad  data: 60
+ Total # of data points: 120 (5*6*1*1*2*2)
+ # flagged as bad  data: 20
+ Minimum value: -79.96
+ Maximum value: 33.002
+ Mean    value: -53.752 (unweighted average)
+ Standard deviation: 21.917
  
 ! basic regrid tests
 LIST temp[g=g5day@ave]
- -DELETE EX#1     M: 80 dset:   1 I:  101  105  J:   41   46  K:    1    1  L: -999 -999  M:    1    2  N:    3    3
- -DELETE EX#1     M: 88 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
+ -DELETE EX#1     M:102 dset:   1 I:  101  105  J:   41   46  K:    1    1  L: -999 -999  M:    1    2  N:    1    2
+ -DELETE EX#1     M:112 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
  dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 58 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- -DELETE TEMP     M: 86 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
+ -DELETE TEMP     M:104 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
+ -DELETE TEMP     M:118 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
- eval    EX#1     C:  5 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
+ eval    EX#1     C:  5 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
  strip regrid on F: TEMP --> G5DAY            @AVE
- reading TEMP     M: 86 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    3
- regrid  TEMP     M: 58 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
+ reading TEMP     M:118 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
+ regrid  TEMP     M:104 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
              VARIABLE : TEMPERATURE (deg. C)
                         regrid: G5DAY on F@AVE
              FILENAME : gtsa056_1_ef.nc
-             SUBSET   : 5 by 6 by 2 points (LONGITUDE-LATITUDE-E)
+             SUBSET   : 5 by 6 by 2 by 2 points (LONGITUDE-LATITUDE-E-FORECAST)
              DEPTH (m): 5
              TIME     : 21-JAN-1982 00:00 (interpolated)
-             FORECAST : 25-JAN-1982 00:00:00
                129.5W   128.5W   127.5W   126.5W   125.5W  
                101      102      103      104      105
+ ---- N:1 F:   23-JAN-1982 00:00:00
  ---- M:1 E:   1
- 1.5N  / 46:  3424.97  4424.97  2524.97  3524.97  4524.97
- 1.17N / 45:  4224.97  2324.97  3324.97  4324.97  2424.97
- 0.83N / 44:  1657.79  2438.62  3219.44  1735.88  2516.70
- 0.5N  / 43:  3437.62  4437.62  2537.62  3537.62  3546.60
- 0.17N / 42:  4237.62  2337.62  3337.62  4337.62  2437.62
- 0.17S / 41:  1672.74     ....  3234.38     ....  2531.64
+ 1.5N  / 46:     ....     ....     ....     ....     ....
+ 1.17N / 45:   59.000   59.562     ....   48.240     ....
+ 0.83N / 44:     ....   55.658   56.658   57.438     ....
+ 0.5N  / 43:     ....     ....     ....     ....     ....
+ 0.17N / 42:     ....     ....    0.781     ....     ....
+ 0.17S / 41:     ....     ....    7.356   10.329   12.521
  ---- M:2 E:   2
- 1.5N  / 46:  3435.97  4435.97  2535.97  3535.97  4535.97
- 1.17N / 45:  4235.97  2335.97  3335.97  4335.97  2435.97
- 0.83N / 44:  2135.97  3135.97  4135.97  2235.97  3235.97
- 0.5N  / 43:  3425.97  4425.97  2525.97  3525.97  4525.97
- 0.17N / 42:  4225.97  2325.97  3325.97  4325.97  2425.97
- 0.17S / 41:  2125.97  3125.97  4125.97  2225.97  3225.97
+ 1.5N  / 46:   84.130   85.130   86.130   87.130   88.130
+ 1.17N / 45:   79.130   80.130   81.130   82.130   83.130
+ 0.83N / 44:   74.130   75.130   76.130   77.130   78.130
+ 0.5N  / 43:  101.925  102.925  103.925  104.925   73.130
+ 0.17N / 42:   96.925   97.925   98.925   99.925  100.925
+ 0.17S / 41:   91.925   92.925   93.925   94.925   95.925
+ ---- N:2 F:   23-JAN-1982 20:00:00
+ ---- M:1 E:   1
+ 1.5N  / 46:  102.130  103.130  104.130  105.130  106.130
+ 1.17N / 45:   97.130   98.130   99.130  100.130  101.130
+ 0.83N / 44:   92.130   93.130   94.130   95.130   96.130
+ 0.5N  / 43:   87.130   88.130   89.130   90.130   91.130
+ 0.17N / 42:  114.925   83.130   84.130   85.130   86.130
+ 0.17S / 41:  109.925  110.925  111.925  112.925  113.925
+ ---- M:2 E:   2
+ 1.5N  / 46:  120.130  121.130  122.130  113.925  114.925
+ 1.17N / 45:  115.130  116.130  117.130  118.130  119.130
+ 0.83N / 44:  110.130  111.130  112.130  113.130  114.130
+ 0.5N  / 43:  105.130  106.130  107.130  108.130  109.130
+ 0.17N / 42:  100.130  101.130  102.130  103.130  104.130
+ 0.17S / 41:   95.130   96.130   97.130   98.130   99.130
 LIST temp[g=g5day]	
  dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 58 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- -DELETE TEMP     M: 88 dset:   1 I:  101  105  J:   41   46  K:    1    1  L: -999 -999  M:    1    2  N:    3    3
+ -DELETE TEMP     M:104 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
+ -DELETE TEMP     M:112 dset:   1 I:  101  105  J:   41   46  K:    1    1  L: -999 -999  M:    1    2  N:    1    2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
- eval    EX#1     C:  5 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
+ eval    EX#1     C:  5 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
  strip regrid on F: TEMP --> G5DAY            @LIN
- reading TEMP     M: 88 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    2    2
- regrid  TEMP     M: 58 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
+ reading TEMP     M:112 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
+ regrid  TEMP     M:104 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
              VARIABLE : TEMPERATURE (deg. C)
                         regrid: G5DAY
              FILENAME : gtsa056_1_ef.nc
-             SUBSET   : 5 by 6 by 2 points (LONGITUDE-LATITUDE-E)
+             SUBSET   : 5 by 6 by 2 by 2 points (LONGITUDE-LATITUDE-E-FORECAST)
              DEPTH (m): 5
              TIME     : 21-JAN-1982 00:00 (interpolated)
-             FORECAST : 25-JAN-1982 00:00:00
-              130W129W128W127W126W
-             101 102 103 104 105
+               129.5W   128.5W   127.5W   126.5W   125.5W  
+               101      102      103      104      105
+ ---- N:1 F:   23-JAN-1982 00:00:00
  ---- M:1 E:   1
- 1.5N  / 46:....................
- 1.17N / 45:....................
- 0.83N / 44:....................
- 0.5N  / 43:....................
- 0.17N / 42:....................
- 0.17S / 41:....................
+ 1.5N  / 46:  34.3553  34.3552  34.5032  34.8652  35.3285
+ 1.17N / 45:  34.1766  34.1710  34.2834  34.5970  35.0244
+ 0.83N / 44:  34.0256  34.0016  34.0631  34.3109  34.6873
+ 0.5N  / 43:  33.9306  33.8902  33.8887  34.0374  34.3408
+ 0.17N / 42:  33.8944  33.8343  33.7825  33.8263  34.0336
+ 0.17S / 41:  33.9538  33.8657  33.7716  33.7285  33.8282
  ---- M:2 E:   2
- 1.5N  / 46:....................
- 1.17N / 45:....................
- 0.83N / 44:....................
- 0.5N  / 43:....................
- 0.17N / 42:....................
- 0.17S / 41:....................
+ 1.5N  / 46:  40.3553  40.3552  40.5032  40.8652  41.3285
+ 1.17N / 45:  40.1766  40.1710  40.2834  40.5970  41.0244
+ 0.83N / 44:  40.0256  40.0016  40.0631  40.3109  40.6873
+ 0.5N  / 43:  39.9306  39.8902  39.8887  40.0374  40.3408
+ 0.17N / 42:  39.8944  39.8343  39.7825  39.8263  40.0336
+ 0.17S / 41:  39.9538  39.8657  39.7716  39.7285  39.8282
+ ---- N:2 F:   23-JAN-1982 20:00:00
+ ---- M:1 E:   1
+ 1.5N  / 46:  36.0220  36.0219  36.1698  36.5318  36.9952
+ 1.17N / 45:  35.8433  35.8377  35.9501  36.2637  36.6910
+ 0.83N / 44:  35.6923  35.6682  35.7298  35.9776  36.3539
+ 0.5N  / 43:  35.5973  35.5568  35.5554  35.7040  36.0075
+ 0.17N / 42:  35.5610  35.5010  35.4491  35.4929  35.7003
+ 0.17S / 41:  35.6205  35.5323  35.4383  35.3952  35.4948
+ ---- M:2 E:   2
+ 1.5N  / 46:  42.0220  42.0219  42.1698  42.5318  42.9952
+ 1.17N / 45:  41.8433  41.8377  41.9501  42.2637  42.6910
+ 0.83N / 44:  41.6923  41.6682  41.7298  41.9776  42.3539
+ 0.5N  / 43:  41.5973  41.5568  41.5554  41.7040  42.0075
+ 0.17N / 42:  41.5610  41.5010  41.4491  41.4929  41.7003
+ 0.17S / 41:  41.6205  41.5323  41.4383  41.3952  41.4948
  
 ! unspecified regions
 SET MODE IGNORE	! V.5 change
 canc reg
 set reg/n=1:3/t=21-JAN-1982/z=5  ! x,y,e unspecified
-load temp
- dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 58 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    3    3
- -DELETE TEMP     M: 80 dset:   1 I:  101  105  J:   41   46  K:    1    1  L: -999 -999  M:    1    2  N:    3    3
- getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GGR1            PSXT      PSYT5_89  PSZT1_2   TIME21
- strip --> EX#1[T=21-JAN-198200:00:00@ITP,D=1]
- eval    EX#1     C:  5 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L:**********  M: -999 -999  N:    1    3
- strip moduloing TEMP on T axis:************ dset:   1
- reading TEMP     M: 80 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    5    5  M:    1    2  N:    1    3
- doing moduloing TEMP on T axis:     5     5 dset:   1
- reading TEMP     M: 72 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    1    1  M:    1    2  N:    1    3
- doing moduloing TEMP on T axis:     1     1 dset:   1
- doing --> TEMP[T=21-JAN-198200:00:00@ITP,D=1]
-load temp[g=g5day]
- dealloc  dynamic grid GGR1            PSXT      PSYT5_89  PSZT1_2   TIME21
- getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[T=21-JAN-198200:00:00@ITP,D=1]
- eval    EX#1     C:  5 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L:**********  M: -999 -999  N:    1    3
- strip moduloing TEMP on T axis:************ dset:   1
- strip regrid on F: TEMP --> G5DAY            @LIN
- reading TEMP     M: 78 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    5    5  M:    1    2  N:    1    2
- regrid  TEMP     M:106 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    5    5  M:    1    2  N:    1    3
- doing moduloing TEMP on T axis:     5     5 dset:   1
- strip regrid on F: TEMP --> G5DAY            @LIN
- reading TEMP     M: 82 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    1    1  M:    1    2  N:    1    2
- regrid  TEMP     M: 74 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    1    1  M:    1    2  N:    1    3
- doing moduloing TEMP on T axis:     1     1 dset:   1
- doing --> TEMP[T=21-JAN-198200:00:00@ITP,D=1]
-load temp[g=g5day@lin]
- dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 70 dset:   1 I:    1  160  J:    1   85  K:    1    1  L: -999 -999  M:    1    2  N:    1    3
- -DELETE TEMP     M: 74 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    1    1  M:    1    2  N:    1    3
- -DELETE TEMP     M: 98 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:**********  M:    1    2  N:    1    3
- -DELETE TEMP     M:106 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    5    5  M:    1    2  N:    1    3
- getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[T=21-JAN-198200:00:00@ITP,D=1]
- eval    EX#1     C:  5 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L:**********  M: -999 -999  N:    1    3
- strip moduloing TEMP on T axis:************ dset:   1
- strip regrid on F: TEMP --> G5DAY            @LIN
- reading TEMP     M:106 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    5    5  M:    1    2  N:    1    2
- regrid  TEMP     M: 98 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    5    5  M:    1    2  N:    1    3
- doing moduloing TEMP on T axis:     5     5 dset:   1
- strip regrid on F: TEMP --> G5DAY            @LIN
- reading TEMP     M: 70 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    1    1  M:    1    2  N:    1    2
- regrid  TEMP     M: 66 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    1    1  M:    1    2  N:    1    3
- doing moduloing TEMP on T axis:     1     1 dset:   1
- doing --> TEMP[T=21-JAN-198200:00:00@ITP,D=1]
- 
-load temp[g=g5day@ave]
- dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 64 dset:   1 I:    1  160  J:    1   85  K:    1    1  L: -999 -999  M:    1    2  N:    1    3
- -DELETE TEMP     M: 66 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    1    1  M:    1    2  N:    1    3
- -DELETE TEMP     M: 74 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:**********  M:    1    2  N:    1    3
- -DELETE TEMP     M: 98 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    5    5  M:    1    2  N:    1    3
- getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[T=21-JAN-198200:00:00@ITP,D=1]
- eval    EX#1     C:  5 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L:**********  M: -999 -999  N:    1    3
- strip moduloing TEMP on T axis:************ dset:   1
- strip regrid on F: TEMP --> G5DAY            @AVE
- reading TEMP     M: 98 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    5    5  M:    1    2  N:    1    3
- regrid  TEMP     M: 74 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    5    5  M:    1    2  N:    1    3
- doing moduloing TEMP on T axis:     5     5 dset:   1
- strip regrid on F: TEMP --> G5DAY            @AVE
- reading TEMP     M: 64 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    1    1  M:    1    2  N:    1    3
- regrid  TEMP     M: 54 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    1    1  M:    1    2  N:    1    3
- doing moduloing TEMP on T axis:     1     1 dset:   1
- doing --> TEMP[T=21-JAN-198200:00:00@ITP,D=1]
  
 canc reg
 set reg/i=101:105/j=41:42/t=21-JAN-1982/z=5  ! e,f unspecified
-load temp[g=g5day]
- dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 54 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    1    1  M:    1    2  N:    1    3
- -DELETE TEMP     M: 62 dset:   1 I:    1  160  J:    1   85  K:    1    1  L: -999 -999  M:    1    2  N:    1    3
- -DELETE TEMP     M: 66 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:**********  M:    1    2  N:    1    3
- -DELETE TEMP     M: 74 dset:   1 I:    1  160  J:    1   85  K:    1    1  L:    5    5  M:    1    2  N:    1    3
- getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
- eval    EX#1     C:  5 dset:   1 I:  101  105  J:   41   42  K:    1    1  L:    2    3  M: -999 -999  N: -999 -999
- strip regrid on F: TEMP --> G5DAY            @LIN
- reading TEMP     M: 74 dset:   1 I:  101  105  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    4
- regrid  TEMP     M: 66 dset:   1 I:  101  105  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1  159
- doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
- 
-load temp[g=g5day@ave]
- dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 62 dset:   1 I:  101  105  J:   41   42  K:    1    1  L: -999 -999  M:    1    2  N:    1  159
- -DELETE TEMP     M: 66 dset:   1 I:  101  105  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1  159
- getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
- eval    EX#1     C:  5 dset:   1 I:  101  105  J:   41   42  K:    1    1  L:    2    3  M: -999 -999  N: -999 -999
- strip regrid on F: TEMP --> G5DAY            @AVE
- reading TEMP     M: 66 dset:   1 I:  101  105  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    4
- regrid  TEMP     M: 62 dset:   1 I:  101  105  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1  159
- doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
  
 SET MODE/LAST IGNORE	! V.5 change
  
@@ -72252,8 +72132,8 @@ use gtsa056_1_ef 		!kob 4/99
 set region/x=180E/y=0/f=23-JAN-1982/t=21-JAN-1982/z=5
 plot temp
  dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 54 dset:   1 I:  101  105  J:   41   42  K:    1    1  L: -999 -999  M:    1    2  N:    1  159
- -DELETE TEMP     M: 62 dset:   1 I:  101  105  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1  159
+ -DELETE TEMP     M:102 dset:   1 I:  101  105  J:   41   46  K:    1    1  L: -999 -999  M:    1    2  N:    1    2
+ -DELETE TEMP     M:104 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GGR1            PSXT      PSYT5_89  PSZT1_2   TIME21
  strip --> EX#1[F=23-JAN-198200:00:00@ITP,D=1]
@@ -72261,7 +72141,7 @@ plot temp
  strip --> EX#1[Y=0@ITP,D=1]
  strip --> EX#1[X=180E@ITP,D=1]
  eval    EX#1     C:  8 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M: -999 -999  N:    1    2
- reading TEMP     M: 62 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    2
+ reading TEMP     M:104 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    2
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
@@ -72271,62 +72151,54 @@ PPL plot 865  complete
 plot/over temp[g=g5day]
  dealloc  dynamic grid GGR1            PSXT      PSYT5_89  PSZT1_2   TIME21
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[F=23-JAN-198200:00:00@ITP,D=1]
  strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
  strip --> EX#1[Y=0@ITP,D=1]
  strip --> EX#1[X=180E@ITP,D=1]
- eval    EX#1     C:  8 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M: -999 -999  N:    2    3
+ eval    EX#1     C:  7 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M: -999 -999  N:    1    1
  strip regrid on F: TEMP --> G5DAY            @LIN
- reading TEMP     M: 44 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    2
- regrid  TEMP     M: 42 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    2    3
+ reading TEMP     M: 90 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    2
+ regrid  TEMP     M: 58 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    1
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
- doing --> TEMP[F=23-JAN-198200:00:00@ITP,D=1]
 setting up plot
 PPL plot 866  complete
 plot/over temp[g=g5day@ave]
  dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 30 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L: -999 -999  M:    1    2  N: -999 -999
- -DELETE TEMP     M: 34 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L: -999 -999  M:    1    2  N:    2    3
- -DELETE TEMP     M: 36 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L:    2    3  M:    1    2  N:    2    3
- -DELETE TEMP     M: 38 dset:   1 I: -999 -999  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    2    3
- -DELETE TEMP     M: 42 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    2    3
+ -DELETE TEMP     M: 58 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    1
+ -DELETE TEMP     M: 72 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L: -999 -999  M:    1    2  N:    1    1
+ -DELETE TEMP     M: 80 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L:    2    3  M:    1    2  N:    1    1
+ -DELETE TEMP     M: 88 dset:   1 I: -999 -999  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[F=23-JAN-198200:00:00@ITP,D=1]
  strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
  strip --> EX#1[Y=0@ITP,D=1]
  strip --> EX#1[X=180E@ITP,D=1]
- eval    EX#1     C:  8 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M: -999 -999  N:    2    3
+ eval    EX#1     C:  7 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M: -999 -999  N:    1    1
  strip regrid on F: TEMP --> G5DAY            @AVE
- reading TEMP     M: 42 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    3
- regrid  TEMP     M: 38 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    2    3
+ reading TEMP     M: 88 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    1
+ regrid  TEMP     M: 80 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    1
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
- doing --> TEMP[F=23-JAN-198200:00:00@ITP,D=1]
 setting up plot
 PPL plot 867  complete
 plot/over temp[g=g5day@asn]
  dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 28 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L: -999 -999  M:    1    2  N: -999 -999
- -DELETE TEMP     M: 30 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L: -999 -999  M:    1    2  N:    2    3
- -DELETE TEMP     M: 34 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L:    2    3  M:    1    2  N:    2    3
- -DELETE TEMP     M: 36 dset:   1 I: -999 -999  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    2    3
- -DELETE TEMP     M: 38 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    2    3
+ -DELETE TEMP     M: 58 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L:    2    3  M:    1    2  N:    1    1
+ -DELETE TEMP     M: 72 dset:   1 I: -999 -999  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    1
+ -DELETE TEMP     M: 80 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    1
+ -DELETE TEMP     M: 94 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L: -999 -999  M:    1    2  N:    1    1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[F=23-JAN-198200:00:00@ITP,D=1]
  strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
  strip --> EX#1[Y=0@ITP,D=1]
  strip --> EX#1[X=180E@ITP,D=1]
- eval    EX#1     C:  8 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M: -999 -999  N:    2    3
+ eval    EX#1     C:  7 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M: -999 -999  N:    1    1
  strip regrid on F: TEMP --> G5DAY            @ASN
- reading TEMP     M: 38 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    2    3
- regrid  TEMP     M: 36 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    2    3
+ reading TEMP     M: 94 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    1
+ regrid  TEMP     M: 80 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    1
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
- doing --> TEMP[F=23-JAN-198200:00:00@ITP,D=1]
 setting up plot
 PPL plot 868  complete
  
@@ -72334,18 +72206,17 @@ PPL plot 868  complete
 set region/x=180/y=20s:20n/e=2/t=21-JAN-1982/z=5
 plot temp
  dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 26 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L: -999 -999  M:    1    2  N: -999 -999
- -DELETE TEMP     M: 28 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L: -999 -999  M:    1    2  N:    2    3
- -DELETE TEMP     M: 30 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L:    2    3  M:    1    2  N:    2    3
- -DELETE TEMP     M: 34 dset:   1 I: -999 -999  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    2    3
- -DELETE TEMP     M: 36 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    2    3
+ -DELETE TEMP     M: 58 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L:    2    3  M:    1    2  N:    1    1
+ -DELETE TEMP     M: 72 dset:   1 I: -999 -999  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    1
+ -DELETE TEMP     M: 78 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L: -999 -999  M:    1    2  N:    1    1
+ -DELETE TEMP     M: 80 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GGR1            PSXT      PSYT5_89  PSZT1_2   TIME21
  strip --> EX#1[F=23-JAN-198200:00:00@ITP,D=1]
  strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
  strip --> EX#1[X=180E@ITP,D=1]
  eval    EX#1     C:  7 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    2
- reading TEMP     M: 36 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    2
+ reading TEMP     M: 80 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    2
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
  doing --> TEMP[F=23-JAN-198200:00:00@ITP,D=1]
@@ -72354,54 +72225,46 @@ PPL plot 869  complete
 plot/over temp[g=g5day]
  dealloc  dynamic grid GGR1            PSXT      PSYT5_89  PSZT1_2   TIME21
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[F=23-JAN-198200:00:00@ITP,D=1]
  strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
  strip --> EX#1[X=180E@ITP,D=1]
- eval    EX#1     C:  7 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    2    3
+ eval    EX#1     C:  6 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    1
  strip regrid on F: TEMP --> G5DAY            @LIN
- reading TEMP     M: 26 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    2
- regrid  TEMP     M: 22 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    2    3
+ reading TEMP     M:106 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    2
+ regrid  TEMP     M: 98 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    1
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
- doing --> TEMP[F=23-JAN-198200:00:00@ITP,D=1]
 setting up plot
 PPL plot 870  complete
 plot/over temp[g=g5day@ave]
  dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 14 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L: -999 -999  M:    2    2  N: -999 -999
- -DELETE TEMP     M: 18 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L: -999 -999  M:    2    2  N:    2    3
- -DELETE TEMP     M: 20 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    2    3
- -DELETE TEMP     M: 22 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    2    3
+ -DELETE TEMP     M: 74 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L: -999 -999  M:    2    2  N:    1    1
+ -DELETE TEMP     M: 82 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    1
+ -DELETE TEMP     M: 98 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[F=23-JAN-198200:00:00@ITP,D=1]
  strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
  strip --> EX#1[X=180E@ITP,D=1]
- eval    EX#1     C:  7 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    2    3
+ eval    EX#1     C:  6 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    1
  strip regrid on F: TEMP --> G5DAY            @AVE
- reading TEMP     M: 22 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    3
- regrid  TEMP     M: 20 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    2    3
+ reading TEMP     M: 98 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    1
+ regrid  TEMP     M: 82 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    1
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
- doing --> TEMP[F=23-JAN-198200:00:00@ITP,D=1]
 setting up plot
 PPL plot 871  complete
 plot/over temp[g=g5day@asn]
  dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 12 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L: -999 -999  M:    2    2  N: -999 -999
- -DELETE TEMP     M: 14 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L: -999 -999  M:    2    2  N:    2    3
- -DELETE TEMP     M: 18 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    2    3
- -DELETE TEMP     M: 20 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    2    3
+ -DELETE TEMP     M: 70 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L: -999 -999  M:    2    2  N:    1    1
+ -DELETE TEMP     M: 74 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    1
+ -DELETE TEMP     M: 82 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- strip --> EX#1[F=23-JAN-198200:00:00@ITP,D=1]
  strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
  strip --> EX#1[X=180E@ITP,D=1]
- eval    EX#1     C:  7 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    2    3
+ eval    EX#1     C:  6 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    1
  strip regrid on F: TEMP --> G5DAY            @ASN
- reading TEMP     M: 20 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    2    3
- regrid  TEMP     M: 18 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    2    3
+ reading TEMP     M: 82 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    1
+ regrid  TEMP     M: 74 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    1
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
- doing --> TEMP[F=23-JAN-198200:00:00@ITP,D=1]
 setting up plot
 PPL plot 872  complete
  
@@ -72425,10 +72288,9 @@ let a2 = _e[ge=e2pt]+_f[gf=f2pt]
  
 list a1[ge=eoffset@ave, gf=fax4day@ave]
  dealloc  dynamic grid G5DAY           PSXT      PSYT5_89  PSZT1_2   TIME21
- -DELETE TEMP     M: 10 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L: -999 -999  M:    2    2  N: -999 -999
- -DELETE TEMP     M: 12 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L: -999 -999  M:    2    2  N:    2    3
- -DELETE TEMP     M: 14 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    2    3
- -DELETE TEMP     M: 18 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    2    3
+ -DELETE TEMP     M: 66 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L: -999 -999  M:    2    2  N:    1    1
+ -DELETE TEMP     M: 70 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    1
+ -DELETE TEMP     M: 74 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A1       C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid (G086)          NORMAL    NORMAL    NORMAL    NORMAL
@@ -72445,16 +72307,16 @@ list a1[ge=eoffset@ave, gf=fax4day@ave]
  strip regrid on F: A1 --> ENTERMED         @AVE
  eval    A1       C:  8 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1    1
  allocate dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _E       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
+ pseudo  _E       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
  allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _F       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
- -DELETE _F       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
+ pseudo  _F       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
+ -DELETE _F       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE _E       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
+ -DELETE _E       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
  dealloc  dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
- regrid  A1       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
- regrid  A1       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- -DELETE A1       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
+ regrid  A1       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
+ regrid  A1       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ -DELETE A1       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
  dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
              VARIABLE : _E[GE=E1PT]+_F[GF=F1PT]
                         regrid: 1 delta on E@AVE, 96 hour on F@AVE
@@ -72462,8 +72324,8 @@ list a1[ge=eoffset@ave, gf=fax4day@ave]
                           1.1      2.1   
                           1        2
  15-JAN-1982 00 /  1:     ....     ....
- 19-JAN-1982 00 /  2:     ....  47.9316
- 23-JAN-1982 00 /  3:     ....  48.3450
+ 19-JAN-1982 00 /  2:     ....  41.9316
+ 23-JAN-1982 00 /  3:     ....  42.3450
  27-JAN-1982 00 /  4:     ....     ....
  31-JAN-1982 00 /  5:     ....     ....
  04-FEB-1982 00 /  6:     ....     ....
@@ -72479,7 +72341,7 @@ list a1[ge=eoffset@ave, gf=fax4day@ave]
  16-MAR-1982 00 / 16:     ....     ....
 list a1[ge=eoffset@sum, gf=fax4day@sum]
  dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE A1       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ -DELETE A1       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
  dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
@@ -72490,16 +72352,16 @@ list a1[ge=eoffset@sum, gf=fax4day@sum]
  strip regrid on F: A1 --> ENTERMED         @SUM
  eval    A1       C:  8 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1    1
  allocate dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _E       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
+ pseudo  _E       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
  allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _F       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
- -DELETE _F       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
+ pseudo  _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
+ -DELETE _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE _E       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
+ -DELETE _E       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
  dealloc  dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
- regrid  A1       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
- regrid  A1       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- -DELETE A1       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
+ regrid  A1       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
+ regrid  A1       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ -DELETE A1       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
  dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
              VARIABLE : _E[GE=E1PT]+_F[GF=F1PT]
                         regrid: 1 delta on E@SUM, 96 hour on F@SUM
@@ -72507,9 +72369,9 @@ list a1[ge=eoffset@sum, gf=fax4day@sum]
                           1.1      2.1   
                           1        2
  15-JAN-1982 00 /  1:     ....     ....
- 19-JAN-1982 00 /  2:     ....  28.7590
- 23-JAN-1982 00 /  3:     ....  14.5141
- 27-JAN-1982 00 /  4:     ....  14.5141
+ 19-JAN-1982 00 /  2:     ....  25.1590
+ 23-JAN-1982 00 /  3:     ....  12.7141
+ 27-JAN-1982 00 /  4:     ....  12.7141
  31-JAN-1982 00 /  5:     ....     ....
  04-FEB-1982 00 /  6:     ....     ....
  08-FEB-1982 00 /  7:     ....     ....
@@ -72524,7 +72386,7 @@ list a1[ge=eoffset@sum, gf=fax4day@sum]
  16-MAR-1982 00 / 16:     ....     ....
 list a1[ge=eoffset@var, gf=fax4day@var]
  dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE A1       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ -DELETE A1       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
  dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
@@ -72535,16 +72397,16 @@ list a1[ge=eoffset@var, gf=fax4day@var]
  strip regrid on F: A1 --> ENTERMED         @VAR
  eval    A1       C:  8 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1    1
  allocate dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _E       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
+ pseudo  _E       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
  allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _F       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
- -DELETE _F       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
+ pseudo  _F       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
+ -DELETE _F       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE _E       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
+ -DELETE _E       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
  dealloc  dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
- regrid  A1       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
- regrid  A1       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- -DELETE A1       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
+ regrid  A1       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
+ regrid  A1       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ -DELETE A1       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
  dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
              VARIABLE : Variance of _E[GE=E1PT]+_F[GF=F1PT]
                         regrid: 1 delta on E@VAR, 96 hour on F@VAR
@@ -72570,7 +72432,7 @@ list a1[ge=eoffset@var, gf=fax4day@var]
  
 list a2[ge=eoffset@ave, gf=fax4day@ave]
  dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE A1       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ -DELETE A1       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A2       C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
@@ -72587,16 +72449,16 @@ list a2[ge=eoffset@ave, gf=fax4day@ave]
  strip regrid on F: A2 --> ENTERMED         @AVE
  eval    A2       C:  8 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   48
  allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _E       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ pseudo  _E       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  allocate dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _F       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
- -DELETE _F       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
+ pseudo  _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
+ -DELETE _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
  dealloc  dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE _E       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ -DELETE _E       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- regrid  A2       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- regrid  A2       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- -DELETE A2       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ regrid  A2       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ regrid  A2       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ -DELETE A2       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  dealloc  dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
              VARIABLE : _E[GE=E2PT]+_F[GF=F2PT]
                         regrid: 1 delta on E@AVE, 96 hour on F@AVE
@@ -72606,8 +72468,8 @@ list a2[ge=eoffset@ave, gf=fax4day@ave]
  15-JAN-1982 00 /  1:     ....     ....
  19-JAN-1982 00 /  2:     ....  710187.
  23-JAN-1982 00 /  3:  710188.  710216.
- 27-JAN-1982 00 /  4:  702679.  707241.
- 31-JAN-1982 00 /  5:       0.       0.
+ 27-JAN-1982 00 /  4:  702705.  707252.
+ 31-JAN-1982 00 /  5:    2444.    2444.
  04-FEB-1982 00 /  6:     ....     ....
  08-FEB-1982 00 /  7:     ....     ....
  12-FEB-1982 00 /  8:     ....     ....
@@ -72621,7 +72483,7 @@ list a2[ge=eoffset@ave, gf=fax4day@ave]
  16-MAR-1982 00 / 16:     ....     ....
 list a2[ge=eoffset@sum, gf=fax4day@sum]
  dealloc  dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE A2       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ -DELETE A2       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
  dealloc  dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
@@ -72632,16 +72494,16 @@ list a2[ge=eoffset@sum, gf=fax4day@sum]
  strip regrid on F: A2 --> ENTERMED         @SUM
  eval    A2       C:  8 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   48
  allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _E       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ pseudo  _E       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  allocate dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _F       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
- -DELETE _F       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
+ pseudo  _F       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
+ -DELETE _F       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
  dealloc  dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE _E       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ -DELETE _E       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- regrid  A2       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- regrid  A2       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- -DELETE A2       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ regrid  A2       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ regrid  A2       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ -DELETE A2       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  dealloc  dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
              VARIABLE : _E[GE=E2PT]+_F[GF=F2PT]
                         regrid: 1 delta on E@SUM, 96 hour on F@SUM
@@ -72651,8 +72513,8 @@ list a2[ge=eoffset@sum, gf=fax4day@sum]
  15-JAN-1982 00 /  1:       ....       ....
  19-JAN-1982 00 /  2:       ....    213056.
  23-JAN-1982 00 /  3:    213056.  20170650.
- 27-JAN-1982 00 /  4:  19815557.  13423456.
- 31-JAN-1982 00 /  5:       ....       ....
+ 27-JAN-1982 00 /  4:  19816288.  13423943.
+ 31-JAN-1982 00 /  5:       730.       487.
  04-FEB-1982 00 /  6:       ....       ....
  08-FEB-1982 00 /  7:       ....       ....
  12-FEB-1982 00 /  8:       ....       ....
@@ -72666,7 +72528,7 @@ list a2[ge=eoffset@sum, gf=fax4day@sum]
  16-MAR-1982 00 / 16:       ....       ....
 list a2[ge=eoffset@var, gf=fax4day@var]
  dealloc  dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE A2       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ -DELETE A2       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
  dealloc  dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
@@ -72677,16 +72539,16 @@ list a2[ge=eoffset@var, gf=fax4day@var]
  strip regrid on F: A2 --> ENTERMED         @VAR
  eval    A2       C:  8 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   48
  allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _E       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ pseudo  _E       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  allocate dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _F       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
- -DELETE _F       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
+ pseudo  _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
+ -DELETE _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
  dealloc  dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE _E       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ -DELETE _E       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- regrid  A2       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- regrid  A2       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- -DELETE A2       M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ regrid  A2       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ regrid  A2       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ -DELETE A2       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  dealloc  dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
              VARIABLE : Variance of _E[GE=E2PT]+_F[GF=F2PT]
                         regrid: 1 delta on E@VAR, 96 hour on F@VAR
@@ -72714,14 +72576,14 @@ list a2[ge=eoffset@var, gf=fax4day@var]
  
 let a1 = _e[ge=e1pt]
  dealloc  dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE A2       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- -DELETE A2       M:  2 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   48
- -DELETE A2       M:  4 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   48
- -DELETE A2       M: 49 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   48
+ -DELETE A2       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
+ -DELETE A2       M: 50 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   48
+ -DELETE A2       M: 56 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   48
+ -DELETE A2       M: 62 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   48
  dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE A1       M:  6 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1    1
- -DELETE A1       M: 10 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1    1
- -DELETE A1       M: 12 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1    1
+ -DELETE A1       M: 54 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1    1
+ -DELETE A1       M: 64 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1    1
+ -DELETE A1       M: 66 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1    1
  dealloc  dynamic grid (G086)          NORMAL    NORMAL    NORMAL    NORMAL
 let a2 = _e[ge=e2pt]
 let a4 = _e[ge=e4pt]
@@ -72740,9 +72602,9 @@ list a1[ge=eoffset@max]
  strip regrid on E: A1 --> (G098)           @MAX
  eval    A1       C:  7 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
  allocate dynamic grid (G086)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _E       M: 12 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
+ pseudo  _E       M: 66 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
  dealloc  dynamic grid (G086)          NORMAL    NORMAL    NORMAL    NORMAL
- regrid  A1       M:  6 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ regrid  A1       M: 54 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
              VARIABLE : _E[GE=E1PT]
                         regrid: 1 delta on E@MAX
@@ -72750,9 +72612,9 @@ list a1[ge=eoffset@max]
  1.1 / 1:     ....
  2.1 / 2:  2.50000
 list a2[ge=eoffset@max]
- -DELETE _E       M: 12 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
+ -DELETE _E       M: 66 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
  dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE A1       M:  6 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ -DELETE A1       M: 54 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A2       C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
@@ -72766,9 +72628,9 @@ list a2[ge=eoffset@max]
  strip regrid on E: A2 --> (G091)           @MAX
  eval    A2       C:  7 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _E       M:  6 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ pseudo  _E       M: 54 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL
- regrid  A2       M: 49 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ regrid  A2       M: 62 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  dealloc  dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
              VARIABLE : _E[GE=E2PT]
                         regrid: 1 delta on E@MAX
@@ -72776,9 +72638,9 @@ list a2[ge=eoffset@max]
  1.1 / 1:  1.50000
  2.1 / 2:  2.50000
 list a4[ge=eoffset@max]
- -DELETE _E       M:  6 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ -DELETE _E       M: 54 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  dealloc  dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE A2       M: 49 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ -DELETE A2       M: 62 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A4       C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
@@ -72792,9 +72654,9 @@ list a4[ge=eoffset@max]
  strip regrid on E: A4 --> (G101)           @MAX
  eval    A4       C:  7 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
  allocate dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _E       M: 49 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
+ pseudo  _E       M: 62 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
  dealloc  dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
- regrid  A4       M:  4 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ regrid  A4       M: 56 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
              VARIABLE : _E[GE=E4PT]
                         regrid: 1 delta on E@MAX
@@ -72802,9 +72664,9 @@ list a4[ge=eoffset@max]
  1.1 / 1:  1.50000
  2.1 / 2:  2.50000
 list a4[ge=eoffset@min]
- -DELETE _E       M: 49 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
+ -DELETE _E       M: 62 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE A4       M:  4 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ -DELETE A4       M: 56 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
@@ -72814,9 +72676,9 @@ list a4[ge=eoffset@min]
  strip regrid on E: A4 --> (G101)           @MIN
  eval    A4       C:  7 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
  allocate dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _E       M:  4 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
+ pseudo  _E       M: 56 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
  dealloc  dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
- regrid  A4       M:  2 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ regrid  A4       M: 50 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
              VARIABLE : _E[GE=E4PT]
                         regrid: 1 delta on E@MIN
@@ -72824,9 +72686,9 @@ list a4[ge=eoffset@min]
  1.1 / 1:  1.50000
  2.1 / 2:  2.00000
 list a4[ge=eoffset@sum] ! 5+5.5+6+6.5=23
- -DELETE _E       M:  4 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
+ -DELETE _E       M: 56 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE A4       M:  2 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ -DELETE A4       M: 50 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
@@ -72836,9 +72698,9 @@ list a4[ge=eoffset@sum] ! 5+5.5+6+6.5=23
  strip regrid on E: A4 --> (G101)           @SUM
  eval    A4       C:  7 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
  allocate dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _E       M:  2 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
+ pseudo  _E       M: 50 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
  dealloc  dynamic grid (G091)          NORMAL    NORMAL    NORMAL    NORMAL
- regrid  A4       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ regrid  A4       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
              VARIABLE : _E[GE=E4PT]
                         regrid: 1 delta on E@SUM
@@ -72851,9 +72713,9 @@ define axis/f=1-jan-1990:5-jan-1990:1/units=days eday
 define axis/f=1-jan-1990:5-jan-1990:24/units=hours ehour
 let afcst = _f[gf=eday]
 list afcst
- -DELETE _E       M:  2 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
+ -DELETE _E       M: 50 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- -DELETE A4       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
+ -DELETE A4       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid AFCST    C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
@@ -72863,7 +72725,7 @@ list afcst
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  eval    AFCST    C:  6 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _F       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
+ pseudo  _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
              VARIABLE : _F[GF=EDAY]
              SUBSET   : 5 points (FORECAST)
@@ -72884,7 +72746,7 @@ show grid
  normal    E
  EDAY      FORECAST             5 r   01-JAN-1990 00:00    05-JAN-1990 00:00
 list afcst[gf=ehour@max]
- -DELETE _F       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
+ -DELETE _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL
@@ -72895,9 +72757,9 @@ list afcst[gf=ehour@max]
  strip regrid on F: AFCST --> (G105)           @MAX
  eval    AFCST    C:  7 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
  allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- pseudo  _F       M: 18 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
+ pseudo  _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
  dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL
- regrid  AFCST    M: 43 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
+ regrid  AFCST    M: 46 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
  dealloc  dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL
              VARIABLE : _F[GF=EDAY]
                         regrid: 24 hour on F@MAX
@@ -72950,13 +72812,13 @@ list/i=3 sst[T=@ave]
  eval    EX#1     C:  5 dset:   5 I:    3    3  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  strip --> SST[T=01-JAN00:45:31-DEC06:34@AVE,D=5]
  strip aggregate gathering SST on E axis:     1     4 dset:   5
- reading SST      M: 10 dset:   1 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M: -999 -999  N: -999 -999
+ reading SST      M: 64 dset:   1 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M: -999 -999  N: -999 -999
  doing aggregate gathering SST on E axis:     1     1 dset:   1
- reading SST      M: 49 dset:   3 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M: -999 -999  N: -999 -999
+ reading SST      M: 62 dset:   3 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M: -999 -999  N: -999 -999
  doing aggregate gathering SST on E axis:     2     2 dset:   3
- reading SST      M:  6 dset:   2 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M: -999 -999  N: -999 -999
+ reading SST      M: 56 dset:   2 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M: -999 -999  N: -999 -999
  doing aggregate gathering SST on E axis:     3     3 dset:   2
- reading SST      M:  4 dset:   4 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M: -999 -999  N: -999 -999
+ reading SST      M: 54 dset:   4 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M: -999 -999  N: -999 -999
  doing aggregate gathering SST on E axis:     4     4 dset:   4
  doing --> SST[T=01-JAN00:45:31-DEC06:34@AVE,D=5]
              VARIABLE : SST_IN (Deg C)
@@ -72971,8 +72833,8 @@ list/i=3 sst[T=@ave]
  3   / 3:   57.026   56.882   55.784   54.913   53.452   51.122     ....     ....     ....
  4   / 4:  114.051  113.765  111.568  109.826  106.903  102.245     ....     ....     ....
 cancel data fourfiles
- -DELETE SST      M: 12 dset:   5 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M:    1    4  N: -999 -999
- -DELETE SST      M: 18 dset:   5 I:    3    3  J:    1    9  K: -999 -999  L: -999 -999  M:    1    4  N: -999 -999
+ -DELETE SST      M: 66 dset:   5 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M:    1    4  N: -999 -999
+ -DELETE SST      M: 74 dset:   5 I:    3    3  J:    1    9  K: -999 -999  L: -999 -999  M:    1    4  N: -999 -999
  dealloc  dynamic grid (G101)          COADSX116_COADSY52_6NORMAL    TIME12
  
 ! Create airt in the other datasets by LET/D definitions.
@@ -73006,15 +72868,15 @@ list/i=3 airt[T=@ave]
  eval    EX#1     C:  5 dset:   5 I:    3    3  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  strip --> AIRT[T=01-JAN00:45:31-DEC06:34@AVE,D=5]
  strip aggregate gathering AIRT on E axis:     1     4 dset:   5
- reading AIRT     M: 18 dset:   1 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M: -999 -999  N: -999 -999
+ reading AIRT     M: 74 dset:   1 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M: -999 -999  N: -999 -999
  doing aggregate gathering AIRT on E axis:     1     1 dset:   1
  eval    AIRT     C:  9 dset:   3 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M: -999 -999  N: -999 -999
- reading SST      M: 14 dset:   3 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M: -999 -999  N: -999 -999
- constan cnst     M:  2 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
- -DELETE cnst     M:  2 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ reading SST      M: 70 dset:   3 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M: -999 -999  N: -999 -999
+ constan cnst     M: 50 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE cnst     M: 50 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  doing aggregate gathering AIRT on E axis:     2     2 dset:   3
  eval    AIRT     C:  9 dset:   2 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M: -999 -999  N: -999 -999
- reading SST      M:  2 dset:   2 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M: -999 -999  N: -999 -999
+ reading SST      M: 50 dset:   2 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M: -999 -999  N: -999 -999
  constan cnst     M:120 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE cnst     M:120 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  doing aggregate gathering AIRT on E axis:     3     3 dset:   2
@@ -73318,7 +73180,7 @@ yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.8  
  	Linux 2.6.18-308.8.1.el5PAE 32-bit - 07/02/12
- 	 2-Jul-12 15:18     
+ 	 2-Jul-12 17:29     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -76869,7 +76731,7 @@ yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.8  
  	Linux 2.6.18-308.8.1.el5PAE 32-bit - 07/02/12
- 	 2-Jul-12 15:18     
+ 	 2-Jul-12 17:29     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
@@ -76882,12 +76744,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2 of Apr 23 2012 16:36:47 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = " 2-Jul-12"
-SESSION_TIME = "15:18"
-SESSION_PID = "5276"
-DELTA_CPU = "0.034994"
-CLOCK_SECS = "0.19"
+SESSION_TIME = "17:29"
+SESSION_PID = "15761"
+DELTA_CPU = "0.031994"
+CLOCK_SECS = "0.191"
 CURRENT_DATE = " 2-Jul-12"
-CURRENT_TIME = "15:18:04"
+CURRENT_TIME = "17:29:26"
 N_OPEN_DSETS = "0"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
@@ -76908,7 +76770,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "2-Jul-12:15:18"
+WIN_TITLE = "2-Jul-12:17:29"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -76969,7 +76831,7 @@ yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v6.8  
  	Linux 2.6.18-308.8.1.el5PAE 32-bit - 07/02/12
- 	 2-Jul-12 15:18     
+ 	 2-Jul-12 17:29     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -77188,7 +77050,7 @@ yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.8  
  	Linux 2.6.18-308.8.1.el5PAE 32-bit - 07/02/12
- 	 2-Jul-12 15:18     
+ 	 2-Jul-12 17:29     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -77302,7 +77164,7 @@ yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.8  
  	Linux 2.6.18-308.8.1.el5PAE 32-bit - 07/02/12
- 	 2-Jul-12 15:18     
+ 	 2-Jul-12 17:29     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -77386,4 +77248,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Mon Jul 2 15:18:06 PDT 2012
+Ended at Mon Jul 2 17:29:28 PDT 2012

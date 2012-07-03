@@ -5,79 +5,28 @@
 use gtsa056_1_ef
 set mode diag
 
-define axis/f=15-jan-1982:15-mar-1984:120/unit=hour fax5day
+define axis/f=23-jan-1982:30-jan-1982:20/unit=hour fax20
 define axis/x=120e:60w:10/unit=degrees xax10
-define grid/like=temp/f=fax5day g5day
+define grid/like=temp/f=fax20 g5day
 
 set reg/x=130w:125w/y=0:1.5/e=1:2/f=23-JAN-1982:24-jan-1982/t=21-JAN-1982/z=5
 
 use gtsa056_1_ef    	!kob 4/99
 
-! valid syntax tests
-load temp
-load temp[g=g5day]
-load temp[g=g5day@lin]
-load temp[g=g5day@ave,gf=@asn]
-load temp[g=g5day@lin,gf=@asn]
-load temp[g=g5day,ge=@ave,gf=@asn]
 stat temp[g=g5day] - temp[g=g5day@ave]  
 
 ! basic regrid tests
 LIST temp[g=g5day@ave]
-LIST temp[g=g5day,ge=g5day@ave]	! V4.20 mod
-LIST temp[g=g5day,gf=g5day@ave]	! V4.20 mod, etc --> many more similar syntax chgs
-
-LIST temp[g=g5day]
-LIST temp[g=g5day@asn]
-LIST temp[g=g5day,ge=g5day@asn]
-LIST temp[g=g5day,gf=g5day@asn]
-
-! Z and T axes different
-LIST temp[g=g5day@ave]
-LIST temp[g=g5day,ge=g5day@ave]
-LIST temp[g=g5day,gf=g5day@ave]
-
-LIST temp[g=g5day]
-LIST temp[g=g5day@asn]
-LIST temp[g=g5day,ge=g5day@asn]
-LIST temp[g=g5day,gf=g5day@asn]
-
-! all 4 axes different
-LIST temp[g=g5day@ave]
-LIST temp[g=g5day,ge=g5day@ave]
-LIST temp[g=g5day,gf=g5day@ave]
-
-LIST temp[g=g5day@asn]
-LIST temp[g=g5day,ge=g5day@asn]
-LIST temp[g=g5day,gf=g5day@asn]
+LIST temp[g=g5day]	
 
 ! unspecified regions
 SET MODE IGNORE	! V.5 change
 canc reg
 set reg/n=1:3/t=21-JAN-1982/z=5  ! x,y,e unspecified
-load temp
-load temp[g=g5day]
-load temp[g=g5day@lin]
-
-load temp[g=g5day@ave]
-load temp[g=g5day,ge=g5day@ave]
-load temp[g=g5day,gf=g5day@ave]
-
-load temp[g=g5day@asn]
-load temp[g=g5day,ge=g5day@asn]
-load temp[g=g5day,gf=g5day@asn]
 
 canc reg
 set reg/i=101:105/j=41:42/t=21-JAN-1982/z=5  ! e,f unspecified
-load temp[g=g5day]
 
-load temp[g=g5day@ave]
-load temp[g=g5day,ge=g5day@ave]
-load temp[g=g5day,gf=g5day@ave]
-
-load temp[g=g5day@asn]
-load temp[g=g5day,ge=g5day@asn]
-load temp[g=g5day,gf=g5day@asn]
 SET MODE/LAST IGNORE	! V.5 change
 
 ! plot verifications
@@ -90,33 +39,15 @@ use gtsa056_1_ef 		!kob 4/99
 set region/x=180E/y=0/f=23-JAN-1982/t=21-JAN-1982/z=5
 plot temp
 plot/over temp[g=g5day]
-plot/over temp[g=g5day]
-plot/over temp[g=g5day]
-plot/over temp[g=g5day@ave]
-plot/over temp[g=g5day@ave]
 plot/over temp[g=g5day@ave]
 plot/over temp[g=g5day@asn]
-plot/over temp[g=g5day@asn]
-plot/over temp[g=g5day,ge=g5day@ave]
-plot/over temp[g=g5day,ge=g5day@ave]
-plot/over temp[g=g5day,ge=g5day@ave]
-plot/over temp[g=g5day@asn]   ! invalid interpretation of data
 
 ! F axis
 set region/x=180/y=20s:20n/e=2/t=21-JAN-1982/z=5
 plot temp
 plot/over temp[g=g5day]
-plot/over temp[g=g5day]
-plot/over temp[g=g5day]
-plot/over temp[g=g5day@ave]
-plot/over temp[g=g5day@ave]
 plot/over temp[g=g5day@ave]
 plot/over temp[g=g5day@asn]
-plot/over temp[g=g5day@asn]
-plot/over temp[g=g5day,gf=g5day@ave]
-plot/over temp[g=g5day,gf=g5day@ave]
-plot/over temp[g=g5day,gf=g5day@ave]
-plot/over temp[g=g5day@asn]  ! invalid interpretation of data
 
 set mode/last interp
 cancel region
@@ -138,7 +69,7 @@ let a2 = _e[ge=e2pt]+_f[gf=f2pt]
 
 list a1[ge=eoffset@ave, gf=fax4day@ave]
 list a1[ge=eoffset@sum, gf=fax4day@sum]
-list a1[ge=eoffset@var, gf=fax4day@var] ! should be all missing
+list a1[ge=eoffset@var, gf=fax4day@var]
 
 list a2[ge=eoffset@ave, gf=fax4day@ave]
 list a2[ge=eoffset@sum, gf=fax4day@sum] 

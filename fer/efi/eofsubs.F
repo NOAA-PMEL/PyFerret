@@ -153,14 +153,15 @@ C  Calling argument declarations.
 C  Internal declarations
 
 	INTEGER I, J, I1, I2, IE, IS
-	REAL TVAR
+	REAL TVAR, RNT
 C---------------------------------------------------------------------
 C.................Find mean, demean DATA.
 C.................Note PCT is used first as a dummy to save the mean.
+	RNT = NT
 	DO 100 I=1,NX
 	PCT(I)=0.0
 	DO 110 J=1,NT
-110	PCT(I)=PCT(I)+DATA(I,J)/REAL(NT)
+110	PCT(I)=PCT(I)+DATA(I,J)/RNT
 	DO 120 J=1,NT
 120	DATA(I,J)=DATA(I,J)-PCT(I)
 100	CONTINUE
@@ -170,7 +171,9 @@ C.................Form the mean product matrix.
 	DO 211 I2=1,NX
 
 	DO 200 J=1,NT
-200	C(I1,I2) = C(I1,I2) + DATA(I1,J) * DATA(I2,J) / REAL(NT)
+200	C(I1,I2) = C(I1,I2) + DATA(I1,J) * DATA(I2,J)
+
+	C(I1,I2) = C(I1,I2)/ RNT
 
 211	CONTINUE
 210	CONTINUE
@@ -245,6 +248,7 @@ C  Ansley Manke 5/01  remove pct_cutoff as a parameter
 C 
 C  Ansley Manke 9/05  Make all workspace be allocated as external function work 
 C                     arrays. Arrays in TRIDIN passed in rather than declared.
+C  Ansley Manke 7/12  Changes for solving EOF's in double precision.
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
@@ -548,26 +552,24 @@ c      DIMENSION ALPHA(4000),BETA(4000),BB(4000)
 
       nb=n
 
+* Set macheps once and pass into QRSTD where its used as ETA
+* and into TRIDIN.
+* Assign 2**(-48) to a variable so it is the correct size REAL
+* (should this be different under double-precision?)
+      macheps = 2.**(-48)
+
       CALL HOUSEH(A,N,eofwork(1,1),eofwork(1,2),NB,
      .            eofwork(1,4))
-      CALL QRSTD (eofwork(1,1),eofwork(1,2),N,E,
-     .            eofwork(1,3),RNORM,EPS)
 
-* assign 2**(-48) to a variable so it is the correct size REAL
-      macheps = 2.0
-      macheps = macheps**(-48)
+      CALL QRSTD (eofwork(1,1),eofwork(1,2),N,E,
+     .            eofwork(1,3),RNORM,MACHEPS, EPS)
+
       CALL TRIDIN(eofwork(1,1),eofwork(1,2),N,E,RNORM,
      .            N,macheps,X,NB,eofwork(1,5),eofwork(1,6),
      .            eofwork(1,7),eofwork(1,8),eofwork(1,9),
      .            eofwork(1,10) )
 
       CALL BACKS(eofwork(1,2),A,N,X,N,EPS,NB)
-
-c      nb=n
-c      CALL HOUSEH(A,N,ALPHA,BETA,NB)
-c      CALL QRSTD (ALPHA,BETA,N,E,BB,RNORM,EPS)
-c      CALL TRIDIN(ALPHA,BETA,N,E,RNORM,N,2.0**(-48),X,NB)
-c      CALL BACKS(BETA,A,N,X,N,EPS,NB)
 
       RETURN
       END
@@ -635,7 +637,7 @@ c      DIMENSION P(2000)
 
 C************************************************************************
 
-      SUBROUTINE QRSTD (ALPHA,BETA,N,E,BB,RNORM,EPS)
+      SUBROUTINE QRSTD (ALPHA,BETA,N,E,BB,RNORM,ETA,EPS)
       REAL ALPHA(*),BETA(*),E(*),BB(*)
 
       INTEGER n, i, k, m, n1, i1, j
@@ -657,7 +659,6 @@ C INFINITY NORM OF TRIDIAGONAL MATRIX
       DO 5 I=1,N
     5 RNORM=AMAX1(RNORM,SQRT(BB(I))+ABS(E(I))+SQRT(BB(I+1)))
 C ETA = RELATIVE MACHINE PRECISION
-      ETA=2.0**(-48)
       DELTA=ETA*RNORM
       EPS=DELTA**2
       IF (EPS.EQ.0) RETURN
@@ -763,7 +764,19 @@ c      REAL M(4000),P(4000),Q(4000),R(4000),INT(4000),X(4002)
 
       INTEGER I,J
 c      REAL BI,BI1,Z1,LAMBDA,U,S,V,H,EPS,ETA
-      REAL BI,BI1,LAMBDA,U,V,H,EPS,ETA
+      REAL BI,BI1,LAMBDA,U,V,H,EPS,ETA,BIG,BIGGER
+
+
+* In single-precision these were 1.e10 and 1.e20
+* Determined by trial and error.
+	
+#ifdef double_p
+      big = 1.E20
+      bigger = 1.E30
+#else
+      big = 1.E10
+      bigger = 1.E20
+#endif
 
       IF (N-1)10,20,30
    20 Z(1,1)=1.
@@ -836,8 +849,8 @@ c      REAL BI,BI1,Z1,LAMBDA,U,S,V,H,EPS,ETA
       GO TO 81
    80 X(I)=U/P(I)
 C   81 H=H+X(I)**2
- 81   IF (X(I).GT.1.E10) THEN
-        H=1.E20
+ 81   IF (X(I).GT.BIG) THEN
+        H=BIGGER
       ELSE
         H=H+X(I)**2
       ENDIF

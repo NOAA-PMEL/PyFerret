@@ -1,0 +1,46 @@
+! bn_eof_simple
+! Define a simple function with two known functions.
+! decompose with EOFs.
+! 7/2012 
+
+
+! Define two locations.
+def axis /X=1:2:1 xaxis
+def axis /Y=1:1:1 yaxis
+! Thinking of the time axis as number of months.
+
+def axis /T=0.0:59.75:0.25 taxis
+def grid /X=xaxis /Y=yaxis /T=taxis xytgrid
+set grid xytgrid
+
+! Make standing waves with a period of 12 months.
+let cosT = cos(T * 3.141592653589793 / 6.1)
+let sinT = sin(T * 3.141592653589793 / 6.2)
+
+! Put a standing wave at each location.
+! The two waves are orthonormal and zero-mean over time. 
+let spacetime = if (i eq 1) then cosT else sinT
+show grid spacetime
+list spacetime
+
+! Run each of the eof functions and show the results.
+! Both are equally significant.  Eigenvalues should be 0.5.
+! Other EOF descriptions do not divide the covariance
+! matrix by the number of time values, in which case the
+! the eigenvalues will be much larger, but still equal.
+show func eof_stat
+list eof_stat(spacetime, 1.0)
+
+! Ideally the sqrt(2.0) * I_2, but may be rotated.
+! This is if the EOF functions are in units of the original data,
+! thus the eigenvectors times the square-root of the eigenvalue.
+! Other EOF descriptions leave these normalized, thus just the eigenvectors.
+show func eof_space
+list eof_space(spacetime, 1.0)
+
+! Ideally the original standing waves after normalization, but may 
+! be mixed by rotation.  This assumes the TAF functions are normalized.
+! Other EOF descriptions leave these unnormalized and would have 
+! norm equal to the square-root of the eigenvalue.
+show func eof_tfunc
+list eof_tfunc(spacetime, 1.0)

@@ -780,6 +780,9 @@ GO bn_repeated_coords
 GO bn_reset
 GO bn_xml_header
 
+GO bn_reset
+GO bn_eof_simple
+
 ! 6D tests for Ferret v6.8
 
 GO bn_reset

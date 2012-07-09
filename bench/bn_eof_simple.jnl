@@ -3,12 +3,11 @@
 ! decompose with EOFs.
 ! 7/2012 
 
-
 ! Define two locations.
 def axis /X=1:2:1 xaxis
 def axis /Y=1:1:1 yaxis
-! Thinking of the time axis as number of months.
 
+! Thinking of the time axis as number of months.
 def axis /T=0.0:59.75:0.25 taxis
 def grid /X=xaxis /Y=yaxis /T=taxis xytgrid
 set grid xytgrid
@@ -21,7 +20,6 @@ let sinT = sin(T * 3.141592653589793 / 6.0)
 ! The two waves are orthonormal and zero-mean over time. 
 let spacetime = if (i eq 1) then cosT else sinT + 1
 show grid spacetime
-list spacetime
 
 show func eof_stat
 ! Run each of the eof functions and show the results.
@@ -50,3 +48,12 @@ list eof_tfunc(spacetime, 1.0)
 ! (original data with the time-series mean subtracted to give 
 ! a zero mean for each time series).
 ! In this case, EOF(1) o TAF(1) + EOF(2) o TAF(2) = (cosT, sinT)
+
+! clean-up
+can var spacetime
+set grid abstract
+can grid xytgrid
+can axis taxis
+can axis yaxis
+can axis xaxis
+

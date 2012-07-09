@@ -1,0 +1,59 @@
+! Define four locations.
+def axis /X=1:2:1 xaxis
+def axis /Y=1:2:1 yaxis
+! Thinking of the time axis as number of months.
+def axis /T=0.0:23.9:0.1 taxis
+def grid /X=xaxis /Y=yaxis /T=taxis xytgrid
+set grid xytgrid
+! Make standing waves with a period of 12 months.
+let cosT = cos(T * 3.141592653589793 / 6.0)
+let sinT = sin(T * 3.141592653589793 / 6.0)
+! Put a products of the standing waves at each location.
+let spacetime12 = if (i eq 1) and (j eq 1) then cost * cost else cost * sint + 1
+let spacetime123 = if (i eq 2) and (j eq 1) then cost * sint + 2 else spacetime12
+let spacetime = if (i eq 2) and (j eq 2) then sint * sint + 3 else spacetime123
+show grid spacetime
+!
+!
+show func eof_stat
+! Two are of equal significance with eigenvalues of 0.25.
+! Two are negligable (eigenvalues of zero or close to it).
+list eof_stat(spacetime, 1.0)
+!
+!
+show func eof_space
+! Ideally:
+! +- [ 0.35355,  0.0,  
+!      0.0,     -0.35355 ]  (norm^2 = 0.25)
+!      corresponding to 0.25 * sqrt(2.0) * (cosT^2 - sinT^2) 
+!                     = 0.25 * sqrt(2.0) * cos2T
+! and
+! +- [ 0.0,      0.35355,  
+!      0.35355,  0.0     ]  (norm^2 = 0.25)
+!      corresponding to 0.25 * sqrt(2.0) * 2 * cosT * sinT 
+!                     = 0.25 * sqrt(2.0) * sin2T
+! The norm^2 of an EOF should be the eigenvalue.
+! The two EOFs should be orthogonal to each other.
+! Rotation (mixing) of these two may occur.
+let eofs = eof_space(spacetime, 1.0)
+list eofs[l=1:2]
+!
+!
+show func eof_tfunc
+! Ideally:
+! +- sqrt(2.0) * cos2T  (norm^2 = 240)
+! +- sqrt(2.0) * sin2T  (norm^2 = 240)
+! The norm^2 of a TAF should be the number of time values.
+! The two TAFs should be orthogonal to each other.
+! Rotation (mixing) of these two may occur.
+let tafs = eof_tfunc(spacetime, 1.0)
+list tafs[i=1:2,l=1:60]
+!
+!
+! Explanation:
+! Time series means = (0.5, 0.0, 0.0, 0.5) + (0, 1, 2, 3)
+! EOF1 * TAF1 = (0.5 * cos2T,  0.0, 0.0, -0.5 * cos2T)
+!             = (cosT^2 - 0.5, 0.0, 0.0, sinT^2 - 0.5)
+! EOF2 * TAF2 = (0.0, 0.5 * sin2T, 0.5 * sin2T, 0.0)
+!             = (0.0, cosT * sinT, cosT * sinT, 0.0)
+! Adding these three gives the original data

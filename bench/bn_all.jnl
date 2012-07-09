@@ -783,6 +783,9 @@ GO bn_xml_header
 GO bn_reset
 GO bn_eof_simple
 
+GO bn_reset
+GO bn_eof_simple2
+
 ! 6D tests for Ferret v6.8
 
 GO bn_reset

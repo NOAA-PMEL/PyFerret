@@ -75,18 +75,20 @@ if pyferret_version == None:
 # Configure the setup
 setup(name = "pyferret",
       version = pyferret_version,
-      description = "python module providing Ferret functionality",
-      long_description = "python module providing Ferret functionality",
+      description = "Python module providing Ferret functionality",
+      long_description = "Python module providing Ferret functionality",
       author = "Karl M. Smith",
       author_email = "karl.smith@noaa.gov",
       url = "http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret",
+      license = "Public Domain",
+      requires = [ "numpy", ],
       packages = [ "pyferret", "pyferret.fershp", "pyferret.graphbind", "pyferret.stats", ],
       package_dir = { "pyferret":"pyfermod", },
       ext_modules = ext_mods)
 
 setup(name = "pipedviewer",
       version = "0.0.3",
-      description = "graphics viewer controlled by a command pipe",
+      description = "Graphics viewer controlled by a command pipe",
       long_description = "A graphics viewer application that receives its " \
                          "drawing and other commands primarily from another " \
                          "application through a pipe.  A limited number of " \
@@ -97,6 +99,43 @@ setup(name = "pipedviewer",
       author = "Karl M. Smith",
       author_email = "karl.smith@noaa.gov",
       url = "http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret",
+      license = "Public Domain",
+      requires = [ "multiprocessing", ],
       packages = [ "pipedviewer", ],
       package_dir = { "pipedviewer":"pviewmod", })
+
+setup(name = "eofanalysis",
+      version = "0.0.1",
+      description = "Module for performing empirical orthogonal " \
+                    "function analysis of space-time data",
+      long_description = "The EOFAnalysis class performs an Empirical Orthogonal " \
+                         "Function (EOF) analysis of space-time data.  An instance " \
+                         "of this class with the desired space-time data array.  " \
+                         "The analyze method is called to perform the analysis.  " \
+                         "Result-reporting methods are called to obtain the results " \
+                         "the of analysis.  The separate initialization, analysis, " \
+                         "and result-reporting methods allow for methods to modify " \
+                         "the input data prior to analysis, and methods to modify " \
+                         "the results prior to reporting.",
+      author = "Karl M. Smith",
+      author_email = "karl.smith@noaa.gov",
+      url = "http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret",
+      license = "Public Domain",
+      requires = [ "numpy", ],
+      py_modules = [ "eofanalysis", "test_eofanalysis", ])
+
+setup(name = "gcircle",
+      version = "0.0.1",
+      description = "Module of functions involving great circles with " \
+                    "points given in longitudes and latitudes (thus " \
+                    "assuming a spheroid model of the earth).",
+      long_description = "Module of functions involving great circles with " \
+                         "points given in longitudes and latitudes (thus " \
+                         "assuming a spheroid model of the earth).",
+      author = "Karl M. Smith",
+      author_email = "karl.smith@noaa.gov",
+      url = "http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret",
+      license = "Public Domain",
+      requires = [ "numpy", ],
+      py_modules = [ "gcircle", ])
 

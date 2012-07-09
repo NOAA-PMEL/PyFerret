@@ -373,6 +373,9 @@ def equidistscatter(min_lon, min_lat, max_lon, max_lat, min_gcdist, dfactor=5.0)
     # return the selected longitudes and latitudes arrays
     return (selectlons, selectlats)
 
+#
+# The following is just for testing "by-hand" and to serve as examples.
+#
 
 if __name__ == "__main__":
     # Test lonlatdistance

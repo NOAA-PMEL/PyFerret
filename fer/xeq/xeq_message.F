@@ -93,7 +93,7 @@
 #else
         INTEGER*1 ctmpfile(slen)
 #endif
-	LOGICAL is_server, its_batch_graphics
+	LOGICAL is_server
 
 * treat all text as a single argument
 	CALL ALL_1_ARG
@@ -146,23 +146,7 @@
 	IF ( qual_given( slash_continue ) .GT. 0
      .	.OR. mode_gui) RETURN
 
-* Output a GIF frame if in server mode
 	IF  (IS_SERVER()) then
-
-c *acm 11/11 This appears to be a fossil; write gif image to file in
-c            /tmp when in -gif mode and a MESSAGE command is issued
-c
-c	   IF (ITS_BATCH_GRAPHICS()) then
-c	      DO wsid = 1, max_windows
-c		 IF ( wn_active(wsid) ) then
-c* output a GIF frame
-c		    call PUT_TEMP_FRAME_BATCH(wsid, ctmpfile, rlen)
-c		    call TM_CTOF_STRNG(ctmpfile, tmpfile, rlen)
-c		    call TM_SPLIT_MESSAGE(ttout_lun,
-c     1		      '<!-- ferret: gif='//tmpfile(:rlen)//' -->')
-c		 endif
-c	      end do
-c	   endif
 
  	   return
 	end if

@@ -57,6 +57,8 @@
 *                  batch mode, except when in batch GIF mode.
 * V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT[=color]
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -67,9 +69,9 @@
 	include 'xplot_setup.cmn'
 
 * internal variable declarations:
-	LOGICAL		ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS,
-     .                  is_format, is_file, its_gif, batch
-	INTEGER		TM_LENSTR1, STR_SAME, status, loc, flen, qp
+	LOGICAL		is_format, is_file, its_gif, batch
+	INTEGER		TM_LENSTR1, STR_SAME, ITS_GIF_GRAPHICS, 
+     .                  ITS_BATCH_GRAPHICS, status, loc, flen, qp
 	CHARACTER	format*3, filename*1028
 
 * initialize
@@ -78,8 +80,8 @@
 
 * Ignore FRAME in batch mode, except when in batch GIF mode.
 
-	its_gif = ITS_GIF_GRAPHICS()
-	batch = ITS_BATCH_GRAPHICS()
+	its_gif = ITS_GIF_GRAPHICS() .NE. 0
+	batch = ITS_BATCH_GRAPHICS() .NE. 0
 
         IF (batch .AND. .NOT.its_gif) RETURN
 

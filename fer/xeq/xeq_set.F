@@ -174,6 +174,8 @@
 *       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 *       *acm* 4/12 Remove MODE FOURDEE, using _E, _F, _M, _N instead, throughout.
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -222,6 +224,7 @@
      .                  TM_GET_LINENUM, TM_LENSTR, TM_LENSTR1, 
      .                  TM_UNIT_ID, TM_GET_CALENDAR_ID, 
      .			FIND_DSET_NUMBER, STR_UPCASE, STR_SAME, 
+     .                  ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS, 
      .                  equal_pos, colon_pos, dset_num, ich, status,
      .			tmap_status, mode, idim, iarg, item, lp, iv, 
      .			cx, i, grid, axis, loc, perm(nferdims), buff_len, 
@@ -243,7 +246,6 @@
      .                  fposition*16, fstatus*16
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
      .                  TM_HAS_STRING, TM_LEGAL_NAME, MATCH_NAME,
-     .                  ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS, 
      .                  NC_GET_ATTRIB, set_last, any_delta, dset_cdf,
      .			do_laser_movie, past_laser_movie, start_frame,
      .                  do_ez, tregular, its_changed, ok_cal,
@@ -624,8 +626,8 @@ c *kob* 4/97
 * ... mode metafile may require immediate communication with PPLUS
 	      ELSEIF ( mode .EQ. pmode_metafile ) THEN
 *     When in gif mode or batch mode, ignore SET MODE META
-	         its_gif = ITS_GIF_GRAPHICS()
-	         batch = ITS_BATCH_GRAPHICS()
+	         its_gif = ITS_GIF_GRAPHICS() .NE. 0
+	         batch = ITS_BATCH_GRAPHICS() .NE. 0
                  IF ( its_gif ) THEN
                     CALL WARN ('in GIF mode: ignoring SET MODE METAFILE')
                     mode_metafile = .FALSE.
@@ -1838,7 +1840,7 @@ c *kob* 4/97
  1700	IF ( num_args .EQ. 0 ) GOTO 5100
 
 * When not in gif mode, ignore SET GIFFILE
-        its_gif = ITS_GIF_GRAPHICS()
+        its_gif = ITS_GIF_GRAPHICS() .NE. 0
         IF ( .NOT. its_gif ) THEN
 	   CALL WARN ('Not in GIF mode: ignoring SET GIFFILE')
         ELSE

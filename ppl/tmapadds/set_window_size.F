@@ -46,7 +46,10 @@
 *                    the size of the window in pixels.  Save these in common 
 *                    gkscm2.cmn, so that in gif and batch modes we can return 
 *                    them in symbols PPL$XPIXEL and PPL$YPIXEL.
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 *
+
 #   ifndef atc_gks
         include         'gkspar.inc'
 #   endif
@@ -62,11 +65,12 @@
 
         character*80 	datarec(1), odr(1), str(1)
 
-	LOGICAL		ITS_BATCH_GRAPHICS, batch
+	INTEGER		ITS_BATCH_GRAPHICS
+	LOGICAL		batch
 
 *******************************************************************************
 * initialize batch mode
-	batch = ITS_BATCH_GRAPHICS()
+	batch = ITS_BATCH_GRAPHICS() .NE. 0
         pixx = -1
         pixy = -1
 

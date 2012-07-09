@@ -52,16 +52,18 @@
 *
 * V6.2  *jli* 5/08 pass background color and transparent to put_frame_batch()
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 * calling argument declarations:
 	INTEGER		status
 	CHARACTER*(*)	filename, format
 
 * internal variable declarations:
-	INTEGER		TM_LENSTR1, i, elen, flen, wsid, clen
+	INTEGER		TM_LENSTR1, ITS_BATCH_GRAPHICS, 
+     .			i, elen, flen, wsid, clen
         REAL            red, green, blue
 	CHARACTER	errstr*128
-	logical         ITS_BATCH_GRAPHICS
 
 	include 'errmsg.parm'
 	include 'movies.parm'
@@ -99,9 +101,7 @@
 
 * if running in batch mode, take care of metafiles rather than
 * dumping window
-	if (ITS_BATCH_GRAPHICS()) then
-!          CALL GET_BACKGROUND_COLOR (red, green, blue)
-!	   call put_frame_batch(wsid, fnmhol, fmthol,colorhol, errhol, status)
+	if (ITS_BATCH_GRAPHICS().NE.0) then
            CALL GET_BACKGROUND_COLOR (red, green, blue)
            call put_frame_batch(wsid, fnmhol, fmthol, transparent, 
      .        red, green, blue, errhol, status)

@@ -141,6 +141,8 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 ** V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 	include 'lines_inc.decl'
 	include 'LINES.INC'
@@ -187,7 +189,7 @@
 
 	LOGICAL CLEAR,CONTR,no_vpt_flag
 
-	LOGICAL ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS
+	INTEGER ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS
         LOGICAL its_meta, batch, meta_batch
 
 *	*jd* linux port 12.96 Add external stmt below
@@ -195,8 +197,8 @@
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-        its_meta = ITS_META_GRAPHICS()
-        batch = ITS_BATCH_GRAPHICS()
+        its_meta = ITS_META_GRAPHICS() .NE. 0
+        batch = ITS_BATCH_GRAPHICS() .NE. 0
 	meta_batch = .FALSE.
 	IF (batch) THEN
 	   IF (its_meta) meta_batch = .TRUE.

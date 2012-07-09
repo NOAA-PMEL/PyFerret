@@ -41,6 +41,8 @@
 *	*jd* 1.14.94 Mod for background setting in xgks
 *       *js* 7.31.97 mod to change call to gqlwk to query_xgks_wkstn
 * V610  *acm* 3/08 Fixes for metafile batch mode
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 #   ifndef atc_gks
         include        'gkspar.inc'
@@ -68,7 +70,7 @@
 	data		black/0/,white/1/
 #endif
 
-	LOGICAL ITS_BATCH_GRAPHICS
+	INTEGER ITS_BATCH_GRAPHICS
         LOGICAL batch
 	integer		type, error
 	REAL		rd, gr, bl
@@ -159,7 +161,7 @@ cc     .        call gscr (wsid,ndx,val(red),val(green),val(blue))
 
 
 **** trying to fix batch bug ***
-        batch = ITS_BATCH_GRAPHICS()
+        batch = ITS_BATCH_GRAPHICS() .NE. 0
         if (batch) then
            saved_line_colors = 1
            CALL save_line_color (ndx,val(red),val(green),val(blue))

@@ -57,15 +57,16 @@
 * V602: *acm* 1/07 Changes for metafile-batch mode
 * V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
         include 'pltcom_dat.decl'
         include 'PLTCOM.DAT'
 
 
-        logical         ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS, 
-     .                  ITS_GIF_GRAPHICS, batch, its_meta, its_gif,  
-     .                  meta_batch
-	integer		error_status,transno,ws_id
+        logical         batch, its_meta, its_gif, meta_batch
+	integer		ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS, 
+     .                  ITS_GIF_GRAPHICS, error_status,transno,ws_id
 	integer		x_pixel_dim,y_pixel_dim
 	integer		new_trans
 	PARAMETER	( new_trans = 10 )
@@ -77,9 +78,9 @@
 
 * meta_batch flag is true when making metafiles in batch mode.
 
-	its_meta = its_meta_GRAPHICS()
-	batch = ITS_BATCH_GRAPHICS()
-	its_gif = ITS_GIF_GRAPHICS()
+	its_meta = ITS_META_GRAPHICS() .NE. 0
+	batch = ITS_BATCH_GRAPHICS() .NE. 0
+	its_gif = ITS_GIF_GRAPHICS() .NE. 0
 	meta_batch = .FALSE.
         IF (batch) THEN
            IF (its_meta) meta_batch = .TRUE.

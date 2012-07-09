@@ -85,6 +85,8 @@
 * V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -109,9 +111,9 @@
 
 * internal variable declarations:
 	LOGICAL TM_DIGIT, physical_chg, relocate, chg_window,
-     .		axis_ref, ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS,
-     .          its_meta, batch, meta_batch
-	INTEGER TM_LENSTR1, ier, id, itype, imeter, irx, iry, wn, n,
+     .		axis_ref, its_meta, batch, meta_batch
+	INTEGER TM_LENSTR1, ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS,
+     .          ier, id, itype, imeter, irx, iry, wn, n,
      .          qp, ivp, colon_pos, tlen, i, s1, idone
 #ifdef double_p
 	REAL	dmaxx, dmaxy, xln, yln, xmn, xmx, ymn, ymx,
@@ -156,8 +158,8 @@
 
 * meta_batch flag is true when making metafiles in batch mode.
 
-	its_meta = its_meta_GRAPHICS()
-	batch = ITS_BATCH_GRAPHICS()
+	its_meta = ITS_META_GRAPHICS().NE.0
+	batch = ITS_BATCH_GRAPHICS().NE.0
 	meta_batch = .FALSE.
         IF (batch) THEN
            IF (its_meta) meta_batch = .TRUE.
@@ -213,7 +215,7 @@ c 75        CONTINUE
 	IF ( .NOT. gksopn	) RETURN
 
 * ... Don't create new window if batch graphics active
-        if (ITS_BATCH_GRAPHICS().and.qual_given(slash_new).gt.0) then
+        if (batch .AND. qual_given(slash_new).gt.0) then
            call warn('Cannot create new windows '//
      $          'when batch mode set')
            qual_given(slash_new) = 0
@@ -259,7 +261,7 @@ c 75        CONTINUE
      .          .NOT.animate  ) CALL ERRMSG
      .		( ferr_out_of_range, status, 'legal numbers are 1-8', *5000 )
 * ... Only one window can be open with batch graphics
-        if (ITS_BATCH_GRAPHICS() .and. n.ne.1) then
+        if (batch .and. n.ne.1) then
            call warn('Only one window can be open in batch mode')
            n = 1
         endif

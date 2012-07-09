@@ -57,10 +57,13 @@
 *                   Save window_title in xplot_setup.cmn for use in subsequent 
 *                   windows. Also define a symbol WIN_TITLE
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 
-	integer 	TM_LENSTR1, s1, nlen, asf(13), error
-	LOGICAL         ITS_BATCH_GRAPHICS, batch
+	integer 	ITS_BATCH_GRAPHICS, TM_LENSTR1, 
+     .			s1, nlen, asf(13), error
+	LOGICAL         batch
 
         character*88    window_name
 
@@ -107,7 +110,7 @@
 
 
 ******************************************************************************** initialize
-	batch = ITS_BATCH_GRAPHICS()	! 7/97
+	batch = ITS_BATCH_GRAPHICS() .NE. 0
 	IF (batch) THEN
 	   CALL GOPKS(1,-1)  
 !	   xwind_id = GKS_X_CONID( wsid )	! obsolete?

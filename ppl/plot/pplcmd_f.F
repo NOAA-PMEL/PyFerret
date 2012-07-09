@@ -125,6 +125,8 @@ C                  year to DAY,MONTH or to MONTH.
 C *acm*  3/10  Bug 670 fixed: New flag MULTICENFLAG for multi-decade plots, 
 C              do not make small tics by default.
 * V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 c
 c	fromi	command file or device (/dev/tty or TT: for terminal)
@@ -254,8 +256,8 @@ CCCCCCC data	        tmapdebug/.false./
 	character strr*2048
 
 * *acm*  For batch metafile 
-	LOGICAL ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS,
-     .          its_meta, batch, meta_batch, its_open
+	INTEGER ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS
+	LOGICAL its_meta, batch, meta_batch, its_open
 
 
         LOGICAL TM_HAS_STRING
@@ -1338,8 +1340,8 @@ C	CLSPLT
 *           *ACM* 4/5/05 After a set/win/clear need meta_actv false
 *                        so VIEW/AXES can reset sizing info 
 
-	    its_meta = ITS_META_GRAPHICS()
-	    batch = ITS_BATCH_GRAPHICS()
+	    its_meta = ITS_META_GRAPHICS() .NE. 0
+	    batch = ITS_BATCH_GRAPHICS() .NE. 0
 	    meta_batch = .FALSE.
 	    IF (batch) THEN
 	       IF (its_meta) meta_batch = .TRUE.

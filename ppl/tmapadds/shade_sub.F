@@ -102,6 +102,8 @@
 *                      SHADE_FILL_IT as needed to fill the longitude range.
 C V602 *acm* 2/07 check status coming out of CURV_COORD_RANGE; part of fix to bug 1485
 * V603 *acm* 5/07 Fix part 1 of bug 1302; if xmodulo is true, then set dim1_modulo true.
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 	INCLUDE		'parampl5_dat.decl'
 	INCLUDE		'PARAMPL5.DAT'
@@ -142,7 +144,8 @@ C       data statement of my_trans added for linux port *jd* 12.96
 
         INTEGER		cells(*), pmax
         INTEGER         j1, jn, jd
-	LOGICAL		ITS_BATCH_GRAPHICS, REGULARLY_SPACED,
+	INTEGER		ITS_BATCH_GRAPHICS
+	LOGICAL		REGULARLY_SPACED,
      .                  batch, irregular, plot_cell
 
 * declarations for curvilinear coordinates
@@ -174,7 +177,7 @@ C       data statement of my_trans added for linux port *jd* 12.96
 	shd_levels = MAX (nlev2 - 1,1)
 
 * are we in no-X mode?
-	batch = ITS_BATCH_GRAPHICS()
+	batch = ITS_BATCH_GRAPHICS() .NE. 0
 
 *	DETERMINE PATTERNS OR COLORS TO SET BUNDLED FILL AREA REPRESENTATIONS
 	CALL set_fill_area_rep (wsid,wstype)

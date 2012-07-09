@@ -54,6 +54,8 @@
 * V602  1/07 *acm*  true batch mode for metafiles; flag meta_batch
 *         distinguises this case from other batch modes.
 * V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 	include 'pltcom_dat.decl'! with declarations    
 	include 'PLTCOM.DAT'! with declarations    
@@ -83,7 +85,7 @@
 	integer         theWsType
 
 
-	LOGICAL ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS
+	INTEGER ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS
         LOGICAL its_meta, batch, meta_batch
 
 C	XGKS DOESN'T DEFINE GMOUTP 
@@ -134,8 +136,8 @@ C	XGKS DOESN'T DEFINE GMOUTP
 	meta_open = .true.
 !	meta_actv = .false.
 
-        its_meta = ITS_META_GRAPHICS()
-        batch = ITS_BATCH_GRAPHICS()
+        its_meta = ITS_META_GRAPHICS() .NE. 0
+        batch = ITS_BATCH_GRAPHICS() .NE. 0
 	meta_batch = .FALSE.
         IF (batch) THEN
            IF (its_meta) meta_batch = .TRUE.

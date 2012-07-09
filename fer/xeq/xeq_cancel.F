@@ -135,6 +135,8 @@
 *       *acm* 3/12 removing old calls to LASER_STATUS routine for movies
 *       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 *       *acm* 4/12 Remove MODE FOURDEE, using _E, _F, _M, _N instead, throughout.
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -172,7 +174,7 @@
 	INTEGER		REGION_NUMBER, FIND_DSET_NUMBER,
      .                  TM_GET_LINENUM, TM_GET_GRIDNUM, 
      .			TM_GET_GRID_OF_LINE, TM_LENSTR1, STR_UPCASE,
-     .                  STR_SAME,
+     .                  STR_SAME, ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS,
      .			ivp, i, blen, ier, i1, num_protected_axes,
      .			status, variable, category,
      .			idim, iqual, iset, item, ivar, nth, mr,
@@ -183,7 +185,6 @@
      .                  slen, iatt, igrd, iline, new_att_modulo_len,
      .			cache_size, cache_nelems, cache_preemption
 	LOGICAL		MATCH4, TM_DIGIT_TEST, IS_TEMPLATE, MATCH_TEMPLATE,
-     .			ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS,
      .			report_error, slash_all, del_perm, del_temp,
      .                  perm_var, all_dims, coordvar, do_err, 
      .                  canout, new_att_modulo, its_gif, batch, 
@@ -419,8 +420,8 @@
 	         ELSEIF ( mode .EQ. pmode_metafile ) THEN
                  
 *     When in gif mode or batch mode, ignore CANCEL MODE META
-	            its_gif = ITS_GIF_GRAPHICS()
-	            batch = ITS_BATCH_GRAPHICS()
+	            its_gif = ITS_GIF_GRAPHICS() .NE. 0
+	            batch = ITS_BATCH_GRAPHICS() .NE. 0
                     IF ( its_gif ) THEN
                        mode_metafile = .FALSE.
                     ELSE IF ( batch ) THEN
@@ -501,7 +502,7 @@
 * CANCEL VIEWPORT
  1000	IF ( num_items .EQ. 0 ) THEN
 * return to default(full) viewport
-           batch = ITS_BATCH_GRAPHICS()
+           batch = ITS_BATCH_GRAPHICS() .NE. 0
            IF (batch) THEN
               IF ( gksopn ) THEN
                  CALL SEND_PLTYPE( mode_metafile )

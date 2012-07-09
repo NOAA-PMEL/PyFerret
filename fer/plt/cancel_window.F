@@ -54,6 +54,9 @@
 * *kob* 1.29.97 changed "can\'t" to cannot for compiler reasons
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
+F
 
         include 'tmap_dims.parm'
 	include 'errmsg.parm'
@@ -73,7 +76,7 @@
 	INTEGER 	n, n_lo, n_hi, lo
 	CHARACTER	buffer*24
 
-        logical         ITS_BATCH_GRAPHICS
+        INTEGER         ITS_BATCH_GRAPHICS
 * local parameter declarations:
 	INTEGER		slash_all
 	PARAMETER     ( slash_all = 0+1 )
@@ -88,7 +91,7 @@
 	   GOTO 1000
 	ENDIF
         
-        if (its_batch_graphics()) then
+        if (its_batch_graphics() .NE. 0) then
            call warn('Cannot cancel window when in batch mode')
            goto 1000
         endif

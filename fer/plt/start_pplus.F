@@ -68,6 +68,8 @@
 * V610 *acm* 3/08 - add new MODE NLEVELS; Store the setting for the default
 *                   number of contour/fill levels.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 	include 'tmap_dims.parm'
 	include 'plot_setup.parm'
@@ -94,7 +96,8 @@
 	PARAMETER     ( dummy_filename	  = ' ' )
 
 * internal variable declarations
-	LOGICAL		ITS_BATCH_GRAPHICS, batch
+	LOGICAL		batch
+	INTEGER		ITS_BATCH_GRAPHICS
 
 * external declarations to force loading of modules used by PPLUS
 	EXTERNAL	GET_VP_FROM_FERRET, CLEAR_VP, INTERRUPT,
@@ -104,7 +107,7 @@
 	IF ( pplus_started ) RETURN
 
 * are we in no-X mode?
-	batch = ITS_BATCH_GRAPHICS()
+	batch = ITS_BATCH_GRAPHICS().NE.0
 
 * tell PPLUS that it is under FERRET control without viewports
 	PPL_in_FERRET = .TRUE.

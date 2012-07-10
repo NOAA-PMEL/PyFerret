@@ -42,6 +42,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * revision 0.0 - 2/92
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -58,7 +59,6 @@
       REAL*8  dval
       CHARACTER*(*) errstr
 
-      include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
 

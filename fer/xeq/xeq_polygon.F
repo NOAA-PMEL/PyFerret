@@ -120,7 +120,7 @@
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
 * Initialize the lines buffer in PPL before setting up
-	overlay   = qual_given( slash_plot_over_plot ).GT.0
+	overlay   = qual_given( slash_shad_over_plot ).GT.0
 	if (overlay) SOVER = .true.
 
 	if (sover) then
@@ -135,8 +135,8 @@ CC       => Set values here instead.
 	endif
 
 * initialize
-	no_labels = qual_given( slash_plot_nolabels  ).GT.0
-	transpz   = qual_given( slash_plot_transpz   ).GT.0
+	transpz   = qual_given( slash_shad_transpz   ).GT.0
+	no_labels = qual_given( slash_shad_nolabels  ).GT.0
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
 	axes      = qual_given( slash_polygon_axes   ).GT.0
@@ -144,7 +144,7 @@ CC       => Set values here instead.
 	   noaxes = .FALSE.
 	   axes = .FALSE.
 	ENDIF
-	coord_ax  = qual_given( slash_plot_vs	     )		! integer
+	coord_ax  = qual_given( slash_polygon_coord  )		! integer
 	is_logh   = qual_given( slash_is_logh        ).GT.0
 	is_logv   = qual_given( slash_is_logv        ).GT.0 
 
@@ -425,7 +425,7 @@ c	IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 	IF ( ppl_interrupted ) GOTO 1000
 
 * capture the bit map ?
-	IF ( qual_given( slash_plot_frame ) .GT. 0 ) THEN
+	IF ( qual_given( slash_shad_frame ) .GT. 0 ) THEN
 	   CALL SAVE_FRAME( frame_file, "HDF", status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	ENDIF

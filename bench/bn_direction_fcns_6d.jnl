@@ -1,0 +1,56 @@
+! bn_direction_functions_6d
+! Tests of sort, sample, reverse, convolve, compress, and compess_by 
+! functions in the E and F directions.
+
+! Sort and sort-string in E direction
+
+let b = {5,4,3}
+let c = esequence(b)
+let m_index = sortm(c)
+list c, m_index, samplem(c, m_index)
+
+let e1 = esequence({"q", "0", "c"})
+let m_index = sortm(e1)  ! or sortm_str
+list e1, m_index, samplem(e1, m_index)
+
+
+! Sort and sort-string in F direction
+
+let b = {5,4,3}
+let c = fsequence(b)
+let n_index = sortn(c)
+list c, n_index, samplen(c, n_index)
+
+let f1 = fsequence({"q", "0", "c"})
+let n_index = sortn(f1)  ! or sortn_str
+list f1, n_index, samplen(f1, n_index)
+
+! Ereverse and Freverse
+use 6dfile
+
+list/i=1/j=15/k=1/l=1/n=1 temp, ereverse(temp)
+list/i=1/j=15/k=1/l=1/m=1 temp, freverse(temp)
+can dat/all
+
+! ConvolveM, ConvolveN
+let a = esequence({0,1,1,0,1,0,0,0,,0,0,0})
+let apat = esequence({.25,.5,.25})
+list a, a[m=@spz], convolvem(a,apat), convolvem(a,{.1,.4,.4,.1})
+
+let b = fsequence({0,1,1,0,1,0,0,0,,0,0,0})
+let bpat = fsequence({.25,.5,.25})
+list b, b[n=@spz], convolven(b,bpat), convolven(b,{.1,.4,.4,.1})
+
+! CompressM, CompressN
+let a = esequence({0,1,1,,1,0,,0}) + fsequence({0,,1,,1})
+list a
+list compressm(a)
+list compressn(a)
+
+let mask = esequence({1,,1,,1}) + 0*L[l=101:102]
+list mask
+list compressm_by(esequence({10,20,30,40,50}),mask)
+
+let mask = fsequence({1,,1,,1}) + 0*L[l=101:102]
+list mask
+list compressn_by(fsequence({10,20,30,40,50}),mask)

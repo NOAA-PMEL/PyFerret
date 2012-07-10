@@ -44,6 +44,8 @@
 *       *kms* 10/11 white is gks color 0 and black is gks color 1
 *             (opposite of XWindows).  Since gks colors are used
 *             in the graphics delegate, switch these values.
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 #   ifndef atc_gks
         include        'gkspar.inc'

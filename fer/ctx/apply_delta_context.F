@@ -44,22 +44,16 @@
 *
 * V200:   5/2/90 - extracted from GET_DELTA_CONTEXT
 * Unix/RISC port - 1/91 - cannot use "//" with char*(*)
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'errmsg.parm'	
 	include 'ferret.parm'	
 	include 'xcontext.cmn'
 	include 'xdelta_context.cmn'
 	include 'xtext_info.cmn'
 	include 'xrisc.cmn'
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	
-	INCLUDE 'FERRET_CMN:FERRET.PARM'	
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XDELTA_CONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'
-#endif
 
 * calling arguments:
 	INTEGER		cx, status
@@ -73,7 +67,7 @@
         risc_buff = reg_name
         len_rbuff = MIN( size_rbuff, LEN(reg_name) )
 
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 
 	   IF ( .NOT.dcx_given(idim) ) GOTO 100
 

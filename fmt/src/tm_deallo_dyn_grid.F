@@ -44,24 +44,15 @@
 *		 - this routine can now be called for static grids, too
 *		 - deallocate lines only for dynamic grids, since static grids
 *		   do not get deleted when their use count falls to zero
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * Include files
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'tmap_errors.parm'
 	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-	include 'xio.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
-#endif
+		include 'xio.cmn_text'
 
 * Argument definitions
 	INTEGER grid
@@ -77,7 +68,7 @@
      . .AND. grid_use_cnt(grid) .EQ. 0 ) THEN
 
 *release claim to any dynamic lines this may use
-	   DO 100 idim = 1, 4
+	   DO 100 idim = 1, nferdims
 	      CALL TM_DEALLO_DYN_LINE( grid_line(idim,grid))
  100	   CONTINUE
 

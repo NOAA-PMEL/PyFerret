@@ -37,7 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* sample the given field at the specified XYZT coordinates
+* sample the given field at the specified XYZTEF coordinates
 
 * Each output record will consist of
 *	value xcoord ycoord zcoord tcoord code
@@ -53,6 +53,7 @@
 * V301:  1/94
 * V312: 5/94 - array "memory" as a calling argument
 * V541: 2/02 *sh* - added support for modilo lengths
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'

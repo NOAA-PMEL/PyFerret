@@ -40,6 +40,7 @@
 * V450: 1/97
 *       97.07.16 *jc* adding code to allow call to efcn_get_name()
 * V500: 3/99 *jc* convert external function names to upper case
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations
 	INTEGER ifcn
@@ -58,15 +59,10 @@
         INTEGER*1 fhol(slen)    ! c-type Hollerith string buffer
 #endif
  
-#ifdef unix
+	include	'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xgrid_chg_fcns.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
-#endif
 
 * check the internal grid changing functions first
 	IF (ifcn .LT. 0 ) THEN

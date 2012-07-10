@@ -41,17 +41,10 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V230: 11/92 - for color map protection during viewport manipulations
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'plot_setup.parm'
-!	include 'xprog_state.cmn'
-!	include 'xplot_setup.cmn'
 	include 'xrisc.cmn'		! to fix RISC FORTRAN bug
-#else
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-!	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-!	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'
-#endif
 
 * calling argument declarations:
 	CHARACTER*(*)	string

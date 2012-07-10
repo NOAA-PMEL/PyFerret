@@ -45,6 +45,8 @@ c
 
       SUBROUTINE EF_SET_DESC(id, text)
 
+      IMPLICIT NONE
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'
       INCLUDE 'EF_Util.parm'
@@ -70,7 +72,7 @@ c     call the external functions library routine to see if it is external
       
       llen = TM_LENSTR1( text )
       CALL TM_FTOC_STRNG( text(:llen), fhol, slen )
-      call ef_set_desc_sub( id, fhol )
+      CALL EF_SET_DESC_SUB( id, fhol )
       
       RETURN 
       END

@@ -40,10 +40,12 @@
 * NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
 *
 * revision 0.0 - 1/13/2010
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * Qualilifiers for SET LIST: NCFORMAT,
 * XCHUNK,YCHUNK,ZCHUNK,TCHUNK,DEFLATE,SHUFFLE,ENDIAN
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'slash.parm'
 	include 'xcontext.cmn'

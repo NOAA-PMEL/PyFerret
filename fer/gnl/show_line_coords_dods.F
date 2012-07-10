@@ -44,6 +44,8 @@
 * V581 *acm*  6/05 Fix bug in show axis/t with non-standard calendars; RESET_SECS_FROM_BC
 * V581 *acm*  6/05 Fix call to TM_GET_CALENDAR_ID (did this ever work with the
 *                  argument grid rather than calendar name?!)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
+*                  dimension is now an arg to SECS_TO_TSTEP.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -91,7 +93,6 @@
 	   swap_flag = 1
 	ENDIF
 
-
 * initialize
 	line = grid_line( idim, grid )
 
@@ -118,9 +119,9 @@
 * cx_lo_ww was set without knowledge of the axis, so if this is a non-std calendar
 * need to reset according to the actual calendar type
 
-	   IF ( idim.EQ.t_dim .AND. cx_calendar(cx) ) THEN
+	   IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. cx_calendar(cx) ) THEN
 
-              axis = grid_line(t_dim, grid)
+              axis = grid_line(idim, grid)
               cal_id = TM_GET_CALENDAR_ID(line_cal_name(axis))
               cx_cal_id(cx) = cal_id
 
@@ -128,7 +129,7 @@
 	      end   = cx_hi_ww(idim,cx)
               prev_cal_id = 1
 
-	      IF ( idim .EQ. t_dim  .AND.  cal_id .NE. prev_cal_id .AND.
+	      IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim)  .AND.  cal_id .NE. prev_cal_id .AND.
      .             start .LT. 0. .AND. start .NE. unspecified_val8.AND.
      .             end   .LT. 0. .AND. end   .NE. unspecified_val8) THEN
 	         CALL RESET_SECS_FROM_BC (-start, new_ww, prev_cal_id, 
@@ -141,7 +142,7 @@
 
 	         cx_hi_ww(idim,cx) = new_ww
 
-              ELSE IF ( idim .EQ. t_dim  .AND. 
+              ELSE IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim)  .AND. 
      .              cal_id .EQ. prev_cal_id .AND.
      .             start .LT. 0. .AND. start .NE. unspecified_val8.AND.
      .             end   .LT. 0. .AND. end   .NE. unspecified_val8) THEN
@@ -150,9 +151,9 @@
               ENDIF
 
               cx_lo_ww(idim,cx) =
-     .            SECS_TO_TSTEP( grid, cx_lo_ww(idim,cx) )
+     .            SECS_TO_TSTEP( grid, idim, cx_lo_ww(idim,cx) )
               cx_hi_ww(idim,cx) =
-     .		   SECS_TO_TSTEP( grid, cx_hi_ww(idim,cx) )
+     .		  SECS_TO_TSTEP( grid, idim, cx_hi_ww(idim,cx) )
  
 
 * reset cx_calendar now that cx_lo/hi_ww have been converted

@@ -2,7 +2,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -48,20 +48,25 @@
 *	  11/95 - support for context reconciliation (isact_class_reconcile)
 *	   1/96 - bug fix: implicit grid kludge use of cx for gridnum crashes
 *		- use "strip" to determine if reconcilliation axis is relevant
-* V500 *kob* 3/99- up VAR_CODE and var decl's from 8 to 64 chars
+* V500 *kob* 3/99- up VAR_CODE and var decls from 8 to 64 chars
 * V510 *sh* 8/99 - added isact_class_sample
 * V541 *sh*  2/02 - added isact_class_subspan_fill
 * V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
 * v552 *acm* 4/03  up VAR_TRANS to 150 characters (variables are up to 128, plus
 *                  space for the transformation specifier)
 * V64  10/09 *acm* longer string length for grid_name: limit length written to diag output
+* V680  5/12 *acm* Add dataset ID to diagnostic output
+* V680  6/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V6.8  acm  6/12 Implement mode_6d_lab, set by default. If cancelled, the 
+*                 output will not list info for E,F dimensions.
 
 * calling argument declarations:
+        IMPLICIT NONE
 	INTEGER	act_class, idim, cx
 	CHARACTER*(*) doing
 
 * internal variable declarations:
-	INTEGER	  TM_LENSTR1, slen, clen, ii, i
+	INTEGER	  TM_LENSTR1, slen, clen, ii, i, listdims
 	CHARACTER*128 VAR_CODE,  var
 	CHARACTER*150 VAR_TRANS, out_buff
 
@@ -76,6 +81,11 @@
         include 'xalgebra.cmn'
 	include 'xrisc.cmn'		! 12/94 SPLIT_LIST buffer
 
+* If mode 6d_lab has been cancelled, we will list info only for 
+* the first 4 dimensions.
+
+	listdims = nferdims
+	IF ( .NOT. mode_6d_lab) listdims = 4
 
 * initialize
 ! 1/96 - kludge of using cx for grid # causes this extra IF -- awful!
@@ -105,38 +115,46 @@
 	ELSEIF( act_class .EQ. isact_class_gather ) THEN
 	   WRITE ( risc_buff, 3030 ) doing, var(1:slen),
      .                  ww_dim_name( idim ),
-     .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim)
- 3030	   FORMAT (1X,A5,' gathering ',A,' on ',A1,' axis:',2I6)
+     .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim),
+     .			cx_data_set(cx)
+ 3030	   FORMAT
+     . (1X,A5,' gathering ',A,' on ',A1,' axis:',2I6,' dset:',I4)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 * SAMPLING (SAMPLE* functions)
 	ELSEIF( act_class .EQ. isact_class_sample ) THEN
 	   WRITE ( risc_buff, 3035 ) doing, var(1:slen),
      .                  ss_dim_name( idim ),
-     .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim)
- 3035	   FORMAT (1X,A5,' sampling ',A,' on ',A1,' axis:',2I6)
+     .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim),
+     .			cx_data_set(cx)
+ 3035	   FORMAT
+     . (1X,A5,' sampling ',A,' on ',A1,' axis:',2I6,' dset:',I4)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 * ASSEMBLING MODULO COMPONENTS
 	ELSEIF( act_class .EQ. isact_class_modulo ) THEN
 	   WRITE ( risc_buff, 3040 ) doing, var(1:slen),
      .                  ww_dim_name( idim ),
-     .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim)
- 3040	   FORMAT (1X,A5,' moduloing ',A,' on ',A1,' axis:',2I6)
+     .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim),
+     .			cx_data_set(cx)
+ 3040	   FORMAT 
+     . (1X,A5,' moduloing ',A,' on ',A1,' axis:',2I6,' dset:',I4)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 * reversed axis reads
 	ELSEIF( act_class .EQ. isact_class_reverse ) THEN
 	   WRITE ( risc_buff, 3050 ) doing, var(1:slen),
      .                  ww_dim_name( idim ),
-     .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim)
- 3050	   FORMAT (1X,A5,' reversing ',A,' on ',A1,' axis:',2I6)
+     .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim),
+     .			cx_data_set(cx)
+ 3050	   FORMAT
+     . (1X,A5,' reversing ',A,' on ',A1,' axis:',2I6,' dset:',I4)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 * implicit grid allocation/deallocation
 	ELSEIF( act_class .EQ. isact_class_impl_grid ) THEN
 * ... special case: "cx" is actually the grid number !!!
-	   DO 500 ii = 1, 4
+	   DO 500 ii = 1, listdims
 	      i = grid_line(ii,cx)
 	      IF ( i .GT. 0 ) THEN
 	         WRITE (out_buff((ii-1)*10+1:ii*10),'(A)') line_name(i)(:10)
@@ -169,8 +187,21 @@
 	ELSEIF( act_class .EQ. isact_class_subspan_fill ) THEN
 	   WRITE ( risc_buff, 3080 ) doing, var(1:slen),
      .                  ww_dim_name( idim ),
-     .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim)
- 3080	   FORMAT (1X,A5,' modulo-void-filling ',A,' on ',A1,' axis:',2I6)
+     .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim),
+     .			cx_data_set(cx)
+ 3080	   FORMAT 
+     . (1X,A5,' modulo-void-filling ',A,' on ',A1,' axis:',2I6,' dset:',I4)
+	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
+
+
+* SPLITTING/GATHERING
+	ELSEIF( act_class .EQ. isact_class_aggregate_gather ) THEN
+	   WRITE ( risc_buff, 3090 ) doing, var(1:slen),
+     .                  ww_dim_name( idim ),
+     .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim),
+     .			cx_data_set(cx)
+ 3090	   FORMAT
+     . (1X,A5,' aggregate gathering ',A,' on ',A1,' axis:',2I6,' dset:',I4)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 	ELSE

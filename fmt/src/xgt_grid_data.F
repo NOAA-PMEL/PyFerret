@@ -64,6 +64,7 @@
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 * V62 *acm*  2/09 - Save original upper/lowercase spelling of axis names 
 *                   in line_name_orig for CANCEL MODE UPCASE
+*      4/12 *acm* - 6D Ferret, formatted F axis is direction FI
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -493,10 +494,10 @@ c     .			/pline_mem_left*real8_init/
      .          axis_orients(  2 )	/ 'SN' /,   ! south to north
      .          axis_orients(  3 )	/ 'DU' /,   ! down to up
      .          axis_orients(  4 )	/ 'TI' /,   ! time (always forward)
-     .          axis_orients(  5 )	/ 'UD' /,   ! up to down
-     .          axis_orients(  6 )	/ 'NA' /,   ! not applicable
-     .          axis_orients(  7 )	/ 'NA' /,   ! ... unused slot ...
-     .          axis_orients(  8 )	/ 'NA' /,   ! ... unused slot ...   
+     .          axis_orients(  5 )	/ 'EE' /,   ! Ensemble
+     .          axis_orients(  6 )	/ 'FI' /,   ! Forecast
+     .          axis_orients(  7 )	/ 'UD' /,   ! up to down
+     .          axis_orients(  8 )	/ 'NA' /,   ! not applicable
      .          axis_orients(  9 )	/ 'NA' /    ! ... unused slot ...   
 
 	END

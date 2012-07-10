@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -47,28 +47,24 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * 1/13/2012
-* Single-precision version of TM_FPEQ_SNGL, to be called from PPLUS.
-
+* Single-precision version of TM_FPEQ, to be called from PPLUS.
+*      *kms*  3/12 modified to actually use the maximum absolute error
+*
 
 * calling arguments:
-	REAL*4	a, b
+	REAL*4 a, b
 
 * local parameters
-	LOGICAL    TM_DFPEQ
-	REAL*4	   VAX_epsilon
+	REAL*4	   VAX_epsilon, eps
 	PARAMETER (VAX_epsilon = 4.E-7)
 
-* treat relative error case (non-zero) separate fron zero case
+* determine the maximum relative error
+        eps = ABS(b) * VAX_epsilon
+* if close to zero, set the maximum absolute error
+        IF ( eps .LT. VAX_epsilon ) eps = VAX_epsilon
 
-	IF  (a.NE.0.0   .AND.  b.NE.0.0 )  THEN
+* make the comparison
+        TM_FPEQ_SNGL = ( ABS(a-b) .LE. eps )
 
-	   TM_FPEQ_SNGL =  ABS(a-b) .LE. ABS(b)*VAX_epsilon		! relative error
-
-	ELSE
-
-	   TM_FPEQ_SNGL =	ABS(a) .LT. VAX_epsilon
-     .		.AND.   ABS(b) .LT. VAX_epsilon			! absolute error
-
-	ENDIF
 	RETURN
 	END

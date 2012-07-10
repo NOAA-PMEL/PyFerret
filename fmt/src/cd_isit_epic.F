@@ -48,6 +48,7 @@
 * revision 0.0 - 2/93
 * V600 *ACM* attribute control. 
 *             Replace NCVID with CD_GET_VAR_ID
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *	dset	- dataset pointer for already opened CDF file
@@ -55,7 +56,6 @@
 * argument declarations
       INTEGER dset, status
 
-      include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
       include 'tmap_dims.parm'

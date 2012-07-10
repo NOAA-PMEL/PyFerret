@@ -55,6 +55,8 @@
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01  remove VMS include statements
 * v604 *acm* 7/07 increase length of ds_name
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
         include 'tmap_dims.parm'
 #       include "tmap_dset.parm"
@@ -203,7 +205,7 @@
 	CALL CSTRING_INSERT( grid_name(grid),
      .			     slen, ctext, ntext, insert_pt)
 * ... then the 4 axis names
-	DO 510 dim = 1, 4
+	DO 510 dim = 1, nferdims
 	   axis = grid_line( dim, grid )
 	   IF ( axis .EQ. munknown ) THEN
 	      CALL CSTRING_INSERT( 'UNKNOWN',
@@ -222,7 +224,7 @@
 	   ENDIF
  510    CONTINUE
 * ... then the 4 axis orientation codes
-	DO 520 dim = 1, 4
+	DO 520 dim = 1, nferdims
 	   axis = grid_line( dim, grid )
 	   IF ( axis .EQ. munknown .OR. axis .EQ. mnormal ) THEN
 	      CALL CSTRING_INSERT( '**',
@@ -357,7 +359,7 @@
      .			     slen, ctext, ntext, insert_pt)
 * ... then the 4 axis spans
 * ... loss,hiss,loww,hiww (all presented as floating point)
-	DO 2010 dim = 1, 4
+	DO 2010 dim = 1, nferdims
 	   axis = grid_line( dim, grid )
 	   i = (dim-1) * 4
 	   IF ( axis .EQ. munknown
@@ -437,14 +439,14 @@
 	num_strings = 2
 	num_vals = 3
 * ... and finially special stuff for calendar axis formatting
-	IF ( dim.EQ.t_dim .AND. flags(2).EQ.1 ) THEN
+	IF ( (dim.EQ.t_dim .OR. dim.EQ.f_dim) .AND. flags(2).EQ.1 ) THEN
 
 *  See if we can find out the calendar, if grid/axis is known
 	IF (grid .EQ. unspecified_int4  .AND.  
      .	    axis .EQ. unspecified_int4)  THEN 
 	   cal_id = 1
 	ELSE
-	   IF (axis .EQ. unspecified_int4) axis = grid_line(t_dim, grid)
+	   IF (axis .EQ. unspecified_int4) axis = grid_line(dim, grid)
 	   cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
 	ENDIF
 

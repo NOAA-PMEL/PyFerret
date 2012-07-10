@@ -72,6 +72,7 @@
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead 
 * 9/06 *acm* 6.01  fixing bug 1439 long symbol values; change length of symval to 2048
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * calling argument declarations:
 	LOGICAL	  did_sub
@@ -107,18 +108,10 @@
 	CHARACTER cat_argument*48
 #endif 
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xcommand.cmn'
 	include 'xrisc.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XCOMMAND.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'	! FOR PPL$XPIXEL
-	INCLUDE 'FERRET_CMN:XRISC.CMN'
-#endif
 
 * initialize
 	did_sub = .FALSE.

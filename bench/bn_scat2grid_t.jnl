@@ -1,0 +1,22 @@
+! bn_scat2grid_t.jnl
+! test the ave_scat2grid_t and scat2grid_t functions,
+! listing the results which can be checked against input
+
+define axis/t=0:8760/unit=hours/t0="01-JAN-1995 00:00:00"/edges/npoints=32 t_32
+
+let logtp50 = log(T[gt=t_32] + 50.0)
+let ltp50_tax = T[gt=t_32]
+list ltp50_tax, logtp50
+
+define axis/t=0:8760/unit=hours/t0="01-JAN-1995 00:00:00"/edges/npoints=12 t_12
+let new_tax = T[gt=t_12]
+
+let ave_t = ave_scat2grid_t(ltp50_tax, logtp50, new_tax)
+let t_cnt = scat2grid_t(ltp50_tax, new_tax)
+list new_tax, ave_t, t_cnt
+
+can mem /all
+can var /all
+can axis t_12
+can axis t_32
+

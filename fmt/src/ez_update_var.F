@@ -40,6 +40,7 @@
 *
 * revision 0.00 - 10/24/89 - extracted from EZ_UPDATE_COMMON
 * 4/03 *acm* - Use STR_SAME to compare strings
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * Arguments:
 *	var		- variable number in COMMON
@@ -47,14 +48,13 @@
 	INTEGER		var
 *                                                 
 * Include files
-#include "gt_lib.parm"
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
+#include "gt_lib.parm"
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-
+	
 
 * calling argument declarations:
 
@@ -66,7 +66,7 @@
         IF (STR_SAME(ds_type(dset), '  EZ') .NE. 0) GOTO 9000
 *
 * Update variable records
-	DO 100 lcnt = 1,4
+	DO 100 lcnt = 1,nferdims
 	  line = grid_line(lcnt,ds_grid_number(var))		! temporary var
 	  IF (line .EQ. mpsnorm) THEN
 	    ds_grid_start(lcnt,var) = 1

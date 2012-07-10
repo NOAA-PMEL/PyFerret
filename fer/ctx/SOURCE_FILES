@@ -34,8 +34,6 @@ merge_axis_with_offsets.F\
 merge_context.F\
 merge_grid.F\
 mergify_cx.F\
-mergify_grid.F\
-mergify_grid_axis.F\
 nest_region_class.F\
 ov_grp_cx_doc.F\
 ovsiz_cx.F\

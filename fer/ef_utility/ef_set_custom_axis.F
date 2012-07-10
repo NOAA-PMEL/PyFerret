@@ -46,6 +46,8 @@ c
       SUBROUTINE EF_SET_CUSTOM_AXIS(id, axis, lo, hi, del,
      .     unit, modulo)
 
+      IMPLICIT NONE
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'
       INCLUDE 'EF_Util.parm'
@@ -72,7 +74,7 @@ c     call the external functions library to set the value
       
       llen = TM_LENSTR1( unit )
       CALL TM_FTOC_STRNG( unit(:llen), fhol, slen )
-      call ef_set_custom_axis_sub( id, axis, lo, hi, del, 
+      CALL EF_SET_CUSTOM_AXIS_SUB( id, axis, lo, hi, del, 
      .     fhol, modulo )
       
       

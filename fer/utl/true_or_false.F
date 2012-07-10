@@ -41,18 +41,14 @@
 
 * V420  4/25/96
 *	7/96 - minor compiler bug fix -- eliminate unuser RETURN
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * calling argument declarations:
 	INTEGER		status
 	CHARACTER*(*)	string
 
-#ifdef unix
 	include	'ferret.parm'
 	include 'errmsg.parm'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 * local parameter declarations
 	INTEGER nyes, nno

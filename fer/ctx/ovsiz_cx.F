@@ -42,8 +42,8 @@
 * written for VAX computer under VMS operating system
 *
 * V200:  5/26/89
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -51,21 +51,13 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	cx
 
 * internal variable declarations:
 	LOGICAL	ovsiz, user_var
-	INTEGER	grid, idim, ndim, pdim, dim(4), ss, ii, status, var
+	INTEGER	grid, idim, ndim, pdim, dim(nferdims), ss, ii, status, var
 	REAL*8	TM_WORLD
 
 * initialize

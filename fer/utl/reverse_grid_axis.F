@@ -45,7 +45,9 @@
 *                     as it has been read, after the strides applied, 
 *                     e.g. reset 4:360:3 to 1:119:1
 * 560: *acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
+* 2/12 *acm* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
@@ -55,10 +57,10 @@
 	REAL    dat( * )
 
 * local variable declarations
-	INTEGER idim, ilo(4), ihi(4), idel(4)
+	INTEGER idim, ilo(nferdims), ihi(nferdims), idel(nferdims)
 
 * get the delta values
-	DO idim = 1, 4
+	DO idim = 1, nferdims
 	  ilo (idim) = cx_lo_ss(cx,idim)
 	  ihi (idim) = cx_hi_ss(cx,idim)
 	  IF (cx_delta(idim,cx) .EQ. unspecified_val8 ) THEN
@@ -79,7 +81,9 @@ c	    ilo(idim) = 1
      .			            ilo(1), ihi(1),
      .			            ilo(2), ihi(2),
      .			            ilo(3), ihi(3),
-     .			            ilo(4), ihi(4) )
+     .			            ilo(4), ihi(4),
+     .			            ilo(5), ihi(5),
+     .			            ilo(6), ihi(6) )
 
 	RETURN
 	END 

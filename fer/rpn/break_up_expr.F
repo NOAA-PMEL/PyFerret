@@ -59,7 +59,9 @@
 * V611 5/08 *acm* Fix bug 1578; dataset specifiers applied correctly var[d=1].attname
 * V62   2/09 *acm* init_uvar has an extra argument, for keeping upper/lowrercase 
 *                  spelling of user-var names (no other changes in this routine).
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'	
 	include 'rpn.parm'

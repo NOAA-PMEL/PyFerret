@@ -1,0 +1,45 @@
+! bn_scat2grid_nobs.jnl
+! test of scat2grid_nobs functions,
+! listing the results which can be checked against input
+
+define axis/x=173:187/unit=degrees_east/npoints=15 x_15
+define axis/y=13:27/unit=degrees_north/npoints=15 y_15
+define axis/t=0:8760/unit=hours/t0="01-JAN-1995 00:00:00"/edges/npoints=16 t_16
+
+let sinx = sin(X[gx=x_15] * 3.14159265 / 180.0)
+let cosyp70 = cos((Y[gy=y_15] + 70.0) * 3.14159265 / 180.0)
+let logtp50 = log(T[gt=t_16] + 50.0)
+
+let smxy = xsequence(sinx + cosyp70)
+let smxy_xs_pos = xsequence(1.0 * X[gx=x_15] + 0.0 * Y[gy=y_15])
+let smxy_xs = if ( smxy_xs_pos gt 180 ) then (smxy_xs_pos - 360) else smxy_xs_pos
+let smxy_ys = xsequence(0.0 * X[gx=x_15] + 1.0 * Y[gy=y_15])
+
+let smxyt = xsequence(sinx + cosyp70 + logtp50)
+let smxyt_xs_pos = xsequence(1.0 * X[gx=x_15] + 0.0 * Y[gy=y_15] + 0.0 * T[gt=t_16])
+let smxyt_xs = if ( smxyt_xs_pos gt 180 ) then (smxyt_xs_pos - 360) else smxyt_xs_pos
+let smxyt_ys = xsequence(0.0 * X[gx=x_15] + 1.0 * Y[gy=y_15] + 0.0 * T[gt=t_16])
+let smxyt_ts = xsequence(0.0 * X[gx=x_15] + 0.0 * Y[gy=y_15] + 1.0 * T[gt=t_16])
+
+define axis/x=170:190/unit=degrees_east/npoints=11 x_11
+define axis/y=10:30/units=degrees_north/npoints=11 y_11
+define axis/t=0:8760/unit=hours/t0="01-JAN-1995 00:00:00"/edges/npoints=12 t_12
+
+list X[gx=x_11]
+
+list /i=1:33 smxy_xs, smxy_ys, smxy
+let xy_nobs = scat2grid_nobs_xy(smxy_xs, smxy_ys, X[gx=x_11], Y[gy=y_11])
+list xy_nobs
+
+list /i=1:33 smxyt_xs, smxyt_ys, smxyt_ts, smxyt
+let xyt_nobs = scat2grid_nobs_xyt(smxyt_xs, smxyt_ys, smxyt_ts, X[gx=x_11], Y[gy=y_11], T[gt=t_12])
+list xyt_nobs
+
+can var /all
+can axis t_12
+can axis y_11
+can axis x_11
+can axis t_16
+can axis y_15
+can axis x_15
+

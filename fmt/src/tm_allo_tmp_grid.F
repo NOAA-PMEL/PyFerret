@@ -39,6 +39,7 @@
 * Steve Hankin  NOAA/PMEL/TMAP
 
 * V510 *sh* 3/00 - guts of routine in  TM_ALLO_DYN_GRID_SUB
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * Include files
 	include 'tmap_dims.parm'
@@ -59,7 +60,7 @@
 * initialize grid to null state
 	grid_name(grid) = char_init16
 	grid_rotation (grid) = real4_init 
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   grid_line(idim,grid) = int4_init
 	   grid_out_prod(idim,grid) = .FALSE.
  100	CONTINUE

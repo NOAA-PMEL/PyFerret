@@ -42,35 +42,47 @@ c*
 c*
 c* Initialize the result context limits the EF will use.  
 c*
+* 4D subroutine version which calls the 6D subroutine version and
+* checks the E and F dimensions are unused
+*
 
       SUBROUTINE EF_GET_RES_SUBSCRIPTS(id, res_lo_ss,
-     .     res_hi_ss, res_incr)
+     .                                 res_hi_ss, res_incr)
 
-      INCLUDE 'ferret.parm'
-      INCLUDE 'xvariables.cmn'
-      INCLUDE 'EF_Util.parm'
+      IMPLICIT NONE
+      INCLUDE 'tmap_dims.parm'
 
+* argument declarations - 4D
       INTEGER id, res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER idim
 
-      INTEGER mres
+* local variables
+      INTEGER res_lo_ss_6d(nferdims),
+     .        res_hi_ss_6d(nferdims),
+     .        res_incr_6d (nferdims)
+      INTEGER ndx
+      CHARACTER*128 buff
 
-c* The memory resident id for the rsult, "mres", was cached by 
-c* Ferret and must be retrieved to be accessible to the external function.
-      CALL EF_GET_MRES(mres)
+* call the 6D version
+      CALL EF_GET_RES_SUBSCRIPTS_6D(id, res_lo_ss_6d, res_hi_ss_6d,
+     .                              res_incr_6d)
 
-      DO 100 idim=1,4
-
-         res_lo_ss(idim) = mr_lo_ss(mres, idim)
-         res_hi_ss(idim) = mr_hi_ss(mres, idim)
-         IF (res_lo_ss(idim) .EQ. res_hi_ss(idim)) 
-     .        THEN
-            res_incr(idim) = 0
-         ELSE
-            res_incr(idim) = 1
+* check E and F are unused
+      DO 100 ndx = 5, nferdims
+         IF ( res_lo_ss_6d(ndx) .NE. res_hi_ss_6d(ndx) ) THEN
+            WRITE (buff,50) ndx
+ 50         FORMAT ('Dimension ', I1,
+     .         ' is used; use EF_GET_RES_SUBSCRIPTS_6D instead')
+            CALL EF_BAIL_OUT(id, buff)
+            STOP 'EF_BAIL_OUT returned in EF_GET_RES_SUBSCRIPTS'
          ENDIF
-
  100  CONTINUE
+
+* copy to the 4D arrays
+      DO 200 ndx = 1, 4
+         res_lo_ss(ndx) = res_lo_ss_6d(ndx)
+         res_hi_ss(ndx) = res_hi_ss_6d(ndx)
+         res_incr(ndx)  = res_incr_6d(ndx)
+ 200  CONTINUE
 
       RETURN 
       END

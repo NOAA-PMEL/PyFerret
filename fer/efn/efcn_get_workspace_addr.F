@@ -16,6 +16,7 @@ c
 
       SUBROUTINE EFCN_GET_WORKSPACE_ADDR(memory, work_blk, workspace)
 
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'xvariables.cmn'
 

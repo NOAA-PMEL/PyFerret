@@ -47,19 +47,15 @@
 *
 * *kob* 10/96 	- Linux port.  Linux didn't like tabs between "include"
 *	          and what was being included.  removed them
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+
 * Parameters and commons
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 	include 'tmap_errors.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
+
 *
 * Local declarations
 	CHARACTER*13	TM_STRING

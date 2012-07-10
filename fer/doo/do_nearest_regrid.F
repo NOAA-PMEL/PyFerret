@@ -4,7 +4,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -42,18 +42,16 @@
 
 * V530: 3/01 *sh* based on do_xact_regrid
 * V533: 6/01 *sh* added string regridding support
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include	'xcontext.cmn'
 
 * calling argument declarations:
 	INTEGER	cx_lims, axis, msrc, mdst, icoef, itot
 	REAL	src(*), dst(*), work(itot)
-
-#ifdef unix
-	include	'ferret.parm'
-	include	'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 	IF (cx_type(cx_lims) .EQ. ptype_string ) THEN
 	   CALL NEAREST_PTR_REGRID_1_AXIS( cx_lims, axis,
@@ -69,4 +67,4 @@
 	
 
 	RETURN
-	END	
+	END

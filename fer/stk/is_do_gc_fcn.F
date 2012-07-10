@@ -54,6 +54,7 @@
 *                  user reference XCAT with string arguments and Ferret will 
 *                  run XCAT_STR
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+*      *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V68   3/12 *KMS/ACM* see 6D branch: working on string bugs. Remove overloading
 *                   of argument/return-type variable and predimensional (data size)
 *                   array parameter (pointer size to one in double-precision Ferret).

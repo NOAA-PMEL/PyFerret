@@ -81,7 +81,9 @@
 *                  it's not going to work well as an external function.
 * V6.8 for double-precision Ferret do the RANDU calculation
 *      with a real*4 argument. Gives consistent results with single-p.
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include 'xvariables.cmn'
@@ -91,40 +93,45 @@
 * calling argument declarations:
 	LOGICAL ifv
 	INTEGER	operation, num_com, com_cx(4), mr1, mr2, mr3, mr4, mres
-	REAL    com1( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		com2( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
-     .		com3( m3lox:m3hix,m3loy:m3hiy,m3loz:m3hiz,m3lot:m3hit ),
-     .		com4( m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,m4lot:m4hit ),
-     .		 res( m5lox:m5hix,m5loy:m5hiy,m5loz:m5hiz,m5lot:m5hit )
+	REAL    com1( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .		com2( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
+     .		com3( m3lox:m3hix,m3loy:m3hiy,m3loz:m3hiz,m3lot:m3hit,m3loe:m3hie,m3lof:m3hif ),
+     .		com4( m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,m4lot:m4hit,m4loe:m4hie,m4lof:m4hif ),
+     .		 res( m5lox:m5hix,m5loy:m5hiy,m5loz:m5hiz,m5lot:m5hit,m5loe:m5hie,m5lof:m5hif )
 
 * internal variable declarations:
 	LOGICAL	first
-	INTEGER CX_DIM_LEN, op, i, j, k, l, icom, idim,
-     .		i1, j1, k1, l1, i2, j2, k2, l2,
-     .		i3, j3, k3, l3, i4, j4, k4, l4,
-     .		di1, dj1, dk1, dl1, di2, dj2, dk2, dl2,
-     .		di3, dj3, dk3, dl3, di4, dj4, dk4, dl4,
-     .		si1, sj1, sk1, sl1, si2, sj2, sk2, sl2,
-     .		si3, sj3, sk3, sl3, si4, sj4, sk4, sl4, inseed
+	INTEGER CX_DIM_LEN, op, i, j, k, l, m, n, icom, idim,
+     .		i1, j1, k1, l1, m1, n1, i2, j2, k2, l2, m2, n2, 
+     .		i3, j3, k3, l3, m3, n3, i4, j4, k4, l4, m4, n4, 
+     .		di1, dj1, dk1, dl1, dm1, dn1, 
+     .		di2, dj2, dk2, dl2, dm2, dn2,
+     .		di3, dj3, dk3, dl3, dm3, dn3, 
+     .		di4, dj4, dk4, dl4, dm4, dn4,
+     .		si1, sj1, sk1, sl1, sm1, sn1, 
+     .		si2, sj2, sk2, sl2, sm2, sn2,
+     .		si3, sj3, sk3, sl3, sm3, sn3, 
+     .		si4, sj4, sk4, sl4, sm4, sn4, 
+     .		inseed
 	REAL	RANDU, RANDN, RANDN2, RHO_UNESCO, THETA_FOFF,
      .		DAYS_FROM_DAY0,
      .          bad1, bad2, bad3, bad4, bad_res, dummy
      .          op_repl
 	REAL*4  R_IN
 
-* equivalence conveniences
-* "inc" is the increments for each axis of each component
+* equivalence conveniences. Arrays are (idim, icom)
+* "inc" is the increments for each axis of each component 
 * "lo"  is the starting subscript (minus 1) for each axis of each component
-	INTEGER	inc(4,4), lo(4,4)
+	INTEGER	inc(nferdims,4), lo(nferdims,4)
 	EQUIVALENCE
-     .	(lo(1,1),si1), (lo(2,1),sj1), (lo(3,1),sk1), (lo(4,1),sl1),
-     .	(lo(1,2),si2), (lo(2,2),sj2), (lo(3,2),sk2), (lo(4,2),sl2),
-     .	(lo(1,3),si3), (lo(2,3),sj3), (lo(3,3),sk3), (lo(4,3),sl3),
-     .	(lo(1,4),si4), (lo(2,4),sj4), (lo(3,4),sk4), (lo(4,4),sl4),
-     .	(inc(1,1),di1),(inc(2,1),dj1),(inc(3,1),dk1),(inc(4,1),dl1),
-     .	(inc(1,2),di2),(inc(2,2),dj2),(inc(3,2),dk2),(inc(4,2),dl2),
-     .	(inc(1,3),di3),(inc(2,3),dj3),(inc(3,3),dk3),(inc(4,3),dl3),
-     .	(inc(1,4),di4),(inc(2,4),dj4),(inc(3,4),dk4),(inc(4,4),dl4)
+     .	(lo(1,1),si1), (lo(2,1),sj1), (lo(3,1),sk1), (lo(4,1),sl1), (lo(5,1),sm1), (lo(6,1),sn1), 
+     .	(lo(1,2),si2), (lo(2,2),sj2), (lo(3,2),sk2), (lo(4,2),sl2), (lo(5,2),sm2), (lo(6,2),sn2), 
+     .	(lo(1,3),si3), (lo(2,3),sj3), (lo(3,3),sk3), (lo(4,3),sl3), (lo(5,3),sm3), (lo(6,3),sn3), 
+     .	(lo(1,4),si4), (lo(2,4),sj4), (lo(3,4),sk4), (lo(4,4),sl4), (lo(5,4),sm4), (lo(6,4),sn4),
+     .	(inc(1,1),di1),(inc(2,1),dj1),(inc(3,1),dk1),(inc(4,1),dl1),(inc(5,1),dm1),(inc(6,1),dn1), 
+     .	(inc(1,2),di2),(inc(2,2),dj2),(inc(3,2),dk2),(inc(4,2),dl2),(inc(5,2),dm2),(inc(6,2),dn2), 
+     .	(inc(1,3),di3),(inc(2,3),dj3),(inc(3,3),dk3),(inc(4,3),dl3),(inc(5,3),dm3),(inc(6,3),dn3), 
+     .	(inc(1,4),di4),(inc(2,4),dj4),(inc(3,4),dk4),(inc(4,4),dl4),(inc(5,4),dm4),(inc(6,4),dn4)
 
 * internal parameter declarations:
 	REAL*8          pdays_by_1900
@@ -151,7 +158,7 @@
 
 * compute the delta increment for each axis of each component
 	DO 10 icom = 1, num_com
-	DO 10 idim = 1, 4
+	DO 10 idim = 1, nferdims
 	   IF ( CX_DIM_LEN(idim,com_cx(icom)) .EQ. 1 ) THEN
 	      inc(idim,icom) = 0
 	   ELSE
@@ -162,7 +169,7 @@
 * compute the starting subscript for each axis of each component
 * (pre-decrement by 1 delta for looping ahead)
 	DO 20 icom = 1, num_com
-	DO 20 idim = 1, 4
+	DO 20 idim = 1, nferdims
  20	lo(idim,icom) = cx_lo_ss(com_cx(icom),idim) - inc(idim,icom)
 
 * operators, functions, logic structures
@@ -180,310 +187,400 @@
 * ------- OPERATORS -------------
 *
 * "+"
- 100	l1 = sl1
-	l2 = sl2
-	DO 110 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 110 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 110 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 110 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 100	n1 = sn1
+	n2 = sn2
+	DO 110 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 110 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 110 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 110 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 110 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 110 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2 ) THEN
-	      res(i,j,k,l) = bad_res
-	   ELSE
-	      res(i,j,k,l) = com1(i1,j1,k1,l1) + com2(i2,j2,k2,l2)
-	   ENDIF
+	     IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	     .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
+	        res(i,j,k,l,m,n) = bad_res
+	     ELSE
+	        res(i,j,k,l,m,n) = com1(i1,j1,k1,l1,m1,n1) + com2(i2,j2,k2,l2,m2,n2)
+	     ENDIF
 
  110	CONTINUE
 	RETURN
 
 * "-"
- 200	l1 = sl1
-	l2 = sl2
-	DO 210 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 210 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 210 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 210 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 200	n1 = sn1
+	n2 = sn2
+	DO 210 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 210 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 210 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 210 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 210 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 210 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	   .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = com1(i1,j1,k1,l1) - com2(i2,j2,k2,l2)
+	      res(i,j,k,l,m,n) = com1(i1,j1,k1,l1,m1,n1) - com2(i2,j2,k2,l2,m2,n2)
 	   ENDIF
 
  210	CONTINUE
 	RETURN
 * "*"
- 300	l1 = sl1
-	l2 = sl2
-	DO 310 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 310 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 310 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 310 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 300	n1 = sn1
+	n2 = sn2
+	DO 310 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 310 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 310 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 310 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 310 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 310 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	   .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = com1(i1,j1,k1,l1) * com2(i2,j2,k2,l2)
+	      res(i,j,k,l,m,n) = com1(i1,j1,k1,l1,m1,n1) * com2(i2,j2,k2,l2,m2,n2)
 	   ENDIF
 
  310	CONTINUE
 	RETURN
 
 * "/"
- 400	l1 = sl1
-	l2 = sl2
-	DO 410 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 410 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 410 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 410 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 400	n1 = sn1
+	n2 = sn2
+	DO 410 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 410 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 410 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 410 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 410 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 410 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. 0.0   ) THEN
-	      res(i,j,k,l) = bad_res
-	   ELSE
-	      res(i,j,k,l) = com1(i1,j1,k1,l1) / com2(i2,j2,k2,l2)
-	   ENDIF
+	     IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	     .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2
+     .	     .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. 0.0   ) THEN
+	        res(i,j,k,l,m,n) = bad_res
+	     ELSE
+	        res(i,j,k,l,m,n) = com1(i1,j1,k1,l1,m1,n1) / com2(i2,j2,k2,l2,m2,n2)
+	     ENDIF
 
  410	CONTINUE
 	RETURN
 
 * "^"
- 500	l1 = sl1
-	l2 = sl2
-	DO 510 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 510 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 510 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 510 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 500	n1 = sn1
+	n2 = sn2
+	DO 510 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 510 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 510 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 510 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 510 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 510 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2
-     .	   .OR.    ( com1(i1,j1,k1,l1) .EQ. 0.0
-     .	       .AND. com2(i2,j2,k2,l2) .LT. 0.0 ) ) THEN
-	      res(i,j,k,l) = bad_res
-	   ELSEIF ( com2(i2,j2,k2,l2).EQ.FLOAT(INT(com2(i2,j2,k2,l2))) ) THEN
-	      res(i,j,k,l) = com1(i1,j1,k1,l1) ** INT(com2(i2,j2,k2,l2))
-	   ELSEIF ( com1(i1,j1,k1,l1) .LT. 0.0 )	THEN
-	      res(i,j,k,l) = bad_res
-	   ELSE
-	      res(i,j,k,l) = com1(i1,j1,k1,l1) ** com2(i2,j2,k2,l2)
-	   ENDIF
+	     IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	     .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2
+     .	     .OR.    ( com1(i1,j1,k1,l1,m1,n1) .EQ. 0.0
+     .	         .AND. com2(i2,j2,k2,l2,m2,n2) .LT. 0.0 ) ) THEN
+	        res(i,j,k,l,m,n) = bad_res
+	     ELSEIF ( com2(i2,j2,k2,l2,m2,n2).EQ.FLOAT(INT(com2(i2,j2,k2,l2,m2,n2))) ) THEN
+	        res(i,j,k,l,m,n) = com1(i1,j1,k1,l1,m1,n1) ** INT(com2(i2,j2,k2,l2,m2,n2))
+	     ELSEIF ( com1(i1,j1,k1,l1,m1,n1) .LT. 0.0 )	THEN
+	        res(i,j,k,l,m,n) = bad_res
+	     ELSE
+	        res(i,j,k,l,m,n) = com1(i1,j1,k1,l1,m1,n1) ** com2(i2,j2,k2,l2,m2,n2)
+	     ENDIF
 
  510	CONTINUE
 	RETURN
 
 * "AND" - logical AND of 2 masks (any non-zero data regarded as .TRUE.)
- 600	l1 = sl1
-	l2 = sl2
-	DO 610 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 610 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 610 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 610 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 600    n1 = sn1
+	n2 = sn2
+	DO 610 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 610 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 610 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 610 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 610 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 610 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2 ) THEN
-	      res(i,j,k,l) = bad_res
-	   ELSE
-	      IF ( com1(i1,j1,k1,l1).NE.0.0
-     .	     .AND. com2(i2,j2,k2,l2).NE.0.0 ) THEN
-		 res(i,j,k,l) = 1.0
-	      ELSE
-		 res(i,j,k,l) = op_repl
-	      ENDIF
-	   ENDIF
+	     IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	     .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
+	        res(i,j,k,l,m,n) = bad_res
+	     ELSE
+	        IF ( com1(i1,j1,k1,l1,m1,n1).NE.0.0
+     .	       .AND. com2(i2,j2,k2,l2,m2,n2).NE.0.0 ) THEN
+		   res(i,j,k,l,m,n) = 1.0
+	        ELSE
+	  	 res(i,j,k,l,m,n) = op_repl
+	        ENDIF
+	     ENDIF
  610	CONTINUE
 	RETURN
 
 * "OR" - logical OR of 2 masks (any non-zero data regarded as .TRUE.)
- 700	l1 = sl1
-	l2 = sl2
-	DO 710 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 710 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 710 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 710 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 700	n1 = sn1
+	n2 = sn2
+	DO 710 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 710 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 710 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 710 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 710 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 710 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2 ) THEN
-	      res(i,j,k,l) = bad_res
-	   ELSE
-	      IF ( com1(i1,j1,k1,l1).NE.0.0
-     .	      .OR. com2(i2,j2,k2,l2).NE.0.0 ) THEN
-		 res(i,j,k,l) = 1.0
-	      ELSE
-		 res(i,j,k,l) = op_repl
-	      ENDIF
-	   ENDIF
+	     IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	     .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
+	        res(i,j,k,l,m,n) = bad_res
+	     ELSE
+	        IF ( com1(i1,j1,k1,l1,m1,n1).NE.0.0
+     .	        .OR. com2(i2,j2,k2,l2,m2,n2).NE.0.0 ) THEN
+	  	   res(i,j,k,l,m,n) = 1.0
+	        ELSE
+		   res(i,j,k,l,m,n) = op_repl
+	        ENDIF
+	     ENDIF
  710	CONTINUE
 	RETURN
 
 * "GT" - mask of 1's where grid 1 exceeds grid 2, 0's elsewhere
 * "GT" - mask of 1's where grid 1 exceeds grid 2, bad-val elsewhere
- 800	l1 = sl1
-	l2 = sl2
-	DO 810 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 810 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 810 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 810 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 800 	n1 = sn1
+	n2 = sn2
+	DO 810 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 810 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 810 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 810 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 810 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 810 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2 ) THEN
-	      res(i,j,k,l) = bad_res
-	   ELSE
-	      IF ( com1(i1,j1,k1,l1) .GT. com2(i2,j2,k2,l2) ) THEN
-		 res(i,j,k,l) = 1.0
-	      ELSE
-		 res(i,j,k,l) = op_repl
-	      ENDIF
-	   ENDIF
+	     IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	     .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
+	        res(i,j,k,l,m,n) = bad_res
+	     ELSE
+	      IF ( com1(i1,j1,k1,l1,m1,n1) .GT. com2(i2,j2,k2,l2,m2,n2) ) THEN
+	  	   res(i,j,k,l,m,n) = 1.0
+	        ELSE
+		   res(i,j,k,l,m,n) = op_repl
+	        ENDIF
+	     ENDIF
  810	CONTINUE
 	RETURN
 
 * "GE" - mask of 1's where grid 1 exceeds or equals grid 2, 0's elsewhere
 * "GE" - mask of 1's where grid 1 exceeds or equals grid 2, bad elsewhere
- 900	l1 = sl1
-	l2 = sl2
-	DO 910 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 910 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 910 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 910 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 900 	n1 = sn1
+	n2 = sn2
+	DO 910 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 910 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 910 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 910 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 910 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 910 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	   .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      IF ( com1(i1,j1,k1,l1) .GE. com2(i2,j2,k2,l2) ) THEN
-		 res(i,j,k,l) = 1.0
+	      IF ( com1(i1,j1,k1,l1,m1,n1) .GE. com2(i2,j2,k2,l2,m2,n2) ) THEN
+		 res(i,j,k,l,m,n) = 1.0
 	      ELSE
-		 res(i,j,k,l) = op_repl
+		 res(i,j,k,l,m,n) = op_repl
 	      ENDIF
 	   ENDIF
  910	CONTINUE
@@ -491,35 +588,45 @@
 
 * "LT" - mask of 1's where grid 1 is less than grid 2, 0's elsewhere
 * "LT" - mask of 1's where grid 1 is less than grid 2, bad elsewhere
- 1000	l1 = sl1
-	l2 = sl2
-	DO 1010 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 1010 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 1010 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 1010 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 1000 	n1 = sn1
+	n2 = sn2
+	DO 1010 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 1010 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 1010 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 1010 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 1010 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 1010 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	   .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      IF ( com1(i1,j1,k1,l1) .LT. com2(i2,j2,k2,l2) ) THEN
-		 res(i,j,k,l) = 1.0
+	      IF ( com1(i1,j1,k1,l1,m1,n1) .LT. com2(i2,j2,k2,l2,m2,n2) ) THEN
+		 res(i,j,k,l,m,n) = 1.0
 	      ELSE
-		 res(i,j,k,l) = op_repl
+		 res(i,j,k,l,m,n) = op_repl
 	      ENDIF
 	   ENDIF
  1010	CONTINUE
@@ -527,35 +634,45 @@
 
 * "LE" - mask of 1's where grid 1 is less than or equal to grid 2, 0's elsewhere
 * "LE" - mask of 1's where grid 1 is less than or equal to grid 2, bad elsewhere
- 1100	l1 = sl1
-	l2 = sl2
-	DO 1110 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 1110 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 1110 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 1110 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 1100	n1 = sn1
+	n2 = sn2
+	DO 1110 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 1110 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 1110 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 1110 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 1110 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 1110 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	   .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      IF ( com1(i1,j1,k1,l1) .LE. com2(i2,j2,k2,l2) ) THEN
-		 res(i,j,k,l) = 1.0
+	      IF ( com1(i1,j1,k1,l1,m1,n1) .LE. com2(i2,j2,k2,l2,m2,n2) ) THEN
+		 res(i,j,k,l,m,n) = 1.0
 	      ELSE
-		 res(i,j,k,l) = op_repl
+		 res(i,j,k,l,m,n) = op_repl
 	      ENDIF
 	   ENDIF
  1110	CONTINUE
@@ -563,70 +680,90 @@
 
 * "EQ" - mask of 1's where grids are equal, 0's elsewhere
 * "EQ" - mask of 1's where grids are equal, bad elsewhere
- 1200	l1 = sl1
-	l2 = sl2
-	DO 1210 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 1210 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 1210 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 1210 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 1200	n1 = sn1
+	n2 = sn2
+	DO 1210 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 1210 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 1210 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 1210 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 1210 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 1210 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	   .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      IF ( com1(i1,j1,k1,l1) .EQ. com2(i2,j2,k2,l2) ) THEN
-		 res(i,j,k,l) = 1.0
+	      IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. com2(i2,j2,k2,l2,m2,n2) ) THEN
+		 res(i,j,k,l,m,n) = 1.0
 	      ELSE
-		 res(i,j,k,l) = op_repl
+		 res(i,j,k,l,m,n) = op_repl
 	      ENDIF
 	   ENDIF
  1210	CONTINUE
 	RETURN
 
 * "NE" - mask of 1's where grids are not equal, 0's elsewhere
- 1300	l1 = sl1
-	l2 = sl2
-	DO 1310 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 1310 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 1310 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 1310 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 1300	n1 = sn1
+	n2 = sn2
+	DO 1310 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 1310 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 1310 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 1310 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 1310 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 1310 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	   .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      IF ( com1(i1,j1,k1,l1) .NE. com2(i2,j2,k2,l2) ) THEN
-		 res(i,j,k,l) = 1.0
+	      IF ( com1(i1,j1,k1,l1,m1,n1) .NE. com2(i2,j2,k2,l2,m2,n2) ) THEN
+		 res(i,j,k,l,m,n) = 1.0
 	      ELSE
-		 res(i,j,k,l) = op_repl
+		 res(i,j,k,l,m,n) = op_repl
 	      ENDIF
 	   ENDIF
  1310	CONTINUE
@@ -642,340 +779,414 @@
 * -------- FUNCTIONS ------------
 
 * "EXP" - exponential function
- 1900	DO 1910 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 1910 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 1910 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 1910 i = mr_lo_s1(mres), mr_hi_s1(mres)
+ 1900	DO 1910 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO 1910 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO 1910 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 1910 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 1910 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 1910 i = mr_lo_s1(mres), mr_hi_s1(mres)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1
-     .     .OR. com1(i,j,k,l) .GT. 77.0 ) THEN    ! 8/92
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i,j,k,l,m,n) .EQ. bad1
+     .     .OR. com1(i,j,k,l,m,n) .GT. 77.0 ) THEN    ! 8/92
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = EXP(com1(i,j,k,l))
+	      res(i,j,k,l,m,n) = EXP(com1(i,j,k,l,m,n))
 	   ENDIF
  1910	CONTINUE
 	RETURN
 
 * "LOG"
- 2000	DO 2010 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 2010 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 2010 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 2010 i = mr_lo_s1(mres), mr_hi_s1(mres)
+ 2000	DO 2010 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO 2010 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO 2010 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO 2010 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 2010 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 2010 i = mr_lo_s1(mres), mr_hi_s1(mres)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1
-     .    .OR.  com1(i,j,k,l) .LE. 0.0 ) THEN    ! 8/92
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i,j,k,l,m,n) .EQ. bad1
+     .    .OR.  com1(i,j,k,l,m,n) .LE. 0.0 ) THEN    ! 8/92
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = LOG10( com1(i,j,k,l) )
+	      res(i,j,k,l,m,n) = LOG10( com1(i,j,k,l,m,n) )
 	   ENDIF
  2010	CONTINUE
 	RETURN
 
 * "MAX"
- 2100	l1 = sl1
-	l2 = sl2
-	DO 2110 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 2110 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 2110 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 2110 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 2100	n1 = sn1
+	n2 = sn2
+	DO 2110 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 2110 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 2110 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 2110 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 2110 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 2110 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	   .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = MAX( com1(i1,j1,k1,l1), com2(i2,j2,k2,l2) )
+	      res(i,j,k,l,m,n) = MAX( com1(i1,j1,k1,l1,m1,n1), com2(i2,j2,k2,l2,m2,n2) )
 	   ENDIF
 
  2110	CONTINUE
 	RETURN
 
 * "MIN"
- 2200	l1 = sl1
-	l2 = sl2
-	DO 2210 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 2210 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 2210 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 2210 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 2200	n1 = sn1
+	n2 = sn2
+	DO 2210 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 2210 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 2210 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 2210 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 2210 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 2210 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	   .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = MIN( com1(i1,j1,k1,l1), com2(i2,j2,k2,l2) )
+	      res(i,j,k,l,m,n) = MIN( com1(i1,j1,k1,l1,m1,n1), com2(i2,j2,k2,l2,m2,n2) )
 	   ENDIF
  2210	CONTINUE
 	RETURN
 
 * "INT"
- 2300	DO 2310 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 2310 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 2310 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 2310 i = mr_lo_s1(mres), mr_hi_s1(mres)
+ 2300	DO 2310 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO 2310 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO 2310 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 2310 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 2310 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 2310 i = mr_lo_s1(mres), mr_hi_s1(mres)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = INT( com1(i,j,k,l) )
+	      res(i,j,k,l,m,n) = INT( com1(i,j,k,l,m,n) )
 	   ENDIF
  2310	CONTINUE
 	RETURN
 
 * "ABS"
- 2400	DO 2410 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 2410 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 2410 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 2410 i = mr_lo_s1(mres), mr_hi_s1(mres)
+ 2400	DO 2410 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO 2410 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO 2410 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 2410 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 2410 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 2410 i = mr_lo_s1(mres), mr_hi_s1(mres)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = ABS( com1(i,j,k,l) )
+	      res(i,j,k,l,m,n) = ABS( com1(i,j,k,l,m,n) )
 	   ENDIF
  2410	CONTINUE
 	RETURN
 
 * "SIN"
- 2500	DO 2510 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 2510 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 2510 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 2510 i = mr_lo_s1(mres), mr_hi_s1(mres)
+ 2500	DO 2510 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO 2510 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO 2510 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 2510 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 2510 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 2510 i = mr_lo_s1(mres), mr_hi_s1(mres)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = SIN( com1(i,j,k,l) )
+	      res(i,j,k,l,m,n) = SIN( com1(i,j,k,l,m,n) )
 	   ENDIF
  2510	CONTINUE
 	RETURN
 
 * "COS"
- 2600	DO 2610 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 2610 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 2610 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 2610 i = mr_lo_s1(mres), mr_hi_s1(mres)
+ 2600	DO 2610 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO 2610 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO 2610 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 2610 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 2610 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 2610 i = mr_lo_s1(mres), mr_hi_s1(mres)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = COS( com1(i,j,k,l) )
+	      res(i,j,k,l,m,n) = COS( com1(i,j,k,l,m,n) )
 	   ENDIF
  2610	CONTINUE
 	RETURN
 
 * "TAN"
- 2700	DO 2710 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 2710 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 2710 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 2710 i = mr_lo_s1(mres), mr_hi_s1(mres)
+ 2700	DO 2710 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO 2710 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO 2710 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 2710 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 2710 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 2710 i = mr_lo_s1(mres), mr_hi_s1(mres)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = TAN( com1(i,j,k,l) )
+	      res(i,j,k,l,m,n) = TAN( com1(i,j,k,l,m,n) )
 	   ENDIF
  2710	CONTINUE
 	RETURN
 
 * "LN"
- 2800	DO 2810 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 2810 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 2810 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 2810 i = mr_lo_s1(mres), mr_hi_s1(mres)
+ 2800	DO 2810 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO 2810 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO 2810 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 2810 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 2810 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 2810 i = mr_lo_s1(mres), mr_hi_s1(mres)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1
-     .    .OR.  com1(i,j,k,l) .LE. 0.0 ) THEN    ! 8/92
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i,j,k,l,m,n) .EQ. bad1
+     .    .OR.  com1(i,j,k,l,m,n) .LE. 0.0 ) THEN    ! 8/92
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = LOG( com1(i,j,k,l) )
+	      res(i,j,k,l,m,n) = LOG( com1(i,j,k,l,m,n) )
 	   ENDIF
  2810	CONTINUE
 	RETURN
 
 * "MOD"
- 2900	l1 = sl1
-	l2 = sl2
-	DO 2910 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 2910 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 2910 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 2910 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 2900	n1 = sn1
+	n2 = sn2
+	DO 2910 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 2910 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 2910 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 2910 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 2910 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 2910 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	   .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = MOD( com1(i1,j1,k1,l1), com2(i2,j2,k2,l2) )
+	      res(i,j,k,l,m,n) = MOD( com1(i1,j1,k1,l1,m1,n1), com2(i2,j2,k2,l2,m2,n2) )
 	   ENDIF
  2910	CONTINUE
 	RETURN
 
 * "MISSING" - replace missing value flag with values in grid 2
- 3000	l1 = sl1
-	l2 = sl2
-	DO 3010 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 3010 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 3010 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 3010 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 3000	n1 = sn1
+	n2 = sn2
+	DO 3010 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 3010 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 3010 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 3010 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 3010 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 3010 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .NE. bad1 ) THEN
-              res(i,j,k,l) = com1(i1,j1,k1,l1)
-           ELSEIF ( com2(i2,j2,k2,l2) .NE. bad2 ) THEN
-              res(i,j,k,l) = com2(i2,j2,k2,l2)
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .NE. bad1 ) THEN
+              res(i,j,k,l,m,n) = com1(i1,j1,k1,l1,m1,n1)
+           ELSEIF ( com2(i2,j2,k2,l2,m2,n2) .NE. bad2 ) THEN
+              res(i,j,k,l,m,n) = com2(i2,j2,k2,l2,m2,n2)
            ELSE
-              res(i,j,k,l) = bad_res
+              res(i,j,k,l,m,n) = bad_res
            ENDIF
 
  3010	CONTINUE
 	RETURN
 
 * "IGNORE0" - replace zeros with bad flags
- 3100	DO 3110 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 3110 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 3110 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 3110 i = mr_lo_s1(mres), mr_hi_s1(mres)
+ 3100	DO 3110 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO 3110 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO 3110 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 3110 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 3110 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 3110 i = mr_lo_s1(mres), mr_hi_s1(mres)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
-	      res(i,j,k,l) = bad_res
-	   ELSEIF ( com1(i,j,k,l) .EQ. 0 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
+	   ELSEIF ( com1(i,j,k,l,m,n) .EQ. 0 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = com1(i,j,k,l)
+	      res(i,j,k,l,m,n) = com1(i,j,k,l,m,n)
 	   ENDIF
  3110	CONTINUE
 	RETURN
 
 * "ATAN"
- 3200	DO 3210 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 3210 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 3210 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 3210 i = mr_lo_s1(mres), mr_hi_s1(mres)
+ 3200	DO 3210 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO 3210 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO 3210 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 3210 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 3210 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 3210 i = mr_lo_s1(mres), mr_hi_s1(mres)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = ATAN( com1(i,j,k,l) )
+	      res(i,j,k,l,m,n) = ATAN( com1(i,j,k,l,m,n) )
 	   ENDIF
  3210	CONTINUE
 	RETURN
 
 * "ATAN2" - 2 argument arc tangent
- 3300	l1 = sl1
-	l2 = sl2
-	DO 3310 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 3310 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 3310 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 3310 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
+ 3300	n1 = sn1
+	n2 = sn2
+	DO 3310 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 3310 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 3310 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 3310 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 3310 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 3310 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2 ) THEN
-	      res(i,j,k,l) = bad_res
-	   ELSEIF ( com1(i1,j1,k1,l1) .EQ. 0.0
-     .	   .AND.    com2(i2,j2,k2,l2) .EQ. 0.0 ) THEN
-	      res(i,j,k,l) = bad_res	! indeterminant
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .	   .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
+	   ELSEIF ( com1(i1,j1,k1,l1,m1,n1) .EQ. 0.0
+     .	   .AND.    com2(i2,j2,k2,l2,m2,n2) .EQ. 0.0 ) THEN
+	      res(i,j,k,l,m,n) = bad_res	! indeterminant
 	   ELSE
-	      res(i,j,k,l) = ATAN2( com1(i1,j1,k1,l1),com2(i2,j2,k2,l2) )
+	      res(i,j,k,l,m,n) = ATAN2( com1(i1,j1,k1,l1,m1,n1),com2(i2,j2,k2,l2,m2,n2) )
 	   ENDIF
 
  3310	CONTINUE
 	RETURN
 
 * "ASIN"
- 3400	DO 3410 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 3410 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 3410 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 3410 i = mr_lo_s1(mres), mr_hi_s1(mres)
+ 3400	DO 3410 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO 3410 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO 3410 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 3410 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 3410 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 3410 i = mr_lo_s1(mres), mr_hi_s1(mres)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1
-     .     .OR. com1(i,j,k,l) .LT. -1.
-     .     .OR. com1(i,j,k,l) .GT. +1. ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i,j,k,l,m,n) .EQ. bad1
+     .     .OR. com1(i,j,k,l,m,n) .LT. -1.
+     .     .OR. com1(i,j,k,l,m,n) .GT. +1. ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = ASIN( com1(i,j,k,l) )
+	      res(i,j,k,l,m,n) = ASIN( com1(i,j,k,l,m,n) )
 	   ENDIF
  3410	CONTINUE
 	RETURN
 
 * "ACOS"
- 3500	DO 3510 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 3510 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 3510 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 3510 i = mr_lo_s1(mres), mr_hi_s1(mres)
+ 3500	DO 3510 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO 3510 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO 3510 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 3510 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 3510 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 3510 i = mr_lo_s1(mres), mr_hi_s1(mres)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1
-     .     .OR. com1(i,j,k,l) .LT. -1.
-     .     .OR. com1(i,j,k,l) .GT. +1. ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i,j,k,l,m,n) .EQ. bad1
+     .     .OR. com1(i,j,k,l,m,n) .LT. -1.
+     .     .OR. com1(i,j,k,l,m,n) .GT. +1. ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      res(i,j,k,l) = ACOS( com1(i,j,k,l) )
+	      res(i,j,k,l,m,n) = ACOS( com1(i,j,k,l,m,n) )
 	   ENDIF
  3510	CONTINUE
 	RETURN
@@ -983,21 +1194,23 @@
 * "RANDU" - random uniform
 * use the first value as the seed
  3600	first = .TRUE.
-	DO 3610 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 3610 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 3610 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 3610 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	DO 3610 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO 3610 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO 3610 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 3610 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 3610 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 3610 i = mr_lo_s1(mres), mr_hi_s1(mres)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSEIF ( first ) THEN
 * ... note: floating point representation is passed as seed integer
-              R_IN = REAL(com1(i,j,k,l))  ! for possibly double-prec. arg
-	      res(i,j,k,l) = RANDU( R_IN )
+              R_IN = REAL(com1(i,j,k,l,m,n))  ! for possibly double-prec. arg
+	      res(i,j,k,l,m,n) = RANDU( R_IN )
 	      first = .FALSE.
 	   ELSE
               R_IN = 0.
-	      res(i,j,k,l) = RANDU(R_IN)			!kob 12/96
+	      res(i,j,k,l,m,n) = RANDU(R_IN)			!kob 12/96
 	   ENDIF
  3610	CONTINUE
 	RETURN
@@ -1005,21 +1218,23 @@
 * "RANDN" - random normal
 * use the first value as the seed
  3700	first = .TRUE.
-	DO 3710 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 3710 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 3710 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 3710 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	DO 3710 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO 3710 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO 3710 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 3710 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 3710 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 3710 i = mr_lo_s1(mres), mr_hi_s1(mres)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
-	      res(i,j,k,l) = bad_res
+	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSEIF ( first ) THEN
 * ... note: floating point representation is passed as seed integer
-              R_IN = REAL(com1(i,j,k,l))  ! for possibly double-prec. arg
-	      res(i,j,k,l) = RANDN( R_IN )
+              R_IN = REAL(com1(i,j,k,l,m,n))  ! for possibly double-prec. arg
+	      res(i,j,k,l,m,n) = RANDN( R_IN )
 	      first = .FALSE.
 	   ELSE
               R_IN = 0.
-	      res(i,j,k,l) = RANDN(R_IN)			!kob 12/96
+	      res(i,j,k,l,m,n) = RANDN(R_IN)			!kob 12/96
 	   ENDIF
  3710	CONTINUE
 	RETURN
@@ -1027,44 +1242,58 @@
 * "RHO" - UNESCO equation of state:
 * rho = rho(salinity, temperature, pressure)
 * three components - each may be a different XYZT shape
- 3800	l1 = sl1
-	l2 = sl2
-	l3 = sl3
-	DO 3810 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	l3 = l3 + dl3
-	k1 = sk1
-	k2 = sk2
-	k3 = sk3
-	 DO 3810 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 k3 = k3 + dk3
-	 j1 = sj1
-	 j2 = sj2
-	 j3 = sj3
-	  DO 3810 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  j3 = j3 + dj3
-	  i1 = si1
-	  i2 = si2
-	  i3 = si3
-	   DO 3810 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
-	   i3 = i3 + di3
+ 3800	n1 = sn1
+	n2 = sn2
+	n3 = sn3
+	DO 3810 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	n1 = n1 + dn1
+	n2 = n2 + dn2
+	n3 = n3 + dn3
+	m1 = sm1
+	m2 = sm2
+	m3 = sm3
+	 DO 3810 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 m1 = m1 + dm1
+	 m2 = m2 + dm2
+	 m3 = m3 + dm3
+	  l1 = sl1
+	  l2 = sl2
+	  l3 = sl3
+	  DO 3810 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  l3 = l3 + dl3
+	  k1 = sk1
+	  k2 = sk2
+	  k3 = sk3
+	   DO 3810 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   k3 = k3 + dk3
+	   j1 = sj1
+	   j2 = sj2
+	   j3 = sj3
+	    DO 3810 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    j3 = j3 + dj3
+	    i1 = si1
+	    i2 = si2
+	    i3 = si3
+	     DO 3810 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
+	     i3 = i3 + di3
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .     .OR. com2(i2,j2,k2,l2) .EQ. bad2
-     .     .OR. com3(i3,j3,k3,l3) .EQ. bad3
-     .     .OR. com1(i1,j1,k1,l1) .LT. 0.0   ) THEN  ! salt>0 8/92
-              res(i,j,k,l) = bad_res
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .     .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2
+     .     .OR. com3(i3,j3,k3,l3,m3,n3) .EQ. bad3
+     .     .OR. com1(i1,j1,k1,l1,m1,n1) .LT. 0.0   ) THEN  ! salt>0 8/92
+              res(i,j,k,l,m,n) = bad_res
            ELSE
-              res(i,j,k,l) = RHO_UNESCO( com1(i1,j1,k1,l1),
-     .                                   com2(i2,j2,k2,l2),
-     .                                   com3(i3,j3,k3,l3) )
+              res(i,j,k,l,m,n) = RHO_UNESCO( com1(i1,j1,k1,l1,m1,n1),
+     .                                   com2(i2,j2,k2,l2,m2,n2),
+     .                                   com3(i3,j3,k3,l3,m3,n3) )
            ENDIF
 
  3810	CONTINUE
@@ -1074,28 +1303,46 @@
 *           and FOFONOFF,N,M,1977,DEEP-SEA RES
 * theta = theta(salinity, temperature, pressure,reference_pressure)
 * three components - each may be a different XYZT shape
- 3900	l1 = sl1
-	l2 = sl2
-	l3 = sl3
-	l4 = sl4
-	DO 3910 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	l3 = l3 + dl3
-	l4 = l4 + dl4
-	k1 = sk1
-	k2 = sk2
-	k3 = sk3
-	k4 = sk4
-	 DO 3910 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 k3 = k3 + dk3
-	 k4 = k4 + dk4
-	 j1 = sj1
-	 j2 = sj2
-	 j3 = sj3
-	 j4 = sj4
+ 3900	n1 = sn1
+	n2 = sn2
+	n3 = sn3
+	n4 = sn4
+	DO 3910 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	n1 = n1 + dn1
+	n2 = n2 + dn2
+	n3 = n3 + dn3
+	n4 = n4 + dn4
+	m1 = sm1
+	m2 = sm2
+	m3 = sm3
+	m4 = sm4
+	 DO 3910 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 m1 = m1 + dm1
+	 m2 = m2 + dm2
+	 m3 = m3 + dm3
+	 m4 = m4 + dm4
+	  l1 = sl1
+	  l2 = sl2
+	  l3 = sl3
+	  l4 = sl4
+	  DO 3910 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  l3 = l3 + dl3
+	  l4 = l4 + dl4
+	  k1 = sk1
+	  k2 = sk2
+	  k3 = sk3
+	  k4 = sk4
+	   DO 3910 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   k3 = k3 + dk3
+	   k4 = k4 + dk4
+	   j1 = sj1
+	   j2 = sj2
+	   j3 = sj3
+	   j4 = sj4
 	  DO 3910 j = mr_lo_s2(mres), mr_hi_s2(mres)
 	  j1 = j1 + dj1
 	  j2 = j2 + dj2
@@ -1111,16 +1358,16 @@
 	   i3 = i3 + di3
 	   i4 = i4 + di4
 
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .     .OR. com2(i2,j2,k2,l2) .EQ. bad2
-     .     .OR. com3(i3,j3,k3,l3) .EQ. bad3
-     .     .OR. com4(i4,j4,k4,l4) .EQ. bad4 ) THEN
-              res(i,j,k,l) = bad_res
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .     .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2
+     .     .OR. com3(i3,j3,k3,l3,m3,n3) .EQ. bad3
+     .     .OR. com4(i4,j4,k4,l4,m4,n4) .EQ. bad4 ) THEN
+              res(i,j,k,l,m,n) = bad_res
            ELSE
-              res(i,j,k,l) = THETA_FOFF( com1(i1,j1,k1,l1),
-     .                                   com2(i2,j2,k2,l2),
-     .                                   com3(i3,j3,k3,l3),
-     .                                   com4(i4,j4,k4,l4) )
+              res(i,j,k,l,m,n) = THETA_FOFF( com1(i1,j1,k1,l1,m1,n1),
+     .                                   com2(i2,j2,k2,l2,m2,n2),
+     .                                   com3(i3,j3,k3,l3,m3,n3),
+     .                                   com4(i4,j4,k4,l4,m4,n4) )
            ENDIF
 
  3910	CONTINUE
@@ -1130,49 +1377,63 @@
 * three components - each may be a different XYZT shape
 * *** note: returns days since 1-jan-1900, on the STANDARD CALENDAR
 
- 4000	l1 = sl1
-	l2 = sl2
-	l3 = sl3
-	DO 4010 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	l3 = l3 + dl3
-	k1 = sk1
-	k2 = sk2
-	k3 = sk3
-	 DO 4010 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 k3 = k3 + dk3
-	 j1 = sj1
-	 j2 = sj2
-	 j3 = sj3
-	  DO 4010 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  j3 = j3 + dj3
-	  i1 = si1
-	  i2 = si2
-	  i3 = si3
-	   DO 4010 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
-	   i3 = i3 + di3
+ 4000	n1 = sn1
+	n2 = sn2
+	n3 = sn3
+	DO 4010 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	n1 = n1 + dn1
+	n2 = n2 + dn2
+	n3 = n3 + dn3
+	m1 = sm1
+	m2 = sm2
+	m3 = sm3
+	 DO 4010 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 m1 = m1 + dm1
+	 m2 = m2 + dm2
+	 m3 = m3 + dm3
+	  l1 = sl1
+	  l2 = sl2
+	  l3 = sl3
+	  DO 4010 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  l3 = l3 + dl3
+	  k1 = sk1
+	  k2 = sk2
+	  k3 = sk3
+	   DO 4010 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   k3 = k3 + dk3
+	   j1 = sj1
+	   j2 = sj2
+	   j3 = sj3
+	    DO 4010 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    j3 = j3 + dj3
+	    i1 = si1
+	    i2 = si2
+	    i3 = si3
+	     DO 4010 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
+	     i3 = i3 + di3
 
 * 4/98, 2nd references to com2, com3 incorrectly used i1,etc for array references
 *       fixed that up - kob
-	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-     .     .OR. com2(i2,j2,k2,l2) .EQ. bad2
-     .     .OR. com3(i3,j3,k3,l3) .EQ. bad3
-     .     .OR. com2(i2,j2,k2,l2) .GT. 12.0
-     .     .OR. com2(i2,j2,k2,l2) .LT. 1.0
-     .     .OR. com3(i3,j3,k3,l3) .LT. 0.0    ) THEN
-              res(i,j,k,l) = bad_res
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
+     .     .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2
+     .     .OR. com3(i3,j3,k3,l3,m3,n3) .EQ. bad3
+     .     .OR. com2(i2,j2,k2,l2,m2,n2) .GT. 12.0
+     .     .OR. com2(i2,j2,k2,l2,m2,n2) .LT. 1.0
+     .     .OR. com3(i3,j3,k3,l3,m3,n3) .LT. 0.0    ) THEN
+              res(i,j,k,l,m,n) = bad_res
            ELSE
-              res(i,j,k,l) = DAYS_FROM_DAY0( pdays_by_1900,
-     .					     INT(com1(i1,j1,k1,l1)),
-     .                                       INT(com2(i2,j2,k2,l2)),
-     .                                       INT(com3(i3,j3,k3,l3)),
+              res(i,j,k,l,m,n) = DAYS_FROM_DAY0( pdays_by_1900,
+     .					     INT(com1(i1,j1,k1,l1,m1,n1)),
+     .                                       INT(com2(i2,j2,k2,l2,m2,n2)),
+     .                                       INT(com3(i3,j3,k3,l3,m3,n3)),
      .                                       dummy)
            ENDIF
 
@@ -1189,20 +1450,25 @@
 * iseed = integer > 0 initialize using that integer: results will be repeatable
 
  4100	CONTINUE
+	n2 = sn2
+	m2 = sm2
 	l2 = sl2
 	k2 = sk2
 	j2 = sj2
 	i2 = si2
-        inseed = INT(com2(i2,j2,k2,l2))
+        inseed = INT(com2(i2,j2,k2,l2,m2,n2))
         CALL INIT_RANDOM_SEED(inseed)
-	DO 4110 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 4110 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 4110 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 4110 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
-	      res(i,j,k,l) = bad_res
+	DO 4110 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO 4110 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO 4110 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 4110 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 4110 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 4110 i = mr_lo_s1(mres), mr_hi_s1(mres)
+
+	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
-	      CALL RANDOM_NUMBER(res(i,j,k,l))
+	      CALL RANDOM_NUMBER(res(i,j,k,l,m,n))
 	   ENDIF
  4110	CONTINUE
 	RETURN
@@ -1210,23 +1476,28 @@
 * "RANDN2" - random normal using gfortran RANDOM_SEED and RANDOM_SEED functions.
 * seed set as for RANDU2
  4200	CONTINUE
+	n2 = sn2
+	m2 = sm2
 	l2 = sl2
 	k2 = sk2
 	j2 = sj2
 	i2 = si2
 	first = .TRUE.
-        inseed = INT(com2(i2,j2,k2,l2))
-	DO 4210 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 4210 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 4210 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 4210 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
-	      res(i,j,k,l) = bad_res
+        inseed = INT(com2(i2,j2,k2,l2,m2,n2))
+	DO 4210 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO 4210 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO 4210 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 4210 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 4210 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 4210 i = mr_lo_s1(mres), mr_hi_s1(mres)
+
+	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
+	      res(i,j,k,l,m,n) = bad_res
 	   ELSEIF ( first ) THEN
-	      res(i,j,k,l) = RANDN2( inseed )
+	      res(i,j,k,l,m,n) = RANDN2( inseed )
 	      first = .FALSE.
 	   ELSE
-	      res(i,j,k,l) = RANDN2(0)
+	      res(i,j,k,l,m,n) = RANDN2(0)
 	   ENDIF
 
  4210	CONTINUE
@@ -1241,78 +1512,104 @@
  4400	CONTINUE
 * "THEN" - comes from IF (condition) THEN (choice)   ... no "ELSE" given
 * component 1 is the condition.  component 2 is the choice
- 4500	l1 = sl1
-	l2 = sl2
-	DO 4510 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 4510 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 4510 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 4510 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
-	   IF ( com1(i1,j1,k1,l1) .NE. bad1
-     .	  .AND. com1(i1,j1,k1,l1) .NE. 0.0
-     .	  .AND. com2(i2,j2,k2,l2) .NE. bad2	 ) THEN
-	      res(i,j,k,l) = com2(i2,j2,k2,l2)
+ 4500	n1 = sn1
+	n2 = sn2
+	DO 4510 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 4510 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 4510 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 4510 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 4510 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 4510 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
+
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .NE. bad1
+     .	  .AND. com1(i1,j1,k1,l1,m1,n1) .NE. 0.0
+     .	  .AND. com2(i2,j2,k2,l2,m2,n2) .NE. bad2	 ) THEN
+	      res(i,j,k,l,m,n) = com2(i2,j2,k2,l2,m2,n2)
 	   ELSE
-	      res(i,j,k,l) = bad_res
+	      res(i,j,k,l,m,n) = bad_res
 	   ENDIF
 
  4510	CONTINUE
 	RETURN
 * "ELSE" - comes from IF (condition) THEN (choice1) ELSE (choice2)
 * component 1 is the condition.  components 2 and 3 are the choices
- 4600	l1 = sl1
-	l2 = sl2
-	l3 = sl3
-	DO 4610 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	l3 = l3 + dl3
-	k1 = sk1
-	k2 = sk2
-	k3 = sk3
-	 DO 4610 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 k3 = k3 + dk3
-	 j1 = sj1
-	 j2 = sj2
-	 j3 = sj3
-	  DO 4610 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  j3 = j3 + dj3
-	  i1 = si1
-	  i2 = si2
-	  i3 = si3
-	   DO 4610 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
-	   i3 = i3 + di3
-	   IF ( com1(i1,j1,k1,l1) .NE. bad1
-     .	  .AND. com1(i1,j1,k1,l1) .NE. 0.0 ) THEN
-	      IF ( com2(i2,j2,k2,l2) .NE. bad2 ) THEN
-	         res(i,j,k,l) = com2(i2,j2,k2,l2)
+ 4600	n1 = sn1
+	n2 = sn2
+	n3 = sn3
+	DO 4610 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	n1 = n1 + dn1
+	n2 = n2 + dn2
+	n3 = n3 + dn3
+	m1 = sm1
+	m2 = sm2
+	m3 = sm3
+	 DO 4610 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 m1 = m1 + dm1
+	 m2 = m2 + dm2
+	 m3 = m3 + dm3
+	  l1 = sl1
+	  l2 = sl2
+	  l3 = sl3
+	  DO 4610 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  l3 = l3 + dl3
+	  k1 = sk1
+	  k2 = sk2
+	  k3 = sk3
+	   DO 4610 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   k3 = k3 + dk3
+	   j1 = sj1
+	   j2 = sj2
+	   j3 = sj3
+	    DO 4610 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    j3 = j3 + dj3
+	    i1 = si1
+	    i2 = si2
+	    i3 = si3
+	     DO 4610 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
+	     i3 = i3 + di3
+
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .NE. bad1
+     .	  .AND. com1(i1,j1,k1,l1,m1,n1) .NE. 0.0 ) THEN
+	      IF ( com2(i2,j2,k2,l2,m2,n2) .NE. bad2 ) THEN
+	         res(i,j,k,l,m,n) = com2(i2,j2,k2,l2,m2,n2)
 	      ELSE
-	         res(i,j,k,l) = bad_res
+	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
 	   ELSE
-	      IF ( com3(i3,j3,k3,l3) .NE. bad3 ) THEN
-	         res(i,j,k,l) = com3(i3,j3,k3,l3)
+	      IF ( com3(i3,j3,k3,l3,m3,n3) .NE. bad3 ) THEN
+	         res(i,j,k,l,m,n) = com3(i3,j3,k3,l3,m3,n3)
 	      ELSE
-	         res(i,j,k,l) = bad_res
+	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
 	   ENDIF
  4610	CONTINUE
@@ -1320,76 +1617,102 @@
 
 * "THEN" - comes from IFV (condition) THEN (choice)   ... no "ELSE" given
 * component 1 is the condition.  component 2 is the choice
- 4700	l1 = sl1
-	l2 = sl2
-	DO 4710 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	k1 = sk1
-	k2 = sk2
-	 DO 4710 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 j1 = sj1
-	 j2 = sj2
-	  DO 4710 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  i1 = si1
-	  i2 = si2
-	   DO 4710 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
-	   IF ( com1(i1,j1,k1,l1) .NE. bad1
-     .	  .AND. com2(i2,j2,k2,l2) .NE. bad2	 ) THEN
-	      res(i,j,k,l) = com2(i2,j2,k2,l2)
+ 4700	n1 = sn1
+	n2 = sn2
+	DO 4710 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 n1 = n1 + dn1
+	 n2 = n2 + dn2
+	 m1 = sm1
+	 m2 = sm2
+	  DO 4710 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  m1 = m1 + dm1
+	  m2 = m2 + dm2
+	  l1 = sl1
+	  l2 = sl2
+	  DO 4710 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  k1 = sk1
+	  k2 = sk2
+	   DO 4710 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   j1 = sj1
+	   j2 = sj2
+	    DO 4710 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    i1 = si1
+	    i2 = si2
+	     DO 4710 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
+
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .NE. bad1
+     .	  .AND. com2(i2,j2,k2,l2,m2,n2) .NE. bad2	 ) THEN
+	      res(i,j,k,l,m,n) = com2(i2,j2,k2,l2,m2,n2)
 	   ELSE
-	      res(i,j,k,l) = bad_res
+	      res(i,j,k,l,m,n) = bad_res
 	   ENDIF
 
  4710	CONTINUE
 	RETURN
 * "ELSE" - comes from IFV (condition) THEN (choice1) ELSE (choice2)
 * component 1 is the condition.  components 2 and 3 are the choices
- 4800	l1 = sl1
-	l2 = sl2
-	l3 = sl3
-	DO 4810 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	l1 = l1 + dl1
-	l2 = l2 + dl2
-	l3 = l3 + dl3
-	k1 = sk1
-	k2 = sk2
-	k3 = sk3
-	 DO 4810 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	 k1 = k1 + dk1
-	 k2 = k2 + dk2
-	 k3 = k3 + dk3
-	 j1 = sj1
-	 j2 = sj2
-	 j3 = sj3
-	  DO 4810 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  j1 = j1 + dj1
-	  j2 = j2 + dj2
-	  j3 = j3 + dj3
-	  i1 = si1
-	  i2 = si2
-	  i3 = si3
-	   DO 4810 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	   i1 = i1 + di1
-	   i2 = i2 + di2
-	   i3 = i3 + di3
-	   IF ( com1(i1,j1,k1,l1) .NE. bad1 ) THEN
-	      IF ( com2(i2,j2,k2,l2) .NE. bad2 ) THEN
-	         res(i,j,k,l) = com2(i2,j2,k2,l2)
+ 4800	n1 = sn1
+	n2 = sn2
+	n3 = sn3
+	DO 4810 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	n1 = n1 + dn1
+	n2 = n2 + dn2
+	n3 = n3 + dn3
+	m1 = sm1
+	m2 = sm2
+	m3 = sm3
+	 DO 4810 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 m1 = m1 + dm1
+	 m2 = m2 + dm2
+	 m3 = m3 + dm3
+	  l1 = sl1
+	  l2 = sl2
+	  l3 = sl3
+	  DO 4810 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  l1 = l1 + dl1
+	  l2 = l2 + dl2
+	  l3 = l3 + dl3
+	  k1 = sk1
+	  k2 = sk2
+	  k3 = sk3
+	   DO 4810 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   k1 = k1 + dk1
+	   k2 = k2 + dk2
+	   k3 = k3 + dk3
+	   j1 = sj1
+	   j2 = sj2
+	   j3 = sj3
+	    DO 4810 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    j1 = j1 + dj1
+	    j2 = j2 + dj2
+	    j3 = j3 + dj3
+	    i1 = si1
+	    i2 = si2
+	    i3 = si3
+	     DO 4810 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     i1 = i1 + di1
+	     i2 = i2 + di2
+	     i3 = i3 + di3
+
+	   IF ( com1(i1,j1,k1,l1,m1,n1) .NE. bad1 ) THEN
+	      IF ( com2(i2,j2,k2,l2,m2,n2) .NE. bad2 ) THEN
+	         res(i,j,k,l,m,n) = com2(i2,j2,k2,l2,m2,n2)
 	      ELSE
-	         res(i,j,k,l) = bad_res
+	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
 	   ELSE
-	      IF ( com3(i3,j3,k3,l3) .NE. bad3 ) THEN
-	         res(i,j,k,l) = com3(i3,j3,k3,l3)
+	      IF ( com3(i3,j3,k3,l3,m3,n3) .NE. bad3 ) THEN
+	         res(i,j,k,l,m,n) = com3(i3,j3,k3,l3,m3,n3)
 	      ELSE
-	         res(i,j,k,l) = bad_res
+	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
 	   ENDIF
  4810	CONTINUE

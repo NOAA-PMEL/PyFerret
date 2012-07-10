@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -41,7 +41,7 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.00 -  3/31/86
-* revision 0.1 --> 3/18/87+ - added several gerr's
+* revision 0.1 --> 3/18/87+ - added several gerrs
 * revision 1.0  -  5/14/87 - added last error and error codes
 * revision 1.1  -  9/25/87 - changed relative coords error message
 * revision 1.2  -  2/15/88 - data_set_not_set --> grid_definition 
@@ -64,7 +64,9 @@
 *                    request exceeds memory setting
 * V6.7 *acm*  1/11 - Fix ticket 1768: undefined messages for no-such-attribute
 *                    and error in attribute caused nulls to be written to std out.
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
+        IMPLICIT NONE
 	include 'errmsg.parm'	! parameter definitions
 	include 'xerrmsg_text.cmn'	! common declaration
 
@@ -280,6 +282,11 @@
      .		/ 'error specifying attribute'/
 	DATA report_err_code( ferr_not_attribute - greport )
      .		/ 'not_attribute' /
+
+	DATA err_text( ferr_aggregate_error - greport )
+     .		/ 'error defining aggregate dataset'/
+	DATA report_err_code( ferr_not_attribute - greport )
+     .		/ 'aggregate_error' /
 
 	DATA err_text( ferr_nomessge - greport )
      .		/ ' '/

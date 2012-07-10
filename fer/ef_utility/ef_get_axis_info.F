@@ -1,11 +1,3 @@
-c*
-c* ef_get_axis_info.F
-c*
-c* Jonathan Callahan
-c* Sep 28th 1998
-c*
-c*
-   
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -43,49 +35,52 @@ c*
 c* This returns the name, title and units associated with
 c* each axis of an argument.
 c*
+* 4D subroutine version which calls the 6D subroutine version and
+* checks the E and F dimensions are unused
+*
 
       SUBROUTINE EF_GET_AXIS_INFO(id, iarg, name, units,
-     .  backward, modulo, regular )
+     .                            backward, modulo, regular)
 
-      INCLUDE 'ferret.parm'
-      INCLUDE 'xcontext.cmn'
-      INCLUDE 'EF_Util.parm'
+      IMPLICIT NONE
       INCLUDE 'tmap_dims.parm'
-      INCLUDE 'xtm_grid.cmn_text'
 
+* argument declarations - 4D
       INTEGER id, iarg
-      INTEGER grid, axis, idim
-
       CHARACTER*(*) name(4), units(4)
       LOGICAL backward(4), modulo(4), regular(4)
-      LOGICAL BKWD_AXIS
 
-      INTEGER cx_list(EF_MAX_ARGS)
+* local variables
+      CHARACTER*32  name_6d(nferdims), units_6d(nferdims)
+      LOGICAL       backward_6d(nferdims), modulo_6d(nferdims),
+     .              regular_6d(nferdims)
+      INTEGER       ndx
+      CHARACTER*128 buff
 
-c* The context list was cached by Ferret and must be retrieved
-c* to be accessible to the external function.
+* call the 6D version
+      CALL EF_GET_AXIS_INFO_6D(id, iarg, name_6d, units_6d,
+     .                         backward_6d, modulo_6d, regular_6d)
 
-      CALL ef_get_cx_list(cx_list)
+* check E and F are unused
+      DO 100 ndx = 5, nferdims
+         IF ( (name_6d(ndx) .NE. 'unknown') .AND.
+     .        (name_6d(ndx) .NE. 'normal') ) THEN
+            WRITE (buff,50) ndx
+ 50         FORMAT ('Dimension ', I1,
+     .              ' is used; use EF_GET_AXIS_INFO_6D instead')
+            CALL EF_BAIL_OUT(id, buff)
+            STOP 'EF_BAIL_OUT returned in EF_GET_AXIS_INFO'
+         ENDIF
+ 100  CONTINUE
 
-      grid = cx_grid(cx_list(iarg))
-
-      do 100 idim=1, 4
-        axis = grid_line(idim, grid) 
-        IF (axis .EQ. munknown) THEN
-          name(idim) = 'unknown'
-          units(idim) = 'none'
-        ELSE IF (axis .EQ. mnormal) THEN
-          name(idim) = 'normal'
-          units(idim) = 'none'
-        ELSE
-          name(idim)  = line_name(axis)
-          units(idim) = line_units(axis)
-          backward(idim) = BKWD_AXIS(idim, grid)
-          modulo(idim)   = line_modulo(axis)
-          regular(idim)  = line_regular(axis)
-        ENDIF
-100   CONTINUE
-
+* copy to the 4D arrays
+      DO 200 ndx = 1, 4
+         name(ndx)     = name_6d(ndx)
+         units(ndx)    = units_6d(ndx)
+         backward(ndx) = backward_6d(ndx)
+         modulo(ndx)   = modulo_6d(ndx)
+         regular(ndx)  = regular_6d(ndx)
+ 200  CONTINUE
 
       RETURN 
       END

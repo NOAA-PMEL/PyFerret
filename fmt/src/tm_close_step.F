@@ -44,23 +44,17 @@
 * revision 0.00 - 11/20/85
 * revision 0.10 - 02/04/85 - added freeing of logical unit after close
 * revision 0.20 - 02/15/89 - renamed TM_CLOSE_STEP, renamed sf_num to f_num
-*
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+
 * arguments:
 *	f_num	- number (in /XSTEP_FILES/) of file to close
 *	status	- error status on completion
 
-#ifdef unix
 	include 'tmap_errors.parm'
 #include "tmap_dset.parm"
 	include 'tmap_dims.parm'
 	include 'xstep_files.cmn_text'
 	external xstep_files_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'
-#endif
 
 	INTEGER		f_num,status,lunit
 

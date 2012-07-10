@@ -54,16 +54,12 @@
 *                - also added @RSUM (like @IIN)
 *           ==>  commandeered "hi" to become "lohi" for @WEQ
 *    note: those table entries using "lohi" are less thoroughly tested
-	
-#ifdef unix
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+
+	include 'tmap_dims.parm'	
 	include 'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER	idim, cx, uvar

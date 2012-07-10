@@ -72,7 +72,10 @@
 *                  computing world coordinates
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
-
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
+*                  dimension is now an arg to SECS_TO_TSTEP. Note the input 
+*                  argument "axis" in this routine is a dimension, 1, 2, ... 
 
 * calling argument declarations:
 	INTEGER	src_cx, dst_cx, axis, work, ok_min, ok_max, status
@@ -91,24 +94,19 @@
      .		src_lo_ww, src_hi_ww, dst_lo_ww, dst_hi_ww,
      .          tmp_lo_ww, tmp_hi_ww, s2d_lo_ww, s2d_hi_ww
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * initialize
 	status = ferr_ok
 	src_grid = cx_grid( src_cx )
 	dst_grid = cx_grid( dst_cx )
 * ... regrid calendar time axes? (src_grid was checked in rqst_regrid)
-	calendar = axis.EQ.t_dim .AND. GEOG_LABEL(axis,dst_grid)
+	calendar = (axis.EQ.t_dim .OR. axis.EQ.f_dim) .AND. GEOG_LABEL(axis,dst_grid)
 	modulo = ITSA_MODULO_REGRID(dst_cx,axis)
 
 * what is the regridding transformation for this axis ?
@@ -203,11 +201,8 @@
               s2d_hi_ww = src_hi_ww
 	   ENDIF
 
-	   tmp_lo_ww = SECS_TO_TSTEP(dst_grid, s2d_lo_ww)
-	   tmp_hi_ww = SECS_TO_TSTEP(dst_grid, s2d_hi_ww)
-
-c	   tmp_lo_ww = SECS_TO_TSTEP(dst_grid, src_lo_ww)
-c	   tmp_hi_ww = SECS_TO_TSTEP(dst_grid, src_hi_ww)
+	   tmp_lo_ww = SECS_TO_TSTEP(dst_grid, axis, s2d_lo_ww)
+	   tmp_hi_ww = SECS_TO_TSTEP(dst_grid, axis, s2d_hi_ww)
 
 	   dst_lo_ss = ISUBSCRIPT( tmp_lo_ww,dst_grid,axis,round_up )
 	   dst_hi_ss = ISUBSCRIPT( tmp_hi_ww,dst_grid,axis,round_dn )

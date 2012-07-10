@@ -33,6 +33,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
 *
 */
+/*  V674 2/12 *acm* 6D Ferret: use NFERDIMS rather than 4 for dimension indexing */
 
 
 
@@ -58,6 +59,7 @@
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build */
 #include <stdlib.h> 
 #include <stdio.h>
+#include "ferretmacros.h"  /* with NFERDIMS */
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 void cd_rd_r8_as_r4(cdfid,
@@ -73,8 +75,8 @@ void cd_rd_r8_as_r4_(cdfid,
 
 int *cdfid;
 int *varid;
-int start[4];
-int count[4];
+int start[NFERDIMS];
+int count[NFERDIMS];
 int *ndim;
 float *values;
 int *cdfstat;/*returns one of: ncnoerr, netCDF status, or -1 (malloc failed)*/ 
@@ -82,7 +84,7 @@ int *cdfstat;/*returns one of: ncnoerr, netCDF status, or -1 (malloc failed)*/
 {
 
   int  idim, i, npts, rcode;
-  long cstart[4], ccount[4];
+  long cstart[NFERDIMS], ccount[NFERDIMS];
   double *dvals;
 
 /* change the start/count values to C ordering and the start to zero offset */

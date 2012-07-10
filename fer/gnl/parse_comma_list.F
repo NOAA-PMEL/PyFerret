@@ -1,3 +1,5 @@
+
+
 	SUBROUTINE PARSE_COMMA_LIST ( buffer, istart, iend, max_items, 
      .				      num_it, it_start, it_end, status )
 
@@ -57,8 +59,9 @@
 *		  - allow for nested parens and brackets
 * V533: *sh* 7/01 - allow both single and double quoted strings
 * 1/03 *kob* g77 port -  Need to use risc_buff for arbitrary concatenations
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'	! for ttout_lun

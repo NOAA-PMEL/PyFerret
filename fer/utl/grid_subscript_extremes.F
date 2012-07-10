@@ -45,17 +45,12 @@
 * revision 0.0 - 10/16/86
 * revision 0.1 - 3/23/87 - added new TMAP library: time axes, file var. names
 * revision 0.2 - 2/6/89  - added modulo axes of arbitrary length
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include	'ferret.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations
 	INTEGER	grid, idim

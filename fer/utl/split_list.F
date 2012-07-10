@@ -48,7 +48,9 @@
 * V400:	  6/20/95 - bug fix: LIST/FILE output sent to "default_list_lun"
 *			should go to disk file, not to screen
 * V6.6  *kms* 5/10 - monitor redirect_*_flags for stdout/stderr redirection.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include	'tmap_dims.parm'
 	include 'ferret.parm'
         include 'gui.parm'
 	include 'xprog_state.cmn'

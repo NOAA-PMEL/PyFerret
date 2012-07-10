@@ -45,25 +45,21 @@
 * revision 0.0 - 6/30/88
 * revision 0.1 - 8/26/88 - moved segment name to XPLOT_STATE
 *			   set vp_segn
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations:
 *	...
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'xprog_state.cmn'		! with mode_segment
 	include	'xplot_state.cmn'
 	include	'gkscm1_inc.decl'	! with wsid
 	include	'GKSCM1.INC'	! with wsid
 	include 'pltcom_dat.decl'	! with gksopn
 	include 'PLTCOM.DAT'	! with gksopn
-#else
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'		! with mode_segment
-	INCLUDE	'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE	'TMAP_PPLV11INC:GKSCM1_INC.DECL/LIST'	! with wsid
-	INCLUDE	'PPLV11INC:GKSCM1.INC/LIST'	! with wsid
-	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL/LIST'	! with gksopn
-	INCLUDE 'PPLV11INC:PLTCOM.DAT/LIST'	! with gksopn
-#endif
 
 	IF ( .NOT. mode_segment			! not using segments
      .	.OR. .NOT. gksopn	) RETURN	! not a VAXstation

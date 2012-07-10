@@ -44,14 +44,12 @@
 *
 * revision 0.0 - ???
 * revision 0.1 - 7/26/88 - documentation re-write
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	context
@@ -59,7 +57,7 @@
 * internal variable declarations:
 	INTEGER	idim
 
-	DO 100 idim = 1,4
+	DO 100 idim = 1,nferdims
  100	cx_given( idim, context ) = .FALSE.
 
 	RETURN

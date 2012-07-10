@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -43,19 +43,14 @@
 *
 * revision 0.0 - 3/18/87
 * revision 0.1 - 8/29/87 - added vms_str_success
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
-	include 'tmap_dims.parm'
-	include 'xdset_info.cmn_text'
-	external xdset_info_data
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'gfdl_vms.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:GFDL_VMS.PARM'
-#endif
+	include 'xdset_info.cmn_text'
+	external xdset_info_data
 
 * calling argument declarations:
 	INTEGER		dset_num

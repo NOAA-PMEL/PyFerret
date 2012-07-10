@@ -47,8 +47,8 @@
 *	 1/25/90 - based on "GKS_WSTYPE" instead of "TT"
 *	 5/01/91 - unixify *JD*
 * V230: simply return .TRUE. on Unix systems
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
       GKS_WINDOWS = .TRUE.
 !* internal variable declarations:
 !	LOGICAL		there
@@ -58,19 +58,6 @@
 !
 !* if there then GKS is installed
 !	GKS_WINDOWS = there
-#else
-	INCLUDE '($SSDEF)'                              ! LIB_ return status
-
-* internal variable declarations:
-	INTEGER		LIB_SYS_TRNLOG, stat, dlen
-	CHARACTER*24	transl
-
-* translate the logical name used as a flag to see if GKS is on the system
-	stat = LIB_SYS_TRNLOG( 'GKS_WSTYPE', dlen, transl )
-
-* "normal" means the logical exists
-	GKS_WINDOWS = stat .EQ. ss$_normal
-#endif	
 
 	RETURN
 	END

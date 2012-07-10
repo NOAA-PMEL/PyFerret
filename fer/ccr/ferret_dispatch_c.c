@@ -36,32 +36,26 @@
 
 
 
-/*	ferret_dispatch_c - C interface routine to set up structure arguments
-	                    for calling ferret_dispatch.F
-
+/*
+*	ferret_dispatch_c - C interface routine to set up structure arguments
+*	                    for calling ferret_dispatch.F
+*
 * TMAP interactive data analysis program
-
+*
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 */
 
 /*
 * revision history:
-   11/16/94 - updated to use macro declarations from ferret_shared_buffer.h
-
-   05/25/95 - added ifdef check for trailing underscores not needed on HP *kob*
-   *js* 6.99 Set line buffering if in server mode
-  *acm* 1/12 - Ferret 6.8 ifdef double_p for double-precision ferret, see the
-              definition of macro DFTYPE in ferret.h 
+*   11/16/94 - updated to use macro declarations from ferret_shared_buffer.h
+*
+*   05/25/95 - added ifdef check for trailing underscores not needed on HP *kob*
+*   *js* 6.99 Set line buffering if in server mode
+*  *acm* 1/12 - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+*              definition of macro DFTYPE in ferret.h 
 */
 
-/*
-compile this with
-   cc -c -I/home/rascal/oz/Ferret_gui ferret_dispatch_c.c
-   (and use -D_NO_PROTO for non-ANSI compilers)
-*/ 
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 #include <Python.h> /* make sure Python.h is first */
 #include <unistd.h>
 #include <stdio.h>
@@ -106,11 +100,12 @@ void ferret_dispatch_c( DFTYPE *memory, char *init_command, smPtr sBuffer )
 /*ifdef check added 5/95 *kob* */
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
-  ferret_dispatch( memory, init_command, sBuffer->flags, &flag_buff_size,
+  ferret_dispatch
 #else
-  ferret_dispatch_( memory, init_command, sBuffer->flags, &flag_buff_size,
+  ferret_dispatch_
 #endif
-		   sBuffer->text, &TEXTLENGTH_size, &(sBuffer->numStrings) );
+                  ( memory, init_command, sBuffer->flags, &flag_buff_size,
+		    sBuffer->text, &TEXTLENGTH_size, &(sBuffer->numStrings) );
 
   return;
 }
@@ -141,5 +136,4 @@ void set_server() {
 int FORTRAN(is_server)() {
   return ServerFlag;
 }
-
 

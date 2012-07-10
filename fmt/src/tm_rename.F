@@ -42,6 +42,7 @@
 * written for DECstation computer under Ultrix and VMS operating systems
 *
 * rev 0.0 -   5/6/91
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * calling argument declarations:
         INTEGER  status
@@ -51,13 +52,8 @@
 	INTEGER	olen, nlen
         INTEGER TM_LENSTR1
 
-#ifdef unix
         include 'tmap_errors.parm'
-#else
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-#endif
 
-#ifdef unix
         INTEGER slen
         PARAMETER  ( slen = 128 )
         INTEGER oldhol(slen), newhol(slen)  ! c-type Hollerith string buffers
@@ -80,11 +76,6 @@
            status = merr_erreq
         ENDIF
 
-#else
-        STOP 'TM_RENAME for VMS isn't yet written'
-!    ... insert VMS system call here
-
-#endif
 	RETURN
 	END
 

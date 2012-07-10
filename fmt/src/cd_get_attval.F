@@ -63,6 +63,7 @@
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
 * V65  *acm* 2/10- all warnings and notes to std error not std out
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -80,7 +81,6 @@
       CHARACTER*(*) attrib, vname
       REAL val(vlen)
 
-      include 'netcdf.decl'
 #include "netcdf.inc"
       include 'xio.cmn_text'
 

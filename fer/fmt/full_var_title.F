@@ -49,6 +49,9 @@
 * revision 0.2 - 4/11/88 - added units
 * V200:   1/3/89 - mr --> cx
 * V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+
+
 * calling argument declarations:
 	INTEGER	cx, tlen
 
@@ -57,11 +60,7 @@
 	CHARACTER	VAR_UNITS*64
 	INTEGER		TM_LENSTR1, maxlen, slen
 
-#ifdef unix
 	include 'ferret.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * initialize
 	maxlen	= LEN( FULL_VAR_TITLE )

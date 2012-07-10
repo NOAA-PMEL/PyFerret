@@ -1,10 +1,10 @@
-	INTEGER FUNCTION mr_NUM_DIMS ( mr )
+	INTEGER FUNCTION MR_NUM_DIMS ( mr )
 
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -42,14 +42,12 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 8/11/87
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	mr
@@ -58,11 +56,11 @@
 	INTEGER	mr_DIM_LEN, idim, num
 
 	num = 0	
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   IF ( mr_DIM_LEN ( idim, mr ) .GT. 1 ) num = num + 1
  100	CONTINUE
 
-	mr_NUM_DIMS = num
+	MR_NUM_DIMS = num
 
 	RETURN
 	END

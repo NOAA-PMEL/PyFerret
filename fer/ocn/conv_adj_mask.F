@@ -55,17 +55,11 @@
 * V200:  7/27/89 - 4D symmetrical version
 *	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'gfdl.parm'		! parameter definitions
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:GFDL.PARM'		! parameter definitions
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	mt, ms, mcmask

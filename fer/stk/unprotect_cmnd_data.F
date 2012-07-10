@@ -41,14 +41,11 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V230: 7/27/92 - removed code from GET_CMND_DATA
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations
 * ...

@@ -64,6 +64,7 @@
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 2/10- all warnings and notes to std error not std out
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *	dset	 - dataset id number for already opened CDF file
@@ -81,7 +82,6 @@
       REAL	    val, blank_val
 
       include 'xio.parm'
-      include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
 

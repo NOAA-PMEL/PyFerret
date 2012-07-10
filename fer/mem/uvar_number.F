@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -45,18 +45,14 @@
 * revision 0.1 - 8/29/87 - added vms_str_success
 * Ultrix/RISC port - 2/91 - removed VMS runtime library reference
 *			    (STR_CASE_BLIND_COMPARE is in the TMAP library)
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'gfdl_vms.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:GFDL_VMS.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	CHARACTER*(*)	name_code

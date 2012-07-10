@@ -18,13 +18,13 @@
 	CHARACTER*80	d_message
 
 * "VARIABLE RECORD (one record per file variable)
-	CHARACTER*2	d_ordering(4)
+	CHARACTER*2	d_ordering(nferdims)
 	CHARACTER*8	d_var_code, d_grid_name
 	CHARACTER*12	d_precision
 	CHARACTER*24	d_var_units
 	CHARACTER*40	d_var_title, d_var_titl_mod
 	REAL		d_missing_flag, d_bad_flag
-	INTEGER*4	d_grid_start(4),d_grid_end(4), d_aux_set_num,
+	INTEGER*4	d_grid_start(nferdims),d_grid_end(nferdims), d_aux_set_num,
      .			d_var_tstart, d_var_tend, d_var_tdelta,
      .			d_ndataperrec
 

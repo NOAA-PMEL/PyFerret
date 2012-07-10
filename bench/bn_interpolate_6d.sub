@@ -1,0 +1,27 @@
+! bn_interpolate_6d.SUB
+! interpolate in various geometries
+
+! this routine assumes that a 4-D region and an expression are already set
+
+! cubes of data
+LIST v[@xpt]
+LIST v[@ypt]
+LIST v[@ept]
+LIST v[@fpt]
+
+! planes of data
+LIST v[@ept,@fpt]	!XY
+LIST v[@ypt,@fpt]	!XE
+LIST v[@ypt,@ept]	!XF
+LIST v[@xpt,@fpt]	!YE
+LIST v[@xpt,@ept]	!YF
+LIST v[@xpt,@ypt]	!EF
+
+! lines of data
+LIST/ORDER=F v[@xpt,@ypt,@ept]	! F
+LIST/ORDER=E v[@xpt,@ypt,@fpt]	! E
+LIST/ORDER=Y v[@xpt,@ept,@fpt]	! Y
+LIST/ORDER=X v[@ypt,@ept,@fpt]	! X
+
+! point of data
+LIST v[@xpt,@ypt,@ept,@fpt]

@@ -61,12 +61,13 @@
 * V533: 6/01 *sh* - set data type
 * V603: 5/07 *acm*  Fix for bug 1475, before confine_axis check cx_by_ss(idim,cx)
 *                   and if its true check for transformation reducing range to a pt
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
+        include 'tmap_dims.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
-        include 'tmap_dims.parm'
         include 'xdset_info.cmn_text'
         external xdset_info_data
 
@@ -130,7 +131,7 @@ c reduces the range to a point and if so sets cx_by_ss(idim,cx)=.FALSE.
 
 * flesh out the context on each axis with grid-related positions
 * seeing if cx_by_ss(idim,cx) should really be in effect
-	DO 11 idim = 1, 4
+	DO 11 idim = 1, nferdims
 	   IF ( cx_by_ss(idim,var_cx) ) THEN
               CALL FLESH_OUT_AXIS( idim, var_cx, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
@@ -142,7 +143,7 @@ c reduces the range to a point and if so sets cx_by_ss(idim,cx)=.FALSE.
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * flesh out the context on each axis with grid-related positions
-	DO 10 idim = 1, 4
+	DO 10 idim = 1, nferdims
 	   CALL FLESH_OUT_AXIS( idim, var_cx, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
  10	CONTINUE

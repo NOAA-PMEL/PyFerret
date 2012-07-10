@@ -12,5 +12,3 @@ set view ul; shade/key a; sh sym lev*
 set view ur; shade/lev a; sh sym lev*
 set view ll; shade/line/key a; sh sym lev*
 set view lr; shade/lev a; sh sym lev*
-
-cancel view

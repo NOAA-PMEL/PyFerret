@@ -1,15 +1,17 @@
 * XCONTEXT.EQUIV
 * equivalence names for various contexts within COMMON / XCONTEXT /
+*
+*  2/12 *kms* Add E and F dimensions (set to nferdims)
 
-	REAL*8	cmnd_lo_ww ( 4 ),
-     .		cmnd_hi_ww ( 4 ),
-     .		cmnd_delta   ( 4 )
-	INTEGER	cmnd_lo_ss ( 4 ),
-     .		cmnd_hi_ss ( 4 ),
-     .		cmnd_trans   ( 4 )
-	LOGICAL	cmnd_norm    ( 4 ),
-     .		cmnd_relative( 4 ),
-     .		cmnd_by_ss( 4 )
+	REAL*8	cmnd_lo_ww ( nferdims ),
+     .		cmnd_hi_ww ( nferdims ),
+     .		cmnd_delta   ( nferdims )
+	INTEGER	cmnd_lo_ss ( nferdims ),
+     .		cmnd_hi_ss ( nferdims ),
+     .		cmnd_trans   ( nferdims )
+	LOGICAL	cmnd_norm    ( nferdims ),
+     .		cmnd_relative( nferdims ),
+     .		cmnd_by_ss( nferdims )
 	INTEGER	cmnd_data_set,
      .		cmnd_category,
      .		cmnd_variable,
@@ -17,15 +19,15 @@
      .		cmnd_dim1,
      .		cmnd_dim2
 
-	REAL*8	expr_lo_ww ( 4 ),
-     .		expr_hi_ww ( 4 ),
-     .		expr_delta   ( 4 )
-	INTEGER	expr_lo_ss ( 4 ),
-     .		expr_hi_ss ( 4 ),
-     .		expr_trans   ( 4 )
-	LOGICAL	expr_norm    ( 4 ),
-     .		expr_relative( 4 ),
-     .		expr_by_ss( 4 )
+	REAL*8	expr_lo_ww ( nferdims ),
+     .		expr_hi_ww ( nferdims ),
+     .		expr_delta   ( nferdims )
+	INTEGER	expr_lo_ss ( nferdims ),
+     .		expr_hi_ss ( nferdims ),
+     .		expr_trans   ( nferdims )
+	LOGICAL	expr_norm    ( nferdims ),
+     .		expr_relative( nferdims ),
+     .		expr_by_ss( nferdims )
 	INTEGER	expr_data_set,
      .		expr_category,
      .		expr_variable,

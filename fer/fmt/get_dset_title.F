@@ -43,20 +43,14 @@
 *
 * revision 0.0 - 12/19/89 - simplified from GET_1_DSET_TITLE
 * Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
-*			  because it needed a preprocessor.
+*                         because it needed a preprocessor.
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'ferret.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER		dset, len, TM_LENSTR1

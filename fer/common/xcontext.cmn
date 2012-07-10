@@ -11,6 +11,8 @@
 *	also moved cx_xtra_doc inside COMMON to Solaris avoid compiler ragging
 * V530:  8/00 *sh* - added cx_type for better string support (and future ...)
 * V550: *acm*10/02- Change cx_name to char*24
+*        2/12 *kms* Add E and F dimensions (set to nferdims),
+*                   added cx_lo_s5 & 6, cx_hi_s5 & 6
 
 * the declarations below represent a stack of depth max_context for saving
 * the nested contexts.  The bottom few entries in the stack have special uses:
@@ -33,7 +35,7 @@
 *	cx_hi_ss	- upper bounds of space/time regions in grid subscripts
 *	cx_delta	- delta increment of space/time regions (in WORLD or
 *		  	  SUBSC according to cx_by_ss )
-*	cx_cal_id	- integer; waich calendar used when computing cx_*ss 
+*	cx_cal_id	- integer; which calendar used when computing cx_*ss 
 *                         in world coords
 *	cx_by_ss	- logical for how dimension was specified by user
 *	cx_trans	- mathematical transform applied to dimension
@@ -51,13 +53,13 @@
 	INTEGER		max_cx
 	PARAMETER     ( max_cx = max_context + 2 )
 
-	REAL*8	cx_lo_ww	 ( 4, min_context:max_cx ),
-     .		cx_hi_ww	 ( 4, min_context:max_cx ),
-     .		cx_delta	 ( 4, max_cx )
-	INTEGER	cx_lo_ss	 ( min_context:max_cx, 4 ),
-     .		cx_hi_ss	 ( min_context:max_cx, 4 ),
-     .		cx_trans	 ( 4, min_context:max_cx ),
-     .		cx_regrid_trans  ( 4, max_cx )
+	REAL*8	cx_lo_ww	 ( nferdims, min_context:max_cx ),
+     .		cx_hi_ww	 ( nferdims, min_context:max_cx ),
+     .		cx_delta	 ( nferdims, max_cx )
+	INTEGER	cx_lo_ss	 ( min_context:max_cx, nferdims ),
+     .		cx_hi_ss	 ( min_context:max_cx, nferdims ),
+     .		cx_trans	 ( nferdims, min_context:max_cx ),
+     .		cx_regrid_trans  ( nferdims, max_cx )
 	INTEGER	cx_stack_ptr,
      .		cx_data_set ( max_cx ),
      .		cx_category ( max_cx ),
@@ -70,17 +72,17 @@
 
 
 	LOGICAL	cx_unstand_grid	( max_cx ),
-     .		cx_by_ss	( 4, min_context:max_cx ),
-     .		cx_given	( 4, min_context:max_cx ),
+     .		cx_by_ss	( nferdims, min_context:max_cx ),
+     .		cx_given	( nferdims, min_context:max_cx ),
      .		cx_dset_gvn	( max_cx ),
      .		cx_calendar	( min_context:max_cx ),
      .		cx_grid_needs_dset,
      .		cx_xtra_doc	( 0:10 ),
      .		cx_has_impl_grid( max_cx ),
-     .		cx_formatted	( 4 )
+     .		cx_formatted	( nferdims )
 
 	REAL	cx_bad_data	( max_cx ),
-     .		cx_trans_arg	( 4, min_context:max_cx )
+     .		cx_trans_arg	( nferdims, min_context:max_cx )
 
 	CHARACTER
      .		cx_name		( min_context:0 )*24
@@ -89,47 +91,55 @@
      .		cx_lo_ww,
      .		cx_hi_ww,
      .		cx_delta,
-     .		cx_stack_ptr,
-     .		cx_unstand_grid,
-     .		cx_regrid_trans,
-     .		cx_data_set,
-     .		cx_category,
-     .		cx_variable,
      .		cx_bad_data,
-     .		cx_grid,
-     .		cx_type,
-     .		cx_ovsiz,
+     .		cx_trans_arg,
+     .		cx_xtra_doc,
      .		cx_lo_ss,
      .		cx_hi_ss,
      .		cx_trans,
+     .		cx_regrid_trans,
+     .		cx_stack_ptr,
+     .		cx_data_set,
+     .		cx_category,
+     .		cx_variable,
+     .		cx_grid,
+     .		cx_type,
+     .		cx_ovsiz,
+     .		cx_impl_grid,
+     .          cx_cal_id,
+     .		cx_unstand_grid,
      .		cx_by_ss,
      .		cx_given,
      .		cx_dset_gvn,
      .		cx_calendar,
-     .		cx_trans_arg,
      .		cx_grid_needs_dset,
-     .		cx_name,
      .		cx_has_impl_grid,
-     .		cx_impl_grid,
-     .          cx_cal_id,
-     .		cx_xtra_doc,
-     .		cx_formatted
+     .		cx_formatted,
+     .		cx_name
 
 * equivalences to assist with declaration statements
 	INTEGER cx_lo_s1( max_cx ),
      .		cx_lo_s2( max_cx ),
      .		cx_lo_s3( max_cx ),
      .		cx_lo_s4( max_cx ),
+     .		cx_lo_s5( max_cx ),
+     .		cx_lo_s6( max_cx ),
      .		cx_hi_s1( max_cx ),
      .		cx_hi_s2( max_cx ),
      .		cx_hi_s3( max_cx ),
-     .		cx_hi_s4( max_cx )
+     .		cx_hi_s4( max_cx ),
+     .		cx_hi_s5( max_cx ),
+     .		cx_hi_s6( max_cx )
 	EQUIVALENCE
      .		( cx_lo_s1, cx_lo_ss(1,1) ),
      .		( cx_lo_s2, cx_lo_ss(1,2) ),
      .		( cx_lo_s3, cx_lo_ss(1,3) ),
      .		( cx_lo_s4, cx_lo_ss(1,4) ),
+     .		( cx_lo_s5, cx_lo_ss(1,5) ),
+     .		( cx_lo_s6, cx_lo_ss(1,6) ),
      .		( cx_hi_s1, cx_hi_ss(1,1) ),
      .		( cx_hi_s2, cx_hi_ss(1,2) ),
      .		( cx_hi_s3, cx_hi_ss(1,3) ),
-     .		( cx_hi_s4, cx_hi_ss(1,4) )
+     .		( cx_hi_s4, cx_hi_ss(1,4) ),
+     .		( cx_hi_s5, cx_hi_ss(1,5) ),
+     .		( cx_hi_s6, cx_hi_ss(1,6) )

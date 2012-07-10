@@ -49,7 +49,8 @@
 * V420:  9/20/95 - deallocate dynamic grids, too
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
-#ifdef unix
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include	'xtm_grid.cmn_text'
@@ -61,22 +62,9 @@
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
 	include 'xfr_grid.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'
-#endif
 
 * internal variable declarations
 	INTEGER	igrid, i, cx, status
-
 
 * deallocate the temporary grids from the upper grid stack
 * (see documentation in tm_allo_dyn_grid)

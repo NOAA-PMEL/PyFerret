@@ -4,7 +4,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -43,7 +43,10 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V533: *sh* 7/01 - based upon DO_SHIFT
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -55,28 +58,34 @@
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
 	REAL	arg 
-	REAL*8	com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
+	REAL*8  com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * internal variable declarations:
-	INTEGER ii, shf, i, j, k, l, lo_sub(4), hi_sub(4)
+	INTEGER ii, shf, i, j, k, l, m, n,
+     .          lo_sub(nferdims), hi_sub(nferdims)
 
 * internal (convenience) equivalences
-	INTEGER	lo_s1, lo_s2, lo_s3, lo_s4, hi_s1, hi_s2, hi_s3, hi_s4
+	INTEGER	lo_s1, lo_s2, lo_s3, lo_s4, lo_s5, lo_s6,
+     .          hi_s1, hi_s2, hi_s3, hi_s4, hi_s5, hi_s6
 	EQUIVALENCE (lo_s1, lo_sub(1)) , (lo_s2, lo_sub(2)),
      .		    (lo_s3, lo_sub(3)) , (lo_s4, lo_sub(4)),
+     .		    (lo_s5, lo_sub(5)) , (lo_s6, lo_sub(6)),
      .		    (hi_s1, hi_sub(1)) , (hi_s2, hi_sub(2)),
-     .		    (hi_s3, hi_sub(3)) , (hi_s4, hi_sub(4))
+     .		    (hi_s3, hi_sub(3)) , (hi_s4, hi_sub(4)),
+     .		    (hi_s5, hi_sub(5)) , (hi_s6, hi_sub(6))
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
-     .				( 'doing',isact_class_trans, res_cx, idim )
+     .				( 'doing', isact_class_trans, res_cx, idim )
 
 * initialize
 	shf = INT(arg)
 
 * compute limits within which calculation is possible
-	DO 10 ii = 1, 4
+	DO 10 ii = 1, nferdims
 	   lo_sub(ii) = cx_lo_ss(res_cx,ii)
 	   hi_sub(ii) = cx_hi_ss(res_cx,ii)
  10	CONTINUE
@@ -89,35 +98,63 @@
 
 * SHIFT ALONG X
 	IF ( idim .EQ. x_dim ) THEN
+	   DO 100 n = lo_s6, hi_s6
+	   DO 100 m = lo_s5, hi_s5
 	   DO 100 l = lo_s4, hi_s4
 	   DO 100 k = lo_s3, hi_s3
 	   DO 100 j = lo_s2, hi_s2
 	   DO 100 i = lo_s1, hi_s1
- 100	   CALL COPY_C_STRING( com(i+shf,j,k,l), res(i,j,k,l) )
+ 100	   CALL COPY_C_STRING( com(i+shf,j,k,l,m,n), res(i,j,k,l,m,n) )
 
 * SHIFT ALONG Y
 	ELSEIF ( idim .EQ. y_dim ) THEN
+	   DO 200 n = lo_s6, hi_s6
+	   DO 200 m = lo_s5, hi_s5
 	   DO 200 l = lo_s4, hi_s4
 	   DO 200 k = lo_s3, hi_s3
 	   DO 200 j = lo_s2, hi_s2
 	   DO 200 i = lo_s1, hi_s1
- 200	   CALL COPY_C_STRING( com(i,j+shf,k,l), res(i,j,k,l) )
+ 200	   CALL COPY_C_STRING( com(i,j+shf,k,l,m,n), res(i,j,k,l,m,n) )
 
 * SHIFT ALONG Z
 	ELSEIF ( idim .EQ. z_dim ) THEN
+	   DO 300 n = lo_s6, hi_s6
+	   DO 300 m = lo_s5, hi_s5
 	   DO 300 l = lo_s4, hi_s4
 	   DO 300 k = lo_s3, hi_s3
 	   DO 300 j = lo_s2, hi_s2
 	   DO 300 i = lo_s1, hi_s1
- 300	   CALL COPY_C_STRING( com(i,j,k+shf,l), res(i,j,k,l) )
+ 300	   CALL COPY_C_STRING( com(i,j,k+shf,l,m,n), res(i,j,k,l,m,n) )
 
 * SHIFT ALONG T
 	ELSEIF ( idim .EQ. t_dim ) THEN
+	   DO 400 n = lo_s6, hi_s6
+	   DO 400 m = lo_s5, hi_s5
 	   DO 400 l = lo_s4, hi_s4
 	   DO 400 k = lo_s3, hi_s3
 	   DO 400 j = lo_s2, hi_s2
 	   DO 400 i = lo_s1, hi_s1
- 400	   CALL COPY_C_STRING( com(i,j,k,l+shf), res(i,j,k,l) )
+ 400	   CALL COPY_C_STRING( com(i,j,k,l+shf,m,n), res(i,j,k,l,m,n) )
+ 
+* SHIFT ALONG E
+	ELSEIF ( idim .EQ. e_dim ) THEN
+	   DO 500 n = lo_s6, hi_s6
+	   DO 500 m = lo_s5, hi_s5
+	   DO 500 l = lo_s4, hi_s4
+	   DO 500 k = lo_s3, hi_s3
+	   DO 500 j = lo_s2, hi_s2
+	   DO 500 i = lo_s1, hi_s1
+ 500	   CALL COPY_C_STRING( com(i,j,k,l,m+shf,n), res(i,j,k,l,m,n) )
+
+* SHIFT ALONG F
+	ELSEIF ( idim .EQ. f_dim ) THEN
+	   DO 600 n = lo_s6, hi_s6
+	   DO 600 m = lo_s5, hi_s5
+	   DO 600 l = lo_s4, hi_s4
+	   DO 600 k = lo_s3, hi_s3
+	   DO 600 j = lo_s2, hi_s2
+	   DO 600 i = lo_s1, hi_s1
+ 600	   CALL COPY_C_STRING( com(i,j,k,l,m,n+shf), res(i,j,k,l,m,n) )
 
 	ENDIF
 

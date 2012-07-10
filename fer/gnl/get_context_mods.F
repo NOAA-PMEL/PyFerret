@@ -143,6 +143,7 @@
 *                   to an axis coordinate.
 * V6.8  *acm* 3/12 remove block that checks for qual_given(slash_T0). Neither 
 *                  slash_t0 nor orient are defined here.
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -181,8 +182,8 @@
 
 * internal variables:
 	LOGICAL		INVALID_R8_TO_I4, TM_DIGIT,
-     .			atsin, colon, colon2, atcolon, first_time(4),
-     .			kludge_gx_to_x(4), set_implicitly(4),
+     .			atsin, colon, colon2, atcolon, first_time(nferdims),
+     .			kludge_gx_to_x(nferdims), set_implicitly(nferdims),
      .			fmat_lo, fmat_hi, logical_dummy, single_char,
      .			has_g_eq_unkn_uvar, gdset_included
 	INTEGER		ATOM_POS, STR_CASE_BLIND_COMPARE, STR_UPCASE,
@@ -194,12 +195,12 @@
      .			colon2_pos, vax_code, istart, iend, itrans,
      .			dset, variable, category, name_end, next_char, i,
      .			impl_grid, axis, other, naxes
-	CHARACTER*(1)	UPPER_CASE, region_qual(4,2), other_qual(2),
+	CHARACTER*(1)	UPPER_CASE, region_qual(nferdims,2), other_qual(2),
      .			letter, letter2
 	CHARACTER	name*512, comment*12, transnam*6, buff*32, 
      .                  cal_name*32, letters*3
 	REAL*8		temp
-	INTEGER		dstart, dend, lbrac, state, gdset, itest, nend
+	INTEGER		dstart, dend, lbrac, state, gdset, itest, nend, ii
 
 * internal parameter declarations:
 	CHARACTER*1	tab
@@ -215,10 +216,10 @@
      .			looking_for_name = 3,
      .			done_looking = 9)
 
-	DATA		(region_qual(idim,1),idim=1,4) / 'I','J','K','L' /,
-     .			(region_qual(idim,2),idim=1,4) / 'X','Y','Z','T' /,
-     .			 other_qual(1) / 'D' /,	! /DATA_SET=
-     .			 other_qual(2) / 'G' /	! /GRID=
+	DATA (region_qual(idim,1),idim=1,nferdims) / 'I','J','K','L','M','N' /,
+     .       (region_qual(idim,2),idim=1,nferdims) / 'X','Y','Z','T','E','F' /,
+     .       other_qual(1) / 'D' /,	! /DATA_SET=
+     .       other_qual(2) / 'G' /	! /GRID=
 
 * local parameter declarations (as in xeq_define)
 	INTEGER	    slash_calendar
@@ -229,7 +230,7 @@
         axis = unspecified_int4
         grid = unspecified_int4
 
-        DO 10 idim = 1, 4    ! 8/92
+        DO 10 idim = 1, nferdims
 	kludge_gx_to_x(idim) = .FALSE.
 	set_implicitly(idim) = .FALSE.
  10     first_time(idim) = .TRUE.
@@ -249,14 +250,14 @@
 	      ict = REGION_NUMBER( text_buff( istart+1:iend) )
 	      IF ( ict .EQ. unspecified_int4 ) GOTO 5100
 * ... set predefined context limits as defaults
- 20	      DO 30 idim = 1,4
+ 20	      DO 30 idim = 1, nferdims
 	         IF ( cx_given( idim, ict ) ) THEN
 	            cx_lo_ss ( mods_cx, idim ) = cx_lo_ss ( ict, idim )
 	            cx_hi_ss ( mods_cx, idim ) = cx_hi_ss ( ict, idim )
 	            cx_lo_ww ( idim, mods_cx ) = cx_lo_ww ( idim, ict )
 	            cx_hi_ww ( idim, mods_cx ) = cx_hi_ww ( idim, ict )
 * kob 9/97 - set cx_calendar as well
-		    IF (idim .EQ. t_dim) 
+		    IF (idim .EQ. t_dim .OR. idim .EQ. f_dim) 
      .                 cx_calendar(mods_cx) = cx_calendar(ict)
 	            cx_trans ( idim, mods_cx ) = cx_trans   ( idim, ict )
 	            cx_trans_arg(idim, mods_cx ) = cx_trans_arg(idim, ict )
@@ -323,7 +324,8 @@
 	   IF ( INDEX(risc_buff,'`') .GT. 0 ) GOTO 500
 
 * all valid specifiers are single characters or double character
-* regrid specifiers of the form G*, when * is I,J,K,L,X,Y,Z, or T. Is this ?
+* regrid specifiers of the form G*, when * is I,J,K,L,M,N,X,Y,Z,T,E or F.
+* Is this ?
 	   IF ( iend .GT. istart ) THEN
               letter2 = text_buff(istart+1:istart+1) ! 8/92
 	      IF (  letter2 .EQ. ' '
@@ -333,7 +335,7 @@
                  single_char = .TRUE.
 	         naxes = 1
                  DO 54 suborval = 1,2
-	         DO 54 idim     = 1,4
+	         DO 54 idim     = 1,nferdims
 	            IF ( letter.EQ.region_qual(idim,suborval) ) GOTO 200
  54              CONTINUE
                  GOTO 100     ! not a region specifier
@@ -341,7 +343,7 @@
                  single_char = .FALSE.
                  letter2 = UPPER_CASE(letter2)
                  DO 60 suborval = 1,2
-	         DO 60 idim     = 1,4
+	         DO 60 idim     = 1,nferdims
 	            IF ( letter2.EQ.region_qual(idim,suborval) ) GOTO 100
  60 	         CONTINUE
                  GOTO 190   ! ... not a recognized qualifier
@@ -394,7 +396,7 @@ c	      next_char = istart + naxes - 1
 	      IF ( next_char-istart .GT. naxes ) GOTO 500
               letter2 = UPPER_CASE( text_buff(next_char:next_char) )
               DO 107 suborval = 1,2
-	      DO 107 idim     = 1,4
+	      DO 107 idim     = 1,nferdims
 	         IF ( letter2.EQ.region_qual(idim,suborval) ) GOTO 109
  107	      CONTINUE
               GOTO 190   ! ... not a recognized qualifier
@@ -410,7 +412,7 @@ c	      next_char = istart + naxes - 1
 *	      to confuse these two
 *       3/98: for T axis with GT="1-JAN-1990" first character may be a quote
 	      i = 1		                                     ! 3/98
-	      IF (idim .EQ. t_dim .AND. name(1:1) .EQ. '"') i = 2    ! 3/98
+	      IF ((idim.EQ.t_dim .OR. idim.EQ.f_dim)  .AND. name(1:1) .EQ. '"') i = 2    ! 3/98
 	      IF ( TM_DIGIT(name(i:i)) .AND. .NOT.single_char ) THEN
 	         IF (.NOT.first_time(idim) ) GOTO 5200
 	         IF (naxes .GT. 1) GOTO 5205	! cannot say GXY=lo:hi:delta
@@ -482,6 +484,18 @@ c	      next_char = istart + naxes - 1
 	               ENDIF
  112	            CONTINUE
  114	            IF ( state .NE. done_looking ) GOTO 5056
+
+* What if it's x[d=1,i=1:3]  ?  dend is pointing at the last bracket.
+		    ii = dend
+	            DO 113 i = dstart+1,dend
+		       IF ( name(i:i) .EQ. ',' ) THEN
+		          ii = i-1
+			  GOTO 115
+		       ENDIF
+ 113	            CONTINUE
+ 115		    CONTINUE
+		    dend = ii
+
 	            gdset = FIND_DSET_NUMBER( name(dstart:dend) )
 	            gdset_included = .TRUE.
 *33333333333333333
@@ -581,7 +595,7 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 	      comment = '?? transform'
 	      GOTO 5020			! unknown regrid transform
  182          IF ( single_char ) THEN   ! apply transform to all axes
-                 DO 184 idim = 1, 4
+                 DO 184 idim = 1, nferdims
  184             IF ( cx_regrid_trans(idim,mods_cx)
      .           .EQ. unspecified_int4 ) cx_regrid_trans(idim,mods_cx)
      .                                 = itrans
@@ -723,11 +737,11 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 	   IF ( status .NE. ferr_ok ) RETURN
 
 * ACM 11/04 save calendar used to compute world coordinates
-           IF (idim .EQ. t_dim) cx_cal_id(mods_cx) = cal_id
+           IF (idim .EQ. t_dim .OR. idim .EQ. f_dim) cx_cal_id(mods_cx) = cal_id
 
 * kob 8/97 - set cx_calender to true/false depending on whether date is
 *            a formated string or not
-	   IF (idim.EQ.t_dim) cx_calendar(mods_cx) = fmat_lo
+	   IF (idim .EQ. t_dim .OR. idim .EQ. f_dim) cx_calendar(mods_cx) = fmat_lo
 	ENDIF
 
 * is there a second value given ?
@@ -823,7 +837,7 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 *             repeat/i=3:1:1 executes the same as repeat/i=1:3:1 and
 *             list var[i=180:10:10] the same as list var[i=10:180:10]
 
-	IF (  idim .EQ. t_dim .AND. cx_calendar(mods_cx) ) THEN
+	IF (  (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. cx_calendar(mods_cx) ) THEN
 	   IF ( cx_hi_ww(idim,mods_cx) .GT. 
      .				cx_lo_ww(idim,mods_cx) ) THEN
 	      temp = cx_lo_ww( idim, mods_cx )
@@ -850,7 +864,7 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 	   cx_lo_ww( idim, mods_cx ) = unspecified_val8
 	   cx_hi_ww( idim, mods_cx ) = unspecified_val8
 * 9/97 *kob* cx_calendar must reflect these changes as well	  
-	   IF (idim .eq. t_dim) 
+	   IF (idim .EQ. t_dim .OR. idim .EQ. f_dim) 
      .                cx_calendar(mods_cx) = .FALSE.
 	ENDIF
 
@@ -881,7 +895,7 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 *     substitute the 4D transform for the one specified
 	DO 610 i = 1, num_4d_trans
 	   other = 0
-	   DO 600 idim = 1, 4	   
+	   DO 600 idim = 1, nferdims	   
 	      IF ( cx_trans(idim,mods_cx) .EQ. alg_1d_to_4d(i) ) THEN
 	         IF ( other .EQ. 0 ) THEN
 	            other = idim		! found 1 axis

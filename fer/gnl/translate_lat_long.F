@@ -46,6 +46,7 @@
 * revision 0.1 - 3/14/89 - return "formatted" flag
 * V300  9/93 - insist that "N", "S", "E", "W" are the LAST character
 * V420 (IBM/AIX port of V411): 10/5/95 - buffer "READ(var,*"
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * possible formats:
 *   x coord:  #  or #E  or  #W  for East  or West,  respectively
@@ -53,13 +54,8 @@
 *   z coord:  #
 *   t coord:  #  or dd-mmm-yyyy@hh-mm-ss  eg 14-JAN-1986@11:15
 
-#ifdef unix
 	include 'errmsg.parm'
 	include 'ferret.parm'
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 	CHARACTER*(*)	string
 	LOGICAL		n_given, s_given, e_given, w_given, formatted

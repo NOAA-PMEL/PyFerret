@@ -1,2 +1,4 @@
+* Needs tmap_dims.parm for definition of nferdims
+	
 	INTEGER	eznn, ezii, ezorder
-	COMMON /XEZ_ORDER/ eznn(4), ezii(4), ezorder(4)
+	COMMON /XEZ_ORDER/ eznn(nferdims), ezii(nferdims), ezorder(nferdims)

@@ -45,17 +45,14 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V420:  4/96
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * internal variable declarations:
 	INTEGER	i
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * if the user did not separate items by commas then make it appear the he did
 

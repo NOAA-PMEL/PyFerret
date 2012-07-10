@@ -1,6 +1,8 @@
 	SUBROUTINE COPY_INTO_SUB( cxlo, cxhi,
-     .		src, slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit  )
+     .          src, slox, shix, sloy, shiy, sloz, shiz, 
+     .          slot, shit, sloe, shie, slof, shif,
+     .          dst, dlox, dhix, dloy, dhiy, dloz, dhiz, 
+     .          dlot, dhit, dloe, dhie, dlof, dhif   )
 
 *
 *
@@ -46,25 +48,32 @@
 *
 * V200: 10/16/89 - from COPY_INTO
 * V533 *sh* 6/01 - allowing delta values in mrs
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 * calling argument declarations:
-	INTEGER cxlo(4), cxhi(4),
-     .		slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit
-	REAL    src( slox:shix,sloy:shiy,sloz:shiz,slot:shit ),
-     .		dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit )
+	INTEGER cxlo(*), cxhi(*),
+     .		slox, shix, sloy, shiy, sloz, shiz, 
+     .          slot, shit, sloe, shie, slof, shif, 
+     .          dlox, dhix, dloy, dhiy, dloz, dhiz, 
+     .          dlot, dhit, dloe, dhie, dlof, dhif
+
+	REAL    src( slox:shix,sloy:shiy,sloz:shiz,slot:shit,sloe:shie,slof:shif ),
+     .          dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit,dloe:dhie,dlof:dhif )
+
 
 * internal variable declarations:
-	INTEGER	i, j, k, l
+	INTEGER	i, j, k, l, m, n
 
 * --- end of introductory code ---
 
+        DO 100 n = cxlo(6), cxhi(6)
+        DO 100 m = cxlo(5), cxhi(5)
 	DO 100 l = cxlo(4), cxhi(4)
 	DO 100 k = cxlo(3), cxhi(3)
 	DO 100 j = cxlo(2), cxhi(2)
 	DO 100 i = cxlo(1), cxhi(1)
 
-	   dst(i,j,k,l) = src(i,j,k,l)
+	   dst(i,j,k,l,m,n) = src(i,j,k,l,m,n)
 
  100	CONTINUE
 

@@ -66,6 +66,7 @@
 *                   If the calling sequence asks for more precision, allow it.
 * V581 *acm*  3/05  axis-independent time coordinates are calculated with default 
 *                   calendar, so do not get cal_id when converting to date string
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -81,10 +82,10 @@
 * internal variable declarations:
 	CHARACTER	SECS_TO_DATE*20, TM_FMT*24, code*1, xtra*16
 	INTEGER		FIELD_WIDTH, TM_GET_CALENDAR_ID, min_width, width, 
-     .                  decim, numbers, n2, cal_id
+     .                  decim, numbers, n2, cal_id, iv
 	LOGICAL		GEOG_LABEL, fancy, use_sig_fig,
      .                  modulo
-	REAL		val4, val4_orig
+	REAL		val4, val4_orig, v2
 
 * valid inputs ?  (bug fix 11/91)
         IF ( val .EQ. unspecified_val8 ) THEN
@@ -101,16 +102,7 @@
         val4_orig  = val4
 	code	   = ' '
 	fancy	   = GEOG_LABEL( idim, grid )
-        line       = grid_line( t_dim, grid )
 
-! removed next line 8/97 *kob* - use fancy as set above
-!        IF ( idim .EQ. t_dim .AND. val .LT. 0.0 ) fancy = .TRUE.  ! 2/3/93
-!removed        IF ( idim .EQ. t_dim .AND. .NOT.fancy ) THEN
-!2/3/93   * ... force date labelling if it is possible (why?? 7/92  )
-!      	           line = grid_line( idim, grid )
-!                  fancy = val .LT. 0.0D0 .AND. 
-!     .                     TM_DATE_OK( line_t0(line)) 
-!               ENDIF
 ! Note (2/3/93): GEOG_LABEL contains the removed logic
 
 * adjust precision to fit into field if necessary
@@ -131,7 +123,10 @@
 	   IF ( idim .EQ. x_dim ) THEN
 * x - longitude E/W
 * ... restrict degrees to a precision of .001
-              IF (ndec .LE. 3) val4 = INT(val4 * 1000.)/1000.
+c (The following doesnt always compute the correct value in double precision
+c on 32-bit linux (.145 comes back as .146). Use NINT instead.)
+c	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.D0)/1000.D0
+	      IF (ndec .LE. 3) val4 = NINT(val4 * 1000.D0)/1000.D0
 	      val4 = MOD( val4, 360. )
 	      IF ( val4 .LT. 0.0 ) val4 = val4 + 360.	! 1/27
               modulo = val4 .NE. val4_orig
@@ -145,7 +140,10 @@
 	   ELSEIF ( idim .EQ. y_dim ) THEN
 * y - latitude N/S
 * ... restrict degrees to a precision of .001
-	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.)/1000.
+c (The following doesnt always compute the correct value in double precision
+c on 32-bit linux (.145 comes back as .146). Use NINT instead.)
+c	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.D0)/1000.D0
+	      IF (ndec .LE. 3) val4 = NINT(val4 * 1000.D0)/1000.D0
  	      IF     ( val4 .LT. 0.0 ) THEN
 	         val4 = -val4
 	         code    = 'S'			! degS
@@ -164,12 +162,12 @@
               IF ( val .LT. -47335449600D0 ) THEN
 ! HACK! negatives time steps are formatted as valid times unless they
 ! would be negative seconds from BC for dates later than 1-jan-1500
-                 line       = grid_line( t_dim, grid )
+                 line       = grid_line( idim, grid )
 !                 cal_id = TM_GET_CALENDAR_ID ( line_cal_name(line))
                  cal_id = 1  ! axis-independent dates were calculated with dflt calendar
                  string = SECS_TO_DATE( -val, cal_id )
               ELSE
-                 CALL TSTEP_TO_DATE( grid, val, decim, string )
+                 CALL TSTEP_TO_DATE( grid, idim, val, decim, string )
               ENDIF
 	      RETURN
 	   ENDIF

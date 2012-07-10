@@ -14,6 +14,7 @@ axis_intervals.F\
 bkwd_axis.F\
 box_bounds.F\
 box_size.F\
+calendar_axis.F\
 cal_factr.F\
 caxis_len.F\
 caxis_modlen.F\
@@ -25,6 +26,9 @@ copy_grid.F\
 copy_grid_sub.F\
 copy_grid_trans.F\
 copy_grid_trans_sub.F\
+copy_agg_into.F\
+copy_agg_into_sub.F\
+copy_agg_ptr_into_sub.F\
 copy_into.F\
 copy_into_mapped.F\
 copy_into_mapped_sub.F\
@@ -100,7 +104,6 @@ match_name.F\
 match_quoted_name.F\
 match_template.F\
 minmax.F\
-mode_gui_on.F\
 modulo_parity.F\
 mult_grid.F\
 ndig_coords.F\

@@ -39,8 +39,8 @@
 
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * V600  6/06 *acm* - additional declarations found by Solaris compiler
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-        include 'netcdf.decl'
 #include "netcdf.inc"
         include 'cd_lib.parm'
         include 'ferret.parm'

@@ -54,6 +54,8 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Make sure parameters values are consistent with 
 *                              whats in netcdf.inc from netcdf4.
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+
 * argument definitions:
 *	dset	 - dataset number
 *       varid    - variable id 
@@ -73,7 +75,6 @@
       real*8        dval(40)
 
 #include "gt_lib.parm"
-      include 'netcdf.decl'
 #include "netcdf.inc"
       include 'xio.cmn_text'
       include 'tmap_errors.parm'

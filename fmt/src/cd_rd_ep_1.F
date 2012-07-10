@@ -53,6 +53,7 @@
 * V66+ *acm* 4/10  Made incorrect call to NF_GET_VAR1_DOUBLE, should have becn
 *                  NF_GET_VAR1_INT.
 * V665 *acm* 11/10 Fix arguments to second call to NF_GET_VAR1_INT. 
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -70,7 +71,6 @@
       REAL*8  dval
       CHARACTER*(*) t0
 
-      include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
 

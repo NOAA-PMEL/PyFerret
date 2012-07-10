@@ -53,6 +53,7 @@
 * V580 9/04 *acm* - if units not given, assign general X or Y direction rather 
 *                   than WE or SN
 * V600 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * Arguments
 	LOGICAL		modulo
@@ -61,7 +62,7 @@
 	CHARACTER*(*)	units
 
 * argument description:
-* in	idim	  - axis orientation: 1-4
+* in	idim	  - axis orientation: 1-nferdims
 * in	units	  - units string for axis (max 16 characters)
 *		    used when labeling the axis
 *		    if creating a time axis format should be
@@ -79,8 +80,7 @@
 	include 'tmap_errors.parm'
 	include 'xtm_grid.cmn_text'
 	include 'xunits.cmn_text'
-	external xgt_grid_data
-	include 'xrisc_buff.cmn'
+		include 'xrisc_buff.cmn'
 
 *
 * Local definitions

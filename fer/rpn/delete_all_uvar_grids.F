@@ -42,14 +42,11 @@
 *
 * V230:  8/10/92 - needed for DEFINE REGION which may change the implied
 *                  context info of uvars using let x = var[@reg] notation
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'	
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'	
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 * ...
@@ -66,7 +63,7 @@
         DO 500 j = 1, num_indices
            uvar = deleted_list_result(j)
 * return to default that all limits are irrelevant
-	   DO 100 i = 1, 4
+	   DO 100 i = 1, nferdims
  100	   uvar_given(i,uvar) = uvlim_irrelevant
 
 * reset grid to unknown for all data sets and clear dynamic grid info

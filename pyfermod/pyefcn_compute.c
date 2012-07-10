@@ -45,10 +45,10 @@
 /*
  * See pyferret.h for information on this function
  */
-void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
+void pyefcn_compute(int id, char modname[], double *data[], int numarrays,
                     int memlo[][MAX_FERRET_NDIM], int memhi[][MAX_FERRET_NDIM],
                     int steplo[][MAX_FERRET_NDIM], int stephi[][MAX_FERRET_NDIM],
-                    int incr[][MAX_FERRET_NDIM], float badvals[], char errmsg[])
+                    int incr[][MAX_FERRET_NDIM], double badvals[], char errmsg[])
 {
     PyObject *nameobj;
     PyObject *usermod;
@@ -62,12 +62,12 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
     npy_intp  strides[MAX_FERRET_NDIM];
     int       itemsize;
     int       flags;
-    float    *dataptr;
+    double   *dataptr;
     int       maxlength;
     int       length;
     double   *dptr;
-    npy_intp  d0, d1, d2, d3;
-    npy_intp  indices[4];
+    npy_intp  d0, d1, d2, d3, d4, d5;
+    npy_intp  indices[MAX_FERRET_NDIMS];
     PyObject *ndarrays[EF_MAX_COMPUTE_ARGS];
     PyObject *inpbadvals_ndarray;
     PyObject *resbadval_ndarray;
@@ -145,16 +145,16 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
                 /* Get the dimensions of the array */
                 for (k = 0; k < MAX_FERRET_NDIM; k++)
                     shape[k] = (npy_intp) ((stephi[j][k] - steplo[j][k] + incr[j][k]) / (incr[j][k]));
-                /* Get the strides through the passed memory as a (float *) */
+                /* Get the strides through the passed memory as a (double *) */
                 strides[0] = 1;
-                for (k = 0; k < 3; k++)
+                for (k = 0; k < MAX_FERRET_NDIM - 1; k++)
                     strides[k+1] = strides[k] * (npy_intp) (memhi[j][k] - memlo[j][k] + 1);
                 /* Get the actual starting point in the array */
                 dataptr = data[j];
                 for (k = 0; k < MAX_FERRET_NDIM; k++)
                     dataptr += strides[k] * (npy_intp) (steplo[j][k] - memlo[j][k]);
                 /* Convert to strides through places in memory to be assigned, and as a (byte *) */
-                itemsize = sizeof(float);
+                itemsize = sizeof(double);
                 for (k = 0; k < MAX_FERRET_NDIM; k++)
                     strides[k] *= (npy_intp) (incr[j][k] * itemsize);
                 /* Get the flags for the array - only results can be written to; others are read-only */
@@ -168,7 +168,7 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
                 if ( j == 0 )
                     flags = flags | NPY_WRITEABLE;
                 /* Create a PyArray object around the array */
-                ndarrays[j] = PyArray_New(&PyArray_Type, MAX_FERRET_NDIM, shape, NPY_FLOAT,
+                ndarrays[j] = PyArray_New(&PyArray_Type, MAX_FERRET_NDIM, shape, NPY_DOUBLE,
                                           strides, dataptr, itemsize, flags, NULL);
                 if ( ndarrays[j] == NULL ) {
                     /* Problem - release references to the previous PyArray objects, assign errmsg, and return */
@@ -184,8 +184,8 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
                 break;
             case FLOAT_ONEVAL:
                 assert( j > 0 );
-                /* Sinple float argument; just create a PyFloat for this argument */
-                ndarrays[j] = PyFloat_FromDouble((double) (data[j][0]));
+                /* Simple double argument; just create a PyFloat for this argument */
+                ndarrays[j] = PyFloat_FromDouble(data[j][0]);
                 if ( ndarrays[j] == NULL ) {
                     /* Problems - Release references to the previous PyArray objects, assign errmsg, and return. */
                     PyErr_Clear();
@@ -204,13 +204,8 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
                     shape[k] = (npy_intp) ((stephi[j][k] - steplo[j][k] + incr[j][k]) / (incr[j][k]));
                 /* Get the strides through the passed memory as a (double *) */
                 strides[0] = 1;
-                for (k = 0; k < 3; k++)
+                for (k = 0; k < MAX_FERRET_NDIM - 1; k++)
                     strides[k+1] = strides[k] * (npy_intp) (memhi[j][k] - memlo[j][k] + 1);
-                /* Get the actual starting point in the array */
-                dptr = (double *) (data[j]);
-                for (k = 0; k < MAX_FERRET_NDIM; k++)
-                    dptr += strides[k] * (npy_intp) (steplo[j][k] - memlo[j][k]);
-                dataptr = (float *) dptr;
                 if ( j == 0 ) {
                     /* result argument - create PyArray of string to hold results to be assigned */
                     itemsize = resstrlen * sizeof(char);
@@ -226,23 +221,32 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
                     }
                 }
                 else {
+                    /* Get the actual starting point in the array */
+                    dataptr = data[j];
+                    for (k = 0; k < MAX_FERRET_NDIM; k++)
+                        dataptr += strides[k] * (npy_intp) (steplo[j][k] - memlo[j][k]);
                     /* Input argument - get the length of the longest string */
+                    /* This needs to be modified if MAX_FERRET_NDIM changes */
                     maxlength = 0;
-                    for (d3 = 0; d3 < shape[3] * strides[3]; d3 += strides[3]) {
-                        for (d2 = 0; d2 < shape[2] * strides[2]; d2 += strides[2]) {
+                    for (d5 = 0; d5 < shape[5] * strides[5]; d5 += strides[5]) {
+                      for (d4 = 0; d4 < shape[4] * strides[4]; d4 += strides[4]) {
+                        for (d3 = 0; d3 < shape[3] * strides[3]; d3 += strides[3]) {
+                          for (d2 = 0; d2 < shape[2] * strides[2]; d2 += strides[2]) {
                             for (d1 = 0; d1 < shape[1] * strides[1]; d1 += strides[1]) {
-                                for (d0 = 0; d0 < shape[0] * strides[0]; d0 += strides[0]) {
-                                    /*
-                                     * The data array values are pointers to strings,
-                                     * but is cast as an array of doubles
-                                     */
-                                    dptr = ((double *) dataptr) + d0 + d1 + d2 + d3;
-                                    length = strlen(*((char **) dptr));
-                                    if ( maxlength < length )
-                                        maxlength = length;
-                                }
+                              for (d0 = 0; d0 < shape[0] * strides[0]; d0 += strides[0]) {
+                                /*
+                                 * The data array values are pointers to strings,
+                                 * but is cast as an array of doubles
+                                 */
+                                dptr = dataptr + d0 + d1 + d2 + d3 + d4 + d5;
+                                length = strlen(*((char **) dptr));
+                                if ( maxlength < length )
+                                    maxlength = length;
+                              }
                             }
+                          }
                         }
+                      }
                     }
                     /* Convert to the next larger multiple of 8 */
                     maxlength  = (maxlength + 8) / 8;
@@ -263,24 +267,35 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
                         return;
                     }
                     /* Assign all the strings in the array */
-                    indices[3] = 0;
-                    for (d3 = 0; d3 < shape[3] * strides[3]; d3 += strides[3]) {
-                        indices[2] = 0;
-                        for (d2 = 0; d2 < shape[2] * strides[2]; d2 += strides[2]) {
+                    /* This needs to be modified if MAX_FERRET_NDIM changes */
+                    indices[5] = 0;
+                    for (d5 = 0; d5 < shape[5] * strides[5]; d5 += strides[5]) {
+                      indices[4] = 0;
+                      for (d4 = 0; d4 < shape[4] * strides[4]; d4 += strides[4]) {
+                        indices[3] = 0;
+                        for (d3 = 0; d3 < shape[3] * strides[3]; d3 += strides[3]) {
+                          indices[2] = 0;
+                          for (d2 = 0; d2 < shape[2] * strides[2]; d2 += strides[2]) {
                             indices[1] = 0;
                             for (d1 = 0; d1 < shape[1] * strides[1]; d1 += strides[1]) {
-                                indices[0] = 0;
-                                for (d0 = 0; d0 < shape[0] * strides[0]; d0 += strides[0]) {
-                                    dptr = ((double *) dataptr) + d0 + d1 + d2 + d3;
-                                    strcpy((char *) PyArray_GetPtr((PyArrayObject *) (ndarrays[j]), indices), *((char **) dptr));
-                                    (indices[0])++;
-                                }
-                                (indices[1])++;
+                              indices[0] = 0;
+                              for (d0 = 0; d0 < shape[0] * strides[0]; d0 += strides[0]) {
+                                dptr = dataptr + d0 + d1 + d2 + d3 + d4 + d5;
+                                strcpy((char *) PyArray_GetPtr((PyArrayObject *) (ndarrays[j]), indices), 
+                                                               *((char **) dptr));
+                                (indices[0])++;
+                              }
+                              (indices[1])++;
                             }
                             (indices[2])++;
+                          }
+                          (indices[3])++;
                         }
-                        (indices[3])++;
+                        (indices[4])++;
+                      }
+                      (indices[5])++;
                     }
+
                 }
                 break;
             case STRING_ONEVAL:
@@ -321,10 +336,10 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
 
     /* Create PyArray objects around the input bad values array and the result bad value */
     shape[0] = numarrays - 1;
-    strides[0] = sizeof(float);
-    itemsize = sizeof(float);
+    strides[0] = sizeof(double);
+    itemsize = sizeof(double);
     flags = NPY_FARRAY_RO;
-    inpbadvals_ndarray = PyArray_New(&PyArray_Type, 1, shape, NPY_FLOAT,
+    inpbadvals_ndarray = PyArray_New(&PyArray_Type, 1, shape, NPY_DOUBLE,
                                      strides, &(badvals[1]), itemsize, flags, NULL);
     if ( inpbadvals_ndarray == NULL ) {
         /* Problem - release references to the previous PyArray objects, assign errmsg, and return */
@@ -336,7 +351,7 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
         return;
     }
     shape[0] = 1;
-    resbadval_ndarray = PyArray_New(&PyArray_Type, 1, shape, NPY_FLOAT,
+    resbadval_ndarray = PyArray_New(&PyArray_Type, 1, shape, NPY_DOUBLE,
                                     strides, badvals, itemsize, flags, NULL);
     if ( resbadval_ndarray == NULL ) {
         /* Problem - release references to the previous PyArray objects, assign errmsg, and return */
@@ -383,39 +398,49 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
             shape[k] = (npy_intp) ((stephi[0][k] - steplo[0][k] + incr[0][k]) / (incr[0][k]));
         /* Get the strides through the passed memory as a (double *) */
         strides[0] = 1;
-        for (k = 0; k < 3; k++)
+        for (k = 0; k <= MAX_FERRET_NDIM - 1; k++)
             strides[k+1] = strides[k] * (npy_intp) (memhi[0][k] - memlo[0][k] + 1);
         /* Get the actual starting point in the array */
-        dptr = (double *) (data[0]);
+        dataptr = data[0];
         for (k = 0; k < MAX_FERRET_NDIM; k++)
-            dptr += strides[k] * (npy_intp) (steplo[0][k] - memlo[0][k]);
-        dataptr = (float *) dptr;
+            dataptr += strides[k] * (npy_intp) (steplo[0][k] - memlo[0][k]);
         /* Assign all the strings in the array */
-        indices[3] = 0;
-        for (d3 = 0; d3 < shape[3] * strides[3]; d3 += strides[3]) {
-            indices[2] = 0;
-            for (d2 = 0; d2 < shape[2] * strides[2]; d2 += strides[2]) {
+        /* This needs to be modified if MAX_FERRET_NDIM changes */
+        indices[5] = 0;
+        for (d5 = 0; d5 < shape[5] * strides[5]; d5 += strides[5]) {
+          indices[4] = 0;
+          for (d4 = 0; d4 < shape[4] * strides[4]; d4 += strides[4]) {
+            indices[3] = 0;
+            for (d3 = 0; d3 < shape[3] * strides[3]; d3 += strides[3]) {
+              indices[2] = 0;
+              for (d2 = 0; d2 < shape[2] * strides[2]; d2 += strides[2]) {
                 indices[1] = 0;
                 for (d1 = 0; d1 < shape[1] * strides[1]; d1 += strides[1]) {
-                    indices[0] = 0;
-                    for (d0 = 0; d0 < shape[0] * strides[0]; d0 += strides[0]) {
-                        strptr = (char *) PyArray_GetPtr((PyArrayObject *) (ndarrays[0]), indices);
-                        for (j = 0; j < resstrlen; j++)
-                            if ( strptr[j] == '\0' )
-                                break;
-                        dptr = ((double *) dataptr) + d0 + d1 + d2 + d3;
-                        ef_put_string_(strptr, &j, (char **) dptr);
-                        (indices[0])++;
-                    }
-                    (indices[1])++;
+                  indices[0] = 0;
+                  for (d0 = 0; d0 < shape[0] * strides[0]; d0 += strides[0]) {
+                    strptr = (char *) PyArray_GetPtr((PyArrayObject *) (ndarrays[0]), indices);
+                    for (j = 0; j < resstrlen; j++)
+                        if ( strptr[j] == '\0' )
+                            break;
+                    dptr = dataptr + d0 + d1 + d2 + d3 + d4 + d5;
+                    ef_put_string_(strptr, &j, (char **) dptr);
+                    (indices[0])++;
+                  }
+                  (indices[1])++;
                 }
                 (indices[2])++;
+              }
+              (indices[3])++;
             }
-            (indices[3])++;
+            (indices[4])++;
+          }
+          (indices[5])++;
         }
+
     }
     Py_DECREF(ndarrays[0]);
 
     errmsg[0] = '\0';
     return;
 }
+

@@ -38,19 +38,23 @@
 *  If there is a missing value routine zgrid does not grid the data in 
 *  a zone around that point, even if there are other nearby good data 
 *  points.  Remove missing/bad data from the input (x,y,zscat) points.
-
+*
 * ACM 11/00 change so not exact comparison: wasnt catching all bad values.
+*
 
       REAL xin(*), yin(*), zin(*), badz
       REAL xscat(*), yscat(*), zscat(*)
       INTEGER nscat, ngood, i
-      REAL badcompare
+      REAL*8 badcompare
+      REAL*8 eps
+      PARAMETER ( eps = 4.0D-7 )
 
       ngood = 0
-      badcompare = abs(badz) - 1.
+      badcompare = eps * abs(badz)
+      IF ( badcompare < eps ) badcompare = eps
 
       DO 100 i = 1, nscat
-         IF (abs(zin(i)) .LT. badcompare) THEN
+         IF ( abs(zin(i) - badz) .GT. badcompare ) THEN
             ngood = ngood + 1
             xscat(ngood) = xin(i)
             yscat(ngood) = yin(i)

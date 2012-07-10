@@ -46,6 +46,7 @@
 *					 definition of macro DFTYPE in ferretmacros.h.
 */
 
+#include <stdio.h>
 #include "ferretmacros.h"
 
 #ifdef _NO_PROTO

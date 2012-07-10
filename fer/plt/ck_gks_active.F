@@ -42,6 +42,7 @@
 * written for VAX computer under VMS operating system
 *
 * V200: 12/20/89
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
         include 'ferret.parm'
         include 'errmsg.parm'

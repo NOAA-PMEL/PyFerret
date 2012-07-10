@@ -52,16 +52,12 @@
 *	     - Guts of routine extracted to PARSE_NAM_DSET
 * V500 *sh* 3/99 - added argument made_impl_grid so calling program can
 *		   manage implicit grids (from GET_CONTEXT_MODS by "Z[gz=ax]")
-	
-#ifdef unix
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+
+	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	LOGICAL		made_impl_grid

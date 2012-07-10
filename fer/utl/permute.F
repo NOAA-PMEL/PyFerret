@@ -34,7 +34,7 @@
 *
 *
 * permute the 4D data from the source grid into the destination grid
-* - 24 possible permutations  (!4)
+* - 24 possible permutations  (!4)  
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
@@ -42,14 +42,16 @@
 *
 * V200:  8/31/89
 *	10/16/89 - modified array declarations using *_SUB call
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 
 * calling argument declarations:
-	INTEGER src_cx, msrc, mdst, perm(4)
+	INTEGER src_cx, msrc, mdst, perm(nferdims)
 	REAL    src( * ),dst( * )
 
 * local variable declarations:
@@ -67,10 +69,14 @@
      .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
      .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
      .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
+     .				 mr_lo_s5(msrc), mr_hi_s5(msrc),
+     .				 mr_lo_s6(msrc), mr_hi_s6(msrc),
      .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
      .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
      .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .				 mr_lo_s4(mdst), mr_hi_s4(mdst) )
+     .				 mr_lo_s4(mdst), mr_hi_s4(mdst),
+     .				 mr_lo_s5(mdst), mr_hi_s5(mdst),
+     .				 mr_lo_s6(mdst), mr_hi_s6(mdst) )
 
 	ELSE	
 	   CALL PERMUTE_SUB (    src_cx, perm,
@@ -78,10 +84,14 @@
      .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
      .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
      .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
+     .				 mr_lo_s5(msrc), mr_hi_s5(msrc),
+     .				 mr_lo_s6(msrc), mr_hi_s6(msrc),
      .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
      .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
      .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .				 mr_lo_s4(mdst), mr_hi_s4(mdst)  )
+     .				 mr_lo_s4(mdst), mr_hi_s4(mdst),
+     .				 mr_lo_s5(mdst), mr_hi_s5(mdst),
+     .				 mr_lo_s6(mdst), mr_hi_s6(mdst)  )
 	ENDIF
 
  5000	RETURN

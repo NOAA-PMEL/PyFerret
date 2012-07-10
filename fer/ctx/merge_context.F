@@ -52,7 +52,9 @@
 * V533: *sh* 6/01 - merge data types (removed to MERGIFY_CX)
 *		  - allow longer char buffer for error message to prevent
 *			crash in pathological cases
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'grid_chg_fcns.parm'
@@ -73,7 +75,8 @@
      .			choice(4,5), i, icom, imrg, uvar,
      .			com_str_slen, mrg_str_slen,
      .			com_int_slen, mrg_int_slen, gcfcn,
-     .			axis_source(4), lo_off(4),  hi_off(4), action(4)
+     .			axis_source(nferdims), lo_off(nferdims),  
+     .			hi_off(nferdims), action(nferdims)
 	CHARACTER	CX_DIM_STR*24, LEFINT*8, com_lims*24, mrg_lims*24,
      .			com_int*8, mrg_int*8
 
@@ -182,7 +185,7 @@
 	len_rbuff = MIN( size_rbuff, LEN(com_str) )
 
 * loop through the axes
-	DO 500 idim = 1,4
+	DO 500 idim = 1,nferdims
 
 * argument of grid-changing function? (1/97)
 *

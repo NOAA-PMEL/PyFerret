@@ -43,7 +43,9 @@
 * V200:   8/3/89
 *	10/16/89 - modified array declarations via call to *_SUB
 * V533: *sh* 6/01 - added string support
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
@@ -59,13 +61,17 @@
      .			    mr_lo_s1(mx), mr_hi_s1(mx),
      .			    mr_lo_s2(mx), mr_hi_s2(mx),
      .			    mr_lo_s3(mx), mr_hi_s3(mx),
-     .			    mr_lo_s4(mx), mr_hi_s4(mx) )
+     .			    mr_lo_s4(mx), mr_hi_s4(mx),
+     .			    mr_lo_s5(mx), mr_hi_s5(mx),
+     .			    mr_lo_s6(mx), mr_hi_s6(mx) )
 	ELSE
 	   CALL BAD_EDGES_SUB( cx, x,
      .			    mr_lo_s1(mx), mr_hi_s1(mx),
      .			    mr_lo_s2(mx), mr_hi_s2(mx),
      .			    mr_lo_s3(mx), mr_hi_s3(mx),
      .			    mr_lo_s4(mx), mr_hi_s4(mx),
+     .			    mr_lo_s5(mx), mr_hi_s5(mx),
+     .			    mr_lo_s6(mx), mr_hi_s6(mx),
      .			    mr_bad_data(mx) )
 	ENDIF
 

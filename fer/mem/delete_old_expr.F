@@ -2,7 +2,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -50,7 +50,10 @@
 * 	 2/19/90 - major rewrite: loop through ALL user vars deleting "EX#"
 * V540:  11/01 - initialize last_cmnd_buff
 *	         (formerly local array in get_prot_cmnd_data)
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'

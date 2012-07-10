@@ -42,12 +42,9 @@
 
 * programmer - steve hankin
 * V530 *sh* 1/01 
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'ferret.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER	grid, idim, inc, lo_ss, hi_ss

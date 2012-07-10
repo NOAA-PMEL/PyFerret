@@ -63,12 +63,9 @@
 *                  permutations)
 * V312: 5/94 - array "memory" as a calling argument
 * V530 *sh* 9/00 - added initial support for multiple data types
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 * calling argument declarations
 	INTEGER	dflt_cx, dtype, status

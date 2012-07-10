@@ -103,14 +103,13 @@ c        REAL DTIME
      .	     special(15)/ 'CURRENT_TIME' /
      .	     special(16)/ 'N_OPEN_DSETS' /
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xplot_state.cmn'	! for PPL$XPIXEL
 	include 'xrevision.cmn'
 	include 'xtoday.cmn'
 	include 'xplatform_type.cmn'
 	include 'xvariables.cmn'
-	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
 
@@ -119,8 +118,6 @@ c        REAL DTIME
 	include 'xmachine_byte.cmn'
 #else
 	include 'xmachine_int1.cmn'
-#endif
-
 #endif
 
 * is this a query by integer or by name?

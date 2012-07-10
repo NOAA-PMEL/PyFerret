@@ -74,7 +74,9 @@
 * V600  10/05 *acm* Fis bug 899: rather than the ungraceful STOP, issue an error
 *                   message if a 4-D transform was requested but the dimensions 
 *                   are not available in the grid.
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -98,7 +100,7 @@
      .		slen, cx_valid,
      .		res_isp, com_isp, res_cx, com_cx, com_mr, res_mr, idim,
      .		trans, grid, lo_off, hi_off, ss_lo, ss_hi, wksiz, wkblk,
-     .		mrlist(2), axes(4), idim1, i, ndim
+     .		mrlist(2), axes(nferdims), idim1, i, ndim
 	REAL	arg
 	REAL*8	TM_WORLD, ww, ww_lo, ww_hi
 	CHARACTER VAR_TRANS*150, buff*150
@@ -127,7 +129,7 @@
 * determine the axes to be transformed.
 	IF (its_4d) THEN
 	   ndim = 0
-	   DO 120 idim = 1, 4
+	   DO 120 idim = 1, nferdims
 	     IF ( cx_trans(idim,res_cx) .EQ. trans ) THEN
 	       ndim = ndim + 1
 	       axes(ndim) = idim

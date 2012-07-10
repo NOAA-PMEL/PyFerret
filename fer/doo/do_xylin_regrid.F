@@ -7,7 +7,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -47,13 +47,17 @@
 * 6/22/2011
 *                    The XY linear regridding matches past Ferret behavior, 
 *                    not using bilinear regridding for now
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-* calling argument declarations:
-	INTEGER	cx_lims, axis, msrc, mdst, iwork2, itot, src_cx, dst_cx
-	REAL	src(*), dst(*), work(itot)
-
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xcontext.cmn'
+
+* calling argument declarations:
+	INTEGER	cx_lims, axis, msrc, mdst, iwork2, iwork3, iwork4, iwork5,
+     .          itot, src_cx, dst_cx
+	REAL	src(*), dst(*), work(itot)
 
 	CALL XYLIN_REGRID( cx_lims,
      .			   cx_lo_ss(cx_lims,x_dim), cx_hi_ss(cx_lims,x_dim),
@@ -63,4 +67,4 @@
      .                     work(iwork5) )
 
 	RETURN
-	END	
+	END

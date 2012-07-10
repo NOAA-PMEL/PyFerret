@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -64,8 +64,10 @@
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * V602 12/06 *acm* - When removeing var from the user-variables dataset in
 *                    linked-list structure, no need to check for  EX# expressions
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-	include 'tmap_dims.parm'
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -79,8 +81,8 @@
 
 * internal variable declarations:
 	INTEGER		STR_UPCASE, TM_LENSTR, TM_LENSTR1,
-     .			du_list( max_uvar ), ndu, kdu, uv, vax_code, ind,
-     .			i, j, num_indices, dset_uvars, slen, flen
+     .			du_list( max_uvar ), ndu, kdu, uv, vax_code,
+     .			ind, i, j, num_indices, dset_uvars, slen, flen
 	CHARACTER*24	check_name
 
       PARAMETER (flen=128)      ! size of variable name string
@@ -142,7 +144,7 @@
 	DO 300 i = 1, ndu
  300	CALL PURGE_USER_VAR( du_list( i ) )
 
-* if this user variable is associated with any dynamic grids release 'em
+* if this user variable is associated with any dynamic grids release them
 	CALL DEALLO_UVAR_GRIDS(uvar)
 
 * eliminate the named variable from the list of uvars
@@ -150,7 +152,7 @@
         CALL deleted_list_modify(uvar_num_items_head,uvar,uvar_deleted)
 
 * Remove from linked-list structure, the user-variables dataset
-* No need to check for  EX# expressions
+* No need to check EX# expressions
 
         slen = TM_LENSTR( uvar_name_code(uvar)  )
         IF (slen .GT. 0 .AND. uvar_name_code(uvar)(1:3) .NE. 'EX#') THEN

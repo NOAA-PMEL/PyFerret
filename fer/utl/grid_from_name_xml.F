@@ -51,7 +51,9 @@
 * V532 5/01 *sh* - use EVAL_CONTEXT to get grid of expression
 * 1/03 *kob* g77 port requires risc buff for arbitrary string concats
 * v552: 4/03 *acm*  Increase length of variable names to 128 characters
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xcontext.cmn'

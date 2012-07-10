@@ -38,17 +38,14 @@
 * is the indicated transformation a filler?
 
 * V450: 5/97
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * calling argument declarations
 	INTEGER	trans
 
 * internal variable declarations
 
-#ifdef unix
 	include 'ferret.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 
 	ITSA_FILL_TRANS =    trans .EQ. trans_fill_ave

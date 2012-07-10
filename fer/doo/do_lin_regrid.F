@@ -5,7 +5,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -44,18 +44,16 @@
 *
 * revision 0.0 - 7/25/88
 * V200:  8/3/89 - 4D symmetrical version - regrid only 1 axis
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include	'xcontext.cmn'
 
 * calling argument declarations:
 	INTEGER	cx_lims, axis, msrc, mdst, icoef, itot
 	REAL	src(*), dst(*), work(itot)
-
-#ifdef unix
-	include	'ferret.parm'
-	include	'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 	CALL LIN_REGRID_1_AXIS( cx_lims, axis,
      .			    cx_lo_ss(cx_lims,axis), cx_hi_ss(cx_lims,axis),
@@ -63,4 +61,4 @@
      .			    work(1), work(icoef) )
 
 	RETURN
-	END	
+	END

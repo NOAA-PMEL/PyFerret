@@ -2,7 +2,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -52,7 +52,7 @@
 * revision 1.1 -10/12/88 - for named variables possibly call DELETE_NVAR
 * V200:  5/25/89 - reordered lo/hi_ss arguments
 * 		 - deleted variables flagged in mr_protected and mr_del_ links
-*		 - nvar's variables eliminated
+*		 - nvar variables eliminated
 *		 - temporary variables represented via mr_protected
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 * V510: 2/00 *sh* - free up the mr_grid pointer when variable is deleted
@@ -60,32 +60,24 @@
 * V533: 6/01 *sh* - allow for string variables with strides
 * V601 11/06 *acm*- fix bug 1466: memory for string vars is NOT allocated via malloc,
 *                   so do not FREE it here. 
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-	include		'tmap_dims.parm'
-	include		'ferret.parm'
-	include 	'xvariables.cmn'
-	include		'xprog_state.cmn'
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include 'ferret.parm'
+	include 'xvariables.cmn'
+	include 'xprog_state.cmn'
 
 * calling argument declarations:
-	INTEGER		mr
+	INTEGER mr
 
 * internal variable declarations:
-	INTEGER		MGRID_SIZE_DELTA, size, idim, prev, next
+	INTEGER MGRID_SIZE_DELTA, size, idim, prev, next
 
-* if this is a srting array variable then free the "C" memory allocated
-	IF ( mr_type(mr)      .EQ. ptype_string 
-     . .AND. mr_protected(mr) .NE. mr_table_entry_only ) THEN
-	   size = MGRID_SIZE_DELTA(mr)
-	   CALL FREE_C_STRING_ARRAY(mr_c_pointer(mr), size)
-	ENDIF
-
-* diagnostic "delete" message
 	IF (mode_diagnostic) THEN
 	   IF ( mr_protected(mr) .NE. mr_table_entry_only )
      .			CALL DIAGNOSTIC_OUT( '-DELETE', mr, point_to_mr )
-	   DO 100 idim = 1, 4
-	      mr_lo_ss( mr, idim ) = unspecified_int4
- 100	   CONTINUE
+
 	   IF     ( mr_protected( mr ) .EQ. mr_not_protected	) THEN
 	      CONTINUE
 	   ELSEIF ( mr_protected( mr ) .EQ. mr_temporary	) THEN
@@ -99,9 +91,17 @@
 	   ELSE
 	      CALL WARN( 'CORRUPTION! mr_protected ????' )
 	   ENDIF
- 3100	   FORMAT (1X,A,' VARIABLE DELETED !!')
 	ENDIF
 
+* if this is a string array variable then free the "C" memory allocated
+* if mr_table_entry_only, no memory was given to the variable
+	IF ( mr_type(mr)      .EQ. ptype_string  .AND.
+     .       mr_protected(mr) .NE. mr_table_entry_only ) THEN
+	   size = MGRID_SIZE_DELTA(mr)
+	   CALL FREE_C_STRING_ARRAY(mr_c_pointer(mr), size)
+	ENDIF
+
+* diagnostic "delete" message
 * remove variable slot from hash pile doubly linked list
 	prev = mv_blink( mr )
 	next = mv_flink( mr )
@@ -113,7 +113,7 @@
 	mv_blink( mr ) = unspecified_int4		! temp diag
 	mv_flink( 0 ) = mr
 
-* remove the variable from the deletion chain if it's there
+* remove the variable from the deletion chain if it is there
 	IF ( mr_protected(mr) .EQ. mr_not_protected ) THEN
 	   prev = mr_del_blink(mr)
 	   next = mr_del_flink(mr)
@@ -125,7 +125,6 @@
 
 * release bulk memory that the variable used
 	IF ( mr_protected( mr ) .NE. mr_table_entry_only ) 
-
      . 		CALL FREE_MEMORY( mr_blk1(mr), mr_nblks(mr) )
 
 

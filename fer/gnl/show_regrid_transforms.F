@@ -46,7 +46,9 @@
 *	  4/96 - branching bug detected by Sun f77 compiler
 * V650  Write to show_lun which may be set to a file unit number rather than std out
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xprog_state.cmn'
 	include	'xalgebra.cmn'

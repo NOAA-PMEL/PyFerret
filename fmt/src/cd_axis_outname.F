@@ -44,6 +44,7 @@
 * V62   2/09 *acm* When writing user-defined variables and when MODE UPCASE_OUTPUT is
 *                  cancelled, get the original upper/lowercase spelling of the axis name.
 * V63   9/09 *acm* Fixing bug 1686: if line_name_orig is not set, use line_name
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -59,7 +60,6 @@
 #include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-        include 'netcdf.decl'
 #include "netcdf.inc"
 
 * argument declarations

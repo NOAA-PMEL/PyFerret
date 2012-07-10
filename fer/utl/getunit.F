@@ -42,12 +42,9 @@
 *
 * V200:  8/28/90 - Extracted from Don Denbo's PPLUS code, 4 May 90, N. Soreide.
 *		   modified for FERRET by Steve Hankin
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER	lun, status

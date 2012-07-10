@@ -47,12 +47,9 @@
 * V530 *sh* use sorting routine SHELL for improved performance
 * V530 *acm* 1/23/01 replace shell sort with HEAPSORT for even 
 *	better performance.
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER n, valid_min, valid_max, nvalid

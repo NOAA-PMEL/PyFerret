@@ -44,7 +44,9 @@
 * V510: 8/99
 *	 *sh* 2/00 (??) - correct improper handling of invalid indices
 * V533; *sh* 7/01 - add support for sampling of string variables
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -97,7 +99,7 @@
 
 * the context for the holder may be missing its limits on axes other than the
 * sampling axis
-	   DO 100 idim = 1, 4
+	   DO 100 idim = 1, nferdims
 	      IF ( idim .NE. axis ) THEN
 	         CALL TRANSFER_AXIS( idim, chunk_cx, hold_cx )
 	      ENDIF
@@ -152,7 +154,6 @@
 	   ENDIF
 	   CALL MR_NOT_IN_USE( chunk_mr )
 	ENDIF
-
 
 *********  SETUP TO GRAB THE NEXT CHUNK  **********
 

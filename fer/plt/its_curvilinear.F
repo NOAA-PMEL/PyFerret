@@ -38,16 +38,13 @@
 * are we being asked to do a curvilinear coordinate plot?
 
 * V450: 3/97
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * calling argument declarations
 
 * internal variable declarations
 
-#ifdef unix
 	include 'xcurvilinear.cmn'
-#else
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 	
 	ITS_CURVILINEAR = curvilinear	! from COMMON
 

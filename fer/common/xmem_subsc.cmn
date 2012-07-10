@@ -7,6 +7,7 @@
 * to arrays.  Ultrix/RISC/FORTRAN doesn't permit EQUIVALENCED object to be
 * used as array declaration bounds
 * V500: 7/97 - increased number of subscripts from 6 to 12
+*       2/12 *kms* Add E and F dimensions
 
 ********************************************************************************
 ******			PARAMETER DEFINITIONS				  ******
@@ -23,6 +24,10 @@
      .		m7loz, m8loz, m9loz, m10loz, m11loz, m12loz,
      .		m1lot, m2lot, m3lot, m4lot,  m5lot,  m6lot,
      .		m7lot, m8lot, m9lot, m10lot, m11lot, m12lot,
+     .		m1loe, m2loe, m3loe, m4loe,  m5loe,  m6loe,
+     .		m7loe, m8loe, m9loe, m10loe, m11loe, m12loe,
+     .		m1lof, m2lof, m3lof, m4lof,  m5lof,  m6lof,
+     .		m7lof, m8lof, m9lof, m10lof, m11lof, m12lof,
      .
      .		m1hix, m2hix, m3hix, m4hix,  m5hix,  m6hix,
      .		m7hix, m8hix, m9hix, m10hix, m11hix, m12hix,
@@ -31,7 +36,11 @@
      .		m1hiz, m2hiz, m3hiz, m4hiz,  m5hiz,  m6hiz,
      .		m7hiz, m8hiz, m9hiz, m10hiz, m11hiz, m12hiz,
      .		m1hit, m2hit, m3hit, m4hit,  m5hit,  m6hit,
-     .		m7hit, m8hit, m9hit, m10hit, m11hit, m12hit
+     .		m7hit, m8hit, m9hit, m10hit, m11hit, m12hit,
+     .		m1hie, m2hie, m3hie, m4hie,  m5hie,  m6hie,
+     .		m7hie, m8hie, m9hie, m10hie, m11hie, m12hie,
+     .		m1hif, m2hif, m3hif, m4hif,  m5hif,  m6hif,
+     .		m7hif, m8hif, m9hif, m10hif, m11hif, m12hif
 
 	INTEGER
      .		m1lox, m2lox, m3lox, m4lox,  m5lox,  m6lox,
@@ -42,6 +51,10 @@
      .		m7loz, m8loz, m9loz, m10loz, m11loz, m12loz,
      .		m1lot, m2lot, m3lot, m4lot,  m5lot,  m6lot,
      .		m7lot, m8lot, m9lot, m10lot, m11lot, m12lot,
+     .		m1loe, m2loe, m3loe, m4loe,  m5loe,  m6loe,
+     .		m7loe, m8loe, m9loe, m10loe, m11loe, m12loe,
+     .		m1lof, m2lof, m3lof, m4lof,  m5lof,  m6lof,
+     .		m7lof, m8lof, m9lof, m10lof, m11lof, m12lof,
      .
      .		m1hix, m2hix, m3hix, m4hix,  m5hix,  m6hix,
      .		m7hix, m8hix, m9hix, m10hix, m11hix, m12hix,
@@ -50,12 +63,16 @@
      .		m1hiz, m2hiz, m3hiz, m4hiz,  m5hiz,  m6hiz,
      .		m7hiz, m8hiz, m9hiz, m10hiz, m11hiz, m12hiz,
      .		m1hit, m2hit, m3hit, m4hit,  m5hit,  m6hit,
-     .		m7hit, m8hit, m9hit, m10hit, m11hit, m12hit
+     .		m7hit, m8hit, m9hit, m10hit, m11hit, m12hit,
+     .		m1hie, m2hie, m3hie, m4hie,  m5hie,  m6hie,
+     .		m7hie, m8hie, m9hie, m10hie, m11hie, m12hie,
+     .		m1hif, m2hif, m3hif, m4hif,  m5hif,  m6hif,
+     .		m7hif, m8hif, m9hif, m10hif, m11hif, m12hif
 
 * equivalences to assist with passing subscripts
 	INTEGER
-     .		lo_ss( max_mem_args, 4 ),
-     .		hi_ss( max_mem_args, 4 )
+     .		lo_ss( max_mem_args, nferdims ),
+     .		hi_ss( max_mem_args, nferdims )
 
 	EQUIVALENCE
      .		(lo_ss(1,1), m1lox), (hi_ss(1,1), m1hix)

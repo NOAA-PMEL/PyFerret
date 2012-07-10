@@ -81,6 +81,7 @@
 * V600 *acm* 2/06 - restore default values of ds_var_scale, ds_var_off, ds_var_scaleit
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
 * V608 *acm* 10/07 Fixes for memory leak; call NCF_DELETE_DSET as a function
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * arguments:
 *	ds_num	- data set number (see COMMON /XSTEP_FILES/)
@@ -134,6 +135,8 @@
 	ds_alert_on_output(ds_num)	= 	.FALSE.
 	ds_message(ds_num)		=	char_init80
 ********************************************************************************
+* Note that ds_basic_axes relate to the TMAP model output
+
 	ds_des_name(ds_num)		=	char_init1024
 	ds_name(ds_num)			=	char_init1024
 	ds_1step(ds_num)		=	real8_init
@@ -149,8 +152,8 @@
 	ds_time_axis(ds_num)		=	int4_init
 
 * Next clear variables associated with variable in that data set.
-	DO 120 ivar = 1,maxvars
-	  IF (ds_var_setnum(ivar) .NE. ds_num) GOTO 120
+	DO 130 ivar = 1,maxvars
+	  IF (ds_var_setnum(ivar) .NE. ds_num) GOTO 130
 * ... deallocate grids and axes used by the dat aset
 	  CALL TM_DEALLO_DYN_GRID( ds_grid_number(ivar))
 *	  ds_var_code(ivar)		=	char_init128
@@ -163,18 +166,11 @@
 	  ds_grid_number(ivar)		=	int4_init
 	  ds_missing_flag(ivar)		=	real4_init
 	  ds_bad_flag(ivar)		=	real4_init
-	  ds_ordering(1,ivar)		=	int4_init
-	  ds_ordering(2,ivar)		=	int4_init
-	  ds_ordering(3,ivar)		=	int4_init
-	  ds_ordering(4,ivar)		=	int4_init
-	  ds_grid_start(1,ivar)		=	int4_init
-	  ds_grid_start(2,ivar)		=	int4_init
-	  ds_grid_start(3,ivar)		=	int4_init
-	  ds_grid_start(4,ivar)		=	int4_init
-	  ds_grid_end(1,ivar)		=	int4_init
-	  ds_grid_end(2,ivar)		=	int4_init
-	  ds_grid_end(3,ivar)		=	int4_init
-	  ds_grid_end(4,ivar)		=	int4_init
+	  DO 120 idim = 1, nferdims
+	     ds_ordering(idim,ivar)	=	int4_init
+	     ds_grid_start(idim,ivar)	=	int4_init
+	     ds_grid_end(idim,ivar)	=	int4_init
+  120	  CONTINUE
 	  ds_precision(ivar)		=	char_init01
 	  ds_aux_set_num(ivar)		=	int4_init
 ********************************************************************************
@@ -186,13 +182,13 @@
 	  ds_var_scale(ivar) 		=	1.0
 	  ds_var_off(ivar) 		=	0.0
 
-  120	CONTINUE
+  130	CONTINUE
 
 * Now loop through stepfiles and initialize associated entries, closing files
 * if necessary
 
-	DO 130 f_num = 1, maxstepfiles
-	  IF (sf_setnum(f_num) .NE. ds_num) GOTO 130
+	DO 140 f_num = 1, maxstepfiles
+	  IF (sf_setnum(f_num) .NE. ds_num) GOTO 140
 
 * close step file or CDF file ?
 	  IF ( sf_lunit (f_num) .NE. file_not_open) THEN	! open ?
@@ -219,12 +215,12 @@
 	  sf_index(f_num)		=	char_init23
 	  sf_regvars(f_num)		=	.TRUE.
 	  sf_regtimes(f_num)		=	.TRUE.
-  130	CONTINUE
+  140	CONTINUE
 
-        DO 140 f_num = 1, maxvarfiles
+        DO 150 f_num = 1, maxvarfiles
 	  vf_firstvar(f_num)		=	int4_init
 	  vf_lastvar(f_num)		=	int4_init
-  140   CONTINUE
+  150   CONTINUE
 
         status = NCF_DELETE_DSET(ds_num)
         GOTO 9900

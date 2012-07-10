@@ -47,10 +47,12 @@
 * V400: 11/94 - send warnings to GUI via 
 * V320: 2/95 - use TMAP routine tm_note
 * V606  8/07 ACM Send Notes to std error.
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 #ifdef NO_PASSED_CONCAT
 	include 'xrisc.cmn'
 #endif
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
         include 'gui.parm'
 	include 'xprog_state.cmn'
@@ -67,7 +69,6 @@
 
 * let the TMAP library do the work
 
-c	CALL TM_NOTE( string(:llen), ttout_lun )
 	CALL TM_NOTE( string(:llen), err_lun )
 
 	RETURN

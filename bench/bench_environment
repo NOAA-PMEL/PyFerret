@@ -1,4 +1,3 @@
-#!/bin/csh -ls
 # 
 #  simple script to restrict the ferret environment when running
 #  benchmark suite.  

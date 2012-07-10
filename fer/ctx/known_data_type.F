@@ -41,6 +41,8 @@
 * V533:  7/01
 * V554 1/04 *acm* - add counter_var 
 *      *kms* 11/10 added cat_pystat_var
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -66,6 +68,10 @@
 	IF     ( category .EQ. cat_file_var ) THEN
 
 	   cx_type(cx) =  ds_var_type(variable)
+
+	ELSEIF ( category .EQ. cat_aggregate_var ) THEN
+
+           cx_type(cx) = ds_var_type(variable)
 
         ELSEIF ( category .EQ. cat_pystat_var ) THEN
 
@@ -108,7 +114,7 @@
 
 * For string variables the result data type of @NGD and @NBD is float.  
 	IF (cx_type(cx) .EQ. ptype_string) THEN
-	   DO 100, idim = 1, 4
+	   DO 100, idim = 1, nferdims
 	      trans = cx_trans(idim, cx) 
 	      IF (trans .EQ. trans_good_pt    .OR.
      .            trans .EQ. trans_bad_pt     .OR.

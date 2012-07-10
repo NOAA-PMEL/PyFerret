@@ -71,11 +71,12 @@
 *              point instead.
 * V68    4/11  Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
-        include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'  
 
 * calling argument declarations:

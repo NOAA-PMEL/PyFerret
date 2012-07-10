@@ -40,23 +40,16 @@
 
 * 10/95 for Ferret V4.20
 * V510 4/00 *sh* - use counts now apply to ALL axes
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * Arguments
 	INTEGER*4	source, dest
 *
 * Parameters and commons
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 *
 * Local declarations
 	INTEGER*4	icnt
@@ -66,7 +59,7 @@
 	CALL TM_COPY_GRID( source, dest )
 
 * give the new grid responsibility for dynimic lines it has inherited
-	DO 100 icnt = 1,4
+	DO 100 icnt = 1,nferdims
 	   CALL TM_USE_LINE( grid_line(icnt,dest) )
   100	CONTINUE
 	RETURN

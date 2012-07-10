@@ -47,7 +47,9 @@
 * V450: 2/97
 *       97.07.16 *jc* adding code to query external functions
 * V63  *acm* 10/09 Changes for gfortran build
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include	'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xgrid_chg_fcns.cmn'

@@ -55,6 +55,8 @@
 * V550: *acm*11/02 add argument is_shade to DISP_SET_UP call (not used by wire)
 *                  remove VMS includes.
 * V552: *acm* 5/03 add argument use_cell to DISP_SET_UP call (not used by wire)
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*                  A time axis may be a T axis or F axis
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -106,8 +108,8 @@
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,
      .                                     is_cx, num_uvars_in_cmnd)
 * ... default orientation for YT and ZT contours has time on horizontal
-	IF ( plot_axis(2).EQ.t_dim .AND. plot_axis(1).NE.x_dim )
-     .							transpz = .NOT.transpz
+	IF ( (plot_axis(2).EQ.t_dim .OR. plot_axis(2).EQ.f_dim) .AND. 
+     .		plot_axis(1).NE.x_dim ) transpz = .NOT.transpz
 
 * get wire frame parameters (just get 'em as text strings)
 * /VIEW = x,y,z

@@ -39,10 +39,13 @@
 * V602 1/07 Fix bug 1410: If the script name contains a relative path name,
 *           it was not recognized as a valid path/filename.  Need to check for
 *           PathSeparator in the filename.  (previously looked for 1st character /)
-*
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+
 * Get script file name from common, for running with the comand line option
 *  ferret -script 
 * 
+
+	include 'tmap_dims.parm'
 	INCLUDE 'xprog_state.cmn'
 #include "gt_lib.parm"
 

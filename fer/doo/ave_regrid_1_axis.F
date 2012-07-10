@@ -7,7 +7,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -75,24 +75,30 @@
 * v580 *acm* 11/04 Fix the definition of ok_neg111; if -111 is at
 *                  either end of the interval we cannot distinguish
 *                  it as a valid index from its use as the bad flag.
+* NOTE: -111 in the above was the value of unspecified_int4 (now -999)
+*      *kms*  2/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
-	include	'xmem_subsc.cmn'
+	include 'xmem_subsc.cmn'
 	include 'xvariables.cmn'
 
 * calling argument declarations:
-	INTEGER	cx_lims, axis, trans, msrc, mdst,
+	INTEGER cx_lims, axis, trans, msrc, mdst,
      .          dst_lox, dst_hix, dst_loy, dst_hiy , wksize
-	INTEGER	ss21(wksize)
+	INTEGER ss21(wksize)
 
-	REAL    src( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
+	REAL    src( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .	             m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .	        dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .	             m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * local variable declarations:
 
-        LOGICAL         OK_neg111
-        INTEGER		dstss,srcss,src_grid,dst_grid,i,j,k,l
+        LOGICAL         ok_neg111
+        INTEGER		dstss,srcss,src_grid,dst_grid,i,j,k,l,m,n
 	INTEGER	     	srcss_lo,srcss_hi, dstss_lo,dstss_hi, ncontrib,
      .                  src_cx, dst_cx
 
@@ -110,16 +116,11 @@
         srcss_lo = mr_lo_ss(msrc,axis)
         srcss_hi = mr_hi_ss(msrc,axis)
 
-c        srcss_lo = cx_lo_ss(src_cx,axis)
-c        srcss_hi = cx_hi_ss(src_cx,axis)
-
-
-* Range of subscripts might be negative, and contain -111 among them.
-* ok_neg111 distinguishes between this and the flag unspecified_int4.
+* Range of subscripts might be negative, and contain the value of unspecified_int4 
+* among them.  ok_neg111 distinguishes between this and the flag unspecified_int4.
 
         ok_neg111 = srcss_lo .LT. unspecified_int4 .AND.
-     .              srcss_hi .GT. unspecified_int4 .AND.
-     .              srcss_lo .NE. srcss_hi
+     .              srcss_hi .GT. unspecified_int4
 
         dstss_lo = cx_lo_ss(cx_lims,axis)
         dstss_hi = cx_hi_ss(cx_lims,axis)
@@ -133,11 +134,10 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
      .			   dstss_lo, dstss_hi, dst_grid,
      .			   axis, ss21 )
 
-* Range of subscripts might be negative, and contain -111 among them.
-* ok_neg111 distinguishes between this and the flag unspecified_int4.
-
 * along X axis
         IF ( axis .EQ. x_dim ) THEN
+           DO 190 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO 190 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
            DO 190 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
            DO 190 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
            DO 190 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
@@ -151,7 +151,7 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
               IF ( (srcss_lo .EQ. unspecified_int4
      .	     .OR.  srcss_hi .EQ. unspecified_int4)
      .       .AND. .NOT.(ok_neg111) ) THEN
-	         dst(dstss,j,k,l) = bad_dst
+	         dst(dstss,j,k,l,m,n) = bad_dst
 	         goto 160
 	      ENDIF
 
@@ -164,7 +164,7 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
 	      DO 110 srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
-	         IF ( src( srcss, j, k, l ) .EQ. bad_src ) GOTO 110
+	         IF ( src(srcss, j, k, l, m, n) .EQ. bad_src ) GOTO 110
 
 	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
 	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
@@ -178,27 +178,26 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
                  IF (ddist .GT. 0.) THEN
 	            distance  = distance + ddist
 	            IF (trans .EQ. prgrd_sum ) THEN
-	               sum   = sum  + src(srcss, j, k, l)
+	               sum   = sum  + src(srcss, j, k, l, m, n)
      .			         * ddist/(xsrc_max-xsrc_min)
 	            ELSEIF (trans .EQ. prgrd_good_pt ) THEN
 	               sum   = sum  + ddist/(xsrc_max-xsrc_min)
-
 	            ELSE	! average or variance
-	               sum   = sum  + ddist * src(srcss, j, k, l)
+	               sum   = sum  + ddist * src(srcss, j, k, l, m, n)
 	            ENDIF
                  ENDIF
 
  110	      CONTINUE
 
 	      IF ( trans.EQ.prgrd_good_pt ) THEN
-	         dst(dstss, j, k, l) = sum
+	         dst(dstss, j, k, l, m, n) = sum
 	      ELSEIF ( distance .EQ. 0.0 ) THEN
-	         dst(dstss, j, k, l) = bad_dst
+	         dst(dstss, j, k, l, m, n) = bad_dst
 	      ELSEIF ( trans.EQ.prgrd_sum ) THEN
-	         dst(dstss, j, k, l) = sum
+	         dst(dstss, j, k, l, m, n) = sum
 	      ELSE
 * ... divide by distance to get average
-	         dst(dstss, j, k, l) = sum / distance
+	         dst(dstss, j, k, l, m, n) = sum / distance
 	      ENDIF
 
 
@@ -208,6 +207,8 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
 * along Y axis
         ELSEIF ( axis .EQ. Y_dim ) THEN
 
+           DO 290 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO 290 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
            DO 290 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
            DO 290 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
            DO 290 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
@@ -221,7 +222,7 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
               IF ( (srcss_lo .EQ. unspecified_int4
      .	     .OR.  srcss_hi .EQ. unspecified_int4)
      .       .AND. .NOT.(ok_neg111) ) THEN
-	         dst(i,dstss,k,l) = bad_dst
+	         dst(i,dstss,k,l,m,n) = bad_dst
 	         goto 260
 	      ENDIF
 
@@ -234,7 +235,7 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
 	      DO 210 srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
-	         IF ( src( i, srcss, k, l ) .EQ. bad_src ) GOTO 210
+	         IF ( src(i, srcss, k, l, m, n) .EQ. bad_src ) GOTO 210
 
 	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
 	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
@@ -248,27 +249,26 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
                  IF (ddist .GT. 0.) THEN
 	            distance  = distance + ddist
 	            IF (trans .EQ. prgrd_sum ) THEN
-	               sum   = sum  + src(i, srcss, k, l)
+	               sum   = sum  + src(i, srcss, k, l, m, n)
      .			         * ddist/(xsrc_max-xsrc_min)
 	            ELSEIF (trans .EQ. prgrd_good_pt ) THEN
 	               sum   = sum  + ddist/(xsrc_max-xsrc_min)
-
 	            ELSE	! average or variance
-	               sum   = sum  + ddist * src(i, srcss, k, l)
+	               sum   = sum  + ddist * src(i, srcss, k, l, m, n)
 	            ENDIF
                  ENDIF
 
  210	      CONTINUE
 
 	      IF (trans.EQ.prgrd_good_pt ) THEN
-	         dst(i, dstss, k, l) = sum
+	         dst(i, dstss, k, l, m, n) = sum
 	      ELSEIF ( distance .EQ. 0.0 ) THEN
-	         dst(i, dstss, k, l) = bad_dst
+	         dst(i, dstss, k, l, m, n) = bad_dst
 	      ELSEIF (trans.EQ.prgrd_sum ) THEN
-	         dst(i, dstss, k, l) = sum
+	         dst(i, dstss, k, l, m, n) = sum
 	      ELSE
 * ... divide by distance to get average
-	         dst(i, dstss, k, l) = sum / distance
+	         dst(i, dstss, k, l, m, n) = sum / distance
 	      ENDIF
 
  260	   CONTINUE
@@ -277,6 +277,8 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
 * along Z axis
         ELSEIF ( axis .EQ. z_dim ) THEN
 
+           DO 390 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO 390 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
            DO 390 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
            DO 390 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
            DO 390 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
@@ -290,6 +292,7 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
               IF ( (srcss_lo .EQ. unspecified_int4
      .	     .OR.  srcss_hi .EQ. unspecified_int4)
      .       .AND. .NOT.(ok_neg111) ) THEN
+	         dst(i,j,dstss,k,m,n) = bad_dst
 	         goto 360
 	      ENDIF
 
@@ -302,7 +305,7 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
 	      DO 310 srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
-	         IF ( src( i, j, srcss, l ) .EQ. bad_src ) GOTO 310
+	         IF ( src(i, j, srcss, l, m, n) .EQ. bad_src ) GOTO 310
 
 	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
 	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
@@ -316,27 +319,26 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
                  IF (ddist .GT. 0.) THEN
 	            distance  = distance + ddist
 	            IF (trans .EQ. prgrd_sum ) THEN
-	               sum   = sum  + src(i, j, srcss, l)
+	               sum   = sum  + src(i, j, srcss, l, m, n)
      .			         * ddist/(xsrc_max-xsrc_min)
 	            ELSEIF (trans .EQ. prgrd_good_pt ) THEN
 	               sum   = sum  + ddist/(xsrc_max-xsrc_min)
-
 	            ELSE	! average or variance
-	               sum   = sum  + ddist * src(i, j, srcss, l)
+	               sum   = sum  + ddist * src(i, j, srcss, l, m, n)
 	            ENDIF
                  ENDIF
 
  310	      CONTINUE
 
 	      IF ( trans.EQ.prgrd_good_pt ) THEN
-	         dst(i, j, dstss, l) = sum
+	         dst(i, j, dstss, l, m, n) = sum
 	      ELSEIF ( distance .EQ. 0.0 ) THEN
-	         dst(i, j, dstss, l) = bad_dst
+	         dst(i, j, dstss, l, m, n) = bad_dst
 	      ELSEIF (trans.EQ.prgrd_sum ) THEN
-	         dst(i, j, dstss, l) = sum
+	         dst(i, j, dstss, l, m, n) = sum
 	      ELSE
 * ... divide by distance to get average
-	         dst(i, j, dstss, l) = sum / distance
+	         dst(i, j, dstss, l, m, n) = sum / distance
 	      ENDIF
 
  360	   CONTINUE
@@ -345,6 +347,8 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
 * along T axis
         ELSEIF ( axis .EQ. T_dim ) THEN
 
+           DO 490 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO 490 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
            DO 490 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
            DO 490 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
            DO 490 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
@@ -358,15 +362,15 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
               IF ( (srcss_lo .EQ. unspecified_int4
      .	     .OR.  srcss_hi .EQ. unspecified_int4)
      .       .AND. .NOT.(ok_neg111) ) THEN
-	         dst(i,j,k,dstss) = bad_dst
+	         dst(i,j,k,dstss,m,n) = bad_dst
 	         goto 460
 	      ENDIF
 
 * USE SOURCE GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS 6/94
 * initialization of TDEST_WORLD is done from GET_AVE_LIMS
 
-	      xdst_lo = TDEST_WORLD(dstss, dst_grid, axis, box_lo_lim )
-	      xdst_hi = TDEST_WORLD(dstss, dst_grid, axis, box_hi_lim )
+	      xdst_lo = TDEST_WORLD(dstss, dst_grid, axis, box_lo_lim)
+	      xdst_hi = TDEST_WORLD(dstss, dst_grid, axis, box_hi_lim)
 
 * add all partial or complete boxes of data from the source grid
 	      sum = 0.0D0
@@ -374,13 +378,13 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
 	      DO 410 srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
-	         IF ( src( i, j, k, srcss ) .EQ. bad_src ) GOTO 410
+	         IF ( src(i, j, k, srcss, m, n) .EQ. bad_src ) GOTO 410
 
 	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
 	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
-	         xsrc_hi = MIN(xsrc_max,xdst_hi )
+	         xsrc_hi = MIN(xsrc_max,xdst_hi)
 
 	         ddist   = xsrc_hi - xsrc_lo
 
@@ -388,33 +392,178 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
                  IF (ddist .GT. 0.) THEN
 	            distance  = distance + ddist
 	            IF (trans .EQ. prgrd_sum ) THEN
-	               sum   = sum  + src(i, j, k, srcss)
+	               sum   = sum  + src(i, j, k, srcss, m, n)
      .			         * ddist/(xsrc_max-xsrc_min)
 	            ELSEIF (trans .EQ. prgrd_good_pt ) THEN
 	               sum   = sum  + ddist/(xsrc_max-xsrc_min)
-
 	            ELSE	! average or variance
-	               sum   = sum  + ddist * src(i, j, k, srcss)
+	               sum   = sum  + ddist * src(i, j, k, srcss, m, n)
 	            ENDIF
 	         ENDIF
  410	      CONTINUE
 
-
 	      IF ( trans.EQ.prgrd_good_pt ) THEN
-	         dst(i, j, k, dstss) = sum
+	         dst(i, j, k, dstss, m, n) = sum
 	      ELSEIF ( distance .EQ. 0.0 ) THEN
-	         dst(i, j, k, dstss) = bad_dst
+	         dst(i, j, k, dstss, m, n) = bad_dst
 	      ELSEIF (trans.EQ.prgrd_sum ) THEN
-	         dst(i, j, k, dstss) = sum
+	         dst(i, j, k, dstss, m, n) = sum
 	      ELSE
 * ... divide by distance to get average
-	         dst(i, j, k, dstss) = sum / distance
+	         dst(i, j, k, dstss, m, n) = sum / distance
 	      ENDIF
 
  460	   CONTINUE
  490	   CONTINUE
 
+* along E axis
+        ELSEIF ( axis .EQ. e_dim ) THEN
+
+           DO 590 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO 590 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO 590 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO 590 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO 590 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+
+* loop through the each destination grid box
+	   DO 560 dstss = dstss_lo,dstss_hi
+	      srcss_lo = ss21(dstss-dstss_lo+1)
+	      srcss_hi = ss21(dstss-dstss_lo+2)
+
+*  check if requested region is out of source range
+              IF ( (srcss_lo .EQ. unspecified_int4
+     .	     .OR.  srcss_hi .EQ. unspecified_int4)
+     .       .AND. .NOT.(ok_neg111) ) THEN
+	         dst(i,j,k,l,dstss,n) = bad_dst
+	         goto 560
+	      ENDIF
+
+* USE SOURCE GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS 6/94
+* initialization of TDEST_WORLD is done from GET_AVE_LIMS
+
+	      xdst_lo = TDEST_WORLD(dstss, dst_grid, axis, box_lo_lim)
+	      xdst_hi = TDEST_WORLD(dstss, dst_grid, axis, box_hi_lim)
+
+* add all partial or complete boxes of data from the source grid
+	      sum = 0.0D0
+	      distance = 0.0D0
+	      DO 510 srcss = srcss_lo, srcss_hi
+
+* ... ignore missing source data
+	         IF ( src(i, j, k, l, srcss, n) .EQ. bad_src ) GOTO 510
+
+	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
+	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
+
+	         xsrc_lo = MAX(xsrc_min,xdst_lo)
+	         xsrc_hi = MIN(xsrc_max,xdst_hi)
+
+	         ddist   = xsrc_hi - xsrc_lo
+
+* ... contribution from this source box
+                 IF (ddist .GT. 0.) THEN
+	            distance  = distance + ddist
+	            IF (trans .EQ. prgrd_sum ) THEN
+	               sum   = sum  + src(i, j, k, l, srcss, n)
+     .			         * ddist/(xsrc_max-xsrc_min)
+	            ELSEIF (trans .EQ. prgrd_good_pt ) THEN
+	               sum   = sum  + ddist/(xsrc_max-xsrc_min)
+	            ELSE	! average or variance
+	               sum   = sum  + ddist * src(i, j, k, l, srcss, n)
+	            ENDIF
+	         ENDIF
+ 510	      CONTINUE
+
+	      IF ( trans.EQ.prgrd_good_pt ) THEN
+	         dst(i, j, k, l, dstss, n) = sum
+	      ELSEIF ( distance .EQ. 0.0 ) THEN
+	         dst(i, j, k, l, dstss, n) = bad_dst
+	      ELSEIF (trans.EQ.prgrd_sum ) THEN
+	         dst(i, j, k, l, dstss, n) = sum
+	      ELSE
+* ... divide by distance to get average
+	         dst(i, j, k, l, dstss, n) = sum / distance
+	      ENDIF
+
+ 560	   CONTINUE
+ 590	   CONTINUE
+
+* along F axis
+        ELSEIF ( axis .EQ. f_dim ) THEN
+
+           DO 690 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO 690 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO 690 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO 690 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO 690 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+
+* loop through the each destination grid box
+	   DO 660 dstss = dstss_lo,dstss_hi
+	      srcss_lo = ss21(dstss-dstss_lo+1)
+	      srcss_hi = ss21(dstss-dstss_lo+2)
+
+*  check if requested region is out of source range
+              IF ( (srcss_lo .EQ. unspecified_int4
+     .	     .OR.  srcss_hi .EQ. unspecified_int4)
+     .       .AND. .NOT.(ok_neg111) ) THEN
+	         dst(i,j,k,l,dstss,n) = bad_dst
+	         goto 660
+	      ENDIF
+
+* USE SOURCE GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS 6/94
+* initialization of TDEST_WORLD is done from GET_AVE_LIMS
+
+	      xdst_lo = TDEST_WORLD(dstss, dst_grid, axis, box_lo_lim)
+	      xdst_hi = TDEST_WORLD(dstss, dst_grid, axis, box_hi_lim)
+
+* add all partial or complete boxes of data from the source grid
+	      sum = 0.0D0
+	      distance = 0.0D0
+	      DO 610 srcss = srcss_lo, srcss_hi
+
+* ... ignore missing source data
+	         IF ( src(i, j, k, l, m, srcss) .EQ. bad_src ) GOTO 610
+
+	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
+	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
+
+	         xsrc_lo = MAX(xsrc_min,xdst_lo)
+	         xsrc_hi = MIN(xsrc_max,xdst_hi)
+
+	         ddist   = xsrc_hi - xsrc_lo
+
+* ... contribution from this source box
+                 IF (ddist .GT. 0.) THEN
+	            distance  = distance + ddist
+	            IF (trans .EQ. prgrd_sum ) THEN
+	               sum   = sum  + src(i, j, k, l, m, srcss)
+     .			         * ddist/(xsrc_max-xsrc_min)
+	            ELSEIF (trans .EQ. prgrd_good_pt ) THEN
+	               sum   = sum  + ddist/(xsrc_max-xsrc_min)
+	            ELSE	! average or variance
+	               sum   = sum  + ddist * src(i, j, k, l, m, srcss)
+	            ENDIF
+	         ENDIF
+ 610	      CONTINUE
+
+	      IF ( trans.EQ.prgrd_good_pt ) THEN
+	         dst(i, j, k, l, m, dstss) = sum
+	      ELSEIF ( distance .EQ. 0.0 ) THEN
+	         dst(i, j, k, l, m, dstss) = bad_dst
+	      ELSEIF (trans.EQ.prgrd_sum ) THEN
+	         dst(i, j, k, l, m, dstss) = sum
+	      ELSE
+* ... divide by distance to get average
+	         dst(i, j, k, l, m, dstss) = sum / distance
+	      ENDIF
+
+ 660	   CONTINUE
+ 690	   CONTINUE
+
+* TODO: along E and F axes?
+
         ENDIF
+
 	IF (trans .NE. prgrd_variance) RETURN
 
 **************************************************************
@@ -427,29 +576,31 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
 	
 * along X axis
         IF ( axis .EQ. x_dim ) THEN
-           DO 590 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 590 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 590 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO 1190 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO 1190 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO 1190 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO 1190 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO 1190 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 
 * loop through the each destination grid box
-	   DO 560 dstss = dstss_lo,dstss_hi
+	   DO 1160 dstss = dstss_lo,dstss_hi
 
-	      IF ( dst(dstss, j, k, l) .EQ. bad_dst ) GOTO 560
+	      IF ( dst(dstss, j, k, l, m, n) .EQ. bad_dst ) GOTO 1160
 
 	      srcss_lo = ss21(dstss-dstss_lo+1)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
 
-	      xdst_lo = TM_WORLD(dstss, dst_grid, axis, box_lo_lim )
-	      xdst_hi = TM_WORLD(dstss, dst_grid, axis, box_hi_lim )
+	      xdst_lo = TM_WORLD(dstss, dst_grid, axis, box_lo_lim)
+	      xdst_hi = TM_WORLD(dstss, dst_grid, axis, box_hi_lim)
 
 * add all partial or complete boxes of data from the source grid
 	      sum = 0.0D0
 	      distance = 0.0D0
 	      ncontrib = 0
-	      DO 510 srcss = srcss_lo, srcss_hi
+	      DO 1110 srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
-	         IF ( src( srcss, j, k, l ) .EQ. bad_src ) GOTO 510
+	         IF ( src(srcss, j, k, l, m, n) .EQ. bad_src ) GOTO 1110
 
 	         xsrc_lo = MAX( TM_WORLD(srcss,src_grid,axis,box_lo_lim),
      .                          xdst_lo )
@@ -461,48 +612,51 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
  	         IF (ddist .GT. 0.0) THEN
 	           ncontrib = ncontrib + 1
 	           distance  = distance + ddist
-	           dev = DBLE(src(srcss, j, k, l)) - DBLE(dst(dstss, j, k, l))
+	           dev = DBLE(src(srcss, j, k, l, m, n)) -
+     .                   DBLE(dst(dstss, j, k, l, m, n))
 	           sum = sum  + ddist * dev*dev
 	         ENDIF
 
- 510	      CONTINUE
+ 1110	      CONTINUE
 
 * ... divide by weight to get variance
 	      IF (ncontrib .GT. 1) THEN
-	         dst(dstss, j, k, l) = sum / distance
+	         dst(dstss, j, k, l, m, n) = sum / distance
 	      ELSE
-	         dst(dstss, j, k, l) = bad_dst
+	         dst(dstss, j, k, l, m, n) = bad_dst
 	      ENDIF
 
- 560	   CONTINUE
- 590	   CONTINUE
+ 1160	   CONTINUE
+ 1190	   CONTINUE
 
 * along Y axis
         ELSEIF ( axis .EQ. Y_dim ) THEN
 
-           DO 690 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 690 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 690 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO 1290 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO 1290 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO 1290 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO 1290 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO 1290 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
-	   DO 660 dstss = dstss_lo,dstss_hi
+	   DO 1260 dstss = dstss_lo,dstss_hi
 
-	      IF ( dst(i, dstss, k, l) .EQ. bad_dst ) GOTO 660
+	      IF ( dst(i, dstss, k, l, m, n) .EQ. bad_dst ) GOTO 1260
 
 	      srcss_lo = ss21(dstss-dstss_lo+1)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
 
-	      xdst_lo = TM_WORLD(dstss, dst_grid, axis, box_lo_lim )
-	      xdst_hi = TM_WORLD(dstss, dst_grid, axis, box_hi_lim )
+	      xdst_lo = TM_WORLD(dstss, dst_grid, axis, box_lo_lim)
+	      xdst_hi = TM_WORLD(dstss, dst_grid, axis, box_hi_lim)
 
 * add all partial or complete boxes of data from the source grid
 	      sum = 0.0D0
 	      distance = 0.0D0
 	      ncontrib = 0
-	      DO 610 srcss = srcss_lo, srcss_hi
+	      DO 1210 srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
-	         IF ( src( i, srcss, k, l ) .EQ. bad_src ) GOTO 610
+	         IF ( src(i, srcss, k, l, m, n) .EQ. bad_src ) GOTO 1210
 
 	         xsrc_lo = MAX( TM_WORLD(srcss,src_grid,axis,box_lo_lim),
      .                          xdst_lo )
@@ -514,48 +668,51 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
 	         IF (ddist .GT. 0.0) THEN 
 	           ncontrib = ncontrib + 1
 	           distance  = distance + ddist
-	           dev = DBLE(src(i, srcss, k, l)) - DBLE(dst(i, dstss, k, l))
+	           dev = DBLE(src(i, srcss, k, l, m, n)) -
+     .                   DBLE(dst(i, dstss, k, l, m, n))
 	           sum   = sum  + ddist * dev*dev
 	         ENDIF
 
- 610	      CONTINUE
+ 1210	      CONTINUE
 
 * ... divide by weight to get variance
 	      IF (ncontrib .GT. 1) THEN
-	         dst(i, dstss, k, l) = sum / distance
+	         dst(i, dstss, k, l, m, n) = sum / distance
 	      ELSE
-	         dst(i, dstss, k, l) = bad_dst
+	         dst(i, dstss, k, l, m, n) = bad_dst
 	      ENDIF
 
- 660	   CONTINUE
- 690	   CONTINUE
+ 1260	   CONTINUE
+ 1290	   CONTINUE
 
 * along Z axis
         ELSEIF ( axis .EQ. z_dim ) THEN
 
-           DO 790 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 790 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-           DO 790 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO 1390 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO 1390 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO 1390 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO 1390 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO 1390 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
-	   DO 760 dstss = dstss_lo,dstss_hi
+	   DO 1360 dstss = dstss_lo,dstss_hi
 
-	      IF ( dst(i, j, dstss, l) .EQ. bad_dst ) GOTO 760
+	      IF ( dst(i, j, dstss, l, m, n) .EQ. bad_dst ) GOTO 1360
 
 	      srcss_lo = ss21(dstss-dstss_lo+1)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
 
-	      xdst_lo = TM_WORLD(dstss, dst_grid, axis, box_lo_lim )
-	      xdst_hi = TM_WORLD(dstss, dst_grid, axis, box_hi_lim )
+	      xdst_lo = TM_WORLD(dstss, dst_grid, axis, box_lo_lim)
+	      xdst_hi = TM_WORLD(dstss, dst_grid, axis, box_hi_lim)
 
 * add all partial or complete boxes of data from the source grid
 	      sum = 0.0D0
 	      distance = 0.0D0
 	      ncontrib = 0
-	      DO 710 srcss = srcss_lo, srcss_hi
+	      DO 1310 srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
-	         IF ( src( i, j, srcss, l ) .EQ. bad_src ) GOTO 710
+	         IF ( src(i, j, srcss, l, m, n) .EQ. bad_src ) GOTO 1310
 
 	         xsrc_lo = MAX( TM_WORLD(srcss,src_grid,axis,box_lo_lim),
      .                          xdst_lo )
@@ -567,34 +724,36 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
  	         IF (ddist .GT. 0.0) THEN
 	           ncontrib = ncontrib + 1
 	           distance  = distance + ddist
-	           dev = DBLE(src(i, j, srcss, l)) - DBLE(dst(i, j, dstss, l))
+	           dev = DBLE(src(i, j, srcss, l, m, n)) -
+     .                   DBLE(dst(i, j, dstss, l, m, n))
 	           sum = sum  + ddist * dev*dev
 	         ENDIF
 
- 710	      CONTINUE
+ 1310	      CONTINUE
 
-* ... divide by weight to get variance	      IF (ncontrib .GT. 1) THEN
+* ... divide by weight to get variance
 	      IF (ncontrib .GT. 1) THEN
-	         dst(i, j, dstss, l) = sum / distance
+	         dst(i, j, dstss, l, m, n) = sum / distance
 	      ELSE
-	         dst(i, j, dstss, l) = bad_dst
+	         dst(i, j, dstss, l, m, n) = bad_dst
 	      ENDIF
 
-
- 760	   CONTINUE
- 790	   CONTINUE
+ 1360	   CONTINUE
+ 1390	   CONTINUE
 
 * along T axis
         ELSEIF ( axis .EQ. T_dim ) THEN
 
-           DO 890 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 890 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-           DO 890 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO 1490 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO 1490 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO 1490 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO 1490 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO 1490 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
-	   DO 860 dstss = dstss_lo,dstss_hi
+	   DO 1460 dstss = dstss_lo,dstss_hi
 
-	      IF ( dst(i, j, k, dstss) .EQ. bad_dst ) GOTO 860
+	      IF ( dst(i, j, k, dstss, m, n) .EQ. bad_dst ) GOTO 1460
 
 	      srcss_lo = ss21(dstss-dstss_lo+1)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
@@ -602,17 +761,17 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
 * USE SOURCE GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS 6/94
 * initialization of TDEST_WORLD is done from GET_AVE_LIMS
 
-	      xdst_lo = TDEST_WORLD(dstss, dst_grid, axis, box_lo_lim )
-	      xdst_hi = TDEST_WORLD(dstss, dst_grid, axis, box_hi_lim )
+	      xdst_lo = TDEST_WORLD(dstss, dst_grid, axis, box_lo_lim)
+	      xdst_hi = TDEST_WORLD(dstss, dst_grid, axis, box_hi_lim)
 
 * add all partial or complete boxes of data from the source grid
 	      sum = 0.0D0
 	      distance = 0.0D0
 	      ncontrib = 0
-	      DO 810 srcss = srcss_lo, srcss_hi
+	      DO 1410 srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
-	         IF ( src( i, j, k, srcss ) .EQ. bad_src ) GOTO 810
+	         IF ( src(i, j, k, srcss, m, n) .EQ. bad_src ) GOTO 1410
 
 	         xsrc_lo = MAX( TM_WORLD(srcss,src_grid,axis,box_lo_lim),
      .                          xdst_lo )
@@ -625,22 +784,143 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
  	         IF (ddist .GT. 0.0) THEN
 	           ncontrib = ncontrib + 1
 	           distance  = distance + ddist
-	           dev = DBLE(src(i, j, k, srcss)) - DBLE(dst(i, j, k, dstss))
+	           dev = DBLE(src(i, j, k, srcss, m, n)) -
+     .                   DBLE(dst(i, j, k, dstss, m, n))
 	           sum = sum  + ddist * dev*dev
 	         ENDIF
 
- 810	      CONTINUE
+ 1410	      CONTINUE
 
 * ... divide by weight to get variance
 	      IF (ncontrib .GT. 1) THEN
-	         dst(i, j, k, dstss) = sum / distance
+	         dst(i, j, k, dstss, m, n) = sum / distance
 	      ELSE
-	         dst(i, j, k, dstss) = bad_dst
+	         dst(i, j, k, dstss, m, n) = bad_dst
 	      ENDIF
 
- 860	   CONTINUE
- 890	   CONTINUE
+ 1460	   CONTINUE
+ 1490	   CONTINUE
 
+* along E axis
+        ELSEIF ( axis .EQ. e_dim ) THEN
+
+           DO 1590 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO 1590 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO 1590 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO 1590 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO 1590 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+
+* loop through the each destination grid box
+	   DO 1560 dstss = dstss_lo,dstss_hi
+
+	      IF ( dst(i, j, k, l, dstss, n) .EQ. bad_dst ) GOTO 1560
+
+	      srcss_lo = ss21(dstss-dstss_lo+1)
+	      srcss_hi = ss21(dstss-dstss_lo+2)
+
+* USE SOURCE GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS 6/94
+* initialization of TDEST_WORLD is done from GET_AVE_LIMS
+
+	      xdst_lo = TDEST_WORLD(dstss, dst_grid, axis, box_lo_lim)
+	      xdst_hi = TDEST_WORLD(dstss, dst_grid, axis, box_hi_lim)
+
+* add all partial or complete boxes of data from the source grid
+	      sum = 0.0D0
+	      distance = 0.0D0
+	      ncontrib = 0
+	      DO 1510 srcss = srcss_lo, srcss_hi
+
+* ... ignore missing source data
+	         IF ( src(i, j, k, l, srcss, n) .EQ. bad_src ) GOTO 1510
+
+	         xsrc_lo = MAX( TM_WORLD(srcss,src_grid,axis,box_lo_lim),
+     .                          xdst_lo )
+	         xsrc_hi = MIN( TM_WORLD(srcss,src_grid,axis,box_hi_lim),
+     .                          xdst_hi )
+	         ddist   = xsrc_hi - xsrc_lo
+                 IF (ddist .LT. 0.) ddist = 0.
+
+* ... contribution from this source box
+ 	         IF (ddist .GT. 0.0) THEN
+	           ncontrib = ncontrib + 1
+	           distance  = distance + ddist
+	           dev = DBLE(src(i, j, k, l, srcss, n)) -
+     .                   DBLE(dst(i, j, k, l, dstss, n))
+	           sum = sum  + ddist * dev*dev
+	         ENDIF
+
+ 1510	      CONTINUE
+
+* ... divide by weight to get variance
+	      IF (ncontrib .GT. 1) THEN
+	         dst(i, j, k, l, dstss, n) = sum / distance
+	      ELSE
+	         dst(i, j, k, l, dstss, n) = bad_dst
+	      ENDIF
+
+ 1560	   CONTINUE
+ 1590	   CONTINUE
+
+
+* along F axis
+        ELSEIF ( axis .EQ. f_dim ) THEN
+
+           DO 1690 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO 1690 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO 1690 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO 1690 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO 1690 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+
+* loop through the each destination grid box
+	   DO 1660 dstss = dstss_lo,dstss_hi
+
+	      IF ( dst(i, j, k, l, m, dstss) .EQ. bad_dst ) GOTO 1660
+
+	      srcss_lo = ss21(dstss-dstss_lo+1)
+	      srcss_hi = ss21(dstss-dstss_lo+2)
+
+* USE SOURCE GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS 6/94
+* initialization of TDEST_WORLD is done from GET_AVE_LIMS
+
+	      xdst_lo = TDEST_WORLD(dstss, dst_grid, axis, box_lo_lim)
+	      xdst_hi = TDEST_WORLD(dstss, dst_grid, axis, box_hi_lim)
+
+* add all partial or complete boxes of data from the source grid
+	      sum = 0.0D0
+	      distance = 0.0D0
+	      ncontrib = 0
+	      DO 1610 srcss = srcss_lo, srcss_hi
+
+* ... ignore missing source data
+	         IF ( src(i, j, k, l, m, srcss) .EQ. bad_src ) GOTO 1610
+
+	         xsrc_lo = MAX( TM_WORLD(srcss,src_grid,axis,box_lo_lim),
+     .                          xdst_lo )
+	         xsrc_hi = MIN( TM_WORLD(srcss,src_grid,axis,box_hi_lim),
+     .                          xdst_hi )
+	         ddist   = xsrc_hi - xsrc_lo
+                 IF (ddist .LT. 0.) ddist = 0.
+
+* ... contribution from this source box
+ 	         IF (ddist .GT. 0.0) THEN
+	           ncontrib = ncontrib + 1
+	           distance  = distance + ddist
+	           dev = DBLE(src(i, j, k, l, m, srcss)) -
+     .                   DBLE(dst(i, j, k, l, m, dstss))
+	           sum = sum  + ddist * dev*dev
+	         ENDIF
+
+ 1610	      CONTINUE
+
+* ... divide by weight to get variance
+	      IF (ncontrib .GT. 1) THEN
+	         dst(i, j, k, l, m, dstss) = sum / distance
+	      ELSE
+	         dst(i, j, k, l, m, dstss) = bad_dst
+	      ENDIF
+
+ 1660	   CONTINUE
+ 1690	   CONTINUE
         ENDIF
 
 	RETURN

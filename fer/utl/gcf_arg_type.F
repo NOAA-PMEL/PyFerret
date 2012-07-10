@@ -3,6 +3,7 @@
 * return the argument type required for this argument
 
 * V500:  1/99
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations
 	INTEGER		gcfcn, iarg
@@ -11,14 +12,10 @@
 	INTEGER		iptr
 	INTEGER efcn_get_arg_type
 
-#ifdef unix
+	include	'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'grid_chg_fcns.parm'   ! for place-holder behavior
 	include 'xgrid_chg_fcns.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
-#endif
 
 
 	IF ( gcfcn .GT. gfcn_num_internal ) THEN

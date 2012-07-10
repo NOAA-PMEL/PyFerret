@@ -45,14 +45,11 @@
 *
 * V200:  6/8/89
 *	8/29/89 - special treatment of interpolation
-
-#ifdef unix
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+ 
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	cx
@@ -64,7 +61,7 @@
 	CALL TRANSFER_CONTEXT( cx, cx_buff )
 
 * expand all the compressing transformations
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   IF ( cx_trans(idim,cx) .EQ. trans_interpolate ) THEN
 	      cx_trans(idim,cx_buff) = trans_no_transform
 	      cx_lo_ss(cx_buff,idim) = 1

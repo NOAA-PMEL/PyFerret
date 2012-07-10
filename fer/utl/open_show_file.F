@@ -40,7 +40,9 @@
 
 * programmer - Ansley Manke TMAP
 * 3/2010
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'slash.parm'
 	include 'errmsg.parm'

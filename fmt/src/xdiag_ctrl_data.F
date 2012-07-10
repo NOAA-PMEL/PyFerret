@@ -43,14 +43,11 @@
 *
 * revision 0.00 -  3/15/91
 * 2/92 *sh* added ds_dset_type to support netCDF
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * COMMON/XDIAG_CTRL.....variables to control diagnostic output
 
-#ifdef unix
 	include 'xdiag_ctrl.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:XDIAG_CTRL.CMN_TEXT'
-#endif
 
       DATA	tmap_diag_on    /.FALSE./
       DATA      ds_dset_type    /'    '/

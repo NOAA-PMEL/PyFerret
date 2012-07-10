@@ -1,0 +1,32 @@
+! bn_syntax_6d.JNL
+! - test syntax interpretation of Program FERRET 6D
+
+! SET - SHOW - CANCEL DATA
+
+! 6D file based on gtbc011
+USE 6dfile
+
+SHOW GRID
+LIST/I=1:2/J=50/K=1/L=2/M=3/N=4 SALT
+SHOW GRID
+SET GRID/SAVE
+SET GRID ABSTRACT
+SHOW GRID
+SHOW GRID/X=180:165W SALT
+SET GRID/RESTORE
+SHOW GRID
+
+can dat/all
+
+! nested brackets (7/95 - version 4.01)
+use 6dfile,gt4d011
+stat/k=1/l=1/j=40/i=3/M=3/N=4/d=2 temp[d=1]
+stat/k=1/l=1/j=40/i=3/M=3/N=4/d=2 temp[d=1,g=u]
+
+! a common example: continuation for REPEAT loops
+repeat/M=1:3 (cancel data/all;\
+show data;\
+let a = _m;\
+list/nohead a;\
+cancel variables/all;\
+)

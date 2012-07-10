@@ -117,6 +117,7 @@
 
       SUBROUTINE samplexy_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -125,35 +126,41 @@
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
+
       CHARACTER*100 fcn_desc
+
       WRITE (fcn_desc, 10)
    10 FORMAT ('Returns data sampled at a set of (X,Y) points, ',
-     .   'using linear interpolation')
+     .        'using linear interpolation')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 3)
       CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance(id, ABSTRACT, 
-     .     NORMAL, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
-
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                ABSTRACT,        NORMAL,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
       CALL ef_set_num_work_arrays(id, 6)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT_TO_SAMPLE')
-      CALL ef_set_arg_desc(id, arg, 'variable (x,y,z,t) to sample')
-      CALL ef_set_axis_influence(id, arg, NO, NO, YES, YES)
+      CALL ef_set_arg_desc(id, arg, 'variable (x,y,z,t,e,f) to sample')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, YES, YES, YES, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'XPTS')
       CALL ef_set_arg_desc(id, arg, 'X values of sample points')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'YPTS')
       CALL ef_set_arg_desc(id, arg, 'Y values of sample points')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
@@ -174,34 +181,38 @@
 
       SUBROUTINE samplexy_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
 
 * **********************************************************************
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
 
-      INTEGER my_lo_l, my_hi_l
-      INTEGER nx, ny, nz, nt
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+      INTEGER my_lo, my_hi
+      INTEGER nx, ny, nz, nt, ne, nf
 
 *     Use utility functions to get context information about the 
-*     1st argument, to set the abstract axis lo and hi indices.
+*     second argument, to set the abstract axis lo and hi indices.
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       nx = arg_hi_ss(X_AXIS, ARG2) - arg_lo_ss(X_AXIS, ARG2) + 1
       ny = arg_hi_ss(Y_AXIS, ARG2) - arg_lo_ss(Y_AXIS, ARG2) + 1
       nz = arg_hi_ss(Z_AXIS, ARG2) - arg_lo_ss(Z_AXIS, ARG2) + 1
       nt = arg_hi_ss(T_AXIS, ARG2) - arg_lo_ss(T_AXIS, ARG2) + 1
+      ne = arg_hi_ss(E_AXIS, ARG2) - arg_lo_ss(E_AXIS, ARG2) + 1
+      nf = arg_hi_ss(F_AXIS, ARG2) - arg_lo_ss(F_AXIS, ARG2) + 1
 
-      my_lo_l = 1
-      my_hi_l = max(nx,ny,nz,nt)
+      my_lo = 1
+      my_hi = max(nx,ny,nz,nt,ne,nf)
 
-      CALL ef_set_axis_limits(id, X_AXIS, my_lo_l, my_hi_l)
+      CALL ef_set_axis_limits(id, X_AXIS, my_lo, my_hi)
 
 *                                                                     ^
 *                                                                     |
@@ -216,8 +227,8 @@
 *
       SUBROUTINE samplexy_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -227,16 +238,19 @@
 *                                                                      V
 
 *
-* Set the work arrays,  X/Y/Z/T dimensions
+* Set the work arrays, X/Y/Z/T/E/F dimensions
 *
-* ef_set_work_array_lens(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+* ef_set_work_array_dims_6d(id, array #,
+*                           xlo, ylo, zlo, tlo, elo, flo,
+*                           xhi, yhi, zhi, thi, ehi, fhi)
 *
+
       INTEGER mxh, myh, mxl, myl
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
-
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
 *  Allocate double the length of the axes for REAL*8 work arrays.
 
@@ -246,25 +260,37 @@
       mxh = mxl + 
      .     2* (arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1)
       myh = myl + 
-     .     2* (arg_hi_ss(Y_AXIS,ARG1)  - arg_lo_ss(Y_AXIS,ARG1) + 1)
+     .     2* (arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1) + 1)
 
 *  xaxdat
-      CALL ef_set_work_array_dims (id, 1, mxl, 1, 1, 1, mxh, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, 1,
+     .                              mxl, 1, 1, 1, 1, 1,
+     .                              mxh, 1, 1, 1, 1, 1)
 
 *  yaxdat
-      CALL ef_set_work_array_dims (id, 2, myl, 1, 1, 1, myh, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, 2,
+     .                              myl, 1, 1, 1, 1, 1,
+     .                              myh, 1, 1, 1, 1, 1)
 
 *  xboxlo
-      CALL ef_set_work_array_dims (id, 3, mxl, 1, 1, 1, mxh, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, 3,
+     .                              mxl, 1, 1, 1, 1, 1,
+     .                              mxh, 1, 1, 1, 1, 1)
 
 *  xboxhi
-      CALL ef_set_work_array_dims (id, 4, mxl, 1, 1, 1, mxh, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, 4,
+     .                              mxl, 1, 1, 1, 1, 1,
+     .                              mxh, 1, 1, 1, 1, 1)
 
 *  yboxlo
-      CALL ef_set_work_array_dims (id, 5, myl, 1, 1, 1, myh, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, 5,
+     .                              myl, 1, 1, 1, 1, 1,
+     .                              myh, 1, 1, 1, 1, 1)
 
 *  yboxhi
-      CALL ef_set_work_array_dims (id, 6, myl, 1, 1, 1, myh, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, 6,
+     .                              myl, 1, 1, 1, 1, 1,
+     .                              myh, 1, 1, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -279,172 +305,173 @@
 *
 
       SUBROUTINE samplexy_compute(id, arg_1, arg_2, arg_3, result,
-     .       xaxdat, yaxdat, xboxlo, xboxhi, yboxlo, yboxhi)
+     .                xaxdat, yaxdat, xboxlo, xboxhi, yboxlo, yboxhi)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
+     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
+     .           mem3lot:mem3hit, mem3loe:mem3hie, mem3lof:mem3hif)
+
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
+
+      REAL*8 xaxdat(wrk1lox:wrk1lox+(wrk1hix-wrk1lox)/2,wrk1loy:wrk1hiy,
+     .              wrk1loz:wrk1hiz, wrk1lot:wrk1hit,
+     .              wrk1loe:wrk1hie, wrk1lof:wrk1hif)
+      REAL*8 yaxdat(wrk2lox:wrk2lox+(wrk2hix-wrk2lox)/2,wrk2loy:wrk2hiy,
+     .              wrk2loz:wrk2hiz, wrk2lot:wrk2hit,
+     .              wrk2loe:wrk2hie, wrk2lof:wrk2hif)
+      REAL*8 xboxlo(wrk3lox:wrk3lox+(wrk3hix-wrk3lox)/2,wrk3loy:wrk3hiy,
+     .              wrk3loz:wrk3hiz, wrk3lot:wrk3hit,
+     .              wrk3loe:wrk3hie, wrk3lof:wrk3hif)
+      REAL*8 xboxhi(wrk4lox:wrk4lox+(wrk4hix-wrk4lox)/2,wrk4loy:wrk4hiy,
+     .              wrk4loz:wrk4hiz, wrk4lot:wrk4hit,
+     .              wrk4loe:wrk4hie, wrk4lof:wrk4hif)
+      REAL*8 yboxlo(wrk5lox:wrk5lox+(wrk5hix-wrk5lox)/2,wrk5loy:wrk5hiy,
+     .              wrk5loz:wrk5hiz, wrk5lot:wrk5hit,
+     .              wrk5loe:wrk5hie, wrk5lof:wrk5hif)
+      REAL*8 yboxhi(wrk6lox:wrk6lox+(wrk6hix-wrk6lox)/2,wrk6loy:wrk6hiy,
+     .              wrk6loz:wrk6hiz, wrk6lot:wrk6hit,
+     .              wrk6loe:wrk6hie, wrk6lof:wrk6hif)
+
+* After initialization, the 'res_' arrays contain indexing information 
+* for the result axes.  The 'arg_' arrays will contain the indexing 
+* information for each variable''s axes. 
+
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz,
-     .     mem1lot:mem1hit)
-      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz,
-     .     mem2lot:mem2hit)
-      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz,
-     .     mem3lot:mem3hit)
-      REAL result(memreslox:memreshix, memresloy:memreshiy,
-     .      memresloz:memreshiz, memreslot:memreshit)
-
-
-* After initialization, the 'res_' arrays contain indexing information
-* for the result axes.  The 'arg_' arrays will contain the indexing
-* information for each variable's axes.
-
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
 
 ***********************************************************************
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
-      COMMON /STOR/ mxdat, mydat
-      INTEGER mxdat, mydat
-      INTEGER nx, nxx, nxy, nxz, nxt
-      INTEGER ny, nyx, nyy, nyz, nyt
+
+      INTEGER STR_UPCASE
+      LOGICAL TM_FPEQ
+
+      INTEGER nx, nxx, nxy, nxz, nxt, nxe, nxf
+      INTEGER ny, nyx, nyy, nyz, nyt, nye, nyf
       INTEGER ndimx, ndimy
-
-*  Set up work arrays
-
-      REAL*8 xaxdat(wrk1lox:wrk1lox+(wrk1hix-wrk1lox)/2,wrk1loy:wrk1hiy,
-     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-      REAL*8 yaxdat(wrk2lox:wrk2lox+(wrk2hix-wrk2lox)/2,wrk2loy:wrk2hiy,
-     .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
-      REAL*8 xboxlo(wrk3lox:wrk3lox+(wrk3hix-wrk3lox)/2,wrk3loy:wrk3hiy,
-     .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
-      REAL*8 xboxhi(wrk4lox:wrk4lox+(wrk4hix-wrk4lox)/2,wrk4loy:wrk4hiy,
-     .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
-      REAL*8 yboxlo(wrk5lox:wrk5lox+(wrk5hix-wrk5lox)/2,wrk5loy:wrk5hiy,
-     .               wrk5loz:wrk5hiz, wrk5lot:wrk5hit)
-      REAL*8 yboxhi(wrk6lox:wrk6lox+(wrk6hix-wrk6lox)/2,wrk6loy:wrk6hiy,
-     .               wrk6loz:wrk6hiz, wrk6lot:wrk6hit)
-
-      INTEGER i, j, k, l
-      INTEGER i1,j1,k1,l1
-      INTEGER i2,j2,k2,l2
-      INTEGER i3,j3,k3,l3
-
-      LOGICAL ok, full_span
-      INTEGER STR_UPCASE, ic, imatch, jmatch
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, k1, l1, m1, n1
+      INTEGER i2, j2, k2, l2, m2, n2
+      INTEGER i3, j3, k3, l3, m3, n3
+      INTEGER ic, imatch, jmatch
       INTEGER ibot, itop, jbot, jtop, xflag
+      INTEGER ilo, ihi, jlo, jhi
+      LOGICAL ok, full_span
       REAL fxbot, fxtop, fbb, ftb, fbt, ftt
       REAL xbot, xtop, ybot, ytop
-      REAL frac
+      REAL xfrac, yfrac
+      REAL dx, dxlo, dxhi, dy, dylo, dyhi, delmodx, xpt, ypt
       CHARACTER err_msg*255, test_str*16
 
 C  variables for checking axis characteristics (modulo axes)
+      CHARACTER ax_name(6)*16, ax_units(6)*16
+      LOGICAL backward(6), modulo(6), regular(6)
 
-      CHARACTER ax_name(4)*16, ax_units(4)*16
-      LOGICAL backward(4), modulo(4), regular(4)
-      INTEGER ilo, ihi, jlo, jhi
-      REAL dx, dxlo, dxhi, dy, dylo, dyhi, delmodx, xpt, ypt
-
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
       nxx = arg_hi_ss(X_AXIS,ARG2) - arg_lo_ss(X_AXIS,ARG2) + 1
       nxy = arg_hi_ss(Y_AXIS,ARG2) - arg_lo_ss(Y_AXIS,ARG2) + 1
       nxz = arg_hi_ss(Z_AXIS,ARG2) - arg_lo_ss(Z_AXIS,ARG2) + 1
       nxt = arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1
-      nx = max(nxx, nxy, nxz, nxt)
+      nxe = arg_hi_ss(E_AXIS,ARG2) - arg_lo_ss(E_AXIS,ARG2) + 1
+      nxf = arg_hi_ss(F_AXIS,ARG2) - arg_lo_ss(F_AXIS,ARG2) + 1
+      nx = max(nxx, nxy, nxz, nxt, nxe, nxf)
 
       nyx = arg_hi_ss(X_AXIS,ARG3) - arg_lo_ss(X_AXIS,ARG3) + 1
       nyy = arg_hi_ss(Y_AXIS,ARG3) - arg_lo_ss(Y_AXIS,ARG3) + 1
       nyz = arg_hi_ss(Z_AXIS,ARG3) - arg_lo_ss(Z_AXIS,ARG3) + 1
       nyt = arg_hi_ss(T_AXIS,ARG3) - arg_lo_ss(T_AXIS,ARG3) + 1
-      ny = max(nyx, nyy, nyz, nyt)
+      nye = arg_hi_ss(E_AXIS,ARG3) - arg_lo_ss(E_AXIS,ARG3) + 1
+      nyf = arg_hi_ss(F_AXIS,ARG3) - arg_lo_ss(F_AXIS,ARG3) + 1
+      ny = max(nyx, nyy, nyz, nyt, nye, nyf)
 
       ndimx = 0
       ndimy = 0
-      DO 110 i = X_AXIS,T_AXIS
+      DO 10 i = X_AXIS,F_AXIS
          IF (arg_hi_ss(i,ARG2) - arg_lo_ss(i,ARG2) .GT.0) 
      .       ndimx = ndimx + 1
          IF (arg_hi_ss(i,ARG3) - arg_lo_ss(i,ARG3) .GT.0) 
      .       ndimy = ndimy + 1
-  110 CONTINUE
+   10 CONTINUE
 
-      IF (nx .NE. ny   .OR.  ndimx .GT. 1  .OR. ndimy .GT.1) THEN
-         WRITE (err_msg, 10)
+      IF ( (nx .NE. ny) .OR. (ndimx .GT. 1) .OR. (ndimy .GT.1) ) THEN
+         err_msg = 
+     .  'Arguments 2 and 3 must be 1-dimensional lists of equal length'
          GO TO 999
       ENDIF
 
-   10 FORMAT(
-     . 'Arguments 2 and 3 must be 1-dimensional lists of equal length')
-
 *  Get x and y coordinates of the data to be sampled.
-
-      CALL ef_get_coordinates(id, ARG1, X_AXIS,
-     .   arg_lo_ss(X_AXIS, ARG1), arg_hi_ss(X_AXIS, ARG1), xaxdat)
-      CALL ef_get_coordinates(id, ARG1, Y_AXIS,
-     .   arg_lo_ss(Y_AXIS, ARG1), arg_hi_ss(Y_AXIS, ARG1), yaxdat)
 
       ilo = arg_lo_ss(X_AXIS,ARG1)
       ihi = arg_hi_ss(X_AXIS,ARG1)
       jlo = arg_lo_ss(Y_AXIS,ARG1)
       jhi = arg_hi_ss(Y_AXIS,ARG1)
 
-*  Get x and y coordinates of the data to be sampled.
-
-      CALL ef_get_coordinates(id, ARG1, X_AXIS,
-     .   arg_lo_ss(X_AXIS, ARG1), arg_hi_ss(X_AXIS, ARG1), xaxdat)
-      CALL ef_get_coordinates(id, ARG1, Y_AXIS,
-     .   arg_lo_ss(Y_AXIS, ARG1), arg_hi_ss(Y_AXIS, ARG1), yaxdat)
+      CALL ef_get_coordinates(id, ARG1, X_AXIS, ilo, ihi, xaxdat)
+      CALL ef_get_coordinates(id, ARG1, Y_AXIS, jlo, jhi, yaxdat)
 
 *  Check to see if input x axis is modulo, and if axes are regular.
 
-      CALL ef_get_axis_info (id, ARG1, ax_name, ax_units, backward, 
-     .                       modulo, regular)
-
-      IF (regular(1)) THEN
-         dx = xaxdat(2,1,1,1) - xaxdat(1,1,1,1)
-	 dxlo = dx/2.
-	 dxhi = dx/2.
+      CALL ef_get_axis_info_6d(id, ARG1, ax_name, ax_units,
+     .                         backward, modulo, regular)
+      IF ( regular(1) ) THEN
+         dx = xaxdat(2,1,1,1,1,1) - xaxdat(1,1,1,1,1,1)
+         dxlo = dx/2.
+         dxhi = dx/2.
       ELSE
-         CALL ef_get_box_limits(id, ARG1, X_AXIS, arg_lo_ss(X_AXIS, ARG1), 
-     .   arg_hi_ss(X_AXIS, ARG1), xboxlo, xboxhi)
-
-         dxlo = (xboxlo(ilo+1,1,1,1) - xboxlo(ilo,1,1,1) )/ 2.
-         dxhi = (xboxhi(ihi,1,1,1) - xboxhi(ihi-1,1,1,1) )/ 2.
+         CALL ef_get_box_limits(id, ARG1, X_AXIS, ilo, ihi,
+     .                          xboxlo, xboxhi)
+         dxlo = (xboxlo(ilo+1,1,1,1,1,1) - xboxlo(ilo,1,1,1,1,1) ) / 2.
+         dxhi = (xboxhi(ihi,1,1,1,1,1) - xboxhi(ihi-1,1,1,1,1,1) ) / 2.
       ENDIF
 
-      IF (regular(2)) THEN
-         dy = yaxdat(2,1,1,1) - yaxdat(1,1,1,1)
-	 dylo = dy/2.
-	 dyhi = dy/2.
+      IF ( regular(2) ) THEN
+         dy = yaxdat(2,1,1,1,1,1) - yaxdat(1,1,1,1,1,1)
+         dylo = dy/2.
+         dyhi = dy/2.
       ELSE
-         CALL ef_get_box_limits(id, ARG1, Y_AXIS, arg_lo_ss(Y_AXIS, ARG1), 
-     .   arg_hi_ss(Y_AXIS, ARG1), yboxlo, yboxhi)
-         dylo = (yboxlo(jlo+1,1,1,1) - yboxlo(jlo,1,1,1) )/ 2.
-         dyhi = (yboxhi(jhi,1,1,1) - yboxlo(jhi-1,1,1,1) )/ 2.
+         CALL ef_get_box_limits(id, ARG1, Y_AXIS, jlo, jhi,
+     .                          yboxlo, yboxhi)
+         dylo = (yboxlo(jlo+1,1,1,1,1,1) - yboxlo(jlo,1,1,1,1,1) )/ 2.
+         dyhi = (yboxhi(jhi,1,1,1,1,1) - yboxlo(jhi-1,1,1,1,1,1) )/ 2.
       ENDIF
       
-* Check to see if input x,y  axis is modulo. If its a longitude 
+* Check to see if input x,y axis is modulo. If its a longitude 
 * axis, check for full-span
 
       IF ( modulo(1) ) THEN
          ic = STR_UPCASE (test_str, ax_units(1))
          ok = (test_str(1:3) .EQ. 'DEG') 
-         dx = xaxdat(ilo+1,1,1,1) - xaxdat(ilo,1,1,1)
-         delmodx = (xaxdat(ihi,1,1,1)+dxhi) - (xaxdat(ilo,1,1,1)-dxlo)
-	 IF (.NOT. regular(1)) 
-     .      delmodx = xboxhi(ihi,1,1,1) - xboxlo(ilo,1,1,1)
-         IF (ok) THEN 
-	    full_span = (delmodx .GT. 360.-dx)
-	    delmodx = 360.
+         dx = xaxdat(ilo+1,1,1,1,1,1) - xaxdat(ilo,1,1,1,1,1)
+         delmodx = (xaxdat(ihi,1,1,1,1,1) + dxhi) -
+     .             (xaxdat(ilo,1,1,1,1,1) - dxlo)
+         IF ( .NOT. regular(1) )
+     .      delmodx = xboxhi(ihi,1,1,1,1,1) - xboxlo(ilo,1,1,1,1,1)
+         IF ( ok ) THEN 
+            full_span = (delmodx .GT. 360.-dx)
+            delmodx = 360.
          ELSE
-	    full_span = .TRUE.
+            full_span = .TRUE.
          ENDIF
       ENDIF
 
@@ -452,241 +479,274 @@ C  variables for checking axis characteristics (modulo axes)
       j2 = arg_lo_ss(Y_AXIS,ARG2)
       k2 = arg_lo_ss(Z_AXIS,ARG2)
       l2 = arg_lo_ss(T_AXIS,ARG2)
+      m2 = arg_lo_ss(E_AXIS,ARG2)
+      n2 = arg_lo_ss(F_AXIS,ARG2)
 
       i3 = arg_lo_ss(X_AXIS,ARG3)
       j3 = arg_lo_ss(Y_AXIS,ARG3)
       k3 = arg_lo_ss(Z_AXIS,ARG3)
       l3 = arg_lo_ss(T_AXIS,ARG3)
+      m3 = arg_lo_ss(E_AXIS,ARG3)
+      n3 = arg_lo_ss(F_AXIS,ARG3)
 
 *  For each (xpt,ypt) pair, search the data array 
 *   arg_1 for the nearest higher (x,y) grid coordinates.  Interpolate 
 *   in 2 directions for the result.
 
+* Y-axis is normal to the result
       j = res_lo_ss(Y_AXIS)
-      DO 500 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-         ibot = ef_unspecified_int4	! Check if xpt points in xax range.
-         itop = ef_unspecified_int4
-         imatch = 0
+      DO 700 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-	 xpt = arg_2(i2,j2,k2,l2)
-	 ypt = arg_3(i3,j3,k3,l3)
+         xpt = arg_2(i2,j2,k2,l2,m2,n2)
+         ypt = arg_3(i3,j3,k3,l3,m3,n3)
          IF (xpt .EQ. bad_flag(ARG2) .OR. ypt .EQ. bad_flag(ARG3)) THEN
-            DO 700 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-               DO 600 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-                    result(i,j,k,l) = bad_flag_result
-  600          CONTINUE
-  700       CONTINUE
+            DO 80 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+            DO 80 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+            DO 80 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            DO 80 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+               result(i,j,k,l,m,n) = bad_flag_result
+   80       CONTINUE
+*           Go to the next pair of coordinates
+            GOTO 690
+         ENDIF
 
-         ELSE
+* Flag for outside of a modulo axis
+         xflag = 0
 
+* Check if xpt is in the x-axis range.
+         ibot = ef_unspecified_int4
+         itop = ef_unspecified_int4
+         imatch = ef_unspecified_int4
 *  Locate the X point within the range of modulo X axis 
 *  If we have the whole span, then use the point at the other
 *  end to handle points within a half-grid cell of the edge.
 
-            xflag = 0
-            IF (modulo(1) .AND. full_span ) THEN
-               IF (xpt .GE. xaxdat(ihi,1,1,1) .AND.
-     .             xpt .LE. xaxdat(ihi,1,1,1)+dxhi) THEN
-                  ibot = ihi
-                  xflag = 1
-               ELSE IF (xpt .GE. xaxdat(ihi,1,1,1) ) THEN
-                  DO WHILE (xpt .GE. xaxdat(ihi,1,1,1) ) 
-                     xpt = xpt - delmodx
-                  ENDDO
-               ENDIF
-
-               IF (xpt .LT. xaxdat(ilo,1,1,1) .AND.
-     .             xpt .GE. xaxdat(ilo,1,1,1)-dxlo) THEN
-                  itop = ilo
-                  xflag = -1
-               ELSE IF (xpt .LT. xaxdat(ilo,1,1,1) ) THEN
-                  DO WHILE (xpt .LT. xaxdat(ilo,1,1,1) )
-                     xpt = xpt + delmodx
-                  ENDDO
-               ENDIF
-
+         IF ( modulo(1) .AND. full_span ) THEN
+            IF ( xpt .GE. xaxdat(ihi,1,1,1,1,1) .AND.
+     .           xpt .LE. xaxdat(ihi,1,1,1,1,1) + dxhi ) THEN
+               ibot = ihi
+               xflag = 1
+            ELSE IF ( xpt .GE. xaxdat(ihi,1,1,1,1,1) ) THEN
+               DO WHILE ( xpt .GE. xaxdat(ihi,1,1,1,1,1) ) 
+                  xpt = xpt - delmodx
+               ENDDO
             ENDIF
 
-            DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
-	       IF (i1  .EQ. arg_lo_ss(X_AXIS,ARG1) .AND.
-     .             xpt .LT. xaxdat(i1,1,1,1)       .AND. 
-     .             xpt .GT. xaxdat(i1,1,1,1)-dxhi  .AND. .NOT.modulo(1) ) 
-     .           ibot = i1
-
-               IF (xpt .GE. xaxdat(i1,1,1,1)) ibot = i1
-                 
-               IF (xpt .EQ. xaxdat(i1,1,1,1)) imatch = i1
-
-cbf      may be some derivation from the exact value can be allowed:
-cbf      if (xpt - xaxdat(i1,1,1,1)).le.eps)   imatch = i1
-
-  100       CONTINUE
-
-  111       CONTINUE
-            i1 = arg_hi_ss(X_AXIS,ARG1)
-	    IF (.NOT.modulo(1) ) THEN
-               IF (xpt .GT. xaxdat(i1,1,1,1)  .AND.
-     .             xpt .LT. xaxdat(i1,1,1,1)+dxhi ) THEN
-                  ibot = ihi
-               ELSE IF (xpt .GT. xaxdat(i1,1,1,1) )THEN
-                  ibot = ef_unspecified_int4		! ARG_2 XPT outside of range 
-               ENDIF					! (non modulo)
-            ENDIF					
-
-cbf       for matching the next neighbour is not of interest
-            IF (imatch .NE. 0) then
-               itop = ibot
-            ELSE
-               itop = ibot + 1
+            IF ( xpt .LT. xaxdat(ilo,1,1,1,1,1) .AND.
+     .           xpt .GE. xaxdat(ilo,1,1,1,1,1) - dxlo ) THEN
+               itop = ilo
+               xflag = -1
+            ELSE IF ( xpt .LT. xaxdat(ilo,1,1,1,1,1) ) THEN
+               DO WHILE (xpt .LT. xaxdat(ilo,1,1,1,1,1) )
+                  xpt = xpt + delmodx
+               ENDDO
             ENDIF
+         ENDIF
+
+
+         DO 120 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+            IF ( TM_FPEQ(xpt, xaxdat(i1,1,1,1,1,1)) ) THEN
+               imatch = i1
+               GOTO 130
+            ELSE IF ( i1  .EQ. arg_lo_ss(X_AXIS,ARG1)     .AND.
+     .                xpt .LT. xaxdat(i1,1,1,1,1,1)       .AND.
+     .                xpt .GT. xaxdat(i1,1,1,1,1,1)-dxhi  .AND.
+     .               .NOT. modulo(1) ) THEN
+               ibot = i1
+            ELSE IF ( xpt .GE. xaxdat(i1,1,1,1,1,1) ) THEN
+               ibot = i1
+            ENDIF
+  120    CONTINUE
+
+         IF ( .NOT. modulo(1) ) THEN
+            IF ( xpt .GT. xaxdat(ihi,1,1,1,1,1) .AND.
+     .           xpt .LT. xaxdat(ihi,1,1,1,1,1) + dxhi ) THEN
+               ibot = ihi
+            ELSE IF ( xpt .GT. xaxdat(ihi,1,1,1,1,1) ) THEN
+               ibot = ef_unspecified_int4   ! ARG_2 XPT outside of range 
+            ENDIF
+         ENDIF
+
+  130    IF ( imatch .NE. ef_unspecified_int4 ) THEN
+            ibot = imatch
+            itop = imatch
+         ELSE IF ( ibot .NE. ef_unspecified_int4 ) THEN
+            itop = ibot + 1
+            IF ( itop .GT. ihi ) itop = ihi
+         ENDIF
 
 * If the data is at the very top or bottom of the modulo x axis, get the
 * point from the other end.
 
-	    IF (xflag .EQ. 1) THEN
-	       ibot = ihi
-	       itop = ilo
-	    ENDIF
-	    IF (xflag .EQ. -1) THEN
-	       itop = ilo
-	       ibot = ihi
-	    ENDIF
+         IF ( xflag .EQ. 1 ) THEN
+            ibot = ihi
+            itop = ilo
+         ENDIF
+         IF ( xflag .EQ. -1 ) THEN
+            itop = ilo
+            ibot = ihi
+         ENDIF
 
-            IF (ibot .EQ. ef_unspecified_int4) itop = ibot
+         IF ( ibot .EQ. ef_unspecified_int4 ) THEN
+*           Coordinate outside the grid
+            DO 140 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+            DO 140 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+            DO 140 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            DO 140 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+               result(i,j,k,l,m,n) = bad_flag_result
+  140       CONTINUE
+*           Go to the next pair of coordinates
+            GOTO 690
+         ENDIF
 
-cbf        analogously in y direction
-            jbot = ef_unspecified_int4	! Check if ypt points in yax range.
-            jmatch = 0
+cbf      analogously in y direction
 
-   	    ypt = arg_3(i3,j3,k3,l3)
-            DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+* Check if ypt is in the y-axis range.
+         jbot = ef_unspecified_int4
+         jmatch = ef_unspecified_int4
 
-	       IF (j1  .EQ. arg_lo_ss(Y_AXIS,ARG1) .AND.
-     .             ypt .LT. yaxdat(j1,1,1,1)       .AND. 
-     .             ypt .GT. yaxdat(j1,1,1,1)-dylo ) 
-     .          jbot = j1
-
-               IF (ypt .GE. yaxdat(j1,1,1,1) ) jbot = j1
-            IF (ypt .EQ. yaxdat(j1,1,1,1) ) jmatch = j1
-cbf         IF (ypt - yaxdat(j1,1,1,1) ) .LE. eps) jmatch = j1
-
-  200       CONTINUE
-
-            j1 = arg_hi_ss(Y_AXIS,ARG1)
-            IF (ypt .GT. yaxdat(j1,1,1,1) .AND.
-     .          ypt .LT. yaxdat(j1,1,1,1)+dyhi  ) THEN
-               jbot = jhi
-            ELSE IF (ypt .GT. yaxdat(j1,1,1,1)) THEN
-               jbot = ef_unspecified_int4		! ARG_3 YPT outside of range 
+         DO 220 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+            IF ( TM_FPEQ(ypt, yaxdat(j1,1,1,1,1,1)) ) THEN
+               jmatch = j1
+               GOTO 230
+            ELSE IF ( j1  .EQ. arg_lo_ss(Y_AXIS,ARG1) .AND.
+     .                ypt .LT. yaxdat(j1,1,1,1,1,1)   .AND. 
+     .                ypt .GT. yaxdat(j1,1,1,1,1,1) - dylo ) THEN
+               jbot = j1
+            ELSE IF ( ypt .GE. yaxdat(j1,1,1,1,1,1) ) THEN
+               jbot = j1
             ENDIF
+  220    CONTINUE
 
-            IF (jmatch .NE. 0) then
-                jtop = jbot
-            ELSE
-               jtop = jbot + 1
+         IF ( ypt .GT. yaxdat(jhi,1,1,1,1,1) .AND.
+     .        ypt .LT. yaxdat(jhi,1,1,1,1,1) + dyhi ) THEN
+            jbot = jhi
+         ELSE IF ( ypt .GT. yaxdat(jhi,1,1,1,1,1) ) THEN
+            jbot = ef_unspecified_int4      ! ARG_3 YPT outside of range 
+         ENDIF
+
+  230    IF ( jmatch .NE. ef_unspecified_int4 ) THEN
+            jbot = jmatch
+            jtop = jmatch
+         ELSE IF ( jbot .NE. ef_unspecified_int4 ) THEN
+            jtop = jbot + 1
+            if ( jtop .GT. jhi ) jtop = jhi
+         ENDIF
+
+         IF ( jbot .EQ. ef_unspecified_int4 ) THEN
+*           Coordinate outside the grid
+            DO 240 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+            DO 240 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+            DO 240 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            DO 240 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+               result(i,j,k,l,m,n) = bad_flag_result
+  240       CONTINUE
+*           Go to the next pair of coordinates
+            GOTO 690
+         ENDIF
+
+
+         xbot = xaxdat(ibot,1,1,1,1,1)
+         xtop = xaxdat(itop,1,1,1,1,1)
+         IF ( xtop .LT. xbot ) THEN
+            IF ( .NOT. regular(1) )
+     .         dx = ( xboxlo(ibot+1,1,1,1,1,1) - 
+     .                xboxlo(ibot,  1,1,1,1,1) ) / 2.0
+            IF ( xflag .EQ. 1 ) THEN
+               xtop = xbot + dx
+            ELSE IF ( xflag .EQ. -1 ) THEN
+               xbot = xtop - dx
             ENDIF
-            IF (jbot .EQ. ef_unspecified_int4) jtop = jbot
-            IF (jtop .GE. arg_hi_ss(Y_AXIS,ARG1)) 
-     .                           jtop = arg_hi_ss(Y_AXIS,ARG1)        !10/2001 acm
+         ENDIF
+         IF ( ibot .NE. itop )
+     .      xfrac = (xpt - xbot) / (xtop - xbot)
+
+         ybot = yaxdat(jbot,1,1,1,1,1)
+         ytop = yaxdat(jtop,1,1,1,1,1)
+         IF ( jbot .NE. jtop )
+     .      yfrac = (ypt - ybot) / (ytop - ybot)
+
+* Loop through the Z/T/E/F axes, assigning results for this coordinate pair
+         n1 = arg_lo_ss(F_AXIS,ARG1)
+         DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+
+         m1 = arg_lo_ss(E_AXIS,ARG1)
+         DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+
+         l1 = arg_lo_ss(T_AXIS,ARG1)
+         DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
             k1 = arg_lo_ss(Z_AXIS,ARG1)
-            DO 400 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-
-               l1 = arg_lo_ss(T_AXIS,ARG1)
-               l2 = arg_lo_ss(T_AXIS,ARG2)
-               l3 = arg_lo_ss(T_AXIS,ARG3)
-               DO 300 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
 *  First interpolate in x, getting values of the fcn at (x,jbot) and (x,jtop)
+               fbb = arg_1(ibot,jbot,k1,l1,m1,n1)
+               ftb = arg_1(itop,jbot,k1,l1,m1,n1)
+               fbt = arg_1(ibot,jtop,k1,l1,m1,n1)
+               ftt = arg_1(itop,jtop,k1,l1,m1,n1)
 
-	          IF (ibot .EQ. ef_unspecified_int4  .OR.  
-     .		      jbot .EQ. ef_unspecified_int4) THEN
-                     result(i,j,k,l) = bad_flag_result
-	          ELSE 
-                     IF (ibot .GE. arg_lo_ss(X_AXIS,ARG1)  .AND.
-     .                 itop .LE. arg_hi_ss(X_AXIS,ARG1) ) THEN
+               IF ( fbb .NE. bad_flag(ARG1)  .AND.
+     .              ftb .NE. bad_flag(ARG1)  .AND.
+     .              fbt .NE. bad_flag(ARG1)  .AND.
+     .              ftt .NE. bad_flag(ARG1) ) THEN
 
-                        xbot = xaxdat(ibot,1,1,1)
-                        xtop = xaxdat(itop,1,1,1)
-			IF (.NOT. regular(1))
-     .                   dx=(xboxlo(ibot+1,1,1,1)-xboxlo(ibot,1,1,1))/2.
-			IF (xflag .EQ. 1 .AND. xtop.LT.xbot) 
-     .  			xtop = xbot + dx
-			IF (xflag .EQ.-1 .AND. xtop.LT.xbot) 
-     .  			xbot = xtop - dx
-
-                        fbb = arg_1(ibot,jbot,k1,l1)
-                        ftb = arg_1(itop,jbot,k1,l1)
-                        fbt = arg_1(ibot,jtop,k1,l1)
-                        ftt = arg_1(itop,jtop,k1,l1)
-
-                        IF (fbb .NE. bad_flag(ARG1)  .AND.
-     .                      ftb .NE. bad_flag(ARG1)  .AND.
-     .                      fbt .NE. bad_flag(ARG1)  .AND.
-     .                      ftt .NE. bad_flag(ARG1) ) THEN
-
-cbf                 for matching x-axis no interpolation is need
-                             if (imatch.ne.0) then
-                                fxbot = fbb
-                                fxtop = fbt
-                             else
-                                frac = (xpt - xbot )/ (xtop - xbot)
-                                fxbot = fbb + frac* (ftb - fbb)
-                                fxtop = fbt + frac* (ftt - fbt)
-                             endif
+cbf               for matching x-axis no interpolation is need
+                  IF ( ibot .EQ. itop ) THEN
+                     fxbot = fbb
+                     fxtop = fbt
+                  ELSE
+                     fxbot = fbb + xfrac * (ftb - fbb)
+                     fxtop = fbt + xfrac * (ftt - fbt)
+                  ENDIF
 
 *  Now interpolate in y, getting value at (x,y)
 
-                          IF (jbot .GE. arg_lo_ss(Y_AXIS,ARG1)  .AND.
-     .                        jtop .LE. arg_hi_ss(Y_AXIS,ARG1) ) THEN
-                             ybot = yaxdat(jbot,1,1,1)
-                             ytop = yaxdat(jtop,1,1,1)
+cbf               for matching y-axis no interpolation is need
+                  IF ( jbot .EQ. jtop ) THEN
+                     result(i,j,k,l,m,n) = fxbot
+                  ELSE
+                     result(i,j,k,l,m,n) = fxbot +
+     .                                     yfrac * (fxtop - fxbot)
+                  ENDIF
 
-                             IF (jmatch .NE. 0) THEN
-                                result(i,j,k,l) = fxbot
-                             ELSE
-                               frac = (ypt - ybot)/ (ytop-ybot)
+               ELSE
 
-                               result(i,j,k,l) = fxbot + frac* 
-     .                                            (fxtop - fxbot)
+*                 one of the components was missing
+                  result(i,j,k,l,m,n) = bad_flag_result
 
-                             ENDIF
-                          ELSE
-                             result(i,j,k,l) = bad_flag_result
-                          ENDIF
-
-                       ELSE
-                           result(i,j,k,l) = bad_flag_result
-                       ENDIF  ! bad_flag(ARG1) test
-                     ENDIF	   ! fbb,ftp, etc not bad flags
-
-	          ENDIF  ! itop, jtop not ef_unspecified_int4
-
-                  l1 = l1 + arg_incr(T_AXIS,ARG1)
-
- 300           CONTINUE
+               ENDIF
 
                k1 = k1 + arg_incr(Z_AXIS,ARG1)
- 400        CONTINUE
+ 300        CONTINUE
 
-         ENDIF  ! xpt and ypt not bad values
+            l1 = l1 + arg_incr(T_AXIS,ARG1)
+ 400     CONTINUE
 
-         i2 = i2 + arg_incr(X_AXIS,ARG2)
+            m1 = m1 + arg_incr(E_AXIS,ARG1)
+ 500     CONTINUE
+
+            n1 = n1 + arg_incr(F_AXIS,ARG1)
+ 600     CONTINUE
+
+* Only one of the ARG2 and one of the ARG3 actually increments
+ 690     i2 = i2 + arg_incr(X_AXIS,ARG2)
          j2 = j2 + arg_incr(Y_AXIS,ARG2)
          k2 = k2 + arg_incr(Z_AXIS,ARG2)
          l2 = l2 + arg_incr(T_AXIS,ARG2)
+         m2 = m2 + arg_incr(E_AXIS,ARG2)
+         n2 = n2 + arg_incr(F_AXIS,ARG2)
 
          i3 = i3 + arg_incr(X_AXIS,ARG3)
          j3 = j3 + arg_incr(Y_AXIS,ARG3)
          k3 = k3 + arg_incr(Z_AXIS,ARG3)
          l3 = l3 + arg_incr(T_AXIS,ARG3)
-         j = j + res_incr(Y_AXIS)
-500   CONTINUE
-
+         m3 = m3 + arg_incr(E_AXIS,ARG3)
+         n3 = n3 + arg_incr(F_AXIS,ARG3)
+ 700  CONTINUE
 
       RETURN
+
  999  CALL ef_bail_out (id, err_msg)
 
       END
-

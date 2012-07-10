@@ -56,18 +56,14 @@
 
 static char brag[] = "$$Version: list-2.1 Copyright (C) 1992 Bradley C. Spatz";
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "list.h"
 
-/*char *malloc();*/
 
-
-LIST *list_init()
+LIST *list_init(void)
 {
    LIST *list;
 
@@ -81,8 +77,7 @@ LIST *list_init()
 }
 
 
-LIST *list_mvprev(list)
-LIST *list;
+LIST *list_mvprev(LIST *list)
 {
    /* Move to the previous link, if possible.  Note that the following
     * compound conditional expression *requires* a short-circuit evaluation.
@@ -96,8 +91,7 @@ LIST *list;
 }
 
 
-LIST *list_mvnext(list)
-LIST *list;
+LIST *list_mvnext(LIST *list)
 {
    /* Move to the next link, if possible.  Note that the following
     * compound conditional expression *requires* a short-circuit evaluation.
@@ -118,10 +112,11 @@ LIST *list;
  * they can always wrap their own functions aroud the macros if they need
  * function semantics (i.e. using the routines as pointers, as in passing
  * the routines as parameters to other functions.
+ *
+ * #ifndef USE_MACROS 
+ * Macros no longer in header file.
  */
-#ifndef USE_MACROS
-LIST *list_mvfront(list)
-LIST *list;
+LIST *list_mvfront(LIST *list)
 {
    /* Move to the front of the list.*/
    list->curr = list->front;
@@ -129,8 +124,7 @@ LIST *list;
 }
 
 
-LIST *list_mvrear(list)
-LIST *list;
+LIST *list_mvrear(LIST *list)
 {
    /* Move to the front of the list.*/
    list->curr = list->rear;
@@ -138,46 +132,41 @@ LIST *list;
 }
 
 
-int list_empty(list)
-LIST *list;
+int list_empty(LIST *list)
 {
    /* Return 1 if the list is empty.  0 otherwise. */
    return((list->front == NULL) ? TRUE : FALSE);
 }
 
 
-char *list_front(list)
-LIST *list;
+char *list_front(LIST *list)
 {
    return((list->front == NULL) ? NULL : (list->front->data));
 }
 
 
-char *list_curr(list)
-LIST *list;
+char *list_curr(LIST *list)
 {
    return((list->curr == NULL) ? NULL : (list->curr->data));
 }
 
 
-char *list_rear(list)
-LIST *list;
+char *list_rear(LIST *list)
 {
    return((list->rear == NULL) ? NULL : (list->rear->data));
 }
 
 
-int list_size(list)
-LIST *list;
+int list_size(LIST *list)
 {
    return(list->size);
 }
-#endif
 
+/*
+ * #endif
+ */
 
-static LIST_ELEMENT *list_create_element(data, bytes)
-char *data;
-int bytes;
+static LIST_ELEMENT *list_create_element(char *data, int bytes)
 {
    LIST_ELEMENT *new;
 
@@ -207,10 +196,7 @@ int bytes;
 }
 
 
-char *list_insert_before(list, data, bytes)
-LIST *list;
-char *data;
-int bytes;
+char *list_insert_before(LIST *list, char *data, int bytes)
 {
    LIST_ELEMENT *new;
 
@@ -251,10 +237,7 @@ int bytes;
 }
 
 
-char *list_insert_after(list, data, bytes)
-LIST *list;
-char *data;
-int bytes;
+char *list_insert_after(LIST *list, char *data, int bytes)
 {
    LIST_ELEMENT *new;
 
@@ -295,8 +278,7 @@ int bytes;
 }
 
 
-static char *list_remove_single(list)
-LIST *list;
+static char *list_remove_single(LIST *list)
 {
    char *data;
 
@@ -309,8 +291,7 @@ LIST *list;
 }
 
 
-char *list_remove_front(list)
-LIST *list;
+char *list_remove_front(LIST *list)
 {
    LIST_ELEMENT *temp;
    char *data;
@@ -344,8 +325,7 @@ LIST *list;
 }
 
 
-char *list_remove_rear(list)
-LIST *list;
+char *list_remove_rear(LIST *list)
 {
    LIST_ELEMENT *temp;
    char *data;
@@ -379,8 +359,7 @@ LIST *list;
 }
 
 
-char *list_remove_curr(list)
-LIST *list;
+char *list_remove_curr(LIST *list)
 {
    LIST_ELEMENT *temp;
    char *data;
@@ -421,11 +400,7 @@ LIST *list;
 }
 
 
-int list_traverse(list, data, func, opts)
-LIST *list;
-char *data;
-int (*func)();
-int opts;
+int list_traverse(LIST *list, char *data, int (*func)(char *, char *), int opts)
 {
    LIST_ELEMENT *lp;
    int status, rc;
@@ -481,9 +456,7 @@ int opts;
 }
 
 
-void list_free(list, dealloc)
-LIST *list;
-void (*dealloc)();
+void list_free(LIST *list, void (*dealloc)(char *))
 {
    char *data;
 
@@ -498,8 +471,8 @@ void (*dealloc)();
       /* Apply either no deallocation function to each node, our own, or
        * a user-supplied version.
        */
-      if ((int) dealloc != LIST_NODEALLOC) {
-	 if ((int) dealloc == LIST_DEALLOC) {
+      if ( dealloc != LIST_NODEALLOC ) {
+	 if ( dealloc == LIST_DEALLOC ) {
 	    free(data);
 	 }
 	 else {

@@ -47,19 +47,13 @@
 * Unix/RISC port 5/91 *sh*: use ds_des_name; right justify long data set paths
 * Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'ferret.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER		dset_num, len_text

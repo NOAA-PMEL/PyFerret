@@ -72,6 +72,7 @@
 *                  Check if the filename contains characters other than digits.
 * V64  10/09 *acm* longer string length for grid_name
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+*       *acm* 3/12 cleanup old VMS ifdef
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -90,12 +91,14 @@
 	CHARACTER	dset_name*(*)
 
 * internal variable declarations:
+	INTEGER		nferdimsp1 
+	PARAMETER	(nferdimsp1 = nferdims+1)
 	LOGICAL		TM_DIGIT, VALID_GRID, its_delimited,
      .			have_mods, already_init, by_number, swap
 	LOGICAL         have_type
 	INTEGER		TM_LENSTR1, TM_DSET_NUMBER, GRID_FROM_NAME,
      .			tmap_status, loc, skip, grid, columns,
-     .			order(5), idim, s1, slen, ndigits
+     .			order(nferdimsp1), idim, s1, slen, ndigits
 	CHARACTER	TM_INQ_PATH*2048, var_list*500,
      .			path_name*2048, ezform*80, title*128, grid_name*64,
      .			type*500, ctype*16, delim*24
@@ -286,7 +289,7 @@
      .                         .TRUE., .TRUE., .FALSE., order, status )
            IF ( status .NE. ferr_ok ) RETURN
 	ELSE
-	   DO 500 idim = 1,5
+	   DO 500 idim = 1,nferdimsp1
  500	   order(idim) = idim
 	ENDIF
 	loc = qual_given( slash_set_data_grid )
@@ -321,8 +324,8 @@ c       /swap
 * Make sure no v permutations are defined for non-stream formats,
 * and don't allow /swap or /type flags 
 	if (ezform(:3) .NE. 'STR') then
-	   do i=1,4
-	      if (order(i) .eq. 5) goto 5700
+	   do i=1,nferdims
+	      if (order(i) .eq. nferdimp1) goto 5700
 	   end do
 * 3/99 *kob* - nag F90 wants to use eqv for logical expressions
 	   if (swap .eqv. .TRUE. .or. have_type .eqv. .TRUE.) then

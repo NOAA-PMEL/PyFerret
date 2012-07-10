@@ -47,6 +47,7 @@
 *	note: this addition was made YEARS after the logic here was developed
 *	      there are uncertainties whether special circumstances in FERRET
 *	      may lead to problem behavior
+*       *acm* 3/12 cleanup old VMS ifdef
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -63,6 +64,7 @@
 	INTEGER idim, cx, lo_ss, hi_ss
 
 * internal variable declarations
+	LOGICAL is_file_var
 	INTEGER dset, cat, var, grid, line, status
 	INTEGER TM_GET_GRIDNUM		! 10/93
 
@@ -86,8 +88,10 @@
 * ... end of 10/93 additions
 
 * cannot return answer under several conditions
-	IF ( ( cat .NE. cat_file_var
-     .   .AND. cat .NE. cat_pystat_var )
+	is_file_var = cat .EQ. cat_file_var .OR. 
+     .                cat .EQ. cat_aggregate_var .OR.
+     .                cat .EQ. cat_pystat_var
+	IF ( (.NOT.is_file_var)
      .  .OR. dset .EQ. unspecified_int4
      .  .OR. line .EQ. mnormal
      .  .OR. cx_unstand_grid(cx)	 ) THEN

@@ -2,7 +2,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -48,6 +48,14 @@
 * V510 8/99 *sh*
 *      2/00 *sh* bug fix - initialize mr_grid
 * V533 7/01 *sh* - set data type
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xvariables.cmn'
+	include 'xcontext.cmn'
 
 * calling argument declarations:
 	INTEGER	size, mr, status
@@ -56,10 +64,6 @@
 	INTEGER start_block, num_blocks, idim
 
 * --- end of introductory code ---
-	include 'ferret.parm'
-	include 'errmsg.parm'
-	include 'xvariables.cmn'
-	include 'xcontext.cmn'
 
 	CALL GET_MEMORY( size, start_block, num_blocks, status )
 
@@ -84,13 +88,13 @@
 * flag it as "in progress"
 	mr_protected( mr )	= mr_in_progress
 
-* work arrays don't use any grids
+* work arrays do not use any grids
 	mr_grid( mr ) = unspecified_int4
 
 * for good house-keeping, set the mr subscripts
 	mr_lo_ss(mr,x_dim) = 1
 	mr_hi_ss(mr,x_dim) = size
-	DO 100 idim = 2, 4
+	DO 100 idim = 2, nferdims
 	   mr_lo_ss(mr,idim) = unspecified_int4
 	   mr_hi_ss(mr,idim) = unspecified_int4
  100	CONTINUE

@@ -49,7 +49,10 @@
 * 1/03 *kob* g77 port - requires use of risc_buff for concats
 *
 * V6.2  *jli* 5/08 pass background color and transparent to put_frame_batch()
-* V7    *kms* 11/11 major rewrite using graphics delegate function call
+* PyFr  *kms* 11/11 major rewrite using graphics delegate function call
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 * calling argument declarations:
         IMPLICIT NONE

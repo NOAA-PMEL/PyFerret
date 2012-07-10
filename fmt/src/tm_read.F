@@ -1,8 +1,8 @@
 	SUBROUTINE TM_READ ( dset_num, variable,
-     .			     a_lo_x, a_lo_y, a_lo_z, a_lo_t,
-     .			     a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			     use_lo, use_hi, stride,
-     .			     data_grid, file_num, status )
+     .		a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f,
+     .		a_hi_x, a_hi_y, a_hi_z, a_hi_t, a_hi_e, a_hi_f,
+     .		use_lo, use_hi, stride,
+     .		data_grid, file_num, status )
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -39,7 +39,7 @@
 *
 *
 *
-* Determines if a read request for a 4-D block of data (3D, 2D being degenerate
+* Determines if a read request for a nferdims-D block of data (3D, 2D being degenerate
 * cases w/ 1 dimension being 1 time series) from TMAP data sets contains a 
 * modulo axis. Arranges calls to TM_CHOOSE_READ accordingly.
 *
@@ -62,6 +62,15 @@
 *      5/99 *sh* - added strides to CD_READ call
 * V552 5/03 *acm*: increase size of upcase_var from 64 to 128 chars
 * V602 9/06 *jli*  Changes for native strides
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+*
+* include files
+	include 'tmap_dims.parm'		! data set dimension
+#include "gt_lib.parm"
+	include 'tmap_errors.parm'		! err code parm defs
+	include 'xtm_grid.cmn_text'		! grid info
+		include 'xdset_info.cmn_text'	! data set info common
+	external xdset_info_data
 
 * arguments:
 *	dset_num    - internal data set # (from TM_INIT_DSET)
@@ -74,22 +83,15 @@
 *
 	CHARACTER*(*)	variable
 	INTEGER		dset_num, file_num, status
-	INTEGER		a_lo_x, a_lo_y, a_lo_z, a_lo_t,
-     .                  a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			use_lo(4), use_hi(4), stride(4)
+	INTEGER		a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f, 
+     .                  a_hi_x, a_hi_y, a_hi_z, a_hi_t, a_hi_e, a_hi_f,
+     .			use_lo(*), use_hi(*), stride(*)
         REAL            data_grid(a_lo_x:a_hi_x,
      .                            a_lo_y:a_hi_y,
      .                            a_lo_z:a_hi_z,
-     .                            a_lo_t:a_hi_t)
-*
-* include files
-	include 'tmap_dims.parm'		! data set dimension
-	include 'tmap_errors.parm'		! err code parm defs
-#include "gt_lib.parm"
-	include 'xtm_grid.cmn_text'		! grid info
-	external xgt_grid_data
-	include 'xdset_info.cmn_text'	! data set info common
-	external xdset_info_data
+     .                            a_lo_t:a_hi_t,
+     .                            a_lo_e:a_hi_e,
+     .                            a_lo_f:a_hi_f)
 
 * local definitions
         INTEGER         STR_UPCASE, TM_LENSTR1, n, num_indices
@@ -99,34 +101,47 @@
      .			Dstart, Dend, Drange,
      .			Rstart, Rend, Rrange,
      .			Tstart, Tend, Trange
-	INTEGER		i_lo, j_lo, k_lo, l_lo,
-     .			i_hi, j_hi, k_hi, l_hi,
-     .			iadj, jadj, kadj, ladj
-	INTEGER		tmp_lo(4), tmp_hi(4), adj_lo(4), adj_hi(4),
-     .			adj(4), actual_lo(4), actual_hi(4)
+	INTEGER		i_lo, j_lo, k_lo, l_lo, m_lo, n_lo, 
+     .			i_hi, j_hi, k_hi, l_hi, m_hi, n_hi,
+     .			iadj, jadj, kadj, ladj, madj, nadj
+	INTEGER		tmp_lo(nferdims), tmp_hi(nferdims), 
+     .			adj_lo(nferdims), adj_hi(nferdims),
+     .			adj(nferdims), actual_lo(nferdims), 
+     .			actual_hi(nferdims)
         CHARACTER*128    upcase_var
 	EQUIVALENCE	(tmp_lo(1),i_lo),
      .			(tmp_lo(2),j_lo),
      .			(tmp_lo(3),k_lo),
      .			(tmp_lo(4),l_lo),
-     .			(tmp_hi(1),i_hi),
+     .			(tmp_lo(5),m_lo),
+     .			(tmp_lo(6),n_lo)
+	EQUIVALENCE	(tmp_hi(1),i_hi),
      .			(tmp_hi(2),j_hi),
      .	  		(tmp_hi(3),k_hi),
      .			(tmp_hi(4),l_hi),
-     .			(adj(1),iadj),
+     .			(tmp_hi(5),m_hi),
+     .			(tmp_hi(6),n_hi)
+	EQUIVALENCE	(adj(1),iadj),
      .			(adj(2),jadj),
      .			(adj(3),kadj),
-     .			(adj(4),ladj)
+     .			(adj(4),ladj),
+     .			(adj(5),madj),
+     .			(adj(6),nadj)
 
 * initialize
+
 	actual_lo(1) = a_lo_x
 	actual_lo(2) = a_lo_y
 	actual_lo(3) = a_lo_z
 	actual_lo(4) = a_lo_t
+	actual_lo(5) = a_lo_e
+	actual_lo(6) = a_lo_f
 	actual_hi(1) = a_hi_x
 	actual_hi(2) = a_hi_y
 	actual_hi(3) = a_hi_z
 	actual_hi(4) = a_hi_t
+	actual_hi(5) = a_hi_e
+	actual_hi(6) = a_hi_f
 !        istat = STR_UPCASE( upcase_var, variable )     ! 4/91
         upcase_var = variable     ! 7/98
 
@@ -159,7 +174,7 @@
 * axis needing a modulo read call.
   110	vargrid = ds_grid_number(varpos)
 	modline = 0
-	DO 120 lcnt = 1,4
+	DO 120 lcnt = 1,nferdims
 	  thisline = grid_line(lcnt,vargrid)
 	  IF (thisline .EQ. mpsunkn .OR. thisline .EQ. mpsnorm) GOTO 120
 	  IF (line_modulo(thisline)) THEN
@@ -175,10 +190,10 @@
 	
 	IF (modline .EQ. 0) THEN
 	  CALL TM_CHOOSE_READ ( dset_num, varpos,
-     .			 a_lo_x, a_lo_y, a_lo_z, a_lo_t,
-     .			 a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			 use_lo, use_hi, stride,
-     .			 data_grid, file_num, status )
+     .		a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f,
+     .		a_hi_x, a_hi_y, a_hi_z, a_hi_t, a_hi_e, a_hi_f,
+     .		use_lo, use_hi, stride,
+     .		data_grid, file_num, status )
 	  IF (status .NE. merr_ok) GOTO 9999
 
 * It's modulo : Set-up
@@ -200,7 +215,7 @@
 	  Trange = Rrange
 
 * Read #1 - always done
-	  DO 130 pcnt = 1,4
+	  DO 130 pcnt = 1,nferdims
 	    tmp_lo(pcnt) = use_lo(pcnt)
 	    tmp_hi(pcnt) = use_hi(pcnt)
 	    adj_lo(pcnt) = actual_lo(pcnt)
@@ -211,10 +226,10 @@
 	  adj_lo(modline) = actual_lo(modline) - (Rstart - Tstart)
 	  adj_hi(modline) = actual_hi(modline) - (Rstart - Tstart)
 	  CALL TM_CHOOSE_READ ( dset_num, varpos,
-     .			 adj_lo(1),adj_lo(2),adj_lo(3),adj_lo(4),
-     .			 adj_hi(1),adj_hi(2),adj_hi(3),adj_hi(4),
-     .			 tmp_lo, tmp_hi, stride,
-     .			 data_grid, file_num, status )
+     .		adj_lo(1),adj_lo(2),adj_lo(3),adj_lo(4),adj_lo(5),adj_lo(6),
+     .		adj_hi(1),adj_hi(2),adj_hi(3),adj_hi(4),adj_hi(5),adj_hi(6),
+     .		tmp_lo, tmp_hi, stride,
+     .		data_grid, file_num, status )
 	  IF (status .NE. merr_ok) GOTO 9999
 
 * Read #2 - optional depending on length & position of Requested grid
@@ -224,10 +239,10 @@
 	    adj_lo(modline) = adj_lo(modline) - Drange
 	    adj_hi(modline) = adj_hi(modline) - Drange
 	    CALL TM_CHOOSE_READ ( dset_num, varpos,
-     .			   adj_lo(1),adj_lo(2),adj_lo(3),adj_lo(4),
-     .			   adj_hi(1),adj_hi(2),adj_hi(3),adj_hi(4),
-     .			   tmp_lo, tmp_hi, stride,
-     .			   data_grid, file_num, status )
+     .		adj_lo(1),adj_lo(2),adj_lo(3),adj_lo(4),adj_lo(5),adj_lo(6),
+     .		adj_hi(1),adj_hi(2),adj_hi(3),adj_hi(4),adj_hi(5),adj_hi(6),
+     .		tmp_lo, tmp_hi, stride,
+     .		data_grid, file_num, status )
 	    IF (status .NE. merr_ok) GOTO 9999
 	  ENDIF
 
@@ -236,7 +251,7 @@
 	  IF (Trange .GT. Drange) THEN
 	    tmp_lo(modline) = Rstart+Drange
 	    tmp_hi(modline) = Rend
-	    DO 140 pcnt = 1,4
+	    DO 140 pcnt = 1,nferdims
 	      adj(pcnt) = 0
   140	    CONTINUE
 	    adj(modline) = Drange
@@ -248,7 +263,8 @@
 	          j = jn - jadj
 	          DO 150 in = i_lo,i_hi
 	            i = in - iadj
-	            data_grid(in,jn,kn,ln) = data_grid(i,j,k,l)	
+	            data_grid(in,jn,kn,ln,-999,-999) = 
+     .			   data_grid(i,j,k,l,-999,-999)	
   150	          CONTINUE
   160	        CONTINUE
   170	      CONTINUE

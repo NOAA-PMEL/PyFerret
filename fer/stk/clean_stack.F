@@ -44,14 +44,12 @@
 *
 * Unix/RISC port - version 0.0 - 9/25/91 *sh*
 * this corrects a bug in the VMS version, too: SET GRID following an error
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include		'tmap_dims.parm'
 	include		'ferret.parm'
 	include 	'xvariables.cmn'
-#else
-	INCLUDE		'FERRET_CMN:FERRET.PARM'
-	INCLUDE 	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * unset is_cx(1) reflecting last data access as a failure
       is_cx(1) = unspecified_int4

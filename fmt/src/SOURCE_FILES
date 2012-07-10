@@ -1,6 +1,7 @@
 SRCS_F = \
 cd_abort_grids.F\
 cd_add_coord_var.F\
+cd_add_agg_var_info.F\
 cd_add_var.F\
 cd_assoc_grids.F\
 cd_axis_name.F\
@@ -26,6 +27,7 @@ cd_get_chunk_cache.F\
 cd_get_dim_id.F\
 cd_get_ds_dims.F\
 cd_get_ds_info.F\
+cd_get_agg_var_info.F\
 cd_get_generic_bounds.F\
 cd_get_generic_grids.F\
 cd_get_missing_flag.F\
@@ -40,6 +42,7 @@ cd_get_var_info.F\
 cd_get_var_outflag.F\
 cd_get_var_outtype.F\
 cd_init_dset.F\
+cd_init_agg_dset.F\
 cd_isit_another_dset.F\
 cd_isit_epic.F\
 cd_isit_recdim.F\
@@ -47,6 +50,7 @@ cd_load_dset_attrs.F\
 cd_make_var.F\
 cd_open_dset.F\
 cd_open_out.F\
+cd_put_agg_memb_grid.F\
 cd_put_new_attr.F\
 cd_put_new_attr_dp.F\
 cd_rd_ep_1.F\
@@ -91,13 +95,7 @@ ez_mod_vars.F\
 ez_permuted_index.F\
 ez_read.F\
 ez_update_var.F\
-gt_find_rec.F\
-gt_find_tstep.F\
-gt_full_grid.F\
 gt_get_time_axis.F\
-gt_init_dset.F\
-gt_open_step.F\
-gt_read.F\
 lib_free_lun.F\
 lib_get_lun.F\
 mc_init_dset.F\
@@ -212,6 +210,7 @@ tm_its_subspan_modulo.F\
 tm_itsa_model_run.F\
 tm_lefint.F\
 tm_legal_name.F\
+tm_legal_name_op.F\
 tm_legal_unix_name.F\
 tm_lenstr.F\
 tm_lenstr1.F\
@@ -269,11 +268,6 @@ tm_ww_ax_1_n.F\
 tm_ww_axlen.F\
 tm_ww_axlims.F\
 tm_ymd_time_convrt.F\
-ts_find_var.F\
-ts_get_time_axis.F\
-ts_init_dset.F\
-ts_open_varf.F\
-ts_read.F\
 xalt_messages_data.F\
 xdiag_ctrl_data.F\
 xdset_info_data.F\

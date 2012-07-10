@@ -44,22 +44,15 @@
 *
 * V200:  6/8/89
 * V312: 5/94 - array "memory" as a calling argument
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	status

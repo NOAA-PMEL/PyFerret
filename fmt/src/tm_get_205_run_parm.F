@@ -55,13 +55,11 @@
 * revision 0.00 - 04/27/88
 * revision 1.00 - 12/02/88 - major changes (unable to document)
 * revision 1.01 -  1/91 *sh* syntax changes to accomodate DEC RISC compiler
-*
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+
 * Include files
-#ifdef unix
+
 	include 'tmap_errors.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-#endif
 
 * Argument definitions
 	CHARACTER*(*)	column, col_head, table_row, entry

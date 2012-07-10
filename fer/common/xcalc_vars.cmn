@@ -2,6 +2,8 @@
 * array declarations and information for "calculatable" variables 
 * ... variables derivable from Philander/COX model results
 * V200:  7/89 - extracted from xvariables
+*  2/12 *kms* Add E and F dimensions to cv_lo_ds and cv_hi_ds
+*             (set to nferdims), added cv_lo_d5 & 6, cv_hi_d5 & 6
 
 *	
 *	cvar_frame_start
@@ -32,8 +34,8 @@
      .
      .		cv_category ( max_cv ),
      .		cv_variable ( max_cv ),
-     .		cv_lo_ds    ( max_cv, 4 ),
-     .		cv_hi_ds    ( max_cv, 4 )
+     .		cv_lo_ds    ( max_cv, nferdims ),
+     .		cv_hi_ds    ( max_cv, nferdims )
 
 ********************************************************************************
 ******			COMMON VARIABLE TYPE DECLARATIONS		  ******
@@ -60,16 +62,24 @@
      .		cv_lo_d2( max_cv ),
      .		cv_lo_d3( max_cv ),
      .		cv_lo_d4( max_cv ),
+     .		cv_lo_d5( max_cv ),
+     .		cv_lo_d6( max_cv ),
      .		cv_hi_d1( max_cv ),
      .		cv_hi_d2( max_cv ),
      .		cv_hi_d3( max_cv ),
-     .		cv_hi_d4( max_cv )
+     .		cv_hi_d4( max_cv ),
+     .		cv_hi_d5( max_cv ),
+     .		cv_hi_d6( max_cv )
 	EQUIVALENCE
      .		( cv_lo_d1, cv_lo_ds(1,1) ),
      .		( cv_lo_d2, cv_lo_ds(1,2) ),
      .		( cv_lo_d3, cv_lo_ds(1,3) ),
      .		( cv_lo_d4, cv_lo_ds(1,4) ),
+     .		( cv_lo_d5, cv_lo_ds(1,5) ),
+     .		( cv_lo_d6, cv_lo_ds(1,6) ),
      .		( cv_hi_d1, cv_hi_ds(1,1) ),
      .		( cv_hi_d2, cv_hi_ds(1,2) ),
      .		( cv_hi_d3, cv_hi_ds(1,3) ),
-     .		( cv_hi_d4, cv_hi_ds(1,4) )
+     .		( cv_hi_d4, cv_hi_ds(1,4) ),
+     .		( cv_hi_d5, cv_hi_ds(1,5) ),
+     .		( cv_hi_d6, cv_hi_ds(1,6) )

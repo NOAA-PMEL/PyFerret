@@ -1,5 +1,6 @@
 	SUBROUTINE BAD_EDGES_SUB( cx,
-     .		src, slox, shix, sloy, shiy, sloz, shiz, slot, shit, bad_src )
+     .		src, slox, shix, sloy, shiy, sloz, shiz, 
+     .		slot, shit, sloe, shie, slof, shif, bad_src )
 
 
 *
@@ -46,26 +47,23 @@
 *
 * V200: 10/16/89 - from BAD_EDGES
 * V300:  3/16/93 - allow for possibility of entire region invalid
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-#endif
 
 * calling argument declarations:
-	INTEGER cx, slox, shix, sloy, shiy, sloz, shiz, slot, shit
-	REAL    src( slox:shix,sloy:shiy,sloz:shiz,slot:shit )
+	INTEGER cx, slox, shix, sloy, shiy, sloz, shiz, 
+     .		slot, shit, sloe, shie, slof, shif
+	REAL    src( slox:shix,sloy:shiy,sloz:shiz,slot:shit,sloe:shie,slof:shif )
 	REAL	bad_src
 
 * internal variable declarations:
-	INTEGER	i, j, k, l, i_lo, j_lo, k_lo, l_lo, i_hi, j_hi, k_hi, l_hi
+	INTEGER	i, j, k, l, m, n, i_lo, j_lo, k_lo, l_lo, 
+     .		m_lo, n_lo, i_hi, j_hi, k_hi, l_hi, m_hi, n_hi
 
 * --- end of introductory code ---
 
@@ -74,23 +72,31 @@
 	j_lo = cx_lo_s2(cx)
 	k_lo = cx_lo_s3(cx)
 	l_lo = cx_lo_s4(cx)
+	m_lo = cx_lo_s5(cx)
+	n_lo = cx_lo_s6(cx)
 	i_hi = cx_hi_s1(cx)
 	j_hi = cx_hi_s2(cx)
 	k_hi = cx_hi_s3(cx)
 	l_hi = cx_hi_s4(cx)
+	m_hi = cx_hi_s5(cx)
+	n_hi = cx_hi_s6(cx)
 
 * 3/93
 * if a low valid limit exceeds a high limit then there must be no valid region
         IF ( i_lo .GT. i_hi
      .  .OR. j_lo .GT. j_hi
      .  .OR. k_lo .GT. k_hi
-     .  .OR. l_lo .GT. l_hi ) THEN
+     .  .OR. l_lo .GT. l_hi
+     .  .OR. m_lo .GT. m_hi
+     .  .OR. n_lo .GT. n_hi ) THEN
 * fill entire result with bad flags
 	   DO 10 i = slox, shix
 	   DO 10 j = sloy, shiy
 	   DO 10 k = sloz, shiz
 	   DO 10 l = slot, shit
- 10	   src(i,j,k,l) = bad_src
+	   DO 10 m = sloe, shie
+	   DO 10 n = slof, shif
+ 10	   src(i,j,k,l,m,n) = bad_src
            RETURN
         ENDIF
 
@@ -99,48 +105,96 @@
 	DO 100 j = j_lo, j_hi
 	DO 100 k = k_lo, k_hi
 	DO 100 l = l_lo, l_hi
- 100	src(i,j,k,l) = bad_src
+	DO 100 m = m_lo, m_hi
+	DO 100 n = n_lo, n_hi
+ 100	src(i,j,k,l,m,n) = bad_src
 	DO 110 i = i_hi+1, shix
 	DO 110 j = j_lo, j_hi
 	DO 110 k = k_lo, k_hi
 	DO 110 l = l_lo, l_hi
- 110	src(i,j,k,l) = bad_src
+	DO 110 m = m_lo, m_hi
+	DO 110 n = n_lo, n_hi
+ 110	src(i,j,k,l,m,n) = bad_src
 
 * fill in along Y axis
 	DO 200 j = sloy, j_lo-1
 	DO 200 i = i_lo, i_hi
 	DO 200 k = k_lo, k_hi
 	DO 200 l = l_lo, l_hi
- 200	src(i,j,k,l) = bad_src
+	DO 200 m = m_lo, m_hi
+	DO 200 n = n_lo, n_hi
+ 200	src(i,j,k,l,m,n) = bad_src
 	DO 210 j = j_hi+1, shiy
 	DO 210 i = i_lo, i_hi
 	DO 210 k = k_lo, k_hi
 	DO 210 l = l_lo, l_hi
- 210	src(i,j,k,l) = bad_src
+	DO 210 m = m_lo, m_hi
+	DO 210 n = n_lo, n_hi
+ 210	src(i,j,k,l,m,n) = bad_src
 
 * fill in along Z axis
 	DO 300 k = sloz, k_lo-1
 	DO 300 i = i_lo, i_hi
 	DO 300 j = j_lo, j_hi
 	DO 300 l = l_lo, l_hi
- 300	src(i,j,k,l) = bad_src
+	DO 300 m = m_lo, m_hi
+	DO 300 n = n_lo, n_hi
+ 300	src(i,j,k,l,m,n) = bad_src
 	DO 310 k = k_hi+1, shiz
 	DO 310 i = i_lo, i_hi
 	DO 310 j = j_lo, j_hi
 	DO 310 l = l_lo, l_hi
- 310	src(i,j,k,l) = bad_src
+	DO 310 m = m_lo, m_hi
+	DO 310 n = n_lo, n_hi
+ 310	src(i,j,k,l,m,n) = bad_src
 
 * fill in along T axis
 	DO 400 l = slot, l_lo-1
 	DO 400 i = i_lo, i_hi
 	DO 400 j = j_lo, j_hi
 	DO 400 k = k_lo, k_hi
- 400	src(i,j,k,l) = bad_src
+	DO 400 m = m_lo, m_hi
+	DO 400 n = n_lo, n_hi
+ 400	src(i,j,k,l,m,n) = bad_src
 	DO 410 l = l_hi+1, shit
 	DO 410 i = i_lo, i_hi
 	DO 410 j = j_lo, j_hi
 	DO 410 k = k_lo, k_hi
- 410	src(i,j,k,l) = bad_src
+	DO 410 m = m_lo, m_hi
+	DO 410 n = n_lo, n_hi
+ 410	src(i,j,k,l,m,n) = bad_src
+
+* fill in along E axis
+	DO 500 m = sloe, m_lo-1
+	DO 500 i = i_lo, i_hi
+	DO 500 j = j_lo, j_hi
+	DO 500 l = l_lo, l_hi
+	DO 500 k = k_lo, k_hi
+	DO 500 n = n_lo, n_hi
+ 500	src(i,j,k,l,m,n) = bad_src
+	DO 510 m = m_hi+1, shie
+	DO 510 i = i_lo, i_hi
+	DO 510 j = j_lo, j_hi
+	DO 510 k = k_lo, k_hi
+	DO 510 l = l_lo, l_hi
+	DO 510 n = n_lo, n_hi
+ 510	src(i,j,k,l,m,n) = bad_src
+
+* fill in along F axis
+	DO 600 n = slof, n_lo-1
+	DO 600 i = i_lo, i_hi
+	DO 600 j = j_lo, j_hi
+	DO 600 k = k_lo, k_hi
+	DO 600 l = l_lo, l_hi
+	DO 600 m = m_lo, m_hi
+ 600	src(i,j,k,l,m,n) = bad_src
+	DO 610 n = n_hi+1, shif
+	DO 610 i = i_lo, i_hi
+	DO 610 j = j_lo, j_hi
+	DO 610 k = k_lo, k_hi
+	DO 610 l = l_lo, l_hi
+	DO 610 m = m_lo, m_hi
+ 610	src(i,j,k,l,m,n) = bad_src
 
 	RETURN
 	END 

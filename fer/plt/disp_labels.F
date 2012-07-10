@@ -65,6 +65,7 @@
 * V580 *acm* 11/04 - bug 1098 url is cut off; keep going to the last /
 * V581: *acm*/3/05 - increase length of strings for dataset title to 1024
 * V68  *acm*  4/11 - more on bug 1098. Call the url the OPeNDAP label, break it up.
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -114,7 +115,7 @@
 * define the position labels ("LATITUDE:", "DEPTH:", etc)
 * ... stack them above one another in the upper left
 	ul_ypos = ul_yorigin + (nlabs-1)*ul_yspace
-	DO 300 idim = 1,4
+	DO 300 idim = 1, nferdims
 	   IF ( ul_dolab(idim) ) THEN
 	      CALL ASCII_LIMITS( joint_cx, idim, line_buff, len )
 	         genl_buff = AX_TITLE( idim, cx_grid(joint_cx), tlen )

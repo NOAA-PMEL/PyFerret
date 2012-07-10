@@ -94,8 +94,9 @@
 * v664 9/10 *acm* Check variables for NaN and replace (unless the bad-value IS NaN
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid. 
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-	include 'netcdf.decl'
+	include 'tmap_dims.parm'
 #include "netcdf.inc"
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -234,7 +235,7 @@
 * is it a SAMPLE* function? (8/99)
 	IF ( its_gc ) THEN
 	   its_sample = ifcn .GE. p_samplei
-     .		.AND.   ifcn .LE. p_samplel
+     .		.AND.   ifcn .LE. p_samplen
 	ELSE
 	   its_sample = .FALSE.
 	ENDIF
@@ -925,8 +926,11 @@
 	ENDIF
 
 * pop off context for the last component received and "big" (merged) context
-	IF ( big_cx .NE. cx_stack_ptr-1
-     .	.OR. big_cx .NE. lo_cx+1 ) WRITE (6, *) 'is_alg_2' ! temp diag
+
+* This diag condition not true when constructing the data with DEFINE DATA/AGG
+c	IF ( big_cx .NE. cx_stack_ptr-1
+c     .	.OR. big_cx .NE. lo_cx+1 ) WRITE (6, *) 'is_alg_2' ! temp diag
+
 	cx_stack_ptr = cx_stack_ptr - 2
 	RETURN 2
 

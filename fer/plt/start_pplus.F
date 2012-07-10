@@ -67,8 +67,11 @@
 *		cuckoo's egg implantation of meta_wsid in place of wsid
 * V610 *acm* 3/08 - add new MODE NLEVELS; Store the setting for the default
 *                   number of contour/fill levels.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
-
+	include 'tmap_dims.parm'
 	include 'plot_setup.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'

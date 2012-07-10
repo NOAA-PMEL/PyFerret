@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -42,13 +42,9 @@
 *
 * revision 0.0 - 7/17/86
 
-#ifdef unix
+        IMPLICIT NONE
 	include 'gfdl.parm'
 	include 'xonedim.cmn'
-#else
-	INCLUDE 'FERRET_CMN:GFDL.PARM'
-	INCLUDE 'FERRET_CMN:XONEDIM.CMN'
-#endif
 
 * lines stolen from Pacanowski's SUBROUTINE GRIDS
       DATA DZ/10*10.E2,12.5E2,15.E2,17.5E2,20.E2,25.E2,30.E2,40.E2,

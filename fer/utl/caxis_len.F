@@ -43,19 +43,13 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V320 - 12/94
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER	idim, cx

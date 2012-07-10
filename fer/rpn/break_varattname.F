@@ -52,7 +52,9 @@
 * V611 5/08 *acm* Fix bug 1578; dataset specifiers applied correctly var[d=1].attname
 * v6.7 1/11 *acm* Fix ticket 1768; do not write nulls when writing err msgs 
 *                 with attname.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'	
 	include 'rpn.parm'

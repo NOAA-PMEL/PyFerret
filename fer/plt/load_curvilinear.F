@@ -49,7 +49,9 @@
 *                   and set a flag.
 * V63   9/09 *acm* Fix bug 1688: curvlinear plots when the curv. coords are NOT
 *                  longitude and latitude.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xcontext.cmn'

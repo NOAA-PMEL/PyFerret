@@ -42,26 +42,20 @@
 *
 * revision 0.00 - 11/22/88
 * V510 *sh* 4/00 - use TM_COPY_GRID_W_LINE_USE
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * Arguments
 	INTEGER*4	newgrid, gridnum, status
 	CHARACTER*(*)	newname
 *
 * INCLUDE FILES
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'tmap_errors.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
+
 *
 * Local definitions
 	INTEGER*4	grid_match

@@ -53,13 +53,14 @@
 * exit #1 is to request another grid ( stack has been pushed )
 * exit #2 is to signal completion of the activity at this stack level
 * V312: 5/94 - array "memory" as a calling argument
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * internal variable declarations:
 	LOGICAL	dummy_next, special_var, k_eq1
 	INTEGER hi_cx, lo_cx, lo_isp, cvar, nitem, item0, item, comp,
      .		next_var, dset
 
-#ifdef unix
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -70,18 +71,6 @@
 	include	'xcalc_vars.cmn'
 	include	'xprog_state.cmn'
 	include	'xdset_parms.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INSTANCE_TABLE.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XCALC_VARS.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XDSET_PARMS.CMN'
-#endif
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents

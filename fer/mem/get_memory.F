@@ -2,7 +2,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -35,7 +35,7 @@
 *
 * find and reserve a section of contiguous memory sufficient to hold num_words 
 * procedure:
-* first check the list of free memory regions to see if there's one big enough
+* first check the list of free memory regions to see if there is one big enough
 * if not then delete variables working from the tail of the priority chain
 * when an adequate region is found pluck what it needed of it from the free list
 
@@ -58,16 +58,13 @@
 * v553: 9/03 *kob* - need to update error calls to include alternate return
 *                    label.  Bug showed up on IRIX with missing elements
 *		     of error statement
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'errmsg.parm'
 	include	'ferret.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	num_words, mblk, num_blocks, status
@@ -111,7 +108,7 @@
 	   mblk = mr_del_last_mblk
 	ENDIF
 
-* WE'VE GOT A REGION AT LEAST BIG ENOUGH
+* WE HAVE GOT A REGION AT LEAST BIG ENOUGH
  500	prev = mblk_blink( mblk )
 	next = mblk_flink( mblk )
 
@@ -130,7 +127,7 @@
 	   mblk_blink( next )     = new_mblk
 	ENDIF
 
-* success - set up the requested region and give it to 'em
+* success - set up the requested region and give it to them
 	mblk_size ( mblk ) = num_blocks
 	status = ferr_ok
 

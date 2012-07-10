@@ -131,7 +131,13 @@
 * V63   *acm* 9/09 Fix bug 1691: deallocate use of dynamic axis when it is found in a grid.
 *                  If more than one grid uses the dyn axis, deallocate use of axis for each.
 * V66   *kms* 5/10 add CANCEL REDIRECT for stdout/stderr redirection
-* V700  *kms* 3/11 Add CANCEL PYVAR /ALL /DATASET
+* PyFr  *kms* 3/11 Add CANCEL PYVAR /ALL /DATASET
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*       *acm* 3/12 removing old calls to LASER_STATUS routine for movies
+*       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
+*       *acm* 4/12 Remove MODE FOURDEE, using _E, _F, _M, _N instead, throughout.
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -169,7 +175,7 @@
 	INTEGER		REGION_NUMBER, FIND_DSET_NUMBER,
      .                  TM_GET_LINENUM, TM_GET_GRIDNUM, 
      .			TM_GET_GRID_OF_LINE, TM_LENSTR1, STR_UPCASE,
-     .                  STR_SAME,
+     .                  STR_SAME, ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS,
      .			ivp, i, blen, ier, i1, num_protected_axes,
      .			status, variable, category,
      .			idim, iqual, iset, item, ivar, nth, mr,
@@ -223,27 +229,27 @@
  200	CALL CANCEL_WINDOW( status )
 	RETURN
 
-* CANCEL REGION[/ALL/X/Y/Z/T] [region_name]
+* CANCEL REGION[/ALL/X/Y/Z/T/E/F/I/J/K/L/M/N] [region_name]
  300	IF ( slash_all .AND.
      .	     (num_args.GT.0 .OR. num_qualifiers.GT.1) ) GOTO 5310
 	all_dims = num_qualifiers .EQ. 0
 	IF ( slash_all ) THEN
 * ... CANCEL REGION/ALL
-	   DO 302 idim = 1, 4
+	   DO 302 idim = 1, nferdims
  302	   CALL DEL_CX_DIM( idim, cx_last )
 	   DO 304 cx = 0, min_context, -1
  304	   cx_name( cx ) = unspecified_name4
 	ELSEIF ( num_args .EQ. 0 ) THEN
-* ... CANCEL REGION[/I/J/K/L]
-	   DO 310 idim = 1, 4
+* ... CANCEL REGION[/I/J/K/L/M/N]
+	   DO 310 idim = 1, nferdims
 	      IF ( all_dims
-     .	      .OR. qual_given(idim+1) .GT. 0		! /I/J/K or /L
-     .	      .OR. qual_given(idim+5) .GT. 0 ) THEN	! /X/Y/Z or /T
+     .	      .OR. qual_given(idim+1) .GT. 0		! /I/J/K/L/M or /N
+     .	      .OR. qual_given(idim+nferdims+1) .GT. 0 ) THEN	! /X/Y/Z/T/E or /F
 	         CALL DEL_CX_DIM( idim, cx_last )
 	      ENDIF
  310	   CONTINUE
 	ELSE
-* ... CANCEL REGION[/I/J/K/L] name
+* ... CANCEL REGION[/I/J/K/L/M/N] name
 	   DO 340 item = 1, num_items
 	      arg = cmnd_buff( item_start(item):item_end(item) )
 	      cx = REGION_NUMBER( arg )
@@ -252,9 +258,9 @@
 	      IF ( all_dims ) THEN
 	         cx_name( cx ) = unspecified_name4
 	      ELSE
-	         DO 320 idim = 1, 4
-	            IF ( qual_given(idim+1) .GT. 0		! /I/J/K or /L
-     .	            .OR. qual_given(idim+5) .GT. 0 ) THEN	! /X/Y/Z or /T
+	         DO 320 idim = 1, nferdims
+	            IF ( qual_given(idim+1) .GT. 0		! /I/J/K/L/M or /N
+     .	            .OR. qual_given(idim+nferdims+1) .GT. 0 ) THEN ! /X/Y/Z/T/E or /F
 	               CALL DEL_CX_DIM( idim, cx )
 	               cx_given( idim, cx ) = .FALSE.
 	            ENDIF
@@ -469,6 +475,7 @@
 		    CONTINUE
 !	            CALL GUI_PIPE_CLOSE( status )
 !		    IF ( status .NE. ferr_ok ) GOTO 5000
+
 	         ENDIF
 		 GOTO 820
 	      ENDIF
@@ -479,19 +486,7 @@
 	RETURN
 
 * CANCEL MOVIE
- 900	IF ( frame_on ) THEN
-	   IF ( frame_file .eq. plaser_flag ) THEN
-	      CALL ODR_OP( 'RC', -1, -1 )	! clear record mode
-	      CALL LASER_STATUS( buff, status )
-	      IF ( status .NE. ferr_OK ) GOTO 5090
-	      CALL ODR_QUIT
-	      CALL LASER_STATUS( buff, status )
-	      IF ( status .NE. ferr_OK ) GOTO 5090
-	   ELSE
-              frame_file = ' '
-	   ENDIF
-	ENDIF
-	frame_on = .FALSE.
+ 900	frame_on = .FALSE.
 	RETURN
 
 * CANCEL VIEWPORT
@@ -649,7 +644,7 @@
 
  6001         CALL TM_NEXT_DYN_GRID( igrd, *6199)
 
-                 DO 6002 idim=1,4
+                 DO 6002 idim = 1, nferdims
                     iline = grid_line(idim,igrd)
 
                     IF ( iline .EQ. axis ) THEN
@@ -722,7 +717,7 @@
      .			cmnd_buff(item_start(item):item_end(item)) )
            IF (grid .EQ. unspecified_int4) GOTO 6215
 * ... clear out any user variable dependencies and warn if used by a dataset
-	   IF (grid_use_cnt(grid) .GE. 1 .OR. grid .LE. mgrid_tabstract) THEN
+	   IF (grid_use_cnt(grid) .GE. 1 .OR. grid .LE. mgrid_fabstract) THEN
 	      CALL PURGE_MR_GRID(grid, status)
 	      IF ( status .NE. ferr_ok ) THEN
 	          CALL WARN( 'Not deleted: '//grid_name(grid))
@@ -736,7 +731,7 @@
 	   IF (grid_use_cnt(grid) .LE. 0) THEN
 	      IF ( grid .LE. max_grids ) THEN
 	         grid_name(grid) = char_init16
-	         DO 1310 idim = 1, 4
+	         DO 1310 idim = 1, nferdims
  1310		 CALL TM_DEALLO_DYN_LINE( grid_line(idim,grid))
 	      ELSE
 	         CALL TM_DEALLO_DYN_GRID(grid)

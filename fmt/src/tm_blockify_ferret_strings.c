@@ -34,15 +34,16 @@
 */
 
 /* 
-    The "ferdat" variable is a pointer to an array of string pointers
-      where the string pointers are spaced 8 bytes apart
-    The buffer pbuff is a long character array. Comy the strings to pbuff
-      spacing the strings outstrlen apart.
-*/
+    The variable mr_blk1 is an array of pointers to strings
+    where the string pointers are spaced 8 bytes apart.
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <Python.h> /* make sure Python.h is first */
-#include <stdlib.h>
+    The variable pblock is a bufsiz-long character array of
+    string data (to be assigned) where each string uses
+    outstrlen characters and is null terminated if shorter
+    than outstrlen characters.
+
+    This function copies the strings from mr_blk1 to pblock.
+*/
 
 void tm_blockify_ferret_strings(char **mr_blk1, char *pblock,
 				int bufsiz, int outstrlen)
@@ -52,7 +53,8 @@ void tm_blockify_ferret_strings(char **mr_blk1, char *pblock,
 
   /* prefill the output buffer with nulls 
      *kob*  fix i<= bufsize bug - corrupted heap */
-  for (i=0; i<bufsiz; i++) pblock[i] = 0;
+  for (i=0; i<bufsiz; i++)
+     pblock[i] = '\0';
 
   /* copy all the strings */
   pinstr = mr_blk1;  /* points to each input  string in turn */
@@ -64,7 +66,7 @@ void tm_blockify_ferret_strings(char **mr_blk1, char *pblock,
     pinstr += (8/sizeof(char**));   /* point to next input  string */
 
     /* copy 1 string ... possibly truncated */
-    while (poutchar<poutstr && *pinchar) {
+    while ( (poutchar < poutstr) && (*pinchar != '\0') ) {
       *poutchar = *pinchar;
       poutchar++;
       pinchar ++;
@@ -72,5 +74,4 @@ void tm_blockify_ferret_strings(char **mr_blk1, char *pblock,
 
   }
 
-   return;
 }

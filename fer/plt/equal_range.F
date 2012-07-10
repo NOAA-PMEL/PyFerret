@@ -50,6 +50,8 @@
 * V500 *sh* - 6/99 check for quotations around text (e.g. date strings)
 * V521 *sh* - added boolean "range_rqd" argument
 * V530 *acm* - send cal_id to TRANSLATE_LIMIT
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
 * calling argument declarations
 	LOGICAL		formatted, range_rqd
@@ -63,16 +65,10 @@
 	INTEGER 	equal_pos, colon1, colon2, end2, slen, i
 	REAL*8		tmp
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 #ifdef NO_PASSED_CONCAT
 	include 'xrisc.cmn'
-#endif
-
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 #endif
 
 * initialize
@@ -149,7 +145,7 @@
 	ENDIF
 	
 * date strings are returned negative from TRANSLATE_LIMIT
-	IF ( formatted .AND. idim .EQ. t_dim ) THEN
+	IF ( formatted .AND. (idim .EQ. t_dim .OR. idim .EQ. f_dim) ) THEN
 	   delta = unspecified_val8	! can't modify time axis with delta
 	   has_delta = .FALSE.
 	   lo = -1 * lo

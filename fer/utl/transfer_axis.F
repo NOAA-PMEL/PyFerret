@@ -47,7 +47,10 @@
 *       - *kob* need to now copy cx_calender as well
 * v580 *acm* 11/04 transfer cx_cal_id, the calendar ID used when  
 *                  computing world coordinates
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 
@@ -62,7 +65,7 @@
 	cx_given ( idim, dest )   = cx_given ( idim, source )
 	cx_trans_arg(idim, dest)  = cx_trans_arg(idim, source)
 * 8/97 *kob* 	
-	IF (idim .EQ. t_dim) THEN
+	IF (idim .EQ. t_dim .OR. idim .EQ. f_dim) THEN
            cx_calendar(dest) = cx_calendar(source)
            cx_cal_id(dest) = cx_cal_id(source)
         ENDIF

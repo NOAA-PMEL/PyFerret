@@ -62,7 +62,6 @@ save/file=eofst.cdf/clobber eofst
 
 can data/all
 can var/all
-can view
 use eofst
 
 list/nohead/i=1/j=1/k=1:10 eofst   ! # eigenfcns, same at all depths

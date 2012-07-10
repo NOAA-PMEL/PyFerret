@@ -56,45 +56,46 @@
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
-
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * argument definitions:
 *	cdfid   - id of currently open CDF file
 *       ivar    - CDF variable ID of the desired variable
 *       grid    - TMAP grid number
 *       tmlo    - lo subscript limits from TMAP grid
-*       cdflo   - array of (4) lower bounds subscripts (returned)
-*       cdfhi   - array of (4) upper bounds subscripts
-*       tmrecdim- returned axis (1-4) which is CDF record dimension (or 0)
-
-* argument declarations:
-	INTEGER	 cdfid, ivar, grid, tmlo(4), cdflo(4), cdfhi(4),
-     .		tmrecdim, status
+*       cdflo   - array of (nferdims) lower bounds subscripts (returned)
+*       cdfhi   - array of (nferdims) upper bounds subscripts
+*       tmrecdim- returned axis (1-nferdims) which is CDF record dimension (or 0)
 
 * include files
-        include 'netcdf.decl'
+
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "gt_lib.parm"
-	include 'cd_lib.parm'
+        include 'cd_lib.parm'
         include 'xio.cmn_text'
         external xio_data
         include 'xtm_grid.cmn_text'
         external xgt_grid_data
 
+
 ! Declare netcdf function names. 
 ! The ones without trailing underscore are declared in netcdf.inc
 #include "netcdf_declareUnderscore.inc"
+
+* argument declarations:
+	INTEGER	 cdfid, ivar, grid, tmlo(nferdims), cdflo(nferdims), cdfhi(nferdims),
+     .		tmrecdim, status
 
 * local variable declarations:
       LOGICAL CD_USE_RECDIM, TM_FPEQ, no_file_coords
       INTEGER TM_LENSTR1, TM_SUBSC, 
      .        idim, vartyp, nvdim,
-     .        ndims, cdfstat, vdims(6), nvatts,
+     .        ndims, cdfstat, vdims(8), nvatts,
      .	      cvartyp, ncvdims, cvdim, npts, alen, axid, offset
 * 4/99 *kob* 
-      CHARACTER vname*128, axnam*64
+      CHARACTER vname*128, axnam*128
       REAL*8 TM_WORLD, file_val, mem_val
 
 * determine if this variable uses the record dimension
@@ -115,7 +116,7 @@
 
 * if it is a character variable, then the first dimension of it is the strlen
         IF (vartyp .EQ. NF_CHAR) THEN
-	   DO idim = 1, 5
+	   DO idim = 1, nferdims+1
 	      vdims(idim) = vdims(idim+1)
 	   ENDDO
 	   nvdim = nvdim - 1
@@ -123,7 +124,7 @@
 
 * get the lo/hi bounds
         ndims = 0
-        DO 100 idim = 1, 4
+        DO 100 idim = 1, nferdims
            IF ( grid_line(idim,grid) .NE. mpsnorm
      .    .AND. tmlo(idim) .NE. unspecified_int4  ) THEN
               ndims = ndims + 1

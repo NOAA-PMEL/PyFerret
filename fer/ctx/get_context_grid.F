@@ -134,16 +134,20 @@
 * V533: *sh* 6/01 - set regrid transform for strides to prgrd_xact_pts
 * V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
+*                  dimension is now an arg to SECS_TO_TSTEP.
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
 	include 'errmsg.parm'
 	include 'ferret.parm'
 	include 'interp_stack.parm'
+	include 'tmap_dims.parm'
 	include 'xcontext.cmn'
 	include 'xalgebra.cmn'
 	include 'xtext_info.cmn'
 	include 'xprog_state.cmn'
 	include 'implicit.parm'
-	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
@@ -174,7 +178,7 @@
 * by this point the variable and data set must be known
 	IF ( var .EQ. unspecified_int4 )	CALL ERRMSG
      .			( ferr_syntax,status,'no variable specified',*5000 )
-	IF ( ( cat.EQ.cat_file_var .OR. cat.EQ.cat_calc_var )
+	IF ( ( cat.EQ.cat_file_var .OR. cat.EQ.cat_aggregate_var .OR. cat.EQ.cat_calc_var )
      .	.AND. dset.EQ.unspecified_int4 )	CALL ERRMSG
      .			( ferr_state_not_set,status,'SET DATA_SET',*5000 )
 
@@ -196,7 +200,7 @@
 
 * regridding implied through delta values or special transformations?
 	has_impl_axis = .FALSE.
-	DO 10 idim = 1, 4
+	DO 10 idim = 1, nferdims
 	   IF (cx_delta(idim,cx) .NE. unspecified_val8) THEN
 * ... make sure the specified delta makes sense (this test moved 1/96)
 	      IF ( cx_delta(idim,cx) .NE. unspecified_val8
@@ -215,7 +219,7 @@
 	      impl_grid = cx_impl_grid(cx)  ! allo'd in get_context_mods 
 	   ENDIF
 * ... make the implicit axes and save them in the implicit grid
-	   DO 20 idim = 1, 4
+	   DO 20 idim = 1, nferdims
 	      IF (cx_delta(idim,cx) .NE. unspecified_val8) THEN
 ! ... trap for twice-defined axis of implicit grid is removed because
 !	var[g=var2,gx=lo:hi:del] needs to be a legal expression
@@ -257,12 +261,12 @@
 	            dlo = cx_lo_ww(idim,cx)
 	            dhi = cx_hi_ww(idim,cx)
 	            delta = cx_delta(idim,cx)
-	            IF ( idim .EQ. t_dim ) THEN
+	            IF (idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
 * 8/97 *kob* use cx_calender to check if time is date rather than time step
 	               IF ( cx_calendar(cx) ) THEN
 	                  IF (.NOT.GEOG_LABEL(idim,std_grid)) GOTO 5400
-	                  dlo = SECS_TO_TSTEP(std_grid,-1.*cx_lo_ww(idim,cx))
-	                  dhi = SECS_TO_TSTEP(std_grid,-1.*cx_hi_ww(idim,cx))
+	                  dlo = SECS_TO_TSTEP(std_grid,idim,-1.*cx_lo_ww(idim,cx))
+	                  dhi = SECS_TO_TSTEP(std_grid,idim,-1.*cx_hi_ww(idim,cx))
 			  delta = delta * 3600
      .				/ line_tunit(grid_line(idim,std_grid)) !was hrs
 	               ENDIF
@@ -310,20 +314,20 @@
 	   ENDIF
 	   impl_grid = cx_impl_grid(cx)
 * ... any axis that wasn't given by the user comes from the source grid
-	   DO 50 idim = 1, 4
+	   DO 50 idim = 1, nferdims
 	      IF ( grid_line(idim,impl_grid).EQ.unspecified_int4 )
      .		   grid_line(idim,impl_grid) = grid_line(idim,base_grid)
  50	   CONTINUE
 	   use_grid = impl_grid
 
 * increment the use count of dynamic axes that are in-use by the temporary grid
-	   DO 60 idim = 1, 4
+	   DO 60 idim = 1, nferdims
  60	   CALL TM_USE_LINE(grid_line(idim,impl_grid))
 	ENDIF
 
 * 9/95 check for incompatibilities in grid geometry -- requiring implicit grid
 * (i.e. chk for a normal axis in one grid without same in other)
-	DO 70 idim = 1, 4
+	DO 70 idim = 1, nferdims
 	   IF (  (grid_line(idim,std_grid).EQ.mnormal)
      .    .NEQV. (grid_line(idim,use_grid).EQ.mnormal) )   THEN
 * ... allocate and initialize some work space if we don't already have it
@@ -369,7 +373,7 @@
 	ENDIF
 
 * flesh out regridding transformations
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   use_axis = grid_line( idim, use_grid )
 	   std_axis = grid_line( idim, std_grid )
 

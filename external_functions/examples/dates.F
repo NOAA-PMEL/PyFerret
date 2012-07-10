@@ -57,10 +57,11 @@
      .        'Returns a string array of dates derived ' //
      .        'from the time axis and the given offsets')
       CALL ef_set_num_args(id, 1)
-      CALL ef_set_axis_inheritance(id,
-     .                             IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
-     .                             IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
       CALL ef_set_result_type(id, STRING_RETURN)
       CALL ef_set_num_work_arrays(id, 1)
 
@@ -68,8 +69,8 @@
       CALL ef_set_arg_name(id, arg, 'Offsets')
       CALL ef_set_arg_desc(id, arg,
      .        'Offsets from the time given by time axis')
-      CALL ef_set_axis_influence(id, arg,
-     .                           YES, YES, YES, YES)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, YES, YES, YES, YES)
 
 *                                                                     ^
 *                                                                     |
@@ -104,12 +105,12 @@
 *                           xhi, yhi, zhi, thi, ehi, fhi)
 *
 
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS),
-     .        arg_hi_ss(4,EF_MAX_ARGS),
-     .        arg_incr (4,EF_MAX_ARGS)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
       INTEGER array_num, nt
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       nt = arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1) + 1
 
@@ -122,9 +123,9 @@
 *         so allocate twice the size of the time axis
 *         in case REAL is REAL*4
       array_num = 1
-      CALL ef_set_work_array_dims(id, array_num,
-     .                             1, 1, 1, 1,
-     .                        2 * nt, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .                                1, 1, 1, 1, 1, 1,
+     .                           2 * nt, 1, 1, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -157,10 +158,11 @@
       INTEGER id
 
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz,
-     .           mem1lot:mem1hit)
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
 
       REAL result(strdf, memreslox:memreshix, memresloy:memreshiy,
-     .                   memresloz:memreshiz, memreslot:memreshit)
+     .                   memresloz:memreshiz, memreslot:memreshit,
+     .                   memresloe:memreshie, memreslof:memreshif)
 
 * Ignore the unused singleton final dimensions in the work arrays
       REAL*8 taxdat(wrk1lox:wrk1hix/2)
@@ -169,12 +171,12 @@
 * for the result axes.  The 'arg_' arrays will contain the indexing
 * information for each variable's axes.
 
-      INTEGER res_lo_ss(4),
-     .        res_hi_ss(4),
-     .        res_incr (4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS),
-     .        arg_hi_ss(4,EF_MAX_ARGS),
-     .        arg_incr (4,EF_MAX_ARGS)
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
@@ -183,15 +185,15 @@
 *                                                                     |
 *                                                                     V
 
-      INTEGER i,  j,  k,  l
-      INTEGER i1, j1, k1, l1
+      INTEGER i,  j,  k,  l,  m,  n
+      INTEGER i1, j1, k1, l1, m1, n1
       INTEGER taxnum, slen, idx
       REAL*8 newtime
       CHARACTER*20 datebuf
       CHARACTER*255 errtxt
 
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
 * Make sure the argument has a time axis
@@ -206,6 +208,11 @@
      .                        arg_hi_ss(T_AXIS, ARG1), taxdat)
 
 * Loop through the argument time offsets, assigning the result time strings
+      n1 = arg_lo_ss(F_AXIS,ARG1)
+      DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+
+       m1 = arg_lo_ss(E_AXIS,ARG1)
+       DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
 
 *       taxdat indices start at 1 (given in dates_work_size)
         taxnum = 1
@@ -221,9 +228,9 @@
            i1 = arg_lo_ss(X_AXIS,ARG1)
            DO 100 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-            IF ( arg_1(i1,j1,k1,l1) .NE. bad_flag(ARG1) ) THEN
+            IF ( arg_1(i1,j1,k1,l1,m1,n1) .NE. bad_flag(ARG1) ) THEN
 
-               newtime = taxdat(taxnum) + arg_1(i1,j1,k1,l1)
+               newtime = taxdat(taxnum) + arg_1(i1,j1,k1,l1,m1,n1)
 
 *              Convert newtime into a date string.
 *              ef_get_axis_dates can work with an array of times,
@@ -252,7 +259,7 @@
             ENDIF
 
 *           Put the date string (or empty string) into the string array
-            CALL ef_put_string(datebuf, slen, result(1,i,j,k,l))
+            CALL ef_put_string(datebuf, slen, result(1,i,j,k,l,m,n))
 
             i1 = i1 + arg_incr(X_AXIS,ARG1)
  100       CONTINUE
@@ -266,6 +273,12 @@
          taxnum = taxnum + 1
          l1 = l1 + arg_incr(T_AXIS,ARG1)
  400    CONTINUE
+
+        m1 = m1 + arg_incr(E_AXIS,ARG1)
+ 500   CONTINUE
+
+       n1 = n1 + arg_incr(F_AXIS,ARG1)
+ 600  CONTINUE
 
       RETURN
 

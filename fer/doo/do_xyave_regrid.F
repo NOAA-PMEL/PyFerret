@@ -5,7 +5,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -46,13 +46,16 @@
 * V552:  4/04 *acm* - bug fix.  For @AVE and related transforms @SUM, etc.
 *                     send src_lo_ss and src_hi_ss for the range on the src
 *                     axis.  
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include	'xcontext.cmn'
 
 * calling argument declarations:
 	INTEGER	cx_lims, axis, msrc, mdst, iwork2, itot, src_cx, dst_cx
 	REAL	src(*), dst(*), work(itot)
-
-	include	'ferret.parm'
-	include	'xcontext.cmn'
 
 	CALL XYAVE_REGRID( cx_lims,
      .			   cx_lo_ss(cx_lims,x_dim), cx_hi_ss(cx_lims,x_dim),
@@ -61,4 +64,4 @@
      .                     work(1), work(iwork2) )
 
 	RETURN
-	END	
+	END

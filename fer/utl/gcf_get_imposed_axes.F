@@ -55,8 +55,8 @@
 *       to the C routine efcn_get_custom_axes
 *                  - changed EFCN_GET_CUSTOM_AXES so it returns a status
 * V541: 2/02 *sh* - support for modulo length
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	include 'ferret.parm'
@@ -68,18 +68,6 @@
 	include 'xfr_grid.cmn'       ! w/ mgrid_abstract
 	include 'xcontext.cmn'       ! for TIMES2
 	include 'xvariables.cmn'     ! for TIMES2
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:GRID_CHG_FCNS.PARM'
-	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'	! W/ WW_DIM_NAME
-	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'       ! w/ mgrid_abstract
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'       ! for TIMES2
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'     ! for TIMES2
-#endif
 
 * calling argument declarations
 	INTEGER	gcfcn, cx_base, axes(4), status
@@ -88,7 +76,7 @@
 	LOGICAL known_limits
 	INTEGER	CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN, CAXIS_LEN,
      .          EFCN_GET_NUM_REQD_ARGS,
-     .		cx, i, idim, axis_will_be(4), n, grid, modulo
+     .		cx, i, idim, axis_will_be(nferdims), n, grid, modulo
 	REAL*8	TM_WORLD, dlo, dhi, del
 	CHARACTER*40 GCF_NAME, buff, unit
         INTEGER EF_cx_list(EF_MAX_ARGS), narg
@@ -105,7 +93,7 @@
 * ... consolidate info about function into local array to blur distinctions
 *     between internal and external functions
 	IF ( gcfcn .LE. gfcn_num_internal ) THEN
-	   DO 10 idim = 1, 4
+	   DO 10 idim = 1, nferdims
  10	   axis_will_be(idim) = gfcn_axis_will_be(idim,gcfcn)
 	ELSE
 	   call efcn_get_axis_will_be(gcfcn, axis_will_be)
@@ -113,7 +101,7 @@
 
 * process what axes we can: either "merged" (determined by grid stack logic),
 *	NORMAL, and ABSTRACT ... but not IMPOSED ("supplied herein")
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   IF (axis_will_be(idim) .EQ. pgc_axis_is_abstract) THEN
 	      axes(idim) = grid_line(1,mgrid_xabstract)         ! 7/99 mod
 	   ELSEIF (axis_will_be(idim) .EQ. pgc_axis_is_normal) THEN
@@ -133,7 +121,7 @@
 	   ENDIF
  100	CONTINUE
 
-* *** XUNRAVEL, YUNRAVEL, ZUNRAVEL, and TUNRAVEL functions ***
+* *** XUNRAVEL, YUNRAVEL, ZUNRAVEL, TUNRAVEL, EUNRAVEL, FUNRAVEL functions ***
 * The result of these functions are grids of ABSTRACT and NORMAL axes
 *   .... 7/97 changes -- handled entirely within "typical" cases above
 
@@ -142,11 +130,9 @@
 * The second argument contains the desired grid. (It cannot simply be merged,
 * however, because the result limits have no obvious relation to the inputs)
 	   cx = cx_base 	! component 2: the reshaping grid
-	   DO 210 idim = 1, 4
+	   DO 210 idim = 1, nferdims
 	      axes(idim) = CGRID_AXIS ( idim, cx )
  210	   CONTINUE
-
-
 
 	ELSEIF ( gcfcn .EQ. p_times2 ) THEN
 * *** TIMES2 (debugging) function ***
@@ -229,13 +215,15 @@
            IF (axis_will_be(1) .EQ. pgc_axis_supplied_herein
      .          .OR. axis_will_be(2) .EQ. pgc_axis_supplied_herein
      .          .OR. axis_will_be(3) .EQ. pgc_axis_supplied_herein
-     .          .OR. axis_will_be(4) .EQ. pgc_axis_supplied_herein) THEN
+     .          .OR. axis_will_be(4) .EQ. pgc_axis_supplied_herein
+     .          .OR. axis_will_be(5) .EQ. pgc_axis_supplied_herein
+     .          .OR. axis_will_be(6) .EQ. pgc_axis_supplied_herein) THEN
               CALL EFCN_GET_CUSTOM_AXES(gcfcn, EF_cx_list, status)
               IF (status .NE. ferr_ok) CALL ERRMSG
      .                          ( status, status, ' ', *5000) 
            ENDIF
 
-           DO 400 idim = 1, 4
+           DO 400 idim = 1, nferdims
 
               IF (axis_will_be(idim) .EQ. pgc_axis_supplied_herein) THEN
                  CALL EFCN_GET_CUSTOM_AXIS(gcfcn, idim, dlo, dhi, del,

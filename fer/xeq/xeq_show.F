@@ -169,6 +169,13 @@
 * V67   *acm* 3/11 - Fix for ticket 1825, call cd_get_var_id instead of cd_get_var_seq
 * v675  *acm  4/12 Fix ticket 1934, simpler SHOW ATTRIBUTE syntax.
 
+*       *acm* 3/12 removing use of old GT and TS data formats
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm
+* v675  *acm  4/12 Fix ticket 1934, simpler SHOW ATTRIBUTE syntax.
+* V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
+*                 various SHOW commnands will not list info for E,F dimensions.
+*                 SHOW with 6D variable and mode_6d_lab cancelled, is an error.
+
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
@@ -216,7 +223,6 @@
      .		    slash_attr,
      .              slash_grid_xml,
      .              slash_axis_xml,
-     .              slash_axis_dods,
      .              slash_attr_dset,
      .              slash_attr_output
      .              
@@ -230,15 +236,14 @@
      .		    slash_vars     = 1 + 3,
      .		    slash_file     = 1 + 4,
      .		    slash_att      = 1 + 5,
-     .		    slash_grid_dyn = 1 + 9,
+     .		    slash_grid_dyn = 1 + 13,
      .		    slash_var_dset = 1 + 1,
      .		    slash_external = 1 + 2,
      .		    slash_internal = 1 + 3,
      .		    slash_xml      = 1 + 5,
      .		    slash_attr     = 1 + 6,
-     .		    slash_grid_xml = 1 + 10,
-     .		    slash_axis_xml = 1 + 9,
-     .		    slash_axis_dods = 1 + 10,
+     .		    slash_grid_xml = 1 + 14,
+     .		    slash_axis_xml = 1 + 13,
      .		    slash_attr_dset = 1 + 1,
      .		    slash_attr_output = 1 + 2)
 
@@ -440,7 +445,7 @@
 
                    ELSE
                       CALL SHOW_LINE( line, .NOT.brief )
-	              DO 405 i2 = 1, 4
+	              DO 405 i2 = 1, nferdims
 	                IF (qual_given( slash_show_grid_x0+i2).GT.0
      .                 .OR. qual_given( slash_show_grid_i0+i2).GT.0)THEN
                          grid_line(i2,tmp_grid) = line
@@ -469,7 +474,7 @@
 
                    ELSE
                       CALL SHOW_LINE( line, .NOT.brief )
-	              DO 412 i2 = 1, 4
+	              DO 412 i2 = 1, nferdims
 	                IF (qual_given( slash_show_grid_x0+i2).GT.0
      .              .OR. qual_given( slash_show_grid_i0+i2).GT.0) THEN
                          grid_line(i2,tmp_grid) = line
@@ -524,32 +529,6 @@
               ENDIF
               GOTO 460
  470       CONTINUE
-*  ... For xml output show the dimensions in the dataset that are not
-*      axes, from the default dataset
-c           IF (sxml) THEN
-c              dset = cx_data_set(cx_last)
-c	      CALL CD_GET_DS_INFO (dset, ndims, nvars, ngatts,
-c     .                             recdim, status)
-c              DO 480 idim = 1, ndims
-c	         CALL CD_GET_DS_DIMS (dset, idim, dname, npts, status)
-c		 IF (status .NE. ferr_ok) GOTO 480
-c ! check for coordinate variable. If not a coordinate, its just a dimension.
-c		 CALL CD_GET_VAR_ID (dset, dname, varid, status)
-c	         IF (status .NE. ferr_ok) THEN 
-c                    IF (firstxml) THEN
-c                       risc_buff = '<axes>'
-c                       CALL SPLIT_LIST(pttmode_explct, show_lun,
-c     .                              risc_buff, 0)
-c                       firstxml = .FALSE.
-c                    ENDIF
-c	            CALL SHOW_DIM_XML( show_lun, dname, npts)
-c		 ENDIF
-c 480          CONTINUE
-c           ENDIF
-
-
-
-
 
 	ENDIF
         IF (.NOT. firstxml .AND. sxml) THEN
@@ -589,8 +568,6 @@ c           ENDIF
 	   WRITE ( risc_buff, 3605 ) 'UNFORMATTED'
 	ELSEIF ( list_fmt_type .EQ. plist_epic ) THEN
 	   WRITE ( risc_buff, 3605 ) 'EPIC'
-	ELSEIF ( list_fmt_type .EQ. plist_gt )   THEN
-	   WRITE ( risc_buff, 3605 ) 'GT'
 	ELSEIF ( list_fmt_type .EQ. plist_cdf )   THEN
 	   WRITE ( risc_buff, 3605 ) 'CDF'
 	ELSEIF ( list_fmt_type .EQ. plist_stream )   THEN
@@ -1173,7 +1150,8 @@ c           ENDIF
 	            WRITE ( risc_buff, 4210 ) grid_name( grid )
 	            CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	            risc_buff = ' '
-	            CALL SHOW_GRID( grid, mods_cx )
+	            CALL SHOW_GRID( grid, mods_cx, status )
+		    IF (status .NE. ferr_ok) GOTO 5000
 	         ENDIF
 	      ENDIF
  1350	   CONTINUE
@@ -1210,11 +1188,7 @@ c           ENDIF
  1379      CONTINUE
 
 	ELSE
-!	   IF ( mgrid_abstract .EQ. unspecified_int4 ) THEN
-!	      WRITE ( risc_buff, 4215 ) 'unknown'
-!	   ELSE
-	      WRITE ( risc_buff, 4215 ) grid_name(mgrid_abstract)
-!	   ENDIF
+	   WRITE ( risc_buff, 4215 ) grid_name(mgrid_abstract)
 	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	   risc_buff = ' '
 * display the grid from last command
@@ -1229,7 +1203,8 @@ c           ENDIF
 	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	   risc_buff = ' '
  4200	   FORMAT (' Last successful data access was on grid ',A)
-	   CALL SHOW_GRID( grid, mods_cx )
+	   CALL SHOW_GRID( grid, mods_cx, status )
+	   IF (status .NE. ferr_ok) GOTO 5000
 	ENDIF
 
 * release context stack space

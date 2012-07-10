@@ -51,28 +51,32 @@
       INCLUDE 'EF_mem_subsc.cmn'
 
 * local variables
-      INTEGER res_memlo(4), res_memhi(4)
-      INTEGER arg_memlo(4, EF_MAX_ARGS)
-      INTEGER arg_memhi(4, EF_MAX_ARGS)
-      INTEGER wrk_memlo(4, EF_MAX_WORK_ARRAYS)
-      INTEGER wrk_memhi(4, EF_MAX_WORK_ARRAYS)
+      INTEGER res_memlo(6), res_memhi(6)
+      INTEGER arg_memlo(6, EF_MAX_ARGS)
+      INTEGER arg_memhi(6, EF_MAX_ARGS)
+      INTEGER wrk_memlo(6, EF_MAX_WORK_ARRAYS)
+      INTEGER wrk_memhi(6, EF_MAX_WORK_ARRAYS)
 
 * get the result array dimensions from Ferret's local copy of the common block
-      CALL ef_get_res_mem_subscripts(0, res_memlo, res_memhi)
+      CALL ef_get_res_mem_subscripts_6d(0, res_memlo, res_memhi)
 
 * copy the result array dimensions to this externally visible common block
       memreslox = res_memlo(1)
       memresloy = res_memlo(2) 
       memresloz = res_memlo(3) 
       memreslot = res_memlo(4) 
+      memresloe = res_memlo(5) 
+      memreslof = res_memlo(6) 
 
       memreshix = res_memhi(1) 
       memreshiy = res_memhi(2) 
       memreshiz = res_memhi(3) 
       memreshit = res_memhi(4) 
+      memreshie = res_memhi(5) 
+      memreshif = res_memhi(6) 
 
 * get the argument arrays dimensions from Ferret's local copy of the common block
-      CALL ef_get_arg_mem_subscripts(0, arg_memlo, arg_memhi)
+      CALL ef_get_arg_mem_subscripts_6d(0, arg_memlo, arg_memhi)
 
 * copy the argument arrays dimensions to this externally visible common block
 * this assumed EF_MAX_ARGS .EQ. 9
@@ -116,6 +120,26 @@
       mem8lot = arg_memlo(4,8) 
       mem9lot = arg_memlo(4,9) 
 
+      mem1loe = arg_memlo(5,1) 
+      mem2loe = arg_memlo(5,2) 
+      mem3loe = arg_memlo(5,3) 
+      mem4loe = arg_memlo(5,4) 
+      mem5loe = arg_memlo(5,5) 
+      mem6loe = arg_memlo(5,6) 
+      mem7loe = arg_memlo(5,7) 
+      mem8loe = arg_memlo(5,8) 
+      mem9loe = arg_memlo(5,9) 
+
+      mem1lof = arg_memlo(6,1) 
+      mem2lof = arg_memlo(6,2) 
+      mem3lof = arg_memlo(6,3) 
+      mem4lof = arg_memlo(6,4) 
+      mem5lof = arg_memlo(6,5) 
+      mem6lof = arg_memlo(6,6) 
+      mem7lof = arg_memlo(6,7) 
+      mem8lot = arg_memlo(6,8) 
+      mem9lof = arg_memlo(6,9) 
+
       mem1hix = arg_memhi(1,1) 
       mem2hix = arg_memhi(1,2) 
       mem3hix = arg_memhi(1,3) 
@@ -156,8 +180,28 @@
       mem8hit = arg_memhi(4,8) 
       mem9hit = arg_memhi(4,9) 
 
+      mem1hie = arg_memhi(5,1) 
+      mem2hie = arg_memhi(5,2) 
+      mem3hie = arg_memhi(5,3) 
+      mem4hie = arg_memhi(5,4) 
+      mem5hie = arg_memhi(5,5) 
+      mem6hie = arg_memhi(5,6) 
+      mem7hie = arg_memhi(5,7) 
+      mem8hie = arg_memhi(5,8) 
+      mem9hie = arg_memhi(5,9) 
+
+      mem1hif = arg_memhi(6,1) 
+      mem2hif = arg_memhi(6,2) 
+      mem3hif = arg_memhi(6,3) 
+      mem4hif = arg_memhi(6,4) 
+      mem5hif = arg_memhi(6,5) 
+      mem6hif = arg_memhi(6,6) 
+      mem7hif = arg_memhi(6,7) 
+      mem8hif = arg_memhi(6,8) 
+      mem9hif = arg_memhi(6,9) 
+
 * get the work arrays dimensions from Ferret's local copy of the common block
-      CALL ef_get_wrk_mem_subscripts(0, wrk_memlo, wrk_memhi)
+      CALL ef_get_wrk_mem_subscripts_6d(0, wrk_memlo, wrk_memhi)
 
 * copy the work arrays dimensions to this externally visible common block
 * this assumed EF_MAX_WORK_ARRAYS .EQ. 9
@@ -201,6 +245,26 @@
       wrk8lot = wrk_memlo(4,8) 
       wrk9lot = wrk_memlo(4,9) 
 
+      wrk1loe = wrk_memlo(5,1) 
+      wrk2loe = wrk_memlo(5,2) 
+      wrk3loe = wrk_memlo(5,3) 
+      wrk4loe = wrk_memlo(5,4) 
+      wrk5loe = wrk_memlo(5,5) 
+      wrk6loe = wrk_memlo(5,6) 
+      wrk7loe = wrk_memlo(5,7) 
+      wrk8loe = wrk_memlo(5,8) 
+      wrk9loe = wrk_memlo(5,9) 
+
+      wrk1lof = wrk_memlo(6,1) 
+      wrk2lof = wrk_memlo(6,2) 
+      wrk3lof = wrk_memlo(6,3) 
+      wrk4lof = wrk_memlo(6,4) 
+      wrk5lof = wrk_memlo(6,5) 
+      wrk6lof = wrk_memlo(6,6) 
+      wrk7lof = wrk_memlo(6,7) 
+      wrk8lof = wrk_memlo(6,8) 
+      wrk9lof = wrk_memlo(6,9) 
+
       wrk1hix = wrk_memhi(1,1) 
       wrk2hix = wrk_memhi(1,2) 
       wrk3hix = wrk_memhi(1,3) 
@@ -240,6 +304,26 @@
       wrk7hit = wrk_memhi(4,7) 
       wrk8hit = wrk_memhi(4,8) 
       wrk9hit = wrk_memhi(4,9) 
+
+      wrk1hie = wrk_memhi(5,1) 
+      wrk2hie = wrk_memhi(5,2) 
+      wrk3hie = wrk_memhi(5,3) 
+      wrk4hie = wrk_memhi(5,4) 
+      wrk5hie = wrk_memhi(5,5) 
+      wrk6hie = wrk_memhi(5,6) 
+      wrk7hie = wrk_memhi(5,7) 
+      wrk8hie = wrk_memhi(5,8) 
+      wrk9hie = wrk_memhi(5,9) 
+
+      wrk1hif = wrk_memhi(6,1) 
+      wrk2hif = wrk_memhi(6,2) 
+      wrk3hif = wrk_memhi(6,3) 
+      wrk4hif = wrk_memhi(6,4) 
+      wrk5hif = wrk_memhi(6,5) 
+      wrk6hif = wrk_memhi(6,6) 
+      wrk7hif = wrk_memhi(6,7) 
+      wrk8hif = wrk_memhi(6,8) 
+      wrk9hif = wrk_memhi(6,9) 
 
       RETURN
       END

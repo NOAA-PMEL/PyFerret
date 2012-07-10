@@ -1,4 +1,4 @@
-	DOUBLE PRECISION FUNCTION TSTEP_TO_SECS( grid, tstep )
+	DOUBLE PRECISION FUNCTION TSTEP_TO_SECS( grid, idim, tstep )
 
 *
 *
@@ -46,6 +46,8 @@
 * V320: 12/94 - bug fix: not based on TSTEP_TODATE because the returned
 *	"date" string blanks out years 0000 and 0001 ==> cannot distinguish
 * V530: *acm* 12/00 add calendar types; cal_id
+*       *acm* 3/12 6D Ferret: Add E and F dimensions 
+*                  A time axis may be a T axis or F axis, so idim is now an arg.
 
 	include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'
@@ -53,7 +55,7 @@
         include 'ferret.parm'
 
 * calling argument declarations:
-	INTEGER	grid
+	INTEGER	grid, idim
 	REAL*8	tstep
 
 * internal variable declarations:
@@ -68,10 +70,11 @@
 	PARAMETER     ( seconds = 6 )
 
 * determine time axis of grid
-	axis = grid_line( t_dim, grid )
+	axis = grid_line( idim, grid )
 
 * valid time axis ?
-	IF ( line_direction( axis ) .EQ. 'TI' ) THEN
+	IF ( line_direction( axis ) .EQ. 'TI'. OR.  
+     .       line_direction( axis ) .EQ. 'FI' ) THEN
 
 * determine time axis of grid
 

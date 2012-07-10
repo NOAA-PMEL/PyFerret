@@ -11,13 +11,12 @@
 #
 # include site specific macro definitions
 #
-include ../../site_specific.mk
+include ../ef_utility/site_specific.mk
 
 #
 # include platform specific macro definitions
 #
 include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
-
 include v5d_platform_specific_flags.mk.$(BUILDTYPE)
 
 #

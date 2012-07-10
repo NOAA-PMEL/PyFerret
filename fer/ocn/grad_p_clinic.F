@@ -52,6 +52,7 @@
 * V420 - 2/96 - fix bug in bounds checking on j loop
 
 #ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'gfdl.parm'		! parameter definitions
 	include	'xvariables.cmn'

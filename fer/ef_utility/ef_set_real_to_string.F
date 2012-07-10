@@ -49,21 +49,23 @@ c* number as a string.  Calls internal Ferret routine tm_fmt.
 * str_len	- (returned) actual length of the string generated
 * outstring     - output string
 
-      SUBROUTINE ef_set_real_to_string ( val, str_len, outstring )
+      SUBROUTINE EF_SET_REAL_TO_STRING( val, str_len, outstring )
 
+      IMPLICIT NONE
       REAL val
       INTEGER str_len
       CHARACTER*(*) outstring
+
       CHARACTER*8 TM_FMT
 
 * internal declarations
 
       INTEGER digits, max_len
- 
+
       digits = 8
       max_len = 8
 
-      outstring = TM_FMT (val, digits, max_len, str_len)
+      outstring = TM_FMT(val, digits, max_len, str_len)
 
       RETURN 
       END

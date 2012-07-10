@@ -65,11 +65,11 @@
 */ 
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build
-                      Other changes to correctly deal with the scalar case dim=0 */ 
-/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
-/*					 definition of macro DFTYPE in ferretmacros.h.
-*/
+/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build */ 
+/*                      Other changes to correctly deal with the scalar case dim=0 */ 
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the */ 
+/*					 definition of macro DFTYPE in ferretmacros.h. */ 
+/*  V674 2/12 *acm* 6D Ferret: use NFERDIMS rather than 4 for dimension indexing */
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
@@ -105,7 +105,7 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
 					   the end of this file
   */
 
-  size_t start[5], count[5], tmp;
+  size_t start[NFERDIMSP1], count[NFERDIMSP1], tmp;
   int i;
   size_t bufsiz, maxstrlen;
   char *pbuff;
@@ -121,7 +121,7 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
 
   /* cast passed in int values (from fortran) to proper types, which can
      be different depending on o.s       *kob* 11/01 */
-  for (i=0;i<5;i++) {
+  for (i=0;i<NFERDIMSP1;i++) {
     start[i] = (size_t)tmp_start[i];
     count[i] = (size_t)tmp_count[i];
   }
@@ -161,7 +161,8 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
          for (i=0; i<=ndim; i++) bufsiz *= count[i];
        }
       pbuff = (char *) malloc(sizeof(char) * bufsiz);
-      assert(pbuff);
+      if ( pbuff == NULL )
+         abort();
       tm_blockify_ferret_strings(dat, pbuff, (int)bufsiz, (int)maxstrlen);
 
       /* update variable dimensions to include string dimension */

@@ -45,20 +45,14 @@
 * V200:  6/22/89
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
-#ifdef unix
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'errmsg.parm'
 	include 'xfr_grid.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER	grid, status

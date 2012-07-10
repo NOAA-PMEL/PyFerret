@@ -1,4 +1,4 @@
-	SUBROUTINE SHOW_1_MR( mr )
+	SUBROUTINE SHOW_1_MR( mr, status )
 
 *
 *
@@ -51,6 +51,10 @@
 * V552 *acm* 4/03- up VAR_CODE and vname decl's from 64 to 128 chars
 * V63  *acm* 10/09 Changes for gfortran build
 * V650  Write to show_lun which may be set to a file unit number rather than std out
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
+*                 various SHOW commnands will not list info for E,F dimensions.
 
 	include	'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -63,26 +67,41 @@
 	include 'xtext_info.cmn'
 	include 'xalgebra.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
+	include 'errmsg.parm'
 
 * calling argument declarations:
-	INTEGER	mr
+	INTEGER	mr, status
 
 * V500 *kob* 3/99- up VAR_CODE and vname decl's to 64 chars
 * V552 *acm* 4/03- up VAR_CODE and vname decl's from 64 to 128 chars
 * local variable declarations:
 	LOGICAL	ITS_UN_CACHED
 	INTEGER TM_LENSTR1, MR_DIM_LEN,
-     .		idim, ndim, mrlen, bk1len, nbklen, dset
+     .		idim, ndim, mrlen, bk1len, nbklen, dset, listdims
 	CHARACTER VAR_CODE*128, ALG_TRANS_CODE*3, ARG_STRING*12, TM_FMT*8,
      .		  protection*4, shape*4, dname*14, gname*12, vname*128,
-     .		  ww_lo(4)*20, ww_hi(4)*20, ss_lo(4)*6, ss_hi(4)*6,
+     .		  ww_lo(nferdims)*20, ww_hi(nferdims)*20, 
+     .		  ss_lo(nferdims)*6, ss_hi(nferdims)*6,
      .		  mrbuf*4, bk1buf*4, 
      .		  nbkbuf*4, cache_stat*8
+
+* If mode 6d_lab has been canceled, we will list only the first 4 dimensions.
+
+	listdims = nferdims
+	IF ( .NOT. mode_6d_lab) listdims = 4
+	status = ferr_ok
 
 * get shape
 	shape = ' '
 	ndim = 0
-	DO 170 idim = 1, 4
+
+* If mode 6d_lab has been canceled, but the variable has dimension 5 or 6,
+* that is an error
+	DO 150 idim = listdims, nferdims
+	   IF ( MR_DIM_LEN( idim, mr ) .GT. 1 ) GOTO 5100
+ 150	CONTINUE
+
+	DO 170 idim = 1, listdims
 	   IF ( MR_DIM_LEN( idim, mr ) .GT. 1 ) THEN
 	      ndim = ndim + 1
 	      shape(ndim:ndim) = ww_dim_name(idim)
@@ -90,7 +109,7 @@
  170	CONTINUE
 
 * get formatted world positions
-	DO 180 idim = 1, 4
+	DO 180 idim = 1, listdims
 	   IF ( mr_lo_ww(idim,mr) .EQ. unspecified_val8 ) THEN
 	      ww_lo(idim) = ' ...'
 	      ww_hi(idim) = ' ...'
@@ -114,7 +133,7 @@
 	   ENDIF
  180	CONTINUE
 
-* write a 4 line summary of this memory variable
+* write a line summary of this memory variable
 	IF ( mr_protected(mr) .EQ. mr_not_protected ) THEN
 	   protection = ' '
 	ELSEIF ( mr_protected(mr) .EQ. mr_perm_protected ) THEN
@@ -157,31 +176,32 @@
 	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	risc_buff = ' '
 	WRITE ( risc_buff, 3020 )
-     .	  ( ss_lo(idim), ww_lo(idim), idim=1,4 )
+     .	  ( ss_lo(idim), ww_lo(idim), idim=1,listdims )
 	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	risc_buff = ' '
 	WRITE ( risc_buff, 3020 )
-     .	  ( ss_hi(idim), ww_hi(idim), idim=1,4 )
+     .	  ( ss_hi(idim), ww_hi(idim), idim=1,listdims )
 	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	risc_buff = ' '
 
-#ifdef unix
 * RISC compiler bug: cannot use character functions in WRITE statement
 * ... use ww_lo and ss_lo as temporary buffers
-        DO 200 idim = 1, 4
+        DO 200 idim = 1, listdims
            ss_lo(idim) = ALG_TRANS_CODE( mr_trans(idim,mr) )
            ww_lo(idim) = ARG_STRING( mr_trans_arg(idim,mr) )
  200    CONTINUE
-	WRITE ( risc_buff, 3030 ) (ss_lo(idim), ww_lo(idim), idim = 1,4)
-#else
-	WRITE ( risc_buff, 3030 ) 
-     .		( ALG_TRANS_CODE( mr_trans(idim,mr) ),
-     .		  ARG_STRING( mr_trans_arg(idim,mr) ), idim = 1,4 )
-#endif
+	WRITE ( risc_buff, 3030 ) (ss_lo(idim), ww_lo(idim), idim = 1,listdims)
+
 	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 
  3010	FORMAT(T2,A,'[',2A,T36,A4,'  mr:',A,'  blk1:',A,
      .'  nblk:',A,1X,A4,1x,A8)
- 3020	FORMAT(T2,3(A6,'/',A12),A6,'/',A12)
- 3030	FORMAT(T2,4(4X,A3,A12))
+ 3020	FORMAT(T2,5(A6,'/',A12),A6,'/',A12)
+ 3030	FORMAT(T2,6(4X,A3,A12))
+
+ 5000	RETURN
+ 5100	CALL ERRMSG( ferr_invalid_command, status,
+     .		     'variable has more than 4 dimensions. Set mode 6D_LAB'
+     .		     //pCR//cmnd_buff(:len_cmnd),
+     .			*5000 )
 	END

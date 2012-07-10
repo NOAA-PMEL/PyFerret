@@ -83,6 +83,7 @@
 
       SUBROUTINE zaxreplace_zlev_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -91,54 +92,58 @@
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
+
       CHARACTER*100 descr
 
-      CALL ef_set_desc(id, 
-     . 'regrid V onto Z axis of ZAX based on layer thickness ')
-
+      CALL ef_set_desc(id,
+     .        'regrid V onto Z axis of ZAX based on layer thickness')
       CALL ef_set_num_args(id, 3)
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
       CALL ef_set_num_work_arrays(id, 1)
-
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-      CALL ef_set_piecemeal_ok(id, YES, YES, YES, NO)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'V')
-      CALL ef_set_arg_desc(id, arg, 
-     .        'Variable on native z axis')
-      CALL ef_set_axis_influence(id, arg, YES, YES, NO, YES)
+      CALL ef_set_arg_desc(id, arg,
+     .        'Variable on native Z axis')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, NO, YES, YES, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'THICKNESS')
       WRITE (descr, 20)
    20 FORMAT ('Thickness corresponding to input Z axis layers ',
      .        'in units of output Z axis')
-
       CALL ef_set_arg_desc(id, arg, descr)
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'ZAX')
-      CALL ef_set_arg_desc(id, arg, 
-     .'Variable with desired z (depth) axis points')
-      CALL ef_set_axis_influence(id, arg, NO, NO, YES, NO)
+      CALL ef_set_arg_desc(id, arg,
+     .        'Variable with desired Z (depth) axis points')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, YES, NO, NO, NO)
 
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
 ***********************************************************************
 
-      RETURN 
+      RETURN
       END
+
+
 *
 * In this subroutine we request an amount of storage to be supplied
 * by Ferret and passed as an additional argument.
 *
       SUBROUTINE zaxreplace_zlev_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -148,199 +153,226 @@
 *                                                                      V
 
 *
-* Set the work arrays,  X/Y/Z/T dimensions
+* Set the work arrays, X/Y/Z/T/E/F dimensions
 *
-* ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+* ef_set_work_array_dims_6d(id, array #,
+*                           xlo, ylo, zlo, tlo, elo, flo,
+*                           xhi, yhi, zhi, thi, ehi, fhi)
 *
+
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
       INTEGER nz
-
       INTEGER iwork
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       nz = 1 + ABS(arg_hi_ss(Z_AXIS,ARG2) - arg_lo_ss(Z_AXIS,ARG2))
 
 *  zdepth
       iwork = 1
-      CALL ef_set_work_array_dims (id, iwork,
-     .   1, 1,  1, 1, 
-     .   nz, 1, 1, 1)
-
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                               nz, 1, 1, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
 * **********************************************************************
 
-      RETURN 
+      RETURN
       END
 
 
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE zaxreplace_zlev_compute(id, arg_1, arg_2, arg_3, 
-     .    result, zdepth)
+      SUBROUTINE zaxreplace_zlev_compute(id, arg_1, arg_2, arg_3,
+     .                                   result, zdepth)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz,
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz,
+     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz,
+     .           mem3lot:mem3hit, mem3loe:mem3hie, mem3lof:mem3hif)
+
+      REAL result(memreslox:memreshix, memresloy:memreshiy,
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
+
+* Ignore the Y/Z/T/E/F dimensions in the work arrays since
+* they are not used and Fortran is column major
+      REAL zdepth(wrk1lox:wrk1hix)
+
+* After initialization, the 'res_' arrays contain indexing information
+* for the result axes.  The 'arg_' arrays will contain the indexing
+* information for each variable''s axes.
+
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
-     .     mem1lot:mem1hit)
-      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
-     .     mem2lot:mem2hit)
-      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
-     .     mem3lot:mem3hit)
-      REAL result(memreslox:memreshix, memresloy:memreshiy, 
-     .     memresloz:memreshiz, memreslot:memreshit)
-
-* After initialization, the 'res_' arrays contain indexing information 
-* for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
-
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
-
 
 ***********************************************************************
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
 
-      INTEGER i, j, k, l
-      INTEGER i1, j1, l1, i2, j2, l2, i3, j3, l3
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, l1, m1, n1
+      INTEGER i2, j2, l2, m2, n2
+      INTEGER i3, j3, l3, m3, n3
       INTEGER nsrc_lo, klo, khi
       REAL sum, lasthalf, frac, zval, zmin, zmax
-      real a1, a2
 
-* declare work array
-      REAL zdepth(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
-     .            wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
-
-* 
-*  Loop over x,y,t of the input fields
-*
 
       klo = arg_lo_ss(Z_AXIS, ARG2)
       khi = arg_hi_ss(Z_AXIS, ARG2)
 
+*
+*  Loop over x,y,t,e,f of the input fields
+*
+      n1 = arg_lo_ss(F_AXIS,ARG1)
+      n2 = arg_lo_ss(F_AXIS,ARG2)
+      n3 = arg_lo_ss(F_AXIS,ARG3)
+      DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+
+      m1 = arg_lo_ss(E_AXIS,ARG1)
+      m2 = arg_lo_ss(E_AXIS,ARG2)
+      m3 = arg_lo_ss(E_AXIS,ARG3)
+      DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+
+      l1 = arg_lo_ss(T_AXIS,ARG1)
+      l2 = arg_lo_ss(T_AXIS,ARG2)
+      l3 = arg_lo_ss(T_AXIS,ARG3)
+      DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+
+      j1 = arg_lo_ss(Y_AXIS,ARG1)
+      j2 = arg_lo_ss(Y_AXIS,ARG2)
+      j3 = arg_lo_ss(Y_AXIS,ARG3)
+      DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+
       i1 = arg_lo_ss(X_AXIS,ARG1)
       i2 = arg_lo_ss(X_AXIS,ARG2)
       i3 = arg_lo_ss(X_AXIS,ARG3)
-      DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-         j1 = arg_lo_ss(Y_AXIS,ARG1)
-         j2 = arg_lo_ss(Y_AXIS,ARG2)
-         j3 = arg_lo_ss(Y_AXIS,ARG3)
-         DO 300 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-
-            l1 = arg_lo_ss(T_AXIS,ARG1)
-            l2 = arg_lo_ss(T_AXIS,ARG2)
-            l3 = arg_lo_ss(T_AXIS,ARG3)
-            DO 200 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-
-* Compute depths at this location and time. Depth coordinate is at 
+* Compute depths at this location and time. Depth coordinate is at
 * half of the current grid cell, plus half of the previous grid cell.
-
-               sum = 0.
-               lasthalf = 0.
-
-               DO 500 k = klo, khi
-                  zdepth(k,1,1,1) = 0.
-                  IF ( arg_2(i2,j2,k,l2) .NE. bad_flag(ARG2) ) THEN
-                     sum = sum + lasthalf + 0.5*arg_2(i2,j2,k,l2)
-                     lasthalf = 0.5*arg_2(i2,j2,k,l2)
-                  ENDIF
-
-* If there are any layer thickness, fill the end of the array with 
+         sum = 0.0
+         lasthalf = 0.0
+         DO 310 k = klo, khi
+            IF ( arg_2(i2,j2,k,l2,m2,n2) .NE. bad_flag(ARG2) ) THEN
+               sum = sum + lasthalf + 0.5 * arg_2(i2,j2,k,l2,m2,n2)
+               lasthalf = 0.5 * arg_2(i2,j2,k,l2,m2,n2)
+            ENDIF
+* If there are any layer thickness, fill the end of the array with
 * the sum of thicknesses up to the deepest.
+            zdepth(k) = sum
+  310    CONTINUE
 
-                  IF (sum .NE. 0.) zdepth(k,1,1,1) = sum
-500           CONTINUE
-              zmin = zdepth(klo,1,1,1)
-              zmax = zdepth(khi,1,1,1)
+         zmin = zdepth(klo)
+         zmax = zdepth(khi)
 
-* For each z line interpolate. 
+* For each z line interpolate.
+*        set to one instead of zero
+*        fixes bug where we got no match if zval equals first point in axis
+         nsrc_lo = 1
 
-               nsrc_lo = 0
-               nsrc_lo = 1    ! fixes bug where if zval equals 1st point in axis
-                              ! we got no match.
+         DO 390 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-               DO 100 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-                  result(i,j,k,l) = bad_flag_result  ! Initialize
+            IF ( sum .EQ. 0.0 ) THEN
 
-                  IF (sum .EQ. 0) THEN
-                     result(i,j,k,l) = bad_flag_result
-                  ELSE
+               result(i,j,k,l,m,n) = bad_flag_result
+
+            ELSE
 
 * ... next Z axis value (arg3) to locate
-
-                     zval = arg_3(i3,j3,k,l3)
+               zval = arg_3(i3,j3,k,l3,m,n3)
 
 * ... search the Z field (arg_2) for the index just below this value
 * ... note that nsrc_lo is always referenced to a starting index of 1
-  
-                     IF (zval .LT. zmin) THEN
-                        frac = -999
-                     ELSE IF (zval .GT. zmax) THEN
-                        frac = -999
-                     ELSE
-                        CALL HUNT_R4 (zdepth,1,khi,zval,nsrc_lo,frac)
-                     ENDIF
+               IF ( (zval .LT. zmin) .OR. (zval .GT. zmax) ) THEN
+                  frac = -999.0
+               ELSE
+                  CALL HUNT_R4 (zdepth,1,khi,zval,nsrc_lo,frac)
+               ENDIF
 
 * ... interpolate data arg_1 field to get result
+               IF ( frac .LT. 0.0 ) THEN
 
-                     IF ( frac .LT. 0.0 ) THEN
 * ... no luck -- the Z axis value we seek is outside the range in com2
-                        result(i,j,k,l) = bad_flag_result
-                     ELSEIF ( arg_1(i1,j1,nsrc_lo,l1) .EQ. 
-     .                                 bad_flag(ARG1) .OR. 
-     .                        arg_1(i1,j1,nsrc_lo+1,l1) .EQ. 
-     .                               bad_flag(ARG1)   ) THEN
-                        result(i,j,k,l) = bad_flag_result
-                     ELSEIF ( frac .EQ. 1.0 ) THEN                  ! exactly on point
-	                result(i,j,k,l) = arg_1(i1,j1,nsrc_lo,l1)
-                     ELSE
-                        a1 = arg_1(i1,j1,nsrc_lo,l1)
-                        a2 = arg_1(i1,j1,nsrc_lo+1,l1)
-	                result(i,j,k,l) =  frac* arg_1(i1,j1,nsrc_lo,l1)
-     .		                 + (1-frac)* arg_1(i1,j1,nsrc_lo+1,l1)
-                  ENDIF
+                  result(i,j,k,l,m,n) = bad_flag_result
 
-               ENDIF  ! IF (sum .EQ. 0) THEN
- 100        CONTINUE
+               ELSEIF ( arg_1(i1,j1,nsrc_lo,l1,m1,n1)
+     .                              .EQ. bad_flag(ARG1) ) THEN
 
+                  result(i,j,k,l,m,n) = bad_flag_result
 
-               l1 = l1 + arg_incr(T_AXIS,ARG1)
-               l2 = l2 + arg_incr(T_AXIS,ARG2)
-               l3 = l3 + arg_incr(T_AXIS,ARG3)
- 200        CONTINUE
+               ELSEIF ( frac .EQ. 1.0 ) THEN         ! exactly on point
 
-            j1 = j1 + arg_incr(Y_AXIS,ARG1)
-            j2 = j2 + arg_incr(Y_AXIS,ARG2)
-            j3 = j3 + arg_incr(Y_AXIS,ARG3)
- 300     CONTINUE
+                  result(i,j,k,l,m,n) = arg_1(i1,j1,nsrc_lo,l1,m1,n1)
+
+               ELSEIF ( arg_1(i1,j1,nsrc_lo+1,l1,m1,n1)
+     .                              .EQ. bad_flag(ARG1) ) THEN
+
+                  result(i,j,k,l,m,n) = bad_flag_result
+
+               ELSE
+
+                  result(i,j,k,l,m,n) =
+     .                        frac  * arg_1(i1,j1,nsrc_lo,  l1,m1,n1) +
+     .                  (1. - frac) * arg_1(i1,j1,nsrc_lo+1,l1,m1,n1)
+
+               ENDIF
+
+            ENDIF  ! IF ( sum .EQ. 0.0 ) THEN
+ 390        CONTINUE
 
          i1 = i1 + arg_incr(X_AXIS,ARG1)
          i2 = i2 + arg_incr(X_AXIS,ARG2)
          i3 = i3 + arg_incr(X_AXIS,ARG3)
+ 100  CONTINUE
+
+         j1 = j1 + arg_incr(Y_AXIS,ARG1)
+         j2 = j2 + arg_incr(Y_AXIS,ARG2)
+         j3 = j3 + arg_incr(Y_AXIS,ARG3)
+ 200  CONTINUE
+
+         l1 = l1 + arg_incr(T_AXIS,ARG1)
+         l2 = l2 + arg_incr(T_AXIS,ARG2)
+         l3 = l3 + arg_incr(T_AXIS,ARG3)
  400  CONTINUE
 
-      
+         m1 = m1 + arg_incr(E_AXIS,ARG1)
+         m2 = m2 + arg_incr(E_AXIS,ARG2)
+         m3 = m3 + arg_incr(E_AXIS,ARG3)
+ 500  CONTINUE
+
+         n1 = n1 + arg_incr(F_AXIS,ARG1)
+         n2 = n2 + arg_incr(F_AXIS,ARG2)
+         n3 = n3 + arg_incr(F_AXIS,ARG3)
+ 600  CONTINUE
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
 ***********************************************************************
 
-      RETURN 
+      RETURN
       END

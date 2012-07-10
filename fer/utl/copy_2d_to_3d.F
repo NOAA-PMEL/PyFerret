@@ -44,14 +44,12 @@
 *
 * V200:  8/1/89 - 4D symmetrical
 *	10/11/89 - use ..._SUB - avoid adjustable dimensioning with array
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* TODO: what changes to make for 6D Ferret?
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER msrc, mdst

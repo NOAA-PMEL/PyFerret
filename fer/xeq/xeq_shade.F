@@ -99,6 +99,8 @@
 *                  Put it on plots only when this mode is set.
 * V6.2  *acm* 11/08Fix bug 1609: If the plot is an overlay then do not process /AXES=
 *                  or /NOAXES. Axes are never drawn for overlays anyway.
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*                  A time axis may be a T axis or F axis
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -165,8 +167,8 @@
 	
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
 * ... default orientation for YT and ZT contours has time on horizontal
-	IF ( plot_axis(2).EQ.t_dim .AND. plot_axis(1).NE.x_dim )
-     .							transpz = .NOT.transpz
+	IF ( (plot_axis(2).EQ.t_dim .OR. plot_axis(2).EQ.f_dim) .AND. 
+     .		plot_axis(1).NE.x_dim ) transpz = .NOT.transpz
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 

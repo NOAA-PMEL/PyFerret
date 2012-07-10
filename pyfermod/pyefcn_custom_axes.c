@@ -39,7 +39,7 @@
 #include "pyferret.h"
 #include "EF_Util.h"
 
-static const char *AXIS_NAMES[MAX_FERRET_NDIM] = { "X", "Y", "Z", "T" };
+static const char *AXIS_NAMES[MAX_FERRET_NDIM] = { "X", "Y", "Z", "T", "E", "F" };
 
 /*
  * See pyferret.h for information on this function
@@ -55,7 +55,7 @@ void pyefcn_custom_axes(int id, char modname[], char errmsg[])
     PyObject  *subseqobj;
     int        subseqlen;
     PyObject  *itemobj;
-    float      values[3];
+    double     values[3];
     char      *strptr;
     char       unit_name[EF_MAX_NAME_LENGTH];
     int        is_modulo;
@@ -134,17 +134,17 @@ void pyefcn_custom_axes(int id, char modname[], char errmsg[])
             /* Get the low, high, delta floating point values */
             for (q = 0; q < 3; q++) {
                 itemobj = PySequence_Fast_GET_ITEM(subseqobj, (Py_ssize_t) q); /* borrowed reference */
-                values[q] = (float) PyFloat_AsDouble(itemobj);
+                values[q] = PyFloat_AsDouble(itemobj);
                 if ( PyErr_Occurred() ) {
                     PyErr_Clear();
                     Py_DECREF(subseqobj);
                     Py_DECREF(seqobj);
                     if ( q == 0 )
-                        sprintf(errmsg, "Invalid custom axes low value (not an float) for the %s axis", AXIS_NAMES[k]);
+                        sprintf(errmsg, "Invalid custom axes low value (not a float) for the %s axis", AXIS_NAMES[k]);
                     else if ( q == 1 )
-                        sprintf(errmsg, "Invalid custom axes high value (not an float) for the %s axis", AXIS_NAMES[k]);
+                        sprintf(errmsg, "Invalid custom axes high value (not a float) for the %s axis", AXIS_NAMES[k]);
                     else
-                        sprintf(errmsg, "Invalid custom axes delta value (not an float) for the %s axis", AXIS_NAMES[k]);
+                        sprintf(errmsg, "Invalid custom axes delta value (not a float) for the %s axis", AXIS_NAMES[k]);
                     return;
                 }
             }

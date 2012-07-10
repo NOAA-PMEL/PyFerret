@@ -29,7 +29,9 @@
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid. 
-* V700 11/10 *kms* - added category cat_pystat_var (python static variable)
+* PyFr 11/10 *kms* - added category cat_pystat_var (python static variable)
+* V680  2/12 *kms* Add e_dim, and f_dim parameters, nferdims is in tmap_dims.parm
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -44,8 +46,10 @@
      .			deg2m  = deg2km * 1000.  )
 
 * names of dimensions
-	INTEGER		x_dim,   y_dim,   z_dim,   t_dim,   no_dim
-	PARAMETER     ( x_dim=1, y_dim=2, z_dim=3, t_dim=4, no_dim = 0 )
+        INTEGER     x_dim,   y_dim,   z_dim,
+     .              t_dim,      e_dim,   f_dim,   no_dim
+        PARAMETER ( x_dim=1, y_dim=2, z_dim=3,
+     .              t_dim=4,    e_dim=5, f_dim=6, no_dim = 0 )
 
 * special data value flags
 	DOUBLE PRECISION	unspecified_val8,
@@ -130,7 +134,7 @@
      .			cat_constant, cat_file_rev,
      .			cat_const_var,   cat_string,
      .                  cat_counter_var, cat_attrib_val,
-     .                  cat_pystat_var
+     .                  cat_aggregate_var, cat_pystat_var
 	PARAMETER     ( cat_work_mr  = -9,
      .			cat_file_var = 1,
      .			cat_calc_var = 2,
@@ -146,7 +150,8 @@
      .			cat_string     = 12,
      .			cat_counter_var= 13,
      .			cat_attrib_val = 14,
-     .                  cat_pystat_var = 15 )
+     .			cat_aggregate_var= 15,
+     .                  cat_pystat_var = 16 )
 
 * codes referring to the user-defined variables
 	INTEGER		uvar_deleted,
@@ -399,7 +404,8 @@
      .			alg_string,
      .                  alg_counter_var,
      .                  alg_attrib_val,
-     .                  alg_log_vstruct
+     .                  alg_log_vstruct,
+     .                  alg_agg_var
 	PARAMETER     (	alg_operator   = 1,
      .			alg_constant   = 2,
      .			alg_variable   = 3,
@@ -419,7 +425,8 @@
      .			alg_string	 = 16,
      .                  alg_counter_var  = 17,
      .                  alg_attrib_val   = 18,
-     .                  alg_log_vstruct  = 19 )
+     .                  alg_log_vstruct  = 19,
+     .                  alg_agg_var	 = 20 )
 
 * codes to distinguish between context choices
 * (contexts describe space/time/variable/transformation/data_set,etc.)

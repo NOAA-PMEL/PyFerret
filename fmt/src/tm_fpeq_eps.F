@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -43,28 +43,27 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
 
-* 8/08 *acm* See Bug 1483
 *
 * revision 0.00 - 11/21/85
 * revision 0.10 - 10/23/87 - all variables explicitly declared
 *
+* 8/08 *acm* See Bug 1483
+*      *kms*  3/12 modified to actually use the maximum absolute error
+*
+
 * calling arguments:
-	REAL	eps, a, b, abmin
+        REAL eps, a, b
 
-        abmin = MIN(abs(a), abs(b))
+* local variables
+        REAL abmin, diffeps
 
-* treat relative error case (non-zero) separate fron zero case
+* determine the maximum relative error
+        abmin = MIN( ABS(a), ABS(b) )
+        diffeps = abmin * ABS(eps)
+* if close to zero, set the maximum absolute error
+        IF ( diffeps .LT. ABS(eps) ) diffeps = ABS(eps)
 
-	IF  (a.NE.0.0   .AND.  b.NE.0.0 )  THEN
-
-	   TM_FPEQ_EPS =  (ABS(a-b) .LE. ABS(abmin)*eps)  ! relative error
-
-	ELSE
-
-	   TM_FPEQ_EPS =	ABS(a) .LT. eps
-     .		.AND.   ABS(b) .LT. eps			! absolute error
-
-	ENDIF
+        TM_FPEQ_EPS = ( ABS(a-b) .LE. diffeps )
 
 	RETURN
 	END

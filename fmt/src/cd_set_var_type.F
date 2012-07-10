@@ -40,6 +40,7 @@
 
 * V600 2/06 *acm* Attribute control.
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * Argument declarations
 
@@ -47,7 +48,6 @@
 
 * Internal declarations
 
-        include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
       include 'xrisc_buff.cmn'

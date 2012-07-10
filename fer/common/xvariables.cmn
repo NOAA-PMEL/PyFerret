@@ -54,6 +54,9 @@
 * V62  2/09 *acm*  increase initial memory by 4.
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid. 
+*       2/12 *kms* Add E and F dimensions (set to nferdims);
+*                  added mr_lo_s5 & 6, mr_hi_s5 & 6;
+*                  reordered to remove padding
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -189,36 +192,44 @@
 	INTEGER		max_uvar,
      .			max_uvar_items,
      .			uvar_text_len,
-     .			uvar_dset,
      .			max_intrp
-	PARAMETER     (	max_uvar      	  =2000,! total # uvars incl. "EX#."
-     .			max_uvar_items    = 200,! complexity of uvar expression
+	PARAMETER     (	max_uvar      	  = 2000,! total # uvars incl. "EX#."
+     .			max_uvar_items    =  200,! complexity of uvar expression
      .			uvar_text_len	  = 2048,! max length of uvar expression
-c     .			max_intrp	  = 200  )
-     .			max_intrp	  = 400  )
+     .			max_intrp	  =  400  )
 
 ********************************************************************************
 ******				COMMON DECLARATION			  ******
-
-! removed 5/17/94
-!	COMMON / XBLOCK_MEM / memory(mem_blk_size,max_mem_blks)
-! changed mem_blk_size and max_mem_blks from parameters to COMMON variables
 
 	COMMON / XMEM_DESCR /
      .		mem_blk_size,
      .		max_mem_blks
 
+* Reordered as REAL*8, REAL (which may be REAL*8 or REAL*4), INTEGER, LOGICAL, CHARACTER
+* to eliminate padding requirements from the compiler.
+* uvar_name_code_head should be immediately followed by uvar_name_code_padding
+* uvar_num_items_head should be immediately followed by uvar_num_items_padding
 	COMMON / XMR / 
-     .		mr_lo_ww	( 4, max_mrs ),
-     .		mr_hi_ww	( 4, max_mrs ),
-     .		mr_delta	( 4, max_mrs ),
+     .		mr_lo_ww	( nferdims, max_mrs ),
+     .		mr_hi_ww	( nferdims, max_mrs ),
+     .		mr_delta	( nferdims, max_mrs ),
+     .		uvar_lo_ww	( nferdims, max_uvar ),
+     .		uvar_hi_ww	( nferdims, max_uvar ),
      .		mr_c_pointer    ( max_mrs ),
-     .		uvar_lo_ww	( 4, max_uvar ),
-     .		uvar_hi_ww	( 4, max_uvar ),
-     .		mr_trans	( 4, max_mrs ),
-     .		mr_trans_arg	( 4, max_mrs ),
-     .		mr_lo_ss	( max_mrs, 4 ),
-     .		mr_hi_ss	( max_mrs, 4 ),
+     .          uvar_name_code_head,
+     .          uvar_name_code_padding,
+     .          uvar_num_items_head,
+     .          uvar_num_items_padding,
+     .
+     .		mr_trans_arg	( nferdims, max_mrs ),
+     .		mr_bad_data   	( max_mrs ),
+     .		uvar_bad_data	( max_uvar ),
+     .		is_sum  	( max_intrp ),
+     .
+     .		mr_trans	( nferdims, max_mrs ),
+     .		mr_regrid_trans	( nferdims, max_mrs ),
+     .		mr_lo_ss	( max_mrs, nferdims ),
+     .		mr_hi_ss	( max_mrs, nferdims ),
      .		mr_protected	( max_mrs ),
      .		mr_blk1		( max_mrs ),
      .		mr_nblks	( max_mrs ),
@@ -227,54 +238,29 @@ c     .			max_intrp	  = 200  )
      .		mr_variable	( max_mrs ),
      .		mr_grid   	( max_mrs ),
      .		mr_type   	( max_mrs ),
-     .		mr_bad_data   	( max_mrs ),
-     .		mr_unstand_grid	( max_mrs ),
-     .		mr_regrid_trans	( 1:4, max_mrs ),
-     .
-     .		mblk_flink( 0:pmax_mem_blks),
-     .		mblk_blink( 0:pmax_mem_blks),
-     .		mblk_size ( 0:pmax_mem_blks),
-     .
-     .		num_uvars_in_cmnd,
-     .
-     .		mv_flink( pmv_lowest_head:max_mrs ),
-     .		mv_blink( pmv_lowest_head:max_mrs ),
-     .
-     .		mr_del_flink( 0:max_mrs ),
-     .		mr_del_blink( 0:max_mrs ),
+     .		mblk_flink      ( 0:pmax_mem_blks ),
+     .		mblk_blink      ( 0:pmax_mem_blks ),
+     .		mblk_size       ( 0:pmax_mem_blks ),
+     .		mv_flink        ( pmv_lowest_head:max_mrs ),
+     .		mv_blink        ( pmv_lowest_head:max_mrs ),
+     .		mr_del_flink    ( 0:max_mrs ),
+     .		mr_del_blink    ( 0:max_mrs ),
      .		mr_del_last_mblk,
      .		mr_del_last_size,
-     .
-     .		uvar_ifv	 ( max_uvar ),
-     .		uvar_by_ss	 ( 4, max_uvar ),
-     .		uvar_lo_ss	 ( max_uvar, 4 ),
-     .		uvar_hi_ss	 ( max_uvar, 4 ),
-     .		uvar_bad_data	 ( max_uvar ),
-     .		uvar_title	 ( max_uvar ),
-     .		uvar_title_w_text( max_uvar ),
-     .
-     .          uvar_name_code_head,
-     .          uvar_name_code_padding,
-     .		uvar_name_code	 ( max_uvar ),
-     .
-     .		uvar_units	 ( max_uvar ),
-     .		uvar_text	 ( max_uvar ),
-     .
-     .          uvar_num_items_head,
-     .          uvar_num_items_padding,
+     .		num_uvars_in_cmnd,
+     .		uvar_lo_ss	 ( max_uvar, nferdims ),
+     .		uvar_hi_ss	 ( max_uvar, nferdims ),
      .		uvar_num_items   ( max_uvar ),
-     .
-     .		uvar_need_dset	 ( max_uvar ),
      .		uvar_parent	 ( max_uvar ),
      .		uvar_grid	 ( max_uvar, 0:max_gfdl_dsets ),
      .		uvar_data_type	 ( max_uvar, 0:max_gfdl_dsets ),
      .		uvar_item_start	 ( max_uvar_items, max_uvar ),
      .		uvar_item_end	 ( max_uvar_items, max_uvar ),
      .		uvar_item_type	 ( max_uvar_items, max_uvar ),
-     .		uvar_given	 ( 4, max_uvar ),
+     .		uvar_given	 ( nferdims, max_uvar ),
      .		uvar_dset	 ( max_uvar ),
-     .		uvar_mod_pseudo	 ( 4, max_uvar ),
-     .
+     .          deleted_list_result(max_uvar),
+     .          string_array_result(max_uvar),
      .		isp,
      .		is_act		( max_intrp ),
      .		is_cx		( max_intrp ),
@@ -284,16 +270,22 @@ c     .			max_intrp	  = 200  )
      .		is_axis 	( max_intrp ),
      .		is_uvar 	( max_intrp ),
      .		is_mr		( max_intrp ),
-     .		is_sum  	( max_intrp ),
      .
-     .          deleted_list_result (max_uvar),
-     .          string_array_result (max_uvar),
-     .		has_uvar_gc
+     .		mr_unstand_grid	 ( max_mrs ),
+     .		uvar_by_ss	 ( nferdims, max_uvar ),
+     .		uvar_mod_pseudo	 ( nferdims, max_uvar ),
+     .		uvar_ifv	 ( max_uvar ),
+     .		uvar_title_w_text( max_uvar ),
+     .		uvar_need_dset	 ( max_uvar ),
+     .		has_uvar_gc,
+     .
+     .		uvar_text	 ( max_uvar ),
+     .		uvar_title	 ( max_uvar ),
+     .		uvar_name_code	 ( max_uvar ),
+     .		uvar_units	 ( max_uvar )
 
 ********************************************************************************
 ******			COMMON VARIABLE TYPE DECLARATIONS		  ******
-
-!	REAL	memory     ! removed 5/94
 
 	INTEGER	mem_blk_size,
      .		max_mem_blks
@@ -324,7 +316,7 @@ c     .			max_intrp	  = 200  )
      .			uvar_hi_ww	,
      .			mr_c_pointer      ! see note
 ! Note: the actual data type for mr_c_pointer is **char
-! we allocate 8 bytes to be safe
+! we allocate 8 bytes for 64-bit pointers
 
 	INTEGER		mr_lo_ss	,
      .			mr_hi_ss	,
@@ -360,6 +352,7 @@ c     .			max_intrp	  = 200  )
      .			uvar_item_type	,
      .			uvar_given	,
      .			uvar_parent	,
+     .			uvar_dset       ,
      .			uvar_lo_ss	,
      .			uvar_hi_ss      ,
      .                  deleted_list_result,
@@ -381,16 +374,25 @@ c     .			max_intrp	  = 200  )
      .		mr_lo_s2( max_mrs ),
      .		mr_lo_s3( max_mrs ),
      .		mr_lo_s4( max_mrs ),
+     .		mr_lo_s5( max_mrs ),
+     .		mr_lo_s6( max_mrs ),
      .		mr_hi_s1( max_mrs ),
      .		mr_hi_s2( max_mrs ),
      .		mr_hi_s3( max_mrs ),
-     .		mr_hi_s4( max_mrs )
+     .		mr_hi_s4( max_mrs ),
+     .		mr_hi_s5( max_mrs ),
+     .		mr_hi_s6( max_mrs )
 	EQUIVALENCE
      .		( mr_lo_s1, mr_lo_ss(1,1) ),
      .		( mr_lo_s2, mr_lo_ss(1,2) ),
      .		( mr_lo_s3, mr_lo_ss(1,3) ),
      .		( mr_lo_s4, mr_lo_ss(1,4) ),
+     .		( mr_lo_s5, mr_lo_ss(1,5) ),
+     .		( mr_lo_s6, mr_lo_ss(1,6) ),
      .		( mr_hi_s1, mr_hi_ss(1,1) ),
      .		( mr_hi_s2, mr_hi_ss(1,2) ),
      .		( mr_hi_s3, mr_hi_ss(1,3) ),
-     .		( mr_hi_s4, mr_hi_ss(1,4) )
+     .		( mr_hi_s4, mr_hi_ss(1,4) ),
+     .		( mr_hi_s5, mr_hi_ss(1,5) ),
+     .		( mr_hi_s6, mr_hi_ss(1,6) )
+

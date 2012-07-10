@@ -76,9 +76,11 @@
 *                 accordingly, then compound conditinals will work.
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V68  3/12  *acm* The string operations EQ, NE, LT, etc return a float-type result.
 *                  Reset mr_type; it has already been set to string elsewhere.
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'rpn.parm'
@@ -197,7 +199,7 @@
 * e.g. temp[k=1] + temp[K=1:3] needs 3 in the K direction
 * also - if there is a meaningful axis then use it
 * e.g. I[i=1] + J[j=1]   --> use the J axis although it is only length 1
-	DO 210 idim = 1, 4
+	DO 210 idim = 1, nferdims
 	   res_len = CX_DIM_LEN( idim, res_cx )
 	   DO 200 icom = 2, num_com
 	      com_cx  = is_cx(frame_bottom+icom-1)

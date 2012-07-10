@@ -95,37 +95,31 @@
 
       SUBROUTINE fft_im_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
-
-      CHARACTER*110 arg_desc
-c      CALL ef_version_test(ef_version)
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-*                                                                      V
+
       CALL ef_set_desc(id, 'Computes imaginary part of fft transform' )
-
       CALL ef_set_num_args(id, 1)
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, CUSTOM)
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
-
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, CUSTOM,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
       CALL ef_set_num_work_arrays(id, 4)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
-      WRITE (arg_desc, 10) 
-   10 FORMAT ('Variable with regular time axis.')
-
-      CALL ef_set_arg_desc(id, arg, arg_desc)
-
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, NO)
-
+      CALL ef_set_arg_desc(id, arg, 'Variable with regular time axis.')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, YES, NO, YES, YES)
 
 *                                                                     ^
 *                                                                     |
@@ -138,7 +132,9 @@ c      CALL ef_version_test(ef_version)
 
       SUBROUTINE fft_im_custom_axes(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
+
       INTEGER id
 
 * **********************************************************************
@@ -150,30 +146,23 @@ c      CALL ef_version_test(ef_version)
 *     argument; use this info to determine the custom axis lo/hi/del 
 
       INTEGER nfreq_lo_l, nfreq_hi_l
-
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
-
-      INTEGER arg
-      INTEGER nfreq, nd
-
-      REAL yquist, freq1, freqn
-
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+      INTEGER arg, nd
       CHARACTER outunits*32
       REAL boxsize(1)
-         
-      CHARACTER ax_name(4)*16, ax_units(4)*16
-      LOGICAL backward(4), modulo(4), regular(4)
+      CHARACTER ax_name(6)*16, ax_units(6)*16
+      LOGICAL backward(6), modulo(6), regular(6)
 
       arg = 1
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-      CALL ef_get_axis_info(id, arg, ax_name, ax_units, backward,
-     .     modulo, regular)
+      CALL ef_get_axis_info_6d(id, arg, ax_name, ax_units,
+     .                         backward, modulo, regular)
 
       CALL ef_get_box_size(id, arg, T_AXIS, arg_lo_ss(T_AXIS,arg), 
-     .               arg_lo_ss(T_AXIS,arg), boxsize)
-     
+     .                     arg_lo_ss(T_AXIS,arg), boxsize)
 
       IF ( arg_hi_ss(T_AXIS,arg) - arg_lo_ss(T_AXIS,arg) .EQ. 0 ) THEN
          nfreq_lo_l = 1
@@ -184,7 +173,6 @@ c      CALL ef_version_test(ef_version)
       ENDIF
 
       nd = abs(nfreq_hi_l - nfreq_lo_l) + 1
-
 
 C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 
@@ -208,9 +196,7 @@ C in the ef_set_custom_axis call, that would be equivalent.)
 C
 C  Set label for the frequency axis CYC/units.
 
-      outunits = 
-     .'LONG units string with this before the reg units of CYC/' // 
-     .ax_units(T_AXIS)
+      outunits = 'CYC/' // ax_units(T_AXIS)
 
       CALL ef_set_freq_axis (id, T_AXIS, nd, boxsize(1), outunits, NO)
 
@@ -235,6 +221,7 @@ C  Set label for the frequency axis CYC/units.
 
       SUBROUTINE fft_im_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -246,17 +233,12 @@ C  Set label for the frequency axis CYC/units.
 *                                                                     V
 
       INTEGER ntime, nfreq
-
       INTEGER arg
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
-
-*     Use utility functions to get context information about the argument.
-
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
-
-      nfreq = 1
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       arg = 1
       ntime = arg_hi_ss(T_AXIS,arg) - arg_lo_ss(T_AXIS,arg) + 1
@@ -282,6 +264,7 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 *
       SUBROUTINE fft_im_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -293,29 +276,41 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 * 
 * Set the work arrays,  X/Y/Z/T dimensions
 *
-* ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+* ef_set_work_array_dims_6d(id, array #,
+*                           xlo, ylo, zlo, tlo, elo, flo,
+*                           xhi, yhi, zhi, thi, ehi, fhi)
 *
-      INTEGER mtdat, mtwork
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      INTEGER mtdat, mtwork
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       mtdat = 1 + arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1)
 
       mtwork = 2.5* mtdat + 15
-  
+
 * a
-      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mtdat, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, 1,
+     .                                1, 1, 1, 1, 1, 1,
+     .                            mtdat, 1, 1, 1, 1, 1)
 
 * b
-      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, mtdat, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, 2,
+     .                                1, 1, 1, 1, 1, 1,
+     .                            mtdat, 1, 1, 1, 1, 1)
 
 * wft
-      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, mtwork, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, 3,
+     .                                1, 1, 1, 1, 1, 1,
+     .                           mtwork, 1, 1, 1, 1, 1)
 
 * ts
-      CALL ef_set_work_array_dims (id, 4, 1, 1, 1, 1, mtdat, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, 4,
+     .                                1, 1, 1, 1, 1, 1,
+     .                            mtdat, 1, 1, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -331,55 +326,58 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 *
       SUBROUTINE fft_im_compute(id, arg_1, result, a, b, wft, ts)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER id, arg
+      INTEGER id
 
-      REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
-     .           mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL result(memreslox:memreshix, memresloy:memreshiy,
-     .            memresloz:memreshiz, memreslot:memreshit)
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
+
+      REAL a(wrk1lox:wrk1hix, wrk1loy:wrk1hiy, wrk1loz:wrk1hiz,
+     .       wrk1lot:wrk1hit, wrk1loe:wrk1hie, wrk1lof:wrk1hif)
+      REAL b(wrk2lox:wrk2hix, wrk2loy:wrk2hiy, wrk2loz:wrk2hiz,
+     .       wrk2lot:wrk2hit, wrk2loe:wrk2hie, wrk2lof:wrk2hif)
+      REAL wft(wrk3lox:wrk3hix, wrk3loy:wrk3hiy, wrk3loz:wrk3hiz,
+     .         wrk3lot:wrk3hit, wrk3loe:wrk3hie, wrk3lof:wrk3hif)
+      REAL ts(wrk4lox:wrk4hix, wrk4loy:wrk4hiy, wrk4loz:wrk4hiz,
+     .        wrk4lot:wrk4hit, wrk4loe:wrk4hie, wrk4lof:wrk4hif)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
+* information for each variable''s axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      CHARACTER ax_name(4)*16, ax_units(4)*16
-      LOGICAL backward(4), modulo(4), regular(4)
 
-*  Dimension work arrays
+      CHARACTER ax_name(6)*16, ax_units(6)*16
+      LOGICAL backward(6), modulo(6), regular(6)
+      INTEGER arg, nd, nf
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, k1, l1, m1, n1
+      CHARACTER*128 err_msg
 
-      REAL a(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
-     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-      REAL b(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
-     .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
-      REAL wft(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
-     .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
-      REAL ts(wrk4lox:wrk4hix, wrk4loy:wrk4hiy,
-     .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
+   40 FORMAT ('FFT_IM encountered missing data at (i,j,k,l,m,n)', 6I5)
+   50 FORMAT ('FFT_IM encountered missing data at L=', I5)
 
-      INTEGER nd, nf
-      INTEGER i,j,k,l
-      INTEGER i1, j1, k1, l1
-
-      CHARACTER*80 err_msg
-
-   40 FORMAT ('FFTA encountered missing data at (i,j,k,l)', 4I5)
-   50 FORMAT ('FFTA encountered missing data at L=', I5)
-
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
 *  number of time points.
@@ -390,70 +388,80 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 
 *  Check that the time axis is regular.
 
-      CALL ef_get_axis_info (id, 1, ax_name, ax_units, backward,
-     .     modulo, regular)
-
+      CALL ef_get_axis_info_6d(id, 1, ax_name, ax_units,
+     .                         backward, modulo, regular)
       IF (.NOT. regular(T_AXIS)) THEN
-            WRITE (err_msg, *) 'Time axis must be a regular axis'
-            GO TO 999
+         WRITE (err_msg, *) 'Time axis must be a regular axis'
+         GO TO 999
       ENDIF
 
 *  Set WFT for fft; prime factorization of ND and trig functions.
 
       CALL rffti (nd, wft)
 
-      i1 = arg_lo_ss(X_AXIS,ARG1)
-      DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      n1 = arg_lo_ss(F_AXIS,ARG1)
+      DO 600 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+
+      m1 = arg_lo_ss(E_AXIS,ARG1)
+      DO 500 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+
+      k1 = arg_lo_ss(Z_AXIS,ARG1)
+      DO 300 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
          j1 = arg_lo_ss(Y_AXIS,ARG1)
-         DO 300 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+         DO 200 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-            k1 = arg_lo_ss(Z_AXIS,ARG1)
-            DO 200 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+            i1 = arg_lo_ss(X_AXIS,ARG1)
+            DO 100 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-*
 * Calculate the FFT for each time series which have no missing data.
-*
+* Make a simple error message if we have a 1-D input time series.
+
                l1 =arg_lo_ss(T_AXIS,ARG1)
-               DO 100 l = 1, nd
-                  IF (arg_1(i1,j1,k1,l1) .EQ. bad_flag(ARG1)) THEN
+               DO 400 l = 1, nd
 
-                     WRITE (err_msg, 40) i1,j1,k1,l
-
-                     IF (i1 .EQ. ef_unspecified_int4 .AND.
-     .                   j1 .EQ. ef_unspecified_int4 .AND.
-     .                   k1 .EQ. ef_unspecified_int4 )
-     .                     WRITE (err_msg, 50) l
-
+                  IF (arg_1(i1,j1,k1,l1,m1,n1) .EQ. bad_flag(ARG1)) THEN
+                     IF ( i1 .EQ. ef_unspecified_int4 .AND.
+     .                    j1 .EQ. ef_unspecified_int4 .AND.
+     .                    k1 .EQ. ef_unspecified_int4 .AND.
+     .                    m1 .EQ. ef_unspecified_int4 .AND.
+     .                    n1 .EQ. ef_unspecified_int4 ) THEN
+                        WRITE (err_msg, 50) l
+                     ELSE
+                        WRITE (err_msg, 40) i1,j1,k1,l,m1,n1
+                     ENDIF
                      GO TO 999 
                   ENDIF
+                  ts(l,1,1,1,1,1) = arg_1(i1,j1,k1,l1,m1,n1)
 
-                  ts(l,1,1,1) = arg_1(i1,j1,k1,l1)
                   l1 = l1 + arg_incr(T_AXIS,ARG1)
- 100           CONTINUE
-
-
-               l1 = arg_lo_ss(T_AXIS,ARG1)
-               l = res_lo_ss(T_AXIS)
+ 400           CONTINUE
 
                CALL four_re (nd, ts, a, b, wft)
 
-               DO 110 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS) 
-                   result(i,j,k,l) = b(l,1,1,1)
- 110           CONTINUE
+               DO 410 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS) 
+                   result(i,j,k,l,m,n) = b(l,1,1,1,1,1)
+ 410           CONTINUE
 
-               k1 = k1 + arg_incr(Z_AXIS,ARG1)
- 200        CONTINUE
+               i1 = i1 + arg_incr(X_AXIS,ARG1)
+ 100        CONTINUE
 
             j1 = j1 + arg_incr(Y_AXIS,ARG1)
- 300     CONTINUE
+ 200     CONTINUE
 
-         i1 = i1 + arg_incr(X_AXIS,ARG1)
- 400  CONTINUE
+         k1 = k1 + arg_incr(Z_AXIS,ARG1)
+ 300  CONTINUE
+
+         m1 = m1 + arg_incr(E_AXIS,ARG1)
+ 500  CONTINUE
+
+         n1 = n1 + arg_incr(F_AXIS,ARG1)
+ 600  CONTINUE
 
       RETURN
 
  999  CALL ef_bail_out (id, err_msg)
+
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -461,4 +469,3 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 
       RETURN 
       END
-      

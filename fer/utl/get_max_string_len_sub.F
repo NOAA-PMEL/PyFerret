@@ -1,5 +1,6 @@
 	SUBROUTINE GET_MAX_STRING_LEN_SUB(cx, grid_data, 
-     .		lox, hix, loy, hiy, loz, hiz, lot, hit, smax )
+     .		lox, hix, loy, hiy, loz, hiz, lot, hit, 
+     .		loe, hie, lof, hif, smax )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -39,17 +40,21 @@
 * v554: 12/04 *acm* Get the shape of the region for the context of the data;
 *                   these are the indices to use in looping through grid_data.
 *                   (fixes bug 617, listing string and numeric data together)
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
         include 'ferret.parm'
 	include 'xcontext.cmn'
 
 * calling argument declarations
-	INTEGER  cx, smax, lox, hix, loy, hiy, loz, hiz,lot, hit
-	REAL*8 grid_data( lox:hix,loy:hiy,loz:hiz,lot:hit )
+	INTEGER  cx, smax, lox, hix, loy, hiy, loz, hiz, 
+     .		 lot, hit, loe, hie, lof, hif
+	REAL*8 grid_data( lox:hix,loy:hiy,loz:hiz,lot:hit,loe:hie,lof:hif )
 
 * internal variable declarations:
-	INTEGER  GET_C_STRING_LEN, i, j, k, l, slen, sslo(4), sshi(4),
-     .         ndim, cxperm(4)
+	INTEGER  GET_C_STRING_LEN, i, j, k, l, m, n, slen, 
+     .         sslo(nferdims), sshi(nferdims),
+     .         ndim, cxperm(nferdims)
 
 * initialize
 	smax = 1
@@ -60,17 +65,24 @@
         sslo(2) = cx_lo_s2(cx)
         sslo(3) = cx_lo_s3(cx)
         sslo(4) = cx_lo_s4(cx)
+        sslo(5) = cx_lo_s5(cx)
+        sslo(6) = cx_lo_s6(cx)
+
         sshi(1) = cx_hi_s1(cx)
         sshi(2) = cx_hi_s2(cx)
         sshi(3) = cx_hi_s3(cx)
         sshi(4) = cx_hi_s4(cx)
+        sshi(5) = cx_hi_s5(cx)
+        sshi(6) = cx_hi_s6(cx)
 
+	DO 100 n = sslo(cxperm(6)), sshi(cxperm(6))
+	DO 100 m = sslo(cxperm(5)), sshi(cxperm(5))
 	DO 100 l = sslo(cxperm(4)), sshi(cxperm(4))
 	DO 100 k = sslo(cxperm(3)), sshi(cxperm(3))
 	DO 100 j = sslo(cxperm(2)), sshi(cxperm(2))
 	DO 100 i = sslo(cxperm(1)), sshi(cxperm(1))
 
-	   slen = GET_C_STRING_LEN( grid_data(i,j,k,l) )
+	   slen = GET_C_STRING_LEN( grid_data(i,j,k,l,m,n) )
 	   IF ( slen .GT. smax ) smax = slen
            
  100	CONTINUE

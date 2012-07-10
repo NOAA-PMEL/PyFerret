@@ -94,6 +94,7 @@
 * V68   4/11 *acm* fix 1848: skip vars with dim>4 or string vars with dim>5
 * V68  *acm* 1/12- added use_strict argument for ticket 1910: micro-adjusting on 
 *                  repeated coordinates in netCDF/OPeDNAP datasets
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -102,7 +103,6 @@
 *	status	- return status
 
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
 #include "gt_lib.parm"
@@ -154,7 +154,7 @@
       PARAMETER (max_vnamelen = 128)
       CHARACTER    vname*128, name*16, buff*128
       CHARACTER*128 bname(30)
-      REAL*4  global_bad
+      REAL global_bad
       REAL dg_bad
 
       INTEGER tt  ! nice short name
@@ -356,15 +356,15 @@
    30         CONTINUE
            ENDIF
 
-* is it a supported dimensionality (strings can be 5D) ?
-          IF ( nvdim .GT. 5 ) THEN
+* is it a supported dimensionality (6d, strings have extra dimension) ?
+          IF ( nvdim .GT. nferdims+1 ) THEN
              CALL TM_NOTE('Unsupported netCDF # of axes for variable. Ignoring '
      .             //vname(:vlen), tt )
              GOTO 1000
           ENDIF
 
-* is it a supported dimensionality (numeric can be 4D)?
-          IF ( nvdim .GT. 4 .AND. vartyp.NE. NCCHAR ) THEN
+* is it a supported dimensionality (numeric can be 6D)?
+          IF ( nvdim .GT. nferdims .AND. vartyp.NE. NCCHAR ) THEN
              CALL TM_NOTE('Unsupported netCDF # of axes for variable. Ignoring '
      .             //vname(:vlen), tt )
              GOTO 1000

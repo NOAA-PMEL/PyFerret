@@ -50,6 +50,7 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -67,7 +68,6 @@
       REAL*8  dvals( d1s:d1e, d2s:d2e )
       CHARACTER*(*) errstr
 
-      include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
 

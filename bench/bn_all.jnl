@@ -103,6 +103,9 @@ SET MODE VERIFY
 ! 11/06 *acm* New bn602_bug_fixes for version 6.02
 * V610  *acm* 3/08 - add new MODE NLEVELS
 
+! Include this statement to compare the outupt of 6D Ferret with 
+! previous 4D benchmark logs.
+! cancel mode 6d_lab
 
 GO bn_reset
 GO bn_syntax
@@ -210,7 +213,6 @@ GO bn_ez_order	! was bn311 until 9/95
 GO bn_reset
 ! cancel mode metafile   ! needed temporarily 6/94: PLOT+/XGKS interaction bug
 GO bn_user
-cancel viewports	! clean up
 set window 1		! clean up
 
 ! added in bn420  1/96
@@ -224,7 +226,6 @@ GO bn_mc
 !added in bn450 10/97 *kob*
 GO bn_reset
 GO bn_negative_t
-
 
 !added in bn450 10/97 *kob*
 GO bn_reset
@@ -778,6 +779,38 @@ GO bn_repeated_coords
 
 GO bn_reset
 GO bn_xml_header
+
+GO bn_reset
+GO bn_eof_simple
+
+GO bn_reset
+GO bn_eof_simple2
+
+! 6D tests for Ferret v6.8
+
+GO bn_reset
+GO bn_interpolate_6d
+
+GO bn_reset
+GO bn_regrid_6d
+
+GO bn_reset
+GO bn_syntax_6d
+
+GO bn_reset
+GO bn_expressions_6d
+
+GO bn_reset
+GO bn_direction_fcns_6d
+
+GO bn_reset
+GO bn_regrid_transforms_6d
+
+GO bn_reset
+GO bn_aggregate_e
+
+GO bn_reset
+GO bn_6d_lab_mode
 
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not

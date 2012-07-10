@@ -44,14 +44,12 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V510 - *sh* 1/00 -- drawn from GET_AVE_LIMS
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
-#ifdef unix
+	include	'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER src_lo, src_hi, dst_lo, dst_hi, src_grid, dst_grid, idim
@@ -62,11 +60,11 @@
 	REAL*8	TDEST_WORLD, src_ww
 
 * initialize
-        IF ( idim .EQ. t_dim ) THEN
+        IF ( idim .EQ. t_dim .OR. idim .EQ. f_dim ) THEN
 *         TDST_WORLD gives dates from the destination axis as they would be
 *         encoded on the source axis 
 *   ==>   ALL TIME/DATE CALCULATIONS ARE DONE IN THE DESTINATION AXIS ENCODING
-           CALL TDEST_WORLD_INIT ( src_grid, dst_grid, status ) ! src<->dst
+           CALL TDEST_WORLD_INIT ( src_grid, dst_grid, idim, status ) ! src<->dst
            IF ( status .NE. ferr_ok ) RETURN   ! note - status not passed!!!
         ENDIF
 

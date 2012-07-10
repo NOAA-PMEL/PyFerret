@@ -73,6 +73,8 @@
 * V600 *acm* 11/05  - Fix for bug 1365; do not fix the world limits for cx_cmnd
 *                     unless they were already set.
 * V600 *acm*  4/06  - correct typo unspecified_val8
+*      *acm*  4/12 6D Ferret: time axis may be in t or f direction.
+* V680 *acm*  612  6D Ferret: Pull the calendar correction into a separate routine.
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -92,7 +94,7 @@
 	LOGICAL its_irrelevant
 	INTEGER	ISUBSCRIPT, TM_LENSTR1, ss, min_ss, max_ss, lo_ss, hi_ss,
      .		axis, grid, lenstr, slen, cat, var, istat
-	REAL*8	SECS_FROM_BC, bc_to_t0, ww, min_ww, max_ww, lo_ww, hi_ww
+	REAL*8	ww, min_ww, max_ww, lo_ww, hi_ww
 *                  and VAR_TITLE from 24 to 128
 	CHARACTER VAR_CODE*128, CX_DIM_STR*48, VAR_TITLE*128,
      .		  buff*48, err_str*128, expr_num*1
@@ -100,8 +102,6 @@
 * internal parameter declarations:
 	LOGICAL     full_precision
 	INTEGER	    err_ss_lims, err_ww_lims
-	INTEGER TM_GET_CALENDAR_ID, cal_id, prev_cal_id
-	REAL*8      new_lo_ww, new_hi_ww
 	PARAMETER ( full_precision = .TRUE.,
      .		    err_ss_lims = -77,
      .		    err_ww_lims = -88 )
@@ -177,43 +177,16 @@
 *11/04 *acm* reset time step only if axis is a different calendar than 
 *            the calendar originally used to compute world coordinates
 
-	   IF ( idim .EQ. t_dim .AND.cx_calendar(cx) ) THEN
-              cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
-	      bc_to_t0 = SECS_FROM_BC(line_t0(axis), cal_id, istat)
-	      IF (istat .ne. ferr_ok) GO TO 4000
+	   IF ( (idim .EQ. t_dim .OR. idim .EQ. f_dim) .AND.cx_calendar(cx) ) THEN
 
-!              prev_cal_id = TM_GET_CALENDAR_ID ('GREGORIAN')
-
-              prev_cal_id = cx_cal_id(cx)
-              IF (prev_cal_id .NE. cal_id) THEN
-                 CALL reset_secs_from_bc (-cx_lo_ww(idim,cx), 
-     .		     new_lo_ww, prev_cal_id, cal_id, istat)
-c                status = err_ww_lims
-                 IF (istat .ne. ferr_ok) GO TO 5000
-                 CALL reset_secs_from_bc (-cx_hi_ww(idim,cx), 
-     .		     new_hi_ww, prev_cal_id, cal_id, istat)
-	         IF (istat.ne. ferr_ok) GO TO 5000
-                 cx_cal_id(cx) = cal_id
-              ELSE
-                 new_lo_ww = -1*cx_lo_ww(idim,cx)
-                 new_hi_ww = -1*cx_hi_ww(idim,cx)
-              ENDIF
-
-	      cx_lo_ww(idim,cx) = (new_lo_ww-bc_to_t0)/line_tunit(axis)
-	      cx_hi_ww(idim,cx) = (new_hi_ww-bc_to_t0)/line_tunit(axis)
+	      CALL CALENDAR_AXIS (idim, grid, cx, istat)
+	      IF (istat .EQ. -1) GOTO 5000
+	      IF (idim .EQ. t_dim .AND. grid_line(f_dim,igrid) .NE. mnormal)THEN
+	         CALL CALENDAR_AXIS(f_dim, grid, cx, istat)
+     	         IF (istat .EQ. -1) GOTO 5000
+	      ENDIF
+	      
 	      cx_calendar(cx) = .FALSE. 
-
-* also fix the world limits for cx_cmnd, if they were originally set 
-* using default calendar
-* Fix for bug 1365: if the limits for cx_cmnd were not set, do not set them here
-
-              IF ( (cx_lo_ww(idim,cx_cmnd) .NE. unspecified_val8)  .AND.
-     .             (cx_cal_id(cx_cmnd) .NE. unspecified_int4)  .AND.
-     .             (cal_id .NE. prev_cal_id) ) THEN   
-                  cx_lo_ww(idim,cx_cmnd) = -1*new_lo_ww
-                  cx_hi_ww(idim,cx_cmnd) = -1*new_hi_ww
-                  cx_cal_id(cx_cmnd) = cal_id
-              ENDIF
 
            ENDIF
 * ... confine values to the limits of the defining grid

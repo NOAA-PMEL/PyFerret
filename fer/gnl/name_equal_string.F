@@ -41,16 +41,12 @@
 * V510 - 12/99 *sh* - extracted from XEQ_DEFINE
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		start_pos, status

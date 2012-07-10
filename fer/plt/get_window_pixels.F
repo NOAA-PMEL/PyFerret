@@ -57,6 +57,8 @@
 * V602: *acm* 1/07 Changes for metafile-batch mode
 * V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
         include 'pltcom_dat.decl'
         include 'PLTCOM.DAT'

@@ -1,7 +1,9 @@
 	SUBROUTINE COPY_PTR_INTO_MAPPED_SUB( cxs, axis, hilim,
      .		sorted_indices, index_map,
-     .		src, slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit  )
+     .		src, slox, shix, sloy, shiy, sloz, shiz, 
+     .		slot, shit, sloe, shie, slof, shif,
+     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, 
+     .		dlot, dhit, dloe, dhie, dlof, dhif  )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -43,20 +45,24 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V533 *sh* 6/01
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'
 
 * calling argument declarations:
 	INTEGER cxs, axis, hilim,
-     .		slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit
+     .		slox, shix, sloy, shiy, sloz, shiz, 
+     .		slot, shit, sloe, shie, slof, shif,
+     .		dlox, dhix, dloy, dhiy, dloz, dhiz, 
+     .		dlot, dhit, dloe, dhie, dlof, dhif 
 	REAL	sorted_indices(hilim), index_map(hilim)
-	REAL*8  src( slox:shix,sloy:shiy,sloz:shiz,slot:shit ),
-     .		dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit )
+	REAL*8  src( slox:shix,sloy:shiy,sloz:shiz,slot:shit,sloe:shie,slof:shif ),
+     .		dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit,dloe:dhie,dlof:dhif )
 
 * internal variable declarations:
-	INTEGER	i, j, k, l, pointer, src_index, dst_index, isorted,
+	INTEGER	i, j, k, l, m, n, pointer, src_index, dst_index, isorted,
      .		src_index_2
 
 * --- end of introductory code ---
@@ -74,7 +80,7 @@
 
 * ... initialize
 	   src_index = cx_hi_s1(cxs)
-* ... if the input data has no range (-111:-111) then match on sorted_indices=1
+* ... if the input data has no range (-999:-999) then match on sorted_indices=1
 	   IF (src_index .EQ. unspecified_int4) THEN
 	      src_index_2 = 1
 	   ELSE
@@ -86,11 +92,13 @@
 	      IF (src_index_2 .EQ. sorted_indices(isorted)) THEN
 * ... copy a source point to the destination
 	         dst_index = index_map(isorted)
+	         DO 110 n = cx_lo_s6(cxs), cx_hi_s6(cxs)
+	         DO 110 m = cx_lo_s5(cxs), cx_hi_s5(cxs)
 	         DO 110 l = cx_lo_s4(cxs), cx_hi_s4(cxs)
 	         DO 110 k = cx_lo_s3(cxs), cx_hi_s3(cxs)
 	         DO 110 j = cx_lo_s2(cxs), cx_hi_s2(cxs)
- 110		 CALL COPY_C_STRING( src(src_index,j,k,l),
-     .				     dst(dst_index,j,k,l) )
+ 110		 CALL COPY_C_STRING( src(src_index,j,k,l,m,n),
+     .				     dst(dst_index,j,k,l,m,n) )
 	      ELSEIF (src_index .GT. sorted_indices(isorted)) THEN
 	         src_index   = src_index   - 1
 	         src_index_2 = src_index_2 - 1
@@ -108,7 +116,7 @@
 
 * ... initialize
 	   src_index = cx_hi_s2(cxs)
-* ... if the input data has no range (-111:-111) then match on sorted_indices=1
+* ... if the input data has no range (-999:-999) then match on sorted_indices=1
 	   IF (src_index .EQ. unspecified_int4) THEN
 	      src_index_2 = 1
 	   ELSE
@@ -120,11 +128,13 @@
 	      IF (src_index_2 .EQ. sorted_indices(isorted)) THEN
 * ... copy a source point to the destination
 	         dst_index = index_map(isorted)
+	         DO 210 n = cx_lo_s6(cxs), cx_hi_s6(cxs)
+	         DO 210 m = cx_lo_s5(cxs), cx_hi_s5(cxs)
 	         DO 210 l = cx_lo_s4(cxs), cx_hi_s4(cxs)
 	         DO 210 k = cx_lo_s3(cxs), cx_hi_s3(cxs)
 	         DO 210 i = cx_lo_s1(cxs), cx_hi_s1(cxs)
- 210		 CALL COPY_C_STRING( src(i,src_index,k,l),
-     .				     dst(i,dst_index,k,l) )
+ 210		 CALL COPY_C_STRING( src(i,src_index,k,l,m,n),
+     .				     dst(i,dst_index,k,l,m,n) )
 	      ELSEIF (src_index .GT. sorted_indices(isorted)) THEN
 	         src_index   = src_index   - 1
 	         src_index_2 = src_index_2 - 1
@@ -142,7 +152,7 @@
 
 * ... initialize
 	   src_index = cx_hi_s3(cxs)
-* ... if the input data has no range (-111:-111) then match on sorted_indices=1
+* ... if the input data has no range (-999:-999) then match on sorted_indices=1
 	   IF (src_index .EQ. unspecified_int4) THEN
 	      src_index_2 = 1
 	   ELSE
@@ -154,11 +164,13 @@
 	      IF (src_index_2 .EQ. sorted_indices(isorted)) THEN
 * ... copy a source point to the destination
 	         dst_index = index_map(isorted)
+	         DO 310 n = cx_lo_s6(cxs), cx_hi_s6(cxs)
+	         DO 310 m = cx_lo_s5(cxs), cx_hi_s5(cxs)
 	         DO 310 l = cx_lo_s4(cxs), cx_hi_s4(cxs)
 	         DO 310 j = cx_lo_s2(cxs), cx_hi_s2(cxs)
 	         DO 310 i = cx_lo_s1(cxs), cx_hi_s1(cxs)
- 310		 CALL COPY_C_STRING( src(i,j,src_index,l),
-     .				     dst(i,j,dst_index,l) )
+ 310		 CALL COPY_C_STRING( src(i,j,src_index,l,m,n),
+     .				     dst(i,j,dst_index,l,m,n) )
 	      ELSEIF (src_index .GT. sorted_indices(isorted)) THEN
 	         src_index   = src_index   - 1
 	         src_index_2 = src_index_2 - 1
@@ -176,7 +188,7 @@
 
 * ... initialize
 	   src_index = cx_hi_s4(cxs)
-* ... if the input data has no range (-111:-111) then match on sorted_indices=1
+* ... if the input data has no range (-999:-999) then match on sorted_indices=1
 	   IF (src_index .EQ. unspecified_int4) THEN
 	      src_index_2 = 1
 	   ELSE
@@ -188,11 +200,13 @@
 	      IF (src_index_2 .EQ. sorted_indices(isorted)) THEN
 * ... copy a source point to the destination
 	         dst_index = index_map(isorted)
+	         DO 410 n = cx_lo_s6(cxs), cx_hi_s6(cxs)
+	         DO 410 m = cx_lo_s5(cxs), cx_hi_s5(cxs)
 	         DO 410 k = cx_lo_s3(cxs), cx_hi_s3(cxs)
 	         DO 410 j = cx_lo_s2(cxs), cx_hi_s2(cxs)
 	         DO 410 i = cx_lo_s1(cxs), cx_hi_s1(cxs)
- 410		 CALL COPY_C_STRING( src(i,j,k,src_index),
-     .				     dst(i,j,k,dst_index) )
+ 410		 CALL COPY_C_STRING( src(i,j,k,src_index,m,n),
+     .				     dst(i,j,k,dst_index,m,n) )
 	      ELSEIF (src_index .GT. sorted_indices(isorted)) THEN
 	         src_index   = src_index   - 1
 	         src_index_2 = src_index_2 - 1
@@ -204,6 +218,78 @@
 	         ENDIF
 	      ENDIF
  450	   CONTINUE
+
+	ELSEIF ( axis .EQ. e_dim ) THEN
+**** Mapped copy along E axis
+
+* ... initialize
+	   src_index = cx_hi_s5(cxs)
+* ... if the input data has no range (-999:-999) then match on sorted_indices=1
+	   IF (src_index .EQ. unspecified_int4) THEN
+	      src_index_2 = 1
+	   ELSE
+	      src_index_2 = src_index
+	   ENDIF
+
+ 500	   CONTINUE	! find where src_index belongs in the result
+	   DO 550 isorted = pointer, 1, -1
+	      IF (src_index_2 .EQ. sorted_indices(isorted)) THEN
+* ... copy a source point to the destination
+	         dst_index = index_map(isorted)
+	         DO 510 n = cx_lo_s6(cxs), cx_hi_s6(cxs)
+	         DO 510 l = cx_lo_s4(cxs), cx_hi_s4(cxs)
+	         DO 510 k = cx_lo_s3(cxs), cx_hi_s3(cxs)
+	         DO 510 j = cx_lo_s2(cxs), cx_hi_s2(cxs)
+	         DO 510 i = cx_lo_s1(cxs), cx_hi_s1(cxs)
+ 510		 CALL COPY_C_STRING( src(i,j,k,l,src_index,n),
+     .				     dst(i,j,k,l,dst_index,n) )
+	      ELSEIF (src_index .GT. sorted_indices(isorted)) THEN
+	         src_index   = src_index   - 1
+	         src_index_2 = src_index_2 - 1
+	         IF ( src_index .LT. cx_lo_s5(cxs) ) THEN
+	            RETURN	! that's all this comonent is gonna supply
+	         ELSE
+	            pointer = isorted	! (just for efficiency)
+	            GOTO 500
+	         ENDIF
+	      ENDIF
+ 550	   CONTINUE
+
+	ELSEIF ( axis .EQ. f_dim ) THEN
+**** Mapped copy along F axis
+
+* ... initialize
+	   src_index = cx_hi_s6(cxs)
+* ... if the input data has no range (-999:-999) then match on sorted_indices=1
+	   IF (src_index .EQ. unspecified_int4) THEN
+	      src_index_2 = 1
+	   ELSE
+	      src_index_2 = src_index
+	   ENDIF
+
+ 600	   CONTINUE	! find where src_index belongs in the result
+	   DO 650 isorted = pointer, 1, -1
+	      IF (src_index_2 .EQ. sorted_indices(isorted)) THEN
+* ... copy a source point to the destination
+	         dst_index = index_map(isorted)
+	         DO 610 m = cx_lo_s5(cxs), cx_hi_s5(cxs)
+	         DO 610 l = cx_lo_s4(cxs), cx_hi_s4(cxs)
+	         DO 610 k = cx_lo_s3(cxs), cx_hi_s3(cxs)
+	         DO 610 j = cx_lo_s2(cxs), cx_hi_s2(cxs)
+	         DO 610 i = cx_lo_s1(cxs), cx_hi_s1(cxs)
+ 610		 CALL COPY_C_STRING( src(i,j,k,l,m,src_index),
+     .				     dst(i,j,k,l,m,dst_index) )
+	      ELSEIF (src_index .GT. sorted_indices(isorted)) THEN
+	         src_index   = src_index   - 1
+	         src_index_2 = src_index_2 - 1
+	         IF ( src_index .LT. cx_lo_s6(cxs) ) THEN
+	            RETURN	! that's all this comonent is gonna supply
+	         ELSE
+	            pointer = isorted	! (just for efficiency)
+	            GOTO 600
+	         ENDIF
+	      ENDIF
+ 650	   CONTINUE
 
 	ELSE
 	   STOP 'COPY_INTO_MAPPED_SUB: axis!!'

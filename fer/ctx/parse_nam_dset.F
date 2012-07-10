@@ -55,18 +55,13 @@
 *		etc. to avoid conflict. (But share the max_item_list parameter
 *		from the COMMON area.
 * V500: *sh* 3/99 -- added comment WATCH IMPLICIT GRID MANAGEMENT
-	
-#ifdef unix
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+
+	include 'tmap_dims.parm'	
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		default_cx, dset, cat, var, mods_cx, status

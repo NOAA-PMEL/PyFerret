@@ -50,6 +50,7 @@
 *                 and what was being included.  removed them
 * V542 2/02 *sh* - added support for modulo length > axis length
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * calling arguments:
 * world_coord	- coordinate vaule to be translated to subscript
@@ -57,16 +58,11 @@
 * idim		- underlying axis number (1-4)
 * clue		- performance assist to code - check this as possible result
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
+
 
 * calling argument declarations:
 	INTEGER	grid, idim, clue

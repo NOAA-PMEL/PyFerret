@@ -56,6 +56,7 @@
 * V65  *acm* 1/10  Make sure parameters values are consistent with 
 *                              whats in netcdf.inc from netcdf4.
 * V65  *acm* 2/10- all warnings and notes to std error not std out
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *	dset	 - dataset number
@@ -78,7 +79,6 @@
       real*8        dval(100)
 
 #include "gt_lib.parm"
-      include 'netcdf.decl'
 #include "netcdf.inc"
       include 'xio.cmn_text'
       include 'tmap_errors.parm'

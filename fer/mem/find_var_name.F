@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -66,19 +66,22 @@
 *                 variable def for user variables defined with LET/D.
 * v600 6/06 *acm* initialize category to 0 (needed for solaris)
 * V63  *acm* 10/09 Changes for gfortran build
-*      *kms* 11/10 add examination of pyvar (cat_pystat_var) variables
+* PyFr *kms* 11/10 add examination of pyvar (cat_pystat_var) variables
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
-	include 'tmap_dims.parm'
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include	'ferret.parm'
+        include 'errmsg.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include	'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 	include 'xcalc_vars.cmn'
 	include	'xalgebra.cmn'
 	include	'xdset_parms.cmn'
         include 'xcontrol.cmn'
-        include 'errmsg.parm'
         include 'xpyvar_info.cmn'
 
 * calling argument declarations:
@@ -166,6 +169,7 @@
      .                         num_indices)
         IF(num_indices.GT.0) THEN
               ivar = string_array_result(1)
+	      IF (ivar .GT. 30) ivar = ivar - 30 ! allow _I,_J,_K,_L,_X,_Y,_Z,_T 
 	      category = cat_pseudo_var
 	      variable = ivar
               test_name = buff
@@ -321,6 +325,7 @@
            ivar = string_array_result(j)
 	   IF ( single_dset .AND. ds_var_setnum( ivar ) .NE. dset ) GOTO 200
  	   category = cat_file_var
+ 	   IF (ds_type(dset) .EQ. 'AGG') category = cat_aggregate_var
 	   variable = ivar
            test_name = buff
            RETURN

@@ -44,19 +44,15 @@
 * V200: 10/25/89
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
+*       *acm* 3/12 changes for 6D Ferret
+
 * calling argument declarations:
 	INTEGER	dset
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-#endif
 
 	DSET_TYPE = ds_type( dset )
 

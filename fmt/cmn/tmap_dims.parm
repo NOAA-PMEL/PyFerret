@@ -32,7 +32,7 @@
      .		num_aux, num_parm, num_gridfiles, maxvarfiles,
      .		num_dyn_grids, max_dyn_grids, num_dyn_lines,
      .		max_dyn_lines, line_ceiling, grid_ceiling,
-     .		tmp_line_hook, tmp_grid_hook
+     .		tmp_line_hook, tmp_grid_hook, nferdims
 
 * parameters used for dimensioning arrays
 	PARAMETER (nrec_codes = 11)	! # of different record codes
@@ -75,3 +75,4 @@
 	PARAMETER (num_aux = 6)		! number of aux_modnum's in descriptor
 	PARAMETER (num_parm = 15)	! number of add_parm's in descriptor
 	PARAMETER (num_gridfiles = 6)	! number of grid_filenames in descript.
+	PARAMETER (nferdims = 6)	! number of dimensions in Ferret grids.

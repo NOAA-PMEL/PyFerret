@@ -43,4 +43,3 @@ set mode/last ignore_errors
 GO bn_axis_limits.sub1   ! lines
 GO bn_axis_limits.sub2   ! 2D graphics
 
-cancel viewports	! clean-up

@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -43,6 +43,8 @@
 
 * for Unix/RISC port 8/91 - based on BINOM_WT
 
+        IMPLICIT NONE
+
 * calling argument declarations:
 	INTEGER	wlen
 	REAL	wt(wlen)
@@ -64,4 +66,4 @@
         CALL NORMALIZE( wt, wlen )
  
 	RETURN
-	END	
+	END

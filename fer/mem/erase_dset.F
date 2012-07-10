@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -48,14 +48,17 @@
 * V411:  7/95 - Delete variables created with  LET/D=this_dset
 * V601  11/06 - Also need to delete LET/D= variables from the linked-
 *               list attribute structure.
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-	include	'ferret.parm'
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include 'ferret.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
 
 
 * calling argument declarations:
-	INTEGER	dset
+	INTEGER dset
 
 * local variable declarations:
 	INTEGER TM_LENSTR, mr, ii, slen, flen, dset_uvars

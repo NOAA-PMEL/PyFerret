@@ -1,3 +1,5 @@
+
+
 	SUBROUTINE NETCDF4_SET_LIST_SETTINGS (status)
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -39,10 +41,12 @@
 * NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
 *
 * revision 0.0 - 1/13/2010
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * Read info from qualilifiers for LIST netCDF4: NCFORMAT,
-* XCHUNK,YCHUNK,ZCHUNK,TCHUNK,DEFLATE,SHUFFLE,ENDIAN
+* XCHUNK,YCHUNK,ZCHUNK,TCHUNK,ECHUNK,FCHUNK,DEFLATE,SHUFFLE,ENDIAN
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'slash.parm'
 	include 'xcontext.cmn'
@@ -66,6 +70,8 @@
 	ychunk_size  = ychunk_size_set
 	zchunk_size  = zchunk_size_set
 	tchunk_size  = tchunk_size_set
+	echunk_size  = echunk_size_set
+	fchunk_size  = fchunk_size_set
 	deflate_lev  = deflate_lev_set
 	shuffle_flag = shuffle_flag_set
 	endian_code  = endian_code_set
@@ -97,7 +103,7 @@
 	   netcdf4_type_set = netcdf4_type
 	ENDIF
 
-* /XCHUNK,YCHUNK,ZCHUNK,TCHUNK for netCDF4 chunking?
+* /XCHUNK,YCHUNK,ZCHUNK,TCHUNK,ECHUNK,FCHUNK for netCDF4 chunking?
 
 	loc = qual_given( slash_set_list_xchunk )
 	IF (loc .GT. 0) THEN 
@@ -140,6 +146,28 @@
            READ (buff, *) tchunk_size
 	   IF (tchunk_size .LE. 0) GOTO 5200
 	   tchunk_size_set = tchunk_size
+	ENDIF
+	
+        loc = qual_given( slash_set_list_echunk )
+	IF (loc .GT. 0) THEN 
+	   CALL EQUAL_STRING(
+     .                   cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                   buff, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+           READ (buff, *) echunk_size
+	   IF (echunk_size .LE. 0) GOTO 5200
+	   echunk_size_set = echunk_size
+	ENDIF
+	
+        loc = qual_given( slash_set_list_fchunk )
+	IF (loc .GT. 0) THEN 
+	   CALL EQUAL_STRING(
+     .                   cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                   buff, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+           READ (buff, *) fchunk_size
+	   IF (fchunk_size .LE. 0) GOTO 5200
+	   fchunk_size_set = fchunk_size
 	ENDIF
 
 * DEFLATE 

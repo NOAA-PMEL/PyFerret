@@ -168,7 +168,7 @@ CC       => Set values here instead.
 	no_labels = qual_given( slash_plot_nolabels  ).GT.0
 	transpz   = qual_given( slash_plot_transpz   ).GT.0
 	versus    = qual_given( slash_plot_vs	     ).GT.0
-	set_up	  = qual_given( slash_shad_set_up    ).GT.0
+	set_up	  = qual_given( slash_plot_set_up    ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
 	axes      = qual_given( slash_plot_axes      ).GT.0
         IF (overlay) THEN

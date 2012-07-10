@@ -23,5 +23,3 @@ set v ur; vector/xskip=10/yskip=10 sst[d=2,l=1],sst[d=2,l=2], xval[d=2], yval[d=
 
 set v ll; contour sst[d=1,l=1], xval[d=2], yval[d=2]; sh sym labtit
 set v lr; contour sst[d=2,l=1], xval[d=2], yval[d=2]; sh sym labtit
-
-can view

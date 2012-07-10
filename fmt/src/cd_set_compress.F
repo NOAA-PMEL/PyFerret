@@ -41,6 +41,7 @@
 * NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
 * Netcdf-4 with HDF chunking and compression
 * revision 0.0 - 12/09
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * argument definitions:
 *   cdfid   - returned pointer to open CDF file
@@ -58,8 +59,8 @@
 	CHARACTER*(*) vname
 
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
+	include 'tmap_dims.parm'
         include 'cdf_tmap.parm'
         include 'tmap_errors.parm'
 
@@ -73,8 +74,8 @@
       INTEGER cdfstat, idim, vlen
       INTEGER do_deflate, do_chunk, cdfformat
 
-      CHARACTER*1     ww_dim_nam(4)
-      DATA ww_dim_nam/'X', 'Y', 'Z', 'T'/
+      CHARACTER*1     ww_dim_nam(nferdims)
+      DATA ww_dim_nam/'X', 'Y', 'Z', 'T', 'E', 'F'/
 
 * Called from CD_MAKE_VAR. We are in define mode
 
@@ -95,7 +96,7 @@
 * Has the user set chunking values?
 
       do_chunk = 0
-      DO 100 idim = 1, 4
+      DO 100 idim = 1, nferdims
          do_chunk = MAX(do_chunk, chunks(idim) ) 
   100 CONTINUE
 

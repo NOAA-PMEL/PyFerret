@@ -35,7 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* list a gridded variable stored in memory - 0 to 4 dimensions
+* list a gridded variable stored in memory - 0 to 6 dimensions
 * Note: the looping/axis labelling procedures of LIST_MULTI are cleaner and
 *	more efficient than this - this could be improved easily (*sh* 7/90)
 
@@ -43,6 +43,7 @@
 * NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
 *
 * V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 
 	include 'tmap_dims.parm'
@@ -70,29 +71,29 @@
 
 * calling argument declarations:
 	LOGICAL		heading, head_enh, clobber
-	INTEGER		mr, cx, perm(4), recsofar, status
-	REAL grid_data(m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit),
+	INTEGER		mr, cx, perm(nferdims), recsofar, status
+	REAL grid_data(m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit,m1loe:m1hie,m1lof:m1hif),
      .       ax_buff(*)
         CHARACTER*(*) dods_file
 	
 * local variable declarations:
 	LOGICAL		GEOG_LABEL, TM_DFPEQ, 
      .			line_too_long, del_col_changed, all_bad,
-     .			valid(4), need_doc(4), span(4), do_unform,
+     .			valid(nferdims), need_doc(nferdims), span(nferdims), do_unform,
      .			do_stream, do_comma_del, do_tab_del, itsa_string,
      .			fortran_selfdoc, do_auto_fmt, do_dods, norow
 	INTEGER		TM_LENSTR, TM_LENSTR1, CX_DIM_LEN,
      .			FIELD_WIDTH, MGRID_SIZE,
      .			GET_MAX_C_STRING_LEN, TM_GET_CALENDAR_ID,
      .			width, w0, grid, dlen, prec_digits,
-     .			ndim, lo(4), hi(4), del(4),
-     .			i, j, k, l, npts, line_length, dset,
+     .			ndim, lo(nferdims), hi(nferdims), del(nferdims),
+     .			i, j, k, l, m, n, npts, line_length, dset,
      .			temp, num_fld_est, nleft, nright, alen, num_fields,
      .			idim, vlen, istart, iend, ifield,
      .			cleft, usable_line_len, max_fields, row_ax,
      .			col_ax, places, col_dec, row_dec, row_wld, 
      .			numbers, first, slen, llen, axis, lp, cal_id,
-     .                  wkblk, ndig(4)
+     .                  wkblk, ndig(nferdims)
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 * V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
 	CHARACTER	AX_TITLE*32, VAR_UNITS*64, LEFINT*8, TM_FMT*16,
@@ -104,21 +105,19 @@
 	REAL		BOX_SIZE, big, small, biggest, bad_data, value
 	REAL*8		TM_WORLD, val8, val_last, diff_min, diff_ave, count
 
-#ifdef DEC_FORTRAN
-	INTEGER		ios
-#endif
-
 * convenience equivalence:
-	INTEGER		lo1, lo2, lo3, lo4, hi1, hi2, hi3, hi4,
-     .			del1, del2, del3, del4
-	EQUIVALENCE	(lo1, lo(1)), (lo2, lo(2)), (lo3,lo(3)),  (lo4,lo(4)),
+	INTEGER		lo1, lo2, lo3, lo4, lo5, lo6, 
+     .			hi1, hi2, hi3, hi4, hi5, hi6, 
+     .			del1, del2, del3, del4, del5, del6
+     .			i1, i2, i3, i4, i5, i6
+	EQUIVALENCE	(i1, pt(1)) , (i2, pt(2)) , (i3, pt(3)),  (i4,pt(4)),
+     .			(i5, pt(5)),  (i6,pt(6)),
+     .			(lo1, lo(1)), (lo2, lo(2)), (lo3,lo(3)),  (lo4,lo(4)),
+     .			(lo5,lo(5)),  (lo6,lo(6)),
      .			(hi1, hi(1)), (hi2, hi(2)), (hi3,hi(3)),  (hi4,hi(4)),
-     .			(del1,del(1)),(del2,del(2)),(del3,del(3)),(del4,del(4))
-
-* local parameter declarations
-	INTEGER		slash_precision, slash_norow
-	PARAMETER     (	slash_precision = 17+1,
-     .                  slash_norow   = 32+1 )
+     .			(hi5,hi(5)),  (hi6,hi(6)),
+     .			(del1,del(1)),(del2,del(2)),(del3,del(3)),(del4,del(4)),
+     .			(del5,del(5)),(del6,del(6))
 
 * initialize
 	status		= ferr_ok
@@ -135,10 +134,10 @@
         do_auto_fmt     = list_fmt_type .EQ. plist_default
 	fortran_selfdoc = head_enh .AND. list_format_given
 	itsa_string     = mr_type(mr) .EQ. ptype_string
-        norow = qual_given(slash_norow) .GT. 0
+        norow = qual_given(slash_list_norow) .GT. 0
 
 * determine precision for outputting values
-	lp = qual_given( slash_precision ) 
+	lp = qual_given( slash_list_precision ) 
 	IF ( lp .GT. 0 ) THEN
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),
      .                     value, status )
@@ -164,11 +163,11 @@
 	row_ax = perm(1)
 	col_ax = perm(2)
 	ndim = 0
-	DO 10 ndim = 4, 1, -1
+	DO 10 ndim = nferdims, 1, -1
 	   IF ( CX_DIM_LEN( perm(ndim), cx ) .GT. 1 ) GOTO 20
  10	CONTINUE
 	ndim = 0
- 20	DO 30 idim = 1, 4
+ 20	DO 30 idim = 1, nferdims
 	   span(idim) = CX_DIM_LEN( perm(idim), cx ) .GT. 1
 	   valid(idim) = cx_lo_ss( cx, perm(idim) ) .NE. unspecified_int4
  30	CONTINUE
@@ -238,7 +237,7 @@
 * ... SUBSET:   e.g. "Nx by Ny (longitude-latitude)"
 	   line_buff = '<subset>'
 	   l = 8
-	   DO idim = 1, 4
+	   DO idim = 1, nferdims
 	      IF ( span(idim) ) THEN
 	         i = perm(idim)
 	         j = CX_DIM_LEN ( i, cx )
@@ -251,7 +250,7 @@
 	   IF ( l.GT.8) THEN
 	      line_buff(l-3:l+7) = ' points (  '
 	      l = l + 5
-	      DO idim = 1, 4
+	      DO idim = 1, nferdims
 	         IF ( span(idim) ) THEN
 	            line_buff = line_buff(:l)//
      .				AX_TITLE(perm(idim), cx_grid(cx), vlen)
@@ -267,7 +266,7 @@
 	ENDIF
 
 * ... which axes require labels
-	DO 35 idim = 1, 4
+	DO 35 idim = 1, nferdims
  35	need_doc(idim) = .TRUE.
 	IF ( .NOT.(do_unform.OR.do_dods.OR.list_format_given) ) THEN
 	   DO 36 idim = 1, ndim
@@ -277,7 +276,7 @@
 * ... if not indicated in time label show a nonstandard calendar name
 	cal_name = line_cal_name( grid_line(t_dim, grid) )
 	cal_id = TM_GET_CALENDAR_ID (cal_name)
-	DO i = 1, 4
+	DO i = 1, nferdims
 	   idim = perm(i)
 	   IF ( .NOT.need_doc(i) .AND. idim.EQ.t_dim .AND.
      .	     cal_id .LE. max_calendars) THEN
@@ -289,16 +288,13 @@
 	ENDDO
 
 * ... region information
-	DO 60 i = 1, 4
+	DO 60 i = 1, nferdims
 	   idim = perm(i)
 	   IF ( need_doc(i) ) THEN
 	      IF ( cx_lo_ww( idim,cx ) .NE. unspecified_val8 ) THEN 
 	         CALL ASCII_LIMITS( cx, idim, line_buff, vlen )
 	         col_head_format = AX_TITLE( idim, grid, alen )
 	         IF (alen .LT. 9) alen = 9
-!	         CALL SPLIT_LIST( pttmode_explct, list_lun,
-!     .			'             '//col_head_format( :alen )//': '
-!     .			//line_buff(1:vlen), alen+vlen+15)
 
                  CALL SPLIT_LIST( pttmode_explct, list_lun,
      .                 '<'//col_head_format( :alen )//'>'
@@ -310,7 +306,7 @@
  60	CONTINUE
 
 * * * * * DETERMINE LIST LIMITS * * *
- 200	DO 210 i = 1, 4
+ 200	DO 210 i = 1, nferdims
 	   idim = perm(i)
 	   lo(i) = cx_lo_ss( cx, idim )
 	   hi(i) = cx_hi_ss( cx, idim )
@@ -324,7 +320,7 @@
 * ... GEOMETRY: xxx
 	   line_buff = ' '
 	   i = 1	   
-	   DO 220 idim = 1, 4
+	   DO 220 idim = 1, nferdims
 	      IF ( span(idim) ) THEN
 	         line_buff(i:i) = ww_dim_name(perm(idim))
 	         i = i + 1
@@ -337,7 +333,7 @@
 * ... SIZE: xxx
 	   line_buff = ' '
 	   l = 1
-	   DO 230 idim = 1, 4
+	   DO 230 idim = 1, nferdims
 	      IF ( span(idim) ) THEN
 	         i = perm(idim)
 	         j = CX_DIM_LEN ( i, cx )
@@ -365,7 +361,7 @@
 	   CALL SPLIT_LIST( pttmode_explct, list_lun, line_buff, 0 )
 
 * ... axis COORDINATES:
-	   DO 250 idim = 1, 4
+	   DO 250 idim = 1, nferdims
 	      IF ( span(idim) ) THEN
 	         line_buff = ' '
 	         i = perm(idim)
@@ -402,7 +398,7 @@
 	IF ( do_dods) THEN
            CALL WRITE_DODS_FMT (grid_data, 
      .           m1lox,m1hix, m1loy,m1hiy, m1loz,m1hiz, m1lot,m1hit, 
-     .           ax_buff, dods_file, clobber, status)
+     .           m1loe,m1hie, m1lof,m1hif, ax_buff, dods_file, clobber, status)
 
 * done - 
 	   RETURN
@@ -412,6 +408,8 @@
      .	.OR. do_stream
      .	.OR. list_format_given ) THEN
 
+	   DO 300 n = lo6, hi6, del6
+	   DO 300 m = lo5, hi5, del5
 	   DO 300 l = lo4, hi4, del4
 	   DO 300 k = lo3, hi3, del3
 	   DO 300 j = lo2, hi2, del2
@@ -421,8 +419,8 @@
 	         llen = 0
 	         DO 270 i = lo1, hi1, del1
 	            line_buff(llen+1:) = GET_STRING_ELEMENT(
-     .			m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,
-     .			grid_data,i,j,k,l,max_line_len,slen )
+     .			m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,m1loe,m1hie,
+     .			m1lof,m1hif,grid_data,i,j,k,l,m,n,max_line_len,slen )
 	            llen = MIN(max_line_len-1, llen+slen)
 	            IF (do_stream) THEN
 	               llen = llen + 1
@@ -440,8 +438,8 @@
 !	single WRITE may imply many records of output
 	            DO 272 i = lo1, hi1, del1
 	               line_buff = GET_STRING_ELEMENT(
-     .			m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,
-     .			grid_data,i,j,k,l,max_line_len,slen )
+     .			m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,,m1loe,m1hie,
+     .			m1lof,m1hif,grid_data,i,j,k,l,m,n,max_line_len,slen )
 	               WRITE (list_lun,list_format, ERR=5010)
      .							line_buff(:slen)
  272		    CONTINUE
@@ -451,13 +449,13 @@
 ! ----- end string handler -------------
 	      IF ( do_unform ) THEN
 	         WRITE (list_lun, ERR=5010)
-     .			( grid_data(i,j,k,l),i = lo1, hi1, del1 )
+     .			( grid_data(i,j,k,l,m,n),i = lo1, hi1, del1 )
 
 	      ELSEIF ( do_stream ) THEN				! 12/94
 	         DO 298 i = lo1, hi1, del1
 	            recsofar = recsofar + 1
 	            WRITE (list_lun, REC=recsofar, ERR=5010)
-     .						grid_data(i,j,k,l)
+     .						grid_data(i,j,k,l,m,n)
  298		 CONTINUE
 	      ELSE
 ! Note: FORMATTED output cannot be passed through SPLIT_AXIS because a
@@ -465,11 +463,11 @@
 #ifdef DEC_FORTRAN
 * on DEC compilers a field too small for the value generates an ERR= branch
 	         WRITE (list_lun,list_format, IOSTAT=ios)
-     .			( grid_data(i,j,k,l),i = lo1, hi1, del1 )
+     .			( grid_data(i,j,k,l,m,n),i = lo1, hi1, del1 )
 	         IF ( ios.NE.0 .AND. ios.NE.63 ) GOTO 5010  ! 63 = fmt conv err
 #else
 	         WRITE (list_lun,list_format, ERR=5010)
-     .			( grid_data(i,j,k,l),i = lo1, hi1, del1 )
+     .			( grid_data(i,j,k,l,m,n),i = lo1, hi1, del1 )
 #endif
 	      ENDIF
  300	   CONTINUE
@@ -514,6 +512,16 @@
      .        CALL NDIG_COORDS (grid, perm(4), lo4, hi4, del4, 
      .           bad_data, ndig(perm(4)), ax_dec_pt(perm(4)) )
 
+           ndig(perm(5)) = ax_dec_pt(perm(5))
+	   IF ( ndim .GE. 5 .AND. valid(5) ) 
+     .        CALL NDIG_COORDS (grid, perm(5), lo5, hi5, del5, 
+     .           bad_data, ndig(perm(5)), ax_dec_pt(perm(5)) )
+
+           ndig(perm(6)) = ax_dec_pt(perm(6))
+	   IF ( ndim .GE. 6 .AND. valid(6) ) 
+     .        CALL NDIG_COORDS (grid, perm(6), lo6, hi6, del6, 
+     .           bad_data, ndig(perm(6)), ax_dec_pt(perm(6)) )
+
 * Write coordinates
 
 	   DO 330 i = lo1, hi1, del1
@@ -540,6 +548,22 @@
  330	   CONTINUE
  331	   CALL SPLIT_LIST(pttmode_explct, list_lun,
      .				line_buff(:alen), alen )
+	   DO 350 n = lo6, hi6, del6
+* ... label the block of blocks (6th dimension)
+	      IF ( ndim .GE. 6 .AND. valid(6) ) THEN
+	         CALL POS_LAB( l, cx, perm(6),
+     .			    ndig(perm(6)), line_buff, alen )
+	         CALL SPLIT_LIST(pttmode_explct, list_lun,
+     .			' ---- '//line_buff(:alen), 6+alen )
+	      ENDIF
+	   DO 350 l = lo5, hi5, del5
+* ... label the block of blocks (5th dimension)
+	      IF ( ndim .GE. 5 .AND. valid(5) ) THEN
+	         CALL POS_LAB( l, cx, perm(5),
+     .			    ndig(perm(5)), line_buff, alen )
+	         CALL SPLIT_LIST(pttmode_explct, list_lun,
+     .			' ---- '//line_buff(:alen), 6+alen )
+	      ENDIF
 	   DO 350 l = lo4, hi4, del4
 * ... label the block of blocks (4th dimension)
 	      IF ( ndim .GE. 4 .AND. valid(4) ) THEN
@@ -573,11 +597,11 @@
 	            IF ( itsa_string ) THEN
 	               line_buff = line_buff(:alen)//tab_or_COMMA//
      .			GET_STRING_ELEMENT(
-     .			m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,
-     .			grid_data,i,j,k,l,max_line_len,vlen )
+     .			m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,m1loe,m1hie,
+     .			m1lof,m1hif,grid_data,i,j,k,l,m,n,max_line_len,vlen )
 	            ELSE
 	               line_buff = line_buff(:alen)//tab_or_COMMA//
-     .			TM_FMT(grid_data(i,j,k,l),prec_digits,16,vlen)
+     .			TM_FMT(grid_data(i,j,k,l,m,n),prec_digits,16,vlen)
 	            ENDIF
 	            alen = alen+vlen+1
 	            IF ( alen .GT. max_line_len ) THEN
@@ -724,6 +748,26 @@
 * for a 3D field each block is separated by an identifier of the 3rd axis
 * for a 4D field each block of blocks is further separated and identified
 
+	DO 550 n = lo6, hi6, del6
+
+* label the block of blocks (4th dimension)
+	   IF ( ndim .GE. 6 .AND. valid(6) ) THEN
+	      CALL POS_LAB( l, cx, perm(6),
+     .			    ax_dec_pt(perm(6)), line_buff, alen )
+	      CALL SPLIT_LIST(pttmode_explct, list_lun,
+     .             '  <6D value=\''//line_buff(:alen)//'\'>', 0)
+	   ENDIF
+
+	DO 540 m = lo5, hi5, del5     
+
+* label the block of blocks (5th dimension)
+	   IF ( ndim .GE. 5 .AND. valid(5) ) THEN
+	      CALL POS_LAB( l, cx, perm(5),
+     .			    ax_dec_pt(perm(5)), line_buff, alen )
+	      CALL SPLIT_LIST(pttmode_explct, list_lun,
+     .             '  <5D value=\''//line_buff(:alen)//'\'>', 0)
+	   ENDIF
+
 	DO 530 l = lo4, hi4, del4
 
            CALL SPLIT_LIST(pttmode_explct, list_lun,
@@ -732,11 +776,9 @@
 
 * label the block of blocks (4th dimension)
 	   IF ( ndim .GE. 4 .AND. valid(4) ) THEN
-!           IF (valid(4)) THEN
 	      CALL POS_LAB( l, cx, perm(4),
      .			    ax_dec_pt(perm(4)), line_buff, alen )
 	      CALL SPLIT_LIST(pttmode_explct, list_lun,
-!     .			' ---- '//line_buff(:alen), 6+alen )
      .             '  <4D value=\''//line_buff(:alen)//'\'>', 0)
 	   ENDIF
 
@@ -744,8 +786,6 @@
 
 *    label a single block (3rd dimension)
 	      IF ( ndim .GE. 3 .AND. valid(3) ) THEN
-!	         CALL POS_LAB( k, cx, perm(3),
-!     .			       ax_dec_pt(perm(3)), line_buff, alen )
                  CALL TRANSLATE_TO_WORLD
      .                ( TM_WORLD( k, grid, perm(3), box_middle ),
      .                  perm(3), grid, ax_dec_pt(perm(3)), k_value )
@@ -762,9 +802,7 @@
 
 	            CALL TRANSLATE_TO_WORLD
      .		      ( TM_WORLD( j, grid, col_ax, box_middle ),
-!     .			col_ax, grid, col_dec, line_buff(:row_wld) )
      .                  col_ax, grid, col_dec, row_value )
-!	            WRITE ( line_buff(row_wld+1:cleft), row_ss_fmt ) j
                     slen= TM_LENSTR1(row_value)
                     CALL SPLIT_LIST(pttmode_explct, list_lun,
      .                  '       <row value=\''//row_value(:slen)
@@ -782,14 +820,14 @@
 	           line_buff(istart:istart) = '"'
 	           line_buff(istart+1:iend) = GET_STRING_ELEMENT(
      .			m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,
-     .			grid_data,i,j,k,l,width-2,slen)
+     .			m1loe,m1hie,m1lof,m1hif,grid_data,i,j,k,l,m,n,width-2,slen)
 	           IF (slen .GT. width-2) THEN
 	              line_buff(iend-3:iend) = '..."'
 	           ELSE
 	              line_buff(istart+slen+1:istart+slen+1) = '"'
 	           ENDIF
 	         ELSE
-	           value = grid_data(i,j,k,l)
+	           value = grid_data(i,j,k,l,m,n)
 	           IF ( value .NE. bad_data ) THEN
 	              WRITE ( entry_value, good_data_form ) value
 	           ELSE
@@ -803,9 +841,6 @@
  500	         CONTINUE
 
 	         IF ( interrupted ) RETURN
-!	         CALL SPLIT_LIST(pttmode_explct, list_lun,
-!     .			'         <entry>'//line_buff(istart:iend)//'</entry>', 0)
-
                  IF ( ndim .GE. 2 .AND. valid(2) .AND.
      .               (.NOT.norow) ) THEN
 
@@ -829,6 +864,20 @@
      .            '</tgroup>',0)                 
 
  530	CONTINUE
+ 
+           IF ( ndim .GE. 5 .AND. valid(5) ) THEN
+               CALL SPLIT_LIST(pttmode_explct, list_lun,
+     .             '  </5D>', 0)
+           ENDIF
+
+ 540	CONTINUE
+ 
+           IF ( ndim .GE. 6 .AND. valid(6) ) THEN
+               CALL SPLIT_LIST(pttmode_explct, list_lun,
+     .             '  </6D>', 0)
+           ENDIF               
+
+ 550	CONTINUE
 
 * successful completion
 	RETURN

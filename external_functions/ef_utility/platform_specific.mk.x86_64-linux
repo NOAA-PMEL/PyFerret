@@ -12,14 +12,14 @@ INCLUDES	= -I. -I../ef_utility -I../ef_utility/ferret_cmn
 
 CCSHFLAG	=
 CC		= gcc
-CFLAGS		= -fPIC -m64 -O $(INCLUDES)
+CFLAGS		= -fPIC -m64 -Ddouble_p -O $(INCLUDES)
 
 FC		= gfortran
 F77		= gfortran
 F77SHFLAG	=
-FFLAGS		= -fPIC -m64 -fno-second-underscore -fno-backslash \
-		  -fdollar-ok -ffixed-line-length-132 \
-		  $(INCLUDES)
+FFLAGS		= -fPIC -m64 -Ddouble_p -fno-second-underscore \
+		  -fno-backslash -fdollar-ok -ffixed-line-length-132 \
+		  -fdefault-real-8 -fdefault-double-8 -O $(INCLUDES)
 
 RANLIB		= /usr/bin/ranlib
 
@@ -30,8 +30,8 @@ SYSLIBS		= -L$(INSTALL_FER_DIR)/lib64/$(PYTHON_EXE)/site-packages/pyferret \
 
 CPP		= /lib/cpp
 CPP_FLAGS	= -P -traditional $(INCLUDES)
-CFLAGS_DEBUG	= -O0 -g -Ddebug
-FFLAGS_DEBUG	= -O0 -g -Ddebug
+CFLAGS_DEBUG	= -O0 -g
+FFLAGS_DEBUG	= -O0 -g
 
 ## cancel the default rule for .f -> .o to prevent objects from being built
 ## from .f files that are out-of-date with respect to their corresponding .F file

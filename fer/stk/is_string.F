@@ -7,22 +7,15 @@
 
 * V500:  1/99 - based on IS_CONST_VAR
 * V530:  8/00 *sh* - support for string arrays -- use dynamic memory alloc
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
 	include	'xvariables.cmn'
 	include	'xcontext.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	status

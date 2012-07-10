@@ -65,13 +65,8 @@
       include 'xmachine_byte.cmn'
       BYTE bb(4),bdum
 #else
-#	if unix
                 include 'xmachine_int1.cmn'
       		INTEGER*1 bb(4),bdum
-#	else
-      		INCLUDE 'TMAP_FORMAT:XMACHINE_BYTE.CMN'
-      		BYTE bb(4),bdum
-# 	endif
 #endif
 
 	EQUIVALENCE (bb(1),dum), (idum,dum)

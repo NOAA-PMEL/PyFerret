@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -45,21 +45,22 @@
 * revision 0.0 - 7/24/86
 * revision 0.1 - 7/20/87 - kludge introduction of 1D grids for XY averages
 * V200:  5/18/89 - 4D symmetrical
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 	INTEGER	MR_DIM_LEN, mr
 
-	   MGRID_SIZE = MR_DIM_LEN( 1, mr )
-     .		      * MR_DIM_LEN( 2, mr )
-     .		      * MR_DIM_LEN( 3, mr )
-     .		      * MR_DIM_LEN( 4, mr )
+        INTEGER k, mgsize
+
+        mgsize = MR_DIM_LEN(1, mr)
+        DO 10 k = 2, nferdims
+           mgsize = mgsize * MR_DIM_LEN(k, mr)
+ 10     CONTINUE
+        MGRID_SIZE = mgsize
 
 	RETURN
 	END

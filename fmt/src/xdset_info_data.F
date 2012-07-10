@@ -71,9 +71,9 @@
 	include 'xdset_info.cmn_text'
 
 * local parameters
-	INTEGER		max6axes, max4vars, maxdsets_aux, maxdsets_parm
+	INTEGER		max6axes, maxnvars, maxdsets_aux, maxdsets_parm
 	PARAMETER	(max6axes = 6*maxdsets)
-	PARAMETER	(max4vars = 4*maxvars)
+	PARAMETER	(maxnvars = nferdims*maxvars)
 	PARAMETER	(maxdsets_aux = maxdsets*num_aux)
 	PARAMETER	(maxdsets_parm = maxdsets*num_parm)
 
@@ -124,9 +124,9 @@
 	DATA	ds_grid_number		/maxvars*int4_init/
 	DATA	ds_missing_flag		/maxvars*real4_init/
 	DATA	ds_bad_flag		/maxvars*real4_init/
-	DATA	ds_ordering		/max4vars*int4_init/
-	DATA	ds_grid_start		/max4vars*int4_init/
-	DATA	ds_grid_end		/max4vars*int4_init/
+	DATA	ds_ordering		/maxnvars*int4_init/
+	DATA	ds_grid_start		/maxnvars*int4_init/
+	DATA	ds_grid_end		/maxnvars*int4_init/
 	DATA	ds_precision		/maxvars*char_init01/
 	DATA	ds_aux_set_num		/maxvars*int4_init/
 ********************************************************************************

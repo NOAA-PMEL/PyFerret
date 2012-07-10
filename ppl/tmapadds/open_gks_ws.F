@@ -56,6 +56,9 @@
 *                   has been defined, set it to the session date:time.
 *                   Save window_title in xplot_setup.cmn for use in subsequent
 *                   windows. Also define a symbol WIN_TITLE
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 
         integer         TM_LENSTR1, s1, nlen, asf(13), error
@@ -71,6 +74,7 @@
         include 'ws_types.cmn'
         include 'shade_vars.cmn'
         include 'xtoday.cmn'            ! with today_date and today_time
+	include 'tmap_dims.parm'
         include 'xplot_setup.cmn'
 
         character       GKS_X_CONID*16, xwind_id*16

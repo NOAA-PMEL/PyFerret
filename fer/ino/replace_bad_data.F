@@ -46,7 +46,9 @@
 *                         will check for use of NaN as missing/bad flag.  new
 *                         routine is also simpler and faster
 * V541: *sh* 4/02 - need to use MGRID_SIZE_DELTA to determine the size
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
@@ -57,13 +59,6 @@
 	REAL    src( * )
 	REAL	old_bad
 
-*	CALL REPLACE_BAD_DATA_SUB( cx, old_bad,
-*     .			    src, mr_lo_s1(msrc), mr_hi_s1(msrc),
-*     .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
-*     .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
-*     .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
-*     .				 mr_bad_data( msrc )		 )
-	
 	size = MGRID_SIZE_DELTA(msrc)
         CALL REPLACE_BAD_DATA_SUB( old_bad, src, size,
      .                            mr_bad_data(msrc) )

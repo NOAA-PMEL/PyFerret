@@ -5,6 +5,7 @@
 * V450:
 * V500: 1/99 added gfcn_arg_type in support of string arguments
 * V533: 6/01 *sh* added gfcn_rtn_type in support of string functions
+*       2/12 *ksm* added E and F dimensions
 
 	INTEGER		pmax_grid_chg_fcns,
      .			pmax_gfcn_args
@@ -12,8 +13,8 @@
      .			pmax_gfcn_args = 1000 )
 
 	COMMON / XGRID_CHG_FCN /
-     .				gfcn_num_internal, 
      .				gfcn_version,
+     .				gfcn_num_internal, 
      .				gfcn_num_reqd_args, 
      .				gfcn_arg_ptr,
      .				gfcn_arg_type, 
@@ -60,13 +61,13 @@
 !	INTEGER		gfcn_num_comps    ( pmax_grid_chg_fcns )
 
 * type of axis of result: merged from args, normal, abstract, or custom
-	INTEGER		gfcn_axis_will_be    ( 4, pmax_grid_chg_fcns )
+	INTEGER		gfcn_axis_will_be    ( nferdims, pmax_grid_chg_fcns )
 
 * how to interpret a range on the result axis: pgc_span_retained or pgc_span_reduced
-	INTEGER		gfcn_axis_reduction  ( 4, pmax_grid_chg_fcns )
+	INTEGER		gfcn_axis_reduction  ( nferdims, pmax_grid_chg_fcns )
 
 * for memory optimization: axes where calculation may be performed piecemeal
-	LOGICAL		gfcn_piecemeal_ok  ( 4, pmax_grid_chg_fcns )
+	LOGICAL		gfcn_piecemeal_ok  ( nferdims, pmax_grid_chg_fcns )
 
 * pointer from function to array of information about arguments
 	INTEGER		gfcn_arg_ptr       ( pmax_grid_chg_fcns )
@@ -75,11 +76,11 @@
 	INTEGER		gfcn_arg_type	   ( pmax_gfcn_args )
 
 * for each argument: should its axes be merged into the result grid?
-	LOGICAL		gfcn_axis_implied_from( 4, pmax_gfcn_args )
+	LOGICAL		gfcn_axis_implied_from( nferdims, pmax_gfcn_args )
 
 * for each argument: does Ferret need to extend arg limits relative to result
-	INTEGER		gfcn_arg_extend_lo ( 4, pmax_gfcn_args ),
-     .			gfcn_arg_extend_hi ( 4, pmax_gfcn_args )
+	INTEGER		gfcn_arg_extend_lo ( nferdims, pmax_gfcn_args ),
+     .			gfcn_arg_extend_hi ( nferdims, pmax_gfcn_args )
 
 * for each argument: what is the name, units, and description of it?
 	CHARACTER	gfcn_arg_name(pmax_gfcn_args)*40 ,

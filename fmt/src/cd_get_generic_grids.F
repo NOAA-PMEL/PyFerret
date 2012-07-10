@@ -63,17 +63,18 @@
 *             from linked list structure
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * argument definitions:
 *       dset        - TMAP data set pointer
 *	cdfid	    - netCDF id number for already opened CDF file
-*       temp_axnams - 4 axis names per grid: temp until grids are assembled
+*       temp_axnams - nferdims axis names per grid: temp until grids are assembled
 *       reversed    - logical array to record which axes have reversed coords
 *       perm        - user-specified permutation (e.g. "YXZT"=2,1,3,4)
 *	status	    - return status
 
 * include files
-        include 'netcdf.decl'
+
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
@@ -85,13 +86,12 @@
 	include 'xio.cmn_text'
 	external xio_data
 	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-        include 'xdset_info.cd_equiv'
+	        include 'xdset_info.cd_equiv'
 
 * argument declarations
 	LOGICAL  reversed(max_lines:line_ceiling)
-	INTEGER	 dset, cdfid, perm(4), status
-	CHARACTER*64 temp_axnams(4,max_temp_grid)
+	INTEGER	 dset, cdfid, perm(nferdims), status
+	CHARACTER*128 temp_axnams(nferdims,max_temp_grid)
 
 * local parameter definitions:
       INTEGER     str_eq
@@ -107,11 +107,11 @@
       INTEGER TM_LENSTR1, TM_FIND_GRID_SLOT, STR_CASE_BLIND_COMPARE,
      .        igrid, iaxis, grid_cnt, istat, idim,
      .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen, idim2,
-     .        tmvar, tmpgrid, npts, dim, tmplines(4), ndim,
-     .	      grid_dims(4), trans(4), indices(4), i, maxlen, attlen,
-     .        attoutflag, all_outflag
+     .        tmvar, tmpgrid, npts, dim, tmplines(nferdims), ndim,
+     .	      grid_dims(nferdims), trans(nferdims), indices(nferdims),
+     .        i, maxlen, attlen,attoutflag, all_outflag
       REAL    tmp
-      CHARACTER name*64, vname*128
+      CHARACTER name*128, vname*128
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
@@ -154,8 +154,8 @@
 * use the next grid building slot to build a grid for this variable
            tmpgrid = num_tmp_grids + 1
 
-* initialize the axis names in case there are fewer than 4 from CDF variable
-           DO 10 idim = 1, 4
+* initialize the axis names in case there are fewer than nferdims from CDF variable
+           DO 10 idim = 1, nferdims
               tmplines(idim) = unspecified_int4
               temp_axnams(idim,tmpgrid)='NORMAL'
  10        CONTINUE
@@ -184,7 +184,7 @@
               IF ( status .NE. merr_ok ) GOTO 5900
 
 * save a pointer to the axis just found
- 150          IF (idim.LE.4) tmplines(idim) = iaxis
+ 150          IF (idim.LE.nferdims) tmplines(idim) = iaxis
 
  200       CONTINUE
 
@@ -197,7 +197,7 @@
 * ... make a sorted list of the relevant axes in grid_dims
 *     and a list of the index ordering of the axes in indices
 	ndim = 0
-	DO 210 idim = 1, 4
+	DO 210 idim = 1, nferdims
 	   trans(idim) =  ABS(ds_ordering(idim,tmvar))
 	   grid_dims(idim) = trans(idim)
 	   indices(idim) = idim
@@ -223,7 +223,7 @@
  230	CONTINUE
 
 * save the axis names in the proper order
-           DO 240 idim = 1, 4
+           DO 240 idim = 1, nferdims
               ds_grid_start(idim,tmvar) = 1
               ds_grid_end  (idim,tmvar) = 1
  240       CONTINUE
@@ -236,18 +236,13 @@
 * ... flag reverse-ordered coordinate axis of variable (2/95)
 	      IF ( reversed(iaxis) ) ds_ordering(idim,tmvar)
      .			      = -1 * ds_ordering(idim,tmvar)
-c this causes trouble elsewhere...
-c	      IF (idim2 .EQ. 1) line_direction(iaxis) = 'XX'
-c	      IF (idim2 .EQ. 2) line_direction(iaxis) = 'YY'
-c	      IF (idim2 .EQ. 3) line_direction(iaxis) = 'ZZ'
-c	      IF (idim2 .EQ. 4) line_direction(iaxis) = 'TT'
  250       CONTINUE
 
 * is the temporary grid we just created unique ?
 	   igrid = 0
  300	   CALL TM_NEXT_TMP_GRID( igrid, *320)
 	      grid_cnt = tmp_nam_ptr(igrid)
-              DO 310 idim = 1, 4
+              DO 310 idim = 1, nferdims
                  IF ( temp_axnams(idim,tmpgrid )
      .          .NE.  temp_axnams(idim,grid_cnt) ) GOTO 300
  310          CONTINUE
@@ -267,7 +262,7 @@ c	      IF (idim2 .EQ. 4) line_direction(iaxis) = 'TT'
 
 * basic defaults
           grid_rotation(igrid) = 0.0
-          DO 340 idim = 1, 4
+          DO 340 idim = 1, nferdims
  340      grid_out_prod(idim,igrid) = .TRUE.
 
 * save a pointer to this grid for the TMAP variable

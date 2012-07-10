@@ -88,7 +88,9 @@
 * *acm* 11/05 V600   -- New symbol FER_LAST_ERROR contains all the text normally
 *                       written to std out. 
 * *acm*  5/06 V600   -- Concatenate multiple lines for FER_LAST_ERROR with backslash.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
@@ -130,10 +132,7 @@
          symbuf = ' '
          len_symbuf = 1
 
-#ifdef unix
-           risc_buff = err_string     ! DEC f772.1 cannot use // with char*(*)
-! kob 12/96					! same for SUN 11/93
-#endif
+         risc_buff = err_string     ! DEC f772.1 cannot use // with char*(*)
 
 * display error message 
 	IF ( status .GT. greport .AND. (.NOT.silent_err) ) THEN
@@ -213,41 +212,11 @@
 * error message from ERR= branch ?
 	ELSEIF ( status .EQ. ferr_erreq ) THEN
 
-#ifdef unix
 	   len_string = TM_LENSTR1( risc_buff )
 #ifdef F90_SYSTEM_ERROR_CALLS
 	   call linux_perror('**ERROR: '//risc_buff(:len_string) )
 #else
            CALL PERROR( '**ERROR: '//risc_buff(:len_string) )
-#endif
-#else
-	! code by Mark Renton
-	! fetch the system error codes for most recent error
-
-	   call ERRSNS ( fnum, rmssts, rmsstv, iunit, condval )
-
-	   if ( ( rmssts .EQ. 0 ) .AND. ( rmsstv .EQ. 0 ) ) then
-
-		msgvec ( 1 ) = 1
-		msgvec ( 2 ) = condval
-		msgvec ( 3 ) = 0
-	   else
-		msgvec ( 1 ) = 1
-		msgvec ( 2 ) = rmssts
-		if ( rmsstv .ne. 0 ) then
-			msgvec ( 1 ) = 2
-			msgvec ( 3 ) = rmsstv
-		endif
-	   endif
-
-	   call sys_putmsg ( msgvec, , , )	! output the message
-
-	   IF ( err_string .NE. ' ' ) THEN
-              WRITE (err_lun,'(1X,A)') err_string
-              
-              len_string = TM_LENSTR1( err_string )
-              symbuf(len_symbuf:) = err_string(:len_string)
-              len_symbuf = len_symbuf + len_string + 1
 #endif
 
 * interrupt processing ? Re-store ^C interrupt handler
@@ -304,11 +273,7 @@
 	ENDIF
 
 * prompt with Help cue ?
-#ifdef unix
 * HELP command doesnt function on Unix systems
-#else
-	IF ( help_cue ) WRITE (err_lun,*) 'Type HELP error for assistance'
-#endif
 
 * Generate symbol containing the whole error message
 

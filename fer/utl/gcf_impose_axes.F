@@ -46,6 +46,7 @@
 *	*sh*  4/00 - all axes now maintain use counts, not just dynamic
 * V533: *sh* 7/01 - improve caching of some functions -- like SPAWN that
 *	            should have uvlim_hidden behavior equivalent to FFTA
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -63,7 +64,8 @@
 * local variable declarations
 	INTEGER WHICH_GCFCN
 	INTEGER	gcfcn, idim, imp_ax, mrg_ax, mrg_grd, uvg,
-     .		axis_source(4), imposed_axes(4), axis_reduction(4)
+     .		axis_source(nferdims), imposed_axes(nferdims), 
+     .		axis_reduction(nferdims)
 
 
 * initialize
@@ -88,7 +90,7 @@
 
 
 * loop through the axes
-	DO 500 idim = 1,4
+	DO 500 idim = 1, nferdims
 
 	   mrg_ax  = grid_line ( idim, mrg_grd )
 

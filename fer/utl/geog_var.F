@@ -40,8 +40,9 @@
 
 * V450: 3/97 - based on GEOG_LABEL
 * *acm* 12/00 cleanup: TM_DATE_OK declared but not called
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
         include 'tmap_errors.parm'
@@ -52,16 +53,6 @@
 	include 'xtext_info.cmn'
 	include 'xprog_state.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-        INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		idim, cx
@@ -80,7 +71,7 @@
 	units = TM_UNIT_ID( VAR_UNITS(cx) )
 
 * do these units imply a formatt-ible axis
-	IF ( idim.EQ.t_dim .AND.
+	IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND.
      .        (units.LT.pun_1st_time.OR.units.GT.pun_last_time)) THEN
 	   GEOG_VAR = .FALSE.
 !	   GEOG_VAR = .TRUE.		! where to get T0 ???

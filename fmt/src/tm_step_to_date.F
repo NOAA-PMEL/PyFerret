@@ -46,6 +46,7 @@
 * revision 0.21 - 07/15/88 - handles errors from TM_BREAK_DATE
 *
 * V530: *acm* 1/01 alternative calendar types; cal_id
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * Arguments:
 *	dset_num - data set number
@@ -61,18 +62,11 @@
 *
 * Inclusions
 *
-#ifdef unix
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-#endif
 
 *
 * Local definitions

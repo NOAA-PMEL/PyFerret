@@ -46,6 +46,8 @@
 *
 * revision 0.0 2/28/01
 * V5.53 *acm* 9/03 Set status flag to OK for case where calendar doesnt change
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * Calling argument declarations:
 	INTEGER		old_cal_id, new_cal_id, status
@@ -56,10 +58,9 @@
 	REAL*8		TM_SECS_FROM_BC
 	CHARACTER*20	TM_SECS_TO_DATE, date
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
-#endif
+
 	IF (old_cal_id .EQ. new_cal_id ) THEN
            new_tstep = tstep
            status = ferr_ok

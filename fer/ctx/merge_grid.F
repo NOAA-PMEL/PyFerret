@@ -108,6 +108,7 @@
 * V533  *sh* 7/01 - determine data type of result
 * V64+ *acm 12/09 - Fix bug 1710: In the grid axis selection table, ax_choice(4,1)
 *                   changed from Not Possible to Not Applicable
+*      *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 	include 'tmap_dims.parm'
 	include 'grid_chg_fcns.parm'
@@ -135,7 +136,7 @@
      .			mrg_grd, mrg_ax, mrg_len, com_grd, com_ax, com_len,
      .			idim, i, icom, imrg, com_uvar, com_class, mrg_class,
      .			uv_class, ax_choice(6,5), joint_match(0:3,0:3),
-     .			lims_gvn, gcfcn, axis_source(4)
+     .			lims_gvn, gcfcn, axis_source(nferdims)
 
 * local parameter declarations
 	INTEGER		EXP,   IMP,   WRN1,   NP,   NA,  WRN2
@@ -295,7 +296,7 @@
 	ENDIF
 
 * loop through the axes
-	DO 500 idim = 1,4
+	DO 500 idim = 1, nferdims
 
 * get axes and lengths of data along them
 	   com_ax  = grid_line ( idim, com_grd )
@@ -404,30 +405,6 @@
 * update the merged cx_given value (added 1/97)
 	cx_given(idim,mrg_cx) = cx_given(idim,mrg_cx)
      .			  .AND. expl_com_lim
-
-********
-* entire kludge block commented out 1/97. (Probably was needed previously
-* because ax_choice(5,4) used to result in error -- changed to "NA" (no-op).
-!* "irrelevant" axis patch (8/30/89): (mod 4/90 using MERGIFY_GRID_AXIS)
-!* irrelevant component won't arrive here because it has unspecified_val8
-!* if, however, the first item in the expression had limits flagged irrelevant
-!* then the merged grid may still be flagged as irrelevant
-!	   IF ( uvar_given(idim,uvar) .EQ. uvlim_irrelevant ) THEN
-!* *sh* 10/95 arrive here for X axis of "x[x=0.1:10:.1] + y[y=101:110:1]"
-!*  ... dont really understand why ... but need to "USE" com_ax or it gets
-!*      deallocated.  Not sure if mrg_ax could ever dynamic but in case
-!*      it seems safer to IF dynamic THEN DEALLo
-! 	      IF ( com_ax .GT. max_lines ) CALL TM_USE_LINE(com_ax)
-!	      IF ( mrg_ax .GT. max_lines ) CALL TM_DEALLO_DYN_LINE(mrg_ax)
-!	      grid_line( idim, mrg_grd ) = com_ax
-!	      cx_lo_ss( mrg_cx, idim ) = cx_lo_ss( com_cx, idim )
-!	      cx_hi_ss( mrg_cx, idim ) = cx_hi_ss( com_cx, idim )
-!	      CALL MERGIFY_GRID_AXIS( com_cx, idim, uvar )
-!	      WRITE (6,*) 'MERGIFY_GRID_AXIS called from MERGE_GRID',
-!     .				idim,icom,imrg
-!	      GOTO 500
-!	   ENDIF	      
-********
 
 * take appropriate merging action
 *		  EXP  IMP WRN1   ***   NA  WRN2

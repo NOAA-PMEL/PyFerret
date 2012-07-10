@@ -94,7 +94,10 @@
 * V603 4/07 *acm* - Fix bug 636;  Resolve any wierd cx_grid definitions leftover from get_context_mods
 *                   before calling COMPLETE_MISSING_LIMITS. Bug occured from regridding a variable to 
 *                   its own axis with [gt=var]
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -111,9 +114,9 @@
 * internal variable declarations:
 	LOGICAL		ITS_UN_CACHED, ITSA_MODULO_REGRID, ITSA_GCVAR,
      .			ITSA_MODULO_GCF, TM_ITS_SUBSPAN_MODULO,
-     .			look_again, modulo_axes(4), explicit_qualifiers
+     .			look_again, modulo_axes(nferdims), explicit_qualifiers
 	INTEGER		UVAR_NUMBER, KNOWN_GRID, CGRID_AXIS, 
-     .			CAXIS_MODLEN, TM_AXES_REVERSED, rev_axes(4),
+     .			CAXIS_MODLEN, TM_AXES_REVERSED, rev_axes(nferdims),
      .			cx, mr, idim, cat, act, uvar_pointer,
      .			com_mr, var
 
@@ -233,7 +236,7 @@
 
 * flesh out the requested dimensions (noting if there are any)
 	explicit_qualifiers = .FALSE.
-	DO 5 idim = 1, 4
+	DO 5 idim = 1, nferdims
 	   IF ( uvar_given( idim, uvar_pointer ) .GE. uvlim_needed
      .	   .OR. cx_given( idim,dflt_cx ) ) THEN
 	      explicit_qualifiers = explicit_qualifiers
@@ -247,7 +250,7 @@
 	
 * was a regridding operation implied through the command qualifier cx_delta?
 * (5/99) test moved from transformation stripping section below
-	DO 8 idim = 1, 4
+	DO 8 idim = 1, nferdims
 	   IF ( cx_delta(idim, dflt_cx) .NE. unspecified_val8 ) THEN
 	      CALL ERRMSG( ferr_invalid_command, status,
      .			'delta values may only modify variable names', *5000 )
@@ -319,7 +322,7 @@
 * ... the Y transformations. This is necessary for accuracy wrt. COS factors.
 * ... By stripping X last it will be done first.
 * 10/98 *jc* - need to ignore trans_reduce (see info in ctx/add_rdc_xform.F)
-	DO 200 idim = 4, 1, -1
+	DO 200 idim = nferdims, 1, -1
        IF ( cx_trans( idim, cx ) .NE. trans_no_transform
      .          .AND. cx_trans( idim, cx ) .NE. trans_reduced ) THEN
 	      CALL IS_STRIP( isact_class_trans, idim, *10, status )
@@ -334,7 +337,7 @@
 	   IF (uvar_name_code(var)(1:3) .EQ. 'EX#'    ) GOTO 260
 	ENDIF	   
 	CALL GET_CX_MODULO_AXES(cx,modulo_axes)
-	DO 250 idim = 1, 4
+	DO 250 idim = 1, nferdims
 	   IF ( modulo_axes(idim)
      .	  .AND. cx_lo_ss(cx,idim) .NE. unspecified_int4 ) THEN
 	      IF ( cat .EQ. cat_user_var ) THEN			! added 12/95
@@ -367,7 +370,7 @@
  250	CONTINUE
 
 * ... strip off creation of virtual "void" point on subspan modulo axes
-	DO 255 idim = 1, 4
+	DO 255 idim = 1, nferdims
 	   IF ( modulo_axes(idim)
      .	  .AND. cx_lo_ss(cx,idim) .NE. unspecified_int4 ) THEN
 	     IF (TM_ITS_SUBSPAN_MODULO(CGRID_AXIS(idim, cx))) THEN
@@ -378,6 +381,12 @@
 	    ENDIF
 	  ENDIF
  255	CONTINUE
+
+* ... strip off need to gather aggregate components together ?
+ 	IF ( cat .EQ. cat_aggregate_var ) THEN
+	   CALL IS_STRIP( isact_class_aggregate_gather, e_dim, *10, status )
+	   GOTO 5000
+	ENDIF
 
 * ... strip off need for regridding data ?
  260	IF ( cx_unstand_grid( cx ) ) THEN
@@ -401,7 +410,7 @@
 	      IF ( status .NE. ferr_ok ) GOTO 5000
 
 * ... kludge to avoid re-reading when regions aren't fully specified 2/90
-	      DO 300 idim = 1, 4
+	      DO 300 idim = 1, nferdims
 	         IF ( cx_lo_ss( cx, idim ) .EQ. unspecified_int4 ) THEN
 		    IF ( CGRID_AXIS(idim,cx) .EQ. mnormal ) GOTO 300
 	            CALL FLESH_OUT_AXIS( idim, cx, status )
@@ -523,6 +532,8 @@ c	   GOTO 5000
 	      CALL IS_REVERSE( memory, *10, *2500, status )     ! 2/95
 	   ELSEIF ( act .EQ. isact_gather		) THEN
 	      CALL IS_GATHER( memory, *10, *2500, status )
+	   ELSEIF ( act .EQ. isact_aggregate_gather	) THEN
+	      CALL IS_AGGREGATE_GATHER( memory, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_sample		) THEN
 	      CALL IS_SAMPLE( memory, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_interp		) THEN

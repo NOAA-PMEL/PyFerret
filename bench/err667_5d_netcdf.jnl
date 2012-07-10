@@ -1,3 +1,6 @@
+exit/script  ! this test is not valid for 6D Ferret.
+
+
 ! err66_5d_netcdf.jnl
 ! see ticket 1848.  If more than 4D for numeric or 5D for strings, issue a warning and
 ! ignore the variable.

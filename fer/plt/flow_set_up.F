@@ -39,10 +39,11 @@
 * programmer - Ansley Manke -- from disp_set_up
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * 5/31/01
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
-#ifdef unix
+
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -55,7 +56,7 @@ C plus those starting w/ xbox_bounds:
 
 *kob 1/97
 	include 'xwindow_state.cmn'
-#endif
+
 * calling argument declarations:
 	INTEGER		mr_list(*), cx_list(*)
 

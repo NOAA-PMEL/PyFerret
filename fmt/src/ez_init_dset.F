@@ -77,6 +77,8 @@
 
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+
 	CHARACTER*4	ez_rev
 	CHARACTER*1	tab
 	PARAMETER 	(ez_rev = '1.11')
@@ -99,11 +101,11 @@
 *
 * Include files
 	include 'xio.parm'
-#include "gt_lib.parm"
 	include 'ez_lib.parm'
 	include 'tmap_dims.parm'
 	include 'tmap_dtypes.parm'
 #include "tmap_dset.parm"
+#include "gt_lib.parm"
 	include 'tmap_errors.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
@@ -111,7 +113,6 @@
 	external xstep_files_data
 	include 'xez_info.cmn_text'
 	external xez_info_data
-        include 'netcdf.decl'
 #include "netcdf.inc"
 
 *
@@ -333,7 +334,7 @@
 	  ds_var_units(nvar)	= ' '
 	  ds_missing_flag(nvar)	= -1.E34
 	  ds_bad_flag(nvar)	= -1.E34
-	  DO 160 jcnt = 1,4
+	  DO 160 jcnt = 1,nferdims
   160	  ds_ordering(jcnt,nvar)     = jcnt
 	  ds_precision(nvar)	= 'SINGLE'
 	  ds_aux_set_num(nvar)	= 0

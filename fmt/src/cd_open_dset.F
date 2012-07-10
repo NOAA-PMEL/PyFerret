@@ -82,7 +82,7 @@
 * V65  *acm* 1/10  Dont add the note **OPeNDAP/netCDF Error code** - that is now
 *                  done only in CD_TRANSLATE_ERROR 
 * V65  *acm* 2/10- all warnings and notes to std error not std out
-
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -94,7 +94,6 @@
 	INTEGER	      dset, cdfid, remote_dods_id, status
 
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
         include 'tmap_errors.parm'
 	include 'tmap_dims.parm'

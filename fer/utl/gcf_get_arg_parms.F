@@ -48,25 +48,20 @@
 
 * V450: 1/97
 *       97.07.16 *jc* adding code to query external functions
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-* calling argument declarations
-	LOGICAL	implied_lims(4)
-	INTEGER	gcfcn, iarg, lo_off(4),  hi_off(4)
 
-* internal variable declarations
-	INTEGER	idim, iptr, ip
-
-#ifdef unix
 	include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'
 	include 'ferret.parm'
 	include 'xgrid_chg_fcns.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
-#endif
+
+* calling argument declarations
+	LOGICAL	implied_lims(nferdims)
+	INTEGER	gcfcn, iarg, lo_off(nferdims),  hi_off(nferdims)
+
+* internal variable declarations
+	INTEGER	idim, iptr, ip
 
 * check the internal grid changing functions first
         IF (gcfcn .LT. 0 ) THEN
@@ -85,7 +80,7 @@
 
 * return information about argument iarg
 
-	   DO 100 idim = 1, 4
+	   DO 100 idim = 1, nferdims
 
 	      lo_off(idim) = gfcn_arg_extend_lo(idim, iptr)
 	      hi_off(idim) = gfcn_arg_extend_hi(idim, iptr)

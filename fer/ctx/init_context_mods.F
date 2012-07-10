@@ -50,14 +50,11 @@
 *       8/97 *kob* - initalize cx_calendar - used to indicate whether a date
 *                    contains a string 
 * V510 *sh* - added cx_formatted
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	cx
@@ -78,7 +75,7 @@
 
 * initialize region
 * note: ss specifications are not used in storing modifications
-	DO 100 idim = 1,4
+	DO 100 idim = 1, nferdims
 	   cx_lo_ss ( cx, idim )  = unspecified_int4
 	   cx_hi_ss ( cx, idim )  = unspecified_int4
 	   cx_lo_ww ( idim, cx )  = unspecified_val8

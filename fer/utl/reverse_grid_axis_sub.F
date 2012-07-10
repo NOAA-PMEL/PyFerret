@@ -1,5 +1,6 @@
 	SUBROUTINE REVERSE_GRID_AXIS_SUB( axis, dat, ddlo, ddhi, ddel,
-     .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit )
+     .		dlox, dhix, dloy, dhiy, dloz, dhiz, 
+     .		dlot, dhit, dloe, dhie, dlof, dhif )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -41,16 +42,19 @@
 *
 * V320: 2/16/89
 * V541:  2/02 *sh* - added support for delta strides
+* 2/12 *acm* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 
 * calling argument declarations:
 	INTEGER axis, ddlo, ddhi, ddel,
-     .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit
-	REAL    dat( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit )
+     .		dlox, dhix, dloy, dhiy, dloz, dhiz, 
+     .		dlot, dhit, dloe, dhie, dlof, dhif
+	REAL    dat( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit,dloe:dhie,dlof:dhif )
 
 * internal variable declarations:
-	INTEGER	i, j, k, l, turn_pt, hiplo
+	INTEGER	i, j, k, l, m, n, turn_pt, hiplo
 	REAL tmp
 
 * --- end of introductory code ---
@@ -62,38 +66,44 @@
 * reverse the data along the appropriate axis
 
 	IF ( axis .EQ. x_dim ) THEN
+	   DO 100 n = dlof, dhif
+	   DO 100 m = dloe, dhie
 	   DO 100 l = dlot, dhit
 	   DO 100 k = dloz, dhiz
 	   DO 100 j = dloy, dhiy
 	   DO 100 i = dlox, turn_pt
 
-	      tmp = dat(i,j,k,l)
-	      dat(      i,j,k,l) = dat(hiplo-i,j,k,l)
-	      dat(hiplo-i,j,k,l) = tmp
+	      tmp = dat(i,j,k,l,m,n)
+	      dat(      i,j,k,l,m,n) = dat(hiplo-i,j,k,l,m,n)
+	      dat(hiplo-i,j,k,l,m,n) = tmp
 
  100	   CONTINUE
 
 	ELSEIF ( axis .EQ. y_dim ) THEN
+	   DO 200 n = dlof, dhif
+	   DO 200 m = dloe, dhie
 	   DO 200 l = dlot, dhit
 	   DO 200 k = dloz, dhiz
 	   DO 200 j = dloy, turn_pt
 	   DO 200 i = dlox, dhix
 
-	      tmp = dat(i,j,k,l)
-	      dat(i,      j,k,l) = dat(i,hiplo-j,k,l)
-	      dat(i,hiplo-j,k,l) = tmp
+	      tmp = dat(i,j,k,l,m,n)
+	      dat(i,      j,k,l,m,n) = dat(i,hiplo-j,k,l,m,n)
+	      dat(i,hiplo-j,k,l,m,n) = tmp
 
  200	   CONTINUE
 
 	ELSEIF ( axis .EQ. z_dim ) THEN
+	   DO 300 n = dlof, dhif
+	   DO 300 m = dloe, dhie
 	   DO 300 l = dlot, dhit
 	   DO 300 k = dloz, turn_pt
 	   DO 300 j = dloy, dhiy
 	   DO 300 i = dlox, dhix
 
-	      tmp = dat(i,j,k,l)
-	      dat(i,j,      k,l) = dat(i,j,hiplo-k,l)
-	      dat(i,j,hiplo-k,l) = tmp
+	      tmp = dat(i,j,k,l,m,n)
+	      dat(i,j,      k,l,m,n) = dat(i,j,hiplo-k,l,m,n)
+	      dat(i,j,hiplo-k,l,m,n) = tmp
 
  300	   CONTINUE
 
@@ -103,13 +113,17 @@
 	   DO 400 j = dloy, dhiy
 	   DO 400 i = dlox, dhix
 
-	      tmp = dat(i,j,k,l)
-	      dat(i,j,k,      l) = dat(i,j,k,hiplo-l)
-	      dat(i,j,k,hiplo-l) = tmp
+	      tmp = dat(i,j,k,l,m,n)
+	      dat(i,j,k,      l,m,n) = dat(i,j,k,hiplo-l,m,n)
+	      dat(i,j,k,hiplo-l,m,n) = tmp
 
  400	   CONTINUE
+* TODO: REVERSE_GRID_AXIS_SUB along E and F axes?
 
-	ENDIF
+* ALONG UNSUPPORTED AXIS
+        ELSE
+           STOP '**ERROR: REVERSE_GRID_AXIS_SUB on an unsupported axis'
+        ENDIF
 
 	RETURN
 	END 

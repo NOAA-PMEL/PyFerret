@@ -39,7 +39,7 @@
 #include "pyferret.h"
 #include "EF_Util.h"
 
-static const char *AXIS_NAMES[MAX_FERRET_NDIM] = { "X", "Y", "Z", "T" };
+static const char *AXIS_NAMES[MAX_FERRET_NDIM] = { "X", "Y", "Z", "T", "E", "F" };
 
 /*
  * See pyferret.h for information on this function

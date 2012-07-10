@@ -1,0 +1,123 @@
+! bn_regrid_6d.jnl
+! version of bn_regrid, using E and F directions.
+
+set mode latit_label -4
+set mode long_label -4
+
+define axis/x=2:20:2 xeven
+define axis/x=1:19:2 xodd
+define axis/y=2:20:2 yeven
+define axis/y=1:19:2 yodd
+define axis/e=2:20:2 eeven
+define axis/e=1:19:2 eodd
+define axis/f=2:20:2/t0="1-jan-1980"/unit=days feven
+define axis/f=1:19:2/t0="1-jan-1980"/unit=days fodd
+
+! default grid
+define grid/x=xeven/y=yeven/e=eeven/f=feven even
+
+! 1 axis different
+define grid/x=xodd/y=yeven/e=eeven/f=feven g1
+define grid/x=xeven/y=yodd/e=eeven/f=feven g2
+define grid/x=xeven/y=yeven/e=eodd/f=feven g3
+define grid/x=xeven/y=yeven/e=eeven/f=fodd g4
+
+! 2 axes different
+define grid/x=xodd/y=yodd/e=eeven/f=feven g12
+define grid/x=xodd/y=yeven/e=eodd/f=feven g13
+define grid/x=xodd/y=yeven/e=eeven/f=fodd g14
+define grid/x=xeven/y=yodd/e=eodd/f=feven g23
+define grid/x=xeven/y=yodd/e=eeven/f=fodd g24
+define grid/x=xeven/y=yeven/e=eodd/f=fodd g33
+
+! 3 axes different
+define grid/x=xeven/y=yodd/e=eodd/f=fodd g234
+define grid/x=xodd/y=yeven/e=eodd/f=fodd g134
+define grid/x=xodd/y=yodd/e=eeven/f=fodd g124
+define grid/x=xodd/y=yodd/e=eodd/f=feven g123
+
+! all axes different
+define grid/x=xodd/y=yodd/e=eodd/f=fodd g1234
+
+LET veven = 1000*i[g=even] + 100*j[g=even] + 10*_m[g=even] + _n[g=even]
+
+LET v1    = veven[g=g1]
+LET v2    = veven[g=g2]
+LET v3    = veven[g=g3]
+LET v4    = veven[g=g4]
+LET v12   = veven[g=g12]
+LET v13   = veven[g=g13]
+LET v14   = veven[g=g14]
+LET v23   = veven[g=g23]
+LET v24   = veven[g=g24]
+LET v33   = veven[g=g33]
+LET v234  = veven[g=g234]
+LET v134  = veven[g=g134]
+LET v124  = veven[g=g124]
+LET v123  = veven[g=g123]
+LET v1234 = veven[g=g1234]
+
+SET REGION/X=4.01:8.99/Y=4.01:8.99/e=4.01:8.99/f=4.01:8.99
+
+! background
+list veven
+list v1234
+stat veven
+
+! first all from one memory variable
+load/x=1:11/y=1:11/e=1:11/f=1:11 veven
+GO bn_regrid.sub
+
+! and now with recalculations at every step
+CANCEL MEMORY/ALL
+SET MODE STUPID
+GO bn_regrid.sub
+
+!****************** area-averaging regrids *******************
+! check easily computable area-averaged regrid
+LET vfine = X+Y
+LET vcoarse = vfine[g=gcoarse]
+
+! first test without COS(latitude) corrections
+define axis/x=1:100:1/unit=cm xfine
+define axis/x=5.5:95.5:10/unit=cm xcoarse
+define axis/y=1:100:1/unit=cm yfine
+define axis/y=5.5:95.5:10/unit=cm ycoarse
+define grid/x=xfine/y=yfine gfine
+define grid/x=xcoarse/y=ycoarse gcoarse
+
+set grid gfine
+set reg/x=20.5:80.5/y=20.5:80.5
+list vcoarse
+stat vcoarse,vfine
+list vcoarse[x=@ave,y=@ave],vfine[x=@ave,y=@ave]
+
+! then test with COS(latitude) corrections
+define axis/x=1:100:1/unit=degrees xfine
+define axis/x=5.5:95.5:10/unit=degrees xcoarse
+define axis/y=1:100:1/unit=degrees yfine
+define axis/y=5.5:95.5:10/unit=degrees ycoarse
+define grid/x=xfine/y=yfine gfine
+define grid/x=xcoarse/y=ycoarse gcoarse
+
+set grid gfine
+set reg/x=20.5:80.5/y=20.5:80.5
+list vcoarse
+stat vcoarse,vfine
+list vcoarse[x=@ave,y=@ave],vfine[x=@ave,y=@ave]
+
+!****************** F axis regridding *******************
+define axis/f="1-jan-1980":"1-jan-1982":24/t0="1-jan-1970" fax24
+define axis/f="1-jan-1980":"1-jan-1982":48/t0="1-jan-1920" fax48
+define grid/f=fax24 g24
+define grid/f=fax48 g48
+show grid/N=1:4 g24 g48
+set region/F="1-jan-1980":"8-jan-1980"
+let a24 = _F[g=g24]
+let a48 = _F[g=g48]
+list a24
+list a48
+
+list a24[g=g48]
+list a24[g=g48]-a48
+

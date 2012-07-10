@@ -58,8 +58,10 @@
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 * 12/96 *kob* - Linux Port - had to move variable assignments off of
 *               declaration line.
-* V650  Write to show_lun which may be set to a file unit number rather than std out
+* V650  Write to show_lun which may be set to a file unit number rather than std out*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
@@ -115,7 +117,8 @@
 	   mr = mr_del_flink(0)
  200	   IF ( mr .NE. 0 ) THEN
 	      IF ( interrupted ) CALL ERRMSG( ferr_interrupt,status,' ',*5000 )
-	      CALL SHOW_1_MR( mr )
+	      CALL SHOW_1_MR( mr, status )
+	      IF (status .NE. ferr_ok) GOTO 5000
 	      mr = mr_del_flink(mr)
 	      GOTO 200
 	   ENDIF

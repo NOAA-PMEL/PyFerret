@@ -47,10 +47,12 @@ c*
       SUBROUTINE EF_GET_COORDINATES(id, iarg, idim,
      .     ss_lo_lim, ss_hi_lim, values )
 
+      IMPLICIT NONE
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
+      INCLUDE 'EF_Util.parm'
       INCLUDE 'xvariables.cmn'
       INCLUDE 'xcontext.cmn'
-      INCLUDE 'EF_Util.parm'
 
       INTEGER id, iarg, idim
       INTEGER ss_lo_lim, ss_hi_lim

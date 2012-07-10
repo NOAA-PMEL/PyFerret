@@ -52,22 +52,33 @@
 * V530 9/00 *sh* - output context or mr pointer rather than data set
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars and change buff64 to buff128
 * V63  *acm* 10/09 Changes for gfortran build
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V680  5/12 *acm* Add dataset ID to diagnostic output
+* V6.8  acm  6/12 Implement mode_6d_lab, set by default. If cancelled, the 
+*                 output will not list info for E,F dimensions.
 
 * calling argument declarations:
 	INTEGER		isub, pointer_type
 	CHARACTER*(*)	action
 
 * internal argument declarations:
-	INTEGER	    TM_LENSTR1, lenbuff, i
+	INTEGER	    TM_LENSTR1, lenbuff, i, listdims
 	CHARACTER   VAR_CODE*128, buff128*128, buff8*8
 
-	include	'ferret.parm'
 	include	'tmap_dims.parm'
+	include	'ferret.parm'
 #	include	"tmap_dset.parm"
 	include	'xprog_state.cmn'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include 'xrisc.cmn'		! 12/94 SPLIT_LIST buffer
+
+
+* If mode 6d_lab has been cancelled, we will list info only for 
+* the first 4 dimensions.
+
+	listdims = nferdims
+	IF ( .NOT. mode_6d_lab) listdims = 4
 
 	risc_buff = ' '
 
@@ -90,22 +101,52 @@
 	   ENDIF
 	ENDIF
 
+      IF (listdims .EQ. nferdims) THEN
+
 	IF ( pointer_type .EQ. point_to_cx ) THEN
 	   WRITE ( risc_buff,3000 )
      .			action,
      .		 	buff8,
      .			'C',isub,
-     .			(cx_lo_ss(isub,i),cx_hi_ss(isub,i),i=1,4)
+     .			cx_data_set(isub),
+     .			(cx_lo_ss(isub,i),cx_hi_ss(isub,i),i=1,listdims)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 	ELSE
 	   WRITE ( risc_buff,3000 )
      .			action,
      .			buff8,
      .			'M',isub,
-     .			(mr_lo_ss(isub,i),mr_hi_ss(isub,i),i=1,4)
+     .			mr_data_set(isub),
+     .			(mr_lo_ss(isub,i),mr_hi_ss(isub,i),i=1,listdims)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 	ENDIF
- 3000	FORMAT (1X,A,1X,A8,1X,A1,':',I3,
+
+      ELSE
+
+	IF ( pointer_type .EQ. point_to_cx ) THEN
+	   WRITE ( risc_buff,3100 )
+     .			action,
+     .		 	buff8,
+     .			'C',isub,
+     .			cx_data_set(isub),
+     .			(cx_lo_ss(isub,i),cx_hi_ss(isub,i),i=1,listdims)
+	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
+	ELSE
+	   WRITE ( risc_buff,3100 )
+     .			action,
+     .			buff8,
+     .			'M',isub,
+     .			mr_data_set(isub),
+     .			(mr_lo_ss(isub,i),mr_hi_ss(isub,i),i=1,listdims)
+	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
+	ENDIF
+
+      ENDIF
+
+ 3000	FORMAT (1X,A,1X,A8,1X,A1,':',I3,' dset:',i4,
+     . ' I:',2I5,'  J:',2I5,'  K:',2I5,'  L:',2I5,'  M:',2I5,'  N:',2I5)
+ 3100	FORMAT (1X,A,1X,A8,1X,A1,':',I3,' dset:',i4,
      . ' I:',2I5,'  J:',2I5,'  K:',2I5,'  L:',2I5)
+
 	RETURN
 	END	

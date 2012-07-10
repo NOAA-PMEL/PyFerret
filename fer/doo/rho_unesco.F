@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -65,6 +65,9 @@
 *			rho = 1062.538172 	for S = 35, T = 25, p = 10000.
 			
 * calling argument declaraions:
+
+        IMPLICIT NONE
+
         REAL salinity, temperature, pressure
 
 * internal variable declarations:
@@ -73,27 +76,27 @@
 	REAL Aw, Bw, Kw
 	REAL A2, B2, C2, Kzero, K
 	REAL rhoW, rhoZero
-	
+
 * initialize
 	S = salinity
 	T = temperature
 	p = pressure / 10.
 	rootS = SQRT (S)
-		
+
 * rhoW is the density of pure water at temperature T.
 	rhoW = ((((6.536332e-09 * T - 1.120083e-06) * T + 1.001685e-04)
      .		* T - 9.095290e-03) * T + 6.793952e-02) * T + 999.842594
-	
+
 	A2 = (((5.3875e-09 * T - 8.2467e-07) * T + 7.6438e-05)
      .		* T - 4.0899e-03) * T + 8.24493e-01
-				
+
 	B2 = (-1.6546e-06 * T + 1.0227e-04) * T - 5.72466e-03
-				
+
 	C2 = 4.8314e-04
 
 * rhoZero is the one-atmosphere density of seawater
 	rhoZero	= (C2 * S + B2 * rootS + A2) * S + rhoW
-	
+
 	IF ( pressure .EQ. 0.0 ) THEN
 	   RHO_UNESCO = rhoZero
 	   RETURN
@@ -101,31 +104,31 @@
 
 	a = ((-6.1670e-05 * T + 1.09987e-02) * T - 6.03459e-01) * T
      .		+ 54.6746
-			
+
 	b = (-5.3009e-04 * T + 1.6483e-02) * T + 7.944e-02
-	
+
 	c = (-1.6078e-06 * T - 1.0981e-05) * T + 2.2838e-03
-	
+
 	d = 1.91075e-04
-	
+
 	e = (9.1697e-10 * T + 2.0816e-08) * T - 9.9348e-07
-	
+
 	Aw = ((-5.77905e-07 * T + 1.16092e-04) * T + 1.43713e-03) * T
      .	       + 3.239908
-			
+
 	Bw = (5.2787e-08 * T - 6.12293e-06) * T + 8.50935e-05
 
-* Kw is the secant bulk modulus of pure water at temperature T.	
+* Kw is the secant bulk modulus of pure water at temperature T.
 	Kw = (((-5.155288e-05 * T + 1.360477e-02) * T - 2.327105)
      .		* T + 148.4206) * T + 19652.21
 
 * Kzero is the secant bulk modulus of seawater at one atmosphere.
 	Kzero = (b * rootS + a) * S + Kw
 
-* K is the secant bulk modulus of seawater at (S, T, p).		
+* K is the secant bulk modulus of seawater at (S, T, p).
 	K = ((e * p + d * rootS + c) * S + Bw * p + Aw) * p + Kzero
-	
+
 	RHO_UNESCO = rhoZero / (1.0 - (p / K))
-	
+
 	RETURN
 	END

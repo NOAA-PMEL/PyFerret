@@ -39,7 +39,9 @@
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * 
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'

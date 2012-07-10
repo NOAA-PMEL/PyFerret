@@ -94,6 +94,7 @@
 
       SUBROUTINE sorti_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -102,10 +103,12 @@
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
+
       CHARACTER*100 fcn_desc
+
       WRITE (fcn_desc, 10)
    10 FORMAT ('Returns indices of data, sorted ',
-     . 'on the I axis in increasing order')
+     .        'on the I axis in increasing order')
       CALL ef_set_desc(id, fcn_desc)
 
 * Tell Ferret to run the following instead, if the argument is a string.
@@ -113,17 +116,19 @@
 
       CALL ef_set_num_args(id, 1)
       CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance(id, ABSTRACT, IMPLIED_BY_ARGS,
-     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
-
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                ABSTRACT,        IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
       CALL ef_set_num_work_arrays(id, 2)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT')
       CALL ef_set_arg_desc(id, arg, 'variable to sort in I')
-      CALL ef_set_axis_influence(id, arg, NO, YES, YES, YES)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, YES, YES, YES, YES, YES)
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
@@ -145,6 +150,7 @@
 
       SUBROUTINE sorti_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id
@@ -154,27 +160,18 @@
 *                                                                     |
 *                                                                     V
 
-      INTEGER my_lo_l, my_hi_l
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+      INTEGER my_lo, my_hi
 
-      INTEGER arg
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-*
-*     Use utility functions to get context information about the arguments.
-*
+      my_lo = 1
+      my_hi = arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_set_axis_limits(id, X_AXIS, my_lo, my_hi)
 
-      my_lo_l = 1
-      my_hi_l = 1
-
-      arg = 1
-
-      my_hi_l = arg_hi_ss(X_AXIS,arg) - arg_lo_ss(X_AXIS,arg) + 1
-
-
-      CALL ef_set_axis_limits(id, X_AXIS, my_lo_l, my_hi_l)
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
@@ -190,8 +187,8 @@
 *
       SUBROUTINE sorti_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -199,24 +196,31 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 * 
-* Set the work arrays,  X/Y/Z/T dimensions
+* Set the work arrays, X/Y/Z/T/E/F dimensions
 *
-* ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+* ef_set_work_array_dims_6d(id, array #,
+*                           xlo, ylo, zlo, tlo, elo, flo,
+*                           xhi, yhi, zhi, thi, ehi, fhi)
 *
-      INTEGER mxdat
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+      INTEGER mxdat
+
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       mxdat = 1 + arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1)
 
-
 * sort_dat
-      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mxdat, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, 1,
+     .                                1, 1, 1, 1, 1, 1,
+     .                            mxdat, 1, 1, 1, 1, 1)
 
 * sort_indx
-      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, mxdat, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, 2,
+     .                                1, 1, 1, 1, 1, 1,
+     .                            mxdat, 1, 1, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -226,80 +230,85 @@
       RETURN
       END
 
+
 *
 * In this subroutine we compute the result
 *
       SUBROUTINE sorti_compute(id, arg_1, result, sort_dat, sort_indx)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
-     .           mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL result(memreslox:memreshix, memresloy:memreshiy,
-     .            memresloz:memreshiz, memreslot:memreshit)
+      INTEGER id
+
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
+
+* Ignore the Y/Z/T/E/F dimensions in the work arrays since
+* they are not used and Fortran is column major
+      REAL sort_dat (wrk1lox:wrk1hix)
+      REAL sort_indx(wrk2lox:wrk2hix)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
+* information for each variable''s axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 ***********************************************************************
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
 
-      INTEGER id
-      INTEGER nbad, m_indx
-      INTEGER m, nsrt
-      INTEGER i, j, k, l
-      INTEGER i1, j1, k1, l1
+      INTEGER nsrt, ii
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, k1, l1, m1, n1
 
-*  Dimension work arrays
-
-      REAL sort_dat(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
-     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-      REAL sort_indx(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
-     .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
-
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
+      n1 = arg_lo_ss(F_AXIS, ARG1)
+      DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
 
-      j1 = arg_lo_ss(Y_AXIS, ARG1)
-      DO 600 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      m1 = arg_lo_ss(E_AXIS, ARG1)
+      DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+
+      l1 = arg_lo_ss(T_AXIS, ARG1)
+      DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
          k1 = arg_lo_ss(Z_AXIS, ARG1)
-         DO 500 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+         DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-            l1 = arg_lo_ss(T_AXIS, ARG1)
-            DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            j1 = arg_lo_ss(Y_AXIS, ARG1)
+            DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
                nsrt = 0
-               nbad = 0
 
                i1 = arg_lo_ss(X_AXIS,ARG1)
                DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-                  IF (arg_1(i1,j1,k1,l1) .EQ. bad_flag(1)) THEN
-                     nbad = nbad + 1
-
-                  ELSE
+                  IF (arg_1(i1,j1,k1,l1,m1,n1) .NE. bad_flag(1)) THEN
                      nsrt = nsrt + 1
-                     sort_dat(nsrt,1,1,1) = arg_1(i1,j1,k1,l1)
-                     sort_indx(nsrt,1,1,1) = i1
-
+                     sort_dat(nsrt) = arg_1(i1,j1,k1,l1,m1,n1)
+                     sort_indx(nsrt) = i1
                   END IF
 
                   i1 = i1 + arg_incr(X_AXIS,ARG1)
  100           CONTINUE
-      
+
 *
 * Sort based on sort_dat.  sort_indx goes along for the ride,
 * elements moved when elements of sort_dat moved.
@@ -307,23 +316,33 @@
                IF (nsrt .GT. 1) CALL HEAP2 (sort_dat, sort_indx, 
      .                                      bad_flag(arg1), nsrt)
 
-               DO 200 m = 1, nsrt
-                  result(m,j,k,l) = sort_indx(m,1,1,1)
- 200           CONTINUE
+* Put sorted indices in the array first, then bad flags.
 
-               DO 300 m = 1, nbad
-                  m_indx = m + nsrt
-                  result(m_indx,j,k,l) = bad_flag_result
- 300           CONTINUE
+               i = res_lo_ss(X_AXIS)
+               DO 120 ii = 1, nsrt
+                  result(i,j,k,l,m,n) = sort_indx(ii)
+                  i = i + 1
+ 120           CONTINUE
 
-               l1 = l1 + arg_incr(T_AXIS, ARG1)
- 400        CONTINUE
+               DO 140 i = res_lo_ss(X_AXIS)+nsrt, res_hi_ss(X_AXIS)
+                  result(i,j,k,l,m,n) = bad_flag_result
+ 140           CONTINUE
+
+               j1 = j1 + arg_incr(Y_AXIS, ARG1)
+ 200        CONTINUE
 
             k1 = k1 + arg_incr(Z_AXIS, ARG1)
- 500     CONTINUE
+ 300     CONTINUE
 
-         j1 = j1 + arg_incr(Y_AXIS, ARG1)
+         l1 = l1 + arg_incr(T_AXIS, ARG1)
+ 400  CONTINUE
+
+         m1 = m1 + arg_incr(E_AXIS, ARG1)
+ 500  CONTINUE
+
+         n1 = n1 + arg_incr(F_AXIS, ARG1)
  600  CONTINUE
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |

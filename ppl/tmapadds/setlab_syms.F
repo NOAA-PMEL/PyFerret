@@ -120,7 +120,7 @@
             DO 100 i=3,nlevels
                diff = ABS( zlevels(i)-zlevels(i-1) )
                diff_dz = ABS(diff - dz)
-               IF(diff_dz .GT. 1.e-6 ) reglevs=.FALSE.
+               IF(TM_FPEQ_SNGL(diff_dz, dz)) reglevs=.FALSE.
   100       CONTINUE
             IF (reglevs) THEN
                buff = TM_FMT_SNGL(dz, -2, 10, slen)

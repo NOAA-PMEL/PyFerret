@@ -42,6 +42,7 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 3/4/87
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * calling argument declarations:
 	INTEGER	tcode
@@ -49,13 +50,8 @@
 * internal variable declarations:
 	INTEGER	i
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xalgebra.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XALGEBRA.CMN'
-#endif
 
 * identify the code from known codes
 	DO 100 i = 1, num_transforms

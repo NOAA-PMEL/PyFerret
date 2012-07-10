@@ -43,14 +43,13 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V300:  8/27/93
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xvariables.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER idim
@@ -63,7 +62,7 @@
 
 	slen = TM_LENSTR1( string )
 
-	IF ( idim .EQ. t_dim ) THEN
+	IF ( idim .EQ. t_dim .OR. idim .EQ. f_dim ) THEN
 * FIX TIMES
 	   IF ( slen .LE. 11 ) RETURN   	! date, only - no time
 	   IF ( string(3:3) .NE. '-' ) RETURN	! not a date string

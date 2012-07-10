@@ -42,7 +42,11 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V609:  2/20/22008
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
+*                  dimension is now an arg to SECS_TO_TSTEP.
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'command.parm'
 	include 'xcontext.cmn'
@@ -101,9 +105,9 @@
 * 8/97 *kob* - check cx_calender for a date time rather than ww_low
 	      ww_low = cx_lo_ww( idim, exp_cx )
 	      ww_hiw = cx_hi_ww( idim, exp_cx )
-	      IF ( idim.EQ.t_dim .AND. cx_calendar(exp_cx) ) THEN
-	         ww_low = SECS_TO_TSTEP( grid, -ww_low )  
-	         ww_hiw = SECS_TO_TSTEP( grid, -ww_hiw )  
+	      IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. cx_calendar(exp_cx) ) THEN
+	         ww_low = SECS_TO_TSTEP( grid, idim, -ww_low )  
+	         ww_hiw = SECS_TO_TSTEP( grid, idim, -ww_hiw )  
 	      ENDIF                                     
 	      ww_lo = MAX( ww_low, ww_lo )
 	      ww_hi = MIN( ww_hiw, ww_hi )

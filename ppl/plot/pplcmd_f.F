@@ -123,6 +123,8 @@ C                  year to DAY,MONTH or to MONTH.
 C *acm*  3/10  Bug 670 fixed: New flag MULTICENFLAG for multi-decade plots, 
 C              do not make small tics by default.
 * V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 c
 c	fromi	command file or device (/dev/tty or TT: for terminal)

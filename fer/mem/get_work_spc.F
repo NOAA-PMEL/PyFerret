@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -44,22 +44,19 @@
 *
 * revision 0.0 - 2/19/87
 * V510: *sh 1/2000 - bug fix when unable to allocate requested work space
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xvariables.cmn'
+	include 'xwork_space.cmn'
 
 * calling argument declarations:
 	INTEGER	size, start_block, status
 
 * --- end of introductory code ---
-#ifdef unix
-	include 'ferret.parm'
-	include 'errmsg.parm'
-	include 'xvariables.cmn'
-	include 'xwork_space.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XWORK_SPACE.CMN'
-#endif
 
 	IF ( size .LE. sp_last_size ) THEN
 	   status = ferr_ok

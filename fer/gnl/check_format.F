@@ -42,6 +42,7 @@
 
 * V301 1/94 - extracted from EQUAL_FORMAT
 * V320 8/94 *kob* -IBM port - had to use risc buff for string concats
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * calling argument declarations
 	INTEGER		status
@@ -51,19 +52,12 @@
         LOGICAL TM_DIGIT
 	INTEGER	left_paren, right_paren, integer_form
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 !	include 'xprog_state.cmn'
 #ifdef NO_PASSED_CONCAT
 	include 'xrisc.cmn'
 #endif
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-!	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
-
 
 * check out user-specified format
 	left_paren  = INDEX( string, '(' )

@@ -44,14 +44,11 @@
 *
 * revision 0.0 - 4/14/88 - from COPY_GRID ver. 0.0
 * V200:	10/11/89 - use *_SUB - avoid adjustable dimensioning with array
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER md1, md2, msrc, mdst
@@ -62,11 +59,15 @@
      .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
      .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
      .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
+     .				 mr_lo_s5(msrc), mr_hi_s5(msrc),
+     .				 mr_lo_s6(msrc), mr_hi_s6(msrc),
      .				 mr_bad_data( msrc ),
      .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
      .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
      .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
      .				 mr_lo_s4(mdst), mr_hi_s4(mdst),
+     .				 mr_lo_s5(mdst), mr_hi_s5(mdst),
+     .				 mr_lo_s6(mdst), mr_hi_s6(mdst),
      .				 mr_bad_data( mdst )			)
 
 	RETURN

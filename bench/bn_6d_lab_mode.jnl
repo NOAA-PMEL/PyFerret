@@ -1,0 +1,35 @@
+! bn_6d_lab_mode.jnl
+!
+! Tests of CANCEL MODE 6d_lab, writes SHOW and STAT output in classic 4D form.
+!
+use gt4d011
+
+! Mode affects output of SHOW
+
+set mode 6d_lab  ! this is the default setting
+show data
+cancel mode 6d_lab
+show data
+
+! Mode affects output of SHOW GRID 
+
+set mode 6d_lab
+show grid temp
+cancel mode 6d_lab
+show grid temp
+
+! Mode affects output of STAT
+
+set mode 6d_lab
+stat temp
+cancel mode 6d_lab
+stat temp
+
+! Mode affects diagnostic output
+
+set mode diag
+set mode 6d_lab
+list/L=1:8 taux[x=@ave,y=@ave]
+cancel mode 6d_lab
+list/L=1:8 taux[x=@sum,y=@sum]
+can mode diag

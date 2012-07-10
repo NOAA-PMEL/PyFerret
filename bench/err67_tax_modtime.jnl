@@ -2,6 +2,7 @@
 ! 5/17/2011
 ! tickets 1853, 1854: TAX_* functions returned
 ! incorrect results when the time axis is modulo
+set mode ignore_error
 
 use climatological_axes
 can dat climatological_axes
@@ -12,5 +13,6 @@ list/L=15:20 tax_datestring(t[gt=tvar],tvar,"day")
 list/L=15:20 tax_dayfrac(t[gt=tvar],tvar), tax_dayfrac(t[gt=tvar],tvar)*24.
 list/L=15:20 tax_day(t[gt=tvar],tvar), tax_jday(t[gt=tvar],tvar) 
 list/L=15:20 tax_month(t[gt=tvar],tvar), tax_yearfrac(t[gt=tvar],tvar)
+! the following is an error for a modulo time axis
 list/L=15:20 tax_year(t[gt=tvar],tvar)
 list tax_units(tvar)

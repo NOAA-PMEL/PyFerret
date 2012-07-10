@@ -47,6 +47,7 @@
 *	   if
 *  for SGI port	 - kob 4/8/92
 * bug fix -4/92- ival2 should be integer*2 declaration
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * calling argument declarations:
 	INTEGER*2 ival2
@@ -55,16 +56,12 @@
 * internal variable declarations:
         LOGICAL swap
 
-#ifdef unix
       include 'cpu.parm'
 #  ifdef sun
       BYTE bb(2),bdum
 #  else
       INTEGER*1 bb(2),bdum
 #  endif
-#else
-      BYTE bb(2),bdum
-#endif
 
         INTEGER*2 dum
 	EQUIVALENCE (bb(1),dum)

@@ -43,14 +43,14 @@
 
 /*
  * This function copies the data from the ndarray given by data_ndarray_ptr 
- * to the array of floats given by dest.  The argument data_ndarray_ptr 
- * is a pointer to a PyObject pointer that is a float32 ndarray containing
+ * to the array of doubles given by dest.  The argument data_ndarray_ptr 
+ * is a pointer to a PyObject pointer that is a float64 ndarray containing
  * the array of data for this static variable.
  */
-void copy_pystat_data_(float dest[], void *data_ndarray_ptr)
+void copy_pystat_data_(double dest[], void *data_ndarray_ptr)
 {
     PyObject *data_ndarray;
-    float *data;
+    double *data;
     npy_intp num_items;
 
     data_ndarray = *( (PyObject **) data_ndarray_ptr);
@@ -60,14 +60,14 @@ void copy_pystat_data_(float dest[], void *data_ndarray_ptr)
      *    ISFARRAY_RO checks if it is F-contiguous, aligned, and in machine byte-order 
      */
     num_items = PyArray_Size(data_ndarray);
-    if ( (num_items < 1) || (PyArray_TYPE(data_ndarray) != NPY_FLOAT) ||
+    if ( (num_items < 1) || (PyArray_TYPE(data_ndarray) != NPY_DOUBLE) ||
          (! PyArray_ISFARRAY_RO(data_ndarray)) || (! PyArray_CHKFLAGS(data_ndarray, NPY_OWNDATA)) ) {
         fflush(stdout);
         fputs("Unexpected data_ndarray pointer passed to copy_pystat_data_\n", stderr);
         fflush(stderr);
         abort();
     }
-    data = (float *)PyArray_DATA(data_ndarray);
-    memcpy(dest, data, (size_t)num_items * sizeof(float));
+    data = (double *)PyArray_DATA(data_ndarray);
+    memcpy(dest, data, (size_t)num_items * sizeof(double));
 }
 

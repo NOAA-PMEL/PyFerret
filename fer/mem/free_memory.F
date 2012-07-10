@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -49,18 +49,13 @@
 * V200:  6/12/89 - use doubly linked list; return mr_del_last_*
 *	 8/1/89  - corrected bug: mr_del_last* not set for not contig at all
 * V312: 5/94 - array "memory" as a calling argument
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
-	include 'tmap_dims.parm'
 	include 'xvariables.cmn'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	mblk, num_blocks, mem_blk, i

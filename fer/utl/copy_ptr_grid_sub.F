@@ -1,6 +1,8 @@
 	SUBROUTINE COPY_PTR_GRID_SUB (
-     .		src, slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit )
+     .		src, slox, shix, sloy, shiy, sloz, shiz, 
+     .		     slot, shit, sloe, shie, slof, shif,
+     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, 
+     .		     dlot, dhit, dloe, dhie, dlof, dhif )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -42,30 +44,31 @@
 * written for VAX computer under VMS operating system
 *
 * V533: 6/01 *sh*
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
 	include 'ferret.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
-	INTEGER slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit
-	REAL*8  src( slox:shix,sloy:shiy,sloz:shiz,slot:shit ),
-     .		dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit )
+	INTEGER slox, shix, sloy, shiy, sloz, shiz, 
+     .		slot, shit, sloe, shie, slof, shif,
+     .		dlox, dhix, dloy, dhiy, dloz, dhiz, 
+     .		dlot, dhit, dloe, dhie, dlof, dhif
+	REAL*8  src( slox:shix,sloy:shiy,sloz:shiz,slot:shit,sloe:shie,slof:shif ),
+     .		dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit,dloe:dhie,dlof:dhif )
 
 * internal variable declarations:
-	INTEGER	i, j, k, l
+	INTEGER	i, j, k, l, m, n
 
 * --- end of introductory code ---
 
+	DO 100 n = dlof, dhif
+	DO 100 m = dloe, dhie
 	DO 100 l = dlot, dhit
 	DO 100 k = dloz, dhiz
 	DO 100 j = dloy, dhiy
 	DO 100 i = dlox, dhix
 
-	   CALL COPY_C_STRING( src(i,j,k,l), dst(i,j,k,l))
+	   CALL COPY_C_STRING( src(i,j,k,l,m,n), dst(i,j,k,l,m,n))
 
  100	CONTINUE
 

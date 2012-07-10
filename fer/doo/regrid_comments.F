@@ -46,7 +46,9 @@
 * V552  4/03 *acm*  up gname_from_number to 128 characters (variable names)
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 * V68  *acm* 1/12  changes for double-precision ferret.
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'implicit.parm'
 	include	'xdset_info.cmn_text'
@@ -98,7 +100,7 @@
 	   mybuff = GNAME_FROM_NUMBER(dset, cx_grid(cx), mlen)
 	   mlen = mlen + 1	! blank at end in case there's more
 * ... only go on if there are transforms to report
-	   DO 10 idim = 1, 4
+	   DO 10 idim = 1, nferdims
 	     IF (cx_regrid_trans(idim,cx) .NE. prgrd_linear_interp
      .	   .AND. cx_regrid_trans(idim,cx) .NE. prgrd_exact
      .	   .AND. cx_regrid_trans(idim,cx) .NE. prgrd_xy_lin) THEN
@@ -113,7 +115,7 @@
 * ... ... trap for internal error -- should never happen
 	IF ( std_grid .EQ. unspecified_int4 ) GOTO 5000
 	n = 0
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   axis = grid_line(idim,cx_grid(cx))
 	   IF ( axis .NE. grid_line(idim,std_grid) ) THEN
 	      n = n + 1
@@ -128,7 +130,7 @@
 
 * generate a string like "2 deg on X@AVE" or "Y" or "T@NGD" (for 1 axis)
 *  or "Y@AVE X 5 m on Z"  or   "2 deg on X@AVE X 5 deg on Y@AVE"
-	DO 120 idim = 1, 4
+	DO 120 idim = 1, nferdims
 	   axis = grid_line(idim,cx_grid(cx))
  	   IF (axis .NE. grid_line(idim,std_grid) ) THEN
 * ... lead-in string
@@ -143,9 +145,9 @@
 * ... delta
 #ifdef double_p
 	         REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
-     .				 TM_FMT((line_delta(axis)),2,8,slen)
+     .				 TM_FMT(line_delta(axis),2,8,slen)
 	         mybuff = mybuff(:mlen) //
-     .				 TM_FMT((line_delta(axis)),2,8,slen)
+     .				 TM_FMT(line_delta(axis),2,8,slen)
 #else
      	         REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
      .				 TM_FMT(SNGL(line_delta(axis)),2,8,slen)
@@ -192,10 +194,10 @@
 	IF ( mlen .EQ. maxlen ) mybuff(maxlen:maxlen) = '*'
 
 * remove silly blanks from the start and end
-	IF ( REGRID_COMMENTS(1:1) .EQ. ' ' ) REGRID_COMMENTS
-     .					= REGRID_COMMENTS(2:maxlen)
-	IF ( mybuff(1:1) .EQ. ' ' ) mybuff
-     .					= mybuff(2:maxlen)
+	IF ( REGRID_COMMENTS(1:1) .EQ. ' ' )
+     .     REGRID_COMMENTS = REGRID_COMMENTS(2:maxlen)
+	IF ( mybuff(1:1) .EQ. ' ' )
+     .     mybuff = mybuff(2:maxlen)
         mlen = mlen - 1
 	IF ( REGRID_COMMENTS(mlen:mlen) .EQ. ' ' ) mlen = mlen - 1
 	IF ( mybuff(mlen:mlen) .EQ. ' ' ) mlen = mlen - 1

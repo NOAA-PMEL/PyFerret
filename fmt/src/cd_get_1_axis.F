@@ -164,6 +164,7 @@
 * V67 *acm* 1/11   WE, SN, not XX, YY in line_direction
 * V68 *acm* 1/12   Implement micro-adjusting of repeated coordinates (ticket 1910).
 *                  To keep the previous behavior the user may specify USE/STRICT.
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -175,7 +176,6 @@
 *       status   - return status
 
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
 
         include 'tmap_errors.parm'
@@ -648,6 +648,12 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
          ELSE IF (axis_dir.EQ.'Z' .OR. axis_dir.EQ.'K' .OR.
      .            axis_dir.eq.'z' .or. axis_dir.eq.'k') THEN
             line_direction(iaxis) = 'DU'
+         ELSE IF (axis_dir.EQ.'E' .OR. axis_dir.EQ.'M' .OR.
+     .            axis_dir.eq.'e' .or. axis_dir.eq.'m') THEN
+            line_direction(iaxis) = 'EE'
+         ELSE IF (axis_dir.EQ.'F' .OR. axis_dir.EQ.'N' .OR.
+     .            axis_dir.eq.'f' .or. axis_dir.eq.'n') THEN
+            line_direction(iaxis) = 'FF'
          ENDIF
       ELSE
          axis_dir = char_init01
@@ -682,6 +688,12 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
             ELSE IF (axis_dir.EQ.'Z' .OR. axis_dir.EQ.'K' .OR.
      .               axis_dir.eq.'z' .or. axis_dir.eq.'k') THEN
                line_direction(iaxis) = 'DU'
+            ELSE IF (axis_dir.EQ.'E' .OR. axis_dir.EQ.'M' .OR.
+     .            axis_dir.eq.'e' .or. axis_dir.eq.'m') THEN
+               line_direction(iaxis) = 'EE'
+            ELSE IF (axis_dir.EQ.'F' .OR. axis_dir.EQ.'N' .OR.
+     .            axis_dir.eq.'f' .or. axis_dir.eq.'n') THEN
+               line_direction(iaxis) = 'FF'
             ENDIF
          ELSE
             axis_dir = char_init01
@@ -690,6 +702,10 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 
 
 * ... next check units
+               
+
+      IF (line_direction(iaxis) .EQ. 'FF' .AND. 
+     .     units .LT. 0 ) line_direction(iaxis) = 'FI'  ! forecast time
 
       IF (line_direction(iaxis) .EQ. 'NA' .OR. 
      .    line_direction(iaxis) .EQ. 'XX' .OR.
@@ -817,12 +833,18 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 * that there seem to be some standard names related to sigma
 * coordinates that may not indicate a vertical axis, so simply 
 * matching sigma and coordinate is probably not safe.
+* Forecast time axes have a standard-name attribute "forecast_reference_time"
 
       maxlen = bufflen
       got_it = NC_GET_ATTRIB( dset, ivar, 'standard_name', do_warn, 
      .                        vname(:vlen), maxlen, attlen, attoutflag, 
      .                        buff, val)
       IF ( got_it ) THEN
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'forecast_reference_time',buff(:24))
+     .                                     .EQ.str_eq) THEN
+            line_direction(iaxis) = 'FI'
+         ENDIF 
          IF (STR_CASE_BLIND_COMPARE(
      .      'atmosphere_hybrid_height_coordinate',buff(:35))
      .                                     .EQ.str_eq) THEN
@@ -1423,7 +1445,8 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 * then it is implicitly MODULO
 
         IF (got_torg) THEN
-           line_direction(iaxis) = 'TI'
+           IF (line_direction(iaxis)(1:1).EQ.'T') line_direction(iaxis) = 'TI'
+           IF (line_direction(iaxis)(1:1).EQ.'F') line_direction(iaxis) = 'FI'
 c           secsperyear = cals_yeardays(cal_id)* 24*60*60
            tmp8 = cals_yeardays(cal_id)
            secsperyear = tmp8 * (24.D0*60.D0*60.D0)
@@ -1476,6 +1499,8 @@ c             line_modulo_len(iaxis) = 0.0D0
          IF (dcode .EQ. 'YY' .OR. dcode .EQ. 'SN') dir = 2
          IF (dcode .EQ. 'ZZ' .OR. dcode .EQ. 'UD' .OR. dcode .EQ. 'DU') dir = 3
          IF (dcode .EQ. 'TT' .OR. dcode .EQ. 'TI') dir = 4
+         IF (dcode .EQ. 'EE') dir = 5
+         IF (dcode .EQ. 'FF' .OR. dcode .EQ. 'FI') dir = 6
          CALL CD_SET_ATT_AXDIR (dset, ivar, dir, status)
 
 * successful completion

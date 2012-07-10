@@ -56,15 +56,12 @@
 *
 * IBM Port 14apr94 *kob* : READONLY not allowed in file open statments.  Added
 *			   an "#ifdef READONLY_ALLOWED"
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+
 * Include files
-#ifdef unix
 	include 'tmap_errors.parm'
         include 'xsys_names.cmn_text'
         external xsys_names_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-        INCLUDE 'TMAP_FORMAT:XSYS_NAMES.CMN'
-#endif
 
 * Argument definitions
 	CHARACTER*(*)	filename, expno, col_head, table_row

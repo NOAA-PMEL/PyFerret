@@ -71,6 +71,8 @@
 *                  mgrid_abstract and saved_abstract_grid. I no longer know the reason 
 *                  for the previous change; it does not seem to fix any listed bug and
 *                  reverting does not break anything...
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -100,7 +102,7 @@
 
         grr = TM_GET_GRIDNUM ('ABSTRACT')
 
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 
 * get the axis number for the abstract axis
 * 10/02 - need to do this for each dimension, not just x_dim
@@ -153,6 +155,7 @@ c!
 
 	         cx_by_ss(idim, cx) = .TRUE.
 	         IF ( (cat .EQ. cat_file_var) .OR.
+     .                (cat .EQ. cat_aggregate_var) .OR.
      .                (cat .EQ. cat_pystat_var) ) THEN
 	            CALL VAR_SS_LIMS( idim, cx,
      .				      cx_lo_ss(cx,idim),

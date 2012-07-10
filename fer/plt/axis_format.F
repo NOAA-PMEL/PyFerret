@@ -76,6 +76,9 @@
 * V64+ *acm*12/09 Fix bugs (crash!)for plots with very small ranges in lon and lat
 *                 See the benchmark test err64_very_small_latlon.jnl, based on a 
 *                 report by Jean Newman.
+*       *acm* 3/12 6D Ferret: Add E and F dimensions 
+*                  A time axis may be a T axis or F axis, so idim is 
+*                  now an arg to TSTEP_TO_SECS, TSTEP_TO_DATE
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -143,10 +146,12 @@
 	ENDIF
 
 ******* special axis formats ********
-	special = idim.EQ.t_dim .AND. its_calendar
-     .       .OR. idim.NE.t_dim .AND. GEOG_LABEL( idim, grid )
+	special = ((idim.EQ.t_dim .OR.  idim.EQ.f_dim) .AND. its_calendar)
+     .       .OR. ((idim.NE.t_dim .AND. idim.NE.f_dim) .AND. 
+     .             GEOG_LABEL( idim, grid ))
 	IF (curvilinear) THEN
-	   special = idim.NE.t_dim .AND. GEOG_VAR( idim, cx_curv )
+	   special = (idim.NE.t_dim .AND. idim.NE.f_dim) .AND. 
+     .             GEOG_VAR( idim, cx_curv )
 	ENDIF
 	IF ( special ) THEN
 	   IF (idim .EQ. x_dim .OR. idim.EQ. y_dim) 
@@ -159,10 +164,10 @@
 	         WRITE ( fmt, 3000 ) ndec
 	      ENDIF
 	   ENDIF
-	   IF ( idim .EQ. t_dim ) THEN
+	   IF (idim.EQ.t_dim .OR.  idim.EQ.f_dim) THEN
 * labels formatted in calendar dates
 * .. convert units of time axis from seconds to minutes
-	      time_unit = line_tunit( grid_line(t_dim,grid) )
+	      time_unit = line_tunit( grid_line(idim,grid) )
 	      dt_min = time_unit / 60.
 
 * ... TAXIS command
@@ -176,9 +181,9 @@
  3012	      FORMAT ('TAXIS ',G13.5,',ON')
 
 * ... TIME command (time axis limits)
-              rbuff(1) = WHOI_DATE(grid, lo_val )      ! f77 bug
-              rbuff(2) = WHOI_DATE(grid, hi_val )
-              rbuff(3) = WHOI_DATE(grid, 1.0D0  )
+              rbuff(1) = WHOI_DATE(grid, idim, lo_val )      ! f77 bug
+              rbuff(2) = WHOI_DATE(grid, idim, hi_val )
+              rbuff(3) = WHOI_DATE(grid, idim, 1.0D0  )
 	      WRITE ( ppl_buff, 3020 )	'W'//rbuff(1),
      .					'W'//rbuff(2),
      .					'W'//rbuff(3)
@@ -186,10 +191,10 @@
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 * ... save infor for PLOLT/VS/OVER
 	      saved_dt_min = dt_min
-	      saved_t1_date =  INTERNAL_WHOI_DATE(grid, 1.0D0 )
+	      saved_t1_date =  INTERNAL_WHOI_DATE(grid, idim, 1.0D0 )
 * ... TXTYPE and TXLINT commands (time axis style)
-	      CALL TAXIS_STYLE(	x_or_y, TSTEP_TO_SECS( grid, lo_val ),
-     .				TSTEP_TO_SECS( grid, hi_val ), tstyle )
+	      CALL TAXIS_STYLE(	x_or_y, TSTEP_TO_SECS( grid, idim, lo_val ),
+     .				TSTEP_TO_SECS( grid, idim, hi_val ), tstyle )
 
 	   ELSEIF ( idim .EQ. x_dim .AND. use_nice) THEN
 * longitude format for axis tic labling

@@ -45,14 +45,11 @@
 * revision 0.0 - 7/24/86
 * revision 0.1 - 7/20/87 - kludge introduction of 1D grids for XY averages
 * V200:  5/18/89 - 4D symmetrical
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 	INTEGER	CX_DIM_LEN, cx
 
@@ -60,6 +57,8 @@
      .		   * CX_DIM_LEN( 2, cx )
      .		   * CX_DIM_LEN( 3, cx )
      .		   * CX_DIM_LEN( 4, cx )
+     .		   * CX_DIM_LEN( 5, cx )
+     .		   * CX_DIM_LEN( 6, cx )
 
 	RETURN
 	END

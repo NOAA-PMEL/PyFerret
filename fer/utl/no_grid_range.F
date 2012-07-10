@@ -45,7 +45,9 @@
 * V200:  5/19/89 - 4D symmetrical
 * V68    4/11  Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'

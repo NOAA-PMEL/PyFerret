@@ -43,17 +43,12 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V510 12/99 *sh* - based on GRID_SUBSCRIPT_EXTREMES
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include	'ferret.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations
 	INTEGER	grid, idim

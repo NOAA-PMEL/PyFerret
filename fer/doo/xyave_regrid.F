@@ -7,7 +7,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -76,34 +76,42 @@
 * V600  4/06 *acm* - make refinement to cos(lat) factor as suggested by A. Wittenberg
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * 6/06 - Fix to Andrew*s correction for XY integ., bug1348
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xvariables.cmn'
 
 * calling argument declarations:
-	INTEGER	cx_lims, msrc, mdst, dst_lox, dst_hix, dst_loy, dst_hiy,
-     .          src_cx, dst_cx 
+	INTEGER	cx_lims, msrc, mdst, dst_lox, dst_hix,
+     .          dst_loy, dst_hiy, src_cx, dst_cx 
 	INTEGER	i21(dst_lox:dst_hix+1),
      .		j21(dst_loy:dst_hiy+1)
 
-	REAL    src( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
+	REAL    src( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * local variable declarations:
-	LOGICAL		GEOG_COS_FACTOR, need_cos, ok_negi111, ok_negj111
+	LOGICAL GEOG_COS_FACTOR,
+     .          need_cos, ok_negi111, ok_negj111
 
-	INTEGER		idst,isrc,jdst,jsrc,dim1,dim2,src_grid,dst_grid,k,l
-	INTEGER	     	isrc_lo,isrc_hi,jsrc_lo,jsrc_hi,
-     .			idst_lo,idst_hi,jdst_lo,jdst_hi
+	INTEGER idst, isrc, jdst, jsrc, dim1, dim2,
+     .          src_grid, dst_grid, k, l, m, n,
+     .          isrc_lo, isrc_hi, jsrc_lo, jsrc_hi,
+     .          idst_lo, idst_hi, jdst_lo, jdst_hi
 
-	REAL		AXIS_DISTANCE, BOX_SIZE, xdist, ydist, area, sum, 
-     .			darea, bad_src, bad_dst, cos_fact, bx, yc, yh_2,
-     .                  pi, r_earth, area_earth, ybxlo, ybxhi
-	
-        REAL*8		TWORLD, xsrc_lo, xsrc_hi, ysrc_lo, ysrc_hi,
-     .				xdst_lo, xdst_hi, ydst_lo, ydst_hi
+	REAL	AXIS_DISTANCE, BOX_SIZE,
+     .          xdist, ydist, area, sum, darea, bad_src, bad_dst,
+     .          cos_fact, area_earth, ybxlo, ybxhi
+
+        REAL*8	TWORLD,
+     .          xsrc_lo, xsrc_hi, ysrc_lo, ysrc_hi,
+     .          xdst_lo, xdst_hi, ydst_lo, ydst_hi
 ********************************************************************************
 
 * initialize
@@ -117,12 +125,6 @@
 	need_cos = GEOG_COS_FACTOR( dim2, dst_grid )
 
 * limits for calculation
-c        isrc_lo = mr_lo_ss(msrc,dim1)
-c        isrc_hi = mr_hi_ss(msrc,dim1)
-c        jsrc_lo = mr_lo_ss(msrc,dim2)
-c        jsrc_hi = mr_hi_ss(msrc,dim2)
-
-
         isrc_lo = cx_lo_ss(src_cx,dim1)
         isrc_hi = cx_hi_ss(src_cx,dim1)
         jsrc_lo = cx_lo_ss(src_cx,dim2)
@@ -150,16 +152,16 @@ c        jsrc_hi = mr_hi_ss(msrc,dim2)
 * Range of subscripts might be negative, and contain -111 among them.
 * ok_negi111, ok_negj111 distinguish between this and the flag unspecified_int4.
 
-        ok_negi111 = ( (i21(idst_lo) .LE. unspecified_int4 .AND.
-     .                 i21(idst_hi) .GE. unspecified_int4) ) .AND.
-     .                (i21(idst_lo) .NE. i21(idst_hi) )
+        ok_negi111 = ( i21(idst_lo) .LT. unspecified_int4 .AND.
+     .                 i21(idst_hi) .GT. unspecified_int4 )
 
-        ok_negj111 = ( (j21(jdst_lo) .LE. unspecified_int4 .AND.
-     .                 j21(jdst_hi) .GE. unspecified_int4) ) .AND.
-     .                (j21(jdst_lo) .NE. j21(jdst_hi) )
+        ok_negj111 = ( j21(jdst_lo) .LT. unspecified_int4 .AND.
+     .                 j21(jdst_hi) .GT. unspecified_int4 )
 
 
-* loop over Z and T ranges of 4-D data
+* loop over Z, T, E, and F ranges of 6-D data
+	DO 100 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	DO 100 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
 	DO 100 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	DO 100 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 
@@ -174,23 +176,22 @@ c        jsrc_hi = mr_hi_ss(msrc,dim2)
 	   isrc_hi = i21(idst+1)
 
 *  check if requested region is out of source range
-           IF ( ((isrc_lo .EQ. unspecified_int4
-     .	  .OR.  isrc_hi .EQ. unspecified_int4) .AND. .NOT.ok_negi111)
-     .	  .OR.  ((jsrc_lo .EQ. unspecified_int4
-     .	  .OR.  jsrc_hi .EQ. unspecified_int4) .AND. .NOT.ok_negj111) ) 
-     .     THEN
-	      dst(idst,jdst,k,l) = bad_dst
+           IF ( ( (isrc_lo .EQ. unspecified_int4
+     .    .OR.     isrc_hi .EQ. unspecified_int4)
+     .            .AND. .NOT. ok_negi111 )
+     .    .OR.  ( (jsrc_lo .EQ. unspecified_int4
+     .    .OR.     jsrc_hi .EQ. unspecified_int4)
+     .            .AND. .NOT. ok_negj111 ) ) THEN
+	      dst(idst,jdst,k,l,m,n) = bad_dst
 	      goto 60
 	   ENDIF
 
 	   xdst_lo = TWORLD(idst, dst_grid, dim1, box_lo_lim )
 	   xdst_hi = TWORLD(idst, dst_grid, dim1, box_hi_lim )
 
-
-           pi = 3.141592653
-           r_earth = 6371000
-           r_earth = radius/100  ! value in ferret.parm (which is in cm)
-           area_earth = 4.* pi * r_earth**2
+! m_radius in ferret.parm
+! area_earth used as a scaling factor that gets cancelled out; is it really needed?
+           area_earth = 4. * 3.141592653 * m_radius**2
 
 * add all partial or complete boxes of data from the source grid
 * 3/06 - apply Andrew*s suggested correction, bug1348
@@ -200,13 +201,12 @@ c        jsrc_hi = mr_hi_ss(msrc,dim2)
 	   DO 51 jsrc = jsrc_lo, jsrc_hi
 	   cos_fact = 1.0
 	   IF ( need_cos ) THEN
-              cos_fact = COS(deg2rad*TWORLD(jsrc,src_grid,dim2,box_middle)) !old method!
-              yc = TWORLD(jsrc,src_grid,dim2,box_middle)
-              bx = BOX_SIZE( jsrc, src_grid, dim2 )
-
-	      yh_2 = 0.5*deg2rad * bx
-              yc = deg2rad * yc
-              cos_fact = COS(yc) * 2.*ABS( SIN(yh_2) )
+!             cos_fact = COS(deg2rad*TWORLD(jsrc,src_grid,dim2,box_middle)) !old method!
+!             yc = TWORLD(jsrc,src_grid,dim2,box_middle)
+!             bx = BOX_SIZE( jsrc, src_grid, dim2 )
+!             yh_2 = 0.5*deg2rad * bx
+!             yc = deg2rad * yc
+!             cos_fact = COS(yc) * 2.*ABS( SIN(yh_2) )
 
 C The above are all OK if the coordinate point is in the middle of the box.
 C If the coordinate is not in the middle of the cell then it should be
@@ -228,27 +228,27 @@ C And also ticket 1348.
 	   DO 50 isrc = isrc_lo, isrc_hi
 
 * ... ignore missing source data
-	      IF ( src( isrc, jsrc, k, l ) .EQ. bad_src ) GOTO 50
+	      IF ( src(isrc,jsrc,k,l,m,n) .EQ. bad_src ) GOTO 50
 
 	      xsrc_lo = MAX( TWORLD(isrc,src_grid,dim1,box_lo_lim), xdst_lo )
 	      xsrc_hi = MIN( TWORLD(isrc,src_grid,dim1,box_hi_lim), xdst_hi )
 	      xdist   = AXIS_DISTANCE( xsrc_lo, xsrc_hi, dim1, src_grid )
 
 * ... contribution from this source box
+*     1/area_earth factor cancels out in result average
               IF (xdist .gt. 0.  .AND.  ydist .GT. 0) THEN
- 	         darea = ydist*(cos_fact*xdist)/area_earth
+	         darea = ydist*(cos_fact*xdist) / area_earth
 	         area  = area + darea
-	         sum   = sum  + darea * src(isrc, jsrc, k, l)
+	         sum   = sum  + darea * src(isrc,jsrc,k,l,m,n)
               ENDIF
 
  50	      CONTINUE
  51	   CONTINUE
 * ... divide by area to get average
 	   IF ( area .GT. 0.0 ) THEN
-	      dst(idst, jdst, k, l) = sum / area
-c!c	      dst(idst, jdst, k, l) =  area
+	      dst(idst,jdst,k,l,m,n) = sum / area
 	   ELSE
-	      dst(idst, jdst, k, l) = bad_dst
+	      dst(idst,jdst,k,l,m,n) = bad_dst
 	   ENDIF
 
  60	CONTINUE

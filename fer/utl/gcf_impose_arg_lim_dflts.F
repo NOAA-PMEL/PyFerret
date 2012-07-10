@@ -63,6 +63,8 @@
 *                  unspecified_int4 then use the full axis range, or if 
 *                  the axis is modulo, then one full modulo repetition
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
 *	Note: the "offset" code in this routine is largely untested!
 
@@ -82,7 +84,7 @@
 * local variable declarations
 	INTEGER	TM_LENSTR1, ISUBSCRIPT, KNOWN_GRID,
      .		gcfcn, idim, arg_grd, mods_cx, tmp_var_cx,
-     .		lo_off(4), hi_off(4), action(4), uvgrid,
+     .		lo_off(nferdims), hi_off(nferdims), action(nferdims), uvgrid,
      .          WHICH_GCFCN, lo, hi, ss_mid, cx_mid
        LOGICAL ss_fix
 
@@ -90,7 +92,7 @@
 	CALL TRANSFER_CONTEXT ( cx_in, cx_out )
 
 * 10/98 fix
-	DO 10 idim = 1, 4
+	DO 10 idim = 1, nferdims
            IF ( cx_trans(idim, cx_out) .EQ. trans_reduced ) THEN
               cx_trans(idim, cx_out) = trans_no_transform
            ENDIF
@@ -108,7 +110,7 @@
 	IF ( status .NE. ferr_ok ) RETURN
 
 * loop through the axes
-	DO 500 idim = 1,4
+	DO 500 idim = 1,nferdims
 
 	   IF ( action(idim) .EQ. pset_to_unspec ) THEN
 * set the axis limits to unspecified
@@ -121,7 +123,7 @@
 	      cx_cal_id(cx_out)          = unspecified_int4
 !	      cx_trans (idim,cx_out)     = trans_no_transform
 !	      cx_trans_arg(idim,cx_out)  = bad_val4  
-	      IF (idim .eq. t_dim) 
+	      IF (idim .EQ. t_dim .OR. idim .EQ. f_dim) 
      .                cx_calendar(cx_out) = .FALSE.
 
 	   ELSEIF (lo_off(idim).NE.0 .OR. hi_off(idim).NE.0) THEN

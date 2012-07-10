@@ -39,17 +39,6 @@ struct list_element_t {
 typedef struct list_t LIST;
 typedef struct list_element_t LIST_ELEMENT;
 
-/* Prototype ahoy! */
-LIST *list_init();
-LIST *list_mvprev();
-LIST *list_mvnext();
-char *list_insert_before();
-char *list_insert_after();
-char *list_remove_front();
-char *list_remove_rear();
-char *list_remove_curr();
-void list_free();
-
 /* Define some constants for controlling list traversals.  We
  * bit-code the attributes so they can be OR'd together.
  */
@@ -63,27 +52,39 @@ void list_free();
 #define LIST_ALTR	64
 
 /* Define some constants for return codes and such. */
-
-
 #ifndef TRUE
 #define TRUE  1
 #endif
 #ifndef FALSE
 #define FALSE 0
 #endif
-#define LIST_DEALLOC   -1
-#define LIST_NODEALLOC -2
-#define LIST_EMPTY     0
-#define LIST_OK        1
-#define LIST_EXTENT    2
+/* LIST_DEALLOC and LIST_NODEALLOC are passed as pointer-to-function "standard" values */
+#define LIST_DEALLOC   ((void (*)(char *))(-1))
+#define LIST_NODEALLOC ((void (*)(char *))(-2))
+#define LIST_EMPTY      0
+#define LIST_OK         1
+#define LIST_EXTENT     2
 
+/* prototypes */
+LIST *list_init(void);
+LIST *list_mvprev(LIST *list);
+LIST *list_mvnext(LIST *list);
+char *list_insert_before(LIST *list, char *data, int bytes);
+char *list_insert_after(LIST *list, char *data, int bytes);
+char *list_remove_front(LIST *list);
+char *list_remove_rear(LIST *list);
+char *list_remove_curr(LIST *list);
+int   list_traverse(LIST *list, char *data, int (*func)(char *, char *), int opts);
+void  list_free(LIST *list, void (*dealloc)(char *));
 
-/* Yet more prototypes. */
-char *list_front();
-char *list_curr();
-char *list_rear();
-LIST *list_mvfront();
-LIST *list_mvrear();
+/* Yet more prototypes - previously were possibly macros */
+LIST *list_mvfront(LIST *list);
+LIST *list_mvrear(LIST *list);
+int   list_empty(LIST *list);
+char *list_front(LIST *list);
+char *list_curr(LIST *list);
+char *list_rear(LIST *list);
+int   list_size(LIST *list);
 
 
 

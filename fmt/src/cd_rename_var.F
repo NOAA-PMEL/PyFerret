@@ -42,7 +42,7 @@
 
 * V600 6/11 *acm* 
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
-
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * include files
 #include "gt_lib.parm"
@@ -55,7 +55,6 @@
 
 * Internal declarations
 
-        include 'netcdf.decl'
 #include "netcdf.inc"
 
       INTEGER TM_LENSTR1, NCF_RENAME_VAR,

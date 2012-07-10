@@ -48,17 +48,12 @@
 *                e.g. SHADE T_INDEPENDENT  CONTOUR/OVER T_DEPENDENT
 * *kob* 11/96   - Linux port.  Linux didn't like tabs between "include"
 *                 and what was being included.  removed them
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
-#elif _WIN32
-	INCLUDE	'FERRET.PARM' 
-	INCLUDE	'XCONTEXT.CMN'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN' 
-#endif
 
 * calling argument declarations
 	INTEGER joint_cx, addl_cx 
@@ -92,7 +87,7 @@
 * check each axis for documentation needs
 * note: unspec_val8_2 indicates differing limits between contexts
 *	unspecified_val8 indicates irrelevant (normal) limits
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   IF ( cx_lo_ww(idim,addl_cx)  .EQ. unspecified_val8 ) GOTO 100
 	   IF ( cx_lo_ww(idim,joint_cx) .EQ. unspec_val8_2    ) GOTO 100
 	   IF ( cx_lo_ww(idim,joint_cx) .EQ. unspecified_val8 ) THEN

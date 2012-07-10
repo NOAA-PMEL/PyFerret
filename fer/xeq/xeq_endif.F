@@ -43,7 +43,9 @@
 * V420:  4/96
 * V6.31 10/09 *acm*  Fixing bug 1706, by properly fixing # 1681. ENDIF inside a REPEAT 
 *              loop with semicolon-separated commands. 
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'command.parm'
 	include 'errmsg.parm'

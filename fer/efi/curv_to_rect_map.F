@@ -83,7 +83,8 @@
 
 
       SUBROUTINE curv_to_rect_map_init(id)
-        
+
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER   id, arg
@@ -103,22 +104,28 @@
       CALL ef_set_num_args(id, 4)
       CALL ef_set_num_work_arrays(id, 8)
 
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS,  
-     .     IMPLIED_BY_ARGS, ABSTRACT, ABSTRACT)
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                ABSTRACT, ABSTRACT,
+     .                                NORMAL, NORMAL)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
+
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'lon_in')
       CALL ef_set_arg_unit(id, arg, 'degrees')
       CALL ef_set_arg_desc(id, arg, 
      .   'Source grid longitudes (2-D)')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'lat_in')
       CALL ef_set_arg_unit(id, arg, 'degrees')
       CALL ef_set_arg_desc(id, arg, 
      .  'Source grid latitudes (2-D)')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'grid_out')
@@ -128,7 +135,8 @@
      .        'grid, Lon and Lat')
       CALL ef_set_arg_desc(id, arg, descr)
      .  
-      CALL ef_set_axis_influence(id, arg, YES, YES, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, NO, NO, NO, NO)
 
       arg = 4
       CALL ef_set_arg_name(id, arg, 'radius')
@@ -137,7 +145,8 @@
    30 FORMAT ('Source points falling ',
      .   'within radius are included in mapping to destination point')
       CALL ef_set_arg_desc(id, arg, descr)
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
 !                                                                     ^
 !                                                                     |
@@ -151,6 +160,7 @@
 
       SUBROUTINE curv_to_rect_map_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id
@@ -179,6 +189,7 @@
 *
       SUBROUTINE curv_to_rect_map_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -190,21 +201,24 @@
 *                                                                      V
 
 *
-* Set the work array X/Y/Z/T dimensions
+* Set the work array X/Y/Z/T/E/F dimensions
 *
-* ef_set_work_array_lens(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+* ef_set_work_array_dims_6d(id, array #,
+*                           xlo, ylo, zlo, tlo, elo, flo,
+*                           xhi, yhi, zhi, thi, ehi, fhi)
 *
       INTEGER array_num
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+      INTEGER res_lo_ss(6), res_hi_ss(6), res_incr(6)
 
       INTEGER num_nbrs, nx, ny
 
       num_nbrs = 4
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
 
 
 * Define together as one work array:
@@ -215,51 +229,51 @@
 
       array_num = 1
       num_nbrs = 4
-      CALL ef_set_work_array_dims(id, array_num,
+      CALL ef_set_work_array_dims_6d(id, array_num,
      .     arg_lo_ss(X_AXIS,ARG3), arg_lo_ss(Y_AXIS,ARG3), 
-     .     1, 1, 
+     .     1, 1, 1, 1,
      .     arg_hi_ss(X_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 
-     .     num_nbrs, 2)
+     .     num_nbrs, 2, 1, 1)
 
 *  Define together as one work array:
 *  real src_dist(nlon_dst, nlat_dst, num_nbrs)
 *  real map_src_dist(nlon_dst, nlat_dst, num_nbrs)
 
       array_num = 2
-      CALL ef_set_work_array_dims(id, array_num,
+      CALL ef_set_work_array_dims_6d(id, array_num,
      .     arg_lo_ss(X_AXIS,ARG3), arg_lo_ss(Y_AXIS,ARG3), 
-     .     1, 1, 
+     .     1, 1, 1, 1,
      .     arg_hi_ss(X_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 
-     .     num_nbrs, 2)
+     .     num_nbrs, 2, 1, 1)
 
 * Define together as one work array:
 * logical found_neighbors(nlon_dst, nlat_dst)
 * logical map_found_neighbors(nlon_dst, nlat_dst)
 
       array_num = 3
-      CALL ef_set_work_array_dims(id, array_num,
+      CALL ef_set_work_array_dims_6d(id, array_num,
      .     arg_lo_ss(X_AXIS,ARG3), arg_lo_ss(Y_AXIS,ARG3), 
-     .     1, 1, 
+     .     1, 1, 1, 1,
      .     arg_hi_ss(X_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 
-     .     2, 1)
+     .     2, 1, 1, 1)
 
 * integer map_src_add(nlon_dst, nlat_dst, num_nbrs)
 
       array_num = 4
-      CALL ef_set_work_array_dims(id, array_num,
+      CALL ef_set_work_array_dims_6d(id, array_num,
      .     arg_lo_ss(X_AXIS,ARG3), arg_lo_ss(Y_AXIS,ARG3), 
-     .     1, 1, 
+     .     1, 1, 1, 1,
      .     arg_hi_ss(X_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 
-     .     num_nbrs, 1)
+     .     num_nbrs, 1, 1, 1)
 
 * real wt(nlon_dst, nlat_dst, num_nbrs) 
 
       array_num = 5
-      CALL ef_set_work_array_dims(id, array_num,
+      CALL ef_set_work_array_dims_6d(id, array_num,
      .     arg_lo_ss(X_AXIS,ARG3), arg_lo_ss(Y_AXIS,ARG3), 
-     .     1, 1, 
+     .     1, 1, 1, 1,
      .     arg_hi_ss(X_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 
-     .     num_nbrs, 1)
+     .     num_nbrs, 1, 1, 1)
 
 * Define together as one work array:
 * real src_grid_radians(nx_src, ny_src, 2, 1)
@@ -267,9 +281,11 @@
 * source grid latitudes  (arg_2), translated to radians
 
       array_num = 6
-      CALL ef_set_work_array_dims(id, array_num,
-     .     arg_lo_ss(X_AXIS,ARG1), arg_lo_ss(Y_AXIS,ARG2), 1, 1, 
-     .     arg_hi_ss(X_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG2), 2, 1)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .     arg_lo_ss(X_AXIS,ARG1), arg_lo_ss(Y_AXIS,ARG2),
+     .     1, 1, 1, 1,
+     .     arg_hi_ss(X_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG2),
+     .     2, 1, 1, 1)
 
 * real*8 dst_grid(MAX(nx_dst, ny_dst), 2, 1, 1)
 * destination rectangular grid, translated to radians
@@ -279,9 +295,9 @@
       nx =  arg_hi_ss(X_AXIS,ARG3) - arg_lo_ss(X_AXIS,ARG3) + 1
       ny =  arg_hi_ss(Y_AXIS,ARG3) - arg_lo_ss(Y_AXIS,ARG3) + 1
       nx = MAX(nx,ny)
-      CALL ef_set_work_array_dims(id, array_num,
-     .        1,   1, 1, 1, 
-     .     2*nx, 2*2, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .        1,   1, 1, 1, 1, 1,
+     .     2*nx, 2*2, 1, 1, 1, 1)
 
 * real dst_grid_radians(nx_dst, ny_dst, 2, 1)
 * destination rectangular grid, translated to radians
@@ -289,9 +305,9 @@
       array_num = 8
       nx =  arg_hi_ss(X_AXIS,ARG3) - arg_lo_ss(X_AXIS,ARG3) + 1
       ny =  arg_hi_ss(Y_AXIS,ARG3) - arg_lo_ss(Y_AXIS,ARG3) + 1
-      CALL ef_set_work_array_dims(id, array_num,
-     .      1,  1, 1, 1, 
-     .     nx, ny, 2, 1)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .      1,  1, 1, 1, 1, 1,
+     .     nx, ny, 2, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -330,61 +346,72 @@
 !
 !
 !
-      IMPLICIT none
-      
+
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
-      
 
-      INTEGER  id
+      INTEGER id
 
-      REAL  bad_flag(EF_MAX_ARGS), bad_flag_result
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
+     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
+     .           mem3lot:mem3hit, mem3loe:mem3hie, mem3lof:mem3hif)
+      REAL arg_4(mem4lox:mem4hix, mem4loy:mem4hiy, mem4loz:mem4hiz, 
+     .           mem4lot:mem4hit, mem4loe:mem4hie, mem4lof:mem4hif)
 
-      REAL  arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz,
-     .       mem1lot:mem1hit)
-      REAL  arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz,
-     .       mem2lot:mem2hit)
-      REAL  arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz,
-     .       mem3lot:mem3hit)
-      REAL  arg_4(mem4lox:mem4hix, mem4loy:mem4hiy, mem4loz:mem4hiz,
-     .       mem4lot:mem4hit)
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
-      REAL  result(memreslox:memreshix, memresloy:memreshiy, 
-     .      memresloz:memreshiz, memreslot:memreshit)
-     
 * Declare work arrays
 
       INTEGER i_lon_j_lat(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
-     .              wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
+     .                    wrk1loz:wrk1hiz, wrk1lot:wrk1hit,
+     .                    wrk1loe:wrk1hie, wrk1lof:wrk1hif)
       REAL src_dist(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
-     .              wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
+     .              wrk2loz:wrk2hiz, wrk2lot:wrk2hit,
+     .              wrk2loe:wrk2hie, wrk2lof:wrk2hif)
       LOGICAL found_neighbors(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
-     .              wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
+     .                        wrk3loz:wrk3hiz, wrk3lot:wrk3hit,
+     .                        wrk3loe:wrk3hie, wrk3lof:wrk3hif)
       INTEGER map_src_add(wrk4lox:wrk4hix, wrk4loy:wrk4hiy,
-     .              wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
+     .                    wrk4loz:wrk4hiz, wrk4lot:wrk4hit,
+     .                    wrk4loe:wrk4hie, wrk4lof:wrk4hif)
       REAL wt(wrk5lox:wrk5hix, wrk5loy:wrk5hiy,
-     .              wrk5loz:wrk5hiz, wrk5lot:wrk5hit)
+     .        wrk5loz:wrk5hiz, wrk5lot:wrk5hit,
+     .        wrk5loe:wrk5hie, wrk5lof:wrk5hif)
       REAL src_grid_radians(wrk6lox:wrk6hix, wrk6loy:wrk6hiy,
-     .              wrk6loz:wrk6hiz, wrk6lot:wrk6hit)
+     .                      wrk6loz:wrk6hiz, wrk6lot:wrk6hit,
+     .                      wrk6loe:wrk6hie, wrk6lof:wrk6hif)
       REAL*8 dst_grid(wrk7lox:wrk7hix/2, wrk7loy:wrk7hiy/2,
-     .              wrk7loz:wrk7hiz, wrk7lot:wrk7hit)
+     .                wrk7loz:wrk7hiz, wrk7lot:wrk7hit,
+     .                wrk7loe:wrk7hie, wrk7lof:wrk7hif)
       REAL dst_grid_radians(wrk8lox:wrk8hix, wrk8loy:wrk8hiy,
-     .              wrk8loz:wrk8hiz, wrk8lot:wrk8hit)
+     .                      wrk8loz:wrk8hiz, wrk8lot:wrk8hit,
+     .                      wrk8loe:wrk8hie, wrk8lof:wrk8hif)
 
-! After initialization, the 'res_' arrays contain indexing information 
-! for the result axes.  The 'arg_' arrays will contain the indexing 
-! information for each variable's axes. 
+* After initialization, the 'res_' arrays contain indexing information 
+* for the result axes.  The 'arg_' arrays will contain the indexing 
+* information for each variable''s axes. 
 
-      INTEGER  res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER  arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .         arg_incr(4,EF_MAX_ARGS)
-      
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
+
 !**********************************************************************
 !                                           USER CONFIGURABLE PORTION |
 !                                                                     |
 !                                                                     V
 
-      INTEGER  i, j, k, l, arg, idim, interp_method, nx, ny,
+      INTEGER  i, j, k, l, m, n, arg, idim, interp_method, nx, ny,
      .         nlon_src, nlat_src, nlon_dst, nlat_dst, num_nbrs, 
      .         ilon(4), jlat(4)
 
@@ -408,8 +435,8 @@ cc      max_dist = 0.17
 
 !  Loop over x,y,t of the input fields
       
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       interp_method = 3
 !      WRITE(*,*) 'Using spherical regridding !!'
@@ -425,7 +452,7 @@ cc      max_dist = 0.17
       ny = arg_hi_ss(Y_AXIS,ARG2) - arg_lo_ss(Y_AXIS,ARG2) + 1
 
       IF (nlon_src .NE. nx .OR. nlat_src .NE. ny) call ef_bail_out (id, 
-     . 'argument 2 must have the same x and y dimensions as argument 1')  
+     . 'argument 2 must have the same x and y dimensions as argument 1')
 
 * Tranlate input and output grid coordinates to radians.
 
@@ -433,18 +460,17 @@ cc      max_dist = 0.17
 * arg_2 is lats_in
 * src_grid_radians(nx_src, ny_src, 2, 1)
 
-      pi =  4.*ATAN(1.)
-      pi180 = pi/ 180.
-
       DO j = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
       DO i = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
-         src_grid_radians(i,j,1,1) = pi180*arg_1(i,j,mem1loz,mem1lot)
+         src_grid_radians(i,j,1,1,1,1) = 
+     .       pi180*arg_1(i,j,mem1loz,mem1lot,mem1loe,mem1lof)
       ENDDO
       ENDDO
 
       DO j = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
       DO i = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
-         src_grid_radians(i,j,2,1) = pi180*arg_2(i,j,mem2loz,mem2lot)
+         src_grid_radians(i,j,2,1,1,1) =
+     .       pi180*arg_2(i,j,mem2loz,mem2lot,mem2loe,mem2lof)
       ENDDO
       ENDDO
 
@@ -453,40 +479,40 @@ cc      max_dist = 0.17
 
       CALL EF_GET_COORDINATES (id, arg, idim,
      .     arg_lo_ss(X_AXIS,ARG3), arg_hi_ss(X_AXIS,ARG3), 
-     .     dst_grid(1,1,1,1) )
+     .     dst_grid(1,1,1,1,1,1) )
 
       arg = 3
       idim = 2
 
       CALL EF_GET_COORDINATES (id, arg, idim,
      .     arg_lo_ss(Y_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 
-     .     dst_grid(1,2,1,1) )
+     .     dst_grid(1,2,1,1,1,1) )
 
       DO j = 1, nlat_dst
       DO i = 1, nlon_dst
-        dst_grid_radians(i, j, 1, 1) = pi180* dst_grid(i,1,1,1)
+        dst_grid_radians(i,j,1,1,1,1) = pi180* dst_grid(i,1,1,1,1,1)
       ENDDO
       ENDDO
 
       DO j = 1, nlat_dst
       DO i = 1, nlon_dst
-        dst_grid_radians(i, j, 2, 1) = pi180* dst_grid(j,2,1,1)
+        dst_grid_radians(i,j,2,1,1,1) = pi180* dst_grid(j,2,1,1,1,1)
       ENDDO
       ENDDO
 
       CALL horiz_interp_init_sphe(id, 
-     .        src_grid_radians(wrk6lox,wrk6loy,1,1), 
-     .        src_grid_radians(wrk6lox,wrk6loy,2,1), 
-     .        dst_grid_radians(wrk8lox,wrk8loy,1,1), 
-     .        dst_grid_radians(wrk8lox,wrk8loy,2,1),
-     .        i_lon_j_lat(wrk1lox,wrk1loy,wrk1loz,1), 
-     .        i_lon_j_lat(wrk1lox,wrk1loy,wrk1loz,2), 
+     .        src_grid_radians(wrk6lox,wrk6loy,1,1,1,1), 
+     .        src_grid_radians(wrk6lox,wrk6loy,2,1,1,1), 
+     .        dst_grid_radians(wrk8lox,wrk8loy,1,1,1,1), 
+     .        dst_grid_radians(wrk8lox,wrk8loy,2,1,1,1),
+     .        i_lon_j_lat(wrk1lox,wrk1loy,1,1,1,1), 
+     .        i_lon_j_lat(wrk1lox,wrk1loy,1,2,1,1), 
      .        ilon, jlat, 
-     .        src_dist(wrk2lox,wrk2loy,wrk2loz,1), 
-     .        src_dist(wrk2lox,wrk2loy,wrk2loz,2),
-     .        found_neighbors(wrk3lox,wrk3loy,1,wrk3lot), 
+     .        src_dist(wrk2lox,wrk2loy,1,1,1,1), 
+     .        src_dist(wrk2lox,wrk2loy,1,2,1,1),
+     .        found_neighbors(wrk3lox,wrk3loy,1,1,1,1), 
      .        map_src_add, 
-     .        found_neighbors(wrk3lox,wrk3loy,1,wrk3lot), 
+     .        found_neighbors(wrk3lox,wrk3loy,1,1,1,1), 
      .        num_nbrs, max_dist, 
      .        src_modulo, nlon_src, nlat_src, nlon_dst, nlat_dst)
 
@@ -494,14 +520,16 @@ cc      max_dist = 0.17
       j = res_lo_ss(Y_AXIS)
       k = res_lo_ss(Z_AXIS)
       l = res_lo_ss(T_AXIS)
+      m = res_lo_ss(E_AXIS)
+      n = res_lo_ss(F_AXIS)
 
       CALL save_mapping (src_dist, wt, 
-     .        found_neighbors(wrk3lox,wrk3loy,wrk3loz,wrk3lot), 
-     .        i_lon_j_lat(wrk1lox,wrk1loy,wrk1loz,1), 
-     .        i_lon_j_lat(wrk1lox,wrk1loy,wrk1loz,2), 
+     .        found_neighbors(wrk3lox,wrk3loy,1,1,1,1), 
+     .        i_lon_j_lat(wrk1lox,wrk1loy,1,1,1,1), 
+     .        i_lon_j_lat(wrk1lox,wrk1loy,1,2,1,1), 
      .        max_dist, nlon_src, nlat_src, 
      .        nlon_dst, nlat_dst, num_nbrs, bad_flag_result,
-     .        result(i,j,k,l) )
+     .        result(i,j,k,l,m,n) )
 
 !                                                                     ^
 !                                                                     |

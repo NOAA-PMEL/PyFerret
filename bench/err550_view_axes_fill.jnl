@@ -70,6 +70,5 @@ set vi top
 fill test
 contour/over test
 
-can view
 set win/clear
 set win/aspect=0.75

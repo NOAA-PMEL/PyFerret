@@ -47,18 +47,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Prototypes for some Ferret external function utility functions */
-ExternalFunction *ef_ptr_from_id_ptr(int *id_ptr);
-void ef_get_arg_subscripts_(int *id, int steplo[][4], int stephi[][4], int incr[][4]);
-void ef_get_coordinates_(int *id, int *arg, int *axis, int *lo, int *hi, double *coords);
-void ef_get_box_size_(int *id, int *arg, int *axis, int *lo, int *hi, float *sizes);
-void ef_get_box_limits_(int *id, int *arg, int *axis, int *lo, int *hi, float *lo_lims, float *hi_lims);
-void set_batch_graphics_(char *meta_name);
-
 /* graphics delegate include file for prototype of grdelWindowVerify */
 #include "grdel.h"
-/* prototype the Fortran subroutine fgdtest_ */
-void fgdtest_(void **mywindow);
 
 /* Ferret's OK return status value */
 #define FERR_OK 3
@@ -77,8 +67,8 @@ static int ferretInitialized = 0;
 
 /* for memory management in this module */
 static size_t ferMemSize;
-static float *ferMemory = NULL;
-static float *pplMemory = NULL;
+static double *ferMemory = NULL;
+static double *pplMemory = NULL;
 
 /* for recovering from seg faults */
 static void (*segv_handler)(int);
@@ -103,7 +93,7 @@ static char pyferretStartDocstring[] =
     " (none) \n"
     "\n"
     "Optional arguments: \n"
-    "    memsize = <float>: the size, in megafloats (where a float is 4 bytes), \n"
+    "    memsize = <float>: the size, in megadoubles (where a double is 8 bytes), \n"
     "                       to allocate for Ferret's memory cache (default 25.6) \n"
     "    journal = <bool>: journal Ferret commands? (default True) \n"
     "    verify = <bool>: echo Ferret commands? (default True) \n"
@@ -184,7 +174,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
 
     /* Initial allocation of PPLUS memory */
     pplMemSize = 0.5 * 1.0E6;
-    pplMemory = (float *) PyMem_Malloc((size_t)pplMemSize * (size_t)sizeof(float));
+    pplMemory = (double *) PyMem_Malloc((size_t)pplMemSize * (size_t)sizeof(double));
     if ( pplMemory == NULL )
         return PyErr_NoMemory();
     set_ppl_memory(pplMemory, pplMemSize);
@@ -197,7 +187,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     /* Check for overflow */
     if ( blksiz != ferMemSize / (size_t)PMAX_MEM_BLKS )
         return PyErr_NoMemory();
-    ferMemory = (float *) PyMem_Malloc(ferMemSize * (size_t)sizeof(float));
+    ferMemory = (double *) PyMem_Malloc(ferMemSize * (size_t)sizeof(double));
     if ( ferMemory == NULL )
         return PyErr_NoMemory();
     set_fer_memory(ferMemory, ferMemSize);
@@ -277,11 +267,11 @@ static int resizeFerretMemory(int blksiz)
      * This could also result in a better garbage collection.
      */
     PyMem_Free(ferMemory);
-    ferMemory = (float *) PyMem_Malloc(newFerMemSize * (size_t)sizeof(float));
+    ferMemory = (double *) PyMem_Malloc(newFerMemSize * (size_t)sizeof(double));
     if ( ferMemory == NULL ) {
-        ferMemory = (float *) PyMem_Malloc(ferMemSize * (size_t)sizeof(float));
+        ferMemory = (double *) PyMem_Malloc(ferMemSize * (size_t)sizeof(double));
         if ( ferMemory == NULL ) {
-            fprintf(stderr, "**ERROR: Unable to restore Ferret's memory cache of %f Mfloats\n", (double)ferMemSize / 1.0E6);
+            fprintf(stderr, "**ERROR: Unable to restore Ferret's memory cache of %f Mdoubles\n", (double)ferMemSize / 1.0E6);
             exit(1);
         }
         return 0;
@@ -298,7 +288,7 @@ static char pyferretResizeMemoryDocstring[] =
     "Reset the the amount of memory allocated for Ferret from Python-managed memory. \n"
     "\n"
     "Required arguments: \n"
-    "    memsize = <float>: the new size, in megafloats (where a float is 4 bytes), \n"
+    "    memsize = <float>: the new size, in megadouble (where a double is 8 bytes), \n"
     "                       for Ferret's memory cache \n"
     "\n"
     "Optional arguments: \n"
@@ -410,9 +400,9 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
         if ( sBuffer->flags[FRTN_ACTION] == FACTN_MEM_RECONFIGURE ) {
             /* resize, then re-enter if not single-command mode */
             if ( resizeFerretMemory(sBuffer->flags[FRTN_IDATA1]) == 0 ) {
-                printf("Unable to resize Ferret's memory cache to %f Mfloats\n",
+                printf("Unable to resize Ferret's memory cache to %f Mdoubles\n",
                        (double)(sBuffer->flags[FRTN_IDATA1]) * (double)PMAX_MEM_BLKS / 1.0E6);
-                printf("Ferret's memory cache remains at %f Mfloats\n",
+                printf("Ferret's memory cache remains at %f Mdoubles\n",
                        (double)(ferMemSize) / 1.0E6);
             }
             cmnd_stack_level = sBuffer->flags[FRTN_IDATA2];
@@ -472,14 +462,14 @@ static char pyferretGetDataDocstring[] =
     "\n"
     "Returns: \n"
     "    A tuple containing: \n"
-    "        a NumPy float32 ndarray containing a copy of the numeric data requested, \n"
-    "        a NumPy float32 ndarray containing the bad-data-flag value(s) for the data, \n"
+    "        a NumPy float64 ndarray containing a copy of the numeric data requested, \n"
+    "        a NumPy float64 ndarray containing the bad-data-flag value(s) for the data, \n"
     "        a string giving the units for the data \n"
-    "        a tuple of four integers giving the AXISTYPE codes of the axes, \n"
-    "        a tuple of four strings giving the names of the axes, \n"
-    "        a tuple of four strings giving the units of a non-calendar-time data axis, or \n"
+    "        a tuple of six integers giving the AXISTYPE codes of the axes, \n"
+    "        a tuple of six strings giving the names of the axes, \n"
+    "        a tuple of six strings giving the units of a non-calendar-time data axis, or \n"
     "                                       the CALTYPE_ calendar name of a calendar-time axis, \n"
-    "        a tuple of four ndarrays giving the coordinates for the data axes \n"
+    "        a tuple of six ndarrays giving the coordinates for the data axes \n"
     "            (ndarray of N doubles for non-calendar-time, non-normal axes, \n"
     "             ndarray of (N,6) integers for calendar-time axes, or \n"
     "             None for normal axes) \n"
@@ -502,14 +492,14 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
     AXISTYPE     axis_types[MAX_FERRET_NDIM];
     char         errmsg[2112];
     int          lenerrmsg;
-    float        badval;
-    int          i, j, k, l, q;
+    double       badval;
+    int          i, j, k, l, m, n, q;
     npy_intp     shape[MAX_FERRET_NDIM];
     npy_intp     new_shape[2];
     int          strides[MAX_FERRET_NDIM];
     PyObject    *data_ndarray;
-    float       *ferdata;
-    float       *npydata;
+    double      *ferdata;
+    double      *npydata;
     PyObject    *badval_ndarray;
     PyObject    *axis_coords[MAX_FERRET_NDIM];
     char         axis_units[MAX_FERRET_NDIM][64];
@@ -554,7 +544,7 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
     for (k = 0; k < MAX_FERRET_NDIM; k++)
         shape[k] = (npy_intp) ((stephi[k] - steplo[k] + incr[k]) / (incr[k]));
 
-    /* Get the strides through the memory (as a float *) */
+    /* Get the strides through the memory (as a double *) */
     strides[0] = 1;
     for (k = 1; k < MAX_FERRET_NDIM; k++)
         strides[k] = strides[k-1] * (memhi[k-1] - memlo[k-1] + 1);
@@ -567,8 +557,8 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
     for (k = 0; k < MAX_FERRET_NDIM; k++)
         strides[k] *= incr[k];
 
-    /* Create a new NumPy float ndarray (Fortran ordering) with the same shape */
-    data_ndarray = PyArray_EMPTY(MAX_FERRET_NDIM, shape, NPY_FLOAT, 1);
+    /* Create a new NumPy double ndarray (Fortran ordering) with the same shape */
+    data_ndarray = PyArray_EMPTY(MAX_FERRET_NDIM, shape, NPY_DOUBLE, 1);
     if ( data_ndarray == NULL ) {
         return NULL;
     }
@@ -580,20 +570,29 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
     ferdata = ferMemory + arraystart;
     npydata = PyArray_DATA(data_ndarray);
     q = 0;
-    for (l = 0; l < (int)(shape[3]); l++) {
-        for (k = 0; k < (int)(shape[2]); k++) {
+    for (n = 0; n < (int)(shape[5]); n++) {
+      for (m = 0; m < (int)(shape[4]); m++) {
+        for (l = 0; l < (int)(shape[3]); l++) {
+          for (k = 0; k < (int)(shape[2]); k++) {
             for (j = 0; j < (int)(shape[1]); j++) {
-                for (i = 0; i < (int)(shape[0]); i++) {
-                   npydata[q] = ferdata[i * strides[0] + j * strides[1] + k * strides[2] + l * strides[3]];
-                   q++;
-                }
+              for (i = 0; i < (int)(shape[0]); i++) {
+                npydata[q] = ferdata[ i * strides[0] + 
+                                      j * strides[1] + 
+                                      k * strides[2] + 
+                                      l * strides[3] +
+                                      m * strides[4] +
+                                      n * strides[5] ];
+                q++;
+              }
             }
+          }
         }
+      }
     }
 
     /* Create a new NumPy float ndarray with the bad-data-flag value(s) */
     new_shape[0] = 1;
-    badval_ndarray = PyArray_SimpleNew(1, new_shape, NPY_FLOAT);
+    badval_ndarray = PyArray_SimpleNew(1, new_shape, NPY_DOUBLE);
     if ( badval_ndarray == NULL ) {
        Py_DECREF(data_ndarray);
        return NULL;
@@ -727,11 +726,11 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
      * badval_ndarray, dataunit, axis_types, axis_names, axis_units, and axis_coords.
      * Note: if MAX_FERRET_NDIM changes, this needs editing.
      */
-    return Py_BuildValue("NNs(iiii)(ssss)(ssss)(NNNN)", data_ndarray, badval_ndarray, dataunit,
-                         axis_types[0], axis_types[1], axis_types[2], axis_types[3],
-                         axis_names[0], axis_names[1], axis_names[2], axis_names[3],
-                         axis_units[0], axis_units[1], axis_units[2], axis_units[3],
-                         axis_coords[0], axis_coords[1], axis_coords[2], axis_coords[3]);
+    return Py_BuildValue("NNs(iiiiii)(ssssss)(ssssss)(NNNNNN)", data_ndarray, badval_ndarray, dataunit,
+              axis_types[0], axis_types[1], axis_types[2], axis_types[3], axis_types[4], axis_types[5],
+              axis_names[0], axis_names[1], axis_names[2], axis_names[3], axis_names[4], axis_names[5],
+              axis_units[0], axis_units[1], axis_units[2], axis_units[3], axis_units[4], axis_units[5],
+              axis_coords[0], axis_coords[1], axis_coords[2], axis_coords[3], axis_coords[4], axis_coords[5]);
 }
 
 
@@ -747,11 +746,11 @@ static char pyferretPutDataDocstring[] =
     "    dset = <string>: the dataset name or number to be associates with this variable; \n"
     "                     give an empty strip associated with the current dataset \n"
     "                     or 'None' to not associate with any dataset \n"
-    "    axis_types = <4-tuple of int>: the AXISTYPE codes for the axes \n"
-    "    axis_names = <4-tuple of string>: the names of the axes \n"
-    "    axis_units = <4-tuple of string>: the units of a non-calendar-time axis, or \n"
+    "    axis_types = <6-tuple of int>: the AXISTYPE codes for the axes \n"
+    "    axis_names = <6-tuple of string>: the names of the axes \n"
+    "    axis_units = <6-tuple of string>: the units of a non-calendar-time axis, or \n"
     "                                      the CALTYPE_ calendar name of a calendar-time axis \n"
-    "    axis_coords = <4-tuple of ndarray>: the axis coordinates \n"
+    "    axis_coords = <6-tuple of ndarray>: the axis coordinates \n"
     "                                        (ndarray of N doubles for a non-calendar-time, non-normal axis, or \n"
     "                                         ndarray of (N,6) integers for a calendar-time axis; \n"
     "                                         None - or any object - for a normal axis) \n"
@@ -780,7 +779,7 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
     PyObject    *axis_names_tuple;
     PyObject    *axis_units_tuple;
     PyObject    *axis_coords_tuple;
-    float        bdfval;
+    double       bdfval;
     int          k;
     PyObject    *seqitem;
     AXISTYPE     axis_types[MAX_FERRET_NDIM];
@@ -814,22 +813,21 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
 
     /* PyArray_Size returns 0 if the object is not an appropriate type */
     /* ISFARRAY_RO checks if it is F-contiguous, aligned, and in machine byte-order */
-    if ( (PyArray_Size(data_ndarray) < 1) || (PyArray_TYPE(data_ndarray) != NPY_FLOAT) ||
+    if ( (PyArray_Size(data_ndarray) < 1) || (PyArray_TYPE(data_ndarray) != NPY_DOUBLE) ||
          (! PyArray_ISFARRAY_RO(data_ndarray)) || (! PyArray_CHKFLAGS(data_ndarray, NPY_OWNDATA)) ) {
-        PyErr_SetString(PyExc_ValueError, "data is not an appropriate ndarray of type float32");
+        PyErr_SetString(PyExc_ValueError, "data is not an appropriate ndarray of type float64");
         return NULL;
     }
-
 
     /* PyArray_Size returns 0 if the object is not an appropriate type */
     /* ISBEHAVED_RO checks if it is aligned and in machine byte-order */
-    if ( (PyArray_Size(bdfval_ndarray) < 1) || (PyArray_TYPE(bdfval_ndarray) != NPY_FLOAT) ||
+    if ( (PyArray_Size(bdfval_ndarray) < 1) || (PyArray_TYPE(bdfval_ndarray) != NPY_DOUBLE) ||
          (! PyArray_ISBEHAVED_RO(bdfval_ndarray)) ) {
-        PyErr_SetString(PyExc_ValueError, "bdfval is not an appropriate ndarray of type float32");
+        PyErr_SetString(PyExc_ValueError, "bdfval is not an appropriate ndarray of type float64");
         return NULL;
     }
     /* Just get bdfval from the data in bdfval_ndarray */
-    bdfval = ((float *) PyArray_DATA(bdfval_ndarray))[0];
+    bdfval = ((double *) PyArray_DATA(bdfval_ndarray))[0];
 
     /* Get the axis types out of the tuple */
     axis_types_tuple = PySequence_Fast(axis_types_tuple, "axis_types is not a tuple or list");
@@ -1155,7 +1153,8 @@ static char pyefcnGetAxisCoordinatesDocstring[] =
     "Required arguments: \n"
     "    id = <int>: the ferret id of the external function \n"
     "    arg = <int>: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9) \n"
-    "    axis = <int>: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, T_AXIS) \n"
+    "    axis = <int>: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, \n"
+    "                                                              T_AXIS, E_AXIS, F_AXIS) \n"
     "\n"
     "Optional arguments: \n"
     "    (none) \n"
@@ -1172,7 +1171,9 @@ static PyObject *pyefcnGetAxisCoordinates(PyObject *self, PyObject *args, PyObje
     static char      *argNames[] = {"id", "arg", "axis", NULL};
     int               id, arg, axis;
     ExternalFunction *ef_ptr;
-    int               steplo[EF_MAX_COMPUTE_ARGS][4], stephi[EF_MAX_COMPUTE_ARGS][4], incr[EF_MAX_COMPUTE_ARGS][4];
+    int               steplo[EF_MAX_COMPUTE_ARGS][MAX_FERRET_NDIM];
+    int               stephi[EF_MAX_COMPUTE_ARGS][MAX_FERRET_NDIM];
+    int               incr[EF_MAX_COMPUTE_ARGS][MAX_FERRET_NDIM];
     int               lo, hi;
     npy_intp          shape[1];
     PyObject         *coords_ndarray;
@@ -1192,7 +1193,7 @@ static PyObject *pyefcnGetAxisCoordinates(PyObject *self, PyObject *args, PyObje
         PyErr_SetString(PyExc_ValueError, "Invalid argument index");
         return NULL;
     }
-    if ( (axis < 0) || (axis > 3) ) {
+    if ( (axis < 0) || (axis >= MAX_FERRET_NDIM) ) {
         PyErr_SetString(PyExc_ValueError, "Invalid axis index");
         return NULL;
     }
@@ -1210,7 +1211,7 @@ static PyObject *pyefcnGetAxisCoordinates(PyObject *self, PyObject *args, PyObje
     }
 
     /* Get the subscripts for all of the arguments */
-    ef_get_arg_subscripts_(&id, steplo, stephi, incr);
+    ef_get_arg_subscripts_6d_(&id, steplo, stephi, incr);
 
     /* Restore the original segv handler */
     signal(SIGSEGV, segv_handler);
@@ -1253,13 +1254,14 @@ static char pyefcnGetAxisBoxSizesDocstring[] =
     "Required arguments: \n"
     "    id = <int>: the ferret id of the external function \n"
     "    arg = <int>: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9) \n"
-    "    axis = <int>: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, T_AXIS) \n"
+    "    axis = <int>: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, \n"
+    "                                                              T_AXIS, E_AXIS, F_AXIS) \n"
     "\n"
     "Optional arguments: \n"
     "    (none) \n"
     "\n"
     "Returns: \n"
-    "    a NumPy float32 ndarray containing the \"box sizes\", \n"
+    "    a NumPy float64 ndarray containing the \"box sizes\", \n"
     "    or None if the values cannot be determined at the time this was called \n"
     "\n"
     "Raises: \n"
@@ -1270,7 +1272,9 @@ static PyObject *pyefcnGetAxisBoxSizes(PyObject *self, PyObject *args, PyObject 
     static char      *argNames[] = {"id", "arg", "axis", NULL};
     int               id, arg, axis;
     ExternalFunction *ef_ptr;
-    int               steplo[EF_MAX_COMPUTE_ARGS][4], stephi[EF_MAX_COMPUTE_ARGS][4], incr[EF_MAX_COMPUTE_ARGS][4];
+    int               steplo[EF_MAX_COMPUTE_ARGS][MAX_FERRET_NDIM];
+    int               stephi[EF_MAX_COMPUTE_ARGS][MAX_FERRET_NDIM];
+    int               incr[EF_MAX_COMPUTE_ARGS][MAX_FERRET_NDIM];
     int               lo, hi;
     npy_intp          shape[1];
     PyObject         *sizes_ndarray;
@@ -1290,7 +1294,7 @@ static PyObject *pyefcnGetAxisBoxSizes(PyObject *self, PyObject *args, PyObject 
         PyErr_SetString(PyExc_ValueError, "Invalid argument index");
         return NULL;
     }
-    if ( (axis < 0) || (axis > 3) ) {
+    if ( (axis < 0) || (axis >= MAX_FERRET_NDIM) ) {
         PyErr_SetString(PyExc_ValueError, "Invalid axis index");
         return NULL;
     }
@@ -1308,7 +1312,7 @@ static PyObject *pyefcnGetAxisBoxSizes(PyObject *self, PyObject *args, PyObject 
     }
 
     /* Get the subscripts for all of the arguments */
-    ef_get_arg_subscripts_(&id, steplo, stephi, incr);
+    ef_get_arg_subscripts_6d_(&id, steplo, stephi, incr);
 
     /* Restore the original segv handler */
     signal(SIGSEGV, segv_handler);
@@ -1320,7 +1324,7 @@ static PyObject *pyefcnGetAxisBoxSizes(PyObject *self, PyObject *args, PyObject 
         return Py_None;
     }
 
-    /* Create a NumPy float32 ndarray to get the memory for the box sizes */
+    /* Create a NumPy float64 ndarray to get the memory for the box sizes */
     if ( incr[arg][axis] == 0 ) {
         if ( steplo[arg][axis] <= stephi[arg][axis] )
             incr[arg][axis] = 1;
@@ -1328,7 +1332,7 @@ static PyObject *pyefcnGetAxisBoxSizes(PyObject *self, PyObject *args, PyObject 
             incr[arg][axis] = -1;
     }
     shape[0] = (Py_ssize_t) ((stephi[arg][axis] - steplo[arg][axis] + incr[arg][axis]) / incr[arg][axis]);
-    sizes_ndarray = PyArray_SimpleNew(1, shape, NPY_FLOAT);
+    sizes_ndarray = PyArray_SimpleNew(1, shape, NPY_DOUBLE);
     if ( sizes_ndarray == NULL ) {
         return NULL;
     }
@@ -1338,7 +1342,7 @@ static PyObject *pyefcnGetAxisBoxSizes(PyObject *self, PyObject *args, PyObject 
     hi = stephi[arg][axis];
     arg++;
     axis++;
-    ef_get_box_size_(&id, &arg, &axis, &lo, &hi, (float *)PyArray_DATA(sizes_ndarray));
+    ef_get_box_size_(&id, &arg, &axis, &lo, &hi, (double *)PyArray_DATA(sizes_ndarray));
 
     return sizes_ndarray;
 }
@@ -1351,7 +1355,8 @@ static char pyefcnGetAxisBoxLimitsDocstring[] =
     "Required arguments: \n"
     "    id = <int>: the ferret id of the external function \n"
     "    arg = <int>: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9) \n"
-    "    axis = <int>: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, T_AXIS) \n"
+    "    axis = <int>: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, \n"
+    "                                                              T_AXIS, E_AXIS, F_AXIS) \n"
     "\n"
     "Optional arguments: \n"
     "    (none) \n"
@@ -1368,7 +1373,9 @@ static PyObject *pyefcnGetAxisBoxLimits(PyObject *self, PyObject *args, PyObject
     static char      *argNames[] = {"id", "arg", "axis", NULL};
     int               id, arg, axis;
     ExternalFunction *ef_ptr;
-    int               steplo[EF_MAX_COMPUTE_ARGS][4], stephi[EF_MAX_COMPUTE_ARGS][4], incr[EF_MAX_COMPUTE_ARGS][4];
+    int               steplo[EF_MAX_COMPUTE_ARGS][MAX_FERRET_NDIM];
+    int               stephi[EF_MAX_COMPUTE_ARGS][MAX_FERRET_NDIM];
+    int               incr[EF_MAX_COMPUTE_ARGS][MAX_FERRET_NDIM];
     int               lo, hi;
     npy_intp          shape[1];
     PyObject         *low_limits_ndarray, *high_limits_ndarray;
@@ -1388,7 +1395,7 @@ static PyObject *pyefcnGetAxisBoxLimits(PyObject *self, PyObject *args, PyObject
         PyErr_SetString(PyExc_ValueError, "Invalid argument index");
         return NULL;
     }
-    if ( (axis < 0) || (axis > 3) ) {
+    if ( (axis < 0) || (axis >= MAX_FERRET_NDIM) ) {
         PyErr_SetString(PyExc_ValueError, "Invalid axis index");
         return NULL;
     }
@@ -1406,7 +1413,7 @@ static PyObject *pyefcnGetAxisBoxLimits(PyObject *self, PyObject *args, PyObject
     }
 
     /* Get the subscripts for all of the arguments */
-    ef_get_arg_subscripts_(&id, steplo, stephi, incr);
+    ef_get_arg_subscripts_6d_(&id, steplo, stephi, incr);
 
     /* Restore the original segv handler */
     signal(SIGSEGV, segv_handler);
@@ -1418,7 +1425,7 @@ static PyObject *pyefcnGetAxisBoxLimits(PyObject *self, PyObject *args, PyObject
         return Py_None;
     }
 
-    /* Create two NumPy float32 ndarrays to get the memory for the box limits */
+    /* Create two NumPy float64 ndarrays to get the memory for the box limits */
     if ( incr[arg][axis] == 0 ) {
         if ( steplo[arg][axis] <= stephi[arg][axis] )
             incr[arg][axis] = 1;
@@ -1441,7 +1448,8 @@ static PyObject *pyefcnGetAxisBoxLimits(PyObject *self, PyObject *args, PyObject
     hi = stephi[arg][axis];
     arg++;
     axis++;
-    ef_get_box_limits_(&id, &arg, &axis, &lo, &hi, (float *)PyArray_DATA(low_limits_ndarray), (float *)PyArray_DATA(high_limits_ndarray));
+    ef_get_box_limits_(&id, &arg, &axis, &lo, &hi, (float *)PyArray_DATA(low_limits_ndarray), 
+                                                   (float *)PyArray_DATA(high_limits_ndarray));
 
     return Py_BuildValue("NN", low_limits_ndarray, high_limits_ndarray); /* Steals the references to the two ndarrays */
 }
@@ -1453,7 +1461,8 @@ static char pyefcnGetAxisInfoDocstring[] =
     "Required arguments: \n"
     "    id = <int>: the ferret id of the external function \n"
     "    arg = <int>: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9) \n"
-    "    axis = <int>: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, T_AXIS) \n"
+    "    axis = <int>: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, \n"
+    "                                                              T_AXIS, E_AXIS, F_AXIS) \n"
     "\n"
     "Optional arguments: \n"
     "    (none) \n"
@@ -1463,7 +1472,8 @@ static char pyefcnGetAxisInfoDocstring[] =
     "        \"name\": name string for the axis coordinate \n"
     "        \"unit\": name string for the axis unit \n"
     "        \"backwards\": boolean - reversed axis? \n"
-    "        \"modulo\": boolean - periodic/wrapping axis? \n"
+    "        \"modulo\": float - length of a modulo (periodic,wrapping) axis, \n"
+    "                          or 0.0 if not a modulo axis\n"
     "        \"regular\": boolean - evenly spaced axis? \n"
     "        \"size\": number of coordinates on this axis, or -1 if the value \n"
     "                  cannot be determined at the time this was called \n"
@@ -1476,13 +1486,16 @@ static PyObject *pyefcnGetAxisInfo(PyObject *self, PyObject *args, PyObject *kwd
     static char      *argNames[] = {"id", "arg", "axis", NULL};
     int               id, arg, axis;
     ExternalFunction *ef_ptr;
-    int               steplo[EF_MAX_COMPUTE_ARGS][4], stephi[EF_MAX_COMPUTE_ARGS][4], incr[EF_MAX_COMPUTE_ARGS][4];
+    int               steplo[EF_MAX_COMPUTE_ARGS][MAX_FERRET_NDIM];
+    int               stephi[EF_MAX_COMPUTE_ARGS][MAX_FERRET_NDIM];
+    int               incr[EF_MAX_COMPUTE_ARGS][MAX_FERRET_NDIM];
     int               num_coords;
     char              name[80];
     char              unit[80];
     int               backwards;
     int               modulo;
     int               regular;
+    double            modulolen;
     PyObject         *backwards_bool;
     PyObject         *modulo_bool;
     PyObject         *regular_bool;
@@ -1502,7 +1515,7 @@ static PyObject *pyefcnGetAxisInfo(PyObject *self, PyObject *args, PyObject *kwd
         PyErr_SetString(PyExc_ValueError, "Invalid argument index");
         return NULL;
     }
-    if ( (axis < 0) || (axis > 3) ) {
+    if ( (axis < 0) || (axis >= MAX_FERRET_NDIM) ) {
         PyErr_SetString(PyExc_ValueError, "Invalid axis index");
         return NULL;
     }
@@ -1520,7 +1533,7 @@ static PyObject *pyefcnGetAxisInfo(PyObject *self, PyObject *args, PyObject *kwd
     }
 
     /* Get the subscripts for all of the arguments */
-    ef_get_arg_subscripts_(&id, steplo, stephi, incr);
+    ef_get_arg_subscripts_6d_(&id, steplo, stephi, incr);
 
     /* Restore the original segv handler */
     signal(SIGSEGV, segv_handler);
@@ -1544,24 +1557,24 @@ static PyObject *pyefcnGetAxisInfo(PyObject *self, PyObject *args, PyObject *kwd
     arg++;
     axis++;
     ef_get_single_axis_info_(&id, &arg, &axis, name, unit, &backwards, &modulo, &regular, 80, 80);
+    if ( modulo != 0 )
+        ef_get_axis_modulo_len_(&id, &arg, &axis, &modulolen)
+    else
+        modulolen = 0.0;
 
     /* Assign the Python bool objects */
     if ( backwards != 0 )
         backwards_bool = Py_True;
     else
         backwards_bool = Py_False;
-    if ( modulo != 0 )
-        modulo_bool = Py_True;
-    else
-        modulo_bool = Py_False;
     if ( regular != 0 )
         regular_bool = Py_True;
     else
         regular_bool = Py_False;
 
     /* Using O for the booleans to increment the references to these objects */
-    return Py_BuildValue("{sssssOsOsOsi}", "name", name, "unit", unit,
-                                           "backwards", backwards_bool, "modulo", modulo_bool,
+    return Py_BuildValue("{sssssOsdsOsi}", "name", name, "unit", unit,
+                                           "backwards", backwards_bool, "modulo", modulolen,
                                            "regular", regular_bool, "size", num_coords);
 }
 
@@ -1594,7 +1607,7 @@ static PyObject *pyefcnGetArgOneVal(PyObject *self, PyObject *args, PyObject *kw
     PyObject         *initdict;
     PyObject         *typetuple;
     PyObject         *typeobj;
-    float             float_val;
+    double            float_val;
     PyObject         *valobj;
     char              str_val[2048];
     int               k;
@@ -1649,7 +1662,7 @@ static PyObject *pyefcnGetArgOneVal(PyObject *self, PyObject *args, PyObject *kw
         case FLOAT_ONEVAL:
             k = arg + 1;
             ef_get_one_val_(&id, &k, &float_val);
-            valobj = PyFloat_FromDouble((double)float_val);
+            valobj = PyFloat_FromDouble(float_val);
             break;
         case STRING_ONEVAL:
         case STRING_ARG:
@@ -1720,6 +1733,8 @@ PyMODINIT_FUNC initlibpyferret(void)
     PyModule_AddIntConstant(mod, "Y_AXIS", 1);
     PyModule_AddIntConstant(mod, "Z_AXIS", 2);
     PyModule_AddIntConstant(mod, "T_AXIS", 3);
+    PyModule_AddIntConstant(mod, "E_AXIS", 4);
+    PyModule_AddIntConstant(mod, "F_AXIS", 5);
     PyModule_AddIntConstant(mod, "ARG1", 0);
     PyModule_AddIntConstant(mod, "ARG2", 1);
     PyModule_AddIntConstant(mod, "ARG3", 2);
@@ -1748,6 +1763,6 @@ PyMODINIT_FUNC initlibpyferret(void)
     /* Private parameter return value from libpyferret._run indicating the program should shut down */
     PyModule_AddIntConstant(mod, "_FERR_EXIT_PROGRAM", FERR_EXIT_PROGRAM);
     /* Private parameter giving the maximum number of axis allowed in Ferret */
-    PyModule_AddIntConstant(mod, "_MAX_FERRET_NDIM", 4);
+    PyModule_AddIntConstant(mod, "_MAX_FERRET_NDIM", MAX_FERRET_NDIM);
 }
 

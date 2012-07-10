@@ -15,7 +15,7 @@
 #
 # include site-specific definitions
 #
-include ../../site_specific.mk
+include ../ef_utility/site_specific.mk
 
 #
 # include platform-specific definitions

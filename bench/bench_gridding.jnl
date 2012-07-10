@@ -47,7 +47,7 @@ list /order=yx sgrid
 
 let sgrid = scat2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 1.,1)
 ! the following in now needed since the result grid axes are no longer extended
-! load perm sgrid
+! load sgrid
 ! otherwise the following would use a 3-element X axis and 1-element Y axis
 ! list/x=4:5/y=1 sgrid
 list /order=yx sgrid

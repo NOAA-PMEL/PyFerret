@@ -8,7 +8,9 @@
 * V500: 12/98 - based on IS_CONSTANT
 * V530:  8/00 *sh* - allow lists of strings
 * V533:  7/01 *sh* - allow single quoted strings
-
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+ 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'

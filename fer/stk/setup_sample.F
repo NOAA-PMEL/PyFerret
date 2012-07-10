@@ -44,24 +44,16 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V510: 8/99 *sh*
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
 	include	'grid_chg_fcns.parm'
-	include 'tmap_dims.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	cx_indices, ifcn, mr_indices, big_cx, status
@@ -74,7 +66,7 @@
 
 * internal variable declarations:
 	INTEGER CGRID_SIZE
-	INTEGER n, dims(4), ndim, hold_isp, cx_holder,
+	INTEGER n, dims(nferdims), ndim, hold_isp, cx_holder,
      .		min_ss, max_ss, res_grid,
      .		mr_sorted_indices, mr_index_map, axis, nvalid
 

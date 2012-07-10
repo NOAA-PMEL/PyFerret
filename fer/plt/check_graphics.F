@@ -44,7 +44,10 @@
 *
 * V200:  3/12/90 - written to permit metafile-only output
 * v530: 1/00 *kob* - added info to check if animations are in progress
-#ifdef unix
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
@@ -53,16 +56,6 @@
 	include	'pltcom_dat.decl'	! with gksopn
 	include	'PLTCOM.DAT'	! with gksopn
 	include 'xplot_setup.cmn'
-
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'TMAP_PPLV11INC:GKSCM1_INC.DECL/LIST'	! with wsid
-	INCLUDE	'PPLV11INC:GKSCM1.INC/LIST'	! with wsid
-	INCLUDE	'TMAP_PPLV11INC:PLTCOM_DAT.DECL/LIST'	! with gksopn
-	INCLUDE	'PPLV11INC:PLTCOM.DAT/LIST'	! with gksopn
-#endif
 
 * calling argument declarations
 	INTEGER	status

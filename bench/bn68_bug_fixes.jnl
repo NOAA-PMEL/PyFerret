@@ -27,3 +27,9 @@ GO err672_runoff_page
 
 GO bn_reset 
 GO err672_samplexy_modulo
+
+GO bn_reset
+GO err672_varnames
+
+GO bn_reset
+GO err672_dset_cx

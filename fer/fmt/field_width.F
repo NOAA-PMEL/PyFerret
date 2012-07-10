@@ -47,11 +47,13 @@
 * 10/2/95 - bug fix:  date string was using ndec instead of ABS(dec) for
 *			determining field width
 * V600  1/06 *acm*  prevent values of LOG10(0.0) 
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'xprog_state.cmn'
 	include 'xtext_info.cmn'
-
 
 * calling argument declarations
 	INTEGER	grid, idim, ndec, numbers
@@ -70,7 +72,7 @@
 
 * get actual numerical value to format if different from given
 	IF ( fancy ) THEN
-	   IF ( idim .EQ. t_dim ) THEN
+	   IF (idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
 	      FIELD_WIDTH = date_str_len( MAX( 1, MIN(6,ABS(ndec)) ) )	! 10/95
 	      RETURN
 	   ELSEIF ( idim .EQ. x_dim .AND. fval .GT. 180.0 ) THEN

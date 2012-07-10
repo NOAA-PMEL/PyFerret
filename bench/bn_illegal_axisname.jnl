@@ -15,5 +15,3 @@ define axis/y/units=degrees_north 'coadsy.illegal' = XSEQUENCE('NEW.LATITUDES')
 list/i=1:5 x[gx=sst]
 set view lower; shade sst
 sh grid sst
-
-can view

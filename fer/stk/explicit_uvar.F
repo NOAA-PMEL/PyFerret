@@ -44,15 +44,12 @@
 * written for VAX computer under VMS operating system
 *
 * V200:   8/8/89
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	uvar

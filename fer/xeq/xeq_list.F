@@ -146,6 +146,7 @@
 *                  to want to set the time axis to NOT be the record axis.
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
+	include 'tmap_dims.parm'
         include 'tmap_errors.parm'
 	include	'ferret.parm'
 	include	'slash.parm'
@@ -162,7 +163,7 @@
 
 * local variable declarations
 	LOGICAL		normal_file, fexist, heading, list_to_tty, do_multi,
-     .			do_epic, do_gt, do_cdf, do_unform, do_stream,
+     .			do_epic, do_cdf, do_unform, do_stream,
      .			do_comma_del, do_tab_del, do_dods, do_xml,
      .			permute, all_at_once, list_at_eof, head_enh,
      .			clobber, quiet, do_bounds
@@ -170,11 +171,9 @@
      .                  STR_UPCASE, GET_MAX_STRING_LEN,
      .			status, mr, cx, inext, ilist, wsize, vax_code,
      .			rlen, flen, reclen, i, cx1, qfile, idim,
-     .			ndim, wkblk, perm(5), mr_perm(max_intrp),
+     .			ndim, wkblk, perm(7), mr_perm(max_intrp),
      .                  npermuted, recsofar, do_stream_phase, nvars, 
-     .                  edges_flag, keepax_flag, nn, slen,
-     .                  netcdf_format, xchunk, ychunk, zchunk, tchunk,
-     .                  compression, endian_flag, shuffle
+     .                  edges_flag, keepax_flag, nn, slen
 	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
      .			buff*2048, fstatus*8, faccess*12, fformatted*12,
      .			cdf_recax*1,
@@ -185,14 +184,14 @@
 	INTEGER		slash_file, slash_append, slash_permute, slash_format,
      .			slash_seqntl, slash_rigid, slash_clobber, 
      .                  slash_quiet
-	PARAMETER     (	slash_seqntl  = 11+1,
-     .			slash_file    = 12+1,
-     .			slash_append  = 13+1,
-     .			slash_permute = 14+1,
-     .			slash_format  = 15+1,
-     .			slash_rigid   = 18+1,
-     .			slash_clobber = 27+1,
-     .                  slash_quiet   = 28+1)
+	PARAMETER     (	slash_seqntl  = 15+1,
+     .			slash_file    = 16+1,
+     .			slash_append  = 17+1,
+     .			slash_permute = 18+1,
+     .			slash_format  = 19+1,
+     .			slash_rigid   = 22+1,
+     .			slash_clobber = 35+1,
+     .                  slash_quiet   = 36+1)
 
 	LOGICAL is_secure
 
@@ -230,7 +229,6 @@
 * initialize
 	list_at_eof  = list_append .OR. qual_given( slash_append ) .GT. 0
 	do_epic	     = list_fmt_type .EQ. plist_epic
-	do_gt	     = list_fmt_type .EQ. plist_gt
 	do_cdf	     = list_fmt_type .EQ. plist_cdf
         do_unform    = list_fmt_type .EQ. plist_unformatted
         do_dods      = list_fmt_type .EQ. plist_dods
@@ -240,7 +238,7 @@
         do_stream_phase = 0		! for multi-variable stream
         do_xml       = list_fmt_type .EQ. plist_xml
 	list_to_tty  = qual_given( slash_file ) .EQ. 0
-     .            .AND. .NOT.(do_epic.OR.do_gt.OR.do_unform
+     .            .AND. .NOT.(do_epic.OR.do_unform
      .			  .OR.do_cdf.OR.do_stream .OR. do_dods)
 	normal_file  = .NOT.( list_to_tty .OR. do_epic .OR. do_cdf
      .			 .OR. do_stream .OR. do_dods) 
@@ -261,11 +259,6 @@
 	IF ( do_stream .AND. list_at_eof ) CALL ERRMSG
      .		( ferr_not_implemented, status,
      .			'cannot /APPEND with STREAM format', *4999)
-
-#ifdef AIX_XLF
-	IF ( do_gt ) CALL ERRMSG( ferr_not_implemented, status,
-     .			'GT format not available on AIX systems', *4999)
-#endif
 
 * /RIGID for netCDF ?
         i = qual_given( slash_rigid )
@@ -324,14 +317,13 @@
 c     .		 .AND. .NOT.do_tab_del
 c     .		 .AND. .NOT.do_comma_del
 
-	all_at_once  = do_multi.OR.do_epic.OR.do_gt.OR.do_cdf
+	all_at_once  = do_multi.OR.do_epic.OR.do_cdf
 
 * permutation requested ?
-        DO 10 idim = 1, 5 ! 3/92 SUN port addition
+        DO 10 idim = 1, 7 ! 3/92 SUN port addition
  10     perm(idim) = idim
 	IF ( permute ) THEN
 * ... user-specified permutation
-	   IF ( do_gt ) GOTO 5030
 	   i = qual_given( slash_permute )
 	   CALL EQUAL_PERMUTE( cmnd_buff(qual_start(i):qual_end(i)),
      .			       .TRUE., .FALSE., .FALSE., perm, status )
@@ -444,12 +436,7 @@ c     .		 .AND. .NOT.do_comma_del
 * ... append or not ?
 	   IF ( fexist ) THEN    ! 10/93 logic change
 	      IF ( list_at_eof ) THEN
-#ifdef unix
-                 IF ( do_gt ) CALL ERRMSG( ferr_invalid_command,
-     .              status,
-     .              'appending to GT format not implemented on Unix',
-     .              *1000 )
-#endif
+
 #ifdef NO_ACCESS_APPEND
 	         faccess = 'SEQUENTIAL'
 #else
@@ -493,40 +480,7 @@ c     .		 .AND. .NOT.do_comma_del
      .		  ' LISTing to file '//raw_name(1:TM_LENSTR1(raw_name))
      .								,0)
 
-	   IF ( do_gt ) THEN
-	      reclen = 8	! minimum
-	      DO 50 i = 1, num_uvars_in_cmnd
-	         cx1 = is_cx( i )
-	         reclen = MAX( reclen, 2+CX_DIM_LEN(x_dim,cx1)  )
- 50	      CONTINUE
-* modified below ifdef logic.  reclen_in_bytes was only getting set, not
-* checked as it should have been for other systems  *kob* 5/97
-c *kob* -7/96 reclen_in_bytes not appropriate for sgi
-#ifdef sun
-# ifndef sgi
-#    define reclen_in_bytes
-# endif
-#endif
-#ifdef reclen_in_bytes
-              reclen = reclen * 4    ! SUN record length in bytes
-#endif
-#ifdef double_p
-              reclen = reclen * 2
-#endif
-
-#ifdef unix
-	      OPEN( UNIT	= default_list_lun,
-     .		    FILE	= raw_name,
-     .		    RECL	= reclen,
-#ifdef NO_OPEN_RECORDTYPE
-#else
-     .		    RECORDTYPE	= 'FIXED',
-#endif
-     .		    FORM	= 'UNFORMATTED',
-     .		    ACCESS	= 'DIRECT',
-     .		    STATUS	= fstatus,
-     .		    ERR		= 5010 )
-	   ELSEIF ( normal_file ) THEN
+	   IF ( normal_file ) THEN
 	      OPEN( UNIT	= default_list_lun,
      .		    FILE	= raw_name,
      .		    FORM	= fformatted,
@@ -565,35 +519,6 @@ c *kob* -7/96 reclen_in_bytes not appropriate for sgi
 #endif
      .		    ERR		= 5010 )
 	      do_stream_phase = 1		! for multi-variables
-#else
-! VMS
-	      OPEN( UNIT	= default_list_lun,
-     .		    DEFAULTFILE	= 'FERRET.DAT',
-     .		    FILE	= raw_name,
-     .		    RECL	= reclen,
-     .		    RECORDTYPE	= 'FIXED',
-     .		    FORM	= 'UNFORMATTED',
-     .		    ACCESS	= faccess,
-     .		    STATUS	= fstatus,
-     .		    ERR		= 5010 )
-	   ELSEIF ( normal_file ) THEN
-	      OPEN( UNIT	= default_list_lun,
-     .		    DEFAULTFILE	= 'FERRET.DAT',
-     .		    FILE	= raw_name,
-     .		    FORM	= fformatted,
-     .		    ACCESS	= faccess,
-     .		    STATUS	= fstatus,
-     .		    ERR		= 5010 )
-	   ELSEIF ( do_stream ) THEN			! 12/94
-	      OPEN( UNIT	= default_list_lun,
-     .		    FILE	= raw_name,
-     .		    FORM	= 'UNFORMATTED',
-     .		    ACCESS	= 'DIRECT',
-     .		    STATUS	= 'NEW',
-     .	            RECL	= 1,
-     .		    ERR		= 5010 )
-	      do_stream_phase = 1		! for multi-variables
-#endif
 	   ENDIF
 	   list_lun = default_list_lun
 	ENDIF
@@ -605,17 +530,17 @@ c *kob* -7/96 reclen_in_bytes not appropriate for sgi
  110	   wsize = MAX ( wsize, CX_DIM_LEN(t_dim,is_cx(ilist)) )
 	   wsize = 3. * wsize
 	ELSEIF ( do_multi ) THEN
-	   wsize = num_uvars_in_cmnd*14
+	   wsize = num_uvars_in_cmnd* (2*nferdims+6)
 	ELSEIF ( all_at_once ) THEN
 	   wsize = num_uvars_in_cmnd
 	ELSE
 * ... allocate enough space for the longest axis
 	   wsize = 1
-	   DO 112 idim = 1, 4
+	   DO 112 idim = 1, nferdims
  112	   wsize = MAX( wsize, CX_DIM_LEN(idim,cx))
 	   IF (do_dods)THEN
               wsize = 1
-              DO 113 idim = 1, 4
+              DO 113 idim = 1, nferdims
  113	        IF (CX_DIM_LEN(idim,cx) .GE. 1) 
      .             wsize = wsize * CX_DIM_LEN(idim,cx)
 	   ENDIF
@@ -665,11 +590,8 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 	ENDIF
 
 * list it
-	IF ( do_gt ) THEN
-	   CALL TMAP_LIST( memory, list_lun, reclen, num_uvars_in_cmnd,
-     .			   is_mr, is_cx, memory(1, wkblk), status )
 !jli: for list in xml
-*        ELSEIF (do_xml) THEN
+	IF (do_xml) THEN
 *           CALL NON_ARRAY_SUBSC( mr_perm, 1 )
 *           nn = mr_perm(1)
 *           CALL LIST_CMND_DATA_XML( memory(1, mr_blk1(mr_perm(1))),
@@ -685,7 +607,7 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
      .                    keepax_flag, status )
 	ELSEIF( all_at_once ) THEN
 	   CALL LIST_MULTI( memory, mr_perm, is_cx, heading, perm,
-     .			    wsize, memory(1, wkblk), clobber, status )
+     .			    wsize, memory(1, wkblk), status )
 	ELSE
 	   CALL NON_ARRAY_SUBSC( mr_perm, 1 )
            nn = mr_perm(1)
@@ -730,8 +652,6 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 * error exit(s)
  5000   GOTO 1000
  5010	CALL ERRMSG( ferr_erreq,status,filename(:flen),*1000 )
- 5030	CALL ERRMSG( ferr_invalid_command, status,
-     .			'/ORDER not allowed with GT output (yet)', *1000 )
  5040	CALL ERRMSG( ferr_invalid_command, status,
      .			'/EXTEND only allowed with CDF format', *1000 )
  5050	CALL ERRMSG( ferr_invalid_command, status,

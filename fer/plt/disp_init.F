@@ -83,7 +83,9 @@
 * V600 *acm* 8/05 - Allow more digits in xrevision number
 * V600 *acm* 5/06 - flag no_plot_yet for applying mode_linecolors setting ...
 * V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'plot_setup.parm'
 	include 'xplot_setup.cmn'
@@ -206,7 +208,7 @@
 	v_logaxis = .FALSE.
         no_plot_yet = .FALSE.
 
-        DO 200 idim = 1, 4
+        DO 200 idim = 1, nferdims
  200    ul_dolab(idim) = .TRUE.
 
 * set up full context of plot (possibly multiple variables to plot)

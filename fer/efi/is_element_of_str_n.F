@@ -80,6 +80,7 @@
 
       SUBROUTINE is_element_of_str_n_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -88,7 +89,9 @@
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
+
       CHARACTER*100 fcn_desc
+
       WRITE (fcn_desc, 10)
    10 FORMAT ('Returns 1 if 1st arg contains any of the ',
      .        'values in 2nd arg, 2 if case-insensitve match, else 0')
@@ -96,21 +99,24 @@
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance(id, ABSTRACT, 
-     .     NORMAL, NORMAL, NORMAL)
-
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                ABSTRACT, NORMAL,
+     .                                NORMAL,   NORMAL,
+     .                                NORMAL,   NORMAL)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'VAR')
       CALL ef_set_arg_desc(id, arg, 'string')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
       CALL ef_set_arg_type (id, arg, STRING_ARG)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'VALUES')
       CALL ef_set_arg_desc(id, arg, 'strings to search')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
       CALL ef_set_arg_type (id, arg, STRING_ARG)
 
 *                                                                     ^
@@ -133,15 +139,8 @@
 
       SUBROUTINE is_element_of_str_n_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
-
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
       INTEGER id
 
@@ -149,16 +148,11 @@
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
-      INTEGER my_lo_l, my_hi_l
 
-*
-*     Use utility functions to get context information about the arguments.
-*     Set the abstract X axis.
-*
+      INTEGER ivalue
 
-      my_lo_l = 1
-      my_hi_l = 1
-      CALL ef_set_axis_limits(id, X_AXIS, my_lo_l, my_hi_l)
+      ivalue = 1
+      CALL ef_set_axis_limits(id, X_AXIS, ivalue, ivalue)
 
 *                                                                     ^
 *                                                                     |
@@ -174,6 +168,7 @@
 *
       SUBROUTINE is_element_of_str_n_compute(id, arg_1, arg_2, result)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -184,101 +179,115 @@
       PARAMETER (strdf = 2)
 #endif
 
-      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
+      INTEGER id
 
-*   string args need to be twice the length.
+      REAL arg_1(strdf,
+     .           mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(strdf,
+     .           mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
+     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
 
-      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
-     .     mem1lot:mem1hit)
-      REAL arg_2(strdf,mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
-     .     mem2lot:mem2hit)
- 
-      REAL result(memreslox:memreshix, memresloy:memreshiy,
-     .      memresloz:memreshiz, memreslot:memreshit)
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
+* information for each variable''s axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 ***********************************************************************
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
-      INTEGER id, arg
-      INTEGER i, j, k, l
-      INTEGER i1, j1, k1, l1
-      INTEGER i2, j2, k2, l2
+
+      INTEGER arg
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, k1, l1, m1, n1
+      INTEGER i2, j2, k2, l2, m2, n2
       INTEGER slen1, slen2
       INTEGER STR_UPCASE, status
-      CHARACTER text1*20, text2*20
-      CHARACTER text1up*20, text2up*20
+      CHARACTER text1*128, text2*128
+      CHARACTER text1up*128, text2up*128
 
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
 C  Check for strings matching arg2
 
+C  Returns a single value, so no incrementing result indices
       i = res_lo_ss(X_AXIS)
       j = res_lo_ss(Y_AXIS)
       k = res_lo_ss(Z_AXIS)
       l = res_lo_ss(T_AXIS)
+      m = res_lo_ss(E_AXIS)
+      n = res_lo_ss(F_AXIS)
 
+C Initialize to no match since case-insensitive match does not immediately return
+      result(i,j,k,l,m,n) = 0.
 
-      DO 400 i2=arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS, ARG2)
-      DO 300 j2=arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS, ARG2)
-      DO 200 k2=arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS, ARG2)
-      DO 100 l2=arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS, ARG2)
+      DO 100 n1=arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS, ARG1)
+      DO 100 m1=arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS, ARG1)
+      DO 100 l1=arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS, ARG1)
+      DO 100 k1=arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS, ARG1)
+      DO 100 j1=arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS, ARG1)
+      DO 100 i1=arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS, ARG1)
 
-         DO 410 i1=arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS, ARG1)
-         DO 310 j1=arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS, ARG1)
-         DO 210 k1=arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS, ARG1)
-         DO 110 l1=arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS, ARG1)
+         arg = 1
+         CALL ef_get_string_arg_element_6d(id, arg, arg_1, 
+     .                      i1, j1, k1, l1, m1, n1, slen1, text1)
 
-            arg = 1
-            CALL ef_get_string_arg_element(id, arg, arg_1, 
-     .                                     i1,j1,k1,l1, slen1, text1)
+         IF ( slen1 .GT. 0 ) THEN
 
+            status = STR_UPCASE(text1up,text1)
 
-            arg = 2
-            CALL ef_get_string_arg_element(id, arg, arg_2, 
-     .                                     i2,j2,k2,l2, slen2, text2)
+            DO 200 n2=arg_lo_ss(F_AXIS,ARG2), arg_hi_ss(F_AXIS, ARG2)
+            DO 200 m2=arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS, ARG2)
+            DO 200 l2=arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS, ARG2)
+            DO 200 k2=arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS, ARG2)
+            DO 200 j2=arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS, ARG2)
+            DO 200 i2=arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS, ARG2)
 
-            result(i,j,k,l) = 0.
-            IF (slen1 .EQ. slen2) THEN
-               IF (text1(:slen1) .EQ. text2(:slen2)) THEN
-                  result(i,j,k,l) = 1.
-                  GO TO 9000
+               arg = 2
+               CALL ef_get_string_arg_element_6d(id, arg, arg_2, 
+     .                            i2, j2, k2, l2, m2, n2, slen2, text2)
+
+               IF ( slen1 .EQ. slen2 ) THEN
+
+                  IF ( text1(:slen1) .EQ. text2(:slen2) ) THEN
+C Found an exact match; done
+                     result(i,j,k,l,m,n) = 1.
+                     RETURN
+                  ENDIF
+                  status = STR_UPCASE(text2up,text2)
+                  IF ( text1up(:slen1) .EQ. text2up(:slen2) ) THEN
+C Case-insensitive match found; mark it but continue searching for an exact match
+                     result(i,j,k,l,m,n) = 2.
+                  ENDIF
+
                ENDIF
-               status = STR_UPCASE(text1up,text1)
-               status = STR_UPCASE(text2up,text2)
-               IF (text1up(:slen1) .EQ. text2up(:slen2)) THEN
-                  result(i,j,k,l) = 2.
-                  GO TO 9000
-               ENDIF
-            ENDIF
-         l = l + res_incr(T_AXIS)
- 110     CONTINUE
-         k = k + res_incr(Z_AXIS)
- 210     CONTINUE
-         j = j + res_incr(Y_AXIS)
- 310     CONTINUE
-         i = i + res_incr(X_AXIS)
- 410     CONTINUE
+
+ 200        CONTINUE
+
+         ENDIF
 
  100  CONTINUE
- 200  CONTINUE
- 300  CONTINUE
- 400  CONTINUE
-      
-9000  RETURN
+
+C Either no match or case-insensitive match found; already marked appropriately
+      RETURN
 
       END
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |

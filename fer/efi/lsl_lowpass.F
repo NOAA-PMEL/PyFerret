@@ -45,6 +45,7 @@
 
       SUBROUTINE lsl_lowpass_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -53,36 +54,42 @@
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
+
       CHARACTER*100 label
 
       WRITE (label, 10) 
    10 FORMAT ( 'Returns Least Squares Lanzcos filter of ',
-     .          'equally-spaced time series' )
+     .         'equally-spaced time series' )
       CALL ef_set_desc(id,label)
 
       CALL ef_set_num_args(id, 3)
       CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
       CALL ef_set_num_work_arrays(id, 3)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_desc(id, arg, 'data to be filtered')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, YES, YES, YES, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'cutoff_period')
       CALL ef_set_arg_desc(id, arg, 
-     .   'period at which filter attains 1/2 amplitude. <=N')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+     .        'period at which filter attains 1/2 amplitude. <=N')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'filter_span')
       CALL ef_set_arg_desc(id, arg, 
      . 'number of input data points used in each filtered output point')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
 *                                                                     ^
 *                                                                     |
@@ -98,6 +105,7 @@
 *
       SUBROUTINE lsl_lowpass_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -109,35 +117,41 @@
 *                                                                      V
 
 *
-* Set the work arrays,  X/Y/Z/T dimensions
+* Set the work arrays, X/Y/Z/T/E/F dimensions
 *
-* ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+* ef_set_work_array_dims_6d(id, array #,
+*                           xlo, ylo, zlo, tlo, elo, flo,
+*                           xhi, yhi, zhi, thi, ehi, fhi)
 *
+
       INTEGER mt
-
       INTEGER iwork
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       mt = 1 + arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1)
 
 *  x -- input time series
       iwork = 1
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   mt, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                               mt, 1, 1, 1, 1, 1)
 
 *  y -- output time series
       iwork = 2
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   mt, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                               mt, 1, 1, 1, 1, 1)
 
 *  h -- work array for subroutine LSL_low_pass_filter
 
       iwork = 3
-      CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   mt, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1, 1, 1, 1, 1, 1,
+     .                               mt, 1, 1, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -153,76 +167,90 @@
 * In this subroutine we compute the result
 *
       SUBROUTINE lsl_lowpass_compute(id, arg_1, arg_2, arg_3, result, 
-     .                              x, y, h)
+     .                               x, y, h)
 
-      INCLUDE 'EF_mem_subsc.cmn'
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
-      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
-     .     mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, 
-     .     mem2loz:mem2hiz, mem2lot:mem2hit)
-      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, 
-     .     mem3loz:mem3hiz, mem3lot:mem3hit)
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
+     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
+     .           mem3lot:mem3hit, mem3loe:mem3hie, mem3lof:mem3hif)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
-     .     memresloz:memreshiz, memreslot:memreshit)
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
+
+      REAL x(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
+     .       wrk1loz:wrk1hiz, wrk1lot:wrk1hit,
+     .       wrk1loe:wrk1hie, wrk1lof:wrk1hif)
+      REAL y(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
+     .       wrk2loz:wrk2hiz, wrk2lot:wrk2hit,
+     .       wrk2loe:wrk2hie, wrk2lof:wrk2hif)
+      REAL h(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
+     .       wrk3loz:wrk3hiz, wrk3lot:wrk3hit,
+     .       wrk3loe:wrk3hie, wrk3lof:wrk3hif)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
+* information for each variable''s axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 ***********************************************************************
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
 
-      INTEGER i, j, k, l, n
-      INTEGER i1, j1, k1, l1
-      INTEGER nt
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, k1, l1, m1, n1
+      INTEGER nn, nt
       INTEGER filter_span
       REAL cutoff_period
       CHARACTER*255 err_msg
 
-*  Dimension the work arrays.
-
-      REAL x(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
-     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-      REAL y(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
-     .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
-      REAL h(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
-     .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
 
 *  Get argument and result subscripts and bad-data flags.
 
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
 *  Get cutoff parameter.
 
-      cutoff_period = arg_2(arg_lo_ss(X_AXIS,ARG2), 
-     .            arg_lo_ss(Y_AXIS,ARG2), arg_lo_ss(Z_AXIS,ARG2), 
-     .            arg_lo_ss(T_AXIS,ARG2))
+      i = arg_lo_ss(X_AXIS,ARG2)
+      j = arg_lo_ss(Y_AXIS,ARG2)
+      k = arg_lo_ss(Z_AXIS,ARG2)
+      l = arg_lo_ss(T_AXIS,ARG2)
+      m = arg_lo_ss(E_AXIS,ARG2)
+      n = arg_lo_ss(F_AXIS,ARG2)
+      cutoff_period = arg_2(i,j,k,l,m,n)
 
 *  Get time percent parameter.
 
-      filter_span = arg_3(arg_lo_ss(X_AXIS,ARG3), 
-     .            arg_lo_ss(Y_AXIS,ARG3), arg_lo_ss(Z_AXIS,ARG3), 
-     .            arg_lo_ss(T_AXIS,ARG3))
+      i = arg_lo_ss(X_AXIS,ARG3)
+      j = arg_lo_ss(Y_AXIS,ARG3)
+      k = arg_lo_ss(Z_AXIS,ARG3)
+      l = arg_lo_ss(T_AXIS,ARG3)
+      m = arg_lo_ss(E_AXIS,ARG3)
+      n = arg_lo_ss(F_AXIS,ARG3)
+      filter_span = arg_3(i,j,k,l,m,n)
 
 *  Get N = length of time series.
 
-      nt  =  1 + arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1)
+      nt = 1 + arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1)
 
       IF (filter_span .GT. nt) THEN
          WRITE (err_msg, 10)
@@ -231,51 +259,64 @@
          GOTO 999
       ENDIF
  
-      i1 = arg_lo_ss(X_AXIS,ARG1)
-      DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      n1 = arg_lo_ss(F_AXIS,ARG1)
+      DO 600 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+
+      m1 = arg_lo_ss(E_AXIS,ARG1)
+      DO 500 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+
+      k1 = arg_lo_ss(Z_AXIS,ARG1)
+      DO 300 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
          j1 = arg_lo_ss(Y_AXIS,ARG1)
-         DO 300 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+         DO 200 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-            k1 = arg_lo_ss(Z_AXIS,ARG1)
-            DO 200 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+            i1 = arg_lo_ss(X_AXIS,ARG1)
+            DO 100 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
 * Compute the filtered time series.
 
-               n = 1
-               DO 100 l1=arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
-                  x(n,1,1,1) = arg_1(i1,j1,k1,l1)
-                  n = n + 1
- 100           CONTINUE
+               nn = 1
+               DO 400 l1=arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+                  x(nn,1,1,1,1,1) = arg_1(i1,j1,k1,l1,m1,n1)
+                  nn = nn + 1
+ 400           CONTINUE
 
                CALL LSL_low_pass_filter (x, nt, cutoff_period, 
-     .            bad_flag(ARG1), filter_span, h, y)
+     .                           bad_flag(ARG1), filter_span, h, y)
 
 *  Put the filtred series in result
 
-               n = 1
-               DO 110 l= res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-                  IF (y(n,1,1,1) .NE. bad_flag(ARG1)) THEN
-                     result(i,j,k,l) = y(n,1,1,1)
+               nn = 1
+               DO 410 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+                  IF ( y(nn,1,1,1,1,1) .NE. bad_flag(ARG1) ) THEN
+                     result(i,j,k,l,m,n) = y(nn,1,1,1,1,1)
                   ELSE
-                     result(i,j,k,l) = bad_flag_result
+                     result(i,j,k,l,m,n) = bad_flag_result
                   ENDIF
-                  n = n + 1
- 110           CONTINUE
+                  nn = nn + 1
+ 410           CONTINUE
 
 
-               k1 = k1 + arg_incr(Z_AXIS,ARG1)
- 200        CONTINUE
+               i1 = i1 + arg_incr(X_AXIS,ARG1)
+ 100        CONTINUE
 
             j1 = j1 + arg_incr(Y_AXIS,ARG1)
- 300     CONTINUE
+ 200     CONTINUE
 
-         i1 = i1 + arg_incr(X_AXIS,ARG1)
- 400  CONTINUE
-      
+         k1 = k1 + arg_incr(Z_AXIS,ARG1)
+ 300  CONTINUE
+
+         m1 = m1 + arg_incr(E_AXIS,ARG1)
+ 500  CONTINUE
+
+         n1 = n1 + arg_incr(F_AXIS,ARG1)
+ 600  CONTINUE
+
       RETURN
 
  999  CALL ef_bail_out (id, err_msg)
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |

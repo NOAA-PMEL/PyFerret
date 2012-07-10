@@ -5,7 +5,6 @@ equal_delimit.F\
 find_dset_number.F\
 get_dset_parms.F\
 init_ez_dset.F\
-laser_status.F\
 make_cvar_grids.F\
 read_ez.F\
 read_binary.F\

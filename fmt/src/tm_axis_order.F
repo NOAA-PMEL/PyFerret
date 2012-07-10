@@ -1,4 +1,4 @@
-	SUBROUTINE TM_AXIS_ORDER( lines4, user_perm, order, ndim, vname )
+	SUBROUTINE TM_AXIS_ORDER( lines_n, user_perm, order, ndim, vname )
 
 *
 *
@@ -35,8 +35,8 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* based on 1 to 4 axes pointed to by lines4 try to determine how to place
-* this object in 4 dimensional space
+* based on 1 to lines_n axes pointed to by lines_n try to determine how to place
+* this object in lines_n dimensional space
 * e.g. if the axes are X,Y and T then slot 3 should probably be NORMAL
 * suppose further that axis 2 has no units or clues to its orientation
 * then our problem is to map  3 dimensions "XNT" to an ordering of 1240
@@ -50,43 +50,37 @@
 *			   tmap_dset.parm contains an ifdef
 * V500 *sh*  6/99 - added user_perm (permutation) input argument allowing the
 *		user to coach this routine on the ordering of the axes
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
-#ifdef unix
         include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
         include 'xtm_grid.cmn_text'
         include 'xio.cmn_text'
         include 'xrisc_buff.cmn'
-#else
-        INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-        INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-        INCLUDE 'TMAP_FORMAT:XIO.CMN'
-        INCLUDE 'TMAP_FORMAT:XRISC_BUFF.CMN'
-#endif
 
         INTEGER tt  ! nice short name
         EQUIVALENCE (tt,lunit_errors)
 
 * calling argument declarations:
-      INTEGER lines4(4), user_perm(4), order(4), ndim
+      INTEGER lines_n(nferdims), user_perm(nferdims), order(nferdims), ndim
       CHARACTER*(*) vname
 
 * internal variable declarations:
 !      LOGICAL TM_FIRM_AXIS_ORIENT, present
+      LOGICAL var_perm
       INTEGER TM_AXIS_DIRECTION, idim, lasdim, vlen, mdim, nuser,
-     .	      ax1, firm_dim, orient, i, ii, perm(4)
+     .	      ax1, firm_dim, orient, i, ii, perm(nferdims), 
+     .	      new1, reorder(nferdims), imin, imax
 
 * initialize
-      DO 10 idim = 1, 4
+      DO 10 idim = 1, nferdims
  10   order(idim) = unspecified_int4
-      mdim =  MIN(4, ndim)
+      mdim =  MIN(nferdims, ndim)
 
 * number of user-specified axes?
 	nuser = 0
-	DO 20 idim = 1, 4
+	DO 20 idim = 1, nferdims
 	   IF (user_perm(idim) .NE.unspecified_int4) THEN
 	      nuser = nuser + 1
 	   ELSE
@@ -99,7 +93,7 @@
 * arguably, one should permute the negatives so that they refer to
 * the axis in the file, rather than the axis in memory. But it was too
 * big a hassle (*sh*)
- 30	DO 36 idim = 1, 4
+ 30	DO 36 idim = 1, nferdims
  36	perm(idim) = user_perm(idim)
 
 
@@ -122,7 +116,7 @@
 * ... now map the remaining axes
 * ... first map self-oriented axes if they match an unused orientation
 	      DO 62 idim = nuser+1, mdim
-	         orient = TM_AXIS_DIRECTION(lines4(idim))
+	         orient = TM_AXIS_DIRECTION(lines_n(idim))
 	         IF (orient .NE. 0) THEN
 	            DO 61 i = 1, mdim
  61		    IF (ABS(order(i)).EQ.orient) GOTO 62
@@ -133,7 +127,7 @@
 * ... then map any remaining axes to any unused orientations
 	      DO 66 idim = nuser+1, mdim
 * ... find unused orientation
-	         DO 64 orient = 1, 4
+	         DO 64 orient = 1, nferdims
 	            DO 63 i = 1, idim
  63		    IF (ABS(order(i)) .EQ. orient) GOTO 64 ! in use
 		    GOTO 65   ! found a free one
@@ -159,13 +153,13 @@
 !*     Step 1: find the first axis of the grid whose orientation is
 !*     known with high certainty. Try to map this to a user-given axis
 !	      DO 76 firm_dim = 1, mdim
-!	         IF (TM_FIRM_AXIS_ORIENT(lines4(firm_dim), orient)) THEN
+!	         IF (TM_FIRM_AXIS_ORIENT(lines_n(firm_dim), orient)) THEN
 !*     ... check that this orientation is in the users list
 !	            DO 72 idim = 1, nuser 
 !	               IF (orient .EQ. ABS(perm(idim))) THEN
 !*     ... check that this orientation is possible to work with
-!*         e.g.  /ORDER=YXT with lines4(1) of 2D grid matching "T" is bad
-!*	                or with lines4(2) of 2D grid matching "Y" is bad
+!*         e.g.  /ORDER=YXT with lines_n(1) of 2D grid matching "T" is bad
+!*	                or with lines_n(2) of 2D grid matching "Y" is bad
 !	                  IF ( (nuser-idim).GE.(mdim-firm_dim)
 !     .			 .AND.  idim .GE. firm_dim ) GOTO 80
 !	               ENDIF
@@ -189,15 +183,59 @@
 ****** automatic determination of axis order ******
 
 * ... pass 1:  e.g. map to 1 0 4 -111
+      imax = 0
+      imin = nferdims
       DO 100 idim = ax1, mdim
- 100  order(idim) = TM_AXIS_DIRECTION(lines4(idim))
-
+         order(idim) = TM_AXIS_DIRECTION(lines_n(idim))
+	 imax = MAX(imax, order(idim))
+	 IF (order(idim).GT.0) imin = MIN(imin, order(idim))
+ 100  CONTINUE
 * ..  pass 2: e.g. map "N" to "Y" to give 1 2 4 0
+
+* ..  Is there a dimension before the x dimension?
+*     If so create a permutation.
+
+      var_perm = imax.GT.0 .AND. imin.EQ.1
+      IF ( imax.GT.0 .AND. imin.EQ.1 .AND. order(1).EQ.0 ) THEN
+         IF (mdim .EQ. 2) THEN  ! simple case, put the dimension in slot 1.
+	    order(1) = MOD(imax,nferdims) + 1
+	    GOTO 160
+	 ENDIF
+
+         lasdim = 0  ! more than 2 dims, keep the order, put dimension afterwards.
+         DO 110 idim = 2, nferdims
+	    IF (order(idim) .EQ. unspecified_int4) THEN 
+	       order(idim) = MOD(imax,nferdims) + 1
+	       new1 = idim-1
+	       GOTO 120
+	    ENDIF
+ 110     CONTINUE
+ 120     CONTINUE
+         
+         DO 130 idim = ax1, mdim
+	    reorder(idim) = order(new1)
+	    new1 = new1 + 1
+	    IF (order(new1) .EQ. unspecified_int4 .OR. 
+     .          new1 .EQ. nferdims) new1 = 1
+	    IF (order(new1) .EQ. 0) new1 = new1 + 1
+ 130     CONTINUE
+         DO 140 idim = mdim+1, nferdims
+	    reorder(idim) = unspecified_int4
+ 140     CONTINUE
+         DO 150 idim = 1, nferdims
+	    order(idim) = reorder(idim)
+ 150     CONTINUE
+
+      ENDIF
+
+ 160  CONTINUE
+
       lasdim = 0
-      DO 200 idim = 1, 4
+      DO 200 idim = 1, nferdims
          IF ( order(idim).EQ.0 ) THEN
-*     need to use MOD to prevent more than 4 dimensions...*kob* 5/02
-            lasdim = MOD(lasdim,4) + 1
+*     need to use MOD to prevent more than nferdims dimensions...*kob* 5/02
+            lasdim = MOD(lasdim,nferdims) + 1
+            IF (var_perm) lasdim = MOD(imax,nferdims) + 1
             order(idim) = lasdim
          ELSEIF (order(idim).NE.unspecified_int4 ) THEN
             lasdim = ABS(order(idim))
@@ -210,28 +248,30 @@
 *             ==> remap to most basic
 * 6/99 - only REPEATED axes are a problem -- permutations OK
       lasdim = 0
-      DO 310 idim = 1, 4
+      irepeat = 0
+      DO 310 idim = 1, nferdims
 	 DO 300 i = 1, idim-1
             IF ( order(i) .NE. 0
      .     .AND. ABS(order(i)) .EQ. ABS(order(idim)) ) GOTO 500
  300	 CONTINUE
  310  CONTINUE
 
-* remap the lines4 array to match TMAP 4-dimensional ordering instead of
+
+* remap the lines_n array to match TMAP nferdims-dimensional ordering instead of
 * netCDF file ordering. For example, change an XYT grid from current
 * line1, line2, line4, unspecified to line1, line2, unspecified, line4
 !	i = mdim
-!	DO 410 idim = 4, 1, -1
+!	DO 410 idim = nferdims, 1, -1
 !* ... is this axis present in the grid
 !	   present = .FALSE.
-!	   DO 400 ii = 1, 4
+!	   DO 400 ii = 1, nferdims
 !	      IF (ABS(order(ii)) .EQ. idim) present = .TRUE.
 ! 400	   CONTINUE
 !	   IF (present) THEN
-!	      lines4(idim) = lines4(i)
+!	      lines_n(idim) = lines_n(i)
 !	      i = i - 1
 !	   ELSE
-!	      lines4(idim) = unspecified_int4
+!	      lines_n(idim) = unspecified_int4
 !	   ENDIF
 ! 410	CONTINUE
 
@@ -239,7 +279,7 @@
       RETURN
 
 * failure - select most basic order
- 500  DO 600 idim = 1, 4
+ 500  DO 600 idim = 1, nferdims
          IF ( idim .LE. mdim ) THEN
             order(idim) = idim
          ELSE

@@ -46,6 +46,7 @@
 *	else
 *	   if
 *  for SGI port	 - kob 4/8/92
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * calling argument declarations:
 	INTEGER ival4, author_cpu
@@ -53,16 +54,12 @@
 * internal variable declarations:
         LOGICAL swap
 
-#ifdef unix
       include 'cpu.parm'
 #  ifdef sun
       BYTE bb(4),bdum
 #  else
       INTEGER*1 bb(4),bdum
 #  endif
-#else
-      BYTE bb(4),bdum
-#endif
 
         INTEGER*4 dum
 	EQUIVALENCE (bb(1),dum)

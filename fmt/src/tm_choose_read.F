@@ -1,8 +1,8 @@
 	SUBROUTINE TM_CHOOSE_READ ( dset_num, varpos,
-     .				    a_lo_x, a_lo_y, a_lo_z, a_lo_t,
-     .				    a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .				    use_lo, use_hi, stride,
-     .				    data_grid, file_num, status )
+     .		a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f,
+     .		a_hi_x, a_hi_y, a_hi_z, a_hi_t, a_hi_e, a_hi_f,
+     .		use_lo, use_hi, stride,
+     .		data_grid, file_num, status )
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -39,7 +39,7 @@
 *
 *
 *
-* Reads a 4-D block of data (3D, 2D being degenerate cases w/ 1 dimension being
+* Reads a N-D block of data (3D, 2D being degenerate cases w/ 1 dimension being
 * 1 time series) from TMAP data sets.
 *
 * written 10/02/88 by M. Verschell for PMEL/TMAP
@@ -52,6 +52,18 @@
 *   3/93 - treat ECDF (EPIC) like CDF
 * V500 5/99 *sh* - added strides to CD_READ call
 * 4/03 *acm* - Use STR_SAME to compare strings
+*       *acm* 3/12 removing use of old GT and TS data formats
+
+* include files
+        include 'tmap_dims.parm'                ! data set dimension
+        include 'tmap_errors.parm'              ! err code parm defs
+#include "gt_lib.parm"
+        include 'xtm_grid.cmn_text'             ! grid info
+        external xgt_grid_data
+        include 'xdset_info.cmn_text'   ! data set info common
+        external xdset_info_data
+        include 'xdset_info.cd_equiv'
+
 
 * arguments:
 *	dset_num    - internal data set # (from TM_INIT_DSET)
@@ -62,72 +74,39 @@
 *	file_num    - file number (output)
 *	status      - error status upon completion (output)
 *
-	INTEGER		dset_num, varpos, file_num, status
-	INTEGER		a_lo_x, a_lo_y, a_lo_z, a_lo_t,
-     .                  a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			use_lo(4), use_hi(4), stride(4)
+	INTEGER		dset_num, varpos, file_num, status,
+     .			a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f,
+     .			a_hi_x, a_hi_y, a_hi_z, a_hi_t, a_hi_e, a_hi_f,
+     .			use_lo(nferdims), use_hi(nferdims), stride(nferdims)
         REAL            data_grid(a_lo_x:a_hi_x,
      .                            a_lo_y:a_hi_y,
      .                            a_lo_z:a_hi_z,
-     .                            a_lo_t:a_hi_t)
+     .                            a_lo_t:a_hi_t,
+     .                            a_lo_e:a_hi_e,
+     .                            a_lo_f:a_hi_f)
 *
-* include files
-	include 'tmap_dims.parm'		! data set dimension
-	include 'tmap_errors.parm'		! err code parm defs
-#include "gt_lib.parm"
-	include 'xtm_grid.cmn_text'		! grid info
-	external xgt_grid_data
-	include 'xdset_info.cmn_text'	! data set info common
-	external xdset_info_data
-        include 'xdset_info.cd_equiv'
-
 * local definitions
 	INTEGER*4	STR_SAME, lcnt, lline, ivar, tcnt, pcnt
-	INTEGER*4	tmp_lo(4), tmp_hi(4)
+	INTEGER*4	tmp_lo(nferdims), tmp_hi(nferdims)
 	REAL*8		tstep, TM_WORLD
 
         is_mc = .FALSE.
 
-* Is it a GT data set?
-  110	IF (STR_SAME(ds_type(dset_num), '  GT') .EQ. 0) THEN
-	  DO 120 pcnt = 1,3
-	    tmp_lo(pcnt) = use_lo(pcnt)
-	    tmp_hi(pcnt) = use_hi(pcnt)
-  120	  CONTINUE
-	  DO 130 tcnt = use_lo(4),use_hi(4)
-	    tstep = TM_WORLD(tcnt,ds_grid_number(varpos),4,box_middle)
-	    tmp_lo(4) = tcnt
-	    tmp_hi(4) = tcnt
-	    CALL GT_READ  ( dset_num, varpos, tstep,
-     .			    a_lo_x, a_lo_y, a_lo_z, a_lo_t,
-     .			    a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			    tmp_lo, tmp_hi,
-     .			    data_grid, file_num, status )
-	    IF (status .NE. merr_ok) GOTO 9999
-  130	  CONTINUE
 * Is it a MC data set?
-	ELSEIF (STR_SAME(ds_type(dset_num), '  MC') .EQ. 0) THEN
+  	IF (STR_SAME(ds_type(dset_num), '  MC') .EQ. 0) THEN
             is_mc = .TRUE.
 	    CALL MC_READ  ( dset_num, varpos,
-     .			    a_lo_x, a_lo_y, a_lo_z, a_lo_t,
-     .			    a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			    use_lo, use_hi, stride,
-     .			    data_grid, file_num, status )
+     .			a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f,
+     .			a_hi_x, a_hi_y, a_hi_z, a_hi_t, a_hi_e, a_hi_f,
+     .			use_lo, use_hi, stride,
+     .			data_grid, file_num, status )
 	    IF (status .NE. merr_ok) GOTO 9999
-* It's a TS data set
-	ELSEIF (STR_SAME(ds_type(dset_num), '  TS') .EQ. 0) THEN
-	  CALL TS_READ ( dset_num, varpos,
-     .			 a_lo_x, a_lo_y, a_lo_z, a_lo_t,
-     .			 a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			 use_lo, use_hi,
-     .			 data_grid, file_num, status )
-	  IF (status .NE. merr_ok) GOTO 9999
 	ELSEIF (STR_SAME(ds_type(dset_num), 'CDF') .EQ. 0
      .    .OR.  STR_SAME(ds_type(dset_num), 'ECDF') .EQ. 0) THEN
 * It's a CDF or an EPIC CDF data set
           CALL CD_READ( dset_num, varpos,
-     .			a_lo_x, a_lo_y, a_lo_z, a_lo_t,
-     .			a_hi_x, a_hi_y, a_hi_z, a_hi_t,
+     .			a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f,
+     .			a_hi_x, a_hi_y, a_hi_z, a_hi_t, a_hi_e, a_hi_f,
      .                  use_lo, use_hi, stride,
      .                  data_grid, cd_stepfile(dset_num),status)
 	  IF (status .NE. merr_ok) GOTO 9999

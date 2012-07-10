@@ -21,5 +21,5 @@ sh var/xml
 
 LET axis_names = ..dimnames
 LET nd = ..ndims
-REPEAT/RANGE=1:`nd`/NAME=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m)]`)
+REPEAT/RANGE=1:`nd`/name=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m)]`)
 

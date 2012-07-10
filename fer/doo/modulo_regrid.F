@@ -4,7 +4,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -60,7 +60,10 @@
 *                     add checks on source points when computing sum of squared deviations
 *                     for MODVAR
 * V603 5/07  *acm* - added MODNBD modulo regridding statistic
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'		! for line_dim
 	include 'ferret.parm'
@@ -72,23 +75,27 @@
 * calling argument declarations:
 	INTEGER	cx_lims, axis, trans, msrc, mdst, mngd, mnbd, mave
 
-	REAL    src( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
-     .		ngd( m3lox:m3hix,m3loy:m3hiy,m3loz:m3hiz,m3lot:m3hit ),
-     .		nbd( m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,m4lot:m4hit ),
-     .		ave( m5lox:m5hix,m5loy:m5hiy,m5loz:m5hiz,m5lot:m5hit )
+	REAL    src( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
+     .          ngd( m3lox:m3hix,m3loy:m3hiy,m3loz:m3hiz,
+     .               m3lot:m3hit,m3loe:m3hie,m3lof:m3hif ),
+     .          nbd( m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,
+     .               m4lot:m4hit,m4loe:m4hie,m4lof:m4hif ),
+     .          ave( m5lox:m5hix,m5loy:m5hiy,m5loz:m5hiz,
+     .               m5lot:m5hit,m5loe:m5hie,m5lof:m5hif )
 
 * local variable declarations:
 	INTEGER	ISUBSCR_CX, TM_MODULO_LINE_DIM,
      .		dstss, srcss, src_grid, dst_grid,
-     .		i, j, k, l, nmod, nfold, dst_start,
+     .		i, j, k, l, m, n, nmod, nfold, dst_start,
      .		srcss_lo, srcss_hi, dstss_lo, dstss_hi, status
 
 	REAL	bad_src, bad_dst, tmp
 	REAL*8	TDEST_WORLD, dstww
 
 ******************************************************************************
-
 * initialize
 	src_grid = mr_grid( msrc )
 	dst_grid = mr_grid( mdst )
@@ -105,32 +112,34 @@
         bad_dst = mr_bad_data(mdst)
 
 * initialize outputs to zero (ngd serves as flag for a valid calculation, too)
+        DO 10 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+        DO 10 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
         DO 10 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
         DO 10 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
         DO 10 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
         DO 10 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
-	   ngd(i, j, k, l) = 0.0
-	   nbd(i, j, k, l) = 0.0
+	   ngd(i,j,k,l,m,n) = 0.0
+	   nbd(i,j,k,l,m,n) = 0.0
 
 	   IF ( trans .EQ. prgrd_modulo ) THEN
-	      dst(i,j,k,l) = 0.0
+	      dst(i,j,k,l,m,n) = 0.0
 	   ELSEIF ( trans .EQ. prgrd_modsum ) THEN
-	      dst(i,j,k,l) = 0.0
+	      dst(i,j,k,l,m,n) = 0.0
 	   ELSEIF ( trans .EQ. prgrd_modvar ) THEN
-	      dst(i,j,k,l) = 0.0
-	      ave(i,j,k,l) = 0.0
+	      dst(i,j,k,l,m,n) = 0.0
+	      ave(i,j,k,l,m,n) = 0.0
 	   ELSEIF ( trans .EQ. prgrd_modngd ) THEN
-	      dst(i,j,k,l) = 0.0
+	      dst(i,j,k,l,m,n) = 0.0
 	   ELSEIF ( trans .EQ. prgrd_modnbd ) THEN
-	      dst(i,j,k,l) = 0.0
+	      dst(i,j,k,l,m,n) = 0.0
 	   ELSEIF ( trans .EQ. prgrd_modmin ) THEN
-	      dst(i,j,k,l) = arbitrary_large_val4
+	      dst(i,j,k,l,m,n) = arbitrary_large_val4
 	   ELSEIF ( trans .EQ. prgrd_modmax ) THEN
-	      dst(i,j,k,l) = arbitrary_small_val4
+	      dst(i,j,k,l,m,n) = arbitrary_small_val4
 	   ENDIF
 
  10	CONTINUE
-	
+
 * the modulo index length of the destination axis
 ! ...	nmod = CAXIS_LEN(axis,cx_dst)	if cx_dst were known ...
 	nmod = TM_MODULO_LINE_DIM( grid_line(axis,dst_grid) )
@@ -148,44 +157,49 @@
 	   DO 190 srcss = srcss_lo,srcss_hi
 
 * what destination grid point owns this source point?
-	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle )
-	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims,round_up )
+	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims,round_up)
 
 * map that index, modulo-style, to the first target destination point
-	      dst_start = MOD(dstss-1,nmod)+1 + nfold
+	      dst_start = MOD(dstss-1,nmod) + 1 + nfold
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
 	      DO 120 dstss = dst_start, dstss_hi, nmod
+                 DO 110 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO 110 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
                  DO 110 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
                  DO 110 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
                  DO 110 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 
 * ... ignore missing source data
-	         IF ( src( srcss,j,k,l ) .EQ. bad_src ) THEN
-                    nbd(dstss,j,k,l) = nbd(dstss,j,k,l) + 1.
+	         IF ( src(srcss,j,k,l,m,n) .EQ. bad_src ) THEN
+                    nbd(dstss,j,k,l,m,n) = nbd(dstss,j,k,l,m,n) + 1.
                     IF ( trans .EQ. prgrd_modnbd ) 
-     .                  dst(dstss,j,k,l) = nbd(dstss,j,k,l)
+     .                  dst(dstss,j,k,l,m,n) = nbd(dstss,j,k,l,m,n)
                     GOTO 110
                  ENDIF
 
 * ... count this point
-	         ngd(dstss,j,k,l) = ngd(dstss,j,k,l) + 1.
+	         ngd(dstss,j,k,l,m,n) = ngd(dstss,j,k,l,m,n) + 1.
 
 	         IF ( trans .EQ. prgrd_modulo ) THEN
-	            dst(dstss,j,k,l) = dst(dstss,j,k,l) + src(srcss,j,k,l)
+	            dst(dstss,j,k,l,m,n) = dst(dstss,j,k,l,m,n) +
+     .                                     src(srcss,j,k,l,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modsum ) THEN
-	            dst(dstss,j,k,l) = dst(dstss,j,k,l) + src(srcss,j,k,l)
+	            dst(dstss,j,k,l,m,n) = dst(dstss,j,k,l,m,n) +
+     .                                     src(srcss,j,k,l,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modvar ) THEN
-	            ave(dstss,j,k,l) = ave(dstss,j,k,l) + src(srcss,j,k,l)
+	            ave(dstss,j,k,l,m,n) = ave(dstss,j,k,l,m,n) +
+     .                                     src(srcss,j,k,l,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modngd ) THEN
-	            dst(dstss,j,k,l) = ngd(dstss,j,k,l)
+	            dst(dstss,j,k,l,m,n) = ngd(dstss,j,k,l,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modmin ) THEN
-	            IF ( src(srcss,j,k,l) .LT. dst(dstss,j,k,l) )
-     .			dst(dstss,j,k,l) = src(srcss,j,k,l)
+	            IF (src(srcss,j,k,l,m,n) .LT. dst(dstss,j,k,l,m,n))
+     .			dst(dstss,j,k,l,m,n) = src(srcss,j,k,l,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modmax ) THEN
-	            IF ( src(srcss,j,k,l) .GT. dst(dstss,j,k,l) )
-     .			dst(dstss,j,k,l) = src(srcss,j,k,l)
+	            IF (src(srcss,j,k,l,m,n) .GT. dst(dstss,j,k,l,m,n))
+     .			dst(dstss,j,k,l,m,n) = src(srcss,j,k,l,m,n)
 	         ENDIF
 
  110	         CONTINUE
@@ -200,44 +214,49 @@
 	   DO 290 srcss = srcss_lo,srcss_hi
 
 * what destination grid point owns this source point?
-	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle )
-	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up )
+	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up)
 
 * map that index, modulo-style, to the first target destination point
-	      dst_start = MOD(dstss-1,nmod)+1 + nfold
+	      dst_start = MOD(dstss-1,nmod) + 1 + nfold
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
 	      DO 220 dstss = dst_start, dstss_hi, nmod
+                 DO 210 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO 210 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
                  DO 210 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
                  DO 210 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
                  DO 210 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * ... ignore missing source data
-	         IF ( src( i,srcss,k,l ) .EQ. bad_src ) THEN
-                    nbd(i,dstss,k,l) = nbd(i,dstss,k,l) + 1.
+	         IF ( src(i,srcss,k,l,m,n) .EQ. bad_src ) THEN
+                    nbd(i,dstss,k,l,m,n) = nbd(i,dstss,k,l,m,n) + 1.
                     IF ( trans .EQ. prgrd_modnbd ) 
-     .                 dst(i,dstss,k,l) = nbd(i,dstss,k,l)
+     .                 dst(i,dstss,k,l,m,n) = nbd(i,dstss,k,l,m,n)
                     GOTO 210
                  ENDIF
 
 * ... count this point
-	         ngd(i,dstss,k,l) = ngd(i,dstss,k,l) + 1.
+	         ngd(i,dstss,k,l,m,n) = ngd(i,dstss,k,l,m,n) + 1.
 
 	         IF ( trans .EQ. prgrd_modulo ) THEN
-	            dst(i,dstss,k,l) = dst(i,dstss,k,l) + src(i,srcss,k,l)
+	            dst(i,dstss,k,l,m,n) = dst(i,dstss,k,l,m,n) +
+     .                                     src(i,srcss,k,l,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modsum ) THEN
-	            dst(i,dstss,k,l) = dst(i,dstss,k,l) + src(i,srcss,k,l)
+	            dst(i,dstss,k,l,m,n) = dst(i,dstss,k,l,m,n) +
+     .                                     src(i,srcss,k,l,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modvar ) THEN
-	            ave(i,dstss,k,l) = ave(i,dstss,k,l) + src(i,srcss,k,l)
+	            ave(i,dstss,k,l,m,n) = ave(i,dstss,k,l,m,n) +
+     .                                     src(i,srcss,k,l,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modngd ) THEN
-	            dst(i,dstss,k,l) = ngd(i,dstss,k,l)
+	            dst(i,dstss,k,l,m,n) = ngd(i,dstss,k,l,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modmin ) THEN
-	            IF ( src(i,srcss,k,l) .LT. dst(i,dstss,k,l) )
-     .			dst(i,dstss,k,l) = src(i,srcss,k,l)
+	            IF (src(i,srcss,k,l,m,n) .LT. dst(i,dstss,k,l,m,n))
+     .			dst(i,dstss,k,l,m,n) = src(i,srcss,k,l,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modmax ) THEN
-	            IF ( src(i,srcss,k,l) .GT. dst(i,dstss,k,l) )
-     .			dst(i,dstss,k,l) = src(i,srcss,k,l)
+	            IF (src(i,srcss,k,l,m,n) .GT. dst(i,dstss,k,l,m,n))
+     .			dst(i,dstss,k,l,m,n) = src(i,srcss,k,l,m,n)
 	         ENDIF
 
  210	         CONTINUE
@@ -252,44 +271,49 @@
 	   DO 390 srcss = srcss_lo,srcss_hi
 
 * what destination grid point owns this source point?
-	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle )
-	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up )
+	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up)
 
 * map that index, modulo-style, to the first target destination point
-	      dst_start = MOD(dstss-1,nmod)+1 + nfold
+	      dst_start = MOD(dstss-1,nmod) + 1 + nfold
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
 	      DO 320 dstss = dst_start, dstss_hi, nmod
+                 DO 310 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO 310 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
                  DO 310 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
                  DO 310 k = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
                  DO 310 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * ... ignore missing source data
-	         IF ( src( i,j,srcss,l ) .EQ. bad_src ) THEN
-                    nbd(i,j,dstss,l) = nbd(i,j,dstss,l) + 1.
+	         IF ( src(i,j,srcss,l,m,n) .EQ. bad_src ) THEN
+                    nbd(i,j,dstss,l,m,n) = nbd(i,j,dstss,l,m,n) + 1.
                     IF ( trans .EQ. prgrd_modnbd ) 
-     .                  dst(i,j,dstss,l) = nbd(i,j,dstss,l)
+     .                  dst(i,j,dstss,l,m,n) = nbd(i,j,dstss,l,m,n)
                     GOTO 310
                  ENDIF
 
 * ... count this point
-	         ngd(i,j,dstss,l) = ngd(i,j,dstss,l) + 1.
+	         ngd(i,j,dstss,l,m,n) = ngd(i,j,dstss,l,m,n) + 1.
 
 	         IF ( trans .EQ. prgrd_modulo ) THEN
-	            dst(i,j,dstss,l) = dst(i,j,dstss,l) + src(i,j,srcss,l)
+	            dst(i,j,dstss,l,m,n) = dst(i,j,dstss,l,m,n) +
+     .                                     src(i,j,srcss,l,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modsum ) THEN
-	            dst(i,j,dstss,l) = dst(i,j,dstss,l) + src(i,j,srcss,l)
+	            dst(i,j,dstss,l,m,n) = dst(i,j,dstss,l,m,n) +
+     .                                     src(i,j,srcss,l,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modvar ) THEN
-	            ave(i,j,dstss,l) = ave(i,j,dstss,l) + src(i,j,srcss,l)
+	            ave(i,j,dstss,l,m,n) = ave(i,j,dstss,l,m,n) +
+     .                                     src(i,j,srcss,l,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modngd ) THEN
-	            dst(i,j,dstss,l) = ngd(i,j,dstss,l)
+	            dst(i,j,dstss,l,m,n) = ngd(i,j,dstss,l,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modmin ) THEN
-	            IF ( src(i,j,srcss,l) .LT. dst(i,j,dstss,l) )
-     .			dst(i,j,dstss,l) = src(i,j,srcss,l)
+	            IF (src(i,j,srcss,l,m,n) .LT. dst(i,j,dstss,l,m,n))
+     .			dst(i,j,dstss,l,m,n) = src(i,j,srcss,l,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modmax ) THEN
-	            IF ( src(i,j,srcss,l) .GT. dst(i,j,dstss,l) )
-     .			dst(i,j,dstss,l) = src(i,j,srcss,l)
+	            IF (src(i,j,srcss,l,m,n) .GT. dst(i,j,dstss,l,m,n))
+     .			dst(i,j,dstss,l,m,n) = src(i,j,srcss,l,m,n)
 	         ENDIF
 
  310	         CONTINUE
@@ -301,7 +325,7 @@
         ELSEIF ( axis .EQ. T_dim ) THEN
 
 *   ==>   ALL TIME/DATE CALCULATIONS ARE DONE IN THE DEST AXIS ENCODING
-           CALL TDEST_WORLD_INIT ( src_grid, dst_grid, status ) ! src<->dst
+           CALL TDEST_WORLD_INIT ( src_grid, dst_grid, axis, status ) ! src<->dst
            IF ( status .NE. ferr_ok ) STOP 'bogus TDEST_WORLD_INIT'
 
 * loop through the each source grid point
@@ -309,50 +333,176 @@
 
 * USE DESTINATION GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS
 * what destination grid point owns this source point?
-	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle )
-	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims,round_up )
+	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims,round_up)
 
 * map that index, modulo-style, to the first target destination point
-	      dst_start = MOD(dstss-1,nmod)+1 + nfold
+	      dst_start = MOD(dstss-1,nmod) + 1 + nfold
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
 	      DO 420 dstss = dst_start, dstss_hi, nmod
+                 DO 410 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO 410 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
                  DO 410 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
                  DO 410 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
                  DO 410 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * ... ignore missing source data
-	         IF ( src( i,j,k,srcss ) .EQ. bad_src ) THEN
-                    nbd(i,j,k,dstss) = nbd(i,j,k,dstss) + 1.
+	         IF ( src(i,j,k,srcss,m,n) .EQ. bad_src ) THEN
+                    nbd(i,j,k,dstss,m,n) = nbd(i,j,k,dstss,m,n) + 1.
                     IF ( trans .EQ. prgrd_modnbd ) 
-     .                  dst(i,j,k,dstss) = nbd(i,j,k,dstss)
+     .                  dst(i,j,k,dstss,m,n) = nbd(i,j,k,dstss,m,n)
                     GOTO 410
                  ENDIF
 
 * ... count this point
-	         ngd(i,j,k,dstss) = ngd(i,j,k,dstss) + 1.
+	         ngd(i,j,k,dstss,m,n) = ngd(i,j,k,dstss,m,n) + 1.
 
 	         IF ( trans .EQ. prgrd_modulo ) THEN
-	            dst(i,j,k,dstss) = dst(i,j,k,dstss) + src(i,j,k,srcss)
+	            dst(i,j,k,dstss,m,n) = dst(i,j,k,dstss,m,n) +
+     .                                     src(i,j,k,srcss,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modsum ) THEN
-	            dst(i,j,k,dstss) = dst(i,j,k,dstss) + src(i,j,k,srcss)
+	            dst(i,j,k,dstss,m,n) = dst(i,j,k,dstss,m,n) +
+     .                                     src(i,j,k,srcss,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modvar ) THEN
-	            ave(i,j,k,dstss) = ave(i,j,k,dstss) + src(i,j,k,srcss)
+	            ave(i,j,k,dstss,m,n) = ave(i,j,k,dstss,m,n) +
+     .                                     src(i,j,k,srcss,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modngd ) THEN
-	            dst(i,j,k,dstss) = ngd(i,j,k,dstss)
+	            dst(i,j,k,dstss,m,n) = ngd(i,j,k,dstss,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modmin ) THEN
-	            IF ( src(i,j,k,srcss) .LT. dst(i,j,k,dstss) )
-     .			dst(i,j,k,dstss) = src(i,j,k,srcss)
+	            IF (src(i,j,k,srcss,m,n) .LT. dst(i,j,k,dstss,m,n))
+     .			dst(i,j,k,dstss,m,n) = src(i,j,k,srcss,m,n)
 	         ELSEIF ( trans .EQ. prgrd_modmax ) THEN
-	            IF ( src(i,j,k,srcss) .GT. dst(i,j,k,dstss) )
-     .			dst(i,j,k,dstss) = src(i,j,k,srcss)
+	            IF (src(i,j,k,srcss,m,n) .GT. dst(i,j,k,dstss,m,n))
+     .			dst(i,j,k,dstss,m,n) = src(i,j,k,srcss,m,n)
 	         ENDIF
 
  410	         CONTINUE
  420	      CONTINUE
 
  490	   CONTINUE
+
+
+* along E axis
+        ELSEIF ( axis .EQ. e_dim ) THEN
+
+* loop through the each source grid point
+	   DO 590 srcss = srcss_lo,srcss_hi
+
+* what destination grid point owns this source point?
+	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims,round_up)
+
+* map that index, modulo-style, to the first target destination point
+	      dst_start = MOD(dstss-1,nmod) + 1 + nfold
+	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
+
+* add this contribution to all of the appropriate destination points
+	      DO 520 dstss = dst_start, dstss_hi, nmod
+                 DO 510 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO 510 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+                 DO 510 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+                 DO 510 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+                 DO 510 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+
+* ... ignore missing source data
+	         IF ( src(i,j,k,l,srcss,n) .EQ. bad_src ) THEN
+                    nbd(i,j,k,l,dstss,n) = nbd(i,j,k,l,dstss,n) + 1.
+                    IF ( trans .EQ. prgrd_modnbd ) 
+     .                  dst(i,j,k,l,dstss,n) = nbd(i,j,k,l,dstss,n)
+                    GOTO 510
+                 ENDIF
+
+* ... count this point
+	         ngd(i,j,k,l,dstss,n) = ngd(i,j,k,l,dstss,n) + 1.
+
+	         IF ( trans .EQ. prgrd_modulo ) THEN
+	            dst(i,j,k,l,dstss,n) = dst(i,j,k,l,dstss,n) +
+     .                                     src(i,j,k,l,srcss,n)
+	         ELSEIF ( trans .EQ. prgrd_modsum ) THEN
+	            dst(i,j,k,l,dstss,n) = dst(i,j,k,l,dstss,n) +
+     .                                     src(i,j,k,l,srcss,n)
+	         ELSEIF ( trans .EQ. prgrd_modvar ) THEN
+	            ave(i,j,k,l,dstss,n) = ave(i,j,k,l,dstss,n) +
+     .                                     src(i,j,k,l,srcss,n)
+	         ELSEIF ( trans .EQ. prgrd_modngd ) THEN
+	            dst(i,j,k,l,dstss,n) = ngd(i,j,k,l,dstss,n)
+	         ELSEIF ( trans .EQ. prgrd_modmin ) THEN
+	            IF (src(i,j,k,l,srcss,n) .LT. dst(i,j,k,l,dstss,n))
+     .			dst(i,j,k,l,dstss,n) = src(i,j,k,l,srcss,n)
+	         ELSEIF ( trans .EQ. prgrd_modmax ) THEN
+	            IF (src(i,j,k,l,srcss,n) .GT. dst(i,j,k,l,dstss,n))
+     .			dst(i,j,k,l,dstss,n) = src(i,j,k,l,srcss,n)
+	         ENDIF
+
+ 510	         CONTINUE
+ 520	      CONTINUE
+
+ 590	   CONTINUE
+
+* along F axis
+        ELSEIF ( axis .EQ. F_dim ) THEN
+
+*   ==>   ALL TIME/DATE CALCULATIONS ARE DONE IN THE DEST AXIS ENCODING
+           CALL TDEST_WORLD_INIT ( src_grid, dst_grid, axis, status ) ! src<->dst
+           IF ( status .NE. ferr_ok ) STOP 'bogus TDEST_WORLD_INIT'
+
+* loop through the each source grid point
+	   DO 690 srcss = srcss_lo,srcss_hi
+
+* USE DESTINATION GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS
+* what destination grid point owns this source point?
+	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims,round_up)
+
+* map that index, modulo-style, to the first target destination point
+	      dst_start = MOD(dstss-1,nmod) + 1 + nfold
+	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
+
+* add this contribution to all of the appropriate destination points
+	      DO 620 dstss = dst_start, dstss_hi, nmod
+                 DO 610 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+                 DO 610 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+                 DO 610 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+                 DO 610 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+                 DO 610 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+
+* ... ignore missing source data
+	         IF ( src(i,j,k,l,m,srcss) .EQ. bad_src ) THEN
+                    nbd(i,j,k,l,m,dstss) = nbd(i,j,k,l,m,dstss) + 1.
+                    IF ( trans .EQ. prgrd_modnbd ) 
+     .                  dst(i,j,k,l,m,dstss) = nbd(i,j,k,l,m,dstss)
+                    GOTO 610
+                 ENDIF
+
+* ... count this point
+	         ngd(i,j,k,l,m,dstss) = ngd(i,j,k,l,m,dstss) + 1.
+
+	         IF ( trans .EQ. prgrd_modulo ) THEN
+	            dst(i,j,k,l,m,dstss) = dst(i,j,k,l,m,dstss) +
+     .                                     src(i,j,k,l,m,srcss)
+	         ELSEIF ( trans .EQ. prgrd_modsum ) THEN
+	            dst(i,j,k,l,m,dstss) = dst(i,j,k,l,m,dstss) +
+     .                                     src(i,j,k,l,m,srcss)
+	         ELSEIF ( trans .EQ. prgrd_modvar ) THEN
+	            ave(i,j,k,l,m,dstss) = ave(i,j,k,l,m,dstss) +
+     .                                     src(i,j,k,l,m,srcss)
+	         ELSEIF ( trans .EQ. prgrd_modngd ) THEN
+	            dst(i,j,k,l,m,dstss) = ngd(i,j,k,l,m,dstss)
+	         ELSEIF ( trans .EQ. prgrd_modmin ) THEN
+	            IF (src(i,j,k,l,m,srcss) .LT. dst(i,j,k,l,m,dstss))
+     .			dst(i,j,k,l,m,dstss) = src(i,j,k,l,m,srcss)
+	         ELSEIF ( trans .EQ. prgrd_modmax ) THEN
+	            IF (src(i,j,k,l,m,srcss) .GT. dst(i,j,k,l,m,dstss))
+     .			dst(i,j,k,l,m,dstss) = src(i,j,k,l,m,srcss)
+	         ENDIF
+
+ 610	         CONTINUE
+ 620	      CONTINUE
+
+ 690	   CONTINUE
+
 	ENDIF
 
 	IF ( trans .EQ. prgrd_modngd ) RETURN
@@ -360,17 +510,19 @@
 
 * for all axis orientations
 * ... fill in missing values where there were zero source points
+        DO 1000 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+        DO 1000 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
         DO 1000 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
         DO 1000 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
         DO 1000 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
         DO 1000 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
-	   IF ( ngd(i, j, k, l) .EQ. 0.0 ) THEN
-	      dst(i, j, k, l) = bad_dst
+	   IF ( ngd(i,j,k,l,m,n) .EQ. 0.0 ) THEN
+	      dst(i,j,k,l,m,n) = bad_dst
 	   ELSEIF ( trans .EQ. prgrd_modulo ) THEN
-	      dst(i, j, k, l) = dst(i, j, k, l) / ngd(i, j, k, l)
+	      dst(i,j,k,l,m,n) = dst(i,j,k,l,m,n) / ngd(i,j,k,l,m,n)
 	   ELSEIF ( trans .EQ. prgrd_modvar ) THEN
-	      ave(i, j, k, l) = ave(i, j, k, l) / ngd(i, j, k, l)
+	      ave(i,j,k,l,m,n) = ave(i,j,k,l,m,n) / ngd(i,j,k,l,m,n)
 	   ENDIF
 
  1000	CONTINUE
@@ -390,25 +542,28 @@
 	   DO 1190 srcss = srcss_lo,srcss_hi
 
 * what destination grid point owns this source point?
-	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle )
-	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up )
+	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up)
 
 * map that index, modulo-style, to the first target destination point
-	      dst_start = MOD(dstss-1,nmod)+1 + nfold
+	      dst_start = MOD(dstss-1,nmod) + 1 + nfold
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
 	      DO 1120 dstss = dst_start, dstss_hi, nmod
+                 DO 1110 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO 1110 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
                  DO 1110 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
                  DO 1110 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
                  DO 1110 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 
 * sum of squared deviations
-	         IF ( ngd(dstss,j,k,l) .GT. 1.0 ) THEN
+	         IF ( ngd(dstss,j,k,l,m,n) .GT. 1.0 ) THEN
 * ... must be at least 2 source points to get a variance
-		    IF (src(srcss,j,k,l) .NE. bad_src) THEN
-	               tmp = src(srcss,j,k,l)- ave(dstss, j, k, l)
-	               dst(dstss,j,k,l) = dst(dstss,j,k,l) + tmp*tmp
+		    IF (src(srcss,j,k,l,m,n) .NE. bad_src) THEN
+	               tmp = src(srcss,j,k,l,m,n)-ave(dstss,j,k,l,m,n)
+	               dst(dstss,j,k,l,m,n) = dst(dstss,j,k,l,m,n) +
+     .                                        tmp * tmp
                     ENDIF
 	         ENDIF
 
@@ -425,25 +580,28 @@
 	   DO 1290 srcss = srcss_lo,srcss_hi
 
 * what destination grid point owns this source point?
-	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle )
-	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims,round_up )
+	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims,round_up)
 
 * map that index, modulo-style, to the first target destination point
-	      dst_start = MOD(dstss-1,nmod)+1 + nfold
+	      dst_start = MOD(dstss-1,nmod) + 1 + nfold
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
 	      DO 1220 dstss = dst_start, dstss_hi, nmod
+                 DO 1210 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO 1210 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
                  DO 1210 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
                  DO 1210 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
                  DO 1210 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * sum of squared deviations
-	         IF ( ngd(i,dstss,k,l) .GT. 1.0 ) THEN
+	         IF ( ngd(i,dstss,k,l,m,n) .GT. 1.0 ) THEN
 * ... must be at least 2 source points to get a variance
-		    IF (src(i,srcss,k,l) .NE. bad_src) THEN
-		        tmp = src(i,srcss,k,l)- ave(i, dstss, k, l)
-		        dst(i,dstss,k,l) = dst(i,dstss,k,l) + tmp*tmp
+		    IF (src(i,srcss,k,l,m,n) .NE. bad_src) THEN
+		        tmp = src(i,srcss,k,l,m,n)-ave(i,dstss,k,l,m,n)
+		        dst(i,dstss,k,l,m,n) = dst(i,dstss,k,l,m,n) +
+     .                                         tmp * tmp
 		    ENDIF
 	         ENDIF
 
@@ -460,25 +618,28 @@
 	   DO 1390 srcss = srcss_lo,srcss_hi
 
 * what destination grid point owns this source point?
-	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle )
-	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up )
+	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up)
 
 * map that index, modulo-style, to the first target destination point
-	      dst_start = MOD(dstss-1,nmod)+1 + nfold
+	      dst_start = MOD(dstss-1,nmod) + 1 + nfold
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
 	      DO 1320 dstss = dst_start, dstss_hi, nmod
+                 DO 1310 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO 1310 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
                  DO 1310 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
                  DO 1310 k = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
                  DO 1310 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * sum of squared deviations
-	         IF ( ngd(i,j,dstss,l) .GT. 1.0 ) THEN
+	         IF ( ngd(i,j,dstss,l,m,n) .GT. 1.0 ) THEN
 * ... must be at least 2 source points to get a variance
-		    IF (src(i,j,srcss,l) .NE. bad_src) THEN
-		       tmp = src(i,j,srcss,l)- ave(i, j, dstss, l)
-		       dst(i,j,dstss,l) = dst(i,j,dstss,l) + tmp*tmp
+		    IF (src(i,j,srcss,l,m,n) .NE. bad_src) THEN
+		       tmp = src(i,j,srcss,l,m,n)-ave(i,j,dstss,l,m,n)
+		       dst(i,j,dstss,l,m,n) = dst(i,j,dstss,l,m,n) +
+     .                                        tmp * tmp
 		    ENDIF
 	         ENDIF
 
@@ -489,32 +650,35 @@
 
 
 * along T axis
-        ELSEIF ( axis .EQ. T_dim ) THEN
+        ELSEIF (  axis .EQ. T_dim ) THEN
 
 * loop through the each source grid point
 	   DO 1490 srcss = srcss_lo,srcss_hi
 
 * USE DESTINATION GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS
 * what destination grid point owns this source point?
-	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle )
-	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up )
+	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up)
 
 * map that index, modulo-style, to the first target destination point
-	      dst_start = MOD(dstss-1,nmod)+1 + nfold
+	      dst_start = MOD(dstss-1,nmod) + 1 + nfold
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
 	      DO 1420 dstss = dst_start, dstss_hi, nmod
+                 DO 1410 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO 1410 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
                  DO 1410 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
                  DO 1410 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
                  DO 1410 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * sum of squared deviations
-	         IF ( ngd(i,j,k,dstss) .GT. 1.0 ) THEN
+	         IF ( ngd(i,j,k,dstss,m,n) .GT. 1.0 ) THEN
 * ... must be at least 2 source points to get a variance
-		    IF (src(i,j,k,srcss) .NE. bad_src) THEN
-		       tmp = src(i,j,k,srcss)- ave(i, j, k, dstss)
-		       dst(i,j,k,dstss) = dst(i,j,k,dstss) + tmp*tmp
+		    IF (src(i,j,k,srcss,m,n) .NE. bad_src) THEN
+		       tmp = src(i,j,k,srcss,m,n)-ave(i,j,k,dstss,m,n)
+		       dst(i,j,k,dstss,m,n) = dst(i,j,k,dstss,m,n) +
+     .                                        tmp * tmp
 		    ENDIF
 	         ENDIF
 
@@ -522,18 +686,98 @@
  1420	      CONTINUE
 
  1490	   CONTINUE
+ 
+
+* along E axis
+        ELSEIF ( axis .EQ. e_dim ) THEN
+
+* loop through the each source grid point
+	   DO 1590 srcss = srcss_lo,srcss_hi
+
+* what destination grid point owns this source point?
+	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up)
+
+* map that index, modulo-style, to the first target destination point
+	      dst_start = MOD(dstss-1,nmod) + 1 + nfold
+	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
+
+* add this contribution to all of the appropriate destination points
+	      DO 1520 dstss = dst_start, dstss_hi, nmod
+                 DO 1510 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO 1510 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+                 DO 1510 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+                 DO 1510 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+                 DO 1510 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+
+* sum of squared deviations
+	         IF ( ngd(i,j,k,l,dstss,n) .GT. 1.0 ) THEN
+* ... must be at least 2 source points to get a variance
+		    IF (src(i,j,k,l,srcss,n) .NE. bad_src) THEN
+	               tmp = src(i,j,k,l,srcss,n)-ave(i,j,k,l,dstss,n)
+	               dst(i,j,k,l,dstss,n) = dst(i,j,k,l,dstss,n) +
+     .                                        tmp * tmp
+                    ENDIF
+	         ENDIF
+
+ 1510	         CONTINUE
+ 1520	      CONTINUE
+
+ 1590	   CONTINUE
+
+* along F axis
+        ELSEIF (  axis .EQ. f_dim ) THEN
+
+* loop through the each source grid point
+	   DO 1690 srcss = srcss_lo,srcss_hi
+
+* USE DESTINATION GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS
+* what destination grid point owns this source point?
+	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up)
+
+* map that index, modulo-style, to the first target destination point
+	      dst_start = MOD(dstss-1,nmod) + 1 + nfold
+	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
+
+* add this contribution to all of the appropriate destination points
+	      DO 1620 dstss = dst_start, dstss_hi, nmod
+                 DO 1610 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+                 DO 1610 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+                 DO 1610 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+                 DO 1610 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+                 DO 1610 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+
+* sum of squared deviations
+	         IF ( ngd(i,j,k,l,m,dstss) .GT. 1.0 ) THEN
+* ... must be at least 2 source points to get a variance
+		    IF (src(i,j,k,l,m,srcss) .NE. bad_src) THEN
+		       tmp = src(i,j,k,l,m,srcss)-ave(i,j,k,l,m,dstss)
+		       dst(i,j,k,l,m,dstss) = dst(i,j,k,l,m,dstss) +
+     .                                        tmp * tmp
+		    ENDIF
+	         ENDIF
+
+ 1610	         CONTINUE
+ 1620	      CONTINUE
+
+ 1690	   CONTINUE
+
 	ENDIF
 
 * for all axis orientations: divide sum of squared deviations by N-1
+        DO 2000 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+        DO 2000 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
         DO 2000 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
         DO 2000 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
         DO 2000 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
         DO 2000 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
-	   IF ( ngd(i, j, k, l) .LE. 1.0 ) THEN
-	      dst(i,j,k,l) = bad_dst
+	   IF ( ngd(i,j,k,l,m,n) .LE. 1.0 ) THEN
+	      dst(i,j,k,l,m,n) = bad_dst
 	   ELSE
-	      dst(i,j,k,l) = dst(i,j,k,l) / (ngd(i,j,k,l) - 1.0)
+	      dst(i,j,k,l,m,n) = dst(i,j,k,l,m,n) /
+     .                           (ngd(i,j,k,l,m,n) - 1.0)
 	   ENDIF
 
  2000	CONTINUE

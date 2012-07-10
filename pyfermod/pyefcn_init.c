@@ -39,7 +39,7 @@
 #include "pyferret.h"
 #include "EF_Util.h"
 
-static const char *AXIS_NAMES[MAX_FERRET_NDIM] = { "X", "Y", "Z", "T" };
+static const char *AXIS_NAMES[MAX_FERRET_NDIM] = { "X", "Y", "Z", "T", "E", "F" };
 
 /*
  * See pyferret.h for information on this function
@@ -194,7 +194,7 @@ void pyefcn_init(int id, char modname[], char errmsg[])
     }
 
     /*
-     * "axes": 4-tuple (X,Y,Z,T) of result grid axis defining values:
+     * "axes": 6-tuple (X,Y,Z,T,E,F) of result grid axis defining values:
      *             AXIS_ABSTRACT: indexed, ferret_result_limits called to define the axis,
      *             AXIS_CUSTOM: ferret_custom_axis called to define the axis,
      *             AXIS_DOES_NOT_EXIST: does not exist in (normal to) the results grid,
@@ -262,8 +262,10 @@ void pyefcn_init(int id, char modname[], char errmsg[])
         }
     }
     Py_XDECREF(seqobj);
-    ef_set_axis_inheritance_(&id, &(axisvals[0]), &(axisvals[1]), &(axisvals[2]), &(axisvals[3]));
-    ef_set_axis_reduction_(&id, &(axisredu[0]), &(axisredu[1]), &(axisredu[2]), &(axisredu[3]));
+    ef_set_axis_inheritance_6d_(&id, &(axisvals[0]), &(axisvals[1]), &(axisvals[2]), 
+                                     &(axisvals[3]), &(axisvals[4]), &(axisvals[5]));
+    ef_set_axis_reduction_6d_(&id, &(axisredu[0]), &(axisredu[1]), &(axisredu[2]), 
+                                   &(axisredu[3]), &(axisredu[4]), &(axisredu[5]));
 
     /*
      * "argnames": N-tuple of names for the input arguments [optional, default: (A, B, ...)]
@@ -421,9 +423,9 @@ void pyefcn_init(int id, char modname[], char errmsg[])
     Py_XDECREF(seqobj);
 
     /*
-     * "influences": N-tuple of 4-tuples of booleans indicating whether the corresponding input
-     *               argument's (X,Y,Z,T) axis influences the result grid's (X,Y,Z,T) axis.
-     *               [optional, None for a 4-tuple and default: True for each value]
+     * "influences": N-tuple of 6-tuples of booleans indicating whether the corresponding input
+     *               argument's (X,Y,Z,T,E,F) axis influences the result grid's (X,Y,Z,T,E,F) axis.
+     *               [optional, None for a 6-tuple and default: True for each value]
      */
     valobj = PyDict_GetItemString(initdict, "influences"); /* borrowed reference */
     if ( valobj != NULL ) {
@@ -500,13 +502,14 @@ void pyefcn_init(int id, char modname[], char errmsg[])
             }
         }
         q = j+1;
-        ef_set_axis_influence_(&id, &q, &(axisvals[0]), &(axisvals[1]), &(axisvals[2]), &(axisvals[3]));
+        ef_set_axis_influence_6d_(&id, &q, &(axisvals[0]), &(axisvals[1]), &(axisvals[2]), 
+                                           &(axisvals[3]), &(axisvals[4]), &(axisvals[5]));
     }
     Py_XDECREF(seqobj);
 
     /*
-     * "extends": N-tuple of 4-tuples of pairs of integers.  The n-th tuple, if not None,
-     *            gives the (X,Y,Z,T) extension pairs (which may be None) for the n-th
+     * "extends": N-tuple of 6-tuples of pairs of integers.  The n-th tuple, if not None,
+     *            gives the (X,Y,Z,T,E,F) extension pairs (which may be None) for the n-th
      *            argument.  [optional, default: no extensions assigned]
      *
      * Note: if not given, not assigned (instead of defaults assigned as above).

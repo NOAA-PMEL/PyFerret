@@ -34,50 +34,67 @@
 */
 
 /* 
-    The "ferdat" variable is a pointer to an array of string pointers
-      where the string pointers are spaced 8 bytes apart
-    The buffer pbuff is a long character array. Comy the strings to pbuff
-      spacing the strings outstrlen apart.
+    The variable mr_blk1 is an array of pointers to strings
+    (to be allocated and assigned) where the string pointers
+    are spaced 8 bytes apart.
+
+    The variable pblock is a bufsiz-long character array of
+    string data where each string uses filestrlen characters
+    and is null terminated if shorter than filestrlen
+    characters.
+
+    This function copies the strings from pblock into newly 
+    allocated strings and assigns them to mr_blk1.
 */
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 
 void tm_unblockify_ferret_strings(char **mr_blk1, char *pblock,
-				int bufsiz, int filestrlen)
+				  int bufsiz, int filestrlen)
 {
-  int i, ii, n;
+  int i, n;
   char *pinchar, *pinstr, *poutchar, **poutstr;
 
-  /* copy all the strings */
-  poutstr = mr_blk1;  /* points to each output string in turn */
-  pinstr  = pblock;   /* points to each input  string in turn */
+  poutstr = mr_blk1;  /* points to each output string pointer in turn */
+  pinstr  = pblock;   /* points to each input string in turn */
+
   for (i=0; i<bufsiz/filestrlen; i++) {
 
     /* measure the length of the string */
     n = 0;
-    while (n<filestrlen && pinstr[n]) n++;
+    while ( (n < filestrlen) && (pinstr[n] != '\0') )
+       n++;
 
+    /* save the pointer to the first character in this string */
     pinchar = pinstr;
-    pinstr += filestrlen;       /* ready for next input string */
 
-    /* allocate memory for string */
+    /* increment pinstr to point to the next input string */
+    pinstr += filestrlen;
+
+    /* allocate memory for this string */
     poutchar = (char *) malloc(sizeof(char) * (n+1));
+
+    /*
+     * Free any existing string in the output array and then
+     * assign this newly allocated memory to the output array.
+     */
+    if ( *poutstr != NULL )
+       free(*poutstr);
     *poutstr = poutchar;
-    poutstr += (8/sizeof(char**));   /* pointer to next output string */
-     
-    /* copy 1 string */
+
+    /* increment poutstr to point to the next output string pointer position */
+    poutstr += (8/sizeof(char**));
+
+    /* copy this input string into the newly allocated memory */
     n = 0;
-    while (n<filestrlen && *pinchar) {
+    while ( (n < filestrlen) && (*pinchar != '\0') ) {
       *poutchar = *pinchar;
       poutchar++;
       pinchar++;
       n++;
     }
-    *poutchar = NULL;
+    *poutchar = '\0';
 
   }
-
-   return;
 }

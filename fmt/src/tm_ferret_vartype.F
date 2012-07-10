@@ -41,9 +41,9 @@
 *            made it think that the variable is, indeed, of type short.
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 	include 'tmap_dtypes.parm'
-        include 'netcdf.decl'
 #include "netcdf.inc"
 
 * input arguments

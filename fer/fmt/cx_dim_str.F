@@ -51,7 +51,9 @@
 *        8/18/92 - eliminated string(1:) notation for MAC compatibility
 * V533:  6/01 - allow for the possibility of negative subscripts
 * V600:  1/06 *acm*  prevent values of LOG10(0.0) 
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xtext_info.cmn'

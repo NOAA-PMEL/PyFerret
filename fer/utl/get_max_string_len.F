@@ -35,7 +35,9 @@
 * Return the length of the longest string in this context
 
 * V530: 8/00 *sh*
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include	'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'
 
@@ -52,6 +54,8 @@
      .				     mr_lo_s2(mr), mr_hi_s2(mr),
      .				     mr_lo_s3(mr), mr_hi_s3(mr),
      .				     mr_lo_s4(mr), mr_hi_s4(mr),
+     .				     mr_lo_s5(mr), mr_hi_s5(mr),
+     .				     mr_lo_s6(mr), mr_hi_s6(mr),
      .				     smax )
 
 	GET_MAX_STRING_LEN = smax

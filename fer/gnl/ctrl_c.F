@@ -65,6 +65,7 @@
 *		statement because variable modified later in routine
 *	      - put a ! in front of "D" for disabled lines
 * 1/03 *kob* - g77 port - g77 needs to call SIGNAL with only two arguments
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * argument: CTRLC_AST
 *	name of routine to be called if operator hits ^C
@@ -78,8 +79,7 @@
 	EXTERNAL	CTRLC_AST
 	LOGICAL		first_call
         DATA	 	first_call/.TRUE./    !kob 12/96
-#ifdef unix
-* ************************ UNIX ******************************
+
 #if defined AIX_XLF 
       INTEGER SIGNAL_, old_handler, sigint
 #else
@@ -121,49 +121,6 @@
 #  endif	
 #endif
 !D 888 CONTINUE
-#else
-* ************************ VMS ******************************
-	INTEGER*4	SYS$QIOW,SYS$ASSIGN,status,code,vms_mode
-	INTEGER*2	input_chan
-
-	STRUCTURE /iostat_block/
-	    INTEGER*2	iostat
-	    BYTE	transmit,
-     .			receive,
-     .			crfill,
-     .			lffill,
-     .			parity,
-     .			zero
-	END STRUCTURE
-	RECORD /iostat_block/ iosb
-
-	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
-
-	INCLUDE '($IODEF)'			! VMS I/O symbols
-	INCLUDE '($JPIDEF)'			! for VMS mode code
-
-* determine VMS mode (BATCH, etc.) to see if interrupts are appropriate
-	CALL GET_VMS_MODE( vms_mode )
-	IF ( vms_mode .NE. JPI$K_INTERACTIVE ) RETURN
-
-	IF (first_call) THEN
-* assign channel and set up QIOW structures
-	   status = SYS$ASSIGN ('SYS$COMMAND',input_chan,,)
-	   IF (.NOT.status) CALL LIB$SIGNAL (%VAL (status) )
-	   code = IO$_SETMODE .OR. IO$M_CTRLCAST
-	ENDIF
-
-* queue an AST to handle ^C interrupt
-	   status = SYS$QIOW (,
-     .			      %VAL (input_chan),
-     .			      %VAL (code),
-     .			      IOSB,
-     .			      ,,
-     .			      CTRLC_AST,		! name of AST routine
-     .			      ,,,,)
-	   IF (.NOT.status) CALL LIB$SIGNAL (%VAL (status) )
-	   IF (.NOT.  iosb.iostat) CALL LIB$SIGNAL (%VAL (iosb.iostat) )
-#endif
 
 * ************************ ALL SYSTEMS ************************
 * system is ready - set flag to indicate no interrupt yet
@@ -179,11 +136,7 @@
 
 * this routine is called when ^C is entered if AST is queued
 
-#ifdef unix
 	include 'xinterrupt.cmn'	! COMMON/XINTERRUPT/
-#else
-	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'	! COMMON/XINTERRUPT/
-#endif
 
 	interrupted = .TRUE.
 

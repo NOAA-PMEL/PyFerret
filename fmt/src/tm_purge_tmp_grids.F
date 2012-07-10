@@ -43,13 +43,13 @@
 * Steve Hankin  NOAA/PMEL/TMAP
 
 * V510 *sh* 3/00
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * Include files
 	include 'tmap_dims.parm'
 #include "gt_lib.parm"
-	include 'xtm_grid.cmn_text'
-	include 'xio.cmn_text'
-
+        include 'xtm_grid.cmn_text'
+        include 'xio.cmn_text'
 
 * Argument definitions
 	INTEGER status
@@ -64,7 +64,7 @@
 	   CALL TM_NEXT_TMP_GRID(grid, *300)
 
 * deallocate axes used by grid (NOTE: only dynamic axes are used by netCDF!)
-	   DO 200 idim = 1, 4
+	   DO 200 idim = 1, nferdims
 	      IF ( grid_line(idim, grid) .GT. max_lines ) THEN
 	         CALL TM_DEALLO_DYN_LINE( grid_line(idim, grid) )
 	      ELSEIF (  grid_line(idim, grid) .NE. mpsnorm ) THEN
@@ -82,7 +82,7 @@
  	   CALL TM_NEXT_TMP_LINE(line, *1000)
 
 * deallocate axes used by grid (NOTE: only dynamic axes are used by netCDF!)
-	   DO 400 idim = 1, 4
+	   DO 400 idim = 1, nferdims
 	      IF ( line .GT. max_lines ) THEN
 	         IF (line_use_cnt(line) .GT. 1) CALL TM_NOTE(
      .			'tm intern err: line over alloc.',lunit_errors)

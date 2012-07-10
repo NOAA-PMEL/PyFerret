@@ -69,20 +69,21 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
 *     lo      - lowest index from variable grid on record axis
 *     hi      - highest index from variable grid on record axis
-*     tmrecax - axis number (1-4) of record axis in grid (for errmsg, only)
+*     tmrecax - axis number (1-nferdims) of record axis in grid (for errmsg, only)
 *     grid    - defining grid for variable
 *     start   - file record number for next write (returned)
 *     axid    - CDF var no of coordinate variable for record axis
 
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
 #include "gt_lib.parm"
+	include 'tmap_dims.parm'
         include 'cd_lib.parm'
         include 'tmap_errors.parm'
         include 'xio.cmn_text'
@@ -102,12 +103,12 @@
       INTEGER TM_LENSTR1, 
      .        alen, look, hi_look, lo_look,
      .        ndims, nvars, cdfstat,
-     .        nvdim, vdims(6), nvatts,
+     .        nvdim, vdims(8), nvatts,
      .        ngatts, npts, recdim, blen, bndid,
      .        startpts(2), numpts(2),  d1s, d1e, d2s, d2e
       CHARACTER axnam*128, buff*16, bname*30
-      CHARACTER*1     dimnam(4)
-      DATA dimnam/'I','J','K','L'/
+      CHARACTER*1     dimnam(nferdims)
+      DATA dimnam/'I','J','K','L','M','N'/
       CHARACTER*13 TM_STRING
 
       REAL*8 TM_WORLD, new_coord, hi_val, lo_val, val,

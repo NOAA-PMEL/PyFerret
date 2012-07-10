@@ -74,7 +74,6 @@ go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Stereographic North
 
-can view
 can region
 exit
 

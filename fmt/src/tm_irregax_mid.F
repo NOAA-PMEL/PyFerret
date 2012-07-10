@@ -42,6 +42,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * revision 0.0 - 2/93 - code lifted from cd_get_1_axis
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *	ipt1	- subscript of first coordinate for axis in line_memory
@@ -54,18 +55,12 @@
         INTEGER i
 
 * include files
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "gt_lib.parm"
 	include 'xio.cmn_text'
 	external xio_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 
 * compute midpoints lying between coordinates
         DO 100 i = ipt1, ipt1+npts-2

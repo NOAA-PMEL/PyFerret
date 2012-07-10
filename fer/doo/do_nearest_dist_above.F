@@ -7,7 +7,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -44,26 +44,22 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V450: 9/97
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'interp_stack.parm'
+	include	'xprog_state.cmn'
 
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
 	REAL	com(*), res(*), arg, dummy(*)
 
-#ifdef unix
-	include	'ferret.parm'
-	include	'errmsg.parm'
-	include	'interp_stack.parm'
-	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
-
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
-     .				( 'doing',isact_class_trans, res_cx, idim )
+     .				( 'doing', isact_class_trans, res_cx, idim )
 
 * request the actual transform
 * ... CALL DO_NEAREST( idim, .FALSE.<==by_index , .TRUE.<==find_above
@@ -75,4 +71,4 @@
 	DO_NEAREST_DIST_ABOVE = ferr_ok
 
 	RETURN
-	END	
+	END

@@ -63,7 +63,9 @@
 *                  When color = -11  then thin line, color=-21 then thick=2, when 
 *                  color=-31 then thick=3
 * V590 *acm* 5/06  settable number of line colors, no longer hard-wired to 6 colors.
-                 
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+
+	include 'tmap_dims.parm'
 	include	'slash.parm'
 	include	'plot_setup.parm'
 	include	'xplot_setup.cmn'

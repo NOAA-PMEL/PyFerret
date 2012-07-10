@@ -68,9 +68,6 @@
 * V68  *acm* 1/12- added use_strict argument for ticket 1910: micro-adjusting on 
 *                  repeated coordinates in netCDF/OPeDNAP datasets
 
-* argument declarations:
-	LOGICAL tregular, use_strict
-	INTEGER	dset, perm(4), status
 
 * include files
 #include "gt_lib.parm"
@@ -84,6 +81,10 @@
 	external xdset_info_data
         include 'xdset_info.cd_equiv'
 
+* argument declarations:
+	LOGICAL tregular, use_strict
+	INTEGER	dset, perm(*), status
+
 ! Declare netcdf function names. 
 ! The ones without trailing underscore are declared in netcdf.inc
 #include "netcdf_declareUnderscore.inc"
@@ -91,7 +92,7 @@
 * local variable declarations:
       INTEGER STR_SAME, cdfid, remote_dods_id,istat
 * 4/99 *kob* increase temp_axnams
-      CHARACTER*64 temp_axnams(4,max_temp_grid)
+      CHARACTER*128 temp_axnams(nferdims,max_temp_grid)
       LOGICAL reversed(max_lines:line_ceiling), shifted
 
 * open the netCDF data file and save global information

@@ -81,7 +81,8 @@
 	variable = cx_variable( cx )
 
 * select units by category of variable
-	IF     ( category .EQ. cat_file_var ) THEN
+	IF     ( category .EQ. cat_file_var .OR. 
+     .		 category .EQ. cat_aggregate_var) THEN
 
 	   VAR_UNITS = ds_var_units( variable )
 

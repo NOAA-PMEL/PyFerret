@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -51,16 +51,18 @@
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01  remove VMS include statements
 * v604 *acm* 7/07 increase length of ds_name
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-	include	'tmap_dims.parm'
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 #	include	"tmap_dset.parm"
 	include	'tmap_errors.parm'
+	include	'ferret.parm'
+	include	'errmsg.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include	'ferret.parm'
-	include	'errmsg.parm'
 	include	'xfr_grid.cmn'
 	include 'xvariables.cmn'
 	include 'xcalc_vars.cmn'
@@ -79,7 +81,7 @@
 * initialize
 	done_dset = 0
 
-* make sure grid isn't used by any file variables
+* make sure grid is not used by any file variables
 	DO 10 ivar = 1, maxvars
 	   dset = ds_var_setnum( ivar )
 	   IF ( dset .EQ. set_not_open ) GOTO 10
@@ -94,7 +96,7 @@
 	   ENDIF
  10	CONTINUE
 
-* make sure it isn't implicitly used by a cvar that depends on file variables
+* make sure it is not implicitly used by a cvar that depends on file variables
 * NOTE: cvars are irrelevant as of V500 ...
 !	DO 25 dset = 1, maxdsets
 !	   IF ( ds_name(dset) .EQ. char_init1024) GOTO 25

@@ -47,19 +47,14 @@
 * 7/96 *sh*: check that "deg" is not hiding "degrees C" or "deg K" ...
 * V5.1 *sh* 12/99 - changed logic for matching un_name to insist on exact
 *	match with possible final "s". It was matching "Kelvin" to "in"
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * Include files
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xunits.cmn_text'
 	external xunits_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-#endif
 
 * calling argument declarations:
 	CHARACTER*(*)	string

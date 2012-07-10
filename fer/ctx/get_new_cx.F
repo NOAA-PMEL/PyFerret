@@ -46,10 +46,11 @@
 * revision 0.1 - 7/27/88 - added dflt_cx to get_context_mods call
 * V200:  5/19/89 - transforms not permitted on command line
 * V530:  8/00 *sh* - added data type sensitivity
-* V600 *acm* 3/06  fixing bugs 439&1390, use apply_cx to say whether
+* V600 *acm* 3/06  fixing bugs nferdims39&1390, use apply_cx to say whether
 *                  to apply command context to grave-accent expressions.
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'xcontext.cmn'
@@ -86,7 +87,7 @@
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * transformation given on command line ?
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
  100	IF (cx_trans(idim,cmnd_mods_cx) .NE. trans_no_transform)
      .        GOTO 5010
 
@@ -99,6 +100,7 @@
         ENDIF
 
 * set default data type
+
 	cx_type(new_cx) = unspecified_int4
 
 	RETURN

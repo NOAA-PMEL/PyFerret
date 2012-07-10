@@ -37,9 +37,12 @@
 /*
  * Init gui dependent code
  * JS 3.99
+ *
+ *
+ *  *acm*  1/12 Ferret 6.8 ifdef double_p for double-precision ferret. Define dp_gui_get_memory
+ *  *kms*  3/12 Removed XWindow GUI code which is no longer used.
  */
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /*  *acm*  1/12     - Ferret 6.8 ifdef double_p for double-precision ferret. Define dp_gui_get_memory */
 
 #include <Python.h> /* make sure Python.h is first */
@@ -51,7 +54,7 @@ int gui_init(void) {
     return 0;
 }
 
-float **gui_get_memory(void) {
+DFTYPE **gui_get_memory(void) {
     return &mem;
 }
 

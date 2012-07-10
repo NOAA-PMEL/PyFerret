@@ -46,14 +46,12 @@
 
 * Unix/RISC port - 10/91
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 	
 * calling argument declarations:
 	INTEGER n

@@ -44,12 +44,9 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V510 *sh* 8/99
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER n, istart, lo_cx_lim, hi_cx_lim

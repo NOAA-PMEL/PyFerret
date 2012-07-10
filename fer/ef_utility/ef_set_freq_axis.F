@@ -47,6 +47,8 @@ c
       SUBROUTINE EF_SET_FREQ_AXIS(id, axis, npts, box,
      .     unit, modulo)
 
+      IMPLICIT NONE
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'
       INCLUDE 'EF_Util.parm'
@@ -64,18 +66,17 @@ c     internal parameter declarations:
 #else 
       INTEGER*1 fhol(slen)      ! c-type Hollerith string buffer
 #endif
-      
+
       INTEGER TM_LENSTR1, llen
-      
+
 c     true string length
 c     convert to a null-terminated Hollerith
 c     call the external functions library to set the value
-      
+
       llen = TM_LENSTR1( unit )
       CALL TM_FTOC_STRNG( unit(:llen), fhol, slen )
-      CALL ef_set_freq_axis_sub( id, axis, npts, box, 
+      CALL EF_SET_FREQ_AXIS_SUB( id, axis, npts, box, 
      .     fhol, modulo )
-      
-      
+
       RETURN 
       END

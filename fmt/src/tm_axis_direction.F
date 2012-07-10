@@ -47,6 +47,7 @@
 *                  based on value of AXIS attribute. Or DEFINE_AXIS may 
 *                  use these for non-lat/lon axes. Assign the axis the 
 *                  corresponding direction.
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
         include 'tmap_dims.parm'
 #include "tmap_dset.parm"
@@ -60,15 +61,15 @@
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
       INTEGER STR_UPCASE, idim, istat
-      CHARACTER*1 c1, ww_dim_name(4) 
-      DATA  ww_dim_name/'X','Y','Z','T'/
+      CHARACTER*1 c1, ww_dim_name(nferdims) 
+      DATA  ww_dim_name/'X','Y','Z','T','E','F'/
       CHARACTER*2 orient
 
 * initialize
       orient = line_direction(iaxis)
 
 * check the obvious
-      DO 100 idim = 1, 4
+      DO 100 idim = 1, nferdims
          IF ( orient .EQ. axis_orients(idim) ) THEN
             TM_AXIS_DIRECTION = idim
             RETURN
@@ -93,7 +94,7 @@
 * last ditch attempt based on axis name and units
       IF ( TM_AXIS_DIRECTION .EQ. 0 ) THEN
          istat = STR_UPCASE( c1, line_name(iaxis)(1:1) )
-         DO 200 idim = 1, 4
+         DO 200 idim = 1, nferdims
  200     IF ( c1 .EQ. ww_dim_name(idim) ) TM_AXIS_DIRECTION = idim
       ENDIF
 

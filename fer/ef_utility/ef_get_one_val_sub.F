@@ -52,6 +52,8 @@ c* to be parsed
 
       SUBROUTINE EF_GET_ONE_VAL_SUB(id, memory, iarg, value)
 
+      IMPLICIT NONE
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'
       INCLUDE 'xvariables.cmn'
@@ -67,7 +69,7 @@ c* to be parsed
 * internal variable declarations
       INTEGER mr, cx, uv, status
       INTEGER mr_list(EF_MAX_ARGS)
-      CHARACTER buff*32
+      CHARACTER*64 buff
 
 c* The following variables were cached by Ferret and must be retrieved
 c* to be accessible to the external function.
@@ -76,10 +78,12 @@ c* to be accessible to the external function.
       IF (mr_list(1) .GT. 0 ) THEN
         mr = mr_list(iarg)
         CALL EF_GET_ONE_VAL_SUB_SUB(memory(1, mr_blk1(mr)), 
-     .     lo_ss(iarg,1), hi_ss(iarg, 1),
-     .     lo_ss(iarg,2), hi_ss(iarg, 2),
-     .     lo_ss(iarg,3), hi_ss(iarg, 3),
-     .     lo_ss(iarg,4), hi_ss(iarg, 4),
+     .                              lo_ss(iarg,1), hi_ss(iarg, 1),
+     .                              lo_ss(iarg,2), hi_ss(iarg, 2),
+     .                              lo_ss(iarg,3), hi_ss(iarg, 3),
+     .                              lo_ss(iarg,4), hi_ss(iarg, 4),
+     .                              lo_ss(iarg,5), hi_ss(iarg, 5),
+     .                              lo_ss(iarg,6), hi_ss(iarg, 6),
      .     value, status)   ! note that status is not valid as returned 10/00
 !        IF  (status .NE. ferr_ok) GOTO 5000
 
@@ -104,6 +108,7 @@ c* return a ststus word to the calling C program
  5000 WRITE (buff, 3000) iarg
  3000 FORMAT ('Argument',I3,' must be a constant')
       CALL EF_BAIL_OUT(id, buff)
+      STOP 'EF_BAIL_OUT returned in EF_GET_ONE_VAL_SUB'
 
       RETURN 
       END

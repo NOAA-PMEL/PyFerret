@@ -1,0 +1,76 @@
+! bn_aggregate_e.jnl
+! using the DEFINE ATTRIBUTE/E command
+
+! Datasets share sst, but only ens1 has airt. 
+
+set mode diag
+
+use ens1, ens2, ens3, ens4
+define data/agg/title fourfiles = ens1, ens3, ens2, ens4
+
+! The grid of SST is known.
+show data fourfiles
+
+list/i=3 sst[T=@ave]
+cancel data fourfiles
+
+! Create airt in the other datasets by LET/D definitions.
+let/d=ens2 airt = sst + 1
+let/d=ens3 airt = sst + 1
+let/d=ens4 airt = sst + 1
+
+define data/agg/title fourfiles = ens1, ens3, ens2, ens4
+show data fourfiles
+
+list/i=3 airt[T=@ave]
+
+cancel mode diag
+cancel data/all
+cancel var/all
+
+! Subsets of coads_climatology and monthly_navy_winds.
+! Define an ensemble after making LET/D definitions so that
+! variables have the same name and grid.
+use coads_uw
+use navy_uw
+
+! Define the ensemble dataset
+
+! intentional errors: 
+set mode ignore
+
+! Use dataset thats not open.
+define data/agg windy = 1,2,3
+
+! No variables on comparable grids.
+define data/agg windy = 1,2
+
+set mode/last ignore
+
+! Rename the varibles in dataset 2, then define UWND and VWND as
+! variables on the grid of dset 1.
+set var/name=uin uwnd
+set var/name=vin vwnd
+
+! Define uwnd and vwnd in dataset 2 to have the grid of 
+! those variables in dataset 1
+
+let/d=2/units="`uin,return=units`"/title="`uin,return=title`" \
+ uwnd = uin[gxy=uwnd[d=1],gt=uwnd[d=1]@mod]
+let/d=2/units="`vin,return=units`"/title="`vin,return=title`" \
+ vwnd = vin[gxy=vwnd[d=1],gt=vwnd[d=1]@mod]
+
+show data
+
+! Define the ensemble dataset
+define data/agg windy = 1,2
+
+! The grid of the aggregate variables with LET/D not yet known.
+show data windy
+
+! Use variable from the new dataset
+list/l=3/y=30 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd[d=3,e=@ave]
+
+! Now the grid of uwnd is known.
+show data windy
+

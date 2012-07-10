@@ -2,7 +2,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -36,9 +36,11 @@
 * Will be regarded as duplicate if X lies within espx distance and ditto y
 * The array "dup" will contain the number of duplicate "mates" for any
 *   given coordinate (i.e. 0 if no matches)
-* The array "seq' will contain the sequence number 0,1,2,... of the mates 
+* The array "seq" will contain the sequence number 0,1,2,... of the mates 
 
 * V530 *sh* 2/01
+
+        IMPLICIT NONE
 
 * Argument declarations
 	INTEGER	n

@@ -1,3 +1,5 @@
+
+
 	SUBROUTINE CS_SEMICOLON( cmnd_line, * )
 
 *
@@ -42,6 +44,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V3.00 - 2/1/93
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * calling argument declarations:
 	CHARACTER*(*)	cmnd_line
@@ -50,19 +53,12 @@
 * internal variable declarations:
 	INTEGER	TM_LENSTR1, status
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'errmsg.parm'
 	include 'ferret.parm'
 	include 'command.parm'
 	include 'xprog_state.cmn'
 	include 'xcontrol.cmn'
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:COMMAND.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCONTROL.CMN'
-#endif
 
 * allocate next spot on the control stack
 * ... but leave the stack in place in case of errors in this routine

@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -44,6 +44,7 @@
 * revision 0.0 - 4/29/87
 * V531 5/01 *sh* - added has_continuation_cmnd
 
+        IMPLICIT NONE
 	include 'xcontrol.cmn'
 
 * control stack pointer starts at stack bottom

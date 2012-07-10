@@ -54,6 +54,7 @@
 * Linux Port 1/97 *kob* - Added a preprocessor include for xgfdl_masks.cmn
 *			  because it needed a preprocessor.
 #ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'gfdl.parm'		! parameter definitions
 	include	'xvariables.cmn'

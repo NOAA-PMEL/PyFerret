@@ -46,6 +46,7 @@
 * V491:  12/97 - bug fix: need to initialize 
 * V510: *sh* 4/00 - initialize the grid that is allocated to 
 * V600  4/06 *acm* - misspelled variable found by Solaris compiler
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 * calling argument declarations:
 	INTEGER	status
@@ -53,7 +54,7 @@
 * internal variable declarations:
 	INTEGER cx, big_cx, idim
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -61,19 +62,11 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
-* carve a space on the context stack for a "bland" (1:1,1:1,1:1,1:1) context
+* carve a space on the context stack for a "bland" (1:1,1:1,1:1,1:1,1:1,1:1) context
 	cx = cx_stack_ptr
 	cx_grid(cx) = unspecified_int4		! for pseudo_vars in pass 1
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	  cx_lo_ss(cx,idim) = 1
 	  cx_hi_ss(cx,idim) = 1
 	  cx_by_ss(idim,cx) = .TRUE.

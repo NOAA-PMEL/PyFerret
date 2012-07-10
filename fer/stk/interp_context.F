@@ -48,7 +48,9 @@
 * V530: 3/01 *sh* bug fix - deallocate implicit grid 
 * V531: 4/01 *sh* insert missing value flag into the context
 * V532: 6/01 *sh* bug fix:  CALL DEALLO_UNFORMED_GRID instead of DEALLO_GRID
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -101,7 +103,7 @@
 
 * flesh out the requested dimensions (noting if there are any)
 	explicit_qualifiers = .FALSE.
-	DO 5 idim = 1, 4
+	DO 5 idim = 1, nferdims
 	   IF ( uvar_given( idim, uvar ) .GE. uvlim_needed
      .	   .OR. cx_given( idim,cx ) ) THEN
 	      explicit_qualifiers = explicit_qualifiers
@@ -114,7 +116,7 @@
  5	CONTINUE
 	
 * copy uvar_* limits into the output context
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   IF ( cx_lo_ss(cx, idim) .EQ. unspecified_int4 ) THEN
 	      IF ( uvar_given(idim,uvar) .GE. uvlim_gvn_gnl
      .       .AND. uvar_given(idim,uvar) .LE. uvlim_gvn_xact ) THEN

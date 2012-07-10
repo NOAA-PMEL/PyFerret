@@ -58,5 +58,3 @@ set view v7; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar
 set view v8; plot/trans/nolab/ax=0,0,1,0/hlim=0:1/set tvar
   ppl tics,0.1,0.25
   ppl plot 
-
-cancel view

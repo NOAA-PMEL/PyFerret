@@ -41,25 +41,31 @@
 
 * V500 *sh* 3/99 
 
+#include "gt_lib.parm"
+
+
 * calling argument declarations
 	INTEGER		a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .                  a_hi_x, a_hi_y, a_hi_z, a_hi_t
-	REAL		region(a_lo_x:a_hi_x,
-     .                      a_lo_y:a_hi_y,
-     .                      a_lo_z:a_hi_z,
-     .                      a_lo_t:a_hi_t), value
+	REAL		value, 
+     .                  region(a_lo_x:a_hi_x,a_lo_y:a_hi_y,
+     .                      a_lo_z:a_hi_z,a_lo_t:a_hi_t,
+     .			    unspecified_int4:unspecified_int4,
+     .			    unspecified_int4:unspecified_int4)
 
 
 * internal variable declarations
-	INTEGER		i, j, k, l
+	INTEGER		i, j, k, l, m, n
+	INTEGER		a_lo_e, a_lo_f, a_hi_e, a_hi_f
 
-
+	DO 100 n = a_lo_f, a_hi_f
+	DO 100 m = a_lo_e, a_hi_e
 	DO 100 l = a_lo_t, a_hi_t
 	DO 100 k = a_lo_z, a_hi_z
 	DO 100 j = a_lo_y, a_hi_y
 	DO 100 i = a_lo_x, a_hi_x
 
-	    region(i,j,k,l) = value
+	    region(i,j,k,l,unspecified_int4,unspecified_int4) = value
 
  100	CONTINUE
 

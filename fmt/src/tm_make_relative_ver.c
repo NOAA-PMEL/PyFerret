@@ -78,10 +78,7 @@ int *real_ver;
 
 {
   int i,j,int_ver, high_ver, ver_len;
-  char *temp_ver;
-
-/* allocate temporary memory */
-  temp_ver = malloc(20);
+  char temp_ver[20];
 
 /* get just the numeric part of the string, ignoring all else */
   for (i=0,j=0; i<=strlen(curr_ver); i++)
@@ -116,20 +113,5 @@ int *real_ver;
   ver_len = strlen(real_ver);
   *(real_ver+ver_len) = '\0';  */
 
-/* return proper version extension */
-/*  return real_ver; 
- */
-
 }
-
-
-
-
-
-
-
-
-
-
-
 

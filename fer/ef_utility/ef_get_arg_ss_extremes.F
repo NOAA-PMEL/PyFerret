@@ -1,13 +1,7 @@
-c*
-c* ef_get_arg_ss_extremes.F
-c*
-c* Jonathan Callahan
-c* Mar 27th 1998
-c*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -40,34 +34,51 @@ c*
 c*
 c* Return the minimum and maximum subscripts for a grid.  
 c*
+* 4D subroutine version which calls the 6D subroutine version and
+* checks the E and F dimensions are unused
+*
 
       SUBROUTINE EF_GET_ARG_SS_EXTREMES(id, num_args, ss_min, ss_max)
 
-      INCLUDE 'ferret.parm'
-      INCLUDE 'xcontext.cmn'
+      IMPLICIT NONE
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'EF_Util.parm'
 
-      INTEGER id, num_args, ss_min(4,EF_MAX_ARGS), 
-     .     ss_max(4,EF_MAX_ARGS)
+* argument declarations - 4D
+      INTEGER id, num_args,
+     .        ss_min(4,EF_MAX_ARGS), 
+     .        ss_max(4,EF_MAX_ARGS)
 
-      INTEGER grid, idim, iarg
-      INTEGER cx_list(EF_MAX_ARGS)
+* local variables
+      INTEGER ndx, adx,
+     .        ss_min_6d(nferdims, EF_MAX_ARGS),
+     .        ss_max_6d(nferdims, EF_MAX_ARGS)
+      CHARACTER*128 buff
 
-c* The context list was cached by Ferret and must be retrieved
-c* to be accessible to the external function.
-      CALL EF_GET_CX_LIST(cx_list)
+* call the 6D version
+      CALL EF_GET_ARG_SS_EXTREMES_6D(id, num_args,
+     .                               ss_min_6d, ss_max_6d)
 
-      DO 200 iarg=1,num_args
-
-         grid = cx_grid( cx_list(iarg) )
-
-         DO 100 idim=1,4
-
-	   CALL GRID_SUBSCRIPT_EXTREMES(ss_min(idim,iarg), 
-     .           ss_max(idim,iarg), grid, idim)
-
+* check E and F are unused
+      DO 110 adx = 1, num_args
+         DO 100 ndx = 5, nferdims
+            IF ( ss_min_6d(ndx, adx) .NE. ss_max_6d(ndx, adx) ) THEN
+               WRITE (buff,50) ndx, adx
+ 50            FORMAT ('Dimension ', I1, ' of argument ', I2,
+     .            ' is used; use EF_GET_ARG_SS_EXTREMES_6D instead')
+               CALL EF_BAIL_OUT(id, buff)
+               STOP 'EF_BAIL_OUT returned in EF_GET_ARG_SS_EXTREMES'
+            ENDIF
  100     CONTINUE
- 200  CONTINUE
+ 110  CONTINUE
+
+* copy to the 4D arrays
+      DO 210 adx = 1, num_args
+         DO 200 ndx = 1, 4
+            ss_min(ndx, adx) = ss_min_6d(ndx, adx)
+            ss_max(ndx, adx) = ss_max_6d(ndx, adx)
+ 200     CONTINUE
+ 210  CONTINUE
 
       RETURN 
       END

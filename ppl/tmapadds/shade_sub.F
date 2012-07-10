@@ -102,6 +102,8 @@
 *                      SHADE_FILL_IT as needed to fill the longitude range.
 C V602 *acm* 2/07 check status coming out of CURV_COORD_RANGE; part of fix to bug 1485
 * V603 *acm* 5/07 Fix part 1 of bug 1302; if xmodulo is true, then set dim1_modulo true.
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 	INCLUDE		'parampl5_dat.decl'
 	INCLUDE		'PARAMPL5.DAT'

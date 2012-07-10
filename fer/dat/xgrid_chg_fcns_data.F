@@ -2,7 +2,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -53,6 +53,7 @@
 *                        SUBSTRING, STRCAT, STRFLOAT 
 *                    internal string handling functions   
 * V550: *acm*10/02 - Correct the function description for SUBSTRING
+*        2/12 *kms* Add E and F dimensions (set to nferdims in tmap_dims.parm)
 
 * the addition (or major modification) of an internal grid-changing function
 * requires changes to these routines:
@@ -62,6 +63,8 @@
 * (opt)	GCF_GET_IMPOSED_AXES	- return the "imposed" axes, if any
 * (opt)	GCF_IMPOSE_RESULT_LIMS	- fill in limits of "imposed" axes, if any
 
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'grid_chg_fcns.parm'
 	include 'xgrid_chg_fcns.cmn'
@@ -81,15 +84,15 @@
 	DATA gfcn_rtn_type     (p_xunravel) /pfcn_rtn_arg1_type /
 	DATA gfcn_num_reqd_args(p_xunravel) /p_xunravel_num_args/
 	DATA gfcn_has_vari_args(p_xunravel) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_xunravel),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_xunravel),i=1,nferdims)/
      .						pgc_axis_is_abstract,
      .						pgc_axis_is_normal,
      .						pgc_axis_is_normal,
+     .						pgc_axis_is_normal,
+     .						pgc_axis_is_normal,
      .						pgc_axis_is_normal /
-	DATA (gfcn_piecemeal_ok(i,p_xunravel),i=1,4) / .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_xunravel),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_xunravel) /p_xunravel_arg_start/
 
 * ... description of arguments
@@ -97,13 +100,13 @@
 	DATA gfcn_arg_type(p_xunravel_arg_start+0)/parg_type_float_or_string/
 	DATA gfcn_arg_units(p_xunravel_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_xunravel_arg_start+0)/' '/
-	DATA (gfcn_arg_extend_lo (i,p_xunravel_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_xunravel_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_xunravel_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_xunravel_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_xunravel_arg_start+0),i=1,4)
-     .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
+	DATA (gfcn_axis_implied_from(i, p_xunravel_arg_start+0),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 
 
 * TIMES2(arg) a.k.a. "ECHO" -- display string  --> debugging function
@@ -122,15 +125,15 @@
 	DATA gfcn_num_reqd_args(p_times2) /p_times2_num_args/
 	DATA gfcn_has_vari_args(p_times2) /.FALSE./
 
-	DATA (gfcn_axis_will_be(i,p_times2),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_times2),i=1,nferdims)/
+     .						pgc_axis_implied_by_args,
+     .						pgc_axis_implied_by_args,
      .						pgc_axis_implied_by_args,
      .						pgc_axis_implied_by_args,
      .						pgc_axis_implied_by_args,
      .						pgc_axis_implied_by_args/
-	DATA (gfcn_piecemeal_ok(i,p_times2),i=1,4) / .TRUE.,
-     .						     .TRUE.,
-     .						     .TRUE.,
-     .						     .TRUE. /
+	DATA (gfcn_piecemeal_ok(i,p_times2),i=1,nferdims)
+     .      / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 	DATA gfcn_arg_ptr(p_times2) /p_times2_arg_start/
 
 * ... description of arguments
@@ -138,29 +141,29 @@
 	DATA gfcn_arg_type(p_times2_arg_start+0)/parg_type_string/
 	DATA gfcn_arg_units(p_times2_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_times2_arg_start+0)/'input text'/
-	DATA (gfcn_arg_extend_lo (i,p_times2_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_times2_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_times2_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_times2_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_times2_arg_start+0),i=1,4)
-     .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
+	DATA (gfcn_axis_implied_from(i, p_times2_arg_start+0),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 * ... argument 2
 	DATA gfcn_arg_name(p_times2_arg_start+1)/'NUM'/
 	DATA gfcn_arg_type(p_times2_arg_start+1)/parg_type_float/
 	DATA gfcn_arg_units(p_times2_arg_start+1)/'anything'/
 	DATA gfcn_arg_descr(p_times2_arg_start+1)/'numerical variable'/
-	DATA (gfcn_arg_extend_lo (i,p_times2_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_times2_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_times2_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_times2_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 2 ?
-	DATA (gfcn_axis_implied_from(i, p_times2_arg_start+1),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_axis_implied_from(i, p_times2_arg_start+1),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 
 * RESHAPE(data,grid_and_start) - same values as input grid but reshaped
-*   into the grid of the 2nd arg ... starting at start point (1,1,1,1)
+*   into the grid of the 2nd arg ... starting at start point (1,1,1,1,1,1)
 	INTEGER		p_reshape_arg_start, p_reshape_num_args 
 	PARAMETER     ( p_reshape_arg_start = p_times2_arg_start +
      .					      p_times2_num_args,
@@ -172,15 +175,15 @@
 	DATA gfcn_rtn_type     (p_reshape) /pfcn_rtn_arg1_type /
 	DATA gfcn_num_reqd_args(p_reshape) /p_reshape_num_args/
 	DATA gfcn_has_vari_args(p_reshape) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_reshape),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_reshape),i=1,nferdims)/
+     .						pgc_axis_supplied_herein,
+     .						pgc_axis_supplied_herein,
      .						pgc_axis_supplied_herein,
      .						pgc_axis_supplied_herein,
      .						pgc_axis_supplied_herein,
      .						pgc_axis_supplied_herein /
-	DATA (gfcn_piecemeal_ok(i,p_reshape),i=1,4) / .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_reshape),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_reshape) /p_reshape_arg_start/
 
 * ... description of arguments
@@ -192,21 +195,21 @@
 	DATA gfcn_arg_type(p_reshape_arg_start+1)/parg_type_float/
 	DATA gfcn_arg_units(p_reshape_arg_start+1)/' '/
 	DATA gfcn_arg_descr(p_reshape_arg_start+1)/'destination grid'/
-	DATA (gfcn_arg_extend_lo (i,p_reshape_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_reshape_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_reshape_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_reshape_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
 *  Note: set to TRUE despite the fact that all of the
 *     resultant axes are "pgc_axis_supplied_herein". This is to cover the
 *     special case in which an axis of the result (imposed) **happens to**
 *     match the axis of the argument. In this case TRUE means that context
 *     limits do get passed upstream.
-	DATA (gfcn_axis_implied_from(i, p_reshape_arg_start+0),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_axis_implied_from(i, p_reshape_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 * ... merge the axes implied by argument 2 ?
-	DATA (gfcn_axis_implied_from(i, p_reshape_arg_start+1),i=1,4)
-     .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
+	DATA (gfcn_axis_implied_from(i, p_reshape_arg_start+1),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 
 * ZAXREPLACE(var, depthoflayer, zaxis)
 *   interpolate the sigma layer onto the Z (depth) axis provided guided by
@@ -226,15 +229,15 @@
 	DATA gfcn_rtn_type     (p_zlayer) / pfcn_rtn_float /
 	DATA gfcn_num_reqd_args(p_zlayer) /p_zlayer_num_args/
 	DATA gfcn_has_vari_args(p_zlayer) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_zlayer),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_zlayer),i=1,nferdims)/
+     .						pgc_axis_implied_by_args,
+     .						pgc_axis_implied_by_args,
      .						pgc_axis_implied_by_args,
      .						pgc_axis_implied_by_args,
      .						pgc_axis_implied_by_args,
      .						pgc_axis_implied_by_args/
-	DATA (gfcn_piecemeal_ok(i,p_zlayer),i=1,4) /  .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE.,
-     .						      .TRUE. /
+	DATA (gfcn_piecemeal_ok(i,p_zlayer),i=1,nferdims)
+     .      /  .FALSE., .FALSE., .FALSE., .TRUE., .TRUE., .TRUE./
 	DATA gfcn_arg_ptr(p_zlayer) /p_zlayer_arg_start/
 
 * ... description of arguments
@@ -253,19 +256,19 @@
 	DATA gfcn_arg_units(p_zlayer_arg_start+2)/' '/
 	DATA gfcn_arg_descr(p_zlayer_arg_start+2)/
      .		'variable with desired Z (depth) axis points'/
-	DATA (gfcn_arg_extend_lo (i,p_zlayer_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_zlayer_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_zlayer_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_zlayer_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_zlayer_arg_start+0),i=1,4)
-     .		/.TRUE., .TRUE., .FALSE.,.TRUE. /
+	DATA (gfcn_axis_implied_from(i, p_zlayer_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .FALSE., .TRUE., .TRUE., .TRUE. /
 * ... argument 2 
-	DATA (gfcn_axis_implied_from(i, p_zlayer_arg_start+1),i=1,4)
-     .		/.TRUE., .TRUE., .FALSE.,.TRUE. /
+	DATA (gfcn_axis_implied_from(i, p_zlayer_arg_start+1),i=1,nferdims)
+     .    / .TRUE., .TRUE., .FALSE., .TRUE., .TRUE., .TRUE. /
 * ... argument 3
-	DATA (gfcn_axis_implied_from(i, p_zlayer_arg_start+2),i=1,4)
-     .		/.FALSE., .FALSE., .TRUE.,.FALSE. /
+	DATA (gfcn_axis_implied_from(i, p_zlayer_arg_start+2),i=1,nferdims)
+     .    / .FALSE., .FALSE., .TRUE., .FALSE., .FALSE., .FALSE. /
 
 
 * YSEQUENCE(arg) - same values as input grid but unravelled into a Y line
@@ -279,15 +282,15 @@
 	DATA gfcn_rtn_type     (p_yunravel) /pfcn_rtn_arg1_type /
 	DATA gfcn_num_reqd_args(p_yunravel) /p_yunravel_num_args/
 	DATA gfcn_has_vari_args(p_yunravel) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_yunravel),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_yunravel),i=1,nferdims)/
      .						pgc_axis_is_normal,
      .						pgc_axis_is_abstract,
      .						pgc_axis_is_normal,
+     .						pgc_axis_is_normal,
+     .						pgc_axis_is_normal,
      .						pgc_axis_is_normal /
-	DATA (gfcn_piecemeal_ok(i,p_yunravel),i=1,4) / .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_yunravel),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_yunravel) /p_yunravel_arg_start/
 
 * ... description of arguments
@@ -295,16 +298,16 @@
 	DATA gfcn_arg_type(p_yunravel_arg_start+0)/parg_type_float_or_string/
 	DATA gfcn_arg_units(p_yunravel_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_yunravel_arg_start+0)/' '/
-	DATA (gfcn_arg_extend_lo (i,p_yunravel_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_yunravel_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_yunravel_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_yunravel_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_yunravel_arg_start+0),i=1,4)
-     .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
+	DATA (gfcn_axis_implied_from(i, p_yunravel_arg_start+0),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 
 
-* ZSEQUENCE(arg) - same values as input grid but unravelled into a Y line
+* ZSEQUENCE(arg) - same values as input grid but unravelled into a Z line
 	INTEGER		p_zunravel_arg_start, p_zunravel_num_args
 	PARAMETER     ( p_zunravel_arg_start = p_yunravel_arg_start +
      .					       p_yunravel_num_args,
@@ -315,15 +318,15 @@
 	DATA gfcn_rtn_type     (p_zunravel) /pfcn_rtn_arg1_type /
 	DATA gfcn_num_reqd_args(p_zunravel) /p_zunravel_num_args/
 	DATA gfcn_has_vari_args(p_zunravel) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_zunravel),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_zunravel),i=1,nferdims)/
      .						pgc_axis_is_normal,
      .						pgc_axis_is_normal,
      .						pgc_axis_is_abstract,
+     .						pgc_axis_is_normal,
+     .						pgc_axis_is_normal,
      .						pgc_axis_is_normal /
-	DATA (gfcn_piecemeal_ok(i,p_zunravel),i=1,4) / .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_zunravel),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_zunravel) /p_zunravel_arg_start/
 
 * ... description of arguments
@@ -331,16 +334,16 @@
 	DATA gfcn_arg_type(p_zunravel_arg_start+0)/parg_type_float_or_string/
 	DATA gfcn_arg_units(p_zunravel_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_zunravel_arg_start+0)/' '/
-	DATA (gfcn_arg_extend_lo (i,p_zunravel_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_zunravel_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_zunravel_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_zunravel_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_zunravel_arg_start+0),i=1,4)
-     .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
+	DATA (gfcn_axis_implied_from(i, p_zunravel_arg_start+0),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 
 
-* TSEQUENCE(arg) - same values as input grid but unravelled into a Y line
+* TSEQUENCE(arg) - same values as input grid but unravelled into a T line
 	INTEGER		p_tunravel_arg_start, p_tunravel_num_args
 	PARAMETER     ( p_tunravel_arg_start = p_zunravel_arg_start +
      .					       p_zunravel_num_args,
@@ -351,15 +354,15 @@
 	DATA gfcn_rtn_type     (p_tunravel) /pfcn_rtn_arg1_type /
 	DATA gfcn_num_reqd_args(p_tunravel) /p_tunravel_num_args/
 	DATA gfcn_has_vari_args(p_tunravel) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_tunravel),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_tunravel),i=1,nferdims)/
      .						pgc_axis_is_normal,
      .						pgc_axis_is_normal,
      .						pgc_axis_is_normal,
-     .						pgc_axis_is_abstract/
-	DATA (gfcn_piecemeal_ok(i,p_tunravel),i=1,4) / .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE. /
+     .						pgc_axis_is_abstract,
+     .						pgc_axis_is_normal,
+     .						pgc_axis_is_normal/
+	DATA (gfcn_piecemeal_ok(i,p_tunravel),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_tunravel) /p_tunravel_arg_start/
 
 * ... description of arguments
@@ -367,19 +370,89 @@
 	DATA gfcn_arg_type(p_tunravel_arg_start+0)/parg_type_float_or_string/
 	DATA gfcn_arg_units(p_tunravel_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_tunravel_arg_start+0)/' '/
-	DATA (gfcn_arg_extend_lo (i,p_tunravel_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_tunravel_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_tunravel_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_tunravel_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_tunravel_arg_start+0),i=1,4)
-     .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
+	DATA (gfcn_axis_implied_from(i, p_tunravel_arg_start+0),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
+
+* ESEQUENCE(arg) - same values as input grid but unravelled into a E line
+	INTEGER		p_eunravel_arg_start, p_eunravel_num_args
+	PARAMETER     ( p_eunravel_arg_start = p_tunravel_arg_start +
+     .					       p_tunravel_num_args,
+     .			p_eunravel_num_args  = 1 )
+	DATA gfcn_name         (p_eunravel) /'ESEQUENCE'/
+	DATA gfcn_version      (p_eunravel) / 1.0 /
+	DATA gfcn_descr        (p_eunravel) / 'unravel grid to a line in E' /
+	DATA gfcn_rtn_type     (p_eunravel) /pfcn_rtn_arg1_type /
+	DATA gfcn_num_reqd_args(p_eunravel) /p_eunravel_num_args/
+	DATA gfcn_has_vari_args(p_eunravel) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_eunravel),i=1,nferdims)/
+     .						pgc_axis_is_normal,
+     .						pgc_axis_is_normal,
+     .						pgc_axis_is_normal,
+     .						pgc_axis_is_normal,
+     .						pgc_axis_is_abstract,
+     .						pgc_axis_is_normal/
+	DATA (gfcn_piecemeal_ok(i,p_eunravel),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
+	DATA gfcn_arg_ptr(p_eunravel) /p_eunravel_arg_start/
+
+* ... description of arguments
+	DATA gfcn_arg_name(p_eunravel_arg_start+0)/'VAR'/
+	DATA gfcn_arg_type(p_eunravel_arg_start+0)/parg_type_float_or_string/
+	DATA gfcn_arg_units(p_eunravel_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_eunravel_arg_start+0)/' '/
+	DATA (gfcn_arg_extend_lo (i,p_eunravel_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_eunravel_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_eunravel_arg_start+0),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 
 
-* SAMPLEI - sample argument 2 at the indices indicated in arg 2
+* FSEQUENCE(arg) - same values as input grid but unravelled into a F line
+	INTEGER		p_funravel_arg_start, p_funravel_num_args
+	PARAMETER     ( p_funravel_arg_start = p_eunravel_arg_start +
+     .					       p_eunravel_num_args,
+     .			p_funravel_num_args  = 1 )
+	DATA gfcn_name         (p_funravel) /'FSEQUENCE'/
+	DATA gfcn_version      (p_funravel) / 1.0 /
+	DATA gfcn_descr        (p_funravel) / 'unravel grid to a line in F' /
+	DATA gfcn_rtn_type     (p_funravel) /pfcn_rtn_arg1_type /
+	DATA gfcn_num_reqd_args(p_funravel) /p_funravel_num_args/
+	DATA gfcn_has_vari_args(p_funravel) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_funravel),i=1,nferdims)/
+     .						pgc_axis_is_normal,
+     .						pgc_axis_is_normal,
+     .						pgc_axis_is_normal,
+     .						pgc_axis_is_normal,
+     .						pgc_axis_is_normal,
+     .						pgc_axis_is_abstract/
+	DATA (gfcn_piecemeal_ok(i,p_funravel),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
+	DATA gfcn_arg_ptr(p_funravel) /p_funravel_arg_start/
+
+* ... description of arguments
+	DATA gfcn_arg_name(p_funravel_arg_start+0)/'VAR'/
+	DATA gfcn_arg_type(p_funravel_arg_start+0)/parg_type_float_or_string/
+	DATA gfcn_arg_units(p_funravel_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_funravel_arg_start+0)/' '/
+	DATA (gfcn_arg_extend_lo (i,p_funravel_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_funravel_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_funravel_arg_start+0),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
+
+* SAMPLEI - sample argument 1 at the X indices indicated in arg 2
 	INTEGER		p_samplei_arg_start, p_samplei_num_args 
-	PARAMETER     ( p_samplei_arg_start = p_tunravel_arg_start +
-     .					      p_tunravel_num_args,
+	PARAMETER     ( p_samplei_arg_start = p_funravel_arg_start +
+     .					      p_funravel_num_args,
      .			p_samplei_num_args  = 2 )
 
 	DATA gfcn_name         (p_samplei) /'SAMPLEI'/
@@ -389,15 +462,15 @@
 	DATA gfcn_rtn_type     (p_samplei) /pfcn_rtn_arg1_type /
 	DATA gfcn_num_reqd_args(p_samplei) /p_samplei_num_args/
 	DATA gfcn_has_vari_args(p_samplei) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_samplei),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_samplei),i=1,nferdims)/
      .					pgc_axis_is_abstract,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args /
-	DATA (gfcn_piecemeal_ok(i,p_samplei),i=1,4) / .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_samplei),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_samplei) /p_samplei_arg_start/
 
 * ... description of arguments
@@ -406,28 +479,28 @@
 	DATA gfcn_arg_units(p_samplei_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_samplei_arg_start+0)
      .			/'data to sample at list of X indices supplied '/
-	DATA (gfcn_arg_extend_lo (i,p_samplei_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_samplei_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_samplei_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplei_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 	DATA gfcn_arg_name(p_samplei_arg_start+1)/'X_INDICES'/
 	DATA gfcn_arg_type(p_samplei_arg_start+1)/parg_type_float/
 	DATA gfcn_arg_units(p_samplei_arg_start+1)/' '/
 	DATA gfcn_arg_descr(p_samplei_arg_start+1)
      .			/'list of X indices at which to sample'/
-	DATA (gfcn_arg_extend_lo (i,p_samplei_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_samplei_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_samplei_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplei_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_samplei_arg_start+0),i=1,4)
-     .		/.FALSE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_axis_implied_from(i, p_samplei_arg_start+0),i=1,nferdims)
+     .    / .FALSE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 * ... by argument 2?
-	DATA (gfcn_axis_implied_from(i, p_samplei_arg_start+1),i=1,4)
-     .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
+	DATA (gfcn_axis_implied_from(i, p_samplei_arg_start+1),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 
 
-* SAMPLEJ - sample argument 2 at the indices indicated in arg 2
+* SAMPLEJ - sample argument 1 at the Y indices indicated in arg 2
 	INTEGER		p_samplej_arg_start, p_samplej_num_args 
 	PARAMETER     ( p_samplej_arg_start = p_samplei_arg_start +
      .					      p_samplei_num_args,
@@ -440,15 +513,15 @@
 	DATA gfcn_rtn_type     (p_samplej) /pfcn_rtn_arg1_type /
 	DATA gfcn_num_reqd_args(p_samplej) /p_samplej_num_args/
 	DATA gfcn_has_vari_args(p_samplej) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_samplej),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_samplej),i=1,nferdims)/
      .					pgc_axis_implied_by_args,
      .					pgc_axis_is_abstract,
      .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args /
-	DATA (gfcn_piecemeal_ok(i,p_samplej),i=1,4) / .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_samplej),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_samplej) /p_samplej_arg_start/
 
 * ... description of arguments
@@ -457,28 +530,28 @@
 	DATA gfcn_arg_units(p_samplej_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_samplej_arg_start+0)
      .			/'data to sample at list of Y indices supplied '/
-	DATA (gfcn_arg_extend_lo (i,p_samplej_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_samplej_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_samplej_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplej_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 	DATA gfcn_arg_name(p_samplej_arg_start+1)/'Y_INDICES'/
 	DATA gfcn_arg_type(p_samplej_arg_start+1)/parg_type_float/
 	DATA gfcn_arg_units(p_samplej_arg_start+1)/' '/
 	DATA gfcn_arg_descr(p_samplej_arg_start+1)
      .			/'list of Y indices at which to sample'/
-	DATA (gfcn_arg_extend_lo (i,p_samplej_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_samplej_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_samplej_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplej_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_samplej_arg_start+0),i=1,4)
-     .		/.TRUE., .FALSE., .TRUE.,.TRUE. /
+	DATA (gfcn_axis_implied_from(i, p_samplej_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .FALSE., .TRUE., .TRUE., .TRUE., .TRUE. /
 * ... by argument 2?
-	DATA (gfcn_axis_implied_from(i, p_samplej_arg_start+1),i=1,4)
-     .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
+	DATA (gfcn_axis_implied_from(i, p_samplej_arg_start+1),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 
 
-* SAMPLEK - sample argument 2 at the indices indicated in arg 2
+* SAMPLEK - sample argument 1 at the Z indices indicated in arg 2
 	INTEGER		p_samplek_arg_start, p_samplek_num_args 
 	PARAMETER     ( p_samplek_arg_start = p_samplej_arg_start +
      .					      p_samplej_num_args,
@@ -491,15 +564,15 @@
 	DATA gfcn_rtn_type     (p_samplek) /pfcn_rtn_arg1_type /
 	DATA gfcn_num_reqd_args(p_samplek) /p_samplek_num_args/
 	DATA gfcn_has_vari_args(p_samplek) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_samplek),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_samplek),i=1,nferdims)/
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_is_abstract,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args /
-	DATA (gfcn_piecemeal_ok(i,p_samplek),i=1,4) / .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_samplek),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_samplek) /p_samplek_arg_start/
 
 * ... description of arguments
@@ -508,28 +581,28 @@
 	DATA gfcn_arg_units(p_samplek_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_samplek_arg_start+0)
      .			/'data to sample at list of Z indices supplied '/
-	DATA (gfcn_arg_extend_lo (i,p_samplek_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_samplek_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_samplek_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplek_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 	DATA gfcn_arg_name(p_samplek_arg_start+1)/'Z_INDICES'/
 	DATA gfcn_arg_type(p_samplek_arg_start+1)/parg_type_float/
 	DATA gfcn_arg_units(p_samplek_arg_start+1)/' '/
 	DATA gfcn_arg_descr(p_samplek_arg_start+1)
      .			/'list of Z indices at which to sample'/
-	DATA (gfcn_arg_extend_lo (i,p_samplek_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_samplek_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_samplek_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplek_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_samplek_arg_start+0),i=1,4)
-     .		/ .TRUE., .TRUE., .FALSE., .TRUE. /
+	DATA (gfcn_axis_implied_from(i, p_samplek_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .FALSE., .TRUE., .TRUE., .TRUE. /
 * ... by argument 2?
-	DATA (gfcn_axis_implied_from(i, p_samplek_arg_start+1),i=1,4)
-     .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
+	DATA (gfcn_axis_implied_from(i, p_samplek_arg_start+1),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 
 
-* SAMPLEL - sample argument 2 at the indices indicated in arg 2
+* SAMPLEL - sample argument 1 at the T indices indicated in arg 2
 	INTEGER		p_samplel_arg_start, p_samplel_num_args 
 	PARAMETER     ( p_samplel_arg_start = p_samplek_arg_start +
      .					      p_samplek_num_args, 
@@ -542,15 +615,15 @@
 	DATA gfcn_rtn_type     (p_samplel) /pfcn_rtn_arg1_type /
 	DATA gfcn_num_reqd_args(p_samplel) /p_samplel_num_args/
 	DATA gfcn_has_vari_args(p_samplel) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_samplel),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_samplel),i=1,nferdims)/
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
-     .					pgc_axis_is_abstract/
-	DATA (gfcn_piecemeal_ok(i,p_samplel),i=1,4) / .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE.,
-     .						      .FALSE. /
+     .					pgc_axis_is_abstract,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args/
+	DATA (gfcn_piecemeal_ok(i,p_samplel),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_samplel) /p_samplel_arg_start/
 
 * ... description of arguments
@@ -559,31 +632,134 @@
 	DATA gfcn_arg_units(p_samplel_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_samplel_arg_start+0)
      .			/'data to sample at list of T indices supplied '/
-	DATA (gfcn_arg_extend_lo (i,p_samplel_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_samplel_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_samplel_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplel_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 	DATA gfcn_arg_name(p_samplel_arg_start+1)/'T_INDICES'/
 	DATA gfcn_arg_type(p_samplel_arg_start+1)/parg_type_float/
 	DATA gfcn_arg_units(p_samplel_arg_start+1)/' '/
 	DATA gfcn_arg_descr(p_samplel_arg_start+1)
      .			/'list of T indices at which to sample'/
-	DATA (gfcn_arg_extend_lo (i,p_samplel_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_samplel_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_samplel_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplel_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_samplel_arg_start+0),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE., .FALSE. /
+	DATA (gfcn_axis_implied_from(i, p_samplel_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .FALSE., .TRUE., .TRUE. /
 * ... by argument 2?
-	DATA (gfcn_axis_implied_from(i, p_samplel_arg_start+1),i=1,4)
-     .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
+	DATA (gfcn_axis_implied_from(i, p_samplel_arg_start+1),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
+
+
+* SAMPLEM - sample argument 1 at the E indices indicated in arg 2
+	INTEGER		p_samplem_arg_start, p_samplem_num_args 
+	PARAMETER     ( p_samplem_arg_start = p_samplel_arg_start +
+     .					      p_samplel_num_args, 
+     .			p_samplem_num_args  = 2 )
+
+	DATA gfcn_name         (p_samplem) /'SAMPLEM'/
+	DATA gfcn_version      (p_samplem) / 1.0 /
+	DATA gfcn_descr        (p_samplem)
+     .		/ 'sample a field at a list of E indices' /
+	DATA gfcn_rtn_type     (p_samplem) /pfcn_rtn_arg1_type /
+	DATA gfcn_num_reqd_args(p_samplem) /p_samplem_num_args/
+	DATA gfcn_has_vari_args(p_samplem) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_samplem),i=1,nferdims)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_is_abstract,
+     .					pgc_axis_implied_by_args/
+	DATA (gfcn_piecemeal_ok(i,p_samplem),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
+	DATA gfcn_arg_ptr(p_samplem) /p_samplem_arg_start/
+
+* ... description of arguments
+	DATA gfcn_arg_name(p_samplem_arg_start+0)/'TO_BE_SAMPLED'/
+	DATA gfcn_arg_type(p_samplem_arg_start+0)/parg_type_float_or_string/
+	DATA gfcn_arg_units(p_samplem_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_samplem_arg_start+0)
+     .			/'data to sample at list of E indices supplied '/
+	DATA (gfcn_arg_extend_lo (i,p_samplem_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplem_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA gfcn_arg_name(p_samplem_arg_start+1)/'E_INDICES'/
+	DATA gfcn_arg_type(p_samplem_arg_start+1)/parg_type_float/
+	DATA gfcn_arg_units(p_samplem_arg_start+1)/' '/
+	DATA gfcn_arg_descr(p_samplem_arg_start+1)
+     .			/'list of E indices at which to sample'/
+	DATA (gfcn_arg_extend_lo (i,p_samplem_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplem_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_samplem_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .FALSE., .TRUE. /
+* ... by argument 2?
+	DATA (gfcn_axis_implied_from(i, p_samplem_arg_start+1),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
+
+
+* SAMPLEN - sample argument 1 at the F indices indicated in arg 2
+	INTEGER		p_samplen_arg_start, p_samplen_num_args 
+	PARAMETER     ( p_samplen_arg_start = p_samplem_arg_start +
+     .					      p_samplem_num_args, 
+     .			p_samplen_num_args  = 2 )
+
+	DATA gfcn_name         (p_samplen) /'SAMPLEN'/
+	DATA gfcn_version      (p_samplen) / 1.0 /
+	DATA gfcn_descr        (p_samplen)
+     .		/ 'sample a field at a list of F indices' /
+	DATA gfcn_rtn_type     (p_samplen) /pfcn_rtn_arg1_type /
+	DATA gfcn_num_reqd_args(p_samplen) /p_samplen_num_args/
+	DATA gfcn_has_vari_args(p_samplen) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_samplen),i=1,nferdims)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_is_abstract/
+	DATA (gfcn_piecemeal_ok(i,p_samplen),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
+	DATA gfcn_arg_ptr(p_samplen) /p_samplen_arg_start/
+
+* ... description of arguments
+	DATA gfcn_arg_name(p_samplen_arg_start+0)/'TO_BE_SAMPLED'/
+	DATA gfcn_arg_type(p_samplen_arg_start+0)/parg_type_float_or_string/
+	DATA gfcn_arg_units(p_samplen_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_samplen_arg_start+0)
+     .			/'data to sample at list of F indices supplied '/
+	DATA (gfcn_arg_extend_lo (i,p_samplen_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplen_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA gfcn_arg_name(p_samplen_arg_start+1)/'F_INDICES'/
+	DATA gfcn_arg_type(p_samplen_arg_start+1)/parg_type_float/
+	DATA gfcn_arg_units(p_samplen_arg_start+1)/' '/
+	DATA gfcn_arg_descr(p_samplen_arg_start+1)
+     .			/'list of F indices at which to sample'/
+	DATA (gfcn_arg_extend_lo (i,p_samplen_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplen_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_samplen_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .FALSE. /
+* ... by argument 2?
+	DATA (gfcn_axis_implied_from(i, p_samplen_arg_start+1),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
+
 
 
 * SPAWN("unix cmnd") - execute a Unix system command and return strings
 	INTEGER		p_spawn_arg_start, p_spawn_num_args
-	PARAMETER     ( p_spawn_arg_start = p_samplel_arg_start +
-     .					    p_samplel_num_args,
+	PARAMETER     ( p_spawn_arg_start = p_samplen_arg_start +
+     .					    p_samplen_num_args,
      .			p_spawn_num_args  = 1 )
 	DATA gfcn_name         (p_spawn) /'SPAWN'/
 	DATA gfcn_version      (p_spawn) / 1.0 /
@@ -591,15 +767,15 @@
 	DATA gfcn_rtn_type     (p_spawn) /pfcn_rtn_string /
 	DATA gfcn_num_reqd_args(p_spawn) /p_spawn_num_args/
 	DATA gfcn_has_vari_args(p_spawn) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_spawn),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_spawn),i=1,nferdims)/
      .						pgc_axis_is_abstract,
      .						pgc_axis_is_normal,
      .						pgc_axis_is_normal,
+     .						pgc_axis_is_normal,
+     .						pgc_axis_is_normal,
      .						pgc_axis_is_normal/
-	DATA (gfcn_piecemeal_ok(i,p_spawn),i=1,4) / .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_spawn),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_spawn) /p_spawn_arg_start/
 
 * ... description of arguments
@@ -607,13 +783,13 @@
 	DATA gfcn_arg_type(p_spawn_arg_start+0)/parg_type_string/
 	DATA gfcn_arg_units(p_spawn_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_spawn_arg_start+0)/'Unix command string'/
-	DATA (gfcn_arg_extend_lo (i,p_spawn_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_spawn_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_spawn_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_spawn_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_spawn_arg_start+0),i=1,4)
-     .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
+	DATA (gfcn_axis_implied_from(i, p_spawn_arg_start+0),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 
 * STRCMP(string1, string2) - compare 2 string *arrays* as in C function
 	INTEGER		p_strcmp_arg_start, p_strcmp_num_args
@@ -627,15 +803,15 @@
 	DATA gfcn_rtn_type     (p_strcmp) /pfcn_rtn_float /
 	DATA gfcn_num_reqd_args(p_strcmp) /p_strcmp_num_args/
 	DATA gfcn_has_vari_args(p_strcmp) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_strcmp),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_strcmp),i=1,nferdims)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args/
-	DATA (gfcn_piecemeal_ok(i,p_strcmp),i=1,4) / .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_strcmp),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_strcmp) /p_strcmp_arg_start/
 
 * ... description of argument 1
@@ -643,26 +819,26 @@
 	DATA gfcn_arg_type(p_strcmp_arg_start+0)/parg_type_string/
 	DATA gfcn_arg_units(p_strcmp_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_strcmp_arg_start+0)/'string array 1'/
-	DATA (gfcn_arg_extend_lo (i,p_strcmp_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_strcmp_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_strcmp_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strcmp_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_strcmp_arg_start+0),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_axis_implied_from(i, p_strcmp_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 * ... description of argument 2
 	DATA gfcn_arg_name(p_strcmp_arg_start+1)/'STR2'/
 	DATA gfcn_arg_type(p_strcmp_arg_start+1)/parg_type_string/
 	DATA gfcn_arg_units(p_strcmp_arg_start+1)/' '/
 	DATA gfcn_arg_descr(p_strcmp_arg_start+1)/'string array 2'/
-	DATA (gfcn_arg_extend_lo (i,p_strcmp_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_strcmp_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
-* ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_strcmp_arg_start+1),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_arg_extend_lo (i,p_strcmp_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strcmp_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+* ... merge the axes implied by argument 2 ?
+	DATA (gfcn_axis_implied_from(i, p_strcmp_arg_start+1),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 
 * STRLEN(string1) - return the length of the string
@@ -677,15 +853,15 @@
 	DATA gfcn_rtn_type     (p_strlen) /pfcn_rtn_float /
 	DATA gfcn_num_reqd_args(p_strlen) /p_strlen_num_args/
 	DATA gfcn_has_vari_args(p_strlen) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_strlen),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_strlen),i=1,nferdims)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args/
-	DATA (gfcn_piecemeal_ok(i,p_strlen),i=1,4) / .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_strlen),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_strlen) /p_strlen_arg_start/
 
 * ... description of argument 1
@@ -693,13 +869,13 @@
 	DATA gfcn_arg_type(p_strlen_arg_start+0)/parg_type_string/
 	DATA gfcn_arg_units(p_strlen_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_strlen_arg_start+0)/'string array 1'/
-	DATA (gfcn_arg_extend_lo (i,p_strlen_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_strlen_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_strlen_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strlen_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_strlen_arg_start+0),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_axis_implied_from(i, p_strlen_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 
 * UPCASE(string1) - return string in all upper case
@@ -714,15 +890,15 @@
 	DATA gfcn_rtn_type     (p_upcase) /pfcn_rtn_string /
 	DATA gfcn_num_reqd_args(p_upcase) /p_upcase_num_args/
 	DATA gfcn_has_vari_args(p_upcase) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_upcase),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_upcase),i=1,nferdims)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args/
-	DATA (gfcn_piecemeal_ok(i,p_upcase),i=1,4) / .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_upcase),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_upcase) /p_upcase_arg_start/
 
 * ... description of argument 1
@@ -730,17 +906,17 @@
 	DATA gfcn_arg_type(p_upcase_arg_start+0)/parg_type_string/
 	DATA gfcn_arg_units(p_upcase_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_upcase_arg_start+0)/'string array 1'/
-	DATA (gfcn_arg_extend_lo (i,p_upcase_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_upcase_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_upcase_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_upcase_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_upcase_arg_start+0),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_axis_implied_from(i, p_upcase_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 
 
-* STRINDEX(string1, substring) - find star char position of substring
+* STRINDEX(string1, substring) - find start char position of substring
 	INTEGER		p_strindex_arg_start, p_strindex_num_args
 	PARAMETER     ( p_strindex_arg_start = p_upcase_arg_start +
      .					    p_upcase_num_args,
@@ -752,15 +928,15 @@
 	DATA gfcn_rtn_type     (p_strindex) /pfcn_rtn_float /
 	DATA gfcn_num_reqd_args(p_strindex) /p_strindex_num_args/
 	DATA gfcn_has_vari_args(p_strindex) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_strindex),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_strindex),i=1,nferdims)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args/
-	DATA (gfcn_piecemeal_ok(i,p_strindex),i=1,4) / .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_strindex),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_strindex) /p_strindex_arg_start/
 
 * ... description of argument 1
@@ -768,26 +944,26 @@
 	DATA gfcn_arg_type(p_strindex_arg_start+0)/parg_type_string/
 	DATA gfcn_arg_units(p_strindex_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_strindex_arg_start+0)/'string array 1'/
-	DATA (gfcn_arg_extend_lo (i,p_strindex_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_strindex_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_strindex_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strindex_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_strindex_arg_start+0),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_axis_implied_from(i, p_strindex_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 * ... description of argument 2
 	DATA gfcn_arg_name(p_strindex_arg_start+1)/'SUBSTR'/
 	DATA gfcn_arg_type(p_strindex_arg_start+1)/parg_type_string/
 	DATA gfcn_arg_units(p_strindex_arg_start+1)/' '/
 	DATA gfcn_arg_descr(p_strindex_arg_start+1)/'string array 2'/
-	DATA (gfcn_arg_extend_lo (i,p_strindex_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_strindex_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
-* ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_strindex_arg_start+1),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_arg_extend_lo (i,p_strindex_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strindex_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+* ... merge the axes implied by argument 2 ?
+	DATA (gfcn_axis_implied_from(i, p_strindex_arg_start+1),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 
 
@@ -803,15 +979,15 @@
 	DATA gfcn_rtn_type     (p_strrindex) /pfcn_rtn_float /
 	DATA gfcn_num_reqd_args(p_strrindex) /p_strrindex_num_args/
 	DATA gfcn_has_vari_args(p_strrindex) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_strrindex),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_strrindex),i=1,nferdims)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args/
-	DATA (gfcn_piecemeal_ok(i,p_strrindex),i=1,4) / .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_strrindex),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_strrindex) /p_strrindex_arg_start/
 
 * ... description of argument 1
@@ -819,26 +995,26 @@
 	DATA gfcn_arg_type(p_strrindex_arg_start+0)/parg_type_string/
 	DATA gfcn_arg_units(p_strrindex_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_strrindex_arg_start+0)/'string array 1'/
-	DATA (gfcn_arg_extend_lo (i,p_strrindex_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_strrindex_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_strrindex_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strrindex_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_strrindex_arg_start+0),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_axis_implied_from(i, p_strrindex_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 * ... description of argument 2
 	DATA gfcn_arg_name(p_strrindex_arg_start+1)/'SUBSTR'/
 	DATA gfcn_arg_type(p_strrindex_arg_start+1)/parg_type_string/
 	DATA gfcn_arg_units(p_strrindex_arg_start+1)/' '/
 	DATA gfcn_arg_descr(p_strrindex_arg_start+1)/'string array 2'/
-	DATA (gfcn_arg_extend_lo (i,p_strrindex_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_strrindex_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
-* ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_strrindex_arg_start+1),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_arg_extend_lo (i,p_strrindex_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strrindex_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+* ... merge the axes implied by argument 2 ?
+	DATA (gfcn_axis_implied_from(i, p_strrindex_arg_start+1),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 
 
@@ -854,15 +1030,15 @@
 	DATA gfcn_rtn_type     (p_dncase) /pfcn_rtn_string /
 	DATA gfcn_num_reqd_args(p_dncase) /p_dncase_num_args/
 	DATA gfcn_has_vari_args(p_dncase) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_dncase),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_dncase),i=1,nferdims)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args/
-	DATA (gfcn_piecemeal_ok(i,p_dncase),i=1,4) / .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_dncase),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_dncase) /p_dncase_arg_start/
 
 * ... description of argument 1
@@ -870,16 +1046,16 @@
 	DATA gfcn_arg_type(p_dncase_arg_start+0)/parg_type_string/
 	DATA gfcn_arg_units(p_dncase_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_dncase_arg_start+0)/'string array 1'/
-	DATA (gfcn_arg_extend_lo (i,p_dncase_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_dncase_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_dncase_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_dncase_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_dncase_arg_start+0),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_axis_implied_from(i, p_dncase_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 
-* STRCAT(string1, string2) - compare 2 string *arrays* as in C function
+* STRCAT(string1, string2) - concatenate 2 string *arrays* as in C function
 	INTEGER		p_strcat_arg_start, p_strcat_num_args
 	PARAMETER     ( p_strcat_arg_start = p_dncase_arg_start +
      .					    p_dncase_num_args,
@@ -891,15 +1067,15 @@
 	DATA gfcn_rtn_type     (p_strcat) /pfcn_rtn_string /
 	DATA gfcn_num_reqd_args(p_strcat) /p_strcat_num_args/
 	DATA gfcn_has_vari_args(p_strcat) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_strcat),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_strcat),i=1,nferdims)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args/
-	DATA (gfcn_piecemeal_ok(i,p_strcat),i=1,4) / .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_strcat),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_strcat) /p_strcat_arg_start/
 
 * ... description of argument 1
@@ -907,26 +1083,26 @@
 	DATA gfcn_arg_type(p_strcat_arg_start+0)/parg_type_string/
 	DATA gfcn_arg_units(p_strcat_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_strcat_arg_start+0)/'string array 1'/
-	DATA (gfcn_arg_extend_lo (i,p_strcat_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_strcat_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_strcat_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strcat_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_strcat_arg_start+0),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_axis_implied_from(i, p_strcat_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 * ... description of argument 2
 	DATA gfcn_arg_name(p_strcat_arg_start+1)/'STR2'/
 	DATA gfcn_arg_type(p_strcat_arg_start+1)/parg_type_string/
 	DATA gfcn_arg_units(p_strcat_arg_start+1)/' '/
 	DATA gfcn_arg_descr(p_strcat_arg_start+1)/'string array 2'/
-	DATA (gfcn_arg_extend_lo (i,p_strcat_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_strcat_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
-* ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_strcat_arg_start+1),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_arg_extend_lo (i,p_strcat_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strcat_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+* ... merge the axes implied by argument 2 ?
+	DATA (gfcn_axis_implied_from(i, p_strcat_arg_start+1),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 
 
@@ -942,15 +1118,15 @@
 	DATA gfcn_rtn_type     (p_substring) /pfcn_rtn_string /
 	DATA gfcn_num_reqd_args(p_substring) /p_substring_num_args/
 	DATA gfcn_has_vari_args(p_substring) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_substring),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_substring),i=1,nferdims)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args/
-	DATA (gfcn_piecemeal_ok(i,p_substring),i=1,4) / .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_substring),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_substring) /p_substring_arg_start/
 
 * ... description of argument 1
@@ -958,26 +1134,26 @@
 	DATA gfcn_arg_type(p_substring_arg_start+0)/parg_type_string/
 	DATA gfcn_arg_units(p_substring_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_substring_arg_start+0)/'string array'/
-	DATA (gfcn_arg_extend_lo (i,p_substring_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_substring_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_substring_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_substring_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_substring_arg_start+0),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_axis_implied_from(i, p_substring_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 * ... description of argument 2
 	DATA gfcn_arg_name(p_substring_arg_start+1)/'OFFSET'/
 	DATA gfcn_arg_type(p_substring_arg_start+1)/parg_type_float/
 	DATA gfcn_arg_units(p_substring_arg_start+1)/' '/
 	DATA gfcn_arg_descr(p_substring_arg_start+1)/'start position'/
-	DATA (gfcn_arg_extend_lo (i,p_substring_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_substring_arg_start+1),i=1,4)
-     .		  / 0, 0, 0, 0 /
-* ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_substring_arg_start+1),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_arg_extend_lo (i,p_substring_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_substring_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+* ... merge the axes implied by argument 2 ?
+	DATA (gfcn_axis_implied_from(i, p_substring_arg_start+1),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 
 * ... description of argument 3
@@ -985,13 +1161,13 @@
 	DATA gfcn_arg_type(p_substring_arg_start+2)/parg_type_float/
 	DATA gfcn_arg_units(p_substring_arg_start+2)/' '/
 	DATA gfcn_arg_descr(p_substring_arg_start+2)/'number of chars'/
-	DATA (gfcn_arg_extend_lo (i,p_substring_arg_start+2),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_substring_arg_start+2),i=1,4)
-     .		  / 0, 0, 0, 0 /
-* ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_substring_arg_start+2),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_arg_extend_lo (i,p_substring_arg_start+2),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_substring_arg_start+2),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+* ... merge the axes implied by argument 3 ?
+	DATA (gfcn_axis_implied_from(i, p_substring_arg_start+2),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 
 * STRFLOAT(string1) - return float value of given string
@@ -1006,15 +1182,15 @@
 	DATA gfcn_rtn_type     (p_strfloat) /pfcn_rtn_float /
 	DATA gfcn_num_reqd_args(p_strfloat) /p_strfloat_num_args/
 	DATA gfcn_has_vari_args(p_strfloat) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_strfloat),i=1,4)/
+	DATA (gfcn_axis_will_be(i,p_strfloat),i=1,nferdims)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args/
-	DATA (gfcn_piecemeal_ok(i,p_strfloat),i=1,4) / .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE.,
-     .						    .FALSE. /
+	DATA (gfcn_piecemeal_ok(i,p_strfloat),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 	DATA gfcn_arg_ptr(p_strfloat) /p_strfloat_arg_start/
 
 * ... description of argument 1
@@ -1022,13 +1198,13 @@
 	DATA gfcn_arg_type(p_strfloat_arg_start+0)/parg_type_string/
 	DATA gfcn_arg_units(p_strfloat_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_strfloat_arg_start+0)/'string array 1'/
-	DATA (gfcn_arg_extend_lo (i,p_strfloat_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_strfloat_arg_start+0),i=1,4)
-     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_lo (i,p_strfloat_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strfloat_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_strfloat_arg_start+0),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+	DATA (gfcn_axis_implied_from(i, p_strfloat_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 
 

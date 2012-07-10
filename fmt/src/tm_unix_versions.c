@@ -61,11 +61,13 @@
    for aix port *kob* 10/94 */
 
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 #include <Python.h> /* make sure Python.h is first */
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 
 
 int tilda_strcmp( rootnam, testnam )

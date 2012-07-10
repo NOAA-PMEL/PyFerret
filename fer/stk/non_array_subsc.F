@@ -44,16 +44,12 @@
 * written for VAX computer under VMS operating system
 *
 * V200:  5/20/89
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'
 	include 'xmem_subsc.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XMEM_SUBSC.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER nmr, mr_list(nmr)
@@ -61,7 +57,7 @@
 * internal variable declarations:
 	INTEGER idim, mr
 
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	DO 100 mr   = 1, nmr
 	   lo_ss( mr, idim ) = mr_lo_ss( mr_list(mr), idim )
 	   hi_ss( mr, idim ) = mr_hi_ss( mr_list(mr), idim )

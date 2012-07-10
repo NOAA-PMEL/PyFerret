@@ -15,7 +15,9 @@
 *	 2/99 *sh* - bug fix on cx_given for normal axes
 * V530:  8/00 *sh* - allow constant arrays of strings
 * V533:  7/01 *sh* - allow single quoted strings
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
@@ -48,11 +50,11 @@
 
 * definition applies only to the axis of the constant list
 	cx_given( x_dim, const_cx ) = .TRUE.
-	DO 100 idim =  y_dim, t_dim
+	DO 100 idim =  y_dim, nferdims
  100	cx_given( idim, const_cx ) = .FALSE.
 
 * remove all axes limits
-	DO 200 idim = y_dim, t_dim
+	DO 200 idim = y_dim, nferdims
  200	CALL DEL_CX_DIM( idim, const_cx )
 
 * set the X axis limits equal to the length of the array

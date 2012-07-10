@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -42,17 +42,13 @@
 * written for VAX computer under VMS operating system
 *
 * V420 9/8/95 - for implicit grid creation
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
-	include 'tmap_dims.parm'
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include 'ferret.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include 'ferret.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations
 	CHARACTER*(*) name
@@ -64,7 +60,7 @@
 	grid_name     ( grid )	= name
 	grid_rotation ( grid )	= 0.0
 
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   grid_line    (idim, grid) = init_ax
 	   grid_out_prod(idim, grid) = .TRUE.
  100	CONTINUE

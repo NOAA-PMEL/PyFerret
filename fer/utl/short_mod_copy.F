@@ -52,7 +52,9 @@
 * V541: *sh*  2/02 - support for subspan modulo axes
 *	See NOTE in code below
 * 560: *acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'

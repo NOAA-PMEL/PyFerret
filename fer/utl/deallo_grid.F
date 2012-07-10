@@ -46,8 +46,8 @@
 * Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
 * V510 *sh* 4/00 - deallocation of axes applies to all -- not just dynamic
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include	'xtm_grid.cmn_text'
@@ -55,14 +55,6 @@
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xfr_grid.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER	status
@@ -71,7 +63,7 @@
 	INTEGER	idim
 
 * clean out the grid deallocating any dynamic lines that this used
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   CALL TM_DEALLO_DYN_LINE(grid_line(idim,grd_stk_ptr) )
 	   grid_line(idim,grd_stk_ptr) = unspecified_int4
  100	CONTINUE

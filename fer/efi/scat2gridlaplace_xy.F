@@ -31,16 +31,16 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
 *
 * Ansley Manke
 * July 28 1998
 *
-* Returns variable interpolated onto an equally-spaced X-Y grid.  
-* Input is scattered triples: (x, y, f(x,y)); may be functions of z and/or time.
-* Output is gridded data in x, y, z, and time.  Calls routine "zgrid".
+* Returns variable interpolated onto an equally-spaced X-Y grid.
+* Input is scattered triples: (x, y, f(x,y)); may be functions of Z,T,E,F.
+* Output is gridded data in X,Y,Z,T,E,F.  Calls routine "zgrid_laplace".
 *
-* Nov 13, 2000 1) Allow modulo axes: if modulo take points from other end 
+* Nov 13, 2000 1) Allow modulo axes: if modulo take points from other end
 *                 to use in gridding each end
 *              2) Check that the scattered points are listed on the I,J,or
 *                 K axis only, as they may be functions of time.
@@ -60,9 +60,17 @@
 *              some hard-wired workspace limited to 50K points. Instead allocate
 *              work arrays here and pass them to zgrid_laplace.F in this directory
 *              with no changes other than the work array declarations.
+*
+*  *kms* 4/2012 Removed extending result grid axes with ef_unspecified_int4: 
+*               this appears to destroy the axes of the result grid as demonstrated
+*               by the listing in bn_scat2grid_test.jnl.  Now it is up to the
+*               the user to give (not truncate) the result grid axes:
+*      let sgrid = scat2gridlaplace_xy(xpts, ypts, fpts, x[gx=xax5], y[gy=yax5], 5., 5)
+*      load sgrid  ! <--- without this, the following uses a 1-element Y axis
+*      list/x=4:5/y=1 sgrid
 
 * In this subroutine we provide information about
-* the function.  The user configurable information 
+* the function.  The user configurable information
 * consists of the following:
 *
 * descr              Text description of the function
@@ -79,7 +87,7 @@
 * piecemeal_ok       For memory optimization:
 *                       axes where calculation may be performed piecemeal
 *                       ( YES, NO )
-* 
+*
 *
 * For each argument we provide the following information:
 *
@@ -92,7 +100,7 @@
 * axis_influence     Are this argument's axes the same as the result grid?
 *                       ( YES, NO )
 *
-* axis_extend       How much does Ferret need to extend arg limits relative to result 
+* axis_extend       How much does Ferret need to extend arg limits relative to result
 *
 
 
@@ -108,86 +116,79 @@
 *                                                                      |
 *                                                                      V
 
-      CHARACTER*100 buff
-
-      WRITE (buff, 10)
-   10 FORMAT ('Use Laplace weighting to grid scattered data to an ',
-     .        'XY grid.')
-      CALL ef_set_desc(id, buff)
-
-
+      CALL ef_set_desc(id, 'Use Laplace weighting to grid ' //
+     .                     'scattered data to an XY grid.')
       CALL ef_set_num_args(id, 7)
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, 
-     .      IMPLIED_BY_ARGS,  IMPLIED_BY_ARGS)
-
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
       CALL ef_set_num_work_arrays(id, 8)
 
-* Horizontal grid is determined by arguments 4 and 5, the result's x and y axes. 
+* XY grid is determined by arguments 4 and 5, the result's x and y axes.
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'XPTS')
-      CALL ef_set_arg_desc(id, arg, 
-     .'x-coordinates of scattered input triples')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_arg_desc(id, arg,
+     .        'X coordinates of scattered XY locations')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'YPTS')
-      CALL ef_set_arg_desc(id, arg, 
-     .'y-coordinates of scattered input triples')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_arg_desc(id, arg,
+     .        'Y coordinates of scattered XY locations')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F')
-      WRITE (buff, 20) 
-   20 FORMAT ('F(X,Y) 3rd component of scattered input triples. ',
-     .  'May be fcn of Z and/or T')
-      CALL ef_set_arg_desc(id, arg, buff)
-      CALL ef_set_axis_influence(id, arg, NO, NO, YES, YES)
-
-* Load the whole range of the output axes to force the
-* regridding to be done on the entire original region.
-* The size of the result will determine any subsetting.
-* 
-* Commented out extending the axes (which matches the gaussian versions).
-* The ef_unspecified_int4 extensions appears to have issues, messing
-* up the axes of the result grid.
+      CALL ef_set_arg_desc(id, arg,
+     .        'F(X,Y) data at scattered XY locations. ' //
+     .        'May also be fcn of Z,T,E,F')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, YES, YES, YES, YES)
 
       arg = 4
       CALL ef_set_arg_name(id, arg, 'XAXPTS')
       CALL ef_set_arg_desc(id, arg,
-     .                    'X axis coordinates of a regular output grid')
-      CALL ef_set_axis_influence(id, arg, YES, NO, NO, NO)
-*      CALL ef_set_axis_extend (id, arg, X_AXIS, ef_unspecified_int4,
-*     .                         ef_unspecified_int4)
+     .        'X axis coordinates of a regular output grid')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, NO, NO, NO, NO, NO)
 
       arg = 5
       CALL ef_set_arg_name(id, arg, 'YAXPTS')
       CALL ef_set_arg_desc(id, arg,
-     .                    'Y axis coordinates of a regular output grid')
-      CALL ef_set_axis_influence(id, arg, NO, YES, NO, NO)
-*      CALL ef_set_axis_extend (id, arg, Y_AXIS, ef_unspecified_int4, 
-*     .                         ef_unspecified_int4)
+     .        'Y axis coordinates of a regular output grid')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, YES, NO, NO, NO, NO)
 
       arg = 6
-      CALL ef_set_arg_name(id, arg, 'CAY')
-      CALL ef_set_arg_desc(id, arg, 
-     .     'Interpolation parameter: CAY')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_arg_name(id, arg, 'KAY')
+      CALL ef_set_arg_desc(id, arg,
+     .        'Laplace/spline mixing parameter KAY; ' //
+     .        '0.0=pure Laplace; inf=pure spline')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
       arg = 7
       CALL ef_set_arg_name(id, arg, 'NRNG')
-      CALL ef_set_arg_desc(id, arg, 
-     .     'Interpolation parameter: NRNG')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_arg_desc(id, arg,
+     .        'Effect parameter NRNG; grid vals ' //
+     .        'undef if > NRNG grid steps from pts')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
 ************************************************************************
 
-      RETURN 
+      RETURN
       END
+
+
 *
 * In this subroutine we request an amount of storage to be supplied
 * by Ferret and passed as an additional argument.
@@ -202,23 +203,30 @@
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
-* 
-* Set the work arrays,  X/Y/Z/T dimensions
-*
-* ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
-*
-      INTEGER nxout, nyout, nx2, ny2
-      INTEGER nxin, nyin, nzin, ntin, nin
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
+*                                                                      V
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+* Set the work arrays, X/Y/Z/T/E/F dimensions
+*
+* ef_set_work_array_dims_6d(id, array #,
+*                           xlo, ylo, zlo, tlo, elo, flo,
+*                           xhi, yhi, zhi, thi, ehi, fhi)
+*
+
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+      INTEGER nxout, nyout, nx2, ny2
+      INTEGER nxin, nyin, nzin, ntin, nein, nfin, nin
+
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       nxin = 1 + arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1)
       nyin = 1 + arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1)
       nzin = 1 + arg_hi_ss(Z_AXIS,ARG1) - arg_lo_ss(Z_AXIS,ARG1)
       ntin = 1 + arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1)
-      nin = max(nxin,nyin,nzin,ntin)
+      nein = 1 + arg_hi_ss(E_AXIS,ARG1) - arg_lo_ss(E_AXIS,ARG1)
+      nfin = 1 + arg_hi_ss(F_AXIS,ARG1) - arg_lo_ss(F_AXIS,ARG1)
+      nin = MAX(nxin,nyin,nzin,ntin,nein,nfin)
 *  If modulo axis, the scatter arrays are extended for values
 *  within nrng of the cut-point.  Worst case: everything gets
 *  duplicated at both ends; thus three times the points for
@@ -228,53 +236,72 @@
       nxout = 1 + arg_hi_ss(X_AXIS,ARG4) - arg_lo_ss(X_AXIS,ARG4)
       nyout = 1 + arg_hi_ss(Y_AXIS,ARG5) - arg_lo_ss(Y_AXIS,ARG5)
 
-      nx2 = nxout* 2
-      ny2 = nyout* 2
+      nx2 = nxout * 2
+      ny2 = nyout * 2
 
 * xax  output x axis
-      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, nx2, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, 1,
+     .                                1, 1, 1, 1, 1, 1,
+     .                              nx2, 1, 1, 1, 1, 1)
 
 * yax  output y axis
-      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, ny2, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, 2,
+     .                                1, 1, 1, 1, 1, 1,
+     .                              ny2, 1, 1, 1, 1, 1)
 
+* zgridded  work array - gridded data.
+      CALL ef_set_work_array_dims_6d(id, 3,
+     .                                1,     1, 1, 1, 1, 1,
+     .                            nxout, nyout, 1, 1, 1, 1)
 
-* zgridded  work array - gridded data. 
-      CALL ef_set_work_array_dims(id, 3, 1, 1, 1, 1, 
-     .                            nxout, nyout, 1, 1)
+* xscat - scattered points with gaps removed and extended for modulo
+      CALL ef_set_work_array_dims_6d(id, 4,
+     .                                1, 1, 1, 1, 1, 1,
+     .                              nin, 1, 1, 1, 1, 1)
 
-* xscat - scattered points with gaps removed.
-      CALL ef_set_work_array_dims (id, 4, 1, 1, 1, 1, nin, 1, 1, 1)
+* yscat - scattered points with gaps removed and extended for modulo
+      CALL ef_set_work_array_dims_6d(id, 5,
+     .                                1, 1, 1, 1, 1, 1,
+     .                              nin, 1, 1, 1, 1, 1)
 
-* yscat - scattered points with gaps removed.
-      CALL ef_set_work_array_dims (id, 5, 1, 1, 1, 1, nin, 1, 1, 1)
-
-* fscat - scattered points with gaps removed.
-      CALL ef_set_work_array_dims (id, 6, 1, 1, 1, 1, nin, 1, 1, 1)
+* fscat - scattered points with gaps removed and extended for modulo
+      CALL ef_set_work_array_dims_6d(id, 6,
+     .                                1, 1, 1, 1, 1, 1,
+     .                              nin, 1, 1, 1, 1, 1)
 
 * zgrid_laplace work array zpij
-      CALL ef_set_work_array_dims (id, 7, 1, 1, 1, 1, nin, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, 7,
+     .                                1, 1, 1, 1, 1, 1,
+     .                              nin, 1, 1, 1, 1, 1)
 
 * zgrid_laplace work array knxt
-      CALL ef_set_work_array_dims (id, 8, 1, 1, 1, 1, nin, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, 8,
+     .                                1, 1, 1, 1, 1, 1,
+     .                              nin, 1, 1, 1, 1, 1)
 
+*                                                                      ^
+*                                                                      |
+*                                            USER CONFIGURABLE PORTION |
 ************************************************************************
 
-      RETURN 
+      RETURN
       END
+
 
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE scat2gridlaplace_xy_compute(id, arg_1, arg_2, 
-     .     arg_3, arg_4, arg_5, arg_6, arg_7, result, xax, yax,
-     .     zgridded, xscat, yscat, fscat, zpij, knxt)
+      SUBROUTINE scat2gridlaplace_xy_compute(id, arg_1, arg_2, arg_3,
+     .                            arg_4, arg_5, arg_6, arg_7, result,
+     .                            xax, yax, zgridded, xscat, yscat,
+     .                            fscat, zpij, knxt)
 
 *  arg_1  xpts \
-*  arg_2  ypts  > scattered x,y,f(x,y) triples to be gridded. F can be fcn of z,t
-*  arg_3  zpts /
+*  arg_2  ypts  > scattered x,y,f(x,y) triples to be gridded. F can be fcn of z,t,e,f
+*  arg_3  Fpts /
 *  arg_4  xaxis of new grid
 *  arg_5  yaxis of new grid
-*  arg_6  interpolation parameter   cay
+*  arg_6  interpolation parameter   kay
 *  arg_7  interpolation parameter   nrng
 
       IMPLICIT NONE
@@ -282,307 +309,341 @@
       INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
+
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz,
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz,
+     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz,
+     .           mem3lot:mem3hit, mem3loe:mem3hie, mem3lof:mem3hif)
+      REAL arg_4(mem4lox:mem4hix, mem4loy:mem4hiy, mem4loz:mem4hiz,
+     .           mem4lot:mem4hit, mem4loe:mem4hie, mem4lof:mem4hif)
+      REAL arg_5(mem5lox:mem5hix, mem5loy:mem5hiy, mem5loz:mem5hiz,
+     .           mem5lot:mem5hit, mem5loe:mem5hie, mem5lof:mem5hif)
+      REAL arg_6(mem6lox:mem6hix, mem6loy:mem6hiy, mem6loz:mem6hiz,
+     .           mem6lot:mem6hit, mem6loe:mem6hie, mem6lof:mem6hif)
+      REAL arg_7(mem7lox:mem7hix, mem7loy:mem7hiy, mem7loz:mem7hiz,
+     .           mem7lot:mem7hit, mem7loe:mem7hie, mem7lof:mem7hif)
+
+      REAL result(memreslox:memreshix, memresloy:memreshiy,
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
+
+* Ignore the unused final dimensions in the work arrays since
+* Fortran is column major
+      REAL*8 xax(wrk1lox:wrk1hix/2)
+      REAL*8 yax(wrk2lox:wrk2hix/2)
+      REAL zgridded(wrk3lox:wrk3hix, wrk3loy:wrk3hiy)
+      REAL xscat(wrk4lox:wrk4hix)
+      REAL yscat(wrk5lox:wrk5hix)
+      REAL fscat(wrk6lox:wrk6hix)
+      REAL zpij(wrk7lox:wrk7hix)
+      REAL knxt(wrk8lox:wrk8hix)
+
+* After initialization, the 'res_' arrays contain indexing information
+* for the result axes.  The 'arg_' arrays will contain the indexing
+* information for each variable''s axes.
+
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
-     .     mem1lot:mem1hit)
-      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
-     .     mem2lot:mem2hit)
-      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
-     .     mem3lot:mem3hit)
-      REAL arg_4(mem4lox:mem4hix, mem4loy:mem4hiy, mem4loz:mem4hiz, 
-     .     mem4lot:mem4hit)
-      REAL arg_5(mem5lox:mem5hix, mem5loy:mem5hiy, mem5loz:mem5hiz, 
-     .     mem5lot:mem5hit)
-      REAL arg_6(mem6lox:mem6hix, mem6loy:mem6hiy, mem6loz:mem6hiz, 
-     .     mem6lot:mem6hit)
-      REAL arg_7(mem7lox:mem7hix, mem7loy:mem7hiy, mem7loz:mem7hiz, 
-     .     mem7lot:mem7hit)
-      REAL result(memreslox:memreshix, memresloy:memreshiy, 
-     .     memresloz:memreshiz, memreslot:memreshit)
-
-* After initialization, the 'res_' arrays contain indexing information 
-* for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
-
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
-
 
 ************************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
 
+      REAL zgridbad
+      PARAMETER (zgridbad = 1.e+35)  ! missing-data flag used by zgrid_laplace
+
       INTEGER i, j, k, l, m, n
-      INTEGER i1, i2, i4, j1
-      INTEGER i1n, i2n, i4n, j5, j5n
-      INTEGER nxsize, nysize
-      INTEGER i3, j3, k3, l3
+      INTEGER idx, lo_ss, hi_ss
+      INTEGER nxpts, nypts, npts, nscat
+      INTEGER nx, ny
+      INTEGER i3, j3, k3, l3, m3, n3
       INTEGER xlo, xhi, ylo, yhi
-      INTEGER nx, ny, nxpts, nypts, nscat
-      REAL x1, y1, dx, dy
-
-      REAL cay, big
       INTEGER nrng
-      PARAMETER (big = 1.e+35)	! missing-data flag expected by zgrid
-
-*  Dimension the work arrays
-
-      REAL*8 xax(wrk1lox:wrk1hix/2, wrk1loy:wrk1hiy,
-     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-      REAL*8 yax(wrk2lox:wrk2hix/2, wrk2loy:wrk2hiy,
-     .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
-      REAL zgridded(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
-     .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
-      REAL xscat(wrk4lox:wrk4hix, wrk4loy:wrk4hiy,
-     .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
-      REAL yscat(wrk5lox:wrk5hix, wrk5loy:wrk5hiy,
-     .               wrk5loz:wrk5hiz, wrk5lot:wrk5hit)
-      REAL fscat(wrk6lox:wrk6hix, wrk6loy:wrk6hiy,
-     .               wrk6loz:wrk6hiz, wrk6lot:wrk6hit)
-      REAL zpij(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
-     .               wrk7loz:wrk7hiz, wrk7lot:wrk7hit)
-      REAL knxt(wrk8lox:wrk8hix, wrk8loy:wrk8hiy,
-     .               wrk8loz:wrk8hiz, wrk8lot:wrk8hit)
-
+      REAL x1, y1, dx, dy
+      REAL kay
       CHARACTER*250 errtxt
 
 C  variables for checking axis characteristics (modulo, regular)
+      CHARACTER ax_name(6)*16, ax_units(6)*16
+      LOGICAL backward(6), mdulo(6), regular(6)
+      LOGICAL modulox, moduloy
+      REAL*8 modxlen, modylen
 
-      CHARACTER ax_name(4)*16, ax_units(4)*16
-      LOGICAL backward(4), modulox(4), moduloy(4), 
-     .        regularx(4), regulary(4)
-
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-*  Get output axis characteristics
-
-      CALL ef_get_axis_info (id, 4, ax_name, ax_units, backward, 
-     .                       modulox, regularx)
-      CALL ef_get_axis_info (id, 5, ax_name, ax_units, backward, 
-     .                       moduloy, regulary)
-
-*  Check that output axes are regular
-
-      IF (.NOT. regularx(1)) then
-         WRITE (errtxt, *) 'output axes must be REGULARLY spaced'
-         GO TO 999
+*  Check to see if output axes are regular, and get modulo characteristics
+      CALL ef_get_axis_info_6d(id, ARG4, ax_name, ax_units,
+     .                         backward, mdulo, regular)
+      IF ( .NOT. regular(X_AXIS) ) THEN
+         errtxt = 'Output axes must be REGULARLY spaced'
+         GOTO 999
       ENDIF
-      IF (.NOT. regulary(2)) then
-         WRITE (errtxt, *) 'output axes must be REGULARLY spaced'
-         GO TO 999
+      modulox = mdulo(X_AXIS)
+      IF ( modulox ) THEN
+         CALL ef_get_axis_modulo_len(id, ARG4, X_AXIS, modxlen)
       ENDIF
 
-*  Find number of points in scattered input points.  1-D arrays defining the 
-*  scattered data points may lie on the X, Y, Z or T axis of the input arguments.
+      CALL ef_get_axis_info_6d(id, ARG5, ax_name, ax_units,
+     .                         backward, mdulo, regular)
+      IF ( .NOT. regular(Y_AXIS) ) THEN
+         errtxt = 'Output axes must be REGULARLY spaced'
+         GOTO 999
+      ENDIF
+      moduloy = mdulo(Y_AXIS)
+      IF ( moduloy ) THEN
+         CALL ef_get_axis_modulo_len(id, ARG5, Y_AXIS, modylen)
+      ENDIF
+
+*  Find number of points in scattered input points.  1-D arrays defining the
+*  scattered data points may lie on the X, Y, Z, T, E, or F axis of the input
+*  arguments.
+*  Using as flattened arrays, so consider all axes.
 
       nxpts = 0
+      DO 10 idx = X_AXIS, F_AXIS
+         lo_ss = arg_lo_ss(idx,ARG1)
+         hi_ss = arg_hi_ss(idx,ARG1)
+         IF ( lo_ss .NE. ef_unspecified_int4 ) THEN
+            IF ( nxpts .NE. 0 ) THEN
+               nxpts = nxpts * (hi_ss - lo_ss + 1)
+            ELSE
+               nxpts = hi_ss - lo_ss + 1
+            ENDIF
+         ENDIF
+  10  CONTINUE
+
       nypts = 0
-
-      DO 100 m = X_AXIS, T_AXIS
-         IF (arg_lo_ss(m,ARG1) .GE. 1) THEN
-            i1 = arg_lo_ss(m,ARG1)
-            i1n = arg_hi_ss(m,ARG1)
-            if (i1n-i1 .NE. 0) nxpts = 1 + (i1n - i1)
+      DO 20 idx = X_AXIS, F_AXIS
+         lo_ss = arg_lo_ss(idx,ARG2)
+         hi_ss = arg_hi_ss(idx,ARG2)
+         IF ( lo_ss .NE. ef_unspecified_int4 ) THEN
+            IF ( nypts .NE. 0 ) THEN
+               nypts = nypts * (hi_ss - lo_ss + 1)
+            ELSE
+               nypts = hi_ss - lo_ss + 1
+            ENDIF
          ENDIF
- 100  CONTINUE
+  20  CONTINUE
 
-      DO 110 m = X_AXIS, T_AXIS
-         IF (arg_lo_ss(m,ARG2) .GE. 1) THEN
-            i2 = arg_lo_ss(m,ARG2)
-            i2n = arg_hi_ss(m,ARG2)
-            if (i2n-i2 .NE. 0) nypts = 1 + (i2n - i2)
-         ENDIF
- 110  CONTINUE
-
-      IF (nypts .NE. nxpts .OR. nxpts .EQ. 0) GOTO 900
-
-      nscat = nxpts
-
-*  Compute number of points in output axes.
-
-      i4 = arg_lo_ss(X_AXIS,ARG4)
-      i4n = arg_hi_ss(X_AXIS,ARG4)
-
-      j5 = arg_lo_ss(Y_AXIS,ARG5)
-      j5n = arg_hi_ss(Y_AXIS,ARG5)
-
-      nx = 1 + (i4n - i4)
-      ny = 1 + (j5n - j5)
-
-*  Check that xax is an X axis and yax a Y axis
-
-      IF (i4 .EQ. ef_unspecified_int4) then
-         WRITE (errtxt, *) 'fourth argument must be an X axis'
-         GO TO 999
-      ENDIF
-      IF (j5 .EQ. ef_unspecified_int4) then
-         WRITE (errtxt, *) 'fifth argument must be a Y axis'
-         GO TO 999
-      ENDIF
-
-C  Get coordinates of output axes.
-
-      call ef_get_coordinates(id, ARG4, X_AXIS, 
-     .   arg_lo_ss(X_AXIS, ARG4), arg_hi_ss(X_AXIS, ARG4), xax)
-
-      call ef_get_coordinates(id, ARG5, Y_AXIS, 
-     .   arg_lo_ss(y_AXIS, ARG5), arg_hi_ss(y_AXIS, ARG5), yax)
-
-*  Set start and delta for output axes.
-
-      x1 = xax(1,1,1,1)
-      y1 = yax(1,1,1,1)
-
-      IF ( nx .GT. 1 ) THEN
-         dx = xax(2,1,1,1) - xax(1,1,1,1)
-      ELSE
-         errtxt = 'More than one output X coordinate required'
-         GOTO 999
-      ENDIF
-      IF ( ny .GT. 1 ) THEN
-         dy = yax(2,1,1,1) - yax(1,1,1,1)
-      ELSE
-         errtxt = 'More than one output Y coordinate required'
+      IF ( nxpts .NE. nypts ) THEN
+         WRITE (errtxt,90) ' XPTS,', ' YPTS ', nxpts, nypts
          GOTO 999
       ENDIF
 
-      nxsize = nx
-      nysize = ny
-
-*  Get interpolation parameters.
-
-      cay = arg_6(arg_lo_ss(X_AXIS,ARG6), arg_lo_ss(Y_AXIS,ARG6), 
-     .            arg_lo_ss(Z_AXIS,ARG6), arg_lo_ss(T_AXIS,ARG6))
-      nrng = arg_7(arg_lo_ss(X_AXIS,ARG7), arg_lo_ss(Y_AXIS,ARG7), 
-     .            arg_lo_ss(Z_AXIS,ARG7), arg_lo_ss(T_AXIS,ARG7)) 
-
-      IF (cay .LT. 0.) GOTO 910
-      IF (nrng .LE. 0) GOTO 920
-
-*  Compute result at each time, and each depth.
-
+* Verify the number of values given in ARG3 makes sense
       xlo = arg_lo_ss(X_AXIS,ARG3)
       xhi = arg_hi_ss(X_AXIS,ARG3)
       ylo = arg_lo_ss(Y_AXIS,ARG3)
       yhi = arg_hi_ss(Y_AXIS,ARG3)
 
+      IF ( (xhi .GT. xlo) .AND. (yhi .GT. ylo) ) THEN
+         errtxt = 'F() data values defined on both X and Y axis'
+         GOTO 999
+      ELSE IF ( xhi .GT. xlo ) THEN
+         npts = xhi - xlo + 1
+         IF ( nxpts .NE. npts ) THEN
+            WRITE (errtxt,90) ' XPTS,', ' F(X) ', nxpts, npts
+            GOTO 999
+         ENDIF
+      ELSE IF ( yhi .GT. ylo ) THEN
+         npts = yhi - ylo + 1
+         IF ( nxpts .NE. npts ) THEN
+            WRITE (errtxt,90) ' XPTS,', ' F(Y) ', nxpts, npts
+            GOTO 999
+         ENDIF
+      ELSE IF ( (xlo .NE. ef_unspecified_int4) .OR.
+     .          (ylo .NE. ef_unspecified_int4) ) THEN
+         npts = 1
+         IF ( nxpts .NE. npts ) THEN
+            WRITE (errtxt,90) ' XPTS,', ' F()  ', nxpts, npts
+            GOTO 999
+         ENDIF
+      ELSE
+         errtxt = 'No data in scattered x, y points.  ' //
+     .            'F() data values must be defined on X or Y axis.'
+         GOTO 999
+      ENDIF
+  90  FORMAT('Input scattered', 2A6, 'have different # of points', 2I8)
+
+*  Compute number of points in output axes.
+
+      lo_ss = arg_lo_ss(X_AXIS,ARG4)
+      hi_ss = arg_hi_ss(X_AXIS,ARG4)
+*  Check that xax is an X axis
+      IF ( lo_ss .EQ. ef_unspecified_int4 ) THEN
+         errtxt = 'Fourth argument must be an X axis'
+         GO TO 999
+      ENDIF
+      nx = hi_ss - lo_ss + 1
+
+      lo_ss = arg_lo_ss(Y_AXIS,ARG5)
+      hi_ss = arg_hi_ss(Y_AXIS,ARG5)
+*  Check that yax a Y axis
+      IF ( lo_ss .EQ. ef_unspecified_int4 ) THEN
+         errtxt = 'Fifth argument must be a Y axis'
+         GO TO 999
+      ENDIF
+      ny = hi_ss - lo_ss + 1
+
+C  Get coordinates of output axes.
+
+      CALL ef_get_coordinates(id, ARG4, X_AXIS, arg_lo_ss(X_AXIS, ARG4),
+     .                        arg_hi_ss(X_AXIS, ARG4), xax)
+
+      CALL ef_get_coordinates(id, ARG5, Y_AXIS, arg_lo_ss(Y_AXIS, ARG5),
+     .                        arg_hi_ss(Y_AXIS, ARG5), yax)
+
+*  Set start and delta for output axes.
+
+      x1 = xax(1)
+      y1 = yax(1)
+
+      IF ( nx .GT. 1 ) THEN
+         dx = xax(2) - xax(1)
+      ELSE
+         errtxt = 'More than one output X coordinate required'
+         GOTO 999
+      ENDIF
+      IF ( ny .GT. 1 ) THEN
+         dy = yax(2) - yax(1)
+      ELSE
+         errtxt = 'More than one output Y coordinate required'
+         GOTO 999
+      ENDIF
+
+*  Get interpolation parameters.
+
+      kay = arg_6(arg_lo_ss(X_AXIS,ARG6), arg_lo_ss(Y_AXIS,ARG6),
+     .            arg_lo_ss(Z_AXIS,ARG6), arg_lo_ss(T_AXIS,ARG6),
+     .            arg_lo_ss(E_AXIS,ARG6), arg_lo_ss(F_AXIS,ARG6))
+      IF ( kay .LT. 0. ) THEN
+         errtxt = 'Gridding parameter KAY must be nonnegative'
+         GOTO 999
+      ENDIF
+
+      nrng = arg_7(arg_lo_ss(X_AXIS,ARG7), arg_lo_ss(Y_AXIS,ARG7),
+     .             arg_lo_ss(Z_AXIS,ARG7), arg_lo_ss(T_AXIS,ARG7),
+     .             arg_lo_ss(E_AXIS,ARG7), arg_lo_ss(F_AXIS,ARG7))
+      IF ( nrng .LE. 0 ) THEN
+         errtxt = 'Gridding parameter NRNG must be a positive integer'
+         GOTO 999
+      ENDIF
+
+*  Compute result at each Z, T, E, F
+
+      n3 = arg_lo_ss(F_AXIS,ARG3)
+      DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+
+      m3 = arg_lo_ss(E_AXIS,ARG3)
+      DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+
       l3 = arg_lo_ss(T_AXIS,ARG3)
-      DO 510 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-         k3 = arg_lo_ss(Z_AXIS,ARG3)
-         DO 500 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+      DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+
+      k3 = arg_lo_ss(Z_AXIS,ARG3)
+      DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
 *  If there is a missing value routine zgrid does not grid the data in
 *  a zone around that point, even if there are other nearby good data
-*  points.  Remove missing/bad data from the input (x,y,z) points. 
+*  points.  Remove missing/bad data from the input (x,y,f) points.
 *  Assigns xscat, yscat, fscat, and nscat.
 
          CALL nobadxy(arg_1, arg_2, arg_3,
      .                bad_flag(ARG1), bad_flag(ARG2), bad_flag(ARG3),
-     .                nxpts, xlo, xhi, ylo, yhi, k3, l3,
+     .                npts, xlo, xhi, ylo, yhi, k3, l3, m3, n3,
      .                xscat, yscat, fscat, nscat)
 
 *  If an output axis is modulo, apply modulo adjustment to that coordinate
 *  of the scattered points.
-
-         IF (modulox(1)) CALL modscat (xax, nx, nscat, xscat)
-         IF (moduloy(2)) CALL modscat (yax, ny, nscat, yscat)
+         IF ( modulox ) THEN
+            CALL modscat(xax(1), xax(nx), modxlen, nscat, xscat)
+         ENDIF
+         IF ( moduloy ) THEN
+            CALL modscat(yax(1), yax(ny), modylen, nscat, yscat)
+         ENDIF
 
 *  If an output axis is modulo, mirror the scattered points within NRNG
 *  of each end to the other end of the region.  Extends xscat, yscat,
 *  fscat, and updates nscat to the new count.
-
-         IF (modulox(1)) THEN
-            CALL copyscat (xax, nx, nrng, 
-     .                     nscat, xscat, yscat, fscat)
+         IF ( modulox ) THEN
+            CALL copyscat(xax, nx, nrng, nscat, xscat, yscat, fscat)
+         ENDIF
+         IF ( moduloy ) THEN
+            CALL copyscat(yax, ny, nrng, nscat, yscat, xscat, fscat)
          ENDIF
 
-         IF (moduloy(2)) THEN
-            CALL copyscat (yax, ny, nrng, 
-     .                     nscat, yscat, xscat, fscat)
-         ENDIF
+*  Initialize zgridded to all zeros
 
-*  Initialize result variable to 0.
+         DO j3 = 1, ny
+            DO i3 = 1, nx
+               zgridded(i3,j3) = 0.0
+            ENDDO
+         ENDDO
 
-         DO 200 j3 = 1, ny
-         DO 200 i3 = 1, nx
-            zgridded(i3,j3,1,1) = 0.
- 200     CONTINUE
+*  Grid the data.
 
-*  Grid the data. 
+         CALL zgrid_laplace(zgridded, nx, ny, nx, ny, x1, y1,
+     .      dx, dy, xscat, yscat, fscat, zpij, knxt, nscat, kay, nrng)
 
-         call zgrid_laplace (zgridded, nxsize, nysize, nx, ny, x1, y1, 
-     .      dx, dy, xscat, yscat, fscat, zpij, knxt, nscat, cay, nrng)
+*  Put zgridded into result variable.  Use "bad_flag_result" rather than
+*  "zgridbad" to mark bad data.
 
+         j3 = 1
+         DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-*  Put gridded z into result variable.  Use "bad_flag_result" rather than
-*  "big" to mark bad data.
+            i3 = 1
+            DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-         i3 = 1
-         DO 410 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-            j3 = 1
-            DO 400 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-
-               IF (zgridded(i3,j3,1,1) .EQ. big) THEN
-                  result(i,j,k,l) = bad_flag_result
+               IF ( zgridded(i3,j3) .EQ. zgridbad ) THEN
+                  result(i,j,k,l,m,n) = bad_flag_result
                ELSE
-                  result(i,j,k,l) = zgridded(i3,j3,1,1)
+                  result(i,j,k,l,m,n) = zgridded(i3,j3)
                ENDIF
 
-               j3 = j3 + 1
-  400       CONTINUE
-            i3 = i3 + 1
-  410    CONTINUE
+               i3 = i3 + 1
+  100       CONTINUE
+
+            j3 = j3 + 1
+  200    CONTINUE
 
          k3 = k3 + arg_incr(Z_AXIS,ARG3)
+  300 CONTINUE
+
+         l3 = l3 + arg_incr(T_AXIS,ARG3)
+  400 CONTINUE
+
+         m3 = m3 + arg_incr(E_AXIS,ARG3)
   500 CONTINUE
-      l3 = l3 + arg_incr(T_AXIS,ARG3)
-  510 CONTINUE
+
+         n3 = n3 + arg_incr(F_AXIS,ARG3)
+  600 CONTINUE
 
       RETURN
 
-  900 CONTINUE
-
-      IF (nxpts .NE. nypts) THEN
-         WRITE (errtxt,20) nxpts, nypts
-      ELSE IF (nxpts .EQ. 0) THEN
-         WRITE (errtxt, 30) 
-      ENDIF
-      GOTO 999
-
-  910 CONTINUE
-      WRITE (errtxt,40)
-      GOTO 999
-
-  920 CONTINUE
-      WRITE (errtxt,50)
-      GOTO 999
-
   999 CALL EF_BAIL_OUT(id, errtxt)
 
-   20 FORMAT('Input scattered x, y have different # of points', 2i8)
-
-   30 FORMAT ('No data in scattered x, y points')
-
-   40 FORMAT ('Gridding parameter CAY must be nonnegative Argument 6')
-
-   50 FORMAT ('Gridding parameter NRNG must be positive. Argument 7')
-
-      
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
 ************************************************************************
 
-      RETURN 
+      RETURN
       END
 
 
       SUBROUTINE nobadxy(xin, yin, fin, badx, bady, badf,
-     .                   npts, xlo, xhi, ylo, yhi, k3, l3,
+     .                   npts, xlo, xhi, ylo, yhi, k3, l3, m3, n3,
      .                   xscat, yscat, fscat, nscat)
 
 * ACM 11/00 change so not exact comparison: wasnt catching all bad values.
@@ -594,14 +655,14 @@ C  Get coordinates of output axes.
 
       LOGICAL TM_FPEQ
 
-* Input arguments
+*  Input arguments
       REAL xin(*), yin(*)
-      REAL fin(mem3lox:mem3hix, mem3loy:mem3hiy,
-     .         mem3loz:mem3hiz, mem3lot:mem3hit)
+      REAL fin(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz,
+     .         mem3lot:mem3hit, mem3loe:mem3hie, mem3lof:mem3hif)
       REAL badx, bady, badf
-      INTEGER npts, xlo, xhi, ylo, yhi, k3, l3
+      INTEGER npts, xlo, xhi, ylo, yhi, k3, l3, m3, n3
 
-* Output arguments
+*  Output arguments
       REAL xscat(*), yscat(*), fscat(*)
       INTEGER nscat
 
@@ -617,11 +678,11 @@ C  Get coordinates of output axes.
             IF ( TM_FPEQ(yin(idx), bady) ) GOTO 100
             i3 = xlo + idx - 1
             j3 = ylo
-            IF ( TM_FPEQ(fin(i3,j3,k3,l3), badf) ) GOTO 100
+            IF ( TM_FPEQ(fin(i3,j3,k3,l3,m3,n3), badf) ) GOTO 100
             nscat = nscat + 1
             xscat(nscat) = xin(idx)
             yscat(nscat) = yin(idx)
-            fscat(nscat) = fin(i3,j3,k3,l3)
+            fscat(nscat) = fin(i3,j3,k3,l3,m3,n3)
   100    CONTINUE
 
       ELSE
@@ -631,11 +692,11 @@ C  Get coordinates of output axes.
             IF ( TM_FPEQ(yin(idx), bady) ) GOTO 200
             i3 = xlo
             j3 = ylo + idx - 1
-            IF ( TM_FPEQ(fin(i3,j3,k3,l3), badf) ) GOTO 200
+            IF ( TM_FPEQ(fin(i3,j3,k3,l3,m3,n3), badf) ) GOTO 200
             nscat = nscat + 1
             xscat(nscat) = xin(idx)
             yscat(nscat) = yin(idx)
-            fscat(nscat) = fin(i3,j3,k3,l3)
+            fscat(nscat) = fin(i3,j3,k3,l3,m3,n3)
   200    CONTINUE
 
       ENDIF

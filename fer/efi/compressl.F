@@ -87,6 +87,7 @@
 
       SUBROUTINE compressl_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -95,7 +96,9 @@
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
+
       CHARACTER*100 fcn_desc
+
       WRITE (fcn_desc, 10)
    10 FORMAT ('Returns data, compressed along the L axis: Missing ',
      .        'points moved to the end')
@@ -103,15 +106,18 @@
 
       CALL ef_set_num_args(id, 1)
       CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, ABSTRACT)
-
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, ABSTRACT,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT')
       CALL ef_set_arg_desc(id, arg, 'variable to compress in L')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, YES, NO, YES, YES)
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
@@ -133,6 +139,7 @@
 
       SUBROUTINE compressl_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id
@@ -145,14 +152,15 @@
       INTEGER my_lo_l, my_hi_l
 
       INTEGER arg
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
 *
 *     Use utility functions to get context information about the arguments.
 *
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       my_lo_l = 1
       my_hi_l = 1
@@ -176,83 +184,103 @@
 *
       SUBROUTINE compressl_compute(id, arg_1, result)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
-     .           mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL result(memreslox:memreshix, memresloy:memreshiy,
-     .            memresloz:memreshiz, memreslot:memreshit)
+      INTEGER id
+
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
 * information for each variable's axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 ***********************************************************************
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
 
-      INTEGER id
-      INTEGER nbad, m_indx
-      INTEGER m, nsrt
-      INTEGER i, j, k, l
-      INTEGER i1, j1, k1, l1
+      INTEGER ndx, nsrt, nbad
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, k1, l1, m1, n1
 
 *  Get subscript ranges
 
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-      i1 = arg_lo_ss(X_AXIS, ARG1)
-      DO 500 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      n1 = arg_lo_ss(F_AXIS, ARG1)
+      DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
 
-         j1 = arg_lo_ss(Y_AXIS, ARG1)
-         DO 400 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+         m1 = arg_lo_ss(E_AXIS, ARG1)
+         DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
 
             k1 = arg_lo_ss(Z_AXIS, ARG1)
-            DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+            DO 400 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-               nsrt = 0
-               nbad = 0
+               j1 = arg_lo_ss(Y_AXIS, ARG1)
+               DO 300 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-               l1 = arg_lo_ss(T_AXIS,ARG1)
-               DO 100 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+                  i1 = arg_lo_ss(X_AXIS, ARG1)
+                  DO 200 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-                  IF (arg_1(i1,j1,k1,l1) .NE. bad_flag(1)) THEN
-                     nsrt = nsrt + 1
-                     result(i,j,k,nsrt) = arg_1(i1,j1,k1,l1)
+                     nsrt = 0
+                     nbad = 0
 
-                  ELSE
-                     nbad = nbad + 1
-                  END IF
+                     l1 = arg_lo_ss(T_AXIS, ARG1)
+                     DO 100 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
-                  l1 = l1 + arg_incr(T_AXIS,ARG1)
- 100           CONTINUE
-      
+                        IF ( arg_1(i1,j1,k1,l1,m1,n1)
+     .                               .NE. bad_flag(1) ) THEN
+                           nsrt = nsrt + 1
+                           result(i,j,k,nsrt,m,n) = 
+     .                               arg_1(i1,j1,k1,l1,m1,n1)
+                        ELSE
+                           nbad = nbad + 1
+                        ENDIF
+
+                        l1 = l1 + arg_incr(T_AXIS,ARG1)
+ 100                 CONTINUE
+
 *
 * Compress argument, putting bad data at the end.
 *
-               DO 200 m = 1, nbad
-                  m_indx = m + nsrt
-                  result(i,j,k,m_indx) = bad_flag_result
- 200           CONTINUE
+                     DO 150 ndx = 1, nbad
+                        nsrt = nsrt + 1
+                        result(i,j,k,nsrt,m,n) = bad_flag_result
+ 150                 CONTINUE
+
+                     i1 = i1 + arg_incr(X_AXIS, ARG1)
+ 200              CONTINUE
+
+                  j1 = j1 + arg_incr(Y_AXIS, ARG1)
+ 300           CONTINUE
 
                k1 = k1 + arg_incr(Z_AXIS, ARG1)
- 300        CONTINUE
+ 400        CONTINUE
 
-            j1 = j1 + arg_incr(Y_AXIS, ARG1)
- 400     CONTINUE
+            m1 = m1 + arg_incr(E_AXIS, ARG1)
+ 500     CONTINUE
 
-         i1 = i1 + arg_incr(X_AXIS, ARG1)
- 500  CONTINUE
+         n1 = n1 + arg_incr(F_AXIS, ARG1)
+ 600  CONTINUE
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |

@@ -49,6 +49,7 @@
 *		    bug fix: invalid branch at 4/94 fix -- was hidden all
 *			     this time because line_name check was invalid
 *			     so code was never executed
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * argument definitions:
 *       first   - highest number line to check
@@ -56,21 +57,13 @@
 * note: lines are allocated from high to low
 
 * include files
-#ifdef unix
+
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
-
+	
 * argument declarations
 	INTEGER	 first, last
 
@@ -92,7 +85,7 @@
 * modify axis pointer saved in the grids
            DO 110 igrid = 1, max_grids
               IF ( grid_name(igrid) .EQ. char_init ) GOTO 110
-              DO 100 idim = 1, 4
+              DO 100 idim = 1, nferdims
                  IF ( grid_line(idim, igrid) .EQ. iaxis )
      .         write (6,*) 'grid defns are garbled!: TM_GRID_GARBAGE' ! diag
                  IF ( grid_line(idim, igrid) .GT. iaxis

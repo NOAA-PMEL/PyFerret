@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -44,7 +44,9 @@
 *
 * revision 0.0 - 8/25/88
 * V230:  7/23/92 - TRUE only if grid has a valid latitude axis (major rewrite)
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -68,7 +70,7 @@
 
 * check that the X and Y axes of this grid are both degrees
 * assume the calling routine calls this only for lat or long
-*     (so the orientation of idim isn't checked here)
+*     (so the orientation of idim is not checked here)
 
 	IF ( xaxis .EQ. mnormal .OR. xaxis .EQ. munknown
      .  .OR. yaxis .EQ. mnormal .OR. yaxis .EQ. munknown ) THEN

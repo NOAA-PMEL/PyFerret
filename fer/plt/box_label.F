@@ -55,7 +55,9 @@
 * V68  *acm*  4/11 - more on bug 1098. Break up labels by sending <NL> to pplus
 *                    instead of creating multiple moveable labels. 
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'plot_setup.parm'
 	include 'xprog_state.cmn'

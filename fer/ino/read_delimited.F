@@ -45,6 +45,7 @@
 * V540: 10/01 *sh* - undo the erroneous change of V533 (why was V533 chg done?)
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars
+*       *acm* 3/12 changes for 6D Ferret
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -72,7 +73,7 @@
      .			cx0, cx1, nread, istep,
      .			cxlist(maxezvars), mrlist(maxezvars),
      .			field_type(maxezvars),
-     .			mr1, ndim, las_dim, fst_dim, dims(4),
+     .			mr1, ndim, las_dim, fst_dim, dims(nferdims),
      .			rec_to_read, buffblk
 	CHARACTER	VAR_CODE*128, delims*80
 
@@ -123,7 +124,7 @@
 	     cx_grid    ( cx_stack_ptr ) = ds_grid_number( fvar )
 	     cx_bad_data( cx_stack_ptr ) = ds_bad_flag( fvar )	! 12/93 add'n
 	     cx_type    ( cx_stack_ptr ) = ds_var_type( fvar )
-	     DO 200 idim = 1, 4
+	     DO 200 idim = 1, nferdims
 	        cx_lo_ss(cx_stack_ptr, idim) = ds_grid_start(idim, fvar)
 	        cx_hi_ss(cx_stack_ptr, idim) = ds_grid_end  (idim, fvar)
 	        cx_by_ss(idim, cx_stack_ptr) = .TRUE.
@@ -212,7 +213,7 @@
 * the data region obtained may be inadequate for the request
 * ("cx" is request, "cx1" is available)
 	cx1 = cxlist(the_var)
-	DO 900 idim = 1, 4
+	DO 900 idim = 1, nferdims
 	   IF ( cx_hi_ss(cx,idim) .GT. cx_hi_ss(cx1,idim) ) THEN
 	      IF ( cx_given(idim,cx) ) THEN  ! 3/00 cut mystery cx_last ref.
 * ... error: the user explicitly requested more than there is

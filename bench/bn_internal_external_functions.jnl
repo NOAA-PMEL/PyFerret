@@ -8,6 +8,8 @@
 ! 05/05 *acm* move bench_compress here; internally linked.
 ! 05/07 *acm* move tax_* functions and fill_xy here; internally linked.
 !  3/12 *acm* new script bn_scat2grid tests scat2grid functions in all directions
+!  4/12 *kms* new scripts bn_scat2grid_gl, bn_scat2gridlaplace_tarasoff,
+!             bn_scat2grid_nobs, bn_scat2grid_t, bn_transpose, bn_unique_str2int
 
 GO bn_reset
 go bench_fft
@@ -17,6 +19,24 @@ go bench_gridding
 
 GO bn_reset
 go bn_scat2grid_test
+
+GO bn_reset
+go bn_scat2grid_gl
+
+GO bn_reset
+go bn_scat2gridlaplace_tarasoff
+
+GO bn_reset
+go bn_scat2grid_nobs
+
+GO bn_reset
+go bn_scat2grid_t
+
+GO bn_reset
+go bn_transpose
+
+GO bn_reset
+go bn_unique_str2int
 
 GO bn_reset
 go bench_sort

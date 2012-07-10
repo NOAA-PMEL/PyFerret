@@ -54,7 +54,10 @@
 * V430:  7/96 - pass cx to ALG_TRANS_TITL so it can document 4D transformations
 * v530  *acm* 3/01 - Show calendar name for alternative calendar types.
 * v570  *acm* 5/04 - When showing calendar, need  cal_id .LE. max_calendars, not .LT.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xalgebra.cmn'
@@ -121,7 +124,7 @@
 
 * calendar name requiring comment ?
 
-	IF (idim .EQ. t_dim  .AND. 
+	IF ((idim.EQ.t_dim .OR. idim.EQ.f_dim)  .AND. 
      .      cx_lo_ww( idim, cx ) .NE. unspecified_val8 ) THEN
 
 	   grid = cx_grid(cx)

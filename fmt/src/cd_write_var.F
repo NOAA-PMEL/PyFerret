@@ -68,6 +68,8 @@
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library. 
 * V641 *acm* 1/10  Fix bug 1715 and output of packed data.
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+*      4/12 *acm* fix for finding the record axis, never axes 5 or 6.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -81,7 +83,6 @@
 *     status  - return status
 
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
@@ -100,7 +101,7 @@
 
 * argument declarations
       LOGICAL do_bounds, mode_upcase_output
-      INTEGER cdfid, dset, grid, lo(4), hi(4), edges_flag, status
+      INTEGER cdfid, dset, grid, lo(nferdims), hi(nferdims), edges_flag, status
       CHARACTER*(*) vname
       REAL dat(*), bad
       REAL*8 scalefac, addoff
@@ -110,16 +111,16 @@
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
       INTEGER TM_LENSTR1, 
-     .        start(4), count(4), idim, iaxis, cdfstat, vlen,
-     .        slab_min(4), slab_max(4), tmrecax, cdrecax, dims, varid,
-     .        hilim, i100, i, j, k, l, recaxvar, lorec, hirec, rectyp,
-     .	      vartyp, nvdim, vdims(6), nvatts, bndstart(2), bndcount(2),
+     .        start(nferdims), count(nferdims), idim, iaxis, cdfstat, vlen,
+     .        slab_min(nferdims), slab_max(nferdims), tmrecax, cdrecax, dims, varid,
+     .        hilim, i100, i, j, k, l, m, n, recaxvar, lorec, hirec, rectyp,
+     .	      vartyp, nvdim, vdims(8), nvatts, bndstart(2), bndcount(2),
      .        mblk1, nblks, npts, savecount
       LOGICAL CD_GET_BOUNDS, TM_ABSTRACT_AXIS, TM_DFPEQ, 
      .        got_it, scaled
       CHARACTER*13 TM_STRING
-      CHARACTER*1  dimnam(4)
-      DATA  	   dimnam/'I','J','K','L'/
+      CHARACTER*1  dimnam(nferdims)
+      DATA  	   dimnam/'I','J','K','L','M','N'/
       CHARACTER*128 vbuff     ! needed because of fussy f772.1 DEC compiler
       REAL   r_scale, r_offset, scaled_bad
       REAL*8 r100_8(200)
@@ -174,7 +175,7 @@ c      EQUIVALENCE (r100_8, r100_4)
 * if i=5:15 overwrites i=1:10 it will be detected but
 * if i=6:15 overwrite i=1:10 it still will not be detected resulting in an
 * unhelpful error message, below
-         DO 10 idim = 1, 4
+         DO 10 idim = 1, nferdims
             IF ( idim .EQ. tmrecax ) GOTO 10
             iaxis = grid_line(idim, grid)
             IF ( TM_ABSTRACT_AXIS(iaxis)
@@ -189,8 +190,12 @@ c      EQUIVALENCE (r100_8, r100_4)
          IF ( lo(t_dim).EQ.unspecified_int4 ) tmrecax = 0
 
 * check for valid limits (must be consistent with first time write)
-      DO 100 idim = 1, 4
+* When reading a 4D file with 6D Ferret, skip checks when slab_min, 
+* slab_max have been set to  unspecified_int4
+
+      DO 100 idim = 1, nferdims
          IF ( idim .EQ. tmrecax ) GOTO 100
+	 IF (slab_min(idim) .EQ. unspecified_int4 ) GOTO 100
          IF ( lo(idim) .EQ. unspecified_int4 ) THEN
             IF ( slab_min(idim) .NE. 1 ) GOTO 5200
          ELSE
@@ -201,14 +206,19 @@ c      EQUIVALENCE (r100_8, r100_4)
 
 * determine the start and count as netCDF will want them
 * and determine which axis (cdrecax = 1-4) of THIS (possibly less than 4D)
-* variable is the record axis.
+* variable is the record axis.  
+* 4/2012 6D Ferret: Note that dimensions 5 and 6 will NOT
+* be the record axis. 
+
 * (the complex logic for this is to allow future record axes not to be T)
       cdrecax = tmrecax
       dims = 0
-      DO 200 idim = 1, 4
+      DO 200 idim = 1, nferdims
          iaxis = grid_line(idim, grid)
          IF ( iaxis.EQ.mnormal .OR. lo(idim).EQ.unspecified_int4) THEN
-            IF ( dims .LE. tmrecax ) cdrecax = cdrecax - 1   ! logic ok ??
+* TODO: this logic is NOT ok for 6D, it assumes rec ax # is larger than other axes. 
+*       Wind up with cdrecax = 0...
+            IF ( dims.LE.tmrecax .AND. idim.LE.4 ) cdrecax = cdrecax - 1   ! logic ok ??
          ELSE
             dims = dims + 1
             start(dims) = lo(idim) - slab_min(idim) + 1
@@ -299,7 +309,7 @@ c      EQUIVALENCE (r100_8, r100_4)
 
 * Write a time-step slab containing missing data
             npts = 1
-            DO 220  idim = 1, 4
+            DO 220  idim = 1, nferdims
                IF ( idim .EQ. tmrecax ) GOTO 220
                IF ( count(idim) .GT. 0 ) npts = npts* count(idim)
  220        CONTINUE
@@ -319,6 +329,8 @@ c      EQUIVALENCE (r100_8, r100_4)
             DO 240 j = 1, MAX(count(2),1)
             DO 240 k = 1, MAX(count(3),1)
             DO 240 l = 1, MAX(count(4),1)
+            DO 240 m = 1, MAX(count(5),1)
+            DO 240 n = 1, MAX(count(6),1)
                memory(npts, mblk1) = missflag
                npts = npts + 1
  240        CONTINUE
@@ -446,7 +458,7 @@ c      EQUIVALENCE (r100_8, r100_4)
          r_offset = -1.D0* addoff* r_scale
 
          npts = 1
-         DO 250  idim = 1, 4
+         DO 250  idim = 1, nferdims
             IF ( count(idim) .GT. 0 ) npts = npts* count(idim)
  250     CONTINUE
          CALL TM_SCALE_ALL ( r_scale, r_offset, dat, vartyp, npts )

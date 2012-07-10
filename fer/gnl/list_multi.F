@@ -44,30 +44,35 @@
 *
 * V200:  7/31/90
 * V312: 5/94 - array "memory" as a calling argument
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+
+	include 'tmap_dims.parm'
+
 
 * calling argument declarations:
 	LOGICAL	heading
-	INTEGER	mr_list(*), cx_list(*), perm(4), wsize, status
+	INTEGER	mr_list(*), cx_list(*), perm(nferdims), wsize, status
 	REAL	memory(*), work(0:wsize)
 	
 * internal variable declarations:
 	INTEGER ws
 
 * the work array is partitioned as follows in the called routine:
+* These need to be recomputed if nferdims is changed.
 *	work(0)	     is xact_range(nvar)
-*	work(ws)     is has_size(4,nvar)
-*	work(5*ws)   is bad(nvar)
-*	work(6*ws)   is pt_blk(nvar)
-*	work(7*ws)   is size(4,nvar)
-*	work(11*ws)  is msize(nvar)
-*	work(12*ws)  is width(nvar)
-*	work(13*ws)  is out(nvar)
+*	work(ws)     is has_size(nferdims,nvar)
+*	work(7*ws)   is bad(nvar)
+*	work(8*ws)   is pt_blk(nvar)
+*	work(9*ws)   is size(nferdims,nvar)
+*	work(15*ws)  is msize(nvar)
+*	work(16*ws)  is width(nvar)
+*	work(17*ws)  is out(nvar)
 
-	ws = wsize / 14
+	ws = wsize / (2*nferdims+6)
 	CALL LIST_MULTI_SUB(memory,mr_list,cx_list,heading,perm, ws,
-     .			work(0),     work(ws),   work(5*ws),
-     .			work(6*ws),  work(7*ws), work(11*ws),
-     .			work(12*ws), work(13*ws),
+     .			work(0),     work(ws),   work(7*ws),
+     .			work(8*ws),  work(9*ws), work(15*ws),
+     .			work(16*ws), work(17*ws),
      .			status)
 
 

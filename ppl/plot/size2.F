@@ -144,6 +144,8 @@ C     MM) HIGH.
 C
 C
 * V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
         include 'pltcom_dat.decl'       ! with declarations
         include 'PLTCOM.DAT'            ! with declarations
@@ -164,7 +166,6 @@ C
         REAL width, height
 
         LOGICAL TM_FPEQ_SNGL
-
         LOGICAL clip
         INTEGER ier, id, itype, imeter, irx, iry
         REAL    dmaxx, dmaxy, fcty, fctx, xln, yln, xmn, xmx, ymn, ymx,

@@ -41,6 +41,7 @@
 * NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
 *
 * revision 0.0 - 3/26/2010
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 	include 'xrevision.cmn'
 	include 'xrevision_type.cmn'
@@ -57,10 +58,6 @@
         show_str = TM_FMT(revision_level, 5, 12, slen)
 	
 	plen = TM_LENSTR1(platform_type)
-
-c	PRINT 3000, show_str(1:slen), platform_type(1:plen), make_date
-c
-c 3000	FORMAT ( 'FERRET v', A, ' ', A, ' -',1X,A )
 
 	PRINT 3000, show_str(1:slen)
  3000	FORMAT (A )

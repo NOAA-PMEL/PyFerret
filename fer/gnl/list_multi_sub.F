@@ -83,6 +83,7 @@
 *                    list out the missing data values. The point of these
 *                    is that they'll be read into some other software e.g.
 *                    spreadsheets, so the user wants the missing flags in there.
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -90,6 +91,7 @@
 	external xdset_info_data
 	include 'ferret.parm'
 	include 'errmsg.parm'
+	include	'slash.parm'
 	include 'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xprog_state.cmn'
@@ -103,18 +105,15 @@
 	INTEGER		line_length
 	PARAMETER     ( line_length  = 2048,
      .			no_decims = .FALSE. )
-	INTEGER		slash_precision, slash_norow
-	PARAMETER     (	slash_precision = 17+1,
-     .                  slash_norow   = 32+1 )
 
 * calling argument declarations:
 	LOGICAL	heading
 	INTEGER	mr_list(num_uvars_in_cmnd), cx_list(num_uvars_in_cmnd),
-     .		perm(4), ws, status
+     .		perm(nferdims), ws, status
 	REAL	memory( mem_blk_size, max_mem_blks )
 * ... work arrays ...
-	LOGICAL		xact_range(ws), has_size(4,ws)
-	INTEGER		pt_blk(ws), size(4,ws), msize(ws), width(ws)
+	LOGICAL		xact_range(ws), has_size(nferdims,ws)
+	INTEGER		pt_blk(ws), size(nferdims,ws), msize(ws), width(ws)
 	REAL		out(ws), bad(ws)
 * ss_save removed from integer declaration and put in logical decl.  *kob* 8/94	
 * V500 *kob* 3/99- up VAR_CODE and vcode decl's to 64 chars and KEY_STRING
@@ -126,11 +125,12 @@
 	INTEGER		TM_LENSTR1, CGRID_AXIS, GET_MAX_STRING_LEN,
      .			GET_OFFSET_C_STRING_LEN, 
      .			w0, w, data_len, nleft, nright, alen, blen,
-     .			lo(4), hi(4), del(4), pt(4), valid_ax(4),
      .			idim, vlen, cleft, col_ax, col_dec,
      .			cx, slen1, slen2, slen3, i, 
      .			ivar, point, word, block, iwd, iblk, dset, ax, new_ax,
-     .			min_width, row_ww_wid, lp, prec_digits, ww
+     .			min_width, row_ww_wid, lp, prec_digits, ww,
+     .			lo(nferdims), hi(nferdims), del(nferdims), 
+     .			pt(nferdims), valid_ax(nferdims)
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 	CHARACTER	KEY_STRING*128, AX_TITLE*32, VAR_UNITS*64, LEFINT*8,
      .			CX_DIM_STR*16, VAR_CODE*128, TM_FMT*16,
@@ -145,15 +145,18 @@
 	INTEGER		ios
 #endif
 * convenience equivalence:
-	INTEGER		lo1, lo2, lo3, lo4, hi1, hi2, hi3, hi4,
-     .			del1, del2, del3, del4,
-     .			i1, i2, i3, i4
-	EQUIVALENCE	(i1, pt(1)) , (i2, pt(2)) , (i3, pt(3)),  (i4,pt(4)),
-     .			(lo1, lo(1)), (lo2, lo(2)), (lo3,lo(3)),  (lo4,lo(4)),
-     .			(hi1, hi(1)), (hi2, hi(2)), (hi3,hi(3)),  (hi4,hi(4)),
-     .			(del1,del(1)),(del2,del(2)),(del3,del(3)),(del4,del(4))
+	INTEGER		lo1, lo2, lo3, lo4, lo5, lo6, 
+     .			hi1, hi2, hi3, hi4, hi5, hi6, 
+     .			del1,del2,del3,del4,del5,del6, 
+     .			i1, i2, i3, i4, i5, i6
+	EQUIVALENCE	
+     .  (i1, pt(1)) , (i2, pt(2)) , (i3, pt(3)),  (i4,pt(4)),   (i5, pt(5)),  (i6,pt(6)),
+     .  (lo1, lo(1)), (lo2, lo(2)), (lo3,lo(3)),  (lo4,lo(4)),  (lo5,lo(5)),  (lo6,lo(6)),
+     .  (hi1, hi(1)), (hi2, hi(2)), (hi3,hi(3)),  (hi4,hi(4)),  (hi5,hi(5)),  (hi6,hi(6)),
+     .  (del1,del(1)),(del2,del(2)),(del3,del(3)),(del4,del(4)),(del5,del(5)),(del6,del(6))
 
 * initialize
+
 	status		= ferr_ok
         do_unform       = list_fmt_type .EQ. plist_unformatted
 	risc_buff = ' '
@@ -161,7 +164,7 @@
         do_tab_del   = list_fmt_type .EQ. plist_tab_del
         do_comma_del = list_fmt_type .EQ. plist_comma_del
 
-        norow = qual_given(slash_norow) .GT. 0
+        norow = qual_given(slash_list_norow) .GT. 0
 
         IF ( do_comma_del .OR. do_tab_del ) THEN
 * ... column headings for tab and comma-delimited output (9/95)
@@ -174,7 +177,7 @@
 	ENDIF
 
 * determine precision for outputting values
-	lp = qual_given( slash_precision ) 
+	lp = qual_given( slash_list_precision ) 
 	IF ( lp .GT. 0 ) THEN
            CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),
      .                     value, status )
@@ -186,7 +189,7 @@
 
 * determine list limits checking for conformable shapes of data to list
 * ... for each axis each var must be same size or length 1
-	DO 10 i = 1, 4
+	DO 10 i = 1, nferdims
 	   idim = perm(i)
 	   lo(i) = unspecified_int4
 	   hi(i) = unspecified_int4
@@ -206,7 +209,7 @@
  10	CONTINUE
 
 * compute lengths of each variables' axes
-	DO 20 i = 1, 4
+	DO 20 i = 1, nferdims
 	   idim = perm(i)
 	   DO 18 ivar = 1, num_uvars_in_cmnd
 	      cx = cx_list(ivar)
@@ -214,10 +217,11 @@
 	      size( i, ivar ) = cx_hi_ss(cx,idim) - cx_lo_ss(cx,idim) + 1
  18	   CONTINUE
  20	CONTINUE
+
 * ... and total size
 	DO 25 ivar = 1, num_uvars_in_cmnd
 	msize(ivar) = 1
-	DO 25 idim = 1, 4
+	DO 25 idim = 1, nferdims	
  25	msize(ivar) = msize(ivar) * size(idim,ivar)	
 
 * determine which axes have unambiguous coordinates (all variables that are
@@ -227,7 +231,7 @@
 	sep = ' '
 	bad_ax = ' '
 	slen1 = 1	! length of bad axis string
-	DO 30 i = 1, 4
+	DO 30 i = 1, nferdims
 	   idim = perm(i)
 	   valid_ax(i) = 0	! assume ambiguous coordinates
 	   ax = mnormal
@@ -252,6 +256,7 @@
 	      ENDIF
  28	   CONTINUE
  30	CONTINUE
+
 * ... warn of ambiguous coordinates if output is not to the screen
 	IF ( slen1.GT.1 .AND. ttout_lun.NE.list_lun ) THEN
 	   WRITE (risc_buff, 3010) bad_ax(2:slen1)
@@ -264,7 +269,7 @@
 	DO 40 ivar = 1, num_uvars_in_cmnd
 	   cx = cx_list(ivar)
 	   xact_range(ivar) = .TRUE.
-	   DO 38 i = 1, 4
+	   DO 38 i = 1, nferdims
 	      idim = perm(i)
 	      IF ( lo(i) .EQ. hi(i) ) GOTO 38
 	      IF ( cx_lo_ss(cx,idim) .NE. lo(i)
@@ -315,7 +320,7 @@
 	ENDIF
 
 * ... location information in common for all variables
-	DO 70 i = 1, 4
+	DO 70 i = 1, nferdims
 	   idim = perm(i)
 	   cx = ABS( valid_ax(i) )
            IF ( cx .LE. 0 ) GOTO 70     !  6/92 bug fix
@@ -371,6 +376,8 @@
 * arbitrarily long
  200	IF ( do_unform .OR. list_format_given ) THEN
 	   point = -1                    ! bug fix 4/93
+	   DO 300 i6 = lo6, hi6, del6
+	   DO 300 i5 = lo5, hi5, del5
 	   DO 300 i4 = lo4, hi4, del4
 	   DO 300 i3 = lo3, hi3, del3
 	   DO 300 i2 = lo2, hi2, del2
@@ -391,8 +398,8 @@
 * ... separate pointer calcs for non-full region variables
 * ... e.g. a 2D field listed with a 3D will replicate at each 3rd-D location
 	            iwd = 0
-	            IF ( has_size(4,ivar) ) iwd = (pt(4)-lo(4))
-	            DO 240 i = 3, 1, -1
+	            IF ( has_size(nferdims,ivar) ) iwd = (pt(nferdims)-lo(nferdims))
+	            DO 240 i = nferdims-1, 1, -1
 	            iwd = iwd*size(i,ivar)
 		    IF ( has_size(i,ivar) ) iwd = iwd + (pt(i)-lo(i))
  240	            CONTINUE
@@ -405,15 +412,9 @@
 	         WRITE (list_lun, ERR=5010)
      .			( out(ivar),ivar = 1, num_uvars_in_cmnd )
 	      ELSE
-#ifdef DEC_FORTRAN
-* on DEC compilers a field too small for the value generates an ERR= branch
-	         WRITE (list_lun, list_format, IOSTAT=ios)
-     .			( out(ivar),ivar = 1, num_uvars_in_cmnd )
-	        IF ( ios.NE.0 .AND. ios.NE.63 ) GOTO 5010  ! 63 = fmt conv err 
-#else
+
 	         WRITE (list_lun, list_format, ERR=5010)
      .			( out(ivar),ivar = 1, num_uvars_in_cmnd )
-#endif
 	      ENDIF
  300	   CONTINUE
 * done - go home
@@ -532,7 +533,26 @@
 
 * If the /NOROWLAB qualifier was given, do not do the "coord/sub:" on each data line
 
+ 3050   FORMAT (1X,4('-'),1X,A)
 	point = -1                    ! bug fix 4/93
+	DO 600 i6 = lo6, hi6, del6
+* label the block of block of blocks (6th dimension)
+	   risc_buff = ' '
+	   IF ( hi6 .GT. lo6 ) THEN
+	      CALL POS_LAB( i6, valid_ax(6), perm(6),
+     .			    ax_dec_pt(perm(6)), line_buff, alen )
+	      WRITE (risc_buff, 3050) line_buff(:alen)
+	      CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
+	   ENDIF
+	DO 600 i5 = lo5, hi5, del5
+* label the block of block of blocks (5th dimension)
+	   risc_buff = ' '
+	   IF ( hi5 .GT. lo5 ) THEN
+	      CALL POS_LAB( i5, valid_ax(5), perm(5),
+     .			    ax_dec_pt(perm(5)), line_buff, alen )
+	      WRITE (risc_buff, 3050) line_buff(:alen)
+	      CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
+	   ENDIF
 	DO 600 i4 = lo4, hi4, del4
 * label the block of block of blocks (4th dimension)
 	   risc_buff = ' '
@@ -540,7 +560,6 @@
 	      CALL POS_LAB( i4, valid_ax(4), perm(4),
      .			    ax_dec_pt(perm(4)), line_buff, alen )
 	      WRITE (risc_buff, 3050) line_buff(:alen)
- 3050	      FORMAT (1X,4('-'),1X,A)
 	      CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
 	   ENDIF
 	DO 600 i3 = lo3, hi3, del3
@@ -598,8 +617,8 @@
 	            iwd = point
                  ELSE	
 	            iwd = 0
-	            IF ( has_size(4,ivar) ) iwd = (pt(4)-lo(4))
-	            DO 530 i = 3, 1, -1
+	            IF ( has_size(nferdims,ivar) ) iwd = (pt(nferdims)-lo(nferdims))
+	            DO 530 i = nferdims-1, 1, -1
                        iwd = iwd*size(i,ivar)
                        IF ( has_size(i,ivar) ) iwd = iwd + (pt(i)-lo(i))
  530	            CONTINUE
@@ -647,8 +666,8 @@
 * ... separate pointer calcs for non-full region variables
 * ... e.g. a 2D field listed with a 3D will replicate at each 3rd-D location
 	           iwd = 0
-	           IF ( has_size(4,ivar) ) iwd = (pt(4)-lo(4))
-	           DO 540 i = 3, 1, -1
+	           IF ( has_size(nferdims,ivar) ) iwd = (pt(nferdims)-lo(nferdims))
+	           DO 540 i = nferdims-1, 1, -1
 	           iwd = iwd*size(i,ivar)
 	           IF ( has_size(i,ivar) ) iwd = iwd + (pt(i)-lo(i))
  540	           CONTINUE

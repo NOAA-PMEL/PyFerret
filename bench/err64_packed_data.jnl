@@ -13,6 +13,12 @@ list/i=1:15 sst
 ! we can write the data out - saving the scaling to re-pack.
 set att/output sst.scale_factor
 set att/output sst.add_offset
+
+! With double-precision Ferret, need to write as float,
+! or the FillValue cant be represnted. 
+
+set var/outtype=float sst
+
 save/clobber/file=mypack.nc/i=1:15 sst
 can data/all; use mypack.nc
 sh att/all sst

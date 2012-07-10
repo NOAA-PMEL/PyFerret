@@ -11,14 +11,20 @@
 * V600 2/06 *kob* - declare alg_pvar_head as double, for 64-bit build
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid. 
+*      2/12  *kms* Increased num_pseudo_vars from 20 to 30:
+*                  M, N, E, F, EBOX, FBOX, EBOXLO, FBOXLO, EBOXHI, FBOXHI
+*       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
+*      4/12  *acm* Increased num_pseudo_vars from 30 to 40
+*                  dont need MODE FOURDEE, use _E, _F, _M, _N.
 
 	INTEGER		num_operators ,num_functions, num_pseudo_vars,
-     .			num_log_structs, num_punctuations,
+     .			num_4d_pseudo_vars, num_log_structs, num_punctuations,
      .			num_transforms,  max_4d_trans, max_fcn_args,
      .                  num_counter_vars, cvar_text_len
 	PARAMETER     (	num_operators   = 18,
      .			num_functions   = 25,
-     .			num_pseudo_vars = 20,
+     .			num_pseudo_vars = 40,
+     .			num_4d_pseudo_vars = 28,
      .			num_log_structs = 3,
      .			num_punctuations = 3,
      .			num_transforms	= 60,

@@ -82,8 +82,8 @@
      .                  pline_mem_init,
      .
      .			grid_name	( 0:grid_ceiling ),
-     .			grid_line	( 4, 0:grid_ceiling ),
-     .			grid_out_prod	( 4, 0:grid_ceiling ),
+     .			grid_line	( nferdims, 0:grid_ceiling ),
+     .			grid_out_prod	( nferdims, 0:grid_ceiling ),
      .			grid_rotation	( 0:grid_ceiling ),
      .			grid_use_cnt	( 0:grid_ceiling ),
      .			grid_flink	( max_grids:grid_ceiling ),

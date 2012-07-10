@@ -42,19 +42,16 @@
 *
 * revision 0.00 - 11/22/88
 * V510 *sh* 4/00 - shift to dynamic grids -- check dynamic grid names
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * Arguments
 	CHARACTER*(*)	suggested_name, new_name
 *                                           
 * Parameters and commons                    
-#ifdef unix
+
         include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'  
 	external xgt_grid_data
-#else
-        INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'  
-#endif
 *
 * Local declarations
 	REAL		newnum

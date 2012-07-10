@@ -60,6 +60,8 @@
 *         distinguises this case from other batch modes.
 * V610  *acm* 3/08 Fixes for metafile batch mode
 * V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
         include 'pltcom_dat.decl'
         include 'PLTCOM.DAT'

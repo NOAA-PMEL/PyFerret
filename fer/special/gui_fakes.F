@@ -3,13 +3,9 @@
 
 	SUBROUTINE FERRET_LIST_IN_WINDOW( fhol, ftxout_append )
 
-#ifdef unix
+	include 'tmap_dims.parm'
         include 'ferret.parm'
         include 'xprog_state.cmn'
-#else
-        INCLUDE 'FERRET_CMN:FERRET.PARM'
-        INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 *
 *
@@ -59,13 +55,9 @@
 
 	SUBROUTINE FERRET_WARN_IN_WINDOW( fhol, ftxout_append )
 
-#ifdef unix
+	include 'tmap_dims.parm'
         include 'ferret.parm'
         include 'xprog_state.cmn'
-#else
-        INCLUDE 'FERRET_CMN:FERRET.PARM'
-        INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER fhol, ftxout_append

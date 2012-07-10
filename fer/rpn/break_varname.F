@@ -47,7 +47,9 @@
 * V604 6/07 *acm* Fix bug 1518 If we didnt find the varid in the dataset,
 *                 it may  be a user var(as in break_varattname, where the bug
 *                 occurred, but make the same change here.)
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'	
 	include 'rpn.parm'

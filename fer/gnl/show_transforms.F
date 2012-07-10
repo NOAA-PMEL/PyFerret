@@ -45,18 +45,13 @@
 *	 12/95 - show explicit ITP as well (start at index 3 instead of 4)
 * V430:   7/96 - incorporate 4D transformations: AVE, VAR, DIN, NDG, NBD
 * V446:   9/97 - bug showed up with addition of new xforms
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xprog_state.cmn'
 	include	'xalgebra.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
-#else
-	INCLUDE	'FERRET.PARM'
-	INCLUDE	'XPROG_STATE.CMN'
-	INCLUDE	'XALGEBRA.CMN'
-	INCLUDE 'XRISC.CMN'          ! 12/94 SPLIT_LIST BUFFER
-#endif
 
 * calling argument declarations:
 *...

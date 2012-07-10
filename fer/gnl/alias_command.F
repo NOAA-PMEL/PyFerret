@@ -74,14 +74,8 @@
 	PARAMETER     ( tab = CHAR(9))
 #endif
 
-
-#ifdef unix
 	include 'ferret.parm'
 	include 'xcommand.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCOMMAND.CMN'
-#endif
 
 #ifdef AIX_XLF
 	include 'xrisc.cmn'

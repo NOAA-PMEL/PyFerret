@@ -116,6 +116,7 @@
 * V63  *acm* 10/09 Changes for gfortran build
 * V664 *kms* 8/10 Add second alternate return from XEQ_EXIT to exit the dispatch
 *                 loop but just re-enter the loop if not under pyferret
+*       *acm* 3/12 removing use USER command
 
 	include 'tmap_dims.parm'
 	include 'xalt_messages.cmn_text'
@@ -235,7 +236,7 @@ c	DO 2 i = 1, 200
 	GOTO 300
  190	CALL XEQ_SPAWN
 	GOTO 300
- 200	CALL XEQ_USER_COMMAND( memory )
+ 200	CALL WARN ('USER command not available in this version') ! CALL XEQ_USER_COMMAND( memory )
 	GOTO 300
  210	CALL XEQ_WIRE( memory )
 	GOTO 300
@@ -346,6 +347,7 @@ c	DO 2 i = 1, 200
 *
         SUBROUTINE SET_ONE_CMND_MODE(new_mode_int)
 
+	include 'tmap_dims.parm'
         INCLUDE 'xprog_state.cmn'
 
         INTEGER new_mode_int

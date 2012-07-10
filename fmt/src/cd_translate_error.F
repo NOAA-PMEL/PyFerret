@@ -35,8 +35,10 @@
 * Call NF_STRERROR to get the error translation from netCDF library.
 * The length of the string is set in netcdf.inc at 512.
 *
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+
+
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
 

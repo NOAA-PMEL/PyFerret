@@ -7,7 +7,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -65,7 +65,10 @@
 *                 when the range of subscripts might be negative, and 
 *                 contain -111 among them. Tests for unspecified_int4
 *                 are not used in this routine.
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include	'xmem_subsc.cmn'
@@ -77,15 +80,18 @@
      .          dst_lox, dst_hix, dst_loy, dst_hiy , wksize
 	INTEGER	sslo(wksize), sshi(wksize)
 
-	REAL    src( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
+	REAL    src( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * local variable declarations:
-	INTEGER		npts, dstss,srcss,src_grid,dst_grid,i,j,k,l
-	INTEGER	     	srcss_lo,srcss_hi, dstss_lo,dstss_hi,
-     .		        src_lo, src_hi
+	INTEGER	npts, dstss, srcss, src_grid, dst_grid,
+     .          i, j, k, l, m, n
+	INTEGER	srcss_lo,srcss_hi, dstss_lo,dstss_hi,
+     .		src_lo, src_hi
 
-	REAL		accum, bad_src, bad_dst
+	REAL	accum, bad_src, bad_dst
 
 ******************************************************************************
 
@@ -112,6 +118,8 @@
 
 * along X axis
         IF ( axis .EQ. x_dim ) THEN
+           DO 190 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO 190 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
            DO 190 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
            DO 190 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
            DO 190 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
@@ -131,21 +139,21 @@
 	      DO 110 srcss = src_lo, src_hi
 
 * ... ignore missing source data
-	         IF ( src(srcss, j, k, l) .EQ. bad_src ) GOTO 110
+	         IF ( src(srcss,j,k,l,m,n) .EQ. bad_src ) GOTO 110
 
 * ... contribution from this source box
 	         IF     ( trans .EQ. prgrd_min ) THEN
-	            accum = MIN( accum, src(srcss, j, k, l) )
+	            accum = MIN( accum, src(srcss,j,k,l,m,n) )
 	         ELSEIF ( trans .EQ. prgrd_max ) THEN
-	            accum = MAX( accum, src(srcss, j, k, l) )
+	            accum = MAX( accum, src(srcss,j,k,l,m,n) )
 	         ENDIF
 	         npts = npts + 1
  110	      CONTINUE
 
               IF ( npts .GT. 0 ) THEN
-                 dst(dstss, j, k, l) = accum
+                 dst(dstss,j,k,l,m,n) = accum
               ELSE
-                 dst(dstss, j, k, l) = bad_dst
+                 dst(dstss,j,k,l,m,n) = bad_dst
               ENDIF
 
  160	   CONTINUE
@@ -154,6 +162,8 @@
 * along Y axis
         ELSEIF ( axis .EQ. Y_dim ) THEN
 
+           DO 290 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO 290 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
            DO 290 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
            DO 290 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
            DO 290 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
@@ -174,21 +184,21 @@
 	      DO 210 srcss = src_lo, src_hi
 
 * ... ignore missing source data
-	         IF ( src(i, srcss, k, l) .EQ. bad_src ) GOTO 210
+	         IF ( src(i,srcss,k,l,m,n) .EQ. bad_src ) GOTO 210
 
 * ... contribution from this source box
 	         IF     ( trans .EQ. prgrd_min ) THEN
-	            accum = MIN( accum, src(i, srcss, k, l) )
+	            accum = MIN( accum, src(i,srcss,k,l,m,n) )
 	         ELSEIF ( trans .EQ. prgrd_max ) THEN
-	            accum = MAX( accum, src(i, srcss, k, l) )
+	            accum = MAX( accum, src(i,srcss,k,l,m,n) )
 	         ENDIF
 	         npts = npts + 1
  210	      CONTINUE
 
               IF ( npts .GT. 0 ) THEN
-                 dst(i, dstss, k, l) = accum
+                 dst(i,dstss,k,l,m,n) = accum
               ELSE
-                 dst(i, dstss, k, l) = bad_dst
+                 dst(i,dstss,k,l,m,n) = bad_dst
               ENDIF
 
  260	   CONTINUE
@@ -197,6 +207,8 @@
 * along Z axis
         ELSEIF ( axis .EQ. z_dim ) THEN
 
+           DO 390 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO 390 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
            DO 390 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
            DO 390 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
            DO 390 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
@@ -217,21 +229,21 @@
 	      DO 310 srcss = src_lo, src_hi
 
 * ... ignore missing source data
-	         IF ( src(i, j, srcss, l) .EQ. bad_src ) GOTO 310
+	         IF ( src(i,j,srcss,l,m,n) .EQ. bad_src ) GOTO 310
 
 * ... contribution from this source box
 	         IF     ( trans .EQ. prgrd_min ) THEN
-	            accum = MIN( accum, src(i, j, srcss, l) )
+	            accum = MIN( accum, src(i,j,srcss,l,m,n) )
 	         ELSEIF ( trans .EQ. prgrd_max ) THEN
-	            accum = MAX( accum, src(i, j, srcss, l) )
+	            accum = MAX( accum, src(i,j,srcss,l,m,n) )
 	         ENDIF
 	         npts = npts + 1
  310	      CONTINUE
 
               IF ( npts .GT. 0 ) THEN
-                 dst(i, j, dstss, l) = accum
+                 dst(i,j,dstss,l,m,n) = accum
               ELSE
-                 dst(i, j, dstss, l) = bad_dst
+                 dst(i,j,dstss,l,m,n) = bad_dst
               ENDIF
 
  360	   CONTINUE
@@ -240,6 +252,8 @@
 * along T axis
         ELSEIF ( axis .EQ. T_dim ) THEN
 
+           DO 490 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO 490 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
            DO 490 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
            DO 490 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
            DO 490 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
@@ -260,25 +274,116 @@
 	      DO 410 srcss = src_lo, src_hi
 
 * ... ignore missing source data
-	         IF ( src(i, j, k, srcss) .EQ. bad_src ) GOTO 410
+	         IF ( src(i,j,k,srcss,m,n) .EQ. bad_src ) GOTO 410
 
 * ... contribution from this source box
 	         IF     ( trans .EQ. prgrd_min ) THEN
-	            accum = MIN( accum, src(i, j, k, srcss) )
+	            accum = MIN( accum, src(i,j,k,srcss,m,n) )
 	         ELSEIF ( trans .EQ. prgrd_max ) THEN
-	            accum = MAX( accum, src(i, j, k, srcss) )
+	            accum = MAX( accum, src(i,j,k,srcss,m,n) )
 	         ENDIF
 	         npts = npts + 1
  410	      CONTINUE
 
               IF ( npts .GT. 0 ) THEN
-                 dst(i, j, k, dstss) = accum
+                 dst(i,j,k,dstss,m,n) = accum
               ELSE
-                 dst(i, j, k, dstss) = bad_dst
+                 dst(i,j,k,dstss,m,n) = bad_dst
               ENDIF
 
  460	   CONTINUE
  490	   CONTINUE
+
+* along E axis
+        ELSEIF ( axis .EQ. E_dim ) THEN
+
+           DO 590 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO 590 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO 590 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO 590 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO 590 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+
+* loop through the each destination grid box
+	   DO 560 dstss = dstss_lo,dstss_hi
+
+	      src_lo = sslo(dstss-dstss_lo+1)
+	      src_hi = sshi(dstss-dstss_lo+1)
+
+	      IF     ( trans .EQ. prgrd_min ) THEN
+	         accum = arbitrary_large_val4
+	      ELSEIF ( trans .EQ. prgrd_max ) THEN
+	         accum = arbitrary_small_val4
+	      ENDIF
+	      npts = 0
+
+	      DO 510 srcss = src_lo, src_hi
+
+* ... ignore missing source data
+	         IF ( src(i,j,k,l,srcss,n) .EQ. bad_src ) GOTO 510
+
+* ... contribution from this source box
+	         IF     ( trans .EQ. prgrd_min ) THEN
+	            accum = MIN( accum, src(i,j,k,l,srcss,n) )
+	         ELSEIF ( trans .EQ. prgrd_max ) THEN
+	            accum = MAX( accum, src(i,j,k,l,srcss,n) )
+	         ENDIF
+	         npts = npts + 1
+ 510	      CONTINUE
+
+              IF ( npts .GT. 0 ) THEN
+                 dst(i,j,k,l,dstss,n) = accum
+              ELSE
+                 dst(i,j,k,l,dstss,n) = bad_dst
+              ENDIF
+
+ 560	   CONTINUE
+ 590	   CONTINUE
+
+
+* along F axis
+        ELSEIF ( axis .EQ. F_dim ) THEN
+
+           DO 690 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO 690 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO 690 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO 690 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO 690 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+
+* loop through the each destination grid box
+	   DO 660 dstss = dstss_lo,dstss_hi
+
+	      src_lo = sslo(dstss-dstss_lo+1)
+	      src_hi = sshi(dstss-dstss_lo+1)
+
+	      IF     ( trans .EQ. prgrd_min ) THEN
+	         accum = arbitrary_large_val4
+	      ELSEIF ( trans .EQ. prgrd_max ) THEN
+	         accum = arbitrary_small_val4
+	      ENDIF
+	      npts = 0
+
+	      DO 610 srcss = src_lo, src_hi
+
+* ... ignore missing source data
+	         IF ( src(i,j,k,srcss,m,n) .EQ. bad_src ) GOTO 610
+
+* ... contribution from this source box
+	         IF     ( trans .EQ. prgrd_min ) THEN
+	            accum = MIN( accum, src(i,j,k,l,m,srcss) )
+	         ELSEIF ( trans .EQ. prgrd_max ) THEN
+	            accum = MAX( accum, src(i,j,k,l,m,srcss) )
+	         ENDIF
+	         npts = npts + 1
+ 610	      CONTINUE
+
+              IF ( npts .GT. 0 ) THEN
+                 dst(i,j,k,l,m,dstss) = accum
+              ELSE
+                 dst(i,j,k,l,m,dstss) = bad_dst
+              ENDIF
+
+ 660	   CONTINUE
+ 690	   CONTINUE
 
         ENDIF
 

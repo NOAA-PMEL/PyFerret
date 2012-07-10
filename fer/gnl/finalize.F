@@ -1,3 +1,5 @@
+
+
 	SUBROUTINE FINALIZE
 
 *
@@ -38,6 +40,7 @@
 *
 *     *kms* 11/10 - added cat_pystat_var string_array_clear
 *                   cleared out VMS-specific includes
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
         include 'tmap_errors.parm'  ! error codes
 	include 'tmap_dims.parm'

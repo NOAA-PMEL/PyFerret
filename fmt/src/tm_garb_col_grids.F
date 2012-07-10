@@ -44,28 +44,19 @@
 *		may **for the first time** be doing work!!
 *		Found a logic bug in the loop that re-assigns ds_grid_number
 * V5.1 *sh* 4/00 - using dynamic grids and axes
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * argument definitions:
 *	dset - the current data set
 
 * include files
-#ifdef unix
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-        include 'xdset_info.cmn_text'
+	        include 'xdset_info.cmn_text'
         external xdset_info_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-        INCLUDE 'XDSET_INFO.CMN'
-#endif
 
 * calling argument declarations:
       INTEGER dset
@@ -92,7 +83,7 @@
 
 * ... bump use counts on all lines used by these grids
 	   IF ( grid_name(igrid) .NE. char_init ) THEN
-	      DO 110 idim = 1, 4
+	      DO 110 idim = 1, nferdims
  110	      CALL TM_USE_LINE( grid_line(idim,igrid) )
 
 !* ... a use count of zero indicates that this explicit parent grid is not used

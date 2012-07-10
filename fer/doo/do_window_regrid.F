@@ -6,7 +6,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -44,18 +44,16 @@
 *
 * V420:  10/95 - based on DO_AVE_REGRID
 * V510: *sh* 1/00 - 2 work arrays passed out instead of one
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include	'xcontext.cmn'
 
 * calling argument declarations:
 	INTEGER	cx_lims, axis, trans, msrc, mdst, itot
 	REAL	src(*), dst(*), work(2*itot)
-
-#ifdef unix
-	include	'ferret.parm'
-	include	'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 	CALL WINDOW_REGRID_1_AXIS(   cx_lims, axis, trans,
      .			   cx_lo_ss(cx_lims,x_dim), cx_hi_ss(cx_lims,x_dim),
@@ -64,4 +62,4 @@
      .			   work(1), work(itot+1), itot )
 
 	RETURN
-	END	
+	END

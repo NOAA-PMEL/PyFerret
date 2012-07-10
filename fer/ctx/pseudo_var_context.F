@@ -68,16 +68,18 @@
 * V530:  8/00 *sh* - assert float data type for pseudo-variable
 * 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
 * V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
+	include 'tmap_dims.parm'
 	include	'xcontext.cmn'
 	include	'xalgebra.cmn'
 	include	'xfr_grid.cmn'
 	include	'xprog_state.cmn'
 	include 'xrisc.cmn'
-	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
 	include 'xunits.cmn_text'
 	include 'implicit.parm'
@@ -118,7 +120,8 @@
 	cx_type( pvar_cx ) = ptype_float 
 
 * axis of pseudo_var
-	pvdim = MOD( cx_variable(pvar_cx)-1, 4 ) + 1
+
+	pvdim = MOD( cx_variable(pvar_cx)-1, 6 ) + 1
 
 * temporary bug check: may not transform pseudo-variable
 	IF ( cx_trans(pvdim,pvar_cx) .NE. trans_no_transform ) CALL ERRMSG
@@ -181,7 +184,7 @@
 	      ENDIF
 	   ENDIF
 	   impl_grid = cx_impl_grid(pvar_cx)
-	   DO 50 idim = 1, 4
+	   DO 50 idim = 1, nferdims
 	      IF ( grid_line(idim,impl_grid).EQ.unspecified_int4 )
      .		   grid_line(idim,impl_grid) = grid_line(idim,base_grid)
  50	   CONTINUE
@@ -264,7 +267,7 @@
 
 	IF ( cx_has_impl_grid(pvar_cx) ) THEN
 * increment the use count of dynamic axes that are in-use by the temporary grid
-	   DO 25 idim = 1, 4
+	   DO 25 idim = 1, nferdims
  25	   CALL TM_USE_LINE(grid_line(idim,impl_grid))
 
 * catalog the temporary grid as a dynamic grid checking for existing like grid
@@ -312,7 +315,7 @@
 	CALL GET_CONTEXT_BAD_FLAG( pvar_cx )
 
 * flesh out context removing all axes except those explicitly given
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   IF ( idim .NE. pvdim ) THEN
 	      CALL DEL_CX_DIM( idim, pvar_cx )
 	   ELSE

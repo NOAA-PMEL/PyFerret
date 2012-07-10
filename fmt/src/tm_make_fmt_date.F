@@ -40,6 +40,7 @@
 * requested date format
 
 * *sh* 2/13/95
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * ARGUMENT DEFINITIONS
 *  form  - code for the date string format
@@ -50,15 +51,9 @@
 	INTEGER	form, day, month, year, hour, minute, second, dlen
 *
 * INCLUDE FILES
-#ifdef unix
 	include 'tmap_errors.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-#endif
 
 * internal variable declarations:
 	CHARACTER*20    tempstr

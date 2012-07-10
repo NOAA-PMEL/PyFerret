@@ -44,7 +44,8 @@
 * revision 0.01 - 07/08/88 - Returns status code, handles errors from
 *			     TM_BREAK_DATE
 * V5.3 *acm* 1/01  add cal_id for TM_BREAK_DATE
-*
+** V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+
 * Arguments:
 *	dset_num - data set number
 *	date	 - date of interest
@@ -55,18 +56,12 @@
 *
 * Inclusions
 *
-#ifdef unix
+
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-#endif
 
 *
 * Local definitions

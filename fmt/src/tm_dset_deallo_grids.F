@@ -40,20 +40,14 @@
 * Steve Hankin  NOAA/PMEL/TMAP
 
 * V510 *sh* 4/00
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * Include files
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xdset_info.cmn_text'
 	include 'xtm_grid.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 
 * Argument definitions
 	INTEGER dset

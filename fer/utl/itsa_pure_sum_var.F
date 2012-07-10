@@ -40,6 +40,7 @@
 
 * V533 *sh* 7/01
 * v554: 1/04 *acm* Counter variables for REPEAT/RANGE=/NAME=
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations
 	INTEGER	uvar
@@ -47,6 +48,7 @@
 * internal variable declarations
 	INTEGER i, i1, ii, itype
 
+	include	'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'
 

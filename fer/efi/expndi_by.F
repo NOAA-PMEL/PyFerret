@@ -45,6 +45,7 @@
 
       SUBROUTINE expndi_by_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -59,26 +60,33 @@
 
       CALL ef_set_num_args(id, 3)
       CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance(id, ABSTRACT, 
-     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                ABSTRACT,        IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
+
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'dat')
       CALL ef_set_arg_desc(id, arg, 'variable to gap-expand on I axis')
-      CALL ef_set_axis_influence(id, arg, NO, YES, YES, YES)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, YES, YES, YES, YES, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'mask')
       CALL ef_set_arg_desc(id, arg,
      .          'valid/bad points guiding gap insertions (multi-D)')
-      CALL ef_set_axis_influence(id, arg, NO, YES, YES, YES)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, YES, YES, YES, YES, YES)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'outsize')
       CALL ef_set_arg_desc(id, arg,
      .          'I size of result (constant)')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
+
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -104,6 +112,7 @@
 
       SUBROUTINE expndi_by_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id
@@ -122,6 +131,7 @@
       CALL ef_get_one_val(id, ARG3, size)
 
       CALL ef_set_axis_limits(id, X_AXIS, 1, INT(ABS(size)))
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
@@ -137,101 +147,125 @@
 * 
       SUBROUTINE expndi_by_compute(id, arg_1, arg_2, arg_3, result)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
-      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy,
-     .	   mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy,
-     .     mem2loz:mem2hiz, mem2lot:mem2hit)
-      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy,
-     .     mem3loz:mem3hiz, mem3lot:mem3hit)
-      REAL result(memreslox:memreshix, memresloy:memreshiy,
-     .     memresloz:memreshiz, memreslot:memreshit)
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
+     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
+     .           mem3lot:mem3hit, mem3loe:mem3hie, mem3lof:mem3hif)
+
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
+* information for each variable''s axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
 
-      INTEGER i,j,k,l
-      INTEGER i1, j1, k1, l1
-      INTEGER i2, j2, k2, l2
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, k1, l1, m1, n1
+      INTEGER i2, j2, k2, l2, m2, n2
       INTEGER imax
 
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
       imax = res_hi_ss(X_AXIS)
 
 * pre-fill the entire output result with missing value flags
 *  (since each I-sequence in mask may have different number of valid pts)
-      DO 40 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-         DO 30 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-            DO 20 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-               DO 10 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
- 10            result(i,j,k,l) = bad_flag_result
- 20         CONTINUE
- 30      CONTINUE
- 40   CONTINUE
+      DO 10 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+      DO 10 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+      DO 10 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+      DO 10 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      DO 10 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+      DO 10 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+         result(i,j,k,l,m,n) = bad_flag_result
+ 10   CONTINUE
 
 * fill in the points as specified by the mask
-      l1 = arg_lo_ss(T_AXIS,ARG1)
-      l2 = arg_lo_ss(T_AXIS,ARG2)
-      DO 400 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+      n1 = arg_lo_ss(F_AXIS,ARG1)
+      n2 = arg_lo_ss(F_AXIS,ARG2)
+      DO 600 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
 
-         j1 = arg_lo_ss(Y_AXIS,ARG1)
-         j2 = arg_lo_ss(Y_AXIS,ARG2)
-         DO 300 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+         m1 = arg_lo_ss(E_AXIS,ARG1)
+         m2 = arg_lo_ss(E_AXIS,ARG2)
+         DO 500 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
 
-            k1 = arg_lo_ss(Z_AXIS,ARG1)
-            k2 = arg_lo_ss(Z_AXIS,ARG2)
-            DO 200 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+            l1 = arg_lo_ss(T_AXIS,ARG1)
+            l2 = arg_lo_ss(T_AXIS,ARG2)
+            DO 400 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
-               i1 = arg_lo_ss(X_AXIS,ARG1)
-               i2 = res_lo_ss(X_AXIS)
-               DO 100 i=arg_lo_ss(X_AXIS,ARG2),arg_hi_ss(X_AXIS,ARG2)
+               k1 = arg_lo_ss(Z_AXIS,ARG1)
+               k2 = arg_lo_ss(Z_AXIS,ARG2)
+               DO 300 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-                  IF ( arg_2(i,j2,k2,l2) .NE. bad_flag(2) ) THEN
-                     IF (i2 .GT. imax) CALL EF_BAIL_OUT(id,
-     .                  'Arg 3 size too small')
-                     result(i2,j,k,l) = bad_flag_result  ! insert a gap
-                     i2 = i2 + 1
-                  ENDIF
-                  IF (i2 .GT. imax) CALL EF_BAIL_OUT(id,
-     .                'Arg 3 size too small')
-                  result(i2,j,k,l) = arg_1(i1,j1,k1,l1) 
+                  j1 = arg_lo_ss(Y_AXIS,ARG1)
+                  j2 = arg_lo_ss(Y_AXIS,ARG2)
+                  DO 200 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-                  i1 = i1 + arg_incr(X_AXIS,ARG1)
-                  i2 = i2 + 1
- 100           CONTINUE
+                     i1 = arg_lo_ss(X_AXIS,ARG1)
+                     i  = res_lo_ss(X_AXIS)
+                     DO 100 i2 = arg_lo_ss(X_AXIS,ARG2),
+     .                           arg_hi_ss(X_AXIS,ARG2)
 
-               k1 = k1 + arg_incr(Z_AXIS,ARG1)
-               k2 = k2 + arg_incr(Z_AXIS,ARG2)
- 200        CONTINUE
+                        IF ( arg_2(i2,j2,k2,l2,m2,n2)
+     .                       .NE. bad_flag(2) ) THEN
+*                          Insert a gap
+                           IF (i .GT. imax) CALL EF_BAIL_OUT(id,
+     .                                          'Arg 3 size too small')
+                           result(i,j,k,l,m,n) = bad_flag_result
+                           i = i + 1
+                        ENDIF
+                        IF (i .GT. imax) CALL EF_BAIL_OUT(id,
+     .                                          'Arg 3 size too small')
+                        result(i,j,k,l,m,n) = arg_1(i1,j1,k1,l1,m1,n1) 
 
-            j1 = j1 + arg_incr(Y_AXIS,ARG1)
-            j2 = j2 + arg_incr(Y_AXIS,ARG2)
- 300     CONTINUE
+                        i1 = i1 + arg_incr(X_AXIS,ARG1)
+                        i = i + 1
+ 100                 CONTINUE
 
-         l1 = l1 + arg_incr(T_AXIS,ARG1)
-         l2 = l2 + arg_incr(T_AXIS,ARG2)
- 400  CONTINUE
-      
-         
+                     j1 = j1 + arg_incr(Y_AXIS,ARG1)
+                     j2 = j2 + arg_incr(Y_AXIS,ARG2)
+ 200              CONTINUE
+
+                  k1 = k1 + arg_incr(Z_AXIS,ARG1)
+                  k2 = k2 + arg_incr(Z_AXIS,ARG2)
+ 300           CONTINUE
+
+               l1 = l1 + arg_incr(T_AXIS,ARG1)
+               l2 = l2 + arg_incr(T_AXIS,ARG2)
+ 400        CONTINUE
+
+            m1 = m1 + arg_incr(E_AXIS,ARG1)
+            m2 = m2 + arg_incr(E_AXIS,ARG2)
+ 500     CONTINUE
+
+         n1 = n1 + arg_incr(F_AXIS,ARG1)
+         n2 = n2 + arg_incr(F_AXIS,ARG2)
+ 600  CONTINUE
+
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |

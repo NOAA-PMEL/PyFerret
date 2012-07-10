@@ -66,10 +66,13 @@
 * V670  *acm* 2/11 Fix bug 1803. Centered levels confused with variance-based centered
 *                  levels.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'command.parm'
+	include 'slash.parm'
 	include 'plot_setup.parm'
 	include 'xplot_setup.cmn'
 	include 'xprog_state.cmn'
@@ -102,12 +105,6 @@
         CHARACTER*255 labsym_buff
 	CHARACTER*1 cbuf
 
-* local parameter definitions:
-	INTEGER		slash_levels,
-     .			slash_length
-	PARAMETER     (	slash_levels = 17,
-     .			slash_length = 17 )
-
 * is the graphics output device open and ready ??
 	CALL CHECK_GRAPHICS( status )
 	IF ( status .NE. ferr_ok ) RETURN
@@ -137,6 +134,7 @@
 
 
 * what qualifiers will effect the initialization of PLOT+
+
 	lev_loc = qual_given( slash_levels )
 	len_loc = qual_given( slash_length )
 	lev_given    = ( cmnd_num.EQ.cmnd_contour .OR. 

@@ -7,7 +7,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -47,7 +47,10 @@
 * V200:	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
 * V230: 5/6/92 - COS correction checks that J location is defined         
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+*       2/12 *kms* Include E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -55,7 +58,6 @@
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include	'xprog_state.cmn'
-	include 'tmap_dims.parm'
 	include 'xunits.cmn_text'
 	external xunits_data
 	include 'xtm_grid.cmn_text'
@@ -65,25 +67,32 @@
 	INTEGER	idim, com_lo, com_hi, com_mr, com_cx, res_mr, res_cx
 	REAL	arg,
      .		box( com_lo:com_hi ),
-     .		com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
+     .          com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * internal variable declarations:
 	LOGICAL	GEOG_COS_FACTOR, need_cos
-	INTEGER i, j, k, l, ii, grid, lo_sub(4), hi_sub(4), axis
-	REAL	bad_com, bad_res, lo_com, hi_com, unit, cos_factor
+	INTEGER i, j, k, l, m, n, ii, grid,
+     .          lo_sub(nferdims), hi_sub(nferdims), axis
+	REAL	bad_com, bad_res, lo_com, hi_com, unit, cos_factor,
+     .          ybxlo, ybxhi, bx
 	REAL*8	TM_WORLD, lo_ww, hi_ww
 
 * internal (convenience) equivalences
-	INTEGER	lo_s1, lo_s2, lo_s3, lo_s4, hi_s1, hi_s2, hi_s3, hi_s4
+	INTEGER	lo_s1, lo_s2, lo_s3, lo_s4, lo_s5, lo_s6,
+     .          hi_s1, hi_s2, hi_s3, hi_s4, hi_s5, hi_s6
 	EQUIVALENCE (lo_s1, lo_sub(1)) , (lo_s2, lo_sub(2)),
      .		    (lo_s3, lo_sub(3)) , (lo_s4, lo_sub(4)),
+     .		    (lo_s5, lo_sub(5)) , (lo_s6, lo_sub(6)),
      .		    (hi_s1, hi_sub(1)) , (hi_s2, hi_sub(2)),
-     .		    (hi_s3, hi_sub(3)) , (hi_s4, hi_sub(4))
+     .		    (hi_s3, hi_sub(3)) , (hi_s4, hi_sub(4)),
+     .		    (hi_s5, hi_sub(5)) , (hi_s6, hi_sub(6))
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
-     .				( 'doing',isact_class_trans, res_cx, idim )
+     .				( 'doing', isact_class_trans, res_cx, idim )
 
 * initialize
 	grid    = mr_grid( res_mr )
@@ -92,7 +101,7 @@
 	bad_res = mr_bad_data( com_mr )
 
 * compute limits within which calculation is possible
-	DO 10 ii = 1, 4
+	DO 10 ii = 1, nferdims
 	   lo_sub(ii) = cx_lo_ss(res_cx,ii)
 	   hi_sub(ii) = cx_hi_ss(res_cx,ii)
  10	CONTINUE
@@ -119,88 +128,130 @@
 	   IF ( need_cos ) THEN
 #ifdef double_p
 	      cos_factor = COS( deg2rad *       
-     .             ( TM_WORLD( j, grid, y_dim, box_middle )) ) 
+     .            TM_WORLD(j, grid, y_dim, box_middle) ) 
               ybxlo = deg2rad* 
-     .          ( TM_WORLD(j,grid,y_dim,box_lo_lim) )
+     .            TM_WORLD(j,grid,y_dim,box_lo_lim)
               ybxhi = deg2rad* 
-     .          ( TM_WORLD(j,grid,y_dim,box_hi_lim) )
+     .            TM_WORLD(j,grid,y_dim,box_hi_lim)
 #else
 	      cos_factor = COS( deg2rad *       
-     .             SNGL( TM_WORLD( j, grid, y_dim, box_middle )) ) 
+     .            SNGL( TM_WORLD(j, grid, y_dim, box_middle) ) ) 
               ybxlo = deg2rad* 
-     .          SNGL( TM_WORLD(j,grid,y_dim,box_lo_lim) )
+     .            SNGL( TM_WORLD(j,grid,y_dim,box_lo_lim) )
               ybxhi = deg2rad* 
-     .          SNGL( TM_WORLD(j,grid,y_dim,box_hi_lim) )
+     .            SNGL( TM_WORLD(j,grid,y_dim,box_hi_lim) )
 #endif
               bx = ABS(ybxhi - ybxlo)
 	      cos_factor = ABS( SIN(ybxhi) - SIN(ybxlo) )/ bx
 	   ENDIF
+	   DO 110 n = lo_s6, hi_s6
+	   DO 110 m = lo_s5, hi_s5
 	   DO 110 l = lo_s4, hi_s4
 	   DO 110 k = lo_s3, hi_s3
 	      DO 100 i = lo_s1, hi_s1
-	         lo_com = com(i-1,j,k,l)
-	         hi_com = com(i+1,j,k,l)
+	         lo_com = com(i-1,j,k,l,m,n)
+	         hi_com = com(i+1,j,k,l,m,n)
 	         IF ( lo_com.EQ.bad_res .OR. hi_com.EQ.bad_res ) THEN
-	            res(i,j,k,l) = bad_res
+	            res(i,j,k,l,m,n) = bad_res
 	         ELSE
-	            res(i,j,k,l) = (hi_com-lo_com) / box(i)
-	            IF ( need_cos ) res(i,j,k,l) = res(i,j,k,l)/cos_factor
+	            res(i,j,k,l,m,n) = (hi_com-lo_com) / box(i)
+	            IF ( need_cos )
+     .                 res(i,j,k,l,m,n) = res(i,j,k,l,m,n)/cos_factor
 	         ENDIF
  100	      CONTINUE
  110	   CONTINUE
 
 * DERIVATIVE ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
+	   DO 210 n = lo_s6, hi_s6
+	   DO 210 m = lo_s5, hi_s5
 	   DO 210 l = lo_s4, hi_s4
 	   DO 210 k = lo_s3, hi_s3
 	   DO 210 i = lo_s1, hi_s1
 	      DO 200 j = lo_s2, hi_s2
-	         lo_com = com(i,j-1,k,l)
-	         hi_com = com(i,j+1,k,l)
+	         lo_com = com(i,j-1,k,l,m,n)
+	         hi_com = com(i,j+1,k,l,m,n)
 	         IF ( lo_com.EQ.bad_res .OR. hi_com.EQ.bad_res ) THEN
-	            res(i,j,k,l) = bad_res
+	            res(i,j,k,l,m,n) = bad_res
 	         ELSE
-	            res(i,j,k,l) = (hi_com-lo_com) / box(j)
+	            res(i,j,k,l,m,n) = (hi_com-lo_com) / box(j)
 	         ENDIF
-	         lo_com = hi_com
  200	      CONTINUE
  210	   CONTINUE
 
 * DERIVATIVE ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
+	   DO 310 n = lo_s6, hi_s6
+	   DO 310 m = lo_s5, hi_s5
 	   DO 310 l = lo_s4, hi_s4
 	   DO 310 j = lo_s2, hi_s2
 	   DO 310 i = lo_s1, hi_s1
 	      DO 300 k = lo_s3, hi_s3
-	         lo_com = com(i,j,k-1,l)
-	         hi_com = com(i,j,k+1,l)
+	         lo_com = com(i,j,k-1,l,m,n)
+	         hi_com = com(i,j,k+1,l,m,n)
 	         IF ( lo_com.EQ.bad_res .OR. hi_com.EQ.bad_res ) THEN
-	            res(i,j,k,l) = bad_res
+	            res(i,j,k,l,m,n) = bad_res
 	         ELSE
-	            res(i,j,k,l) = (hi_com-lo_com) / box(k)
+	            res(i,j,k,l,m,n) = (hi_com-lo_com) / box(k)
 	         ENDIF
-	         lo_com = hi_com
  300	      CONTINUE
  310	   CONTINUE
 
 * DERIVATIVE ALONG T AXIS
-	ELSE
+	ELSEIF ( idim .EQ. t_dim ) THEN
+	   DO 410 n = lo_s6, hi_s6
+	   DO 410 m = lo_s5, hi_s5
 	   DO 410 k = lo_s3, hi_s3
 	   DO 410 j = lo_s2, hi_s2
 	   DO 410 i = lo_s1, hi_s1
 	      DO 400 l = lo_s4, hi_s4
-	         lo_com = com(i,j,k,l-1)
-	         hi_com = com(i,j,k,l+1)
+	         lo_com = com(i,j,k,l-1,m,n)
+	         hi_com = com(i,j,k,l+1,m,n)
 	         IF ( lo_com.EQ.bad_res .OR. hi_com.EQ.bad_res ) THEN
-	            res(i,j,k,l) = bad_res
+	            res(i,j,k,l,m,n) = bad_res
 	         ELSE
-	            res(i,j,k,l) = (hi_com-lo_com) / box(l)
+	            res(i,j,k,l,m,n) = (hi_com-lo_com) / box(l)
 	         ENDIF
-	         lo_com = hi_com
  400	      CONTINUE
  410	   CONTINUE
+
+* DERIVATIVE ALONG E AXIS
+	ELSEIF ( idim .EQ. e_dim ) THEN
+	   DO 510 n = lo_s6, hi_s6
+	   DO 510 l = lo_s4, hi_s4
+	   DO 510 k = lo_s3, hi_s3
+	   DO 510 j = lo_s2, hi_s2
+	   DO 510 i = lo_s1, hi_s1
+	      DO 500 m = lo_s5, hi_s5
+	         lo_com = com(i,j,k,l,m-1,n)
+	         hi_com = com(i,j,k,l,m+1,n)
+	         IF ( lo_com.EQ.bad_res .OR. hi_com.EQ.bad_res ) THEN
+	            res(i,j,k,l,m,n) = bad_res
+	         ELSE
+	            res(i,j,k,l,m,n) = (hi_com-lo_com) / box(m)
+	         ENDIF
+ 500	      CONTINUE
+ 510	   CONTINUE
+
+* DERIVATIVE ALONG F AXIS
+	ELSEIF ( idim .EQ. f_dim ) THEN
+	   DO 610 m = lo_s5, hi_s5
+	   DO 610 l = lo_s4, hi_s4
+	   DO 610 k = lo_s3, hi_s3
+	   DO 610 j = lo_s2, hi_s2
+	   DO 610 i = lo_s1, hi_s1
+	      DO 600 n = lo_s6, hi_s6
+	         lo_com = com(i,j,k,l,m,n-1)
+	         hi_com = com(i,j,k,l,m,n+1)
+	         IF ( lo_com.EQ.bad_res .OR. hi_com.EQ.bad_res ) THEN
+	            res(i,j,k,l,m,n) = bad_res
+	         ELSE
+	            res(i,j,k,l,m,n) = (hi_com-lo_com) / box(n)
+	         ENDIF
+ 600	      CONTINUE
+ 610	   CONTINUE
 
 	ENDIF
 
 	RETURN
-	END	
+	END

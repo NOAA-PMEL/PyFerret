@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -46,31 +46,32 @@
 * revision 0.00 - 11/21/85
 * revision 0.10 - 10/23/87 - all variables explicitly declared
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+*      *kms*  3/12 modified to actually use the maximum absolute error
+*
 
 * calling arguments:
 	REAL	a, b
 
 * local parameters
 	LOGICAL    TM_DFPEQ
-	REAL	   VAX_epsilon
+	REAL	   VAX_epsilon, eps
 	PARAMETER (VAX_epsilon = 4.E-7)
 
 #ifdef double_p
-        tm_fpeq = TM_DFPEQ(a, b)
-	RETURN
+
+        TM_FPEQ = TM_DFPEQ(a, b)
+
+#else
+
+* determine the maximum relative error
+        eps = ABS(b) * VAX_epsilon
+* if close to zero, set the maximum absolute error
+        IF ( eps .LT. VAX_epsilon ) eps = VAX_epsilon
+
+* make the comparison
+        TM_FPEQ = ( ABS(a-b) .LE. eps )
+
 #endif
 
-* treat relative error case (non-zero) separate fron zero case
-
-	IF  (a.NE.0.0   .AND.  b.NE.0.0 )  THEN
-
-	   tm_fpeq =  ABS(a-b) .LE. ABS(b)*VAX_epsilon		! relative error
-
-	ELSE
-
-	   tm_fpeq =	ABS(a) .LT. VAX_epsilon
-     .		.AND.   ABS(b) .LT. VAX_epsilon			! absolute error
-
-	ENDIF
 	RETURN
 	END

@@ -41,7 +41,7 @@
 
 * V600 6/05 *acm* Attribute control.
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
-
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * include files
 #include "gt_lib.parm"
@@ -52,8 +52,6 @@
       INTEGER dset, dimid
 
 * Internal declarations
-
-        include 'netcdf.decl'
 #include "netcdf.inc"
 
       INTEGER TM_LENSTR1, NCF_GET_DIM_ID, slen, flen, dset_num

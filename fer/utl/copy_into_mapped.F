@@ -45,7 +45,9 @@
 *
 * V510: 8/99 *sh* - based on COPY_INTO
 * V533: 7/01 *sh* - added string support
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
@@ -74,10 +76,14 @@
      .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
      .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
      .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
+     .				 mr_lo_s5(msrc), mr_hi_s5(msrc),
+     .				 mr_lo_s6(msrc), mr_hi_s6(msrc),
      .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
      .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
      .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .				 mr_lo_s4(mdst), mr_hi_s4(mdst) )
+     .				 mr_lo_s4(mdst), mr_hi_s4(mdst),
+     .				 mr_lo_s5(mdst), mr_hi_s5(mdst),
+     .				 mr_lo_s6(mdst), mr_hi_s6(mdst) )
 	ELSE
 	  CALL COPY_INTO_MAPPED_SUB( cxs, axis, hilim,
      .			    sorted_indices, index_map,
@@ -85,10 +91,14 @@
      .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
      .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
      .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
+     .				 mr_lo_s5(msrc), mr_hi_s5(msrc),
+     .				 mr_lo_s6(msrc), mr_hi_s6(msrc),
      .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
      .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
      .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .				 mr_lo_s4(mdst), mr_hi_s4(mdst) )
+     .				 mr_lo_s4(mdst), mr_hi_s4(mdst),
+     .				 mr_lo_s5(mdst), mr_hi_s5(mdst),
+     .				 mr_lo_s6(mdst), mr_hi_s6(mdst) )
 	ENDIF
 
 	RETURN

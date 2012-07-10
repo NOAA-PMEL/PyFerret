@@ -79,6 +79,7 @@
 
       SUBROUTINE test_opendap_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -87,24 +88,24 @@
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
-      CHARACTER*100 fcn_desc
-      WRITE (fcn_desc, 10)
-   10 FORMAT (
-     , 'Returns the status flag from attempt to open an OPeNDAP file')
-      CALL ef_set_desc(id, fcn_desc)
+
+      CALL ef_set_desc(id,
+     ,  'Returns the status flag from attempt to open an OPeNDAP file')
 
       CALL ef_set_num_args(id, 1)
       CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance(id, ABSTRACT, 
-     .     NORMAL, NORMAL, NORMAL)
-
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                ABSTRACT, NORMAL,
+     .                                NORMAL,   NORMAL,
+     .                                NORMAL,   NORMAL)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'url')
       CALL ef_set_arg_desc(id, arg, 'OPeNDAP URL to test')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
       CALL ef_set_arg_type (id, arg, STRING_ARG)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
 *                                                                     ^
 *                                                                     |
@@ -113,19 +114,12 @@
 
       RETURN 
       END
-      
+
 
       SUBROUTINE test_opendap_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
-
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
       INTEGER id
 
@@ -133,25 +127,21 @@
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
-      INTEGER nx, my_lo_l, my_hi_l
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
 
-*
-*     Use utility functions to get context information about the arguments.
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+      INTEGER nx, my_lo, my_hi
+
 *     Set the abstract X axis.
-*
-*     Use utility functions to get context information about the 
-*     1st argument, to set the abstract axis lo and hi indices.
 
-
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       nx = arg_hi_ss(X_AXIS, ARG1) - arg_lo_ss(X_AXIS, ARG1) + 1
 
-      my_lo_l = 1
-      my_hi_l = nx
-      CALL ef_set_axis_limits(id, X_AXIS, my_lo_l, my_hi_l)
+      my_lo = 1
+      my_hi = nx
+      CALL ef_set_axis_limits(id, X_AXIS, my_lo, my_hi)
 
 *                                                                     ^
 *                                                                     |
@@ -167,7 +157,7 @@
 *
       SUBROUTINE test_opendap_compute(id, arg_1, result)
 
-      INTEGER id
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -178,23 +168,28 @@
       PARAMETER (strdf = 2)
 #endif
 
-      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
+      INTEGER id
 
-*  string args need to be twice the length.
-      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
-     .     mem1lot:mem1hit)
- 
-      REAL result(memreslox:memreshix, memresloy:memreshiy,
-     .      memresloz:memreshiz, memreslot:memreshit)
+      REAL arg_1(strdf, mem1lox:mem1hix, mem1loy:mem1hiy,
+     .                  mem1loz:mem1hiz, mem1lot:mem1hit,
+     .                  mem1loe:mem1hie, mem1lof:mem1hif)
+
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
+* information for each variable''s axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 ***********************************************************************
 *                                           USER CONFIGURABLE PORTION |
@@ -210,52 +205,55 @@
 #endif 
       EXTERNAL NCCLOS
 
-      INTEGER i,j,k,l
-      INTEGER i1,j1,k1,l1
-      INTEGER arg, istatus, slen, cdfid
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, k1, l1, m1, n1
+      INTEGER istatus, slen, cdfid
       CHARACTER*2048 filename
       CHARACTER*1024 errbuff
       INTEGER nf_nowrite
       PARAMETER (nf_nowrite = 0)
 
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-      arg = 1
-      i1=arg_lo_ss(X_AXIS,ARG1)
-      j1=arg_lo_ss(Y_AXIS,ARG1)
-      k1=arg_lo_ss(Z_AXIS,ARG1)
-      l1=arg_lo_ss(T_AXIS,ARG1)
+      j1 = arg_lo_ss(Y_AXIS,ARG1)
+      k1 = arg_lo_ss(Z_AXIS,ARG1)
+      l1 = arg_lo_ss(T_AXIS,ARG1)
+      m1 = arg_lo_ss(E_AXIS,ARG1)
+      n1 = arg_lo_ss(F_AXIS,ARG1)
 
-      i = res_lo_ss(X_AXIS)
       j = res_lo_ss(Y_AXIS)
       k = res_lo_ss(Z_AXIS)
       l = res_lo_ss(T_AXIS)
-      
-      DO 100 i1=arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS, ARG1)
-         CALL ef_get_string_arg_element(id, arg, arg_1, 
-     .                  i1,j1,k1,l1, slen, filename)
+      m = res_lo_ss(E_AXIS)
+      n = res_lo_ss(F_AXIS)
+
+      i = res_lo_ss(X_AXIS)
+      DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS, ARG1)
+         CALL ef_get_string_arg_element_6d(id, ARG1, arg_1, 
+     .                          i1, j1, k1, l1, m1, n1, slen, filename)
 
 #ifdef usingDODSf2cUnderscore 
+
            istatus = NF_OPEN_(filename, NF_NOWRITE, cdfid) 
-           IF (istatus .NE. 0) errbuff = NF_STRERROR_(istatus)
+           IF ( istatus .NE. 0 ) errbuff = NF_STRERROR_(istatus)
 * close the netCDF file
-         IF (istatus .EQ. 0) CALL NCCLOS( cdfid, istatus )
+           IF ( istatus .EQ. 0 ) CALL NCCLOS(cdfid, istatus)
 
 #else
+
            istatus = NF_OPEN(filename, NF_NOWRITE, cdfid) 
-           IF (istatus .NE. 0) errbuff = NF_STRERROR(istatus)
+           IF ( istatus .NE. 0 ) errbuff = NF_STRERROR(istatus)
 * close the netCDF file
-         IF (istatus .EQ. 0) CALL NCCLOS( cdfid, istatus )
+           IF ( istatus .EQ. 0 ) CALL NCCLOS(cdfid, istatus)
+
 #endif 
 
-         result(i,j,k,l) = istatus
-
+           result(i,j,k,l,m,n) = istatus
 
          i = i + 1
  100  CONTINUE
-
 
 *                                                                      ^
 *                                                                      |

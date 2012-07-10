@@ -44,6 +44,7 @@
 * V312:  5/19/94 - with code extracted from GET_COMMAND
 * V320:  11/94   - dont process error message buffer -- done in ferret_dispatch
 * V531:  4/01 *sh* - cleanup incomplete continuation lines
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * calling argument declarations: (none)
 	INTEGER	control_stack_level
@@ -51,7 +52,7 @@
 * internal variable declarations:
 	INTEGER status
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'errmsg.parm'
 	include 'ferret.parm'
 	include 'command.parm'
@@ -60,18 +61,6 @@
 	include 'xcontrol.cmn'
 	include 'xinterrupt.cmn'
 	include 'xgui.cmn'
-#else
-	INTEGER	SMG$READ_COMPOSED_LINE, vax_code
-
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:COMMAND.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCONTROL.CMN'
-	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
-	INCLUDE 'FERRET_CMN:XGUI.CMN'
-#endif
 
 * re-store ^C interrupt handler following interrupt
  10	IF ( interrupted ) CALL ERRMSG

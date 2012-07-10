@@ -56,22 +56,26 @@
 * V602: *acm* 1/07 Changes for metafile-batch mode: Ignore FRAME in 
 *                  batch mode, except when in batch GIF mode.
 * V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT[=color]
-* V7.0  *kms* 11/11 changes for saving using the graphics delegate
+* PyFr  *kms* 11/11 changes for saving using the graphics delegate
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
         IMPLICIT NONE
-        INCLUDE 'ferret.parm'
-        INCLUDE 'errmsg.parm'
-        INCLUDE 'slash.parm'
-        INCLUDE 'xprog_state.cmn'
-        INCLUDE 'xplot_state.cmn'
-        INCLUDE 'xplot_setup.cmn'
+	include 'tmap_dims.parm'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'slash.parm'
+	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
+	include 'xplot_setup.cmn'
 
 * internal function return value declarations:
         INTEGER   TM_LENSTR1
 
 * internal variable declarations:
         INTEGER   sts, loc, flen
-        CHARACTER fformat*5, filename*255
+        CHARACTER fformat*5, filename*1028
 
 * decode the qualifiers, if any
 

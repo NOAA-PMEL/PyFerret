@@ -2,7 +2,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -42,7 +42,10 @@
 
 * V533 *sh* 6/01
 * V560 *acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 
@@ -54,7 +57,7 @@
 
 * determine the delta product
 	size = 1
-	DO idim = 1, 4
+	DO 10 idim = 1, nferdims
 	  IF (cx_delta(idim,cx) .NE. unspecified_val8) THEN
 	    delta = NINT(cx_delta(idim,cx))
 	  ELSE
@@ -62,7 +65,7 @@
 	  ENDIF
 	  size = size * 
      .		((cx_hi_ss(cx,idim)-cx_lo_ss(cx,idim))/delta + 1)
-	ENDDO
+ 10 	CONTINUE
 
 * the result
 	CGRID_SIZE_DELTA = size

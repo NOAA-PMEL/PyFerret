@@ -46,7 +46,9 @@
 * V541: 2/02 *sh* - bug fix -- 6/01 changes in the handling of delta strides
 *			(see read_tm.F) were not propagated to this routine
 * V602  8/06 *jli* chages for native strides 
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -54,7 +56,6 @@
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
 
-        include 'tmap_dims.parm'
 !        include 'tmap_errors.parm'
 !        include 'implicit.parm'
         include 'xtm_grid.cmn_text'
@@ -75,7 +76,7 @@
 * internal variable declarations:
 	INTEGER TM_AXES_REVERSED, nrev,
      .		com_mr, res_mr, com_cx, res_cx,	com_isp, res_isp,
-     .		axis, i, var, hi_ss, lo_ss, itmp, reversed(4),
+     .		axis, i, var, hi_ss, lo_ss, itmp, reversed(nferdims),
      .          grid, line
 
 * --- end of introductory code ---
@@ -102,7 +103,7 @@
 !* strides indicated in cx_delta e.g. SST[I=110:180:10] ?
 !* If so, transfer this info to the stride array
 !        has_a_stride = .FALSE.
-!        DO 100 idim = 1, 4
+!        DO 100 idim = 1, nferdims
 !           has_strides(idim) =  cx_delta(idim,res_cx) .NE. unspecified_val8
 !     .                   .AND.  cx_delta(idim,res_cx) .NE. 1 
 !           IF (has_strides(idim))  has_a_stride = .TRUE.
@@ -112,7 +113,7 @@
 !* 2/02 -- no longer necessary or appropriate
 !        CALL TRANSFER_CONTEXT(res_cx, cx_buff)
 !        IF (has_a_stride) THEN
-!           DO 200 idim = 1, 4
+!           DO 200 idim = 1, nferdims
 !              IF  (has_strides(idim)) THEN
 ! 1  	cx_lo_ss( cx_buff, idim ) = 1 
 !               cx_hi_ss( cx_buff, idim ) = 

@@ -43,6 +43,7 @@
 * revision 0.0 - 3/92
 * 1/95 - allow negative subscripts.  Substitute "N" for "-"
 * v4.91 - *kob* - 12/97 - added checks for axis name length
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *     axis    - original axis name
@@ -50,8 +51,6 @@
 *     hi      - hi subscript
 *     slen    - returned length of name
 
-#ifdef unix
-        include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
@@ -59,14 +58,6 @@
 #include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-xx        include 'netcdf.decl'  ! untested
-#include "netcdf.inc"
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 
 * argument declarations
       INTEGER lo, hi, tlen

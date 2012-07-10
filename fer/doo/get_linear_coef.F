@@ -6,7 +6,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -50,7 +50,9 @@
 * V230:  8/23/92 - bug fix for non-date time axes
 * V300:   5/5/93 - coordinate comparisons in single precision
 * V312:	  6/7/94 - use TDST_WORLD* for simpler, faster date conversions
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'errmsg.parm'
 
@@ -64,11 +66,11 @@
 	REAL*8	TM_WORLD, TDEST_WORLD, xsrc, xdst, xmin, xmax
 
 * initialize
-	IF ( axis .EQ. t_dim ) THEN
+	IF ( axis .EQ. t_dim .OR. axis .EQ. f_dim ) THEN
 *          TDST_WORLD gives dates from the source axis as they would be
 *	   encoded on the destination axis 
 *      ==> ALL TIME/DATE CALCULATIONS ARE DONE IN THE SOURCE AXIS ENCODING
-	   CALL TDEST_WORLD_INIT ( dst_grid, src_grid, status ) ! src<->dst
+	   CALL TDEST_WORLD_INIT ( dst_grid, src_grid, axis, status ) ! src<->dst
 	   IF ( status .NE. ferr_ok ) RETURN  ! note - status not passed !!
 	ENDIF
 	xmin = TM_WORLD( src_lo, src_grid, axis, box_middle )
@@ -84,7 +86,7 @@
 	   IF ( SNGL(xdst) .LT. SNGL(xmin)
      .     .OR. SNGL(xdst) .GT. SNGL(xmax) ) THEN  	! SNGL 5/93
 
-* ... destination point doesn't lie within source grid bounds
+* ... destination point does not lie within source grid bounds
 	      coef( ii ) = bad_val4
 	      ss  ( ii ) = unspecified_int4
 
@@ -110,4 +112,4 @@
  100	CONTINUE
 
 	RETURN
-	END	
+	END

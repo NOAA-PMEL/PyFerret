@@ -23,15 +23,17 @@
 *	deflate_lev_set  - deflate level (0 for no deflate)
 *	shuffle_flag_set - shuffle - 0 or 1
 *	endian_code_set  - native=0, little=1, big=0 match nf_endian_* params
+*
+*    2/12 *kms* Moved cache_size_mb to the beginning to eliminate warnings about padding
 
-	COMMON/NETCDF4/
+	COMMON/NETCDF4/cache_size_mb,
      .		netcdf4_type, xchunk_size, ychunk_size, 
      .		zchunk_size, tchunk_size, deflate_lev, 
      .		shuffle_flag, endian_code, 
      .		netcdf4_type_set, xchunk_size_set, ychunk_size_set, 
      .		zchunk_size_set, tchunk_size_set, deflate_lev_set, 
      .		shuffle_flag_set, endian_code_set, 
-     .		default_cache_size, cache_size_mb
+     .		default_cache_size
 
 	INTEGER 
      .		netcdf4_type, xchunk_size, ychunk_size, 

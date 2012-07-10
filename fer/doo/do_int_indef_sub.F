@@ -8,7 +8,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -52,7 +52,10 @@
 * 9/09 - Apply fix to the cos factor (previous versions of the fix had not
 *        been made), bug1348
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -60,7 +63,6 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
-	include 'tmap_dims.parm'
 	include 'xunits.cmn_text'
 	external xunits_data
 	include 'xtm_grid.cmn_text'
@@ -69,13 +71,16 @@
 * calling argument declarations:
 	INTEGER	idim, com_lo, com_hi, com_mr, com_cx, res_mr, res_cx
 	REAL	arg,
-     .		com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
+     .          com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
      .		box( com_lo:com_hi )
 
 * internal variable declarations:
 	LOGICAL	GEOG_COS_FACTOR, need_cos
-	INTEGER i, j, k, l, grid, lo, hi, axis, ii, jj, kk, ll
+	INTEGER i, j, k, l, m, n, grid, lo, hi, axis,
+     .          ii, jj, kk, ll, mm, nn
 	REAL	BOX_SIZE, unit, bad_com, bad_res, cos_factor,
      .          ybxlo, ybxhi, bx
 	REAL*8	TM_WORLD, dsum
@@ -109,7 +114,7 @@
 * INTEGRATE
 * (is double precision summing necessary ? *sh* 6/89)
 * ALONG X AXIS
-* (note: X integration is a special case 'cuz it requires COSINE(lat) )
+* (note: X integration is a special case because it requires COSINE(lat) )
 	IF ( idim .EQ. x_dim ) THEN
 	   need_cos = GEOG_COS_FACTOR( idim, grid )
      .                .AND. cx_lo_s2(com_cx).NE.unspecified_int4
@@ -117,95 +122,144 @@
 	   IF ( need_cos ) THEN
 #ifdef double_p
 	      cos_factor = COS( deg2rad *       
-     .             ( TM_WORLD( j, grid, y_dim, box_middle )) ) 
+     .            TM_WORLD(j, grid, y_dim, box_middle) ) 
               ybxlo = deg2rad* 
-     .          ( TM_WORLD(j,grid,y_dim,box_lo_lim) )
+     .            TM_WORLD(j,grid,y_dim,box_lo_lim)
               ybxhi = deg2rad* 
-     .          ( TM_WORLD(j,grid,y_dim,box_hi_lim) )
+     .            TM_WORLD(j,grid,y_dim,box_hi_lim)
 #else
 	      cos_factor = COS( deg2rad *       
-     .             SNGL( TM_WORLD( j, grid, y_dim, box_middle )) ) 
+     .            SNGL( TM_WORLD(j, grid, y_dim, box_middle) ) ) 
               ybxlo = deg2rad* 
-     .          SNGL( TM_WORLD(j,grid,y_dim,box_lo_lim) )
+     .            SNGL( TM_WORLD(j,grid,y_dim,box_lo_lim) )
               ybxhi = deg2rad* 
-     .          SNGL( TM_WORLD(j,grid,y_dim,box_hi_lim) )
+     .            SNGL( TM_WORLD(j,grid,y_dim,box_hi_lim) )
 #endif
               bx = ABS(ybxhi - ybxlo)
 	      cos_factor = ABS( SIN(ybxhi) - SIN(ybxlo) )/ bx
 	   ENDIF
+	   DO 210 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 210 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 210 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 210 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	      dsum = 0.0D0
 	      DO 205 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-	         IF ( com(i,j,k,l) .EQ. bad_com ) THEN
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
 * ... reject all data after a bad point
 	            DO 200 ii = i, hi
- 200	            res(ii,j,k,l) = bad_res
+ 200	            res(ii,j,k,l,m,n) = bad_res
 	            GOTO 210
-	         ENDIF	
-	         dsum = dsum + box(i)*com(i,j,k,l)
+	         ENDIF
+	         dsum = dsum + box(i)*com(i,j,k,l,m,n)
 	         IF ( need_cos ) THEN
-	            res(i,j,k,l) = dsum * cos_factor
+	            res(i,j,k,l,m,n) = dsum * cos_factor
 	         ELSE
-	            res(i,j,k,l) = dsum
-	         ENDIF	
+	            res(i,j,k,l,m,n) = dsum
+	         ENDIF
  205	      CONTINUE
  210	   CONTINUE
 
 * ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
+	   DO 310 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 310 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 310 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 310 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 310 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	      dsum = 0.0D0
 	      DO 305 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	         IF ( com(i,j,k,l) .EQ. bad_com ) THEN
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
 * ... reject all data after a bad point
 	            DO 300 jj = j, hi
- 300	            res(i,jj,k,l) = bad_res
+ 300	            res(i,jj,k,l,m,n) = bad_res
 	            GOTO 310
 	         ENDIF
-	         dsum = dsum + box(j)*com(i,j,k,l)
-	         res(i,j,k,l) = dsum
+	         dsum = dsum + box(j)*com(i,j,k,l,m,n)
+	         res(i,j,k,l,m,n) = dsum
  305	      CONTINUE
  310	   CONTINUE
 
 * ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
+	   DO 410 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 410 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 410 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 410 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 410 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	      dsum = 0.0D0
 	      DO 405 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	         IF ( com(i,j,k,l) .EQ. bad_com ) THEN
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
 * ... reject all data after a bad point
 	            DO 400 kk = k, hi
- 400	            res(i,j,kk,l) = bad_res
+ 400	            res(i,j,kk,l,m,n) = bad_res
 	            GOTO 410
 	         ENDIF
-	         dsum = dsum + box(k)*com(i,j,k,l)
-	         res(i,j,k,l) = dsum
+	         dsum = dsum + box(k)*com(i,j,k,l,m,n)
+	         res(i,j,k,l,m,n) = dsum
  405	      CONTINUE
  410	   CONTINUE
 
 * ALONG T AXIS
-	ELSE
+	ELSEIF ( idim .EQ. t_dim ) THEN
+	   DO 510 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 510 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 510 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 510 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 510 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	      dsum = 0.0D0
 	      DO 505 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	         IF ( com(i,j,k,l) .EQ. bad_com ) THEN
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
 * ... reject all data after a bad point
 	            DO 500 ll = l, hi
- 500	            res(i,j,k,ll) = bad_res
+ 500	            res(i,j,k,ll,m,n) = bad_res
 	            GOTO 510
 	         ENDIF
-	         dsum = dsum + box(l)*com(i,j,k,l)
-	         res(i,j,k,l) = dsum
+	         dsum = dsum + box(l)*com(i,j,k,l,m,n)
+	         res(i,j,k,l,m,n) = dsum
  505	      CONTINUE
  510	   CONTINUE
+
+* ALONG E AXIS
+	ELSEIF ( idim .EQ. e_dim ) THEN
+	   DO 610 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 610 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO 610 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO 610 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO 610 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	      dsum = 0.0D0
+	      DO 605 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
+* ... reject all data after a bad point
+	            DO 600 mm = m, hi
+ 600	            res(i,j,k,l,mm,n) = bad_res
+	            GOTO 610
+	         ENDIF
+	         dsum = dsum + box(m)*com(i,j,k,l,m,n)
+	         res(i,j,k,l,m,n) = dsum
+ 605	      CONTINUE
+ 610	   CONTINUE
+
+* ALONG F AXIS
+	ELSEIF ( idim .EQ. f_dim ) THEN
+	   DO 710 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO 710 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO 710 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO 710 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO 710 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	      dsum = 0.0D0
+	      DO 705 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
+* ... reject all data after a bad point
+	            DO 700 nn = n, hi
+ 700	            res(i,j,k,l,m,nn) = bad_res
+	            GOTO 710
+	         ENDIF
+	         dsum = dsum + box(n)*com(i,j,k,l,m,n)
+	         res(i,j,k,l,m,n) = dsum
+ 705	      CONTINUE
+ 710	   CONTINUE
+
 	ENDIF
 
 	RETURN
-	END	
+	END

@@ -38,7 +38,9 @@
 * V600  4/06 *acm*   attribute handling
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * V670  2/11 *acm*   Fixes for inheriting attributes.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'      
       INCLUDE 'xprog_state.cmn'

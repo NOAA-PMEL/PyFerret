@@ -47,6 +47,7 @@
 * V450: 12/96
 *        7/7/97 - revert to one name in all cases -- use DIAGNOSTIC_OUT
 *                 to make diagnostic output more readable
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations
 	INTEGER		parent_uvar, char1
@@ -54,11 +55,8 @@
 
 * internal variable declarations
 
-#ifdef unix
+	include	'tmap_dims.parm'
 	include 'ferret.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * sanity check
 	IF ( LEN(name) .LT. 11 ) THEN

@@ -45,14 +45,10 @@
 * revision 0.1 - 5/22/87  - stack pointer is only decremented for non-error
 *			    calls to avoid subscript out of bounds in calling
 *			    routine
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 	INTEGER	stack_ptr, min_stack, status
 

@@ -50,6 +50,7 @@
 
       SUBROUTINE list_value_xml_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -58,31 +59,35 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
+
       CHARACTER*120 fcn_descr
 
       WRITE (fcn_descr,100) 
       CALL ef_set_desc(id, fcn_descr)
   100 FORMAT('write a string in xml format with specified ',
-     .        'tag and optional CDATA escape sequence')
+     .       'tag and optional CDATA escape sequence')
 
       CALL ef_set_num_args(id, 4)
-      CALL ef_set_axis_inheritance(id, ABSTRACT, NORMAL, 
-     .			NORMAL, NORMAL)
-
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                ABSTRACT, NORMAL,
+     .                                NORMAL,   NORMAL,
+     .                                NORMAL,   NORMAL)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'tag')
       CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_type (id, arg, STRING_ARG)
       CALL ef_set_arg_desc(id, arg, 'tag to open and close with')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'value')
       CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_desc(id, arg, 'single string value to write')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
       CALL ef_set_arg_type (id, arg, STRING_ARG)
 
       arg = 3
@@ -90,13 +95,15 @@
       CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_desc(id, arg, 
      .'enter 1 to request CDATA escape, 0 otherwise')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
       arg = 4
       CALL ef_set_arg_name(id, arg, 'outputfile')
       CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_desc(id, arg, 'the filename to write to')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
       CALL ef_set_arg_type (id, arg, STRING_ARG)
 
 *                                                                      ^
@@ -119,6 +126,7 @@
 
       SUBROUTINE list_value_xml_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id
@@ -128,24 +136,11 @@
 *                                                                     |
 *                                                                     V
 
-      INTEGER my_lo, my_hi, nx, ny
-
-      INTEGER arg
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
-
-*
-*     Use utility functions to get context information about the argument.
-*
-
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
-
-      CALL ef_set_axis_limits(id, Y_AXIS, 1, 3)
-
-      my_lo = 1
-      my_hi = 1
+      INTEGER arg, my_lo, my_hi
 
       arg = 1
+      my_lo = 1
+      my_hi = 1
       CALL ef_set_axis_limits(id, X_AXIS, my_lo, my_hi)
 
 *                                                                     ^
@@ -163,6 +158,7 @@
       SUBROUTINE list_value_xml_compute(id, arg_1, arg_2, arg_3, 
      .           arg_4, result)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -175,38 +171,42 @@
 
       INTEGER id
 
-      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy,
-     .           mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL arg_2(strdf,mem2lox:mem2hix, mem2loy:mem2hiy,
-     .           mem2loz:mem2hiz, mem2lot:mem2hit)
-      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, 
-     .     mem3loz:mem3hiz, mem3lot:mem3hit)
-      REAL arg_4(strdf,mem4lox:mem4hix, mem4loy:mem4hiy,
-     .           mem4loz:mem4hiz, mem4lot:mem4hit)
+      REAL arg_1(strdf,
+     .           mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(strdf,
+     .           mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
+     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
+     .           mem3lot:mem3hit, mem3loe:mem3hie, mem3lof:mem3hif)
+      REAL arg_4(strdf,
+     .           mem4lox:mem4hix, mem4loy:mem4hiy, mem4loz:mem4hiz, 
+     .           mem4lot:mem4hit, mem4loe:mem4hie, mem4lof:mem4hif)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
-     .     memresloz:memreshiz, memreslot:memreshit)
-
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
+* information for each variable''s axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
 
-      INTEGER i, j, k, l
-      INTEGER i1, j1, k1, l1
-      INTEGER i3, j3, k3, l3
-      INTEGER TM_LENSTR1, vlen, tlen, slen
+      INTEGER i, j, k, l, m, n
+      INTEGER TM_LENSTR1, vlen, tlen, slen, flen, iunit
       CHARACTER*2048 outstring, first, second, third
       CHARACTER*2048 outfile
       CHARACTER*50 tag
@@ -214,49 +214,48 @@
       CHARACTER*100 errtxt
       INTEGER cdata_flag
 
-*  variables for checking axis characteristics (modulo axes)
-
-      CHARACTER ax_name(4)*16, ax_units(4)*16
-      LOGICAL backward(4), modulo(4), regular(4), tmodulo
-
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_result_type(id, rtype)
-
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-      i1 = arg_lo_ss(X_AXIS,ARG1)
-      j1 = arg_lo_ss(Y_AXIS,ARG1)
-      k1 = arg_lo_ss(Z_AXIS,ARG1)
-      l1 = arg_lo_ss(T_AXIS,ARG1)
+      i = arg_lo_ss(X_AXIS,ARG1)
+      j = arg_lo_ss(Y_AXIS,ARG1)
+      k = arg_lo_ss(Z_AXIS,ARG1)
+      l = arg_lo_ss(T_AXIS,ARG1)
+      m = arg_lo_ss(E_AXIS,ARG1)
+      n = arg_lo_ss(F_AXIS,ARG1)
 *     Get the tag (string)
-      CALL ef_get_string_arg_element(id, ARG1, arg_1,
-     .     i1,j1,k1,l1,tlen,tag)
+      CALL ef_get_string_arg_element_6d(id, ARG1, arg_1,
+     .                                  i,j,k,l,m,n,tlen,tag)
 
-      i2 = arg_lo_ss(X_AXIS,ARG2)
-      j2 = arg_lo_ss(Y_AXIS,ARG2)
-      k2 = arg_lo_ss(Z_AXIS,ARG2)
-      l2 = arg_lo_ss(T_AXIS,ARG2)
+      i = arg_lo_ss(X_AXIS,ARG2)
+      j = arg_lo_ss(Y_AXIS,ARG2)
+      k = arg_lo_ss(Z_AXIS,ARG2)
+      l = arg_lo_ss(T_AXIS,ARG2)
+      m = arg_lo_ss(E_AXIS,ARG2)
+      n = arg_lo_ss(F_AXIS,ARG2)
 *     Get the value (string)
-      CALL ef_get_string_arg_element(id, ARG2, arg_2,
-     .     i2,j2,k2,l2,vlen,value)
+      CALL ef_get_string_arg_element_6d(id, ARG2, arg_2,
+     .                                  i,j,k,l,m,n,vlen,value)
 
-      i3 = arg_lo_ss(X_AXIS,ARG3)
-      j3 = arg_lo_ss(Y_AXIS,ARG3)
-      k3 = arg_lo_ss(Z_AXIS,ARG3)
-      l3 = arg_lo_ss(T_AXIS,ARG3)
+      i = arg_lo_ss(X_AXIS,ARG3)
+      j = arg_lo_ss(Y_AXIS,ARG3)
+      k = arg_lo_ss(Z_AXIS,ARG3)
+      l = arg_lo_ss(T_AXIS,ARG3)
+      m = arg_lo_ss(E_AXIS,ARG3)
+      n = arg_lo_ss(F_AXIS,ARG3)
+      cdata_flag = INT(arg_3(i,j,k,l,m,n))
 
-      cdata_flag = INT(arg_3(i3,j3,k3,l3))
 
-
-      i4 = arg_lo_ss(X_AXIS,ARG4)
-      j4 = arg_lo_ss(Y_AXIS,ARG4)
-      k4 = arg_lo_ss(Z_AXIS,ARG4)
-      l4 = arg_lo_ss(T_AXIS,ARG4)
-*     Get the value (string)
-      CALL ef_get_string_arg_element(id, ARG4, arg_4,
-     .     i4,j4,k4,l4,flen,outfile)
-
+      i = arg_lo_ss(X_AXIS,ARG4)
+      j = arg_lo_ss(Y_AXIS,ARG4)
+      k = arg_lo_ss(Z_AXIS,ARG4)
+      l = arg_lo_ss(T_AXIS,ARG4)
+      m = arg_lo_ss(E_AXIS,ARG4)
+      n = arg_lo_ss(F_AXIS,ARG4)
+*     Get the filename (string)
+      CALL ef_get_string_arg_element_6d(id, ARG4, arg_4,
+     .                                  i,j,k,l,m,n,flen,outfile)
 
 *		<value><![CDATA[0]]></value>
 *		<value>0</value>
@@ -287,16 +286,13 @@
          outstring = first(1:tlen)//second(1:vlen)//third(1:slen)
       ENDIF
       vlen = TM_LENSTR1(outstring)
-      
-
 
       iunit = 19
-
-       OPEN( UNIT        = iunit,
-     .       FILE        = outfile,
-     .       FORM        = 'FORMATTED',
-     .       ACCESS      = 'APPEND',
-     .       ERR         = 5010 )
+      OPEN( UNIT        = iunit,
+     .      FILE        = outfile(1:flen),
+     .      FORM        = 'FORMATTED',
+     .      ACCESS      = 'APPEND',
+     .      ERR         = 5010 )
 
       WRITE (iunit, 1060) outstring(1:vlen)
       CLOSE (iunit, ERR = 5020 )
@@ -305,17 +301,20 @@
       j = res_lo_ss(Y_AXIS)
       k = res_lo_ss(Z_AXIS)
       l = res_lo_ss(T_AXIS)
-      result(i,j,k,l) = 1
+      m = res_lo_ss(E_AXIS)
+      n = res_lo_ss(F_AXIS)
+      result(i,j,k,l,m,n) = 1
 
       RETURN
-     
-5010  CONTINUE
-      WRITE(errtxt,*) 'Error opening file ', fname
+
+ 5010 CONTINUE
+      WRITE(errtxt,*) 'Error opening file ', outfile(1:flen)
       CALL EF_BAIL_OUT(id, errtxt)
-5020  CONTINUE
-      WRITE(errtxt,*) 'Error closing file ', fname
+ 5020 CONTINUE
+      WRITE(errtxt,*) 'Error closing file ', outfile(1:flen)
       CALL EF_BAIL_OUT(id, errtxt)
       RETURN
+
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |

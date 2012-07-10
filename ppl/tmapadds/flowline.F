@@ -64,11 +64,13 @@ C   int *shdcls, int shdcnt, int den)
 *             from xeq_vector.  Also clean up the declarations.
 * ACM  9/9/02 Make px and py declarations px(*); for regular grids these
 *             are dummy arrays.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'

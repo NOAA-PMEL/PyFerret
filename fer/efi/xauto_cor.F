@@ -80,35 +80,32 @@
 
       SUBROUTINE xauto_cor_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
-      CHARACTER*110 fcn_desc
-
-c      CALL ef_version_test(ef_version)
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      WRITE (fcn_desc, 20)
-      CALL ef_set_desc(id, fcn_desc)
-   20 FORMAT ( 'Compute autocorrelation of ',
-     .        ' series, lags of 0, ..., N-1' )
 
+      CALL ef_set_desc(id,
+     .        'Compute autocorrelation of series, lags of 0, ..., N-1')
       CALL ef_set_num_args(id, 1)
-
-      CALL ef_set_axis_inheritance(id, ABSTRACT, IMPLIED_BY_ARGS, 
-     .        IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
-
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                ABSTRACT,        IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
       CALL ef_set_num_work_arrays(id, 3)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
-      CALL ef_set_arg_desc(id, arg, 'X- series variable')
-      CALL ef_set_axis_influence(id, arg, NO, YES, YES, YES)
+      CALL ef_set_arg_desc(id, arg, 'X-series variable')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, YES, YES, YES, YES, YES)
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
@@ -116,6 +113,8 @@ c      CALL ef_version_test(ef_version)
 
       RETURN 
       END
+
+
 *
 * In this subroutine we provide information about the lo and hi
 * limits associated with each abstract or custom axis.   The user 
@@ -128,8 +127,8 @@ c      CALL ef_version_test(ef_version)
 
       SUBROUTINE xauto_cor_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -138,20 +137,19 @@ c      CALL ef_version_test(ef_version)
 *                                                                     |
 *                                                                     V
 
-      INTEGER nx, nx1
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+      INTEGER lo_ss, hi_ss
 
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-*     Use utility functions to get context information about the argument.
+C  Autocorrelation returns correlations for lags of 0 to N-1.
+      lo_ss = 1
+      hi_ss = arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
-      nx = arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1
+      CALL ef_set_axis_limits(id, X_AXIS, lo_ss, hi_ss)
 
-C  Autocorrelation returns corelations for lags of 0 to N-1.
-
-      nx1 = 1
-      CALL ef_set_axis_limits(id, X_AXIS, nx1, nx)
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -159,14 +157,15 @@ C  Autocorrelation returns corelations for lags of 0 to N-1.
       RETURN
       END
 
+
 *
 * In this subroutine we request an amount of storage to be supplied
 * by Ferret and passed as an additional argument.
 *
       SUBROUTINE xauto_cor_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -174,31 +173,39 @@ C  Autocorrelation returns corelations for lags of 0 to N-1.
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 * 
-* Set the work arrays,  X/Y/Z/T dimensions
+* Set the work arrays, X/Y/Z/T/E/F dimensions
 *
-* ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+* ef_set_work_array_dims_6d(id, array #,
+*                           xlo, ylo, zlo, tlo, elo, flo,
+*                           xhi, yhi, zhi, thi, ehi, fhi)
 *
+
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
       INTEGER npts, irr
 
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
-
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       npts = 1 + arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1)
   
 * partial means  pmean
       irr = 1
-      CALL ef_set_work_array_dims (id, irr, 1, 1, 1, 1, npts, 1, 1, 1)
-
+      CALL ef_set_work_array_dims_6d(id, irr,
+     .                                1, 1, 1, 1, 1, 1,
+     .                             npts, 1, 1, 1, 1, 1)
 
 * partial variances  pvar
       irr = 2
-      CALL ef_set_work_array_dims (id, irr, 1, 1, 1, 1, npts, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, irr,
+     .                                1, 1, 1, 1, 1, 1,
+     .                             npts, 1, 1, 1, 1, 1)
 
 * box sizes BOX
       irr = 3
-      CALL ef_set_work_array_dims (id, irr, 1, 1, 1, 1, npts, 1, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, irr,
+     .                                1, 1, 1, 1, 1, 1,
+     .                             npts, 1, 1, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -212,28 +219,40 @@ C  Autocorrelation returns corelations for lags of 0 to N-1.
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE xauto_cor_compute(id, arg_1, result, pmean, 
-     .           pvar, box)
+      SUBROUTINE xauto_cor_compute(id, arg_1, result,
+     .                             pmean, pvar, box)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
-      REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
-     .           mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL result(memreslox:memreshix, memresloy:memreshiy,
-     .            memresloz:memreshiz, memreslot:memreshit)
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
+
+* Ignore the Y/Z/T/E/F dimensions in the work arrays since
+* they are not used and Fortran is column major
+      REAL pmean(wrk1lox:wrk1hix)
+      REAL pvar (wrk2lox:wrk2hix)
+      REAL box  (wrk3lox:wrk3hix)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
+* information for each variable''s axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
@@ -242,40 +261,35 @@ C  Autocorrelation returns corelations for lags of 0 to N-1.
 
       REAL psum, diff, diff2
       REAL dsum, bsize
-      INTEGER ir, im, m
-
-*  Dimension work arrays
-
-      REAL pmean(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
-     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-      REAL pvar(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
-     .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
-      REAL box(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
-     .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
-
-
+      INTEGER ir, im, is
       INTEGER nd, arg
-      INTEGER i, j, k, l
-      INTEGER i1, j1, k1, l1
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, k1, l1, m1, n1
 
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
       arg = 1
       CALL ef_get_box_size(id, arg, X_AXIS, arg_lo_ss(X_AXIS,arg), 
      .                     arg_hi_ss(X_AXIS,arg), box)
 
-      nd = (arg_hi_ss(X_AXIS,arg) - arg_lo_ss(X_AXIS,arg) + 1)
+      nd = arg_hi_ss(X_AXIS,arg) - arg_lo_ss(X_AXIS,arg) + 1
 
-      j1 = arg_lo_ss(Y_AXIS,ARG1)
-      DO 400 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      n1 = arg_lo_ss(F_AXIS,ARG1)
+      DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+
+      m1 = arg_lo_ss(E_AXIS,ARG1)
+      DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+
+      l1 = arg_lo_ss(T_AXIS,ARG1)
+      DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
          k1 = arg_lo_ss(Z_AXIS,ARG1)
-         DO 300 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+         DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-            l1 = arg_lo_ss(T_AXIS,ARG1)
-            DO 200 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            j1 = arg_lo_ss(Y_AXIS,ARG1)
+            DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
 *
 * Calculate the autocorrelation 
@@ -285,18 +299,17 @@ C  Autocorrelation returns corelations for lags of 0 to N-1.
                   psum = 0.
                   dsum = 0.
                   im = i-1
-                  i1 =arg_lo_ss(X_AXIS,ARG1)
-                  DO 110 m = 1, nd-im 
-                     IF (arg_1(i1+im,j1,k1,l1) .NE. bad_flag(ARG1)) THEN
-                        bsize = box(m+im,1,1,1)
-                        psum = psum + bsize* arg_1(i1+im,j1,k1,l1)
+                  i1 = arg_lo_ss(X_AXIS,ARG1)
+                  DO 110 is = 1, nd-im 
+                     IF ( arg_1(i1+im,j1,k1,l1,m1,n1)
+     .                    .NE. bad_flag(ARG1) ) THEN
+                        bsize = box(is+im)
+                        psum = psum + bsize*arg_1(i1+im,j1,k1,l1,m1,n1)
                         dsum = dsum + bsize
                      ENDIF
-
                      i1 = i1 + arg_incr(X_AXIS,ARG1)
  110              CONTINUE
-                  IF (dsum .gt. 0.) pmean(i,1,1,1) = psum/ dsum
-
+                  IF ( dsum .GT. 0. ) pmean(i) = psum / dsum
  120           CONTINUE
 
 *  Compute the partial variances RMS[dat(m+i) - pmean(i)]
@@ -306,28 +319,23 @@ C  Autocorrelation returns corelations for lags of 0 to N-1.
                DO 160 i = 1, nd
                   psum = 0.
                   dsum = 0.
-
                   im = i-1
                   i1 = arg_lo_ss(X_AXIS,ARG1)
-                  DO 150 m = 1, nd-im 
-                     IF (arg_1(i1+im,j1,k1,l1) .NE. bad_flag(ARG1)) THEN
-                        bsize = box(m+im,1,1,1)
-                        diff = 
-     .                     arg_1(i1+im,j1,k1,l1) - pmean(i,1,1,1)
-                        psum = psum + bsize* diff* diff
+                  DO 150 is = 1, nd-im 
+                     IF ( arg_1(i1+im,j1,k1,l1,m1,n1)
+     .                    .NE. bad_flag(ARG1) ) THEN
+                        bsize = box(is+im)
+                        diff = arg_1(i1+im,j1,k1,l1,m1,n1) - pmean(i)
+                        psum = psum + bsize * diff * diff
                         dsum = dsum + bsize
-
                      ENDIF
-
                      i1 = i1 + arg_incr(X_AXIS,ARG1)
  150              CONTINUE
-
-                  IF (dsum .gt. 0.) THEN
-                     pvar(i,1,1,1) = sqrt(psum)
+                  IF ( dsum .GT. 0. ) THEN
+                     pvar(i) = sqrt(psum)
                   ELSE
-                     pvar(i,1,1,1) = 0.
+                     pvar(i) = 0.
                   ENDIF
-
  160           CONTINUE
 
 *  Compute the autocorrelation for lag l=0,1,2,...,ND-1
@@ -339,46 +347,47 @@ C  Autocorrelation returns corelations for lags of 0 to N-1.
                   psum = 0.
                   dsum = 0.
                   im = i-1
-                  i1 =arg_lo_ss(X_AXIS,ARG1)
-                  DO 170 m = 1, nd-im 
-                     IF (arg_1(i1+im,j1,k1,l1) .NE. bad_flag(ARG1) .AND.
-     .                   arg_1(i1,j1,k1,l1)    .NE. bad_flag(ARG1)) THEN
-                        bsize = (box(m+im,1,1,1) + box(m,1,1,1))/ 2.
-                        diff = 
-     .                     arg_1(i1+im,j1,k1,l1) - pmean(i,1,1,1)
-                        diff2 = 
-     .                     arg_1(i1,j1,k1,l1)    - pmean(1,1,1,1)
-                        psum = psum + bsize* diff* diff2
-                        dsum = dsum + box(m+im,1,1,1)* box(m,1,1,1)
+                  i1 = arg_lo_ss(X_AXIS,ARG1)
+                  DO 170 is = 1, nd-im 
+                     IF ( arg_1(i1+im,j1,k1,l1,m1,n1)
+     .                    .NE. bad_flag(ARG1) .AND.
+     .                    arg_1(i1,   j1,k1,l1,m1,n1)    
+     .                    .NE. bad_flag(ARG1) ) THEN
+                        bsize = (box(is+im) + box(is)) / 2.
+                        diff  = arg_1(i1+im,j1,k1,l1,m1,n1) - pmean(i)
+                        diff2 = arg_1(i1,   j1,k1,l1,m1,n1) - pmean(1)
+                        psum = psum + bsize * diff * diff2
+                        dsum = dsum + box(is+im) * box(m)
                      ENDIF
-
                      i1 = i1 + arg_incr(X_AXIS,ARG1)
  170              CONTINUE
 
-                  IF (pvar(1,1,1,1) .NE. 0.   .AND.  
-     .                pvar(i,1,1,1) .NE. 0.   .AND. 
-     .                psum .NE. 0.) THEN
-     .                     
-                     result(ir,j,k,l) = psum/ 
-     .                                (pvar(1,1,1,1)* pvar(i,1,1,1))
-
+                  IF ( pvar(1) .NE. 0.   .AND.  
+     .                 pvar(i) .NE. 0.   .AND. 
+     .                 psum    .NE. 0. ) THEN
+                     result(ir,j,k,l,m,n) = psum / (pvar(1) * pvar(i))
                   ELSE
-                     result(ir,j,k,l) = bad_flag_result
+                     result(ir,j,k,l,m,n) = bad_flag_result
                   ENDIF
 
                   i1 = i1 + arg_incr(X_AXIS,ARG1)
                   ir = ir + res_incr(X_AXIS)
  180           CONTINUE
 
-               l1 = l1 + arg_incr(T_AXIS,ARG1)
+               j1 = j1 + arg_incr(Y_AXIS,ARG1)
  200        CONTINUE
 
             k1 = k1 + arg_incr(Z_AXIS,ARG1)
  300     CONTINUE
 
-         j1 = j1 + arg_incr(Y_AXIS,ARG1)
+         l1 = l1 + arg_incr(T_AXIS,ARG1)
  400  CONTINUE
 
+         m1 = m1 + arg_incr(E_AXIS,ARG1)
+ 500  CONTINUE
+
+         n1 = n1 + arg_incr(F_AXIS,ARG1)
+ 600  CONTINUE
 
 *                                                                      ^
 *                                                                      |

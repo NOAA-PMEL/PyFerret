@@ -80,54 +80,60 @@
 
 
       SUBROUTINE rect_to_curv_init(id)
-        
+
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER   id, arg
-      CHARACTER*100  descr
 
 !**********************************************************************
 !                                           USER CONFIGURABLE PORTION |
 !                                                                     |
 !                                                                     V
 
-      WRITE (descr, 10)
-   10 FORMAT ('Regrid from rectangular to curvilinear grid')
-      CALL ef_set_desc(id, descr)
+      CHARACTER*100  descr
 
+      CALL ef_set_desc(id,
+     .  'Regrid from rectangular to curvilinear grid')
       CALL ef_set_num_args(id, 4)
       CALL ef_set_num_work_arrays(id, 8)
-
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS,  
-     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'V')
       CALL ef_set_arg_desc(id, arg,
-     ,  'variable V(x,y,z,t) on rectilinear grid')
-      CALL ef_set_axis_influence(id, arg, NO, NO, YES, YES)
+     ,  'variable V(x,y,z,t,e,f) on rectilinear grid')
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, YES, YES, YES, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'lon_bounds_out')
       CALL ef_set_arg_unit(id, arg, 'degrees')
       CALL ef_set_arg_desc(id, arg, 
      .  'Destination curvilinear grid longitude bounds(2-D)')
-      CALL ef_set_axis_influence(id, arg, YES, YES, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'lat_bounds_out')
       CALL ef_set_arg_unit(id, arg, 'degrees')
       CALL ef_set_arg_desc(id, arg, 
      .  'Destination curvilinear grid latitude bounds(2-D)')
-      CALL ef_set_axis_influence(id, arg, YES, YES, NO, NO)   
-      
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, NO, NO, NO, NO)
+
       arg = 4
       CALL ef_set_arg_name(id, arg, 'missing_allowed')
       WRITE (descr, 20)
    20 FORMAT ('number of missing values allowed in four ',
-     .   'surrounding source cells: 0 to 3')
+     .        'surrounding source cells: 0 to 3')
       CALL ef_set_arg_desc(id, arg, descr)
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)      
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              NO, NO, NO, NO, NO, NO)
 
 !                                                                     ^
 !                                                                     |
@@ -143,8 +149,8 @@
 *
       SUBROUTINE rect_to_curv_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -154,37 +160,34 @@
 *                                                                      V
 
 *
-* Set the work array X/Y/Z/T dimensions
+* Set the work array X/Y/Z/T/E/F dimensions
 *
-* ef_set_work_array_lens(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+* ef_set_work_array_dims_6d(id, array #,
+*                           xlo, ylo, zlo, tlo, elo, flo,
+*                           xhi, yhi, zhi, thi, ehi, fhi)
 *
       INTEGER array_num, nx, ny
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
 *   real wti(nlon_dst,nlat_dst,2)      
 *   weights for bilinear interpolation 
 
       array_num = 1
-      CALL ef_set_work_array_dims(id, array_num,
-     .     arg_lo_ss(X_AXIS,ARG3), arg_lo_ss(Y_AXIS,ARG3), 
-     .     1, 0, 
-     .     arg_hi_ss(X_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 
-     .     2, 0)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .     arg_lo_ss(X_AXIS,ARG3), arg_lo_ss(Y_AXIS,ARG3), 1, 1, 1, 1,
+     .     arg_hi_ss(X_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 2, 1, 1, 1)
      
 *  real wtj(nlon_dst,nlat_dst,2)      
 *  weights for bilinear interpolation 
 
       array_num = 2
-      CALL ef_set_work_array_dims(id, array_num,
-     .     arg_lo_ss(X_AXIS,ARG3), arg_lo_ss(Y_AXIS,ARG3), 
-     .     1, 0, 
-     .     arg_hi_ss(X_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 
-     .     2, 0)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .     arg_lo_ss(X_AXIS,ARG3), arg_lo_ss(Y_AXIS,ARG3), 1, 1, 1, 1,
+     .     arg_hi_ss(X_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 2, 1, 1, 1)
 
 *  real*8 in_lon_lat(max(nlat_src+1, nlon_src+1), 2) 
 *  edges of x,y input axes, will be declared real*8
@@ -192,17 +195,17 @@
       nx = arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 2
       ny = arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1) + 2
       nx = MAX(nx,ny)
-      CALL ef_set_work_array_dims(id, array_num,
-     .        1,  1, 1, 1,
-     .     2*nx, 4, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .                                1, 1, 1, 1, 1, 1,
+     .                             2*nx, 4, 1, 1, 1, 1)
 
 *  real rad_lon_lat(max(nlat_src+1, nlon_src+1), 2) 
 *  edges of input axes, will be declared real, converted to radians
 
       array_num = 4
-      CALL ef_set_work_array_dims(id, array_num,
-     .     1,  1, 1, 1,
-     .     nx, 2, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .                                1, 1, 1, 1, 1, 1,
+     .                               nx, 2, 1, 1, 1, 1)
 
 *  real out_lon(nlon_dst, nlat_dst)  
 *  edges of output longitude grid, will be converted to radians
@@ -210,9 +213,9 @@
       array_num = 5
       nx = arg_hi_ss(X_AXIS,ARG2) - arg_lo_ss(X_AXIS,ARG2) + 1
       ny = arg_hi_ss(Y_AXIS,ARG2) - arg_lo_ss(Y_AXIS,ARG2) + 1
-      CALL ef_set_work_array_dims(id, array_num,
-     .     1,   1, 1, 1,
-     .     nx, ny, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .                                1,  1, 1, 1, 1, 1,
+     .                               nx, ny, 1, 1, 1, 1)
 
 *  real out_lat(nlon_dst, nlat_dst)      
 *  edges of output latitude grid, will be converted to radians
@@ -220,31 +223,27 @@
       array_num = 6
       nx = arg_hi_ss(X_AXIS,ARG3) - arg_lo_ss(X_AXIS,ARG3) + 1
       ny = arg_hi_ss(Y_AXIS,ARG3) - arg_lo_ss(Y_AXIS,ARG3) + 1
-      CALL ef_set_work_array_dims(id, array_num,
-     .     1,   1, 1, 1,
-     .     nx, ny, 1, 1)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .                                1,  1, 1, 1, 1, 1,
+     .                               nx, ny, 1, 1, 1, 1)
 
 *  integer i_lon(nlon_dst,nlat_dst,2) 
 * indices for bilinear interpolation 
 * These will be declared integer inside the compute routine
 
       array_num = 7
-      CALL ef_set_work_array_dims(id, array_num,
-     .     arg_lo_ss(X_AXIS,ARG3), arg_lo_ss(Y_AXIS,ARG3), 
-     .     1, 1, 
-     .     arg_hi_ss(X_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 
-     .     2, 1)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .     arg_lo_ss(X_AXIS,ARG3), arg_lo_ss(Y_AXIS,ARG3), 1, 1, 1, 1,
+     .     arg_hi_ss(X_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 2, 1, 1, 1)
 
 *  integer j_lat(nlon_dst,nlat_dst,2) 
 *  indices for bilinear interpolation 
 *  These will be declared integer inside the compute routine
 
       array_num = 8
-      CALL ef_set_work_array_dims(id, array_num,
-     .     arg_lo_ss(X_AXIS,ARG3), arg_lo_ss(Y_AXIS,ARG3), 
-     .     1, 1, 
-     .     arg_hi_ss(X_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 
-     .     2, 1)
+      CALL ef_set_work_array_dims_6d(id, array_num,
+     .     arg_lo_ss(X_AXIS,ARG3), arg_lo_ss(Y_AXIS,ARG3), 1, 1, 1, 1,
+     .     arg_hi_ss(X_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 2, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -262,83 +261,93 @@
      .          arg_4, result, wti, wtj, in_lon_lat,
      .          rad_lon_lat, out_lon, out_lat, i_lon, j_lat)
 
-      implicit none
-      
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
-      
 
-      INTEGER  id
+      INTEGER id
 
-      REAL  bad_flag(EF_MAX_ARGS), bad_flag_result
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
+     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
+     .           mem3lot:mem3hit, mem3loe:mem3hie, mem3lof:mem3hif)
+      REAL arg_4(mem4lox:mem4hix, mem4loy:mem4hiy, mem4loz:mem4hiz, 
+     .           mem4lot:mem4hit, mem4loe:mem4hie, mem4lof:mem4hif)
 
-      REAL  arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz,
-     .       mem1lot:mem1hit)
-      REAL  arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz,
-     .       mem2lot:mem2hit)
-      REAL  arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz,
-     .       mem3lot:mem3hit)      
-      REAL  arg_4(mem4lox:mem4hix, mem4loy:mem4hiy, mem4loz:mem4hiz,
-     .       mem4lot:mem4hit)       
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
-      REAL  result(memreslox:memreshix, memresloy:memreshiy, 
-     .      memresloz:memreshiz, memreslot:memreshit)
-     
       REAL wti(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
-     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
+     .         wrk1loz:wrk1hiz, wrk1lot:wrk1hit,
+     .         wrk1loe:wrk1hie, wrk1lof:wrk1hif)
       REAL wtj(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
-     .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
+     .         wrk2loz:wrk2hiz, wrk2lot:wrk2hit,
+     .         wrk2loe:wrk2hie, wrk2lof:wrk2hif)
       REAL*8 in_lon_lat(wrk3lox:wrk3hix/2, wrk3loy:wrk3hiy,
-     .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
+     .                  wrk3loz:wrk3hiz, wrk3lot:wrk3hit,
+     .                  wrk3loe:wrk3hie, wrk3lof:wrk3hif)
       REAL rad_lon_lat(wrk4lox:wrk4hix, wrk4loy:wrk4hiy,
-     .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
+     .                 wrk4loz:wrk4hiz, wrk4lot:wrk4hit,
+     .                 wrk4loe:wrk4hie, wrk4lof:wrk4hif)
       REAL out_lon(wrk5lox:wrk5hix, wrk5loy:wrk5hiy,
-     .               wrk5loz:wrk5hiz, wrk5lot:wrk5hit)
+     .             wrk5loz:wrk5hiz, wrk5lot:wrk5hit,
+     .             wrk5loe:wrk5hie, wrk5lof:wrk5hif)
       REAL out_lat(wrk6lox:wrk6hix, wrk6loy:wrk6hiy,
-     .               wrk6loz:wrk6hiz, wrk6lot:wrk6hit)
+     .             wrk6loz:wrk6hiz, wrk6lot:wrk6hit,
+     .             wrk6loe:wrk6hie, wrk6lof:wrk6hif)
       INTEGER i_lon(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
-     .               wrk7loz:wrk7hiz, wrk7lot:wrk7hit)
+     .              wrk7loz:wrk7hiz, wrk7lot:wrk7hit,
+     .              wrk7loe:wrk7hie, wrk7lof:wrk7hif)
       INTEGER j_lat(wrk8lox:wrk8hix, wrk8loy:wrk8hiy,
-     .               wrk8loz:wrk8hiz, wrk8lot:wrk8hit)
+     .              wrk8loz:wrk8hiz, wrk8lot:wrk8hit,
+     .              wrk8loe:wrk8hie, wrk8lof:wrk8hif)
 
-! After initialization, the 'res_' arrays contain indexing information 
-! for the result axes.  The 'arg_' arrays will contain the indexing 
-! information for each variable's axes. 
+* After initialization, the 'res_' arrays contain indexing information 
+* for the result axes.  The 'arg_' arrays will contain the indexing 
+* information for each variable''s axes. 
 
-      INTEGER  res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER  arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .         arg_incr(4,EF_MAX_ARGS)
-      
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
+
 !**********************************************************************
 !                                           USER CONFIGURABLE PORTION |
 !                                                                     |
 !                                                                     V
 
-      INTEGER  arg, idim, i, j, k, l, interp_method
-      INTEGER  i1, j1, k1, l1, k2, k3, l2, l3, verbose,
-     .         nlon_src, nlat_src, nlon_dst, nlat_dst, nx, ny
-
+      INTEGER  idim, i, j, k, l, m, n, verbose
+      INTEGER  i1, j1, k1, l1, m1, n1, nx, ny,
+     .         nlon_src, nlat_src, nlon_dst, nlat_dst
       REAL missing_permit, pi, pi180
-      CHARACTER*16 axname(4), ax_units(4) 
-      LOGICAL back(4), modulo(4), reg(4)
+      CHARACTER*16 axname(6), ax_units(6) 
+      LOGICAL back(6), modulo(6), reg(6)
 
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_bad_flags(id,bad_flag,bad_flag_result)
 
 ! Get edges of coordinate boxes on input axes.  Convert to radians.
 
       pi =  4.*ATAN(1.)
       pi180 = pi/ 180.
 
-      arg = 1
-     
-      CALL ef_get_box_limits(id, ARG1, X_AXIS, arg_lo_ss(X_AXIS, ARG1), 
-     .   arg_hi_ss(X_AXIS, ARG1), 
-     .   in_lon_lat(1,1,1,1), in_lon_lat(1,3,1,1))
+      CALL ef_get_box_limits(id, ARG1, X_AXIS,
+     .                       arg_lo_ss(X_AXIS, ARG1), 
+     .                       arg_hi_ss(X_AXIS, ARG1), 
+     .                       in_lon_lat(1,1,1,1,1,1),
+     .                       in_lon_lat(1,3,1,1,1,1))
 
 ! last box upper limit
       nx = arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1
-      in_lon_lat(nx+1,1,1,1) = in_lon_lat(nx,3,1,1)
+      in_lon_lat(nx+1,1,1,1,1,1) = in_lon_lat(nx,3,1,1,1,1)
 
 c      idim = 1
 c      CALL EF_GET_COORDINATES (id, arg, idim,
@@ -349,16 +358,18 @@ c     .     in_lon_lat(1,1,1,1) )
 
       nx = arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 2
       DO i = 1, nx
-        rad_lon_lat(i, 1, 1, 1) = pi180* in_lon_lat(i,1,1,1)
+        rad_lon_lat(i,1,1,1,1,1) = pi180 * in_lon_lat(i,1,1,1,1,1)
       ENDDO
 
-      CALL ef_get_box_limits(id, ARG1, Y_AXIS, arg_lo_ss(Y_AXIS, ARG1), 
-     .   arg_hi_ss(Y_AXIS, ARG1), 
-     .   in_lon_lat(1,2,1,1), in_lon_lat(1,4,1,1))
+      CALL ef_get_box_limits(id, ARG1, Y_AXIS,
+     .                       arg_lo_ss(Y_AXIS, ARG1), 
+     .                       arg_hi_ss(Y_AXIS, ARG1), 
+     .                       in_lon_lat(1,2,1,1,1,1),
+     .                       in_lon_lat(1,4,1,1,1,1))
 
 ! last box upper limit
       ny = arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1) + 1
-      in_lon_lat(ny+1,2,1,1) = in_lon_lat(ny,4,1,1)
+      in_lon_lat(ny+1,2,1,1,1,1) = in_lon_lat(ny,4,1,1,1,1)
 
 c      idim = 2
 c      CALL EF_GET_COORDINATES (id, arg, idim,
@@ -369,37 +380,36 @@ c     .     in_lon_lat(1,2,1,1) )
 
       ny = arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1) + 2
       DO i = 1, ny
-        rad_lon_lat(i, 2, 1, 1) = pi180* in_lon_lat(i,2,1,1)
+        rad_lon_lat(i,2,1,1,1,1) = pi180 * in_lon_lat(i,2,1,1,1,1)
       ENDDO
 
-      k2 = arg_lo_ss(Z_AXIS,ARG2)
-      l2 = arg_lo_ss(T_AXIS,ARG2)
+      n = arg_lo_ss(F_AXIS,ARG2)
+      m = arg_lo_ss(E_AXIS,ARG2)
+      l = arg_lo_ss(T_AXIS,ARG2)
+      k = arg_lo_ss(Z_AXIS,ARG2)
       DO j = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
          DO i = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
-            out_lon(i, j, 1, 1) = pi180* arg_2(i,j,k2,l2)
+            out_lon(i,j,1,1,1,1) = pi180 * arg_2(i,j,k,l,m,n)
          ENDDO
       ENDDO
 
-      k3 = arg_lo_ss(Z_AXIS,ARG3)
-      l3 = arg_lo_ss(T_AXIS,ARG3)
+      n = arg_lo_ss(F_AXIS,ARG3)
+      m = arg_lo_ss(E_AXIS,ARG3)
+      l = arg_lo_ss(T_AXIS,ARG3)
+      k = arg_lo_ss(Z_AXIS,ARG3)
       DO j = arg_lo_ss(Y_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3)
          DO i = arg_lo_ss(X_AXIS,ARG3), arg_hi_ss(X_AXIS,ARG3)
-            out_lat(i, j, 1, 1) = pi180* arg_3(i,j,k3,l3)
+            out_lat(i,j,1,1,1,1) = pi180 * arg_3(i,j,k,l,m,n)
          ENDDO
       ENDDO
 
-      CALL ef_get_axis_info(id,ARG1,axname,ax_units,back,modulo,reg)
-
-      interp_method = 2
-!      WRITE(*,*) 'Using bilinear regridding !!'
+      CALL ef_get_axis_info_6d(id,ARG1,axname,ax_units,back,modulo,reg)
 
 ! Number of missing cells to allow (0 to 3)
 
-      CALL ef_get_one_val (id, 4, missing_permit)
+      CALL ef_get_one_val (id, ARG4, missing_permit)
       IF (missing_permit .LT. 0 .OR. missing_permit .GT. 3) 
      .    CALL ef_bail_out (id, 'argument 6 must be between 0 and 3')
-
-      CALL ef_get_bad_flags(id,bad_flag,bad_flag_result)
 
 ! nlon_src and nlat_src without the extra element for upper grid box (why?)
 
@@ -409,10 +419,10 @@ c     .     in_lon_lat(1,2,1,1) )
       nlat_dst = arg_hi_ss(Y_AXIS,ARG3) - arg_lo_ss(Y_AXIS,ARG3) + 1
 
       verbose = 0
-      CALL horiz_interp_init_bili (id, wti, wtj, i_lon, j_lat,  
-     .   nlon_src, nlat_src, nlon_dst, nlat_dst, interp_method, 
-     .   rad_lon_lat(1,1,1,1), rad_lon_lat(1,2,1,1), out_lon, out_lat, 
-     .   verbose, modulo(1) )
+      CALL horiz_interp_init_bili (id, wti, wtj, i_lon, j_lat,
+     .           nlon_src, nlat_src, nlon_dst, nlat_dst,
+     .           rad_lon_lat(1,1,1,1,1,1), rad_lon_lat(1,2,1,1,1,1),
+     .           out_lon, out_lat, verbose, modulo(1) )
 
       i1 = arg_lo_ss(X_AXIS,ARG1)
       j1 = arg_lo_ss(Y_AXIS,ARG1)
@@ -420,23 +430,35 @@ c     .     in_lon_lat(1,2,1,1) )
       i = res_lo_ss(X_AXIS)
       j = res_lo_ss(Y_AXIS)
 
+      n1 = arg_lo_ss(F_AXIS,ARG1)
+      DO n = res_lo_ss(F_AXIS),res_hi_ss(F_AXIS)
+
+      m1 = arg_lo_ss(E_AXIS,ARG1)
+      DO m = res_lo_ss(E_AXIS),res_hi_ss(E_AXIS)
+
       l1 = arg_lo_ss(T_AXIS,ARG1)
       DO l = res_lo_ss(T_AXIS),res_hi_ss(T_AXIS)
+
          k1 = arg_lo_ss(Z_AXIS,ARG1)
          DO k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-            CALL horiz_interp_bili ( wti, wtj, i_lon, j_lat,  
-     .                    nlon_src, nlat_src, nlon_dst, 
-     .                    nlat_dst, interp_method, 
-     .                    arg_1(i1,j1,k1,l1), result(i,j,k,l),
-     .                    verbose, bad_flag(ARG1), bad_flag_result,
-     .                    missing_permit)
+            CALL horiz_interp_bili ( wti, wtj, i_lon, j_lat,
+     .                 nlon_src, nlat_src, nlon_dst, nlat_dst,
+     .                 arg_1(i1,j1,k1,l1,m1,n1), result(i,j,k,l,m,n),
+     .                 verbose, bad_flag(ARG1), bad_flag_result,
+     .                 missing_permit)
 
             k1 = k1 + arg_incr(Z_AXIS,ARG1)
          ENDDO
+
          l1 = l1 + arg_incr(T_AXIS,ARG1)
       ENDDO
 
+         m1 = m1 + arg_incr(E_AXIS,ARG1)
+      ENDDO
+
+         n1 = n1 + arg_incr(F_AXIS,ARG1)
+      ENDDO
 
 !                                                                     ^
 !                                                                     |
@@ -568,13 +590,13 @@ C      integer interp_method              !interpolation method.
 
 
 C Interp list:
-C wti, wtj, i_lon, j_lat, nlon_src, nlat_src, nlon_dst, nlat_dst, interp_method 
+C wti, wtj, i_lon, j_lat, nlon_src, nlat_src, nlon_dst, nlat_dst
 
 C Interp allocation from subroutine horiz_interp_init_bili 
 
       subroutine horiz_interp_init_bili (id, wti, wtj, i_lon, j_lat,  
-     .   nlon_src, nlat_src, nlon_dst,nlat_dst, interp_method, 
-     .   lon_in, lat_in, lon_out, lat_out, verbose, src_modulo )
+     .                 nlon_src, nlat_src, nlon_dst, nlat_dst, lon_in,
+     .                 lat_in, lon_out, lat_out, verbose, src_modulo )
 
 !-----------------------------------------------------------------------
 C inputs
@@ -587,7 +609,6 @@ C  From type horiz_interp_type, variable Interp
       integer j_lat(nlon_dst,nlat_dst,2)
       integer nlon_src, nlat_src         !size of source grid
       integer nlon_dst, nlat_dst         !size of destination grid
-      integer interp_method              !interpolation method.
 
 C Other inputs
 
@@ -769,12 +790,9 @@ C  Other declarations
 * %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
       subroutine horiz_interp_bili ( wti, wtj, i_lon, j_lat,  
-     .                    nlon_src, nlat_src, nlon_dst, 
-     .                    nlat_dst, interp_method, 
-
-     .                    data_in, data_out, verbose, 
-     .                    missing_value,  missing_result, 
-     .                    missing_permit)
+     .                    nlon_src, nlat_src, nlon_dst, nlat_dst, 
+     .                    data_in, data_out, verbose, missing_value,
+     .                    missing_result, missing_permit)
 !-----------------------------------------------------------------------
 
 
@@ -787,7 +805,6 @@ C  From type horiz_interp_type, variable Interp
       integer j_lat(nlon_dst,nlat_dst,2)
       integer nlon_src, nlat_src         !size of source grid
       integer nlon_dst, nlat_dst         !size of destination grid
-      integer interp_method              !interpolation method.
 
       real data_in(nlon_src, nlat_src)   ! input
       real data_out(nlon_dst, nlat_dst)  ! output

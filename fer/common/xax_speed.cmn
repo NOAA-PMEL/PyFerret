@@ -1,7 +1,8 @@
 ! temp - until incorporated into TMAP library
 * XAX_SPEED.CMN
 * contains information about the relative access speeds of each axis
+*   2/12 *kms* Added E and F dimensions (set to nferdims)
 
-	INTEGER	    ds_ax_speed( 4, maxdsets )
+	INTEGER	    ds_ax_speed( nferdims, maxdsets )
 
 	COMMON /XAX_SPEED / ds_ax_speed

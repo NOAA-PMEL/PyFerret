@@ -1,3 +1,5 @@
+
+
       SUBROUTINE ADD_ATTRIBUTE( grid_data, mr, varattname, dset, 
      .         attype_spec, attoutflag, new_att, status )
 
@@ -39,7 +41,10 @@
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP
 * 9/2005
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+
+      include 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'
       INCLUDE 'xvariables.cmn'
@@ -56,14 +61,16 @@
       REAL grid_data(mr_lo_ss(mr,1):mr_hi_ss(mr,1),
      .               mr_lo_ss(mr,2):mr_hi_ss(mr,2),
      .               mr_lo_ss(mr,3):mr_hi_ss(mr,3),
-     .               mr_lo_ss(mr,4):mr_hi_ss(mr,4))
+     .               mr_lo_ss(mr,4):mr_hi_ss(mr,4),
+     .               mr_lo_ss(mr,5):mr_hi_ss(mr,5),
+     .               mr_lo_ss(mr,6):mr_hi_ss(mr,6))
       CHARACTER*(*) varattname
 
 * local variable declarations: 
       
       LOGICAL valid, do_err
       INTEGER MR_DIM_LEN, TM_LENSTR1, varid, idim, ndims, attlen,
-     .        attype, span, lo(4), hi(4), del(4), slen, vlen
+     .        attype, span, lo(nferdims), hi(nferdims), del(nferdims), slen, vlen
       REAL dummy
       CHARACTER GET_STRING_ELEMENT*2048, TM_FMT*2048, attbuff*2048, 
      .          varname*512, attname*128
@@ -75,7 +82,7 @@
 
       ndims = 0
       attlen = 0
-      DO 30 idim = 1, 4
+      DO 30 idim = 1, nferdims
          span = MR_DIM_LEN(idim, mr )
          valid = mr_lo_ss( mr,idim ) .NE. unspecified_int4
          IF (span .GT. 0 .AND. valid ) ndims = ndims + 1
@@ -83,7 +90,7 @@
  30   CONTINUE
 
 * * * * * DETERMINE INDEX LIMITS * * *
-      DO 40 idim = 1, 4
+      DO 40 idim = 1, nferdims
          lo(idim) = mr_lo_ss( mr, idim )
          hi(idim) = mr_hi_ss( mr, idim )
          del(idim)= 1
@@ -117,7 +124,8 @@
 * Use first value of expression.
 
             IF (mr_type(mr) .NE. ptype_string) THEN
-               attbuff = TM_FMT( grid_data(lo(1),lo(2),lo(3),lo(4)),
+               attbuff = TM_FMT( 
+     .             grid_data(lo(1),lo(2),lo(3),lo(4),lo(5),lo(6)),
      .             8, 40, slen)
                IF (attlen .GT. 1) THEN 
                   CALL WARN ('Requested string attribute using a ',
@@ -129,9 +137,10 @@
             ELSE
                IF (attlen .GT. 1) GOTO 5200
                attbuff = GET_STRING_ELEMENT(
-     .           lo(1), hi(1), lo(2), hi(2),
-     .	         lo(3), hi(3), lo(4), hi(4), 
-     .           grid_data, lo(1), lo(2), lo(3), lo(4), max_line_len, slen)
+     .           lo(1), hi(1), lo(2), hi(2), lo(3), hi(3), 
+     .	         lo(4), hi(4), lo(5), hi(5), lo(6), hi(6),
+     .           grid_data, lo(1), lo(2), lo(3), lo(4), lo(5), lo(6),
+     .	         max_line_len, slen)
 
                dummy = 1.
                attlen = TM_LENSTR1(attbuff)    
@@ -143,8 +152,8 @@
          ELSE 
             attype = NCFLOAT
             CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, attlen, 
-     .         attoutflag, attbuff, grid_data(lo(1),lo(2),lo(3),lo(4)), 
-     .         status)      
+     .         attoutflag, attbuff, 
+     .         grid_data(lo(1),lo(2),lo(3),lo(4),lo(5),lo(6)), status)      
          ENDIF
 
 !  If attribute already exists, error

@@ -5,7 +5,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -43,23 +43,29 @@
 
 * V230:  8/22/92
 * V570:  5/ 5/04  remove VMS includes
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'
-	include	'xmem_subsc.cmn'
+	include 'xmem_subsc.cmn'
 	include 'xcontext.cmn'
 
 * Calling argument declarations:
-	INTEGER	  cx_lims, axis, dst_lo, dst_hi, msrc, mdst
-	REAL    src( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
+	INTEGER cx_lims, axis, dst_lo, dst_hi, msrc, mdst
+	REAL    src( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * Internal variable declarations:
-	INTEGER i, j, k, l, idim, lo_lim(4), hi_lim(4)
+	INTEGER i, j, k, l, m, n, idim,
+     .          lo_lim(nferdims), hi_lim(nferdims)
 
 
 * Initialize: limits for calculation
-        DO 10 idim = 1, 4
+        DO 10 idim = 1, nferdims
            lo_lim(idim) = cx_lo_ss(cx_lims, idim)
            hi_lim(idim) = cx_hi_ss(cx_lims, idim)
  10     CONTINUE
@@ -68,12 +74,13 @@
 
 
 * Copy the data to the destination grid
+	DO 100 n = lo_lim(f_dim), hi_lim(f_dim)
+	DO 100 m = lo_lim(e_dim), hi_lim(e_dim)
 	DO 100 l = lo_lim(t_dim), hi_lim(t_dim)
 	DO 100 k = lo_lim(z_dim), hi_lim(z_dim)
 	DO 100 j = lo_lim(y_dim), hi_lim(y_dim)
 	DO 100 i = lo_lim(x_dim), hi_lim(x_dim)
- 100	dst(i,j,k,l) = src(i,j,k,l)
-
+ 100	dst(i,j,k,l,m,n) = src(i,j,k,l,m,n)
 
 	RETURN
 	END

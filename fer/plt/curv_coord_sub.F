@@ -52,7 +52,10 @@
 * V63   9/09 *acm* Fix bug 1688: curvlinear plots when the curv. coords are NOT
 *                  longitude and latitude.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include	'xvariables.cmn'

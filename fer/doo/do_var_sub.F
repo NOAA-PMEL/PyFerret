@@ -7,7 +7,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -55,25 +55,30 @@
 * V664:  8/10 - implement robust method for computing variances
 * V672+: 1/12 - previous checkin had wrong indices for result. Return to 
 *               divide by n, not n+1
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-* internal variable declarations:
-!	LOGICAL	GEOG_, need_cos
-	INTEGER  CGRID_AXIS, i, j, k, l, grid, pt, lo, hi, axis, npt
-	REAL	BOX_SIZE, bad_com, bad_res
-!       REAL    
-	REAL*8	TM_WORLD, dsum, bsum, mean, diff
-	REAL*8  x, xmean, xdelta
-
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'interp_stack.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 
+* internal variable declarations:
+	INTEGER CGRID_AXIS, i, j, k, l, m, n,
+     .          grid, pt, lo, hi, axis, npt
+	REAL	BOX_SIZE, bad_com, bad_res
+	REAL*8	TM_WORLD, dsum, bsum, mean, diff
+	REAL*8  x, xmean, xdelta
+
+
 * calling argument declarations:
 	INTEGER	idim, com_lo, com_hi, com_mr, com_cx, res_mr, res_cx
-	REAL    com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
+	REAL    com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
      .		box( com_lo:com_hi )
 
 * --- end of introductory code ---
@@ -97,27 +102,29 @@
      .		- TM_WORLD(hi, grid, idim, box_lo_lim)
 
 * ALONG X AXIS
-* (note: X integration is a special case 'cuz it requires COSINE(lat) )
 	IF ( idim .EQ. x_dim ) THEN
-	   DO 210 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO 210 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 210 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 210 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 210 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO 210 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 * ... Pass #1: determine mean
               npt = 0
 	      dsum = 0.0D0	! data
 	      bsum = 0.0D0	! boxes
 	      DO 200 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-	         IF ( com(i,j,k,l) .EQ. bad_com ) GOTO 200
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 200
 	         bsum = bsum + box(i)
-	         dsum = dsum + box(i)*com(i,j,k,l)
+	         dsum = dsum + box(i)*com(i,j,k,l,m,n)
                  npt = npt + 1
  200	      CONTINUE
 	      IF ( npt .LE. 1 ) THEN
-	         res(pt,j,k,l) = bad_res
+	         res(pt,j,k,l,m,n) = bad_res
                  GOTO 210
 	      ELSE
                  mean = dsum / bsum
               ENDIF
+
 * ... Pass #2: determine variance
 
 * Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
@@ -129,7 +136,7 @@
               xmean = 0.D0
               dsum = 0.D0
               DO 205 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-	         x = com(i,j,k,l)
+	         x = com(i,j,k,l,m,n)
                  IF ( x .NE. bad_com ) THEN
                     npt = npt + 1
 		    x = x - mean
@@ -137,17 +144,16 @@
                     xmean = xmean + xdelta/ FLOAT(npt)
                     dsum = dsum + xdelta*(x - xmean)  ! This expression uses the new value of mean
                   ENDIF
-
  205          CONTINUE
-
-	      res(pt,j,k,l) = 0.
-              IF (npt .GT. 1) res(pt,j,k,l) = dsum / FLOAT(npt-1)
-              IF (npt .GT. 1) res(pt,j,k,l) = dsum / FLOAT(npt)
+* because of checking above, npt .GT. 1
+              res(pt,j,k,l,m,n) = dsum / FLOAT(npt)
  210	   CONTINUE
 
 * ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
-!	   need_cos = GEOG_( idim, grid )
+
+	   DO 310 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 310 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 310 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 310 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 310 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
@@ -156,18 +162,17 @@
 	      dsum = 0.0D0	! data
 	      bsum = 0.0D0	! boxes
 	      DO 300 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	         IF ( com(i,j,k,l) .EQ. bad_com ) GOTO 300
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 300
 	         bsum = bsum + box(j)
-	         dsum = dsum + box(j)*com(i,j,k,l)
+	         dsum = dsum + box(j)*com(i,j,k,l,m,n)
                  npt = npt + 1
  300	      CONTINUE
 	      IF ( npt .LE. 1 ) THEN
-	         res(i,pt,k,l) = bad_res
+	         res(i,pt,k,l,m,n) = bad_res
                  GOTO 310
 	      ELSE
                  mean = dsum / bsum
               ENDIF
-
 
 * ... Pass #2: determine variance
 
@@ -179,9 +184,8 @@
 	      npt = 0
               xmean = 0.D0
               dsum = 0.D0
-
               DO 305 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	         x = com(i,j,k,l)
+	         x = com(i,j,k,l,m,n)
                  IF ( x .NE. bad_com ) THEN
 	            npt = npt + 1
 		    x = x - mean
@@ -189,16 +193,16 @@
                     xmean = xmean + xdelta/ FLOAT(npt)
                     dsum = dsum + xdelta*(x - xmean)  ! This expression uses the new value of mean
                   ENDIF
-
  305          CONTINUE
-	      res(i,pt,k,l) = 0.
-              IF (npt .GT. 1) res(i,pt,k,l) = dsum / FLOAT(npt-1)
-              IF (npt .GT. 1) res(i,pt,k,l) = dsum / FLOAT(npt)
+* because of checking above, npt .GT. 1
+              res(i,pt,k,l,m,n) = dsum / FLOAT(npt)
  310	   CONTINUE
 
 
 * ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
+	   DO 410 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 410 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 410 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 410 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 410 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
@@ -207,19 +211,19 @@
 	      dsum = 0.0D0	! data
 	      bsum = 0.0D0	! boxes
 	      DO 400 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	         IF ( com(i,j,k,l) .EQ. bad_com ) GOTO 400
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 400
 	         bsum = bsum + box(k)
-	         dsum = dsum + box(k)*com(i,j,k,l)
+	         dsum = dsum + box(k)*com(i,j,k,l,m,n)
                  npt = npt + 1
  400	      CONTINUE
 	      IF ( npt .LE. 1 ) THEN
-	         res(i,j,pt,l) = bad_res
+	         res(i,j,pt,l,m,n) = bad_res
                  GOTO 410
 	      ELSE
                  mean = dsum / bsum
               ENDIF
-* ... Pass #2: determine variance
 
+* ... Pass #2: determine variance
 
 * Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
 
@@ -229,9 +233,8 @@
 	      npt = 0
               xmean = 0.D0
               dsum = 0.D0
-
 	      DO 405 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	         x = com(i,j,k,l)
+	         x = com(i,j,k,l,m,n)
                  IF ( x .NE. bad_com ) THEN
 	            npt = npt + 1
 		    x = x - mean
@@ -239,15 +242,15 @@
                     xmean = xmean + xdelta/ FLOAT(npt)
                     dsum = dsum + xdelta*(x - xmean)  ! This expression uses the new value of mean
                   ENDIF
-
  405          CONTINUE
-	      res(i,j,pt,l) = 0.
-              IF (npt .GT. 1) res(i,j,pt,l) = dsum / FLOAT(npt-1)
-              IF (npt .GT. 1) res(i,j,pt,l) = dsum / FLOAT(npt)
+* because of checking above, npt .GT. 1
+              res(i,j,pt,l,m,n) = dsum / FLOAT(npt)
  410	   CONTINUE
 
 * ALONG T AXIS
-	ELSE
+	ELSEIF ( idim .EQ. t_dim ) THEN
+	   DO 510 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 510 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	   DO 510 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 510 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 510 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
@@ -256,17 +259,18 @@
 	      dsum = 0.0D0	! data
 	      bsum = 0.0D0	! boxes
 	      DO 500 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	         IF ( com(i,j,k,l) .EQ. bad_com ) GOTO 500
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 500
 	         bsum = bsum + box(l)
-	         dsum = dsum + box(l)*com(i,j,k,l)
+	         dsum = dsum + box(l)*com(i,j,k,l,m,n)
                  npt = npt + 1
  500	      CONTINUE
 	      IF ( npt .LE. 1 ) THEN
-	         res(i,j,k,pt) = bad_res
+	         res(i,j,k,pt,m,n) = bad_res
                  GOTO 510
 	      ELSE
                  mean = dsum / bsum
               ENDIF
+
 * ... Pass #2: determine variance
 
 * Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
@@ -277,9 +281,8 @@
 	      npt = 0
               xmean = 0.D0
               dsum = 0.D0
-
 	      DO 505 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	         x = com(i,j,k,l)
+	         x = com(i,j,k,l,m,n)
                  IF ( x .NE. bad_com ) THEN
 		    npt = npt + 1
 		    x = x - mean
@@ -287,17 +290,109 @@
                     xmean = xmean + xdelta/ FLOAT(npt)
                     dsum = dsum + xdelta*(x - xmean)  ! This expression uses the new value of mean
                   ENDIF
-
  505          CONTINUE
-	      res(i,j,k,pt) = 0.
-              IF (npt .GT. 1) res(i,j,k,pt) = dsum/ FLOAT(npt-1)
-              IF (npt .GT. 1) res(i,j,k,pt) = dsum/ FLOAT(npt)
+* because of checking above, npt .GT. 1
+              res(i,j,k,pt,m,n) = dsum/ FLOAT(npt)
  510	   CONTINUE
+
+* ALONG E AXIS
+	ELSEIF ( idim .EQ. e_dim ) THEN
+	   DO 610 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO 610 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO 610 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO 610 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO 610 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+* ... Pass #1: determine mean
+              npt = 0
+	      dsum = 0.0D0	! data
+	      bsum = 0.0D0	! boxes
+	      DO 600 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 600
+	         bsum = bsum + box(l)
+	         dsum = dsum + box(l)*com(i,j,k,l,m,n)
+                 npt = npt + 1
+ 600	      CONTINUE
+	      IF ( npt .LE. 1 ) THEN
+	         res(i,j,k,l,pt,n) = bad_res
+                 GOTO 610
+	      ELSE
+                 mean = dsum / bsum
+              ENDIF
+
+* ... Pass #2: determine variance
+
+* Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+
+* On-line algorithm with mean subtracted first. Noted as the most robust.
+* Since we always compute the mean first anyway, use it.
+
+	      npt = 0
+              xmean = 0.D0
+              dsum = 0.D0
+	      DO 605 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	         x = com(i,j,k,l,m,n)
+                 IF ( x .NE. bad_com ) THEN
+		    npt = npt + 1
+		    x = x - mean
+                    xdelta = x - xmean
+                    xmean = xmean + xdelta/ FLOAT(npt)
+                    dsum = dsum + xdelta*(x - xmean)  ! This expression uses the new value of mean
+                  ENDIF
+ 605          CONTINUE
+* because of checking above, npt .GT. 1
+              res(i,j,k,l,pt,n) = dsum/ FLOAT(npt)
+ 610	   CONTINUE
+
+* ALONG F AXIS
+	ELSEIF ( idim .EQ. f_dim ) THEN
+	   DO 710 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO 710 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO 710 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO 710 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO 710 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+* ... Pass #1: determine mean
+              npt = 0
+	      dsum = 0.0D0	! data
+	      bsum = 0.0D0	! boxes
+	      DO 700 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 700
+	         bsum = bsum + box(l)
+	         dsum = dsum + box(l)*com(i,j,k,l,m,n)
+                 npt = npt + 1
+ 700	      CONTINUE
+	      IF ( npt .LE. 1 ) THEN
+	         res(i,j,k,l,m,pt) = bad_res
+                 GOTO 710
+	      ELSE
+                 mean = dsum / bsum
+              ENDIF
+
+* ... Pass #2: determine variance
+
+* Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+
+* On-line algorithm with mean subtracted first. Noted as the most robust.
+* Since we always compute the mean first anyway, use it.
+
+	      npt = 0
+              xmean = 0.D0
+              dsum = 0.D0
+	      DO 705 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	         x = com(i,j,k,l,m,n)
+                 IF ( x .NE. bad_com ) THEN
+		    npt = npt + 1
+		    x = x - mean
+                    xdelta = x - xmean
+                    xmean = xmean + xdelta/ FLOAT(npt)
+                    dsum = dsum + xdelta*(x - xmean)  ! This expression uses the new value of mean
+                  ENDIF
+ 705          CONTINUE
+* because of checking above, npt .GT. 1
+              res(i,j,k,l,m,pt) = dsum/ FLOAT(npt)
+ 710	   CONTINUE
+
 	ENDIF
 
 * success
 	RETURN
-
-* error exit
-! 5000	RETURN
-	END	
+	END

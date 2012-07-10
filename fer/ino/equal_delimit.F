@@ -42,6 +42,7 @@
 * V530: *sh* 11/00
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead 
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations
 	INTEGER		status
@@ -51,6 +52,7 @@
 	INTEGER	TM_LENSTR1, n, llen, pos, ll, ic
 	CHARACTER buff*80, buff1*8
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'

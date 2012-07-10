@@ -6,6 +6,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * version 5.0 - 10/20/98
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 * The @RDC ("reduced") transform is an attempt to use Ferret's
 * transform capabilities to create a result context which is 
@@ -63,8 +65,6 @@
 * interp_stack.F
 *
 
-
-#ifdef unix
       include 'tmap_dims.parm'
       include 'xdset_info.cmn_text'
       external xdset_info_data
@@ -72,21 +72,13 @@
       include 'xcontext.cmn'
       include 'xgrid_chg_fcns.cmn'
       include 'errmsg.parm'
-#else 
-      INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-      INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-      INCLUDE 'FERRET_CMN:FERRET.PARM'
-      INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-      INCLUDE 'FERRET_CMN/XGRID_CHG_FCNS.CMN'
-      INCLUDE 'FERRET_CMN/ERRMSG.PARM'
-#endif
       
       LOGICAL ITSA_GCVAR
       INTEGER WHICH_GCFCN
 
       LOGICAL valid_limits
       INTEGER cx, status, uvar, gcfcn, idim
-      INTEGER axis_reduction(4)
+      INTEGER axis_reduction(nferdims)
       
       valid_limits = .TRUE.
 
@@ -100,7 +92,7 @@
             IF ( gcfcn .GT. gfcn_num_internal ) THEN
 
                CALL EFCN_GET_AXIS_REDUCTION(gcfcn, axis_reduction)
-               DO 100 idim = 1, 4
+               DO 100 idim = 1, nferdims
 
 * Check that we have valid limits
                   IF ( cx_by_ss(idim,cx) ) THEN

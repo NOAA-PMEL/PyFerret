@@ -45,8 +45,10 @@ c     for a string version of xcat) which takes different argument types
 c     and may have a different result type. E.g. this lets the user 
 c     reference XCAT with string arguments and Ferret will run XCAT_STR
 
-      SUBROUTINE EF_set_alt_fcn_name(id, text)
+      SUBROUTINE EF_SET_ALT_FCN_NAME(id, text)
 
+      IMPLICIT NONE
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'
       INCLUDE 'EF_Util.parm'
@@ -72,7 +74,7 @@ c     call the external functions library routine to see if it is external
       
       llen = TM_LENSTR1( text )
       CALL TM_FTOC_STRNG( text(:llen), fhol, slen )
-      CALL EF_SET_alt_fcn_name_SUB( id, fhol )
+      CALL EF_SET_ALT_FCN_NAME_SUB( id, fhol )
       
       RETURN 
       END

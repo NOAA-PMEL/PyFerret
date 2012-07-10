@@ -1,5 +1,6 @@
         SUBROUTINE WRITE_DODS_FMT ( data, 
      .           m1lox,m1hix, m1loy,m1hiy, m1loz,m1hiz, m1lot,m1hit, 
+     .           m1loe,m1hie, m1lof,m1hif, 
      .           workspace, filename, clobber, status)
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -41,20 +42,22 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * Ferret v5.54 9/4/06
-*
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+
 * change this comment, so that the checkin under branch FDSv1
 * will occur.
 
 * calling argument declarations:
         LOGICAL clobber
         INTEGER status,
-     .          m1lox,m1hix, m1loy,m1hiy, m1loz,m1hiz, m1lot,m1hit
-	REAL    data(m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit)
+     .          m1lox,m1hix, m1loy,m1hiy, m1loz,m1hiz, m1lot,m1hit, 
+     .          m1loe,m1hie, m1lof,m1hif
+	REAL data(m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit,m1loe:m1hie,m1lof:m1hif)
         REAL    workspace (*)  
         CHARACTER*(*) filename
 
 * Local variable declarations
-        INTEGER TM_LENSTR1, i, j, k, l, size, swap_flag,
+        INTEGER TM_LENSTR1, i, j, k, l, m, n, size, swap_flag,
      .          clobber_flag, slen
 
 
@@ -66,8 +69,6 @@
 #endif
 
 
-
-
 * BYTEORDER - get byteorder of this architecture
  	IF (active_cpu .EQ. cptype_sun) THEN
 	   swap_flag = 0
@@ -77,13 +78,15 @@
 
         size = 0
 
+	DO 100 n = m1lof,m1hif
+	DO 100 m = m1loe,m1hie
 	DO 100 l = m1lot,m1hit
 	DO 100 k = m1loz,m1hiz
 	DO 100 j = m1loy,m1hiy
 	DO 100 i = m1lox,m1hix
 
            size = size + 1
-           workspace(size) = data(i,j,k,l)
+           workspace(size) = data(i,j,k,l,m,n)
   100   CONTINUE
 
          slen = TM_LENSTR1(filename)

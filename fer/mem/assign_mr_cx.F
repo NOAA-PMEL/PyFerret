@@ -2,7 +2,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -41,7 +41,10 @@
 * V200:  6/26/89 - extracted from ASSIGN_VARIABLE
 * V530:  8/00 *sh* save data type, too
 * V530:  6/01 *sh* save the delta value, too
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
@@ -66,7 +69,7 @@
 	mr_unstand_grid( mr )   = cx_unstand_grid( cx )
 
 * region, transformations and regridding transforms
-	DO 100 idim = 1,4
+	DO 100 idim = 1,nferdims
 	   trans = cx_trans( idim, cx )
 	   mr_trans( idim, mr )   = trans
 	   mr_lo_ss( mr, idim )   = cx_lo_ss( cx, idim )
@@ -76,14 +79,16 @@
 	   mr_regrid_trans( idim, mr ) = cx_regrid_trans( idim, cx )
 
 * round out to world coordinate box edges except in some special cases:
-*   i) indefinite integrals ( since they depend on exact integration limits)
+*   i) indefinite integrals (since they depend on exact integration limits)
 *  ii) transforms (except MIN and MAX) that reduce to a point
 * iii) user-defined variables that are based on transformed quantities
 *      (e.g. DEFINE UAVE = U[K=1:3@AVE])
-	   IF (  trans .EQ. trans_integ_indef
-     .    .OR. ( trans .GT. trans_compress_code
-     .      .AND.trans .NE. trans_max .AND. trans.NE.trans_min )
-     .	  .OR. ( cx_lo_ss(cx,idim) .EQ. unspecified_int4 ) ) THEN
+
+	   IF ( (trans .EQ. trans_integ_indef) .OR.
+     .          ( (trans .GT. trans_compress_code) .AND.
+     .            (trans .NE. trans_max) .AND.
+     .            (trans .NE. trans_min) ) .OR.
+     .          (cx_lo_ss(cx,idim) .EQ. unspecified_int4) ) THEN
 * ... catalog with exact world coordinate limits
 	      mr_lo_ww( idim, mr ) = cx_lo_ww( idim, cx )
 	      mr_hi_ww( idim, mr ) = cx_hi_ww( idim, cx )

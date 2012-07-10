@@ -43,24 +43,19 @@
 *
 * revision 0.0 - 10/14/86
 * revision 0.1 -  3/23/87 - eliminated grid_origin as not useful
+* 2/12 *acm* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 	INTEGER	source_grid, dest_grid, idim
 
 	grid_name     ( dest_grid )	= 'unknown'
 	grid_rotation ( dest_grid )	= grid_rotation( source_grid )
 
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   grid_line    (idim, dest_grid) = grid_line    (idim, source_grid)
 	   grid_out_prod(idim, dest_grid) = grid_out_prod(idim, source_grid)
  100	CONTINUE

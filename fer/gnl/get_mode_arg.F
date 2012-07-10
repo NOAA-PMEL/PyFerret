@@ -64,7 +64,9 @@
 * V610  *acm* 3/08 - add new MODE NLEVELS:argument
 * V67   *acm* 3/11 - Fix for ticket 1819, size of arg for MODE DESPERATE,
 *                    and allow for a floating-point input
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'gfdl_vms.parm'	

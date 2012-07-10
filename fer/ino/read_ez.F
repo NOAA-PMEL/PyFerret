@@ -60,6 +60,7 @@
 *		(see err500_2nd_try.jnl)
 * V510: 6/00 *sh* - bug fix trap /COLUMNS= >grid size
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars
+*       *acm* 3/12 cleanup old VMS ifdef
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -83,7 +84,7 @@
      .			idim, ask_var, category, data_set, grid, ivar,
      .			fvar, nvar20, the_var, nleft, nsize,
      .			cx0, cx1, cx20(20), mr20(20), nread,
-     .			mr1, ndim, las_dim, fst_dim, dims(4), rec1,
+     .			mr1, ndim, las_dim, fst_dim, dims(nferdims), rec1,
      .			rec_to_read, nrepeat, columns, num_names, buffblk
 	CHARACTER	VAR_CODE*128
 
@@ -138,7 +139,7 @@
 	   cx_variable( cx_stack_ptr ) = fvar
 	   cx_grid( cx_stack_ptr ) = ds_grid_number( fvar )
 	   cx_bad_data( cx_stack_ptr ) = ds_bad_flag( fvar )	! 12/93 add'n
-	   DO 200 idim = 1, 4
+	   DO 200 idim = 1, nferdims
 	      cx_lo_ss( cx_stack_ptr, idim ) = ds_grid_start( idim, fvar )
 	      cx_hi_ss( cx_stack_ptr, idim ) = ds_grid_end  ( idim, fvar )
 	      cx_by_ss( idim, cx_stack_ptr ) = .TRUE.
@@ -243,7 +244,7 @@
 * the data region obtained may be inadequate for the request
 * ("cx" is request, "cx1" is available)
 	cx1 = cx20(the_var)
-	DO 900 idim = 1, 4
+	DO 900 idim = 1, nferdims
 	   IF ( cx_hi_ss(cx,idim) .GT. cx_hi_ss(cx1,idim) ) THEN
 	      IF ( cx_given(idim,cx) ) THEN  ! 3/00 cut mystery cx_last ref.
 * ... error: the user explicitly requested more than there is

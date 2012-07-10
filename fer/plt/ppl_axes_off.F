@@ -39,18 +39,12 @@
 * state so the axes can be restored
 
 * V450:  
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'plot_setup.parm'
 	include 'xcontrol.cmn'
 	include 'axis_inc.decl'
 	include 'AXIS.INC'		! variable iaxon
-#else
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	include 'FERRET_CMN:XCONTROL.CMN'
-	INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'
-	INCLUDE 'PPLV11INC:AXIS.INC'	
-#endif
 
 * calling argument declarations
 	LOGICAL set_up

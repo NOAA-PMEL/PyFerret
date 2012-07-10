@@ -46,8 +46,10 @@
 *	causes the /XLIMITS=lo_date:hi_date to mis-represent the data
 *	(see err450_time_xlimits.jnl). Eliminated tstart.
 * V530  *acm* cal_id for alternative calendar axis types
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'plot_setup.parm'
 	include 'xplot_setup.cmn'
@@ -55,11 +57,7 @@
         include 'xrisc.cmn'     ! for f77 bug
         CHARACTER rbuff(4)*14
         EQUIVALENCE ( rbuff, risc_buff )
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-        INCLUDE 'PPLV11INC:AXIS.INC/LIST'       ! with axis lengths	
-#endif
+
 
 * calling argument declarations:
 	REAL*8	  lo_val, hi_val
@@ -77,21 +75,14 @@
 !	tstart = MAX( 0.0D0, lo_val - yrofsecs )
 
 * TIME command (time axis limits)
-#ifdef unix
+
               rbuff(1) = ABS_WHOI_DATE( lo_val, cal_id )      ! f77 bug
               rbuff(2) = ABS_WHOI_DATE( hi_val, cal_id )
 !              rbuff(3) = ABS_WHOI_DATE( tstart, cal_id )
               WRITE ( ppl_buff, 3020 )  'W'//rbuff(1),
      .                                  'W'//rbuff(2)
 !     .                                  'W'//rbuff(3)
-#else
-	      WRITE ( ppl_buff, 3020 )	'W'//ABS_WHOI_DATE( lo_val, 
-     .                                                    cal_id ),
-     .					'W'//ABS_WHOI_DATE( hi_val, 
-     .                                                    cal_id )
-!     .					'W'//ABS_WHOI_DATE( tstart, 
-     .                                                    cal_id )
-#endif
+
 ! 3020	      FORMAT ('TIME ',A15,',',A15,',',A15)
  3020	      FORMAT ('TIME ',A15,',',A15)
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )

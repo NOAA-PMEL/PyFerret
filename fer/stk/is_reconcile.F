@@ -44,7 +44,9 @@
 * V420: 11/95
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars 
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -66,9 +68,9 @@
 *	 isp	<--	current stack level (for moduloing )
 
 * internal variable declarations:
-	LOGICAL	by_ss(4), given(4)
+	LOGICAL	by_ss(nferdims), given(nferdims)
 	INTEGER i, mr, com_cx, res_cx,	com_isp, res_isp,
-     .		com_lo, com_hi, res_lo(4), res_hi(4)
+     .		com_lo, com_hi, res_lo(nferdims), res_hi(nferdims)
 	CHARACTER VAR_CODE*128, qual*1
 
 * --- end of introductory code ---
@@ -86,7 +88,7 @@
 
 * save the key ingredients from the requesting context (res_cx)
 * (FLESH_OUT_AXIS has already been applied so world coords need not be used)
-	DO 10 i = 1, 4
+	DO 10 i = 1, nferdims
 	   res_lo(i) =  cx_lo_ss(res_cx,i)
 	   res_hi(i) =  cx_hi_ss(res_cx,i)
 	   by_ss(i)  =  cx_by_ss(i,res_cx)
@@ -97,7 +99,7 @@
 	CALL TRANSFER_CONTEXT( com_cx, res_cx )
 
 * check each axis for possible reconciliation
-	DO 100 i = 1, 4
+	DO 100 i = 1, nferdims
 	   IF ( given(i) ) THEN
 	      com_lo = cx_lo_ss(com_cx,i)
 	      com_hi = cx_hi_ss(com_cx,i)

@@ -60,5 +60,3 @@ let/quiet y1 = `($ppl$yorg)`
 fill/title="with shakey, restore default key style"/set temp[l=1]
 ppl shakey ,0,-.12,3,,,`x1`,`x2`,`y1`
 ppl fill
-
-can view

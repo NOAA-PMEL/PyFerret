@@ -51,7 +51,9 @@
 *		    by CAXIS_LEN -> CAXIS_MODLEN
 *		  - pre-fill strings with null strings as with FILL_MEMORY
 * 560: *acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -182,8 +184,8 @@
 * deleted before exiting this routine.
 	CALL FIND_MR_SLOT( com_cx, tmp_mr, status )
 	IF ( status .NE. ferr_ok ) GOTO 5910
-	CALL ASSIGN_MR_CX( com_cx, tmp_mr )     ! effects diag output, only
-	DO 100 i = 1, 4
+	CALL ASSIGN_MR_CX( com_cx, tmp_mr )     ! affects diag output, only
+	DO 100 i = 1, nferdims
 	   mr_lo_ss(tmp_mr,i) = mr_lo_ss(com_mr,i)
 	   mr_hi_ss(tmp_mr,i) = mr_hi_ss(com_mr,i)
  100	CONTINUE

@@ -43,6 +43,7 @@
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "string_array.h"
 
 void string_array_init_( double *string_array_header,

@@ -44,7 +44,9 @@
 * V200:   1/12/90
 * V420: send back the transformation that has been applied
 * V603 5/07  *acm* - added MODNBD modulo regridding statistic
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xcontext.cmn'
 
@@ -57,7 +59,7 @@
 * transformations are performed from x to t order.
 * It is the LAST transformation that determines the units (at least so far)
 * (probably a very imperfect test ... 11/95)
-	DO 100 idim = 4, 1, -1
+	DO 100 idim = nferdims, 1, -1
 	   IF ( cx_trans(idim,cx) .EQ. trans_locate ) THEN
 	      trans = punit_mod_loc
 	      GOTO 200

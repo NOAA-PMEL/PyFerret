@@ -4,20 +4,20 @@
  * Utility functions for reading binary data
  *
  * $Id$
- 
-/* *acm*  5/07 v603 - fix prototype of createBinaryRead to use MAXDIMS rather 
-                      than hardwired to 4; to match what is in .c file.
-					  (Found by Andy Jacobson doing the MAC build.)
-					 
+ *
+ * *acm*  5/07 v603 - fix prototype of createBinaryRead to use MAXDIMS rather 
+ *                    than hardwired to 4; to match what is in .c file.
+ *			  (Found by Andy Jacobson doing the MAC build.)
+ *
+ * * 1/12 *acm* - Ferret 6.8 Changes for double-precision ferret,
+ *                see the define macro DFTYPE in binaryRead.h
+ *   2/12 *kms* - Add E and F dimensions
  */
 
 #define MEM_INFO_BLOCKSIZE      1048576	/* Max mem chunk size */
 #define MEM_INFO_MINTHRESH      1024 /* No closer to mmap boundary than this! */
 
-/* * 1/12 *acm* - Ferret 6.8 Changes for double-precision ferret, see the*/
-/*                define macro DFTYPE in binaryRead.h */
 /* Easier way of handling single/double floating-point declarations */
-
 #ifdef double_p
 #define DFTYPE double
 #else
@@ -43,7 +43,8 @@ typedef struct _VarInfo {
   int dataSize;			/* Size of variable data type */
 } VarInfo;
 
-#define MAXDIMS  5
+/* One additional dimension for variables */
+#define MAXDIMS  7
 
 typedef struct _FileInfo {
   MemInfo minfo;		/* Memory mapped file stuff */
@@ -62,14 +63,8 @@ typedef struct _FileInfo {
   int doSwap;			/* Swap bytes */
 } FileInfo;
 
-/*
-extern FileInfo *createBinaryReader(char *, int[MAXDIMS], int[MAXDIMS], int, int);
-extern void deleteBinaryReader(FileInfo *);
-extern int addVar(FileInfo *, DFTYPE *, int, int);
-extern int readBinary(FileInfo *);
-*/
-				/* TODO -- redefine FORTRAN for different arch. */
 #ifndef FORTRAN
 #define FORTRAN(a) a##_
 #endif
+
 #endif

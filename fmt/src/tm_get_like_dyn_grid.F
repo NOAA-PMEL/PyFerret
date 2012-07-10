@@ -52,26 +52,19 @@
 *	       matches against those scratch grids
 
 * V511: 5/00 *sh* even static grids get "used" now
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * Arguments
 	LOGICAL		its_dyn
 	INTEGER		ingrid, outgrid, static_lim, status
 *
 * INCLUDE FILES
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'tmap_errors.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 *
 * Local definitions
 	INTEGER		TM_FIND_LIKE_GRID, TM_FIND_LIKE_DYN_GRID

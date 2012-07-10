@@ -82,9 +82,11 @@
 * V671:  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 *                    The XY linear regridding matches past Ferret behavior, 
 *                    not using bilinear regridding for now
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V68+ 4/12  *acm*   Fix ticket 1931: the work space for XY linear regridding
 *                    was computed incorrectly.
 
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -92,6 +94,7 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xalgebra.cmn'   ! with alg_regrid_code
+
 
 * calling argument declarations:
 	INTEGER	status
@@ -106,7 +109,7 @@
 	INTEGER hi_isp, lo_isp, axis, cx_valid, idim,
      .		rgrd_trans, mrlist(5), wk_size, wk_size2,
      .		dst_cx, src_cx, dst_mr, src_mr, ngd_mr, ave_mr,
-     .		blk1, axis_list(4), naxis, i, nbd_mr, nxsrc
+     .		blk1, axis_list(nferdims), naxis, i, nbd_mr, nxsrc
 	CHARACTER dtype*4
 
 *        ... interpretation stack setup at the time this is called ...
@@ -167,7 +170,7 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 	   done_by_strides = .FALSE.
 	ENDIF
 	IF (done_by_strides) THEN
-	   DO 400 idim = axis+1, 4
+	   DO 400 idim = axis+1, nferdims
 	      IF (cx_delta(idim,src_cx) .NE. unspecified_val8) THEN
 	         naxis = naxis + 1
 	         axis_list(naxis) = idim

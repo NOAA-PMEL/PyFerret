@@ -46,7 +46,7 @@
 * v540 *acm*  2/02 save the state of the axes; so can restore PPL AXSEST settings
 *             3/25  Put the common block in a separate include file.
 c v552 *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
-
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -59,7 +59,7 @@ c v552 *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
 	INTEGER		i, iax(4), indep_dim, dep_dim, labx, laby
 	CHARACTER*25	buff
 
-* save previous axis state
+* save previous axis state (top,bottom,left,right)
 
 	DO 10 i = 1, 4
  10	save_iaxon(i) = iaxon(i)
@@ -103,7 +103,8 @@ c v552 *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
 
 	indep_dim = plot_axis(1)
 	dep_dim = plot_axis(2)
-	time_axis = (indep_dim.EQ.t_dim  .OR. dep_dim.EQ.t_dim)
+	time_axis = ( (indep_dim.EQ.t_dim .OR. indep_dim.EQ.f_dim)
+     .    .OR. (dep_dim.EQ.t_dim .OR. dep_dim.EQ.t_dim) )
 
 	IF ( time_axis .AND. change_axlab) THEN
 	   WRITE (buff,94) labx, laby

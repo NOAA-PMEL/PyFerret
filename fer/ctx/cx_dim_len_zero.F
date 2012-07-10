@@ -45,17 +45,18 @@
 * (based on cx_dim_len
 * V580: 10/8/04 *ACM*
 * If the subscripts are undefined, return zero.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
-
 
 * calling argument declarations:
 	INTEGER	idim, cx
 
-	   CX_DIM_LEN_zero = cx_hi_ss( cx, idim ) 
+	CX_DIM_LEN_zero = cx_hi_ss( cx, idim ) 
      .		      - cx_lo_ss( cx, idim ) + 1
-           IF ( (cx_hi_ss( cx, idim ) .EQ. unspecified_int4)  .OR.
+	IF ( (cx_hi_ss( cx, idim ) .EQ. unspecified_int4)  .OR.
      .		(cx_lo_ss( cx, idim ) .EQ. unspecified_int4) )
      .       CX_DIM_LEN_ZERO = 0
 

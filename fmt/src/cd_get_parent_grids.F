@@ -58,6 +58,8 @@
 *             Replace NCDINQ with CD_GET_DS_DIMS
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* TODO: initially leave this as 4D -- what to do with old files that have 4 slab min/max?
 
 * argument definitions:
 *	dset	       - Ferret dataset number for already opened CDF file
@@ -65,7 +67,7 @@
 *	status	       - return status
 
 * include files
-        include 'netcdf.decl'
+
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
@@ -77,14 +79,13 @@
 	include 'xio.cmn_text'
 	external xio_data
 	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-	include 'xunits.cmn_text'
+		include 'xunits.cmn_text'
 	external xunits_data
 
 * argument declarations
 	INTEGER	 dset, status
 * 4/99 *kob*
-        CHARACTER*64 temp_axnams(4,max_temp_grid)
+        CHARACTER*128 temp_axnams(nferdims,max_temp_grid)
 
 * local parameter definitions:
       INTEGER     str_eq
@@ -106,7 +107,8 @@
       REAL    tmp
 * 4/99 *kob*
       CHARACTER vname*128, words(8)*24
-      CHARACTER*132 TM_CMPRSS, buff, cbuff
+      CHARACTER*132 TM_CMPRSS, buff
+      CHARACTER*1024 cbuff
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
@@ -163,7 +165,7 @@
 * parse the list and store the axis names in the temporary grid definition
 	  grid_cnt = num_tmp_grids    ! temporary name holder pointer
 	  cbuff = TM_CMPRSS(buff)
-	  DO 180 idim =1,4
+	  DO 180 idim =1, 4
  180      words(idim) = ' '
 	  CALL TM_BREAK_STR(cbuff, words, 4)
           DO 185 idim = 1, 4
@@ -200,7 +202,7 @@
           IF ( got_it ) THEN
 * ... parse the inner/outer list and store it in the grid definition
 	     cbuff = TM_CMPRSS(buff)
-	     DO 190 idim =1,4
+	     DO 190 idim =1, 4
  190         words(idim) = ' '
 	     CALL TM_BREAK_STR(cbuff, words, 4)
              DO 200 idim = 1, 4

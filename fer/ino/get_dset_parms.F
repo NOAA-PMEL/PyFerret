@@ -58,8 +58,8 @@
 * V420: 9/95 - using TM_ITSA_MODEL_RUN TMAP runs are now recognizable from
 * 		their file names, alone.  Parameters are then read from the
 *		205 run data base.
+*       *acm* 3/12 changes for 6D Ferret
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'tmap_dims.parm'
@@ -69,16 +69,6 @@
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'FERRET_CMN:XDSET_PARMS.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'          ! 12/94 SPLIT_LIST BUFFER
-#endif
 
 * calling argument declarations
 	INTEGER	dset, num_prev_gridfiles, status

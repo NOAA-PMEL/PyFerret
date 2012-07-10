@@ -47,23 +47,17 @@
 * Linux port -kob - 3/97 - Modify include for tmap_dset.parm to be a
 *			   preprocessor include for F90 - needed because
 *			   tmap_dset.parm contains an ifdef
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * calling argument declarations:
         INTEGER iaxis
 
 * internal variable declarations:
 
-#ifdef unix
         include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
         include 'xtm_grid.cmn_text'
-#else
-        INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-        INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 
       IF ( iaxis .LT. 1 .OR. iaxis .GT. max_lines ) THEN
          TM_ABSTRACT_AXIS = .FALSE.

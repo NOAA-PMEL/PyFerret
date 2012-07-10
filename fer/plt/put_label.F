@@ -72,10 +72,12 @@
 * 7/10 *acm* - ticket 1747: LABNUM_CALEN for automatically generated CALENDAR
 *              label, points to the PPL LAB# number.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *      *kms* 5/12 Always use generic REAL instead of specific SNGL 
 *                 (SNGL must have a double-precision or complex argument)
 * V68  *acm* 5/12  Dont write the font to xlab, ylab if they are blank strings.
 
+	include 'tmap_dims.parm'
 	include 'plot_setup.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_setup.cmn'

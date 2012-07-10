@@ -47,17 +47,15 @@
 * revision 0.1 -12/30/88 - added where_in_box
 * V230:  7/20/92 - check for valid time axis T0
 * V530: *acm* 12/00 alternative calendar types; cal_id
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *acm* 3/12 6D Ferret: Add E and F dimensions 
+*                  A time axis may be a T axis or F axis, so idim is 
+*                  now an arg to TSTEP_TO_SECS
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER	subsc, grid, idim, where_in_box, 
@@ -73,11 +71,11 @@
 	TWORLD = ww
 
 * special treatment of calendar time axis
-	IF ( idim .EQ. t_dim ) THEN
+	IF ( idim .EQ. t_dim .OR. idim .EQ. f_dim ) THEN
            line = grid_line( idim, grid )
            cal_id = TM_GET_CALENDAR_ID ( line_cal_name(line) )
            IF ( TM_DATE_OK( line_t0(line), cal_id )  )
-     .     TWORLD = TSTEP_TO_SECS( grid, ww )
+     .     TWORLD = TSTEP_TO_SECS( grid, idim, ww )
 	ENDIF
 	RETURN
 	END

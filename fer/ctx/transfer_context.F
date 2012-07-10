@@ -51,26 +51,22 @@
 *		 - added cx_ovsiz, eliminated %%_relative
 * V420: 9/95	- Support for implicit grids (cx_has_impl_grid)
 * V530:  8/00 *sh* - transfer data type, too
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-#ifdef unix
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 	INTEGER	source, dest, idim
 
-
 * all contexts contain axis region information
-	DO 100 idim = 1,4
+	DO 100 idim = 1, nferdims
  100	CALL TRANSFER_AXIS( idim, source, dest )
 
 * that's all that pre-defined contexts have
 	IF ( source .LE. 0 .OR. dest .LE. 0 ) RETURN
 
-	DO 200 idim = 1,4
+	DO 200 idim = 1, nferdims
 	   cx_delta   ( idim, dest ) = cx_delta   ( idim, source )
 	   cx_regrid_trans(idim,dest)=cx_regrid_trans(idim,source)
  200	CONTINUE	

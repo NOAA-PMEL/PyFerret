@@ -42,7 +42,7 @@
 *
 * desc               Text description of an argument
 *
-* axis_influence     Are this argument's axes the same as the result grid?
+* axis_influence     Are this argument''s axes the same as the result grid?
 *                       ( YES, NO )
 *
 * axis_extend       How much does Ferret need to extend arg limits relative to result 
@@ -51,11 +51,10 @@
 
       SUBROUTINE tax_times_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
-
-      CALL ef_version_test(ef_version)
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
@@ -63,20 +62,23 @@
 *                                                                      V
 
       CALL ef_set_desc(id,
-     . '(demonstration function) returns % good data at each time' )
-
+     .        'returns percent good (x,y,z) data at each (t,e,f) step')
       CALL ef_set_num_args(id, 1)
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-      CALL ef_set_axis_reduction(id, REDUCED, REDUCED, REDUCED,
-     .     RETAINED)
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+      CALL ef_set_axis_inheritance_6d(id,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_axis_reduction_6d(id, REDUCED,  REDUCED,  REDUCED,
+     .                                  RETAINED, RETAINED, RETAINED)
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_desc(id, arg, 'data to be checked')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+      CALL ef_set_axis_influence_6d(id, arg,
+     .                              YES, YES, YES, YES, YES, YES)
+
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -91,88 +93,94 @@
 *
       SUBROUTINE tax_times_compute(id, arg_1, result)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-	  INTEGER id, good, total
+      INTEGER id
 
-      REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
-     .           mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL result(memreslox:memreshix, memresloy:memreshiy,
-     .            memresloz:memreshiz, memreslot:memreshit)
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
+* information for each variable''s axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
 
-      INTEGER i,j,k,l
-      INTEGER i1, j1, k1, l1
+      INTEGER good, total
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, k1, l1, m1, n1
 
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
 *
 * Note that we are looping on the argument subscripts rather than
 * the result subscripts. (Looping on result subscripts is the normal 
-* way).  That's because the result has axes which are normal and the
+* way).  That is because the result has axes which are normal and the
 * loop count on those normal axes will be one.
 *
+      n = res_lo_ss(F_AXIS)
+      DO 600 n1 = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
+ 
+      m = res_lo_ss(T_AXIS)
+      DO 500 m1 = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
+ 
       l = res_lo_ss(T_AXIS)
-      DO 100 l1=arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+      DO 400 l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
  
-      good = 0
-      total = 0
+         good = 0
+         total = 0
 
-      i = res_lo_ss(X_AXIS)
-      DO 400 i1=arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+         DO 300 k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
+         DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+         DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
  
-         j = res_lo_ss(Y_AXIS)
-         DO 300 j1=arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+            IF ( arg_1(i1,j1,k1,l1,m1,n1) .NE. bad_flag(ARG1) ) THEN
+               good = good + 1
+            ENDIF
+            total = total + 1
  
-            k = res_lo_ss(Z_AXIS)
-            DO 200 k1=arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
- 
-
-                  IF ( arg_1(i1,j1,k1,l1) .NE. bad_flag(1) ) THEN
- 
-                     total = total + 1
-                     good = good + 1
- 
-                  END IF
- 
-               k = k + res_incr(Z_AXIS)
- 200        CONTINUE
- 
-            j = j + res_incr(Y_AXIS)
+ 100     CONTINUE
+ 200     CONTINUE
  300     CONTINUE
  
-         i = i + res_incr(X_AXIS)
- 400  CONTINUE
-         IF (total .GT. 0.) THEN
-            result(i,j,k,l) = (good * 100.0) / total
-
+         i = res_lo_ss(X_AXIS)
+         j = res_lo_ss(Y_AXIS)
+         k = res_lo_ss(Z_AXIS)
+         IF ( total .GT. 0. ) THEN
+            result(i,j,k,l,m,n) = (good * 100.0) / total
          ELSE
-            result(i,j,k,l) = bad_flag_result
+            result(i,j,k,l,m,n) = bad_flag_result
          ENDIF
 
-
          l = l + res_incr(T_AXIS)
- 100  CONTINUE
+ 400  CONTINUE
 
+         m = m + res_incr(E_AXIS)
+ 500  CONTINUE
 
- 
+         n = n + res_incr(F_AXIS)
+ 600  CONTINUE
+
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |

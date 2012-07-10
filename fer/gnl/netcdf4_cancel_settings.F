@@ -47,6 +47,8 @@
 	ychunk_size  = 0
 	zchunk_size  = 0
 	tchunk_size  = 0
+	echunk_size  = 0
+	fchunk_size  = 0
 	deflate_lev  = 0
 	shuffle_flag = 0
 	endian_code  = 0
@@ -56,6 +58,8 @@
 	ychunk_size_set  = ychunk_size
 	zchunk_size_set  = zchunk_size
 	tchunk_size_set  = tchunk_size
+	echunk_size_set  = echunk_size
+	fchunk_size_set  = fchunk_size
 	deflate_lev_set  = deflate_lev
 	shuffle_flag_set = shuffle_flag
 	endian_code_set  = endian_code

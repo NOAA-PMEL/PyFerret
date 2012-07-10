@@ -41,6 +41,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V530: 10/00 - for delimited reads
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 * calling argument declarations
 	INTEGER		status
@@ -59,6 +60,7 @@
      .          len_test, len_mchars
 	CHARACTER*9 ftypes(maxtypes)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'

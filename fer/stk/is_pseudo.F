@@ -46,22 +46,17 @@
 *	10/16/89 - changed adj. array bounds for MAKE_PSEUDO_VAR call
 *	11/30/89 - added diagnostic output
 * V312: 5/94 - array "memory" as a calling argument
+*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 
-#ifdef unix
+	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
+	include	'xalgebra.cmn'
 
 * calling argument declarations:
 	INTEGER	status
@@ -88,7 +83,11 @@
 	IF (mode_diagnostic) CALL DIAGNOSTIC_OUT('pseudo ',mr,point_to_mr)
 
 * fill the space with the desired data
-	idim = MOD( cx_variable(cx)-1, 4 ) + 1
+
+* Get the direction of the pseudo-variable.
+
+	idim = MOD( cx_variable(cx)-1, 6 ) + 1
+
 	CALL MAKE_PSEUDO_VAR( cx, idim, memory(1, mr_blk1(mr)), mr,
      .			      mr_lo_ss(mr,idim), mr_hi_ss(mr,idim) )
 

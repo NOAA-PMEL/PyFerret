@@ -53,6 +53,9 @@
 *                   * quick sol'n if axis points are regularly spaced
 *                   did not give enough accuracy for axes defined in terms of 
 *                   seconds.  Convert all this to double-precision calculations.
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
+*                  dimension is now an arg to SECS_TO_TSTEP.
+
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -90,10 +93,10 @@
 	ENDIF
 
 * time expressed as seconds since BC ?
-	IF ( idim .EQ. t_dim .AND. cx_calendar(cx) ) THEN
+	IF ( (idim .EQ. t_dim .OR. idim .EQ. f_dim) .AND. cx_calendar(cx) ) THEN
 * no negative needeed on world_coord, because it is not being passed 
 * in as negative *kob*  9/97
-	   wcoord = SECS_TO_TSTEP( grid, world_coord )
+	   wcoord = SECS_TO_TSTEP( grid, idim, world_coord )
 	ELSE
 	   wcoord = world_coord
 	ENDIF

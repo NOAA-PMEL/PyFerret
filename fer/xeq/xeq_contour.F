@@ -111,6 +111,8 @@
 *                  Put it on plots only when this mode is set.
 * V6.2  *acm* 11/08Fix bug 1609: If the plot is an overlay then do not process /AXES=
 *                  or /NOAXES. Axes are never drawn for overlays anyway.
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*                  A time axis may be a T axis or F axis
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -185,8 +187,8 @@
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,
      .                                       num_uvars_in_cmnd)
 * ... default orientation for YT and ZT contours has time on horizontal
-	IF ( plot_axis(2).EQ.t_dim .AND. plot_axis(1).NE.x_dim )
-     .							transpz = .NOT.transpz
+	IF ( (plot_axis(2).EQ.t_dim .OR. plot_axis(2).EQ.f_dim) .AND. 
+     .		plot_axis(1).NE.x_dim ) transpz = .NOT.transpz
 
 * ... CONTOUR/SIZE=float
 	loc = qual_given( slash_cont_size )
@@ -505,7 +507,7 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 * interrupt occurred during plot ?
 	IF ( ppl_interrupted ) GOTO 1000
 
-* capture the bit map ?
+* capture the bit map ? (discontinued with v6.6)
 	IF ( qual_given( slash_cont_frame ) .GT. 0 ) THEN
 	   CALL SAVE_FRAME( frame_file, "HDF", status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000

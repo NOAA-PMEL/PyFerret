@@ -144,7 +144,9 @@
 *                  computed from the dependent data.
 * V662 *acm*  5/10 Set AX_VERT or AX_HORIZ symbol with the direction of the independent axis: X, Y, Z, T" plot_set_up.F
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
-
+*       *acm* 3/12 6D Ferret: Add E and F dimensions 
+*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
+*                  dimension is now an arg to SECS_TO_TSTEP.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -192,15 +194,15 @@
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			mv, cx, slen, ito, indep_lab, dep_lab, nline_in_mem,
      .			indep_dim, npts, dep_dim, npts2, ndv, var1,
-     .			grid, grid1, ipl, style, justify, ndim, dims(4),
+     .			grid, grid1, ipl, style, justify, ndim, dims(6),
      .			slen2, slen3, tax, plot_mem_used, nload, i,
      .			pxlim, pylim, ptitl, phlim, pvlim,pindeplim, pdeplim,
-     .			dep_axtyp, indep_axtyp
+     .			dep_axtyp, indep_axtyp, the_taxis
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new
         INTEGER         TM_UNIT_ID, cx_x , cx_y, iunits
-	CHARACTER*1     axdir(4), ax1
+	CHARACTER*1     axdir(6), ax1
 
 	REAL		val1, dt_min, lo, hi, dep_len, 
      .			ind_len, first, last
@@ -215,7 +217,7 @@
      .			norm_labs = .FALSE.,
      .			pnot_curv = .FALSE.,
      .			range_rqd = .TRUE. )
-	DATA axdir / 'X', 'Y', 'Z', 'T' /
+	DATA axdir / 'X', 'Y', 'Z', 'T', 'E', 'F' /
 
 * signal that plot set-up has begun
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
@@ -360,7 +362,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF
 * Get calendar name for equal_range (even if not time axis)
-              tax = grid_line(t_dim,cx_grid(cx_list(var1)) )
+	      tax = grid_line(f_dim,cx_grid(cx_list(var1)) )
+              IF (tax .EQ. 0) tax = grid_line(t_dim,cx_grid(cx_list(var1)) )
               cal_name = line_cal_name(tax)
               cal_id_1 = TM_GET_CALENDAR_ID ( cal_name )
 	      CALL EQUAL_RANGE(
@@ -461,19 +464,21 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   var1 = 1
 	   ndv  = nmv
 	   ito  = 0
-	   time_axis =	indep_dim.EQ.t_dim
+	   time_axis =	indep_dim.EQ.t_dim .OR. indep_dim.EQ.f_dim
 	   IF ( time_axis ) THEN	! 11/95: are ALL vars time vars?
+
+	      the_taxis = indep_dim
 
 * and are all the calendar types the same?
 
-              tax = grid_line(t_dim,cx_grid(cx_list(var1)) )
+              tax = grid_line(the_taxis,cx_grid(cx_list(var1)) )
               cal_name = line_cal_name(tax)
               cal_id_1 = TM_GET_CALENDAR_ID ( cal_name )
 
 	      DO 100 ipl = var1, nmv
 	         time_axis = time_axis
-     .			.AND. GEOG_LABEL( t_dim, cx_grid(cx_list(ipl)) )
-                 tax = grid_line(t_dim,cx_grid(cx_list(ipl)) )
+     .			.AND. GEOG_LABEL( the_taxis, cx_grid(cx_list(ipl)) )
+                 tax = grid_line(the_taxis,cx_grid(cx_list(ipl)) )
                  cal_id_2 = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
                  IF (cal_id_2 .NE. cal_id_1) THEN
                     cal_id_old = cal_id_1
@@ -522,7 +527,7 @@ c#endif
 * * * * * * *    - - - LOAD DATA - - - * * * * * * * * *
 * 11/95: determine T0 reference time for time axis
 	IF ( time_axis .AND. .NOT.overlay ) THEN
-	   tref = MERGED_WHOI_DATE( cx_list(var1), nmv )
+	   tref = MERGED_WHOI_DATE( cx_list(var1), the_taxis, nmv )
 	ELSE
 	   tref = ' '		! overlays reuse previous tref
 	ENDIF
@@ -604,10 +609,9 @@ c#endif
      .			indep_dat )
 	      IF ( time_axis ) THEN
 	         ind_min = MIN( ind_min,
-     .                     TSTEP_TO_SECS(grid, DBLE(indep_dat(1)) ))
+     .                     TSTEP_TO_SECS(grid, the_taxis, DBLE(indep_dat(1)) ))
 	         ind_max = MAX( ind_max,
-     .                     TSTEP_TO_SECS(grid,
-     .		                         DBLE(indep_dat(nload)) ))
+     .                     TSTEP_TO_SECS(grid, the_taxis, DBLE(indep_dat(nload)) ))
 	      ELSE
 	         ind_min = MIN( ind_min, DBLE(indep_dat(1)) )
 	         ind_max = MAX( ind_max, DBLE(indep_dat(nload)) )
@@ -653,7 +657,7 @@ c#endif
               IF ( tax .EQ. mnormal .OR. tax .EQ. munknown ) THEN  ! 8/91 bug
                  dt_min = 1.0
               ELSE
-	         dt_min = line_tunit( grid_line(t_dim,grid) ) / 60.! sec-->min
+	         dt_min = line_tunit( grid_line(the_taxis,grid) ) / 60.! sec-->min
 
 *  Check for calendar mismatch for time- overlay plots
 	         IF (overlay) THEN
@@ -665,7 +669,7 @@ c#endif
                  ENDIF
 
               ENDIF
-              t1_date = INTERNAL_WHOI_DATE( grid, 1.0D0 )
+              t1_date = INTERNAL_WHOI_DATE( grid, the_taxis, 1.0D0 )
            ELSE
 	      IF (overlay .AND. has_time_axis) THEN
 	         dt_min  = saved_dt_min
@@ -727,14 +731,14 @@ c#endif
 	               ind_min = ind_max
 	               ind_max = tmp
 	            ENDIF
-	            ind_min = TSTEP_TO_SECS( grid1, ind_min )
-	            ind_max = TSTEP_TO_SECS( grid1, ind_max )
-	         ELSEIF ( indep_dim .EQ. t_dim
+	            ind_min = TSTEP_TO_SECS( grid1, the_taxis, ind_min )
+	            ind_max = TSTEP_TO_SECS( grid1, the_taxis, ind_max )
+	         ELSEIF ( indep_dim .EQ. the_taxis
      .		   .AND. .NOT.time_axis
      .	           .AND.  formatted ) THEN
 * time limits given as dates although mode calendar is false
-	            ind_min = SECS_TO_TSTEP( grid1, ind_min )
-	            ind_max = SECS_TO_TSTEP( grid1, ind_max )
+	            ind_min = SECS_TO_TSTEP( grid1, the_taxis, ind_min )
+	            ind_max = SECS_TO_TSTEP( grid1, the_taxis, ind_max )
 	         ENDIF
               ELSE   ! /HLIM or /VLIM not used; check for range in indep direction
                  IF (nload .EQ. 1) GOTO 5180
@@ -746,8 +750,8 @@ c#endif
 * (6/99) Note: The time axis extrema symbols are only approximately correct
 *		since PLOT+ rounds out the time ranges ...
 	         CALL AXIS_END_SYMS( indep_ax,
-     .				SECS_TO_TSTEP( grid1, ind_min ),
-     .				SECS_TO_TSTEP( grid1, ind_max ) )
+     .				SECS_TO_TSTEP( grid1, the_taxis, ind_min ),
+     .				SECS_TO_TSTEP( grid1, the_taxis, ind_max ) )
 	      ELSE
 
 	         CALL AXIS_ENDS  ( indep_ax, indep_dim, grid1,
@@ -779,7 +783,7 @@ c#endif
      .			formatted, range_rqd, cal_id_1, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 
-	      CALL AXIS_ENDS( dep_ax, t_dim, grid, dep_min, dep_max, 
+	      CALL AXIS_ENDS( dep_ax, the_taxis, grid, dep_min, dep_max, 
      .                        delta, dep_is_log, dep_axtyp, status )
 	      IF ( status .NE. ferr_OK ) THEN
                  first = dep_min
@@ -789,7 +793,7 @@ c#endif
 
 	   ELSEIF ( all_1_dep ) THEN
 	      IF (only_val .EQ. bad_val4) val1 = 0.0	! 10/99
-	      CALL AXIS_ENDS( dep_ax, t_dim, grid,val1-1.D0,val1+1.D0,1.D0,
+	      CALL AXIS_ENDS( dep_ax, the_taxis, grid,val1-1.D0,val1+1.D0,1.D0,
      .                        dep_is_log, dep_axtyp, status )   
 	      IF ( status .NE. ferr_OK ) THEN
                   first = val1-1.0
@@ -800,7 +804,7 @@ c#endif
 	      CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
 	      dep_min = DBLE( lo )
 	      dep_max = DBLE( hi )
-	      CALL AXIS_ENDS( dep_ax, t_dim, grid, dep_min, dep_max, 
+	      CALL AXIS_ENDS( dep_ax, the_taxis, grid, dep_min, dep_max, 
      .                        delta, dep_is_log, dep_axtyp, status )
 	      IF ( status .NE. ferr_OK ) THEN
                  first = dep_min

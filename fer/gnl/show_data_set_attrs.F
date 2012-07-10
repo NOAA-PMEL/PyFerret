@@ -46,6 +46,7 @@
 *           the linked list structure.
 * V62  4/09 List the data type of variables as they are in the input
 *           dataset.
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -63,7 +64,6 @@
 	include	'xrisc.cmn'
 	include 'calendar.decl'
 	include 'calendar.cmn'
-        include 'netcdf.decl'
 #include "netcdf.inc"
 
 * calling argument declarations:

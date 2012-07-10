@@ -1,4 +1,4 @@
-	SUBROUTINE EXTRACT_LINE( cx, src, msrc, line, idim, ndim, n, status )
+	SUBROUTINE EXTRACT_LINE( cx, src, msrc, line, idim, ndim, nout, status )
 
 *
 *
@@ -54,7 +54,9 @@
 *                  array plot_axis().  This means we can plot a variable with just 
 *                  one point in their range (if /HLIMITS or /VLIMITS are used to give 
 *                  PPLUS a range to draw).
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
@@ -65,9 +67,9 @@
 	REAL    src(*), line(*)
 
 * internal variable declarations:
-	INTEGER	CGRID_SIZE, dim(4)
+	INTEGER	CGRID_SIZE, dim(nferdims)
 
-* determine 4D shape of context
+* determine 6D shape of context
 	CALL GET_CX_DIMS_ZERO( cx, ndim, dim )
 
 * have we been given a reasonable context ?
@@ -77,14 +79,16 @@
 
 * determine the axis orientation and length
 	idim = dim(1)
-	n    = CGRID_SIZE( cx )
+	nout = CGRID_SIZE( cx )
 
 * extract the line
 	CALL EXTRACT_LINE_SUB(	cx, line, src,
      .				mr_lo_s1(msrc), mr_hi_s1(msrc),
      .				mr_lo_s2(msrc), mr_hi_s2(msrc),
      .				mr_lo_s3(msrc), mr_hi_s3(msrc),
-     .				mr_lo_s4(msrc), mr_hi_s4(msrc)  )
+     .				mr_lo_s4(msrc), mr_hi_s4(msrc),
+     .				mr_lo_s5(msrc), mr_hi_s5(msrc),
+     .				mr_lo_s6(msrc), mr_hi_s6(msrc)  )
 
 * successful completion
 	status = ferr_ok

@@ -2,7 +2,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -40,13 +40,16 @@
 
 * V230:  8/22/92
 * V533:  6/01 *sh* - added string regridding
+*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include	'xcontext.cmn'
 
 * calling argument declarations:
 	INTEGER	cx_lims, axis, msrc, mdst
 	REAL	src(*), dst(*)
-
-	include	'ferret.parm'
-	include	'xcontext.cmn'
 
 	IF ( cx_type(cx_lims) .EQ. ptype_string ) THEN
 	   CALL ASN_PTR_REGRID_1_AXIS( cx_lims, axis,
@@ -59,5 +62,5 @@
 	ENDIF
 
 	RETURN
-	END	
+	END
 

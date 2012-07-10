@@ -1,0 +1,30 @@
+! bn_tranpose.jnl
+! test the transpose functions,
+! listing the results which can be checked against input
+
+def axis /X=0.0:4.0:1.0 xaxs
+def axis /Y=0.0:3.0:1.0 yaxs
+def axis /Z=0.0:2.0:1.0 zaxs
+def axis /T=0.0:1.0:1.0 taxs
+
+def grid /X=xaxs /Y=yaxs /Z=zaxs /T=taxs mygrd 
+set grid mygrd
+
+let myvar = X + 5.0 * (Y + 4.0 * (Z + 3.0 * T))
+
+list myvar
+list transpose_xy(myvar)
+list transpose_xz(myvar)
+list transpose_xt(myvar)
+list transpose_yz(myvar)
+list transpose_yt(myvar)
+list transpose_zt(myvar)
+
+can var /all
+set grid abstract
+can grid mygrd
+can axis taxs
+can axis zaxs
+can axis yaxs
+can axis xaxs
+

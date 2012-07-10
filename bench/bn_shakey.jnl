@@ -68,5 +68,3 @@ shade/title="In viewport, shakey located anywhere on page"/set temp[l=1]
 ppl shakey ,0,-.1,2,,,,,`y1`
 ppl shade
 ppl list shakey
-
-can view

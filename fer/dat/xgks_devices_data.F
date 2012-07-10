@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -43,11 +43,8 @@
 *
 * V200:  12/6/89
 
-#ifdef unix
+        IMPLICIT NONE
 	include	'xgks_devices.cmn'
-#else
-	INCLUDE	'FERRET_CMN:XGKS_DEVICES.CMN'
-#endif
 
 	DATA	gks_dev_name(1) / 'DEFAULT'    	/,
      .		gks_dev_name(2) / 'VSII'    	/,

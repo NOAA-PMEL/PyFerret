@@ -43,21 +43,23 @@
 *   8/97 - type mismatch on axis_implied_from caught by 
 *              linux/aix compilers *kob*
 * V63  *acm* 10/09 Changes for gfortran build
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-* calling argument declarations
-	INTEGER	ifcn, iarg, axis_source(4)
-
-* internal variable declarations
-	INTEGER	idim, iptr1,
-     .		axis_will_be(4)
-	INTEGER efcn_get_num_reqd_args
-	LOGICAL axis_implied_from(4)
 
 	include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'
 	include 'ferret.parm'
 	include 'xgrid_chg_fcns.cmn'
 	include 'xfr_grid.cmn'	! w/ mgrid_abstract
+
+* calling argument declarations
+	INTEGER	ifcn, iarg, axis_source(nferdims)
+
+* internal variable declarations
+	INTEGER	idim, iptr1,
+     .		axis_will_be(nferdims)
+	INTEGER efcn_get_num_reqd_args
+	LOGICAL axis_implied_from(nferdims)
 
 * initialize
         IF (ifcn .LT. 0 .OR. iarg .LT. 1) THEN
@@ -74,7 +76,7 @@
 * store info in local arrays to blur distinction between internal and external
 * ... determine pointer to argument information
 	   iptr1 = gfcn_arg_ptr(ifcn)
-	   DO 10 idim = 1, 4
+	   DO 10 idim = 1, nferdims
 	      axis_will_be(idim) = gfcn_axis_will_be(idim,ifcn)
 	      axis_implied_from(idim) =
      .			gfcn_axis_implied_from(idim,iptr1+iarg-1)
@@ -96,7 +98,7 @@
 *	pgc_merge_axis
 *    or	pgc_ignore_axis
 
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 
 	   IF (axis_will_be(idim) .EQ. pgc_axis_is_abstract)	THEN
 	      axis_source(idim) = pgc_impose_axis

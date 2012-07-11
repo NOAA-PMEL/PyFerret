@@ -20,6 +20,8 @@
 #define TEXTLENGTH 500
 #define NUMDOUBLES 2048
 
+#include "ferret.h"
+
 typedef struct sharedStruct {
 	int flags[NUMFLAGS];
 	char text[TEXTLENGTH];
@@ -43,8 +45,8 @@ typedef sharedMem *smPtr;
 
 __global smPtr sBuffer;
 
-__global float *memory;
-__global float *ppl_memory;   /* new 10/01 */
+__global DFTYPE *memory;
+__global float *ppl_memory;
 
 
 #undef __global

@@ -55,7 +55,7 @@ void FORTRAN(pplldx_envelope)(int *, double *, double *, int *,
                        char *, char *, double *, int *);
 
 void FORTRAN(pplldx)( int *, double *, double *, int *, 
-                       char *, char *, double *, double * );
+                       char *, char *, double *, float * );
 
 
 void FORTRAN(pplldc_envelope)(int *, double *, int *, int *, int *, int *,
@@ -64,13 +64,13 @@ void FORTRAN(pplldc_envelope)(int *, double *, int *, int *, int *, int *,
 
 void FORTRAN(pplldc)( int *, double *, int *, int *, int *, int *, 
                        int *, int *, double *, double *, int *, int *, 
-                       double *, double *, double *, double *, double *);
+                       double *, double *, double *, double *, float *);
 
 void FORTRAN(pplldv_envelope)(int *, double *, int *, int *, int *, 
                        int *, int *, int *);
 
 void FORTRAN(pplldv)( int *, double *, int *, int *, int *, int *, 
-                       int *, int *, double *);
+                       int *, int *, float *);
 #else
 void FORTRAN(pplldx_envelope)(int *, float *, float *, int *, 
                        char *, char *, float *, int *);

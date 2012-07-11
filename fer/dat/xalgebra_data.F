@@ -414,16 +414,16 @@
      .       alg_pvar	( 29 ) / 'EBOXHI  ' /,
      .       alg_pvar	( 30 ) / 'FBOXHI  ' /
 ! allow _I,_J,_K,_L,_X,_Y,_Z,_T which will be translated to just I,J,...Z,T.
-	DATA alg_pvar	( 31 ) / '_I       ' /,
-     .       alg_pvar	( 32 ) / '_J       ' /,
-     .       alg_pvar	( 33 ) / '_K       ' /,
-     .       alg_pvar	( 34 ) / '_L       ' /,
+	DATA alg_pvar	( 31 ) / '_I      ' /,
+     .       alg_pvar	( 32 ) / '_J      ' /,
+     .       alg_pvar	( 33 ) / '_K      ' /,
+     .       alg_pvar	( 34 ) / '_L      ' /,
      .       alg_pvar	( 35 ) / '_M      ' /,
      .       alg_pvar	( 36 ) / '_N      ' /,
-     .       alg_pvar	( 37 ) / '_X       ' /,
-     .       alg_pvar	( 38 ) / '_Y       ' /,
-     .       alg_pvar	( 39 ) / '_Z       ' /,
-     .       alg_pvar	( 40 ) / '_T       ' /
+     .       alg_pvar	( 37 ) / '_X      ' /,
+     .       alg_pvar	( 38 ) / '_Y      ' /,
+     .       alg_pvar	( 39 ) / '_Z      ' /,
+     .       alg_pvar	( 40 ) / '_T      ' /
         DATA alg_cvar        /60*unspecified_name4/
         DATA countervar_name_head / 0 /
         DATA countervar_name_padding / 0 /

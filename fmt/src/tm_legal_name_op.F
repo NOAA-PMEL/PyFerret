@@ -48,7 +48,7 @@
 	CHARACTER*(*) name
 *
 * internal variable declarations:
-	LOGICAL STR_MATCH
+	INTEGER STR_MATCH
 	INTEGER	TM_LENSTR1, STR_SAME, slen
 	
 * string length

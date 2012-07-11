@@ -132,7 +132,7 @@
 *                    Change resize requests to pass mem_blk_size (an int) instead of
 *                    mem_size (a size_t) in sBuffer->flags[FRTN_IDATA1]
 * *acm*  1/12      - Ferret 6.8 ifdef for double-precision ferret, see the
-*					 definition of macro DFTYPE in ferret.h. ppl_memory remains float.
+*                    definition of macro DFTYPE in ferret.h. ppl_memory remains float.
 */
 
 #include <unistd.h>
@@ -155,8 +155,9 @@ static void command_line_run(DFTYPE **memory);
 void help_text()
 {
   printf(
-	 "Usage:  ferret [-memsize Mwords] [-batch [outfile]] [-server] [-secure] [-gif] [-gui] [-unmapped] [-help] [-nojnl] [-noverify] [-script [args]]\n"
-         "   -memsize:  specify the memory cache size in megawords (default 3.2)\n"
+	 "Usage:  ferret [-memsize Mflts] [-batch [outfile]] [-server] [-secure] [-gif] [-gui] [-unmapped] [-help] [-nojnl] [-noverify] [-script [args]]\n"
+         "   -memsize:  specify the memory cache size (default 25.6) in mega (10^6) flts where a flt\n"
+         "              is 8 bytes in double-precision Ferret, 4 bytes in single-precision Ferret\n"
          "   -batch:  output directly to metafile \"outfile\" w/out X windows\n"
          "   -unmapped:  use invisible output windows (superceded by -batch)\n"
          "   -gif:  output to GIF file w/o X windows only w/ FRAME command\n"

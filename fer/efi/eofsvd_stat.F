@@ -1,5 +1,5 @@
 *
-*  eof_space.F
+*  eofsvd_stat.F
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -33,34 +33,23 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* Ansley Manke
-* Sep 1998
-* Aug 2000 change fcn description; argument can be fcn of Z as well as x,y,t
-* May 2001 Use simpler solver EOFIN when frac_timeser = 1.
 *
-* Jul 2001 Move to statically linked code in fer/efi. 
-* Jul 2001 Move count_eof and pack_eof to file eofsubs.f, rename solve_eof
-*          to solve_eof_space.
-*          Make the function work w/ data having multiple depths: compute
-*          EOF solution for each depth.
-* Aug 2001 move to fer/efi directory, to be statically linked to Ferret.  
-*	   Change INCLUDE statements to remove directory spec.  
-* Feb 2003 Add a test that NEOF <= max_neof, which is dictated by work
-*          arrays in the solvers in TRIDIN in eofsubs.F
-* Jun 2003 Workspace arrays need to be initialized for each vertical level.
-* Sep 2005 Remove the max_eof test; make all workspace be allocated as 
-*          external function work arrays.
+* Ansley Manke
+* July 2012
 *
 * Compute EOF/s and time amplitude funcions from a 2-d field, or for each level 
-* of a 3-D field.  Based on programs (coadseof.f, etc.) by Dai McClurg and 
-* Ansley Manke and calls Billy Kessler's method for finding EOFs  of NON-gappy 
-* time series EOFIN, or optionally his implementation of Chelton's '82 method 
-* for finding EOFs of gappy time series.
+* of a 3-D field. Calls Billy Kessler's svdeof code
 *
-* Return Spatial EOF's
+* Return statistics: number of eof's computed, percent variance explained
+* by each EOF, and the eigenvalue for each EOF.
+* x-axis is abstract length nx*ny; listing the statistics for each EOF.
+* y-axis is length 3: 
+*    1st is the # of eof's computed
+*    2nd is the Pct variation for each eof
+*    3rd is the eigenvalue for each eof.
 *
 *
-* In this subroutine we provide information about
+* In this SUBROUTINE we provide information about
 * the function.  The user configurable information 
 * consists of the following:
 *
@@ -95,7 +84,7 @@
 *
 
 
-      SUBROUTINE eof_space_init(id)
+      SUBROUTINE eofsvd_stat_init(id)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
@@ -106,14 +95,21 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
-      CALL ef_set_desc(id, 'Function NOT AVAILABLE in this Ferret version')
 
-      CALL ef_set_num_args(id, 2)
+      CHARACTER*100 fcn_desc
+
+   10 FORMAT ('SVD EOF statistics from XYT field. j=1:#EOFs, ',
+     .        'j=2:%variation, j=3:eigenvalues' )
+
+      WRITE (fcn_desc, 10) 
+
+      CALL ef_set_desc(id, fcn_desc)
+
+      CALL ef_set_num_args(id, 1)
 
       CALL ef_set_axis_inheritance_6d(id,
-     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
-     .                                IMPLIED_BY_ARGS, ABSTRACT,
+     .                                ABSTRACT,        ABSTRACT,
+     .                                IMPLIED_BY_ARGS, NORMAL,
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
       CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
       CALL ef_set_num_work_arrays(id, 9)
@@ -122,17 +118,11 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_desc(id, arg,
-     .                     'Variable in x,y,t; may be fcn of z,e,f')
+     .        'Variable in x,y,t; may be fcn of z,e,f')
       CALL ef_set_axis_influence_6d(id, arg,
-     .                              YES, YES, YES, NO, YES, YES)
+     .                              NO, NO, YES, NO, YES, YES)
 
-      arg = 2
-      CALL ef_set_arg_name(id, arg, 'frac_timeser')
-      CALL ef_set_arg_unit(id, arg, ' ')
-      CALL ef_set_arg_desc(id, arg,
-     . 'Use only those time series with this fraction valid data')
-      CALL ef_set_axis_influence_6d(id, arg,
-     .                              NO, NO, NO, NO, NO, NO)
+
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -151,7 +141,7 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
 * hiss               hi subscript for an axis
 *
 
-      SUBROUTINE eof_space_result_limits(id)
+      SUBROUTINE eofsvd_stat_result_limits(id)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
@@ -182,7 +172,9 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
       my_lo_l = 1
       my_hi_l = nx * ny
 
-      CALL ef_set_axis_limits(id, T_AXIS, my_lo_l, my_hi_l)
+      CALL ef_set_axis_limits(id, X_AXIS, my_lo_l, my_hi_l)
+
+      CALL ef_set_axis_limits(id, Y_AXIS, 1, 3)
 
 *                                                                     ^
 *                                                                     |
@@ -192,11 +184,13 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
       RETURN 
       END
 
+
+
 *
 * In this subroutine we request an amount of storage to be supplied
 * by Ferret and passed as an additional argument.
 *
-      SUBROUTINE eof_space_work_size(id)
+      SUBROUTINE eofsvd_stat_work_size(id)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
@@ -216,8 +210,8 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
 *                           xlo, ylo, zlo, tlo, elo, flo,
 *                           xhi, yhi, zhi, thi, ehi, fhi)
 *
-      COMMON /EOFXYSTOR/ mx
-      INTEGER mx1, my1, mt1, mx, mxmt, mxmx
+      COMMON /eof_statSTOR/ mx
+      INTEGER mx1, my1, mt1, mx, mxmt, mxmx, mwrk, mwrk2
 
       INTEGER iwork
       INTEGER arg_lo_ss(6,EF_MAX_ARGS),
@@ -233,60 +227,64 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
       mx = mx1 * my1 + 10
       mxmt = mx * mt1 + 10
       mxmx = mx * mx + 10
+      mwrk = mxmt/2
+      mwrk2 = MIN(mx, mt1)
 
-*  val
+*  taf (pack data into this eof by t array, returned as taf)
       iwork = 1
       CALL ef_set_work_array_dims_6d(id, iwork,
      .                                1, 1, 1, 1, 1, 1,
-     .                               mx, 1, 1, 1, 1, 1)
-
-*  taf
-      iwork = 2
-      CALL ef_set_work_array_dims_6d(id, iwork,
-     .                                1, 1, 1, 1, 1, 1,
      .                             mxmt, 1, 1, 1, 1, 1)
 
-*  pct
+*  ok
+      iwork = 2
+      CALL ef_set_work_array_dims_6d(id, iwork,
+     .                                1,   1, 1, 1, 1, 1,
+     .                              mx1, my1, 1, 1, 1, 1)
+
+* workspace
       iwork = 3
       CALL ef_set_work_array_dims_6d(id, iwork,
      .                                1, 1, 1, 1, 1, 1,
-     .                               mx, 1, 1, 1, 1, 1)
+     .                               mwrk, 1, 1, 1, 1, 1)
 
-*  vec
+* W(NX) eigenvalues of decomposition
       iwork = 4
       CALL ef_set_work_array_dims_6d(id, iwork,
      .                                1, 1, 1, 1, 1, 1,
-     .                             mxmx, 1, 1, 1, 1, 1)
+     .                               mx, 1, 1, 1, 1, 1)
 
-*  c
+* V(NX,NX) EOFs in columns (V(space,neof))
       iwork = 5
       CALL ef_set_work_array_dims_6d(id, iwork,
      .                                1, 1, 1, 1, 1, 1,
-     .                             mxmx, 1, 1, 1, 1, 1)
+     .                               mxmx, 2, 1, 1, 1, 1)
 
-*  ddat_1d
+* PCT(NX) % variance represented by each EOF
       iwork = 6
       CALL ef_set_work_array_dims_6d(id, iwork,
      .                                1, 1, 1, 1, 1, 1,
-     .                             mxmt, 1, 1, 1, 1, 1)
+     .                               mx, 1, 1, 1, 1, 1)
 
+*                                                            
 *  isave_jsave
+*  Make this work array 7, so that pack_ef from eofsubs can be used
       iwork = 7
       CALL ef_set_work_array_dims_6d(id, iwork,
      .                                1, 1, 1, 1, 1, 1,
      .                               mx, 2, 1, 1, 1, 1)
 
-*  ok
+* work2
       iwork = 8
       CALL ef_set_work_array_dims_6d(id, iwork,
-     .                                1,   1, 1, 1, 1, 1,
-     .                              mx1, my1, 1, 1, 1, 1)
+     .                                1, 1, 1, 1, 1, 1,
+     .                               mwrk2, 1, 1, 1, 1, 1)
 
-*  eofwork
+* work3
       iwork = 9
       CALL ef_set_work_array_dims_6d(id, iwork,
-     .                                1,  1, 1, 1, 1, 1,
-     .                               mx, 10, 1, 1, 1, 1)
+     .                                1, 1, 1, 1, 1, 1,
+     .                               mwrk2, 1, 1, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -300,23 +298,18 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
 * In this SUBROUTINE we compute the result
 *
 
-      SUBROUTINE  eof_space_compute(id, arg_1, arg_2, result, 
-     .       val, taf, pct, vec, c, ddat_1d, isave_jsave, ok, eofwork)
+      SUBROUTINE eofsvd_stat_compute(id, arg_1, result, 
+     .    taf, ok, workspace, w, v, pct, isave_jsave, work2, work3)
 
 *  arg_1  variable, function of (x,y,t)
-*  result NX*NY eigenvectors
 
-*  Work arrays:
-*  val, taf, pct, vec, c, ddat_1d, isave_jsave, ok
+*  result(i, 1,. ,. )    # eigenfunctions.
+*  result(i, 2,. ,. )    pct variation for eigenfuncton i.
+*  result(i, 3,. ,. )    eigenvalue for eigenfuncton i.
 
-*  val(neof)	eigenvalues (Lambda)
-*  result == vec(neof,neof) eigenvectors (Lambda*U). Same units as data.
-*  taf(neof,nt)	time amplitude functions (V). Dimensionless.
-*  pct(neof)	% variance represented by each EOF.
-*  c(neof,neof)	work space for cov matrix (garbage output)
-*  isave_jsave  save the locations of the data in the x-y plane
-*  eofwork	used by QRSYM and other solver routines; replaces
-*		original ALPHA, BETA, BB, and P arrays.
+*  Work arrays (there are some internal hard-coded arrays, should be 
+*  done by external-functions work arrays).
+*  taf, ok, isave_jsave, w, v, pct
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
@@ -324,13 +317,11 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
 
       INTEGER id
 
-      COMMON /EOFXYSTOR/ mx
+      COMMON /eof_statSTOR/ mx
       INTEGER mx
 
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
      .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
-      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
-     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .            memresloz:memreshiz, memreslot:memreshit,
@@ -338,33 +329,33 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
 
 *  Dimension the work arrays.
 
-      REAL val(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
+      REAL taf(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
      .         wrk1loz:wrk1hiz, wrk1lot:wrk1hit,
      .         wrk1loe:wrk1hie, wrk1lof:wrk1hif)
-      REAL taf(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
-     .         wrk2loz:wrk2hiz, wrk2lot:wrk2hit,
-     .         wrk2loe:wrk2hie, wrk2lof:wrk2hif)
-      REAL pct(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
-     .         wrk3loz:wrk3hiz, wrk3lot:wrk3hit,
-     .         wrk3loe:wrk3hie, wrk3lof:wrk3hif)
-      REAL vec(wrk4lox:wrk4hix, wrk4loy:wrk4hiy,
-     .         wrk4loz:wrk4hiz, wrk4lot:wrk4hit,
-     .         wrk4loe:wrk4hie, wrk4lof:wrk4hif)
-      REAL c(wrk5lox:wrk5hix, wrk5loy:wrk5hiy,
-     .       wrk5loz:wrk5hiz, wrk5lot:wrk5hit,
-     .       wrk5loe:wrk5hie, wrk5lof:wrk5hif)
-      REAL ddat_1d(wrk6lox:wrk6hix, wrk6loy:wrk6hiy,
-     .             wrk6loz:wrk6hiz, wrk6lot:wrk6hit,
-     .             wrk6loe:wrk6hie, wrk6lof:wrk6hif)
+      REAL ok(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
+     .        wrk2loz:wrk2hiz, wrk2lot:wrk2hit,
+     .        wrk2loe:wrk2hie, wrk2lof:wrk2hif)
+      REAL workspace(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
+     .        wrk3loz:wrk3hiz, wrk3lot:wrk3hit,
+     .        wrk3loe:wrk3hie, wrk3lof:wrk3hif)
+      REAL w(wrk4lox:wrk4hix, wrk4loy:wrk4hiy,
+     .        wrk4loz:wrk4hiz, wrk4lot:wrk4hit,
+     .        wrk4loe:wrk4hie, wrk4lof:wrk4hif)
+      REAL v(wrk5lox:wrk5hix, wrk5loy:wrk5hiy,
+     .        wrk5loz:wrk5hiz, wrk5lot:wrk5hit,
+     .        wrk5loe:wrk5hie, wrk5lof:wrk5hif)
+      REAL pct(wrk6lox:wrk6hix, wrk6loy:wrk6hiy,
+     .        wrk6loz:wrk6hiz, wrk6lot:wrk6hit,
+     .        wrk6loe:wrk6hie, wrk6lof:wrk6hif)
       REAL isave_jsave(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
-     .                 wrk7loz:wrk7hiz, wrk7lot:wrk7hit,
-     .                 wrk7loe:wrk7hie, wrk7lof:wrk7hif)
-      REAL ok(wrk8lox:wrk8hix, wrk8loy:wrk8hiy,
+     .        wrk7loz:wrk7hiz, wrk7lot:wrk7hit,
+     .        wrk7loe:wrk7hie, wrk7lof:wrk7hif)
+      REAL work2(wrk8lox:wrk8hix, wrk8loy:wrk8hiy,
      .        wrk8loz:wrk8hiz, wrk8lot:wrk8hit,
      .        wrk8loe:wrk8hie, wrk8lof:wrk8hif)
-      REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
-     .             wrk9loz:wrk9hiz, wrk9lot:wrk9hit,
-     .             wrk9loe:wrk9hie, wrk9lof:wrk9hif)
+      REAL work3(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
+     .        wrk9loz:wrk9hiz, wrk9lot:wrk9hit,
+     .        wrk9loe:wrk9hie, wrk9lof:wrk9hif)
 
 
 * After initialization, the 'res_' arrays contain indexing information 
@@ -385,16 +376,12 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
 *                                                                      |
 *                                                                      V
 
-      INTEGER neof, ier
+      INTEGER neof, max_neof, ier
       CHARACTER*255 err_msg, err_out
 
       INTEGER nx, ny, nt, k, m, n, k1, m1, n1,
      .        iw, jw, kw, lw, mw, nw
       REAL frac_timeser
-      
-      WRITE (err_msg,*)
-     .  'Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE'
-      CALL ef_bail_out (id, err_msg)
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -406,14 +393,7 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
       ny = 1 + arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1)
       nt = 1 + arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1)
 
-*  Get time percent parameter.
-
-      frac_timeser = arg_2(arg_lo_ss(X_AXIS,ARG2), 
-     .                     arg_lo_ss(Y_AXIS,ARG2),
-     .                     arg_lo_ss(Z_AXIS,ARG2), 
-     .                     arg_lo_ss(T_AXIS,ARG2),
-     .                     arg_lo_ss(E_AXIS,ARG2),
-     .                     arg_lo_ss(F_AXIS,ARG2))
+      frac_timeser = 1.
 
 *  Compute EOF for each depth, ensemble, forecast
 
@@ -428,13 +408,15 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
 
 *  Initialize work arrays.
 
+*  Initialize work arrays.
+
          DO 701 nw = wrk1lof,wrk1hif
          DO 701 mw = wrk1loe,wrk1hie
          DO 701 lw = wrk1lot,wrk1hit
          DO 701 kw = wrk1loz,wrk1hiz 
          DO 701 jw = wrk1loy,wrk1hiy
          DO 701 iw = wrk1lox,wrk1hix
-            val(iw,jw,kw,lw,mw,nw) = 0.
+            taf(iw,jw,kw,lw,mw,nw) = 0.
   701    CONTINUE
 
          DO 702 nw = wrk2lof,wrk2hif
@@ -443,7 +425,7 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
          DO 702 kw = wrk2loz,wrk2hiz 
          DO 702 jw = wrk2loy,wrk2hiy
          DO 702 iw = wrk2lox,wrk2hix
-            taf(iw,jw,kw,lw,mw,nw) = 0.
+            ok(iw,jw,kw,lw,mw,nw) = 0.
   702    CONTINUE
 
          DO 703 nw = wrk3lof,wrk3hif
@@ -452,7 +434,7 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
          DO 703 kw = wrk3loz,wrk3hiz 
          DO 703 jw = wrk3loy,wrk3hiy
          DO 703 iw = wrk3lox,wrk3hix
-            pct(iw,jw,kw,lw,mw,nw) = 0.
+            workspace(iw,jw,kw,lw,mw,nw) = 0.
   703    CONTINUE
 
          DO 704 nw = wrk4lof,wrk4hif
@@ -461,7 +443,7 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
          DO 704 kw = wrk4loz,wrk4hiz 
          DO 704 jw = wrk4loy,wrk4hiy
          DO 704 iw = wrk4lox,wrk4hix
-            vec(iw,jw,kw,lw,mw,nw) = 0.
+            w(iw,jw,kw,lw,mw,nw) = 0.
   704    CONTINUE
 
          DO 705 nw = wrk5lof,wrk5hif
@@ -470,7 +452,7 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
          DO 705 kw = wrk5loz,wrk5hiz 
          DO 705 jw = wrk5loy,wrk5hiy
          DO 705 iw = wrk5lox,wrk5hix
-            c(iw,jw,kw,lw,mw,nw) = 0.
+            v(iw,jw,kw,lw,mw,nw) = 0.
   705    CONTINUE
 
          DO 706 nw = wrk6lof,wrk6hif
@@ -479,7 +461,7 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
          DO 706 kw = wrk6loz,wrk6hiz 
          DO 706 jw = wrk6loy,wrk6hiy
          DO 706 iw = wrk6lox,wrk6hix
-            ddat_1d(iw,jw,kw,lw,mw,nw) = 0.
+            pct(iw,jw,kw,lw,mw,nw) = 0.
   706    CONTINUE
 
          DO 707 nw = wrk7lof,wrk7hif
@@ -497,7 +479,7 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
          DO 708 kw = wrk8loz,wrk8hiz 
          DO 708 jw = wrk8loy,wrk8hiy
          DO 708 iw = wrk8lox,wrk8hix
-            ok(iw,jw,kw,lw,mw,nw) = 0.
+            work2(iw,jw,kw,lw,mw,nw) = 0.
   708    CONTINUE
 
          DO 709 nw = wrk9lof,wrk9hif
@@ -506,11 +488,11 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
          DO 709 kw = wrk9loz,wrk9hiz 
          DO 709 jw = wrk9loy,wrk9hiy
          DO 709 iw = wrk9lox,wrk9hix
-            eofwork(iw,jw,kw,lw,mw,nw) = 0.
+            work3(iw,jw,kw,lw,mw,nw) = 0.
   709    CONTINUE
 
-
-*  Find the number of eofs to solve for.
+*  Find the number of eofs to solve for. Require that a location has
+*  all time points present or it is skipped.
 *  neof = number of (x,y) points with frac_timeser good data.  
 *  Set OK to mark where they are.   (note this also allows for 
 *  working around continental boundaries or other areas where 
@@ -518,25 +500,25 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
 
          CALL count_neof (arg_1, neof, ok, nx, ny, nt, k1, m1, n1,
      .                    arg_lo_ss, arg_hi_ss, arg_incr, mx,
-     .                    bad_flag(ARG1), frac_timeser, err_msg, ier)
+     .                    bad_flag(ARG1), 1., err_msg, ier)
          IF (ier .NE. 0) then
             GOTO 5010
          ENDIF
 
-*  Put the data into the array ddat_1d(neof,nt) 
+*  Put the data into the array taf(neof,nt). Input to solver routine,
+*  returned as taf.
 
-         CALL pack_ef (arg_1, ddat_1d, isave_jsave, neof,  
+         CALL pack_ef (arg_1, taf, isave_jsave, neof,  
      .                 ok, frac_timeser, nx, ny, nt, k1, m1, n1,
      .                 arg_lo_ss, arg_hi_ss, arg_incr)
 
 *  Solve for the EOF's: eigenvectors, time functions, percent variance explained.
 
-         CALL solve_eof_space (ddat_1d, neof, nt, k, m, n, val, vec, 
-     .            taf, pct, c, result, isave_jsave, eofwork, res_lo_ss,
-     .            res_hi_ss, res_incr, bad_flag(ARG1), bad_flag_result,
-     .            frac_timeser, err_msg, ier)
+         CALL solve_eofsvd_stat (taf, neof, nt, k, m, n, result, 
+     .            isave_jsave, w, v, pct, workspace, work2, work3, 
+     .            res_lo_ss, res_hi_ss, res_incr, bad_flag(ARG1),
+     .            bad_flag_result, frac_timeser, err_msg, ier)
          IF (ier .NE. 0) GOTO 5020
-
          k1 = k1 + arg_incr(Z_AXIS,ARG1)
   100 CONTINUE
          m1 = m1 + arg_incr(E_AXIS,ARG1)
@@ -549,7 +531,10 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
  5010 CALL ef_bail_out (id, err_msg)
       RETURN
 
- 5020 WRITE (err_out, 5500) k, m, n, err_msg 
+ 5020 IF (ier .EQ. -1) THEN
+         err_msg = 'SVDEOF. No convergence in 60 iterations.'
+      ENDIF
+      WRITE (err_out, 5500) k, m, n, err_msg 
  5500 FORMAT ('k,m,n=', 3I3, A250)
       CALL ef_bail_out (id, err_out)
       RETURN
@@ -558,10 +543,10 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
 
 ***********************************************************************
 
-      SUBROUTINE solve_eof_space (ddat_1d, neof, nt, k, m, n, val, vec, 
-     .            taf, pct, c, result, isave_jsave, eofwork, res_lo_ss,
-     .            res_hi_ss, res_incr, bad_flag_dat, bad_flag_result, 
-     .            frac_timeser, err_msg, ier)
+      SUBROUTINE solve_eofsvd_stat  (taf, neof, nt, k, m, n, result, 
+     .            isave_jsave, w, v, pct, workspace, work2, work3, 
+     .            res_lo_ss, res_hi_ss, res_incr, bad_flag_dat,
+     .            bad_flag_result, frac_timeser, err_msg, ier)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
@@ -569,65 +554,55 @@ c      CALL ef_set_desc(id, 'Compute EOF spacial fields from XYT field')
 
 * arguments
       INTEGER neof, nt, k, m, n
-      REAL ddat_1d(neof,nt)
-      REAL val(*)
-      REAL vec(neof, neof)
+      REAL w(*)
+      REAL v(neof, neof)
       REAL taf(neof, nt)
       REAL pct(*)
-      REAL c(neof, neof)
+      REAL workspace(*), work2(*), work3(*)
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .            memresloz:memreshiz, memreslot:memreshit,
      .            memresloe:memreshie, memreslof:memreshif)
-      REAL isave_jsave(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
-     .                 wrk7loz:wrk7hiz, wrk7lot:wrk7hit,
-     .                 wrk7loe:wrk7hie, wrk7lof:wrk7hif)
-      REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
-     .             wrk9loz:wrk9hiz, wrk9lot:wrk9hit,
-     .             wrk9loe:wrk9hie, wrk9lof:wrk9hif)
+      REAL isave_jsave(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
+     .        wrk3loz:wrk3hiz, wrk3lot:wrk3hit,
+     .        wrk3loe:wrk3hie, wrk3lof:wrk3hif)
       INTEGER res_lo_ss(6), res_hi_ss(6), res_incr(6)
       REAL bad_flag_dat, bad_flag_result, frac_timeser
       CHARACTER*(*) err_msg
       INTEGER ier
 
 * local variables
-      INTEGER i, j, l, mm, nn, is, js
+      INTEGER i, j, l
 
-      IF (frac_timeser .LT. 1.) THEN
-         CALL EOFIN_CHEL_GAP (ddat_1d, neof, nt, val, vec, taf, pct, c, 
-     .            eofwork, bad_flag_dat, bad_flag_result, err_msg, ier)
-         IF (ier .NE. 0) RETURN
-      ELSE
-         CALL EOFIN(ddat_1d, neof, nt, val, vec, taf, pct, c, eofwork)
-      ENDIF
+      CALL DO_SVD_EOF (taf, neof, nt, w, v, pct, workspace, 
+     .                 work2, work3, ier)
+      IF (ier .NE. 0) RETURN
 
-*  Result is the eigenvectors.
+*  Result for j = 1 is the # eigenfunctions.
 
+      j =  res_lo_ss(Y_AXIS)
       DO 130 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-         DO 120 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-            DO 110 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-               result(i,j,k,l,m,n) = bad_flag_result
-  110       CONTINUE
-  120    CONTINUE
+         DO 110 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+            result(i,j,k,l,m,n) = neof
+  110    CONTINUE
   130 CONTINUE
 
-      DO 220 nn = 1, neof
-         DO 210 mm = 1, neof
-            IF (res_lo_ss(X_AXIS) .EQ. ef_unspecified_int4) THEN
-               is = ef_unspecified_int4
-            ELSE
-               is = res_lo_ss(X_AXIS) + isave_jsave(mm,1,1,1,1,1) - 1
-            ENDIF
+*  Result for j = 2 is the percent variation explained by the eigenfunctions
 
-            IF (res_lo_ss(Y_AXIS) .EQ. ef_unspecified_int4) THEN
-               js = ef_unspecified_int4
-            ELSE
-               js = res_lo_ss(Y_AXIS) + isave_jsave(mm,2,1,1,1,1) - 1
-            ENDIF
-
-            result(is,js,k,nn,m,n) = vec(mm,nn)
-
+      j =  j + res_incr(Y_AXIS)
+      DO 230 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+         DO 210 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            result(i,j,k,l,m,n) = pct(i)* 100.
   210    CONTINUE
-  220 CONTINUE
+  230 CONTINUE
+
+*  Result for j = 3 is the eigenvalue for each eigenfunction
+
+      j =  j + res_incr(Y_AXIS)
+      DO 330 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+         DO 310 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            result(i,j,k,l,m,n) = w(i)
+  310    CONTINUE
+  330 CONTINUE
 
       RETURN
       END

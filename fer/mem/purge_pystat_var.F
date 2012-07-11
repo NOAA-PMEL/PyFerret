@@ -37,6 +37,7 @@
 * eliminate all stored mrs for the given cat_pystat_var variable
 
       INCLUDE 'ferret.parm'
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'xvariables.cmn'
 
 * calling argument declaration:

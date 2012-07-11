@@ -145,6 +145,7 @@ static volatile sig_atomic_t canjump;
 static int I_have_scanned_already = FALSE;
 static int I_have_warned_already = TRUE; /* Warning turned off Jan '98 */
 
+static void *internal_dlsym(char *name);
 static void *ferret_ef_mem_subsc_so_ptr;
 static void (*copy_ferret_ef_mem_subsc_ptr)(void);
 

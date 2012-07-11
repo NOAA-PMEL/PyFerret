@@ -1448,8 +1448,8 @@ static PyObject *pyefcnGetAxisBoxLimits(PyObject *self, PyObject *args, PyObject
     hi = stephi[arg][axis];
     arg++;
     axis++;
-    ef_get_box_limits_(&id, &arg, &axis, &lo, &hi, (float *)PyArray_DATA(low_limits_ndarray), 
-                                                   (float *)PyArray_DATA(high_limits_ndarray));
+    ef_get_box_limits_(&id, &arg, &axis, &lo, &hi, (double *)PyArray_DATA(low_limits_ndarray), 
+                                                   (double *)PyArray_DATA(high_limits_ndarray));
 
     return Py_BuildValue("NN", low_limits_ndarray, high_limits_ndarray); /* Steals the references to the two ndarrays */
 }
@@ -1497,7 +1497,6 @@ static PyObject *pyefcnGetAxisInfo(PyObject *self, PyObject *args, PyObject *kwd
     int               regular;
     double            modulolen;
     PyObject         *backwards_bool;
-    PyObject         *modulo_bool;
     PyObject         *regular_bool;
 
     /* Parse the arguments, checking if an Exception was raised */
@@ -1558,7 +1557,7 @@ static PyObject *pyefcnGetAxisInfo(PyObject *self, PyObject *args, PyObject *kwd
     axis++;
     ef_get_single_axis_info_(&id, &arg, &axis, name, unit, &backwards, &modulo, &regular, 80, 80);
     if ( modulo != 0 )
-        ef_get_axis_modulo_len_(&id, &arg, &axis, &modulolen)
+        ef_get_axis_modulo_len_(&id, &arg, &axis, &modulolen);
     else
         modulolen = 0.0;
 

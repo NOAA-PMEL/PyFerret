@@ -39,6 +39,7 @@
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'
       INCLUDE 'interp_stack.parm'
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'xvariables.cmn'
       INCLUDE 'xcontext.cmn'
       INCLUDE 'xprog_state.cmn'

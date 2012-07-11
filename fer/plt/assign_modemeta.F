@@ -40,8 +40,9 @@
 * (which is done at the start of the program).
 * 
 
-        include 'ferret.parm'
-        include 'xprog_state.cmn'
+        INCLUDE 'ferret.parm'
+        INCLUDE 'tmap_dims.parm'
+        INCLUDE 'xprog_state.cmn'
 
         mode_metafile = .TRUE.
 

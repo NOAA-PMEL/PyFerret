@@ -9,6 +9,7 @@
 
         IMPLICIT NONE
         INTEGER inanimation
+        INCLUDE 'tmap_dims.parm'
         INCLUDE 'xplot_setup.cmn'
 
         IF ( .NOT. animate ) THEN

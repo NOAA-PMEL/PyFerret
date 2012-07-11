@@ -15,6 +15,7 @@
         INTEGER regenflag
 
         INCLUDE 'ferret.parm'
+        INCLUDE 'tmap_dims.parm'
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 

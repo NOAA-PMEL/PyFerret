@@ -67,7 +67,7 @@ void pyefcn_compute(int id, char modname[], double *data[], int numarrays,
     int       length;
     double   *dptr;
     npy_intp  d0, d1, d2, d3, d4, d5;
-    npy_intp  indices[MAX_FERRET_NDIMS];
+    npy_intp  indices[MAX_FERRET_NDIM];
     PyObject *ndarrays[EF_MAX_COMPUTE_ARGS];
     PyObject *inpbadvals_ndarray;
     PyObject *resbadval_ndarray;

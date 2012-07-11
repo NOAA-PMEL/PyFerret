@@ -38,6 +38,7 @@
 * delete all memory pystat variables associated with the given dataset
 
       INCLUDE 'ferret.parm'
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'xvariables.cmn'
 
 * calling argument declarations:

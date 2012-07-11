@@ -82,7 +82,7 @@ typedef struct {
  */
 typedef struct {
   /* Information about the overall function */
-  float version;
+  double version;
   char description[EF_MAX_DESCRIPTION_LENGTH];
   char alt_fcn_name[EF_MAX_NAME_LENGTH];
   int  language;
@@ -134,11 +134,13 @@ extern DFTYPE *GLOBAL_bad_flag_ptr;
 
 /* prototypes of external function used in ef funtions and PyFerret C functions */
 extern ExternalFunction *ef_ptr_from_id_ptr(int *id_ptr);
-void FORTRAN(ef_get_arg_subscripts_6d)(int *id, int steplo[][6], int stephi[][6], int incr[][6]);
-void FORTRAN(ef_get_coordinates)(int *id, int *arg, int *axis, int *lo, int *hi, double coords[]);
-void FORTRAN(ef_get_box_size)(int *id, int *arg, int *axis, int *lo, int *hi, double sizes[]);
-void FORTRAN(ef_get_box_limits)(int *id, int *arg, int *axis, int *lo, int *hi, 
-                                double lo_lims[], double hi_lims[]);
+extern void FORTRAN(ef_get_arg_subscripts_6d)(int *id, int steplo[][6], int stephi[][6], int incr[][6]);
+extern void FORTRAN(ef_get_coordinates)(int *id, int *arg, int *axis, int *lo, int *hi, double coords[]);
+extern void FORTRAN(ef_get_box_size)(int *id, int *arg, int *axis, int *lo, int *hi, double sizes[]);
+extern void FORTRAN(ef_get_box_limits)(int *id, int *arg, int *axis, int *lo, int *hi, 
+                                       double lo_lims[], double hi_lims[]);
+extern void FORTRAN(ef_get_axis_modulo_len)(int *id, int *arg, int *axis, double *modlen);
+
 extern void FORTRAN(ef_get_one_val_sub)(int *id_ptr, DFTYPE *mem_ptr,
                                         int *arg_ptr, DFTYPE *val_ptr);
 
@@ -163,6 +165,41 @@ extern void FORTRAN(ef_set_work_array_dims_6d)(int *id_ptr, int *iarray,
 extern void FORTRAN(ef_set_work_array_lens_6d)(int *id_ptr, int *iarray,
                                                int *xlen, int *ylen, int *zlen,
                                                int *tlen, int *elen, int *flen);
+
+extern void FORTRAN(ef_version_test)( double * );
+
+extern void FORTRAN(ef_set_num_args)( int *, int * );
+extern void FORTRAN(ef_set_num_work_arrays)( int *, int * );
+extern void FORTRAN(ef_set_work_array_lens)( int *, int *, int *, int *, int *, int * );
+extern void FORTRAN(ef_set_work_array_dims)( int *, int *, int *, int *, int *, int *, int *, int *, int *, int * );
+extern void FORTRAN(ef_set_has_vari_args)( int *, int * );
+extern void FORTRAN(ef_set_axis_inheritance)( int *, int *, int *, int *, int * );
+extern void FORTRAN(ef_set_piecemeal_ok)( int *, int *, int *, int *, int * );
+extern void FORTRAN(ef_set_result_type)(int *, int *);
+extern void FORTRAN(ef_set_desc_sub)(int *, char *);
+
+extern void FORTRAN(ef_set_axis_influence)( int *, int *, int *, int *, int *, int * );
+extern void FORTRAN(ef_set_axis_reduction)( int *, int *, int *, int *, int * );
+extern void FORTRAN(ef_set_axis_extend)( int *, int *, int *, int *, int * );
+extern void FORTRAN(ef_set_axis_limits)(int *, int *, int *, int *);
+
+extern void FORTRAN(ef_set_arg_type)( int *, int *, int *);
+extern void FORTRAN(ef_set_arg_name_sub)(int *, int *, char *);
+extern void FORTRAN(ef_set_arg_desc_sub)(int *, int *, char *);
+extern void FORTRAN(ef_set_custom_axis_sub)(int *, int *, double *, double *, double *, char *, int *);
+
+extern void FORTRAN(ef_get_bad_flags)(int *, double *, double *);
+extern void FORTRAN(ef_get_arg_type)(int *, int *, int *);
+extern void FORTRAN(ef_get_result_type)(int *, int *);
+
+extern void FORTRAN(ef_get_one_val)(int *, int *, double *);
+
+extern void FORTRAN(ef_put_string)(char* , int* , char** );
+extern void FORTRAN(ef_put_string_ptr)(char**, char**);
+
+extern void FORTRAN(ef_get_cx_list)(int *);
+extern void FORTRAN(ef_get_mr_list)(int *);
+extern void FORTRAN(ef_get_mres)(int *);
 
 #endif /* _EF_UTIL_H */
 

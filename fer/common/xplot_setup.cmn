@@ -73,26 +73,6 @@
 	CHARACTER	ppl_buff*2048
 
 	COMMON / XPLOT_SETUP /
-<<<<<<< .working
-     .		animate,
-     .		first_frame,
-     .		need_std,
-     .		need_histo,
-     .		key_doc,
-     .		onedee_on,
-     .		twodee_on,
-     .		saved_ppl_yax,
-     .		nvect_on,
-     .		ncont_on,
-     .		nlabs_on,
-     .		nline_on,
-     .		nkeys_on,
-     .		novkeys_on,
-     .		novkeys_ll,
-     .		key_ncolmn,
-     .		plot_axis, nplot_axis,
-=======
->>>>>>> .merge-right.r14324
      .		key_yspace0,
      .		key_yspace,
      .		key_xspace0,

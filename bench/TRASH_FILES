@@ -6,6 +6,8 @@
 5a.dat
 7a.dat
 9a.dat
+a1.nc
+a2.nc
 aa.nc
 abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
 a.jnl
@@ -75,6 +77,7 @@ err67_axis_order_copy.nc
 f2.nc
 F.cdf
 ferret.jnl
+ferret.jnl.~1~
 ferret.png
 FI.cdf
 FL.cdf
@@ -180,6 +183,7 @@ v1file.nc
 vec_curv2.plt
 vec_curv.plt
 WV.J34K56L7
+xml_out.xml
 xyir.nc
 xz.nc
 z1.nc

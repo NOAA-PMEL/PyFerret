@@ -170,5 +170,16 @@ bn_ifv.jnl
 bn_randu2_randn2.jnl
 bn_axis_cf.jnl
 bn_repeated_coords.jnl
+bn_xml_header.jnl
+bn_eof_simple.jnl
+bn_eof_simple2.jnl
+bn_interpolate_6d.jnl
+bn_regrid_6d.jnl
+bn_syntax_6d.jnl
+bn_expressions_6d.jnl
+bn_direction_fcns_6d.jnl
+bn_regrid_transforms_6d.jnl
+bn_aggregate_e.jnl
+bn_6d_lab_mode.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

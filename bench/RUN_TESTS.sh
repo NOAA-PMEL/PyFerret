@@ -139,7 +139,11 @@ for jnl in $test_scripts; do
       cp -f ferret_startup $HOME/.ferret
    fi
 
-   $fver -script $jnl 1>> $log_file 2>> $err_file
+   if [ $jnl = "bn_dollar.jnl" ]; then
+      $fver -script $jnl hello 1>> $log_file 2>> $err_file
+   else
+      $fver -script $jnl 1>> $log_file 2>> $err_file
+   fi
    if [ $? -ne 0 ]; then
       echo "****** FERRET error: $jnl failed ******" >> $log_file
       echo "****** FERRET error: $jnl failed ******" >> $err_file

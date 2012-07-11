@@ -416,7 +416,7 @@ def init(arglist=None, enterferret=True):
     if script != None:
         script_line = " ".join(script)
         try:
-            result = run('go "%s"; exit /program' % script_line)
+            result = run('go %s; exit /program' % script_line)
         except:
             print >>sys.stderr, " **Error: exception raised in running script %s" % script_line
         # If exception or if returned early, force shutdown

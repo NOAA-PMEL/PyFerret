@@ -7,7 +7,7 @@
 
         IMPLICIT NONE
         INTEGER il, ia, rl, sl, lstr, mldr, errind, ldr
-        REAL ra
+        REAL*4 ra
         CHARACTER*10 str
         CHARACTER*80 datarec
         DIMENSION ia(il), ra(rl), lstr(sl), str(sl), datarec(mldr)

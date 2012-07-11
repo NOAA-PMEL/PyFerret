@@ -16,6 +16,12 @@ extern FILE *debuglogfile;
  * All the graphics functions in this library simply call the appropriate
  * function(s)/method(s) of the graphics library/object being used for that
  * window.
+ *
+ * Note that in double-precision Ferret, the PlotPlus code is still single
+ * precision.  Thus all the C functions still use float, and the Fortran
+ * functions use REAL*4, for their arguments.  However, the bindings 
+ * functions use double precision; thus the C functions convert any float
+ * arguments to double for calling the bindings function.
  */
 
 /*
@@ -109,7 +115,7 @@ void fgdwinsetsize_(int *success, void **window, float *width, float *height);
 void fgdwinsetvis_(int *success, void **window, int *visible);
 void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
                  char *fileformat, int *formatlen, int *tranparentbkg);
-void fgdwindpi(int *success, void **window, float *dpix, float *dpiy);
+void fgdwindpi_(int *success, void **window, float *dpix, float *dpiy);
 
 /*
  * A "View" refers to a rectangular subsection of the Window, possibly

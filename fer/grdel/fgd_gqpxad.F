@@ -7,14 +7,14 @@
 
         IMPLICIT NONE
         INTEGER windowid, istat, widthpix, heightpix
-        REAL left, top, right, bottom
+        REAL*4 left, top, right, bottom
 
         INCLUDE 'ferret.parm'
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
-        REAL mywidth, myheight
+        REAL*4 mywidth, myheight
         INTEGER success, errmsglen
         CHARACTER*2048 errmsg
 

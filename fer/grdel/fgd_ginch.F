@@ -7,7 +7,7 @@
 
         IMPLICIT NONE
         INTEGER windowid, chdnr, istat, ichnr, pet, ldr
-        REAL    xmin, xmax, ymin, ymax
+        REAL*4    xmin, xmax, ymin, ymax
         CHARACTER*(80) datarec
         DIMENSION datarec(ldr)
 

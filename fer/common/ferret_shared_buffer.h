@@ -15,6 +15,7 @@
 #ifndef _FERRET_SHARED_BUFFER_H 
 #define _FERRET_SHARED_BUFFER_H
 
+#include "ferret.h"
 
 #define NUMFLAGS 10
 #define TEXTLENGTH 500
@@ -43,8 +44,8 @@ typedef sharedMem *smPtr;
 
 __global smPtr sBuffer;
 
-__global double *memory;
-__global double *ppl_memory;   /* new 10/01 */
+__global DFTYPE *memory;
+__global float *ppl_memory;
 
 
 #undef __global

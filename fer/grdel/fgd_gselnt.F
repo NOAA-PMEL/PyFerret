@@ -12,8 +12,8 @@
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
-        REAL lftfrac, rgtfrac, btmfrac, topfrac,
-     .       lftcoord, rgtcoord, btmcoord, topcoord
+        REAL*4 lftfrac, rgtfrac, btmfrac, topfrac,
+     .         lftcoord, rgtcoord, btmcoord, topcoord
         INTEGER clipit, success, errmsglen
         CHARACTER*2048 errmsg
 

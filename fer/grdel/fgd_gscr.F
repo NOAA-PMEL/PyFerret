@@ -7,7 +7,7 @@
 
         IMPLICIT NONE
         INTEGER windowid, colorindex
-        REAL redfrac, greenfrac, bluefrac
+        REAL*4 redfrac, greenfrac, bluefrac
 
         INCLUDE 'ferret.parm'
         INCLUDE 'tmap_dims.parm'
@@ -15,7 +15,7 @@
         INCLUDE 'fgrdel.cmn'
 
         INTEGER colornum, success, errmsglen
-        REAL opaquefrac
+        REAL*4 opaquefrac
         CHARACTER*2048 errmsg
         INTEGER brushnum, pennum
 

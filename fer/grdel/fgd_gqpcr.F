@@ -10,7 +10,7 @@
 
         IMPLICIT NONE
         INTEGER wstype, colorindex, stat
-        REAL redfrac, greenfrac, bluefrac
+        REAL*4 redfrac, greenfrac, bluefrac
 
 *       White is color index 0, black is color index 1
         IF ( colorindex .EQ. 0 ) THEN

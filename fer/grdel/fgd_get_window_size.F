@@ -6,7 +6,7 @@
 
         IMPLICIT NONE
 
-        REAL width, height
+        REAL*4 width, height
 
         INCLUDE 'fgrdel.cmn'
 

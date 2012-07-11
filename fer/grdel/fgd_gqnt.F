@@ -6,7 +6,7 @@
 
         IMPLICIT NONE
         INTEGER transnum, istat
-        REAL usercoords(4), viewfracs(4)
+        REAL*4 usercoords(4), viewfracs(4)
 
         INCLUDE 'fgrdel.cmn'
 

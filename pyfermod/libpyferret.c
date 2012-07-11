@@ -65,10 +65,14 @@
 /* Flag of this Ferret's start/stop state */
 static int ferretInitialized = 0;
 
-/* for memory management in this module */
+/*
+ * for memory management in this module
+ * double *, instead of DFTYPE *, is used for ferMemory 
+ * to create a warning if DFTYPE is not double.
+ */
 static size_t ferMemSize;
 static double *ferMemory = NULL;
-static double *pplMemory = NULL;
+static float  *pplMemory = NULL;
 
 /* for recovering from seg faults */
 static void (*segv_handler)(int);
@@ -174,7 +178,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
 
     /* Initial allocation of PPLUS memory */
     pplMemSize = 0.5 * 1.0E6;
-    pplMemory = (double *) PyMem_Malloc((size_t)pplMemSize * (size_t)sizeof(double));
+    pplMemory = (float *) PyMem_Malloc((size_t)pplMemSize * (size_t)sizeof(float));
     if ( pplMemory == NULL )
         return PyErr_NoMemory();
     set_ppl_memory(pplMemory, pplMemSize);

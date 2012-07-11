@@ -10,8 +10,8 @@
 
         IMPLICIT NONE
 
-        REAL lftfrc, rgtfrc, btmfrc, topfrc,
-     .       lftcrd, rgtcrd, btmcrd, topcrd
+        REAL*4 lftfrc, rgtfrc, btmfrc, topfrc,
+     .         lftcrd, rgtcrd, btmcrd, topcrd
 
         INCLUDE 'fgrdel.cmn'
 

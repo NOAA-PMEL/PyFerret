@@ -7,7 +7,7 @@
 
         IMPLICIT NONE
         INTEGER windowid
-        REAL dpix, dpiy
+        REAL*4 dpix, dpiy
 
         INCLUDE 'fgrdel.cmn'
 

@@ -7,7 +7,7 @@
 
         IMPLICIT NONE
         INTEGER npts
-        REAL ptsx, ptsy
+        REAL*4 ptsx, ptsy
         DIMENSION ptsx(npts), ptsy(npts)
 
         INCLUDE 'ferret.parm'
@@ -18,7 +18,7 @@
         INTEGER k, success, errmsglen
         CHARACTER*2048 errmsg
         REAL*8 tempbrush, fillbrush
-        REAL left, bottom, right, top
+        REAL*4 left, bottom, right, top
 
 *       Sanity checks
         IF ( (activewindow .LT. 1) .OR.

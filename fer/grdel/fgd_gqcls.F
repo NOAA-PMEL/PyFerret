@@ -11,7 +11,7 @@
         IMPLICIT NONE
         INTEGER windowid, locdevnum, rettyp, maxdr, stat, opmode,
      .          echomode, transnum, promptyp, lendr
-        REAL locx, locy, echoarea(4)
+        REAL*4 locx, locy, echoarea(4)
         CHARACTER*80 datarec
         DIMENSION datarec(maxdr)
 

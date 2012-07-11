@@ -8,7 +8,7 @@
 
         IMPLICIT NONE
         INTEGER wstype, istat, dspunit, imaxx, imaxy
-        REAL dmaxx, dmaxy
+        REAL*4 dmaxx, dmaxy
 
 *       Canned values from XWindows display
         dspunit = 1

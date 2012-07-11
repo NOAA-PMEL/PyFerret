@@ -30,7 +30,8 @@
         INTEGER engnamelen, wintitlelen, showit,
      .          success, errmsglen, aaint
         CHARACTER*2048 errmsg
-        REAL wdth, hght, dpix, dpiy
+        REAL*4 wdth, hght, dpix, dpiy,
+     .         redf, greenf, bluef, opaquef
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR.
@@ -60,16 +61,24 @@
         ENDIF
 
 *       Create opaque white as the first color for this window
+        redf = 1.0
+        greenf = 1.0
+        bluef = 1.0
+        opaquef = 1.0
         CALL FGDCOLOR(colorobjs(1, windowid), windowobjs(windowid),
-     .                1.0, 1.0, 1.0, 1.0)
+     .                redf, greenf, bluef, opaquef)
         IF ( colorobjs(1, windowid) .EQ. nullobj ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
 *       Create opaque black as the second color for this window
+        redf = 0.0
+        greenf = 0.0
+        bluef = 0.0
+        opaquef = 1.0
         CALL FGDCOLOR(colorobjs(2, windowid), windowobjs(windowid),
-     .                0.0, 0.0, 0.0, 1.0)
+     .                redf, greenf, bluef, opaquef)
         IF ( colorobjs(2, windowid) .EQ. nullobj ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)

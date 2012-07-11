@@ -1,9 +1,10 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
 #include <stdlib.h>
+#include "ferret.h"
 #include "binaryRead.h"
 
-int FORTRAN(pl_read_var)(float *mem, int *lengths){
+int FORTRAN(pl_read_var)(DFTYPE *mem, int *lengths){
   return 0;
 }
 

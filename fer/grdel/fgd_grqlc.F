@@ -9,7 +9,7 @@
 
         IMPLICIT NONE
         INTEGER windowid, locdevnum, outstat, transnum
-        REAL outx, outy
+        REAL*4 outx, outy
 
         outstat = 0
 

@@ -11,7 +11,7 @@
         IMPLICIT NONE
         INTEGER windowid, chdevnum, maxdr, stat, opmode,
      .          echomode, chnum, promptyp, lendr
-        REAL echoarea(4)
+        REAL*4 echoarea(4)
         CHARACTER*80 datarec
         DIMENSION datarec(maxdr)
 

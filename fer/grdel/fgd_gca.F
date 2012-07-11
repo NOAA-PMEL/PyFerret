@@ -23,7 +23,7 @@
         IMPLICIT NONE
         INTEGER totcols, totrows, stcol, strow, numcols, numrows,
      .          colorindices
-        REAL left, bottom, right, top
+        REAL*4 left, bottom, right, top
 
         STOP 'FGD_GCA: Stubbed, unexpected call'
 

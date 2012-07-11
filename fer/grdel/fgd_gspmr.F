@@ -8,7 +8,7 @@
 
         IMPLICIT NONE
         INTEGER windowid, symnum, symtype, colorindex
-        REAL symsize
+        REAL*4 symsize
 
         INCLUDE 'ferret.parm'
         INCLUDE 'tmap_dims.parm'
@@ -17,7 +17,7 @@
 
         INTEGER colornum, snlen, success, errmsglen
         CHARACTER*8 symname
-        REAL adjsize
+        REAL*4 adjsize
         CHARACTER*2048 errmsg
 
 *       Sanity checks

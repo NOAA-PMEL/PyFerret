@@ -2,7 +2,7 @@
 #define PYFERRET_H_
 
 extern double *memory;
-extern double *ppl_memory;
+extern float *ppl_memory;
 
 #define MAX_FERRET_NDIM 6
 
@@ -39,7 +39,7 @@ typedef enum CALTYPE_ {
 
 /* Prototypes for library C functions */
 void set_fer_memory(double *mem, size_t mem_size);
-void set_ppl_memory(double *mem, int mem_size);
+void set_ppl_memory(float *mem, int mem_size);
 void set_shared_buffer(void);
 void decref_pyobj_(void *pyobj_ptr_ptr);
 void copy_pystat_data_(double dest[], void *data_ndarray_ptr);

@@ -7,7 +7,7 @@
 
         IMPLICIT NONE
         INTEGER npts
-        REAL ptsx, ptsy
+        REAL*4 ptsx, ptsy
         DIMENSION ptsx(npts), ptsy(npts)
 
         INCLUDE 'ferret.parm'

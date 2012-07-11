@@ -6,7 +6,7 @@
 
         IMPLICIT NONE
         INTEGER transnum
-        REAL xmin, xmax, ymin, ymax
+        REAL*4 xmin, xmax, ymin, ymax
 
         INCLUDE 'fgrdel.cmn'
 

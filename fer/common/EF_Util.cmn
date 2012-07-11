@@ -47,11 +47,11 @@ c*
       EXTERNAL ef_get_one_val
       EXTERNAL ef_get_res_mem_subscripts
       EXTERNAL ef_get_res_mem_subscripts_6d
-      EXTERNAL ef_get_res_mem_subscripts
       EXTERNAL ef_get_res_subscripts
-      EXTERNAL ef_get_wrk_mem_subscripts
       EXTERNAL ef_get_res_subscripts_6d
       EXTERNAL ef_get_result_type
+      EXTERNAL ef_get_wrk_mem_subscripts
+      EXTERNAL ef_get_wrk_mem_subscripts_6d
       EXTERNAL ef_set_arg_desc
       EXTERNAL ef_set_arg_name
       EXTERNAL ef_set_arg_type

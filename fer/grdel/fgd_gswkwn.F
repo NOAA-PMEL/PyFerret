@@ -14,7 +14,7 @@
 
         IMPLICIT NONE
         INTEGER windowid
-        REAL xmin, xmax, ymin, ymax
+        REAL*4 xmin, xmax, ymin, ymax
 
         INCLUDE 'fgrdel.cmn'
 

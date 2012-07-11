@@ -13,7 +13,7 @@
 
         IMPLICIT NONE
         INTEGER windowid, colorindex, rettype, istat
-        REAL redfrac, greenfrac, bluefrac
+        REAL*4 redfrac, greenfrac, bluefrac
 
         INCLUDE 'ferret.parm'
         INCLUDE 'tmap_dims.parm'

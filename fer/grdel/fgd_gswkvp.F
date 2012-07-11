@@ -10,14 +10,14 @@
 
         IMPLICIT NONE
         INTEGER windowid
-        REAL xmin, xmax, ymin, ymax
+        REAL*4 xmin, xmax, ymin, ymax
 
         INCLUDE 'ferret.parm'
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
-        REAL newwidth, newheight
+        REAL*4 newwidth, newheight
         INTEGER success, errmsglen
         CHARACTER*2048 errmsg
 

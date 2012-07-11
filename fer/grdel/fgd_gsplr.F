@@ -14,7 +14,7 @@
 
         IMPLICIT NONE
         INTEGER windowid, pennum, linestyle, colorindex
-        REAL linewidth
+        REAL*4 linewidth
 
         INCLUDE 'ferret.parm'
         INCLUDE 'tmap_dims.parm'

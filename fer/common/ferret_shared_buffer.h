@@ -15,11 +15,12 @@
 #ifndef _FERRET_SHARED_BUFFER_H 
 #define _FERRET_SHARED_BUFFER_H
 
-#include "ferret.h"
 
 #define NUMFLAGS 10
 #define TEXTLENGTH 500
 #define NUMDOUBLES 2048
+
+#include "ferret.h"
 
 typedef struct sharedStruct {
 	int flags[NUMFLAGS];

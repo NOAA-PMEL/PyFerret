@@ -179,7 +179,7 @@
 *     Temporarily grab memory for floating-point time coordinates
   150 first_pt = next_line_mem_pos
       IF ( first_pt + numcoords .GT. maxlinestore ) THEN
-          errmsg = 'No memory for floating-point time coordiantes'
+          errmsg = 'No memory for floating-point time coordinates'
           lenerrmsg = TM_LENSTR(errmsg)
           RETURN
       ENDIF

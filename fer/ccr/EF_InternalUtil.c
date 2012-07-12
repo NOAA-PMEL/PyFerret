@@ -508,6 +508,28 @@ void FORTRAN(eof_tfunc_work_size)(int *);
 void FORTRAN(eof_tfunc_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
                            DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
                            DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+						   
+						   
+void FORTRAN(eofsvd_space_init)(int *);
+void FORTRAN(eofsvd_space_result_limits)(int *);
+void FORTRAN(eofsvd_space_work_size)(int *);
+void FORTRAN(eofsvd_space_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *);
+						   
+void FORTRAN(eofsvd_stat_init)(int *);
+void FORTRAN(eofsvd_stat_result_limits)(int *);
+void FORTRAN(eofsvd_stat_work_size)(int *);
+void FORTRAN(eofsvd_stat_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *);
+						   
+void FORTRAN(eofsvd_tfunc_init)(int *);
+void FORTRAN(eofsvd_tfunc_result_limits)(int *);
+void FORTRAN(eofsvd_tfunc_work_size)(int *);
+void FORTRAN(eofsvd_tfunc_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *);
  
 void FORTRAN(compressi_init)(int *);
 void FORTRAN(compressi_result_limits)(int *);
@@ -984,7 +1006,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 148
+#define N_INTEF 151
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1138,6 +1160,9 @@ struct {
    strcpy(I_EFnames[145].funcname, "zcat");
    strcpy(I_EFnames[146].funcname, "zcat_str");
    strcpy(I_EFnames[147].funcname, "zreverse");
+   strcpy(I_EFnames[148].funcname, "eofsvd_space");
+   strcpy(I_EFnames[149].funcname, "eofsvd_stat");
+   strcpy(I_EFnames[150].funcname, "eofsvd_tfunc");
 
 /*    
  *  ------------------------------------ 
@@ -3564,6 +3589,24 @@ else if ( !strcmp(name,"eof_tfunc_init_") ) return (void *)FORTRAN(eof_tfunc_ini
 else if ( !strcmp(name,"eof_tfunc_result_limits_") ) return (void *)FORTRAN(eof_tfunc_result_limits);
 else if ( !strcmp(name,"eof_tfunc_work_size_") ) return (void *)FORTRAN(eof_tfunc_work_size);
 else if ( !strcmp(name,"eof_tfunc_compute_") ) return (void *)FORTRAN(eof_tfunc_compute);
+
+/* eofsvd_space.F */
+else if ( !strcmp(name,"eofsvd_space_init_") ) return (void *)FORTRAN(eofsvd_space_init);
+else if ( !strcmp(name,"eofsvd_space_result_limits_") ) return (void *)FORTRAN(eofsvd_space_result_limits);
+else if ( !strcmp(name,"eofsvd_space_work_size_") ) return (void *)FORTRAN(eofsvd_space_work_size);
+else if ( !strcmp(name,"eofsvd_space_compute_") ) return (void *)FORTRAN(eofsvd_space_compute);
+
+/* eofsvd_stat.F */
+else if ( !strcmp(name,"eofsvd_stat_init_") ) return (void *)FORTRAN(eofsvd_stat_init);
+else if ( !strcmp(name,"eofsvd_stat_result_limits_") ) return (void *)FORTRAN(eofsvd_stat_result_limits);
+else if ( !strcmp(name,"eofsvd_stat_work_size_") ) return (void *)FORTRAN(eofsvd_stat_work_size);
+else if ( !strcmp(name,"eofsvd_stat_compute_") ) return (void *)FORTRAN(eofsvd_stat_compute);
+
+/* eofsvd_tfunc.F */
+else if ( !strcmp(name,"eofsvd_tfunc_init_") ) return (void *)FORTRAN(eofsvd_tfunc_init);
+else if ( !strcmp(name,"eofsvd_tfunc_result_limits_") ) return (void *)FORTRAN(eofsvd_tfunc_result_limits);
+else if ( !strcmp(name,"eofsvd_tfunc_work_size_") ) return (void *)FORTRAN(eofsvd_tfunc_work_size);
+else if ( !strcmp(name,"eofsvd_tfunc_compute_") ) return (void *)FORTRAN(eofsvd_tfunc_compute);
 
 /* compressi.F */
 else if ( !strcmp(name,"compressi_init_") ) return (void *)FORTRAN(compressi_init);

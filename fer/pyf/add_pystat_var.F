@@ -56,18 +56,14 @@
       INCLUDE 'xfr_grid.cmn'
       INCLUDE 'xpyvar_info.cmn'
 
-*     MAX_FERRET_NDIM parameter value (must match that in pyferret.h)
-      INTEGER MAX_FERRET_NDIM
-      PARAMETER(MAX_FERRET_NDIM = 4)
-
 *     Passed arguments
       INTEGER*8     ndarray_obj
       CHARACTER*(*) codename, title, units, dset, errmsg
-      REAL*4        bdfval
+      REAL*8        bdfval
       INTEGER       lenerr,
-     .              axis_nums(MAX_FERRET_NDIM),
-     .              axis_starts(MAX_FERRET_NDIM),
-     .              axis_ends(MAX_FERRET_NDIM)
+     .              axis_nums(nferdims),
+     .              axis_starts(nferdims),
+     .              axis_ends(nferdims)
 
 *     Function declarations
       INTEGER       TM_LENSTR, STR_UPCASE, FIND_DSET_NUMBER
@@ -159,7 +155,7 @@
           RETURN
       ENDIF
       CALL INIT_GRID(ingrid, '', mnormal)
-      DO 30 k = 1,MAX_FERRET_NDIM
+      DO 30 k = 1,nferdims
           grid_line(k,ingrid) = axis_nums(k)
           CALL TM_USE_LINE(axis_nums(k))
    30 CONTINUE
@@ -175,7 +171,7 @@
       CALL DEALLO_GRID(sts)
 
 *     Assign the start and end indices of the axes in this grid
-      DO 40 k = 1,MAX_FERRET_NDIM
+      DO 40 k = 1,nferdims
           pyvar_grid_start(k,vpos) = axis_starts(k)
           pyvar_grid_end(k,vpos) = axis_ends(k)
    40 CONTINUE

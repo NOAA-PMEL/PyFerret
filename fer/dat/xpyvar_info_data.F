@@ -39,10 +39,11 @@
 
       IMPLICIT NONE
 
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'xpyvar_info.cmn'
 
-      INTEGER     max4pyvars
-      PARAMETER ( max4pyvars = 4 * maxpyvars )
+      INTEGER     max6pyvars
+      PARAMETER ( max6pyvars = 6 * maxpyvars )
 
 * tmap_dset.parm contains C-preprocessor flags
 #include "tmap_dset.parm"
@@ -55,8 +56,8 @@
       DATA pyvar_missing_flag / maxpyvars * real4_init /
       DATA pyvar_dset_number  / maxpyvars * int4_init /
       DATA pyvar_grid_number  / maxpyvars * int4_init /
-      DATA pyvar_grid_start   / max4pyvars * int4_init /
-      DATA pyvar_grid_end     / max4pyvars * int4_init /
+      DATA pyvar_grid_start   / max6pyvars * int4_init /
+      DATA pyvar_grid_end     / max6pyvars * int4_init /
 
       END
 

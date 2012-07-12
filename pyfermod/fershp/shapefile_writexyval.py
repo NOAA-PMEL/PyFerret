@@ -24,6 +24,8 @@ def ferret_init(efid):
                 "axes": ( pyferret.AXIS_ABSTRACT,
                           pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "SHAPEFILE", "GRIDX", "GRIDY", "VALUE", "VALNAME", "MAPPRJ"),
                 "argdescripts": ( "Shapefile name (any extension given is ignored)",
@@ -39,12 +41,12 @@ def ferret_init(efid):
                               pyferret.FLOAT_ARRAY,
                               pyferret.STRING_ONEVAL,
                               pyferret.STRING_ONEVAL, ),
-                "influences": ( (False, False, False, False),
-                                (False, False, False, False),
-                                (False, False, False, False),
-                                (False, False, False, False),
-                                (False, False, False, False),
-                                (False, False, False, False), ),
+                "influences": ( (False, False, False, False, False, False),
+                                (False, False, False, False, False, False),
+                                (False, False, False, False, False, False),
+                                (False, False, False, False, False, False),
+                                (False, False, False, False, False, False),
+                                (False, False, False, False, False, False), ),
               }
     return retdict
 
@@ -53,7 +55,7 @@ def ferret_result_limits(efid):
     """
     Abstract axis limits for the shapefile_writexyval PyEF
     """
-    return ( (1, 1), None, None, None, )
+    return ( (1, 1), None, None, None, None, None, )
 
 
 def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
@@ -81,9 +83,10 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     map_projection = inputs[5]
 
     # Verify the shapes are as expected
-    if (grid_vals.shape[2] != 1) or (grid_vals.shape[3] != 1):
-        raise ValueError("The Z and T axes of VALUE must be undefined or singleton axes")
-    exp_shape = ( grid_vals.shape[0] + 1, grid_vals.shape[1] + 1, 1, 1 )
+    if (grid_vals.shape[2] != 1) or (grid_vals.shape[3] != 1) or \
+       (grid_vals.shape[4] != 1) or (grid_vals.shape[5] != 1):
+        raise ValueError("The Z, T, E, and F axes of VALUE must be undefined or singleton axes")
+    exp_shape = ( grid_vals.shape[0] + 1, grid_vals.shape[1] + 1, 1, 1, 1, 1 )
     if (grid_xs.shape != exp_shape) or (grid_ys.shape != exp_shape):
          raise ValueError('GRIDX and GRIDY must have one more value along both X and Y axes compared to VALUE')
 
@@ -95,21 +98,21 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     shape_written = False
     for j in xrange(grid_vals.shape[1]):
         for i in xrange(grid_vals.shape[0]):
-            if grid_vals[i, j, 0, 0] != missing_val:
+            if grid_vals[i, j, 0, 0, 0, 0] != missing_val:
                 shape_written = True
                 pyferret.fershp.addquadxyvalues(sfwriter,
-                         (grid_xs[i,   j,   0, 0], grid_ys[i,   j,   0, 0]),
-                         (grid_xs[i,   j+1, 0, 0], grid_ys[i,   j+1, 0, 0]),
-                         (grid_xs[i+1, j+1, 0, 0], grid_ys[i+1, j+1, 0, 0]),
-                         (grid_xs[i+1, j,   0, 0], grid_ys[i+1, j,   0, 0]),
-                         None, [ float(grid_vals[i, j, 0, 0]) ])
+                         (grid_xs[i,   j,   0, 0, 0, 0], grid_ys[i,   j,   0, 0, 0, 0]),
+                         (grid_xs[i,   j+1, 0, 0, 0, 0], grid_ys[i,   j+1, 0, 0, 0, 0]),
+                         (grid_xs[i+1, j+1, 0, 0, 0, 0], grid_ys[i+1, j+1, 0, 0, 0, 0]),
+                         (grid_xs[i+1, j,   0, 0, 0, 0], grid_ys[i+1, j,   0, 0, 0, 0]),
+                         None, [ float(grid_vals[i, j, 0, 0, 0, 0]) ])
     if not shape_written:
         raise ValueError("All values are missing values")
     sfwriter.save(shapefile_name)
 
     # Create the .prj file from the map projection common name or the WKT description
     pyferret.fershp.createprjfile(map_projection, shapefile_name)
-    result[:, :, :, :] = 0
+    result[:, :, :, :, :, :] = 0
 
 
 #
@@ -155,8 +158,8 @@ if __name__ == "__main__":
         [  -80.0, -70.0, -60.0, -50.0, -40.0, -30.0, -20.0, -10.0,   0.0,  10.0,
             20.0,  30.0,  40.0,  50.0,  60.0, 100.0, 110.0, 120.0, 130.0, 140.0,
            150.0, 160.0, 170.0, 180.0, 190.0, 200.0, 210.0, 220.0, 230.0, 240.0, ],
-    ], dtype=numpy.float32)
-    geolon_c = geolon_c.T[:, :, numpy.newaxis, numpy.newaxis]
+    ], dtype=numpy.float64)
+    geolon_c = geolon_c.T[:, :, numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis]
     geolat_c = numpy.array([
         [ 72.35, 75.41, 78.20, 80.77, 83.20, 85.52, 87.78, 90.00, 87.78, 85.52,
           83.20, 80.77, 78.20, 75.41, 72.35, 72.35, 75.41, 78.20, 80.77, 83.20,
@@ -188,8 +191,8 @@ if __name__ == "__main__":
         [ 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00,
           45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00,
           45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, ],
-    ], dtype=numpy.float32)
-    geolat_c = geolat_c.T[:, :, numpy.newaxis, numpy.newaxis]
+    ], dtype=numpy.float64)
+    geolat_c = geolat_c.T[:, :, numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis]
 
     # Make the value an approximate sphere surface area (in square degrees) of the quadrilateral
     vals  = geolon_c[:-1, :-1] * geolat_c[:-1,  1:]
@@ -207,8 +210,8 @@ if __name__ == "__main__":
                                             geolat_c[ 1:, :-1]) )
 
     # Assign the value of the rectangles between 60E and 100E with the missing value
-    resbdf = numpy.array([-99999.0], dtype=numpy.float32)
-    inpbdfs = numpy.array([-88888.0, -77777.0, -66666.0, -55555.0, -44444.0, -33333.0], dtype=numpy.float32)
+    resbdf = numpy.array([-99999.0], dtype=numpy.float64)
+    inpbdfs = numpy.array([-88888.0, -77777.0, -66666.0, -55555.0, -44444.0, -33333.0], dtype=numpy.float64)
     vals[14,:,0,0] = inpbdfs[3]
 
     # Make sure these calls do not generate errors
@@ -218,7 +221,7 @@ if __name__ == "__main__":
     del limits
 
     # Create the shapefile
-    result = numpy.ones((1,1,1,1), dtype=numpy.float32)
+    result = numpy.ones((1,1,1,1,1,1), dtype=numpy.float64)
     ferret_compute(0, result, resbdf, (shapefilename, geolon_c, geolat_c, vals, fieldname, ""), inpbdfs)
 
     # Read the shapefile back in and check
@@ -235,13 +238,18 @@ if __name__ == "__main__":
     expvals = []
     for j in xrange(vals.shape[1]):
         for i in xrange(vals.shape[0]):
-            if vals[i, j, 0, 0] != inpbdfs[3]:
-                exppoints.append( numpy.array([ [ geolon_c[i,   j,   0, 0], geolat_c[i,   j,   0, 0] ],
-                                                [ geolon_c[i+1, j,   0, 0], geolat_c[i+1, j,   0, 0] ],
-                                                [ geolon_c[i+1, j+1, 0, 0], geolat_c[i+1, j+1, 0, 0] ],
-                                                [ geolon_c[i,   j+1, 0, 0], geolat_c[i,   j+1, 0, 0] ],
-                                                [ geolon_c[i,   j,   0, 0], geolat_c[i,   j,   0, 0] ] ]) )
-                expvals.append(vals[i, j, 0, 0])
+            if vals[i, j, 0, 0, 0, 0] != inpbdfs[3]:
+                exppoints.append( numpy.array([ [ geolon_c[i,   j,   0, 0, 0, 0], 
+                                                  geolat_c[i,   j,   0, 0, 0, 0] ],
+                                                [ geolon_c[i+1, j,   0, 0, 0, 0], 
+                                                  geolat_c[i+1, j,   0, 0, 0, 0] ],
+                                                [ geolon_c[i+1, j+1, 0, 0, 0, 0], 
+                                                  geolat_c[i+1, j+1, 0, 0, 0, 0] ],
+                                                [ geolon_c[i,   j+1, 0, 0, 0, 0], 
+                                                  geolat_c[i,   j+1, 0, 0, 0, 0] ],
+                                                [ geolon_c[i,   j,   0, 0, 0, 0], 
+                                                  geolat_c[i,   j,   0, 0, 0, 0] ] ]) )
+                expvals.append(vals[i, j, 0, 0, 0, 0])
     # Verify these arrays - does not depend on the same ordering of the shapes
     for (shape, record) in zip(shapes, records):
         for k in range(len(exppoints)):

@@ -6,6 +6,7 @@ import numpy
 import scipy.stats
 import scipy.special
 import pyferret
+from pyferret.libpyferret import _MAX_FERRET_NDIM
 
 
 def getdistname(distribname=None):
@@ -573,44 +574,28 @@ def getinitdict(distribname, funcname):
     distscipyname = getdistname(distribname)
     paramdescripts = getdistparams(distscipyname, None)
     numargs = len(paramdescripts) + 1
-    axes = ( pyferret.AXIS_IMPLIED_BY_ARGS,
-             pyferret.AXIS_IMPLIED_BY_ARGS,
-             pyferret.AXIS_IMPLIED_BY_ARGS,
-             pyferret.AXIS_IMPLIED_BY_ARGS, )
+    descript = "Returns array of %s for %s prob. distrib." % (funcreturn, distribname)
+    axes = ( pyferret.AXIS_IMPLIED_BY_ARGS, ) * _MAX_FERRET_NDIM
+    argtypes = ( pyferret.FLOAT_ARRAY, ) * numargs
+    influences = ( ( True, ) * _MAX_FERRET_NDIM, ) * numargs
     if ( numargs == 2 ):
         # info for distributions with one parameter
-        descript = "Returns array of %s for %s prob. distrib." % (funcreturn, distribname)
         argnames = ( "PTS", paramdescripts[0][0], )
         argdescripts = ( "Point(s) at which to %s the %s" % (funcaction, funcreturn),
                          "Parameter(s) defining the %s" % paramdescripts[0][1], )
-        argtypes = ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, )
-        influences = ( (True, True, True, True, ),
-                       (True, True, True, True, ), )
     elif (numargs == 3):
         # info for distributions with two parameters
-        descript = "Returns array of %s for %s prob. distrib." % (funcreturn, distribname)
         argnames = ( "PTS", paramdescripts[0][0], paramdescripts[1][0], )
         argdescripts = ( "Point(s) at which to %s the %s" % (funcaction, funcreturn),
                          "Parameter(s) defining the %s" % paramdescripts[0][1],
                          "Parameter(s) defining the %s" % paramdescripts[1][1], )
-        argtypes = ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, )
-        influences = ( (True, True, True, True, ),
-                       (True, True, True, True, ),
-                       (True, True, True, True, ), )
     elif (numargs == 4):
         # info for distributions with three parameters
-        descript = "Returns array of %s for %s prob. distrib." % (funcreturn, distribname)
         argnames = ( "PTS", paramdescripts[0][0], paramdescripts[1][0], paramdescripts[2][0], )
         argdescripts = ( "Point(s) at which to %s the %s" % (funcaction, funcreturn),
                          "Parameter(s) defining the %s" % paramdescripts[0][1],
                          "Parameter(s) defining the %s" % paramdescripts[1][1],
                          "Parameter(s) defining the %s" % paramdescripts[2][1], )
-        argtypes = ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY,
-                     pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, )
-        influences = ( (True, True, True, True, ),
-                       (True, True, True, True, ),
-                       (True, True, True, True, ),
-                       (True, True, True, True, ), )
     else:
         raise ValueError("Unexpected number of arguments: %d" % numargs)
     # Create and return the dictionary
@@ -653,14 +638,14 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
     """
     # get the masks for the PTS data
     pts = inputs[0]
-    badmask = ( numpy.fabs(pts - inpbdfs[0]) < 1.0E-5 )
+    badmask = ( numpy.fabs(pts - inpbdfs[0]) < 1.0E-7 )
     badmask = numpy.logical_or(badmask, numpy.isnan(pts))
     goodmask = numpy.logical_not(badmask)
     # figure out the axes for the parameters
     numparams = len(inputs) - 1
     if numparams > 0:
         par1axis = -1
-        for k in xrange(4):
+        for k in xrange(_MAX_FERRET_NDIM):
             if inputs[1].shape[k] > 1:
                 if par1axis != -1:
                     raise ValueError("Parameters arrays can have only one defined, non-singular axis")
@@ -670,11 +655,11 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
                 raise ValueError("Unexpected error: shape[%d] of PTS and PAR1 both > 1" % par1axis)
         par1vals = inputs[1].reshape(-1)
         # temporary results array for a given first parameter
-        tmp1result = numpy.empty(pts.shape, dtype=numpy.float32, order='F')
+        tmp1result = numpy.empty(pts.shape, dtype=numpy.float64, order='F')
         tmp1result[badmask] = resbdf
     if numparams > 1:
         par2axis = -1
-        for k in xrange(4):
+        for k in xrange(_MAX_FERRET_NDIM):
             if inputs[2].shape[k] > 1:
                 if par2axis != -1:
                     raise ValueError("Parameters arrays can have only one defined, non-singular axis")
@@ -689,20 +674,12 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
         if par1axis == -1:
             tmp2result = tmp1result
         else:
-            if par1axis == 0:
-                shape = ( len(par1vals), tmp1result.shape[1], tmp1result.shape[2], tmp1result.shape[3], )
-            elif par1axis == 1:
-                shape = ( tmp1result.shape[0], len(par1vals), tmp1result.shape[2], tmp1result.shape[3], )
-            elif par1axis == 2:
-                shape = ( tmp1result.shape[0], tmp1result.shape[1], len(par1vals), tmp1result.shape[3], )
-            elif par1axis == 3:
-                shape = ( tmp1result.shape[0], tmp1result.shape[1], tmp1result.shape[2], len(par1vals), )
-            else:
-                raise ValueError("Unexpected par1axis of %d" % par1axis)
-            tmp2result = numpy.empty(shape, dtype=numpy.float32, order='F')
+            shape = list(tmp1result.shape)
+            shape[par1axis] = len(par1vals)
+            tmp2result = numpy.empty(shape, dtype=numpy.float64, order='F')
     if numparams > 2:
         par3axis = -1
-        for k in xrange(4):
+        for k in xrange(_MAX_FERRET_NDIM):
             if inputs[3].shape[k] > 1:
                 if par3axis != -1:
                     raise ValueError("Parameters arrays can have only one defined, non-singular axis")
@@ -719,22 +696,14 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
         if par2axis == -1:
             tmp3result = tmp2result
         else:
-            if par2axis == 0:
-                shape = ( len(par2vals), tmp2result.shape[1], tmp2result.shape[2], tmp2result.shape[3], )
-            elif par2axis == 1:
-                shape = ( tmp2result.shape[0], len(par2vals), tmp2result.shape[2], tmp2result.shape[3], )
-            elif par2axis == 2:
-                shape = ( tmp2result.shape[0], tmp2result.shape[1], len(par3vals), tmp3result.shape[3], )
-            elif par3axis == 3:
-                shape = ( tmp3result.shape[0], tmp3result.shape[1], tmp3result.shape[2], len(par3vals), )
-            else:
-                raise ValueError("Unexpected par2axis of %d" % par2axis)
-            tmp3result = numpy.empty(shape, dtype=numpy.float32, order='F')
+            shape = list(tmp2result.shape)
+            shape[par2axis] = len(par2vals)
+            tmp3result = numpy.empty(shape, dtype=numpy.float64, order='F')
     # deal with each number of parameters separately when assigning results
     if numparams == 1:
         for j in xrange(len(par1vals)):
             try:
-                if math.isnan(par1vals[j]) or (math.fabs(par1vals[j] - inpbdfs[1]) < 1.0E-5):
+                if math.isnan(par1vals[j]) or (math.fabs(par1vals[j] - inpbdfs[1]) < 1.0E-7):
                     raise ValueError
                 distrib = getdistrib(distribname, ( par1vals[j], ))
                 distribfunc = getdistribfunc(distrib, funcname)
@@ -746,23 +715,27 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
                 tmp1result[goodmask] = resbdf
             # Appropriately assign the tmp1result to result
             if par1axis == -1:
-                result[:, :, :, :] = tmp1result
+                result[:, :, :, :, :, :] = tmp1result
             elif par1axis == 0:
-                result[j, :, :, :] = tmp1result[0, :, :, :]
+                result[j, :, :, :, :, :] = tmp1result[0, :, :, :, :, :]
             elif par1axis == 1:
-                result[:, j, :, :] = tmp1result[:, 0, :, :]
+                result[:, j, :, :, :, :] = tmp1result[:, 0, :, :, :, :]
             elif par1axis == 2:
-                result[:, :, j, :] = tmp1result[:, :, 0, :]
+                result[:, :, j, :, :, :] = tmp1result[:, :, 0, :, :, :]
             elif par1axis == 3:
-                result[:, :, :, j] = tmp1result[:, :, :, 0]
+                result[:, :, :, j, :, :] = tmp1result[:, :, :, 0, :, :]
+            elif par1axis == 4:
+                result[:, :, :, :, j, :] = tmp1result[:, :, :, :, 0, :]
+            elif par1axis == 5:
+                result[:, :, :, :, :, j] = tmp1result[:, :, :, :, :, 0]
             else:
                 raise ValueError("Unexpected par1axis of %d" % par1axis)
     elif numparams == 2:
         for k in xrange(len(par2vals)):
             for j in xrange(len(par1vals)):
                 try:
-                    if math.isnan(par2vals[k]) or (math.fabs(par2vals[k] - inpbdfs[2]) < 1.0E-5) or \
-                       math.isnan(par1vals[j]) or (math.fabs(par1vals[j] - inpbdfs[1]) < 1.0E-5):
+                    if math.isnan(par2vals[k]) or (math.fabs(par2vals[k] - inpbdfs[2]) < 1.0E-7) or \
+                       math.isnan(par1vals[j]) or (math.fabs(par1vals[j] - inpbdfs[1]) < 1.0E-7):
                         raise ValueError
                     distrib = getdistrib(distribname, ( par1vals[j], par2vals[k], ))
                     distribfunc = getdistribfunc(distrib, funcname)
@@ -777,26 +750,34 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
                     # in this case tmp2result is tmp1result
                     pass
                 elif par1axis == 0:
-                    tmp2result[j, :, :, :] = tmp1result[0, :, :, :]
+                    tmp2result[j, :, :, :, :, :] = tmp1result[0, :, :, :, :, :]
                 elif par1axis == 1:
-                    tmp2result[:, j, :, :] = tmp1result[:, 0, :, :]
+                    tmp2result[:, j, :, :, :, :] = tmp1result[:, 0, :, :, :, :]
                 elif par1axis == 2:
-                    tmp2result[:, :, j, :] = tmp1result[:, :, 0, :]
+                    tmp2result[:, :, j, :, :, :] = tmp1result[:, :, 0, :, :, :]
                 elif par1axis == 3:
-                    tmp2result[:, :, :, j] = tmp1result[:, :, :, 0]
+                    tmp2result[:, :, :, j, :, :] = tmp1result[:, :, :, 0, :, :]
+                elif par1axis == 4:
+                    tmp2result[:, :, :, :, j, :] = tmp1result[:, :, :, :, 0, :]
+                elif par1axis == 5:
+                    tmp2result[:, :, :, :, :, j] = tmp1result[:, :, :, :, :, 0]
                 else:
                     raise ValueError("Unexpected par1axis of %d" % par1axis)
             # Appropriately assign the tmp2result to result
             if par2axis == -1:
-                result[:, :, :, :] = tmp2result
+                result[:, :, :, :, :, :] = tmp2result
             elif par2axis == 0:
-                result[k, :, :, :] = tmp2result[0, :, :, :]
+                result[k, :, :, :, :, :] = tmp2result[0, :, :, :, :, :]
             elif par2axis == 1:
-                result[:, k, :, :] = tmp2result[:, 0, :, :]
+                result[:, k, :, :, :, :] = tmp2result[:, 0, :, :, :, :]
             elif par2axis == 2:
-                result[:, :, k, :] = tmp2result[:, :, 0, :]
+                result[:, :, k, :, :, :] = tmp2result[:, :, 0, :, :, :]
             elif par2axis == 3:
-                result[:, :, :, k] = tmp2result[:, :, :, 0]
+                result[:, :, :, k, :, :] = tmp2result[:, :, :, 0, :, :]
+            elif par2axis == 4:
+                result[:, :, :, :, k, :] = tmp2result[:, :, :, :, 0, :]
+            elif par2axis == 5:
+                result[:, :, :, :, :, k] = tmp2result[:, :, :, :, :, 0]
             else:
                 raise ValueError("Unexpected par2axis of %d" % par2axis)
     elif numparams == 3:
@@ -804,9 +785,9 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
             for k in xrange(len(par2vals)):
                 for j in xrange(len(par1vals)):
                     try:
-                        if math.isnan(par3vals[q]) or (math.fabs(par3vals[q] - inpbdfs[3]) < 1.0E-5) or \
-                           math.isnan(par2vals[k]) or (math.fabs(par2vals[k] - inpbdfs[2]) < 1.0E-5) or \
-                           math.isnan(par1vals[j]) or (math.fabs(par1vals[j] - inpbdfs[1]) < 1.0E-5):
+                        if math.isnan(par3vals[q]) or (math.fabs(par3vals[q] - inpbdfs[3]) < 1.0E-7) or \
+                           math.isnan(par2vals[k]) or (math.fabs(par2vals[k] - inpbdfs[2]) < 1.0E-7) or \
+                           math.isnan(par1vals[j]) or (math.fabs(par1vals[j] - inpbdfs[1]) < 1.0E-7):
                             raise ValueError
                         distrib = getdistrib(distribname, ( par1vals[j], par2vals[k], par3vals[q], ))
                         distribfunc = getdistribfunc(distrib, funcname)
@@ -821,13 +802,17 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
                         # in this case tmp2result is tmp1result
                         pass
                     elif par1axis == 0:
-                        tmp2result[j, :, :, :] = tmp1result[0, :, :, :]
+                        tmp2result[j, :, :, :, :, :] = tmp1result[0, :, :, :, :, :]
                     elif par1axis == 1:
-                        tmp2result[:, j, :, :] = tmp1result[:, 0, :, :]
+                        tmp2result[:, j, :, :, :, :] = tmp1result[:, 0, :, :, :, :]
                     elif par1axis == 2:
-                        tmp2result[:, :, j, :] = tmp1result[:, :, 0, :]
+                        tmp2result[:, :, j, :, :, :] = tmp1result[:, :, 0, :, :, :]
                     elif par1axis == 3:
-                        tmp2result[:, :, :, j] = tmp1result[:, :, :, 0]
+                        tmp2result[:, :, :, j, :, :] = tmp1result[:, :, :, 0, :, :]
+                    elif par1axis == 4:
+                        tmp2result[:, :, :, :, j, :] = tmp1result[:, :, :, :, 0, :]
+                    elif par1axis == 5:
+                        tmp2result[:, :, :, :, :, j] = tmp1result[:, :, :, :, :, 0]
                     else:
                         raise ValueError("Unexpected par1axis of %d" % par1axis)
                 # Appropriately assign the tmp2result to tmp3result
@@ -835,26 +820,34 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
                     # in this case tmp3result is tmp2result
                     pass
                 elif par2axis == 0:
-                    tmp3result[k, :, :, :] = tmp2result[0, :, :, :]
+                    tmp3result[k, :, :, :, :, :] = tmp2result[0, :, :, :, :, :]
                 elif par2axis == 1:
-                    tmp3result[:, k, :, :] = tmp2result[:, 0, :, :]
+                    tmp3result[:, k, :, :, :, :] = tmp2result[:, 0, :, :, :, :]
                 elif par2axis == 2:
-                    tmp3result[:, :, k, :] = tmp2result[:, :, 0, :]
+                    tmp3result[:, :, k, :, :, :] = tmp2result[:, :, 0, :, :, :]
                 elif par2axis == 3:
-                    tmp3result[:, :, :, k] = tmp2result[:, :, :, 0]
+                    tmp3result[:, :, :, k, :, :] = tmp2result[:, :, :, 0, :, :]
+                elif par2axis == 4:
+                    tmp3result[:, :, :, :, k, :] = tmp2result[:, :, :, :, 0, :]
+                elif par2axis == 5:
+                    tmp3result[:, :, :, :, :, k] = tmp2result[:, :, :, :, :, 0]
                 else:
                     raise ValueError("Unexpected par2axis of %d" % par2axis)
             # Appropriately assign the tmp3result to result
             if par3axis == -1:
-                result[:, :, :, :] = tmp3result
+                result[:, :, :, :, :, :] = tmp3result
             elif par3axis == 0:
-                result[q, :, :, :] = tmp3result[0, :, :, :]
+                result[q, :, :, :, :, :] = tmp3result[0, :, :, :, :, :]
             elif par3axis == 1:
-                result[:, q, :, :] = tmp3result[:, 0, :, :]
+                result[:, q, :, :, :, :] = tmp3result[:, 0, :, :, :, :]
             elif par3axis == 2:
-                result[:, :, q, :] = tmp3result[:, :, 0, :]
+                result[:, :, q, :, :, :] = tmp3result[:, :, 0, :, :, :]
             elif par3axis == 3:
-                result[:, :, :, q] = tmp3result[:, :, :, 0]
+                result[:, :, :, q, :, :] = tmp3result[:, :, :, 0, :, :]
+            elif par3axis == 4:
+                result[:, :, :, :, q, :] = tmp3result[:, :, :, :, 0, :]
+            elif par3axis == 5:
+                result[:, :, :, :, :, q] = tmp3result[:, :, :, :, :, 0]
             else:
                 raise ValueError("Unexpected par3axis of %d" % par3axis)
     else:
@@ -1526,7 +1519,7 @@ if __name__ == "__main__":
 
     mu = 5.0
     sigma = 3.0
-    distparms = numpy.array([ mu, sigma ], dtype=numpy.float32)
+    distparms = numpy.array([ mu, sigma ], dtype=numpy.float64)
     distf = getdistrib(distname, distparms)
     foundstats = distf.stats("mvsk")
     expectedstats = ( mu, sigma**2, 0.0, 0.0 )

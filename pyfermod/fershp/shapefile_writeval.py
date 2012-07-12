@@ -20,6 +20,8 @@ def ferret_init(efid):
                 "axes": ( pyferret.AXIS_ABSTRACT,
                           pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "SHAPEFILE", "VALUE", "VALNAME", "MAPPRJ"),
                 "argdescripts": ( "Shapefile name (any extension given is ignored)",
@@ -32,10 +34,10 @@ def ferret_init(efid):
                               pyferret.FLOAT_ARRAY,
                               pyferret.STRING_ONEVAL,
                               pyferret.STRING_ONEVAL, ),
-                "influences": ( (False, False, False, False),
-                                (False, False, False, False),
-                                (False, False, False, False),
-                                (False, False, False, False), ),
+                "influences": ( (False, False, False, False, False, False),
+                                (False, False, False, False, False, False),
+                                (False, False, False, False, False, False),
+                                (False, False, False, False, False, False), ),
               }
     return retdict
 
@@ -44,7 +46,7 @@ def ferret_result_limits(efid):
     """
     Abstract axis limits for the shapefile_writeval PyEF
     """
-    return ( (1, 1), None, None, None, )
+    return ( (1, 1), None, None, None, None, None, )
 
 
 def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
@@ -68,8 +70,8 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     map_projection = inputs[3]
 
     # Verify the shapes are as expected
-    if values.shape[3] > 1:
-        raise ValueError("The T axis must be undefined or a singleton axis")
+    if (values.shape[3] != 1) or (values.shape[4] != 1) or (values.shape[5] != 1):
+        raise ValueError("The T, E, and F axes of VALUE must be undefined or singleton axes")
 
     # Get the X axis box limits for the quadrilateral coordinates
     x_box_limits = pyferret.get_axis_box_limits(efid, pyferret.ARG2, pyferret.X_AXIS)
@@ -100,27 +102,27 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     if z_coords == None:
         for j in xrange(len(lowerys)):
             for i in xrange(len(lowerxs)):
-                if values[i, j, 0, 0] != missing_value:
+                if values[i, j, 0, 0, 0, 0] != missing_value:
                     pyferret.fershp.addquadxyvalues(sfwriter,
                                     ( lowerxs[i], lowerys[j] ),
                                     ( lowerxs[i], upperys[j] ),
                                     ( upperxs[i], upperys[j] ),
                                     ( upperxs[i], lowerys[j] ),
                                     None,
-                                    [ float(values[i, j, 0, 0]) ])
+                                    [ float(values[i, j, 0, 0, 0, 0]) ])
                     shape_written = True
     else:
         for k in xrange(len(z_coords)):
             for j in xrange(len(lowerys)):
                 for i in xrange(len(lowerxs)):
-                    if values[i, j, k, 0] != missing_value:
+                    if values[i, j, k, 0, 0, 0] != missing_value:
                         pyferret.fershp.addquadxyvalues(sfwriter,
                                         ( lowerxs[i], lowerys[j] ),
                                         ( lowerxs[i], upperys[j] ),
                                         ( upperxs[i], upperys[j] ),
                                         ( upperxs[i], lowerys[j] ),
                                         z_coords[k],
-                                        [ float(values[i, j, k, 0]) ])
+                                        [ float(values[i, j, k, 0, 0, 0]) ])
                         shape_written = True
     if not shape_written:
         raise ValueError("All values are missing values")
@@ -128,7 +130,7 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
 
     # Create the .prj file from the map projection common name or the WKT description
     pyferret.fershp.createprjfile(map_projection, shapefile_name)
-    result[:, :, :, :] = 0
+    result[:, :, :, :, :, :] = 0
 
 
 #

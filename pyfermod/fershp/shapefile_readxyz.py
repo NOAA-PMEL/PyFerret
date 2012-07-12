@@ -19,14 +19,16 @@ def ferret_init(efid):
                 "axes": ( pyferret.AXIS_ABSTRACT,
                           pyferret.AXIS_ABSTRACT,
                           pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "SHAPEFILE", "MAXPTS", ),
                 "argdescripts": ( "Shapefile name (any extension given is ignored)",
                                   "Max. number of points to return (-1 for all, but reads shapefile twice)", ),
                 "argtypes": ( pyferret.STRING_ONEVAL,
                               pyferret.FLOAT_ONEVAL, ),
-                "influences": ( (False, False, False, False),
-                                (False, False, False, False), ),
+                "influences": ( (False, False, False, False, False, False),
+                                (False, False, False, False, False, False), ),
               }
     return retdict
 
@@ -45,7 +47,7 @@ def ferret_result_limits(efid):
             maxpts += len(shp.points) + 1
     elif maxpts < 1:
         raise ValueError("MAXPTS must be a positive integer or -1")
-    return ( (1, maxpts), (1, 3), None, None, )
+    return ( (1, maxpts), (1, 3), None, None, None, None, )
 
 
 def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
@@ -56,14 +58,14 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     in the shapefile.  The missing value, resbdf, is assigned as the
     coordinates of a point separating different shapes.
     """
-    result[:,:,:,:] = resbdf
+    result[:,:,:,:,:,:] = resbdf
     sf = shapefile.Reader(inputs[0])
     try:
         pt_index = 0
         for shp in sf.shapes():
             for (pt,z) in zip(shp.points,shp.z):
-                result[pt_index,:2,0,0] = pt[:2]
-                result[pt_index, 2,0,0] = z
+                result[pt_index,:2,0,0,0,0] = pt[:2]
+                result[pt_index, 2,0,0,0,0] = z
                 pt_index += 1
             # missing value coordinates (already assigned) separating shapes
             pt_index += 1

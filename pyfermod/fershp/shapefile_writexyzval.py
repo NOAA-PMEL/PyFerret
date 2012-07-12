@@ -24,6 +24,8 @@ def ferret_init(efid):
                 "axes": ( pyferret.AXIS_ABSTRACT,
                           pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "SHAPEFILE", "GRIDX", "GRIDY", "GRIDZ", "VALUE", "VALNAME", "MAPPRJ"),
                 "argdescripts": ( "Shapefile name (any extension given is ignored)",
@@ -41,13 +43,13 @@ def ferret_init(efid):
                               pyferret.FLOAT_ARRAY,
                               pyferret.STRING_ONEVAL,
                               pyferret.STRING_ONEVAL, ),
-                "influences": ( (False, False, False, False),
-                                (False, False, False, False),
-                                (False, False, False, False),
-                                (False, False, False, False),
-                                (False, False, False, False),
-                                (False, False, False, False),
-                                (False, False, False, False), ),
+                "influences": ( (False, False, False, False, False, False),
+                                (False, False, False, False, False, False),
+                                (False, False, False, False, False, False),
+                                (False, False, False, False, False, False),
+                                (False, False, False, False, False, False),
+                                (False, False, False, False, False, False),
+                                (False, False, False, False, False, False), ),
               }
     return retdict
 
@@ -56,7 +58,7 @@ def ferret_result_limits(efid):
     """
     Abstract axis limits for the shapefile_writexyzval PyEF
     """
-    return ( (1, 1), None, None, None, )
+    return ( (1, 1), None, None, None, None, None, )
 
 
 def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
@@ -87,9 +89,10 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     map_projection = inputs[6]
 
     # Verify the shapes are as expected
-    if (grid_vals.shape[2] != 1) or (grid_vals.shape[3] != 1):
-        raise ValueError("The Z and T axes of VALUE must be undefined or singleton axes")
-    exp_shape = ( grid_vals.shape[0] + 1, grid_vals.shape[1] + 1, 1, 1 )
+    if (grid_vals.shape[2] != 1) or (grid_vals.shape[3] != 1) or \
+       (grid_vals.shape[4] != 1) or (grid_vals.shape[5] != 1):
+        raise ValueError("The Z, T, E, and F axes of VALUE must be undefined or singleton axes")
+    exp_shape = ( grid_vals.shape[0] + 1, grid_vals.shape[1] + 1, 1, 1, 1, 1 )
     if (grid_xs.shape != exp_shape) or \
        (grid_ys.shape != exp_shape) or \
        (grid_zs.shape != exp_shape):
@@ -104,25 +107,25 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     shape_written = False
     for j in xrange(grid_vals.shape[1]):
         for i in xrange(grid_vals.shape[0]):
-            if grid_vals[i, j, 0, 0] != missing_val:
+            if grid_vals[i, j, 0, 0, 0, 0] != missing_val:
                 shape_written = True
                 pyferret.fershp.addquadxyvalues(sfwriter,
-                         (grid_xs[i,   j,   0, 0], grid_ys[i,   j,   0, 0]),
-                         (grid_xs[i,   j+1, 0, 0], grid_ys[i,   j+1, 0, 0]),
-                         (grid_xs[i+1, j+1, 0, 0], grid_ys[i+1, j+1, 0, 0]),
-                         (grid_xs[i+1, j,   0, 0], grid_ys[i+1, j,   0, 0]),
-                         ( grid_zs[i,   j,   0, 0],
-                           grid_zs[i,   j+1, 0, 0],
-                           grid_zs[i+1, j+1, 0, 0],
-                           grid_zs[i+1, j,   0, 0] ),
-                         [ float(grid_vals[i, j, 0, 0]) ])
+                         (grid_xs[i,   j,   0, 0, 0, 0], grid_ys[i,   j,   0, 0, 0, 0]),
+                         (grid_xs[i,   j+1, 0, 0, 0, 0], grid_ys[i,   j+1, 0, 0, 0, 0]),
+                         (grid_xs[i+1, j+1, 0, 0, 0, 0], grid_ys[i+1, j+1, 0, 0, 0, 0]),
+                         (grid_xs[i+1, j,   0, 0, 0, 0], grid_ys[i+1, j,   0, 0, 0, 0]),
+                         ( grid_zs[i,   j,   0, 0, 0, 0],
+                           grid_zs[i,   j+1, 0, 0, 0, 0],
+                           grid_zs[i+1, j+1, 0, 0, 0, 0],
+                           grid_zs[i+1, j,   0, 0, 0, 0] ),
+                         [ float(grid_vals[i, j, 0, 0, 0, 0]) ])
     if not shape_written:
         raise ValueError("All values are missing values")
     sfwriter.save(shapefile_name)
 
     # Create the .prj file from the map projection common name or the WKT description
     pyferret.fershp.createprjfile(map_projection, shapefile_name)
-    result[:, :, :, :] = 0
+    result[:, :, :, :, :, :] = 0
 
 
 #
@@ -166,8 +169,8 @@ if __name__ == "__main__":
         [  -80.0, -70.0, -60.0, -50.0, -40.0, -30.0, -20.0, -10.0,   0.0,  10.0,
             20.0,  30.0,  40.0,  50.0,  60.0, 100.0, 110.0, 120.0, 130.0, 140.0,
            150.0, 160.0, 170.0, 180.0, 190.0, 200.0, 210.0, 220.0, 230.0, 240.0, 280.0, ],
-    ], dtype=numpy.float32)
-    geolon_c = geolon_c.T[:, :, numpy.newaxis, numpy.newaxis]
+    ], dtype=numpy.float64)
+    geolon_c = geolon_c.T[:, :, numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis]
     geolat_c = numpy.array([
         [ 71.85, 74.69, 77.25, 79.54, 81.58, 83.30, 84.53, 85.00, 84.53, 83.30,
           81.58, 79.54, 77.25, 74.69, 71.85, 71.85, 74.69, 77.25, 79.54, 81.58,
@@ -196,12 +199,12 @@ if __name__ == "__main__":
         [ 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00,
           45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00,
           45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, ],
-    ], dtype=numpy.float32)
-    geolat_c = geolat_c.T[:, :, numpy.newaxis, numpy.newaxis]
+    ], dtype=numpy.float64)
+    geolat_c = geolat_c.T[:, :, numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis]
 
     # Just create random elevations in [0.0,100.0)
     levels = 100.0 * numpy.random.rand(*(geolon_c.shape))
-    levels = numpy.array(levels, dtype=numpy.float32, order='F')
+    levels = numpy.array(levels, dtype=numpy.float64, order='F')
 
     # Make the value an approximate sphere surface area (in square degrees) of the quadrilateral
     vals  = geolon_c[:-1, :-1] * geolat_c[:-1,  1:]
@@ -225,12 +228,12 @@ if __name__ == "__main__":
     del limits
 
     # check that ferret_compute does not cause any errors
-    resbdf = numpy.array([-99999.0], dtype=numpy.float32)
-    inpbdfs = numpy.array([-88888.0, -77777.0, -66666.0, -55555.0, -44444.0, -33333.0, -22222.0], dtype=numpy.float32)
-    result = numpy.ones((1,1,1,1), dtype=numpy.float32)
+    resbdf = numpy.array([-99999.0], dtype=numpy.float64)
+    inpbdfs = numpy.array([-88888.0, -77777.0, -66666.0, -55555.0, -44444.0, -33333.0, -22222.0], dtype=numpy.float64)
+    result = numpy.ones((1,1,1,1,1,1), dtype=numpy.float64)
     ferret_compute(0, result, resbdf, (shapefilename, geolon_c, geolat_c, levels, vals, fieldname, ""), inpbdfs)
-    if result[0,0,0,0] != 0.0:
-        raise ValueError("ferret_compute result array value: expected 0.0, found %f" % result[0,0,0,0])
+    if result[0,0,0,0,0,0] != 0.0:
+        raise ValueError("ferret_compute result array value: expected 0.0, found %f" % result[0,0,0,0,0,0])
 
     # create the expected arrays returned from shapefile.Reader
     # as well as from shapefile_readxyz and shapefile_readxyzval
@@ -241,17 +244,22 @@ if __name__ == "__main__":
     for j in xrange(vals.shape[1]):
         for i in xrange(vals.shape[0]):
             # add the values expected to be returned from shapefile.Reader
-            exppoints.append( numpy.array([ [ geolon_c[i,   j,   0, 0], geolat_c[i,   j,   0, 0] ],
-                                            [ geolon_c[i+1, j,   0, 0], geolat_c[i+1, j,   0, 0] ],
-                                            [ geolon_c[i+1, j+1, 0, 0], geolat_c[i+1, j+1, 0, 0] ],
-                                            [ geolon_c[i,   j+1, 0, 0], geolat_c[i,   j+1, 0, 0] ],
-                                            [ geolon_c[i,   j,   0, 0], geolat_c[i,   j,   0, 0] ] ]) )
-            expzs.append( numpy.array([ levels[i,   j,   0, 0],
-                                        levels[i+1, j,   0, 0],
-                                        levels[i+1, j+1, 0, 0],
-                                        levels[i,   j+1, 0, 0],
-                                        levels[i,   j,   0, 0] ]) )
-            expvals.append(vals[i, j, 0, 0])
+            exppoints.append( numpy.array([ [ geolon_c[i,   j,   0, 0, 0, 0], 
+                                              geolat_c[i,   j,   0, 0, 0, 0] ],
+                                            [ geolon_c[i+1, j,   0, 0, 0, 0], 
+                                              geolat_c[i+1, j,   0, 0, 0, 0] ],
+                                            [ geolon_c[i+1, j+1, 0, 0, 0, 0], 
+                                              geolat_c[i+1, j+1, 0, 0, 0, 0] ],
+                                            [ geolon_c[i,   j+1, 0, 0, 0, 0], 
+                                              geolat_c[i,   j+1, 0, 0, 0, 0] ],
+                                            [ geolon_c[i,   j,   0, 0, 0, 0], 
+                                              geolat_c[i,   j,   0, 0, 0, 0] ] ]) )
+            expzs.append( numpy.array([ levels[i,   j,   0, 0, 0, 0],
+                                        levels[i+1, j,   0, 0, 0, 0],
+                                        levels[i+1, j+1, 0, 0, 0, 0],
+                                        levels[i,   j+1, 0, 0, 0, 0],
+                                        levels[i,   j,   0, 0, 0, 0] ]) )
+            expvals.append(vals[i, j, 0, 0, 0, 0])
             # add the expected values returned from shapefile_readxyz and shapefile_readxyzval
             expcurvals[0].extend(exppoints[-1][:,0])
             expcurvals[0].append(resbdf[0])
@@ -260,11 +268,11 @@ if __name__ == "__main__":
             expcurvals[2].extend(expzs[-1])
             expcurvals[2].append(resbdf[0])
             expcurvals[3].append(expvals[-1])
-    # shapefile_readxyz and shapefile_readxyzval return numpy.float32 arrays
-    expcurvals[0] = numpy.array(expcurvals[0], dtype=numpy.float32)
-    expcurvals[1] = numpy.array(expcurvals[1], dtype=numpy.float32)
-    expcurvals[2] = numpy.array(expcurvals[2], dtype=numpy.float32)
-    expcurvals[3] = numpy.array(expcurvals[3], dtype=numpy.float32)
+    # shapefile_readxyz and shapefile_readxyzval return numpy.float64 arrays
+    expcurvals[0] = numpy.array(expcurvals[0], dtype=numpy.float64)
+    expcurvals[1] = numpy.array(expcurvals[1], dtype=numpy.float64)
+    expcurvals[2] = numpy.array(expcurvals[2], dtype=numpy.float64)
+    expcurvals[3] = numpy.array(expcurvals[3], dtype=numpy.float64)
 
     # check the values read using shapefile.Reader
     sfreader = shapefile.Reader(shapefilename)
@@ -309,17 +317,17 @@ if __name__ == "__main__":
     # not change, which appears to be the case but is not required.
     import shapefile_readxyz
     maxpts = len(expcurvals[0])
-    result = -11111.0 * numpy.ones((maxpts, 3, 1, 1), dtype=numpy.float32, order='F')
+    result = -11111.0 * numpy.ones((maxpts, 3, 1, 1, 1, 1), dtype=numpy.float64, order='F')
     shapefile_readxyz.ferret_compute(0, result, resbdf, (shapefilename, maxpts), inpbdfs[:2])
-    if not numpy.allclose(result[:,0,0,0], expcurvals[0], rtol=1.0E-4):
+    if not numpy.allclose(result[:,0,0,0,0,0], expcurvals[0], rtol=1.0E-4):
         raise ValueError("Xs from shapefile_readxyz:\n   expected\n%s\n   found\n%s" % \
-                         (str(expcurvals[0]), str(result[:,0,0,0])))
-    if not numpy.allclose(result[:,1,0,0], expcurvals[1], rtol=1.0E-4):
+                         (str(expcurvals[0]), str(result[:,0,0,0,0,0])))
+    if not numpy.allclose(result[:,1,0,0,0,0], expcurvals[1], rtol=1.0E-4):
         raise ValueError("Ys from shapefile_readxyz:\n   expected\n%s\n   found\n%s" % \
-                         (str(expcurvals[1]), str(result[:,1,0,0])))
-    if not numpy.allclose(result[:,2,0,0], expcurvals[2], rtol=1.0E-4, atol=1.0E-5):
+                         (str(expcurvals[1]), str(result[:,1,0,0,0,0])))
+    if not numpy.allclose(result[:,2,0,0,0,0], expcurvals[2], rtol=1.0E-4, atol=1.0E-5):
         raise ValueError("Zs from shapefile_readxyz:\n   expected\n%s\n   found\n%s" % \
-                         (str(expcurvals[2]), str(result[:,2,0,0])))
+                         (str(expcurvals[2]), str(result[:,2,0,0,0,0])))
 
     print "shapefile_readxyz: SUCCESS"
 
@@ -327,24 +335,24 @@ if __name__ == "__main__":
     # in this directory.  This assumes the ordering of the shapes does
     # not change, which appears to be the case but is not required.
     import shapefile_readxyzval
-    result = -11111.0 * numpy.ones((maxpts, 4, 1, 1), dtype=numpy.float32, order='F')
+    result = -11111.0 * numpy.ones((maxpts, 4, 1, 1, 1, 1), dtype=numpy.float64, order='F')
     shapefile_readxyzval.ferret_compute(0, result, resbdf, (shapefilename, fieldname, maxpts), inpbdfs[:3])
-    if not numpy.allclose(result[:,0,0,0], expcurvals[0], rtol=1.0E-4):
+    if not numpy.allclose(result[:,0,0,0,0,0], expcurvals[0], rtol=1.0E-4):
         raise ValueError("Xs from shapefile_readxyzval:\n   expected\n%s\n   found\n%s" % \
-                         (str(expcurvals[0]), str(result[:,0,0,0])))
-    if not numpy.allclose(result[:,1,0,0], expcurvals[1], rtol=1.0E-4):
+                         (str(expcurvals[0]), str(result[:,0,0,0,0,0])))
+    if not numpy.allclose(result[:,1,0,0,0,0], expcurvals[1], rtol=1.0E-4):
         raise ValueError("Ys from shapefile_readxyzval:\n   expected\n%s\n   found\n%s" % \
-                         (str(expcurvals[1]), str(result[:,1,0,0])))
-    if not numpy.allclose(result[:,2,0,0], expcurvals[2], rtol=1.0E-4, atol=1.0E-5):
+                         (str(expcurvals[1]), str(result[:,1,0,0,0,0])))
+    if not numpy.allclose(result[:,2,0,0,0,0], expcurvals[2], rtol=1.0E-4, atol=1.0E-5):
         raise ValueError("Zs from shapefile_readxyzval:\n   expected\n%s\n   found\n%s" % \
-                         (str(expcurvals[2]), str(result[:,2,0,0])))
+                         (str(expcurvals[2]), str(result[:,2,0,0,0,0])))
     numvals = len(expcurvals[3])
-    if not numpy.allclose(result[:numvals,3,0,0], expcurvals[3], rtol=1.0E-4):
+    if not numpy.allclose(result[:numvals,3,0,0,0,0], expcurvals[3], rtol=1.0E-4):
         raise ValueError("Values from shapefile_readxyzval:\n   expected\n%s\n   found\n%s" % \
-                         (str(expcurvals[3]), str(result[:numvals,3,0,0])))
-    if not numpy.allclose(result[numvals:,3,0,0], resbdf, rtol=1.0E-4):
+                         (str(expcurvals[3]), str(result[:numvals,3,0,0,0,0])))
+    if not numpy.allclose(result[numvals:,3,0,0,0,0], resbdf, rtol=1.0E-4):
         raise ValueError("Extra values from shapefile_readxyzval: expected all %s\n   found\n%s" % \
-                         (str(float(resbdf[0])), str(result[numvals:,3,0,0])))
+                         (str(float(resbdf[0])), str(result[numvals:,3,0,0,0,0])))
 
     print "shapefile_readxyzval: SUCCESS"
 

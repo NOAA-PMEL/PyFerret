@@ -43,17 +43,20 @@
      .         axis_unit, backwards_axis, modulo_axis, regular_axis)
 
       IMPLICIT NONE
+      INCLUDE 'tmap_dims.parm'
+
       INTEGER id, iarg, iaxis
       CHARACTER*(*) axis_name, axis_unit
       INTEGER backwards_axis, modulo_axis, regular_axis
 
-      CHARACTER*(64) axnames(4), axunits(4)
-      LOGICAL axbackwards(4), axmodulos(4), axregulars(4)
+      CHARACTER*(64) axnames(nferdims), axunits(nferdims)
+      LOGICAL axbackwards(nferdims), axmodulos(nferdims), 
+     .        axregulars(nferdims)
       INTEGER TM_LENSTR, namelen
 
 *     Get the information for all the axes (avoid duplication of code)
-      CALL EF_GET_AXIS_INFO(id, iarg, axnames, axunits,
-     .                      axbackwards, axmodulos, axregulars)
+      CALL EF_GET_AXIS_INFO_6D(id, iarg, axnames, axunits,
+     .                         axbackwards, axmodulos, axregulars)
 
 *     Assign the values for the axis requested
       namelen = TM_LENSTR(axnames(iaxis))

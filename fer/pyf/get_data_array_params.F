@@ -72,9 +72,9 @@
 *     Passed arguments
       CHARACTER*(*) datnam, datunit, errmsg
       INTEGER       lennam, start, lenerr, lendatunit,
-     .              memlo(MAX_FERRET_NDIM), memhi(MAX_FERRET_NDIM),
-     .              steplo(MAX_FERRET_NDIM), stephi(MAX_FERRET_NDIM),
-     .              incr(MAX_FERRET_NDIM), axtyp(MAX_FERRET_NDIM)
+     .              memlo(nferdims), memhi(nferdims),
+     .              steplo(nferdims), stephi(nferdims),
+     .              incr(nferdims), axtyp(nferdims)
       REAL          memory(*), badflg
 
 *     Function declarations
@@ -103,7 +103,7 @@
 *     Step values for this array.
 *     If the whole array was not requested, a new copy of the data
 *     has been made in memory with unit increments (or so it appears).
-      DO 20 k = 1,MAX_FERRET_NDIM
+      DO 20 k = 1,nferdims
           memlo(k) = mr_lo_ss(mr,k)
           memhi(k) = mr_hi_ss(mr,k)
           steplo(k) = cx_lo_ss(cx,k)
@@ -122,7 +122,7 @@
           lenerr = TM_LENSTR(errmsg)
           RETURN
       ENDIF
-      DO 30 k = 1,MAX_FERRET_NDIM
+      DO 30 k = 1,nferdims
           IF ( GEOG_LABEL(k, grid) ) THEN
 *             In Ferret, if a special {longitude,latitude,level,time} axis,
 *             they have to be axis {1,2,3,4}.

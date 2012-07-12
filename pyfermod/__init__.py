@@ -90,8 +90,8 @@ def init(arglist=None, enterferret=True):
                      [-secure]  [-server]  [-python]  [-version]  [-help]  [-gif]
                      [-unmapped]  [-script <scriptname> [ <scriptarg> ... ]]
 
-       -memsize:   initialize the memory cache size to <N> (default 25.6) megafloats
-                   (where 1 float = 4 bytes)
+       -memsize:   initialize the memory cache size to <N> (default 25.6) mega (10^6)
+                   floats (where 1 float = 8 bytes)
 
        -batch:     output graphics to <filename> (default "ferret.png") instead of
                    displaying to the console; the file format will be guessed from
@@ -505,7 +505,7 @@ def resize(memsize):
     Resets the the amount of memory allocated for Ferret from Python-managed memory.
 
     Arguments:
-        memsize: the new size, in megafloats (where a "float" is 4 bytes),
+        memsize: the new size, in mega (10^) floats (where a "float" is 8 bytes),
                  for Ferret's memory block
     Returns:
         True if successful - Ferret has the new amount of memory
@@ -690,11 +690,11 @@ def getdata(name, create_mask=True):
         method.  The dictionary contains the following key/value pairs:
             'title' : the string passed in the name argument
             'data': the numeric data array.  If create_mask is True, this
-                    will be a NumPy float32 MaskedArray object with the
+                    will be a NumPy float64 MaskedArray object with the
                     masked array properly assigned.  If create_mask is False,
-                    this will just be a NumPy float32 ndarray.
+                    this will just be a NumPy float64 ndarray.
             'missing_value': the missing data value.  This will be a NumPy
-                    float32 ndarray containing a single value.
+                    float64 ndarray containing a single value.
             'data_unit': a string describing the unit of the data.
             'axis_types': a list of integer values describing the type of
                     each axis.  Possible values are the following constants
@@ -782,7 +782,7 @@ def getdata(name, create_mask=True):
             # NaN comparisons always return False, even to another NaN
             datavar = numpy.ma.array(data, fill_value=bdfs[0], mask=numpy.isnan(data))
         else:
-            # since values in data and bdfs[0] are all float32 values assigned by Ferret,
+            # since values in data and bdfs[0] are all float64 values assigned by Ferret,
             # using equality should work correctly
             datavar = numpy.ma.array(data, fill_value=bdfs[0], mask=( data == bdfs[0] ))
     else:
@@ -931,7 +931,7 @@ def put(datavar, axis_pos=None):
         datavar:  a cdms2 AbstractVariable describing the data variable
                   to be created in Ferret.  Any masked values in the data
                   of datavar will be set to the missing value for datavar
-                  before extracting the data as 32-bit floating-point
+                  before extracting the data as 64-bit floating-point
                   values for Ferret.  In addition to the data and axes
                   described in datavar, the following attributes are used:
                       id: the code name for the variable in Ferret (eg,
@@ -949,15 +949,16 @@ def put(datavar, axis_pos=None):
                           If None or 'None', the variable is not associated
                           with any dataset.
 
-        axis_pos: a four-tuple giving the Ferret positions for each axis in
-                  datavar.  If the axes in datavar are in (time, level, lat.,
-                  long.) order, the tuple (T_AXIS, Z_AXIS, Y_AXIS, X_AXIS)
-                  should be used for proper axis handling in Ferret.  If not
-                  given (or None), the first longitude axis will be made the
-                  X_AXIS, the first latitude axis will be made the Y_AXIS,
-                  the first level axis will be made the Z_AXIS, the first
-                  time axis will be made the T_AXIS, and any remaining axes
-                  are then filled into the remaining unassigned positions.
+        axis_pos: a six-tuple giving the Ferret positions for each axis in
+                  datavar.  If the axes in datavar are in (forecast, ensemble,
+                  time, level, lat., long.) order, the tuple (F_AXIS, E_AXIS,
+                  T_AXIS, Z_AXIS, Y_AXIS, X_AXIS) should be used for proper 
+                  axis handling in Ferret.  If not given (or None), the first 
+                  longitude axis will be made the X_AXIS, the first latitude 
+                  axis will be made the Y_AXIS, the first level axis will be 
+                  made the Z_AXIS, the first time axis will be made the T_AXIS, 
+                  the second time axis will be made the F_AXIS, and any remaining 
+                  axes are then filled into the remaining unassigned positions.
 
     Returns:
         None
@@ -1110,9 +1111,9 @@ def putdata(datavar_dict, axis_pos=None):
                     variable.  If blank or not given, the current dataset is used.  If
                     None or 'None', no dataset will be associated with the new variable.
             'data': a NumPy numeric ndarray or masked array.  The data will be saved
-                    in Ferret as a 32-bit floating-point values.  Must be given.
+                    in Ferret as a 64-bit floating-point values.  Must be given.
             'missing_value': the missing data value.  This will be saved in Ferret as
-                    a 32-bit floating-point value.  If not given, Ferret's default
+                    a 64-bit floating-point value.  If not given, Ferret's default
                     missing value (-1.0E34) will be used.
             'data_unit': a string describing the unit of the data.  If not given, no
                     unit will be assigned.
@@ -1167,13 +1168,14 @@ def putdata(datavar_dict, axis_pos=None):
             Note: a relative time axis should be given as type AXISTYPE_CUSTOM, with a
                   unit indicating the starting point, such as 'days since 01-JAN-2000'
 
-        axis_pos: a four-tuple giving the Ferret positions for each axis in datavar.
-            If the axes in datavar are in (time, level, lat., long.) order, the tuple
-            (T_AXIS, Z_AXIS, Y_AXIS, X_AXIS) should be used for proper axis handling in
-            Ferret.  If not given (or None), the first longitude axis will be made the
-            X_AXIS, the first latitude axis will be made the Y_AXIS, the first level axis
-            will be made the Z_AXIS, the first time axis will be made the T_AXIS, and
-            any remaining axes are then filled into the remaining unassigned positions.
+        axis_pos: a six-tuple giving the Ferret positions for each axis in datavar.
+            If the axes in datavar are in (forecast, ensemble, time, level, lat., long.) 
+            order, the tuple (F_AXIS, E_AXIS, T_AXIS, Z_AXIS, Y_AXIS, X_AXIS) should be 
+            used for proper axis handling in Ferret.  If not given (or None), the first 
+            longitude axis will be made the X_AXIS, the first latitude axis will be made 
+            the Y_AXIS, the first level axis will be made the Z_AXIS, the first time axis 
+            will be made the T_AXIS, the second time axis will be made the F_AXIS, and any 
+            remaining axes are then filled into the remaining unassigned positions.
 
     Returns:
         None
@@ -1315,8 +1317,12 @@ def putdata(datavar_dict, axis_pos=None):
             ferr_axis.append(libpyferret.Z_AXIS)
         if not libpyferret.T_AXIS in ferr_axis:
             ferr_axis.append(libpyferret.T_AXIS)
-        # intentionally left as 4 (instead of _MAX_FERRET_NDIM) since new axes will need to be appended
-        if len(ferr_axis) != 4:
+        if not libpyferret.E_AXIS in ferr_axis:
+            ferr_axis.append(libpyferret.E_AXIS)
+        if not libpyferret.F_AXIS in ferr_axis:
+            ferr_axis.append(libpyferret.F_AXIS)
+        # intentionally left as 6 (instead of _MAX_FERRET_NDIM) since new axes will need to be appended
+        if len(ferr_axis) != 6:
             raise ValueError("axis_pos can contain at most one of each of the pyferret integer values X_AXIS, Y_AXIS, Z_AXIS, or T_AXIS")
     else:
         ferr_axis = [ -1 ] * libpyferret._MAX_FERRET_NDIM
@@ -1334,6 +1340,8 @@ def putdata(datavar_dict, axis_pos=None):
             elif axis_types[k] == libpyferret.AXISTYPE_TIME:
                 if not libpyferret.T_AXIS in ferr_axis:
                     ferr_axis[k] = libpyferret.T_AXIS
+                elif not libpyferret.F_AXIS in ferr_axis:
+                    ferr_axis[k] = libpyferret.F_AXIS
         # fill in other axes types in unused positions
         if not libpyferret.X_AXIS in ferr_axis:
             ferr_axis[ferr_axis.index(-1)] = libpyferret.X_AXIS
@@ -1343,6 +1351,10 @@ def putdata(datavar_dict, axis_pos=None):
             ferr_axis[ferr_axis.index(-1)] = libpyferret.Z_AXIS
         if not libpyferret.T_AXIS in ferr_axis:
             ferr_axis[ferr_axis.index(-1)] = libpyferret.T_AXIS
+        if not libpyferret.E_AXIS in ferr_axis:
+            ferr_axis[ferr_axis.index(-1)] = libpyferret.E_AXIS
+        if not libpyferret.F_AXIS in ferr_axis:
+            ferr_axis[ferr_axis.index(-1)] = libpyferret.F_AXIS
         try:
             ferr_axis.index(-1)
             raise RuntimeError("Unexpected undefined axis position (_MAX_FERRET_NDIM increased?) in ferr_axis " + str(ferr_axis))
@@ -1350,8 +1362,8 @@ def putdata(datavar_dict, axis_pos=None):
             # expected result
             pass
     #
-    # get the missing data value as a 32-bit float
-    bdfval = numpy.array(missingval, dtype=numpy.float32)
+    # get the missing data value as a 64-bit float
+    bdfval = numpy.array(missingval, dtype=numpy.float64)
     #
     # if a masked array, make sure the masked values are set
     # to the missing value, and get the ndarray underneath
@@ -1367,7 +1379,7 @@ def putdata(datavar_dict, axis_pos=None):
     for k in xrange(len(shape), libpyferret._MAX_FERRET_NDIM):
         data = data[..., numpy.newaxis]
     #
-    # swap data axes and axis information to give (X_AXIS, Y_AXIS, Z_AXIS, T_AXIS) axes
+    # swap data axes and axis information to give (X_AXIS, Y_AXIS, Z_AXIS, T_AXIS, E_AXIS, F_AXIS) axes
     # swapping axes still reference the original data array - just creates new shape and stride objects
     k = ferr_axis.index(libpyferret.X_AXIS)
     if k != 0:
@@ -1393,12 +1405,29 @@ def putdata(datavar_dict, axis_pos=None):
         axis_names[2], axis_names[k] = axis_names[k], axis_names[2]
         axis_units[2], axis_units[k] = axis_units[k], axis_units[2]
         axis_coords[2], axis_coords[k] = axis_coords[k], axis_coords[2]
-    # T_AXIS must now be ferr_axis[3]
-    # assumes _MAX_FERRET_NDIM == 4; extend the logic if axes are added
-    # would rather not assume X_AXIS == 0, Y_AXIS == 1, Z_AXIS == 2, T_AXIS == 3
+    k = ferr_axis.index(libpyferret.T_AXIS)
+    if k != 3:
+        data = data.swapaxes(3, k)
+        ferr_axis[3], ferr_axis[k] = ferr_axis[k], ferr_axis[3]
+        axis_types[3], axis_types[k] = axis_types[k], axis_types[3]
+        axis_names[3], axis_names[k] = axis_names[k], axis_names[3]
+        axis_units[3], axis_units[k] = axis_units[k], axis_units[3]
+        axis_coords[3], axis_coords[k] = axis_coords[k], axis_coords[3]
+    k = ferr_axis.index(libpyferret.E_AXIS)
+    if k != 4:
+        data = data.swapaxes(4, k)
+        ferr_axis[4], ferr_axis[k] = ferr_axis[k], ferr_axis[4]
+        axis_types[4], axis_types[k] = axis_types[k], axis_types[4]
+        axis_names[4], axis_names[k] = axis_names[k], axis_names[4]
+        axis_units[4], axis_units[k] = axis_units[k], axis_units[4]
+        axis_coords[4], axis_coords[k] = axis_coords[k], axis_coords[4]
+    # F_AXIS must now be ferr_axis[5]
+    # assumes _MAX_FERRET_NDIM == 6; extend the logic if axes are added
+    # would rather not assume X_AXIS == 0, Y_AXIS == 1, Z_AXIS == 2, 
+    #                         T_AXIS == 3, E_AXIS == 4, F_AXIS == 5
     #
-    # now make a copy of the data as (contiguous) 32-bit floats in Fortran order
-    fdata = numpy.array(data, dtype=numpy.float32, order='F', copy=1)
+    # now make a copy of the data as (contiguous) 64-bit floats in Fortran order
+    fdata = numpy.array(data, dtype=numpy.float64, order='F', copy=1)
     #
     # libpyferret._put will throw an Exception if there is a problem
     libpyferret._put(codename, titlename, fdata, bdfval, data_unit, dset_str,
@@ -1467,7 +1496,7 @@ def ferret_pyfunc():
             "resstrlen":    if the result type is an array of strings, this specifies
                             the (maximum) length of the strings in the array
                             [optional, default: 128]
-            "axes":         4-tuple (X,Y,Z,T) of result grid axis defining values,
+            "axes":         6-tuple (X,Y,Z,T,E,F) of result grid axis defining values,
                             which are:
                                     AXIS_ABSTRACT:        indexed, ferret_result_limits
                                                           called to define the axis,
@@ -1488,20 +1517,20 @@ def ferret_pyfunc():
                             an array of floating-point values, a single floating point
                             value, an array of strings, or a single string value.
                             [optional; default: FLOAT_ARRAY for every argument]
-            "influences":   N-tuple of 4-tuples of booleans indicating whether the
-                            corresponding input argument's (X,Y,Z,T) axis influences
-                            the result grid's (X,Y,Z,T) axis.  [optional; default,
-                            and when None is given for a 4-tuple: True for every axis]
+            "influences":   N-tuple of 6-tuples of booleans indicating whether the
+                            corresponding input argument's (X,Y,Z,T,E,F) axis influences
+                            the result grid's (X,Y,Z,T,E,F) axis.  [optional; default,
+                            and when None is given for a 6-tuple: True for every axis]
                       NOTE: If the "influences" value for an axis is True (which is the
                             default), the "axes" value for this axis must be either
                             AXIS_IMPLIED_BY_ARGS (the default) or AXIS_REDUCED.
-            "extends":      N-tuple of 4-tuples of pairs of integers.  The n-th tuple,
-                            if not None, gives the (X,Y,Z,T) extension pairs for the
+            "extends":      N-tuple of 6-tuples of pairs of integers.  The n-th tuple,
+                            if not None, gives the (X,Y,Z,T,E,F) extension pairs for the
                             n-th argument.  An extension pair, if not None, is the
                             number of points extended in the (low,high) indices for
                             that axis of that argument beyond the implied axis of the
                             result grid.  Thus,
-                                    (None, (None, None, None, (-1,1)), None)
+                                    (None, (None, None, None, (-1,1)), None, None, None)
                             means the T axis of the second argument is extended by two
                             points (low dimension lowered by 1, high dimension raised
                             by 1) beyond the implied axis of the result.
@@ -1520,14 +1549,14 @@ def ferret_pyfunc():
     ferret_compute(id, result_array, result_bdf, input_arrays, input_bdfs)
         Arguments:
             id           - Ferret's integer ID of this external function
-            result_array - a writeable NumPy float32 ndarray of four dimensions (X,Y,Z,T)
+            result_array - a writeable NumPy float64 ndarray of six dimensions (X,Y,Z,T,E,F)
                            to contain the results of this computation.  The shape and
                            strides of this array has been configured so that only (and
                            all) the data points that should be assigned are accessible.
             result_bdf   - a NumPy ndarray of one dimension containing the bad-data-flag
                            value for the result array.
-            input_arrays - tuple of read-only NumPy float32 ndarrays of four dimensions
-                           (X,Y,Z,T) containing the given input data.  The shape and
+            input_arrays - tuple of read-only NumPy float64 ndarrays of six dimensions
+                           (X,Y,Z,T,E,F) containing the given input data.  The shape and
                            strides of these array have been configured so that only (and
                            all) the data points that should be accessible are accessible.
             input_bdfs   - a NumPy ndarray of one dimension containing
@@ -1547,7 +1576,7 @@ def ferret_pyfunc():
         Arguments:
             id - Ferret's integer ID of this external function
 
-        Returns a (X,Y,Z,T) 4-tuple of either None or (low, high) pairs of integers.
+        Returns a (X,Y,Z,T,E,F) 6-tuple of either None or (low, high) pairs of integers.
         If an axis was not designated as AXIS_ABSTRACT, None should be given for that axis.
         If an axis was designated as AXIS_ABSTRACT, a (low, high) pair of integers should
         be given, and are used as the low and high Ferret indices for that axis.
@@ -1565,14 +1594,14 @@ def ferret_pyfunc():
         Arguments:
             id - Ferret's integer ID of this external function
 
-        Returns a (X,Y,Z,T) 4-tuple of either None or a (low, high, delta, unit_name,
+        Returns a (X,Y,Z,T,E,F) 6-tuple of either None or a (low, high, delta, unit_name,
         is_modulo) tuple.  If an axis was not designated as AXIS_CUSTOM, None should be
         given for that axis.  If an axis was designated as AXIS_CUSTOM, a (low, high,
         delta, unit_name, is_modulo) tuple should be given where low and high are the
         "world" coordinates (floating point) limits for the axis, delta is the step
         increments in "world" coordinates, unit_name is a string used in describing the
         "world" coordinates, and is_modulo is either True or False, indicating if this
-        is a modulo ("wrapping") coordinate system.
+        is a modulo ("periodic" or "wrapping") coordinate system.
 
         If an exception is raised, Ferret is notified that an error occurred using
         the message of the exception.
@@ -1588,7 +1617,8 @@ def get_axis_coordinates(id, arg, axis):
     Arguments:
         id: the Ferret id of the external function
         arg: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9)
-        axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, T_AXIS)
+        axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, 
+                                                          T_AXIS, E_AXIS, F_AXIS)
     Returns:
         a NumPy float64 ndarray containing the "world" coordinates,
         or None if the values cannot be determined at the time this was called
@@ -1612,10 +1642,10 @@ def get_axis_coordinates(id, arg, axis):
     # check the axis index
     try:
         int_axis = int(axis)
-        if (int_axis < libpyferret.X_AXIS) or (int_axis > libpyferret.T_AXIS):
+        if (int_axis < libpyferret.X_AXIS) or (int_axis > libpyferret.F_AXIS):
             raise ValueError
     except:
-        raise ValueError("axis must be an integer value in [%d,%d]" % (libpyferret.X_AXIS,libpyferret.T_AXIS))
+        raise ValueError("axis must be an integer value in [%d,%d]" % (libpyferret.X_AXIS,libpyferret.F_AXIS))
     # make the actual call
     return libpyferret._get_axis_coordinates(int_id, int_arg, int_axis)
 
@@ -1628,9 +1658,10 @@ def get_axis_box_sizes(id, arg, axis):
     Arguments:
         id: the Ferret id of the external function
         arg: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9)
-        axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, T_AXIS)
+        axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, 
+                                                          T_AXIS, E_AXIS, F_AXIS)
     Returns:
-        a NumPy float32 ndarray containing the "box sizes",
+        a NumPy float64 ndarray containing the "box sizes",
         or None if the values cannot be determined at the time this was called
     Raises:
         ValueError if id, arg, or axis is invalid
@@ -1652,10 +1683,10 @@ def get_axis_box_sizes(id, arg, axis):
     # check the axis index
     try:
         int_axis = int(axis)
-        if (int_axis < libpyferret.X_AXIS) or (int_axis > libpyferret.T_AXIS):
+        if (int_axis < libpyferret.X_AXIS) or (int_axis > libpyferret.F_AXIS):
             raise ValueError
     except:
-        raise ValueError("axis must be an integer value in [%d,%d]" % (libpyferret.X_AXIS,libpyferret.T_AXIS))
+        raise ValueError("axis must be an integer value in [%d,%d]" % (libpyferret.X_AXIS,libpyferret.F_AXIS))
     # make the actual call
     return libpyferret._get_axis_box_sizes(int_id, int_arg, int_axis)
 
@@ -1668,7 +1699,8 @@ def get_axis_box_limits(id, arg, axis):
     Arguments:
         id: the Ferret id of the external function
         arg: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9)
-        axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, T_AXIS)
+        axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, 
+                                                          T_AXIS, E_AXIS, F_AXIS)
     Returns:
         a tuple of two NumPy float64 ndarrays containing the low and high "box limits",
         or None if the values cannot be determined at the time this was called
@@ -1692,10 +1724,10 @@ def get_axis_box_limits(id, arg, axis):
     # check the axis index
     try:
         int_axis = int(axis)
-        if (int_axis < libpyferret.X_AXIS) or (int_axis > libpyferret.T_AXIS):
+        if (int_axis < libpyferret.X_AXIS) or (int_axis > libpyferret.F_AXIS):
             raise ValueError
     except:
-        raise ValueError("axis must be an integer value in [%d,%d]" % (libpyferret.X_AXIS,libpyferret.T_AXIS))
+        raise ValueError("axis must be an integer value in [%d,%d]" % (libpyferret.X_AXIS,libpyferret.F_AXIS))
     # make the actual call
     return libpyferret._get_axis_box_limits(int_id, int_arg, int_axis)
 
@@ -1707,13 +1739,14 @@ def get_axis_info(id, arg, axis):
     Arguments:
         id: the Ferret id of the external function
         arg: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9)
-        axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, T_AXIS)
+        axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, 
+                                                          T_AXIS, E_AXIS, F_AXIS)
     Returns:
         a dictionary defining the following keys:
             "name": name string for the axis coordinate
             "unit": name string for the axis unit
             "backwards": boolean - reversed axis?
-            "modulo": boolean - periodic/wrapping axis?
+            "modulo": float - modulo length of axis, or 0.0 if not modulo
             "regular": boolean - evenly spaced axis?
             "size": number of coordinates on this axis, or -1 if the value
                     cannot be determined at the time this was called
@@ -1737,10 +1770,10 @@ def get_axis_info(id, arg, axis):
     # check the axis index
     try:
         int_axis = int(axis)
-        if (int_axis < libpyferret.X_AXIS) or (int_axis > libpyferret.T_AXIS):
+        if (int_axis < libpyferret.X_AXIS) or (int_axis > libpyferret.F_AXIS):
             raise ValueError
     except:
-        raise ValueError("axis must be an integer value in [%d,%d]" % (libpyferret.X_AXIS,libpyferret.T_AXIS))
+        raise ValueError("axis must be an integer value in [%d,%d]" % (libpyferret.X_AXIS,libpyferret.F_AXIS))
     # make the actual call
     return libpyferret._get_axis_info(int_id, int_arg, int_axis)
 

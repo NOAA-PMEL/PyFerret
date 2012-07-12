@@ -51,6 +51,7 @@
       SUBROUTINE DELETE_PYSTAT_VAR(ivar, errmsg, lenerr)
       IMPLICIT NONE
 
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'xpyvar_info.cmn'
 
 *     Passed arguments

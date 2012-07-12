@@ -1,9 +1,5 @@
 *  PYFERRET.PARM
 
-*     maximum Ferret grid dimension parameter (must match that in pyferret.h)
-      INTEGER MAX_FERRET_NDIM
-      PARAMETER(MAX_FERRET_NDIM = 4)
-
 *     axis type parameters (must match those in pyferret.h)
       INTEGER    AXISTYPE_LONGITUDE, AXISTYPE_LATITUDE, AXISTYPE_LEVEL,
      .           AXISTYPE_TIME, AXISTYPE_CUSTOM, AXISTYPE_ABSTRACT,

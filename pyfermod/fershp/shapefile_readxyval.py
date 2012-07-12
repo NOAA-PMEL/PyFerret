@@ -19,6 +19,8 @@ def ferret_init(efid):
                 "axes": ( pyferret.AXIS_ABSTRACT,
                           pyferret.AXIS_ABSTRACT,
                           pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "SHAPEFILE", "VALNAME", "MAXPTS", ),
                 "argdescripts": ( "Shapefile name (any extension given is ignored)",
@@ -27,9 +29,9 @@ def ferret_init(efid):
                 "argtypes": ( pyferret.STRING_ONEVAL,
                               pyferret.STRING_ONEVAL,
                               pyferret.FLOAT_ONEVAL, ),
-                "influences": ( (False, False, False, False),
-                                (False, False, False, False),
-                                (False, False, False, False), ),
+                "influences": ( (False, False, False, False, False, False),
+                                (False, False, False, False, False, False),
+                                (False, False, False, False, False, False), ),
               }
     return retdict
 
@@ -48,7 +50,7 @@ def ferret_result_limits(efid):
             maxpts += len(shp.points) + 1
     elif maxpts < 1:
         raise ValueError("MAXPTS must be a positive integer or -1")
-    return ( (1, maxpts), (1, 3), None, None, )
+    return ( (1, maxpts), (1, 3), None, None, None, None, )
 
 
 def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
@@ -61,7 +63,7 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     of the field named in inputs[1] associated with each shape.
     """
     # Initialize all results to the missing value flag to make it easier later on
-    result[:,:,:,:] = resbdf
+    result[:,:,:,:,:,:] = resbdf
 
     # Open the shapefile for reading and read the metadata
     sf = shapefile.Reader(inputs[0])
@@ -91,7 +93,7 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
         for shp in sf.shapes():
             num_shapes += 1
             for pt in shp.points:
-                result[pt_index,:2,0,0] = pt[:2]
+                result[pt_index,:2,0,0,0,0] = pt[:2]
                 pt_index += 1
             # missing value coordinates (already assigned) separating shapes
             pt_index += 1
@@ -104,7 +106,7 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     # Retrieve the field values
     rec_index = 0
     for rec in sf.records():
-        result[rec_index,2,0,0] = float(rec[field_index])
+        result[rec_index,2,0,0,0,0] = float(rec[field_index])
         rec_index += 1
         # only get field values for shapes that were read
         if rec_index >= num_shapes:
@@ -120,24 +122,24 @@ if __name__ == "__main__":
     # make sure ferret_init does not cause problems
     info = ferret_init(0)
 
-    resbdf = numpy.array([-9999.0], dtype=numpy.float32)
-    inpbdfs = numpy.array([-8888.0, -7777.0], dtype=numpy.float32)
+    resbdf = numpy.array([-9999.0], dtype=numpy.float64)
+    inpbdfs = numpy.array([-8888.0, -7777.0], dtype=numpy.float64)
     maxpts = 3200 * 2400
-    result = -6666.0 * numpy.ones((maxpts, 3, 1, 1), dtype=numpy.float32, order='F')
+    result = -6666.0 * numpy.ones((maxpts,3,1,1,1,1), dtype=numpy.float64, order='F')
     print "ferret_compute start: time = %s" % time.asctime()
     # INTPTLAT10 == latitude of an internal point in each county
     ferret_compute(0, result, resbdf, ("tl_2010_us_county10", "INTPTLAT10", maxpts, ), inpbdfs)
     print "ferret_compute done; time = %s" % time.asctime()
-    good_x = numpy.logical_and((-180.0 <= result[:,0,0,0]), (result[:,0,0,0] <= -65.0))
+    good_x = numpy.logical_and((-180.0 <= result[:,0,0,0,0,0]), (result[:,0,0,0,0,0] <= -65.0))
     good_x = numpy.logical_or(good_x,
-                 numpy.logical_and((172.0 <= result[:,0,0,0]), (result[:,0,0,0] <= 180.0)))
-    good_y = numpy.logical_and((17.0 <= result[:,1,0,0]), (result[:,1,0,0] <= 72.0))
+                 numpy.logical_and((172.0 <= result[:,0,0,0,0,0]), (result[:,0,0,0,0,0] <= 180.0)))
+    good_y = numpy.logical_and((17.0 <= result[:,1,0,0,0,0]), (result[:,1,0,0,0,0] <= 72.0))
     if numpy.logical_xor(good_x, good_y).any():
         raise ValueError("good_x != good_y")
-    missing_x = ( result[:,0,0,0] == resbdf )
+    missing_x = ( result[:,0,0,0,0,0] == resbdf )
     if numpy.logical_xor(good_x, numpy.logical_not(missing_x)).any():
         raise ValueError("good_x != not missing_x")
-    missing_y = ( result[:,1,0,0] == resbdf )
+    missing_y = ( result[:,1,0,0,0,0] == resbdf )
     if numpy.logical_xor(good_y, numpy.logical_not(missing_y)).any():
         raise ValueError("good_y != not missing_y")
     count = 0
@@ -158,11 +160,11 @@ if __name__ == "__main__":
         else:
             count += 1
     total += count
-    good_val = numpy.logical_and((17.0 <= result[:,2,0,0]), (result[:,2,0,0] <= 72.0))
-    missing_val = ( result[:,2,0,0] == resbdf )
+    good_val = numpy.logical_and((17.0 <= result[:,2,0,0,0,0]), (result[:,2,0,0,0,0] <= 72.0))
+    missing_val = ( result[:,2,0,0,0,0] == resbdf )
     if numpy.logical_xor(good_val, numpy.logical_not(missing_val)).any():
         raise ValueError("good_val != not missing_val")
-    num_good = len(result[:,2,0,0][good_val])
+    num_good = len(result[:,2,0,0,0,0][good_val])
     if num_good != shape_num:
         raise ValueError("number of values: expected %d, found %d" % (shape_num, num_good))
     print "shapefile_readxyval: SUCCESS"

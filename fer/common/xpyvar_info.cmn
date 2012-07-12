@@ -8,27 +8,27 @@
       REAL*8        pyvar_code_padding
 *
       INTEGER*8     pyvar_ndarray_obj
+      REAL          pyvar_missing_flag
+      INTEGER       pyvar_dset_number
+      INTEGER       pyvar_grid_number
+      INTEGER       pyvar_grid_start
+      INTEGER       pyvar_grid_end
+      INTEGER       pyvar_type
       CHARACTER*128 pyvar_code
       CHARACTER*128 pyvar_title
       CHARACTER*64  pyvar_units
-      REAL*4        pyvar_missing_flag
-      INTEGER*4     pyvar_dset_number
-      INTEGER*4     pyvar_grid_number
-      INTEGER*4     pyvar_grid_start
-      INTEGER*4     pyvar_grid_end
-      INTEGER*4     pyvar_type
 *
       COMMON/ XPYVAR_INFO /
      .         pyvar_code_head,
      .         pyvar_code_padding,
      .         pyvar_ndarray_obj(maxpyvars),
-     .         pyvar_code(maxpyvars),
-     .         pyvar_title(maxpyvars),
-     .         pyvar_units(maxpyvars),
      .         pyvar_missing_flag(maxpyvars),
      .         pyvar_dset_number(maxpyvars),
      .         pyvar_grid_number(maxpyvars),
-     .         pyvar_grid_start(4,maxpyvars),
-     .         pyvar_grid_end(4,maxpyvars),
-     .         pyvar_type(maxpyvars)
+     .         pyvar_grid_start(nferdims,maxpyvars),
+     .         pyvar_grid_end(nferdims,maxpyvars),
+     .         pyvar_type(maxpyvars),
+     .         pyvar_code(maxpyvars),
+     .         pyvar_title(maxpyvars),
+     .         pyvar_units(maxpyvars)
 

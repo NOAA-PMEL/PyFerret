@@ -39,6 +39,7 @@
       SUBROUTINE DELETE_ALL_PYSTAT_VARS()
       IMPLICIT NONE
 
+      INCLUDE 'tmap_dims.parm'
       INCLUDE 'xpyvar_info.cmn'
 
       CHARACTER*2048 errmsg

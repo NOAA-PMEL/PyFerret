@@ -20,6 +20,8 @@ def ferret_init(efid):
                 "axes": ( pyferret.AXIS_ABSTRACT,
                           pyferret.AXIS_ABSTRACT,
                           pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "SHAPEFILE", "VALNAME", "MAXPTS", ),
                 "argdescripts": ( "Shapefile name (any extension given is ignored)",
@@ -28,9 +30,9 @@ def ferret_init(efid):
                 "argtypes": ( pyferret.STRING_ONEVAL,
                               pyferret.STRING_ONEVAL,
                               pyferret.FLOAT_ONEVAL, ),
-                "influences": ( (False, False, False, False),
-                                (False, False, False, False),
-                                (False, False, False, False), ),
+                "influences": ( (False, False, False, False, False, False),
+                                (False, False, False, False, False, False),
+                                (False, False, False, False, False, False), ),
               }
     return retdict
 
@@ -49,7 +51,7 @@ def ferret_result_limits(efid):
             maxpts += len(shp.points) + 1
     elif maxpts < 1:
         raise ValueError("MAXPTS must be a positive integer or -1")
-    return ( (1, maxpts), (1, 4), None, None, )
+    return ( (1, maxpts), (1, 4), None, None, None, None, )
 
 
 def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
@@ -63,7 +65,7 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     associated with each shape.
     """
     # Initialize all results to the missing value flag to make it easier later on
-    result[:,:,:,:] = resbdf
+    result[:,:,:,:,:,:] = resbdf
 
     # Open the shapefile for reading and read the metadata
     sf = shapefile.Reader(inputs[0])
@@ -93,8 +95,8 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
         for shp in sf.shapes():
             num_shapes += 1
             for (pt, z) in zip(shp.points, shp.z):
-                result[pt_index,:2,0,0] = pt[:2]
-                result[pt_index, 2,0,0] = z
+                result[pt_index,:2,0,0,0,0] = pt[:2]
+                result[pt_index, 2,0,0,0,0] = z
                 pt_index += 1
             # missing value coordinates (already assigned) separating shapes
             pt_index += 1
@@ -107,7 +109,7 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     # Retrieve the field values
     rec_index = 0
     for rec in sf.records():
-        result[rec_index,3,0,0] = float(rec[field_index])
+        result[rec_index,3,0,0,0,0] = float(rec[field_index])
         rec_index += 1
         # only get field values for shapes that were read
         if rec_index >= num_shapes:

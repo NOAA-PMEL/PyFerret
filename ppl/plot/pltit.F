@@ -91,7 +91,7 @@
 * V6.5  3/10 *acm* When re-plotting axes, do not redraw the main label.
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
-* v7    11/11 *kms* added call to consider updating the drawing when done
+* PyFr  11/11 *kms* added call to consider updating the drawing when done
 *
 *****************************************************
 

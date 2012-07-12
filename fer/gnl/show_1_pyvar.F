@@ -60,9 +60,11 @@
 * local variables
       CHARACTER*256 myline
       CHARACTER*17  axstr(4), fltstr
-      INTEGER       j, k, q, starti(4), grid
+      INTEGER       j, k, q, starti(4), grid, listdims
       REAL*8        lo, hi
 
+      listdims = nferdims
+      IF ( .NOT. mode_6d_lab ) listdims = 4
 
 * if the code name is long, print it on a separate line
       myline = pyvar_code(ivar)
@@ -74,7 +76,7 @@
       ENDIF
 
 * grid axis limits
-      DO 120 k = 1,4
+      DO 120 k = 1,listdims
           IF ( grid_line(k,pyvar_grid_number(ivar)) .EQ. mnormal) THEN
               axstr(k) = '       ...'
               starti(k) = 6
@@ -95,9 +97,15 @@
  120  CONTINUE
 
 * write the basic information line
-      WRITE (risc_buff, 200) myline, pyvar_title(ivar),
-     .                       (axstr(k)(starti(k):15),k=1,4)
- 200  FORMAT(1X,A8,1X,A31,T42,4(A))
+      IF ( listdims .EQ. nferdims ) THEN
+          WRITE (risc_buff, 200) myline, pyvar_title(ivar),
+     .                           (axstr(k)(starti(k):15),k=1,nferdims)
+ 200      FORMAT(1X,A8,1X,A31,T42,6(A))
+      ELSE
+          WRITE (risc_buff, 205) myline, pyvar_title(ivar),
+     .                           (axstr(k)(starti(k):15),k=1,4)
+ 205      FORMAT(1X,A8,1X,A31,T42,4(A))
+      ENDIF
       CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
 
 * write more information if full output requested

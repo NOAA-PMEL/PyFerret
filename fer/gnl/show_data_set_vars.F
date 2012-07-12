@@ -70,7 +70,7 @@
 * V600  *acm* 1/06  prevent values of LOG10(0.0) 
 * V68   *acm* 12/11 Fix ticket 1905. Axis-lengths that need more than 6 characters
 *                   were being cut off.
-* V700  *kms* 11/10 added display of pyvars associated with the dataset
+* PyFr  *kms* 11/10 added display of pyvars associated with the dataset
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
 *                 various SHOW commnands will not list info for E,F dimensions.

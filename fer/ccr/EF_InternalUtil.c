@@ -2367,10 +2367,10 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
       }
 
       /* Assign the memory limits, step values, and bad-data-flag values - first result, then arguments */
-      ef_get_res_mem_subscripts_(id_ptr, memlo[0], memhi[0]);
-      ef_get_arg_mem_subscripts_(id_ptr, &(memlo[1]), &(memhi[1]));
-      ef_get_res_subscripts_(id_ptr, steplo[0], stephi[0], incr[0]);
-      ef_get_arg_subscripts_(id_ptr, &(steplo[1]), &(stephi[1]), &(incr[1]));
+      ef_get_res_mem_subscripts_6d_(id_ptr, memlo[0], memhi[0]);
+      ef_get_arg_mem_subscripts_6d_(id_ptr, &(memlo[1]), &(memhi[1]));
+      ef_get_res_subscripts_6d_(id_ptr, steplo[0], stephi[0], incr[0]);
+      ef_get_arg_subscripts_6d_(id_ptr, &(steplo[1]), &(stephi[1]), &(incr[1]));
       ef_get_bad_flags_(id_ptr, &(badflags[1]), &(badflags[0]));
 
       /* Reset zero increments to +1 or -1 for pyefcn_compute */

@@ -91,6 +91,10 @@
 
 
 /* .................... Includes .................... */
+
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
  
 #include <sys/types.h>	        /* required for some of our prototypes */
 #include <sys/stat.h>

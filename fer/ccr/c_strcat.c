@@ -40,6 +40,10 @@
  *
  */
 
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 

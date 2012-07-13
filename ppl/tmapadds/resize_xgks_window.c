@@ -58,6 +58,10 @@
  */
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
+
 #include <wchar.h>
 #include "udposix.h"
 #include "gks_implem.h"

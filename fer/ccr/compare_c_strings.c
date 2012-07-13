@@ -37,6 +37,10 @@
  * Compare 2 strings with strcasecmp -- case-insensitive
  */
 
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
+
 #include <string.h>
 
 int compare_c_strings_(ptr_1, ptr_2)

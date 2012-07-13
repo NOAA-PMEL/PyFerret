@@ -50,6 +50,10 @@
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret. */
 
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
+
 #include <wchar.h>
 #include <unistd.h>
 #include <stdio.h>

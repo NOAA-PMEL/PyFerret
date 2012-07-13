@@ -40,6 +40,11 @@
  * V552: *kob* 4/03 - change func type to void
  *
  */ 
+
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
+
 #include <string.h>
 
 void c_strindex_(in_ptr1, in_ptr2, out_ptr)

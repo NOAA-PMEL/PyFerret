@@ -41,6 +41,10 @@
  *
  */
 
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
+
 #include <string.h>
 
 void c_strlen_(in_ptr, out_ptr)

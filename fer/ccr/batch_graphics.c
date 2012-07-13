@@ -54,6 +54,9 @@
  *
  */
 
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
 #include <assert.h>
 #include <string.h>
 

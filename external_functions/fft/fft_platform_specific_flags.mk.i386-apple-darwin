@@ -1,0 +1,14 @@
+#
+# platform_specific_includes.mk.i486-linux
+#
+# This file is included in the External Function Makefiles and defines
+# platform specific macros
+
+# FFT functions need the -mismatch_all flag
+# 1/2002 acm  add -u flag
+# 2/2002 ACM  update flags to ones for current compiler.
+
+
+#FFLAGS          = -132 -c -u -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch_all $(FINCLUDES)
+
+#FFLAGS          = -132 -c -u -save -dusty -fieee -Nl90 -x77 -w -mismatch_all $(FINCLUDES)

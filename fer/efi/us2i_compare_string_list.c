@@ -42,6 +42,10 @@
  * function unique_str2int
  */
 
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include "list.h"  /* locally added list library */

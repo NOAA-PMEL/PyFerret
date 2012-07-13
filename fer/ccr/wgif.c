@@ -60,6 +60,10 @@
  *  Routine for writing out GIF files, using pd GIFEncode routine
  */
 
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
+
 #include <X11/Xlib.h>
 #include <unistd.h>
 #include <stdio.h>

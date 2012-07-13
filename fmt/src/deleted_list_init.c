@@ -40,9 +40,8 @@
  */
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
-#include <stdio.h>
+# include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "deleted_list.h"
 
 void deleted_list_init_(void *deleted_list_header,

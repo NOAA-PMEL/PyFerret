@@ -37,6 +37,11 @@
 /* 
  *   Fill the indicated region of memory with pointers to null strings
  */
+ 
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
+
 #include <stdlib.h>
 
 void set_null_c_string_array_(fer_ptr, nstr)

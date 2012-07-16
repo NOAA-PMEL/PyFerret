@@ -1,0 +1,177 @@
+\SET MODE VERIFY
+! ef_eofsvd_demo.jnl ( acm  9/2000)
+
+! Description: Demonstration of computing EOFs using the
+! External Functions EOFSVD_SPACE, EOFSVD_TFUNC, EOFSVD_STAT
+
+! The functions implements Numerical Recipes SVDCMP. All the functions perform
+! the same computation but return different portions of the results.
+
+!   * EOFSVD_SPACE returns EOF eigenvectors: spatial EOF in x and y with the
+!     same units as the incoming data
+!   * EOFSVD_TFUNC returns EOF time amplitude functions; dimensionless
+!   * EOFSVD_STAT returns statistics on the EOF computation: number of EOFs
+!     scaled and returned; Percent variance explained by each EOF; and the
+!     eigenvalues.
+!
+! For all functions the arguments are as follows:
+!
+!   * 1st argument: Input data field, a function of x, y, and time; may be a
+!     function of z
+!
+! EOFSVD functions Example 1: define a function of x,y,time using trig
+! functions.  Decompose into spatial and time EOF's and display statistics.
+!
+PAUSE
+LET time = t[t=1-jan-1990:10-jan-1990:24]   ! 24 hour resolution time axis
+
+DEFINE AXIS/x=0:10:0.5 x10
+DEFINE AXIS/y=0:10:0.5 y10
+DEFINE GRID/x=x10/y=y10/t=time g10x10
+SET GRID g10x10
+
+LET fcn1 = 15.* sin(omega1*t)*cos(r)/(r+1)
+LET fcn2 = 20.* sin(omega2*t)*(sin(s)-.2*sin(q))/(s+1)
+
+LET r = ((6.*(xpts-x0)^2 + 7.*(ypts-y0)^2)^0.5)
+LET s = (((xpts-x1)^2 + 2*(ypts-y1)^2)^0.5)
+LET q = ((3*(xpts-x0)^2 + (ypts-y1)^2)^0.5)
+
+LET x0 = 2
+LET y0 = 4
+LET x1 = 5
+LET y1 = 7
+
+LET omega1 = 1/10*2*3.14159
+LET omega2 = 2 * omega1
+
+LET sample_function = fcn1 + fcn2
+LET xpts = x
+LET ypts = y
+
+!  Compute the statistics on the EOF solution.  EOFSVD_STAT returns:
+!  for J=1  the number of EOFs returned
+!  for J=2  the percent variance explained by each EOF
+!  for J=3  the eigenvalue for each EOF
+
+LET estat = eofsvd_stat(sample_function)
+
+LIST/I=1/J=1 estat
+
+LIST/I=1:4/J=2 estat
+
+LIST/I=1:4/J=3 estat
+
+
+!  Plot the original function (averaged over time) and its spatial
+!  decomposition by EOFSVD_SPACE
+
+PAUSE
+
+DEFINE VIEW/xlim=0.,.33/ylim=.6,1./text=0.2 vul
+DEFINE VIEW/xlim=.33,.66/ylim=.6,1./text=0.2 vuc
+DEFINE VIEW/xlim=.66,1./ylim=.6,1./text=0.2 vur
+
+DEFINE VIEW/xlim=0.,.33/ylim=.1,.5/text=0.2 vll
+DEFINE VIEW/xlim=.33,.66/ylim=.1,.5/text=0.2 vlc
+DEFINE VIEW/xlim=.66,1./ylim=.1,.5/text=0.2 vlr
+
+SET VIEW vul; CONTOUR/TITLE="FCN1" fcn1[l=1:10@ave]
+SET VIEW vuc; CONTOUR/TITLE="FCN2" fcn2[l=1:10@ave]
+SET VIEW vur; CONTOUR/TITLE="FCN1 + FCN2" sample_function[l=1:10@ave]
+
+
+LET exy = eofsvd_space(sample_function)
+
+SET VIEW vll; CONTOUR/L=1/TITLE="EOF 1" exy
+SET VIEW vlc; CONTOUR/L=2/TITLE="EOF 2" exy
+
+PAUSE
+CANCEL VIEW
+
+! Now plot the time amplitude functions.
+
+LET etim = eofsvd_tfunc(sample_function)
+
+SET VIEW ul
+PLOT/I=1/TITLE=taf1 etim
+
+SET VIEW ur
+PLOT/I=2/TITLE=taf2 etim
+
+! should be all bad flags...
+SET VIEW ll
+PLOT/I=3/TITLE=taf3 etim
+
+PAUSE
+CANCEL DATA/ALL
+CANCEL VARIABLE/ALL
+CANCEL REGION
+CANCEL VIEW
+
+!  A second example, using the COADS climatology data.
+!
+
+USE coads_climatology
+SET REGION/X=67w:1w/Y=11S:11N
+
+!  Compute and save the spatial EOF functions.  These have the same units
+!  as the data.
+
+LET EOFSVD_xyfcn = eofsvd_space(sst)
+SAVE/CLOBBER/FILE=sst_clim_eofsvd_space.cdf eofsvd_xyfcn
+
+
+CANCEL DATA/ALL
+CANCEL VARIABLE/ALL
+CANCEL REGION
+
+USE sst_clim_eofsvd_space.cdf
+SET VIEW ul; fill/l=1/TITLE="eof 1" eofsvd_xyfcn; go land
+SET VIEW ur; fill/l=2/TITLE="eof 2" eofsvd_xyfcn; go land
+SET VIEW ll; fill/l=3/TITLE="eof 3" eofsvd_xyfcn; go land
+
+PAUSE
+CANCEL DATA/ALL
+CANCEL VARIABLE/ALL
+CANCEL REGION
+
+!  Compute the statistics on the EOFs: number of EOFs scaled
+!  and returned; Percent variance explained by each EOF; and the
+!  eigenvalues.
+
+
+USE coads_climatology
+SET REGION/X=67w:1w/Y=11S:11N
+LET eofstat = eofsvd_stat(sst[X=67w:1w,Y=11S:11N])
+
+LET nout = eofstat[i=1,j=1]
+LET pcts = eofstat[i=1:`nout`,j=2]
+
+LET eigenv = eofstat[i=1:`nout`,j=3]
+
+LIST nout
+LIST/I=1:6 pcts
+LIST/I=1:6 eigenv
+
+PAUSE
+
+!  Compute and save time amplitude functions: Note they are dimensionless.
+
+USE coads_climatology
+LET eoftime = eofsvd_tfunc(sst[X=67w:1w,Y=11S:11N])
+
+SAVE/CLOBBER/FILE=sst_clim_eofsvd_tfunc.cdf eoftime[i=1:`nout`]
+
+CANCEL VIEW
+CANCEL VARIABLE/ALL
+USE sst_clim_eofsvd_tfunc.cdf
+
+SET VIEW ul
+PLOT/I=1/TITLE="time function 1"/VLIMITS=-2:2:0.5 eoftime
+SET VIEW ur
+PLOT/I=2/TITLE="time function 2"/VLIMITS=-2:2:0.5 eoftime
+SET VIEW ll
+PLOT/I=3/TITLE="time function 3"/VLIMITS=-2:2:0.5 eoftime
+
+\SET MODE/LAST VERIFY

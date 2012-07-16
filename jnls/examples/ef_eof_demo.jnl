@@ -30,6 +30,8 @@
 ! EOF functions Example 1: define a function of x,y,time using trig
 ! functions.  Decompose into spatial and time EOF's and display statistics.
 !
+Say With Ferret v6.8 and higher, run ef_eofsvd_demo instead
+IF `($ferret_version"0") GE 6.8` THEN exit/script
 PAUSE
 LET time = t[t=1-jan-1990:10-jan-1990:24]   ! 24 hour resolution time axis
 

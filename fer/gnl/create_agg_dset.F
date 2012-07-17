@@ -69,12 +69,12 @@
 	ds_type(agg_dset) = 'AGG'
 
 	ds_name(agg_dset) = dname
-	ds_des_name(agg_dset) = 'aggregate dataset'
+	ds_des_name(agg_dset) = dname
 
 	IF (dtitle(1:2).EQ.char_init .OR. TM_LENSTR(dtitle).EQ.0) THEN
 	   ds_title(agg_dset) = cmnd_buff(item_start(1):item_end(num_items))
 	ELSE
-	   ds_title = dtitle(:TM_LENSTR1(dname))
+	   ds_title(agg_dset) = dtitle(:TM_LENSTR1(dname))
 	ENDIF
 
 * create the aggregate axis

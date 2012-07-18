@@ -31,6 +31,14 @@ i386-linux:
 		GKLIB="../xgks/src/lib/libxgks.a" \
 		LIB="-lX11 -lm"
 
+i386-apple-darwin:
+	${MAKE} gksm2ps \
+		CC=gcc \
+		CFLAGS="-I../xgks/port -I../xgks/src/lib -I/usr/openwin/share/include -I../xgks/src/lib/gksm" \
+		LDFLAGS= \
+		GKLIB="../xgks/src/lib/libxgks.a" \
+		LIB="-L/usr/X11R6/lib -lX11 -lm"
+
 i486-linux:	
 	${MAKE} gksm2ps \
 		CC=gcc \

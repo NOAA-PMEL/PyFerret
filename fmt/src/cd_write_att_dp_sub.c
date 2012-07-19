@@ -43,11 +43,9 @@
     cc -c -g -I/opt/local/netcdf-3.4/include cd_write_var_sub.c
 */ 
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 #include <Python.h> /* make sure Python.h is first */
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <stdlib.h>
-#include <wchar.h>
 #include <stdio.h>
 #include <netcdf.h>
 #include <assert.h>

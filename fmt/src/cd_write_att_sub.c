@@ -65,14 +65,12 @@
     cc -c -g -I/opt/local/netcdf-3.4/include cd_write_var_sub.c
 */ 
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /*  *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
 *                                        definition of macro DFTYPE in ferretmacros.h. */
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <stdlib.h>
-#include <wchar.h>
 #include <stdio.h>
 #include <netcdf.h>
 #include <assert.h>
@@ -85,8 +83,9 @@ void FORTRAN(cd_write_att_sub) (int *cdfid, int *varid, char* attname, int *atty
   /*
      V600:  2/06 *acm* Write correct atttr type to netcdf files : Note that compiler
                        warnings may be seen about data type inconsistencies in the
-					   calls to nc_put_att_float. This is ok; netcdf library does conversion.
-					   
+                       calls to nc_put_att_float. This is ok; netcdf library does conversion.
+     PyFr   7/12 *kms* Leave off the recasts of the void * since it does nothing except
+                       raise compiler warnings.
   */
   
   int vid = *varid;
@@ -100,37 +99,31 @@ void FORTRAN(cd_write_att_sub) (int *cdfid, int *varid, char* attname, int *atty
   /* DOUBLE attr */
   case NC_DOUBLE:
 #ifdef double_p
-     *status= nc_put_att_double (*cdfid, vid, attname, *attype,
-              *nval, (double*) val);
+     *status= nc_put_att_double (*cdfid, vid, attname, *attype, *nval, val);
 #else
-     *status= nc_put_att_float (*cdfid, vid, attname, *attype,
-              *nval, (double*) val);
+     *status= nc_put_att_float (*cdfid, vid, attname, *attype, *nval, val);
 #endif
 
   break;
 
   /* FLOAT attr */
   case NC_FLOAT:
-      *status= nc_put_att_float (*cdfid, vid, attname, *attype,
-              *nval, (float*) val);
+      *status= nc_put_att_float (*cdfid, vid, attname, *attype, *nval, val);
   break;
 
   /* INT attr */
   case NC_INT:
-	  *status= nc_put_att_float (*cdfid, vid, attname, *attype,
-              *nval, (int*) val);
+	  *status= nc_put_att_float (*cdfid, vid, attname, *attype, *nval, val);
   break;
 
   /* SHORT attr */
   case NC_SHORT:
-	  *status= nc_put_att_float (*cdfid, vid, attname, *attype,
-              *nval, (short*) val);
+	  *status= nc_put_att_float (*cdfid, vid, attname, *attype, *nval, val);
   break;
 
   /* Byte attr */
   case NC_BYTE:
-	  *status= nc_put_att_float (*cdfid, vid, attname, *attype,
-              *nval, (char*) val);
+	  *status= nc_put_att_float (*cdfid, vid, attname, *attype, *nval, val);
   break;
 
   default:

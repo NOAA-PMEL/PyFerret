@@ -64,7 +64,6 @@
     cc -c -g -I/opt/local/netcdf-3.4/include cd_read_sub.c
 */ 
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build
                       Other changes to correctly deal with the scalar case dim=0 */ 
 /* *acm   2/11 v67  - Call nc_get_varm only if strides and permuted.
@@ -76,7 +75,6 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
-#include <wchar.h>
 #include <stdlib.h>
 #include <netcdf.h>
 #include <assert.h>

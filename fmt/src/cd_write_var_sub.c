@@ -64,7 +64,6 @@
     cc -c -g -I/opt/local/netcdf-3.4/include cd_write_var_sub.c
 */ 
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build */ 
 /*                      Other changes to correctly deal with the scalar case dim=0 */ 
 /* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the */ 
@@ -74,7 +73,6 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <stdlib.h>
-#include <wchar.h>
 #include <stdio.h>
 #include <netcdf.h>
 #include <assert.h>

@@ -44,7 +44,6 @@
 */
 
 /*******************/
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret. */
 
 #include <Python.h> /* make sure Python.h is first */
@@ -52,6 +51,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "pplmem.h"
+
 /*******************/
 
 /* The global pointer to PLOT+ memory is declared as extern here

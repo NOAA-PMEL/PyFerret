@@ -57,7 +57,7 @@ hh:mm:ss are optional (defaulting to 00:00:00) or seconds, alone may be omitted
 
 */
 /* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
-/*					 definition of macro DFTYPE in ferretmacros.h.
+ *					 definition of macro DFTYPE in ferretmacros.h.
 */
 
 #include <Python.h> /* make sure Python.h is first */

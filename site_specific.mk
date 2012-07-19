@@ -9,6 +9,7 @@ DIR_PREFIX	= $(HOME)/pyferret
 BUILDTYPE	= $(HOSTTYPE)
 # BUILDTYPE	= x86_64-linux
 # BUILDTYPE	= i386-linux
+# BUILDTYPE	= i386-apple-darwin
 
 ## Python 2.x executable to invoke for build and install.
 PYTHON_EXE	= python2.6

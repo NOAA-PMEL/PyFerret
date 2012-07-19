@@ -49,7 +49,6 @@
 /* v51 *kob* - upgraded to new version of readline, which is now seperate
    from tmap library - modified readline include to that end */
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/
 /*
  * *kms* 10/11 use a static memory line in server mode

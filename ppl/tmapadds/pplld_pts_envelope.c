@@ -45,12 +45,12 @@
 
 /*******************/
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 #include <Python.h> /* make sure Python.h is first */
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "pplmem.h"
+
 /*******************/
 
 /* The global pointer to PLOT+ memory is declared as extern here

@@ -12,9 +12,6 @@
  *   2/12 *kms* - Add E and F dimensions
  */
 
-/* * 1/12 *acm* - Ferret 6.8 Changes for double-precision ferret, see the*/
-/*             definition of macro DFTYPE in binaryRead.h */
-
 #include <Python.h> /* make sure Python.h is first */
 #include <sys/types.h>
 #include <sys/stat.h>

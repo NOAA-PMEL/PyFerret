@@ -1,3 +1,5 @@
+/* Make sure Python.h is included first */
+#include <Python.h>
 #include <stdlib.h>
 #include "EF_Util.h"
 

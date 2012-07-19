@@ -54,9 +54,9 @@
 */
 
 #include <Python.h> /* make sure Python.h is first */
-#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "ferret_shared_buffer.h"
 

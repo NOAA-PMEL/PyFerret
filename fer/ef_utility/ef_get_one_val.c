@@ -1,3 +1,5 @@
+/* Make sure Python.h is included first */
+#include <Python.h>
 #include "EF_Util.h"
 
 void FORTRAN(ef_get_one_val)(int *id_ptr, int *arg_ptr, DFTYPE *val_ptr)

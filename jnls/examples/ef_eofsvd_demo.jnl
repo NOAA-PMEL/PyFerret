@@ -1,17 +1,16 @@
 \SET MODE VERIFY
-! ef_eof_demo.jnl ( acm  9/2000)
+! ef_eofsvd_demo.jnl ( acm  9/2000)
 
 ! Description: Demonstration of computing EOFs using the
-! External Functions EOF_SPACE, EOF_TFUNC, EOF_STAT
+! External Functions EOFSVD_SPACE, EOFSVD_TFUNC, EOFSVD_STAT
 
-! The functions implements Chelton's '82 method for finding EOFs of gappy
-! time series. All the functions perform the same computation but return
-! different portions of the results.
+! The functions implements Numerical Recipes SVDCMP. All the functions perform
+! the same computation but return different portions of the results.
 
-!   * EOF_SPACE returns EOF eigenvectors: spatial EOF in x and y with the
+!   * EOFSVD_SPACE returns EOF eigenvectors: spatial EOF in x and y with the
 !     same units as the incoming data
-!   * EOF_TFUNC returns EOF time amplitude functions; dimensionless
-!   * EOF_STAT returns statistics on the EOF computation: number of EOFs
+!   * EOFSVD_TFUNC returns EOF time amplitude functions; dimensionless
+!   * EOFSVD_STAT returns statistics on the EOF computation: number of EOFs
 !     scaled and returned; Percent variance explained by each EOF; and the
 !     eigenvalues.
 !
@@ -19,19 +18,10 @@
 !
 !   * 1st argument: Input data field, a function of x, y, and time; may be a
 !     function of z
-!   * 2nd argument: The minimum percent variance explained by the EOF's that
-!     are computed and scaled, e.g. to return EOFs that explain at least 2%
-!     variance, use 2.0
-!   * 3nd argument: The fraction of each time series that must be present to
-!     include it in the calculations, e.g. to use all time series that have
-!     at least half the data present, use 0.5
 !
-!
-! EOF functions Example 1: define a function of x,y,time using trig
+! EOFSVD functions Example 1: define a function of x,y,time using trig
 ! functions.  Decompose into spatial and time EOF's and display statistics.
 !
-Say With Ferret v6.8 and higher, run ef_eofsvd_demo instead
-IF `($ferret_version"0") GE 6.8` THEN exit/script
 PAUSE
 LET time = t[t=1-jan-1990:10-jan-1990:24]   ! 24 hour resolution time axis
 
@@ -59,12 +49,12 @@ LET sample_function = fcn1 + fcn2
 LET xpts = x
 LET ypts = y
 
-!  Compute the statistics on the EOF solution.  EOF_STAT returns:
+!  Compute the statistics on the EOF solution.  EOFSVD_STAT returns:
 !  for J=1  the number of EOFs returned
 !  for J=2  the percent variance explained by each EOF
 !  for J=3  the eigenvalue for each EOF
 
-LET estat = eof_stat(sample_function, 0.1)
+LET estat = eofsvd_stat(sample_function)
 
 LIST/I=1/J=1 estat
 
@@ -74,7 +64,7 @@ LIST/I=1:4/J=3 estat
 
 
 !  Plot the original function (averaged over time) and its spatial
-!  decomposition by EOF_SPACE
+!  decomposition by EOFSVD_SPACE
 
 PAUSE
 
@@ -91,7 +81,7 @@ SET VIEW vuc; CONTOUR/TITLE="FCN2" fcn2[l=1:10@ave]
 SET VIEW vur; CONTOUR/TITLE="FCN1 + FCN2" sample_function[l=1:10@ave]
 
 
-LET exy = eof_space(sample_function, 0.1)
+LET exy = eofsvd_space(sample_function)
 
 SET VIEW vll; CONTOUR/L=1/TITLE="EOF 1" exy
 SET VIEW vlc; CONTOUR/L=2/TITLE="EOF 2" exy
@@ -101,7 +91,7 @@ CANCEL VIEW
 
 ! Now plot the time amplitude functions.
 
-LET etim = eof_tfunc(sample_function, 0.1)
+LET etim = eofsvd_tfunc(sample_function)
 
 SET VIEW ul
 PLOT/I=1/TITLE=taf1 etim
@@ -128,18 +118,18 @@ SET REGION/X=67w:1w/Y=11S:11N
 !  Compute and save the spatial EOF functions.  These have the same units
 !  as the data.
 
-LET eof_xyfcn = eof_space(sst, 0.5)
-SAVE/CLOBBER/FILE=sst_clim_eof_space.cdf eof_xyfcn
+LET EOFSVD_xyfcn = eofsvd_space(sst)
+SAVE/CLOBBER/FILE=sst_clim_eofsvd_space.cdf eofsvd_xyfcn
 
 
 CANCEL DATA/ALL
 CANCEL VARIABLE/ALL
 CANCEL REGION
 
-USE sst_clim_eof_space.cdf
-SET VIEW ul; fill/l=1/TITLE="eof 1" eof_xyfcn; go land
-SET VIEW ur; fill/l=2/TITLE="eof 2" eof_xyfcn; go land
-SET VIEW ll; fill/l=3/TITLE="eof 3" eof_xyfcn; go land
+USE sst_clim_eofsvd_space.cdf
+SET VIEW ul; fill/l=1/TITLE="eof 1" eofsvd_xyfcn; go land
+SET VIEW ur; fill/l=2/TITLE="eof 2" eofsvd_xyfcn; go land
+SET VIEW ll; fill/l=3/TITLE="eof 3" eofsvd_xyfcn; go land
 
 PAUSE
 CANCEL DATA/ALL
@@ -153,7 +143,7 @@ CANCEL REGION
 
 USE coads_climatology
 SET REGION/X=67w:1w/Y=11S:11N
-LET eofstat = eof_stat(sst[X=67w:1w,Y=11S:11N], 0.5)
+LET eofstat = eofsvd_stat(sst[X=67w:1w,Y=11S:11N])
 
 LET nout = eofstat[i=1,j=1]
 LET pcts = eofstat[i=1:`nout`,j=2]
@@ -169,13 +159,13 @@ PAUSE
 !  Compute and save time amplitude functions: Note they are dimensionless.
 
 USE coads_climatology
-LET eoftime = eof_tfunc(sst[X=67w:1w,Y=11S:11N], 0.5)
+LET eoftime = eofsvd_tfunc(sst[X=67w:1w,Y=11S:11N])
 
-SAVE/CLOBBER/FILE=sst_clim_eof_tfunc.cdf eoftime[i=1:`nout`]
+SAVE/CLOBBER/FILE=sst_clim_eofsvd_tfunc.cdf eoftime[i=1:`nout`]
 
 CANCEL VIEW
 CANCEL VARIABLE/ALL
-USE sst_clim_eof_tfunc.cdf
+USE sst_clim_eofsvd_tfunc.cdf
 
 SET VIEW ul
 PLOT/I=1/TITLE="time function 1"/VLIMITS=-2:2:0.5 eoftime

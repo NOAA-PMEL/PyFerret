@@ -1,0 +1,171 @@
+#
+# platform_specific_includes.mk.i386-apple-darwin
+#
+# This file is included in other Makefiles and defines
+# platform specific macros
+
+	GKS_INCLUDES	= -I../../ppl/include/xgks \
+			  -I../../xgks/src/lib \
+			  -Ipplinc/xgks \
+			  -I../../xgks/port 
+
+	INCLUDES        = -I. \
+			  -I../fmt/cmn/ \
+			  -I$(NETCDF4_DIR)/include \
+			  -I$(READLINE_DIR)/include \
+			  -I../common \
+			  -I../../fmt/cmn \
+			  -I../../ppl/include \
+			  -I../../fer/common \
+			  $(GKS_INCLUDES) \
+			  -I/usr/local/include
+
+	FINCLUDES	= -I../../ppl/tmap_inc \
+			  -I../include \
+			  -I../../fmt/cmn \
+			  -I../common \
+			  -I../../ppl/include \
+			  -I../../fer/common
+
+	PLATFORM = $(shell uname -s -r) 
+
+	CC              = gcc
+	CXX		= c++
+	FC		= gfortran
+	F77		= gfortran
+
+	RANLIB          = /usr/bin/ranlib
+
+	CPP		= /usr/bin/cpp
+
+	CPP_FLAGS       = $(INCLUDES) \
+			  -fPIC \
+			  -Dunix \
+			  -Dgfortran \
+			  -DNO_OPEN_SHARED \
+			  -DNO_OPEN_RECORDTYPE \
+			  -DNO_SNGL \
+			  -DX_REFRESH \
+			  -Dreclen_in_bytes \
+			  -DNO_OPEN_READONLY \
+			  -DMANDATORY_FORMAT_WIDTHS \
+			  -DNO_OPEN_CARRIAGECONTROL \
+			  -Dxgks \
+			  -DSTAR_1_SUPPORTED \
+			  -DFULL_GUI_VERSION \
+			  -DX_REFRESH \
+			  -DXT_CODE \
+			  -DDARWIN  \
+			  -DMAC_SSIZE \
+			  -DLINUX \
+			  -DNO_PASSED_CONCAT \
+			  -Dcrptd_cat_argument \
+			  -DG77_SIGNAL \
+			  -DG77 \
+			  -DNEED_IAND \
+			  -DNO_PREPEND_STRING \
+			  -DNO_DOUBLE_ESCAPE_SLASH \
+			  -Ddouble_p/
+
+# -DusingDODSf2cUnderscore needed if using netcdf library...
+# also consider -ffloat-store.
+	CFLAGS	= \
+			  $(CPP_FLAGS) \
+			  -Dlint \
+			  -D_SSIZE_T \
+			  -DVOID_SIGHANDLER \
+			  -D_POSIX_VERSION \
+			  -DLINUX \
+			  -DFULL_GUI_VERSION \
+			  -DX_REFRESH \
+			  -DXT_CODE \
+			  -Dsun4 
+
+	FFLAGS = $(CPP_FLAGS) \
+			  -fno-automatic \
+			  -fno-second-underscore \
+			  -fdollar-ok \
+			  -ffixed-line-length-132 \
+			  -ffpe-trap=overflow $(FINCLUDES) \
+			  -fdefault-real-8 \
+			  -fdefault-double-8
+
+	PPLUS_FFLAGS = \
+			  $(CPP_FLAGS) \
+			  -fno-automatic \
+			  -fno-second-underscore \
+			  -fdollar-ok \
+			  -ffixed-line-length-132 \
+			  $(FINCLUDES)
+
+
+	# Below this line are macro definitions used only for the final linking of the executable
+	# specify gfortran library. With gfortran 4.4, ssee notews in the i386-linux platform
+	# flags file.
+
+	LD		= gcc
+	LDFLAGS		= \
+			  -v \
+			  --verbose \
+			  -fPIC
+
+	SYSLIB		= \
+			  -L/usr/X11R6/lib -lX11 \
+			  /usr/local/gfortran/lib/libgfortran.a \
+			  -lcurl \
+			  -ldl \
+			  -L$(LIBZ_DIR)/lib -lz \
+			  -lm
+
+# -static-libgfortran can be used with gfortran 4.4 but not 4.1
+# /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgfortran.a
+
+	TMLIB		= ../lib/tmap_lib.a
+
+	GKSLIB		= ../xgks/src/lib/libxgks.a
+
+# For netCDF4 using new hdf5 and new zlib
+
+	CDFLIB		= \
+			  $(NETCDF4_DIR)/lib/libnetcdff.a \
+			  $(NETCDF4_DIR)/lib/libnetcdf.a \
+			  $(HDF5_DIR)/lib/libhdf5_hl.a \
+			  $(HDF5_DIR)/lib/libhdf5.a \
+			  -L$(LIBZ_DIR)/lib/ -lz
+
+	LINUX_OBJS	= \
+			  special/linux_routines.o \
+			  dat/*.o \
+			  ../fmt/src/x*.o \
+			  ../ppl/plot/ppldata.o
+
+# Use the home-built libncurses.so to build so
+# libtinfo.so is not a requirement from RHEL6
+# builds.
+# (But use the system ncurses.so.5 for running.)
+
+	TERMCAPLIB	= -L/usr/lib -lncurses
+
+	READLINELIB	= -L$(READLINE_DIR)/lib -lreadline 
+#			  $(READLINE_DIR)/lib/libhistory.a
+
+# cancel the default rule for .f -> .o to prevent objects from being built
+# from .f files that are out-of-date with respect to their corresponding .F file
+# %.o : %__.f
+
+# use cpp to preprocess the .F files to .f files and then compile the .f files
+# rename to __.f because removing .f also removes .F
+#%.o : %.F
+#	rm -f $*__.f
+#	$(CPP) -P -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*__.f
+#	$(F77) $(FFLAGS) -c $*__.f; mv $*__.o $*.o	 
+
+# Directly compile the .F source files to the .o object files
+# since gfortran can handle the C compiler directives in Fortran coe
+%.o : %.F
+	$(FC) $(FFLAGS) -c $*.F -o $*.o
+
+
+#
+# End of platform_specific_includes.mk.i386-apple-darwin
+#

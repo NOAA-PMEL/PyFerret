@@ -11,6 +11,7 @@
 # 2/2001  debug macros
 # 1/2002  need $(F77) in .F.so rule
 #         and compile ffta_sample, fftp_sample functions
+# 7/2012  Do not need a special platform_specific file.
 
 #
 # include site specific macro definitions
@@ -22,7 +23,6 @@ include ../ef_utility/site_specific.mk
 #
 include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 
-include fft_platform_specific_flags.mk.$(BUILDTYPE)
 
 #
 # Macros

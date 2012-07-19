@@ -1,7 +1,7 @@
 /* Our own header, to be included *after* all standard system headers */
 
-#ifndef	__ourhdr_h
-#define	__ourhdr_h
+#ifndef	__ourhdr_posix_signal_h
+#define	__ourhdr_posix_signal_h
 
 #include <Python.h> /* make sure Python.h is always first */
 #include	<sys/types.h>	/* required for some of our prototypes */
@@ -13,10 +13,16 @@
 /* added typedef for ssize_t because sunOS doesn't include it in
    sys/types.h file *kob* 6/96 */
 /*  added ifdef check for aix because it didn't like this typedef */
+#ifdef MAC_SSIZE
+#define _SSIZE_T
+typedef long ssize_t;
+#endif
+
 #ifndef aix
 #ifndef _SSIZE_T
 #define _SSIZE_T
-typedef long                    ssize_t; /* Required for ISO/IEC 9945-1:1990 */
+/* Required for ISO/IEC 9945-1:1990 */
+typedef long ssize_t;
 #endif
 #endif
 
@@ -116,4 +122,4 @@ void	TELL_CHILD(pid_t);
 void	WAIT_PARENT(void);
 void	WAIT_CHILD(void);
 
-#endif	/* __ourhdr_h */
+#endif	/* __ourhdr_posix_signal_h */

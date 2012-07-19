@@ -1,3 +1,5 @@
+/* Make sure Python.h is included first */
+#include <Python.h>
 #include "EF_Util.h"
 
 /* Calls the 6D version with NORMAL for the E and F axis */

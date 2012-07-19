@@ -883,6 +883,12 @@ c
 900	call arc(x(k-1),y(k-1),narc+1,.001,xc,yc,npt,
      ,      k-1,kmax-1,x(2),y(2),splxp,splyp,spls,spline_tension)
 c
+c check for lines crossing the branch cut in curvilinear grids. Pick up the pen.
+	IF (curvilinear) THEN
+	   kk1 = 2
+	   IF (ABS(x_curv(k+1)-x_curv(k)) .GT. 190) call plotny(xc(kk1),yc(kk1),3,lwgt)
+	ENDIF
+
 	do 910 kk1 = 2,npt
 910	call plotny(xc(kk1),yc(kk1),2,lwgt)
 	k=k+1

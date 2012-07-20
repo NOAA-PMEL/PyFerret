@@ -40,6 +40,7 @@
 *	11.9.93 Mod to put immediate mode output in segments
 * v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 
+        IMPLICIT NONE
 	include 	'parampl5_dat.decl'            
 	include 	'PARAMPL5.DAT'            
 	include 	'cmrd_inc.decl'            

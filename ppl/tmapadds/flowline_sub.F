@@ -57,6 +57,7 @@ C**
 *  ACM  12/01 bug fix: jjndex not jjindex!
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
+        IMPLICIT NONE
         include 'ferret.parm'
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
@@ -118,7 +119,7 @@ C  Local declarations
      .     upi, upj, upij, vpi, vpj, vpij, xfuser, yfuser, ylousr,
      .     xlousr, xt, yt, xx1, yy1, xl, yl, vfact
       INTEGER LNBLK, TM_LENSTR1, 
-     .     i, ii, jj, ii1, ij1, i2, j2, mx, my, ipt, acnt, icol, 
+     .     i, i1, ii, jj, ii1, ij1, i2, j2, mx, my, ipt, acnt, icol, 
      .     scol, dis, iindex, jjndex, ii1index, iacc, iisav, iscl, imn, 
      .     jmn, j, iz, jz, iss, jss, imx, jmx, iln, slen
       LOGICAL bflg
@@ -264,7 +265,7 @@ C     flag boxes.
             ENDIF
 
             IF (curvilinear) THEN
-               x_curv = DBLE
+               x_curv = xx
                y_curv = yy
                CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
 

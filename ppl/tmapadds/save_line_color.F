@@ -38,6 +38,7 @@
 *       for metafile batch mode (cuckoos egg trick makes this necessary)
 * V616  *acm* 1/00 
 
+        IMPLICIT NONE
 	include         'parampl5_dat.decl'
 	include         'PARAMPL5.DAT'
 	include         'save_colors.cmn'

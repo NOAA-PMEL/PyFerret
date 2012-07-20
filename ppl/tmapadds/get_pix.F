@@ -39,6 +39,7 @@
 *       for gif windows where gqpxad does not work.
 *       
 
+        IMPLICIT NONE
 	INCLUDE 'gkscm2.cmn'
 
 * Calling arguments

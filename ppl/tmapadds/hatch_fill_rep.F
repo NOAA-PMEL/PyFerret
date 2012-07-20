@@ -43,23 +43,9 @@
 *	*jd* 10.12.92 mod for new hatching scheme
 
 
-#ifdef atc_gks
-#   ifdef unix
-	include        'gkspar.inc'
-        include        'shade_vars.cmn'
-#   else
-	INCLUDE        'atc_gksdir:gkspar.inc'
-        INCLUDE        'tmap_pplv11inc:tmap_shade_vars.inc'
-#   endif
-#else
-#   ifdef unix
-  	include        'gkspar.inc'
-        include         'shade_vars.cmn'
-#   else
-  	INCLUDE        'sys$library:gksdefs.bnd'
-        INCLUDE        'tmap_pplv11inc:tmap_shade_vars.inc'
-#   endif
-#endif
+        IMPLICIT NONE
+  	include 'gkspar.inc'
+        include 'shade_vars.cmn'
 
 	integer		zwsid,patt,ndx
 

@@ -43,13 +43,9 @@
 *
 * revision 0.0 - 1/24/89
 
-#ifdef unix
+        IMPLICIT NONE
 	include 'axis_inc.decl'
 	include 'AXIS.INC'
-#else
-	INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'
-	INCLUDE 'PPLV11INC:AXIS.INC'
-#endif
 
 	REAL	x, y, ang, ht, wid, strwid
 	CHARACTER string*32

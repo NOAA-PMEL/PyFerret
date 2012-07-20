@@ -50,6 +50,7 @@
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 *
 
+        IMPLICIT NONE
 #   ifndef atc_gks
         include         'gkspar.inc'
 #   endif

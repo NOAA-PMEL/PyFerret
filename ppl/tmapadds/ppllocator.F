@@ -45,6 +45,7 @@
 *	5.3.88/8.29.88
 
 
+        IMPLICIT NONE
 	integer		lo_dim,hi_dim,ndx_lo,ndx_mid,ndx_hi,inc
 
 	real*4		x1(lo_dim:hi_dim),x2

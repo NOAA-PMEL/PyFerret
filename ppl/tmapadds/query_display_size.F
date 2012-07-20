@@ -40,15 +40,11 @@
 *     J Davison 3.24.92
 *     Mod 8.27.93 *jd* to deal w xgks
 
-#ifdef unix
+        IMPLICIT NONE
 #   ifndef atc_gks
         include         'gkspar.inc'
 #   endif
         include         'ws_types.cmn'
-#else
-        include         'sys$library:gksdefs.bnd'
-        include         'tmap_pplv11inc:ws_types.inc'
-#endif
 
       integer     wstype,ierr,imeter,ix,iy
       real        dx_in,dy_in,x,y,xfactor,yfactor

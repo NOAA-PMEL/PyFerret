@@ -39,9 +39,12 @@
 *       called on the Ferret side from xeq_shade.
 *       ACM  5/03
 
+        IMPLICIT NONE
         include         'shade_vars.cmn'
 	include		'cmrd_inc.decl'
 	include		'CMRD.INC'
+
+        INTEGER flag
 
 *******************************************************************************
 

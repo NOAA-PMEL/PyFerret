@@ -49,6 +49,7 @@ C                with "*(*)" for the linux port
 * Mod J Davison 10.15.99 Add multi calendar support. Call new routine.
 *  *acm* 12/00 Change calendars to match NetCDF standard 
 
+      IMPLICIT NONE
       INCLUDE 'calendar.decl'
       INCLUDE 'calendar.cmn'
 

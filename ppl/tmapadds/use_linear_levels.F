@@ -42,7 +42,7 @@ C**
 *       For variance-based levels, if the values are too large, then
 *       we couldnt compute std dev. Revert to classic linear levels.
 
-	
+        IMPLICIT NONE
 	include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
 	include 'hd_inc.decl'

@@ -40,6 +40,7 @@ c:
 *                      resulted in drawing rectangles across what should be curvi portions
 *                      of the grid (bug 1505).
 
+      IMPLICIT NONE
       real x(*), y(*), z(*)
       integer i,j,npoly,nlev,nsides 
       real xadd, lmin, lmax

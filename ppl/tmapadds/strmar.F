@@ -42,6 +42,7 @@
 *  *acm&   3/06   change the scale of arrow heads; values are actually the same.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
+      IMPLICIT NONE
       REAL a160
       PARAMETER (a160 = 160.0*3.1416/180.0)
       REAL xf, yf

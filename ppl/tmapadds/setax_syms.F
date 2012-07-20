@@ -40,15 +40,16 @@
 *  v608 *acm* 10/07 Formatting very small numbers resulted in 0.
 *               (bug 1542). Use same formatting as in axis_end_syms.F
 
-* Calling argument declarations
+      IMPLICIT NONE
 
+* Calling argument declarations
       REAL axlo, axhi
       CHARACTER*1 dir
 
 * Internal arguments
 
       CHARACTER axval*255, ppl_buff*2048, buff*30
-      INTEGER TM_LENSTR1, nc, ier, ilen 
+      INTEGER TM_LENSTR1, nc, ier, ilen, ist
 
       buff = dir//'AXIS_MIN'
       CALL GETSYM(buff,axval,nc,ier)

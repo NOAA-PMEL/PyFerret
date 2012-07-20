@@ -41,6 +41,7 @@
 *       Mod JD 10.98 setup by percent, by_value, or by_level
 * V63  *acm* 10/09 Changes for gfortran build
 
+        IMPLICIT NONE
         include         'parampl5_dat.decl'
         include         'PARAMPL5.DAT'
         include         'shade_vars.cmn'

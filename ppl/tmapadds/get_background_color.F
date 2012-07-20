@@ -37,6 +37,7 @@
 * Get back the background color for use in making gif images transparent
 * Called in save_frame. 
 
+        IMPLICIT NONE
 	include 'gkscm1_inc.decl'
 	include 'GKSCM1.INC'
 

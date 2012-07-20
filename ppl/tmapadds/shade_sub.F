@@ -105,6 +105,7 @@ C V602 *acm* 2/07 check status coming out of CURV_COORD_RANGE; part of fix to bu
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
+        IMPLICIT NONE
 	INCLUDE		'parampl5_dat.decl'
 	INCLUDE		'PARAMPL5.DAT'
         INCLUDE         'shade_vars.cmn'
@@ -129,7 +130,7 @@ C V602 *acm* 2/07 check status coming out of CURV_COORD_RANGE; part of fix to bu
         INCLUDE         'xcurvilinear.cmn'
         INCLUDE         'errmsg.parm'
 
-	INTEGER		error,i,j,trans_no,cflag
+	INTEGER		error,i,j,k,trans_no,cflag
 
         INTEGER         my_trans,fill_ndx,GET_NDX
         DATA            my_trans/20/
@@ -143,7 +144,7 @@ C       data statement of my_trans added for linux port *jd* 12.96
 	logical		valid
 
         INTEGER		cells(*), pmax
-        INTEGER         j1, jn, jd
+        INTEGER         j1, jn, jd, my, mx
 	LOGICAL		REGULARLY_SPACED,
      .                  irregular, plot_cell
 
@@ -154,7 +155,7 @@ C       data statement of my_trans added for linux port *jd* 12.96
      .                  ilo, ihi, jlo, jhi
 	PARAMETER     ( maxpts = 200,
      .			maxpt_ov2 = maxpts / 2 )
-	REAL		px(maxpts), py(maxpts), xadd, lmin, lmax
+	REAL		px(maxpts), py(maxpts), xadd, xrange, lmin, lmax
 
 *	PARAMETER	(my_trans = 10)
 	EXTERNAL	GET_NDX

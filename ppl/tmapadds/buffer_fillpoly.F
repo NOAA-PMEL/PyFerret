@@ -4,15 +4,10 @@ C======================================================================
 
       subroutine buffer_fillpoly (xarg,yarg,npts,index)
 
-#ifdef unix
+        IMPLICIT NONE
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
         include         'shade_vars.cmn'
-#else
-        INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
-        INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-#endif
 
 *     J Davison 2.4.99
 

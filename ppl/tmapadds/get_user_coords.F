@@ -38,12 +38,9 @@
 *	Finds user coordinates given world coordinates and ancillary ppl info.
 *	J Davison 5.17.90
 
-#ifdef unix
+        IMPLICIT NONE
 	include		'axis_inc.decl'
 	include		'AXIS.INC'
-#else
-	INCLUDE		'tmap_pplv11inc:tmap_axis.inc'
-#endif
 
 	real	 	w(4),v(4),vc(4),ndc(4),wc(4),uc(4)
 	real		nax,nay,nbx,nby,wax,way,wbx,wby,uax,uay,ubx,uby

@@ -38,6 +38,11 @@
 * see fer/dat/xprog_state_data.F. Store a new setting for the default number of 
 * contour/fill levels, set by MODE NLEVELS 
 
+        IMPLICIT NONE
+
+        INTEGER nlevels
+
+	INCLUDE 'parampl5_dat.decl'
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'cont_inc.decl'
 	INCLUDE 'CONT.INC'

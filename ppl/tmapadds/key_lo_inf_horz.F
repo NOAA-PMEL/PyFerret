@@ -40,6 +40,7 @@
 * v581 *acm* 3/05 open levels (-INF) (INF)
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
+      IMPLICIT NONE
       INCLUDE 	'parampl5_dat.decl'
       INCLUDE 	'PARAMPL5.DAT'
       INCLUDE   'cont_inc.decl'

@@ -49,6 +49,7 @@
 * V600 *acm* 5/06  num_line_colors for MODE LINECOLORS. Number of line colors 
 *                  no longer fixed at 6.
 
+        IMPLICIT NONE
         include         'shade_vars.cmn'
         include         'gkscm1_inc.decl'
         include         'gkscm2.cmn'

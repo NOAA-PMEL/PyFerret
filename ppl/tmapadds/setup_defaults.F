@@ -48,6 +48,7 @@
 * V65 *acm   2/10 If Open-ended levels were used, symbol LEV_OPNLEVS saves 
 * the /LEV command needed to duplicate the levels
 
+        IMPLICIT NONE
         include         'shade_vars.cmn'
         include         'parampl5_dat.decl'
         include         'PARAMPL5.DAT'

@@ -42,13 +42,14 @@
 
 * Argument declarations
 
+      IMPLICIT NONE
       CHARACTER*(*) lab, newfont, newpen
       INTEGER lnbeg(*), lnend(*), npnew, nfnew, nchr, jln
 
 * Local variable definitions
 
       CHARACTER*1 fcode
-      INTEGER TM_LOC_STRING, ioc, loc
+      INTEGER TM_LOC_STRING, ioc, loc, nloc
 
       npnew = 0
       nfnew = 0

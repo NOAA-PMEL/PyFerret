@@ -42,6 +42,8 @@
 *  v5.4 *acm* 10/18/01  When plotting SYM=DOT clear buffer at end: doit_makedot
 *                       Remove VMS include statements
 
+        IMPLICIT NONE
+
 *****************************************************
 * local variable declarations for PLTIT (for TMAP)
 	REAL  	x

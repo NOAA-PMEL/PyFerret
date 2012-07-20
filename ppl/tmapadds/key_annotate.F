@@ -44,6 +44,7 @@
 *  lohi		1 = lo, 2 = hi
 *  vh		1 = vert, 2 = horiz
 
+      IMPLICIT NONE
       INCLUDE 	'parampl5_dat.decl'
       INCLUDE 	'PARAMPL5.DAT'
       INCLUDE   'cont_inc.decl'

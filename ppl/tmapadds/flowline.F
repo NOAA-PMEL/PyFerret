@@ -67,6 +67,7 @@ C   int *shdcls, int shdcnt, int den)
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 
+        IMPLICIT NONE
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
 

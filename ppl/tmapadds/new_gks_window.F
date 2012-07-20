@@ -43,6 +43,8 @@
 *     *jd* 12.21.93 Modified to accommodate xgks
 *  V600 *acm* 9/05 append window_title to window name
 
+      IMPLICIT NONE
+
 * Calling arguments
       integer         ws_id,status
       character*(*)   xname, window_title

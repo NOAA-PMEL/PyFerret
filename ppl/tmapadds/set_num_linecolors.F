@@ -38,6 +38,7 @@
 *  v6.00 Sets the number of line colors that will be allowed.
 * V602: *acm* 1/07 Changes for metafile-batch mode
 
+        IMPLICIT NONE
 	INCLUDE 'cmrd_inc.decl'
         INCLUDE 'CMRD.INC'
         INCLUDE 'parampl5_dat.decl'

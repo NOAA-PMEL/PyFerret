@@ -51,9 +51,13 @@
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 
+        IMPLICIT NONE
+
 	DIMENSION SX(12000),SY(12000),ASCII(127,4),BASE(4),RAST(4)
 	DIMENSION DTYPE(35),DLEN(35),IOFF(4),IFLEN(4),ITYPE(4)
 C
+        REAL BASE, RAST
+        INTEGER IFONT, II, IADD, ID
 	LOGICAL SYMROT,READIR,PLOT,COLRF
 c	CHARACTER PLTFIL*80
 	CHARACTER ICOM*2,ICHR*1,STRING*120,DNME(35)*(*),DNUM(35)*(*)
@@ -79,13 +83,11 @@ c	CHARACTER PLTFIL*80
 	INTEGER*2 DTYPE,DLEN,IOFF,IFLEN,ITYPE
 	INTEGER COLOLD
 	LOGICAL ASCFNT
+        INTEGER IJ
 C
 C
-#ifdef unix
+	INCLUDE 'pltcom_dat.decl'
 	INCLUDE 'PLTCOM.DAT'
-#else
-	INCLUDE 'pplv11inc:PLTCOM.DAT'
-#endif
 
 
 #ifdef unix

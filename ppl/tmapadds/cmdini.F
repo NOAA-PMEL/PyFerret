@@ -27,13 +27,18 @@ C**		30-MAY-1986	by Donald W. Denbo
 C**		  Changes made for VAX/VMS version
 C**
 C**
+        IMPLICIT NONE
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'SYMKEY.INC'
+        INCLUDE 'cmdcom_inc.decl'
 	INCLUDE 'CMDCOM.INC'
+        INCLUDE 'lunits_inc.decl'
 	INCLUDE 'LUNITS.INC'
 
 	CHARACTER FROM*80,TO*80,TEMP*2048,LINE*2048,CR*1,ESC*1
-	INTEGER*4 STATUS,IFLAG
+	INTEGER*4 STATUS,IFLAG, IER, IS, itlen, ISTP, ISPC
+
+        INTEGER*4 lnblk
 
 * 1/03 *kob* - g77 port requires that equivalence line comes before 
 *              variable declaration

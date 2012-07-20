@@ -78,6 +78,7 @@ C
 *                 xinv, yinv to the opposite axis.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
+        IMPLICIT NONE
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
 
@@ -138,14 +139,15 @@ C
 	real		xinv,yinv, tmp
 
 *jd*
-	real            zzmin, zzmax
+	real            zzmin, zzmax, zt
 	integer         status, nlm1
 	real		dz,znp,zmp
 	integer		i,j,uprdn, llen, ptsbase
 	logical         line_it, fill_it
-        integer         slen1, slen2
+        integer         slen1, slen2, ICNT, ii, IY
         CHARACTER       TM_FMT_SNGL*20, buff1*20, buff2*20, err_msg*40
 
+        real             epsilon
         parameter       (epsilon = 1e-6)
 
 *************************************

@@ -63,6 +63,7 @@
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
+        IMPLICIT NONE
         include 'pltcom_dat.decl'
         include 'PLTCOM.DAT'
         include 'cmrdl_inc.decl'

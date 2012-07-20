@@ -47,6 +47,8 @@
 *                 Declare all variables.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
+      IMPLICIT NONE
+
 *  Argument declarations.
       REAL xx1, yy1, xx2, yy2, vel
 

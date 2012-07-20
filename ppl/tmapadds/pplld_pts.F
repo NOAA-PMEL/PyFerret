@@ -66,6 +66,7 @@ c
 * of points in each polygon in the PPLUS dynamic memory.
 
 
+        IMPLICIT NONE
 	include 'PPLDAT.INC'
 
 

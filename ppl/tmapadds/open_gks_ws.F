@@ -61,9 +61,11 @@
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 
 
-        integer         TM_LENSTR1, s1, nlen, asf(13), error
+        IMPLICIT NONE
+        integer      TM_LENSTR, TM_LENSTR1, s1, nlen, asf(13), error,
+     .               clen, ier, status
 
-        character*88    window_name
+        character*88 window_name
 
         include 'pltcom_dat.decl'! with declarations
         include 'PLTCOM.DAT'! with declarations

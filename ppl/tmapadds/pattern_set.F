@@ -42,31 +42,20 @@
 *                  pattern file.
 * v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 
+        IMPLICIT NONE
         include         'shade_vars.cmn'
-        include 	'cmrdl_inc.decl'            
-        include 	'CMRDL.INC'            
-        include 	'gkscm1_inc.decl'            
-        include 	'GKSCM1.INC'            
-        include 	'gkscm2.cmn'            
-	include		'CMRD.INC'
+        include 'cmrdl_inc.decl'            
+        include 'CMRDL.INC'            
+        include 'gkscm1_inc.decl'            
+        include 'GKSCM1.INC'            
+        include 'gkscm2.cmn'            
+        include 'cmrd_inc.decl'
+        include 'CMRD.INC'
+        include 'gkspar.inc'
 
-#ifdef atc_gks
-#   ifdef unix
-	include        'gkspar.inc'
-#   else
-	INCLUDE        'atc_gksdir:gkspar.inc'
-#   endif
-#else
-#   ifdef unix
-  	include        'gkspar.inc'
-#   else
-  	INCLUDE        'sys$library:gksdefs.bnd'
-#   endif
-#endif
-
-       	logical		there
+       	logical         there
         integer         beg,end,beg_eq                        
-        character*2048   str                                
+        character*2048  str                                
 
 ******************************************************************************
 
@@ -112,6 +101,7 @@
 
 	SUBROUTINE PATTERN_LEVELS (str,end)
 
+        IMPLICIT NONE
         include         'shade_vars.cmn'
 	include		'cmrd_inc.decl'
 	include		'CMRD.INC'
@@ -122,7 +112,7 @@
 	integer		i,j,ndx,npatp1,solid
         DATA            solid/21/
 
-        integer         beg,end,andx
+        integer         beg,end,andx,status,named_ndx
         character*2048   str   
         character*100   err_msg                             
 
@@ -194,7 +184,7 @@
            recognized = .true.
            named_ndx = i
            goto 11
- 10     end do
+ 10     CONTINUE
         if (.not. recognized) then
            write (6,'(/a/a/)') ' PPL+ error: The pattern name ' 
      .        //str(1:end)//' is not valid.',
@@ -232,11 +222,8 @@
 
         SUBROUTINE PATTERN_DEFAULT
 
-#ifdef unix
+        IMPLICIT NONE
         include         'shade_vars.cmn'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-#endif
 
         integer  i
 
@@ -256,20 +243,14 @@
 
 	SUBROUTINE PATTERN_READ (str,beg,end,there)
 
-#ifdef unix
+        IMPLICIT NONE
         include 	'tmap_errors.parm'    
 	include		'cmrd_inc.decl'
 	include		'CMRD.INC'
         include         'shade_vars.cmn'
-#else
-
-        INCLUDE 	'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE		'tmap_pplv11inc:tmap_cmrd.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-#endif
 
 	logical		there, recognized
-	integer		beg,end,i,j,speclen,lnblk,status,ndx
+	integer		beg,end,i,j,speclen,lnblk,status,ndx,named_ndx
 	character*2048	str,sfile,instr,label,specdir,tm_inq_path
 
 	external 	lnblk
@@ -330,7 +311,7 @@
            recognized = .true.
            named_ndx = i
            goto 27
- 25     end do
+ 25     CONTINUE
         if (.not. recognized) then
            write (6,'(/a/a/)') ' PPL+ error: The pattern name ' 
      .        //str(1:end)//' is not valid.',
@@ -362,11 +343,8 @@
 
 	SUBROUTINE PATTERN_SAVE (str,beg,end)
 
-#ifdef unix
+        IMPLICIT NONE
         include         'shade_vars.cmn'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-#endif
 
 	integer		beg,end,i
 	character*2048	str,sfile

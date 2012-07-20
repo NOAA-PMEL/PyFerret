@@ -45,6 +45,7 @@
 * gsplr: wkid, line index, line type, linewidth scale factor, color index
 * gspmr: wkid, marker index, marker type(dot=1), size scale factor (const for dot), color
 
+        IMPLICIT NONE
         INTEGER zwsid,zwstype
 
         INCLUDE 'ws_types.cmn'

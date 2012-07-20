@@ -41,6 +41,7 @@
 *	and left justify, throwing away all blanks, and returning 
 *	the length of the resulting string.  
 
+        IMPLICIT NONE
 	integer		len_in,len_out,i
 	character*(*)	instr,outstr
 

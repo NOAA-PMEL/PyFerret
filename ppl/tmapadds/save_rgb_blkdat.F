@@ -41,6 +41,7 @@ C	*******************************************************************
 C       Initialize space that saves the rgb colors
 C	*******************************************************************
 
+        IMPLICIT NONE
 	INCLUDE         'parampl5_dat.decl'
 	INCLUDE         'PARAMPL5.DAT'
 	INCLUDE         'save_colors.cmn'

@@ -57,6 +57,7 @@
 *                  wasnt plotted on SHADE and POLY plots
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
+        IMPLICIT NONE
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
 	include		'miss_inc.decl'

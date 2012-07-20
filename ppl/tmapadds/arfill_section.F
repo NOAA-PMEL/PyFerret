@@ -42,11 +42,13 @@
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
 
+        IMPLICIT NONE
+
       REAL z(nx,ny),x(nx),y(ny),zlev(nlev), x_extra, y_extra, 
      .     xadd, lmin, lmax
       INTEGER nx, ny, nlev, nnx, nny, ilo, ihi, jlo, jhi, status
 
-      integer i, j, ii, jj
+      integer i, j, ii, jj, itop, jtop
       real xt(5), yt(5), zt(5)
 
 	include 	'ARFILL.INC'

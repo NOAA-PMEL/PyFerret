@@ -2,6 +2,7 @@
 
       subroutine fillpoly(xarg,yarg,npts,index,xadd,lmin,lmax)
 
+      IMPLICIT NONE
       real xarg(*),yarg(*)
       integer npts,index
 *
@@ -108,7 +109,7 @@ C
 
 *  From shade_sub; to use GKS calls to get scaling 
 
-	INTEGER		error, trans_no
+	INTEGER		error, trans_no, status
 	REAL	 	w(4), v(4), wc(4)
 
 	xplus = xadd
@@ -280,7 +281,11 @@ c
 1000  RETURN
       END
 c
+c
+c
       subroutine clippoly(xt,yt,npts,xc,yc,nout)
+
+      IMPLICIT NONE
       real xt(*),yt(*),xc(*),yc(*)
       integer npts,nout
 c
@@ -313,7 +318,11 @@ c
       return
       end
 c
+c
+c
       logical function inregion(x,y)
+
+      IMPLICIT NONE
       real x,y
 c
       common/plyclp/acmin,acmax,bcmin,bcmax
@@ -324,7 +333,11 @@ c
       return
       end
 c
+c
+c
       subroutine putunique(x, y, xc, yc, nout)
+
+      IMPLICIT NONE
       real x,y,xc(*),yc(*)
       integer nout,i
 c
@@ -338,7 +351,11 @@ c
       return
       end
 c
+c
+c
       subroutine getinterp(xin,yin,xout,yout,x,y)
+
+      IMPLICIT NONE
       real xin,yin,xout,yout,x,y
 c
       common/plyclp/acmin,acmax,bcmin,bcmax

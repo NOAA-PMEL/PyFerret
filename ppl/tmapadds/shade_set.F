@@ -55,30 +55,17 @@
 *                  a warning if its not one of these. Fixes bug 1549
 * V610  *acm* 3/08 Fixes for metafile batch mode
 
+        IMPLICIT NONE
         include         'shade_vars.cmn'
         include 	'cmrdl_inc.decl'            
         include 	'CMRDL.INC'            
         include 	'gkscm1_inc.decl'            
         include 	'GKSCM1.INC'            
         include 	'gkscm2.cmn'            
-
-
-#ifdef atc_gks
-#   ifdef unix
-	include        'gkspar.inc'
-#   else
-	INCLUDE        'atc_gksdir:gkspar.inc'
-#   endif
-#else
-#   ifdef unix
-  	include        'gkspar.inc'
-#   else
-  	INCLUDE        'sys$library:gksdefs.bnd'
-#   endif
-#endif
+	include         'gkspar.inc'
 
        	logical		there
-        integer         beg,end                            
+        integer         beg,end,istate
         character*2048   str                                
 
 ******************************************************************************
@@ -142,6 +129,7 @@
 
 	SUBROUTINE SHADE_LEVELS 
 
+        IMPLICIT NONE
         include         'parampl5_dat.decl'
         include         'PARAMPL5.DAT'
         include         'cont_inc.decl'
@@ -152,7 +140,7 @@
 
 	include 'errmsg.parm'
 
-	integer		i,j
+	integer		i,j, status
 
         CHARACTER*100   err_msg
 
@@ -286,6 +274,7 @@
 
 	SUBROUTINE SHADE_DEFAULT
 
+        IMPLICIT NONE
         include         'shade_vars.cmn'
 
 
@@ -304,11 +293,8 @@
 *     BY_VALUE   -> 1
 *     BY_LEVEL   -> 2
 
-#ifdef unix
+        IMPLICIT NONE
         include         'shade_vars.cmn'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-#endif
 
         character*2048   str
 
@@ -339,6 +325,7 @@
 *	Mod *jd* 10.92 to allow memory reads
 *	Mod *jd* 3.1.93 to use tm_inq_path
 
+        IMPLICIT NONE
         include 	'tmap_errors.parm'    
 	include		'cmrd_inc.decl'
 	include		'CMRD.INC'
@@ -496,6 +483,7 @@
 
 	SUBROUTINE SHADE_SAVE (str,beg,end)
 
+        IMPLICIT NONE
         include         'shade_vars.cmn'
 
 	integer		beg,end,i
@@ -585,6 +573,7 @@
 
 	SUBROUTINE SHADE_PROTECT_RESET (str)
 
+        IMPLICIT NONE
         include         'shade_vars.cmn'
 	include		'gkscm1_inc.decl'
 	include		'GKSCM1.INC'

@@ -50,6 +50,7 @@
 
 *    (LEV_TEXT - full text string of last levels used, set in routine LEV.F)
 
+        IMPLICIT NONE
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
 	include		'cont_inc.decl'
@@ -65,7 +66,7 @@
       REAL zmax, zmin, dz, diff, diff_dz
 
       CHARACTER ppl_buff*2048, TM_FMT_SNGL*10, buff*10, symbuff*30
-      INTEGER TM_LENSTR1, STR_SAME, i, ier, ilen, slen 
+      INTEGER TM_LENSTR1, STR_SAME, i, ier, ilen, slen, ist
       LOGICAL TM_FPEQ_SNGL, reglevs
 
 * Lowest and highest Z level

@@ -97,6 +97,7 @@
 *                 was not applied to loop 20 for horizontal keys.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
+        IMPLICIT NONE
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
 	include		'cont_inc.decl'
@@ -121,7 +122,7 @@
 	include        'gkspar.inc'
 
 	integer		ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
-     .                  lab_add
+     .                  lab_add, lev1, levn, nspace
 
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht
@@ -582,9 +583,6 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	      if (max_len .lt. str_len) max_len = str_len
            ENDIF
 1010	continue
-
-        ystart = 0.
-        IF (lev1 .NE. 1) ystart = y_inc
 
         IF (incr .GT. 0) THEN
         do 1020 ndx = lev1,shd_levels+1,incr

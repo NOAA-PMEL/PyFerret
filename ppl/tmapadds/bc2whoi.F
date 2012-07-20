@@ -48,6 +48,7 @@
 * 
 *  *acm* 12/00 Change calendars to match NetCDF standard
 
+      IMPLICIT NONE
       INCLUDE 'calendar.decl'
       INCLUDE 'calendar.cmn'
 

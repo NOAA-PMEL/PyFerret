@@ -42,11 +42,8 @@
 *
 *       v5.11 *kob* 5/00 
 
-#ifdef unix
+        IMPLICIT NONE
 	include 'xgrinpt.cmn'
-#else
-	INCLUDE 'TMAP_PPLV11INC:XGRINPT.CMN'
-#endif
 
 	DATA	has_new_mouse/ .FALSE. /   ! at program initialization
 	end

@@ -39,7 +39,7 @@
 *	J Davison 2.13.92
 *	Mod to support XGKS *jd* 8.10.93
 
-#ifdef unix
+        IMPLICIT NONE
 #   ifndef atc_gks
 #      ifndef xgks
 	include		'/usr/include/GKS3D/GKS3Dforbnd.f'
@@ -49,11 +49,6 @@
 #   endif
 	include		'ws_types.cmn'
         include         'gkscm2.cmn'
-#else
-	include		'sys$library:gksdefs.bnd'
-	include		'tmap_pplv11inc:ws_types.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_gkscm2.inc'
-#endif
 
 *******************************************************************************
 

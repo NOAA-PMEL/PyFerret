@@ -71,6 +71,7 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
 
+        IMPLICIT NONE
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
 
@@ -93,8 +94,9 @@
 
 	real		dx,dy,dz,z(nx,ny),znp,zmp
 
-	integer		status, i, j, cells(*), slen1, slen2
+	integer		status, i, ii, j, cells(*), slen1, slen2
         CHARACTER       TM_FMT_SNGL*20, buff1*20, buff2*20, err_msg*40
+        REAL             epsilon
         parameter       (epsilon = 1e-6)
 
 C       Add external stmt for linux port *jd* 12.96 RANGE is intrinsic fcn

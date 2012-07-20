@@ -44,6 +44,7 @@
 *       2.18.92 *jd* mod to support ATC GKS
 *       *kms* 11/20111 - change to only using ws_fill_rep
 
+        IMPLICIT NONE
         INCLUDE 'ws_types.cmn'
 
         INTEGER zwsid,zwstype

@@ -40,6 +40,7 @@
 *                   called by pplmod_contur and pplmod_arc to interpolate 
 *                   on contour lines.
 
+      IMPLICIT NONE
       integer n,islpsw,ierr
       real x(n),y(n),slp1,slpn,xp(n),yp(n),temp(n),s(n),
      *     sigma
@@ -123,6 +124,12 @@ c and snhcsh.
 c
 c-----------------------------------------------------------
 c
+      INTEGER i, ibak, im1, nm1, np1
+      REAL c1, c2, c3, dels, dels1, dels2, delsn, delsnm, 
+     .     delt, diag, diag1, diag2, diagin, 
+     .     dx1, dx2, dy1, dy2, sdiag1, sdiag2, sigmap, 
+     .     slpp1x, slpp1y, slppnx, slppny, sx, sy
+
       nm1 = n-1
       np1 = n+1
       ierr = 0
@@ -224,8 +231,12 @@ c
    12 ierr = 2
       return
       end
+c
+c
+c
       subroutine kurv2 (t,xs,ys,n,x,y,xp,yp,s,sigma)
 c
+      IMPLICIT NONE
       integer n
       real t,xs,ys,x(n),y(n),xp(n),yp(n),s(n),sigma
 c
@@ -280,6 +291,10 @@ c
 c this subroutine references package modules intrvl and
 c snhcsh.
 c
+
+      integer i, im1, intrvl
+      real    c1, c2, d, del1, del2, dels, dummy, 
+     *        s1, s2, sigdel, sigmap, ss, sumx, sumy, tn
 c-----------------------------------------------------------
 c
 c determine interval
@@ -317,9 +332,14 @@ c
       ys = sumy+yp(i)*c1+yp(im1)*c2
       return
       end
+c
+c
+c
       subroutine ceez (del1,del2,sigma,c1,c2,c3,n)
 c
+      IMPLICIT NONE
       real del1,del2,sigma,c1,c2,c3
+      integer n
 c
 c                                 coded by alan kaylor cline
 c                           from fitpack -- january 26, 1987
@@ -359,6 +379,10 @@ c none of the input parameters are altered.
 c
 c this subroutine references package module snhcsh.
 c
+
+      real coshm1, coshm2, del, delm, delp, denom, dummy,
+     *     sinhmm, sinhmp
+
 c-----------------------------------------------------------
 c
       if (n .eq. 2) go to 2
@@ -393,8 +417,12 @@ c
       c2 = -c1
       return
       end
+c
+c
+c
       subroutine snhcsh (sinhm,coshm,x,isw)
 c
+      IMPLICIT NONE
       integer isw
       real sinhm,coshm,x
 c
@@ -438,6 +466,13 @@ c   x and isw are unaltered.
 c
 c-----------------------------------------------------------
 c
+      real sp13, sp12, sp11, sp10, 
+     *     sp24, sp23, sp22, sp21, sp20,
+     *     sp33, sp32, sp31, sq32, sq31, sq30, 
+     *     sp43, sp42, sp41, sq42, sq41, sq40,
+     *     cp4, cp3, cp2, cp1, cp0,
+     *     ax, expx, xs
+
       data sp13/.3029390e-5/,
      *     sp12/.1975135e-3/,
      *     sp11/.8334261e-2/,
@@ -533,8 +568,12 @@ c
       if (isw .eq. 3) sinhm = (expx-1./expx)/(ax+ax)-1.
       return
       end
+c
+c
+c
       subroutine terms (diag,sdiag,sigma,del)
 c
+      IMPLICIT NONE
       real diag,sdiag,sigma,del
 c
 c                                 coded by alan kaylor cline
@@ -571,6 +610,9 @@ c   sigma and del are unaltered.
 c
 c this subroutine references package module snhcsh.
 c
+
+      real coshm, denom, sigdel, sinhm
+
 c-----------------------------------------------------------
 c
       if (sigma .ne. 0.) go to 1
@@ -584,8 +626,12 @@ c
       sdiag = sinhm/denom
       return
       end
-      function intrvl (t,x,n)
 c
+c
+c
+      integer function intrvl (t,x,n)
+c
+      IMPLICIT NONE
       integer n
       real t,x(n)
 c
@@ -619,6 +665,10 @@ c          otherwise       x(i)  .le. t .le. x(i+1),
 c
 c none of the input parameters are altered.
 c
+
+      integer i, il, ih
+      real    tt
+
 c-----------------------------------------------------------
 c
       save i

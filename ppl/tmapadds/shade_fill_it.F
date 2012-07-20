@@ -39,6 +39,7 @@
 * Do the fill for a shade plot, perhaps with a modulo offset in X
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
+       IMPLICIT NONE
        INCLUDE 'parampl5_dat.decl'
        INCLUDE 'PARAMPL5.DAT'
        INCLUDE 'hd_inc.decl'
@@ -48,14 +49,19 @@
        INCLUDE 'errmsg.parm'
        INCLUDE 'xcurvilinear.cmn'
 
-       INTEGER nxdim, nydim, status
-       REAL    data(nxdim,nydim), px(*), py(*), xs(*), ys(*), lmin, lmax
+       INTEGER nxdim, nydim, status, ilo, ihi, jlo, jhi
+       REAL    data(nxdim,nydim), px(*), py(*), xs(*), ys(*), 
+     .         lmin, lmax, xinv, yinv, xadd
 
 * local definitions
 
+       INTEGER maxpts, maxpt_ov2
+       PARAMETER ( maxpts = 200,
+     .             maxpt_ov2 = maxpts / 2 )
+
       REAL    minrowx, maxrowx, big
       INTEGER GET_NDX, i, j, i1, fill_ndx, npt, pt1, next_ndx,
-     .        jtop
+     .        itop, jtop
       REAL    ddat
       INTEGER nothing
       LOGICAL BAD_XY_COORD, first, xfield_is_modulo

@@ -43,11 +43,8 @@
 *       Mod *jd* 3.7.94  to include xgks event handling, on Solaris.  Renamed
 *	from atc_update to process_x_events
 
-#ifdef unix
+        IMPLICIT NONE
         include         'gkscm2.cmn'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_gkscm2.inc'
-#endif
 
 #ifdef atc_gks
 	integer 	i,err,num_open,wsid,num
@@ -55,11 +52,7 @@
         real		ra(1)
         character*80 	str(1), datarec(1), odr(1)
 
-#   ifdef unix
         include        'gkspar.inc'
-#   else
-        INCLUDE        'atc_gksdir:gkspar.inc'
-#   endif
 
 ******************************************************************************
 

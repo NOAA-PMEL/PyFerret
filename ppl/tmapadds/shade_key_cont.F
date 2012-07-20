@@ -40,6 +40,7 @@
 * v541 *acm*  5/02 add option to control outline on the shade key boxes
 * v581 *acm* 3/05 put flag cont_key into common CONT.INC
 
+        IMPLICIT NONE
 	include		'cmrd_inc.decl'
 	include		'CMRD.INC'
 	include 	'parampl5_dat.decl'

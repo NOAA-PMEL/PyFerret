@@ -43,6 +43,8 @@
 *                   Taken from aline_sub, but put a third symbol in
 *                   the middle of the line the key of a line-plot  
 
+        IMPLICIT NONE
+
 *****************************************************
 * local variable declarations for PLTIT (for TMAP)
 	REAL  	x

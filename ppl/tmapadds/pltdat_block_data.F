@@ -4,6 +4,9 @@ C	Initialization of PLTCOM.DAT common block.  Must be done in
 C	a block data stmt in FORTRAN 90.  *jd* Linux port 12.96
 C       All ports should have this, not just Linux (for sh libs) *js* 8.97
 
+      IMPLICIT NONE
+
+      include 'pltcom_dat.decl'
       include 'PLTCOM.DAT'
 
       DATA A/0.0/,AMAX/7500.0/,AMIN/0.0/,AOLD/0.0/,AORIGN/500.0/,

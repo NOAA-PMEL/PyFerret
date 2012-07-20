@@ -9,20 +9,11 @@
 *       *jd* 10.98 handle "atomic" colors
 * 3/99 *kob* 	move var init off of decl list  - cleaning up after jerry.
 
-#ifdef unix
+        IMPLICIT NONE
         include         'shade_vars.cmn'
 	include		'gkscm1_inc.decl'
 	include		'GKSCM1.INC'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_gkscm1.inc'
-#endif
-
-#   ifdef unix
         include        'gkspar.inc'
-#   else
-        INCLUDE        'sys$library:gksdefs.bnd'
-#   endif
 
 	integer		fill_ndx,style,pattern_ndx,solid
 	DATA            solid/21/

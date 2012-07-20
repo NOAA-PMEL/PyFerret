@@ -38,11 +38,8 @@
 *	Sets the color map between ndx_lo and ndx_hi to ws default
 *	J Davison JISAO/PMEL/TMAP 8.1.89
 
-#ifdef unix
+        IMPLICIT NONE
         include         'shade_vars.cmn'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-#endif
 
 	integer		zwsid,ndx_lo,range,ndx_hi,zwstype,err,ndx
 	real		r_val,g_val,b_val

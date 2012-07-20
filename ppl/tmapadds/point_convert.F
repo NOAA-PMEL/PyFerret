@@ -38,15 +38,11 @@
 *	Converts a point (x,y) in /nouser coordinates to /user
 *	J Davison 10.17.89
 
-#ifdef unix
+        IMPLICIT NONE
 	include		'plt_inc.decl'
 	include		'PLT.INC'
 	include		'axis_inc.decl'
 	include		'AXIS.INC'
-#else
-	INCLUDE		'tmap_pplv11inc:tmap_plt.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_axis.inc'
-#endif
 
 	real		xno_uzr,yno_uzr,xuzr,yuzr,xf,yf
 

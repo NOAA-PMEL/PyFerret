@@ -40,6 +40,7 @@
 * V663  *acm* 5/10 Fix bug 1744: hang if /LEVELS=v and all missing data.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
+        IMPLICIT NONE
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
 	include		'axis_inc.decl'
@@ -58,8 +59,8 @@
 	INTEGER		status
 
 * local declarations
-	REAL		dz, fm, znp, zmp, dzmax
-	INTEGER		m, jj
+	REAL		dmin, dmax, dz, fm, znp, zmp, dzmax
+	INTEGER		i, m, jj
         LOGICAL		TM_FPEQ_SNGL
 
         EXTERNAL range

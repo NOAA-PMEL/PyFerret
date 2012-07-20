@@ -44,7 +44,7 @@ C**
 *               so variance result is the same as other Ferret variance calculations
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
-	
+        IMPLICIT NONE
 	include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
 	include 'hd_inc.decl'
@@ -73,7 +73,7 @@ C**
 #endif
 
 	REAL*8 x, xmean, sum2, sumc, variance_c, xdelta
-	INTEGER n
+	INTEGER i, n
 
 c  Already have zmin, zmax
 

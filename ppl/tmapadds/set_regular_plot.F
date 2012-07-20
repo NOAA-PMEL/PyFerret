@@ -38,7 +38,10 @@
 * ACM 10/2005  for the fix to bug 1347.
 *               
 
+        IMPLICIT NONE
+        INCLUDE 'parampl5_dat.decl'
         INCLUDE 'PARAMPL5.DAT'
+	INCLUDE 'hd_inc.decl'
 	INCLUDE 'HD.INC'
 
 	JTYPE=0

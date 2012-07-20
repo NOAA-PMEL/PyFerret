@@ -46,6 +46,7 @@
 *           the key the default size in that direction.  See key.F
 * v581 *acm* 3/05 put flag cont_key into common CONT.INC
 
+        IMPLICIT NONE
         include         'shade_vars.cmn'
 	include		'cmrd_inc.decl'
 	include		'CMRD.INC'

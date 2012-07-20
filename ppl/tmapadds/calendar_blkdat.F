@@ -18,6 +18,7 @@ C  10/1/2001  *acm* change name of 360-day calendar to 360_DAY
 C   v554 2/3/2004  *acm* add an index to identify calendar type of d360
 C   v570 5/ 2004   *acm* new calendar all_leap=366_day
 
+        IMPLICIT NONE
         include 'calendar.decl'
         include 'calendar.cmn'
 

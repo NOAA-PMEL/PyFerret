@@ -43,29 +43,21 @@
 *	translations included in the logic these two functions needed to be
 *	separated
 
-#ifdef unix
-	include		'parampl5_dat.decl'
-	include		'PARAMPL5.DAT'
-	include		'miss_inc.decl'
-	include		'MISS.INC'
-        include         'hd_inc.decl'
-        include         'HD.INC'
-	include		'cont_inc.decl'
-	include		'CONT.INC'
-	include		'shade_vars.cmn'
+        IMPLICIT NONE
+	include	'parampl5_dat.decl'
+	include	'PARAMPL5.DAT'
+	include	'miss_inc.decl'
+	include	'MISS.INC'
+        include 'hd_inc.decl'
+        include 'HD.INC'
+	include	'cont_inc.decl'
+	include	'CONT.INC'
+	include	'shade_vars.cmn'
 
-#else
-	INCLUDE		'tmap_pplv11inc:tmap_parampl5.dat'
-	INCLUDE		'tmap_pplv11inc:tmap_miss.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_hd.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_cont.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_shade_vars.inc'
-#endif
+	integer	i,j,ndx
 
-	integer		i,j,ndx
-
-	real		xs(nx+1),py(4)
-	real            get_ndx
+	real    xs(nx+1),py(4)
+	real    get_ndx
 
 ********************************************************************************
 

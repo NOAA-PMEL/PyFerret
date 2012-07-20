@@ -38,6 +38,7 @@ C =========================================================================
 c:    Extracted from arfill.F
 *     v5.81 *acm* 4/05 Changes for FILL/MOD. Draw replications for curvilinear datasets
 
+        IMPLICIT NONE
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
         include         'shade_vars.cmn'

@@ -73,6 +73,7 @@ C V602 *acm* 2/07 check status coming out of CURV_COORD_RANGE; part of fix to bu
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
 
+        IMPLICIT NONE
 	include 	'ARFILL.INC'
         include         'GKSCM1.INC'
         include         'gkscm2.cmn'
@@ -96,6 +97,9 @@ C V602 *acm* 2/07 check status coming out of CURV_COORD_RANGE; part of fix to bu
 	real xadd,xinv,yinv,w(4),v(4),ndc(4),uc(4)
 
         real lmin, lmax
+
+        real big, xrange
+        integer error, nleft, nright, trans_no
 
 C     *jd* mod to allow filling single level fields
         if (nlev .le. 1) return

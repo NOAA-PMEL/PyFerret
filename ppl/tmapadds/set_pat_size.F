@@ -43,6 +43,7 @@
 *	J Davison JISAO/PMEL/TMAP
 *	10.28.88
 
+        IMPLICIT NONE
 	real		window(4),vport(4),xres,yres
         integer         wsid,error,xform,cols,rows,xsize,ysize
 

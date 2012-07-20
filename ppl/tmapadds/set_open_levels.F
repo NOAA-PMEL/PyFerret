@@ -41,6 +41,7 @@
 * v673 *acm* 10/11 Fix cut-and-paste bug on first setting of nlev3.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
+      IMPLICIT NONE
       include 'parampl5_dat.decl'
       include 'PARAMPL5.DAT'
       include 'axis_inc.decl'
@@ -58,9 +59,10 @@
       LOGICAL         TM_FPEQ_SNGL
       REAL    dz, fm, znp, zmp, dzf, znpf, zmpf, 
      .        znpclo,zmpclo, dzc, dzclo, dzchi, 
-     .        twostd, density_factor
+     .        twostd, density_factor, zlast, zmpchi, znpchi
       INTEGER TM_LENSTR1, m, jj, nlevf, nlevc, nlev3, half_ncoarse, 
-     .        slen, llen, dlen, hlen, if1, if2, i, k
+     .        slen, llen, dlen, hlen, if1, if2, i, i1, i2, ilev, 
+     .        index, k, levcount
 
       CHARACTER*10 TM_FMT_SNGL, lo_str, del_str, hi_str
 

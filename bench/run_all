@@ -206,14 +206,7 @@ echo "Beginning at $now" >>&$log_file
 cp $log_file $err_file
 echo "Beginning at $now"
 
-# $fver <bn230_all.jnl >>&$log_file        ! problem with missing lines in log
-# $fver <bn230_all_shell.jnl >>&$log_file  ! mixes error lines erratically
-#($fver <bn230_all_shell.jnl >>$log_file) >>&$err_file
-#($fver <bn300_all_shell.jnl >>$log_file) >>&$err_file
-#($fver <bn301_all_shell.jnl >>$log_file) >>&$err_file
-#($fver <bn311_all_shell.jnl >>$log_file) >>&$err_file
-#($fver <{$bver}_all_shell.jnl >>$log_file) >>&$err_file
-(($fver -script bn_all_shell.jnl) >>$log_file) >>&$err_file
+(($fver -script bn_all.jnl) >>$log_file) >>&$err_file
 
 # check status before continuing *kob* 4/98
 if ($status) then
@@ -223,7 +216,7 @@ endif
 
 # 5/05 *acm* run tests of externally-linked external functions
 if ( $do_shared_obj == "y" ) then
-  ($fver <bn_all_ef_shell.jnl >>$log_file) >>&$err_file
+  ($fver <bn_all_ef.jnl >>$log_file) >>&$err_file
 endif
 
 # Append the ncdump output file to the log file

@@ -167,12 +167,12 @@ test.cdf
 test.dat
 test_fil0.cdf
 test_fil.cdf
-test.gt
 test_mod.cdf
 test_modulo.cdf
 test_nomod.cdf
 test_string.cdf
 test_subspan_modulo.nc
+test.txt
 test.unf
 the_xml_file.xml
 timetics2.plt

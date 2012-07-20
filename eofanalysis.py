@@ -324,12 +324,12 @@ class EOFAnalysis(object):
         '''
         Returns a vector of the null-space in this empirical orthogonal 
         function (EOF) analysis.  These are the eigenvectors corresponding 
-        EOFs with negligible significance.  Null-space vectors have a norm
-        of one and are orthogonal to each other.
+        to EOFs with negligible significance.  Null-space vectors have a 
+        norm of one and are orthogonal to each other.
 
         Since null-space vectors are orthogonal to the data, there are no 
         time amplitude functions (TAFs) associated with these vectors.
-        (Or, alternatively, the TAF is an array of zeros.)
+        (Or, if you prefer, the TAF is an array of zeros.)
 
         Arguments:
             num -   positive integer giving the number of the null-space 

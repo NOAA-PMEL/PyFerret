@@ -7,5 +7,8 @@ list t[gt=time]
 
 ! Should be able to specify 30-feb-1909 for a 360-day calendar but it
 ! resulted in an error
+cancel symbol fer_last_error
+set mode ignore_error
 define axis/t=30-feb-1909:07-mar-1909:2/units=days/t0=1-jan-1909/calendar=d360 time
-
+set mode /last ignore_error
+show symbol fer_last_error

@@ -264,7 +264,7 @@ C     flag boxes.
             ENDIF
 
             IF (curvilinear) THEN
-               x_curv = DBLE
+               x_curv = xx
                y_curv = yy
                CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
 

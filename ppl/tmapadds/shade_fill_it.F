@@ -1,6 +1,6 @@
       SUBROUTINE SHADE_FILL_IT (data, nxdim, nydim, px, py, xs, ys, 
      .                          xinv, yinv, xadd, lmin, lmax, 
-     .                          ilo, ihi, jlo, jhi, status)
+     .                          ilo, ihi, jlo, jhi, maxpt_ov2, status)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -48,7 +48,7 @@
        INCLUDE 'errmsg.parm'
        INCLUDE 'xcurvilinear.cmn'
 
-       INTEGER nxdim, nydim, status
+       INTEGER nxdim, nydim, maxpt_ov2, status
        REAL    data(nxdim,nydim), px(*), py(*), xs(*), ys(*), lmin, lmax
 
 * local definitions

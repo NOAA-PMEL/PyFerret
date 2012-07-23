@@ -62,7 +62,7 @@
 
 
 	integer 	ITS_BATCH_GRAPHICS, TM_LENSTR1, 
-     .			s1, nlen, asf(13), error
+     .			s1, nlen, asf(13), error, clen
 	LOGICAL         batch
 
         character*88    window_name

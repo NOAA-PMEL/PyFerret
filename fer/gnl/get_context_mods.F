@@ -223,7 +223,7 @@
 
 * local parameter declarations (as in xeq_define)
 	INTEGER	    slash_calendar
-	PARAMETER ( slash_calendar = 1 + 13)
+	PARAMETER ( slash_calendar = 1 + 15)
 
 * initialize
 	dset = cx_data_set( dflt_cx)

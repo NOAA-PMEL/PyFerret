@@ -15,6 +15,7 @@
 #
 
 DIRS = contributed cmprsi_by examples fft statistics
+MOREDIRS = contributed cmprsi_by examples fft statistics gridding featurecollections
 # DIRS = contributed examples fft sort cflib closest_in_list hinterp featurecollections romea odd_formats cat statistics tax_times gridding zaxr 
 
 #
@@ -23,6 +24,12 @@ DIRS = contributed cmprsi_by examples fft statistics
 
 all:
 	for i in $(DIRS); \
+		do \
+			(cd $$i; echo "making" $@ "in $$i..."; \
+			$(MAKE) );\
+		done
+more:
+	for i in $(MOREDIRS); \
 		do \
 			(cd $$i; echo "making" $@ "in $$i..."; \
 			$(MAKE) );\

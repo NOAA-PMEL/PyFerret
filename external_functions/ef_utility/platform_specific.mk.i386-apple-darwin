@@ -26,9 +26,12 @@ CFLAGS_DEBUG	= -g -Ddebug
 FFLAGS_DEBUG	= -g -Ddebug
 FER_LOCAL_EXTFCNS = /usr/local/src/FERRET/external_functions/libs
 
-.F.so:
-	$(FC) $(FFLAGS) $(<F)
-	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so
+%.o : %.F
+	$(FC) $(FFLAGS) -c $*.F -o $*.o
+
+#.F.so:
+#	$(FC) $(FFLAGS) $(<F)
+#	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so
 
 # gcc -dynamiclib -Wl,-undefined,dynamic_lookup -o add_9.dylib add_9.o
 #    gcc -dynamiclib -Wl,-undefined,dynamic_lookup -o .so .o

@@ -37,5 +37,8 @@ LIST/FILE
 LIST/FILE=test.dat
 LIST/FILE=test.dat/APPEND
 LIST/FILE=test.unf/FORMAT=UNFORMATTED
-LIST/FILE=test.txt/FORMAT=(1X,F8.1,1X,F9.4)/L=1:3 v,v^0.5
+! V6.8 we no longer write this file type
+SET MODE IGNORE
+LIST/FILE=test.gt/FORMAT=TMAP/L=1:3 v,v^0.5
+SET MODE/LAST IGNORE
 CANCEL LIST

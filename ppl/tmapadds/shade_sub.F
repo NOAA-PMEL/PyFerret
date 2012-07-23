@@ -413,7 +413,8 @@ c If all the data is missing don't make the cellarray call
 
         xadd = 0.
         CALL SHADE_FILL_IT (data, nx, ny, px, py, xs, ys, xinv, yinv, 
-     .                   xadd, lmin, lmax, ilo, ihi, jlo, jhi, status)
+     .                   xadd, lmin, lmax, ilo, ihi, jlo, jhi, 
+     .                   maxpt_ov2, status)
         IF (status .EQ. ferr_interrupt) GOTO 3333
 
 *	MODULO REPLICATIONS TO FILL OUT uc(1) TO uc(2)
@@ -432,7 +433,7 @@ c If all the data is missing don't make the cellarray call
                  xadd = xadd - xrange
                  CALL SHADE_FILL_IT (data, nx, ny, px, py, xs, ys,
      .                         xinv, yinv,  xadd, lmin, lmax, ilo, 
-     .                         ihi, jlo, jhi, status)
+     .                         ihi, jlo, jhi, maxpt_ov2, status)
                  IF (status .EQ. ferr_interrupt) GOTO 3333
  100          CONTINUE
            ENDIF
@@ -443,7 +444,7 @@ c If all the data is missing don't make the cellarray call
                  xadd = xadd + xrange
                  CALL SHADE_FILL_IT (data, nx, ny, px, py, xs, ys,
      .                         xinv, yinv,  xadd, lmin, lmax, ilo, 
-     .                         ihi, jlo, jhi, status)
+     .                         ihi, jlo, jhi, maxpt_ov2, status)
                  IF (status .EQ. ferr_interrupt) GOTO 3333
  110          CONTINUE
            ENDIF

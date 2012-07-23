@@ -1,7 +1,7 @@
 *
 * Save the active window graphics to file.
 * This is intended to be used as the alternative
-* of  writing a GKS metafile by PlotPlus.
+* of writing a GKS metafile by PlotPlus.
 *
 * Input Arguments:
 *     windowid: ID number of the Window to be closed
@@ -40,8 +40,12 @@
 *       Let it guess the format from the filename extension
         fformat = ' '
         fmtlen = 0
-*       Make the background transparent (similar to metafile behavior)
-        transpbkg = 1
+*       Set the background transparency from the common block value
+        IF ( savetransparent ) THEN
+            transpbkg = 1
+        ELSE
+            transpbkg = 0
+        ENDIF
 *       Save the graphics to file
         CALL FGDWINSAVE(success, windowobjs(activewindow), filename,
      .                  fnamelen, fformat, fmtlen, transpbkg)

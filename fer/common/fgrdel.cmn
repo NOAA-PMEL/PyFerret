@@ -129,6 +129,9 @@
 * Default antialiasing state for new windows
         LOGICAL useantialiasing
 
+* Save on exit with a transparent background?
+        LOGICAL savetransparent
+
 * Title for the window to be created.  The program flow
 * sets this in a separate call before creating a window.
         CHARACTER*128 windowtitle
@@ -144,5 +147,6 @@
      .         activebrush, activepen, activesymbol, lastbrushcolor,
      .         lastbstylen, clearcolor, brushcolor, pencolor,
      .         symbolcolor, showwindow, cliptoview, somethingdrawn,
-     .         useantialiasing, lastbrushstyle, enginename, windowtitle
+     .         useantialiasing, savetransparent, 
+     .         lastbrushstyle, enginename, windowtitle
 

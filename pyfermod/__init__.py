@@ -86,40 +86,43 @@ def init(arglist=None, enterferret=True):
     ferret_help_message = \
     """
 
-    Usage:  ferret7  [-memsize <N>]  [-batch [<filename>]]  [-nojnl]  [-noverify]
-                     [-secure]  [-server]  [-python]  [-version]  [-help]  [-gif]
-                     [-unmapped]  [-script <scriptname> [ <scriptarg> ... ]]
+    Usage:  ferret7  [-memsize <N>]  [-batch [<filename>]]  [-transparent]  [-nojnl]
+                     [-noverify]  [-secure]  [-server]  [-python]  [-version]  [-help]
+                     [-gif]  [-unmapped]  [-script <scriptname> [ <scriptarg> ... ]]
 
-       -memsize:   initialize the memory cache size to <N> (default 25.6) mega (10^6)
-                   floats (where 1 float = 8 bytes)
+       -memsize:     initialize the memory cache size to <N> (default 25.6)
+                     mega (10^6) floats (where 1 float = 8 bytes)
 
-       -batch:     output graphics to <filename> (default "ferret.png") instead of
-                   displaying to the console; the file format will be guessed from
-                   the filename extension
+       -batch:       output graphics to <filename> (default "ferret.png") instead
+                     of displaying to the console; the file format will be guessed
+                     from the filename extension
 
-       -nojnl:     on startup do not open a journal file (can be turned on later with
-                   SET MODE JOURNAL)
+       -transparent: when output graphics are saved automatically (for example, on
+                     exit), use a transparent background instead of opaque white.
 
-       -noverify:  on startup turn off verify mode (can be turned on later with
-                   SET MODE VERIFY)
+       -nojnl:       on startup do not open a journal file (can be turned on later
+                     with SET MODE JOURNAL)
 
-       -secure:    restrict Ferret's capabilities
+       -noverify:    on startup turn off verify mode (can be turned on later with
+                     SET MODE VERIFY)
 
-       -server:    run Ferret in server mode
+       -secure:      restrict Ferret's capabilities
 
-       -python:    start at the Python prompt instead of the Ferret prompt
-                   (the ferret prompt can be obtained entering 'pyferret.run()')
+       -server:      run Ferret in server mode
 
-       -version:   print the Ferret header with version number and quit
+       -python:      start at the Python prompt instead of the Ferret prompt
+                     (the ferret prompt can be obtained entering 'pyferret.run()')
 
-       -help:      print this help message and quit
+       -version:     print the Ferret header with version number and quit
 
-       -gif        and
-       -unmapped:  inhibit the display of graphics to the console; grahics can
-                   be written to file using the FRAME /FILE command
+       -help:        print this help message and quit
 
-       -script:    execute the script <scriptname> with any arguments specified,
-                   and exit (THIS MUST BE SPECIFIED LAST)
+       -gif      and
+       -unmapped:    inhibit the display of graphics to the console; grahics can
+                     be written to file using the FRAME /FILE command
+
+       -script:      execute the script <scriptname> with any arguments specified,
+                     and exit (THIS MUST BE SPECIFIED LAST)
     """
 
     # Create the list of standard ferret PyEFs to create
@@ -306,6 +309,7 @@ def init(arglist=None, enterferret=True):
                             "             shapefile_* Ferret functions will not be added"
 
     my_metaname = None
+    my_transparent = False
     my_unmapped = False
     my_memsize = 25.6
     my_journal = True
@@ -342,6 +346,8 @@ def init(arglist=None, enterferret=True):
                             k -= 1
                     except:
                         k -= 1
+                elif opt == "-transparent":
+                    my_transparent = True
                 elif opt == "-gif":
                     # just treat -gif the same as -unmapped
                     my_unmapped = True
@@ -392,8 +398,8 @@ def init(arglist=None, enterferret=True):
 
     # start ferret without journaling
     start(memsize=my_memsize, journal=False, verify=my_verify,
-          restrict=my_restrict, server=my_server,
-          metaname=my_metaname, unmapped=my_unmapped)
+          restrict=my_restrict, server=my_server, metaname=my_metaname,
+          transparent= my_transparent, unmapped=my_unmapped)
 
     # define all the Ferret standard Python external functions
     for fname in std_pyefs:
@@ -438,7 +444,7 @@ def init(arglist=None, enterferret=True):
 
 
 def start(memsize=25.6, journal=True, verify=True, restrict=False,
-          server=False, metaname=None, unmapped=False):
+          server=False, metaname=None, transparent=False, unmapped=False):
     """
     Initializes Ferret.  This allocates the initial amount of memory
     for Ferret (from Python-managed memory), opens the journal file,
@@ -452,14 +458,16 @@ def start(memsize=25.6, journal=True, verify=True, restrict=False,
     This routine does NOT run any user initialization scripts.
 
     Arguments:
-        memsize:  the size, in megafloats (where a "float" is 4 bytes),
-                  to allocate for Ferret's memory block
-        journal:  turn on Ferret's journal mode?
-        verify:   turn on Ferret's verify mode?
-        restrict: restrict Ferret's capabilities?
-        server:   put Ferret in server mode?
-        metaname: filename for Ferret graphics; can be None or empty
-        unmapped: hide the graphics viewer?
+        memsize:     the size, in mega (10^6) floats (where 1 float
+                     = 8 bytes) to allocate for Ferret's memory block
+        journal:     turn on Ferret's journal mode?
+        verify:      turn on Ferret's verify mode?
+        restrict:    restrict Ferret's capabilities?
+        server:      put Ferret in server mode?
+        metaname:    filename for Ferret graphics; can be None or empty
+        transparent: autosave (e.g., on exit) image files with a
+                     transparent background?
+        unmapped:    hide the graphics viewer?
     Returns:
         True is successful
         False if Ferret has already been started
@@ -497,7 +505,7 @@ def start(memsize=25.6, journal=True, verify=True, restrict=False,
     # the actual call to ferret's start
     return libpyferret._start(flt_memsize, bool(journal), bool(verify),
                               bool(restrict), bool(server), str_metaname,
-                              bool(unmapped))
+                              bool(transparent), bool(unmapped))
 
 
 def resize(memsize):

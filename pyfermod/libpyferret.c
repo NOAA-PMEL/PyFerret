@@ -36,19 +36,17 @@
 #define PY_ARRAY_UNIQUE_SYMBOL pyferret_ARRAY_API
 #include <numpy/arrayobject.h>
 
-#include "ferret.h"
-#include "ferret_shared_buffer.h"
-#include "EF_Util.h"
-#include "pyferret.h"
-
 #include <ctype.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-/* graphics delegate include file for prototype of grdelWindowVerify */
+#include "ferret.h"
+#include "ferret_shared_buffer.h"
+#include "EF_Util.h"
 #include "grdel.h"
+#include "pyferret.h"
 
 /* Ferret's OK return status value */
 #define FERR_OK 3
@@ -117,18 +115,20 @@ static char pyferretStartDocstring[] =
 static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
 {
     static char *argNames[] = {"memsize", "journal", "verify", "restrict",
-                               "server", "metaname", "unmapped", NULL};
+                               "server", "metaname", "transparent", "unmapped", NULL};
     double mwMemSize = 25.6;
     PyObject *pyoJournal = NULL;
     PyObject *pyoVerify = NULL;
     PyObject *pyoRestrict = NULL;
     PyObject *pyoServer = NULL;
+    PyObject *pyoTransparent = NULL;
     PyObject *pyoUnmapped = NULL;
     char *metaname = NULL;
     int journalFlag = 1;
     int verifyFlag = 1;
     int restrictFlag = 0;
     int serverFlag = 0;
+    int transparentFlag = 0;
     int unmappedFlag = 0;
     int pplMemSize;
     size_t blksiz;
@@ -146,11 +146,11 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     import_array1(NULL);
 
     /* Parse the arguments, checking if an Exception was raised */
-    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|dO!O!O!O!sO!",
+    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|dO!O!O!O!sO!O!",
                  argNames, &mwMemSize, &PyBool_Type, &pyoJournal,
                  &PyBool_Type, &pyoVerify, &PyBool_Type, &pyoRestrict,
                  &PyBool_Type, &pyoServer, &metaname,
-                 &PyBool_Type, &pyoUnmapped) )
+                 &PyBool_Type, &pyoTransparent, &PyBool_Type, &pyoUnmapped) )
         return NULL;
 
     /* Interpret the booleans - Py_False and Py_True are singleton non-NULL objects, so just use == */
@@ -162,10 +162,13 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
         restrictFlag = 1;
     if ( pyoServer == Py_True )
         serverFlag = 1;
-    if ( metaname[0] == '\0' )
-        metaname = NULL;
+    if ( pyoTransparent == Py_True )
+        transparentFlag = 1;
     if ( pyoUnmapped == Py_True )
         unmappedFlag = 1;
+
+    if ( metaname[0] == '\0' )
+        metaname = NULL;
 
     /* Deal with the restrict and server flags right away */
     if ( restrictFlag != 0 )
@@ -212,6 +215,9 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
        }
        set_batch_graphics_(my_meta_name);
     }
+
+    /* Set the default autosave transparency */
+    fgd_set_transparency_(&transparentFlag);
 
     /* Initialize stuff: keyboard, todays date, grids, GFDL terms, PPL brain */
     initialize_();

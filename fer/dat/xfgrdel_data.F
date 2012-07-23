@@ -86,9 +86,9 @@
 
 * Values when creating windows.
 * These default values (especially windowtitle) may be reset.
-*        DATA enginename / 'Cairo' /
         DATA enginename / 'PyQtCairo' /
-*        DATA enginename / 'PyQtViewer' /
+        DATA useantialiasing / .TRUE. /
+        DATA savetransparent / .FALSE. /
         DATA windowtitle / 'FERRET' /
 
         END

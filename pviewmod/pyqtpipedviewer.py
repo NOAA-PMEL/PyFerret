@@ -566,6 +566,10 @@ class PyQtPipedViewer(QMainWindow):
         dialog will be shown for PostScript and PDF formats,
         allowing customizations to the file to be created.
         '''
+        # This could be called when there is no scene present.
+        # If this is the case, ignore the call.
+        if len(self.__viewpics) == 0:
+            return
         if not imageformat:
             # Guess the image format from the filename extension
             # to determine if it is a vector type, and if so,
@@ -797,12 +801,10 @@ class PyQtPipedViewer(QMainWindow):
             mysize = self.__helper.getSizeFromCmnd(cmnd)
             self.resizeScene(mysize.width(), mysize.height())
         elif cmndact == "save":
-            # this command could be called when there is no scene present
-            if len(self.__viewpics) > 0:
-                filename = cmnd["filename"]
-                fileformat = cmnd.get("fileformat", None)
-                transparentbkg = cmnd.get("transparentbkg", False)
-                self.saveSceneToFile(filename, fileformat, transparentbkg, False)
+            filename = cmnd["filename"]
+            fileformat = cmnd.get("fileformat", None)
+            transparentbkg = cmnd.get("transparentbkg", False)
+            self.saveSceneToFile(filename, fileformat, transparentbkg, False)
         elif cmndact == "setTitle":
             self.setWindowTitle(cmnd["title"])
         elif cmndact == "imgname":

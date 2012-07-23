@@ -499,6 +499,10 @@ class PyQtPipedImager(QMainWindow):
         clearing color is set to zero before using it to initialize
         the background color.
         '''
+        # This could be called when there is no image present.
+        # If this is the case, ignore the call.
+        if ( self.__sceneimage == None ):
+            return
         if not imageformat:
             # Guess the image format from the filename extension
             # This is only done to silently change gif to png
@@ -607,12 +611,10 @@ class PyQtPipedImager(QMainWindow):
         elif cmndact == "newImage":
             self.loadNewSceneImage(cmnd)
         elif cmndact == "save":
-            # this command could be called when there is no image present
-            if ( self.__sceneimage != None ):
-                filename = cmnd["filename"]
-                fileformat = cmnd.get("fileformat", None)
-                transparentbkg = cmnd.get("transparentbkg", False)
-                self.saveSceneToFile(filename, fileformat, transparentbkg)
+            filename = cmnd["filename"]
+            fileformat = cmnd.get("fileformat", None)
+            transparentbkg = cmnd.get("transparentbkg", False)
+            self.saveSceneToFile(filename, fileformat, transparentbkg)
         elif cmndact == "setTitle":
             self.setWindowTitle(cmnd["title"])
         elif cmndact == "imgname":

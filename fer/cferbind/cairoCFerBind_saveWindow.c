@@ -60,10 +60,9 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int nam
         return 0;
     }
     instdata = (CairoCFerBindData *) self->instancedata;
+    /* This might be called with no image present; if so, ignore the call */
     if ( (instdata->surface == NULL) || (instdata->context == NULL) ) {
-        strcpy(grdelerrmsg, "cairoCFerBind_saveWindow: "
-                            "attempting to save an empty image");
-        return 0;
+        return 1;
     }
     /* Just to be safe */
     cairo_surface_flush(instdata->surface);
@@ -185,7 +184,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int nam
 
         /* Create a path covering the entire image */
         cairo_new_path(tempcontext);
-        cairo_rectangle(tempcontext, 0.0, 0.0, 
+        cairo_rectangle(tempcontext, 0.0, 0.0,
                         (double) instdata->imagewidth,
                         (double) instdata->imageheight);
 

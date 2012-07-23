@@ -607,10 +607,12 @@ class PyQtPipedImager(QMainWindow):
         elif cmndact == "newImage":
             self.loadNewSceneImage(cmnd)
         elif cmndact == "save":
-            filename = cmnd["filename"]
-            fileformat = cmnd.get("fileformat", None)
-            transparentbkg = cmnd.get("transparentbkg", False)
-            self.saveSceneToFile(filename, fileformat, transparentbkg)
+            # this command could be called when there is no image present
+            if ( self.__sceneimage != None ):
+                filename = cmnd["filename"]
+                fileformat = cmnd.get("fileformat", None)
+                transparentbkg = cmnd.get("transparentbkg", False)
+                self.saveSceneToFile(filename, fileformat, transparentbkg)
         elif cmndact == "setTitle":
             self.setWindowTitle(cmnd["title"])
         elif cmndact == "imgname":

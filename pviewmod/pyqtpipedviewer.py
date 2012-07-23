@@ -797,10 +797,12 @@ class PyQtPipedViewer(QMainWindow):
             mysize = self.__helper.getSizeFromCmnd(cmnd)
             self.resizeScene(mysize.width(), mysize.height())
         elif cmndact == "save":
-            filename = cmnd["filename"]
-            fileformat = cmnd.get("fileformat", None)
-            transparentbkg = cmnd.get("transparentbkg", False)
-            self.saveSceneToFile(filename, fileformat, transparentbkg, False)
+            # this command could be called when there is no scene present
+            if len(self.__viewpics) > 0:
+                filename = cmnd["filename"]
+                fileformat = cmnd.get("fileformat", None)
+                transparentbkg = cmnd.get("transparentbkg", False)
+                self.saveSceneToFile(filename, fileformat, transparentbkg, False)
         elif cmndact == "setTitle":
             self.setWindowTitle(cmnd["title"])
         elif cmndact == "imgname":

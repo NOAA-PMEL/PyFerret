@@ -297,7 +297,9 @@ class PyFerretBindings(AbstractPyFerretBindings):
 
     def saveWindow(self, filename, fileformat, transparentbkg):
         '''
-        Save the contents of the window to a file.
+        Save the contents of the window to a file.  This might be called
+        when there is no image to save; in this case the call should be
+        ignored.
 
         Arguments:
             filename: name of the file to create

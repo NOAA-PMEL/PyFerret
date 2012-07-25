@@ -574,10 +574,10 @@
      .			slash_noaxes		= 1+28,
      .
      .
-     .                  slash_repeat_animate	= 13 + 1 ,
-     .                  slash_repeat_loop	= 14 + 1,
-     .                  slash_repeat_range	= 15 + 1 ,
-     .                  slash_repeat_name	= 16 + 1,
+     .                  slash_repeat_animate	= 12 + 1 ,
+     .                  slash_repeat_loop	= 13 + 1,
+     .                  slash_repeat_range	= 14 + 1 ,
+     .                  slash_repeat_name	= 15 + 1,
      .
      .			slash_exit_command	= 0 + 1,
      .                  slash_exit_loop 	= 1 + 1,

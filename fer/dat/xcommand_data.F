@@ -1314,11 +1314,11 @@
 		DATA qualifiers  (nqual_at16a+9)/ 'T'	/
 		DATA qualifiers  (nqual_at16a+10)/ 'E'	/
 		DATA qualifiers  (nqual_at16a+11)/ 'F'	/
-		DATA qualifiers  (nqual_at16a+12)/ '*****' /   ! future "QUIET"
-		DATA qualifiers  (nqual_at16a+13)/ 'ANIMATE'  /
-		DATA qualifiers  (nqual_at16a+14)/ 'LOOP' /   
-		DATA qualifiers  (nqual_at16a+15)/ 'RANGE' /   
-		DATA qualifiers  (nqual_at16a+16)/ 'NAME' /  
+		DATA qualifiers  (nqual_at16a+12)/ 'ANIMATE' /
+		DATA qualifiers  (nqual_at16a+13)/ 'LOOP'  /
+		DATA qualifiers  (nqual_at16a+14)/ 'RANGE' /   
+		DATA qualifiers  (nqual_at16a+15)/ 'NAME' /   
+		DATA qualifiers  (nqual_at16a+16)/ '****' /  
 
 * STATISTICS - command # 17
 	DATA commands(17)			/ 'STAT'	/

@@ -137,7 +137,7 @@
       mem5lof = arg_memlo(6,5) 
       mem6lof = arg_memlo(6,6) 
       mem7lof = arg_memlo(6,7) 
-      mem8lot = arg_memlo(6,8) 
+      mem8lof = arg_memlo(6,8) 
       mem9lof = arg_memlo(6,9) 
 
       mem1hix = arg_memhi(1,1) 

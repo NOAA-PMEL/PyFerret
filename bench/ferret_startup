@@ -1,4 +1,7 @@
 CAN MODE VERIFY
+SET MODE IGNORE_ERROR
+SET GRAPHICS UNMAPPED
+CAN MODE IGNORE_ERROR
 
 ! This file will be copied to .ferret as part
 ! pf the benchmark testing

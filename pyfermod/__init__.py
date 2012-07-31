@@ -37,6 +37,10 @@ functions provided by this module are:
 
 import sys
 import os
+try:
+    import rlcompleter
+except ImportError:
+    pass
 import readline
 import numpy
 import numpy.ma
@@ -124,6 +128,16 @@ def init(arglist=None, enterferret=True):
        -script:      execute the script <scriptname> with any arguments specified,
                      and exit (THIS MUST BE SPECIFIED LAST)
     """
+
+    # Use tab completion for readline (for Ferret) by default
+    readline.parse_and_bind('tab: complete');
+
+    # Execute the $PYTHONSTARTUP file, if given and not in secure mode
+    if not '-secure' in arglist:
+        try:
+            execfile(os.getenv('PYTHONSTARTUP', ''));
+        except IOError:
+            pass;
 
     # Create the list of standard ferret PyEFs to create
     std_pyefs = [ ]

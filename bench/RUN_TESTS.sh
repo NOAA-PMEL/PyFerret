@@ -31,9 +31,9 @@ fi
 umask 002
 
 # Get the machine type for the stream file testing
-if [ `uname -s` = "Linux" -a `uname -i` = "x86_64" ]; then
+if [ `uname -s` = "Linux" -a `uname -m` = "x86_64" ]; then
     machine="x86_64-linux"
-elif [ `uname -s` = "Linux" -a `uname -i` = "i386" ]; then
+elif [ `uname -s` = "Linux" -a `uname -m` = "i686" ]; then
     machine="linux"
 else
     echo "Unknown machine type"

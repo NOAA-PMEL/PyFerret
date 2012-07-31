@@ -69,19 +69,7 @@ endif
 
 
 ## Finally, execute an in-line Python script to run Ferret using the pyferret 
-## module.  The following explicity processes the $PYTHONSTARTUP file, if it
+## module.  The init method explicity processes the $PYTHONSTARTUP file, if it
 ## exists and if '-secure' was not given as a command-line argument.
-${pyname} -i -c "\
-import sys; \
-import os; \
-import rlcompleter; \
-import readline; \
-import pyferret; \
-readline.parse_and_bind('tab: complete'); \
-if not '-secure' in sys.argv[1:]: \
-    try: \
-        execfile(os.getenv('PYTHONSTARTUP', '')); \
-    except IOError: \
-        pass; \
-(errval, errmsg) = pyferret.init(sys.argv[1:], True)" $*
+${pyname} -i -c "import sys; import pyferret; (errval, errmsg) = pyferret.init(sys.argv[1:], True)" $*
 

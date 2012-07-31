@@ -1,4 +1,5 @@
 ## Site-dependent definitions included in Makefiles
+## Also verify the values in external_functions/ef_utility/site_specific.mk
 
 ## Full path name of the directory containing this file (the ferret root directory).
 ## Do not use $(shell pwd) since this is included in Makefiles in other directories.
@@ -13,6 +14,7 @@ BUILDTYPE	= $(HOSTTYPE)
 
 ## Python 2.x executable to invoke for build and install.
 PYTHON_EXE	= python2.6
+## The assignment of PYTHONINCDIR should not need any modifications
 PYTHONINCDIR   := $(shell $(PYTHON_EXE) -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()")
 
 ## Installation directory for built Ferret.  Using the "install"
@@ -41,5 +43,7 @@ NETCDF4_DIR	= /usr/local/netcdf_42
 # JAVA_HOME	= /usr/lib/jvm/java-1.6.0-sun
 # JAVA_HOME	= /usr/lib/jvm/java-6-sun
 JAVA_HOME	= /usr/lib/jvm/java-sun
+# JAVA_HOME	= /usr/lib/jvm/java-1.6.0-openjdk
+# JAVA_HOME	= /usr/lib/jvm/java-6-openjdk
 
 ##

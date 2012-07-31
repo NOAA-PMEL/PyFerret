@@ -59,10 +59,10 @@ void FORTRAN(tm_number_sub)  (char * string, int * result)
 #endif  /* NO_PROTO */
 {
   int num_read;
-  DFTYPE rval;
+  double rval;  /* pointer to double expected by %lf in sscanf */
   char kval[255];
 
-  num_read = sscanf(string, "%g%s", &rval, kval);
+  num_read = sscanf(string, "%lf%s", &rval, kval);
  
   if (num_read == 1) 
     *result = 1;

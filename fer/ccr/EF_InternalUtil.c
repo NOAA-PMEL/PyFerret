@@ -3103,7 +3103,7 @@ int EF_ListTraverse_fprintf( char *data, char *curr )
    ExternalFunction *ef_ptr=(ExternalFunction *)curr; 
 
    fprintf(stderr, "path = \"%s\", name = \"%s\", id = %d, internals_ptr = %d\n",
-	   ef_ptr->path, ef_ptr->name, ef_ptr->id, ef_ptr->internals_ptr);
+	   ef_ptr->path, ef_ptr->name, ef_ptr->id, (long) (ef_ptr->internals_ptr));
 
    return TRUE;
 }

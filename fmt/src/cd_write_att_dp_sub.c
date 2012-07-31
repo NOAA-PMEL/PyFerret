@@ -26,8 +26,8 @@
 *  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
 *  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
-*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY
+*  SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
@@ -63,7 +63,9 @@ void FORTRAN(cd_write_att_dp_sub) (int *cdfid, int *varid, char* attname, int *a
   /*
      V600:  2/06 *acm* Write correct atttr type to netcdf files : Note that compiler
                        warnings may be seen about data type inconsistencies in the
-					   calls to nc_put_att_double. This is ok; netcdf library does conversion.
+                       calls to nc_put_att_double. This is ok; netcdf library does conversion.
+     PyFr   7/12 *kms* Leave off the recasts of the void * since it does nothing except
+                       raise compiler warnings.
 					   
   */
   
@@ -77,32 +79,27 @@ void FORTRAN(cd_write_att_dp_sub) (int *cdfid, int *varid, char* attname, int *a
 
   /* DOUBLE attr */
   case NC_DOUBLE:
-      *status= nc_put_att_double (*cdfid, vid, attname, *attype,
-              *nval, (double*) val);
+      *status= nc_put_att_double (*cdfid, vid, attname, *attype, *nval, val);
   break;
 
   /* FLOAT attr */
   case NC_FLOAT:
-      *status= nc_put_att_double (*cdfid, vid, attname, *attype,
-              *nval, (float*) val);
+      *status= nc_put_att_double (*cdfid, vid, attname, *attype, *nval, val);
   break;
 
   /* INT attr */
   case NC_INT:
-	  *status= nc_put_att_double (*cdfid, vid, attname, *attype,
-              *nval, (int*) val);
+	  *status= nc_put_att_double (*cdfid, vid, attname, *attype, *nval, val);
   break;
 
   /* SHORT attr */
   case NC_SHORT:
-	  *status= nc_put_att_double (*cdfid, vid, attname, *attype,
-              *nval, (short*) val);
+	  *status= nc_put_att_double (*cdfid, vid, attname, *attype, *nval, val);
   break;
 
   /* Byte attr */
   case NC_BYTE:
-	  *status= nc_put_att_double (*cdfid, vid, attname, *attype,
-              *nval, (char*) val);
+	  *status= nc_put_att_double (*cdfid, vid, attname, *attype, *nval, val);
   break;
 
   default:

@@ -64,6 +64,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "pyferret.h"
 
 /* Easier way of handling FORTRAN calls with underscore/no underscore */
 #ifdef NO_ENTRY_NAME_UNDERSCORES
@@ -179,7 +180,8 @@ static char *do_gets(char *prompt)
         /* Prompt the user and get the answer */
         fputs(prompt, stdout);
         fflush(stdout);
-        fgets(static_line, STATIC_LINE_LEN - 1, stdin);
+        if ( fgets(static_line, STATIC_LINE_LEN - 1, stdin) == NULL )
+            return NULL;
 
         /* Trim off any trailing whitespace */
         linelen = strlen(static_line);

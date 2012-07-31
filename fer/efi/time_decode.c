@@ -53,10 +53,10 @@ DFTYPE FORTRAN(time_decode) (char *strtime)
 {
 
   int ih,im, ok;
-  DFTYPE ss;
+  double ss;  /* pointer to double expected by %lf in sscanf */
   char str1[2];
 
-  if (sscanf(strtime,"%d:%d:%f%1s",&ih,&im,&ss,str1) == 3)
+  if (sscanf(strtime,"%d:%d:%lf%1s",&ih,&im,&ss,str1) == 3)
     /* time as hh:mm:ss.s */
     {
       ok = 1;

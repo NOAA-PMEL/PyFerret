@@ -89,9 +89,10 @@ int FORTRAN(tm_break_fmt_date_c)(char *date,
 {
 
   int n;
+  double dblsec; /* pointer to double expected by %lf in sscanf */
 
 /* perform the conversion (e.g.) 1992-10-8 15:15:42.5  */
-  n = sscanf(date,"%d-%d-%d %d:%d:%f",year,month,day,hour,minute,second);
+  n = sscanf(date,"%d-%d-%d %d:%d:%lf",year,month,day,hour,minute,&dblsec);
 
   if ( n == 3 ) {
     *hour = 0;
@@ -102,7 +103,9 @@ int FORTRAN(tm_break_fmt_date_c)(char *date,
     *second = 0.0;
   } else if ( n == 5 ) {
     *second = 0.0;
-  } else if ( n != 6 ) {
+  } else if ( n == 6 ) {
+    *second = (DFTYPE) dblsec;
+  } else {
     return(1);
   }
 

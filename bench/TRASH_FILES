@@ -10,6 +10,8 @@ aa.nc
 abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
 a.jnl
 a.nc
+a1.nc
+a2.nc
 anothername.gif
 asc.nc
 b1566.jnl
@@ -180,6 +182,7 @@ v1file.nc
 vec_curv2.plt
 vec_curv.plt
 WV.J34K56L7
+xml_out.xml
 xyir.nc
 xz.nc
 z1.nc

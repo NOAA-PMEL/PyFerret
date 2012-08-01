@@ -164,8 +164,9 @@
 	         out_buff((ii-1)*10+1:ii*10) = '(invalid) '
 	      ENDIF
  500	   CONTINUE
+	   slen = TM_LENSTR1( out_buff )
 	   WRITE ( risc_buff, 3060 ) doing, grid_name(cx)(:16), 
-     .	           out_buff(:40)
+     .	           out_buff(:slen)
  3060	   FORMAT (1X,A,' dynamic grid ',2A)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 

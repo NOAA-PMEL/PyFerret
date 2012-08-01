@@ -85,12 +85,12 @@
       INTEGER grid_ndims (max_grids:grid_ceiling), 
      .        line_use_dir(0:3000)
 
-      INTEGER copy_of_grids (nferdims, 500)
+      INTEGER copy_of_grids (nferdims, 1001)
 
       iter = 0
       reordered = 0
 
-      DO igrid = 501, 508
+      DO igrid = 501, grid_ceiling
       DO idim = 1, nferdims
          copy_of_grids(idim, igrid-500) = grid_line(idim, igrid)
       ENDDO

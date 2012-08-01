@@ -78,7 +78,9 @@ if [ "${repository}" = "." ]; then
     cp -f -r ${source_dir}/external_functions .
 #   remove any object files and libraries from this copy
 #   of what is suppose to be just the source files
-    find ./external_functions -name \*.so -o -name \*.a -o -name \*.o -exec rm -f {} \;
+    find ${temp_dir}/external_functions -name \*.so -delete
+    find ${temp_dir}/external_functions -name \*.a -delete
+    find ${temp_dir}/external_functions -name \*.o -delete
     echo "   palettes"
     cp -f -r ${source_dir}/palettes .
 else
@@ -101,7 +103,6 @@ mv jnls/* .
 rm -rf jnls
 mv palettes ppl
 mkdir ext_func
-mv external_functions/site_specific.mk ext_func
 mv external_functions ext_func/src
 
 # Remove files that should not be distributed

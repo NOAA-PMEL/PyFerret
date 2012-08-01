@@ -2,18 +2,20 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>PyFerret Known Issues</title>
+<title>PyFerret Release Notes and Known Issues</title>
 <link rel="stylesheet" type="text/css" href="pyferret.css" />
 </head>
 
 <body>
 
-<h1>PyFerret Known Issues</h1>
+<h1>PyFerret Release Notes and Known Issues</h1>
 
 <p>
-The following are the currently known issues with PyFerret.  
-These are issues specific to PyFerret and does not include issues 
-with the Ferret engine contained within PyFerret.
+The following describes changes in behavior, 
+<a href="#KNOWNISSUES">known issues</a>, and
+<a href="#RELEASENOTES">release notes</a> for PyFerret.
+The known issues listed are those specific to PyFerret and does not 
+include issues with the Ferret engine contained within PyFerret.
 </p>
 
 <h3>Changes in behavior</h3>
@@ -45,6 +47,7 @@ with the Ferret engine contained within PyFerret.
     <i>.ps</i> extension instead of a <i>.plt</i> extension to support 
     existing scripts.
     </dd>
+<a name="PPLCOLORCOB">
 <dt>Changing a color does not change previously drawn items</dt>
     <dd>
     In Ferret, the XGKS graphics engine uses color values in a color 
@@ -62,91 +65,22 @@ with the Ferret engine contained within PyFerret.
     </dd>
 </dl>
 
+<a name="KNOWNISSUES"></a>
 <h3>Problems to be fixed</h3>
-
 <dl>
-<dt>Traditional Ferret external functions do not work properly.</dt>
-    <dd>
-    These functions are from Fortran source files that are compiled and 
-    linked to create a .so library file.  These .so library files are 
-    contained in a directory listed in the <i>$FER_EXTERNAL_FUNCTIONS</i> 
-    environment variable.  The problem observed is the indices in the 
-    Fortran common block <i>EF_MEM_SUBSC</i> are not updated.  (The 
-    common block in the external functions is not the same common block 
-    used in the Ferret engine in PyFerret.)
-    <br />
-    <i>This has been fixed in the next release of PyFerret.</i>
-    </dd>
-<dt>Command-line options <i>-unmapped</i>, <i>-gif</i>, <i>-batch</i> do not 
-    turn on anti-aliasing</dt>
-    <dd>
-    When the <i>pyferret</i> script is called with either the 
-    <i>-unmapped</i>, <i>-gif</i>, or <i>-batch</i> command-line options, 
-    anti-aliasing is not automatically turned on.  To be consistent with 
-    the Ferret command <i>SET GRAPHICS UNMAPPED</i>, anti-aliasing should 
-    be turned on by default.  The work-around for this is to issue the 
-    Ferret command <i>SET GRAPHICS /ANTIALIAS</i> at the beginning of the 
-    Ferret session or script.
-    <br />
-    <i>This has been fixed in the next release of PyFerret.</i>
-    </dd>
-<dt>Name completion using the <b>TAB</b> key does not work</dt>
-    <dd>
-    In Ferret, the <b>TAB</b> key will complete a partial file name or
-    provide a list of matching file names if there is more than one.
-    In PyFerret, this name completion does not work, and if implemented
-    using the Python readline module, will normally examine matching
-    Python function and variable names instead of file names.
-    <br />
-    <i>This has been fixed in the next release of PyFerret.
-    With this fix, matching file names will be presented at the Ferret
-    prompt.  At the Python prompt, however, whatever completion method
-    was used with the readline module will still be used.</i>
-    </dd>
-<dt><i>$PYTHONSTARTUP</i> file not read</dt>
-    <dd>
-    If the name of a file of Python commands is given by the environment 
-    variable PYTHONSTARTUP, normally the commands in this file are executed
-    when Python starts.  However, the Python session started using the
-    <i>pyferret</i> script does not read this file.  This is because the
-    <i>pyferret</i> script starts Python using the <i>-i</i> command-line 
-    option, which disables reading the <i>$PYTHONSTARTUP</i> file.
-    <br />
-    <i>This has been fixed in the next release of PyFerret.
-    With this fix, the pyferret script explicitly processes the
-    contents of the $PYTHONSTARTUP file, if it exists and if the 
-    -secure command-line option is not given.</i>
-    </dd>
-<dt>PPL COLOR command does not work</dt>
-    <dd>
-    The PPL COLOR command does not change the color value used 
-    for a color number in subsequent drawing commands.
-    <br />
-    <i>This has been fixed in the next release of PyFerret.</i>
-    </dd>
 <dt>PLOT+ patterns are not supported</dt>
     <dd>
     PLOT+ pattern files are not yet supported by the new graphics engines.  
     Thus <i>/pattern</i> qualifiers on Ferret plotting commands usually 
     will result in an error.
     </dd>
-<dt>Images automatically saved have a transparent background</dt>
-    <dd>
-    In PyFerret, using the <i>-batch filename</i> command-line option 
-    or the <i>SET MODE METAFILE:filename</i> Ferret command has the 
-    effect of automatically saving the final image to <i>filename</i> 
-    when PyFerret ends.  However, the image is saved (if possible) 
-    with a transparent background.  Instead, the image should be saved 
-    with a white background.  A <i>-transparent</i> command-line option 
-    should be provided for those wanting a transparent background.
-    </dd>
 <dt>Shared time axis not always recognized with putdata and put functions</dt>
     <dd>
-    When bringing Python data into Ferret using the PyFerret put or 
-    putdata functions, sometimes a time axis in common with an existing 
-    time axis in Ferret is not recognized.  This is most likely due to 
-    trying to map times derived from the six array values (year, month, 
-    day, hour, minute, second) to a single floating point time value.
+    When bringing Python data into Ferret using the PyFerret put or putdata 
+    functions, sometimes a time axis in common with an existing time axis 
+    in Ferret is not recognized.  This is most likely due to trying to map 
+    times derived from the six integer array values (year, month, day, hour, 
+    minute, second) to a single floating point time value.
     </dd>
 <dt>A "metafile" name with a <i>.plt</i> extension can sometimes cause errors</dt>
     <dd>
@@ -170,12 +104,109 @@ with the Ferret engine contained within PyFerret.
     PDF files are compressed when created on RHEL6 and other Linux 
     systems.
     </dd>
-<dt>Window name not set in the default first window</dt>
+</dl>
+
+<a name="RELEASENOTES"></a>
+<h3>Release Notes for PyFerret 0.0.9</h3>
+
+<dl>
+<dt>PyFerret uses double-precision floating-point values for all 
+    calculations and data arrays.</dt>
     <dd>
-    The default first window displayed does not have the window title set 
-    to the standard <i>FERRET_(windownumber)_(datestamp)</i>.  Instead it 
-    displays the name of the display application (PyQtPipedImager or 
-    PyQtPipedViewer).
+    PyFerret has been updated to use Ferret 6.8.1 as its Ferret engine.
+    One major enhancement to Ferret 6.8.1 was the use of double-precision
+    floating-point values for all calculations and data arrays.  See 
+    <a href="http://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/version-6-8-release-notes#DoublePrecision">
+    these release notes</a> for more details about this enhancement 
+    in Ferret. <br />
+    Because of this change, NumPy numeric data arrays used by PyFerret 
+    now have the type NumPy float64 (or Python float).  If your Python 
+    code explicitly creates NumPy float32 arrays that are given to 
+    PyFerret, the data type will need to be changed to float64.  For 
+    most users, however, no changes to your Python code will be required. 
+    </dd>
+<dt>PyFerret implements a six-dimensional grid.</dt>
+    <dd>
+    This also is a result of the update of PyFerret to use Ferret 6.8.1 
+    as its Ferret engine.  This Ferret enhancement provides standard axes
+    for ensembles as well as forecasts in a data array.  See
+    <a href="http://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/version-6-8-release-notes#SixDim">
+    these release notes</a> for more details about this enhancement 
+    in Ferret. <br />
+    Because of this change, NumPy numeric data arrays returned by PyFerret 
+    now have six dimensions instead of four.  As before, the NumPy array 
+    shape value for both singleton and normal (orthogonal, unused) axes 
+    is one.  The additional axes can be used as desired in Ferret external 
+    functions written in Python.  If not specified, the usual default 
+    values (such as the result axis is inherited from the arguments) will 
+    apply to the two additional axes.
+    </dd>
+<dt>Ferret Fortran external functions now work properly.</dt>
+    <dd>
+    Ferret Fortran external functions are are created from Fortran source 
+    files that are compiled and linked to create a shared-object (.so) 
+    library file.  These .so library files are contained in a directory 
+    listed in the <i>$FER_EXTERNAL_FUNCTIONS</i> environment variable.  
+    To work with PyFerret, these external functions will need to be rebuilt, 
+    not only to use double-precision (possibly six-dimensional) arrays, 
+    but also to use the PyFerret shared-object library to resolve calls 
+    to Ferret utility functions (the ef_... functions).  See the
+    <a href="http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/fortranefs/">
+    Ferret Fortran external functions</a> section of the PyFerret 
+    documentation for more information.
+    </dd>
+<dt>Command-line options <i>-unmapped</i>, <i>-gif</i>, <i>-batch</i> now 
+    turn on anti-aliasing</dt>
+    <dd>
+    When the <i>pyferret</i> script is called with either the 
+    <i>-unmapped</i>, <i>-gif</i>, or <i>-batch</i> command-line options, 
+    anti-aliasing is now turned on by default to be consistent with 
+    the Ferret command <i>SET GRAPHICS UNMAPPED</i>.
+    </dd>
+<dt>Filename completion using the <b>TAB</b> key now works</dt>
+    <dd>
+    At the Ferret prompt in PyFerret, the <b>TAB</b> key will complete a 
+    partial file name or provide a list of matching file names if there 
+    is more than one.  At the Python prompt, however, whatever completion 
+    method was used with the readline module will still be used (by default, 
+    the method in rlcompleter, which provides a list of matching Python 
+    variables and methods).  
+    </dd>
+<dt>The initialization script <i>$PYTHONSTARTUP</i> is now read</dt>
+    <dd>
+    When Python starts under normal conditions, Python executes the 
+    commands given in an initialization script named by the environment 
+    variable <i>PYTHONSTARTUP</i>.  When using the pyferret shell 
+    scripts, however, this initialization is not automatically performed 
+    by Python (because of the use of the <i>-i</i> Python command-line 
+    option).<br />
+    To provide behavior consistent with a normal start-up of Python,
+    the <i>pyferret.init</i> method (which is used by the pyferret shell 
+    scripts) now executes the commands in the <i>$PYTHONSTARTUP</i> 
+    initialization script unless <i>-secure</i> is given in the arguments 
+    (given as a command-line option).  
+    </dd>
+<dt>PPL COLOR command now works</dt>
+    <dd>
+    The PPL COLOR command now works as expected, changing the color 
+    value used for a color number in subsequent drawing commands.
+    However, see <a href="#PPLCOLORCOB">the note above</a> about the 
+    change in behavior of this command in PyFerret.
+    </dd>
+<dt>Images automatically saved now have an opaque white background 
+    by default</dt>
+    <dd>
+    Images automatically saved from using the <i>-batch filename</i> 
+    command-line option or the <i>SET MODE METAFILE:filename</i> Ferret 
+    command now have an opaque white background.  Use the 
+    <i>-transparent</i> command-line option to save the image with a 
+    transparent background (if transparency is supported by the image 
+    format used).
+    </dd>
+<dt>The window title of the default first window is now properly assigned</dt>
+    <dd>
+    The default first window displayed now has the standard window title
+    of <i>FERRET_(windownumber)_(datestamp)</i>. 
     </dd>
 </dl>
 

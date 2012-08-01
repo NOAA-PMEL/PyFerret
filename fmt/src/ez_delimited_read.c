@@ -205,8 +205,8 @@ int decode_file (char* fname, char *recptr, char *delims, int *skip,
   /* skip initial records */
   for (i=0; i<*skip; i++)
     {  
-      if (feof(fp)) break;
-      (void) fgets(recptr,*reclen,fp);
+      if ( fgets(recptr,*reclen,fp) == NULL )
+        break;
     }
 
   while (!feof(fp) && (*nrec)<(*maxrec))
@@ -278,8 +278,8 @@ int FORTRAN(anal_file) (char* fname, char *recptr, char *delims, int* skip,
   /* skip initial records */
   for (rec=0; rec<*skip; rec++)
     {  
-      if (feof(fp)) break;
-      (void) fgets(recptr,*reclen,fp);
+      if ( fgets(recptr,*reclen,fp) == NULL )
+        break;
     }
 
   /* initially set all field types to missing (no information) */

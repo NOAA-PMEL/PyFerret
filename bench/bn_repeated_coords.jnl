@@ -18,6 +18,6 @@ show grid a
 show axis tmin
 
 define axis/t/t0=15-jan-1901/units=minute tnew = tmin
-let aa = a[gt=tnew@asn]
+let aa = RESHAPE(a, t[gt=tnew])
 list aa[L=1:71:10]
 

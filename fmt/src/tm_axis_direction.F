@@ -92,11 +92,14 @@
       ENDIF
 
 * last ditch attempt based on axis name and units
-      IF ( TM_AXIS_DIRECTION .EQ. 0 ) THEN
-         istat = STR_UPCASE( c1, line_name(iaxis)(1:1) )
-         DO 200 idim = 1, nferdims
- 200     IF ( c1 .EQ. ww_dim_name(idim) ) TM_AXIS_DIRECTION = idim
-      ENDIF
+* ACM V6.8: Dont do this! Sets ETA to an E axis for instance.
+* See ticket 1955.
+
+c      IF ( TM_AXIS_DIRECTION .EQ. 0 ) THEN
+c         istat = STR_UPCASE( c1, line_name(iaxis)(1:1) )
+c         DO 200 idim = 1, nferdims
+c 200     IF ( c1 .EQ. ww_dim_name(idim) ) TM_AXIS_DIRECTION = idim
+c      ENDIF
 
       RETURN
       END

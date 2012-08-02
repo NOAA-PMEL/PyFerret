@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 42548373 Jul 18 10:11 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+Running FERRET version ../fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 42548230 Aug  2 10:49 ../fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: v8.6 release
+Note: test v6.82, fixing ticket 1955. Changes to diag_op, so it doesnt chop off output and doesn't write nulls.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,8 +20,8 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
-PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Wed Jul 18 10:13:46 PDT 2012
+PWD=/home/users/ansley/build/linux/FERRET_trunk/bench
+Beginning at Thu Aug 2 10:51:22 PDT 2012
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2319,8 +2319,6 @@ set axis/stride=2 NORMAL
  LISTing to file tripolar_missing_lon.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-syntax error, unexpected WORD_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
-context: <!DOCTYPE^ HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head><title>503 Service Temporarily Unavailable</title></head><body><h1>Service Temporarily Unavailable</h1><p>The server is temporarily unable to service yourrequest due to maintenance downtime or capacityproblems. Please try again later.</p><hr><address>Apache/2.2.3 (CentOS) Server at test.opendap.org Port 80</address></body></html>
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2442,8 +2440,7 @@ Replacing definition of axis XAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TIME
- **ERROR: command syntax: 30-feb-1909
-define axis/t=30-feb-1909:07-mar-1909:2/units=days/t0=1-jan-1909/calendar=d360 time
+Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2467,8 +2464,7 @@ plot/trans var, var[z=@med:4]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TIME
- **ERROR: command syntax: 30-feb-1909
-define axis/t=30-feb-1909:07-mar-1909:2/units=days/t0=1-jan-1909/calendar=d360 time
+Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3070,14 +3066,14 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
-
-Bailing out of external function "tax_year":
-	 Function not valid for modulo time axis
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis YAX
+
+Bailing out of external function "tax_year":
+	 Function not valid for modulo time axis
 Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3394,4 +3390,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jul 18 10:15:22 PDT 2012
+Ended at Thu Aug 2 10:52:53 PDT 2012

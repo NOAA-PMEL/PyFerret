@@ -116,7 +116,7 @@ bn608_bug_fixes.jnl
 bn_shade_trim.jnl
 bn_mode_nlevels.jnl
 bn61_bug_fixes.jnl
-bn_test_opendap.jnl
+! bn_test_opendap.jnl - test.opendap.org not up at this time
 bn611_bug_fixes.jnl
 bn_no_valid_on_plot.jnl
 bn_median.jnl

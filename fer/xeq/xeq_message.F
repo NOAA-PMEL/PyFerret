@@ -118,7 +118,10 @@
 	      IF (status .NE. ferr_ok ) GOTO 2000
 	      CALL TM_SPLIT_MESSAGE( show_lun,
      .				cmnd_buff(arg_start(1):arg_end(1)) )
-
+     
+* ... close the file
+	      CLOSE ( UNIT = show_lun, ERR = 2000 )
+	      
 * ... message logged in journal file
 	   ELSEIF ( qual_given( slash_journal ) .GT. 0 ) THEN
 	      IF (mode_journal .AND. jrnl_lun.NE.unspecified_int4) THEN

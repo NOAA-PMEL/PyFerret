@@ -3,7 +3,7 @@
 ! Specify "overlay" or "basemap" (default 20 minute resolution land bathymetry data)
 ! 8/12
 
-! Description: Plot or overlay an area-filled slice showing bathymetry
+! Description: Draw a vertical bathymetry line showing a slice in the x or y direction
 
 ! usage:       arg1        arg2  arg3     arg4
 !  GO vland  [resolution] [pen]  x=val    y=lo:hi

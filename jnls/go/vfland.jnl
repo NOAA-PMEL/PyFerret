@@ -1,9 +1,9 @@
 \cancel mode verify
-! vfland.jnl - Draw a filled vertical land mask showing a slice in the x or y direction
+! vfland.jnl - Draw a filled vertical bathymetry slice in the x or y direction
 ! (overlay or "basemap" (default 20 minute resolution)
 ! 8/12
 
-! Description: Plot or overlay an area-filled slice showing bathymetry
+! Description: Draw a filled vertical bathymetry slice in the x or y direction
 
 ! usage:       arg1        arg2       arg3     arg3
 !  GO vfland [resolution] [palette]  x=val    y=lo:hi

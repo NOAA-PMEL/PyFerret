@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43352696 Aug  2 10:43 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 43352728 Aug  3 13:38 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: change to diag_op.F so it doesnt chop off lines and doesnt write nulls
+Note: v6.82 for release
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,14 +14,14 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/x86/FERRET/external_functions/ext_func
-FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go /home/users/ansley/baker_v8_UI/JavaSource/resources/iosp/scripts/
+FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Thu Aug 2 10:50:27 PDT 2012
+Beginning at Fri Aug 3 15:47:39 PDT 2012
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2319,6 +2319,8 @@ set axis/stride=2 NORMAL
  LISTing to file tripolar_missing_lon.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+syntax error, unexpected WORD_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
+context: <!DOCTYPE^ html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><!--/////////////////////////////////////////////////////////////////////////////// This file is part of the "OPeNDAP 4 Data Server (aka Hyrax)" project.////// Copyright (c) 2011 OPeNDAP, Inc.// Author: Nathan David Potter <ndp@opendap.org>//// This library is free software; you can redistribute it and/or// modify it under the terms of the GNU Lesser General Public// License as published by the Free Software Foundation; either// version 2.1 of the License, or (at your option) any later version.//// This library is distributed in the hope that it will be useful,// but WITHOUT ANY WARRANTY; without even the implied warranty of// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU// Lesser General Public License for more details.//// You should have received a copy of the GNU Lesser General Public// License along with this library; if not, write to the Free Software// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA//// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112./////////////////////////////////////////////////////////////////////////////--><html xmlns="http://www.w3.org/1999/xhtml"><head> <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/> <link rel='stylesheet' href='/opendap/docs/css/contents.css' type='text/css'/> <title>Hyrax: ERROR</title> <style type="text/css"> <!-- .style1 { font-size: 24px; font-weight: bold; } --> </style></head><body><p>&nbsp;</p><h1 align="center">Hyrax Error</h1><hr size="1" noshade="noshade"/><table width="100%" border="0"> <tr> <td><img src="/opendap/docs/images/superman.jpg" alt="Bad things are happening" width="320" height="426"/></td> <td> <p align="center" class="style1">OUCH!</p> <p align="center">Something Bad Happened On This Server.</p> <p align="center">If you think that the server is broken (that the URL you submitted should have worked), then please contact the OPeNDAP user support coordinator at: <a href="mailto:support@opendap.org">support@opendap.org</a> </p> </td> </tr></table><hr size="1" noshade="noshade"/><h1 align="center">Hyrax Error</h1></body></html>
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3303,6 +3305,8 @@ define data/agg windy = 1,2
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -3390,4 +3394,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Aug 2 10:51:49 PDT 2012
+Ended at Fri Aug 3 15:49:11 PDT 2012

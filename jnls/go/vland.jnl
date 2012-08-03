@@ -65,7 +65,7 @@ DEFINE SYMBOL fv_xyregion = ($3),($4)
 SET DATA/SAVE
 
 USE etopo$1"20"
-LET fv_rosedepth = IF rose LE 0 THEN rose ELSE 0
+LET fv_rosedepth = IF rose LT 0 THEN rose 
 
 
 PLOT/NOLAB/overlay/VLIM=($ppl$ymax):($ppl$ymin)/SET  -1*fv_rosedepth[($fv_xyregion)]

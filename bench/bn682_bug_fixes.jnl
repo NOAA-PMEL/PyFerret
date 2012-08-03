@@ -1,0 +1,7 @@
+! bn682_bug_fixes.jnl
+! test various fixes that went into version 6.82
+! 8/2012 ACM
+
+GO bn_reset
+GO err681_dims_direction
+

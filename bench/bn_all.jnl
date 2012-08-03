@@ -812,6 +812,10 @@ GO bn_aggregate_e
 GO bn_reset
 GO bn_6d_lab_mode
 
+
+! *********** v6.82 Additions ***********
+GO bn682_bug_fixes
+
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not
 ! tested in the benchmarks.

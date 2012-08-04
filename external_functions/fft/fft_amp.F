@@ -108,17 +108,14 @@
 
       INTEGER id, arg
 
-      CHARACTER*110 arg_desc, fcn_desc
 c      CALL ef_version_test(ef_version)
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      WRITE (fcn_desc, 20)
-      CALL ef_set_desc(id, fcn_desc)
-   20 FORMAT ( 'Computes fft amplitude spectra, normalized by 1/N, ',
-     .          'WITH CORRECTED FREQ AXIS' )
+      CALL ef_set_desc(id, 
+     . 'Computes fft amplitude spectra, normalized by 1/N, WITH CORRECTED FREQ AXIS' )
 
       CALL ef_set_num_args(id, 1)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
@@ -130,11 +127,9 @@ c      CALL ef_version_test(ef_version)
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
-      WRITE (arg_desc, 10) 
-   10 FORMAT ('Variable with regular time axis. Specify time ', 
-     .         'explicitly e.g. fft_amp(var[l=1,96])')
 
-      CALL ef_set_arg_desc(id, arg, arg_desc)
+      CALL ef_set_arg_desc(id, arg, 
+     .  'Variable with regular time axis. Specify time explicitly e.g. fft_amp(var[l=1,96])')
 
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, NO)
 

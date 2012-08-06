@@ -39,6 +39,11 @@
                  data structure.
  */
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
+
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
+
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 # include <stdio.h>
 #include <stdlib.h>

@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 12 Aug  2 11:01 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.csh
+lrwxrwxrwx 1 ksmith tmap 12 Aug  6 11:12 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.csh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -121,6 +121,7 @@ Benchmark scripts that will be run:
    bn_shade_trim.jnl
    bn_mode_nlevels.jnl
    bn61_bug_fixes.jnl
+   bn_test_opendap.jnl
    bn611_bug_fixes.jnl
    bn_no_valid_on_plot.jnl
    bn_median.jnl
@@ -185,6 +186,7 @@ Benchmark scripts that will be run:
    bn_regrid_transforms_6d.jnl
    bn_aggregate_e.jnl
    bn_6d_lab_mode.jnl
+   bn682_bug_fixes.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -201,7 +203,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Thu Aug  2 11:02:28 PDT 2012
+Beginning at Mon Aug  6 11:13:28 PDT 2012
 *** Running test: bn_syntax.jnl
     WARNING: Unable to import cdms2 and/or cdtime;
              the Python functions pyferret.get and pyferret.put are not available
@@ -2301,6 +2303,10 @@ SHADE/LEV=300/I=1:100/J=1:100 i+j
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+*** Running test: bn_test_opendap.jnl
+    WARNING: Unable to import cdms2 and/or cdtime;
+             the Python functions pyferret.get and pyferret.put are not available
+ Cached data cleared from memory
 *** Running test: bn611_bug_fixes.jnl
     WARNING: Unable to import cdms2 and/or cdtime;
              the Python functions pyferret.get and pyferret.put are not available
@@ -3276,6 +3282,12 @@ define data/agg windy = 1,2
     WARNING: Unable to import cdms2 and/or cdtime;
              the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
+*** Running test: bn682_bug_fixes.jnl
+    WARNING: Unable to import cdms2 and/or cdtime;
+             the Python functions pyferret.get and pyferret.put are not available
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_all_ef.jnl
     WARNING: Unable to import cdms2 and/or cdtime;
              the Python functions pyferret.get and pyferret.put are not available
@@ -3299,4 +3311,4 @@ LOAD/TEMPORARY vflag
     WARNING: Unable to import cdms2 and/or cdtime;
              the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
-Ended at Thu Aug  2 11:05:15 PDT 2012
+Ended at Mon Aug  6 11:16:27 PDT 2012

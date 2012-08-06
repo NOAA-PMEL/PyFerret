@@ -1,0 +1,81 @@
+\cancel mode verify
+! vland.jnl - Draw a vertical bathymetry line showing a slice in the x or y direction
+! Specify "overlay" or "basemap" (default 20 minute resolution land bathymetry data)
+! 8/12
+
+! Description: Draw a vertical bathymetry line showing a slice in the x or y direction
+
+! usage:       arg1        arg2  arg3     arg4
+!  GO vland  [resolution] [pen]  x=val    y=lo:hi
+!                                x=lo:hi  y=val
+
+
+! arg 1 - resolution - may be 120,60,40,20,10, or 5     default=20
+!         To use resolution "nnn" the file etoponnn must exist.
+! arg 2 - pen or "thick" for thick black pen
+! arg 3 - longitude limits for the slice - specify as for FERRET longitude range or value
+! arg 4 - latitude  limits for the slice - specify as for FERRET latitude  range or value
+
+! See also vfland.jnl for filled vertical bathymetry overlays
+
+! Examples:
+! XZ slice
+!    use levitus_climatology
+!    shade/y=20/x=50e:150e  temp
+!    GO vland 20 thick x=50e:150e y=20
+
+! YZ slice
+!    use levitus_climatology
+!    shade/pal=grayscale/x=95w/y=15:30/z=0:4000 salt
+!    fill/pal=grayscale/over/nolab/lev/x=95w/y=15:30/z=0:4000 salt
+!    GO vland 5 green x=95w y=15:30
+
+
+! Check the pen argument
+query/ignore $2%1|black|red|green|blue|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|N|<GO land [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
+
+! Check for location arguments
+LET fv_xyloc = 1
+IF `($3"0|*>1") EQ 0` THEN LET fv_xyloc = 0
+IF `($4"0|*>1") EQ 0` THEN LET fv_xyloc = 0
+IF `fv_xyloc EQ 0` THEN 
+   SAY Arguments 3 and 4, longitude and latitude of slice, are required.
+   CANCEL VAR fv*
+   CANCEL SYM fv*
+   EXIT/SCRIPT
+ENDIF
+
+LET fv_xc = `STRINDEX("($3)", ":")`
+LET fv_xc = IF `fv_xc` GT 0 THEN 1 ELSE 0
+LET fv_yc = `STRINDEX("($4)", ":")`
+LET fv_yc = IF `fv_yc` GT 0 THEN 1 ELSE 0
+
+
+IF `fv_xc+fv_yc NE 1` THEN 
+   SAY Error in arguments 3 and 4: One must be a range, the other a single value.
+   CANCEL VAR fv*
+   CANCEL SYM fv*
+   EXIT/SCRIPT
+ENDIF
+
+DEFINE SYMBOL fv_xyregion = ($3),($4)
+
+! Open the topo dataset
+! Define arguments for the fill_between script.
+SET DATA/SAVE
+
+USE etopo$1"20"
+LET fv_rosedepth = IF rose LT 0 THEN rose 
+
+
+PLOT/NOLAB/overlay/VLIM=($ppl$ymax):($ppl$ymin)/SET  -1*fv_rosedepth[($fv_xyregion)]
+   PPL PEN 1 $2"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|19|N>1|"
+   PPL PLOT/OVERLAY
+
+! Clean up and exit
+CANCEL VAR fv*
+CANCEL SYM fv*
+
+CANCEL DATA etopo$1"20"
+SET DATA/RESTORE
+SET MODE/LAST verify

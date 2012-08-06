@@ -1,0 +1,84 @@
+\cancel mode verify
+! vfland.jnl - Draw a filled vertical bathymetry slice in the x or y direction
+! (overlay or "basemap" (default 20 minute resolution)
+! 8/12
+
+! Description: Draw a filled vertical bathymetry slice in the x or y direction
+
+! usage:       arg1        arg2       arg3     arg3
+!  GO vfland [resolution] [palette]  x=val    y=lo:hi
+!                                    x=lo:hi  y=val
+
+
+! arg 1 - resolution - may be 120,60,40,20,10, or 5     default=20
+!         To use resolution "nnn" the file etoponnn must exist.
+! arg 2 - palette - may be any palette on your system.  Normally solid colors
+!                   like black, gray,red, etc. (see Fpalette '*') default=gray
+!                   Fill is made with a single color
+! arg 3 - longitude limits for the slice - specify as for FERRET longitude range or value
+! arg 4 - latitude  limits for the slice - specify as for FERRET latitude  range or value
+ 
+! See also vland.jnl for line plots of vertical slices of bathymetry
+
+! Examples:
+! XZ slice
+!    use levitus_climatology
+!    shade/y=20/x=50e:150e  temp
+!    GO vfland 60 blue_dark x=50e:150e y=20
+
+! Just the bathymetry of a YZ slice
+!    GO vfland 20 black x=180 y=-90:90
+
+! YZ slice with default topo resolution and gray palette
+!    use levitus_climatology
+!    shade/x=95w/y=15:30/z=0:4000 salt
+!    fill/over/nolab/lev/x=95w/y=15:30/z=0:4000 salt
+!    GO vfland "" "" x=95w y=15:30
+
+! Check for location arguments
+LET fv_xyloc = 1
+IF `($3"0|*>1") EQ 0` THEN LET fv_xyloc = 0
+IF `($4"0|*>1") EQ 0` THEN LET fv_xyloc = 0
+IF `fv_xyloc EQ 0` THEN 
+   SAY Arguments 3 and 4, longitude and latitude of slice, are required.
+   CANCEL VAR fv*
+   CANCEL SYM fv*
+   EXIT/SCRIPT
+ENDIF
+
+LET fv_xc = `STRINDEX("($3)", ":")`
+LET fv_xc = IF `fv_xc` GT 0 THEN 1 ELSE 0
+LET fv_yc = `STRINDEX("($4)", ":")`
+LET fv_yc = IF `fv_yc` GT 0 THEN 1 ELSE 0
+
+IF `fv_xc+fv_yc NE 1` THEN 
+   SAY Error in arguments 3 and 4: One must be a range, the other a single value.
+   CANCEL VAR fv*
+   CANCEL SYM fv*
+   EXIT/SCRIPT
+ENDIF
+
+DEFINE SYMBOL fv_xyregion = ($3),($4)
+
+! Open the topo dataset
+! Define arguments for the fill_between script.
+SET DATA/SAVE
+
+USE etopo$1"20"
+LET fv_rosedepth = IF rose LE 0 THEN rose ELSE 0
+
+IF `fv_xc EQ 1` THEN DEFINE SYMBOL fv_fill_axis = `rose,RETURN=xaxis` 
+IF `fv_yc EQ 1` THEN DEFINE SYMBOL fv_fill_axis = `rose,RETURN=yaxis`
+
+LET fv_bot = ($ppl$ymax) + 0*fv_rosedepth[($fv_xyregion)]
+
+GO fill_between POLY/NOLAB/PAL=$2"gray"/VLIM=($ppl$ymax):($ppl$ymin)/overlay  -1*fv_rosedepth[($fv_xyregion)] ($fv_fill_axis) fv_bot
+
+
+! Clean up and exit
+CANCEL VAR fv*
+CANCEL SYM fv*
+
+CANCEL DATA etopo$1"20"
+SET DATA/RESTORE
+SET MODE/LAST verify

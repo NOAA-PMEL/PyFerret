@@ -1,0 +1,25 @@
+! err681_dims_direction.jnl
+! ticket 1955: Code still existed that determined axis direction
+! according to axis name.  Here, coordinate variables are defined,
+! but their dimensions are not coordinate variables, so there isn't 
+! direct info in the file about the directions of the dimensions.
+! netcdf dims {
+! dimensions:
+!        ETA = 4 ;
+!        TAU1 = 7 ;
+!        ZT_OCEAN = 1 ;
+! variables:
+!  ...
+!        float LON_C(TAU, ETA) ;
+!                LON_C:long_name = "uv longitude" ;
+!                LON_C:units = "degrees_E" ;
+!                LON_C:history = "From data_1302" ;
+!
+! Where tau is intended to be a Y axis and ETA is an X axis.
+! 4D Ferret puts these in an X and a T direction, and inital versions
+! of 6D Ferret had them in the E and T directions.  They should just
+! get assigned by position, here with TAU in the Y direction an ETA in x.
+
+use dims_not_coord
+sh dat
+sho grid lon_c

@@ -1,0 +1,27 @@
+
+
+! Tests polytube and polytube_bent
+
+let pi = 4.0*atan(1.0)
+
+let npts = 6	! Vary npts to get a coarser or finer trackline
+
+define axis/t=0:`npts-1`:1/units=days t_ax
+let tim = t[gt=t_ax]
+
+let xpts = 180 + 50*COS(2*pi*tim/(npts-1))
+let ypts = 15  + 20*SIN(2*pi*tim/(npts-1))
+let sst  = 35 - ypts + RANDN(ypts)
+let sst1 = if (l eq 3) then sst/0 else sst	! Test function with missing value which should not plot
+
+set window/aspect=1:axis 1
+go basemap x=120:250 Y=25s:65n 20
+go polytube polygon/over/key/title=sst xpts,ypts,sst
+plot/vs/over/nolab/line/sym/thick=2 xpts,ypts
+
+set window/aspect=1:axis 2
+go basemap x=120:250 Y=25s:65n 20
+go polytube_bent polygon/over/key/title=sst xpts,ypts,sst
+plot/vs/over/nolab/line/sym/thick=2 xpts,ypts
+
+

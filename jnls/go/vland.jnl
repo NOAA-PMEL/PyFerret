@@ -30,7 +30,6 @@
 !    fill/pal=grayscale/over/nolab/lev/x=95w/y=15:30/z=0:4000 salt
 !    GO vland 5 green x=95w y=15:30
 
-
 ! Check the pen argument
 query/ignore $2%1|black|red|green|blue|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|N|<GO land [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
 
@@ -61,12 +60,12 @@ ENDIF
 DEFINE SYMBOL fv_xyregion = ($3),($4)
 
 ! Open the topo dataset
-! Define arguments for the fill_between script.
+! Define variable to plot. Let it go above zero so that the data extends
+! to the surface.
 SET DATA/SAVE
 
 USE etopo$1"20"
-LET fv_rosedepth = IF rose LT 0 THEN rose 
-
+LET fv_rosedepth = rose
 
 PLOT/NOLAB/overlay/VLIM=($ppl$ymax):($ppl$ymin)/SET  -1*fv_rosedepth[($fv_xyregion)]
    PPL PEN 1 $2"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|19|N>1|"

@@ -346,10 +346,12 @@
            cal_id = TM_GET_CALENDAR_ID ( cal_name )
 
 * allowed name?
-           IF ( .NOT.TM_LEGAL_NAME(varcode) ) GOTO 5200
-           CALL FIND_VAR_NAME ( pdset_irrelevant, varcode, cat1, var1 )
-           IF (  var1 .NE. munknown_var_name
-     .     .AND. cat1 .EQ. cat_pseudo_var    ) GOTO 5200
+	   IF (cat .NE. cat_file_var) THEN
+              IF ( .NOT.TM_LEGAL_NAME(varcode) ) GOTO 5200
+              CALL FIND_VAR_NAME ( pdset_irrelevant, varcode, cat1, var1 )
+              IF (  var1 .NE. munknown_var_name
+     .      .AND. cat1 .EQ. cat_pseudo_var    ) GOTO 5200
+           ENDIF
 
 * if a string variable, then find max len
 	   IF (itsa_string) THEN

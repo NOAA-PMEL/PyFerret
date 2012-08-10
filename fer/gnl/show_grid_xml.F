@@ -83,9 +83,12 @@
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 	DO 110 idim = 1, nferdims
+	   slen = 0
            line = grid_line(idim, grid)
-           slen = TM_LENSTR(line_name(line))
-	   status = STR_DNCASE(axdir, ww_dim_name(idim))
+           IF (line .GT. 0) THEN
+	      slen = TM_LENSTR(line_name(line))
+	      status = STR_DNCASE(axdir, ww_dim_name(idim))
+	   ENDIF
 
            IF (line .GT. 0  .AND.  slen .GT. 0 .AND.
      .         cx_expr .EQ. unspecified_int4) THEN

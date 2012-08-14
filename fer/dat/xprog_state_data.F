@@ -317,6 +317,7 @@ c     .	( mode_name(i),i=pmode_nodata_lab+1,max_modes )/pmode_unused/
 	DATA	list_append	  / .FALSE. /
 	DATA	list_heading	  / .TRUE.  /
 	DATA	list_file	  / 'AUTO'	 /
+	DATA	list_outtype	  / 'DFLT'	 /
 	DATA	list_digits	  / default_output_precision /
 
 * for FRAME

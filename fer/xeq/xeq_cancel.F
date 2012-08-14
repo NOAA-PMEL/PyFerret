@@ -137,6 +137,7 @@
 *       *acm* 4/12 Remove MODE FOURDEE, using _E, _F, _M, _N instead, throughout.
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
+* V683 *acm*  8/12 add new CANCEL LIST/OUTTYPE=  
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -300,6 +301,10 @@
      .	   list_append = .FALSE.
 	IF ( slash_all .OR. qual_given( slash_canc_list_form ) .GT. 0 ) THEN
 	   list_format_given = .FALSE.
+	   list_fmt_type     = plist_default
+	ENDIF
+	IF ( slash_all .OR. qual_given( slash_canc_list_outtyp ) .GT. 0 ) THEN
+	   list_outtype = 'DFLT'
 	   list_fmt_type     = plist_default
 	ENDIF
 	IF ( qual_given( slash_canc_list_heading ) .GT. 0 ) THEN

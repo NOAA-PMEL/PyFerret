@@ -175,6 +175,7 @@
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
 *                 various SHOW commnands will not list info for E,F dimensions.
 *                 SHOW with 6D variable and mode_6d_lab cancelled, is an error.
+* V683 *acm*  8/12 On SHOW LIST, show the output-type setting from SET LIST/OUTTYPE=  
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -609,6 +610,17 @@
 	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	risc_buff = ' '
  3620	FORMAT (8X,'SET LIST/FILE=',A,' ( when LIST/FILE is used )' )
+	IF ( list_outtype(1:3) .EQ. 'DOU') WRITE ( risc_buff, 3630 ) 'Double'
+	IF ( list_outtype(1:3) .EQ. 'FLO') WRITE ( risc_buff, 3630 ) 'Float'
+	IF ( list_outtype(1:3) .EQ. 'INT') WRITE ( risc_buff, 3630 ) 'Int'
+	IF ( list_outtype(1:3) .EQ. 'SHO') WRITE ( risc_buff, 3630 ) 'Short'
+	IF ( list_outtype(1:3) .EQ. 'BYT') WRITE ( risc_buff, 3630 ) 'Byte'
+	IF ( list_outtype(1:3) .EQ. 'DFL') WRITE ( risc_buff, 3630 ) '[Default]'
+
+	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
+	risc_buff = ' '
+ 3630	FORMAT ( 8X,'SET LIST/OUTTYPE = ',A )
+
         CALL NETCDF4_SHOW_LIST_SETTINGS 
 	IF ( limited_show ) RETURN
 

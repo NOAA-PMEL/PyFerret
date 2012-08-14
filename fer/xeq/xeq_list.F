@@ -144,7 +144,8 @@
 *                  XCHUNK,YCHUNK,ZCHUNK,TCHUNK,COMPRESSION,SHUFFLE,ENDIAN
 * V6.7  *acm* 3/11 Remove warning deprecating /RIGID. There are still valid reasons
 *                  to want to set the time axis to NOT be the record axis.
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V68  *acm*  1/12 ifdef double_p for double-precision ferret.
+* V683 *acm*  8/12 add new SAVE/OUTTYPE=  
 
 	include 'tmap_dims.parm'
         include 'tmap_errors.parm'
@@ -166,7 +167,8 @@
      .			do_epic, do_cdf, do_unform, do_stream,
      .			do_comma_del, do_tab_del, do_dods, do_xml,
      .			permute, all_at_once, list_at_eof, head_enh,
-     .			clobber, quiet, do_bounds
+     .			clobber, quiet, do_bounds, have_outtype
+     .                    
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, STR_CASE_BLIND_COMPARE,
      .                  STR_UPCASE, GET_MAX_STRING_LEN,
      .			status, mr, cx, inext, ilist, wsize, vax_code,
@@ -176,8 +178,7 @@
      .                  edges_flag, keepax_flag, nn, slen
 	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
      .			buff*2048, fstatus*8, faccess*12, fformatted*12,
-     .			cdf_recax*1,
-     .			fposition*12
+     .			cdf_recax*1, fposition*12, out_type*6
 
 * local parameter declarations
 * *kob* 2/99 - add entries for quiet qualifier 
@@ -376,6 +377,27 @@ c     .		 .AND. .NOT.do_comma_del
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	ELSE
 	   buff = ' '
+	ENDIF
+
+* did they set an output type?
+	out_type = "DFLT"
+	i = qual_given( slash_list_outtype )
+	IF ( i .GT. 0 ) THEN
+           IF (.NOT. do_cdf) THEN
+	      CALL WARN('/OUTTYPE is valid only for NetCDF output. Ignored')
+	   ELSE
+	      have_outtype = .FALSE.
+	      CALL EQUAL_STRING(
+     .                  cmnd_buff(qual_start(i):qual_end(i)),
+     .                  out_type, status )
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+	      have_outtype = ( INDEX(out_type,'DOU') .GT. 0 .OR.
+     .                    INDEX(out_type,'FLO') .GT. 0 .OR. 
+     .                    INDEX(out_type,'INT') .GT. 0 .OR.
+     .                    INDEX(out_type,'SHO') .GT. 0 .OR.
+     .                    INDEX(out_type,'BYT') .GT. 0 )
+	      IF (.NOT. have_outtype) GOTO 5100
+           ENDIF
 	ENDIF
 
 * Get any settings for netcdf-4 output
@@ -604,7 +626,7 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
      .                    list_at_eof, cdf_recax, num_uvars_in_cmnd,
      .			  mr_perm, is_cx, buff, head_enh,
      .			  pcdf_mode_normal, clobber, edges_flag, do_bounds,
-     .                    keepax_flag, status )
+     .                    keepax_flag, out_type, status )
 	ELSEIF( all_at_once ) THEN
 	   CALL LIST_MULTI( memory, mr_perm, is_cx, heading, perm,
      .			    wsize, memory(1, wkblk), status )
@@ -669,6 +691,11 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
      .  'Cannot write to file w/ name longer than 256 characters: '//pCR//
      .  'Limitation of Fortran INQUIRE and OPEN calls '	
      .			, *5000 )
+     
+ 5100	CALL ERRMSG( ferr_invalid_command, status,
+     .		'Unrecognized option/'//
+     .          cmnd_buff(qual_start(i):qual_end(i)) //pCR//
+     .		' Valid options are /OUTTYPE=DOUBLE,FLOAT,INT,SHORT,or BYTE', *1000 )
 	END
 
 

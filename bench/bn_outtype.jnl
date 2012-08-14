@@ -1,0 +1,101 @@
+! bn_outtype
+! Tests of output-type control:
+!  SET VAR/OUTTYPE
+!  SET LIST/OUTTYPE
+!  save/x=300/y=0:5/OUTTYPE
+
+! SET LIST/OUTTYPE takes precedence over the variable type from
+! an input dataset or the SET VAR/OUTTYPE
+! save/x=300/y=0:5/OUTTYPE takes precedence over both
+
+! SET VAR/OUTTYPE
+can dat/all
+use coads_climatology
+
+let sst2 = 2*sst
+set var/outtype=double sst2
+
+! For saving as INT and smaller, the default missing value
+! can't be the default Ferret value
+let/bad=-999 sst3 = missing(sst, -999)
+set var/outtype=int sst3
+
+! sst is saved in its native type, float
+! sst2 and sst3 have SET VAR/OUTTYPE types
+
+save/x=300/y=0:5/clobber/file=mytype.nc sst, sst2, sst3
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+! SET LIST/OUTTYPE overrides native type and SET VAR/OUTTYPE
+can var/all
+
+let sst2 = 2*sst
+let/bad=-999 sst3 = missing(sst, -999)
+set var/outtype=int sst3
+
+set list/outtype=double
+save/x=300/y=0:5/clobber/file=mytype.nc sst, sst2
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+set list/outtype=float
+save/x=300/y=0:5/clobber/file=mytype.nc sst, sst2
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+set list/outtype=int
+save/x=300/y=0:5/clobber/file=mytype.nc sst3
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+set list/outtype=short
+save/x=300/y=0:5/clobber/file=mytype.nc sst3
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+set list/outtype=byte
+let/bad=-99 sst4 = missing(sst, -99)
+save/x=300/y=0:5/clobber/file=mytype.nc sst4
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+! shows the outtype
+show list
+
+! CANCEL LIST/OUTTYPE
+cancel list/outtype
+show list
+
+save/x=300/y=0:5/clobber/file=mytype.nc sst, sst2, sst3
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+set list/outtype=int
+save/x=300/y=0:5/clobber/file=mytype.nc sst3
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+cancel list/all
+show list
+pause
+
+! SAVE/OUTTYPE overrides all other settings
+can var/all
+let sst2 = 2*sst3
+
+let/bad=-999 sst3 = missing(sst, -999)
+set var/outtype=int sst3
+
+let/bad=-99 sst4 = missing(sst, -99)
+set var/outtype=short sst4
+
+
+save/x=300/y=0:5/clobber/file=mytype.nc/outtype=double sst2, sst3
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+save/x=300/y=0:5/clobber/file=mytype.nc/outtype=float sst2, sst3
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+save/x=300/y=0:5/clobber/file=mytype.nc/outtype=int sst4, sst3
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+save/x=300/y=0:5/clobber/file=mytype.nc/outtype=byte sst4
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+! Type will be int
+set list/outtype=float
+save/x=300/y=0:5/clobber/file=mytype.nc/outtype=int sst4, sst3
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+

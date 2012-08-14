@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/linux/FERRET_trunk/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 42548230 Aug  3 13:37 /home/users/ansley/build/linux/FERRET_trunk/fer/ferret_c
-Using external functions from /home/users/ansley/build/linux/FERRET_trunk/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 42556775 Aug 14 14:53 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: v6.82 for release
+Note: with SET LIST/OUTTYPE and SAVE/OUTTYPE
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,15 +13,15 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/linux/FERRET_trunk/external_functions/ext_func
-FER_GO=. /home/users/tmap/ferret/linux/go /home/users/tmap/ferret/linux/examples /home/users/tmap/ferret/linux/contrib /home/users/tmap/ferret/tmap_go
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/linux/FERRET/external_functions/ext_func
+FER_GO=. /home/users/tmap/ferret/linux/go /home/users/tmap/ferret/linux/examples /home/users/tmap/ferret/linux/contrib /home/users/tmap/ferret/tmap_go /home/users/ansley/baker_v8_UI/JavaSource/resources/iosp/scripts/
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
-PWD=/home/users/ansley/build/linux/FERRET_trunk/bench
-Beginning at Fri Aug 3 15:58:17 PDT 2012
+PWD=/home/users/ansley/build/linux/FERRET/bench
+Beginning at Tue Aug 14 14:53:29 PDT 2012
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2077,14 +2077,12 @@ Replacing definition of grid MYGRID
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
- *** NOTE: Converting single precision variable to double on output
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
- *** NOTE: Converting single precision variable to double on output
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2130,7 +2128,6 @@ Replacing definition of axis X2AX
  *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
 Replacing definition of axis TIME
  LISTing to file a.nc
- *** NOTE: Converting single precision variable to double on output
  LISTing to file a.nc
  LISTing to file a.nc
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
@@ -2319,8 +2316,6 @@ set axis/stride=2 NORMAL
  LISTing to file tripolar_missing_lon.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-syntax error, unexpected WORD_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
-context: <!DOCTYPE^ html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><!--/////////////////////////////////////////////////////////////////////////////// This file is part of the "OPeNDAP 4 Data Server (aka Hyrax)" project.////// Copyright (c) 2011 OPeNDAP, Inc.// Author: Nathan David Potter <ndp@opendap.org>//// This library is free software; you can redistribute it and/or// modify it under the terms of the GNU Lesser General Public// License as published by the Free Software Foundation; either// version 2.1 of the License, or (at your option) any later version.//// This library is distributed in the hope that it will be useful,// but WITHOUT ANY WARRANTY; without even the implied warranty of// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU// Lesser General Public License for more details.//// You should have received a copy of the GNU Lesser General Public// License along with this library; if not, write to the Free Software// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA//// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112./////////////////////////////////////////////////////////////////////////////--><html xmlns="http://www.w3.org/1999/xhtml"><head> <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/> <link rel='stylesheet' href='/opendap/docs/css/contents.css' type='text/css'/> <title>Hyrax: ERROR</title> <style type="text/css"> <!-- .style1 { font-size: 24px; font-weight: bold; } --> </style></head><body><p>&nbsp;</p><h1 align="center">Hyrax Error</h1><hr size="1" noshade="noshade"/><table width="100%" border="0"> <tr> <td><img src="/opendap/docs/images/superman.jpg" alt="Bad things are happening" width="320" height="426"/></td> <td> <p align="center" class="style1">OUCH!</p> <p align="center">Something Bad Happened On This Server.</p> <p align="center">If you think that the server is broken (that the URL you submitted should have worked), then please contact the OPeNDAP user support coordinator at: <a href="mailto:support@opendap.org">support@opendap.org</a> </p> </td> </tr></table><hr size="1" noshade="noshade"/><h1 align="center">Hyrax Error</h1></body></html>
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2513,7 +2508,6 @@ LIST a_regrid[D=1,GT=b[D=2]@MOD]
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: Converting single precision variable to double on output
  LISTing to file a.nc
  LISTing to file a.nc
  PERMANENT data cleared from memory
@@ -3073,14 +3067,14 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis YAX
-
-Bailing out of external function "tax_year":
-	 Function not valid for modulo time axis
 Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+
+Bailing out of external function "tax_year":
+	 Function not valid for modulo time axis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0002.SURF.nc b40.coup_carb.004.cam2.h0.0003.SURF.nc b40.coup_carb.004.cam2.h0.0004.SURF.nc b40.coup_carb.004.cam2.h0.0005.SURF.nc b40.coup_carb.004.cam2.h0.0006.SURF.nc b40.coup_carb.004.cam2.h0.0007.SURF.nc b40.coup_carb.004.cam2.h0.0008.SURF.nc b40.coup_carb.004.cam2.h0.0009.SURF.nc b40.coup_carb.004.cam2.h0.0010.SURF.nc b40.coup_carb.004.cam2.h0.0011.SURF.nc b40.coup_carb.004.cam2.h0.0012.SURF.nc b40.coup_carb.004.cam2.h0.0013.SURF.nc b40.coup_carb.004.cam2.h0.0014.SURF.nc b40.coup_carb.004.cam2.h0.0015.SURF.nc b40.coup_carb.004.cam2.h0.0016.SURF.nc b40.coup_carb.004.cam2.h0.0017.SURF.nc b40.coup_carb.004.cam2.h0.0018.SURF.nc b40.coup_carb.004.cam2.h0.0019.SURF.nc b40.coup_carb.004.cam2.h0.0020.SURF.nc b40.coup_carb.004.cam2.h0.0021.SURF.nc b40.coup_carb.004.cam2.h0.0022.SURF.nc b40.coup_carb.004.cam2.h0.0023.SURF.nc b40.coup_carb.004.cam2.h0.0024.SURF.nc b40.coup_carb.004.cam2.h0.0025.SURF.nc b40.coup_carb.004.cam2.h0.0026.SURF.nc b40.coup_carb.004.cam2.h0.0027.SURF.nc b40.coup_carb.004.cam2.h0.0028.SURF.nc b40.coup_carb.004.cam2.h0.0029.SURF.nc b40.coup_carb.004.cam2.h0.0030.SURF.nc b40.coup_carb.004.cam2.h0.0031.SURF.nc b40.coup_carb.004.cam2.h0.0032.SURF.nc b40.coup_carb.004.cam2.h0.0033.SURF.nc b40.coup_carb.004.c:
@@ -3307,6 +3301,24 @@ define data/agg windy = 1,2
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -3394,4 +3406,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Aug 3 15:59:42 PDT 2012
+Ended at Tue Aug 14 14:54:54 PDT 2012

@@ -906,9 +906,9 @@
 		DATA qualifiers  (nqual_at5a+49)/ 'DEFLATE'/
 		DATA qualifiers  (nqual_at5a+50)/ 'SHUFFLE'/
 		DATA qualifiers  (nqual_at5a+51)/ 'ENDIAN'/
-+               DATA qualifiers  (nqual_at5a+52)/ 'OUTTYPE'/
-+               DATA qualifiers  (nqual_at5a+53)/ '****'/
-+               DATA qualifiers  (nqual_at5a+54)/ '****'/
+                DATA qualifiers  (nqual_at5a+52)/ 'OUTTYPE'/
+                DATA qualifiers  (nqual_at5a+53)/ '****'/
+                DATA qualifiers  (nqual_at5a+54)/ '****'/
 
 
 * PLOT - command # 6

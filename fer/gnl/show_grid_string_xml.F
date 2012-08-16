@@ -104,7 +104,6 @@
      .         cx_expr .EQ. unspecified_int4) THEN
               CALL ESCAPE_FOR_XML (line_name(line), outstring, slen)
               WRITE (risc_buff, 2040 ) axdir, outstring(1:slen), axdir
-	      print *, risc_buff
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ENDIF
 

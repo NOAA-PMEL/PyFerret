@@ -3,8 +3,14 @@
 ! Test for the fix to ticket 1896 . Y-Axis labels may run off the
 ! edge of the page if the numbers have lots of digits.
 ! We change the ax-label size just for this axis issue a note.
+!
+! starting w/ v683, shrink yaxis lab size only if 
+! MODE shrink_ylab is set. (ticket 1958)
+
+SET MODE shrink_ylab
 
 define axis/x=1:100:1 xax
 let/units="Observation value" var = 1.e37 * sin(randu(x[gx=xax])-1)
 plot var
 
+SET MODE/LAST shrink_ylab

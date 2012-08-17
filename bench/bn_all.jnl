@@ -817,6 +817,10 @@ GO bn_6d_lab_mode
 GO bn_reset
 GO bn682_bug_fixes
 
+! *********** v6.83 Additions ***********
+GO bn_reset
+GO bn683_bug_fixes
+
 GO bn_reset
 GO bn_outtype
 

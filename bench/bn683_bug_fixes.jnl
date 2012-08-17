@@ -1,0 +1,7 @@
+! bn683_bug_fixes.jnl
+! test various fixes that went into version 6.83
+! 8/2012 ACM
+
+GO bn_reset
+GO err682_shrink_axlab
+

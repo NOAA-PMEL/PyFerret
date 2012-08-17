@@ -1,0 +1,23 @@
+! err682_shrink_axlab.jnl
+! See ticket 1958. Scripts may want the axis labels to
+! run out of the viewport or off the page. So shrink labels
+! only if MODE SHRINK_YLAB has been set.
+! See also err672_runoff_page.jnl and err672_vert_axislabel.jnl
+!
+! Default setting, mode shrink_ylab is cancelled.
+
+! The lower plot has its vertical axis labels intact and visible.
+! The upper one will have them shrink away to nothing.
+
+set view lr
+go magnify
+plot/vs {-1,1},{-1,1}
+
+set mode shrink_ylab
+
+set view ur
+go magnify
+plot/vs {-1,1},{-1,1} 
+
+set mode/last shrink_ylab
+

@@ -43,6 +43,7 @@
         INTEGER VCOLOR
         LOGICAL HLINE
         LOGICAL VLINE
+        LOGICAL SHRINKY
         INTEGER XDMS
         INTEGER YDMS
         REAL*4    XVALOFF

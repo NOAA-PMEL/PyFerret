@@ -722,6 +722,11 @@ c *kob* 4/97
               ELSEIF ( mode .EQ. pmode_nlevels ) THEN
                  CALL SET_DEFAULT_NLEVELS( mode_arg(pmode_nlevels, 1) )
 
+* ... mode shrink_ylab allows the y-axis label to automatically shrink
+*     so it doesn't run off the page.
+              ELSEIF ( mode .EQ. pmode_shrink_ylab ) THEN
+	         CALL PPLCMD ( from, line, 0, 'SHRINKY 1', 1, 1 )
+
 	      ENDIF
 	      GOTO 820
 	   ENDIF

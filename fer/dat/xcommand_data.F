@@ -906,10 +906,9 @@
 		DATA qualifiers  (nqual_at5a+49)/ 'DEFLATE'/
 		DATA qualifiers  (nqual_at5a+50)/ 'SHUFFLE'/
 		DATA qualifiers  (nqual_at5a+51)/ 'ENDIAN'/
-                DATA qualifiers  (nqual_at5a+52)/ 'OUTTYPE'/
-                DATA qualifiers  (nqual_at5a+53)/ '****'/
-                DATA qualifiers  (nqual_at5a+54)/ '****'/
-
+		DATA qualifiers  (nqual_at5a+52)/ 'OUTTYPE'/
+		DATA qualifiers  (nqual_at5a+53)/ '****'/
+		DATA qualifiers  (nqual_at5a+54)/ '****'/
 
 * PLOT - command # 6
 	DATA commands(6)			/ 'PLOT'	/
@@ -962,9 +961,13 @@
 		DATA qualifiers  (nqual_at6a+38)/ 'GRATICUL'/	! tic lines
 		DATA qualifiers  (nqual_at6a+39)/ 'NOKEY'/	! nokey
 		DATA qualifiers  (nqual_at6a+40)/ 'NOYADJUS'/	! noyadjust
-		DATA qualifiers  (nqual_at6a+41)/ '****'/	! 
-		DATA qualifiers  (nqual_at6a+42)/ '****'/	! 
-
+		DATA qualifiers  (nqual_at6a+41)/ '****'/	! KEY [=cont] for Ribbon plot
+		DATA qualifiers  (nqual_at6a+42)/ '****'/	! LEVELS for Ribbon plot
+		DATA qualifiers  (nqual_at6a+43)/ '****'/	! PALETTE for Ribbon plot
+		DATA qualifiers  (nqual_at6a+44)/ '****'/	!  
+		DATA qualifiers  (nqual_at6a+45)/ '****'/	!  
+		DATA qualifiers  (nqual_at6a+46)/ '****'/	!  
+		DATA qualifiers  (nqual_at6a+47)/ '****'/	! 
 
 * GO	 - command # 7
 	DATA commands(7)			/ 'GO  '	/

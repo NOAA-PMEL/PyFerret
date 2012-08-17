@@ -484,6 +484,11 @@
      .                  'SET WIN/CLEAR')
                     ENDIF
 
+* ... mode shrink_ylab allows the y-axis label to automatically shrink
+*     so it doesn't run off the page.
+                 ELSEIF ( mode .EQ. pmode_shrink_ylab ) THEN
+	            CALL PPLCMD ( from, line, 0, 'SHRINKY 0', 1, 1 )
+
 * ... mode pplgui - close reply pipe
                  ELSEIF ( mode .EQ. pmode_gui ) THEN
 	            alt_messages = .FALSE.

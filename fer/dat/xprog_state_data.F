@@ -110,6 +110,7 @@
 * V6.8  acm  6/12 Instead of mode_ensemble_lab, mode_forecast_lab, use mode_6d_lab, 
 *                 which will be on by default. If canceled, the various SHOW and 
 *                 LIST commands, etc, will not list info for E,F dimensions.
+* V683  *acm* 8/12 - add new MODE SHRINK_YLAB
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -205,7 +206,9 @@
      .		(mode_state( pmode_nlevels,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.TRUE.   /,
      .		(mode_state( pmode_nodata_lab,i), i=1,mode_stack_size)
-     .					/ mode_stack_size*.TRUE.   /
+     .					/ mode_stack_size*.TRUE.   /,
+     .		(mode_state( pmode_shrink_ylab,i), i=1,mode_stack_size)
+     .					/ mode_stack_size*.FALSE.   /
 	DATA	mode_name ( pmode_diagnostic  )	/ 'DIAGNOSTIC  ' /,
      .		mode_name ( pmode_verify      )	/ 'VERIFY      ' /,
      .		mode_name ( pmode_interpolate )	/ 'INTERPOLATE ' /,
@@ -235,11 +238,11 @@
      .		mode_name ( pmode_upcase_output)/ 'UPCASE_OUTPUT'/,
      .		mode_name ( pmode_nlevels     ) / 'NLEVELS' /,
      .		mode_name ( pmode_nodata_lab  ) / 'NODATA_LAB' /,
-     .		mode_name ( 30     ) / pmode_unused /,
+     .		mode_name ( pmode_shrink_ylab ) / 'shrink_ylab' /,
      .		mode_name ( 31     ) / pmode_unused /,
      .		mode_name ( 32     ) / pmode_unused /
 c	DATA  
-c     .	( mode_name(i),i=pmode_nodata_lab+1,max_modes )/pmode_unused/
+c     .	( mode_name(i),i=pmode_shrink_ylab+1,max_modes )/pmode_unused/
 
 	DATA	(mode_arg  ( pmode_diagnostic  ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*99 /,
@@ -298,6 +301,8 @@ c     .	( mode_name(i),i=pmode_nodata_lab+1,max_modes )/pmode_unused/
      .		(mode_arg  ( pmode_nlevels,i), i=1,mode_stack_size)
      .				/ mode_stack_size*30 /,
      .		(mode_arg  ( pmode_nodata_lab,i), i=1,mode_stack_size)
+     .				/ mode_stack_size*unspecified_int4 /,
+     .		(mode_arg  ( pmode_shrink_ylab,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /
 
 * If the value of nlevels is changed, also change NLEV in plot/ppldata.F

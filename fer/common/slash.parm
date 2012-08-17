@@ -283,7 +283,10 @@
      .			slash_plot_vgrat,
      .			slash_plot_grat,
      .			slash_plot_nokey,
-     .			slash_plot_noyadjust
+     .			slash_plot_noyadjust,
+     .			slash_plot_key,
+     .			slash_plot_levels,
+     .			slash_plot_spectrum
 
 	INTEGER		slash_wire_over,
      .			slash_wire_set_up,
@@ -549,7 +552,10 @@
      .			slash_plot_vgrat	= 1+33,
      .			slash_plot_grat 	= 1+38,
      .			slash_plot_nokey 	= 1+39,
-     .			slash_plot_noyadjust 	= 1+40 )
+     .			slash_plot_noyadjust 	= 1+40,
+     .			slash_plot_key 		= 1+41,
+     .			slash_plot_levels 	= 1+42,
+     .			slash_plot_spectrum 	= 1+43 )
 
 	PARAMETER     ( slash_wire_over		= 1+12,
      .			slash_wire_set_up	= 1+13,

@@ -1,0 +1,44 @@
+!* EF_Util_f90.parm
+!*
+!* Jonathan Callahan
+!* July 10th 1997
+!*
+!* This is the header file to be included by routines which
+!* are part of the Ferret External Function library.
+!*
+!*       EXTERNAL ef_version 1.1: *jc* 9.98 Added       EXTERNAL ef_max_work_arrays
+!*
+!*            1.3: *jc* 4.99 Changed "work_array_len" to "work_array_lo/hi" in EF_Util.h
+!*
+!*                 *ac* 7.99 Added unspecified_int4
+!*		   *sh* 8.99 Changed unspeficied_int4 to EF_unspecified_int4
+!*				because of conflict with same-name parameter
+!*				in ferret.parm
+!*		   *ac* 9.99 Separate the parameters (previously EF_Util.cmn)
+!*				external statements which will be included
+!*				in external functions code.
+!*		   *kob* 1/02 - add in int_buff and size_ibuff to use for
+!*                              strings being converted from c to fortran
+!*                 *acm* 1/03 - Add float_return and string_return
+!*           V6.02 *acm*11/06 - Change unspecified_int4 to -999. Fixes bug 1463 where
+!*                              where an index value of -111 was confused with this flag
+!*	     V6.8  *acm* 1/12 - Double precision Ferret. Declare arguments
+!*				and function results with either 2 or 1 as
+!*				the first (extra) dimension
+!*                 *kms* 2/12 - added e_axis and f_axis; increment ef_version
+!*                 *kms* 3/12 - remove int_buff and size_ibuff since they are
+!*                              not in a common block (declare locally when needed)
+!*
+!* Converted to f90 by Andrew Wittenberg, 8/14/2012
+
+integer, parameter :: ef_c = 1, ef_f = 2, yes = 1, no = 0
+integer, parameter :: x_axis=1, y_axis=2, z_axis=3, t_axis=4, e_axis=5, f_axis=6
+integer, parameter :: arg1=1, arg2=2, arg3=3, arg4=4, arg5=5, arg6=6,  arg7=7, arg8=8, arg9=9
+integer, parameter :: custom=101, implied_by_args=102, normal=103, abstract=104, retained=201
+integer, parameter :: reduced=202, float_arg=1, string_arg=2
+integer, parameter :: ef_max_args=9, ef_max_work_arrays=9, ef_max_name_length=40
+integer, parameter :: ef_max_description=128,  ef_unspecified_int4=-999
+integer, parameter :: float_return=1, string_return=2
+
+real, parameter :: ef_version = 1.4
+

@@ -177,6 +177,7 @@
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
+* V683 *acm*  8/12 add new SET LIST/OUTTYPE=  
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -253,7 +254,7 @@
      .                  coordvar, new_att_modulo,
      .                  got_it, redir_stdout, redir_stderr, redir_tee,
      .                  redir_journal, redir_append, redir_clobber, 
-     .                  fexist, use_strict, is_nc
+     .                  fexist, use_strict, is_nc, have_outtype
 
 * local parameter declarations:
 	INTEGER		slash_set_last
@@ -374,6 +375,21 @@ c *kob* 4/97
 	lp = qual_given( slash_set_list_form )
 	IF ( lp .GT. 0 ) THEN
 	   CALL EQUAL_FORMAT( cmnd_buff(qual_start(lp):qual_end(lp)), status )
+	ENDIF
+
+*  ... SET LIST/OUTTYPE=(netcdf type), 'DOUBLE', 'FLOAT', 'INT', 'SHORT', 'BYTE'
+	lp = qual_given( slash_set_list_outtype )
+	IF ( lp .GT. 0 ) THEN
+	   CALL EQUAL_STRING(
+     .                  cmnd_buff(qual_start(lp):qual_end(lp)),
+     .                  list_outtype, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   have_outtype = ( INDEX(list_outtype,"DOU") .GT. 0 .OR.
+     .                    INDEX(list_outtype,"FLO") .GT. 0 .OR. 
+     .                    INDEX(list_outtype,"INT") .GT. 0 .OR.
+     .                    INDEX(list_outtype,"SHO") .GT. 0 .OR.
+     .                    INDEX(list_outtype,"BYT") .GT. 0 )
+	   IF (.NOT. have_outtype) GOTO 6810
 	ENDIF
 
 * Get and save any settings for netcdf-4 output
@@ -678,6 +694,11 @@ c *kob* 4/97
 * ... mode nlevels sets the default number of contour intervals.
               ELSEIF ( mode .EQ. pmode_nlevels ) THEN
                  CALL SET_DEFAULT_NLEVELS( mode_arg(pmode_nlevels, 1) )
+
+* ... mode shrink_ylab allows the y-axis label to automatically shrink
+*     so it doesn't run off the page.
+              ELSEIF ( mode .EQ. pmode_shrink_ylab ) THEN
+	         CALL PPLCMD ( from, line, 0, 'SHRINKY 1', 1, 1 )
 
 	      ENDIF
 	      GOTO 820
@@ -1094,6 +1115,9 @@ c *kob* 4/97
            delta = val_buf
            IF (delta .LT. 0) GOTO 6670  
 
+* ...   If STRIDE value is 1 -- ignore the command.                    (II.2.c)
+           IF( delta .EQ. 1) RETURN 
+
 * ...   Elimate all cached memory                                     (II.1)
            CALL PURGE_ALL_MEMORY
 
@@ -1119,10 +1143,6 @@ c *kob* 4/97
            ELSE
               offset = 0
            ENDIF
-
-* ...   If STRIDE value is 1 -- ignore the command.                    (II.2.c)
-           IF( delta .EQ. 1) RETURN 
-
 
 * ...   offset must be less than the stride value
            IF(offset .GE. delta) GOTO 6640 
@@ -2049,4 +2069,8 @@ c *kob* 4/97
      .           'cache preemption must be 0 or 1',
      .               *5000 )
  6800   CALL ERRMSG( ferr_erreq, status, title, *5000 )
+ 6810	CALL ERRMSG( ferr_invalid_command, status,
+     .		'Unrecognized option/'//
+     .          cmnd_buff(qual_start(i):qual_end(i)) //pCR//
+     .		' Valid options are /OUTTYPE=DOUBLE,FLOAT,INT,SHORT,or BYTE', *1000 )
 	END

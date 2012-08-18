@@ -138,6 +138,7 @@
 *       *acm* 4/12 Remove MODE FOURDEE, using _E, _F, _M, _N instead, throughout.
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
+* V683 *acm*  8/12 add new CANCEL LIST/OUTTYPE=  
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -304,6 +305,10 @@
 	   list_format_given = .FALSE.
 	   list_fmt_type     = plist_default
 	ENDIF
+	IF ( slash_all .OR. qual_given( slash_canc_list_outtyp ) .GT. 0 ) THEN
+	   list_outtype = 'DFLT'
+	   list_fmt_type     = plist_default
+	ENDIF
 	IF ( qual_given( slash_canc_list_heading ) .GT. 0 ) THEN
 	   list_heading = .FALSE.
 	ELSEIF ( slash_all ) THEN
@@ -468,6 +473,11 @@
      .                  'effect on next new window: SET WIN/NEW or '//
      .                  'SET WIN/CLEAR')
                     ENDIF
+
+* ... mode shrink_ylab allows the y-axis label to automatically shrink
+*     so it doesn't run off the page.
+                 ELSEIF ( mode .EQ. pmode_shrink_ylab ) THEN
+	            CALL PPLCMD ( from, line, 0, 'SHRINKY 0', 1, 1 )
 
 * ... mode pplgui - close reply pipe
                  ELSEIF ( mode .EQ. pmode_gui ) THEN

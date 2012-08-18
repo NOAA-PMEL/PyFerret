@@ -39,13 +39,15 @@ all: optimized
 optimized:
 	$(MAKE) "CFLAGS = $(CFLAGS) -O -DNDEBUG" \
 		"FFLAGS = $(FFLAGS) -O -DNDEBUG" \
-		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O -DNDEBUG" build
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O -DNDEBUG" \
+		build
 
 .PHONY : debug
 debug:
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" \
 		"FFLAGS = $(FFLAGS) -O0 -g" \
-		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O0 -g" build
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O0 -g" \
+		build
 
 .PHONY : build
 build: update special_code ppl_libraries fmt_libraries fer_libraries

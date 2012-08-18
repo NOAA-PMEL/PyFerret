@@ -1,7 +1,7 @@
 	SUBROUTINE CDF_LIST ( memory, fname, append, crecdim, nvars,
      .			      mr_list, cx_list, title, enhead, mode,
      .			      clobber, edges_flag, do_bounds, 
-     .			      keepax_flag, status )
+     .			      keepax_flag, out_type, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -109,7 +109,8 @@
 *       *acm* 4/12  The record axis must be the last (slowest varying) axis. If a 
 *                   time axis is written, and an E or F axis is written, then write 
 *                   in /RIGID mode, with no record axis.
-* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V680  5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V683  8/12 *acm*  New SET LIST/OUTTYPE and SAVE/OUTTYPE 
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -134,7 +135,7 @@
 	INTEGER		nvars, mr_list(nvars), cx_list(nvars), mode,
      .			edges_flag, keepax_flag, status
 	REAL		memory( mem_blk_size, max_mem_blks )
-        CHARACTER*(*)   fname, title
+        CHARACTER*(*)   fname, title, out_type
         CHARACTER*1     crecdim
 
 * internal variable declarations:
@@ -206,8 +207,8 @@
      .			wwlimits0, cal_id, tax, varid, vartype, nvdims, 
      .                  nvatts, vdims(8), iatt, slen, alen, istat, 
      .                  attype, attlen, attoutflag, all_outflag,
-     .                  outtype, no_missing_flag, no_fill_flag
-        LOGICAL         NC_GET_ATTRIB, NC_GET_ATTRIB_DP,
+     .                  outtype, no_missing_flag, no_fill_flag 
+        LOGICAL         NC_GET_ATTRIB, NC_GET_ATTRIB_DP, 
      .                  full_precision, DODS_cache, range_not_rqd,
      .                  got_it, got_title, got_units, got_history,
      .                  do_warn, coordvar
@@ -218,8 +219,6 @@
      .                  full_precision = .TRUE.,
      .			range_not_rqd = .FALSE. )
 	CHARACTER	cal_name*32 , attname*128, buff1*128, buff2*128
-
-
 
 * initialize
 	 ivar = 1  ! just house-keeping -- make sure all is init'ed
@@ -322,6 +321,7 @@
            CALL CD_GET_VAR_ID (dset, varcode, varid, status)
 
            vartype = 0
+
            IF (status .EQ. ferr_ok) THEN
               CALL CD_GET_VAR_INFO (dset, varid, varname, vartype, nvdims, 
      .            vdims, nvatts, coordvar, all_outflag, status)
@@ -332,9 +332,50 @@
                  IF (itsa_string) vartype = 2
               ENDIF
               outtype = vartype
+
+* If there is an OUTTYPE attribute, that came from a SET VAR/OUTTYPE.
+* It will be superceded by a SET LIST/OUTTYPE or a SAVE/OUTTYPE setting,
+* applied just below.
 	      CALL CD_GET_VAR_OUTTYPE (dset, varid, outtype, status)
               IF (outtype .EQ. 0) outtype = vartype
            ENDIF
+
+* Setting made with SAVE/OUTTYPE or SET LIST/OUTTYPE
+* SAVE/OUTTYPE takes precedence over a SET LIST/OUTTYPE
+* out_type comes in from a SAVE/OUTTYPE  Use it if its not DFLT
+* list_outtype is from SET LIST/OUTTYPE  IF out_type is DFLT, use list_outtype
+
+	   IF ( out_type(1:3) .EQ. 'DFL') out_type = list_outtype
+
+	   IF (out_type(1:3) .EQ. 'DOU') outtype = nf_double
+	   IF (out_type(1:3) .EQ. 'FLO') outtype = nf_float
+	   IF (out_type(1:3) .EQ. 'INT') outtype = nf_int
+	   IF (out_type(1:3) .EQ. 'SHO') outtype = nf_short
+	   IF (out_type(1:3) .EQ. 'BYT') outtype = nf_byte
+
+* When the user requests higher precision output from a lower precision file 
+* variable, e.g. converting FLOAT to DOUBLE, write an attribute explaining 
+* that it contains data converted in this way.
+
+	   IF (dset .GT. 0 .AND. outtype.GT.vartype) THEN
+              CALL CD_GET_VAR_INFO (dset, varid, varname, vartype, 
+     .                  nvdims, vdims, nvatts, coordvar, varoutflag, 
+     .                  status) 
+
+              attname = 'Ferret_Precision_Note'
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+	      IF (status.EQ.ferr_ok) 
+     .             CALL CD_DELETE_ATTRIBUTE(dset, varid, attname, status)
+	      slen = TM_LENSTR1(typnam(vartype))
+              alen = TM_LENSTR1(typnam(outtype))
+              CALL CD_PUT_NEW_ATTR (dset, varid, 
+     .              attname, 2, 61, 1, 
+     .              'This variable written using Ferret was converted from '//
+     .              typnam(vartype)(4:slen)//' to '//
+     .              typnam(outtype)(4:alen), 1., status )
+              IF (status .NE. ferr_ok) GOTO 5990
+
+	   ENDIF
 
            IF ( cat .EQ. cat_pseudo_var )THEN
 	      varcode = varcode(:TM_LENSTR1(varcode))//"_"
@@ -346,10 +387,12 @@
            cal_id = TM_GET_CALENDAR_ID ( cal_name )
 
 * allowed name?
-           IF ( .NOT.TM_LEGAL_NAME(varcode) ) GOTO 5200
-           CALL FIND_VAR_NAME ( pdset_irrelevant, varcode, cat1, var1 )
-           IF (  var1 .NE. munknown_var_name
-     .     .AND. cat1 .EQ. cat_pseudo_var    ) GOTO 5200
+	   IF (cat .NE. cat_file_var) THEN
+              IF ( .NOT.TM_LEGAL_NAME(varcode) ) GOTO 5200
+              CALL FIND_VAR_NAME ( pdset_irrelevant, varcode, cat1, var1 )
+              IF (  var1 .NE. munknown_var_name
+     .      .AND. cat1 .EQ. cat_pseudo_var    ) GOTO 5200
+           ENDIF
 
 * if a string variable, then find max len
 	   IF (itsa_string) THEN
@@ -437,24 +480,24 @@
 
 * convert the data type into netCDF parameter value
            IF (DODS_cache .AND. cx_type(cx).EQ.unspecified_int4) THEN
-	      cx_type(cx) = NCDOUBLE
+	      cx_type(cx) = nf_double
 	   ENDIF
 
 	   IF (cx_type(cx) .EQ. ptype_float) THEN
-	      type = NCFLOAT
+	      type = nf_float
 	   ELSEIF  (cx_type(cx) .EQ. ptype_string) THEN
-	      type = NCCHAR
+	      type = nf_char
 	   ELSEIF  (cx_type(cx) .EQ. ptype_double) THEN
-	      type = NCDOUBLE
+	      type = nf_double
 	   ELSEIF  (cx_type(cx) .EQ. ptype_int4) THEN
-	      type = NCLONG
+	      type = nf_int
 	   ELSEIF  (cx_type(cx) .EQ. ptype_int2) THEN
-	      type = NCSHORT
+	      type = nf_short
 	   ELSEIF  (cx_type(cx) .EQ. ptype_int1) THEN
-	      type = NCBYTE
+	      type = nf_byte
 	   ELSE
 	      CALL WARN('Internal err: unknown data type')
-	      type = NCFLOAT
+	      type = nf_float
 	   ENDIF
            IF (type .NE. 0 .AND. varid .GT. 0) type = outtype
            IF (type .EQ. 0) outtype = vartype
@@ -578,7 +621,7 @@
 * If the data is numeric, see if the missing flag needs to be rescaled, 
 * or converted to the output type
 
-                 IF (istat .EQ. ferr_ok .AND. outtype .NE. NCCHAR) THEN
+                 IF (istat .EQ. ferr_ok .AND. outtype .NE. nf_char) THEN
 
 * If un-scaling on output, will also un-scale the missing flag.
                     IF (scalefac .NE. 1.D0  .OR. addoff .NE. 0.D0) THEN
@@ -678,7 +721,7 @@
      .                  aname(1:alen))
                        ENDIF
 
-                       IF (attype .EQ. NCCHAR .AND. attoutflag.EQ.1) THEN
+                       IF (attype .EQ. nf_char .AND. attoutflag.EQ.1) THEN
                           got_it = NC_GET_ATTRIB ( dset, varid, aname, 
      .                       do_warn, varcode, buff_size, attlen,
      .                       attoutflag, buff, vals)
@@ -907,11 +950,11 @@
 	      IF ( DODS_cache ) THEN
 	         ibuff4 = cd_varid(var)		! for F90 data type checks
 	         CALL CD_WRITE_ATTVAL(cdfid, varcode,
-     .                     'netcdf_var_id',rbuff4, 1, NCLONG, status )
+     .                     'netcdf_var_id',rbuff4, 1, nf_int, status )
                  IF ( status .NE. merr_ok ) GOTO 5800
 	         ibuff1 = cd_data_type(var)	! for F90 data type checks
 	         CALL CD_WRITE_ATTVAL(cdfid, varcode,
-     .                  'netcdf_data_type', rbuff4, 1, NCBYTE, status )
+     .                  'netcdf_data_type', rbuff4, 1, nf_byte, status )
                  IF ( status .NE. merr_ok ) GOTO 5800
 	      ENDIF
 

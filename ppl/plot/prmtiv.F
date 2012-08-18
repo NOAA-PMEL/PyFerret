@@ -136,6 +136,7 @@ C
 	INCLUDE 'HD.INC'
 	INCLUDE 'MISS.INC'
 	INCLUDE 'TAXIS.INC'
+	include 'axis_inc.decl'
 	INCLUDE 'AXIS.INC'
 	INCLUDE 'AXISL.INC'
 	INCLUDE 'CMRD.INC'
@@ -425,7 +426,7 @@ c	    ENDIF
 	    call color(ipen(0))
 	    CALL YAXIS1(XX,XFF,YLOW,YHIGH,YTICC,NSMTCS,LINTT,YUNIT,
      *		IPOS,FRMTX,YFF,CHSIZE,across,dms,hgrat,hcolor,hline,
-     *          yvaloff,.FALSE.)
+     *          yvaloff,.FALSE.,SHRINKY)
 
             CALL tm_break_lines (ylab, lnbeg, lnend, numlines)
             nfont = 0

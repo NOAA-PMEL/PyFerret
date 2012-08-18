@@ -28,7 +28,8 @@
      .		animate,
      .		first_frame,
      .		need_std,
-     .		need_histo
+     .		need_histo,
+     .		ribbon_plot
 	INTEGER	nvect_on,
      .		ncont_on,
      .		nlabs_on,
@@ -105,6 +106,7 @@
      .		first_frame,
      .		need_std,
      .		need_histo,
+     .		ribbon_plot,
      .          active_win_id,
      .		key_doc,
      .		onedee_on,

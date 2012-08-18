@@ -47,7 +47,8 @@
 * V6.63 *acm* 7/10 Add VECTOR/KEY to force key even if /NOLAB
 * V664  8/10 *kms* Add EXIT /TOPYTHON
 * V68 *acm* 1/12   Add USE/STRICT; see ticket 1910.
-* V700  *kms* 1/12 Add SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
+* PyFr  *kms* 1/12 Add SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
+* V683  8/12 *acm*  New SET LIST/OUTTYPE CANCEL LIST/OUTTYPE, and SAVE/OUTTYPE 
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -71,6 +72,7 @@
      .			slash_set_list_tchunk,
      .			slash_set_list_echunk,
      .			slash_set_list_fchunk,
+     .			slash_set_list_outtype,
      .
      .			slash_canc_list_all,
      .			slash_canc_list_prec,
@@ -78,6 +80,7 @@
      .			slash_canc_list_form,
      .			slash_canc_list_heading,
      .			slash_canc_list_append,
+     .			slash_canc_list_outtyp,
      .
      .			slash_canc_axis_modulo,
      .			slash_canc_axis_all,
@@ -141,7 +144,8 @@
      .			slash_list_fchunk,
      .			slash_list_deflate,
      .			slash_list_shuffle,
-     .			slash_list_endian
+     .			slash_list_endian,
+     .			slash_list_outtype
 
 	INTEGER		
      .			slash_set_data_ez,
@@ -284,8 +288,10 @@
      .			slash_plot_vgrat,
      .			slash_plot_grat,
      .			slash_plot_nokey,
-     .			slash_plot_noyadjust
-
+     .			slash_plot_noyadjust,
+     .			slash_plot_key,
+     .			slash_plot_levels,
+     .			slash_plot_spectrum
 
 	INTEGER		slash_wire_over,
      .			slash_wire_set_up,
@@ -341,6 +347,7 @@
      .			slash_set_list_tchunk= 13,
      .			slash_set_list_echunk= 14,
      .			slash_set_list_fchunk= 15,
+     .			slash_set_list_outtype=16,
      .
      .			slash_canc_list_all    = 1,
      .			slash_canc_list_prec   = 2,
@@ -348,6 +355,7 @@
      .			slash_canc_list_form   = 4,
      .			slash_canc_list_heading= 5,
      .			slash_canc_list_append = 6,
+     .			slash_canc_list_outtyp = 7,
      .
      .			slash_canc_axis_modulo = 1,
      .			slash_canc_axis_all    = 2,
@@ -408,7 +416,8 @@
      .			slash_list_fchunk = 1+48,
      .			slash_list_deflate = 1+49,
      .			slash_list_shuffle = 1+50,
-     .			slash_list_endian = 1+51 )
+     .			slash_list_endian  = 1+51,
+     .			slash_list_outtype = 1+52 )
 
 	PARAMETER     (
      .			slash_set_data_ez	= 1,
@@ -552,7 +561,10 @@
      .			slash_plot_vgrat	= 1+33,
      .			slash_plot_grat 	= 1+38,
      .			slash_plot_nokey 	= 1+39,
-     .			slash_plot_noyadjust 	= 1+40 )
+     .			slash_plot_noyadjust 	= 1+40,
+     .			slash_plot_key 		= 1+41,
+     .			slash_plot_levels 	= 1+42,
+     .			slash_plot_spectrum 	= 1+43 )
 
 	PARAMETER     ( slash_wire_over		= 1+12,
      .			slash_wire_set_up	= 1+13,

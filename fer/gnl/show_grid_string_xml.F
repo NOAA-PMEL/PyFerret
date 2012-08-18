@@ -87,16 +87,18 @@
 * First the string-length dimension
 
 	slen = TM_LENSTR(stringdimname)
+	axdir = 'd'
 
 	CALL ESCAPE_FOR_XML (stringdimname, outstring, slen)
-	WRITE (risc_buff, 2040 ) 'd',
-     .           outstring(1:slen),  'd'
+	WRITE (risc_buff, 2040 ) axdir, outstring(1:slen),  axdir
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 	DO 110 idim = 1, nferdims
            line = grid_line(idim, grid)
-           slen = TM_LENSTR(line_name(line))
-	   status = STR_DNCASE(ww_dim_name(idim), axdir)
+           IF (line .GT. 0) THEN
+	      slen = TM_LENSTR(line_name(line))
+	      status = STR_DNCASE(axdir, ww_dim_name(idim))
+	   ENDIF
 
            IF (line .GT. 0  .AND.  slen .GT. 0 .AND.
      .         cx_expr .EQ. unspecified_int4) THEN
@@ -113,6 +115,7 @@
                  slen = TM_LENSTR1(line_name(line))
                  WRITE (risc_buff, 2040 ) axdir,
      .              line_name(line)(1:slen), axdir
+	      print *, risc_buff
 	         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
               ENDIF
            ENDIF

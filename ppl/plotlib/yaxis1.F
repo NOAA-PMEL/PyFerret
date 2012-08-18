@@ -1,6 +1,6 @@
       SUBROUTINE YAXIS1(X,XFACT,YLO,YHI,YTIC,NSMTCY,LINTY,YUNIT,LABEL,
      *    IFORMT,YFACT,CSIZE,xacross,ydms,hgrat,hcolor,hline,
-     *    yvaloff, noylab)
+     *    yvaloff, noylab, SHRINKY)
 
 *
 *
@@ -77,6 +77,7 @@ C**
         LOGICAL solid          ! solid lines across at tics
         LOGICAL dashed         ! dashed lines across at tics
 	LOGICAL noylab
+	LOGICAL SHRINKY
 
 	CHARACTER IFORMT*(*),YLAB*20
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
@@ -229,13 +230,13 @@ C
 	ISTOP=INT((YHI-Y)/(YTIC*LINTY)+0.000001)
 
 	y0 = y
+	YWIDT=0.
+        YSAVE = Y
 
+	IF (SHRINKY) THEN
 C First compute max axis-label width without writing labels 
 C (ITYPE=3 arg to SCINOT) 
 
-	YWIDT=0.
-
-        YSAVE = Y
         DO 199 I=0,ISTOP
 	IF ( interrupted ) RETURN		! TMAP interrupt
         TEMP=SIGSZ*Y/YUNIT
@@ -259,10 +260,12 @@ C (ITYPE=3 arg to SCINOT)
 
         IF (label .EQ. -1) CALL RESET_LABSIZ (YWID, YWIDT, ABSSZ, NOYLAB)
 
-* Now make the labels.
+	ENDIF !SHRINKY
 
 	YWIDT=0.
 	Y = YSAVE
+
+* Now make the labels.
 
 	DO 200 I=0,ISTOP
 	IF ( interrupted ) RETURN		! TMAP interrupt

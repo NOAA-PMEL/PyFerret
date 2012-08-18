@@ -79,6 +79,7 @@
 *                    attribute isnt already there.
 * V64  10/09 *acm* longer string length for grid_name
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V683 8/12  *acm* Move writing of notes about output precision to cdf_list.F
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -300,10 +301,7 @@
            ELSE IF (typflag(1:3) .EQ. 'FLO' .OR. typflag(1:3) .EQ. 'REA') THEN
               outtype_flag = 5   ! NC_FLOAT
            ELSE IF (typflag(1:3) .EQ. 'DOU') THEN
-              CALL WARN 
-     .         ('Converting single precision variable to double on output')
               outtype_flag = 6   ! NC_DOUBLE
-
            ELSE
               GOTO 5900
            ENDIF
@@ -342,27 +340,6 @@
 	      dset = -1
   	      CALL CD_GET_VAR_ID (dset, vname, varid, status)
            ENDIF
-
-* When the user requests double precision output, write an attribute to the
-* file explaining that it contains data converted from float.
-           attname = 'Ferret_Precision_Note'
-           CALL CD_GET_VAR_ATT_ID (dset, varid, 
-     .        attname, attid, status)
-           IF (typflag(1:3).EQ.'DOU' .AND. status.NE.ferr_ok) THEN
-             CALL CD_PUT_NEW_ATTR (dset, varid, 
-     .        attname, 2, 61, 1, 
-     .        'This variable written by Ferret was converted from '//
-     .        'FLOAT to DOUBLE', 1., status )
-             IF (status .NE. ferr_ok) GOTO 5000
-	  ENDIF
-
-* If they changed their minds and reset from double to something else
-* then dont write that attribute.
-
-	   IF (typflag(1:3).NE.'DOU' .AND. status.EQ.ferr_ok) THEN
-             CALL CD_DELETE_ATTRIBUTE(dset, varid, attname, status)
-             IF (status .NE. ferr_ok) GOTO 5000
-	   ENDIF
 
 * Get input type, store in variable outtype_flag
            IF (outtype_flag .EQ. 99) THEN

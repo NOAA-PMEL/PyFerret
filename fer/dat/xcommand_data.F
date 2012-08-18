@@ -196,6 +196,7 @@
 * PyFr  *kms* 3/11 Add CANCEL PYVAR /ALL /DATASET
 * PyFr  *kms* 1/12 Add SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
 * V68 *acm* 5/12   Add DEFINE DATA /AGGREGATE /NAME= /QUIET
+* V683*acm* 8/12   New SET LIST/OUTTYPE, CANCEL LIST/OUTTYPE and SAVE/OUTTYPE 
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -287,6 +288,7 @@
 		DATA qualifiers  (nqual_at1f+12)/ 'TCHUNK'	/
 		DATA qualifiers  (nqual_at1f+13)/ 'ECHUNK'	/
 		DATA qualifiers  (nqual_at1f+14)/ 'FCHUNK'	/
+		DATA qualifiers  (nqual_at1f+15)/ 'OUTTYPE'	/
 * SET DATA_SET
 	   DATA subcommands      (nsub_at1 + 6)	/ 'DATA'	/
 	   DATA num_qualifs      (nsub_at1 + 6)	/ nqual1g	/
@@ -708,6 +710,7 @@
 		DATA qualifiers  (nqual_at3f+3)	/ 'FORMAT'	/
 		DATA qualifiers  (nqual_at3f+4)	/ 'HEADING'	/
 		DATA qualifiers  (nqual_at3f+5)	/ 'APPEND'	/
+		DATA qualifiers  (nqual_at3f+6)	/ 'OUTTYPE'	/
 * CANCEL DATA_SET
 	   DATA subcommands      (nsub_at3 + 6)	/ 'DATA'	/
 	   DATA num_qualifs      (nsub_at3 + 6)	/ nqual3g	/
@@ -911,6 +914,9 @@
 		DATA qualifiers  (nqual_at5a+49)/ 'DEFLATE'/
 		DATA qualifiers  (nqual_at5a+50)/ 'SHUFFLE'/
 		DATA qualifiers  (nqual_at5a+51)/ 'ENDIAN'/
+		DATA qualifiers  (nqual_at5a+52)/ 'OUTTYPE'/
+		DATA qualifiers  (nqual_at5a+53)/ '****'/
+		DATA qualifiers  (nqual_at5a+54)/ '****'/
 
 * PLOT - command # 6
 	DATA commands(6)			/ 'PLOT'	/
@@ -963,9 +969,13 @@
 		DATA qualifiers  (nqual_at6a+38)/ 'GRATICUL'/	! tic lines
 		DATA qualifiers  (nqual_at6a+39)/ 'NOKEY'/	! nokey
 		DATA qualifiers  (nqual_at6a+40)/ 'NOYADJUS'/	! noyadjust
-		DATA qualifiers  (nqual_at6a+41)/ '****'/	! 
-		DATA qualifiers  (nqual_at6a+42)/ '****'/	! 
-
+		DATA qualifiers  (nqual_at6a+41)/ '****'/	! KEY [=cont] for Ribbon plot
+		DATA qualifiers  (nqual_at6a+42)/ '****'/	! LEVELS for Ribbon plot
+		DATA qualifiers  (nqual_at6a+43)/ '****'/	! PALETTE for Ribbon plot
+		DATA qualifiers  (nqual_at6a+44)/ '****'/	!  
+		DATA qualifiers  (nqual_at6a+45)/ '****'/	!  
+		DATA qualifiers  (nqual_at6a+46)/ '****'/	!  
+		DATA qualifiers  (nqual_at6a+47)/ '****'/	! 
 
 * GO	 - command # 7
 	DATA commands(7)			/ 'GO  '	/

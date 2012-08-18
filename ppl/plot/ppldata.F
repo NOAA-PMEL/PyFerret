@@ -62,6 +62,7 @@ C     for compatibility with Ferret use of symbols.
 *                If this is changed, also change it in fer/dat/xprog_state_data.F
 
 	INCLUDE 'PARAMPL5.DAT'
+	include 'axis_inc.decl'
 	INCLUDE 'AXIS.INC'
 	INCLUDE 'AXISL.INC'
 	INCLUDE 'AXLWID.INC'
@@ -111,6 +112,7 @@ C
 	DATA YLO,YHI,YTIC,YLEN,YCSIZE,IAUTOY,ITYPEY/3*0.,6.0,.10,1,1/
 	DATA NMTCY,LINTY,LABELY,NSIGY,NTICY,YORG/0,2,-1,2,5,1.2/
 	DATA IAXON/4*1/
+	DATA SHRINKY/.FALSE./
 C
 	DATA IFRX,IFRY,IT1,IT2,ITSTRT,ITMIN,ITMAX/2*' ',
      *	5*'71010100000019'/ 

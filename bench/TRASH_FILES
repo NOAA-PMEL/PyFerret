@@ -111,6 +111,7 @@ lonlat.dat
 lonlat.nc
 multi_line_labels.plt
 mypack.nc
+mytype.nc
 names
 nc4_deflate4bigchunk.nc
 nc4_deflate4_defaultchunk.nc

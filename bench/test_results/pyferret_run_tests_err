@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 12 Aug  6 11:12 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.csh
+lrwxrwxrwx 1 ksmith tmap 12 Aug 17 17:32 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.csh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for PyFerret
+Note: 
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -187,6 +187,8 @@ Benchmark scripts that will be run:
    bn_aggregate_e.jnl
    bn_6d_lab_mode.jnl
    bn682_bug_fixes.jnl
+   bn683_bug_fixes.jnl
+   bn_outtype.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -203,7 +205,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Aug  6 11:13:28 PDT 2012
+Beginning at Fri Aug 17 17:43:38 PDT 2012
 *** Running test: bn_syntax.jnl
     WARNING: Unable to import cdms2 and/or cdtime;
              the Python functions pyferret.get and pyferret.put are not available
@@ -474,11 +476,8 @@ shade/nolabel sst, x_page, y_page
 shade/nolabel sst, 0*x_page, y_page
  **ERROR: all data have same value: Y coordinate field
 shade/nolabel sst, x_page, 0*y_page
- *** NOTE: Adjusting Y-axis label size from 0.100 to 0.036, to avoid running off page.
- *** NOTE: Adjusting Y-axis label size from 0.100 to 0.036, to avoid running off page.
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
- *** NOTE: Adjusting Y-axis label size from 0.100 to 0.036, to avoid running off page.
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
 *** Running test: bn_symbols.jnl
@@ -2027,8 +2026,6 @@ LOAD vw_fft
     WARNING: Unable to import cdms2 and/or cdtime;
              the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
- *** NOTE: Adjusting Y-axis label size from 0.100 to 0.094, to avoid running off page.
- *** NOTE: ./bn_deg_min.jnl
 *** Running test: bn_dp_readscale.jnl
     WARNING: Unable to import cdms2 and/or cdtime;
              the Python functions pyferret.get and pyferret.put are not available
@@ -2281,7 +2278,6 @@ set axis/stride=2 NORMAL
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: Adjusting Y-axis label size from 0.100 to 0.096, to avoid running off page.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: invalid command: "300": Number of contour levels must be between 1 and 250
@@ -2418,7 +2414,6 @@ LIST a_regrid[D=1,GT=b[D=2]@MOD]
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: Converting single precision variable to double on output
  LISTing to file a.nc
  LISTing to file a.nc
  PERMANENT data cleared from memory
@@ -2825,8 +2820,6 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: Adjusting Y-axis label size from 0.100 to 0.093, to avoid running off page.
- *** NOTE: ./err64_very_small_latlon.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Units on axis "ENS" are not recognized: count
@@ -3288,6 +3281,32 @@ define data/agg windy = 1,2
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+*** Running test: bn683_bug_fixes.jnl
+    WARNING: Unable to import cdms2 and/or cdtime;
+             the Python functions pyferret.get and pyferret.put are not available
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Adjusting Y-axis label size from 0.100 to 0.001, to avoid running off page.
+ *** NOTE: /home/users/ksmith/PyFerret/go/magnify.jnl
+*** Running test: bn_outtype.jnl
+    WARNING: Unable to import cdms2 and/or cdtime;
+             the Python functions pyferret.get and pyferret.put are not available
+ Cached data cleared from memory
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
 *** Running test: bn_all_ef.jnl
     WARNING: Unable to import cdms2 and/or cdtime;
              the Python functions pyferret.get and pyferret.put are not available
@@ -3311,4 +3330,4 @@ LOAD/TEMPORARY vflag
     WARNING: Unable to import cdms2 and/or cdtime;
              the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
-Ended at Mon Aug  6 11:16:27 PDT 2012
+Ended at Fri Aug 17 17:46:41 PDT 2012

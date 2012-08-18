@@ -182,5 +182,7 @@ bn_regrid_transforms_6d.jnl
 bn_aggregate_e.jnl
 bn_6d_lab_mode.jnl
 bn682_bug_fixes.jnl
+bn683_bug_fixes.jnl
+bn_outtype.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

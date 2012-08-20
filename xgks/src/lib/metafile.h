@@ -300,7 +300,7 @@ typedef struct {
 extern int XgksMiOpenWs		PROTO((WS_STATE_PTR ws));
 extern int XgksMoOpenWs		PROTO((WS_STATE_PTR ws));
 extern int XgksMiCloseWs	PROTO((WS_STATE_PTR ws));
-extern int XgksMoCloseWs	PROTO((WS_STATE_PTR ws));
+extern int XgksMoCloseWs	PROTO((WS_STATE_PTR ws, Gint *batmode));
 extern int XgksMoClearWs	PROTO((WS_STATE_PTR ws, Gclrflag flag));
 extern int XgksMoReDrawAllSeg	PROTO((WS_STATE_PTR ws));
 extern int XgksMoUpdateWs	PROTO((WS_STATE_PTR ws, Gregen regenflag));

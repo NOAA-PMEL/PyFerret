@@ -555,7 +555,7 @@ GIFmoOpen(WS_STATE_PTR ws)
  * Close an output GIF file.
  */
     int
-GIFmoClose(Metafile *mf)
+GIFmoClose(Metafile *mf, int batmode)
 {
   int status = 1;		/* return status error */
   if (mf != NULL && mf->cgmo != NULL) {
@@ -564,7 +564,9 @@ GIFmoClose(Metafile *mf)
 	/* the call to GIFFlush had been commented out with the
 	   fix to ticket 1150.  But that means that files created 
 	   with "ferret -batch giffilename.gif" are not written. */
-    status = GIFFlush(mf, meta->ws->conn); 
+    if (batmode != 0){
+      status = GIFFlush(mf, meta->ws->conn);
+    }
 
     if (meta != 0){
       destroy_meta(cgmo, meta);

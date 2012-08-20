@@ -330,9 +330,12 @@ gopenws(ws_id, connection, ws_type)
  *
  * See also: ANSI standard p.75
  */
-gclosews(ws_id)
+gclosews(ws_id, batmode)
     Gint            ws_id;
+    Gint            batmode;
 {
+    Gint            the_bat_mode;
+
     WS_STATE_PTR    ws;
 
     /* check gks in proper state */
@@ -400,7 +403,7 @@ gclosews(ws_id)
 	XgksMiCloseWs(ws);
 	break;
     case MO:
-	XgksMoCloseWs(ws);
+	XgksMoCloseWs(ws, batmode);
 	xgks_state.open_mo--;
 	break;
     case WISS:

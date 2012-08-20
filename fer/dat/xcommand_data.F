@@ -961,9 +961,9 @@
 		DATA qualifiers  (nqual_at6a+38)/ 'GRATICUL'/	! tic lines
 		DATA qualifiers  (nqual_at6a+39)/ 'NOKEY'/	! nokey
 		DATA qualifiers  (nqual_at6a+40)/ 'NOYADJUS'/	! noyadjust
-		DATA qualifiers  (nqual_at6a+41)/ '****'/	! KEY [=cont] for Ribbon plot
-		DATA qualifiers  (nqual_at6a+42)/ '****'/	! LEVELS for Ribbon plot
-		DATA qualifiers  (nqual_at6a+43)/ '****'/	! PALETTE for Ribbon plot
+		DATA qualifiers  (nqual_at6a+41)/ 'KEY'/	! [=cont] for Ribbon plot
+		DATA qualifiers  (nqual_at6a+42)/ 'LEVELS'/	! for Ribbon plot
+		DATA qualifiers  (nqual_at6a+43)/ 'PALETTE'/	! for Ribbon plot
 		DATA qualifiers  (nqual_at6a+44)/ '****'/	!  
 		DATA qualifiers  (nqual_at6a+45)/ '****'/	!  
 		DATA qualifiers  (nqual_at6a+46)/ '****'/	!  

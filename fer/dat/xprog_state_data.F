@@ -111,6 +111,7 @@
 *                 which will be on by default. If canceled, the various SHOW and 
 *                 LIST commands, etc, will not list info for E,F dimensions.
 * V683  *acm* 8/12 - add new MODE SHRINK_YLAB
+* V683  *acm* 8/12 - frame file FERRET.MGM  > ferret.gif
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -326,7 +327,7 @@ c     .	( mode_name(i),i=pmode_shrink_ylab+1,max_modes )/pmode_unused/
 	DATA	list_digits	  / default_output_precision /
 
 * for FRAME
-	DATA	frame_file	  / 'ferret.mgm' /
+	DATA	frame_file	  / 'ferret.gif' /
         DATA    frame_compress    / 'RLE' /  ! matching pframe_hdf_runlen
 
 * other filenames

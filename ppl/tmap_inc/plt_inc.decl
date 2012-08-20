@@ -9,4 +9,5 @@
 	INTEGER	MOD
 	INTEGER	IR
 	INTEGER	LUN
+	INTEGER	BATMODE
 * requires: INCLUDE 'PPLV11INC:PLT.INC'                                     

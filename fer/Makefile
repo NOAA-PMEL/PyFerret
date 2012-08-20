@@ -57,7 +57,7 @@ CLEANDIRS = $(DIRS)
 
 DEPDIRS = ccr
 
-FERLIBS = -lxeq -lgnl -lferplt -lrpn -lstk -ldoo -locn \
+FERLIBS = -lxeq -lgnl  -lccr -lferplt -lrpn -lstk -ldoo -locn \
 	-lctx -lfmt -lino -lmem -lutl -ldat -lccr -lefi -lefn
 
 PPLLIBS = -lplt -lpll -lsym -lcmp -lour -lepi -lusr -ltmap

@@ -50,6 +50,7 @@
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
 
+
 #ifdef core
         include 'CORECM.INC'
 #endif
@@ -90,12 +91,10 @@ C
 *       Written to close GKS if it is open, deactivate and close workstations
 *       J Davison 9.27.88
 
-#ifdef unix
         include         'pltcom_dat.decl'
         include         'PLTCOM.DAT'
-#else
-        INCLUDE         'PPLV11INC:pltcom.dat'
-#endif
+	include         'plt_inc.decl'
+        include         'PLT.INC'
 
         integer         member,er_status,num_active,rmember,i,j,
      .                  num_open, istate
@@ -121,7 +120,7 @@ C
 
               do 30 i = 1,num_open
                  call gqopwk (1,er_status,j,rmember)
-                 call gclwk (rmember)
+                 call gclwk (rmember, batmode)
 30            continue
 
            endif    ! istate

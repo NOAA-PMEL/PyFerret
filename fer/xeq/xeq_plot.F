@@ -125,7 +125,8 @@
 * internal variable declarations:
 	LOGICAL		overlay, transpz, versus,
      .			no_labels, set_up, noaxes, axes, use_line,
-     .			is_logh, is_logv, nokey, no_data, no_range
+     .			is_logh, is_logv, nokey, no_data, no_range,
+     .			continuous_key, do_key
 	INTEGER		TM_LENSTR1, STR_UPCASE,
      .                  symbol, color, status,
      .			loc, limit, slen, thick, step_inc,
@@ -307,6 +308,78 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
      .	   .OR. (versus.AND.qual_given(slash_plot_symb).EQ.0) ) 
      .							symbol = qual_off
 	ENDIF
+
+* ... PLOT/LEVELS=  for multi-colored "ribbon" line 
+*     3-agument plot/vs/lev xpts, ypts, var
+
+	ribbon_plot = .FALSE.
+	loc = qual_given( slash_plot_levels )
+	IF ( loc .GT. 0  ) THEN
+	   IF (num_uvars_in_cmnd .GT. 3)
+     .      CALL WARN (
+     .      '/PLOT/VS/LEVELS uses just 3 varables. Ignoring extra varibles.')
+	   IF (num_uvars_in_cmnd .LT. 3) GOTO 5470
+
+	   ribbon_plot = .TRUE.
+	   CALL DISP_PREP( status )
+	ENDIF
+
+
+* ... PLOT/PALETTE=  for multi-colored "ribbon" line 
+*     3-agument plot/vs/lev/palette xpts, ypts, var
+
+* save old and reset to new color spectrum if requested
+
+        IF (ribbon_plot) THEN
+           loc = qual_given( slash_plot_spectrum  )
+           IF ( loc.GT.0 ) THEN
+              CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .             buff, status )
+              IF ( status .NE. ferr_ok ) RETURN
+              IF ( buff .EQ. ' ' ) buff = 'default'
+              CALL PPL_SHASET( 'SAVE' )
+              CALL PPL_SHASET( 'SPECTRUM='//buff(1:TM_LENSTR1(buff)) )
+           ENDIF
+
+
+* default key
+	   do_key =  (qual_given(slash_plot_key)  .GT. 0)
+     .		.OR. ( (qual_given(slash_plot_key) .EQ. 0)
+     .           .AND. .NOT.overlay
+     .           .AND. .NOT.no_data )
+	   IF (qual_given(slash_plot_nokey) .gt. 0) do_key = .FALSE.
+           IF ( do_key ) THEN
+              CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
+
+* ... /KEY[=continouus] ?
+              loc = qual_given( slash_plot_key )
+
+              IF ( loc .GT. 0) THEN
+	         CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        buff, status )
+                 IF ( status .NE. ferr_ok ) GOTO 5000
+	         IF ( buff(1:3) .EQ. 'CON' ) THEN
+                    continuous_key = .TRUE.
+                    CALL PPLCMD (from, line, 0, 'S_KEY 1', 1, 1 )
+                 ENDIF
+              ENDIF
+
+           ELSE
+              CALL PPLCMD ( from, line, 0, 'SHAKEY 0,1', 1, 1 )
+
+c when it's an overlay, 'No Valid Data' is part of the plot key,
+c done in disp_set_up. If mode_nodata_lab is false then leave this off.
+
+              IF (.NOT. overlay .AND. no_data .AND. mode_nodata_lab) 
+     .                  CALL PUT_LABEL( ppl_movlab, 0.5, 0.5,
+     .                  ppl_centered, letsize_title,
+     .                  'No Valid Data',
+     .                  lab_loc_axlen_times, lab_loc_axlen_times )
+           ENDIF
+
+	ENDIF  ! ribbon plot
+
+
 * ... PLOT/STEP[=CONNECTED]
 	loc = qual_given( slash_plot_step )
 	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
@@ -547,5 +620,7 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
  5460	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'/COLOR=WHITE only available with /THICK=1', *1000 )
-
+ 5470	CALL ERRMSG( ferr_syntax, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .	'PLOT/VS/LEVELS ribbon plot needs 3 arguments', *1000 )
 	END

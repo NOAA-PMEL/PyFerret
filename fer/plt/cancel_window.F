@@ -66,6 +66,8 @@
 	include	'PLTCOM.DAT'	! with sizing data, etc.
 	include	'gkscm1_inc.decl'	! with gks common
 	include	'GKSCM1.INC'	! with gks common
+        include 'plt_inc.decl'     ! batmode
+        include 'PLT.INC'
 	
 * calling argument declarations:
 	INTEGER		status
@@ -143,7 +145,7 @@
 	   ENDIF
 	      
 * close the specified window
- 80	   CALL GCLWK( n )
+ 80	   CALL GCLWK( n, batmode )
 ! old UIS code
 !	   CLOSE ( UNIT=n+50, ERR=5010 )
 	   wn_open ( n ) = .FALSE.

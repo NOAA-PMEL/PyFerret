@@ -52,7 +52,8 @@ extern int GIFmoOpen	PROTO((
     WS_STATE_PTR ws
 ));
 extern int GIFmoClose	PROTO((
-    Metafile	*mf
+    Metafile	*mf,
+    int         batmode
 ));
 extern int GIFclear	PROTO((
     Metafile	*mf,

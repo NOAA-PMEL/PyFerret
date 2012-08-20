@@ -123,7 +123,7 @@ static INT_PROC emptyProc(void)
 #define MO_CLEAR(mf, num, flag)	\
 	    SEL_FUNC(mf, (INT_PROC)GMclear, (INT_PROC)CGMclear, (INT_PROC)PSclear, (INT_PROC)GIFclear)(mf, num, flag)
 #define MO_CLOSE(mf)	\
-	    SEL_FUNC(mf, (INT_PROC)GMmoClose, (INT_PROC)CGMmoClose, (INT_PROC)PSmoClose, (INT_PROC)GIFmoClose)(mf)
+	    SEL_FUNC(mf, (INT_PROC)GMmoClose, (INT_PROC)CGMmoClose, (INT_PROC)PSmoClose, (INT_PROC)GIFmoClose)(mf, batmode)
 #define MO_CLOSE_SEG(mf, num)	\
 	    SEL_FUNC(mf, (INT_PROC)GMcloseSeg, (INT_PROC)CGMcloseSeg, (INT_PROC)PScloseSeg, (INT_PROC)GIFcloseSeg)(mf, num)
 #define MO_DEFER(mf, num, defer_mode, regen_mode)	\
@@ -1211,10 +1211,10 @@ XgksMiCloseWs(WS_STATE_PTR ws)
 
 
 /*
- * Close an output Metafile.
+ * Close an output Metafile.  ?batmode
  */
     int
-XgksMoCloseWs(WS_STATE_PTR ws)
+XgksMoCloseWs(WS_STATE_PTR ws, int *batmode)
 {
   return MO_CLOSE(&ws->mf);
 }

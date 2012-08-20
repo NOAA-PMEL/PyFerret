@@ -546,14 +546,15 @@ GIFmoOpen(WS_STATE_PTR ws)
  * Close an output GIF file.
  */
     int
-GIFmoClose(Metafile *mf)
+GIFmoClose(Metafile *mf, int *batmode)
 {
   int status = 1;		/* return status error */
   if (mf != NULL && mf->cgmo != NULL) {
     mf_cgmo *cgmo	= mf->cgmo;
     GIFmetafile *meta = find_meta(cgmo);
-//    status = GIFFlush(mf, meta->ws->conn);
-    status = GIFFlush(mf, meta->ws->conn);
+    if (batmode != 0){
+      *status = GIFFlush(mf, meta->ws->conn);
+    }
 
     if (meta != 0){
       destroy_meta(cgmo, meta);

@@ -155,7 +155,7 @@
            CALL GDAWK(anim_id)
            wn_active(anim_id) = .FALSE.
 *     close unmapped window
-           CALL GCLWK(anim_id)
+           CALL GCLWK(anim_id, batmode)
            wn_open ( anim_id ) = .FALSE.
 *     activate the mapped window for continued ferret use
            CALL GACWK(wsid)

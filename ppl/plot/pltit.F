@@ -245,7 +245,7 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 
 	   if (.not. meta_clsplt) then				!1.25.90 JD
               call gdawk (meta_wsid)     			!11.6.89 JD
-	      call gclwk (meta_wsid)				!11.6.89 JD
+	      call gclwk (meta_wsid, batmode)
 	      close (meta_lun)					!11.6.89 JD
 *             TEMP FIX DUE TO GKS BUG  *JD* 5.91
 * ----        close (aux_lun)

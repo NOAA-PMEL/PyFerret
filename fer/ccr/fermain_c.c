@@ -222,6 +222,7 @@ main (int oargc, char *oargv[])
   int verify_flag = 1;
   int len_str;
   int uvar_dset;
+  int bat_mode;
 
   its_script = 0;
   arg_pos = 0;
@@ -258,7 +259,8 @@ main (int oargc, char *oargv[])
       i++;    /* advance to next argument */
     } else if (strcmp(argv[i],"-gif")==0) {
       char *meta_name = ".gif";	/* Unused dummy name */
-      FORTRAN(set_batch_graphics)(meta_name);  /* inhibit X output altogether */
+	  bat_mode = 0;
+      FORTRAN(set_batch_graphics)(meta_name, &bat_mode);  /* inhibit X output altogether */
       ++i;
     } else if (strcmp(argv[i],"-secure")==0) {
       set_secure();
@@ -276,7 +278,8 @@ main (int oargc, char *oargv[])
       if (++i < argc && argv[i][0] != '-'){
 	  meta_name = argv[i++];
       }
-      FORTRAN(set_batch_graphics)(meta_name);  /* inhibit X output altogether*/
+	  bat_mode = 1;
+      FORTRAN(set_batch_graphics)(meta_name, &bat_mode);  /* inhibit X output altogether*/
 	  
     } else if (strcmp(argv[i],"-noverify")==0) {
       verify_flag = 0;    

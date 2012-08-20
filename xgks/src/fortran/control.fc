@@ -302,11 +302,12 @@ gopwk(
     void
 /*FORTRAN*/
 gclwk(
-    int     *wkid)
+    int     *wkid,
+    int     *batmode)
 {
     debug(("Close Workstation %d\n", *wkid));
 
-    (void) gclosews((Gint) *wkid);
+    (void) gclosews((Gint) *wkid, (Gint) *batmode);
 }
 
 

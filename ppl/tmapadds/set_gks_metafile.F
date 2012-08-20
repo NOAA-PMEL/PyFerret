@@ -230,16 +230,23 @@ c	      IF ( batch .AND. (.NOT.meta_batch)) THEN
 	end
 
 
-	subroutine save_metafile_name(mname, clen)
+	subroutine save_metafile_name(mname, clen, bat_mode)
 	implicit none
 	include 'gkscm2.cmn'
-	integer clen
+	
+	include         'plt_inc.decl'
+        include         'PLT.INC'
+
+	integer clen, bat_mode
+
 #ifdef sun
 	byte mname(clen) 
 #else   
 	integer*1 mname(clen)
 #endif  
 	call tm_ctof_strng(mname, meta_file, clen)
+
+	batmode = bat_mode
 	return
 	end
 	

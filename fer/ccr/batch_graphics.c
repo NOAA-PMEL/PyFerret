@@ -51,7 +51,8 @@
  * v552 *acm* 6/5/03 check for the new flag its_gif
  * v602 *acm*  12/07 additions for metafile batch mode; new flag its_meta
  *                   and routine its_meta_graphics to check for it
- *
+ * v683 *acm*  8/12  batmode distinguishes ferret -batch gifname.gif from ferret -gif
+
  */
 
 #ifdef MAC_SSIZE
@@ -68,26 +69,31 @@ typedef long ssize_t;
 
 /* local static variable to contain the state */
 static int its_batch=0;
+static int its_batch_mode=0;
 static int its_gif=0;
 static int its_ps=0;
 static int its_meta=0;
 
 /* set_batch_graphics */
-void FORTRAN(set_batch_graphics)(char *outfile)
+void FORTRAN(set_batch_graphics)(char *outfile, int *batmode)
 {
   int length;
   char * result;
-  int modestate;
+  int bat_mode;
 
   assert(outfile);
   length = strlen(outfile);
-  modestate = 1;
-  FORTRAN(save_metafile_name)(outfile, &length, &modestate);
+  bat_mode = *batmode;
+  FORTRAN(save_metafile_name)(outfile, &length, &bat_mode);
   its_batch = -1;
+  its_batch_mode = bat_mode;
 
   result = strstr(outfile,".gif"); 
   if (result)  {
       its_gif = -1;
+      if (length > 4)
+      {FORTRAN(save_frame_name)(outfile, &length);
+      }
    }
   result = strstr(outfile,".ps"); 
   if (result)  {
@@ -98,6 +104,12 @@ void FORTRAN(set_batch_graphics)(char *outfile)
       its_meta = -1;
    }
   return;
+}
+
+/* its_batch_mode */
+int FORTRAN(its_batch_mode)()
+{
+   return (its_batch_mode);
 }
 
 /* its_batch_graphics */
@@ -123,4 +135,5 @@ int FORTRAN(its_meta_graphics)()
 {
    return (its_meta);
 }
+
 

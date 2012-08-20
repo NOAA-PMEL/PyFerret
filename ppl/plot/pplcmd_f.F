@@ -1351,14 +1351,14 @@ C	CLSPLT
 
 	    if (its_open .and. .not. meta_clsplt .and. .not. first_meta) then
 	       if (meta_actv .OR. meta_batch) call gdawk (meta_wsid)
-	       call gclwk (meta_wsid)
+	       call gclwk (meta_wsid, batmode)
 	       close (meta_lun)
 	       meta_clsplt = .true.
                meta_actv = .false.     ! mode state is still saved in mode_metafile
 	       vpt_was_set = .false.
 	    elseif (meta_batch .and. vpt_was_set ) then
 	       call gdawk (meta_wsid)
-	       call gclwk (meta_wsid)
+	       call gclwk (meta_wsid, batmode)
 	       close (meta_lun)
 	       meta_clsplt = .true.
                meta_actv = .false.

@@ -225,7 +225,7 @@
      .                  TM_GET_LINENUM, TM_LENSTR, TM_LENSTR1, 
      .                  TM_UNIT_ID, TM_GET_CALENDAR_ID, 
      .			FIND_DSET_NUMBER, STR_UPCASE, STR_SAME, 
-     .                  ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS, 
+     .                  ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS, ITS_BATCH_MODE,
      .                  equal_pos, colon_pos, dset_num, ich, status,
      .			tmap_status, mode, idim, iarg, item, lp, iv, 
      .			cx, i, grid, axis, loc, perm(nferdims), buff_len, 
@@ -1860,12 +1860,15 @@ c *kob* 4/97
  1700	IF ( num_args .EQ. 0 ) GOTO 5100
 
 * When not in gif mode, ignore SET GIFFILE
-        its_gif = ITS_GIF_GRAPHICS() .NE. 0
+        its_gif = ITS_GIF_GRAPHICS() .NE. 0 
         IF ( .NOT. its_gif ) THEN
 	   CALL WARN ('Not in GIF mode: ignoring SET GIFFILE')
         ELSE
 	   slen = item_end(1) - item_start(1) + 1
-	   CALL SAVE_METAFILE_NAME (cmnd_buff(item_start(1):item_end(1)), slen)
+	   i1 = ITS_BATCH_MODE()   ! batmode flag, zero because we are in gif mode.
+	   CALL SAVE_METAFILE_NAME (cmnd_buff(item_start(1):item_end(1)),
+     .              slen, i1)
+	   CALL SAVE_FRAME_NAME (cmnd_buff(item_start(1):item_end(1)), slen)
         ENDIF
 	RETURN
 

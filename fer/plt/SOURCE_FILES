@@ -57,6 +57,7 @@ put_key.F\
 put_label.F\
 re_orient.F\
 save_frame.F\
+save_frame_name.F\
 seg_off.F\
 seg_on.F\
 send_pltype.F\

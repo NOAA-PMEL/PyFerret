@@ -1,3 +1,6 @@
+#! python
+#
+
 """
 Module that defines a readline completer class with a complete 
 method that returns filenames matching the given partial name.
@@ -155,6 +158,21 @@ if __name__ == '__main__':
     # ~ and $HOME should be the same
     if tildenames != homenames:
         raise ValueError('%s and %s lists do not match' % (tildedir, homedir))
+
+    # Try with $HOME/bin/
+    bindir = '$HOME' + os.sep + 'bin' + os.sep
+    print ''
+    print 'Contents of %s' % bindir
+    binnames = []
+    k = 0
+    fnam = completer.complete(bindir, 0)
+    while fnam != None:
+        print '    %s' % fnam
+        binnames.append(fnam)
+        k += 1
+        fnam = completer.complete(bindir, k)
+    if binnames == homenames:
+        raise ValueError('%s and %s lists match' % (bindir, homedir))
 
     # Try with an invalid directory
     invalid_name = 'hopefully' + os.sep + 'a' + os.sep + 'non' + os.sep \

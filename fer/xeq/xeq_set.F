@@ -226,7 +226,6 @@
      .                  TM_GET_LINENUM, TM_LENSTR, TM_LENSTR1, 
      .                  TM_UNIT_ID, TM_GET_CALENDAR_ID, 
      .			FIND_DSET_NUMBER, STR_UPCASE, STR_SAME, 
-     .                  ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS, 
      .                  equal_pos, colon_pos, dset_num, ich, status,
      .			tmap_status, mode, idim, iarg, item, lp, iv, 
      .			cx, i, grid, axis, loc, perm(nferdims), buff_len, 

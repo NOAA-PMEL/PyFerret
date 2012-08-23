@@ -65,7 +65,7 @@ class CurvRectRegridderTests(unittest.TestCase):
         ESMP.ESMP_Initialize()
 
 
-    def testCreateCurvGrid(self):
+    def test01CreateCurvGrid(self):
         regridder = CurvRectRegridder()
 
         # Test with all data given
@@ -87,7 +87,7 @@ class CurvRectRegridderTests(unittest.TestCase):
         regridder.finalize()
 
 
-    def testAssignCurvField(self):
+    def test02AssignCurvField(self):
         regridder = CurvRectRegridder()
 
         # Test with completely specified grid
@@ -119,7 +119,7 @@ class CurvRectRegridderTests(unittest.TestCase):
         regridder.finalize()
 
 
-    def testCreateRectGrid(self):
+    def test03CreateRectGrid(self):
         regridder = CurvRectRegridder()
 
         # Test with all data given
@@ -143,7 +143,7 @@ class CurvRectRegridderTests(unittest.TestCase):
         regridder.finalize()
 
 
-    def testAssignRectField(self):
+    def test04AssignRectField(self):
         regridder = CurvRectRegridder()
 
         # Test with fully specified grid
@@ -175,11 +175,11 @@ class CurvRectRegridderTests(unittest.TestCase):
         regridder.finalize()
 
 
-    def testRegridCurvToRect(self):
+    def test05RegridCurvToRect(self):
         self.fail("Not implemented")
 
 
-    def testRegridRectToCurv(self):
+    def test06RegridRectToCurv(self):
         self.fail("Not implemented")
 
 

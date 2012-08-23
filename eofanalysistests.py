@@ -10,7 +10,7 @@ import numpy
 import unittest
 
 
-class TestEOFAnalysis(unittest.TestCase):
+class EOFAnalysisTests(unittest.TestCase):
     '''
     Tests of the eofanalysis.EOFAnalysis
     and eofanalysis.InvalidStateError classes
@@ -334,4 +334,7 @@ class TestEOFAnalysis(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    '''
+    Run the unit tests in this module.
+    '''
     unittest.main()

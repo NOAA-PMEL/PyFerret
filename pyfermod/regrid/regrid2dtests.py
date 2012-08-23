@@ -13,9 +13,15 @@ from regrid2d import CurvRectRegridder
 
 
 class CurvRectRegridderTests(unittest.TestCase):
-    '''Unit tests for the CurvRectRegridder class'''
+    '''
+    Unit tests for the CurvRectRegridder class
+    '''
 
     def setUp(self):
+        '''
+        Create some repeatedly used test data.
+        Call ESMP.ESMP_Initialize() to start up ESMP/ESMF.
+        '''
         # Use tuples for the arrays to make sure the NumPy 
         # arrays created in the class methods are always used;
         # not arrays that happened to be passed as input.
@@ -62,23 +68,41 @@ class CurvRectRegridderTests(unittest.TestCase):
         center_lats, center_lons = numpy.meshgrid(lat_ctr_vals, lon_ctr_vals)
         data_array =  center_lons * (center_lats - 60.0)
         self.rect_data = tuple([ tuple(sublist) for sublist in data_array ])
+
         ESMP.ESMP_Initialize()
 
 
-    def test01CreateCurvGrid(self):
+    def test01CurvRectRegridderInit(self):
+        '''
+        Test of the CurvRectRegridder.__init__ method.
+        '''
+        regridder = CurvRectRegridder()
+        self.assertIsNotNull(regridder)
+        regridder.finalize()
+
+
+    def test02CreateCurvGrid(self):
+        '''
+        Tests the CurvRectRegridder.createCurvGrid method.
+        Since nothing is returned from this method, just
+        checks for unexpected/expected Errors being raised.
+        '''
         regridder = CurvRectRegridder()
 
         # Test with all data given
         regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats, 
                                  self.curv_ignore_centers, self.curv_corner_lons, 
                                  self.curv_corner_lats, self.curv_ignore_corners)
-        # Test overwriting with no flags 
+
+        # Test without flags 
         regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats, 
                                  None, self.curv_corner_lons, self.curv_corner_lats)
 
         # Test without corners
         regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats, 
                                  self.curv_ignore_centers)
+
+        # Test without corners or flags
         regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats)
 
         # Test invalid cases
@@ -87,7 +111,12 @@ class CurvRectRegridderTests(unittest.TestCase):
         regridder.finalize()
 
 
-    def test02AssignCurvField(self):
+    def test03AssignCurvField(self):
+        '''
+        Tests the CurvRectRegridder.assignCurvGrid method.
+        Since nothing is returned from this method, just
+        checks for unexpected/expected Errors being raised.
+        '''
         regridder = CurvRectRegridder()
 
         # Test with completely specified grid
@@ -97,7 +126,7 @@ class CurvRectRegridderTests(unittest.TestCase):
         regridder.assignCurvField()
         regridder.assignCurvField(self.curv_data)
 
-        # Test overwriting with no flags 
+        # Test without flags 
         regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats, 
                                  None, self.curv_corner_lons, self.curv_corner_lats)
         regridder.assignCurvField(self.curv_data)
@@ -109,6 +138,7 @@ class CurvRectRegridderTests(unittest.TestCase):
         regridder.assignCurvField(self.curv_data)
         regridder.assignCurvField()
 
+        # Test without corners or flags
         regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats)
         regridder.assignCurvField()
         regridder.assignCurvField(self.curv_data)
@@ -119,7 +149,12 @@ class CurvRectRegridderTests(unittest.TestCase):
         regridder.finalize()
 
 
-    def test03CreateRectGrid(self):
+    def test04CreateRectGrid(self):
+        '''
+        Tests the CurvRectRegridder.createRectGrid method.
+        Since nothing is returned from this method, just
+        checks for unexpected/expected Errors being raised.
+        '''
         regridder = CurvRectRegridder()
 
         # Test with all data given
@@ -143,7 +178,12 @@ class CurvRectRegridderTests(unittest.TestCase):
         regridder.finalize()
 
 
-    def test04AssignRectField(self):
+    def test05AssignRectField(self):
+        '''
+        Tests the CurvRectRegridder.assignRectGrid method.
+        Since nothing is returned from this method, just
+        checks for unexpected/expected Errors being raised.
+        '''
         regridder = CurvRectRegridder()
 
         # Test with fully specified grid
@@ -175,18 +215,31 @@ class CurvRectRegridderTests(unittest.TestCase):
         regridder.finalize()
 
 
-    def test05RegridCurvToRect(self):
+    def test06RegridCurvToRect(self):
+        '''
+        Tests the CurvRectRegridder.regridCurvToRect method.
+        '''
+        regridder = CurvRectRegridder()
         self.fail("Not implemented")
 
 
-    def test06RegridRectToCurv(self):
+    def test07RegridRectToCurv(self):
+        '''
+        Tests the CurvRectRegridder.regridRectToCurv method.
+        '''
         self.fail("Not implemented")
 
 
     def tearDown(self):
+        '''
+        Call ESMP.ESMP_Finalize() to close down ESMP/ESMF.
+        '''
         ESMP.ESMP_Finalize()
 
 
 if __name__ == "__main__":
+    '''
+    Run the unit tests in this module.
+    '''
     unittest.main()
 

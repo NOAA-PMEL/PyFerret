@@ -52,9 +52,13 @@ except ImportError:
     print >>sys.stderr, "    WARNING: Unable to import cdms2 and/or cdtime;\n" \
                         "             the Python functions pyferret.get and pyferret.put are not available"
 
-import pyferret.filenamecompleter
-import pyferret.graphbind
+# the following should be in this (pyferret) directory, which should be examined first
+import filenamecompleter
+import graphbind
+
+# bindings for the PyQt-based graphics engines
 import pipedviewer.pyferretbindings
+
 # import everything from libpyferret so constants
 # in that module are seen as part of this module
 from libpyferret import *

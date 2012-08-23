@@ -2,18 +2,18 @@
 #
 
 '''
-Unit tests for Ferret2DRegridder
+Unit tests for CurvRectRegridder
 
 @author: Karl Smith
 '''
 import unittest
 import numpy
 import ESMP
-from ferret2dregridder import Ferret2DRegridder
+from regrid2d import CurvRectRegridder
 
 
-class Ferret2DRegridderTests(unittest.TestCase):
-    '''Unit tests for the Ferret2DRegridder class'''
+class CurvRectRegridderTests(unittest.TestCase):
+    '''Unit tests for the CurvRectRegridder class'''
 
     def setUp(self):
         # Use tuples for the arrays to make sure the NumPy 
@@ -66,7 +66,7 @@ class Ferret2DRegridderTests(unittest.TestCase):
 
 
     def testCreateCurvGrid(self):
-        regridder = Ferret2DRegridder()
+        regridder = CurvRectRegridder()
 
         # Test with all data given
         regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats, 
@@ -88,7 +88,7 @@ class Ferret2DRegridderTests(unittest.TestCase):
 
 
     def testAssignCurvField(self):
-        regridder = Ferret2DRegridder()
+        regridder = CurvRectRegridder()
 
         # Test with completely specified grid
         regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats, 
@@ -120,7 +120,7 @@ class Ferret2DRegridderTests(unittest.TestCase):
 
 
     def testCreateRectGrid(self):
-        regridder = Ferret2DRegridder()
+        regridder = CurvRectRegridder()
 
         # Test with all data given
         regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats, 
@@ -144,7 +144,7 @@ class Ferret2DRegridderTests(unittest.TestCase):
 
 
     def testAssignRectField(self):
-        regridder = Ferret2DRegridder()
+        regridder = CurvRectRegridder()
 
         # Test with fully specified grid
         regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats, 

@@ -12,7 +12,7 @@ Uses the ESMP interface to ESMF to perform the regridding.
 import numpy
 import ESMP
 
-class Ferret2DRegridder(object):
+class CurvRectRegridder(object):
     '''
     Regridder for regridding data between a 2D curvilinear grid, where 
     the longitude and latitude of each grid corner and/or center point 
@@ -28,9 +28,9 @@ class Ferret2DRegridder(object):
     corner_pt[i+1,j+1], corner_pt([i,j+1], corner_pt[i,j]).
 
     Uses the ESMP interface to ESMF to perform the regridding.  Prior 
-    to calling any instance methods in the Ferret2DRegridder class, the 
+    to calling any instance methods in the CurvRectRegridder class, the 
     ESMP module must be imported and ESMP.ESMP_Initialize() must have 
-    been called.  When a Ferret2DRegridder instance is no longer needed, 
+    been called.  When a CurvRectRegridder instance is no longer needed, 
     the finalize method of the instance should be called to free ESMP 
     resources associated with the instance.  When ESMP is no longer 
     required, the ESMP.ESMP_Finalize() method should be called to free 
@@ -1543,7 +1543,7 @@ if __name__ == '__main__':
     ESMP.ESMP_Initialize()
 
     # Create the regridder
-    regridder = Ferret2DRegridder()
+    regridder = CurvRectRegridder()
 
     if direction in ('cw2r', 'r2cw'):
         # Create the curvilinear grid with corner and center points

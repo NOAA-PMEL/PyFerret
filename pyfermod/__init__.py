@@ -511,15 +511,15 @@ def start(memsize=25.6, journal=True, verify=True, restrict=False,
     else:
         str_metaname = metaname
     # Get the known viewer bindings
-    knownengines = pyferret.graphbind.knownPyFerretEngines()
+    knownengines = graphbind.knownPyFerretEngines()
     # Add PyQtViewerPyFerretBindings, as "PyQtViewer" to the known bindings
     if not ("PyQtViewer" in knownengines):
-        pyferret.graphbind.addPyFerretBindings("PyQtViewer",
-                           pipedviewer.pyferretbindings.PyQtViewerPyFerretBindings)
+        graphbind.addPyFerretBindings("PyQtViewer",
+                  pipedviewer.pyferretbindings.PyQtViewerPyFerretBindings)
     # Add PyQtImagerPyFerretBindings, as "PyQtImager" to the known bindings
     if not ("PyQtImager" in knownengines):
-        pyferret.graphbind.addPyFerretBindings("PyQtImager",
-                           pipedviewer.pyferretbindings.PyQtImagerPyFerretBindings)
+        graphbind.addPyFerretBindings("PyQtImager",
+                  pipedviewer.pyferretbindings.PyQtImagerPyFerretBindings)
     # the actual call to ferret's start
     return libpyferret._start(flt_memsize, bool(journal), bool(verify),
                               bool(restrict), bool(server), str_metaname,
@@ -585,7 +585,7 @@ def run(command=None):
     # use the filename completer for readline name completion
     if str_command == "":
         old_completer = readline.get_completer()
-        filename_completer_obj = pyferret.filenamecompleter.FilenameCompleter()
+        filename_completer_obj = filenamecompleter.FilenameCompleter()
         readline.set_completer(filename_completer_obj.complete)
     # the actual Ferret function call
     retval = libpyferret._run(str_command)

@@ -82,7 +82,8 @@ setup(name = "pyferret",
       url = "http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret",
       license = "Public Domain",
       requires = [ "numpy", ],
-      packages = [ "pyferret", "pyferret.fershp", "pyferret.graphbind", "pyferret.stats", ],
+      packages = [ "pyferret", "pyferret.fershp", "pyferret.graphbind", 
+                   "pyferret.regrid", "pyferret.stats", ],
       package_dir = { "pyferret":"pyfermod", },
       ext_modules = ext_mods)
 
@@ -122,7 +123,7 @@ setup(name = "eofanalysis",
       url = "http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret",
       license = "Public Domain",
       requires = [ "numpy", ],
-      py_modules = [ "eofanalysis", "test_eofanalysis", ])
+      py_modules = [ "eofanalysis", "eofanalysistests", ])
 
 setup(name = "gcircle",
       version = "0.0.1",

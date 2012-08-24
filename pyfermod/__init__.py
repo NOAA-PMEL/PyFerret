@@ -37,6 +37,7 @@ functions provided by this module are:
 
 import sys
 import os
+import atexit
 try:
     import rlcompleter
 except ImportError:
@@ -1840,6 +1841,5 @@ def get_arg_one_val(id, arg):
 
 # register the libpyferret._quit function with atexit to ensure
 # open viewer windows do not hang a Python shutdown
-import atexit
 atexit.register(libpyferret._quit)
 

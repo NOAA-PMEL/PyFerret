@@ -577,7 +577,7 @@ class CurvRectRegridder(object):
                        corner and center point coordinates are 
                        defined in the grids. 
         Returns:
-            data: a 2D array of data values located at the rectilinear
+            data: a 2D numpy array of data values located at the rectilinear
                   grid centers representing the regridded curvilinear
                   ESMP_Field data.  The undefined data value will be
                   assigned to unassigned data points.

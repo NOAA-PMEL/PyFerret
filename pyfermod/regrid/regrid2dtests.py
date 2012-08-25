@@ -9,6 +9,7 @@ Unit tests for CurvRectRegridder
 import unittest
 import numpy
 import ESMP
+from esmpcontrol import ESMPControl
 from regrid2d import CurvRectRegridder
 
 
@@ -17,8 +18,7 @@ class CurvRectRegridderTests(unittest.TestCase):
     Unit tests for the CurvRectRegridder class
     '''
 
-    # ESMP.ESMP_Intialize and ESMP.ESMP_Finalize can only be called once per session
-    esmp_initialized = False
+    # flag to indicate when to call ESMPControl().stopESMP()
     last_test = False
 
 
@@ -78,19 +78,14 @@ class CurvRectRegridderTests(unittest.TestCase):
         # undef_val must be a numpy array
         self.undef_val = numpy.array([1.0E10], dtype=numpy.float64)
 
-        # ESMP.ESMP_Intialize and ESMP.ESMP_Finalize can only be called once per session
-        if not self.esmp_initialized:
-            ESMP.ESMP_Initialize()
-            self.esmp_initialized = True
+        if not ESMPControl().startCheckESMP():
+            self.fail("startCheckESMP did not succeed - test called after last_test set to True")
 
 
     def test01CurvRectRegridderInit(self):
         '''
         Test of the CurvRectRegridder.__init__ method.
         '''
-        if self.last_test:
-            self.fail("Tests called in an invalid order")
-
         regridder = CurvRectRegridder()
         self.assertTrue( regridder != None, "CurvRectRegridder() returned None")
         regridder.finalize()
@@ -102,9 +97,6 @@ class CurvRectRegridderTests(unittest.TestCase):
         Since nothing is returned from this method, just
         checks for unexpected/expected Errors being raised.
         '''
-        if self.last_test:
-            self.fail("Tests called in an invalid order")
-
         regridder = CurvRectRegridder()
 
         # Test with all corner and center data
@@ -135,9 +127,6 @@ class CurvRectRegridderTests(unittest.TestCase):
         Since nothing is returned from this method, just
         checks for unexpected/expected Errors being raised.
         '''
-        if self.last_test:
-            self.fail("Tests called in an invalid order")
-
         regridder = CurvRectRegridder()
 
         # Test with all corner and center data
@@ -176,9 +165,6 @@ class CurvRectRegridderTests(unittest.TestCase):
         Since nothing is returned from this method, just
         checks for unexpected/expected Errors being raised.
         '''
-        if self.last_test:
-            self.fail("Tests called in an invalid order")
-
         regridder = CurvRectRegridder()
 
         # Test with all corner and center data
@@ -208,9 +194,6 @@ class CurvRectRegridderTests(unittest.TestCase):
         Since nothing is returned from this method, just
         checks for unexpected/expected Errors being raised.
         '''
-        if self.last_test:
-            self.fail("Tests called in an invalid order")
-
         regridder = CurvRectRegridder()
 
         # Test with all corner and center data
@@ -246,9 +229,6 @@ class CurvRectRegridderTests(unittest.TestCase):
         '''
         Tests the CurvRectRegridder.regridCurvToRect method.
         '''
-        if self.last_test:
-            self.fail("Tests called in an invalid order")
-
         regridder = CurvRectRegridder()
 
         # Test with all corner and center data, using conservative regridding
@@ -320,9 +300,7 @@ class CurvRectRegridderTests(unittest.TestCase):
         '''
         Tests the CurvRectRegridder.regridRectToCurv method.
         '''
-        if self.last_test:
-            self.fail("Tests called in an invalid order")
-        # Mark as the last test so ESMP.ESMP_Finalize will be called
+        # Mark as the last test so ESMPControl().stopESMP will be called
         self.last_test = True
 
         regridder = CurvRectRegridder()
@@ -406,9 +384,8 @@ class CurvRectRegridderTests(unittest.TestCase):
         '''
         Finalize ESMP if it has been initialized and if this is the last test
         '''
-        if self.esmp_initialized and self.last_test:
-            ESMP.ESMP_Finalize()
-            self.esmp_initialized = False
+        if self.last_test:
+            ESMPControl().stopESMP(True)
         
 
 if __name__ == "__main__":

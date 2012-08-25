@@ -379,6 +379,10 @@ C		call aline_sub (x,nxs,a_line,minx,miny,maxx,maxy)
 		IF ( interrupted ) GOTO 3333 !*jd* 8.3.92
 100	    continue
 ****
+
+	ELSE IF(MAKEP.EQ.'RIBPLOT') THEN
+	   CALL PLOTXY_RIBBON(X,NXS,XF,YF)
+
 	ELSE IF(MAKEP.EQ.'VECTOR')THEN
 	    IF(JTYPE.EQ.-1)THEN
 		CALL VECFLD(X(1),X(NX*NY+1),NX,NY,X(1),X(1),XF,YF)

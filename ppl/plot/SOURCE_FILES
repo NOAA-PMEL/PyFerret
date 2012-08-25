@@ -30,6 +30,7 @@ mult.F\
 opnppl.F\
 plotnm.F\
 plotxy.F\
+plotxy_ribbon.F\
 plotz.F\
 pltit.F\
 pplcmd.F\

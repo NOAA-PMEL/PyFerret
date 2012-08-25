@@ -86,6 +86,7 @@ vec_arrows.F\
 whoi2bc.F\
 ws_fill_rep.F\
 ws_line_bundle.F\
+ws_line_spectrum.F\
 ws_types_init.F\
 xgrinpt_blkdat.F\
 yabd.F 

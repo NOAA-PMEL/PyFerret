@@ -202,6 +202,13 @@ C
 C
 	    WRITE(SYM,998)'YMAX',LINEN
 	    CALL PUTVAL(SYM,YMAX1,4,IER)
+
+* If its a ribbon plot, we need the min and max of the color-by variable.
+	    IF (linen .EQ. 2) THEN
+	       zmin = ymin1
+	       zmax = ymax1
+	    ENDIF
+
 C
 C	SET FIRST - LAST VALUES
 C

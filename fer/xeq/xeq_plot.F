@@ -80,9 +80,9 @@
 *                   was always being reset to the default, not just on sym=dot.
 * v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 * V580: *acm*11/04 add PLOT/NOKEY qualifier (bug 1089)
-* V580 *acm*11/04  (bug 1085) Allow thickness to be set when cycling through colors 
+* V580 *acm*11/04  (bug 1085) Allow JFness to be set when cycling through colors 
 *                  automatically. In call to line_style, when color = -11  then 
-*                  thin line, color=-21 then thick=2, when color=-31 then thick=3
+*                  thin line, color=-21 then JF=2, when color=-31 then thick=3
 * V581 *acm* 5/05  fix bug 1250: step=connected. Need to use EQUAL_STR to get the
 *                  argument to /STEP, then compare to see if it equals uppercase 'CON'
 * V600 *acm* 5/06  increase length of buff, for longer arugments to /DASH=
@@ -126,7 +126,7 @@
 	LOGICAL		overlay, transpz, versus,
      .			no_labels, set_up, noaxes, axes, use_line,
      .			is_logh, is_logv, nokey, no_data, no_range,
-     .			continuous_key, do_key
+     .			continuous_key, do_key, spectrum
 	INTEGER		TM_LENSTR1, STR_UPCASE,
      .                  symbol, color, status,
      .			loc, limit, slen, thick, step_inc,
@@ -315,18 +315,47 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 	ribbon_plot = .FALSE.
 	loc = qual_given( slash_plot_levels )
 	IF ( loc .GT. 0  ) THEN
-	   IF (num_uvars_in_cmnd .GT. 3)
-     .      CALL WARN (
-     .      '/PLOT/VS/LEVELS uses just 3 varables. Ignoring extra varibles.')
-	   IF (num_uvars_in_cmnd .LT. 3) GOTO 5470
+c	   IF (.NOT.versus)  GOTO 5470
 
+	   IF (versus) THEN
+	      IF (num_uvars_in_cmnd .LT. 3) GOTO 5480
+	      IF (num_uvars_in_cmnd .GT. 3)
+     .         CALL WARN (
+     .         '/PLOT/VS/LEVELS uses just 3 varables. Ignoring extra varibles.')
+           ELSE
+	      IF (num_uvars_in_cmnd .LT. 2) GOTO 5480
+	      IF (num_uvars_in_cmnd .GT. 2)
+     .         CALL WARN (
+     .         '/PLOT/LEVELS uses just 2 varables. Ignoring extra varibles.')
+           ENDIF
+
+* If a color was given, that's not valid for Ribbon plots.
+	   loc = qual_given( slash_plot_color )
+	   IF ( loc .GT. 0  ) GOTO 5490
+
+* If a thickness is given, set pen number to the thickness, pen=1,2,or 3
+
+	   color = 1
+ 	   loc = qual_given( slash_plot_thick )
+	   IF ( loc .GT. 0  ) THEN
+
+	      CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			   val, status )
+
+	      IF ( val .NE. unspecified_val4 ) THEN
+	         thick = NINT( val )	! user-specified line style
+	      ELSE
+	         thick = 2  ! default if no value is specified
+	      ENDIF
+	      color = thick 
+	   ENDIF
+	   
 	   ribbon_plot = .TRUE.
-	   CALL DISP_PREP( status )
 	ENDIF
 
 
 * ... PLOT/PALETTE=  for multi-colored "ribbon" line 
-*     3-agument plot/vs/lev/palette xpts, ypts, var
+*     3-agument plot/lev/palette xpts, ypts, var
 
 * save old and reset to new color spectrum if requested
 
@@ -339,6 +368,8 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
               IF ( buff .EQ. ' ' ) buff = 'default'
               CALL PPL_SHASET( 'SAVE' )
               CALL PPL_SHASET( 'SPECTRUM='//buff(1:TM_LENSTR1(buff)) )
+	      spectrum = .TRUE.
+
            ENDIF
 
 
@@ -366,16 +397,8 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 
            ELSE
               CALL PPLCMD ( from, line, 0, 'SHAKEY 0,1', 1, 1 )
-
-c when it's an overlay, 'No Valid Data' is part of the plot key,
-c done in disp_set_up. If mode_nodata_lab is false then leave this off.
-
-              IF (.NOT. overlay .AND. no_data .AND. mode_nodata_lab) 
-     .                  CALL PUT_LABEL( ppl_movlab, 0.5, 0.5,
-     .                  ppl_centered, letsize_title,
-     .                  'No Valid Data',
-     .                  lab_loc_axlen_times, lab_loc_axlen_times )
            ENDIF
+
 
 	ENDIF  ! ribbon plot
 
@@ -442,12 +465,12 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
 	ENDIF	   
 
 
-* ... PLOT/hgrat[=dash or line, color=, thick[=] ] default is line
+* ... PLOT/hgrat[=dash or line, color=, JF[=] ] default is line
 *     hgrat line type: 0=tics only, 1=dash 2=line
 
 	loch = qual_given(slash_plot_hgrat)
 
-* ... PLOT/vgrat[=dash or line, color=, thick[=] ] default is line
+* ... PLOT/vgrat[=dash or line, color=, JF[=] ] default is line
 *     vgrat line type: 0=tics only, 1=dash 2=line
 
 	locv = qual_given(slash_plot_vgrat)
@@ -553,10 +576,20 @@ c done in plot_set_up.
 	IF ( set_up ) GOTO 1000
 
 * plot it 
-	IF ( overlay ) THEN
-	   CALL PPLCMD ( ' ', ' ', 0, 'PLOT/OVER/' //ppl_wait//' ', 1, 1 )
+	IF (ribbon_plot) THEN
+	   IF ( overlay ) THEN
+	      CALL PPLCMD ( ' ', ' ', 0, 'RIBBON/OVER/' //ppl_wait//' ', 1, 1 )
+	   ELSE
+	      CALL PPLCMD ( ' ', ' ', 0, 'RIBBON/LATCH/'//ppl_wait//' ', 1, 1 )
+	   ENDIF
+ 
 	ELSE
-	   CALL PPLCMD ( ' ', ' ', 0, 'PLOT/LATCH/'//ppl_wait//' ', 1, 1 )
+	
+	   IF ( overlay ) THEN
+	      CALL PPLCMD ( ' ', ' ', 0, 'PLOT/OVER/' //ppl_wait//' ', 1, 1 )
+	   ELSE
+	      CALL PPLCMD ( ' ', ' ', 0, 'PLOT/LATCH/'//ppl_wait//' ', 1, 1 )
+	   ENDIF
 	ENDIF
 
 * restore axes? (5/29/97  revised 3/2002
@@ -583,6 +616,12 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 	   h_logaxis= is_logh
 	   v_logaxis = is_logv 
 	ENDIF
+	
+* Ribbon plot? protect the new colors and restore the original color spectrum
+           IF ( spectrum ) THEN
+              CALL PPL_SHASET( 'PROTECT' )
+              CALL PPL_SHASET( 'SPECTRUM' )
+           ENDIF
 
 
 * release the memory used for axis buffers
@@ -622,5 +661,17 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
      .		'/COLOR=WHITE only available with /THICK=1', *1000 )
  5470	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
-     .	'PLOT/VS/LEVELS ribbon plot needs 3 arguments', *1000 )
+     .	'Ribbon plot PLOT/LEVELS valid only with /VS', *1000 )
+ 5480	IF (versus) THEN
+           CALL ERRMSG( ferr_syntax, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .	   'PLOT/VS/LEVELS ribbon plot needs 3 arguments', *1000 )
+	ELSE
+           CALL ERRMSG( ferr_syntax, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .	   'PLOT/LEVELS ribbon plot needs 2 arguments', *1000 )
+	ENDIF
+ 5490	CALL ERRMSG( ferr_syntax, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .	'/COLOR not valid for PLOT/LEVELS ribbon plot', *1000 )
 	END

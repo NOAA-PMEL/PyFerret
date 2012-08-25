@@ -68,6 +68,7 @@
 	   del_lvl	= 100.0/real (range - 1)
 
 *	   SET ALL COLORS IN SPECTRUM EXCEPT FIRST AND LAST
+
 	   do 50 ndx = ndx_lop1,ndx_him1
 	      lvl = lvl + del_lvl
 	   

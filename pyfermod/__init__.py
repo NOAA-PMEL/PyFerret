@@ -1510,9 +1510,9 @@ def ferret_pyfunc():
     ferret_init and ferret_compute, must be provided by such a module:
 
 
-    ferret_init(id)
+    ferret_init(efid)
         Arguments:
-            id - Ferret's integer ID of this external function
+            efid - Ferret's integer ID of this external function
 
         Returns a dictionary defining the following keys:
             "numargs":      number of input arguments [1 - 9; required]
@@ -1573,9 +1573,9 @@ def ferret_pyfunc():
         the message of the exception.
 
 
-    ferret_compute(id, result_array, result_bdf, input_arrays, input_bdfs)
+    ferret_compute(efid, result_array, result_bdf, input_arrays, input_bdfs)
         Arguments:
-            id           - Ferret's integer ID of this external function
+            efid         - Ferret's integer ID of this external function
             result_array - a writeable NumPy float64 ndarray of six dimensions (X,Y,Z,T,E,F)
                            to contain the results of this computation.  The shape and
                            strides of this array has been configured so that only (and
@@ -1599,9 +1599,9 @@ def ferret_pyfunc():
     then the ferret_result_limits method must also be defined:
 
 
-    ferret_result_limits(id)
+    ferret_result_limits(efid)
         Arguments:
-            id - Ferret's integer ID of this external function
+            efid - Ferret's integer ID of this external function
 
         Returns a (X,Y,Z,T,E,F) 6-tuple of either None or (low, high) pairs of integers.
         If an axis was not designated as AXIS_ABSTRACT, None should be given for that axis.
@@ -1617,9 +1617,9 @@ def ferret_pyfunc():
     then the ferret_custom_axes method must also be defined:
 
 
-    ferret_custom_axes(id)
+    ferret_custom_axes(efid)
         Arguments:
-            id - Ferret's integer ID of this external function
+            efid - Ferret's integer ID of this external function
 
         Returns a (X,Y,Z,T,E,F) 6-tuple of either None or a (low, high, delta, unit_name,
         is_modulo) tuple.  If an axis was not designated as AXIS_CUSTOM, None should be
@@ -1637,12 +1637,12 @@ def ferret_pyfunc():
     return ferret_pyfunc.__doc__
 
 
-def get_axis_coordinates(id, arg, axis):
+def get_axis_coordinates(efid, arg, axis):
     """
     Returns the "world" coordinates for an axis of an argument to an external function
 
     Arguments:
-        id: the Ferret id of the external function
+        efid: the Ferret id of the external function
         arg: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9)
         axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, 
                                                           T_AXIS, E_AXIS, F_AXIS)
@@ -1650,15 +1650,15 @@ def get_axis_coordinates(id, arg, axis):
         a NumPy float64 ndarray containing the "world" coordinates,
         or None if the values cannot be determined at the time this was called
     Raises:
-        ValueError if id, arg, or axis is invalid
+        ValueError if efid, arg, or axis is invalid
     """
-    # check the id
+    # check the efid
     try:
-        int_id = int(id)
+        int_id = int(efid)
         if int_id < 0:
             raise ValueError
     except:
-        raise ValueError("id must be a positive integer value")
+        raise ValueError("efid must be a positive integer value")
     # check the arg index
     try:
         int_arg = int(arg)
@@ -1677,13 +1677,13 @@ def get_axis_coordinates(id, arg, axis):
     return libpyferret._get_axis_coordinates(int_id, int_arg, int_axis)
 
 
-def get_axis_box_sizes(id, arg, axis):
+def get_axis_box_sizes(efid, arg, axis):
     """
     Returns the "box sizes", in "world" coordinate units,
     for an axis of an argument to an external function
 
     Arguments:
-        id: the Ferret id of the external function
+        efid: the Ferret id of the external function
         arg: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9)
         axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, 
                                                           T_AXIS, E_AXIS, F_AXIS)
@@ -1691,15 +1691,15 @@ def get_axis_box_sizes(id, arg, axis):
         a NumPy float64 ndarray containing the "box sizes",
         or None if the values cannot be determined at the time this was called
     Raises:
-        ValueError if id, arg, or axis is invalid
+        ValueError if efid, arg, or axis is invalid
     """
-    # check the id
+    # check the efid
     try:
-        int_id = int(id)
+        int_id = int(efid)
         if int_id < 0:
             raise ValueError
     except:
-        raise ValueError("id must be a positive integer value")
+        raise ValueError("efid must be a positive integer value")
     # check the arg index
     try:
         int_arg = int(arg)
@@ -1718,13 +1718,13 @@ def get_axis_box_sizes(id, arg, axis):
     return libpyferret._get_axis_box_sizes(int_id, int_arg, int_axis)
 
 
-def get_axis_box_limits(id, arg, axis):
+def get_axis_box_limits(efid, arg, axis):
     """
     Returns the "box limits", in "world" coordinate units,
     for an axis of an argument to an external function
 
     Arguments:
-        id: the Ferret id of the external function
+        efid: the Ferret id of the external function
         arg: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9)
         axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, 
                                                           T_AXIS, E_AXIS, F_AXIS)
@@ -1732,15 +1732,15 @@ def get_axis_box_limits(id, arg, axis):
         a tuple of two NumPy float64 ndarrays containing the low and high "box limits",
         or None if the values cannot be determined at the time this was called
     Raises:
-        ValueError if id, arg, or axis is invalid
+        ValueError if efid, arg, or axis is invalid
     """
-    # check the id
+    # check the efid
     try:
-        int_id = int(id)
+        int_id = int(efid)
         if int_id < 0:
             raise ValueError
     except:
-        raise ValueError("id must be a positive integer value")
+        raise ValueError("efid must be a positive integer value")
     # check the arg index
     try:
         int_arg = int(arg)
@@ -1759,12 +1759,12 @@ def get_axis_box_limits(id, arg, axis):
     return libpyferret._get_axis_box_limits(int_id, int_arg, int_axis)
 
 
-def get_axis_info(id, arg, axis):
+def get_axis_info(efid, arg, axis):
     """
     Returns information about the axis of an argument to an external function
 
     Arguments:
-        id: the Ferret id of the external function
+        efid: the Ferret id of the external function
         arg: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9)
         axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, 
                                                           T_AXIS, E_AXIS, F_AXIS)
@@ -1778,15 +1778,15 @@ def get_axis_info(id, arg, axis):
             "size": number of coordinates on this axis, or -1 if the value
                     cannot be determined at the time this was called
     Raises:
-        ValueError if id, arg, or axis is invalid
+        ValueError if efid, arg, or axis is invalid
     """
-    # check the id
+    # check the efid
     try:
-        int_id = int(id)
+        int_id = int(efid)
         if int_id < 0:
             raise ValueError
     except:
-        raise ValueError("id must be a positive integer value")
+        raise ValueError("efid must be a positive integer value")
     # check the arg index
     try:
         int_arg = int(arg)
@@ -1805,29 +1805,29 @@ def get_axis_info(id, arg, axis):
     return libpyferret._get_axis_info(int_id, int_arg, int_axis)
 
 
-def get_arg_one_val(id, arg):
+def get_arg_one_val(efid, arg):
     """
     Returns the value of the indicated FLOAT_ONEVAL or STRING_ONEVAL argument.
     Can be called from the ferret_result_limits or ferret_custom_axes method
     of an external function.
 
     Arguments:
-        id: the Ferret id of the external function
+        efid: the Ferret id of the external function
         arg: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9)
     Returns:
         the value of the argument, either as a float (if a FLOAT_ONEVAL)
         or a string (if STRING_ONEVAL)
     Raises:
-        ValueError if id or arg is invalid, or if the argument type is not
+        ValueError if efid or arg is invalid, or if the argument type is not
         FLOAT_ONEVAL or STRING_ONEVAL
     """
-    # check the id
+    # check the efid
     try:
-        int_id = int(id)
+        int_id = int(efid)
         if int_id < 0:
             raise ValueError
     except:
-        raise ValueError("id must be a positive integer value")
+        raise ValueError("efid must be a positive integer value")
     # check the arg index
     try:
         int_arg = int(arg)

@@ -12,7 +12,7 @@ desired.
 import numpy
 
 
-def ferret_init(id):
+def ferret_init(efid):
     '''
     Initialization function for this PyFerret PyEF.  Returns
     a dictionary describing the features of this PyFerret PyEF.
@@ -29,7 +29,7 @@ def ferret_init(id):
     return init_dict
 
 
-def ferret_result_limits(id):
+def ferret_result_limits(efid):
     '''
     Defines the index limits for all abstract axes in the result grid.
     Returns an (X,Y,Z,T,E,F)-axis six-tuple of either (low,high) pairs, 
@@ -42,7 +42,7 @@ def ferret_result_limits(id):
     return axis_limits
 
 
-def ferret_custom_axes(id):
+def ferret_custom_axes(efid):
     '''
     Defines all custom axes in ther result grid.  Returns a (X,Y,Z,T,E,F)-
     axis six-tuple of either a (low, high, delta, unit_name, is_modulo) 
@@ -56,7 +56,7 @@ def ferret_custom_axes(id):
     return axis_info
 
 
-def ferret_compute(id, result, result_bdf, inputs, input_bdfs):
+def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
     '''
     Computation function for this PyFerret PyEF.  Assign values to the
     elements of result; do not reassign result itself.  In other words,

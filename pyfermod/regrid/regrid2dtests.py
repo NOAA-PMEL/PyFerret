@@ -38,9 +38,9 @@ class CurvRectRegridderTests(unittest.TestCase):
         data = -2.0 * numpy.sin(numpy.deg2rad(ctr_lons_mat)) \
                     * numpy.cos(numpy.deg2rad(ctr_lats_mat))
         ctr_flags = numpy.zeros(data.shape, dtype=numpy.int32)
-        ctr_flags[:1,:1] = 1
+        ctr_flags[:1, :1] = 1
         crn_flags = numpy.zeros((edge_lons.shape[0], edge_lats.shape[0]), dtype=numpy.int32)
-        crn_flags[:2,:2] = 1
+        crn_flags[:2, :2] = 1
 
         self.rect_edge_lons = tuple(edge_lons)
         self.rect_edge_lats = tuple(edge_lats)
@@ -56,16 +56,16 @@ class CurvRectRegridderTests(unittest.TestCase):
         ctr_lons = 0.5 * (crn_lons[:-1] + crn_lons[1:])
         ctr_lats = 0.5 * (crn_lats[:-1] + crn_lats[1:])
         ctr_lats_mat, ctr_lons_mat = numpy.meshgrid(ctr_lats, ctr_lons)
-        crn_lons = crn_lons_mat * numpy.cos(numpy.deg2rad(crn_lats_mat - 16.0)/2.0)
-        crn_lats = crn_lats_mat * numpy.cos(numpy.deg2rad(crn_lons_mat + 100.0)/2.0)
-        ctr_lons = ctr_lons_mat * numpy.cos(numpy.deg2rad(ctr_lats_mat - 16.0)/2.0)
-        ctr_lats = ctr_lats_mat * numpy.cos(numpy.deg2rad(ctr_lons_mat + 100.0)/2.0)
+        crn_lons = crn_lons_mat * numpy.cos(numpy.deg2rad(crn_lats_mat - 16.0) / 2.0)
+        crn_lats = crn_lats_mat * numpy.cos(numpy.deg2rad(crn_lons_mat + 100.0) / 2.0)
+        ctr_lons = ctr_lons_mat * numpy.cos(numpy.deg2rad(ctr_lats_mat - 16.0) / 2.0)
+        ctr_lats = ctr_lats_mat * numpy.cos(numpy.deg2rad(ctr_lons_mat + 100.0) / 2.0)
         data = -2.0 * numpy.sin(numpy.deg2rad(ctr_lons)) \
                     * numpy.cos(numpy.deg2rad(ctr_lats))
         ctr_flags = numpy.zeros(data.shape, dtype=numpy.int32)
-        ctr_flags[:2,:2] = 1
+        ctr_flags[:2, :2] = 1
         crn_flags = numpy.zeros(crn_lons.shape, dtype=numpy.int32)
-        crn_flags[:3,:3] = 1
+        crn_flags[:3, :3] = 1
 
         self.curv_corner_lons = tuple([tuple(subarr) for subarr in crn_lons])
         self.curv_corner_lats = tuple([tuple(subarr) for subarr in crn_lats])
@@ -87,7 +87,7 @@ class CurvRectRegridderTests(unittest.TestCase):
         Test of the CurvRectRegridder.__init__ method.
         '''
         regridder = CurvRectRegridder()
-        self.assertTrue( regridder != None, "CurvRectRegridder() returned None")
+        self.assertTrue(regridder != None, "CurvRectRegridder() returned None")
         regridder.finalize()
 
 
@@ -100,16 +100,16 @@ class CurvRectRegridderTests(unittest.TestCase):
         regridder = CurvRectRegridder()
 
         # Test with all corner and center data
-        regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats, 
-                                 self.curv_center_ignr, self.curv_corner_lons, 
+        regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats,
+                                 self.curv_center_ignr, self.curv_corner_lons,
                                  self.curv_corner_lats, self.curv_corner_ignr)
 
         # Test without flags 
-        regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats, 
+        regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats,
                                  None, self.curv_corner_lons, self.curv_corner_lats)
 
         # Test without corners
-        regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats, 
+        regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats,
                                  self.curv_center_ignr)
 
         # Test without corners or flags
@@ -130,20 +130,20 @@ class CurvRectRegridderTests(unittest.TestCase):
         regridder = CurvRectRegridder()
 
         # Test with all corner and center data
-        regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats, 
-                                 self.curv_center_ignr, self.curv_corner_lons, 
+        regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats,
+                                 self.curv_center_ignr, self.curv_corner_lons,
                                  self.curv_corner_lats, self.curv_corner_ignr)
         regridder.assignCurvField()
         regridder.assignCurvField(self.curv_data)
 
         # Test without flags 
-        regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats, 
+        regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats,
                                  None, self.curv_corner_lons, self.curv_corner_lats)
         regridder.assignCurvField(self.curv_data)
         regridder.assignCurvField()
 
         # Test without corners
-        regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats, 
+        regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats,
                                  self.curv_center_ignr)
         regridder.assignCurvField(self.curv_data)
         regridder.assignCurvField()
@@ -168,19 +168,19 @@ class CurvRectRegridderTests(unittest.TestCase):
         regridder = CurvRectRegridder()
 
         # Test with all corner and center data
-        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats, 
+        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats,
                                  self.rect_center_ignr, self.rect_corner_ignr)
 
         # Test without center flags
-        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats, 
+        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats,
                                  None, self.rect_corner_ignr)
 
         # Test without corners flags
-        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats, 
+        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats,
                                  self.rect_center_ignr)
 
         # Test with no flags 
-        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats) 
+        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats)
 
         # Test invalid cases
 
@@ -197,25 +197,25 @@ class CurvRectRegridderTests(unittest.TestCase):
         regridder = CurvRectRegridder()
 
         # Test with all corner and center data
-        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats, 
+        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats,
                                  self.rect_center_ignr, self.rect_corner_ignr)
         regridder.assignRectField(self.rect_data)
         regridder.assignRectField()
 
         # Test without center flags
-        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats, 
+        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats,
                                  None, self.rect_corner_ignr)
         regridder.assignRectField()
         regridder.assignRectField(self.rect_data)
 
         # Test without corners flags
-        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats, 
+        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats,
                                  self.rect_center_ignr)
         regridder.assignRectField()
         regridder.assignRectField(self.rect_data)
 
         # Test with no flags 
-        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats) 
+        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats)
         regridder.assignRectField(self.rect_data)
         regridder.assignRectField()
 
@@ -232,11 +232,11 @@ class CurvRectRegridderTests(unittest.TestCase):
         regridder = CurvRectRegridder()
 
         # Test with all corner and center data, using conservative regridding
-        regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats, 
-                                 self.curv_center_ignr, self.curv_corner_lons, 
+        regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats,
+                                 self.curv_center_ignr, self.curv_corner_lons,
                                  self.curv_corner_lats, self.curv_corner_ignr)
         regridder.assignCurvField(self.curv_data)
-        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats, 
+        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats,
                                  self.rect_center_ignr, self.rect_corner_ignr)
         regridder.assignRectField()
         regrid_data = regridder.regridCurvToRect(self.undef_val, ESMP.ESMP_REGRIDMETHOD_CONSERVE)
@@ -245,14 +245,14 @@ class CurvRectRegridderTests(unittest.TestCase):
         expect_data[undef_flags] = self.undef_val
         mismatch_found = False
         # One "good" point next to bad data area is a bit wonky
-        expect_data[1,0] = self.undef_val
-        regrid_data[1,0] = self.undef_val
+        expect_data[1, 0] = self.undef_val
+        regrid_data[1, 0] = self.undef_val
         for i in xrange(expect_data.shape[0]):
             for j in xrange(expect_data.shape[1]):
-                if numpy.abs(expect_data[i,j] - regrid_data[i,j]) > 0.0007:
+                if numpy.abs(expect_data[i, j] - regrid_data[i, j]) > 0.0007:
                     mismatch_found = True
                     print "expect = %#6.4f, found = %#6.4f for lon = %5.1f, lat = %5.1f" % \
-                          (expect_data[i,j], regrid_data[i,j], self.rect_ctr_lons[i], self.rect_ctr_lats[j])
+                          (expect_data[i, j], regrid_data[i, j], self.rect_ctr_lons[i], self.rect_ctr_lats[j])
         if mismatch_found:
             self.fail("data mismatch found for conservative regridding")
 
@@ -265,13 +265,13 @@ class CurvRectRegridderTests(unittest.TestCase):
         expect_data = numpy.array(self.rect_data, dtype=numpy.float64)
         mismatch_found = False
         # one edge point falls outside the curvilinear grid?
-        expect_data[5,0] = self.undef_val
+        expect_data[5, 0] = self.undef_val
         for i in xrange(expect_data.shape[0]):
             for j in xrange(expect_data.shape[1]):
-                if numpy.abs(expect_data[i,j] - regrid_data[i,j]) > 0.0003:
+                if numpy.abs(expect_data[i, j] - regrid_data[i, j]) > 0.0003:
                     mismatch_found = True
                     print "expect = %#6.4f, found = %#6.4f for lon = %5.1f, lat = %5.1f" % \
-                          (expect_data[i,j], regrid_data[i,j], self.rect_ctr_lons[i], self.rect_ctr_lats[j])
+                          (expect_data[i, j], regrid_data[i, j], self.rect_ctr_lons[i], self.rect_ctr_lats[j])
         if mismatch_found:
             self.fail("data mismatch found for bilinear regridding")
 
@@ -285,14 +285,14 @@ class CurvRectRegridderTests(unittest.TestCase):
         undef_flags = numpy.array(self.rect_center_ignr, dtype=numpy.bool)
         expect_data[undef_flags] = self.undef_val
         # one edge point falls outside the curvilinear grid?
-        expect_data[5,0] = self.undef_val
+        expect_data[5, 0] = self.undef_val
         mismatch_found = False
         for i in xrange(expect_data.shape[0]):
             for j in xrange(expect_data.shape[1]):
-                if numpy.abs(expect_data[i,j] - regrid_data[i,j]) > 0.0011:
+                if numpy.abs(expect_data[i, j] - regrid_data[i, j]) > 0.0011:
                     mismatch_found = True
                     print "expect = %#6.4f, found = %#6.4f for lon = %5.1f, lat = %5.1f" % \
-                          (expect_data[i,j], regrid_data[i,j], self.rect_ctr_lons[i], self.rect_ctr_lats[j])
+                          (expect_data[i, j], regrid_data[i, j], self.rect_ctr_lons[i], self.rect_ctr_lats[j])
         if mismatch_found:
             self.fail("data mismatch found for patch regridding")
 
@@ -306,11 +306,11 @@ class CurvRectRegridderTests(unittest.TestCase):
         regridder = CurvRectRegridder()
 
         # Test with all corner and center data, using conservative regridding
-        regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats, 
-                                 self.curv_center_ignr, self.curv_corner_lons, 
+        regridder.createCurvGrid(self.curv_center_lons, self.curv_center_lats,
+                                 self.curv_center_ignr, self.curv_corner_lons,
                                  self.curv_corner_lats, self.curv_corner_ignr)
         regridder.assignCurvField()
-        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats, 
+        regridder.createRectGrid(self.rect_edge_lons, self.rect_edge_lats,
                                  self.rect_center_ignr, self.rect_corner_ignr)
         regridder.assignRectField(self.rect_data)
         regrid_data = regridder.regridRectToCurv(self.undef_val, ESMP.ESMP_REGRIDMETHOD_CONSERVE)
@@ -318,8 +318,8 @@ class CurvRectRegridderTests(unittest.TestCase):
         undef_flags = numpy.array(self.curv_center_ignr, dtype=numpy.bool)
         expect_data[undef_flags] = self.undef_val
         # One "good" point next to bad data area is a bit wonky
-        expect_data[1,2] = self.undef_val
-        regrid_data[1,2] = self.undef_val
+        expect_data[1, 2] = self.undef_val
+        regrid_data[1, 2] = self.undef_val
         mismatch_found = False
         # Ignore outermost edges of curvilinear grid since
         # they aren't really well covered by the rectilinear grid
@@ -327,10 +327,10 @@ class CurvRectRegridderTests(unittest.TestCase):
         # also not well covered and errors are larger 
         for i in xrange(1, expect_data.shape[0] - 2):
             for j in xrange(1, expect_data.shape[1] - 1):
-                if numpy.abs(expect_data[i,j] - regrid_data[i,j]) > 0.0004:
+                if numpy.abs(expect_data[i, j] - regrid_data[i, j]) > 0.0004:
                     mismatch_found = True
                     print "expect = %#6.4f, found = %#6.4f for lon = %7.3f, lat = %7.3f" % \
-                          (expect_data[i,j], regrid_data[i,j], self.curv_center_lons[i][j], self.curv_center_lats[i][j])
+                          (expect_data[i, j], regrid_data[i, j], self.curv_center_lons[i][j], self.curv_center_lats[i][j])
         if mismatch_found:
             self.fail("data mismatch found for conservative regridding")
 
@@ -348,10 +348,10 @@ class CurvRectRegridderTests(unittest.TestCase):
         # also not covered
         for i in xrange(1, expect_data.shape[0] - 2):
             for j in xrange(2, expect_data.shape[1] - 1):
-                if numpy.abs(expect_data[i,j] - regrid_data[i,j]) > 0.0004:
+                if numpy.abs(expect_data[i, j] - regrid_data[i, j]) > 0.0004:
                     mismatch_found = True
                     print "expect = %#6.4f, found = %#6.4f for lon = %7.3f, lat = %7.3f" % \
-                          (expect_data[i,j], regrid_data[i,j], self.curv_center_lons[i][j], self.curv_center_lats[i][j])
+                          (expect_data[i, j], regrid_data[i, j], self.curv_center_lons[i][j], self.curv_center_lats[i][j])
         if mismatch_found:
             self.fail("data mismatch found for bilinear regridding")
 
@@ -371,10 +371,10 @@ class CurvRectRegridderTests(unittest.TestCase):
         # also not covered
         for i in xrange(1, expect_data.shape[0] - 2):
             for j in xrange(2, expect_data.shape[1] - 1):
-                if numpy.abs(expect_data[i,j] - regrid_data[i,j]) > 0.0011:
+                if numpy.abs(expect_data[i, j] - regrid_data[i, j]) > 0.0011:
                     mismatch_found = True
                     print "expect = %#6.4f, found = %#6.4f for lon = %7.3f, lat = %7.3f" % \
-                          (expect_data[i,j], regrid_data[i,j], self.curv_center_lons[i][j], self.curv_center_lats[i][j])
+                          (expect_data[i, j], regrid_data[i, j], self.curv_center_lons[i][j], self.curv_center_lats[i][j])
         if mismatch_found:
             self.fail("data mismatch found for patch regridding")
 
@@ -386,7 +386,7 @@ class CurvRectRegridderTests(unittest.TestCase):
         '''
         if self.last_test:
             ESMPControl().stopESMP(True)
-        
+
 
 if __name__ == "__main__":
     '''

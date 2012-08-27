@@ -29,15 +29,19 @@ class Test(unittest.TestCase):
         ctrl = ESMPControl()
         # calling stopESMP before calling startCheckESMP should not cause any problems
         ctrl.stopESMP(False)
-        self.assertTrue(ctrl.startCheckESMP(), "First call to startCheckESMP did not return True")
-        self.assertTrue(ctrl.startCheckESMP(), "Second call to startCheckESMP did not return True")
+        self.assertTrue(ctrl.startCheckESMP(),
+                        "First call to startCheckESMP did not return True")
+        self.assertTrue(ctrl.startCheckESMP(),
+                        "Second call to startCheckESMP did not return True")
         ctrl.stopESMP(True)
-        self.assertFalse(ctrl.startCheckESMP(), "Call to startCheckESMP after stopESMP did not return False")
+        self.assertFalse(ctrl.startCheckESMP(),
+                         "Call to startCheckESMP after stopESMP did not return False")
         # another call to stopESMP should not cause any problems
         ctrl.stopESMP(False)
         # creating another instance should have no effect
         ctrl2 = ESMPControl()
-        self.assertFalse(ctrl2.startCheckESMP(), "Call to startCheckESMP from a 'new' instance after stopESMP did not return False")
+        self.assertFalse(ctrl2.startCheckESMP(),
+                         "Call to startCheckESMP from a 'new' instance after stopESMP did not return False")
 
 
 if __name__ == "__main__":

@@ -2,9 +2,9 @@
 #
 
 '''
-Regridder for converting data between a curvilinear longitude, 
-latitude grid and a rectilinear longitude, latitude grid.  
-Uses the ESMP interface to ESMF to perform the regridding. 
+Regridder for converting data between a curvilinear longitude,
+latitude grid and a rectilinear longitude, latitude grid.
+Uses the ESMP interface to ESMF to perform the regridding.
 
 @author: Karl Smith
 '''
@@ -14,33 +14,33 @@ import ESMP
 
 class CurvRectRegridder(object):
     '''
-    Regridder for regridding data between a 2D curvilinear grid, where 
-    the longitude and latitude of each grid corner and/or center point 
-    is explicitly defined, and a 2D rectilinear grid, where the grid 
-    corners are all intersections of a given set of strictly increasing 
-    longitudes with a set of strictly increasing latitudes.  The 
-    rectilinear grid centers are the the intersections of averaged 
-    consecutive longitude pairs with averaged consecutive latitude pairs.  
+    Regridder for regridding data between a 2D curvilinear grid, where
+    the longitude and latitude of each grid corner and/or center point
+    is explicitly defined, and a 2D rectilinear grid, where the grid
+    corners are all intersections of a given set of strictly increasing
+    longitudes with a set of strictly increasing latitudes.  The
+    rectilinear grid centers are the the intersections of averaged
+    consecutive longitude pairs with averaged consecutive latitude pairs.
 
-    For these grids, the center point [i,j] is taken to be the center 
-    point of the quadrilateral defined by connecting consecutive corner 
-    points in the sequence (corner_pt[i,j], corner_pt[i+1,j], 
+    For these grids, the center point [i,j] is taken to be the center
+    point of the quadrilateral defined by connecting consecutive corner
+    points in the sequence (corner_pt[i,j], corner_pt[i+1,j],
     corner_pt[i+1,j+1], corner_pt([i,j+1], corner_pt[i,j]).
 
-    Uses the ESMP interface to ESMF to perform the regridding.  Prior 
-    to calling any instance methods in the CurvRectRegridder class, the 
-    ESMP module must be imported and ESMP.ESMP_Initialize() must have 
-    been called.  When a CurvRectRegridder instance is no longer needed, 
-    the finalize method of the instance should be called to free ESMP 
-    resources associated with the instance.  When ESMP is no longer 
-    required, the ESMP.ESMP_Finalize() method should be called to free 
+    Uses the ESMP interface to ESMF to perform the regridding.  Prior
+    to calling any instance methods in the CurvRectRegridder class, the
+    ESMP module must be imported and ESMP.ESMP_Initialize() must have
+    been called.  When a CurvRectRegridder instance is no longer needed,
+    the finalize method of the instance should be called to free ESMP
+    resources associated with the instance.  When ESMP is no longer
+    required, the ESMP.ESMP_Finalize() method should be called to free
     all ESMP and ESMF resources.
     '''
 
 
     def __init__(self):
         '''
-        Initializes to an empty regridder.  The ESMP module must be 
+        Initializes to an empty regridder.  The ESMP module must be
         imported and ESMP.ESMP_Initialize() called prior to calling
         any methods in this instance.
         '''
@@ -64,35 +64,35 @@ class CurvRectRegridder(object):
                        corner_lons=None, corner_lats=None, corner_ignore=None):
         '''
         Create the curvilinear grid as an ESMP_Grid using the provided center
-        longitudes and latitudes as the grid center points, and, if given, 
+        longitudes and latitudes as the grid center points, and, if given,
         the grid corner longitudes and latitudes as the grid corner points.
         Curvilinear data is assigned to the center points.  Grid point
         coordinates are assigned as coord[i,j] = ( lons[i,j], lats[i,j] ).
 
-        Any previous ESMP_Grid, ESMP_Field, or ESMP regridding procedures 
+        Any previous ESMP_Grid, ESMP_Field, or ESMP regridding procedures
         are destroyed.
 
         Arguments:
-            center_lons:   2D array of longitudes, in degrees, 
+            center_lons:   2D array of longitudes, in degrees,
                            for each of the curvilinear center points
-            center_lats:   2D array of latitudes, in degrees, 
+            center_lats:   2D array of latitudes, in degrees,
                            for each of the curvilinear center points
-            center_ignore: 2D array of boolean-like values, indicating if 
-                           the corresponding grid center point should be 
-                           ignored in the regridding; if None, no grid 
+            center_ignore: 2D array of boolean-like values, indicating if
+                           the corresponding grid center point should be
+                           ignored in the regridding; if None, no grid
                            center points will be ignored
-            corner_lons:   2D array of longitudes, in degrees, 
+            corner_lons:   2D array of longitudes, in degrees,
                            for each of the curvilinear corner points
-            corner_lats:   2D array of latitudes, in degrees, 
+            corner_lats:   2D array of latitudes, in degrees,
                            for each of the curvilinear corner points
-            corner_ignore: 2D array of boolean-like values, indicating if 
-                           the corresponding grid corner point should be 
-                           ignored in the regridding; if None, no grid 
+            corner_ignore: 2D array of boolean-like values, indicating if
+                           the corresponding grid corner point should be
+                           ignored in the regridding; if None, no grid
                            corner points will be ignored
         Returns:
             None
         Raises:
-            ValueError: if the shape (dimensionality) of an argument 
+            ValueError: if the shape (dimensionality) of an argument
                         is invalid, or if a value in an argument is invalid
             TypeError:  if an argument is not array-like
         '''
@@ -129,7 +129,7 @@ class CurvRectRegridder(object):
             corner_lons_array = numpy.array(corner_lons, dtype=numpy.float64, copy=False)
             if len(corner_lons_array.shape) != 2:
                 raise ValueError("corner_lons must be two-dimensional")
-            if corner_lons_array.shape != (center_lons_array.shape[0] + 1, 
+            if corner_lons_array.shape != (center_lons_array.shape[0] + 1,
                                            center_lons_array.shape[1] + 1):
                 raise ValueError("corner_lons must have one more point along " \
                                  "each dimension when compared to center_lons")
@@ -154,7 +154,7 @@ class CurvRectRegridder(object):
                 # If not actually ignoring any points, do not create a mask
                 if not corner_ignore_array.any():
                     corner_ignore_array = None
-            
+
         elif corner_lons != None:
             raise ValueError("corner_lons given without corner_lats")
         elif corner_lats != None:
@@ -194,8 +194,8 @@ class CurvRectRegridder(object):
         # thus interpolates between the last and first longitude. 
         self.__curv_shape = center_lons_array.shape
         grid_shape = numpy.array(self.__curv_shape, dtype=numpy.int32)
-        self.__curv_grid = ESMP.ESMP_GridCreateNoPeriDim(grid_shape, 
-                                         ESMP.ESMP_COORDSYS_SPH_DEG, 
+        self.__curv_grid = ESMP.ESMP_GridCreateNoPeriDim(grid_shape,
+                                         ESMP.ESMP_COORDSYS_SPH_DEG,
                                          ESMP.ESMP_TYPEKIND_R8)
 
         if corner_lats_array != None:
@@ -203,9 +203,9 @@ class CurvRectRegridder(object):
             ESMP.ESMP_GridAddCoord(self.__curv_grid, ESMP.ESMP_STAGGERLOC_CORNER)
 
             # Retrieve the grid corner coordinate arrays in the ESMP_Grid
-            grid_lon_coords = ESMP.ESMP_GridGetCoordPtr(self.__curv_grid, 0, 
+            grid_lon_coords = ESMP.ESMP_GridGetCoordPtr(self.__curv_grid, 0,
                                                         ESMP.ESMP_STAGGERLOC_CORNER)
-            grid_lat_coords = ESMP.ESMP_GridGetCoordPtr(self.__curv_grid, 1, 
+            grid_lat_coords = ESMP.ESMP_GridGetCoordPtr(self.__curv_grid, 1,
                                                         ESMP.ESMP_STAGGERLOC_CORNER)
 
             # Assign the longitudes and latitudes of the grid corners in the ESMP_Grid
@@ -215,11 +215,11 @@ class CurvRectRegridder(object):
             # Add a mask if not considering all the corner points
             if corner_ignore_array != None:
                 # Allocate space for the grid corners mask
-                ESMP.ESMP_GridAddItem(self.__curv_grid, ESMP.ESMP_GRIDITEM_MASK, 
+                ESMP.ESMP_GridAddItem(self.__curv_grid, ESMP.ESMP_GRIDITEM_MASK,
                                                         ESMP.ESMP_STAGGERLOC_CORNER)
                 # Retrieve the grid corners mask array in the ESMP_Grid
-                ignore_mask = ESMP.ESMP_GridGetItem(self.__curv_grid, 
-                                                    ESMP.ESMP_GRIDITEM_MASK, 
+                ignore_mask = ESMP.ESMP_GridGetItem(self.__curv_grid,
+                                                    ESMP.ESMP_GRIDITEM_MASK,
                                                     ESMP.ESMP_STAGGERLOC_CORNER)
                 # Assign the mask in the ESMP_Grid; 
                 # False (turns into zero) means use the point;
@@ -230,9 +230,9 @@ class CurvRectRegridder(object):
         ESMP.ESMP_GridAddCoord(self.__curv_grid, ESMP.ESMP_STAGGERLOC_CENTER)
 
         # Retrieve the grid center coordinate arrays in the ESMP_Grid
-        grid_lon_coords = ESMP.ESMP_GridGetCoordPtr(self.__curv_grid, 0, 
+        grid_lon_coords = ESMP.ESMP_GridGetCoordPtr(self.__curv_grid, 0,
                                                     ESMP.ESMP_STAGGERLOC_CENTER)
-        grid_lat_coords = ESMP.ESMP_GridGetCoordPtr(self.__curv_grid, 1, 
+        grid_lat_coords = ESMP.ESMP_GridGetCoordPtr(self.__curv_grid, 1,
                                                     ESMP.ESMP_STAGGERLOC_CENTER)
 
         # Assign the longitudes and latitudes of the grid centers in the ESMP_Grid
@@ -242,11 +242,11 @@ class CurvRectRegridder(object):
         # Add a mask if not considering all the center points
         if center_ignore_array != None:
             # Allocate space for the grid centers mask
-            ESMP.ESMP_GridAddItem(self.__curv_grid, ESMP.ESMP_GRIDITEM_MASK, 
+            ESMP.ESMP_GridAddItem(self.__curv_grid, ESMP.ESMP_GRIDITEM_MASK,
                                                     ESMP.ESMP_STAGGERLOC_CENTER)
             # Retrieve the grid centers mask array in the ESMP_Grid
-            ignore_mask = ESMP.ESMP_GridGetItem(self.__curv_grid, 
-                                                ESMP.ESMP_GRIDITEM_MASK, 
+            ignore_mask = ESMP.ESMP_GridGetItem(self.__curv_grid,
+                                                ESMP.ESMP_GRIDITEM_MASK,
                                                 ESMP.ESMP_STAGGERLOC_CENTER)
             # Assign the mask in the ESMP_Grid; 
             # False (turns into zero) means use the point;
@@ -256,26 +256,26 @@ class CurvRectRegridder(object):
 
     def assignCurvField(self, data=None):
         '''
-        Possibly creates, and possible assigns, an appropriate curvilinear 
-        ESMP_Field located at the center points of the grid.  An ESMP_Field 
-        is created if and only if it is not already present; thus allowing 
+        Possibly creates, and possible assigns, an appropriate curvilinear
+        ESMP_Field located at the center points of the grid.  An ESMP_Field
+        is created if and only if it is not already present; thus allowing
         the "weights" computed from a previous regridding to be reused.
 
         If data is not None, assigns the data values to the curvilinear
         source ESMP_Field, creating the ESMP_field if it does not exist.
 
-        If data is None, only creates the curvilinear destination ESMP_Field 
+        If data is None, only creates the curvilinear destination ESMP_Field
         if it does not exist.
 
         Arguments:
-            data: 2D array of data values to be assigned in an 
+            data: 2D array of data values to be assigned in an
                   ESMP_Field for the grid center points; if None,
                   no data in any ESMP_Field is modified.
         Returns:
             None
         Raises:
-            ValueError: if data is not None, and if the shape 
-                        (dimensionality) of data is invalid or 
+            ValueError: if data is not None, and if the shape
+                        (dimensionality) of data is invalid or
                         if a value in data is not numeric
             TypeError:  if data, if not None, is not array-like
         '''
@@ -283,9 +283,9 @@ class CurvRectRegridder(object):
 
             # Create the curvilinear destination ESMP_Field if it does not exist
             if self.__curv_dest_field == None:
-                self.__curv_dest_field = ESMP.ESMP_FieldCreateGrid(self.__curv_grid, 
-                                                        "curv_dest_field", 
-                                                        ESMP.ESMP_TYPEKIND_R8, 
+                self.__curv_dest_field = ESMP.ESMP_FieldCreateGrid(self.__curv_grid,
+                                                        "curv_dest_field",
+                                                        ESMP.ESMP_TYPEKIND_R8,
                                                         ESMP.ESMP_STAGGERLOC_CENTER)
 
         else:
@@ -300,9 +300,9 @@ class CurvRectRegridder(object):
 
             # Create the curvilinear source ESMP_Field if it does not exist
             if self.__curv_src_field == None:
-                self.__curv_src_field = ESMP.ESMP_FieldCreateGrid(self.__curv_grid, 
-                                                       "curv_src_field", 
-                                                       ESMP.ESMP_TYPEKIND_R8, 
+                self.__curv_src_field = ESMP.ESMP_FieldCreateGrid(self.__curv_grid,
+                                                       "curv_src_field",
+                                                       ESMP.ESMP_TYPEKIND_R8,
                                                        ESMP.ESMP_STAGGERLOC_CENTER)
 
             # Retrieve the field data array in the ESMP_Field
@@ -312,39 +312,39 @@ class CurvRectRegridder(object):
             field_ptr[:] = data_array.flatten('F')
 
 
-    def createRectGrid(self, edge_lons, edge_lats, center_ignore=None, 
+    def createRectGrid(self, edge_lons, edge_lats, center_ignore=None,
                        corner_ignore=None):
         '''
-        Create the rectilinear grid as an ESMP_Grid using the provided cell 
-        edge longitudes and latitudes to define the grid center and corner 
+        Create the rectilinear grid as an ESMP_Grid using the provided cell
+        edge longitudes and latitudes to define the grid center and corner
         points.  Rectilinear data is assigned to the center points.  Grid
-        corner point coordinates are assigned as corner_pt[i,j] = 
+        corner point coordinates are assigned as corner_pt[i,j] =
         ( edge_lons[i], edge_lats[j] ).  Grid center point coordinates are
         assigned as center_pt[i,j]= ( (edge_lons[i] + edge_lons[i+1]) / 2,
         (edge_lats[j] + edge_lats[j+1]) / 2 ).
 
-        Any previous ESMP_Grid, ESMP_Field, or ESMP regridding procedures 
+        Any previous ESMP_Grid, ESMP_Field, or ESMP regridding procedures
         are destroyed.
 
         Arguments:
-            edge_lons:     1D array of longitudes, in degrees, 
+            edge_lons:     1D array of longitudes, in degrees,
                            for each of the rectilinear grid cells edges;
                            must be strictly increasing values
-            edge_lats:     1D array of latitudes, in degrees, 
+            edge_lats:     1D array of latitudes, in degrees,
                            for each of the rectilinear grid cells edges;
                            must be strictly increasing values
-            center_ignore: 2D array of boolean-like values, indicating if 
-                           the corresponding grid center point should be 
-                           ignored in the regridding; if None, no grid 
+            center_ignore: 2D array of boolean-like values, indicating if
+                           the corresponding grid center point should be
+                           ignored in the regridding; if None, no grid
                            center points will be ignored
-            corner_ignore: 2D array of boolean-like values, indicating if 
-                           the corresponding grid corner point should be 
-                           ignored in the regridding; if None, no grid 
+            corner_ignore: 2D array of boolean-like values, indicating if
+                           the corresponding grid corner point should be
+                           ignored in the regridding; if None, no grid
                            corner points will be ignored
         Returns:
             None
         Raises:
-            ValueError: if the shape (dimensionality) of an argument 
+            ValueError: if the shape (dimensionality) of an argument
                         is invalid, or if a value in an argument is invalid
             TypeError:  if an argument is not array-like
         '''
@@ -352,7 +352,7 @@ class CurvRectRegridder(object):
         lons_array = numpy.array(edge_lons, dtype=numpy.float64, copy=False)
         if len(lons_array.shape) != 1:
             raise ValueError("edge_lons must be one-dimensional")
-        increasing = ( lons_array[:-1] < lons_array[1:] )
+        increasing = (lons_array[:-1] < lons_array[1:])
         if not increasing.all():
             raise ValueError("edge_lons must contain strictly increasing values")
 
@@ -360,7 +360,7 @@ class CurvRectRegridder(object):
         lats_array = numpy.array(edge_lats, dtype=numpy.float64, copy=True)
         if len(lats_array.shape) != 1:
             raise ValueError("edge_lats must be one-dimensional")
-        increasing = ( lats_array[:-1] < lats_array[1:] )
+        increasing = (lats_array[:-1] < lats_array[1:])
         if not increasing.all():
             raise ValueError("edge_lats must contain strictly increasing values")
 
@@ -425,17 +425,17 @@ class CurvRectRegridder(object):
         grid_shape = numpy.array(self.__rect_shape, dtype=numpy.int32)
         if self.__rect_grid != None:
             ESMP.ESMP_GridDestroy(self.__rect_grid)
-        self.__rect_grid = ESMP.ESMP_GridCreateNoPeriDim(grid_shape, 
-                                         ESMP.ESMP_COORDSYS_SPH_DEG, 
+        self.__rect_grid = ESMP.ESMP_GridCreateNoPeriDim(grid_shape,
+                                         ESMP.ESMP_COORDSYS_SPH_DEG,
                                          ESMP.ESMP_TYPEKIND_R8)
 
         # Allocate space for the grid corner coordinates
         ESMP.ESMP_GridAddCoord(self.__rect_grid, ESMP.ESMP_STAGGERLOC_CORNER)
 
         # Retrieve the grid corner coordinate arrays in the ESMP_Grid
-        grid_lon_coords = ESMP.ESMP_GridGetCoordPtr(self.__rect_grid, 0, 
+        grid_lon_coords = ESMP.ESMP_GridGetCoordPtr(self.__rect_grid, 0,
                                                     ESMP.ESMP_STAGGERLOC_CORNER)
-        grid_lat_coords = ESMP.ESMP_GridGetCoordPtr(self.__rect_grid, 1, 
+        grid_lat_coords = ESMP.ESMP_GridGetCoordPtr(self.__rect_grid, 1,
                                                     ESMP.ESMP_STAGGERLOC_CORNER)
 
         # Assign the longitudes and latitudes of the grid corners in the ESMP_Grid
@@ -445,13 +445,13 @@ class CurvRectRegridder(object):
         grid_lat_coords[:] = numpy.repeat(lats_array, lons_array.shape[0])
 
         # Add a mask if not considering all the corner points
-        if ( corner_ignore_array != None ):
+        if (corner_ignore_array != None):
             # Allocate space for the grid corners mask
-            ESMP.ESMP_GridAddItem(self.__rect_grid, ESMP.ESMP_GRIDITEM_MASK, 
+            ESMP.ESMP_GridAddItem(self.__rect_grid, ESMP.ESMP_GRIDITEM_MASK,
                                                     ESMP.ESMP_STAGGERLOC_CORNER)
             # Retrieve the grid corners mask array in the ESMP_Grid
-            ignore_mask = ESMP.ESMP_GridGetItem(self.__rect_grid, 
-                                                ESMP.ESMP_GRIDITEM_MASK, 
+            ignore_mask = ESMP.ESMP_GridGetItem(self.__rect_grid,
+                                                ESMP.ESMP_GRIDITEM_MASK,
                                                 ESMP.ESMP_STAGGERLOC_CORNER)
             # Assign the mask in the ESMP_Grid; 
             # False (turns into zero) means use the point;
@@ -463,9 +463,9 @@ class CurvRectRegridder(object):
         ESMP.ESMP_GridAddCoord(self.__rect_grid, ESMP.ESMP_STAGGERLOC_CENTER)
 
         # Retrieve the grid corner coordinate arrays in the ESMP_Grid
-        grid_lon_coords = ESMP.ESMP_GridGetCoordPtr(self.__rect_grid, 0, 
+        grid_lon_coords = ESMP.ESMP_GridGetCoordPtr(self.__rect_grid, 0,
                                                     ESMP.ESMP_STAGGERLOC_CENTER)
-        grid_lat_coords = ESMP.ESMP_GridGetCoordPtr(self.__rect_grid, 1, 
+        grid_lat_coords = ESMP.ESMP_GridGetCoordPtr(self.__rect_grid, 1,
                                                     ESMP.ESMP_STAGGERLOC_CENTER)
 
         # Assign the longitudes and latitudes of the grid centers in the ESMP_Grid
@@ -477,13 +477,13 @@ class CurvRectRegridder(object):
         grid_lat_coords[:] = numpy.repeat(mid_lats, mid_lons.shape[0])
 
         # Add a mask if not considering all the center points
-        if ( center_ignore_array != None ):
+        if (center_ignore_array != None):
             # Allocate space for the grid centers mask
-            ESMP.ESMP_GridAddItem(self.__rect_grid, ESMP.ESMP_GRIDITEM_MASK, 
+            ESMP.ESMP_GridAddItem(self.__rect_grid, ESMP.ESMP_GRIDITEM_MASK,
                                                     ESMP.ESMP_STAGGERLOC_CENTER)
             # Retrieve the grid centers mask array in the ESMP_Grid
-            ignore_mask = ESMP.ESMP_GridGetItem(self.__rect_grid, 
-                                                ESMP.ESMP_GRIDITEM_MASK, 
+            ignore_mask = ESMP.ESMP_GridGetItem(self.__rect_grid,
+                                                ESMP.ESMP_GRIDITEM_MASK,
                                                 ESMP.ESMP_STAGGERLOC_CENTER)
             # Assign the mask in the ESMP_Grid; 
             # False (turns into zero) means use the point;
@@ -494,26 +494,26 @@ class CurvRectRegridder(object):
 
     def assignRectField(self, data=None):
         '''
-        Possibly creates, and possible assigns, an appropriate rectilinear 
-        ESMP_Field located at the center points of the grid.  An ESMP_Field 
-        is created if and only if it is not already present; thus allowing 
+        Possibly creates, and possible assigns, an appropriate rectilinear
+        ESMP_Field located at the center points of the grid.  An ESMP_Field
+        is created if and only if it is not already present; thus allowing
         the "weights" computed from a previous regridding to be reused.
 
         If data is not None, assigns the data values to the rectilinear
         source ESMP_Field, creating the ESMP_field if it does not exist.
 
-        If data is None, only creates the rectilinear destination ESMP_Field 
+        If data is None, only creates the rectilinear destination ESMP_Field
         if it does not exist.
 
         Arguments:
-            data: 2D array of data values to be assigned in an 
+            data: 2D array of data values to be assigned in an
                   ESMP_Field for the grid center points; if None,
                   no data in any ESMP_Field is modified.
         Returns:
             None
         Raises:
-            ValueError: if data is not None, and if the shape 
-                        (dimensionality) of data is invalid or 
+            ValueError: if data is not None, and if the shape
+                        (dimensionality) of data is invalid or
                         if a value in data is not numeric
             TypeError:  if data, if not None, is not array-like
         '''
@@ -521,9 +521,9 @@ class CurvRectRegridder(object):
 
             # Create the rectilinear destination ESMP_Field if it does not exist
             if self.__rect_dest_field == None:
-                self.__rect_dest_field = ESMP.ESMP_FieldCreateGrid(self.__rect_grid, 
-                                                        "rect_dest_field", 
-                                                        ESMP.ESMP_TYPEKIND_R8, 
+                self.__rect_dest_field = ESMP.ESMP_FieldCreateGrid(self.__rect_grid,
+                                                        "rect_dest_field",
+                                                        ESMP.ESMP_TYPEKIND_R8,
                                                         ESMP.ESMP_STAGGERLOC_CENTER)
 
         else:
@@ -538,9 +538,9 @@ class CurvRectRegridder(object):
 
             # Create the rectilinear source ESMP_Field if it does not exist
             if self.__rect_src_field == None:
-                self.__rect_src_field = ESMP.ESMP_FieldCreateGrid(self.__rect_grid, 
-                                                       "rect_src_field", 
-                                                       ESMP.ESMP_TYPEKIND_R8, 
+                self.__rect_src_field = ESMP.ESMP_FieldCreateGrid(self.__rect_grid,
+                                                       "rect_src_field",
+                                                       ESMP.ESMP_TYPEKIND_R8,
                                                        ESMP.ESMP_STAGGERLOC_CENTER)
 
             # Retrieve the field data array in the ESMP_Field
@@ -550,32 +550,32 @@ class CurvRectRegridder(object):
             field_ptr[:] = data_array.flatten('F')
 
 
-    def regridCurvToRect(self, undef_val, 
+    def regridCurvToRect(self, undef_val,
                          method=ESMP.ESMP_REGRIDMETHOD_BILINEAR):
         '''
         Regrids from the curvilinear source ESMP_Field to the rectilinear
-        destination ESMP_Field using the given regridding method.  Reuses 
-        the appropriate regridding procedure if one already exists; 
+        destination ESMP_Field using the given regridding method.  Reuses
+        the appropriate regridding procedure if one already exists;
         otherwise a new regridding procedure is created and stored.
 
-        Prior to calling this method, the curvilinear source ESMP_Field 
-        must be created by calling createCurvGrid, then assignCurvField 
+        Prior to calling this method, the curvilinear source ESMP_Field
+        must be created by calling createCurvGrid, then assignCurvField
         with valid data.  The rectilinear destination ESMP_Field must
-        also have been created by calling createRectGrid, and then 
+        also have been created by calling createRectGrid, and then
         assignRectField with no data argument (or None for data).
 
         Arguments:
-            undef_val: numpy array containing one numeric value to 
-                       be used as the undefined data value in the 
+            undef_val: numpy array containing one numeric value to
+                       be used as the undefined data value in the
                        returned array
-            method:    one of the ESMP regridding method identifiers, 
+            method:    one of the ESMP regridding method identifiers,
                        such as:
                            ESMP.ESMP_REGRIDMETHOD_BILINEAR
                            ESMP.ESMP_REGRIDMETHOD_CONSERVE
                            ESMP.ESMP_REGRIDMETHOD_PATCH
-                       Conservative regridding requires that both 
-                       corner and center point coordinates are 
-                       defined in the grids. 
+                       Conservative regridding requires that both
+                       corner and center point coordinates are
+                       defined in the grids.
         Returns:
             data: a 2D numpy array of data values located at the rectilinear
                   grid centers representing the regridded curvilinear
@@ -598,9 +598,9 @@ class CurvRectRegridder(object):
             # Assign the value in the masks marking points to be ignored
             ignore_mask_value = numpy.array([1], dtype=numpy.int32)
             # Generate the procedure handle
-            handle = ESMP.ESMP_FieldRegridStore(self.__curv_src_field, 
-                                                self.__rect_dest_field, 
-                                                ignore_mask_value, ignore_mask_value, 
+            handle = ESMP.ESMP_FieldRegridStore(self.__curv_src_field,
+                                                self.__rect_dest_field,
+                                                ignore_mask_value, ignore_mask_value,
                                                 method, ESMP.ESMP_UNMAPPEDACTION_IGNORE)
             # Save the handle for this method for future regrids
             self.__curv_to_rect_handles[method] = handle
@@ -609,41 +609,41 @@ class CurvRectRegridder(object):
         field_ptr[:] = undef_val
         # Perform the regridding, zeroing out only the 
         # destination fields values that will be assigned
-        ESMP.ESMP_FieldRegrid(self.__curv_src_field, self.__rect_dest_field, 
+        ESMP.ESMP_FieldRegrid(self.__curv_src_field, self.__rect_dest_field,
                               handle, ESMP.ESMP_REGION_SELECT)
         # Make a copy of the destination field values to return, reshaped to 2D
         result = numpy.array(field_ptr, dtype=numpy.float64, copy=True)
-        result = result.reshape(self.__rect_shape, order = 'F')
+        result = result.reshape(self.__rect_shape, order='F')
 
         return result
 
 
-    def regridRectToCurv(self, undef_val, 
+    def regridRectToCurv(self, undef_val,
                          method=ESMP.ESMP_REGRIDMETHOD_BILINEAR):
         '''
         Regrids from the rectilinear source ESMP_Field to the curvilinear
-        destination ESMP_Field using the given regridding method.  Reuses 
-        the appropriate regridding procedure if one already exists; 
+        destination ESMP_Field using the given regridding method.  Reuses
+        the appropriate regridding procedure if one already exists;
         otherwise a new regridding procedure is created and stored.
 
-        Prior to calling this method, the rectilinear source ESMP_Field 
-        must be created by calling createRectGrid, then assignRectField 
+        Prior to calling this method, the rectilinear source ESMP_Field
+        must be created by calling createRectGrid, then assignRectField
         with valid data.  The curvilinear destination ESMP_Field must
-        also have been created by calling createCurvGrid, and then 
+        also have been created by calling createCurvGrid, and then
         assignCurvField with no data argument (or None for data).
 
         Arguments:
-            undef_val: numpy array containing one numeric value to 
-                       be used as the undefined data value in the 
+            undef_val: numpy array containing one numeric value to
+                       be used as the undefined data value in the
                        returned array
-            method:    one of the ESMP regridding method identifiers, 
+            method:    one of the ESMP regridding method identifiers,
                        such as:
                            ESMP.ESMP_REGRIDMETHOD_BILINEAR
                            ESMP.ESMP_REGRIDMETHOD_CONSERVE
                            ESMP.ESMP_REGRIDMETHOD_PATCH
-                       Conservative regridding requires that both 
-                       corner and center point coordinates are 
-                       defined in the grids. 
+                       Conservative regridding requires that both
+                       corner and center point coordinates are
+                       defined in the grids.
         Returns:
             data: a 2D array of data values located at the curvilinear
                   grid centers representing the regridded rectilinear
@@ -666,9 +666,9 @@ class CurvRectRegridder(object):
             # Assign the value in the masks marking points to be ignored
             ignore_mask_value = numpy.array([1], dtype=numpy.int32)
             # Generate the procedure handle
-            handle = ESMP.ESMP_FieldRegridStore(self.__rect_src_field, 
-                                                self.__curv_dest_field, 
-                                                ignore_mask_value, ignore_mask_value, 
+            handle = ESMP.ESMP_FieldRegridStore(self.__rect_src_field,
+                                                self.__curv_dest_field,
+                                                ignore_mask_value, ignore_mask_value,
                                                 method, ESMP.ESMP_UNMAPPEDACTION_IGNORE)
             # Save the handle for this method for future regrids
             self.__rect_to_curv_handles[method] = handle
@@ -677,20 +677,20 @@ class CurvRectRegridder(object):
         field_ptr[:] = undef_val
         # Perform the regridding, zeroing out only the 
         # destination fields values that will be assigned
-        ESMP.ESMP_FieldRegrid(self.__rect_src_field, self.__curv_dest_field, 
+        ESMP.ESMP_FieldRegrid(self.__rect_src_field, self.__curv_dest_field,
                               handle, ESMP.ESMP_REGION_SELECT)
         # Make a copy of the destination field values to return, reshaped to 2D
         result = numpy.array(field_ptr, dtype=numpy.float64, copy=True)
-        result = result.reshape(self.__curv_shape, order = 'F')
+        result = result.reshape(self.__curv_shape, order='F')
 
         return result
 
 
     def finalize(self):
         '''
-        Destroys any ESMP_Grid, ESMP_Field, and ESMP regridding 
-        procedures present in this instance.  If ESMP is no longer 
-        needed, ESMP.ESMP_Finalize() should be called to free any 
+        Destroys any ESMP_Grid, ESMP_Field, and ESMP regridding
+        procedures present in this instance.  If ESMP is no longer
+        needed, ESMP.ESMP_Finalize() should be called to free any
         ESMP and ESMF resources.
 
         Arguments:
@@ -737,9 +737,9 @@ class CurvRectRegridder(object):
 
 def __createExampleCurvData():
     '''
-    Creates and returns example longitude, latitudes, and data for a curvilinear 
-    grid.  Uses the GFDL tripolar grid.  Assigns grid center point data[i,j] 
-        = cos(lon[i,j]) * cos(3.6 * (lat[i,j] - 65.0)) for areas over ocean, 
+    Creates and returns example longitude, latitudes, and data for a curvilinear
+    grid.  Uses the GFDL tripolar grid.  Assigns grid center point data[i,j]
+        = cos(lon[i,j]) * cos(3.6 * (lat[i,j] - 65.0)) for areas over ocean,
         = 1.0E20 for areas over land.
 
     Arguments:
@@ -864,7 +864,7 @@ def __createExampleCurvData():
            15.964,  18.339,  20.626,  22.826,  24.938,  26.963,  28.903,  30.759,  32.536,  34.234,
            35.859,  37.412,  38.898,  40.319,  41.679,  42.980,  44.227,  45.423,  46.569,  47.669,
            48.725,  49.740, ),
-      ), dtype = numpy.float64)
+      ), dtype=numpy.float64)
     # latitude centerpoints for the GFDL tripolar grid in the region 20W:20E, 65N:85N
     corner_lats = numpy.array( (
         ( 64.500, 64.500, 64.500, 64.500, 64.500, 64.500, 64.500, 64.500, 64.500, 64.500,
@@ -977,7 +977,7 @@ def __createExampleCurvData():
           85.031, 84.932, 84.826, 84.712, 84.591, 84.464, 84.330, 84.190, 84.044, 83.894,
           83.738, 83.578, 83.413, 83.244, 83.071, 82.894, 82.714, 82.530, 82.343, 82.153,
           81.959, 81.763, ),
-      ), dtype = numpy.float64)
+      ), dtype=numpy.float64)
     # longitude centerpoints for the GFDL tripolar grid in the region 20W:20E, 65N:85N
     center_lons = numpy.array( (
         ( -20.000, -19.000, -18.000, -17.000, -16.000, -15.000, -14.000, -13.000, -12.000, -11.000,
@@ -1085,7 +1085,7 @@ def __createExampleCurvData():
            14.940,  17.141,  19.274,  21.336,  23.327,  25.247,  27.098,  28.879,  30.594,  32.242,
            33.828,  35.352,  36.817,  38.226,  39.581,  40.884,  42.138,  43.344,  44.506,  45.626,
            46.705, ),
-      ), dtype = numpy.float64)
+      ), dtype=numpy.float64)
     # latitude centerpoints for the GFDL tripolar grid in the region 20W:20E, 65N:85N
     center_lats = numpy.array( (
         ( 65.000, 65.000, 65.000, 65.000, 65.000, 65.000, 65.000, 65.000, 65.000, 65.000,
@@ -1193,7 +1193,7 @@ def __createExampleCurvData():
           84.530, 84.436, 84.335, 84.226, 84.111, 83.989, 83.862, 83.728, 83.589, 83.445,
           83.296, 83.142, 82.984, 82.822, 82.655, 82.485, 82.310, 82.133, 81.951, 81.767,
           81.579, ),
-      ), dtype = numpy.float64)
+      ), dtype=numpy.float64)
     # model salinity data at the center points of the GFDL tripolar grid in the region 20W:20E, 65N:85N
     # used here only for the land mask (values set to 1.0E20)
     salt_center_data = numpy.array( (
@@ -1302,9 +1302,9 @@ def __createExampleCurvData():
           33.322, 33.422, 33.507, 33.577, 33.636, 33.687, 33.733, 33.774, 33.811, 33.846,
           33.881, 33.918, 33.958, 33.999, 34.038, 34.075, 34.113, 34.152, 34.195, 34.243,
           34.300, ),
-      ), dtype = numpy.float64)
+      ), dtype=numpy.float64)
     # Create the land (True) / ocean (False) centerpoint mask from the salt data 
-    over_land = ( salt_center_data >= 256.0 )
+    over_land = (salt_center_data >= 256.0)
     # Synthesize the data values for the curvilinear grid center points
     cos_data = numpy.cos(numpy.deg2rad(center_lons)) * \
                numpy.cos(3.6 * numpy.deg2rad(center_lats - 65.0))
@@ -1317,15 +1317,15 @@ def __createExampleCurvData():
 
 def __createExampleRectData():
     '''
-    Creates and returns example longitude, latitudes, and data for a rectilinear 
+    Creates and returns example longitude, latitudes, and data for a rectilinear
     grid.  Covers approximately the same region given by __createExampleCurvData.
-    Assigns grid center point data[i,j] 
-        = cos(lon[i,j]) * cos(3.6 * (lat[i,j] - 65.0)) for areas over ocean, 
+    Assigns grid center point data[i,j]
+        = cos(lon[i,j]) * cos(3.6 * (lat[i,j] - 65.0)) for areas over ocean,
         = 1.0E34 for areas over land.
 
     Arguments:
         None
-    Returns: 
+    Returns:
         (lon_edges, lat_edges, data) where:
         lon_edges: numpy.float64 1D array of rectilinear edge longitudes
         lat_edges: numpy.float64 1D array of rectilinear edge latitudes
@@ -1415,7 +1415,7 @@ def __createExampleRectData():
           31.727, 31.768, 32.365, 32.332, 32.380, 1.0E34, 1.0E34, 32.598, 1.0E34, 1.0E34,
           1.0E34, 31.811, 1.0E34, 1.0E34, 1.0E34, 1.0E34, 1.0E34, 1.0E34, 1.0E34, 1.0E34,
           1.0E34, 1.0E34, 33.465, 1.0E34, 1.0E34, 1.0E34, 1.0E34, 31.944, 1.0E34, 1.0E34, ),
-    ), dtype = numpy.float64)
+    ), dtype=numpy.float64)
     # Rectilinear grid longitude edges covering center points 19.5W:19.5E:1.0
     lon_edges = numpy.linspace(-20.0, 20.0, 41)
     # Rectilinear grid latitude edges covering center points 65.5N:84.5N:1.0
@@ -1428,7 +1428,7 @@ def __createExampleRectData():
     sin_cos_data = numpy.cos(numpy.deg2rad(center_lons)) * \
                    numpy.cos(3.6 * numpy.deg2rad(center_lats - 65.0))
     # Reassign the values that are over land
-    over_land = ( salt_center_data >= 256.0 )
+    over_land = (salt_center_data >= 256.0)
     sin_cos_data[over_land] = 1.0E34
 
     # The 2D arrays were generated as [lat][lon], so return the transpose
@@ -1439,27 +1439,27 @@ def __printDiffs(grid_lons, grid_lats, undef_val, expect_data, found_data):
     '''
     Prints significant differences between expect_data and found_data
     along with the location of these differences
-    
+
     Arguments:
         grid_lons:   numpy 2D array of grid longitudes
         grid_lats:   numpy 2D array of grid latitudes
         undef_val:   numpy array of one value; the undefined data value
         expect_data: numpy 2D array of expected data values
         found_data:  numpy 2d array of data values to check
-    Returns: 
+    Returns:
         None
     Raises:
         ValueError:  if the array shapes do not match
     '''
-    if ( len(grid_lons.shape) != 2 ):
+    if (len(grid_lons.shape) != 2):
         raise ValueError("grid_lons is not 2D")
-    if ( grid_lats.shape != grid_lons.shape ):
+    if (grid_lats.shape != grid_lons.shape):
         raise ValueError("grid_lats.shape != grid_lons.shape")
-    if ( expect_data.shape != grid_lons.shape ):
+    if (expect_data.shape != grid_lons.shape):
         raise ValueError("expect_data.shape != grid_lons.shape")
-    if ( found_data.shape != grid_lons.shape ):
+    if (found_data.shape != grid_lons.shape):
         raise ValueError("found_data.shape != grid_lons.shape")
-    different = ( numpy.abs(expect_data - found_data) > 0.05 )
+    different = (numpy.abs(expect_data - found_data) > 0.05)
     diff_lons = grid_lons[different]
     diff_lats = grid_lats[different]
     diff_expect = expect_data[different]
@@ -1516,13 +1516,13 @@ if __name__ == '__main__':
                 break
     except EOFError:
         raise SystemExit(0)
- 
+
     # Synthesize test data
-    (curv_corner_lons, curv_corner_lats, 
+    (curv_corner_lons, curv_corner_lats,
      curv_center_lons, curv_center_lats, curv_data) = __createExampleCurvData()
-    curv_center_ignore = ( curv_data >= 256.0 ) 
+    curv_center_ignore = (curv_data >= 256.0)
     (rect_lon_edges, rect_lat_edges, rect_data) = __createExampleRectData()
-    rect_center_ignore = ( rect_data >= 256.0 )
+    rect_center_ignore = (rect_data >= 256.0)
     undef_val = numpy.array([-1.0E10], dtype=numpy.float64)
 
     # Create the expected results on the curvilinear grid
@@ -1547,7 +1547,7 @@ if __name__ == '__main__':
 
     if direction in ('cw2r', 'r2cw'):
         # Create the curvilinear grid with corner and center points
-        regridder.createCurvGrid(curv_center_lons, curv_center_lats, curv_center_ignore, 
+        regridder.createCurvGrid(curv_center_lons, curv_center_lats, curv_center_ignore,
                                  curv_corner_lons, curv_corner_lats)
     elif direction in ('co2r', 'r2co'):
         # Create the curvilinear grid with only center points

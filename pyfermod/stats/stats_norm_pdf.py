@@ -67,9 +67,8 @@ if __name__ == "__main__":
     sigmas[0, 0, 0, 1, 0, 0] = inpbdfs[2]
     pdfs[:, :, :, 1, 0, 0] = resbdf[0]
     # Get the result from ferret_compute and compare
-    result = -5555.0 * numpy.ones((xdim, ydim, zdim, tdim), dtype=numpy.float64, order='F')
+    result = -5555.0 * numpy.ones((xdim, ydim, zdim, tdim, 1, 1), dtype=numpy.float64, order='F')
     ferret_compute(0, result, resbdf, (yzvals, mus, sigmas), inpbdfs)
-    print "Expect =\n%s" % str(pdfs)
     if not numpy.allclose(result, pdfs):
         print "Expect (flattened) =\n%s" % str(pdfs.reshape(-1))
         print "Result (flattened) =\n%s" % str(result.reshape(-1))

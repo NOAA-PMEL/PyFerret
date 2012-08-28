@@ -18,15 +18,17 @@ def ferret_init(id):
                 "axes": ( pyferret.AXIS_CUSTOM,
                           pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "VALS", "PDNAME", "PDPARAMS", ),
                 "argdescripts": ( "Values to fit with the probability distribution",
                                   "Name of the probability distribution type to use",
                                   "Initial parameter estimates for this probability distribution", ),
                 "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.STRING_ONEVAL, pyferret.FLOAT_ARRAY, ),
-                "influences": ( ( False, False, False, False, ),
-                                ( False, False, False, False, ),
-                                ( False, False, False, False, ), ),
+                "influences": ( ( False, False, False, False, False, False, ),
+                                ( False, False, False, False, False, False, ),
+                                ( False, False, False, False, False, False, ), ),
               }
     return retdict
 
@@ -38,7 +40,7 @@ def ferret_custom_axes(id):
     parameter, if not considered one of the "standard" parameters, is
     appended to the "standard" parameters.
     """
-    return ( ( 1, 5, 1, "PDPARAMS", False, ), None, None, None, )
+    return ( ( 1, 5, 1, "PDPARAMS", False, ), None, None, None, None, None, )
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
@@ -78,19 +80,19 @@ if __name__ == "__main__":
     sample = distf.rvs(ydimen * zdimen)
 
     pfname = "norm"
-    pfparams = numpy.array([mu, sigma], dtype=numpy.float32)
-    inpbdfs = numpy.array([-9999.0, -8888.0, -7777.0], dtype=numpy.float32)
-    resbdf = numpy.array([-6666.0], dtype=numpy.float32)
-    values = numpy.empty((1, ydimen, zdimen, 1), dtype=numpy.float32, order='F')
+    pfparams = numpy.array([mu, sigma], dtype=numpy.float64)
+    inpbdfs = numpy.array([-9999.0, -8888.0, -7777.0], dtype=numpy.float64)
+    resbdf = numpy.array([-6666.0], dtype=numpy.float64)
+    values = numpy.empty((1, ydimen, zdimen, 1, 1, 1), dtype=numpy.float64, order='F')
     index = 0
     for j in xrange(ydimen):
         for k in xrange(zdimen):
             if (index % 103) == 13:
-                values[0, j, k, 0] = inpbdfs[0]
+                values[0, j, k, 0, 0, 0] = inpbdfs[0]
             else:
-                values[0, j, k, 0] = sample[index]
+                values[0, j, k, 0, 0, 0] = sample[index]
             index += 1
-    result = -5555.0 * numpy.ones((5,), dtype=numpy.float32, order='F')
+    result = -5555.0 * numpy.ones((5,), dtype=numpy.float64, order='F')
     ferret_compute(0, result, resbdf, (values, pfname, pfparams), inpbdfs)
     if (abs(result[0] - mu) > 0.2) or \
        (abs(result[1] - sigma) > 0.2) or \

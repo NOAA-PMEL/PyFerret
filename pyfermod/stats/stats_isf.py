@@ -17,15 +17,17 @@ def ferret_init(id):
                 "axes": (pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS,
+                         pyferret.AXIS_IMPLIED_BY_ARGS,
+                         pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS),
                 "argnames": ("PROBS", "PDNAME", "PDPARAMS"),
                 "argdescripts": ("Probabilities (0-1) at which to calculate the inverse survival function values",
                                  "Name of a probability distribution",
                                  "Parameters for this probability distribution"),
                 "argtypes": (pyferret.FLOAT_ARRAY, pyferret.STRING_ONEVAL, pyferret.FLOAT_ARRAY),
-                "influences": ((True,  True,  True,  True),
-                               (False, False, False, False),
-                               (False, False, False, False)),
+                "influences": ((True,  True,  True,  True,  True,  True),
+                               (False, False, False, False, False, False),
+                               (False, False, False, False, False, False)),
               }
     return retdict
 
@@ -64,19 +66,19 @@ if __name__ == "__main__":
     isfvals = distf.isf(qvals)
 
     pfname = "norm"
-    pfparams = numpy.array([mu, sigma], dtype=numpy.float32)
-    inpbdfs = numpy.array([-1.0, 0.0, 0.0], dtype=numpy.float32)
-    resbdf = numpy.array([-2.0], dtype=numpy.float32)
-    quantile = numpy.empty((1, dimen, 1, 1), dtype=numpy.float32, order='F')
-    expected = numpy.empty((1, dimen, 1, 1), dtype=numpy.float32, order='F')
+    pfparams = numpy.array([mu, sigma], dtype=numpy.float64)
+    inpbdfs = numpy.array([-1.0, 0.0, 0.0], dtype=numpy.float64)
+    resbdf = numpy.array([-2.0], dtype=numpy.float64)
+    quantile = numpy.empty((1, dimen, 1, 1, 1, 1), dtype=numpy.float64, order='F')
+    expected = numpy.empty((1, dimen, 1, 1, 1, 1), dtype=numpy.float64, order='F')
     for j in xrange(dimen):
         if (j % 7) == 3:
-            quantile[0, j, 0, 0] = inpbdfs[0]
-            expected[0, j, 0, 0] = resbdf[0]
+            quantile[0, j, 0, 0, 0, 0] = inpbdfs[0]
+            expected[0, j, 0, 0, 0, 0] = resbdf[0]
         else:
-            quantile[0, j, 0, 0] = qvals[j]
-            expected[0, j, 0, 0] = isfvals[j]
-    result = -888.0 * numpy.ones((1, dimen, 1, 1), dtype=numpy.float32, order='F')
+            quantile[0, j, 0, 0, 0, 0] = qvals[j]
+            expected[0, j, 0, 0, 0, 0] = isfvals[j]
+    result = -888.0 * numpy.ones((1, dimen, 1, 1, 1, 1), dtype=numpy.float64, order='F')
     ferret_compute(0, result, resbdf, (quantile, pfname, pfparams), inpbdfs)
     if not numpy.allclose(result, expected):
         print "Expected (flattened) = %s" % str(expected.reshape(-1))

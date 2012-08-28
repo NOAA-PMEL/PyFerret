@@ -17,13 +17,15 @@ def ferret_init(id):
                 "axes": ( pyferret.AXIS_CUSTOM,
                           pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "XVALS", "YVALS", ),
                 "argdescripts": ( "Abscissa values for the linear regression fit",
                                   "Ordinate values for the linear regression fit", ),
                 "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
-                "influences": ( ( False, False, False, False, ),
-                                ( False, False, False, False, ), ),
+                "influences": ( ( False, False, False, False, False, False, ),
+                                ( False, False, False, False, False, False, ), ),
               }
     return retdict
 
@@ -40,7 +42,7 @@ def ferret_custom_axes(id):
     incorrect.  The value returned is close but larger than the
     square of the correct value.)
     """
-    return ( ( 1, 4, 1, "M,B,R,N", False, ), None, None, None, )
+    return ( ( 1, 4, 1, "M,B,R,N", False, ), None, None, None, None, None, )
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
@@ -63,12 +65,12 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
             "both have only one defined non-singular axis of the same length"
         lena = 1
         leno = 1
-        for k in xrange(4):
+        for k in xrange(6):
             if inputs[0].shape[k] > 1:
                 if lena != 1:
                     raise ValueError(errmsg)
                 lena = inputs[0].shape[k]
-        for k in xrange(4):
+        for k in xrange(6):
             if inputs[1].shape[k] > 1:
                 if leno != 1:
                     raise ValueError(errmsg)
@@ -115,29 +117,29 @@ if __name__ == "__main__":
     xvals = numpy.arange(0.0, 10.0, 0.01)
     fuzz = scipy.stats.norm(0.0, 0.01).rvs(1000)
     yvals = slope * xvals + intercept + fuzz
-    inpbdfs = numpy.array([-9999.0, -8888.0], dtype=numpy.float32)
-    resbdf = numpy.array([-7777.0], dtype=numpy.float32)
-    abscissa = numpy.empty((1, 1000, 1, 1), dtype=numpy.float32, order='F')
-    ordinate = numpy.empty((1, 1, 1000, 1), dtype=numpy.float32, order='F')
+    inpbdfs = numpy.array([-9999.0, -8888.0], dtype=numpy.float64)
+    resbdf = numpy.array([-7777.0], dtype=numpy.float64)
+    abscissa = numpy.empty((1, 1000, 1, 1, 1, 1), dtype=numpy.float64, order='F')
+    ordinate = numpy.empty((1, 1, 1000, 1, 1, 1), dtype=numpy.float64, order='F')
     goodvals = numpy.empty((1000,), dtype=bool)
     index = 0
     numgood = 0
     for j in xrange(1000):
         if (index % 53) == 13:
-            abscissa[0, j, 0, 0] = inpbdfs[0]
+            abscissa[0, j, 0, 0, 0, 0] = inpbdfs[0]
         else:
-            abscissa[0, j, 0, 0] = xvals[j]
+            abscissa[0, j, 0, 0, 0, 0] = xvals[j]
         if (index % 73) == 13:
-            ordinate[0, 0, j, 0] = inpbdfs[1]
+            ordinate[0, 0, j, 0, 0, 0] = inpbdfs[1]
         else:
-            ordinate[0, 0, j, 0] = yvals[j]
+            ordinate[0, 0, j, 0, 0, 0] = yvals[j]
         if ((index % 53) == 13) or ((index % 73) == 13):
             goodvals[index] = False
         else:
             goodvals[index] = True
             numgood += 1
         index += 1
-    result = -5555.0 * numpy.ones((4,), dtype=numpy.float32)
+    result = -5555.0 * numpy.ones((4,), dtype=numpy.float64)
     ferret_compute(0, result, resbdf, ( abscissa, ordinate, ), inpbdfs)
     xvals = xvals[goodvals]
     xave = xvals.mean()
@@ -154,7 +156,7 @@ if __name__ == "__main__":
     r = math.sqrt(rsq)
     if m < 0.0:
         r *= -1.0
-    expected = numpy.array([m, b, r, numgood], dtype=numpy.float32)
+    expected = numpy.array([m, b, r, numgood], dtype=numpy.float64)
     if not numpy.allclose(result, expected, rtol=1.0E-5, atol=1.0E-5):
         raise ValueError("Linear regression fail\nexpected params:\n%s\nfound params:\n%s" % \
                          (str(expected), str(result)))

@@ -19,11 +19,13 @@ def ferret_init(id):
                 "axes": ( pyferret.AXIS_IMPLIED_BY_ARGS,
                           pyferret.AXIS_IMPLIED_BY_ARGS,
                           pyferret.AXIS_IMPLIED_BY_ARGS,
+                          pyferret.AXIS_IMPLIED_BY_ARGS,
+                          pyferret.AXIS_IMPLIED_BY_ARGS,
                           pyferret.AXIS_IMPLIED_BY_ARGS, ),
                 "argnames": ( "VALUES", ),
                 "argdescripts": ( "Array of data values", ),
                 "argtypes": ( pyferret.FLOAT_ARRAY, ),
-                "influences": ( (True,  True,  True,  True), ),
+                "influences": ( (True,  True,  True,  True,  True,  True), ),
               }
     return retdict
 
@@ -60,25 +62,25 @@ if __name__ == "__main__":
     zscores = (sample - sample.mean()) / math.sqrt(sample.var(0))
 
     # setup for the call to ferret_compute
-    inpbdfs = numpy.array([-9999.0], dtype=numpy.float32)
-    resbdf = numpy.array([-8888.0], dtype=numpy.float32)
-    input = numpy.empty((1, ydim, zdim, 1), dtype=numpy.float32, order='F')
-    expected = numpy.empty((1, ydim, zdim, 1), dtype=numpy.float32, order='F')
+    inpbdfs = numpy.array([-9999.0], dtype=numpy.float64)
+    resbdf = numpy.array([-8888.0], dtype=numpy.float64)
+    input = numpy.empty((1, ydim, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
+    expected = numpy.empty((1, ydim, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
     sindex = 0
     iindex = 0
     for j in xrange(ydim):
         for k in xrange(zdim):
             if ((iindex % 13) == 3) or (sindex >= samplesize):
-                input[0, j, k, 0] = inpbdfs[0]
-                expected[0, j, k, 0] = resbdf
+                input[0, j, k, 0, 0, 0] = inpbdfs[0]
+                expected[0, j, k, 0, 0, 0] = resbdf
             else:
-                input[0, j, k, 0] = sample[sindex]
-                expected[0, j, k, 0] = zscores[sindex]
+                input[0, j, k, 0, 0, 0] = sample[sindex]
+                expected[0, j, k, 0, 0, 0] = zscores[sindex]
                 sindex += 1
             iindex += 1
     if sindex != samplesize:
         raise ValueError("Unexpected final sindex of %d (ydim,zdim too small)" % sindex)
-    result = -7777.0 * numpy.ones((1, ydim, zdim, 1), dtype=numpy.float32, order='F')
+    result = -7777.0 * numpy.ones((1, ydim, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
 
     # call ferret_compute and check the results
     ferret_compute(0, result, resbdf, (input, ), inpbdfs)

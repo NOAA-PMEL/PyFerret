@@ -18,15 +18,17 @@ def ferret_init(id):
                 "axes": ( pyferret.AXIS_CUSTOM,
                           pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "SAMPLE", "PDNAME", "PDPARAMS", ),
                 "argdescripts": ( "Sample data array",
                                   "Name of a continuous probability distribution",
                                   "Parameters for this continuous probability distribution"),
                 "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.STRING_ONEVAL, pyferret.FLOAT_ARRAY, ),
-                "influences": ( (False, False, False, False),
-                                (False, False, False, False),
-                                (False, False, False, False), ),
+                "influences": ( (False, False, False, False, False, False),
+                                (False, False, False, False, False, False),
+                                (False, False, False, False, False, False), ),
               }
     return retdict
 
@@ -35,7 +37,7 @@ def ferret_custom_axes(id):
     """
     Define custom axis of the stats_kstest1 Ferret PyEF
     """
-    return ( ( 1, 2, 1, "KS,P", False ), None, None, None, )
+    return ( ( 1, 2, 1, "KS,P", False ), None, None, None, None, None, )
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
@@ -67,11 +69,11 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     values = inputs[0][goodmask]
     # perform the test and assign the results
     fitparams = scipy.stats.kstest(values, distscipyname, distscipyparams)
-    result[:, :, :, :] = resbdf
+    result[:, :, :, :, :, :] = resbdf
     # Kolmogorov-Smirnov test statistic
-    result[0, 0, 0, 0] = fitparams[0]
+    result[0, 0, 0, 0, 0, 0] = fitparams[0]
     # probability
-    result[1, 0, 0, 0] = fitparams[1]
+    result[1, 0, 0, 0, 0, 0] = fitparams[1]
 
 
 #
@@ -96,23 +98,23 @@ if __name__ == "__main__":
 
     # setup for the call to ferret_compute
     distname = "norm"
-    distparams = numpy.array([mu, sigma], dtype=numpy.float32)
-    inpbdfs = numpy.array([-9999.0, -1.0, -2.0], dtype=numpy.float32)
-    resbdf  = numpy.array([-8888.0], dtype=numpy.float32)
-    sampc = numpy.empty((1, ydim, zdim, 1), dtype=numpy.float32, order='F')
-    sampu = numpy.empty((1, ydim, zdim, 1), dtype=numpy.float32, order='F')
+    distparams = numpy.array([mu, sigma], dtype=numpy.float64)
+    inpbdfs = numpy.array([-9999.0, -1.0, -2.0], dtype=numpy.float64)
+    resbdf  = numpy.array([-8888.0], dtype=numpy.float64)
+    sampc = numpy.empty((1, ydim, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
+    sampu = numpy.empty((1, ydim, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
     index = 0
     for j in xrange(ydim):
         for k in xrange(zdim):
             if (index % 71) == 3:
-                sampc[0, j, k, 0] = inpbdfs[0]
-                sampu[0, j, k, 0] = inpbdfs[0]
+                sampc[0, j, k, 0, 0, 0] = inpbdfs[0]
+                sampu[0, j, k, 0, 0, 0] = inpbdfs[0]
             else:
-                sampc[0, j, k, 0] = rvsc[index]
-                sampu[0, j, k, 0] = rvsu[index]
+                sampc[0, j, k, 0, 0, 0] = rvsc[index]
+                sampu[0, j, k, 0, 0, 0] = rvsu[index]
             index += 1
-    resultc = -7777.0 * numpy.ones((2, 1, 1, 1), dtype=numpy.float32, order='F')
-    resultu = -7777.0 * numpy.ones((2, 1, 1, 1), dtype=numpy.float32, order='F')
+    resultc = -7777.0 * numpy.ones((2, 1, 1, 1, 1, 1), dtype=numpy.float64, order='F')
+    resultu = -7777.0 * numpy.ones((2, 1, 1, 1, 1, 1), dtype=numpy.float64, order='F')
 
     # call ferret_compute with data from the distribution and check the results
     ferret_compute(0, resultc, resbdf, (sampc, distname, distparams), inpbdfs)

@@ -17,15 +17,17 @@ def ferret_init(id):
                 "axes": (pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS,
+                         pyferret.AXIS_IMPLIED_BY_ARGS,
+                         pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS),
                 "argnames": ("TEMPLATE", "PDNAME", "PDPARAMS"),
                 "argdescripts": ("Template array for the array of random variates to be returned",
                                  "Name of a probability distribution",
                                  "Parameters for this probability distribution"),
                 "argtypes": (pyferret.FLOAT_ARRAY, pyferret.STRING_ONEVAL, pyferret.FLOAT_ARRAY),
-                "influences": ((True,  True,  True,  True),
-                               (False, False, False, False),
-                               (False, False, False, False)),
+                "influences": ((True,  True,  True,  True,  True,  True),
+                               (False, False, False, False, False, False),
+                               (False, False, False, False, False, False)),
               }
     return retdict
 
@@ -65,24 +67,24 @@ if __name__ == "__main__":
     tdim = 23
 
     pfname = "norm"
-    pfparams = numpy.array([mu, sigma], dtype=numpy.float32)
-    inpbdfs = numpy.array([-1.0, 0.0, 0.0], dtype=numpy.float32)
-    resbdf = numpy.array([undefval], dtype=numpy.float32)
+    pfparams = numpy.array([mu, sigma], dtype=numpy.float64)
+    inpbdfs = numpy.array([-1.0, 0.0, 0.0], dtype=numpy.float64)
+    resbdf = numpy.array([undefval], dtype=numpy.float64)
     # template initialized to all zero != impbdfs[0]
-    template = numpy.zeros((xdim, ydim, zdim, tdim), dtype=numpy.float32, order='F')
-    expectedgood = numpy.empty((xdim, ydim, zdim, tdim), dtype=bool, order='F')
+    template = numpy.zeros((xdim, ydim, zdim, tdim, 1, 1), dtype=numpy.float64, order='F')
+    expectedgood = numpy.empty((xdim, ydim, zdim, tdim, 1, 1), dtype=bool, order='F')
     index = 0
     for i in xrange(xdim):
         for j in xrange(ydim):
             for k in xrange(zdim):
                 for l in xrange(tdim):
                     if (index % 53) == 1:
-                        template[i, j, k, l] = inpbdfs[0]
-                        expectedgood[i, j, k, l] = False
+                        template[i, j, k, l, 0, 0] = inpbdfs[0]
+                        expectedgood[i, j, k, l, 0, 0] = False
                     else:
-                        expectedgood[i, j, k, l] = True
+                        expectedgood[i, j, k, l, 0, 0] = True
                     index += 1
-    result = -8888.0 * numpy.ones((xdim, ydim, zdim, tdim), dtype=numpy.float32, order='F')
+    result = -8888.0 * numpy.ones((xdim, ydim, zdim, tdim, 1, 1), dtype=numpy.float64, order='F')
     ferret_compute(0, result, resbdf, (template, pfname, pfparams), inpbdfs)
     resultgood = ( result != resbdf )
     if numpy.any( resultgood !=  expectedgood ):

@@ -13,16 +13,18 @@ def ferret_init(id):
     """
     retdict = { "numargs": 2,
                 "descript": "Returns unweighted histogram bin counts for all defined data values",
-                "axes": ( pyferret.AXIS_IMPLIED_BY_ARGS,
-                          pyferret.AXIS_IMPLIED_BY_ARGS,
-                          pyferret.AXIS_IMPLIED_BY_ARGS,
-                          pyferret.AXIS_IMPLIED_BY_ARGS, ),
-                "argnames": ( "VALS", "BINS_TEMPLATE", ),
-                "argdescripts": ( "Values to put into bins and then count",
-                                  "Template argument whose one defined axis gives midpoints of bins", ),
-                "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
-                "influences": ( ( False, False, False, False, ),
-                                ( True,  True,  True,  True, ), ),
+                "axes": (pyferret.AXIS_IMPLIED_BY_ARGS,
+                         pyferret.AXIS_IMPLIED_BY_ARGS,
+                         pyferret.AXIS_IMPLIED_BY_ARGS,
+                         pyferret.AXIS_IMPLIED_BY_ARGS,
+                         pyferret.AXIS_IMPLIED_BY_ARGS,
+                         pyferret.AXIS_IMPLIED_BY_ARGS),
+                "argnames": ("VALS", "BINS_TEMPLATE"),
+                "argdescripts": ("Values to put into bins and then count",
+                                 "Template argument whose one defined axis gives midpoints of bins"),
+                "argtypes": (pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY),
+                "influences": ((False, False, False, False, False, False),
+                               (True,  True,  True,  True,  True,  True )),
               }
     return retdict
 
@@ -41,7 +43,8 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
         limits_func = pyferret.get_axis_box_limits
     limits_tuple = None
     axis_used = None
-    for axis_num in ( pyferret.X_AXIS, pyferret.Y_AXIS, pyferret.Z_AXIS, pyferret.T_AXIS):
+    for axis_num in (pyferret.X_AXIS, pyferret.Y_AXIS, pyferret.Z_AXIS, 
+                     pyferret.T_AXIS, pyferret.E_AXIS, pyferret.F_AXIS):
         this_tuple = limits_func(id, pyferret.ARG2, axis_num)
         if (this_tuple != None) and (len(this_tuple[0]) > 1):
             if limits_tuple != None:
@@ -64,13 +67,17 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     # compute the histogram and assign the counts to result
     (hist, edges) = numpy.histogram(values, bins=bin_edges)
     if axis_used == pyferret.X_AXIS:
-        result[:,0,0,0] = hist
+        result[:,0,0,0,0,0] = hist
     elif axis_used == pyferret.Y_AXIS:
-        result[0,:,0,0] = hist
+        result[0,:,0,0,0,0] = hist
     elif axis_used == pyferret.Z_AXIS:
-        result[0,0,:,0] = hist
+        result[0,0,:,0,0,0] = hist
     elif axis_used == pyferret.T_AXIS:
-        result[0,0,0,:] = hist
+        result[0,0,0,:,0,0] = hist
+    elif axis_used == pyferret.E_AXIS:
+        result[0,0,0,0,:,0] = hist
+    elif axis_used == pyferret.F_AXIS:
+        result[0,0,0,0,0,:] = hist
     else:
         raise ValueError("Unexpected axis_used value: %d" % axis_used)
 
@@ -93,17 +100,17 @@ if __name__ == "__main__":
         limits = numpy.array([1.0, 2.0, 3.0, 4.0, 6.0, 9.0], dtype=numpy.float64)
         return (limits[:-1], limits[1:])
     # create the input values array with values on the edges and outside
-    values = numpy.arange(0.0, 10.2, 0.1, dtype=numpy.float32).reshape((1,6,1,17), order='F')
+    values = numpy.arange(0.0, 10.2, 0.1, dtype=numpy.float64).reshape((1,6,1,17,1,1), order='F')
     # create the expected results array
-    expected = -1.0 * numpy.ones((1,1,5,1), dtype=numpy.float32, order='F')
-    expected[0,0,:,0] = (10.0, 10.0, 10.0, 20.0, 31.0)
+    expected = -1.0 * numpy.ones((1,1,5,1,1,1), dtype=numpy.float64, order='F')
+    expected[0,0,:,0,0,0] = (10.0, 10.0, 10.0, 20.0, 31.0)
     # make sure no errors when ferret_init called
     info = ferret_init(0)
     # make the call to ferret_compute
     result = 999.0 * expected
-    resbdf = numpy.array([-1.0], dtype=numpy.float32)
-    inpbdfs = numpy.array([-1.0, -1.0], dtype=numpy.float32)
-    ferret_compute(0, result, resbdf, ( values, None, ), inpbdfs)
+    resbdf = numpy.array([-1.0], dtype=numpy.float64)
+    inpbdfs = numpy.array([-1.0, -1.0], dtype=numpy.float64)
+    ferret_compute(0, result, resbdf, (values, None), inpbdfs)
     # verify the results
     if not numpy.allclose(result, expected):
         raise ValueError("Unexpected results; expected:\n%s\nfound:\n%s" % (str(expected), str(result)))

@@ -17,13 +17,15 @@ def ferret_init(id):
                 "axes": ( pyferret.AXIS_CUSTOM,
                           pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "SAMPLEA", "SAMPLEB", ),
                 "argdescripts": ( "First sample data array",
                                   "Second sample data array", ),
                 "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
-                "influences": ( (False, False, False, False),
-                                (False, False, False, False), ),
+                "influences": ( (False, False, False, False, False, False),
+                                (False, False, False, False, False, False), ),
               }
     return retdict
 
@@ -32,7 +34,7 @@ def ferret_custom_axes(id):
     """
     Define custom axis of the stats_ttest2ind Ferret PyEF
     """
-    return ( ( 1, 2, 1, "T,P", False ), None, None, None, )
+    return ( ( 1, 2, 1, "T,P", False ), None, None, None, None, None, )
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
@@ -55,11 +57,11 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     goodmask = numpy.logical_not(badmask)
     sampb = inputs[1][goodmask]
     fitparams = scipy.stats.ttest_ind(sampa, sampb)
-    result[:, :, :, :] = resbdf
+    result[:, :, :, :, :, :] = resbdf
     # T-test statistic
-    result[0, 0, 0, 0] = fitparams[0]
+    result[0, 0, 0, 0, 0, 0] = fitparams[0]
     # probability
-    result[1, 0, 0, 0] = fitparams[1]
+    result[1, 0, 0, 0, 0, 0] = fitparams[1]
 
 
 #
@@ -81,31 +83,31 @@ if __name__ == "__main__":
     sampu = scipy.stats.norm(5.5,0.5).rvs(ydimb * zdimb)
 
     # setup for the call to ferret_compute
-    inpbdfs = numpy.array([-9999.0, -8888.0], dtype=numpy.float32)
-    resbdf = numpy.array([-7777.0], dtype=numpy.float32)
-    arraya = numpy.empty((1, ydima, zdima, 1), dtype=numpy.float32, order='F')
-    arrayb = numpy.empty((ydimb, 1, 1, zdimb), dtype=numpy.float32, order='F')
-    arrayu = numpy.empty((ydimb, 1, 1, zdimb), dtype=numpy.float32, order='F')
+    inpbdfs = numpy.array([-9999.0, -8888.0], dtype=numpy.float64)
+    resbdf = numpy.array([-7777.0], dtype=numpy.float64)
+    arraya = numpy.empty((1, ydima, zdima, 1, 1, 1), dtype=numpy.float64, order='F')
+    arrayb = numpy.empty((ydimb, 1, 1, zdimb, 1, 1), dtype=numpy.float64, order='F')
+    arrayu = numpy.empty((ydimb, 1, 1, zdimb, 1, 1), dtype=numpy.float64, order='F')
     index = 0
     for j in xrange(ydima):
         for k in xrange(zdima):
             if (index % 23) == 3:
-                arraya[0, j, k, 0] = inpbdfs[0]
+                arraya[0, j, k, 0, 0, 0] = inpbdfs[0]
             else:
-                arraya[0, j, k, 0] = sampa[index]
+                arraya[0, j, k, 0, 0, 0] = sampa[index]
             index += 1
     index = 0
     for j in xrange(ydimb):
         for k in xrange(zdimb):
             if (index % 53) == 3:
-                arrayb[j, 0, 0, k] = inpbdfs[1]
-                arrayu[j, 0, 0, k] = inpbdfs[1]
+                arrayb[j, 0, 0, k, 0, 0] = inpbdfs[1]
+                arrayu[j, 0, 0, k, 0, 0] = inpbdfs[1]
             else:
-                arrayb[j, 0, 0, k] = sampb[index]
-                arrayu[j, 0, 0, k] = sampu[index]
+                arrayb[j, 0, 0, k, 0, 0] = sampb[index]
+                arrayu[j, 0, 0, k, 0, 0] = sampu[index]
             index += 1
-    resultb = -6666.0 * numpy.ones((2, 1, 1, 1), dtype=numpy.float32, order='F')
-    resultu = -6666.0 * numpy.ones((2, 1, 1, 1), dtype=numpy.float32, order='F')
+    resultb = -6666.0 * numpy.ones((2, 1, 1, 1, 1, 1), dtype=numpy.float64, order='F')
+    resultu = -6666.0 * numpy.ones((2, 1, 1, 1, 1, 1), dtype=numpy.float64, order='F')
 
     # call ferret_compute with the samples from distribs with the same mean and check
     ferret_compute(0, resultb, resbdf, (arraya, arrayb), inpbdfs)

@@ -15,13 +15,15 @@ def ferret_init(id):
                 "axes": ( pyferret.AXIS_IMPLIED_BY_ARGS,
                           pyferret.AXIS_IMPLIED_BY_ARGS,
                           pyferret.AXIS_IMPLIED_BY_ARGS,
+                          pyferret.AXIS_IMPLIED_BY_ARGS,
+                          pyferret.AXIS_IMPLIED_BY_ARGS,
                           pyferret.AXIS_IMPLIED_BY_ARGS, ),
                 "argnames": ( "SAMPLE", "PERCENTILES", ),
                 "argdescripts": ( "Sample of scores (values)",
                                   "Percentiles (0-100) through sample to find scores (values) of", ),
                 "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
-                "influences": ( ( False, False, False, False, ),
-                                ( True,  True,  True,  True, ), ),
+                "influences": ( ( False, False, False, False, False, False, ),
+                                ( True,  True,  True,  True,  True,  True, ), ),
               }
     return retdict
 
@@ -30,7 +32,7 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     """
     Assigns result with interpolated scores that are given percentiles
     through a sample.  The sample scores are given in inputs[0], and the
-    percentiles are given in inputs[0].  Undefined values in inputs[0]
+    percentiles are given in inputs[1].  Undefined values in inputs[0]
     are eliminated before using it in scipy.stats.scoreatpercentile.
     Undefined values in inputs[1] return corresponding undefined values
     in result.
@@ -43,7 +45,6 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     badmask = ( numpy.fabs(inputs[0] - inpbdfs[0]) < 1.0E-5 )
     badmask = numpy.logical_or(badmask, numpy.isnan(inputs[0]))
     goodmask = numpy.logical_not(badmask)
-    # note that these are still float32 values
     values = inputs[0][goodmask]
     # get the mask for the good percentiles
     badmask = ( numpy.fabs(inputs[1] - inpbdfs[1]) < 1.0E-5 )
@@ -68,30 +69,30 @@ if __name__ == "__main__":
     ydim = 10
     zdim = 12
     offset = 32.5
-    inpbdfs = numpy.array([-1.0, -2.0], dtype=numpy.float32)
-    resbdf = numpy.array([-3.0], dtype=numpy.float32)
-    sample = numpy.empty((1, ydim, zdim, 1), dtype=numpy.float32, order='F')
+    inpbdfs = numpy.array([-1.0, -2.0], dtype=numpy.float64)
+    resbdf = numpy.array([-3.0], dtype=numpy.float64)
+    sample = numpy.empty((1, ydim, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
     # valid sample values are [0:100:1] + offset
     pval = 0
     index = 0
     for j in xrange(ydim):
         for k in xrange(zdim):
             if ((index % 7) == 3) or (pval > 100):
-                sample[0, j, k, 0] = inpbdfs[0]
+                sample[0, j, k, 0, 0, 0] = inpbdfs[0]
             else:
-                sample[0, j, k, 0] = pval + offset
+                sample[0, j, k, 0, 0, 0] = pval + offset
                 pval += 1
             index += 1
     if pval != 101:
         raise ValueError("Unexpected final pval of %d (ydim,zdim too small)" % pval)
-    prcnts = numpy.empty((1, 1, zdim, 1), dtype=numpy.float32, order='F')
-    expected = numpy.empty((1, 1, zdim, 1), dtype=numpy.float32, order='F')
-    prcnts[:,:,:,:] = inpbdfs[1]
-    expected[:,:,:,:] = resbdf
+    prcnts = numpy.empty((1, 1, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
+    expected = numpy.empty((1, 1, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
+    prcnts[:,:,:,:,:,:] = inpbdfs[1]
+    expected[:,:,:,:,:,:] = resbdf
     for k in ( 1, 2, 3, 5, 6, 7, 9 ):
-        prcnts[0, 0, k, 0] = 10.0 * k
-        expected[0, 0, k, 0] = 10.0 * k + offset
-    result = -888.0 * numpy.ones((1, 1, zdim, 1), dtype=numpy.float32, order='F')
+        prcnts[0, 0, k, 0, 0, 0] = 10.0 * k
+        expected[0, 0, k, 0, 0, 0] = 10.0 * k + offset
+    result = -888.0 * numpy.ones((1, 1, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
     ferret_compute(0, result, resbdf, (sample, prcnts), inpbdfs)
     if not numpy.allclose(result, expected):
         print "Expected (flattened) = %s" % str(expected.reshape(-1))

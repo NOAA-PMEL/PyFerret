@@ -18,15 +18,17 @@ def ferret_init(id):
                 "axes": ( pyferret.AXIS_CUSTOM,
                           pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "SAMPLE_CNTS", "EXPECT_CNTS", "DELTA_DEGFREE", ),
                 "argdescripts": ( "Sample counts of categorical data",
                                   "Expected counts or relative frequencies (will be adjusted)",
                                   "Difference from standard (N-1) degrees of freedom (num. computed parameters)", ),
                 "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
-                "influences": ( (False, False, False, False),
-                                (False, False, False, False),
-                                (False, False, False, False), ),
+                "influences": ( (False, False, False, False, False, False),
+                                (False, False, False, False, False, False),
+                                (False, False, False, False, False, False), ),
               }
     return retdict
 
@@ -35,7 +37,7 @@ def ferret_custom_axes(id):
     """
     Define custom axis of the stats_chisquare Ferret PyEF
     """
-    return ( ( 1, 3, 1, "X2,P,N", False ), None, None, None, )
+    return ( ( 1, 3, 1, "X2,P,N", False ), None, None, None, None, None, )
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
@@ -56,13 +58,13 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
         errmsg = "SAMPLE_CNTS and EXPECT_CNTS must either have identical dimensions " \
                  "or both have only one defined non-singular axis of the same length"
         lensam = 1
-        for k in xrange(4):
+        for k in xrange(6):
             if inputs[0].shape[k] > 1:
                 if lensam != 1:
                     raise ValueError(errmsg)
                 lensam = inputs[0].shape[k]
         lenpop = 1
-        for k in xrange(4):
+        for k in xrange(6):
             if inputs[1].shape[k] > 1:
                 if lenpop != 1:
                     raise ValueError(errmsg)
@@ -78,7 +80,6 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     badpop = numpy.logical_or(badpop, numpy.isnan(popcnts))
     goodpop = numpy.logical_not(badpop)
     goodmask = numpy.logical_and(goodsam, goodpop)
-    # must use double precision arrays for accuracy
     samcnts = numpy.array(samcnts[goodmask], dtype=numpy.float64)
     numgood = len(samcnts)
     if numgood < 2:
@@ -89,15 +90,15 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     # and removes issues about missing values.  Get the adjustment factor
     # from the means instead of the sums for accuracy.
     popcnts = popcnts * (samcnts.mean() / popcnts.mean())
-    ddof = int(float(inputs[2][0, 0, 0, 0]) + 0.5)
+    ddof = int(float(inputs[2][0, 0, 0, 0, 0, 0]) + 0.5)
     fitparams = scipy.stats.chisquare(samcnts, popcnts, ddof)
-    result[:, :, :, :] = resbdf
+    result[:, :, :, :, :, :] = resbdf
     # chi-square test statistic
-    result[0, 0, 0, 0] = fitparams[0]
+    result[0, 0, 0, 0, 0, 0] = fitparams[0]
     # probability
-    result[1, 0, 0, 0] = fitparams[1]
+    result[1, 0, 0, 0, 0, 0] = fitparams[1]
     # number of good categories
-    result[2, 0, 0, 0] = numgood
+    result[2, 0, 0, 0, 0, 0] = numgood
 
 
 #
@@ -123,19 +124,19 @@ if __name__ == "__main__":
         chival = ((histgr - exphist)**2 / exphist).sum()
         print "created a sample with chival = %f" % chival
     prob = scipy.stats.chi2(nbins - 1 - ddof).sf(chival)
-    expect = numpy.array([chival, prob, nbins], dtype=numpy.float32)
+    expect = numpy.array([chival, prob, nbins], dtype=numpy.float64)
     print "sample histogram = \n%s" % str(histgr)
     print "expect histogram value for all bins = %f" % exphist[0]
     print "expect result = %s" % str(expect)
 
     # setup for the call to ferret_compute - one non-singular axis
-    inpbdfs = numpy.array([-9999.0, -8888.0, -7777.0], dtype=numpy.float32)
-    resbdf = numpy.array([-6666.0], dtype=numpy.float32)
-    samhist = inpbdfs[0] * numpy.ones((1, 1, 2 * nbins, 1), dtype=numpy.float32, order='F')
-    samhist[0, 0, ::2, 0] = histgr
-    pophist = numpy.ones((1, 2 * nbins, 1, 1), dtype=numpy.float32, order='F')
-    ddofarr = numpy.array([ddof], dtype=numpy.float32).reshape((1, 1, 1, 1), order='F')
-    result = -5555.0 * numpy.ones((3, 1, 1, 1), dtype=numpy.float32, order='F')
+    inpbdfs = numpy.array([-9999.0, -8888.0, -7777.0], dtype=numpy.float64)
+    resbdf = numpy.array([-6666.0], dtype=numpy.float64)
+    samhist = inpbdfs[0] * numpy.ones((1, 1, 2 * nbins, 1, 1, 1), dtype=numpy.float64, order='F')
+    samhist[0, 0, ::2, 0, 0, 0] = histgr
+    pophist = numpy.ones((1, 2 * nbins, 1, 1, 1, 1), dtype=numpy.float64, order='F')
+    ddofarr = numpy.array([ddof], dtype=numpy.float64).reshape((1, 1, 1, 1, 1, 1), order='F')
+    result = -5555.0 * numpy.ones((3, 1, 1, 1, 1, 1), dtype=numpy.float64, order='F')
 
     # call ferret_compute and check the result
     ferret_compute(0, result, resbdf, (samhist, pophist, ddofarr), inpbdfs)
@@ -145,14 +146,14 @@ if __name__ == "__main__":
         raise ValueError("Unexpected result")
 
     # setup for the call to ferret_compute - multiple dimensions
-    inpbdfs = numpy.array([-9999.0, -8888.0, -7777.0], dtype=numpy.float32)
-    resbdf = numpy.array([-6666.0], dtype=numpy.float32)
-    samhist = inpbdfs[0] * numpy.ones((1, 2, nbins, 1), dtype=numpy.float32, order='F')
-    samhist[0, 0, ::2, 0] = histgr[0:nbins//2]
-    samhist[0, 1, 1::2, 0] = histgr[nbins//2:]
-    pophist = numpy.ones((1, 2, nbins, 1), dtype=numpy.float32, order='F')
-    ddofarr = numpy.array([ddof], dtype=numpy.float32).reshape((1, 1, 1, 1), order='F')
-    result = -5555.0 * numpy.ones((3, 1, 1, 1), dtype=numpy.float32, order='F')
+    inpbdfs = numpy.array([-9999.0, -8888.0, -7777.0], dtype=numpy.float64)
+    resbdf = numpy.array([-6666.0], dtype=numpy.float64)
+    samhist = inpbdfs[0] * numpy.ones((1, 2, nbins, 1, 1, 1), dtype=numpy.float64, order='F')
+    samhist[0, 0, ::2, 0, 0, 0] = histgr[0:nbins//2]
+    samhist[0, 1, 1::2, 0, 0, 0] = histgr[nbins//2:]
+    pophist = numpy.ones((1, 2, nbins, 1, 1, 1), dtype=numpy.float64, order='F')
+    ddofarr = numpy.array([ddof], dtype=numpy.float64).reshape((1, 1, 1, 1, 1, 1), order='F')
+    result = -5555.0 * numpy.ones((3, 1, 1, 1, 1, 1), dtype=numpy.float64, order='F')
 
     # call ferret_compute and check the result
     ferret_compute(0, result, resbdf, (samhist, pophist, ddofarr), inpbdfs)

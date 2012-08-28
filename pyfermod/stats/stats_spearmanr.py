@@ -17,13 +17,15 @@ def ferret_init(id):
                 "axes": ( pyferret.AXIS_CUSTOM,
                           pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
+                          pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "SAMPLEA", "SAMPLEB", ),
                 "argdescripts": ( "First array of sample data",
                                   "Second array of sample data", ),
                 "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
-                "influences": ( (False, False, False, False),
-                                (False, False, False, False), ),
+                "influences": ( (False, False, False, False, False, False),
+                                (False, False, False, False, False, False), ),
               }
     return retdict
 
@@ -32,7 +34,7 @@ def ferret_custom_axes(id):
     """
     Define custom axis of the stats_spearmanr Ferret PyEF
     """
-    return ( ( 1, 2, 1, "R,N", False ), None, None, None, )
+    return ( ( 1, 2, 1, "R,N", False ), None, None, None, None, None, )
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
@@ -47,12 +49,12 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
             "both have only one defined non-singular axis of the same length"
         lena = 1
         lenb = 1
-        for k in xrange(4):
+        for k in xrange(6):
             if inputs[0].shape[k] > 1:
                 if lena != 1:
                     raise ValueError(errmsg)
                 lena = inputs[0].shape[k]
-        for k in xrange(4):
+        for k in xrange(6):
             if inputs[1].shape[k] > 1:
                 if lenb != 1:
                     raise ValueError(errmsg)
@@ -66,7 +68,6 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     badb = ( numpy.fabs(sampb - inpbdfs[1]) < 1.0E-5 )
     badb = numpy.logical_or(badb, numpy.isnan(sampb))
     goodmask = numpy.logical_not(numpy.logical_or(bada, badb))
-    # must use double precision arrays for accuracy
     valsa = numpy.array(sampa[goodmask], dtype=numpy.float64)
     numpts = len(valsa)
     if numpts < 2:
@@ -93,49 +94,49 @@ if __name__ == "__main__":
     ydim = 83
     zdim = 17
     samplesize = ydim * zdim
-    sampa = scipy.stats.norm(5.0, 2.0).rvs(samplesize)
+    sampa = scipy.stats.norm(15.0, 2.0).rvs(samplesize)
 
     # Create a correlated distribution
     sampc = -numpy.log(sampa)
 
-    # Create an uncorrelated distribution and approx. Pearson Correlation Coeff.
-    sampu = scipy.stats.norm(5.0, 2.0).rvs(samplesize)
+    # Create an uncorrelated distribution
+    sampu = scipy.stats.norm(15.0, 2.0).rvs(samplesize)
 
     # setup for the call to ferret_compute
-    inpbdfs = numpy.array([-9999.0, -8888.0], dtype=numpy.float32)
-    resbdf = numpy.array([-7777.0], dtype=numpy.float32)
-    inputa = numpy.empty((1, ydim, zdim, 1), dtype=numpy.float32, order='F')
-    inputc = numpy.empty((1, ydim, zdim, 1), dtype=numpy.float32, order='F')
-    inputu = numpy.empty((1, ydim, zdim, 1), dtype=numpy.float32, order='F')
+    inpbdfs = numpy.array([-9999.0, -8888.0], dtype=numpy.float64)
+    resbdf = numpy.array([-7777.0], dtype=numpy.float64)
+    inputa = numpy.empty((1, ydim, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
+    inputc = numpy.empty((1, ydim, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
+    inputu = numpy.empty((1, ydim, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
     index = 0
     numgood = 0
     numpos = 0
     for j in xrange(ydim):
         for k in xrange(zdim):
             if (index % 23) == 3:
-                inputa[0, j, k, 0] = inpbdfs[0]
+                inputa[0, j, k, 0, 0, 0] = inpbdfs[0]
             else:
-                inputa[0, j, k, 0] = sampa[index]
+                inputa[0, j, k, 0, 0, 0] = sampa[index]
             if (index % 31) == 3:
-                inputc[0, j, k, 0] = inpbdfs[1]
-                inputu[0, j, k, 0] = inpbdfs[1]
+                inputc[0, j, k, 0, 0, 0] = inpbdfs[1]
+                inputu[0, j, k, 0, 0, 0] = inpbdfs[1]
             else:
-                inputc[0, j, k, 0] = sampc[index]
-                inputu[0, j, k, 0] = sampu[index]
+                inputc[0, j, k, 0, 0, 0] = sampc[index]
+                inputu[0, j, k, 0, 0, 0] = sampu[index]
             if ((index % 23) != 3) and ((index % 31) != 3):
                 numgood += 1
                 if sampa[index] > 0.0:
                     numpos += 1
             index += 1
-    resultc = -6666.0 * numpy.ones((2, 1, 1, 1), dtype=numpy.float32, order='F')
-    expectc = numpy.empty((2, 1, 1, 1), dtype=numpy.float32, order='F')
-    expectc[0,0,0,0] = -1.0
-    expectc[1,0,0,0] = numpos
-    resultu = -6666.0 * numpy.ones((2, 1, 1, 1), dtype=numpy.float32, order='F')
-    expectu = numpy.empty((2, 1, 1, 1), dtype=numpy.float32, order='F')
+    resultc = -6666.0 * numpy.ones((2, 1, 1, 1, 1, 1), dtype=numpy.float64, order='F')
+    expectc = numpy.empty((2, 1, 1, 1, 1, 1), dtype=numpy.float64, order='F')
+    expectc[0,0,0,0,0,0] = -1.0
+    expectc[1,0,0,0,0,0] = numpos
+    resultu = -6666.0 * numpy.ones((2, 1, 1, 1, 1, 1), dtype=numpy.float64, order='F')
+    expectu = numpy.empty((2, 1, 1, 1, 1, 1), dtype=numpy.float64, order='F')
     # rough expected correlation coefficient for uncorrelated
-    expectu[0,0,0,0] = 0.0
-    expectu[1,0,0,0] = numgood
+    expectu[0,0,0,0,0,0] = 0.0
+    expectu[1,0,0,0,0,0] = numgood
 
     # call ferret_compute with correlated data and check the results
     ferret_compute(0, resultc, resbdf, (inputa, inputc), inpbdfs)

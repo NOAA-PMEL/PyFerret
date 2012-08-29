@@ -46,19 +46,6 @@ import readline
 import numpy
 import numpy.ma
 import StringIO
-try:
-    import cdms2
-    import cdtime
-except ImportError:
-    pass
-
-# the following should be in this (pyferret) directory, which should be examined first
-import filenamecompleter
-import graphbind
-import regrid
-
-# bindings for the PyQt-based graphics engines
-import pipedviewer.pyferretbindings
 
 # import everything from libpyferret so constants
 # in that module are seen as part of this module
@@ -75,6 +62,21 @@ CALTYPE_NONE = 'CALTYPE_NONE'
 # register the libpyferret._quit function with atexit to ensure
 # open viewer windows do not hang a Python shutdown
 atexit.register(libpyferret._quit)
+
+# bindings for the PyQt-based graphics engines
+import pipedviewer.pyferretbindings
+
+# the following should be in this (pyferret) directory, which should be examined first
+import filenamecompleter
+import graphbind
+import regrid
+
+# try import cdms2 and cdtime needed for get() and put()
+try:
+    import cdms2
+    import cdtime
+except ImportError:
+    pass
 
 
 def init(arglist=None, enterferret=True):
@@ -145,16 +147,15 @@ def init(arglist=None, enterferret=True):
     readline.parse_and_bind('tab: complete');
 
     # Execute the $PYTHONSTARTUP file, if given and not in secure mode
-    if not '-secure' in arglist:
+    if not (arglist and ('-secure' in arglist)):
         try:
             execfile(os.getenv('PYTHONSTARTUP', ''));
         except IOError:
             pass;
 
-    if '-quiet' in arglist:
+    my_quiet = False
+    if arglist and ('-quiet' in arglist):
         my_quiet = True
-    else:
-        my_quiet = False
 
     if not my_quiet:
         # Check (again) if able to import cdms2/cdtime.
@@ -417,6 +418,9 @@ def init(arglist=None, enterferret=True):
                     my_server = True
                 elif opt == "-python":
                     my_enterferret = False
+                elif opt == "-quiet":
+                    # -quiet handled earlier
+                    pass
                 elif opt == "-version":
                     just_exit = True
                     break
@@ -432,9 +436,6 @@ def init(arglist=None, enterferret=True):
                     except:
                         raise ValueError("a script filename must be given for the -script value")
                     break
-                elif opt == "-quiet":
-                    # -quiet handled earlier
-                    k += 1
                 else:
                     raise ValueError("unrecognized option '%s'" % opt)
                 k += 1

@@ -50,12 +50,12 @@ try:
     import cdms2
     import cdtime
 except ImportError:
-    print >>sys.stderr, "    WARNING: Unable to import cdms2 and/or cdtime;\n" \
-                        "             the Python functions pyferret.get and pyferret.put are not available"
+    pass
 
 # the following should be in this (pyferret) directory, which should be examined first
 import filenamecompleter
 import graphbind
+import regrid
 
 # bindings for the PyQt-based graphics engines
 import pipedviewer.pyferretbindings
@@ -71,6 +71,11 @@ CALTYPE_GREGORIAN = 'CALTYPE_GREGORIAN'
 CALTYPE_JULIAN = 'CALTYPE_JULIAN'
 CALTYPE_ALLLEAP = 'CALTYPE_ALLLEAP'
 CALTYPE_NONE = 'CALTYPE_NONE'
+
+# register the libpyferret._quit function with atexit to ensure
+# open viewer windows do not hang a Python shutdown
+atexit.register(libpyferret._quit)
+
 
 def init(arglist=None, enterferret=True):
     """
@@ -97,7 +102,7 @@ def init(arglist=None, enterferret=True):
 
     Usage:  ferret7  [-memsize <N>]  [-batch [<filename>]]  [-transparent]  [-nojnl]
                      [-noverify]  [-secure]  [-server]  [-python]  [-version]  [-help]
-                     [-gif]  [-unmapped]  [-script <scriptname> [ <scriptarg> ... ]]
+                     [-gif]  [-unmapped]  [-quiet]  [-script <scriptname> [ <scriptarg> ... ]]
 
        -memsize:     initialize the memory cache size to <N> (default 25.6)
                      mega (10^6) floats (where 1 float = 8 bytes)
@@ -130,6 +135,8 @@ def init(arglist=None, enterferret=True):
        -unmapped:    inhibit the display of graphics to the console; grahics can
                      be written to file using the FRAME /FILE command
 
+       -quiet        do not display the startup header or import failure warnings
+
        -script:      execute the script <scriptname> with any arguments specified,
                      and exit (THIS MUST BE SPECIFIED LAST)
     """
@@ -143,6 +150,21 @@ def init(arglist=None, enterferret=True):
             execfile(os.getenv('PYTHONSTARTUP', ''));
         except IOError:
             pass;
+
+    if '-quiet' in arglist:
+        my_quiet = True
+    else:
+        my_quiet = False
+
+    if not my_quiet:
+        # Check (again) if able to import cdms2/cdtime.
+        # If the imports were successful before, these imports just return.
+        try:
+            import cdms2
+            import cdtime
+        except ImportError:
+            print >>sys.stderr, "    WARNING: Unable to import cdms2 and/or cdtime;\n" \
+                                "             the Python functions pyferret.get and pyferret.put are not available"
 
     # Create the list of standard ferret PyEFs to create
     std_pyefs = [ ]
@@ -307,8 +329,9 @@ def init(arglist=None, enterferret=True):
                   "stats.stats_helper",
                   ))
     except ImportError:
-        print >>sys.stderr, "    WARNING: Unable to import scipy;\n" \
-                            "             most stats_* Ferret functions will not be added"
+        if not my_quiet:
+            print >>sys.stderr, "    WARNING: Unable to import scipy;\n" \
+                                "             most stats_* Ferret functions will not be added."
     # stats_* functions that do not need scipy
     std_pyefs.append("stats.stats_histogram")
     # shapefile_* functions
@@ -324,8 +347,20 @@ def init(arglist=None, enterferret=True):
                   "fershp.shapefile_writexyzval",
                   ))
     except ImportError:
-        print >>sys.stderr, "    WARNING: Unable to import shapefile;\n" \
-                            "             shapefile_* Ferret functions will not be added"
+        if not my_quiet:
+            print >>sys.stderr, "    WARNING: Unable to import shapefile;\n" \
+                                "             shapefile_* Ferret functions will not be added."
+    # regrid functions
+    try:
+        import ESMP
+        std_pyefs.extend((
+                  "regrid.curv2rect",
+                  ))
+    except ImportError:
+        if not my_quiet:
+            print >>sys.stderr, "    WARNING: Unable to import ESMP;\n" \
+                                "             curv2rect* Ferret functions will not be added.\n" \
+                                "             Use curv_to_rect* functions instead"
 
     my_metaname = None
     my_transparent = False
@@ -397,6 +432,9 @@ def init(arglist=None, enterferret=True):
                     except:
                         raise ValueError("a script filename must be given for the -script value")
                     break
+                elif opt == "-quiet":
+                    # -quiet handled earlier
+                    k += 1
                 else:
                     raise ValueError("unrecognized option '%s'" % opt)
                 k += 1
@@ -418,7 +456,7 @@ def init(arglist=None, enterferret=True):
     # start ferret without journaling
     start(memsize=my_memsize, journal=False, verify=my_verify,
           restrict=my_restrict, server=my_server, metaname=my_metaname,
-          transparent= my_transparent, unmapped=my_unmapped)
+          transparent= my_transparent, unmapped=my_unmapped, quiet=my_quiet)
 
     # define all the Ferret standard Python external functions
     for fname in std_pyefs:
@@ -463,7 +501,8 @@ def init(arglist=None, enterferret=True):
 
 
 def start(memsize=25.6, journal=True, verify=True, restrict=False,
-          server=False, metaname=None, transparent=False, unmapped=False):
+          server=False, metaname=None, transparent=False, 
+          unmapped=False, quiet=False):
     """
     Initializes Ferret.  This allocates the initial amount of memory
     for Ferret (from Python-managed memory), opens the journal file,
@@ -474,6 +513,7 @@ def start(memsize=25.6, journal=True, verify=True, restrict=False,
     empty this value is used as the initial filename for automatic 
     output of graphics, and the graphics viewer will not be displayed.
     If unmapped is True, the graphics viewer will not be displayed.
+    If quiet is True, the Ferret start-up header is not displayed.
     This routine does NOT run any user initialization scripts.
 
     Arguments:
@@ -487,6 +527,7 @@ def start(memsize=25.6, journal=True, verify=True, restrict=False,
         transparent: autosave (e.g., on exit) image files with a
                      transparent background?
         unmapped:    hide the graphics viewer?
+        quiet:       do not display the Ferret start-up header?
     Returns:
         True is successful
         False if Ferret has already been started
@@ -524,7 +565,7 @@ def start(memsize=25.6, journal=True, verify=True, restrict=False,
     # the actual call to ferret's start
     return libpyferret._start(flt_memsize, bool(journal), bool(verify),
                               bool(restrict), bool(server), str_metaname,
-                              bool(transparent), bool(unmapped))
+                              bool(transparent), bool(unmapped), bool(quiet))
 
 
 def resize(memsize):
@@ -796,7 +837,7 @@ def getdata(name, create_mask=True):
     axis_coords = vals[6]
     # A custom axis could be standard axis that is not in Ferret's expected order,
     # so check the units
-    for k in xrange(libpyferret._MAX_FERRET_NDIM):
+    for k in xrange(libpyferret.MAX_FERRET_NDIM):
         if axis_types[k] == libpyferret.AXISTYPE_CUSTOM:
             uc_units = axis_units[k].upper()
             if uc_units in UC_LONGITUDE_UNITS:
@@ -860,7 +901,7 @@ def get(name, create_mask=True):
     axis_coords = data_dict["axis_coords"]
     # create the axis list for this variable
     var_axes = [ ]
-    for k in xrange(libpyferret._MAX_FERRET_NDIM):
+    for k in xrange(libpyferret.MAX_FERRET_NDIM):
         if axis_types[k] == libpyferret.AXISTYPE_LONGITUDE:
             newaxis = cdms2.createAxis(axis_coords[k], id=axis_names[k])
             newaxis.units = axis_units[k]
@@ -1027,12 +1068,12 @@ def put(datavar, axis_pos=None):
     #
     # get the list of axes and initialize the axis information lists
     axis_list = datavar.getAxisList()
-    if len(axis_list) > libpyferret._MAX_FERRET_NDIM:
-        raise ValueError("More than %d axes is not supported in Ferret at this time" % libpyferret._MAX_FERRET_NDIM)
-    axis_types = [ libpyferret.AXISTYPE_NORMAL ] * libpyferret._MAX_FERRET_NDIM
-    axis_names = [ "" ] * libpyferret._MAX_FERRET_NDIM
-    axis_units = [ "" ] * libpyferret._MAX_FERRET_NDIM
-    axis_coords = [ None ] * libpyferret._MAX_FERRET_NDIM
+    if len(axis_list) > libpyferret.MAX_FERRET_NDIM:
+        raise ValueError("More than %d axes is not supported in Ferret at this time" % libpyferret.MAX_FERRET_NDIM)
+    axis_types = [ libpyferret.AXISTYPE_NORMAL ] * libpyferret.MAX_FERRET_NDIM
+    axis_names = [ "" ] * libpyferret.MAX_FERRET_NDIM
+    axis_units = [ "" ] * libpyferret.MAX_FERRET_NDIM
+    axis_coords = [ None ] * libpyferret.MAX_FERRET_NDIM
     for k in xrange(len(axis_list)):
         #
         # get the information for this axis
@@ -1236,37 +1277,37 @@ def putdata(datavar_dict, axis_pos=None):
     data_unit = str(datavar_dict.get('data_unit', '')).strip()
     #
     # axis types
-    axis_types = [ libpyferret.AXISTYPE_NORMAL ] * libpyferret._MAX_FERRET_NDIM
+    axis_types = [ libpyferret.AXISTYPE_NORMAL ] * libpyferret.MAX_FERRET_NDIM
     given_axis_types = datavar_dict.get('axis_types', None)
     if given_axis_types:
-        if len(given_axis_types) > libpyferret._MAX_FERRET_NDIM:
-            raise ValueError("More than %d axes (in the types) is not supported in Ferret at this time" % libpyferret._MAX_FERRET_NDIM)
+        if len(given_axis_types) > libpyferret.MAX_FERRET_NDIM:
+            raise ValueError("More than %d axes (in the types) is not supported in Ferret at this time" % libpyferret.MAX_FERRET_NDIM)
         for k in xrange(len(given_axis_types)):
             axis_types[k] = given_axis_types[k]
     #
     # axis names
-    axis_names = [ "" ] * libpyferret._MAX_FERRET_NDIM
+    axis_names = [ "" ] * libpyferret.MAX_FERRET_NDIM
     given_axis_names = datavar_dict.get('axis_names', None)
     if given_axis_names:
-        if len(given_axis_names) > libpyferret._MAX_FERRET_NDIM:
-            raise ValueError("More than %d axes (in the names) is not supported in Ferret at this time" % libpyferret._MAX_FERRET_NDIM)
+        if len(given_axis_names) > libpyferret.MAX_FERRET_NDIM:
+            raise ValueError("More than %d axes (in the names) is not supported in Ferret at this time" % libpyferret.MAX_FERRET_NDIM)
         for k in xrange(len(given_axis_names)):
             axis_names[k] = given_axis_names[k]
     #
     # axis units
-    axis_units = [ "" ] * libpyferret._MAX_FERRET_NDIM
+    axis_units = [ "" ] * libpyferret.MAX_FERRET_NDIM
     given_axis_units = datavar_dict.get('axis_units', None)
     if given_axis_units:
-        if len(given_axis_units) > libpyferret._MAX_FERRET_NDIM:
-            raise ValueError("More than %d axes (in the units) is not supported in Ferret at this time" % libpyferret._MAX_FERRET_NDIM)
+        if len(given_axis_units) > libpyferret.MAX_FERRET_NDIM:
+            raise ValueError("More than %d axes (in the units) is not supported in Ferret at this time" % libpyferret.MAX_FERRET_NDIM)
         for k in xrange(len(given_axis_units)):
             axis_units[k] = given_axis_units[k]
     # axis coordinates
-    axis_coords = [ None ] * libpyferret._MAX_FERRET_NDIM
+    axis_coords = [ None ] * libpyferret.MAX_FERRET_NDIM
     given_axis_coords = datavar_dict.get('axis_coords', None)
     if given_axis_coords:
-        if len(given_axis_coords) > libpyferret._MAX_FERRET_NDIM:
-            raise ValueError("More than %d axes (in the coordinates) is not supported in Ferret at this time" % libpyferret._MAX_FERRET_NDIM)
+        if len(given_axis_coords) > libpyferret.MAX_FERRET_NDIM:
+            raise ValueError("More than %d axes (in the coordinates) is not supported in Ferret at this time" % libpyferret.MAX_FERRET_NDIM)
         for k in xrange(len(given_axis_coords)):
             axis_coords[k] = given_axis_coords[k]
     #
@@ -1277,8 +1318,8 @@ def putdata(datavar_dict, axis_pos=None):
     # change to AXISTYPE_ABSTRACT.  Note that a shape == 1 could either be normal or a singleton axis.
     try:
         shape = datavar.shape
-        if len(shape) > libpyferret._MAX_FERRET_NDIM:
-            raise ValueError("More than %d axes (in the data) is not supported in Ferret at this time" % libpyferret._MAX_FERRET_NDIM)
+        if len(shape) > libpyferret.MAX_FERRET_NDIM:
+            raise ValueError("More than %d axes (in the data) is not supported in Ferret at this time" % libpyferret.MAX_FERRET_NDIM)
         for k in xrange(len(shape)):
             if (shape[k] > 1) and (axis_types[k] == libpyferret.AXISTYPE_NORMAL):
                 axis_types[k] = libpyferret.AXISTYPE_ABSTRACT
@@ -1287,7 +1328,7 @@ def putdata(datavar_dict, axis_pos=None):
     #
     # assign any defaults on the axis information not given,
     # and make a copy of the axis coordinates (to ensure they are well-behaved)
-    for k in xrange(libpyferret._MAX_FERRET_NDIM):
+    for k in xrange(libpyferret.MAX_FERRET_NDIM):
         if axis_types[k] == libpyferret.AXISTYPE_LONGITUDE:
             if not axis_units[k]:
                 axis_units[k] = "DEGREES_E"
@@ -1348,11 +1389,11 @@ def putdata(datavar_dict, axis_pos=None):
             ferr_axis.append(libpyferret.E_AXIS)
         if not libpyferret.F_AXIS in ferr_axis:
             ferr_axis.append(libpyferret.F_AXIS)
-        # intentionally left as 6 (instead of _MAX_FERRET_NDIM) since new axes will need to be appended
+        # intentionally left as 6 (instead of MAX_FERRET_NDIM) since new axes will need to be appended
         if len(ferr_axis) != 6:
             raise ValueError("axis_pos can contain at most one of each of the pyferret integer values X_AXIS, Y_AXIS, Z_AXIS, or T_AXIS")
     else:
-        ferr_axis = [ -1 ] * libpyferret._MAX_FERRET_NDIM
+        ferr_axis = [ -1 ] * libpyferret.MAX_FERRET_NDIM
         # assign positions of longitude/latitude/level/time
         for k in xrange(len(axis_types)):
             if axis_types[k] == libpyferret.AXISTYPE_LONGITUDE:
@@ -1384,7 +1425,7 @@ def putdata(datavar_dict, axis_pos=None):
             ferr_axis[ferr_axis.index(-1)] = libpyferret.F_AXIS
         try:
             ferr_axis.index(-1)
-            raise RuntimeError("Unexpected undefined axis position (_MAX_FERRET_NDIM increased?) in ferr_axis " + str(ferr_axis))
+            raise RuntimeError("Unexpected undefined axis position (MAX_FERRET_NDIM increased?) in ferr_axis " + str(ferr_axis))
         except ValueError:
             # expected result
             pass
@@ -1401,9 +1442,9 @@ def putdata(datavar_dict, axis_pos=None):
     except AttributeError:
         data = datavar
     #
-    # get the data as an ndarray of _MAX_FERRET_NDIM dimensions
+    # get the data as an ndarray of MAX_FERRET_NDIM dimensions
     # adding new axes still reference the original data array - just creates new shape and stride objects
-    for k in xrange(len(shape), libpyferret._MAX_FERRET_NDIM):
+    for k in xrange(len(shape), libpyferret.MAX_FERRET_NDIM):
         data = data[..., numpy.newaxis]
     #
     # swap data axes and axis information to give (X_AXIS, Y_AXIS, Z_AXIS, T_AXIS, E_AXIS, F_AXIS) axes
@@ -1449,7 +1490,7 @@ def putdata(datavar_dict, axis_pos=None):
         axis_units[4], axis_units[k] = axis_units[k], axis_units[4]
         axis_coords[4], axis_coords[k] = axis_coords[k], axis_coords[4]
     # F_AXIS must now be ferr_axis[5]
-    # assumes _MAX_FERRET_NDIM == 6; extend the logic if axes are added
+    # assumes MAX_FERRET_NDIM == 6; extend the logic if axes are added
     # would rather not assume X_AXIS == 0, Y_AXIS == 1, Z_AXIS == 2, 
     #                         T_AXIS == 3, E_AXIS == 4, F_AXIS == 5
     #
@@ -1474,6 +1515,12 @@ def stop():
         False if Ferret has not been started or has already been stopped
         True otherwise
     """
+    # If it had been started, shut down ESMP and delete the log file
+    try:
+        regrid.ESMPControl().stopESMP(True)
+    except ImportError:
+        pass
+    # Continue with Ferret shutdown
     return libpyferret._stop()
 
 
@@ -1837,9 +1884,4 @@ def get_arg_one_val(efid, arg):
         raise ValueError("arg must be an integer value in [%d,%d]" % (libpyferret.ARG1,libpyferret.ARG9))
     # make the actual call
     return libpyferret._get_arg_one_val(int_id, int_arg)
-
-
-# register the libpyferret._quit function with atexit to ensure
-# open viewer windows do not hang a Python shutdown
-atexit.register(libpyferret._quit)
 

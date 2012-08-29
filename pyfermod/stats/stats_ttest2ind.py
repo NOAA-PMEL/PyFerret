@@ -11,21 +11,18 @@ def ferret_init(id):
     """
     Initialization for the stats_ttest2ind PyEF
     """
+    axes_values = [ pyferret.AXIS_DOES_NOT_EXIST ] * pyferret.MAX_FERRET_NDIM
+    axes_values[0] = pyferret.AXIS_CUSTOM
+    false_influences = [ False ] * pyferret.MAX_FERRET_NDIM
     retdict = { "numargs": 2,
                 "descript": "Returns two-sided T-test stat. and prob. that two independent " \
                             "samples comes from (normal) distribs. with the same mean",
-                "axes": ( pyferret.AXIS_CUSTOM,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST, ),
+                "axes": axes_values,
                 "argnames": ( "SAMPLEA", "SAMPLEB", ),
                 "argdescripts": ( "First sample data array",
                                   "Second sample data array", ),
                 "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
-                "influences": ( (False, False, False, False, False, False),
-                                (False, False, False, False, False, False), ),
+                "influences": ( false_influences, false_influences, ),
               }
     return retdict
 
@@ -34,7 +31,9 @@ def ferret_custom_axes(id):
     """
     Define custom axis of the stats_ttest2ind Ferret PyEF
     """
-    return ( ( 1, 2, 1, "T,P", False ), None, None, None, None, None, )
+    axis_defs = [ None ] * pyferret.MAX_FERRET_NDIM
+    axis_defs[0] = ( 1, 2, 1, "T,P", False )
+    return axis_defs
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
@@ -57,11 +56,11 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     goodmask = numpy.logical_not(badmask)
     sampb = inputs[1][goodmask]
     fitparams = scipy.stats.ttest_ind(sampa, sampb)
-    result[:, :, :, :, :, :] = resbdf
+    result[:] = resbdf
     # T-test statistic
-    result[0, 0, 0, 0, 0, 0] = fitparams[0]
+    result[0] = fitparams[0]
     # probability
-    result[1, 0, 0, 0, 0, 0] = fitparams[1]
+    result[1] = fitparams[1]
 
 
 #
@@ -112,7 +111,7 @@ if __name__ == "__main__":
     # call ferret_compute with the samples from distribs with the same mean and check
     ferret_compute(0, resultb, resbdf, (arraya, arrayb), inpbdfs)
     resultb = resultb.reshape(-1)
-    print "from same mean result: %s" % str(resultb)
+    print "result from same mean: %s" % str(resultb)
     if (abs(resultb[0]) > 2.0) or \
        (resultb[1] <  0.1) or (resultb[1] > 1.0):
         raise ValueError("Unexpected result")
@@ -120,7 +119,7 @@ if __name__ == "__main__":
     # call ferret_compute with the samples from distribs with different means and check
     ferret_compute(0, resultu, resbdf, (arraya, arrayu), inpbdfs)
     resultu = resultu.reshape(-1)
-    print "from diff mean result: %s" % str(resultu)
+    print "result from diff mean: %s" % str(resultu)
     if (resultu[0] > -20.0) or \
        (resultu[1] < 0.0) or (resultu[1] > 1.0E-5):
         raise ValueError("Unexpected result")

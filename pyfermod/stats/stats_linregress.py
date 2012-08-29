@@ -12,20 +12,17 @@ def ferret_init(id):
     """
     Initialization for the stats_linregress python-backed ferret external function
     """
+    axes_values = [ pyferret.AXIS_DOES_NOT_EXIST ] * pyferret.MAX_FERRET_NDIM
+    axes_values[0] = pyferret.AXIS_CUSTOM
+    false_influences = [ False ] * pyferret.MAX_FERRET_NDIM
     retdict = { "numargs": 2,
                 "descript": "Returns slope, intercept, correlation coeff (r), and num good pts for a linear regression",
-                "axes": ( pyferret.AXIS_CUSTOM,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST, ),
+                "axes": axes_values,
                 "argnames": ( "XVALS", "YVALS", ),
                 "argdescripts": ( "Abscissa values for the linear regression fit",
                                   "Ordinate values for the linear regression fit", ),
                 "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
-                "influences": ( ( False, False, False, False, False, False, ),
-                                ( False, False, False, False, False, False, ), ),
+                "influences": ( false_influences, false_influences, ),
               }
     return retdict
 
@@ -42,7 +39,9 @@ def ferret_custom_axes(id):
     incorrect.  The value returned is close but larger than the
     square of the correct value.)
     """
-    return ( ( 1, 4, 1, "M,B,R,N", False, ), None, None, None, None, None, )
+    axis_defs = [ None ] * pyferret.MAX_FERRET_NDIM
+    axis_defs[0] = ( 1, 4, 1, "M,B,R,N", False, )
+    return axis_defs
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
@@ -61,22 +60,11 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     but larger than the square of the correct value.)
     """
     if inputs[0].shape != inputs[1].shape :
-        errmsg = "XVALS and YVALS must either have identical dimensions or "\
-            "both have only one defined non-singular axis of the same length"
-        lena = 1
-        leno = 1
-        for k in xrange(6):
-            if inputs[0].shape[k] > 1:
-                if lena != 1:
-                    raise ValueError(errmsg)
-                lena = inputs[0].shape[k]
-        for k in xrange(6):
-            if inputs[1].shape[k] > 1:
-                if leno != 1:
-                    raise ValueError(errmsg)
-                leno = inputs[1].shape[k]
-        if lena != leno:
-            raise ValueError(errmsg)
+        shp0 = inputs[0].squeeze().shape
+        shp1 = inputs[1].squeeze().shape
+        if (len(shp0) > 1) or (len(shp1) > 1) or (shp0 != shp1):
+            raise ValueError("XVALS and YVALS must either have identical dimensions or "\
+                             "both have only one defined non-singular axis of the same length")
     abscissa = inputs[0].reshape(-1)
     ordinate = inputs[1].reshape(-1)
     badmaska = ( numpy.fabs(abscissa - inpbdfs[0]) < 1.0E-5 )
@@ -84,7 +72,6 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     badmasko = ( numpy.fabs(ordinate - inpbdfs[1]) < 1.0E-5 )
     badmasko = numpy.logical_or(badmasko, numpy.isnan(ordinate))
     goodmask = numpy.logical_not(numpy.logical_or(badmaska, badmasko))
-    # must use double precision arrays for accuracy
     xvals = numpy.array(abscissa[goodmask], dtype=numpy.float64)
     numpts = len(xvals)
     if numpts < 2:

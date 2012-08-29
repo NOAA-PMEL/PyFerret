@@ -12,23 +12,19 @@ def ferret_init(id):
     """
     Initialization for the stats_kstest1 PyEF
     """
+    axes_values = [ pyferret.AXIS_DOES_NOT_EXIST ] * pyferret.MAX_FERRET_NDIM
+    axes_values[0] = pyferret.AXIS_CUSTOM
+    false_influences = [ False ] * pyferret.MAX_FERRET_NDIM
     retdict = { "numargs": 3,
                 "descript": "Returns two-sided Kolmogorov-Smirnov test stat. and prob. " \
                             "that sample comes from a pop. with given prob. distrib.",
-                "axes": ( pyferret.AXIS_CUSTOM,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST, ),
+                "axes": axes_values,
                 "argnames": ( "SAMPLE", "PDNAME", "PDPARAMS", ),
                 "argdescripts": ( "Sample data array",
                                   "Name of a continuous probability distribution",
                                   "Parameters for this continuous probability distribution"),
                 "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.STRING_ONEVAL, pyferret.FLOAT_ARRAY, ),
-                "influences": ( (False, False, False, False, False, False),
-                                (False, False, False, False, False, False),
-                                (False, False, False, False, False, False), ),
+                "influences": ( false_influences, false_influences, false_influences, ),
               }
     return retdict
 
@@ -37,7 +33,9 @@ def ferret_custom_axes(id):
     """
     Define custom axis of the stats_kstest1 Ferret PyEF
     """
-    return ( ( 1, 2, 1, "KS,P", False ), None, None, None, None, None, )
+    axis_defs = [ None ] * pyferret.MAX_FERRET_NDIM
+    axis_defs[0] = ( 1, 2, 1, "KS,P", False )
+    return axis_defs
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
@@ -69,11 +67,11 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     values = inputs[0][goodmask]
     # perform the test and assign the results
     fitparams = scipy.stats.kstest(values, distscipyname, distscipyparams)
-    result[:, :, :, :, :, :] = resbdf
+    result[:] = resbdf
     # Kolmogorov-Smirnov test statistic
-    result[0, 0, 0, 0, 0, 0] = fitparams[0]
+    result[0] = fitparams[0]
     # probability
-    result[1, 0, 0, 0, 0, 0] = fitparams[1]
+    result[1] = fitparams[1]
 
 
 #

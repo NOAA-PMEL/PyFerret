@@ -11,21 +11,18 @@ def ferret_init(id):
     """
     Initialization for the stats_kstest2 PyEF
     """
+    axes_values = [ pyferret.AXIS_DOES_NOT_EXIST ] * pyferret.MAX_FERRET_NDIM
+    axes_values[0] = pyferret.AXIS_CUSTOM
+    false_influences = [ False ] * pyferret.MAX_FERRET_NDIM
     retdict = { "numargs": 2,
                 "descript": "Returns two-sided Kolmogorov-Smirnov test stat. and prob. " \
                             "that two samples comes from the same prob. distrib.",
-                "axes": ( pyferret.AXIS_CUSTOM,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST, ),
+                "axes": axes_values,
                 "argnames": ( "SAMPLEA", "SAMPLEB", ),
                 "argdescripts": ( "First sample data array",
                                   "Second sample data array", ),
                 "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
-                "influences": ( (False, False, False, False, False, False),
-                                (False, False, False, False, False, False), ),
+                "influences": ( false_influences, false_influences, ),
               }
     return retdict
 
@@ -34,7 +31,9 @@ def ferret_custom_axes(id):
     """
     Define custom axis of the stats_kstest2 Ferret PyEF
     """
-    return ( ( 1, 2, 1, "KS,P", False ), None, None, None, None, None, )
+    axis_defs = [ None ] * pyferret.MAX_FERRET_NDIM
+    axis_defs[0] = ( 1, 2, 1, "KS,P", False )
+    return axis_defs
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
@@ -57,11 +56,11 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     goodmask = numpy.logical_not(badmask)
     sampb = inputs[1][goodmask]
     fitparams = scipy.stats.ks_2samp(sampa, sampb)
-    result[:, :, :, :, :, :] = resbdf
+    result[:] = resbdf
     # Kolmogorov-Smirnov test statistic
-    result[0, 0, 0, 0, 0, 0] = fitparams[0]
+    result[0] = fitparams[0]
     # probability
-    result[1, 0, 0, 0, 0, 0] = fitparams[1]
+    result[1] = fitparams[1]
 
 
 #

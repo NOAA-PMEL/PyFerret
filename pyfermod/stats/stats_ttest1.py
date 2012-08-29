@@ -11,21 +11,19 @@ def ferret_init(id):
     """
     Initialization for the stats_ttest1 PyEF
     """
+    axes_values = [ pyferret.AXIS_DOES_NOT_EXIST ] * pyferret.MAX_FERRET_NDIM
+    axes_values[0] = pyferret.AXIS_CUSTOM
+    axes_values[1] = pyferret.AXIS_CUSTOM
+    false_influences = [ False ] * pyferret.MAX_FERRET_NDIM
     retdict = { "numargs": 2,
                 "descript": "Returns [i=1] two-sided T-test stat. and [i=2] prob. " \
                             "for sample data coming from pop. with given mean(s).",
-                "axes": ( pyferret.AXIS_CUSTOM,
-                          pyferret.AXIS_CUSTOM,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST, ),
+                "axes": axes_values,
                 "argnames": ( "SAMPLE", "POPMEANS", ),
                 "argdescripts": ( "Sample data to compare",
                                   "Proposed population means (averages)", ),
                 "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
-                "influences": ( (False, False, False, False, False, False),
-                                (False, False, False, False, False, False), ),
+                "influences": ( false_influences, false_influences, ),
               }
     return retdict
 
@@ -42,7 +40,10 @@ def ferret_custom_axes(id):
         if num > 0:
             arglen *= num
     # if all axes have undefined lengths, assume it is a single value
-    return ( ( 1, 2, 1, "T,P", False ), (1, arglen, 1, "MEAN_INDEX", False), None, None, None, None, )
+    axis_defs = [ None ] * pyferret.MAX_FERRET_NDIM
+    axis_defs[0] = ( 1, 2, 1, "T,P", False )
+    axis_defs[1] = (1, arglen, 1, "MEAN_INDEX", False)
+    return axis_defs
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
@@ -54,12 +55,6 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     along the first axis for each mean along the second axis.
     Undefined data in inputs[0] are removed before performing the test.
     """
-    # make sure result has the expected shape
-    nummeans = len(inputs[1].reshape(-1))
-    expected = (2, nummeans, 1, 1, 1, 1)
-    if result.shape != expected:
-        raise ValueError("Unexpected result dimensions; expect: %s, found: %s" % \
-                         (str(expected), str(result.shape)))
     # get the valid sample values as 64-bit floats
     badmask = ( numpy.fabs(inputs[0] - inpbdfs[0]) < 1.0E-5 )
     badmask = numpy.logical_or(badmask, numpy.isnan(inputs[0]))
@@ -74,7 +69,7 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     means = numpy.array(means[goodmask], dtype=numpy.float64)
     # perform the test and assign the results
     fitparams = scipy.stats.ttest_1samp(values, means)
-    result[:, :, :, :, :, :] = resbdf
+    result[:] = resbdf
     # T-test statistics
     result[0, goodmask, 0, 0, 0, 0] = fitparams[0]
     # probabilities
@@ -136,8 +131,8 @@ if __name__ == "__main__":
     # call ferret_compute and check the results
     ferret_compute(0, result, resbdf, (samparr, meanarr), inpbdfs)
     if not numpy.allclose(result, expect):
-        print "result[:,:,0,0,0,0]:\n   %s" % str(result[:, :, 0, 0, 0, 0])
         print "expect[:,:,0,0,0,0]:\n   %s" % str(expect[:, :, 0, 0, 0, 0])
+        print "result[:,:,0,0,0,0]:\n   %s" % str(result[:, :, 0, 0, 0, 0])
         raise ValueError("Unexpected result")
 
     # All successful

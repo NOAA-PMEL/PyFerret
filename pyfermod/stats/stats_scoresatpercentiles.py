@@ -10,20 +10,17 @@ def ferret_init(id):
     """
     Initialization for the stats_scoresatpercentiles.py Ferret PyEF
     """
+    axes_values = [ pyferret.AXIS_IMPLIED_BY_ARGS ] * pyferret.MAX_FERRET_NDIM
+    true_influences = [ True ] * pyferret.MAX_FERRET_NDIM
+    false_influences = [ False ] * pyferret.MAX_FERRET_NDIM
     retdict = { "numargs": 2,
                 "descript": "Returns interpolated scores (values) that are given percentiles through a sample",
-                "axes": ( pyferret.AXIS_IMPLIED_BY_ARGS,
-                          pyferret.AXIS_IMPLIED_BY_ARGS,
-                          pyferret.AXIS_IMPLIED_BY_ARGS,
-                          pyferret.AXIS_IMPLIED_BY_ARGS,
-                          pyferret.AXIS_IMPLIED_BY_ARGS,
-                          pyferret.AXIS_IMPLIED_BY_ARGS, ),
+                "axes": axes_values,
                 "argnames": ( "SAMPLE", "PERCENTILES", ),
                 "argdescripts": ( "Sample of scores (values)",
                                   "Percentiles (0-100) through sample to find scores (values) of", ),
                 "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
-                "influences": ( ( False, False, False, False, False, False, ),
-                                ( True,  True,  True,  True,  True,  True, ), ),
+                "influences": ( false_influences, true_influences, ),
               }
     return retdict
 

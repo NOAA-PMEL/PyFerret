@@ -324,7 +324,7 @@
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet, agg_e
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
-     .		  CX_DIM_LEN, ALIAS_ID,
+     .		  CX_DIM_LEN, ALIAS_ID, EFCN_SCAN,
      .		  TM_GET_LINENUM, TM_LENSTR1,
      .		  TM_GET_GRIDNUM, TM_UNIT_ID,
      .		  ALLO_MANAGED_AXIS, ALLO_MANAGED_GRID, FIND_DSET_NUMBER,
@@ -2092,7 +2092,7 @@ C /units=months  is 1/12 of the length of the year
         ENDIF
 
 *       Make sure the scan for standard external functions has been performed
-        CALL EFCN_SCAN(gfcn_num_internal)
+        IF ( EFCN_SCAN(gfcn_num_internal) .LT. 0 ) GOTO 6040
 
         i1 = TM_LENSTR1(buff1)
         buff = cmnd_buff(arg_start(1):arg_end(1))
@@ -2295,6 +2295,8 @@ C /units=months  is 1/12 of the length of the year
  6020 CALL ERRMSG(ferr_syntax, status, 'illegal name: '//buff1, *5000)
 
  6030 CALL ERRMSG(ferr_invalid_command,status,err_string(1:slen),*5000)
+
+ 6040 CALL ERRMSG(ferr_invalid_command,status,'EFCN_SCAN failed',*5000)
 
  6100 CALL ERRMSG(ferr_syntax, status, 
      .    'DEFINE DATA valid only with /AGGREGATE: ', *5000)

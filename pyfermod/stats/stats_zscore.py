@@ -13,19 +13,16 @@ def ferret_init(id):
     """
     Initialization for the stats_zscore PyEF
     """
+    axes_values = [ pyferret.AXIS_IMPLIED_BY_ARGS ] * pyferret.MAX_FERRET_NDIM
+    true_influences = [ True ] * pyferret.MAX_FERRET_NDIM
     retdict = { "numargs": 1,
                 "descript": "Returns standard scores for data values relative to " \
                             "a normal distribution with same mean and variance as the data",
-                "axes": ( pyferret.AXIS_IMPLIED_BY_ARGS,
-                          pyferret.AXIS_IMPLIED_BY_ARGS,
-                          pyferret.AXIS_IMPLIED_BY_ARGS,
-                          pyferret.AXIS_IMPLIED_BY_ARGS,
-                          pyferret.AXIS_IMPLIED_BY_ARGS,
-                          pyferret.AXIS_IMPLIED_BY_ARGS, ),
+                "axes": axes_values,
                 "argnames": ( "VALUES", ),
                 "argdescripts": ( "Array of data values", ),
                 "argtypes": ( pyferret.FLOAT_ARRAY, ),
-                "influences": ( (True,  True,  True,  True,  True,  True), ),
+                "influences": ( true_influences, ),
               }
     return retdict
 

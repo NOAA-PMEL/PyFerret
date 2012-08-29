@@ -6,7 +6,6 @@ import numpy
 import scipy.stats
 import scipy.special
 import pyferret
-from pyferret.libpyferret import _MAX_FERRET_NDIM
 
 
 def getdistname(distribname=None):
@@ -575,9 +574,9 @@ def getinitdict(distribname, funcname):
     paramdescripts = getdistparams(distscipyname, None)
     numargs = len(paramdescripts) + 1
     descript = "Returns array of %s for %s prob. distrib." % (funcreturn, distribname)
-    axes = ( pyferret.AXIS_IMPLIED_BY_ARGS, ) * _MAX_FERRET_NDIM
-    argtypes = ( pyferret.FLOAT_ARRAY, ) * numargs
-    influences = ( ( True, ) * _MAX_FERRET_NDIM, ) * numargs
+    axes = [ pyferret.AXIS_IMPLIED_BY_ARGS ] * pyferret.MAX_FERRET_NDIM
+    argtypes = [ pyferret.FLOAT_ARRAY ] * numargs
+    influences = [ [ True ] * pyferret.MAX_FERRET_NDIM ] * numargs
     if ( numargs == 2 ):
         # info for distributions with one parameter
         argnames = ( "PTS", paramdescripts[0][0], )
@@ -645,7 +644,7 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
     numparams = len(inputs) - 1
     if numparams > 0:
         par1axis = -1
-        for k in xrange(_MAX_FERRET_NDIM):
+        for k in xrange(pyferret.MAX_FERRET_NDIM):
             if inputs[1].shape[k] > 1:
                 if par1axis != -1:
                     raise ValueError("Parameters arrays can have only one defined, non-singular axis")
@@ -659,7 +658,7 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
         tmp1result[badmask] = resbdf
     if numparams > 1:
         par2axis = -1
-        for k in xrange(_MAX_FERRET_NDIM):
+        for k in xrange(pyferret.MAX_FERRET_NDIM):
             if inputs[2].shape[k] > 1:
                 if par2axis != -1:
                     raise ValueError("Parameters arrays can have only one defined, non-singular axis")
@@ -679,7 +678,7 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
             tmp2result = numpy.empty(shape, dtype=numpy.float64, order='F')
     if numparams > 2:
         par3axis = -1
-        for k in xrange(_MAX_FERRET_NDIM):
+        for k in xrange(pyferret.MAX_FERRET_NDIM):
             if inputs[3].shape[k] > 1:
                 if par3axis != -1:
                     raise ValueError("Parameters arrays can have only one defined, non-singular axis")

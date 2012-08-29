@@ -11,20 +11,17 @@ def ferret_init(id):
     """
     Initialization for the stats_histogram Ferret PyEF
     """
+    axes_values = [ pyferret.AXIS_IMPLIED_BY_ARGS ] * pyferret.MAX_FERRET_NDIM
+    true_influences = [ True ] * pyferret.MAX_FERRET_NDIM
+    false_influences = [ False ] * pyferret.MAX_FERRET_NDIM
     retdict = { "numargs": 2,
                 "descript": "Returns unweighted histogram bin counts for all defined data values",
-                "axes": (pyferret.AXIS_IMPLIED_BY_ARGS,
-                         pyferret.AXIS_IMPLIED_BY_ARGS,
-                         pyferret.AXIS_IMPLIED_BY_ARGS,
-                         pyferret.AXIS_IMPLIED_BY_ARGS,
-                         pyferret.AXIS_IMPLIED_BY_ARGS,
-                         pyferret.AXIS_IMPLIED_BY_ARGS),
+                "axes": axes_values,
                 "argnames": ("VALS", "BINS_TEMPLATE"),
                 "argdescripts": ("Values to put into bins and then count",
                                  "Template argument whose one defined axis gives midpoints of bins"),
                 "argtypes": (pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY),
-                "influences": ((False, False, False, False, False, False),
-                               (True,  True,  True,  True,  True,  True )),
+                "influences": (true_influences, false_influences),
               }
     return retdict
 

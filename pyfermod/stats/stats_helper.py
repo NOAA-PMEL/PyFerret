@@ -11,18 +11,18 @@ def ferret_init(id):
     """
     Initialization for the stats_helper Ferret PyEF
     """
+    axes_values = [ pyferret.AXIS_DOES_NOT_EXIST ] * pyferret.MAX_FERRET_NDIM
+    axes_values[0] = pyferret.AXIS_ABSTRACT
+    false_influences = [ False ] * pyferret.MAX_FERRET_NDIM
     retdict = { "numargs": 1,
                 "descript": "Help on probability distribution names or parameters",
                 "restype": pyferret.STRING_ARRAY,
                 "resstrlen": 256,
-                "axes": ( pyferret.AXIS_ABSTRACT,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST, ),
+                "axes": axes_values,
                 "argnames": ( "PDNAME", ),
                 "argdescripts": ( "Name of a probability distribution (or blank for all)", ),
                 "argtypes": ( pyferret.STRING_ONEVAL, ),
-                "influences": ( (False,  False,  False,  False), ),
+                "influences": ( false_influences, ),
               }
     return retdict
 
@@ -38,7 +38,10 @@ def ferret_result_limits(id):
     distnamelist = pyferret.stats.getdistname(None)
     # One intro string and at least one empty line at the end
     max_num_string_pairs = len(distnamelist) + 2
-    return ( ( 1, max_num_string_pairs ), None, None, None )
+
+    axis_lims = [ None ] * pyferret.MAX_FERRET_NDIM
+    axis_lims[0] = ( 1, max_num_string_pairs )
+    return axis_lims
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
@@ -52,15 +55,15 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
         # list the parameters with descriptions for this distribution
         distname = pyferret.stats.getdistname(distribname)
         paramlist = pyferret.stats.getdistparams(distname, None)
-        result[0, 0, 0, 0] = "Parameters of probability distribution %s" % distribname
+        result[0] = "Parameters of probability distribution %s" % distribname
         for k in xrange(len(paramlist)):
-            result[k+1, 0, 0, 0] = "(%d) %s: %s" % (k+1, paramlist[k][0], paramlist[k][1])
+            result[k+1] = "(%d) %s: %s" % (k+1, paramlist[k][0], paramlist[k][1])
         for k in xrange(len(paramlist)+1, max_num_string_pairs):
-            result[k, 0, 0, 0] = ""
+            result[k] = ""
     else:
         # list the all the distributions with parameter list arguments
         distnamelist = pyferret.stats.getdistname(None)
-        result[0, 0, 0, 0] = "Supported probability distributions"
+        result[0] = "Supported probability distributions"
         for k in xrange(len(distnamelist)):
             # create the parameter argument string
             paramlist = pyferret.stats.getdistparams(distnamelist[k][0], None)
@@ -80,20 +83,20 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
             # create the help string
             numnames = len(distnamelist[k])
             if numnames == 2:
-                result[k+1, 0, 0, 0] = "   %s: %s%s" % \
+                result[k+1] = "   %s: %s%s" % \
                     (distnamelist[k][0], distnamelist[k][1], paramstr)
             elif numnames == 3:
-                result[k+1, 0, 0, 0] = "   %s: %s or %s%s" % \
+                result[k+1] = "   %s: %s or %s%s" % \
                     (distnamelist[k][0], distnamelist[k][1],
                      distnamelist[k][2], paramstr)
             elif numnames == 4:
-                result[k+1, 0, 0, 0] = "   %s: %s, %s, or %s%s" % \
+                result[k+1] = "   %s: %s, %s, or %s%s" % \
                     (distnamelist[k][0], distnamelist[k][1],
                      distnamelist[k][2], distnamelist[k][3], paramstr)
             else:
                 raise ValueError("Unexpected number of names: %s" % numnames)
         for k in xrange(len(distnamelist)+1, max_num_string_pairs):
-            result[k, 0, 0, 0] = ""
+            result[k] = ""
 
 
 def print_help():
@@ -105,32 +108,32 @@ def print_help():
     stype = "S%d" % info["resstrlen"]
     sizetuple = ferret_result_limits(0)
     max_strings = sizetuple[0][1]
-    distrib_array = numpy.empty((max_strings, 1, 1, 1), \
+    distrib_array = numpy.empty((max_strings,), \
                                 dtype=numpy.dtype(stype), order='F')
     # Some initialization for testing
     for k in xrange(max_strings):
-        distrib_array[k, 0, 0, 0] = "Unassigned %d" % k
+        distrib_array[k] = "Unassigned %d" % k
     # Get the list of distributions (string of spaces for testing)
     pfname = "    "
     ferret_compute(0, distrib_array, None, ( pfname, ), None)
     # Print all the distribution short and long names, and the empty line at the end
     for j in xrange(max_strings):
-        print distrib_array[j, 0, 0, 0]
+        print distrib_array[j]
     # Now go through all the distributions
-    params_array = numpy.empty((max_strings, 1, 1, 1), \
+    params_array = numpy.empty((max_strings,), \
                                dtype=numpy.dtype('S128'), order='F')
     # Skip intro line, and empty line at end
     for j in xrange(1, max_strings-1):
         # Some initialization for testing
         for k in xrange(max_strings):
-            params_array[k, 0, 0, 0] = "Unassigned %d" % k
+            params_array[k] = "Unassigned %d" % k
         # Use the distribution long name (second word, remove the param list)
-        pfname = distrib_array[j, 0, 0, 0].split()[1].split('(')[0]
+        pfname = distrib_array[j].split()[1].split('(')[0]
         ferret_compute(0, params_array, None, ( pfname, ), None)
         for k in xrange(max_strings):
-            print params_array[k, 0, 0, 0]
+            print params_array[k]
             # Stop after printing an empty line
-            if not params_array[k, 0, 0, 0]:
+            if not params_array[k]:
                 break;
 
 

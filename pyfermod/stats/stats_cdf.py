@@ -12,22 +12,18 @@ def ferret_init(id):
     """
     Initialization for the stats_cdf python-backed ferret external function
     """
+    axes_values = [ pyferret.AXIS_IMPLIED_BY_ARGS ] * pyferret.MAX_FERRET_NDIM
+    true_influences = [ True ] * pyferret.MAX_FERRET_NDIM
+    false_influences = [ False ] * pyferret.MAX_FERRET_NDIM
     retdict = { "numargs": 3,
                 "descript": "Returns cumulative distribution function values for a probability distribution",
-                "axes": (pyferret.AXIS_IMPLIED_BY_ARGS,
-                         pyferret.AXIS_IMPLIED_BY_ARGS,
-                         pyferret.AXIS_IMPLIED_BY_ARGS,
-                         pyferret.AXIS_IMPLIED_BY_ARGS,
-                         pyferret.AXIS_IMPLIED_BY_ARGS,
-                         pyferret.AXIS_IMPLIED_BY_ARGS),
+                "axes": axes_values,
                 "argnames": ("PTS", "PDNAME", "PDPARAMS"),
                 "argdescripts": ("Points at which to calculate the cumulative distribution function values",
                                  "Name of a probability distribution",
                                  "Parameters for this probability distribution"),
                 "argtypes": (pyferret.FLOAT_ARRAY, pyferret.STRING_ONEVAL, pyferret.FLOAT_ARRAY),
-		"influences": ((True,  True,  True,  True,  True,  True),
-                               (False, False, False, False, False, False),
-                               (False, False, False, False, False, False)),
+		"influences": (true_influences, false_influences, false_influences),
               }
     return retdict
 

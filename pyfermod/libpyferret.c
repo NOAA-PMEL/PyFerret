@@ -103,6 +103,7 @@ static char pyferretStartDocstring[] =
     "    server = <bool>: run Ferret in server mode? (default False) \n"
     "    metaname = <string>: filename for Ferret graphics (default empty) \n"
     "    unmapped = <bool>: hide the graphics viewer? (default False) \n"
+    "    quiet = <bool>: do not print the ferret header? (default False) \n"
     "\n"
     "Returns: \n"
     "    True is successful \n"
@@ -114,8 +115,8 @@ static char pyferretStartDocstring[] =
 
 static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
 {
-    static char *argNames[] = {"memsize", "journal", "verify", "restrict",
-                               "server", "metaname", "transparent", "unmapped", NULL};
+    static char *argNames[] = {"memsize", "journal", "verify", "restrict", "server",
+                               "metaname", "transparent", "unmapped", "quiet", NULL};
     double mwMemSize = 25.6;
     PyObject *pyoJournal = NULL;
     PyObject *pyoVerify = NULL;
@@ -123,6 +124,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     PyObject *pyoServer = NULL;
     PyObject *pyoTransparent = NULL;
     PyObject *pyoUnmapped = NULL;
+    PyObject *pyoQuiet = NULL;
     char *metaname = NULL;
     int journalFlag = 1;
     int verifyFlag = 1;
@@ -130,6 +132,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     int serverFlag = 0;
     int transparentFlag = 0;
     int unmappedFlag = 0;
+    int quietFlag = 0;
     int pplMemSize;
     size_t blksiz;
     int status;
@@ -146,11 +149,12 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     import_array1(NULL);
 
     /* Parse the arguments, checking if an Exception was raised */
-    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|dO!O!O!O!sO!O!",
+    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|dO!O!O!O!sO!O!O!",
                  argNames, &mwMemSize, &PyBool_Type, &pyoJournal,
                  &PyBool_Type, &pyoVerify, &PyBool_Type, &pyoRestrict,
                  &PyBool_Type, &pyoServer, &metaname,
-                 &PyBool_Type, &pyoTransparent, &PyBool_Type, &pyoUnmapped) )
+                 &PyBool_Type, &pyoTransparent, &PyBool_Type, &pyoUnmapped,
+                 &PyBool_Type, &pyoQuiet) )
         return NULL;
 
     /* Interpret the booleans - Py_False and Py_True are singleton non-NULL objects, so just use == */
@@ -166,6 +170,8 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
         transparentFlag = 1;
     if ( pyoUnmapped == Py_True )
         unmappedFlag = 1;
+    if ( pyoQuiet == Py_True )
+        quietFlag = 1;
 
     if ( metaname[0] == '\0' )
         metaname = NULL;
@@ -237,8 +243,9 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     if ( verifyFlag == 0 )
         turnoff_verify_(&status);
 
-    /* Output Program name and revision number */
-    proclaim_c_(&ttoutLun, "\t");
+    /* Output program name and revision number */
+    if ( quietFlag != 0 )
+        proclaim_c_(&ttoutLun, "\t");
 
     /* Set so that ferret_dispatch returns after every command */
     one_cmnd_mode_int = 1;
@@ -1769,9 +1776,10 @@ PyMODINIT_FUNC initlibpyferret(void)
     PyModule_AddIntConstant(mod, "TIMEARRAY_MINUTEINDEX", TIMEARRAY_MINUTEINDEX);
     PyModule_AddIntConstant(mod, "TIMEARRAY_SECONDINDEX", TIMEARRAY_SECONDINDEX);
 
+    /* Parameter giving the maximum number of axis allowed in Ferret */
+    PyModule_AddIntConstant(mod, "MAX_FERRET_NDIM", MAX_FERRET_NDIM);
+
     /* Private parameter return value from libpyferret._run indicating the program should shut down */
     PyModule_AddIntConstant(mod, "_FERR_EXIT_PROGRAM", FERR_EXIT_PROGRAM);
-    /* Private parameter giving the maximum number of axis allowed in Ferret */
-    PyModule_AddIntConstant(mod, "_MAX_FERRET_NDIM", MAX_FERRET_NDIM);
 }
 

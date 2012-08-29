@@ -11,21 +11,18 @@ def ferret_init(id):
     """
     Initialization for the stats_ttest2rel PyEF
     """
+    axes_values = [ pyferret.AXIS_DOES_NOT_EXIST ] * pyferret.MAX_FERRET_NDIM
+    axes_values[0] = pyferret.AXIS_CUSTOM
+    false_influences = [ False ] * pyferret.MAX_FERRET_NDIM
     retdict = { "numargs": 2,
                 "descript": "Returns two-sided T-test stat. and prob. (and num good pairs) that two " \
                             "related (paired) samples comes from (normal) distribs. with the same mean.",
-                "axes": ( pyferret.AXIS_CUSTOM,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST, ),
+                "axes": axes_values,
                 "argnames": ( "SAMPLEA", "SAMPLEB", ),
                 "argdescripts": ( "First sample data array",
                                   "Second sample data array", ),
                 "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
-                "influences": ( (False, False, False, False, False, False),
-                                (False, False, False, False, False, False), ),
+                "influences": ( false_influences, false_influences, ),
               }
     return retdict
 
@@ -34,7 +31,9 @@ def ferret_custom_axes(id):
     """
     Define custom axis of the stats_ttest2rel Ferret PyEF
     """
-    return ( ( 1, 3, 1, "T,P,N", False ), None, None, None, None, None, )
+    axis_defs = [ None ] * pyferret.MAX_FERRET_NDIM
+    axis_defs[0] = ( 1, 3, 1, "T,P,N", False )
+    return axis_defs
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
@@ -48,22 +47,11 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     have a single defined non-sigular axis of the same size.
     """
     if inputs[0].shape != inputs[1].shape :
-        errmsg = "SAMPLEA and SAMPLEB must either have identical dimensions or "\
-            "both have only one defined non-singular axis of the same length"
-        lena = 1
-        lenb = 1
-        for k in xrange(6):
-            if inputs[0].shape[k] > 1:
-                if lena != 1:
-                    raise ValueError(errmsg)
-                lena = inputs[0].shape[k]
-        for k in xrange(6):
-            if inputs[1].shape[k] > 1:
-                if lenb != 1:
-                    raise ValueError(errmsg)
-                lenb = inputs[1].shape[k]
-        if lena != lenb:
-            raise ValueError(errmsg)
+        shp0 = inputs[0].squeeze().shape
+        shp1 = inputs[1].squeeze().shape
+        if (len(shp0) > 1) or (len(shp1) > 1) or (shp0 != shp1):
+            raise ValueError("SAMPLEA and SAMPLEB must either have identical dimensions or "\
+                             "both have only one defined non-singular axis of the same length")
     sampa = inputs[0].reshape(-1)
     sampb = inputs[1].reshape(-1)
     bada = ( numpy.fabs(sampa - inpbdfs[0]) < 1.0E-5 )
@@ -77,13 +65,13 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
         raise ValueError("Not enough defined points in common in SAMPLEA and SAMPLEB")
     valsb = numpy.array(sampb[goodmask], dtype=numpy.float64)
     fitparams = scipy.stats.ttest_rel(valsa, valsb)
-    result[:, :, :, :, :, :] = resbdf
+    result[:] = resbdf
     # T-test statistic
-    result[0, 0, 0, 0, 0, 0] = fitparams[0]
+    result[0] = fitparams[0]
     # probability
-    result[1, 0, 0, 0, 0, 0] = fitparams[1]
+    result[1] = fitparams[1]
     # number of good points
-    result[2, 0, 0, 0, 0, 0] = numpts
+    result[2] = numpts
 
 
 #
@@ -130,7 +118,7 @@ if __name__ == "__main__":
     # call ferret_compute with the samples with the same mean and check
     ferret_compute(0, resultb, resbdf, (arraya, arrayb), inpbdfs)
     resultb = resultb.reshape(-1)
-    print "same mean result:\n   %s" % str(resultb)
+    print "result from same mean:\n   %s" % str(resultb)
     if (abs(resultb[0]) > 2.0) or \
        (resultb[1] < 0.1) or (resultb[1] > 1.0) or \
        (abs(resultb[2] - numgood) > 1.0E-5):
@@ -139,7 +127,7 @@ if __name__ == "__main__":
     # call ferret_compute with samples with different means and check
     ferret_compute(0, resultu, resbdf, (arraya, arrayu), inpbdfs)
     resultu = resultu.reshape(-1)
-    print "diff mean result:\n   %s" % str(resultu)
+    print "result from diff mean:\n   %s" % str(resultu)
     if (resultu[0] > -2000.0) or \
        (resultu[1] < 0.00) or (resultu[1] > 0.0001) or \
        (abs(resultb[2] - numgood) > 1.0E-5):

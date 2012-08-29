@@ -1194,8 +1194,8 @@ struct {
   sprintf(path, "%s/ferret_ef_mem_subsc.so", path_ptr);
   ferret_ef_mem_subsc_so_ptr = dlopen(path, RTLD_LAZY | RTLD_GLOBAL);
   if ( ferret_ef_mem_subsc_so_ptr == NULL ) {
-     fprintf(stderr, "**ERROR: efcn_scan: dlopen of $FER_LIBS/ferret_ef_mem_subsc.so\n"
-                     "  failed -- %s\n", dlerror());
+     fprintf(stderr, "**ERROR: efcn_scan: dlopen of %s\n"
+                     "  failed -- %s\n", path, dlerror());
      return_val = -1;
      return return_val;
   }

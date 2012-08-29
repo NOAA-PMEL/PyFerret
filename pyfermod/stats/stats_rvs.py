@@ -12,22 +12,18 @@ def ferret_init(id):
     """
     Initialization for the stats_rvs python-backed ferret external function
     """
+    axes_values = [ pyferret.AXIS_IMPLIED_BY_ARGS ] * pyferret.MAX_FERRET_NDIM
+    true_influences = [ True ] * pyferret.MAX_FERRET_NDIM
+    false_influences = [ False ] * pyferret.MAX_FERRET_NDIM
     retdict = { "numargs": 3,
                 "descript": "Returns random variates for a probability distribution",
-                "axes": (pyferret.AXIS_IMPLIED_BY_ARGS,
-                         pyferret.AXIS_IMPLIED_BY_ARGS,
-                         pyferret.AXIS_IMPLIED_BY_ARGS,
-                         pyferret.AXIS_IMPLIED_BY_ARGS,
-                         pyferret.AXIS_IMPLIED_BY_ARGS,
-                         pyferret.AXIS_IMPLIED_BY_ARGS),
+                "axes": axes_values,
                 "argnames": ("TEMPLATE", "PDNAME", "PDPARAMS"),
                 "argdescripts": ("Template array for the array of random variates to be returned",
                                  "Name of a probability distribution",
                                  "Parameters for this probability distribution"),
                 "argtypes": (pyferret.FLOAT_ARRAY, pyferret.STRING_ONEVAL, pyferret.FLOAT_ARRAY),
-                "influences": ((True,  True,  True,  True,  True,  True),
-                               (False, False, False, False, False, False),
-                               (False, False, False, False, False, False)),
+                "influences": (true_influences, false_influences, false_influences),
               }
     return retdict
 
@@ -55,6 +51,9 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
 # The rest of this is just for testing this module at the command line
 #
 if __name__ == "__main__":
+    # make sure ferret_init does not have problems
+    info = ferret_init(0)
+
     # Get a large sample from a normal distribution with small variance
     # so the mean and stdev will be very close
     mu = 5.0

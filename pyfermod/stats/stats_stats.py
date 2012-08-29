@@ -12,18 +12,16 @@ def ferret_init(id):
     """
     Initialization for the stats_stats.py Ferret PyEF
     """
+    axes_values = [ pyferret.AXIS_DOES_NOT_EXIST ] * pyferret.MAX_FERRET_NDIM
+    axes_values[0] = pyferret.AXIS_CUSTOM
+    false_influences = [ False ] * pyferret.MAX_FERRET_NDIM
     retdict = { "numargs": 1,
                 "descript": "Returns the (unweighted) mean, variance, skew, and excess kurtosis of an array of values",
-                "axes": ( pyferret.AXIS_CUSTOM,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST, ),
+                "axes": axes_values,
                 "argnames": ( "VALUES", ),
                 "argdescripts": ( "Array of values to find the statistical values of", ),
                 "argtypes": ( pyferret.FLOAT_ARRAY, ),
-                "influences": ( ( False, False, False, False, False, False, ), )
+                "influences": ( false_influences, ),
               }
     return retdict
 
@@ -32,7 +30,9 @@ def ferret_custom_axes(id):
     """
     Define custom axis of the stats_stats.py Ferret PyEF
     """
-    return ( ( 1, 4, 1, "M,V,S,K", False ), None, None, None, None, None, )
+    axis_defs = [ None ] * pyferret.MAX_FERRET_NDIM
+    axis_defs[0] = ( 1, 4, 1, "M,V,S,K", False )
+    return axis_defs
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
@@ -42,18 +42,17 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     values in inputs[0] are eliminated before using them in python
     methods.
     """
-    if result.shape != (4, 1, 1, 1, 1, 1):
-        raise ValueError("Unexpected error; result dimen: %s" % str(result.shape))
     # get the clean sample data as a flattened array
     badmask = ( numpy.fabs(inputs[0] - inpbdfs[0]) < 1.0E-5 )
     badmask = numpy.logical_or(badmask, numpy.isnan(inputs[0]))
     goodmask = numpy.logical_not(badmask)
     values = numpy.array(inputs[0][goodmask], dtype=numpy.float64)
     # Use the numpy/scipy methods which includes some guards
-    result[0,0,0,0,0,0] = numpy.mean(values)
-    result[1,0,0,0,0,0] = numpy.var(values)
-    result[2,0,0,0,0,0] = scipy.stats.skew(values)
-    result[3,0,0,0,0,0] = scipy.stats.kurtosis(values)
+    result[:] = resbdf
+    result[0] = numpy.mean(values)
+    result[1] = numpy.var(values)
+    result[2] = scipy.stats.skew(values)
+    result[3] = scipy.stats.kurtosis(values)
 
 
 #

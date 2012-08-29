@@ -13,22 +13,18 @@ def ferret_init(id):
     """
     Initialization for the stats_fit python-backed ferret external function
     """
+    axes_values = [ pyferret.AXIS_DOES_NOT_EXIST ] * pyferret.MAX_FERRET_NDIM
+    axes_values[0] = pyferret.AXIS_CUSTOM
+    false_influences = [ False ] * pyferret.MAX_FERRET_NDIM
     retdict = { "numargs": 3,
                 "descript": "Returns parameters for a probability distribution that best fit all defined data values",
-                "axes": ( pyferret.AXIS_CUSTOM,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST,
-                          pyferret.AXIS_DOES_NOT_EXIST, ),
+                "axes": axes_values,
                 "argnames": ( "VALS", "PDNAME", "PDPARAMS", ),
                 "argdescripts": ( "Values to fit with the probability distribution",
                                   "Name of the probability distribution type to use",
                                   "Initial parameter estimates for this probability distribution", ),
                 "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.STRING_ONEVAL, pyferret.FLOAT_ARRAY, ),
-                "influences": ( ( False, False, False, False, False, False, ),
-                                ( False, False, False, False, False, False, ),
-                                ( False, False, False, False, False, False, ), ),
+                "influences": ( false_influences, false_influences, false_influences, ),
               }
     return retdict
 
@@ -40,7 +36,9 @@ def ferret_custom_axes(id):
     parameter, if not considered one of the "standard" parameters, is
     appended to the "standard" parameters.
     """
-    return ( ( 1, 5, 1, "PDPARAMS", False, ), None, None, None, None, None, )
+    axis_defs = [ None ] * pyferret.MAX_FERRET_NDIM
+    axis_defs[0] = ( 1, 5, 1, "PDPARAMS", False, )
+    return axis_defs
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):

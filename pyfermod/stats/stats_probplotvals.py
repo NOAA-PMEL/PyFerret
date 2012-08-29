@@ -23,24 +23,21 @@ def ferret_init(id):
     """
     Initialization for the stats_probplotvals Ferret PyEF
     """
+    axes_values = [ pyferret.AXIS_DOES_NOT_EXIST ] * pyferret.MAX_FERRET_NDIM
+    axes_values[0] = pyferret.AXIS_CUSTOM
+    axes_values[1] = pyferret.AXIS_CUSTOM
+    false_influences = [ False ] * pyferret.MAX_FERRET_NDIM
     retdict = { "numargs": 3,
                 "descript": "Returns [j=1] order statistic medians, " \
                                     "[j=2] ordered response data, and " \
                                     "[j=3] slope, intercept, and corr. coeff. of fitted line",
-                "axes": (pyferret.AXIS_CUSTOM,
-                         pyferret.AXIS_CUSTOM,
-                         pyferret.AXIS_DOES_NOT_EXIST,
-                         pyferret.AXIS_DOES_NOT_EXIST,
-                         pyferret.AXIS_DOES_NOT_EXIST,
-                         pyferret.AXIS_DOES_NOT_EXIST),
+                "axes": axes_values,
                 "argnames": ("SAMPLE", "PDNAME", "PDPARAMS"),
                 "argdescripts": ("Sample values for the ordered response data",
                                  "Name of a continuous probability distribution for the order statistic medians",
                                  "Parameters for this continuous probability distribution"),
                 "argtypes": (pyferret.FLOAT_ARRAY, pyferret.STRING_ONEVAL, pyferret.FLOAT_ARRAY),
-                "influences": ((False, False, False, False, False, False),
-                               (False, False, False, False, False, False),
-                               (False, False, False, False, False, False)),
+                "influences": (false_influences, false_influences, false_influences),
               }
     return retdict
 
@@ -57,19 +54,23 @@ def ferret_custom_axes(id):
         num = axis_info.get("size", -1)
         if num > 1:
             size *= num
-    return ( (1, size, 1, "VALUE_NUM", False, ), (1, 3, 1, "OSM,ORD,P", False, ), None, None, None, None, )
+    axis_defs = [ None ] * pyferret.MAX_FERRET_NDIM
+    axis_defs[0] = (1, size, 1, "VALUE_NUM", False, )
+    axis_defs[1] = (1, 3, 1, "OSM,ORD,P", False, )
+    return axis_defs
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     """
-    Assigns to result[:,0,0,0,0,0] the order statistic medians 
-    for the probability distribution named in inputs[1] with 
-    parameters given in inputs[2].  Assigns to result[:,1,0,0,0,0] 
+    Assigns to result[:,0] the order statistic medians for
+    the probability distribution named in inputs[1] with 
+    parameters given in inputs[2].  Assigns to result[:,1] 
     the ordered response data of the sample values given in 
-    inputs[0].  Assigns to result[:3,2,0,0,0,0] the slope, intercept, 
-    and correlation coefficient of the line fitted to a plot of 
-    result[:,1,0,0,0,0] against result[:,0,0,0,0,0].  Undefined values 
-    in inputs[0] are removed at the beginning of this computation.
+    inputs[0].  Assigns to result[:3,2] the slope, intercept, 
+    and correlation coefficient of the line fitted to a plot
+    of result[:,1] against result[:,0].  Undefined values 
+    in inputs[0] are removed at the beginning of this
+    computation.
     """
     distribname = inputs[1]
     distname = pyferret.stats.getdistname(distribname)
@@ -81,19 +82,12 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
         raise ValueError("Unknown (for params) probability function %s" % distribname)
 
     sample = inputs[0].reshape(-1)
-    expshape = ( len(sample), 3, 1, 1, 1, 1 )
-    if result.shape != expshape:
-        raise ValueError("Unexpected shape of results array: expected %s; found %s" % \
-                         (str(expshape), str(result.shape)))
     badmask = ( numpy.fabs(sample - inpbdfs[0]) < 1.0E-5 )
-    badmask = numpy.logical_or(badmask, numpy.isnan(sample))
-    goodmask = numpy.logical_not(badmask)
+    goodmask = numpy.logical_not(numpy.logical_or(badmask, numpy.isnan(sample)))
     ppdata = scipy.stats.probplot(sample[goodmask], distparams, distname, fit=1)
-    result[badmask,0,0,0,0,0] = resbdf
+    result[:] = resbdf
     result[goodmask,0,0,0,0,0] = ppdata[0][0]
-    result[badmask,1,0,0,0,0] = resbdf
     result[goodmask,1,0,0,0,0] = ppdata[0][1]
-    result[3:,2,0,0,0,0] = resbdf
     result[:3,2,0,0,0,0] = ppdata[1]
 
 

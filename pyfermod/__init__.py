@@ -102,9 +102,9 @@ def init(arglist=None, enterferret=True):
     ferret_help_message = \
     """
 
-    Usage:  ferret7  [-memsize <N>]  [-batch [<filename>]]  [-transparent]  [-nojnl]
-                     [-noverify]  [-secure]  [-server]  [-python]  [-version]  [-help]
-                     [-gif]  [-unmapped]  [-quiet]  [-script <scriptname> [ <scriptarg> ... ]]
+    Usage:  pyferret  [-memsize <N>]  [-batch [<filename>]]  [-transparent]  [-nojnl]
+                      [-noverify]  [-secure]  [-server]  [-python]  [-version]  [-help]
+                      [-gif]  [-unmapped]  [-quiet]  [-script <scriptname> [ <scriptarg> ... ]]
 
        -memsize:     initialize the memory cache size to <N> (default 25.6)
                      mega (10^6) floats (where 1 float = 8 bytes)
@@ -143,23 +143,110 @@ def init(arglist=None, enterferret=True):
                      and exit (THIS MUST BE SPECIFIED LAST)
     """
 
+    my_metaname = None
+    my_transparent = False
+    my_unmapped = False
+    my_memsize = 25.6
+    my_journal = True
+    my_verify = True
+    my_restrict = False
+    my_server = False
+    my_quiet = False
+    my_enterferret = enterferret
+    script = None
+    # To be compatible with traditional Ferret command-line options
+    # (that are still supported), we need to parse the options by hand.
+    if arglist:
+        print_help = False
+        just_exit = False
+        try:
+            k = 0
+            while k < len(arglist):
+                opt = arglist[k]
+                if opt == "-memsize":
+                    k += 1
+                    try:
+                        my_memsize = float(arglist[k])
+                    except:
+                        raise ValueError("a positive number must be given for a -memsize value")
+                    if my_memsize <= 0.0:
+                        raise ValueError("a positive number must be given for a -memsize value")
+                elif opt == "-batch":
+                    my_metaname = "ferret.png"
+                    k += 1
+                    # -batch has an optional argument
+                    try:
+                        if arglist[k][0] != '-':
+                            my_metaname = arglist[k]
+                        else:
+                            k -= 1
+                    except:
+                        k -= 1
+                elif opt == "-transparent":
+                    my_transparent = True
+                elif opt == "-gif":
+                    # just treat -gif the same as -unmapped
+                    my_unmapped = True
+                elif opt == "-unmapped":
+                    my_unmapped = True
+                elif opt == "-nojnl":
+                    my_journal = False
+                elif opt == "-noverify":
+                    my_verify = False
+                elif opt == "-secure":
+                    my_restrict = True
+                elif opt == "-server":
+                    my_server = True
+                elif opt == "-quiet":
+                    my_quiet = True
+                elif opt == "-python":
+                    my_enterferret = False
+                elif opt == "-version":
+                    just_exit = True
+                    break
+                elif (opt == "-help") or (opt == "-h") or (opt == "--help"):
+                    print_help = True
+                    break
+                elif opt == "-script":
+                    k += 1
+                    try:
+                        script = arglist[k:]
+                        if len(script) == 0:
+                            raise ValueError("a script filename must be given for the -script value")
+                    except:
+                        raise ValueError("a script filename must be given for the -script value")
+                    break
+                else:
+                    raise ValueError("unrecognized option '%s'" % opt)
+                k += 1
+        except ValueError, errmsg:
+            # print the error message, then print the help message
+            print >>sys.stderr, "\n%s" % errmsg
+            print_help = True
+        if print_help:
+            # print the help message, then mark for exiting
+            print >>sys.stderr, ferret_help_message
+            just_exit = True
+        if just_exit:
+            # print the ferret header then exit completely
+            start(journal=False, verify=False, metaname="ferret.png")
+            result = run("exit /program")
+            # should not get here
+            raise SystemExit
+
     # Use tab completion for readline (for Ferret) by default
     readline.parse_and_bind('tab: complete');
 
-    # Execute the $PYTHONSTARTUP file, if given and not in secure mode
-    if not (arglist and ('-secure' in arglist)):
+    # Execute the $PYTHONSTARTUP file, if it exists and -secure not given
+    if not my_restrict:
         try:
             execfile(os.getenv('PYTHONSTARTUP', ''));
         except IOError:
             pass;
 
-    my_quiet = False
-    if arglist and ('-quiet' in arglist):
-        my_quiet = True
-
     if not my_quiet:
         # Check (again) if able to import cdms2/cdtime.
-        # If the imports were successful before, these imports just return.
+        # If the imports were successful before, these imports do nothing
         try:
             import cdms2
             import cdtime
@@ -362,97 +449,6 @@ def init(arglist=None, enterferret=True):
             print >>sys.stderr, "    WARNING: Unable to import ESMP;\n" \
                                 "             curv2rect* Ferret functions will not be added.\n" \
                                 "             Use curv_to_rect* functions instead"
-
-    my_metaname = None
-    my_transparent = False
-    my_unmapped = False
-    my_memsize = 25.6
-    my_journal = True
-    my_verify = True
-    my_restrict = False
-    my_server = False
-    my_enterferret = enterferret
-    script = None
-    # To be compatible with traditional Ferret command-line options
-    # (that are still supported), we need to parse the options by hand.
-    if arglist:
-        print_help = False
-        just_exit = False
-        try:
-            k = 0
-            while k < len(arglist):
-                opt = arglist[k]
-                if opt == "-memsize":
-                    k += 1
-                    try:
-                        my_memsize = float(arglist[k])
-                    except:
-                        raise ValueError("a positive number must be given for a -memsize value")
-                    if my_memsize <= 0.0:
-                        raise ValueError("a positive number must be given for a -memsize value")
-                elif opt == "-batch":
-                    my_metaname = "ferret.png"
-                    k += 1
-                    # -batch has an optional argument
-                    try:
-                        if arglist[k][0] != '-':
-                            my_metaname = arglist[k]
-                        else:
-                            k -= 1
-                    except:
-                        k -= 1
-                elif opt == "-transparent":
-                    my_transparent = True
-                elif opt == "-gif":
-                    # just treat -gif the same as -unmapped
-                    my_unmapped = True
-                elif opt == "-unmapped":
-                    my_unmapped = True
-                elif opt == "-nojnl":
-                    my_journal = False
-                elif opt == "-noverify":
-                    my_verify = False
-                elif opt == "-secure":
-                    my_restrict = True
-                elif opt == "-server":
-                    my_server = True
-                elif opt == "-python":
-                    my_enterferret = False
-                elif opt == "-quiet":
-                    # -quiet handled earlier
-                    pass
-                elif opt == "-version":
-                    just_exit = True
-                    break
-                elif (opt == "-help") or (opt == "-h") or (opt == "--help"):
-                    print_help = True
-                    break
-                elif opt == "-script":
-                    k += 1
-                    try:
-                        script = arglist[k:]
-                        if len(script) == 0:
-                            raise ValueError("a script filename must be given for the -script value")
-                    except:
-                        raise ValueError("a script filename must be given for the -script value")
-                    break
-                else:
-                    raise ValueError("unrecognized option '%s'" % opt)
-                k += 1
-        except ValueError, errmsg:
-            # print the error message then pritn the help message
-            print >>sys.stderr, "\n%s" % errmsg
-            print_help = True
-        if print_help:
-            # print the help message, then mark for exiting
-            print >>sys.stderr, ferret_help_message
-            just_exit = True
-        if just_exit:
-            # print the ferret header then exit completely
-            start(journal=False, verify=False, metaname="ferret.png")
-            result = run("exit /program")
-            # should not get here
-            raise SystemExit
 
     # start ferret without journaling
     start(memsize=my_memsize, journal=False, verify=my_verify,

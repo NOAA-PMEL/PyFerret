@@ -19,13 +19,13 @@ class CurvRectRegridder(object):
     is explicitly defined, and a 2D rectilinear grid, where the grid
     corners are all intersections of a given set of strictly increasing
     longitudes with a set of strictly increasing latitudes.  The
-    rectilinear grid centers are the the intersections of averaged
+    rectilinear grid centers are the intersections of averaged
     consecutive longitude pairs with averaged consecutive latitude pairs.
 
-    For these grids, the center point [i,j] is taken to be the center
+    For these grids, the center point [i, j] is taken to be the center
     point of the quadrilateral defined by connecting consecutive corner
-    points in the sequence (corner_pt[i,j], corner_pt[i+1,j],
-    corner_pt[i+1,j+1], corner_pt([i,j+1], corner_pt[i,j]).
+    points in the sequence (corner_pt[i, j], corner_pt[i+1, j],
+    corner_pt[i+1, j+1], corner_pt([i, j+1], corner_pt[i, j]).
 
     Uses the ESMP interface to ESMF to perform the regridding.  Prior
     to calling any instance methods in the CurvRectRegridder class, the
@@ -35,6 +35,10 @@ class CurvRectRegridder(object):
     resources associated with the instance.  When ESMP is no longer
     required, the ESMP.ESMP_Finalize() method should be called to free
     all ESMP and ESMF resources.
+
+    See the ESMPControl singleton class to simplify initializing ESMP
+    once, and only once, and scheduling finalization of ESMP.  At this
+    time, ESMP cannot be reinitialized after it is finalized.
     '''
 
 
@@ -68,6 +72,11 @@ class CurvRectRegridder(object):
         the grid corner longitudes and latitudes as the grid corner points.
         Curvilinear data is assigned to the center points.  Grid point
         coordinates are assigned as coord[i,j] = ( lons[i,j], lats[i,j] ).
+
+        For these grids, the center point [i, j] is taken to be the center
+        point of the quadrilateral defined by connecting consecutive corner
+        points in the sequence (corner_pt[i, j], corner_pt[i+1, j],
+        corner_pt[i+1, j+1], corner_pt([i ,j+1], corner_pt[i, j]).
 
         Any previous ESMP_Grid, ESMP_Field, or ESMP regridding procedures
         are destroyed.
@@ -190,15 +199,15 @@ class CurvRectRegridder(object):
         # ESMP_GridCreateNoPeriDim for the typical case in Ferret.
         # ESMP_GridCreate1PeriDim assumes that the full globe is to
         # be used; that there is a center point provided for a cell
-        # between the last latitude and the first latitude and 
-        # thus interpolates between the last and first longitude. 
+        # between the last longitude and the first longitude and 
+        # thus interpolates through the last and first longitude. 
         self.__curv_shape = center_lons_array.shape
         grid_shape = numpy.array(self.__curv_shape, dtype=numpy.int32)
         self.__curv_grid = ESMP.ESMP_GridCreateNoPeriDim(grid_shape,
                                          ESMP.ESMP_COORDSYS_SPH_DEG,
                                          ESMP.ESMP_TYPEKIND_R8)
 
-        if corner_lats_array != None:
+        if corner_lons_array != None:
             # Allocate space for the grid corner coordinates
             ESMP.ESMP_GridAddCoord(self.__curv_grid, ESMP.ESMP_STAGGERLOC_CORNER)
 
@@ -320,7 +329,7 @@ class CurvRectRegridder(object):
         points.  Rectilinear data is assigned to the center points.  Grid
         corner point coordinates are assigned as corner_pt[i,j] =
         ( edge_lons[i], edge_lats[j] ).  Grid center point coordinates are
-        assigned as center_pt[i,j]= ( (edge_lons[i] + edge_lons[i+1]) / 2,
+        assigned as center_pt[i, j]= ( (edge_lons[i] + edge_lons[i+1]) / 2,
         (edge_lats[j] + edge_lats[j+1]) / 2 ).
 
         Any previous ESMP_Grid, ESMP_Field, or ESMP regridding procedures
@@ -419,12 +428,10 @@ class CurvRectRegridder(object):
         # ESMP_GridCreateNoPeriDim for the typical case in Ferret.
         # ESMP_GridCreate1PeriDim assumes that the full globe is to
         # be used; that there is a center point provided for a cell
-        # between the last latitude and the first latitude and 
-        # thus interpolates between the last and first longitude. 
+        # between the last longitude and the first longitude and 
+        # thus interpolates through the last and first longitude. 
         self.__rect_shape = (lons_array.shape[0] - 1, lats_array.shape[0] - 1)
         grid_shape = numpy.array(self.__rect_shape, dtype=numpy.int32)
-        if self.__rect_grid != None:
-            ESMP.ESMP_GridDestroy(self.__rect_grid)
         self.__rect_grid = ESMP.ESMP_GridCreateNoPeriDim(grid_shape,
                                          ESMP.ESMP_COORDSYS_SPH_DEG,
                                          ESMP.ESMP_TYPEKIND_R8)
@@ -1445,7 +1452,7 @@ def __printDiffs(grid_lons, grid_lats, undef_val, expect_data, found_data):
         grid_lats:   numpy 2D array of grid latitudes
         undef_val:   numpy array of one value; the undefined data value
         expect_data: numpy 2D array of expected data values
-        found_data:  numpy 2d array of data values to check
+        found_data:  numpy 2D array of data values to check
     Returns:
         None
     Raises:

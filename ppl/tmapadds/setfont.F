@@ -79,13 +79,10 @@ c	CHARACTER PLTFIL*80
 	INTEGER*2 DTYPE,DLEN,IOFF,IFLEN,ITYPE
 	INTEGER COLOLD
 	LOGICAL ASCFNT
+	INTEGER TM_LENSTR1, tlen
 C
 C
-#ifdef unix
 	INCLUDE 'PLTCOM.DAT'
-#else
-	INCLUDE 'pplv11inc:PLTCOM.DAT'
-#endif
 
 
 #ifdef unix
@@ -132,11 +129,13 @@ C
 	return
 
  5000	temp_charbuff = DNAME(ID)
+	tlen = TM_LENSTR1(temp_charbuff)
 	write(6,*) "setfont: Couldn't open font file:"//
-     .               fontdir(:dirlen)//'/'//temp_charbuff
+     .               fontdir(:dirlen)//'/'//temp_charbuff(:tlen)
 	stop
  5010	temp_charbuff = DNAME(ID)
+	tlen = TM_LENSTR1(temp_charbuff)
 	write(6,*) "setfont: Read error on font file:"//
-     .               fontdir(:dirlen)//'/'//temp_charbuff
+     .               fontdir(:dirlen)//'/'//temp_charbuff(:tlen)
 	stop
 	end

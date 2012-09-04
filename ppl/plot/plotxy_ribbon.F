@@ -133,7 +133,7 @@ C
 C  Set the contour/color levels
 
 	CALL SET_LEVELS_SHADE_FILL (status)
-	shd_levels = MAX (nlev2,1)
+	shd_levels = MAX (nlev2-1,1)  ! as in shade_sub
 	
 * DETERMINE COLORS TO SET BUNDLED LINE REPRESENTATIONS
 	CALL WS_LINE_SPECTRUM (wsid,wstype, low_index)

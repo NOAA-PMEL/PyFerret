@@ -1,6 +1,3 @@
-#! python
-#
-
 '''
 Unit tests for CurvRectRegridder
 

@@ -1,6 +1,3 @@
-#! python
-#
-
 '''
 Unit tests for CurvRect3DRegridder
 
@@ -593,5 +590,5 @@ if __name__ == "__main__":
     '''
     Run the unit tests in this module.
     '''
-    unittest.TestProgram(argv=['', '-v', 'CurvRect3DRegridderTests.test10RegridRectToCurvConserve'])
+    unittest.main()
 

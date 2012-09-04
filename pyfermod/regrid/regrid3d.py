@@ -1,6 +1,3 @@
-#! python
-#
-
 '''
 Regridder for converting data between a curvilinear longitude,
 latitude, depth (or elevation) grid and a rectilinear longitude,

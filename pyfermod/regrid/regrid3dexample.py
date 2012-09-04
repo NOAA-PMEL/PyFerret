@@ -495,11 +495,11 @@ if __name__ == '__main__':
             print ""
             print "analytic (expect) versus conserve regridded (found) differences"
             printDiffs(rect_3d_center_lons,
-                         rect_3d_center_lats,
-                         rect_3d_center_depths,
-                         undef_val, 0.001,
-                         rect_expect_data,
-                         rect_regrid_data)
+                       rect_3d_center_lats,
+                       rect_3d_center_depths,
+                       undef_val, 0.001,
+                       rect_expect_data,
+                       rect_regrid_data)
 
         # Regrid from curvilinear to rectilinear using the bilinear method
         rect_regrid_data = regridder.regridCurvToRect(undef_val, ESMP.ESMP_REGRIDMETHOD_BILINEAR)
@@ -507,11 +507,11 @@ if __name__ == '__main__':
         print ""
         print "analytic (expect) versus bilinear regridded (found) differences"
         printDiffs(rect_3d_center_lons,
-                     rect_3d_center_lats,
-                     rect_3d_center_depths,
-                     undef_val, 0.12,
-                     rect_expect_data,
-                     rect_regrid_data)
+                   rect_3d_center_lats,
+                   rect_3d_center_depths,
+                   undef_val, 0.12,
+                   rect_expect_data,
+                   rect_regrid_data)
 
         # Regrid from curvilinear to rectilinear using the patch method
         rect_regrid_data = regridder.regridCurvToRect(undef_val, ESMP.ESMP_REGRIDMETHOD_PATCH)
@@ -519,11 +519,11 @@ if __name__ == '__main__':
         print ""
         print "analytic (expect) versus patch regridded (found) differences"
         printDiffs(rect_3d_center_lons,
-                     rect_3d_center_lats,
-                     rect_3d_center_depths,
-                     undef_val, 1.0, 
-                     rect_expect_data,
-                     rect_regrid_data)
+                   rect_3d_center_lats,
+                   rect_3d_center_depths,
+                   undef_val, 1.0, 
+                   rect_expect_data,
+                   rect_regrid_data)
 
     elif direction in ('r2cw', 'r2co'):
 
@@ -547,11 +547,11 @@ if __name__ == '__main__':
             print ""
             print "analytic (expect) versus conserve regridded (found) differences"
             printDiffs(curv_center_lons[:,:,1:-1],
-                         curv_center_lats[:,:,1:-1],
-                         curv_center_depths[:,:,1:-1],
-                         undef_val, 0.001,
-                         curv_expect_data[:,:,1:-1],
-                         curv_regrid_data[:,:,1:-1])
+                       curv_center_lats[:,:,1:-1],
+                       curv_center_depths[:,:,1:-1],
+                       undef_val, 0.001,
+                       curv_expect_data[:,:,1:-1],
+                       curv_regrid_data[:,:,1:-1])
 
         # Regrid from rectilinear to curvilinear using the bilinear method
         curv_regrid_data = regridder.regridRectToCurv(undef_val, ESMP.ESMP_REGRIDMETHOD_BILINEAR)
@@ -559,11 +559,11 @@ if __name__ == '__main__':
         print ""
         print "analytic (expect) versus bilinear regridded (found) differences"
         printDiffs(curv_center_lons[:,:,1:-1],
-                     curv_center_lats[:,:,1:-1],
-                     curv_center_depths[:,:,1:-1],
-                     undef_val, 0.25,
-                     curv_expect_data[:,:,1:-1],
-                     curv_regrid_data[:,:,1:-1])
+                   curv_center_lats[:,:,1:-1],
+                   curv_center_depths[:,:,1:-1],
+                   undef_val, 0.25,
+                   curv_expect_data[:,:,1:-1],
+                   curv_regrid_data[:,:,1:-1])
 
         # Regrid from rectilinear to curvilinear using the patch method
         curv_regrid_data = regridder.regridRectToCurv(undef_val, ESMP.ESMP_REGRIDMETHOD_PATCH)
@@ -571,11 +571,11 @@ if __name__ == '__main__':
         print ""
         print "analytic (expect) versus patch regridded (found) differences"
         printDiffs(curv_center_lons[:,:,1:-1],
-                     curv_center_lats[:,:,1:-1],
-                     curv_center_depths[:,:,1:-1],
-                     undef_val, 1.1,
-                     curv_expect_data[:,:,1:-1],
-                     curv_regrid_data[:,:,1:-1])
+                   curv_center_lats[:,:,1:-1],
+                   curv_center_depths[:,:,1:-1],
+                   undef_val, 1.1,
+                   curv_expect_data[:,:,1:-1],
+                   curv_regrid_data[:,:,1:-1])
 
     else:
         raise ValueError("unexpected direction of %s" % direction)

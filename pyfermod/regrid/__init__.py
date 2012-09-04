@@ -1,6 +1,3 @@
-#! python
-#
-
 '''
 Regridders designed for use in PyFerret, especially for Python external
 functions for PyFerret.  Includes the singleton class ESMPControl to
@@ -8,12 +5,14 @@ safely start and stop ESMP once, and only once, in a Python session.
 
 @author: Karl Smith
 '''
+
 import numpy
 
 # Import classes given in modules in this package so they are all seen here.
 try:
     from esmpcontrol import ESMPControl
     from regrid2d import CurvRectRegridder
+    from regrid3d import CurvRect3DRegridder
 except ImportError:
     # No ESMP, but do not raise an error until attempting to actually use it
     pass
@@ -70,7 +69,7 @@ def quadCornersFrom3D(ptx3d, pty3d):
     corners_shape = (ptx3d.shape[0] + 1, ptx3d.shape[1] + 1)
 
     if not (numpy.allclose(ptx3d[1:, 1:, 0], ptx3d[:-1, :-1, 2], rtol, atol) and \
-             numpy.allclose(pty3d[1:, 1:, 0], pty3d[:-1, :-1, 2], rtol, atol)):
+            numpy.allclose(pty3d[1:, 1:, 0], pty3d[:-1, :-1, 2], rtol, atol)):
         raise ValueError("Unexpected ptx3d, pty3d values in quadCornersFrom3D")
 
     # Check if corners are: 
@@ -129,23 +128,23 @@ def quadCentroids(ptx, pty):
     if ptx.shape != pty.shape:
         raise ValueError("ptx and pty in quadCentroids must have the same shape")
 
-    side0010 = ptx[:-1, :-1] * pty[1:, :-1] - ptx[1:, :-1] * pty[:-1, :-1]
-    side1011 = ptx[1:, :-1] * pty[1:, 1:] - ptx[1:, 1:] * pty[1:, :-1]
-    side1101 = ptx[1:, 1:] * pty[:-1, 1:] - ptx[:-1, 1:] * pty[1:, 1:]
-    side0100 = ptx[:-1, 1:] * pty[:-1, :-1] - ptx[:-1, :-1] * pty[:-1, 1:]
+    side0010 = ptx[:-1, :-1] * pty[1:,  :-1] - ptx[1:,  :-1] * pty[:-1, :-1]
+    side1011 = ptx[1:,  :-1] * pty[1:,  1:]  - ptx[1:,  1:]  * pty[1:,  :-1]
+    side1101 = ptx[1:,  1:]  * pty[:-1, 1:]  - ptx[:-1, 1:]  * pty[1:,  1:]
+    side0100 = ptx[:-1, 1:]  * pty[:-1, :-1] - ptx[:-1, :-1] * pty[:-1, 1:]
 
     area = 0.5 * (side0010 + side1011 + side1101 + side0100)
 
-    ctrx = (ptx[:-1, :-1] + ptx[1:, :-1]) * side0010
-    ctrx += (ptx[1:, :-1] + ptx[1:, 1:]) * side1011
-    ctrx += (ptx[1:, 1:] + ptx[:-1, 1:]) * side1101
-    ctrx += (ptx[:-1, 1:] + ptx[:-1, :-1]) * side0100
+    ctrx  = (ptx[:-1, :-1] + ptx[1:,  :-1]) * side0010
+    ctrx += (ptx[1:,  :-1] + ptx[1:,  1:])  * side1011
+    ctrx += (ptx[1:,  1:]  + ptx[:-1, 1:])  * side1101
+    ctrx += (ptx[:-1, 1:]  + ptx[:-1, :-1]) * side0100
     ctrx /= 6.0 * area
 
-    ctry = (pty[:-1, :-1] + pty[1:, :-1]) * side0010
-    ctry += (pty[1:, :-1] + pty[1:, 1:]) * side1011
-    ctry += (pty[1:, 1:] + pty[:-1, 1:]) * side1101
-    ctry += (pty[:-1, 1:] + pty[:-1, :-1]) * side0100
+    ctry  = (pty[:-1, :-1] + pty[1:,  :-1]) * side0010
+    ctry += (pty[1:,  :-1] + pty[1:,  1:])  * side1011
+    ctry += (pty[1:,  1:]  + pty[:-1, 1:])  * side1101
+    ctry += (pty[:-1, 1:]  + pty[:-1, :-1]) * side0100
     ctry /= 6.0 * area
 
     return (ctrx, ctry)

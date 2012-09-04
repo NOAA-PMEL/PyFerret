@@ -6,6 +6,7 @@
 * V600: *am* 6/05 - added ferr_unknown_attribute
 * V600: *am* 2/06 - added ferr_not_attribute
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V684 9/12 *acm*  - Add error code for file not found (error message for font files not found)
 
 * error coding:
 *	gspecial +1--> gnoreport	- error codes requiring special action
@@ -80,7 +81,8 @@
      .			ferr_nomessge,
      .			ferr_unknown_attribute,
      .			ferr_not_attribute,
-     .			ferr_aggregate_error
+     .			ferr_aggregate_error,
+     .			ferr_file_not_found
 	PARAMETER     ( ferr_insuff_memory	= greport		+ 1,
      .			ferr_too_many_vars	= ferr_insuff_memory	+ 1,
      .			ferr_perm_var		= ferr_too_many_vars	+ 1,
@@ -123,5 +125,6 @@
      .			ferr_nomessge	        = ferr_data_type 	+ 1,
      .                  ferr_unknown_attribute  = ferr_nomessge         + 1,
      .                  ferr_not_attribute      = ferr_unknown_attribute+ 1,
-     .                  ferr_aggregate_error     = ferr_not_attribute    + 1)
-	PARAMETER     ( gnum_report	= 42 )
+     .                  ferr_aggregate_error    = ferr_not_attribute    + 1,
+     .                  ferr_file_not_found     = ferr_aggregate_error  + 1)
+	PARAMETER     ( gnum_report	= 43 )

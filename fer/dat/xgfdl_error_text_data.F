@@ -65,6 +65,7 @@
 * V6.7 *acm*  1/11 - Fix ticket 1768: undefined messages for no-such-attribute
 *                    and error in attribute caused nulls to be written to std out.
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V684 9/12 *acm*  - Add error code for file not found (error message for font files not found)
 
         IMPLICIT NONE
 	include 'errmsg.parm'	! parameter definitions
@@ -287,6 +288,11 @@
      .		/ 'error defining aggregate dataset'/
 	DATA report_err_code( ferr_not_attribute - greport )
      .		/ 'aggregate_error' /
+
+	DATA err_text( ferr_file_not_found - greport )
+     .		/ 'file undefined or not found'/
+	DATA report_err_code( ferr_aggregate_error - greport )
+     .		/ 'filefound_error' /
 
 	DATA err_text( ferr_nomessge - greport )
      .		/ ' '/

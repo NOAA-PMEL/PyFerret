@@ -577,7 +577,7 @@ C
 	   CALL WARN ('Could not open font file. Check the Ferret environment.')
 	   err_msg = fontdir(:dirlen)//'/fondat.dat'
 	ELSE
-	   CALL WARN ('Fonts directory is undefined. Is the Ferret environment set?')
+	   CALL WARN ('Fonts directory is undefined. Check the Ferret environment.')
 	   err_msg = 'fondat.dat'
 	ENDIF
 

@@ -2,7 +2,7 @@
 Singleton class for starting and stopping ESMP (using ESMP.ESMP_Intialize
 and ESMP.ESMP_Finalize) once, and only once, in a Python session.
 
-@author: ksmith
+@author: Karl Smith
 '''
 
 import os
@@ -18,9 +18,9 @@ class ESMPControl(object):
     When ESMP is initialized in the first call to startCheckESMP,
     stopESMP is registered with atexit to ensure ESMP is always
     finalized prior to exiting Python.  If startCheckESMP was
-    called, and then stopESMP was called, any subsequent calls to
-    startCheckESMP will return False to prevent reinitialization,
-    which currently causes problems in ESMP.
+    called, and then stopESMP was called, any subsequent calls
+    to startCheckESMP will return False to prevent attempts to 
+    reinitialization.
     '''
 
     # The singleton instance for this class
@@ -69,7 +69,7 @@ class ESMPControl(object):
 
     def stopESMP(self, delete_log=False):
         '''
-        Calls ESMP.ESMP_Finalize if ESMP had been initialzed using
+        Calls ESMP.ESMP_Finalize if ESMP had been initialized using
         startCheckESMP.  This function is registered with atexit
         by startCheckESMP when it calls ESMP.ESMP_Initialize to
         ensure ESMP.ESMP_Finalize is always called before exiting

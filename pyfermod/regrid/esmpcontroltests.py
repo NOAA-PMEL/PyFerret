@@ -1,7 +1,7 @@
 '''
 Tests of ESMPControl singleton class
 
-@author: ksmith
+@author: Karl Smith
 '''
 import unittest
 from esmpcontrol import ESMPControl

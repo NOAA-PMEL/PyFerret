@@ -3,8 +3,12 @@ Helper functions for pyferret stats external functions.
 """
 import math
 import numpy
-import scipy.stats
-import scipy.special
+try:
+    import scipy.stats
+    import scipy.special
+except ImportError:
+    # do not raise an error until actually used
+    pass
 import pyferret
 
 

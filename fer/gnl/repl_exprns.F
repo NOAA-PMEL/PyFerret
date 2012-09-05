@@ -141,7 +141,7 @@
      .            attid, ieq, dqot
 	REAL	  result, val
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
-	CHARACTER TM_FMT*16, LEFINT*16, VAR_TITLE*(max_len),
+	CHARACTER TM_FMT*18, LEFINT*16, VAR_TITLE*(max_len),
      .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len),
      .		  repl*(max_len), bad_str*(max_len), return_errmsg*256,
      .            buff*128, varname*512, attname*128, aname*128

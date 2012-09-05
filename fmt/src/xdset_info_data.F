@@ -131,9 +131,9 @@
 	DATA	ds_aux_set_num		/maxvars*int4_init/
 ********************************************************************************
 	DATA	ds_ndataperrec		/maxvars*int4_init/
-	DATA	ds_nrecpervar		/maxvars*int4_init/
+	DATA	ds_nrecpervar		/maxvar2*int4_init/
 	DATA	ds_npospervar		/maxvars*int4_init/
-	DATA	ds_nrecb4var		/maxvars*int4_init/
+	DATA	ds_nrecb4var		/maxvar2*int4_init/
 	DATA	ds_var_setnum		/maxvars*set_not_open/
 ********************************************************************************
 	DATA	min_ds_tstart		/int4_init/

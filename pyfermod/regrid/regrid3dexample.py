@@ -130,7 +130,7 @@ def createExampleCurvData():
     '''
     Creates and returns example longitude, latitudes, depth, and data
     for a curvilinear grid.  Assigns grid center point data[i,j,k]
-        = -2 * sin(lon[i,j,k]) * cos(lat[i,j,k]) / log(depth[i,j,k] + 1.0)
+        = -2 * sin(lon[i,j,k] + 20) * cos(lat[i,j,k]) / log(depth[i,j,k] + 10)
             for valid center points
         = 1.0E20 for invalid center points
 
@@ -237,7 +237,7 @@ def createExampleRectData():
     Creates and returns example longitude, latitudes, depth, and data
     for a rectilinear grid.  Covers approximately the same region given
     by createExampleCurvData.  Assigns grid center point data[i,j,k]
-        = -2 * sin(lon[i]) * cos(lat[j]) / log(depth[k] + 1.0)
+        = -2 * sin(lon[i] + 20) * cos(lat[j]) / log(depth[k] + 10)
             for valid center points
         = 1.0E34 for invalid center points
 
@@ -298,7 +298,7 @@ def createExampleRectData():
                                        ( center_3d_depths > -gulf_mex_center_rose ) )
     data[ center_invalid ] = 1.0E34
 
-    # Convert sigma, zeta coordaintes in corner depths
+    # Convert sigma, zeta coordinates in corner depths
     # Estimate the corner depths using the center depths;
     # edges not too critical since most are over land
     corner_shape = (corner_lons.shape[0], corner_lats.shape[0], corner_depths.shape[0])

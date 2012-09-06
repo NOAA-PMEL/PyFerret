@@ -160,7 +160,6 @@
 
 	      call gspmr (zwsid,index,marktype,dotsize,icolr)
 	      call gsplr (zwsid,index,1,thickness,icolr)
-	      IF (index .EQ. 40) print *, index, icolr
        
 10	   continue
 20	continue

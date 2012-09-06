@@ -60,10 +60,10 @@
 
 * internal variable declarations:
 	LOGICAL user_title
-	INTEGER	TM_LENSTR1, TM_UNIT_ID, ipl, nline_in_mem, slen, status, ptitl,
-     .		style, justify, iunits
+	INTEGER	TM_LENSTR1, TM_UNIT_ID, ipl, nline_in_mem, slen, slen1, 
+     .		status, ptitl, style, justify, iunits
 	
-	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title
+	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title, plot_title_1
 	CHARACTER	VAR_UNITS*64, SECS_TO_DATE*20, year*4, buff1*16
 	REAL		xkeypos, ykeypos, xkeysize, ykeysize, 
      .			lab_ht
@@ -240,62 +240,79 @@
 	   CALL DISP_LABELS( cx_plot, year, cal_id_1 )
 
 * ... label dependent axis with units (over-written below if /vs)
+
 	   plot_title = VAR_UNITS( cx_list(var1) )
+
 	   slen = TM_LENSTR1( plot_title )
 	   buff1 = VAR_UNITS(cx_y)
 	   iunits = TM_UNIT_ID(buff1)
-	   IF (iunits .NE. 4) CALL BOX_LABEL( dep_lab,
+	   IF (iunits .NE. 4) THEN
+	      CALL BOX_LABEL( dep_lab,
      .			   plot_title(:slen),
      .			   0.0, 0.0, 0.6*dep_len, letsize_label,
      .			   letsize_label, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
+	   ENDIF
+
+	   IF (ribbon_plot) THEN
+	      plot_title = FULL_VAR_TITLE( cx_list(var1), slen )
+	      slen = TM_LENSTR1( plot_title )
+	      CALL BOX_LABEL( dep_lab,
+     .			   plot_title(:slen),
+     .			   0.0, 0.0, 0.6*dep_len, letsize_label,
+     .			   letsize_label, ppl_centered,
+     .			   lab_loc_absolute, lab_loc_absolute )
+	   ENDIF
 
 * ... keys for the dependent vars, or if one, only then title or axis label
 ! ribbon_plot
 
-	      DO 1600 ipl = var1, var1+1
-	         nline_in_mem = nline_in_mem + 1
-	         IF ( use_keys .AND. (.NOT. nokey) ) THEN
-	            plot_title = KEY_STRING( cx_list(ipl), key_doc, slen )
-	         ELSE
-	            plot_title = FULL_VAR_TITLE( cx_list(ipl), slen )
-	         ENDIF
+	   istart = var1
+	   IF (versus .AND. ribbon_plot) istart = 1
+
+	   DO 1600 ipl = istart, var1+1
+	      IF (ipl .EQ. var1 .AND. (versus .AND. ribbon_plot)) GOTO 1600     
+	      nline_in_mem = nline_in_mem + 1
+	      IF ( use_keys .AND. (.NOT. nokey) ) THEN
+	         plot_title = KEY_STRING( cx_list(ipl), key_doc, slen )
+	      ELSE
+	         plot_title = FULL_VAR_TITLE( cx_list(ipl), slen )
+	      ENDIF
               IF (this_no_range(ipl) .AND. mode_nodata_lab) THEN
                  plot_title(slen+1:slen+14) = ' No Valid Data'
                  slen = slen + 14
               ENDIF
 	         
-	         IF (ipl.NE.ribbon_var) THEN
-	            IF ( user_title ) THEN     ! user over-ride of title
-	               CALL EQUAL_STR_LC
+              labsize = letsize_title
+              IF (ipl.EQ.ribbon_var) THEN
+		 IF (versus) THEN
+		    plot_title = 'Colored by '//plot_title(1:slen)
+                 ELSE
+		    slen1 = TM_LENSTR1( plot_title_1 )
+                    plot_title = plot_title_1(1:slen1)//
+     .			'<NL>Colored by '//plot_title(1:slen)
+                 ENDIF
+
+		 labsize = 0.6*letsize_title
+
+                 IF ( user_title ) THEN     ! user over-ride of title
+                    CALL EQUAL_STR_LC
      .			 ( cmnd_buff(qual_start(ptitl):qual_end(ptitl)),
      .                    plot_title, status )
                     IF ( status .NE. ferr_ok ) GOTO 5000
-	               slen = TM_LENSTR1( plot_title )
-	            ENDIF
-	               CALL BOX_LABEL( ppl_title,
+                    labsize = letsize_title
+	         ENDIF
+              ENDIF
+
+              slen = TM_LENSTR1( plot_title )
+              CALL BOX_LABEL( ppl_title,
      .			   plot_title(:slen),
      .			   0.0, 0.0, 0.75*hlen, letsize_title,
      .			   letsize_title, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
-	         ELSE
-	   	    plot_title = 'Colored by '//plot_title(1:slen) 
-	   	    slen = TM_LENSTR1( plot_title )
-	            IF (this_no_range(ipl) .AND. mode_nodata_lab) 
-     .		       plot_title(slen+1:slen+14) = ' (No Valid Data)'
-	   	    slen = TM_LENSTR1( plot_title )
-		    nkeys_on = nkeys_on + 1
-                    IF (.NOT. nokey) THEN
-	               CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
-     .			       lab_ht, style, justify, plot_title(:slen) )
-	               CALL PUT_KEY( nline_in_mem, plot_title(:slen),
-     .			       xkeypos, ykeypos, xkeysize, ykeysize,
-     .			       lab_ht, style,
-     .			       lab_loc_absolute, lab_loc_absolute )
-	            ENDIF
-	         ENDIF
 
- 1600	      CONTINUE
+              plot_title_1 = plot_title ! ribbon plot: combine with color-by label
+ 1600	   CONTINUE
 	   
 	ENDIF ! overlay
 

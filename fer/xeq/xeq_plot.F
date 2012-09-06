@@ -321,12 +321,12 @@ c	   IF (.NOT.versus)  GOTO 5470
 	      IF (num_uvars_in_cmnd .LT. 3) GOTO 5480
 	      IF (num_uvars_in_cmnd .GT. 3)
      .         CALL WARN (
-     .         '/PLOT/VS/LEVELS uses just 3 varables. Ignoring extra varibles.')
+     .         '/PLOT/VS/LEVELS uses just 3 variables. Ignoring extra varibles.')
            ELSE
 	      IF (num_uvars_in_cmnd .LT. 2) GOTO 5480
 	      IF (num_uvars_in_cmnd .GT. 2)
      .         CALL WARN (
-     .         '/PLOT/LEVELS uses just 2 varables. Ignoring extra varibles.')
+     .         '/PLOT/LEVELS uses just 2 variables. Ignoring extra varibles.')
            ENDIF
 
 * If a color was given, that's not valid for Ribbon plots.

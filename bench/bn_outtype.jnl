@@ -69,7 +69,6 @@ save/x=300/y=0:5/clobber/file=mytype.nc sst3
 use mytype.nc; sh dat/att mytype.nc; can data mytype
 cancel list/all
 show list
-pause
 
 ! SAVE/OUTTYPE overrides all other settings
 can var/all

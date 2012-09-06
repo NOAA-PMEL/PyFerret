@@ -141,8 +141,12 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
        (curv_center_baths.shape != curv_centers_shape):
         raise ValueError("Curvilinear data, longitude, latitudes, and " \
                          "and bathymetries must have same X and Y axes")
-    # Squeeze should have removed a singleton Z axis in zetas
+    # Squeeze should remove a singleton Z axis in zetas
     curv_center_zetas = inputs[pyferret.ARG5].squeeze()
+    # If only one time step, squeeze would have also removed it.
+    # So if no time axis, put one in.
+    if len(curv_center_zetas.shape) == 2:
+        curv_center_zetas = curv_center_zetas[:,:,numpy.newaxis]
     if curv_center_zetas.shape != (curv_data.shape[0],
                                    curv_data.shape[1],
                                    curv_data.shape[3]):

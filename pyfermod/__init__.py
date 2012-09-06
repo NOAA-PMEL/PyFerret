@@ -443,6 +443,7 @@ def init(arglist=None, enterferret=True):
         import ESMP
         std_pyefs.extend((
                   "regrid.curv2rect",
+                  "regrid.curv3srect",
                   ))
     except ImportError:
         if not my_quiet:

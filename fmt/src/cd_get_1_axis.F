@@ -1068,7 +1068,10 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 	   IF (use_strict .AND. (line_mem(i) .LE. line_mem(i-1)) )
      .	      misordered = .TRUE.
 
-* out of order axis coordinates
+* out of order axis coordinates.
+* If reversed above, remove that designation to 
+* just hand the user the original data
+
 	   IF (misordered) THEN
               words(1) = TM_LEFINT(i-ipt1+1, istat)
               CALL TM_NOTE(
@@ -1076,6 +1079,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
      .           vname(:vlen)//' at subscript '//words(1), tt)
               CALL TM_NOTE(
      .             'A dummy axis of subscripts will be used', tt)
+              reversed(iaxis) = .FALSE.
               GOTO 1000
            ENDIF
   350   CONTINUE
@@ -1509,6 +1513,7 @@ c             line_modulo_len(iaxis) = 0.0D0
 
 * 3/99-style "soft" error - invalid axis but CDF file need not be rejected
  1000   CALL TM_DEALLO_DYN_LINE(iaxis)
+
         iaxis = 0
         status = merr_ok
         RETURN

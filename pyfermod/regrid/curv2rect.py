@@ -59,6 +59,9 @@ def ferret_init(efid):
                                no_influence,
                                full_influence,
                                no_influence)
+    # okay to break up along Z, T, E, and F result axes
+    init_dict["piecemeal"] = (False, False, True, True, True, True)
+
     return init_dict
 
 

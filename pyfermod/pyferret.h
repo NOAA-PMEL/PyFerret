@@ -124,6 +124,9 @@ void turnoff_verify_(int *status);
  *                 AXIS_IMPLIED_BY_ARGS: same as the corresponding axis in one or more arguments,
  *                 AXIS_REDUCED: reduced to a single point
  *             [optional, default: AXIS_IMPLIED_BY_ARGS for each axis]
+ *     "piecemeal": 6-tuple (X,Y,Z,T,E,F) of True or False indicating if it is
+ *                  acceptable to break up the calculation, if needed, along the
+ *                  corresponding axis [optional; default: False for each axis]
  *     "argnames": N-tuple of names for the input arguments [optional, default: (A, B, ...)]
  *     "argdescripts": N-tuple of descriptions for the input arguments
  *                     [optional, default: no descriptions]

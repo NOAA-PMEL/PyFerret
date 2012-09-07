@@ -268,6 +268,53 @@ void pyefcn_init(int id, char modname[], char errmsg[])
                                    &(axisredu[3]), &(axisredu[4]), &(axisredu[5]));
 
     /*
+     * "piecemeal": 6-tuple (X,Y,Z,T,E,F) allow breaking calculations along this result grid axis?
+     *         [optional, default: False for each value]
+     */
+    valobj = PyDict_GetItemString(initdict, "piecemeal"); /* borrowed reference */
+    if ( valobj != NULL ) {
+        seqobj = PySequence_Fast(valobj, "piecemeal value");
+        if ( seqobj == NULL ) {
+            PyErr_Clear();
+            Py_DECREF(initdict);
+            strcpy(errmsg, "Invalid \"piecemeal\" value (not a tuple or list)");
+            return;
+        }
+        seqlen = (int) PySequence_Fast_GET_SIZE(seqobj);
+        if ( seqlen > MAX_FERRET_NDIM ) {
+            Py_DECREF(seqobj);
+            Py_DECREF(initdict);
+            sprintf(errmsg, "Invalid \"piecemeal\" value (tuple or list with more than %d items)",
+                             MAX_FERRET_NDIM);
+            return;
+        }
+    }
+    else {
+        seqobj = NULL;
+        seqlen = -1;
+    }
+    for (k = 0; k < MAX_FERRET_NDIM; k++) {
+        axisvals[k] = NO;
+        if ( k < seqlen ) {
+            itemobj = PySequence_Fast_GET_ITEM(seqobj, (Py_ssize_t) k); /* borrowed reference */
+            /* Must be one of the singleton objects Py_True or Py_False to be accepted */
+            if ( itemobj == Py_True ) {
+                axisvals[k] = YES;
+            }
+            else if ( itemobj != Py_False ) {
+                PyErr_Clear();
+                Py_DECREF(seqobj);
+                Py_DECREF(initdict);
+                strcpy(errmsg, "Invalid \"piecemeal\" value (not True or False)");
+                return;
+            }
+        }
+    }
+    Py_XDECREF(seqobj);
+    ef_set_piecemeal_ok_6d_(&id, &(axisvals[0]), &(axisvals[1]), &(axisvals[2]), 
+                                 &(axisvals[3]), &(axisvals[4]), &(axisvals[5]));
+
+    /*
      * "argnames": N-tuple of names for the input arguments [optional, default: (A, B, ...)]
      */
     valobj = PyDict_GetItemString(initdict, "argnames"); /* borrowed reference */
@@ -635,7 +682,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
              (strcmp(strptr, "restype") != 0) && (strcmp(strptr, "resstrlen") != 0) &&
              (strcmp(strptr, "axes") != 0) && (strcmp(strptr, "argnames") != 0) &&
              (strcmp(strptr, "argdescripts") != 0) && (strcmp(strptr, "argtypes") != 0) &&
-             (strcmp(strptr, "influences") != 0) && (strcmp(strptr, "extends") != 0) ) {
+             (strcmp(strptr, "influences") != 0) && (strcmp(strptr, "extends") != 0) &&
+             (strcmp(strptr, "piecemeal") != 0) ) {
             sprintf(errmsg, "Invalid key \"%s\" in the dictionary returned from %s in %s",
                             strptr, INIT_METHOD_NAME, modname);
             Py_DECREF(seqobj);

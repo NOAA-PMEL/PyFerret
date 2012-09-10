@@ -22,7 +22,7 @@ def ferret_init(efid):
     init_dict = { }
     init_dict["numargs"] = 7
     init_dict["descript"] = \
-        "Regrids data from curvilinear lon,lat, bathymetry/zeta/sigma " \
+        "Regrids data from curvilinear lon,lat, sigma/bathymetry/zeta " \
         "(centers) grid to rectilinear lon, lat, depth using ESMP/ESMF"
     init_dict["argnames"] = ("CurvData",
                              "CurvLons",
@@ -36,7 +36,7 @@ def ferret_init(efid):
         "Longitudes of curvilinear data on an X,Y grid",
         "Latitudes of curvilinear data on an X,Y grid",
         "Bathymetries (as depths) of curvilinear data on an X,Y grid",
-        "Water surface elevations of curvilinear data on an X,Y,[T] grid",
+        "Water surface elevations of curvilinear data on an X,Y,[T] grid (optional)",
         "Template variable on the desired rectilinear X,Y,Z,[T,E,F] grid " \
             "where Z is depths",
         "Regrid method: BILINEAR, PATCH")
@@ -138,21 +138,25 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
     curv_center_lons  = inputs[pyferret.ARG2].squeeze()
     curv_center_lats  = inputs[pyferret.ARG3].squeeze()
     curv_center_baths = inputs[pyferret.ARG4].squeeze()
-    curv_centers_shape = (curv_data.shape[0], curv_data.shape[1])
+    curv_centers_shape = curv_data.shape[:2]
     if (curv_center_lons.shape  != curv_centers_shape) or \
        (curv_center_lats.shape  != curv_centers_shape) or \
        (curv_center_baths.shape != curv_centers_shape):
         raise ValueError("Curvilinear data, longitude, latitudes, and " \
                          "and bathymetries must have same X and Y axes")
+
     # Squeeze should remove a singleton Z axis in zetas
     curv_center_zetas = inputs[pyferret.ARG5].squeeze()
     # If only one time step, squeeze would have also removed it.
     # So if no time axis, put one in.
     if len(curv_center_zetas.shape) == 2:
         curv_center_zetas = curv_center_zetas[:,:,numpy.newaxis]
-    if curv_center_zetas.shape != (curv_data.shape[0],
-                                   curv_data.shape[1],
-                                   curv_data.shape[3]):
+    # Allow zeta to be omitted by giving a single-point array
+    if curv_center_zetas.shape == ():
+        curv_center_zetas = None
+    elif curv_center_zetas.shape != (curv_data.shape[0],
+                                     curv_data.shape[1],
+                                     curv_data.shape[3]):
         raise ValueError("Curvilinear data and zetas " \
                          "must have same X, Y, and T axes")
 
@@ -186,26 +190,31 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
     regridder3d = regrid.CurvRect3DRegridder()
     last_rect_center_ignore = None
 
+    if curv_center_zetas == None:
+        # Create the curvilinear depths array
+        curv_center_depths = curv_center_sigmas * curv_center_baths
+        last_curv_center_ignore = None
+        
     # Increment the time index last since zeta is time dependent
     for t_idx in xrange(curv_data.shape[3]):
 
-        # Expand the zetas for this time step to 3D - adding Z axis
-        zetas = numpy.tile(curv_center_zetas[:,:,t_idx].flatten('F'),
-                           curv_centers_shape[2]) \
-                     .reshape(curv_centers_shape, order='F')
-        # Create the curvilinear depths array
-        curv_center_depths = curv_center_sigmas * (curv_center_baths + zetas) \
-                            - zetas
-
-        # Different curvilinear depths, so need to recreate the curvilinear grid
-        last_curv_center_ignore = None
+        if curv_center_zetas != None:
+            # Expand the zetas for this time step to 3D - adding Z axis
+            zetas = numpy.tile(curv_center_zetas[:,:,t_idx].flatten('F'),
+                               curv_centers_shape[2]) \
+                         .reshape(curv_centers_shape, order='F')
+            # Create the curvilinear depths array
+            curv_center_depths = curv_center_sigmas * (curv_center_baths + \
+                                                       zetas) - zetas
+            # Different curvilinear depths, so need to recreate the curvilinear grid
+            last_curv_center_ignore = None
 
         # Arrays are probably in Fortran order, so increment last indices last
         for f_idx in xrange(curv_data.shape[5]):
             for e_idx in xrange(curv_data.shape[4]):
                 # Determine curvilinear center points to ignore from undefined data
-                curv_center_ignore = ( curv_data[:, :, :, t_idx,
-                                                 e_idx, f_idx] == curv_undef )
+                curv_center_ignore = ( numpy.abs(curv_data[:, :, :, t_idx,
+                                        e_idx, f_idx] - curv_undef) < 1.0E-7 )
                 # If mask has changed, need to recreate the curvilinear grid
                 if (last_curv_center_ignore is None) or \
                    numpy.any(curv_center_ignore != last_curv_center_ignore):
@@ -214,8 +223,8 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
                                                True, None, None, None, None)
                     last_curv_center_ignore = curv_center_ignore
                 # Determine rectilinear center points to ignore from undefined data
-                rect_center_ignore = ( template_data[:, :, :, t_idx,
-                                                     e_idx, f_idx] == template_undef )
+                rect_center_ignore = ( numpy.abs(template_data[:, :, :, t_idx,
+                                        e_idx, f_idx] - template_undef) < 1.0E-7 )
                 # If mask has changed, need to recreate the rectilinear grid
                 if (last_rect_center_ignore is None) or \
                    numpy.any(rect_center_ignore != last_rect_center_ignore):

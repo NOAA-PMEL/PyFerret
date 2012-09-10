@@ -185,8 +185,8 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
             for e_idx in xrange(curv_data.shape[4]):
                 for t_idx in xrange(curv_data.shape[3]):
                     # Determine curvilinear center points to ignore from undefined data
-                    curv_center_ignore = ( curv_data[:, :, d_idx, t_idx,
-                                                e_idx, f_idx] == curv_undef )
+                    curv_center_ignore = ( numpy.abs(curv_data[:, :, d_idx, t_idx,
+                                                e_idx, f_idx] - curv_undef) < 1.0E-7 )
                     # If mask has changed, need to recreate the curvilinear grid
                     if (last_curv_center_ignore is None) or \
                        numpy.any(curv_center_ignore != last_curv_center_ignore):
@@ -195,8 +195,8 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
                                                  curv_corner_lats, None)
                         last_curv_center_ignore = curv_center_ignore
                     # Determine rectilinear center points to ignore from undefined data
-                    rect_center_ignore = ( template_data[:, :, d_idx, t_idx,
-                                                    e_idx, f_idx] == template_undef )
+                    rect_center_ignore = ( numpy.abs(template_data[:, :, d_idx, t_idx,
+                                                e_idx, f_idx] - template_undef) < 1.0E-7 )
                     # If mask has changed, need to recreate the rectilinear grid
                     if (last_rect_center_ignore is None) or \
                        numpy.any(rect_center_ignore != last_rect_center_ignore):

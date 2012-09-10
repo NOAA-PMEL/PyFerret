@@ -22,7 +22,7 @@ def ferret_init(efid):
     init_dict = { }
     init_dict["numargs"] = 7
     init_dict["descript"] = \
-        "Regrids data from curvilinear lon,lat, sigma/bathymetry/zeta " \
+        "Regrids data from curvilinear lon, lat, sigma, bathymetry, zeta " \
         "(centers) grid to rectilinear lon, lat, depth using ESMP/ESMF"
     init_dict["argnames"] = ("CurvData",
                              "CurvLons",
@@ -35,7 +35,7 @@ def ferret_init(efid):
         "Curvilinear X,Y,Z,[T,E,F] data where Z is sigma values",
         "Longitudes of curvilinear data on an X,Y grid",
         "Latitudes of curvilinear data on an X,Y grid",
-        "Bathymetries (as depths) of curvilinear data on an X,Y grid",
+        "Bathymetry (as depths) of curvilinear data on an X,Y grid",
         "Water surface elevations of curvilinear data on an X,Y,[T] grid (optional)",
         "Template variable on the desired rectilinear X,Y,Z,[T,E,F] grid " \
             "where Z is depths",
@@ -143,7 +143,7 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
        (curv_center_lats.shape  != curv_centers_shape) or \
        (curv_center_baths.shape != curv_centers_shape):
         raise ValueError("Curvilinear data, longitude, latitudes, and " \
-                         "and bathymetries must have same X and Y axes")
+                         "and bathymetry must have same X and Y axes")
 
     # Squeeze should remove a singleton Z axis in zetas
     curv_center_zetas = inputs[pyferret.ARG5].squeeze()

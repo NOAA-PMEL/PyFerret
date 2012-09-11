@@ -31,6 +31,14 @@ contained within PyFerret.
     As a result, the Ferret "where" function returns random coordinates 
     without any interaction with the displayed window.
     </dd>
+<dt>CTRL-C exits PyFerret</dt>
+    <dd>
+    In Ferret, when CTRL-C is pressed, any pending activity in Ferret
+    is stopped and the user is returned to the Ferret prompt.  
+    In PyFerret, CTRL-C causes the program to exit completely.  
+    This is due to Python capturing and reacting to the CTRL-C; 
+    thus Ferret functionality does not see the CTRL-C.
+    </dd>
 </dl>
 
 <br />

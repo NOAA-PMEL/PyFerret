@@ -16,7 +16,6 @@ set view lr; plot/l=15/j=40/lev=v/thick/pal=rnb2 temp[i=96], temp[i=103]
 can data/all
 
 ! xpts, ypts all present, compare when var has missing.
-pause
 can view
 let/title="Xpts"/units=degrees_east xpts = {\
 151.0,153.0,155.0,157.0,159.0,161.0,163.0,165.0,167.0,169.0,171.0,173.0,175.0,\
@@ -51,7 +50,6 @@ plot/vs/line/lev=20/nokey/over xpts,ypts2,var2
 let yp3 = if var2 then ypts2 - 0.1
 plot/over/nolab/vs/line/color=black/sym=20 xpts, yp3
 
-pause
 ! Testing other palettes
 
 let/title="Xpts"/units=degrees_east xpts = { 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,\

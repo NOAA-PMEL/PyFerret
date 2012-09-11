@@ -86,10 +86,11 @@
      .          coef( dst_lo:dst_hi )
 
 * INTERNAL VARIABLE DECLARATIONS:
-	LOGICAL	TM_FPEQ, ok_neg111
+	LOGICAL	TM_FPEQ_SNGL, TM_DFPEQ_TOL, ok_neg111
 	INTEGER i, j, k, l, m, n,
-     .		ss, src_lo, src_hi, src_grd, dst_grd
+     .		ss, src_lo, src_hi, src_grd, dst_grd, was
 	REAL	bad_src, bad_dst
+	REAL*4  singlec, singlez, single1
 
 ******************************************************************************
 
@@ -105,12 +106,21 @@
 	src_grd = mr_grid( msrc )
 	dst_grd = mr_grid( mdst )
 
+* single-precision comparison with zero and 1.
+	singlez = 0.0  
+	single1 = 1.0  
+
 * DETERMINE src_grd INDEX OF exact matches on the dst_grd axis
 	CALL GET_LINEAR_COEF(	src_lo, src_hi, src_grd,
      .				dst_lo, dst_hi, dst_grd,
      .				axis, ss12, coef )
 	DO 10 i = dst_lo, dst_hi
-	   IF ( .NOT.TM_FPEQ(coef(i),0.0) ) ss12(i) = unspecified_int4
+	   singlec = coef(i)
+	   was = ss12(i)
+	   IF ( .NOT.TM_FPEQ_SNGL(singlec,singlez) ) 
+     .				ss12(i) = unspecified_int4
+	   IF (  TM_FPEQ_SNGL(singlec,single1) ) 
+     .				ss12(i) = was
  10	CONTINUE
 
 * Range of subscripts might be negative, and contain -111 among them.

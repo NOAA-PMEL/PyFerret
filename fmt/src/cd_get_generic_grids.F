@@ -183,6 +183,11 @@
      .                                 iaxis, status )
               IF ( status .NE. merr_ok ) GOTO 5900
 
+* Are there attributes that tell us the direction?  If so apply them.
+* for the user's convenience, an invalid T axis is still in the T direction.
+	      CALL CD_GET_LINE_DIRECTION (dset, ivar, iaxis, 
+     .                name, do_warn)
+
 * save a pointer to the axis just found
  150          IF (idim.LE.nferdims) tmplines(idim) = iaxis
 

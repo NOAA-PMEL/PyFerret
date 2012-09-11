@@ -30,6 +30,7 @@ cd_get_ds_info.F\
 cd_get_agg_var_info.F\
 cd_get_generic_bounds.F\
 cd_get_generic_grids.F\
+cd_get_line_direction.F\
 cd_get_missing_flag.F\
 cd_get_parent_grids.F\
 cd_get_time_axis.F\

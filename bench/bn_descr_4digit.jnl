@@ -1,0 +1,7 @@
+ ! bn_descr_4digit.jnl
+ ! See ticket 1969: step files have 3- or 4-digit extensions
+ ! coads_clim.999, coads_clim.1000, coads_clim.1001
+
+use coads_clim_4digit.des
+sh dat
+list/x=180/y=0 sst

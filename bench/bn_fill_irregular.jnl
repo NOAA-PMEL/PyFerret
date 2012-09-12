@@ -16,5 +16,5 @@ use test_subspan_modulo.nc
 fill v2d_irr[x=-100:100]
 fill v2d_irr[t=1-jan-1990:1-jan-1995]
 
-use coads_clim_irreg
+use coads_clim_irreg.des
 fill/x=180 sst

@@ -3,7 +3,7 @@
  ! Version 4.91 - 04/29/98
  ! 30-Apr-98 14:42     
 
-set data coads_clim_irreg
+set data coads_clim_irreg.des
 stat sst
 can data/all
 

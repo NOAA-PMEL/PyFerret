@@ -7,11 +7,11 @@
 ! stepfile to read from, when the point requested is
 ! just at or between the range of the stepfiles.
 
-set data coads_clim_irreg
+set data coads_clim_irreg.des
 list/x=180/y=0/t=1-apr-1900 sst
 
 can mem/all
 can data/all
-set data coads_clim_irreg
+set data coads_clim_irreg.des
 list/x=180/y=0/t=2000 sst
 

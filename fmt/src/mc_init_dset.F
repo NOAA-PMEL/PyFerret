@@ -69,6 +69,8 @@
 * V68  *acm* 1/12- added use_strict argument for ticket 1910: micro-adjusting on 
 *                  repeated coordinates in netCDF/OPeDNAP datasets
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V682 *acm* 9/12  Fix ticket 1969: stepfiles may have 3- or 4-digit extensions 
+*                  when listed under S_NUM_OF_FILES
 
 * arguments:
 *	dset_num	- number assigned to this data set (output)

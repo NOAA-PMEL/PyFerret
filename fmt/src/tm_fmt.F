@@ -110,10 +110,10 @@
 * If the value is NaN, set the string here
         IF ( TM_CHECK_NAN(aval) .EQ. 1   ) THEN
            IF (slen .GE. 3) THEN
-              outstring  = 'NaN'
+              TM_FMT  = 'NaN'
               str_len = 3
            ELSE
-              outstring = '*'
+              TM_FMT = '*'
               str_len = 1
            ENDIF
 	   RETURN

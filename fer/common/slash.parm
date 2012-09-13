@@ -287,7 +287,8 @@
      .			slash_plot_key,
      .			slash_plot_levels,
      .			slash_plot_spectrum,
-     .			slash_plot_fast
+     .			slash_plot_fast,
+     .			slash_plot_ribbon
 
 	INTEGER		slash_wire_over,
      .			slash_wire_set_up,

@@ -35,26 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-*	Routine to set up the line bundles for generic WS's.
-*	J Davison JISAO/PMEL/TMAP 3.23.89
-*	*jd* 2.19.92 mod to support atc gks
-*	*jd* 8.10.93 mod to support XGKS line colors -- force setting
-*       *js* 7.31.97 mod to change call to gqlwk to query_xgks_wkstn
-
-*       *acm* 8/2001  add polymarker call for PLOT/SYMBOL=DOT  
-*       *acm* 4/2002  add polymarker calls for circles of different sizes
-*                     and colors 1-6 are colored dots, 7-12 are small circles
-*                     13-18 are larger circles.  /THICK makes them thicker.
-
-* gsplr: wkid, line index, line type, linewidth scale factor, color index
-* gspmr: wkid, marker index, marker type(dot=1), size (const for dot), color index
-
-*        *acm* 12/4/02 NOTE: With changes to gksm2ps.c which multiply the 
-*              size of the dots by 4, the output is consistent from 
-*              ferret metafiles transformed to postscript, from 
-*              "ferret -batch" output, and gif files.
-*       *acm* 2/2003 polymarker dot line bundles had not been set for pen > 6
-*  v600 *acm* 5/2006 User can change the number of line colors.
+*	Routine to set up the line bundles for color-line plots
 
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'

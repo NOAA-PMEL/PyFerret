@@ -70,8 +70,8 @@
      .		ds_regsteps(maxdsets), ds_basic_axes(6,maxdsets),
      .		ds_time_axis(maxdsets),
 **************************************************************************
-     .		ds_ndataperrec(maxvars),ds_nrecpervar(maxvars),
-     .		ds_nrecb4var(maxvars),ds_var_setnum(maxvars),
+     .		ds_ndataperrec(maxvars),ds_nrecpervar(maxvar2),
+     .		ds_nrecb4var(maxvar2),ds_var_setnum(maxvars),
      .		ds_npospervar(maxvars),
 **************************************************************************
      .          string_array_result1(maxvars)

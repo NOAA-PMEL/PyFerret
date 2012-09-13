@@ -242,7 +242,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	        IF(ITYPE(I).EQ.1.OR.ITYPE(I).EQ.3)IM=IMARK(I)
 	        GOTO 71
 70	      CONTINUE
-71	      IF=1
+71	      IDN=1
 * ... plot remaining points
 	      DO 72 K=J+1,IBASE+LLENG(I)
 		IF((XLE.AND.X(K).LE.CMXLE).OR.
@@ -251,14 +251,14 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
      *		 (YLE.AND.X(IY+K).LE.CMYLE).OR.
      *		 (YEQ.AND.X(IY+K).EQ.CMYEQ).OR.
      *		 (YGE.AND.X(IY+K).GE.CMYGE))THEN
-	          IF=0
+	          IDN=0
 	        ELSE
 	          CALL TRANS(I,X(K),X(IY+K),XT,YT)
-	          CALL PLOT(XT,YT,IF,0)
+	          CALL PLOT(XT,YT,IDN,0)
 		  if (interrupted) goto 51 ! *jd* 8.3.92
 	          CALL MARK(IM)
-	          IF(IF.EQ.0)THEN
-	            IF=1
+	          IF(IDN.EQ.0)THEN
+	            IDN=1
 	          END IF
 	        END IF
 72	      CONTINUE

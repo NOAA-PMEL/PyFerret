@@ -84,6 +84,7 @@ c	CHARACTER PLTFIL*80
 	INTEGER COLOLD
 	LOGICAL ASCFNT
         INTEGER IJ
+	INTEGER TM_LENSTR1, tlen
 C
 C
 	INCLUDE 'pltcom_dat.decl'
@@ -134,11 +135,13 @@ C
 	return
 
  5000	temp_charbuff = DNAME(ID)
+	tlen = TM_LENSTR1(temp_charbuff)
 	write(6,*) "setfont: Couldn't open font file:"//
-     .               fontdir(:dirlen)//'/'//temp_charbuff
+     .               fontdir(:dirlen)//'/'//temp_charbuff(:tlen)
 	stop
  5010	temp_charbuff = DNAME(ID)
+	tlen = TM_LENSTR1(temp_charbuff)
 	write(6,*) "setfont: Read error on font file:"//
-     .               fontdir(:dirlen)//'/'//temp_charbuff
+     .               fontdir(:dirlen)//'/'//temp_charbuff(:tlen)
 	stop
 	end

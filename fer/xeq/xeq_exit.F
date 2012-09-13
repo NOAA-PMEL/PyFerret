@@ -155,6 +155,7 @@
 	ELSE
 * no qualifier supplied on a "quit" in a command file: Exit current script
 	   CALL POP_CS
+	   IF (cs_cmnd_num(csp+1) .EQ. cmnd_if .AND. cs_cmnd_num(csp) .EQ. cmnd_go) CALL POP_CS 
 	   RETURN
 	ENDIF
 

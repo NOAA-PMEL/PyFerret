@@ -69,6 +69,8 @@
 * V68  *acm* 1/12- added use_strict argument for ticket 1910: micro-adjusting on 
 *                  repeated coordinates in netCDF/OPeDNAP datasets
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V682 *acm* 9/12  Fix ticket 1969: stepfiles may have 3- or 4-digit extensions 
+*                  when listed under S_NUM_OF_FILES
 
 * arguments:
 *	dset_num	- number assigned to this data set (output)
@@ -118,7 +120,7 @@
      .			byplane, l_ivar, stp_pos, min_file, max_file,
      .			file_num, cnt_stp, nrecperstep, epos, first_file,
      .			file_cnt, stp_cnt, min_pos, max_pos,istat, lcnt,
-     .			lline, file_reclen, prev_steps, lenb
+     .			lline, file_reclen, prev_steps, lenb, dot, ic
         INTEGER*4       upstat
 	INTEGER		TM_GET_GRIDNUM, TM_LENSTR, STR_UPCASE
 	REAL*8		last_delta, file_trange, steps_in_file
@@ -241,7 +243,14 @@
 * figure out if we should read filename for file number (read P.R.G)
 	IF (s_num_of_files .GT. 1) THEN
 	  epos = TM_LENSTR(s_filename)
-	  READ  (s_filename(epos-2:epos),1200) first_file
+	  dot = 0
+	  do ic = epos, 1, -1
+	    IF (s_filename(ic:ic) .EQ. '.') GOTO 188
+	    dot = dot + 1
+	  enddo
+  188	  CONTINUE
+          dot = epos - dot + 1
+	  READ  (s_filename(dot:epos),1200) first_file
  1200	  FORMAT(I3)
 	ELSE
 	  first_file = file_num+1
@@ -279,8 +288,13 @@
 	  sf_name  (stp_cnt) = s_filename
           upstat = STR_UPCASE(temp_t0time,ds_t0time(dset_num))  ! kob 6/91
 	  IF (s_num_of_files .GT. 1) THEN
-	     WRITE (sf_name(stp_cnt)(epos-3:epos),1300) file_cnt
- 1300	     FORMAT('.',I3.3)
+	     IF (file_cnt .LE. 999) THEN
+	        WRITE (sf_name(stp_cnt)(epos-3:epos),1300) file_cnt
+ 1300	        FORMAT('.',I3.3)
+             ELSE
+	        WRITE (sf_name(stp_cnt)(dot-1:dot+3),1301) file_cnt
+ 1301	        FORMAT('.',I4.4)
+             ENDIF
 
  	     sf_1step(stp_cnt) = s_start +
      .				   file_trange*(file_cnt-first_file)
@@ -357,6 +371,11 @@ c	     sf_ndxe(stp_cnt) = steps_in_file + sf_ndxs(stp_cnt) - 1
  5100	CALL TM_ERRMSG (merr_nmlerr, status, 'MC_INIT_DSET',
      .			dset_num, no_stepfile,
      .			'Error in: '//reading_nml,
+     .			no_errstring, *9900)
+
+ 5200	CALL TM_ERRMSG (merr_nmlerr, status, 'MC_INIT_DSET',
+     .			dset_num, no_stepfile,
+     .			'Error in stepfile names '//reading_nml,
      .			no_errstring, *9900)
 
 * get out from error

@@ -5,3 +5,8 @@
 GO bn_reset
 GO err682_shrink_axlab
 
+GO bn_reset
+GO err682_xact_high_prec
+
+GO bn_reset
+GO err682_if_yes_exit

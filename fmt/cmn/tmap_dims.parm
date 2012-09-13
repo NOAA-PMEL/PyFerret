@@ -32,7 +32,7 @@
      .		num_aux, num_parm, num_gridfiles, maxvarfiles,
      .		num_dyn_grids, max_dyn_grids, num_dyn_lines,
      .		max_dyn_lines, line_ceiling, grid_ceiling,
-     .		tmp_line_hook, tmp_grid_hook, nferdims
+     .		tmp_line_hook, tmp_grid_hook, nferdims, maxvar2
 
 * parameters used for dimensioning arrays
 	PARAMETER (nrec_codes = 11)	! # of different record codes
@@ -41,6 +41,7 @@
 	PARAMETER (maxdsets = 100)	! maximum # of data sets simultaneously
 	PARAMETER (maxstepfiles = 5000)	! # of files with time step data (up from 500 12/02)
 	PARAMETER (maxvars = 2000)	! max # of ALL vars *parmchg: now
+	PARAMETER (maxvar2 = 2*maxvars)	! max # *2, for dimension equivalenced to real*8 arrays
 	PARAMETER (maxvarfiles = 500)	! # of files with time step data
 	PARAMETER (maxaux = 50)		! max # of ALL auxiliary sets
 !	PARAMETER (max_grids = 60)	! max # of grids *parmchg: pre 7/92

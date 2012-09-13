@@ -1,0 +1,46 @@
+! err682_xact_high_prec.jnl
+! based on an example from the Users List, 
+! http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2012/msg00477.html
+
+! shows that the @XACT regridding in double-precision Ferret is broken.
+
+
+Let time = {\
+ 22585.3295833333,\
+ 22585.3302777778,\
+ 22585.3309722222,\
+ 22585.3316666667,\
+ 22585.3323611111,\
+ 22585.3330555556,\
+ 22585.33375,\
+ 22585.3344444444,\
+ 22585.3351388889,\
+ 22585.3358333333}
+
+Define Axis /T /From /T0=1-JAN-1950 /Units=days my_axis = time
+
+Let fake_var = T[GT=my_axis]
+Let var = RANDU( fake_var )
+Let var_regrid = RESHAPE( var, fake_var )
+
+List /T="2-nov-2011 07:54":"2-nov-2011 08:04" var_regrid
+
+! Note that if we define the axis as below, the regridding is
+! successful. But the @XACT regridding in v6.82 was requiring too 
+! much matching precision.
+
+!    DEFINE AXIS/t="02-nov-2011:07:54:36":"02-nov-2011:08:03:36":60/units=seconds/T0=1-JAN-1950 my_axis
+!    let time = t[gt=my_axis]
+!    Let var = TSEQUENCE( RANDU( time ) )
+!    Let fake_var = T[GT=my_axis]
+!    Let var_regrid = RESHAPE( var, fake_var )
+
+! New time axis
+Define Axis /T="01-NOV-2011 00:00":"30-NOV-2011 23:00":1 /Units=seconds /T0=1-JAN-1950 t_axis_seconds
+
+Let var_sec = var_regrid[ GT=t_axis_seconds@XACT ]
+
+! Here we got no good data, should be one at 7:54:36.
+
+List /T="2-nov-2011 07:54:30":"2-nov-2011 07:54:50" var_sec
+

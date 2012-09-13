@@ -2,9 +2,9 @@
      .				overlay, transpz, versus, no_labels,
      .				symbol, sym_size, color, use_line,
      .				step_inc, do_dash, dashstyle,
-     .                          is_logx, is_logy, nokey, all_1_dep,
-     .				only_val, mv_list, cx_list, nmv,
-     .				indep_dat, dep_dat, status )
+     .                          is_logx, is_logy, nokey,
+     .				all_1_dep, only_val, mv_list, cx_list, 
+     .				nmv, indep_dat, dep_dat, status )
 
 *
 *
@@ -180,24 +180,24 @@
 * internal variable declarations:
 	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, TM_HAS_STRING,
      .                  flip, time_axis,
-     .			all_1_ind, formatted, user_title,
+     .			all_1_ind, formatted,
      .			indep_is_log, dep_is_log, use_nice,
-     .                  this_no_range(50)
+     .                  this_no_range(50), set_axis
 	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
      .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14, 
      .			LEFT_REAL*16, TM_GET_CALENDAR_NAME*32, 
-     .			indep_ax*1, dep_ax*1, tstyle*3, year*4,
+     .			indep_ax*1, dep_ax*1, tstyle*3,
      .			buff1*16, buff2*16, buff3*8, t1_date*14, tref*14,
      .                  cal_name*32, cal_name_new*32, val_buff*32, fmt*4
 
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			mv, cx, slen, ito, indep_lab, dep_lab, nline_in_mem,
      .			indep_dim, npts, dep_dim, npts2, ndv, var1,
-     .			grid, grid1, ipl, style, justify, ndim, dims(6),
+     .			grid, grid1, ipl, ndim, dims(6),
      .			slen2, slen3, tax, plot_mem_used, nload, i,
-     .			pxlim, pylim, ptitl, phlim, pvlim,pindeplim, pdeplim,
-     .			dep_axtyp, indep_axtyp, the_taxis
+     .			pxlim, pylim, phlim, pvlim,pindeplim, pdeplim,
+     .			dep_axtyp, indep_axtyp, the_taxis, ribbon_var
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new
@@ -205,9 +205,7 @@
 	CHARACTER*1     axdir(6), ax1
 
 	REAL		val1, dt_min, lo, hi, dep_len, 
-     .			ind_len, first, last
-	REAL		xkeypos, ykeypos, xkeysize, ykeysize, 
-     .			lab_ht, sngl_bad
+     .			ind_len, first, last, hlen
 	REAL*8		TSTEP_TO_SECS, SECS_TO_TSTEP,
      .			ind_min, ind_max, dep_min, dep_max, delta, tmp
 
@@ -237,8 +235,6 @@
 	pvlim = qual_given( slash_vlimits )
 	pxlim = qual_given( slash_xlimits )	! deprecated
 	pylim = qual_given( slash_ylimits )	! deprecated
-	ptitl = qual_given( slash_title )
-	user_title = ptitl .GT. 0
 	cal_id_1 = 0
 	cal_id_2 = 0
 	cal_name = ' '
@@ -275,6 +271,11 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 
 * set flag indicating a 1D plot is on the screen
 	IF (.NOT.overlay) onedee_on = .TRUE.
+
+	IF (ribbon_plot) THEN
+	   ribbon_var = 3
+	   IF (.NOT.versus) ribbon_var = 2
+	ENDIF
 
 * decide if the picture should be rotated 90 degrees
 	IF ( .NOT.versus .AND. indep_dim .EQ. z_dim  ) THEN
@@ -345,7 +346,10 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   ENDIF
 * ... label the independent axis as the first var given
 	   IF ( .NOT.no_labels ) THEN
-	   CALL BOX_LABEL( indep_lab,
+	      buff1 = VAR_UNITS(cx_x)
+	      iunits = TM_UNIT_ID(buff1)
+	      IF (iunits .NE. 4) 
+     .           CALL BOX_LABEL( indep_lab,
      .			   plot_title(:slen),
      .			   0.0, 0.0, 0.6*ind_len, letsize_label,
      .			   letsize_label, ppl_centered,
@@ -516,10 +520,6 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	IF ( versus ) THEN               ! 1/94
 	   ppl_buff = ' '
 	   WRITE ( ppl_buff, 3005 ) mr_bad_data( mv ), indep_ax
-c#ifdef double_p
-c           sngl_bad = SNGL(mr_bad_data( mv ))
-c	   WRITE ( ppl_buff, 3005 ) sngl_bad, indep_ax
-c#endif
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1)
 	ENDIF
  3005	FORMAT ( 'LIMITS ',G15.8,1X,A1,'EQ' )
@@ -533,6 +533,7 @@ c#endif
 	ENDIF
 
 * loop through all the dependent variables loading them into PPLUS
+
 	all_1_dep = .TRUE.
 	only_val  = bad_val4
 	DO 200 ipl = var1, nmv
@@ -549,6 +550,15 @@ c#endif
      .				npts2,
      .				status	)
            iaxis = CGRID_AXIS(dep_dim,cx)
+	   
+	   IF (.NOT.overlay .AND. (ipl.EQ.var1 .AND. ribbon_plot)) THEN
+	      CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
+	      dep_min = DBLE( lo )
+	      dep_max = DBLE( hi )
+	      delta = unspecified_val8
+	      CALL AXIS_ENDS(dep_ax,dep_dim,grid1,dep_min,dep_max,
+     .                      delta, dep_is_log, dep_axtyp, status)
+           ENDIF
  
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 * ... replicate points to create a "step" plot if requested  (1/01)
@@ -572,7 +582,10 @@ c#endif
 	      IF ( npts2 .NE. npts ) GOTO 5130
 
 * Set up the dependent axis.
-              IF (versus .AND. .NOT.overlay) THEN
+
+	      set_axis = .TRUE.
+	      IF (ribbon_plot) set_axis = (ipl .EQ. var1)
+              IF (versus .AND. set_axis .AND. .NOT.overlay) THEN
  	         CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
 	         dep_min = DBLE( lo )
 	         dep_max = DBLE( hi )
@@ -623,10 +636,18 @@ c#endif
 	      ENDIF
 	   ENDIF
 
+* Compute the mean and standard dev for ribbon-color variable, 
+* needed for computing color levels. Results stored in PPLUS common.
+
+	   IF (ribbon_plot .AND. ipl.EQ.ribbon_var) THEN
+              CALL COMPUTE_MNSTD (dep_dat, mr_bad_data(mv), .TRUE., npts, status)
+	   ENDIF
+
 * ... check that there is a range of dependent data for PLOT+ auto-scaling
 * ... when all the variables are considered together
         
-        this_no_range(ipl) = NO_LINE_RANGE( 
+	this_no_range(ipl) = .FALSE.
+        IF (set_axis) this_no_range(ipl) = NO_LINE_RANGE( 
      .       dep_dat, nload, mr_bad_data(mv), val1 )
 	all_1_dep = all_1_dep .AND. this_no_range(ipl)
         IF (this_no_range(ipl) .AND. val1.NE.mr_bad_data(mv) )
@@ -647,11 +668,8 @@ c#endif
 	ENDIF
 
 * pass the data to PLOT+
+	   WRITE ( ppl_buff, 3005 ) mr_bad_data( mv ), dep_ax8/23/2012
 	   WRITE ( ppl_buff, 3005 ) mr_bad_data( mv ), dep_ax
-c#ifdef double_p
-c           sngl_bad = SNGL(mr_bad_data( mv ))
-c	   WRITE ( ppl_buff, 3005 ) sngl_bad, dep_ax
-c#endif
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 	   IF ( time_axis ) THEN
               IF ( tax .EQ. mnormal .OR. tax .EQ. munknown ) THEN  ! 8/91 bug
@@ -691,7 +709,7 @@ c#endif
 	      ENDIF
 	   ENDIF
 
-	   
+	   IF (ribbon_plot .AND. ipl.EQ.ribbon_var) flip = .FALSE. ! put colorvar in the right place
 	   IF ( flip ) THEN
 	      CALL PPLLDX_envelope(0,dep_dat,indep_dat,nload,
      .                             t1_date, tref, dt_min, plot_mem_used)
@@ -836,111 +854,16 @@ c#endif
 	   CALL PPLCMD ( from, line, 0, 'SET AX_HORIZ '//ax1, 1, 1 )
         ENDIF
 
-
-	IF ( no_labels ) RETURN
-
-* * * * * * *    - - - TITLES - - -   * * * * * * * * *
-* if we are starting from a blank screen titling information is centered
-* below the X axis - either a title for a single variable or keys for multiple
-* if we are overlaying on an existing plot put the new variable name on as a
-* key at the lower left
-	nline_in_mem = 0
-	IF ( overlay ) THEN
-	   DO 500 ipl = var1, nmv
-	      nline_in_mem = nline_in_mem + 1
-	      CALL OV_GRP_CX_DOC( cx_list(ipl), 1, cx_xtra_doc )
-	      IF ( user_title ) THEN
-	         CALL EQUAL_STR_LC(
-     .			cmnd_buff(qual_start(ptitl):qual_end(ptitl)),
-     .                  plot_title, status )
-                 IF ( status .NE. ferr_ok ) GOTO 5000
-	         slen = TM_LENSTR1( plot_title )
-	      ELSE
-	         plot_title = KEY_STRING( cx_list(ipl), cx_xtra_doc, slen )
-	      ENDIF
-              IF (this_no_range(ipl) .AND. mode_nodata_lab) THEN
-                 plot_title(slen+1:slen+14) = ' No Valid Data'
-                 slen = slen + 14
-              ENDIF
-              IF (.NOT. nokey) THEN
-	         CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
-     .			    lab_ht, style, justify, plot_title(:slen))
-	         CALL PUT_KEY( nline_in_mem, plot_title(:slen),
-     .			    xkeypos, ykeypos, xkeysize, ykeysize,
-     .			    lab_ht, style, lab_loc_absolute, lab_loc_absolute )
-              ENDIF
- 500	   CONTINUE
-	ELSE
-* *kob* 1/00 check the variable time_axis before looking at
-*            any time-relevant variables.
-* ... basic position and data set labels 
-*    ... does the year need special documentation? 
-           year = unspecified_name4    ! assume no label needed by default 
-           IF ( time_axis ) THEN 
-*    ... document the year where the axis, itself, doesn't 
-              IF ( tstyle.EQ.'MON' .OR. tstyle.EQ.'DAY' ) THEN 
-                 ppl_buff = SECS_TO_DATE( ind_min, cal_id_1 ) 
-                 year = ppl_buff(8:11) 
-              ENDIF 
-           ENDIF 
-* *ACM* if time axis, then cal_id_1 is set to the calendar.  Label the
-*       plot with the calendar name if there is non-standard calendar
-	   CALL DISP_LABELS( cx_plot, year, cal_id_1 )
-* ... label dependent axis with units (over-written below if /vs)
-	   plot_title = VAR_UNITS( cx_list(var1) )
-	   slen = TM_LENSTR1( plot_title )
-	   CALL BOX_LABEL( dep_lab,
-     .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.6*dep_len, letsize_label,
-     .			   letsize_label, ppl_centered,
-     .			   lab_loc_absolute, lab_loc_absolute )
-* ... keys for the dependent vars, or if one, only then title or axis label
-	   DO 600 ipl = var1, nmv
-	      nline_in_mem = nline_in_mem + 1
-	      IF ( use_keys .AND. (.NOT. nokey) ) THEN
-	         plot_title = KEY_STRING( cx_list(ipl), key_doc, slen )
-	      ELSE
-	         plot_title = FULL_VAR_TITLE( cx_list(ipl), slen )
-	      ENDIF
-              IF (this_no_range(ipl) .AND. mode_nodata_lab) THEN
-                 plot_title(slen+1:slen+14) = ' No Valid Data'
-                 slen = slen + 14
-              ENDIF
-	      IF ( ndv .EQ. 1 .OR. user_title ) THEN
-	         IF ( versus ) THEN     ! ("xlen" changed to "dep_len" 11/92)
-	            CALL BOX_LABEL( dep_lab,
-     .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.6*dep_len, letsize_label,
-     .			   letsize_label, ppl_centered,
-     .			   lab_loc_absolute, lab_loc_absolute )
-	         ENDIF
-	         IF ( .NOT.versus .OR. user_title ) THEN 
-	            IF ( user_title ) THEN     ! user over-ride of title
-	               CALL EQUAL_STR_LC
-     .			( cmnd_buff(qual_start(ptitl):qual_end(ptitl)),
-     .                    plot_title, status )
-                       IF ( status .NE. ferr_ok ) GOTO 5000
-	               slen = TM_LENSTR1( plot_title )
-	            ENDIF
-	            CALL BOX_LABEL( ppl_title,
-     .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.75*xlen, letsize_title,
-     .			   letsize_title, ppl_centered,
-     .			   lab_loc_absolute, lab_loc_absolute )
-	         ENDIF
-	      ELSE
-                 IF (.NOT. nokey) THEN
-	            CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
-     .			       lab_ht, style, justify, plot_title(:slen) )
-	            CALL PUT_KEY( nline_in_mem, plot_title(:slen),
-     .			       xkeypos, ykeypos, xkeysize, ykeysize,
-     .			       lab_ht, style,
-     .			       lab_loc_absolute, lab_loc_absolute )
-	         ENDIF
-	      ENDIF
-
- 600	   CONTINUE
-	ENDIF
+*  TITLES
+* Main plot title. Add labels for multi-lines as a key, 
+* or a "Colored by var2" label for the ribbon color variable
+*
+	hlen = xlen ! single-precision xlen from PPLUS common -> double prec. var
+	IF ( .NOT.no_labels ) 
+     .          CALL LINE_PLOT_LABELS (var1, nmv, ndv, cx_list, 
+     .		this_no_range, overlay, versus, nokey, time_axis, 
+     .		tstyle, cal_id_1, ribbon_var, dep_lab, ind_min, 
+     .		dep_len, hlen)
 
 * successful completion
  1000	status = ferr_ok

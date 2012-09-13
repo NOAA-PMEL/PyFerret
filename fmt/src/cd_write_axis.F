@@ -90,6 +90,7 @@
 *                  name but different contents, write both to file with the name
 *                  Ferret uses internally.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* V683 9/12 *acm* Ticket 1968, If there is a _FillValue attributes on axes, refuse to write it.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -371,6 +372,11 @@
      .        ((line_regular(iaxis)) .AND. (.NOT.do_bounds)) ) 
      .               attoutflag = 0
 
+* If there is a _FillValue attributes on axes, refuse to write it.
+
+            IF (MATCH_NAME (attname,  TM_LENSTR1(attname), 
+     .           '_FILLVALUE', 10) ) attoutflag = 0
+		
 * Write the attribute, but skip this for the point-spacing attr on record axis.
 
             IF ( MATCH_NAME (attname,  TM_LENSTR1(attname), 

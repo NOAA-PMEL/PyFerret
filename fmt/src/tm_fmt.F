@@ -78,9 +78,9 @@
 	LOGICAL		exp_fmt, negative, fixed_pt
 	INTEGER		slen, sig_left, sig_full, nleft, nright, full,
      .			sig_max, full10, xtra, sig_needed, pow10,
-     .			chk10, chk10_save, waste, i, need_adjust
+     .			chk10, chk10_save, waste, i, need_adjust, ind
 	REAL		aval, l10
-	CHARACTER*10	fmt
+	CHARACTER*10	fmt, outstring*25, strend*25
 
 * local parameters:
 	INTEGER		TM_CHECK_NAN, TM_CHECK_INF, TM_LENSTR1, 
@@ -95,10 +95,11 @@
 	IF ( val .EQ. 0.0 ) GOTO 1000
 
 * initialize
+
 	negative = val .LT. 0.0
 	fixed_pt = digits .LE. 0
 	aval     = ABS( val )
-	TM_FMT   = ' '
+	outstring   = ' '
 	exp_fmt  = .FALSE.
 	added_pow10 = 0
 
@@ -121,10 +122,10 @@
 * If the value is NaN, or Inf, set the string here
         IF ( TM_CHECK_INF(val)  .EQ. 1   ) THEN
            IF (slen .GE. 3) THEN
-              TM_FMT  = 'Inf'
+              outstring  = 'Inf'
               str_len = 3
            ELSE
-              TM_FMT = '*'
+              outstring = '*'
               str_len = 1
            ENDIF
 	   RETURN
@@ -243,7 +244,7 @@
 	      xtra = 5
 	   ENDIF
 	   IF ( slen .LE. xtra ) THEN
-	      TM_FMT  = '******'
+	      outstring  = '******'
 	      str_len = slen
 	   ELSE
 	      str_len = MIN( slen, sig_needed+xtra)
@@ -253,7 +254,7 @@
               IF (str_len-(xtra+1) .LT. 0) xtra = 1
 	      WRITE ( fmt, 3000 ) str_len, str_len-(xtra+1)
  3000	      FORMAT( '(1PG',I2,'.',I2,')' )
-	      WRITE ( TM_FMT, fmt ) val
+	      WRITE ( outstring, fmt ) val
 	   ENDIF
 
 * INTEGER STRING
@@ -277,8 +278,8 @@
  9000	   IF (str_len .LE. 0) str_len = 1
 	   WRITE ( fmt, 3100 ) str_len
  3100	   FORMAT ( '(I',I2,')' )
-	   WRITE ( TM_FMT, fmt ) NINT(val)
-	   IF (INDEX(TM_FMT,'*') .EQ. 1) THEN
+	   WRITE ( outstring, fmt ) NINT(val)
+	   IF (INDEX(outstring,'*') .EQ. 1) THEN
 	      str_len = str_len + 1
 	      iloop = iloop + 1
 	      IF (iloop .LT. 5) GOTO 9000
@@ -291,20 +292,20 @@
 	   str_len = nleft + nright + 1
 	   WRITE ( fmt, 3200 ) str_len, nright
  3200	   FORMAT ( '(F',I2,'.',I2,')' )
-	   WRITE ( TM_FMT, fmt ) val
+	   WRITE ( outstring, fmt ) val
 	   IF (slen .GE. 3) THEN 
-	       IF (TM_FMT(1:3) .EQ. ' -.') THEN
-		  TM_FMT(1:3) = '-0.'	! 8/96 for aix&hp
-	       ELSEIF (TM_FMT(1:1) .EQ. ' ') THEN
-                  TM_FMT(1:1) = '0'
+	       IF (outstring(1:3) .EQ. ' -.') THEN
+		  outstring(1:3) = '-0.'	! 8/96 for aix&hp
+	       ELSEIF (outstring(1:1) .EQ. ' ') THEN
+                  outstring(1:1) = '0'
 	       ENDIF	
 	   ENDIF
 * Precision in computation of value of FULL can cause an extra
 * digit at the end, and so trailing 0s may still exist. Remove them.
-           slen = TM_LENSTR1( TM_FMT )
+           slen = TM_LENSTR1( outstring )
            DO 3300 i = slen,1,-1
-              IF (TM_FMT(i:i) .EQ. '0') THEN
-                 TM_FMT(i:i) = ' '
+              IF (outstring(i:i) .EQ. '0') THEN
+                 outstring(i:i) = ' '
                  str_len = str_len - 1
               ELSE
                  GOTO 3400
@@ -313,6 +314,18 @@
  3400      CONTINUE
 
 	ENDIF
+
+	str_len = TM_LENSTR1( outstring )
+	IF (INDEX(outstring, '0E') .GT. 0) THEN
+	   ind = INDEX(outstring, '0E')
+	   DO WHILE (ind .GT. 0)
+	      strend = outstring(ind+1:str_len)
+	      outstring = outstring(1:ind-1)//strend
+	      ind = INDEX(outstring, '0E')
+	   ENDDO
+	ENDIF
+
+	TM_FMT = outstring
 	RETURN
 
 * return exact zero

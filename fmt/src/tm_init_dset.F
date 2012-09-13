@@ -101,7 +101,9 @@
 *                  repeated coordinates in netCDF/OPeDNAP datasets
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
-*
+* V683 9/12 *acm* Fix ticket 1531: nc is the default dataset type if not given 
+*                 with the command qualifier or the extension is not recognized.
+
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
 *	dset_num	- number assigned to this data set (output)
@@ -161,7 +163,7 @@
      .				   '    ',
      .				   '    ',
      .				   '    '/
-	DATA		def_ext  /'.des'/, def_cdf/'.cdf'/
+	DATA		def_ext  /'.nc'/, def_cdf/'.cdf'/
         DATA            def_nc/'.nc'/
 
         DATA            cdf_path/'FER_DATA'/
@@ -217,7 +219,7 @@
 	        explicit_ext = .TRUE.
 	   ENDIF
 	   IF (TM_HAS_STRING(dset_name(dlen-3:dlen), '.des')) THEN
-     		ds_dset_type = '  '
+     		ds_dset_type = ' MC'
 	        explicit_ext = .TRUE.
 	   ENDIF
 	ENDIF
@@ -292,6 +294,9 @@
 	      ENDIF
 	   ENDIF
 	ENDIF
+
+	IF (ds_dset_type .EQ. '  ') ds_dset_type = 'CDF'
+
 * check to see if this descriptor has already been initialized
 	DO 100 set_cnt = 1, maxdsets
 	   IF (nocache) THEN

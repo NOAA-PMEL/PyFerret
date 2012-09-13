@@ -40,6 +40,7 @@ itsa_modulo_curvi_axis.F\
 itsa_modulo_curvi_axis_sub.F\
 key_loc.F\
 key_string.F\
+line_plot_labels.F\
 line_style.F\
 load_curvilinear.F\
 merged_whoi_date.F\

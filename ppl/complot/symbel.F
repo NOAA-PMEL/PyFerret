@@ -114,13 +114,14 @@ c	CHARACTER PLTFIL*80
 	INTEGER*2 DTYPE,DLEN,IOFF,IFLEN,ITYPE
 	INTEGER COLOLD
 	LOGICAL ASCFNT
+	CHARACTER*265 err_msg
+	INTEGER status
+
 C
 C
-#ifdef unix
 	INCLUDE 'PLTCOM.DAT'
-#else
-	INCLUDE 'pplv11inc:PLTCOM.DAT'
-#endif
+        INCLUDE 'errmsg.parm'
+
 C
 	DATA DNUM,DNME/35*'@@',35*'@@'/
 #ifdef unix
@@ -166,12 +167,12 @@ C *kob* 1/02 - cygwin 1.3.x requires "\" for unix directory accesses
      *	        STATUS='OLD')
 #else
 	   OPEN(LUSY,FILE=fontdir(:dirlen)//'/fondat.dat',
-     *	        STATUS='OLD')
+     *	        STATUS='OLD',ERR=5000)
 #endif
 
 #else
 	   open(lusy,file='plotfonts:fondat.dat',readonly,
-     *	       status='old')
+     *	       status='old',err=5000)
 #endif
 C
 C	FILE EXISTS
@@ -572,6 +573,18 @@ C
 
 	RETURN
 C
+ 5000   IF (dirlen .GT. 1) THEN
+	   CALL WARN ('Could not open font file. Check the Ferret environment.')
+	   err_msg = fontdir(:dirlen)//'/fondat.dat'
+	ELSE
+	   CALL WARN ('Fonts directory is undefined. Check the Ferret environment.')
+	   err_msg = 'fondat.dat'
+	ENDIF
+
+        CALL errmsg (ferr_file_not_found, status, err_msg, *5002)
+
+ 5002	STOP
+
 	END
 	FUNCTION SYMWID(HEIGHT,NCHAR,STRING)
 C *kob* 04/07/96 passed in character strings had to be declared 

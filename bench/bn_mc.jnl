@@ -8,7 +8,7 @@
 CAN MODE VERIFY
 
 !look at data set with regular time axis
-set data coads_clim
+set data coads_clim.des
 sh data/var 
 sh grid/t sst
 list/x=140w/y=-8:8 sst
@@ -16,7 +16,7 @@ list/y=0/x=180e:140w sst
 stat sst
 
 ! move next to irregular data set
-set data coads_clim_irreg
+set data coads_clim_irreg.des
 sh data/var
 sh grid/t sst
 list/x=140w/y=-8:8 sst
@@ -25,20 +25,20 @@ stat sst
 
 ! now test a delta in the descriptor equal to zero...should get an error message
 set mode ignore
-set data coads_clim_bad_delta
+set data coads_clim_bad_delta.des
 
 !now test out of order stpe file
-set data coads_clim_step_order
+set data coads_clim_step_order.des
 
 !Now check for missing first step file
 can data/all
-set data coads_clim_missing_step1
+set data coads_clim_missing_step1.des
 sh data/var
 list sst
 
 !Now check for a missing step file other than the first
 can data/all
-set data coads_clim_missing_stepN
+set data coads_clim_missing_stepN.des
 sh data/var
 list sst
 can mode ignore

@@ -55,6 +55,7 @@
         INCLUDE 'pen_inc.decl'  ! with num_line_colors
         INCLUDE 'PEN.INC'
 	INCLUDE 'save_colors.cmn'
+	INCLUDE 'errmsg.parm'
 
 	integer		zwsid,zwstype,i,j, low_index
 

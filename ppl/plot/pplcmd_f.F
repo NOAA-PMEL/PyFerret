@@ -270,7 +270,7 @@ CCCCCCC data	        tmapdebug/.false./
 	LOGICAL IFLG1,IFLG2,LABON,VALOFF
 	DIMENSION X1(5),Y1(5),Y2(4),X3(2),IX3(5)
 	DIMENSION X4(4)
-	CHARACTER COMM(121)*7
+	CHARACTER COMM(122)*7
 	EQUIVALENCE (DT,X3(1)),(ITYPET,IX3(1)),(TSMX,X4(1))
 	EQUIVALENCE (XLO,X1(1)),(YLO,Y1(1)),
      *		(HLAB1,Y2(1))
@@ -295,7 +295,7 @@ CCCCCCC data	        tmapdebug/.false./
      *  'SHADE','SHAKEY','SHASET','PIXMAP','ALINE','TMDEBUG','COLOR',
      *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL', 'PATSET','CALENDA',
      *  'FLOWLIN', 'S_KEY', 'S_CELL', 'POLYGON', 'XVALOFF', 'YVALOFF',
-     *  'LINECOL','RENAMPL','SHRINKY','RIBBON'/
+     *  'LINECOL','RENAMPL','SHRINKY','RIBBON','RIBFAST'/
 
 !  *  'SQFILL','AREA'/ NAME CHANGE *jd*
  
@@ -405,7 +405,7 @@ C
 
 C       Changed ICOM to CHAR*7 comparison for CALENDAR command. *jd* 10.99
 	ICOM7(1:7)=ICOM(1:7)
-	DO 20 I=1,121
+	DO 20 I=1,122
 	    IF(ICOM7.EQ.COMM(I))GOTO 21
 20	CONTINUE
 	IF(ICOM(1:1).EQ.'%')THEN
@@ -438,7 +438,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
      *  9174,9175,9390,9165,9166,9183,4401,4501,9192,9960,9970,
-     *  1550),I
+     *  1550,9980),I
         else
 	GOTO (100,200,300,500,99,700,900,1000,1100,1200,1300,
      *	1400,1500,99,1800,1900,2000,2100,2200,2300,2500,2600,
@@ -451,7 +451,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
      *  9174,9175,9390,9165,9166,9183,4401,4501,9192,9960,9970,
-     *  1550),I
+     *  1550,9980),I
         end if
         goto 10
 
@@ -1390,6 +1390,17 @@ C	SHRINKY
 	    GOTO 10
 
 
+
+C	RIBFAST (PLOT/FAST)  
+9980	    CONTINUE
+*	Plot style for ribbon plots: 
+*	 FAST for one color per point, default is interpolate
+*	 colors between points
+            RIBBON_FAST = .FALSE.      
+            IF (P(1) .EQ. 1) RIBBON_FAST = .TRUE.      
+	    GOTO 10
+
+
 C     RWDSEQ & RWD
 600	    CALL OPENF(FILE,IERR)
 	    IF(IERR.NE.0)GOTO 10
@@ -1421,7 +1432,7 @@ C     CONTOUR
 C     PLOT
 1500	MAKEP='PLOT'
 	GOTO 6002
-C     Fibbon PLOT
+C     Ribbon PLOT
 1550	MAKEP='RIBPLOT'
 	GOTO 6002
 C     READSEQ & RD

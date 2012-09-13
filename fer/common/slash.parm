@@ -286,7 +286,8 @@
      .			slash_plot_noyadjust,
      .			slash_plot_key,
      .			slash_plot_levels,
-     .			slash_plot_spectrum
+     .			slash_plot_spectrum,
+     .			slash_plot_fast
 
 	INTEGER		slash_wire_over,
      .			slash_wire_set_up,
@@ -554,8 +555,10 @@
      .			slash_plot_nokey 	= 1+39,
      .			slash_plot_noyadjust 	= 1+40,
      .			slash_plot_key 		= 1+41,
-     .			slash_plot_levels 	= 1+42,
-     .			slash_plot_spectrum 	= 1+43 )
+     .			slash_plot_ribbon 	= 1+42,
+     .			slash_plot_levels 	= 1+43,
+     .			slash_plot_spectrum 	= 1+44,
+     .			slash_plot_fast 	= 1+45 )
 
 	PARAMETER     ( slash_wire_over		= 1+12,
      .			slash_wire_set_up	= 1+13,

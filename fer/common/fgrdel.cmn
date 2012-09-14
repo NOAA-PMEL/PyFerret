@@ -23,7 +23,7 @@
      .            maxbrushobjs = 320,
      .            maxfontobjs = 60,
      .            maxpenobjs = 320,
-     .            maxsymbolobjs = 120,
+     .            maxsymbolobjs = 320,
      .            maxtransforms = 60)
 
 * A NULL object (zero) as a parameter.

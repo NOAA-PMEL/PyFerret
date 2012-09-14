@@ -309,11 +309,11 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
      .							symbol = qual_off
 	ENDIF
 
-* ... PLOT/LEVELS=  for multi-colored "ribbon" line 
+* ... PLOT/RIBBON  for multi-colored "ribbon" line 
 *     3-agument plot/vs/lev xpts, ypts, var
 
 	ribbon_plot = .FALSE.
-	loc = qual_given( slash_plot_levels )
+	loc = qual_given( slash_plot_ribbon )
 	IF ( loc .GT. 0  ) THEN
 c	   IF (.NOT.versus)  GOTO 5470
 
@@ -321,12 +321,12 @@ c	   IF (.NOT.versus)  GOTO 5470
 	      IF (num_uvars_in_cmnd .LT. 3) GOTO 5480
 	      IF (num_uvars_in_cmnd .GT. 3)
      .         CALL WARN (
-     .         '/PLOT/VS/LEVELS uses just 3 variables. Ignoring extra varibles.')
+     .         'PLOT/RIBBON/VS uses just 3 variables. Ignoring extra variables.')
            ELSE
 	      IF (num_uvars_in_cmnd .LT. 2) GOTO 5480
 	      IF (num_uvars_in_cmnd .GT. 2)
      .         CALL WARN (
-     .         '/PLOT/LEVELS uses just 2 variables. Ignoring extra varibles.')
+     .         'PLOT/RIBBON/LEVELS uses just 2 variables. Ignoring extra variables.')
            ENDIF
 
 * If a color was given, that's not valid for Ribbon plots.
@@ -372,6 +372,12 @@ c	   IF (.NOT.versus)  GOTO 5470
 
            ENDIF
 
+* Style: fast for one-color per point, default is to interpolate
+* colors between points
+
+           loc = qual_given( slash_plot_fast  )
+           IF ( loc.GT.0 ) 
+     .		CALL PPLCMD ( from, line, 0, 'RIBFAST 1', 1, 1 )
 
 * default key
 	   do_key =  (qual_given(slash_plot_key)  .GT. 0)

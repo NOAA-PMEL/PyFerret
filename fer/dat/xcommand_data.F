@@ -970,10 +970,10 @@
 		DATA qualifiers  (nqual_at6a+39)/ 'NOKEY'/	! nokey
 		DATA qualifiers  (nqual_at6a+40)/ 'NOYADJUS'/	! noyadjust
 		DATA qualifiers  (nqual_at6a+41)/ 'KEY'/	! [=cont] for Ribbon plot
-		DATA qualifiers  (nqual_at6a+42)/ 'LEVELS'/	! for Ribbon plot
-		DATA qualifiers  (nqual_at6a+43)/ 'PALETTE'/	! for Ribbon plot
-		DATA qualifiers  (nqual_at6a+44)/ '****'/	!  
-		DATA qualifiers  (nqual_at6a+45)/ '****'/	!  
+		DATA qualifiers  (nqual_at6a+42)/ 'RIBBON'/	! for Ribbon plot
+		DATA qualifiers  (nqual_at6a+43)/ 'LEVELS'/	! 
+		DATA qualifiers  (nqual_at6a+44)/ 'PALETTE'/	! 
+		DATA qualifiers  (nqual_at6a+45)/ 'FAST'/	! style for Ribbon plot
 		DATA qualifiers  (nqual_at6a+46)/ '****'/	!  
 		DATA qualifiers  (nqual_at6a+47)/ '****'/	! 
 
@@ -1700,13 +1700,16 @@
      .		alias_name(20)	/ 'OPEN' /,
      .		alias_len(20)	/ 16 /,
      .		alias(20)	/ 'SET DATA /BROWSE' /
+     .		alias_name(21)	/ 'RIBBON' /,
+     .		alias_len(21)	/ 11 /,
+     .		alias(21)	/ 'PLOT/RIBBON' /
 
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
-     .                   / 130*unspecified_name4 /,
-     .		(alias_len(i),i=num_predefined_alias+1,150) / 130*4 /,
+     .                   / 129*unspecified_name4 /,
+     .		(alias_len(i),i=num_predefined_alias+1,150) / 129*4 /,
      .		(alias(i),i=num_predefined_alias+1,150)
-     .                   / 130*unspecified_name4 /
+     .                   / 129*unspecified_name4 /
 
 
 	DATA queries(1) / 'STATUS' /,

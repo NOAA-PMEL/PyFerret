@@ -92,10 +92,10 @@ C
 	include 'cont_inc.decl'
 	include 'CONT.INC'
 
-	REAL datum
+	REAL datum, xlast, ylast, frac, dx, dy, xi, yi
 	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
      .		nvertex, low_index, colr_ndx, last_colr_ndx, 
-     .		line_ndx, thick_offset
+     .		line_ndx, thick_offset, nseg, iseg, indx, inc
 	INTEGER ibase, iline2
 
 	INTEGER GET_NDX
@@ -161,6 +161,7 @@ C     SET PLOT MODE
 	    IF(ITYPE(I).EQ.3)THEN 
                CALL POINTS
                IF (imark(i) .eq. 99) ipt = 0
+	       RIBBON_FAST = .FALSE.
             ENDIF
 	    IF(.NOT.(XLE.OR.XEQ.OR.XGE.OR.YLE.OR.YEQ.OR.YGE))THEN
 C     DO NOT CHECK POINTS FOR MISSING DATA
@@ -194,6 +195,8 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 
 	        CALL TRANS(I,X(J),X(IY+J),XT,YT)
 	        CALL PLOT(XT,YT,0,0)
+		xlast = xt
+		ylast = yt
 	        IF(ITYPE(I).NE.0.AND.ITYPE(I).NE.4)CALL MARK(IMARK(I))
  	        IM=0
 	        IF(ITYPE(I).EQ.1.OR.ITYPE(I).EQ.3)IM=IMARK(I)
@@ -223,14 +226,47 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 
 	             line_ndx = colr_ndx + thick_offset + low_index - 1
 		     IF (line_ndx .LT. 1) line_ndx = 1
+
 	             IF (last_colr_ndx .EQ. -999) THEN
 		        IDN = 0
 	                CALL PLOT(XT,YT,IDN,0)
 		        CALL COLOR (line_ndx) 
+
 		     ELSEIF (colr_ndx .NE. last_colr_ndx) THEN
-	                CALL PLOT(XT,YT,IDN,0)
-		        CALL COLOR (line_ndx) 
-c	                CALL PLOT(XT,YT,IDN,0)
+		     
+* In default (not fast) mode, draw sub-segments filling in all the colors
+* corresponding to the index range between the color at this point and the
+* color at the previous point.
+
+		        IF (.NOT.RIBBON_FAST .AND. 
+     .                       ABS(colr_ndx-last_colr_ndx) .GT. 1) THEN
+		           nseg = ABS(colr_ndx-last_colr_ndx) 
+		           frac = 1./FLOAT(nseg)
+		           dx = (xt-xlast)
+		           dx = (xt-xlast)* frac
+		           dy = (yt-ylast)
+		           dy = (yt-ylast)* frac
+			   indx = 1
+			   inc = 1
+			   IF (last_colr_ndx .GT. colr_ndx) inc = -1
+		           DO 80 iseg = last_colr_ndx+inc, colr_ndx, inc
+			      xi = xlast + dx*indx
+			      yi = ylast + dy*indx
+	                      line_ndx = iseg + thick_offset + low_index - 1
+		              IF (line_ndx .LT. 1) line_ndx = 1
+	                      CALL PLOT(xi,yi,IDN,0)
+	                      CALL COLOR (line_ndx) 
+c	                      IF (iseg.LT.last_colr_ndx) CALL PLOT(xi,yi,IDN,0)
+	                      CALL PLOT(xi,yi,IDN,0)
+			      indx = indx + 1
+80	                   CONTINUE
+			   XT = xi  ! should already be??
+			   YT = yi
+                        ELSE
+
+	                   CALL PLOT(XT,YT,IDN,0)
+		           CALL COLOR (line_ndx) 
+		        ENDIF
 		     ENDIF
 
 	             CALL PLOT(XT,YT,IDN,0)
@@ -241,6 +277,8 @@ c	                CALL PLOT(XT,YT,IDN,0)
      .		       colr_ndx .NE. -999) CALL COLOR (line_ndx) 
 
 		  last_colr_ndx = colr_ndx
+	  	  xlast = xt
+		  ylast = yt
 
 		  if (interrupted) goto 51 ! *jd* 8.3.92
 	          CALL MARK(IM)

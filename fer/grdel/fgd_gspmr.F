@@ -76,7 +76,7 @@
         ENDIF
 
 *       Adjust the symbol size to typical user coordinates
-        adjsize = 10.0 * symsize
+        adjsize = 5.0 * symsize
 
 *       If a symbol object already exists, delete it
         IF ( symbolobjs(symnum, windowid) .NE. nullobj ) THEN

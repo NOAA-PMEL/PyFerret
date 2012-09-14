@@ -147,45 +147,14 @@
 	len_given = cmnd_num .EQ. cmnd_vector
      .		.AND. len_loc .NE. 0
 
-* For colored lines, /LEV is used to trigger the ribbon-style plot. If no
-* previous color setting was made, set things to use Ferret default linear levels.
-
-	set_default_levs = 0
-	IF (cmnd_num.EQ.cmnd_plot .AND. lev_loc.GT.0) THEN
-	
-	   CALL EQUAL_STRING( 
-     .          cmnd_buff(qual_start(lev_loc):qual_end(lev_loc)),
-     .			      str_buff, status )
-	   ilen = TM_LENSTR(str_buff)
-
-           buff30 = 'LEV_NUM'
-           CALL GETSYM( buff30, buffer, nc, ier )
-           IF (ilen.EQ.0 .AND. ier.NE.0 ) THEN        ! If this IS defined, prev. levels setting is used.
-	      set_default_levs = mode_arg(pmode_nlevels, 1)
-	      val = set_default_levs
-	      buffer = TM_FMT (val, 4, 4, nc)
-	      labsym_buff = 'lev='//buffer(1:nc)
-	      str_buff = buffer(1:nc)
-	      str_1 = 1
-	      get_more = .FALSE.
-	   ENDIF  
-	ENDIF  
-
-* contour levels ?
-
         contour_fewer = 1
         need_std = .FALSE.
 
 	IF ( lev_given    ) THEN
            contour_fewer = 0
-
-           IF (set_default_levs .EQ. 0) THEN
-	      CALL EQUAL_STRING( 
-     .          cmnd_buff(qual_start(lev_loc):qual_end(lev_loc)),
-     .			      str_buff, status )
-	   ELSE
-	      GOTO 500
-	   ENDIF
+           CALL EQUAL_STRING(  
+     .          cmnd_buff(qual_start(lev_loc):qual_end(lev_loc)), 
+     .                        str_buff, status ) 
 
 * Set symbol LEV_TEXT with the users input to the LABEL command.
 * (Note that the above call has put str_buff into uppercase.)

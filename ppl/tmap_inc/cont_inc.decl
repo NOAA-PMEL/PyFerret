@@ -9,6 +9,7 @@ c  v581 *acm* 3/05 add flags for use of open levels (-INF) (INF)
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * *acm* 1/13/12 For DP Ferret/ SP Pplus: explicitly declare REALs 
 *               as single-precision
+* v683 *acm*	9/12 ribbon plots: RIBBON_FAST flag for style of ribbon plots
 
 	REAL*4	ZLEV,CANGLE
 	INTEGER	LDIG,IVCOMP
@@ -33,5 +34,6 @@ c  v581 *acm* 3/05 add flags for use of open levels (-INF) (INF)
      .          USE_HIST
 	REAL*4	LEV_STD,LEV_MEAN,LEV_MIN,LEV_MAX,LEV_HIST
 
+	LOGICAL RIBBON_FAST
 * requires: INCLUDE 'CONT.INC'                                    
 

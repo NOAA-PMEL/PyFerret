@@ -6,6 +6,8 @@
 5a.dat
 7a.dat
 9a.dat
+a1.nc
+a2.nc
 aa.nc
 abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
 a.jnl
@@ -77,8 +79,9 @@ err67_axis_order_copy.nc
 f2.nc
 F.cdf
 ferret.jnl
+ferret.jnl.~1~
+ferret.png
 FI.cdf
-files2
 FL.cdf
 flowlines.plt
 f.nc
@@ -108,6 +111,7 @@ lonlat.dat
 lonlat.nc
 multi_line_labels.plt
 mypack.nc
+mytype.nc
 names
 nc4_deflate4bigchunk.nc
 nc4_deflate4_defaultchunk.nc
@@ -166,12 +170,12 @@ test.cdf
 test.dat
 test_fil0.cdf
 test_fil.cdf
-test.gt
 test_mod.cdf
 test_modulo.cdf
 test_nomod.cdf
 test_string.cdf
 test_subspan_modulo.nc
+test.txt
 test.unf
 the_xml_file.xml
 timetics2.plt

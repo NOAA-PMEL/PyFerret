@@ -33,11 +33,16 @@ contained within PyFerret.
     </dd>
 <dt>CTRL-C exits PyFerret</dt>
     <dd>
+    UPDATE: This is a tcsh issue! <br />
     In Ferret, when CTRL-C is pressed, any pending activity in Ferret
     is stopped and the user is returned to the Ferret prompt.  
-    In PyFerret, CTRL-C causes the program to exit completely.  
-    This is due to Python capturing and reacting to the CTRL-C; 
-    thus Ferret functionality does not see the CTRL-C.
+    In PyFerret, CTRL-C causes the program to exit completely under 
+    some circumstances (using the pyferret.csh C-shell script to run 
+    PyFerret under RHEL6 tcsh).
+    The solution to this bug in tcsh is to use the pyferret.sh 
+    Bourne-shell script to run PyFerret (even if you are in a C-shell).  
+    The pyferret.csh script should only be used if you wish to 'source' 
+    a pyferret script from a C-shell.
     </dd>
 </dl>
 

@@ -109,9 +109,9 @@
      .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen, idim2,
      .        tmvar, tmpgrid, npts, dim, tmplines(nferdims), ndim,
      .	      grid_dims(nferdims), trans(nferdims), indices(nferdims),
-     .        i, maxlen, attlen,attoutflag, all_outflag
+     .        i, maxlen, attlen,attoutflag, all_outflag, axid
       REAL    tmp
-      CHARACTER name*128, vname*128
+      CHARACTER name*128, vname*128, linunits*16
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
@@ -185,8 +185,13 @@
 
 * Are there attributes that tell us the direction?  If so apply them.
 * for the user's convenience, an invalid T axis is still in the T direction.
-	      CALL CD_GET_LINE_DIRECTION (dset, ivar, iaxis, 
-     .                name, do_warn)
+* The routine will get and use basic info about the units.
+
+* axis ID
+	      CALL CD_GET_VAR_ID (dset, name, axid, status)
+	      linunits = char_init16
+	      CALL CD_GET_LINE_DIRECTION (dset, axid, iaxis, 
+     .                name, linunits, do_warn)
 
 * save a pointer to the axis just found
  150          IF (idim.LE.nferdims) tmplines(idim) = iaxis

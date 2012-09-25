@@ -64,7 +64,7 @@ c	delta		The specified DZ value
 *	set_max            open only on top
 *	lev_min		the values of min and/or max.
 *	lev_max
-*	RIBBON_FAST	FAST for one color per point, default is interpolate
+*	ribbon_fast	FAST for one color per point, default is interpolate
 *                       colors between points
 
 c*******************************************************************

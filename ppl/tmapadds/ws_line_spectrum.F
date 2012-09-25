@@ -70,9 +70,9 @@
 	integer		max_pline,max_pmark,max_text,max_fill_area
 	integer		max_pattern,max_color,error
 	integer		fktr, marktype, index, line_color_reserve,
-     .			icolr
+     .			icolr, ndx
                                        
-	real		thickness, dotsize, grey, frac
+	real		thickness, dotsize, frac, r_val,g_val,b_val
 	CHARACTER*100   err_msg
 
 
@@ -106,15 +106,20 @@
 
         usable_colors = max_color - line_color_reserve - lo_color_ndx(zwsid)
 
-        if (usable_colors .lt. shd_levels) then
+        if (usable_colors .lt. shd_levels+1) then
            write (6,'(/a)') ' PPL warning: You''re attempting to use '//
      .           'more colors than are available.'
            write (6,'(a/)') '             Using PPL SHASET RESET to re-use'//
      .		 ' protected colors may help.'
            lo_color_ndx(zwsid) = max (line_color_reserve + 1,
-     .       max_color - line_color_reserve - shd_levels)
+     .       max_color - line_color_reserve - (shd_levels+1))
         endif
-        hi_color_ndx(zwsid) = lo_color_ndx(zwsid) + shd_levels - 1
+        hi_color_ndx(zwsid) = lo_color_ndx(zwsid) + (shd_levels+1) - 1
+
+* Plus one more for the bad-value color (e.g. missing data drawn as gray)
+
+        hi_color_ndx(zwsid) = hi_color_ndx(zwsid) + 1
+	bad_ribbon_ndx = (shd_levels+1) + 1
 
 *	CHOOSE CUSTOM COLORS OR THE DEFAULT SELECTION
         if (custom_colors) then
@@ -128,7 +133,6 @@
 
 
 * Set line bundles
-* (can we do 250 thin,medium, and thick lines?
 
 	nthick = 3
 	low_index = MAX(num_line_colors* nthick + 2, lo_color_ndx(zwsid))
@@ -138,15 +142,43 @@
 	   do 10 fktr = 1,nthick     ! thickness
               thickness = REAL(fktr)
 	      icolr = j + lo_color_ndx(zwsid) - 1
-              index = low_index + (fktr-1)* shd_levels + j
+              index = low_index + (fktr-1)* (shd_levels+1) + j
+
+	      call gspmr (zwsid,index,marktype,dotsize,icolr)
+	      call gsplr (zwsid,index,1,thickness,icolr)
+
+10	   continue
+20	continue
+
+* Initialize the color for bad-data asc
+
+        r_val = 0.75
+        g_val = 0.75
+        b_val = 0.75
+
+* What is ribbon_miss?  If user asked for a palette with /missing= 
+* then set that color.
+
+	IF (ribbon_miss(1) .GE. 0.) THEN
+           r_val = ribbon_miss(1)/100.
+           g_val = ribbon_miss(2)/100.
+           b_val = ribbon_miss(3)/100.
+	ENDIF
+	ndx = lo_color_ndx(zwsid)+shd_levels
+	call gscr (zwsid,ndx,r_val,g_val,b_val)
+
+	do 40 j = shd_levels + 1, shd_levels + 1
+	    
+	   do 30 fktr = 1,nthick     ! thickness
+              thickness = REAL(fktr)
+	      icolr = j + lo_color_ndx(zwsid) - 1
+              index = low_index + (fktr-1)* (shd_levels+1) + j
 
 	      call gspmr (zwsid,index,marktype,dotsize,icolr)
 	      call gsplr (zwsid,index,1,thickness,icolr)
        
-10	   continue
-20	continue
-
-	i = index
+30	   continue
+40	continue
 
 * ERROR
 1000	return

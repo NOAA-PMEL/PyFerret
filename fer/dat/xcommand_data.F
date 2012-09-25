@@ -966,7 +966,7 @@
 		DATA qualifiers  (nqual_at6a+43)/ 'LEVELS'/	! 
 		DATA qualifiers  (nqual_at6a+44)/ 'PALETTE'/	! 
 		DATA qualifiers  (nqual_at6a+45)/ 'FAST'/	! style for Ribbon plot
-		DATA qualifiers  (nqual_at6a+46)/ '****'/	!  
+		DATA qualifiers  (nqual_at6a+46)/ 'MISSING'/	! For missing-dat in ribbon plot
 		DATA qualifiers  (nqual_at6a+47)/ '****'/	! 
 
 * GO	 - command # 7

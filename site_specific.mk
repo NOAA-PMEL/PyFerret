@@ -22,13 +22,13 @@ HDF5_DIR	= /usr/local/hdf5_189
 ## (contains include and lib or lib64 subdirectories)
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
-NETCDF4_DIR	= /home/users/ansley/local/linux_nc4211_major
+NETCDF4_DIR	= /usr/local/netcdf_4211
 
 ## Installation directory for readline static libraries
 ## (contains include and lib or lib64 subdirectories)
 # READLINE_DIR	= /
-READLINE_DIR	= /usr
-# READLINE_DIR	= /usr/local
+# READLINE_DIR	= /usr
+READLINE_DIR	= /usr/local
 
 ## Installation directory for libz static library
 ## (contains include and lib or lib64 subdirectories)

@@ -197,7 +197,7 @@
      .			grid, grid1, ipl, ndim, dims(6),
      .			slen2, slen3, tax, plot_mem_used, nload, i,
      .			pxlim, pylim, phlim, pvlim,pindeplim, pdeplim,
-     .			dep_axtyp, indep_axtyp, the_taxis, ribbon_var
+     .			dep_axtyp, indep_axtyp, the_taxis, ribbon_var, junits
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new
@@ -240,6 +240,8 @@
 	cal_name = ' '
 	dep_axtyp = 1
 	indep_axtyp = 1
+	mod_vs_x = .FALSE.
+	mod_vs_y = .FALSE.
         cx_x = cx_list(1)
 
 * determine PLOT+ memory required
@@ -389,6 +391,26 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      ind_max = DBLE( hi )
 	   ENDIF
 
+* Set up modulo longitude handling if /vs and variable has units
+* of longitude
+
+	   cx_x = cx_list(1)	 
+	   cx_y = cx_list(2)
+	   buff1 = VAR_UNITS(cx_x)
+	   iunits = TM_UNIT_ID(buff1)
+	   IF (iunits .EQ. 4) THEN
+	      mod_vs_x = (TM_HAS_STRING(buff1, '_e') .OR.
+     .                   TM_HAS_STRING(buff1, 'lon') )
+	         
+	   ENDIF
+
+	   buff1 = VAR_UNITS(cx_y)	 
+	   junits = TM_UNIT_ID(buff1)
+	   IF (junits .EQ. 4) THEN
+               mod_vs_y = (TM_HAS_STRING(buff1, '_e') .OR.
+     .                     TM_HAS_STRING(buff1, 'lon') ) 
+	   ENDIF
+
 	   IF (.NOT.overlay) THEN
 	      CALL AXIS_ENDS(indep_ax,indep_dim,grid1,ind_min,ind_max,
      .                       delta, indep_is_log, indep_axtyp, status)
@@ -398,72 +420,43 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                  GOTO 5170
               ENDIF
 
-* for /VS plots turn on lon/lat axis formatting, if lon/lat units	 
-       	  
-               IF (.NOT.overlay) THEN	 
-                  buff1 = VAR_UNITS(cx_x)
-                  iunits = TM_UNIT_ID(buff1)
-                  IF (iunits .EQ. 4) THEN
-	             CALL GET_AXIS_FORMAT( ind_min, ind_max, delta, 
+              IF (iunits .EQ. 4) THEN
+                 CALL GET_AXIS_FORMAT( ind_min, ind_max, delta, 
      .                  fmt, use_nice )
-                     IF (use_nice) THEN
-                        IF (TM_HAS_STRING(buff1, '_e') .OR.
-     .                      TM_HAS_STRING(buff1, 'lon') ) THEN
-                            ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
-     .                     ',''''LONE'''')' 
-                        ELSE
-                            ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
-     .                     ',''''LAT'''')'
-                        ENDIF
-                        CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-                     ENDIF
-                  ENDIF	 
-               ENDIF
-
-* for /VS plots turn on lon/lat axis formatting, if lon/lat units	 
-       	 
-               cx_x = cx_list(1)	 
-               cx_y = cx_list(2) 	 
-               IF (.NOT.overlay) THEN
-                  buff1 = VAR_UNITS(cx_x)
-                  iunits = TM_UNIT_ID(buff1) 
-                  IF (iunits .EQ. 4) THEN	 
-	             CALL GET_AXIS_FORMAT( ind_min, ind_max, delta, 
+                 IF (use_nice) THEN
+                    IF (mod_vs_x) THEN
+                       ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
+     .                  ',''''LONE'''')'
+                    ELSE
+                       ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
+     .                  ',''''LAT'''')'
+                    ENDIF
+                    CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+                 ENDIF
+              ELSE	 
+                 CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )	 
+              ENDIF	 
+		  
+              IF (junits .EQ. 4) THEN
+                 CALL GET_AXIS_FORMAT( ind_min, ind_max, delta, 
      .                  fmt, use_nice )
-                     IF (use_nice) THEN
-                        IF (TM_HAS_STRING(buff1, '_e') .OR.
-     .                      TM_HAS_STRING(buff1, 'lon') ) THEN
-                            ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
-     .                     ',''''LONE'''')'
-                        ELSE
-                            ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
-     .                     ',''''LAT'''')'
-                        ENDIF
-                        CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-                     ENDIF
-                  ELSE	 
-                     CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )	 
-                  ENDIF	 
-            	 
-                  buff1 = VAR_UNITS(cx_y)	 
-                  iunits = TM_UNIT_ID(buff1)	 
-                  IF (iunits .EQ. 4) THEN
-                     IF (TM_HAS_STRING(buff1, '_e') .OR.
-     .                   TM_HAS_STRING(buff1, 'lon') ) THEN
-                        CALL PPLCMD ( from, line, 0, 
-     .                    'YFOR (I7,''''LONE'''')', 1, 1 )	
-                     ELSE
-                        CALL PPLCMD ( from, line, 0, 
-     .                    'YFOR (I7,''''LAT'''')', 1, 1 )	
-                     ENDIF
-                  ELSE	 
-                     CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )	 
-                  ENDIF	 
-               ELSE
-	          CALL PPLCMD ( from, line, 0, indep_ax//'FOR 0', 1, 1 )
-               ENDIF
-
+                 IF (use_nice) THEN
+                    IF (mod_vs_y) THEN
+                       ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
+     .                  ',''''LONE'''')'
+                    ELSE
+                       ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
+     .                  ',''''LAT'''')'
+                    ENDIF
+                    CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+                 ENDIF
+              ELSE	 
+                 CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )	 
+              ENDIF	 
+           ELSE
+              CALL PPLCMD ( from, line, 0, indep_ax//'FOR 0', 1, 1 )
 	   ENDIF
+
 	ELSE	! (not VERSUS)
 	   var1 = 1
 	   ndv  = nmv

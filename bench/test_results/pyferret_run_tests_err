@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 12 Aug 17 17:32 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.csh
+lrwxrwxrwx 1 ksmith tmap 11 Oct 12 04:03 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: 
+Note: RUN_TESTS.sh test results of PyFerret updated from Ferret trunk 2012-10-12
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -189,6 +189,8 @@ Benchmark scripts that will be run:
    bn682_bug_fixes.jnl
    bn683_bug_fixes.jnl
    bn_outtype.jnl
+   bn_ribbon_plot.jnl
+   bn_descr_4digit.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -205,7 +207,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Aug 17 17:43:38 PDT 2012
+Beginning at Fri Oct 12 04:06:47 PDT 2012
 *** Running test: bn_syntax.jnl
     WARNING: Unable to import cdms2 and/or cdtime;
              the Python functions pyferret.get and pyferret.put are not available
@@ -754,10 +756,10 @@ plot/xlimits=5:5 i
  **TMAP ERR: Attempt to access unsupported feature
              Descriptor requests delta of 0, please use 1
              Data set: ./coads_clim_bad_delta.des
-set data coads_clim_bad_delta
+set data coads_clim_bad_delta.des
  **TMAP ERR: error in line definition
              A gap or overlap exists in time axis
-set data coads_clim_step_order
+set data coads_clim_step_order.des
  **TMAP ERR: non-existent or not on line
              coads_clim.001b
 list sst
@@ -3289,6 +3291,10 @@ define data/agg windy = 1,2
  TEMPORARY data cleared from memory
  *** NOTE: Adjusting Y-axis label size from 0.100 to 0.001, to avoid running off page.
  *** NOTE: /home/users/ksmith/PyFerret/go/magnify.jnl
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_outtype.jnl
     WARNING: Unable to import cdms2 and/or cdtime;
              the Python functions pyferret.get and pyferret.put are not available
@@ -3307,6 +3313,14 @@ define data/agg windy = 1,2
  LISTing to file mytype.nc
  LISTing to file mytype.nc
  LISTing to file mytype.nc
+*** Running test: bn_ribbon_plot.jnl
+    WARNING: Unable to import cdms2 and/or cdtime;
+             the Python functions pyferret.get and pyferret.put are not available
+ Cached data cleared from memory
+*** Running test: bn_descr_4digit.jnl
+    WARNING: Unable to import cdms2 and/or cdtime;
+             the Python functions pyferret.get and pyferret.put are not available
+ Cached data cleared from memory
 *** Running test: bn_all_ef.jnl
     WARNING: Unable to import cdms2 and/or cdtime;
              the Python functions pyferret.get and pyferret.put are not available
@@ -3330,4 +3344,4 @@ LOAD/TEMPORARY vflag
     WARNING: Unable to import cdms2 and/or cdtime;
              the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
-Ended at Fri Aug 17 17:46:41 PDT 2012
+Ended at Fri Oct 12 04:10:24 PDT 2012

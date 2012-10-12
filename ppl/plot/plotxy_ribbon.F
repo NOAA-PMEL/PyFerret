@@ -100,7 +100,7 @@ C
 
 	logical	isbad, last_bad, bad_blank
 
-        real            red,green,blue
+        real            xadd, xaddlast, datx, daty, datxlast,datylast
         integer         ndx,type
 
 
@@ -114,6 +114,9 @@ C
 *************************************
 
 	nl = lnum
+
+	xadd = 0.
+	xadlast = 0.
 C
 C  JTYPE IS DATA TYPE (0 FOR 2D, 1 FOR 1D)
 C
@@ -210,8 +213,19 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 
 		CALL COLOR (line_ndx) 
 		last_colr_ndx = colr_ndx
+	
+	        datx = X(J)
+	        daty = X(IY+J)
+		IF (MOD_VS_X .AND. datx .LT. xlo) THEN
+		   xadd = 360.
+		   datx = datx + xadd
+		ELSE IF (MOD_VS_X .AND. datx .GT. xhi) THEN
+		   xadd = -360.
+		   datx = datx + xadd
+		ENDIF
+		xaddlast = xadd
 
-	        CALL TRANS(I,X(J),X(IY+J),XT,YT)
+	        CALL TRANS(I,datx,daty,XT,YT)
 	        CALL PLOT(XT,YT,0,0)
 		xlast = xt
 		ylast = yt
@@ -235,7 +249,66 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	        ELSE
 		
 	        CALL PLOT(XT,YT,IDN,0)
-	          CALL TRANS(I,X(K),X(IY+K),XT,YT)
+
+		
+	          datx = X(K)
+	          daty = X(IY+K)
+
+
+		  IF (MOD_VS_X .AND. datx .LT. xlo) THEN  ! here plot to edge?
+		     xadd = 360.
+		     datx = datx + xadd
+
+* Plot to lower edge, then pick up the pen and move to the upper edge.
+		     IF (xadd .NE. xaddlast) THEN
+		        CALL TRANS(I,xlo,(datylast+daty)/2.,XT,YT)
+		        CALL PLOT(xt,yt,idn,0)
+		        datxlast = xhi
+	                CALL TRANS(I,datxlast,(datylast+daty)/2.,xlast,ylast)
+	                CALL PLOT(xlast,ylast,0,0)
+	                CALL PLOT(xlast,ylast,idn,0)
+		     ENDIF
+
+		  ELSE IF (MOD_VS_X .AND. datx .GT. xhi) THEN  
+		     xadd = -360.
+		     datx = datx + xadd
+		     
+* Plot to lower edge, then pick up the pen and move to the upper edge.
+		     IF (xadd .NE. xaddlast) THEN
+		        CALL TRANS(I,xhi,(datylast+daty)/2.,XT,YT)
+		        CALL PLOT(xt,yt,idn,0)
+		        datxlast = xlo
+	                CALL TRANS(I,datxlast,(datylast+daty)/2.,xlast,ylast)
+	                CALL PLOT(xlast,ylast,0,0)
+	                CALL PLOT(xlast,ylast,idn,0)
+		     ENDIF
+
+		  ELSE
+* Plot to near edge, then pick up the pen and move to the far edge.
+		     IF (xaddlast .NE. 0.) THEN
+		        IF (xadd .EQ. 360.) THEN
+		           CALL TRANS(I,xhi,(datylast+daty)/2.,XT,YT)
+		           CALL PLOT(xt,yt,idn,0)
+		           datxlast = xlo
+	                   CALL TRANS(I,datxlast,(datylast+daty)/2.,xlast,ylast)
+	                   CALL PLOT(xlast,ylast,0,0)
+	                   CALL PLOT(xlast,ylast,idn,0)
+			ELSE
+		           CALL TRANS(I,xlo,(datylast+daty)/2.,XT,YT)
+		           CALL PLOT(xt,yt,idn,0)
+		           datxlast = xhi
+		           CALL TRANS(I,datxlast,(datylast+daty)/2.,xlast,ylast)
+	                   CALL PLOT(xlast,ylast,0,0)
+	                   CALL PLOT(xlast,ylast,idn,0)
+			ENDIF
+		     ENDIF
+		     xadd = 0.
+
+		  ENDIF
+
+		  xaddlast = xadd
+
+	          CALL TRANS(I,datx,daty,XT,YT)
 
 		  xhalf = xlast + (xt - xlast)/2
 		  yhalf = ylast + (yt - ylast)/2
@@ -317,6 +390,8 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		  isbad = .FALSE.
 	  	  xlast = xt
 		  ylast = yt
+		  datxlast = datx
+		  datylast = daty
 
 		  if (interrupted) goto 51 ! *jd* 8.3.92
 		  IF (bad_blank .AND. colr_ndx.EQ.bad_ribbon_ndx) THEN

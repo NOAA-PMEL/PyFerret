@@ -191,6 +191,7 @@
 
 	INTEGER ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS
         LOGICAL its_meta, batch, meta_batch
+	INTEGER ipv
 
 *	*jd* linux port 12.96 Add external stmt below
 	external size, scale
@@ -351,7 +352,8 @@ C  so any tics inside the box show up.
             ENDIF
 
 	ELSE IF(MAKEP.EQ.'PLOT') THEN
-	   CALL PLOTXY(X,NXS,XF,YF)
+	   IPV = 0
+	   CALL PLOTXY(X,NXS,XF,YF,IPV)
 	   if (interrupted) go to 3333
 ****    JD * ALINE CALL 
 	   CALL WINDOW(0.,0.,0.,0.)
@@ -412,10 +414,15 @@ C ACM Add FLOWLINE call based on VECFLD
 		IF ( interrupted ) GOTO 3333
 	    ENDIF
         ELSE IF(MAKEP.EQ.'VELVCT')THEN
-	    CALL VELVCT(X,NXS,XF,YF)
+c	    CALL VELVCT(X,NXS,XF,YF)
+	    IPV = 2
+	    CALL PLOTXY(X,NXS,XF,YF,IPV)
 		IF ( interrupted ) GOTO 3333 !*jd* 8.3.92
 	ELSE IF(MAKEP.EQ.'PLOTV'.OR.MAKEP.EQ.'PLOTUV')THEN
-	    CALL PLOTV(X,NXS,XF,YF)
+c	    CALL PLOTV(X,NXS,XF,YF)
+	    IPV=1
+	    CALL PLOTXY(X,NXS,XF,YF,IPV)
+
 		IF ( interrupted ) GOTO 3333 !*jd* 8.3.92
 	ELSE IF(MAKEP.EQ.'VIEW')THEN
 	    IF(JTYPE.EQ.-1.AND.ivcomp.eq.2) then
@@ -450,7 +457,11 @@ C ACM Add FLOWLINE call based on VECFLD
 ***************************************************
 * TMAP addition for PLOTPOL call
 	ELSE IF(MAKEP.EQ.'PLOTPOL')THEN
-	    CALL PLOTPOL(X,NXS,XF,YF)
+
+	   STOP  'PLOTPOL not yet implemented'
+c	    CALL PLOTPOL(X,NXS,XF,YF)
+	    IPV=3
+	    CALL PLOTXY(X,NXS,XF,YF,IPV)
 	    IF ( interrupted ) GOTO 3333
 ***************************************************
 * TMAP addition for FILLPOL call

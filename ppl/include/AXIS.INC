@@ -23,7 +23,7 @@ c
      *		     YLO,YHI,YTIC,YLEN,YCSIZE, 
      *	IAUTOY,ITYPEY,NMTCY,LINTY,LABELY,NSIGY,NTICY,YORG,YVALOFF,
      *	IAXON(4),IAXSET, HGRAT(4,2), VGRAT(4,2), HLINE, VLINE, 
-     *	SHRINKY, HCOLOR(2), 
+     *	SHRINKY, MOD_VS_X, MOD_VS_Y, HCOLOR(2), 
      *  VCOLOR(2),XDMS,YDMS
 c
 c**	x axis variables
@@ -87,6 +87,8 @@ c       VGRAT      draw vertical tic lines across whole plot 0=no,1=dash,2=solid
 c       hline           flag: true if still need to draw horizontal tic lines
 c       vline           flag: true if still need to draw vertical tic lines
 c       SHRINKY         flag: true to allow auto-shrinking of y-axis tic labels
+c	MOD_VS_X        For PLOT/VS plots, data are treated as modulo, if they 
+c       MOD_VS_Y        have units of longitude.
 c       XDMS           = 0 for degrees in decimal deg.frac
 c                      = 1 for Degrees and minutes 
 c       YDMS           same as xdms, for vertical axis

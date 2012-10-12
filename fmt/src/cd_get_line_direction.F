@@ -1,6 +1,42 @@
-      SUBROUTINE CD_GET_LINE_DIRECTION (dset, ivar, iaxis, 
-     .     vname, do_warn)
+      SUBROUTINE CD_GET_LINE_DIRECTION (dset, ivar, iaxis,
+     .     vname, linunits, do_warn)
+     
 
+*  This software was developed by the Thermal Modeling and Analysis
+*  Project(TMAP) of the National Oceanographic and Atmospheric
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  hereafter referred to as NOAA/PMEL/TMAP.
+*
+*  Access and use of this software shall impose the following
+*  obligations and understandings on the user. The user is granted the
+*  right, without any fee or cost, to use, copy, modify, alter, enhance
+*  and distribute this software, and any derivative works thereof, and
+*  its supporting documentation for any purpose whatsoever, provided
+*  that this entire notice appears in all copies of the software,
+*  derivative works and supporting documentation.  Further, the user
+*  agrees to credit NOAA/PMEL/TMAP in any publications that result from
+*  the use of this software or in any product that includes this
+*  software. The names TMAP, NOAA and/or PMEL, however, may not be used
+*  in any advertising or publicity to endorse or promote any products
+*  or commercial entity unless specific written permission is obtained
+*  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
+*  is not obligated to provide the user with any support, consulting,
+*  training or assistance of any kind with regard to the use, operation
+*  and performance of this software nor to provide the user with any
+*  updates, revisions, new versions or "bug fixes".
+*
+*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
+*  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
+*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+*  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+*  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*
+*  code to determine the direction of a coordinate axis. Pulled out of cd_get_1_axis
+*  V683 ACM 9/2012
+*
 *      include files: 
       
         IMPLICIT NONE
@@ -18,15 +54,15 @@
 * calling arguments
       LOGICAL do_warn
       INTEGER dset, ivar, iaxis, idir
-      CHARACTER*(*) vname
+      CHARACTER*(*) vname, linunits
 
 * local declarations
-      LOGICAL TM_HAS_STRING, NC_GET_ATTRIB, got_it
+      LOGICAL TM_HAS_STRING, NC_GET_ATTRIB, got_it, yyyymmdd_time
       CHARACTER*1 axis_dir*1, vupcase*128
 
       INTEGER STR_UPCASE, STR_CASE_BLIND_COMPARE, TM_LENSTR1, 
      .	      TM_UNIT_ID, units, attlen, attoutflag, attype, iatt,  
-     .        vlen, slen,maxlen, istat, status
+     .        vlen, slen,maxlen, istat, since_T0, epic_t2var, status
 
       REAL val, dummy
 
@@ -43,9 +79,6 @@
       line_direction(iaxis) = 'NA'
 
       vlen = TM_LENSTR1(vname)
-      units = TM_UNIT_ID( line_units(iaxis) )
-      istat = STR_UPCASE( vupcase, vname )
-
 
 * ... First check for an AXIS attribute
 
@@ -126,42 +159,79 @@
          ENDIF
       ENDIF
 
-
 * ... next check units
                
+* If this is called by cd_get_1_axis, we have incoming units from 
+* line_units(iaxis) already. Otherwise, get basic units.
 
-      IF (line_direction(iaxis) .EQ. 'FF' .AND. 
-     .     units .LT. 0 ) line_direction(iaxis) = 'FI'  ! forecast time
+* Time ax may contain "tunits since T0_date"
+
+      IF (linunits .EQ. char_init16) THEN
+
+         linunits = ' '   ! default
+         maxlen = bufflen
+         got_it = NC_GET_ATTRIB( dset, ivar, 'units', do_warn,
+     .                        vname(:vlen), maxlen, attlen, attoutflag, 
+     .                        buff, val)
+         since_T0 = MAX( INDEX(buff,'since'), INDEX(buff,'SINCE') )
+         yyyymmdd_time = buff(1:15) .EQ. 'yyyymmddhhmmss'
+
+         IF ( since_T0 .GT. 2 ) THEN
+            linunits = buff(:since_T0-1)  ! just the "tunits" part 
+         ELSEIF ( yyyymmdd_time ) THEN
+            linunits = 'days'
+         ELSE
+            IF (got_it) linunits = buff
+         ENDIF
+
+* EPIC time axes are encoded as 2 integers in variables TIME and TIME2
+         IF ( vupcase .EQ. 'TIME' ) THEN
+            CALL CD_GET_VAR_ID ( dset, 'time2', epic_t2var, status)
+	    IF ( status .EQ. merr_ok ) linunits = 'Days'     ! arbitrary
+         ENDIF
+      ENDIF
+      
+* ... decode the units
+
+      units = TM_UNIT_ID( linunits )
+      istat = STR_UPCASE( vupcase, vname )
+
 
       IF (line_direction(iaxis) .EQ. 'NA' .OR. 
      .    line_direction(iaxis) .EQ. 'XX' .OR.
-     .    line_direction(iaxis) .EQ. 'YY') THEN
+     .    line_direction(iaxis) .EQ. 'YY' .OR.
+     .    line_direction(iaxis) .EQ. 'FF') THEN
 
       IF ( units .LT. 0 ) THEN
-         line_direction(iaxis) = 'TI'  ! time
+	 IF (line_direction(iaxis) .EQ. 'FF') THEN
+	    line_direction(iaxis) = 'FI'  ! forecast time
+	 ELSE
+            line_direction(iaxis) = 'TI'  ! time
+	 ENDIF
+
       ELSEIF ( units .EQ. 4 ) THEN     ! degrees
-        IF  ( TM_HAS_STRING(line_units(iaxis), 'NORTH')
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'SOUTH')
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreeN')   ! Check all CF_compliant 
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesN')  ! options
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degree_N')  ! Case independent
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degrees_N')
-c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches all degrees
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degree_S')
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degrees_S')
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'LAT') ) THEN 
+        IF  ( TM_HAS_STRING(linunits, 'NORTH')
+     .   .OR. TM_HAS_STRING(linunits, 'SOUTH')
+     .   .OR. TM_HAS_STRING(linunits, 'degreeN')   ! Check all CF_compliant 
+     .   .OR. TM_HAS_STRING(linunits, 'degreesN')  ! options
+     .   .OR. TM_HAS_STRING(linunits, 'degree_N')  ! Case independent
+     .   .OR. TM_HAS_STRING(linunits, 'degrees_N')
+c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degrees
+     .   .OR. TM_HAS_STRING(linunits, 'degree_S')
+     .   .OR. TM_HAS_STRING(linunits, 'degrees_S')
+     .   .OR. TM_HAS_STRING(linunits, 'LAT') ) THEN 
             line_direction(iaxis) = 'SN'
-        ELSEIF ( TM_HAS_STRING(line_units(iaxis), 'EAST')
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'WEST')
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreeE')
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesE')
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degree_E')
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degrees_E')
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreeW')
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesW')
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degree_W')
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degrees_W')
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'LON') ) THEN 
+        ELSEIF ( TM_HAS_STRING(linunits, 'EAST')
+     .   .OR. TM_HAS_STRING(linunits, 'WEST')
+     .   .OR. TM_HAS_STRING(linunits, 'degreeE')
+     .   .OR. TM_HAS_STRING(linunits, 'degreesE')
+     .   .OR. TM_HAS_STRING(linunits, 'degree_E')
+     .   .OR. TM_HAS_STRING(linunits, 'degrees_E')
+     .   .OR. TM_HAS_STRING(linunits, 'degreeW')
+     .   .OR. TM_HAS_STRING(linunits, 'degreesW')
+     .   .OR. TM_HAS_STRING(linunits, 'degree_W')
+     .   .OR. TM_HAS_STRING(linunits, 'degrees_W')
+     .   .OR. TM_HAS_STRING(linunits, 'LON') ) THEN 
             line_direction(iaxis) = 'WE'
         ELSEIF ( line_direction(iaxis) .EQ. 'XX') THEN
                         line_direction(iaxis) = 'WE'
@@ -176,9 +246,9 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
      .   .OR.  units .EQ. 15   ) THEN         ! layer or level
          line_direction(iaxis) = 'UD'
 * ... then check stray clues
-         ELSEIF ( TM_HAS_STRING(line_units(iaxis), 'LAT') ) THEN
+         ELSEIF ( TM_HAS_STRING(linunits, 'LAT') ) THEN
          line_direction(iaxis) = 'SN'
-      ELSEIF ( TM_HAS_STRING(line_units(iaxis), 'LON') ) THEN
+      ELSEIF ( TM_HAS_STRING(linunits, 'LON') ) THEN
          line_direction(iaxis) = 'WE'
       ENDIF
       ENDIF
@@ -199,18 +269,18 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
             ENDIF
          ENDIF
 	 IF (line_direction(iaxis) .EQ. 'WE') THEN
-	    line_units(iaxis) = 'degrees_east'
-	    slen = TM_LENSTR1(line_units(iaxis))
+	    linunits = 'degrees_east'
+	    slen = TM_LENSTR1(linunits)
 	    dummy = 1.
 	    CALL CD_REPLACE_ATTR (dset, ivar, 'units', NF_CHAR, slen,
-     .            line_units(iaxis), dummy, status)
+     .            linunits, dummy, status)
 	 ENDIF
 	 IF (line_direction(iaxis) .EQ. 'SN') THEN
-	    line_units(iaxis) = 'degrees_north'
-	    slen = TM_LENSTR1(line_units(iaxis))
+	    linunits = 'degrees_north'
+	    slen = TM_LENSTR1(linunits)
 	    dummy = 1.
 	    CALL CD_REPLACE_ATTR (dset, ivar, 'units', NF_CHAR, slen,
-     .            line_units(iaxis), dummy, status)
+     .            linunits, dummy, status)
 	 ENDIF
       ENDIF
 
@@ -253,11 +323,9 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
          ENDIF
       ENDIF
 
-* standard_names indicating a sigma-axis in Z, and standard names 
-* for geophysical axes, longitude, latitude, altitude etc. Note 
-* that there seem to be some standard names related to sigma
-* coordinates that may not indicate a vertical axis, so simply 
-* matching sigma and coordinate is probably not safe.
+
+* Basic standard names
+* Look for time, longitude, latitude, depth and height names.
 * Forecast time axes have a standard-name attribute "forecast_reference_time"
 
       maxlen = bufflen
@@ -266,10 +334,53 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
      .                        buff, val)
       IF ( got_it ) THEN
          IF (STR_CASE_BLIND_COMPARE(
+     .      'time',buff(:4))
+     .                                     .EQ.str_eq) THEN
+            line_direction(iaxis) = 'TI'
+         ENDIF 
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'longitude',buff(:0))          .EQ.str_eq .OR. 
+     .      STR_CASE_BLIND_COMPARE(
+     .      'grid_longitude',buff(:19))    .EQ.str_eq) THEN
+            line_direction(iaxis) = 'WE'
+         ENDIF 
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'latitude',buff(:8))           .EQ.str_eq .OR.
+     .      STR_CASE_BLIND_COMPARE(
+     .      'grid_latitude',buff(:18))     .EQ.str_eq) THEN
+            line_direction(iaxis) = 'SN'
+         ENDIF 
+	 
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'depth',buff(:5))
+     .                                     .EQ.str_eq) THEN
+            line_direction(iaxis) = 'UD'
+         ENDIF 
+	 
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'altitude',buff(:8))
+     .                                     .EQ.str_eq) THEN
+            line_direction(iaxis) = 'DU'
+         ENDIF 
+         IF (STR_CASE_BLIND_COMPARE(
      .      'forecast_reference_time',buff(:24))
      .                                     .EQ.str_eq) THEN
             line_direction(iaxis) = 'FI'
          ENDIF 
+      ENDIF
+
+
+* Standard_names indicating a sigma-axis in Z, and standard names 
+* for geophysical axes, longitude, latitude, altitude etc. Note 
+* that there seem to be some standard names related to sigma
+* coordinates that may not indicate a vertical axis, so simply 
+* matching sigma and coordinate is probably not safe.
+
+      maxlen = bufflen
+      got_it = NC_GET_ATTRIB( dset, ivar, 'standard_name', do_warn, 
+     .                        vname(:vlen), maxlen, attlen, attoutflag, 
+     .                        buff, val)
+      IF ( got_it ) THEN
          IF (STR_CASE_BLIND_COMPARE(
      .      'atmosphere_hybrid_height_coordinate',buff(:35))
      .                                     .EQ.str_eq) THEN

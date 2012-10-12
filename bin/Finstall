@@ -218,7 +218,6 @@ export FER_DSETS=\"${fer_dsets}\"" \
 #   Make links to the appropriate files
 #   Note: $SHELL may not be defined in a Bourne-type shell
     rm -f "${ferpaths_dir}/ferret_paths"
-    rm -f "${fer_dir}/bin/pyferret"
     if echo "${SHELL}" | grep -q 'csh$' ; then
         if ( cd "${ferpaths_dir}" ; ln -s "ferret_paths.csh" "ferret_paths" ) ; then
             echo " "
@@ -231,19 +230,6 @@ export FER_DSETS=\"${fer_dsets}\"" \
             echo " Unable to create ${ferpaths_dir}/ferret_paths "
             write_log_message "Unable to create ${ferpaths_dir}/ferret_paths"
         fi
-        if [ -f "${fer_dir}/bin/pyferret.csh" ]; then
-            if ( cd "${fer_dir}/bin" ; ln -s "pyferret.csh" "pyferret" ) ; then
-                echo " "
-                echo " Created ${fer_dir}/bin/pyferret "
-                echo "     as a link to pyferret.csh "
-                write_log_message "Created ${fer_dir}/bin/pyferret"
-                write_log_message "    as a link to pyferret.csh"
-            else
-                echo " "
-                echo " Unable to create ${fer_dir}/bin/pyferret "
-                write_log_message "Unable to create ${fer_dir}/bin/pyferret"
-            fi
-        fi
     else
         if ( cd "${ferpaths_dir}" ; ln -s "ferret_paths.sh" "ferret_paths" ) ; then
             echo " "
@@ -255,19 +241,6 @@ export FER_DSETS=\"${fer_dsets}\"" \
             echo " "
             echo " Unable to create ${ferpaths_dir}/ferret_paths "
             write_log_message "Unable to create ${ferpaths_dir}/ferret_paths"
-        fi
-        if [ -f "${fer_dir}/bin/pyferret.sh" ]; then
-            if ( cd "${fer_dir}/bin" ; ln -s "pyferret.sh" "pyferret" ) ; then
-                echo " "
-                echo " Created ${fer_dir}/bin/pyferret "
-                echo "     as a link to pyferret.sh "
-                write_log_message "Created ${fer_dir}/bin/pyferret"
-                write_log_message "    as a link to pyferret.sh"
-            else
-                echo " "
-                echo " Unable to create ${fer_dir}/bin/pyferret "
-                write_log_message "Unable to create ${fer_dir}/bin/pyferret"
-            fi
         fi
     fi
 }

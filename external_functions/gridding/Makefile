@@ -44,7 +44,7 @@ SUB_OBJS = scat2grid_subs.o
 #	scat2grid_mask_nbin_xyt.so scat2grid_mask_std_xyt.so tracks2grid_mask_ave_xyt.so \
 #	tracks2grid_mask_std_xyt.so tracks2grid_mask_var_xyt.so
 
-all:	$(SUB_OBJS) scat2grid_nobs_xy.o
+all:	$(SUB_OBJS) index_to_grid.so scat2grid_nobs_xy.so
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug" "CFLAGS = $(CFLAGS) -g -Ddebug"  all

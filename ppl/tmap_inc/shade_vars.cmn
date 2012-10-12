@@ -74,6 +74,7 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * *acm* 1/13/12 For DP Ferret/ SP Pplus: explicitly declare REALs 
 *               as single-precision
+*	ribbon_miss	rgb codes for the missing-value rep. on ribbon plots.
 
 	integer		spec_size,max_windows,pattern_num
 	parameter	(spec_size=250,max_windows=12,pattern_num=50)
@@ -86,6 +87,7 @@
 	integer		patterns(pattern_num),npat
 	integer		default_patterns(pattern_num)
 	integer		mpatterns(pattern_num),mnpat
+	integer		bad_ribbon_ndx
 
 	character*25	pattern_list(21)
 
@@ -96,6 +98,7 @@
 	REAL*4		slvl(spec_size)
 	REAL*4		msr(spec_size),msg(spec_size),msb(spec_size)
 	REAL*4		mslvl(spec_size)
+	REAL*4		ribbon_miss(3)
 
 	logical		fill_missing,even_histo,do_key,area_bundles
 	logical		vertical_key,kuser_loc(4),custom_colors
@@ -110,7 +113,7 @@
 
 	common/shade_vars/ i_lo,i_hi,j_lo,j_hi,
      .			   x_lo,x_hi,y_lo,y_hi,
-     .			   bad_val, 
+     .			   bad_val, bad_ribbon_ndx,
      .			   fill_missing,even_histo,do_key,vertical_key,
      .			   kuser_loc,custom_colors,
      .			   shd_min,shd_max,shd_levels,
@@ -126,6 +129,7 @@
      .			   rgb_mapping, percent, by_level, by_value,
      .			   mrgb_mapping, annotate_key, ilast,
      .			   buffer_empty, num_buffered,
-     .		     	   xbuff, ybuff, upperflg, upper_first,use_cell,
+     .		     	   xbuff, ybuff, ribbon_miss,
+     .			   upperflg, upper_first,use_cell,
      .			   pattern_list
 

@@ -620,7 +620,8 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * Use attributes to try to determine the orientation and 
 * direction of the axis
 
-      CALL CD_GET_LINE_DIRECTION (dset, ivar, iaxis, vname, do_warn)
+      CALL CD_GET_LINE_DIRECTION (dset, ivar, iaxis, vname, 
+     .   line_units(iaxis), do_warn)
 
 * longitude axes may be encoded "west" (discontinuous at 180, East negative,
 * West positive) or "east" (standard - 0->360 east from Greenwhich)

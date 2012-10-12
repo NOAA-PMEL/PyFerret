@@ -127,7 +127,7 @@
      .			no_labels, set_up, noaxes, axes, use_line,
      .			is_logh, is_logv, nokey, no_data, no_range,
      .			continuous_key, do_key, spectrum
-	INTEGER		TM_LENSTR1, STR_UPCASE,
+	INTEGER		TM_LENSTR1, STR_UPCASE, STR_SAME,
      .                  symbol, color, status,
      .			loc, limit, slen, thick, step_inc,
      .			ax1_blks, ax1_start,
@@ -376,8 +376,34 @@ c	   IF (.NOT.versus)  GOTO 5470
 * colors between points
 
            loc = qual_given( slash_plot_fast  )
-           IF ( loc.GT.0 ) 
-     .		CALL PPLCMD ( from, line, 0, 'RIBFAST 1', 1, 1 )
+           IF ( loc.GT.0 ) THEN
+     		CALL PPLCMD ( from, line, 0, 'RIBFAST 1', 1, 1 )
+           ELSE
+     		CALL PPLCMD ( from, line, 0, 'RIBFAST 0', 1, 1 )
+           ENDIF
+
+* Missing: how to represent missing color-values. Default is
+* thin black line. Can request /missing=dash, /missing=blank, 
+* /missing= color-palette (e.g. gray_light). The color palette 
+* will typically be a one-color plot, or if a multicolor palette 
+* is given its first color will be used.
+
+           loc = qual_given( slash_plot_missing  )
+           IF ( loc.GT.0 ) THEN
+              CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .             buff, status )
+              IF ( status .NE. ferr_ok ) RETURN
+
+	      IF (STR_SAME (buff(1:4), 'blan') .EQ. 0) THEN
+                 CALL PPLCMD ( from, line, 0, 'RIBMISS BLANK', 1, 1 )
+              ELSEIF ( buff .EQ. ' ' ) THEN
+                 CALL PPLCMD ( from, line, 0, 'RIBMISS DEFAULT', 1, 1 )
+	      ELSE
+                 CALL PPLCMD ( from, line, 0, 'RIBMISS SPECTRUM='//buff, 1, 1 )
+	      ENDIF
+           ELSE
+	      CALL PPLCMD ( from, line, 0, 'RIBMISS DEFAULT', 1, 1 )
+           ENDIF
 
 * default key
 	   do_key =  (qual_given(slash_plot_key)  .GT. 0)

@@ -34,6 +34,7 @@ c  v581 *acm* 3/05 add flags for use of open levels (-INF) (INF)
      .          USE_HIST
 	REAL*4	LEV_STD,LEV_MEAN,LEV_MIN,LEV_MAX,LEV_HIST
 
+* For ribbon-plots: line plots colored-by a variable
 	LOGICAL RIBBON_FAST
 * requires: INCLUDE 'CONT.INC'                                    
 

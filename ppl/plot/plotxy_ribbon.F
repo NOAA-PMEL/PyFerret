@@ -92,13 +92,17 @@ C
 	include 'cont_inc.decl'
 	include 'CONT.INC'
 
-	REAL datum, xlast, ylast, frac, dx, dy, xi, yi
+	REAL datum, xlast, ylast, frac, dx, dy, xi, yi, xhalf, yhalf
 	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
      .		nvertex, low_index, colr_ndx, last_colr_ndx, 
      .		line_ndx, thick_offset, nseg, iseg, indx, inc
-	INTEGER ibase, iline2
+	INTEGER GET_NDX, ibase, iline2
 
-	INTEGER GET_NDX
+	logical	isbad, last_bad, bad_blank
+
+        real            red,green,blue
+        integer         ndx,type
+
 
 * GKS initialization vars
 	integer		error,trans_no,cflag
@@ -106,8 +110,6 @@ C
         data            my_trans/20/
 	real	 	w(4),v(4),ndc(4),uc(4)
 	real		xinv,yinv
-
-	logical		valid
 
 *************************************
 
@@ -126,7 +128,6 @@ C
 	ICNT=1
 	IF(M.GE.2.AND.IFLG(2).NE.0)ICNT=P(2)
 
-
 * Line 2 contains the variable on which to color. ZMAX and ZMIN are its 
 * range.  Set levels and set up color line bundles.
 
@@ -138,6 +139,16 @@ C  Set the contour/color levels
 * DETERMINE COLORS TO SET BUNDLED LINE REPRESENTATIONS
 	CALL WS_LINE_SPECTRUM (wsid,wstype, low_index)
 
+* For plotting missing values of the color-by variable.
+* Code -1 is for the default, thin black line (or gray? Set in ws_line_spectrum)
+* Code -2 is to lift the pen and make the segment blank.
+* If a palette, then use the first color. This was set up in ws_line_spectrum.
+
+	bad_blank = .FALSE.
+	IF (ribbon_miss(1) .EQ. -2) THEN 
+	   bad_blank = .TRUE.
+	ENDIF
+
         ILINE2=IBASE+LLENG(I)
 
 	  CALL MARKH(HMARK(I))
@@ -145,8 +156,8 @@ C  Set the contour/color levels
 * IPEN contains the thickness setting.
 
 	  thick_offset = 0
-	  IF (ipen(i) .EQ. 2) thick_offset = shd_levels 
-	  IF (ipen(i) .EQ. 3) thick_offset = 2*shd_levels 
+	  IF (ipen(i) .EQ. 2) thick_offset = (shd_levels+1) 
+	  IF (ipen(i) .EQ. 3) thick_offset = 2*(shd_levels+1) 
 
 C     SET PLOT MODE
 
@@ -161,7 +172,6 @@ C     SET PLOT MODE
 	    IF(ITYPE(I).EQ.3)THEN 
                CALL POINTS
                IF (imark(i) .eq. 99) ipt = 0
-	       RIBBON_FAST = .FALSE.
             ENDIF
 	    IF(.NOT.(XLE.OR.XEQ.OR.XGE.OR.YLE.OR.YEQ.OR.YGE))THEN
 C     DO NOT CHECK POINTS FOR MISSING DATA
@@ -185,11 +195,16 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		IF(YEQ.AND.X(IY+J).EQ.CMYEQ)GOTO 70
 		IF(YGE.AND.X(IY+J).GE.CMYGE)GOTO 70
 		
+		last_bad = .FALSE.
 	        colr_ndx = GET_NDX (X(IY+J+ILINE2),colr_ndx)
 
-	        IF (colr_ndx .EQ. -999) GOTO 70
-		IF (colr_ndx .LT. 1) colr_ndx = 1
 	        line_ndx = colr_ndx + thick_offset + low_index - 1
+	        IF (colr_ndx .EQ. -999) THEN 
+		   colr_ndx = bad_ribbon_ndx
+		   line_ndx = colr_ndx + low_index - 1
+		   last_bad = .TRUE.
+		ENDIF
+
 		CALL COLOR (line_ndx) 
 		last_colr_ndx = colr_ndx
 
@@ -197,12 +212,14 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	        CALL PLOT(XT,YT,0,0)
 		xlast = xt
 		ylast = yt
+		isbad = .FALSE.
 	        IF(ITYPE(I).NE.0.AND.ITYPE(I).NE.4)CALL MARK(IMARK(I))
  	        IM=0
 	        IF(ITYPE(I).EQ.1.OR.ITYPE(I).EQ.3)IM=IMARK(I)
 	        GOTO 71
 70	      CONTINUE
 71	      IDN=1
+	      IF (last_bad .AND. bad_blank) IDN = 0
 * ... plot remaining points
 	      DO 72 K=J+1,IBASE+LLENG(I)
 		IF((XLE.AND.X(K).LE.CMXLE).OR.
@@ -213,75 +230,99 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
      *		 (YGE.AND.X(IY+K).GE.CMYGE))THEN
 	          IDN=0
 	        ELSE
+		
+	        CALL PLOT(XT,YT,IDN,0)
 	          CALL TRANS(I,X(K),X(IY+K),XT,YT)
+
+		  xhalf = xlast + (xt - xlast)/2
+		  yhalf = ylast + (yt - ylast)/2
+
+		  IF (RIBBON_FAST .OR. last_bad) THEN 
+! go halfway between the last point and this one, using previous color.
+                     IF (last_bad .AND. bad_blank) THEN 
+		        CALL PLOT(xhalf,yhalf,0,0)
+		     ELSE
+		        CALL PLOT(xhalf,yhalf,IDN,0)
+		     ENDIF
+		  ENDIF
 
 		  datum = X(IY+K+ILINE2)
 		  IF (datum .EQ. -3.E33) datum = CMZGE  ! This value set in pplldx.
 		  
 	          colr_ndx = GET_NDX (datum,colr_ndx)
+	          line_ndx = colr_ndx + thick_offset + low_index - 1
+
 	          IF (colr_ndx .EQ. -999) THEN
-		     IDN = 0
-	          ELSE
-		     IF (colr_ndx .LT. 1) colr_ndx = 1
+		     isbad = .true.
+		     colr_ndx = bad_ribbon_ndx
+		     line_ndx = colr_ndx + low_index - 1
 
-	             line_ndx = colr_ndx + thick_offset + low_index - 1
-		     IF (line_ndx .LT. 1) line_ndx = 1
+		     IF (bad_blank .AND. .NOT.last_bad) CALL PLOT(xhalf,yhalf,IDN,0)
+		     IF (bad_blank) IDN = 0
+		  ENDIF
+		  
+	          IF (line_ndx .LT. 1) line_ndx = 1
 
-	             IF (last_colr_ndx .EQ. -999) THEN
-		        IDN = 0
-	                CALL PLOT(XT,YT,IDN,0)
-		        CALL COLOR (line_ndx) 
-
-		     ELSEIF (colr_ndx .NE. last_colr_ndx) THEN
+	          IF (colr_ndx .NE. last_colr_ndx) THEN
 		     
 * In default (not fast) mode, draw sub-segments filling in all the colors
 * corresponding to the index range between the color at this point and the
 * color at the previous point.
 
-		        IF (.NOT.RIBBON_FAST .AND. 
-     .                       ABS(colr_ndx-last_colr_ndx) .GT. 1) THEN
-		           nseg = ABS(colr_ndx-last_colr_ndx) 
-		           frac = 1./FLOAT(nseg)
-		           dx = (xt-xlast)
-		           dx = (xt-xlast)* frac
-		           dy = (yt-ylast)
-		           dy = (yt-ylast)* frac
-			   indx = 1
-			   inc = 1
-			   IF (last_colr_ndx .GT. colr_ndx) inc = -1
-		           DO 80 iseg = last_colr_ndx+inc, colr_ndx, inc
-			      xi = xlast + dx*indx
-			      yi = ylast + dy*indx
-	                      line_ndx = iseg + thick_offset + low_index - 1
-		              IF (line_ndx .LT. 1) line_ndx = 1
-	                      CALL PLOT(xi,yi,IDN,0)
-	                      CALL COLOR (line_ndx) 
-c	                      IF (iseg.LT.last_colr_ndx) CALL PLOT(xi,yi,IDN,0)
-	                      CALL PLOT(xi,yi,IDN,0)
-			      indx = indx + 1
-80	                   CONTINUE
-			   XT = xi  ! should already be??
-			   YT = yi
-                        ELSE
-
-	                   CALL PLOT(XT,YT,IDN,0)
-		           CALL COLOR (line_ndx) 
-		        ENDIF
+		     IF (.NOT.RIBBON_FAST .AND. 
+     .                    .NOT.isbad .AND. .NOT.last_bad .AND.
+     .                    ABS(colr_ndx-last_colr_ndx) .GT. 1) THEN
+		        nseg = ABS(colr_ndx-last_colr_ndx) 
+		        frac = 1./FLOAT(nseg)
+		        dx = (xt-xlast)
+		        dx = (xt-xlast)* frac
+		        dy = (yt-ylast)
+		        dy = (yt-ylast)* frac
+		        indx = 1
+		        inc = 1
+		        IF (last_colr_ndx .GT. colr_ndx) inc = -1
+		        DO 80 iseg = last_colr_ndx+inc, colr_ndx, inc
+			   xi = xlast + dx*indx
+			   yi = ylast + dy*indx
+	                   line_ndx = iseg + thick_offset + low_index - 1
+		           IF (line_ndx .LT. 1) line_ndx = 1
+	                   CALL PLOT(xi,yi,IDN,0)
+	                   CALL COLOR (line_ndx) 
+	                   CALL PLOT(xi,yi,IDN,0)
+			   indx = indx + 1
+80	                CONTINUE
+			XT = xi  ! should already be??
+			YT = yi
+                     ELSE
+	                CALL PLOT(xhalf,yhalf,IDN,0)
+			CALL COLOR (line_ndx)
+	                CALL PLOT(xhalf,yhalf,IDN,0)
+	                CALL PLOT(XT,YT,IDN,0)
 		     ENDIF
+		  ENDIF
 
-	             CALL PLOT(XT,YT,IDN,0)
+	          CALL PLOT(XT,YT,IDN,0)
 
-	          ENDIF !colr_ndx .EQ. -999
-
-	          IF (last_colr_ndx .EQ. -999 .AND. 
-     .		       colr_ndx .NE. -999) CALL COLOR (line_ndx) 
+	          IF (last_colr_ndx .EQ. bad_ribbon_ndx .AND. 
+     .		       colr_ndx .NE. bad_ribbon_ndx) THEN
+                     CALL COLOR (line_ndx) 
+		  ENDIF
 
 		  last_colr_ndx = colr_ndx
+		  last_bad = .FALSE.
+		  IF (isbad) last_bad = .TRUE.
+		  isbad = .FALSE.
 	  	  xlast = xt
 		  ylast = yt
 
 		  if (interrupted) goto 51 ! *jd* 8.3.92
-	          CALL MARK(IM)
+		  IF (bad_blank .AND. colr_ndx.EQ.bad_ribbon_ndx) THEN
+		     nothing = 0
+		  ELSE
+	             CALL MARK(IM)
+	          ENDIF
+		  CALL PLOT(XT,YT,IDN,0) 
+
 	          IF(IDN.EQ.0)IDN=1
 	        END IF
 72	      CONTINUE

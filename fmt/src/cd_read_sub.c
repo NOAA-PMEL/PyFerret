@@ -79,9 +79,24 @@
 /*#include <stdio.h>*/
 #include <stdlib.h>
 #include <netcdf.h>
-#include <assert.h>
+#include <signal.h>
+#include <setjmp.h>
 #include "ferretmacros.h"
+#include "list.h"
+#include "NCF_Util.h"
 
+
+/* jump buffer for returning to the point prior to calling nc_* functions */
+static jmp_buf cd_read_sigint_jmp_buf;
+
+/* pointer to previous function called when Ctrl-C is given */
+static void (*orig_sigint_handler)(int signum);
+
+/* function called when Ctrl-C is given */
+static void cd_read_sigint_handler(int signum) {
+    /* Return to the setjmp call but return a value of 1 */
+    longjmp(cd_read_sigint_jmp_buf, 1);
+}
 
 /* prototype */
 void tm_unblockify_ferret_strings(void *dat, char *pbuff,
@@ -150,9 +165,33 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
 					imap[ndim-i] = tmp_ptrdiff_t;
 				}
 		}
+
+  /* 
+   * Capture the program state at this moment (zero is returned)
+   * or returning via longjmp after a Ctrl-C (non-zero is returned)
+   */
+  if ( setjmp(cd_read_sigint_jmp_buf) != 0 ) {
+      /* restore the original Ctrl-C handler */
+      signal(SIGINT, orig_sigint_handler);
+      /* call CTRLC_AST (in fer/gnl/ctrl_c.F) to set the interrupted flag */
+      ctrlc_ast_();
+      /* return NC_INTERRUPT in cdfstat to indicate the read interrupt */
+      *cdfstat = NC_INTERRUPT;
+      return;
+  }
+
+  /* Put in our own Ctrl-C handler */
+  orig_sigint_handler = signal(SIGINT, cd_read_sigint_handler);
+  if ( orig_sigint_handler == SIG_ERR )
+      abort();
+
   /* get the type of the variable on disk */
   *cdfstat = nc_inq_vartype(*cdfid, vid, &vtyp);
-  if (*cdfstat != NC_NOERR) return;
+  if (*cdfstat != NC_NOERR) {
+      /* restore the original Ctrl-C handler */
+      signal(SIGINT, orig_sigint_handler);
+      return;
+  }
   /* write out the data */
   if (vtyp == NC_CHAR) {
     /* Read into a buffer area with the multi-dimensiona array of strings
@@ -161,14 +200,27 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
        where the string pointers are spaced 8 bytes apart
     */
       *cdfstat = nc_inq_varndims (*cdfid, vid, &ndimsp);
-      if (*cdfstat != NC_NOERR) return;
-      dimids =  (int *) malloc(sizeof(int) * ndimsp);
-      assert(dimids);
+      if (*cdfstat != NC_NOERR) {
+          /* restore the original Ctrl-C handler */
+          signal(SIGINT, orig_sigint_handler);
+          return;
+      }
+      dimids = (int *) malloc(sizeof(int) * ndimsp);
+      if ( dimids == NULL )
+          abort();
       ndimsp--;
       *cdfstat = nc_inq_vardimid (*cdfid, vid, dimids);
-      if (*cdfstat != NC_NOERR) return;
+      if (*cdfstat != NC_NOERR) {
+          /* restore the original Ctrl-C handler */
+          signal(SIGINT, orig_sigint_handler);
+          return;
+      }
       *cdfstat = nc_inq_dimlen (*cdfid, dimids[ndimsp], &bufsiz);
-      if (*cdfstat != NC_NOERR) return;
+      if (*cdfstat != NC_NOERR) {
+          /* restore the original Ctrl-C handler */
+          signal(SIGINT, orig_sigint_handler);
+          return;
+      }
       free(dimids);
       maxstrlen = bufsiz;
       if (indim > 0) {
@@ -238,6 +290,10 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
      count, (float*) dat);
 	  }
 #endif
+
+  /* restore the original Ctrl-C handler */
+  signal(SIGINT, orig_sigint_handler);
+
   return;
 }
 

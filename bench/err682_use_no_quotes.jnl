@@ -1,0 +1,9 @@
+! err682_use_no_quotes.jnl
+! See ticket 1974 - on 64-bit machines, this statement causes a crash.
+! It should just generate an error message, as the file spec. should have
+! quotes around it.
+
+SET MODE ignore
+use ./z1.nc
+
+CANCEL MODE ignore

@@ -244,8 +244,9 @@
      .                  varname*512, attname*128, new_att_calendar*10, 
      .                  new_att_t0*128, new_att_units*128, buff3*512,
      .                  t0string*128, ustring*128, faccess*16, 
-     .                  fposition*16, fstatus*16
-	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
+     .                  fposition*16, fstatus*16, c1*1
+	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT, 
+     .                  TM_DIGIT_ONLY,
      .                  TM_HAS_STRING, TM_LEGAL_NAME, MATCH_NAME,
      .                  NC_GET_ATTRIB, set_last, any_delta, dset_cdf,
      .			do_laser_movie, past_laser_movie, start_frame,
@@ -483,7 +484,9 @@ c *kob* 4/97
 
 * check to see if data set was referred to by number
 * 9/95 - replaced "*" with "(I)" read from separate buffer
-	   IF ( TM_DIGIT(cmnd_buff(item_start(item):item_start(item)) )) THEN
+* Just check the first character for a digit (ticket 1974)
+	   c1 = cmnd_buff(item_start(item):item_start(item))
+	   IF ( c1 .GE. '0' .AND. c1 .LE. '9' ) THEN
 	      buff1 = cmnd_buff(item_start(item):item_end(item))
 * *kob* 4/97
 #ifdef INTERNAL_READ_FORMAT_BUG

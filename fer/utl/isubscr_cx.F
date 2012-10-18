@@ -55,7 +55,9 @@
 *                   seconds.  Convert all this to double-precision calculations.
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
 *                  dimension is now an arg to SECS_TO_TSTEP.
-
+* V683: *acm* 10/12 Fix ticket 1973. If the coordinate value is on the boundary
+*                   of the grid cell, precicision could cause the wrong index 
+*                   to be returned.
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -68,12 +70,13 @@
 	REAL*8	world_coord
 
 * internal variable declarations:
-	LOGICAL	TM_DFPEQ, TM_ITS_SUBSPAN_MODULO, regular
+	LOGICAL	TM_DFPEQ, TM_ITS_SUBSPAN_MODULO, TM_FPEQ_SNGL, regular
 	INTEGER	lo_look, hi_look, axis, ibot, itop, look,
      .		line_len, isubsc, num_mod
 	REAL*8	SECS_TO_TSTEP, TM_WORLD, TM_WW_AXLEN,
      .		wwindex, wcoord, half_way, start, aend, span, 
      .		first, last, dsubsc
+	REAL*4  delsubsc, half
 
 * initialize
         isubsc = 0
@@ -163,9 +166,31 @@
 	   isubsc = line_len
 
 * quick sol'n if axis points are regularly spaced
+* Fixing bug 1973 - See if the input was the box_lo or box_hi 
+* using a test, is the computed index location halfway between 
+* two integers, and if so return the correct index.
+
 	ELSEIF ( regular ) THEN
-	   dsubsc = (wcoord-first)/line_delta(axis) + .5
+	   dsubsc = (wcoord-first)/line_delta(axis)
 	   isubsc = INT( dsubsc )
+
+	   half_way = line_delta(axis)/2.
+	   half = 0.5
+
+	   IF ( round_code .EQ. round_up ) THEN
+	      delsubsc = ABS( REAL(dsubsc)-FLOAT(isubsc) )
+	      IF ( TM_FPEQ_SNGL(delsubsc, half) )
+     .         dsubsc = (wcoord+half_way-first)/line_delta(axis)
+	   ENDIF  
+	   IF ( round_code .EQ. round_dn ) THEN
+	      delsubsc = ABS( REAL(dsubsc)-FLOAT(isubsc) )
+	      IF ( TM_FPEQ_SNGL(delsubsc, half) )
+     .         dsubsc = (wcoord-half_way-first)/line_delta(axis)
+	   ENDIF  
+
+	   dsubsc = dsubsc + .5  ! to get the right result from INT()
+	   isubsc = INT( dsubsc )
+
 	   IF ( TM_DFPEQ(dsubsc,DBLE( isubsc )) ) THEN
 * ...... value is on box boundary
 	      IF     ( round_code .EQ. round_up ) THEN

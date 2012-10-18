@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 59842416 Oct 17 14:10 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 59842450 Oct 17 16:42 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: testing fix for ticket 1975.
+Note: fixed bug 1973
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -21,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Wed Oct 17 14:24:37 PDT 2012
+Beginning at Wed Oct 17 16:47:43 PDT 2012
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10449,12 +10449,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Sep 14 2012 15:49:53 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "17-Oct-12"
-SESSION_TIME = "14:24"
-SESSION_PID = "6358"
-DELTA_CPU = "8.38972"
-CLOCK_SECS = "11.69"
+SESSION_TIME = "16:47"
+SESSION_PID = "20486"
+DELTA_CPU = "7.56985"
+CLOCK_SECS = "9.304"
 CURRENT_DATE = "17-Oct-12"
-CURRENT_TIME = "14:24:49"
+CURRENT_TIME = "16:47:52"
 N_OPEN_DSETS = "0"
  
 ! define some symbols ... syntax variations
@@ -10477,12 +10477,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Sep 14 2012 15:49:53 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "17-Oct-12"
-SESSION_TIME = "14:24"
-SESSION_PID = "6358"
-DELTA_CPU = "0.001"
-CLOCK_SECS = "11.691"
+SESSION_TIME = "16:47"
+SESSION_PID = "20486"
+DELTA_CPU = "0.001999"
+CLOCK_SECS = "9.305"
 CURRENT_DATE = "17-Oct-12"
-CURRENT_TIME = "14:24:49"
+CURRENT_TIME = "16:47:52"
 N_OPEN_DSETS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10492,8 +10492,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "17-Oct-12"
-SESSION_TIME = "14:24"
-SESSION_PID = "6358"
+SESSION_TIME = "16:47"
+SESSION_PID = "20486"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10504,14 +10504,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "17-Oct-12"
-SESSION_TIME = "14:24"
-SESSION_PID = "6358"
+SESSION_TIME = "16:47"
+SESSION_PID = "20486"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "17-Oct-12"
-SESSION_TIME = "14:24"
-SESSION_PID = "6358"
+SESSION_TIME = "16:47"
+SESSION_PID = "20486"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10545,7 +10545,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.83"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "17-OCT-2012 14:24:49"
+LAB3 = "17-OCT-2012 16:47:52"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10646,12 +10646,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Sep 14 2012 15:49:53 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "17-Oct-12"
-SESSION_TIME = "14:24"
-SESSION_PID = "6358"
-DELTA_CPU = "0.013998"
-CLOCK_SECS = "11.705"
+SESSION_TIME = "16:47"
+SESSION_PID = "20486"
+DELTA_CPU = "0.014998"
+CLOCK_SECS = "9.321"
 CURRENT_DATE = "17-Oct-12"
-CURRENT_TIME = "14:24:49"
+CURRENT_TIME = "16:47:52"
 N_OPEN_DSETS = "0"
  
  
@@ -25612,7 +25612,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Wed Oct 17 14:25:01 PDT 2012
+Wed Oct 17 16:48:00 PDT 2012
  
 GO bn_reset
 cancel mode verify
@@ -47717,7 +47717,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS17-OCT-2012 14:25:49
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS17-OCT-2012 16:48:37
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -49144,7 +49144,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "17-Oct-12:14:24"
+WIN_TITLE = "17-Oct-12:16:47"
  
 set win/title="set the title"
 sho sym win_title
@@ -49162,7 +49162,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="17-Oct-12:14:24"
+ !-> set win/title="17-Oct-12:16:47"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -49173,14 +49173,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 17-Oct-12
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 14:24
+ !-> DEFINE SYMBOL the_time = 16:47
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="17-Oct-12:14:24"
+ !-> SET WIN/TITLE="17-Oct-12:16:47"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "17-Oct-12:14:24"
+WIN_TITLE = "17-Oct-12:16:47"
  
 GO bn_reset
 cancel mode verify
@@ -59330,10 +59330,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "63.8333"
-CLOCK_SECS = "105.899"
+DELTA_CPU = "59.5529"
+CLOCK_SECS = "80.277"
 CURRENT_DATE = "17-Oct-12"
-CURRENT_TIME = "14:26:23"
+CURRENT_TIME = "16:49:03"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -59342,8 +59342,8 @@ CURRENT_TIME = "14:26:23"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.057991"
-CLOCK_SECS = "105.98"
+DELTA_CPU = "0.056992"
+CLOCK_SECS = "80.369"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -59357,60 +59357,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.32895
+ !-> DEFINE VARIABLE ten_plots = 0.333948
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "106.728"
+CLOCK_SECS = "81.157"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "106.729"
+CLOCK_SECS = "81.158"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.034995
- !-> DEFINE VARIABLE sumcpu =0.034995
-!-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.040993
- !-> DEFINE VARIABLE sumcpu =0.075988
-!-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.039994
- !-> DEFINE VARIABLE sumcpu =0.115982
-!-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.039994
- !-> DEFINE VARIABLE sumcpu =0.155976
-!-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.037994
- !-> DEFINE VARIABLE sumcpu =0.19397
-!-> REPEAT: K=6
  !-> DEFINE VARIABLE dt = 0.037995
- !-> DEFINE VARIABLE sumcpu =0.231965
+ !-> DEFINE VARIABLE sumcpu =0.037995
+!-> REPEAT: K=2
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.07499
+!-> REPEAT: K=3
+ !-> DEFINE VARIABLE dt = 0.033993
+ !-> DEFINE VARIABLE sumcpu =0.108983
+!-> REPEAT: K=4
+ !-> DEFINE VARIABLE dt = 0.032996
+ !-> DEFINE VARIABLE sumcpu =0.141979
+!-> REPEAT: K=5
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.174974
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.038993
+ !-> DEFINE VARIABLE sumcpu =0.213967
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.035994
- !-> DEFINE VARIABLE sumcpu =0.267959
-!-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.035995
- !-> DEFINE VARIABLE sumcpu =0.303954
-!-> REPEAT: K=9
  !-> DEFINE VARIABLE dt = 0.034995
- !-> DEFINE VARIABLE sumcpu =0.338949
+ !-> DEFINE VARIABLE sumcpu =0.248962
+!-> REPEAT: K=8
+ !-> DEFINE VARIABLE dt = 0.037995
+ !-> DEFINE VARIABLE sumcpu =0.286957
+!-> REPEAT: K=9
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.323952
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.035994
- !-> DEFINE VARIABLE sumcpu =0.374943
+ !-> DEFINE VARIABLE dt = 0.032994
+ !-> DEFINE VARIABLE sumcpu =0.356946
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.374943
-0.374943
+ !-> MESSAGE/CONTINUE 0.356946
+0.356946
 sh sym CLOCK_SECS
-CLOCK_SECS = "107.946"
+CLOCK_SECS = "82.3"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "17-Oct-12"
-SESSION_TIME = "14:24"
+SESSION_TIME = "16:47"
 CURRENT_DATE = "17-Oct-12"
-CURRENT_TIME = "14:26:25"
+CURRENT_TIME = "16:49:05"
  
  
 ! ******** V6.3 Additions below ***********
@@ -63303,7 +63303,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.83  "                                                          
  3    /  3:" ! Linux 2.6.18-308.1.1.el5 64-bit - 10/17/12"                              
- 4    /  4:" ! 17-Oct-12 14:24     "                                                    
+ 4    /  4:" ! 17-Oct-12 16:47     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -65904,42 +65904,42 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.6778
- 2   / 2:  0.8429
- 3   / 3:  0.2147
- 4   / 4:  0.0250
- 5   / 5:  0.1987
+ 1   / 1:  0.1434
+ 2   / 2:  0.5831
+ 3   / 3:  0.0936
+ 4   / 4:  0.9966
+ 5   / 5:  0.3869
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.7763
- 2   / 2:  0.2818
- 3   / 3:  0.9311
- 4   / 4:  0.6853
- 5   / 5:  0.8244
+ 1   / 1:  0.2419
+ 2   / 2:  0.3004
+ 3   / 3:  0.2090
+ 4   / 4:  0.6955
+ 5   / 5:  0.0282
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.7444
- 2   / 2:  0.6695
- 3   / 3:  0.8638
- 4   / 4:  0.7658
- 5   / 5:  0.3070
- 6   / 6:  0.4706
+ 1   / 1:  0.2899
+ 2   / 2:  0.2055
+ 3   / 3:  0.5602
+ 4   / 4:  0.6223
+ 5   / 5:  0.6853
+ 6   / 6:  0.0797
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.4730
- 2   / 2:  0.8837
- 3   / 3:  0.4604
- 4   / 4:  0.2224
- 5   / 5:  0.6478
- 6   / 6:  0.7554
+ 1   / 1:  0.9496
+ 2   / 2:  0.4194
+ 3   / 3:  0.8028
+ 4   / 4:  0.3003
+ 5   / 5:  0.3102
+ 6   / 6:  0.7071
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
@@ -65971,42 +65971,42 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.476
- 2   / 2:  1.271
- 3   / 3:  0.281
- 4   / 4:  0.470
- 5   / 5: -0.901
+ 1   / 1:  0.0239
+ 2   / 2:  0.1244
+ 3   / 3: -0.4186
+ 4   / 4: -0.6616
+ 5   / 5: -0.6303
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.546
- 2   / 2:  1.682
- 3   / 3: -1.489
- 4   / 4:  1.805
- 5   / 5:  0.140
+ 1   / 1:  1.385
+ 2   / 2:  1.330
+ 3   / 3: -0.369
+ 4   / 4:  1.735
+ 5   / 5: -1.742
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1: -0.833
- 2   / 2: -2.120
- 3   / 3:  0.221
- 4   / 4:  1.062
- 5   / 5: -1.126
- 6   / 6:  0.972
+ 1   / 1:  0.934
+ 2   / 2:  1.466
+ 3   / 3: -0.323
+ 4   / 4:  0.094
+ 5   / 5: -0.298
+ 6   / 6: -0.407
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1: -1.255
- 2   / 2:  1.409
- 3   / 3:  2.387
- 4   / 4: -0.889
- 5   / 5:  0.535
- 6   / 6:  1.697
+ 1   / 1: -1.575
+ 2   / 2: -0.005
+ 3   / 3: -1.083
+ 4   / 4:  0.340
+ 5   / 5: -0.267
+ 6   / 6:  0.279
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
@@ -66041,15 +66041,15 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-            VAR2   VAR2   VAR2
-0     / 1:  1.191  1.236  1.077
-20    / 2:  1.236  1.191  1.077
-40    / 3:  1.077  1.077 -0.054
-60    / 4: -0.054 -0.054  0.356
-80    / 5: -0.744 -0.744  0.356
-100   / 6: -0.944 -0.744  0.356
-120   / 7: -0.219 -0.219  0.356
-140   / 8:  0.356  0.356  0.356
+            VAR2   VAR2    VAR2
+0     / 1:  1.836  1.836  0.4702
+20    / 2:  0.864  0.864  0.4702
+40    / 3:  0.470  0.470 -0.1098
+60    / 4: -0.110 -0.110  0.2628
+80    / 5: -0.172 -0.154  0.2628
+100   / 6: -0.154 -0.172  0.2628
+120   / 7: -0.641 -0.154  0.2628
+140   / 8:  0.263  0.263  0.2628
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -74911,7 +74911,7 @@ yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.83  
  	Linux 2.6.18-308.1.1.el5 64-bit - 10/17/12
- 	17-Oct-12 14:26     
+ 	17-Oct-12 16:49     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -78460,7 +78460,7 @@ yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.83  
  	Linux 2.6.18-308.1.1.el5 64-bit - 10/17/12
- 	17-Oct-12 14:26     
+ 	17-Oct-12 16:49     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
@@ -78473,12 +78473,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Sep 14 2012 15:49:53 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "17-Oct-12"
-SESSION_TIME = "14:26"
-SESSION_PID = "6767"
+SESSION_TIME = "16:49"
+SESSION_PID = "20895"
 DELTA_CPU = "0.034994"
-CLOCK_SECS = "0.255"
+CLOCK_SECS = "0.182"
 CURRENT_DATE = "17-Oct-12"
-CURRENT_TIME = "14:26:54"
+CURRENT_TIME = "16:49:29"
 N_OPEN_DSETS = "0"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
@@ -78499,7 +78499,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "17-Oct-12:14:26"
+WIN_TITLE = "17-Oct-12:16:49"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -78561,7 +78561,7 @@ yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v6.83  
  	Linux 2.6.18-308.1.1.el5 64-bit - 10/17/12
- 	17-Oct-12 14:26     
+ 	17-Oct-12 16:49     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -78780,7 +78780,7 @@ yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.83  
  	Linux 2.6.18-308.1.1.el5 64-bit - 10/17/12
- 	17-Oct-12 14:26     
+ 	17-Oct-12 16:49     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -78894,7 +78894,7 @@ yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.83  
  	Linux 2.6.18-308.1.1.el5 64-bit - 10/17/12
- 	17-Oct-12 14:26     
+ 	17-Oct-12 16:49     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -78978,4 +78978,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Wed Oct 17 14:26:56 PDT 2012
+Ended at Wed Oct 17 16:49:31 PDT 2012

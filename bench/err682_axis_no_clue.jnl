@@ -1,0 +1,8 @@
+! err682_axis_no_clue.jnl
+! See ticket 1975. The axis sax is intended to be
+! used as a Y axis. The axes of the variable are 
+! TEMP(zax, sax, xax). The grid should be XYZ but 
+! Ferret v6.82 created a grid thats XZT instead.
+
+use xsz.nc
+sh dat

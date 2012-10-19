@@ -58,8 +58,10 @@
 * V683: *acm* 10/12 Fix ticket 1973. If the coordinate value is on the boundary
 *                   of the grid cell, precicision could cause the wrong index 
 *                   to be returned.
+* V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
 
 	include 'tmap_dims.parm'
+#      include "tmap_dset.parm"
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include	'ferret.parm'
@@ -70,7 +72,8 @@
 	REAL*8	world_coord
 
 * internal variable declarations:
-	LOGICAL	TM_DFPEQ, TM_ITS_SUBSPAN_MODULO, TM_FPEQ_SNGL, regular
+	LOGICAL	TM_DFPEQ, TM_ITS_SUBSPAN_MODULO, TM_FPEQ_SNGL, 
+     .		is_regular, calendar
 	INTEGER	lo_look, hi_look, axis, ibot, itop, look,
      .		line_len, isubsc, num_mod
 	REAL*8	SECS_TO_TSTEP, TM_WORLD, TM_WW_AXLEN,
@@ -96,7 +99,10 @@
 	ENDIF
 
 * time expressed as seconds since BC ?
-	IF ( (idim .EQ. t_dim .OR. idim .EQ. f_dim) .AND. cx_calendar(cx) ) THEN
+	calendar = (idim .EQ. t_dim .OR. idim .EQ. f_dim) .AND. cx_calendar(cx) 
+	IF (idim.EQ.f_dim .AND. (line_t0(axis) .EQ. char_init20)) calendar = .FALSE.
+
+	IF ( calendar ) THEN
 * no negative needeed on world_coord, because it is not being passed 
 * in as negative *kob*  9/97
 	   wcoord = SECS_TO_TSTEP( grid, idim, world_coord )
@@ -109,16 +115,16 @@
 	   CALL TM_WW_AX_1_N(axis, start, aend)
 	   IF ( wcoord.LT.start .OR. wcoord.GT.aend ) THEN
 	      line_len = line_len + 1
-	      regular = .FALSE.
+	      is_regular = .FALSE.
 	   ELSE
-	      regular = line_regular( axis )
+	      is_regular = line_regular( axis )
 	   ENDIF
 	ELSE
-	   regular = line_regular( axis )
+	   is_regular = line_regular( axis )
 	ENDIF
 
 * initialize pointers for axes with irregularly spaced points
-	IF ( .NOT.regular ) THEN
+	IF ( .NOT.is_regular ) THEN
 	   ibot  = 1
 	   itop  = line_len
 	ENDIF
@@ -151,7 +157,7 @@
 
 * get positions of first and last points on axis
         
-        IF ( regular ) THEN
+        IF ( is_regular ) THEN
 	   first = line_start( axis )
 	   last  = first + line_delta(axis) * (line_len-1) !4/94 was *line_len
         ELSE
@@ -170,7 +176,7 @@
 * using a test, is the computed index location halfway between 
 * two integers, and if so return the correct index.
 
-	ELSEIF ( regular ) THEN
+	ELSEIF ( is_regular ) THEN
 	   dsubsc = (wcoord-first)/line_delta(axis)
 	   isubsc = INT( dsubsc )
 

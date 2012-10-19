@@ -65,6 +65,7 @@
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
+* V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
 
 *	Note: the "offset" code in this routine is largely untested!
 
@@ -123,7 +124,7 @@
 	      cx_cal_id(cx_out)          = unspecified_int4
 !	      cx_trans (idim,cx_out)     = trans_no_transform
 !	      cx_trans_arg(idim,cx_out)  = bad_val4  
-	      IF (idim .EQ. t_dim .OR. idim .EQ. f_dim) 
+	      IF (idim .EQ. t_dim) 
      .                cx_calendar(cx_out) = .FALSE.
 
 	   ELSEIF (lo_off(idim).NE.0 .OR. hi_off(idim).NE.0) THEN

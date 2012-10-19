@@ -114,8 +114,7 @@
 	grid = cx_grid    ( cx )
 	
 * For setting the calendar information just think about the time axis
-* we have just one calendar context per grid.  May need to think about
-* this further in the future for forecast time.
+* (What if it's the F axis?)
 
 	is_time = idim .EQ. t_dim
 

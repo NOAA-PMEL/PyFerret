@@ -1,4 +1,4 @@
-	SUBROUTINE PROCLAIM ( logical_unit, left_margin )
+	SUBROUTINE PROCLAIM ( logical_unit, left_margin, quiet )
 
 *
 *
@@ -51,6 +51,7 @@
 *                    discovered by linux compiler
 *       8/05 *acm* - Allow more digits in xrevision number
 * V63  *acm* 10/09 Changes for gfortran build
+* PyFr *kms* 10/12 Add quiet flag
 
 	include 'xrevision.cmn'
 	include 'xrevision_type.cmn'
@@ -61,6 +62,7 @@
 * calling argument declarations:
 	INTEGER		logical_unit
 	CHARACTER*(*)	left_margin
+        LOGICAL         quiet
 
 * local variable definitions
 	INTEGER TM_LENSTR1, len_platform_type, slen
@@ -76,7 +78,8 @@
 	len_platform_type = TM_LENSTR1(platform_type)
         show_str = TM_FMT(revision_level, 5, 12, slen)
 
-	WRITE  ( logical_unit, 3000)
+        IF ( .NOT. quiet )
+     .     WRITE  ( logical_unit, 3000)
      .				left_margin,
      .				left_margin, program_name(1:len_program_name),
      .                                       show_str(1:slen),

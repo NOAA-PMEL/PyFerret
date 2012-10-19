@@ -72,7 +72,7 @@
      .		ERR = 9000 )
 
 * put introductory remarks into journal file
-	CALL PROCLAIM ( jrnl_lun, '! ' )
+	CALL PROCLAIM ( jrnl_lun, '! ', .FALSE. )
 
 * successful completion
 	status = ferr_ok   ! status not really used

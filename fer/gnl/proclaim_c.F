@@ -1,4 +1,4 @@
-	SUBROUTINE PROCLAIM_C( lun, leader ) 
+	SUBROUTINE PROCLAIM_C( lun, leader, quiet_flag ) 
 
 *
 *
@@ -45,7 +45,7 @@
 
 
 * calling argument declarations
-	INTEGER lun
+	INTEGER lun, quiet_flag
 	INTEGER	slen
         PARAMETER  ( slen = 32 )
 #ifdef sun
@@ -57,10 +57,17 @@
 * internal variable declarations:
 	INTEGER	TM_LENSTR1, flen
 	CHARACTER*32 fstrng
+        LOGICAL quiet
 
 	CALL TM_CTOF_STRNG( leader, fstrng, slen )
 	flen = TM_LENSTR1(fstrng)
-	CALL PROCLAIM( lun, fstrng(:flen) )
+        IF ( quiet_flag .EQ. 0 ) THEN
+           quiet = .FALSE.
+        ELSE
+           quiet = .TRUE.
+        ENDIF
+
+	CALL PROCLAIM( lun, fstrng(:flen), quiet )
 	RETURN
 	
 	END

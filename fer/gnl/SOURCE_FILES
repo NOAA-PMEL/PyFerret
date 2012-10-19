@@ -21,7 +21,6 @@ cs_semicolon.F\
 ctrl_c.F\
 define_aggregate_grid.F\
 define_special_grids.F\
-distrib_msg.F\
 do_query.F\
 dollar_arg.F\
 dollar_command.F\

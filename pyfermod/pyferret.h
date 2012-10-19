@@ -82,7 +82,7 @@ void get_time_axis_num_(int *axisnum, int *axisstart, int *axisend, char axisnam
 void init_journal_(int *status);
 void initialize_(void);
 void no_journal_(void);
-void proclaim_c_(int *ttoutLun, char *leader);
+void proclaim_c_(int *ttoutLun, char *leader, int *quiet);
 void set_one_cmnd_mode_(int *one_cmnd_mode_int);
 void turnoff_verify_(int *status);
 

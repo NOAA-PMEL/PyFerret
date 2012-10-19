@@ -243,9 +243,8 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     if ( verifyFlag == 0 )
         turnoff_verify_(&status);
 
-    /* Output program name and revision number */
-    if ( quietFlag == 0 )
-        proclaim_c_(&ttoutLun, "\t");
+    /* Set and possibly output program name and revision number */
+    proclaim_c_(&ttoutLun, "\t", &quietFlag);
 
     /* Set so that ferret_dispatch returns after every command */
     one_cmnd_mode_int = 1;

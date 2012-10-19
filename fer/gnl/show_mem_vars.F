@@ -109,7 +109,7 @@
 	IF ( show_perm ) THEN
 	   DO 100 mr = 1, max_mr_avail
 	      IF ( interrupted ) CALL ERRMSG( ferr_interrupt,status,' ',*5000 )
- 100	   IF (mr_protected(mr).EQ.mr_perm_protected) CALL SHOW_1_MR(mr)
+ 100	   IF (mr_protected(mr).EQ.mr_perm_protected) CALL SHOW_1_MR(mr,status)
 	ENDIF
 
 * display deletable variables

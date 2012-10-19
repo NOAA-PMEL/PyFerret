@@ -195,8 +195,8 @@
 * ..  Is there a dimension before the x dimension?
 *     If so create a permutation.
 
-      var_perm = imax.GT.0 .AND. imin.EQ.1
       IF ( imax.GT.0 .AND. imin.EQ.1 .AND. order(1).EQ.0 ) THEN
+         var_perm = imax.GT.0 .AND. imin.EQ.1
          IF (mdim .EQ. 2) THEN  ! simple case, put the dimension in slot 1.
 	    order(1) = MOD(imax,nferdims) + 1
 	    GOTO 160
@@ -290,7 +290,7 @@
 * sound a warning horn
       risc_buff = vname
       vlen = LEN(vname)
-      CALL TM_NOTE( 'unsupported ordering of axes in variable '
+      CALL TM_NOTE( 'Unspecified or unsupported ordering of axes in variable '
      .               //risc_buff(:vlen), tt )
       CALL TM_NOTE( 'The default ordering will be used', tt )
 

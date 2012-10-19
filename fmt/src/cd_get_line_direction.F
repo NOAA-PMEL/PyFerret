@@ -61,14 +61,14 @@
       CHARACTER*1 axis_dir*1, vupcase*128
 
       INTEGER STR_UPCASE, STR_CASE_BLIND_COMPARE, TM_LENSTR1, 
-     .	      TM_UNIT_ID, units, attlen, attoutflag, attype, iatt,  
+     .	      TM_UNIT_ID, i, units, attlen, attoutflag, attype, iatt,  
      .        vlen, slen,maxlen, istat, since_T0, epic_t2var, status
 
       REAL val, dummy
 
       INTEGER bufflen
       PARAMETER (bufflen = 256)
-      CHARACTER*256 buff
+      CHARACTER*256 buff, upbuff
       INTEGER     str_eq
       PARAMETER ( str_eq = 0 )
 
@@ -157,6 +157,59 @@
          ELSE
             axis_dir = char_init01
          ENDIF
+      ENDIF
+
+* ... check for a _CoordinateAxisType attribute, if still undetermined
+
+      IF (line_direction(iaxis) .EQ. 'NA') THEN
+
+         maxlen = 20
+         got_it = NC_GET_ATTRIB(dset, ivar, '_CoordinateAxisType',
+     .              do_warn, vname(:vlen), maxlen, attlen, 
+     .              attoutflag, buff, val)
+         IF (got_it) THEN
+            CALL CD_GET_VAR_ATT_ID (dset, ivar,
+     .        '_CoordinateAxisType', iatt, status)
+            CALL CD_GET_VAR_ATT_INFO (dset, ivar, iatt, upbuff, attype, 
+     .        attlen, attoutflag, status )
+            IF (attype .NE. NCCHAR) got_it = .FALSE.
+         ENDIF
+
+         IF (got_it) THEN
+	    i = STR_UPCASE(upbuff, buff)
+            IF (upbuff.EQ.'TIME') THEN 
+               line_direction(iaxis) = 'TI'  ! time
+            ELSE IF (upbuff.EQ.'LON' .OR. upbuff.EQ.'GEOX') THEN
+            line_direction(iaxis) = 'WE'
+            ELSE IF (upbuff.EQ.'LAT' .OR. upbuff.EQ.'GEOY') THEN
+             line_direction(iaxis) = 'SN'
+            ELSE IF (upbuff.EQ.'HEIGHT') THEN
+               line_direction(iaxis) = 'UD'
+            ELSE IF (upbuff.EQ.'PRESSURE') THEN
+               line_direction(iaxis) = 'DU'
+            ELSE IF (upbuff.EQ.'ENSEMBLE') THEN
+               line_direction(iaxis) = 'EE'
+            ELSE IF (upbuff.EQ.'RUNTIME') THEN
+               line_direction(iaxis) = 'FF'
+            ENDIF
+	 
+	    IF (upbuff.EQ.'HEIGHT' .OR. 
+     .               upbuff.EQ.'PRESSURE') THEN
+               maxlen = 20
+               got_it = NC_GET_ATTRIB(dset, ivar, 
+     .              'CoordinateZisPositive',
+     .              do_warn, vname(:vlen), maxlen, attlen, 
+     .              attoutflag, buff, val)
+               IF (got_it) THEN
+	          i = STR_UPCASE(upbuff, buff)
+	          IF (upbuff.EQ.'UP')
+     .             line_direction(iaxis) = 'DU'
+	          IF (upbuff.EQ.'DOWN')
+     .             line_direction(iaxis) = 'UD'
+               ENDIF
+            ENDIF
+         ENDIF
+
       ENDIF
 
 * ... next check units

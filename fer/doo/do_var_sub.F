@@ -308,8 +308,8 @@
 	      bsum = 0.0D0	! boxes
 	      DO 600 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 600
-	         bsum = bsum + box(l)
-	         dsum = dsum + box(l)*com(i,j,k,l,m,n)
+	         bsum = bsum + box(m)
+	         dsum = dsum + box(m)*com(i,j,k,l,m,n)
                  npt = npt + 1
  600	      CONTINUE
 	      IF ( npt .LE. 1 ) THEN
@@ -356,8 +356,8 @@
 	      bsum = 0.0D0	! boxes
 	      DO 700 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
 	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 700
-	         bsum = bsum + box(l)
-	         dsum = dsum + box(l)*com(i,j,k,l,m,n)
+	         bsum = bsum + box(n)
+	         dsum = dsum + box(n)*com(i,j,k,l,m,n)
                  npt = npt + 1
  700	      CONTINUE
 	      IF ( npt .LE. 1 ) THEN

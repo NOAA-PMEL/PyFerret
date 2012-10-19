@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43397867 Sep 11 16:28 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 59850066 Oct 17 12:48 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: giekets 1965, 1966
+Note: testing fix for ticket 1974
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -21,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Tue Sep 11 16:35:42 PDT 2012
+Beginning at Wed Oct 17 13:08:39 PDT 2012
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -518,10 +518,10 @@ Replacing definition of grid G24
  **TMAP ERR: Attempt to access unsupported feature
              Descriptor requests delta of 0, please use 1
              Data set: ./coads_clim_bad_delta.des
-set data coads_clim_bad_delta
+set data coads_clim_bad_delta.des
  **TMAP ERR: error in line definition
              A gap or overlap exists in time axis
-set data coads_clim_step_order
+set data coads_clim_step_order.des
  **TMAP ERR: non-existent or not on line
              coads_clim.001b
 list sst
@@ -3306,6 +3306,12 @@ define data/agg windy = 1,2
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ **netCDF error
+             Is a directory (OPeNDAP/netCDF Error code 21)
+             Data set: ./.
+SET DAT/FORM=CDF ./z1.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  LISTing to file mytype.nc
  LISTing to file mytype.nc
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
@@ -3320,6 +3326,8 @@ define data/agg windy = 1,2
  LISTing to file mytype.nc
  LISTing to file mytype.nc
  LISTing to file mytype.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3411,4 +3419,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Sep 11 16:37:20 PDT 2012
+Ended at Wed Oct 17 13:10:17 PDT 2012

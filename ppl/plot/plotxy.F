@@ -1,4 +1,4 @@
-	SUBROUTINE PLOTXY(X,NXS,XF,YF)
+	SUBROUTINE PLOTXY(X,NXS,XF,YF,IPV)
 C** 
 C**    @(#)plotxy.F	1.1    3/10/88
 C**
@@ -91,6 +91,8 @@ C
 
 	REAL MAXVEL
 
+        REAL	xadd, xaddlast, datx, daty
+
 	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
      .		nvertex, fill_ndx
 
@@ -107,12 +109,14 @@ C
 
 *************************************
 
-	IPV=0
-	nl = lnum	
+	nl = lnum
+
+	xadd = 0.
+	xadlast = 0.	
 C
 C  JTYPE IS DATA TYPE (0 FOR 2D, 1 FOR 1D)
 C
-	IF(JTYPE.NE.1) RETURN
+	IF(IPV.NE.0 .AND.JTYPE.NE.1) RETURN
 
 
 1000	IBASE=0
@@ -235,7 +239,19 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		IF(YLE.AND.X(IY+J).LE.CMYLE)GOTO 70
 		IF(YEQ.AND.X(IY+J).EQ.CMYEQ)GOTO 70
 		IF(YGE.AND.X(IY+J).GE.CMYGE)GOTO 70
-	        CALL TRANS(I,X(J),X(IY+J),XT,YT)
+
+		datx = X(J)
+	        daty = X(IY+J)
+		IF (MOD_VS_X .AND. datx .LT. xlo) THEN
+		   xadd = 360.
+		   datx = datx + xadd
+		ELSE IF (MOD_VS_X .AND. datx .GT. xhi) THEN
+		   xadd = -360.
+		   datx = datx + xadd
+		ENDIF
+		xaddlast = xadd
+
+	        CALL TRANS(I,datx,daty,XT,YT)
 	        CALL PLOT(XT,YT,0,0)
 	        IF(ITYPE(I).NE.0.AND.ITYPE(I).NE.4)CALL MARK(IMARK(I))
  	        IM=0
@@ -253,8 +269,67 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
      *		 (YGE.AND.X(IY+K).GE.CMYGE))THEN
 	          IDN=0
 	        ELSE
-	          CALL TRANS(I,X(K),X(IY+K),XT,YT)
-	          CALL PLOT(XT,YT,IDN,0)
+
+	          IF (MOD_VS_X) THEN
+	          datx = X(K)
+	          daty = X(IY+K)
+
+		  IF (MOD_VS_X .AND. datx .LT. xlo) THEN  ! here plot to edge?
+		     xadd = 360.
+		     datx = datx + xadd
+
+* Plot to lower edge, then pick up the pen and move to the upper edge.
+		     IF (xadd .NE. xaddlast) THEN
+		        CALL TRANS(I,xlo,daty,XT,YT)
+		        CALL PLOT(xt,yt,idn,0)
+	                CALL TRANS(I,xhi,daty,XT,YT)
+	                CALL PLOT(XT,YT,0,0)
+	                CALL PLOT(XT,YT,IDN,0)
+		     ENDIF
+
+		  ELSE IF (MOD_VS_X .AND. datx .GT. xhi) THEN  
+		     xadd = -360.
+		     datx = datx + xadd
+		     
+* Plot to lower edge, then pick up the pen and move to the upper edge.
+		     IF (xadd .NE. xaddlast) THEN
+		        CALL TRANS(I,xhi,daty,XT,YT)
+		        CALL PLOT(xt,yt,idn,0)
+	                CALL TRANS(I,xlo,daty,XT,YT)
+	                CALL PLOT(XT,YT,0,0)
+	                CALL PLOT(XT,YT,IDN,0)
+		     ENDIF
+
+		  ELSE
+* Plot to near edge, then pick up the pen and move to the far edge.
+		     IF (xaddlast .NE. 0.) THEN
+		        IF (xaddlast .EQ. 360.) THEN
+		           CALL TRANS(I,xhi,daty,XT,YT)
+		           CALL PLOT(xt,yt,idn,0)
+	                   CALL TRANS(I,xlo,daty,XT,YT)
+	                   CALL PLOT(XT,YT,0,0)
+	                   CALL PLOT(XT,YT,IDN,0)
+			ELSE
+		           CALL TRANS(I,xlo,daty,XT,YT)
+		           CALL PLOT(xt,yt,idn,0)
+		           CALL TRANS(I,xhi,daty,XT,YT)
+	                   CALL PLOT(XT,YT,0,0)
+	                   CALL PLOT(XT,YT,IDN,0)
+			ENDIF
+		     ENDIF
+		     xadd = 0.
+
+		  ENDIF
+
+		  CALL TRANS(I,datx,daty,XT,YT)
+		  xaddlast = xadd
+	
+	          ELSE
+		     CALL TRANS(I,X(K),X(IY+K),XT,YT)
+		  ENDIF  ! mod_vs_x
+
+		  CALL PLOT(XT,YT,IDN,0)
+
 		  if (interrupted) goto 51 ! *jd* 8.3.92
 	          CALL MARK(IM)
 	          IF(IDN.EQ.0)THEN
@@ -286,31 +361,4 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
         CALL COLOR(IPEN(0))
 	RETURN
 
-**************************************
-***** OTHER ENTRY POINTS *************
-
-	ENTRY PLOTV(X,NXS,XF,YF)
-	IPV=1
-	nl = lnum
-	GOTO 1000
-
-	ENTRY VELVCT(X,NXS,XF,YF)
-	IPV=2
-	nl = lnum
-	GOTO 1000
-
-********
-
-* added 11/97
-	ENTRY PLOTPOL(X,NXS,XF,YF)
-	IPV=3
-	nl = lnum
-	STOP  'PLOTPOL not yet implemented'
-* 4/99 *kob* removed this goto - solaris f77 didn't like it and it's not 
-*       really clear why its here - to me anyway
-* 	GOTO 1000
-
 	END
-
-
-

@@ -8,6 +8,8 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * *acm* 1/13/12 For DP Ferret/ SP Pplus: explicitly declare REALs 
 *               as single-precision
+* V683 *acm*  9/12 MOD_VS_X and MOD_VS_Y. For PLOT/VS plots, data are treated as 
+*               modulo, if they have units of longitude.
 
 	REAL*4	XLO
 	REAL*4	XHI
@@ -44,6 +46,8 @@
         LOGICAL HLINE
         LOGICAL VLINE
         LOGICAL SHRINKY
+	LOGICAL MOD_VS_X
+	LOGICAL MOD_VS_Y
         INTEGER XDMS
         INTEGER YDMS
         REAL*4    XVALOFF

@@ -58,6 +58,9 @@
 #define FERR_OK 3  /* This should match the ferr_ok parameter in errmsg.parm. */
 #define NC_GLOBAL -1  /* This should match the NC_GLOBAL parameter in netcdf.h */
 
+/* Ferret-defined "netcdf error status" when a read was interrupted by Crtl-C */
+#define NC_INTERRUPT -256
+
 #define MAX_PATH_NAME	2048	 /* max length of a path */
 #define MAX_FER_SETNAME	256	 /* max length of a path */
 #define MAX_FER_SETNAME	256	 /* max length of a path */

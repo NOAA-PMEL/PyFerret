@@ -1,4 +1,5 @@
 from numpy.distutils.core import setup, Extension
+import distutils.sysconfig
 import sys
 import os
 import os.path
@@ -20,7 +21,10 @@ if hdf5_libdir == None:
 netcdf4_libdir = os.getenv("NETCDF4_LIBDIR")
 if netcdf4_libdir == None:
     raise ValueError("Environment variable NETCDF4_LIBDIR is not defined")
-libdir_list = [ "lib", str(hdf5_libdir), str(netcdf4_libdir), ]
+# The location of libpython2.x.so in case it is not in a standard location
+python_libdir = os.path.split(distutils.sysconfig.get_python_lib(standard_lib=True))[0]
+# The list of additional directories to examine for libraries
+libdir_list = [ "lib", str(hdf5_libdir), str(netcdf4_libdir), str(python_libdir), ]
 
 # Get the list of ferret static libraries
 # Stripping off the "lib" prefix and the ".a" suffix

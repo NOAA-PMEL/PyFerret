@@ -306,6 +306,7 @@ c
 	cmxeq = bad_flag
 	cmyeq = bad_flag
 * end of 2/89 FERRET mod
+
 	xmin=1.0e36
 	xmax=-xmin
 	ymin=xmin
@@ -413,6 +414,7 @@ c
 	pbuf=1
 * ORIG	call stmnmx(pplmem,pplmem_nsize,xmin,xmax,ymin,ymax,0.,0.)
 	call stmnmx(pplmem,pplmem_nsize,xmin,xmax,ymin,ymax)
+
 	lnum = linen
         IF (icode .LE. 2) THEN
            lleng(linen)=npts

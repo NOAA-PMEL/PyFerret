@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Oct 12 04:03 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Oct 19 12:26 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results of PyFerret updated from Ferret trunk 2012-10-12
+Note: RUN_Tests.sh test results for PyFerret Oct 19, 2012 (-quiet added)
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -207,13 +207,8 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Oct 12 04:06:47 PDT 2012
+Beginning at Fri Oct 19 12:45:10 PDT 2012
 *** Running test: bn_syntax.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:06     
-
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
 ! - major changes for FERRET ver 2.00 5/90
@@ -1212,11 +1207,6 @@ J1111111112222222222333333333344444444445555555555666666666677777777778888888888
 *** A111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000B111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000C111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000D111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000E111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000F111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000G111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000H111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000I111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000J111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000
  
 *** Running test: bn_dollar.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:06     
-
 ! test this with GO journal hello
  
 ! V510: 3/00 *sh* added tests of backslash escapes and surrounding quotations
@@ -1386,11 +1376,6 @@ set mode ignore
   say ($10)0      ! argument 10 not defined
 set mode/last ignore
 *** Running test: bn_grave.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:06     
-
 ! bn420_grave
 ! benchmark to test evaluation of grave accent-enclosed expressions
 ! requires FERRET version 4.00 or later
@@ -1703,11 +1688,6 @@ say `sst,return=trash`
 set mode/last ignore_errors
  
 *** Running test: bn_letd.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:06     
-
 ! bn420_letd.jnl
 ! 9/1/95
  
@@ -1982,11 +1962,6 @@ list q[d=v12file]
  3   / 3:   4.00   5.00   6.00   7.00   8.00   9.00  10.00  11.00
  
 *** Running test: bn_if.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:06     
-
 ! bn430_if
 ! 5/6/96
 ! 5/22/96 - added nested multi-line IF with nesting in REJECTED clause
@@ -2070,11 +2045,6 @@ IF yes THEN
  
  
 *** Running test: bn_expressions.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:06     
-
 ! bn450_expressions.JNL
 ! test all manner of expressions
 ! V450 - commented out MODE POLISH test -- mode was eliminated
@@ -2603,11 +2573,6 @@ LIST/L=5:7 TBOXLO, TBOXHI
 6   / 6:  5.500  6.500
 7   / 7:  6.500  7.500
 *** Running test: bn_geometry.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:06     
-
 ! bn200_geometry.JNL
 ! benchmark various geometries for accessing FERRET data
 ! similar tests are performed on:
@@ -3901,11 +3866,6 @@ SET MODE/LAST IGNORE_ERRORS
  
  
 *** Running test: bn_output.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:06     
-
 ! bn200_output.JNL
 ! - test various output methods in FERRET
 ! rev 0.0  4/27/90 *sh*
@@ -6891,11 +6851,6 @@ LIST/FILE=test.gt/FORMAT=TMAP/L=1:3 v,v^0.5
 SET MODE/LAST IGNORE
 CANCEL LIST
 *** Running test: bn_in_plane.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:06     
-
 ! bn200_in_plane.JNL
 ! benchmark various geometries with in-plane transformation applied (@SBX)
 ! this benchmark is layered on the compress benchmark to obtain the geometries
@@ -7410,11 +7365,6 @@ LIST/ORDER=T v[t=@sbx,i=@ave,j=@ave,k=@ave]
             2      3      4
          -2.855 -1.567 -0.836
 *** Running test: bn_compress.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:06     
-
 ! bn200_compress.JNL
 ! benchmark various geometries obtained by compressing FERRET data with @AVE
 ! similar tests are performed on:
@@ -7921,11 +7871,6 @@ LIST/ORDER=X v[i=@ave,j=@ave,k=@ave,l=@ave]
 ! remove call to bn200_compress.sub_qady for portable benchmarks *kob* 5/99
 ! ****
 *** Running test: bn_interpolate.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:06     
-
 ! bn200_interpolate.JNL
 ! benchmark interpolation along various axes
  
@@ -8321,11 +8266,6 @@ LIST v[@xpt,@ypt,@zpt,@tpt]
              T        : 1.0005 (interpolated)
           1113.00
 *** Running test: bn_regrid.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:06     
-
 ! bn200_regrid.JNL
 ! test regridding
 ! first test consists of regridding and re-regridding back and comparing
@@ -9707,11 +9647,6 @@ list a24[g=g48]-a48
  05-JAN-1980 00 / 3: -438312.
  07-JAN-1980 00 / 4: -438312.
 *** Running test: bn_ez.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:06     
-
 ! bn401_ez.JNL
 ! test all manner of accessing non-TMAP data files
 ! V401 modified from bn200_ez.jnl by the addition of a test of UNF reading
@@ -10121,11 +10056,6 @@ list my_var
  9    /  9:   9.00
  10   / 10:  10.00
 *** Running test: bn_plot.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:06     
-
 ! bn450_plot.JNL - updated 9/97 from bn320_plot.jnl
 ! upgraded from bn320 to provide method for testing batch mode.  Also remove
 ! all labels to create "master" gif and ps files to compare against
@@ -10324,11 +10254,6 @@ polygon/thick/color=red/palette=blue {1,2,1}, {2,1,0.5}
  
 set mode/last logo
 *** Running test: bn_curv.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 cancel mode ignore
 !
 ! Your basic map projection
@@ -10509,11 +10434,6 @@ can mode ignore
 ! KMS - commented out for PyFerret - .plt not supported
 ! set mode meta bnplot.plt
 *** Running test: bn_symbols.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn420_symbols
 ! benchmark to test machinery of symbol definition and use
 ! requires FERRET version 4.00 or later
@@ -10540,13 +10460,13 @@ FERRET_PLATFORM = "Linux 2.6.18-308.1.1.el5"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Sep 14 2012 15:49:53 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "12-Oct-12"
-SESSION_TIME = "04:07"
-SESSION_PID = "1886"
-DELTA_CPU = "0.51792"
-CLOCK_SECS = "0.314"
-CURRENT_DATE = "12-Oct-12"
-CURRENT_TIME = "04:07:08"
+SESSION_DATE = "19-Oct-12"
+SESSION_TIME = "12:45"
+SESSION_PID = "13132"
+DELTA_CPU = "0.51592"
+CLOCK_SECS = "0.3"
+CURRENT_DATE = "19-Oct-12"
+CURRENT_TIME = "12:45:26"
 N_OPEN_DSETS = "0"
  
 ! define some symbols ... syntax variations
@@ -10568,13 +10488,13 @@ FERRET_PLATFORM = "Linux 2.6.18-308.1.1.el5"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Sep 14 2012 15:49:53 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "12-Oct-12"
-SESSION_TIME = "04:07"
-SESSION_PID = "1886"
-DELTA_CPU = "0.002"
-CLOCK_SECS = "0.316"
-CURRENT_DATE = "12-Oct-12"
-CURRENT_TIME = "04:07:08"
+SESSION_DATE = "19-Oct-12"
+SESSION_TIME = "12:45"
+SESSION_PID = "13132"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "0.301"
+CURRENT_DATE = "19-Oct-12"
+CURRENT_TIME = "12:45:26"
 N_OPEN_DSETS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10583,9 +10503,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "12-Oct-12"
-SESSION_TIME = "04:07"
-SESSION_PID = "1886"
+SESSION_DATE = "19-Oct-12"
+SESSION_TIME = "12:45"
+SESSION_PID = "13132"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10595,15 +10515,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "12-Oct-12"
-SESSION_TIME = "04:07"
-SESSION_PID = "1886"
+SESSION_DATE = "19-Oct-12"
+SESSION_TIME = "12:45"
+SESSION_PID = "13132"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "12-Oct-12"
-SESSION_TIME = "04:07"
-SESSION_PID = "1886"
+SESSION_DATE = "19-Oct-12"
+SESSION_TIME = "12:45"
+SESSION_PID = "13132"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10734,21 +10654,16 @@ FERRET_PLATFORM = "Linux 2.6.18-308.1.1.el5"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Sep 14 2012 15:49:53 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "12-Oct-12"
-SESSION_TIME = "04:07"
-SESSION_PID = "1886"
-DELTA_CPU = "0.025996"
-CLOCK_SECS = "0.342"
-CURRENT_DATE = "12-Oct-12"
-CURRENT_TIME = "04:07:08"
+SESSION_DATE = "19-Oct-12"
+SESSION_TIME = "12:45"
+SESSION_PID = "13132"
+DELTA_CPU = "0.021997"
+CLOCK_SECS = "0.323"
+CURRENT_DATE = "19-Oct-12"
+CURRENT_TIME = "12:45:26"
 N_OPEN_DSETS = "0"
  
 *** Running test: bn_comma_delimited.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn420_comma_delimited
  
 ! 10/2/95 - test comma and tab-delimited outputs
@@ -12407,11 +12322,6 @@ LIST/FORMAT=comma/precision=5 10*j+i
 2,21,22,23,24,25
 3,31,32,33,34,35
 *** Running test: bn_dynamic_grids.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn420_dynamic_grids
 ! 9/95-9/11/95 - test the creation, destruction, and use of dynamic grids
 ! 2/96 - added GX=lo:hi:delta notation
@@ -14246,11 +14156,6 @@ set axis/modulo psxt
  
 set mode/last diag
 *** Running test: bn_cdf.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn320_cdf
 ! benchmark to test netCDF input and output
 ! requires version 3.20 or later
@@ -15155,11 +15060,6 @@ list/x=180 fcn_rev_sub
  0    / 11:  0.0000
  1S   / 10:  0.3166
 *** Running test: bn_regrid_transforms.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn500_regrid_transforms
 ! benchmark to test regridding transformations and syntax
 ! requires version 2.30 or later
@@ -18177,11 +18077,6 @@ set mode/last diag
  
  
 *** Running test: bn_axis_limits.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 !bn301_axis_limits.jnl
 ! exercise the new-V301 /XLIMITS and /YLIMITS qualifiers
  
@@ -18334,11 +18229,6 @@ set view v44
 contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=28000:29000:-400/trans sin(x/3)*sin(t/100)
  
 *** Running test: bn_movie.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn301_movie.JNL
 ! - test on-HDF movie creation by Program FERRET
 ! - FERRET ver 3.10 10/93
@@ -18348,11 +18238,6 @@ contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/
 ! Dont run this script - fails with hdf5 libraries
 exit/script
 *** Running test: bn_ez_order.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn420_ez_order
 ! updated from bn311_ez_order 9/95 - improved testing of /FORMAT=STREAM
  
@@ -19386,11 +19271,6 @@ sp rm -f test_perm48.dat
 sp rm -f test_perm48_10.dat
  
 *** Running test: bn_user.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn312_user.jnl
  
 ! test the USER command options
@@ -19405,11 +19285,6 @@ set window/size=.5/aspect=.75 2
  
 exit/script
 *** Running test: bn_stream.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn420_stream.jnl
  
 ! jan 96
@@ -19471,11 +19346,6 @@ list myv1,myv2
 cancel data stream_data_link.unf
  
 *** Running test: bn_mc.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 !bn430_mc.jnl
 ! kob - 9/5/96
 !     - simple test of mc data access for both irregular and regular time
@@ -19925,11 +19795,6 @@ CAN MODE VERIFY
  
  
 *** Running test: bn_negative_t.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn450_negative_t - 10/97
  
 ! test behavior of negative time step values (unsupported except as absolute
@@ -20919,11 +20784,6 @@ LIST a[gt=tcal]		! deliberate error
 CANCEL MODE ignore_error
  
 *** Running test: bn_xact_regrid.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! BN450_xact_regrid.jnl
  
 ! 10/97 - test "exact match" regridding
@@ -22320,11 +22180,6 @@ LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
  
  
 *** Running test: bn_gc_functions.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn500_gc_functions.jnl
  
 ! 10/97 - first version - test GC functions released in V4.9
@@ -22911,11 +22766,6 @@ LIST/x=0/l=1 Z10_flow - bottom_flow
 set view lr
 shade/x=0/l=1/ylim=0:200:-20/lev ZAXREPLACE(flow[z=0:200],depth[z=0:200],z[z=0:200:.5])
 *** Running test: bn491_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn491_bug_fixes.jnl
 ! test various fixes that went into version 4.91
 ! 2/98 *kob*
@@ -23634,11 +23484,6 @@ list elev
  58.5947N /   1:   ....   ....   ....   ....  2.940  2.940  2.940  2.940  2.940   ....   ....   ....
  
 *** Running test: bn_odd_variable_name.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! make sure memory is limited; otherwise the abstract axis will list
 let save_mem = ($ferret_memory)
  !-> DEFINE VARIABLE save_mem = 25.6
@@ -23903,11 +23748,6 @@ list 'v2-and-minus'[i=5:15@ddc] ! Now the proper syntax
 set mem /size=`save_mem`
  !-> set mem /size=25.6
 *** Running test: bn_test_stream.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
  
 canc data/all
  
@@ -24569,11 +24409,6 @@ list num1
  2   / 2:  20.00  21.00
  3   / 3:  22.00  23.00
 *** Running test: bn_define_axes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn_define_axes.jnl
 ! *sh* 5/99
 ! *sh* 12/99 - with streamlined syntax
@@ -25041,11 +24876,6 @@ show axis xax2
 ! cleanup
 set mode/last ignore
 *** Running test: bn_polygon.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! Demo of new POLYGON command
 ! *jd * 3.99
  
@@ -25068,11 +24898,6 @@ polygon/trans/line=4/over/i=1:100/nolabel xpts+xsqr-.25, ypts+ysqr, x*x/10
  
 can mode meta
 *** Running test: bn500_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn500_bug_fixes.jnl
 ! test various fixes that went into version 5.00
 ! 5/99 *kob*
@@ -25364,7 +25189,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Fri Oct 12 04:07:27 PDT 2012
+Fri Oct 19 12:45:42 PDT 2012
  
 GO bn_reset
 cancel mode verify
@@ -25431,11 +25256,6 @@ GO err500_IF_THEN_ELSE_quote.jnl
 IF 1 THEN SAY "I is too big" ENDIF
 I is too big
 *** Running test: bn_sample.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn_sample.jnl
 ! 10/99 *sh*
 ! V550 *sh* 11/02 - documentation change only, reflecting subspan modulo
@@ -26509,11 +26329,6 @@ list SAMPLEL(X[x=110:200:10],{3,4,7})	! normal axis
  3   / 3:........................................
  
 *** Running test: bn_strides_revs_perms.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn_strides_revs_perms.jnl
 ! *sh* 6/99
  
@@ -28545,11 +28360,6 @@ canc data/all
  -DELETE MIDVAR   M:  6 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  dealloc  dynamic grid (G006)          (AX022)   (AX024)   (AX020)   ZAX1_7    NORMAL    NORMAL
 *** Running test: bn_non_COARDS_netCDF.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn_non_COARDS_netCDF.jnl
 ! *sh* 3/99
 ! *sh* 6/00 -- added true scalar variable, TRUE_SCALAR
@@ -28776,11 +28586,6 @@ list HAS_BACKWARDS_AXIS
  
 ! list/i=1:5 BIG_IRREG
 *** Running test: bn_cache_hits.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn_cache_hits.jnl
  
 ! 3/99 *sh*
@@ -30578,11 +30383,6 @@ set mode/last diag
 ! v5.4 *kob* 10/01 - need to add exit/script - new exit command qualifiers
 EXIT/SCRIPT
 *** Running test: bn_regrid_to_user.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn_regrid_to_user
 ! 8/99 *sh*
 ! 5/01 *sh* - changes to accomodate truncated levitus_climatology.cdf
@@ -31065,11 +30865,6 @@ Dynamic axes:
     AXIS (AX008)                         use count:   1
  
 *** Running test: bn_calendar.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn_calendar.jnl
 ! Version 5.3
 ! Add definitions of calendar axes as a NetCDF attribute of the time axis
@@ -31353,11 +31148,6 @@ T0 = 1-JAN-1980
 ! also see bn_all_leap.jnl, 6/2004
 ! Added ALL_LEAP, or 366_DAY calendar (which is in the CF conventions).
 *** Running test: bn_dash_dot.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! new PLOT/DASH and PLOT/SYMBOL=DOT  qualifiers
 ! *acm* 5/01
 ! *acm* 8/02 Remove calls to SYMBOL=DOT until postscript issues are resolved.
@@ -31378,11 +31168,6 @@ set mode ignore
 plot/dash=(1., 2.)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
 plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
 *** Running test: bn_flowlines.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn_flowlines.jnl
 ! VECTOR/FLOW
 ! 6/2001
@@ -31430,11 +31215,6 @@ vec/over/flow/noax/xskip=16/yskip=8/len=5/title="Sinusoidal Projection" fsst*0,f
  
 set mode logo
 *** Running test: bn_logaxes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 !  Test the qualifiers /HLOG and /VLOG for setting
 !  log axes.  On a depth axis, inverse log plot.
  
@@ -31477,11 +31257,6 @@ def axis/x dlog = -1*(10-i[i=1:10])
 let fcn = (i[gx=dlog])^2
 plot/hlog fcn
 *** Running test: bn_internal_external_functions.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! test internal external functions.  These moved from bn_external_functions
 !  6/01 because on systems w/out external functions support, the internal
 !  functions were not being tested - most notably win32   *kob*
@@ -34825,11 +34600,6 @@ shade fill_xy(sst[l=1], mask[l=1], 1)
 shade fill_xy(sst[l=1], mask[l=1], 4)
  
 *** Running test: bn_modulo_strides.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn_modulo_strides.jnl
 ! 6/01 *sh*
 ! exercise the combination of modulo and netCDF strides IO
@@ -35209,11 +34979,6 @@ list/nohead str[i=105:145:5]
  140   / 8:"t"
  145   / 9:"e"
 *** Running test: bn_axis_viewports.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn_axis_viewports
 ! *sh* 9/01
  
@@ -35550,11 +35315,6 @@ ppl list yaxis
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          YORG= 1.40E+00  AUTO LABELLING
 *** Running test: bn_strings.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn_strings.jnl
  
 ! 7/01 - test string syntax and behaviors
@@ -36132,11 +35892,6 @@ list a[i=@rsum]
  
 set mode/last stupid
 *** Running test: bn_axcontrol.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
  ! NOAA/PMEL TMAP
  ! Program FERRET (alpha)
  ! Version 5.33 - 07/12/01
@@ -36176,11 +35931,6 @@ fill/l=1/axes sst
 can view
 polygon/thick/color=red/palette=blue/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
 *** Running test: bn_vec_curv.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn_vec_curv.jnl
 !
 ! vector plots with curvilinear coordinates
@@ -36254,11 +36004,6 @@ vec/title="Stretched grid" a,b,mxpage,mypage
 can mode meta
 set mode logo
 *** Running test: bn_delimited_read.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn_delimited_read.jnl
 ! 10/01 *sh*
  
@@ -37319,11 +37064,6 @@ file/form=delim/delim="/,,,:" bn_delimited_read_date_time.dat
 cancel mode ignore
  
 *** Running test: bn541_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn541_bug_fixes.jnl
 ! test various fixes that went into version 5.41
 ! 3/02 *acm*
@@ -38288,11 +38028,6 @@ list b[d=1]
  
  
 *** Running test: bn_cancel_axes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
  
 let ind1 = 1*i
 let tim1 = 20500*randu(ind1[i=1:20500])
@@ -38538,11 +38273,6 @@ T0 = 01-JAN-0000 00:00:00
        4>  15-NOV 14:05:33       2191.455   30-SEP 22:21:54        7670.092
  
 *** Running test: bn542_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn542_bug_fixes.jnl
 ! test various fixes that went into version 5.42
 ! 10/02 *acm*
@@ -38753,11 +38483,6 @@ cancel mode verify
 ! GO err541_date_delim
  
 *** Running test: bn_subspan_modulo.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn_subspan_modulo.jnl
 ! *sh* 11/02
  
@@ -40001,11 +39726,6 @@ list $1_strings[i=1013:1024] 	! via IS_MODULO
  
  
 *** Running test: bn_dots.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! PLOT/SYMBOL=DOT  qualifiers
 ! *acm* 12/02
 ! ACM 4/2005 set mode meta to save this plot for the metafile checks.
@@ -40027,11 +39747,6 @@ plot/symbol=dot/size=0.5/over/i=1:1000 -0.5*sin(62.8*(i+10) )
 vector/i=1:5/j=1:5 0.*(i+j),0*(i+j)
 set mode logo
 *** Running test: bn_lev_symbols.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! Test symbols which capture the latest LEVELS settings
 ! LEV_TEXT  The argument, if any, to the LEV qualifier
 ! LEV_MIN  Minimum level
@@ -40107,11 +39822,6 @@ LEV_MAX = "33"
 LEV_NUM = "1"
 LEV_DEL = "none"
 *** Running test: bn_mode_logo_lab.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
  
 ! bn_mode_logo_lab.jnl
 ! cancel both logo and labels
@@ -40204,11 +39914,6 @@ cancel view
 set mode logo
 set mode labels
 *** Running test: bn_modulo_attribute.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! Ferret V5.50 m
  
 ! Modulo attribute can take numerical values to indicate
@@ -40248,11 +39953,6 @@ T0 = %%
    Axis span (to cell edges) = 40 (modulo length = axis span)
  
 *** Running test: bn550_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn550_bug_fixes.jnl
 ! test various fixes that went into version 5.5
 ! 10/02 *acm*
@@ -40270,11 +39970,6 @@ shade pc
 poly/over/color=red/line=2/title="polygon" {220,240,280,250},{-20,70,40,-30}
  
 *** Running test: bn551_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:07     
-
 ! bn551_bug_fixes.jnl
 ! test various fixes that went into version 5.51
 ! 2/03 *acm*
@@ -40505,11 +40200,6 @@ GO err550_dots_thickpens.jnl
  
 plot/sym=dot/color=8/i=1:10 i
 *** Running test: bn_multi_line_labels.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
      ! bn_multi_line_labels.jnl
 ! March 31, 2003
 !
@@ -40639,11 +40329,6 @@ ppl plot
  
 ppl rlabs,4,0
 *** Running test: bn552_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn552_bug_fixes.jnl
 ! test various fixes that went into version 5.52
 ! 3/03 *acm*
@@ -41128,11 +40813,6 @@ list/t=1-jan-1990 dummy
  
 SET MODE/LAST IGNORE_ERROR
 *** Running test: bn_set_var_scale_off.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! Qualifiers /SCALEFACTOR=  and /OFFSET  for SET VARIABLE.
 ! Only for NetCDF datasets
 ! Applied after NetCDF Scale_factor and add_offset attributes
@@ -41178,11 +40858,6 @@ SET VAR/SCALE=10 x2
  
 SET MODE/LAST IGNORE_ERROR
 *** Running test: bn_longvarnames.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! variable names up to 128 characters long
 ! 3/2006 make them 127 to be able to add the null terminator for C strings
 !        else not used correctly in linked-list attribute structure.
@@ -41284,11 +40959,6 @@ LIST/K=2/L=3 a234567890b234567890c234567890d234567890e234567890f234567890g234567
  3   / 3:   9.00  15.00  21.00  27.00  33.00
  4   / 4:  11.00  19.00  27.00  35.00  43.00
 *** Running test: bn_shakey.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! Changes to shade key:
 ! - Default size is a little bigger
 ! - To put key labels on the left or bottom of the key, multiply the size by -1
@@ -41414,11 +41084,6 @@ ppl list shakey
          X LO     X HI     Y LO     Y HI
          1.20     9.20    -1.40    -1.28
 *** Running test: bn_eof_4d.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_eof_4d.jnl
 ! test EOFs on XYZT grids
  
@@ -41630,11 +41295,6 @@ list/nohead/i=1:5/j=3/k=9 eofst
  
 exit/script
 *** Running test: bn_abstract_axis_names.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_abstract_axis_names.jnl
 ! acm 6/12/03
 !
@@ -41834,11 +41494,6 @@ sh grid v
  normal    F
 can data 1
 *** Running test: bn_many_polygons.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! testing large number of polygons in a plot.  Map plot has
 ! 130501 polygons; previously we had an upper limit of 100K polygons
  
@@ -41867,11 +41522,6 @@ let xpts = 180 + 30*randu(i[i=1:10])
 let ypts = 30*randu(1+i[i=1:10])
 polygon xtriangle+xpts, ytriangle+ypts, i[i=1:10]
 *** Running test: bn_fill_irregular.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! FILL on vars with irregular axes
  
 use gtbc011
@@ -41893,11 +41543,6 @@ fill v2d_irr[t=1-jan-1990:1-jan-1995]
 use coads_clim_irreg.des
 fill/x=180 sst
 *** Running test: bn_xml_output.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 !bn_xml_output.jnl
 ! new-V553 output in XML-style format
 ! Illustrate the SHOW commands with /XML xml-style output
@@ -42573,11 +42218,6 @@ SHOW VAR/XML
 </global>
  
 *** Running test: bn_test_nan.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 !bn_test_nan.jnl
 ! test to make sure that NaN is able to be set by user
 !  as bad value.  If this fails, Ferret will crash
@@ -42654,11 +42294,6 @@ can var/all
  
  
 *** Running test: bn553_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn553_bug_fixes.jnl
 ! test various fixes that went into version 5.52
 ! 9/03 *kob*
@@ -42744,11 +42379,6 @@ ppl shakey 1,1,.12
 ppl shade
  
 *** Running test: bn_graticules.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! /GRAT, /HGRAT and /VGRAT to set graticule lines
 ! ACM March 12, 2004
 ! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
@@ -42859,11 +42489,6 @@ can mode graticule
 pplus/reset   ! restore tics etc
  
 *** Running test: bn_repeat_range.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! REPEAT/RANGE=[/NAME=]  for looping without depending
 ! on the grid\
 ! ACM March 12, 2004
@@ -43361,11 +42986,6 @@ repeat/range=1:4/name=a (repeat/range=3:1:-1/name=a list a)
 !-> REPEAT: A:4
 cancel mode ignore
 *** Running test: bn554_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn554_bug_fixes.jnl
 ! test various fixes that went into version 5.54
 ! 11/03 *acm*
@@ -44815,11 +44435,6 @@ list/wid=1024/y=1:2 sin(x[gx=xax]) + y[gy=yax]
  
 can mode ignore
 *** Running test: bn_bounds.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
  
 ! bn_bounds.jnl
 ! testing CDF read and write of file with irregular axes and bounds
@@ -45175,11 +44790,6 @@ sh axis/t tax
        4>  10                    1          9.5
        5>  11                    1          10.5
 *** Running test: bn_all_leap.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_all_leap.jnl
 ! ACM 6/2004
 ! Added ALL_LEAP, or 366_DAY calendar (which is in the CF conventions).
@@ -45230,11 +44840,6 @@ def axis/t/cal=nogood/t=1-jan-2000:1-jan-2010:1/units=months tax
  
 can mode ignore
 *** Running test: bn570_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn554_bug_fixes.jnl
 ! test various fixes that went into version 5.70
 ! 11/03 *acm*
@@ -45472,11 +45077,6 @@ plot v[gt=tax@asn]
 def axis/t=07-feb-0599:07-feb-0600:1/units=years tt
 plot t[gt=tt]
 *** Running test: bn_modstats.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_modstats.jnl
 ! acm 8/25/04
 ! There was never a benchmark test of modulo statistics.
@@ -45624,11 +45224,6 @@ list var[gt=month_reg@modngd]
  15-NOV      / 11:  10.00
  16-DEC      / 12:  10.00
 *** Running test: bn_mc_vary_scale.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_mc_vary_scale.jnl
 !   Allow stepfiles to have different internal scale and offset.
 !   read and apply when opening each stepfile. Previously, the
@@ -45707,11 +45302,6 @@ list/quiet/nohead `tt,return=nc_scale`, `tt,return=nc_offset`
 I / *:     2.000 -0.02000
  
 *** Running test: bn_plot_nokey.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_plot_nokey.jnl (bug 1089)
 ! 22-nov-2004
  
@@ -45731,11 +45321,6 @@ PLOT/X=180/Y=0/K=1 temp
 PLOT/OVER/NOKEY/X=180/Y=-1/K=1 temp
 PLOT/OVER/NOKEY/X=180/Y=1/K=1 temp
 *** Running test: bn580_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn580_bug_fixes.jnl
 ! test various fixes that went into version 5.80
 ! 7/04 *acm*
@@ -46895,11 +46480,6 @@ POLYGON XT, YT, I[I=1:10]
  
 PLOT/VS XT, YT
 *** Running test: bn_inf_levels.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! Run FERRET/fer/ferretdods_gui
 ! test open upper and lower levels (-INF) (INF)
  
@@ -46991,11 +46571,6 @@ go polymark poly/key/title="polygons"/lev=(-inf)(4,26,1)(inf), lon, lat, xsequen
  
  
 *** Running test: bn_regulart.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_regulart.jnl
 ! 5/12/2005 ACM
  
@@ -47040,11 +46615,6 @@ list/l=1:6 t[gt=tcoads], tbox[gt=tcoads]
 17-JUN-1946 / 6:  90017.  30.44
  
 *** Running test: bn_labwid.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! LABWID returns the length in Denbo inches of the
 ! string.  For multi-line strings, returns length of
 ! the longest line.
@@ -47097,11 +46667,6 @@ let wid = labwid("@P2@IILine1<NL>@IIA LONGER LINE",.15)
 label/nouser `wid`, 3, -1, 0, .15,  "@P4@IIMulti-line<NL>Length is longest of ALL lines<NL>Line three"
  !-> PPL %LABEL/nouser 2.019230842590332, 3, -1, 0, .15,  "@P4@IIMulti-line<NL>Length is longest of ALL lines<NL>Line three"
 *** Running test: bn_redefine_taxis_mc.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_redefine_taxis_mc.jnl
 ! ACM 15-Apr-2005
  
@@ -47165,11 +46730,6 @@ list/x=180/y=0 sst
  5   / 5:  28.49
  6   / 6:  28.32
 *** Running test: bn_illegal_axisname.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! Some OPenDAP HDF files have illegal axis names, e.g. with a dot in the name.
 ! This is a test of using such names, in a redefinition of the axes of the data.
 ! The file has a variable with axis names COADSX.ILLEGAL, COADSY.ILLEGAL. The axes contain
@@ -47223,11 +46783,6 @@ sh grid sst
  normal    E
  normal    F
 *** Running test: bn_exit_script.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_exit_script.jnl
 ! 5/2005 ACM
 ! tests of EXIT/SCRIPT command, in combination with IF and REPEAT
@@ -47314,11 +46869,6 @@ loop
 3
 loop
 *** Running test: bn_exit_cycle.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_exit_cycle.jnl
 ! 5/2005 ACM
 ! EXIT/CYCLE skips remaining commands in this repetition of a loop
@@ -47347,11 +46897,6 @@ say 16384 if bigger than 500
  
 loop finished 16384 gt 10000
 *** Running test: bn_curv_mod.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_curv_mod
 ! Test of fill/mod and contour/mod
 ! 5/24/2005 Ferret v5.81
@@ -47370,11 +46915,6 @@ fill/mod/hlim=-180:180 ht, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[i=1:180,
 contour/over/mod/hlim=-180:180 ht, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[i=1:180,j=1:24]
  
 *** Running test: bn_shade_keycont.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! Continuous shade key
 ! test setting it and whether default is restored on next command.
 ! also whether behavior consistent when we call shakey
@@ -47468,11 +47008,6 @@ ppl shakey ,0,-.12,3,,,`x1`,`x2`,`y1`
  !-> ppl shakey ,0,-.12,3,,,2.2,5.212,1.4
 ppl fill
 *** Running test: bn581_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn581_bug_fixes.jnl
 ! test various fixes that went into version 5.81
 ! 2/05 *acm*
@@ -47955,11 +47490,6 @@ POLYGON/LINE/fill xp, yp, ypts
 ! GO err580_regrid_prec.jnl
  
 *** Running test: bn_tab_comma_multivar.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_tab_comma_multivar.jnl
 !
 ! Fixes for bug 1273
@@ -48002,11 +47532,6 @@ COUNTRY	ID	AA	BB	NEWCOUNTRY	THE_DATA_VAR
 "JP"	2	8000	2000500	"c"	5  
 "US"	3	12000	3000500	"e"	4  
 *** Running test: bn_element_functions.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
  ! NOAA/PMEL TMAP
  ! FERRET v5.81
  ! Solaris 5.6 - 08/08/05
@@ -48131,11 +47656,6 @@ list element_index_str_n (axy[k=1:2,j=1:2], {"a10", "a2", "d4", "c5"})
  2   / 2:   ....  3.000
  
 *** Running test: bn_long_revision_num.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_long_revision_num.jnl
 ! ACM 8/30/05
 ! revision numbers were previously limited to 2 decimal places: v5.81
@@ -48161,7 +47681,7 @@ LAB1 = "X : 0.5 to 314.5"
  
 ! show commands without an argument, lists version number at the top
 sho command
- Commands in Program FERRET (PyFerret 1.0.0) version6.83:
+ Commands in Program FERRET  version6.83:
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE
  SET REGION/I/J/K/L/M/N/X/Y/Z/T/E/F/DX/DY/DZ/DT/DE/DF/DI/DJ/DK/DL/DM/DN
@@ -48281,11 +47801,6 @@ sho command
  
  Use SHOW ALIAS to see alternative command names
 *** Running test: bn_window_title.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_window_title.jnl
 ! Define a title for windows rather than just FERRET_1, FERRET_2, ...
 ! If no title is set, use SESSION_DATE:SESSION_TIME
@@ -48297,7 +47812,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "12-Oct-12_04:08"
+WIN_TITLE = "19-Oct-12_12:46"
  
 set win/title="set the title"
 sho sym win_title
@@ -48315,7 +47830,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="12-Oct-12:04:08"
+ !-> set win/title="19-Oct-12:12:46"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48324,22 +47839,17 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 12-Oct-12
+ !-> DEFINE SYMBOL the_date = 19-Oct-12
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 04:08
+ !-> DEFINE SYMBOL the_time = 12:46
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="12-Oct-12:04:08"
+ !-> SET WIN/TITLE="19-Oct-12:12:46"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "12-Oct-12:04:08"
+WIN_TITLE = "19-Oct-12:12:46"
 *** Running test: bn_last_error.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_last_error.jnl
 ! acm Nov 2005
 !
@@ -48393,11 +47903,6 @@ FER_LAST_ERROR = "**ERROR: error in external function. Bailing out of external f
  
 SET MODE/LAST IGNORE_ERROR
 *** Running test: bn_deg_min.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_deg_min.jnl
 ! label axes with degrees and minutes rather than degrees and decimal degrees.
 ! 19-May-06 add seconds as well...
@@ -48432,11 +47937,6 @@ ppl plot
 ! Restore the default settings
 ppl axlint,2,2
 *** Running test: bn_dp_readscale.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_dp_readscale.jnl
 ! 9-Feb-2006 ACM
  
@@ -48513,11 +48013,6 @@ list xax
  
 cancel list/precision
 *** Running test: bn_bounds_defineax.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_bounds_defineax.jnl
 ! 3/22/2006
 ! Previously only allowed 2*N definition of bounds in DEFINE AXIS/BOUNDS
@@ -48720,11 +48215,6 @@ list zboxlo[gz=zax2], z[gz=zax2], zboxhi[gz=zax2]
 1678.5 / 12:  1158.  1679.  2199.
 2849   / 13:  2199.  2849.  3499.
 *** Running test: bn600_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn600_bug_fixes.jnl
 ! test various fixes that went into version 6.00
 ! 8/05 *acm*
@@ -49535,11 +49025,6 @@ set mem /size=25.6
  
  
 *** Running test: bn601_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn601_bug_fixes.jnl
 ! test various fixes that went into version 6.01
 ! 20-Sep-2006 ACM
@@ -50078,7 +49563,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 12-Oct-12
+ .                               history         CHAR        23   T       FERRET V6.83  19-Oct-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -50123,7 +49608,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 12-Oct-12
+ .                               history         CHAR        23   T       FERRET V6.83  19-Oct-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -50338,11 +49823,6 @@ stat rose[j=12,d=1]
  Mean    value: 62.717 (unweighted average)
  Standard deviation: 156.25
 *** Running test: bn_set_strides.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_set_strides.jnl
 ! Jing Li, 11/2006
 ! tests for SET AXIS/STRIDES
@@ -50780,11 +50260,6 @@ show axis `sst,return=taxis`
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 2191.455 (modulo length = 8765.82)
 *** Running test: bn_lsl_lowpass.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn_lsl_lowpass.jnl
 ! Test lsl_lowpass, now included as a statically-linked external function
  
@@ -50818,11 +50293,6 @@ LIST/L=10:20 MY_TEMP[L=1:110], F_FILTERED[L=1:110]
 14-MAR-1982 09 / 20:   27.42   27.43
  
 *** Running test: bn_return_xmod_tmod.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! New `var,return=xmod` `var,return=tmod`
 ! Return modulo lengths, or blank if not modulo
  
@@ -50896,11 +50366,6 @@ say `axy,return=xmod`
  !-> MESSAGE/CONTINUE
 
 *** Running test: bn602_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:08     
-
 ! bn602_bug_fixes.jnl
 ! test various fixes that went into version 6.02
 ! 09-Nov-2006 ACM
@@ -51154,11 +50619,6 @@ list a
  3   / 3:"" 
  
 *** Running test: bn_modnbd.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! Test MODNBD regridding statistic.
  
 use "../bench/gtsa056_2.cdf"
@@ -51221,11 +50681,6 @@ list var[gt=month_reg@MODNGD], var[gt=month_reg@MODNBD], var[gt=month_reg@MODNGD
 15-NOV      / 11:  10.00   0.00  10.00  10.00
 16-DEC      / 12:  10.00   0.00  10.00  10.00
 *** Running test: bn_fifty_files.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_fifty_files.jnl
 ! We build OPeNDAP so that 100 files can be opened at a time.
 ! Test with fifty.
@@ -51286,11 +50741,6 @@ use weird_name1.cdf
 cancel mode ignore_error
  
 *** Running test: bn603_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn603_bug_fixes.jnl
 ! test various fixes that went into version 6.03
 ! 11-May-2006 ACM
@@ -51404,11 +50854,6 @@ LIST/NOHEAD/I=91:94/J=37/K=1/L=1 TEMP,SALT
 136.5W / 94:  27.17807  2.380348E-04
  
 *** Running test: bn_set_var_name.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_set_var_name.jnl
 ! This has been in Ferret since v5.3 but never a benchmark test of it!
 ! ACM 8/2007
@@ -51456,11 +50901,6 @@ LIST/X=179:183/Y=40/L=3 sst
 *** Running test: bn_memory_symbol.jnl
 Unable to resize Ferret's memory cache to 500000.000000 Mdoubles
 Ferret's memory cache remains at 0.200000 Mdoubles
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_memory_symbol.jnl
 ! Ferret v6.06 15-Aug-07
 ! Symbol FERRET_MEMORY shows current size of Ferret memory in MWords
@@ -51486,11 +50926,6 @@ set mem/siz=25.6  ! return to the default setting
 show memory
  Current size of FERRET memory cache: 25.6 MegaWords  (1 word = 4 bytes)
 *** Running test: bn605_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn604_bug_fixes.jnl
 ! test various fixes that went into version 6.05
 ! 27-July-2007 ACM
@@ -51924,11 +51359,6 @@ CURV2RECT(CurvData,CurvCenterLons,CurvCenterLats,CurvCornerLons,CurvCornerLats,T
 CURV3SRECT(CurvData,CurvLons,CurvLats,CurvBaths,CurvZetas,TemplateRectVar,Method)
  
 *** Running test: bn608_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn608_bug_fixes
 ! test various fixes that went into version 6.08
 ! 24-Sep ACM
@@ -52077,11 +51507,6 @@ SHADE/LEV=300/I=1:100/J=1:100 i+j
  
 SET MODE/LAST ignore
 *** Running test: bn_shade_trim.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_shade_trim.jnl
 ! Test new qualifier SHADE/TRIM which trims the region of
 ! shade plot as is done by FILL. For LAS scripts which do
@@ -52116,11 +51541,6 @@ YAXIS_MIN = "30.500000"
 YAXIS_MAX = "43.50000"
  
 *** Running test: bn_mode_nlevels.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_mode_nlevels.jnl
 ! 3-mar-2008
 ! v6.1 MODE NLEVELS (default is 40)
@@ -52159,11 +51579,6 @@ LEV_DEL = "0.5"
 set mode nlevels 40
  
 *** Running test: bn61_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn608_bug_fixes
 ! test various fixes that went into version 6.1
 ! 2-Jan-2008 ACM
@@ -52218,11 +51633,6 @@ SAY `1.23456789e-15,prec=10`
  !-> MESSAGE/CONTINUE 1.23456789E-15
 1.23456789E-15
 *** Running test: bn_test_opendap.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! Test the test_opendap function: returns 0 if successful, or error code if not.
 SET MODE IGNORE
  
@@ -52243,11 +51653,6 @@ list test_opendap ("http://ferret.pmel.NOT.noaa.gov/thredds/dodsC/data/PMEL/WOA0
  
 CANCEL MODE IGNORE
 *** Running test: bn611_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn611_bug_fixes.jnl
 ! Fixes that go into v6.11 release
  
@@ -52924,11 +52329,6 @@ list b
 save/clob/file=b.nc b
  
 *** Running test: bn_no_valid_on_plot.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_no_valid_on_plot.jnl
 ! Bug 1038 points out that the No Valid Data label that is
 ! put onto 2D plot if there is no good data, is not put onto
@@ -53007,11 +52407,6 @@ VECTOR/Y=80:90 sst[L=1], sst[L=1]
  
 SET MODE/last nodata_lab
 *** Running test: bn_median.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! Test median smoothing tranform
 ! Default length is 3
  
@@ -53117,11 +52512,6 @@ plot/trans var, var[z=@med:4]
 set mode/last ignore
  
 *** Running test: bn614_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn614_bug_fixes.jnl
 ! Fixes that go into v6.14 release
  
@@ -53974,11 +53364,6 @@ fill/ov/pal=greyscale/x=-360:360 b
 cont/ov/x=-360:360 b
  
 *** Running test: bn_mode_nodata_lab.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_mode_nodata_lab
 ! turns off the No Valid Data label on plots
 ! (for line plots this is added to the plot label,
@@ -54008,11 +53393,6 @@ contour/fill/y=40:50/x=70e:110e/L=1 vwnd
 set mode/last nodata_lab
  
 *** Running test: bn_proleptic_gregorian_calendar.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! proleptic_gregorian_calendar.jnl
 ! Allow PROLEPTIC_GREGORIAN as a calendar attribute
 ! for the default Ferret calendar.
@@ -54030,11 +53410,6 @@ show axis tdays
 T0 = 15-JAN-1901 00:00:00
    Axis span (to cell edges) = 32
 *** Running test: bn_string_ngd_nbd.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! @NGD and @NBD for strings
 ! Bad data is taken to be the null string
 ! Compare with results for numeric data
@@ -54351,11 +53726,6 @@ list av[i=@ngd,j=@ngd,k=@ngd,L=@ngd]
              T        : 0.5 to 2.5 (XYZT # valid)
           16.00
 *** Running test: bn_cat_string.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_cat_string.jnl
 ! Test concatenation functions for string variables
 ! ACM nov 08  See bug 1577
@@ -54422,11 +53792,6 @@ list tcat(a,b)
  5   / 5:"V"
  6   / 6:"W"
 *** Running test: bn_sort_strings.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_sort_strings.jnl
 ! 11/08 acm
  
@@ -54603,11 +53968,6 @@ list indx_bl, samplel(bl,indx_bl)
 7   / 7:    .... ""   
  
 *** Running test: bn_samplexyt.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_samplexyt.jnl
 ! 1/2009
  
@@ -54678,11 +54038,6 @@ plot/vs/color=red/over tpts, sampl_pts
  
 set mode calendar
 *** Running test: bn_last_go_file.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_last_go_file.jnl
 ! test the automatically-defined symbol LAST_GO_FILE
  
@@ -54690,11 +54045,6 @@ show sym last_go_file
 LAST_GO_FILE = "./bn_last_go_file.jnl"
  
 *** Running test: bn_cancel_upcase_uservar.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_cancel_upcase_uservar.jnl
 !
 ! Ferret v6.2
@@ -54727,11 +54077,6 @@ SP ncdump -h a.nc >> all_ncdump.out
  
 SET MODE/LAST upcase_output
 *** Running test: bn_cdf_keepax.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn320_cdf
 ! benchmark to test netCDF input and output
 ! This is the same as bn_cdf with /KEEP_AXNAMES added to SAVE commands.
@@ -55596,11 +54941,6 @@ list/x=180 fcn_rev_sub
  0    / 11:  0.0000
  1S   / 10:  0.3166
 *** Running test: bn_keep_axisnames.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_keep_axisnames.jnl
 ! 2/2009 ACM
  
@@ -55627,11 +54967,6 @@ sp echo "bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES" >> all_ncdump.out
 sp ncdump -h a.nc >> all_ncdump.out
  
 *** Running test: bn_key_label_minmax.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_key_label_minmax.jnl
  
 ! Label data min and max on vertical and horizontal keys
@@ -55712,11 +55047,6 @@ set mode/last logo
 shade/lev=35 sst[L=1]
  
 *** Running test: bn62_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn62_bug_fixes.jnl
 ! Fixes that go into v6.2 release
  
@@ -55788,11 +55118,6 @@ plot/title="vertical profile" yp4
 GO error_bars polygon/color=red/thickness=2/title="variability" yp4 errors
  
 *** Running test: bn_convolve.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_convolve.jnl
 ! test convolutions, including with missing-data.
 ! compare behavior with smoothing transform spz.
@@ -55921,11 +55246,6 @@ list a, a[i=@spz], convolvei(a,{.25,.5,.25})
  
  
 *** Running test: bn_tax_tstep.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_tax_tstep.jnl
 !
 ! Working with the coordinates of this axis loses accuracy because its
@@ -56038,11 +55358,6 @@ LIST/L=1:15 TAX_TSTEP(tt, "`reset_date`")
  01-JAN-1902 00:01:05 / 14:  65.00000
  01-JAN-1902 00:01:10 / 15:  70.00000
 *** Running test: bn_grads_z.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_grads_z.jnl
 ! acm 3/31/09
 ! Fixing bug 1651.
@@ -56112,16 +55427,11 @@ SH GRID am
  normal    E
  normal    F
 *** Running test: bn_clock_syms.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.514921"
-CLOCK_SECS = "0.3"
-CURRENT_DATE = "12-Oct-12"
-CURRENT_TIME = "04:09:27"
+DELTA_CPU = "0.513921"
+CLOCK_SECS = "0.301"
+CURRENT_DATE = "19-Oct-12"
+CURRENT_TIME = "12:47:27"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -56130,8 +55440,8 @@ CURRENT_TIME = "04:09:27"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.139978"
-CLOCK_SECS = "0.441"
+DELTA_CPU = "0.117982"
+CLOCK_SECS = "0.419"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -56145,66 +55455,61 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.731889
+ !-> DEFINE VARIABLE ten_plots = 0.584911
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "1.173"
+CLOCK_SECS = "1.004"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.174"
+CLOCK_SECS = "1.005"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.061991
- !-> DEFINE VARIABLE sumcpu =0.061991
+ !-> DEFINE VARIABLE dt = 0.051992
+ !-> DEFINE VARIABLE sumcpu =0.051992
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.06299
- !-> DEFINE VARIABLE sumcpu =0.124981
+ !-> DEFINE VARIABLE dt = 0.052992
+ !-> DEFINE VARIABLE sumcpu =0.104984
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.061991
- !-> DEFINE VARIABLE sumcpu =0.186972
+ !-> DEFINE VARIABLE dt = 0.051992
+ !-> DEFINE VARIABLE sumcpu =0.156976
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.059991
- !-> DEFINE VARIABLE sumcpu =0.246963
+ !-> DEFINE VARIABLE dt = 0.050992
+ !-> DEFINE VARIABLE sumcpu =0.207968
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.060991
- !-> DEFINE VARIABLE sumcpu =0.307954
+ !-> DEFINE VARIABLE dt = 0.050992
+ !-> DEFINE VARIABLE sumcpu =0.25896
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.057991
- !-> DEFINE VARIABLE sumcpu =0.365945
+ !-> DEFINE VARIABLE dt = 0.048993
+ !-> DEFINE VARIABLE sumcpu =0.307953
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.056991
- !-> DEFINE VARIABLE sumcpu =0.422936
+ !-> DEFINE VARIABLE dt = 0.047993
+ !-> DEFINE VARIABLE sumcpu =0.355946
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.055992
- !-> DEFINE VARIABLE sumcpu =0.478928
+ !-> DEFINE VARIABLE dt = 0.046993
+ !-> DEFINE VARIABLE sumcpu =0.402939
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.053991
- !-> DEFINE VARIABLE sumcpu =0.532919
+ !-> DEFINE VARIABLE dt = 0.045993
+ !-> DEFINE VARIABLE sumcpu =0.448932
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.056991
- !-> DEFINE VARIABLE sumcpu =0.58991
+ !-> DEFINE VARIABLE dt = 0.046993
+ !-> DEFINE VARIABLE sumcpu =0.495925
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.58991
-0.58991
+ !-> MESSAGE/CONTINUE 0.495925
+0.495925
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.765"
+CLOCK_SECS = "1.502"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "12-Oct-12"
-SESSION_TIME = "04:09"
-CURRENT_DATE = "12-Oct-12"
-CURRENT_TIME = "04:09:28"
+SESSION_DATE = "19-Oct-12"
+SESSION_TIME = "12:47"
+CURRENT_DATE = "19-Oct-12"
+CURRENT_TIME = "12:47:29"
 *** Running test: bn63_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
  
@@ -56894,11 +56199,6 @@ LIST 1 EQ 2 OR "A" EQ "B"    ! should be 0
           0.0000
  
 *** Running test: bn_axis_reversed_syms.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_axis_reversed_syms.jnl
 ! XAXIS_REVERSED and YAXIS_REVERSED are
 ! set to 0 or if the reversed-axis is
@@ -56983,11 +56283,6 @@ XAXIS_REVERSED = "0"
 YAXIS_REVERSED = "1"
  
 *** Running test: bn_isdepth.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! Tests of `var,RETURN=ISDEPTH`
  
 define axis/units=meters/z=0:100:2 zup
@@ -57021,11 +56316,6 @@ say `temp,return=isdepth`
 0
  
 *** Running test: bn_var_hist_levels.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_var_hist_levels.jnl
 ! Syntax for variance-based or histogram-based levels
 !
@@ -57083,11 +56373,6 @@ shade/line/key/lev=20c,1d/title="/LEV=20c,1d" cvar[K=1]
 shade/line/key/lev=50h/title="/LEV=50h" cvar[K=1]
  
 *** Running test: bn64_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn64_bug_fixes.jnl
 ! Fixes that go into v6.4 release
  
@@ -57175,11 +56460,6 @@ list v1
              X        : 1
         "ZAIRA"
 *** Running test: bn_long_grid_names.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_long_grid_names.jnl
 ! test longer grid names (16 --> 64 chars)
 ! tests taken from other bn scripts but with longer grid names
@@ -57964,11 +57244,6 @@ SHOW GRID mygrid_123456789012345678901234567890
  normal    E
  normal    F
 *** Running test: bn_xml_repl.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_xml_repl.jnl
 ! replace > and < and & with their html equivalents.
  
@@ -58011,11 +57286,6 @@ sh dat/xml/var
 </datasets>
 shade/l=1 sst
 *** Running test: bn65_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn65_bug_fixes.jnl
 ! Fixes that go into v6.5 release
  
@@ -58277,11 +57547,6 @@ go polymark "poly/ov/nolab/pal=red/line=1" pos pos " " circle .5
  
  
 *** Running test: bn_txtype_dmy.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_txtype_dmy.jnl
 ! 2/2010 ACM
 !
@@ -58405,11 +57670,6 @@ ppl plot
 plot/y=-1/k=1/t=5-mar-1982:28-mar-1982/x=144w temp
 plot/y=-1/k=1/t=5-mar-1982:28-apr-1982/x=144w temp
 *** Running test: bn_n_open_dsets_sym.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
  !  bn_n_open_dsets_sym.jnl
 ! Ferret v6.5
 ! New special symbol N_OPEN_DSETS, evaulated when requested.
@@ -58451,11 +57711,6 @@ sh sym N_OPEN_DSETS
 N_OPEN_DSETS = "0"
  
 *** Running test: bn_multi_decade.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_multi_decade.jnl
 ! New default no-small tics for multi-decade plots
 ! See bug 670
@@ -58517,11 +57772,6 @@ set view v8; plot/trans/nolab/ax=0,0,1,0/hlim=0:1/set tvar
   ppl tics,0.1,0.25
   ppl plot
 *** Running test: bn_show_xml_file.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_show_xml_file.jnl
 ! Testing SHOW DATA/OUTFILE
 !         SHOW AXIS/OUTFILE
@@ -58737,11 +57987,6 @@ sp cat the_xml_file.xml
 </data>
  
 *** Running test: bn66_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn66_bug_fixes.jnl
 ! Fixes that go into v6.6 release
  
@@ -58838,11 +58083,6 @@ stat temp[z=@ave,t=@ave,y=-2:2]
  
 cancel region
 *** Running test: bn_netcdf4.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_netcdf4.jnl
 ! test syntax for controling NetCDF-4 intput and output.
  
@@ -58958,11 +58198,6 @@ save/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk=6/ychunk=1
 can mode ignore
  
 *** Running test: bn_scat2grid_bin.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_scat2grid_bin.jnl
 ! Tests of scat2grid_bin and scat2grid_nbin functions.
  
@@ -59300,11 +58535,6 @@ can axis tout
 can axis tin
  
 *** Running test: bn_axis_dir_symbols.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_axis_dir_symbols.jnl
 ! 5/2010
 !
@@ -59331,11 +58561,6 @@ shade/x=180 sst; show sym ax*; can sym ax*
 AX_HORIZ = "T"
 AX_VERT = "Y"
 *** Running test: bn663_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn663_bug_fixes.jnl
 ! Fixes that go into v6.63 release
  
@@ -59372,11 +58597,6 @@ SHADE/L=1/X=60:70/Y=40:50/LEV=v sst
  
 FILL/L=2/X=60:70/Y=40:50/LEV=v sst
 *** Running test: bn_set_axis_regular.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_set_axis_regular.jnl
 ! Karl Smith, 5/2010
 ! tests for SET AXIS /REGULAR
@@ -59650,11 +58870,6 @@ show grid
  normal    F
  
 *** Running test: bn_set_cancel_redirect.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_set_cancel_redirect.jnl
 ! Karl Smith, 5/2010
 ! test for SET REDIRECT and CANCEL REDIRECT
@@ -60104,8 +59319,8 @@ list contents
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.83 (PyFerret 1.0.0)"                                           
- 3    /  3:" ! Linux 2.6.18-308.1.1.el5 - 10/12/12"                                     
- 4    /  4:" ! 12-Oct-12 04:09     "                                                    
+ 3    /  3:" ! Linux 2.6.18-308.1.1.el5 - 10/19/12"                                     
+ 4    /  4:" ! 19-Oct-12 12:47     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -60157,11 +59372,6 @@ cancel grid mygrid
  
 !!! NOTE: journal mode is now turned off !!!
 *** Running test: bn_min_max_smoothers.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_min_max_smoothers.jnl
 ! New transforms @SMN and @SMX, smoothers based on the
 ! min and max of the data in the window.
@@ -60443,11 +59653,6 @@ list/l=1/x=123.5w/y=2.5/z=0:100 temp, temp[k=@med], temp[k=@smx], temp[k=@smn]
 95    / 10:  23.54  24.51  24.51  23.54
  
 *** Running test: bn_vector_symbols.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_vector_symbols.jnl
 ! ACM 7/16/21010 Ferret V6.6.3
 !
@@ -60493,11 +59698,6 @@ VECTOR/NOLAB/KEY/I=1:300/J=1:200/LEN=12.2/XSKIP=10/YSKIP=6 i/j,j/i
  
 VECTOR/OVER/KEY/NOLAB/I=1:300/J=1:200/LEN=12.2/XSKIP=10/YSKIP=4 i/j,j/i
 *** Running test: bn_variance_large.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:09     
-
 ! bn_variance_large.jnl
 ! Previous to v6.6.4, these returned messages **too big**
  
@@ -60544,11 +59744,6 @@ SHADE/L=1/LEV=v huge
  
 CANCEL SYMBOL lev*
 *** Running test: bn_labnum_calendar.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_labnum_calendar.jn.
 ! Define new symbol, when a Calendar label is on
 ! the plot, pointing to its ppl label number.
@@ -60567,11 +59762,6 @@ sh sym lab($labnum_calend)
 LAB4 = "CALENDAR: NOLEAP"
  
 *** Running test: bn665_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn65_bug_fixes.jnl
 ! test various fixes that went into version 6.6.5
 ! 11/2010 ACM
@@ -61070,11 +60260,6 @@ list tax_year(a,a)
  JUL-0005 / 6:"01-JUL-0005"
  
 *** Running test: bn_floatstr.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_floatstr.jnl
 ! testing new function to convert floating-point
 ! variables to strings.
@@ -61196,11 +60381,6 @@ LIST/X=165W:135W/Y=-50/L=1 STRLEN(var)
  137W   / 102:  0.000
  135W   / 103:  0.000
 *** Running test: bn67_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn67_bug_fixes.jnl
 ! test various fixes that went into version 6.7
 ! 2/2011 ACM
@@ -61551,11 +60731,6 @@ sh dat
  
  
 *** Running test: bn_NaN_note.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_NaN_note.jnl
 ! Ferret v6.7  2/2011
 ! The message about no missing flags, and assuming NaN,
@@ -61573,11 +60748,6 @@ SET MODE diag
 USE test0
 CANCEL MODE diag
 *** Running test: bn671_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn671_bug_fixes.jnl
 ! test various fixes that went into version 6.71
 ! 4/2011 ACM
@@ -61869,11 +61039,6 @@ list var
  390   / 10:   ....
  400   / 11:   ....
 *** Running test: bn68_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn68_bug_fixes.jnl
 ! test various fixes that went into version 6.8
 !
@@ -62576,11 +61741,6 @@ list x[gx=a[d=1],i=1:3]
  1   / 2:  1.000
  2   / 3:  2.000
 *** Running test: bn_ifv.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_ifv.jnl
 ! test IFV IfValid masking for a variety of combos
  
@@ -62716,11 +61876,6 @@ list IFV strings EQ "a" THEN "" ELSE strings
  2   / 2:"b"
  3   / 3:"" 
 *** Running test: bn_randu2_randn2.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! Test randu2 and randn2 with newer random-number algorithm.
 ! 9/2011 acm
 ! Note that most of these results will differe from one
@@ -62737,42 +61892,42 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.8493
- 2   / 2:  0.2777
- 3   / 3:  0.3806
- 4   / 4:  0.2771
- 5   / 5:  0.2342
+ 1   / 1:  0.2393
+ 2   / 2:  0.6189
+ 3   / 3:  0.5750
+ 4   / 4:  0.2221
+ 5   / 5:  0.9852
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.5048
- 2   / 2:  0.5267
- 3   / 3:  0.4816
- 4   / 4:  0.8375
- 5   / 5:  0.2005
+ 1   / 1:  0.8867
+ 2   / 2:  0.6929
+ 3   / 3:  0.7983
+ 4   / 4:  0.5288
+ 5   / 5:  0.2984
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.8999
- 2   / 2:  0.5881
- 3   / 3:  0.4838
- 4   / 4:  0.2922
- 5   / 5:  0.9539
- 6   / 6:  0.9944
+ 1   / 1:  0.5046
+ 2   / 2:  0.3490
+ 3   / 3:  0.3980
+ 4   / 4:  0.0710
+ 5   / 5:  0.8884
+ 6   / 6:  0.7951
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.0792
- 2   / 2:  0.3892
- 3   / 3:  0.2888
- 4   / 4:  0.3671
- 5   / 5:  0.9587
- 6   / 6:  0.6045
+ 1   / 1:  0.4868
+ 2   / 2:  0.3021
+ 3   / 3:  0.7661
+ 4   / 4:  0.4871
+ 5   / 5:  0.5710
+ 6   / 6:  0.0744
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
@@ -62804,42 +61959,42 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.958
- 2   / 2: -0.412
- 3   / 3:  0.886
- 4   / 4:  1.177
- 5   / 5:  0.302
+ 1   / 1:  0.7628
+ 2   / 2:  0.5376
+ 3   / 3:  0.2429
+ 4   / 4: -0.5682
+ 5   / 5:  0.6344
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  1.696
- 2   / 2:  2.413
- 3   / 3:  0.001
- 4   / 4: -1.473
- 5   / 5: -1.117
+ 1   / 1: -1.519
+ 2   / 2: -1.345
+ 3   / 3: -0.373
+ 4   / 4: -0.095
+ 5   / 5: -1.262
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.219
- 2   / 2: -0.652
- 3   / 3:  1.380
- 4   / 4:  2.672
- 5   / 5: -1.288
- 6   / 6: -0.407
+ 1   / 1:  1.461
+ 2   / 2:  0.970
+ 3   / 3:  0.482
+ 4   / 4:  0.167
+ 5   / 5: -1.515
+ 6   / 6: -0.134
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.539
- 2   / 2:  0.296
- 3   / 3: -1.563
- 4   / 4:  0.269
- 5   / 5:  0.770
- 6   / 6:  1.265
+ 1   / 1:  1.435
+ 2   / 2: -1.251
+ 3   / 3:  0.217
+ 4   / 4:  0.816
+ 5   / 5: -0.528
+ 6   / 6: -1.215
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
@@ -62874,15 +62029,15 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-            VAR2   VAR2    VAR2
-0     / 1:  1.940  1.940  0.4616
-20    / 2:  1.158  1.158  0.4616
-40    / 3:  0.462  0.462 -0.1197
-60    / 4: -0.120 -0.120  0.3191
-80    / 5: -0.720 -0.130  0.3191
-100   / 6: -0.130 -0.284  0.3191
-120   / 7: -0.284 -0.130  0.3191
-140   / 8:  0.319  0.319  0.3191
+            VAR2   VAR2   VAR2
+0     / 1:  1.327  1.394  1.119
+20    / 2:  1.394  1.327  1.119
+40    / 3:  1.119  1.119  0.103
+60    / 4:  0.103  0.103  0.884
+80    / 5: -0.842 -0.842  0.884
+100   / 6: -0.905 -0.842  0.884
+120   / 7: -0.190 -0.190  0.884
+140   / 8:  0.884  0.884  0.585
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -62893,11 +62048,6 @@ plot/vs xpts,ypts
 GO polymark POLYGON/KEY/LEV=v xpts,ypts,sst,star
  
 *** Running test: bn_axis_cf.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
  
@@ -62964,11 +62114,6 @@ sp ncdump -h a.nc >> all_ncdump.out
  
  
 *** Running test: bn_repeated_coords.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! Test the use of micro-adjusting on NetCDF read
 ! when coordinates are repeated.
 ! See ticket 1910
@@ -63041,11 +62186,6 @@ list aa[L=1:71:10]
  01-JAN-2001 01:10:00 / 8:  0.6997
  
 *** Running test: bn_xml_header.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_xml_header.jnl
 ! run the exact script that LAS uses to make XML header files
  
@@ -63216,11 +62356,6 @@ sp cat xml_out.xml
 </data>
  
 *** Running test: bn_eof_simple.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_eof_simple
 ! Define a simple function with two known functions.
 ! decompose with EOFs.
@@ -63560,11 +62695,6 @@ can axis xaxis
  
 exit/script
 *** Running test: bn_eof_simple2.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_eof_simple2
 ! Define a simple function with four known functions, two of which are degenerate.
 ! decompose with EOFs.
@@ -63925,11 +63055,6 @@ can axis xaxis
  
 exit/script
 *** Running test: bn_interpolate_6d.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_interpolate_6d.JNL
 ! benchmark interpolation along various axes
 ! including the E and F axis
@@ -64326,11 +63451,6 @@ LIST v[@xpt,@ypt,@ept,@fpt]
              F        : 1.000499999999999945 (interpolated)
           1113.00
 *** Running test: bn_regrid_6d.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_regrid_6d.jnl
 ! version of bn_regrid, using E and F directions.
  
@@ -65706,11 +64826,6 @@ list a24[g=g48]-a48
  07-JAN-1980 00 / 4: -438312.
  
 *** Running test: bn_syntax_6d.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_syntax_6d.JNL
 ! - test syntax interpretation of Program FERRET 6D
  
@@ -65829,11 +64944,6 @@ cancel variables/all;\
      currently SET data sets:
           3.000
 *** Running test: bn_expressions_6d.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_expressions_6d.jnl
 ! testing expressions syntax in E and F directions.
 ! Note pseudo-variables are _E,
@@ -66314,11 +65424,6 @@ LIST/n=5:7 FBOXLO, FBOXHI
 6   / 6:  5.500  6.500
 7   / 7:  6.500  7.500
 *** Running test: bn_direction_fcns_6d.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_direction_functions_6d
 ! Tests of sort, sample, reverse, convolve, compress, and compess_by
 ! functions in the E and F directions.
@@ -66536,11 +65641,6 @@ list compressn_by(fsequence({10,20,30,40,50}),mask)
  4   / 4:   ....   ....
  5   / 5:   ....   ....
 *** Running test: bn_regrid_transforms_6d.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_regrid_transforms_6d.jnl
 ! benchmark to test regridding transformations and syntax
 ! version of bn_regrid_transforms, using E and F directions.
@@ -67304,11 +66404,6 @@ show grid
  
 set mode/last diag
 *** Running test: bn_aggregate_e.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_aggregate_e.jnl
 ! using the DEFINE ATTRIBUTE/E command
  
@@ -67540,11 +66635,6 @@ show data windy
  
  
 *** Running test: bn_6d_lab_mode.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_6d_lab_mode.jnl
 !
 ! Tests of CANCEL MODE 6d_lab, writes SHOW and STAT output in classic 4D form.
@@ -67691,11 +66781,6 @@ list/L=1:8 taux[x=@sum,y=@sum]
  29-SEP-1982 02 / 8:  -39.8
 can mode diag
 *** Running test: bn682_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn682_bug_fixes.jnl
 ! test various fixes that went into version 6.82
 ! 8/2012 ACM
@@ -67745,11 +66830,6 @@ sho grid lon_c
  normal    F
  
 *** Running test: bn683_bug_fixes.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn683_bug_fixes.jnl
 ! test various fixes that went into version 6.83
 ! 8/2012 ACM
@@ -67881,12 +66961,83 @@ GO err682_if_yes_exit
 let test = 1
 if `test` then exit
  !-> if 1 then exit
+ 
+GO bn_reset
+cancel mode verify
+GO err682_use_no_quotes
+! err682_use_no_quotes.jnl
+! See ticket 1974 - on 64-bit machines, this statement causes a crash.
+! It should just generate an error message, as the file spec. should have
+! quotes around it.
+ 
+SET MODE ignore
+use ./z1.nc
+ 
+CANCEL MODE ignore
+ 
+GO bn_reset
+cancel mode verify
+GO err682_axis_no_clue
+! err682_axis_no_clue.jnl
+! See ticket 1975. The axis sax is intended to be
+! used as a Y axis. The axes of the variable are
+! TEMP(zax, sax, xax). The grid should be XYZ but
+! Ferret v6.82 created a grid thats XZT instead.
+ 
+use xsz.nc
+sh dat
+     currently SET data sets:
+    1> ./xsz.nc  (default)
+ name     title                             I         J         K         L         M         N
+ TEMP     TEMPERATURE                      1:5       1:7       1:3       ...       ...       ...
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err682_grid_merge
+! err682_grid_merge.jnl
+! Bug 1972. When merging contexts, the calendar time-axis
+! info gets lost, causing an error with the time axis.
+ 
+use truemonth.nc
+let a = 2
+let b = a * var
+list a*var[t=1-jan-1960:1-jan-1961]
+             VARIABLE : A*VAR[T=1-JAN-1960:1-JAN-1961]
+             FILENAME : truemonth.nc
+             SUBSET   : 12 points (TIME)
+ 16-JAN-1960 12 / 121:  1.632
+ 15-FEB-1960 12 / 122:  1.901
+ 16-MAR-1960 12 / 123:  2.000
+ 16-APR-1960 00 / 124:  1.917
+ 16-MAY-1960 12 / 125:  1.658
+ 16-JUN-1960 00 / 126:  1.246
+ 16-JUL-1960 12 / 127:  0.718
+ 16-AUG-1960 12 / 128:  0.114
+ 16-SEP-1960 00 / 129: -0.490
+ 16-OCT-1960 12 / 130: -1.050
+ 16-NOV-1960 00 / 131: -1.513
+ 16-DEC-1960 12 / 132: -1.836
+ 
+! The bug had this statement failing with a time-region error
+list b[T=1-JAN-1960:1-JAN-1961]
+             VARIABLE : A * VAR
+             FILENAME : truemonth.nc
+             SUBSET   : 12 points (TIME)
+ 16-JAN-1960 12 / 121:  1.632
+ 15-FEB-1960 12 / 122:  1.901
+ 16-MAR-1960 12 / 123:  2.000
+ 16-APR-1960 00 / 124:  1.917
+ 16-MAY-1960 12 / 125:  1.658
+ 16-JUN-1960 00 / 126:  1.246
+ 16-JUL-1960 12 / 127:  0.718
+ 16-AUG-1960 12 / 128:  0.114
+ 16-SEP-1960 00 / 129: -0.490
+ 16-OCT-1960 12 / 130: -1.050
+ 16-NOV-1960 00 / 131: -1.513
+ 16-DEC-1960 12 / 132: -1.836
+ 
 *** Running test: bn_outtype.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_outtype
 ! Tests of output-type control:
 !  SET VAR/OUTTYPE
@@ -67919,7 +67070,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 12-Oct-12
+ .                               history         CHAR        23   T       FERRET V6.83  19-Oct-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67974,7 +67125,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 12-Oct-12
+ .                               history         CHAR        23   T       FERRET V6.83  19-Oct-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68018,7 +67169,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 12-Oct-12
+ .                               history         CHAR        23   T       FERRET V6.83  19-Oct-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68062,7 +67213,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 12-Oct-12
+ .                               history         CHAR        23   T       FERRET V6.83  19-Oct-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68099,7 +67250,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 12-Oct-12
+ .                               history         CHAR        23   T       FERRET V6.83  19-Oct-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68137,7 +67288,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 12-Oct-12
+ .                               history         CHAR        23   T       FERRET V6.83  19-Oct-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68204,7 +67355,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 12-Oct-12
+ .                               history         CHAR        23   T       FERRET V6.83  19-Oct-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68253,7 +67404,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 12-Oct-12
+ .                               history         CHAR        23   T       FERRET V6.83  19-Oct-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68314,7 +67465,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 12-Oct-12
+ .                               history         CHAR        23   T       FERRET V6.83  19-Oct-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68355,7 +67506,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 12-Oct-12
+ .                               history         CHAR        23   T       FERRET V6.83  19-Oct-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68396,7 +67547,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 12-Oct-12
+ .                               history         CHAR        23   T       FERRET V6.83  19-Oct-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68437,7 +67588,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 12-Oct-12
+ .                               history         CHAR        23   T       FERRET V6.83  19-Oct-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68475,7 +67626,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 12-Oct-12
+ .                               history         CHAR        23   T       FERRET V6.83  19-Oct-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68510,11 +67661,6 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
   
  
 *** Running test: bn_ribbon_plot.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 ! bn_ribbon_plot.jnl
 ! Test color-line-by variable style of plots
  
@@ -68644,11 +67790,6 @@ RIBBON/vs/line/thick/lev=(1,8,1)/pal=ten_by_levels xpts,ypts,var
  
 PLOT/vs/over/sym=20 xpts,ypts
 *** Running test: bn_descr_4digit.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
  ! bn_descr_4digit.jnl
  ! See ticket 1969: step files have 3- or 4-digit extensions
  ! coads_clim.999, coads_clim.1000, coads_clim.1001
@@ -68676,11 +67817,6 @@ list/x=180/y=0 sst
  17-MAY-1900 / 5:  28.49
  17-JUN-1900 / 6:  28.32
 *** Running test: bn_all_ef.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
 SET MODE VERIFY
 ! bn_all_ef.jnl
 ! - run all the benchmark tests for externally-linked external functions.
@@ -69513,11 +68649,6 @@ exit
  
 exit/command
 *** Running test: bn_startupfile.jnl
- 	NOAA/PMEL TMAP
- 	FERRET v6.83 (PyFerret 1.0.0)
- 	Linux 2.6.18-308.1.1.el5 - 10/12/12
- 	12-Oct-12 04:10     
-
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
 PPL$XPIXEL = "900"
 PPL$YPIXEL = "506"
@@ -69527,13 +68658,13 @@ FERRET_PLATFORM = "Linux 2.6.18-308.1.1.el5"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Sep 14 2012 15:49:53 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "12-Oct-12"
-SESSION_TIME = "04:10"
-SESSION_PID = "3045"
-DELTA_CPU = "0.530918"
-CLOCK_SECS = "0.326"
-CURRENT_DATE = "12-Oct-12"
-CURRENT_TIME = "04:10:24"
+SESSION_DATE = "19-Oct-12"
+SESSION_TIME = "12:48"
+SESSION_PID = "14427"
+DELTA_CPU = "0.527919"
+CLOCK_SECS = "0.314"
+CURRENT_DATE = "19-Oct-12"
+CURRENT_TIME = "12:48:17"
 N_OPEN_DSETS = "0"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
@@ -69554,7 +68685,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "12-Oct-12_04:10"
+WIN_TITLE = "19-Oct-12_12:48"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -69605,4 +68736,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Fri Oct 12 04:10:24 PDT 2012
+Ended at Fri Oct 19 12:48:17 PDT 2012

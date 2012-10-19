@@ -140,9 +140,9 @@ for jnl in $test_scripts; do
    fi
 
    if [ $jnl = "bn_dollar.jnl" ]; then
-      $fver -noverify -script $jnl hello 1>> $log_file 2>> $err_file
+      $fver -noverify -quiet -script $jnl hello 1>> $log_file 2>> $err_file
    else
-      $fver -noverify -script $jnl 1>> $log_file 2>> $err_file
+      $fver -noverify -quiet -script $jnl 1>> $log_file 2>> $err_file
    fi
    if [ $? -ne 0 ]; then
       echo "****** FERRET error: $jnl failed ******" >> $log_file

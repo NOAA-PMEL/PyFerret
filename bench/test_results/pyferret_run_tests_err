@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Oct 12 04:03 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Oct 19 12:26 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results of PyFerret updated from Ferret trunk 2012-10-12
+Note: RUN_Tests.sh test results for PyFerret Oct 19, 2012 (-quiet added)
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -207,10 +207,8 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Oct 12 04:06:47 PDT 2012
+Beginning at Fri Oct 19 12:45:10 PDT 2012
 *** Running test: bn_syntax.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
         SET EXPRESSION has not been given or implied
@@ -221,8 +219,6 @@ that
  **ERROR: command syntax: \!
 \! ignore (err cuz bang gets escaped)
 *** Running test: bn_dollar.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: invalid command: Value needed for argument 3 in command
           GO bn_dollar.jnl hello
@@ -268,8 +264,6 @@ say ($100)
           GO bn_dollar.jnl hello
 say ($10)0
 *** Running test: bn_grave.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: command syntax: unpaired grave accents: message/continue "2+2=`2+2"
 message/continue "2+2=`2+2"
@@ -312,8 +306,6 @@ MESSAGE/CONTINUE `sst,return=Xsize`
           sst,return=trash
 MESSAGE/CONTINUE `sst,return=trash`
 *** Running test: bn_letd.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: unknown data set: NOEXIST
 DEFINE VARIABLE/d=noexist a = b
@@ -324,8 +316,6 @@ can var
  LISTing to file v12file.nc
  LISTing to file v1file.nc
 *** Running test: bn_if.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: invalid command: ELSE can only be used between IF and ENDIF
 else
@@ -334,8 +324,6 @@ endif
  **ERROR: invalid command: ELIF can only be used between IF and ENDIF
 elif
 *** Running test: bn_expressions.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
           Cannot use multiple IFs in an expression
@@ -347,8 +335,6 @@ DEFINE VARIABLE A = IF I LT 5 THEN I ELSE -9
  **ERROR: variable unknown or not in data set: A1
 load a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21
 *** Running test: bn_geometry.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -360,8 +346,6 @@ load a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21
           expression has 5 points (I=1:5)
 LIST X[I=1:5] - X[I=6:9]
 *** Running test: bn_output.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file WV.J34K56L7
  LISTing to file test.dat
@@ -370,22 +354,14 @@ LIST X[I=1:5] - X[I=6:9]
  **ERROR: invalid subcommand: File type no longer supported TMA
 LIST/FILE=test.gt/FORMAT=TMAP/L=1:3 v,v^0.5
 *** Running test: bn_in_plane.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_compress.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_interpolate.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_regrid.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -395,13 +371,9 @@ Replacing definition of axis YFINE
 Replacing definition of axis YCOARSE
 Replacing definition of grid G24
 *** Running test: bn_ez.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file test.unf
 *** Running test: bn_plot.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
@@ -464,8 +436,6 @@ cont/over/i=1:10/thick=4 i
           Value must be positive
 cont/over/i=1:10/sigdig=-1 i
 *** Running test: bn_curv.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 Replacing definition of axis LON_FIELD_I_AXIS
 Replacing definition of axis LON_FIELD_J_AXIS
@@ -483,8 +453,6 @@ shade/nolabel sst, x_page[j=1:12], y_page
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
 *** Running test: bn_symbols.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: command syntax: illegal name: TEST*
 define symbol test* = hello
@@ -502,12 +470,8 @@ message/continue ($test2"|hello|bye|<error message")
 message/continue ($t2"|solong>really hello|bye|")
  *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
 *** Running test: bn_comma_delimited.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_dynamic_grids.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: unknown defining grid: GX=NOEXIST
 list temp[gx=noexist]
@@ -578,8 +542,6 @@ list a
           Axis extremes are I=1:8
 list a
 *** Running test: bn_cdf.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file test0a.cdf
  LISTing to file test0b.cdf
@@ -692,8 +654,6 @@ list/format=cdf/l=13/append/file=test_abs.cdf l1
  LISTing to file test_fil.cdf
  LISTing to file test_fil.cdf
 *** Running test: bn_regrid_transforms.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: regridding: no target grid specified
 load temp[g=@lin]
@@ -704,8 +664,6 @@ load temp[g=u,g=w]
  **ERROR: unknown defining grid: G=X --> g=user-or-pseudo-var not allowed
 load temp[g=x]
 *** Running test: bn_axis_limits.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  *** NOTE: /XLIMITS and /YLIMITS are deprecated.
  *** NOTE: Use /HLIMITS and /VLIMITS instead.
@@ -726,12 +684,8 @@ plot/xlimits=1:2: i
  **ERROR: invalid command: Must give a range: xlimits=5:5
 plot/xlimits=5:5 i
 *** Running test: bn_movie.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_ez_order.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file test_perm10.dat
  LISTing to file test_perm24.dat
@@ -742,16 +696,10 @@ plot/xlimits=5:5 i
  LISTing to file test_stream.unf
  LISTing to file test_stream.unf
 *** Running test: bn_user.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_stream.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_mc.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **TMAP ERR: Attempt to access unsupported feature
              Descriptor requests delta of 0, please use 1
@@ -764,25 +712,17 @@ set data coads_clim_step_order.des
              coads_clim.001b
 list sst
 *** Running test: bn_negative_t.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: regridding: only @ASN regridding between calendar and
           non-calendar axes: A
 LIST a[gt=tcal]
 *** Running test: bn_xact_regrid.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_gc_functions.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  *** NOTE: /XLIMITS and /YLIMITS are deprecated.
  *** NOTE: Use /HLIMITS and /VLIMITS instead.
 *** Running test: bn491_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file test.cdf
  PERMANENT data cleared from memory
@@ -805,8 +745,6 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_odd_variable_name.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  Cached data cleared from memory
  **ERROR: command syntax: v2-and-minus
@@ -827,8 +765,6 @@ list 'i'
 list v2-and-minus[i=5:15@ddc]
  Cached data cleared from memory
 *** Running test: bn_test_stream.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file permutedBinaryTest.dat
  LISTing to file junk.dat
@@ -854,8 +790,6 @@ load num
  **ERROR: invalid command: invalid argument for /TYPE
 SET DATA/EZ/var=num/type=i3/grid=mygrid/form=stream junk.dat
 *** Running test: bn_define_axes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 Replacing definition of axis XAX
 Replacing definition of axis XAX
@@ -914,12 +848,8 @@ Replacing definition of axis XAX2
  *** NOTE: (fyi) units are not subject to auto-conversion: BLAHS
 Replacing definition of axis XAX2
 *** Running test: bn_polygon.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn500_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -954,8 +884,6 @@ stat i, noname(i)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_sample.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -994,8 +922,6 @@ stat i, noname(i)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_strides_revs_perms.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1016,20 +942,14 @@ LIST/i=2:4:2 VAR
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
  *** NOTE: Stride value not a factor of axis length
 *** Running test: bn_non_COARDS_netCDF.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
  *** NOTE: A dummy axis of subscripts will be used
 *** Running test: bn_cache_hits.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_regrid_to_user.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 Replacing definition of grid GG2
  **ERROR: unknown defining grid: G=NO_EXIST
@@ -1037,8 +957,6 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist]
  **ERROR: unknown defining grid: GX=A[D=1]
 load/x=160e/y=5s v2
 *** Running test: bn_calendar.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 Replacing definition of axis TDAYS
 Replacing definition of axis TDAYS
@@ -1054,8 +972,6 @@ Replacing definition of axis TDAYS
 Replacing definition of grid TGRID
  *** NOTE: /UNIT=MONTHS  ... using 1/12 of 365.25 days
 *** Running test: bn_dash_dot.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: command syntax: dash=(1., 2.)
           DASH[=(dn1,up1,dn2,up2)] takes 4 arguments or no argument
@@ -1064,8 +980,6 @@ plot/dash=(1., 2.)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
           DASH arguments must be positive
 plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
 *** Running test: bn_flowlines.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  Using every   2th vector in the Y direction
  Using every   2th vector in the Y direction
@@ -1076,16 +990,12 @@ plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_logaxes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 Replacing definition of axis DLOG
 Replacing definition of axis DLOG
  **ERROR: value out of legal range: Limits for log axis negative or too small: -9.00 : 0.00
 plot/hlog fcn
 *** Running test: bn_internal_external_functions.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
@@ -1176,8 +1086,6 @@ list strcat ("All work and no play")
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_modulo_strides.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file test_modulo.cdf
  PERMANENT data cleared from memory
@@ -1187,8 +1095,6 @@ list strcat ("All work and no play")
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
  *** NOTE: Stride value not a factor of axis length
 *** Running test: bn_axis_viewports.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 Re-defining viewport MID
 Re-defining viewport MID2
@@ -1197,8 +1103,6 @@ Re-defining viewport LRAX
 Re-defining viewport ULAX
 Re-defining viewport URAX
 *** Running test: bn_strings.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: command syntax: "string2"}
 list e
@@ -1230,16 +1134,10 @@ list a[gx=xnrst@sum]
 list a[gx=xnrst@mod]
  LISTing to file foo.cdf
 *** Running test: bn_axcontrol.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_vec_curv.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_delimited_read.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 Replacing definition of axis TAX
 Replacing definition of grid G1
@@ -1256,8 +1154,6 @@ SET DATA/FORM=delimited/type="da,da, date2"  bn_delimited_read_date_time.dat
  **ERROR: command syntax: ,,:
 SET DATA/EZ/form=delim/delim="/,,,:" bn_delimited_read_date_time.dat
 *** Running test: bn541_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1305,8 +1201,6 @@ sh: ncrename: command not found
 sh: ncrename: command not found
 sh: ncrename: command not found
 *** Running test: bn_cancel_axes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file longax.dat
  PERMANENT data cleared from memory
@@ -1328,8 +1222,6 @@ sh: ncrename: command not found
  *** NOTE: regarding ./climatological_axes.cdf ...
  *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
 *** Running test: bn542_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1352,8 +1244,6 @@ sh: ncrename: command not found
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_subspan_modulo.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file test_mod.cdf
  LISTing to file test_mod.cdf
@@ -1379,40 +1269,28 @@ define axis/x=130e:500:10/modulo=360 xsub
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
  *** NOTE: Stride value not a factor of axis length
 *** Running test: bn_dots.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  *** NOTE: /THICKNESS ignored  on /SYMBOL=DOT
  *** NOTE: /SIZE= ignored  on /SYMBOL=DOT
 *** Running test: bn_lev_symbols.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_mode_logo_lab.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 Re-defining viewport UL
 Re-defining viewport UR
 Re-defining viewport LL
 Re-defining viewport LR
 *** Running test: bn_modulo_attribute.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  *** NOTE: Undecipherable value of netCDF attribute modulo on variable lon_moderr
  *** NOTE: modulo = "j"
  *** NOTE: Undecipherable value of netCDF attribute modulo on variable time_moderr
  *** NOTE: modulo = "j"
 *** Running test: bn550_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn551_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1431,12 +1309,8 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_multi_line_labels.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn552_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1496,16 +1370,12 @@ Replacing definition of axis YAX
           Axis extremes are T=31-DEC-1997 12:00:30-JAN-1998 12:00
 list/t=1-jan-1990 dummy
 *** Running test: bn_set_var_scale_off.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: invalid command: Can SET VARIABLE/OFFSET= only with NetCDF datasets
 SET VAR/OFFSET=1 x1
  **ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets
 SET VAR/SCALE=10 x2
 *** Running test: bn_longvarnames.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1518,19 +1388,13 @@ SET VAR/SCALE=10 x2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_shakey.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_eof_4d.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file eofsp.cdf
  LISTing to file eofti.cdf
  LISTing to file eofst.cdf
 *** Running test: bn_abstract_axis_names.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file confuse_xz.nc
  LISTing to file confuse_yz.nc
@@ -1541,17 +1405,11 @@ SET VAR/SCALE=10 x2
  LISTing to file confuse_yt.nc
  LISTing to file confuse_yzt.nc
 *** Running test: bn_many_polygons.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 Replacing definition of axis YQ
 *** Running test: bn_fill_irregular.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_xml_output.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 SHO VAR/XML
 SHO VAR/XML
@@ -1560,12 +1418,8 @@ SHO VAR/XML
 SHOW VAR/XML
 SHOW VAR/XML
 *** Running test: bn_test_nan.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn553_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1574,8 +1428,6 @@ SHOW VAR/XML
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_graticules.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  Using every   5th vector in the X direction
  Using every   3th vector in the Y direction
@@ -1586,8 +1438,6 @@ Replacing definition of axis TAX
 Replacing definition of axis TAX
 Replacing definition of axis TAX
 *** Running test: bn_repeat_range.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: invalid command: REPEAT/NAME requires /RANGE
@@ -1619,8 +1469,6 @@ repeat/range=3:1:-1/name=a list a
  **ERROR: command syntax: nested REPEAT loops with the same counter name a
 repeat/range=3:1:-1/name=a list a
 *** Running test: bn554_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1683,8 +1531,6 @@ Replacing definition of axis X_AX
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 *** Running test: bn_bounds.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  *** NOTE: regarding ./climatological_axes.cdf ...
  *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
@@ -1742,14 +1588,10 @@ def axis/t/bounds tax= {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} , {0,24, 0,
  *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
  *** NOTE: Substituting coordinate midpoints
 *** Running test: bn_all_leap.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP
 def axis/t/cal=nogood/t=1-jan-2000:1-jan-2010:1/units=months tax
 *** Running test: bn570_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1770,24 +1612,16 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_modstats.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  *** NOTE: regarding ./climatological_axes.cdf ...
  *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
 *** Running test: bn_mc_vary_scale.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_plot_nokey.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn580_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1878,21 +1712,13 @@ list/l=1/j=40/i=0:300:0 sst
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_inf_levels.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_regulart.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  *** NOTE: Evenly spaced axis has edges definition: TCOADS - ignored
 *** Running test: bn_labwid.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_redefine_taxis_mc.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 Replacing definition of axis TIME1
  *** NOTE: grid  used by data set coads_clim
@@ -1901,8 +1727,6 @@ Replacing definition of axis TIME1
  *** NOTE: grid  used by data set coads_clim
  *** NOTE: Redefinition may alter apparent contents of data set
 *** Running test: bn_illegal_axisname.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 Replacing definition of axis COADSX.ILLEGAL
  *** NOTE: grid  used by data set illeg_axname
@@ -1915,24 +1739,14 @@ Replacing definition of axis COADSY.ILLEGAL
  *** NOTE: grid  used by data set illeg_axname
  *** NOTE: Redefinition may alter apparent contents of data set
 *** Running test: bn_exit_script.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_exit_cycle.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_curv_mod.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_shade_keycont.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn581_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1983,25 +1797,15 @@ DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/T/CALENDAR=noleap myt
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_tab_comma_multivar.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_element_functions.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_long_revision_num.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file revision.nc
 *** Running test: bn_window_title.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_last_error.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
@@ -2025,25 +1829,17 @@ repeat/range=1:3/name=L (use coads_climatology; list/nohead [sst=I=1,j=1])
  **ERROR: error in external function
 LOAD vw_fft
 *** Running test: bn_deg_min.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_dp_readscale.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_bounds_defineax.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 Replacing definition of axis TAX
  LISTing to file irrxzt.nc
 Replacing definition of axis ZAX
 Replacing definition of axis ZAX2
 *** Running test: bn600_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2108,8 +1904,6 @@ Replacing definition of axis XAX
  Cached data cleared from memory
  Cached data cleared from memory
 *** Running test: bn601_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2161,8 +1955,6 @@ Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_set_strides.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: invalid command: it is a child axis already
 set axis/stride=2/offset=1 (AX005)
@@ -2178,16 +1970,10 @@ cancel axis/stride COADSX
  **ERROR: invalid command: unknown axis: NORMAL
 set axis/stride=2 NORMAL
 *** Running test: bn_lsl_lowpass.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_return_xmod_tmod.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn602_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2206,14 +1992,10 @@ set axis/stride=2 NORMAL
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_modnbd.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  *** NOTE: regarding ./climatological_axes.cdf ...
  *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
 *** Running test: bn_fifty_files.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
  *** NOTE: Axis has repeated values -- micro-adjusting TIME
@@ -2238,8 +2020,6 @@ set axis/stride=2 NORMAL
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
  *** NOTE: A dummy axis of subscripts will be used
 *** Running test: bn603_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2248,20 +2028,14 @@ set axis/stride=2 NORMAL
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_set_var_name.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_memory_symbol.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  Cached data cleared from memory
  Cached data cleared from memory
  Cached data cleared from memory
  Cached data cleared from memory
 *** Running test: bn605_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2270,8 +2044,6 @@ set axis/stride=2 NORMAL
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn608_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2285,16 +2057,10 @@ set axis/stride=2 NORMAL
  **ERROR: invalid command: "300": Number of contour levels must be between 1 and 250
 SHADE/LEV=300/I=1:100/J=1:100 i+j
 *** Running test: bn_shade_trim.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_mode_nlevels.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn61_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2302,12 +2068,8 @@ SHADE/LEV=300/I=1:100/J=1:100 i+j
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_test_opendap.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn611_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2351,19 +2113,13 @@ Replacing definition of axis TIME
  LISTing to file b.nc
  LISTing to file b.nc
 *** Running test: bn_no_valid_on_plot.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  Using every   5th vector in the X direction
 *** Running test: bn_median.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: value out of legal range: Median smoother length must be odd
 plot/trans var, var[z=@med:4]
 *** Running test: bn614_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2430,16 +2186,10 @@ LIST a_regrid[D=1,GT=b[D=2]@MOD]
  LISTing to file a.nc
  LISTing to file b.nc
 *** Running test: bn_mode_nodata_lab.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_proleptic_gregorian_calendar.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_string_ngd_nbd.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  *** NOTE: @NGD of string variable, counting null strings as missing
  *** NOTE: @NBD of string variable, counting null strings as missing
@@ -2463,32 +2213,20 @@ Replacing definition of axis TAX
  *** NOTE: @NBD of string variable, counting null strings as missing
  *** NOTE: @NGD of string variable, counting null strings as missing
 *** Running test: bn_cat_string.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_sort_strings.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_samplexyt.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  *** NOTE: /XLIMITS and /YLIMITS are deprecated.
  *** NOTE: Use /HLIMITS and /VLIMITS instead.
 *** Running test: bn_last_go_file.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_cancel_upcase_uservar.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running test: bn_cdf_keepax.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file test0a.cdf
  LISTing to file test0b.cdf
@@ -2684,47 +2422,31 @@ list/format=cdf/keep_axnames/append/file=test_fil.cdf ijklave
  **ERROR: variable unknown or not in data set: IJKL
 show grid ijkl
 *** Running test: bn_keep_axisnames.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running test: bn_key_label_minmax.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn62_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_convolve.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_tax_tstep.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file a.nc
 Replacing definition of axis TSEC
 *** Running test: bn_grads_z.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 Replacing definition of axis CAXIS
  *** NOTE: grid  used by data set grads_bug_file
  *** NOTE: Redefinition may alter apparent contents of data set
 *** Running test: bn_clock_syms.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn63_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2777,20 +2499,12 @@ SET AXIS/STRIDE=-1/OFFSET=1 truemonth
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_axis_reversed_syms.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_isdepth.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_var_hist_levels.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn64_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2799,8 +2513,6 @@ SET AXIS/STRIDE=-1/OFFSET=1 truemonth
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_long_grid_names.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2812,13 +2524,9 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_xml_repl.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  *** NOTE: Changing the value of attribute sst.history
 *** Running test: bn65_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2843,17 +2551,11 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  TEMPORARY data cleared from memory
 Replacing definition of axis TAX
 *** Running test: bn_txtype_dmy.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_n_open_dsets_sym.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file list_of_numbers.dat
 *** Running test: bn_multi_decade.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 Re-defining viewport V1
 Re-defining viewport V2
@@ -2864,19 +2566,13 @@ Re-defining viewport V6
 Re-defining viewport V7
 Re-defining viewport V8
 *** Running test: bn_show_xml_file.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file dummy.dat
 *** Running test: bn66_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_netcdf4.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  Restoring default chunk cache settings
  Restoring default chunk cache settings
@@ -2911,28 +2607,20 @@ LIST/FORMAT=CDF/file=nc4_deflate4_t1.nc/clobber/ncformat=4/deflate/shuffle/tchun
              TChunkSize 0 is larger than dimension length 3
 LIST/FORMAT=CDF/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk=6/ychunk=18/tchunk=15 sst
 *** Running test: bn_scat2grid_bin.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_axis_dir_symbols.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn663_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_set_axis_regular.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  *** NOTE: Axis reset to be regular (evenly-spaced): MYX
  *** NOTE: Axis is already regular: MYX
@@ -2940,8 +2628,6 @@ LIST/FORMAT=CDF/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk
  TEMPORARY data cleared from memory
  *** NOTE: Axis reset to be regular (evenly-spaced): MYX1
 *** Running test: bn_set_cancel_redirect.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  Use the GO command to name a file of FERRET commands to be executed.
      e.g.   yes? GO filename
@@ -2997,26 +2683,16 @@ show grid garbage
  
  Use "GO/HELP filename" to read documentation in  the file to be executed.
 *** Running test: bn_min_max_smoothers.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_vector_symbols.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  Using every   8th vector in the X direction
  Using every   7th vector in the Y direction
 *** Running test: bn_variance_large.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_labnum_calendar.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn665_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3027,12 +2703,8 @@ show grid garbage
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_floatstr.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn67_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3074,15 +2746,11 @@ Replacing definition of axis YAX_DUP_AXNAMES
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running test: bn_NaN_note.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: broiled
 *** Running test: bn671_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
 
 Bailing out of external function "tax_year":
 	 Function not valid for modulo time axis
@@ -3109,8 +2777,6 @@ list/L=15:20 tax_year(t[gt=tvar],tvar)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn68_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3163,8 +2829,6 @@ DEFINE VARIABLE ELSE = 5
  LISTing to file a1.nc
  LISTing to file a2.nc
 *** Running test: bn_ifv.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: command syntax: IFV I GT 3 THEN ( IFV I LT 5 THEN I ELSE -9 ) ELSE .333
           Cannot use multiple IFs in an expression
@@ -3174,8 +2838,6 @@ LIST/ORDER=X  IFV I GT 3 THEN ( IFV I LT 5 THEN I ELSE -9 ) ELSE .333
           negative constants need to be enclosed in parentheses
 DEFINE VARIABLE A = ifv I LT 5 THEN I ELSE -9
 *** Running test: bn_randu2_randn2.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
@@ -3184,8 +2846,6 @@ DEFINE VARIABLE A = ifv I LT 5 THEN I ELSE -9
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_axis_cf.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
@@ -3196,32 +2856,20 @@ DEFINE VARIABLE A = ifv I LT 5 THEN I ELSE -9
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running test: bn_repeated_coords.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  *** NOTE: Axis has repeated values -- micro-adjusting TMIN
  *** NOTE: Coordinates out of order or missing on axis TMIN at subscript 4
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 *** Running test: bn_xml_header.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_eof_simple.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_eof_simple2.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_interpolate_6d.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_regrid_6d.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3231,12 +2879,8 @@ Replacing definition of axis YFINE
 Replacing definition of axis YCOARSE
 Replacing definition of grid G24
 *** Running test: bn_syntax_6d.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_expressions_6d.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  **ERROR: command syntax: IF _m GT 3 THEN ( IF _m LT 5 THEN _m ELSE -9 ) ELSE .333
           Cannot use multiple IFs in an expression
@@ -3248,17 +2892,11 @@ DEFINE VARIABLE A = IF _m LT 5 THEN _m ELSE -9
  **ERROR: variable unknown or not in data set: A1
 load a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21
 *** Running test: bn_direction_fcns_6d.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_regrid_transforms_6d.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 Replacing definition of axis FAX4DAY
 *** Running test: bn_aggregate_e.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
@@ -3274,18 +2912,12 @@ define data/agg windy = 1,2
 define data/agg windy = 1,2
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
 *** Running test: bn_6d_lab_mode.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn682_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn683_bug_fixes.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3295,9 +2927,17 @@ define data/agg windy = 1,2
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **netCDF error
+             Is a directory (OPeNDAP/netCDF Error code 21)
+             Data set: ./.
+SET DAT/FORM=CDF ./z1.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_outtype.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  LISTing to file mytype.nc
  LISTing to file mytype.nc
@@ -3314,16 +2954,10 @@ define data/agg windy = 1,2
  LISTing to file mytype.nc
  LISTing to file mytype.nc
 *** Running test: bn_ribbon_plot.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_descr_4digit.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
 *** Running test: bn_all_ef.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3341,7 +2975,5 @@ LOAD/TEMPORARY vflag
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
-    WARNING: Unable to import cdms2 and/or cdtime;
-             the Python functions pyferret.get and pyferret.put are not available
  Cached data cleared from memory
-Ended at Fri Oct 12 04:10:24 PDT 2012
+Ended at Fri Oct 19 12:48:17 PDT 2012

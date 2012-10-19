@@ -79,6 +79,8 @@
 *		   for double-precision ferret
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
 *                  dimension is now an arg to SECS_TO_TSTEP.
+* V683  *acm*10/12  Fix bug 1972: cx_calendar and cx_cal_id are changed only
+*                   if it's the T dimension not the T or F dimension.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -98,7 +100,8 @@
 	INTEGER	idim, cx, status
 
 * internal variable declarations:
-	LOGICAL TM_DATE_OK, TM_FPEQ, INHERITED_LIMITS, point, lim_redundant
+	LOGICAL TM_DATE_OK, TM_FPEQ, INHERITED_LIMITS, 
+     .		point, lim_redundant, is_time
 	INTEGER	TM_LENSTR1, ISUBSCR_CX,
      .		ss, lo_ss, hi_ss, axis, grid, cat, var, ispread
 	INTEGER TM_GET_CALENDAR_ID, cal_id
@@ -109,6 +112,12 @@
 	var  = cx_variable( cx )
 	cat  = cx_category( cx )
 	grid = cx_grid    ( cx )
+	
+* For setting the calendar information just think about the time axis
+* we have just one calendar context per grid.  May need to think about
+* this further in the future for forecast time.
+
+	is_time = idim .EQ. t_dim
 
 * check for special actions needed on user-defined variables
 * ( e.g. how to handle U[K=5] - U[K=1:10] )
@@ -139,13 +148,7 @@
 	   cx_trans( idim, cx ) = trans_no_transform
 * kob 9/97 - need to reset cx_calendar as well
 
-c  What to do with multiple time axes? If f_axis is normal, dont wipe out
-c  a valid calendar setting for time axis. Need cx_calendar(idim,cx) ??
-c	   IF (idim.EQ.t_dim .OR. idim.EQ.f_dim)
-c     .                cx_calendar(cx) = .FALSE.
-
-	   IF (idim.EQ.t_dim)
-     .                cx_calendar(cx) = .FALSE.
+	   IF (is_time) cx_calendar(cx) = .FALSE.
 
 * axes with fully "given" regions will have their regions determined via
 * MERGE_CONTEXT (when computed) or PASS_AMBIG_LIMS (when found in memory)
@@ -183,7 +186,7 @@ c     .                cx_calendar(cx) = .FALSE.
 	   cx_delta( idim, cx ) = unspecified_val8
 	   cx_trans( idim, cx ) = trans_no_transform
 * kob 9/97 - need to reset cx_calendar as well
-	   IF (idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
+	   IF (is_time) THEN
               cx_calendar(cx) = .FALSE.
               cx_cal_id(cx) = unspecified_int4
            ENDIF
@@ -215,7 +218,7 @@ c     .                cx_calendar(cx) = .FALSE.
 	   cx_hi_ww(idim, cx) = TM_WORLD( cx_hi_ss( cx,idim),
      .					  grid, idim, box_hi_lim )
 
-	   IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. cx_calendar(cx) ) THEN
+	   IF ( is_time .AND. cx_calendar(cx) ) THEN
              cal_id = TM_GET_CALENDAR_ID (line_cal_name(axis))
              cx_cal_id(cx) = cal_id
            ENDIF
@@ -241,7 +244,7 @@ c     .                cx_calendar(cx) = .FALSE.
 * convert times given as seconds from BC to time step values
 * *kob* 8/97 - use cx_calender instead of cx_lo_ww
 
-	   IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. cx_calendar(cx) ) THEN
+	   IF ( is_time .AND. cx_calendar(cx) ) THEN
              cal_id = TM_GET_CALENDAR_ID (line_cal_name(axis))
              IF ( TM_DATE_OK( line_t0(axis), cal_id ) ) THEN
 	         cx_lo_ww(idim,cx) =

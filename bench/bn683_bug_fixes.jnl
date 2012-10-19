@@ -16,3 +16,6 @@ GO err682_use_no_quotes
 
 GO bn_reset
 GO err682_axis_no_clue
+
+GO bn_reset
+GO err682_grid_merge

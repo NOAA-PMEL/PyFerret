@@ -1,0 +1,12 @@
+! err682_grid_merge.jnl
+! Bug 1972. When merging contexts, the calendar time-axis
+! info gets lost, causing an error with the time axis.
+
+use truemonth.nc
+let a = 2
+let b = a * var
+list a*var[t=1-jan-1960:1-jan-1961]
+
+! The bug had this statement failing with a time-region error
+list b[T=1-JAN-1960:1-JAN-1961]
+

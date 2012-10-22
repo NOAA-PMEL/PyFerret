@@ -60,6 +60,7 @@
 #define NC_GLOBAL -1  /* This should match the NC_GLOBAL parameter in netcdf.h */
 
 /* Ferret-defined "netcdf error status" when a read was interrupted by Crtl-C */
+/* match nc_interrupt with nf_interrupt in tmap_errors.parm */
 #define NC_INTERRUPT 900
 
 #define MAX_PATH_NAME	2048	 /* max length of a path */

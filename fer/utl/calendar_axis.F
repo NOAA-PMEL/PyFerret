@@ -39,8 +39,10 @@
 *
 
 * Reset time step if axis is a different calendar than Gregorian.
+* V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
 
 	include 'tmap_dims.parm'
+#	include "tmap_dset.parm"
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include	'ferret.parm'
@@ -57,9 +59,17 @@
 * axis for this dimension
 	axis = grid_line( idim, grid )
 
+* Is it really a calendar axis? Might be an F axis in a grid with a 
+* calendar T axis.
+
+	IF (line_t0(axis) .EQ. char_init20) THEN
+	   istat = 2
+	   GOTO 5000
+	ENDIF
+
 	cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
 	bc_to_t0 = SECS_FROM_BC(line_t0(axis), cal_id, istat)
-	IF (istat .ne. ferr_ok) GO TO 4000
+	IF (istat .NE. ferr_ok) GO TO 4000
 
 	prev_cal_id = cx_cal_id(cx)
 	IF (prev_cal_id .NE. cal_id) THEN

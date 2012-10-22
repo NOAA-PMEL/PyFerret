@@ -40,6 +40,7 @@
 * Ferret v5.54 1/04
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
+* V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -88,7 +89,7 @@
 
 	cx_trans    ( idim, cx ) = trans_no_transform
 	cx_trans_arg( idim, cx ) = bad_val4
-	if (idim .EQ. t_dim .OR. idim .EQ. f_dim) 
+	if (idim .EQ. t_dim ) 
      .      cx_calendar(cx) = .FALSE.
 
 

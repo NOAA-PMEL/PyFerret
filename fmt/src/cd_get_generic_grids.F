@@ -64,6 +64,8 @@
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* V683 10/12*acm* If T and F dimensions, and if both are calendar axes, insist that
+*                 the calendars match.
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -105,7 +107,7 @@
       PARAMETER (do_warn = .TRUE. )
       PARAMETER (centers = .TRUE. )
       INTEGER TM_LENSTR1, TM_FIND_GRID_SLOT, STR_CASE_BLIND_COMPARE,
-     .        igrid, iaxis, grid_cnt, istat, idim,
+     .        STR_SAME, igrid, iaxis, grid_cnt, istat, idim,
      .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen, idim2,
      .        tmvar, tmpgrid, npts, dim, tmplines(nferdims), ndim,
      .	      grid_dims(nferdims), trans(nferdims), indices(nferdims),
@@ -248,6 +250,16 @@
      .			      = -1 * ds_ordering(idim,tmvar)
  250       CONTINUE
 
+* ... If there is a T and an F axis, check for matching calendars
+           idim = 5
+	   iaxis5 = tmplines(indices(idim))
+           idim = 6
+	   iaxis6 = tmplines(indices(idim))
+	   IF (STR_SAME(line_cal_name(iaxis5), line_cal_name(iaxis5)) .NE. 0) 
+     .       CALL TM_ERRMSG
+     .     ( istat+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
+     .       vname(:vlen), 'Calendar definitions on T and F axes must match', *5900 )
+
 * is the temporary grid we just created unique ?
 	   igrid = 0
  300	   CALL TM_NEXT_TMP_GRID( igrid, *320)
@@ -259,6 +271,7 @@
 * ... not unique - exact match with one that already exists
               GOTO 350
  320	   CONTINUE
+ 
 
 * allocate a new grid
 * find next location to store info; if too many grids - give error

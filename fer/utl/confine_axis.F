@@ -75,6 +75,8 @@
 * V600 *acm*  4/06  - correct typo unspecified_val8
 *      *acm*  4/12 6D Ferret: time axis may be in t or f direction.
 * V680 *acm*  612  6D Ferret: Pull the calendar correction into a separate routine.
+* V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
+
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -180,12 +182,14 @@
 	   IF ( (idim .EQ. t_dim .OR. idim .EQ. f_dim) .AND.cx_calendar(cx) ) THEN
 
 	      CALL CALENDAR_AXIS (idim, grid, cx, istat)
-	      IF (istat .EQ. -1) GOTO 5000
-	      IF (idim .EQ. t_dim .AND. grid_line(f_dim,igrid) .NE. mnormal)THEN
-	         CALL CALENDAR_AXIS(f_dim, grid, cx, istat)
-     	         IF (istat .EQ. -1) GOTO 5000
+	      IF (istat .NE. 2) THEN
+	         IF (istat .EQ. -1) GOTO 5000
+	         IF (idim .EQ. t_dim .AND. grid_line(f_dim,igrid) .NE. mnormal)THEN
+	            CALL CALENDAR_AXIS(f_dim, grid, cx, istat)
+     	            IF (istat .EQ. -1) GOTO 5000
+	         ENDIF
 	      ENDIF
-	      
+
 	      cx_calendar(cx) = .FALSE. 
 
            ENDIF

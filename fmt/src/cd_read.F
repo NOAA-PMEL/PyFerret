@@ -344,15 +344,18 @@
 * but the user may have reset the attributes by now.) If this is a file in a 
 * descriptor file, and if scaling values exist for the variable, then do not reset 
 * scale factors again here.
+* Ticket 1980: initialize the scale attributes in case they don't exist.
 
         IF (.NOT.is_mc .OR. .NOT.cd_scaled(ivar)) THEN
            maxlen = 2
+	   cd_scale_factor(ivar) = 1.
            CALL CD_GET_VAR_INFO (dset, varid, vname, vtype, nvdims,
      .         vdims, nvatts, coordvar, outflag, status)
            got_it = NC_GET_ATTRIB( dset, varid, 'scale_factor',
      .                     do_warn, vname, maxlen, attlen, 
      .                     attoutflag, buff, cd_scale_factor(ivar))
            maxlen = 2
+	   cd_add_offset(ivar) = 0.
            tf2    = NC_GET_ATTRIB( dset, varid, 'add_offset',
      .                     do_warn, vname, maxlen, attlen, 
      .                     attoutflag, buff, cd_add_offset(ivar))
@@ -405,8 +408,18 @@
      .		     no_errstring, *5900 )
 	ELSE
 	
-	   err_status = merr_nc_open
-           CALL CD_TRANSLATE_ERROR (cdfstat, ebuff)
+           IF (cdfstat .LT. NC_NOERR) THEN
+	      err_status = merr_nc_open 
+	      CALL CD_TRANSLATE_ERROR (cdfstat, ebuff)
+           ELSE IF (cdfstat .EQ. nf_interrupt) THEN
+	      err_status = merr_read_interrupt
+      
+	      CALL CD_GET_VAR_INFO (dset, varid, vname, vtype, nvdims,
+     .          vdims, nvatts, coordvar, outflag, status)
+
+	      ebuff = 'Reading variable '//vname(:TM_LENSTR1(vname))//
+     .          ', interrupted from command line'
+           ENDIF
 
            CALL TM_ERRMSG
      .     ( err_status, status, 'CD_READ', dset,

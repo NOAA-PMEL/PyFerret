@@ -17,14 +17,15 @@
 * V600 6/06 *acm* Attribute control. Add new merr_badfileatt
 * V600 7/06 *acm* New merr_nc_open for errors opening NC datasets
 * V604 6/07 *acm* New merr_remote_open for errors opening remote datasets
+* V683 10/10*acm* New merr_read_interrupt for user-interrupt reading netCDF/OPeNDAP data
 
 * internally used PARAMETERS:
 	INTEGER		num_special,num_regular,pspecial,pregular,
      .			no_stepfile, no_varfile, no_descfile, no_varid,
-     .	                pcdferr, pcdferrmax
+     .	                pcdferr, pcdferrmax, nf_interrupt
 	CHARACTER*1	no_errstring
 	PARAMETER      (num_special	= 3,
-     .			num_regular	= 46,
+     .			num_regular	= 47,
      .			pspecial	= 2,	! avoid 0,1 as too special
      .			pregular	= 200,
      .			pcdferr		= 1000,
@@ -33,7 +34,8 @@
      .			no_stepfile	= -991,
      .			no_varfile	= -991,
      .			no_varid	= -9,
-     .			no_descfile	= -999)
+     .			no_descfile	= -999,
+     .			nf_interrupt	= 900)  ! match this with NC_INTERRUPT in NCF_Util.h
 
 * special errors
 	INTEGER		 merr_ok,  merr_erreq,  merr_interrupt, merr_no_action
@@ -58,7 +60,7 @@
      .			merr_varform, merr_varmtch, merr_badtimedef,
      .			merr_dsetnf, merr_stepnf, merr_badcolmn,
      .                  merr_attalready, merr_badfileatt, merr_nc_open,
-     .                  merr_remote_open, merr_chunk_spec
+     .                  merr_remote_open, merr_chunk_spec, merr_read_interrupt
 	PARAMETER      (merr_notsupport	= 1 + pregular,
      .			merr_filpos	= 1 + merr_notsupport,
      .			merr_tstep	= 1 + merr_filpos,
@@ -105,4 +107,5 @@
      .			merr_badfileatt = 1 + merr_attalready,
      .                  merr_nc_open    = 1 + merr_badfileatt,
      .                  merr_remote_open = 1 + merr_nc_open,
-     .                  merr_chunk_spec = 1 + merr_remote_open)
+     .                  merr_chunk_spec = 1 + merr_remote_open,
+     .                  merr_read_interrupt = 1 + merr_chunk_spec)

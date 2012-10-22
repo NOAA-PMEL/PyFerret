@@ -41,6 +41,7 @@
  *
  * This is the header file to be included by routines which
  * are part of the Ferret NetCDF attribute handling library.
+ * V683 10/10*acm* New NC_INTERRUPT for user-interrupt reading netCDF/OPeNDAP data
  *
  */
 
@@ -59,7 +60,7 @@
 #define NC_GLOBAL -1  /* This should match the NC_GLOBAL parameter in netcdf.h */
 
 /* Ferret-defined "netcdf error status" when a read was interrupted by Crtl-C */
-#define NC_INTERRUPT -256
+#define NC_INTERRUPT 900
 
 #define MAX_PATH_NAME	2048	 /* max length of a path */
 #define MAX_FER_SETNAME	256	 /* max length of a path */

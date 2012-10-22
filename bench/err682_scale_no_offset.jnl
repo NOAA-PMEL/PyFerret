@@ -1,0 +1,21 @@
+! err682_scale_no_offset.jnl
+! See ticket 1980 and the report on the Ferret list at
+! http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2012/msg00585.html
+! Dataset with a scale_factor attributue on variables but no add_offset att.
+
+
+use err682_scale_no_offset.nc
+say `sst_rms[x=@ngd,y=@ngd]` SHOULD BE 91
+
+can dat 1
+use err682_scale_no_offset.nc
+say `sst_cor[x=@ngd,y=@ngd]` SHOULD BE 91
+use tripolar_subset
+can dat 2
+
+say `sst_rms[x=@ngd,y=@ngd]` SHOULD BE 91
+load sst_rms
+
+say `sst_rms[x=@ngd,y=@ngd]`  SHOULD BE 91
+load sst_rms
+say `sst_rms[x=@nbd,y=@nbd]`  SHOULD BE 30

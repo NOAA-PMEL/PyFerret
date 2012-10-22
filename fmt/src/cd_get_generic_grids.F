@@ -251,9 +251,9 @@
  250       CONTINUE
 
 * ... If there is a T and an F axis, check for matching calendars
-           dim = 5
+           idim = 5
 	   iaxis5 = tmplines(indices(idim))
-           dim = 6
+           idim = 6
 	   iaxis6 = tmplines(indices(idim))
 	   IF (STR_SAME(line_cal_name(iaxis5), line_cal_name(iaxis5)) .NE. 0) 
      .       CALL TM_ERRMSG

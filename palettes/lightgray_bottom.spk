@@ -1,16 +1,15 @@
-! palette suited to data with low significance at low values  
-! *sh* 2/00
+! lightgray_bottom palette, for data that has values of zero
+! to appear with little fanfare
+! otherwise based on rainbow
 
 RGB_Mapping Percent
 
 ! Lev  R    G    B
-0      95.  98.  98.
-24     50. 100. 100.
-45     30.  30. 100.
-56     20.  20.  50.
-67     10.  60.  10.
-78     50. 100.  50.
-89    100. 100.   0.
-100   100.    0.  0.
+    0   95   98   98
+   10   30   20  100
+   33    0   60   30
+   66  100  100    0
+   90  100    0    0
+  100   60    0    0
 
 

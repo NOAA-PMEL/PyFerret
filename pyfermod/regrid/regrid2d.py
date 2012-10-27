@@ -162,6 +162,22 @@ class CurvRectRegridder(object):
             corner_lons_array = None
             corner_ignore_array = None
 
+        # If a centers mask is given and corner points are given, 
+        # but a corners mask is not given, create a mask ignoring 
+        # all corners around an ignored center
+        if (corner_ignore_array == None) and (corner_lons_array != None) \
+                and (center_ignore_array != None):
+            corner_ignore_array = numpy.zeros((center_ignore_array.shape[0]+1, 
+                                               center_ignore_array.shape[1]+1),
+                                              dtype=numpy.bool, order='F')
+            corner_ignore_array[:-1,:-1] = center_ignore_array
+            corner_ignore_array[1:,:-1] = numpy.logical_or(corner_ignore_array[1:,:-1], 
+                                                           center_ignore_array)
+            corner_ignore_array[1:,1:] = numpy.logical_or(corner_ignore_array[1:,1:], 
+                                                           center_ignore_array)
+            corner_ignore_array[:-1,1:] = numpy.logical_or(corner_ignore_array[:-1,1:], 
+                                                           center_ignore_array)
+
         # Release any regridding procedures and clear the dictionaries
         for handle in self.__rect_to_curv_handles.values():
             ESMP.ESMP_FieldRegridRelease(handle)
@@ -409,6 +425,22 @@ class CurvRectRegridder(object):
             corner_lats_array = None
             corner_lons_array = None
             corner_ignore_array = None
+
+        # If a centers mask is given and corner points are given, 
+        # but a corners mask is not given, create a mask ignoring 
+        # all corners around an ignored center
+        if (corner_ignore_array == None) and (corner_lons_array != None) \
+                and (center_ignore_array != None):
+            corner_ignore_array = numpy.zeros((center_ignore_array.shape[0]+1, 
+                                               center_ignore_array.shape[1]+1),
+                                              dtype=numpy.bool, order='F')
+            corner_ignore_array[:-1,:-1] = center_ignore_array
+            corner_ignore_array[1:,:-1] = numpy.logical_or(corner_ignore_array[1:,:-1], 
+                                                           center_ignore_array)
+            corner_ignore_array[1:,1:] = numpy.logical_or(corner_ignore_array[1:,1:], 
+                                                           center_ignore_array)
+            corner_ignore_array[:-1,1:] = numpy.logical_or(corner_ignore_array[:-1,1:], 
+                                                           center_ignore_array)
 
         # Release any regridding procedures and clear the dictionaries
         for handle in self.__rect_to_curv_handles.values():

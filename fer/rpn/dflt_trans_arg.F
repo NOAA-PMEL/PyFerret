@@ -83,11 +83,15 @@
 
 	   ELSEIF ( alg_trans_its_int(i) ) THEN
 * ... convert argument to integer if possible
-	      IF ( ABS(arg) .GT. 32766. ) THEN	! was 1000 5/95
-	         GOTO 5000
-	      ELSE
+
+*     Dont limit the size of this -- using very large indices is ok.
+*     May need very large numbers for some @SHF operations.
+
+c	      IF ( ABS(arg) .GT. 32766. ) THEN	! was 1000 5/95
+c	         GOTO 5000
+c	      ELSE
 	         cx_trans_arg( idim, cx ) = INT( arg )
-	      ENDIF
+c	      ENDIF
 	   ELSE
 * ... leave it as it is
 	      CONTINUE

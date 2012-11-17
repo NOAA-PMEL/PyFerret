@@ -215,6 +215,8 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 * V68  *acm* 5/12  Add DEFINE DATA/AGGREGATE
+* V683 *acm*11/12  If DEFINE AXIS data not monotonic, add the index location 
+*                  to the error message
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -2191,8 +2193,10 @@ C /units=months  is 1/12 of the length of the year
      .		'inappropriate units:'//buff1(:TM_LENSTR1(buff1)), *5000 )
  5560	CALL ERRMSG( ferr_grid_definition, status,
      .		'unrepairable repeated axis coords', *5000 )
- 5570	CALL ERRMSG( ferr_grid_definition, status,
-     .		'data for DEFINE AXIS/FROM_VARIABLE is not monotonic', *5000 )
+ 5570	buff1 = TM_FMT(FLOAT(i1-frst_pt+1), 14, 16, slen)
+	CALL ERRMSG( ferr_grid_definition, status,
+     .		'data for DEFINE AXIS/FROM_VARIABLE is not monotonic at index '
+     .		//buff1(:slen), *5000 )
  5580	CALL ERRMSG( ferr_grid_definition, status,
      .		'data for DEFINE AXIS/FROM_VARIABLE is ambiguous', *5000 )
  5582	CALL ERRMSG( ferr_grid_definition, status,

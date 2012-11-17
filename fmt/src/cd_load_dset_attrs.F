@@ -43,6 +43,8 @@
 * V600 6/05 *acm* Attribute control.
 * V65  *acm* 2/10- all warnings and notes to std error not std out
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V6.83 11/12 *acm* If there are multiple global atts including a 
+*                   message attribute, issue the message just once.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -166,6 +168,7 @@
      .	   	   ds_des_name(dset)(:TM_LENSTR1(ds_des_name(dset)))
      .		   //' ...', lunit_errors)
 	         CALL TM_NOTE(ds_message(dset), lunit_errors)
+		 ds_alert_on_open(dset) = .FALSE.  ! Don't keep hollering for all global atts.
               ENDIF
  100       CONTINUE
 

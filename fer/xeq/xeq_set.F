@@ -244,7 +244,7 @@
      .                  varname*512, attname*128, new_att_calendar*10, 
      .                  new_att_t0*128, new_att_units*128, buff3*512,
      .                  t0string*128, ustring*128, faccess*16, 
-     .                  fposition*16, fstatus*16, c1*1
+     .                  fposition*16, fstatus*16, c1*1, typflag*10
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT, 
      .                  TM_DIGIT_ONLY,
      .                  TM_HAS_STRING, TM_LEGAL_NAME, MATCH_NAME,
@@ -853,7 +853,7 @@ c *kob* 4/97
 	mgrid_abstract = grid
 	RETURN
 
-* SET AXIS  /MODULO /DEPTH /CALENDAR /REGULAR /T0 /UNITS
+* SET AXIS  /MODULO /DEPTH /CALENDAR /REGULAR /T0 /UNITS /OUTTYPE
  1200	axis = TM_GET_LINENUM( cmnd_buff(item_start(1):item_end(1)) )
         IF ( axis .EQ. unspecified_int4 ) GOTO 6210
 * /MODULO
@@ -892,6 +892,33 @@ c *kob* 4/97
 	      line_direction(axis) = 'UD'
            ENDIF
         ENDIF
+
+* /OUTTYPE= INTYPE, DOUBLE, FLOAT, INT, SHORT, or NONE
+	loc = qual_given(slash_set_axis_outtype )
+	IF ( loc .GT. 0 ) THEN
+           CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      buff1, status )
+           IF ( status .NE. ferr_ok ) RETURN
+           i = STR_UPCASE (typflag, buff1)
+
+           IF (typflag(1:5) .EQ. 'INPUT'  ) THEN   ! input type
+              line_dattype(axis) = 99  ! do not change from incoming type
+           ELSE IF (typflag(1:3) .EQ. 'BYT' .OR. typflag(1:4) .EQ. 'INT1') THEN
+              line_dattype(axis) = 1   ! NC_BYTE
+           ELSE IF (typflag(1:3) .EQ. 'SHO' .OR. typflag(1:4) .EQ. 'INT2') THEN
+              line_dattype(axis) = 3   ! NC_SHORT
+           ELSE IF (typflag(1:3) .EQ. 'INT' .OR. typflag(1:4) .EQ. 'INT4') THEN
+              line_dattype(axis) = 4   ! NC_INT (4-byte integer)
+           ELSE IF (typflag(1:3) .EQ. 'FLO' .OR. typflag(1:3) .EQ. 'REA') THEN
+              line_dattype(axis) = 5   ! NC_FLOAT
+           ELSE IF (typflag(1:3) .EQ. 'DOU') THEN
+              line_dattype(axis) = 6   ! NC_DOUBLE
+           ELSE IF (typflag(1:3) .EQ. 'NON') THEN
+              line_dattype(axis) = -1  ! Flag for no-write
+           ELSE
+              GOTO 6900
+           ENDIF
+	ENDIF
 
 */CALENDAR 
         new_att_calendar = ' '
@@ -2025,4 +2052,8 @@ c *kob* 4/97
      .		'Unrecognized option/'//
      .          cmnd_buff(qual_start(i):qual_end(i)) //pCR//
      .		' Valid options are /OUTTYPE=DOUBLE,FLOAT,INT,SHORT,or BYTE', *1000 )
+     
+ 6900	CALL ERRMSG( ferr_unknown_arg, status,
+     .'Can SET AXIS/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE, or NONE',
+     .               						*5000 )
 	END

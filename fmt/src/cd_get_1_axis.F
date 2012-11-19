@@ -305,6 +305,10 @@
       CALL TM_ALLO_TMP_LINE(iaxis, status)
       IF (status .NE. merr_ok) GOTO 5900
 
+* Store the data type of the axis
+
+      line_dattype(iaxis) = vartype
+
 * Are there scale_factor and/or add_offset attributes?  If so need to unpack
 * the coordinate values
 

@@ -75,7 +75,7 @@
 
 	INTEGER		ngrd_def, nlne_def, grids_left, lines_left,
      .			grid_lines_left, i, j,
-     .			pline_mem_next, pline_mem_left
+     .			pline_mem_next, pline_mem_left, outtype
 
 	PARAMETER	(ngrd_def	= 5,
      .			 nlne_def	= 6,
@@ -84,6 +84,8 @@
      .			 grid_lines_left= 4*grids_left,
      .                   pline_mem_next = 514,
      .                   pline_mem_left = maxlinestore-pline_mem_next+1)
+
+	PARAMETER	(outtype	= 6)  ! netcdf type double, output axis type.
 
 * LAST LINE_MEM POSITION + 1
 	DATA	next_line_mem_pos  /pline_mem_next/
@@ -290,6 +292,9 @@
 
 	DATA	(line_modulo_len(i),i=nlne_def+1,line_ceiling)
      .			/lines_left*0.0D0/
+     
+	DATA	(line_dattype(i),i=1,line_ceiling)
+     .			/line_ceiling*outtype/
 
 c comment out to speed compilation and decrease mem needs *kob* 7/92
 c	DATA	(line_mem(i),i=pline_mem_next,maxlinestore)

@@ -309,7 +309,7 @@ C New form for attribute output, list values separately.
                  DO 150 i = 1, attlen
                     buff = TM_FMT(vals(i), 7, 14, llen)
                     CALL ESCAPE_FOR_XML (buff, outstring, llen)
-	            WRITE ( risc_buff, 2050 ) outstring(1:slen)
+	            WRITE ( risc_buff, 2050 ) outstring(1:llen)  ! was slen
 	            CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
  150             CONTINUE
               ELSE 

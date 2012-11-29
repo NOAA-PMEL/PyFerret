@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43391868 Nov  7 17:02 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 43403972 Nov 27 16:35 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: dont limit the size of integers in rpn/dflt_trans_arg.F
+Note: show_line_xml.F, fix writing numeric attributes to xml for an axis
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -21,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Wed Nov 7 17:03:16 PST 2012
+Beginning at Tue Nov 27 17:01:07 PST 2012
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2875,6 +2875,9 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  *** NOTE: Units on axis "ENS" are not recognized: count
  *** NOTE: They will not be convertible:
  LISTing to file mypack.nc
+ *** NOTE: LON1_15: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
+ *** NOTE: LAT1800_1800: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
+ *** NOTE: ENS: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
  *** NOTE: Units on axis "ENS" are not recognized: count
  *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
@@ -3338,6 +3341,28 @@ SET DAT/FORM=CDF ./z1.nc
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
+ failure writing to CDF output file
+LIST/FORMAT=CDF/L=32875000:32875201/clobber/file=mytype.nc tt
+ LISTing to file mytype.nc
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
+ failure writing to CDF output file
+LIST/FORMAT=CDF/clobber/file=mytype.nc my_data
+ LISTing to file mytype.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: improper grid or axis definition: data for DEFINE AXIS/FROM_VARIABLE is not monotonic at index 12
+define axis/t/units=days tax = tvar
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -3425,4 +3450,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Nov 7 17:04:51 PST 2012
+Ended at Tue Nov 27 17:02:41 PST 2012

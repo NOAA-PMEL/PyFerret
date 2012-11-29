@@ -64,6 +64,9 @@
       REAL delx, xx, yy, xxx, yyy
       CHARACTER*20 TM_FMT_SNGL_DIGITS, text
 
+* If min and max values havent been set then return.
+      IF (zmin .EQ. 1e33 .OR. zmax .EQ. -1*1e33) RETURN
+
 * save px and py values
       y1 = py(1)
       y2 = py(2)

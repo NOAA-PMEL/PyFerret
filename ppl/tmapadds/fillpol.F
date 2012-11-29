@@ -228,6 +228,8 @@ C       Check switches
 
 C *jd* 
 * FIND LIMITS
+	zmin = 1e33
+	zmax = -1e33
 	zzmin = 1e33
 	zzmax = -1e33
 	nlm1  = nl - 1
@@ -256,6 +258,12 @@ C      set already.
      .      ((zzmin .NE. 1e33) .AND. (zzmax .NE. -1e33)) ) THEN
            CALL SET_LEVELS_SHADE_FILL (status)
            IF (status .NE. ferr_ok) GOTO 5000
+	ELSE
+	   IF (sover) THEN
+	      IF (zzmin .EQ. 1e33) zmin = 1e36
+	      IF (zzmax .EQ. -1e33) zma x= CMZLE - 10
+	      CALL SET_LEVELS_SHADE_FILL (status)  !?
+	   ENDIF 
 	ENDIF
 
 *	DETERMINE PATTERNS OR COLORS TO SET BUNDLED FILL AREA REPRESENTATIONS

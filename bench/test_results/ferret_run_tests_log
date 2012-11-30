@@ -1,8 +1,8 @@
-Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Nov 30 10:56 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
-Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
+Using FERRET /home/users/ksmith/Ferret/bin/ferret
+lrwxrwxrwx 1 ksmith tmap 12 Nov 30 11:04 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.83
+Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for PyFerret on Nov 30, 2012
+Note: RUN_TESTS.sh test results for Ferret on Nov 30, 2012
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -37,6 +37,7 @@ Benchmark scripts that will be run:
    bn_odd_variable_name.jnl
    bn_test_stream.jnl
    bn_define_axes.jnl
+   bn_pattern.jnl
    bn_polygon.jnl
    bn500_bug_fixes.jnl
    bn_sample.jnl
@@ -202,14 +203,14 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ksmith/PyFerret/ext_func/libs
-FER_FONTS=/home/users/ksmith/PyFerret/ppl/fonts
-FER_GO=. /home/users/ksmith/PyFerret/go /home/users/ksmith/PyFerret/examples /home/users/ksmith/PyFerret/contrib
+FER_EXTERNAL_FUNCTIONS=/home/users/ksmith/Ferret/ext_func/libs
+FER_FONTS=/home/users/ksmith/Ferret/ppl/fonts
+FER_GO=. /home/users/ksmith/Ferret/go /home/users/ksmith/Ferret/examples /home/users/ksmith/Ferret/contrib
 FER_GRIDS=.
-FER_LIBS=/home/users/ksmith/PyFerret/lib
-FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
+FER_LIBS=/home/users/ksmith/Ferret/lib
+FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Nov 30 10:57:13 PST 2012
+Beginning at Fri Nov 30 11:16:19 PST 2012
 *** Running test: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -521,7 +522,7 @@ SHOW MODES
       DESPERATE     CANCELLED      2560000
       GKS              SET
       REFRESH          SET
-      METAFILE      CANCELLED      ferret.png
+      METAFILE      CANCELLED      metafile.plt
       PPLLIST       CANCELLED      ppllist.out
       GUI           CANCELLED
       LOGO          CANCELLED
@@ -552,7 +553,7 @@ SHOW MODES
       DESPERATE     CANCELLED      2560000
       GKS              SET
       REFRESH          SET
-      METAFILE      CANCELLED      ferret.png
+      METAFILE      CANCELLED      metafile.plt
       PPLLIST       CANCELLED      ppllist.out
       GUI           CANCELLED
       LOGO          CANCELLED
@@ -583,7 +584,7 @@ SHOW MODES
       DESPERATE     CANCELLED      2560000
       GKS              SET
       REFRESH          SET
-      METAFILE      CANCELLED      ferret.png
+      METAFILE      CANCELLED      metafile.plt
       PPLLIST       CANCELLED      ppllist.out
       GUI           CANCELLED
       LOGO          CANCELLED
@@ -616,7 +617,7 @@ ppl list plot
          WIDTH=   10.20  HEIGHT=    8.80  TKTYPE= 4010  BAUD=  110
          WINDOW= ON   BOX= OFF  CROSS= 0  PLTYPE=  3
          PLOT MODE=   A
-         PLOT FILE= ferret.png                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+         PLOT FILE= metafile.plt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 set mode ppllist:ppllist.out
 show mode ppllist
       MODE            STATE        ARGUMENT
@@ -628,7 +629,7 @@ ppl list plot
          WIDTH=   10.20  HEIGHT=    8.80  TKTYPE= 4010  BAUD=  110
          WINDOW= ON   BOX= OFF  CROSS= 0  PLTYPE=  3
          PLOT MODE=   A
-         PLOT FILE= ferret.png                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+         PLOT FILE= metafile.plt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 cancel mode journal
 show mode journal
       MODE            STATE        ARGUMENT
@@ -637,7 +638,7 @@ show mode journal
 ! new 1/94  (syntax check also applies to modes journal and ppllist)
 show mode metafile
       MODE            STATE        ARGUMENT
-      METAFILE      CANCELLED      ferret.png
+      METAFILE      CANCELLED      metafile.plt
 set mode metafile newmetafile1.plt
 show mode metafile
       MODE            STATE        ARGUMENT
@@ -679,7 +680,6 @@ show mode metafile
       MODE            STATE        ARGUMENT
       METAFILE         SET         ./newmetafile10.plt
 set mode metafile metafile.plt
-can mode metafile
  
 ! SET - SHOW - CANCEL EXPRESSION
 SHOW EXPRESSION
@@ -10122,7 +10122,7 @@ ppl list plot
          WIDTH=   10.20  HEIGHT=    8.80  TKTYPE= 4010  BAUD=  110
          WINDOW= ON   BOX= OFF  CROSS= 0  PLTYPE=  3
          PLOT MODE=   A
-         PLOT FILE= ferret.png                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+         PLOT FILE= metafile.plt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
  
 ! enlarge it to accomodate an additional 50% width
 ppl size 15.3,8.8
@@ -10280,8 +10280,7 @@ shade/nolabel sst, x_page, y_page
 !
 ! A more complex projection
 !
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta bnplot.plt
+set mode meta bnplot.plt
 go mp_orthographic 210 45
 set grid sst
 let masked_sst = sst * mp_mask
@@ -10380,6 +10379,10 @@ set region/x=240:420
 go mp_stereographic_eq
 go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
+
+ PPL warning: You're attempting to use more colors than are available.
+             Using PPL SHASET RESET to re-use protected colors may help.
+
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Stereographic Equatorial
  !-> PPL %LABEL/nouser 2.5335,-0.4,0,0,.20 Stereographic Equatorial
  
@@ -10388,6 +10391,10 @@ set region/x=0:360/y=00:90
 go mp_stereographic_north
 go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
+
+ PPL warning: You're attempting to use more colors than are available.
+             Using PPL SHASET RESET to re-use protected colors may help.
+
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Stereographic North
  !-> PPL %LABEL/nouser 2.5335,-0.4,0,0,.20 Stereographic North
  
@@ -10413,14 +10420,17 @@ let phi = y * deg2rad
 shade/nolabel sst, 0*x_page, y_page ! DELIBERATE ERROR
 shade/nolabel sst, x_page, 0*y_page ! DELIBERATE ERROR
 shade/nolabel sst, x_page, sin(y_page)
+
+ PPL warning: You're attempting to use more colors than are available.
+             Using PPL SHASET RESET to re-use protected colors may help.
+
 shade/nolabel sst, randn(x_page), randn(y_page)
 !2/98 *kob* - can mode meta before this plot
 can mode meta
 shade/nolabel sst, x_page[j=1:12], y_page ! DELIBERATE ERROR
 shade/nolabel sst, x_page, asin(y_page) ! DELIBERATE ERROR
  
-! KMS - commented out for PyFerret - error not caught by ferret
-! shade/nolabel sst, x_page, y_page ! DELIBERATE gsetviewport() ERROR
+shade/nolabel sst, x_page, y_page ! DELIBERATE gsetviewport() ERROR
  
  
 can win 1
@@ -10433,8 +10443,7 @@ shade/nolabel sst, x_page, y_page
 shade/nolabel sst, x_page[j=1:12], y_page ! DELIBERATE ERROR
 can mode ignore
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta bnplot.plt
+set mode meta bnplot.plt
 *** Running test: bn_symbols.jnl
 ! bn420_symbols
 ! benchmark to test machinery of symbol definition and use
@@ -10458,17 +10467,17 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.83"
-FERRET_PLATFORM = "Linux 2.6.18-308.1.1.el5"
+FERRET_PLATFORM = "Linux 2.6.18-308.1.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Sep 14 2012 15:49:53 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "30-Nov-12"
-SESSION_TIME = "10:57"
-SESSION_PID = "15991"
-DELTA_CPU = "0.51992"
-CLOCK_SECS = "0.303"
+SESSION_TIME = "11:16"
+SESSION_PID = "19288"
+DELTA_CPU = "0.008998"
+CLOCK_SECS = "0.005"
 CURRENT_DATE = "30-Nov-12"
-CURRENT_TIME = "10:57:29"
+CURRENT_TIME = "11:16:26"
 N_OPEN_DSETS = "0"
  
 ! define some symbols ... syntax variations
@@ -10486,17 +10495,17 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.83"
-FERRET_PLATFORM = "Linux 2.6.18-308.1.1.el5"
+FERRET_PLATFORM = "Linux 2.6.18-308.1.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Sep 14 2012 15:49:53 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "30-Nov-12"
-SESSION_TIME = "10:57"
-SESSION_PID = "15991"
-DELTA_CPU = "0.001"
-CLOCK_SECS = "0.304"
+SESSION_TIME = "11:16"
+SESSION_PID = "19288"
+DELTA_CPU = "9.99E-04"
+CLOCK_SECS = "0.006"
 CURRENT_DATE = "30-Nov-12"
-CURRENT_TIME = "10:57:29"
+CURRENT_TIME = "11:16:26"
 N_OPEN_DSETS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10506,8 +10515,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "30-Nov-12"
-SESSION_TIME = "10:57"
-SESSION_PID = "15991"
+SESSION_TIME = "11:16"
+SESSION_PID = "19288"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10518,14 +10527,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "30-Nov-12"
-SESSION_TIME = "10:57"
-SESSION_PID = "15991"
+SESSION_TIME = "11:16"
+SESSION_PID = "19288"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "30-Nov-12"
-SESSION_TIME = "10:57"
-SESSION_PID = "15991"
+SESSION_TIME = "11:16"
+SESSION_PID = "19288"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10648,21 +10657,21 @@ say ($delayed_eval)         ! translate symbol and then evaluate
 ! cleanup
 cancel symbols/all
 show symbols/all
-PPL$XPIXEL = "900"
-PPL$YPIXEL = "506"
+PPL$XPIXEL = "691"
+PPL$YPIXEL = "518"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.83"
-FERRET_PLATFORM = "Linux 2.6.18-308.1.1.el5"
+FERRET_PLATFORM = "Linux 2.6.18-308.1.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Sep 14 2012 15:49:53 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "30-Nov-12"
-SESSION_TIME = "10:57"
-SESSION_PID = "15991"
-DELTA_CPU = "0.021996"
-CLOCK_SECS = "0.326"
+SESSION_TIME = "11:16"
+SESSION_PID = "19288"
+DELTA_CPU = "0.026996"
+CLOCK_SECS = "0.094"
 CURRENT_DATE = "30-Nov-12"
-CURRENT_TIME = "10:57:29"
+CURRENT_TIME = "11:16:26"
 N_OPEN_DSETS = "0"
  
 *** Running test: bn_comma_delimited.jnl
@@ -24877,6 +24886,50 @@ show axis xax2
  
 ! cleanup
 set mode/last ignore
+*** Running test: bn_pattern.jnl
+! pattern_bench.jnl
+! Quick demo of Ferret pattern feature *jd* 12.18.98
+ 
+set view full
+ 
+use coads_climatology
+set reg/l=3/y=50s:60n/x=100e:60w
+set mode cal months
+ 
+! The /pattern qualifier sets patterns to be used, like /palette sets colors.
+! Files in $FER_PALETTE with extension .pat are read in to set patterns.
+! Use "Fpattern '*'" to find available pattern files.
+ 
+! Note that colors are set in the usual way...
+ 
+set win 1
+ 
+set mode meta pattern_plot1.plt
+shade/pal=black/lev=(10,30,5,-3)/line/key/pattern=4patterns/nolabel sst
+ 
+go land thick
+ 
+! Colors and patterns can be overlaid; patterns are transparent
+ 
+set win 2
+ 
+set data coads_climatology
+set data clim_airt_lev.cdf
+set reg/l=1:3/y=50s:60n/x=100e:60w
+set mode cal months
+ 
+set mode meta pattern_plot2.plt
+fill/lev=(0,33,3)/nolabel sst[l=@ave,d=1]
+ 
+fill/lev=(25,27,1)/over/nolab/pal=black/pat=angled_grid/nolabel airt[l=@ave]
+label/user,200,-30,-1,0,.15,@trAIRT gt 25 and lt 27 deg. C
+ 
+go land thick
+ 
+!can data/all
+can win 2
+set win 1
+can mode meta
 *** Running test: bn_polygon.jnl
 ! Demo of new POLYGON command
 ! *jd * 3.99
@@ -24889,12 +24942,10 @@ let xpts = cos(x/10)
  
 set win/asp=.4
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta polygon_plot.plt
+set mode meta polygon_plot.plt
 polygon/trans/i=1:100/nolable xpts+xsqr, ypts+ysqr, x*x/10
  
-! KMS - commented out for PyFerret - patterns not supported
-! polygon/trans/line=6/fill/over/lev/i=1:100/pattern=ball_bearings/nolabel xpts+xsqr, ypts+ysqr+.5, x*x/10
+polygon/trans/line=6/fill/over/lev/i=1:100/pattern=ball_bearings/nolabel xpts+xsqr, ypts+ysqr+.5, x*x/10
  
 polygon/trans/line=4/over/i=1:100/nolabel xpts+xsqr-.25, ypts+ysqr, x*x/10
  
@@ -25191,7 +25242,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Fri Nov 30 10:57:45 PST 2012
+Fri Nov 30 11:16:33 PST 2012
  
 GO bn_reset
 cancel mode verify
@@ -31189,8 +31240,7 @@ vector/flow/over/len=10  u,v
  
 GO bn_reset
 cancel mode verify
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta flowlines.plt
+set mode meta flowlines.plt
 can mode logo
  
 can region
@@ -34467,24 +34517,6 @@ CURV_TO_RECT_MAP(lon_in,lat_in,grid_out,radius)
     lat_in: Source grid latitudes (2-D) (degrees)
     grid_out: Any variable on destination Longitude-Latitude grid, Lon and Lat (degrees)
     radius: Source points falling within radius are included in mapping to destination point (degrees)
-CURV2RECT(CurvData,CurvCenterLons,CurvCenterLats,CurvCornerLons,CurvCornerLats,TemplateRectVar,Method)
-    Regrids data from curvilinear lon,lat center and/or corner grid to rectilinear using ESMP/ESMF
-    CurvData: Curvilinear X,Y data positioned at centers
-    CurvCenterLons: Curvilinear center longitudes on an X,Y grid
-    CurvCenterLats: Curvilinear center latitudes on an X,Y grid
-    CurvCornerLons: Curvilinear corner longitudes on an X,Y (maybe Z) grid
-    CurvCornerLats: Curvilinear corner latitudes on an X,Y (maybe Z) grid
-    TemplateRectVar: Template variable on the desired rectilinear grid
-    Method: Regrid method: BILINEAR, PATCH, CONSERVE (STRING)
-CURV3SRECT(CurvData,CurvLons,CurvLats,CurvBaths,CurvZetas,TemplateRectVar,Method)
-    Regrids data from curvilinear lon, lat, sigma, bathymetry, zeta (centers) grid to rectilinear lon, lat, depth using ESMP/ESMF
-    CurvData: Curvilinear X,Y,Z,[T,E,F] data where Z is sigma values
-    CurvLons: Longitudes of curvilinear data on an X,Y grid
-    CurvLats: Latitudes of curvilinear data on an X,Y grid
-    CurvBaths: Bathymetry (as depths) of curvilinear data on an X,Y grid
-    CurvZetas: Water surface elevations of curvilinear data on an X,Y,[T] grid (optional)
-    TemplateRectVar: Template variable on the desired rectilinear X,Y,Z,[T,E,F] grid where Z is depths
-    Method: Regrid method: BILINEAR, PATCH (STRING)
  
 use tripolar_subset.nc
 shade ht, geolon_vert_t, geolat_vert_t
@@ -35942,8 +35974,7 @@ polygon/thick/color=red/palette=blue/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
 ! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta vec_curv.plt
+set mode meta vec_curv.plt
 can mode logo
 use coads_climatology
 set reg/l=1
@@ -35975,8 +36006,7 @@ vec/over/xskip=16/yskip=8/len=15 fsst*0+yy*mp_mask,fsst*0, x_page,y_page
  
 ! Irregular axes, and manual axis scaling
 set win/asp=1
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta vec_curv2.plt
+set mode meta vec_curv2.plt
  
 def axis/from_data/x/name=xirr {0,1,2,4,6,7,8,10,14,16,20,23,24}
 def axis/from_data/y/name=yirr {0,2,4,5,6,7,8,9,12,13,14,15,18}
@@ -37301,8 +37331,11 @@ plot/over/thick/dash/color=blue 50*sin(ypts/3)+700, 30*cos(ypts/3)+800, 20*cos(y
 !overlay on polygon plots
 GO bn_reset
 cancel mode verify
-! KMS - commented out for PyFerret - patterns not supported
-! GO err540_poly_overlay
+GO err540_poly_overlay
+!overlay on polygon plots
+ 
+polygon/thick/color=red/palette=blue/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
+shade/over/i=1:2/j=0:2/patt i+j
  
 !polytube failed on plot/over; go polytube, because YAXIS_MIN, _MAX not defined.
 GO bn_reset
@@ -37655,7 +37688,7 @@ shade a[i=1:100:10]
  dealloc  dynamic grid (G003)          (AX003)   YAX1_100  NORMAL    NORMAL    NORMAL    NORMAL
 setting up 2D plot
  -DELETE A        M:  3 dset:   1 I:    1   10  J:    1  100  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
-PPL plot 24   complete
+PPL plot 26   complete
 ppl list stats
 
 
@@ -39733,8 +39766,7 @@ list $1_strings[i=1013:1024] 	! via IS_MODULO
 ! ACM 4/2005 set mode meta to save this plot for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta dots.plt
+set mode meta dots.plt
 can mode logo
 plot/symbol=dot/i=1:1000 sin(62.8*i)
 plot/symbol=dot/color=red/over/i=1:1000 sin(62.8*(i+20))
@@ -39862,7 +39894,7 @@ show modes
       DESPERATE     CANCELLED      2560000
       GKS              SET
       REFRESH          SET
-      METAFILE      CANCELLED      ferret.png
+      METAFILE      CANCELLED      metafile.plt
       PPLLIST       CANCELLED      ppllist.out
       GUI           CANCELLED
       LOGO          CANCELLED
@@ -39898,8 +39930,7 @@ set view ll
 set mode labels
 shade/i=1:10/j=1:10 i*j
 set mode logo
-! KMS - white changed to green for PyFerret - white causing problems
-plot/vs/over/line/color=green {1,4}, {1,9}
+plot/vs/over/line/color=white {1,4}, {1,9}
  
 ! but the logo is restored on the next plot command.
 set view lm
@@ -40026,6 +40057,10 @@ contour/over test
  
 set vi top
 fill test
+
+ PPL warning: You're attempting to use more colors than are available.
+             Using PPL SHASET RESET to re-use protected colors may help.
+
 contour/over test
  
  
@@ -40053,6 +40088,10 @@ contour/over test
  
 set vi top
 fill test
+
+ PPL warning: You're attempting to use more colors than are available.
+             Using PPL SHASET RESET to re-use protected colors may help.
+
 contour/over test
  
 set win/clear
@@ -40217,8 +40256,7 @@ so Ferret will resize the entire title. Titles are sized according to the\
 ppl plot
 plot/over/i=1:100 i*sin(i/8)
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta multi_line_labels.plt
+set mode meta multi_line_labels.plt
 cancel mode logo
 plot/i=1:100/title="@p2two-line<NL>RED title"/set i*cos(i/8)
 ppl ylab "A four-line y label.<nl>second line<nl>third line<NL>fourth line"
@@ -42393,8 +42431,7 @@ PLOT/grat/i=1:100 sin(i/5)
 let a = sin(i/5) * cos(j/8)
 CONTOUR/color=ligh/grat=(color=red)/i=1:100/j=1:80 a
 use coads_climatology
-! KMS - white changed to green for PyFerret - white causing problems
-SHADE/grat=(color=green) sst[L=1]
+SHADE/grat=(color=white) sst[L=1]
 FILL/grat=dash sst[l=1]
 VECTOR/color=red/grat=(blue,dash) sst[l=1], sst[l=2]
 let b = {1,2,1}
@@ -42406,8 +42443,7 @@ plot/grat="large(dash),small(dash,color=blue)"/i=1:100 sin(i/5)
 contour/color=ligh/grat="large(color=purple,thick=3,line),small(dash,color=blue)"/i=1:100/j=1:80 a
 shade/grat="small(color=lightblue),large(thick,color=lightblue)" sst[l=1]
 fill/i=1:50/j=1:30/grat="large(line),small(dash,color=lightblue)" i+j
-! KMS - white changed to green for PyFerret - white causing problems
-poly/thi/col=red/pal=blue/grat="lar(col=pur,thi=3,lin),sma(dash,col=green)" b,c
+poly/thi/col=red/pal=blue/grat="lar(col=pur,thi=3,lin),sma(dash,col=whi)" b,c
 vector/i=1:50/j=1:30/grat="small(color=black),large(thick,color=blue)"  sst[l=1], sst[l=2]
  
 ! /HGRAT and /VGRAT
@@ -42417,8 +42453,7 @@ plot/hg=small(color=red,dash,thick=1),large(color=blue,line,thick=3)/vg=large(li
  
 ! Log axes: VLOG and HLOG with large and small tics
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta graticules.plt
+set mode meta graticules.plt
 can mode logo
  
 set view left
@@ -47261,8 +47296,7 @@ GO err580_def_view_axes.jnl
 define view/x=0.2:0.4/y=.2:.4/text=0.75/axes v1
  
 set window/clear
-! KMS - commented out for PyFerret - .plt not supported
-! set mode metafile viewaxes.plt
+set mode metafile viewaxes.plt
  
 set view v1
 go ptest
@@ -47275,8 +47309,7 @@ PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
 set window/clear
  
 ! can mode meta
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta
+set mode meta
  
 set view v1
 shade/i=1:12/j=1:12 i+j
@@ -47683,7 +47716,7 @@ LAB1 = "X : 0.5 to 314.5"
  
 ! show commands without an argument, lists version number at the top
 sho command
- Commands in Program FERRET (PyFerret 1.0.0) version6.83:
+ Commands in Program FERRET  version6.83:
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE
  SET REGION/I/J/K/L/M/N/X/Y/Z/T/E/F/DX/DY/DZ/DT/DE/DF/DI/DJ/DK/DL/DM/DN
@@ -47703,7 +47736,6 @@ sho command
  SET NCCACHE/SIZE/NELEMS/PREEMPT
  SET REDIRECT/TEE/JOURNAL/FILE/APPEND/CLOBBER
  SET GIFFILE
- SET GRAPHICS/ENGINE/ANTIALIA/NOANTIAL
  SHOW/ALL
  SHOW WINDOW/ALL
  SHOW REGION/ALL
@@ -47744,7 +47776,6 @@ sho command
  CANCEL ALIAS/ALL
  CANCEL SYMBOL/ALL
  CANCEL NCCACHE
- CANCEL PYVAR/ALL/DATASET
  CONTOUR/I/J/K/L/M/N/X/Y/Z/T/E/F/OVERLAY/SET_UP/FRAME/D/TRANPOSE/FILL/LINE
           /NOLABEL/LEVELS/KEY/NOKEY/PALETTE/XLIMITS/YLIMITS/TITLE/COLOR
           /NOAXES/PATTERN/SIZE/SPACING/SIGDIG/PEN/HLIMITS/VLIMITS/AXES/HGRATICU
@@ -47814,7 +47845,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "30-Nov-12_10:58"
+WIN_TITLE = "30-Nov-12:11:17"
  
 set win/title="set the title"
 sho sym win_title
@@ -47832,7 +47863,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="30-Nov-12:10:58"
+ !-> set win/title="30-Nov-12:11:17"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47843,14 +47874,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 30-Nov-12
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 10:58
+ !-> DEFINE SYMBOL the_time = 11:17
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="30-Nov-12:10:58"
+ !-> SET WIN/TITLE="30-Nov-12:11:17"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "30-Nov-12:10:58"
+WIN_TITLE = "30-Nov-12:11:17"
 *** Running test: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -49565,7 +49596,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -49610,7 +49641,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -50901,8 +50932,8 @@ LIST/X=179:183/Y=40/L=3 sst
  177W   / 82:  36.24
  
 *** Running test: bn_memory_symbol.jnl
-Unable to resize Ferret's memory cache to 500000.000000 Mdoubles
-Ferret's memory cache remains at 0.200000 Mdoubles
+Unable to allocate 500000.0 Mwords of memory.
+Restoring previous memory of 0.2 Mwords.
 ! bn_memory_symbol.jnl
 ! Ferret v6.06 15-Aug-07
 ! Symbol FERRET_MEMORY shows current size of Ferret memory in MWords
@@ -51194,171 +51225,6 @@ STORAGE(A)
 STRING_ARG(Flags,NString)
 STUDENT_T_CUTOFF(P,nf)
 SUBTRACT(A,B)
-STATS_BETA_CDF(PTS,ALPHA,BETA)
-STATS_BETA_ISF(PTS,ALPHA,BETA)
-STATS_BETA_PDF(PTS,ALPHA,BETA)
-STATS_BETA_PPF(PTS,ALPHA,BETA)
-STATS_BETA_RVS(PTS,ALPHA,BETA)
-STATS_BETA_SF(PTS,ALPHA,BETA)
-STATS_BINOM_CDF(PTS,N,P)
-STATS_BINOM_ISF(PTS,N,P)
-STATS_BINOM_PMF(PTS,N,P)
-STATS_BINOM_PPF(PTS,N,P)
-STATS_BINOM_RVS(PTS,N,P)
-STATS_BINOM_SF(PTS,N,P)
-STATS_CAUCHY_CDF(PTS,M,GAMMA)
-STATS_CAUCHY_ISF(PTS,M,GAMMA)
-STATS_CAUCHY_PDF(PTS,M,GAMMA)
-STATS_CAUCHY_PPF(PTS,M,GAMMA)
-STATS_CAUCHY_RVS(PTS,M,GAMMA)
-STATS_CAUCHY_SF(PTS,M,GAMMA)
-STATS_CHI_CDF(PTS,DF)
-STATS_CHI_ISF(PTS,DF)
-STATS_CHI_PDF(PTS,DF)
-STATS_CHI_PPF(PTS,DF)
-STATS_CHI_RVS(PTS,DF)
-STATS_CHI_SF(PTS,DF)
-STATS_CHI2_CDF(PTS,DF)
-STATS_CHI2_ISF(PTS,DF)
-STATS_CHI2_PDF(PTS,DF)
-STATS_CHI2_PPF(PTS,DF)
-STATS_CHI2_RVS(PTS,DF)
-STATS_CHI2_SF(PTS,DF)
-STATS_EXPON_CDF(PTS,LAMBDA)
-STATS_EXPON_ISF(PTS,LAMBDA)
-STATS_EXPON_PDF(PTS,LAMBDA)
-STATS_EXPON_PPF(PTS,LAMBDA)
-STATS_EXPON_RVS(PTS,LAMBDA)
-STATS_EXPON_SF(PTS,LAMBDA)
-STATS_EXPONWEIB_CDF(PTS,K,LAMBDA,ALPHA)
-STATS_EXPONWEIB_ISF(PTS,K,LAMBDA,ALPHA)
-STATS_EXPONWEIB_PDF(PTS,K,LAMBDA,ALPHA)
-STATS_EXPONWEIB_PPF(PTS,K,LAMBDA,ALPHA)
-STATS_EXPONWEIB_RVS(PTS,K,LAMBDA,ALPHA)
-STATS_EXPONWEIB_SF(PTS,K,LAMBDA,ALPHA)
-STATS_F_CDF(PTS,DFN,DFD)
-STATS_F_ISF(PTS,DFN,DFD)
-STATS_F_PDF(PTS,DFN,DFD)
-STATS_F_PPF(PTS,DFN,DFD)
-STATS_F_RVS(PTS,DFN,DFD)
-STATS_F_SF(PTS,DFN,DFD)
-STATS_GAMMA_CDF(PTS,ALPHA,THETA)
-STATS_GAMMA_ISF(PTS,ALPHA,THETA)
-STATS_GAMMA_PDF(PTS,ALPHA,THETA)
-STATS_GAMMA_PPF(PTS,ALPHA,THETA)
-STATS_GAMMA_RVS(PTS,ALPHA,THETA)
-STATS_GAMMA_SF(PTS,ALPHA,THETA)
-STATS_GEOM_CDF(PTS,P)
-STATS_GEOM_ISF(PTS,P)
-STATS_GEOM_PMF(PTS,P)
-STATS_GEOM_PPF(PTS,P)
-STATS_GEOM_RVS(PTS,P)
-STATS_GEOM_SF(PTS,P)
-STATS_HYPERGEOM_CDF(PTS,NTOTAL,NGOOD,NDRAWN)
-STATS_HYPERGEOM_ISF(PTS,NTOTAL,NGOOD,NDRAWN)
-STATS_HYPERGEOM_PMF(PTS,NTOTAL,NGOOD,NDRAWN)
-STATS_HYPERGEOM_PPF(PTS,NTOTAL,NGOOD,NDRAWN)
-STATS_HYPERGEOM_RVS(PTS,NTOTAL,NGOOD,NDRAWN)
-STATS_HYPERGEOM_SF(PTS,NTOTAL,NGOOD,NDRAWN)
-STATS_INVGAMMA_CDF(PTS,ALPHA,BETA)
-STATS_INVGAMMA_ISF(PTS,ALPHA,BETA)
-STATS_INVGAMMA_PDF(PTS,ALPHA,BETA)
-STATS_INVGAMMA_PPF(PTS,ALPHA,BETA)
-STATS_INVGAMMA_RVS(PTS,ALPHA,BETA)
-STATS_INVGAMMA_SF(PTS,ALPHA,BETA)
-STATS_LAPLACE_CDF(PTS,MU,B)
-STATS_LAPLACE_ISF(PTS,MU,B)
-STATS_LAPLACE_PDF(PTS,MU,B)
-STATS_LAPLACE_PPF(PTS,MU,B)
-STATS_LAPLACE_RVS(PTS,MU,B)
-STATS_LAPLACE_SF(PTS,MU,B)
-STATS_LOGNORM_CDF(PTS,MU,SIGMA)
-STATS_LOGNORM_ISF(PTS,MU,SIGMA)
-STATS_LOGNORM_PDF(PTS,MU,SIGMA)
-STATS_LOGNORM_PPF(PTS,MU,SIGMA)
-STATS_LOGNORM_RVS(PTS,MU,SIGMA)
-STATS_LOGNORM_SF(PTS,MU,SIGMA)
-STATS_NBINOM_CDF(PTS,N,P)
-STATS_NBINOM_ISF(PTS,N,P)
-STATS_NBINOM_PMF(PTS,N,P)
-STATS_NBINOM_PPF(PTS,N,P)
-STATS_NBINOM_RVS(PTS,N,P)
-STATS_NBINOM_SF(PTS,N,P)
-STATS_NORM_CDF(PTS,MU,SIGMA)
-STATS_NORM_ISF(PTS,MU,SIGMA)
-STATS_NORM_PDF(PTS,MU,SIGMA)
-STATS_NORM_PPF(PTS,MU,SIGMA)
-STATS_NORM_RVS(PTS,MU,SIGMA)
-STATS_NORM_SF(PTS,MU,SIGMA)
-STATS_PARETO_CDF(PTS,XM,ALPHA)
-STATS_PARETO_ISF(PTS,XM,ALPHA)
-STATS_PARETO_PDF(PTS,XM,ALPHA)
-STATS_PARETO_PPF(PTS,XM,ALPHA)
-STATS_PARETO_RVS(PTS,XM,ALPHA)
-STATS_PARETO_SF(PTS,XM,ALPHA)
-STATS_POISSON_CDF(PTS,MU)
-STATS_POISSON_ISF(PTS,MU)
-STATS_POISSON_PMF(PTS,MU)
-STATS_POISSON_PPF(PTS,MU)
-STATS_POISSON_RVS(PTS,MU)
-STATS_POISSON_SF(PTS,MU)
-STATS_RANDINT_CDF(PTS,MIN,MAX)
-STATS_RANDINT_ISF(PTS,MIN,MAX)
-STATS_RANDINT_PMF(PTS,MIN,MAX)
-STATS_RANDINT_PPF(PTS,MIN,MAX)
-STATS_RANDINT_RVS(PTS,MIN,MAX)
-STATS_RANDINT_SF(PTS,MIN,MAX)
-STATS_T_CDF(PTS,DF)
-STATS_T_ISF(PTS,DF)
-STATS_T_PDF(PTS,DF)
-STATS_T_PPF(PTS,DF)
-STATS_T_RVS(PTS,DF)
-STATS_T_SF(PTS,DF)
-STATS_UNIFORM_CDF(PTS,MIN,MAX)
-STATS_UNIFORM_ISF(PTS,MIN,MAX)
-STATS_UNIFORM_PDF(PTS,MIN,MAX)
-STATS_UNIFORM_PPF(PTS,MIN,MAX)
-STATS_UNIFORM_RVS(PTS,MIN,MAX)
-STATS_UNIFORM_SF(PTS,MIN,MAX)
-STATS_WEIBULL_CDF(PTS,K,LAMBDA)
-STATS_WEIBULL_ISF(PTS,K,LAMBDA)
-STATS_WEIBULL_PDF(PTS,K,LAMBDA)
-STATS_WEIBULL_PPF(PTS,K,LAMBDA)
-STATS_WEIBULL_RVS(PTS,K,LAMBDA)
-STATS_WEIBULL_SF(PTS,K,LAMBDA)
-STATS_CDF(PTS,PDNAME,PDPARAMS)
-STATS_ISF(PROBS,PDNAME,PDPARAMS)
-STATS_PDF(PTS,PDNAME,PDPARAMS)
-STATS_PMF(PTS,PDNAME,PDPARAMS)
-STATS_PPF(PROBS,PDNAME,PDPARAMS)
-STATS_RVS(TEMPLATE,PDNAME,PDPARAMS)
-STATS_SF(PTS,PDNAME,PDPARAMS)
-STATS_CHISQUARE(SAMPLE_CNTS,EXPECT_CNTS,DELTA_DEGFREE)
-STATS_FIT(VALS,PDNAME,PDPARAMS)
-STATS_KSTEST1(SAMPLE,PDNAME,PDPARAMS)
-STATS_KSTEST2(SAMPLEA,SAMPLEB)
-STATS_LINREGRESS(XVALS,YVALS)
-STATS_PEARSONR(SAMPLEA,SAMPLEB)
-STATS_PERCENTILESOFSCORES(SAMPLE,SCORES)
-STATS_PROBPLOTVALS(SAMPLE,PDNAME,PDPARAMS)
-STATS_STATS(VALUES)
-STATS_SCORESATPERCENTILES(SAMPLE,PERCENTILES)
-STATS_SPEARMANR(SAMPLEA,SAMPLEB)
-STATS_TTEST1(SAMPLE,POPMEANS)
-STATS_TTEST2IND(SAMPLEA,SAMPLEB)
-STATS_TTEST2REL(SAMPLEA,SAMPLEB)
-STATS_ZSCORE(VALUES)
-STATS_HELPER(PDNAME)
-STATS_HISTOGRAM(VALS,BINS_TEMPLATE)
-SHAPEFILE_READXY(SHAPEFILE,MAXPTS)
-SHAPEFILE_READXYVAL(SHAPEFILE,VALNAME,MAXPTS)
-SHAPEFILE_READXYZ(SHAPEFILE,MAXPTS)
-SHAPEFILE_READXYZVAL(SHAPEFILE,VALNAME,MAXPTS)
-SHAPEFILE_WRITEVAL(SHAPEFILE,VALUE,VALNAME,MAPPRJ)
-SHAPEFILE_WRITEXYVAL(SHAPEFILE,GRIDX,GRIDY,VALUE,VALNAME,MAPPRJ)
-SHAPEFILE_WRITEXYZVAL(SHAPEFILE,GRIDX,GRIDY,GRIDZ,VALUE,VALNAME,MAPPRJ)
-CURV2RECT(CurvData,CurvCenterLons,CurvCenterLats,CurvCornerLons,CurvCornerLats,TemplateRectVar,Method)
-CURV3SRECT(CurvData,CurvLons,CurvLats,CurvBaths,CurvZetas,TemplateRectVar,Method)
  
 *** Running test: bn608_bug_fixes.jnl
 ! bn608_bug_fixes
@@ -51703,12 +51569,10 @@ can view
  
 ! shade over polygon
 set view upper; polygon/thick/color=red/palette=blue/axes=0,0,0,0 {1,2,1}, {2,1,0.5}
-! KMS - commented out for PyFerret - patterns not supported
-! shade/over/i=1:2/j=0:2/patt i+j
+shade/over/i=1:2/j=0:2/patt i+j
  
 set view lower; polygon/thick/color=red/palette=blue/axes=1,1,1,0 {1,2,1}, {2,1,0.5}
-! KMS - commented out for PyFerret - patterns not supported
-! fill/over/i=1:2/j=0:2/patt i+j
+fill/over/i=1:2/j=0:2/patt i+j
 can view
  
 ! Polygon over shade
@@ -55430,10 +55294,10 @@ SH GRID am
  normal    F
 *** Running test: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.509921"
-CLOCK_SECS = "0.298"
+DELTA_CPU = "0.009998"
+CLOCK_SECS = "0.005"
 CURRENT_DATE = "30-Nov-12"
-CURRENT_TIME = "10:59:32"
+CURRENT_TIME = "11:17:25"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -55442,8 +55306,8 @@ CURRENT_TIME = "10:59:32"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.120982"
-CLOCK_SECS = "0.418"
+DELTA_CPU = "0.06399"
+CLOCK_SECS = "0.103"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -55457,60 +55321,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.592909
+ !-> DEFINE VARIABLE ten_plots = 0.261959
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "1.011"
+CLOCK_SECS = "0.451"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.012"
+CLOCK_SECS = "0.452"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.053992
- !-> DEFINE VARIABLE sumcpu =0.053992
+ !-> DEFINE VARIABLE dt = 0.029996
+ !-> DEFINE VARIABLE sumcpu =0.029996
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.052993
- !-> DEFINE VARIABLE sumcpu =0.106985
+ !-> DEFINE VARIABLE dt = 0.029996
+ !-> DEFINE VARIABLE sumcpu =0.059992
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.052992
- !-> DEFINE VARIABLE sumcpu =0.159977
+ !-> DEFINE VARIABLE dt = 0.029995
+ !-> DEFINE VARIABLE sumcpu =0.089987
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.050992
- !-> DEFINE VARIABLE sumcpu =0.210969
+ !-> DEFINE VARIABLE dt = 0.027996
+ !-> DEFINE VARIABLE sumcpu =0.117983
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.050992
- !-> DEFINE VARIABLE sumcpu =0.261961
+ !-> DEFINE VARIABLE dt = 0.028995
+ !-> DEFINE VARIABLE sumcpu =0.146978
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.048992
- !-> DEFINE VARIABLE sumcpu =0.310953
+ !-> DEFINE VARIABLE dt = 0.028996
+ !-> DEFINE VARIABLE sumcpu =0.175974
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.047993
- !-> DEFINE VARIABLE sumcpu =0.358946
+ !-> DEFINE VARIABLE dt = 0.025996
+ !-> DEFINE VARIABLE sumcpu =0.20197
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.046993
- !-> DEFINE VARIABLE sumcpu =0.405939
+ !-> DEFINE VARIABLE dt = 0.027996
+ !-> DEFINE VARIABLE sumcpu =0.229966
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.046993
- !-> DEFINE VARIABLE sumcpu =0.452932
+ !-> DEFINE VARIABLE dt = 0.025995
+ !-> DEFINE VARIABLE sumcpu =0.255961
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.046993
- !-> DEFINE VARIABLE sumcpu =0.499925
+ !-> DEFINE VARIABLE dt = 0.029996
+ !-> DEFINE VARIABLE sumcpu =0.285957
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.499925
-0.499925
+ !-> MESSAGE/CONTINUE 0.285957
+0.285957
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.513"
+CLOCK_SECS = "0.904"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "30-Nov-12"
-SESSION_TIME = "10:59"
+SESSION_TIME = "11:17"
 CURRENT_DATE = "30-Nov-12"
-CURRENT_TIME = "10:59:33"
+CURRENT_TIME = "11:17:26"
 *** Running test: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -55618,8 +55482,7 @@ GO err62_thick_tic_time_axis
  
 define axis/t=1-jan-1990:1-jan-2010:1/units=months tax
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta timetics.plt
+set mode meta timetics.plt
 let tt = l[gt=tax]
 set view upper; plot/thick/line cos(tt/20)
 set view lower; plot/thick/line/t=1-jan-1991:1-jan-1997 cos(tt/20)
@@ -55635,8 +55498,7 @@ sho mode linecolors
 can win/all
 set win/new
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta timetics2.plt
+set mode meta timetics2.plt
  
 ppl color,7,100,50,0   ! orange
 ppl color,8,0,55,0     ! dark green
@@ -55664,8 +55526,7 @@ GO err62_reset_after_inf
 ! Bug 1292
 ! The levels did not reset to default closed levels
  
-! KMS - commented out for PyFerret - .plt not supported
-! Set mode meta closed_lev.plt
+Set mode meta closed_lev.plt
  
 use levitus_climatology
 set view left
@@ -56058,8 +55919,25 @@ save/clobber/file=a.nc sst
  
 GO bn_reset
 cancel mode verify
-! KMS - commented out for PyFerret - takes a bit of time
-! GO err62_contourbug
+GO err62_contourbug
+! err62_contourbug.jnl
+! Bug 1688
+! contours of curvi data when x units not longitude
+! some contour lines draw across the plot
+ 
+let xb=x[x=0:290:10]
+let yb=y[y=0:290:10]
+let xb2 = xb + 0*yb
+let zb=I[x=0:290:10]*J[y=0:290:10]
+contour/hlimits=-100:400:50 xb2+zb,xb2,zb
+ 
+! A FILL version of the same general thing
+let xb = x[x=0:290:10]
+let yb = y[y=0:290:10]
+let xb2 = xb + 0*yb
+let zb = I[x=0:290:10] * J[y=0:290:10]
+fill/hlimits=-100:400:50 0.0000001*(xb2+zb)^3,xb2,zb
+ 
  
 GO bn_reset
 cancel mode verify
@@ -58577,8 +58455,7 @@ GO err65_dots_in_dashes.jnl
 ! metafile batch mode
  
 can view
-! KMS - commented out for PyFerret - .plt not supported
-! set mode metafile dashbug.plt
+set mode metafile dashbug.plt
 set v ul; plot/dash x[gx=0:20:.5]
 set v ur; plot/dash x[gx=0:20:.1]
 set v ll; plot/dash x[gx=0:20:.05]
@@ -59320,9 +59197,9 @@ list contents
              VARIABLE : { SPAWN:"cat redirect_journal.txt" }
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
- 2    /  2:" ! FERRET v6.83 (PyFerret 1.0.0)"                                           
- 3    /  3:" ! Linux 2.6.18-308.1.1.el5 - 11/30/12"                                     
- 4    /  4:" ! 30-Nov-12 10:59     "                                                    
+ 2    /  2:" ! FERRET v6.83 (beta)"                                                     
+ 3    /  3:" ! Linux 2.6.18-308.1.1.el5 64-bit - 11/30/12"                              
+ 4    /  4:" ! 30-Nov-12 11:17     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -61894,42 +61771,42 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.6099
- 2   / 2:  0.5756
- 3   / 3:  0.1659
- 4   / 4:  0.7110
- 5   / 5:  0.6096
+ 1   / 1:  0.0601
+ 2   / 2:  0.5973
+ 3   / 3:  0.8759
+ 4   / 4:  0.8974
+ 5   / 5:  0.1038
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.9838
- 2   / 2:  0.0176
- 3   / 3:  0.4337
- 4   / 4:  0.5373
- 5   / 5:  0.9997
+ 1   / 1:  0.4332
+ 2   / 2:  0.7276
+ 3   / 3:  0.4609
+ 4   / 4:  0.6220
+ 5   / 5:  0.3278
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.8225
- 2   / 2:  0.5162
- 3   / 3:  0.0656
- 4   / 4:  0.4993
- 5   / 5:  0.3305
- 6   / 6:  0.0739
+ 1   / 1:  0.9650
+ 2   / 2:  0.9808
+ 3   / 3:  0.9532
+ 4   / 4:  0.2810
+ 5   / 5:  0.4789
+ 6   / 6:  0.3318
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.0982
- 2   / 2:  0.2924
- 3   / 3:  0.0663
- 4   / 4:  0.6810
- 5   / 5:  0.6188
- 6   / 6:  0.0957
+ 1   / 1:  0.8869
+ 2   / 2:  0.6495
+ 3   / 3:  0.3067
+ 4   / 4:  0.0928
+ 5   / 5:  0.7891
+ 6   / 6:  0.3006
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
@@ -61961,42 +61838,42 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1: -0.446
- 2   / 2:  1.158
- 3   / 3: -0.325
- 4   / 4: -0.597
- 5   / 5: -1.006
+ 1   / 1: -0.567
+ 2   / 2: -0.795
+ 3   / 3:  0.298
+ 4   / 4: -1.276
+ 5   / 5:  0.129
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.196
- 2   / 2:  0.527
- 3   / 3:  0.853
- 4   / 4: -1.300
- 5   / 5:  0.124
+ 1   / 1:  0.315
+ 2   / 2:  1.233
+ 3   / 3: -1.243
+ 4   / 4: -1.244
+ 5   / 5:  0.432
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.3105
- 2   / 2:  0.5833
- 3   / 3: -0.9461
- 4   / 4: -0.5131
- 5   / 5: -0.0655
- 6   / 6:  0.9728
+ 1   / 1:  0.231
+ 2   / 2:  0.656
+ 3   / 3:  0.205
+ 4   / 4: -1.527
+ 5   / 5: -0.139
+ 6   / 6: -0.774
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1: -1.498
- 2   / 2: -1.102
- 3   / 3:  1.070
- 4   / 4: -0.500
- 5   / 5: -0.333
- 6   / 6: -0.738
+ 1   / 1: -2.155
+ 2   / 2: -1.973
+ 3   / 3: -0.148
+ 4   / 4:  0.914
+ 5   / 5: -1.013
+ 6   / 6:  0.275
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
@@ -62031,15 +61908,15 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-            VAR2   VAR2   VAR2
-0     / 1:  1.779  1.779  1.002
-20    / 2:  1.018  1.018  1.002
-40    / 3:  1.002  1.002  0.067
-60    / 4:  0.067  0.067  0.067
-80    / 5: -0.717 -0.012  0.067
-100   / 6: -0.012 -0.243  0.067
-120   / 7: -0.243 -0.012  0.067
-140   / 8: -0.007 -0.007  0.067
+            VAR2   VAR2    VAR2
+0     / 1:  1.206  1.627  0.8358
+20    / 2:  1.627  1.206  0.8358
+40    / 3:  0.836  0.836  0.5218
+60    / 4:  0.522  0.522  0.8358
+80    / 5: -0.569 -0.569  0.8358
+100   / 6: -0.580 -0.569  0.8358
+120   / 7:  0.230  0.230  0.8358
+140   / 8:  0.886  0.886  0.8856
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -67107,7 +66984,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67162,7 +67039,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67206,7 +67083,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67250,7 +67127,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67287,7 +67164,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67325,7 +67202,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67392,7 +67269,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67441,7 +67318,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67502,7 +67379,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67543,7 +67420,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67584,7 +67461,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67625,7 +67502,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67663,7 +67540,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67875,7 +67752,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -67913,7 +67790,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -67960,7 +67837,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68004,7 +67881,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -68029,7 +67906,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -68054,7 +67931,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        39   T       FERRET V6.83 (PyFerret 1.0.0) 30-Nov-12
+ .                               history         CHAR        23   T       FERRET V6.83  30-Nov-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -68939,25 +68816,25 @@ exit
 exit/command
 *** Running test: bn_startupfile.jnl
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
-PPL$XPIXEL = "900"
-PPL$YPIXEL = "506"
+PPL$XPIXEL = "691"
+PPL$YPIXEL = "518"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.83"
-FERRET_PLATFORM = "Linux 2.6.18-308.1.1.el5"
+FERRET_PLATFORM = "Linux 2.6.18-308.1.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Sep 14 2012 15:49:53 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "30-Nov-12"
-SESSION_TIME = "11:00"
-SESSION_PID = "17250"
-DELTA_CPU = "0.52492"
-CLOCK_SECS = "0.312"
+SESSION_TIME = "11:17"
+SESSION_PID = "20364"
+DELTA_CPU = "0.028994"
+CLOCK_SECS = "0.087"
 CURRENT_DATE = "30-Nov-12"
-CURRENT_TIME = "11:00:24"
+CURRENT_TIME = "11:17:48"
 N_OPEN_DSETS = "0"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
-PPL$PLTNME = "ferret.png"
+PPL$PLTNME = "startup_tests.plt"
 PPL$TEKNME = "/dev/tty"
 PPL$XLEN = "8.000"
 PPL$YLEN = "6.000"
@@ -68974,7 +68851,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "30-Nov-12_11:00"
+WIN_TITLE = "30-Nov-12:11:17"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -69002,7 +68879,7 @@ VP_YHI = "1"
       DESPERATE     CANCELLED      3100000
       GKS              SET
       REFRESH          SET
-      METAFILE      CANCELLED      ferret.png
+      METAFILE         SET         startup_tests.plt
       PPLLIST       CANCELLED      ppllist.out
       GUI           CANCELLED
       LOGO             SET
@@ -69025,4 +68902,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Fri Nov 30 11:00:24 PST 2012
+Ended at Fri Nov 30 11:17:49 PST 2012

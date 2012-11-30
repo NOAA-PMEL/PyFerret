@@ -185,6 +185,7 @@
      .                  slash_set_axis_stride,
      .                  slash_set_axis_offset,
      .                  slash_set_axis_regular,
+     .                  slash_set_axis_outtype,
      .
      .			slash_set_memory_words,
      .			slash_set_nccache_size,
@@ -460,6 +461,7 @@
      .                  slash_set_axis_stride   = 6,
      .                  slash_set_axis_offset   = 7,
      .			slash_set_axis_regular  = 8,
+     .			slash_set_axis_outtype  = 9,
      .
      .			slash_set_memory_words	= 1,
      .			slash_set_nccache_size	= 1,

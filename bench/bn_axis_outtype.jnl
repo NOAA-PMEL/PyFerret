@@ -1,0 +1,68 @@
+! bn_axis_outtype.jnl
+!  SET AXIS/OUTTYPE
+! 23-Oct-2012
+
+can dat/all
+use coads_climatology
+
+set axis/outtype=float `sst,return=xaxis`
+set axis/outtype=float `sst,return=yaxis`
+set axis/outtype=float `sst,return=taxis`
+
+save/x=300/y=0:5/clobber/file=mytype.nc sst
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+! SAVE/OUTTYPE sets the type of the variable not the axes
+save/x=300/y=0:5/clobber/file=mytype.nc/outtype=double sst
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+! Restore the axis type from the file
+
+set axis/outtype=input `sst,return=xaxis`
+set axis/outtype=input `sst,return=yaxis`
+set axis/outtype=input `sst,return=taxis`
+
+save/x=300/y=0:5/clobber/file=mytype.nc sst
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+! User-defined axes are output as double by default.
+
+define axis/t=1-jan-1990:1-feb-1990:2/units=hours myhours
+let tt = t[gt=myhours] - `t[gt=myhours,L=1]`
+
+save/clobber/file=mytype.nc tt
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+set axis/outtype=int myhours
+set var/bad=-9999 tt
+
+save/clobber/file=mytype.nc/outtype=int tt
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+! Restore the type of non-file axis, to double
+
+set axis/outtype=input myhours
+save/clobber/file=mytype.nc tt
+use mytype.nc; sh dat/att mytype.nc; can data mytype
+
+
+! not all axes can be correctly represented in all data types
+! Intentional errors:
+set mode ignore
+
+define axis/t=1-jan-1990:1-feb-1992:2/units=seconds myseconds
+let tt = t[gt=myseconds] - `t[gt=myseconds,L=1]`
+
+set axis/outtype=int myseconds
+save/L=32875000:32875201/clobber/file=mytype.nc tt
+
+
+use proleptic_gregorian.nc
+set axis/outtype=byte `my_data,return=taxis`
+save/clobber/file=mytype.nc my_data
+
+set axis/outtype=int `my_data,return=taxis`
+save/clobber/file=mytype.nc my_data
+
+cancel mode ignore
+

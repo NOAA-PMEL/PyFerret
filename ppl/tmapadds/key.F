@@ -133,7 +133,7 @@
 	character*12	text,TM_FMT_SNGL, TM_FMT_SNGL_DIGITS, txt_out, blanks
         character*20    buff
 	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, windof_hold, 
-     .                  check_0, increase_digits
+     .                  check_0, increase_digits, nofill
 
 	external	TM_FMT_SNGL, TM_FMT_SNGL_DIGITS
 
@@ -161,6 +161,9 @@
         levn = nlev2
         IF (neginf) lev1 = 2
         IF (posinf) levn = nlev2 - 1
+
+	nofill = (levn .EQ. 1 .AND. zlev(1) .GE. 1.e33)
+	IF (nofill) GOTO 2000
 
         IF (shd_levels .GT. 1) del = zlev(lev1+1) - zlev(lev1)
         IF (TM_FPEQ_SNGL(del,0.)) check_0 = .FALSE.

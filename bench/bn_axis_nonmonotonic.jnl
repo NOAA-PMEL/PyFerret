@@ -1,0 +1,11 @@
+! bn_axis_nonmonotonic.jnl
+! bn_define_axis doesnt test the case where the varible is not monotonic
+! ACM 11/2012  With Ferret v6.83+ the message tells us the index value
+
+! Intentional error
+
+set mode ignore
+let tvar = {85, 86, 86, 87, 88, 89, 90, 91, 92, 92, 92, 91, 92, 94, 95, 98}
+define axis/t/units=days tax = tvar
+
+cancel mode ignore

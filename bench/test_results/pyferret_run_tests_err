@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Oct 22 12:17 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Nov 30 10:56 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for PyFerret 2012-10-22
+Note: RUN_TESTS.sh test results for PyFerret on Nov 30, 2012
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -191,6 +191,8 @@ Benchmark scripts that will be run:
    bn_outtype.jnl
    bn_ribbon_plot.jnl
    bn_descr_4digit.jnl
+   bn_axis_outtype.jnl
+   bn_axis_nonmonotonic.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -207,7 +209,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Oct 22 12:58:51 PDT 2012
+Beginning at Fri Nov 30 10:57:13 PST 2012
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -653,6 +655,7 @@ list/format=cdf/l=13/append/file=test_abs.cdf l1
  LISTing to file test_fil.cdf
  LISTing to file test_fil.cdf
  LISTing to file test_fil.cdf
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis Y1010_REV
 *** Running test: bn_regrid_transforms.jnl
  Cached data cleared from memory
  **ERROR: regridding: no target grid specified
@@ -2019,6 +2022,7 @@ set axis/stride=2 NORMAL
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
  *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis Y1010_REV
 *** Running test: bn603_bug_fixes.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -2421,6 +2425,7 @@ list/format=cdf/keep_axnames/append/file=test_fil.cdf ijkavel
 list/format=cdf/keep_axnames/append/file=test_fil.cdf ijklave
  **ERROR: variable unknown or not in data set: IJKL
 show grid ijkl
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis Y1010_REV
 *** Running test: bn_keep_axisnames.jnl
  Cached data cleared from memory
  LISTing to file a.nc
@@ -2463,6 +2468,7 @@ Replacing definition of axis CAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis ZAXLEVITR
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file xz.nc
@@ -2535,6 +2541,10 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  *** NOTE: Units on axis "ENS" are not recognized: count
  *** NOTE: They will not be convertible:
  LISTing to file mypack.nc
+ *** NOTE: LON1_15: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
+ *** NOTE: LAT1800_1800: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
+ *** NOTE: ENS: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
+ *** NOTE: TIME: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
  *** NOTE: Units on axis "ENS" are not recognized: count
  *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
@@ -2774,6 +2784,7 @@ list/L=15:20 tax_year(t[gt=tvar],tvar)
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis lev
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn68_bug_fixes.jnl
@@ -2797,6 +2808,8 @@ Replacing definition of axis TAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis RLATU79_961_9
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis RLATU79_961_9
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
@@ -2959,6 +2972,28 @@ SET DAT/FORM=CDF ./z1.nc
  Cached data cleared from memory
 *** Running test: bn_descr_4digit.jnl
  Cached data cleared from memory
+*** Running test: bn_axis_outtype.jnl
+ Cached data cleared from memory
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+ LISTing to file mytype.nc
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
+ failure writing to CDF output file
+LIST/FORMAT=CDF/L=32875000:32875201/clobber/file=mytype.nc tt
+ LISTing to file mytype.nc
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
+ failure writing to CDF output file
+LIST/FORMAT=CDF/clobber/file=mytype.nc my_data
+ LISTing to file mytype.nc
+*** Running test: bn_axis_nonmonotonic.jnl
+ Cached data cleared from memory
+ **ERROR: improper grid or axis definition: data for DEFINE AXIS/FROM_VARIABLE is not monotonic at index 12
+define axis/t/units=days tax = tvar
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -2978,4 +3013,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Mon Oct 22 13:02:16 PDT 2012
+Ended at Fri Nov 30 11:00:24 PST 2012

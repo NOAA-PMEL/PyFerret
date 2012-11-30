@@ -64,6 +64,7 @@
 *                  color=-31 then thick=3
 * V590 *acm* 5/06  settable number of line colors, no longer hard-wired to 6 colors.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* v683 *acm* 11/12 Put sym_so_far into common - previously SAVEd here, no longer working.
 
 	include 'tmap_dims.parm'
 	include	'slash.parm'
@@ -83,12 +84,10 @@
 
 * internal variable declarations
         LOGICAL unique_symbol, symbol_only1, select_lines
-	INTEGER	style, ppl_draw_line, sym_so_far, i, ltyp
-        SAVE sym_so_far     ! # symbols on the screen ... *sh* 10/91
+	INTEGER	style, ppl_draw_line, i, ltyp
 
 * internal parameter declarations
 	INTEGER	num_line, ncolors, num_linebundles
-c	PARAMETER     ( num_line = num_plain*num_sym, ncolors=6)
 
 * internal variable declarations
 	INTEGER	ityp, imrk, style0, sym(num_sym)

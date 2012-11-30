@@ -197,6 +197,7 @@
 * PyFr  *kms* 1/12 Add SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
 * V68 *acm* 5/12   Add DEFINE DATA /AGGREGATE /NAME= /QUIET
 * V683*acm* 8/12   New SET LIST/OUTTYPE, CANCEL LIST/OUTTYPE and SAVE/OUTTYPE 
+* V683*acm 10/12   NEW SET AXIS/OUTTYPE to change default coordinate axis output type
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -356,7 +357,7 @@
 	   DATA subcommands      (nsub_at1 +11)	/ 'AXIS'	/
 	   DATA num_qualifs      (nsub_at1 +11)	/ nqual1l	/
 	   DATA qualifier_pointer(nsub_at1 +11)	/ nqual_at1l	/
-* SET AXIS / MODULO /DEPTH /CALENDAR /UNITS /T0 /STRIDE /OFFSET /REGULAR
+* SET AXIS / MODULO /DEPTH /CALENDAR /UNITS /T0 /STRIDE /OFFSET /REGULAR /OUTTYPE
 		DATA qualifiers  (nqual_at1l+0)	/ 'MODULO'	/
 		DATA qualifiers  (nqual_at1l+1)	/ 'DEPTH'	/
 		DATA qualifiers  (nqual_at1l+2)	/ 'CALENDAR'	/
@@ -365,6 +366,8 @@
 		DATA qualifiers  (nqual_at1l+5)	/ 'STRIDE'	/
 		DATA qualifiers  (nqual_at1l+6)	/ 'OFFSET'	/
 		DATA qualifiers  (nqual_at1l+7)	/ 'REGULAR'	/
+		DATA qualifiers  (nqual_at1l+8)	/ 'OUTTYPE'	/
+		DATA qualifiers  (nqual_at1l+9)	/ '****'	/
 * SET MEMORY
 	   DATA subcommands      (nsub_at1 +12)	/ 'MEMORY'	/
 	   DATA num_qualifs      (nsub_at1 +12)	/ nqual1m	/
@@ -747,9 +750,11 @@
 	   DATA num_qualifs      (nsub_at3 +11)	/ nqual3l	/
 	   DATA qualifier_pointer(nsub_at3 +11)	/ nqual_at3l	/
 		DATA qualifiers  (nqual_at3l+0)	/ 'MODULO'	/
-		DATA qualifiers  (nqual_at3l+1)	/ 'ALL'	        /
+		DATA qualifiers  (nqual_at3l+1)	/ 'ALL'         /
 		DATA qualifiers  (nqual_at3l+2)	/ 'DEPTH'       /
-		DATA qualifiers  (nqual_at3l+3) / 'STRIDE'       /
+		DATA qualifiers  (nqual_at3l+3) / 'STRIDE'      /
+		DATA qualifiers  (nqual_at3l+4) / '****'        /
+		DATA qualifiers  (nqual_at3l+5) / '****'        /
 * CANCEL GRID
 	   DATA subcommands      (nsub_at3 +12)	/ 'GRID'	/
 	   DATA num_qualifs      (nsub_at3 +12)	/ nqual3m	/

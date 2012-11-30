@@ -165,6 +165,7 @@
 * V68 *acm* 1/12   Implement micro-adjusting of repeated coordinates (ticket 1910).
 *                  To keep the previous behavior the user may specify USE/STRICT.
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V6.83 12/12 *acm* ticket 1996: NOTE if reversing an axis
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -304,6 +305,10 @@
 * grab a temporary dynamic axis slot for it
       CALL TM_ALLO_TMP_LINE(iaxis, status)
       IF (status .NE. merr_ok) GOTO 5900
+
+* Store the data type of the axis
+
+      line_dattype(iaxis) = vartype
 
 * Are there scale_factor and/or add_offset attributes?  If so need to unpack
 * the coordinate values
@@ -774,6 +779,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
          ENDIF
 
 * if the coordinates are decreasing-ordered then reverse them
+* Notify user of reversal
          IF (npts .GT. 1) THEN
             first_delta = line_mem(ipt1+1) - line_mem(ipt1)
             reversed(iaxis) = first_delta .LT. 0.0
@@ -784,6 +790,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
                line_mem(i) = line_mem(ipte+ipt1-i)
                line_mem(ipte+ipt1-i) = tmp8
  345        CONTINUE
+ 
          ENDIF
 
 * If repeated values, apply micro-adjusting. 
@@ -942,6 +949,11 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
       ENDIF
 
 * ============= END OF IRREGULAR AXIS PROCESSING ========================
+
+      IF ( reversed(iaxis) ) THEN
+         CALL TM_NOTE('Axis coordinates are decreasing-ordered. '//
+     .         'Reversing ordering for axis '//vname(:vlen), tt)
+      ENDIF
 
 * hack to cope with Gregorian/Julian calendar ambiguities (used by NOAA/CDC)
 * Comments from Roland Schweitzer about CDC files:

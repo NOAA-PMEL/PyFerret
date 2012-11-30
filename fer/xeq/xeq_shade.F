@@ -244,6 +244,10 @@ c              nlev = 1
      .           .AND. .NOT.overlay
      .           .AND. .NOT.no_data )
 	   IF (qual_given(slash_shad_nokey) .gt. 0) do_key = .FALSE.
+	   
+* Double check: is there no valid input data?
+	   IF ( no_data ) do_key = .FALSE.
+
            IF ( do_key ) THEN
               CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
 

@@ -96,7 +96,7 @@
 * internal variable declarations:
         LOGICAL         no_range, do_key, spectrum, pattern, use_line
 	LOGICAL		overlay, transpz, no_labels, set_up, noaxes, axes
-	LOGICAL         line_it, fill_it, is_logh, is_logv
+	LOGICAL         line_it, fill_it, is_logh, is_logv, no_data
 	INTEGER         sp, patt, TM_LENSTR1, STR_UPCASE
 	INTEGER		symbol, color, status,
      .			loc, limit, slen, coord_ax, thick,
@@ -267,6 +267,9 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
+* is there no valid input data?
+	no_data =  no_range .AND. only_val.EQ.bad_val4
+
 * PPLUS blows up setting auto contour levels if all data have same value
 * But, do not let this be rounded off, or we cannot find the color when matching 
 * this value in get_ndx, called by fillpol
@@ -291,6 +294,10 @@ c           nlev = 1
      .		     .AND. .NOT.overlay
      .		     .AND. num_uvars_in_cmnd.GT.2)
 	IF (qual_given(slash_polygon_nokey) .gt. 0) do_key = .FALSE.
+	
+
+* Double check: is there no valid input data?
+	IF ( no_data ) do_key = .FALSE.
 	IF ( do_key ) THEN
 	   CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
 

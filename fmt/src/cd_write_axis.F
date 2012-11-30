@@ -143,7 +143,7 @@
       INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, cal_id, varid,
      .        llen, vartype, nvdims, nvatts, iatt, attype, attlen,
      .        attoutflag, istat, maxlen, vdims(8), newid, all_outflag,
-     .        attid, dset_num
+     .        attid, dset_num, outtype, axis_packed
       REAL vals(100)
 
 !      LOGICAL condensed
@@ -175,6 +175,41 @@
       IF (mode_upcase_output) THEN
          CALL STR_UPCASE( name_in, name)
          CALL STR_UPCASE( name, name_in)
+      ENDIF
+
+* Check that the axis type is set. User may have reset the type and then
+* asked for SET AX/OUTTYPE=INTYPE.  If so need to re-get the orig type.
+* If its a static line, set to double, and store that in line_dattype. If
+* its an axis from a netcdf dataset, get the type from initializing the dataset.
+
+      outtype = line_dattype(iaxis)
+
+      CALL CD_GET_VAR_ID (dset_num, line_name(iaxis), varid, status)
+      CALL CD_GET_VAR_INFO (dset_num, varid, buff, vartype, 
+     .            nvdims, vdims, nvatts, coordvar, all_outflag, status)
+
+      IF (outtype.LT.NF_BYTE .OR.  outtype.GT.NF_DOUBLE) THEN
+         IF (iaxis .LE. max_lines) THEN
+	    outtype = NF_DOUBLE  ! static lines - user-defined or Ferret internal
+	    line_dattype(iaxis) = NF_DOUBLE
+	 ELSE
+	    outtype = vartype
+         ENDIF
+      ENDIF
+
+* If axis came in packed we are not going to re-pack it on output (for now).
+* write it as double and add a note.
+
+      axis_packed = 0
+      attname = 'add_offset'
+      CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, status)
+      IF (attid .GT. 0) axis_packed = 1
+      attname = 'scale_factor'
+      CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+      IF (attid .GT. 0) axis_packed = 1
+
+      IF (axis_packed .EQ. 1) THEN	    
+         outtype = NF_DOUBLE
       ENDIF
 
       npts = line_dim(iaxis)
@@ -291,9 +326,9 @@
 
 * create the coordinate variable (12/92 -> double precision)
 #ifdef usingDODSf2cUnderscore
-      cdfstat = NF_DEF_VAR_(cdfid, name(:nlen), NF_DOUBLE, 1, dimid, axid)
+      cdfstat = NF_DEF_VAR_(cdfid, name(:nlen), outtype, 1, dimid, axid)
 #else
-      cdfstat = NF_DEF_VAR(cdfid, name(:nlen), NF_DOUBLE, 1, dimid, axid)
+      cdfstat = NF_DEF_VAR(cdfid, name(:nlen), outtype, 1, dimid, axid)
 #endif
       IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
 
@@ -583,10 +618,10 @@
            IF (attoutflag .EQ. 1) 
 #ifdef usingDODSf2cUnderscore
      .      cdfstat = NF_PUT_ATT_DOUBLE_( cdfid, axid, attname,
-     .        	       NF_DOUBLE, 1, line_modulo_len(iaxis) )
+     .        	       outtype, 1, line_modulo_len(iaxis) )
 #else
      .      cdfstat = NF_PUT_ATT_DOUBLE( cdfid, axid, attname,
-     .        	       NF_DOUBLE, 1, line_modulo_len(iaxis) )
+     .        	       outtype, 1, line_modulo_len(iaxis) )
 #endif
 	 ENDIF
 
@@ -809,7 +844,7 @@
              IF (attoutflag .EQ. 1) do_off = .TRUE.
           ENDIF
  
-          IF (do_scale .OR. do_off)  
+          IF (do_scale .OR. do_off .OR. (axis_packed .EQ. 1) )  
      .    CALL TM_NOTE(name(1:nlen)//
      .      ': Writing scaled coordinates not implemented. Suggest '//
      .      'using nco operators on output file to pack coord values', 
@@ -852,10 +887,10 @@
 * ... create the bounds variable, if it has not been created.
 #ifdef usingDODSf2cUnderscore
          IF (bndid .EQ. -1) cdfstat = NF_DEF_VAR_(cdfid, 
-     .    name(:elen), NF_DOUBLE, 2, dim2d, bndid)
+     .    name(:elen), outtype, 2, dim2d, bndid)
 #else
          IF (bndid .EQ. -1) cdfstat = NF_DEF_VAR(cdfid, 
-     .    name(:elen), NF_DOUBLE, 2, dim2d, bndid)
+     .    name(:elen), outtype, 2, dim2d, bndid)
 #endif
 
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5220
@@ -908,11 +943,11 @@
          elen = nlen + 5
 #ifdef usingDODSf2cUnderscore
          cdfstat = NF_DEF_DIM_( cdfid, name(:elen), axlen+1, dimid )
-         cdfstat = NF_DEF_VAR_(cdfid, name(:elen), NF_DOUBLE, 1, 
+         cdfstat = NF_DEF_VAR_(cdfid, name(:elen), outtype, 1, 
      .           dimid, edgid)
 #else
          cdfstat = NF_DEF_DIM( cdfid, name(:elen), axlen+1, dimid )
-         cdfstat = NF_DEF_VAR(cdfid, name(:elen), NF_DOUBLE, 1, 
+         cdfstat = NF_DEF_VAR(cdfid, name(:elen), outtype, 1, 
      .           dimid, edgid)
 #endif
          attname = 'edges' 

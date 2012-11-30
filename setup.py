@@ -86,8 +86,8 @@ setup(name = "pyferret",
       url = "http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret",
       license = "Public Domain",
       requires = [ "numpy", ],
-      packages = [ "pyferret", "pyferret.fershp", "pyferret.graphbind", 
-                   "pyferret.regrid", "pyferret.stats", ],
+      packages = [ "pyferret", "pyferret.eofanal", "pyferret.fershp", 
+                   "pyferret.graphbind", "pyferret.regrid", "pyferret.stats", ],
       package_dir = { "pyferret":"pyfermod", },
       ext_modules = ext_mods)
 
@@ -108,26 +108,6 @@ setup(name = "pipedviewer",
       requires = [ "multiprocessing", ],
       packages = [ "pipedviewer", ],
       package_dir = { "pipedviewer":"pviewmod", })
-
-setup(name = "eofanalysis",
-      version = "0.0.1",
-      description = "Module for performing empirical orthogonal " \
-                    "function analysis of space-time data",
-      long_description = "The EOFAnalysis class performs an Empirical Orthogonal " \
-                         "Function (EOF) analysis of space-time data.  An instance " \
-                         "of this class with the desired space-time data array.  " \
-                         "The analyze method is called to perform the analysis.  " \
-                         "Result-reporting methods are called to obtain the results " \
-                         "the of analysis.  The separate initialization, analysis, " \
-                         "and result-reporting methods allow for methods to modify " \
-                         "the input data prior to analysis, and methods to modify " \
-                         "the results prior to reporting.",
-      author = "Karl M. Smith",
-      author_email = "karl.smith@noaa.gov",
-      url = "http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret",
-      license = "Public Domain",
-      requires = [ "numpy", ],
-      py_modules = [ "eofanalysis", "eofanalysistests", ])
 
 setup(name = "gcircle",
       version = "0.0.1",

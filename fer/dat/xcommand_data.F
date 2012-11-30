@@ -742,9 +742,11 @@
 	   DATA num_qualifs      (nsub_at3 +11)	/ nqual3l	/
 	   DATA qualifier_pointer(nsub_at3 +11)	/ nqual_at3l	/
 		DATA qualifiers  (nqual_at3l+0)	/ 'MODULO'	/
-		DATA qualifiers  (nqual_at3l+1)	/ 'ALL'	        /
+		DATA qualifiers  (nqual_at3l+1)	/ 'ALL'         /
 		DATA qualifiers  (nqual_at3l+2)	/ 'DEPTH'       /
-		DATA qualifiers  (nqual_at3l+3) / 'STRIDE'       /
+		DATA qualifiers  (nqual_at3l+3) / 'STRIDE'      /
+		DATA qualifiers  (nqual_at3l+4) / '****'        /
+		DATA qualifiers  (nqual_at3l+5) / '****'        /
 * CANCEL GRID
 	   DATA subcommands      (nsub_at3 +12)	/ 'GRID'	/
 	   DATA num_qualifs      (nsub_at3 +12)	/ nqual3m	/

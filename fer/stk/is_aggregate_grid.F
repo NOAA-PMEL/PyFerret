@@ -44,7 +44,7 @@
 
 * programmer - Ansley Mankek (from is_uvar_grid)
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-*
+* V6.83 *acm* 11/30/2012 If variable isn't a file variable, get the right definition.
 
 * calling argument declarations:
 * uvar and dset point to the variable in the aggregate dataset
@@ -54,10 +54,11 @@
 
 * internal variable declarations:
 	LOGICAL its_dynamic
-	INTEGER NCF_GET_AGG_COUNT, TM_LENSTR1,
+	INTEGER NCF_GET_AGG_COUNT, TM_LENSTR1, STR_SAME,
      .		cx_orig, agg_cx, hi_cx, big_cx, isp_orig, agg_dset, 
      .		agg_len, imemb, fer_uvar, memb_dset, memb_grid, iline, 
-     .		nv, test_grid, this_grid, len_name, agg_dim, gnum, var
+     .		nv, test_grid, this_grid, len_name, agg_dim, gnum, var,
+     .		varid
 
 	CHARACTER name*512
 
@@ -97,6 +98,26 @@
 
 	name = uvar_text(uvar)
 	len_name = TM_LENSTR1(name)
+
+* are we pointing at a "LET var = [some expr with an agg var]"
+* If so then the vname is not in the agg dset. Find the 
+* var in the list of uvar_code, and get the right uvar_text
+* (this is a hack, something is wrong with my stack handling)
+
+	CALL CD_GET_VAR_ID (agg_dset, name, varid, status)
+	IF (status .NE. ferr_ok) THEN 
+	   DO 30, i = uvar, 1, -1
+ 	      IF (STR_SAME(name, uvar_name_code(i)) .EQ. 0) THEN
+	         name =  uvar_text(i)
+	         len_name = TM_LENSTR1(name)
+	         CALL CD_GET_VAR_ID (agg_dset, name, varid, status)
+	         IF (status .NE. ferr_ok) GOTO 5010 
+	         GOTO 40
+               ENDIF
+   30	   CONTINUE
+	   GOTO 5010 
+   40	   CONTINUE
+	ENDIF
 
 	DO 90 imemb = 1, agg_len
 
@@ -241,6 +262,10 @@
 	RETURN
  5300	CALL ERRMSG( ferr_aggregate_error, status,
      .   'grids for LET/D variables do not match for aggregate dataset'
+     .   //name,*5000 )
+ 5010	name = uvar_text(uvar)
+	CALL ERRMSG( ferr_aggregate_error, status,
+     .   'error defining grid for variable in aggregate dataset'
      .   //name,*5000 )
 
 	END	

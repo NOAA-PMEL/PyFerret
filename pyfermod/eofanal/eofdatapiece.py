@@ -82,11 +82,19 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
     for t in xrange(ntime):    
         defined_data[:,:,:,t] = defd_mask 
     # Convert to time-location (a 2-D array), eliminating locations with missing time steps
-    # The transpose is taking so the time axis is the first axis. 
+    # The transpose is used so the time axis is the first axis. 
     timeloc = inputs[pyferret.ARG1][defined_data].reshape((-1, ntime)).T
     # Create the EOFAnalysis object and analyze the data
     eofanal = eofanal.EOFAnalysis(timeloc)
     eofanal.setminsignif(min_signif)
     eofanal.analyze()
-    # TODO:
-    
+    # Initialize the result to all-undefined
+    result[:] = result_bdf
+    # Assign the EOF-TAF products for the significant EOFs to the result
+    # The values at m=0 are the time-series averages
+    numeofs = eofanal.numeofs()
+    for k in xrange(0, numeofs):
+        timeloc_piece = eofanal.datapiece(k)
+        result[:,:,:,:,k][defined_data] = timeloc_piece.T
+    # The EOF-TAF products for insignificant EOFs are left as undefined 
+    return

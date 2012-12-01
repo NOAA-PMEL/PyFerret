@@ -377,7 +377,7 @@ class EOFAnalysis(object):
         However, a simplified formula is actually used in this method.  
 
         Summing the returned matrices for all significant EOFs will produce 
-        a space-time matrix negligibly different from the original data.  
+        a space-time matrix with negligible difference from the original data.  
         However, see EOFAnalysis.dataexplaned for a direct method for 
         obtaining these sums.
 

@@ -22,8 +22,8 @@ def ferret_init(efid):
     init_dict["argnames"] = ("Data",
                              "MinSignif")
     init_dict["argdescripts"] = (
-        "Time-location data; defined on regular T and one or more of X, Y, Z",
-        "Minimum fraction-of-data-explained to be considered significant")
+        "Time-location data; defined on and one or more of X, Y, Z",
+        "Minimum fraction-of-data-explained considered significant")
     init_dict["argtypes"] = (pyferret.FLOAT_ARRAY,
                              pyferret.FLOAT_ONEVAL)
     # X, Y, Z, and T match input; E axis added as an abstract axis
@@ -31,10 +31,10 @@ def ferret_init(efid):
     axes[pyferret.E_AXIS] = pyferret.AXIS_ABSTRACT
     axes[pyferret.F_AXIS] = pyferret.AXIS_DOES_NOT_EXIST;
     init_dict["axes"] = axes
-    no_influence = [ False ] * pyferret.MAX_FERRET_NDIM
     part_influence = [ True ] * pyferret.MAX_FERRET_NDIM
     part_influence[pyferret.E_AXIS] = False
     part_influence[pyferret.F_AXIS] = False
+    no_influence = [ False ] * pyferret.MAX_FERRET_NDIM
     init_dict["influences"] = (part_influence,
                                no_influence)
     init_dict["piecemeal"] =  [ False ] * pyferret.MAX_FERRET_NDIM
@@ -46,22 +46,24 @@ def ferret_result_limits(efid):
     '''
     Provides the bounds of the E abstract axis
     '''
-    time_axis_info = pyferret.get_axis_info(efid, pyferret.ARG1, pyferret.T_AXIS);
-    ntime = time_axis_info.get("size", -1)
-    if ntime < 0:
-        raise ValueError("The time axis of the input data is not bounded (not pre-defined)")
-    if ntime < 2:
-        raise ValueError("Unexpectedly small number of time steps (%d) in the input data" % ntime)
-    regular = time_axis_info.get("regular", False)
-    if not regular:
-        raise ValueError("The time axis of the input data is not a regularly-spaced axis")
+    maxpts = 1
+    for axis in (pyferret.X_AXIS, pyferret.Y_AXIS, pyferret.Z_AXIS):
+        axis_info = pyferret.get_axis_info(efid, pyferret.ARG1, axis);
+        if axis_info:
+            npts = axis_info.get("size", -1)
+            if npts > 0:
+                maxpts *= npts
     result_limits = [ None ] * pyferret.MAX_FERRET_NDIM
-    result_limits[pyferret.E_AXIS] = (0, ntime)
+    result_limits[pyferret.E_AXIS] = (0, maxpts)
     return result_limits
 
 
 def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
     '''
+    Assign result with EOF * TAF (piece of data explained) up to 
+    the number of significant EOFs.  The X,Y,Z,T data is given in
+    inputs[0], the minimum fraction-of-data-explained considered
+    significant is given as a single value in inputs[1].
     '''
     # verify no ensemble or forecast axis on the input data
     if inputs[pyferret.ARG1].shape[pyferret.E_AXIS] > 1:
@@ -85,16 +87,39 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
     # The transpose is used so the time axis is the first axis. 
     timeloc = inputs[pyferret.ARG1][defined_data].reshape((-1, ntime)).T
     # Create the EOFAnalysis object and analyze the data
-    eofanal = eofanal.EOFAnalysis(timeloc)
-    eofanal.setminsignif(min_signif)
-    eofanal.analyze()
+    eofs = eofanal.EOFAnalysis(timeloc)
+    eofs.setminsignif(min_signif)
+    eofs.analyze()
     # Initialize the result to all-undefined
     result[:] = result_bdf
     # Assign the EOF-TAF products for the significant EOFs to the result
     # The values at m=0 are the time-series averages
-    numeofs = eofanal.numeofs()
-    for k in xrange(0, numeofs):
-        timeloc_piece = eofanal.datapiece(k)
-        result[:,:,:,:,k][defined_data] = timeloc_piece.T
+    numeofs = eofs.numeofs()
+    for k in xrange(numeofs+1):
+        timeloc_piece = eofs.datapiece(k)
+        result[:,:,:,:,k][defined_data] = timeloc_piece.T.ravel()
     # The EOF-TAF products for insignificant EOFs are left as undefined 
     return
+
+
+if __name__ == "__main__":
+    yaxis = numpy.linspace(-80.0, 80.0, 17)
+    zaxis = numpy.linspace(0.0, 250.0, 6)
+    taxis = numpy.linspace(0.0, 8760.0, 25)
+    ydata = numpy.square(numpy.cos(numpy.deg2rad(yaxis)))
+    zdata = numpy.log10(zaxis + 10.0)
+    tdata = numpy.sin(taxis * numpy.pi / 4380.0)
+    yzdata = numpy.outer(ydata, zdata)
+    yztdata = numpy.outer(yzdata, tdata).reshape((1,17,6,25))
+    print "time series at Y = 0.0, Z = 0.0"
+    print str(yztdata[0,8,0,:])
+    print "depth series at Y = 0.0, T = mid-March"
+    print str(yztdata[0,8,:,5])
+    print "latitude series at Z = 0.0, T = mid-March"
+    print str(yztdata[0,:,0,5])
+    result = numpy.array((1,17,6,25,17*6))
+    resbdf = numpy.array([1.0E20])
+    inputs = (yztdata, 0.01)
+    inpbdfs = (-1.0E34, -1.0E34)
+    ferret_compute(0, result, resbdf, inputs, inpbdfs)
+

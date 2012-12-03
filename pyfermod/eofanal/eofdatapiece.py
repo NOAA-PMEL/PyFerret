@@ -16,15 +16,18 @@ def ferret_init(efid):
     Initializes the eofdatapiece function. 
     '''
     init_dict = { }
-    init_dict["numargs"] = 2
+    init_dict["numargs"] = 3
     init_dict["descript"] = "Partitions data into EOF * TAF pieces " + \
         "(parts of data explained) along the ensemble axis"
     init_dict["argnames"] = ("Data",
-                             "MinSignif")
+                             "MinSignif",
+                             "MaxEOFs")
     init_dict["argdescripts"] = (
         "Time-location data; defined on T and one or more of X, Y, Z",
-        "Minimum fraction-of-data-explained considered significant")
+        "Minimum fraction-of-data-explained considered significant",
+        "Maximum number of EOFs to consider (-1 for all signficant EOFS)")
     init_dict["argtypes"] = (pyferret.FLOAT_ARRAY,
+                             pyferret.FLOAT_ONEVAL,
                              pyferret.FLOAT_ONEVAL)
     # X, Y, Z, and T match input; E axis added as an abstract axis
     axes = [ pyferret.AXIS_IMPLIED_BY_ARGS ] * pyferret.MAX_FERRET_NDIM
@@ -36,6 +39,7 @@ def ferret_init(efid):
     part_influence[pyferret.F_AXIS] = False
     no_influence = [ False ] * pyferret.MAX_FERRET_NDIM
     init_dict["influences"] = (part_influence,
+                               no_influence,
                                no_influence)
     init_dict["piecemeal"] =  [ False ] * pyferret.MAX_FERRET_NDIM
 
@@ -47,15 +51,19 @@ def ferret_result_limits(efid):
     Provides the bounds of the E abstract axis.
     The maximum number of EOFs is the number of locations. 
     '''
-    maxpts = 1
-    for axis in (pyferret.X_AXIS, pyferret.Y_AXIS, pyferret.Z_AXIS):
-        axis_info = pyferret.get_axis_info(efid, pyferret.ARG1, axis);
-        if axis_info:
-            npts = axis_info.get("size", -1)
-            if npts > 0:
-                maxpts *= npts
+    maxeofs = pyferret.get_arg_one_val(efid, pyferret.ARG3)
+    if maxeofs > 0.95:
+        maxeofs = int(maxeofs + 0.1)
+    else:
+        maxeofs = 1
+        for axis in (pyferret.X_AXIS, pyferret.Y_AXIS, pyferret.Z_AXIS):
+            axis_info = pyferret.get_axis_info(efid, pyferret.ARG1, axis);
+            if axis_info:
+                npts = axis_info.get("size", -1)
+                if npts > 0:
+                    maxeofs *= npts
     result_limits = [ None ] * pyferret.MAX_FERRET_NDIM
-    result_limits[pyferret.E_AXIS] = (0, maxpts)
+    result_limits[pyferret.E_AXIS] = (1, maxeofs+1)
     return result_limits
 
 
@@ -64,7 +72,9 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
     Assign result with EOF * TAF (piece of data explained) up to 
     the number of significant EOFs.  The X,Y,Z,T data is given in
     inputs[0], the minimum fraction-of-data-explained considered
-    significant is given as a single value in inputs[1].
+    significant is given as a single value in inputs[1].  The 
+    maximum number of EOFs to consider is given as a single value
+    in inputs[2] (-1 for all significant).
     '''
     # verify no ensemble or forecast axis on the input data
     if inputs[pyferret.ARG1].shape[pyferret.E_AXIS] > 1:
@@ -75,10 +85,16 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
     ntime = inputs[pyferret.ARG1].shape[pyferret.T_AXIS]
     if ntime < 2:
         raise ValueError("Input data time axis does not exist or is a singleton")
-    # Verify the second value is reasonable
+    # Get the minimum fraction-data-explained and verify it is reasonable
     min_signif = float(inputs[1])
     if (min_signif < 1.0E-6) or (min_signif > (1.0 - 1.0E-6)):
         raise ValueError("MinSignif must be in [0.000001, 0.999999]")
+    # Get the maximum number of EOFs to consider
+    maxeofs = float(inputs[2])
+    if maxeofs > 0.95:
+        maxeofs = int(maxeofs + 0.1)
+    else:
+        maxeofs = -1
     # Get the mask of where the data is defined
     defined_data = ( numpy.fabs(inputs[pyferret.ARG1] - 
                                 input_bdfs[pyferret.ARG1]) >= 1.0E-5 )
@@ -102,6 +118,8 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
     # Assign the EOF-TAF products for the significant EOFs 
     # The values at m=0 are the time-series averages
     numeofs = eofs.numeofs()
+    if (maxeofs > 0) and (numeofs > maxeofs):
+        numeofs = maxeofs
     for k in xrange(numeofs+1):
         timeloc_piece = eofs.datapiece(k)
         loctime_piece = numpy.array(timeloc_piece.T).reshape(-1)
@@ -136,8 +154,8 @@ if __name__ == "__main__":
     # Create the result array and the other ferret_compute arguments
     result = numpy.zeros((1, 17, 6, 25, 17*6, 1))
     resbdf = numpy.array([1.0E20])
-    inputs = (yztdata, 0.001)
-    inpbdfs = (-1.0E34, -1.0E34)
+    inputs = (yztdata, 0.001, -1)
+    inpbdfs = (-1.0E34, -1.0E34, -1.0E34)
     # Check ferret_compute
     ferret_compute(0, result, resbdf, inputs, inpbdfs)
     piecesum = numpy.zeros((1, 17, 6, 25))

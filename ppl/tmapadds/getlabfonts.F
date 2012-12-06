@@ -39,6 +39,7 @@
 *                  as @Pn. In saving info about color/font changes from
 *                  one line to the next in multi-line lables, allow for
 *                  @Cnnn syntax.
+* V683 12/12 *acm* Fix for applying a font setting in multiple line labels
 
 * Argument declarations
 
@@ -47,8 +48,9 @@
 
 * Local variable definitions
 
-      CHARACTER*1 fcode
+      CHARACTER*1 fcode, fnext
       INTEGER TM_LOC_STRING, ioc, loc
+      LOGICAL digit, isc
 
       npnew = 0
       nfnew = 0
@@ -61,10 +63,16 @@
 
       IF ( loc .GT. 0) THEN
          fcode = lab(lnbeg(jln)+loc:lnbeg(jln)+loc)
+	 fnext = lab(lnbeg(jln)+loc+1:lnbeg(jln)+loc+1)
+
+	 digit = (fcode .EQ. 'C'  .OR.  fcode .EQ. 'c') 
+	 digit = ( fnext .GE. '0' .AND. fnext .LE. '9')
+	 isc = ((fcode .EQ. 'C'  .OR.  fcode .EQ. 'c') .AND.digit) 
+
          IF (fcode .EQ. 'P'  .OR.  fcode .EQ. 'p') THEN
             newpen(1:3) = lab(lnbeg(jln)+loc-1:lnbeg(jln)+loc+1)
             npnew = 3
-         ELSE IF (fcode .EQ. 'C'  .OR.  fcode .EQ. 'c') THEN
+         ELSE IF ((fcode .EQ. 'C'  .OR.  fcode .EQ. 'c') .AND.digit) THEN
             newpen(1:5) = lab(lnbeg(jln)+loc-1:lnbeg(jln)+loc+3)
             npnew = 5
          ELSE

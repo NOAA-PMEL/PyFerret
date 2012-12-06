@@ -6,6 +6,7 @@ C** v5.51+ *acm* 3/03 Longer strings: changes for multi-line labels.
 C** v5.8  *acm* 10/04 Font prefixes may be @P3, @C003, or @FN (font)
 C**                   so lengthen fontprefix, etc to store  @Cnnn.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplusC**
+* V683 *acm* 12/12 up the spacing between lines for multi-line labels
 C***********************************************************************
 C**
 C**                 PLOT+ Scientific Graphics System
@@ -21,7 +22,7 @@ c
         INTEGER nlablines
         REAL*4 line_spacing
         PARAMETER (nlablines=250,
-     .             line_spacing=1.4)
+     .             line_spacing=1.6)
         INTEGER lnbeg(nlablines), lnend(nlablines)
 c
 c	lab1	main label

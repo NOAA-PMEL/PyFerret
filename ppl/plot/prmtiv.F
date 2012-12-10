@@ -52,6 +52,7 @@ C**    @(#)prmtiv.F	1.1    3/10/88
 C        1/06  xvaloff,yvaloff add this amount to each x or y axis label. 
 C              (axis data was read as double precision and converted to single 
 C              after applying an offset.)
+* V683 12/12 *acm* Fix for applying a font setting in multiple line labels
 C**
 C**
 C***********************************************************************
@@ -659,9 +660,10 @@ C  Set up to use any font settings from this line on subsequent lines.
                   npen = npnew
                ENDIF
                IF (nfnew.GT.0) THEN
-                  fontprefix(1:npnew) = newfont(1:npnew)
-                  nfont = npnew
+                  fontprefix(1:nfnew) = newfont(1:nfnew)
+                  nfont = nfnew
                ENDIF
+
   40        CONTINUE
 C
 C

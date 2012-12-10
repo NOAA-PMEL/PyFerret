@@ -41,6 +41,7 @@
 *
 * Pulled out of plot_set_up.F 
 * 8/12 ACM 
+* V6.83 *acm* 11/30/2012 Need AXIS.INC for the axis lengths, xlen, ylen
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -50,6 +51,8 @@
 	include 'xplot_setup.cmn'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
+	include 'axis_inc.decl'    ! with axis lengths 
+	include 'AXIS.INC'         ! with axis lengths   
 
 * calling argument declarations:
 	LOGICAL this_no_range(*), overlay, versus, nokey, time_axis
@@ -66,10 +69,11 @@
 	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title, plot_title_1
 	CHARACTER	VAR_UNITS*64, SECS_TO_DATE*20, year*4, buff1*16
 	REAL		xkeypos, ykeypos, xkeysize, ykeysize, 
-     .			lab_ht
+     .			lab_ht, aa, labsize
 
 	ptitl = qual_given( slash_title )
 	user_title = ptitl .GT. 0
+	aa = letsize_title
 
 
 * * * * * * *    - - - TITLES - - -   * * * * * * * * *
@@ -164,6 +168,7 @@
                        IF ( status .NE. ferr_ok ) GOTO 5000
 	               slen = TM_LENSTR1( plot_title )
 	            ENDIF
+		    aa = letsize_title
 	            CALL BOX_LABEL( ppl_title,
      .			   plot_title(:slen),
      .			   0.0, 0.0, 0.75*xlen, letsize_title,
@@ -293,7 +298,7 @@
      .			'<NL>Colored by '//plot_title(1:slen)
                  ENDIF
 
-		 labsize = 0.6*letsize_title
+!		 labsize = 0.8*letsize_title
 
                  IF ( user_title ) THEN     ! user over-ride of title
                     CALL EQUAL_STR_LC
@@ -308,7 +313,7 @@
               CALL BOX_LABEL( ppl_title,
      .			   plot_title(:slen),
      .			   0.0, 0.0, 0.75*hlen, letsize_title,
-     .			   letsize_title, ppl_centered,
+     .			   labsize, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 
               plot_title_1 = plot_title ! ribbon plot: combine with color-by label

@@ -111,6 +111,7 @@
 *                   in /RIGID mode, with no record axis.
 * V680  5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V683  8/12 *acm*  New SET LIST/OUTTYPE and SAVE/OUTTYPE 
+* V683 12/12 *acm*  Fix ticket 2004: appending data when writing packed variable
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -518,6 +519,62 @@
 
            IF ( status .NE. merr_ok ) GOTO 5800
 
+	   
+* If the variable is to be written scaled, set the scale and offset
+*  values that will be written as attributes and sent to CD_WRITE_VAR. 
+
+
+           IF (varid .GT. 0) THEN
+	      
+              scalefac = 1.
+              attname = 'scale_factor'
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .                  istat)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
+     .                  varid, attid, aname, attype, attlen, attoutflag, 
+     .                  istat )
+
+              IF (istat .EQ. ferr_ok .AND. attoutflag.EQ.1) THEN
+                 IF (attype .EQ. nf_double) THEN
+                    got_it = NC_GET_ATTRIB_DP (dset, varid,
+     .                  aname, do_warn, varcode, attlen, 
+     .                  attoutflag, dvals)
+                    scalefac = dvals(1)
+
+                 ELSE
+                    got_it = NC_GET_ATTRIB (dset, varid, aname,
+     .                  do_warn, varcode, buff_size, attlen, 
+     .                  attoutflag, buff, vals)
+                    scalefac = vals(1)
+                 ENDIF
+              ENDIF
+
+              addoff = 0.
+              attname = 'add_offset'
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .                  istat)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
+     .                  varid, attid, aname, attype, attlen, attoutflag, 
+     .                  istat )
+
+              IF (istat .EQ. ferr_ok .AND. attoutflag.EQ.1) THEN
+                 IF (attype .EQ. nf_double) THEN
+                    got_it = NC_GET_ATTRIB_DP (dset, varid,
+     .                  aname, do_warn, varcode, attlen, 
+     .                  attoutflag, dvals)
+                    addoff = dvals(1)
+
+                 ELSE
+                    got_it = NC_GET_ATTRIB (dset, varid, aname,
+     .                  do_warn, varcode, buff_size, attlen, 
+     .                  attoutflag, buff, vals)
+                    addoff = vals(1)
+                 ENDIF
+              ENDIF
+
+           ENDIF  ! setting scalefac and addoff
+
+
 * if its a newly-created variable write attributes
            IF ( new  .AND. all_outflag .GT. 0) THEN
 
@@ -527,51 +584,6 @@
 * structure.
 
               IF (varid .GT. 0) THEN
-                 scalefac = 1.
-                 attname = 'scale_factor'
-                 CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
-     .                  istat)
-                 IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
-     .              varid, attid, aname, attype, attlen, attoutflag, 
-     .              istat )
-
-                 IF (istat .EQ. ferr_ok .AND. attoutflag.EQ.1) THEN
-                    IF (attype .EQ. nf_double) THEN
-                       got_it = NC_GET_ATTRIB_DP (dset, varid,
-     .                     aname, do_warn, varcode, attlen, 
-     .                     attoutflag, dvals)
-                       scalefac = dvals(1)
-
-                    ELSE
-                       got_it = NC_GET_ATTRIB (dset, varid, aname,
-     .                    do_warn, varcode, buff_size, attlen, 
-     .                    attoutflag, buff, vals)
-                       scalefac = vals(1)
-                    ENDIF
-                 ENDIF
-
-                 addoff = 0.
-                 attname = 'add_offset'
-                 CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
-     .                  istat)
-                 IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
-     .                  varid, attid, aname, attype, attlen, attoutflag, 
-     .                  istat )
-
-                 IF (istat .EQ. ferr_ok .AND. attoutflag.EQ.1) THEN
-                    IF (attype .EQ. nf_double) THEN
-                      got_it = NC_GET_ATTRIB_DP (dset, varid,
-     .                     aname, do_warn, varcode, attlen, 
-     .                     attoutflag, dvals)
-                      addoff = dvals(1)
-
-                    ELSE
-                       got_it = NC_GET_ATTRIB (dset, varid, aname,
-     .                    do_warn, varcode, buff_size, attlen, 
-     .                    attoutflag, buff, vals)
-                      addoff = vals(1)
-                    ENDIF
-                 ENDIF
 
 * Output the bad flag used by Ferret (and _FillValue which has been made  
 * the same as missing_flag)

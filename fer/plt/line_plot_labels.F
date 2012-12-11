@@ -1,7 +1,7 @@
 	SUBROUTINE LINE_PLOT_LABELS (var1, nmv, ndv, cx_list, 
      .		this_no_range, overlay, versus, nokey, time_axis, 
-     .		tstyle, cal_id_1, ribbon_var, dep_lab, ind_min, 
-     .		dep_len, hlen)
+     .		tstyle, cal_id_1, ribbon_var, indep_lab, dep_lab, 
+     .		ind_min, dep_len, hlen)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -56,7 +56,8 @@
 
 * calling argument declarations:
 	LOGICAL this_no_range(*), overlay, versus, nokey, time_axis
-	INTEGER var1, nmv, cx_list(*), cal_id_1, ribbon_var, dep_lab
+	INTEGER var1, nmv, cx_list(*), cal_id_1, ribbon_var, 
+     .		indep_lab, dep_lab
 	REAL	dep_len, hlen
 	REAL*8  ind_min
 	CHARACTER*(*) tstyle
@@ -188,6 +189,17 @@
 
  600	   CONTINUE
 
+           IF (versus) THEN
+	      plot_title = FULL_VAR_TITLE( cx_list(1), slen )
+              slen = TM_LENSTR1( plot_title )
+              CALL BOX_LABEL( indep_lab,
+     .                     plot_title(:slen),
+     .                     0.0, 0.0, 0.6*dep_len, letsize_label,
+     .                     letsize_label, ppl_centered,
+     .                     lab_loc_absolute, lab_loc_absolute )
+           ENDIF
+
+
 	ENDIF  ! overlay
 	
 	GOTO 5000  ! done
@@ -259,7 +271,7 @@
      .			   lab_loc_absolute, lab_loc_absolute )
 	   ENDIF
 
-	   IF (ribbon_plot) THEN
+	   IF (versus .AND. ribbon_plot) THEN
 	      plot_title = FULL_VAR_TITLE( cx_list(var1), slen )
 	      slen = TM_LENSTR1( plot_title )
 	      CALL BOX_LABEL( dep_lab,
@@ -290,7 +302,13 @@
 	         
               labsize = letsize_title
               IF (ipl.EQ.ribbon_var) THEN
-		 IF (versus) THEN
+	         IF (versus) THEN
+                    slen1 = TM_LENSTR1( plot_title_1 )
+		    CALL BOX_LABEL( indep_lab,
+     .                     plot_title_1(:slen1),
+     .                     0.0, 0.0, 0.6*dep_len, letsize_label,
+     .                     letsize_label, ppl_centered,
+     .                     lab_loc_absolute, lab_loc_absolute )
 		    plot_title = 'Colored by '//plot_title(1:slen)
                  ELSE
 		    slen1 = TM_LENSTR1( plot_title_1 )
@@ -318,8 +336,9 @@
 
               plot_title_1 = plot_title ! ribbon plot: combine with color-by label
  1600	   CONTINUE
-	   
+
 	ENDIF ! overlay
+
 
  5000	RETURN
 	END

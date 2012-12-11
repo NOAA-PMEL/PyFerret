@@ -855,8 +855,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	IF ( .NOT.no_labels ) 
      .          CALL LINE_PLOT_LABELS (var1, nmv, ndv, cx_list, 
      .		this_no_range, overlay, versus, nokey, time_axis, 
-     .		tstyle, cal_id_1, ribbon_var, dep_lab, ind_min, 
-     .		dep_len, hlen)
+     .		tstyle, cal_id_1, ribbon_var, indep_lab, dep_lab, 
+     .		ind_min, dep_len, hlen)
 
 * successful completion
  1000	status = ferr_ok

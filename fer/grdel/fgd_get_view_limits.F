@@ -14,6 +14,8 @@
      .         lftcrd, rgtcrd, btmcrd, topcrd
 
         INCLUDE 'fgrdel.cmn'
+        REAL*4 EPSIL
+        PARAMETER (EPSIL = 1.0E-4)
 
 *       Sanity checks - transform 0 is an implicit transform
         IF ( (activetransform .LT. 0) .OR.
@@ -33,13 +35,23 @@
 *           full window is thought of as going from [0.0,0.0]
 *           to [ndcxmax,ndcymax] (set by FGD_GSWKWN).
             lftfrc = viewleftfrac(activetransform) / 
-     .                ndcxmax(activewindow)
+     .               ndcxmax(activewindow)
             rgtfrc = viewrightfrac(activetransform) / 
-     .                ndcxmax(activewindow)
+     .               ndcxmax(activewindow)
             btmfrc = viewbottomfrac(activetransform) / 
-     .                ndcymax(activewindow)
+     .               ndcymax(activewindow)
             topfrc = viewtopfrac(activetransform) / 
-     .                ndcymax(activewindow)
+     .               ndcymax(activewindow)
+*           Allow some tolerance for all PlotPlus arithmetic 
+*           (more than just the above) in single-precision
+            IF ( (lftfrc .LT. 0.0) .AND. (lftfrc .GT. -EPSIL) )
+     .          lftfrc = 0.0
+            IF ( (rgtfrc .GT. 1.0) .AND. (rgtfrc .LT. 1.0+EPSIL) )
+     .          lftfrc = 1.0
+            IF ( (btmfrc .LT. 0.0) .AND. (btmfrc .GT. -EPSIL) )
+     .          btmfrc = 0.0
+            IF ( (topfrc .GT. 1.0) .AND. (topfrc .LT. 1.0+EPSIL) )
+     .          topfrc = 1.0
             lftcrd = viewleftcoord(activetransform)
             btmcrd = viewbottomcoord(activetransform)
             rgtcrd = viewrightcoord(activetransform)
@@ -65,9 +77,9 @@
             lftcrd = 0.0
             btmcrd = 0.0
             rgtcrd = windowwidth(activewindow) *
-     .                 windowdpix(activewindow)
+     .               windowdpix(activewindow)
             topcrd = windowheight(activewindow) *
-     .                 windowdpiy(activewindow)
+     .               windowdpiy(activewindow)
         ENDIF
 
         RETURN

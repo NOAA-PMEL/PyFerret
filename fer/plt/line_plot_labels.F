@@ -70,7 +70,7 @@
 	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title, plot_title_1
 	CHARACTER	VAR_UNITS*64, SECS_TO_DATE*20, year*4, buff1*16
 	REAL		xkeypos, ykeypos, xkeysize, ykeysize, 
-     .			lab_ht, aa, labsize
+     .			lab_ht, labsize
 
 	ptitl = qual_given( slash_title )
 	user_title = ptitl .GT. 0
@@ -169,10 +169,9 @@
                        IF ( status .NE. ferr_ok ) GOTO 5000
 	               slen = TM_LENSTR1( plot_title )
 	            ENDIF
-		    aa = letsize_title
 	            CALL BOX_LABEL( ppl_title,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.75*xlen, letsize_title,
+     .			   0.0, 0.0, 0.75*hlen, letsize_title,
      .			   letsize_title, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 	         ENDIF
@@ -194,7 +193,7 @@
               slen = TM_LENSTR1( plot_title )
               CALL BOX_LABEL( indep_lab,
      .                     plot_title(:slen),
-     .                     0.0, 0.0, 0.6*dep_len, letsize_label,
+     .                     0.0, 0.0, 0.6*hlen, letsize_label,
      .                     letsize_label, ppl_centered,
      .                     lab_loc_absolute, lab_loc_absolute )
            ENDIF
@@ -306,7 +305,7 @@
                     slen1 = TM_LENSTR1( plot_title_1 )
 		    CALL BOX_LABEL( indep_lab,
      .                     plot_title_1(:slen1),
-     .                     0.0, 0.0, 0.6*dep_len, letsize_label,
+     .                     0.0, 0.0, 0.75*hlen, letsize_label,
      .                     letsize_label, ppl_centered,
      .                     lab_loc_absolute, lab_loc_absolute )
 		    plot_title = 'Colored by '//plot_title(1:slen)

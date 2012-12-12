@@ -22,3 +22,6 @@ GO err682_grid_merge
 
 GO bn_reset
 GO err682_scale_no_offset
+
+GO bn_reset
+GO err682_append_packed

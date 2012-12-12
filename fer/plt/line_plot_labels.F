@@ -1,7 +1,7 @@
 	SUBROUTINE LINE_PLOT_LABELS (var1, nmv, ndv, cx_list, 
      .		this_no_range, overlay, versus, nokey, time_axis, 
-     .		tstyle, cal_id_1, ribbon_var, dep_lab, ind_min, 
-     .		dep_len, hlen)
+     .		tstyle, cal_id_1, ribbon_var, indep_lab, dep_lab, 
+     .		ind_min, dep_len, hlen)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -41,6 +41,7 @@
 *
 * Pulled out of plot_set_up.F 
 * 8/12 ACM 
+* V6.83 *acm* 11/30/2012 Need AXIS.INC for the axis lengths, xlen, ylen
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -50,10 +51,13 @@
 	include 'xplot_setup.cmn'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
+	include 'axis_inc.decl'    ! with axis lengths 
+	include 'AXIS.INC'         ! with axis lengths   
 
 * calling argument declarations:
 	LOGICAL this_no_range(*), overlay, versus, nokey, time_axis
-	INTEGER var1, nmv, cx_list(*), cal_id_1, ribbon_var, dep_lab
+	INTEGER var1, nmv, cx_list(*), cal_id_1, ribbon_var, 
+     .		indep_lab, dep_lab
 	REAL	dep_len, hlen
 	REAL*8  ind_min
 	CHARACTER*(*) tstyle
@@ -66,10 +70,11 @@
 	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title, plot_title_1
 	CHARACTER	VAR_UNITS*64, SECS_TO_DATE*20, year*4, buff1*16
 	REAL		xkeypos, ykeypos, xkeysize, ykeysize, 
-     .			lab_ht
+     .			lab_ht, labsize
 
 	ptitl = qual_given( slash_title )
 	user_title = ptitl .GT. 0
+	aa = letsize_title
 
 
 * * * * * * *    - - - TITLES - - -   * * * * * * * * *
@@ -166,7 +171,7 @@
 	            ENDIF
 	            CALL BOX_LABEL( ppl_title,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.75*xlen, letsize_title,
+     .			   0.0, 0.0, 0.75*hlen, letsize_title,
      .			   letsize_title, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 	         ENDIF
@@ -182,6 +187,17 @@
 	      ENDIF
 
  600	   CONTINUE
+
+           IF (versus) THEN
+	      plot_title = FULL_VAR_TITLE( cx_list(1), slen )
+              slen = TM_LENSTR1( plot_title )
+              CALL BOX_LABEL( indep_lab,
+     .                     plot_title(:slen),
+     .                     0.0, 0.0, 0.6*hlen, letsize_label,
+     .                     letsize_label, ppl_centered,
+     .                     lab_loc_absolute, lab_loc_absolute )
+           ENDIF
+
 
 	ENDIF  ! overlay
 	
@@ -254,7 +270,7 @@
      .			   lab_loc_absolute, lab_loc_absolute )
 	   ENDIF
 
-	   IF (ribbon_plot) THEN
+	   IF (versus .AND. ribbon_plot) THEN
 	      plot_title = FULL_VAR_TITLE( cx_list(var1), slen )
 	      slen = TM_LENSTR1( plot_title )
 	      CALL BOX_LABEL( dep_lab,
@@ -285,7 +301,13 @@
 	         
               labsize = letsize_title
               IF (ipl.EQ.ribbon_var) THEN
-		 IF (versus) THEN
+	         IF (versus) THEN
+                    slen1 = TM_LENSTR1( plot_title_1 )
+		    CALL BOX_LABEL( indep_lab,
+     .                     plot_title_1(:slen1),
+     .                     0.0, 0.0, 0.75*hlen, letsize_label,
+     .                     letsize_label, ppl_centered,
+     .                     lab_loc_absolute, lab_loc_absolute )
 		    plot_title = 'Colored by '//plot_title(1:slen)
                  ELSE
 		    slen1 = TM_LENSTR1( plot_title_1 )
@@ -293,7 +315,7 @@
      .			'<NL>Colored by '//plot_title(1:slen)
                  ENDIF
 
-		 labsize = 0.6*letsize_title
+!		 labsize = 0.8*letsize_title
 
                  IF ( user_title ) THEN     ! user over-ride of title
                     CALL EQUAL_STR_LC
@@ -308,13 +330,14 @@
               CALL BOX_LABEL( ppl_title,
      .			   plot_title(:slen),
      .			   0.0, 0.0, 0.75*hlen, letsize_title,
-     .			   letsize_title, ppl_centered,
+     .			   labsize, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 
               plot_title_1 = plot_title ! ribbon plot: combine with color-by label
  1600	   CONTINUE
-	   
+
 	ENDIF ! overlay
+
 
  5000	RETURN
 	END

@@ -1,0 +1,18 @@
+! err682_append_packed.jnl
+! See ticket 2004. Write packed variable with scale attributes
+! Append more values, data was not correctly scaled.
+
+use append_pack.nc
+list temp  ! values should be  28.69, 28.63
+
+cancel mode upcase_output
+set att/output=all temp
+save/clobber/file=a.nc/outtype=short/L=1 temp
+save/append/file=a.nc/outtype=short/L=2 temp
+
+can data/all
+use a.nc
+
+list temp  ! values should match those above.
+
+set mode/last upcase_output

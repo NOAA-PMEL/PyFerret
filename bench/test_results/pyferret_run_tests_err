@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Nov 30 10:56 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Dec 12 14:12 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for PyFerret on Nov 30, 2012
+Note: RUN_TESTS.sh test results for PyFerret using Ferret 6.8.3_rc1
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -209,7 +209,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Nov 30 10:57:13 PST 2012
+Beginning at Wed Dec 12 14:14:57 PST 2012
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2952,6 +2952,10 @@ SET DAT/FORM=CDF ./z1.nc
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
 *** Running test: bn_outtype.jnl
  Cached data cleared from memory
  LISTing to file mytype.nc
@@ -3013,4 +3017,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Fri Nov 30 11:00:24 PST 2012
+Ended at Wed Dec 12 14:18:41 PST 2012

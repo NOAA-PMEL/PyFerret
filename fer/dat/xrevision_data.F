@@ -104,13 +104,14 @@
 * V6.64            BROWSE, bug fixes. Released 9/2010  
 * V6.65  10/01/10
 * V6.74   4/2011  to GFDL: double precision, netCDF4.2, fix ticket 1391 
+* V6.84  12/2012  Ribbon plots, bug fixes.
 
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.83    /
+	DATA revision_level	/  6.84    /
 
 ! Note we can put a debug title in the Ferret startup header lines
 ! by putting a title into the Makefile: $(MAKE) "DEBUG_TITLE=beta" update

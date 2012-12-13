@@ -1,4 +1,4 @@
-      SUBROUTINE vec_arrows (xx1, yy1, xx2, yy2, vel) 
+      SUBROUTINE vec_arrows (xx1, yy1, xx2, yy2, vel, xadd) 
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -46,9 +46,10 @@
 *                 Also remove VMS includes.
 *                 Declare all variables.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V684 *adm* 12/12 Changes for VECTOR/MODULO on curvilinear plots.
 
 *  Argument declarations.
-      REAL xx1, yy1, xx2, yy2, vel
+      REAL xx1, yy1, xx2, yy2, vel, xadd
 
       REAL a160
       PARAMETER (a160 = 160.0*3.1416/180.0)
@@ -102,6 +103,7 @@ C     Curvilinear coordinates declarations
       addy2 = arrlen* sin(dir-a160)
 
       IF (curvilinear) THEN
+	  xxc = xxc + xadd
 
           CALL plot (xxc, yyc, 0, 0)
           CALL plot (xxc+addx1, yyc+addy1, 1, 0)

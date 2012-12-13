@@ -40,6 +40,7 @@
 * V6.8  *acm* 1/12 Add SET DATA/STRICT 
 * V68 *acm* 5/12   Add DEFINE DATA/AGGREGATE/TITLE/QUIET
 * V683  8/12 *acm*  New SET LIST/OUTTYPE CANCEL LIST/OUTTYPE, and SAVE/OUTTYPE 
+* V684 *adm* 12/12 Changes for VECTOR/MODULO on curvilinear plots.
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -292,7 +293,7 @@
 	INTEGER		nsub13       , nsub_at14 ,
      .			nqual13a     ,nqual_at14a
 	PARAMETER    (	nsub13   = 1, nsub_at14    = nsub_at13   + nsub13,
-     .			nqual13a = 40,nqual_at14a  = nqual_at13a + nqual13a  )
+     .			nqual13a = 45,nqual_at14a  = nqual_at13a + nqual13a  )
 
 * PPLUS		 - commmand # 14
 	INTEGER		nsub14      , nsub_at15 ,

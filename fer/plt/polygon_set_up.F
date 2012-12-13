@@ -3,8 +3,12 @@
      .				overlay, transpz, coord_ax, no_labels,
      .				no_range, only_val,
      .				symbol, line_type, use_line,
-     .				is_logx, is_logy,
+     .				is_logx, is_logy, 
      .				mr_list, cx_list, nmv,
+     .				is_modx,
+     .				do_mod_minus, 
+     .				do_mod_plus,
+     .				add_lon,
      .				x_dat, y_dat, status )
 
 
@@ -154,12 +158,12 @@
 
 * calling argument declarations:
 	LOGICAL		overlay, transpz, no_labels, no_range, use_line,
-     .			is_logx, is_logy
+     .			is_logx, is_logy, is_modx, do_mod_minus, do_mod_plus
 	INTEGER		symbol, line_type, coord_ax, iunits, do_dash,
      .			nmv, mr_list( nmv ), cx_list( nmv ), status
 	REAL		memory( mem_blk_size, max_mem_blks )
 	REAL		x_dat(*), y_dat(*)     ! dynamic space allocation 
-	REAL            only_val, dashstyle(4)
+	REAL            only_val, dashstyle(4), add_lon
 
 * internal variable declarations:
 	LOGICAL         missing_polygon, first_polygon, use_nice
@@ -171,7 +175,7 @@
 	CHARACTER	VAR_UNITS*64, LEFINT*6, TM_GET_CALENDAR_NAME*32, 
      .			x_ax*1, y_ax*1,buff*8, buff2*4, t1_date*14,
      .                  cal_name*32, cal_name_saved*32, buff3*16,
-     .			buff4*16, LEFT_REAL*16, fmt*4
+     .			buff4*16, LEFT_REAL*16, fmt*4, buffer*40, buff30*30
 	INTEGER         TM_UNIT_ID
 	INTEGER		TM_LENSTR1, CX_DIM_LEN,	TM_GET_CALENDAR_ID, 
      .			STR_SAME,
@@ -527,6 +531,13 @@ c	ind_dim = plot_axis(1)
   204            CONTINUE
               ENDIF
 	   ENDIF  
+
+	   IF (add_lon .NE. 0.) THEN
+	      DO 205 i = 1, npts
+	         IF ( x_dat(i) .NE. mr_bad_data(mr_x) ) 
+     .              x_dat(i) = add_lon + x_dat(i)
+  205	      CONTINUE
+           ENDIF
 
 * When using log axis transform to log(x).  Scale the points of the
 * polygon within the log axis range xlo, xhi to keep something like
@@ -887,9 +898,49 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	   endif
 	ENDIF
 
+
+* If xmodulo, check for modulo operation
+* Get axis limits - if this is an overlay or the user specified /HLIM
+
+	IF (is_modx .AND. add_lon.EQ.0) THEN
+	   IF (overlay) THEN ! Get existing xaxis limits
+
+              buff30 = 'XAXIS_MIN'
+              CALL GETSYM( buff30, buffer, nc, ier )
+              READ (buffer, *) vmin
+              buff30 = 'XAXIS_MAX'
+              CALL GETSYM( buff30, buffer, nc, ier )
+              READ (buffer, *) vmax
+	   ELSE IF ( pxdenig .GT. 0 ) THEN 
+              tax = grid_line(f_dim,cx_grid(cx_x ))
+              IF (tax.EQ.mnormal) tax = grid_line(t_dim,cx_grid(cx_x ))
+              cal_name = line_cal_name(tax)
+              cal_id = TM_GET_CALENDAR_ID ( cal_name )
+	      CALL EQUAL_RANGE( 
+     .			cmnd_buff(qual_start(pxdenig):qual_end(pxdenig)),
+     .			x_dim, vmin, vmax, delta,
+     .			formatted, range_rqd, cal_id, status )
+	      IF ( status .NE. ferr_OK ) GOTO 5000
+	   ENDIF
+
+	   IF (lox.LT.vmin .OR. hix.LT.vmax) THEN
+	      do_mod_plus = .TRUE.
+	   ENDIF
+	   IF (hix .GT. vmax .OR. lox.GT.vmin) THEN
+	      do_mod_minus = .TRUE.
+	   ENDIF
+	   IF ((do_mod_minus.OR.do_mod_plus) .AND. x_is_log) THEN
+	      CALL WARN( '/MODULO ignored on polygon command with log x axis')
+	      do_mod_minus = .FALSE.
+	      do_mod_plus = .FALSE.
+	   ENDIF
+        ENDIF
+
 * axis scaling -- only applies if it is a fresh plot (not an overlay)
 * most of the work is avoiding an error if there is no data range with
 * which to make a scale ...
+
+
 	IF ( .NOT.overlay ) THEN
 	   delta = unspecified_val8
 * ... X axis

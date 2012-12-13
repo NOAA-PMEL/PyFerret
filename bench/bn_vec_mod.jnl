@@ -1,0 +1,20 @@
+! bn_vec_mod.jnl
+! /MODULO qualifier for the vector command.
+! 12/12/2012 ACM
+!
+! (Note for a test of POLY/MODULO see 
+! /home/users/ansley/ans_ferret/users/brockmann/polymod.jnl)
+
+use tripolar_subset.nc
+
+! Define a V component for vectors
+
+let fakev = 0.8*u - 0.1*geolat_c
+set view ul
+vec u,fakev,geolon_c,geolat_c
+set view ll
+vec/MOD/HLIM=0:360 u,fakev,geolon_c,geolat_c
+set view lr
+vec/MOD/HLIM=-180:180 u,fakev,geolon_c,geolat_c
+
+can view

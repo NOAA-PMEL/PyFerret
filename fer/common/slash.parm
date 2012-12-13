@@ -48,6 +48,7 @@
 * V664  8/10 *kms* Add EXIT /TOPYTHON
 * V68 *acm* 1/12   Add USE/STRICT; see ticket 1910.
 * V683  8/12 *acm*  New SET LIST/OUTTYPE CANCEL LIST/OUTTYPE, and SAVE/OUTTYPE 
+* V684 *adm* 12/12 Changes for POLY/MODULO and  VECTOR/MODULO on curvilinear plots.
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -239,6 +240,7 @@
      .			slash_vect_vgrat,
      .			slash_vect_grat,
      .			slash_vect_key,
+     .			slash_vect_mod,
      .
      .			slash_strm_over_plot,
      .			slash_strm_set_up,
@@ -512,6 +514,7 @@
      .			slash_vect_vgrat	= 1+37,
      .			slash_vect_grat 	= 1+38,
      .			slash_vect_key	 	= 1+39,
+     .			slash_vect_mod		= 1+40,
      .
      .			slash_strm_over_plot	= 1+12,
      .			slash_strm_set_up	= 1+12,
@@ -621,7 +624,8 @@
      .			slash_polygon_axes,
      .			slash_polygon_hgrat,
      .			slash_polygon_vgrat,
-     .			slash_polygon_grat
+     .			slash_polygon_grat,
+     .			slash_polygon_mod
 
 	PARAMETER     ( slash_polygon_coord = 1 + 17,
      .			slash_polygon_line  = 1 + 21,
@@ -633,5 +637,6 @@
      .			slash_polygon_axes  = 1 + 33,
      .			slash_polygon_hgrat  = 1 + 38,
      .			slash_polygon_vgrat  = 1 + 39,
-     .			slash_polygon_grat  = 1 + 40 )
+     .			slash_polygon_grat   = 1 + 40,
+     .			slash_polygon_mod    = 1 + 41 )
 

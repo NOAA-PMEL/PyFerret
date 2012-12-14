@@ -198,6 +198,7 @@
 * V68 *acm* 5/12   Add DEFINE DATA /AGGREGATE /NAME= /QUIET
 * V683*acm* 8/12   New SET LIST/OUTTYPE, CANCEL LIST/OUTTYPE and SAVE/OUTTYPE 
 * V683*acm 10/12   NEW SET AXIS/OUTTYPE to change default coordinate axis output type
+* V684 *adm* 12/12 Changes for POLY/MODULO and  VECTOR/MODULO on curvilinear plots.
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -1277,7 +1278,12 @@
 		DATA qualifiers  (nqual_at13a+36)/ 'HGRATICU'/	! horiz tic lines
 		DATA qualifiers  (nqual_at13a+37)/ 'VGRATICU'/	! vert tic lines
 		DATA qualifiers  (nqual_at13a+38)/ 'GRATICUL'/
-		DATA qualifiers  (nqual_at13a+39)/ 'KEY'/   !KEY 
+		DATA qualifiers  (nqual_at13a+39)/ 'KEY'/	!KEY 
+		DATA qualifiers  (nqual_at13a+40)/ 'MODULO'/
+		DATA qualifiers  (nqual_at13a+41)/ '****'/
+		DATA qualifiers  (nqual_at13a+42)/ '****'/
+		DATA qualifiers  (nqual_at13a+43)/ '****'/
+		DATA qualifiers  (nqual_at13a+44)/ '****'/
 
 * PPLUS	 - command # 14
 	DATA commands(14)			/ 'PPLUS'	/
@@ -1601,7 +1607,7 @@
 		DATA qualifiers  (nqual_at27a+38)/ 'HGRATICU'/	!tic lines, dash or line
 		DATA qualifiers  (nqual_at27a+39)/ 'VGRATICU'/	!vert tic lines
 		DATA qualifiers  (nqual_at27a+40)/ 'GRATICUL'/
-		DATA qualifiers  (nqual_at27a+41)/ '****'/
+		DATA qualifiers  (nqual_at27a+41)/ 'MODULO'/
 		DATA qualifiers  (nqual_at27a+42)/ '****'/
 		DATA qualifiers  (nqual_at27a+43)/ '****'/
 

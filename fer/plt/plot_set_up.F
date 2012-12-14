@@ -661,7 +661,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	ENDIF
 
 * pass the data to PLOT+
-	   WRITE ( ppl_buff, 3005 ) mr_bad_data( mv ), dep_ax8/23/2012
+
 	   WRITE ( ppl_buff, 3005 ) mr_bad_data( mv ), dep_ax
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 	   IF ( time_axis ) THEN
@@ -702,7 +702,15 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      ENDIF
 	   ENDIF
 
-	   IF (ribbon_plot .AND. ipl.EQ.ribbon_var) flip = .FALSE. ! put colorvar in the right place
+ ! put colorvar in the right place
+	   IF (ribbon_plot .AND. ipl.EQ.ribbon_var) THEN
+	      flip = .FALSE.
+	      IF (indep_dim .EQ. z_dim) THEN
+	         WRITE ( ppl_buff, 3005 ) mr_bad_data( mv ), indep_ax
+	         CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+	      ENDIF
+	   ENDIF
+
 	   IF ( flip ) THEN
 	      CALL PPLLDX_envelope(0,dep_dat,indep_dat,nload,
      .                             t1_date, tref, dt_min, plot_mem_used)

@@ -64,8 +64,10 @@
 * V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
 * V6.2  *acm* 11/08Fix bug 1609: If the plot is an overlay then do not process /AXES=
 *                  or /NOAXES. Axes are never drawn for overlays anyway.
-* V6.2  *acm& 2/09 Fix choice of color settings with /PEN and /THICK when we have 
+* V6.2  *acm* 2/09 Fix choice of color settings with /PEN and /THICK when we have 
 *                  increased the num of colors with MODE linecolors
+* V6.83 *acm*12/12 Add POLYGON/MODULO qualifier, for curvilienar coordinate plots, 
+*                  as is done for SHADE and CONTOUR plots
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -96,7 +98,8 @@
 * internal variable declarations:
         LOGICAL         no_range, do_key, spectrum, pattern, use_line
 	LOGICAL		overlay, transpz, no_labels, set_up, noaxes, axes
-	LOGICAL         line_it, fill_it, is_logh, is_logv, no_data
+	LOGICAL         line_it, fill_it, is_logh, is_logv, no_data, is_modx,
+     .			do_mod_minus, do_mod_plus
 	INTEGER         sp, patt, TM_LENSTR1, STR_UPCASE
 	INTEGER		symbol, color, status,
      .			loc, limit, slen, coord_ax, thick,
@@ -104,7 +107,7 @@
      .			ax2_blks, ax2_start,
      .			s1, s2, it_start(4), it_end(4),
      .			nparm,  num_it, i, iax(4), i1, loch, locv
-	REAL		val, only_val, sym_size
+	REAL		val, only_val, sym_size, add_lon
 	CHARACTER	LEFINT*4, TM_FMT*20, fname*128, poly_opt*10,
      .                  buff*25
 
@@ -158,6 +161,7 @@ CC       => Set values here instead.
         spectrum  = sp .GT. 0 
         patt      = qual_given( slash_shad_pattern   )
         pattern   = patt .GT. 0
+	add_lon	  = 0.
 
         ncolors = mode_arg(pmode_linecolors,1)
 
@@ -245,48 +249,7 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 
         CALL set_graticules(loch, locv, status)
 
-	if (overlay) sover = .true.
-* set up the axes and title and load the data into PPLUS
-	CALL POLYGON_SET_UP   ( memory,
-     .				overlay,
-     .				transpz,
-     .				coord_ax,
-     .				no_labels,
-     .				no_range,
-     .				only_val,
-     .				symbol,
-     .				color,
-     .				use_line,
-     .				is_logh, 
-     .				is_logv,
-     .				is_mr,
-     .				is_cx,
-     .				num_uvars_in_cmnd,
-     .				memory( 1, ax1_start ),
-     .				memory( 1, ax2_start ),
-     .				status )
-	IF ( status .NE. ferr_ok ) GOTO 5000
-
-* is there no valid input data?
-	no_data =  no_range .AND. only_val.EQ.bad_val4
-
-* PPLUS blows up setting auto contour levels if all data have same value
-* But, do not let this be rounded off, or we cannot find the color when matching 
-* this value in get_ndx, called by fillpol
-
-* The initial fix below had precision problems when the value in only_val was
-* of high precision, sometimes causing polygons to go unfilled (bug 1472).  
-* Instead, make a ppl lev 1 setting, as is done in disp_prep.F
-
-c     IF ( no_range .AND. qual_given( slash_shad_lev_same ) .EQ. 0 )
-c    .          CALL PPLCMD ( from, line, 0, 
-c    .          'LEV () ('//TM_FMT(only_val, 8, 20, slen)//')' , 1, 1 )
-
-      IF ( no_range .AND. qual_given( slash_shad_lev_same ) .EQ. 0 ) THEN
-           iautoc = 1  
-c           nlev = 1   
-      ENDIF
-
+	
 * default key
 
 	do_key =  (qual_given(slash_polygon_key)  .GT. 0)
@@ -316,6 +279,58 @@ c           nlev = 1
 	ELSE
 	   CALL PPLCMD ( from, line, 0, 'SHAKEY 0,1', 1, 1 )
 	ENDIF
+
+* Do a /MODULO operation for curvilinear coordinates?
+
+	is_modx = qual_given(slash_polygon_mod) .GT. 0
+
+	if (overlay) sover = .true.
+* set up the axes and title and load the data into PPLUS
+
+ 220	CONTINUE 
+	CALL POLYGON_SET_UP   ( memory,
+     .				overlay,
+     .				transpz,
+     .				coord_ax,
+     .				no_labels,
+     .				no_range,
+     .				only_val,
+     .				symbol,
+     .				color,
+     .				use_line,
+     .				is_logh, 
+     .				is_logv,
+     .				is_mr,
+     .				is_cx,
+     .				num_uvars_in_cmnd,
+     .				is_modx,
+     .				do_mod_minus, 
+     .				do_mod_plus,
+     .				add_lon,
+     .				memory( 1, ax1_start ),
+     .				memory( 1, ax2_start ),
+     .				status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+
+* is there no valid input data?
+	no_data =  no_range .AND. only_val.EQ.bad_val4
+
+* PPLUS blows up setting auto contour levels if all data have same value
+* But, do not let this be rounded off, or we cannot find the color when matching 
+* this value in get_ndx, called by fillpol
+
+* The initial fix below had precision problems when the value in only_val was
+* of high precision, sometimes causing polygons to go unfilled (bug 1472).  
+* Instead, make a ppl lev 1 setting, as is done in disp_prep.F
+
+c     IF ( no_range .AND. qual_given( slash_shad_lev_same ) .EQ. 0 )
+c    .          CALL PPLCMD ( from, line, 0, 
+c    .          'LEV () ('//TM_FMT(only_val, 8, 20, slen)//')' , 1, 1 )
+
+      IF ( no_range .AND. qual_given( slash_shad_lev_same ) .EQ. 0 ) THEN
+           iautoc = 1  
+c           nlev = 1   
+      ENDIF
 
 * protect colors already on-screen before a color overlay
 	IF ( overlay ) CALL PPL_SHASET( 'PROTECT' )
@@ -405,6 +420,34 @@ c           nlev = 1
 	   ELSE
 	      CALL PPLCMD ( ' ', ' ', 0,
      .		'FILLPOL/'//ppl_wait//poly_opt//' ', 1, 1 )
+	   ENDIF
+
+* Is a modulo replication set up?  If so go do it, no labels, no axes, no key,
+* same levels (which were computed with all the data, just not shown on orig. plot)
+	   IF (is_modx) THEN
+	      add_lon = 0.
+	      IF (do_mod_minus) THEN
+	         add_lon = -360.
+		 do_mod_minus = .FALSE.
+	      ELSEIF (do_mod_plus) THEN
+	         add_lon = 360.
+		 do_mod_plus = .FALSE.
+	      ENDIF
+	      IF (add_lon .NE. 0) THEN
+		 sover = .TRUE.
+		 overlay = .TRUE.
+		 noaxes = .TRUE.
+		 no_labels = .TRUE.
+		 do_key = .FALSE.
+		 iautoc = 1 ! Mark the levels as set
+C Reset pplus lines
+		 LINEN=0
+		 IBASE=1
+		 PBUF=0
+		 LNUM=1
+
+		 GOTO 220
+	      ENDIF
 	   ENDIF
 
 * protect the new colors and restore the original color spectrum

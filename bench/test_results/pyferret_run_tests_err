@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Dec 12 14:12 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Dec 13 15:41 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for PyFerret using Ferret 6.8.3_rc1
+Note: RUN_TESTS.sh test results for PyFerret 1.0.0 beta from Ferret 6.8.4 on Dec 13, 2012
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -193,6 +193,7 @@ Benchmark scripts that will be run:
    bn_descr_4digit.jnl
    bn_axis_outtype.jnl
    bn_axis_nonmonotonic.jnl
+   bn_vec_mod.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -209,7 +210,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Wed Dec 12 14:14:57 PST 2012
+Beginning at Thu Dec 13 15:49:31 PST 2012
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2998,6 +2999,11 @@ LIST/FORMAT=CDF/clobber/file=mytype.nc my_data
  Cached data cleared from memory
  **ERROR: improper grid or axis definition: data for DEFINE AXIS/FROM_VARIABLE is not monotonic at index 12
 define axis/t/units=days tax = tvar
+*** Running test: bn_vec_mod.jnl
+ Cached data cleared from memory
+ Using every   9th vector in the X direction
+ Using every   9th vector in the X direction
+ Using every   9th vector in the X direction
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3017,4 +3023,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Wed Dec 12 14:18:41 PST 2012
+Ended at Thu Dec 13 15:53:03 PST 2012

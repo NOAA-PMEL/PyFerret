@@ -71,6 +71,7 @@ C**
 * V6.63 *acm* 7/10 Save a symbol PPL_VECLEN containing the Vector Length value
 * V6.65 *acm* 10/10 Draw curvilinear vectors as straight lines.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V684 *adm* 12/12 Changes for VECTOR/MODULO on curvilinear plots.
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -105,8 +106,9 @@ C
 
 	real xfuser,yfuser,xlousr,ylousr,zave,xt,yt
 	real xx2,yy2,zz,vfact,xtm,ytm,xtx,ytx,xx1,yy1,vx,vy,vclen
-	real thfact,xn,yn,xl,yl,dy,dx, alen
+	real thfact,xn,yn,xl,yl,dy,dx, alen, big,lmin,lmax, xadd
 
+	logical done_nleft, done_nright
 	integer ic,i,j,lnblk,iln, overedge
 	integer TM_LENSTR1, slen, i1, i2
 
@@ -189,6 +191,17 @@ C
 	DX=(xtx-xtm)/MAX(NX-1,1)
 	DY=(ytx-ytm)/MAX(NY-1,1)
         IPT = 0
+
+	big = ABS(bad_val4)
+	lmin = -1*big
+	lmax = big
+
+	done_nleft  = .FALSE.
+	done_nright = .FALSE.
+	xadd = 0.
+
+ 90	CONTINUE
+
 	DO 100 I=1,NX,VSKPX
 	DO 100 J=1,NY,VSKPY
 
@@ -247,7 +260,12 @@ C Set up to plot the vector in pieces to make a curve.
 C Dont draw as a curve. Move to the tail now and when we have reached the end
 C then draw the line to the arrow head.
 
-           CALL PLOT(XX1,YY1,0,0) 
+           CALL PLOT(XX1+xadd,YY1,0,0)
+	   IF (xadd .EQ. 0) THEN
+	      lmin = MIN(lmin, XX1)
+              lmax = MAX(lmax, XX1)
+	   ENDIF
+
            DO 60, ii=1, 500
 
               head_i = tail_i + U(I,J)*vfact/10
@@ -278,10 +296,7 @@ C then draw the line to the arrow head.
               CALL CURV_COORD(x_curv, y_curv, 1, 1.0, 1.0, status)
 
               IF (x_curv(1) .ne. cmzeq) xxc = x_curv(1)
-              IF (y_curv(1) .ne. cmzeq) yyc = y_curv(1)
-
-c              CALL PLOT(XX1,YY1,0,0)    
-c              CALL PLOT(xxc,yyc,1,0) 
+              IF (y_curv(1) .ne. cmzeq) yyc = y_curv(1) 
 
 C  curv_len is sum of vector pieces; actual vector length.  When 
 C  it is vclen we are done plotting the vector.
@@ -295,7 +310,11 @@ C   equivalent to xxc = xx1 + (len/xf), or len = (xxc-xx1)* xf
 C  If the line goes over the edge, draw to the edge but don't
 C  draw an arrow head.
               IF (overedge .EQ. 1) THEN
-	         CALL PLOT(xxc,yyc,1,0)
+	         CALL PLOT(xxc+xadd,yyc,1,0)
+		 IF (xadd .EQ. 0) THEN
+	            lmin = MIN(lmin, xxc)
+	            lmax = MAX(lmax, xxc)
+		 ENDIF
 		 GO TO 80 
               ENDIF
 
@@ -309,7 +328,11 @@ C  draw an arrow head.
  60        CONTINUE
 
  70        CONTINUE
-           CALL PLOT(xxc,yyc,1,0)
+           CALL PLOT(xxc+xadd,yyc,1,0)
+           IF (xadd .EQ. 0) THEN
+	      lmin = MIN(lmin, xxc)
+              lmax = MAX(lmax, xxc)
+	   ENDIF
 
 C     DRAW ARROW HEADS
 
@@ -317,7 +340,7 @@ C     DRAW ARROW HEADS
               head_len = 2.*curv_len/(xf+yf)
               head_len = 2.*vclen*vfact/(xf+yf)
               CALL vec_arrows(tail_i_orig, tail_j_orig, 
-     .           head_i, head_j, head_len)
+     .           head_i, head_j, head_len, xadd)
 	   ENDIF	! draw arrow if xxc and yyc were ok
    80	   CONTINUE	! vector went over edge
 
@@ -366,9 +389,36 @@ C
            CALL PLOT(XX1,YY1,1,0)
         ENDIF
 
-100	IF (interrupted) goto 3333 ! *jd* 8.3.92
-	CONTINUE
+100	CONTINUE
+	IF (interrupted) goto 3333 ! *jd* 8.3.92
+
         CALL doit_makedot(IPT,XDOT,YDOT)
+
+
+C Go back to do modulo replications if curvilinear and /MODULO
+
+	IF (xmodulo .AND. curvilinear) THEN
+           xrange = 360
+c           IF (.NOT. units_degrees) xrange = wwxmax - wwxmin
+           nleft = 0
+           nright = 0
+           IF (lmin.GT.xlo .OR. lmax.GT.xhi ) nleft =  1
+	   IF (lmin.LT.xlo .OR. lmax.LT.xhi ) nright = 1
+
+           IF (nleft .GT. 0 .AND. .NOT.done_nleft) THEN
+              xadd = -1.* xrange
+	      done_nleft = .TRUE.
+	      GOTO 90
+	   ENDIF
+
+           IF (nright .GT. 0 .AND. .NOT.done_nright) THEN
+              xadd = xrange
+	      done_nright = .TRUE.
+	      GOTO 90
+	   ENDIF
+	ENDIF
+
+
         IPT = 0
 C
 C	DRAW SCALE  MAKE SCALE .5 INCH LONG AT XT,YT

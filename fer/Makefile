@@ -14,7 +14,7 @@ include ../site_specific.mk
 include ../platform_specific.mk.$(BUILDTYPE)
 
 PLATFORM := $(shell uname -rs)
-VERSION_INFO := (PyFerret $(PYFERRET_VERSION))
+VERSION_INFO := (PyFerret $(PYFERRET_VERSION) beta)
 DATE := $(shell /bin/date +%D)
 
 #

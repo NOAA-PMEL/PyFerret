@@ -13,7 +13,10 @@ LET dy = `0.5* ybox[gy=ylat,j=1]`
 
 !Data contains lat,lon,date,data_id,cruise_id,cruise_no,fco2_rec
 ! USE "/home/data/socat/SOCAT_triples_fco2.nc"
- USE "/home/data/socat/SOCAT_triples_AD_1.3_fco2.nc"
+
+ !USE "/home/data/socat/SOCAT_triples_AD_1.3_fco2.nc"
+
+use  "/home/data/socat/SOCAT_triples_averaged_8_30_2011_AD_1.3_fco2.nc"
 
 !SET AXIS/STRIDE=100 `lon,return=xaxis`
 
@@ -34,7 +37,7 @@ let imax = 457  ! through the end of 2007
 
 DEFINE SYMBOL file_qual = CLOBBER  ! First time CLOBBBER, afterwards APPEND to the file.
 DEFINE SYMBOL gridded_outfile = /home/data/socat/SOCAT_tracks_gridded_stats_AD.nc
-DEFINE SYMBOL gridded_outfile = /home/data/socat/SOCAT_tracks_gridded_monthly.nc
+DEFINE SYMBOL gridded_outfile = /home/data/socat/SOCAT_tracks_gridded_monthly.SOCAT_triples_averaged_8_30_2011_AD_1.3_fco2.nc
 
 repeat/range=1:10:1 ( \
  LET ii = i[i=`i1`:`i2`]; \

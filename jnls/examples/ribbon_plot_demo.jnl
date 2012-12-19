@@ -1,0 +1,197 @@
+\cancel mode verify
+! ribbon_plot_demo.jnl
+! Description: Demonstration of various ribbon plotting options
+! Ferret v6.84 capabilities for coloring a line by the values
+! of a variable, or "ribbon" plots.
+!
+
+say **** Welcome to the Ribbon plotting demo ****
+say .
+say This demo will lead you through a number of options and styles for
+say colored-by-variable line plotting in FERRET. The commands that are
+say producing the plots you will see are set off in the style
+say
+say .   yes? [command]
+say
+say 
+pause
+
+! clean up from any previous activity and set up
+define region/default save
+cancel region
+set wind/asp=.75:ax
+go white
+cancel mode logo
+cancel viewports
+ppl shaset reset
+
+say Ribbon plots are line plots colored by a variable. 
+say These may be 3-variable PLOT/VS plots, colored by the third argument
+
+
+say . RIBBON/VS/LEV= xpts, ypts, var
+say . 
+say . or 2-variable line plot, colored by the second argument
+say . RIBBON/LEV= var1, var2
+say . 
+say . The alias RIBBON is shorthand for PLOT/RIBBON
+say ...
+
+say .    yes? show alias ribbon
+
+show alias ribbon
+
+pause
+
+
+say Here are some plots where a line plot is colored by a second variable.
+say
+say .    yes? USE coads_climatology
+say .    yes? RIBBON/THICK/Y=0/L=6 sst, speh
+say ...
+
+USE coads_climatology
+RIBBON/THICK/Y=0/L=6 sst, speh
+
+pause
+
+say Now temperature, colored by salinity
+
+say
+say .    yes? USE levitus_climatology
+say .    yes? RIBBON/X=150/Y=10/L=5/Z=0:3000/LEV=v/THICK temp, salt
+say ...
+
+USE levitus_climatology
+RIBBON/X=150/Y=10/L=5/Z=0:3000/LEV=v/THICK temp, salt
+
+pause
+
+say We can even plot a variable, colored by itself. 
+say Notice here that the /LEVELS and /PALETTE qualifiers are
+say applied in the same way as for any 2-dimensonal color plot.
+say ...
+
+say
+say .    yes? USE etopo60
+say .    yes? RIBBON/Y=30/THICK/PALETTE=land_sea/LEVEL=c rose, rose
+say ...
+
+
+USE etopo60
+RIBBON/Y=30/THICK/PALETTE=land_sea/LEVEL=c rose, rose
+
+pause
+can data/all
+can view
+
+LET/TITLE="Xloc"/UNITS=degrees_east xpts = {\
+151.0,153.0,155.0,157.0,159.0,161.0,163.0,165.0,167.0,169.0,171.0,173.0,175.0,\
+177.0,179.0,181.0,183.0,185.0,187.0,189.0}
+
+LET/TITLE="SST"/UNITS="Deg C" ypts {\
+29.32,29.43,29.33,29.19,29.22,29.12,29.36,29.22,29.04,28.92,29.00,28.59,28.31,\
+28.69,28.20,28.86,27.98,27.80,28.29,27.94}
+
+LET/TITLE="VAR"/UNITS="V" var =  {\
+11.5, 2.5, 13.5, 4.5, 15.5, 6.5, 17.5, 8.5, 19.5, 1.5, 11.5, 2.5, 13.5, 4.5, \
+15.5, 6.5, 17.5, 8.5, 19.5, 10.5}
+
+
+say We just defined some variables to plot. These will be 
+say PLOT/VS plots, where the plot is colored by a third variable.
+say
+say By default, colors are blended from one point to the next, with the 
+say color right at the point corresponding to the value at that point.
+say If we plot with /SYMBOL, the symbols will be colored by the exact color
+say for the variable at that point.
+say
+say The /FAST qualifier draws a plot without this blending. The color 
+say for the point extends from the start of the grid cell to the end 
+say of the grid cell.
+
+say Plot with /LINE/SYMBOL to show both the points and the line between them
+say ...
+say
+say .    yes? SET VIEW upper
+say .    yes? RIBBON/VS/LINE/SYMBOL=21/THICK/LEV=10/TITLE="Without FAST qualifier" xpts,ypts,var
+say
+say .    yes? SET VIEW lower
+say .    yes? RIBBON/FAST/VS/LINE/SYMBOL=21/THICK/LEV=10/TITLE="With FAST qualifier" xpts,ypts,var
+
+
+
+SET VIEW upper
+RIBBON/VS/LINE/SYMBOL=21/THICK/LEV=10/TITLE="Without FAST qualifier" xpts,ypts,var
+
+pause
+
+say Here is the same data plotted using the /FAST qualifier
+say ...
+say
+
+SET VIEW lower
+RIBBON/FAST/VS/LINE/SYMBOL=21/THICK/LEV=10/TITLE="With FAST qualifier" xpts,ypts,var
+
+pause
+cancel view
+
+say If there are gaps in the variable or variables that define the line, there 
+say is a gap in the line. If there is a gap in the color-by variable, the line
+say is drawn using a thin gray line.
+
+say Lets add a gap or two to the color-by variable.
+say ...
+
+
+say .    yes? LET/TITLE="VAR"/UNITS="V" var =  {\
+say        14.16,14.31,13.34,11.90,12.19, , ,12.25,10.37, 9.22,10.05, 5.91, \
+say        3.13, 6.88, 2.02, 8.63, , , 2.94,-0.65}
+
+
+say .    yes? SET VIEW upper
+say .    yes? RIBBON/VS/LINE/THICK=3/PAL=rnb2/TITLE="Gaps in var" xpts,ypts,var
+
+
+
+LET/TITLE="VAR"/UNITS="V" var =  {\
+ 14.16,14.31,13.34,11.90,12.19, , ,12.25,10.37, 9.22,10.05, 5.91, \
+ 3.13, 6.88, 2.02, 8.63, , , 2.94,-0.65}
+
+
+SET VIEW upper
+RIBBON/VS/LINE/THICK=3/PAL=rnb2/TITLE="Gaps in var" xpts,ypts,var
+
+pause
+
+
+say Add some gaps in one of the /vs varibles.
+say ...
+
+     
+say .    yes? LET/TITLE="SST"/UNITS="Deg C" ypts {\
+say        29.42,29.43, ,29.19,29.22,29.12,29.36,29.22,29.04,28.92,29.00,28.59,28.31,\
+say        28.69,28.20,28.86,27.98, ,28.29,27.94}
+
+say .    yes? SET VIEW lower 
+say .    yes? RIBBON/VS/LINE/THICK=3/PAL=rnb2/TITLE="Gaps also in the versus variable"  xpts,ypts,var
+
+     
+LET/TITLE="SST"/UNITS="Deg C" ypts {\
+  29.42,29.43, ,29.19,29.22,29.12,29.36,29.22,29.04,28.92,29.00,28.59,28.31,\
+  28.69,28.20,28.86,27.98, ,28.29,27.94}
+
+SET VIEW lower 
+RIBBON/VS/LINE/THICK=3/PAL=rnb2/TITLE="Gaps also in the versus variable"  xpts,ypts,var
+
+
+pause
+say ...
+
+say clean up
+set region save
+
+set mode/last logo
+cancel viewports
+ppl shaset reset
+set mode/last verify

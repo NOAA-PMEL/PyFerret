@@ -103,6 +103,7 @@
 *                    function, we will do a full evaluation to get its size
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V684 *acm* 12/12 Add data type of DOUBLE for return=dtype
 
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
@@ -157,7 +158,7 @@
 #endif
 
         DATA typstring/
-     .  'Notype', 'BYTE', 'CHAR', 'SHORT', 'INT4', 'FLOAT', '' /
+     .  'Notype', 'BYTE', 'CHAR', 'SHORT', 'INT4', 'FLOAT', 'DOUBLE' /
 
 * initialize
 	did_sub = .FALSE.    	! any substitutions done?
@@ -525,8 +526,8 @@
                     vartype = 2     ! NC_CHAR
                  ELSE IF (fertype .EQ. ptype_string) THEN
                     vartype = 2   ! NC_CHAR
-                 ELSE IF (fertype .EQ. ptype_) THEN
-                    vartype = 6   ! NC_
+                 ELSE IF (fertype .EQ. ptype_double) THEN
+                    vartype = 6   ! NC_DOUBLE
                  ELSE
                     vartype = 0
                  ENDIF

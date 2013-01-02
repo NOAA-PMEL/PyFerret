@@ -126,7 +126,7 @@ RIBBON/VS/LINE/SYMBOL=21/THICK/LEV=10/TITLE="Without FAST qualifier" xpts,ypts,v
 
 pause
 
-say Here is the same data plotted using the /FAST qualifier
+say Compare with the same data plotted using the /FAST qualifier
 say ...
 say
 

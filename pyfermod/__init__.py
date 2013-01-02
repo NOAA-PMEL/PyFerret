@@ -215,6 +215,8 @@ def init(arglist=None, enterferret=True):
                             raise ValueError("a script filename must be given for the -script value")
                     except:
                         raise ValueError("a script filename must be given for the -script value")
+                    # Put double quotes around the script filename
+                    script[0] = '"' + script[0] + '"'
                     break
                 else:
                     raise ValueError("unrecognized option '%s'" % opt)

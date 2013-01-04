@@ -49,6 +49,7 @@
 * V531: 4/01 *sh* insert missing value flag into the context
 * V532: 6/01 *sh* bug fix:  CALL DEALLO_UNFORMED_GRID instead of DEALLO_GRID
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V685: 1/13 *sh* ensure that sst[L=@ave] is recognized as a compressed axis
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -147,6 +148,16 @@
 
 * fill in any unspecified limits with information from the grid
 	CALL COMPLETE_MISSING_LIMITS(cx)
+
+* *sh* 1/2013
+* make sure that the cx_lo/hi_ss limits of compressed axes are unset
+	DO 200 idim = 1, nferdims
+	   IF ( uvar_given(idim,uvar) .EQ. uvlim_need_xact ) THEN
+	      cx_lo_ss(cx, idim) = unspecified_int4
+	      cx_hi_ss(cx, idim) = unspecified_int4
+	   ENDIF
+ 200	CONTINUE
+
 
 * insert the missing value flag
 	CALL GET_CONTEXT_BAD_FLAG(cx)

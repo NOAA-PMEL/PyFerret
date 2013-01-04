@@ -1,0 +1,18 @@
+! when limits are omitted with a compressing transformation the grave
+! accent R=SHAPE erroneously includes the corresponding axis in the shape
+
+! The problem was when INTERP_CONTEXT calls COMPLETE_MISSING_LIMITS.
+! That routine fills in both the SS and the WW limits as the full axis span.
+! in a full-fledged evaluation occurred the ss limits would be set to
+! -999:-999 at the time that the transform was stripped from the stack
+
+! The fix is to simulate this action inside of INTERP_CONTEXT
+
+use coads_climatology
+say `sst[l=1:12@ave],ret=shape`
+say `sst[l=@ave],ret=shape`
+
+let a = sst[l=1:12@ave]
+let b = sst[l=@ave]
+say `a,ret=shape`
+say `b,ret=shape`

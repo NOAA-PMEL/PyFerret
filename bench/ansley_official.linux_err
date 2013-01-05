@@ -1,27 +1,29 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 42646240 Jan  3 10:50 /home/users/ansley/build/linux/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
-Running the tests of external functions y
-Benchmark run by ansley
-Note: fix for ticket 1298
+Running FERRET version /home/users/hankin/FERRET32/fer/ferret_c
+-rwxr-xr-x 1 hankin tmap 42632311 Jan  4 10:33 /home/users/hankin/FERRET32/fer/ferret_c
+Using external functions from /home/users/hankin/FERRET32/external_functions/ext_func/
+Running the tests of external functions n
+Benchmark run by Steve
+Note: Have just fixed problem of err684_context_shape.jnl
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
+fchk=/home/users/hankin/fer/i386-linux/FERRET/checkdir
 FER_DAT=.
 FER_DATA=.
 FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/tmap/ferret/linux/fer_dsets
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/linux/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/hankin/FERRET32/external_functions/ext_func/
 FER_GO=. /home/users/tmap/ferret/linux/go /home/users/tmap/ferret/linux/examples /home/users/tmap/ferret/linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
-PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Thu Jan 3 11:08:44 PST 2013
+fsrc=/home/users/hankin/fer/i386-linux/FERRET
+PWD=/home/users/hankin/FERRET32/bench
+Beginning at Fri Jan 4 14:06:51 PST 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1417,6 +1419,7 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+rm: cannot remove `input.txt': No such file or directory
 ls: input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2128,7 +2131,6 @@ Replacing definition of axis TIME
  LISTing to file a.nc
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
-curl error details: 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2313,7 +2315,6 @@ set axis/stride=2 NORMAL
  LISTing to file tripolar_missing_lon.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-curl error details: 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3383,21 +3384,6 @@ define axis/t/units=days tax = tvar
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **ERROR: command syntax: unknown region name: @w
-set region/@w
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **ERROR: command syntax: writev5d(tr, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
-          unknown function "writev5d"
-DEFINE VARIABLE/QUIET vflag = writev5d(tr, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
- **ERROR: variable unknown or not in data set: VFLAG
-LOAD/TEMPORARY vflag
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
  Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
@@ -3472,4 +3458,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Jan 3 11:10:35 PST 2013
+Ended at Fri Jan 4 14:08:24 PST 2013

@@ -62,7 +62,6 @@
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 * V614 *acm* 10/08 - Fix bug 1595, comparisons of xx1 and -1*xx2 did
 *                   not take into account that the values may be zero.
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 * Include files
 	include 'tmap_dims.parm'
@@ -76,9 +75,10 @@
 	INTEGER*4	line1, line2
 
 * Local definitions
-        LOGICAL         TM_FPEQ, TM_DFPEQ, dynamic
+        LOGICAL         TM_FPEQ, TM_FPEQ_SNGL, TM_DFPEQ, dynamic
 	INTEGER*4	j
 	REAL*8		TM_WORLD_AX, xx1, xx2
+	REAL*4  asingle, bsingle
 
 * local parameter declaration
 * ... all these are somewhat arbitrary
@@ -128,17 +128,12 @@
 	  IF ( line_regular(line2)
      .	.OR.   (line_class (line1) .EQ. pline_class_stride)
      .	.OR.   (line_class (line1) .EQ. pline_class_midpt)   ) THEN
-#ifdef double_p
-	    IF ( .NOT. TM_FPEQ( (line_start(line1)),
-     .                          (line_start(line2)) ) ) GOTO 1000
-            IF ( .NOT. TM_FPEQ( (line_delta(line1)),
-     .                          (line_delta(line2)) ) ) GOTO 1000
-#else
-	    IF ( .NOT. TM_FPEQ( SNGL(line_start(line1)),
-     .                          SNGL(line_start(line2)) ) ) GOTO 1000
-            IF ( .NOT. TM_FPEQ( SNGL(line_delta(line1)),
-     .                          SNGL(line_delta(line2)) ) ) GOTO 1000
-#endif
+	    asingle = SNGL(line_start(line1))
+	    bsingle = SNGL(line_start(line2))
+            IF ( .NOT. TM_FPEQ_SNGL( asingle, bsingle ) ) GOTO 1000
+	    asingle = SNGL(line_delta(line1))
+	    bsingle = SNGL(line_delta(line2))
+            IF ( .NOT. TM_FPEQ_SNGL( asingle, bsingle ) ) GOTO 1000
 	  ELSE
 * irregular lines
 	    DO 100 j = 1,line_dim(line1)
@@ -149,12 +144,8 @@
 	         IF ( TM_DFPEQ(ABS(xx1), -1*ABS(xx2)) ) GOTO 1000
               ENDIF
               IF ( ABS(xx2) .LT. max_sp_compare ) THEN
-#ifdef double_p
-	         IF ( (xx2) .EQ. (xx1) ) GOTO 100
-#else
 * ... single precision comparison
 	         IF ( SNGL(xx2) .EQ. SNGL(xx1) ) GOTO 100
-#endif
 * ... they're not equal but they may be within acceptable limits
 	         IF ( ABS((xx2-xx1)/(xx2+xx1)) .GT. haf_sp_eps )
      .							    GOTO 1000
@@ -173,12 +164,8 @@
 	         IF ( TM_DFPEQ(ABS(xx1), -1*ABS(xx2)) ) GOTO 1000
               ENDIF
               IF ( ABS(xx2) .LT. max_sp_compare ) THEN
-#ifdef double_p
-	         IF ( (xx2) .EQ. (xx1) ) GOTO 100
-#else
 * ... single precision comparison
 	         IF ( SNGL(xx2) .EQ. SNGL(xx1) ) GOTO 100
-#endif
 * ... they re not equal but they may be within acceptable limits
 	         IF ( ABS((xx2-xx1)/(xx2+xx1)) .GT. haf_sp_eps )
      .							    GOTO 1000
@@ -198,12 +185,8 @@
 	         IF ( TM_DFPEQ(ABS(xx1), -1*ABS(xx2)) ) GOTO 1000
               ENDIF
             IF ( ABS(xx2) .LT. max_sp_compare ) THEN
-#ifdef double_p
-	       IF ( (xx2) .EQ. (xx1) ) GOTO 500
-#else
 * ... single precision comparison
 	       IF ( SNGL(xx2) .EQ. SNGL(xx1) ) GOTO 500
-#endif
 * ... they're not equal but they may be within acceptable limits
 	       IF ( ABS((xx2-xx1)/(xx2+xx1)) .GT. haf_sp_eps )
      .							    GOTO 1000

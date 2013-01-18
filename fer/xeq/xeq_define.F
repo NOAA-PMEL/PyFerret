@@ -217,6 +217,8 @@
 * V68  *acm* 5/12  Add DEFINE DATA/AGGREGATE
 * V683 *acm*11/12  If DEFINE AXIS data not monotonic, add the index location 
 *                  to the error message
+* V685 *acm* 1/13  Fix ticket 2026: dont automatically mark a 1-point longitude
+*                  axis as modulo.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"

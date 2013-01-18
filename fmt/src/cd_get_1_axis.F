@@ -166,6 +166,8 @@
 *                  To keep the previous behavior the user may specify USE/STRICT.
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * V6.83 12/12 *acm* ticket 1996: NOTE if reversing an axis
+* V685 *acm* 1/13  Fix ticket 2026: dont automatically treat a 1-point longitude
+*                  axis as modulo.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)

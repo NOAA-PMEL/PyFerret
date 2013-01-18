@@ -1440,7 +1440,7 @@ C /units=months  is 1/12 of the length of the year
 * automatic longitude modulo
 	axwwlen = TM_WW_AXLEN(iline)
 	IF (line_direction(iline) .EQ. 'WE' ) THEN
-	  IF (axwwlen .LE. 360.D0) THEN
+	  IF (axwwlen .LE. 360.D0 .AND. (npoints.GT.1)) THEN
 	     its_modulo = .TRUE.
 	     IF (rmod_len .EQ. 0.0D0)  rmod_len = 360.D0
 	     new_att_modulo = .TRUE.

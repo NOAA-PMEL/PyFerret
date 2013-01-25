@@ -61,6 +61,7 @@
 * V510: 6/00 *sh* - bug fix trap /COLUMNS= >grid size
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars
 *       *acm* 3/12 cleanup old VMS ifdef
+* V685 *acm* 1/13  Ticket 2030: if we run out of memory, issue a new message
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -86,7 +87,7 @@
      .			cx0, cx1, cx20(20), mr20(20), nread,
      .			mr1, ndim, las_dim, fst_dim, dims(nferdims), rec1,
      .			rec_to_read, nrepeat, columns, num_names, buffblk
-	CHARACTER	VAR_CODE*128
+	CHARACTER	VAR_CODE*128, errbuff*100
 
 * --- end of introductory code ---
 
@@ -267,6 +268,11 @@
 * error exit
  4900	nvar20 = nvar20 + 1		! delete all
  5000	cx_stack_ptr = cx0
+	IF (nvar20 .GT. 1) THEN
+	   WRITE ( errbuff, 1000 ) nvar20
+           CALL WARN (errbuff)
+	ENDIF
+ 1000   FORMAT ('ASCII file reading: Insufficient memory reading variable ', i4)
 	DO 5010 nleft = 1, nvar20-1	! delete all except last
  5010	CALL DELETE_VARIABLE(mr20(nleft))
         CALL  RELEASE_WORK_SPC
@@ -279,3 +285,4 @@
  5700	CALL ERRMSG( ferr_TMAP_error, status, ' ', *4900 )
  6000	CALL ERRMSG( ferr_internal, status, 'READ_EZ ??', *4900 )
 	END	
+

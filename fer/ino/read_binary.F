@@ -48,6 +48,7 @@
 * v604 *acm* 7/07 increase length of ds_name
 * V63  *acm* 10/09 Changes for gfortran build
 *       *acm* 3/12 cleanup old VMS ifdef
+* V685 *acm* 1/13  Ticket 2030: if we run out of memory, issue a new message
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -255,6 +256,11 @@
 * error exit
  4900	nvar20 = nvar20 + 1		! delete all
  5000	cx_stack_ptr = cx0
+	IF (nvar20 .GT. 1) THEN
+	   WRITE ( ferrmsg, 1000 ) nvar20
+           CALL WARN (ferrmsg)
+	ENDIF
+ 1000   FORMAT ('Binary file reading: Insufficient memory reading variable ', i4)
 	DO 5010 nleft = 1, nvar20-1	! delete all except last
  5010	CALL DELETE_VARIABLE(mr20(nleft))
         CALL  RELEASE_WORK_SPC

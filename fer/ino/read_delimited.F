@@ -46,6 +46,8 @@
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars
 *       *acm* 3/12 changes for 6D Ferret
+* V685 *acm* 1/13  Ticket 2030: if we run out of memory, issue a new message
+*                  and only clear the variables that had been initialized.
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -70,12 +72,12 @@
 	INTEGER 	CGRID_SIZE, CX_DIM_LEN, TM_LENSTR1,
      .			idim, ask_var, category, dset, grid, ivar,
      .			fvar, nvar, the_var, nleft, nsize,
-     .			cx0, cx1, nread, istep,
+     .			cx0, cx1, nread, istep, nvar20,
      .			cxlist(maxezvars), mrlist(maxezvars),
      .			field_type(maxezvars),
      .			mr1, ndim, las_dim, fst_dim, dims(nferdims),
      .			rec_to_read, buffblk
-	CHARACTER	VAR_CODE*128, delims*80
+	CHARACTER	VAR_CODE*128, delims*80, errbuff*100
 
 * --- end of introductory code ---
 
@@ -89,9 +91,9 @@
 	ask_var  = cx_variable( cx )
 	grid = cx_grid( cx )
 	fvar      = 0
+	nvar20    = 0
 	CALL GET_DELIMITED_INFO(nvar, field_type, delims, 
      .				   ds_file_info_ptr(dset) )
-
 * locate the step file belonging to this data set
 
 	DO 10 istep = 1,maxstepfiles
@@ -114,6 +116,9 @@
 	      cxlist(ivar) = 0
 	      mrlist(ivar) = 0
 	   ELSE
+
+* save record of which is the desired var
+	     nvar20 = nvar20 + 1
 
 * ... create a context describing this variable
 	     CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
@@ -239,7 +244,12 @@
 * error exit
  4900	nvar = nvar + 1		! delete all
  5000	cx_stack_ptr = cx0
-	DO 5010 nleft = 1, nvar-1	! delete all except last
+	IF (nvar20 .GT. 1) THEN
+	   WRITE ( errbuff, 1000 ) nvar20
+           CALL WARN (errbuff)
+	ENDIF
+ 1000   FORMAT ('Delimited file reading: Insufficient memory reading variable ', i4)
+	DO 5010 nleft = 1, nvar20-1	! delete all initialized so far
  5010	CALL DELETE_VARIABLE(mrlist(nleft))
         CALL  RELEASE_WORK_SPC
  5500	RETURN

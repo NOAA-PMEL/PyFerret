@@ -49,8 +49,10 @@ grdelBool cairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor)
                                 "something drawn without a surface");
             return 0;
         }
+        cairo_show_page(instdata->context);
         cairo_destroy(instdata->context);
         instdata->context = NULL;
+        cairo_surface_finish(instdata->surface);
         cairo_surface_destroy(instdata->surface);
         instdata->surface = NULL;
         instdata->somethingdrawn = 0;

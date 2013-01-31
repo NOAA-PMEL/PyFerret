@@ -1,6 +1,9 @@
 /* Python.h should always be first */
 #include <Python.h>
 #include <cairo/cairo.h>
+#include <cairo/cairo-pdf.h>
+#include <cairo/cairo-ps.h>
+#include <cairo/cairo-svg.h>
 #include <stdio.h>
 #include <string.h>
 #include "grdel.h"
@@ -9,17 +12,12 @@
 
 /*
  * Saves this "Window" to file.
- * In this case (Cairo), this function currently only saves image
- * surfaces to PNG files.  All other surfaces return an error since
- * they write directly to the image file assigned when they were
- * created.
  *
  * Arguments:
- *     filename   - name of the image file to create, or an
- *                  empty string or NULL
+ *     filename   - name of the image file to create, 
+ *                  or an empty string or NULL
  *     namelen    - actual length of filename (zero if NULL)
- *     formatname - name of the image format (case insensitive);
- *                  currently only "PNG", "", and NULL are supported.
+ *     formatname - name of the image format (case insensitive)
  *     fmtnamelen - actual length of format (zero if NULL)
  *     transbkg   - leave the background transparent?
  *
@@ -28,7 +26,7 @@
  * filename.
  *
  * If format is empty or NULL, the image format is determined
- * from the extension, of the filename.  In this case it is
+ * from the extension of the filename.  In this case it is
  * an error if the extension does not exist or is not recognized.
  * A filename consisting of only an extension (e.g., ".png")
  * will be treated as not having an extension.
@@ -50,8 +48,12 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int nam
     int                j, k;
     char               fmtext[8];
     cairo_surface_t   *savesurface;
+    cairo_t           *savecontext;
     cairo_status_t     result;
     char               savename[CCFB_NAME_SIZE];
+    double             width;
+    double             height;
+    int                usealpha;
 
     /* Sanity checks - this should NOT be called by the PyQtCairo engine */
     if ( self->enginename != CairoCFerBindName ) {
@@ -68,7 +70,8 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int nam
     cairo_surface_flush(instdata->surface);
 
     /* Check the surface type */
-    if ( instdata->imageformat != CCFBIF_PNG ) {
+    if ( (instdata->imageformat != CCFBIF_PNG) &&
+         (instdata->imageformat != CCFBIF_REC) ) {
         /* Silently ignore this command since this was probably called automatically */
         return 1;
     }
@@ -138,94 +141,199 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int nam
             strcpy(&(savename[imgnamelen-4]), ".pdf");
     }
 
-    /* Currently only PNG format is supported */
-    if ( strcmp(fmtext, "PNG") != 0 ) {
+    /* If an image surface, can only output PNG */
+    if ( (instdata->imageformat == CCFBIF_PNG) &&
+         (strcmp(fmtext, "PNG") != 0) ) {
         sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
-                             "unrecognized format '%s'", fmtext);
+                "unrecognized format '%s' for an image surface", fmtext);
         return 0;
     }
 
-    if ( ! transbkg ) {
-        cairo_t *tempcontext;
+    if ( transbkg && (instdata->imageformat == CCFBIF_PNG) ) {
+        /* just use the image surface as-is */
+        savesurface = instdata->surface;
+    }
+    else {
+        /* Create a temporary surface for the desired format */
+        if ( strcmp(fmtext, "PNG") == 0 ) {
+            /* Surface size is given in integer pixels */
+            savesurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+                                instdata->imagewidth, instdata->imageheight);
+            width = (double) instdata->imagewidth;
+            height = (double) instdata->imageheight;
+            usealpha = 1;
+        }
+        else if ( strcmp(fmtext, "PDF") == 0 ) {
+            /* Surface size is given in (floating-point) points */
+            width = (double) instdata->imagewidth * CCFB_POINTS_PER_PIXEL;
+            height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
+            savesurface = cairo_pdf_surface_create(savename, width, height);
+            usealpha = 0;
+        }
+        else if ( strcmp(fmtext, "PS") == 0 ) {
+            /* Surface size is given in (floating-point) points */
+            width = (double) instdata->imagewidth * CCFB_POINTS_PER_PIXEL;
+            height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
+            if ( width > height ) {
+                /*
+                 * Landscape orientation
+                 * Swap width and height and then translate and rotate 
+                 * (see below) per Cairo requirements.
+                 */
+                savesurface = cairo_ps_surface_create(savename, height, width);
+            }
+            else {
+                /* Portrait orientation */
+                savesurface = cairo_ps_surface_create(savename, width, height);
+            }
+            /* Do not use alpha channel - prevents embedded image */
+            usealpha = 0;
+        }
+        else if ( strcmp(fmtext, "SVG") == 0 ) {
+            /* Surface size is given in (floating-point) points */
+            width = (double) instdata->imagewidth * CCFB_POINTS_PER_PIXEL;
+            height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
+            savesurface = cairo_svg_surface_create(savename, width, height);
+            usealpha = 1;
+        }
+        else {
+            sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
+                                 "unrecognized format '%s'", fmtext);
+            return 0;
+        }
 
-        /* Create a temporary image surface */
-        savesurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
-                            instdata->imagewidth, instdata->imageheight);
+        /* Check for failure to create the surface */
         if ( cairo_surface_status(savesurface) != CAIRO_STATUS_SUCCESS ) {
-            strcpy(grdelerrmsg, "cairoCFerBind_saveWindow: "
-                                "problems creating a temporary PNG surface");
+            sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
+                                 "problems creating a temporary %s surface", fmtext);
             cairo_surface_destroy(savesurface);
             return 0;
         }
 
-        /* Create a temporary context for this tempoary surface */
-        tempcontext = cairo_create(savesurface);
-        if ( cairo_status(tempcontext) != CAIRO_STATUS_SUCCESS ) {
+        /* set the resolution for fallback raster images in vector drawings */
+        cairo_surface_set_fallback_resolution(savesurface,
+                          (double) CCFB_WINDOW_DPI, (double) CCFB_WINDOW_DPI);
+
+        /* Create a temporary context for this temporary surface */
+        savecontext = cairo_create(savesurface);
+        if ( cairo_status(savecontext) != CAIRO_STATUS_SUCCESS ) {
             strcpy(grdelerrmsg, "cairoCFerBind_saveWindow: problems creating "
-                                "a tempoary context for the temporary surface");
-            cairo_destroy(tempcontext);
+                                "a temporary context for the temporary surface");
+            cairo_destroy(savecontext);
             cairo_surface_destroy(savesurface);
             return 0;
         }
 
-        /* Fill with the last clearing color */
-        if ( instdata->usealpha )
-            cairo_set_source_rgba(tempcontext,
-                                  instdata->lastclearcolor.redfrac,
-                                  instdata->lastclearcolor.greenfrac,
-                                  instdata->lastclearcolor.bluefrac,
-                                  instdata->lastclearcolor.opaquefrac);
-        else
-            cairo_set_source_rgb(tempcontext,
-                                 instdata->lastclearcolor.redfrac,
-                                 instdata->lastclearcolor.greenfrac,
-                                 instdata->lastclearcolor.bluefrac);
-        cairo_paint(tempcontext);
+        if ( (strcmp(fmtext, "PDF") == 0) || 
+             (strcmp(fmtext, "PS")  == 0) ||
+             (strcmp(fmtext, "SVG") == 0)   ) {
+            /*
+             * The recording surface used units of pixels, 
+             * but these surfaces these use units of points,
+             * so scale the drawing in the transfer.
+             */
+            cairo_scale(savecontext, 
+                        CCFB_POINTS_PER_PIXEL, 
+                        CCFB_POINTS_PER_PIXEL);
+        }
+
+        /*
+         * If landscape PostScript, translate and rotate the coordinate system
+         * to correct for swapped width and height (per Cairo requirements).
+         */
+        if ( (strcmp(fmtext, "PS") == 0) &&  (width > height) ) {
+            /* surface was created with coordinates (0,0) to (height, width) */
+            cairo_matrix_t transmat;
+
+            /* Add a "comment" telling PostScript it is landscape */
+            cairo_ps_surface_dsc_begin_page_setup(savesurface);
+            cairo_ps_surface_dsc_comment(savesurface,
+                                         "%%PageOrientation: Landscape");
+            /* Move to the bottom left corner */
+            cairo_translate(savecontext, 0.0, (double) instdata->imagewidth);
+            /* Rotate 90 degrees clockwise */
+            cairo_matrix_init(&transmat, 0.0, -1.0, 1.0, 0.0, 0.0, 0.0);
+            cairo_transform(savecontext, &transmat);
+            /*
+             * The transformed coordinate system goes from (0,0) at the top
+             * left corner to (width, height) at the bottom right corner.
+             */
+        }
+
+        if ( ! transbkg ) {
+            /* Fill with the last clearing color */
+            if ( usealpha )
+                cairo_set_source_rgba(savecontext,
+                                      instdata->lastclearcolor.redfrac,
+                                      instdata->lastclearcolor.greenfrac,
+                                      instdata->lastclearcolor.bluefrac,
+                                      instdata->lastclearcolor.opaquefrac);
+            else
+                cairo_set_source_rgb(savecontext,
+                                     instdata->lastclearcolor.redfrac,
+                                     instdata->lastclearcolor.greenfrac,
+                                     instdata->lastclearcolor.bluefrac);
+            cairo_paint(savecontext);
+        }
 
         /* Create a path covering the entire image */
-        cairo_new_path(tempcontext);
-        cairo_rectangle(tempcontext, 0.0, 0.0,
-                        (double) instdata->imagewidth,
-                        (double) instdata->imageheight);
+        cairo_new_path(savecontext);
+        cairo_rectangle(savecontext, 0.0, 0.0, 
+                                    (double) instdata->imagewidth, 
+                                    (double) instdata->imageheight);
 
         /* Draw the transparent-background image onto this temporary surface */
-        cairo_set_source_surface(tempcontext, instdata->surface, 0.0, 0.0);
-        cairo_fill(tempcontext);
+        cairo_set_source_surface(savecontext, instdata->surface, 0.0, 0.0);
+        cairo_fill(savecontext);
 
-        /* No longer need the temporary context */
-        cairo_destroy(tempcontext);
-    }
-    else
-        /* Just use the transparent-background image as-is */
-        savesurface = instdata->surface;
+        /* Just to be safe */
+        cairo_show_page(savecontext);
 
-    /* Save the image to file */
-    result = cairo_surface_write_to_png(savesurface, savename);
-    switch( result ) {
-    case CAIRO_STATUS_SUCCESS:
-        break;
-    case CAIRO_STATUS_WRITE_ERROR:
-        sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
-                             "I/O error while saving to '%s'", savename);
-        return 0;
-    case CAIRO_STATUS_NO_MEMORY:
-        sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
-                             "out of memory while saving to '%s'", savename);
-        return 0;
-    case CAIRO_STATUS_SURFACE_TYPE_MISMATCH:
-        sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: unexpected error, "
-                             "type mismatch while saving to '%s'", savename);
-        return 0;
-    default:
-        sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: unexpected error, "
-                             "unknown error %d while saving to '%s'",
-                             result, savename);
-        return 0;
+        /* Done with the temporary context */
+        cairo_destroy(savecontext);
+
+        /* Just to be safe */
+        cairo_surface_flush(savesurface);
     }
 
-    /* Delete the temporary surface if it was created */
-    if ( savesurface != instdata->surface )
+    if ( strcmp(fmtext, "PNG") == 0 ) {
+        /* Save the raster image in memory to file */
+        result = cairo_surface_write_to_png(savesurface, savename);
+        /* Done with the temporary surface */
+        if ( savesurface != instdata->surface ) {
+            cairo_surface_finish(savesurface);
+            cairo_surface_destroy(savesurface);
+        }
+        /* Analyze the results */
+        switch( result ) {
+        case CAIRO_STATUS_SUCCESS:
+            break;
+        case CAIRO_STATUS_WRITE_ERROR:
+            sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
+                                 "I/O error while saving to '%s'", savename);
+            return 0;
+        case CAIRO_STATUS_NO_MEMORY:
+            sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
+                                 "out of memory while saving to '%s'", savename);
+            return 0;
+        case CAIRO_STATUS_SURFACE_TYPE_MISMATCH:
+            sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: unexpected error, "
+                                 "type mismatch while saving to '%s'", savename);
+            return 0;
+        default:
+            sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: unexpected error, "
+                                 "unknown error %d while saving to '%s'",
+                                 result, savename);
+            return 0;
+        }
+    }
+    else {
+        /* Vector images are written directly to file, so nothing more to do. */
+        /* Done with the temporary surface */
+        cairo_surface_finish(savesurface);
         cairo_surface_destroy(savesurface);
+    }
+
     return 1;
 }
 

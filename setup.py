@@ -15,6 +15,9 @@ incdir_list = [ "pyfermod",
                 os.path.join("fer", "grdel"), ]
 
 # Non-standard directories containing libraries to link
+cairo_libdir = os.getenv("CAIRO_LIBDIR")
+if cairo_libdir == None:
+    raise ValueError("Environment variable CAIRO_LIBDIR is not defined")
 hdf5_libdir = os.getenv("HDF5_LIBDIR")
 if hdf5_libdir == None:
     raise ValueError("Environment variable HDF5_LIBDIR is not defined")
@@ -22,9 +25,11 @@ netcdf4_libdir = os.getenv("NETCDF4_LIBDIR")
 if netcdf4_libdir == None:
     raise ValueError("Environment variable NETCDF4_LIBDIR is not defined")
 # The location of libpython2.x.so in case it is not in a standard location
-python_libdir = os.path.split(distutils.sysconfig.get_python_lib(standard_lib=True))[0]
+python_libdir = os.path.split(
+                   distutils.sysconfig.get_python_lib(standard_lib=True))[0]
 # The list of additional directories to examine for libraries
-libdir_list = [ "lib", str(hdf5_libdir), str(netcdf4_libdir), str(python_libdir), ]
+libdir_list = [ "lib", str(cairo_libdir), str(hdf5_libdir), 
+                str(netcdf4_libdir), str(python_libdir), ]
 
 # Get the list of ferret static libraries
 # Stripping off the "lib" prefix and the ".a" suffix
@@ -41,8 +46,8 @@ lib_list.extend(fer_lib_list)
 lib_list.extend(fer_lib_list)
 # Add required system libraries to the list to link in
 lib_list.append("python%i.%i" % sys.version_info[:2])
-lib_list.extend( ( "cairo", "netcdff", "netcdf", "hdf5_hl", "hdf5",
-                   "curl", "z", "dl", "gfortran", "m", ) )
+lib_list.extend( ( "netcdff", "netcdf", "hdf5_hl", "hdf5",
+                   "curl", "cairo", "z", "dl", "gfortran", "m", ) )
 
 # Get the list of C source files in pyfermod
 src_list = [ ]

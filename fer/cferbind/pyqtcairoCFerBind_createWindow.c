@@ -79,6 +79,8 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
 
     /* Set non-zero default values */
     instdata = (CairoCFerBindData *) bindings->instancedata;
+    /* Cairo surface type - must be an image surface */
+    instdata->imageformat = CCFBIF_PNG;
     /* image size and minimum allowed value */
     instdata->imagewidth = 840;
     instdata->imageheight = 720;

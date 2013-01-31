@@ -1,5 +1,6 @@
 /* Python.h should always be first */
 #include <Python.h>
+#include <cairo/cairo.h>
 #include <string.h>
 #include "grdel.h"
 #include "cferbind.h"
@@ -74,6 +75,12 @@ CFerBind *cairoCFerBind_createWindow(void)
 
     /* Set non-zero default values */
     instdata = (CairoCFerBindData *) bindings->instancedata;
+    /* Cairo surface type */
+#ifdef CAIRO_HAS_RECORDING_SURFACE
+    instdata->imageformat = CCFBIF_REC;
+#else
+    instdata->imageformat = CCFBIF_PNG;
+#endif
     /* image size and minimum allowed value */
     instdata->imagewidth = 840;
     instdata->imageheight = 720;

@@ -108,6 +108,12 @@ grdelBool cairoCFerBind_setImageName(CFerBind *self, const char imagename[],
         return 0;
     }
 
+#ifdef CAIRO_HAS_RECORDING_SURFACE
+    /* Always use a recording surface if available */
+    /* But leave the above checks in */
+    imageformat = CCFBIF_REC;
+#endif
+
     /* Update the instance data structure */
     instdata = (CairoCFerBindData *) self->instancedata;
     instdata->imageformat = imageformat;
@@ -129,10 +135,12 @@ grdelBool cairoCFerBind_setImageName(CFerBind *self, const char imagename[],
 
     /* Delete any existing context and surface */
     if ( instdata->context != NULL ) {
+        cairo_show_page(instdata->context);
         cairo_destroy(instdata->context);
         instdata->context = NULL;
     }
     if ( instdata->surface != NULL ) {
+        cairo_surface_finish(instdata->surface);
         cairo_surface_destroy(instdata->surface);
         instdata->surface = NULL;
     }

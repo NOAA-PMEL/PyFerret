@@ -13,6 +13,7 @@
 #
 # Directories for the libraries
 #
+	CAIRO_LIBDIR	= $(CAIRO_DIR)/lib
 	HDF5_LIBDIR	= $(HDF5_DIR)/lib
 	NETCDF4_LIBDIR	= $(NETCDF4_DIR)/lib
 
@@ -28,9 +29,9 @@
 			  -I$(DIR_PREFIX)/ppl/tmap_inc \
 			  -I$(DIR_PREFIX)/pyfermod \
 			  -I$(DIR_PREFIX)/external_functions/ef_utility \
+			  -I$(CAIRO_DIR)/include \
 			  -I$(HDF5_DIR)/include \
-			  -I$(NETCDF4_DIR)/include \
-			  -I/usr/local/include
+			  -I$(NETCDF4_DIR)/include
 
 	MYDEFINES	= -Dcrptd_cat_argument \
 			  -Ddouble_p \

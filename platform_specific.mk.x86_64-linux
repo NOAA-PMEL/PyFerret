@@ -14,6 +14,7 @@
 # Directories for the libraries.  Convention has the 64-bit libraries
 # in a .../lib64 directory, but they may be in a .../lib directory.
 #
+	CAIRO_LIBDIR	= $(CAIRO_DIR)/lib64
 	HDF5_LIBDIR	= $(HDF5_DIR)/lib64
 	NETCDF4_LIBDIR	= $(NETCDF4_DIR)/lib64
 
@@ -29,9 +30,9 @@
 			  -I$(DIR_PREFIX)/ppl/tmap_inc \
 			  -I$(DIR_PREFIX)/pyfermod \
 			  -I$(DIR_PREFIX)/external_functions/ef_utility \
+			  -I$(CAIRO_DIR)/include \
 			  -I$(HDF5_DIR)/include \
-			  -I$(NETCDF4_DIR)/include \
-			  -I/usr/local/include
+			  -I$(NETCDF4_DIR)/include
 
 	MYDEFINES	= -Dcrptd_cat_argument \
 			  -Ddouble_p \

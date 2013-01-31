@@ -22,6 +22,10 @@ PYTHONINCDIR   := $(shell $(PYTHON_EXE) -c "import distutils.sysconfig; print di
 ## files just for creating a Ferret installation.
 INSTALL_FER_DIR	= $(FER_DIR)
 
+## Installation directory for Cairo libraries
+## (contains include and lib or lib64 subdirectories)
+CAIRO_DIR	= $(HOME)/.local
+
 ## Installation directory for HDF5 static libraries
 ## (contains include and lib or lib64 subdirectories)
 # HDF5_DIR	= /usr

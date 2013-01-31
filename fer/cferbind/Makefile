@@ -13,15 +13,15 @@ COBJS = $(CSRCS:.c=.o)
 .PHONY : all
 all : optimized
 
-# The -I/usr/include/cairo is only needed for older cairo's (1.2) own include files
+# The -I$(CAIRO_DIR)/include/cairo is only needed for older cairo's (1.2) own include files
 
 .PHONY : optimized
 optimized :
-	$(MAKE) "CFLAGS = $(CFLAGS) -I/usr/include/cairo -Wall -Wno-pointer-to-int-cast -Werror -DNDEBUG -O" $(LIBNAME)
+	$(MAKE) "CFLAGS = $(CFLAGS) -Wall -Wno-pointer-to-int-cast -Werror -DNDEBUG -O" $(LIBNAME)
 
 .PHONY : debug
 debug :
-	$(MAKE) "CFLAGS = $(CFLAGS) -I/usr/include/cairo -Wall -Wno-pointer-to-int-cast -Werror -O0 -g" $(LIBNAME)
+	$(MAKE) "CFLAGS = $(CFLAGS) -Wall -Wno-pointer-to-int-cast -Werror -O0 -g" $(LIBNAME)
 
 $(LIBNAME) : $(COBJS)
 	$(AR) $(ARFLAGS) $(LIBNAME) $(COBJS)

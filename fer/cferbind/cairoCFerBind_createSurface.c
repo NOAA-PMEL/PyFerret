@@ -19,9 +19,12 @@
 grdelBool cairoCFerBind_createSurface(CFerBind *self)
 {
     CairoCFerBindData *instdata;
-    double  width;
-    double  height;
-    char   *fmtname;
+    char  *fmtname;
+    double width;
+    double height;
+#ifdef CAIRO_HAS_RECORDING_SURFACE
+    cairo_rectangle_t  extents;
+#endif
 
     /* Sanity check */
     if ( (self->enginename != CairoCFerBindName) &&
@@ -44,6 +47,7 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
                                 "NULL surface but non-NULL context");
             return 0;
         }
+
         /* Create the appropriate surface */
         switch( instdata->imageformat ) {
         case CCFBIF_PNG:
@@ -94,11 +98,25 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
             instdata->usealpha = 1;
             fmtname = "SVG";
             break;
+#ifdef CAIRO_HAS_RECORDING_SURFACE
+        case CCFBIF_REC:
+            /* Surface size is given in float-point pixels (or could be omitted) */
+            extents.x = 0.0;
+            extents.y = 0.0;
+            extents.width = (double) instdata->imagewidth;
+            extents.height = (double) instdata->imageheight;
+            instdata->surface = 
+                cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, &extents);
+            instdata->usealpha = 1;
+            fmtname = "recording";
+            break;
+#endif
         default:
             sprintf(grdelerrmsg, "cairoCFerBind_createSurface: unexpected error, "
                                  "unknown imageformat %d", instdata->imageformat);
             return 0;
         }
+
         /* Check for failure to create the surface */
         if ( cairo_surface_status(instdata->surface) != CAIRO_STATUS_SUCCESS ) {
             sprintf(grdelerrmsg, "cairoCFerBind_createSurface: "
@@ -108,9 +126,8 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
             return 0;
         }
         /* set the resolution for fallback raster images in vector drawings */
-        if ( instdata->imageformat != CCFBIF_PNG )
-            cairo_surface_set_fallback_resolution(instdata->surface,
-                              (double) CCFB_WINDOW_DPI, (double) CCFB_WINDOW_DPI);
+        cairo_surface_set_fallback_resolution(instdata->surface,
+                          (double) CCFB_WINDOW_DPI, (double) CCFB_WINDOW_DPI);
     }
 
     /* Create the Context if it does not exist */
@@ -130,6 +147,7 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
             cairo_set_antialias(instdata->context, CAIRO_ANTIALIAS_DEFAULT);
         else
             cairo_set_antialias(instdata->context, CAIRO_ANTIALIAS_NONE);
+
         /*
          * If landscape PostScript, translate and rotate the coordinate system
          * to correct for swapped width and height (per Cairo requirements).
@@ -156,6 +174,7 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
                  */
             }
         }
+
         /* Set the appropriate clipping rectangle (if any) */
         if ( ! cairoCFerBind_clipView(self, instdata->clipit) ) {
             /* grdelerrmsg appropriately assigned */

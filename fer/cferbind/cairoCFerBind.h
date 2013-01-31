@@ -14,13 +14,14 @@
 #define CCFB_WINDOW_DPI 120
 
 /* Factor for converting pixels to points */
-#define CCFB_POINTS_PER_PIXEL (72.0 / (double) CCFB_WINDOW_DPI);
+#define CCFB_POINTS_PER_PIXEL (72.0 / (double) CCFB_WINDOW_DPI)
 
 typedef enum CCFBImageFormat_enum {
     CCFBIF_PNG = 0,
     CCFBIF_PDF,
     CCFBIF_PS,
     CCFBIF_SVG,
+    CCFBIF_REC,
 } CCFBImageFormat;
 
 typedef struct CCFBSides_struct {

@@ -53,10 +53,12 @@ grdelBool cairoCFerBind_resizeWindow(CFerBind *self, double width, double height
 
     /* Delete any existing context and surface which uses the old size */
     if ( instdata->context != NULL ) {
+        cairo_show_page(instdata->context);
         cairo_destroy(instdata->context);
         instdata->context = NULL;
     }
     if ( instdata->surface != NULL ) {
+        cairo_surface_finish(instdata->surface);
         cairo_surface_destroy(instdata->surface);
         instdata->surface = NULL;
     }

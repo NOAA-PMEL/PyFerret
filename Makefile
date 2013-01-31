@@ -40,11 +40,13 @@ debug :
 pymod_optimized :
 	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/pyferret_install
 	( cd $(DIR_PREFIX) ; \
+	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
 	  $(PYTHON_EXE) setup.py build )
 	( cd $(DIR_PREFIX) ; \
+	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
@@ -54,11 +56,13 @@ pymod_optimized :
 pymod_debug :
 	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/pyferret_install
 	( cd $(DIR_PREFIX) ; \
+	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
 	  $(PYTHON_EXE) setup.py build -g )
 	( cd $(DIR_PREFIX) ; \
+	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
@@ -109,6 +113,7 @@ update :
 	cp -f $(DIR_PREFIX)/efmem/ferret_ef_mem_subsc.so $(INSTALL_FER_DIR)/lib
 	cp -f $(DIR_PREFIX)/threddsBrowser/threddsBrowser.jar $(INSTALL_FER_DIR)/lib
 	( cd $(DIR_PREFIX) ; \
+	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \

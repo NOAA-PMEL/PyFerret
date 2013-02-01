@@ -23,18 +23,19 @@
  *
  * If formatname is "" or NULL, the filename extension of imagename,
  * if it exists and is recognized, will determine the format.  If
- * the extension does not exist or is not recognized, a PNG surface
- * will be created.  A filename consisting of only an extension
- * (e.g., ".png") will be treated as not having an extension.
+ * the extension does not exist or is not recognized, a recording
+ * surface, if available (otherwise, an image surface) will be 
+ * created.  A filename consisting of only an extension (e.g., ".png") 
+ * will be treated as not having an extension.
  *
  * A "GIF" format is silently converted to "PNG".  A "PLT" format
  * is silently converted to "PDF".
  *
- * If the PNG surface is created, the saveWindow function is used
- * to save the image.  Thus, imagename is only a default name that
- * may not be used.  For other surfaces, the saveWindow function
- * does nothing as the drawing is being written directly to file
- * and cannot be saved to another file.
+ * If a recording or an image surface is created, the saveWindow 
+ * function is used to save the image.  Thus, imagename is only 
+ * a default name that may not be used.  For other surfaces, the 
+ * saveWindow function does nothing as the drawing is being written 
+ * directly to file and cannot be saved to another file.
  *
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
@@ -109,9 +110,9 @@ grdelBool cairoCFerBind_setImageName(CFerBind *self, const char imagename[],
     }
 
 #ifdef CAIRO_HAS_RECORDING_SURFACE
-    /* Always use a recording surface if available */
-    /* But leave the above checks in */
-    imageformat = CCFBIF_REC;
+    /* Recording surface is available, so use it instead of image surfaces */
+    if ( imageformat == CCFBIF_PNG )
+        imageformat = CCFBIF_REC;
 #endif
 
     /* Update the instance data structure */

@@ -86,6 +86,8 @@ C     *JD* 8.2.91 Mod to support brain dead PPL -- no @ usage
 
 * v580 *acm* 8/04 Change use of 256 to buflen+1, 
 *                 where buflen is defined in cmndlen.inc
+* v685 *acm* 1/13 Fix ticket 1298. If a label comes in containing single
+*                 quotes, just pass that on. It's not a symbol translation.
 
         logical         tmapdebug
         common/tmdebug/ tmapdebug
@@ -98,7 +100,7 @@ C     *JD* 8.2.91 Mod to support brain dead PPL -- no @ usage
 
 	CHARACTER COM*(*),LABEL*(*),LINE*(*),SYM*30,VALUE*2048,FILE*80
 	CHARACTER ICOM*2048
-	LOGICAL RESULT,NUM
+	LOGICAL RESULT,NUM,islab
 	DIMENSION X(*),IF(*)
 	INTEGER LBSTRT,WHCNT
 	integer*4 status,iflag
@@ -122,14 +124,17 @@ C
 999	FORMAT(1X,A)
 	IF(DONEF)RETURN
 	IF(ECHOF.AND..NOT.DEBUGF)CALL ECHO(LINE,ILEN)
+
 	CALL SYMSUB(LINE,ILEN,IER,SYM,IPOS)
 	IF(DEBUGF)CALL ECHO(LINE,ILEN)
-	IF((IER.NE.0).AND..NOT.(SKIPIF.OR.SKIPWH))THEN
+	CALL CMLJST(LINE,ILEN)
+	CALL PARSE(LINE,ILEN,ICOM,LABEL,N,LBSTRT)
+	islab = (ICOM.EQ.'%LABEL') .OR. (icom.EQ.'TITLE') .OR.
+     .          (ICOM.EQ.'XLAB') .OR. (icom.EQ.'YLAB')
+	IF((IER.NE.0).AND..NOT.(SKIPIF.OR.SKIPWH.OR.islab))THEN
 	    CALL CMDERR(IER,LINE,ILEN,IPOS)
 	    GOTO 1000
 	ENDIF
-	CALL CMLJST(LINE,ILEN)
-	CALL PARSE(LINE,ILEN,ICOM,LABEL,N,LBSTRT)
 C
 C	CHECK FOR ELSE AND ENDIF // IF SKIPIF IS TRUE
 C

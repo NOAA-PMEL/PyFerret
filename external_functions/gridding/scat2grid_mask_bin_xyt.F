@@ -207,8 +207,7 @@
       CALL ef_set_work_array_dims (id, 6, 1, 1, 1, 1, nt2, 1, 1, 1)
 
 * counts
-      CALL ef_set_work_array_dims 
-     .    (id, 7, 1, 1, 1, 1, nxout, nyout, 1, ntout)
+      CALL ef_set_work_array_dims (id, 7, 1,1,1,1, nxout,nyout,1,ntout)
 
       RETURN
       END
@@ -217,7 +216,7 @@
 *
 
       SUBROUTINE  scat2grid_mask_bin_xyt_compute(id, arg_1, arg_2, arg_3, 
-     .     arg_4, arg_5, arg_6, arg_7, result, xaxlo, xaxhi, 
+     .     arg_4, arg_5, arg_6, arg_7, arg_8, result, xaxlo, xaxhi, 
      .     yaxlo, yaxhi, taxlo, taxhi, counts)
 
 *  arg_1  xpts  \
@@ -248,6 +247,8 @@
      .     mem6lot:mem6hit)
       REAL arg_7(mem7lox:mem7hix, mem7loy:mem7hiy, mem7loz:mem7hiz,
      .     mem7lot:mem7hit)
+      REAL arg_8(mem8lox:mem8hix, mem8loy:mem8hiy, mem8loz:mem8hiz,
+     .     mem8lot:mem8hit)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .     memresloz:memreshiz, memreslot:memreshit)
@@ -280,10 +281,8 @@
      .               wrk5loz:wrk5hiz, wrk5lot:wrk5hit)
       REAL*8 taxhi(wrk6lox:wrk6hix/2, wrk6loy:wrk6hiy,
      .               wrk6loz:wrk6hiz, wrk6lot:wrk6hit)
-      REAL arg_8(mem8lox:mem8hix, mem8loy:mem8hiy, 
-     .     mem8loz:mem8hiz, mem8lot:mem8hit)
 
-      REAL counts(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
+      REAL*8 counts(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
      .              wrk7loz:wrk7hiz, wrk7lot:wrk7hit) 
 
       INTEGER i, j, k, l, m, n
@@ -304,6 +303,7 @@
 
       CHARACTER ax_name(5)*16, ax_units(5)*16
       LOGICAL backward(5), modulox(5), regular(5)
+
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -415,10 +415,11 @@ C  Get first coordinates of output axes.
 
 *  Initialize counts.
 
+        k = 1
         DO l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
            DO j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
               DO i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-                 counts(i,j,1,L) = 0.0
+                 counts(i,j,k,L) = 0.0
               ENDDO
            ENDDO
         ENDDO
@@ -436,11 +437,11 @@ C  Get first coordinates of output axes.
      .                         n, xx, yy, tt, ff)
 
             imask = INT(1+(xx-x1)/dx)
-            if (xx .LT. xax(imask,1,1,1) - dx/2) imask = imask - 1
-            if (xx .GT. xax(imask,1,1,1) + dx/2) imask = imask + 1
+            if (xx .LT. xaxlo(imask,1,1,1)) imask = imask - 1
+            if (xx .GT. xaxhi(imask,1,1,1)) imask = imask + 1
             jmask = INT(1+(yy-y1)/dy)
-            if (yy .LT. yax(jmask,1,1,1) - dy/2) jmask = jmask - 1
-            if (yy .GT. yax(jmask,1,1,1) + dy/2) jmask = jmask + 1
+            if (yy .LT. yaxlo(jmask,1,1,1)) jmask = jmask - 1
+            if (yy .GT. yaxhi(jmask,1,1,1)) jmask = jmask + 1
 
             IF (arg_8(imask,jmask,k8,l8) .NE. 1.) GOTO 300
 
@@ -489,6 +490,7 @@ C  Get first coordinates of output axes.
 
 * Compute result, average in each bin.
 
+      k = res_lo_ss(Z_AXIS)
       i1 = 1
       DO 620 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
          j1 = 1

@@ -261,6 +261,12 @@
 
         CALL set_graticules(loch, locv, status)
 
+* set contour label details (3/00)
+* fix bug 
+	WRITE ( ppl_buff, 3100 ) lab_size, sigdig, lab_spacing
+	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+ 3100	FORMAT('CONSET ',F8.3,',',I4,', , , , , ,',F7.2)
+
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
@@ -296,10 +302,6 @@
 * is the no valid input data?
         no_data =  no_range .AND. only_val.EQ.bad_val4
 
-* set contour label details (3/00)
-	WRITE ( ppl_buff, 3100 ) lab_size, sigdig, lab_spacing
-	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
- 3100	FORMAT('CONSET ',F8.3,',',I4,', , , , , ,',F7.2)
 
 * PPLUS blows up setting auto contour levels if all data have same value
 * But, do not let this be rounded off, or we cannot find the color when matching 

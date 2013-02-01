@@ -1,0 +1,7 @@
+! bn685_bug_fixes.jnl
+! test various fixes that went into version 6.85
+! 1/2013 ACM
+
+GO bn_reset
+GO err684_label_quotes
+GO err684_context_shape.jnl

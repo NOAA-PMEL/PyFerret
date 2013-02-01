@@ -1,0 +1,22 @@
+! err684_label_quotes.jnl
+! See ticket 1298. 
+
+! A long-standing bug, error message if a label
+! enclosed in single quotes is sent to pplus
+! The single quotes triggers an attempt to translate
+! a pplus symbol.
+
+plot/set/i=1:12 1./i
+  ppl xlab "'My X label'"
+  ppl ylab "'My Y Label'"
+  ppl title "'A title w/ single quotes'. Need not be in pairs: Ka'imimoana"
+ppl plot
+
+
+! Here is the example from the ticket
+
+! This is ok
+say "'hello'"
+
+! this returned an error
+label 4.5 .5 0 0 .3 "'hello'"

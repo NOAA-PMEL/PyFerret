@@ -189,5 +189,6 @@ bn_descr_4digit.jnl
 bn_axis_outtype.jnl
 bn_axis_nonmonotonic.jnl
 bn_vec_mod.jnl
+bn685_bug_fixes.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

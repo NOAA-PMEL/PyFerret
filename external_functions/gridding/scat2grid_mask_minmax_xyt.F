@@ -170,8 +170,6 @@
       SUBROUTINE scat2grid_mask_minmax_xyt_result_limits(id)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
-
 
       INTEGER id
 
@@ -180,7 +178,10 @@
 *                                                                     |
 *                                                                     V
 
-      CALL ef_set_axis_limits(id, Z_AXIS, 1, 2)
+      integer lo, hi
+      lo = 1
+      hi = 2
+      CALL ef_set_axis_limits(id, Z_AXIS, lo, hi)
 
 *                                                                     ^
 *                                                                     |
@@ -432,7 +433,6 @@ C  Get first coordinates of output axes.
 
         BIG = ABS(bad_flag_result)
 
-        k = res_lo_ss(Z_AXIS)
         DO l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
            DO j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
               DO i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
@@ -453,11 +453,11 @@ C  Get first coordinates of output axes.
      .                         n, xx, yy, tt, ff)
 
             imask = INT(1+(xx-x1)/dx)
-            if (xx .LT. xax(imask,1,1,1) - dx/2) imask = imask - 1
-            if (xx .GT. xax(imask,1,1,1) + dx/2) imask = imask + 1
+            if (xx .LT. xaxlo(imask,1,1,1)) imask = imask - 1
+            if (xx .GT. xaxhi(imask,1,1,1)) imask = imask + 1
             jmask = INT(1+(yy-y1)/dy)
-            if (yy .LT. yax(jmask,1,1,1) - dy/2) jmask = jmask - 1
-            if (yy .GT. yax(jmask,1,1,1) + dy/2) jmask = jmask + 1
+            if (yy .LT. yaxlo(jmask,1,1,1)) jmask = jmask - 1
+            if (yy .GT. yaxhi(jmask,1,1,1)) jmask = jmask + 1
 
             IF (arg_8(imask,jmask,k8,l8) .NE. 1.) GOTO 300
 

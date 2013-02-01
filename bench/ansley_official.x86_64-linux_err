@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43405753 Dec 10 15:48 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+Running FERRET version /home/users/tmap/ferret/x86_64-linux/bin/ferret
+lrwxrwxrwx 1 ansley tmap 56 Dec 13 12:38 /home/users/tmap/ferret/x86_64-linux/bin/ferret -> /home/users/tmap/ferret/x86_64-linux/bin/ferret_v684_rc1
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix bug 2004: append to packed variable
+Note: update the benchmark logs for v6.84 on dunkel
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -21,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Mon Dec 10 16:04:22 PST 2012
+Beginning at Fri Jan 18 09:56:58 PST 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3374,6 +3374,27 @@ LIST/FORMAT=CDF/clobber/file=mytype.nc my_data
 define axis/t/units=days tax = tvar
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ Using every   9th vector in the X direction
+ Using every   9th vector in the X direction
+ Using every   9th vector in the X direction
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR Symbol not found              
+  xlab "'My X label'"
+         ^
+ **ERROR Symbol not found              
+  ylab "'My Y Label'"
+         ^
+ **ERROR Symbol not found              
+  title "'A title w/ single quotes'. Need not be in pairs: Ka'imimoana"
+          ^
+ **ERROR Symbol not found              
+  %LABEL 4.5 .5 0 0 .3 "'hello'"
+                         ^
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -3461,4 +3482,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Dec 10 16:05:56 PST 2012
+Ended at Fri Jan 18 09:58:33 PST 2013

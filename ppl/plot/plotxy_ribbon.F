@@ -56,6 +56,8 @@ C
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 
+* 1/2013  *acm* Fix ticket 2029, call to WS_LINE_SPECTRUM was missing an 
+*               argument for setting up metafile plots.
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'

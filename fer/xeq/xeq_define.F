@@ -217,6 +217,8 @@
 * V68  *acm* 5/12  Add DEFINE DATA/AGGREGATE
 * V683 *acm*11/12  If DEFINE AXIS data not monotonic, add the index location 
 *                  to the error message
+* V685 *acm* 1/13  Fix ticket 2026: dont automatically mark a 1-point longitude
+*                  axis as modulo.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -1441,7 +1443,7 @@ C /units=months  is 1/12 of the length of the year
 * automatic longitude modulo
 	axwwlen = TM_WW_AXLEN(iline)
 	IF (line_direction(iline) .EQ. 'WE' ) THEN
-	  IF (axwwlen .LE. 360.D0) THEN
+	  IF (axwwlen .LE. 360.D0 .AND. (npoints.GT.1)) THEN
 	     its_modulo = .TRUE.
 	     IF (rmod_len .EQ. 0.0D0)  rmod_len = 360.D0
 	     new_att_modulo = .TRUE.

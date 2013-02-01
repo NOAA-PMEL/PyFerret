@@ -3,7 +3,7 @@
 
 ## Full path name of the directory containing this file (the ferret root directory).
 ## Do not use $(shell pwd) since this is included in Makefiles in other directories.
-DIR_PREFIX	= $(HOME)/pyferret_64dev
+DIR_PREFIX	= $(HOME)/pyferret_dev
 
 ## Machine for which to build Ferret
 ## Use $(HOSTTYPE) to build natively for the machine you are using
@@ -24,7 +24,8 @@ INSTALL_FER_DIR	= $(FER_DIR)
 
 ## Installation directory for Cairo libraries
 ## (contains include and lib or lib64 subdirectories)
-CAIRO_DIR	= $(HOME)/.local
+CAIRO_DIR	= /usr
+# CAIRO_DIR	= $(HOME)/.local
 
 ## Installation directory for HDF5 static libraries
 ## (contains include and lib or lib64 subdirectories)

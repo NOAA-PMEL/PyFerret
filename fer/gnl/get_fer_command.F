@@ -231,7 +231,7 @@ c        IF(has_more.NE.1) goto 210
 	   RETURN 1
 	ELSE
 *          Consider an update of the graphics
-           CALL FGD_CONSIDER_UPDATE()
+           CALL FGD_CONSIDER_UPDATE(.FALSE.)
 	   GOTO 20
 	ENDIF
 

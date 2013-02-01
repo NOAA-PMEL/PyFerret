@@ -40,6 +40,8 @@ c**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 * v552 *acm* 3/03 Longer strings: changes for multi-line labels
+* V6842*acm* 1/13 Increase number of symbols: why doesnt the STOP
+*                 statement in loop 30 work?
 
 	character file*(*)
 	integer flen,lun
@@ -50,7 +52,7 @@ c
 	subroutine dbmstore(lun,sym,ilen,value,len,ier)
 c
 	integer VSHORT,VLONG
-	parameter (VSHORT=1000,VLONG=100)
+	parameter (VSHORT=2000,VLONG=100)
 c
 	character sym*(*),value*(*)
 	integer lun,ilen,len,ier

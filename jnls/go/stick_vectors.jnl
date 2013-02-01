@@ -3,6 +3,7 @@
 ! 4/94
 ! 4/95 - instructions on how to use "PLOTV" and angle/increment arguments
 ! 7/01 *acm* update /ylimits to /vlimits
+! 2/13 *acm* dont stop on quotes in the plot command when checking for /over
 
 ! Description: Make a stick vector plot of a line of U,V values
 
@@ -45,12 +46,25 @@ $1/SET_UP $2, $3
 ! If the plot command includes /OVER, then that needs to be added to the
 ! PPL PLOTUV command.
 
-DEFINE SYMBOL upcommand = `UPCASE("($1)")`
-IF `STRINDEX("($upcommand)","OV") GT 0` THEN DEFINE SYMBOL qualifiers = /OVER
+! The commands below to send the the $1 argument into string functions
+! will fail if there are quotes in the text of $1.  If there is an error,
+! try to continue without setting the /OVER qualifier.
 
+SET MODE IGNORE
+DEFINE SYMBOL upcommand = `UPCASE("($1)")`
+IF ($FER_LAST_ERROR%0|*>1%) THEN 
+   SAY ... 
+   SAY ... stick_vectors.jnl fails checking the plot command for /OVERLAY qualifier, 
+   SAY ... when command contains a quoted string. Continuing.
+   SAY ... 
+ELSE
+   IF `STRINDEX("($upcommand)","OV") GT 0` THEN DEFINE SYMBOL qualifiers = /OVER
+ENDIF
+SET MODE/LAST IGNORE
 
 ! ... but display it with the PLOTUV command
 PPL PLOTUV($qualifiers) $4"0" $5"1"
 
 set mode/last verify
+cancel symbol qualifiers
 

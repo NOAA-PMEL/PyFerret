@@ -22,9 +22,6 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
     char  *fmtname;
     double width;
     double height;
-#ifdef CAIRO_HAS_RECORDING_SURFACE
-    cairo_rectangle_t  extents;
-#endif
 
     /* Sanity check */
     if ( (self->enginename != CairoCFerBindName) &&
@@ -98,19 +95,15 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
             instdata->usealpha = 1;
             fmtname = "SVG";
             break;
-#ifdef CAIRO_HAS_RECORDING_SURFACE
         case CCFBIF_REC:
-            /* Surface size is given in float-point pixels (or could be omitted) */
-            extents.x = 0.0;
-            extents.y = 0.0;
-            extents.width = (double) instdata->imagewidth;
-            extents.height = (double) instdata->imageheight;
+            /* Surface size is given in (floating-point) points */
+            width = (double) instdata->imagewidth * CCFB_POINTS_PER_PIXEL;
+            height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
             instdata->surface = 
-                cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, &extents);
+                cairo_svg_surface_create_for_stream(NULL, NULL, width, height);
             instdata->usealpha = 1;
-            fmtname = "recording";
+            fmtname = "SVG REC";
             break;
-#endif
         default:
             sprintf(grdelerrmsg, "cairoCFerBind_createSurface: unexpected error, "
                                  "unknown imageformat %d", instdata->imageformat);
@@ -135,18 +128,13 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
         instdata->context = cairo_create(instdata->surface);
         if ( cairo_status(instdata->context) != CAIRO_STATUS_SUCCESS ) {
             strcpy(grdelerrmsg, "cairoCFerBind_createSurface: "
-                                 "problems creating a context from a surface");
+                                "problems creating a context from a surface");
             cairo_destroy(instdata->context);
             instdata->context = NULL;
             cairo_surface_destroy(instdata->surface);
             instdata->surface = NULL;
             return 0;
         }
-        /* Assign context values recorded in this instance */
-        if ( instdata->antialias )
-            cairo_set_antialias(instdata->context, CAIRO_ANTIALIAS_DEFAULT);
-        else
-            cairo_set_antialias(instdata->context, CAIRO_ANTIALIAS_NONE);
 
         /*
          * If landscape PostScript, translate and rotate the coordinate system
@@ -173,7 +161,19 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
                  * left corner to (width, height) at the bottom right corner.
                  */
             }
+            else {
+                /* Add a "comment" telling PostScript it is portrait */
+                cairo_ps_surface_dsc_begin_page_setup(instdata->surface);
+                cairo_ps_surface_dsc_comment(instdata->surface,
+                                         "%%PageOrientation: Portrait");
+            }
         }
+
+        /* Set the antialiasing state in the context */
+        if ( instdata->antialias )
+            cairo_set_antialias(instdata->context, CAIRO_ANTIALIAS_DEFAULT);
+        else
+            cairo_set_antialias(instdata->context, CAIRO_ANTIALIAS_NONE);
 
         /* Set the appropriate clipping rectangle (if any) */
         if ( ! cairoCFerBind_clipView(self, instdata->clipit) ) {

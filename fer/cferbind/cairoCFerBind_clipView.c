@@ -52,17 +52,11 @@ grdelBool cairoCFerBind_clipView(CFerBind *self, int clipit)
     right = instdata->fracsides.right * instdata->imagewidth;
     top = instdata->fracsides.top * instdata->imageheight;
     bottom = instdata->fracsides.bottom * instdata->imageheight;
-    switch( instdata->imageformat ) {
-    case CCFBIF_PDF:
-    case CCFBIF_PS:
-    case CCFBIF_SVG:
+    if ( instdata->imageformat != CCFBIF_PNG ) {
         left   *= CCFB_POINTS_PER_PIXEL;
         right  *= CCFB_POINTS_PER_PIXEL;
         top    *= CCFB_POINTS_PER_PIXEL;
         bottom *= CCFB_POINTS_PER_PIXEL;
-        break;
-    default:
-        break;
     }
 
     /* Create the clipping rectangle path */

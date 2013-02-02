@@ -47,7 +47,8 @@ grdelBool pyqtcairoCFerBind_updateWindow(CFerBind *self)
     status = cairo_status(instdata->context);
     if ( status != CAIRO_STATUS_SUCCESS ) {
         sprintf(grdelerrmsg, "pyqtcairoCFerBind_updateWindow: "
-                             "context has error state %d", status);
+                             "cairo context error: %s", 
+                             cairo_status_to_string(status));
         return 0;
     }
 
@@ -58,7 +59,8 @@ grdelBool pyqtcairoCFerBind_updateWindow(CFerBind *self)
     status = cairo_surface_status(instdata->surface);
     if ( status != CAIRO_STATUS_SUCCESS ) {
         sprintf(grdelerrmsg, "pyqtcairoCFerBind_updateWindow: "
-                             "surface has error state %d", status);
+                             "cairo surface error: %s", 
+                             cairo_status_to_string(status));
         return 0;
     }
 

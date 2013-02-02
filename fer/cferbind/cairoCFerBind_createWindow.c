@@ -75,12 +75,8 @@ CFerBind *cairoCFerBind_createWindow(void)
 
     /* Set non-zero default values */
     instdata = (CairoCFerBindData *) bindings->instancedata;
-    /* Cairo surface type */
-#ifdef CAIRO_HAS_RECORDING_SURFACE
+    /* Default Cairo surface type */
     instdata->imageformat = CCFBIF_REC;
-#else
-    instdata->imageformat = CCFBIF_PNG;
-#endif
     /* image size and minimum allowed value */
     instdata->imagewidth = 840;
     instdata->imageheight = 720;

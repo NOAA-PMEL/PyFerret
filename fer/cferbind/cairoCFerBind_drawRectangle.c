@@ -84,15 +84,11 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
     }
 
     /* Convertions factor for those surfaces that expect points instead of pixels */
-    switch( instdata->imageformat ) {
-    case CCFBIF_PDF:
-    case CCFBIF_PS:
-    case CCFBIF_SVG:
-        unitfactor = CCFB_POINTS_PER_PIXEL;
-        break;
-    default:
+    if ( instdata->imageformat == CCFBIF_PNG ) {
         unitfactor = 1.0;
-        break;
+    }
+    else {
+        unitfactor = CCFB_POINTS_PER_PIXEL;
     }
 
     /* Create the path that will be filled and/or stroked */

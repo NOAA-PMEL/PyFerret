@@ -224,40 +224,46 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int nam
             return 0;
         }
 
-        if ( (strcmp(fmtext, "PDF") == 0) || 
-             (strcmp(fmtext, "PS")  == 0) ||
-             (strcmp(fmtext, "SVG") == 0)   ) {
+        if ( strcmp(fmtext, "PNG") == 0 ) {
             /*
-             * The recording surface used units of pixels, 
-             * but these surfaces these use units of points,
+             * The recording surface used units of points
+             * but this surfaces uses units of pixels,
              * so scale the drawing in the transfer.
              */
             cairo_scale(savecontext, 
-                        CCFB_POINTS_PER_PIXEL, 
-                        CCFB_POINTS_PER_PIXEL);
+                        1.0 / CCFB_POINTS_PER_PIXEL, 
+                        1.0 / CCFB_POINTS_PER_PIXEL);
         }
 
         /*
          * If landscape PostScript, translate and rotate the coordinate system
          * to correct for swapped width and height (per Cairo requirements).
          */
-        if ( (strcmp(fmtext, "PS") == 0) &&  (width > height) ) {
-            /* surface was created with coordinates (0,0) to (height, width) */
-            cairo_matrix_t transmat;
+        if ( strcmp(fmtext, "PS") == 0 ) {
+           if ( width > height ) {
+                /* surface was created with coordinates (0,0) to (height, width) */
+                cairo_matrix_t transmat;
 
-            /* Add a "comment" telling PostScript it is landscape */
-            cairo_ps_surface_dsc_begin_page_setup(savesurface);
-            cairo_ps_surface_dsc_comment(savesurface,
-                                         "%%PageOrientation: Landscape");
-            /* Move to the bottom left corner */
-            cairo_translate(savecontext, 0.0, (double) instdata->imagewidth);
-            /* Rotate 90 degrees clockwise */
-            cairo_matrix_init(&transmat, 0.0, -1.0, 1.0, 0.0, 0.0, 0.0);
-            cairo_transform(savecontext, &transmat);
-            /*
-             * The transformed coordinate system goes from (0,0) at the top
-             * left corner to (width, height) at the bottom right corner.
-             */
+                /* Add a "comment" telling PostScript it is landscape */
+                cairo_ps_surface_dsc_begin_page_setup(savesurface);
+                cairo_ps_surface_dsc_comment(savesurface,
+                                             "%%PageOrientation: Landscape");
+                /* Move to the bottom left corner */
+                cairo_translate(savecontext, 0.0, width);
+                /* Rotate 90 degrees clockwise */
+                cairo_matrix_init(&transmat, 0.0, -1.0, 1.0, 0.0, 0.0, 0.0);
+                cairo_transform(savecontext, &transmat);
+                /*
+                 * The transformed coordinate system goes from (0,0) at the top
+                 * left corner to (width, height) at the bottom right corner.
+                 */
+            }
+            else {
+                /* Add a "comment" telling PostScript it is portrait */
+                cairo_ps_surface_dsc_begin_page_setup(savesurface);
+                cairo_ps_surface_dsc_comment(savesurface,
+                                             "%%PageOrientation: Portrait");
+            }
         }
 
         if ( ! transbkg ) {
@@ -278,9 +284,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int nam
 
         /* Create a path covering the entire image */
         cairo_new_path(savecontext);
-        cairo_rectangle(savecontext, 0.0, 0.0, 
-                                    (double) instdata->imagewidth, 
-                                    (double) instdata->imageheight);
+        cairo_rectangle(savecontext, 0.0, 0.0, width, height);
 
         /* Draw the transparent-background image onto this temporary surface */
         cairo_set_source_surface(savecontext, instdata->surface, 0.0, 0.0);
@@ -299,39 +303,30 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int nam
     if ( strcmp(fmtext, "PNG") == 0 ) {
         /* Save the raster image in memory to file */
         result = cairo_surface_write_to_png(savesurface, savename);
-        /* Done with the temporary surface */
         if ( savesurface != instdata->surface ) {
+            /* Done with the temporary surface */
             cairo_surface_finish(savesurface);
             cairo_surface_destroy(savesurface);
         }
-        /* Analyze the results */
-        switch( result ) {
-        case CAIRO_STATUS_SUCCESS:
-            break;
-        case CAIRO_STATUS_WRITE_ERROR:
-            sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
-                                 "I/O error while saving to '%s'", savename);
-            return 0;
-        case CAIRO_STATUS_NO_MEMORY:
-            sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
-                                 "out of memory while saving to '%s'", savename);
-            return 0;
-        case CAIRO_STATUS_SURFACE_TYPE_MISMATCH:
-            sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: unexpected error, "
-                                 "type mismatch while saving to '%s'", savename);
-            return 0;
-        default:
-            sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: unexpected error, "
-                                 "unknown error %d while saving to '%s'",
-                                 result, savename);
-            return 0;
-        }
     }
     else {
-        /* Vector images are written directly to file, so nothing more to do. */
-        /* Done with the temporary surface */
+        /* 
+         * Vector images are written directly to file.
+         * Check there were no errors after finishing 
+         * off the surface.
+         */
         cairo_surface_finish(savesurface);
+        result = cairo_surface_status(savesurface);
+        /* Done with the temporary surface */
         cairo_surface_destroy(savesurface);
+    }
+
+    /* Analyze the results */
+    if ( result != CAIRO_STATUS_SUCCESS ) {
+        sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
+                             "error while saving to '%s'; %s",
+                             savename, cairo_status_to_string(result));
+        return 0;
     }
 
     return 1;

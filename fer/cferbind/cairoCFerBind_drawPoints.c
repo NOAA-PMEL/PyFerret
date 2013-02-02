@@ -57,15 +57,11 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
                              colorobj->greenfrac, colorobj->bluefrac);
 
     /* Convertions factor for those surfaces that expect points instead of pixels */
-    switch( instdata->imageformat ) {
-    case CCFBIF_PDF:
-    case CCFBIF_PS:
-    case CCFBIF_SVG:
-        unitfactor = CCFB_POINTS_PER_PIXEL;
-        break;
-    default:
+    if ( instdata->imageformat == CCFBIF_PNG ) {
         unitfactor = 1.0;
-        break;
+    }
+    else {
+        unitfactor = CCFB_POINTS_PER_PIXEL;
     }
 
     /* Scaling factor to use for these symbols "drawn" as 100x100 pixel paths */

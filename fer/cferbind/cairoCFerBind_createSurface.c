@@ -151,11 +151,9 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
                 cairo_ps_surface_dsc_begin_page_setup(instdata->surface);
                 cairo_ps_surface_dsc_comment(instdata->surface,
                                          "%%PageOrientation: Landscape");
-                /* Move to the bottom left corner */
-                cairo_translate(instdata->context, 0.0, width);
-                /* Rotate 90 degrees clockwise */
-                cairo_matrix_init(&transmat, 0.0, -1.0, 1.0, 0.0, 0.0, 0.0);
-                cairo_transform(instdata->context, &transmat);
+                /* Translate and rotate 90 degrees */
+                cairo_matrix_init(&transmat, 0.0, -1.0, 1.0, 0.0, 0.0, width);
+                cairo_set_matrix(instdata->context, &transmat);
                 /*
                  * The transformed coordinate system goes from (0,0) at the top
                  * left corner to (width, height) at the bottom right corner.

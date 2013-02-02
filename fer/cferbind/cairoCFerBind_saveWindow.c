@@ -248,11 +248,9 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int nam
                 cairo_ps_surface_dsc_begin_page_setup(savesurface);
                 cairo_ps_surface_dsc_comment(savesurface,
                                              "%%PageOrientation: Landscape");
-                /* Move to the bottom left corner */
-                cairo_translate(savecontext, 0.0, width);
-                /* Rotate 90 degrees clockwise */
-                cairo_matrix_init(&transmat, 0.0, -1.0, 1.0, 0.0, 0.0, 0.0);
-                cairo_transform(savecontext, &transmat);
+                /* Translate and rotate 90 degrees */
+                cairo_matrix_init(&transmat, 0.0, -1.0, 1.0, 0.0, 0.0, width);
+                cairo_set_matrix(savecontext, &transmat);
                 /*
                  * The transformed coordinate system goes from (0,0) at the top
                  * left corner to (width, height) at the bottom right corner.
@@ -282,13 +280,9 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int nam
             cairo_paint(savecontext);
         }
 
-        /* Create a path covering the entire image */
-        cairo_new_path(savecontext);
-        cairo_rectangle(savecontext, 0.0, 0.0, width, height);
-
         /* Draw the transparent-background image onto this temporary surface */
         cairo_set_source_surface(savecontext, instdata->surface, 0.0, 0.0);
-        cairo_fill(savecontext);
+        cairo_paint(savecontext);
 
         /* Just to be safe */
         cairo_show_page(savecontext);

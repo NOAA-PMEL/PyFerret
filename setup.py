@@ -4,8 +4,18 @@ import sys
 import os
 import os.path
 
-# Make sure functions are externally visible and that everything is resolved
-addn_link_args = [ "-fPIC", "-rdynamic", "-Xlinker", "--no-undefined", ]
+# Moved linking of the system libraries to here to make sure the static 
+# netcdff, netcdf, hdf5_hl, hdf5, and cairo libraries are linked in. 
+# (There is very likely to be a system-wide libcairo.so library.)  
+# The pixman-1, freetype, fontconfig, png12, Xrender, and X11 libraries
+# are only used to resolve cairo library function calls.
+# Also make sure all libpyferret functions are externally visible and
+# that everything is resolved in the final linking step.
+addn_link_args = [ "-Wl,-Bstatic", "-lnetcdff", "-lnetcdf", "-lhdf5_hl", 
+                   "-lhdf5", "-lcairo", "-Wl,-Bdynamic", "-lgfortran", 
+                   "-lpixman-1", "-lfreetype", "-lfontconfig", "-lpng12", 
+                   "-lXrender", "-lX11", "-lcurl", "-lz", "-ldl", "-lm", 
+                   "-fPIC", "-rdynamic", "-Wl,--no-undefined", ]
 
 # (Non-standard) Directories containing .h include files
 incdir_list = [ "pyfermod",
@@ -46,8 +56,14 @@ lib_list.extend(fer_lib_list)
 lib_list.extend(fer_lib_list)
 # Add required system libraries to the list to link in
 lib_list.append("python%i.%i" % sys.version_info[:2])
-lib_list.extend( ( "netcdff", "netcdf", "hdf5_hl", "hdf5",
-                   "curl", "cairo", "z", "dl", "gfortran", "m", ) )
+
+#
+# Linking in the rest of the system libraries were moved to addn_link_flags 
+# in order to make sure the static netcdff, netcdf, hdf5_hl, hdf5, and cairo 
+# libraries are used.
+#
+# lib_list.extend( ( "netcdff", "netcdf", "hdf5_hl", "hdf5",
+#                    "cairo", "gfortran", "curl", "z", "dl", "m", ) )
 
 # Get the list of C source files in pyfermod
 src_list = [ ]

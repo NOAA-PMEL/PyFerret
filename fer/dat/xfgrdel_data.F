@@ -55,9 +55,6 @@
 * By default clip drawings to the current view
         DATA cliptoview / maxwindowobjs * .TRUE. /
 
-* Display the window on creation and updates.
-        DATA showwindow / maxwindowobjs * .TRUE. /
-
 * Default factors for normalized device coordinates.
         DATA ndcxmax / maxwindowobjs * 1.0 /
         DATA ndcymax / maxwindowobjs * 1.0 /
@@ -84,11 +81,22 @@
 * 1 = white, 2 = black
         DATA clearcolor / 1, 1, 1, 1, 1, 1, 1, 1, 2 /
 
-* Values when creating windows.
-* These default values (especially windowtitle) may be reset.
-        DATA enginename / 'PyQtCairo' /
-        DATA useantialiasing / .TRUE. /
+* Default engine for a new window.
+* Should not change after start-up.
+* Only reset by command-line options.
+        DATA defaultenginename / 'PyQtViewer' /
+
+* Transparent background for save-on-exit (-batch)?
+* Should not change after start-up.
+* Only reset by the "-transparent" command-line option.
+* Has nothing to do with "frame /transparent".
         DATA savetransparent / .FALSE. /
+
+* Actual window values - may get reset by the user.
+        DATA enginename / maxwindowobjs * 'PyQtViewer' /
+        DATA antialias / maxwindowobjs * .TRUE. /
+
+* Window title assigned just before creating a window
         DATA windowtitle / 'FERRET' /
 
         END

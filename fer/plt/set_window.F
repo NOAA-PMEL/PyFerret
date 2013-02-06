@@ -65,7 +65,7 @@
 *			     logical but was defined as integer
 * V411: 9/6/95 *sh* changes to CLEAR_WINDOW (explicit segment deleting) caused
 *	SET WINDOW/CLEAR/SIZE=0.2 to crash Ferret.  Indications are that this
-*	is timing-related (plot must be complex, doesn't happen in totalview)
+*	is timing-related (plot must be complex, does not happen in totalview)
 *	Changes here to clear window **before** other actions.
 * V420 (IBM/AIX port of V411): 10/5/95 - buffer "READ(var,*"
 * 1/97 *kob* - Linux Port - had to move variable assignments off of
@@ -87,6 +87,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
+* PyFr *kms* 2/2013  Add /QUALITY=... /AALIAS /NOAALIAS /ENGINE=...
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -110,24 +111,15 @@
 	INTEGER	status
 
 * internal variable declarations:
-	LOGICAL TM_DIGIT, physical_chg, relocate, chg_window,
+	LOGICAL TM_DIGIT, MATCH4, physical_chg, relocate, chg_window,
      .		axis_ref
 	INTEGER TM_LENSTR1, ier, id, itype, imeter, irx, iry, wn, n,
-     .          qp, ivp, colon_pos, tlen, i, s1, idone
-#ifdef double_p
+     .          qp, ivp, colon_pos, slen, tlen, i, s1, idone
 	REAL	dmaxx, dmaxy, xln, yln, xmn, xmx, ymn, ymx,
      .		scale, xstretch, ystretch, aspect, ref_len
-*       REAL    bigness
 	REAL*4  rzero, rone, fcty, fctx, setpx, setpy,
      .          xwlo, ywlo, xwhi, ywhi
-#else
-	REAL    dmaxx, dmaxy, fcty, fctx, xln, yln, xmn, xmx, ymn, ymx,
-     .          bigness, scale, xstretch, ystretch, aspect,
-     .          ref_len, rzero, rone, setpx, setpy,
-     .          xwlo, ywlo, xwhi, ywhi
-#endif
-	
-	CHARACTER	UPPER_CASE*1, GKS_X_CONID*16,
+	CHARACTER	UPPER_CASE*1, GKS_X_CONID*16, warnmsg*80,
      .			arg1*1, buffer*24, xwind_id*80, short_buff*24
 * ... for GKS escape call:
 	INTEGER esc_data(4), dummy
@@ -138,7 +130,11 @@
      .			slash_loc,
      .			slash_aspect,
      .			slash_clear,
-     .			slash_title
+     .			slash_title,
+     .                  slash_quality,
+     .                  slash_aalias,
+     .                  slash_noaalias,
+     .                  slash_engine
         LOGICAL         physical
 	PARAMETER     ( slash_size   = 0+1,
      .			slash_new    = 1+1,
@@ -146,6 +142,10 @@
      .			slash_aspect = 3+1,
      .			slash_clear  = 4+1,
      .			slash_title  = 5+1,
+     .                  slash_quality = 6+1,
+     .                  slash_aalias = 7+1,
+     .                  slash_noaalias = 8+1,
+     .                  slash_engine = 9+1,
      .                  physical     = .TRUE. )
 
 * statement function - value between 0 and 1
@@ -245,20 +245,65 @@ c 75        CONTINUE
      .          .NOT.animate  ) CALL ERRMSG
      .		( ferr_out_of_range, status, 'legal numbers are 1-8', *5000 )
 
+* Determine the graphics engine to use.  This also sets the default 
+* anti-alias state for that engine.  If a new window and neither 
+* /quality nor /engine is given, the default engine is assigned.
+        qp = qual_given(slash_quality)
+        IF ( qp .GT. 0 ) THEN
+* /QUALITY=... given; translate to an engine name to use,
+* but do not force it to be used (in case -nodisplay was specified)
+            CALL EQUAL_STRING(cmnd_buff(qual_start(qp):qual_end(qp)), 
+     .                        buffer, status)
+            IF ( status .NE. ferr_ok ) RETURN
+            IF ( buffer .EQ. ' ' ) THEN
+                CALL ERRMSG(ferr_syntax, status, '/QUALITY=?', *5000)
+            ENDIF
+            slen = TM_LENSTR1(buffer)
+            IF ( MATCH4(buffer, slen, 'DRAFT', 5) ) THEN
+                CALL CANCEL_WINDOW_NUM(n)
+                CALL FGD_SET_ENGINE(n, 'PYQTCAIRO', .FALSE., status)
+                IF ( status .NE. ferr_ok ) RETURN
+            ELSE IF ( MATCH4(buffer, slen, 'HIGH', 4) ) THEN
+                CALL CANCEL_WINDOW_NUM(n)
+                CALL FGD_SET_ENGINE(n, 'PYQTVIEWER', .FALSE., status)
+                IF ( status .NE. ferr_ok ) RETURN
+            ELSE
+                CALL ERRMSG(ferr_syntax, status, 
+     .                      'Unknown /QUALITY value of ' // 
+     .                      buffer(1:slen), *5000)
+            ENDIF
+            qp = qual_given(slash_engine)
+            IF ( qp .GT. 0 ) THEN
+* /ENGINE=... also given; ignore but warn
+                warnmsg = '/QUALITY and /ENGINE both given ' //
+     .                    'with SET WINDOW; /ENGINE ignored'
+                CALL WARN(warmsg)
+            ENDIF
+        ELSE
+            qp = qual_given(slash_engine)
+            IF ( qp .GT. 0 ) THEN
+* /ENGINE=... given; force the use of this engine
+                CALL EQUAL_STRING(cmnd_buff(qual_start(qp):qual_end(qp)), 
+     .                         buffer, status)
+                IF ( status .NE. ferr_ok ) RETURN
+                slen = TM_LENSTR1(buffer)
+                CALL CANCEL_WINDOW_NUM(n)
+                CALL FGD_SET_ENGINE(n, buffer(1:slen), .TRUE., status)
+                IF ( status .NE. ferr_ok ) RETURN
+            ELSE IF ( .NOT. wn_open(n) ) THEN
+* Neither /QUALITY=... nor /ENGINE=... given but a new window
+* Give a blank engine name to use the default engine
+                CALL FGD_SET_ENGINE(n, '', .TRUE., status)
+                IF ( status .NE. ferr_ok ) RETURN
+            ENDIF
+        ENDIF
+
 * clear the screen ? (which deletes all segments from window)
 * (moved from near end of routine 
 	IF ( qual_given( slash_clear ) .GT. 0 .AND. .NOT.animate) THEN
-        
            CALL CLEAR_WINDOW( n )
-! segments already deleted inside CLEAR_WINDOW 9/95
-!	   DO 1010 ivp = mvp_dflt, max_viewport
-!	      vp_seg0(ivp) = 0
-!	      vp_segn(ivp) = 0
-! 1010	   CONTINUE
 	   vp_seg0( vp_num ) = curr_seg_name	! no segments left in viewport
 	   vp_segn( vp_num ) = curr_seg_name
-c           ENDIF
-
 	ENDIF
 	   
 * /SIZE=q
@@ -398,8 +443,28 @@ c           ENDIF
 * activate window
 	CALL FGD_GACWK(n)
 
+* use anti-aliasing?
+        qp = qual_given(slash_aalias)
+        IF ( qp .GT. 0 ) THEN
+* turn anti-aliasing on for this window
+            CALL FGD_SET_ANTIALIAS(n, 1)
+            qp = qual_given(slash_noaalias)
+            IF ( qp .GT. 0 ) THEN
+* also specified turning anti-aliasing off; ignore but warn
+                warnmsg = '/AALIAS and /NOAALIAS both given ' //
+     .                    'with SET WINDOW; /NOAALIAS ignored'
+                CALL WARN(warmsg)
+            ENDIF
+        ELSE
+            qp = qual_given(slash_noaalias)
+            IF ( qp .GT. 0 ) THEN
+* turn anti-aliasing off for this window
+                CALL FGD_SET_ANTIALIAS(n, 0)
+            ENDIF
+        ENDIF
+
 *set up sizing
-* (capitalized code from Denbo's SUBROUTINE COLOR )
+* (capitalized code from Denbo''s SUBROUTINE COLOR )
 	IF(ASIZE.GT.BSIZE)THEN
 	   FCTY=BSIZE/ASIZE
 	   FCTX=1.0
@@ -434,13 +499,6 @@ c
 * re-scale as requested
 	        xln = wn_scale(n) * xln
 	        yln = wn_scale(n) * yln
-
-* ... too big to fit ?
-*               bigness = MIN( dmaxx/xln, dmaxy/yln )
-*               IF ( bigness .LT. 1.0 ) THEN
-*                  xln = xln * bigness
-*                  yln = yln * bigness
-*               ENDIF
 
 * ... put lower left of each window at a different place if possible
 	        wkxmn = MIN( xlowlef(n), dmaxx-xln )

@@ -50,6 +50,7 @@
 * PyFr  *kms* 1/12 Add SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
 * V683  8/12 *acm*  New SET LIST/OUTTYPE CANCEL LIST/OUTTYPE, and SAVE/OUTTYPE 
 * V684 *adm* 12/12 Changes for POLY/MODULO and  VECTOR/MODULO on curvilinear plots.
+* PyFr  *kms* 2/13 Remove SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -201,11 +202,7 @@
      .                  slash_set_redirect_journal,
      .                  slash_set_redirect_file,
      .                  slash_set_redirect_append,
-     .                  slash_set_redirect_clobber,
-     .
-     .                  slash_set_graphics_engine,
-     .                  slash_set_graphics_antialias,
-     .                  slash_set_graphics_noantialias
+     .                  slash_set_redirect_clobber
 
 	INTEGER		slash_cont_over_plot,
      .			slash_cont_set_up,
@@ -479,11 +476,7 @@
      .                  slash_set_redirect_journal = 2,
      .                  slash_set_redirect_file    = 3,
      .                  slash_set_redirect_append  = 4,
-     .                  slash_set_redirect_clobber = 5,
-     .
-     .                  slash_set_graphics_engine      = 1,
-     .                  slash_set_graphics_antialias   = 2,
-     .                  slash_set_graphics_noantialias = 3 )
+     .                  slash_set_redirect_clobber = 5 )
 
 	PARAMETER     ( slash_cont_over_plot	= 1+12,
      .			slash_cont_set_up	= 1+13,

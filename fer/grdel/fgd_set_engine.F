@@ -3,19 +3,23 @@
 * after this call. 
 *
 * Input Arguments:
+*     windowid - window number to use
 *     newname - name (or partial name) of the engine in
 *               uppercase; standard recognized names are
 *               CAIRO, PYQTVIEWER, or PYQTCAIRO (compared
-*               in that order)
+*               in that order, so PYQT match PYQTVIEWER)
+*     forceit - change the engine name regardless of 
+*               no-display command-line options?
 * Output Arguments:
 *     sts - FERR_OK if successful; 
 *           FERR_INVALID_COMMAND otherwise
 *
-        SUBROUTINE FGD_SET_ENGINE(newname, sts)
+        SUBROUTINE FGD_SET_ENGINE(windowid, newname, forceit, sts)
 
         IMPLICIT NONE
         CHARACTER*(*) newname
-        INTEGER sts
+        INTEGER windowid, sts
+        LOGICAL forceit
 
         INCLUDE 'ferret.parm'
         INCLUDE 'errmsg.parm'
@@ -25,35 +29,73 @@
         INTEGER TM_LENSTR
 
 *       Local variables
-        INTEGER idx
+        INTEGER slen, idx
         CHARACTER*256 warnmsg
 
-        idx = INDEX("CAIRO", newname)
-        IF ( idx .EQ. 1 ) THEN
-            enginename = "Cairo"
+        IF ( (windowid .LT. 1) .OR.
+     .       (windowid .GT. maxwindowobjs) ) THEN
+            STOP 'FGD_SET_ENGINE: Invalid windowid value'
+        ENDIF
+
+* The window will not exist at the time this is called.
+* So just set the values to use when the window is created.
+
+* Get the actual string length of new engine name
+        slen = TM_LENSTR(newname)
+
+* An empty engine name uses the default engine
+        IF ( slen .EQ. 0 ) THEN
+            enginename(windowid) = defaultenginename
+            antialias(windowid) = .TRUE.
             sts = FERR_OK
             RETURN
         ENDIF
 
-        idx = INDEX("PYQTVIEWER", newname)
+* INDEX is used to match incomplete new engine names
+        idx = INDEX('CAIRO', newname(1:slen))
         IF ( idx .EQ. 1 ) THEN
-            enginename = "PyQtViewer"
+            enginename(windowid) = 'Cairo'
+            antialias(windowid) = .TRUE.
             sts = FERR_OK
             RETURN
         ENDIF
 
-        idx = INDEX("PYQTCAIRO", newname)
-        IF ( idx .EQ. 1 ) THEN
-            enginename = "PyQtCairo"
+* If a no-display command-line option was used (and thus
+* defaultenginename .EQ. 'Cairo'), do not allow other 
+* engines to be used unless forceit is .TRUE.
+        IF ( (defaultenginename .EQ. 'Cairo') .AND. .NOT. forceit ) THEN
+            warnmsg = '/QUALITY was ignored in SET WINDOW ' //
+     .          'since a no-display command-line option was given'
+            CALL WARN(warnmsg)
+            enginename(windowid) = defaultenginename
+            antialias(windowid) = .TRUE.
             sts = FERR_OK
             RETURN
         ENDIF
 
-        idx = TM_LENSTR(newname)
-        IF ( (idx .GT. 1) .AND. (idx .LT. 65) ) THEN
-            CALL WARN('Non-standard graphics engine "'
-     .                // newname(1:idx) // '"')
-            enginename = newname
+* Note that 'PYQT' will give 'PyQtViewer' and not 'PyQtCairo
+        idx = INDEX('PYQTVIEWER', newname(1:slen))
+        IF ( idx .EQ. 1 ) THEN
+            enginename(windowid) = 'PyQtViewer'
+            antialias(windowid) = .TRUE.
+            sts = FERR_OK
+            RETURN
+        ENDIF
+
+        idx = INDEX('PYQTCAIRO', newname(1:slen))
+        IF ( idx .EQ. 1 ) THEN
+            enginename(windowid) = 'PyQtCairo'
+            antialias(windowid) = .FALSE.
+            sts = FERR_OK
+            RETURN
+        ENDIF
+
+        IF ( slen .LE. 64 ) THEN
+            warnmsg = 'Non-standard graphics engine "'
+     .                // newname(1:slen) // '"'
+            CALL WARN(warnmsg)
+            enginename(windowid) = newname
+            antialias(windowid) = .TRUE.
             sts = FERR_OK
             RETURN
         ENDIF

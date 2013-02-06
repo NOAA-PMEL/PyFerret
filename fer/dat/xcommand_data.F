@@ -199,6 +199,8 @@
 * V683*acm* 8/12   New SET LIST/OUTTYPE, CANCEL LIST/OUTTYPE and SAVE/OUTTYPE 
 * V683*acm 10/12   NEW SET AXIS/OUTTYPE to change default coordinate axis output type
 * V684 *adm* 12/12 Changes for POLY/MODULO and  VECTOR/MODULO on curvilinear plots.
+* PyFr  *kms* 1/13 Remove SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL;
+*                  Add /QUALITY= /AAlias /NoAAlias /ENGINE= to SET WINDOW
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -227,6 +229,12 @@
 		DATA qualifiers  (nqual_at1b+3)	/ 'ASPECT'	/
 		DATA qualifiers  (nqual_at1b+4)	/ 'CLEAR'	/
 		DATA qualifiers  (nqual_at1b+5)	/ 'TITLE'	/
+		DATA qualifiers  (nqual_at1b+6)	/ 'QUALITY'	/
+		DATA qualifiers  (nqual_at1b+7)	/ 'AALIAS'	/
+		DATA qualifiers  (nqual_at1b+8)	/ 'NOAALIAS'	/
+		DATA qualifiers  (nqual_at1b+9)	/ 'ENGINE'	/
+		DATA qualifiers  (nqual_at1b+10)/ '****'	/
+		DATA qualifiers  (nqual_at1b+11)/ '****'	/
 * SET REGION
 	   DATA subcommands      (nsub_at1 + 2)	/ 'REGION'	/
 	   DATA num_qualifs      (nsub_at1 + 2)	/ nqual1c	/
@@ -414,19 +422,15 @@
 	   DATA subcommands      (nsub_at1 +16)	/ 'GIFFILE'	/
 	   DATA num_qualifs      (nsub_at1 +16)	/ nqual1q	/
 	   DATA qualifier_pointer(nsub_at1 +16)	/ nqual_at1q	/
-* SET GRAPHICS							  ! set graphics engine name and other drawing details
-           DATA subcommands      (nsub_at1 +17)	/ 'GRAPHICS'	/
+* SET ****							  ! unused (r)
+           DATA subcommands      (nsub_at1 +17)	/ '****'	/
            DATA num_qualifs      (nsub_at1 +17)	/ nqual1r	/
            DATA qualifier_pointer(nsub_at1 +17)	/ nqual_at1r	/
-* SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
-                DATA qualifiers  (nqual_at1r+0)	/ 'ENGINE'	/
-                DATA qualifiers  (nqual_at1r+1)	/ 'ANTIALIA'	/
-                DATA qualifiers  (nqual_at1r+2)	/ 'NOANTIAL'	/
+* SET **** / ****
+                DATA qualifiers  (nqual_at1r+0)	/ '****'	/
+                DATA qualifiers  (nqual_at1r+1)	/ '****'	/
+                DATA qualifiers  (nqual_at1r+2)	/ '****'	/
                 DATA qualifiers  (nqual_at1r+3)	/ '****'	/
-                DATA qualifiers  (nqual_at1r+4)	/ '****'	/
-                DATA qualifiers  (nqual_at1r+5)	/ '****'	/
-                DATA qualifiers  (nqual_at1r+6)	/ '****'	/
-                DATA qualifiers  (nqual_at1r+7)	/ '****'	/
 * SET ****							  ! unused (s)
 	   DATA subcommands      (nsub_at1 +18)	/ '****'	/
 	   DATA num_qualifs      (nsub_at1 +18)	/ nqual1s	/

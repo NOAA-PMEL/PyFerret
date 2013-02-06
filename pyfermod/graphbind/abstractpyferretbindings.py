@@ -168,8 +168,7 @@ class AbstractPyFerretBindings(object):
     def showWindow(self, visible):
         '''
         Display or hide a Window.  A graphics engine that does not
-        have the ability to display a Window will always raise an
-        AttributeError.
+        have the ability to display a Window should ignore this call.
 
         Arguments:
             visible: display (if True) or hide (if False) the Window

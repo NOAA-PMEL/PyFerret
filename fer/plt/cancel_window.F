@@ -54,8 +54,8 @@
 * *kob* 1.29.97 changed "can\'t" to cannot for compiler reasons
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
-*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
+* PyFr *kms*  1/13 Broke out the code actually cancelling a window 
+*                  into the subroutine CANCEL_WINDOW_NUM.
 
         include 'tmap_dims.parm'
 	include 'errmsg.parm'
@@ -115,37 +115,7 @@
 
 * loop through all requested windows
 	DO 100 n = n_lo, n_hi
-	   IF ( .NOT.wn_open( n ) ) GOTO 100
-
-* currently active ?
-	   IF ( wn_active(n) ) THEN
-* ... clear segments from it
-	      CALL SET_VIEWPORT( mvp_dflt )
-* ... deactivate it
-	      CALL FGD_GDAWK( n )
-	      wn_active( n ) = .FALSE.
-* ... activate lowest available window, if any
-	      DO 70 lo = 1, max_windows
-	         IF ( lo.NE.n  .AND. wn_open(lo) ) THEN
-	            CALL FGD_GACWK( lo )
-	            wn_active( lo ) = .TRUE.
-	            wsid = lo
-	            GOTO 80
-	         ENDIF
- 70	      CONTINUE
-	      wsid = 0		! no active window, now
-	   ENDIF
-	      
-* close the specified window
- 80	   CALL FGD_GCLWK( n )
-! old UIS code
-!	   CLOSE ( UNIT=n+50, ERR=5010 )
-	   wn_open ( n ) = .FALSE.
-	   wn_scale( n ) = wn_dflt_scale
-
-* and set flag so that the GUI will be informed when this window is reopened 
-!	   gui_window_reported(n) = .FALSE.   ! No - done in ferret_dispatch
-
+           CALL CANCEL_WINDOW_NUM(n)
  100	CONTINUE
 
 * successful completion
@@ -157,3 +127,55 @@
 ! 5010	CALL ERRMSG(ferr_erreq,status,'closing window',*5000)
  5020	CALL ERRMSG(ferr_invalid_command,status,buffer,*5000)
 	END
+
+
+*
+* Deactive,if active, and close the specified window.  
+*
+* Made into a separate routine for calling from 
+* CREATE_WINDOW when the graphics engine for a window 
+* is modified.
+*
+        SUBROUTINE CANCEL_WINDOW_NUM(n)
+
+        include 'tmap_dims.parm'
+	include 'errmsg.parm'
+	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
+	include 'xgui.cmn'
+	include	'pltcom_dat.decl'	! with sizing data, etc.
+	include	'PLTCOM.DAT'	! with sizing data, etc.
+	include	'gkscm1_inc.decl'	! with gks common
+	include	'GKSCM1.INC'	! with gks common
+
+* calling argument declarations:
+        INTEGER n
+
+        IF ( .NOT.wn_open( n ) ) RETURN
+
+* currently active ?
+        IF ( wn_active(n) ) THEN
+* ... clear segments from it
+           CALL SET_VIEWPORT( mvp_dflt )
+* ... deactivate it
+           CALL FGD_GDAWK( n )
+           wn_active( n ) = .FALSE.
+* ... activate lowest available window, if any
+           DO 70 lo = 1, max_windows
+              IF ( lo.NE.n  .AND. wn_open(lo) ) THEN
+                 CALL FGD_GACWK( lo )
+                 wn_active( lo ) = .TRUE.
+                 wsid = lo
+                 GOTO 80
+              ENDIF
+ 70        CONTINUE
+           wsid = 0           ! no active window if we get here
+        ENDIF
+            
+* close the specified window
+ 80     CALL FGD_GCLWK( n )
+        wn_open ( n ) = .FALSE.
+        wn_scale( n ) = wn_dflt_scale
+
+        RETURN
+        END

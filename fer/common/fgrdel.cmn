@@ -103,9 +103,6 @@
 * Whether clip the drawing to the current view
         LOGICAL cliptoview(maxwindowobjs)
 
-* Whether to display the window when created and updated.
-        LOGICAL showwindow(maxwindowobjs)
-
 * Number of the colorobj to use for clearing the window.
         INTEGER clearcolor(maxwindowobjs)
 
@@ -123,17 +120,25 @@
         INTEGER symbolcolor(maxsymbolobjs, maxwindowobjs)
         REAL*4 symbolsize(maxsymbolobjs, maxwindowobjs)
 
-* Name of the graphics engine to use when creating a window.
-        CHARACTER*64 enginename
+* Default engine for a new window.
+* Should not change after start-up.
+* Only reset by command-line options.
+        CHARACTER*64 defaultenginename
 
-* Default antialiasing state for new windows
-        LOGICAL useantialiasing
-
-* Save on exit with a transparent background?
+* Transparent background for save-on-exit (-batch)?
+* Should not change after start-up.
+* Only reset by the "-transparent" command-line option.
+* Has nothing to do with "frame /transparent".
         LOGICAL savetransparent
 
+* Name of the graphics engine used for each window.
+        CHARACTER*64 enginename(maxwindowobjs)
+
+* Antialiasing state for each window
+        LOGICAL antialias(maxwindowobjs)
+
 * Title for the window to be created.  The program flow
-* sets this in a separate call before creating a window.
+* sets this in a separate call just before creating a window.
         CHARACTER*128 windowtitle
 
 * And finally the common block containing all these variables
@@ -146,7 +151,7 @@
      .         viewtopcoord, activewindow, activetransform,
      .         activebrush, activepen, activesymbol, lastbrushcolor,
      .         lastbstylen, clearcolor, brushcolor, pencolor,
-     .         symbolcolor, showwindow, cliptoview, somethingdrawn,
-     .         useantialiasing, savetransparent, 
-     .         lastbrushstyle, enginename, windowtitle
+     .         symbolcolor, cliptoview, somethingdrawn,
+     .         savetransparent, antialias, lastbrushstyle,
+     .         defaultenginename, enginename, windowtitle
 

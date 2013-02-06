@@ -599,8 +599,7 @@ grdelBool grdelWindowSetSize(grdelType window, float width, float height)
 
 /*
  * Display or hide a Window.  A graphics engine that does not
- * have the ability to display a Window may return failure or
- * may ignore this call.
+ * have the ability to display a Window will ignore this call.
  *
  * Arguments:
  *     window: Window to use
@@ -949,7 +948,7 @@ void fgdwinsetsize_(int *success, void **window, float *width, float *height)
 
 /*
  * Display or hide a Window.  A graphics engine that does not
- * have the ability to display a Window will fail.
+ * have the ability to display a Window will ignore the call.
  *
  * Input Arguments:
  *     window: Window to use

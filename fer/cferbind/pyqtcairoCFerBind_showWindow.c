@@ -19,7 +19,7 @@ grdelBool pyqtcairoCFerBind_showWindow(CFerBind *self, int visible)
 
     /* Sanity check */
     if ( self->enginename != PyQtCairoCFerBindName ) {
-        strcpy(grdelerrmsg, "pyqtcairoCFerBind_endView: unexpected error, "
+        strcpy(grdelerrmsg, "pyqtcairoCFerBind_showWindow: unexpected error, "
                             "self is not a valid CFerBind struct");
         return 0;
     }

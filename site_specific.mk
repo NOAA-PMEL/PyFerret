@@ -14,6 +14,7 @@ BUILDTYPE	= $(HOSTTYPE)
 
 ## Python 2.x executable to invoke for build and install.
 PYTHON_EXE	= python2.6
+# PYTHON_EXE	= python2.7
 ## The assignment of PYTHONINCDIR should not need any modifications
 PYTHONINCDIR   := $(shell $(PYTHON_EXE) -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()")
 

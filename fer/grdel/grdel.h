@@ -75,9 +75,7 @@ void fgd_get_view_limits_(float *lftfrc, float *rgtfrc,
 void fgd_getdpi_(int *windowid, float *dpix, float *dpiy);
 void fgd_gswkvp_(int *windowid, float *xmin, float *xmax,
                                 float *ymin, float *ymax);
-void fgd_hide_all_windows_(void);
-void fgd_show_all_windows_(void);
-void fgd_set_engine_(char *engname, int *status, int engnamelen);
+void fgd_set_unmapped_default_(void);
 void fgd_set_transparency_(int *transparent);
 void fgd_getanimate_(int *inanimation);
 

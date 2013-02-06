@@ -178,6 +178,8 @@
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 * V683 *acm*  8/12 add new SET LIST/OUTTYPE=  
+* PyFr  *kms* 1/13 Remove SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL;
+*                  Add /QUALITY= /AAlias /NoAAlias /ENGINE= to SET WINDOW
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -268,7 +270,7 @@
 
 * select subcommand
 	GOTO ( 100,200,300,400,500,600,700,800,900,1000,
-     .        1100,1200,1300,1400,1500,1600,1700,1800 ) subcmnd_num
+     .        1100,1200,1300,1400,1500,1600,1700 ) subcmnd_num
 
 * SET '    ' 
 * arrival at this point usually means an illegal subcommand was given
@@ -1859,97 +1861,15 @@ c *kob* 4/97
      .             'Either /JOURNAL or /FILE= must be given', *5000 )
         ENDIF
         RETURN
-	
+
 * SET GIFFILE
- 1700	IF ( num_args .EQ. 0 ) GOTO 5100
+ 1700   IF ( num_args .EQ. 0 ) GOTO 5100
 
 * *kms* with the graphics delegate, treat it the same as set mode meta:"filename"
         buff2 = cmnd_buff(item_start(1):item_end(1))
         IF ( .NOT. pplus_started ) CALL START_PPLUS
         CALL PPLCMD(from, line, 0, 'PLTNME ' // buff2, 1, 1)
         mode_metafile = .TRUE.
-	RETURN
-
-* SET GRAPHICS /ENGINE= /ANTIALIAS /NOANTIALIAS [ DRAFT | HIGHQUALITY | UNMAPPED ]
- 1800   IF ( num_args .GT. 1 ) THEN
-           CALL ERRMSG(ferr_invalid_command, status,
-     .             'SET GRAPHICS [ DRAFT | HIGHQUALITY | UNMAPPED ]',
-     .             *5000)
-        ENDIF
-
-*       Use slen as a flag that something was given
-        slen = 0
-
-        IF ( num_args .EQ. 1 ) THEN
-           buff2 = cmnd_buff(item_start(1):item_end(1))
-           slen = item_end(1) - item_start(1) + 1
-           IF ( MATCH4(buff2, slen, 'DRAFT', 5) ) THEN
-               CALL FGD_SHOW_ALL_WINDOWS()
-               CALL FGD_SET_ANTIALIAS(0)
-               CALL FGD_SET_ENGINE('PYQTCAIRO', status)
-           ELSE IF ( MATCH4(buff2, slen, "HIGHQUALITY", 11) ) THEN
-               CALL FGD_SHOW_ALL_WINDOWS()
-               CALL FGD_SET_ANTIALIAS(1)
-               CALL FGD_SET_ENGINE('PYQTVIEWER', status)
-           ELSE IF ( MATCH4(buff2, slen, 'UNMAPPED', 8) ) THEN
-               CALL FGD_HIDE_ALL_WINDOWS()
-               CALL FGD_SET_ANTIALIAS(1)
-               CALL FGD_SET_ENGINE('CAIRO', status)
-           ELSE
-               CALL ERRMSG(ferr_invalid_command, status,
-     .                     'Unknown SET GRAPHICS argument: ' //
-     .                     buff2(1:slen), *5000)
-           ENDIF
-           IF ( status .NE. FERR_OK ) THEN
-               CALL ERRMSG(ferr_invalid_command, status,
-     .                     'Unexpected error from SET GRAPHICS ' //
-     .                     buff2(1:slen), *5000)
-           ENDIF
-        ENDIF
-
-*       /ENGINE=
-        lp = qual_given( slash_set_graphics_engine )
-        IF ( lp .GT. 0 ) THEN
-           CALL EQUAL_STRING(cmnd_buff(qual_start(lp):qual_end(lp)),
-     .                       title, status)
-           IF ( status .NE. ferr_ok ) RETURN
-           slen = TM_LENSTR(title)
-           IF ( slen .LE. 1 ) THEN
-               CALL ERRMSG(ferr_invalid_command, status,
-     .              'No engine name given with SET GRAPHICS /ENGINE=',
-     .              *5000)
-           ENDIF
-           CALL FGD_SET_ENGINE(title(1:slen), status)
-           IF ( status .NE. ferr_ok ) THEN
-               CALL ERRMSG(ferr_invalid_command, status,
-     .                     'Invalid graphics engine name "' //
-     .                     title(1:slen) // '"', *5000)
-           ENDIF
-        ENDIF
-
-*       /ANTIALIAs and /NOANTIALias
-        lp = qual_given( slash_set_graphics_antialias )
-        loc = qual_given( slash_set_graphics_noantialias )
-        IF ( (lp .GT. 0) .AND. (loc .GT. 0) ) THEN
-           CALL ERRMSG(ferr_invalid_command, status,
-     .             'Cannot give both /ANTIALIAS and /NOANTIALIAS',
-     .             *5000)
-        ENDIF
-        IF ( lp .GT. 0 ) THEN
-           CALL FGD_SET_ANTIALIAS(1)
-           slen = 1
-        ENDIF
-        IF ( loc .GT. 0 ) THEN
-           CALL FGD_SET_ANTIALIAS(0)
-           slen = 1
-        ENDIF
-
-*       Check if anything was given
-        IF ( slen .EQ. 0 ) THEN
-           CALL ERRMSG(ferr_invalid_command, status,
-     .             'SET GRAPHICS [ DRAFT | HIGHQUALITY | UNMAPPED ]',
-     .             *5000)
-        ENDIF
         RETURN
 
 * error exits

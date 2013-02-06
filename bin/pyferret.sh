@@ -6,6 +6,7 @@
 
 ## Assign the python2.x executable to use
 pyname="python2.6"
+# pyname="python2.7"
 
 
 ## Make sure the FER_* environment variables are assigned

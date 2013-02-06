@@ -1,18 +1,16 @@
 *
 * Turns on or off anti-aliasing on items drawn after this call
-* in all existing and future windows.
+* in the specified window
 *
 * Input Arguments:
+*     windowid - number of the window to use
 *     aaint - if non-zero, turn on antialiasing;
 *             if zero, turn off antialiasing
 *
-* TODO: when SET WIN /ANTIALIAS implemented, have this function
-*       only set antialiasing for future windows.
-*
-        SUBROUTINE FGD_SET_ANTIALIAS(aaint)
+        SUBROUTINE FGD_SET_ANTIALIAS(windowid, aaint)
 
         IMPLICIT NONE
-        INTEGER aaint
+        INTEGER windowid, aaint
 
         INCLUDE 'ferret.parm'
         INCLUDE 'tmap_dims.parm'
@@ -20,28 +18,33 @@
         INCLUDE 'fgrdel.cmn'
 
 *       Local variables
-        INTEGER k, success, errmsglen
+        INTEGER success, errmsglen
         CHARACTER*2048 errmsg
 
-*       Inform all existing windows
-*       To be eliminated when SET WIN /ANTIALIAS implemented
-        DO 10 k = 1, maxwindowobjs
-            IF ( windowobjs(k) .NE. nullobj ) THEN
-                CALL FGDWINSETANTIALIAS(success, windowobjs(k), aaint)
-                IF ( success .EQ. 0 ) THEN
-                    errmsg = ' '
-                    CALL FGDERRMSG(errmsg, errmsglen)
-                    CALL SPLIT_LIST(pttmode_help, err_lun,
-     .                              errmsg, errmsglen)
-                ENDIF
-            ENDIF
-   10   CONTINUE
+        IF ( (windowid .LT. 1) .OR.
+     .       (windowid .GT. maxwindowobjs) ) THEN
+            STOP 'FGD_SET_ANTIALIAS: Invalid windowid value'
+        ENDIF
 
-*       Set the default for future windows
-        IF ( aaint .NE. 0 ) THEN
-           useantialiasing = .TRUE.
+*       This may be called to prior to window creation
+        IF ( windowobjs(windowid) .NE. nullobj ) THEN
+*           Update the anti-aliasing state of this window
+            CALL FGDWINSETANTIALIAS(success, 
+     .                              windowobjs(windowid), aaint)
+            IF ( success .EQ. 0 ) THEN
+*               Error - output error message
+                errmsg = ' '
+                CALL FGDERRMSG(errmsg, errmsglen)
+                CALL SPLIT_LIST(pttmode_help, 
+     .                          err_lun, errmsg, errmsglen)
+            ENDIF
+        ENDIF
+
+*       Record the current anti-aliasing state
+        IF ( aaint .EQ. 0 ) THEN
+            antialias(windowid) = .FALSE.
         ELSE
-           useantialiasing = .FALSE.
+            antialias(windowid) = .TRUE.
         ENDIF
 
         RETURN

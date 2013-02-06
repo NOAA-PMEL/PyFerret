@@ -12,7 +12,7 @@
 *     windowtitle
 *     windowwidth
 *     windowheight
-*     showwindow
+*     antialias
 *
 
         SUBROUTINE FGD_GOPWK(windowid, connectid, windowtype)
@@ -27,11 +27,10 @@
 
         INTEGER TM_LENSTR
 
-        INTEGER engnamelen, wintitlelen, showit,
+        INTEGER engnamelen, wintitlelen, showit, 
      .          success, errmsglen, aaint
         CHARACTER*2048 errmsg
-        REAL*4 wdth, hght, dpix, dpiy,
-     .         redf, greenf, bluef, opaquef
+        REAL*4 wdth, hght, dpix, dpiy, redf, greenf, bluef, opaquef
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR.
@@ -43,15 +42,11 @@
         ENDIF
 
 *       Create the window
-        engnamelen = TM_LENSTR(enginename)
+        engnamelen = TM_LENSTR(enginename(windowid))
         wintitlelen = TM_LENSTR(windowtitle)
-        IF ( showwindow(windowid) ) THEN
-            showit = 1
-        ELSE
-            showit = 0
-        ENDIF
+        showit = 1
         CALL FGDWINCREATE(windowobjs(windowid),
-     .                    enginename, engnamelen,
+     .                    enginename(windowid), engnamelen,
      .                    windowtitle, wintitlelen, showit)
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
             errmsg = ' '
@@ -103,8 +98,8 @@
             CALL FGDERRMSG(errmsg, errmsglen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
-*       Set the default antialias state
-        IF ( useantialiasing ) THEN
+*       Set the antialias state
+        IF ( antialias(windowid) ) THEN
             aaint = 1
         ELSE
             aaint = 0

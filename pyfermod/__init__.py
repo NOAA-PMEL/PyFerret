@@ -102,45 +102,58 @@ def init(arglist=None, enterferret=True):
     ferret_help_message = \
     """
 
-    Usage:  pyferret  [-memsize <N>]  [-batch [<filename>]]  [-transparent]  [-nojnl]
-                      [-noverify]  [-secure]  [-server]  [-python]  [-version]  [-help]
-                      [-gif]  [-unmapped]  [-quiet]  [-script <scriptname> [ <scriptarg> ... ]]
+    Usage:  pyferret  [-memsize <N>]  [-nodisplay]  [-nojnl]  [-noverify]
+                      [-secure]  [-server]  [-python]  [-version]  [-help]
+                      [-quiet]  [-batch [<filename>]]  [-transparent]
+                      [-script <scriptname> [ <scriptarg> ... ]]
 
        -memsize:     initialize the memory cache size to <N> (default 25.6)
                      mega (10^6) floats (where 1 float = 8 bytes)
 
-       -batch:       output graphics to <filename> (default "ferret.png") instead
-                     of displaying to the console; the file format will be guessed
-                     from the filename extension
+       -nodisplay    do not display to the console; a drawing can be saved
+                     using the FRAME command in any of the supported file
+                     formats.  The /QUALITY option of SET WINDOW will be
+                     ignored when this is specified.  The deprecated
+                     command-line options -unmapped and -gif are now
+                     aliases of this option.
 
-       -transparent: when output graphics are saved automatically (for example, on
-                     exit), use a transparent background instead of opaque white.
+       -nojnl:       on startup do not open a journal file (can be turned
+                     on later with SET MODE JOURNAL)
 
-       -nojnl:       on startup do not open a journal file (can be turned on later
-                     with SET MODE JOURNAL)
+       -noverify:    on startup turn off verify mode (can be turned on
+                     later with SET MODE VERIFY)
 
-       -noverify:    on startup turn off verify mode (can be turned on later with
-                     SET MODE VERIFY)
-
-       -secure:      restrict Ferret's capabilities
+       -secure:      restrict Ferret's capabilities (e.g., SPAWN and
+                     EXIT /TOPYTHON are not permitted)
 
        -server:      run Ferret in server mode
 
-       -python:      start at the Python prompt instead of the Ferret prompt
-                     (the ferret prompt can be obtained entering 'pyferret.run()')
+       -python:      start at the Python prompt instead of the Ferret prompt.
+                     The ferret prompt can be obtained using 'pyferret.run()'
 
        -version:     print the Ferret header with version number and quit
 
        -help:        print this help message and quit
 
-       -gif      and
-       -unmapped:    inhibit the display of graphics to the console; grahics can
-                     be written to file using the FRAME /FILE command
+       -quiet        do not display the startup header or
+                     warning of import failures
 
-       -quiet        do not display the startup header or import failure warnings
+       -batch:       draw to <filename> (default "ferret.png") instead of
+                     displaying to the console.  The file format will be
+                     guessed from the filename extension.  When using this
+                     option, new windows should not be created and the
+                     FRAME command should not be used.
+
+                     Use of -batch (and -transparent) is not recommended.
+                     Instead use the -nodisplay option and the FRAME
+                     /FILE=<filename> [ /TRANSPARENT ] command.
+
+       -transparent: use a transparent background instead of opaque white
+                     when saving to the file given by -batch
 
        -script:      execute the script <scriptname> with any arguments specified,
                      and exit (THIS MUST BE SPECIFIED LAST)
+
     """
 
     my_metaname = None
@@ -184,8 +197,9 @@ def init(arglist=None, enterferret=True):
                         k -= 1
                 elif opt == "-transparent":
                     my_transparent = True
+                elif opt == "-nodisplay":
+                    my_unmapped = True
                 elif opt == "-gif":
-                    # just treat -gif the same as -unmapped
                     my_unmapped = True
                 elif opt == "-unmapped":
                     my_unmapped = True
@@ -501,16 +515,16 @@ def init(arglist=None, enterferret=True):
 
 
 def start(memsize=25.6, journal=True, verify=True, restrict=False,
-          server=False, metaname=None, transparent=False, 
+          server=False, metaname=None, transparent=False,
           unmapped=False, quiet=False):
     """
     Initializes Ferret.  This allocates the initial amount of memory
     for Ferret (from Python-managed memory), opens the journal file,
     if requested, and sets Ferret's verify mode.  If restrict is True,
     some Ferret commands will not be available (to provide a secured
-    session).  Once restrict is set, it cannot be unset.  If server 
-    is True, Ferret will be run in server mode.  If metaname is not 
-    empty this value is used as the initial filename for automatic 
+    session).  Once restrict is set, it cannot be unset.  If server
+    is True, Ferret will be run in server mode.  If metaname is not
+    empty this value is used as the initial filename for automatic
     output of graphics, and the graphics viewer will not be displayed.
     If unmapped is True, the graphics viewer will not be displayed.
     If quiet is True, the Ferret start-up header is not displayed.
@@ -623,7 +637,7 @@ def run(command=None):
         str_command = ""
     else:
         str_command = command
-    # if going into Ferret-command mode, 
+    # if going into Ferret-command mode,
     # use the filename completer for readline name completion
     if str_command == "":
         old_completer = readline.get_completer()
@@ -1020,12 +1034,12 @@ def put(datavar, axis_pos=None):
         axis_pos: a six-tuple giving the Ferret positions for each axis in
                   datavar.  If the axes in datavar are in (forecast, ensemble,
                   time, level, lat., long.) order, the tuple (F_AXIS, E_AXIS,
-                  T_AXIS, Z_AXIS, Y_AXIS, X_AXIS) should be used for proper 
-                  axis handling in Ferret.  If not given (or None), the first 
-                  longitude axis will be made the X_AXIS, the first latitude 
-                  axis will be made the Y_AXIS, the first level axis will be 
-                  made the Z_AXIS, the first time axis will be made the T_AXIS, 
-                  the second time axis will be made the F_AXIS, and any remaining 
+                  T_AXIS, Z_AXIS, Y_AXIS, X_AXIS) should be used for proper
+                  axis handling in Ferret.  If not given (or None), the first
+                  longitude axis will be made the X_AXIS, the first latitude
+                  axis will be made the Y_AXIS, the first level axis will be
+                  made the Z_AXIS, the first time axis will be made the T_AXIS,
+                  the second time axis will be made the F_AXIS, and any remaining
                   axes are then filled into the remaining unassigned positions.
 
     Returns:
@@ -1237,12 +1251,12 @@ def putdata(datavar_dict, axis_pos=None):
                   unit indicating the starting point, such as 'days since 01-JAN-2000'
 
         axis_pos: a six-tuple giving the Ferret positions for each axis in datavar.
-            If the axes in datavar are in (forecast, ensemble, time, level, lat., long.) 
-            order, the tuple (F_AXIS, E_AXIS, T_AXIS, Z_AXIS, Y_AXIS, X_AXIS) should be 
-            used for proper axis handling in Ferret.  If not given (or None), the first 
-            longitude axis will be made the X_AXIS, the first latitude axis will be made 
-            the Y_AXIS, the first level axis will be made the Z_AXIS, the first time axis 
-            will be made the T_AXIS, the second time axis will be made the F_AXIS, and any 
+            If the axes in datavar are in (forecast, ensemble, time, level, lat., long.)
+            order, the tuple (F_AXIS, E_AXIS, T_AXIS, Z_AXIS, Y_AXIS, X_AXIS) should be
+            used for proper axis handling in Ferret.  If not given (or None), the first
+            longitude axis will be made the X_AXIS, the first latitude axis will be made
+            the Y_AXIS, the first level axis will be made the Z_AXIS, the first time axis
+            will be made the T_AXIS, the second time axis will be made the F_AXIS, and any
             remaining axes are then filled into the remaining unassigned positions.
 
     Returns:
@@ -1491,7 +1505,7 @@ def putdata(datavar_dict, axis_pos=None):
         axis_coords[4], axis_coords[k] = axis_coords[k], axis_coords[4]
     # F_AXIS must now be ferr_axis[5]
     # assumes MAX_FERRET_NDIM == 6; extend the logic if axes are added
-    # would rather not assume X_AXIS == 0, Y_AXIS == 1, Z_AXIS == 2, 
+    # would rather not assume X_AXIS == 0, Y_AXIS == 1, Z_AXIS == 2,
     #                         T_AXIS == 3, E_AXIS == 4, F_AXIS == 5
     #
     # now make a copy of the data as (contiguous) 64-bit floats in Fortran order
@@ -1694,7 +1708,7 @@ def get_axis_coordinates(efid, arg, axis):
     Arguments:
         efid: the Ferret id of the external function
         arg: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9)
-        axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, 
+        axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS,
                                                           T_AXIS, E_AXIS, F_AXIS)
     Returns:
         a NumPy float64 ndarray containing the "world" coordinates,
@@ -1735,7 +1749,7 @@ def get_axis_box_sizes(efid, arg, axis):
     Arguments:
         efid: the Ferret id of the external function
         arg: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9)
-        axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, 
+        axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS,
                                                           T_AXIS, E_AXIS, F_AXIS)
     Returns:
         a NumPy float64 ndarray containing the "box sizes",
@@ -1776,7 +1790,7 @@ def get_axis_box_limits(efid, arg, axis):
     Arguments:
         efid: the Ferret id of the external function
         arg: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9)
-        axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, 
+        axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS,
                                                           T_AXIS, E_AXIS, F_AXIS)
     Returns:
         a tuple of two NumPy float64 ndarrays containing the low and high "box limits",
@@ -1816,7 +1830,7 @@ def get_axis_info(efid, arg, axis):
     Arguments:
         efid: the Ferret id of the external function
         arg: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9)
-        axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS, 
+        axis: the index (zero based) of the axis (can use X_AXIS, Y_AXIS, Z_AXIS,
                                                           T_AXIS, E_AXIS, F_AXIS)
     Returns:
         a dictionary defining the following keys:

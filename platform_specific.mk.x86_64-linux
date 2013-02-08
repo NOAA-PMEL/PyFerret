@@ -14,7 +14,11 @@
 # Directories for the libraries.  Convention has the 64-bit libraries
 # in a .../lib64 directory, but they may be in a .../lib directory.
 #
+ifeq ($(CAIRO_DIR),"")
+        CAIRO_LIBDIR	=
+else
 	CAIRO_LIBDIR	= $(CAIRO_DIR)/lib64
+endif
 	HDF5_LIBDIR	= $(HDF5_DIR)/lib64
 	NETCDF4_LIBDIR	= $(NETCDF4_DIR)/lib64
 
@@ -89,7 +93,7 @@
 #%.o : %.F
 #	rm -f $*.f
 #	$(CPP) -P -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
-#	$(F77) $(FFLAGS) -c $*.f	 
+#	$(F77) $(FFLAGS) -c $*.f
 
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code

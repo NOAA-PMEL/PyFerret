@@ -6,7 +6,7 @@
 # ACM 2/2001 debug flags
 
 # this assumes INSTALL_FER_DIR and PYTHON_EXE has already been defined
-# in site_specific.mk 
+# in site_specific.mk
 
 INCLUDES	= -I. -I../ef_utility -I../ef_utility/ferret_cmn
 
@@ -24,7 +24,7 @@ FFLAGS		= -fPIC -m32 -Ddouble_p -fno-second-underscore \
 RANLIB		= /usr/bin/ranlib
 
 LD		= gfortran
-LD_DYN_FLAGS	= -fPIC -m32 -shared -Xlinker --no-undefined
+LD_DYN_FLAGS	= -fPIC -m32 -shared -Wl,--no-undefined
 SYSLIBS		= -L$(INSTALL_FER_DIR)/lib/$(PYTHON_EXE)/site-packages/pyferret -lpyferret
 
 CPP		= /lib/cpp

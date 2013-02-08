@@ -13,7 +13,11 @@
 #
 # Directories for the libraries
 #
+ifeq ($(CAIRO_DIR),"")
+	CAIRO_LIBDIR	=
+else
 	CAIRO_LIBDIR	= $(CAIRO_DIR)/lib
+endif
 	HDF5_LIBDIR	= $(HDF5_DIR)/lib
 	NETCDF4_LIBDIR	= $(NETCDF4_DIR)/lib
 
@@ -87,7 +91,7 @@
 #%.o : %.F
 #	rm -f $*.f
 #	$(CPP) -P -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
-#	$(F77) $(FFLAGS) -c $*.f	 
+#	$(F77) $(FFLAGS) -c $*.f
 
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code

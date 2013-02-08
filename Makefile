@@ -1,5 +1,5 @@
 #
-# Makefile for building and installing the pyferret module 
+# Makefile for building and installing the pyferret module
 # and the modules and libraries associated with it.
 #
 
@@ -18,7 +18,7 @@ optimized :
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) "CFLAGS = $(CFLAGS) -O" pymod_optimized
-	$(MAKE) "FFLAGS = $(FFLAGS) -O" -C $(DIR_PREFIX)/efmem 
+	$(MAKE) "FFLAGS = $(FFLAGS) -O" -C $(DIR_PREFIX)/efmem
 	$(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/pyferret_install" -C $(DIR_PREFIX)/external_functions optimized
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
@@ -28,7 +28,7 @@ debug :
 	$(MAKE) -C $(DIR_PREFIX)/fer debug
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" pymod_debug
-	$(MAKE) "FFLAGS = $(FFLAGS) -O0 -g" -C $(DIR_PREFIX)/efmem 
+	$(MAKE) "FFLAGS = $(FFLAGS) -O0 -g" -C $(DIR_PREFIX)/efmem
 	$(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/pyferret_install" -C $(DIR_PREFIX)/external_functions debug
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
@@ -104,7 +104,7 @@ install_exes :
 	( cd $(INSTALL_FER_DIR) ; tar xvzf fer_executables.tar.gz )
 	cp -f threddsBrowser/toolsUI/toolsUI-4.1.jar $(INSTALL_FER_DIR)/lib/
 
-## The following is for installing the updated threddsBrowser.jar, libpyferret.so, 
+## The following is for installing the updated threddsBrowser.jar, libpyferret.so,
 ## and python scripts into $(INSTALL_FER_DIR)/lib without having to go
 ## through the make_executables_tar script.
 .PHONY : update

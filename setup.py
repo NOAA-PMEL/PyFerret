@@ -4,19 +4,6 @@ import sys
 import os
 import os.path
 
-# Moved linking of the system libraries to here to make sure the static 
-# netcdff, netcdf, hdf5_hl, hdf5, and cairo libraries are linked in. 
-# (There is very likely to be a system-wide libcairo.so library.)  
-# The pixman-1, freetype, fontconfig, png12, Xrender, and X11 libraries
-# are only used to resolve cairo library function calls.
-# Also make sure all libpyferret functions are externally visible and
-# that everything is resolved in the final linking step.
-addn_link_args = [ "-Wl,-Bstatic", "-lnetcdff", "-lnetcdf", "-lhdf5_hl", 
-                   "-lhdf5", "-lcairo", "-Wl,-Bdynamic", "-lgfortran", 
-                   "-lpixman-1", "-lfreetype", "-lfontconfig", "-lpng12", 
-                   "-lXrender", "-lX11", "-lcurl", "-lz", "-ldl", "-lm", 
-                   "-fPIC", "-rdynamic", "-Wl,--no-undefined", ]
-
 # (Non-standard) Directories containing .h include files
 incdir_list = [ "pyfermod",
                 os.path.join("fer", "common"),
@@ -25,21 +12,24 @@ incdir_list = [ "pyfermod",
                 os.path.join("fer", "grdel"), ]
 
 # Non-standard directories containing libraries to link
-cairo_libdir = os.getenv("CAIRO_LIBDIR")
-if cairo_libdir == None:
-    raise ValueError("Environment variable CAIRO_LIBDIR is not defined")
-hdf5_libdir = os.getenv("HDF5_LIBDIR")
-if hdf5_libdir == None:
-    raise ValueError("Environment variable HDF5_LIBDIR is not defined")
 netcdf4_libdir = os.getenv("NETCDF4_LIBDIR")
 if netcdf4_libdir == None:
     raise ValueError("Environment variable NETCDF4_LIBDIR is not defined")
+hdf5_libdir = os.getenv("HDF5_LIBDIR")
+if hdf5_libdir == None:
+    raise ValueError("Environment variable HDF5_LIBDIR is not defined")
+# CAIRO_LIBDIR is only given if the cairo library is to be statically linked in
+cairo_libdir = os.getenv("CAIRO_LIBDIR")
 # The location of libpython2.x.so in case it is not in a standard location
 python_libdir = os.path.split(
                    distutils.sysconfig.get_python_lib(standard_lib=True))[0]
 # The list of additional directories to examine for libraries
-libdir_list = [ "lib", str(cairo_libdir), str(hdf5_libdir), 
-                str(netcdf4_libdir), str(python_libdir), ]
+if cairo_libdir:
+    libdir_list = [ "lib", str(netcdf4_libdir), str(hdf5_libdir),
+                    str(cairo_libdir), str(python_libdir), ]
+else:
+    libdir_list = [ "lib", str(netcdf4_libdir), str(hdf5_libdir),
+                    str(python_libdir), ]
 
 # Get the list of ferret static libraries
 # Stripping off the "lib" prefix and the ".a" suffix
@@ -58,12 +48,35 @@ lib_list.extend(fer_lib_list)
 lib_list.append("python%i.%i" % sys.version_info[:2])
 
 #
-# Linking in the rest of the system libraries were moved to addn_link_flags 
-# in order to make sure the static netcdff, netcdf, hdf5_hl, hdf5, and cairo 
-# libraries are used.
+# Linking in the rest of the system libraries were moved to addn_link_flags
+# in order to make sure the static netcdff, netcdf, hdf5_hl, and hdf5
+# (and possibly cairo) libraries are used.
 #
 # lib_list.extend( ( "netcdff", "netcdf", "hdf5_hl", "hdf5",
 #                    "cairo", "gfortran", "curl", "z", "dl", "m", ) )
+
+#
+# The pixman-1, freetype, fontconfig, png12, Xrender, and X11 libraries
+# are only used to resolve cairo library function calls when statically
+# linking in the cairo-1.8.8 library.
+#
+# Make sure everything is resolved in the final linking step.
+#
+netcdff_lib = "-Wl," + os.path.join(netcdf4_libdir, "libnetcdff.a")
+netcdf_lib = "-Wl," + os.path.join(netcdf4_libdir, "libnetcdf.a")
+hdf5_hl_lib = "-Wl," + os.path.join(hdf5_libdir, "libhdf5_hl.a")
+hdf5_lib = "-Wl," + os.path.join(hdf5_libdir, "libhdf5.a")
+if cairo_libdir:
+   cairo_lib = "-Wl," + os.path.join(cairo_libdir, "libcairo.a")
+   addn_link_args = [ netcdff_lib, netcdf_lib, hdf5_hl_lib, hdf5_lib,
+                      cairo_lib, "-lpixman-1", "-lfreetype",
+                      "-lfontconfig", "-lpng12", "-lXrender", "-lX11",
+                      "-lgfortran", "-lcurl", "-lz", "-ldl",
+                      "-lm", "-fPIC", "-Wl,--no-undefined", ]
+else:
+   addn_link_args = [ netcdff_lib, netcdf_lib, hdf5_hl_lib, hdf5_lib,
+                      "-lcairo", "-lgfortran", "-lcurl", "-lz", "-ldl",
+                      "-lm", "-fPIC", "-Wl,--no-undefined", ]
 
 # Get the list of C source files in pyfermod
 src_list = [ ]
@@ -107,7 +120,7 @@ setup(name = "pyferret",
       url = "http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret",
       license = "Public Domain",
       requires = [ "numpy", ],
-      packages = [ "pyferret", "pyferret.eofanal", "pyferret.fershp", 
+      packages = [ "pyferret", "pyferret.eofanal", "pyferret.fershp",
                    "pyferret.graphbind", "pyferret.regrid", "pyferret.stats", ],
       package_dir = { "pyferret":"pyfermod", },
       ext_modules = ext_mods)

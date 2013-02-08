@@ -24,9 +24,11 @@ PYTHONINCDIR   := $(shell $(PYTHON_EXE) -c "import distutils.sysconfig; print di
 INSTALL_FER_DIR	= $(FER_DIR)
 
 ## Installation directory for Cairo-1.8.8 static libraries
-## (contains include and lib or lib64 subdirectories)
-# CAIRO_DIR	= /usr
-# CAIRO_DIR	= /usr/local
+## (contains include and lib or lib64 subdirectories) for RHEL5.
+## Do not give a location on other systems.  For these systems
+## the system-wide shared-object Cairo libraries which are also
+## used by Qt4 must be used.
+# CAIRO_DIR	=
 CAIRO_DIR	= /usr/local/cairo_188
 
 ## Installation directory for HDF5 static libraries

@@ -13,7 +13,7 @@
 #
 # Directories for the libraries
 #
-ifeq ($(CAIRO_DIR),"")
+ifeq ($(strip $(CAIRO_DIR)),)
 	CAIRO_LIBDIR	=
 else
 	CAIRO_LIBDIR	= $(CAIRO_DIR)/lib

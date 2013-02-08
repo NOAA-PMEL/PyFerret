@@ -13,23 +13,29 @@ incdir_list = [ "pyfermod",
 
 # Non-standard directories containing libraries to link
 netcdf4_libdir = os.getenv("NETCDF4_LIBDIR")
-if netcdf4_libdir == None:
+if netcdf4_libdir:
+    netcdf4_libdir = netcdf4_libdir.strip()
+if not netcdf4_libdir:
     raise ValueError("Environment variable NETCDF4_LIBDIR is not defined")
 hdf5_libdir = os.getenv("HDF5_LIBDIR")
-if hdf5_libdir == None:
+if hdf5_libdir:
+    hdf5_libdir = hdf5_libdir.strip()
+if not hdf5_libdir:
     raise ValueError("Environment variable HDF5_LIBDIR is not defined")
 # CAIRO_LIBDIR is only given if the cairo library is to be statically linked in
 cairo_libdir = os.getenv("CAIRO_LIBDIR")
-# The location of libpython2.x.so in case it is not in a standard location
+if cairo_libdir:
+    cairo_libdir = cairo_libdir.strip()
+# The location of libpython2.x.so, in case it is not in a standard location
 python_libdir = os.path.split(
                    distutils.sysconfig.get_python_lib(standard_lib=True))[0]
 # The list of additional directories to examine for libraries
 if cairo_libdir:
-    libdir_list = [ "lib", str(netcdf4_libdir), str(hdf5_libdir),
-                    str(cairo_libdir), str(python_libdir), ]
+    libdir_list = [ "lib", netcdf4_libdir, hdf5_libdir,
+                    cairo_libdir, python_libdir, ]
 else:
-    libdir_list = [ "lib", str(netcdf4_libdir), str(hdf5_libdir),
-                    str(python_libdir), ]
+    libdir_list = [ "lib", netcdf4_libdir, hdf5_libdir,
+                    python_libdir, ]
 
 # Get the list of ferret static libraries
 # Stripping off the "lib" prefix and the ".a" suffix

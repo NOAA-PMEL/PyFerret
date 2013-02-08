@@ -14,8 +14,8 @@
 # Directories for the libraries.  Convention has the 64-bit libraries
 # in a .../lib64 directory, but they may be in a .../lib directory.
 #
-ifeq ($(CAIRO_DIR),"")
-        CAIRO_LIBDIR	=
+ifeq ($(strip $(CAIRO_DIR)),)
+	CAIRO_LIBDIR	=
 else
 	CAIRO_LIBDIR	= $(CAIRO_DIR)/lib64
 endif

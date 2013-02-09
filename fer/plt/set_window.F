@@ -106,13 +106,13 @@
 !	include 'gksdefs.for'		! escape code
         include 'xplot_setup.cmn'       ! for animate boolean
         include 'xtoday.cmn'            ! with today_date and today_time
-        
+
 * calling argument declarations:
 	INTEGER	status
 
 * internal variable declarations:
-	LOGICAL TM_DIGIT, MATCH4, physical_chg, relocate, chg_window,
-     .		axis_ref
+	LOGICAL TM_DIGIT, MATCH4, FGD_ENGINE_MATCH, 
+     .		physical_chg, relocate, chg_window, axis_ref
 	INTEGER TM_LENSTR1, ier, id, itype, imeter, irx, iry, wn, n,
      .          qp, ivp, colon_pos, slen, tlen, i, s1, idone
 	REAL	dmaxx, dmaxy, xln, yln, xmn, xmx, ymn, ymx,
@@ -260,13 +260,19 @@ c 75        CONTINUE
             ENDIF
             slen = TM_LENSTR1(buffer)
             IF ( MATCH4(buffer, slen, 'DRAFT', 5) ) THEN
-                CALL CANCEL_WINDOW_NUM(n)
-                CALL FGD_SET_ENGINE(n, 'PYQTCAIRO', .FALSE., status)
-                IF ( status .NE. ferr_ok ) RETURN
+                IF ( .NOT. FGD_ENGINE_MATCH(n, 'PyQtCairo') ) THEN
+                    chg_window = .TRUE.
+                    CALL CANCEL_WINDOW_NUM(n)
+                    CALL FGD_SET_ENGINE(n, 'PyQtCairo', .FALSE., status)
+                    IF ( status .NE. ferr_ok ) RETURN
+                ENDIF
             ELSE IF ( MATCH4(buffer, slen, 'HIGH', 4) ) THEN
-                CALL CANCEL_WINDOW_NUM(n)
-                CALL FGD_SET_ENGINE(n, 'PYQTVIEWER', .FALSE., status)
-                IF ( status .NE. ferr_ok ) RETURN
+                IF ( .NOT. FGD_ENGINE_MATCH(n, 'PyQtViewer') ) THEN
+                    chg_window = .TRUE.
+                    CALL CANCEL_WINDOW_NUM(n)
+                    CALL FGD_SET_ENGINE(n, 'PyQtViewer', .FALSE., status)
+                    IF ( status .NE. ferr_ok ) RETURN
+                ENDIF
             ELSE
                 CALL ERRMSG(ferr_syntax, status, 
      .                      'Unknown /QUALITY value of ' // 
@@ -287,12 +293,15 @@ c 75        CONTINUE
      .                         buffer, status)
                 IF ( status .NE. ferr_ok ) RETURN
                 slen = TM_LENSTR1(buffer)
-                CALL CANCEL_WINDOW_NUM(n)
-                CALL FGD_SET_ENGINE(n, buffer(1:slen), .TRUE., status)
-                IF ( status .NE. ferr_ok ) RETURN
+                IF ( .NOT. FGD_ENGINE_MATCH(n, buffer(1:slen)) ) THEN
+                    chg_window = .TRUE.
+                    CALL CANCEL_WINDOW_NUM(n)
+                    CALL FGD_SET_ENGINE(n, buffer(1:slen), .TRUE., status)
+                    IF ( status .NE. ferr_ok ) RETURN
+                ENDIF
             ELSE IF ( .NOT. wn_open(n) ) THEN
 * Neither /QUALITY=... nor /ENGINE=... given but a new window
-* Give a blank engine name to use the default engine
+* Give a blank engine name to reset to the default engine
                 CALL FGD_SET_ENGINE(n, '', .TRUE., status)
                 IF ( status .NE. ferr_ok ) RETURN
             ENDIF

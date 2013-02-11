@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 42636117 Jan 16 11:40 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 42640213 Feb 11 10:58 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: pull back on the precision of checking if axis is already defined, tm_same_line_def.F
+Note: one-point axes NOT modulo; fixing ticket 2038: error message on attribute string too long"
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -21,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Wed Jan 16 11:44:22 PST 2013
+Beginning at Mon Feb 11 11:04:16 PST 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -246,8 +246,8 @@ plot/over/i=1:10/size=-1 i
 cont/over/i=1:10/color=noexist i
  **ERROR: unknown command qualifier: thick=4
 cont/over/i=1:10/thick=4 i
- **ERROR: value out of legal range: sigdig=-1
-          Value must be positive
+ **ERROR: dimensions improperly specified: overlay not valid in plane of plot
+          cont/over/i=1:10/sigdig=-1 i
 cont/over/i=1:10/sigdig=-1 i
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -604,6 +604,7 @@ Replacing definition of axis TAX
 SET DATA/EZ/format=stream/var=num/grid=mygrid NoSuchFile.dat
  **ERROR: Size of file ./junk.dat doesn't match size specified by variables/grid
 load num
+ *** NOTE: Binary file reading: Insufficient memory reading variable    2
  **ERROR: invalid command: invalid argument for /TYPE
 SET DATA/EZ/var=num/type=i3/grid=mygrid/form=stream junk.dat
  PERMANENT data cleared from memory
@@ -849,7 +850,6 @@ Replacing definition of axis X10
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
 
 Bailing out of external function "eof_space":
 	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
@@ -859,6 +859,7 @@ Bailing out of external function "eof_stat":
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+ PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3077,8 +3078,8 @@ Replacing definition of axis YAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0002.SURF.nc b40.coup_carb.004.cam2.h0.0003.SURF.nc b40.coup_carb.004.cam2.h0.0004.SURF.nc b40.coup_carb.004.cam2.h0.0005.SURF.nc b40.coup_carb.004.cam2.h0.0006.SURF.nc b40.coup_carb.004.cam2.h0.0007.SURF.nc b40.coup_carb.004.cam2.h0.0008.SURF.nc b40.coup_carb.004.cam2.h0.0009.SURF.nc b40.coup_carb.004.cam2.h0.0010.SURF.nc b40.coup_carb.004.cam2.h0.0011.SURF.nc b40.coup_carb.004.cam2.h0.0012.SURF.nc b40.coup_carb.004.cam2.h0.0013.SURF.nc b40.coup_carb.004.cam2.h0.0014.SURF.nc b40.coup_carb.004.cam2.h0.0015.SURF.nc b40.coup_carb.004.cam2.h0.0016.SURF.nc b40.coup_carb.004.cam2.h0.0017.SURF.nc b40.coup_carb.004.cam2.h0.0018.SURF.nc b40.coup_carb.004.cam2.h0.0019.SURF.nc b40.coup_carb.004.cam2.h0.0020.SURF.nc b40.coup_carb.004.cam2.h0.0021.SURF.nc b40.coup_carb.004.cam2.h0.0022.SURF.nc b40.coup_carb.004.cam2.h0.0023.SURF.nc b40.coup_carb.004.cam2.h0.0024.SURF.nc b40.coup_carb.004.cam2.h0.0025.SURF.nc b40.coup_carb.004.cam2.h0.0026.SURF.nc b40.coup_carb.004.cam2.h0.0027.SURF.nc b40.coup_carb.004.cam2.h0.0028.SURF.nc b40.coup_carb.004.cam2.h0.0029.SURF.nc b40.coup_carb.004.cam2.h0.0030.SURF.nc b40.coup_carb.004.cam2.h0.0031.SURF.nc b40.coup_carb.004.cam2.h0.0032.SURF.nc b40.coup_carb.004.cam2.h0.0033.SURF.nc b40.coup_carb.004.c:
- *** NOTE: Maximum characters: 2048
+ *** NOTE: b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_ca
+ *** NOTE: exceeds expected length. Maximum characters: 2048
  LISTing to file aa.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3470,4 +3471,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jan 16 11:46:03 PST 2013
+Ended at Mon Feb 11 11:05:53 PST 2013

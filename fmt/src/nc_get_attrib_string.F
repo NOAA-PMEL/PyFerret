@@ -55,6 +55,7 @@
 * V65  *acm* 1/10  Make sure parameters values are consistent with 
 *                              whats in netcdf.inc from netcdf4.
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V6.85 2/13 *acm* Fix ticket 2038: making warning message for too-long string
 
 * argument definitions:
 *	dset	 - dataset number
@@ -161,19 +162,21 @@
  5000 lenb = TM_LENSTR1( string )
  
       lena = TM_LENSTR1( attrib )
-      string = string(:lenb)//': "'//attrib(:lena)//
+      buff = string(:lenb)//'"'//attrib(:lena)//
      .             '" in netCDF variable: '//vname
-      lenb = TM_LENSTR1( string )
-      IF ( do_warn ) CALL TM_NOTE( string(:lenb), tt )
+      lenb = TM_LENSTR1( buff )
+      IF ( do_warn ) CALL TM_NOTE( buff(:lenb), tt )
       IF ( do_warn .AND. too_long ) THEN
-         WRITE (string, 1000) maxlen
-1000     FORMAT ('Maximum characters: ',I4, ' ')
-         lenb = TM_LENSTR1( string )
-         CALL TM_NOTE( string(:lenb), tt )
-         WRITE (string, 1010) maxlen
+         IF (maxlen .GE. 3) WRITE (buff, 1000) maxlen
+         IF (maxlen .LT. 3) WRITE (buff, 1001) maxlen
+1000     FORMAT ('exceeds expected length. Maximum characters: ',I4, ' ')
+1001     FORMAT ('exceeds expected length. Maximum characters: ',I2, ' ')
+         lenb = TM_LENSTR1( buff )
+         CALL TM_NOTE( buff(:lenb), tt )
+         WRITE (buff, 1010) maxlen
 1010     FORMAT ('--TRUNCATED TO LENGTH ',I4, '--')
-         lenb = TM_LENSTR1( string )
-	 CALL TM_CTOF_STRNG( fhol, string(lenb+2:maxlen), (maxlen-lenb))
+         lenb = TM_LENSTR1( buff )
+	 CALL TM_CTOF_STRNG( fhol, buff(lenb+2:maxlen), (maxlen-lenb))
 	 
 	 attlen = maxlen
       ENDIF

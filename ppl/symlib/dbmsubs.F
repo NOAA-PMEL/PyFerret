@@ -40,8 +40,9 @@ c**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 * v552 *acm* 3/03 Longer strings: changes for multi-line labels
-* V6842*acm* 1/13 Increase number of symbols: why doesnt the STOP
-*                 statement in loop 30 work?
+* V685 *acm* 1/13 Increase number of symbols, # short to 5000,
+*                 # long to 500. Move the test for all-symbols-set
+*                 outside the loop. (Should do proper error handling...)
 
 	character file*(*)
 	integer flen,lun
@@ -52,7 +53,7 @@ c
 	subroutine dbmstore(lun,sym,ilen,value,len,ier)
 c
 	integer VSHORT,VLONG
-	parameter (VSHORT=2000,VLONG=100)
+	parameter (VSHORT=5000,VLONG=500)
 c
 	character sym*(*),value*(*)
 	integer lun,ilen,len,ier
@@ -116,6 +117,8 @@ c
 		    return
 		endif
 30	    continue
+            stop 'exceeded symbol storage'
+	    return
 	else
 	    do 40 i=1,mxlong+1
 		if(lunl(i).eq.-1)then
@@ -128,6 +131,8 @@ c
 		    return
 		endif
 40	    continue
+            stop 'exceeded symbol storage'
+	    return
 	endif
 	return
 c

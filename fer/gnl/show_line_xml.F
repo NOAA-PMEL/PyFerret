@@ -103,7 +103,7 @@ C New form for attribute output, list values separately.
 
 * determine orientation
 
-	DO 100 idim = 1, nferdim+1
+	DO 100 idim = 1, nferdims+1
 	   IF ( line_direction(line) .EQ. axis_orients( idim ) ) THEN
 	      orient = idim
 	      GOTO 110

@@ -6,8 +6,10 @@
 *     windowid - window number to use
 *     newname - name (or partial name) of the engine;
 *               standard recognized names are Cairo, 
-*               PyQtViewer, or PyQtCairo (compared
-*               in that order, so PyQt match PyQtViewer)
+*               CAIRO, PyQtViewer, PYQTVIEWER, PyQtCairo,
+*               and PYQTCAIRO (compared in that order, 
+*               so PyQt match PyQtViewer)
+*               Need all-uppercase for /ENGINE="..."
 *     forceit - change the engine name regardless of 
 *               no-display command-line options?
 * Output Arguments:
@@ -53,6 +55,9 @@
 
 * INDEX is used to match incomplete new engine names
         idx = INDEX('Cairo', newname(1:slen))
+        IF ( idx .NE. 1 ) THEN
+            idx = INDEX('CAIRO', newname(1:slen))
+        ENDIF
         IF ( idx .EQ. 1 ) THEN
             enginename(windowid) = 'Cairo'
             antialias(windowid) = .TRUE.
@@ -75,6 +80,9 @@
 
 * Note that 'PyQt' will give 'PyQtViewer' and not 'PyQtCairo'
         idx = INDEX('PyQtViewer', newname(1:slen))
+        IF ( idx .NE. 1 ) THEN
+            idx = INDEX('PYQTVIEWER', newname(1:slen))
+        ENDIF
         IF ( idx .EQ. 1 ) THEN
             enginename(windowid) = 'PyQtViewer'
             antialias(windowid) = .TRUE.
@@ -83,6 +91,9 @@
         ENDIF
 
         idx = INDEX('PyQtCairo', newname(1:slen))
+        IF ( idx .NE. 1 ) THEN
+            idx = INDEX('PYQTCAIRO', newname(1:slen))
+        ENDIF
         IF ( idx .EQ. 1 ) THEN
             enginename(windowid) = 'PyQtCairo'
             antialias(windowid) = .FALSE.

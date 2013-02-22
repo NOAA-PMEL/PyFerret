@@ -66,6 +66,7 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V68   1/12 *acm*- Symbol FERRET_PRECISION is single or double.
 * V68   3/12 *acm*- Symbol SESSION_PID for the process ID
+* V68   2/13 *kms*- Symbol PROGRAM_NAME = Ferret or PyFerret
 
 * calling argument declarations:
 	INTEGER	  isym, slen
@@ -73,7 +74,7 @@
 
 * internal parameter declaration
 	INTEGER nspecial
-	PARAMETER (nspecial = 16)
+	PARAMETER (nspecial = 17)
 
 * internal variable declarations:
 	INTEGER STR_UPCASE, TM_LENSTR, i, i1, ierr, wsid, 
@@ -91,17 +92,18 @@ c        REAL DTIME
      .	     special(3)/ 'BYTEORDER' /,
      .	     special(4)/ 'FERRET_VERSION' /,
      .	     special(5)/ 'FERRET_PLATFORM' /,
-     .	     special(6)/ 'FERRET_PRECISION' /
-     .	     special(7)/ 'NETCDF_VERSION' /
+     .	     special(6)/ 'FERRET_PRECISION' /,
+     .	     special(7)/ 'NETCDF_VERSION' /,
      .	     special(8)/ 'FERRET_MEMORY' /,
      .	     special(9)/ 'SESSION_DATE' /,
      .	     special(10)/ 'SESSION_TIME' /,
      .	     special(11)/ 'SESSION_PID' /,
-     .	     special(12)/ 'DELTA_CPU' /
-     .	     special(13)/ 'CLOCK_SECS' /
-     .	     special(14)/ 'CURRENT_DATE' /
-     .	     special(15)/ 'CURRENT_TIME' /
-     .	     special(16)/ 'N_OPEN_DSETS' /
+     .	     special(12)/ 'DELTA_CPU' /,
+     .	     special(13)/ 'CLOCK_SECS' /,
+     .	     special(14)/ 'CURRENT_DATE' /,
+     .	     special(15)/ 'CURRENT_TIME' /,
+     .	     special(16)/ 'N_OPEN_DSETS' /,
+     .	     special(17)/ 'PROGRAM_NAME' /
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -143,7 +145,8 @@ c        REAL DTIME
 	RETURN
 
  200	GOTO (1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 
-     .        1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600) i
+     .        1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600,
+     .        2700) i
 
 * PPL$XPIXEL, PPL$YPIXEL
  1100	CONTINUE
@@ -285,18 +288,23 @@ c        CALL DTIME(TArray)
 	slen = 8
 	RETURN
 
-
 * N_OPEN_DSETS
  2600	CONTINUE
  
 	count = 0.
-	DO 790 iset = 1, maxdsets
+	DO 2690 iset = 1, maxdsets
 	   IF ( ds_name(iset) .NE. char_init1024) count = count + 1.
- 790	CONTINUE
-
- 800	CONTINUE
+ 2690	CONTINUE
 
 	value =  TM_FMT(count, 10, 10, slen)
 	RETURN
+
+* PROGRAM_NAME
+ 2700   CONTINUE
+
+        value = 'PyFerret'
+        slen = 8
+        RETURN
+
 
 	END

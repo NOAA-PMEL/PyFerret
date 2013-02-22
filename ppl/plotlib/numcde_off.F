@@ -92,13 +92,18 @@ C
 	    ENDIF
 	  ELSE IF (ILONE .NE. 0)THEN
 * TMAP insert 2/13/89
+* Further fixes for X LE -180  1/18/2013
 	    X = MOD( X, 360. )
 * ... end of TMAP insert
 	    IF (X .GT.180.) THEN
 	      X=360.-X
 	      FRMT (ILONE+1:) = '''#W'')'
-	    ELSE IF (X .EQ. 180.) THEN
+	    ELSE IF (ABS(X) .EQ. 180.) THEN
 	      FRMT (ILONE+1:) = '''#'')'
+	      X = ABS(X)
+	    ELSE IF (X .LT. -180.) THEN
+	      FRMT (ILONE+1:) = '''#E'')'
+	      X = 360.+X
 	    ELSE IF (X .LT. 0.) THEN
 	      FRMT (ILONE+1:) = '''#W'')'
 	      X = -X

@@ -55,7 +55,10 @@
 *                  with &lt; etc.
 * V650  2/10 *acm* LAS ticket 761: consistency of the missing-value flags. Use a Fortran
 *                  format rather than TM_FMT to write the value to the xml output.
-* V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
+* V67  *acm* 2/11  XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
+* V685 *acm* 2/13  Always list the default Ferret bad-flag in the xml header. The script 
+*                  get_datavar.jnl under LAS iosp/scripts makes sure that is the value written 
+*                  to the netcdf data files.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -176,16 +179,14 @@ C Write statement that uses number 2075 when we change to using these.)
 ! missing_flag comes from attribute FillValue; 
 ! bad_flag comes from missing_value
 
-           show_str = TM_FMT(ds_missing_flag(ivar), 7,16,slen)
-c	   WRITE (show_str, 1111) ds_missing_flag(ivar)
+           show_str = TM_FMT(bad_val4, 7,16,slen)
           uvarname = ds_var_code(ivar)
           CALL CD_GET_VAR_ID (dset, uvarname, varid, status)
 	   
           attname = '_FillValue'
           CALL CD_GET_VAR_ATT_ID (dset, varid, attname, iatt, status)
           IF (status .EQ. ferr_ok) THEN
-             show_str = TM_FMT(ds_bad_flag(ivar), 7,16,slen)
-c             WRITE (show_str, 1111) ds_missing_flag(ivar)
+             show_str = TM_FMT(bad_val4, 7,16,slen)
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)
              WRITE ( risc_buff, 2030 ) '_FillValue' 
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -198,8 +199,7 @@ c             WRITE (show_str, 1111) ds_missing_flag(ivar)
           attname = 'missing_value'
           CALL CD_GET_VAR_ATT_ID (dset, varid, attname, iatt, status)
           IF (status .EQ. ferr_ok) THEN
-             show_str = TM_FMT(ds_missing_flag(ivar), 7,16,slen)
-c	     WRITE (show_str, 1111) ds_missing_flag(ivar)
+             show_str = TM_FMT(bad_val4, 7,16,slen)
              slen = TM_LENSTR(show_str)
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)
              WRITE ( risc_buff, 2030 ) 'missing_value'
@@ -397,9 +397,9 @@ c	     WRITE (show_str, 1111) ds_missing_flag(ivar)
              ENDIF
 
 ! missing_flag comes from attribute FillValue; 
-! bad_flag comes from missing_value
+! Always write the Ferret default bad-flag
 
-             show_str = TM_FMT(uvar_bad_data(ivar), 7,16,slen)
+             show_str = TM_FMT(bad_val4, 7,16,slen)
 c	     WRITE (show_str, 1111) uvar_bad_data(ivar)
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)
              WRITE ( risc_buff, 2030 ) '_FillValue' 
@@ -410,7 +410,7 @@ c	     WRITE (show_str, 1111) uvar_bad_data(ivar)
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 
-             show_str = TM_FMT(uvar_bad_data(ivar), 7,16,slen)
+             show_str = TM_FMT(bad_val4, 7,16,slen)
 c	     WRITE (show_str, 1111) uvar_bad_data(ivar)
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)
              WRITE ( risc_buff, 2030 ) 'missing_value'

@@ -1,0 +1,28 @@
+!err684_tax_fcns.jnl
+! See ticket 2043, bug in workaround for single-precision arguments
+!                  no longer needed in double-precision Ferret
+! The output at 13-oct and 18-oct was incorrect
+ 
+ define axis/t/units=days/t0=1-jan-1950 tday = { \
+ 20724.935546875, 20729.921875, 20734.951171875,\
+20739.96484375, 20744.939453125, 20749.8984375, 20754.92578125}
+
+ let var = t[gt=tday]
+
+
+ list/L=3:7 tax_datestring(var, var, "second")
+
+ list/L=3:7 tax_day(var, var)
+
+ list/L=3:7 tax_dayfrac(var, var)
+
+ list/L=3:7 tax_jday(var, var)
+ 
+ list/L=3:7 tax_jday1900(var, var)
+ 
+ list/L=3:7 tax_month(var, var)
+ 
+ list/L=3:7 tax_yearfrac(var, var)
+ 
+ list/L=3:7 tax_year(var, var)
+

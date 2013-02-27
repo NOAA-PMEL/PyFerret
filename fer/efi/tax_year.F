@@ -3,6 +3,9 @@
 *
 * Jing Y. Li 
 * May 4th 2006
+* 27-Feb-2013 ACM  Fix ticket 2043: remove old code for handling single-
+*                  precision values coming in from argument 1
+
 *
 * This function returns year specified by the first argument (variable 
 * containing time values) from the second argument (variable from which time 
@@ -187,7 +190,6 @@
       INTEGER L2, LL
       LOGICAL TM_FPEQ, first
       CHARACTER*255 err_msg
-      REAL   rdate, rdate_last
       REAL*8 ddate, d1, d2
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, k1, l1, m1, n1
@@ -231,34 +233,8 @@
                l1 = arg_lo_ss(T_AXIS,ARG1)
                DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
-                  rdate = arg_1(i1,j1,k1,l1,m1,n1)
-                  ddate = rdate  
-                  IF ( rdate .NE. bad_flag(ARG1) ) THEN
-
-C  Convert date back to nearest double precision coordinate value
-
-                     IF ( .NOT. first ) THEN
-                        IF ( TM_FPEQ(rdate, rdate_last) ) THEN
-C                          Create a message saying arg1 values at index are duplicate
-                           CALL TAX_FORMAT_MESSAGE (l1, err_msg)
-                           GOTO 999
-                        ENDIF
-                     ENDIF
-
-                     first = .FALSE.
-                     rdate_last = rdate
-
-                     ddate = rdate
-                     LL = arg_lo_ss(T_AXIS,ARG2)
-                     L2 = arg_lo_ss(T_AXIS,ARG2) + 1
-                     d1 = ABS(taxdat(L2) - taxdat(LL))
-                     LL = 1
-                     DO 410 L2 = arg_lo_ss(T_AXIS,ARG2) + 1,
-     .                           arg_hi_ss(T_AXIS,ARG2)
-                        d2 = ABS(ddate - taxdat(L2))
-                        IF ( d2 .LT. d1 ) LL = L2
- 410                 CONTINUE
-                     ddate = taxdat(LL)
+                  ddate = arg_1(i1,j1,k1,l1,m1,n1)
+                  IF ( ddate .NE. bad_flag(ARG1) ) THEN
 
 *     Get the date string corresponding to time ddate for the variable ARG2
                      CALL EF_GET_AXIS_DATES(id, ARG2, ddate, 1, datebuf)

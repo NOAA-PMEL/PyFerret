@@ -1,0 +1,10 @@
+! err684_cancel_att.jnl
+! Fix bug 2048: cancel attribute of a user-defined variable
+
+use coads_climatology
+let sst2 = 2*sst
+set att/like=sst sst2
+list sst2.attnames
+
+can att sst2.history
+sh att sst2

@@ -256,7 +256,8 @@
      .		NC_GET_ATTRIB, slash_all, limited_show, 
      .		nothing, sdetail, only_1, done_1, sfull, svars, sfile, 
      .		sbrief, first, sxml, clobber, append, firstxml, got_it, 
-     .		coordvar, sattr, do_err, sho_out, sh_att_dset
+     .		coordvar, sattr, do_err, sho_out, sh_att_dset,
+     .		lineok
 	INTEGER TM_LENSTR1, TM_LENSTR, UVAR_NUMBER, STR_UPCASE,
      .		REGION_NUMBER, GRID_FROM_NAME, FIND_DSET_NUMBER,
      .		EFCN_MATCH_TEMPLATE, TM_GET_LINENUM, STR_SAME,
@@ -271,7 +272,7 @@
      .          vseq, attid, save_deleted_list_result(max_uvar),
      .          cache_size, cache_nelems, cache_preemption,
      .          sho_file, idim, ndims, nvars, ngatts, recdim, npts,
-     .          var_num, vartype, outflag
+     .          var_num, vartype, outflag, num_clim_1, num_clim_n
 	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p
 	CHARACTER EXPR_NAME*8, TM_FMT*12,
      .		default*10, show_str*2048, arg*128, name*128, arg30*30
@@ -493,6 +494,8 @@
 * show all the defined axes
 *  ... first show the static lines (for XML output skip pre-defined axes)
            num_predefined_axes = TM_GET_LINENUM('EZ')
+           num_clim_1 = TM_GET_LINENUM('MONTH_IRREG')
+           num_clim_n = TM_GET_LINENUM('ABSTRACT') - 1
 	   DO 450 line = 1, max_lines
 	      IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
@@ -500,7 +503,9 @@
               IF (.NOT.sxml) THEN
                  CALL SHOW_LINE( line, brief )
               ENDIF
-              IF (sxml .AND. line .GT. num_predefined_axes) THEN
+	      lineok = ( line.GT.num_predefined_axes .OR.
+     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
+              IF (sxml .AND. lineok) THEN
                  IF (firstxml) THEN
                     risc_buff = '<axes>'
                     CALL SPLIT_LIST(pttmode_explct, show_lun,

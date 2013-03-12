@@ -52,7 +52,6 @@ cd_load_dset_attrs.F\
 cd_make_var.F\
 cd_ncclose.F\
 cd_ncopen.F\
-cd_ncopen.F\
 cd_nf_get_bad.F\
 cd_nf_get_varid.F\
 cd_nf_get_var_grid.F\

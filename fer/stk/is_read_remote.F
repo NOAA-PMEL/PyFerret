@@ -1,4 +1,6 @@
-	SUBROUTINE CD_ENCODE_URL ( urlbuff, ebuff, status)
+	SUBROUTINE IS_READ_REMOTE ( memory, *, *, status )
+
+*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -33,51 +35,52 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* read a grid of data defined via LET/REMOTE from a remote F-TDS dataset
 
-* Programmer Ansley Manke
-* NOAA/PMEL, Seattle, WA - TMAP 
+* programmer - Ansley Manke
+* NOAA/PMEL, Seattle, WA - Thermcal Modeling and Analysis Program
+*
+* revision 0.0 - 2/2013
 
-* 
-* V6.85 2/13 
-* argument definitions:
-*       urlbuff - url to encode
-*       ebuff   - result enocded url
-*	status	- return status
+* calling argument declarations:
+	INTEGER	status
+	REAL	memory(*)
+	REAL	baddat
 
-* argument declarations:
-	INTEGER	      status
-	CHARACTER*(*) urlbuff, ebuff
+* normal exit is for error conditions
+* exit #1 is to request another grid ( stack has been pushed )
+* exit #2 is to signal completion of the activity at this stack level
 
-	INTEGER url_encode
+* internal variable declarations:
+	INTEGER cx, idim, ivar, cat
 
+	include	'tmap_dims.parm'
+#	include	"tmap_dset.parm"
+	include	'xdset_info.cmn_text'
+	external xdset_info_data
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'interp_stack.parm'
+	include	'xcontext.cmn'
+	include	'xvariables.cmn'
 
-#include "netcdf.inc"
-        include 'tmap_errors.parm'
+* --- end of introductory code ---
 
+* initialize
+	cx = is_cx( isp )
 
-        INTEGER   TM_LENSTR1, llen, slen
-        PARAMETER (slen=2048)
+	cat = cx_category(cx)
+	cx_category(cx) = cat_user_var
 
-#ifdef sun
-        BYTE        fhol_url(slen)      ! c-type Hollerith string buffer
-	BYTE      fhol_eurl(slen)
-#else
-	INTEGER*1 fhol_url(slen)      ! c-type Hollerith string buffer
-	INTEGER*1 fhol_eurl(slen)
-#endif
+	CALL READ_REMOTE(memory, baddat, cx, is_mr(isp), status )
+        IF ( status .EQ. ferr_ok ) GOTO 2
 
-* Save dataset info in GLOBAL_NCdsetList for attribute handling
+* error exit
+ 5000	cx_category(cx) = cat
+ 	RETURN
 
-        llen = TM_LENSTR1( urlbuff )
-        CALL TM_FTOC_STRNG( urlbuff(1:llen), fhol_url, slen )
-
-        status = url_encode(fhol_url, fhol_eurl, llen)         
-        IF (status .EQ. 0) THEN
-           CALL TM_CTOF_STRNG (fhol_eurl, ebuff, llen) 
-	   status = merr_ok
-	ENDIF
-
-* successful completion
-	
-	RETURN
-	END
+* done - we got what was asked for
+ 2	cx_bad_data(cx) = baddat
+	cx_category(cx) = cat
+	RETURN 2
+	END	

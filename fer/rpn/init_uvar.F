@@ -1,7 +1,8 @@
 	SUBROUTINE INIT_UVAR ( name, text, title, units, dset, bad,
      .                         implct_defn, uvar,
      .			       at_type, at_id, at_start, at_end,
-     .			       natom, txstart, txend, varname, status )
+     .			       natom, txstart, txend, varname, 
+     .			       its_remote, status )
 
 *
 *
@@ -101,7 +102,7 @@
 	include 'xrisc_buff.cmn'
 
 * calling argument declarations:
-	LOGICAL		implct_defn
+	LOGICAL		implct_defn, its_remote
 	CHARACTER*(*)	name, text, title, units, varname
 	INTEGER		uvar, natom, txstart, txend, status,
      .			at_type  (maxatoms), at_id  (maxatoms),
@@ -113,7 +114,7 @@
 	INTEGER		max_gcf_stack
 	PARAMETER     ( max_gcf_stack = 15 )
 * internal variable declarations:
-	LOGICAL		has_children, child
+	LOGICAL		has_children, child, child_remote
 	INTEGER		tlen, iat, paren_level, atoms_lost, uvar_child, gcfstk, 
      .			child_start, child_end, gc_arg_start, istart, iend,
      .			parent,
@@ -247,12 +248,13 @@
 	   GOTO 5900
 	ENDIF
 
-* initialize the child variable
+* initialize the child variable  its_remote is set .FALSE. for child variables. (?)
  860	child = .TRUE.
+        child_remote = .FALSE.
         CALL INIT_UVAR_SUB (
      .			     child_name,
      .			     text, ' ', ' ', dset, bad,
-     .                       implct_defn, uvar_child,parent,
+     .                       child_remote, implct_defn, uvar_child,parent,
      .			     at_type(child_start), at_id(child_start),
      .			     at_start(child_start), at_end(child_start),
      .			     child_end-child_start+1,
@@ -285,7 +287,7 @@
 * initialize the parent user variable, "uvar"
  1000	child = .FALSE.
         CALL INIT_UVAR_SUB ( name, text, title, units, dset, bad,
-     .                         implct_defn, uvar, 0,
+     .                         its_remote, implct_defn, uvar, 0,
      .			       at_type, at_id, at_start, at_end,
      .			       natom, txstart, txend, child, varname,
      .			       status )

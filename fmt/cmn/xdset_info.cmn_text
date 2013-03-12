@@ -67,6 +67,7 @@
 **************************************************************************
      .		ds_des_name(maxdsets),ds_name(maxdsets),
      .		ds_open(maxdsets),
+     .		ds_accepts_remote(maxdsets), 
      .		ds_regsteps(maxdsets), ds_basic_axes(6,maxdsets),
      .		ds_time_axis(maxdsets),
 **************************************************************************
@@ -116,7 +117,8 @@
 	CHARACTER*2048	ds_name
 	CHARACTER*2048	ds_des_name
 	INTEGER*4	ds_open,ds_basic_axes,ds_time_axis
-	LOGICAL		ds_regsteps, ds_var_scaleit, is_mc
+	LOGICAL		ds_regsteps, ds_var_scaleit, is_mc, 
+     .			ds_accepts_remote
 	REAL*8		ds_1step,ds_lastep,ds_delstep,
      .			ds_file_info_ptr
         REAL            ds_var_scale, ds_var_off

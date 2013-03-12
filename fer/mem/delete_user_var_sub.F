@@ -167,6 +167,14 @@
         CALL string_array_modify(uvar_name_code_head, uvar, " ", 1 )
 
 	uvar_text     ( uvar ) = " "
+
+	IF (uvar_remote (uvar)) THEN
+	   rvar_dset (uvar) = 0
+	   rvar_varid (uvar) = 0
+	   rvar_on_server (uvar) = .FALSE.
+	   rvar_uvar (uvar) = 0
+	   uvar_remote (uvar) = .FALSE.
+	ENDIF
 	      
 	RETURN
 	END

@@ -60,8 +60,7 @@
       CALL ef_set_desc(id, 'Returns a subset of a feature collection' )
 
       CALL ef_set_num_args(id, 4)
-      CALL ef_set_axis_inheritance(id, ABSTRACT, IMPLIED_BY_ARGS, 
-     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_axis_inheritance(id, CUSTOM, NORMAL, NORMAL, NORMAL)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'index_list')
@@ -93,7 +92,7 @@
 
       CALL ef_set_arg_desc(id, arg, 
      .     'input data: 1D list from which to select features')
-      CALL ef_set_axis_influence(id, arg, NO, YES, YES, YES)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -125,6 +124,38 @@
 
       call ef_set_axis_limits(id, X_AXIS, 1, nx)
 
+
+*                                                                      ^
+*                                                                      |
+*                                            USER CONFIGURABLE PORTION |
+* **********************************************************************
+
+      RETURN 
+      END
+
+
+      SUBROUTINE fc_isubset_custom_axes(id)
+
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
+
+      INTEGER id
+
+
+* **********************************************************************
+*                                            USER CONFIGURABLE PORTION |
+*                                                                      |
+*                                                                      V
+
+* Get the size of the output axis from arg 3
+
+      INTEGER nx, iarg
+      REAL val
+
+      iarg = 3
+      CALL ef_get_one_val(id, iarg, val)
+      nx = INT(val)
+
+      CALL ef_set_custom_axis (id, X_AXIS, 1., val, 1., 'X', NO)
 
 *                                                                      ^
 *                                                                      |

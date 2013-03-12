@@ -176,6 +176,8 @@
 *                 various SHOW commnands will not list info for E,F dimensions.
 *                 SHOW with 6D variable and mode_6d_lab cancelled, is an error.
 * V683 *acm*  8/12 On SHOW LIST, show the output-type setting from SET LIST/OUTTYPE=  
+* V685 *acm*  2/13 LET/REMOTE changes: show internally-defined climatological axes
+*                  in xml output.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -503,8 +505,9 @@
               IF (.NOT.sxml) THEN
                  CALL SHOW_LINE( line, brief )
               ENDIF
-	      lineok = ( line.GT.num_predefined_axes .OR.
-     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
+	      lineok = ( line.GT.num_predefined_axes )
+c	      lineok = ( line.GT.num_predefined_axes .OR.
+c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
               IF (sxml .AND. lineok) THEN
                  IF (firstxml) THEN
                     risc_buff = '<axes>'
@@ -1165,7 +1168,12 @@
                     CALL SHOW_GRID_XML(show_lun, grid, unspecified_int4 )
                  ELSE
 	            WRITE ( risc_buff, 4210 ) grid_name( grid )
+	            IF ( TM_HAS_STRING(ds_type(dset), 'ENS') ) THEN
+		       dlen = TM_LENSTR1(grid_name(grid) )
+		       WRITE ( risc_buff, 4211) grid_name(grid)(:dlen)
+		    ENDIF
 	            CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
+
 	            risc_buff = ' '
 	            CALL SHOW_GRID( grid, mods_cx, status )
 		    IF (status .NE. ferr_ok) GOTO 5000
@@ -1173,6 +1181,7 @@
 	      ENDIF
  1350	   CONTINUE
  4210	   FORMAT ( 4X,'GRID ',A)
+ 4211	   FORMAT ( 4X,'GRID ',A, '  Ferret-defined Ensemble Grid')
 
 	ELSEIF( qual_given(slash_grid_dyn) .GT. 0 ) THEN
 	   CALL SHOW_DYN_GRIDS(mods_cx)

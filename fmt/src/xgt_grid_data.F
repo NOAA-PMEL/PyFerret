@@ -36,6 +36,7 @@
 *
 *
 * names and sizes of predefined grids for program GFDL
+* And climatological axes
 
 * programmer - mark verschell (from a program by steve hankin)
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
@@ -65,6 +66,7 @@
 * V62 *acm*  2/09 - Save original upper/lowercase spelling of axis names 
 *                   in line_name_orig for CANCEL MODE UPCASE
 *      4/12 *acm* - 6D Ferret, formatted F axis is direction FI
+* V685 *acm* 3/13 - add climatological axes to the pre-defined axes.
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -78,11 +80,11 @@
      .			pline_mem_next, pline_mem_left, outtype
 
 	PARAMETER	(ngrd_def	= 5,
-     .			 nlne_def	= 6,
+     .			 nlne_def	= 13,
      .			 grids_left	= grid_ceiling-ngrd_def,
      .			 lines_left	= line_ceiling-nlne_def,
      .			 grid_lines_left= 4*grids_left,
-     .                   pline_mem_next = 514,
+     .                   pline_mem_next = 614,
      .                   pline_mem_left = maxlinestore-pline_mem_next+1)
 
 	PARAMETER	(outtype	= 6)  ! netcdf type double, output axis type.
@@ -104,7 +106,10 @@
      .		line_modulo	(mpsxt) / .TRUE.        /,
      .		line_modulo_len	(mpsxt) / 360.0D0       /,
      .		line_start	(mpsxt)	/ 130.5		/,
-     .		line_delta	(mpsxt)	/ 1.0		/
+     .		line_delta	(mpsxt)	/ 1.0		/,
+     .		line_tunit	(mpsxt)	/ real4_init /,
+     .		line_t0		(mpsxt)	/ char_init20 /,
+     .		line_cal_name	(mpsxt)	/'GREGORIAN'/
 	DATA
      .		line_name	(mpsxu)	/ 'PSXU'	/,
      .		line_name_orig	(mpsxu)	/ 'PSXU'	/,
@@ -117,7 +122,10 @@
      .		line_modulo	(mpsxu) / .TRUE.        /,
      .		line_modulo_len	(mpsxu) / 360.0D0       /,
      .		line_start	(mpsxu)	/ 131.0		/,
-     .		line_delta	(mpsxu)	/ 1.0		/
+     .		line_delta	(mpsxu)	/ 1.0		/,
+     .		line_tunit	(mpsxu)	/ real4_init /,
+     .		line_t0		(mpsxu)	/ char_init20 /,
+     .		line_cal_name	(mpsxu)	/'GREGORIAN'/
 	DATA
      .		line_name	(mpsyt)	/ 'PSYT'	/,
      .		line_name_orig	(mpsyt)	/ 'PSYT'	/,
@@ -130,7 +138,10 @@
      .		line_modulo	(mpsyt) / .FALSE.       /,
      .		line_modulo_len	(mpsyt) / 0.0D0         /,
      .		line_start	(mpsyt)	/ unspecified_val8 /,
-     .		line_delta	(mpsyt)	/ unspecified_val8 /
+     .		line_delta	(mpsyt)	/ unspecified_val8 /,
+     .		line_tunit	(mpsyt)	/ real4_init /,
+     .		line_t0		(mpsyt)	/ char_init20 /,
+     .		line_cal_name	(mpsyt)	/'GREGORIAN'/
 	DATA
      .		line_name	(mpsyu)	/ 'PSYU'	/,
      .		line_name_orig	(mpsyu)	/ 'PSYU'	/,
@@ -143,7 +154,10 @@
      .		line_modulo	(mpsyu) / .FALSE.       /,
      .		line_modulo_len	(mpsyu) / 0.0D0         /,
      .		line_start	(mpsyu)	/ unspecified_val8 /,
-     .		line_delta	(mpsyu)	/ unspecified_val8 /
+     .		line_delta	(mpsyu)	/ unspecified_val8 /,
+     .		line_tunit	(mpsyu)	/ real4_init /,
+     .		line_t0		(mpsyu)	/ char_init20 /,
+     .		line_cal_name	(mpsyu)	/'GREGORIAN'/
 	DATA
      .		line_name	(mpszt)	/ 'PSZT'	/,
      .		line_name_orig	(mpszt)	/ 'PSZT'	/,
@@ -156,7 +170,11 @@
      .		line_modulo	(mpszt) / .FALSE.       /,
      .		line_modulo_len	(mpszt) / 0.0D0         /,
      .		line_start	(mpszt)	/ unspecified_val8 /,
-     .		line_delta	(mpszt)	/ unspecified_val8 /
+     .		line_delta	(mpszt)	/ unspecified_val8 /,
+     .		line_tunit	(mpszt)	/ real4_init /,
+     .		line_t0		(mpszt)	/ char_init20 /,
+     .		line_cal_name	(mpszt)	/'GREGORIAN'/
+
 	DATA
      .		line_name	(mpszw)	/ 'PSZW'	/,
      .		line_name_orig	(mpszw)	/ 'PSZW'	/,
@@ -170,6 +188,131 @@
      .		line_modulo_len	(mpszw) / 0.0D0         /,
      .		line_start	(mpszw)	/ unspecified_val8 /,
      .		line_delta	(mpszw)	/ unspecified_val8 /
+     .		line_tunit	(mpszw)	/ real4_init /,
+     .		line_t0		(mpszw)	/ char_init20 /,
+     .		line_cal_name	(mpszw)	/'GREGORIAN'/
+
+
+	DATA
+     .		line_name	(clmirr)	/ 'MONTH_IRREG'	/,
+     .		line_name_orig	(clmirr)	/ 'MONTH_IRREG'	/,
+     .		line_subsc1	(clmirr)	/ 514		/,
+     .		line_dim	(clmirr)	/ 12		/,
+     .		line_units	(clmirr)	/ 'DAYS'	/,
+     .		line_unit_code  (clmirr)	/ -4   /,
+     .		line_direction	(clmirr)	/ 'TI'		/,
+     .		line_regular	(clmirr)	/ .FALSE.	/,
+     .		line_modulo	(clmirr)	/ .TRUE.       /,
+     .		line_modulo_len	(clmirr)	/ 365.2425         /,
+     .		line_start	(clmirr)	/ unspecified_val8 /,
+     .		line_delta	(clmirr)	/ unspecified_val8 /,
+     .		line_tunit	(clmirr)	/ 86400 /,
+     .		line_t0		(clmirr)	/'01-JAN-0000 00:00:00'/,
+     .		line_cal_name	(clmirr)	/'GREGORIAN'/
+     
+	DATA
+     .		line_name	(clmreg)	/ 'MONTH_REG'	/,
+     .		line_name_orig	(clmreg)	/ 'MONTH_REG'	/,
+     .		line_subsc1	(clmreg)	/ unspecified_int4 /,
+     .		line_dim	(clmreg)	/ 12		/,
+     .		line_units	(clmreg)	/ 'hour'	/,
+     .		line_unit_code  (clmreg)	/ -3   /,
+     .		line_direction	(clmreg)	/ 'TI'		/,
+     .		line_regular	(clmreg)	/ .TRUE.	/,
+     .		line_modulo	(clmreg)	/ .TRUE.       /,
+     .		line_modulo_len	(clmreg)	/ 8765.82         /,
+     .		line_start	(clmreg)	/ 366 /,
+     .		line_delta	(clmreg)	/ 730.485 /,
+     .		line_tunit	(clmreg)	/ 3600 /,
+     .		line_t0		(clmreg)	/'01-JAN-0000 00:00:00'/,
+     .		line_cal_name	(clmreg)	/'GREGORIAN'/
+
+
+	DATA
+     .		line_name	(clseas)	/ 'SEASONAL_REG'	/,
+     .		line_name_orig	(clseas)	/ 'SEASONAL_REG'	/,
+     .		line_subsc1	(clseas)	/ unspecified_int4 /,
+     .		line_dim	(clseas)	/ 4		/,
+     .		line_units	(clseas)	/ 'HOURS'	/,
+     .		line_unit_code  (clseas)	/ -3   /,
+     .		line_direction	(clseas)	/ 'TI'		/,
+     .		line_regular	(clseas)	/ .TRUE.	/,
+     .		line_modulo	(clseas)	/ .TRUE.       /,
+     .		line_modulo_len	(clseas)	/ 8765.82         /,
+     .		line_start	(clseas)	/ 1095.7275 /,
+     .		line_delta	(clseas)	/ 2191.455 /,
+     .		line_tunit	(clseas)	/ 3600 /,
+     .		line_t0		(clseas)	/'01-JAN-0000 00:00:00'/,
+     .		line_cal_name	(clseas)	/'GREGORIAN'/
+
+	DATA
+     .		line_name	(clmgrg)	/ 'MONTH_GREGORIAN' /,
+     .		line_name_orig	(clmgrg)	/ 'MONTH_GREGORIAN' /,
+     .		line_subsc1	(clmgrg)	/ 539		/,
+     .		line_dim	(clmgrg)	/ 12		/,
+     .		line_units	(clmgrg)	/ 'days'	/,
+     .		line_unit_code  (clmgrg)	/ -4   /,
+     .		line_direction	(clmgrg)	/ 'TI'		/,
+     .		line_regular	(clmgrg)	/ .FALSE.	/,
+     .		line_modulo	(clmgrg)	/ .TRUE.       /,
+     .		line_modulo_len	(clmgrg)	/ 365.2425         /,
+     .		line_start	(clmgrg)	/ unspecified_val8 /,
+     .		line_delta	(clmgrg)	/ unspecified_val8 /,
+     .		line_tunit	(clmgrg)	/ 86400 /,
+     .		line_t0		(clmgrg)	/'01-JAN-0000 00:00:00'/,
+     .		line_cal_name	(clmgrg)	/'GREGORIAN'/
+     
+	DATA
+     .		line_name	(clmnol)	/ 'MONTH_NOLEAP' /,
+     .		line_name_orig	(clmnol)	/ 'MONTH_NOLEAP' /,
+     .		line_subsc1	(clmnol)	/ 564		/,
+     .		line_dim	(clmnol)	/ 12		/,
+     .		line_units	(clmnol)	/ 'days'	/,
+     .		line_unit_code  (clmnol)	/ -4   /,
+     .		line_direction	(clmnol)	/ 'TI'		/,
+     .		line_regular	(clmnol)	/ .FALSE.	/,
+     .		line_modulo	(clmnol)	/ .TRUE.       /,
+     .		line_modulo_len	(clmnol)	/ 365.         /,
+     .		line_start	(clmnol)	/ unspecified_val8 /,
+     .		line_delta	(clmnol)	/ unspecified_val8 /,
+     .		line_tunit	(clmnol)	/ 86400 /,
+     .		line_t0		(clmnol)	/'01-JAN-0000 00:00:00'/,
+     .		line_cal_name	(clmnol)	/'NOLEAP'/
+
+	DATA
+     .		line_name	(clm360)	/ 'MONTH_360_DAY' /,
+     .		line_name_orig	(clm360)	/ 'MONTH_360_DAY' /,
+     .		line_subsc1	(clm360)	/ unspecified_int4	/,
+     .		line_dim	(clm360)	/ 12		/,
+     .		line_units	(clm360)	/ 'days'	/,
+     .		line_unit_code  (clm360)	/ -4   /,
+     .		line_direction	(clm360)	/ 'TI'		/,
+     .		line_regular	(clm360)	/ .TRUE.	/,
+     .		line_modulo	(clm360)	/ .TRUE.       /,
+     .		line_modulo_len	(clm360)	/ 360.         /,
+     .		line_start	(clm360)	/ 15. /,
+     .		line_delta	(clm360)	/ 30. /,
+     .		line_tunit	(clm360)	/ 86400 /,
+     .		line_t0		(clm360)	/'01-JAN-0000 00:00:00'/,
+     .		line_cal_name	(clm360)	/'360_DAY'/
+
+	DATA
+     .		line_name	(clmall)	/ 'MONTH_ALL_LEAP' /,
+     .		line_name_orig	(clmall)	/ 'MONTH_ALL_LEAP' /,
+     .		line_subsc1	(clmall)	/ 589	/,
+     .		line_dim	(clmall)	/ 12		/,
+     .		line_units	(clmall)	/ 'days'	/,
+     .		line_unit_code  (clmall)	/ -4   /,
+     .		line_direction	(clmall)	/ 'TI'		/,
+     .		line_regular	(clmall)	/ .FALSE.	/,
+     .		line_modulo	(clmall)	/ .TRUE.       /,
+     .		line_modulo_len	(clmall)	/ 366.         /,
+     .		line_start	(clmall)	/ unspecified_val8 /,
+     .		line_delta	(clmall)	/ unspecified_val8 /,
+     .		line_tunit	(clmall)	/ 86400 /,
+     .		line_t0		(clmall)	/'01-JAN-0000 00:00:00'/,
+     .		line_cal_name	(clmall)	/'ALL_LEAP'/
+
 
 * 7/99 *kob* add in initialization for line_name and mpsnorm.  
 *            needed for v3.4 of netcdf use
@@ -275,17 +418,18 @@
 	DATA	(line_regular(i),i=nlne_def+1,line_ceiling)
      .			/lines_left*.FALSE./
 
-	DATA	(line_t0(i),i=1,line_ceiling)
-     .			/line_ceiling*char_init20/
+	DATA	(line_t0(i),i=nlne_def+1,line_ceiling)
+     .			/lines_left*char_init20/
+
+	DATA	 line_cal_name(0)  /'GREGORIAN'/
+	DATA	(line_cal_name(i),i=nlne_def+1,line_ceiling)
+     .			/lines_left*'GREGORIAN'/
 
 	DATA	(line_shift_origin(i),i=1,line_ceiling)
      .			/line_ceiling*.FALSE./
 
-	DATA	(line_tunit(i),i=1,line_ceiling)
-     .			/line_ceiling*real4_init/
-
-	DATA	(line_cal_name(i),i=0,line_ceiling)
-     .			/line_ceiling*'GREGORIAN', 'GREGORIAN'/
+	DATA	(line_tunit(i),i=nlne_def+1,line_ceiling)
+     .			/lines_left*real4_init/
 
 	DATA	(line_modulo(i),i=nlne_def+1,line_ceiling)
      .			/lines_left*.FALSE./
@@ -492,6 +636,56 @@ c     .			/pline_mem_left*real8_init/
      .	    75.00,   85.00,   95.00,  106.25,  120.00,  136.25,  155.00,
      .	   177.50,  205.00,  240.00,  288.50,  362.50,  483.50,  680.00,
      .	   979.50, 1395.50, 1916.00, 2524.00, 3174.00, 3824.00, 4149.00/
+
+* MONTH_IRREG
+
+*  COORDS FOR MONTH_IRREG
+	DATA	(line_mem(i),i=514,525)
+     .	/     15.5, 45.1, 74.7, 105.2, 135.7, 166.2, 196.7, 227.7, 
+     .	     258.2, 288.7, 319.2,  349.7/
+
+*  BOX BOUNDARIES FOR MONTH_IRREG
+	DATA	(line_mem(i),i=526,538)
+     .	/     0.0, 31.0, 59.2425, 90.2425, 120.2425, 151.2425, 
+     .	    181.2425, 212.2425, 243.2425, 273.2425, 304.2425, 
+     .	    334.2425, 365.2425/
+     
+* MONTH_GREGORIAN
+     
+*  COORDS FOR MONTH_GREGORIAN
+	DATA	(line_mem(i),i=539,550)
+     .	/     15.5, 45.1, 74.7, 105.2, 135.7, 166.2, 196.7, 227.7, 
+     .	     258.2, 288.7, 319.2,  349.7/
+
+*  BOX BOUNDARIES FOR MONTH_GREGORIAN
+	DATA	(line_mem(i),i=551,563)
+     .	/     0.0, 31.0, 59.2425, 90.2425, 120.2425, 151.2425, 
+     .	    181.2425, 212.2425, 243.2425, 273.2425, 304.2425, 
+     .	    334.2425, 365.2425/
+
+* MONTH_NOLEAP
+     
+*  COORDS FOR MONTH_NOLEAP
+	DATA	(line_mem(i),i=564,575)
+     .	/     15.5,  45.0,  74.5, 105.0, 135.5, 166.0, 196.5, 
+     .	     227.5, 258.0, 288.5, 319.0, 349.5/
+
+*  BOX BOUNDARIES FOR MONTH_NOLEAP
+	DATA	(line_mem(i),i=576,588)
+     .	/     0.0, 31.0, 59.0, 90.0, 120.0, 151.0, 181.0, 
+     .      212.0, 243.0, 273.0, 304.0, 334.0, 365.0/
+
+* MONTH_ALL_LEAP
+     
+*  COORDS FOR MONTH_ALL_LEAP
+	DATA	(line_mem(i),i=589,600)
+     .	/     15.5, 45.5, 75.5, 106.0, 136.5, 167.0, 197.5, 
+     .       228.5, 259.0, 289.5, 320.0, 350.5/
+
+*  BOX BOUNDARIES FOR MONTH_ALL_LEAP
+	DATA	(line_mem(i),i=601,613)
+     .	/     0.0, 31.0, 60.0, 91.0, 121.0, 152.0, 182.0, 213.0, 
+     .      244.0, 274.0, 305.0, 335.0, 366.0/
 
 * Miscellaneous (axis orientations)
 

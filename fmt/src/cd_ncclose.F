@@ -1,4 +1,5 @@
-	SUBROUTINE CD_ENCODE_URL ( urlbuff, ebuff, status)
+	SUBROUTINE CD_NCCLOSE ( dset, status )
+*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -33,51 +34,26 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-
-* Programmer Ansley Manke
-* NOAA/PMEL, Seattle, WA - TMAP 
-
-* 
-* V6.85 2/13 
-* argument definitions:
-*       urlbuff - url to encode
-*       ebuff   - result enocded url
-*	status	- return status
-
-* argument declarations:
-	INTEGER	      status
-	CHARACTER*(*) urlbuff, ebuff
-
-	INTEGER url_encode
+* Just do an nc_close on the ncid for the dataset. We're going to 
+* re-open it with F-TDS variable definitions, so leave all the
+* dataset initialization information in place.
+*
+* programmer - Ansley Manke
+* NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
+* 2/2013  Ferret v6.85
+*
+* arguments:
+*	dset	- data set number 
 
 
-#include "netcdf.inc"
-        include 'tmap_errors.parm'
+	include 'tmap_dims.parm'
+	include 'xstep_files.cmn_text'
+	external xstep_files_data
 
+* Argument variable declarations
+	INTEGER   dset, status
 
-        INTEGER   TM_LENSTR1, llen, slen
-        PARAMETER (slen=2048)
-
-#ifdef sun
-        BYTE        fhol_url(slen)      ! c-type Hollerith string buffer
-	BYTE      fhol_eurl(slen)
-#else
-	INTEGER*1 fhol_url(slen)      ! c-type Hollerith string buffer
-	INTEGER*1 fhol_eurl(slen)
-#endif
-
-* Save dataset info in GLOBAL_NCdsetList for attribute handling
-
-        llen = TM_LENSTR1( urlbuff )
-        CALL TM_FTOC_STRNG( urlbuff(1:llen), fhol_url, slen )
-
-        status = url_encode(fhol_url, fhol_eurl, llen)         
-        IF (status .EQ. 0) THEN
-           CALL TM_CTOF_STRNG (fhol_eurl, ebuff, llen) 
-	   status = merr_ok
-	ENDIF
-
-* successful completion
+	CALL CD_CLOSE_SET( sf_lunit(dset), status )
 	
 	RETURN
 	END

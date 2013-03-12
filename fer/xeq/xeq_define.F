@@ -219,6 +219,7 @@
 *                  to the error message
 * V685 *acm* 1/13  Fix ticket 2026: dont automatically mark a 1-point longitude
 *                  axis as modulo.
+* V685 *adm*  1/13 DEFINE VARIABLE/REMOTE. Require /D= to accompany /REMOTE.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -267,6 +268,7 @@
      .		    slash_let_quiet,
      .		    slash_let_dset,
      .		    slash_let_bad,
+     .		    slash_let_remote,
      .		    slash_define_vp_by_ax,
      .              slash_bounds,
      .              slash_type,
@@ -306,6 +308,7 @@
      .		    slash_let_quiet  = 1 + 2,
      .		    slash_let_dset   = 1 + 3,
      .		    slash_let_bad    = 1 + 4,
+     .		    slash_let_remote = 1 + 5,
      .		    slash_define_vp_by_ax = 1 + 6,
      .              slash_type       = 1+1,
      .              slash_dset       = 1+0,
@@ -323,10 +326,11 @@
 * local variable declarations:
 	LOGICAL	  TM_DIGIT, TM_LEGAL_NAME, TM_LINE_MATCH, TM_GRID_MATCH,
      .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, MATCH_NAME,
-     .            NC_GET_ATTRIB, TM_LENSTR, TM_LEGAL_NAME_OP,
+     .            NC_GET_ATTRIB, TM_LENSTR, TM_LEGAL_NAME_OP, TM_HAS_STRING,
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
-     .            new_att, new_att_modulo, got_it, orient_t, agg_quiet, agg_e
+     .            new_att, new_att_modulo, got_it, orient_t, agg_quiet, agg_e,
+     .            letdset, its_remote
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1,
@@ -592,7 +596,8 @@
 
 * /D=xxx: has the user requested a data-set-specific definition?
 	iqual = qual_given( slash_let_dset )
-	IF ( iqual .GT. 0 ) THEN
+	letdset = ( iqual .GT. 0 ) 
+	IF (letdset) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      buff3, status )
 	   IF ( status .NE. ferr_ok ) RETURN
@@ -636,6 +641,15 @@
 	   bad_flag = bad_val4
 	ENDIF
 
+* LET/REMOTE ?
+
+	its_remote = .FALSE.
+	iqual = qual_given( slash_let_remote )
+	IF ( iqual .GT. 0 ) THEN
+	   IF (.NOT. letdset) GOTO 5480
+	   its_remote = .TRUE.
+	ENDIF
+
 * break the expression into atoms and identify them
 
         t2 = cmnd_buff(pos:pos+1)
@@ -645,6 +659,11 @@
         cmnd_buff(pos:pos+1) = t2
 
 	IF ( status .NE. ferr_ok ) GOTO 5440
+
+* cannot use [d= in the remote var-- the expression is evaluated on the
+* remote server; same dsets not open there.
+	IF (its_remote.AND. TM_HAS_STRING(cmnd_buff(pos:len_cmnd), 'd=') ) GOTO 5490
+
 	CALL ALG_ID( cmnd_buff(pos:len_cmnd), natom, at_start, at_end,
      .		     at_type, at_id, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
@@ -682,13 +701,7 @@
               IF ( uvar_num_items(i1) .EQ. uvar_deleted ) GOTO 410
 * ... delete only if same name in same data set
 	      IF ( uvar_dset(i1) .EQ. dset ) THEN
-!	         IF ( qual_given(slash_let_quiet) .EQ. 0 ) THEN
-!	            err_string = FULL_UVAR_NAME(i1,i2)	! buffer
-!	            CALL SPLIT_LIST(pttmode_ops, err_lun,
-!     .			replmsg// 'variable '//err_string(:i2), 0)
-!	         ENDIF
 	         CALL DELETE_USER_VAR(i1)
-!  pre-4/99	         uvar_num_items(i1) = uvar_deleted
 	      ENDIF
 * ... reuse of name  makes all past assumptions incorrect
 	      CALL PURGE_ALL_UVARS	! not done above for pdset_irrelevant
@@ -699,7 +712,8 @@
 	CALL INIT_UVAR ( buff1, cmnd_buff(pos:len_cmnd), buff3, buff2, dset,
      .			 bad_flag, explct_defn, uvar,
      .			 at_type, at_id, at_start, at_end,
-     .			 natom, 1, len_cmnd-pos+1, varname, status )
+     .			 natom, 1, len_cmnd-pos+1, varname, 
+     .			 its_remote, status )
 	IF ( status .NE. ferr_ok ) RETURN
 
 * is there at least one slot blank ?
@@ -2178,6 +2192,10 @@ C /units=months  is 1/12 of the length of the year
      .			cmnd_buff(pos:len_cmnd)//pCR//err_string, *5000 )
  5470	CALL ERRMSG( ferr_unknown_data_set, status,
      .			buff3(:TM_LENSTR1(buff3)), *5000 )
+ 5480   CALL ERRMSG( ferr_syntax,status,
+     .	  '/REMOTE variable definition must also specify /D=',*5000 )
+ 5490   CALL ERRMSG( ferr_syntax,status,
+     .	  '/REMOTE variable expression may not contain [d= ',*5000 )
  5505	CALL ERRMSG( ferr_invalid_command, status,
      .		'DEFINE AXIS/DEPTH needs /Z=lo:hi:del', *5000 )
  5510	CALL ERRMSG( ferr_invalid_command, status,

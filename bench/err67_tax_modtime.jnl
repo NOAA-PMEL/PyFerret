@@ -4,8 +4,8 @@
 ! incorrect results when the time axis is modulo
 set mode ignore_error
 
-use climatological_axes
-can dat climatological_axes
+!use climatological_axes
+!can dat climatological_axes
 let tvar = t[gt=month_reg]
 
 list/L=15:20 tax_datestring(t[gt=tvar],tvar,"hour")

@@ -7,8 +7,8 @@ use  gtsa056_2.cdf
 set region/x=140/y=1/k=1
 let var = if temp gt 29.5 then temp
 
-use climatological_axes
-can data climatological_axes
+!use climatological_axes
+!can data climatological_axes
 
 list var[gt=month_reg@mod]
 

@@ -15,6 +15,7 @@ cd_conventions_out.F\
 cd_defer_coord_write.F\
 cd_delete_attribute.F\
 cd_dods_control.F\
+cd_dset_remoteok.F\
 cd_encode_url.F\
 cd_get_1_axis.F\
 cd_get_1_dep_var.F\
@@ -49,6 +50,12 @@ cd_isit_epic.F\
 cd_isit_recdim.F\
 cd_load_dset_attrs.F\
 cd_make_var.F\
+cd_ncclose.F\
+cd_ncopen.F\
+cd_ncopen.F\
+cd_nf_get_bad.F\
+cd_nf_get_varid.F\
+cd_nf_get_var_grid.F\
 cd_open_dset.F\
 cd_open_out.F\
 cd_put_agg_memb_grid.F\
@@ -62,6 +69,7 @@ cd_rd_r8_bnds.F\
 cd_rd_ymd_1.F\
 cd_rd_ymd_arr.F\
 cd_read.F\
+cd_read_remote.F\
 cd_rec_synch.F\
 cd_rename_var.F\
 cd_replace_attr.F\
@@ -102,6 +110,7 @@ lib_free_lun.F\
 lib_get_lun.F\
 mc_init_dset.F\
 mc_read.F\
+remote_read.F\
 str_case_blind_compare.F\
 str_dncase.F\
 str_same.F\
@@ -330,4 +339,5 @@ tm_unix_versions.c\
 tm_world_recur.c \
 tm_check_inf.c\
 tm_check_nan.c\
-tm_switch_nan.c
+tm_switch_nan.c\
+urlencode.c

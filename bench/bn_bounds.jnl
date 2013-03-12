@@ -9,7 +9,7 @@
 ! Output data on irregular record axis. No need for:
 ! save/clobber/RIGID/HEADING=ENHANCED/LLIMITS=1:3/file=a.nc v
 
-use climatological_axes
+!use climatological_axes
 let v = t[gt=month_irreg]
 save/clobber/file=a.nc v
 
@@ -48,7 +48,7 @@ can var/all
 ! SAVE on irregular time axis, multi-dimensional save.
 ! Void point is one time, all X and Y
 
-use climatological_axes
+!use climatological_axes
 use coads_climatology
 let v = missing(sst[gt=month_irreg], 28)
 save/clobber/x=181:185/y=1:7/L=1:5/file=a.nc v
@@ -143,7 +143,7 @@ can data/all
  
 ! RIGID/HEAD=ENHANCED works the same; issues a note
 
-use climatological_axes
+!use climatological_axes
 use coads_climatology
 let v = sst[gt=month_irreg]
 save/clobber/rigid/head=enh/llimits=1:3/x=181:191/y=1:7/l=1:3/file=a.nc v
@@ -152,7 +152,7 @@ save/clobber/rigid/head=enh/llimits=1:3/x=181:191/y=1:7/l=1:3/file=a.nc v
 ! First save without the bounds attribute, result is a file with 
 ! irregular time axis, possibly unintended large boxes.
 
-use climatological_axes
+!use climatological_axes
 use coads_climatology
 let v = missing(sst[gt=month_reg], 28)
 
@@ -166,7 +166,7 @@ can data a
 
 ! Now save with /bounds
 
-use climatological_axes
+!use climatological_axes
 use coads_climatology
 let v = missing(sst[gt=month_reg], 28)
 save/clobber/BOUNDS/file=a.nc/x=181/y=1/L=1:4 v

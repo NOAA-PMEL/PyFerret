@@ -150,6 +150,7 @@
 	ds_basic_axes(5,ds_num)		=	int4_init
 	ds_basic_axes(6,ds_num)		=	int4_init
 	ds_time_axis(ds_num)		=	int4_init
+	ds_accepts_remote(ds_num)	= 	.FALSE.
 
 * Next clear variables associated with variable in that data set.
 	DO 130 ivar = 1,maxvars

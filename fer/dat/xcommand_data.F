@@ -197,6 +197,7 @@
 * V683*acm* 8/12   New SET LIST/OUTTYPE, CANCEL LIST/OUTTYPE and SAVE/OUTTYPE 
 * V683*acm 10/12   NEW SET AXIS/OUTTYPE to change default coordinate axis output type
 * V684 *adm* 12/12 Changes for POLY/MODULO and  VECTOR/MODULO on curvilinear plots.
+* V685 *adm*  1/13 DEFINE VARIABLE/REMOTE
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -1092,13 +1093,13 @@
 	   DATA subcommands      (nsub_at10 + 3)/ 'VARIABLE'	/
 	   DATA num_qualifs      (nsub_at10 + 3)/ nqual10d	/
 	   DATA qualifier_pointer(nsub_at10 + 3)/ nqual_at10d	/
-* DEFINE VARIABLE /TITLE
+* DEFINE VARIABLE /TITLE /UNITS /QUIET /DATASET /BAD /REMOTE
 		DATA qualifiers  (nqual_at10d+ 0)/ 'TITLE' /
 		DATA qualifiers  (nqual_at10d+ 1)/ 'UNITS' /
 		DATA qualifiers  (nqual_at10d+ 2)/ 'QUIET' /
 		DATA qualifiers  (nqual_at10d+ 3)/ 'DATASET' /
 		DATA qualifiers  (nqual_at10d+ 4)/ 'BAD' /
-		DATA qualifiers  (nqual_at10d+ 5)/ '****' /
+		DATA qualifiers  (nqual_at10d+ 5)/ 'REMOTE' /
 * DEFINE AXIS
 	   DATA subcommands      (nsub_at10 + 4)/ 'AXIS'	/
 	   DATA num_qualifs      (nsub_at10 + 4)/ nqual10e	/
@@ -1706,13 +1707,16 @@
      .		alias_name(21)	/ 'RIBBON' /,
      .		alias_len(21)	/ 11 /,
      .		alias(21)	/ 'PLOT/RIBBON' /
+     .		alias_name(22)	/ 'ENSEMBLE' /,
+     .		alias_len(22)	/ 22 /,
+     .		alias(22)	/ 'DEFINE DATA/AGGREGAT/E' /
 
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
-     .                   / 129*unspecified_name4 /,
-     .		(alias_len(i),i=num_predefined_alias+1,150) / 129*4 /,
+     .                   / 128*unspecified_name4 /,
+     .		(alias_len(i),i=num_predefined_alias+1,150) / 128*4 /,
      .		(alias(i),i=num_predefined_alias+1,150)
-     .                   / 129*unspecified_name4 /
+     .                   / 128*unspecified_name4 /
 
 
 	DATA queries(1) / 'STATUS' /,

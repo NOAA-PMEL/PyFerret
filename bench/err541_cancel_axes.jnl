@@ -1,12 +1,13 @@
 ! Check that an axis in use cannot be cancelled.
 
-use climatological_axes
-cancel data climatological_axes
-let tt = t[gt=month_irreg] + 50*x[i=1:10]
+use test_axes
+cancel data test_axes
+
+let tt = t[gt=test_irreg] + 50*x[i=1:10]
 load tt
 
 show axis month*
-cancel axis month_irreg
+cancel axis test_irreg
 
 show axis month*
 

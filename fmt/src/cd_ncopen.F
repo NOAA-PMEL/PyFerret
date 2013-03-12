@@ -1,4 +1,5 @@
-	SUBROUTINE CD_ENCODE_URL ( urlbuff, ebuff, status)
+	SUBROUTINE CD_NCOPEN ( urlstring, dset, status )
+*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -33,51 +34,54 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-
-* Programmer Ansley Manke
-* NOAA/PMEL, Seattle, WA - TMAP 
-
-* 
-* V6.85 2/13 
-* argument definitions:
-*       urlbuff - url to encode
-*       ebuff   - result enocded url
-*	status	- return status
-
-* argument declarations:
-	INTEGER	      status
-	CHARACTER*(*) urlbuff, ebuff
-
-	INTEGER url_encode
-
+* Just do an nc_close on the ncid for the dataset. We're going to 
+* re-open it with F-TDS variable definitions, so leave all the
+* dataset initialization information in place.
+*
+* programmer - Ansley Manke
+* NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
+* 2/2013  Ferret v6.85
+*
+* arguments:
+*	dset	- data set number 
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
+	include 'tmap_dims.parm'
+	include 'xstep_files.cmn_text'
+	external xstep_files_data
+
+* Argument variable declarations
+	INTEGER   dset, status
+	CHARACTER*(*) urlstring
+
+* Local variable declarations
+	INTEGER cdfid
+	CHARACTER*500 errbuff
 
 
-        INTEGER   TM_LENSTR1, llen, slen
-        PARAMETER (slen=2048)
-
-#ifdef sun
-        BYTE        fhol_url(slen)      ! c-type Hollerith string buffer
-	BYTE      fhol_eurl(slen)
+#ifdef usingDODSf2cUnderscore 
+	status = NF_OPEN_(urlstring, NF_NOWRITE, cdfid) 
 #else
-	INTEGER*1 fhol_url(slen)      ! c-type Hollerith string buffer
-	INTEGER*1 fhol_eurl(slen)
+	status = NF_OPEN(urlstring, NF_NOWRITE, cdfid) 
 #endif
-
-* Save dataset info in GLOBAL_NCdsetList for attribute handling
-
-        llen = TM_LENSTR1( urlbuff )
-        CALL TM_FTOC_STRNG( urlbuff(1:llen), fhol_url, slen )
-
-        status = url_encode(fhol_url, fhol_eurl, llen)         
-        IF (status .EQ. 0) THEN
-           CALL TM_CTOF_STRNG (fhol_eurl, ebuff, llen) 
-	   status = merr_ok
-	ENDIF
+	
+	IF ( status .NE. NF_NOERR ) GOTO 5100
+	sf_lunit(dset) = cdfid
 
 * successful completion
-	
-	RETURN
+        status = merr_ok
+ 5000	RETURN
+
+* error messages
+ 5100   CONTINUE
+
+        errbuff = 
+     .    'Unable to open URL with REMOTE variable definitions: '
+
+        CALL TM_ERRMSG
+     .     ( merr_nc_open, status, 'CD_NCOPEN', dset,
+     .        no_stepfile, errbuff, no_errstring, *5000 )
+
+
 	END

@@ -114,7 +114,8 @@
 * internal variable declarations:
 	LOGICAL		ITS_UN_CACHED, ITSA_MODULO_REGRID, ITSA_GCVAR,
      .			ITSA_MODULO_GCF, TM_ITS_SUBSPAN_MODULO,
-     .			look_again, modulo_axes(nferdims), explicit_qualifiers
+     .			look_again, modulo_axes(nferdims), 
+     .			explicit_qualifiers, is_remote_var
 	INTEGER		UVAR_NUMBER, KNOWN_GRID, CGRID_AXIS, 
      .			CAXIS_MODLEN, TM_AXES_REVERSED, rev_axes(nferdims),
      .			cx, mr, idim, cat, act, uvar_pointer,
@@ -395,8 +396,21 @@
 	ENDIF
 
 * ... reduce algebraic expression to its components ?
+
 	IF ( cat .EQ. cat_user_var	) THEN
-	   CALL IS_ALGEBRA( memory, *10, *2000, isp_base, status )
+
+* * * * * * * * * * * * How to test whether uvar is an F-TDS remote var 
+*  ??
+	   is_remote_var = ( uvar_remote(var) )
+
+	   IF (.NOT. is_remote_var) THEN
+	      CALL IS_ALGEBRA( memory, *10, *2000, isp_base, status )
+	   ELSE
+	   
+	      CALL INIT_FTDS_DSET ( cx_data_set(cx), var, status)
+	      CALL IS_READ_REMOTE( memory, *10, *2000, status )
+	   ENDIF
+
 	   GOTO 5000
 
 * ... read from disk ?

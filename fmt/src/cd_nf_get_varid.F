@@ -1,4 +1,6 @@
-	SUBROUTINE CD_ENCODE_URL ( urlbuff, ebuff, status)
+	SUBROUTINE CD_NF_GET_VARID ( dset, vname, varid, status )
+
+*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -33,51 +35,54 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Just do an nf_get_varid for a variable that has been defined with LET/REMOTE.
+* Call this after the dataset has been redefined with the encoded variable
+* definitions.
+*
+* programmer - Ansley Manke
+* NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
+* 2/2013  Ferret v6.85
+*
+* arguments:
+*	dset	- data set number 
 
-* Programmer Ansley Manke
-* NOAA/PMEL, Seattle, WA - TMAP 
 
-* 
-* V6.85 2/13 
-* argument definitions:
-*       urlbuff - url to encode
-*       ebuff   - result enocded url
-*	status	- return status
+* Argument variable declarations
+	INTEGER   dset, varid, status
+	CHARACTER*(*) vname
 
-* argument declarations:
-	INTEGER	      status
-	CHARACTER*(*) urlbuff, ebuff
-
-	INTEGER url_encode
-
+* Local variable declarations
+	INTEGER cdfid
+	CHARACTER*500 errbuff
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
+	include 'tmap_dims.parm'
+	include 'xstep_files.cmn_text'
+	external xstep_files_data
 
+	cdfid = sf_lunit(dset)
 
-        INTEGER   TM_LENSTR1, llen, slen
-        PARAMETER (slen=2048)
-
-#ifdef sun
-        BYTE        fhol_url(slen)      ! c-type Hollerith string buffer
-	BYTE      fhol_eurl(slen)
+#ifdef usingDODSf2cUnderscore 
+	status = NF_INQ_VARID_(cdfid, vname, varid) 
 #else
-	INTEGER*1 fhol_url(slen)      ! c-type Hollerith string buffer
-	INTEGER*1 fhol_eurl(slen)
+	status = NF_INQ_VARID(cdfid, vname, varid)
 #endif
-
-* Save dataset info in GLOBAL_NCdsetList for attribute handling
-
-        llen = TM_LENSTR1( urlbuff )
-        CALL TM_FTOC_STRNG( urlbuff(1:llen), fhol_url, slen )
-
-        status = url_encode(fhol_url, fhol_eurl, llen)         
-        IF (status .EQ. 0) THEN
-           CALL TM_CTOF_STRNG (fhol_eurl, ebuff, llen) 
-	   status = merr_ok
-	ENDIF
+	
+	IF ( status .NE. NF_NOERR ) GOTO 5100
 
 * successful completion
-	
-	RETURN
+        status = merr_ok
+ 5000	RETURN
+
+* error messages
+ 5100   CONTINUE
+        CALL CD_TRANSLATE_ERROR (status, buff)
+
+        errbuff = 'Unable to get varid for LET/REMOTE variable: '//
+     .    errbuff
+
+        CALL TM_ERRMSG
+     .     ( merr_badfileatt, status, 'CD_NF_GET_VARID', dset,
+     .        no_stepfile, buff, no_errstring, *5000 )
 	END

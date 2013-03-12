@@ -110,8 +110,9 @@
 
 	TERMCAPLIB	= -L/usr/local/lib64 -lncurses
 
-	READLINELIB	= $(READLINE_DIR)/lib64/libreadline.a \
-			  $(READLINE_DIR)/lib64/libhistory.a
+#	READLINELIB	= $(READLINE_DIR)/lib64/libreadline.a \
+#			  $(READLINE_DIR)/lib64/libhistory.a
+	READLINELIB	= -L$(READLINE_DIR)/lib64 -lreadline -lhistory
 
 ## cancel the default rule for .f -> .o to prevent objects from being built
 ## from .f files that are out-of-date with respect to their corresponding .F file

@@ -1,5 +1,5 @@
 	SUBROUTINE INIT_UVAR_SUB ( name, text, title, units, dset, bad,
-     .                             implct_defn, uvar, parent_uvar,
+     .                             its_remote, implct_defn, uvar, parent_uvar,
      .			           at_type, at_id, at_start, at_end,
      .			           natom, txstart, txend, child, 
      .			           varname, status )
@@ -83,7 +83,7 @@
 	include 'xrisc_buff.cmn'
 
 * calling argument declarations:
-	LOGICAL		implct_defn, child
+	LOGICAL		implct_defn, child, its_remote
 	CHARACTER*(*)	name, text, title, units, varname
 	INTEGER		dset, uvar, natom, txstart, txend, status,
      .			parent_uvar, 
@@ -182,6 +182,7 @@ c* copy title, units, dset, and missing flag into buffers
         uvar_units( uvar ) = units
         uvar_dset ( uvar ) = dset
         uvar_bad_data ( uvar ) = bad
+        uvar_remote ( uvar ) = its_remote
 
 * Add variable to the user-variable dataset in the linked list structure.
 * The variable type is not known at this time - will set it later when the

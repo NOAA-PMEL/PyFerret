@@ -527,7 +527,7 @@ c                CALL CD_GET_DS_DIMS (iset, vdims(1), buff, npts, status)
 c                CALL SHOW_GRID_STRING_XML (lun, grid, cx_expr,
 c     .                  buff, npts)
 c             ELSE
-                CALL SHOW_GRID_XML (lun, grid, cx_expr)
+                CALL SHOW_GRID_XML (lun, grid, unspecified_int4)
 c             ENDIF
 c             IF ( status .NE. ferr_ok ) GOTO 5100
 

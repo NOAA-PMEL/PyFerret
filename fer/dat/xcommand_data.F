@@ -201,6 +201,7 @@
 * V684 *adm* 12/12 Changes for POLY/MODULO and  VECTOR/MODULO on curvilinear plots.
 * PyFr  *kms* 1/13 Remove SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL;
 *                  Add /QUALITY= /AAlias /NoAAlias /ENGINE= to SET WINDOW
+* PyFr  *kms* 3/13 Change /AAlias and /NoAAlias to /AntiAlia[s] and /NoAntiAl[ias]
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -230,8 +231,8 @@
 		DATA qualifiers  (nqual_at1b+4)	/ 'CLEAR'	/
 		DATA qualifiers  (nqual_at1b+5)	/ 'TITLE'	/
 		DATA qualifiers  (nqual_at1b+6)	/ 'QUALITY'	/
-		DATA qualifiers  (nqual_at1b+7)	/ 'AALIAS'	/
-		DATA qualifiers  (nqual_at1b+8)	/ 'NOAALIAS'	/
+		DATA qualifiers  (nqual_at1b+7)	/ 'ANTIALIA'	/
+		DATA qualifiers  (nqual_at1b+8)	/ 'NOANTIAL'	/
 		DATA qualifiers  (nqual_at1b+9)	/ 'ENGINE'	/
 		DATA qualifiers  (nqual_at1b+10)/ '****'	/
 		DATA qualifiers  (nqual_at1b+11)/ '****'	/

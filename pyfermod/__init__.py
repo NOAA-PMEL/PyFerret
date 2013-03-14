@@ -71,13 +71,6 @@ import filenamecompleter
 import graphbind
 import regrid
 
-# try import cdms2 and cdtime needed for get() and put()
-try:
-    import cdms2
-    import cdtime
-except ImportError:
-    pass
-
 
 def init(arglist=None, enterferret=True):
     """
@@ -259,16 +252,6 @@ def init(arglist=None, enterferret=True):
             execfile(os.getenv('PYTHONSTARTUP', ''));
         except IOError:
             pass;
-
-    if not my_quiet:
-        # Check (again) if able to import cdms2/cdtime.
-        # If the imports were successful before, these imports do nothing
-        try:
-            import cdms2
-            import cdtime
-        except ImportError:
-            print >>sys.stderr, "    WARNING: Unable to import cdms2 and/or cdtime;\n" \
-                                "             the Python functions pyferret.get and pyferret.put are not available"
 
     # Create the list of standard ferret PyEFs to create
     std_pyefs = [ ]
@@ -887,11 +870,21 @@ def get(name, create_mask=True):
         If create_mask is True (or not given), the mask attribute will be
         assigned using the missing value.
     Raises:
-        ValueError if the data name is invalid
-        MemoryError if Ferret has not been started or has been stopped
+        ImportError: if the cdms2 or cdtime modules cannot be found (use getdata instead)
+        ValueError:  if the data name is invalid
+        MemoryError: if Ferret has not been started or has been stopped
     See also:
-        getdata
+        getdata (does not need cdms2 or cdtime)
     """
+    # Check (again) if able to import cdms2/cdtime.
+    # If the imports were successful before, these imports do nothing
+    try:
+        import cdms2
+        import cdtime
+    except ImportError:
+        raise ImportError("cdms2 or cdtime not found; pyferret.get not available.\n" \
+                          "             Use pyferret.getdata instead.")
+
     # lists of units (in lowercase) for checking if a custom axis can be represented by a cdtime.reltime
     # the unit must be followed by "since" and something else
     LC_TIME_UNITS = [ "s", "sec", "secs", "second", "seconds",
@@ -1046,13 +1039,24 @@ def put(datavar, axis_pos=None):
         None
 
     Raises:
+        ImportError:    if the cdms2 or cdtime modules cannot be found (use putdata instead)
         AttributeError: if datavar is missing a required method or attribute
         MemoryError:    if Ferret has not been started or has been stopped
         ValueError:     if there is a problem with the contents of the arguments
 
     See also:
-        putdata
+        putdata (does not require cdms2 or cdtime)
     """
+    # Check (again) if able to import cdms2/cdtime.
+    # If the imports were successful before, these imports do nothing
+    try:
+        import cdms2
+        import cdtime
+    except ImportError:
+        raise ImportError("cdms2 or cdtime not found; pyferret.put not available.\n" \
+                          "             Use pyferret.putdata instead.")
+
+
     #
     # code name for the Ferret variable
     codename = datavar.id.strip()

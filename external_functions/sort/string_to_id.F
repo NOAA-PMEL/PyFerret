@@ -119,13 +119,16 @@
       INTEGER i,j,k,l, i1,i2,i3,i4
       INTEGER iarg, slen1, alen, nchar
       REAL value
-      CHARACTER text1*10, this_string*20
+      CHARACTER text1*1000, this_string*1000
       LOGICAL isnew
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
+      aindex = 0
+      alen = 1
+      this_string = " "
 
       i1 = arg_lo_ss(X_AXIS,ARG1)
       DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)

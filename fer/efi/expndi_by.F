@@ -3,6 +3,7 @@
 * 
 *  Steve Hankin
 *  1/16/2001
+*  ACM v6.85 3/2013 Fix handling of bad-flags coming in on Arg 1
 * 
 *  Expand argument 1 by inserting a gap before each valid point in 
 * argument 2 along axis I
@@ -240,7 +241,8 @@
                         ENDIF
                         IF (i .GT. imax) CALL EF_BAIL_OUT(id,
      .                                          'Arg 3 size too small')
-                        result(i,j,k,l,m,n) = arg_1(i1,j1,k1,l1,m1,n1) 
+                        IF ( arg_1(i1,j1,k1,l1,m1,n1) .NE. bad_flag(1) ) 
+     .                    result(i,j,k,l,m,n) = arg_1(i1,j1,k1,l1,m1,n1) 
 
                         i1 = i1 + arg_incr(X_AXIS,ARG1)
                         i = i + 1

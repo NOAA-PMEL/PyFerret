@@ -48,8 +48,7 @@ SUB_OBJS = modscatminmax.o nobsxytv.o scat2grid_subs_mask.o
 
 all:	$(SUB_OBJS) tracks2grid_std_xyt.so tracks2grid_ave_xyt.so scat2grid_std_xyt.so \
 	scat2grid_minmax_xyt.so scat2grid_mask_bin_xyt.so scat2grid_mask_minmax_xyt.so \
-	scat2grid_mask_nbin_xyt.so scat2grid_mask_std_xyt.so tracks2grid_mask_ave_xyt.so \
-	tracks2grid_mask_std_xyt.so tracks2grid_mask_var_xyt.so
+	scat2grid_mask_nbin_xyt.so scat2grid_mask_std_xyt.so tracks2grid_mask_ave_xyt.so 
 
 #all:	$(SUB_OBJS) index_to_grid.so scat2grid_nobs_xy.so
 

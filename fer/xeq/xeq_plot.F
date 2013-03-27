@@ -98,6 +98,7 @@
 *                  or /NOAXES. Axes are never drawn for overlays anyway.
 * V6.2  *acm& 2/09 Fix choice of color settings with /PEN and /THICK when we have 
 *                  increased the num of colors with MODE linecolors
+* V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -137,6 +138,8 @@
      .                  loch, locv
 	REAL		val, sym_size, dashstyle(4), only_val
 	CHARACTER	LEFINT*4, buff*128
+	
+	CHARACTER	TM_FMT*12, TM_INQ_PATH*2048, sfile*2048
 	INTEGER ncolors
 
 * internal parameter declarations
@@ -366,6 +369,12 @@ c	   IF (.NOT.versus)  GOTO 5470
      .             buff, status )
               IF ( status .NE. ferr_ok ) RETURN
               IF ( buff .EQ. ' ' ) buff = 'default'
+
+	      slen = TM_LENSTR1(buff)
+              sfile = TM_INQ_PATH (buff(:slen),'FER_PALETTE','.spk',
+     .        	 .false.,status)
+              IF (status .NE. ferr_ok) go to 5300 
+
               CALL PPL_SHASET( 'SAVE' )
               CALL PPL_SHASET( 'SPECTRUM='//buff(1:TM_LENSTR1(buff)) )
 	      spectrum = .TRUE.
@@ -673,6 +682,9 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
  5220	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'optionally /STEP=connected', *1000 )
+ 5300   CALL ERRMSG (ferr_file_not_found, status, 
+     .          'unable to open "' //
+     .	buff(:slen)//'.spk" to set ribbon-plot colors.', *1000)
  5400	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'Legal range is 1 to 3', *1000 )

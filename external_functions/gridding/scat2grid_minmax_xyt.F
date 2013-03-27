@@ -399,16 +399,17 @@ C  Get coordinates of output axes.
 
       CALL EF_GET_BOX_LIMITS(id, ARG5, X_AXIS,
      .   arg_lo_ss(X_AXIS, ARG5), arg_hi_ss(X_AXIS, ARG5), xaxlo, xaxhi)
-      xmin = xaxlo(1,1,1,1)
-      xdel = xaxhi(1,1,1,1) - xmin
 
       CALL EF_GET_BOX_LIMITS(id, ARG6, Y_AXIS,
      .   arg_lo_ss(Y_AXIS, ARG6), arg_hi_ss(Y_AXIS, ARG6), yaxlo, yaxhi)
-      ymin = yaxlo(1,1,1,1)
-      ydel = yaxhi(1,1,1,1) - ymin
 
       CALL EF_GET_BOX_LIMITS(id, ARG7, T_AXIS,
      .   arg_lo_ss(T_AXIS, ARG7), arg_hi_ss(T_AXIS, ARG7), taxlo, taxhi)
+
+      xmin = xaxlo(1,1,1,1)
+      xdel = xaxhi(1,1,1,1) - xmin
+      ymin = yaxlo(1,1,1,1)
+      ydel = yaxhi(1,1,1,1) - ymin
       tmin = taxlo(1,1,1,1)
       tdel = taxhi(1,1,1,1) - tmin
  

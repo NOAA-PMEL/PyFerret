@@ -312,6 +312,7 @@
 
       REAL x1, y1, xf, yf
       REAL xx, yy, tt, ff, a1, a2
+      REAL xmin, xdel, ymin, ydel, tmin, tdel
 
       CHARACTER*250 errtxt
 
@@ -398,12 +399,18 @@ C  Get coordinates of output axes.
 
       CALL EF_GET_BOX_LIMITS(id, ARG5, X_AXIS,
      .   arg_lo_ss(X_AXIS, ARG5), arg_hi_ss(X_AXIS, ARG5), xaxlo, xaxhi)
+      xmin = xaxlo(1,1,1,1)
+      xdel = xaxhi(1,1,1,1) - xmin
 
       CALL EF_GET_BOX_LIMITS(id, ARG6, Y_AXIS,
      .   arg_lo_ss(Y_AXIS, ARG6), arg_hi_ss(Y_AXIS, ARG6), yaxlo, yaxhi)
+      ymin = yaxlo(1,1,1,1)
+      ydel = yaxhi(1,1,1,1) - ymin
 
       CALL EF_GET_BOX_LIMITS(id, ARG7, T_AXIS,
      .   arg_lo_ss(T_AXIS, ARG7), arg_hi_ss(T_AXIS, ARG7), taxlo, taxhi)
+      tmin = taxlo(1,1,1,1)
+      tdel = taxhi(1,1,1,1) - tmin
  
 
 *  Compute result
@@ -439,37 +446,14 @@ C  Get coordinates of output axes.
 *  Put fcn into result variable.
 
          IF (ff .NE. bad_flag(ARG4)) THEN
-            i1 = 1
-            DO 520 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-               IF ( xx.GE.xaxlo(i1,1,1,1) .AND.
-     .             xx.LT.xaxhi(i1,1,1,1)) THEN
+            i = INT(0.5+(xx - xmin)/xdel)
+            j = INT(0.5+(yy - ymin)/ydel)
+            l = INT(0.5+(tt - tmin)/tdel)
 
-               j1 = 1
-               DO 510 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-                  IF (yy.GE.yaxlo(j1,1,1,1) .AND.
-     .                yy.LT.yaxhi(j1,1,1,1)) THEN
-
-	          l1 = 1
-	          DO 500 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-                     IF (tt.GE.taxlo(l1,1,1,1) .AND.
-     .                   tt.LT.taxhi(l1,1,1,1)) THEN
-
-                        result(i,j,1,L) = MIN(ff, result(i,j,1,L))
-                        result(i,j,2,L) = MAX(ff, result(i,j,2,L))
-
-                     ENDIF
-
-                    l1 = l1 + 1
- 500              CONTINUE
-
-		  ENDIF ! if yy
-
-                  j1 = j1 + 1
- 510           CONTINUE
-               ENDIF  ! if xx
-
-               i1 = i1 + 1
- 520        CONTINUE
+	    IF ( L.GE.res_lo_ss(T_AXIS) .AND. L.LE.res_hi_ss(T_AXIS) ) THEN
+               result(i,j,1,L) = MIN(ff, result(i,j,1,L))
+               result(i,j,2,L) = MAX(ff, result(i,j,2,L))
+	    ENDIF
 
          ENDIF  ! ff not bad
 

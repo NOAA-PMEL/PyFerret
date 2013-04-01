@@ -459,24 +459,25 @@ def init(arglist=None, enterferret=True):
     for fname in std_pyefs:
         result = run("define pyfunc pyferret.%s" % fname)
 
-    # run the ${HOME}/.ferret script if it exists
-    home_val = os.getenv('HOME')
-    if home_val:
-        init_script = os.path.join(home_val, '.ferret')
-        if os.path.exists(init_script):
-            try:
-                result = run('go "%s"; exit /topy' % init_script)
-            except:
-                print >>sys.stderr, " **Error: exception raised in runnning script %s" % init_script
-                result = run('exit /program')
-                # should not get here
-                raise SystemExit
+    # run the ${HOME}/.ferret script if it exists and not restricted environment
+    if not restrict:
+        home_val = os.getenv('HOME')
+        if home_val:
+            init_script = os.path.join(home_val, '.ferret')
+            if os.path.exists(init_script):
+                try:
+                    result = run('go "%s"; exit /topy' % init_script)
+                except:
+                    print >>sys.stderr, " **Error: exception raised in runnning script %s" % init_script
+                    result = run('exit /program')
+                    # should not get here
+                    raise SystemExit
 
     # if a command-line script is given, run the script and exit completely
     if script != None:
         script_line = " ".join(script)
         try:
-            result = run('go %s; exit /program' % script_line)
+            result = run('go "%s"; exit /program' % script_line)
         except:
             print >>sys.stderr, " **Error: exception raised in running script %s" % script_line
         # If exception or if returned early, force shutdown

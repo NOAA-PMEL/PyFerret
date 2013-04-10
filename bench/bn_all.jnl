@@ -846,8 +846,6 @@ GO bn_reset
 GO bn685_bug_fixes
 
 GO bn_reset
-GO bn_let_remote
-
 
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not

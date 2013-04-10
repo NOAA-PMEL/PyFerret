@@ -67,6 +67,7 @@
 *                   in line_name_orig for CANCEL MODE UPCASE
 *      4/12 *acm* - 6D Ferret, formatted F axis is direction FI
 * V685 *acm* 3/13 - add climatological axes to the pre-defined axes.
+* v685 *acm* 4/13 - Let Ferret compute the modulo lengths for clim. axes
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -203,7 +204,6 @@
      .		line_direction	(clmirr)	/ 'TI'		/,
      .		line_regular	(clmirr)	/ .FALSE.	/,
      .		line_modulo	(clmirr)	/ .TRUE.       /,
-     .		line_modulo_len	(clmirr)	/ 365.2425         /,
      .		line_start	(clmirr)	/ unspecified_val8 /,
      .		line_delta	(clmirr)	/ unspecified_val8 /,
      .		line_tunit	(clmirr)	/ 86400 /,
@@ -220,8 +220,7 @@
      .		line_direction	(clmreg)	/ 'TI'		/,
      .		line_regular	(clmreg)	/ .TRUE.	/,
      .		line_modulo	(clmreg)	/ .TRUE.       /,
-     .		line_modulo_len	(clmreg)	/ 8765.82         /,
-     .		line_start	(clmreg)	/ 366 /,
+     .		line_start	(clmreg)	/ 366. /,
      .		line_delta	(clmreg)	/ 730.485 /,
      .		line_tunit	(clmreg)	/ 3600 /,
      .		line_t0		(clmreg)	/'01-JAN-0000 00:00:00'/,
@@ -238,7 +237,6 @@
      .		line_direction	(clseas)	/ 'TI'		/,
      .		line_regular	(clseas)	/ .TRUE.	/,
      .		line_modulo	(clseas)	/ .TRUE.       /,
-     .		line_modulo_len	(clseas)	/ 8765.82         /,
      .		line_start	(clseas)	/ 1095.7275 /,
      .		line_delta	(clseas)	/ 2191.455 /,
      .		line_tunit	(clseas)	/ 3600 /,
@@ -255,7 +253,6 @@
      .		line_direction	(clmgrg)	/ 'TI'		/,
      .		line_regular	(clmgrg)	/ .FALSE.	/,
      .		line_modulo	(clmgrg)	/ .TRUE.       /,
-     .		line_modulo_len	(clmgrg)	/ 365.2425         /,
      .		line_start	(clmgrg)	/ unspecified_val8 /,
      .		line_delta	(clmgrg)	/ unspecified_val8 /,
      .		line_tunit	(clmgrg)	/ 86400 /,
@@ -272,7 +269,6 @@
      .		line_direction	(clmnol)	/ 'TI'		/,
      .		line_regular	(clmnol)	/ .FALSE.	/,
      .		line_modulo	(clmnol)	/ .TRUE.       /,
-     .		line_modulo_len	(clmnol)	/ 365.         /,
      .		line_start	(clmnol)	/ unspecified_val8 /,
      .		line_delta	(clmnol)	/ unspecified_val8 /,
      .		line_tunit	(clmnol)	/ 86400 /,
@@ -289,7 +285,6 @@
      .		line_direction	(clm360)	/ 'TI'		/,
      .		line_regular	(clm360)	/ .TRUE.	/,
      .		line_modulo	(clm360)	/ .TRUE.       /,
-     .		line_modulo_len	(clm360)	/ 360.         /,
      .		line_start	(clm360)	/ 15. /,
      .		line_delta	(clm360)	/ 30. /,
      .		line_tunit	(clm360)	/ 86400 /,
@@ -306,7 +301,6 @@
      .		line_direction	(clmall)	/ 'TI'		/,
      .		line_regular	(clmall)	/ .FALSE.	/,
      .		line_modulo	(clmall)	/ .TRUE.       /,
-     .		line_modulo_len	(clmall)	/ 366.         /,
      .		line_start	(clmall)	/ unspecified_val8 /,
      .		line_delta	(clmall)	/ unspecified_val8 /,
      .		line_tunit	(clmall)	/ 86400 /,
@@ -641,8 +635,8 @@ c     .			/pline_mem_left*real8_init/
 
 *  COORDS FOR MONTH_IRREG
 	DATA	(line_mem(i),i=514,525)
-     .	/     15.5, 45.1, 74.7, 105.2, 135.7, 166.2, 196.7, 227.7, 
-     .	     258.2, 288.7, 319.2,  349.7/
+     .	/     15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
+     .	     196.7425, 227.7425, 258.2425, 288.7425, 319.2425, 349.7425/
 
 *  BOX BOUNDARIES FOR MONTH_IRREG
 	DATA	(line_mem(i),i=526,538)
@@ -654,8 +648,8 @@ c     .			/pline_mem_left*real8_init/
      
 *  COORDS FOR MONTH_GREGORIAN
 	DATA	(line_mem(i),i=539,550)
-     .	/     15.5, 45.1, 74.7, 105.2, 135.7, 166.2, 196.7, 227.7, 
-     .	     258.2, 288.7, 319.2,  349.7/
+     .	/     15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
+     .	     196.7425, 227.7425, 258.2425, 288.7425, 319.2425, 349.7425/
 
 *  BOX BOUNDARIES FOR MONTH_GREGORIAN
 	DATA	(line_mem(i),i=551,563)

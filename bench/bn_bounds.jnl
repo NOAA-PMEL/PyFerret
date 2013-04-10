@@ -5,6 +5,11 @@
 ! 5/2005 made changes so the bounds coordinates {1,2} are written to the 
 !        file. If axis is Z, write attribute potitive="up". (bug 1196)
 ! 2/10   new examples of bounds which overlap each other.
+! 4/13   with climatological axes defined internally the LIST outputs
+!        differ by a digit. This is just roundoff in the listing, the
+!        number 730.485 shown as 730.48 vs 730.49. Just increase precision
+!        for those list commands.
+
 
 ! Output data on irregular record axis. No need for:
 ! save/clobber/RIGID/HEADING=ENHANCED/LLIMITS=1:3/file=a.nc v
@@ -152,6 +157,8 @@ save/clobber/rigid/head=enh/llimits=1:3/x=181:191/y=1:7/l=1:3/file=a.nc v
 ! First save without the bounds attribute, result is a file with 
 ! irregular time axis, possibly unintended large boxes.
 
+! 4/13 Increase precision for those list commands, see comment above
+
 !use climatological_axes
 use coads_climatology
 let v = missing(sst[gt=month_reg], 28)
@@ -161,7 +168,7 @@ save/append/file=a.nc/x=181/y=1/L=8:10 v
 can data/all
 can var v
 use a.nc
-list v, t[gt=v], tbox[gt=v]
+list/prec=7 v, t[gt=v], tbox[gt=v]
 can data a
 
 ! Now save with /bounds
@@ -175,14 +182,14 @@ can data/all
 can var v
 use a.nc
 
-list v, t[gt=v], tbox[gt=v]
+list/prec=7 v, t[gt=v], tbox[gt=v]
 can data/all
 
 ! gappy_bounds.nc has discontiguous bounds
 ! We use the LOWER bound of all axis cells.
 
 use gappy_bounds.nc
-list a, t[gt=a], tboxlo[gt=a], tboxhi[gt=a]
+list/prec=7 a, t[gt=a], tboxlo[gt=a], tboxhi[gt=a]
 
 cancel dat/all
 

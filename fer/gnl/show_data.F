@@ -176,14 +176,14 @@
 	      IF ( sattr       ) CALL SHOW_DATA_SET_ATTRS      
      .                             (show_lun, iset)
            ENDIF
-           IF (sxml) THEN
+           IF (sxml .AND. (.NOT.svars)) THEN
               risc_buff = '</dataset>'
               CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
            ENDIF
 	   IF (status .NE. ferr_ok) GOTO 5000
  790	CONTINUE
 
-        IF (sxml) THEN
+        IF (sxml .AND. (.NOT.svars)) THEN
            risc_buff = '</datasets>'
            CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
         ENDIF

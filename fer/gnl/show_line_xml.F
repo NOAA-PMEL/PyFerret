@@ -52,7 +52,8 @@
 * V650  Write to show_lun which may be set to a file unit number rather than std out
 * V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
-*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*      *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*      *acm* 3/13 Dont show axes with names in parentheses e.g. (AX004)
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -353,8 +354,12 @@ C New form for attribute output, list values separately.
 * closer tag
 
  1000   CONTINUE
-        WRITE ( risc_buff, 2080 ) 
-	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	IF (status .LT. 0) THEN
+	   status = ferr_ok
+	ELSE
+           WRITE ( risc_buff, 2080 ) 
+   	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	ENDIF
 
 	RETURN
 	END

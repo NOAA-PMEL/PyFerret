@@ -53,6 +53,7 @@
 *                  with &lt; etc.
 * V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*      *acm* 3/13 Dont show axes with names in parentheses e.g. (AX004)
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -119,9 +120,11 @@
 	   axis_name = line_name(line)
 
 * header
+	   IF (axis_name(1:1) .EQ. '(') GOTO 5000
 
            CALL ESCAPE_FOR_XML (axis_name, outstring, slen)
 	   WRITE ( risc_buff, 2020 ) outstring(1:slen)
+
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * axis units, including ... since start date if time axis
@@ -273,5 +276,7 @@
 1000    CONTINUE
         status = ferr_ok
 	ENDIF
+	RETURN
+ 5000	status = -1
 	RETURN
 	END

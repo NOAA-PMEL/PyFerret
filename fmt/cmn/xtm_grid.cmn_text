@@ -29,6 +29,7 @@
 * V62   2/09 *acm* Save the original upper/lowercase spelling of axis names in line_name_orig,
 *                  for use on output of user-defined variables when MODE UPCASE_OUTPUT is cancelled.
 * V64  10/09 *acm* longer string length for grid_name
+* v685  3/13 *acm* new line_write for writing axes to xml
 
 	CHARACTER*128	grid_filename
 	CHARACTER*20	line_t0
@@ -44,7 +45,7 @@
      .                  pline_mem_init, line_offset, line_dattype
 	LOGICAL		grid_out_prod, line_regular, line_modulo, line_reversed,
 !     .			line_has_edges, line_keep_flag,
-     .			line_keep_flag, line_shift_origin, line_fixname
+     .			line_keep_flag, line_shift_origin, line_fixname, line_write
 	REAL		line_tunit, grid_rotation
 	REAL*8		line_start, line_delta, line_mem, line_modulo_len
 
@@ -76,6 +77,7 @@
      .			line_keep_flag  ( 0:line_ceiling ),
      .			line_fixname    ( 0:line_ceiling ),
      .			line_shift_origin( 0:line_ceiling ),
+     .			line_write      ( 0:line_ceiling ),
      .			line_free_ptr,
      .			max_line_used,
      .			line_cal_name  ( 0:line_ceiling ),

@@ -1,4 +1,6 @@
 ! Check that an axis in use cannot be cancelled.
+! 4/2013 changes for Ferret with climatological axes
+!        defined internally. Use a different datset for this test
 
 use test_axes
 cancel data test_axes
@@ -6,16 +8,17 @@ cancel data test_axes
 let tt = t[gt=test_irreg] + 50*x[i=1:10]
 load tt
 
-show axis month*
+show axis test_i*
 cancel axis test_irreg
 
-show axis month*
+show axis test_i*
 
 ! Pre V5.42, this causes a crash: axes were cancelled, but not fully.
 cancel axis/all
-show axis month*
+show axis test_i*
 
 cancel var tt
 cancel axis/all
 
-show axis month*
+show axis test_i*
+

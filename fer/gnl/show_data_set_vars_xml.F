@@ -110,9 +110,14 @@ C Write statement that uses number 2075 when we change to using these.)
  2060  FORMAT ('</attribute>')
 
  2070  FORMAT ('</var>')
- 1111  FORMAT (1PG16.7)
 
 * describe the variables in the set, including a report on the axes of this grid.
+
+* Initialize flag for writing axes that are used in the dataset variables.
+
+	DO 100 i = 1, line_ceiling
+	   line_write(i) = .FALSE.
+ 100	CONTINUE
 
 * temporarily make this the default data set
 
@@ -179,14 +184,22 @@ C Write statement that uses number 2075 when we change to using these.)
 ! missing_flag comes from attribute FillValue; 
 ! bad_flag comes from missing_value
 
-           show_str = TM_FMT(bad_val4, 7,16,slen)
           uvarname = ds_var_code(ivar)
           CALL CD_GET_VAR_ID (dset, uvarname, varid, status)
 	   
           attname = '_FillValue'
           CALL CD_GET_VAR_ATT_ID (dset, varid, attname, iatt, status)
           IF (status .EQ. ferr_ok) THEN
-             show_str = TM_FMT(bad_val4, 7,16,slen)
+
+             CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, attype, 
+     .          attlen, attoutflag, status )
+             got_it = NC_GET_ATTRIB (dset, varid, attname, 
+     .          .TRUE., uvarname, blen, attlen, 
+     .          attoutflag, attbuff, vals)
+
+* ?? if double-prec, check whether we need more precision to write the value?
+
+             show_str = TM_FMT(vals(1), 7,16,slen)
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)
              WRITE ( risc_buff, 2030 ) '_FillValue' 
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -199,7 +212,14 @@ C Write statement that uses number 2075 when we change to using these.)
           attname = 'missing_value'
           CALL CD_GET_VAR_ATT_ID (dset, varid, attname, iatt, status)
           IF (status .EQ. ferr_ok) THEN
-             show_str = TM_FMT(bad_val4, 7,16,slen)
+
+             CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, attype, 
+     .          attlen, attoutflag, status )
+             got_it = NC_GET_ATTRIB (dset, varid, attname, 
+     .          .TRUE., uvarname, blen, attlen, 
+     .          attoutflag, attbuff, vals)
+
+             show_str = TM_FMT(vals(1), 7,16,slen)
              slen = TM_LENSTR(show_str)
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)
              WRITE ( risc_buff, 2030 ) 'missing_value'
@@ -396,11 +416,9 @@ C Write statement that uses number 2075 when we change to using these.)
 		have_title = .TRUE.
              ENDIF
 
-! missing_flag comes from attribute FillValue; 
-! Always write the Ferret default bad-flag
+! missing_flag and _FillValue same for user-variable 
 
-             show_str = TM_FMT(bad_val4, 7,16,slen)
-c	     WRITE (show_str, 1111) uvar_bad_data(ivar)
+             show_str = TM_FMT(uvar_bad_data(ivar), 7,16,slen)
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)
              WRITE ( risc_buff, 2030 ) '_FillValue' 
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -409,9 +427,7 @@ c	     WRITE (show_str, 1111) uvar_bad_data(ivar)
              WRITE ( risc_buff, 2060 ) 
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-
-             show_str = TM_FMT(bad_val4, 7,16,slen)
-c	     WRITE (show_str, 1111) uvar_bad_data(ivar)
+             show_str = TM_FMT(uvar_bad_data(ivar), 7,16,slen)
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)
              WRITE ( risc_buff, 2030 ) 'missing_value'
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -527,7 +543,7 @@ c                CALL CD_GET_DS_DIMS (iset, vdims(1), buff, npts, status)
 c                CALL SHOW_GRID_STRING_XML (lun, grid, cx_expr,
 c     .                  buff, npts)
 c             ELSE
-                CALL SHOW_GRID_XML (lun, grid, unspecified_int4)
+                CALL SHOW_GRID_XML (lun, grid, cx_expr)
 c             ENDIF
 c             IF ( status .NE. ferr_ok ) GOTO 5100
 
@@ -536,6 +552,22 @@ c             IF ( status .NE. ferr_ok ) GOTO 5100
 
          ENDIF
  600  CONTINUE
+
+
+* Write the axes used in the dataset
+      
+      risc_buff = '</dataset>'
+      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+      risc_buff = '</datasets>'
+      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+      risc_buff = '<axes>'
+      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+      DO 800, i = 1, line_ceiling
+         IF (line_write(i)) CALL SHOW_LINE_XML( show_lun, i)
+ 800  CONTINUE
+      risc_buff = '</axes>'
+      CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 
 * Restore the default data set
 

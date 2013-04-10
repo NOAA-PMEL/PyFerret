@@ -115,7 +115,6 @@
                  slen = TM_LENSTR1(line_name(line))
                  WRITE (risc_buff, 2040 ) axdir,
      .              line_name(line)(1:slen), axdir
-	      print *, risc_buff
 	         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
               ENDIF
            ENDIF

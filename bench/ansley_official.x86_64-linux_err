@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43208134 Feb 27 12:15 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 43290188 Apr  8 12:09 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  ticket 2043 fixed
+Note: updates to show data/var/xml
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,14 +14,14 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/x86/FERRET/external_functions/ext_func
-FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
+FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go /home/users/ansley/baker/JavaSource/resources/iosp/scripts /home/users/ansley/tomcat/content/las/conf/server/data/scripts/
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Wed Feb 27 12:38:09 PST 2013
+Beginning at Mon Apr 8 15:06:20 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1065,8 +1065,8 @@ Replacing definition of grid MYGRID
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
+ *** NOTE: regarding ./test_axes.nc ...
+ *** NOTE: Climatological axes test_irreg, test_seas defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1082,9 +1082,9 @@ Replacing definition of axis TAX2
  LISTing to file string4d.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
- *** NOTE: Not deleted: MONTH_IRREG
+ *** NOTE: regarding ./test_axes.nc ...
+ *** NOTE: Climatological axes test_irreg, test_seas defined
+ *** NOTE: Not deleted: TEST_IRREG
  *** NOTE: Axis is in use by grid (G022)
  *** NOTE: Not deleted: XEVEN
  *** NOTE: Axis is in use by grid EVEN
@@ -1196,12 +1196,12 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GLB1
  *** NOTE: Not deleted: COADSX
  *** NOTE: Axis is in use by grid GG
- *** NOTE: Not deleted: MONTH_IRREG
- *** NOTE: Axis is in use by grid (G022)
  *** NOTE: Not deleted: COADSY
  *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: YAXLEVITR1_90
  *** NOTE: Axis is in use by grid GG2
+ *** NOTE: Not deleted: TEST_IRREG
+ *** NOTE: Axis is in use by grid (G022)
  *** NOTE: Not deleted: ZAXLEVITR1_1
  *** NOTE: Axis is in use by grid GG2
  *** NOTE: Not deleted: (AX020)
@@ -1440,14 +1440,10 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis Z1
  *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file clim.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1629,14 +1625,10 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file a.nc
  LISTing to file a.nc
 Replacing definition of axis TAX
@@ -1670,16 +1662,12 @@ Replacing definition of axis XAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
  LISTing to file irrxzt.nc
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
  *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
  *** NOTE: This will result in incorrect box sizes on record axis: MONTH_REG
  *** NOTE: Write the data initially with the /BOUNDS qualifier
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file a.nc
  LISTing to file a.nc
  *** NOTE: Axis definition error on axis: TGAP
@@ -1734,8 +1722,6 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
@@ -2281,7 +2267,7 @@ Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: invalid command: it is a child axis already
-set axis/stride=2/offset=1 (AX050)
+set axis/stride=2/offset=1 (AX047)
  **ERROR: invalid command: not a strided axis: COADSX
 cancel axis/stride COADSX
  **ERROR: invalid command: offset must be less than stride value
@@ -2317,8 +2303,6 @@ set axis/stride=2 NORMAL
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
@@ -2366,8 +2350,6 @@ set axis/stride=2 NORMAL
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3068,9 +3050,6 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis YAX
-
-Bailing out of external function "tax_year":
-	 Function not valid for modulo time axis
 Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3102,6 +3081,9 @@ Replacing definition of axis YAX_DUP_AXNAMES
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
+
+Bailing out of external function "tax_year":
+	 Function not valid for modulo time axis
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
@@ -3114,8 +3096,6 @@ Replacing definition of axis YAX_DUP_AXNAMES
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  **ERROR: error in external function
 list/L=15:20 tax_year(t[gt=tvar],tvar)
  PERMANENT data cleared from memory
@@ -3389,6 +3369,20 @@ define axis/t/units=days tax = tvar
 Replacing definition of axis TDAY
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: netCDF bounds variable definition error
+ *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+ *** NOTE: Ignoring BOUNDS attribute
+ *** NOTE: netCDF bounds variable definition error
+ *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+ *** NOTE: Ignoring BOUNDS attribute
+ *** NOTE: netCDF bounds variable definition error
+ *** NOTE: Bounds definition "time_bnds" points to no existing axis
+ *** NOTE: Ignoring BOUNDS attribute
+ *** NOTE: netCDF bounds variable definition error
+ *** NOTE: Bounds definition "depth_bnds" points to no existing axis
+ *** NOTE: Ignoring BOUNDS attribute
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -3476,4 +3470,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Feb 27 12:39:39 PST 2013
+Ended at Mon Apr 8 15:07:59 PDT 2013

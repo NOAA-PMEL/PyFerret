@@ -66,7 +66,7 @@
 
 * local variable declarations:
 	INTEGER TM_LENSTR1, TM_LENSTR, STR_DNCASE, STR_SAME,
-     .		idim, slen, line, status
+     .		idim, slen, line, iwrite, status
         CHARACTER*1 axdir
 	CHARACTER*512 outstring
 

@@ -135,7 +135,9 @@
       INTEGER TM_LENSTR1, CD_ISIT_RECDIM, CD_WRITE_STRDIM,
      .        dimid(8), iaxis, cdfstat, dims, idim, varid, vartyp,
      .        nvdims, vdims(8), nvatts, nlen, glen, vlen, ax_type,
-     .        lo2(nferdims), hi2(nferdims), what_recdim, strdim, dimsize
+     .        lo2(nferdims), hi2(nferdims), what_recdim, strdim, dimsize,
+     .        chunk_set
+      REAL    val
 * *kob*  - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME, lname,
 *          cdfname, vname and gname to 64 from 24
 * acm* vname to 128

@@ -58,7 +58,7 @@
      .		cx_orig, agg_cx, hi_cx, big_cx, isp_orig, agg_dset, 
      .		agg_len, imemb, fer_uvar, memb_dset, memb_grid, iline, 
      .		nv, test_grid, this_grid, len_name, agg_dim, gnum, var,
-     .		varid
+     .		varid, idim, i, igrid, lo_cx
 
 	CHARACTER name*512
 

@@ -124,7 +124,8 @@
 #include "tmap_dset.parm"
         include 'tmap_dims.parm'                ! data set dimensions
 #include "gt_lib.parm"
-        include 'xio.parm'
+	include 'xio.cmn_text'
+        external xio_data
         include 'xdset_info.cmn_text'   ! data set common
         external xdset_info_data
         include 'xsys_names.cmn_text'
@@ -153,7 +154,7 @@
 	CHARACTER*2048  des_name
 	INTEGER*4	set_cnt, lunit, cnt, aux_cnt, tcnt, dlen, dlen2,
      .			rcnt, parm_cnt, grd_cnt, equal_pos, istat
-	INTEGER*4	TM_LENSTR, TM_LENSTR1, STR_SAME,ic
+	INTEGER*4	TM_LENSTR, TM_LENSTR1, STR_SAME, STR_UPCASE, ic
 	LOGICAL		TM_HAS_STRING, match,
      .			opened, got_lun, dods_url, nocache,
      .                  explicit_ext                 ! 7/97

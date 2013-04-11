@@ -90,7 +90,8 @@
 #include "tmap_dset.parm"	
 	include 'tmap_dims.parm'		! data set dimensions
 #include "gt_lib.parm"
-	include 'xio.parm'
+	include 'xio.cmn_text'
+        external xio_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'xdset_info.cmn_text'		! data set common

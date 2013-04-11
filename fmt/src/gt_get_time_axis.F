@@ -112,7 +112,7 @@
         CHARACTER*20    buff
 	INTEGER*4	scr, nsteps, istp, cpos, cpos1, bpos, bpos0,
      .			i1, i2, i3, i4, i5, i6, iunit, nline,
-     .			nsteps_in_file,i			!*kob*
+     .			nsteps_in_file,i, lenb
 	INTEGER*4	TM_FIND_LIKE_LINE
         INTEGER         TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id
 	LOGICAL		TM_FPEQ, TM_CHECK_BOX_LOC

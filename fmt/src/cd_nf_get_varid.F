@@ -52,8 +52,8 @@
 	CHARACTER*(*) vname
 
 * Local variable declarations
-	INTEGER cdfid
-	CHARACTER*500 errbuff
+	INTEGER TM_LENSTR1, cdfid, slen
+	CHARACTER*500 errbuff, buff
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -77,10 +77,11 @@
 
 * error messages
  5100   CONTINUE
-        CALL CD_TRANSLATE_ERROR (status, buff)
+        CALL CD_TRANSLATE_ERROR (status, errbuff)
+	slen = TM_LENSTR1(errbuff)
 
-        errbuff = 'Unable to get varid for LET/REMOTE variable: '//
-     .    errbuff
+        buff = 'Unable to get varid for LET/REMOTE variable: '//
+     .    errbuff(:slen)
 
         CALL TM_ERRMSG
      .     ( merr_badfileatt, status, 'CD_NF_GET_VARID', dset,

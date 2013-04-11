@@ -115,7 +115,7 @@
      .		inseed
 	REAL	RANDU, RANDN, RANDN2, RHO_UNESCO, THETA_FOFF,
      .		DAYS_FROM_DAY0,
-     .          bad1, bad2, bad3, bad4, bad_res, dummy
+     .          bad1, bad2, bad3, bad4, bad_res, dummy,
      .          op_repl
 	REAL*4  R_IN
 

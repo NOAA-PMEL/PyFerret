@@ -123,7 +123,7 @@
       REAL val
       INTEGER TM_HASH_NAME, TM_LENSTR1, STR_SAME, STR_UPCASE,
      .        ndims, nvars, ngatts, recdim, cdfstat, i, istep, 
-     .        err_status
+     .        err_status, i1, i2
       INTEGER len, iin, iout, ilast, dlen
       CHARACTER ch*1
 * *kob* 4/99

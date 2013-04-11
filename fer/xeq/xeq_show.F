@@ -807,7 +807,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 			    DO 1010 ivar = 1, varid
 			      CALL CD_GET_VAR_INFO (dset, ivar, arg(:len), 
      .                           vartype, nvdims, vdims, nvatts, coordvar, 
-     .                           outflag, cdfstat)
+     .                           outflag, status)
                               IF (coordvar) var_num = var_num - 1
  1010			    CONTINUE
 			    CALL SHOW_1_DSVAR (
@@ -830,7 +830,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 			    DO 1011 ivar = 1, varid
 			      CALL CD_GET_VAR_INFO (dset, ivar, arg(:len), 
      .                           vartype, nvdims, vdims, nvatts, coordvar, 
-     .                           outflag, cdfstat)
+     .                           outflag, status)
                               IF (coordvar) var_num = var_num - 1
  1011			    CONTINUE
 			    CALL SHOW_1_DSVAR (

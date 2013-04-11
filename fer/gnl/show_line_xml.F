@@ -77,7 +77,7 @@
 * local variable declarations:
 	LOGICAL		TM_ITS_SUBSPAN_MODULO, NC_GET_ATTRIB, GEOG_LABEL, 
      .                  got_it, calendar, bounds_done
-	INTEGER		idim, orient, slen, iset, dset, alen
+	INTEGER		idim, orient, slen, iset, dset, alen, igrid
 	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id, status
 	CHARACTER	TM_FMT*32, buff*80, outbuff*20
 
@@ -165,7 +165,7 @@ C New form for attribute output, list values separately.
 
 * report /T0= for formatted time axis
 	IF ( line_direction(line) .EQ. 'TI' ) THEN
-	   calendar = GEOG_LABEL(idim, grid)
+	   calendar = GEOG_LABEL(idim, igrid)
            IF (calendar) THEN
 	      buff = line_cal_name (line)
 	      cal_id = TM_GET_CALENDAR_ID (buff)

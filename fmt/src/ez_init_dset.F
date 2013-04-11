@@ -100,7 +100,8 @@
 	INTEGER*4	skip, columns, dset, status
 *
 * Include files
-	include 'xio.parm'
+	include 'xio.cmn_text'
+        external xio_data
 	include 'ez_lib.parm'
 	include 'tmap_dims.parm'
 	include 'tmap_dtypes.parm'

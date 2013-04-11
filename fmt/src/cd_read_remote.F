@@ -47,6 +47,7 @@
 *                     
 
 * include files
+#include "netcdf.inc"
         include 'tmap_dims.parm'                ! data set dimension
         include 'tmap_errors.parm'              ! err code parm defs
 #include "gt_lib.parm"
@@ -294,7 +295,7 @@
      .		     no_errstring, *5900 )
 	ELSE
 	
-           IF (cdfstat .LT. NC_NOERR) THEN
+           IF (cdfstat .LT. NF_NOERR) THEN
 	      err_status = merr_nc_open 
 	      CALL CD_TRANSLATE_ERROR (cdfstat, ebuff)
            ELSE IF (cdfstat .EQ. nf_interrupt) THEN

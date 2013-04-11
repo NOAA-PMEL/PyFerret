@@ -78,7 +78,7 @@
 
 * internal variable declarations:
 	INTEGER STR_UPCASE, TM_LENSTR, i, i1, ierr, wsid, 
-     .          nxpix, nypix, llen, icount, irate, imax
+     .          nxpix, nypix, llen, icount, irate, imax, iset
 c        REAL DTIME 
         REAL TArray(2), dtime_res, clock_secs, count, cputime_now
 	CHARACTER special(nspecial)*16, upname*16

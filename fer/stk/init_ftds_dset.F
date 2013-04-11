@@ -42,7 +42,7 @@
 	INTEGER		dset, uvar, status
 
 * local variable declarations
-	INTEGER TM_LENSTR1, nvars, nv, slen, vlen, varid
+	INTEGER TM_LENSTR1, nvars, nv, slen, vlen, varid, ivar
 	CHARACTER buff*3000, ebuff*3000, vname*128
 
 * Includes

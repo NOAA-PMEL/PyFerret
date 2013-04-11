@@ -81,7 +81,7 @@
 	INTEGER grid, cx, status
 
 * local variable declarations:
-	INTEGER idim, listdims
+	INTEGER i, idim, listdims
 
 * If mode 6d_lab has been cancelled, we will list only the first 4 dimensions.
 * But if the grid has E or F axes, thats an error.

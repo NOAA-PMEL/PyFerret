@@ -91,7 +91,7 @@
 * argument declarations
       LOGICAL itsa_slab, do_bounds, mode_upcase_output
       INTEGER cdfid, dset, grid, lo(nferdims), hi(nferdims), recdim, 
-     .        edges_flag, status
+     .        edges_flag, keepax_flag, status
       CHARACTER*(*) gname
 
 * local variable declarations:

@@ -56,7 +56,7 @@
       INTEGER TM_LENSTR, slen, tlen, dset1, dset2, 
      .  varid1, varid2, vtype, nvdims, nvatts1, nvatts2,
      .  vdims(8), iatt, first_quote, next_quote, dot, mr, cx, 
-     .  all_outflag, cat
+     .  all_outflag, cat, iflag
       CHARACTER*128 attname, buff1, buff2
 
 * Check that neither buffer contains varname.attname (If it is in 

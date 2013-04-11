@@ -6,6 +6,8 @@
 *	ychunk_size     - chunk size in Y direction
 *	zchunk_size     - chunk size in Z direction
 *	tchunk_size     - chunk size in T direction
+*	echunk_size     - chunk size in E direction
+*	fchunk_size     - chunk size in F direction
 *	deflate_lev	- deflate level (0 for no deflate)
 *	shuffle_flag    - shuffle - 0 or 1
 *	endian_code     - native=0, little=1, big=0 match nf_endian_* params
@@ -20,6 +22,8 @@
 *	ychunk_size_set  - chunk size in Y direction
 *	zchunk_size_set  - chunk size in Z direction
 *	tchunk_size_set  - chunk size in T direction
+*	echunk_size_set  - chunk size in E direction
+*	fchunk_size_set  - chunk size in F direction
 *	deflate_lev_set  - deflate level (0 for no deflate)
 *	shuffle_flag_set - shuffle - 0 or 1
 *	endian_code_set  - native=0, little=1, big=0 match nf_endian_* params
@@ -28,19 +32,21 @@
 
 	COMMON/NETCDF4/cache_size_mb,
      .		netcdf4_type, xchunk_size, ychunk_size, 
-     .		zchunk_size, tchunk_size, deflate_lev, 
-     .		shuffle_flag, endian_code, 
+     .		zchunk_size, tchunk_size, echunk_size, fchunk_size, 
+     .		deflate_lev, shuffle_flag, endian_code, 
      .		netcdf4_type_set, xchunk_size_set, ychunk_size_set, 
-     .		zchunk_size_set, tchunk_size_set, deflate_lev_set, 
+     .		zchunk_size_set, tchunk_size_set, echunk_size_set, 
+     .		fchunk_size_set,  deflate_lev_set, 
      .		shuffle_flag_set, endian_code_set, 
      .		default_cache_size
 
 	INTEGER 
      .		netcdf4_type, xchunk_size, ychunk_size, 
-     .		zchunk_size, tchunk_size, deflate_lev, 
-     .		shuffle_flag, endian_code, 
+     .		zchunk_size, tchunk_size, echunk_size, fchunk_size, 
+     .		deflate_lev, shuffle_flag, endian_code, 
      .		netcdf4_type_set, xchunk_size_set, ychunk_size_set, 
-     .		zchunk_size_set, tchunk_size_set, deflate_lev_set, 
+     .		zchunk_size_set, tchunk_size_set, echunk_size_set, 
+     .		fchunk_size_set,  deflate_lev_set, 
      .		shuffle_flag_set, endian_code_set, 
      .		default_cache_size
 	REAL cache_size_mb   

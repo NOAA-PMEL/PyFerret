@@ -80,7 +80,7 @@
 
 * error messages
  5100   CONTINUE
-        CALL CD_TRANSLATE_ERROR (cdfstat, buff)
+        CALL CD_TRANSLATE_ERROR (status, buff)
 
         buff = 'Unable to get bad-value for LET/REMOTE variable: '//
      .    buff

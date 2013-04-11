@@ -77,7 +77,8 @@
      .        disordered, reordered, n_in_grid,  
      .        grid_save(nferdims), igrid1, ipos1, igrid2, ipos2, kk, 
      .        iaxis_last, iax, iorder, tmvar, ivar, vartyp, nvdims, 
-     .        vdims(8), nvatts, vlen, istat, lastdim, tmplines(nferdims)
+     .        vdims(8), nvatts, vlen, istat, lastdim, tmplines(nferdims), 
+     .        i1, i2, iter, ndim, isave_order, ncheck
       LOGICAL shift_ok, need_iterate, coordvar, all_outflag, permuted
       REAL axes_out_of_order(100)
       CHARACTER vname*128
@@ -306,7 +307,7 @@ c Find the grid which contains this axis and has the most dimensions.
 	    ELSE
 	       ds_grid_end(idim,tmvar) = line_dim(iaxis)
 	       ndim = ndim + 1
-	       save_order = ds_ordering(ndim,tmvar)  ! want to keep the sign
+	       isave_order = ds_ordering(ndim,tmvar)  ! want to keep the sign
 	       ds_ordering(ndim,tmvar) = idim
 
 	       IF ( reversed(iaxis) ) THEN
@@ -316,9 +317,9 @@ c Find the grid which contains this axis and has the most dimensions.
 	          IF ( perm(idim).NE.unspecified_int4 .AND. perm(idim).LT.0) THEN
 		  ds_ordering(ndim,tmvar) = -1 * ds_ordering(ndim,tmvar)
                   ELSE   ! if already had a reversed coord indicated, save that.
-                     IF ( (ABS(save_order) .EQ. ABS(ds_ordering(ndim,tmvar)) )
-     .	                 .AND.(save_order .NE. ds_ordering(ndim,tmvar)) )
-     .	               ds_ordering(ndim,tmvar) = save_order
+                     IF ( (ABS(isave_order) .EQ. ABS(ds_ordering(ndim,tmvar)) )
+     .	                 .AND.(isave_order .NE. ds_ordering(ndim,tmvar)) )
+     .	               ds_ordering(ndim,tmvar) = isave_order
                   ENDIF
                ENDIF
 	    ENDIF

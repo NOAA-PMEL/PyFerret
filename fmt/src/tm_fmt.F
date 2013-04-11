@@ -78,7 +78,8 @@
 	LOGICAL		exp_fmt, negative, fixed_pt
 	INTEGER		slen, sig_left, sig_full, nleft, nright, full,
      .			sig_max, full10, xtra, sig_needed, pow10,
-     .			chk10, chk10_save, waste, i, need_adjust, ind
+     .			chk10, chk10_save, waste, i, need_adjust, ind,
+     .			iloop
 	REAL		aval, l10
 	CHARACTER*10	fmt, outstring*25, strend*25
 

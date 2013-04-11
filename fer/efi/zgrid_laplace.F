@@ -88,6 +88,7 @@ c*******************************************************************************
 c 
 c	vax/vms
 c
+	IMPLICIT REAL(A-H, O-Z), INTEGER(I-N)
 	real z(nxsize,nysize),xp(n),yp(n),zp(n),zpij(n)
         integer knxt(n)
 c

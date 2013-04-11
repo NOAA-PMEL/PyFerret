@@ -55,7 +55,7 @@
 
 * argument declarations:
 	INTEGER cdfid, varid, dimid(*), deflate, chunks(*), 
-     .          shuffle,  status
+     .          shuffle, endian_code, status
 	CHARACTER*(*) vname
 
 * include files

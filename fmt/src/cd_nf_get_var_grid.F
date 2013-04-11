@@ -59,9 +59,10 @@
 	CHARACTER*(*) vname
 
 * Local variable declarations
-	INTEGER STR_SAME, cdfid, varid, ndims, dimids(nferdims),
-     .		idim, igrid, dimlen, outgrid(nferdims)
-	CHARACTER*500 buff
+	INTEGER STR_SAME, TM_LENSTR1, 
+     .		cdfid, varid, ndims, dimids(nferdims),
+     .		idim, igrid, dimlen, outgrid(nferdims), slen
+	CHARACTER*500 buff, errbuff
 
 	cdfid = sf_lunit(dset)
 
@@ -106,10 +107,12 @@
 
 * error messages
  5100   CONTINUE
-        CALL CD_TRANSLATE_ERROR (cdfstat, buff)
 
-        buff = 'Unable to get grid for LET/REMOTE variable: '//
-     .    buff
+        CALL CD_TRANSLATE_ERROR (status, errbuff)
+	slen = TM_LENSTR1(errbuff)
+
+        buff = 'Unable to get varid for LET/REMOTE variable: '//
+     .    errbuff(:slen)
 
         CALL TM_ERRMSG
      .     ( merr_badfileatt, status, 'CD_NF_GET_VAR_GRID', dset,

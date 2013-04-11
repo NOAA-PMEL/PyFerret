@@ -52,6 +52,8 @@
 	INTEGER :: i, n, clock
 	INTEGER, DIMENSION(:), ALLOCATABLE :: seed
 
+	INTEGER iseed
+
 	iseed = inseed
 	IF (inseed .EQ. 0) RETURN
 

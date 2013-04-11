@@ -191,13 +191,14 @@
      .			buff1*16, buff2*16, buff3*8, t1_date*14, tref*14,
      .                  cal_name*32, cal_name_new*32, val_buff*32, fmt*4
 
-	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
+	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE, CGRID_AXIS,
      .			mv, cx, slen, ito, indep_lab, dep_lab, nline_in_mem,
      .			indep_dim, npts, dep_dim, npts2, ndv, var1,
      .			grid, grid1, ipl, ndim, dims(6),
      .			slen2, slen3, tax, plot_mem_used, nload, i,
      .			pxlim, pylim, phlim, pvlim,pindeplim, pdeplim,
-     .			dep_axtyp, indep_axtyp, the_taxis, ribbon_var, junits
+     .			dep_axtyp, indep_axtyp, the_taxis, ribbon_var, 
+     .			junits, iaxis
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new

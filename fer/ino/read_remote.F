@@ -320,7 +320,7 @@
  	RETURN
 
 * error exit
- 5000	cx_category(cx) = cat
+ 5000	cx_category(cx) = category
  	RETURN
 
 * error exit

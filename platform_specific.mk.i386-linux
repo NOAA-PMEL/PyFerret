@@ -101,6 +101,7 @@
 		-ffixed-line-length-132 \
 		-fdefault-real-8 \
 		-fdefault-double-8 \
+		-fimplicit-none \
 		$(FINCLUDES)
 
 

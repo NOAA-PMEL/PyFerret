@@ -66,7 +66,8 @@
 
 *  Include files
 	include	'tmap_errors.parm'
-	include 'xio.parm'
+	include 'xio.cmn_text'
+        external xio_data
 #include "tmap_dset.parm"
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'

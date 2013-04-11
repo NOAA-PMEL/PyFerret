@@ -239,8 +239,8 @@
      . buff(:slen)//' style cannot set compression, ignoring /DEFLATE')
 	   ENDIF
 
-	   IF (shuffle .NE. 0) THEN
-	      shuffle = 0
+	   IF (shuffle_flag .NE. 0) THEN
+	      shuffle_flag = 0
 	      CALL WARN(
      . buff(:slen)//' style cannot set compression, ignoring /SHUFFLE')
 	   ENDIF

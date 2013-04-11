@@ -248,7 +248,6 @@
 *             ==> remap to most basic
 * 6/99 - only REPEATED axes are a problem -- permutations OK
       lasdim = 0
-      irepeat = 0
       DO 310 idim = 1, nferdims
 	 DO 300 i = 1, idim-1
             IF ( order(i) .NE. 0

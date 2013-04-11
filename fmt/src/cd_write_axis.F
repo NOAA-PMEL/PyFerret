@@ -117,7 +117,8 @@
         include 'xtm_grid.cmn_text'
         external xgt_grid_data
         include 'xunits.cmn_text'
-
+	include 'xio.cmn_text'
+        external xio_data
 
 ! Declare netcdf function names. 
 ! The ones without trailing underscore are declared in netcdf.inc
@@ -137,7 +138,7 @@
      .       got_positive, got_spacing, got_axis, got_cartesian, got_it,
      .       coordvar, do_off, do_scale
       PARAMETER (do_warn = .TRUE. )
-      INTEGER TM_LENSTR1, CD_AXLEN, STR_SAME, 
+      INTEGER TM_LENSTR1, CD_AXLEN, STR_SAME, STR_DNCASE,
      .        dimid, iaxis, axid, cdfstat, lo, hi,
      .        nlen, elen, axlen, slen, edgid, bndid, npts, dim2d(2)
       INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, cal_id, varid,

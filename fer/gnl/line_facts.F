@@ -70,7 +70,7 @@
 * local variable declarations:
 	LOGICAL	BKWD_AXIS, GEOG_LABEL, calendar
 	INTEGER TM_LENSTR1, lo, hi, i, line, dlen, ndec, status,
-     .          nlen, naxlen
+     .          nlen, naxlen, int1
 	CHARACTER AX_TITLE*32, 	lo_str*20, hi_str*20, direction*1,
      .		  title*32, reg*1, modflag*1, truncated*1, frmt*50
 	REAL*8	TM_WORLD, lo_val8, hi_val8, pts

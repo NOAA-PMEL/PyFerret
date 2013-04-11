@@ -174,7 +174,7 @@
       CALL TM_NOTE( buff(:lenb), tt )
 
       CALL TM_ERRMSG
-     .     ( cdfstat+pcdferr, status, 'NC_GET_ATTRIB_FLOAT', dset,
+     .     ( status+pcdferr, status, 'NC_GET_ATTRIB_FLOAT', dset,
      .        no_varid, no_errstring, no_errstring, *5900 )
 
  5900 RETURN

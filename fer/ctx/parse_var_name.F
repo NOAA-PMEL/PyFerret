@@ -84,7 +84,7 @@
      .                  full_name_len, left_bracket, right_bracket, 
      .			name_len, atsign, idim,  brac_nest, i,
      .                  dset, varid, attype, attlen, attoutflag,
-     .                  attid
+     .                  attid, dot
  	LOGICAL		name_only, do_err
 * 1/97 addition
 	INTEGER	num_it, it_start(max_item_list), it_end(max_item_list)

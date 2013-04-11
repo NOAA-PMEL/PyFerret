@@ -248,7 +248,7 @@
       CHARACTER*2 dcode
 
       INTEGER tt  ! nice short name
-      EQUIVALENCE (tt,c)
+      EQUIVALENCE (tt,lunit_errors)
 
       INTEGER bufflen
       PARAMETER (bufflen = 256)
@@ -835,6 +835,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * ... make micro-adjustments if axis has repeated values (4/99)
          IF ( has_repeated ) THEN
             IF (micro_adj .EQ. 0.D0) THEN
+	       i1 = ipt1+1
 	       misordered = .TRUE.
 	       GOTO 540
 	    ENDIF

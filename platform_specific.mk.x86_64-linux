@@ -68,6 +68,7 @@
 	FFLAGS		= $(CPP_FLAGS) \
 			  -fno-automatic -fno-second-underscore \
 			  -fdollar-ok -ffixed-line-length-132 -ffpe-trap=overflow \
+			  -fimplicit-none \
 			  -fdefault-real-8 -fdefault-double-8 $(FINCLUDES)
 
         # PROF_FLAGS	= -pg

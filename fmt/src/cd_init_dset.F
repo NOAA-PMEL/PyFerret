@@ -89,6 +89,14 @@
 ! The ones without trailing underscore are declared in netcdf.inc
 #include "netcdf_declareUnderscore.inc"
 
+#ifdef usingDODSf2cUnderscore 
+      INTEGER NF_CLOSE_
+#else
+      INTEGER NF_CLOSE
+#endif 
+
+
+
 * local variable declarations:
       INTEGER STR_SAME, cdfid, remote_dods_id,istat
 * 4/99 *kob* increase temp_axnams
@@ -179,9 +187,9 @@ c        sf_lunit( cd_stepfile(dset) ) = file_not_open
  5900 CALL CD_ABORT_GRIDS
  5980 CONTINUE
 #ifdef usingDODSf2cUnderscore
-      IF (remote_dods_id .NE. 0) cdfstat = NF_CLOSE_( remote_dods_id )
+      IF (remote_dods_id .NE. 0) istat = NF_CLOSE_( remote_dods_id )
 #else
-      IF (remote_dods_id .NE. 0) cdfstat = NF_CLOSE( remote_dods_id )
+      IF (remote_dods_id .NE. 0) istat = NF_CLOSE( remote_dods_id )
 #endif
  5990 RETURN
       END

@@ -83,7 +83,7 @@
      .            atype*10, axis_name*128
 
 	REAL*8	TM_WORLD, lo_val8, hi_val8
-	REAL      vals(100)
+	REAL      vals(100), fval
 
 * local parameter declarations:
 	INTEGER		sig_figs

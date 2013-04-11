@@ -72,7 +72,8 @@
       CHARACTER*(*) attrib, vname
       LOGICAL       val
 
-      include 'xio.parm'
+      include 'xio.cmn_text'
+      external xio_data
 #include "netcdf.inc"
       include 'xrisc_buff.cmn'         !1/03 *kob*
       include 'tmap_errors.parm'

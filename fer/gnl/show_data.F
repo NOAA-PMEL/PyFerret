@@ -55,7 +55,8 @@
 
 	LOGICAL sbrief, sfull, svars, sfile, sattr, sxml, clobber, 
      .          append, only_1
-	INTEGER TM_LENSTR1, FIND_DSET_NUMBER, sho_file, iset, len, len0,
+	INTEGER TM_LENSTR1, TM_LENSTR, FIND_DSET_NUMBER, 
+     .		    sho_file, iset, len, len0,
      .		    slash_brief,
      .		    slash_full,
      .		    slash_vars,

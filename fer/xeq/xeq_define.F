@@ -348,7 +348,8 @@
      .            mon_by_d(366), d_in_mon(12), len_cal, n2, n3, s2len,
      .            prev_cal_id, j, num_indices, varid, attype_spec,
      .            mr_perm(max_intrp), attoutflag, attlen, coordvar, 
-     .            dset_to_add, dir, type, attype, attid, ibuff, i0
+     .            dset_to_add, dir, type, attype, attid, ibuff, i0,  
+     .            agg_dim, ivar
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            val, dummy, val_buf

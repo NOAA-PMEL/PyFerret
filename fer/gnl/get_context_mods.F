@@ -194,7 +194,7 @@
      .			hi_start, hi_end, item, idim, del_start, del_end,
      .			colon2_pos, vax_code, istart, iend, itrans,
      .			dset, variable, category, name_end, next_char, i,
-     .			impl_grid, axis, other, naxes
+     .			impl_grid, axis, other, naxes, iqual
 	CHARACTER*(1)	UPPER_CASE, region_qual(nferdims,2), other_qual(2),
      .			letter, letter2
 	CHARACTER	name*512, comment*12, transnam*6, buff*32, 
@@ -293,7 +293,7 @@
 
         cal_name = 'GREGORIAN'		! default
         name = " "
-        dflt_cal_id = TM_GET_CALENDAR_ID (cal_name)
+        cal_id = TM_GET_CALENDAR_ID (cal_name)
 	iqual = qual_given( slash_calendar )
 	IF ( iqual .GT. 0 ) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),

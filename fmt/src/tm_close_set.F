@@ -96,7 +96,8 @@
 
 * internal variable declarations
         LOGICAL   its_cdf
-	INTEGER   NCF_DELETE_DSET, ds_num,status,f_num,ivar,iparm,iaux
+	INTEGER   NCF_DELETE_DSET, ds_num,status,f_num,ivar,
+     .		  iparm,iaux,idim
 
 * initialize: do we have an open set?
 	IF (ds_name(ds_num) .EQ. char_init1024) GOTO 9000

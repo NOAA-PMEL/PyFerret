@@ -117,7 +117,8 @@
      .		saved_ifthen_type, do_err, agg_has_uvar, ok_remote
 	INTEGER KNOWN_GRID, STR_SAME,
      .		TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR, 
-     .		 hi_cx, lo_cx, big_cx, start, end, grid,
+     .		NCF_GET_AGG_COUNT,
+     .		hi_cx, lo_cx, big_cx, start, end, grid,
      .		i, dset, uvar, item, itype, idim, gnum, nitem, uv_grd,
      .		var, len_name, pass_number, cx_save, this_dset,
      .		ifthen_data_type, varid, alen, attype, attlen,

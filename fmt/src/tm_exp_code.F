@@ -125,7 +125,7 @@
  
 	WRITE (string, *) 'Unknown data set ',ds_num
 	lenb = TM_LENSTR1( string )
-	CALL TM_NOTE( string(:lenb), lunit_errors )
+	CALL WARN( string(:lenb) )
 	TM_Exp_code = ' '
 	GOTO 9999
 

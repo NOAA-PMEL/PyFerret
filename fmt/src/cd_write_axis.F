@@ -846,10 +846,9 @@
           ENDIF
  
           IF (do_scale .OR. do_off .OR. (axis_packed .EQ. 1) )  
-     .    CALL TM_NOTE(name(1:nlen)//
+     .    CALL WARN(name(1:nlen)//
      .      ': Writing scaled coordinates not implemented. Suggest '//
-     .      'using nco operators on output file to pack coord values', 
-     .      lunit_errors)
+     .      'using nco operators on output file to pack coord values')
        ENDIF
             
 * does it need axis bounds definitions ?

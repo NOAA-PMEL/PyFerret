@@ -153,9 +153,10 @@
 
 	TERMCAPLIB = -L/usr/local/lib -lncurses
 
-	READLINELIB = \
-		$(READLINE_DIR)/lib/libreadline.a \
-		$(READLINE_DIR)/lib/libhistory.a
+# For statically linking in the readline and history libraries
+#	READLINELIB = -L$(READLINE_DIR)/lib64 -Wl,-Bstatic -lreadline -lhistory -Wl,-Bdynamic
+# For linking against the shared-object libraries (if they exist)
+	READLINELIB = -L$(READLINE_DIR)/lib64 -lreadline -lhistory
 
 ## cancel the default rule for .f -> .o to prevent objects from being built
 ## from .f files that are out-of-date with respect to their corresponding .F file

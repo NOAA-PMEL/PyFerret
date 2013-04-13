@@ -460,7 +460,7 @@ def init(arglist=None, enterferret=True):
         result = run("define pyfunc pyferret.%s" % fname)
 
     # run the ${HOME}/.ferret script if it exists and not restricted environment
-    if not restrict:
+    if not my_restrict:
         home_val = os.getenv('HOME')
         if home_val:
             init_script = os.path.join(home_val, '.ferret')

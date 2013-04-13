@@ -55,7 +55,8 @@
 
 	LOGICAL sbrief, sfull, svars, sfile, sattr, sxml, clobber, 
      .          append, only_1
-	INTEGER TM_LENSTR1, FIND_DSET_NUMBER, sho_file, iset, len, len0,
+	INTEGER TM_LENSTR1, TM_LENSTR, FIND_DSET_NUMBER, 
+     .		    sho_file, iset, len, len0,
      .		    slash_brief,
      .		    slash_full,
      .		    slash_vars,
@@ -176,14 +177,14 @@
 	      IF ( sattr       ) CALL SHOW_DATA_SET_ATTRS      
      .                             (show_lun, iset)
            ENDIF
-           IF (sxml) THEN
+           IF (sxml .AND. (.NOT.svars)) THEN
               risc_buff = '</dataset>'
               CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
            ENDIF
 	   IF (status .NE. ferr_ok) GOTO 5000
  790	CONTINUE
 
-        IF (sxml) THEN
+        IF (sxml .AND. (.NOT.svars)) THEN
            risc_buff = '</datasets>'
            CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
         ENDIF

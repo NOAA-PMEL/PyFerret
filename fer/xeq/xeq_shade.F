@@ -101,6 +101,7 @@
 *                  or /NOAXES. Axes are never drawn for overlays anyway.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *                  A time axis may be a T axis or F axis
+* V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -133,7 +134,9 @@
      .            density, i1, loch, locv
 	REAL	  only_val, aspect
 	PARAMETER ( aspect = 0.0)			!kob 12/96
-	CHARACTER TM_FMT*12, fname*128, buff*25
+
+	CHARACTER TM_FMT*12, TM_INQ_PATH*2048, 
+     .                  fname*128, buff*25, sfile*2048
 
 * internal parameter declarations:
 	LOGICAL		norm_dims_only, not_vector, continuous_key
@@ -286,6 +289,12 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
      .             fname, status )
               IF ( status .NE. ferr_ok ) RETURN
               IF ( fname .EQ. ' ' ) fname = 'default'
+	      
+	      slen = TM_LENSTR1(fname)
+              sfile = TM_INQ_PATH (fname(:slen),'FER_PALETTE','.spk',
+     .        	 .false.,status)
+              IF (status .NE. ferr_ok) go to 5300 
+
               CALL PPL_SHASET( 'SAVE' )
               CALL PPL_SHASET( 'SPECTRUM='//fname(1:TM_LENSTR1(fname)) )
            ENDIF
@@ -297,6 +306,12 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
      .             fname, status )
               IF ( status .NE. ferr_ok ) RETURN
               IF ( fname .EQ. ' ' ) fname = 'default'
+	      
+	      slen = TM_LENSTR1(fname)
+              sfile = TM_INQ_PATH (fname(:slen),'FER_PALETTE','.pat',
+     .        	 .false.,status)
+              IF (status .NE. ferr_ok) go to 5300 
+
               CALL PPL_PATSET( 'SAVE' )
               CALL PPL_PATSET( 'PATTERN='//fname(1:TM_LENSTR1(fname)) )
            ENDIF
@@ -430,6 +445,9 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
 * error exits
  5000	GOTO 1000
+ 5300   CALL ERRMSG (ferr_file_not_found, status, 
+     .          'unable to open "' //
+     .	fname(:slen)//'.spk" to set plot colors or pattern.', *1000)
  5440	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .	'AXES[=(TOP,BOTTOM,LEFT,RIGHT)] takes 4 arguments or no argument', *1000 )

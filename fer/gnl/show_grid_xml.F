@@ -44,7 +44,8 @@
 * V580 *acm* 11/4/04 add <axes> tags
 * v6.5 *acm* 3/10 Cleanup - remove commented-out includes
 * V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
-*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*      *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* v685 *acm* 4/12 The flag line_write tells us whether to write the axis name to the xml
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -64,9 +65,10 @@
 	INTEGER lun, grid, cx_expr
 
 * local variable declarations:
-	INTEGER TM_LENSTR1, TM_LENSTR, STR_DNCASE, idim, slen, line, status
+	INTEGER TM_LENSTR1, TM_LENSTR, STR_DNCASE, STR_SAME,
+     .		idim, slen, line, iwrite, status
         CHARACTER*1 axdir
-	CHARACTER*2048 outstring
+	CHARACTER*512 outstring
 
  2020   FORMAT ('<grid name="',A,'">' )
  2030   FORMAT ('<axes>' )
@@ -82,34 +84,57 @@
 	WRITE ( risc_buff, 2030 ) 
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
+	iwrite = 0
 	DO 110 idim = 1, nferdims
 	   slen = 0
            line = grid_line(idim, grid)
-           IF (line .GT. 0) THEN
+           IF (line .GT. 0 .AND. 
+     .	          STR_SAME(line_name(line), 'ABSTRACT') .NE. 0) THEN
 	      slen = TM_LENSTR(line_name(line))
 	      status = STR_DNCASE(axdir, ww_dim_name(idim))
-	   ENDIF
+	      IF (slen .EQ. 0) GOTO 110
+	      CALL ESCAPE_FOR_XML (line_name(line), outstring, slen)
 
-           IF (line .GT. 0  .AND.  slen .GT. 0 .AND.
-     .         cx_expr .EQ. unspecified_int4) THEN
-              CALL ESCAPE_FOR_XML (line_name(line), outstring, slen)
-              WRITE (risc_buff, 2040 ) axdir, outstring(1:slen), axdir
-	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-           ENDIF
 
-           IF (line .GT. 0  .AND.  slen .GT. 0 .AND.
-     .         cx_expr .NE. unspecified_int4) THEN
-
-              IF ( cx_hi_ss(cx_expr,idim).NE.unspecified_int4 .AND. 
-     .	           cx_lo_ss(cx_expr,idim).NE.unspecified_int4 ) THEN
-                 slen = TM_LENSTR1(line_name(line))
-                 WRITE (risc_buff, 2040 ) axdir,
-     .              line_name(line)(1:slen), axdir
+              IF (cx_expr .EQ. unspecified_int4) THEN
+                 WRITE (risc_buff, 2040 ) axdir, outstring(1:slen), axdir
 	         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	         line_write(line) = .TRUE.
+	         iwrite = iwrite + 1
+              ELSE
+                 IF ( cx_hi_ss(cx_expr,idim).NE.unspecified_int4 .AND. 
+     .	           cx_lo_ss(cx_expr,idim).NE.unspecified_int4 ) THEN
+                    WRITE (risc_buff, 2040 ) axdir, outstring(1:slen), axdir
+	            CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	            line_write(line) = .TRUE.
+	         iwrite = iwrite + 1
+                ENDIF
               ENDIF
-           ENDIF
 
+	   ENDIF
  110	CONTINUE
+
+* (hack:) If there are axes, but nothing has been written yet, then 
+* just write the axes.
+
+        IF (iwrite .EQ. 0) THEN
+	   DO 120 idim = 1, nferdims
+	      slen = 0
+              line = grid_line(idim, grid)
+              IF (line .GT. 0 .AND. 
+     .	          STR_SAME(line_name(line), 'ABSTRACT') .NE. 0) THEN
+	         slen = TM_LENSTR(line_name(line))
+	         status = STR_DNCASE(axdir, ww_dim_name(idim))
+	         IF (slen .EQ. 0) GOTO 120
+	         CALL ESCAPE_FOR_XML (line_name(line), outstring, slen)
+
+                 WRITE (risc_buff, 2040 ) axdir, outstring(1:slen), axdir
+                 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	         line_write(line) = .TRUE.
+
+	      ENDIF
+ 120	   CONTINUE
+        ENDIF
 
         WRITE ( risc_buff, 2050 )
         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)

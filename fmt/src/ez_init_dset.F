@@ -100,7 +100,8 @@
 	INTEGER*4	skip, columns, dset, status
 *
 * Include files
-	include 'xio.parm'
+	include 'xio.cmn_text'
+        external xio_data
 	include 'ez_lib.parm'
 	include 'tmap_dims.parm'
 	include 'tmap_dtypes.parm'
@@ -204,10 +205,10 @@
 	  IF (num_names .GT. name_limit) THEN
 	    buff = ' '
 	    WRITE (buff,1000) num_names
-	    CALL TM_NOTE( buff, lunit_errors ) 
+	    CALL WARN( buff ) 
 	    buff = ' '
 	    WRITE (buff,1002) name_limit
-	    CALL TM_NOTE( buff, lunit_errors ) 
+	    CALL WARN( buff ) 
  1000	    FORMAT( 'attempt to initalize',I3,' variables')
  1002	    FORMAT( 'maximum allowed is',I3,' variables')
 	    num_names = name_limit
@@ -473,7 +474,7 @@
 	   line_buff(jcnt+1:) = ','//ftyp_name(i)
 	   jcnt = jcnt + 1 + TM_LENSTR1(ftyp_name(i))
  9320	CONTINUE
-	CALL TM_NOTE('Valid types are: '//line_buff(:jcnt), lunit_errors)
+	CALL WARN('Valid types are: '//line_buff(:jcnt))
 	GOTO 9950
 
  9330	WRITE (line_buff,3100) num_names, num_types

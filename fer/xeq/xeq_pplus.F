@@ -49,9 +49,11 @@
 * V500 *sh* 6/99 - for commands %LABEL and %WHERE define PLOT+ symbols
 *			mode verify output, and journal file comments
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
+	include 'errmsg.parm'
 	include	'plot_setup.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
@@ -62,9 +64,10 @@
 	
 * local variable declarations:
 	LOGICAL	ver_out, jnl_out
-	INTEGER TM_LENSTR1, slen
+	INTEGER TM_LENSTR1, slen, start, status
         REAL temp_ylen, temp_yorg
 	CHARACTER*16 vbuff
+	CHARACTER TM_INQ_PATH*2048, fname*128, sfile*2048
 
 * local parameter declarations:
 	INTEGER		slash_reset
@@ -77,6 +80,28 @@
 * 10/9/91 addition 
         temp_ylen = ylen
         temp_yorg = yorg
+
+* Check for a PPL SHASET SPECTRUM command, and verify the palette file can be opened.
+	IF ( num_args .GT. 0 ) THEN
+           IF ( INDEX(cmnd_buff(arg_start(1):len_cmnd),'SPECTRUM') .GT. 0 ) THEN
+	      start = INDEX(cmnd_buff,'SPECTRUM=') + 10
+              fname = cmnd_buff(start:len_cmnd)
+	      slen = TM_LENSTR1(fname)
+              sfile = TM_INQ_PATH (fname(:slen),'FER_PALETTE','.spk',
+     .        	 .false.,status)
+              IF (status .NE. ferr_ok) go to 5300 
+           ENDIF
+
+           IF ( INDEX(cmnd_buff(arg_start(1):len_cmnd),'PATTERN') .GT. 0 ) THEN
+	      start = INDEX(cmnd_buff,'PATTERN=') + 9
+              fname = cmnd_buff(start:len_cmnd)
+	      slen = TM_LENSTR1(fname)
+              sfile = TM_INQ_PATH (fname(:slen),'FER_PALETTE','.pat',
+     .        	 .false.,status)
+              IF (status .NE. ferr_ok) go to 5300 
+           ENDIF
+
+        ENDIF
 
 	IF ( qual_given( slash_reset ) .GT. 0 ) THEN
 * ... reset plot environment to defaults
@@ -143,9 +168,14 @@
         IF ( ylen .NE. temp_ylen ) ppl_saved_yaxlen = ylen
         IF ( yorg .NE. temp_yorg ) ppl_saved_yorg   = yorg
 
-	RETURN
+ 1000	RETURN
 
  3100   FORMAT('SET ',A1,'MOUSE ', A)       ! "SET ?MOUSE position_string"
  3200	FORMAT(' !-> DEFINE SYMBOL ',A1,'MOUSE = ',A)
+ 
+ 5300   CALL ERRMSG (ferr_file_not_found, status, 
+     .          'unable to open "' //
+     .	fname(:slen)//'.spk" to set plot colors or pattern.', *1000)
+
 	END
 

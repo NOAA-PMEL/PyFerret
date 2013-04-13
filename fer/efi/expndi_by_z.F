@@ -3,6 +3,7 @@
 * 
 *  Steve Hankin
 *  2/22/2001
+*  ACM v6.85 3/2013 Fix handling of bad-flags coming in on Arg 1
 * 
 *  Expand argument 1 by createing a 2D XZ structure from it with the 
 * separation between Z columns given by the location of non-missing values in
@@ -274,7 +275,8 @@
                         iout = iout + 1
                         kout = res_lo_ss(Z_AXIS)
                      ENDIF
-                     result(iout,j,kout,l,m,n)
+                     IF ( arg_1(i,j1,k1,l1,m1,n1) .NE. bad_flag(1) ) 
+     .                 result(iout,j,kout,l,m,n)
      .                     = arg_1(i,j1,k1,l1,m1,n1)
  100              CONTINUE
 

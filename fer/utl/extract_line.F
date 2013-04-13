@@ -63,7 +63,7 @@
 	include 'xcontext.cmn'
 
 * calling argument declarations:
-	INTEGER	cx, msrc, idim, ndim, n, status
+	INTEGER	cx, msrc, idim, ndim, n, nout, status
 	REAL    src(*), line(*)
 
 * internal variable declarations:

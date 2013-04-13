@@ -88,6 +88,7 @@
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 * PyFr *kms* 2/2013  Add /QUALITY=... /AALIAS /NOAALIAS /ENGINE=...
+* PyFr *kms* 4/2013  remove specific reference to /AALIAS /NOAALIAS in warning message
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -283,7 +284,7 @@ c 75        CONTINUE
 * /ENGINE=... also given; ignore but warn
                 warnmsg = '/QUALITY and /ENGINE both given ' //
      .                    'with SET WINDOW; /ENGINE ignored'
-                CALL WARN(warmsg)
+                CALL WARN(warnmsg)
             ENDIF
         ELSE
             qp = qual_given(slash_engine)
@@ -460,9 +461,9 @@ c 75        CONTINUE
             qp = qual_given(slash_noaalias)
             IF ( qp .GT. 0 ) THEN
 * also specified turning anti-aliasing off; ignore but warn
-                warnmsg = '/AALIAS and /NOAALIAS both given ' //
-     .                    'with SET WINDOW; /NOAALIAS ignored'
-                CALL WARN(warmsg)
+                warnmsg = 'anti-aliasing and no anti-aliasing ' //
+     .            'both specified with SET WINDOW; using anti-aliasing'
+                CALL WARN(warnmsg)
             ENDIF
         ELSE
             qp = qual_given(slash_noaalias)

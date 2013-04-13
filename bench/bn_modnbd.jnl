@@ -1,8 +1,8 @@
 ! Test MODNBD regridding statistic.
 
-use "../bench/gtsa056_2.cdf"
-use climatological_axes
-cancel data climatological_axes
+use gtsa056_2.cdf
+!use climatological_axes
+!cancel data climatological_axes
 
 set region/x=140/y=1/k=1
 

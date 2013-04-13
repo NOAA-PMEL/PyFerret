@@ -1,3 +1,4 @@
+! bn_cancel_axes.jnl
 
 let ind1 = 1*i
 let tim1 = 20500*randu(ind1[i=1:20500])
@@ -27,20 +28,21 @@ can axis ax1
 sh axis/x ax2
 
 ! Test interaction with irreg axes from datasets
-use climatological_axes
-cancel data climatological_axes
-sh axis/t month_irreg
+
+use test_axes
+cancel data test_axes
+sh axis/t test_irreg
 
 def axis/x ax1 = {1, 3, 4, 5, 9}
 can axis ax1
-sh axis/t month_irreg
+sh axis/t test_irreg
 
-cancel axis month_irreg
+cancel axis test_irreg
 
 def axis/x ax1 = {1, 3, 4, 5, 9}
 sh axis/x ax1
 can axis ax1
 
-sh axis/t month_irreg
-sh axis/t seasonal_reg
+sh axis/t test_irreg
+sh axis/t test_seas
 

@@ -49,7 +49,7 @@
 *
 * internal variable declarations:
 	INTEGER STR_MATCH
-	INTEGER	TM_LENSTR1, STR_SAME, slen
+	INTEGER	TM_LENSTR1, STR_SAME, slen, imatch
 	
 * string length
 	slen = TM_LENSTR1( name )

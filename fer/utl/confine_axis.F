@@ -184,7 +184,7 @@
 	      CALL CALENDAR_AXIS (idim, grid, cx, istat)
 	      IF (istat .NE. 2) THEN
 	         IF (istat .EQ. -1) GOTO 5000
-	         IF (idim .EQ. t_dim .AND. grid_line(f_dim,igrid) .NE. mnormal)THEN
+	         IF (idim .EQ. t_dim .AND. grid_line(f_dim,grid) .NE. mnormal)THEN
 	            CALL CALENDAR_AXIS(f_dim, grid, cx, istat)
      	            IF (istat .EQ. -1) GOTO 5000
 	         ENDIF

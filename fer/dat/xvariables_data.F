@@ -117,4 +117,13 @@
         DATA uvar_num_items_padding / 0 /
 	DATA uvar_num_items	/ max_uvar*uvar_deleted /
 	DATA num_uvars_in_cmnd	/ cmnd_uvars_not_given	/
+
+	
+* Remote user-defined variables: LET/REMOTE
+	DATA uvar_remote	 /max_uvar*.FALSE./
+	DATA rvar_on_server	 /max_rvar*.FALSE./
+	DATA rvar_uvar		 /max_rvar*0/
+	DATA rvar_dset		 /max_rvar*0/
+	DATA rvar_varid		 /max_rvar*0/
+
 	END

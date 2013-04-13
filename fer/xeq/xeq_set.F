@@ -956,8 +956,8 @@ c *kob* 4/97
         new_att_t0 = ' '
 	loc = qual_given(slash_set_axis_t0) 
         IF (loc .GT. 0 ) THEN
-           IF ( line_direction(iline)(1:1) .EQ. 'T' .OR.
-     .          line_direction(iline)(1:1) .EQ. 'F' ) THEN
+           IF ( line_direction(axis)(1:1) .EQ. 'T' .OR.
+     .          line_direction(axis)(1:1) .EQ. 'F' ) THEN
 
 	      CALL EQUAL_STRING(
      .                cmnd_buff(qual_start(loc):qual_end(loc)),
@@ -969,9 +969,9 @@ c *kob* 4/97
               IF ( status .NE. ferr_ok ) GOTO 6420
               line_t0(axis) = buff1
               new_att_t0 = buff1
-              IF (line_direction(iline)(1:1) .EQ. 'T') 
+              IF (line_direction(axis)(1:1) .EQ. 'T') 
      .          line_direction(axis) = 'TI'
-              IF (line_direction(iline)(1:1) .EQ. 'F') 
+              IF (line_direction(axis)(1:1) .EQ. 'F') 
      .          line_direction(axis) = 'FI'
 
            ENDIF
@@ -1110,8 +1110,8 @@ c *kob* 4/97
 * Combine new attribute units and/or time origin to express the units
 * attribute as units since time-origin
 
-           IF (line_direction(iline)(1:1) .EQ. 'T' .OR. 
-     .         line_direction(iline)(1:1) .EQ. 'F' ) THEN
+           IF (line_direction(axis)(1:1) .EQ. 'T' .OR. 
+     .         line_direction(axis)(1:1) .EQ. 'F' ) THEN
               IF (new_att_units .NE. ' ') THEN
               i1 = TM_LENSTR1(new_att_units)
               new_att_units = new_att_units(1:i1)//' since ' 
@@ -1578,8 +1578,8 @@ c *kob* 4/97
            IF (axis .NE. unspecified_int4) THEN
               slen = TM_LENSTR1(attname)
               IF ( MATCH_NAME (attname,  slen, 'TIME_ORIGIN', 11) .AND.
-     .            ( line_direction(iline)(1:1) .EQ. 'T' .OR.
-     .              line_direction(iline)(1:1) .EQ. 'F' ) ) THEN
+     .            ( line_direction(axis)(1:1) .EQ. 'T' .OR.
+     .              line_direction(axis)(1:1) .EQ. 'F' ) ) THEN
                  CALL CD_GET_VAR_ATT_ID (dset_num, varid, 'UNITS', attid, status)
                  IF (status .NE. ferr_ok) GOTO 5950
    
@@ -1610,8 +1610,8 @@ c *kob* 4/97
            
               slen = TM_LENSTR1(attname)
               IF (MATCH_NAME (attname,  slen, 'units', 5)  .AND.
-     .            ( line_direction(iline)(1:1) .EQ. 'T' .OR.
-     .              line_direction(iline)(1:1) .EQ. 'F' ) ) THEN
+     .            ( line_direction(axis)(1:1) .EQ. 'T' .OR.
+     .              line_direction(axis)(1:1) .EQ. 'F' ) ) THEN
                  CALL CD_GET_VAR_ATT_ID (dset_num, varid, 'time_origin', 
      .                 attid, status)
                  IF (status .EQ. ferr_ok) THEN 

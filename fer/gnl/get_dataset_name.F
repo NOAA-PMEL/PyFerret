@@ -67,7 +67,7 @@
      .                      '!-> **ERROR**', 0)
             CALL SPLIT_LIST(pttmode_ops, ttout_lun, 
      .                      '!-> **ERROR**', 0)
-            CALL SPLIT_LIST(pttmode_ops, tterr_lun, err_warn_msg, 0)
+            CALL SPLIT_LIST(pttmode_ops, err_lun, err_warn_msg, 0)
             status = ferr_erreq
             RETURN
         ENDIF

@@ -39,7 +39,8 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 # Targets
 #
 
-all:    sorti_str.so bin_index_wt.so samplei_multi.so samplej_multi.so samplek_multi.so samplel_multi.so is_element_of_str.so 
+#all:    sorti_str.so bin_index_wt.so samplei_multi.so samplej_multi.so samplek_multi.so samplel_multi.so is_element_of_str.so 
+all:    compressi_str.so string_to_id.so 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

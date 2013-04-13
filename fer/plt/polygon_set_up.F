@@ -188,7 +188,7 @@
      .			cx_buff_x, cx_buff_y,
      .			phlim, pvlim, pxdenig, pydenig,
      .                  cal_id, tax, x_axtyp, y_axtyp, n,
-     .                  ss_x_save, ss_y_save, hblk1, mvh_temp
+     .                  ss_x_save, ss_y_save, hblk1, mvh_temp, ier, nc
 
 	REAL		x_len, y_len, lo, hi, lox, hix, loy, hiy,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -763,7 +763,8 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
        IF (need_histo) THEN
 * create temporary buffer to contain workspace
-	  CALL CREATE_TEMP_MEM_VAR( ctx, mvh_temp, status )
+
+	  CALL CREATE_TEMP_MEM_VAR( cx_x, mvh_temp, status )
 	  IF ( status .NE. ferr_ok ) RETURN
 	  hblk1 = mr_blk1( mvh_temp )
           plot_mem_used = plot_mem_used + ncolor

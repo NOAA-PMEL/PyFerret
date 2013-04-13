@@ -53,7 +53,7 @@
 	INTEGER agg_dset, imemb, igrid, status
 
 * Local variable declarations
-	INTEGER NCF_ADD_AGG_VAR_INFO, varid
+	INTEGER NCF_ADD_AGG_VAR_INFO, NCF_PUT_AGG_MEMB_GRID, varid
 
 	CALL CD_GET_VAR_ID (agg_dset, vname, varid, status)
 

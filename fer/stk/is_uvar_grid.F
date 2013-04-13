@@ -114,10 +114,11 @@
 
 * internal variable declarations:
 	LOGICAL	ITSA_GCVAR, its_dynamic, its_gc, need_another_pass,
-     .		saved_ifthen_type, do_err, agg_has_uvar
+     .		saved_ifthen_type, do_err, agg_has_uvar, ok_remote
 	INTEGER KNOWN_GRID, STR_SAME,
      .		TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR, 
-     .		 hi_cx, lo_cx, big_cx, start, end, grid,
+     .		NCF_GET_AGG_COUNT,
+     .		hi_cx, lo_cx, big_cx, start, end, grid,
      .		i, dset, uvar, item, itype, idim, gnum, nitem, uv_grd,
      .		var, len_name, pass_number, cx_save, this_dset,
      .		ifthen_data_type, varid, alen, attype, attlen,
@@ -731,6 +732,24 @@ c        ENDIF
 c        IF ( itype .EQ. alg_attrib_val  ) THEN
 c           uvar_dset(uvar) = unspecified_int4  ! or irrelevant??
 c        ENDIF
+
+* Is it a LET/REMOTE variable?
+* ! do we need to find a slot in rvar_uvar, and index the rvars with "rvar", 
+* !or just use same indexing as for regular user-vars?
+
+
+        IF (uvar_remote(uvar)) THEN 
+
+	   CALL CD_DSET_REMOTEOK(dset, ok_remote)
+	   IF (ok_remote) THEN
+	      uvar_remote(uvar) = .TRUE. 
+	      rvar_uvar(uvar) = uvar  
+	      rvar_dset(uvar) = dset
+c	      rvar_on_server(uvar) = .FALSE. 
+	   ELSE
+	      uvar_remote(uvar) = .FALSE. 
+	   ENDIF
+	ENDIF
 
 	RETURN 2
 

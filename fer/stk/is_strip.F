@@ -99,7 +99,7 @@
      .		cxsize, split_ax, split_ax_len, frag, var, ss, lo_ss,
      .		hi_ss, nmod, nmodhi, npts, xlate, dup_cx, i4d,
      .          line, imemb, imemb_dset, grids_dset, len, 
-     .		igrid, iline, varid, attlen, maxlen, fer_uvar, nv
+     .		igrid, iline, varid, attlen, maxlen, fer_uvar, nv, memb_dset
 	REAL	ax_frac, vbad
 	REAL*8	TM_WORLD, ww_given, ww_nrst
 	CHARACTER*128 VAR_CODE, vname

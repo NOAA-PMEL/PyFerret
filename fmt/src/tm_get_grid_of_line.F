@@ -42,9 +42,10 @@
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 # include "tmap_dset.parm"	
-	include 'tmap_dims.parm'	! 
+	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'	! pre-defined grid common
-	
+#include "gt_lib.parm"
+
 * input arguments
 	INTEGER		line
 

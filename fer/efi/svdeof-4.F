@@ -69,7 +69,7 @@ c.......DO_SVD_EOF is called from the main program, and calls SVDEOF to do the w
 c..........It is assumed that the input data is A(space,time) (NX,NT).
 
 	SUBROUTINE DO_SVD_EOF (A, NX, NT, w, v, pct, move, work2, work3, ier)
-      
+        IMPLICIT REAL(A-H, O-Z), INTEGER(I-N)
 c...................................maximum size of (m+n)/2.
 cc	PARAMETER (iwrk=200000)		! HARDWIRING
 	INTEGER ier
@@ -172,7 +172,8 @@ c	   continue the above operations NT times
 c	4) shift the rows of V (EOFs) over to the left side of V
 
 	subroutine switch_a_v(a,v,w,pct,nx,nt)
-	
+	IMPLICIT REAL(A-H, O-Z), INTEGER(I-N)
+
 	real a(nx,nt), v(nx,nx)
 	real w(nx), pct(nx)
 	
@@ -218,6 +219,7 @@ c......Fix V here: Make first NT indices of each of the first NT columns a TAF
 c......This might leave some stray leftovers, but it should be ok (?)
 
 	subroutine fix_v(v,nt,nx)
+	IMPLICIT REAL(A-H, O-Z), INTEGER(I-N)
 	
 	real v(nx*nx)		! true size of V
 	
@@ -246,6 +248,7 @@ c.........But still want to call with the same declared array sizes.
 c.........Otherwise have array overflow problems (in V).
 
 	subroutine scaling (a, n, m, w, v, pct, neof)
+	IMPLICIT REAL(A-H, O-Z), INTEGER(I-N)
 	
 c	real A(n,m),W(n),V(n,n),pct(n)
 	real A(n,m),W(neof),V(n,neof),pct(neof)
@@ -276,6 +279,7 @@ c*********************************************************************
 c.......demean A in time. Returned demeaned.
 
 	subroutine demean (a, nx, nt)
+	IMPLICIT REAL(A-H, O-Z), INTEGER(I-N)
 	
 	real a(nx,nt)
 	
@@ -296,6 +300,7 @@ c........subroutine now does no scaling (handles either transposition)
 c........=> demeaning must have been done previously
 
       SUBROUTINE SVDEOF (A, M, N, W, V, pct, RV1, indx, ier)
+	IMPLICIT REAL(A-H, O-Z), INTEGER(I-N)
 
 c......................................maximum number of spatial locations.
 cc      PARAMETER (NMAX=100000)		! HARDWIRED
@@ -606,6 +611,7 @@ c...............The inputs N and ARRIN are not changed.
 c...............Method is heapsort.
 
       SUBROUTINE INDEXX(N,ARRIN,INDX)
+	IMPLICIT REAL(A-H, O-Z), INTEGER(I-N)
 
       DIMENSION ARRIN(N),INDX(N)
 
@@ -654,6 +660,7 @@ c...............subroutine to transpose matrices
 c...............from http://www.netlib.org/toms/513
 
       SUBROUTINE MATRIXTRANS(A, M, N, MN, MOVE, IWRK, IOK)
+	IMPLICIT REAL(A-H, O-Z), INTEGER(I-N)
 C *****
 C  ALGORITHM 380 - REVISED
 C *****

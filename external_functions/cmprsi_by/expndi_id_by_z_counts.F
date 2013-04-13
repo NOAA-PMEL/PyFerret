@@ -183,7 +183,7 @@
 *                                                                      V
 
       INTEGER i,j,k,l
-      INTEGER j1, k1, l1
+      INTEGER i1, j1, k1, l1
       INTEGER iout, kout, isum
       REAL size, xlen, zlen
 

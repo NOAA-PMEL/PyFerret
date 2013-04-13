@@ -16,6 +16,7 @@ get_prot_cmnd_data.F\
 get_uvar_grid.F\
 hunt.F\
 i1mach.F\
+init_ftds_dset.F\
 init_random_seed.F\
 interp_context.F\
 interp_stack.F\
@@ -35,6 +36,7 @@ is_modulo.F\
 is_pseudo.F\
 is_pystat_var.F\
 is_read.F\
+is_read_remote.F\
 is_reconcile.F\
 is_regrid.F\
 is_reverse.F\

@@ -96,6 +96,8 @@
 * V670 *acm* 2/11 Fix ticket 1798. The fix to 1339 starting label loops at ndx=lev1+1 
 *                 was not applied to loop 20 for horizontal keys.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V685 *acm* 4/13 For horizontal keys check that there is room for the labels and adjust
+*                 label size and/or increment
 
         IMPLICIT NONE
 	include 	'parampl5_dat.decl'
@@ -122,15 +124,16 @@
 	include        'gkspar.inc'
 
 	integer		ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
-     .                  lab_add, lev1, levn, nspace
+     .                  lab_add, nlab, lev1, levn, nspace
 
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht
-	real		xx,yy,xxx,yyy
+	real		xx,yy,xxx,yyy, xx1, xxn, xxlen
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
      .                  val, del, x_inc_inf, y_inc_inf, frac, fixx
         real*8          val_n, val_last
-	character*12	text,TM_FMT_SNGL, TM_FMT_SNGL_DIGITS, txt_out, blanks
+	character*12	text,TM_FMT_SNGL, TM_FMT_SNGL_DIGITS, 
+     ,			txt_out, blanks
         character*20    buff
 	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, windof_hold, 
      .                  check_0, increase_digits, nofill
@@ -305,11 +308,32 @@
 	   karht = ABS(klab_size)
 	end if
 
+* Is there room for the labels at their current size?
+* If not adjust the size and/or increment
+
+        IF (incr .GT. 0) THEN
+
+	   xx1 = (kx_lo + x_inc*real(lev1-1))/1000.0 - xorg
+	   xxn = (kx_lo + x_inc*real(shd_levels))/1000.0
+     .		 + karht*real(max_len) - xorg
+	   xxlen = xxn-xx1
+	   nlab = INT( 0.5+(shd_levels-lev1)/incr )
+	
+	   IF (nlab*max_len*karht .GT. xxlen) THEN
+	      karht = 0.85*xxlen/FLOAT(nlab*max_len)
+	      IF (karht .LT. 0.06) THEN
+	         karht = 0.08
+	         incr = incr*2
+	      ENDIF
+	   ENDIF
+	ENDIF
+
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
 	val = zlev(lev1)
 	IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)  
+	text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)  
         if (max_len .lt. str_len) max_len = str_len
         
         nhi = MAX(2,shd_levels+1)
@@ -363,11 +387,13 @@
               val = zlev(ndx)
               IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	      text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+	      text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
 	      if (max_len .lt. str_len) max_len = str_len
            ENDIF
 10	continue
 
         IF (incr .GT. 0) THEN
+
 	do 20 ndx = lev1,shd_levels+1,incr
 
 *	   WRITE OUT CORRESPONDING VALUE
@@ -377,11 +403,13 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
              val = zlev(lev1)
              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+	     text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
 
 	   else
              val = zlev(ndx)
              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+	     text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
 
              IF (ndx .EQ. 1 .AND. neginf) text = " "
              IF (ndx .EQ. shd_levels+1 .AND. posinf) text = " "

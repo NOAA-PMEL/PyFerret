@@ -208,7 +208,8 @@
      .			wwlimits0, cal_id, tax, varid, vartype, nvdims, 
      .                  nvatts, vdims(8), iatt, slen, alen, istat, 
      .                  attype, attlen, attoutflag, all_outflag,
-     .                  outtype, no_missing_flag, no_fill_flag 
+     .                  outtype, no_missing_flag, no_fill_flag, 
+     .                  varoutflag
         LOGICAL         NC_GET_ATTRIB, NC_GET_ATTRIB_DP, 
      .                  full_precision, DODS_cache, range_not_rqd,
      .                  got_it, got_title, got_units, got_history,

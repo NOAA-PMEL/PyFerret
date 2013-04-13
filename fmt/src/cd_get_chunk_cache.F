@@ -41,6 +41,7 @@
 
 * revision 0.0 - 1/2010
 
+#include "netcdf.inc"
       INCLUDE 'netcdf4_settings.cmn'
       INCLUDE 'tmap_errors.parm'
 

@@ -5,8 +5,8 @@
 
 use coads_vwnd 
 set region/x=161w/y=39n
-use climatological_axes
-can data climatological_axes
+!use climatological_axes
+!can data climatological_axes
 
 let vwnd_clim = vwnd[gt=month_reg@mod]
 

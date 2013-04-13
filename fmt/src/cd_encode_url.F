@@ -1,5 +1,4 @@
-	SUBROUTINE CD_ENCODE_URL (urlstring)
-*
+	SUBROUTINE CD_ENCODE_URL ( urlbuff, ebuff, status)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -34,108 +33,51 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Encode a URL that has an expression, which is set off by the string
-* _expr_{}. (_expr_ is the "marker" string - could be something else.) 
-* Encode everything starting with the {} after _expr_ and up 
-* to and including the next }.  Throw away anything else which would be 
-* a constraint (We may deal with constraints later...)
 
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP 
-* 10/2009
 
-*Reserved characters after percent-encoding ; the last being a space, is %20.
-*
-*      !  %21
-*      *  %2A
-*      "  %22
-*      '  %27
-*      (  %28
-*      )  %29
-*      ;  %3B
-*      :  %3A
-*      @  %40
-*      &  %26
-*      =  %3D
-*      +  %2B
-*      $  %24
-*      ,  %2C
-*      /  %2F
-*      ?  %3F
-*      %  %25
-*      #  %23
-*      [  %5B
-*      ]  %5D
-*         %20
-*      {  %7B
-*      }  %7D
-*
+* 
+* V6.85 2/13 
+* argument definitions:
+*       urlbuff - url to encode
+*       ebuff   - result enocded url
+*	status	- return status
 
-	INCLUDE 'xrisc_buff.cmn'
-	INCLUDE 'encode_strings.cmn'
-	
-	EXTERNAL ENCODE_STRINGS_DATA
+* argument declarations:
+	INTEGER	      status
+	CHARACTER*(*) urlbuff, ebuff
 
-* Argument declarations
-	CHARACTER*(*) urlstring
+	INTEGER url_encode
 
-* Local declarations
 
-	INTEGER TM_LENSTR1, slen, mlen, blen, iencode, loc, bracket
-	CHARACTER*10 marker
+#include "netcdf.inc"
+        include 'tmap_errors.parm'
+
+
+        INTEGER   TM_LENSTR1, llen, slen
+        PARAMETER (slen=2048)
+
+#ifdef sun
+        BYTE        fhol_url(slen)      ! c-type Hollerith string buffer
+	BYTE      fhol_eurl(slen)
+#else
+	INTEGER*1 fhol_url(slen)      ! c-type Hollerith string buffer
+	INTEGER*1 fhol_eurl(slen)
+#endif
 
 * Save dataset info in GLOBAL_NCdsetList for attribute handling
 
-	marker = '_expr_{}'
+        llen = TM_LENSTR1( urlbuff )
+        CALL TM_FTOC_STRNG( urlbuff(1:llen), fhol_url, slen )
 
-	slen = TM_LENSTR1( urlstring )
-	mlen = TM_LENSTR1(marker)
+        status = url_encode(fhol_url, fhol_eurl, llen)         
+        IF (status .EQ. 0) THEN
+           CALL TM_CTOF_STRNG (fhol_eurl, ebuff, llen) 
+	   status = merr_ok
+	ENDIF
 
-        iencode = INDEX( urlstring(1:slen), marker(1:mlen) ) 
-
-* Encode an F-TDS expression?
-
-        IF (iencode .EQ. 0) RETURN
-
-	loc = iencode + mlen - 3  ! up to the {}
-        risc_buff = urlstring(1:loc)
-	blen = loc
-
-        loc = loc + 1
-	bracket = 0
-
-	DO WHILE (loc .LE. slen)
-	   DO 100 i = 1, nencode
-	      IF (urlstring(loc:loc) .EQ. reschar(i)) THEN
-	         risc_buff = risc_buff(1:blen)//subencode(i)
-		 blen = blen + nsubencode(i)
-		 GOTO 200
-	      ENDIF
-  100      CONTINUE
-
-*  Not encoded, just keep the orig. character
-
-           risc_buff = risc_buff(1:blen)//urlstring(loc:loc)
-	   blen = blen + 1
-  200      CONTINUE
- 
-* Stop the second time a } is reached; this is the end of the Ferret expr.
-* (If there is a DODS constraint on the orig. URL, would it also get encoded?)
-
-	   IF (urlstring(loc:loc) .EQ. '}') THEN
-	      IF (bracket .GT. 0) GOTO 300
-	      bracket = bracket + 1
-	   ENDIF
-
-           loc = loc + 1
-
-	ENDDO
-
-  300   CONTINUE
-
-        urlstring = risc_buff(1:blen)
-	print *, urlstring(1:blen)
+* successful completion
 	
 	RETURN
 	END
-

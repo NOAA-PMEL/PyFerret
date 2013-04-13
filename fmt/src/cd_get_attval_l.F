@@ -72,7 +72,8 @@
       CHARACTER*(*) attrib, vname
       LOGICAL       val
 
-      include 'xio.parm'
+      include 'xio.cmn_text'
+      external xio_data
 #include "netcdf.inc"
       include 'xrisc_buff.cmn'         !1/03 *kob*
       include 'tmap_errors.parm'
@@ -148,11 +149,10 @@
         lena = TM_LENSTR1( attrib )
 	risc_buff = attrib(:lena)
 	tmp_buff = vname
-	CALL TM_NOTE('Undecipherable value of netCDF attribute '//
+	CALL WARN('Undecipherable value of netCDF attribute '//
      .        risc_buff(:TM_LENSTR1(risc_buff))//' on variable '//
-     .        tmp_buff, lunit_errors)
-        CALL TM_NOTE('modulo = "'//buff(:TM_LENSTR1(buff))//
-     .        '"', lunit_errors)
+     .        tmp_buff)
+        CALL WARN('modulo = "'//buff(:TM_LENSTR1(buff))//'"')
 
       ENDIF
 

@@ -55,7 +55,7 @@
 	include 'ferret.parm'
 
 * calling argument declarations
-	INTEGER	grid
+	INTEGER	grid, idim
 	REAL*8	tstep
 
 * internal variable declarations

@@ -77,6 +77,7 @@
 	PARAMETER     ( implct_defn = .TRUE. )
 
 * internal variable declarations:
+	LOGICAL its_remote
 	INTEGER	tlen, uvar, natom, i, paren_level, at1,
      .		at_type  (maxatoms), at_id  (maxatoms),
      .		at_start (maxatoms), at_end (maxatoms),
@@ -194,6 +195,8 @@ c        tlen = MIN( size_rbuff, LEN(text) )
 	exp_end(num_parts) = at_end(natom)
 
 * now file the expression in the user-defined variable area
+        its_remote = .FALSE.  ! LET/REMOTE only with LET itself.
+
 	DO 200 i = 1, num_parts
 	   at1 = atom_1(i)
 	   CALL INIT_UVAR( EXPR_NAME(i),text,' ', ' ', unspecified_int4,
@@ -202,7 +205,7 @@ c        tlen = MIN( size_rbuff, LEN(text) )
      .			   at_start(at1), at_end(at1),
      .			   atom_n(i)-at1+1,
      .			   exp_start(i), exp_end(i), 
-     .			   EXPR_NAME(i), status )
+     .			   EXPR_NAME(i), its_remote, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
  200	CONTINUE
 

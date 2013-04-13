@@ -52,7 +52,7 @@
 	include 'xcontext.cmn'
 
 * calling argument declarations:
-	INTEGER	com_cx(4), mr1, mr2, mres
+	INTEGER	com_cx(4), mr1, mr2, mres, m, n
 	REAL*8  com1( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
      .		com2( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
         REAL*8   res( m5lox:m5hix,m5loy:m5hiy,m5loz:m5hiz,m5lot:m5hit,m5loe:m5hie,m5lof:m5hif )

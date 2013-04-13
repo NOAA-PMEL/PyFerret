@@ -183,8 +183,8 @@
 *                                                                      V
 
       INTEGER i,j,k,l
-      INTEGER j1, k1, l1
-      INTEGER j2, k2, l2
+      INTEGER i1, j1, k1, l1
+      INTEGER i2, j2, k2, l2
       INTEGER imax,kmax, iout, kout, isum
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)

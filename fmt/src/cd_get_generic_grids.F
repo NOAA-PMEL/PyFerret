@@ -111,7 +111,7 @@
      .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen, idim2,
      .        tmvar, tmpgrid, npts, dim, tmplines(nferdims), ndim,
      .	      grid_dims(nferdims), trans(nferdims), indices(nferdims),
-     .        i, maxlen, attlen,attoutflag, all_outflag, axid
+     .        i, maxlen, attlen,attoutflag, all_outflag, axid, iaxis5
       REAL    tmp
       CHARACTER name*128, vname*128, linunits*16
 
@@ -253,13 +253,12 @@
 * ... If there is a T and an F axis, check for matching calendars
            idim = 5
 	   iaxis5 = tmplines(indices(idim))
-           idim = 6
-	   iaxis6 = tmplines(indices(idim))
-	   IF (STR_SAME(line_cal_name(iaxis5), line_cal_name(iaxis5)) .NE. 0) 
-     .       CALL TM_ERRMSG
-     .     ( istat+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
-     .       vname(:vlen), 'Calendar definitions on T and F axes must match', *5900 )
-
+	   IF (iaxis5 .NE. unspecified_int4) THEN
+	     IF (STR_SAME(line_cal_name(iaxis), line_cal_name(iaxis5)) .NE. 0) 
+     .        CALL TM_ERRMSG
+     .        ( istat+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
+     .        vname(:vlen), 'Calendar definitions on T and F axes must match', *5900 )
+	   ENDIF
 * is the temporary grid we just created unique ?
 	   igrid = 0
  300	   CALL TM_NEXT_TMP_GRID( igrid, *320)

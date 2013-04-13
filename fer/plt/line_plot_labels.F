@@ -53,10 +53,11 @@
 	include 'xplot_state.cmn'
 	include 'axis_inc.decl'    ! with axis lengths 
 	include 'AXIS.INC'         ! with axis lengths   
+	include 'xcontext.cmn'
 
 * calling argument declarations:
 	LOGICAL this_no_range(*), overlay, versus, nokey, time_axis
-	INTEGER var1, nmv, cx_list(*), cal_id_1, ribbon_var, 
+	INTEGER var1, nmv, ndv, cx_list(*), cal_id_1, ribbon_var, 
      .		indep_lab, dep_lab
 	REAL	dep_len, hlen
 	REAL*8  ind_min
@@ -65,7 +66,7 @@
 * internal variable declarations:
 	LOGICAL user_title
 	INTEGER	TM_LENSTR1, TM_UNIT_ID, ipl, nline_in_mem, slen, slen1, 
-     .		status, ptitl, style, justify, iunits
+     .		status, ptitl, style, justify, iunits, istart
 	
 	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title, plot_title_1
 	CHARACTER	VAR_UNITS*64, SECS_TO_DATE*20, year*4, buff1*16
@@ -74,8 +75,6 @@
 
 	ptitl = qual_given( slash_title )
 	user_title = ptitl .GT. 0
-	aa = letsize_title
-
 
 * * * * * * *    - - - TITLES - - -   * * * * * * * * *
 * if we are starting from a blank screen titling information is centered
@@ -260,7 +259,7 @@
 	   plot_title = VAR_UNITS( cx_list(var1) )
 
 	   slen = TM_LENSTR1( plot_title )
-	   buff1 = VAR_UNITS(cx_y)
+	   buff1 = VAR_UNITS(cx_list(2))  ! ? was cx_y
 	   iunits = TM_UNIT_ID(buff1)
 	   IF (iunits .NE. 4) THEN
 	      CALL BOX_LABEL( dep_lab,

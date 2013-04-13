@@ -57,6 +57,7 @@
 *       2/12 *kms* Add E and F dimensions (set to nferdims);
 *                  added mr_lo_s5 & 6, mr_hi_s5 & 6;
 *                  reordered to remove padding
+* V685 1/13  *acm* implement LET/REMOTE
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -163,6 +164,12 @@
 *	is_mr		- pointer to memory grid for result
 *	is_sum   	- stores a value that is accumulated at stack level
 
+*	uvar_remote	- is the user-variable a LET/REMOTE variable
+*	rvar_on_server	- indicates if F-TDS server knows about the LET def
+*	rvar_uvar	- associates the remote variable with a uvar
+*	rvar_dset	- dataset that hosts the remote definition
+*	rvar_varid	- netCDF var id of the remotely defined variable
+
 ********************************************************************************
 ******			PARAMETER DEFINITIONS				  ******
 
@@ -192,11 +199,13 @@
 	INTEGER		max_uvar,
      .			max_uvar_items,
      .			uvar_text_len,
-     .			max_intrp
+     .			max_intrp,
+     .			max_rvar
 	PARAMETER     (	max_uvar      	  = 2000,! total # uvars incl. "EX#."
      .			max_uvar_items    =  200,! complexity of uvar expression
      .			uvar_text_len	  = 2048,! max length of uvar expression
-     .			max_intrp	  =  400  )
+     .			max_intrp	  =  400 ,! max length of uvar expression
+     .			max_rvar	  = 2000  )
 
 ********************************************************************************
 ******				COMMON DECLARATION			  ******
@@ -259,6 +268,11 @@
      .		uvar_item_type	 ( max_uvar_items, max_uvar ),
      .		uvar_given	 ( nferdims, max_uvar ),
      .		uvar_dset	 ( max_uvar ),
+     .		uvar_remote	 ( max_uvar ),
+     .		rvar_on_server	 ( max_rvar ),
+     .		rvar_uvar	 ( max_rvar ),
+     .		rvar_dset	 ( max_rvar ),
+     .		rvar_varid	 ( max_rvar ),
      .          deleted_list_result(max_uvar),
      .          string_array_result(max_uvar),
      .		isp,
@@ -339,7 +353,9 @@
      .			uvar_mod_pseudo,
      .			uvar_by_ss,
      .			has_uvar_gc,
-     .			uvar_ifv
+     .			uvar_ifv,
+     .			uvar_remote,
+     .			rvar_on_server
 	REAL*8          uvar_name_code_head,
      .                  uvar_name_code_padding,       
      .                  uvar_num_items_head,
@@ -356,7 +372,10 @@
      .			uvar_lo_ss	,
      .			uvar_hi_ss      ,
      .                  deleted_list_result,
-     .                  string_array_result
+     .                  string_array_result,
+     .			rvar_uvar,
+     .			rvar_dset,
+     .			rvar_varid
 
 	INTEGER		isp,
      .			is_act  ,

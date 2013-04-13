@@ -90,7 +90,8 @@
 #include "tmap_dset.parm"	
 	include 'tmap_dims.parm'		! data set dimensions
 #include "gt_lib.parm"
-	include 'xio.parm'
+	include 'xio.cmn_text'
+        external xio_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'xdset_info.cmn_text'		! data set common
@@ -147,10 +148,10 @@
 	ds_alert_on_output(dset_num) = d_alert_on_output
 	ds_message(dset_num) = d_message
 	IF (d_alert_on_open) THEN
-	   CALL TM_NOTE('regarding '//
+	   CALL WARN ('regarding '//
      .	      ds_name(dset_num)(:TM_LENSTR(ds_name(dset_num)))
-     .	      //' ...', lunit_errors)
-	   CALL TM_NOTE(d_message, lunit_errors)
+     .	      //' ...')
+	   CALL WARN(d_message)
 	ENDIF
 
 * Last data set record - EXTRA_RECORD
@@ -228,7 +229,7 @@
  1100         FORMAT(' WARNING - NON-INTEGER NUMBER OF STEPS PER STEPFILE'/
      .	         ' INDICATED IN DESCRIPTOR - TRYING TO CONTINUE ANYWAY')
               lenb = TM_LENSTR( string )
-              CALL TM_NOTE( string(:lenb), lunit_errors )
+              CALL WARN( string(:lenb) )
 	   ENDIF
 	ENDIF
 

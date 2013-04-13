@@ -149,7 +149,7 @@
 	include	'GKSCM1.INC'	! with gks common
 
 * calling argument declarations:
-        INTEGER n
+        INTEGER n, lo
 
         IF ( .NOT.wn_open( n ) ) RETURN
 

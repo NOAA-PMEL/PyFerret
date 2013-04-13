@@ -231,7 +231,7 @@
 		 risc_buff(tlen:tlen+8) = '   ...   '
 		 tlen = tlen + 9
               ELSE
-                 long = LEFINT(ds_grid_start(i,ivar),dtlen)
+                 long = LEFINT(ds_grid_start(i,ivar),dlen)
 	         risc_buff(tlen+1:tlen+dlen) = long(1:dlen)
 	         tlen = TM_LENSTR1(risc_buff)
 	         risc_buff(tlen+1:tlen+1) = ":"

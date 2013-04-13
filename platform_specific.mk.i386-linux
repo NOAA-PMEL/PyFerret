@@ -71,7 +71,7 @@ endif
 	CFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
 	FFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC -fno-automatic -fdollar-ok \
 			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash \
-			  -fdefault-real-8 -fdefault-double-8
+			  -fimplicit-none -fdefault-real-8 -fdefault-double-8
 	PPLUS_FFLAGS	= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC -fno-automatic -fdollar-ok \
 			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash
 

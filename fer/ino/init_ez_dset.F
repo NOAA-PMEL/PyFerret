@@ -325,7 +325,7 @@ c       /swap
 * and don't allow /swap or /type flags 
 	if (ezform(:3) .NE. 'STR') then
 	   do i=1,nferdims
-	      if (order(i) .eq. nferdimp1) goto 5700
+	      if (order(i) .eq. nferdimsp1) goto 5700
 	   end do
 * 3/99 *kob* - nag F90 wants to use eqv for logical expressions
 	   if (swap .eqv. .TRUE. .or. have_type .eqv. .TRUE.) then

@@ -222,8 +222,6 @@ def init(arglist=None, enterferret=True):
                             raise ValueError("a script filename must be given for the -script value")
                     except:
                         raise ValueError("a script filename must be given for the -script value")
-                    # Put double quotes around the script filename
-                    script[0] = '"' + script[0] + '"'
                     break
                 else:
                     raise ValueError("unrecognized option '%s'" % opt)
@@ -475,9 +473,10 @@ def init(arglist=None, enterferret=True):
 
     # if a command-line script is given, run the script and exit completely
     if script != None:
-        script_line = " ".join(script)
+        # put double quotes around every script argument
+        script_line = '"' + '" "'.join(script) + '"'
         try:
-            result = run('go "%s"; exit /program' % script_line)
+            result = run('go %s; exit /program' % script_line)
         except:
             print >>sys.stderr, " **Error: exception raised in running script %s" % script_line
         # If exception or if returned early, force shutdown

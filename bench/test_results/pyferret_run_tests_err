@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Mar 11 09:47 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Apr 12 18:05 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TEST.sh test results for PyFerret Mar-11-2013
+Note: RUN_TESTS.sh test results for PyFerret
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -211,7 +211,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Mar 11 09:51:50 PDT 2013
+Beginning at Fri Apr 12 18:27:12 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -225,7 +225,7 @@ that
 *** Running test: bn_dollar.jnl
  Cached data cleared from memory
  **ERROR: invalid command: Value needed for argument 3 in command
-          GO "bn_dollar.jnl" hello
+          GO "bn_dollar.jnl" "hello"
 message/cont $3
  **ERROR: my error message
 message/cont $3"<my error message"
@@ -265,7 +265,7 @@ say $100
  **ERROR: command syntax: arg number not in 1-99 range: $100)
 say ($100)
  **ERROR: invalid command: Value needed for argument 10 in command
-          GO "bn_dollar.jnl" hello
+          GO "bn_dollar.jnl" "hello"
 say ($10)0
 *** Running test: bn_grave.jnl
  Cached data cleared from memory
@@ -793,6 +793,8 @@ SET DATA/EZ/format=stream/var=num/grid=mygrid NoSuchFile.dat
  **ERROR: Size of file ./junk.dat doesn't match size specified by variables/grid
 load num
  *** NOTE: Binary file reading: Insufficient memory reading variable    2
+ **ERROR: invalid command: variable permutations only allowed for STREAM format
+SET DATA/EZ/var=num/order=vxyzt/grid=mygrid junk.dat
  **ERROR: invalid command: invalid argument for /TYPE
 SET DATA/EZ/var=num/type=i3/grid=mygrid/form=stream junk.dat
 *** Running test: bn_define_axes.jnl
@@ -1225,8 +1227,8 @@ sh: ncrename: command not found
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
+ *** NOTE: regarding ./test_axes.nc ...
+ *** NOTE: Climatological axes test_irreg, test_seas defined
 *** Running test: bn542_bug_fixes.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -1241,11 +1243,11 @@ sh: ncrename: command not found
  LISTing to file string4d.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
- *** NOTE: Not deleted: MONTH_IRREG
+ *** NOTE: regarding ./test_axes.nc ...
+ *** NOTE: Climatological axes test_irreg, test_seas defined
+ *** NOTE: Not deleted: TEST_IRREG
  *** NOTE: Axis is in use by grid (G001)
- *** NOTE: Not deleted: MONTH_IRREG
+ *** NOTE: Not deleted: TEST_IRREG
  *** NOTE: Axis is in use by grid (G001)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1357,14 +1359,10 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
 Replacing definition of axis YAX
  *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file clim.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1538,14 +1536,10 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
 *** Running test: bn_bounds.jnl
  Cached data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file a.nc
  LISTing to file a.nc
 Replacing definition of axis TAX
@@ -1573,16 +1567,12 @@ def axis/t/bounds tax= {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} , {0,24, 0,
  *** NOTE: Cannot have both /BOUNDS and /EDGES Ignoring /EDGES
  LISTing to file a.nc
  LISTing to file irrxzt.nc
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
  *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
  *** NOTE: This will result in incorrect box sizes on record axis: MONTH_REG
  *** NOTE: Write the data initially with the /BOUNDS qualifier
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file a.nc
  LISTing to file a.nc
  *** NOTE: Axis definition error on axis: TGAP
@@ -1619,8 +1609,6 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
 *** Running test: bn_modstats.jnl
  Cached data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
 *** Running test: bn_mc_vary_scale.jnl
  Cached data cleared from memory
  TEMPORARY data cleared from memory
@@ -1999,8 +1987,6 @@ set axis/stride=2 NORMAL
  TEMPORARY data cleared from memory
 *** Running test: bn_modnbd.jnl
  Cached data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
 *** Running test: bn_fifty_files.jnl
  Cached data cleared from memory
  *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
@@ -2046,8 +2032,6 @@ set axis/stride=2 NORMAL
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn608_bug_fixes.jnl
@@ -2770,8 +2754,6 @@ Bailing out of external function "tax_year":
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  **ERROR: error in external function
 list/L=15:20 tax_year(t[gt=tvar],tvar)
  PERMANENT data cleared from memory
@@ -3014,8 +2996,6 @@ define axis/t/units=days tax = tvar
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3035,4 +3015,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Mon Mar 11 09:56:11 PDT 2013
+Ended at Fri Apr 12 18:30:42 PDT 2013

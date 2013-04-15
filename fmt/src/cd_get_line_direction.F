@@ -1,5 +1,5 @@
       SUBROUTINE CD_GET_LINE_DIRECTION (dset, ivar, iaxis,
-     .     vname, linunits, do_warn)
+     .     vname, linunits, rec_ax, do_warn)
      
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -52,7 +52,7 @@
 
 
 * calling arguments
-      LOGICAL do_warn
+      LOGICAL rec_ax, do_warn
       INTEGER dset, ivar, iaxis, idir
       CHARACTER*(*) vname, linunits
 
@@ -72,6 +72,12 @@
       INTEGER     str_eq
       PARAMETER ( str_eq = 0 )
 
+* If its the record axis, it's a Time axis
+
+      IF (rec_ax) THEN
+         line_direction(iaxis) = 'TI'  ! time
+	 GOTO 5000
+      ENDIF
 
 * Use attributes to try to determine the orientation and 
 * direction of the axis
@@ -496,17 +502,17 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
 * or starts with XAX, YAX, etc. then give it that direction.
 
       IF (line_direction(iaxis) .EQ. 'NA' .AND. vlen .EQ. 1) THEN
-         IF ( vupcase(1:1) .EQ. 'X') line_direction(iaxis) = 'XX'
-         IF ( vupcase(1:1) .EQ. 'Y') line_direction(iaxis) = 'YY'
-         IF ( vupcase(1:1) .EQ. 'Z') line_direction(iaxis) = 'ZZ'
-         IF ( vupcase(1:1) .EQ. 'T') line_direction(iaxis) = 'TT'
+         IF ( vupcase(1:1) .EQ. 'X') line_direction(iaxis) = 'WE'
+         IF ( vupcase(1:1) .EQ. 'Y') line_direction(iaxis) = 'SN'
+         IF ( vupcase(1:1) .EQ. 'Z') line_direction(iaxis) = 'DU'
+         IF ( vupcase(1:1) .EQ. 'T') line_direction(iaxis) = 'TI'
       ENDIF
       IF (line_direction(iaxis).EQ.'NA') THEN
-         IF (vupcase(1:3).EQ.'XAX') line_direction(iaxis) = 'XX'
-         IF (vupcase(1:3).EQ.'YAX') line_direction(iaxis) = 'YY'
-         IF (vupcase(1:3).EQ.'ZAX') line_direction(iaxis) = 'ZZ'
-         IF (vupcase(1:3).EQ.'TAX') line_direction(iaxis) = 'TT'
+         IF (vupcase(1:3).EQ.'XAX') line_direction(iaxis) = 'WE'
+         IF (vupcase(1:3).EQ.'YAX') line_direction(iaxis) = 'SN'
+         IF (vupcase(1:3).EQ.'ZAX') line_direction(iaxis) = 'DU'
+         IF (vupcase(1:3).EQ.'TAX') line_direction(iaxis) = 'TI'
       ENDIF
 
-      RETURN
+ 5000 RETURN
       END

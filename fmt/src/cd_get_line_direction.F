@@ -1,5 +1,5 @@
       SUBROUTINE CD_GET_LINE_DIRECTION (dset, ivar, iaxis,
-     .     vname, linunits, rec_ax, do_warn)
+     .     vname, linunits, do_warn)
      
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -52,7 +52,7 @@
 
 
 * calling arguments
-      LOGICAL rec_ax, do_warn
+      LOGICAL do_warn
       INTEGER dset, ivar, iaxis, idir
       CHARACTER*(*) vname, linunits
 
@@ -71,13 +71,6 @@
       CHARACTER*256 buff, upbuff
       INTEGER     str_eq
       PARAMETER ( str_eq = 0 )
-
-* If its the record axis, it's a Time axis
-
-      IF (rec_ax) THEN
-         line_direction(iaxis) = 'TI'  ! time
-	 GOTO 5000
-      ENDIF
 
 * Use attributes to try to determine the orientation and 
 * direction of the axis

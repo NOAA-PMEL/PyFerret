@@ -8,6 +8,7 @@
 * version 5.0 - 10/20/98
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*       *kms* 4/13 change RETURN's in middle of idim loop to GOTO 100's
 
 * The @RDC ("reduced") transform is an attempt to use Ferret's
 * transform capabilities to create a result context which is 
@@ -99,19 +100,19 @@
                      IF ( cx_lo_ss(cx,idim) .EQ. unspecified_int4 
      .                 .OR. cx_hi_ss(cx,idim) .EQ. unspecified_int4 )
      .                 THEN
-                          RETURN
+                          GOTO 100
                      ENDIF
                   ELSE
                      IF ( cx_lo_ww(idim,cx) .EQ. unspecified_val8 
      .                 .OR. cx_hi_ww(idim,cx) .EQ. unspecified_val8 )
      .                 THEN
-                          RETURN
+                          GOTO 100
                      ENDIF
                   ENDIF
 
 * Check that we have a valid grid or else FLESH_OUT_AXIS will fail
                   IF ( cx_grid(cx) .EQ. unspecified_int4 ) THEN
-                     RETURN
+                     GOTO 100
                   ENDIF
 
                   IF ( axis_reduction(idim) 

@@ -85,11 +85,11 @@
 #include "netcdf_declareUnderscore.inc"
 
 * argument declarations:
-	INTEGER	 cdfid, ivar, grid, tmlo(nferdims), cdflo(nferdims), cdfhi(nferdims),
+	INTEGER	 cdfid, ivar, grid, tmlo(*), cdflo(*), cdfhi(*),
      .		tmrecdim, status
 
 * local variable declarations:
-      LOGICAL CD_USE_RECDIM, TM_FPEQ, no_file_coords
+      LOGICAL CD_USE_RECDIM, TM_FPEQ_SNGL, no_file_coords
       INTEGER TM_LENSTR1, TM_SUBSC, 
      .        idim, vartyp, nvdim,
      .        ndims, cdfstat, vdims(8), nvatts,
@@ -97,6 +97,7 @@
 * 4/99 *kob* 
       CHARACTER vname*128, axnam*128
       REAL*8 TM_WORLD, file_val, mem_val
+      REAL*4 sfval, smval
 
 * determine if this variable uses the record dimension
         IF ( CD_USE_RECDIM( cdfid, ivar, status ) ) THEN
@@ -132,7 +133,7 @@
 * 1/95: get info about the coordinate variable (previously w/ CD_AXLEN)
 * and then synchronize the start subscript in the output file with the axis
 * position on the grid being written (this permits writing into files that
-* lack the slab_min/max_limits machinery)
+* lack the cdfhi/max_limits machinery)
 
 * ... get the size and name of the dimension
 #ifdef usingDODSf2cUnderscore
@@ -185,11 +186,10 @@
 
 * ... check that the starting alignment is "exact"
 	      mem_val = TM_WORLD ( offset, grid, idim, box_middle )
-#ifdef double_p
-	      IF (.NOT.TM_FPEQ((file_val), (mem_val))) GOTO 5100
-#else
-	      IF (.NOT.TM_FPEQ(SNGL(file_val), SNGL(mem_val))) GOTO 5100
-#endif
+
+	      sfval = SNGL(file_val)
+	      smval = SNGL(mem_val)
+	      IF (.NOT.TM_FPEQ_SNGL(sfval, smval)) GOTO 5100
 
 * .. here are the synchronized subscripts
               cdflo(idim) = offset
@@ -206,11 +206,10 @@
 	      ENDIF
 	      offset = TM_SUBSC ( file_val, grid, idim,  cdfhi(idim) )
 	      mem_val = TM_WORLD ( offset, grid, idim, box_middle )
-#ifdef double_p
-	      IF (.NOT.TM_FPEQ((file_val), (mem_val))) GOTO 5100
-#else
-	      IF (.NOT.TM_FPEQ(SNGL(file_val), SNGL(mem_val))) GOTO 5100
-#endif
+	      
+	      sfval = SNGL(file_val)
+	      smval = SNGL(mem_val)
+	      IF (.NOT.TM_FPEQ_SNGL(sfval, smval)) GOTO 5100
 
            ELSE
               cdflo(idim) = 1

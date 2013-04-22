@@ -21,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Mon Apr 22 11:58:58 PDT 2013
+Beginning at Mon Apr 22 12:04:38 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3463,4 +3463,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Apr 22 12:00:36 PDT 2013
+Ended at Mon Apr 22 12:06:17 PDT 2013

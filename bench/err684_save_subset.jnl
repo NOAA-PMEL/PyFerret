@@ -1,0 +1,8 @@
+! err684_bug_save_subset
+! see ticke 2064, precision in internal comparison of coordinate data
+
+! previously gave a message about inconsistent coords
+
+use bug_save_subset.nc
+save/clobber/file=aa.nc/i=5:15 sh
+

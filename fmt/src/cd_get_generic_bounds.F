@@ -57,6 +57,7 @@
 *                  linked with OPeNDAP library.
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* V686 4/13 *acm* Fix ticket 2064: use single-precision comparisons
 
 * argument definitions:
 *	cdfid   - id of currently open CDF file

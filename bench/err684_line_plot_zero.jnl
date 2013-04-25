@@ -1,0 +1,7 @@
+! err684_line_plot_zero.jnl
+! plot all-zero variable gave blank plot. 
+! For a correct plot, yaxis_min and yaxis_max should be -1.0 and 1.0 not 0.0, 0.0 
+
+plot {0,0,0}
+sh sym yaxis*
+

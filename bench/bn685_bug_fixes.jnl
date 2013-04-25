@@ -14,3 +14,8 @@ GO err684_tax_fcns
 GO bn_reset
 GO err684_save_subset
 
+GO bn_reset
+GO err684_save_subset
+
+GO bn_reset
+GO err684_line_plot_zero

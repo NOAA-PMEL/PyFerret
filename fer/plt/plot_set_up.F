@@ -529,6 +529,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * loop through all the dependent variables loading them into PPLUS
 
 	all_1_dep = .TRUE.
+	set_axis = .TRUE.
 	only_val  = bad_val4
 	DO 200 ipl = var1, nmv
 	   mv   = mv_list( ipl )
@@ -571,6 +572,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   ENDIF
 * set up corresponding independent axis
 * ( note - each variable may have different points on the indep. axis )
+
 	   IF ( versus ) THEN
 * ... number of values must be equal in independ. and depend. for ordered pairs
 	      IF ( npts2 .NE. npts ) GOTO 5130

@@ -51,7 +51,7 @@
 
 * Internal declarations
 
-#include "netcdf.inc"
+      INCLUDE 'netcdf.inc'
 
       INTEGER NCF_INQ_DS_DIMS, slen, flen, dset_num
       PARAMETER (flen=128)      ! size of axis name string

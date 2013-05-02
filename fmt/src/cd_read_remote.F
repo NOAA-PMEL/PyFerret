@@ -47,7 +47,7 @@
 *                     
 
 * include files
-#include "netcdf.inc"
+        include 'netcdf.inc'
         include 'tmap_dims.parm'                ! data set dimension
         include 'tmap_errors.parm'              ! err code parm defs
 #include "gt_lib.parm"

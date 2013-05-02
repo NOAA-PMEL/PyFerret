@@ -56,7 +56,7 @@
 
 * Internal declarations
 
-#include "netcdf.inc"
+      INCLUDE 'netcdf.inc'
 
       CHARACTER*512 abuff
       LOGICAL coordvar

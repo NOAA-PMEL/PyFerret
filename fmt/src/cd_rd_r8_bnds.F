@@ -68,7 +68,7 @@
       REAL*8  dvals( d1s:d1e, d2s:d2e )
       CHARACTER*(*) errstr
 
-#include "netcdf.inc"
+      include 'netcdf.inc'
       include 'tmap_errors.parm'
 
 ! Declare netcdf function names. 

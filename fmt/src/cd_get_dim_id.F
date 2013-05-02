@@ -52,7 +52,7 @@
       INTEGER dset, dimid
 
 * Internal declarations
-#include "netcdf.inc"
+      INCLUDE 'netcdf.inc'
 
       INTEGER TM_LENSTR1, NCF_GET_DIM_ID, slen, flen, dset_num
       PARAMETER (flen=512)      ! size of variable name string

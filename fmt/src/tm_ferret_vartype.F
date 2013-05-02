@@ -44,7 +44,7 @@
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 	include 'tmap_dtypes.parm'
-#include "netcdf.inc"
+        include 'netcdf.inc'
 
 * input arguments
 	INTEGER	ncvtype

@@ -94,7 +94,7 @@
 	INTEGER	      dset, cdfid, remote_dods_id, status
 
 * include files
-#include "netcdf.inc"
+        include 'netcdf.inc'
         include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "gt_lib.parm"

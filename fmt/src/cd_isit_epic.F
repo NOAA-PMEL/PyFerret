@@ -56,7 +56,7 @@
 * argument declarations
       INTEGER dset, status
 
-#include "netcdf.inc"
+      include 'netcdf.inc'
       include 'tmap_errors.parm'
       include 'tmap_dims.parm'
       include 'xdset_info.cmn_text'

@@ -66,7 +66,7 @@
       REAL*8  dval
       CHARACTER*(*) t0
 
-#include "netcdf.inc"
+      include 'netcdf.inc'
       include 'tmap_errors.parm'
 
 ! Declare netcdf function names. 

@@ -77,7 +77,7 @@
       real*8        dval(100)
 
 #include "gt_lib.parm"
-#include "netcdf.inc"
+      include 'netcdf.inc'
       include 'xio.cmn_text'
       include 'tmap_errors.parm'
       include 'xrisc_buff.cmn'

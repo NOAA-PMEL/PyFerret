@@ -45,7 +45,7 @@
 * arguments:
 *	dset	- data set number 
 
-#include "netcdf.inc"
+        include 'netcdf.inc'
         include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 	include 'xstep_files.cmn_text'

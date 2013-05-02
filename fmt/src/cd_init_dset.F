@@ -87,14 +87,8 @@
 
 ! Declare netcdf function names. 
 ! The ones without trailing underscore are declared in netcdf.inc
+        INCLUDE 'netcdf.inc'
 #include "netcdf_declareUnderscore.inc"
-
-#ifdef usingDODSf2cUnderscore 
-      INTEGER NF_CLOSE_
-#else
-      INTEGER NF_CLOSE
-#endif 
-
 
 
 * local variable declarations:

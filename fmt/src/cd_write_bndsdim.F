@@ -53,7 +53,7 @@
 *     status  - return status
 
 * include files
-#include "netcdf.inc"
+        include 'netcdf.inc'
 	include 'tmap_errors.parm'
 	include 'cdf_tmap.parm'
 #include "gt_lib.parm"

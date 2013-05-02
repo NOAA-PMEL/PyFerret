@@ -58,7 +58,7 @@
 * argument declarations
       INTEGER	    cdfid, dimid, status
 
-#include "netcdf.inc"
+      include 'netcdf.inc'
       include 'tmap_errors.parm'
 
 ! Declare netcdf function names. 

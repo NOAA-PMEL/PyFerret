@@ -56,7 +56,7 @@
 * Internal declarations
 
 #include "gt_lib.parm"
-#include "netcdf.inc"
+      INCLUDE 'netcdf.inc'
 
       INTEGER TM_LENSTR1, NCF_INQ_VAR, slen, flen, rev(8), i, ndx, istat
       PARAMETER (flen=512)      ! size of variable name string

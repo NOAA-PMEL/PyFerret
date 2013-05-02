@@ -82,7 +82,7 @@
       REAL	    val, blank_val
 
       include 'xio.parm'
-#include "netcdf.inc"
+      include 'netcdf.inc'
       include 'tmap_errors.parm'
 
 * internal variable declarations:

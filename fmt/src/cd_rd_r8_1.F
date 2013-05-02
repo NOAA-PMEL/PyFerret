@@ -59,7 +59,7 @@
       REAL*8  dval
       CHARACTER*(*) errstr
 
-#include "netcdf.inc"
+      include 'netcdf.inc'
       include 'tmap_errors.parm'
 
 ! Declare netcdf function names. 

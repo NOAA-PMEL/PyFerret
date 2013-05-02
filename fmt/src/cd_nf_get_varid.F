@@ -55,7 +55,7 @@
 	INTEGER TM_LENSTR1, cdfid, slen
 	CHARACTER*500 errbuff, buff
 
-#include "netcdf.inc"
+        include 'netcdf.inc'
         include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 	include 'xstep_files.cmn_text'

@@ -49,7 +49,7 @@
 
 * Internal declarations
 
-#include "netcdf.inc"
+      include 'netcdf.inc'
       include 'tmap_errors.parm'
 
       INTEGER NCF_GET_VAR_ATTR_NAME, flen, dset_num

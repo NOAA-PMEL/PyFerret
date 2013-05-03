@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 May  1 08:29 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 May  3 12:57 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -211,7 +211,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Wed May  1 08:32:54 PDT 2013
+Beginning at Fri May  3 12:58:58 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2029,6 +2029,7 @@ set axis/stride=2 NORMAL
  Cached data cleared from memory
  Cached data cleared from memory
 *** Running test: bn605_bug_fixes.jnl
+**ERROR in efcn_gather_info(): ê«Ω_init_ is not found.
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3023,4 +3024,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Wed May  1 08:36:51 PDT 2013
+Ended at Fri May  3 13:02:42 PDT 2013

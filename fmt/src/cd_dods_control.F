@@ -62,7 +62,7 @@
 	INTEGER	dset, cdfid, remote_dods_id, cdfstat
 
 * include files
-#include "netcdf.inc"
+        include 'netcdf.inc'
 #include "gt_lib.parm"
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"

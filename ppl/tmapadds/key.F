@@ -430,7 +430,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
 	   if (makep .eq. 'SHADE' .or. makep .eq. 'FILLPOL' .OR.
-     .         makep .EQ. 'POLYGON') then
+     .         makep .EQ. 'POLYGON' .or. makep .eq. 'RIBPLOT') then
 	      call point_convert (xx,yy,xxx,yyy)
 	   else if (makep .eq. 'FILL') then
 	      xxx = xx

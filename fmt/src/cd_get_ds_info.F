@@ -51,7 +51,7 @@
 
 * Internal declarations
 
-#include "netcdf.inc"
+      INCLUDE 'netcdf.inc'
 
       INTEGER NCF_INQ_DS, dset_num
 

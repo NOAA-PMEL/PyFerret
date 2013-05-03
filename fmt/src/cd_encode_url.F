@@ -51,7 +51,7 @@
 	INTEGER url_encode
 
 
-#include "netcdf.inc"
+        include 'netcdf.inc'
         include 'tmap_errors.parm'
 
 

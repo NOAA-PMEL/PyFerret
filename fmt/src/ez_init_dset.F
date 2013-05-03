@@ -114,7 +114,7 @@
 	external xstep_files_data
 	include 'xez_info.cmn_text'
 	external xez_info_data
-#include "netcdf.inc"
+        include 'netcdf.inc'
 
 *
 * Local definitions

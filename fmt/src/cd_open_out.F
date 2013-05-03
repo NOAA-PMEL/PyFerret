@@ -67,7 +67,7 @@
 	
 
 * include files
-#include "netcdf.inc"
+        include 'netcdf.inc'
         include 'cdf_tmap.parm'
         include 'tmap_errors.parm'
 #include "gt_lib.parm"

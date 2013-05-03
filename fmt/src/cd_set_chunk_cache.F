@@ -63,7 +63,7 @@
 *       cache_mbytes  - Cache size to set
 *	status         - return status
 
-#include "netcdf.inc"
+      INCLUDE 'netcdf.inc'
       INCLUDE 'netcdf4_settings.cmn'
       INCLUDE 'tmap_errors.parm'
 
@@ -75,13 +75,6 @@
       REAL cache_mbytes
       INTEGER cache_size, cache_nelems, 
      .     cache_preemption, status
-
-
-#ifdef usingDODSf2cUnderscore 
-      INTEGER NF_GET_CHUNK_CACHE_
-#else
-      INTEGER NF_GET_CHUNK_CACHE
-#endif 
 
 * local variable declarations:
       INTEGER cdfstat, c_size_in, c_nelems_in, c_preemp_in

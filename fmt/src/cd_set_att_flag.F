@@ -51,7 +51,7 @@
 
 * Internal declarations
 
-#include "netcdf.inc"
+      include 'netcdf.inc'
       include 'tmap_errors.parm'
       include 'xrisc_buff.cmn'
 

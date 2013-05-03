@@ -46,7 +46,7 @@
         INCLUDE 'xtm_grid.cmn_text'
         INCLUDE 'xio.cmn_text'
         INCLUDE 'tmap_errors.parm'
-#include "netcdf.inc"
+        INCLUDE 'netcdf.inc'
 
 ! Declare netcdf function names. 
 ! The ones without trailing underscore are declared in netcdf.inc

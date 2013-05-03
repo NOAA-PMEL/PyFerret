@@ -51,7 +51,7 @@
 *     hi      - hi subscript
 *     slen    - returned length of name
 
-#include "netcdf.inc"
+        include 'netcdf.inc'
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"

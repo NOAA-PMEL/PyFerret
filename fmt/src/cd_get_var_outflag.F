@@ -54,7 +54,7 @@
 
 * Internal declarations
 
-#include "netcdf.inc"
+      INCLUDE 'netcdf.inc'
 
       INTEGER NCF_GET_VAR_OUTFLAG, dset_num, status
 

@@ -53,8 +53,7 @@
 
 * Internal declarations
 
-c        include 'netcdf.decl'
-c#include "netcdf.inc"
+c        include 'netcdf.inc'
          include 'tmap_errors.parm'
 
       INTEGER TM_LENSTR1, NCF_INQ_VAR_ATT,

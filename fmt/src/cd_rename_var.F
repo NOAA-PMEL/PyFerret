@@ -55,7 +55,7 @@
 
 * Internal declarations
 
-#include "netcdf.inc"
+      INCLUDE 'netcdf.inc'
 
       INTEGER TM_LENSTR1, NCF_RENAME_VAR,
      .        slen, flen, dset_num

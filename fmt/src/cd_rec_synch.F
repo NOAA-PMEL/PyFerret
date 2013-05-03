@@ -81,7 +81,7 @@
 *     axid    - CDF var no of coordinate variable for record axis
 
 * include files
-#include "netcdf.inc"
+        include 'netcdf.inc'
 #include "gt_lib.parm"
 	include 'tmap_dims.parm'
         include 'cd_lib.parm'

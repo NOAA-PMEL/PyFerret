@@ -38,7 +38,7 @@ C Check whether we can define a LET/REMOTE variable in this dataset.
 * Sets the flag  ds_accepts_remote for the dataset.
 
 * include files
-#include "netcdf.inc"
+        include 'netcdf.inc'
 	include 'tmap_errors.parm'
 #include "gt_lib.parm"
 	include 'tmap_dims.parm'

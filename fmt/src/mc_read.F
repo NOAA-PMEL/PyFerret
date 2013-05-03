@@ -80,7 +80,7 @@
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * include files
-#include "netcdf.inc"
+        include 'netcdf.inc'
         include 'tmap_errors.parm'
 #include "tmap_dset.parm"
         include 'tmap_dims.parm'                ! data set dimension

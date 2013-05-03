@@ -81,7 +81,7 @@
       CHARACTER*(*) attrib, vname
       REAL val(vlen)
 
-#include "netcdf.inc"
+      include 'netcdf.inc'
       include 'xio.cmn_text'
 
 ! Declare netcdf function names. 

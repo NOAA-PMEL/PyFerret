@@ -49,8 +49,7 @@
 * v6.8 3/14/2012 *acm* fix for scaled SHORT data and double-precision Ferret.
 
 * include files
-c        include 'netcdf.decl'
-#include "netcdf.inc"
+      INCLUDE 'netcdf.inc'
 
 * calling argument declarations:
       INTEGER n, vartyp

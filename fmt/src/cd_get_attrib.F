@@ -76,7 +76,7 @@
       INTEGER	    cdfid, varid, attlen, slen
       CHARACTER*(*) attrib, vname, string
 
-#include "netcdf.inc"
+      include 'netcdf.inc'
       include 'xio.cmn_text'
 
 ! Declare netcdf function names. 

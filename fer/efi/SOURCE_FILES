@@ -39,9 +39,11 @@ eofsvd_space.F\
 eofsvd_stat.F\
 eofsvd_tfunc.F\
 ereverse.F\
+expnd_by_len.F\
 expndi_by.F\
 expndi_by_t.F\
 expndi_by_z.F\
+fc_isubset.F\
 fcat.F\
 fcat_str.F\
 fftsubs.F\
@@ -80,6 +82,10 @@ pickindex.F\
 pt_in_poly.F\
 rect_to_curv.F\
 sampleij.F\
+samplei_multi.F\
+samplej_multi.F\
+samplek_multi.F\
+samplel_multi.F\
 samplet_date.F\
 samplexy.F\
 samplexy_closest.F\

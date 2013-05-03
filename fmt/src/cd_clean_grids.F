@@ -80,9 +80,8 @@
 #include "gt_lib.parm"
         include 'xbuild_grids.cmn'
 	include 'xtm_grid.cmn_text'
-	        include 'xdset_info.cmn_text'
-
-#include "netcdf.inc"
+	include 'xdset_info.cmn_text'
+        include 'netcdf.inc'
 
 
 * argument declarations

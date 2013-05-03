@@ -98,3 +98,17 @@ set view lr
 RIBBON/vs/line/thick/lev=(1,8,1)/pal=ten_by_levels xpts,ypts,var
 
 PLOT/vs/over/sym=20 xpts,ypts
+
+
+can view
+
+! Do an overlay on a map. 
+! To use RIBBON/SET, finish with PPL RIBBON/OVER
+
+use coads_climatology
+let mask = if sst then 0 else 1
+shade/NOLAB/L=1/x=-50:100/y=-60:50/pal=grayscale mask
+
+RIBBON/vs/over/nolab/thick=3/sym=20/key/set xpts, ypts, var
+ppl shakey,1,0
+ppl ribbon/over

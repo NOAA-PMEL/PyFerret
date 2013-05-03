@@ -60,7 +60,7 @@
 #include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#include "netcdf.inc"
+        include 'netcdf.inc'
 
 * argument declarations
       INTEGER dset, grid, idim, nlen

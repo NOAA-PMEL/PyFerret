@@ -40,7 +40,7 @@
 *      include files: 
       
         IMPLICIT NONE
-#include "netcdf.inc"
+        include 'netcdf.inc'
         include 'tmap_errors.parm'
         include 'tmap_dims.parm'
 #include "tmap_dset.parm"

@@ -66,7 +66,7 @@
 	INTEGER	      cdfid, dset, grid, idim, status
 
 * include files
-#include "netcdf.inc"
+        include 'netcdf.inc'
         include 'tmap_errors.parm'
         include 'cd_lib.parm'
 

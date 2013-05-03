@@ -42,7 +42,7 @@
 
 * include files
 
-#include "netcdf.inc"
+        include 'netcdf.inc'
 	include 'tmap_errors.parm'
 
 * Argument declarations

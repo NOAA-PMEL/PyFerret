@@ -1085,7 +1085,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 158
+#define N_INTEF 157
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1235,19 +1235,19 @@ struct {
    strcpy(I_EFnames[141].funcname, "xreverse");
    strcpy(I_EFnames[142].funcname, "ycat");
    strcpy(I_EFnames[143].funcname, "ycat_str");
-   strcpy(I_EFnames[145].funcname, "yreverse");
-   strcpy(I_EFnames[146].funcname, "zaxreplace_avg");
-   strcpy(I_EFnames[147].funcname, "zaxreplace_bin");
-   strcpy(I_EFnames[148].funcname, "zaxreplace_rev");
-   strcpy(I_EFnames[149].funcname, "zaxreplace_zlev");
-   strcpy(I_EFnames[150].funcname, "zcat");
-   strcpy(I_EFnames[151].funcname, "zcat_str");
-   strcpy(I_EFnames[152].funcname, "zreverse");
-   strcpy(I_EFnames[153].funcname, "eofsvd_space");
-   strcpy(I_EFnames[154].funcname, "eofsvd_stat");
-   strcpy(I_EFnames[155].funcname, "eofsvd_tfunc");
-   strcpy(I_EFnames[156].funcname, "expnd_by_len");
-   strcpy(I_EFnames[157].funcname, "fc_isubset");
+   strcpy(I_EFnames[144].funcname, "yreverse");
+   strcpy(I_EFnames[145].funcname, "zaxreplace_avg");
+   strcpy(I_EFnames[146].funcname, "zaxreplace_bin");
+   strcpy(I_EFnames[147].funcname, "zaxreplace_rev");
+   strcpy(I_EFnames[148].funcname, "zaxreplace_zlev");
+   strcpy(I_EFnames[149].funcname, "zcat");
+   strcpy(I_EFnames[150].funcname, "zcat_str");
+   strcpy(I_EFnames[151].funcname, "zreverse");
+   strcpy(I_EFnames[152].funcname, "eofsvd_space");
+   strcpy(I_EFnames[153].funcname, "eofsvd_stat");
+   strcpy(I_EFnames[154].funcname, "eofsvd_tfunc");
+   strcpy(I_EFnames[155].funcname, "expnd_by_len");
+   strcpy(I_EFnames[156].funcname, "fc_isubset");
 
 /*    
  *  ------------------------------------ 

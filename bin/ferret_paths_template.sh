@@ -82,13 +82,13 @@ export FER_LIBS="${FER_DIR}/lib"
 export FER_DAT="${FER_DIR}"
 
 ## Faddpath: a tool to quickly add paths to the search lists
-function Faddpath { if [ -n "$*" ]
-                    then
-                        export FER_GO="$FER_GO $*"
-                        export FER_DATA="$FER_DATA $*"
-                        export FER_DESCR="$FER_DESCR $*"
-                        export FER_GRIDS="$FER_GRIDS $*"
-                     else
-                        echo "    Usage: Faddpath new_directory_1 ..."
-                     fi }
+Faddpath() { if [ -n "$*" ]
+             then
+                 export FER_GO="$FER_GO $*"
+                 export FER_DATA="$FER_DATA $*"
+                 export FER_DESCR="$FER_DESCR $*"
+                 export FER_GRIDS="$FER_GRIDS $*"
+             else
+                 echo "    Usage: Faddpath new_directory_1 ..."
+             fi }
 

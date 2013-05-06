@@ -124,6 +124,14 @@ if [ -f $HOME/.ferret ]; then
 fi
 cp ./default.ferret $HOME/.ferret
 
+if ! echo "$fver" | grep -q "pyferret"; then
+#  command-line options for ferret
+   feropts="-unmapped -noverify"
+else
+#  command-line options for pyferret
+   feropts="-quiet -unmapped -noverify"
+fi
+
 # run each of the scripts in the list
 rm -f all_ncdump.out
 for jnl in $test_scripts; do
@@ -140,9 +148,9 @@ for jnl in $test_scripts; do
    fi
 
    if [ $jnl = "bn_dollar.jnl" ]; then
-      $fver -unmapped -noverify -script $jnl hello 1>> $log_file 2>> $err_file
+      $fver $feropts -script $jnl hello 1>> $log_file 2>> $err_file
    else
-      $fver -unmapped -noverify -script $jnl 1>> $log_file 2>> $err_file
+      $fver $feropts -script $jnl 1>> $log_file 2>> $err_file
    fi
    if [ $? -ne 0 ]; then
       echo "****** FERRET error: $jnl failed ******" >> $log_file

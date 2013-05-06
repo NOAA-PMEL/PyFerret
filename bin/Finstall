@@ -137,18 +137,19 @@ get_ferpaths_dir() {
 ### assign $ferpaths_link, the link destination, if any, for ferret_paths
 get_ferpaths_link() {
     echo " "
-    echo " To duplicate behavior found in older version of Ferret, you "
-    echo " can create a link (shortcut) 'ferret_paths' that refers to "
-    echo " either 'ferret_paths.csh' or 'ferret_paths.sh'.  This is "
-    echo " simply a convenience and should only be done on systems where "
-    echo " all users work under the same shell (such as tcsh or bash). "
-    echo " The files 'ferret_path.csh' and 'ferret_paths.sh' can always "
-    echo " be used regardless of the answer to this question. "
+    echo " To duplicate behavior found in older version of Ferret, you can "
+    echo " create a link (shortcut) 'ferret_paths' that refers to either "
+    echo " 'ferret_paths.csh' or 'ferret_paths.sh'.  This is simply a "
+    echo " convenience for users and should only be done on systems where "
+    echo " all Ferret users work under the same shell (such as tcsh or bash). "
+    echo " The files 'ferret_path.csh' and 'ferret_paths.sh' can always be "
+    echo " used regardless of the answer to this question. "
     until [ 0 = 1 ]; do
         echo " "
-        echo "c - link to ferret_paths.csh (all user work under csh, tcsh) "
-        echo "s - link to ferret_paths.sh (all users work under sh, ksh, dash, bash) "
-        echo "n - do not create the link (use ferret_paths.csh or ferret_paths.sh)"
+        echo " ferret_paths link options: "
+        echo "    c - link to ferret_paths.csh (all users work under tcsh, csh) "
+        echo "    s - link to ferret_paths.sh (all users work under bash, dash, ksh, sh) "
+        echo "    n - do not create the link (use ferret_paths.csh or ferret_paths.sh)"
         read -p " ferret_paths link to create? (c/s/n) [n] --> " ans
         if [ -z "$ans" ] || [ "$ans" = 'n' ] || [ "$ans" = 'N' ]; then
            ferpaths_link=''

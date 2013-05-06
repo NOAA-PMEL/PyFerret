@@ -1,0 +1,17 @@
+! err684_delimited_precision.jnl
+! 5/2013 Fixing bug 2066
+! Reading numeric data with /FORM=DELIM converted to single precision
+
+! Data has numeric, longitude, and latitude values needing double precision.
+! The seconds portion of time is also now read with double precision
+sp cat delim_prec.dat
+
+! Delimited read, automatically detect data types
+set data/ez/format=delim/del=" " delim_prec.dat
+list/i=1:5/prec=10 v1,v2,v3,v4
+
+! Delimited read, specify data types
+can dat/all
+set data/ez/format=delim/del=" "/var="day,lon,lat,tim"/type="numeric,longitude,latitude,time" delim_prec.dat
+list/prec=10 day, lon, lat, tim
+

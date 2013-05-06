@@ -100,7 +100,7 @@ get_ferpaths_dir() {
         echo " the newly created 'ferret_paths.csh' and 'ferret_path.sh' "
         echo " files; for example, '/usr/local'."
         echo " "
-        read -p " desired 'ferret_paths' location --> " ferpaths_dir
+        read -p " desired ferret_paths location --> " ferpaths_dir
         if [ ! -d "${ferpaths_dir}" ]; then
             echo " '${ferpaths_dir}' is not a directory"
         else
@@ -108,17 +108,13 @@ get_ferpaths_dir() {
             ferpaths_dir=`cd "${ferpaths_dir}" ; pwd`
 #           if ferret_paths* exists, check to see if it's OK to replace
             if [ -f "${ferpaths_dir}/ferret_paths.csh" ] || \
-               [ -f "${ferpaths_dir}/ferret_paths.sh" ] || \
-               [ -f "${ferpaths_dir}/ferret_paths" ] ; then
+               [ -f "${ferpaths_dir}/ferret_paths.sh" ] ; then
                 echo " "
                 if [ -f "${ferpaths_dir}/ferret_paths.csh" ]; then
                     echo " ${ferpaths_dir}/ferret_paths.csh already exists"
                 fi
                 if [ -f "${ferpaths_dir}/ferret_paths.sh" ]; then
                     echo " ${ferpaths_dir}/ferret_paths.sh already exists"
-                fi
-                if [ -f "${ferpaths_dir}/ferret_paths" ]; then
-                    echo " ${ferpaths_dir}/ferret_path already exists"
                 fi
                 read -p " Rename and create new? (n/y) [n] " ans
                 if [ "${ans}" = "Y" ] || [ "${ans}" = "y" ]; then
@@ -131,6 +127,38 @@ get_ferpaths_dir() {
             else
                 return 0
             fi
+        fi
+    done
+#   should not get here - return error
+    return 1
+}
+
+
+### assign $ferpaths_link, the link destination, if any, for ferret_paths
+get_ferpaths_link() {
+    echo " "
+    echo " To duplicate behavior found in older version of Ferret, you "
+    echo " can create a link (shortcut) 'ferret_paths' that refers to "
+    echo " either 'ferret_paths.csh' or 'ferret_paths.sh'.  This is "
+    echo " simply a convenience and should only be done on systems where "
+    echo " all users work under the same shell (such as tcsh or bash). "
+    echo " The files 'ferret_path.csh' and 'ferret_paths.sh' can always "
+    echo " be used regardless of the answer to this question. "
+    until [ 0 = 1 ]; do
+        echo " "
+        echo "c - link to ferret_paths.csh (all user work under csh, tcsh) "
+        echo "s - link to ferret_paths.sh (all users work under sh, ksh, dash, bash) "
+        echo "n - do not create the link (use ferret_paths.csh or ferret_paths.sh)"
+        read -p " ferret_paths link to create? (c/s/n) [n] --> " ans
+        if [ -z "$ans" ] || [ "$ans" = 'n' ] || [ "$ans" = 'N' ]; then
+           ferpaths_link=''
+           return 0
+        elif [ "$ans" = 'c' ] || [ "$ans" = 'C' ]; then
+           ferpaths_link='ferret_paths.csh'
+           return 0
+        elif [ "$ans" = 's' ] || [ "$ans" = 'S' ]; then
+           ferpaths_link='ferret_paths.sh'
+           return 0
         fi
     done
 #   should not get here - return error
@@ -225,67 +253,18 @@ export FER_DSETS=\"${fer_dsets}\"" \
             write_log_message "              to ${ferpaths_dir}/ferret_paths.old"
         fi
     fi
-#   Check for existing ferret7
-    if [ -f "${fer_dir}/bin/ferret7" ]; then
-        if mv -f "${fer_dir}/bin/ferret7" "${fer_dir}/bin/ferret7.old"; then
-            echo " "
-            echo " Renamed existing ${fer_dir}/bin/ferret7 "
-            echo "               to ${fer_dir}/bin/ferret7.old "
-            write_log_message "Renamed existing ${fer_dir}/bin/ferret7"
-            write_log_message "              to ${fer_dir}/bin/ferret7.old"
-        fi
-    fi
-#   Copy the appropriate file
-#   Note: $SHELL may not be defined in a Bourne-type shell
-    if echo "${SHELL}" | grep -q 'csh$' ; then
-        if ( cd "${ferpaths_dir}" ; ln -s "ferret_paths.csh" "ferret_paths" ) ; then
+#   Link ferret_paths to the appropriate file
+    if [ -n "${ferpaths_link}" ]; then
+        if ( cd "${ferpaths_dir}" ; ln -s "${ferpaths_link}" "ferret_paths" ) ; then
             echo " "
             echo " Created ${ferpaths_dir}/ferret_paths "
-            echo "     as a link to ferret_paths.csh "
+            echo "     as a link to ${ferpaths_link} "
             write_log_message "Created ${ferpaths_dir}/ferret_paths"
-            write_log_message "    as a link to ferret_paths.csh"
+            write_log_message "    as a link to ${ferpaths_link}"
         else
             echo " "
             echo " Unable to create ${ferpaths_dir}/ferret_paths "
             write_log_message "Unable to create ${ferpaths_dir}/ferret_paths"
-        fi
-        if [ -f "${fer_dir}/bin/ferret7.csh" ]; then
-            if ( cd "${fer_dir}/bin" ; ln -s "ferret7.csh" "ferret7" ) ; then
-                echo " "
-                echo " Created ${fer_dir}/bin/ferret7 "
-                echo "     as a link to ferret7.csh "
-                write_log_message "Created ${fer_dir}/bin/ferret7"
-                write_log_message "    as a link to ferret7.csh"
-            else
-                echo " "
-                echo " Unable to create ${fer_dir}/bin/ferret7 "
-                write_log_message "Unable to create ${fer_dir}/bin/ferret7"
-            fi
-        fi
-    else
-        if ( cd "${ferpaths_dir}" ; ln -s "ferret_paths.sh" "ferret_paths" ) ; then
-            echo " "
-            echo " Created ${ferpaths_dir}/ferret_paths "
-            echo "     as a link to ferret_paths.sh "
-            write_log_message "Created ${ferpaths_dir}/ferret_paths"
-            write_log_message "    as a link to ferret_paths.sh"
-        else
-            echo " "
-            echo " Unable to create ${ferpaths_dir}/ferret_paths "
-            write_log_message "Unable to create ${ferpaths_dir}/ferret_paths"
-        fi
-        if [ -f "${fer_dir}/bin/ferret7.sh" ]; then
-            if ( cd "${fer_dir}/bin" ; ln -s "ferret7.sh" "ferret7" ) ; then
-                echo " "
-                echo " Created ${fer_dir}/bin/ferret7 "
-                echo "     as a link to ferret7.sh "
-                write_log_message "Created ${fer_dir}/bin/ferret7"
-                write_log_message "    as a link to ferret7.sh"
-            else
-                echo " "
-                echo " Unable to create ${fer_dir}/bin/ferret7 "
-                write_log_message "Unable to create ${fer_dir}/bin/ferret7"
-            fi
         fi
     fi
 }
@@ -383,13 +362,13 @@ echo "     containing the Ferret software and demonstration data. "
 echo " "
 echo "     The files 'ferret_paths.csh' and 'ferret_paths.sh' are "
 echo "     created in a directory you choose.  Furthermore, the link "
-echo "     'ferret_paths' will be created using the appropriate file "
-echo "     for the current shell. "
+echo "     (shortcut) 'ferret_paths' can be created which refers to "
+echo "     either 'ferret_paths.csh' or 'ferret_paths.sh'. "
 echo " "
 echo "     Sourcing one of these files ('source ferret_paths.csh' "
-echo "     for c-shell users, '. ferret_paths.sh' for bash users) "
-echo "     will set up a user's environment for running ferret. "
-echo "     You should also be able to use 'source ferret_paths'. "
+echo "     for csh or tcsh, '. ferret_paths.sh' for bash, sh ksh, "
+echo "     or dash) will set up a user's environment for running "
+echo "     ferret. "
 echo " "
 echo "     You will want to run this option if you are installing "
 echo "     Ferret for the first time or if you relocated where "
@@ -397,11 +376,11 @@ echo "     Ferret is installed. "
 echo " "
 
 ### Print menu and act on choice
-until [ "$choice" = "3" ]; do
+until [ 0 = 1 ]; do
     echo " "
     echo " Enter your choice:"
-    echo " (1) Install executables, (2) Customize ferret_paths files, (3) Exit"
-    read -p " (1, 2, or 3) --> " choice
+    echo " (1) Install executables, (2) Customize ferret_paths files, (3,q,x) Exit"
+    read -p " (1, 2, 3, q, x) --> " choice
     case "$choice" in
         1)
             echo " "
@@ -419,15 +398,20 @@ until [ "$choice" = "3" ]; do
         2)
             echo " "
             echo " Customize ferret_paths files..."
-            if get_fer_dir && get_fer_dsets && get_ferpaths_dir; then
+            if get_fer_dir && get_fer_dsets && get_ferpaths_dir && get_ferpaths_link; then
                 create_ferret_paths
             else
                 echo " "
                 echo " ferret_paths files NOT created "
             fi
             ;;
+        3 | 'q' | 'Q' | 'x' | 'X')
+            exit 0
+            ;;
         *)
+            ;;
     esac
 done
-exit 0
+# should not get here - return error
+exit 1
 

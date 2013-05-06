@@ -361,7 +361,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 {
 
   char *p, *pnext, str1[2], errstr[2];
-  DFTYPE dummy;
+  double dummy;
   DFTYPE rdum;
 
   int idummy1, idummy2, idummy3, i;
@@ -558,7 +558,7 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
 {
 
   char *p, *pnext, pstart[256], str1[2], latlon1[2];
-  DFTYPE dummy;
+  double dummy;
 
   int idummy1, idummy2, idummy3, i, nfields_in;
 
@@ -646,7 +646,7 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  field_type[(*nfields)] = FTYP_CHARACTER;
 	  idummy1 = (strlen(p))-1;
 	  strncpy(pstart,p,idummy1 );
-	if (sscanf(pstart,"%f",&dummy) != 1)
+	if (sscanf(pstart,"%lf",&dummy) != 1)
 	  field_type[(*nfields)] = FTYP_CHARACTER;
       }
     else if (sscanf(p,"%lf%1s",&dummy,str1) == 2)

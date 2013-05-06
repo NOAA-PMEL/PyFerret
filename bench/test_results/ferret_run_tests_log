@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 12 Feb  1 12:43 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
+lrwxrwxrwx 1 ksmith tmap 12 May  6 11:44 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -195,6 +195,7 @@ Benchmark scripts that will be run:
    bn_axis_outtype.jnl
    bn_axis_nonmonotonic.jnl
    bn_vec_mod.jnl
+   bn685_bug_fixes.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -211,7 +212,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Thu Feb 21 20:00:52 PST 2013
+Beginning at Mon May  6 12:24:35 PDT 2013
 *** Running test: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -523,7 +524,7 @@ SHOW MODES
       DESPERATE     CANCELLED      2560000
       GKS              SET
       REFRESH          SET
-      METAFILE      CANCELLED      metafile.plt
+      METAFILE      CANCELLED      .gif
       PPLLIST       CANCELLED      ppllist.out
       GUI           CANCELLED
       LOGO          CANCELLED
@@ -554,7 +555,7 @@ SHOW MODES
       DESPERATE     CANCELLED      2560000
       GKS              SET
       REFRESH          SET
-      METAFILE      CANCELLED      metafile.plt
+      METAFILE      CANCELLED      .gif
       PPLLIST       CANCELLED      ppllist.out
       GUI           CANCELLED
       LOGO          CANCELLED
@@ -585,7 +586,7 @@ SHOW MODES
       DESPERATE     CANCELLED      2560000
       GKS              SET
       REFRESH          SET
-      METAFILE      CANCELLED      metafile.plt
+      METAFILE      CANCELLED      .gif
       PPLLIST       CANCELLED      ppllist.out
       GUI           CANCELLED
       LOGO          CANCELLED
@@ -618,7 +619,7 @@ ppl list plot
          WIDTH=   10.20  HEIGHT=    8.80  TKTYPE= 4010  BAUD=  110
          WINDOW= ON   BOX= OFF  CROSS= 0  PLTYPE=  3
          PLOT MODE=   A
-         PLOT FILE= metafile.plt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+         PLOT FILE= .gif                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 set mode ppllist:ppllist.out
 show mode ppllist
       MODE            STATE        ARGUMENT
@@ -630,7 +631,7 @@ ppl list plot
          WIDTH=   10.20  HEIGHT=    8.80  TKTYPE= 4010  BAUD=  110
          WINDOW= ON   BOX= OFF  CROSS= 0  PLTYPE=  3
          PLOT MODE=   A
-         PLOT FILE= metafile.plt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+         PLOT FILE= .gif                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 cancel mode journal
 show mode journal
       MODE            STATE        ARGUMENT
@@ -639,47 +640,47 @@ show mode journal
 ! new 1/94  (syntax check also applies to modes journal and ppllist)
 show mode metafile
       MODE            STATE        ARGUMENT
-      METAFILE      CANCELLED      metafile.plt
+      METAFILE      CANCELLED      .gif
 set mode metafile newmetafile1.plt
 show mode metafile
       MODE            STATE        ARGUMENT
-      METAFILE         SET         newmetafile1.plt
+      METAFILE      CANCELLED      .gif
 set mode metafile:newmetafile2.plt
 show mode metafile
       MODE            STATE        ARGUMENT
-      METAFILE         SET         newmetafile2.plt
+      METAFILE      CANCELLED      .gif
 set mode metafile: newmetafile3.plt
 show mode metafile
       MODE            STATE        ARGUMENT
-      METAFILE         SET         newmetafile3.plt
+      METAFILE      CANCELLED      .gif
 set mode metafile: "newmetafile4.plt"
 show mode metafile
       MODE            STATE        ARGUMENT
-      METAFILE         SET         newmetafile4.plt
+      METAFILE      CANCELLED      .gif
 set mode metafile: "./newmetafile5.plt"
 show mode metafile
       MODE            STATE        ARGUMENT
-      METAFILE         SET         ./newmetafile5.plt
+      METAFILE      CANCELLED      .gif
 set mode metafile: ./newmetafile6.plt
 show mode metafile
       MODE            STATE        ARGUMENT
-      METAFILE         SET         ./newmetafile6.plt
+      METAFILE      CANCELLED      .gif
 set mode metafile newmetafile7.plt
 show mode metafile
       MODE            STATE        ARGUMENT
-      METAFILE         SET         newmetafile7.plt
+      METAFILE      CANCELLED      .gif
 set mode metafile "newmetafile8.plt"
 show mode metafile
       MODE            STATE        ARGUMENT
-      METAFILE         SET         newmetafile8.plt
+      METAFILE      CANCELLED      .gif
 set mode metafile "./newmetafile9.plt"
 show mode metafile
       MODE            STATE        ARGUMENT
-      METAFILE         SET         ./newmetafile9.plt
+      METAFILE      CANCELLED      .gif
 set mode metafile ./newmetafile10.plt
 show mode metafile
       MODE            STATE        ARGUMENT
-      METAFILE         SET         ./newmetafile10.plt
+      METAFILE      CANCELLED      .gif
 set mode metafile metafile.plt
  
 ! SET - SHOW - CANCEL EXPRESSION
@@ -10123,7 +10124,7 @@ ppl list plot
          WIDTH=   10.20  HEIGHT=    8.80  TKTYPE= 4010  BAUD=  110
          WINDOW= ON   BOX= OFF  CROSS= 0  PLTYPE=  3
          PLOT MODE=   A
-         PLOT FILE= metafile.plt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+         PLOT FILE= .gif                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
  
 ! enlarge it to accomodate an additional 50% width
 ppl size 15.3,8.8
@@ -10468,18 +10469,19 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
-FERRET_PLATFORM = "Linux 2.6.18-308.1.1.el5 64-bit"
+FERRET_PLATFORM = "Linux 2.6.18-348.3.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "21-Feb-13"
-SESSION_TIME = "20:01"
-SESSION_PID = "25256"
-DELTA_CPU = "0.010998"
-CLOCK_SECS = "0.007"
-CURRENT_DATE = "21-Feb-13"
-CURRENT_TIME = "20:01:17"
+SESSION_DATE = " 6-May-13"
+SESSION_TIME = "12:24"
+SESSION_PID = "6680"
+DELTA_CPU = "0.010997"
+CLOCK_SECS = "0.006"
+CURRENT_DATE = " 6-May-13"
+CURRENT_TIME = "12:24:39"
 N_OPEN_DSETS = "0"
+PROGRAM_NAME = "Ferret"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10496,18 +10498,19 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
-FERRET_PLATFORM = "Linux 2.6.18-308.1.1.el5 64-bit"
+FERRET_PLATFORM = "Linux 2.6.18-348.3.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "21-Feb-13"
-SESSION_TIME = "20:01"
-SESSION_PID = "25256"
-DELTA_CPU = "0.001999"
-CLOCK_SECS = "0.008"
-CURRENT_DATE = "21-Feb-13"
-CURRENT_TIME = "20:01:17"
+SESSION_DATE = " 6-May-13"
+SESSION_TIME = "12:24"
+SESSION_PID = "6680"
+DELTA_CPU = "0.002"
+CLOCK_SECS = "0.007"
+CURRENT_DATE = " 6-May-13"
+CURRENT_TIME = "12:24:39"
 N_OPEN_DSETS = "0"
+PROGRAM_NAME = "Ferret"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10515,9 +10518,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "21-Feb-13"
-SESSION_TIME = "20:01"
-SESSION_PID = "25256"
+SESSION_DATE = " 6-May-13"
+SESSION_TIME = "12:24"
+SESSION_PID = "6680"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10527,15 +10530,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "21-Feb-13"
-SESSION_TIME = "20:01"
-SESSION_PID = "25256"
+SESSION_DATE = " 6-May-13"
+SESSION_TIME = "12:24"
+SESSION_PID = "6680"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "21-Feb-13"
-SESSION_TIME = "20:01"
-SESSION_PID = "25256"
+SESSION_DATE = " 6-May-13"
+SESSION_TIME = "12:24"
+SESSION_PID = "6680"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10658,22 +10661,23 @@ say ($delayed_eval)         ! translate symbol and then evaluate
 ! cleanup
 cancel symbols/all
 show symbols/all
-PPL$XPIXEL = "821"
-PPL$YPIXEL = "616"
+PPL$XPIXEL = "0"
+PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
-FERRET_PLATFORM = "Linux 2.6.18-308.1.1.el5 64-bit"
+FERRET_PLATFORM = "Linux 2.6.18-348.3.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "21-Feb-13"
-SESSION_TIME = "20:01"
-SESSION_PID = "25256"
-DELTA_CPU = "0.026996"
-CLOCK_SECS = "0.871"
-CURRENT_DATE = "21-Feb-13"
-CURRENT_TIME = "20:01:18"
+SESSION_DATE = " 6-May-13"
+SESSION_TIME = "12:24"
+SESSION_PID = "6680"
+DELTA_CPU = "0.021997"
+CLOCK_SECS = "0.033"
+CURRENT_DATE = " 6-May-13"
+CURRENT_TIME = "12:24:39"
 N_OPEN_DSETS = "0"
+PROGRAM_NAME = "Ferret"
  
 *** Running test: bn_comma_delimited.jnl
 ! bn420_comma_delimited
@@ -25243,7 +25247,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Thu Feb 21 20:01:42 PST 2013
+Mon May  6 12:24:45 PDT 2013
  
 GO bn_reset
 cancel mode verify
@@ -33347,6 +33351,22 @@ SAMPLEIJ(DAT_TO_SAMPLE,XPTS,YPTS)
     DAT_TO_SAMPLE: variable (x,y,z,t,e,f) to sample
     XPTS: X indices of grid points
     YPTS: Y indices of grid points
+SAMPLEI_MULTI(I_INDICES,DAT_TO_SAMPLE)
+    Returns data sampled according to I indices which may vary in JKL
+    I_INDICES: indices upon which to sample
+    DAT_TO_SAMPLE: data to sample using I indices
+SAMPLEJ_MULTI(J_INDICES,DAT_TO_SAMPLE)
+    Returns data sampled according to J indices which may vary in IKL
+    J_INDICES: ordered indices
+    DAT_TO_SAMPLE: data to sample using J indices
+SAMPLEK_MULTI(K_INDICES,DAT_TO_SAMPLE)
+    Returns data sampled according to K indices which may vary in IJL
+    K_INDICES: ordered indices
+    DAT_TO_SAMPLE: data to sample using K indices
+SAMPLEL_MULTI(L_INDICES,DAT_TO_SAMPLE)
+    Returns data sampled according to L indices which may vary in IJK
+    L_INDICES: ordered indices
+    DAT_TO_SAMPLE: data to sample using L indices
 SAMPLET_DATE(DAT_TO_SAMPLE,YR,MO,DAY,HR,MIN,SEC)
     Returns data sampled by interpolating to a set of times
     DAT_TO_SAMPLE: data to sample at set of times
@@ -37035,7 +37055,7 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,
 5    /  5: "I8SI9S"  4.000 "B"  34671.  94.99 -30.30  1945.   154.  16.36  35.71  0.000  32.00  0.0000  1.000   155.  230.2  0.0000   0.91  0.000  0.1465  0.000   0.90  0.000  0.266  0.000  2.846
 6    /  6: "I8SI9S"  4.000 "B"  34671.  94.99 -30.30  1945.   204.  14.85  35.55  0.000  31.00  0.0000  1.000   206.  222.3  0.0000   3.79  0.000  0.0098  0.000   1.44  0.000  0.445  0.000  2.954
 7    /  7: "I8SI9S"  4.000 "B"  34671.  94.99 -30.30  1945.   253.  13.72  35.38  0.000  29.00  0.0000  1.000   255.  227.6  0.0000   5.53  0.000  0.0098  0.000   1.63  0.000  0.559  0.000  3.006
-8    /  8: "I8SI9S"  4.000 "B"  34671.  94.99 -30.30  1945.   254.  13.71  35.38  0.000  30.00  0.0000  1.000   256.  227.4  0.0000   5.51  0.000  0.0098  0.000   1.79  0.000  0.555  0.000  2.996
+8    /  8: "I8SI9S"  4.000 "B"  34671.  94.99 -30.30  1945.   254.  13.71  35.38  0.000  30.00  0.0000  1.000   256.  227.3  0.0000   5.51  0.000  0.0098  0.000   1.79  0.000  0.555  0.000  2.996
 9    /  9: "I8SI9S"  4.000 "B"  34671.  94.99 -30.30  1945.   305.  12.62  35.21  0.000  28.00  0.0000  1.000   307.  230.9  0.0000   7.65  0.000  0.0098  0.000   2.16  0.000  0.686  0.000  3.134
 10   / 10: "I8SI9S"  4.000 "B"  34671.  94.99 -30.30  1945.   353.  12.01  35.12  0.000  27.00  0.0000  1.000   356.  235.4  0.0000   8.72  0.000  0.0098  0.000   2.52  0.000  0.753  0.000  3.190
 11   / 11: "I8SI9S"  4.000 "B"  34671.  94.99 -30.30  1945.   404.  11.46   ....  9.000  26.00  0.0000  1.000   407.   ....  0.0000   ....  9.000    ....  9.000   ....  9.000   ....  9.000  3.255
@@ -38064,6 +38084,7 @@ list b[d=1]
  
  
 *** Running test: bn_cancel_axes.jnl
+! bn_cancel_axes.jnl
  
 let ind1 = 1*i
 let tim1 = 20500*randu(ind1[i=1:20500])
@@ -38234,11 +38255,12 @@ sh axis/x ax2
        4>  100                   10         95
  
 ! Test interaction with irreg axes from datasets
-use climatological_axes
-cancel data climatological_axes
-sh axis/t month_irreg
+ 
+use test_axes
+cancel data test_axes
+sh axis/t test_irreg
  name       axis              # pts   start                end
- MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
+ TEST_IRREG TIME               12mi   16-JAN 12:00         15-DEC 17:49
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 365.2425 (modulo length = axis span)
  
@@ -38258,9 +38280,9 @@ T0 = 01-JAN-0000 00:00:00
  
 def axis/x ax1 = {1, 3, 4, 5, 9}
 can axis ax1
-sh axis/t month_irreg
+sh axis/t test_irreg
  name       axis              # pts   start                end
- MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
+ TEST_IRREG TIME               12mi   16-JAN 12:00         15-DEC 17:49
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 365.2425 (modulo length = axis span)
  
@@ -38278,7 +38300,7 @@ T0 = 01-JAN-0000 00:00:00
       11>  15-NOV 05:49:12       30         31-OCT 05:49:12         319.2425
       12>  15-DEC 17:49:12       31         30-NOV 05:49:12         349.7425
  
-cancel axis month_irreg
+cancel axis test_irreg
  
 def axis/x ax1 = {1, 3, 4, 5, 9}
 sh axis/x ax1
@@ -38294,11 +38316,11 @@ sh axis/x ax1
        5>  9                     4          7
 can axis ax1
  
-sh axis/t month_irreg
+sh axis/t test_irreg
  name       axis              # pts   start                end
-sh axis/t seasonal_reg
+sh axis/t test_seas
  name       axis              # pts   start                end
- SEASONAL_REG TIME              4mr   15-FEB 15:43         15-NOV 14:05
+ TEST_SEAS TIME                 4mr   15-FEB 15:43         15-NOV 14:05
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 8765.82 (modulo length = axis span)
  
@@ -38471,44 +38493,42 @@ GO bn_reset
 cancel mode verify
 GO err541_cancel_axes
 ! Check that an axis in use cannot be cancelled.
+! 4/2013 changes for Ferret with climatological axes
+!        defined internally. Use a different datset for this test
  
-use climatological_axes
-cancel data climatological_axes
-let tt = t[gt=month_irreg] + 50*x[i=1:10]
+use test_axes
+cancel data test_axes
+ 
+let tt = t[gt=test_irreg] + 50*x[i=1:10]
 load tt
  
-show axis month*
+show axis test_i*
  name       axis              # pts   start                end
- MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
+ TEST_IRREG TIME               12mi   16-JAN 12:00         15-DEC 17:49
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 365.2425 (modulo length = axis span)
- MONTH_REG TIME                12mr   16-JAN 06:00         16-DEC 01:20
-T0 = 01-JAN-0000 00:00:00
-   Axis span (to cell edges) = 8765.82 (modulo length = axis span)
-cancel axis month_irreg
+cancel axis test_irreg
  
-show axis month*
+show axis test_i*
  name       axis              # pts   start                end
- MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
+ TEST_IRREG TIME               12mi   16-JAN 12:00         15-DEC 17:49
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 365.2425 (modulo length = axis span)
- MONTH_REG TIME                12mr   16-JAN 06:00         16-DEC 01:20
-T0 = 01-JAN-0000 00:00:00
-   Axis span (to cell edges) = 8765.82 (modulo length = axis span)
  
 ! Pre V5.42, this causes a crash: axes were cancelled, but not fully.
 cancel axis/all
-show axis month*
+show axis test_i*
  name       axis              # pts   start                end
- MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
+ TEST_IRREG TIME               12mi   16-JAN 12:00         15-DEC 17:49
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 365.2425 (modulo length = axis span)
  
 cancel var tt
 cancel axis/all
  
-show axis month*
+show axis test_i*
  name       axis              # pts   start                end
+ 
  
  
 ! Make sure delimited reads are processing dates correctly
@@ -39895,7 +39915,7 @@ show modes
       DESPERATE     CANCELLED      2560000
       GKS              SET
       REFRESH          SET
-      METAFILE      CANCELLED      metafile.plt
+      METAFILE      CANCELLED      .gif
       PPLLIST       CANCELLED      ppllist.out
       GUI           CANCELLED
       LOGO          CANCELLED
@@ -40697,8 +40717,8 @@ can var/all
 ! Convoluted definitions, LIST needs data on a grid not yet loaded.
 use clim_airt_lev.cdf
 def axis/t=16-JUL-1966:16-MAY-1967:1/unit=month hope_month
-use climatological_axes
-can dat climatological_axes
+! use climatological_axes
+! can dat climatological_axes
  
 let dzdt_month = airt[gt=hope_month]
 let dzdt_clim = airt[gt=month_reg@mod]
@@ -40763,8 +40783,8 @@ GO err551_modulo_nc_regrid.jnl
  
 use coads_vwnd
 set region/x=161w/y=39n
-use climatological_axes
-can data climatological_axes
+!use climatological_axes
+!can data climatological_axes
  
 let vwnd_clim = vwnd[gt=month_reg@mod]
  
@@ -41723,6 +41743,241 @@ SHO DATA/VAR/XML
 </var>
 </dataset>
 </datasets>
+<axes>
+<axis name="PSXT">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[LONGITUDE]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>160</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>130.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>289.5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>PSXT</value>
+</attribute>
+</axis>
+<axis name="PSXU">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[LONGITUDE]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>160</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>131</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>290</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>PSXU</value>
+</attribute>
+</axis>
+<axis name="PSYT">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[LATITUDE]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>100</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-28.83607</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>48.56797</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>PSYT_bnds</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>PSYT</value>
+</attribute>
+</axis>
+<axis name="PSYU">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[LATITUDE]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>100</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-27.67214</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>50.00005</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>PSYU_bnds</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>PSYU</value>
+</attribute>
+</axis>
+<axis name="PSZT">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>27</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>3824</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>PSZT_bnds</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>PSZT</value>
+</attribute>
+</axis>
+<axis name="PSZW">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>27</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>10</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>4149</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>PSZW_bnds</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>PSZW</value>
+</attribute>
+</axis>
+<axis name="TIME">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[hour since 1976-01-14 14:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>168</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1982-01-15 14:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1983-06-07 13:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1976-01-14 14:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>TIME</value>
+</attribute>
+</axis>
+</axes>
  
 SHO GRID/XML ps3du1
 <grid name="PS3DU1">
@@ -42046,6 +42301,242 @@ SHO DATA/VAR/XML
 </grid>
 </var>
 </dataset>
+</datasets>
+<axes>
+<axis name="PSXT">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[LONGITUDE]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>160</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>130.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>289.5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>PSXT</value>
+</attribute>
+</axis>
+<axis name="PSXU">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[LONGITUDE]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>160</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>131</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>290</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>PSXU</value>
+</attribute>
+</axis>
+<axis name="PSYT">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[LATITUDE]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>100</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-28.83607</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>48.56797</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>PSYT_bnds</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>PSYT</value>
+</attribute>
+</axis>
+<axis name="PSYU">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[LATITUDE]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>100</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-27.67214</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>50.00005</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>PSYU_bnds</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>PSYU</value>
+</attribute>
+</axis>
+<axis name="PSZT">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>27</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>3824</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>PSZT_bnds</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>PSZT</value>
+</attribute>
+</axis>
+<axis name="PSZW">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>27</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>10</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>4149</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>PSZW_bnds</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>PSZW</value>
+</attribute>
+</axis>
+<axis name="TIME">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[hour since 1976-01-14 14:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>168</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1982-01-15 14:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1983-06-07 13:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1976-01-14 14:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>TIME</value>
+</attribute>
+</axis>
+</axes>
 <dataset name="./coads_climatology.cdf" default="true">
 <title> </title>
 <var name="SST">
@@ -42077,6 +42568,104 @@ SHO DATA/VAR/XML
 </var>
 </dataset>
 </datasets>
+<axes>
+<axis name="COADSX">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>180</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>21</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>379</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>COADSX</value>
+</attribute>
+</axis>
+<axis name="COADSY">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>90</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-89</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>89</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>COADSY</value>
+</attribute>
+</axis>
+<axis name="TIME1">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[hour since 0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0000-01-16 06:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0000-03-17 02:58:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>8765.82</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>TIME</value>
+</attribute>
+</axis>
+</axes>
  
  
 ! tests of SHOW VAR/XML for global variables.
@@ -44480,11 +45069,16 @@ can mode ignore
 ! 5/2005 made changes so the bounds coordinates {1,2} are written to the
 !        file. If axis is Z, write attribute potitive="up". (bug 1196)
 ! 2/10   new examples of bounds which overlap each other.
+! 4/13   with climatological axes defined internally the LIST outputs
+!        differ by a digit. This is just roundoff in the listing, the
+!        number 730.485 shown as 730.48 vs 730.49. Just increase precision
+!        for those list commands.
+ 
  
 ! Output data on irregular record axis. No need for:
 ! save/clobber/RIGID/HEADING=ENHANCED/LLIMITS=1:3/file=a.nc v
  
-use climatological_axes
+!use climatological_axes
 let v = t[gt=month_irreg]
 save/clobber/file=a.nc v
  
@@ -44523,7 +45117,7 @@ can var/all
 ! SAVE on irregular time axis, multi-dimensional save.
 ! Void point is one time, all X and Y
  
-use climatological_axes
+!use climatological_axes
 use coads_climatology
 let v = missing(sst[gt=month_irreg], 28)
 save/clobber/x=181:185/y=1:7/L=1:5/file=a.nc v
@@ -44710,7 +45304,7 @@ can data/all
  
 ! RIGID/HEAD=ENHANCED works the same; issues a note
  
-use climatological_axes
+!use climatological_axes
 use coads_climatology
 let v = sst[gt=month_irreg]
 save/clobber/rigid/head=enh/llimits=1:3/x=181:191/y=1:7/l=1:3/file=a.nc v
@@ -44719,7 +45313,9 @@ save/clobber/rigid/head=enh/llimits=1:3/x=181:191/y=1:7/l=1:3/file=a.nc v
 ! First save without the bounds attribute, result is a file with
 ! irregular time axis, possibly unintended large boxes.
  
-use climatological_axes
+! 4/13 Increase precision for those list commands, see comment above
+ 
+!use climatological_axes
 use coads_climatology
 let v = missing(sst[gt=month_reg], 28)
  
@@ -44728,7 +45324,7 @@ save/append/file=a.nc/x=181/y=1/L=8:10 v
 can data/all
 can var v
 use a.nc
-list v, t[gt=v], tbox[gt=v]
+list/prec=7 v, t[gt=v], tbox[gt=v]
              DATA SET: ./a.nc
              TIME: 01-JAN 00:45 to 31-OCT 09:36
              LONGITUDE: 179W
@@ -44736,19 +45332,19 @@ list v, t[gt=v], tbox[gt=v]
  Column  1: V is MISSING(SST[GT=MONTH_REG], 28)
  Column  2: T is T (axis MONTH_REG1)
  Column  3: TBOX is TBOX (axis MONTH_REG1)
-                     V     T    TBOX
-16-JAN      / 1:  28.28   366.   730.
-15-FEB      / 2:  28.42  1096.   730.
-17-MAR      / 3:  28.05  1827.   730.
-16-APR      / 4:  28.00  2557.  1826.
-16-AUG      / 5:  28.00  5479.  1826.
-15-SEP      / 6:  28.00  6210.   730.
-16-OCT      / 7:  28.00  6940.   730.
+                        V      T        TBOX
+16-JAN      / 1:  28.28389   366.000   730.485
+15-FEB      / 2:  28.41851  1096.485   730.485
+17-MAR      / 3:  28.04680  1826.970   730.485
+16-APR      / 4:  28.00000  2557.455  1826.213
+16-AUG      / 5:  28.00000  5479.395  1826.213
+15-SEP      / 6:  28.00000  6209.880   730.485
+16-OCT      / 7:  28.00000  6940.365   730.485
 can data a
  
 ! Now save with /bounds
  
-use climatological_axes
+!use climatological_axes
 use coads_climatology
 let v = missing(sst[gt=month_reg], 28)
 save/clobber/BOUNDS/file=a.nc/x=181/y=1/L=1:4 v
@@ -44757,7 +45353,7 @@ can data/all
 can var v
 use a.nc
  
-list v, t[gt=v], tbox[gt=v]
+list/prec=7 v, t[gt=v], tbox[gt=v]
              DATA SET: ./a.nc
              TIME: 01-JAN 00:45 to 31-OCT 09:36
              LONGITUDE: 179W
@@ -44765,35 +45361,35 @@ list v, t[gt=v], tbox[gt=v]
  Column  1: V is MISSING(SST[GT=MONTH_REG], 28)
  Column  2: T is T (axis MONTH_REG1)
  Column  3: TBOX is TBOX (axis MONTH_REG1)
-                     V     T    TBOX
-16-JAN      / 1:  28.28   366.   730.
-15-FEB      / 2:  28.42  1096.   730.
-17-MAR      / 3:  28.05  1827.   730.
-16-APR      / 4:  28.00  2557.   730.
-16-JUN      / 5:   ....  4018.  2191.
-16-AUG      / 6:  28.00  5479.   730.
-15-SEP      / 7:  28.00  6210.   730.
-16-OCT      / 8:  28.00  6940.   730.
+                        V      T        TBOX
+16-JAN      / 1:  28.28389   366.000   730.485
+15-FEB      / 2:  28.41851  1096.485   730.485
+17-MAR      / 3:  28.04680  1826.970   730.485
+16-APR      / 4:  28.00000  2557.455   730.485
+16-JUN      / 5:      ....  4018.425  2191.455
+16-AUG      / 6:  28.00000  5479.395   730.485
+15-SEP      / 7:  28.00000  6209.880   730.485
+16-OCT      / 8:  28.00000  6940.365   730.485
 can data/all
  
 ! gappy_bounds.nc has discontiguous bounds
 ! We use the LOWER bound of all axis cells.
  
 use gappy_bounds.nc
-list a, t[gt=a], tboxlo[gt=a], tboxhi[gt=a]
+list/prec=7 a, t[gt=a], tboxlo[gt=a], tboxhi[gt=a]
              DATA SET: ./gappy_bounds.nc
              TIME: 01-JAN-1990 12:00 to 10-JAN-1990 12:00
  Column  1: A is SST[X=150:180@AVE,Y=-10:0@AVE]
  Column  2: T is T (axis TGAP)
  Column  3: TBOXLO is TBOXLO (axis TGAP)
  Column  4: TBOXHI is TBOXHI (axis TGAP)
-                        A     T   TBOXLO TBOXHI
-02-JAN-1990 00 / 1:  29.70  1.000  0.500  1.500
-03-JAN-1990 00 / 2:  29.37  2.000  1.500  2.500
-04-JAN-1990 00 / 3:  29.12  3.000  2.500  3.500
-08-JAN-1990 00 / 4:  29.29  7.000  3.500  7.500
-09-JAN-1990 00 / 5:  28.90  8.000  7.500  8.500
-10-JAN-1990 00 / 6:  28.94  9.000  8.500  9.500
+                           A      T       TBOXLO    TBOXHI
+02-JAN-1990 00 / 1:  29.69704  1.000000  0.500000  1.500000
+03-JAN-1990 00 / 2:  29.37104  2.000000  1.500000  2.500000
+04-JAN-1990 00 / 3:  29.11568  3.000000  2.500000  3.500000
+08-JAN-1990 00 / 4:  29.29205  7.000000  3.500000  7.500000
+09-JAN-1990 00 / 5:  28.89826  8.000000  7.500000  8.500000
+10-JAN-1990 00 / 6:  28.93826  9.000000  8.500000  9.500000
  
 cancel dat/all
  
@@ -45124,8 +45720,8 @@ use  gtsa056_2.cdf
 set region/x=140/y=1/k=1
 let var = if temp gt 29.5 then temp
  
-use climatological_axes
-can data climatological_axes
+!use climatological_axes
+!can data climatological_axes
  
 list var[gt=month_reg@mod]
              VARIABLE : IF TEMP GT 29.5 THEN TEMP
@@ -47797,7 +48393,7 @@ sho command
  DEFINE REGION/I/J/K/L/M/N/X/Y/Z/T/E/F/DEFAULT/DX/DY/DZ/DT/DE/DF/DI/DJ/DK
          /DL/DM/DN
  DEFINE GRID/X/Y/Z/T/E/F/FILE/LIKE
- DEFINE VARIABLE/TITLE/UNITS/QUIET/DATASET/BAD
+ DEFINE VARIABLE/TITLE/UNITS/QUIET/DATASET/BAD/REMOTE
  DEFINE AXIS/X/Y/Z/T/E/F/FILE/UNITS/T0/NAME/FROMDATA/DEPTH/MODULO/NPOINTS
          /EDGES/CALENDAR/BOUNDS/QUIET
  DEFINE VIEWPORT/TEXT/XLIMITS/YLIMITS/SIZE/ORIGIN/CLIP/AXES
@@ -47846,7 +48442,6 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "21-Feb-13:20:04"
  
 set win/title="set the title"
 sho sym win_title
@@ -47864,7 +48459,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="21-Feb-13:20:04"
+ !-> set win/title=" 6-May-13:12:25"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47873,16 +48468,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 21-Feb-13
+ !-> DEFINE SYMBOL the_date =  6-May-13
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 20:04
+ !-> DEFINE SYMBOL the_time = 12:25
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="21-Feb-13:20:04"
+ !-> SET WIN/TITLE="6-May-13:12:25"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "21-Feb-13:20:04"
+WIN_TITLE = "6-May-13:12:25"
 *** Running test: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -49597,7 +50192,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -49642,7 +50237,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -50655,9 +51250,9 @@ list a
 *** Running test: bn_modnbd.jnl
 ! Test MODNBD regridding statistic.
  
-use "../bench/gtsa056_2.cdf"
-use climatological_axes
-cancel data climatological_axes
+use gtsa056_2.cdf
+!use climatological_axes
+!cancel data climatological_axes
  
 set region/x=140/y=1/k=1
  
@@ -50692,7 +51287,7 @@ list nomiss[gt=month_reg@MODNGD]
  
 let var = if temp gt 29.5 then temp
 list var[gt=month_reg@MODNGD], var[gt=month_reg@MODNBD], var[gt=month_reg@MODNGD]+var[gt=month_reg@MODNBD], nomiss[gt=month_reg@MODNGD]
-             DATA SET: ../bench/gtsa056_2.cdf
+             DATA SET: ./gtsa056_2.cdf
              TIME: 01-JAN 00:45 to 31-DEC 06:34
              LONGITUDE: 139.5E
              LATITUDE: 0.8N
@@ -50970,7 +51565,7 @@ cancel mode verify
 GO err604_irreg_axis.jnl
 ! Bug 1524: irregular axis detected as REGULAR!
  
-use climatological_axes
+!use climatological_axes
 sh ax MONTH_IRREG
  name       axis              # pts   start                end
  MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
@@ -51120,6 +51715,10 @@ NCO_ATTR(FileName,VariableName,AttributeName,AttType,Mode,AttributeValue)
 PT_IN_POLY(A,XVERT,YVERT)
 RECT_TO_CURV(V,lon_bounds_out,lat_bounds_out,missing_allowed)
 SAMPLEIJ(DAT_TO_SAMPLE,XPTS,YPTS)
+SAMPLEI_MULTI(I_INDICES,DAT_TO_SAMPLE)
+SAMPLEJ_MULTI(J_INDICES,DAT_TO_SAMPLE)
+SAMPLEK_MULTI(K_INDICES,DAT_TO_SAMPLE)
+SAMPLEL_MULTI(L_INDICES,DAT_TO_SAMPLE)
 SAMPLET_DATE(DAT_TO_SAMPLE,YR,MO,DAY,HR,MIN,SEC)
 SAMPLEXY(DAT_TO_SAMPLE,XPTS,YPTS)
 SAMPLEXY_CLOSEST(DAT_TO_SAMPLE,XPTS,YPTS)
@@ -51208,6 +51807,8 @@ ZREVERSE(A)
 EOFSVD_SPACE(A)
 EOFSVD_STAT(A)
 EOFSVD_TFUNC(A)
+EXPND_BY_LEN(var,len,nx)
+FC_ISUBSET(index_list,lengths,nx,FullData)
 ADD_9(A,B,C,D,E,F,G,H,I)
 APPENDE(ENS,VAR)
 AVET(A)
@@ -52071,6 +52672,41 @@ SHOW DATA/VAR/XML
 </grid>
 </var>
 </dataset>
+</datasets>
+<axes>
+<axis name="ZAXIS_ORIG">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>10</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>50</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="axis" type="char">
+   <value>Z</value>
+</attribute>
+<attribute name="standard_name" type="char">
+   <value>altitude</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>ZAXIS_ORIG</value>
+</attribute>
+</axis>
+</axes>
 <dataset name="./z2.nc" default="true">
 <title> </title>
 <var name="CYCLE_ORIG">
@@ -52119,6 +52755,60 @@ SHOW DATA/VAR/XML
 </var>
 </dataset>
 </datasets>
+<axes>
+<axis name="ZAXIS_ORIG">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>10</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>50</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="axis" type="char">
+   <value>Z</value>
+</attribute>
+<attribute name="standard_name" type="char">
+   <value>altitude</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>ZAXIS_ORIG</value>
+</attribute>
+</axis>
+<axis name="ZAXIS_DES">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>9</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>345</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>353</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+</axes>
  
 GO bn_reset
 cancel mode verify
@@ -52205,7 +52895,7 @@ save/clob/file=b.nc b
 use coads_climatology
 plot/x=56e:100e/y=40 sst[L=1]
 ppl list labels
- @ACSEA SURFACE TEMPERATURE (Deg C)                                             
+ @ACSEA SURFACE TEMPERATURE (Deg C) No Valid Data                               
  @ASLONGITUDE                                                                   
  @ASDeg C                                                                       
 
@@ -52237,7 +52927,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
  LAB 4  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 5 -3.700E-01 -5.500E-01 0.080    0  SYSTEM  @ASSST[Y=39N]
+ LAB 5 -3.700E-01 -5.500E-01 0.080    0  SYSTEM  @ASSST[Y=39N] No Valid Data
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
  
 ! For plots with multi lines in one plot command, mark each if no data
@@ -52256,7 +52946,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  2.530E+00 -7.900E-01 0.120    0  SYSTEM  @ASSST[Y=9N]
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 5  5.780E+00 -7.900E-01 0.120    0  SYSTEM  @ASSST[Y=49N]
+ LAB 5  5.780E+00 -7.900E-01 0.119    0  SYSTEM  @ASSST[Y=49N] No Valid Data
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
  LAB 6  2.530E+00 -1.050E+00 0.120    0  SYSTEM  @ASSST[Y=19N]
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -55295,10 +55985,10 @@ SH GRID am
  normal    F
 *** Running test: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.011997"
-CLOCK_SECS = "0.007"
-CURRENT_DATE = "21-Feb-13"
-CURRENT_TIME = "20:05:15"
+DELTA_CPU = "0.005998"
+CLOCK_SECS = "0.004"
+CURRENT_DATE = " 6-May-13"
+CURRENT_TIME = "12:25:21"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -55307,8 +55997,8 @@ CURRENT_TIME = "20:05:15"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.077989"
-CLOCK_SECS = "1.342"
+DELTA_CPU = "0.044993"
+CLOCK_SECS = "0.052"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -55322,60 +56012,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.320951
+ !-> DEFINE VARIABLE ten_plots = 0.389941
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "9.99E-04"
-CLOCK_SECS = "5.709"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "0.443"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "5.71"
+CLOCK_SECS = "0.443"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.039994
- !-> DEFINE VARIABLE sumcpu =0.039994
+ !-> DEFINE VARIABLE dt = 0.042993
+ !-> DEFINE VARIABLE sumcpu =0.042993
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.034994
- !-> DEFINE VARIABLE sumcpu =0.074988
+ !-> DEFINE VARIABLE dt = 0.043994
+ !-> DEFINE VARIABLE sumcpu =0.086987
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.039995
- !-> DEFINE VARIABLE sumcpu =0.114983
+ !-> DEFINE VARIABLE dt = 0.042992
+ !-> DEFINE VARIABLE sumcpu =0.129979
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.035994
- !-> DEFINE VARIABLE sumcpu =0.150977
+ !-> DEFINE VARIABLE dt = 0.027996
+ !-> DEFINE VARIABLE sumcpu =0.157975
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.184972
+ !-> DEFINE VARIABLE dt = 0.025997
+ !-> DEFINE VARIABLE sumcpu =0.183972
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.036995
- !-> DEFINE VARIABLE sumcpu =0.221967
+ !-> DEFINE VARIABLE dt = 0.024996
+ !-> DEFINE VARIABLE sumcpu =0.208968
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.034994
- !-> DEFINE VARIABLE sumcpu =0.256961
+ !-> DEFINE VARIABLE dt = 0.025996
+ !-> DEFINE VARIABLE sumcpu =0.234964
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.290956
+ !-> DEFINE VARIABLE dt = 0.024996
+ !-> DEFINE VARIABLE sumcpu =0.25996
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.031996
- !-> DEFINE VARIABLE sumcpu =0.322952
+ !-> DEFINE VARIABLE dt = 0.024997
+ !-> DEFINE VARIABLE sumcpu =0.284957
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.034993
- !-> DEFINE VARIABLE sumcpu =0.357945
+ !-> DEFINE VARIABLE dt = 0.024995
+ !-> DEFINE VARIABLE sumcpu =0.309952
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.357945
-0.357945
+ !-> MESSAGE/CONTINUE 0.309952
+0.309952
 sh sym CLOCK_SECS
-CLOCK_SECS = "13.418"
+CLOCK_SECS = "0.755"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "21-Feb-13"
-SESSION_TIME = "20:05"
-CURRENT_DATE = "21-Feb-13"
-CURRENT_TIME = "20:05:28"
+SESSION_DATE = " 6-May-13"
+SESSION_TIME = "12:25"
+CURRENT_DATE = " 6-May-13"
+CURRENT_TIME = "12:25:22"
 *** Running test: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -57165,6 +57855,104 @@ sh dat/xml/var
 </var>
 </dataset>
 </datasets>
+<axes>
+<axis name="COADSX">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>180</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>21</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>379</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>COADSX</value>
+</attribute>
+</axis>
+<axis name="COADSY">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>90</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-89</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>89</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>COADSY</value>
+</attribute>
+</axis>
+<axis name="TIME">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[hour since 0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0000-01-16 06:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0000-03-17 02:58:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>8765.82</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>TIME</value>
+</attribute>
+</axis>
+</axes>
 shade/l=1 sst
 *** Running test: bn65_bug_fixes.jnl
 ! bn65_bug_fixes.jnl
@@ -57729,6 +58517,136 @@ sp cat the_xml_file.xml
 </var>
 </dataset>
 </datasets>
+<axes>
+<axis name="XAX_LEV9421_380">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>360</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>20.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>379.5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>XAX_LEV9421_380</value>
+</attribute>
+</axis>
+<axis name="YAX_LEV94">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>180</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-89.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>89.5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>YAX_LEV94</value>
+</attribute>
+</axis>
+<axis name="ZAXLEVIT191_1">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>ZAXLEVIT191_1</value>
+</attribute>
+</axis>
+<axis name="TIME">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[hour since 0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0000-01-16 06:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0000-02-15 16:29:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>8765.82</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>TIME</value>
+</attribute>
+</axis>
+</axes>
 <axes>
 <axis name="XAX_LEV9421_380">
 <attribute name="direction" type="char">
@@ -59199,8 +60117,8 @@ list contents
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.85 (beta)"                                                     
- 3    /  3:" ! Linux 2.6.18-308.1.1.el5 64-bit - 02/01/13"                              
- 4    /  4:" ! 21-Feb-13 20:06     "                                                    
+ 3    /  3:" ! Linux 2.6.18-348.3.1.el5 64-bit - 05/06/13"                              
+ 4    /  4:" !  6-May-13 12:25     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -59696,6 +60614,154 @@ sh dat/var/xml
 </var>
 </dataset>
 </datasets>
+<axes>
+<axis name="TIME">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[days since 1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1900-02-15 03:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1900-02-15 03:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[JULIAN]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>TIME</value>
+</attribute>
+</axis>
+<axis name="GRID_X_T">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>79</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>79</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value>Nominal Longitude of T-cell center</value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value>X</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>grid_x_T</value>
+</attribute>
+</axis>
+<axis name="GRID_Y_T">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-0.25</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>-0.25</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value>Nominal Latitude of T-cell center</value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value>Y</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>grid_y_T</value>
+</attribute>
+</axis>
+<axis name="ZT">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[meters]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>22.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>157.9952</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value>zt</value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value>z</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>zt</value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>zt_bnds</value>
+</attribute>
+</axis>
+</axes>
 sh var/xml
  
 ! List the xml for just the axes in this file. sho axis/all/xml
@@ -59968,6 +61034,154 @@ SH DAT/VAR/XML
 </var>
 </dataset>
 </datasets>
+<axes>
+<axis name="TIME">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[days since 1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1900-02-15 03:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1900-02-15 03:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[JULIAN]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>TIME</value>
+</attribute>
+</axis>
+<axis name="ZT">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[meters]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>22.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>157.9952</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value>zt</value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value>z</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>zt</value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>zt_bnds</value>
+</attribute>
+</axis>
+<axis name="GRID_Y_T">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-0.25</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>-0.25</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value>Nominal Latitude of T-cell center</value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value>Y</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>grid_y_T</value>
+</attribute>
+</axis>
+<axis name="GRID_X_T">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>79</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>79</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value>Nominal Longitude of T-cell center</value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value>X</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>grid_x_T</value>
+</attribute>
+</axis>
+</axes>
  
 CANCEL VAR a
  
@@ -60047,6 +61261,154 @@ SH DAT/VAR/XML
 </var>
 </dataset>
 </datasets>
+<axes>
+<axis name="TIME">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[days since 1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1900-02-15 03:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1900-02-15 03:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[JULIAN]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>TIME</value>
+</attribute>
+</axis>
+<axis name="ZT">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[meters]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>22.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>157.9952</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value>zt</value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value>z</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>zt</value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>zt_bnds</value>
+</attribute>
+</axis>
+<axis name="GRID_Y_T">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-0.25</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>-0.25</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value>Nominal Latitude of T-cell center</value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value>Y</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>grid_y_T</value>
+</attribute>
+</axis>
+<axis name="GRID_X_T">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>79</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>79</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value>Nominal Longitude of T-cell center</value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value>X</value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>grid_x_T</value>
+</attribute>
+</axis>
+</axes>
  
 GO bn_reset
 cancel mode verify
@@ -60410,7 +61772,7 @@ cancel mode verify
 GO err667_att_too_long
 ! err667_att_too_long.jnl
 ! 3/25/2011 ACM
-! bug 1839; too-long string attribute causes crash or hang
+! bug 1820; too-long string attribute causes crash or hang
  
 use toolong.nc
 sh dat/att
@@ -60423,7 +61785,7 @@ sh dat/att
                                  Conventions     CHAR        6    F       CF-1.0
                                  nco_input_file_nINT         1    F       1000
                                  nco_input_file_lCHAR        2048 F
- --TRUNCATED TO LENGTH 2048-- b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0002.SURF.nc b40.coup_carb.004.cam2.h0.0003.SURF.nc b40.coup_carb.004.cam2.h0.0004.SURF.nc b40.coup_carb.004.cam2.h0.0005.SURF.nc b40.coup_carb.004.cam2.h0.0006.SURF.nc b40.coup_carb.004.cam2.h0.0007.SURF.nc b40.coup_carb.004.cam2.h0.0008.SURF.nc b40.coup_carb.004.cam2.h0.0009.SURF.nc b40.coup_carb.004.cam2.h0.0010.SURF.nc b40.coup_carb.004.cam2.h0.0011.SURF.nc b40.coup_carb.004.cam2.h0.0012.SURF.nc b40.coup_carb.004.cam2.h0.0013.SURF.nc b40.coup_carb.004.cam2.h0.0014.SURF.nc b40.coup_carb.004.cam2.h0.0015.SURF.nc b40.coup_carb.004.cam2.h0.0016.SURF.nc b40.coup_carb.004.cam2.h0.0017.SURF.nc b40.coup_carb.004.cam2.h0.0018.SURF.nc b40.coup_carb.004.cam2.h0.0019.SURF.nc b40.coup_carb.004.cam2.h0.0020.SURF.nc b40.coup_carb.004.cam2.h0.0021.SURF.nc b40.coup_carb.004.cam2.h0.0022.SURF.nc b40.coup_carb.004.cam2.h0.0023.SURF.nc b40.coup_carb.004.cam2.h0.0024.SURF.nc b40.coup_carb.004.cam2.h0.0025.SURF.nc b40.coup_carb.004.cam2.h0.0026.SURF.nc b40.coup_carb.004.cam2.h0.0027.SURF.nc b40.coup_carb.004.cam2.h0.0028.SURF.nc b40.coup_carb.004.cam2.h0.0029.SURF.nc b40.coup_carb.004.cam2.h0.0030.SURF.nc b40.coup_carb.004.cam2.h0.0031.SURF.nc b40.coup_carb.004.cam2.h0.0032.SURF.nc b40.coup_carb.004.cam2.h0.00
+ b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0002.SURF.nc b40.coup_carb.004.cam2.h0.0003.SURF.nc b40.coup_carb.004.cam2.h0.0004.SURF.nc b40.coup_carb.004.cam2.h0.0005.SURF.nc b40.coup_carb.004.cam2.h0.0006.SURF.nc b40.coup_carb.004.cam2.h0.0007.SURF.nc b40.coup_carb.004.cam2.h0.0008.SURF.nc b40.coup_carb.004.cam2.h0.0009.SURF.nc b40.coup_carb.004.cam2.h0.0010.SURF.nc b40.coup_carb.004.cam2.h0.0011.SURF.nc b40.coup_carb.004.cam2.h0.0012.SURF.nc b40.coup_carb.004.cam2.h0.0013.SURF.nc b40.coup_carb.004.cam2.h0.0014.SURF.nc b40.coup_carb.004.cam2.h0.0015.SURF.nc b40.coup_carb.004.cam2.h0.0016.SURF.nc b40.coup_carb.004.cam2.h0.0017.SURF.nc b40.coup_carb.004.cam2.h0.0018.SURF.nc b40.coup_carb.004.cam2.h0.0019.SURF.nc b40.coup_carb.004.cam2.h0.0020.SURF.nc b40.coup_carb.004.cam2.h0.0021.SURF.nc b40.coup_carb.004.cam2.h0.0022.SURF.nc b40.coup_carb.004.cam2.h0.0023.SURF.nc b40.coup_carb.004.cam2.h0.0024.SURF.nc b40.coup_carb.004.cam2.h0.0025.SURF.nc b40.coup_carb.004.cam2.h0.0026.SURF.nc b40.coup_carb.004.cam2.h0.0027.SURF.nc b40.coup_carb.004.cam2.h0.0028.SURF.nc b40.coup_carb.004.cam2.h0.0029.SURF.nc b40.coup_carb.004.cam2.h0.0030.SURF.nc b40.coup_carb.004.cam2.h0.0031.SURF.nc b40.coup_carb.004.cam2.h0.0032.SURF.nc b40.coup_carb.004.cam2.h0.0033.SURF.nc b40.coup_carb.004.
   
 (LON273_289)           DOUBLE    long_name       CHAR        9    T       longitude
                                  units           CHAR        12   T       degrees_east
@@ -60638,8 +62000,8 @@ GO err67_tax_modtime
 ! incorrect results when the time axis is modulo
 set mode ignore_error
  
-use climatological_axes
-can dat climatological_axes
+!use climatological_axes
+!can dat climatological_axes
 let tvar = t[gt=month_reg]
  
 list/L=15:20 tax_datestring(t[gt=tvar],tvar,"hour")
@@ -61769,42 +63131,42 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.1545
- 2   / 2:  0.2359
- 3   / 3:  0.7654
- 4   / 4:  0.4855
- 5   / 5:  0.5590
+ 1   / 1:  0.8855
+ 2   / 2:  0.2561
+ 3   / 3:  0.3351
+ 4   / 4:  0.0335
+ 5   / 5:  0.6547
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.5247
- 2   / 2:  0.4015
- 3   / 3:  0.3667
- 4   / 4:  0.5866
- 5   / 5:  0.2056
+ 1   / 1:  0.7096
+ 2   / 2:  0.3110
+ 3   / 3:  0.8839
+ 4   / 4:  0.7967
+ 5   / 5:  0.0988
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.3571
- 2   / 2:  0.8992
- 3   / 3:  0.7173
- 4   / 4:  0.7150
- 5   / 5:  0.2471
- 6   / 6:  0.7649
+ 1   / 1:  0.0785
+ 2   / 2:  0.8765
+ 3   / 3:  0.3868
+ 4   / 4:  0.7975
+ 5   / 5:  0.9514
+ 6   / 6:  0.1395
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.8431
- 2   / 2:  0.8252
- 3   / 3:  0.6660
- 4   / 4:  0.6154
- 5   / 5:  0.0003
- 6   / 6:  0.6707
+ 1   / 1:  0.8555
+ 2   / 2:  0.9130
+ 3   / 3:  0.6208
+ 4   / 4:  0.9682
+ 5   / 5:  0.4509
+ 6   / 6:  0.8939
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
@@ -61836,42 +63198,42 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.483
- 2   / 2:  0.510
- 3   / 3: -0.645
- 4   / 4: -0.251
- 5   / 5:  1.751
+ 1   / 1:  0.3653
+ 2   / 2: -0.0340
+ 3   / 3: -0.8077
+ 4   / 4: -0.3784
+ 5   / 5:  0.8449
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.840
- 2   / 2:  0.773
- 3   / 3:  0.188
- 4   / 4:  0.163
- 5   / 5:  1.004
+ 1   / 1:  0.308
+ 2   / 2: -0.670
+ 3   / 3: -1.416
+ 4   / 4: -1.767
+ 5   / 5:  0.601
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.6550
- 2   / 2:  0.7276
- 3   / 3:  0.2829
- 4   / 4: -0.2631
- 5   / 5: -0.2636
- 6   / 6: -0.1591
+ 1   / 1:  0.981
+ 2   / 2:  0.326
+ 3   / 3: -1.414
+ 4   / 4: -0.285
+ 5   / 5:  1.007
+ 6   / 6:  0.161
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  1.612
- 2   / 2: -0.986
- 3   / 3: -0.556
- 4   / 4: -0.795
- 5   / 5: -1.007
- 6   / 6: -0.956
+ 1   / 1:  0.203
+ 2   / 2: -0.192
+ 3   / 3: -0.286
+ 4   / 4:  1.011
+ 5   / 5:  0.329
+ 6   / 6: -0.434
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
@@ -61907,14 +63269,14 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
             VAR2   VAR2    VAR2
-0     / 1:  1.317  1.317  0.3902
-20    / 2:  1.237  1.237  0.3902
-40    / 3:  0.390  0.390  0.0587
-60    / 4:  0.058  0.058  0.3781
-80    / 5:  0.019  0.019  0.3781
-100   / 6: -0.783  0.019  0.3781
-120   / 7:  0.059  0.059  0.3781
-140   / 8:  0.378  0.378  0.3781
+0     / 1:  1.387  1.387  0.8909
+20    / 2:  0.990  0.990  0.8909
+40    / 3:  0.891  0.891 -0.3482
+60    / 4: -0.348 -0.348  0.0672
+80    / 5: -0.541 -0.445  0.0672
+100   / 6: -0.445 -0.445  0.0672
+120   / 7: -0.413 -0.413  0.0672
+140   / 8:  0.067  0.067  0.0672
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -62073,6 +63435,7 @@ go xml_header_script.jnl xml_use_coads.jnl xml_out.xml
 ! Requires Ferret v6.5 or higher
  
 ! This is the header.jnl script from LAS; comment out can mode verify
+! Ferret v685, show/data/var/xml includes the output of show axis, so remove that.
  
 ! cancel mode verify
 IF `($ferret_version) LT 6.5` THEN
@@ -62091,10 +63454,8 @@ say/quiet/outfile="($output_xml_file)"/clobber <?xml version="1.0" encoding="ISO
 say/quiet/outfile="($output_xml_file)"/append <data>
  !-> MESSAGE/CONTINUE/quiet/outfile="xml_out.xml"/append <data>
  
-show data/var/xml/append/outfile="($output_xml_file)"
- !-> show data/var/xml/append/outfile="xml_out.xml"
-show axis/all/xml/append/outfile="($output_xml_file)"
- !-> show axis/all/xml/append/outfile="xml_out.xml"
+show data/var/xml/append/outfile="($output_xml_file)" 1
+ !-> show data/var/xml/append/outfile="xml_out.xml" 1
 say/quiet/append/outfile="($output_xml_file)" </data>
  !-> MESSAGE/CONTINUE/quiet/append/outfile="xml_out.xml" </data>
 sp cat xml_out.xml
@@ -67024,7 +68385,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67079,7 +68440,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67123,7 +68484,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67167,7 +68528,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67204,7 +68565,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67242,7 +68603,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67309,7 +68670,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67358,7 +68719,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67419,7 +68780,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67460,7 +68821,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67501,7 +68862,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67542,7 +68903,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67580,7 +68941,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67743,6 +69104,20 @@ set view lr
 RIBBON/vs/line/thick/lev=(1,8,1)/pal=ten_by_levels xpts,ypts,var
  
 PLOT/vs/over/sym=20 xpts,ypts
+ 
+ 
+can view
+ 
+! Do an overlay on a map.
+! To use RIBBON/SET, finish with PPL RIBBON/OVER
+ 
+use coads_climatology
+let mask = if sst then 0 else 1
+shade/NOLAB/L=1/x=-50:100/y=-60:50/pal=grayscale mask
+ 
+RIBBON/vs/over/nolab/thick=3/sym=20/key/set xpts, ypts, var
+ppl shakey,1,0
+ppl ribbon/over
 *** Running test: bn_descr_4digit.jnl
  ! bn_descr_4digit.jnl
  ! See ticket 1969: step files have 3- or 4-digit extensions
@@ -67792,7 +69167,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -67830,7 +69205,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -67877,7 +69252,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -67921,7 +69296,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -67946,7 +69321,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -67971,7 +69346,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  21-Feb-13
+ .                               history         CHAR        23   T       FERRET V6.85   6-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -68043,6 +69418,240 @@ set view lr
 vec/MOD/HLIM=-180:180 u,fakev,geolon_c,geolat_c
  
 can view
+*** Running test: bn685_bug_fixes.jnl
+! bn685_bug_fixes.jnl
+! test various fixes that went into version 6.85
+! 1/2013 ACM
+ 
+GO bn_reset
+cancel mode verify
+GO err684_label_quotes
+! err684_label_quotes.jnl
+! See ticket 1298.
+ 
+! A long-standing bug, error message if a label
+! enclosed in single quotes is sent to pplus
+! The single quotes triggers an attempt to translate
+! a pplus symbol.
+ 
+plot/set/i=1:12 1./i
+  ppl xlab "'My X label'"
+  ppl ylab "'My Y Label'"
+  ppl title "'A title w/ single quotes'. Need not be in pairs: Ka'imimoana"
+ppl plot
+ 
+ 
+! Here is the example from the ticket
+ 
+! This is ok
+say "'hello'"
+'hello'
+ 
+! this returned an error
+label 4.5 .5 0 0 .3 "'hello'"
+ 
+GO bn_reset
+cancel mode verify
+GO err684_context_shape
+! when limits are omitted with a compressing transformation the grave
+! accent R=SHAPE erroneously includes the corresponding axis in the shape
+ 
+! The problem was when INTERP_CONTEXT calls COMPLETE_MISSING_LIMITS.
+! That routine fills in both the SS and the WW limits as the full axis span.
+! in a full-fledged evaluation occurred the ss limits would be set to
+! -999:-999 at the time that the transform was stripped from the stack
+ 
+! The fix is to simulate this action inside of INTERP_CONTEXT
+ 
+use coads_climatology
+say `sst[l=1:12@ave],ret=shape`
+ !-> MESSAGE/CONTINUE XY
+XY
+say `sst[l=@ave],ret=shape`
+ !-> MESSAGE/CONTINUE XY
+XY
+ 
+let a = sst[l=1:12@ave]
+let b = sst[l=@ave]
+say `a,ret=shape`
+ !-> MESSAGE/CONTINUE XY
+XY
+say `b,ret=shape`
+ !-> MESSAGE/CONTINUE XY
+XY
+ 
+GO bn_reset
+cancel mode verify
+GO err684_tax_fcns
+!err684_tax_fcns.jnl
+! See ticket 2043, bug in workaround for single-precision arguments
+!                  no longer needed in double-precision Ferret
+! The output at 13-oct and 18-oct was incorrect
+ 
+ define axis/t/units=days/t0=1-jan-1950 tday = { \
+ 20724.935546875, 20729.921875, 20734.951171875,\
+20739.96484375, 20744.939453125, 20749.8984375, 20754.92578125}
+ 
+ let var = t[gt=tday]
+ 
+ 
+ list/L=3:7 tax_datestring(var, var, "second")
+             VARIABLE : TAX_DATESTRING(VAR, VAR, "second")
+             SUBSET   : 5 points (TIME)
+ 08-OCT-2006 22 / 3:"08-OCT-2006 22:49:41"
+ 13-OCT-2006 23 / 4:"13-OCT-2006 23:09:22"
+ 18-OCT-2006 22 / 5:"18-OCT-2006 22:32:48"
+ 23-OCT-2006 21 / 6:"23-OCT-2006 21:33:45"
+ 28-OCT-2006 22 / 7:"28-OCT-2006 22:13:07"
+ 
+ list/L=3:7 tax_day(var, var)
+             VARIABLE : TAX_DAY(VAR, VAR)
+             SUBSET   : 5 points (TIME)
+ 08-OCT-2006 22 / 3:   8.00
+ 13-OCT-2006 23 / 4:  13.00
+ 18-OCT-2006 22 / 5:  18.00
+ 23-OCT-2006 21 / 6:  23.00
+ 28-OCT-2006 22 / 7:  28.00
+ 
+ list/L=3:7 tax_dayfrac(var, var)
+             VARIABLE : TAX_DAYFRAC(VAR, VAR)
+             SUBSET   : 5 points (TIME)
+ 08-OCT-2006 22 / 3:  0.9512
+ 13-OCT-2006 23 / 4:  0.9648
+ 18-OCT-2006 22 / 5:  0.9394
+ 23-OCT-2006 21 / 6:  0.8984
+ 28-OCT-2006 22 / 7:  0.9258
+ 
+ list/L=3:7 tax_jday(var, var)
+             VARIABLE : TAX_JDAY(VAR, VAR)
+             SUBSET   : 5 points (TIME)
+ 08-OCT-2006 22 / 3:  281.0
+ 13-OCT-2006 23 / 4:  286.0
+ 18-OCT-2006 22 / 5:  291.0
+ 23-OCT-2006 21 / 6:  296.0
+ 28-OCT-2006 22 / 7:  301.0
+ 
+ list/L=3:7 tax_jday1900(var, var)
+             VARIABLE : TAX_JDAY1900(VAR, VAR)
+             SUBSET   : 5 points (TIME)
+ 08-OCT-2006 22 / 3:  38996.
+ 13-OCT-2006 23 / 4:  39001.
+ 18-OCT-2006 22 / 5:  39006.
+ 23-OCT-2006 21 / 6:  39011.
+ 28-OCT-2006 22 / 7:  39016.
+ 
+ list/L=3:7 tax_month(var, var)
+             VARIABLE : TAX_MONTH(VAR, VAR)
+             SUBSET   : 5 points (TIME)
+ 08-OCT-2006 22 / 3:  10.00
+ 13-OCT-2006 23 / 4:  10.00
+ 18-OCT-2006 22 / 5:  10.00
+ 23-OCT-2006 21 / 6:  10.00
+ 28-OCT-2006 22 / 7:  10.00
+ 
+ list/L=3:7 tax_yearfrac(var, var)
+             VARIABLE : TAX_YEARFRAC(VAR, VAR)
+             SUBSET   : 5 points (TIME)
+ 08-OCT-2006 22 / 3:  0.7699
+ 13-OCT-2006 23 / 4:  0.7836
+ 18-OCT-2006 22 / 5:  0.7973
+ 23-OCT-2006 21 / 6:  0.8110
+ 28-OCT-2006 22 / 7:  0.8247
+ 
+ list/L=3:7 tax_year(var, var)
+             VARIABLE : TAX_YEAR(VAR, VAR)
+             SUBSET   : 5 points (TIME)
+ 08-OCT-2006 22 / 3:  2006.
+ 13-OCT-2006 23 / 4:  2006.
+ 18-OCT-2006 22 / 5:  2006.
+ 23-OCT-2006 21 / 6:  2006.
+ 28-OCT-2006 22 / 7:  2006.
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err684_save_subset
+! err684_bug_save_subset
+! see ticke 2064, precision in internal comparison of coordinate data
+ 
+! previously gave a message about inconsistent coords
+ 
+use bug_save_subset.nc
+save/clobber/file=aa.nc/i=5:15 sh
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err684_save_subset
+! err684_bug_save_subset
+! see ticke 2064, precision in internal comparison of coordinate data
+ 
+! previously gave a message about inconsistent coords
+ 
+use bug_save_subset.nc
+save/clobber/file=aa.nc/i=5:15 sh
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err684_line_plot_zero
+! err684_line_plot_zero.jnl
+! plot all-zero variable gave blank plot.
+! For a correct plot, yaxis_min and yaxis_max should be -1.0 and 1.0 not 0.0, 0.0
+ 
+plot {0,0,0}
+sh sym yaxis*
+YAXIS_MIN = "-1.0000000"
+YAXIS_MAX = "1.000000"
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err684_delimited_precision
+! err684_delimited_precision.jnl
+! 5/2013 Fixing bug 2066
+! Reading numeric data with /FORM=DELIM converted to single precision
+ 
+! Data has numeric, longitude, and latitude values needing double precision.
+! The seconds portion of time is also now read with double precision
+sp cat delim_prec.dat
+  734654.0000  330.1234500E  42.00001000N  00:00:1.00000001
+  734654.0104  330.1234600E  42.00004000N  00:00:1.00000003
+  734654.0208  330.1234700E  42.00006000N  00:00:1.00000007
+  734654.0313  330.1234800E  42.00007000N  00:00:1.000000095
+ 
+! Delimited read, automatically detect data types
+set data/ez/format=delim/del=" " delim_prec.dat
+list/i=1:5/prec=10 v1,v2,v3,v4
+             DATA SET: ./delim_prec.dat
+             X: 0.5 to 4.5
+ Column  1: V1
+ Column  2: V2 is V2 (degrees_east)(Longitude)
+ Column  3: V3 is V3 (degrees_north)(Latitude)
+ Column  4: V4 is V4 (hours)(Time of day)
+                  V1       V2           V3             V4
+1   / 1:  734654.0000  330.1234500  42.00001000  2.777777806E-04
+2   / 2:  734654.0104  330.1234600  42.00004000  2.777777861E-04
+3   / 3:  734654.0208  330.1234700  42.00006000  2.777777972E-04
+4   / 4:  734654.0313  330.1234800  42.00007000  2.777778042E-04
+ 
+! Delimited read, specify data types
+can dat/all
+set data/ez/format=delim/del=" "/var="day,lon,lat,tim"/type="numeric,longitude,latitude,time" delim_prec.dat
+list/prec=10 day, lon, lat, tim
+             DATA SET: ./delim_prec.dat
+             X: 0.5 to 4.5
+ Column  1: DAY
+ Column  2: LON is LON (degrees_east)(Longitude)
+ Column  3: LAT is LAT (degrees_north)(Latitude)
+ Column  4: TIM is TIM (hours)(Time of day)
+                 DAY       LON          LAT            TIM
+1   / 1:  734654.0000  330.1234500  42.00001000  2.777777806E-04
+2   / 2:  734654.0104  330.1234600  42.00004000  2.777777861E-04
+3   / 3:  734654.0208  330.1234700  42.00006000  2.777777972E-04
+4   / 4:  734654.0313  330.1234800  42.00007000  2.777778042E-04
+ 
+ 
 *** Running test: bn_all_ef.jnl
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -68877,25 +70486,26 @@ exit
 exit/command
 *** Running test: bn_startupfile.jnl
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
-PPL$XPIXEL = "821"
-PPL$YPIXEL = "616"
+PPL$XPIXEL = "0"
+PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
-FERRET_PLATFORM = "Linux 2.6.18-308.1.1.el5 64-bit"
+FERRET_PLATFORM = "Linux 2.6.18-348.3.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "21-Feb-13"
-SESSION_TIME = "20:07"
-SESSION_PID = "26245"
-DELTA_CPU = "0.029994"
-CLOCK_SECS = "1.342"
-CURRENT_DATE = "21-Feb-13"
-CURRENT_TIME = "20:07:10"
+SESSION_DATE = " 6-May-13"
+SESSION_TIME = "12:25"
+SESSION_PID = "7716"
+DELTA_CPU = "0.022996"
+CLOCK_SECS = "0.018"
+CURRENT_DATE = " 6-May-13"
+CURRENT_TIME = "12:25:39"
 N_OPEN_DSETS = "0"
+PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
-PPL$PLTNME = "startup_tests.plt"
+PPL$PLTNME = ".gif"
 PPL$TEKNME = "/dev/tty"
 PPL$XLEN = "8.000"
 PPL$YLEN = "6.000"
@@ -68912,7 +70522,6 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "21-Feb-13:20:07"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -68940,7 +70549,7 @@ VP_YHI = "1"
       DESPERATE     CANCELLED      3100000
       GKS              SET
       REFRESH          SET
-      METAFILE         SET         startup_tests.plt
+      METAFILE      CANCELLED      .gif
       PPLLIST       CANCELLED      ppllist.out
       GUI           CANCELLED
       LOGO             SET
@@ -68963,4 +70572,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Thu Feb 21 20:07:12 PST 2013
+Ended at Mon May  6 12:25:39 PDT 2013

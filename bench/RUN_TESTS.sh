@@ -126,10 +126,10 @@ cp ./default.ferret $HOME/.ferret
 
 if ! echo "$fver" | grep -q "pyferret"; then
 #  command-line options for ferret
-   feropts="-unmapped -noverify"
+   feropts="-gif -noverify"
 else
 #  command-line options for pyferret
-   feropts="-quiet -unmapped -noverify"
+   feropts="-quiet -nodisplay -noverify"
 fi
 
 # run each of the scripts in the list

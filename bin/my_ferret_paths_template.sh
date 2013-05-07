@@ -1,7 +1,7 @@
 ## my_ferret_paths_template.sh
 ##
 ## Template for setting up a personal FERRET environment
-## for bash users.
+## for users working under the bash, ksh, dash, or sh shells.
 ##
 ## Copy this file to your own directory area and
 ## customize it to suit your personal directory layout.
@@ -9,7 +9,7 @@
 ## AFTER you source the generic ferret_paths
 ##
 ## example:  (in your .bashrc file)
-## . /usr/local/ferret_paths.sh    (or wherever your system mgr. has put it)
+## . /usr/local/bin/ferret_paths.sh    (or wherever your system mgr. has put it)
 ## . $HOME/my_ferret_paths.sh
 
 ## These are the environment variables you may wish to customize.

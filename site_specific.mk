@@ -33,15 +33,20 @@ CAIRO_DIR	= /usr/local/cairo_188
 
 ## Installation directory for HDF5 static libraries
 ## (contains include and lib or lib64 subdirectories)
+## Do not give a location if linking to netcdf shared-object libraries
 # HDF5_DIR	= /usr
 # HDF5_DIR	= /usr/local
 HDF5_DIR	= /usr/local/hdf5_189
+# HDF5_DIR	= /usr/local/hdf5-1.8.9
+# HDF5_DIR	= 
 
-## Installation directory for NetCDF static libraries
+## Installation directory for NetCDF static or shared object libraries
 ## (contains include and lib or lib64 subdirectories)
+## If HDF5_DIR is empty, the shared-object libraries will be used.
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
 NETCDF4_DIR	= /usr/local/netcdf_4211
+# NETCDF4_DIR	= /usr/local/netcdf-4.2.1.1
 
 ## Java 1.6 jdk home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,

@@ -15,10 +15,18 @@
 #
 ifeq ($(strip $(CAIRO_DIR)),)
 	CAIRO_LIBDIR	=
+	CAIRO_INCLUDE	=
 else
 	CAIRO_LIBDIR	= $(CAIRO_DIR)/lib
+	CAIRO_INCLUDE	= -I$(CAIRO_DIR)/include
 endif
+
+ifeq ($(strip $(HDF5_DIR)),)
+	HDF5_LIBDIR	=
+else
 	HDF5_LIBDIR	= $(HDF5_DIR)/lib
+endif
+
 	NETCDF4_LIBDIR	= $(NETCDF4_DIR)/lib
 
 #
@@ -33,8 +41,7 @@ endif
 			  -I$(DIR_PREFIX)/ppl/tmap_inc \
 			  -I$(DIR_PREFIX)/pyfermod \
 			  -I$(DIR_PREFIX)/external_functions/ef_utility \
-			  -I$(CAIRO_DIR)/include \
-			  -I$(HDF5_DIR)/include \
+			  $(CAIRO_INCLUDE) \
 			  -I$(NETCDF4_DIR)/include
 
 	MYDEFINES	= -Dcrptd_cat_argument \

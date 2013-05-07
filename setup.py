@@ -20,8 +20,6 @@ if not netcdf4_libdir:
 hdf5_libdir = os.getenv("HDF5_LIBDIR")
 if hdf5_libdir:
     hdf5_libdir = hdf5_libdir.strip()
-if not hdf5_libdir:
-    raise ValueError("Environment variable HDF5_LIBDIR is not defined")
 # CAIRO_LIBDIR is only given if the cairo library is to be statically linked in
 cairo_libdir = os.getenv("CAIRO_LIBDIR")
 if cairo_libdir:
@@ -30,12 +28,12 @@ if cairo_libdir:
 python_libdir = os.path.split(
                    distutils.sysconfig.get_python_lib(standard_lib=True))[0]
 # The list of additional directories to examine for libraries
+libdir_list = [ "lib", netcdf4_libdir, ]
+if hdf5_libdir:
+    libdir_list.append(hdf5_libdir)
 if cairo_libdir:
-    libdir_list = [ "lib", netcdf4_libdir, hdf5_libdir,
-                    cairo_libdir, python_libdir, ]
-else:
-    libdir_list = [ "lib", netcdf4_libdir, hdf5_libdir,
-                    python_libdir, ]
+    libdir_list.append(cairo_libdir)
+libdir_list.append(python_libdir)
 
 # Get the list of ferret static libraries
 # Stripping off the "lib" prefix and the ".a" suffix
@@ -53,36 +51,43 @@ lib_list.extend(fer_lib_list)
 # Add required system libraries to the list to link in
 lib_list.append("python%i.%i" % sys.version_info[:2])
 
-#
 # Linking in the rest of the system libraries were moved to addn_link_flags
-# in order to make sure the static netcdff, netcdf, hdf5_hl, and hdf5
-# (and possibly cairo) libraries are used.
+# in order to make sure the appropriate netcdff, netcdf, hdf5_hl, hdf5, and
+# cairo libraries are used.
 #
 # lib_list.extend( ( "netcdff", "netcdf", "hdf5_hl", "hdf5",
 #                    "cairo", "gfortran", "curl", "z", "dl", "m", ) )
 
-#
+# Link to the appropriate netcdf libraries.
+# The hdf5 libraries are only used to resolve netcdf library function
+# calls when statically linking in the netcdf libraries.
+if hdf5_libdir:
+    netcdff_lib = "-Wl," + os.path.join(netcdf4_libdir, "libnetcdff.a")
+    netcdf_lib = "-Wl," + os.path.join(netcdf4_libdir, "libnetcdf.a")
+    hdf5_hl_lib = "-Wl," + os.path.join(hdf5_libdir, "libhdf5_hl.a")
+    hdf5_lib = "-Wl," + os.path.join(hdf5_libdir, "libhdf5.a")
+    addn_link_args = [ netcdff_lib, netcdf_lib, hdf5_hl_lib, hdf5_lib, ]
+else:
+    addn_link_args = [ "-lnetcdff", "-lnetcdf", ]
+
+# Link to the appropriate cairo library.
 # The pixman-1, freetype, fontconfig, png12, Xrender, and X11 libraries
 # are only used to resolve cairo library function calls when statically
 # linking in the cairo-1.8.8 library.
-#
-# Make sure everything is resolved in the final linking step.
-#
-netcdff_lib = "-Wl," + os.path.join(netcdf4_libdir, "libnetcdff.a")
-netcdf_lib = "-Wl," + os.path.join(netcdf4_libdir, "libnetcdf.a")
-hdf5_hl_lib = "-Wl," + os.path.join(hdf5_libdir, "libhdf5_hl.a")
-hdf5_lib = "-Wl," + os.path.join(hdf5_libdir, "libhdf5.a")
 if cairo_libdir:
-   cairo_lib = "-Wl," + os.path.join(cairo_libdir, "libcairo.a")
-   addn_link_args = [ netcdff_lib, netcdf_lib, hdf5_hl_lib, hdf5_lib,
-                      cairo_lib, "-lpixman-1", "-lfreetype",
-                      "-lfontconfig", "-lpng12", "-lXrender", "-lX11",
-                      "-lgfortran", "-lcurl", "-lz", "-ldl",
-                      "-lm", "-fPIC", "-Wl,--no-undefined", ]
+    cairo_lib = "-Wl," + os.path.join(cairo_libdir, "libcairo.a")
+    addn_link_args.extend([ cairo_lib, "-lpixman-1", "-lfreetype",
+                            "-lfontconfig", "-lpng12", "-lXrender", 
+                            "-lX11", ])
 else:
-   addn_link_args = [ netcdff_lib, netcdf_lib, hdf5_hl_lib, hdf5_lib,
-                      "-lcairo", "-lgfortran", "-lcurl", "-lz", "-ldl",
-                      "-lm", "-fPIC", "-Wl,--no-undefined", ]
+   addn_link_args.append("-lcairo")
+
+# Link in the appropriate system libraries and make sure
+# everything is resolved in the final linking step.
+if hdf5_libdir:
+   addn_link_args.append("-lcurl -lz")
+addn_link_args.extend([ "-lgfortran", "-ldl", "-lm", 
+                        "-fPIC", "-Wl,--no-undefined", ])
 
 # Get the list of C source files in pyfermod
 src_list = [ ]

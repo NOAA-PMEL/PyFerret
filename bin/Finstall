@@ -2,11 +2,11 @@
 ## NOAA PMEL TMAP
 ## Finstall
 ## Does two things:
-## 1) modifies 'ferret_paths template' to specify locations of ferret
-##    software and demo data sets and places the result in the indicated
-##    sourcing directory as 'ferret_paths'
-## 2) extracts the contents of fer_executables.tar.gz into $FER_DIR
-##    after renaming any existing files that would have been overwritten
+## Option 1) extracts the contents of fer_executables.tar.gz into $FER_DIR
+##           after renaming any existing files that would have been overwritten
+## Option 2) modifies ferret_paths_template and pyferret_template files to 
+##           specify locations of ferret software and demo data sets to create 
+##           the ferret_paths and pyferret files.
 ## All changes are recorded, with a timestamp, in the log file
 ## $FER_DIR/bin/Finstall.log
 
@@ -97,8 +97,8 @@ get_ferpaths_dir() {
     until [ 0 = 1 ]; do
         echo " "
         echo " Enter the name of the directory where you want to place "
-        echo " the newly created 'ferret_paths.csh' and 'ferret_path.sh' "
-        echo " files; for example, '/usr/local'."
+        echo " the newly created 'ferret_paths.csh', 'ferret_path.sh', "
+        echo " pyferret files; for example, '/usr/local/bin'."
         echo " "
         read -p " desired ferret_paths location --> " ferpaths_dir
         if [ ! -d "${ferpaths_dir}" ]; then
@@ -108,13 +108,21 @@ get_ferpaths_dir() {
             ferpaths_dir=`cd "${ferpaths_dir}" ; pwd`
 #           if ferret_paths* exists, check to see if it's OK to replace
             if [ -f "${ferpaths_dir}/ferret_paths.csh" ] || \
-               [ -f "${ferpaths_dir}/ferret_paths.sh" ] ; then
+               [ -f "${ferpaths_dir}/ferret_paths.sh" ] ||
+               [ -f "${ferpaths_dir}/pyferret.csh" ] ||
+               [ -f "${ferpaths_dir}/pyferret.sh" ] ; then
                 echo " "
                 if [ -f "${ferpaths_dir}/ferret_paths.csh" ]; then
                     echo " ${ferpaths_dir}/ferret_paths.csh already exists"
                 fi
                 if [ -f "${ferpaths_dir}/ferret_paths.sh" ]; then
                     echo " ${ferpaths_dir}/ferret_paths.sh already exists"
+                fi
+                if [ -f "${ferpaths_dir}/pyferret.csh" ]; then
+                    echo " ${ferpaths_dir}/pyferret.csh already exists"
+                fi
+                if [ -f "${ferpaths_dir}/pyferret.sh" ]; then
+                    echo " ${ferpaths_dir}/pyferret.sh already exists"
                 fi
                 read -p " Rename and create new? (n/y) [n] " ans
                 if [ "${ans}" = "Y" ] || [ "${ans}" = "y" ]; then
@@ -167,6 +175,37 @@ get_ferpaths_link() {
 }
 
 
+### Get python_executable and python_subdirectory
+get_python_vars() {
+    echo " "
+    echo " Enter the desired python executable to use for running PyFerret. "
+    echo " This may simply be 'python', but on systems with multiple versions "
+    echo " of python, you need to specify the version to use, such as 'python2.6' "
+    echo " or 'python2.7', or the full-path name to desired version of python. "
+    until [ 0 = 1 ]; do
+        echo " "
+        read -p " python executable to use: ['python'] --> " ans
+        if [ -z "$ans" ]; then
+            ans='python'
+        fi
+#       expand to the full path name, just to be safe (may not be necessary)
+        python_executable=`which "$ans"`
+#       assign python_subdirectory as 'python2.6' or 'python2.7' using the version
+#       number reported by the python executable (which validates the python executable)
+        python_subdirectory=`${ans} -c "import sys; print 'python%i.%i' % sys.version_info[:2]"`
+        if echo "${python_subdirectory}" | grep -q '^python2\.[67]$'; then
+            return 0
+        elif echo "${python_subdirectory}" | grep -q '^python'; then
+            echo " This appears to be ${python_subdirectory}; only python2.6 or python2.7 supported "
+        else
+            echo " ${ans} does not appear to be a valid python executable "
+        fi
+    done
+#   should not get here - return error
+    return 1
+}
+
+
 ### Write a message to ${fer_dir}/bin/Finstall.log (creating it if it does not exist)
 write_log_message() {
 #   Sanity check
@@ -192,8 +231,9 @@ write_log_message() {
 }
 
 
-### Edit the ferret_paths_template.{csh,sh} files to create the ferret_paths.{csh,sh} files
-create_ferret_paths() {
+### Edit the ferret_paths_template.{csh,sh} files to create the ferret_paths.{csh,sh} files 
+### and edit the pyferret_template.{csh,sh} files to create the pyferret.{csh.sh} files.
+create_ferret_paths_and_pyferret() {
 #   Check for existing ferret_paths.csh
     if [ -f "${ferpaths_dir}/ferret_paths.csh" ]; then
         if mv -f "${ferpaths_dir}/ferret_paths.csh" "${ferpaths_dir}/ferret_paths.csh.old"; then
@@ -267,6 +307,79 @@ export FER_DSETS=\"${fer_dsets}\"" \
             echo " Unable to create ${ferpaths_dir}/ferret_paths "
             write_log_message "Unable to create ${ferpaths_dir}/ferret_paths"
         fi
+    fi
+#   Check for existing pyferret.csh
+    if [ -f "${ferpaths_dir}/pyferret.csh" ]; then
+        if mv -f "${ferpaths_dir}/pyferret.csh" "${ferpaths_dir}/pyferret.csh.old"; then
+            echo " "
+            echo " Renamed existing ${ferpaths_dir}/pyferret.csh "
+            echo "               to ${ferpaths_dir}/pyferret.csh.old "
+            write_log_message "Renamed existing ${ferpaths_dir}/pyferret.csh"
+            write_log_message "              to ${ferpaths_dir}/pyferret.csh.old"
+        fi
+    fi
+#   Create new pyferret.csh
+    if sed -e "/set python_exe = /c\\
+set python_exe = \"${python_executable}\"" \
+           -e "/set python_subdir = /c\\
+set python_subdir = \"${python_subdirectory}\"" \
+           "${fer_dir}/bin/pyferret_template.csh" \
+           > "${ferpaths_dir}/pyferret.csh" ; then
+        chmod +x "${ferpaths_dir}/pyferret.csh"
+        echo " "
+        echo " Created executable script ${ferpaths_dir}/pyferret.csh "
+        write_log_message "Created executable script ${ferpaths_dir}/pyferret.csh"
+    else
+        echo " "
+        echo " Unable to create ${ferpaths_dir}/pyferret.csh "
+        write_log_message "Unable to create ${ferpaths_dir}/pyferret.csh"
+    fi
+#   Check for existing pyferret.sh
+    if [ -f "${ferpaths_dir}/pyferret.sh" ]; then
+        if mv -f "${ferpaths_dir}/pyferret.sh" "${ferpaths_dir}/pyferret.sh.old"; then
+            echo " "
+            echo " Renamed existing ${ferpaths_dir}/pyferret.sh "
+            echo "               to ${ferpaths_dir}/pyferret.sh.old "
+            write_log_message "Renamed existing ${ferpaths_dir}/pyferret.sh"
+            write_log_message "              to ${ferpaths_dir}/pyferret.sh.old"
+        fi
+    fi
+#   Create new pyferret.sh
+    if sed -e "/python_exe=/c\\
+python_exe=\"${python_executable}\"" \
+           -e "/python_subdir=/c\\
+python_subdir=\"${python_subdirectory}\"" \
+           "${fer_dir}/bin/pyferret_template.sh" \
+           > "${ferpaths_dir}/pyferret.sh" ; then
+        chmod +x "${ferpaths_dir}/pyferret.sh"
+        echo " "
+        echo " Created executable script ${ferpaths_dir}/pyferret.sh "
+        write_log_message "Created executable script ${ferpaths_dir}/pyferret.sh"
+    else
+        echo " "
+        echo " Unable to create ${ferpaths_dir}/pyferret.sh"
+        write_log_message "Unable to create ${ferpaths_dir}/pyferret.sh"
+    fi
+#   Check for existing pyferret
+    if [ -f "${ferpaths_dir}/pyferret" ]; then
+        if mv -f "${ferpaths_dir}/pyferret" "${ferpaths_dir}/pyferret.old"; then
+            echo " "
+            echo " Renamed existing ${ferpaths_dir}/pyferret "
+            echo "               to ${ferpaths_dir}/pyferret.old "
+            write_log_message "Renamed existing ${ferpaths_dir}/pyferret"
+            write_log_message "              to ${ferpaths_dir}/pyferret.old"
+        fi
+    fi
+#   Link pyferret to pyferret.sh, regardless of user's shell, 
+#   since it is run as an executable. 
+    if ( cd "${ferpaths_dir}" ; ln -s "pyferret.sh" "pyferret" ) ; then
+        echo " "
+        echo " Created executable script ${ferpaths_dir}/pyferret "
+        write_log_message "Created executable script ${ferpaths_dir}/pyferret "
+    else
+        echo " "
+        echo " Unable to create executable script ${ferpaths_dir}/pyferret "
+        write_log_message "Unable to create executable script ${ferpaths_dir}/pyferret "
     fi
 }
 
@@ -371,6 +484,9 @@ echo "     for csh or tcsh, '. ferret_paths.sh' for bash, sh ksh, "
 echo "     or dash) will set up a user's environment for running "
 echo "     ferret. "
 echo " "
+echo "     This also creates the executable shell scripts "
+echo "     'pyferret.csh' and 'pyferret.sh'. "
+echo " "
 echo "     You will want to run this option if you are installing "
 echo "     Ferret for the first time or if you relocated where "
 echo "     Ferret is installed. "
@@ -399,8 +515,9 @@ until [ 0 = 1 ]; do
         2)
             echo " "
             echo " Customize ferret_paths files..."
-            if get_fer_dir && get_fer_dsets && get_ferpaths_dir && get_ferpaths_link; then
-                create_ferret_paths
+            if get_fer_dir && get_fer_dsets && get_ferpaths_dir && \
+               get_ferpaths_link && get_python_vars; then
+                create_ferret_paths_and_pyferret
             else
                 echo " "
                 echo " ferret_paths files NOT created "

@@ -72,6 +72,7 @@
       INTEGER     str_eq
       PARAMETER ( str_eq = 0 )
 
+* (could check for the record axis and if so, set it to T)
 
 * Use attributes to try to determine the orientation and 
 * direction of the axis
@@ -498,14 +499,27 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
       IF (line_direction(iaxis) .EQ. 'NA' .AND. vlen .EQ. 1) THEN
          IF ( vupcase(1:1) .EQ. 'X') line_direction(iaxis) = 'XX'
          IF ( vupcase(1:1) .EQ. 'Y') line_direction(iaxis) = 'YY'
-         IF ( vupcase(1:1) .EQ. 'Z') line_direction(iaxis) = 'ZZ'
-         IF ( vupcase(1:1) .EQ. 'T') line_direction(iaxis) = 'TT'
+         IF ( vupcase(1:1) .EQ. 'Z') line_direction(iaxis) = 'DU'
+         IF ( vupcase(1:1) .EQ. 'T') line_direction(iaxis) = 'TI'
       ENDIF
       IF (line_direction(iaxis).EQ.'NA') THEN
          IF (vupcase(1:3).EQ.'XAX') line_direction(iaxis) = 'XX'
          IF (vupcase(1:3).EQ.'YAX') line_direction(iaxis) = 'YY'
-         IF (vupcase(1:3).EQ.'ZAX') line_direction(iaxis) = 'ZZ'
-         IF (vupcase(1:3).EQ.'TAX') line_direction(iaxis) = 'TT'
+         IF (vupcase(1:3).EQ.'ZAX') line_direction(iaxis) = 'DU'
+         IF (vupcase(1:3).EQ.'TAX') line_direction(iaxis) = 'TI'
+      ENDIF
+
+      IF (line_direction(iaxis).EQ.'NA') THEN
+         IF (vupcase(1:3).EQ.'LON') line_direction(iaxis) = 'WE'
+         IF (vupcase(1:3).EQ.'LAT') line_direction(iaxis) = 'SN'
+         IF (vupcase(1:3).EQ.'TIME') line_direction(iaxis) = 'TI'
+         IF (vupcase(1:3).EQ.'DATE') line_direction(iaxis) = 'TI'
+         IF (vupcase(1:3).EQ.'DEP') line_direction(iaxis) = 'UD'
+         IF (vupcase(1:3).EQ.'ALT') line_direction(iaxis) = 'DU'
+         IF (vupcase(1:3).EQ.'ELEV') line_direction(iaxis) = 'DU'
+         IF (vupcase(1:3).EQ.'HEI') line_direction(iaxis) = 'DU'
+         IF (vupcase(1:3).EQ.'LAYER') line_direction(iaxis) = 'DU'
+         IF (vupcase(1:3).EQ.'LEVEL') line_direction(iaxis) = 'DU'
       ENDIF
 
       RETURN

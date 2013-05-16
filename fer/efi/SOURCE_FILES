@@ -43,6 +43,8 @@ expnd_by_len.F\
 expndi_by.F\
 expndi_by_t.F\
 expndi_by_z.F\
+expndi_by_z_counts.F\
+expndi_id_by_z_counts.F\
 fc_isubset.F\
 fcat.F\
 fcat_str.F\

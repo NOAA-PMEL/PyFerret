@@ -54,6 +54,8 @@
 
 umask 002     #  make all files group deletable  3/16
 
+set rhlev = "0"
+
 # Solaris may have HOSTTYPE=sun, or HOSTTYPE=solaris
 if ( $HOSTTYPE =~ *sun* ) then
    if ( `uname -r` =~ *5*  ) then
@@ -75,10 +77,17 @@ else if ( $HOSTTYPE =~ *ia64*) then
     set machine = "ia64-linux"
 else if ( $HOSTTYPE =~ *x86_64-linux*) then
     set machine = "x86_64-linux"
+    if ( `uname -r` =~ *el6* ) then
+       set rhlev = "six"
+    endif
 else if ( $HOSTTYPE =~ *linux*) then
     set machine = "linux"
 else
    set machine = "unknown_host"
+endif
+
+if ($rhlev == six) then 
+  echo six
 endif
 
 echo "Enter the path (including filename) to the FERRET version of choice"
@@ -158,6 +167,10 @@ set check_met = check_metafiles
 
 if ($machine == "linux" || $machine == "ia64-linux") then
    set check_met = check_metafiles_linux
+endif
+
+if ($rhlev == "six") then
+   set check_met = check_metafiles_rh6
 endif
 
 echo "Log output in $log_file  Errors in $err_file" 

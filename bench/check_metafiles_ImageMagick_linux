@@ -1,4 +1,4 @@
-#!/bin/csh -x
+#!/bin/csh -F
 # script to check metafiles (.plt*, .gif* and .ps) created after a run of the 
 # benchmark routine against master metafiles. 
 # kob  10/97

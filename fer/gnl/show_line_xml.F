@@ -220,10 +220,17 @@ C New form for attribute output, list values separately.
 
         vname = line_name_orig(line)
 	DO 300 iset = 1, maxdsets
-	   IF ( ds_name(iset) .EQ. char_init1024) GOTO 1000
+	   IF ( ds_name(iset) .EQ. char_init1024) GOTO 400
            CALL CD_GET_VAR_ID (iset, vname, varid, status)
            IF (status .EQ. ferr_ok) GOTO 50
   300   CONTINUE
+
+* Try user-defined axes, may want to get some attributes (F-TDS variables)
+  400   CONTINUE
+        iset = -2
+        CALL CD_GET_VAR_ID (iset, vname, varid, status)
+	IF (status .NE. ferr_ok) GOTO 1000
+
    50   dset = iset
 
 * other attributes
@@ -272,9 +279,11 @@ C New form for attribute output, list values separately.
      .              (STR_SAME(attname, 'start')         .NE. 0) .AND. 
      .              (STR_SAME(attname, 'end')           .NE. 0) .AND. 
      .              (STR_SAME(attname, 'time_origin')   .NE. 0) .AND. 
-     .              (STR_SAME(attname, 'calendar')      .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'calendar')      .NE. 0) .AND.  
      .              (STR_SAME(attname, 'point_spacing') .NE. 0) .AND. 
      .              (STR_SAME(attname, 'infile_datatype') .NE. 0)
+
+	if (.NOT.new) new = (STR_SAME(attname, 'long_name') .EQ. 0)
 
            IF (new) THEN
               blen = 2048  ! len of attbuff
@@ -315,7 +324,7 @@ C New form for attribute output, list values separately.
  150             CONTINUE
               ELSE 
                  CALL ESCAPE_FOR_XML (attbuff, outstring, llen)
-                 WRITE ( risc_buff, 2050 ) outstring(1:llen)
+                 WRITE ( risc_buff, 2055 ) outstring(1:llen)
                  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
               ENDIF
 

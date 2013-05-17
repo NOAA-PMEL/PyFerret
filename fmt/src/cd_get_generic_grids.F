@@ -111,7 +111,8 @@
      .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen, idim2,
      .        tmvar, tmpgrid, npts, dim, tmplines(nferdims), ndim,
      .	      grid_dims(nferdims), trans(nferdims), indices(nferdims),
-     .        i, maxlen, attlen,attoutflag, all_outflag, axid, iaxis5
+     .        i, maxlen, attlen,attoutflag, all_outflag, axid, iaxis5,
+     .        attid, eax, cfrole_dim
       REAL    tmp
       CHARACTER name*128, vname*128, linunits*16
 
@@ -122,6 +123,56 @@
 	num_tmp_grids = 0
 	DO 5 i = max_grids, grid_ceiling
  5	   tmp_nam_ptr(i) = 0
+
+* * * * loop through each variable in this TMAP data set * * *
+* Check for cf_role attribute. If present, its grid is in the E direction.
+
+	cfrole_dim = 0 
+	
+        DO 25 tmvar = 1,maxvars
+           IF ( ds_var_setnum(tmvar) .NE. dset ) GOTO 25
+	   eax = 0
+           ivar = cd_varid(tmvar)
+
+* get the vital statistics for this variable
+           CALL CD_GET_VAR_INFO(dset, ivar, vname, vartyp, nvdims,
+     .                 vdims, nvatts, coordvar, all_outflag, istat)
+
+           IF (istat.NE.merr_ok) CALL TM_ERRMSG
+     .     ( istat+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
+     .       no_errstring, no_errstring, *5900 )
+           vlen = TM_LENSTR1(vname)
+
+* if a string variable, the first dimension is the string axis (ignore it)
+	   IF (vartyp .EQ. NF_CHAR) THEN
+	      nvdims = nvdims - 1
+	      DO idim = 1, nvdims
+	         vdims(idim) = vdims(idim+1)
+	      ENDDO
+	   ENDIF
+
+* if it has a cf_role attribute, we'll put its axis in the E direction.
+*  trajectory:cf_role = "trajectory_id" (or var w/ "profile_id", or "timeseries_id")
+* (IF there is a instance_dimension attribute, it's value is the the instance axis,
+* to be put in the E direction. If there is a sample_dimension attribute on some variable, its value is the obs 
+* dimension, to be put in the X direction.) 
+
+	   CALL  CD_GET_VAR_ATT_ID (dset, ivar, "cf_role", attid, status)
+	   IF (status .EQ. merr_ok) THEN
+	      eax = vdims(1)
+
+* find the instance dimension
+
+              DO 15 idim = 1, nvdims
+	         IF (idim .EQ. eax) cfrole_dim = idim
+ 15          CONTINUE
+             GOTO 35  ! only one cf_role attribute recognized
+
+	   ENDIF
+
+ 25       CONTINUE
+
+ 35       CONTINUE
 
 * * * * loop through each variable in this TMAP data set * * *
 * if it doesn't have a grid pointer create a suitable one and point to it
@@ -192,8 +243,14 @@
 * axis ID
 	      CALL CD_GET_VAR_ID (dset, name, axid, status)
 	      linunits = char_init16
-	      CALL CD_GET_LINE_DIRECTION (dset, axid, iaxis, 
+	      IF (idim .EQ. cfrole_dim) THEN
+	         line_direction(iaxis) = 'EE'
+		 cfrole_dim = 0  ! reset. Just one axis will have this role.
+		 eax = 0
+	      ELSE
+	         CALL CD_GET_LINE_DIRECTION (dset, axid, iaxis, 
      .                name, linunits, do_warn)
+	      ENDIF
 
 * save a pointer to the axis just found
  150          IF (idim.LE.nferdims) tmplines(idim) = iaxis

@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 12 May  6 11:44 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
+lrwxrwxrwx 1 ksmith tmap 12 May 21 10:44 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -106,6 +106,11 @@ Benchmark scripts that will be run:
    bn_deg_min.jnl
    bn_dp_readscale.jnl
    bn_bounds_defineax.jnl
+   bn_attributes.jnl
+   bn_transforms.jnl
+   bn_variance.jnl
+   bn_linecolors.jnl
+   bn_cdf_errmsg.jnl
    bn600_bug_fixes.jnl
    bn601_bug_fixes.jnl
    bn_set_strides.jnl
@@ -196,6 +201,7 @@ Benchmark scripts that will be run:
    bn_axis_nonmonotonic.jnl
    bn_vec_mod.jnl
    bn685_bug_fixes.jnl
+   bn_dsg_e_x.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -212,7 +218,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon May  6 12:24:35 PDT 2013
+Beginning at Tue May 21 11:51:21 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -1870,6 +1876,192 @@ Replacing definition of axis TAX
  LISTing to file irrxzt.nc
 Replacing definition of axis ZAX
 Replacing definition of axis ZAX2
+*** Running test: bn_attributes.jnl
+ Cached data cleared from memory
+ **ERROR: invalid command: SHOW ATTRIBUTE given with no argument
+sho att/all
+ **ERROR: unknown data set: d=2
+show att/all temp[d=2]
+ **ERROR: attribute undefined or invalid attribute name: salt.nonsense
+          attribute nonsense not found for variable SALT
+sho att salt.nonsense
+ **ERROR: invalid command: dataset not found for varname.attname .
+sho att/all .
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Changing the value of attribute temp.pp
+ *** NOTE: Changing the length  of attribute temp.pp
+ *** NOTE: Changing the value of attribute temp.some_text
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Changing the value of attribute temp.long_name
+ *** NOTE: Changing the value of attribute temp.units
+ *** NOTE: Changing the value of attribute temp.missing_value
+ *** NOTE: Changing the value of attribute temp.missing_value
+ LISTing to file a.nc
+ LISTing to file a.nc
+ *** NOTE: Changing the value of attribute (PSZT).positive
+ *** NOTE: Changing the type of attribute (coadsx).modulo
+ *** NOTE: Changing the value of attribute (coadsx).modulo
+ *** NOTE: Changing the value of attribute (TIME1).time_origin
+ **ERROR: command syntax: enclose coordinate variable name in parentheses
+list coadsx.units
+ **ERROR: variable unknown or not in data set: COADSX.UNITS
+list coadsx.units
+ **ERROR: invalid command: Cannot change attribute for direction of axis.
+set att (COADSX81_81).axis = "Z"
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Changing the value of attribute temp.pp
+ *** NOTE: Changing the length  of attribute temp.pp
+ *** NOTE: Changing the value of attribute temp.some_text
+ *** NOTE: Changing the type of attribute temp.pp
+ *** NOTE: Changing the value of attribute temp.pp
+ *** NOTE: Changing the type of attribute temp.some_text
+ *** NOTE: Changing the value of attribute temp.some_text
+ *** NOTE: Changing the value of attribute temp.long_name
+ *** NOTE: Changing the value of attribute temp.units
+ *** NOTE: Changing the type of attribute temp.pp
+ *** NOTE: Changing the value of attribute temp.pp
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
+ LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ *** NOTE: Changing the value of attribute (COADSX).point_spacing
+ *** NOTE: Changing the value of attribute (COADSY).point_spacing
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
+ data in attribute missing_value not representable in output type NC_INT
+LIST/FORMAT=CDF/file=a.nc/clobber/x=132w/k=1 temp
+ **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
+set var/outtype=char broiled
+ **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
+set var/outtype=garbage broiled
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Changing the value of attribute (PSXT).units
+ LISTing to file a.nc
+ LISTing to file a.nc
+ *** NOTE: Changing the value of attribute (PSXT).units
+ *** NOTE: Changing the value of attribute (PSYT).units
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis X2AX
+ *** NOTE: Changing the value of attribute (z4ax).positive
+ LISTing to file string4d.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Changing the value of attribute (TIME).units
+ *** NOTE: Changing the value of attribute (TIME).units
+ *** NOTE: Changing the value of attribute (TIME).time_origin
+ *** NOTE: Changing the value of attribute (TIME).time_origin
+ *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+Replacing definition of axis TIME
+ *** NOTE: grid  used by data set coads_climatology
+ *** NOTE: Redefinition may alter apparent contents of data set
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+*** Running test: bn_transforms.jnl
+ Cached data cleared from memory
+*** Running test: bn_variance.jnl
+ Cached data cleared from memory
+*** Running test: bn_linecolors.jnl
+ Cached data cleared from memory
+ *** NOTE: in GIF mode: ignoring SET MODE METAFILE
+ *** NOTE: Cannot cancel window when in batch mode
+ *** NOTE: Cannot create new windows when batch mode set
+ *** NOTE: in GIF mode: ignoring SET MODE METAFILE
+ Using every   3th vector in the X direction
+ Using every   4th vector in the Y direction
+ *** NOTE: New number of line colors will take effect on next new window: SET WIN/NEW or SET WIN/CLEAR
+ *** NOTE: Cannot create new windows when batch mode set
+ *** NOTE: Cannot cancel window when in batch mode
+ *** NOTE: Cannot create new windows when batch mode set
+*** Running test: bn_cdf_errmsg.jnl
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
+ Cached data cleared from memory
+ **TMAP ERR: non-existent or not on line
+             this_is_not_a_file.nc
+SET DAT/FORM=CDF this_is_not_a_file.nc
+ **Internet Data error
+             NetCDF: Malformed or inaccessible DAP DDS (OPeNDAP/netCDF Error code -72)
+             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf
+SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf"
+ **Internet Data error
+             NetCDF: I/O failure (OPeNDAP/netCDF Error code -68)
+             Data set: http://noserver/a/nofile.cdf
+SET DAT/FORM=CDF  "http://noserver/a/nofile.cdf"
+ LISTing to file asc.dat
+ **netCDF error
+             NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
+             Data set: ./asc.nc
+SET DAT/FORM=CDF asc.nc
 *** Running test: bn600_bug_fixes.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3051,6 +3243,10 @@ define axis/t/units=days tax = tvar
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+*** Running test: bn_dsg_e_x.jnl
+ Cached data cleared from memory
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3072,4 +3268,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
-Ended at Mon May  6 12:25:39 PDT 2013
+Ended at Tue May 21 11:52:28 PDT 2013

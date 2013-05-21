@@ -100,6 +100,11 @@ bn_last_error.jnl
 bn_deg_min.jnl
 bn_dp_readscale.jnl
 bn_bounds_defineax.jnl
+bn_attributes.jnl
+bn_transforms.jnl
+bn_variance.jnl
+bn_linecolors.jnl
+bn_cdf_errmsg.jnl
 bn600_bug_fixes.jnl
 bn601_bug_fixes.jnl
 bn_set_strides.jnl
@@ -190,5 +195,6 @@ bn_axis_outtype.jnl
 bn_axis_nonmonotonic.jnl
 bn_vec_mod.jnl
 bn685_bug_fixes.jnl
+bn_dsg_e_x.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

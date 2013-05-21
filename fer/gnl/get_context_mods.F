@@ -144,6 +144,7 @@
 * V6.8  *acm* 3/12 remove block that checks for qual_given(slash_T0). Neither 
 *                  slash_t0 nor orient are defined here.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V6.84 *acm* 3/12 fix ticket 1951: context information in square brackets.
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)

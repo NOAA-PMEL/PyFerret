@@ -1,0 +1,34 @@
+! err6842_context_shape.jnl
+! 5/2013 acm
+! Continuing the fixes for #1801 (see ticket 2051, and 
+! see err68_context_shape.jnl
+
+! Compound expressions did not always return the correct
+! result,depending on the order of the sub-expressions.
+
+use coads_climatology
+
+! All the returns in this script should say XYT
+
+! Here the second used to just say XY
+
+let a = sst - sst[t=1:12@ave]
+let b = sst - sst[t=@ave]
+say `a,ret=shape`
+say `b,ret=shape`
+
+let a = sst[t=1:12@ave] + sst
+let b = sst[t=@ave] + sst
+say `a,ret=shape`
+say `b,ret=shape`
+
+! The second used to just say XY
+! and the third said XY
+
+let a = sst - sst[t=1:12@ave] + sst[x=1:100@ave]
+let b = sst - sst[t=@ave] + sst[x=@ave]
+let c = sst - sst[x=@ave] + sst[t=@ave]
+say `a,ret=shape`
+say `b,ret=shape`
+say `c,ret=shape`
+

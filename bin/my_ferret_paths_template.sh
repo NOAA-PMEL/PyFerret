@@ -6,7 +6,7 @@
 ## Copy this file to your own directory area and
 ## customize it to suit your personal directory layout.
 ## Then source it (as below) from your .bashrc file
-## AFTER you source the generic ferret_paths
+## AFTER you source the generic ferret_paths.sh file.
 ##
 ## example:  (in your .bashrc file)
 ## . /usr/local/bin/ferret_paths.sh    (or wherever your system mgr. has put it)

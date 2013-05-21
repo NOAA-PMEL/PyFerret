@@ -33,3 +33,6 @@ list/L=1:8 taux[x=@ave,y=@ave]
 cancel mode 6d_lab
 list/L=1:8 taux[x=@sum,y=@sum]
 can mode diag
+
+! restore default setting
+set mode 6d_lab

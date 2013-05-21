@@ -196,7 +196,7 @@ get_python_vars() {
         if echo "${python_subdirectory}" | grep -q '^python2\.[67]$'; then
             return 0
         elif echo "${python_subdirectory}" | grep -q '^python'; then
-            echo " This appears to be ${python_subdirectory}; only python2.6 or python2.7 supported "
+            echo " ${ans} appears to be ${python_subdirectory}; only python2.6 or python2.7 supported "
         else
             echo " ${ans} does not appear to be a valid python executable "
         fi

@@ -39,6 +39,7 @@
 *
 * v581 *acm* 3/05 open levels (-INF) (INF)
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V685 *acm* 5/13  changes for ribbon plots
 
       IMPLICIT NONE
       INCLUDE 	'parampl5_dat.decl'
@@ -103,7 +104,7 @@
 	 
 * FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
          if (makep .eq. 'SHADE' .or. makep .eq. 'FILLPOL' .OR.
-     .         makep .EQ. 'POLYGON') then
+     .         makep .EQ. 'POLYGON' .or. makep .eq. 'RIBPLOT') then
 	    call point_convert (xx,yy,xxx,yyy)
          else if (makep .eq. 'FILL') then
 	    xxx = xx

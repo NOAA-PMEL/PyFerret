@@ -673,7 +673,15 @@ void FORTRAN(expndi_by_t_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
 
 void FORTRAN(expndi_by_z_init)(int *);
 void FORTRAN(expndi_by_z_result_limits)(int *);
-void FORTRAN(expndi_by_z_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+void FORTRAN(expndi_by_z_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(expndi_by_z_counts_init)(int *);
+void FORTRAN(expndi_by_z_counts_result_limits)(int *);
+void FORTRAN(expndi_by_z_counts_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(expndi_id_by_z_counts_init)(int *);
+void FORTRAN(expndi_id_by_z_counts_result_limits)(int *);
+void FORTRAN(expndi_id_by_z_counts_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(fc_isubset_init)(int *);
 void FORTRAN(fc_isubset_result_limits)(int *);
@@ -1037,7 +1045,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 157
+#define N_INTEF 159
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1200,6 +1208,8 @@ struct {
    strcpy(I_EFnames[154].funcname, "eofsvd_tfunc");
    strcpy(I_EFnames[155].funcname, "expnd_by_len");
    strcpy(I_EFnames[156].funcname, "fc_isubset");
+   strcpy(I_EFnames[157].funcname, "expndi_by_z_counts");
+   strcpy(I_EFnames[158].funcname, "expndi_id_by_z_counts");
 
 /*    
  *  ------------------------------------ 
@@ -3821,6 +3831,16 @@ else if ( !strcmp(name,"expndi_by_t_compute_") ) return (void *)FORTRAN(expndi_b
 else if ( !strcmp(name,"expndi_by_z_init_") ) return (void *)FORTRAN(expndi_by_z_init);
 else if ( !strcmp(name,"expndi_by_z_result_limits_") ) return (void *)FORTRAN(expndi_by_z_result_limits);
 else if ( !strcmp(name,"expndi_by_z_compute_") ) return (void *)FORTRAN(expndi_by_z_compute);
+
+/* expndi_by_z_counts.F */
+else if ( !strcmp(name,"expndi_by_z_counts_init_") ) return (void *)FORTRAN(expndi_by_z_counts_init);
+else if ( !strcmp(name,"expndi_by_z_counts_result_limits_") ) return (void *)FORTRAN(expndi_by_z_counts_result_limits);
+else if ( !strcmp(name,"expndi_by_z_counts_compute_") ) return (void *)FORTRAN(expndi_by_z_counts_compute);
+
+/* expndi_id_by_z_counts.F */
+else if ( !strcmp(name,"expndi_id_by_z_counts_init_") ) return (void *)FORTRAN(expndi_id_by_z_counts_init);
+else if ( !strcmp(name,"expndi_id_by_z_counts_result_limits_") ) return (void *)FORTRAN(expndi_id_by_z_counts_result_limits);
+else if ( !strcmp(name,"expndi_id_by_z_counts_compute_") ) return (void *)FORTRAN(expndi_id_by_z_counts_compute);
 
 /* fc_isubset.F */
 else if ( !strcmp(name,"fc_isubset_init_") ) return (void *)FORTRAN(fc_isubset_init);

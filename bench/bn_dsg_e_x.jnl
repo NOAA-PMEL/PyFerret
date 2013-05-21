@@ -1,0 +1,13 @@
+! bn_dsg_e.jnl
+!
+!  Discrete Sampling Geometries files
+!  Create grids such that the instance dimension
+!  is on the E axis, so that the variable which
+!  has the cf_role attribute has an E grid.
+!  The obs axis is in the X direction.
+
+use dsg.nc
+sh dat
+sh att profile
+sh grid rowsize
+sh grid sal

@@ -1,27 +1,34 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 42646111 May  8 14:40 /home/users/ansley/build/linux/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 43412406 May 16 15:49 /home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/trunk_for_flat64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Fix to ticket 2051
+Note: link on flat 64-bit with netCDF 4.3
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
+setenv FER_DATA .
+setenv FER_DESCR .
+setenv FER_DSETS .
+setenv FER_DAT .
+setenv FER_GRIDS .
+setenv FER_DIR .
 FER_DAT=.
 FER_DATA=.
 FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/tmap/ferret/linux/fer_dsets
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/linux/FERRET/external_functions/ext_func
-FER_GO=. /home/users/tmap/ferret/linux/go /home/users/tmap/ferret/linux/examples /home/users/tmap/ferret/linux/contrib /home/users/tmap/ferret/tmap_go
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk_for_flat64/FERRET/external_functions/ext_func
+FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
+FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
-FER_LIBS=/home/users/tmap/ferret/linux/lib
+FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
-FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
-FER_WEB_BROWSER=netscape -ncols 60
-PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Wed May 8 14:42:17 PDT 2013
+FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
+FER_WEB_BROWSER=firefox
+PWD=/home/users/ansley/build/trunk_for_flat64/FERRET/bench
+Beginning at Thu May 16 15:50:18 PDT 2013
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10440,21 +10447,21 @@ GO bn_symbols	! added 6/22/95
  
 cancel symbols/all
 show symbols/all
-PPL$XPIXEL = "507"
-PPL$YPIXEL = "507"
+PPL$XPIXEL = "406"
+PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
-FERRET_PLATFORM = "Linux 2.6.18-348.4.1.el5PAE 32-bit"
+FERRET_PLATFORM = "Linux 2.6.32-358.6.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.2.1.1 of Feb  1 2013 11:20:17 $"
+NETCDF_VERSION = "4.3.0 of May  3 2013 16:02:47 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 8-May-13"
-SESSION_TIME = "14:42"
-SESSION_PID = "26459"
-DELTA_CPU = "5.48416"
-CLOCK_SECS = "8.528"
-CURRENT_DATE = " 8-May-13"
-CURRENT_TIME = "14:42:26"
+SESSION_DATE = "16-May-13"
+SESSION_TIME = "15:50"
+SESSION_PID = "3430"
+DELTA_CPU = "5.16921"
+CLOCK_SECS = "12.041"
+CURRENT_DATE = "16-May-13"
+CURRENT_TIME = "15:50:30"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10469,21 +10476,21 @@ define symbol t_($s1) = hi	! define "t_hello" as a symbol
  
 ! exercise SHOW SYMBOL
 show symbol/all
-PPL$XPIXEL = "507"
-PPL$YPIXEL = "507"
+PPL$XPIXEL = "406"
+PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
-FERRET_PLATFORM = "Linux 2.6.18-348.4.1.el5PAE 32-bit"
+FERRET_PLATFORM = "Linux 2.6.32-358.6.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.2.1.1 of Feb  1 2013 11:20:17 $"
+NETCDF_VERSION = "4.3.0 of May  3 2013 16:02:47 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 8-May-13"
-SESSION_TIME = "14:42"
-SESSION_PID = "26459"
-DELTA_CPU = "0"
-CLOCK_SECS = "8.529"
-CURRENT_DATE = " 8-May-13"
-CURRENT_TIME = "14:42:26"
+SESSION_DATE = "16-May-13"
+SESSION_TIME = "15:50"
+SESSION_PID = "3430"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "12.042"
+CURRENT_DATE = "16-May-13"
+CURRENT_TIME = "15:50:30"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10493,9 +10500,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 8-May-13"
-SESSION_TIME = "14:42"
-SESSION_PID = "26459"
+SESSION_DATE = "16-May-13"
+SESSION_TIME = "15:50"
+SESSION_PID = "3430"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10505,15 +10512,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 8-May-13"
-SESSION_TIME = "14:42"
-SESSION_PID = "26459"
+SESSION_DATE = "16-May-13"
+SESSION_TIME = "15:50"
+SESSION_PID = "3430"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 8-May-13"
-SESSION_TIME = "14:42"
-SESSION_PID = "26459"
+SESSION_DATE = "16-May-13"
+SESSION_TIME = "15:50"
+SESSION_PID = "3430"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10545,9 +10552,9 @@ Q23456789012345678901234567XXX = "6"
 ! show the upper left coordinate limits labels as symbols
 plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
-LAB1 = "FERRET (beta) Ver.6.85"
+LAB1 = "FERRET Ver. 6.85"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "08-MAY-2013 14:42:26"
+LAB3 = "16-MAY-2013 15:50:30"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10639,21 +10646,21 @@ say ($delayed_eval)         ! translate symbol and then evaluate
 ! cleanup
 cancel symbols/all
 show symbols/all
-PPL$XPIXEL = "507"
-PPL$YPIXEL = "507"
+PPL$XPIXEL = "406"
+PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
-FERRET_PLATFORM = "Linux 2.6.18-348.4.1.el5PAE 32-bit"
+FERRET_PLATFORM = "Linux 2.6.32-358.6.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.2.1.1 of Feb  1 2013 11:20:17 $"
+NETCDF_VERSION = "4.3.0 of May  3 2013 16:02:47 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 8-May-13"
-SESSION_TIME = "14:42"
-SESSION_PID = "26459"
-DELTA_CPU = "0.010998"
-CLOCK_SECS = "8.539"
-CURRENT_DATE = " 8-May-13"
-CURRENT_TIME = "14:42:26"
+SESSION_DATE = "16-May-13"
+SESSION_TIME = "15:50"
+SESSION_PID = "3430"
+DELTA_CPU = "0.007999"
+CLOCK_SECS = "12.05"
+CURRENT_DATE = "16-May-13"
+CURRENT_TIME = "15:50:30"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -19605,7 +19612,7 @@ CAN MODE VERIFY
        3>  1826.97               730.485    1461.727
        4>  2557.455              730.485    2192.213
        5>  3287.94               730.485    2922.698
-       6>  4018.425              730.485    3653.182
+       6>  4018.425              730.485    3653.183
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
              DATA SET : COAD
              FILENAME : coads_clim.des
@@ -25615,7 +25622,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Wed May  8 14:42:34 PDT 2013
+Thu May 16 15:50:40 PDT 2013
  
 GO bn_reset
 cancel mode verify
@@ -32472,7 +32479,7 @@ list xy_laplace_gridded
  19.47N / 19:     ....     ....     ....     ....  117.831  207.449  172.925     ....     ....     ....
  18.95N / 18:     ....     ....     ....  137.758  107.307   98.003     ....     ....     ....     ....
  18.42N / 17:     ....     ....     ....  161.079  156.071    7.072   16.239     ....     ....     ....
- 17.89N / 16:     ....     ....     ....  179.862  189.128   81.665     ....     ....     ....     ....
+ 17.9N  / 16:     ....     ....     ....  179.862  189.128   81.665     ....     ....     ....     ....
  17.37N / 15:     ....     ....     ....  165.097  200.741  145.418     ....     ....     ....     ....
  16.84N / 14:     ....     ....     ....  128.322  183.027  168.029  182.582     ....     ....     ....
  16.32N / 13:     ....     ....   76.347   92.413  158.520  190.506  197.367     ....     ....     ....
@@ -41881,7 +41888,7 @@ ppl list shakey
 
 
          X LO     X HI     Y LO     Y HI
-         9.94    10.23     1.80     7.20
+         9.94    10.23     1.80     7.21
  
 shade/title="set only x2,y2"/set temp[l=1]
  
@@ -42626,7 +42633,7 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSXU</value>
+   <value><![CDATA[PSXU]]></value>
 </attribute>
 </axis>
 <axis name="PSYT">
@@ -42655,10 +42662,10 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSYT_bnds</value>
+   <value><![CDATA[PSYT_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSYT</value>
+   <value><![CDATA[PSYT]]></value>
 </attribute>
 </axis>
 <axis name="PSYU">
@@ -42687,10 +42694,10 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSYU_bnds</value>
+   <value><![CDATA[PSYU_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSYU</value>
+   <value><![CDATA[PSYU]]></value>
 </attribute>
 </axis>
 <axis name="PSZT">
@@ -42722,10 +42729,10 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSZT_bnds</value>
+   <value><![CDATA[PSZT_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSZT</value>
+   <value><![CDATA[PSZT]]></value>
 </attribute>
 </axis>
 <axis name="PSZW">
@@ -42757,10 +42764,10 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSZW_bnds</value>
+   <value><![CDATA[PSZW_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSZW</value>
+   <value><![CDATA[PSZW]]></value>
 </attribute>
 </axis>
 <axis name="PSXT1">
@@ -42889,10 +42896,10 @@ SHO AXIS/XML `temp,return=yaxis`
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSYT_bnds</value>
+   <value><![CDATA[PSYT_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSYT</value>
+   <value><![CDATA[PSYT]]></value>
 </attribute>
 </axis>
 </axes>
@@ -42928,10 +42935,10 @@ SHO AXIS/XML `temp,return=zaxis`
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSZT_bnds</value>
+   <value><![CDATA[PSZT_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSZT</value>
+   <value><![CDATA[PSZT]]></value>
 </attribute>
 </axis>
 </axes>
@@ -43161,7 +43168,7 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSXU</value>
+   <value><![CDATA[PSXU]]></value>
 </attribute>
 </axis>
 <axis name="PSYT">
@@ -43190,10 +43197,10 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSYT_bnds</value>
+   <value><![CDATA[PSYT_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSYT</value>
+   <value><![CDATA[PSYT]]></value>
 </attribute>
 </axis>
 <axis name="PSYU">
@@ -43222,10 +43229,10 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSYU_bnds</value>
+   <value><![CDATA[PSYU_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSYU</value>
+   <value><![CDATA[PSYU]]></value>
 </attribute>
 </axis>
 <axis name="PSZT">
@@ -43257,10 +43264,10 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSZT_bnds</value>
+   <value><![CDATA[PSZT_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSZT</value>
+   <value><![CDATA[PSZT]]></value>
 </attribute>
 </axis>
 <axis name="PSZW">
@@ -43292,10 +43299,10 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSZW_bnds</value>
+   <value><![CDATA[PSZW_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSZW</value>
+   <value><![CDATA[PSZW]]></value>
 </attribute>
 </axis>
 <axis name="PSXT1">
@@ -43444,7 +43451,7 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>COADSX</value>
+   <value><![CDATA[COADSX]]></value>
 </attribute>
 </axis>
 <axis name="COADSY">
@@ -43473,7 +43480,7 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>COADSY</value>
+   <value><![CDATA[COADSY]]></value>
 </attribute>
 </axis>
 </axes>
@@ -47498,7 +47505,7 @@ list/form=tab aa
              VARIABLE : (X[GX=XAX] + Y[GY=YAX])/100
              BAD FLAG : -1.E+34       
              SUBSET   : 6 by 9 points (LONGITUDE-LATITUDE)
-  	100E     	100E     	100.1E   	100.2E   	100.2E   	100.3E   
+  	100E     	100.E    	100.1E   	100.2E   	100.2E   	100.3E   
 0.11N	1.0011	1.0016	1.0021	1.0026	1.0031	1.0036
 0.128N	1.00128	1.00178	1.00228	1.00278	1.00328	1.00378
 0.146N	1.00146	1.00196	1.00246	1.00296	1.00346	1.00396
@@ -48266,11 +48273,11 @@ ppl list labels
  @ASDeg C                                                                       
 
           XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET (beta) Ver.6.85
+ LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET Ver. 6.85
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS08-MAY-2013 14:43:06
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS16-MAY-2013 15:51:12
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -49565,7 +49572,7 @@ LAB1 = "X : 0.5 to 314.5"
  
 ! show commands without an argument, lists version number at the top
 sho command
- Commands in Program FERRET (beta) version6.85:
+ Commands in Program FERRET   version6.85:
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE
  SET REGION/I/J/K/L/M/N/X/Y/Z/T/E/F/DX/DY/DZ/DT/DE/DF/DI/DJ/DK/DL/DM/DN
@@ -49697,7 +49704,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "8-May-13:14:42"
+WIN_TITLE = "16-May-13:15:50"
  
 set win/title="set the title"
 sho sym win_title
@@ -49715,7 +49722,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 8-May-13:14:42"
+ !-> set win/title="16-May-13:15:50"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -49724,16 +49731,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date =  8-May-13
+ !-> DEFINE SYMBOL the_date = 16-May-13
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 14:42
+ !-> DEFINE SYMBOL the_time = 15:50
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="8-May-13:14:42"
+ !-> SET WIN/TITLE="16-May-13:15:50"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "8-May-13:14:42"
+WIN_TITLE = "16-May-13:15:50"
  
 GO bn_reset
 cancel mode verify
@@ -51696,7 +51703,7 @@ sp echo "bn_attributes.jnl --- 19 scale and offset attr." >> all_ncdump.out
 use a.nc
 list/j=1 elev[d=1], elev[d=2]
              LONGITUDE: 135.5W(-135.5) to 135W(-135)
-             LATITUDE: 58.59N
+             LATITUDE: 58.6N
              T (day): 1.8
  Column  1: ELEV[D=err491_attval] is Surface elevation (meter)
  Column  2: ELEV[D=a] is Surface elevation (meter)
@@ -54034,7 +54041,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -54079,7 +54086,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -54899,6 +54906,12 @@ sh axis/xml timenoleap
 <attribute name="calendar" type="char">
    <value><![CDATA[NOLEAP]]></value>
 </attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="axis" type="char">
+   <value><![CDATA[T]]></value>
+</attribute>
 </axis>
 </axes>
  
@@ -55190,9 +55203,6 @@ use bad_taxis.nc
 use bounds_noenclose.nc
 use dstitle.nc
 use err542_poly_over_calendar.nc
-Internal overflow expressing 500000.0 Mwords as words (1783793664) 
-Unable to allocate the requested 500000.0 Mwords of memory.
-Memory remaining at 0.2 Mwords.
 use err600_upcase.nc
 use err_calendar.nc
 use gappy_bounds.nc
@@ -55374,6 +55384,8 @@ SHOW DATA
  MY_SST   SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3       ...       ...
  
  
+Unable to allocate 500000.0 Mwords of memory.
+Restoring previous memory of 0.2 Mwords.
 LIST/X=179:183/Y=40/L=3 my_sst
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
              FILENAME : coads_climatology.cdf
@@ -55696,6 +55708,8 @@ EOFSVD_STAT(A)
 EOFSVD_TFUNC(A)
 EXPND_BY_LEN(var,len,nx)
 FC_ISUBSET(index_list,lengths,nx,FullData)
+EXPNDI_BY_Z_COUNTS(dat,counts,max_profile_len)
+EXPNDI_ID_BY_Z_COUNTS(counts,max profile len)
 ADD_9(A,B,C,D,E,F,G,H,I)
 APPENDE(ENS,VAR)
 AVET(A)
@@ -56624,13 +56638,13 @@ SHOW DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="axis" type="char">
-   <value>Z</value>
+   <value><![CDATA[Z]]></value>
 </attribute>
 <attribute name="standard_name" type="char">
-   <value>altitude</value>
+   <value><![CDATA[altitude]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>ZAXIS_ORIG</value>
+   <value><![CDATA[ZAXIS_ORIG]]></value>
 </attribute>
 </axis>
 </axes>
@@ -56706,13 +56720,13 @@ SHOW DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="axis" type="char">
-   <value>Z</value>
+   <value><![CDATA[Z]]></value>
 </attribute>
 <attribute name="standard_name" type="char">
-   <value>altitude</value>
+   <value><![CDATA[altitude]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>ZAXIS_ORIG</value>
+   <value><![CDATA[ZAXIS_ORIG]]></value>
 </attribute>
 </axis>
 <axis name="ZAXIS_DES">
@@ -56733,6 +56747,12 @@ SHOW DATA/VAR/XML
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="axis" type="char">
+   <value><![CDATA[Z]]></value>
 </attribute>
 </axis>
 </axes>
@@ -57117,7 +57137,7 @@ use fine_x_axis
 sh grid sst
     GRID GPY1
  name       axis              # pts   start                end
- LON       LONGITUDE         7200mr   179.97W(-179.97)     179.97E(179.97)
+ LON       LONGITUDE         7200mr   179.97W(-179.97)     179.97E
  LAT1800_1800 LATITUDE          1 r   0.025S               0.025S
  ENS       Z (count)            1 r   1                    1
  TIME11    TIME                 1 r   01-APR-2006 00:00    01-APR-2006 00:00
@@ -57128,7 +57148,7 @@ sh grid sst
 list/x=180 sst
              VARIABLE : sea surface temperature [degc]
              FILENAME : fine_x_axis.nc
-             LONGITUDE: 180E(180)
+             LONGITUDE: 180E
              LATITUDE : 0.025S
              Z (count): 1
              TIME     : APR-2006
@@ -57137,7 +57157,7 @@ list/x=180 sst
 list/i=7200 sst
              VARIABLE : sea surface temperature [degc]
              FILENAME : fine_x_axis.nc
-             LONGITUDE: 180E(180)
+             LONGITUDE: 180E
              LATITUDE : 0.025S
              Z (count): 1
              TIME     : APR-2006
@@ -59977,10 +59997,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "38.8741"
-CLOCK_SECS = "71.215"
-CURRENT_DATE = " 8-May-13"
-CURRENT_TIME = "14:43:29"
+DELTA_CPU = "36.8224"
+CLOCK_SECS = "77.019"
+CURRENT_DATE = "16-May-13"
+CURRENT_TIME = "15:51:35"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -59989,8 +60009,8 @@ CURRENT_TIME = "14:43:29"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.038994"
-CLOCK_SECS = "71.314"
+DELTA_CPU = "0.031995"
+CLOCK_SECS = "77.087"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -60004,60 +60024,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.290955
+ !-> DEFINE VARIABLE ten_plots = 0.277958
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "72.145"
+CLOCK_SECS = "77.816"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "72.146"
+CLOCK_SECS = "77.816"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.031995
+ !-> DEFINE VARIABLE dt = 0.030995
+ !-> DEFINE VARIABLE sumcpu =0.030995
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.030996
- !-> DEFINE VARIABLE sumcpu =0.062991
+ !-> DEFINE VARIABLE dt = 0.029996
+ !-> DEFINE VARIABLE sumcpu =0.060991
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.094986
+ !-> DEFINE VARIABLE dt = 0.030994
+ !-> DEFINE VARIABLE sumcpu =0.091985
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.128981
+ !-> DEFINE VARIABLE dt = 0.031996
+ !-> DEFINE VARIABLE sumcpu =0.123981
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.161976
+ !-> DEFINE VARIABLE dt = 0.028995
+ !-> DEFINE VARIABLE sumcpu =0.152976
 !-> REPEAT: K=6
  !-> DEFINE VARIABLE dt = 0.029996
- !-> DEFINE VARIABLE sumcpu =0.191972
+ !-> DEFINE VARIABLE sumcpu =0.182972
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.223967
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.215967
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.040993
- !-> DEFINE VARIABLE sumcpu =0.26496
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.247962
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.029996
- !-> DEFINE VARIABLE sumcpu =0.294956
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.279957
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.034994
- !-> DEFINE VARIABLE sumcpu =0.32995
+ !-> DEFINE VARIABLE dt = 0.030996
+ !-> DEFINE VARIABLE sumcpu =0.310953
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.32995
-0.32995
+ !-> MESSAGE/CONTINUE 0.310953
+0.310953
 sh sym CLOCK_SECS
-CLOCK_SECS = "73.312"
+CLOCK_SECS = "78.876"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = " 8-May-13"
-SESSION_TIME = "14:42"
-CURRENT_DATE = " 8-May-13"
-CURRENT_TIME = "14:43:31"
+SESSION_DATE = "16-May-13"
+SESSION_TIME = "15:50"
+CURRENT_DATE = "16-May-13"
+CURRENT_TIME = "15:51:37"
  
  
 ! ******** V6.3 Additions below ***********
@@ -60373,8 +60393,8 @@ list yboxlo[g=grd],yboxhi[g=grd]
 11.2S / 15: -12.83959  -9.59407
 8S    / 16:  -9.59407  -6.37937
 4.8S  / 17:  -6.37937  -3.18474
-1.6S  / 18:  -3.18474   0.00000
-1.6N  / 19:   0.00000   3.18474
+1.6S  / 18:  -3.18474  -0.00000
+1.6N  / 19:  -0.00000   3.18474
 4.8N  / 20:   3.18474   6.37937
 8N    / 21:   6.37937   9.59407
 11.2N / 22:   9.59407  12.83959
@@ -61899,7 +61919,7 @@ sh dat/xml/var
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>COADSX</value>
+   <value><![CDATA[COADSX]]></value>
 </attribute>
 </axis>
 <axis name="COADSY">
@@ -61928,7 +61948,7 @@ sh dat/xml/var
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>COADSY</value>
+   <value><![CDATA[COADSY]]></value>
 </attribute>
 </axis>
 <axis name="TIME10">
@@ -62604,7 +62624,7 @@ sp cat the_xml_file.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>XAX_LEV9421_380</value>
+   <value><![CDATA[XAX_LEV9421_380]]></value>
 </attribute>
 </axis>
 <axis name="YAX_LEV94">
@@ -62633,7 +62653,7 @@ sp cat the_xml_file.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>YAX_LEV94</value>
+   <value><![CDATA[YAX_LEV94]]></value>
 </attribute>
 </axis>
 <axis name="ZAXLEVIT191_1">
@@ -62665,7 +62685,7 @@ sp cat the_xml_file.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>ZAXLEVIT191_1</value>
+   <value><![CDATA[ZAXLEVIT191_1]]></value>
 </attribute>
 </axis>
 </axes>
@@ -62696,7 +62716,7 @@ sp cat the_xml_file.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>XAX_LEV9421_380</value>
+   <value><![CDATA[XAX_LEV9421_380]]></value>
 </attribute>
 </axis>
 </axes>
@@ -62727,7 +62747,7 @@ sp cat the_xml_file.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>YAX_LEV94</value>
+   <value><![CDATA[YAX_LEV94]]></value>
 </attribute>
 </axis>
 </axes>
@@ -62761,7 +62781,7 @@ sp cat the_xml_file.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>ZAXLEVIT191_1</value>
+   <value><![CDATA[ZAXLEVIT191_1]]></value>
 </attribute>
 </axis>
 </axes>
@@ -64164,9 +64184,9 @@ list contents
              VARIABLE : { SPAWN:"cat redirect_journal.txt" }
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
- 2    /  2:" ! FERRET v6.85 (beta)"                                                     
- 3    /  3:" ! Linux 2.6.18-348.4.1.el5PAE 32-bit - 05/08/13"                           
- 4    /  4:" !  8-May-13 14:42     "                                                    
+ 2    /  2:" ! FERRET v6.85  "                                                          
+ 3    /  3:" ! Linux 2.6.32-358.6.1.el6.x86_64 64-bit - 05/16/13"                       
+ 4    /  4:" ! 16-May-13 15:50     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -64709,13 +64729,13 @@ sh dat/var/xml
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>zt</value>
+   <value><![CDATA[zt]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>z</value>
+   <value><![CDATA[z]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>zt</value>
+   <value><![CDATA[zt]]></value>
 </attribute>
 <attribute name="bounds" type="char">
    <value>zt_bnds</value>
@@ -64747,13 +64767,13 @@ sh dat/var/xml
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>Nominal Latitude of T-cell center</value>
+   <value><![CDATA[Nominal Latitude of T-cell center]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>Y</value>
+   <value><![CDATA[Y]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>grid_y_T</value>
+   <value><![CDATA[grid_y_T]]></value>
 </attribute>
 </axis>
 <axis name="TIME12">
@@ -64811,13 +64831,13 @@ sh dat/var/xml
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>Nominal Longitude of T-cell center</value>
+   <value><![CDATA[Nominal Longitude of T-cell center]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>X</value>
+   <value><![CDATA[X]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>grid_x_T</value>
+   <value><![CDATA[grid_x_T]]></value>
 </attribute>
 </axis>
 </axes>
@@ -64894,13 +64914,13 @@ REPEAT/RANGE=1:`nd`/name=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>Nominal Longitude of T-cell center</value>
+   <value><![CDATA[Nominal Longitude of T-cell center]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>X</value>
+   <value><![CDATA[X]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>grid_x_T</value>
+   <value><![CDATA[grid_x_T]]></value>
 </attribute>
 </axis>
 </axes>
@@ -64934,13 +64954,13 @@ REPEAT/RANGE=1:`nd`/name=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>Nominal Latitude of T-cell center</value>
+   <value><![CDATA[Nominal Latitude of T-cell center]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>Y</value>
+   <value><![CDATA[Y]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>grid_y_T</value>
+   <value><![CDATA[grid_y_T]]></value>
 </attribute>
 </axis>
 </axes>
@@ -64977,13 +64997,13 @@ REPEAT/RANGE=1:`nd`/name=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>zt</value>
+   <value><![CDATA[zt]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>z</value>
+   <value><![CDATA[z]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>zt</value>
+   <value><![CDATA[zt]]></value>
 </attribute>
 <attribute name="bounds" type="char">
    <value>zt_bnds</value>
@@ -65114,13 +65134,13 @@ SH DAT/VAR/XML
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>Nominal Longitude of T-cell center</value>
+   <value><![CDATA[Nominal Longitude of T-cell center]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>X</value>
+   <value><![CDATA[X]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>grid_x_T</value>
+   <value><![CDATA[grid_x_T]]></value>
 </attribute>
 </axis>
 <axis name="GRID_Y_T">
@@ -65149,13 +65169,13 @@ SH DAT/VAR/XML
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>Nominal Latitude of T-cell center</value>
+   <value><![CDATA[Nominal Latitude of T-cell center]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>Y</value>
+   <value><![CDATA[Y]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>grid_y_T</value>
+   <value><![CDATA[grid_y_T]]></value>
 </attribute>
 </axis>
 <axis name="TIME12">
@@ -65216,13 +65236,13 @@ SH DAT/VAR/XML
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>zt</value>
+   <value><![CDATA[zt]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>z</value>
+   <value><![CDATA[z]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>zt</value>
+   <value><![CDATA[zt]]></value>
 </attribute>
 <attribute name="bounds" type="char">
    <value>zt_bnds</value>
@@ -65335,13 +65355,13 @@ SH DAT/VAR/XML
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>Nominal Longitude of T-cell center</value>
+   <value><![CDATA[Nominal Longitude of T-cell center]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>X</value>
+   <value><![CDATA[X]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>grid_x_T</value>
+   <value><![CDATA[grid_x_T]]></value>
 </attribute>
 </axis>
 <axis name="GRID_Y_T">
@@ -65370,13 +65390,13 @@ SH DAT/VAR/XML
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>Nominal Latitude of T-cell center</value>
+   <value><![CDATA[Nominal Latitude of T-cell center]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>Y</value>
+   <value><![CDATA[Y]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>grid_y_T</value>
+   <value><![CDATA[grid_y_T]]></value>
 </attribute>
 </axis>
 <axis name="TIME12">
@@ -65437,13 +65457,13 @@ SH DAT/VAR/XML
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>zt</value>
+   <value><![CDATA[zt]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>z</value>
+   <value><![CDATA[z]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>zt</value>
+   <value><![CDATA[zt]]></value>
 </attribute>
 <attribute name="bounds" type="char">
    <value>zt_bnds</value>
@@ -66082,7 +66102,7 @@ list/L=15:20 tax_dayfrac(t[gt=tvar],tvar), tax_dayfrac(t[gt=tvar],tvar)*24.
  Column  1: TAX_DAYFRAC(T[GT=TVAR],TVAR)
  Column  2: EX#2 is TAX_DAYFRAC(T[GT=TVAR],TVAR)*24.
              (C001,V002)   EX#2
-17-MAR      / 15:  0.3663   8.79
+17-MAR      / 15:  0.3662   8.79
 16-APR      / 16:  0.8031  19.27
 17-MAY      / 17:  0.2400   5.76
 16-JUN      / 18:  0.6769  16.25
@@ -67196,64 +67216,64 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.1401
- 2   / 2:  0.2630
- 3   / 3:  0.1619
- 4   / 4:  0.1463
- 5   / 5:  0.9442
+ 1   / 1:  0.9203
+ 2   / 2:  0.0727
+ 3   / 3:  0.5494
+ 4   / 4:  0.5019
+ 5   / 5:  0.0085
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.6878
- 2   / 2:  0.8852
- 3   / 3:  0.8602
- 4   / 4:  0.7875
- 5   / 5:  0.5486
+ 1   / 1:  0.3494
+ 2   / 2:  0.0515
+ 3   / 3:  0.2433
+ 4   / 4:  0.0701
+ 5   / 5:  0.3210
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.0509
- 2   / 2:  0.0609
- 3   / 3:  0.4155
- 4   / 4:  0.2100
- 5   / 5:  0.8468
- 6   / 6:  0.8126
+ 1   / 1:  0.6535
+ 2   / 2:  0.1182
+ 3   / 3:  0.1754
+ 4   / 4:  0.0069
+ 5   / 5:  0.4450
+ 6   / 6:  0.0517
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.9050
- 2   / 2:  0.2832
- 3   / 3:  0.6592
- 4   / 4:  0.5559
- 5   / 5:  0.5330
- 6   / 6:  0.7511
+ 1   / 1:  0.9519
+ 2   / 2:  0.8292
+ 3   / 3:  0.1034
+ 4   / 4:  0.3795
+ 5   / 5:  0.3371
+ 6   / 6:  0.5547
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
 list randu2(xx,12436)
              VARIABLE : RANDU2(XX,12436)
              SUBSET   : 6 points (X)
- 1   / 1:  0.3428
- 2   / 2:  0.5977
- 3   / 3:  0.8883
- 4   / 4:  0.6080
- 5   / 5:  0.4462
- 6   / 6:  0.8997
+ 1   / 1:  0.3018
+ 2   / 2:  0.3804
+ 3   / 3:  0.9263
+ 4   / 4:  0.6721
+ 5   / 5:  0.2378
+ 6   / 6:  0.6382
 can mem
 list randu2(xx,12436)
              VARIABLE : RANDU2(XX,12436)
              SUBSET   : 6 points (X)
- 1   / 1:  0.3428
- 2   / 2:  0.5977
- 3   / 3:  0.8883
- 4   / 4:  0.6080
- 5   / 5:  0.4462
- 6   / 6:  0.8997
+ 1   / 1:  0.3018
+ 2   / 2:  0.3804
+ 3   / 3:  0.9263
+ 4   / 4:  0.6721
+ 5   / 5:  0.2378
+ 6   / 6:  0.6382
  
 !same tests with RANDN2
  
@@ -67263,64 +67283,64 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1: -0.481
- 2   / 2: -2.031
- 3   / 3: -0.580
- 4   / 4:  1.304
- 5   / 5:  0.372
+ 1   / 1: -1.158
+ 2   / 2:  0.233
+ 3   / 3: -1.710
+ 4   / 4:  0.899
+ 5   / 5: -1.812
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1: -1.901
- 2   / 2: -1.724
- 3   / 3:  1.095
- 4   / 4:  0.626
- 5   / 5:  0.775
+ 1   / 1:  1.150
+ 2   / 2: -0.405
+ 3   / 3:  0.271
+ 4   / 4:  0.902
+ 5   / 5: -1.827
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  1.339
- 2   / 2: -0.395
- 3   / 3: -0.527
- 4   / 4:  0.125
- 5   / 5: -1.531
- 6   / 6:  1.309
+ 1   / 1: -0.332
+ 2   / 2: -0.126
+ 3   / 3:  0.007
+ 4   / 4: -1.146
+ 5   / 5: -0.664
+ 6   / 6: -0.172
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  1.213
- 2   / 2: -1.113
- 3   / 3:  0.579
- 4   / 4: -0.399
- 5   / 5:  1.312
- 6   / 6: -2.301
+ 1   / 1:  0.693
+ 2   / 2:  0.697
+ 3   / 3: -0.850
+ 4   / 4: -1.424
+ 5   / 5: -0.213
+ 6   / 6:  0.289
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
 list randn2(xx,12436)
              VARIABLE : RANDN2(XX,12436)
              SUBSET   : 6 points (X)
- 1   / 1:  1.052
- 2   / 2: -1.694
- 3   / 3:  0.249
- 4   / 4:  0.895
- 5   / 5:  0.919
- 6   / 6: -0.124
+ 1   / 1: -0.906
+ 2   / 2: -1.503
+ 3   / 3:  0.217
+ 4   / 4:  0.537
+ 5   / 5:  0.674
+ 6   / 6: -1.279
 can mem
 list randn2(xx,12436)
              VARIABLE : RANDN2(XX,12436)
              SUBSET   : 6 points (X)
- 1   / 1:  1.052
- 2   / 2: -1.694
- 3   / 3:  0.249
- 4   / 4:  0.895
- 5   / 5:  0.919
- 6   / 6: -0.124
+ 1   / 1: -0.906
+ 2   / 2: -1.503
+ 3   / 3:  0.217
+ 4   / 4:  0.537
+ 5   / 5:  0.674
+ 6   / 6: -1.279
  
 ! A test from the median-smoothing benchmark
  
@@ -67333,15 +67353,15 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-            VAR2   VAR2   VAR2
-0     / 1:  1.809  1.809  1.030
-20    / 2:  1.097  1.097  1.030
-40    / 3:  1.030  1.030  0.568
-60    / 4:  0.568  0.568  0.789
-80    / 5: -0.786 -0.786  0.728
-100   / 6: -0.920 -0.786  0.728
-120   / 7:  0.195  0.195  0.728
-140   / 8:  0.789  0.728  0.568
+            VAR2   VAR2    VAR2
+0     / 1:  1.392  1.392  0.4658
+20    / 2:  0.939  0.939  0.4658
+40    / 3:  0.466  0.466 -0.2655
+60    / 4: -0.265 -0.265  0.4658
+80    / 5: -0.323 -0.323  0.4658
+100   / 6: -0.498 -0.367  0.4658
+120   / 7: -0.367 -0.367  0.4658
+140   / 8:  0.849  0.849  0.8490
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -67594,7 +67614,7 @@ sp cat xml_out.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>COADSX</value>
+   <value><![CDATA[COADSX]]></value>
 </attribute>
 </axis>
 <axis name="COADSY">
@@ -67623,7 +67643,7 @@ sp cat xml_out.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>COADSY</value>
+   <value><![CDATA[COADSY]]></value>
 </attribute>
 </axis>
 <axis name="TIME10">
@@ -67732,8 +67752,8 @@ list eofsvd_space(spacetime)
              SUBSET   : 2 by 2 points (X-T)
              1       2     
               1       2
- 1   / 1: -0.7071  0.0000
- 2   / 2:  0.0000 -0.7071
+ 1   / 1:  0.0000 -0.7071
+ 2   / 2: -0.7071 -0.0000
  
 show func eofsvd_tfunc
 EOFSVD_TFUNC(A)
@@ -67746,246 +67766,246 @@ list eofsvd_tfunc(spacetime)
              SUBSET   : 2 by 240 points (X-T)
                  1      2    
                  1      2
- 0     /   1: -1.414  0.000
- 0.25  /   2: -1.402 -0.185
- 0.5   /   3: -1.366 -0.366
- 0.75  /   4: -1.307 -0.541
- 1     /   5: -1.225 -0.707
- 1.25  /   6: -1.122 -0.861
+ 0     /   1: -0.000 -1.414
+ 0.25  /   2: -0.185 -1.402
+ 0.5   /   3: -0.366 -1.366
+ 0.75  /   4: -0.541 -1.307
+ 1     /   5: -0.707 -1.225
+ 1.25  /   6: -0.861 -1.122
  1.5   /   7: -1.000 -1.000
- 1.75  /   8: -0.861 -1.122
- 2     /   9: -0.707 -1.225
- 2.25  /  10: -0.541 -1.307
- 2.5   /  11: -0.366 -1.366
- 2.75  /  12: -0.185 -1.402
- 3     /  13:  0.000 -1.414
- 3.25  /  14:  0.185 -1.402
- 3.5   /  15:  0.366 -1.366
- 3.75  /  16:  0.541 -1.307
- 4     /  17:  0.707 -1.225
- 4.25  /  18:  0.861 -1.122
- 4.5   /  19:  1.000 -1.000
- 4.75  /  20:  1.122 -0.861
- 5     /  21:  1.225 -0.707
- 5.25  /  22:  1.307 -0.541
- 5.5   /  23:  1.366 -0.366
- 5.75  /  24:  1.402 -0.185
- 6     /  25:  1.414  0.000
- 6.25  /  26:  1.402  0.185
- 6.5   /  27:  1.366  0.366
- 6.75  /  28:  1.307  0.541
- 7     /  29:  1.225  0.707
- 7.25  /  30:  1.122  0.861
+ 1.75  /   8: -1.122 -0.861
+ 2     /   9: -1.225 -0.707
+ 2.25  /  10: -1.307 -0.541
+ 2.5   /  11: -1.366 -0.366
+ 2.75  /  12: -1.402 -0.185
+ 3     /  13: -1.414 -0.000
+ 3.25  /  14: -1.402  0.185
+ 3.5   /  15: -1.366  0.366
+ 3.75  /  16: -1.307  0.541
+ 4     /  17: -1.225  0.707
+ 4.25  /  18: -1.122  0.861
+ 4.5   /  19: -1.000  1.000
+ 4.75  /  20: -0.861  1.122
+ 5     /  21: -0.707  1.225
+ 5.25  /  22: -0.541  1.307
+ 5.5   /  23: -0.366  1.366
+ 5.75  /  24: -0.185  1.402
+ 6     /  25: -0.000  1.414
+ 6.25  /  26:  0.185  1.402
+ 6.5   /  27:  0.366  1.366
+ 6.75  /  28:  0.541  1.307
+ 7     /  29:  0.707  1.225
+ 7.25  /  30:  0.861  1.122
  7.5   /  31:  1.000  1.000
- 7.75  /  32:  0.861  1.122
- 8     /  33:  0.707  1.225
- 8.25  /  34:  0.541  1.307
- 8.5   /  35:  0.366  1.366
- 8.75  /  36:  0.185  1.402
- 9     /  37:  0.000  1.414
- 9.25  /  38: -0.185  1.402
- 9.5   /  39: -0.366  1.366
- 9.75  /  40: -0.541  1.307
- 10    /  41: -0.707  1.225
- 10.25 /  42: -0.861  1.122
- 10.5  /  43: -1.000  1.000
- 10.75 /  44: -1.122  0.861
- 11    /  45: -1.225  0.707
- 11.25 /  46: -1.307  0.541
- 11.5  /  47: -1.366  0.366
- 11.75 /  48: -1.402  0.185
- 12    /  49: -1.414  0.000
- 12.25 /  50: -1.402 -0.185
- 12.5  /  51: -1.366 -0.366
- 12.75 /  52: -1.307 -0.541
- 13    /  53: -1.225 -0.707
- 13.25 /  54: -1.122 -0.861
+ 7.75  /  32:  1.122  0.861
+ 8     /  33:  1.225  0.707
+ 8.25  /  34:  1.307  0.541
+ 8.5   /  35:  1.366  0.366
+ 8.75  /  36:  1.402  0.185
+ 9     /  37:  1.414  0.000
+ 9.25  /  38:  1.402 -0.185
+ 9.5   /  39:  1.366 -0.366
+ 9.75  /  40:  1.307 -0.541
+ 10    /  41:  1.225 -0.707
+ 10.25 /  42:  1.122 -0.861
+ 10.5  /  43:  1.000 -1.000
+ 10.75 /  44:  0.861 -1.122
+ 11    /  45:  0.707 -1.225
+ 11.25 /  46:  0.541 -1.307
+ 11.5  /  47:  0.366 -1.366
+ 11.75 /  48:  0.185 -1.402
+ 12    /  49:  0.000 -1.414
+ 12.25 /  50: -0.185 -1.402
+ 12.5  /  51: -0.366 -1.366
+ 12.75 /  52: -0.541 -1.307
+ 13    /  53: -0.707 -1.225
+ 13.25 /  54: -0.861 -1.122
  13.5  /  55: -1.000 -1.000
- 13.75 /  56: -0.861 -1.122
- 14    /  57: -0.707 -1.225
- 14.25 /  58: -0.541 -1.307
- 14.5  /  59: -0.366 -1.366
- 14.75 /  60: -0.185 -1.402
- 15    /  61:  0.000 -1.414
- 15.25 /  62:  0.185 -1.402
- 15.5  /  63:  0.366 -1.366
- 15.75 /  64:  0.541 -1.307
- 16    /  65:  0.707 -1.225
- 16.25 /  66:  0.861 -1.122
- 16.5  /  67:  1.000 -1.000
- 16.75 /  68:  1.122 -0.861
- 17    /  69:  1.225 -0.707
- 17.25 /  70:  1.307 -0.541
- 17.5  /  71:  1.366 -0.366
- 17.75 /  72:  1.402 -0.185
- 18    /  73:  1.414  0.000
- 18.25 /  74:  1.402  0.185
- 18.5  /  75:  1.366  0.366
- 18.75 /  76:  1.307  0.541
- 19    /  77:  1.225  0.707
- 19.25 /  78:  1.122  0.861
+ 13.75 /  56: -1.122 -0.861
+ 14    /  57: -1.225 -0.707
+ 14.25 /  58: -1.307 -0.541
+ 14.5  /  59: -1.366 -0.366
+ 14.75 /  60: -1.402 -0.185
+ 15    /  61: -1.414 -0.000
+ 15.25 /  62: -1.402  0.185
+ 15.5  /  63: -1.366  0.366
+ 15.75 /  64: -1.307  0.541
+ 16    /  65: -1.225  0.707
+ 16.25 /  66: -1.122  0.861
+ 16.5  /  67: -1.000  1.000
+ 16.75 /  68: -0.861  1.122
+ 17    /  69: -0.707  1.225
+ 17.25 /  70: -0.541  1.307
+ 17.5  /  71: -0.366  1.366
+ 17.75 /  72: -0.185  1.402
+ 18    /  73: -0.000  1.414
+ 18.25 /  74:  0.185  1.402
+ 18.5  /  75:  0.366  1.366
+ 18.75 /  76:  0.541  1.307
+ 19    /  77:  0.707  1.225
+ 19.25 /  78:  0.861  1.122
  19.5  /  79:  1.000  1.000
- 19.75 /  80:  0.861  1.122
- 20    /  81:  0.707  1.225
- 20.25 /  82:  0.541  1.307
- 20.5  /  83:  0.366  1.366
- 20.75 /  84:  0.185  1.402
- 21    /  85:  0.000  1.414
- 21.25 /  86: -0.185  1.402
- 21.5  /  87: -0.366  1.366
- 21.75 /  88: -0.541  1.307
- 22    /  89: -0.707  1.225
- 22.25 /  90: -0.861  1.122
- 22.5  /  91: -1.000  1.000
- 22.75 /  92: -1.122  0.861
- 23    /  93: -1.225  0.707
- 23.25 /  94: -1.307  0.541
- 23.5  /  95: -1.366  0.366
- 23.75 /  96: -1.402  0.185
- 24    /  97: -1.414  0.000
- 24.25 /  98: -1.402 -0.185
- 24.5  /  99: -1.366 -0.366
- 24.75 / 100: -1.307 -0.541
- 25    / 101: -1.225 -0.707
- 25.25 / 102: -1.122 -0.861
+ 19.75 /  80:  1.122  0.861
+ 20    /  81:  1.225  0.707
+ 20.25 /  82:  1.307  0.541
+ 20.5  /  83:  1.366  0.366
+ 20.75 /  84:  1.402  0.185
+ 21    /  85:  1.414  0.000
+ 21.25 /  86:  1.402 -0.185
+ 21.5  /  87:  1.366 -0.366
+ 21.75 /  88:  1.307 -0.541
+ 22    /  89:  1.225 -0.707
+ 22.25 /  90:  1.122 -0.861
+ 22.5  /  91:  1.000 -1.000
+ 22.75 /  92:  0.861 -1.122
+ 23    /  93:  0.707 -1.225
+ 23.25 /  94:  0.541 -1.307
+ 23.5  /  95:  0.366 -1.366
+ 23.75 /  96:  0.185 -1.402
+ 24    /  97:  0.000 -1.414
+ 24.25 /  98: -0.185 -1.402
+ 24.5  /  99: -0.366 -1.366
+ 24.75 / 100: -0.541 -1.307
+ 25    / 101: -0.707 -1.225
+ 25.25 / 102: -0.861 -1.122
  25.5  / 103: -1.000 -1.000
- 25.75 / 104: -0.861 -1.122
- 26    / 105: -0.707 -1.225
- 26.25 / 106: -0.541 -1.307
- 26.5  / 107: -0.366 -1.366
- 26.75 / 108: -0.185 -1.402
- 27    / 109:  0.000 -1.414
- 27.25 / 110:  0.185 -1.402
- 27.5  / 111:  0.366 -1.366
- 27.75 / 112:  0.541 -1.307
- 28    / 113:  0.707 -1.225
- 28.25 / 114:  0.861 -1.122
- 28.5  / 115:  1.000 -1.000
- 28.75 / 116:  1.122 -0.861
- 29    / 117:  1.225 -0.707
- 29.25 / 118:  1.307 -0.541
- 29.5  / 119:  1.366 -0.366
- 29.75 / 120:  1.402 -0.185
- 30    / 121:  1.414  0.000
- 30.25 / 122:  1.402  0.185
- 30.5  / 123:  1.366  0.366
- 30.75 / 124:  1.307  0.541
- 31    / 125:  1.225  0.707
- 31.25 / 126:  1.122  0.861
+ 25.75 / 104: -1.122 -0.861
+ 26    / 105: -1.225 -0.707
+ 26.25 / 106: -1.307 -0.541
+ 26.5  / 107: -1.366 -0.366
+ 26.75 / 108: -1.402 -0.185
+ 27    / 109: -1.414 -0.000
+ 27.25 / 110: -1.402  0.185
+ 27.5  / 111: -1.366  0.366
+ 27.75 / 112: -1.307  0.541
+ 28    / 113: -1.225  0.707
+ 28.25 / 114: -1.122  0.861
+ 28.5  / 115: -1.000  1.000
+ 28.75 / 116: -0.861  1.122
+ 29    / 117: -0.707  1.225
+ 29.25 / 118: -0.541  1.307
+ 29.5  / 119: -0.366  1.366
+ 29.75 / 120: -0.185  1.402
+ 30    / 121: -0.000  1.414
+ 30.25 / 122:  0.185  1.402
+ 30.5  / 123:  0.366  1.366
+ 30.75 / 124:  0.541  1.307
+ 31    / 125:  0.707  1.225
+ 31.25 / 126:  0.861  1.122
  31.5  / 127:  1.000  1.000
- 31.75 / 128:  0.861  1.122
- 32    / 129:  0.707  1.225
- 32.25 / 130:  0.541  1.307
- 32.5  / 131:  0.366  1.366
- 32.75 / 132:  0.185  1.402
- 33    / 133:  0.000  1.414
- 33.25 / 134: -0.185  1.402
- 33.5  / 135: -0.366  1.366
- 33.75 / 136: -0.541  1.307
- 34    / 137: -0.707  1.225
- 34.25 / 138: -0.861  1.122
- 34.5  / 139: -1.000  1.000
- 34.75 / 140: -1.122  0.861
- 35    / 141: -1.225  0.707
- 35.25 / 142: -1.307  0.541
- 35.5  / 143: -1.366  0.366
- 35.75 / 144: -1.402  0.185
- 36    / 145: -1.414  0.000
- 36.25 / 146: -1.402 -0.185
- 36.5  / 147: -1.366 -0.366
- 36.75 / 148: -1.307 -0.541
- 37    / 149: -1.225 -0.707
- 37.25 / 150: -1.122 -0.861
+ 31.75 / 128:  1.122  0.861
+ 32    / 129:  1.225  0.707
+ 32.25 / 130:  1.307  0.541
+ 32.5  / 131:  1.366  0.366
+ 32.75 / 132:  1.402  0.185
+ 33    / 133:  1.414 -0.000
+ 33.25 / 134:  1.402 -0.185
+ 33.5  / 135:  1.366 -0.366
+ 33.75 / 136:  1.307 -0.541
+ 34    / 137:  1.225 -0.707
+ 34.25 / 138:  1.122 -0.861
+ 34.5  / 139:  1.000 -1.000
+ 34.75 / 140:  0.861 -1.122
+ 35    / 141:  0.707 -1.225
+ 35.25 / 142:  0.541 -1.307
+ 35.5  / 143:  0.366 -1.366
+ 35.75 / 144:  0.185 -1.402
+ 36    / 145:  0.000 -1.414
+ 36.25 / 146: -0.185 -1.402
+ 36.5  / 147: -0.366 -1.366
+ 36.75 / 148: -0.541 -1.307
+ 37    / 149: -0.707 -1.225
+ 37.25 / 150: -0.861 -1.122
  37.5  / 151: -1.000 -1.000
- 37.75 / 152: -0.861 -1.122
- 38    / 153: -0.707 -1.225
- 38.25 / 154: -0.541 -1.307
- 38.5  / 155: -0.366 -1.366
- 38.75 / 156: -0.185 -1.402
- 39    / 157:  0.000 -1.414
- 39.25 / 158:  0.185 -1.402
- 39.5  / 159:  0.366 -1.366
- 39.75 / 160:  0.541 -1.307
- 40    / 161:  0.707 -1.225
- 40.25 / 162:  0.861 -1.122
- 40.5  / 163:  1.000 -1.000
- 40.75 / 164:  1.122 -0.861
- 41    / 165:  1.225 -0.707
- 41.25 / 166:  1.307 -0.541
- 41.5  / 167:  1.366 -0.366
- 41.75 / 168:  1.402 -0.185
- 42    / 169:  1.414  0.000
- 42.25 / 170:  1.402  0.185
- 42.5  / 171:  1.366  0.366
- 42.75 / 172:  1.307  0.541
- 43    / 173:  1.225  0.707
- 43.25 / 174:  1.122  0.861
+ 37.75 / 152: -1.122 -0.861
+ 38    / 153: -1.225 -0.707
+ 38.25 / 154: -1.307 -0.541
+ 38.5  / 155: -1.366 -0.366
+ 38.75 / 156: -1.402 -0.185
+ 39    / 157: -1.414 -0.000
+ 39.25 / 158: -1.402  0.185
+ 39.5  / 159: -1.366  0.366
+ 39.75 / 160: -1.307  0.541
+ 40    / 161: -1.225  0.707
+ 40.25 / 162: -1.122  0.861
+ 40.5  / 163: -1.000  1.000
+ 40.75 / 164: -0.861  1.122
+ 41    / 165: -0.707  1.225
+ 41.25 / 166: -0.541  1.307
+ 41.5  / 167: -0.366  1.366
+ 41.75 / 168: -0.185  1.402
+ 42    / 169: -0.000  1.414
+ 42.25 / 170:  0.185  1.402
+ 42.5  / 171:  0.366  1.366
+ 42.75 / 172:  0.541  1.307
+ 43    / 173:  0.707  1.225
+ 43.25 / 174:  0.861  1.122
  43.5  / 175:  1.000  1.000
- 43.75 / 176:  0.861  1.122
- 44    / 177:  0.707  1.225
- 44.25 / 178:  0.541  1.307
- 44.5  / 179:  0.366  1.366
- 44.75 / 180:  0.185  1.402
- 45    / 181:  0.000  1.414
- 45.25 / 182: -0.185  1.402
- 45.5  / 183: -0.366  1.366
- 45.75 / 184: -0.541  1.307
- 46    / 185: -0.707  1.225
- 46.25 / 186: -0.861  1.122
- 46.5  / 187: -1.000  1.000
- 46.75 / 188: -1.122  0.861
- 47    / 189: -1.225  0.707
- 47.25 / 190: -1.307  0.541
- 47.5  / 191: -1.366  0.366
- 47.75 / 192: -1.402  0.185
- 48    / 193: -1.414  0.000
- 48.25 / 194: -1.402 -0.185
- 48.5  / 195: -1.366 -0.366
- 48.75 / 196: -1.307 -0.541
- 49    / 197: -1.225 -0.707
- 49.25 / 198: -1.122 -0.861
+ 43.75 / 176:  1.122  0.861
+ 44    / 177:  1.225  0.707
+ 44.25 / 178:  1.307  0.541
+ 44.5  / 179:  1.366  0.366
+ 44.75 / 180:  1.402  0.185
+ 45    / 181:  1.414 -0.000
+ 45.25 / 182:  1.402 -0.185
+ 45.5  / 183:  1.366 -0.366
+ 45.75 / 184:  1.307 -0.541
+ 46    / 185:  1.225 -0.707
+ 46.25 / 186:  1.122 -0.861
+ 46.5  / 187:  1.000 -1.000
+ 46.75 / 188:  0.861 -1.122
+ 47    / 189:  0.707 -1.225
+ 47.25 / 190:  0.541 -1.307
+ 47.5  / 191:  0.366 -1.366
+ 47.75 / 192:  0.185 -1.402
+ 48    / 193:  0.000 -1.414
+ 48.25 / 194: -0.185 -1.402
+ 48.5  / 195: -0.366 -1.366
+ 48.75 / 196: -0.541 -1.307
+ 49    / 197: -0.707 -1.225
+ 49.25 / 198: -0.861 -1.122
  49.5  / 199: -1.000 -1.000
- 49.75 / 200: -0.861 -1.122
- 50    / 201: -0.707 -1.225
- 50.25 / 202: -0.541 -1.307
- 50.5  / 203: -0.366 -1.366
- 50.75 / 204: -0.185 -1.402
- 51    / 205:  0.000 -1.414
- 51.25 / 206:  0.185 -1.402
- 51.5  / 207:  0.366 -1.366
- 51.75 / 208:  0.541 -1.307
- 52    / 209:  0.707 -1.225
- 52.25 / 210:  0.861 -1.122
- 52.5  / 211:  1.000 -1.000
- 52.75 / 212:  1.122 -0.861
- 53    / 213:  1.225 -0.707
- 53.25 / 214:  1.307 -0.541
- 53.5  / 215:  1.366 -0.366
- 53.75 / 216:  1.402 -0.185
- 54    / 217:  1.414  0.000
- 54.25 / 218:  1.402  0.185
- 54.5  / 219:  1.366  0.366
- 54.75 / 220:  1.307  0.541
- 55    / 221:  1.225  0.707
- 55.25 / 222:  1.122  0.861
+ 49.75 / 200: -1.122 -0.861
+ 50    / 201: -1.225 -0.707
+ 50.25 / 202: -1.307 -0.541
+ 50.5  / 203: -1.366 -0.366
+ 50.75 / 204: -1.402 -0.185
+ 51    / 205: -1.414 -0.000
+ 51.25 / 206: -1.402  0.185
+ 51.5  / 207: -1.366  0.366
+ 51.75 / 208: -1.307  0.541
+ 52    / 209: -1.225  0.707
+ 52.25 / 210: -1.122  0.861
+ 52.5  / 211: -1.000  1.000
+ 52.75 / 212: -0.861  1.122
+ 53    / 213: -0.707  1.225
+ 53.25 / 214: -0.541  1.307
+ 53.5  / 215: -0.366  1.366
+ 53.75 / 216: -0.185  1.402
+ 54    / 217: -0.000  1.414
+ 54.25 / 218:  0.185  1.402
+ 54.5  / 219:  0.366  1.366
+ 54.75 / 220:  0.541  1.307
+ 55    / 221:  0.707  1.225
+ 55.25 / 222:  0.861  1.122
  55.5  / 223:  1.000  1.000
- 55.75 / 224:  0.861  1.122
- 56    / 225:  0.707  1.225
- 56.25 / 226:  0.541  1.307
- 56.5  / 227:  0.366  1.366
- 56.75 / 228:  0.185  1.402
- 57    / 229:  0.000  1.414
- 57.25 / 230: -0.185  1.402
- 57.5  / 231: -0.366  1.366
- 57.75 / 232: -0.541  1.307
- 58    / 233: -0.707  1.225
- 58.25 / 234: -0.861  1.122
- 58.5  / 235: -1.000  1.000
- 58.75 / 236: -1.122  0.861
- 59    / 237: -1.225  0.707
- 59.25 / 238: -1.307  0.541
- 59.5  / 239: -1.366  0.366
- 59.75 / 240: -1.402  0.185
+ 55.75 / 224:  1.122  0.861
+ 56    / 225:  1.225  0.707
+ 56.25 / 226:  1.307  0.541
+ 56.5  / 227:  1.366  0.366
+ 56.75 / 228:  1.402  0.185
+ 57    / 229:  1.414  0.000
+ 57.25 / 230:  1.402 -0.185
+ 57.5  / 231:  1.366 -0.366
+ 57.75 / 232:  1.307 -0.541
+ 58    / 233:  1.225 -0.707
+ 58.25 / 234:  1.122 -0.861
+ 58.5  / 235:  1.000 -1.000
+ 58.75 / 236:  0.861 -1.122
+ 59    / 237:  0.707 -1.225
+ 59.25 / 238:  0.541 -1.307
+ 59.5  / 239:  0.366 -1.366
+ 59.75 / 240:  0.185 -1.402
  
 ! The sum over all significant EOFs of the outer product of
 ! EOF(i) and TAF(i) should return the zero-time-meaned data
@@ -68081,11 +68101,11 @@ list eofs[L=1:2]
              1       2     
               1       2
  ---- L:1 T:   1
- 1   / 1: -0.3534 -0.0087
- 2   / 2: -0.0087  0.3534
+ 1   / 1:  0.0635 -0.3478
+ 2   / 2: -0.3478 -0.0635
  ---- L:2 T:   2
- 1   / 1:  0.0087 -0.3534
- 2   / 2: -0.3534 -0.0087
+ 1   / 1:  0.3478  0.0635
+ 2   / 2:  0.0635 -0.3478
  
 show func eofsvd_tfunc
 EOFSVD_TFUNC(A)
@@ -68104,246 +68124,246 @@ list tafs[I=1:2]
              SUBSET   : 2 by 240 points (X-T)
                  1      2    
                  1      2
- 0     /   1: -1.414  0.035
- 0.1   /   2: -1.410 -0.113
- 0.2   /   3: -1.390 -0.260
- 0.3   /   4: -1.355 -0.404
- 0.4   /   5: -1.306 -0.543
- 0.5   /   6: -1.242 -0.677
- 0.6   /   7: -1.164 -0.803
- 0.7   /   8: -1.074 -0.920
- 0.8   /   9: -0.972 -1.027
- 0.9   /  10: -0.859 -1.123
- 1     /  11: -0.737 -1.207
- 1.1   /  12: -0.607 -1.277
- 1.2   /  13: -0.470 -1.334
- 1.3   /  14: -0.328 -1.376
- 1.4   /  15: -0.182 -1.402
- 1.5   /  16: -0.035 -1.414
- 1.6   /  17:  0.113 -1.410
- 1.7   /  18:  0.260 -1.390
- 1.8   /  19:  0.404 -1.355
- 1.9   /  20:  0.543 -1.306
- 2     /  21:  0.677 -1.242
- 2.1   /  22:  0.803 -1.164
- 2.2   /  23:  0.920 -1.074
- 2.3   /  24:  1.027 -0.972
- 2.4   /  25:  1.123 -0.859
- 2.5   /  26:  1.207 -0.737
- 2.6   /  27:  1.277 -0.607
- 2.7   /  28:  1.334 -0.470
- 2.8   /  29:  1.376 -0.328
- 2.9   /  30:  1.402 -0.182
- 3     /  31:  1.414 -0.035
- 3.1   /  32:  1.410  0.113
- 3.2   /  33:  1.390  0.260
- 3.3   /  34:  1.355  0.404
- 3.4   /  35:  1.306  0.543
- 3.5   /  36:  1.242  0.677
- 3.6   /  37:  1.164  0.803
- 3.7   /  38:  1.074  0.920
- 3.8   /  39:  0.972  1.027
- 3.9   /  40:  0.859  1.123
- 4     /  41:  0.737  1.207
- 4.1   /  42:  0.607  1.277
- 4.2   /  43:  0.470  1.334
- 4.3   /  44:  0.328  1.376
- 4.4   /  45:  0.182  1.402
- 4.5   /  46:  0.035  1.414
- 4.6   /  47: -0.113  1.410
- 4.7   /  48: -0.260  1.390
- 4.8   /  49: -0.404  1.355
- 4.9   /  50: -0.543  1.306
- 5     /  51: -0.677  1.242
- 5.1   /  52: -0.803  1.164
- 5.2   /  53: -0.920  1.074
- 5.3   /  54: -1.027  0.972
- 5.4   /  55: -1.123  0.859
- 5.5   /  56: -1.207  0.737
- 5.6   /  57: -1.277  0.607
- 5.7   /  58: -1.334  0.470
- 5.8   /  59: -1.376  0.328
- 5.9   /  60: -1.402  0.182
- 6     /  61: -1.414  0.035
- 6.1   /  62: -1.410 -0.113
- 6.2   /  63: -1.390 -0.260
- 6.3   /  64: -1.355 -0.404
- 6.4   /  65: -1.306 -0.543
- 6.5   /  66: -1.242 -0.677
- 6.6   /  67: -1.164 -0.803
- 6.7   /  68: -1.074 -0.920
- 6.8   /  69: -0.972 -1.027
- 6.9   /  70: -0.859 -1.123
- 7     /  71: -0.737 -1.207
- 7.1   /  72: -0.607 -1.277
- 7.2   /  73: -0.470 -1.334
- 7.3   /  74: -0.328 -1.376
- 7.4   /  75: -0.182 -1.402
- 7.5   /  76: -0.035 -1.414
- 7.6   /  77:  0.113 -1.410
- 7.7   /  78:  0.260 -1.390
- 7.8   /  79:  0.404 -1.355
- 7.9   /  80:  0.543 -1.306
- 8     /  81:  0.677 -1.242
- 8.1   /  82:  0.803 -1.164
- 8.2   /  83:  0.920 -1.074
- 8.3   /  84:  1.027 -0.972
- 8.4   /  85:  1.123 -0.859
- 8.5   /  86:  1.207 -0.737
- 8.6   /  87:  1.277 -0.607
- 8.7   /  88:  1.334 -0.470
- 8.8   /  89:  1.376 -0.328
- 8.9   /  90:  1.402 -0.182
- 9     /  91:  1.414 -0.035
- 9.1   /  92:  1.410  0.113
- 9.2   /  93:  1.390  0.260
- 9.3   /  94:  1.355  0.404
- 9.4   /  95:  1.306  0.543
- 9.5   /  96:  1.242  0.677
- 9.6   /  97:  1.164  0.803
- 9.7   /  98:  1.074  0.920
- 9.8   /  99:  0.972  1.027
- 9.9   / 100:  0.859  1.123
- 10    / 101:  0.737  1.207
- 10.1  / 102:  0.607  1.277
- 10.2  / 103:  0.470  1.334
- 10.3  / 104:  0.328  1.376
- 10.4  / 105:  0.182  1.402
- 10.5  / 106:  0.035  1.414
- 10.6  / 107: -0.113  1.410
- 10.7  / 108: -0.260  1.390
- 10.8  / 109: -0.404  1.355
- 10.9  / 110: -0.543  1.306
- 11    / 111: -0.677  1.242
- 11.1  / 112: -0.803  1.164
- 11.2  / 113: -0.920  1.074
- 11.3  / 114: -1.027  0.972
- 11.4  / 115: -1.123  0.859
- 11.5  / 116: -1.207  0.737
- 11.6  / 117: -1.277  0.607
- 11.7  / 118: -1.334  0.470
- 11.8  / 119: -1.376  0.328
- 11.9  / 120: -1.402  0.182
- 12    / 121: -1.414  0.035
- 12.1  / 122: -1.410 -0.113
- 12.2  / 123: -1.390 -0.260
- 12.3  / 124: -1.355 -0.404
- 12.4  / 125: -1.306 -0.543
- 12.5  / 126: -1.242 -0.677
- 12.6  / 127: -1.164 -0.803
- 12.7  / 128: -1.074 -0.920
- 12.8  / 129: -0.972 -1.027
- 12.9  / 130: -0.859 -1.123
- 13    / 131: -0.737 -1.207
- 13.1  / 132: -0.607 -1.277
- 13.2  / 133: -0.470 -1.334
- 13.3  / 134: -0.328 -1.376
- 13.4  / 135: -0.182 -1.402
- 13.5  / 136: -0.035 -1.414
- 13.6  / 137:  0.113 -1.410
- 13.7  / 138:  0.260 -1.390
- 13.8  / 139:  0.404 -1.355
- 13.9  / 140:  0.543 -1.306
- 14    / 141:  0.677 -1.242
- 14.1  / 142:  0.803 -1.164
- 14.2  / 143:  0.920 -1.074
- 14.3  / 144:  1.027 -0.972
- 14.4  / 145:  1.123 -0.859
- 14.5  / 146:  1.207 -0.737
- 14.6  / 147:  1.277 -0.607
- 14.7  / 148:  1.334 -0.470
- 14.8  / 149:  1.376 -0.328
- 14.9  / 150:  1.402 -0.182
- 15    / 151:  1.414 -0.035
- 15.1  / 152:  1.410  0.113
- 15.2  / 153:  1.390  0.260
- 15.3  / 154:  1.355  0.404
- 15.4  / 155:  1.306  0.543
- 15.5  / 156:  1.242  0.677
- 15.6  / 157:  1.164  0.803
- 15.7  / 158:  1.074  0.920
- 15.8  / 159:  0.972  1.027
- 15.9  / 160:  0.859  1.123
- 16    / 161:  0.737  1.207
- 16.1  / 162:  0.607  1.277
- 16.2  / 163:  0.470  1.334
- 16.3  / 164:  0.328  1.376
- 16.4  / 165:  0.182  1.402
- 16.5  / 166:  0.035  1.414
- 16.6  / 167: -0.113  1.410
- 16.7  / 168: -0.260  1.390
- 16.8  / 169: -0.404  1.355
- 16.9  / 170: -0.543  1.306
- 17    / 171: -0.677  1.242
- 17.1  / 172: -0.803  1.164
- 17.2  / 173: -0.920  1.074
- 17.3  / 174: -1.027  0.972
- 17.4  / 175: -1.123  0.859
- 17.5  / 176: -1.207  0.737
- 17.6  / 177: -1.277  0.607
- 17.7  / 178: -1.334  0.470
- 17.8  / 179: -1.376  0.328
- 17.9  / 180: -1.402  0.182
- 18    / 181: -1.414  0.035
- 18.1  / 182: -1.410 -0.113
- 18.2  / 183: -1.390 -0.260
- 18.3  / 184: -1.355 -0.404
- 18.4  / 185: -1.306 -0.543
- 18.5  / 186: -1.242 -0.677
- 18.6  / 187: -1.164 -0.803
- 18.7  / 188: -1.074 -0.920
- 18.8  / 189: -0.972 -1.027
- 18.9  / 190: -0.859 -1.123
- 19    / 191: -0.737 -1.207
- 19.1  / 192: -0.607 -1.277
- 19.2  / 193: -0.470 -1.334
- 19.3  / 194: -0.328 -1.376
- 19.4  / 195: -0.182 -1.402
- 19.5  / 196: -0.035 -1.414
- 19.6  / 197:  0.113 -1.410
- 19.7  / 198:  0.260 -1.390
- 19.8  / 199:  0.404 -1.355
- 19.9  / 200:  0.543 -1.306
- 20    / 201:  0.677 -1.242
- 20.1  / 202:  0.803 -1.164
- 20.2  / 203:  0.920 -1.074
- 20.3  / 204:  1.027 -0.972
- 20.4  / 205:  1.123 -0.859
- 20.5  / 206:  1.207 -0.737
- 20.6  / 207:  1.277 -0.607
- 20.7  / 208:  1.334 -0.470
- 20.8  / 209:  1.376 -0.328
- 20.9  / 210:  1.402 -0.182
- 21    / 211:  1.414 -0.035
- 21.1  / 212:  1.410  0.113
- 21.2  / 213:  1.390  0.260
- 21.3  / 214:  1.355  0.404
- 21.4  / 215:  1.306  0.543
- 21.5  / 216:  1.242  0.677
- 21.6  / 217:  1.164  0.803
- 21.7  / 218:  1.074  0.920
- 21.8  / 219:  0.972  1.027
- 21.9  / 220:  0.859  1.123
- 22    / 221:  0.737  1.207
- 22.1  / 222:  0.607  1.277
- 22.2  / 223:  0.470  1.334
- 22.3  / 224:  0.328  1.376
- 22.4  / 225:  0.182  1.402
- 22.5  / 226:  0.035  1.414
- 22.6  / 227: -0.113  1.410
- 22.7  / 228: -0.260  1.390
- 22.8  / 229: -0.404  1.355
- 22.9  / 230: -0.543  1.306
- 23    / 231: -0.677  1.242
- 23.1  / 232: -0.803  1.164
- 23.2  / 233: -0.920  1.074
- 23.3  / 234: -1.027  0.972
- 23.4  / 235: -1.123  0.859
- 23.5  / 236: -1.207  0.737
- 23.6  / 237: -1.277  0.607
- 23.7  / 238: -1.334  0.470
- 23.8  / 239: -1.376  0.328
- 23.9  / 240: -1.402  0.182
+ 0     /   1:  0.254  1.391
+ 0.1   /   2:  0.107  1.410
+ 0.2   /   3: -0.041  1.414
+ 0.3   /   4: -0.188  1.402
+ 0.4   /   5: -0.334  1.374
+ 0.5   /   6: -0.476  1.332
+ 0.6   /   7: -0.612  1.275
+ 0.7   /   8: -0.742  1.204
+ 0.8   /   9: -0.864  1.120
+ 0.9   /  10: -0.976  1.023
+ 1     /  11: -1.078  0.916
+ 1.1   /  12: -1.168  0.798
+ 1.2   /  13: -1.245  0.672
+ 1.3   /  14: -1.308  0.538
+ 1.4   /  15: -1.357  0.398
+ 1.5   /  16: -1.391  0.254
+ 1.6   /  17: -1.410  0.107
+ 1.7   /  18: -1.414 -0.041
+ 1.8   /  19: -1.402 -0.188
+ 1.9   /  20: -1.374 -0.334
+ 2     /  21: -1.332 -0.476
+ 2.1   /  22: -1.275 -0.612
+ 2.2   /  23: -1.204 -0.742
+ 2.3   /  24: -1.120 -0.864
+ 2.4   /  25: -1.023 -0.976
+ 2.5   /  26: -0.916 -1.078
+ 2.6   /  27: -0.798 -1.168
+ 2.7   /  28: -0.672 -1.245
+ 2.8   /  29: -0.538 -1.308
+ 2.9   /  30: -0.398 -1.357
+ 3     /  31: -0.254 -1.391
+ 3.1   /  32: -0.107 -1.410
+ 3.2   /  33:  0.041 -1.414
+ 3.3   /  34:  0.188 -1.402
+ 3.4   /  35:  0.334 -1.374
+ 3.5   /  36:  0.476 -1.332
+ 3.6   /  37:  0.612 -1.275
+ 3.7   /  38:  0.742 -1.204
+ 3.8   /  39:  0.864 -1.120
+ 3.9   /  40:  0.976 -1.023
+ 4     /  41:  1.078 -0.916
+ 4.1   /  42:  1.168 -0.798
+ 4.2   /  43:  1.245 -0.672
+ 4.3   /  44:  1.308 -0.538
+ 4.4   /  45:  1.357 -0.398
+ 4.5   /  46:  1.391 -0.254
+ 4.6   /  47:  1.410 -0.107
+ 4.7   /  48:  1.414  0.041
+ 4.8   /  49:  1.402  0.188
+ 4.9   /  50:  1.374  0.334
+ 5     /  51:  1.332  0.476
+ 5.1   /  52:  1.275  0.612
+ 5.2   /  53:  1.204  0.742
+ 5.3   /  54:  1.120  0.864
+ 5.4   /  55:  1.023  0.976
+ 5.5   /  56:  0.916  1.078
+ 5.6   /  57:  0.798  1.168
+ 5.7   /  58:  0.672  1.245
+ 5.8   /  59:  0.538  1.308
+ 5.9   /  60:  0.398  1.357
+ 6     /  61:  0.254  1.391
+ 6.1   /  62:  0.107  1.410
+ 6.2   /  63: -0.041  1.414
+ 6.3   /  64: -0.188  1.402
+ 6.4   /  65: -0.334  1.374
+ 6.5   /  66: -0.476  1.332
+ 6.6   /  67: -0.612  1.275
+ 6.7   /  68: -0.742  1.204
+ 6.8   /  69: -0.864  1.120
+ 6.9   /  70: -0.976  1.023
+ 7     /  71: -1.078  0.916
+ 7.1   /  72: -1.168  0.798
+ 7.2   /  73: -1.245  0.672
+ 7.3   /  74: -1.308  0.538
+ 7.4   /  75: -1.357  0.398
+ 7.5   /  76: -1.391  0.254
+ 7.6   /  77: -1.410  0.107
+ 7.7   /  78: -1.414 -0.041
+ 7.8   /  79: -1.402 -0.188
+ 7.9   /  80: -1.374 -0.334
+ 8     /  81: -1.332 -0.476
+ 8.1   /  82: -1.275 -0.612
+ 8.2   /  83: -1.204 -0.742
+ 8.3   /  84: -1.120 -0.864
+ 8.4   /  85: -1.023 -0.976
+ 8.5   /  86: -0.916 -1.078
+ 8.6   /  87: -0.798 -1.168
+ 8.7   /  88: -0.672 -1.245
+ 8.8   /  89: -0.538 -1.308
+ 8.9   /  90: -0.398 -1.357
+ 9     /  91: -0.254 -1.391
+ 9.1   /  92: -0.107 -1.410
+ 9.2   /  93:  0.041 -1.414
+ 9.3   /  94:  0.188 -1.402
+ 9.4   /  95:  0.334 -1.374
+ 9.5   /  96:  0.476 -1.332
+ 9.6   /  97:  0.612 -1.275
+ 9.7   /  98:  0.742 -1.204
+ 9.8   /  99:  0.864 -1.120
+ 9.9   / 100:  0.976 -1.023
+ 10    / 101:  1.078 -0.916
+ 10.1  / 102:  1.168 -0.798
+ 10.2  / 103:  1.245 -0.672
+ 10.3  / 104:  1.308 -0.538
+ 10.4  / 105:  1.357 -0.398
+ 10.5  / 106:  1.391 -0.254
+ 10.6  / 107:  1.410 -0.107
+ 10.7  / 108:  1.414  0.041
+ 10.8  / 109:  1.402  0.188
+ 10.9  / 110:  1.374  0.334
+ 11    / 111:  1.332  0.476
+ 11.1  / 112:  1.275  0.612
+ 11.2  / 113:  1.204  0.742
+ 11.3  / 114:  1.120  0.864
+ 11.4  / 115:  1.023  0.976
+ 11.5  / 116:  0.916  1.078
+ 11.6  / 117:  0.798  1.168
+ 11.7  / 118:  0.672  1.245
+ 11.8  / 119:  0.538  1.308
+ 11.9  / 120:  0.398  1.357
+ 12    / 121:  0.254  1.391
+ 12.1  / 122:  0.107  1.410
+ 12.2  / 123: -0.041  1.414
+ 12.3  / 124: -0.188  1.402
+ 12.4  / 125: -0.334  1.374
+ 12.5  / 126: -0.476  1.332
+ 12.6  / 127: -0.612  1.275
+ 12.7  / 128: -0.742  1.204
+ 12.8  / 129: -0.864  1.120
+ 12.9  / 130: -0.976  1.023
+ 13    / 131: -1.078  0.916
+ 13.1  / 132: -1.168  0.798
+ 13.2  / 133: -1.245  0.672
+ 13.3  / 134: -1.308  0.538
+ 13.4  / 135: -1.357  0.398
+ 13.5  / 136: -1.391  0.254
+ 13.6  / 137: -1.410  0.107
+ 13.7  / 138: -1.414 -0.041
+ 13.8  / 139: -1.402 -0.188
+ 13.9  / 140: -1.374 -0.334
+ 14    / 141: -1.332 -0.476
+ 14.1  / 142: -1.275 -0.612
+ 14.2  / 143: -1.204 -0.742
+ 14.3  / 144: -1.120 -0.864
+ 14.4  / 145: -1.023 -0.976
+ 14.5  / 146: -0.916 -1.078
+ 14.6  / 147: -0.798 -1.168
+ 14.7  / 148: -0.672 -1.245
+ 14.8  / 149: -0.538 -1.308
+ 14.9  / 150: -0.398 -1.357
+ 15    / 151: -0.254 -1.391
+ 15.1  / 152: -0.107 -1.410
+ 15.2  / 153:  0.041 -1.414
+ 15.3  / 154:  0.188 -1.402
+ 15.4  / 155:  0.334 -1.374
+ 15.5  / 156:  0.476 -1.332
+ 15.6  / 157:  0.612 -1.275
+ 15.7  / 158:  0.742 -1.204
+ 15.8  / 159:  0.864 -1.120
+ 15.9  / 160:  0.976 -1.023
+ 16    / 161:  1.078 -0.916
+ 16.1  / 162:  1.168 -0.798
+ 16.2  / 163:  1.245 -0.672
+ 16.3  / 164:  1.308 -0.538
+ 16.4  / 165:  1.357 -0.398
+ 16.5  / 166:  1.391 -0.254
+ 16.6  / 167:  1.410 -0.107
+ 16.7  / 168:  1.414  0.041
+ 16.8  / 169:  1.402  0.188
+ 16.9  / 170:  1.374  0.334
+ 17    / 171:  1.332  0.476
+ 17.1  / 172:  1.275  0.612
+ 17.2  / 173:  1.204  0.742
+ 17.3  / 174:  1.120  0.864
+ 17.4  / 175:  1.023  0.976
+ 17.5  / 176:  0.916  1.078
+ 17.6  / 177:  0.798  1.168
+ 17.7  / 178:  0.672  1.245
+ 17.8  / 179:  0.538  1.308
+ 17.9  / 180:  0.398  1.357
+ 18    / 181:  0.254  1.391
+ 18.1  / 182:  0.107  1.410
+ 18.2  / 183: -0.041  1.414
+ 18.3  / 184: -0.188  1.402
+ 18.4  / 185: -0.334  1.374
+ 18.5  / 186: -0.476  1.332
+ 18.6  / 187: -0.612  1.275
+ 18.7  / 188: -0.742  1.204
+ 18.8  / 189: -0.864  1.120
+ 18.9  / 190: -0.976  1.023
+ 19    / 191: -1.078  0.916
+ 19.1  / 192: -1.168  0.798
+ 19.2  / 193: -1.245  0.672
+ 19.3  / 194: -1.308  0.538
+ 19.4  / 195: -1.357  0.398
+ 19.5  / 196: -1.391  0.254
+ 19.6  / 197: -1.410  0.107
+ 19.7  / 198: -1.414 -0.041
+ 19.8  / 199: -1.402 -0.188
+ 19.9  / 200: -1.374 -0.334
+ 20    / 201: -1.332 -0.476
+ 20.1  / 202: -1.275 -0.612
+ 20.2  / 203: -1.204 -0.742
+ 20.3  / 204: -1.120 -0.864
+ 20.4  / 205: -1.023 -0.976
+ 20.5  / 206: -0.916 -1.078
+ 20.6  / 207: -0.798 -1.168
+ 20.7  / 208: -0.672 -1.245
+ 20.8  / 209: -0.538 -1.308
+ 20.9  / 210: -0.398 -1.357
+ 21    / 211: -0.254 -1.391
+ 21.1  / 212: -0.107 -1.410
+ 21.2  / 213:  0.041 -1.414
+ 21.3  / 214:  0.188 -1.402
+ 21.4  / 215:  0.334 -1.374
+ 21.5  / 216:  0.476 -1.332
+ 21.6  / 217:  0.612 -1.275
+ 21.7  / 218:  0.742 -1.204
+ 21.8  / 219:  0.864 -1.120
+ 21.9  / 220:  0.976 -1.023
+ 22    / 221:  1.078 -0.916
+ 22.1  / 222:  1.168 -0.798
+ 22.2  / 223:  1.245 -0.672
+ 22.3  / 224:  1.308 -0.538
+ 22.4  / 225:  1.357 -0.398
+ 22.5  / 226:  1.391 -0.254
+ 22.6  / 227:  1.410 -0.107
+ 22.7  / 228:  1.414  0.041
+ 22.8  / 229:  1.402  0.188
+ 22.9  / 230:  1.374  0.334
+ 23    / 231:  1.332  0.476
+ 23.1  / 232:  1.275  0.612
+ 23.2  / 233:  1.204  0.742
+ 23.3  / 234:  1.120  0.864
+ 23.4  / 235:  1.023  0.976
+ 23.5  / 236:  0.916  1.078
+ 23.6  / 237:  0.798  1.168
+ 23.7  / 238:  0.672  1.245
+ 23.8  / 239:  0.538  1.308
+ 23.9  / 240:  0.398  1.357
  
 ! Explanation:
 ! Time series means = (0.5, 0.0, 0.0, 0.5) + (0, 1, 2, 3)
@@ -72497,7 +72517,7 @@ list temp  ! values should be  28.69, 28.63
              VARIABLE : Potential temperature (degrees C)
              FILENAME : append_pack.nc
              SUBSET   : 2 points (TIME)
-             LONGITUDE: 179.9E(179.9)
+             LONGITUDE: 180E(179.9)
              LATITUDE : 0.05S
              DEPTH (m): 2.5
                       179.95E  
@@ -72517,13 +72537,13 @@ list temp  ! values should match those above.
              VARIABLE : Potential temperature (degrees C)
              FILENAME : a.nc
              SUBSET   : 2 points (TIME)
-             LONGITUDE: 179.9E(179.9)
+             LONGITUDE: 180E(179.9)
              LATITUDE : 0.05S
              DEPTH (m): 2.5
                       179.95E  
                          1
- 01-JAN-1994 12 / 1:  28.6966
- 02-JAN-1994 12 / 2:  28.6361
+ 01-JAN-1994 12 / 1:  28.6949
+ 02-JAN-1994 12 / 2:  28.6344
  
 set mode/last upcase_output
  
@@ -72562,7 +72582,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72613,7 +72633,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72652,7 +72672,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72691,7 +72711,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72722,7 +72742,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72754,7 +72774,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72815,7 +72835,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72860,7 +72880,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72915,7 +72935,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72951,7 +72971,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72987,7 +73007,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73023,7 +73043,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73055,7 +73075,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73283,7 +73303,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSY46_48)          FLOAT     units           CHAR        13   T       degrees_north
@@ -73315,7 +73335,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSY46_48)          FLOAT     units           CHAR        13   T       degrees_north
@@ -73356,7 +73376,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73394,7 +73414,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -73419,7 +73439,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -73444,7 +73464,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.85 (beta)  8-May-13
+ .                               history         CHAR        24   T       FERRET V6.85   16-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -73828,9 +73848,9 @@ yes? ! run bn_all_ef tests
 yes? 
 yes? GO bn_all_ef
  	NOAA/PMEL TMAP
- 	FERRET v6.85 (beta)
- 	Linux 2.6.18-348.4.1.el5PAE 32-bit - 05/08/13
- 	 8-May-13 14:43     
+ 	FERRET v6.85  
+ 	Linux 2.6.32-358.6.1.el6.x86_64 64-bit - 05/16/13
+ 	16-May-13 15:51     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -73971,23 +73991,23 @@ list a - sst[l=@ave]
              SUBSET   : 15 points (LONGITUDE)
              LATITUDE : 1S
              TIME     : 01-JAN 00:45 to 01-APR 08:12
-                 1S    
-                 45
- 151E   / 66:  0.0000
- 153E   / 67:  0.0000
- 155E   / 68:  0.0000
- 157E   / 69:  0.0000
- 159E   / 70:  0.0000
- 161E   / 71:  0.0000
- 163E   / 72:  0.0000
- 165E   / 73:  0.0000
- 167E   / 74:  0.0000
- 169E   / 75:  0.0000
- 171E   / 76:  0.0000
- 173E   / 77:  0.0000
- 175E   / 78:  0.0000
- 177E   / 79:  0.0000
- 179E   / 80:  0.0000
+                  1S      
+                  45
+ 151E   / 66:  0.000E+00
+ 153E   / 67: -3.553E-15
+ 155E   / 68:  0.000E+00
+ 157E   / 69:  0.000E+00
+ 159E   / 70:  3.553E-15
+ 161E   / 71:  7.105E-15
+ 163E   / 72:  3.553E-15
+ 165E   / 73:  0.000E+00
+ 167E   / 74:  0.000E+00
+ 169E   / 75:  3.553E-15
+ 171E   / 76:  0.000E+00
+ 173E   / 77:  3.553E-15
+ 175E   / 78:  0.000E+00
+ 177E   / 79:  3.553E-15
+ 179E   / 80:  3.553E-15
  
 can region
 let a = x[i=1:9,k=1:5] + t[l=1:5]
@@ -74684,7 +74704,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -74709,7 +74729,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -74733,7 +74753,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -74772,7 +74792,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -74807,7 +74827,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -74848,7 +74868,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -74905,7 +74925,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -74962,7 +74982,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -75017,7 +75037,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -75065,7 +75085,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -75097,7 +75117,7 @@ data:
   27.9665335861598, 27.7497643747061, 27.8315865878107,
   28.0636671118728, 27.5906545051978, 27.7380534023442,
   27.9418187705116, 28.0035441744124, 27.7237886368008,
-  27.8988417091574, 27.8729683348803, 27.9324667419544,
+  27.8988417091574, 27.8729683348804, 27.9324667419545,
   27.8429933705147, 27.8182966108574, 27.9089173534895,
   28, 28, 28,
   28, 28, 28,
@@ -75159,7 +75179,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -75229,7 +75249,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -75280,7 +75300,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -75355,7 +75375,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -75382,7 +75402,7 @@ variables:
 		X_:_FillValue = -1.308568e+26f ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -75406,7 +75426,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -75433,11 +75453,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -75468,7 +75488,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -75540,7 +75560,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -75584,7 +75604,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -75626,7 +75646,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -75732,7 +75752,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -75771,7 +75791,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -75794,7 +75814,7 @@ variables:
 		BB:another_attr = 0.f ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -75820,7 +75840,7 @@ variables:
 		BB:another_attr = 0.f ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -75840,7 +75860,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -75861,7 +75881,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -75904,7 +75924,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -75944,7 +75964,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -75982,7 +76002,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -76011,7 +76031,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -76044,7 +76064,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -76070,7 +76090,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -76114,7 +76134,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -76219,7 +76239,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 		:dt_internal = 15. ;
 }
@@ -76261,7 +76281,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -76344,7 +76364,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -76381,7 +76401,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -76421,7 +76441,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -76472,7 +76492,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -76531,7 +76551,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -76575,7 +76595,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -76617,7 +76637,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -76652,7 +76672,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -76686,7 +76706,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -76716,7 +76736,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -76745,7 +76765,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -76806,7 +76826,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -76851,7 +76871,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -76870,37 +76890,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
-		:Conventions = "CF-1.0" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	double A(XAX) ;
-		A:missing_value = -1.e+34 ;
-		A:_FillValue = -1.e+34 ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -76930,7 +76920,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
+		:Conventions = "CF-1.0" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	double A(XAX) ;
+		A:missing_value = -1.e+34 ;
+		A:_FillValue = -1.e+34 ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -76983,7 +77003,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -77025,7 +77045,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -77043,7 +77063,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 err611_set_var_ez.jnl --- 
@@ -77062,7 +77082,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -77080,7 +77100,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -77097,7 +77117,7 @@ variables:
 		A:long_name = "{1.1,2.2,3.3}" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -77118,7 +77138,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -77180,7 +77200,7 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_keep_axisnames.jnl --- test SAVE/KEEP_AXISNAMES
@@ -77207,7 +77227,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -77234,7 +77254,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_axis_cf.jnl, degrees_east, degrees_north, std names on axes:
@@ -77300,7 +77320,7 @@ variables:
 		ZUP:long_name = "Z[GZ=ZAXUP]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_axis_cf.jnl, Convert forms of DEG, degrees to degrees_east:
@@ -77332,7 +77352,7 @@ variables:
 		Y_:_FillValue = -3.689349e+19f ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_axis_cf.jnl, Downcase units, e.g. in time axis DAYS since
@@ -77365,7 +77385,7 @@ variables:
 		XYTVAR:history = "From bn_strides" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (beta)  8-May-13" ;
+		:history = "FERRET V6.85   16-May-13" ;
 		:Conventions = "CF-1.0" ;
 }
 -----
@@ -77379,27 +77399,27 @@ yes?
 yes? 
 yes? GO bn_startupfile
  	NOAA/PMEL TMAP
- 	FERRET v6.85 (beta)
- 	Linux 2.6.18-348.4.1.el5PAE 32-bit - 05/08/13
- 	 8-May-13 14:43     
+ 	FERRET v6.85  
+ 	Linux 2.6.32-358.6.1.el6.x86_64 64-bit - 05/16/13
+ 	16-May-13 15:51     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
-PPL$XPIXEL = "819"
-PPL$YPIXEL = "615"
+PPL$XPIXEL = "656"
+PPL$YPIXEL = "492"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
-FERRET_PLATFORM = "Linux 2.6.18-348.4.1.el5PAE 32-bit"
+FERRET_PLATFORM = "Linux 2.6.32-358.6.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.2.1.1 of Feb  1 2013 11:20:17 $"
+NETCDF_VERSION = "4.3.0 of May  3 2013 16:02:47 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = " 8-May-13"
-SESSION_TIME = "14:43"
-SESSION_PID = "26845"
-DELTA_CPU = "0.033994"
-CLOCK_SECS = "0.202"
-CURRENT_DATE = " 8-May-13"
-CURRENT_TIME = "14:43:55"
+SESSION_DATE = "16-May-13"
+SESSION_TIME = "15:51"
+SESSION_PID = "3816"
+DELTA_CPU = "0.040993"
+CLOCK_SECS = "0.18"
+CURRENT_DATE = "16-May-13"
+CURRENT_TIME = "15:51:59"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -77421,7 +77441,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "8-May-13:14:43"
+WIN_TITLE = "16-May-13:15:51"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -77481,9 +77501,9 @@ yes?
 yes? 
 yes? GO bn_gif
  	NOAA/PMEL TMAP
- 	FERRET v6.85 (beta)
- 	Linux 2.6.18-348.4.1.el5PAE 32-bit - 05/08/13
- 	 8-May-13 14:43     
+ 	FERRET v6.85  
+ 	Linux 2.6.32-358.6.1.el6.x86_64 64-bit - 05/16/13
+ 	16-May-13 15:52     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -77700,9 +77720,9 @@ yes?
 yes? 
 yes? GO bn_ps
  	NOAA/PMEL TMAP
- 	FERRET v6.85 (beta)
- 	Linux 2.6.18-348.4.1.el5PAE 32-bit - 05/08/13
- 	 8-May-13 14:43     
+ 	FERRET v6.85  
+ 	Linux 2.6.32-358.6.1.el6.x86_64 64-bit - 05/16/13
+ 	16-May-13 15:52     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -77814,9 +77834,9 @@ yes?
 yes? 
 yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
- 	FERRET v6.85 (beta)
- 	Linux 2.6.18-348.4.1.el5PAE 32-bit - 05/08/13
- 	 8-May-13 14:43     
+ 	FERRET v6.85  
+ 	Linux 2.6.32-358.6.1.el6.x86_64 64-bit - 05/16/13
+ 	16-May-13 15:52     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -77900,4 +77920,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Wed May 8 14:43:57 PDT 2013
+Ended at Thu May 16 15:52:01 PDT 2013

@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 12 May  6 11:44 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
+lrwxrwxrwx 1 ksmith tmap 12 May 21 10:44 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -106,6 +106,11 @@ Benchmark scripts that will be run:
    bn_deg_min.jnl
    bn_dp_readscale.jnl
    bn_bounds_defineax.jnl
+   bn_attributes.jnl
+   bn_transforms.jnl
+   bn_variance.jnl
+   bn_linecolors.jnl
+   bn_cdf_errmsg.jnl
    bn600_bug_fixes.jnl
    bn601_bug_fixes.jnl
    bn_set_strides.jnl
@@ -196,6 +201,7 @@ Benchmark scripts that will be run:
    bn_axis_nonmonotonic.jnl
    bn_vec_mod.jnl
    bn685_bug_fixes.jnl
+   bn_dsg_e_x.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -212,7 +218,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon May  6 12:24:35 PDT 2013
+Beginning at Tue May 21 11:51:21 PDT 2013
 *** Running test: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10469,17 +10475,17 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
-FERRET_PLATFORM = "Linux 2.6.18-348.3.1.el5 64-bit"
+FERRET_PLATFORM = "Linux 2.6.18-348.4.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 6-May-13"
-SESSION_TIME = "12:24"
-SESSION_PID = "6680"
+SESSION_DATE = "21-May-13"
+SESSION_TIME = "11:51"
+SESSION_PID = "3223"
 DELTA_CPU = "0.010997"
 CLOCK_SECS = "0.006"
-CURRENT_DATE = " 6-May-13"
-CURRENT_TIME = "12:24:39"
+CURRENT_DATE = "21-May-13"
+CURRENT_TIME = "11:51:25"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10498,17 +10504,17 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
-FERRET_PLATFORM = "Linux 2.6.18-348.3.1.el5 64-bit"
+FERRET_PLATFORM = "Linux 2.6.18-348.4.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 6-May-13"
-SESSION_TIME = "12:24"
-SESSION_PID = "6680"
-DELTA_CPU = "0.002"
+SESSION_DATE = "21-May-13"
+SESSION_TIME = "11:51"
+SESSION_PID = "3223"
+DELTA_CPU = "0.001"
 CLOCK_SECS = "0.007"
-CURRENT_DATE = " 6-May-13"
-CURRENT_TIME = "12:24:39"
+CURRENT_DATE = "21-May-13"
+CURRENT_TIME = "11:51:25"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10518,9 +10524,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 6-May-13"
-SESSION_TIME = "12:24"
-SESSION_PID = "6680"
+SESSION_DATE = "21-May-13"
+SESSION_TIME = "11:51"
+SESSION_PID = "3223"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10530,15 +10536,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 6-May-13"
-SESSION_TIME = "12:24"
-SESSION_PID = "6680"
+SESSION_DATE = "21-May-13"
+SESSION_TIME = "11:51"
+SESSION_PID = "3223"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 6-May-13"
-SESSION_TIME = "12:24"
-SESSION_PID = "6680"
+SESSION_DATE = "21-May-13"
+SESSION_TIME = "11:51"
+SESSION_PID = "3223"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10665,17 +10671,17 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
-FERRET_PLATFORM = "Linux 2.6.18-348.3.1.el5 64-bit"
+FERRET_PLATFORM = "Linux 2.6.18-348.4.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 6-May-13"
-SESSION_TIME = "12:24"
-SESSION_PID = "6680"
-DELTA_CPU = "0.021997"
+SESSION_DATE = "21-May-13"
+SESSION_TIME = "11:51"
+SESSION_PID = "3223"
+DELTA_CPU = "0.022997"
 CLOCK_SECS = "0.033"
-CURRENT_DATE = " 6-May-13"
-CURRENT_TIME = "12:24:39"
+CURRENT_DATE = "21-May-13"
+CURRENT_TIME = "11:51:25"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -25247,7 +25253,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Mon May  6 12:24:45 PDT 2013
+Tue May 21 11:51:32 PDT 2013
  
 GO bn_reset
 cancel mode verify
@@ -41773,7 +41779,7 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSXT</value>
+   <value><![CDATA[PSXT]]></value>
 </attribute>
 </axis>
 <axis name="PSXU">
@@ -41805,7 +41811,7 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSXU</value>
+   <value><![CDATA[PSXU]]></value>
 </attribute>
 </axis>
 <axis name="PSYT">
@@ -41834,10 +41840,10 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSYT_bnds</value>
+   <value><![CDATA[PSYT_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSYT</value>
+   <value><![CDATA[PSYT]]></value>
 </attribute>
 </axis>
 <axis name="PSYU">
@@ -41866,10 +41872,10 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSYU_bnds</value>
+   <value><![CDATA[PSYU_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSYU</value>
+   <value><![CDATA[PSYU]]></value>
 </attribute>
 </axis>
 <axis name="PSZT">
@@ -41901,10 +41907,10 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSZT_bnds</value>
+   <value><![CDATA[PSZT_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSZT</value>
+   <value><![CDATA[PSZT]]></value>
 </attribute>
 </axis>
 <axis name="PSZW">
@@ -41936,10 +41942,10 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSZW_bnds</value>
+   <value><![CDATA[PSZW_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSZW</value>
+   <value><![CDATA[PSZW]]></value>
 </attribute>
 </axis>
 <axis name="TIME">
@@ -41974,7 +41980,7 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>TIME</value>
+   <value><![CDATA[TIME]]></value>
 </attribute>
 </axis>
 </axes>
@@ -42021,7 +42027,7 @@ SHO AXIS/XML `temp,return=xaxis`
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSXT</value>
+   <value><![CDATA[PSXT]]></value>
 </attribute>
 </axis>
 </axes>
@@ -42054,10 +42060,10 @@ SHO AXIS/XML `temp,return=yaxis`
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSYT_bnds</value>
+   <value><![CDATA[PSYT_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSYT</value>
+   <value><![CDATA[PSYT]]></value>
 </attribute>
 </axis>
 </axes>
@@ -42093,10 +42099,10 @@ SHO AXIS/XML `temp,return=zaxis`
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSZT_bnds</value>
+   <value><![CDATA[PSZT_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSZT</value>
+   <value><![CDATA[PSZT]]></value>
 </attribute>
 </axis>
 </axes>
@@ -42135,7 +42141,7 @@ SHO AXIS/XML `temp,return=taxis`
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>TIME</value>
+   <value><![CDATA[TIME]]></value>
 </attribute>
 </axis>
 </axes>
@@ -42332,7 +42338,7 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSXT</value>
+   <value><![CDATA[PSXT]]></value>
 </attribute>
 </axis>
 <axis name="PSXU">
@@ -42364,7 +42370,7 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSXU</value>
+   <value><![CDATA[PSXU]]></value>
 </attribute>
 </axis>
 <axis name="PSYT">
@@ -42393,10 +42399,10 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSYT_bnds</value>
+   <value><![CDATA[PSYT_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSYT</value>
+   <value><![CDATA[PSYT]]></value>
 </attribute>
 </axis>
 <axis name="PSYU">
@@ -42425,10 +42431,10 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSYU_bnds</value>
+   <value><![CDATA[PSYU_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSYU</value>
+   <value><![CDATA[PSYU]]></value>
 </attribute>
 </axis>
 <axis name="PSZT">
@@ -42460,10 +42466,10 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSZT_bnds</value>
+   <value><![CDATA[PSZT_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSZT</value>
+   <value><![CDATA[PSZT]]></value>
 </attribute>
 </axis>
 <axis name="PSZW">
@@ -42495,10 +42501,10 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="bounds" type="char">
-   <value>PSZW_bnds</value>
+   <value><![CDATA[PSZW_bnds]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>PSZW</value>
+   <value><![CDATA[PSZW]]></value>
 </attribute>
 </axis>
 <axis name="TIME">
@@ -42533,7 +42539,7 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>TIME</value>
+   <value><![CDATA[TIME]]></value>
 </attribute>
 </axis>
 </axes>
@@ -42595,7 +42601,7 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>COADSX</value>
+   <value><![CDATA[COADSX]]></value>
 </attribute>
 </axis>
 <axis name="COADSY">
@@ -42624,7 +42630,7 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>COADSY</value>
+   <value><![CDATA[COADSY]]></value>
 </attribute>
 </axis>
 <axis name="TIME1">
@@ -42662,7 +42668,7 @@ SHO DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>TIME</value>
+   <value><![CDATA[TIME]]></value>
 </attribute>
 </axis>
 </axes>
@@ -44870,7 +44876,7 @@ say "axis should be reversed"
 axis should be reversed
 show axis zax
  name       axis              # pts   start                end
- ZAX                            5 r   1                    5
+ ZAX       Z                    5 r-  1                    5
    Axis span (to cell edges) = 5
 q
  
@@ -48459,7 +48465,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 6-May-13:12:25"
+ !-> set win/title="21-May-13:11:51"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48468,16 +48474,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date =  6-May-13
+ !-> DEFINE SYMBOL the_date = 21-May-13
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 12:25
+ !-> DEFINE SYMBOL the_time = 11:51
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="6-May-13:12:25"
+ !-> SET WIN/TITLE="21-May-13:11:51"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "6-May-13:12:25"
+WIN_TITLE = "21-May-13:11:51"
 *** Running test: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -48843,6 +48849,2549 @@ list zboxlo[gz=zax2], z[gz=zax2], zboxhi[gz=zax2]
 858.5  / 11:   559.   859.  1158.
 1678.5 / 12:  1158.  1679.  2199.
 2849   / 13:  2199.  2849.  3499.
+*** Running test: bn_attributes.jnl
+! bn_attributes
+! test attribute handling on netcdf intput/output and
+! programatic access to attribute information
+! needs new cdf files modfalse.nc, test0.nc
+ 
+! 31Aug2006 ACM Remove OPeNDAP references; not essential to the
+! benchmark tests.
+ 
+ 
+!-----
+ 
+! SHOW ATTRIBUTE examples
+ 
+can data/all
+can var/all
+ 
+use ocean_atlas_temp
+sho att/all temp
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ TEMP.missing_value = -1.E+34
+ TEMP._FillValue = -1.E+34
+ TEMP.long_name = Temperature 
+ TEMP.history = From ocean_atlas_monthly 
+ TEMP.units = Deg C 
+ 
+show attribute temp.units
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ TEMP.units = Deg C 
+show attribute temp.missing_value
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ TEMP.missing_value = -1.E+34
+ 
+!  specifying data set
+ 
+use gt4d011
+use levitus_climatology
+ 
+sh att/all temp[d=2]
+     attributes for dataset: ./gt4d011.cdf
+ TEMP.parent_grid = PS3DT2 
+ TEMP.slab_min_index = 91, 35, 1, 0
+ TEMP.slab_max_index = 108, 56, 10, 0
+ TEMP.missing_value = -1.E+34
+ TEMP._FillValue = -1.E+34
+ TEMP.long_name = TEMPERATURE 
+ TEMP.history = From gt4d011 
+ TEMP.units = deg. C 
+sh att temp.units[d=1]
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ TEMP.units = Deg C 
+ 
+!  global attributes
+use err491_attval
+ 
+show att ..remark
+     attributes for dataset: ./err491_attval.cdf
+  .remark = Generated by oar3d                                                                                                                                               
+show att/all .
+     attributes for dataset: ./err491_attval.cdf
+ ..simulation = K-Bay OAR3d model (200m) 
+ ..start_date = 980105000000 
+ ..history = a
+ 
+ ..option = 1
+ ..run_mode = 3
+ ..srfc_bndry = 3
+ ..rad_penet = 2
+ ..dt_external = 1
+ ..dt_internal = 15
+ ..horiz_diff = 0.2
+ ..inv_prandtl = 0.2
+ ..min_slope = 0.2
+ ..title = K-Bay OAR3d model (200m)                                                         
+ ..command =                                                                                                                                                                                                                                                                                                                                  
+ ..remark = Generated by oar3d                                                                                                                                               
+ ..x_units = degrees                                                                          
+ ..y_units = degrees                                                                          
+ ..z_units =                                                                                  
+ ..nx = 35
+ ..ny = 127
+ ..x_min = 0
+ ..x_max = 0
+ ..y_min = 0
+ ..y_max = 0
+ ..z_min = 0
+ ..z_max = 0
+ ..x_inc = 0
+ ..y_inc = 0
+ ..z_scale_factor = 0
+ ..z_add_offset = 0
+ ..node_offset = 0
+ 
+sho att/all .[d=1]
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ ..history = FERRET V4.90 (GUI) 04-Feb-98 
+ 
+!  Now SHOW DATA/ATT
+ 
+can data/all
+use ocean_atlas_temp
+sho data/att
+     currently SET data sets:
+    1> ./ocean_atlas_temp.cdf  (default)
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
+  
+ .                               history         CHAR        28   T       FERRET V4.90 (GUI) 04-Feb-98
+  
+(XAX_LEV9421_380)      DOUBLE    units           CHAR        12   T       degrees_east
+                                 modulo          CHAR        1    T
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        15   F       XAX_LEV9421_380
+  
+(YAX_LEV94)            DOUBLE    units           CHAR        13   T       degrees_north
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        9    F       YAX_LEV94
+  
+(ZAXLEVIT191_1)        DOUBLE    units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 orig_file_axnameCHAR        13   F       ZAXLEVIT191_1
+  
+(TIME)                 DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
+                                 time_origin     CHAR        20   T       01-JAN-0000 00:00:00
+                                 modulo          CHAR        1    T
+                                 orig_file_axnameCHAR        4    F       TIME
+  
+ TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.E+34
+                                 _FillValue      FLOAT       1    T       -1.E+34
+                                 long_name       CHAR        11   T       Temperature
+                                 history         CHAR        24   T       From ocean_atlas_monthly
+                                 units           CHAR        5    T       Deg C
+  
+ 
+use gt4d011
+use levitus_climatology
+ 
+sh data/att gt4d011
+     currently SET data sets:
+    2> ./gt4d011.cdf
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
+  
+ .                               history         CHAR        28   T       FERRET V4.45 (GUI) 21-Apr-97
+  
+ PS3DT2                CHAR      axes            CHAR        20   F       PSXT PSYT PSZT TIME1
+  
+(PSXT)                 DOUBLE    units           CHAR        12   T       degrees_east
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        4    F       PSXT
+  
+(PSYT)                 DOUBLE    units           CHAR        13   T       degrees_north
+                                 point_spacing   CHAR        6    T       uneven
+                                 edges           CHAR        9    F       PSYTedges
+                                 orig_file_axnameCHAR        4    F       PSYT
+  
+(PSYTedges)            DOUBLE    edges           CHAR        1    F
+                                 orig_file_axnameCHAR        9    F       PSYTedges
+  
+(PSZT)                 DOUBLE    units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 point_spacing   CHAR        6    T       uneven
+                                 edges           CHAR        9    F       PSZTedges
+                                 orig_file_axnameCHAR        4    F       PSZT
+  
+(PSZTedges)            DOUBLE    edges           CHAR        1    F
+                                 orig_file_axnameCHAR        9    F       PSZTedges
+  
+(TIME1)                DOUBLE    units           CHAR        30   T       hour since 1980-01-14 14:00:00
+                                 time_origin     CHAR        20   T       14-JAN-1980 14:00:00
+                                 orig_file_axnameCHAR        5    F       TIME1
+  
+(PSXT91_108)           DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        12   T       degrees_east
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        10   F       PSXT91_108
+  
+(PSYT35_56)            DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        13   T       degrees_north
+                                 orig_file_axnameCHAR        9    F       PSYT35_56
+  
+(PSZT1_10)             DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 orig_file_axnameCHAR        8    F       PSZT1_10
+  
+ TEMP                  FLOAT     parent_grid     CHAR        6    F       PS3DT2
+                                 slab_min_index  INT         4    F       91 35 1 0
+                                 slab_max_index  INT         4    F       108 56 10 0
+                                 missing_value   FLOAT       1    T       -1.E+34
+                                 _FillValue      FLOAT       1    T       -1.E+34
+                                 long_name       CHAR        11   T       TEMPERATURE
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        6    T       deg. C
+  
+(PSYT35_55)            DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        13   T       degrees_north
+                                 orig_file_axnameCHAR        9    F       PSYT35_55
+  
+ SALT                  FLOAT     parent_grid     CHAR        6    F       PS3DT2
+                                 slab_min_index  INT         4    F       91 35 1 0
+                                 slab_max_index  INT         4    F       108 55 10 0
+                                 missing_value   FLOAT       1    T       0.01
+                                 _FillValue      FLOAT       1    T       0.01
+                                 long_name       CHAR        26   T       (SALINITY(ppt) - 35) /1000
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        22   T       frac. by wt. less .035
+  
+ PS3DU2                CHAR      axes            CHAR        20   F       PSXU PSYU PSZT TIME1
+  
+(PSXU)                 DOUBLE    units           CHAR        12   T       degrees_east
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        4    F       PSXU
+  
+(PSYU)                 DOUBLE    units           CHAR        13   T       degrees_north
+                                 point_spacing   CHAR        6    T       uneven
+                                 edges           CHAR        9    F       PSYUedges
+                                 orig_file_axnameCHAR        4    F       PSYU
+  
+(PSYUedges)            DOUBLE    edges           CHAR        1    F
+                                 orig_file_axnameCHAR        9    F       PSYUedges
+  
+(PSXU91_108)           DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        12   T       degrees_east
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        10   F       PSXU91_108
+  
+(PSYU35_55)            DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        13   T       degrees_north
+                                 orig_file_axnameCHAR        9    F       PSYU35_55
+  
+ U                     FLOAT     parent_grid     CHAR        6    F       PS3DU2
+                                 slab_min_index  INT         4    F       91 35 1 0
+                                 slab_max_index  INT         4    F       108 55 10 0
+                                 missing_value   FLOAT       1    T       -1.E+34
+                                 _FillValue      FLOAT       1    T       -1.E+34
+                                 long_name       CHAR        14   T       ZONAL VELOCITY
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        6    T       cm/sec
+  
+ V                     FLOAT     parent_grid     CHAR        6    F       PS3DU2
+                                 slab_min_index  INT         4    F       91 35 1 0
+                                 slab_max_index  INT         4    F       108 55 10 0
+                                 missing_value   FLOAT       1    T       -1.E+34
+                                 _FillValue      FLOAT       1    T       -1.E+34
+                                 long_name       CHAR        19   T       MERIDIONAL VELOCITY
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        6    T       cm/sec
+  
+ PS3DW2                CHAR      axes            CHAR        20   F       PSXT PSYT PSZW TIME1
+  
+(PSZW)                 DOUBLE    units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 point_spacing   CHAR        6    T       uneven
+                                 edges           CHAR        9    F       PSZWedges
+                                 orig_file_axnameCHAR        4    F       PSZW
+  
+(PSZWedges)            DOUBLE    edges           CHAR        1    F
+                                 orig_file_axnameCHAR        9    F       PSZWedges
+  
+(PSYT36_55)            DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        13   T       degrees_north
+                                 orig_file_axnameCHAR        9    F       PSYT36_55
+  
+(PSZW1_10)             DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 orig_file_axnameCHAR        8    F       PSZW1_10
+  
+ W                     FLOAT     parent_grid     CHAR        6    F       PS3DW2
+                                 slab_min_index  INT         4    F       91 36 1 0
+                                 slab_max_index  INT         4    F       108 55 10 0
+                                 missing_value   FLOAT       1    T       -1.E+34
+                                 _FillValue      FLOAT       1    T       -1.E+34
+                                 long_name       CHAR        17   T       VERTICAL VELOCITY
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        6    T       cm/sec
+  
+ PS2DU2                CHAR      axes            CHAR        22   F       PSXU PSYU NORMAL TIME1
+  
+ TAUX                  FLOAT     parent_grid     CHAR        6    F       PS2DU2
+                                 slab_min_index  INT         4    F       91 35 1 0
+                                 slab_max_index  INT         4    F       108 55 1 0
+                                 missing_value   FLOAT       1    T       -1.E+34
+                                 _FillValue      FLOAT       1    T       -1.E+34
+                                 long_name       CHAR        17   T       ZONAL WIND STRESS
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        11   T       dynes/cm**2
+  
+ TAUY                  FLOAT     parent_grid     CHAR        6    F       PS2DU2
+                                 slab_min_index  INT         4    F       91 35 1 0
+                                 slab_max_index  INT         4    F       108 55 1 0
+                                 missing_value   FLOAT       1    T       -1.E+34
+                                 _FillValue      FLOAT       1    T       -1.E+34
+                                 long_name       CHAR        22   T       MERIDIONAL WIND STRESS
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        11   T       dynes/cm**2
+  
+(PSYU35_56)            DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        13   T       degrees_north
+                                 orig_file_axnameCHAR        9    F       PSYU35_56
+  
+ PSI                   FLOAT     parent_grid     CHAR        6    F       PS2DU2
+                                 slab_min_index  INT         4    F       91 35 1 0
+                                 slab_max_index  INT         4    F       108 56 1 0
+                                 missing_value   FLOAT       1    T       -1.E+34
+                                 _FillValue      FLOAT       1    T       -1.E+34
+                                 long_name       CHAR        15   T       STREAM FUNCTION
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        9    T       cm**3/sec
+  
+ 
+!  error messages
+ 
+set mode ignore
+ 
+! no argument
+sho att/all
+ 
+! dataset not open
+can data 2
+show att/all temp[d=2]
+ 
+! variable not in default dataset
+use ocean_atlas_temp
+show att/all salt
+ 
+! nonexistent attribute
+use gt4d011
+sho att salt.nonsense
+ 
+can data/all
+ 
+! No datasets open
+sho att/all .
+ 
+can mode ignore
+ 
+go bn_reset
+cancel mode verify
+ 
+!-----
+! attributes of string variables
+let/title="my strings" var_b = {"Seattle", "Skykomish", "Snoqualmie"}
+sho att/all var_b
+     attributes for user-defined variables
+ var_b.long_name = my strings 
+ var_b.missing_value = -1.E+34
+ 
+save/clobber/file=a.nc var_b
+sp echo "bn_attributes.jnl --- 1 attributes of string variables" >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+ 
+go bn_reset
+cancel mode verify
+ 
+!-----
+! Demonstrate `var,return=` output for attributes
+ 
+use gt4d011
+ 
+! RETURN=size gives length of attribute:
+! # values for numeric attributes
+! string length for string attributes
+ 
+show att/all temp
+     attributes for dataset: ./gt4d011.cdf
+ TEMP.parent_grid = PS3DT2 
+ TEMP.slab_min_index = 91, 35, 1, 0
+ TEMP.slab_max_index = 108, 56, 10, 0
+ TEMP.missing_value = -1.E+34
+ TEMP._FillValue = -1.E+34
+ TEMP.long_name = TEMPERATURE 
+ TEMP.history = From gt4d011 
+ TEMP.units = deg. C 
+ 
+say `temp.2,return=size`
+ !-> MESSAGE/CONTINUE 4
+4
+say `temp.6,return=size`
+ !-> MESSAGE/CONTINUE 11
+11
+ 
+say `..history,return=size`
+ !-> MESSAGE/CONTINUE 28
+28
+ 
+! test0 is from the netcdf distribution;
+! vars and attrs of all types
+use test0
+say `broiled.acd,return=size`
+ !-> MESSAGE/CONTINUE 2
+2
+say `broiled.acf,return=size`
+ !-> MESSAGE/CONTINUE 3
+3
+ 
+go bn_reset
+cancel mode verify
+ 
+!-----
+! define variables to contain attribute value(s)
+ 
+use ocean_atlas_temp
+let a = temp.missing_value
+list a
+             VARIABLE : TEMP.MISSING_VALUE
+             FILENAME : ocean_atlas_temp.cdf
+         -1.000E+34
+ 
+use ocean_atlas_temp
+let s = temp.units
+list s
+             VARIABLE : TEMP.UNITS
+             FILENAME : ocean_atlas_temp.cdf
+        "Deg C"
+ 
+can data/all
+ 
+! global attribute
+use err491_attval
+let s = ..remark
+list s
+             VARIABLE : ..REMARK
+             DATA SET : K-Bay OAR3d model (200m)
+             FILENAME : err491_attval.cdf
+        "Generated by oar3d                                                                                                                                              "
+ 
+go bn_reset
+cancel mode verify
+ 
+!-----
+! Variables containing number of variables, attributes, dimensions,
+! lists of variable names, attribute names, coordinate variables,
+! global attribute names
+ 
+! Given a variable, return the attribute names
+use coads_climatology
+let nat = sst.nattrs
+ 
+let anames = sst.attnames
+list nat
+             VARIABLE : SST.NATTRS
+             FILENAME : coads_climatology.cdf
+          5.000
+list anames
+             VARIABLE : SST.ATTNAMES
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 5 points (X)
+ 1   / 1:"missing_value"
+ 2   / 2:"_FillValue"   
+ 3   / 3:"long_name"    
+ 4   / 4:"history"      
+ 5   / 5:"units"        
+ 
+! Given a variable, return the coordinate number and names
+let nd = sst.ndims
+let cnames = sst.dimnames
+list nd
+             VARIABLE : SST.NDIMS
+             FILENAME : coads_climatology.cdf
+          3.000
+list cnames
+             VARIABLE : SST.DIMNAMES
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 3 points (X)
+ 1   / 1:"COADSX"
+ 2   / 2:"COADSY"
+ 3   / 3:"TIME"  
+ 
+! ..varnames
+can data/all
+use gt4d011
+use coads_climatology
+ 
+let nv = ..nvars
+let nd = ..ndims
+let vnames = ..varnames
+list/d=1 nv, nd
+             DATA SET: ./gt4d011.cdf
+ Column  1: NV is ..NVARS
+ Column  2: ND is ..NDIMS
+             NV    ND
+I / *:     12.00  21.00
+list/d=1 vnames
+             VARIABLE : ..VARNAMES
+             FILENAME : gt4d011.cdf
+             SUBSET   : 12 points (X)
+ 1    /  1:"PS3DT2"
+ 2    /  2:"TEMP"  
+ 3    /  3:"SALT"  
+ 4    /  4:"PS3DU2"
+ 5    /  5:"U"     
+ 6    /  6:"V"     
+ 7    /  7:"PS3DW2"
+ 8    /  8:"W"     
+ 9    /  9:"PS2DU2"
+ 10   / 10:"TAUX"  
+ 11   / 11:"TAUY"  
+ 12   / 12:"PSI"   
+ 
+let vnames = ..varnames
+list/d=coads_climatology vnames
+             VARIABLE : ..VARNAMES
+             FILENAME : coads_climatology.cdf
+        "SST"
+list/d=gt4d011 vnames
+             VARIABLE : ..VARNAMES
+             FILENAME : gt4d011.cdf
+             SUBSET   : 12 points (X)
+ 1    /  1:"PS3DT2"
+ 2    /  2:"TEMP"  
+ 3    /  3:"SALT"  
+ 4    /  4:"PS3DU2"
+ 5    /  5:"U"     
+ 6    /  6:"V"     
+ 7    /  7:"PS3DW2"
+ 8    /  8:"W"     
+ 9    /  9:"PS2DU2"
+ 10   / 10:"TAUX"  
+ 11   / 11:"TAUY"  
+ 12   / 12:"PSI"   
+ 
+can data/all
+can var/all
+ 
+! global ..dimnames
+ 
+use coads_climatology
+use gt4d011
+ 
+let vnames = ..dimnames[d=1]
+let lnames = ..dimnames[d=2]
+list vnames
+             VARIABLE : ..DIMNAMES[D=coads_climatology]
+             SUBSET   : 3 points (X)
+ 1   / 1:"COADSX"
+ 2   / 2:"COADSY"
+ 3   / 3:"TIME"  
+list lnames
+             VARIABLE : ..DIMNAMES[D=gt4d011]
+             SUBSET   : 20 points (X)
+ 1    /  1:"PSXT"      
+ 2    /  2:"PSYT"      
+ 3    /  3:"PSYTedges" 
+ 4    /  4:"PSZT"      
+ 5    /  5:"PSZTedges" 
+ 6    /  6:"TIME1"     
+ 7    /  7:"PSXT91_108"
+ 8    /  8:"PSYT35_56" 
+ 9    /  9:"PSZT1_10"  
+ 10   / 10:"PSYT35_55" 
+ 11   / 11:"PSXU"      
+ 12   / 12:"PSYU"      
+ 13   / 13:"PSYUedges" 
+ 14   / 14:"PSXU91_108"
+ 15   / 15:"PSYU35_55" 
+ 16   / 16:"PSZW"      
+ 17   / 17:"PSZWedges" 
+ 18   / 18:"PSYT36_55" 
+ 19   / 19:"PSZW1_10"  
+ 20   / 20:"PSYU35_56" 
+ 
+can var/all
+can data/all
+ 
+! Global attributes ..attnames
+use err491_attval
+ 
+let v = ..ndims
+list v
+             VARIABLE : ..NDIMS
+             DATA SET : K-Bay OAR3d model (200m)
+             FILENAME : err491_attval.cdf
+          3.000
+ 
+let na = ..nattrs
+list na
+             VARIABLE : ..NATTRS
+             DATA SET : K-Bay OAR3d model (200m)
+             FILENAME : err491_attval.cdf
+          31.00
+ 
+let gnames = ..attnames
+list gnames
+             VARIABLE : ..ATTNAMES
+             DATA SET : K-Bay OAR3d model (200m)
+             FILENAME : err491_attval.cdf
+             SUBSET   : 31 points (X)
+ 1    /  1:"simulation"    
+ 2    /  2:"start_date"    
+ 3    /  3:"history"       
+ 4    /  4:"option"        
+ 5    /  5:"run_mode"      
+ 6    /  6:"srfc_bndry"    
+ 7    /  7:"rad_penet"     
+ 8    /  8:"dt_external"   
+ 9    /  9:"dt_internal"   
+ 10   / 10:"horiz_diff"    
+ 11   / 11:"inv_prandtl"   
+ 12   / 12:"min_slope"     
+ 13   / 13:"title"         
+ 14   / 14:"command"       
+ 15   / 15:"remark"        
+ 16   / 16:"x_units"       
+ 17   / 17:"y_units"       
+ 18   / 18:"z_units"       
+ 19   / 19:"nx"            
+ 20   / 20:"ny"            
+ 21   / 21:"x_min"         
+ 22   / 22:"x_max"         
+ 23   / 23:"y_min"         
+ 24   / 24:"y_max"         
+ 25   / 25:"z_min"         
+ 26   / 26:"z_max"         
+ 27   / 27:"x_inc"         
+ 28   / 28:"y_inc"         
+ 29   / 29:"z_scale_factor"
+ 30   / 30:"z_add_offset"  
+ 31   / 31:"node_offset"   
+ 
+! attributes of variable number 2
+ 
+use ocean_atlas_temp
+use gt4d011
+let names = ..varnames
+let anames = `names[i=2]`.attnames
+ !-> DEFINE VARIABLE anames = TEMP.attnames
+ 
+go bn_reset
+cancel mode verify
+ 
+ 
+!-----
+! more on number of attributes
+ 
+can data/all
+can var/all
+ 
+use ocean_atlas_temp
+let nat = temp.nattrs
+list nat
+             VARIABLE : TEMP.NATTRS
+             FILENAME : ocean_atlas_temp.cdf
+          5.000
+ 
+list (`temp,return=xaxis`).nattrs
+ !-> list (XAX_LEV9421_380).nattrs
+             VARIABLE : (XAX_LEV9421_380).NATTRS
+             FILENAME : ocean_atlas_temp.cdf
+          4.000
+ 
+use gt4d011
+say `temp.nattrs[d=1]`
+ !-> MESSAGE/CONTINUE 5
+5
+ 
+def sym xaxnam  "(`temp[d=1],return=xaxis`)"
+ !-> def sym xaxnam  "(XAX_LEV9421_380)"
+list `($xaxnam).nattrs[d=1]`
+ !-> list 4
+             VARIABLE : constant
+          4.000
+ 
+say `(yax_lev94).nattrs[d=1]`
+ !-> MESSAGE/CONTINUE 3
+3
+ 
+go bn_reset
+cancel mode verify
+ 
+!-----
+! more on access to attribute names and values as variables
+ 
+use coads_climatology
+use levitus_climatology
+use ocean_atlas_temp
+use gt4d011
+ 
+let a = temp.units
+list/d=3 a
+             VARIABLE : TEMP.UNITS
+             FILENAME : ocean_atlas_temp.cdf
+        "Deg C"
+ 
+list temp.units[d=3]
+             VARIABLE : TEMP.UNITS[D=ocean_atlas_temp]
+             FILENAME : ocean_atlas_temp.cdf
+        "Deg C"
+list/d=3 temp.history
+             VARIABLE : TEMP.HISTORY
+             FILENAME : ocean_atlas_temp.cdf
+        "From ocean_atlas_monthly"
+ 
+can data/all
+can var/all
+ 
+use test0.nc
+sh data/att
+     currently SET data sets:
+    1> ./test0.nc  (default)
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
+  
+ .                               glob            CHAR        16   F       Global attribute
+  
+ broiled               CHAR      act             CHAR        16   F       text string
+	123
+                                 acb             BYTE        1    F       10
+                                 acs             SHORT       1    F       -200
+                                 acl             INT         1    F       17000
+                                 acf             FLOAT       3    F       -2 1 0
+                                 acd             DOUBLE      2    F       -1 2.718282
+  
+ the_bullet            BYTE
+  
+ order                 SHORT
+  
+ rigue                 INT
+  
+ a_loan                FLOAT
+  
+ entendre              DOUBLE
+  
+ cscalar               CHAR
+  
+ dscalar               DOUBLE
+  
+ cnodata               CHAR
+  
+ bnodata               BYTE
+  
+ snodata               SHORT
+  
+ inodata               INT
+  
+ fnodata               FLOAT
+  
+ dnodata               DOUBLE
+  
+(i)                    INT       orig_file_axnameCHAR        1    F       i
+  
+(j)                    FLOAT     orig_file_axnameCHAR        1    F       j
+  
+(l)                    BYTE      orig_file_axnameCHAR        1    F       l
+  
+ 
+let a= broiled.acl
+list a
+             VARIABLE : BROILED.ACL
+             FILENAME : test0.nc
+          17000.
+ 
+let a= broiled.acf
+list a
+             VARIABLE : BROILED.ACF
+             FILENAME : test0.nc
+             SUBSET   : 3 points (X)
+ 1   / 1: -2.000
+ 2   / 2:  1.000
+ 3   / 3:  0.000
+ 
+list/i=2 a
+             VARIABLE : BROILED.ACF
+             FILENAME : test0.nc
+             X        : 2
+          1.000
+ 
+list a[i=2:3]
+             VARIABLE : BROILED.ACF
+             FILENAME : test0.nc
+             SUBSET   : 2 points (X)
+ 2   / 2:  1.000
+ 3   / 3:  0.000
+ 
+use coads_climatology
+list sst.dimnames[i=2]
+             VARIABLE : SST.DIMNAMES[I=2]
+             FILENAME : coads_climatology.cdf
+             X        : 2
+        "COADSY"
+ 
+list/i=3 sst.dimnames
+             VARIABLE : SST.DIMNAMES
+             FILENAME : coads_climatology.cdf
+             X        : 3
+        "TIME"
+let a= sst.dimnames
+ 
+list a
+             VARIABLE : SST.DIMNAMES
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 3 points (X)
+ 1   / 1:"COADSX"
+ 2   / 2:"COADSY"
+ 3   / 3:"TIME"  
+list a[i=1]
+             VARIABLE : SST.DIMNAMES
+             FILENAME : coads_climatology.cdf
+             X        : 1
+        "COADSX"
+ 
+go bn_reset
+cancel mode verify
+ 
+!-----
+! keyword . to refer to global properties and attributes
+ 
+use gt4d011
+list ..nvars
+             VARIABLE : ..NVARS
+             FILENAME : gt4d011.cdf
+          12.00
+ 
+use coads_climatology
+ 
+list/d=1 ..nvars
+             VARIABLE : ..NVARS
+             FILENAME : gt4d011.cdf
+          12.00
+list/d=2 ..nvars
+             VARIABLE : ..NVARS
+             FILENAME : coads_climatology.cdf
+          1.000
+ 
+sh data
+     currently SET data sets:
+    1> ./gt4d011.cdf
+ name     title                             I         J         K         L         M         N
+ TEMP     TEMPERATURE                     91:108    35:56      1:10      1:25      ...       ...
+ SALT     (SALINITY(ppt) - 35) /1000      91:108    35:55      1:10      1:25      ...       ...
+ U        ZONAL VELOCITY                  91:108    35:55      1:10      1:25      ...       ...
+ V        MERIDIONAL VELOCITY             91:108    35:55      1:10      1:25      ...       ...
+ W        VERTICAL VELOCITY               91:108    36:55      1:10      1:25      ...       ...
+ TAUX     ZONAL WIND STRESS               91:108    35:55      ...       1:25      ...       ...
+ TAUY     MERIDIONAL WIND STRESS          91:108    35:55      ...       1:25      ...       ...
+ PSI      STREAM FUNCTION                 91:108    35:56      ...       1:25      ...       ...
+ 
+    2> ./coads_climatology.cdf  (default)
+ name     title                             I         J         K         L         M         N
+ SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3       ...       ...
+ 
+list/d=2 ..varnames
+             VARIABLE : ..VARNAMES
+             FILENAME : coads_climatology.cdf
+        "SST"
+ 
+list/d=2 ..dimnames
+             VARIABLE : ..DIMNAMES
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 3 points (X)
+ 1   / 1:"COADSX"
+ 2   / 2:"COADSY"
+ 3   / 3:"TIME"  
+list/d=1 ..dimnames
+             VARIABLE : ..DIMNAMES
+             FILENAME : gt4d011.cdf
+             SUBSET   : 20 points (X)
+ 1    /  1:"PSXT"      
+ 2    /  2:"PSYT"      
+ 3    /  3:"PSYTedges" 
+ 4    /  4:"PSZT"      
+ 5    /  5:"PSZTedges" 
+ 6    /  6:"TIME1"     
+ 7    /  7:"PSXT91_108"
+ 8    /  8:"PSYT35_56" 
+ 9    /  9:"PSZT1_10"  
+ 10   / 10:"PSYT35_55" 
+ 11   / 11:"PSXU"      
+ 12   / 12:"PSYU"      
+ 13   / 13:"PSYUedges" 
+ 14   / 14:"PSXU91_108"
+ 15   / 15:"PSYU35_55" 
+ 16   / 16:"PSZW"      
+ 17   / 17:"PSZWedges" 
+ 18   / 18:"PSYT36_55" 
+ 19   / 19:"PSZW1_10"  
+ 20   / 20:"PSYU35_56" 
+ 
+list/d=1 ..nattrs
+             VARIABLE : ..NATTRS
+             FILENAME : gt4d011.cdf
+          1.000
+list/d=1 ..attnames
+             VARIABLE : ..ATTNAMES
+             FILENAME : gt4d011.cdf
+        "history"
+ 
+list/d=1 ..ndims
+             VARIABLE : ..NDIMS
+             FILENAME : gt4d011.cdf
+          21.00
+list/d=2 ..ndims
+             VARIABLE : ..NDIMS
+             FILENAME : coads_climatology.cdf
+          3.000
+ 
+list ..nvars[d=1]
+             VARIABLE : ..NVARS[D=gt4d011]
+             FILENAME : gt4d011.cdf
+          12.00
+sh var
+ Created by DEFINE VARIABLE:
+ 
+let pp = ..varnames
+list pp[d=1]
+             VARIABLE : ..VARNAMES
+             FILENAME : gt4d011.cdf
+             SUBSET   : 12 points (X)
+ 1    /  1:"PS3DT2"
+ 2    /  2:"TEMP"  
+ 3    /  3:"SALT"  
+ 4    /  4:"PS3DU2"
+ 5    /  5:"U"     
+ 6    /  6:"V"     
+ 7    /  7:"PS3DW2"
+ 8    /  8:"W"     
+ 9    /  9:"PS2DU2"
+ 10   / 10:"TAUX"  
+ 11   / 11:"TAUY"  
+ 12   / 12:"PSI"   
+ 
+set data 1
+list/d=2 pp
+             VARIABLE : ..VARNAMES
+             FILENAME : coads_climatology.cdf
+        "SST"
+ 
+go bn_reset
+cancel mode verify
+ 
+!-----
+! Editing attributes: add new attributes to a variable.
+ 
+use ocean_atlas_temp
+def att/type=string temp.strval = 2
+def att/type=float temp.floatval = 22
+def att temp.pp = {1.5, 1.9}
+def att temp.some_text = "some text about the TEMP variable"
+sh att/all temp
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ TEMP.missing_value = -1.E+34
+ TEMP._FillValue = -1.E+34
+ TEMP.long_name = Temperature 
+ TEMP.history = From ocean_atlas_monthly 
+ TEMP.units = Deg C 
+ TEMP.strval = 2 
+ TEMP.floatval = 22
+ TEMP.pp = 1.5, 1.9
+ TEMP.some_text = some text about the TEMP variable 
+ 
+! Now change some existing attributes (this redefines
+! the attribute, behaving like DEFINE AXIS...)
+ 
+def att temp.pp = {1.5, 1.9, 3.45, 7}
+def att temp.some_text = "some different text"
+sh att temp.pp
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ TEMP.pp = 1.5, 1.9, 3.45, 7
+let var = temp.some_text
+list/nohead var
+        "some different text"
+ 
+! add an attribute to a variable not in the default dataset
+ 
+use gt4d011
+def att/D=1 temp.morenew = 2
+sh att/all temp[d=1]
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ TEMP.missing_value = -1.E+34
+ TEMP._FillValue = -1.E+34
+ TEMP.long_name = Temperature 
+ TEMP.history = From ocean_atlas_monthly 
+ TEMP.units = Deg C 
+ TEMP.strval = 2 
+ TEMP.floatval = 22
+ TEMP.pp = 1.5, 1.9, 3.45, 7
+ TEMP.some_text = some different text 
+ TEMP.morenew = 2
+ 
+go bn_reset
+cancel mode verify
+ 
+!-----
+! Edit existing attributes on variables
+ 
+use ocean_atlas_temp
+sh att/all temp
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ TEMP.missing_value = -1.E+34
+ TEMP._FillValue = -1.E+34
+ TEMP.long_name = Temperature 
+ TEMP.history = From ocean_atlas_monthly 
+ TEMP.units = Deg C 
+set att temp.long_name = "set title via SET ATT temp.longname"
+set att temp.units = "Centigrade"
+plot/y=0/l=1 temp
+ 
+! two settings of the missing value change both the missing and bad flags
+set att temp.missing_value = 12
+set att temp.missing_value = 12
+shade/L=2 temp
+ 
+!-----
+! access and edit attributes of coordinate variables.
+! Specify names of coord variables inside parentheses
+ 
+use ocean_atlas_temp
+use coads_climatology
+ 
+! Get attributes of a coordinate variable
+ 
+list (coadsx).units
+             VARIABLE : (COADSX).UNITS
+             FILENAME : coads_climatology.cdf
+        "degrees_east"
+list (coadsx).modulo
+             VARIABLE : (COADSX).MODULO
+             FILENAME : coads_climatology.cdf
+        " "
+sho att/all (coadsx)
+     attributes for dataset: ./coads_climatology.cdf
+ (COADSX).units = degrees_east 
+ (COADSX).modulo =   
+ (COADSX).point_spacing = even 
+ (COADSX).orig_file_axname = COADSX 
+ 
+! Set the attribute output flag
+ 
+set att/output (coadsx).modulo
+ 
+! Define a new attribute on a coordinate axis
+ 
+define att (`sst,return=xaxis`).newatt = 3
+ !-> define att (COADSX).newatt = 3
+set att/output (`sst,return=xaxis`).newatt
+ !-> set att/output (COADSX).newatt
+save/clobber/file=a.nc/x=130w/y=0 sst
+ 
+sp echo "bn_attributes.jnl --- 2 access and edit attributes of coordinate variables." >> all_ncdump.out
+sp ncdump -c a.nc >> all_ncdump.out
+ 
+! modfalse.nc is a file with modulo attribute on x axis
+! explicitly set to FALSE
+ 
+use modfalse.nc
+set att/output (`sst,return=xaxis`).modulo
+ !-> set att/output (COADSX81_81).modulo
+save/clobber/file=a.nc sst
+sp echo "bn_attributes.jnl --- 3 modulo set to false" >> all_ncdump.out
+sp ncdump -c a.nc >> all_ncdump.out
+ 
+! Reset attributes as in SET AXIS
+ 
+use gt4d011
+set view left; shade/y=0/L=1 temp
+set att (`temp,return=zaxis`).positive="up"
+ !-> set att (PSZT).positive="up"
+set view right; shade/y=0/L=1 temp
+can data gt4d011
+ 
+set data coads_climatology
+sho att (coadsx).modulo
+     attributes for dataset: ./coads_climatology.cdf
+ (COADSX).modulo =   
+set att (coadsx).modulo=360
+ 
+! Note here that Ferret is using the name TIME1 instead of TIME.
+! axis still found and edited.
+ 
+set att (`sst,return=taxis`).time_origin="1-jan-1980"
+ !-> set att (TIME1).time_origin="1-jan-1980"
+list/x=130w/y=0 sst
+             VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 3 points (TIME)
+             LONGITUDE: 131W
+             LATITUDE : 1S
+                   131W   
+                   105
+ 16-JAN-1980 / 1:  25.02
+ 15-FEB-1980 / 2:  26.35
+ 17-MAR-1980 / 3:  26.98
+ 
+!(coordvar).attname[d=1]
+! Can have the parentheses included in a symbol
+ 
+def sym xaxnam  "(`temp[d=1],return=xaxis`)"
+ !-> def sym xaxnam  "(XAX_LEV9421_380)"
+list `($xaxnam).nattrs[d=1]`
+ !-> list 4
+             VARIABLE : constant
+          4.000
+ 
+! Or parentheses added when symbol is evaluated
+def sym yaxnam  "`temp[d=1],return=yaxis`"
+ !-> def sym yaxnam  "YAX_LEV94"
+list `(($yaxnam)).nattrs[d=1]`
+ !-> list 3
+             VARIABLE : constant
+          3.000
+ 
+! just the name of the axis
+list (`sst,return=xaxis`).nattrs[d=2]
+ !-> list (COADSX).nattrs[d=2]
+             VARIABLE : (COADSX).NATTRS[D=coads_climatology]
+             FILENAME : coads_climatology.cdf
+          5.000
+ 
+! using dimension names from the linked list structure
+ 
+let cnames = sst.dimnames
+list cnames
+             VARIABLE : SST.DIMNAMES
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 3 points (X)
+ 1   / 1:"COADSX"
+ 2   / 2:"COADSY"
+ 3   / 3:"TIME1" 
+show axis (`cnames[i=1]`)
+ !-> show axis (COADSX)
+ name       axis              # pts   start                end
+list (`cnames[i=1]`).nattrs
+ !-> list (COADSX).nattrs
+             VARIABLE : (COADSX).NATTRS
+             FILENAME : coads_climatology.cdf
+          5.000
+ 
+! Intentional errors.
+ 
+SET MODE IGNORE
+ 
+! Need parentheses around axis name.
+list coadsx.units
+sh att/all coadsy
+ 
+! Cannot change the direction of an axis
+use modfalse.nc
+set att (`sst,return=xaxis`).axis = "Z"
+ !-> set att (COADSX81_81).axis = "Z"
+ 
+can view
+ 
+can mode ignore
+go bn_reset
+cancel mode verify
+ 
+!-----
+! Edit attributes: inherit all attrs from another variable
+ 
+use gt4d011
+sh att/all salt
+     attributes for dataset: ./gt4d011.cdf
+ SALT.parent_grid = PS3DT2 
+ SALT.slab_min_index = 91, 35, 1, 0
+ SALT.slab_max_index = 108, 55, 10, 0
+ SALT.missing_value = 0.01
+ SALT._FillValue = 0.01
+ SALT.long_name = (SALINITY(ppt) - 35) /1000 
+ SALT.history = From gt4d011 
+ SALT.units = frac. by wt. less .035 
+ 
+set att/like=temp salt
+sh att/all salt
+     attributes for dataset: ./gt4d011.cdf
+ SALT.parent_grid = PS3DT2 
+ SALT.slab_min_index = 91, 35, 1, 0
+ SALT.slab_max_index = 108, 56, 10, 0
+ SALT.missing_value = -1.E+34
+ SALT._FillValue = -1.E+34
+ SALT.long_name = TEMPERATURE 
+ SALT.history = From gt4d011 
+ SALT.units = deg. C 
+ 
+! If a user variable is defined based on another variable,
+! it gets only default attributes. All attributes must be
+! specified with qualifiers (/UNITS=) or with DEF ATT
+ 
+! Define a new attribute on a file variable, then a new var as fcn of that
+ 
+define attribute temp.description = "description of TEMP in gt4d011"
+let temp2 = temp*2
+sh att/all temp2
+     attributes for user-defined variables
+ temp2.long_name = TEMP*2 
+ temp2.missing_value = -1.E+34
+ 
+! Can inherit attributes explicitly, either all at once or individually.
+def att temp2.units = "`temp,return=units`"
+ !-> def att temp2.units = "deg. C"
+sh att/all temp2
+     attributes for user-defined variables
+ temp2.long_name = TEMP*2 
+ temp2.missing_value = -1.E+34
+ temp2.units = deg. C 
+ 
+let temp3 = temp*3
+set att/like=temp temp3
+sh att/all temp3
+     attributes for user-defined variables
+ temp3.parent_grid = PS3DT2 
+ temp3.slab_min_index = 91, 35, 1, 0
+ temp3.slab_max_index = 108, 56, 10, 0
+ temp3.missing_value = -1.E+34
+ temp3._FillValue = -1.E+34
+ temp3.long_name = TEMPERATURE 
+ temp3.history = From gt4d011 
+ temp3.units = deg. C 
+ temp3.description = description of TEMP in gt4d011 
+ 
+can var temp2
+let/units="degrees C"/title="my new TEMP"/bad=`temp,return=bad` temp2 = temp*2
+ !-> DEFINE VARIABLE/units="degrees C"/title="my new TEMP"/bad=-9.9999998E+33 temp2 = temp*2
+sh att/all temp2
+     attributes for user-defined variables
+ temp2.long_name = my new TEMP 
+ temp2.units = degrees C 
+ temp2.missing_value = -1.E+34
+ 
+go bn_reset
+cancel mode verify
+ 
+!-----
+! Edit attributes, changing type
+! change values, type, and length of attributes.
+ 
+use ocean_atlas_temp
+def att/type=string temp.strval = 2
+def att/type=float temp.floatval = 22
+def att temp.pp = {1.5, 1.9}
+def att temp.some_text = "some text about the TEMP variable"
+sh att/all temp
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ TEMP.missing_value = -1.E+34
+ TEMP._FillValue = -1.E+34
+ TEMP.long_name = Temperature 
+ TEMP.history = From ocean_atlas_monthly 
+ TEMP.units = Deg C 
+ TEMP.strval = 2 
+ TEMP.floatval = 22
+ TEMP.pp = 1.5, 1.9
+ TEMP.some_text = some text about the TEMP variable 
+ 
+! Change attribute values
+ 
+set att temp.pp = {1.5, 1.9, 3.45, 7}
+set att temp.some_text = "some different text"
+sh att temp.pp
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ TEMP.pp = 1.5, 1.9, 3.45, 7
+let var = temp.some_text
+list/nohead var
+        "some different text"
+ 
+! Now change attribute types
+ 
+set att temp.pp = "PP now has some text."
+set att temp.some_text = 745.
+ 
+! Does changing the type of an attribute cause any trouble for a variable
+! defined based on that variable?
+ 
+list/nohead var
+          745.0
+let pq = temp.pp
+list pq
+             VARIABLE : TEMP.PP
+             FILENAME : ocean_atlas_temp.cdf
+        "PP now has some text."
+ 
+! set an attribute when the variable is not in the default dataset.
+ 
+use gt4d011
+def att/d=1 temp.morenew = 33
+sho att/all temp[d=1]
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ TEMP.missing_value = -1.E+34
+ TEMP._FillValue = -1.E+34
+ TEMP.long_name = Temperature 
+ TEMP.history = From ocean_atlas_monthly 
+ TEMP.units = Deg C 
+ TEMP.strval = 2 
+ TEMP.floatval = 22
+ TEMP.pp = PP now has some text. 
+ TEMP.some_text = 745
+ TEMP.morenew = 33
+ 
+! Edit the text in some of the attributes, make a plot where we see
+! the resulting change in title and units.
+ 
+set data ocean_atlas_temp
+set att temp.long_name = "Ocean Atlas Temperature"
+set att temp.units = "Centigrade"
+shade/L=2 temp
+ 
+! Define an attr that already exists: redefines
+ 
+def att temp.pp = {1.5, 1.9, 3}
+let pq = temp.pp
+list pq
+             VARIABLE : TEMP.PP
+             FILENAME : ocean_atlas_temp.cdf
+             SUBSET   : 3 points (X)
+ 1   / 1:  1.500
+ 2   / 2:  1.900
+ 3   / 3:  3.000
+ 
+go bn_reset
+cancel mode verify
+ 
+! When we CANCEL MODE upcase_output, writing a netcdf file preserves
+! case of variable and axis names. This file has lower case and some
+! mixed-case names.
+ 
+use err491_attval.cdf
+sp echo "bn_attributes.jnl --- 4 CANCEL MODE upcase_output; original file:" >> all_ncdump.out
+sp ncdump -h err491_attval.cdf >> all_ncdump.out
+save/clobber/file=a.nc elev[i=3,j=2:4]
+sp echo "bn_attributes.jnl --- 5 before CANCEL MODE upcase_output" >> all_ncdump.out
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+cancel mode upcase_output
+save/clobber/file=a.nc elev[i=3,j=2:4]
+sp echo "bn_attributes.jnl --- 6 after CANCEL MODE upcase_output" >> all_ncdump.out
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+set mode/last upcase_output
+ 
+go bn_reset
+cancel mode verify
+ 
+!-----
+ 
+! outtput flags to control attribute output to netcdf files
+ 
+! SET ATT/OUTPUT varname.attname sets individual attr to be written
+! SET ATT/OUTPUT=all varname     output all attributes defined when var written
+! SET ATT/OUTPUT=default varname output default Ferret attributes
+! SET ATT/OUTPUT=none varname    output no attrbutes
+ 
+let aa = 12
+let bb = {3,4.5,6,7,4}
+ 
+def att bb.my_title = "This is my new variable bb"
+def att bb.another_attr = 6
+ 
+! Output just one of these new attributes
+ 
+set att/output bb.my_title
+ 
+save/clobber/file=a.nc aa,bb
+sp echo "bn_attributes.jnl --- 7 outtput flags to control attribute output" >> all_ncdump.out
+sp ncdump -c a.nc >> all_ncdump.out
+ 
+! Output all attributes
+ 
+set att/output=all bb
+save/clobber/file=a.nc aa,bb
+sp echo "bn_attributes.jnl --- 8 outtput all flags" >> all_ncdump.out
+sp ncdump -c a.nc >> all_ncdump.out
+ 
+! Just output the default attributes
+ 
+set att/output=default bb
+save/clobber/file=a.nc bb
+sp echo "bn_attributes.jnl --- 9 Just output the default attributes" >> all_ncdump.out
+sp ncdump -c a.nc >> all_ncdump.out
+ 
+! Output none of the attributes for aa
+ 
+set att/output=none aa
+save/clobber/file=a.nc aa,bb
+sp echo "bn_attributes.jnl --- 10 Output none of the attributes for aa" >> all_ncdump.out
+sp ncdump -c a.nc >> all_ncdump.out
+ 
+go bn_reset
+cancel mode verify
+ 
+ 
+!-----
+! CANCEL ATTRIBUTE/OUTPUT= to surpress output of attributes
+ 
+use ocean_atlas_temp
+sh att/all  (`temp,return=xaxis`)
+ !-> sh att/all  (XAX_LEV9421_380)
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ (XAX_LEV9421_380).units = degrees_east 
+ (XAX_LEV9421_380).modulo =   
+ (XAX_LEV9421_380).point_spacing = even 
+ (XAX_LEV9421_380).orig_file_axname = XAX_LEV9421_380 
+ 
+! Surpress output of existing attribute
+can att/out (`temp,return=xaxis`).point_spacing
+ !-> can att/out (XAX_LEV9421_380).point_spacing
+ 
+! Surpress output of an attribute that Ferret would otherwise add.
+ 
+can att/out (`temp,return=xaxis`).axis
+ !-> can att/out (XAX_LEV9421_380).axis
+save/file=a.nc/clobber temp
+sp echo "bn_attributes.jnl --- 11 Surpress output of an attribute that Ferret would otherwise add." >> all_ncdump.out
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+! subregions create child axes with new names
+! Check that settings hold for such an output file.
+ 
+set reg/x=300:360/y=30:45
+sh att/all  (`temp,return=xaxis`)
+ !-> sh att/all  (XAX_LEV9421_380)
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ (XAX_LEV9421_380).units = degrees_east 
+ (XAX_LEV9421_380).modulo =   
+ (XAX_LEV9421_380).point_spacing = even 
+ (XAX_LEV9421_380).orig_file_axname = XAX_LEV9421_380 
+ (XAX_LEV9421_380).axis = 1
+can att/out (`temp,return=xaxis`).point_spacing
+ !-> can att/out (XAX_LEV9421_380).point_spacing
+can att/out (`temp,return=xaxis`).axis
+ !-> can att/out (XAX_LEV9421_380).axis
+save/file=a.nc/clobber temp
+sp echo "bn_attributes.jnl --- 12 Check that settings hold for child axis." >> all_ncdump.out
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+! cancel output of attributes of the variable itself
+can region
+sh att/all  temp
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ TEMP.missing_value = -1.E+34
+ TEMP._FillValue = -1.E+34
+ TEMP.long_name = Temperature 
+ TEMP.history = From ocean_atlas_monthly 
+ TEMP.units = Deg C 
+can att/out temp.history
+can att/out temp.long_name
+save/file=a.nc/clobber temp
+sp echo "bn_attributes.jnl --- 13 cancel output of attributes of the variable." >> all_ncdump.out
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+go bn_reset
+cancel mode verify
+ 
+!-----
+! Read EZ ascii, delimited, and stream data files,
+! add attributes to their variables.
+ 
+! read file as an ez file
+ 
+file/var="a1,a2,a3" EZ.DAT
+def att a1.three={1,2,3}
+sh att/all a1
+     attributes for dataset: ./EZ.DAT
+ A1.long_name = A1 
+ A1.missing_value = -1.E+34
+ A1.three = 1, 2, 3
+sh dat/att
+     currently SET data sets:
+    1> ./EZ.DAT  (default)
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
+  
+ .                               history         CHAR        6    F       EZ.DAT
+  
+ A1                    FLOAT     long_name       CHAR        2    T       A1
+                                 missing_value   FLOAT       1    T       -1.E+34
+                                 three           FLOAT       3    T       1 2 3
+  
+ A2                    FLOAT     long_name       CHAR        2    T       A2
+                                 missing_value   FLOAT       1    T       -1.E+34
+  
+ A3                    FLOAT     long_name       CHAR        2    T       A3
+                                 missing_value   FLOAT       1    T       -1.E+34
+  
+save/file=a.nc/clobber a1,a2,a3
+sp echo "bn_attributes.jnl --- 14 attributes of data from ez data." >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+ 
+! now read it as a delimited file
+ 
+can data/all
+ 
+columns/delim=" " EZ.DAT
+def att/type=string v1.strval = 2
+set att/output v1.strval
+sh att/all v1
+     attributes for dataset: ./EZ.DAT
+ V1.long_name = V1 
+ V1.missing_value = -1.E+34
+ V1.strval = 2 
+save/clobber/file=a.nc v1,v4
+sp echo "bn_attributes.jnl --- 15 attributes of data from delimited data." >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+ 
+! and a stream dataset
+ 
+def axis/x=1:1:1 xax
+def axis/y=1:2:1 yax
+def axis/z=1:3:1 zax
+def axis/t=1:4:1 tax
+def grid/x=xax/y=yax/z=zax/t=tax mygrid
+file/format=str/var=num,num1/grid=mygrid/order=xyztv permutedBinaryTest.dat
+ 
+define att/type=string num.new = "a string attribute"
+sh att/all num
+     attributes for dataset: ./permutedBinaryTest.dat
+ NUM.long_name = NUM 
+ NUM.missing_value = -1.E+34
+ NUM.new = a string attribute 
+go bn_reset
+cancel mode verify
+ 
+!-----
+! manipulate attributes of user-defined variables
+ 
+let a = {12,14,15}
+def att a.three={1,2,3}
+set att/output a.three
+def att a.four = {"theory"}
+set att/output a.four
+sh att/all a
+     attributes for user-defined variables
+ a.long_name = {12,14,15} 
+ a.missing_value = -1.E+34
+ a.three = 1, 2, 3
+ a.four = theory 
+sh dat/att
+     currently SET data sets:
+save/file=a.nc/clobber a
+sp echo "bn_attributes.jnl --- 16 attributes of user vars" >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+ 
+ 
+!-----
+! write global attributes (Note this implementation needs work;
+! what is the right syntax?? Perhaps an undocumented feature for
+! the first release)
+ 
+use err491_attval
+set att/out=all .   ! from the default data set
+ 
+save/file=a.nc/clobber elev
+sp echo "bn_attributes.jnl --- 17 global attrs." >> all_ncdump.out
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+! Choose a single global attribute to write, from dataset 1
+can data/all
+use err491_attval
+use gt4d011
+set att/output/d=1 ..dt_internal
+save/clobber/file=a.nc elev[d=1], temp[d=2,x=130w,k=1,y=-20:20]
+ 
+sp echo "bn_attributes.jnl --- 18 choose global attr to write" >> all_ncdump.out
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+! Note: this syntax does not work
+! use err491_attval
+! use ocean_atlas_temp
+! set att/out  ..min_slope[d=1]
+! save/file=a.nc/clobber elev[d=1]
+ 
+go bn_reset
+cancel mode verify
+ 
+!-----
+ 
+! File with scale_factor and add_offset
+! If we request to write the variable with its scale factor
+! and offset attributes, then the data and its missing and fill
+! flags are rescaled.  Lets us re-pack data on output, or specify
+! new packing.
+ 
+use err491_attval
+set att/output elev.scale_factor
+set att/output elev.add_offset
+set var/outtype=input elev
+ 
+save/clobber/file=a.nc/j=1 elev
+sp echo "bn_attributes.jnl --- 19 scale and offset attr." >> all_ncdump.out
+ 
+! Both of these should be scaled the same by Ferret
+use a.nc
+list/j=1 elev[d=1], elev[d=2]
+             LONGITUDE: 135.5W(-135.5) to 135W(-135)
+             LATITUDE: 58.6N
+             T (day): 1.7837
+ Column  1: ELEV[D=err491_attval] is Surface elevation (meter)
+ Column  2: ELEV[D=a] is Surface elevation (meter)
+                 ELEV   ELEV
+135.51W   /  1:   ....   ....
+135.496W  /  2:   ....   ....
+135.483W  /  3:   ....   ....
+135.469W  /  4:   ....   ....
+135.456W  /  5:   ....   ....
+135.442W  /  6:   ....   ....
+135.429W  /  7:   ....   ....
+135.415W  /  8:   ....   ....
+135.402W  /  9:   ....   ....
+135.389W  / 10:   ....   ....
+135.375W  / 11:   ....   ....
+135.362W  / 12:  2.940  2.940
+135.348W  / 13:  2.940  2.940
+135.335W  / 14:  2.940  2.940
+135.321W  / 15:  2.940  2.940
+135.308W  / 16:  2.940  2.940
+135.294W  / 17:  2.940  2.940
+135.281W  / 18:  2.940  2.940
+135.267W  / 19:  2.940  2.940
+135.254W  / 20:  2.940  2.940
+135.241W  / 21:  2.940  2.940
+135.227W  / 22:  2.940  2.940
+135.214W  / 23:  2.940  2.940
+135.2W    / 24:  2.940  2.940
+135.187W  / 25:  2.940  2.940
+135.173W  / 26:   ....   ....
+135.16W   / 27:   ....   ....
+135.146W  / 28:   ....   ....
+135.133W  / 29:   ....   ....
+135.12W   / 30:   ....   ....
+135.106W  / 31:   ....   ....
+135.093W  / 32:   ....   ....
+135.079W  / 33:   ....   ....
+135.066W  / 34:   ....   ....
+135.052W  / 35:   ....   ....
+sp ncdump a.nc  >> all_ncdump.out
+ 
+go bn_reset
+cancel mode verify
+ 
+!-----
+! Set type of data on output, uses netcdf call to output
+! the requseted type.
+ 
+use gt4d011
+set var/bad=-1000 temp
+set var/outtype=int4 temp
+save/file=a.nc/clobber/y=1/k=1/L=1 temp
+sp echo "bn_attributes.jnl --- 20 set data type on output int4" >> all_ncdump.out
+sp ncdump a.nc | grep -A2 -i temp >> all_ncdump.out
+ 
+can data/all
+use gt4d011
+ 
+set var/outtype=double salt
+save/clobber/file=a.nc/y=1/k=1/L=1 salt
+sp echo "bn_attributes.jnl --- 21 set data type on output double" >> all_ncdump.out
+sp ncdump a.nc | grep -A2 -i salt >> all_ncdump.out
+ 
+can data gt4d011
+ 
+! Force output type to equal input type (should we have a MODE setting for this??)
+ 
+use test0
+let nam = ..varnames
+ 
+repeat/range=1:4/name=q (def sym va = nam[i=`q`]; sh sym va; \
+  set var/outtype=input `($va)`;\
+  if `q eq 1` THEN save/clobber/file=a.nc `($va)` \
+  ELSE save/append/file=a.nc `($va)`)
+ !-> repeat/range=1:4/name=q (def sym va = nam[i=`q`]; sh sym va;   set var/outtype=input `($va)`;  if `q eq 1` THEN save/clobber/file=a.nc `($va)`   ELSE save/append/file=a.nc `($va)`)
+!-> REPEAT: Q:1
+ !-> def sym va = nam[i=1]
+VA = "nam[i=1]"
+ !-> set var/outtype=input broiled
+ !-> if 1 THEN save/clobber/file=a.nc `nam[i=1]`   ELSE save/append/file=a.nc `nam[i=1]`
+ !-> LIST/FORMAT=CDF/clobber/file=a.nc broiled
+!-> REPEAT: Q:2
+ !-> def sym va = nam[i=2]
+VA = "nam[i=2]"
+ !-> set var/outtype=input the_bullet
+ !-> if 0 THEN save/clobber/file=a.nc `nam[i=2]`   ELSE save/append/file=a.nc `nam[i=2]`
+ !-> LIST/FORMAT=CDF/append/file=a.nc the_bullet
+!-> REPEAT: Q:3
+ !-> def sym va = nam[i=3]
+VA = "nam[i=3]"
+ !-> set var/outtype=input order
+ !-> if 0 THEN save/clobber/file=a.nc `nam[i=3]`   ELSE save/append/file=a.nc `nam[i=3]`
+ !-> LIST/FORMAT=CDF/append/file=a.nc order
+!-> REPEAT: Q:4
+ !-> def sym va = nam[i=4]
+VA = "nam[i=4]"
+ !-> set var/outtype=input rigue
+ !-> if 0 THEN save/clobber/file=a.nc `nam[i=4]`   ELSE save/append/file=a.nc `nam[i=4]`
+ !-> LIST/FORMAT=CDF/append/file=a.nc rigue
+ 
+sp echo "bn_attributes.jnl --- 22 outtype=input" >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+ 
+set var/outtype=double a_loan
+save/file=a.nc/clobber a_loan
+ 
+can data test0
+ 
+go bn_reset
+cancel mode verify
+ 
+!-----
+! More tests of user-defined variables. Bug 1427, now fixed, problem with varid of user vars
+ 
+let v = {1,2,3,4}
+let a = is_element_of(1,v)
+let/title="hello" b = 1
+save/clobber/file=a.nc b
+sp echo "bn_attributes.jnl --- 23 more user-defined vars" >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+ 
+ 
+!-----
+! Bug 1492, now fixed, output user-defined or redefined attributes
+ 
+! A new setting for the point_spacing attribute using either SET or DEFINE
+ 
+use coads_vwnd
+set att (`vwnd,return=xaxis`).point_spacing = "uneven"
+ !-> set att (COADSX).point_spacing = "uneven"
+define att (`vwnd,return=yaxis`).point_spacing = "uneven"
+ !-> define att (COADSY).point_spacing = "uneven"
+save/file=a.nc/clobber/L=1 vwnd
+ 
+sp echo "bn_attributes.jnl --- 24 output redefined attr" >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+ 
+! new attribute written to file
+ 
+let t2 = 2*vwnd
+DEFINE ATT/OUTPUT  (`t2,return=yaxis`).new_att = "somthing"
+ !-> DEFINE ATT/OUTPUT  (COADSY).new_att = "somthing"
+ 
+! shows up on the output of
+ 
+SHOW ATT/ALL (`t2,return=yaxis`)
+ !-> SHOW ATT/ALL (COADSY)
+     attributes for dataset: ./coads_vwnd.cdf
+ (COADSY).units = degrees_north 
+ (COADSY).point_spacing = uneven 
+ (COADSY).orig_file_axname = COADSY 
+ (COADSY).new_att = somthing 
+ 
+! Check the new attribute is saved to a file. (if we
+! save uwnd to a file, it is output)
+ 
+save/file=a.nc/clobber/L=1 t2
+ 
+sp echo "bn_attributes.jnl --- 25 output new attr on user-defined var" >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+ 
+ 
+! intentional errors
+ 
+set mode ignore_error
+ 
+! missing value and fill value too large for INT output.
+ 
+use gt4d011
+set var/outtype=int4 temp
+save/file=a.nc/clobber/x=132w/k=1 temp
+can data gt4d011
+ 
+sp rm a.nc
+ 
+! specify incorrect output types
+ 
+use test0
+set var/outtype=char broiled
+ 
+set var/outtype=garbage broiled
+ 
+can mode ignore
+go bn_reset
+cancel mode verify
+ 
+ 
+!---!!!---
+! Manipulate attributes of axes from datasets
+! A user-defined variable is used to refer to the axes.
+ 
+use gt4d011.cdf
+ 
+let t2 = t*temp
+set att (`t2,return=xaxis`).units = "degrees"
+ !-> set att (PSXT).units = "degrees"
+sh att/all (`t2,return=xaxis`)
+ !-> sh att/all (PSXT)
+     attributes for dataset: ./gt4d011.cdf
+ (PSXT).units = degrees 
+ (PSXT).point_spacing = even 
+ (PSXT).orig_file_axname = PSXT 
+set att/output (`t2,return=xaxis`).point_spacing
+ !-> set att/output (PSXT).point_spacing
+save/file=a.nc/clobber/L=1 t2
+ 
+sp echo "bn_attributes.jnl --- 26 attributes of axes" >> all_ncdump.out
+ 
+sp ncdump -h a.nc >> all_ncdump.out
+define att/out (`t2,return=xaxis`).new_att = "something"
+ !-> define att/out (PSXT).new_att = "something"
+save/file=a.nc/clobber/L=1 t2
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+! A file variable is used to refer to the axes
+ 
+set att (`temp,return=xaxis`).units="meters"
+ !-> set att (PSXT).units="meters"
+set att (`temp,return=yaxis`).units="meters"
+ !-> set att (PSYT).units="meters"
+sho att/all (`temp,return=yaxis`)
+ !-> sho att/all (PSYT)
+     attributes for dataset: ./gt4d011.cdf
+ (PSYT).units = meters 
+ (PSYT).point_spacing = uneven 
+ (PSYT).edges = PSYTedges 
+ (PSYT).orig_file_axname = PSYT 
+save/file=a.nc/clobber/L=1 t2
+ 
+sp ncdump -h a.nc >> all_ncdump.out
+go bn_reset
+cancel mode verify
+ 
+! User-defined axes and variables
+ 
+def axis/x=1:200:1  x2ax
+sh att/all (x2ax)
+     attributes for coordinate axis
+ (X2AX).point_spacing = even 
+ (X2AX).axis = X 
+! SET AXIS command changes attributes
+set axis/modulo x2ax
+sh att/all (x2ax)
+     attributes for coordinate axis
+ (X2AX).point_spacing = even 
+ (X2AX).axis = X 
+ (X2AX).modulo =   
+ 
+! DEFINE ATTRIBUTE command changes attributes
+define attribute (x2ax).units = "degrees_east"
+sh att/all (x2ax)
+     attributes for coordinate axis
+ (X2AX).point_spacing = even 
+ (X2AX).axis = X 
+ (X2AX).modulo =   
+ (X2AX).units = degrees_east 
+ 
+! Define new attribute on an axis.
+! Save file var, and a user var defined from the file var
+ 
+go bn_reset
+cancel mode verify
+ 
+use levitus_climatology
+define att/out (`temp,return=xaxis`).new_att = "something"
+ !-> define att/out (XAXLEVITR1_160).new_att = "something"
+sh dat/att
+     currently SET data sets:
+    1> ./levitus_climatology.cdf  (default)
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
+  
+ .                               history         CHAR        24   T       FERRET V5.22    5-Apr-01
+  
+(XAXLEVITR1_160)       DOUBLE    units           CHAR        12   T       degrees_east
+                                 modulo          CHAR        1    T
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        14   F       XAXLEVITR1_160
+                                 new_att         CHAR        9    T       something
+  
+(YAXLEVITR1_90)        DOUBLE    units           CHAR        13   T       degrees_north
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        13   F       YAXLEVITR1_90
+  
+(ZAXLEVITR1_1)         DOUBLE    units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 orig_file_axnameCHAR        12   F       ZAXLEVITR1_1
+  
+ TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.E+10
+                                 _FillValue      FLOAT       1    T       -1.E+10
+                                 long_name       CHAR        11   T       TEMPERATURE
+                                 history         CHAR        24   T       From levitus_climatology
+                                 units           CHAR        5    T       DEG C
+  
+save/file=a.nc/clobber/y=0:5 temp
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+let two = 2*temp[y=0:15,x=180:200]
+save/file=a.nc/clobber/y=0:5 two
+sp ncdump -h a.nc >> all_ncdump.out
+go bn_reset
+cancel mode verify
+ 
+! defining more axes with attributes
+ 
+show axis x2ax
+ name       axis              # pts   start                end
+ X2AX      X                  200mr   1                    200
+   Axis span (to cell edges) = 200 (modulo length = axis span)
+def axis/x=1:2:1/modulo=360 x2ax
+def axis/y=1:3:1 y3ax
+def axis/z=1:4:1/depth z4ax
+def axis/t=1:2:1 t2ax
+let a = {"alpha","a2","a3","a4","a5","a6","a7","a8","a9","a10",\
+"bravo","b2","b3","b4","b5","b6","b7","b8","b9","b10",\
+"c1","c2","c3","c4","c5","c6","c7","c8","c9","c10",\
+"d1","d2","d3","d4","d5","d6","d7","d8","d9","d10",\
+"echo","e2","e3","e4","e5","e6","e7","e8"}
+let rvar = x[gx=x2ax] + y[gy=y3ax] + z[gz=z4ax] + t[gt=t2ax]
+ 
+let axy = reshape (a,rvar)
+ 
+show att/all (z4ax)
+     attributes for coordinate axis
+ (Z4AX).point_spacing = even 
+ (Z4AX).axis = Z 
+ (Z4AX).positive = down 
+set att (z4ax).positive = "up"
+ 
+sp echo "bn_attributes.jnl --- 27 attributes of  user-defined axes" >> all_ncdump.out
+save/clobber/file=string4d.nc axy
+sp ncdump -h string4d.nc >> all_ncdump.out
+ 
+go bn_reset
+cancel mode verify
+! For SET ATT timeaxis.units or SET ATT timeaxis.time_origin
+! include the correct time origin as part of the units attribute.
+ 
+! Note original attributes
+use coads_climatology
+show att/all (`sst,return=taxis`)
+ !-> show att/all (TIME)
+     attributes for dataset: ./coads_climatology.cdf
+ (TIME).units = hour since 0000-01-01 00:00:00 
+ (TIME).time_origin = 1-JAN-0000 00:00:00 
+ (TIME).modulo =   
+ (TIME).orig_file_axname = TIME 
+ 
+! change units to days since time origin
+set att (`sst,return=taxis`).units="days"
+ !-> set att (TIME).units="days"
+show att/all (`sst,return=taxis`)
+ !-> show att/all (TIME)
+     attributes for dataset: ./coads_climatology.cdf
+ (TIME).units = days since 1-JAN-0000 00:00:00 
+ (TIME).time_origin = 1-JAN-0000 00:00:00 
+ (TIME).modulo =   
+ (TIME).orig_file_axname = TIME 
+ 
+define attribute (`sst,return=taxis`).units = "months"
+ !-> define attribute (TIME).units = "months"
+show att/all (`sst,return=taxis`)
+ !-> show att/all (TIME)
+     attributes for dataset: ./coads_climatology.cdf
+ (TIME).units = months since 1-JAN-0000 00:00:00 
+ (TIME).time_origin = 1-JAN-0000 00:00:00 
+ (TIME).modulo =   
+ (TIME).orig_file_axname = TIME 
+ 
+! change time origin and also units to include time origin
+set att (`sst,return=taxis`).time_origin = "1-mar-1955"
+ !-> set att (TIME).time_origin = "1-mar-1955"
+show att/all (`sst,return=taxis`)
+ !-> show att/all (TIME)
+     attributes for dataset: ./coads_climatology.cdf
+ (TIME).units = months since 1-mar-1955 
+ (TIME).time_origin = 1-mar-1955 
+ (TIME).modulo =   
+ (TIME).orig_file_axname = TIME 
+ 
+define attribute (`sst,return=taxis`).time_origin = "15-jan-2002"
+ !-> define attribute (TIME).time_origin = "15-jan-2002"
+show att/all (`sst,return=taxis`)
+ !-> show att/all (TIME)
+     attributes for dataset: ./coads_climatology.cdf
+ (TIME).units = months since 15-jan-2002 
+ (TIME).time_origin = 15-jan-2002 
+ (TIME).modulo =   
+ (TIME).orig_file_axname = TIME 
+ 
+! Likewise on DEFINE AXIS or SET AXIS, change units to
+! include the correct since time_origin.
+ 
+use coads_climatology
+show att/all (`sst,return=taxis`)
+ !-> show att/all (TIME)
+     attributes for dataset: ./coads_climatology.cdf
+ (TIME).units = months since 15-jan-2002 
+ (TIME).time_origin = 15-jan-2002 
+ (TIME).modulo =   
+ (TIME).orig_file_axname = TIME 
+def axis/t=1:12:1/unit=months/t0="1-jan-0001" time
+show att/all (`sst,return=taxis`)
+ !-> show att/all (TIME)
+     attributes for dataset: ./coads_climatology.cdf
+ (TIME).units = MONTHS since 1-JAN-0001 
+ (TIME).time_origin = 1-JAN-0001 
+ (TIME).orig_file_axname = TIME 
+ 
+set axis/t0="15-jan-0000" time
+show att/all (`sst,return=taxis`)
+ !-> show att/all (TIME)
+     attributes for dataset: ./coads_climatology.cdf
+ (TIME).units = MONTHS since 15-JAN-0000 
+ (TIME).time_origin = 15-JAN-0000 
+ (TIME).orig_file_axname = TIME 
+ 
+set axis/units=days time
+show att/all (`sst,return=taxis`)
+ !-> show att/all (TIME)
+     attributes for dataset: ./coads_climatology.cdf
+ (TIME).units = DAYS since 15-JAN-0000 
+ (TIME).time_origin = 15-JAN-0000 
+ (TIME).orig_file_axname = TIME 
+ 
+! Fix bug 1518: previously var.attnames for a user-defined variable resulted in an error
+use coads_climatology
+let sst2 = 2*sst
+set att/like=sst sst2
+list sst2.attnames
+             VARIABLE : SST2.ATTNAMES
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 5 points (X)
+ 1   / 1:"missing_value"
+ 2   / 2:"_FillValue"   
+ 3   / 3:"long_name"    
+ 4   / 4:"history"      
+ 5   / 5:"units"        
+ 
+ 
+! Add a global attribute
+use test0
+ 
+DEFINE ATT/OUTPUT ..FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset"
+SET ATT/OUTPUT=all .
+ 
+SET ATT/OUTPUT=all broiled
+SAVE/CLOBBER/FILE=a.nc broiled
+ 
+sp echo "bn_attributes.jnl --- 28 Define a new global attribute" >> all_ncdump.out
+sp echo "bn_attributes.jnl --- 29 SET ATT/OUTPUT=all for global attrs and a var" >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+ 
+ 
+!-----
+! Set type of data on output for a user var
+! the requseted type.
+ 
+sp echo "bn_attributes.jnl --- 29 SET VAR/OUTTYPE for user variable" >> all_ncdump.out
+ 
+use gt4d011
+let/units="Deg F" faren = temp*9/5 + 32
+set var/outtype=double faren
+save/file=a.nc/clobber faren
+ 
+sp ncdump -h a.nc  >> all_ncdump.out
+ 
+let/units="Deg F"/bad=-999 faren = temp*9/5 + 32
+set var/outtype=int faren
+save/file=a.nc/clobber faren
+ 
+sp ncdump -h a.nc  >> all_ncdump.out
+ 
+! Tests for simplified syntax for SHOW ATTRIBUTE:
+ 
+! SHOW ATT varname   is like SHOW ATT/ALL varname
+! SHOW ATT dset      same output as SHOW DATA/ATT dset
+ 
+can data/all
+use ocean_atlas_temp
+sho att temp
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ TEMP.missing_value = -1.E+34
+ TEMP._FillValue = -1.E+34
+ TEMP.long_name = Temperature 
+ TEMP.history = From ocean_atlas_monthly 
+ TEMP.units = Deg C 
+sho att ocean_atlas_temp
+     currently SET data sets:
+    1> ./ocean_atlas_temp.cdf  (default)
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
+  
+ .                               history         CHAR        28   T       FERRET V4.90 (GUI) 04-Feb-98
+  
+(XAX_LEV9421_380)      DOUBLE    units           CHAR        12   T       degrees_east
+                                 modulo          CHAR        1    T
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        15   F       XAX_LEV9421_380
+  
+(YAX_LEV94)            DOUBLE    units           CHAR        13   T       degrees_north
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        9    F       YAX_LEV94
+  
+(ZAXLEVIT191_1)        DOUBLE    units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 orig_file_axnameCHAR        13   F       ZAXLEVIT191_1
+  
+(TIME1)                DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
+                                 time_origin     CHAR        20   T       01-JAN-0000 00:00:00
+                                 modulo          CHAR        1    T
+                                 orig_file_axnameCHAR        4    F       TIME
+  
+ TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.E+34
+                                 _FillValue      FLOAT       1    T       -1.E+34
+                                 long_name       CHAR        11   T       Temperature
+                                 history         CHAR        24   T       From ocean_atlas_monthly
+                                 units           CHAR        5    T       Deg C
+  
+sho att (`temp,return=xaxis`)
+ !-> sho att (XAX_LEV9421_380)
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ (XAX_LEV9421_380).units = degrees_east 
+ (XAX_LEV9421_380).modulo =   
+ (XAX_LEV9421_380).point_spacing = even 
+ (XAX_LEV9421_380).orig_file_axname = XAX_LEV9421_380 
+ 
+use levitus_climatology
+sho att 1
+     currently SET data sets:
+    1> ./ocean_atlas_temp.cdf
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
+  
+ .                               history         CHAR        28   T       FERRET V4.90 (GUI) 04-Feb-98
+  
+(XAX_LEV9421_380)      DOUBLE    units           CHAR        12   T       degrees_east
+                                 modulo          CHAR        1    T
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        15   F       XAX_LEV9421_380
+  
+(YAX_LEV94)            DOUBLE    units           CHAR        13   T       degrees_north
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        9    F       YAX_LEV94
+  
+(ZAXLEVIT191_1)        DOUBLE    units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 orig_file_axnameCHAR        13   F       ZAXLEVIT191_1
+  
+(TIME1)                DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
+                                 time_origin     CHAR        20   T       01-JAN-0000 00:00:00
+                                 modulo          CHAR        1    T
+                                 orig_file_axnameCHAR        4    F       TIME
+  
+ TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.E+34
+                                 _FillValue      FLOAT       1    T       -1.E+34
+                                 long_name       CHAR        11   T       Temperature
+                                 history         CHAR        24   T       From ocean_atlas_monthly
+                                 units           CHAR        5    T       Deg C
+  
+sho att 2
+     currently SET data sets:
+    2> ./levitus_climatology.cdf  (default)
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
+  
+ .                               history         CHAR        24   T       FERRET V5.22    5-Apr-01
+  
+(XAXLEVITR1_160)       DOUBLE    units           CHAR        12   T       degrees_east
+                                 modulo          CHAR        1    T
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        14   F       XAXLEVITR1_160
+  
+(YAXLEVITR1_90)        DOUBLE    units           CHAR        13   T       degrees_north
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        13   F       YAXLEVITR1_90
+  
+(ZAXLEVITR1_1)         DOUBLE    units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 orig_file_axnameCHAR        12   F       ZAXLEVITR1_1
+  
+ TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.E+10
+                                 _FillValue      FLOAT       1    T       -1.E+10
+                                 long_name       CHAR        11   T       TEMPERATURE
+                                 history         CHAR        24   T       From levitus_climatology
+                                 units           CHAR        5    T       DEG C
+  
+ 
+sho att temp[d=1]
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ TEMP.missing_value = -1.E+34
+ TEMP._FillValue = -1.E+34
+ TEMP.long_name = Temperature 
+ TEMP.history = From ocean_atlas_monthly 
+ TEMP.units = Deg C 
+sho att temp[d=2]
+     attributes for dataset: ./levitus_climatology.cdf
+ TEMP.missing_value = -1.E+10
+ TEMP._FillValue = -1.E+10
+ TEMP.long_name = TEMPERATURE 
+ TEMP.history = From levitus_climatology 
+ TEMP.units = DEG C 
+ 
+sho att (`temp[d=1],return=taxis`[d=1])
+ !-> sho att (TIME1[d=1])
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ (TIME1).units = hour since 0000-01-01 00:00:00 
+ (TIME1).time_origin = 01-JAN-0000 00:00:00 
+ (TIME1).modulo =   
+ (TIME1).orig_file_axname = TIME 
+ 
+sho att .
+     attributes for dataset: ./levitus_climatology.cdf
+ ..history = FERRET V5.22    5-Apr-01 
+*** Running test: bn_transforms.jnl
+! Test the transforms
+ 
+use coads_climatology
+ 
+list/L=1/prec=7 sst[x=100:120@ave,y=10:30@ave]
+             VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
+             FILENAME : coads_climatology.cdf
+             LONGITUDE: 100E to 120E (XY ave)
+             LATITUDE : 10N to 30N (XY ave)
+             TIME     : 16-JAN 06:00
+          24.02076
+ 
+list/L=1/prec=7 sst[x=100:120@din,y=10:30@din]
+             VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
+             FILENAME : coads_climatology.cdf
+             LONGITUDE: 100E to 120E (XY integ.)
+             LATITUDE : 10N to 30N (XY integ.)
+             TIME     : 16-JAN 06:00
+          6.008341E+13
+ 
+list/L=1/y=0/x=83w:49w sst,sst[x=@cda], sst[x=@cdb], sst[x=@cia], sst[x=@cib]
+             DATA SET: ./coads_climatology.cdf
+             LONGITUDE: 83W to 49W
+             LATITUDE: 1S
+             TIME: 16-JAN 06:00
+ Column  1: SST is SEA SURFACE TEMPERATURE (Deg C)
+ Column  2: SST[X=@CDA:1] is SEA SURFACE TEMPERATURE (Deg C)(closest dist above on X)
+ Column  3: SST[X=@CDB:1] is SEA SURFACE TEMPERATURE (Deg C)(closest dist below on X)
+ Column  4: SST[X=@CIA:1] is SEA SURFACE TEMPERATURE (Deg C)(closest index above on X)
+ Column  5: SST[X=@CIB:1] is SEA SURFACE TEMPERATURE (Deg C)(closest index below on X)
+               SST    SST    SST    SST    SST
+83W   / 129:  24.60   0.00   0.00   0.00   0.00
+81W   / 130:  25.44   0.00   0.00   0.00   0.00
+79W   / 131:   ....  26.00   2.00  13.00   1.00
+77W   / 132:   ....  24.00   4.00  12.00   2.00
+75W   / 133:   ....  22.00   6.00  11.00   3.00
+73W   / 134:   ....  20.00   8.00  10.00   4.00
+71W   / 135:   ....  18.00  10.00   9.00   5.00
+69W   / 136:   ....  16.00  12.00   8.00   6.00
+67W   / 137:   ....  14.00  14.00   7.00   7.00
+65W   / 138:   ....  12.00  16.00   6.00   8.00
+63W   / 139:   ....  10.00  18.00   5.00   9.00
+61W   / 140:   ....   8.00  20.00   4.00  10.00
+59W   / 141:   ....   6.00  22.00   3.00  11.00
+57W   / 142:   ....   4.00  24.00   2.00  12.00
+55W   / 143:   ....   2.00  26.00   1.00  13.00
+53W   / 144:  27.35   0.00   0.00   0.00   0.00
+51W   / 145:  27.13   0.00   0.00   0.00   0.00
+49W   / 146:  27.38   0.00   0.00   0.00   0.00
+ 
+list/L=1/y=10:33/x=93w sst, sst[y=@ddb], sst[y=@ddc], sst[y=@ddf]
+             DATA SET: ./coads_climatology.cdf
+             LATITUDE: 10N to 33N
+             LONGITUDE: 93W
+             TIME: 16-JAN 06:00
+ Column  1: SST is SEA SURFACE TEMPERATURE (Deg C)
+ Column  2: SST[Y=@DDB] is SEA SURFACE TEMPERATURE (Deg C)(backwards derivative on Y)
+ Column  3: SST[Y=@DDC] is SEA SURFACE TEMPERATURE (Deg C)(centered derivative on Y)
+ Column  4: SST[Y=@DDF] is SEA SURFACE TEMPERATURE (Deg C)(forward derivative on Y)
+              SST      SST        SST        SST
+11N   / 51:  26.99  2.217E-06  1.611E-06  1.005E-06
+13N   / 52:  27.21  1.005E-06  1.468E-06  1.932E-06
+15N   / 53:  27.64  1.932E-06  5.847E-07 -7.622E-07
+17N   / 54:  27.47 -7.622E-07 -7.072E-06 -1.338E-05
+19N   / 55:  24.50 -1.338E-05 -7.908E-06 -2.435E-06
+21N   / 56:  23.95 -2.435E-06 -1.473E-06 -5.111E-07
+23N   / 57:  23.84 -5.111E-07 -1.898E-06 -3.286E-06
+25N   / 58:  23.11 -3.286E-06 -3.738E-06 -4.190E-06
+27N   / 59:  22.18 -4.190E-06 -9.122E-06 -1.405E-05
+29N   / 60:  19.05 -1.405E-05       ....       ....
+31N   / 61:   ....       ....       ....       ....
+33N   / 62:   ....       ....       ....       ....
+ 
+list/L=1/y=10:33/x=93w sst, sst[y=@evnt:23.84]
+             DATA SET: ./coads_climatology.cdf
+             LATITUDE: 10N to 33N
+             LONGITUDE: 93W
+             TIME: 16-JAN 06:00
+ Column  1: SST is SEA SURFACE TEMPERATURE (Deg C)
+ Column  2: SST[Y=@EVN: 23.84] is SEA SURFACE TEMPERATURE (Deg C)(event mask at 23.84 on Y)
+              SST    SST
+11N   / 51:  26.99  0.000
+13N   / 52:  27.21  0.000
+15N   / 53:  27.64  0.000
+17N   / 54:  27.47  0.000
+19N   / 55:  24.50  0.000
+21N   / 56:  23.95  0.000
+23N   / 57:  23.84  0.000
+25N   / 58:  23.11  1.000
+27N   / 59:  22.18  1.000
+29N   / 60:  19.05  1.000
+31N   / 61:   ....  1.000
+33N   / 62:   ....  1.000
+ 
+list/L=1/y=23:51/x=93w sst, sst[y=@fav], sst[y=@fln], sst[y=@fnr]
+             DATA SET: ./coads_climatology.cdf
+             LATITUDE: 23N to 51N
+             LONGITUDE: 93W
+             TIME: 16-JAN 06:00
+ Column  1: SST is SEA SURFACE TEMPERATURE (Deg C)
+ Column  2: SST[Y=@FAV:3] is SEA SURFACE TEMPERATURE (Deg C)(ave-filled by 3 pts on Y)
+ Column  3: SST[Y=@FLN:1] is SEA SURFACE TEMPERATURE (Deg C)(linear-filled by 1 pts on Y)
+ Column  4: SST[Y=@FNR:1] is SEA SURFACE TEMPERATURE (Deg C)(nearest-filled by 1 pts on Y)
+              SST    SST    SST    SST
+23N   / 57:  23.84  23.84  23.84  23.84
+25N   / 58:  23.11  23.11  23.11  23.11
+27N   / 59:  22.18  22.18  22.18  22.18
+29N   / 60:  19.05  19.05  19.05  19.05
+31N   / 61:   ....  19.05  18.15  19.05
+33N   / 62:   ....   ....  17.24  19.05
+35N   / 63:   ....   ....  16.33  19.05
+37N   / 64:   ....   ....  15.43  15.43
+39N   / 65:   ....   ....  14.52  11.80
+41N   / 66:   ....   ....  13.61  11.80
+43N   / 67:   ....  11.80  12.71  11.80
+45N   / 68:  11.80  11.80  11.80  11.80
+47N   / 69:   2.47   2.47   2.47   2.47
+49N   / 70:   ....   2.47   ....   2.47
+51N   / 71:   ....   ....   ....   2.47
+ 
+list/L=1/y=23:51/x=93w sst[y=23:51@min], sst[y=23:51@max]
+             DATA SET: ./coads_climatology.cdf
+             LONGITUDE: 93W
+             LATITUDE: 23N to 51N
+             TIME: 16-JAN 06:00
+ Column  1: SST[Y=@MIN] is SEA SURFACE TEMPERATURE (Deg C)
+ Column  2: SST[Y=@MAX] is SEA SURFACE TEMPERATURE (Deg C)
+            SST    SST
+I / *:     2.466  23.84
+ 
+list/L=1/y=23:51/x=93w sst[y=23:51@nbd], sst[y=23:51@ngd]
+             DATA SET: ./coads_climatology.cdf
+             LONGITUDE: 93W
+             LATITUDE: 23N to 51N
+             TIME: 16-JAN 06:00
+ Column  1: SST[Y=@NBD] is SEA SURFACE TEMPERATURE (# of points)
+ Column  2: SST[Y=@NGD] is SEA SURFACE TEMPERATURE (# of points)
+            SST    SST
+I / *:     9.000  6.000
+ 
+list/L=1/y=1:11/x=93w sst, sst[y=@iin]
+             DATA SET: ./coads_climatology.cdf
+             LATITUDE: 1N to 11N
+             LONGITUDE: 93W
+             TIME: 16-JAN 06:00
+ Column  1: SST is SEA SURFACE TEMPERATURE (Deg C)
+ Column  2: SST[Y=@IIN] is SEA SURFACE TEMPERATURE (Deg C)(indef. integ. on Y)
+              SST      SST
+1N    / 46:  25.77  2.865E+06
+3N    / 47:  26.60  8.780E+06
+5N    / 48:  26.86  1.475E+07
+7N    / 49:  26.57  2.066E+07
+9N    / 50:  26.49  2.656E+07
+11N   / 51:  26.99  2.956E+07
+ 
+list/L=1/y=23:25/x=93w sst, sst[y=24@itp]
+             DATA SET: ./coads_climatology.cdf
+             LONGITUDE: 93W
+             TIME: 16-JAN 06:00
+ Column  1: SST[Y=23N:25N] is SEA SURFACE TEMPERATURE (Deg C)
+ Column  2: SST[Y=24N@ITP] is SEA SURFACE TEMPERATURE (Deg C)
+              SST    SST
+23N   / 57:  23.84  23.47
+25N   / 58:  23.11  23.47
+ 
+list/L=1/y=11:23/x=93w sst, sst[y=@rsum], sst[y=@sbn], sst[y=@sbx], sst[y=@shf:-1]
+             DATA SET: ./coads_climatology.cdf
+             LATITUDE: 11N to 23N
+             LONGITUDE: 93W
+             TIME: 16-JAN 06:00
+ Column  1: SST is SEA SURFACE TEMPERATURE (Deg C)
+ Column  2: SST[Y=@RSU] is SEA SURFACE TEMPERATURE (Deg C)(running sum on Y)
+ Column  3: SST[Y=@SBN:3] is SEA SURFACE TEMPERATURE (Deg C)(binomial smoothed by 3 pts on Y)
+ Column  4: SST[Y=@SBX:3] is SEA SURFACE TEMPERATURE (Deg C)(box smoothed by 3 pts on Y)
+ Column  5: SST[Y=@SHF:-1] is SEA SURFACE TEMPERATURE (Deg C)(shifted by -1 pts on Y)
+              SST    SST    SST    SST    SST
+11N   / 51:  26.99   27.0  26.92  26.90  26.49
+13N   / 52:  27.21   54.2  27.26  27.28  26.99
+15N   / 53:  27.64   81.8  27.49  27.44  27.21
+17N   / 54:  27.47  109.3  26.77  26.54  27.64
+19N   / 55:  24.50  133.8  25.10  25.31  27.47
+21N   / 56:  23.95  157.8  24.06  24.10  24.50
+23N   / 57:  23.84  181.6  23.69  23.63  23.95
+ 
+list/L=1/y=11:23/x=93w sst, sst[y=@shn] , sst[y=@spz], sst[y=@sum], sst[y=@swl], sst[y=@weq:26]
+             DATA SET: ./coads_climatology.cdf
+             LATITUDE: 11N to 23N
+             LONGITUDE: 93W
+             TIME: 16-JAN 06:00
+ Column  1: SST is SEA SURFACE TEMPERATURE (Deg C)
+ Column  2: SST[Y=@SHN:3] is SEA SURFACE TEMPERATURE (Deg C)(Hanning smoothed by 3 pts on Y)
+ Column  3: SST[Y=@SPZ:3] is SEA SURFACE TEMPERATURE (Deg C)(Parzen smoothed by 3 pts on Y)
+ Column  4: SST[Y=@SUM] is SEA SURFACE TEMPERATURE (Deg C)
+ Column  5: SST[Y=@SWL:3] is SEA SURFACE TEMPERATURE (Deg C)(Welch smoothed by 3 pts on Y)
+ Column  6: SST[Y=@WEQ:26] is SEA SURFACE TEMPERATURE (Deg C)(weighted equal of 26 on Y)
+              SST    SST    SST    SST    SST    SST
+11N   / 51:  26.99  26.92  26.92  181.6  26.91    ....
+13N   / 52:  27.21  27.26  27.26  181.6  27.27    ....
+15N   / 53:  27.64  27.49  27.49  181.6  27.46    ....
+17N   / 54:  27.47  26.77  26.77  181.6  26.63  0.5056
+19N   / 55:  24.50  25.10  25.10  181.6  25.23  0.4944
+21N   / 56:  23.95  24.06  24.06  181.6  24.08    ....
+23N   / 57:  23.84  23.69  23.69  181.6  23.66    ....
+*** Running test: bn_variance.jnl
+ ! bn_variance.jnl
+ ! the @VAR transform is not tested in bn_transforms.jnl script.
+ 
+use coads_climatology
+list/x=100/y=10 sst[t=@var]
+             VARIABLE : Variance of SEA SURFACE TEMPERATURE ((Deg C)^2)
+             FILENAME : coads_climatology.cdf
+             LONGITUDE: 99E
+             LATITUDE : 9N
+             TIME     : 01-JAN 00:45 to 01-APR 08:12 (variance)
+          0.4424
+list/x=100/L=1 sst[y=@var]
+             VARIABLE : Variance of SEA SURFACE TEMPERATURE ((Deg C)^2)
+             FILENAME : coads_climatology.cdf
+             LONGITUDE: 99E
+             LATITUDE : 90S to 90N (variance)
+             TIME     : 16-JAN 06:00
+          102.3
+list/y=10/L=1 sst[x=@var]
+             VARIABLE : Variance of SEA SURFACE TEMPERATURE ((Deg C)^2)
+             FILENAME : coads_climatology.cdf
+             LONGITUDE: 20E to 20E(380) (variance)
+             LATITUDE : 9N
+             TIME     : 16-JAN 06:00
+          0.5010
+ 
+use gt4d011.cdf
+list/y=3/l=1/x=233 u[z=@var]
+             VARIABLE : Variance of ZONAL VELOCITY ((cm/sec)^2)
+             FILENAME : gt4d011.cdf
+             LONGITUDE: 127W
+             LATITUDE : 3N
+             DEPTH (m): 0 to 100 (variance)
+             TIME     : 17-AUG-1982 12:00
+          11.33
+*** Running test: bn_linecolors.jnl
+! bn_linecolors.jnl
+! 5/2006 ACM
+! test setting more line colors
+ 
+set mode meta linecolors.plt
+ 
+set mode linec:12
+sho mode linecolors
+      MODE            STATE        ARGUMENT
+      LINECOLORS       SET              12
+ 
+can win/all
+set win/new
+ 
+ppl color,7,100,50,0   ! orange
+ppl color,8,0,55,0     ! dark green
+ppl color,9,60,0,100   ! purple
+ppl color,10,100,60,70 ! pink
+ppl color,11,80,70,60  ! tan
+ppl color,12,100,75,0  ! yellow
+plot/thick/line/i=1:100 \
+ cos(i/20), cos(i/24), cos(i/28), cos(i/32), \
+ cos(i/36), cos(i/40), cos(i/44), cos(i/48), \
+ cos(i/52), cos(i/56), cos(i/60), cos(i/64)
+ 
+set mode/last meta
+ 
+! Test choosing individual colors and thickness combinations
+! All commands except for contour have /THICK
+ 
+plot/color=7/thick=3/i=1:100 cos(i/10)
+plot/over/color=8/thick=2/i=1:100 cos(i/12)
+plot/over/color=12/thick=1/i=1:100 cos(i/8)
+ 
+vector/color=11/thick=2/i=1:100/j=1:100 cos(i/10)+sin(j/14), cos(i/20)-sin(j/30)
+ 
+polygon/thick=3/color=12/palette=purple {1,2,1}, {2,1,0.5}
+ 
+contour/color=7/i=1:100/j=1:100 cos(i/10)+sin(j/14)
+contour/over/color=20/i=1:100/j=1:100 cos(i/15)+sin(j/20)
+ 
+can mode linecolors
+sho mode linecolors
+      MODE            STATE        ARGUMENT
+      LINECOLORS       SET               6
+ 
+! resetting line colors with cancel mode does not
+! take effect until we do a SET WIN/NEW
+ 
+plot/line/i=1:100 \
+ cos(i/20), cos(i/24), cos(i/28), cos(i/32), \
+ cos(i/36), cos(i/40), cos(i/44), cos(i/48), \
+ cos(i/52), cos(i/56), cos(i/60), cos(i/64)
+ 
+set win/new
+plot/line/i=1:100\
+ cos(i/20), cos(i/24), cos(i/28), cos(i/32), \
+ cos(i/36), cos(i/40), cos(i/44), cos(i/48), \
+ cos(i/52), cos(i/56), cos(i/60), cos(i/64)
+ 
+can win/all
+set win/new
+ 
+*** Running test: bn_cdf_errmsg.jnl
+! bn_cdf_errmsg.jnl
+! ACM 7/13/2006
+! test reporting of cdf error messages from OPeNDAP library v3.6.2
+ 
+set mode ignore
+ 
+! bad file names; file missing or misspelled
+use this_is_not_a_file.nc
+ 
+ 
+!! Change to another server, our server down...
+!!use  "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf"
+!! Not working either as of 7/5/2007
+!! use "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/nofile.cdf"
+ 
+!! Change to another server, this one not working 3/2012
+!! This is a valid address
+!!use "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauy/dods"
+ 
+!! change the variable name to something nonexistent
+!!use "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods"
+ 
+! This is a valid address
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_air.cdf"
+ 
+! change the variable name to something nonexistent
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf"
+ 
+! bad server
+use  "http://noserver/a/nofile.cdf"
+ 
+! Not a netCDF file: Create an ascii file with extension .nc
+ 
+list/nohead/file=asc.dat {1,2,3}
+ 
+sp rm -f asc.nc
+sp mv asc.dat asc.nc
+use asc.nc
+ 
+set mode/last ignore
+ 
 *** Running test: bn600_bug_fixes.jnl
 ! bn600_bug_fixes.jnl
 ! test various fixes that went into version 6.00
@@ -50192,7 +52741,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -50237,7 +52786,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -50981,7 +53530,7 @@ use string4d
 sh grid axy
     GRID GMS2
  name       axis              # pts   start                end
- X2AX      X                    2 r   1                    2
+ X2AX      X                    2mr   1                    2
  Y3AX      Y                    3 r   1                    3
  Z4AX      Z                    4 r   1                    4
  T2AX      T                    2 r   1                    2
@@ -50989,11 +53538,11 @@ sh grid axy
  normal    F
 show axis x2ax
  name       axis              # pts   start                end
- X2AX      X                    2 r   1                    2
-   Axis span (to cell edges) = 2
+ X2AX      X                    2mr   1                    2
+   Axis span (to cell edges) = 2 (modulo length = axis span)
 say `axy,return=xmod`
- !-> MESSAGE/CONTINUE
-
+ !-> MESSAGE/CONTINUE 2
+2
 *** Running test: bn602_bug_fixes.jnl
 ! bn602_bug_fixes.jnl
 ! test various fixes that went into version 6.02
@@ -51042,6 +53591,12 @@ sh axis/xml timenoleap
 </attribute>
 <attribute name="calendar" type="char">
    <value><![CDATA[NOLEAP]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="axis" type="char">
+   <value><![CDATA[T]]></value>
 </attribute>
 </axis>
 </axes>
@@ -51809,6 +54364,8 @@ EOFSVD_STAT(A)
 EOFSVD_TFUNC(A)
 EXPND_BY_LEN(var,len,nx)
 FC_ISUBSET(index_list,lengths,nx,FullData)
+EXPNDI_BY_Z_COUNTS(dat,counts,max_profile_len)
+EXPNDI_ID_BY_Z_COUNTS(counts,max profile len)
 ADD_9(A,B,C,D,E,F,G,H,I)
 APPENDE(ENS,VAR)
 AVET(A)
@@ -52697,13 +55254,13 @@ SHOW DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="axis" type="char">
-   <value>Z</value>
+   <value><![CDATA[Z]]></value>
 </attribute>
 <attribute name="standard_name" type="char">
-   <value>altitude</value>
+   <value><![CDATA[altitude]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>ZAXIS_ORIG</value>
+   <value><![CDATA[ZAXIS_ORIG]]></value>
 </attribute>
 </axis>
 </axes>
@@ -52779,13 +55336,13 @@ SHOW DATA/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="axis" type="char">
-   <value>Z</value>
+   <value><![CDATA[Z]]></value>
 </attribute>
 <attribute name="standard_name" type="char">
-   <value>altitude</value>
+   <value><![CDATA[altitude]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>ZAXIS_ORIG</value>
+   <value><![CDATA[ZAXIS_ORIG]]></value>
 </attribute>
 </axis>
 <axis name="ZAXIS_DES">
@@ -52806,6 +55363,12 @@ SHOW DATA/VAR/XML
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="axis" type="char">
+   <value><![CDATA[Z]]></value>
 </attribute>
 </axis>
 </axes>
@@ -55985,10 +58548,10 @@ SH GRID am
  normal    F
 *** Running test: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.005998"
-CLOCK_SECS = "0.004"
-CURRENT_DATE = " 6-May-13"
-CURRENT_TIME = "12:25:21"
+DELTA_CPU = "0.009997"
+CLOCK_SECS = "0.006"
+CURRENT_DATE = "21-May-13"
+CURRENT_TIME = "11:52:10"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -55997,8 +58560,8 @@ CURRENT_TIME = "12:25:21"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.044993"
-CLOCK_SECS = "0.052"
+DELTA_CPU = "0.075989"
+CLOCK_SECS = "0.085"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -56012,60 +58575,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.389941
+ !-> DEFINE VARIABLE ten_plots = 0.406938
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.001"
-CLOCK_SECS = "0.443"
+DELTA_CPU = "9.99E-04"
+CLOCK_SECS = "0.493"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.443"
+CLOCK_SECS = "0.494"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.042993
- !-> DEFINE VARIABLE sumcpu =0.042993
+ !-> DEFINE VARIABLE dt = 0.042994
+ !-> DEFINE VARIABLE sumcpu =0.042994
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.043994
- !-> DEFINE VARIABLE sumcpu =0.086987
-!-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.042992
- !-> DEFINE VARIABLE sumcpu =0.129979
-!-> REPEAT: K=4
  !-> DEFINE VARIABLE dt = 0.027996
- !-> DEFINE VARIABLE sumcpu =0.157975
+ !-> DEFINE VARIABLE sumcpu =0.07099
+!-> REPEAT: K=3
+ !-> DEFINE VARIABLE dt = 0.025996
+ !-> DEFINE VARIABLE sumcpu =0.096986
+!-> REPEAT: K=4
+ !-> DEFINE VARIABLE dt = 0.026995
+ !-> DEFINE VARIABLE sumcpu =0.123981
 !-> REPEAT: K=5
  !-> DEFINE VARIABLE dt = 0.025997
- !-> DEFINE VARIABLE sumcpu =0.183972
+ !-> DEFINE VARIABLE sumcpu =0.149978
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.024996
- !-> DEFINE VARIABLE sumcpu =0.208968
-!-> REPEAT: K=7
  !-> DEFINE VARIABLE dt = 0.025996
- !-> DEFINE VARIABLE sumcpu =0.234964
+ !-> DEFINE VARIABLE sumcpu =0.175974
+!-> REPEAT: K=7
+ !-> DEFINE VARIABLE dt = 0.024997
+ !-> DEFINE VARIABLE sumcpu =0.200971
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.024996
- !-> DEFINE VARIABLE sumcpu =0.25996
+ !-> DEFINE VARIABLE dt = 0.024995
+ !-> DEFINE VARIABLE sumcpu =0.225966
 !-> REPEAT: K=9
  !-> DEFINE VARIABLE dt = 0.024997
- !-> DEFINE VARIABLE sumcpu =0.284957
+ !-> DEFINE VARIABLE sumcpu =0.250963
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.024995
- !-> DEFINE VARIABLE sumcpu =0.309952
+ !-> DEFINE VARIABLE dt = 0.025996
+ !-> DEFINE VARIABLE sumcpu =0.276959
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.309952
-0.309952
+ !-> MESSAGE/CONTINUE 0.276959
+0.276959
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.755"
+CLOCK_SECS = "0.772"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = " 6-May-13"
-SESSION_TIME = "12:25"
-CURRENT_DATE = " 6-May-13"
-CURRENT_TIME = "12:25:22"
+SESSION_DATE = "21-May-13"
+SESSION_TIME = "11:52"
+CURRENT_DATE = "21-May-13"
+CURRENT_TIME = "11:52:11"
 *** Running test: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -57882,7 +60445,7 @@ sh dat/xml/var
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>COADSX</value>
+   <value><![CDATA[COADSX]]></value>
 </attribute>
 </axis>
 <axis name="COADSY">
@@ -57911,7 +60474,7 @@ sh dat/xml/var
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>COADSY</value>
+   <value><![CDATA[COADSY]]></value>
 </attribute>
 </axis>
 <axis name="TIME">
@@ -57949,7 +60512,7 @@ sh dat/xml/var
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>TIME</value>
+   <value><![CDATA[TIME]]></value>
 </attribute>
 </axis>
 </axes>
@@ -58544,7 +61107,7 @@ sp cat the_xml_file.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>XAX_LEV9421_380</value>
+   <value><![CDATA[XAX_LEV9421_380]]></value>
 </attribute>
 </axis>
 <axis name="YAX_LEV94">
@@ -58573,7 +61136,7 @@ sp cat the_xml_file.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>YAX_LEV94</value>
+   <value><![CDATA[YAX_LEV94]]></value>
 </attribute>
 </axis>
 <axis name="ZAXLEVIT191_1">
@@ -58605,7 +61168,7 @@ sp cat the_xml_file.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>ZAXLEVIT191_1</value>
+   <value><![CDATA[ZAXLEVIT191_1]]></value>
 </attribute>
 </axis>
 <axis name="TIME">
@@ -58643,7 +61206,7 @@ sp cat the_xml_file.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>TIME</value>
+   <value><![CDATA[TIME]]></value>
 </attribute>
 </axis>
 </axes>
@@ -58674,7 +61237,7 @@ sp cat the_xml_file.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>XAX_LEV9421_380</value>
+   <value><![CDATA[XAX_LEV9421_380]]></value>
 </attribute>
 </axis>
 </axes>
@@ -58705,7 +61268,7 @@ sp cat the_xml_file.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>YAX_LEV94</value>
+   <value><![CDATA[YAX_LEV94]]></value>
 </attribute>
 </axis>
 </axes>
@@ -58739,7 +61302,7 @@ sp cat the_xml_file.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>ZAXLEVIT191_1</value>
+   <value><![CDATA[ZAXLEVIT191_1]]></value>
 </attribute>
 </axis>
 </axes>
@@ -58779,7 +61342,7 @@ sp cat the_xml_file.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>TIME</value>
+   <value><![CDATA[TIME]]></value>
 </attribute>
 </axis>
 </axes>
@@ -60117,8 +62680,8 @@ list contents
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.85 (beta)"                                                     
- 3    /  3:" ! Linux 2.6.18-348.3.1.el5 64-bit - 05/06/13"                              
- 4    /  4:" !  6-May-13 12:25     "                                                    
+ 3    /  3:" ! Linux 2.6.18-348.4.1.el5 64-bit - 05/21/13"                              
+ 4    /  4:" ! 21-May-13 11:52     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -60647,7 +63210,7 @@ sh dat/var/xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>TIME</value>
+   <value><![CDATA[TIME]]></value>
 </attribute>
 </axis>
 <axis name="GRID_X_T">
@@ -60676,13 +63239,13 @@ sh dat/var/xml
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>Nominal Longitude of T-cell center</value>
+   <value><![CDATA[Nominal Longitude of T-cell center]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>X</value>
+   <value><![CDATA[X]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>grid_x_T</value>
+   <value><![CDATA[grid_x_T]]></value>
 </attribute>
 </axis>
 <axis name="GRID_Y_T">
@@ -60711,13 +63274,13 @@ sh dat/var/xml
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>Nominal Latitude of T-cell center</value>
+   <value><![CDATA[Nominal Latitude of T-cell center]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>Y</value>
+   <value><![CDATA[Y]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>grid_y_T</value>
+   <value><![CDATA[grid_y_T]]></value>
 </attribute>
 </axis>
 <axis name="ZT">
@@ -60749,13 +63312,13 @@ sh dat/var/xml
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>zt</value>
+   <value><![CDATA[zt]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>z</value>
+   <value><![CDATA[z]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>zt</value>
+   <value><![CDATA[zt]]></value>
 </attribute>
 <attribute name="bounds" type="char">
    <value>zt_bnds</value>
@@ -60807,7 +63370,7 @@ REPEAT/RANGE=1:`nd`/name=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>TIME</value>
+   <value><![CDATA[TIME]]></value>
 </attribute>
 </axis>
 </axes>
@@ -60841,13 +63404,13 @@ REPEAT/RANGE=1:`nd`/name=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>Nominal Longitude of T-cell center</value>
+   <value><![CDATA[Nominal Longitude of T-cell center]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>X</value>
+   <value><![CDATA[X]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>grid_x_T</value>
+   <value><![CDATA[grid_x_T]]></value>
 </attribute>
 </axis>
 </axes>
@@ -60881,13 +63444,13 @@ REPEAT/RANGE=1:`nd`/name=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>Nominal Latitude of T-cell center</value>
+   <value><![CDATA[Nominal Latitude of T-cell center]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>Y</value>
+   <value><![CDATA[Y]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>grid_y_T</value>
+   <value><![CDATA[grid_y_T]]></value>
 </attribute>
 </axis>
 </axes>
@@ -60924,13 +63487,13 @@ REPEAT/RANGE=1:`nd`/name=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>zt</value>
+   <value><![CDATA[zt]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>z</value>
+   <value><![CDATA[z]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>zt</value>
+   <value><![CDATA[zt]]></value>
 </attribute>
 <attribute name="bounds" type="char">
    <value>zt_bnds</value>
@@ -61067,7 +63630,7 @@ SH DAT/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>TIME</value>
+   <value><![CDATA[TIME]]></value>
 </attribute>
 </axis>
 <axis name="ZT">
@@ -61099,13 +63662,13 @@ SH DAT/VAR/XML
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>zt</value>
+   <value><![CDATA[zt]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>z</value>
+   <value><![CDATA[z]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>zt</value>
+   <value><![CDATA[zt]]></value>
 </attribute>
 <attribute name="bounds" type="char">
    <value>zt_bnds</value>
@@ -61137,13 +63700,13 @@ SH DAT/VAR/XML
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>Nominal Latitude of T-cell center</value>
+   <value><![CDATA[Nominal Latitude of T-cell center]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>Y</value>
+   <value><![CDATA[Y]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>grid_y_T</value>
+   <value><![CDATA[grid_y_T]]></value>
 </attribute>
 </axis>
 <axis name="GRID_X_T">
@@ -61172,13 +63735,13 @@ SH DAT/VAR/XML
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>Nominal Longitude of T-cell center</value>
+   <value><![CDATA[Nominal Longitude of T-cell center]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>X</value>
+   <value><![CDATA[X]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>grid_x_T</value>
+   <value><![CDATA[grid_x_T]]></value>
 </attribute>
 </axis>
 </axes>
@@ -61294,7 +63857,7 @@ SH DAT/VAR/XML
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>TIME</value>
+   <value><![CDATA[TIME]]></value>
 </attribute>
 </axis>
 <axis name="ZT">
@@ -61326,13 +63889,13 @@ SH DAT/VAR/XML
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>zt</value>
+   <value><![CDATA[zt]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>z</value>
+   <value><![CDATA[z]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>zt</value>
+   <value><![CDATA[zt]]></value>
 </attribute>
 <attribute name="bounds" type="char">
    <value>zt_bnds</value>
@@ -61364,13 +63927,13 @@ SH DAT/VAR/XML
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>Nominal Latitude of T-cell center</value>
+   <value><![CDATA[Nominal Latitude of T-cell center]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>Y</value>
+   <value><![CDATA[Y]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>grid_y_T</value>
+   <value><![CDATA[grid_y_T]]></value>
 </attribute>
 </axis>
 <axis name="GRID_X_T">
@@ -61399,13 +63962,13 @@ SH DAT/VAR/XML
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value>Nominal Longitude of T-cell center</value>
+   <value><![CDATA[Nominal Longitude of T-cell center]]></value>
 </attribute>
 <attribute name="cartesian_axis" type="char">
-   <value>X</value>
+   <value><![CDATA[X]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>grid_x_T</value>
+   <value><![CDATA[grid_x_T]]></value>
 </attribute>
 </axis>
 </axes>
@@ -63131,42 +65694,42 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.8855
- 2   / 2:  0.2561
- 3   / 3:  0.3351
- 4   / 4:  0.0335
- 5   / 5:  0.6547
+ 1   / 1:  0.0242
+ 2   / 2:  0.1425
+ 3   / 3:  0.4850
+ 4   / 4:  0.6715
+ 5   / 5:  0.2322
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.7096
- 2   / 2:  0.3110
- 3   / 3:  0.8839
- 4   / 4:  0.7967
- 5   / 5:  0.0988
+ 1   / 1:  0.1232
+ 2   / 2:  0.9849
+ 3   / 3:  0.0848
+ 4   / 4:  0.3112
+ 5   / 5:  0.3639
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.0785
- 2   / 2:  0.8765
- 3   / 3:  0.3868
- 4   / 4:  0.7975
- 5   / 5:  0.9514
- 6   / 6:  0.1395
+ 1   / 1:  0.0867
+ 2   / 2:  0.3376
+ 3   / 3:  0.7078
+ 4   / 4:  0.2036
+ 5   / 5:  0.0898
+ 6   / 6:  0.8551
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.8555
- 2   / 2:  0.9130
- 3   / 3:  0.6208
- 4   / 4:  0.9682
- 5   / 5:  0.4509
- 6   / 6:  0.8939
+ 1   / 1:  0.9510
+ 2   / 2:  0.3822
+ 3   / 3:  0.6034
+ 4   / 4:  0.0678
+ 5   / 5:  0.3392
+ 6   / 6:  0.7712
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
@@ -63198,42 +65761,42 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.3653
- 2   / 2: -0.0340
- 3   / 3: -0.8077
- 4   / 4: -0.3784
- 5   / 5:  0.8449
+ 1   / 1:  0.200
+ 2   / 2: -2.663
+ 3   / 3: -1.662
+ 4   / 4:  2.430
+ 5   / 5:  2.021
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.308
- 2   / 2: -0.670
- 3   / 3: -1.416
- 4   / 4: -1.767
- 5   / 5:  0.601
+ 1   / 1:  1.220
+ 2   / 2: -0.781
+ 3   / 3: -0.670
+ 4   / 4:  1.511
+ 5   / 5: -1.158
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.981
- 2   / 2:  0.326
- 3   / 3: -1.414
- 4   / 4: -0.285
- 5   / 5:  1.007
- 6   / 6:  0.161
+ 1   / 1: -1.358
+ 2   / 2:  0.573
+ 3   / 3:  0.000
+ 4   / 4: -1.122
+ 5   / 5:  0.180
+ 6   / 6:  1.461
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.203
- 2   / 2: -0.192
- 3   / 3: -0.286
- 4   / 4:  1.011
- 5   / 5:  0.329
- 6   / 6: -0.434
+ 1   / 1:  1.936
+ 2   / 2:  1.432
+ 3   / 3: -1.153
+ 4   / 4: -0.505
+ 5   / 5: -0.163
+ 6   / 6:  0.659
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
@@ -63269,14 +65832,14 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
             VAR2   VAR2    VAR2
-0     / 1:  1.387  1.387  0.8909
-20    / 2:  0.990  0.990  0.8909
-40    / 3:  0.891  0.891 -0.3482
-60    / 4: -0.348 -0.348  0.0672
-80    / 5: -0.541 -0.445  0.0672
-100   / 6: -0.445 -0.445  0.0672
-120   / 7: -0.413 -0.413  0.0672
-140   / 8:  0.067  0.067  0.0672
+0     / 1:  1.740  1.740  0.8295
+20    / 2:  1.386  1.386  0.8295
+40    / 3:  0.830  0.830  0.0861
+60    / 4: -0.289 -0.029  0.7768
+80    / 5: -0.029 -0.029  0.7768
+100   / 6: -0.009 -0.009  0.7768
+120   / 7:  0.086  0.086  0.7768
+140   / 8:  0.777  0.777  0.7757
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -63520,7 +66083,7 @@ sp cat xml_out.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>COADSX</value>
+   <value><![CDATA[COADSX]]></value>
 </attribute>
 </axis>
 <axis name="COADSY">
@@ -63549,7 +66112,7 @@ sp cat xml_out.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>COADSY</value>
+   <value><![CDATA[COADSY]]></value>
 </attribute>
 </axis>
 <axis name="TIME">
@@ -63587,7 +66150,7 @@ sp cat xml_out.xml
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value>TIME</value>
+   <value><![CDATA[TIME]]></value>
 </attribute>
 </axis>
 </axes>
@@ -68018,6 +70581,9 @@ list/L=1:8 taux[x=@sum,y=@sum]
  23-SEP-1982 00 / 7:  -39.6
  29-SEP-1982 02 / 8:  -39.8
 can mode diag
+ 
+! restore default setting
+set mode 6d_lab
 *** Running test: bn682_bug_fixes.jnl
 ! bn682_bug_fixes.jnl
 ! test various fixes that went into version 6.82
@@ -68385,7 +70951,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68440,7 +71006,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68484,7 +71050,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68528,7 +71094,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68565,7 +71131,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68603,7 +71169,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68670,7 +71236,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68719,7 +71285,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68780,7 +71346,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68821,7 +71387,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68862,7 +71428,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68903,7 +71469,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -68941,7 +71507,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -69167,7 +71733,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -69205,7 +71771,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -69252,7 +71818,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -69296,7 +71862,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -69321,7 +71887,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -69346,7 +71912,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85   6-May-13
+ .                               history         CHAR        23   T       FERRET V6.85  21-May-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -69652,6 +72218,106 @@ list/prec=10 day, lon, lat, tim
 4   / 4:  734654.0313  330.1234800  42.00007000  2.777778042E-04
  
  
+GO bn_reset
+cancel mode verify
+GO err6842_context_shape
+! err6842_context_shape.jnl
+! 5/2013 acm
+! Continuing the fixes for #1801 (see ticket 2051, and
+! see err68_context_shape.jnl
+ 
+! Compound expressions did not always return the correct
+! result,depending on the order of the sub-expressions.
+ 
+use coads_climatology
+ 
+! All the returns in this script should say XYT
+ 
+! Here the second used to just say XY
+ 
+let a = sst - sst[t=1:12@ave]
+let b = sst - sst[t=@ave]
+say `a,ret=shape`
+ !-> MESSAGE/CONTINUE XYT
+XYT
+say `b,ret=shape`
+ !-> MESSAGE/CONTINUE XYT
+XYT
+ 
+let a = sst[t=1:12@ave] + sst
+let b = sst[t=@ave] + sst
+say `a,ret=shape`
+ !-> MESSAGE/CONTINUE XYT
+XYT
+say `b,ret=shape`
+ !-> MESSAGE/CONTINUE XYT
+XYT
+ 
+! The second used to just say XY
+! and the third said XY
+ 
+let a = sst - sst[t=1:12@ave] + sst[x=1:100@ave]
+let b = sst - sst[t=@ave] + sst[x=@ave]
+let c = sst - sst[x=@ave] + sst[t=@ave]
+say `a,ret=shape`
+ !-> MESSAGE/CONTINUE XYT
+XYT
+say `b,ret=shape`
+ !-> MESSAGE/CONTINUE XYT
+XYT
+say `c,ret=shape`
+ !-> MESSAGE/CONTINUE XYT
+XYT
+ 
+*** Running test: bn_dsg_e_x.jnl
+! bn_dsg_e.jnl
+!
+!  Discrete Sampling Geometries files
+!  Create grids such that the instance dimension
+!  is on the E axis, so that the variable which
+!  has the cf_role attribute has an E grid.
+!  The obs axis is in the X direction.
+ 
+use dsg.nc
+sh dat
+     currently SET data sets:
+    1> ./dsg.nc  (default)
+ name     title                             I         J         K         L         M         N
+ ROWSIZE  number of obs for this profile   ...       ...       ...       ...       1:3       ...
+ PROFILE  profile ID: Cruise and Station   ...       ...       ...       ...       1:3       ...
+ TIME     time                             ...       ...       ...       ...       1:3       ...
+ LATITUDE station latitude                 ...       ...       ...       ...       1:3       ...
+ LONGITUDE
+          station longitude                ...       ...       ...       ...       1:3       ...
+ POT_TEMP_DEGC
+          pot_temp_degc                    1:34      ...       ...       ...       ...       ...
+ SAL      sal                              1:34      ...       ...       ...       ...       ...
+ 
+sh att profile
+     attributes for dataset: ./dsg.nc
+ profile.missing_value = -1.E+34
+ profile._FillValue = -1.E+34
+ profile.long_name = profile ID: Cruise and Station 
+ profile.cf_role = profile_id 
+ profile.history = From FINAL_verification_data_all_PacOOS_NHL_OCNMS_CCCC_03072013.txt 
+sh grid rowsize
+    GRID GEN1
+ name       axis              # pts   start                end
+ normal    X
+ normal    Y
+ normal    Z
+ normal    T
+ PROF      E                    3 r   1                    3
+ normal    F
+sh grid sal
+    GRID GEN2
+ name       axis              # pts   start                end
+ OBS       X                   34 r   1                    34
+ normal    Y
+ normal    Z
+ normal    T
+ normal    E
+ normal    F
 *** Running test: bn_all_ef.jnl
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -70490,17 +73156,17 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
-FERRET_PLATFORM = "Linux 2.6.18-348.3.1.el5 64-bit"
+FERRET_PLATFORM = "Linux 2.6.18-348.4.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = " 6-May-13"
-SESSION_TIME = "12:25"
-SESSION_PID = "7716"
-DELTA_CPU = "0.022996"
+SESSION_DATE = "21-May-13"
+SESSION_TIME = "11:52"
+SESSION_PID = "4412"
+DELTA_CPU = "0.021995"
 CLOCK_SECS = "0.018"
-CURRENT_DATE = " 6-May-13"
-CURRENT_TIME = "12:25:39"
+CURRENT_DATE = "21-May-13"
+CURRENT_TIME = "11:52:28"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -70572,4 +73238,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Mon May  6 12:25:39 PDT 2013
+Ended at Tue May 21 11:52:28 PDT 2013

@@ -109,6 +109,9 @@
 * V64+ *acm 12/09 - Fix bug 1710: In the grid axis selection table, ax_choice(4,1)
 *                   changed from Not Possible to Not Applicable
 *      *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* v685 *acm* 4/13   Call WARN for warning message
+* v685 *acm* 5/13   Fix ticket 2051, setting uvar_given(idim,uvar) when the
+*                   user-variable has multiple sub-expressions
 
 	include 'tmap_dims.parm'
 	include 'grid_chg_fcns.parm'
@@ -136,7 +139,7 @@
      .			mrg_grd, mrg_ax, mrg_len, com_grd, com_ax, com_len,
      .			idim, i, icom, imrg, com_uvar, com_class, mrg_class,
      .			uv_class, ax_choice(6,5), joint_match(0:3,0:3),
-     .			lims_gvn, gcfcn, axis_source(nferdims)
+     .			lims_gvn, gcfcn, axis_source(nferdims), uvar_test
 
 * local parameter declarations
 	INTEGER		EXP,   IMP,   WRN1,   NP,   NA,  WRN2
@@ -427,8 +430,9 @@
 	   GOTO 400
 
 * give a warning before imposing ambiguous implicit limits
-!(Should really use the WARN subroutine ...)
- 190	   IF ( grid_name(mrg_grd) .EQ. 'UVAR' ) CALL WARN
+
+ 190	   IF ( grid_name(mrg_grd) .EQ. 'UVAR'
+     .		.OR. grid_name(mrg_grd) .EQ. 'AMBG' ) CALL WARN
      .			('Ambiguous coordinates on '//
      .			ww_dim_name(idim)//' axis: '//
      .			uvar_text(uvar)(:TM_LENSTR1(uvar_text(uvar))))
@@ -462,14 +466,21 @@
 	   ELSE
 	      IF (cx_lo_ww(idim,com_cx) .EQ. unspecified_val8) GOTO 500 ! 1/97
 	   ENDIF
-	   IF ( uvar_given(idim,uvar) .EQ. uvlim_need_xact ) GOTO 500
+
+* If a previous component gave us uvlim_need_xact, we just kept that setting. 
+* for the entire expression. This was the cause of ticket 2051. Use 
+* uvlim_need_lohi instead for the tests below.
+
+cc	   IF ( uvar_given(idim,uvar) .EQ. uvlim_need_xact ) GOTO 500
+	   uvar_test =  uvar_given(idim,uvar)
+	   IF ( uvar_given(idim,uvar) .EQ. uvlim_need_xact ) uvar_test = uvlim_need_lohi
 
 * get limits-region class of new component
 	   IF ( nest ) THEN
 	      com_class = NEST_REGION_CLASS( idim, com_cx, com_uvar )
 	   ELSE
 	      com_class = REGION_CLASS( idim, com_cx )
-	   ENDIF	      
+	   ENDIF
 
 	   IF ( uvar_given(idim,uvar) .EQ. uvlim_irrelevant 
      .	   .OR. uvar_given(idim,uvar) .EQ. uvlim_hidden) THEN ! 1/97
@@ -477,7 +488,7 @@
 	      uv_class = com_class				   ! 1/97
 	   ELSE
 * get limits-region class of so-far-merged components
-	      mrg_class = MOD( uvar_given(idim,uvar), 4 )
+	      mrg_class = MOD( uvar_test, 4 )
 * how does the new component effect the merged class ?
 	      uv_class = joint_match( mrg_class, com_class )
 	   ENDIF

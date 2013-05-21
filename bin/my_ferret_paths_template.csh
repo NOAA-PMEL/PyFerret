@@ -6,11 +6,11 @@
 ## Copy this file to your own directory area and
 ## customize it to suit your personal directory layout.
 ## Then source it (as below) from your .login file
-## AFTER you source the generic ferret_paths
+## AFTER you source the generic ferret_paths.csh file.
 ##
 ## example:  (in your .login file)
-## source /usr/local/bin/ferret_paths    (or wherever your system mgr. has put it)
-## source $HOME/my_ferret_paths
+## source /usr/local/ferret_paths.csh    (or wherever your system mgr. has put it)
+## source $HOME/my_ferret_paths.csh
 
 ## These are the environment variables you may wish to customize.
 ## They are currently set up on the assumption that all your FERRET

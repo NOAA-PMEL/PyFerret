@@ -6,9 +6,8 @@
 *     windowid - window number to use
 *     newname - name (or partial name) of the engine;
 *               standard recognized names are Cairo, 
-*               CAIRO, PyQtViewer, PYQTVIEWER, PyQtCairo,
-*               and PYQTCAIRO (compared in that order, 
-*               so PyQt match PyQtViewer)
+*               CAIRO, PipedViewerPQ, PIPEDVIEWERPQ, 
+*               PipedImager, and PIPEDIMAGER
 *               Need all-uppercase for /ENGINE="..."
 *     forceit - change the engine name regardless of 
 *               no-display command-line options?
@@ -78,24 +77,23 @@
             RETURN
         ENDIF
 
-* Note that 'PyQt' will give 'PyQtViewer' and not 'PyQtCairo'
-        idx = INDEX('PyQtViewer', newname(1:slen))
+        idx = INDEX('PipedViewerPQ', newname(1:slen))
         IF ( idx .NE. 1 ) THEN
-            idx = INDEX('PYQTVIEWER', newname(1:slen))
+            idx = INDEX('PIPEDVIEWERPQ', newname(1:slen))
         ENDIF
         IF ( idx .EQ. 1 ) THEN
-            enginename(windowid) = 'PyQtViewer'
+            enginename(windowid) = 'PipedViewerPQ'
             antialias(windowid) = .TRUE.
             sts = FERR_OK
             RETURN
         ENDIF
 
-        idx = INDEX('PyQtCairo', newname(1:slen))
+        idx = INDEX('PipedImager', newname(1:slen))
         IF ( idx .NE. 1 ) THEN
-            idx = INDEX('PYQTCAIRO', newname(1:slen))
+            idx = INDEX('PIPEDIMAGER', newname(1:slen))
         ENDIF
         IF ( idx .EQ. 1 ) THEN
-            enginename(windowid) = 'PyQtCairo'
+            enginename(windowid) = 'PipedImager'
             antialias(windowid) = .FALSE.
             sts = FERR_OK
             RETURN

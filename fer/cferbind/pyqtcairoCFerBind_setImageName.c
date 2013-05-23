@@ -8,7 +8,7 @@
 
 /*
  * Assigns the default name and format for saving the image
- * from the PyQtPipedImager window.
+ * from the PipedImagerPQ window.
  *
  * Arguments:
  *     imagename  - name for the image file (can be NULL)
@@ -22,7 +22,7 @@
  * the format.  Only raster formats are supported.
  *
  * The saveWindow function is used to save the (possibly
- * scaled) image from PyQtPipedImager.  Thus, imagename
+ * scaled) image from PipedImagerPQ.  Thus, imagename
  * and formatname are only defaults that may not be used.
  *
  * Returns one if successful.   If an error occurs, grdelerrmsg
@@ -51,7 +51,7 @@ grdelBool pyqtcairoCFerBind_setImageName(CFerBind *self, const char imagename[],
     }
     /*
      * A cairo_image_surface (CCFBIF_PNG) is always created and
-     * the image data is sent to PyQtPipedImager for display
+     * the image data is sent to PipedImagerPQ for display
      * and saving to file.  Thus the information does not need
      * to be recorded in the cairoCFerBindData structure.
      *

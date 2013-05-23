@@ -11,7 +11,7 @@ from PyQt4.QtGui  import QApplication, QDialog, QDialogButtonBox, \
                          QGridLayout, QLabel, QLineEdit, QMessageBox
 
 
-class PyQtScaleDialog(QDialog):
+class ScaleDialogPQ(QDialog):
     '''
     Dialog for obtaining scaling information from the user.
     Validates that the resulting width and height values
@@ -28,7 +28,7 @@ class PyQtScaleDialog(QDialog):
         given by minwidth and minheight.  Values are assumed to
         be in units of pixels.
         '''
-        super(PyQtScaleDialog, self).__init__(parent)
+        super(ScaleDialogPQ, self).__init__(parent)
         self.setWindowTitle(title)
         self.__scale = float(scale)
         self.__pixwidth = float(width)
@@ -148,9 +148,9 @@ class PyQtScaleDialog(QDialog):
 
 if __name__ == "__main__":
     app = QApplication(["tester"])
-    resizedialog = PyQtScaleDialog("Scale Dialog",
-                                    "Message of the scale dialog",
-                                    1.0, 500, 300, 75, 50)
+    resizedialog = ScaleDialogPQ("Scale Dialog",
+                                 "Message of the scale dialog",
+                                 1.0, 500, 300, 75, 50)
     retval = resizedialog.exec_()
     print "retval = %d" % retval
     if retval == QDialog.Accepted:

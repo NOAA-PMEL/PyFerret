@@ -2,11 +2,11 @@
 The PyFerretBindings class is a base class providing common
 methods in PipedViewer bindings for PyFerret graphics methods.
 
-The PyQtViewerPyFerretBindings class is a subclass of PyFerretBindings
-using PyQtPipedViewer as the viewer.
+The PViewerPQPyFerretBindings class is a subclass of PyFerretBindings
+using PipedViewerPQ as the viewer.
 
-The PyQtImagerPyFerretBindings class is a subclass of PyFerretBindings
-using PyQtPipedImager as the viewer.  Note that PyQtPipedImager only
+The PImagerPQPyFerretBindings class is a subclass of PyFerretBindings
+using PipedImagerPQ as the viewer.  Note that PipedImagerPQ only
 displays completed images and does not understand many of the commands
 (including all the drawing commands) given here.
 
@@ -104,7 +104,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
 
     def deleteWindow(self):
         '''
-        Shuts down the PyQtPipedViewer.
+        Shuts down the PipedViewer.
 
         Returns True.
         '''
@@ -155,7 +155,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         
     def beginView(self, leftfrac, bottomfrac, rightfrac, topfrac, clipit):
         '''
-        Start a view in the PyQtPipedViewer Window.  The view fractions
+        Start a view in the PipedViewer Window.  The view fractions
         start at (0.0, 0.0) in the left top corner and increase to
         (1.0, 1.0) in the right bottom corner; thus leftfrac must be less
         than rightfrac and topfrac must be less than bottomfrac.
@@ -169,7 +169,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
                          for the right side of the View
             topfrac:     [0,1] fraction of the Window height
                          for the top side of the View
-           clipit:      clip drawings to this View?
+            clipit:      clip drawings to this View?
         '''
         leftfracflt = float(leftfrac)
         bottomfracflt = float(bottomfrac)
@@ -202,7 +202,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
 
     def endView(self):
         '''
-        Close a View in the PyQtPipedViewer Window
+        Close a View in the PipedViewer Window
         '''
         self.__window.submitCommand( { "action":"endView" } )
         self.checkForErrorResponse()
@@ -646,14 +646,14 @@ class PyFerretBindings(AbstractPyFerretBindings):
         self.checkForErrorResponse()
 
 
-class PyQtViewerPyFerretBindings(PyFerretBindings):
+class PViewerPQPyFerretBindings(PyFerretBindings):
     '''
-    PyFerretBindings using PyQtPipedViewer as the viewer.
+    PyFerretBindings using a PipedViewerPQ as the viewer.
     '''
 
     def createWindow(self, title, visible):
         '''
-        Creates PyFerret bindings using a PyQtPipedViewer.
+        Creates PyFerret bindings using a PipedViewerPQ.
 
         Arguments:
             title: display title for the Window
@@ -665,16 +665,16 @@ class PyQtViewerPyFerretBindings(PyFerretBindings):
 
         Returns True.
         '''
-        result = self.createPipedViewerWindow("PyQtPipedViewer",
+        result = self.createPipedViewerWindow("PipedViewerPQ",
                                               title, visible)
         return result
 
 
-class PyQtImagerPyFerretBindings(PyFerretBindings):
+class PImagerPQPyFerretBindings(PyFerretBindings):
     '''
-    PyFerretBindings using PyQtPipedImager as the viewer.
+    PyFerretBindings using PipedImagerPQ as the viewer.
 
-    Note that PyQtPipedImager only displays completed images
+    Note that PipedImagerPQ only displays completed images
     and at this time does not understand many of the commands
     (including all the drawing commands) given in the base
     class PyFerretBindings.  However, the associated methods
@@ -687,7 +687,7 @@ class PyQtImagerPyFerretBindings(PyFerretBindings):
 
     def createWindow(self, title, visible):
         '''
-        Creates PyFerret bindings using a PyQtPipedImager.
+        Creates PyFerret bindings using a PipedImagerPQ.
 
         Arguments:
             title: display title for the Window
@@ -699,7 +699,7 @@ class PyQtImagerPyFerretBindings(PyFerretBindings):
 
         Returns True.
         '''
-        result = self.createPipedViewerWindow("PyQtPipedImager",
+        result = self.createPipedViewerWindow("PipedImagerPQ",
                                               title, visible)
         return result
 
@@ -779,7 +779,7 @@ if __name__ == "__main__":
 
     # Initiate pyferret, but stay in python
     pyferret.init(None, False)
-    for viewertype in ( "PyQtViewer", ):
+    for viewertype in ( "PipedViewerPQ", ):
         print "Testing bindings for %s" % viewertype
         # Create a viewer window
         title = viewertype + "Tester"

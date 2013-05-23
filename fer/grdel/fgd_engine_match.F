@@ -6,8 +6,7 @@
 *     windowid - window number to use
 *     engname - name (or partial name) of the engine;
 *               standard recognized names are Cairo, 
-*               PyQtViewer, or PyQtCairo (compared
-*               in that order, so PyQt match PyQtViewer)
+*               PipedViewerPQ, or PipedImager 
 * Returns
 *     .TRUE. if the window uses the indicated engine; 
 *     otherwise .FALSE.
@@ -50,16 +49,15 @@
             RETURN
         ENDIF
 
-* Note that 'PyQt' will give 'PyQtViewer' and not 'PyQtCairo'
-        idx = INDEX('PyQtViewer', engname(1:slen))
+        idx = INDEX('PipedViewerPQ', engname(1:slen))
         IF ( idx .EQ. 1 ) THEN
-            FGD_ENGINE_MATCH = enginename(windowid) .EQ. 'PyQtViewer'
+            FGD_ENGINE_MATCH = enginename(windowid) .EQ. 'PipedViewerPQ'
             RETURN
         ENDIF
 
-        idx = INDEX('PyQtCairo', engname(1:slen))
+        idx = INDEX('PipedImager', engname(1:slen))
         IF ( idx .EQ. 1 ) THEN
-            FGD_ENGINE_MATCH = enginename(windowid) .EQ. 'PyQtCairo'
+            FGD_ENGINE_MATCH = enginename(windowid) .EQ. 'PipedImager'
             RETURN
         ENDIF
 

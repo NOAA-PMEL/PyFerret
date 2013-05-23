@@ -95,8 +95,8 @@ typedef struct CairoCFerBindData_struct {
      */
     int imagechanged;
     /*
-     * The (PyQtPipedImager) image displayer.
-     * Only assigned and used by the PyQtCairo engine
+     * The image displayer.
+     * Only assigned and used by the PipedImager engine
      */
     grdelType viewer;
 } CairoCFerBindData;

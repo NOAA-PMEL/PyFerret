@@ -1,12 +1,12 @@
 '''
-PyQtPipedImager is a graphics viewer application written in PyQt4
+PipedImagerPQ is a graphics viewer application written in PyQt4
 that receives its images and commands primarily from another
 application through a pipe.  A limited number of commands are
 provided by the viewer itself to allow saving and some manipulation
 of the displayed image.  The controlling application, however, may
 be unaware of these modifications made to the image.
 
-PyQtPipedImagerProcess is used to create and run a PyQtPipedImager.
+PipedImagerPQProcess is used to create and run a PipedImagerPQ.
 
 This package was developed by the Thermal Modeling and Analysis
 Project (TMAP) of the National Oceanographic and Atmospheric
@@ -25,15 +25,15 @@ from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, \
                          QMainWindow, QMessageBox, QPainter, QPalette, \
                          QPen, QPixmap, QPolygonF, QPushButton, QScrollArea
 
-from pyqtcmndhelper import PyQtCmndHelper
-from pyqtscaledialog import PyQtScaleDialog
+from cmndhelperpq import CmndHelperPQ
+from scaledialogpq import ScaleDialogPQ
 from multiprocessing import Pipe, Process
 import sys
 import time
 import os
 
 
-class PyQtPipedImager(QMainWindow):
+class PipedImagerPQ(QMainWindow):
     '''
     A PyQt graphics viewer that receives images and commands through
     a pipe.
@@ -53,7 +53,7 @@ class PyQtPipedImager(QMainWindow):
         Create a PyQt viewer which reads commands from the Pipe
         cmndpipe and writes responses back to rspdpipe.
         '''
-        super(PyQtPipedImager, self).__init__()
+        super(PipedImagerPQ, self).__init__()
         self.__cmndpipe = cmndpipe
         self.__rspdpipe = rspdpipe
         # unmodified image for creating the scene
@@ -92,7 +92,7 @@ class PyQtPipedImager(QMainWindow):
         # control whether the window will be destroyed or hidden
         self.__shuttingdown = False
         # command helper object
-        self.__helper = PyQtCmndHelper(self)
+        self.__helper = CmndHelperPQ(self)
         # create the menubar
         self.createActions()
         self.createMenus()
@@ -178,9 +178,9 @@ class PyQtPipedImager(QMainWindow):
         self.close()
 
     def aboutMsg(self):
-        QMessageBox.about(self, self.tr("About PyQtPipedImager"),
+        QMessageBox.about(self, self.tr("About PipedImagerPQ"),
             self.tr("\n" \
-            "PyQtPipedImager is a graphics viewer application that " \
+            "PipedImagerPQ is a graphics viewer application that " \
             "receives its displayed image and commands primarily from " \
             "another application through a pipe.  A limited number " \
             "of commands are provided by the viewer itself to allow " \
@@ -194,7 +194,7 @@ class PyQtPipedImager(QMainWindow):
             "occur and the controlling program cannot shut down the " \
             "viewer properly. " \
             "\n\n" \
-            "PyQtPipedImager was developed by the Thermal Modeling and Analysis " \
+            "PipedImagerPQ was developed by the Thermal Modeling and Analysis " \
             "Project (TMAP) of the National Oceanographic and Atmospheric " \
             "Administration's (NOAA) Pacific Marine Environmental Lab (PMEL). "))
 
@@ -389,10 +389,10 @@ class PyQtPipedImager(QMainWindow):
         '''
         labelwidth = int(self.__scenewidth * self.__scalefactor + 0.5)
         labelheight = int(self.__sceneheight * self.__scalefactor + 0.5)
-        scaledlg = PyQtScaleDialog(self.tr("Image Size Scaling"),
-                       self.tr("Scaling factor (both horiz. and vert.) for the image"),
-                       self.__scalefactor, labelwidth, labelheight,
-                       self.__minsize, self.__minsize, self)
+        scaledlg = ScaleDialogPQ(self.tr("Image Size Scaling"),
+                        self.tr("Scaling factor (both horiz. and vert.) for the image"),
+                        self.__scalefactor, labelwidth, labelheight,
+                        self.__minsize, self.__minsize, self)
         if scaledlg.exec_():
             (newscale, okay) = scaledlg.getValues()
             if okay:
@@ -632,13 +632,13 @@ class PyQtPipedImager(QMainWindow):
                                   .arg(str(cmndact)) )
 
 
-class PyQtPipedImagerProcess(Process):
+class PipedImagerPQProcess(Process):
     '''
-    A Process specifically tailored for creating a PyQtPipedImager.
+    A Process specifically tailored for creating a PipedImagerPQ.
     '''
     def __init__(self, cmndpipe, rspdpipe):
         '''
-        Create a Process that will produce a PyQtPipedImager
+        Create a Process that will produce a PipedImagerPQ
         attached to the given Pipes when run.
         '''
         Process.__init__(self)
@@ -647,11 +647,11 @@ class PyQtPipedImagerProcess(Process):
 
     def run(self):
         '''
-        Create a PyQtPipedImager that is attached
+        Create a PipedImagerPQ that is attached
         to the Pipe of this instance.
         '''
-        self.__app = QApplication(["PyQtPipedImager"])
-        self.__viewer = PyQtPipedImager(self.__cmndpipe, self.__rspdpipe)
+        self.__app = QApplication(["PipedImagerPQ"])
+        self.__viewer = PipedImagerPQ(self.__cmndpipe, self.__rspdpipe)
         result = self.__app.exec_()
         self.__cmndpipe.close()
         self.__rspdpipe.close()
@@ -662,10 +662,10 @@ class PyQtPipedImagerProcess(Process):
 # The following are for testing this module
 #
 
-class _PyQtCommandSubmitter(QDialog):
+class _CommandSubmitterPQ(QDialog):
     '''
     Testing dialog for controlling the addition of commands to a pipe.
-    Used for testing PyQtPipedImager in the same process as the viewer.
+    Used for testing PipedImagerPQ in the same process as the viewer.
     '''
     def __init__(self, parent, cmndpipe, rspdpipe, cmndlist):
         '''
@@ -713,7 +713,7 @@ if __name__ == "__main__":
                 (150, 250),
                 (100, 450) )
     # start PyQt
-    app = QApplication(["PyQtPipedImager"])
+    app = QApplication(["PipedImagerPQ"])
     # create the list of commands to submit
     drawcmnds = []
     drawcmnds.append( { "action":"setTitle", "title":"Tester" } )
@@ -781,12 +781,12 @@ if __name__ == "__main__":
     # finish the command list
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"exit" } )
-    # create a PyQtPipedViewer in this process
+    # create a PipedImagerPQ in this process
     cmndrecvpipe, cmndsendpipe = Pipe(False)
     rspdrecvpipe, rspdsendpipe = Pipe(False)
-    viewer = PyQtPipedImager(cmndrecvpipe, rspdsendpipe)
+    viewer = PipedImagerPQ(cmndrecvpipe, rspdsendpipe)
     # create a command submitter dialog
-    tester = _PyQtCommandSubmitter(viewer, cmndsendpipe,
+    tester = _CommandSubmitterPQ(viewer, cmndsendpipe,
                                    rspdrecvpipe, drawcmnds)
     tester.show()
     # let it all run

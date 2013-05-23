@@ -7,8 +7,8 @@
 /* Instantiate the globals */
 const char *CairoCFerBindName = "Cairo";
 const int lenCairoCFerBindName = 5;
-const char *PyQtCairoCFerBindName = "PyQtCairo";
-const int lenPyQtCairoCFerBindName = 9;
+const char *PyQtCairoCFerBindName = "PipedImager";
+const int lenPyQtCairoCFerBindName = 11;
 
 /*
  * Creates a CFerBind struct (bindings instance)
@@ -16,8 +16,8 @@ const int lenPyQtCairoCFerBindName = 9;
  *
  * The currently supported engines are:
  *    "Cairo" - generation of image files only (unmapped) using Cairo
- *    "PyQtCairo" - generate image file using Cairo and display using
- *                  PyQtPipesImager
+ *    "PipedImager" - generate image file using Cairo and display using
+ *                    PipedImagerPQ
  *
  * For the "Cairo" engine, the windowname, winnamelen, and
  * visible arguments are ignored as they is not applicable.
@@ -40,10 +40,10 @@ CFerBind *cferbind_createWindow(const char *enginename, int engnamelen,
         return bindings;
     }
 
-    /* Check if the PyQtCairo engine was specified */
+    /* Check if the PipedImager (previously called PyQtCairo) engine was specified */
     if ( (engnamelen == lenPyQtCairoCFerBindName) &&
          (strncmp(enginename, PyQtCairoCFerBindName, lenPyQtCairoCFerBindName) == 0) ) {
-        /* Create a bindings instance for a PyQtCairo engine */
+        /* Create a bindings instance for a PipedImager engine */
         bindings = pyqtcairoCFerBind_createWindow(windowname, winnamelen, visible);
         return bindings;
     }

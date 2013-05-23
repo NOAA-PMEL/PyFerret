@@ -84,7 +84,7 @@
 * Default engine for a new window.
 * Should not change after start-up.
 * Only reset by command-line options.
-        DATA defaultenginename / 'PyQtViewer' /
+        DATA defaultenginename / 'PipedViewerPQ' /
 
 * Transparent background for save-on-exit (-batch)?
 * Should not change after start-up.
@@ -93,7 +93,7 @@
         DATA savetransparent / .FALSE. /
 
 * Actual window values - may get reset by the user.
-        DATA enginename / maxwindowobjs * 'PyQtViewer' /
+        DATA enginename / maxwindowobjs * 'PipedViewerPQ' /
         DATA antialias / maxwindowobjs * .TRUE. /
 
 * Window title assigned just before creating a window

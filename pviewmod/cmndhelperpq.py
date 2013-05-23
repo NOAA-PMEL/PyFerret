@@ -1,5 +1,5 @@
 '''
-PyQtCmndHelper is a helper class for dealing with commands
+CmndHelperPQ is a helper class for dealing with commands
 sent to a PyQt piped viewer.
 
 This package was developed by the Thermal Modeling and Analysis
@@ -108,7 +108,7 @@ class SymbolPath(object):
         return self.__isfilled
 
 
-class PyQtCmndHelper(object):
+class CmndHelperPQ(object):
     '''
     Helper class of static methods for dealing with commands
     sent to a PyQt piped viewer.
@@ -119,6 +119,7 @@ class PyQtCmndHelper(object):
         is only used for determining the default font and for
         translation of error messages.
         '''
+        super(CmndHelperPQ, self).__init__()
         self.__viewer = viewer
         self.__symbolpaths = { }
 

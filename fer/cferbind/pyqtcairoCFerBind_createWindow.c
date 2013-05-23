@@ -7,7 +7,8 @@
 #include "pyqtcairoCFerBind.h"
 
 /*
- * Creates a PyQtCario instance of a CFerBind struct.
+ * Creates a PipedImager (previously called PyQtCairo) 
+ * instance of a CFerBind struct.
  *
  * A pointer to created bindings instance is returned if
  * successful.  If an error occurs, grdelerrmsg is assigned
@@ -32,7 +33,7 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
     /* Identify the type of bindings using the pointer address to the global name */
     bindings->enginename = PyQtCairoCFerBindName;
 
-    /* binding functions specific for the PyQtCairo engine */
+    /* binding functions specific for the PipedImager engine */
     bindings->setImageName = pyqtcairoCFerBind_setImageName;
     bindings->deleteWindow = pyqtcairoCFerBind_deleteWindow;
     bindings->updateWindow = pyqtcairoCFerBind_updateWindow;
@@ -94,11 +95,11 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
     /* make sure the format is set correctly */
     instdata->imageformat = CCFBIF_PNG;
     /*
-     * Get bindings to PyQtPipedImager for displaying the image.
+     * Get bindings to PipedImagerPQ for displaying the image.
      * This prevents duplication of Python-calling code for those
-     * PyQtCairo methods interacting with the viewer.
+     * PipedImager methods interacting with the viewer.
      */
-    instdata->viewer = grdelWindowCreate("PyQtImager", 10, windowname,
+    instdata->viewer = grdelWindowCreate("PipedImagerPQ", 13, windowname,
                                          windnamelen, visible);
     if ( instdata->viewer == NULL ) {
         /* grdelerrmsg already assigned */

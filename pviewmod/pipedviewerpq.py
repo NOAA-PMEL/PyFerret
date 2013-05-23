@@ -1,12 +1,12 @@
 '''
-PyQtPipedViewer is a graphics viewer application written in PyQt4
+PipedViewerPQ is a graphics viewer application written in PyQt4
 that receives its drawing and other commands primarily from another
 application through a pipe.  A limited number of commands are
 provided by the viewer itself to allow saving and some manipulation
 of the displayed image.  The controlling application, however, may
 be unaware of these modifications made to the image.
 
-PyQtPipedViewerProcess is used to create and run a PyQtPipedViewer.
+PipedViewerPQProcess is used to create and run a PipedViewerPQ.
 
 This package was developed by the Thermal Modeling and Analysis
 Project (TMAP) of the National Oceanographic and Atmospheric
@@ -32,8 +32,8 @@ try:
 except ImportError:
     HAS_QSvgGenerator = False
 
-from pyqtcmndhelper import PyQtCmndHelper
-from pyqtscaledialog import PyQtScaleDialog
+from cmndhelperpq import CmndHelperPQ
+from scaledialogpq import ScaleDialogPQ
 from multiprocessing import Pipe, Process
 import sys
 import time
@@ -41,7 +41,7 @@ import os
 import math
 
 
-class PyQtPipedViewer(QMainWindow):
+class PipedViewerPQ(QMainWindow):
     '''
     A PyQt graphics viewer that receives generic drawing commands
     through a pipe.  Uses a list of QPictures to record the drawings
@@ -66,7 +66,7 @@ class PyQtPipedViewer(QMainWindow):
         Create a PyQt viewer which reads commands from the Pipe
         cmndpipe and writes responses back to rspdpipe.
         '''
-        super(PyQtPipedViewer, self).__init__()
+        super(PipedViewerPQ, self).__init__()
         self.__cmndpipe = cmndpipe
         self.__rspdpipe = rspdpipe
         # default scene size
@@ -118,7 +118,7 @@ class PyQtPipedViewer(QMainWindow):
         # Control whether the window will be destroyed or hidden
         self.__shuttingdown = False
         # command helper object
-        self.__helper = PyQtCmndHelper(self)
+        self.__helper = CmndHelperPQ(self)
         # Create the menubar
         self.createActions()
         self.createMenus()
@@ -213,9 +213,9 @@ class PyQtPipedViewer(QMainWindow):
         self.close()
 
     def aboutMsg(self):
-        QMessageBox.about(self, self.tr("About PyQtPipedViewer"),
+        QMessageBox.about(self, self.tr("About PipedViewerPQ"),
             self.tr("\n" \
-            "PyQtPipedViewer is a graphics viewer application that " \
+            "PipedViewerPQ is a graphics viewer application that " \
             "receives its drawing and other commands primarily from " \
             "another application through a pipe.  A limited number " \
             "of commands are provided by the viewer itself to allow " \
@@ -229,7 +229,7 @@ class PyQtPipedViewer(QMainWindow):
             "occur and the controlling program cannot shut down the " \
             "viewer properly. " \
             "\n\n" \
-            "PyQtPipedViewer was developed by the Thermal Modeling and Analysis " \
+            "PipedViewerPQ was developed by the Thermal Modeling and Analysis " \
             "Project (TMAP) of the National Oceanographic and Atmospheric " \
             "Administration's (NOAA) Pacific Marine Environmental Lab (PMEL). "))
 
@@ -442,7 +442,7 @@ class PyQtPipedViewer(QMainWindow):
         '''
         labelwidth = int(self.__scenewidth * self.__scalefactor + 0.5)
         labelheight = int(self.__sceneheight * self.__scalefactor + 0.5)
-        scaledlg = PyQtScaleDialog(self.tr("Image Size Scaling"),
+        scaledlg = ScaleDialogPQ(self.tr("Image Size Scaling"),
                        self.tr("Scaling factor (both horiz. and vert.) for the image"),
                        self.__scalefactor, labelwidth, labelheight,
                        self.__minsize, self.__minsize, self)
@@ -843,7 +843,7 @@ class PyQtPipedViewer(QMainWindow):
         (possibly all) of the scene.  Recognized keys from cmnd
         are:
             "viewfracs": a dictionary of sides positions (see
-                    PyQtCmndHelper.getSidesFromCmnd) giving the
+                    CmndHelperPQ.getSidesFromCmnd) giving the
                     fractions [0.0, 1.0] of the way through the
                     scene for the sides of the new View.
             "clip": clip to the new View? (default: True)
@@ -964,7 +964,7 @@ class PyQtPipedViewer(QMainWindow):
             "points": consecutive endpoints of the connected line
                     segments as a list of (x, y) coordinates
             "pen": dictionary describing the pen used to draw the
-                    segments (see PyQtCmndHelper.getPenFromCmnd)
+                    segments (see CmndHelperPQ.getPenFromCmnd)
 
         The coordinates are device coordinates from the upper left corner.
 
@@ -996,7 +996,7 @@ class PyQtPipedViewer(QMainWindow):
         Recognized keys from cmnd:
             "points": point centers as a list of (x,y) coordinates
             "symbol": name of the symbol to use
-                    (see PyQtCmndHelper.getSymbolFromCmnd)
+                    (see CmndHelperPQ.getSymbolFromCmnd)
             "size": size of the symbol (scales with view size)
             "color": color name or 24-bit RGB integer value (eg, 0xFF0088)
             "alpha": alpha value from 0 (transparent) to 255 (opaque)
@@ -1052,10 +1052,10 @@ class PyQtPipedViewer(QMainWindow):
             "points": the vertices of the polygon as a list of (x,y)
                     coordinates
             "fill": dictionary describing the brush used to fill the
-                    polygon; see PyQtCmndHelper.getBrushFromCmnd
+                    polygon; see CmndHelperPQ.getBrushFromCmnd
                     If not given, the polygon will not be filled.
             "outline": dictionary describing the pen used to outline
-                    the polygon; see PyQtCmndHelper.getPenFromCmnd
+                    the polygon; see CmndHelperPQ.getPenFromCmnd
                     If not given, the border will be drawn with a
                     cosmetic pen identical to the brush used to fill
                     the polygon.
@@ -1099,10 +1099,10 @@ class PyQtPipedViewer(QMainWindow):
             "right": x-coordinate of the right edge of the rectangle
             "top": y-coordinate of the top edge of the rectangle
             "fill": dictionary describing the brush used to fill the
-                    rectangle; see PyQtCmndHelper.getBrushFromCmnd
+                    rectangle; see CmndHelperPQ.getBrushFromCmnd
                     If not given, the rectangle will not be filled.
             "outline": dictionary describing the pen used to outline
-                    the rectangle; see PyQtCmndHelper.getPenFromCmnd
+                    the rectangle; see CmndHelperPQ.getPenFromCmnd
                     If not given, the border will be drawn with a
                     cosmetic pen identical to the brush used to fill
                     the rectangle.
@@ -1151,10 +1151,10 @@ class PyQtPipedViewer(QMainWindow):
         Recognized keys from cmnd:
             "text": string to displayed
             "font": dictionary describing the font to use;  see
-                    PyQtCmndHelper.getFontFromCmnd.  If not given
+                    CmndHelperPQ.getFontFromCmnd.  If not given
                     the default font for this viewer is used.
             "fill": dictionary describing the pen used to draw the
-                    text; see PyQtCmndHelper.getPenFromCmnd.
+                    text; see CmndHelperPQ.getPenFromCmnd.
                     If not given, the default pen for this viewer
                     is used.
             "rotate": clockwise rotation of the text in degrees
@@ -1208,13 +1208,13 @@ class PyQtPipedViewer(QMainWindow):
         return self.__viewfactor 
 
 
-class PyQtPipedViewerProcess(Process):
+class PipedViewerPQProcess(Process):
     '''
-    A Process specifically tailored for creating a PyQtPipedViewer.
+    A Process specifically tailored for creating a PipedViewerPQ.
     '''
     def __init__(self, cmndpipe, rspdpipe):
         '''
-        Create a Process that will produce a PyQtPipedViewer
+        Create a Process that will produce a PipedViewerPQ
         attached to the given Pipes when run.
         '''
         Process.__init__(self)
@@ -1223,11 +1223,11 @@ class PyQtPipedViewerProcess(Process):
 
     def run(self):
         '''
-        Create a PyQtPipedViewer that is attached
+        Create a PipedViewerPQ that is attached
         to the Pipe of this instance.
         '''
-        self.__app = QApplication(["PyQtPipedViewer"])
-        self.__viewer = PyQtPipedViewer(self.__cmndpipe, self.__rspdpipe)
+        self.__app = QApplication(["PipedViewerPQ"])
+        self.__viewer = PipedViewerPQ(self.__cmndpipe, self.__rspdpipe)
         result = self.__app.exec_()
         self.__cmndpipe.close()
         self.__rspdpipe.close()
@@ -1235,13 +1235,13 @@ class PyQtPipedViewerProcess(Process):
 
 
 #
-# The following are for testing this (and the pyqtqcmndhelper) modules
+# The following are for testing this (and the cmndhelperpq) modules
 #
 
-class _PyQtCommandSubmitter(QDialog):
+class _CommandSubmitterPQ(QDialog):
     '''
     Testing dialog for controlling the addition of commands to a pipe.
-    Used for testing PyQtPipedViewer in the same process as the viewer.
+    Used for testing PipedViewerPQ in the same process as the viewer.
     '''
     def __init__(self, parent, cmndpipe, rspdpipe, cmndlist):
         '''
@@ -1411,14 +1411,14 @@ if __name__ == "__main__":
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"exit" } )
     # start PyQt
-    app = QApplication(["PyQtPipedViewer"])
-    # create a PyQtPipedViewer in this process
+    app = QApplication(["PipedViewerPQ"])
+    # create a PipedViewerPQ in this process
     cmndrecvpipe, cmndsendpipe = Pipe(False)
     rspdrecvpipe, rspdsendpipe = Pipe(False)
-    viewer = PyQtPipedViewer(cmndrecvpipe, rspdsendpipe)
+    viewer = PipedViewerPQ(cmndrecvpipe, rspdsendpipe)
     # create a command submitter dialog
-    tester = _PyQtCommandSubmitter(viewer, cmndsendpipe,
-                                   rspdrecvpipe, drawcmnds)
+    tester = _CommandSubmitterPQ(viewer, cmndsendpipe,
+                                 rspdrecvpipe, drawcmnds)
     tester.show()
     # let it all run
     result = app.exec_()

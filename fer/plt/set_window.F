@@ -261,17 +261,17 @@ c 75        CONTINUE
             ENDIF
             slen = TM_LENSTR1(buffer)
             IF ( MATCH4(buffer, slen, 'DRAFT', 5) ) THEN
-                IF ( .NOT. FGD_ENGINE_MATCH(n, 'PyQtCairo') ) THEN
+                IF ( .NOT. FGD_ENGINE_MATCH(n, 'PipedImager') ) THEN
                     chg_window = .TRUE.
                     CALL CANCEL_WINDOW_NUM(n)
-                    CALL FGD_SET_ENGINE(n, 'PyQtCairo', .FALSE., status)
+                    CALL FGD_SET_ENGINE(n, 'PipedImager', .FALSE., status)
                     IF ( status .NE. ferr_ok ) RETURN
                 ENDIF
             ELSE IF ( MATCH4(buffer, slen, 'HIGH', 4) ) THEN
-                IF ( .NOT. FGD_ENGINE_MATCH(n, 'PyQtViewer') ) THEN
+                IF ( .NOT. FGD_ENGINE_MATCH(n, 'PipedViewerPQ') ) THEN
                     chg_window = .TRUE.
                     CALL CANCEL_WINDOW_NUM(n)
-                    CALL FGD_SET_ENGINE(n, 'PyQtViewer', .FALSE., status)
+                    CALL FGD_SET_ENGINE(n, 'PipedViewerPQ', .FALSE., status)
                     IF ( status .NE. ferr_ok ) RETURN
                 ENDIF
             ELSE

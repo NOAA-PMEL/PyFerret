@@ -295,7 +295,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         self.__window.submitCommand(cmnd)
         self.checkForErrorResponse()
 
-    def saveWindow(self, filename, fileformat, transparentbkg):
+    def saveWindow(self, filename, fileformat, bkgcolor):
         '''
         Save the contents of the window to a file.  This might be called
         when there is no image to save; in this case the call should be
@@ -304,14 +304,18 @@ class PyFerretBindings(AbstractPyFerretBindings):
         Arguments:
             filename: name of the file to create
             fileformat: name of the format to use
-            transparentbkg: should the background be transparent?
+            bkgcolor: color for the background
 
         If fileformat is None or empty, the fileformat
         is guessed from the filename extension.
         '''
-        cmnd = { "action":"save",
-                 "filename":filename,
-                 "transparentbkg": transparentbkg }
+        if bkgcolor:
+            # Make a copy of the bkgcolor dictionary
+            cmnd = dict(bkgcolor)
+        else:
+            cmnd = { }
+        cmnd["action"] = "save"
+        cmnd["filename"] = filename
         if fileformat:
             cmnd["fileformat"] = fileformat
         self.__window.submitCommand(cmnd)

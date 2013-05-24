@@ -175,7 +175,7 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError()
 
-    def saveWindow(self, filename, fileformat, transparentbkg):
+    def saveWindow(self, filename, fileformat, bkgcolor):
         '''
         Save the contents of the window to a file.  This might be called
         when there is no image to save; in this case the call should be
@@ -184,7 +184,7 @@ class AbstractPyFerretBindings(object):
         Arguments:
             filename: name of the file to create
             fileformat: name of the format to use
-            transparentbkg: should the background be transparent?
+            bkgcolor: color of the background
 
         If fileformat is NULL, the fileformat is guessed from the
         filename extension.

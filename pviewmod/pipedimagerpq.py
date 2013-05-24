@@ -20,10 +20,10 @@ except AttributeError:
     pass
 
 from PyQt4.QtCore import Qt, QPointF, QRectF, QSize, QString, QTimer
-from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, \
-                         QDialog, QFileDialog, QImage, QLabel, \
-                         QMainWindow, QMessageBox, QPainter, QPalette, \
-                         QPen, QPixmap, QPolygonF, QPushButton, QScrollArea
+from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, QColorDialog, \
+                         QDialog, QFileDialog, QImage, QLabel, QMainWindow, \
+                         QMessageBox, QPainter, QPalette, QPen, QPixmap, \
+                         QPolygonF, QPushButton, QScrollArea
 
 from cmndhelperpq import CmndHelperPQ
 from scaledialogpq import ScaleDialogPQ
@@ -236,7 +236,7 @@ class PipedImagerPQ(QMainWindow):
         described in the colorinfo dictionary.  If colorinfo is None,
         or if no color or an invalid color is specified in this
         dictionary, the color used is the one used from the last
-        clearScene call (or transparent white if a color has never
+        clearScene call (or opaque white if a color has never
         been specified).
         '''
         # get the color to use for clearing (the background color)
@@ -474,30 +474,25 @@ class PipedImagerPQ(QMainWindow):
             else:
                 raise RuntimeError( self.tr("Unexpected file format name '%1'") \
                                         .arg(fileFilter) )
-            if (fileFormat == "png") or \
-               (fileFormat == "tiff") or \
-               (fileFormat == "xpm"):
-                transparentbkg = True
-            else:
-                transparentbkg = False
-            self.saveSceneToFile(fileName, fileFormat, transparentbkg)
-            self.__lastfilename = fileName
-            self.__lastformat = fileFormat
+            # Get the background color with an alpha channel
+            bkgcolor = QColorDialog.getColor(self.__lastclearcolor, self, 
+                                             self.tr("Background color"),
+                                             QColorDialog.ShowAlphaChannel)
+            if bkgcolor.isValid():
+                self.saveSceneToFile(fileName, fileFormat, bkgcolor)
+                self.__lastfilename = fileName
+                self.__lastformat = fileFormat
 
-    def saveSceneToFile(self, filename, imageformat, transparentbkg):
+    def saveSceneToFile(self, filename, imageformat, bkgcolor):
         '''
         Save the current scene to the named file.
         
         If imageformat is empty or None, the format is guessed from
         the filename extension.
 
-        If transparentbkg is False, the entire scene is initialized
-        to the last clearing color, using a filled rectangle for
-        vector images.
-
-        If transparentbkg is True, the alpha channel of the last
-        clearing color is set to zero before using it to initialize
-        the background color.
+        If bkgcolor is given, the entire scene is initialized
+        to this color, using a filled rectangle for vector images.
+        If bkgcolor is not given, the last clearing color is used.
         '''
         # This could be called when there is no image present.
         # If this is the case, ignore the call.
@@ -530,10 +525,8 @@ class PipedImagerPQ(QMainWindow):
             image = QImage( QSize(imagewidth, imageheight),
                             QImage.Format_ARGB32_Premultiplied )
             # Initialize the image
-            if transparentbkg:
-                # Note that this gives black for formats not supporting the alpha
-                # channel (JPEG) whereas ARGB32 with 0x00FFFFFF gives white
-                fillint = 0
+            if bkgcolor:
+                fillint = self.__helper.computeARGB32PreMultInt(bkgcolor)
             else:
                 # Clear the image with self.__lastclearcolor
                 fillint = self.__helper.computeARGB32PreMultInt(self.__lastclearcolor)
@@ -613,8 +606,11 @@ class PipedImagerPQ(QMainWindow):
         elif cmndact == "save":
             filename = cmnd["filename"]
             fileformat = cmnd.get("fileformat", None)
-            transparentbkg = cmnd.get("transparentbkg", False)
-            self.saveSceneToFile(filename, fileformat, transparentbkg)
+            try:
+                bkgcolor = self.__helper.getColorFromCmnd(cmnd)
+            except KeyError:
+                bkgcolor = None
+            self.saveSceneToFile(filename, fileformat, bkgcolor)
         elif cmndact == "setTitle":
             self.setWindowTitle(cmnd["title"])
         elif cmndact == "imgname":

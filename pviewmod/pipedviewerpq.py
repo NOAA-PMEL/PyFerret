@@ -20,11 +20,11 @@ except AttributeError:
     pass
 
 from PyQt4.QtCore import Qt, QPointF, QRect, QRectF, QSize, QString, QTimer
-from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, \
-                         QDialog, QFileDialog, QImage, QLabel, \
-                         QMainWindow, QMessageBox, QPainter, QPalette, \
-                         QPen, QPicture, QPixmap, QPolygonF, QPrintDialog, \
-                         QPrinter, QPushButton, QScrollArea
+from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, QColorDialog, \
+                         QDialog, QFileDialog, QImage, QLabel, QMainWindow, \
+                         QMessageBox, QPainter, QPalette, QPen, QPicture, \
+                         QPixmap, QPolygonF, QPrintDialog, QPrinter, \
+                         QPushButton, QScrollArea
 
 try:
     from PyQt4.QtSvg  import QSvgGenerator
@@ -361,7 +361,7 @@ class PipedViewerPQ(QMainWindow):
         described in the colorinfo dictionary.  If colorinfo is None,
         or if no color or an invalid color is specified in this
         dictionary, the color used is the one used from the last
-        clearScene call (or transparent white if a color has never
+        clearScene call (or opaque white if a color has never
         been specified).
         '''
         # If there is an active View with content,
@@ -534,33 +534,24 @@ class PipedViewerPQ(QMainWindow):
             else:
                 raise RuntimeError( self.tr("Unexpected file format name '%1'") \
                                         .arg(fileFilter) )
-            if (fileFormat == "pdf") or \
-               (fileFormat == "png") or \
-               (fileFormat == "ps") or \
-               (fileFormat == "svg") or \
-               (fileFormat == "tiff") or \
-               (fileFormat == "xpm"):
-                transparentbkg = True
-            else:
-                transparentbkg = False
-            self.saveSceneToFile(fileName, fileFormat, transparentbkg, True)
-            self.__lastfilename = fileName
-            self.__lastformat = fileFormat
+            # Get the background color with an alpha channel
+            bkgcolor = QColorDialog.getColor(self.__lastclearcolor, self, 
+                                             self.tr("Background color"),
+                                             QColorDialog.ShowAlphaChannel)
+            if bkgcolor.isValid():
+                self.saveSceneToFile(fileName, fileFormat, bkgcolor, True)
+                self.__lastfilename = fileName
+                self.__lastformat = fileFormat
 
-    def saveSceneToFile(self, filename, imageformat=None,
-                        transparentbkg=True, showPrintDialog=False):
+    def saveSceneToFile(self, filename, imageformat, bkgcolor, showPrintDialog):
         '''
         Save the current scene to the named file.  If imageformat
         is empty or None, the format is guessed from the filename
         extension.
 
-        If transparentbkg is False, the entire scene is initialized
-        to the last clearing color, using a filled rectangle for
-        vector images.
-        If transparentbkg is True, the alpha channel of the last
-        clearing color is set to zero before using it to initialize
-        the background color of raster images, and no background
-        filled rectangle is drawn in vector images.
+        If bkgcolor is given, the entire scene is initialized
+        to this color, using a filled rectangle for vector images.
+        If bkgcolor is not given, the last clearing color is used.
 
         If showPrintDialog is True, the standard printer options
         dialog will be shown for PostScript and PDF formats,
@@ -656,10 +647,18 @@ class PipedViewerPQ(QMainWindow):
                                            printer.resolution())
             # Set up to send the drawing commands to the QPrinter
             painter = QPainter(printer)
-            if not transparentbkg:
-                # draw a rectangle filling the entire scene
-                # with the last clearing color
-                painter.fillRect(QRectF(pagerect), self.__lastclearcolor)
+            if bkgcolor:
+                # Draw a rectangle filling the entire scene
+                # with the given background color.
+                # Only draw if not completely transparent
+                if (bkgcolor.getRgb())[3] > 0:
+                    painter.fillRect(QRectF(pagerect), bkgcolor)
+            else:
+                # Draw a rectangle filling the entire scene
+                # with the last clearing color.
+                # Only draw if not completely transparent
+                if (self.__lastclearcolor.getRgb())[3] > 0:
+                    painter.fillRect(QRectF(pagerect), self.__lastclearcolor)
             # Draw the scene to the printer
             self.paintScene(painter, 0, printleftx, printuppery, printfactor,
                             "Saving", False)
@@ -674,11 +673,20 @@ class PipedViewerPQ(QMainWindow):
             generator.setViewBox( QRect(0, 0, imagewidth, imageheight) )
             # paint the scene to this QSvgGenerator
             painter = QPainter(generator)
-            if not transparentbkg:
-                # draw a rectangle filling the entire scene
-                # with the last clearing color
-                painter.fillRect( QRectF(0, 0, imagewidth, imageheight),
-                                  self.__lastclearcolor )
+            if bkgcolor:
+                # Draw a rectangle filling the entire scene
+                # with the given background color.
+                # Only draw if not completely transparent
+                if (bkgcolor.getRgb())[3] > 0:
+                    painter.fillRect( QRectF(0, 0, imagewidth, imageheight),
+                                      bkgcolor )
+            else:
+                # Draw a rectangle filling the entire scene
+                # with the last clearing color.
+                # Only draw if not completely transparent
+                if (self.__lastclearcolor.getRgb())[3] > 0:
+                    painter.fillRect( QRectF(0, 0, imagewidth, imageheight),
+                                      self.__lastclearcolor )
             self.paintScene(painter, 0, 0.0, 0.0, self.__scalefactor,
                             "Saving", False)
             painter.end()
@@ -689,10 +697,10 @@ class PipedViewerPQ(QMainWindow):
             image = QImage( QSize(imagewidth, imageheight),
                             QImage.Format_ARGB32_Premultiplied )
             # Initialize the image
-            if transparentbkg:
-                # Note that this gives black for formats not supporting the alpha
-                # channel (JPEG) whereas ARGB32 with 0x00FFFFFF gives white
-                fillint = 0
+            # Note that completely transparent gives black for formats not supporting 
+            # the alpha channel (JPEG) whereas ARGB32 with 0x00FFFFFF gives white
+            if bkgcolor:
+                fillint = self.__helper.computeARGB32PreMultInt(bkgcolor)
             else:
                 # Clear the image with self.__lastclearcolor
                 fillint = self.__helper.computeARGB32PreMultInt(self.__lastclearcolor)
@@ -803,8 +811,11 @@ class PipedViewerPQ(QMainWindow):
         elif cmndact == "save":
             filename = cmnd["filename"]
             fileformat = cmnd.get("fileformat", None)
-            transparentbkg = cmnd.get("transparentbkg", False)
-            self.saveSceneToFile(filename, fileformat, transparentbkg, False)
+            try:
+                bkgcolor = self.__helper.getColorFromCmnd(cmnd)
+            except KeyError:
+                bkgcolor = None
+            self.saveSceneToFile(filename, fileformat, bkgcolor, False)
         elif cmndact == "setTitle":
             self.setWindowTitle(cmnd["title"])
         elif cmndact == "imgname":

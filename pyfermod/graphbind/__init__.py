@@ -31,7 +31,7 @@ def addPyFerretBindings(engine_name, bindings_class):
                 AbstractPyFerretBindings
     '''
     try:
-        __pyferret_bindings_classes[engine_name]
+        _ = __pyferret_bindings_classes[engine_name]
         raise ValueError("Bindings already exist for graphics engine '%s'" \
                          % engine_name)
     except KeyError:
@@ -59,8 +59,6 @@ def createWindow(engine_name, title, visible):
                      graphics engine to use for the Window
         title: display title for the Window
         visible: display Window on start-up?
-
-        "device units" is pixels at the current window DPI
 
     Returns the instance of the binding class associated with
     the newly created Window if the createWindow method of the

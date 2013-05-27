@@ -106,10 +106,6 @@
 * Number of the colorobj to use for clearing the window.
         INTEGER clearcolor(maxwindowobjs)
 
-* Color RGB fractions of color objects created
-* Only used for inquiries about colors
-        REAL*4 colorrgb(3, maxcolorobjs, maxwindowobjs)
-
 * Color ID number used in brushes (for color updates)
         INTEGER brushcolor(maxbrushobjs, maxwindowobjs)
 
@@ -143,15 +139,18 @@
 
 * And finally the common block containing all these variables
         COMMON /FGRDEL/ windowobjs, colorobjs, brushobjs,
-     .         fontobjs, penobjs, symbolobjs, colorrgb,
+     .         fontobjs, penobjs, symbolobjs, 
      .         symbolsize, windowdpix, windowdpiy, windowwidth,
      .         windowheight, ndcxmax, ndcymax, viewleftfrac,
      .         viewbottomfrac, viewrightfrac, viewtopfrac,
      .         viewleftcoord, viewbottomcoord, viewrightcoord,
-     .         viewtopcoord, activewindow, activetransform,
-     .         activebrush, activepen, activesymbol, lastbrushcolor,
+     .         viewtopcoord, 
+     .         activewindow, activetransform, activebrush, 
+     .         activepen, activesymbol, lastbrushcolor,
      .         lastbstylen, clearcolor, brushcolor, pencolor,
-     .         symbolcolor, cliptoview, somethingdrawn,
-     .         savetransparent, antialias, lastbrushstyle,
-     .         defaultenginename, enginename, windowtitle
+     .         symbolcolor, 
+     .         cliptoview, somethingdrawn, savetransparent, 
+     .         antialias, 
+     .         lastbrushstyle, defaultenginename, enginename, 
+     .         windowtitle
 

@@ -37,12 +37,13 @@
 *
 *	Sets the color map between ndx_lo and ndx_hi to ws default
 *	J Davison JISAO/PMEL/TMAP 8.1.89
+* PyFr *kms* 5/13 Add alpha channel (opaque)
 
         IMPLICIT NONE
         include         'shade_vars.cmn'
 
 	integer		zwsid,ndx_lo,range,ndx_hi,zwstype,err,ndx
-	real		r_val,g_val,b_val
+	real		r_val,g_val,b_val,a_val
 
 ********************************************************************************
 
@@ -52,11 +53,11 @@
 	do 50 ndx = ndx_lo,ndx_hi
 
 *	   WHAT IS THE DEFAULT COLOR FOR EACH NDX?
-	   call FGD_GQPCR(zwstype,ndx,err,r_val,g_val,b_val)
+	   call FGD_GQPCR(zwstype,ndx,err,r_val,g_val,b_val,a_val)
 	   if (err .eq. 0) then
 
 *	   SET THE COLOR OF THIS NDX
-   	      call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val)
+   	      call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val,a_val)
 	   endif
 50	end do
 

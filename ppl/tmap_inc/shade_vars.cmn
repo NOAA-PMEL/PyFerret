@@ -29,14 +29,14 @@
 *	KLAB_INCR is the number of color bars between adjacent labels
 
 *	SLVL is a spectrum level in percent from 0 to 100 
-*	SR,SG,SB  are the rgb values specified in the spectrum table
+*	SR,SG,SB,SA  are the rgba values specified in the spectrum table
 *	SPEC_SIZE is the number of spectrum levels allowed to be specified
 *	NCL is the number of color levels specified in the spectrum table
 *	LO_COLOR_NDX is the minimum color index used in shading
 *	HI_COLOR_NDX is the maximum color index used in shading
 *	AREA_BUNDLES determines whether bundles will be used in shading
 *	PROTECT_USED_COLORS if true causes SHADE/FILL to preserve colors used
-*	MNCL,MSLVL,MSR,MSG,MSB are shaset levels stored for later use in mem.
+*	MNCL,MSLVL,MSR,MSG,MSB,MSA are shaset levels stored for later use in mem.
 *	RGB_MAPPING sets (0,1,2)->(interpolated,atomic,data-based) color scale
 *	PERCENT, BY_LEVEL, BY_VALUE are the integers just named
 *	MRGB_MAPPING is rgb_mapping stored for later use in mem.
@@ -75,6 +75,7 @@
 * *acm* 1/13/12 For DP Ferret/ SP Pplus: explicitly declare REALs 
 *               as single-precision
 *	ribbon_miss	rgb codes for the missing-value rep. on ribbon plots.
+* PyFr *kms* 5/13 Add alpha channel (opaque) variables SA,MSA
 
 	integer		spec_size,max_windows,pattern_num
 	parameter	(spec_size=250,max_windows=12,pattern_num=50)
@@ -94,11 +95,11 @@
 	REAL*4		x_lo,x_hi,y_lo,y_hi
 	REAL*4		bad_val,shd_min,shd_max
 	REAL*4		kx_lo,kx_hi,ky_lo,ky_hi,klab_size
-	REAL*4		sr(spec_size),sg(spec_size),sb(spec_size)
+	REAL*4		sr(spec_size),sg(spec_size),sb(spec_size),sa(spec_size)
 	REAL*4		slvl(spec_size)
-	REAL*4		msr(spec_size),msg(spec_size),msb(spec_size)
+	REAL*4		msr(spec_size),msg(spec_size),msb(spec_size),msa(spec_size)
 	REAL*4		mslvl(spec_size)
-	REAL*4		ribbon_miss(3)
+	REAL*4		ribbon_miss(4)
 
 	logical		fill_missing,even_histo,do_key,area_bundles
 	logical		vertical_key,kuser_loc(4),custom_colors
@@ -119,11 +120,11 @@
      .			   shd_min,shd_max,shd_levels,
      .			   kx_lo,kx_hi,ky_lo,ky_hi,
      .			   klab_size,klab_dig,klab_len,klab_incr,
-     .			   ncl,slvl,sr,sg,sb,
+     .			   ncl,slvl,sr,sg,sb,sa,
      .			   lo_color_ndx(max_windows),
      .			   hi_color_ndx(max_windows),
      .			   area_bundles,protect_used_colors,
-     .			   mncl,mslvl,msr,msg,msb,
+     .			   mncl,mslvl,msr,msg,msb,msa,
      .			   patterns,npat,mpatterns,mnpat,
      .			   default_patterns,
      .			   rgb_mapping, percent, by_level, by_value,

@@ -36,7 +36,9 @@
 
 *       Sets the options for missing-data representation in RIBBON plots
 *       (see shade_set for color spectra)
+* PyFr *kms* 5/13 Add alpha channel (opaque)
 
+        IMPLICIT NONE
         include         'shade_vars.cmn'
         include 	'cmrdl_inc.decl'            
         include 	'CMRDL.INC'            
@@ -69,6 +71,7 @@
 	   ribbon_miss(1) = -1.
 	   ribbon_miss(2) = -1.
 	   ribbon_miss(3) = -1.
+	   ribbon_miss(4) = -1.
 	end if
 
 *	Otherwise: if user has said BLANK, mark this with -2.
@@ -77,6 +80,7 @@
 	   ribbon_miss(1) = -2.
 	   ribbon_miss(2) = -2.
 	   ribbon_miss(3) = -2.
+	   ribbon_miss(4) = -2.
 	end if
 
 	return
@@ -157,6 +161,11 @@
 	   ribbon_miss(1) = p(2)
 	   ribbon_miss(2) = p(3)
 	   ribbon_miss(3) = p(4)
+           if ( m .eq. 5 ) then
+              ribbon_miss(4) = p(5)
+           else
+              ribbon_miss(4) = 100.0
+           endif
 	ENDIF
 	goto 30
 

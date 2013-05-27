@@ -54,6 +54,7 @@
 * V608: *acm*11/07 the text for RGB_mapping must be palette, by_value, or by_level; issue
 *                  a warning if its not one of these. Fixes bug 1549
 * V610  *acm* 3/08 Fixes for metafile batch mode
+* PyFr *kms* 5/13 Add alpha channel (opaque) variables SA,MSA
 
         IMPLICIT NONE
         include         'shade_vars.cmn'
@@ -166,10 +167,12 @@
            sr(1) = 0.0
            sg(1) = 0.0
            sb(1) = 0.0
+           sa(1) = 1.0
            
            sr(2) = 1.0
            sg(2) = 1.0
            sb(2) = 1.0
+           sa(2) = 1.0
            
            return
         end if
@@ -190,6 +193,7 @@
                        sr(j) = sr(j+1)       
                        sg(j) = sg(j+1)       
                        sb(j) = sb(j+1)       
+                       sa(j) = sa(j+1)       
  1                  end do
                     return
                  end if
@@ -198,16 +202,18 @@
         end if
 
 *	NEED COMPLETE SET OF ARGUMENTS OTHERWISE
-	if (m .ne. 4) return
+	if ( (m .lt. 4) .or. (m .gt. 5) ) return
 
 *	REJECT PERCENT OF SPECTRUM OUTSIDE 0 TO 100	
 	if (rgb_mapping .eq. percent .and. 
      .       (p(1) .lt. 0.0 .or. p(1) .gt. 100.0)) return
 
-*	REJECT PERCENT OF R,G,B OUTSIDE 0 TO 100
+*	REJECT PERCENT OF R,G,B,A OUTSIDE 0 TO 100
 	if (p(2) .lt. 0.0 .or. p(2) .gt. 100.0) return
 	if (p(3) .lt. 0.0 .or. p(3) .gt. 100.0) return
 	if (p(4) .lt. 0.0 .or. p(4) .gt. 100.0) return
+        if ( (m .eq. 5) .and. 
+     .       (p(5) .lt. 0.0 .or. p(5) .gt. 100.0) ) return
 
 *	IF FIRST VALUE, ENTER INTO TABLE
         if (ncl .eq. 0) then
@@ -215,6 +221,11 @@
            sr(1) = p(2)/100.0
            sg(1) = p(3)/100.0
            sb(1) = p(4)/100.0
+           if ( m .eq. 5 ) then
+              sa(1) = p(5)/100.0
+           else
+              sa(1) = 1.0
+           endif
            ncl = 1
 
            return
@@ -226,6 +237,11 @@
 	      sr(i) = p(2)/100.0
 	      sg(i) = p(3)/100.0
 	      sb(i) = p(4)/100.0
+              if ( m .eq. 5 ) then
+                 sa(i) = p(5)/100.0
+              else
+                 sa(i) = 1.0
+              endif
 
 	      return
 	   end if
@@ -239,6 +255,7 @@
 		 sr(j+1) = sr(j)
 		 sg(j+1) = sg(j)
 		 sb(j+1) = sb(j)
+                 sa(j+1) = sa(j)
 15	      end do
 	      ncl = ncl + 1
               IF (ncl .GT. spec_size) GOTO 1000
@@ -247,6 +264,11 @@
 	      sr(i+1) = p(2)/100.0
 	      sg(i+1) = p(3)/100.0
 	      sb(i+1) = p(4)/100.0
+              if ( m .eq. 5 ) then
+                 sa(i+1) = p(5)/100.0
+              else
+                 sa(i+1) = 1.0
+              endif
 
 	      return
 	   end if
@@ -260,6 +282,11 @@
            sr(ncl) = p(2)/100.0
            sg(ncl) = p(3)/100.0
            sb(ncl) = p(4)/100.0
+           if ( m .eq. 5 ) then
+              sa(ncl) = p(5)/100.0
+           else
+              sa(ncl) = 1.0
+           endif
         end if
  
  5000	RETURN
@@ -359,6 +386,7 @@
 	      sr(i) = msr(i)/100.0
 	      sg(i) = msg(i)/100.0
 	      sb(i) = msb(i)/100.0
+	      sa(i) = msa(i)/100.0
 4	   end do
 
 	   there = .true.
@@ -454,10 +482,12 @@
            sr(1) = 0.0
            sg(1) = 0.0
            sb(1) = 0.0
+           sa(1) = 1.0
            
            sr(2) = 1.0
            sg(2) = 1.0
            sb(2) = 1.0
+           sa(2) = 1.0
            
            goto 10
         end if
@@ -502,6 +532,7 @@
 	      msr(i) = sr(i)*100.0
  	      msg(i) = sg(i)*100.0
 	      msb(i) = sb(i)*100.0
+	      msa(i) = sa(i)*100.0
 10	   end do
 	   goto 101
 	end if
@@ -537,27 +568,27 @@
 #endif
 *	WRITE OUT THE SPECTRUM
         if (rgb_mapping .eq. percent) then
-           write(70,'(a/" "/"! SetPt    Red  Green   Blue")') 
+           write(70,'(a/" "/"! SetPt    Red  Green   Blue  Opacity")') 
      .          'RGB_Mapping Percent'
 
         else if (rgb_mapping .eq. by_value) then
-           write(70,'(a/" "/"! SetPt    Red  Green   Blue")') 
+           write(70,'(a/" "/"! SetPt    Red  Green   Blue  Opacity")') 
      .          'RGB_Mapping By_value'
 
         else if (rgb_mapping .eq. by_level) then
-           write(70,'(a/" "/"! Level    Red  Green   Blue")') 
+           write(70,'(a/" "/"! Level    Red  Green   Blue  Opacity")') 
      .          'RGB_Mapping By_level'
         end if
 
         if (rgb_mapping .ne. by_level) then
            do i = 1,ncl
-              write (70,'(4f7.1)') slvl(i),
-     .             sr(i)*100.0,sg(i)*100.0,sb(i)*100.0
+              write (70,'(5f7.1)') slvl(i),
+     .             sr(i)*100.0,sg(i)*100.0,sb(i)*100.0,sa(i)*100.0
            end do
         else
            do i = 1,ncl
-              write (70,'(i7,3f7.1)') i,
-     .             sr(i)*100.0,sg(i)*100.0,sb(i)*100.0
+              write (70,'(i7,4f7.1)') i,
+     .             sr(i)*100.0,sg(i)*100.0,sb(i)*100.0,sa(i)*100.0
            end do
         end if
         

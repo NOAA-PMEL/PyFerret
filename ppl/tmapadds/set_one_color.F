@@ -46,6 +46,7 @@
 *             in the graphics delegate, switch these values.
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
+* PyFr *kms* 5/13 Add alpha channel (opaque), allow background color (0) to be set
 
         IMPLICIT NONE
 #   ifndef atc_gks
@@ -62,17 +63,10 @@
         INCLUDE         'pen_inc.decl'  ! with num_line_colors
         INCLUDE         'PEN.INC'
 
-	integer		ndx,red,green,blue,i,err
+	integer		ndx,i,err
         integer         max_pline,max_pmark,max_text,max_fill_area
         integer         max_pattern,max_color
-	real		val(3)
-
-	parameter	(red = 1,green = 2,blue = 3)	
-
-#ifdef xgks
-	integer		black, white
-	data		black/1/,white/0/
-#endif
+	real		val(4)
 
 	integer		type, error
 	REAL		rd, gr, bl
@@ -85,22 +79,19 @@
      .              max_text,max_fill_area,max_pattern,max_color)
 	   if (err .ne. 0) goto 1000
 
-#ifndef xgks
 	   do 5 i = 0,num_line_colors
-#else
-           do 5 i = 1,num_line_colors
-#endif
-	      call FGD_GQPCR(wstype,i,err,val(red),val(green),val(blue))
+	      call FGD_GQPCR(wstype,i,err,val(1),val(2),val(3),val(4))
 	      if (err .ne. 0) goto 5
-	      call FGD_GSCR(wsid,i,val(red),val(green),val(blue))
+	      call FGD_GSCR(wsid,i,val(1),val(2),val(3),val(4))
 5	   continue
 	   goto 1000
 	end if
 
 
 
-*	ELSE SET COLOR P(1) to RGB: P(2), P(3), P(4)
-	if (m .ne. 4) goto 1000
+*	ELSE SET COLOR P(1) to RGBA: P(2), P(3), P(4), P(5)
+*       where p(5) is optional (default 1.0)
+	if ( (m .lt. 4) .or. (m .gt. 5) ) goto 1000
 	
 	if (p(1) .ge. 0.0 .and. p(1) .le. 255) then
 	   ndx = ifix (p(1))
@@ -108,7 +99,8 @@
 	   goto 1000
 	end if
 
-	do 10 i = 1,3
+        val(4) = 1.0
+	do 10 i = 1,m-1
 	   if (p(i+1) .ge. 0.0 .and. p(i+1) .le. 100.0) then
 	      val(i) = p(i+1)/100.0
 	   else
@@ -116,28 +108,13 @@
 	   end if
 10	continue
 
-#ifndef xgks
-	call FGD_GSCR(wsid,ndx,val(red),val(green),val(blue))
-#else
-*	FOR X, PERMIT ONLY WHITE OR BLACK BACKGROUNDS FOR NOW
-	if (ndx .eq. 0) then
-	   if (val(red)   .eq. 0.0 .and.
-     .	       val(green) .eq. 0.0 .and. 
-     .	       val(blue)  .eq. 0.0) then 
-	       call set_background (wsid,black)
-	   else
-	       call set_background (wsid,white)
-	   endif
-	else
-	   call FGD_GSCR(wsid,ndx,val(red),val(green),val(blue))
-	endif
-#endif
+	CALL FGD_GSCR(wsid,ndx,val(1),val(2),val(3),val(4))
+	if (ndx .eq. 0)
+     .     call SET_BACKGROUND(wsid,ndx)
 
  1000   continue
 
-#ifndef atc_gks
         call FGD_GUWK(wsid,gpostp)
-#endif
 
         return
 	end

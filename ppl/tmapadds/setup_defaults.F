@@ -47,6 +47,7 @@
 * V553 6/03 *acm* Keep the initialization of do_key here.
 * V65 *acm   2/10 If Open-ended levels were used, symbol LEV_OPNLEVS saves 
 * the /LEV command needed to duplicate the levels
+* PyFr *kms* 5/13 Add alpha channel (opaque) variables SA
 
         IMPLICIT NONE
         include         'shade_vars.cmn'
@@ -137,31 +138,37 @@
 	sr(1) = 0.8
 	sg(1) = 0.0
 	sb(1) = 1.0
+	sa(1) = 1.0
 
 	slvl(2) = 10.0
 	sr(2) = 0.3
 	sg(2) = 0.2
 	sb(2) = 1.0
+	sa(2) = 1.0
 
 	slvl(3) = 33.0
 	sr(3) = 0.0
 	sg(3) = 0.6
 	sb(3) = 0.3
+	sa(3) = 1.0
 
 	slvl(4) = 66.0
 	sr(4) = 1.0
 	sg(4) = 1.0
 	sb(4) = 0.0
+	sa(4) = 1.0
 
 	slvl(5) = 90.0
 	sr(5) = 1.0
 	sg(5) = 0.0
 	sb(5) = 0.0
+	sa(5) = 1.0
 
 	slvl(6) = 100.0
 	sr(6) = 0.6
 	sg(6) = 0.0
 	sb(6) = 0.0
+	sa(6) = 1.0
 
 *       DO THE KEY --- move most of this setup to routine SHADE_KEY; values
 *       need to be initialized with each call.

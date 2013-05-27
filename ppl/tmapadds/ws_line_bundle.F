@@ -55,6 +55,7 @@
 *              "ferret -batch" output, and gif files.
 *       *acm* 2/2003 polymarker dot line bundles had not been set for pen > 6
 *  v600 *acm* 5/2006 User can change the number of line colors.
+* PyFr *kms* 5/13 Add alpha channel (opaque)
 
         IMPLICIT NONE
         INCLUDE 'parampl5_dat.decl'
@@ -95,13 +96,11 @@
 	if (max_color .le. 2) goto 100
 
 *	COLOR WORKSTATIONS:
-#ifdef xgks
-
-        call FGD_GSCR(zwsid,2,1.0,0.0,0.0)   ! pre-defined colors
-        call FGD_GSCR(zwsid,3,0.0,1.0,0.0)
-        call FGD_GSCR(zwsid,4,0.0,0.0,1.0)
-        call FGD_GSCR(zwsid,5,0.0,1.0,1.0)
-        call FGD_GSCR(zwsid,6,1.0,0.0,1.0) 
+        call FGD_GSCR(zwsid,2,1.0,0.0,0.0,1.0)   ! pre-defined colors
+        call FGD_GSCR(zwsid,3,0.0,1.0,0.0,1.0)
+        call FGD_GSCR(zwsid,4,0.0,0.0,1.0,1.0)
+        call FGD_GSCR(zwsid,5,0.0,1.0,1.0,1.0)
+        call FGD_GSCR(zwsid,6,1.0,0.0,1.0,1.0) 
      
 ! Set up initial values for further colors as grey
 ! range them between 0.6,0.6,0.6 and 0.9,0.9,0.9
@@ -114,7 +113,7 @@
                grey = 0.6
            ENDIF
            DO 40 j = 7, num_line_colors
-              call FGD_GSCR(zwsid,j,grey,grey,grey)
+              call FGD_GSCR(zwsid,j,grey,grey,grey,1.0)
               grey = grey + frac
   40       CONTINUE
         ENDIF
@@ -122,8 +121,6 @@
 	IF (saved_line_colors .GT. 0) THEN
 	   CALL restore_saved_line_colors (zwsid)
 	ENDIF
-
-#endif
 
 ! Set line bundles
 

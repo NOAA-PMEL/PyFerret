@@ -3,11 +3,11 @@
 *
 
         SUBROUTINE FGD_GSCR(windowid, colorindex,
-     .                  redfrac, greenfrac, bluefrac)
+     .             redfrac, greenfrac, bluefrac, opaquefrac)
 
         IMPLICIT NONE
         INTEGER windowid, colorindex
-        REAL*4 redfrac, greenfrac, bluefrac
+        REAL*4 redfrac, greenfrac, bluefrac, opaquefrac
 
         INCLUDE 'ferret.parm'
         INCLUDE 'tmap_dims.parm'
@@ -15,7 +15,6 @@
         INCLUDE 'fgrdel.cmn'
 
         INTEGER colornum, success, errmsglen
-        REAL*4 opaquefrac
         CHARACTER*2048 errmsg
         INTEGER brushnum, pennum
 
@@ -40,6 +39,9 @@
         IF ( (bluefrac .LT. 0.0) .OR.  (bluefrac .GT. 1.0) ) THEN
             STOP 'FGD_GSCR: Invalid bluefrac'
         ENDIF
+        IF ( (opaquefrac .LT. 0.0) .OR.  (opaquefrac .GT. 1.0) ) THEN
+            STOP 'FGD_GSCR: Invalid opaquefrac'
+        ENDIF
 
         colornum = colorindex + 1
 
@@ -57,8 +59,6 @@
         ENDIF
 
 *       Create the new color object.
-*       Hard coded to be opaque for now.
-        opaquefrac = 1.0
         CALL FGDCOLOR(colorobjs(colornum, windowid),
      .                windowobjs(windowid),
      .                redfrac, greenfrac, bluefrac, opaquefrac)
@@ -67,9 +67,6 @@
             CALL FGDERRMSG(errmsg, errmsglen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
-        colorrgb(1, colornum, windowid) = redfrac
-        colorrgb(2, colornum, windowid) = greenfrac
-        colorrgb(3, colornum, windowid) = bluefrac
 
 *       Update any brushes that used this color number
         DO 10 brushnum = 1, maxbrushobjs

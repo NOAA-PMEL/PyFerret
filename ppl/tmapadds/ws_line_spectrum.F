@@ -36,6 +36,7 @@
 *
 *
 *	Routine to set up the line bundles for color-line plots
+* PyFr *kms* 5/13 Add alpha channel (opaque)
 
         IMPLICIT NONE
 	include 'pltcom_dat.decl'
@@ -73,7 +74,7 @@
 	integer		fktr, marktype, index, line_color_reserve,
      .			icolr, nthick, status, usable_colors, ndx
 
-	real		thickness, dotsize, frac, r_val,g_val,b_val
+	real	thickness, dotsize, frac, r_val,g_val,b_val,a_val
 	CHARACTER*100   err_msg
 
 
@@ -154,6 +155,7 @@
         r_val = 0.75
         g_val = 0.75
         b_val = 0.75
+        a_val = 1.00
 
 * What is ribbon_miss?  If user asked for a palette with /missing= 
 * then set that color.
@@ -162,9 +164,10 @@
            r_val = ribbon_miss(1)/100.
            g_val = ribbon_miss(2)/100.
            b_val = ribbon_miss(3)/100.
+           a_val = ribbon_miss(4)/100.
 	ENDIF
 	ndx = lo_color_ndx(zwsid)+shd_levels
-	CALL FGD_GSCR(zwsid,ndx,r_val,g_val,b_val)
+	CALL FGD_GSCR(zwsid,ndx,r_val,g_val,b_val,a_val)
 
 	do 40 j = shd_levels + 1, shd_levels + 1
 	    

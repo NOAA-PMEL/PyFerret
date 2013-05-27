@@ -172,9 +172,6 @@ C
 
 *       SET UP DEFAULT LINE BUNDLES FOR WS
         call setup_line_bundles (wsid,wstype)
-*ATC two lines following -- commented out for now
-*       call FGD_GSCR(wsid,0,1.0,1.0,1.0)
-*       call FGD_GSCR(wsid,1,0.0,0.0,0.0)
 
         return
 

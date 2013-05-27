@@ -61,6 +61,7 @@ C                with "*(*)" for the linux port
 * 3/99  *kob* had to move initialization of var solid off decl. line - for linux
 * V552 *acm* 3/03 For SHAKEY info, write out location of key, whether it was
 *                 automatically set or set by user with SHASET
+* PyFr *kms* 5/13 Add alpha channel (opaque)
 
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
@@ -407,15 +408,15 @@ C	SHASET info
 	if (rgb_mapping .ne. by_level) then
            do 1801 i = 1,ncl
               write (llun,10002) 
-     .             slvl(i),sr(i)*100.0,sg(i)*100.0,sb(i)*100.0 
+     .          slvl(i),sr(i)*100.0,sg(i)*100.0,sb(i)*100.0,sa(i)*100.0
  1801      continue
-10002      format (9x,f9.1,5x,f5.1,7x,f5.1,7x,f5.1)
+10002      format (9x,f9.1,5x,f5.1,7x,f5.1,7x,f5.1,7x,f5.1)
         else
            do 1802 i = 1,ncl
               write (llun,11002) 
-     .             i,sr(i)*100.0,sg(i)*100.0,sb(i)*100.0 
+     .             i,sr(i)*100.0,sg(i)*100.0,sb(i)*100.0,sa(i)*100.0
  1802      continue
-11002      format (9x,i9,5x,f5.1,7x,f5.1,7x,f5.1)
+11002      format (9x,i9,5x,f5.1,7x,f5.1,7x,f5.1,7x,f5.1)
         end if
 	goto 5000
 

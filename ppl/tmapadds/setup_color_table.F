@@ -40,6 +40,7 @@
 *	Mod JD 4.18.90 allowing only one shade level
 *       Mod JD 10.98 setup by percent, by_value, or by_level
 * V63  *acm* 10/09 Changes for gfortran build
+* PyFr *kms* 5/13 Add alpha channel (opaque)
 
         IMPLICIT NONE
         include         'parampl5_dat.decl'
@@ -48,11 +49,11 @@
         include         'cont_inc.decl'
         include         'CONT.INC'
 
-	integer		zwsid,ndx_lo,range,ndx,t_cl,cl_0
-	integer		ndx_hi,ndx_lop1,ndx_him1
+	integer	zwsid,ndx_lo,range,ndx,t_cl,cl_0
+	integer	ndx_hi,ndx_lop1,ndx_him1
 
- 	real		del_lvl,lvl
-	real		r_inc,g_inc,b_inc,r_val,g_val,b_val
+ 	real	del_lvl,lvl
+	real	r_inc,g_inc,b_inc,a_inc,r_val,g_val,b_val,a_val
 
 ******************************************************************************
 	
@@ -81,22 +82,24 @@
 		 end if
  10	      end do
 
-*             FIND THE R,G,B VALUES TO SET THIS LEVEL
+*             FIND THE R,G,B,A VALUES TO SET THIS LEVEL
  20	      r_inc	= (sr(cl_0+1) - sr(cl_0))/(slvl(cl_0+1) - slvl(cl_0))
 	      g_inc	= (sg(cl_0+1) - sg(cl_0))/(slvl(cl_0+1) - slvl(cl_0))
 	      b_inc	= (sb(cl_0+1) - sb(cl_0))/(slvl(cl_0+1) - slvl(cl_0))
+	      a_inc	= (sa(cl_0+1) - sa(cl_0))/(slvl(cl_0+1) - slvl(cl_0))
 	      
 	      r_val	= sr(cl_0) + r_inc*(lvl - slvl(cl_0))
 	      g_val	= sg(cl_0) + g_inc*(lvl - slvl(cl_0))
 	      b_val	= sb(cl_0) + b_inc*(lvl - slvl(cl_0))
+	      a_val	= sa(cl_0) + a_inc*(lvl - slvl(cl_0))
 
 *             NOW SET THE COLOR OF THIS INDEX/LEVEL
-	      call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val)
+	      call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val,a_val)
  50	   end do
 
-*	   SET R,G,B FOR FIRST AND LAST LEVELS
- 100	   call FGD_GSCR(zwsid,ndx_hi,sr(ncl),sg(ncl),sb(ncl))
- 101	   call FGD_GSCR(zwsid,ndx_lo,sr(1),sg(1),sb(1))
+*	   SET R,G,B,A FOR FIRST AND LAST LEVELS
+ 100	   call FGD_GSCR(zwsid,ndx_hi,sr(ncl),sg(ncl),sb(ncl),sa(ncl))
+ 101	   call FGD_GSCR(zwsid,ndx_lo,sr(1),sg(1),sb(1),sa(1))
 
 	else if (rgb_mapping .eq. by_value) then
 	   if (ncl .eq. 0) then
@@ -120,9 +123,9 @@
 	   
 *	      LOCATE THIS LEVEL IN THE SPECIFIED SPECTRUM LEVELS
 	      if (lvl .lt. slvl(1)) then
-		 call FGD_GSCR(zwsid,ndx,sr(1),sg(1),sb(1))
+		 call FGD_GSCR(zwsid,ndx,sr(1),sg(1),sb(1),sa(1))
 	      else if  (lvl .ge. slvl(ncl)) then
-		 call FGD_GSCR(zwsid,ndx,sr(ncl),sg(ncl),sb(ncl))
+		 call FGD_GSCR(zwsid,ndx,sr(ncl),sg(ncl),sb(ncl),sa(ncl))
 	      else
 		 do 110 t_cl = cl_0,ncl-1
 		    if (lvl .lt. slvl(t_cl+1)) then
@@ -141,20 +144,24 @@
 		 b_inc	= (sb(cl_0+1) - sb(cl_0))
      .  	      /(slvl(cl_0+1) - slvl(cl_0))
 		 
+		 a_inc	= (sa(cl_0+1) - sa(cl_0))
+     .  	      /(slvl(cl_0+1) - slvl(cl_0))
+		 
 		 r_val	= sr(cl_0) + r_inc*(lvl - slvl(cl_0))
 		 g_val	= sg(cl_0) + g_inc*(lvl - slvl(cl_0))
 		 b_val	= sb(cl_0) + b_inc*(lvl - slvl(cl_0))
+		 a_val	= sa(cl_0) + a_inc*(lvl - slvl(cl_0))
 
 *                NOW SET THE COLOR OF THIS INDEX/LEVEL
-		 call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val)
+		 call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val,a_val)
 	      end if
  150	   end do
 
 	   goto 2000
 
 *	   SET R,G,B FOR FIRST AND LAST LEVELS
- 200	   call FGD_GSCR(zwsid,ndx_hi,sr(ncl),sg(ncl),sb(ncl))
- 201	   call FGD_GSCR(zwsid,ndx_lo,sr(1),sg(1),sb(1))
+ 200	   call FGD_GSCR(zwsid,ndx_hi,sr(ncl),sg(ncl),sb(ncl),sa(ncl))
+ 201	   call FGD_GSCR(zwsid,ndx_lo,sr(1),sg(1),sb(1),sa(1))
 
 	else if (rgb_mapping .eq. by_level) then
 *	   ATOMIC COLORS -- AS MANY COLORS AS SET IN COLOR PALETTE
@@ -162,8 +169,9 @@
 	      r_val = sr(ndx - ndx_lo + 1)    
 	      g_val = sg(ndx - ndx_lo + 1)    
 	      b_val = sb(ndx - ndx_lo + 1)    
+	      a_val = sa(ndx - ndx_lo + 1)    
 
-	      call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val)
+	      call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val,a_val)
  1000	   end do
 	end if
 

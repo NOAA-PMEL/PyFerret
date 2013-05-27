@@ -38,6 +38,7 @@
 *       Restores saved RGB values - changes for single color indices
 *       for metafile batch mode (cuckoos egg trick makes this necessary)
 * V616  *acm* 1/00 
+* PyFr *kms* 5/13 Add alpha channel (opaque)
 
         IMPLICIT NONE
 	include 'parampl5_dat.decl'
@@ -51,7 +52,8 @@
 
 	do 40 j = 1, num_line_colors     
            IF (ndx_save_colors(j) .EQ. j) 
-     .	   CALL FGD_GSCR(zwsid,j,val_red(j),val_green(j), val_blue(j))
+     .	       CALL FGD_GSCR(zwsid,j,val_red(j),val_green(j),
+     .                               val_blue(j),val_opaque(j))
   40	CONTINUE
 
         RETURN

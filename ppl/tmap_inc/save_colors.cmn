@@ -5,10 +5,13 @@
 *	Ansley Manke PMEL/TMAP
 *	requires PARAMPL5.DAT with NLINES
 *  Ferret v6.16  1/2009
+*  PyFr *kms* 5/13 Added alpha channel (opaque)
 
-	integer		saved_line_colors ! flag
-	integer		ndx_save_colors(NLINES)
-	real		val_red(NLINES), val_blue(NLINES), val_green(NLINES)
+	integer	saved_line_colors ! flag
+	integer	ndx_save_colors(NLINES)
+	real	val_red(NLINES), val_green(NLINES), 
+     .          val_blue(NLINES), val_opaque(NLINES)
 
-	common/save_colr/ saved_line_colors,
-     .			ndx_save_colors,val_red, val_blue, val_green
+	common/save_colr/ saved_line_colors, ndx_save_colors, 
+     .                    val_red, val_green, 
+     .                    val_blue, val_opaque

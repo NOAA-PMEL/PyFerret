@@ -20,8 +20,8 @@ except AttributeError:
     pass
 
 from PyQt4.QtCore import Qt, QPointF, QRectF, QSize, QString, QTimer
-from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, QColorDialog, \
-                         QDialog, QFileDialog, QImage, QLabel, QMainWindow, \
+from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, QDialog, \
+                         QFileDialog, QImage, QLabel, QMainWindow, \
                          QMessageBox, QPainter, QPalette, QPen, QPixmap, \
                          QPolygonF, QPushButton, QScrollArea
 
@@ -474,14 +474,9 @@ class PipedImagerPQ(QMainWindow):
             else:
                 raise RuntimeError( self.tr("Unexpected file format name '%1'") \
                                         .arg(fileFilter) )
-            # Get the background color with an alpha channel
-            bkgcolor = QColorDialog.getColor(self.__lastclearcolor, self, 
-                                             self.tr("Background color"),
-                                             QColorDialog.ShowAlphaChannel)
-            if bkgcolor.isValid():
-                self.saveSceneToFile(fileName, fileFormat, bkgcolor)
-                self.__lastfilename = fileName
-                self.__lastformat = fileFormat
+            self.saveSceneToFile(fileName, fileFormat, None)
+            self.__lastfilename = fileName
+            self.__lastformat = fileFormat
 
     def saveSceneToFile(self, filename, imageformat, bkgcolor):
         '''

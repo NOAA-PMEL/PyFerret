@@ -67,8 +67,6 @@
      .				( ferr_interrupt, status, ' ', *10 )
 	ppl_interrupted = .FALSE.	! for interrupt of PPLUS
 
-	IF ( mode_xwindows ) CALL PROCESS_X_EVENTS    ! 3/94
-
 * send the state of the control stack back to the caller
 * (zero is command line level)
 	control_stack_level = csp

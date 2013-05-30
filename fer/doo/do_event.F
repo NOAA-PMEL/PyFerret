@@ -47,6 +47,7 @@
 *
 * V533:  6/01 - new routine based on DO_DIST_LOC
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* v685   5/13 *acm* Fix ticket 2054, EVNT in z direction - typo in equiv.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -78,7 +79,7 @@
      .          hi_s1, hi_s2, hi_s3, hi_s4, hi_s5, hi_s6
 	EQUIVALENCE (lo_s1, lo_sub(1)) , (lo_s2, lo_sub(2)),
      .		    (lo_s3, lo_sub(3)) , (lo_s4, lo_sub(4)),
-     .		    (lo_s5, lo_sub(3)) , (lo_s6, lo_sub(6)),
+     .		    (lo_s5, lo_sub(5)) , (lo_s6, lo_sub(6)),
      .		    (hi_s1, hi_sub(1)) , (hi_s2, hi_sub(2)),
      .		    (hi_s3, hi_sub(3)) , (hi_s4, hi_sub(4)),
      .		    (hi_s5, hi_sub(5)) , (hi_s6, hi_sub(6))

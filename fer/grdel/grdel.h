@@ -90,6 +90,7 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
 const BindObj *grdelWindowVerify(grdelType window);
 grdelBool grdelWindowDelete(grdelType window);
 grdelBool grdelWindowClear(grdelType window, grdelType fillcolor);
+grdelBool grdelWindowRedraw(grdelType window, grdelType fillcolor);
 grdelBool grdelWindowSetImageName(grdelType window, const char *imagename,
                      int imgnamelen, const char *formatname, int fmtnamelen);
 grdelBool grdelWindowUpdate(grdelType window);
@@ -108,6 +109,7 @@ void fgdwincreate_(void **window, char *engine, int *enginelen,
                    char *title, int *titlelen, int *visible);
 void fgdwindelete_(int *success, void **window);
 void fgdwinclear_(int *success, void **window, void **fillcolor);
+void fgdwinredraw_(int *success, void **window, void **fillcolor);
 void fgdwinupdate_(int *success, void **window);
 void fgdwinsetantialias_(int *success, void **window, int *antialias);
 void fgdwinsetsize_(int *success, void **window, float *width, float *height);

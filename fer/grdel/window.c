@@ -357,16 +357,16 @@ grdelBool grdelWindowSetImageName(grdelType window, const char *imagename,
 
 /*
  * Clears the window of all drawings.  The window is filled
- * (initialized) with fillcolor.
+ * (initialized) with bkgcolor; i.e., the background color.
  *
  * Arguments:
  *     window: Window to be cleared
- *     fillcolor: Color to fill (initialize) the scene
+ *     bkgcolor: Color to fill (initialize) the scene
  *
  * Returns success (nonzero) or failure (zero).
  * If failure, grdelerrmsg contains an explanatory message.
  */
-grdelBool grdelWindowClear(grdelType window, grdelType fillcolor)
+grdelBool grdelWindowClear(grdelType window, grdelType bkgcolor)
 {
     GDWindow *mywindow;
     grdelType colorobj;
@@ -375,7 +375,7 @@ grdelBool grdelWindowClear(grdelType window, grdelType fillcolor)
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelWindowClear called: "
-            "window = %p, fillcolor = %p\n", window, fillcolor);
+            "window = %p, bkgcolor = %p\n", window, bkgcolor);
     fflush(debuglogfile);
 #endif
 
@@ -385,9 +385,9 @@ grdelBool grdelWindowClear(grdelType window, grdelType fillcolor)
         return 0;
     }
     mywindow = (GDWindow *) window;
-    colorobj = grdelColorVerify(fillcolor, window);
+    colorobj = grdelColorVerify(bkgcolor, window);
     if ( colorobj == NULL ) {
-        strcpy(grdelerrmsg, "grdelWindowClear: fillcolor argument is not "
+        strcpy(grdelerrmsg, "grdelWindowClear: bkgcolor argument is not "
                             "a valid grdel Color for the window");
         return 0;
     }
@@ -412,6 +412,69 @@ grdelBool grdelWindowClear(grdelType window, grdelType fillcolor)
     }
     else {
         strcpy(grdelerrmsg, "grdelWindowClear: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
+
+    return 1;
+}
+
+/*
+ * Redraws the current drawing with bkgcolor as the background Color. 
+ *
+ * Arguments:
+ *     window: Window to be cleared
+ *     bkgcolor: Color to fill (initialize) the scene
+ *
+ * Returns success (nonzero) or failure (zero).
+ * If failure, grdelerrmsg contains an explanatory message.
+ */
+grdelBool grdelWindowRedraw(grdelType window, grdelType bkgcolor)
+{
+    GDWindow *mywindow;
+    grdelType colorobj;
+    grdelBool success;
+    PyObject *result;
+
+#ifdef VERBOSEDEBUG
+    fprintf(debuglogfile, "grdelWindowRedraw called: "
+            "window = %p, bkgcolor = %p\n", window, bkgcolor);
+    fflush(debuglogfile);
+#endif
+
+    if ( grdelWindowVerify(window) == NULL ) {
+        strcpy(grdelerrmsg, "grdelWindowRedraw: window argument is not "
+                            "a grdel Window");
+        return 0;
+    }
+    mywindow = (GDWindow *) window;
+    colorobj = grdelColorVerify(bkgcolor, window);
+    if ( colorobj == NULL ) {
+        strcpy(grdelerrmsg, "grdelWindowRedraw: bkgcolor argument is not "
+                            "a valid grdel Color for the window");
+        return 0;
+    }
+
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                            redrawWindow(mywindow->bindings.cferbind, colorobj);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+    }
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, "redrawWindow",
+                                     "O", (PyObject *) colorobj);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowRedraw: Error when calling "
+                    "the Python binding's redrawWindow method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelWindowRedraw: unexpected error, "
                             "no bindings associated with this Window");
         return 0;
     }
@@ -873,20 +936,39 @@ void fgdwinimgname_(int *success, void **window, char *imagename,
 
 /*
  * Clears the window of all drawings.  The window is filled
- * (initialized) with fillcolor.
+ * (initialized) with bkgcolor; i.e., the background color.
  *
  * Input Arguments:
  *     window: Window to be cleared
- *     fillcolor: Color to fill (initialize) the scene
+ *     bkgcolor: Color to fill (initialize) the scene
  * Output Arguments:
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdwinclear_(int *success, void **window, void **fillcolor)
+void fgdwinclear_(int *success, void **window, void **bkgcolor)
 {
     grdelBool result;
 
-    result = grdelWindowClear(*window, *fillcolor);
+    result = grdelWindowClear(*window, *bkgcolor);
+    *success = result;
+}
+
+/*
+ * Redraws the current drawing with bkgcolor as the background Color. 
+ *
+ * Input Arguments:
+ *     window: Window to be cleared
+ *     bkgcolor: Color to fill (initialize) the scene 
+ *               prior to redrawing the scene.
+ * Output Arguments:
+ *     success: non-zero if successful; zero if an error occurred.
+ *              Use fgderrmsg_ to retrieve the error message.
+ */
+void fgdwinredraw_(int *success, void **window, void **bkgcolor)
+{
+    grdelBool result;
+
+    result = grdelWindowRedraw(*window, *bkgcolor);
     *success = result;
 }
 

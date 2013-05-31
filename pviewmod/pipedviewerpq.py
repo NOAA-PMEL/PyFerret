@@ -72,7 +72,7 @@ class PipedViewerPQ(QMainWindow):
         # default scene size
         self.__scenewidth = 840
         self.__sceneheight = 720
-        # initial default color for clearScene (opaque white)
+        # initial default color for the background (opaque white)
         self.__lastclearcolor = QColor(0xFFFFFF)
         self.__lastclearcolor.setAlpha(0xFF)
         # List of QPictures creating the current scene
@@ -355,13 +355,12 @@ class PipedViewerPQ(QMainWindow):
         # Update the record of which pictures have been displayed
         self.__lastpicdrawn = len(self.__viewpics)
 
-    def clearScene(self, colorinfo):
+    def clearScene(self, bkgcolor):
         '''
-        Removes all view pictures, and fills the scene with the color
-        described in the colorinfo dictionary.  If colorinfo is None,
-        or if no color or an invalid color is specified in this
-        dictionary, the color used is the one used from the last
-        clearScene call (or opaque white if a color has never
+        Removes all view pictures, and fills the scene with bkgcolor.
+        If bkgcolor is None or an invalid color, the color used is 
+        the one used from the last clearScene or redrawScene call 
+        with a valid color (or opaque white if a color has never 
         been specified).
         '''
         # If there is an active View with content,
@@ -372,13 +371,9 @@ class PipedViewerPQ(QMainWindow):
         else:
             restartview = False
         # get the color to use for clearing (the background color)
-        if colorinfo:
-            try :
-                mycolor = self.__helper.getColorFromCmnd(colorinfo)
-                if mycolor.isValid():
-                    self.__lastclearcolor = mycolor
-            except KeyError:
-                pass
+        if bkgcolor:
+            if bkgcolor.isValid():
+                self.__lastclearcolor = bkgcolor
         # Delete all the pictures from the list and
         # mark that the pixmap needs to be cleared
         self.__viewpics[:] = [ ]
@@ -392,9 +387,13 @@ class PipedViewerPQ(QMainWindow):
         if restartview:
             self.beginViewFromSides(self.__fracsides, self.__clipit)
 
-    def redrawScene(self):
+    def redrawScene(self, bkgcolor=None):
         '''
-        Clear and redraw all the pictures to the displayed scene.
+        Clear the scene using the given background color and redraw all 
+        the pictures to the displayed scene.  If bkgcolor is None or an 
+        invalid color, the color used is the one used from the last 
+        clearScene or redrawScene call with a valid color (or opaque 
+        white if a color has never been specified).
         '''
         # If there is an active View, end it now, but do not update the scene
         if self.__activepainter:
@@ -402,6 +401,9 @@ class PipedViewerPQ(QMainWindow):
             hadactiveview = True
         else:
             hadactiveview = False
+        if bkgcolor:
+            if bkgcolor.isValid():
+                self.__lastclearcolor = bkgcolor
         # mark that the pixmap needs to be cleared
         # and all the pictures redrawn
         self.__clearpixmap = True
@@ -786,7 +788,11 @@ class PipedViewerPQ(QMainWindow):
             raise ValueError( self.tr("Unknown command %1").arg(str(cmnd)) )
 
         if cmndact == "clear":
-            self.clearScene(cmnd)
+            try:
+                bkgcolor = self.__helper.getColorFromCmnd(cmnd)
+            except KeyError:
+                bkgcolor = None
+            self.clearScene(bkgcolor)
         elif cmndact == "exit":
             self.exitViewer()
         elif cmndact == "hide":
@@ -799,7 +805,11 @@ class PipedViewerPQ(QMainWindow):
         elif cmndact == "update":
             self.updateScene()
         elif cmndact == "redraw":
-            self.redrawScene()
+            try:
+                bkgcolor = self.__helper.getColorFromCmnd(cmnd)
+            except KeyError:
+                bkgcolor = None
+            self.redrawScene(bkgcolor)
         elif cmndact == "resize":
             mysize = self.__helper.getSizeFromCmnd(cmnd)
             self.resizeScene(mysize.width(), mysize.height())

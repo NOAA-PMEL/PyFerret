@@ -68,7 +68,7 @@ class PipedImagerPQ(QMainWindow):
         # a viewer (mainWindow) of the right size
         self.__scenewidth = 840
         self.__sceneheight = 720
-        # initial default color for clearScene (opaque white)
+        # initial default color for the background (opaque white)
         self.__lastclearcolor = QColor(0xFFFFFF)
         self.__lastclearcolor.setAlpha(0xFF)
         # scaling factor for creating the displayed scene
@@ -230,33 +230,32 @@ class PipedImagerPQ(QMainWindow):
         # update the label from the new pixmap
         self.__label.update()
        
-    def clearScene(self, colorinfo):
+    def clearScene(self, bkgcolor=None):
         '''
-        Deletes the scene image and fills the label with the color
-        described in the colorinfo dictionary.  If colorinfo is None,
-        or if no color or an invalid color is specified in this
-        dictionary, the color used is the one used from the last
-        clearScene call (or opaque white if a color has never
+        Deletes the scene image and fills the label with bkgcolor.
+        If bkgcolor is None or an invalid color, the color used is 
+        the one used from the last clearScene or redrawScene call 
+        with a valid color (or opaque white if a color has never 
         been specified).
         '''
         # get the color to use for clearing (the background color)
-        if colorinfo:
-            try :
-                mycolor = self.__helper.getColorFromCmnd(colorinfo)
-                if mycolor.isValid():
-                    self.__lastclearcolor = mycolor
-            except KeyError:
-                pass
+        if bkgcolor:
+            if bkgcolor.isValid():
+                    self.__lastclearcolor = bkgcolor
         # Remove the image and its bytearray
         self.__sceneimage = None
         self.__scenedata = None
         # Update the scene label using the current clearing color and image
         self.updateScene()
 
-    def redrawScene(self):
+    def redrawScene(self, bkgcolor=None):
         '''
         Clear and redraw the displayed scene.
         '''
+        # get the background color
+        if bkgcolor:
+            if bkgcolor.isValid():
+                    self.__lastclearcolor = bkgcolor
         # Update the scene label using the current clearing color and image
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.statusBar().showMessage( self.tr("Redrawing image") )
@@ -583,7 +582,11 @@ class PipedImagerPQ(QMainWindow):
             raise ValueError( self.tr("Unknown command %1").arg(str(cmnd)) )
 
         if cmndact == "clear":
-            self.clearScene(cmnd)
+            try:
+                bkgcolor = self.__helper.getColorFromCmnd(cmnd)
+            except KeyError:
+                bkgcolor = None
+            self.clearScene(bkgcolor)
         elif cmndact == "exit":
             self.exitViewer()
         elif cmndact == "hide":
@@ -592,7 +595,11 @@ class PipedImagerPQ(QMainWindow):
             windowdpi = ( self.physicalDpiX(), self.physicalDpiY() )
             self.__rspdpipe.send(windowdpi)
         elif cmndact == "redraw":
-            self.redrawScene()
+            try:
+                bkgcolor = self.__helper.getColorFromCmnd(cmnd)
+            except KeyError:
+                bkgcolor = None
+            self.redrawScene(bkgcolor)
         elif cmndact == "resize":
             mysize = self.__helper.getSizeFromCmnd(cmnd)
             self.resizeScene(mysize.width(), mysize.height())

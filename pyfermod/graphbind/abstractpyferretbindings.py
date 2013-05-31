@@ -135,13 +135,24 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError()
 
-    def clearWindow(self, fillcolor):
+    def clearWindow(self, bkgcolor):
         '''
-        Clears the Window of all drawings.  The Window is filled
-        (initialized) with fillcolor.
+        Clears the Window of all drawings.  The window is 
+        initialized to all bkgcolor (the background color).
  
         Arguments:
-            fillcolor: Color to fill (initialize) the Window
+            bkgcolor: initialize (fill) the Window with this Color
+        '''
+        raise AttributeError()
+
+    def redrawWindow(self, bkgcolor):
+        '''
+        Redraw the current drawing except using bkgcolor as the
+        background color (the initialization color for the Window). 
+        
+        Arguments:
+            bkgcolor: initialize (fill) the Window with this Color
+                      before redrawing the current drawing.
         '''
         raise AttributeError()
 

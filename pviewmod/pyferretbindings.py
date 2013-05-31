@@ -215,20 +215,38 @@ class PyFerretBindings(AbstractPyFerretBindings):
         self.__window.submitCommand(cmnd)
         self.checkForErrorResponse()
 
-    def clearWindow(self, fillcolor):
+    def clearWindow(self, bkgcolor):
         '''
-        Clears the Window of all drawings.  The Window is filled
-        (initialized) with fillcolor.
-
+        Clears the Window of all drawings.  The window is 
+        initialized to all bkgcolor (the background color).
+ 
         Arguments:
-            fillcolor: Color to fill (initialize) the Window
+            bkgcolor: initialize (fill) the Window with this Color
         '''
-        if fillcolor:
-            # Make a copy of the fillcolor dictionary
-            cmnd = dict(fillcolor)
+        if bkgcolor:
+            # Make a copy of the bkgcolor dictionary
+            cmnd = dict(bkgcolor)
         else:
             cmnd = { }
         cmnd["action"] = "clear"
+        self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
+
+    def redrawWindow(self, bkgcolor):
+        '''
+        Redraw the current drawing except using bkgcolor as the
+        background color (the initialization color for the Window). 
+        
+        Arguments:
+            bkgcolor: initialize (fill) the Window with this Color
+                      before redrawing the current drawing.
+        '''
+        if bkgcolor:
+            # Make a copy of the bkgcolor dictionary
+            cmnd = dict(bkgcolor)
+        else:
+            cmnd = { }
+        cmnd["action"] = "redraw"
         self.__window.submitCommand(cmnd)
         self.checkForErrorResponse()
 

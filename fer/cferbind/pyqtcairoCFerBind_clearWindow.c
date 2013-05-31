@@ -25,8 +25,7 @@ grdelBool pyqtcairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor)
     grdelBool  success;
 
     /* Sanity checks */
-    if ( (self->enginename != CairoCFerBindName) &&
-         (self->enginename != PyQtCairoCFerBindName) ) {
+    if ( self->enginename != PyQtCairoCFerBindName ) {
         strcpy(grdelerrmsg, "pyqtcairoCFerBind_clearWindow: unexpected error, "
                             "self is not a valid CFerBind struct");
         return 0;

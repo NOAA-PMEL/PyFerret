@@ -1,74 +1,301 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
 <title>PyFerret Known Issues Addenda</title>
-<link rel="stylesheet" type="text/css" href="pyferret.css" />
+<link
+	rel="stylesheet"
+	type="text/css"
+	href="pyferret.css"
+/>
 </head>
 
 <body>
 
-<h1>PyFerret Known Issues Addenda</h1>
+	<h1>PyFerret Known Issues Addenda</h1>
 
-<p>
-The following describes recently discovered issues with 
-PyFerret that are not listed in 
-<a href="http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/known-issues/">
-PyFerret Known Issues and Release Notes</a>
-<br />
-The recently discovered issues listed here are those specific 
-to PyFerret and does not include issues with the Ferret engine 
-contained within PyFerret.
-</p>
+	<p>
+		The following describes issues with PyFerret that are not listed in <a
+			href="http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/known-issues/"
+		> PyFerret Known Issues and Release Notes</a> The issues listed here are
+		those specific to PyFerret and does not include issues with the Ferret
+		engine contained within PyFerret. This list includes both problems and
+		some desired enhancements.
+	</p>
 
-<br />
+	<dl>
 
-<dl>
-<dt>The Ferret "where" function does not work properly in PyFerret.</dt>
-    <dd>
-    The graphics input function, which returns coordinates of a mouse-click, 
-    has yet to be implemented for the new graphics engines in PyFerret.  
-    As a result, the Ferret "where" function returns random coordinates 
-    without any interaction with the displayed window.
-    </dd>
-<dt>CTRL-C exits PyFerret</dt>
-    <dd>
-    UPDATE: This is a tcsh issue! <br />
-    In Ferret, when CTRL-C is pressed, any pending activity in Ferret
-    is stopped and the user is returned to the Ferret prompt.  
-    In PyFerret, CTRL-C causes the program to exit completely under 
-    some circumstances (using the pyferret.csh C-shell script to run 
-    PyFerret under RHEL6 tcsh).
-    The solution to this bug in tcsh is to use the pyferret.sh 
-    Bourne-shell script to run PyFerret (even if you are in a C-shell).  
-    The pyferret.csh script should only be used if you wish to 'source' 
-    a pyferret script from a C-shell.
-    </dd>
-</dl>
+		<dt>#1898: The Ferret "where" function does not work properly in
+			PyFerret.</dt>
+		<dd>The graphics input function, which returns coordinates of a
+			mouse-click, has yet to be implemented for the new graphics engines
+			in PyFerret. As a result, the Ferret "where" function returns random
+			coordinates without any interaction with the displayed window.</dd>
 
-<br />
-<br />
+		<dt>#1904: CTRL-C exits PyFerret</dt>
+		<dd>
+			This is a tcsh issue! <br /> In Ferret, when CTRL-C is pressed, any
+			pending activity in Ferret is stopped and the user is returned to the
+			Ferret prompt. In PyFerret, CTRL-C causes the program to exit
+			completely under some circumstances (using the pyferret.csh C-shell
+			script to run PyFerret under RHEL6 tcsh). The solution to this bug in
+			tcsh is to use the pyferret.sh Bourne-shell script to run PyFerret
+			(even if you are in a C-shell). The pyferret.csh script should only
+			be used if you wish to 'source' a pyferret script from a C-shell. <br />
+			The next release will always link pyferret to pyferret.sh, so the
+			Bourne shell script will always be used.
+		</dd>
 
-<table border="1">
-<tr>
-<td> <a class="nav" href="http://www.doc.gov/">US Department of Commerce</a> </td >
-<td> <a class="nav" href="http://www.noaa.gov/">NOAA</a> </td>
-<td> <a class="nav" href="http://www.oar.noaa.gov/">OAR</a> </td>
-<td> <a class="nav" href="http://www.pmel.noaa.gov/">PMEL</a> </td>
-<td> <a class="nav" href="http://www.pmel.noaa.gov/home/persons.shtml">Contacts</a> </td>
-<td> <a class="nav" href="http://www.noaa.gov/privacy.html">Privacy Policy</a> </td>
-<td> <a class="nav" href="http://www.noaa.gov/disclaimer.html">Disclaimer</a> </td>
-</tr>
-</table>
+		<dt>#2019: CTRL-C can cause PyFerret to crash</dt>
+		<dd>Using pyferret.sh (see previous issue), entering a CTRL-C
+			while Ferret is reading data can cause the program to crash. Entering
+			CTRL-C while the program is updating the display can sometimes cause
+			the viewer to crash.</dd>
 
-<p style="text-align:left;"><strong>
-NOAA/OAR/PMEL<br />
-Pacific Marine Environmental Laboratory<br>
-7600 Sand Point Way NE, Seattle, WA 98115<br>
-Phone: (206) 526-6239 ~ Fax: (206) 526-6815 
-Email: <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#111;&#97;&#114;&#46;&#112;&#109;&#101;&#108;&#46;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#95;&#102;&#101;&#114;&#114;&#101;&#116;&#64;&#110;&#111;&#97;&#97;&#46;&#103;&#111;&#118;">
-        &#111;&#97;&#114;&#46;&#112;&#109;&#101;&#108;&#46;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#95;&#102;&#101;&#114;&#114;&#101;&#116;&#64;&#110;&#111;&#97;&#97;&#46;&#103;&#111;&#118; </a>
-</strong></p>
+		<dt>#2006: Make graphics quality a qualifier of SET WINDOW</dt>
+		<dd>
+			In the next release, SET GRAPHICS has been removed and is replaced by
+			SET WINDOW /QUALITY=.... The anti-alias control also part of SET
+			WINDOW. The default is HIGH quality graphics with anti-aliasing.
+			Unmapped, high-quality graphics now specified using the <em>-nodisplay</em>
+			command line option.
+		</dd>
+
+		<dt>#NNNN: Window displayed when using pyferret -unmapped</dt>
+		<dd>
+			Although the <em>-unmapped</em> command-line option is suppose to
+			prevent the display of any graphics, setting the graphics quality to
+			high or draft with cause PyFerret to switch to that graphics mode and
+			display windows. In the next release the -nodisplay (and equivalent
+			-unmapped and -gif) command line options causes the program to ignore
+			any /QUALITY qualifiers to SET WINDOW (see previous issue). This will
+			prevent the change to displayed windows.
+		</dd>
+
+		<dt>#2001: Need to show graphics details (quality, anti-alias) as
+			part of SHOW WINDOW</dt>
+		<dd></dd>
+
+		<dt>#1918: Graphics not updated in pyferret.run
+			semicolon-separated commands</dt>
+		<dd>Fixed in next release; removed deferral of updating graphics</dd>
+
+		<dt>#2011: FRAME /FILE=... in a script does not have complete
+			graphics</dt>
+		<dd>Fixed in next release; removed deferral of updating graphics</dd>
+
+		<dt>#1993: Symbol to differentiate PyFerret from traditional
+			Ferret</dt>
+		<dd>PROGRAM_NAME symbol added in next release. The value is
+			"Ferret" in Ferret, "PyFerret" in PyFerret.</dd>
+
+		<dt>#2042: Option to set color and transparency (opacity) of
+			graphics background</dt>
+		<dd>
+			When using <em>Image -&gt; Save As</em> in the menu bar, saving to
+			PNG produces a file with a transparent background. But using FRAME
+			/FILE=plot.png produces a file with an opaque white background. <br />
+			The next version supports specifying the color and opacity of the
+			background. This background color is used for both the displayed and
+			saved image.
+		</dd>
+
+		<dt>#1941: Enable transparency value in color specifications (in
+			particular, for shading overlay)</dt>
+		<dd>The next version supports opacity in all color
+			specifications. There is also the option of specifying an overriding
+			opacity for colors used in shade and fill plots so the standard color
+			palettes can be used.</dd>
+
+		<dt>#1939: Enable dynamic resizing of image</dt>
+		<dd>Dynamically resize the image to fill the area inside the
+			display window. Add a menu item to disable/enable this behavior.</dd>
+
+		<dt>#2002: SET WINDOW /SIZE=&lt;n&gt; should rerender, if
+			possible, or scale the currently display graphics at the new size</dt>
+		<dd></dd>
+
+		<dt>#2007: PostScript print oversized?</dt>
+		<dd>
+			PostScript output is slightly too large for the printed page; top
+			line of FERRET insignia is partly outside the printable area. Output
+			image is scaled about 10% larger than what one gets with Fprint in
+			vanilla Ferret.<br /> No margins are currently used when saving
+			PostScript and PDF images. This will be changed to use narrow margins
+			and respect the margins specified in the <em>Print to File</em>
+			dialog from <em>Image -&gt; Save As</em> in the menu bar.
+		</dd>
+
+		<dt>#1985: Inside a viewport, plots overlay instead of replace
+			previous plot</dt>
+		<dd>
+			In the following script, the second plot overlays the first instead
+			of replacing the previous plot:
+			<pre>
+	yes? set view upper
+	yes? plot/vs/line {0,1,2},{1,2,4}
+	yes? plot/vs/line {0,1,2},{1,8,6}</pre>
+		</dd>
+
+		<dt>#1838: Embedded newlines in a pyferret.run command do not
+			break up into separate command lines</dt>
+		<dd></dd>
+
+		<dt>#1995: PyFerret does not work with commands piped to it</dt>
+		<dd>
+			Piping output from a command into PyFerret, such as <em>cat
+				my.jnl | pyferret</em> does not work.
+		</dd>
+
+		<dt>#2032: White lines from anti-aliasing in shade and fill plots</dt>
+		<dd>
+			Shade and fill plots still show white lines due to anti-aliasing
+			against a white background. Primarily an issue with PS and PDF
+			output. <br /> A work-around (mentioned by Ansley on the
+			ferret-users list) is to do both a fill and shade, with the latter
+			one the desired plot as an overlay with no labels. This makes for a
+			larger PS or PDF since it is essentially drawing the plot twice, but
+			the anti-aliasing is now against a similar color instead of white.
+		</dd>
+
+		<dt>#1880: PyFerret python method to get a Ferret symbol value</dt>
+		<dd>Create a method in PyFerret to return the value of a Ferret
+			symbol as a Python string.</dd>
+
+		<dt>#1842: The get and getdata methods do not record the dataset</dt>
+		<dd>The get and getdata methods need to return the dataset ID for
+			the data. For getdata, this would be the value of the "dset" key. The
+			ID should be the filename of the dataset from which the came from.</dd>
+
+		<dt>#2053: SHOW DATA for a data variable added from Python does
+			not display the grid correctly</dt>
+		<dd>The grid shown for a data variable added from Python is not
+			displayed correctly in the SHOW DATA Ferret command, although the
+			grid is correct when displayed using the SHOW GRID Ferret command.</dd>
+
+
+		<dt>#1919: Support patterns or some hatching</dt>
+		<dd>
+			The *.pat pattern files, as used in FILL /PATTERN=... are not
+			supported.<br /> Alternatively (preferably) support hatching as this
+			is used to mark areas where another color is not possible (as in
+			black-and-white) or where the user wants the underlying color to show
+			through.
+		</dd>
+
+		<dt>#2005: Add new Ferret commands from PyFerret to the standard
+			Ferret documentation</dt>
+		<dd>The new Ferret commands coming from PyFerret should be added
+			to the list of standard Ferret commands in the documentation, with
+			some sort of indication these are PyFerret-only commands.</dd>
+
+		<dt>#2022: Create multipage PS, PDF, SVG</dt>
+		<dd>
+			Allow the PyFerret user to create multi-page PS, PDF, and SVG output
+			files. Maybe something along the lines of:
+			<pre>
+	yes? use coads_climatology
+	yes? shade/l=1 sst
+	yes? frame/clobber/multi/file=sst.pdf
+	yes? shade/l=4 sst
+	yes? frame/append/file=sst.pdf
+	yes? shade/l=7 sst
+	yes? frame/append/close/file=sst.pdf</pre>
+		</dd>
+
+		<dt>#2009: Scan for +-Inf in Python external function results,
+			converting to the missing value</dt>
+		<dd></dd>
+
+		<dt>#2036: FRAME /FILE=... in unsupported formats does not give
+			back an error.</dt>
+		<dd>An error message is generated, but not displayed until the
+			next Ferret command is given.</dd>
+
+		<dt>#2000: Global line thickness scaling factor; more line
+			thickness control in new line specifications</dt>
+		<dd></dd>
+
+		<dt>#1831: When adding a Python-defined data variable (put and
+			putdata), a existing matching time axis may not be recognized.</dt>
+		<dd>Seconds are currently integer values and thus can cause
+			slight differences in time values. Seconds need to be saved as a
+			floating-point value.</dd>
+
+		<dt>#1816: Create get and put methods for strings in PyFerret</dt>
+		<dd>Generate PyFerret methods for getting and putting (arrays of)
+			strings from/to Ferret. Maybe have getstring/putstring for a single
+			string (no axes), putstringarray/getstringarray for arrays of strings
+			(with axes).</dd>
+
+
+		<dt>#2008: PyFerret confirmation for Help-&gt;Exit in graphics
+			window</dt>
+		<dd>Add a confirmation dialog to Help -&gt; Exit from the menu
+			bar, explaining that this should only be used when PyFerret has
+			crashed or somehow shutdown without closing the window. Exiting a
+			window that PyFerret thinks is still viable will cause issues - most
+			likely a crash.</dd>
+
+		<dt>#2052: Provide layers (groups) in graphics output files where
+			supported (SVG)</dt>
+		<dd>The SVG format provides support for grouping sets of drawing
+			commands. (The &lt;g&gt; XML tag.) This presumably turns into layers
+			in inkscape, which are quite useful for editing graphics. So it would
+			be very useful if PyFerret would produce SVG files that separate
+			different parts of the drawing into layers (e.g., separate the axes
+			from fills and shades, and maybe separate different fills and shades
+			such as "shade sst" from "go fland".)</dd>
+	</dl>
+
+	<br />
+	<br />
+
+	<table border="1">
+		<tr>
+			<td><a
+				class="nav"
+				href="http://www.doc.gov/"
+			>US Department of Commerce</a></td>
+			<td><a
+				class="nav"
+				href="http://www.noaa.gov/"
+			>NOAA</a></td>
+			<td><a
+				class="nav"
+				href="http://www.oar.noaa.gov/"
+			>OAR</a></td>
+			<td><a
+				class="nav"
+				href="http://www.pmel.noaa.gov/"
+			>PMEL</a></td>
+			<td><a
+				class="nav"
+				href="http://www.pmel.noaa.gov/home/persons.shtml"
+			>Contacts</a></td>
+			<td><a
+				class="nav"
+				href="http://www.noaa.gov/privacy.html"
+			>Privacy Policy</a></td>
+			<td><a
+				class="nav"
+				href="http://www.noaa.gov/disclaimer.html"
+			>Disclaimer</a></td>
+		</tr>
+	</table>
+
+	<p style="text-align: left;">
+		<strong> NOAA/OAR/PMEL<br /> Pacific Marine Environmental
+			Laboratory<br /> 7600 Sand Point Way NE, Seattle, WA 98115<br />
+			Phone: (206) 526-6239 ~ Fax: (206) 526-6815 <br /> Email: <a
+			href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#111;&#97;&#114;&#46;&#112;&#109;&#101;&#108;&#46;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#95;&#102;&#101;&#114;&#114;&#101;&#116;&#64;&#110;&#111;&#97;&#97;&#46;&#103;&#111;&#118;"
+		>
+				&#111;&#97;&#114;&#46;&#112;&#109;&#101;&#108;&#46;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#95;&#102;&#101;&#114;&#114;&#101;&#116;&#64;&#110;&#111;&#97;&#97;&#46;&#103;&#111;&#118;
+		</a>
+		</strong>
+	</p>
 
 </body>
+
 </html>

@@ -43,7 +43,7 @@
 			tcsh is to use the pyferret.sh Bourne-shell script to run PyFerret
 			(even if you are in a C-shell). The pyferret.csh script should only
 			be used if you wish to 'source' a pyferret script from a C-shell. <br />
-			The next release will always link pyferret to pyferret.sh, so the
+			In the next release will always link pyferret to pyferret.sh, so the
 			Bourne shell script will always be used.
 		</dd>
 
@@ -67,10 +67,24 @@
 			Although the <em>-unmapped</em> command-line option is suppose to
 			prevent the display of any graphics, setting the graphics quality to
 			high or draft with cause PyFerret to switch to that graphics mode and
-			display windows. In the next release the -nodisplay (and equivalent
-			-unmapped and -gif) command line options causes the program to ignore
-			any /QUALITY qualifiers to SET WINDOW (see previous issue). This will
-			prevent the change to displayed windows.
+			display windows. <br /> In the next release the -nodisplay (and
+			equivalent -unmapped and -gif) command line options causes the
+			program to ignore any /QUALITY qualifiers to SET WINDOW (see previous
+			issue). This will prevent the change to displayed windows.
+		</dd>
+
+		<dt>#NNNN: Save file in any format at any time with nodisplay
+			windows</dt>
+		<dd>
+			When using the <em>-unmapped</em> command-line option, only raster
+			(PNG) images could be saved at any time in the session. PostScript
+			and PDF images could be produced, but the name of the file had to be
+			specified at the beginning of the session and the image could not be
+			saved in any other format.<br /> In the next release, the image can
+			be saved in any of the supported formats (PNG, PS, PDF, SVG) at any
+			time during the session using the FRAME Ferret command. An image can
+			also be saved in multiple formats by repeated use of the FRAME
+			command.
 		</dd>
 
 		<dt>#2001: Need to show graphics details (quality, anti-alias) as
@@ -95,16 +109,16 @@
 		<dd>
 			When using <em>Image -&gt; Save As</em> in the menu bar, saving to
 			PNG produces a file with a transparent background. But using FRAME
-			/FILE=plot.png produces a file with an opaque white background. <br />
-			The next version supports specifying the color and opacity of the
-			background. This background color is used for both the displayed and
-			saved image.
+			/FILE=plot.png produces a file with an opaque white background.
+			<br /> In the next release, color and opacity of the background can
+			be specified. This background color is used for both the displayed
+			and saved image.
 		</dd>
 
 		<dt>#1941: Enable transparency value in color specifications (in
 			particular, for shading overlay)</dt>
-		<dd>The next version supports opacity in all color
-			specifications. There is also the option of specifying an overriding
+		<dd>In the next release, opacity in all color specifications is
+			supported. There will also be the option of specifying an overriding
 			opacity for colors used in shade and fill plots so the standard color
 			palettes can be used.</dd>
 
@@ -122,9 +136,9 @@
 			line of FERRET insignia is partly outside the printable area. Output
 			image is scaled about 10% larger than what one gets with Fprint in
 			vanilla Ferret.<br /> No margins are currently used when saving
-			PostScript and PDF images. This will be changed to use narrow margins
-			and respect the margins specified in the <em>Print to File</em>
-			dialog from <em>Image -&gt; Save As</em> in the menu bar.
+			PostScript and PDF images. In the next release this will be changed
+			to use narrow margins and respect the margins specified in the <em>Print
+				to File</em> dialog from <em>Image -&gt; Save As</em> in the menu bar.
 		</dd>
 
 		<dt>#1985: Inside a viewport, plots overlay instead of replace

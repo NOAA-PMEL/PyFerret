@@ -1,0 +1,16 @@
+! err684_evnt_z.jnl
+! see ticket 2054
+
+! Result of @EVNT is correct in x direction
+
+let my_var1 = { 0, 0, 1, 2, 3, 4 }
+let my_event1 = my_var1[x=@evnt:0.1]
+list my_var1, my_event1! Right answer
+
+! Should be same in the Z direction:
+
+let my_var = zsequence( my_var1)
+let my_event = my_var[z=@evnt:0.1]
+list my_var, my_event
+
+

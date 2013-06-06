@@ -1,9 +1,9 @@
 *
-* Set the color object number to use for clearing a window
-* Redraw the current image using this color as the background color.
+* Redraw the current image using the current color zero
+* (colornum one) as the background color.
 *
 
-        SUBROUTINE FGD_BKGCOLOR(windowid, colorindex)
+        SUBROUTINE FGD_REDRAW_BACKGROUND(windowid)
 
         IMPLICIT NONE
         INTEGER windowid, colorindex
@@ -19,19 +19,17 @@
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR. 
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGDBKGCOLOR: Invalid windowid value'
+            STOP 'FGD_REDRAW_BACKGROUND: Invalid windowid value'
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'FGDBKGCOLOR: null windowobj'
+            STOP 'FGD_REDRAW_BACKGROUND: null windowobj'
         ENDIF
 
-        colornum = colorindex + 1
+*       Background color is always color zero = colornum one
+        colornum = 1
         IF ( colorobjs(colornum, windowid) .EQ. nullobj ) THEN
-            STOP 'FGDBKGCOLOR: invalid colorindex'
+            STOP 'FGD_REDRAW_BACKGROUND: invalid colorindex'
         ENDIF
-
-*       Save the background/clearing color for this window
-        clearcolor(windowid) = colornum
 
 *       Redraw the contents of the window with this background color
         CALL FGDWINREDRAW(success, windowobjs(windowid), 

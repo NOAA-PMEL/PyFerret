@@ -118,6 +118,10 @@
   40       CONTINUE
         ENDIF
 
+*     color 19 defaults to white since 
+*     color 0 is the background so could be reset
+        call FGD_GSCR(zwsid,19,1.0,1.0,1.0,1.0)
+
 	IF (saved_line_colors .GT. 0) THEN
 	   CALL restore_saved_line_colors (zwsid)
 	ENDIF

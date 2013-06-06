@@ -68,6 +68,13 @@
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
 
+*       Simplest approach for retrieving color RGBA values was 
+*       just to store them in the common block when they are set
+        colorrgba(1, colornum, windowid) = redfrac
+        colorrgba(2, colornum, windowid) = greenfrac
+        colorrgba(3, colornum, windowid) = bluefrac
+        colorrgba(4, colornum, windowid) = opaquefrac
+
 *       Update any brushes that used this color number
         DO 10 brushnum = 1, maxbrushobjs
             IF ( (brushobjs(brushnum, windowid)  .NE. nullobj) .AND.

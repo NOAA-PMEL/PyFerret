@@ -89,6 +89,7 @@
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 * PyFr *kms* 2/2013  Add /QUALITY=... /AALIAS /NOAALIAS /ENGINE=...
 * PyFr *kms* 4/2013  remove specific reference to /AALIAS /NOAALIAS in warning message
+* PyFr  *kms*  6/13  Add /COLOR= /OPACITY= to specify background color
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -115,11 +116,12 @@
 	LOGICAL TM_DIGIT, MATCH4, FGD_ENGINE_MATCH, 
      .		physical_chg, relocate, chg_window, axis_ref
 	INTEGER TM_LENSTR1, ier, id, itype, imeter, irx, iry, wn, n,
-     .          qp, ivp, colon_pos, slen, tlen, i, s1, idone
+     .          qp, ivp, colon_pos, slen, tlen, i, s1, idone, bkgcolor
 	REAL	dmaxx, dmaxy, xln, yln, xmn, xmx, ymn, ymx,
      .		scale, xstretch, ystretch, aspect, ref_len
 	REAL*4  rzero, rone, fcty, fctx, setpx, setpy,
-     .          xwlo, ywlo, xwhi, ywhi
+     .          xwlo, ywlo, xwhi, ywhi, 
+     .          redfrac, grnfrac, bluefrac, opaqfrac
 	CHARACTER	UPPER_CASE*1, GKS_X_CONID*16, warnmsg*80,
      .			arg1*1, buffer*24, xwind_id*80, short_buff*24
 * ... for GKS escape call:
@@ -135,7 +137,9 @@
      .                  slash_quality,
      .                  slash_aalias,
      .                  slash_noaalias,
-     .                  slash_engine
+     .                  slash_engine,
+     .                  slash_color,
+     .                  slash_opacity
         LOGICAL         physical
 	PARAMETER     ( slash_size   = 0+1,
      .			slash_new    = 1+1,
@@ -147,6 +151,8 @@
      .                  slash_aalias = 7+1,
      .                  slash_noaalias = 8+1,
      .                  slash_engine = 9+1,
+     .                  slash_color  = 10+1,
+     .                  slash_opacity = 11+1,
      .                  physical     = .TRUE. )
 
 * statement function - value between 0 and 1
@@ -473,6 +479,50 @@ c 75        CONTINUE
             ENDIF
         ENDIF
 
+* background color is always color zero
+        bkgcolor = 0
+* background color specified?
+        qp = qual_given(slash_color)
+        IF ( qp .GT. 0 ) THEN
+            CALL EQUAL_COLOR(cmnd_buff(qual_start(qp):qual_end(qp)), 
+     .                       bkgcolor, status)
+            IF ( status .NE. ferr_ok ) RETURN
+*           Check if opacity is given before resetting the background
+        ENDIF
+
+* opacity specified? (must be after /COLOR to reset alpha channel value if given)
+        qp = qual_given(slash_opacity)
+        IF ( qp .GT. 0 ) THEN
+            CALL EQUAL_STRING(cmnd_buff(qual_start(qp):qual_end(qp)), 
+     .                        buffer, status)
+            IF ( status .NE. ferr_ok ) RETURN
+            IF ( buffer .EQ. ' ' ) THEN
+                buffer = 'opacity value ?'
+                GOTO 5050
+            ENDIF
+  
+*           Get the background color (either zero or the one just specified)
+            CALL FGD_GQCR(n, bkgcolor, ier, 
+     .                    redfrac, grnfrac, bluefrac, opaqfrac)
+            IF ( ier .NE. 0 ) GOTO 5070
+
+*           Get the new opacity
+            READ ( buffer, *, ERR=5080 ) opaqfrac
+            IF ((opaqfrac .LT. 0.0).OR.(opaqfrac .GT. 100.0)) GOTO 5080
+            opaqfrac = opaqfrac / 100.0
+            CALL FGD_CREATE_TEMP_COLOR(bkgcolor, redfrac, grnfrac, 
+     .                                           bluefrac, opaqfrac)
+        ENDIF
+
+        IF ( bkgcolor > 0 ) THEN
+*           Get the RGBA fractions for the new background
+            CALL FGD_GQCR(n, bkgcolor, ier, 
+     .                    redfrac, grnfrac, bluefrac, opaqfrac)
+*           Modify color zero and redraw the background
+            CALL FGD_GSCR(n, 0, redfrac, grnfrac, bluefrac, opaqfrac)
+            CALL FGD_REDRAW_BACKGROUND(n)
+        ENDIF
+
 *set up sizing
 * (capitalized code from Denbo''s SUBROUTINE COLOR )
 	IF(ASIZE.GT.BSIZE)THEN
@@ -561,5 +611,9 @@ C
  5050	CALL ERRMSG( ferr_out_of_range, status, buffer,*5000)
  5060	CALL ERRMSG( ferr_invalid_command,status,
      .          'no open window',*5000 )
+ 5070   CALL ERRMSG( ferr_invalid_command, status,
+     .          'Unexpected error: no background color', *5000)
+ 5080   CALL ERRMSG( ferr_out_of_range, status, 
+     .          'Invalid opacity specification', *5000)
 	END
 

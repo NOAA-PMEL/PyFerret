@@ -203,6 +203,7 @@
 * PyFr  *kms* 1/13 Remove SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL;
 *                  Add /QUALITY= /AAlias /NoAAlias /ENGINE= to SET WINDOW
 * PyFr  *kms* 3/13 Change /AAlias and /NoAAlias to /AntiAlia[s] and /NoAntiAl[ias]
+* PyFr  *kms* 6/13  Add /COLOR= /OPACITY= to specify background color
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -235,8 +236,8 @@
 		DATA qualifiers  (nqual_at1b+7)	/ 'ANTIALIA'	/
 		DATA qualifiers  (nqual_at1b+8)	/ 'NOANTIAL'	/
 		DATA qualifiers  (nqual_at1b+9)	/ 'ENGINE'	/
-		DATA qualifiers  (nqual_at1b+10)/ '****'	/
-		DATA qualifiers  (nqual_at1b+11)/ '****'	/
+		DATA qualifiers  (nqual_at1b+10)/ 'COLOR'	/
+		DATA qualifiers  (nqual_at1b+11)/ 'OPACITY'	/
 * SET REGION
 	   DATA subcommands      (nsub_at1 + 2)	/ 'REGION'	/
 	   DATA num_qualifs      (nsub_at1 + 2)	/ nqual1c	/

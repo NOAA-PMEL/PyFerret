@@ -77,10 +77,6 @@
         DATA windowwidth / maxwindowobjs * 7.5 /
         DATA windowheight / maxwindowobjs * 5.625 /
 
-* Default color object number to use to clear the window;
-* 1 = white, 2 = black
-        DATA clearcolor / 1, 1, 1, 1, 1, 1, 1, 1, 2 /
-
 * Default engine for a new window.
 * Should not change after start-up.
 * Only reset by command-line options.

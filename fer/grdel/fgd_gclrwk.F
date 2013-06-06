@@ -3,9 +3,6 @@
 * Input arguments:
 *    windowid: ID number of the window to clear
 *    ctrlflag: ignored
-* Also used from fgrdel.cmn:
-*    clearcolor(windowid): number of the color object to
-*                          use to  clearing the window
 *
 
         SUBROUTINE FGD_GCLRWK(windowid, ctrlflag)
@@ -29,13 +26,10 @@
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
             STOP 'FGD_GCLRWK: null windowobj'
         ENDIF
-        colornum = clearcolor(windowid)
-        IF ( (colornum .LT. 1) .OR.
-     .       (colornum .GT. maxcolorobjs) ) THEN
-            STOP 'FGD_GCLRWK: Invalid clearcolor'
-        ENDIF
+*       Background color is always color zero which is colornum one
+        colornum = 1
         IF ( colorobjs(colornum, windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GCLRWK: null clearcolor'
+            STOP 'FGD_GCLRWK: null color for background'
         ENDIF
 
         CALL FGDWINCLEAR(success, windowobjs(windowid),

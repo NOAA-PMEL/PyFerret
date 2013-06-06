@@ -44,6 +44,7 @@ line_plot_labels.F\
 line_style.F\
 load_curvilinear.F\
 merged_whoi_date.F\
+parse_color_tuple.F\
 plot_set_up.F\
 polygon_set_up.F\
 pos_lab.F\

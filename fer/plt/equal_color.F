@@ -48,6 +48,8 @@
 *
 * 1/03 *kob* g77 port - requires use of risc_buff for concats
 *
+* PyFr *kms*  6/13 - add support for (R,G,B) and (R,G,B,A)
+*
 * calling argument declarations
 	INTEGER		icolor, status
 	CHARACTER*(*)	string
@@ -58,11 +60,11 @@
 
 * internal variable declarations
 	LOGICAL	MATCH4, TM_DIGIT
-	INTEGER	TM_LENSTR1, STR_UPCASE, equal_pos, slen, strt, vax_code,
-     .          TM_LENSTR, len_test, len_mchars
+	INTEGER	TM_LENSTR, TM_LENSTR1, STR_UPCASE, 
+     .          equal_pos, slen, strt, vax_code, len_test, len_mchars
 	REAL	val
-*	CHARACTER	LEFINT*4, str*12, colors*12(6)
-	CHARACTER	LEFINT*4, str*12
+        REAL*4 redfrac, grnfrac, bluefrac, opaqfrac
+	CHARACTER	LEFINT*4, str*32
 	CHARACTER*12    COLORS(ncolor_string)
 
 * internal data declarations
@@ -110,7 +112,15 @@
            READ ( str, *, ERR=5000 ) val
 cc	   IF ( val.LE. 0.0 .OR. val.GT.num_fancy_lines+1 ) GOTO 5200
 	   icolor = NINT( val )	! user-specified line style
-	 ELSE
+        ELSEIF ( str(1:1) .EQ. '(' ) THEN
+* ... color by (R,G,B,A) or (R,G,B)
+           CALL PARSE_COLOR_TUPLE(str, redfrac, grnfrac, 
+     .                            bluefrac, opaqfrac, status)
+           IF ( status .NE. ferr_ok ) RETURN
+*          Now create a temporary color using these RGBA values
+           CALL FGD_CREATE_TEMP_COLOR(icolor, redfrac, grnfrac, 
+     .                                bluefrac, opaqfrac)
+	ELSE
 * ... compare with allowable colors
            len_test = TM_LENSTR(str)
 	   DO 200 icolor = 1, ncolor_string

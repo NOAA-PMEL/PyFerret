@@ -109,9 +109,9 @@
 10	continue
 
 	CALL FGD_GSCR(wsid,ndx,val(1),val(2),val(3),val(4))
-*       pen zero is the color of the background for this window
+*       color zero is always the color of the background for this window
 	if (ndx .eq. 0)
-     .     call FGD_BKGCOLOR(wsid,ndx)
+     .     CALL FGD_REDRAW_BACKGROUND(wsid)
 
  1000   continue
 

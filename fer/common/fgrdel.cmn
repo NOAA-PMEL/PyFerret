@@ -103,8 +103,9 @@
 * Whether clip the drawing to the current view
         LOGICAL cliptoview(maxwindowobjs)
 
-* Number of the colorobj to use for clearing the window.
-        INTEGER clearcolor(maxwindowobjs)
+* Simplest approach for retrieving color RGBA values was 
+* just to store them in the common block when they are set
+        REAL*4 colorrgba(4, maxcolorobjs, maxwindowobjs)
 
 * Color ID number used in brushes (for color updates)
         INTEGER brushcolor(maxbrushobjs, maxwindowobjs)
@@ -139,7 +140,7 @@
 
 * And finally the common block containing all these variables
         COMMON /FGRDEL/ windowobjs, colorobjs, brushobjs,
-     .         fontobjs, penobjs, symbolobjs, 
+     .         fontobjs, penobjs, symbolobjs, colorrgba,
      .         symbolsize, windowdpix, windowdpiy, windowwidth,
      .         windowheight, ndcxmax, ndcymax, viewleftfrac,
      .         viewbottomfrac, viewrightfrac, viewtopfrac,
@@ -147,7 +148,7 @@
      .         viewtopcoord, 
      .         activewindow, activetransform, activebrush, 
      .         activepen, activesymbol, lastbrushcolor,
-     .         lastbstylen, clearcolor, brushcolor, pencolor,
+     .         lastbstylen, brushcolor, pencolor,
      .         symbolcolor, 
      .         cliptoview, somethingdrawn, savetransparent, 
      .         antialias, 

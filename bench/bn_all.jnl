@@ -657,6 +657,9 @@ GO bn_clock_syms
 
 
 ! ******** V6.3 Additions below ***********
+! Note that allowing mouse-click operations in the current
+! window, not only in window 1, is implemented in v6.3. Not
+! tested in the benchmarks.
 
 GO bn_reset
 GO bn63_bug_fixes.jnl
@@ -848,9 +851,17 @@ GO bn685_bug_fixes
 GO bn_reset
 GO bn_dsg_e_x
 
-! Note that allowing mouse-click operations in the current
-! window, not only in window 1, is implemented in v6.3. Not
-! tested in the benchmarks.
+GO bn_reset
+GO bn_nco_append
+
+GO bn_reset
+go bn_nocoords
+
+GO bn_reset
+GO bn_nobounds
+
+!!!!!!!!!!!!! Note we should include tests for all the scat2grid functions. 
+!!!!!!!!! completed and improved the docs for scat2grid_bin and scat2grid_nbin functions 
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

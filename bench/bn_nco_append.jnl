@@ -1,0 +1,14 @@
+! bn_nco_append.jnl
+! 5/2013 add a test appending files with ncks
+
+! Prior to v6.85 Ferret's NCO function always included -O for Override.
+! Appending failed. In v6.85+, if -A is included then dont send -O to ncks.
+use z1
+use z2
+sh dat
+
+! Write a file to be appended to and append variable in z1.nc to the file.
+
+save/clobber/file=append_to_this.nc cycle_orig
+load nco("ncks", "-A -h z1.nc append_to_this.nc")
+sp ncdump -h append_to_this.nc

@@ -278,7 +278,7 @@
         dset = cx_data_set( cx )
         IF (dset .GE. 1) THEN
           IF (ds_type(dset) .EQ. 'CDF' .OR. ds_type(dset) .EQ. ' MC' 
-     .        .OR. ds_type(dset) .EQ. 'AGG')
+     .        .OR. ds_type(dset) .EQ. 'ENS')
      .       CALL CDF_LIST_GLOBAL_ATTS (dset, cdfid, status)
         ENDIF
         dset_last = dset
@@ -297,7 +297,7 @@
               IF (dset .GE. 1) THEN
                  IF (ds_type(dset) .EQ. 'CDF' .OR. 
      .               ds_type(dset) .EQ. ' MC' .OR. 
-     .               ds_type(dset) .EQ. 'AGG')
+     .               ds_type(dset) .EQ. 'ENS')
      .          CALL CDF_LIST_GLOBAL_ATTS (dset, cdfid, status)
               ENDIF
               dset_last = dset
@@ -342,8 +342,16 @@
 * It will be superceded by a SET LIST/OUTTYPE or a SAVE/OUTTYPE setting,
 * applied just below.
 	      CALL CD_GET_VAR_OUTTYPE (dset, varid, outtype, status)
-              IF (outtype .EQ. 0) outtype = vartype
+
+* If its just an expression it doesnt have a varid in the attribute structure
+* for user-vars. Still set the output type.
+
+           ELSE
+              vartype = 6  ! netcdf nf_double
+              IF (itsa_string) vartype = 2
            ENDIF
+   
+	   IF (outtype .EQ. 0) outtype = vartype
 
 * Setting made with SAVE/OUTTYPE or SET LIST/OUTTYPE
 * SAVE/OUTTYPE takes precedence over a SET LIST/OUTTYPE
@@ -505,6 +513,7 @@
 	      type = nf_float
 	   ENDIF
            IF (type .NE. 0 .AND. varid .GT. 0) type = outtype
+           IF (dset .EQ. -1) type = outtype
            IF (type .EQ. 0) outtype = vartype
 
 * create the variable and its grid (coordinate output gets deferred)
@@ -791,6 +800,24 @@
 
  200             CONTINUE
 ! done getting attributes from linked-list structure
+
+* If its just an expression, write missing_value and _FillValue
+* attributes with default Ferret values.
+
+              ELSE ! varid GT 0
+
+		 attname = 'missing_value'
+		 vals(1) = bad_val4
+		 attlen = 1
+		 attype = outtype
+		 CALL CD_WRITE_ATTVAL_DP(cdfid, varcode,
+     .                          attname, vals, attlen, attype, status )
+		 attname = '_FillValue'
+		 vals(1) = bad_val4
+		 attlen = 1
+		 attype = outtype
+		 CALL CD_WRITE_ATTVAL_DP(cdfid, varcode,
+     .                          attname, vals, attlen, attype, status )
 
               ENDIF ! varid GT 0
 

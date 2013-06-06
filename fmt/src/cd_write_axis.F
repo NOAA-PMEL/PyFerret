@@ -1,7 +1,8 @@
 	SUBROUTINE CD_WRITE_AXIS ( cdfid, dset, grid, idim, recdim,
      .                           loss, hiss, ax_type,  edges_flag, 
      .                           do_bounds, mode_upcase_output,  
-     .                           keepax_flag, name_from_grid, status )
+     .                           keepax_flag, name_from_grid, do_coords, 
+     .                           status )
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -91,6 +92,11 @@
 *                  Ferret uses internally.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V683 9/12 *acm* Ticket 1968, If there is a _FillValue attributes on axes, refuse to write it.
+* V685 5/13 *acm* When appending, if dimension of that name in the file but not a coord var,
+*                 just check the length. See ticket 2075.
+* V685 5/13 *acm* Allow specifying data type for axis
+* V685 6/13 *acm* new qualifier SAVE/NOBOUNDS
+* V685 6/13 *acm* new qualifier SAVE/NOCOORDS
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -126,9 +132,10 @@
 
 
 * argument declarations
-      LOGICAL recdim, do_bounds, mode_upcase_output, name_from_grid
+      LOGICAL recdim, mode_upcase_output, name_from_grid,
+     .	      do_coords
       INTEGER cdfid, dset, grid, idim, loss, hiss, ax_type, 
-     .        edges_flag, keepax_flag, status
+     .        edges_flag, keepax_flag, do_bounds, status
 
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
@@ -144,7 +151,7 @@
       INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, cal_id, varid,
      .        llen, vartype, nvdims, nvatts, iatt, attype, attlen,
      .        attoutflag, istat, maxlen, vdims(8), newid, all_outflag,
-     .        attid, dset_num, outtype, axis_packed
+     .        attid, dset_num, outtype, axis_packed, dlen, vlen
       REAL vals(100)
 
 !      LOGICAL condensed
@@ -152,9 +159,9 @@
 * *kob* 3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,
 *                    name to 64 from 24 to match longer line_name
 * *acm* 6/06 - change axis name lengths to 128
-      CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_OUTNAME*128,
+      CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_OUTNAME*128, TM_FMT*12,
      .       name*128, name_in*128, units*48, datebuff*40, 
-     .       buff*140, buff2*140, attname*128
+     .       buff*140, buff2*140, attname*128, dimstr*12, varstr*12
 
 !      REAL*8 val8_cdf, val8_tmap
 * 12/97
@@ -167,6 +174,9 @@
 
       name = CD_AXIS_OUTNAME( dset_num, grid, idim, nlen )
       name_in = name
+
+      npts = line_dim(iaxis)
+      abstract = TM_ABSTRACT_AXIS( iaxis )
       
       name_from_grid = .FALSE.
 
@@ -176,6 +186,104 @@
       IF (mode_upcase_output) THEN
          CALL STR_UPCASE( name_in, name)
          CALL STR_UPCASE( name, name_in)
+      ENDIF
+
+
+* determine lo/hi limits of the axis to be written
+      IF ( abstract ) THEN
+         lo = loss
+         hi = hiss
+      ELSEIF ( ax_type .EQ. pcdf_full_span ) THEN
+         lo = 1
+         hi = line_dim(iaxis)
+      ELSE
+         lo = loss
+         hi = hiss
+      ENDIF
+
+* dimension and size for this axis
+      axlen = hi - lo + 1
+      IF ( abstract .OR. ax_type.NE.pcdf_full_span ) THEN
+         IF (keepax_flag .EQ. 0) 
+     .       name = CD_CHILDAX_NAME( name, lo, hi, nlen )
+* *kob* 12/9/97 - use new paramater maxchildlen in length check
+         nlen = MIN(nlen,maxchildlen)
+      ENDIF
+
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_INQ_DIMID_( cdfid, name(:nlen), dimid)
+#else
+      cdfstat = NF_INQ_DIMID( cdfid, name(:nlen), dimid)
+#endif
+
+* already defined ? (limited consistency checking)
+      IF ( cdfstat .EQ. NF_NOERR ) THEN
+
+* ... is there a coordinate variable by the same name ?
+#ifdef usingDODSf2cUnderscore
+         cdfstat = NF_INQ_VARID_( cdfid, name(:nlen), axid )
+#else
+         cdfstat = NF_INQ_VARID( cdfid, name(:nlen), axid )
+#endif
+
+cc         IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
+* ... May be a dimension of that name in the file but not a coord var.
+*     That is OK, just check the length. See ticket 2075.
+
+	 IF (.NOT. recdim) THEN 
+            slen = CD_AXLEN( cdfid, dimid, status )
+            IF ( status .NE. merr_ok ) GOTO 5900
+            IF ( keepax_flag .NE. 1 .AND. .NOT.abstract) THEN
+
+* ... check the length. 
+*     If axis is a dimension not a coordinate var, length must match.
+               IF ( axlen .NE. slen ) THEN
+	          IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
+
+* use the basic name straight from the grid
+                  name = line_name(iaxis)
+                  nlen = TM_LENSTR1( name )
+		        name_in = name   ! ??
+
+* If mode upcase_output is set, then upcase name
+
+                  IF (mode_upcase_output) THEN
+                     CALL STR_UPCASE( buff, name)
+                  ENDIF
+
+                  npts = line_dim(iaxis)
+                  abstract = TM_ABSTRACT_AXIS( iaxis )
+
+                  bndid = -1
+
+* determine lo/hi limits of the axis to be written
+                  IF ( abstract ) THEN
+                     lo = loss
+                     hi = hiss
+                  ELSEIF ( ax_type .EQ. pcdf_full_span ) THEN
+                     lo = 1
+                     hi = line_dim(iaxis)
+                  ELSE
+                     lo = loss
+                     hi = hiss
+                  ENDIF
+
+* dimension and size for this axis
+                  axlen = hi - lo + 1
+
+* Yes, use the basic name straight from the grid
+	          name_from_grid = .TRUE.
+                  
+	       ENDIF
+            ELSE 
+               IF (axlen .NE. slen ) THEN
+	          IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
+	          GOTO 5100
+	       ENDIF
+               GOTO 1000
+            ENDIF
+	 ENDIF
+	 IF (.NOT. name_From_grid) GOTO 1000
       ENDIF
 
 * Check that the axis type is set. User may have reset the type and then
@@ -218,93 +326,6 @@
 
       bndid = -1
 
-* determine lo/hi limits of the axis to be written
-      IF ( abstract ) THEN
-         lo = loss
-         hi = hiss
-      ELSEIF ( ax_type .EQ. pcdf_full_span ) THEN
-         lo = 1
-         hi = line_dim(iaxis)
-      ELSE
-         lo = loss
-         hi = hiss
-      ENDIF
-
-* dimension and size for this axis
-      axlen = hi - lo + 1
-      IF ( abstract .OR. ax_type.NE.pcdf_full_span ) THEN
-         IF (keepax_flag .EQ. 0) 
-     .       name = CD_CHILDAX_NAME( name, lo, hi, nlen )
-* *kob* 12/9/97 - use new paramater maxchildlen in length check
-         nlen = MIN(nlen,maxchildlen)
-      ENDIF
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_INQ_DIMID_( cdfid, name(:nlen), dimid)
-#else
-      cdfstat = NF_INQ_DIMID( cdfid, name(:nlen), dimid)
-#endif
-
-* already defined ? (limited consistency checking)
-      IF ( cdfstat .EQ. NF_NOERR ) THEN
-* ... is there a coordinate variable by the same name ?
-#ifdef usingDODSf2cUnderscore
-         cdfstat = NF_INQ_VARID_( cdfid, name(:nlen), axid )
-#else
-         cdfstat = NF_INQ_VARID( cdfid, name(:nlen), axid )
-#endif
-
-         IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
-	 IF (.NOT. recdim) THEN 
-            slen = CD_AXLEN( cdfid, dimid, status )
-            IF ( status .NE. merr_ok ) GOTO 5900
-            IF ( keepax_flag .NE. 1 .AND. .NOT.abstract) THEN
-
-* ... check the length
-               IF ( axlen .NE. slen ) THEN
-
-* use the basic name straight from the grid
-                  name = line_name(iaxis)
-                  nlen = TM_LENSTR1( name )
-		        name_in = name   ! ??
-
-
-* If mode upcase_output is set, then upcase name
-
-                  IF (mode_upcase_output) THEN
-                     CALL STR_UPCASE( buff, name)
-                  ENDIF
-
-                  npts = line_dim(iaxis)
-                  abstract = TM_ABSTRACT_AXIS( iaxis )
-
-                  bndid = -1
-
-* determine lo/hi limits of the axis to be written
-                  IF ( abstract ) THEN
-                     lo = loss
-                     hi = hiss
-                  ELSEIF ( ax_type .EQ. pcdf_full_span ) THEN
-                     lo = 1
-                     hi = line_dim(iaxis)
-                  ELSE
-                     lo = loss
-                     hi = hiss
-                  ENDIF
-
-* dimension and size for this axis
-                  axlen = hi - lo + 1
-
-* Yes, use the basic name straight from the grid
-	          name_from_grid = .TRUE.
-                  
-	       ENDIF
-            ELSE 
-               IF (axlen .NE. slen ) GOTO 5100
-               GOTO 1000
-            ENDIF
-	 ENDIF
-	 IF (.NOT. name_From_grid) GOTO 1000
-      ENDIF
 
 * put CDF into define mode so axis can be defined
       CALL CD_SET_MODE(cdfid, pcd_mode_define, status)
@@ -323,7 +344,13 @@
 #endif
 
       ENDIF
-      IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
+
+      IF ( cdfstat .NE. NF_NOERR ) GOTO 5210
+
+* If user asked for no coordinate variable, we are done. Defined the
+* dimension just above, now skip all the stuff writing coordinates.
+
+      IF (.NOT. do_coords) GOTO 1000
 
 * create the coordinate variable (12/92 -> double precision)
 #ifdef usingDODSf2cUnderscore
@@ -403,10 +430,14 @@
      .               buff, vals)
 
 * If the user has not asked for bounds and if its a regular axis then
-* do not write bounds attribute. (The bounds themselves arent written.)
+*  do not write bounds attribute. (The bounds themselves arent written.)
          IF ( (STR_SAME(attname, 'bounds') .EQ. 0) .AND. 
-     .        ((line_regular(iaxis)) .AND. (.NOT.do_bounds)) ) 
+     .        ((line_regular(iaxis)) .AND. do_bounds.LE.0) ) 
      .               attoutflag = 0
+
+* If they asked for /NOBOUNDS, dont write bounds even if the axis is irregular.
+         IF ( (STR_SAME(attname, 'bounds') .EQ. 0) .AND. 
+     .        ( do_bounds.LT.0) ) attoutflag = 0
 
 * If there is a _FillValue attributes on axes, refuse to write it.
 
@@ -853,13 +884,13 @@
             
 * does it need axis bounds definitions ?
 
-* Has the user explicitly asked not to write bounds for the variable?
+* Has the user explicitly asked not to write bounds attribute for the variable? 
 * If so mark this with the value attoutflag = 2
 
       attname = 'bounds' 
       attoutflag = 0
       IF (varid .GT. 0) THEN
-         CALL CD_GET_VAR_ATT_ID(dset_num, varid, attname, attid,status)
+         CALL CD_GET_VAR_ATT_ID(dset_num, varid, attname, attid, status)
          IF (attid .GT. 0) THEN
             CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .      attid, attname, attype, attlen, attoutflag, istat )
@@ -867,8 +898,13 @@
          ENDIF
       ENDIF
 
+* If they said /NOBOUNDS on the SAVE command, do not write bounds
+* even if the axis is irregular.
+
+      IF (do_bounds .EQ. -1) attoutflag = 2
+
       IF (  (ax_type.EQ.pcdf_full_span .OR. ax_type.EQ.pcdf_sub_span)
-     .  .AND. ( .NOT.line_regular(iaxis) .OR. do_bounds) 
+     .  .AND. ( .NOT.line_regular(iaxis) .OR. do_bounds.EQ.1) 
      .  .AND. ( edges_flag .EQ. 0) 
      .  .AND. ( attoutflag .NE. 2) ) THEN
 
@@ -1006,17 +1042,25 @@
      .       unspecified_int4, 'Failed creating coord variable '
      .       //name(:nlen), no_errstring, *5900 )
 
+ 5210 CALL TM_ERRMSG
+     .     ( cdfstat+pcdferr, status, 'CD_WRITE_AXIS', cdfid,
+     .       unspecified_int4, 'Failed creating dimension '
+     .       //name(:nlen), no_errstring, *5900 )
+
  5220 CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_WRITE_AXIS', cdfid,
      .       unspecified_int4, 
      .       'Failed creating bounds for coord variable '
      .       //name(:nlen), no_errstring, *5900 )
 
- 5300 CALL TM_ERRMSG
+ 5300 dimstr = TM_FMT(FLOAT(slen), 8, 12, dlen)
+      varstr = TM_FMT(FLOAT(axlen), 8, 12, vlen)
+      CALL TM_ERRMSG
      . ( merr_linepredef, status, 'CD_WRITE_AXIS', unspecified_int4,
      .   unspecified_int4,
-     .  'Bad CDF file: dimension '//name(:nlen)
-     .  //' exists without coordinates',
+     .  'Length of file dimension '//name(:nlen)//' is '//dimstr(:dlen)
+     .  //'. Variable axis length '//varstr(:vlen)
+     .  //' must match.',
      .  no_errstring, *5900 )
 
 * error exit

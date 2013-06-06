@@ -1,7 +1,7 @@
 	SUBROUTINE CDF_LIST ( memory, fname, append, crecdim, nvars,
      .			      mr_list, cx_list, title, enhead, mode,
      .			      clobber, edges_flag, do_bounds, 
-     .			      keepax_flag, out_type, status )
+     .			      keepax_flag, out_type, do_coords, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -112,6 +112,9 @@
 * V680  5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V683  8/12 *acm*  New SET LIST/OUTTYPE and SAVE/OUTTYPE 
 * V683 12/12 *acm*  Fix ticket 2004: appending data when writing packed variable
+* V685 *acm*  3/13  List the full path or url in the history att for variable.
+* V685 6/13 *acm* new qualifier SAVE/NOBOUNDS
+* V685 6/13 *acm* new qualifier SAVE/NOCOORDS
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -132,9 +135,9 @@
         include 'netcdf4_settings.cmn'
 
 * calling argument declarations:
-        LOGICAL         append, enhead, clobber, do_bounds
+        LOGICAL         append, enhead, clobber, do_coords
 	INTEGER		nvars, mr_list(nvars), cx_list(nvars), mode,
-     .			edges_flag, keepax_flag, status
+     .			edges_flag, keepax_flag, do_bounds, status
 	REAL		memory( mem_blk_size, max_mem_blks )
         CHARACTER*(*)   fname, title, out_type
         CHARACTER*1     crecdim
@@ -143,9 +146,9 @@
         LOGICAL         TM_LEGAL_NAME, MATCH_NAME,
      .			itsa_uvar, need_doc, new, formatted, flushed,
      .			itsa_string, output_units, output_title,
-     .                  output_history
+     .                  output_history, get_ds
 	INTEGER		TM_LENSTR1, ISUBSCR_CX, GET_MAX_C_STRING_LEN,
-     .			MGRID_SIZE,
+     .			MGRID_SIZE, STR_SAME, 
      .			cx, mr, dset, grid, cdfid, ivar, nready,
      .                  lbuff, cdfstat, idim, i, loc, errloc,
      .                  recdim, cat, var, cat1, var1, iaxis,
@@ -162,7 +165,7 @@
      .                  VAR_TITLE_MOD*140, VAR_UNITS*64, CX_DIM_STR*48,
      .                  TM_FMT*12,
      .                  varcode*128, varname*128, buff*2048, revnum*12, 
-     .                  c1*1, aname*128
+     .                  c1*1, aname*128, short*128
 
 	REAL*8		user_lo, user_hi, delta, loest_ww, hiest_ww,
      .                  miss_in, fill_in
@@ -229,7 +232,7 @@
 	 DODS_cache = mode .EQ. pcdf_mode_cache
          do_warn = .TRUE.
 
-         CALL CD_DEFER_COORD_WRITE(0,0,0,0,0,pcd_defer_init)
+         IF (do_coords) CALL CD_DEFER_COORD_WRITE(0,0,0,0,0,pcd_defer_init)
 
 * open/create the file
          CALL CD_OPEN_OUT( fname, append, cdfid, clobber, 
@@ -516,7 +519,8 @@
      .               edges_flag, do_bounds, mode_upcase_output, 
      .               keepax_flag, netcdf4_type, xchunk_size, 
      .               ychunk_size, zchunk_size, tchunk_size, 
-     .               deflate_lev, shuffle_flag, endian_code, status )
+     .               deflate_lev, shuffle_flag, endian_code, 
+     .               do_coords, status )
 
            IF ( status .NE. merr_ok ) GOTO 5800
 
@@ -878,7 +882,9 @@
               IF ( dset .NE. pdset_irrelevant .AND. dset.NE.-1) THEN
        
 * ..... unless the user has created a history attribute, or asked that writing
-*       it be turned off. See if there is a history attribute
+*       it be turned off. See if there is a history attribute.
+*       If the history attribute is just "from dsetname", or is not present,
+*       then write the dataset and its path or URL.
 
                  attoutflag = 1
                  IF (varid .GT. 0) THEN
@@ -901,29 +907,44 @@
                        lbuff = TM_LENSTR1( buff )
                        IF (buff .EQ. ' ') THEN
                           buff = 'From '
-                          CALL GET_SHORT_DSET_NAME( dset, buff(6:), lbuff )
+                          CALL GET_DSET_NAME( dset, buff(6:), lbuff )
+			  IF (buff(6:7) .EQ. './') 
+     .                      CALL GET_SHORT_DSET_NAME( dset, buff(6:), lbuff )
                           lbuff = TM_LENSTR1( buff )
+                       ELSE
+		          get_ds = .FALSE.
+		          IF (STR_SAME(buff(1:5), 'From ') .EQ. 0) THEN
+			    CALL GET_SHORT_DSET_NAME( dset, short, lbuff )
+			    IF (STR_SAME(buff(6:attlen), short) .EQ. 0) 
+     .                        get_ds = .TRUE.
+                          ENDIF
                        ENDIF
+                    ENDIF
 
-                    ELSE
+                    IF (status .NE. ferr_ok .OR. get_ds) THEN 
                        buff = 'From '
-                       CALL GET_SHORT_DSET_NAME( dset, buff(6:), lbuff )
+                       CALL GET_DSET_NAME( dset, buff(6:), lbuff )
+		       IF (buff(6:7) .EQ. './') 
+     .                     CALL GET_SHORT_DSET_NAME( dset, buff(6:), lbuff )
                        lbuff = TM_LENSTR1( buff )
                     ENDIF
                  
                  ELSE
                     buff = 'From '
-                    CALL GET_SHORT_DSET_NAME( cx_data_set(cx), 
-     .                        buff(6:), lbuff)
+                    CALL GET_DSET_NAME( cx_data_set(cx), buff(6:), lbuff)
+                    IF (buff(6:7) .EQ. './') CALL GET_SHORT_DSET_NAME
+     .                  ( cx_data_set(cx), buff(6:), lbuff )
                     lbuff = TM_LENSTR1( buff )
                  ENDIF ! varid .gt. 0
 
 
                  status = ferr_ok
 
-                 IF (all_outflag .NE. 0 .AND. attoutflag .NE. 0)
-     .               CALL CD_WRITE_ATTRIB(cdfid, varcode, 'history', 
+                 IF (all_outflag .NE. 0 .AND. attoutflag .NE. 0) THEN
+                    lbuff = TM_LENSTR1( buff )
+                    CALL CD_WRITE_ATTRIB(cdfid, varcode, 'history', 
      .                              buff(:lbuff), .FALSE., status )
+                 ENDIF
                  IF ( status .NE. merr_ok ) GOTO 5800
 
               ELSEIF ( cx_data_set(cx) .NE. pdset_irrelevant .AND.
@@ -937,7 +958,9 @@
 
                     attoutflag = 1
                     buff = 'From '
-                    CALL GET_SHORT_DSET_NAME(cx_data_set(cx), buff(6:), lbuff)
+                    CALL GET_DSET_NAME(cx_data_set(cx), buff(6:), lbuff)
+                    IF (buff(6:7) .EQ. './') CALL GET_SHORT_DSET_NAME
+     .                  ( cx_data_set(cx), buff(6:), lbuff )
                     lbuff = TM_LENSTR1( buff )
                     status = ferr_ok
 
@@ -1019,7 +1042,7 @@
 *
 * write the deferred coordinates
 *
-	CALL CD_WRITE_DEFER_COORD( cdfid, status )
+	IF (do_coords) CALL CD_WRITE_DEFER_COORD( cdfid, status )
 	IF ( status .NE. merr_OK ) GOTO 5800
 *
 * write the variables
@@ -1070,7 +1093,7 @@
            CALL CD_WRITE_VAR ( memory, cdfid, dset_num, varcode, grid, 
      .                        write_lo, write_hi, memory(1,mr_blk1(mr)), 
      .                        edges_flag, do_bounds, scalefac, addoff, 
-     .                        bad, mode_upcase_output, status )
+     .                        bad, mode_upcase_output, do_coords, status )
            IF ( status .NE. merr_ok ) GOTO 5800
  500	CONTINUE
 

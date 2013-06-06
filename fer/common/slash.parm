@@ -49,6 +49,10 @@
 * V68 *acm* 1/12   Add USE/STRICT; see ticket 1910.
 * V683  8/12 *acm*  New SET LIST/OUTTYPE CANCEL LIST/OUTTYPE, and SAVE/OUTTYPE 
 * V684 *adm* 12/12 Changes for POLY/MODULO and  VECTOR/MODULO on curvilinear plots.
+* V685 *acm*  4/13 Add /HIDDEN on sho dat for aggregations.
+* V685 6/13 *acm* new qualifier SAVE/NOBOUNDS
+* V685 6/13 *acm* new qualifier SAVE/NOCOORDS
+* V685 6/13 *acm* new qualifier SHOW DATA/HIDDEN
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -118,6 +122,7 @@
      .			slash_show_data_file,
      .			slash_show_data_append,
      .			slash_show_data_clobber,
+     .			slash_show_data_hidden,
      .
      .			slash_show_func_detail,
      .
@@ -133,6 +138,7 @@
      .			slash_list_width,
      .			slash_list_edges,
      .			slash_list_bounds,
+     .			slash_list_nobounds,
      .			slash_list_keepax,
      .			slash_list_norow,
      .			slash_list_ncformat,
@@ -145,7 +151,8 @@
      .			slash_list_deflate,
      .			slash_list_shuffle,
      .			slash_list_endian,
-     .			slash_list_outtype
+     .			slash_list_outtype,
+     .			slash_list_nocoords
 
 	INTEGER		
      .			slash_set_data_ez,
@@ -392,6 +399,7 @@
      .			slash_show_data_file = 8,
      .			slash_show_data_append = 9,
      .			slash_show_data_clobber = 10,
+     .			slash_show_data_hidden = 11,
      .
      .			slash_show_func_detail = 1+4,
      .			slash_show_axis_file = 1+14,
@@ -406,19 +414,21 @@
      .			slash_list_width = 1+37,
      .			slash_list_edges = 1+38,
      .			slash_list_bounds = 1+39,
-     .			slash_list_norow = 1+40,
-     .			slash_list_keepax = 1+41,
-     .			slash_list_ncformat = 1+42,
-     .			slash_list_xchunk = 1+43,
-     .			slash_list_ychunk = 1+44,
-     .			slash_list_zchunk = 1+45,
-     .			slash_list_tchunk = 1+46,
-     .			slash_list_echunk = 1+47,
-     .			slash_list_fchunk = 1+48,
-     .			slash_list_deflate = 1+49,
-     .			slash_list_shuffle = 1+50,
-     .			slash_list_endian  = 1+51,
-     .			slash_list_outtype = 1+52 )
+     .			slash_list_nobounds = 1+40,
+     .			slash_list_norow = 1+41,
+     .			slash_list_keepax = 1+42,
+     .			slash_list_ncformat = 1+43,
+     .			slash_list_xchunk = 1+44,
+     .			slash_list_ychunk = 1+45,
+     .			slash_list_zchunk = 1+46,
+     .			slash_list_tchunk = 1+47,
+     .			slash_list_echunk = 1+48,
+     .			slash_list_fchunk = 1+49,
+     .			slash_list_deflate = 1+50,
+     .			slash_list_shuffle = 1+51,
+     .			slash_list_endian  = 1+52,
+     .			slash_list_outtype = 1+53,
+     .			slash_list_nocoords = 1+54 )
 
 	PARAMETER     (
      .			slash_set_data_ez	= 1,

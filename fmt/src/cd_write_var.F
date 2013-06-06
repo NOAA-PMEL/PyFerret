@@ -1,7 +1,7 @@
 	SUBROUTINE CD_WRITE_VAR ( memory, cdfid, dset, vname, grid, lo,
      .                            hi, dat, edges_flag, do_bounds, 
      .                            scalefac, addoff, bad, mode_upcase_output, 
-     .                            status )
+     .                            do_coords, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -70,6 +70,8 @@
 * V641 *acm* 1/10  Fix bug 1715 and output of packed data.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 *      4/12 *acm* fix for finding the record axis, never axes 5 or 6.
+* V685 6/13 *acm* new qualifier SAVE/NOBOUNDS
+* V685 6/13 *acm* new qualifier SAVE/NOCOORDS
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -100,8 +102,9 @@
 #include "netcdf_declareUnderscore.inc"
 
 * argument declarations
-      LOGICAL do_bounds, mode_upcase_output
-      INTEGER cdfid, dset, grid, lo(nferdims), hi(nferdims), edges_flag, status
+      LOGICAL mode_upcase_output, do_coords
+      INTEGER cdfid, dset, grid, lo(nferdims), hi(nferdims), 
+     .        edges_flag, do_bounds, status
       CHARACTER*(*) vname
       REAL dat(*), bad
       REAL*8 scalefac, addoff
@@ -117,7 +120,7 @@
      .	      vartyp, nvdim, vdims(8), nvatts, bndstart(2), bndcount(2),
      .        mblk1, nblks, npts, savecount
       LOGICAL CD_GET_BOUNDS, TM_ABSTRACT_AXIS, TM_DFPEQ, 
-     .        got_it, scaled
+     .        got_it, scaled, writebounds
       CHARACTER*13 TM_STRING
       CHARACTER*1  dimnam(nferdims)
       DATA  	   dimnam/'I','J','K','L','M','N'/
@@ -140,6 +143,7 @@ c      EQUIVALENCE (r100_8, r100_4)
 
 * initialize
       vlen = TM_LENSTR1( vname )
+      writebounds = do_bounds .GT. 0
 
 * get the variable id
 #ifdef usingDODSf2cUnderscore
@@ -167,14 +171,25 @@ c      EQUIVALENCE (r100_8, r100_4)
       got_it = CD_GET_BOUNDS( cdfid, varid, slab_min, slab_max,
      .                        tmrecax, status )
       IF ( status .NE. merr_ok ) GOTO 5900
-      IF ( .NOT. got_it ) CALL CD_GET_GENERIC_BOUNDS
-     .   ( cdfid, varid, grid, lo, slab_min, slab_max, tmrecax, status )
+    
+      IF (do_coords .AND. (.NOT.got_it)) THEN
+         CALL CD_GET_GENERIC_BOUNDS
+     .      ( cdfid, varid, grid, lo, slab_min, slab_max, tmrecax, status )
+      ENDIF
+      IF (.NOT.do_coords) THEN
+         DO 20 idim = 1, nferdims
+            slab_min(idim) = lo(idim)
+            slab_max(idim) = hi(idim)
+ 20      CONTINUE
+      ENDIF
+
       IF ( status .NE. merr_ok ) GOTO 5900
 
 * special check for abstract axes (kludge!) - length, only
 * if i=5:15 overwrites i=1:10 it will be detected but
 * if i=6:15 overwrite i=1:10 it still will not be detected resulting in an
 * unhelpful error message, below
+	 
          DO 10 idim = 1, nferdims
             IF ( idim .EQ. tmrecax ) GOTO 10
             iaxis = grid_line(idim, grid)
@@ -237,9 +252,10 @@ c      EQUIVALENCE (r100_8, r100_4)
          lorec = unspecified_int4
       ENDIF
       IF ( lorec .NE. unspecified_int4 ) THEN
+
          CALL CD_REC_SYNCH( cdfid, lorec, hirec, tmrecax,
      .               grid, start(cdrecax), recaxvar, rectyp, 
-     .               reset, old_box_hi, new_box_lo, do_bounds,
+     .               reset, old_box_hi, new_box_lo, writebounds,
      .               status )
 
          IF ( status .NE. merr_ok ) GOTO 5900
@@ -385,7 +401,9 @@ c      EQUIVALENCE (r100_8, r100_4)
 * Now write the bounds, if record axis is irregular, or if /BOUNDS was requested.
 
          iaxis = grid_line(tmrecax, grid)
-         IF ( (.NOT.line_regular(iaxis) .OR. do_bounds) 
+
+	 IF (do_bounds .GE. 0) THEN
+         IF ( (.NOT.line_regular(iaxis) .OR. writebounds) 
      .         .AND. (edges_flag .EQ. 0) ) THEN
 
             name = CD_AXIS_OUTNAME( dset, grid, tmrecax, nlen )
@@ -436,6 +454,7 @@ c      EQUIVALENCE (r100_8, r100_4)
 #endif
                IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
  330        CONTINUE
+         ENDIF
          ENDIF
 
       ENDIF

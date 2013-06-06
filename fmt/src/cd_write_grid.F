@@ -1,7 +1,7 @@
 	SUBROUTINE CD_WRITE_GRID ( cdfid, dset, grid, lo, hi, recdim, 
      .                           itsa_slab, gname, edges_flag, 
      .                           do_bounds, mode_upcase_output, 
-     .                           keepax_flag, status )
+     .                           keepax_flag, do_coords, status )
 
 *
 *
@@ -63,6 +63,7 @@
 *                  name but different contents, write both to file with the name
 *                  Ferret uses internally.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* V685 6/13 *acm* new qualifier SAVE/NOCOORDS
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -89,9 +90,9 @@
 #include "netcdf_declareUnderscore.inc"
 
 * argument declarations
-      LOGICAL itsa_slab, do_bounds, mode_upcase_output
+      LOGICAL itsa_slab, mode_upcase_output, do_coords
       INTEGER cdfid, dset, grid, lo(nferdims), hi(nferdims), recdim, 
-     .        edges_flag, keepax_flag, status
+     .        edges_flag, keepax_flag, do_bounds, status
       CHARACTER*(*) gname
 
 * local variable declarations:
@@ -196,7 +197,7 @@
      .           idim.EQ.recdim,
      .           lo(idim), hi(idim), pcdf_full_span, 
      .           edges_flag, do_bounds, mode_upcase_output,
-     .           keepax_flag, name_from_grid, status ) 
+     .           keepax_flag, name_from_grid, do_coords, status ) 
 
             IF ( status .NE. merr_ok ) GOTO 5900
          ENDIF

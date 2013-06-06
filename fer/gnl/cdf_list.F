@@ -326,6 +326,7 @@
            CALL CD_GET_VAR_ID (dset, varcode, varid, status)
 
            vartype = 0
+           outtype = 0
 
            IF (status .EQ. ferr_ok) THEN
               CALL CD_GET_VAR_INFO (dset, varid, varname, vartype, nvdims, 

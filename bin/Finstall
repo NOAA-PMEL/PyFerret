@@ -309,13 +309,13 @@ export FER_DSETS=\"${fer_dsets}\"" \
         fi
     fi
 #   Check for existing pyferret.csh
-    if [ -f "${ferpaths_dir}/pyferret.csh" ]; then
-        if mv -f "${ferpaths_dir}/pyferret.csh" "${ferpaths_dir}/pyferret.csh.old"; then
+    if [ -f "${fer_dir}/bin/pyferret.csh" ]; then
+        if mv -f "${fer_dir}/bin/pyferret.csh" "${fer_dir}/bin/pyferret.csh.old"; then
             echo " "
-            echo " Renamed existing ${ferpaths_dir}/pyferret.csh "
-            echo "               to ${ferpaths_dir}/pyferret.csh.old "
-            write_log_message "Renamed existing ${ferpaths_dir}/pyferret.csh"
-            write_log_message "              to ${ferpaths_dir}/pyferret.csh.old"
+            echo " Renamed existing ${fer_dir}/bin/pyferret.csh "
+            echo "               to ${fer_dir}/bin/pyferret.csh.old "
+            write_log_message "Renamed existing ${fer_dir}/bin/pyferret.csh"
+            write_log_message "              to ${fer_dir}/bin/pyferret.csh.old"
         fi
     fi
 #   Create new pyferret.csh
@@ -324,24 +324,24 @@ set python_exe = \"${python_executable}\"" \
            -e "/set python_subdir = /c\\
 set python_subdir = \"${python_subdirectory}\"" \
            "${fer_dir}/bin/pyferret_template.csh" \
-           > "${ferpaths_dir}/pyferret.csh" ; then
-        chmod +x "${ferpaths_dir}/pyferret.csh"
+           > "${fer_dir}/bin/pyferret.csh" ; then
+        chmod +x "${fer_dir}/bin/pyferret.csh"
         echo " "
-        echo " Created executable script ${ferpaths_dir}/pyferret.csh "
-        write_log_message "Created executable script ${ferpaths_dir}/pyferret.csh"
+        echo " Created executable script ${fer_dir}/bin/pyferret.csh "
+        write_log_message "Created executable script ${fer_dir}/bin/pyferret.csh"
     else
         echo " "
-        echo " Unable to create ${ferpaths_dir}/pyferret.csh "
-        write_log_message "Unable to create ${ferpaths_dir}/pyferret.csh"
+        echo " Unable to create ${fer_dir}/bin/pyferret.csh "
+        write_log_message "Unable to create ${fer_dir}/bin/pyferret.csh"
     fi
 #   Check for existing pyferret.sh
-    if [ -f "${ferpaths_dir}/pyferret.sh" ]; then
-        if mv -f "${ferpaths_dir}/pyferret.sh" "${ferpaths_dir}/pyferret.sh.old"; then
+    if [ -f "${fer_dir}/bin/pyferret.sh" ]; then
+        if mv -f "${fer_dir}/bin/pyferret.sh" "${fer_dir}/bin/pyferret.sh.old"; then
             echo " "
-            echo " Renamed existing ${ferpaths_dir}/pyferret.sh "
-            echo "               to ${ferpaths_dir}/pyferret.sh.old "
-            write_log_message "Renamed existing ${ferpaths_dir}/pyferret.sh"
-            write_log_message "              to ${ferpaths_dir}/pyferret.sh.old"
+            echo " Renamed existing ${fer_dir}/bin/pyferret.sh "
+            echo "               to ${fer_dir}/bin/pyferret.sh.old "
+            write_log_message "Renamed existing ${fer_dir}/bin/pyferret.sh"
+            write_log_message "              to ${fer_dir}/bin/pyferret.sh.old"
         fi
     fi
 #   Create new pyferret.sh
@@ -350,36 +350,36 @@ python_exe=\"${python_executable}\"" \
            -e "/python_subdir=/c\\
 python_subdir=\"${python_subdirectory}\"" \
            "${fer_dir}/bin/pyferret_template.sh" \
-           > "${ferpaths_dir}/pyferret.sh" ; then
-        chmod +x "${ferpaths_dir}/pyferret.sh"
+           > "${fer_dir}/bin/pyferret.sh" ; then
+        chmod +x "${fer_dir}/bin/pyferret.sh"
         echo " "
-        echo " Created executable script ${ferpaths_dir}/pyferret.sh "
-        write_log_message "Created executable script ${ferpaths_dir}/pyferret.sh"
+        echo " Created executable script ${fer_dir}/bin/pyferret.sh "
+        write_log_message "Created executable script ${fer_dir}/bin/pyferret.sh"
     else
         echo " "
-        echo " Unable to create ${ferpaths_dir}/pyferret.sh"
-        write_log_message "Unable to create ${ferpaths_dir}/pyferret.sh"
+        echo " Unable to create ${fer_dir}/bin/pyferret.sh"
+        write_log_message "Unable to create ${fer_dir}/bin/pyferret.sh"
     fi
 #   Check for existing pyferret
-    if [ -f "${ferpaths_dir}/pyferret" ]; then
-        if mv -f "${ferpaths_dir}/pyferret" "${ferpaths_dir}/pyferret.old"; then
+    if [ -f "${fer_dir}/bin/pyferret" ]; then
+        if mv -f "${fer_dir}/bin/pyferret" "${fer_dir}/bin/pyferret.old"; then
             echo " "
-            echo " Renamed existing ${ferpaths_dir}/pyferret "
-            echo "               to ${ferpaths_dir}/pyferret.old "
-            write_log_message "Renamed existing ${ferpaths_dir}/pyferret"
-            write_log_message "              to ${ferpaths_dir}/pyferret.old"
+            echo " Renamed existing ${fer_dir}/bin/pyferret "
+            echo "               to ${fer_dir}/bin/pyferret.old "
+            write_log_message "Renamed existing ${fer_dir}/bin/pyferret"
+            write_log_message "              to ${fer_dir}/bin/pyferret.old"
         fi
     fi
 #   Link pyferret to pyferret.sh, regardless of user's shell, 
-#   since it is run as an executable. 
-    if ( cd "${ferpaths_dir}" ; ln -s "pyferret.sh" "pyferret" ) ; then
+#   since it is run as an executable script
+    if ( cd "${fer_dir}/bin" ; ln -s "pyferret.sh" "pyferret" ) ; then
         echo " "
-        echo " Created executable script ${ferpaths_dir}/pyferret "
-        write_log_message "Created executable script ${ferpaths_dir}/pyferret "
+        echo " Created executable script ${fer_dir}/bin/pyferret "
+        write_log_message "Created executable script ${fer_dir}/bin/pyferret "
     else
         echo " "
-        echo " Unable to create executable script ${ferpaths_dir}/pyferret "
-        write_log_message "Unable to create executable script ${ferpaths_dir}/pyferret "
+        echo " Unable to create executable script ${fer_dir}/bin/pyferret "
+        write_log_message "Unable to create executable script ${fer_dir}/bin/pyferret "
     fi
 }
 

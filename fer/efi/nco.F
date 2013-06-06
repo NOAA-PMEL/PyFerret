@@ -4,6 +4,8 @@
 * Ansley Manke
 * March 1, 2005
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V685 *acm* 5/13  If the user has sent -A (append) then don't send 
+*                  -O (override) to nco.
 *
 * This function spawns any NCO call, with the first argument being the
 * NCO function name, and the second one long string which is the argument 
@@ -102,9 +104,10 @@
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
+      LOGICAL TM_HAS_STRING
       INTEGER TM_LENSTR
 
-      INTEGER arg, blen, slen
+      INTEGER arg, alen, slen
       INTEGER i, j, k, l, m, n
       CHARACTER*2048 argstring, buff
 
@@ -113,15 +116,24 @@
 
       arg = 1
       CALL ef_get_arg_string(id, arg, argstring)
-      slen = TM_LENSTR(argstring)
-      buff = argstring(1:slen)//' -O -h '
-      blen = slen + 7
+      alen = TM_LENSTR(argstring)
+      buff = argstring(1:alen)
+      slen = alen
 
       arg = 2
       CALL ef_get_arg_string(id, arg, argstring)
-      slen = TM_LENSTR(argstring)
-      buff = buff(1:blen)//argstring(1:slen)
-      blen = blen + slen 
+      alen = TM_LENSTR(argstring)
+
+      IF ( TM_HAS_STRING(argstring, '-A') ) THEN 
+         buff = buff(1:slen)//' -h '
+         slen = slen + 5
+      ELSE
+         buff = buff(1:slen)//' -O -h '
+         slen = slen + 7
+      ENDIF
+
+      buff = buff(1:slen)//argstring(1:alen)
+      slen = slen + alen 
 
 * Spawn the command 
 
@@ -133,7 +145,7 @@
       n = res_lo_ss(F_AXIS)
       result(i,j,k,l,m,n) = bad_flag_result
 
-      CALL system( buff(1:blen) )
+      CALL system( buff(1:slen) )
 
       result(i,j,k,l,m,n) = 1
 

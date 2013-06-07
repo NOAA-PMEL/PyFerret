@@ -77,6 +77,8 @@
 *                  it as a valid index from its use as the bad flag.
 * NOTE: -111 in the above was the value of unspecified_int4 (now -999)
 *      *kms*  2/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* v685 *acm* 06/13 Fix ticket 2070: regridding when source cell encloses 
+*                  dest cell.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -97,7 +99,7 @@
 
 * local variable declarations:
 
-        LOGICAL         ok_neg111
+        LOGICAL         ok_neg111, src_encloses
         INTEGER		dstss,srcss,src_grid,dst_grid,i,j,k,l,m,n
 	INTEGER	     	srcss_lo,srcss_hi, dstss_lo,dstss_hi, ncontrib,
      .                  src_cx, dst_cx
@@ -159,6 +161,9 @@
 	      xdst_hi = TM_WORLD(dstss, dst_grid, axis, box_hi_lim )
 
 * add all partial or complete boxes of data from the source grid
+
+* IF source box completely encloses the dest box, then srcss_lo=srcss_hi
+* and we can just stick the source point into the destination (for avg or var)
 	      sum = 0.0D0
 	      distance = 0.0D0
 	      DO 110 srcss = srcss_lo, srcss_hi
@@ -168,6 +173,9 @@
 
 	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
 	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
+
+	        src_encloses = 
+     .               (xdst_lo.GE.xsrc_min .AND. xdst_hi.LE.xsrc_max) 
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi )
@@ -198,6 +206,8 @@
 	      ELSE
 * ... divide by distance to get average
 	         dst(dstss, j, k, l, m, n) = sum / distance
+		 IF (src_encloses) dst(dstss,j,k,l,m,n) = 
+     .			         src(srcss_lo,j,k,l,m,n)
 	      ENDIF
 
 
@@ -230,6 +240,9 @@
 	      xdst_hi  = TM_WORLD(dstss, dst_grid, axis, box_hi_lim )
 
 * add all partial or complete boxes of data from the source grid
+
+* IF source box completely encloses the dest box, then srcss_lo=srcss_hi
+* and we can just stick the source point into the destination (for avg or var)
 	      sum = 0.0D0
 	      distance = 0.0D0
 	      DO 210 srcss = srcss_lo, srcss_hi
@@ -239,6 +252,9 @@
 
 	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
 	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
+
+	        src_encloses = 
+     .               (xdst_lo.GE.xsrc_min .AND. xdst_hi.LE.xsrc_max) 
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi)
@@ -269,6 +285,8 @@
 	      ELSE
 * ... divide by distance to get average
 	         dst(i, dstss, k, l, m, n) = sum / distance
+		 IF (src_encloses) dst(dstss,j,k,l,m,n) = 
+     .			         src(srcss_lo,j,k,l,m,n)
 	      ENDIF
 
  260	   CONTINUE
@@ -300,6 +318,9 @@
 	      xdst_hi = TM_WORLD(dstss, dst_grid, axis, box_hi_lim )
 
 * add all partial or complete boxes of data from the source grid
+
+* IF source box completely encloses the dest box, then srcss_lo=srcss_hi
+* and we can just stick the source point into the destination (for avg or var)
 	      sum = 0.0D0
 	      distance = 0.0D0
 	      DO 310 srcss = srcss_lo, srcss_hi
@@ -309,6 +330,9 @@
 
 	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
 	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
+
+	        src_encloses = 
+     .               (xdst_lo.GE.xsrc_min .AND. xdst_hi.LE.xsrc_max) 
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi )
@@ -339,6 +363,8 @@
 	      ELSE
 * ... divide by distance to get average
 	         dst(i, j, dstss, l, m, n) = sum / distance
+		 IF (src_encloses) dst(dstss,j,k,l,m,n) = 
+     .			         src(srcss_lo,j,k,l,m,n)
 	      ENDIF
 
  360	   CONTINUE
@@ -373,6 +399,9 @@
 	      xdst_hi = TDEST_WORLD(dstss, dst_grid, axis, box_hi_lim)
 
 * add all partial or complete boxes of data from the source grid
+
+* IF source box completely encloses the dest box, then srcss_lo=srcss_hi
+* and we can just stick the source point into the destination (for avg or var)
 	      sum = 0.0D0
 	      distance = 0.0D0
 	      DO 410 srcss = srcss_lo, srcss_hi
@@ -382,6 +411,9 @@
 
 	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
 	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
+
+	        src_encloses = 
+     .               (xdst_lo.GE.xsrc_min .AND. xdst_hi.LE.xsrc_max) 
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi)
@@ -411,6 +443,8 @@
 	      ELSE
 * ... divide by distance to get average
 	         dst(i, j, k, dstss, m, n) = sum / distance
+		 IF (src_encloses) dst(dstss,j,k,l,m,n) = 
+     .			         src(srcss_lo,j,k,l,m,n)
 	      ENDIF
 
  460	   CONTINUE
@@ -445,6 +479,9 @@
 	      xdst_hi = TDEST_WORLD(dstss, dst_grid, axis, box_hi_lim)
 
 * add all partial or complete boxes of data from the source grid
+
+* IF source box completely encloses the dest box, then srcss_lo=srcss_hi
+* and we can just stick the source point into the destination (for avg or var)
 	      sum = 0.0D0
 	      distance = 0.0D0
 	      DO 510 srcss = srcss_lo, srcss_hi
@@ -454,6 +491,9 @@
 
 	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
 	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
+
+	        src_encloses = 
+     .               (xdst_lo.GE.xsrc_min .AND. xdst_hi.LE.xsrc_max) 
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi)
@@ -483,6 +523,8 @@
 	      ELSE
 * ... divide by distance to get average
 	         dst(i, j, k, l, dstss, n) = sum / distance
+		 IF (src_encloses) dst(dstss,j,k,l,m,n) = 
+     .			         src(srcss_lo,j,k,l,m,n)
 	      ENDIF
 
  560	   CONTINUE
@@ -517,6 +559,9 @@
 	      xdst_hi = TDEST_WORLD(dstss, dst_grid, axis, box_hi_lim)
 
 * add all partial or complete boxes of data from the source grid
+
+* IF source box completely encloses the dest box, then srcss_lo=srcss_hi
+* and we can just stick the source point into the destination (for avg or var)
 	      sum = 0.0D0
 	      distance = 0.0D0
 	      DO 610 srcss = srcss_lo, srcss_hi
@@ -526,6 +571,9 @@
 
 	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
 	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
+
+	        src_encloses = 
+     .               (xdst_lo.GE.xsrc_min .AND. xdst_hi.LE.xsrc_max) 
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi)
@@ -555,6 +603,8 @@
 	      ELSE
 * ... divide by distance to get average
 	         dst(i, j, k, l, m, dstss) = sum / distance
+		 IF (src_encloses) dst(dstss,j,k,l,m,n) = 
+     .			         src(srcss_lo,j,k,l,m,n)
 	      ENDIF
 
  660	   CONTINUE

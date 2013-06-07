@@ -216,7 +216,7 @@
         LOGICAL         NC_GET_ATTRIB, NC_GET_ATTRIB_DP, 
      .                  full_precision, DODS_cache, range_not_rqd,
      .                  got_it, got_title, got_units, got_history,
-     .                  do_warn, coordvar
+     .                  got_missing, got_fill, do_warn, coordvar
 
         PARAMETER     ( buff_size = 2048,
      .			sslimits0 = 1+23-1,
@@ -231,6 +231,8 @@
 	 final_status = ferr_ok  ! innocent unless proven guilty
 	 DODS_cache = mode .EQ. pcdf_mode_cache
          do_warn = .TRUE.
+	 got_missing = .FALSE.
+	 got_fill = .FALSE.
 
          IF (do_coords) CALL CD_DEFER_COORD_WRITE(0,0,0,0,0,pcd_defer_init)
 
@@ -670,11 +672,13 @@
                     ENDIF
    
                     IF (attoutflag .EQ. 1) THEN
-                       IF (no_missing_flag.EQ.0) CALL CD_WRITE_ATTVAL_DP(
-     .                   cdfid, varcode, 'missing_value', dvals, attlen, 
-     .                   attype, status )
-                       IF (status .NE. ferr_ok) GOTO 5400
-
+                       IF (no_missing_flag.EQ.0) THEN
+		          CALL CD_WRITE_ATTVAL_DP(
+     .                    cdfid, varcode, 'missing_value', dvals, attlen, 
+     .                    attype, status )
+                          IF (status .NE. ferr_ok) GOTO 5400
+			  got_missing = .TRUE.
+                       ENDIF
 
 		       IF (scalefac .NE. 1.D0  .OR. addoff .NE. 0.D0) THEN
 		       attname = '_FillValue'
@@ -691,9 +695,12 @@
                           vals(1) = dvals(1)
                           attype = outtype
 		       ENDIF
-                       IF (no_fill_flag.EQ.0) CALL CD_WRITE_ATTVAL_DP(
-     .                   cdfid, varcode, '_FillValue', dvals, attlen, 
-     .                   attype, status )
+                       IF (no_fill_flag.EQ.0) THEN
+		          CALL CD_WRITE_ATTVAL_DP(
+     .                     cdfid, varcode, '_FillValue', dvals, attlen, 
+     .                     attype, status )
+		          got_fill = .TRUE.
+                       ENDIF
 
                     ENDIF
                  ENDIF ! istat 
@@ -813,12 +820,14 @@
 		 attype = outtype
 		 CALL CD_WRITE_ATTVAL_DP(cdfid, varcode,
      .                          attname, vals, attlen, attype, status )
+		 got_missing = .TRUE.
 		 attname = '_FillValue'
 		 vals(1) = bad_val4
 		 attlen = 1
 		 attype = outtype
 		 CALL CD_WRITE_ATTVAL_DP(cdfid, varcode,
      .                          attname, vals, attlen, attype, status )
+		 got_fill = .TRUE.
 
               ENDIF ! varid GT 0
 
@@ -1027,13 +1036,17 @@
 * Write attributes for psuedo-variables
            IF (cat .EQ. cat_pseudo_var) THEN  
 
-	      CALL CD_WRITE_ATTVAL(cdfid, varcode,
+              IF (.NOT.got_missing) THEN
+ 	         CALL CD_WRITE_ATTVAL_DP(cdfid, varcode,
      .          'missing_value', bad, 1, type, status )
-              IF ( status .NE. merr_ok ) GOTO 5800
+                 IF ( status .NE. merr_ok ) GOTO 5800
+              ENDIF
 
-              CALL CD_WRITE_ATTVAL(cdfid, varcode,
+              IF (.NOT.got_fill) THEN
+                 CALL CD_WRITE_ATTVAL_DP(cdfid, varcode,
      .          '_FillValue', bad, 1, type, status )
-              IF ( status .NE. merr_ok ) GOTO 5800
+                IF ( status .NE. merr_ok ) GOTO 5800
+	      ENDIF
 
               buff = VAR_TITLE( cx )
               lbuff = TM_LENSTR1( buff )

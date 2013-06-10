@@ -1,4 +1,4 @@
-	SUBROUTINE SHOW_1_DSVAR( lun, dset, vname, varid, line )
+	SUBROUTINE SHOW_1_DSVAR( lun, dset, vname, varid )
 
 *
 *
@@ -41,6 +41,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V600 6/05 *acm* Attribute control.
+* V685 5/13 *acm* Write the long_name not the variable number.
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -53,36 +54,40 @@
 
 	INTEGER	lun, dset, varid
 	CHARACTER*(*) vname
-	CHARACTER*(*) line	! line buffer -- 255 char
 	
 * local variable declarations:
-	INTEGER TM_LENSTR1, slen, llen
-	CHARACTER TM_FMT*12
+	LOGICAL NC_GET_ATTRIB_STRING, do_warn, got_it
+	INTEGER TM_LENSTR1, slen, llen, maxlen, attlen, attoutflag
+	CHARACTER*512 string
 
 * initialize
 	slen = TM_LENSTR1(vname)
+	maxlen = 512
 
 * variable name and definition
 	risc_buff = ' '//vname(:slen)
         slen = slen + 1
-	risc_buff = risc_buff(:slen)//' var # '
-        slen = slen + 7
 
-        line = TM_FMT(FLOAT(varid), -4, 12, llen)
-        risc_buff = risc_buff(:slen)//line(:llen)
+        got_it = NC_GET_ATTRIB_STRING ( dset, varid, 'LONG_NAME',
+     .                                   do_warn, vname, maxlen,
+     .                                   attlen, attoutflag, string)
 
-        slen = slen + llen
+	IF (got_it) THEN
+	   risc_buff = risc_buff(:slen)//': '
+           slen = slen + 2
+	   risc_buff = risc_buff(:slen)//string(:attlen)
+           slen = slen + attlen
+	ENDIF
 
-	risc_buff = risc_buff(:slen)//' of dataset '
-        slen = slen + 12
+	risc_buff = risc_buff(:slen)//', in dataset '
+        slen = slen + 13
 
         llen = TM_LENSTR1(ds_des_name(dset))
 
         risc_buff = risc_buff(:slen)//ds_des_name(dset)(:llen)
         slen = slen + llen
 
-	CALL SPLIT_LIST(pttmode_explct, lun,
-     .                       risc_buff, 0)
+	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 	risc_buff = ' '
 
 	RETURN

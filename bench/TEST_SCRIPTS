@@ -31,7 +31,7 @@ bn491_bug_fixes.jnl
 bn_odd_variable_name.jnl
 bn_test_stream.jnl
 bn_define_axes.jnl
-! bn_pattern.jnl - KMS - patterns not supported
+! bn_pattern.jnl - KMS - patterns not supported in PyFerret
 bn_polygon.jnl
 bn500_bug_fixes.jnl
 bn_sample.jnl
@@ -196,5 +196,8 @@ bn_axis_nonmonotonic.jnl
 bn_vec_mod.jnl
 bn685_bug_fixes.jnl
 bn_dsg_e_x.jnl
+bn_nco_append.jnl
+bn_nocoords.jnl
+bn_nobounds.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

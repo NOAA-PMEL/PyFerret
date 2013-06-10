@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 42646111 May  8 14:40 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 42597828 Jun  6 15:16 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Fix to ticket 2051
+Note: fixes through 5/6/2013
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -19,9 +19,8 @@ FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
-FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Wed May 8 14:42:17 PDT 2013
+Beginning at Fri Jun 7 12:02:12 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2117,6 +2116,7 @@ Replacing definition of axis TIME
  LISTing to file a.nc
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
+curl error details: 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2301,6 +2301,7 @@ set axis/stride=2 NORMAL
  LISTing to file tripolar_missing_lon.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+curl error details: 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3300,7 +3301,7 @@ define data/agg windy = 1,2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **netCDF error
-             Is a directory (OPeNDAP/netCDF Error code 21)
+             NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
              Data set: ./.
 SET DAT/FORM=CDF ./z1.nc
  PERMANENT data cleared from memory
@@ -3383,6 +3384,43 @@ Replacing definition of axis TDAY
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file aa.nc
+ LISTing to file aa.nc
+ LISTing to file aa.nc
+ncks: WARNING Overwriting global attribute history
+ncks: WARNING Overwriting global attribute Conventions
+ncks: WARNING Overwriting attribute point_spacing for output variable ZAXIS_ORIG
+ncks: WARNING Overwriting attribute axis for output variable ZAXIS_ORIG
+ncks: WARNING Overwriting attribute standard_name for output variable ZAXIS_ORIG
+ LISTing to file aa.nc
+ LISTing to file aa.nc
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
+ data in attribute missing_value not representable in output type NC_INT
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
+ data in attribute _FillValue not representable in output type NC_INT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file append_to_this.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file aa.nc
+ TEMPORARY data cleared from memory
+ LISTing to file dsg_nocoord.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XIRREG
+ LISTing to file a.nc
+ LISTing to file a.nc
+ *** NOTE: Axis definition error on axis: TGAP
+ *** NOTE: Bounds given describe non-contiguous axis cells
+ *** NOTE: Using the LOWER bound specified for each axis cell
+ LISTing to file a.nc
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -3472,4 +3510,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed May 8 14:43:57 PDT 2013
+Ended at Fri Jun 7 12:04:13 PDT 2013

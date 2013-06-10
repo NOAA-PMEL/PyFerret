@@ -1,18 +1,12 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43412406 May 16 15:49 /home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 43420301 Jun  7 12:01 /home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/trunk_for_flat64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: link on flat 64-bit with netCDF 4.3
+Note: fixes through 5/6/2013
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-setenv FER_DATA .
-setenv FER_DESCR .
-setenv FER_DSETS .
-setenv FER_DAT .
-setenv FER_GRIDS .
-setenv FER_DIR .
 FER_DAT=.
 FER_DATA=.
 FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/tmap/ferret/linux/fer_dsets
@@ -28,8 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/trunk_for_flat64/FERRET/bench
-Beginning at Thu May 16 15:50:18 PDT 2013
-/home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c -script bn_all_shell.jnl
+Beginning at Fri Jun 7 12:02:42 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3393,7 +3386,43 @@ Replacing definition of axis TDAY
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-/home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file aa.nc
+ LISTing to file aa.nc
+ LISTing to file aa.nc
+ LISTing to file aa.nc
+ LISTing to file aa.nc
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
+ data in attribute missing_value not representable in output type NC_INT
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
+ data in attribute _FillValue not representable in output type NC_INT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file append_to_this.nc
+ncks: WARNING Overwriting global attribute history
+ncks: WARNING Overwriting global attribute Conventions
+ncks: WARNING Overwriting attribute point_spacing for output variable ZAXIS_ORIG
+ncks: WARNING Overwriting attribute axis for output variable ZAXIS_ORIG
+ncks: WARNING Overwriting attribute standard_name for output variable ZAXIS_ORIG
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file aa.nc
+ TEMPORARY data cleared from memory
+ LISTing to file dsg_nocoord.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XIRREG
+ LISTing to file a.nc
+ LISTing to file a.nc
+ *** NOTE: Axis definition error on axis: TGAP
+ *** NOTE: Bounds given describe non-contiguous axis cells
+ *** NOTE: Using the LOWER bound specified for each axis cell
+ LISTing to file a.nc
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -3409,9 +3438,7 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-/home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c
  Cached data cleared from memory
-/home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c -gif
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -3454,7 +3481,6 @@ Re-defining viewport UM6
  Using every   2th vector in the Y direction
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-/home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c -batch bnplot.ps
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -3485,6 +3511,5 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
-/home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c -batch bat.plt
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu May 16 15:52:01 PDT 2013
+Ended at Fri Jun 7 12:04:51 PDT 2013

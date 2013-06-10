@@ -198,8 +198,10 @@
 * V68 *acm* 5/12   Add DEFINE DATA /AGGREGATE /NAME= /QUIET
 * V683*acm* 8/12   New SET LIST/OUTTYPE, CANCEL LIST/OUTTYPE and SAVE/OUTTYPE 
 * V683*acm 10/12   NEW SET AXIS/OUTTYPE to change default coordinate axis output type
-* V684 *adm* 12/12 Changes for POLY/MODULO and  VECTOR/MODULO on curvilinear plots.
-* V685 *adm*  1/13 DEFINE VARIABLE/REMOTE
+* V684 *acm* 12/12 Changes for POLY/MODULO and  VECTOR/MODULO on curvilinear plots.
+* V685 *acm*  1/13 DEFINE VARIABLE/REMOTE
+* V685 *acm*  6/13 new qualifier SAVE/NOBOUNDS
+* V685 *acm*  6/13 new qualifier SAVE/NOCOORDS
 * PyFr  *kms* 1/13 Remove SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL;
 *                  Add /QUALITY= /AAlias /NoAAlias /ENGINE= to SET WINDOW
 * PyFr  *kms* 3/13 Change /AAlias and /NoAAlias to /AntiAlia[s] and /NoAntiAl[ias]
@@ -915,21 +917,21 @@
 		DATA qualifiers  (nqual_at5a+37)/ 'WIDTH'/
 		DATA qualifiers  (nqual_at5a+38)/ 'EDGES'/
 		DATA qualifiers  (nqual_at5a+39)/ 'BOUNDS'/
-		DATA qualifiers  (nqual_at5a+40)/ 'NOROWLAB'/
-		DATA qualifiers  (nqual_at5a+41)/ 'KEEP_AXI'/
-		DATA qualifiers  (nqual_at5a+42)/ 'NCFORMAT'/
-		DATA qualifiers  (nqual_at5a+43)/ 'XCHUNK'/
-		DATA qualifiers  (nqual_at5a+44)/ 'YCHUNK'/
-		DATA qualifiers  (nqual_at5a+45)/ 'ZCHUNK'/
-		DATA qualifiers  (nqual_at5a+46)/ 'TCHUNK'/
-		DATA qualifiers  (nqual_at5a+47)/ 'ECHUNK'/
-		DATA qualifiers  (nqual_at5a+48)/ 'FCHUNK'/
-		DATA qualifiers  (nqual_at5a+49)/ 'DEFLATE'/
-		DATA qualifiers  (nqual_at5a+50)/ 'SHUFFLE'/
-		DATA qualifiers  (nqual_at5a+51)/ 'ENDIAN'/
-		DATA qualifiers  (nqual_at5a+52)/ 'OUTTYPE'/
-		DATA qualifiers  (nqual_at5a+53)/ '****'/
-		DATA qualifiers  (nqual_at5a+54)/ '****'/
+		DATA qualifiers  (nqual_at5a+40)/ 'NOBOUNDS'/
+		DATA qualifiers  (nqual_at5a+41)/ 'NOROWLAB'/
+		DATA qualifiers  (nqual_at5a+42)/ 'KEEP_AXI'/
+		DATA qualifiers  (nqual_at5a+43)/ 'NCFORMAT'/
+		DATA qualifiers  (nqual_at5a+44)/ 'XCHUNK'/
+		DATA qualifiers  (nqual_at5a+45)/ 'YCHUNK'/
+		DATA qualifiers  (nqual_at5a+46)/ 'ZCHUNK'/
+		DATA qualifiers  (nqual_at5a+47)/ 'TCHUNK'/
+		DATA qualifiers  (nqual_at5a+48)/ 'ECHUNK'/
+		DATA qualifiers  (nqual_at5a+49)/ 'FCHUNK'/
+		DATA qualifiers  (nqual_at5a+50)/ 'DEFLATE'/
+		DATA qualifiers  (nqual_at5a+51)/ 'SHUFFLE'/
+		DATA qualifiers  (nqual_at5a+52)/ 'ENDIAN'/
+		DATA qualifiers  (nqual_at5a+53)/ 'OUTTYPE'/
+		DATA qualifiers  (nqual_at5a+54)/ 'NOCOORDS'/
 
 * PLOT - command # 6
 	DATA commands(6)			/ 'PLOT'	/

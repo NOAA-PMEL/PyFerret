@@ -178,6 +178,7 @@
 * V683 *acm*  8/12 On SHOW LIST, show the output-type setting from SET LIST/OUTTYPE=  
 * V685 *acm*  2/13 LET/REMOTE changes: show internally-defined climatological axes
 *                  in xml output.
+* V685 *acm*  6/13 Fixes for SHOW VAR/D= on file variables.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -274,7 +275,7 @@
      .          vseq, attid, save_deleted_list_result(max_uvar),
      .          cache_size, cache_nelems, cache_preemption,
      .          sho_file, idim, ndims, nvars, ngatts, recdim, npts,
-     .          var_num, vartype, outflag, num_clim_1, num_clim_n
+     .          vartype, outflag, num_clim_1, num_clim_n
 	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p
 	CHARACTER EXPR_NAME*8, TM_FMT*12,
      .		default*10, show_str*2048, arg*128, name*128, arg30*30
@@ -727,6 +728,23 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
  1000   sxml  = qual_given(slash_show_var_xml) .GT. 0 
         IF (sxml) firstxml = .TRUE.
 
+* get dset number if appropriate:  SHOW VAR/D=dset ...
+	rqst_dset = unspecified_int4	
+	iqual = qual_given( slash_var_dset )
+	IF ( iqual .GT. 0 ) THEN
+	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .			   show_str, status )  ! show_str is just a buffer
+	   IF ( status .NE. ferr_ok ) RETURN
+	   IF ( show_str .NE. ' ' ) THEN
+	      rqst_dset = FIND_DSET_NUMBER( show_str )
+	      IF ( rqst_dset .EQ. unspecified_int4) THEN
+	         CALL WARN('Unknown data set: '
+     .			//show_str(:TM_LENSTR1(show_str)))
+	         RETURN
+	      ENDIF
+	   ENDIF
+	ENDIF
+
 * 	SHOW VARIABLES/FILE=[/APPEND][/CLOBBER]
 
         sho_file = qual_given( slash_show_var_file )
@@ -787,6 +805,9 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 		    dset = pdset_irrelevant	! default (not used ...)
                     CALL PARSE_NAM_DSET(arg, cx_last, dset,
      .				     category, ivar, mods_cx, status)
+                    IF (dset .EQ. pdset_irrelevant .AND. 
+     .                  rqst_dset .NE. unspecified_int4)
+     .                         dset = rqst_dset
 	            IF (status .EQ. ferr_ok) THEN 
                        IF (category .EQ. cat_user_var) THEN
                           IF (sxml) THEN
@@ -803,15 +824,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
                          IF (INDEX(arg,'.') .NE. 0) GOTO 5100
 			 CALL CD_GET_VAR_ID (dset, arg(:len), varid, status)
                          IF (status .EQ. ferr_ok) THEN
-			    var_num = varid
-			    DO 1010 ivar = 1, varid
-			      CALL CD_GET_VAR_INFO (dset, ivar, arg(:len), 
-     .                           vartype, nvdims, vdims, nvatts, coordvar, 
-     .                           outflag, status)
-                              IF (coordvar) var_num = var_num - 1
- 1010			    CONTINUE
-			    CALL SHOW_1_DSVAR (
-     .                         show_lun, dset, arg, var_num, show_str)
+			    CALL SHOW_1_DSVAR (show_lun, dset, arg, varid)
                          ENDIF
                        ENDIF
 
@@ -824,19 +837,9 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 *  if not a user var, see if its a dataset variable from a nc file.
                        len = TM_LENSTR1(arg)
                        IF (INDEX(arg,'.') .NE. 0) GOTO 5100
-                       CALL CD_GET_VAR_ID (dset, arg(:len), varid, status)
+                       CALL CD_GET_VAR_ID (rqst_dset, arg(:len), varid, status)
                        IF (status .EQ. ferr_ok)  THEN
-			    var_num = varid
-			    DO 1011 ivar = 1, varid
-			      CALL CD_GET_VAR_INFO (dset, ivar, arg(:len), 
-     .                           vartype, nvdims, vdims, nvatts, coordvar, 
-     .                           outflag, status)
-                              IF (coordvar) var_num = var_num - 1
- 1011			    CONTINUE
-			    CALL SHOW_1_DSVAR (
-     .                         show_lun, dset, arg, var_num, show_str)
-                          CALL SHOW_1_DSVAR( show_lun, 
-     .                      rqst_dset, arg, varid, show_str)
+		          CALL SHOW_1_DSVAR (show_lun, rqst_dset, arg, varid)
                        ELSE 
                           GOTO 5100
                        ENDIF

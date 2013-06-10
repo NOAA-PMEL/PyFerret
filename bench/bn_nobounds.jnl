@@ -1,0 +1,31 @@
+! bn_nobounds.jnl
+! The SAVE/NOBOUNDS qualifier causes bounds never to be written
+! even if the data is irregular, and even if the axis came into
+! Ferret with bounds.
+
+define axis/x/units=meters xirreg = {0,1,2,4,8}
+let avar = x[gx=xirreg]
+save/clobber/file=a.nc avar
+sp ncdump a.nc
+save/nobounds/clobber/file=a.nc avar
+sp ncdump a.nc
+
+! The dataset has a bounds attribute on the time axis
+! (the bounds themselves get corrected by Ferret on opening the file)
+use gappy_bounds.nc
+sh dat
+
+! See the bounds attribute on the t axis
+sh dat/att
+
+! On a SAVE/NOBOUNDS, do not write the bounds
+! and do not write a bounds attribute on the axis.
+save/clobber/file=a.nc/nobounds a
+sp ncdump -h a.nc	
+
+! On a SAVE either with /BOUNDS or no bounds qualifier, 
+! bounds are written for this irregular time axis.
+save/clobber/file=a.nc/bounds a
+
+sp ncdump -h a.nc	
+

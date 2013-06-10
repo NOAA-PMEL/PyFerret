@@ -146,6 +146,8 @@
 *                  to want to set the time axis to NOT be the record axis.
 * V68  *acm*  1/12 ifdef double_p for double-precision ferret.
 * V683 *acm*  8/12 add new SAVE/OUTTYPE=  
+* V685 *acm*  6/13 new qualifier SAVE/NOBOUNDS
+* V685 *acm*  6/13 new qualifier SAVE/NOCOORDS
 
 	include 'tmap_dims.parm'
         include 'tmap_errors.parm'
@@ -167,7 +169,7 @@
      .			do_epic, do_cdf, do_unform, do_stream,
      .			do_comma_del, do_tab_del, do_dods, do_xml,
      .			permute, all_at_once, list_at_eof, head_enh,
-     .			clobber, quiet, do_bounds, have_outtype
+     .			clobber, quiet, have_outtype, do_coords
      .                    
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, STR_CASE_BLIND_COMPARE,
      .                  STR_UPCASE, GET_MAX_STRING_LEN,
@@ -175,7 +177,7 @@
      .			rlen, flen, reclen, i, cx1, qfile, idim,
      .			ndim, wkblk, perm(7), mr_perm(max_intrp),
      .                  npermuted, recsofar, do_stream_phase, nvars, 
-     .                  edges_flag, keepax_flag, nn, slen
+     .                  edges_flag, keepax_flag, nn, slen, do_bounds
 	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
      .			buff*2048, fstatus*8, faccess*12, fformatted*12,
      .			cdf_recax*1, fposition*12, out_type*6
@@ -217,12 +219,15 @@
      .			  memory, is_mr, is_cx, clobber, status )
 	   IF ( status .NE. ferr_ok ) RETURN
            edges_flag = 0
-           do_bounds = .FALSE.
+           do_bounds = 0
+           do_coords = .TRUE.
 	   keepax_flag = 0
+	   out_type = "DFLT"
 	   CALL CDF_LIST( memory, filename( 1:TM_LENSTR1(filename)), 
      .                    .FALSE., 'N', nvars, is_mr, is_cx,
      .			   ' ', .TRUE., pcdf_mode_cache, clobber, 
-     .                    edges_flag, do_bounds, keepax_flag, status )
+     .                    edges_flag, do_bounds, keepax_flag, out_type,  
+     .                    do_coords, status )
 	   CALL DELETE_MRS_IN_PROGRESS		! remove temporary vars
 	   RETURN
 	ENDIF
@@ -283,13 +288,13 @@
         IF ( qual_given( slash_rigid ) .GT. 0) edges_flag = 2 
 
 * /BOUNDS for netCDF ?
-        do_bounds = qual_given( slash_list_bounds ) .GT. 0
+	do_bounds = 0
+        IF (qual_given( slash_list_bounds ) .GT. 0) do_bounds = 1
+        IF (qual_given( slash_list_nobounds ) .GT. 0) do_bounds = -1
  
 * only for cdf, and not both edges and bounds.  Use BOUNDS if both specified.
 
-        IF (do_bounds) THEN
-           IF (.NOT. do_cdf) CALL WARN(
-     .         '/BOUNDS is valid only for NetCDF output. Ignored')
+        IF (do_bounds .GT. 0) THEN
            IF (.NOT. do_cdf) CALL WARN(
      .          '/BOUNDS is valid only for NetCDF output. Ignored')
            IF (edges_flag .GT. 0) THEN
@@ -303,6 +308,14 @@
               edges_flag = 0
            ENDIF
         ENDIF
+
+* By default write coordinate variables, unless the user asks for /NOCOORDS
+
+* /NOCOORDS for netCDF ?
+        do_coords = .TRUE.
+        IF (qual_given( slash_list_nocoords ) .GT. 0) do_coords = .FALSE.
+        IF ((.NOT.do_coords) .AND. (.NOT. do_cdf)) CALL WARN(
+     .         '/NOCOORDS is valid only for NetCDF output. Ignored')
 
 * get the requested data somehow
 * (leave the variables flagged as "in-use" 7/92)
@@ -626,7 +639,8 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
      .                    list_at_eof, cdf_recax, num_uvars_in_cmnd,
      .			  mr_perm, is_cx, buff, head_enh,
      .			  pcdf_mode_normal, clobber, edges_flag, do_bounds,
-     .                    keepax_flag, out_type, status )
+     .                    keepax_flag, out_type, do_coords, status )
+
 	ELSEIF( all_at_once ) THEN
 	   CALL LIST_MULTI( memory, mr_perm, is_cx, heading, perm,
      .			    wsize, memory(1, wkblk), status )

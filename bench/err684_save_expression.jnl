@@ -1,0 +1,44 @@
+! err684_save_expression.jnl
+! Bug 2076. If we write out an expression that has not been defined 
+! as a user-variable, the variable didn't have missing_value and _FillValue 
+! attributes and was written as single-precision float.
+
+! Define a variable - result is correct
+use coads_climatology
+let a = sst[x=@ave,y=@ave]-sst[x=@ave,y=@ave,t=@ave]
+save/clob/file=a.nc a
+sp ncdump a.nc
+
+save/clob/file=aa.nc sst[x=@ave,y=@ave]-sst[x=@ave,y=@ave,t=@ave]
+sp ncdump aa.nc
+
+! Double check the missing-value matches what is written.
+
+save/clob/file=aa.nc/y=-81:-75 sst[x=@ave]-sst[x=@ave,t=@ave]
+use aa.nc
+list e410
+
+can dat 2
+
+! Can we ask to save as another data type? 
+! Note can't set the bad-flag of an expresion so
+! asking for type of INT cannot match missing to 
+! data type so will fail.
+
+save/clob/file=aa.nc/outtype=float sst[x=@ave,y=@ave]-sst[x=@ave,y=@ave,t=@ave]
+sp ncdump aa.nc
+
+save/clob/file=aa.nc/outtype=float/y=-81:-75 sst[x=@ave]-sst[x=@ave,t=@ave]
+use aa.nc
+list e410
+
+can dat 2
+
+! Note can't set the bad-flag of an expresion so
+! asking for type of INT cannot match missing to 
+! data type so will return an error.
+
+set mode ignore
+save/clob/file=aa.nc/outtype=int sst[x=@ave,y=@ave]-sst[x=@ave,y=@ave,t=@ave]
+
+set mode/last ignore

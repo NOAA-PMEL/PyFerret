@@ -15,6 +15,7 @@ a.nc
 a1.nc
 a2.nc
 anothername.gif
+append_to_this.nc
 asc.nc
 b1566.jnl
 bat.plt_1
@@ -54,6 +55,7 @@ dashbug.plt
 dashbug.png
 dat.dat
 dots.plt
+dsg_nocoord.nc
 dummy1.string_tst
 dummy1.str_test
 dummy2.string_tst

@@ -1,8 +1,8 @@
-Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Jun  5 17:02 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
-Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
+Using FERRET /home/stout/ksmith/PyFerret/bin/pyferret
+lrwxrwxrwx 1 ksmith tmap 11 Jun 10 10:49 /home/stout/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+Using external functions from /home/stout/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for PyFerret
+Note: RUN_TESTS.sh test results for PyFerret on 32-bit linux
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -201,23 +201,26 @@ Benchmark scripts that will be run:
    bn_vec_mod.jnl
    bn685_bug_fixes.jnl
    bn_dsg_e_x.jnl
+   bn_nco_append.jnl
+   bn_nocoords.jnl
+   bn_nobounds.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
-FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/ksmith/Datasets
+FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/stout/ksmith/Datasets
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ksmith/PyFerret/ext_func/libs
-FER_FONTS=/home/users/ksmith/PyFerret/ppl/fonts
-FER_GO=. /home/users/ksmith/PyFerret/go /home/users/ksmith/PyFerret/examples /home/users/ksmith/PyFerret/contrib
+FER_EXTERNAL_FUNCTIONS=/home/stout/ksmith/PyFerret/ext_func/libs
+FER_FONTS=/home/stout/ksmith/PyFerret/ppl/fonts
+FER_GO=. /home/stout/ksmith/PyFerret/go /home/stout/ksmith/PyFerret/examples /home/stout/ksmith/PyFerret/contrib
 FER_GRIDS=.
-FER_LIBS=/home/users/ksmith/PyFerret/lib
-FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
+FER_LIBS=/home/stout/ksmith/PyFerret/lib
+FER_PALETTE=. /home/stout/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Thu Jun  6 03:50:56 PDT 2013
+Beginning at Mon Jun 10 10:50:43 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3105,7 +3108,7 @@ define data/agg windy = 1,2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Adjusting Y-axis label size from 0.100 to 0.001, to avoid running off page.
- *** NOTE: /home/users/ksmith/PyFerret/go/magnify.jnl
+ *** NOTE: /home/stout/ksmith/PyFerret/go/magnify.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3195,8 +3198,38 @@ define axis/t/units=days tax = tvar
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file aa.nc
+ LISTing to file aa.nc
+ LISTing to file aa.nc
+ LISTing to file aa.nc
+ LISTing to file aa.nc
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
+ data in attribute missing_value not representable in output type NC_INT
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
+ data in attribute _FillValue not representable in output type NC_INT
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
+*** Running test: bn_nco_append.jnl
+sh: ncks: command not found
+ Cached data cleared from memory
+ LISTing to file append_to_this.nc
+*** Running test: bn_nocoords.jnl
+ Cached data cleared from memory
+ LISTing to file aa.nc
+ TEMPORARY data cleared from memory
+ LISTing to file dsg_nocoord.nc
+*** Running test: bn_nobounds.jnl
+ Cached data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ *** NOTE: Axis definition error on axis: TGAP
+ *** NOTE: Bounds given describe non-contiguous axis cells
+ *** NOTE: Using the LOWER bound specified for each axis cell
+ LISTing to file a.nc
+ LISTing to file a.nc
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3216,4 +3249,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Thu Jun  6 03:54:30 PDT 2013
+Ended at Mon Jun 10 10:53:58 PDT 2013

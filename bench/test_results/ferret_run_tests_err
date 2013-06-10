@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 12 May 21 10:44 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
+lrwxrwxrwx 1 ksmith tmap 12 Jun 10 11:17 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -37,7 +37,6 @@ Benchmark scripts that will be run:
    bn_odd_variable_name.jnl
    bn_test_stream.jnl
    bn_define_axes.jnl
-   bn_pattern.jnl
    bn_polygon.jnl
    bn500_bug_fixes.jnl
    bn_sample.jnl
@@ -202,6 +201,9 @@ Benchmark scripts that will be run:
    bn_vec_mod.jnl
    bn685_bug_fixes.jnl
    bn_dsg_e_x.jnl
+   bn_nco_append.jnl
+   bn_nocoords.jnl
+   bn_nobounds.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -218,7 +220,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Tue May 21 11:51:21 PDT 2013
+Beginning at Mon Jun 10 11:19:04 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -878,12 +880,6 @@ Replacing definition of axis XAX
 Replacing definition of axis XAX2
  *** NOTE: (fyi) units are not subject to auto-conversion: BLAHS
 Replacing definition of axis XAX2
-*** Running test: bn_pattern.jnl
- Cached data cleared from memory
- *** NOTE: in GIF mode: ignoring SET MODE METAFILE
- *** NOTE: Only one window can be open in batch mode
- *** NOTE: in GIF mode: ignoring SET MODE METAFILE
- *** NOTE: Cannot cancel window when in batch mode
 *** Running test: bn_polygon.jnl
  Cached data cleared from memory
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -3245,8 +3241,40 @@ define axis/t/units=days tax = tvar
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file aa.nc
+ LISTing to file aa.nc
+ LISTing to file aa.nc
+ LISTing to file aa.nc
+ LISTing to file aa.nc
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
+ data in attribute missing_value not representable in output type NC_INT
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
+ data in attribute _FillValue not representable in output type NC_INT
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
+*** Running test: bn_nco_append.jnl
+sh: ncks: command not found
+ Cached data cleared from memory
+ LISTing to file append_to_this.nc
+*** Running test: bn_nocoords.jnl
+ Cached data cleared from memory
+ LISTing to file aa.nc
+ TEMPORARY data cleared from memory
+ LISTing to file dsg_nocoord.nc
+*** Running test: bn_nobounds.jnl
+ Cached data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ *** NOTE: Axis definition error on axis: TGAP
+ *** NOTE: Bounds given describe non-contiguous axis cells
+ *** NOTE: Using the LOWER bound specified for each axis cell
+ LISTing to file a.nc
+ LISTing to file a.nc
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3268,4 +3296,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
-Ended at Tue May 21 11:52:28 PDT 2013
+Ended at Mon Jun 10 11:20:22 PDT 2013

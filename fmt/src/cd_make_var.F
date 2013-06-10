@@ -4,7 +4,7 @@
      .                           keepax_flag, netcdf4_type, xchunk_size, 
      .                           ychunk_size, zchunk_size, tchunk_size, 
      .                           deflate_lev, shuffle_flag, endian_code,
-     .                           do_coords, status )
+     .                           status )
 
 *
 *
@@ -82,7 +82,7 @@
 *                  name but different contents, write both to file with the name
 *                  Ferret uses internally.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
-* V685 6/13 *acm* new qualifier SAVE/NOCOORDS
+* V685 6/13 *acm* Dont add SAVE/NOCOORDS
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -123,7 +123,7 @@
 #include "netcdf_declareUnderscore.inc"
 
 * argument declarations
-      LOGICAL enhead, new, edges_flag, mode_upcase_output, do_coords
+      LOGICAL enhead, new, edges_flag, mode_upcase_output
       INTEGER cdfid, dset, type, maxstrlen, grid, lo(nferdims), hi(nferdims),
      .        recdim, keepax_flag, do_bounds, netcdf4_type, xchunk_size, 
      .        ychunk_size, zchunk_size, tchunk_size, 
@@ -253,7 +253,7 @@
          CALL CD_WRITE_GRID( cdfid, dset, grid, lo, hi, recdim, itsa_slab,
      .                       gname,  edges_flag, do_bounds, 
      .                       mode_upcase_output, keepax_flag, 
-     .                       do_coords, status )
+     .                       status )
          IF ( status .NE. merr_ok ) RETURN
 
 * create child axes where this variable doesn't run full-span on an axis
@@ -262,8 +262,7 @@
                CALL CD_WRITE_AXIS( cdfid, dset, grid, idim, .FALSE.,
      .                   lo(idim), hi(idim), pcdf_child_span, 
      .                   .FALSE., .FALSE., mode_upcase_output, 
-     .                   keepax_flag, name_from_grid(idim), 
-     .                   do_coords, status)
+     .                   keepax_flag, name_from_grid(idim), status)
                IF ( status .NE. merr_ok ) GOTO 5900
             ENDIF
  250     CONTINUE
@@ -283,8 +282,7 @@
      .			       idim.EQ.recdim, lo(idim), hi(idim), 
      .			       ax_type, edges_flag, do_bounds, 
      .                         mode_upcase_output, keepax_flag, 
-     .                         name_from_grid(idim), do_coords,
-     .			       status )
+     .                         name_from_grid(idim), status )
               IF ( status .NE. merr_ok ) GOTO 5900
 	    ENDIF
  260     CONTINUE

@@ -199,7 +199,7 @@
 * V684 *acm* 12/12 Changes for POLY/MODULO and  VECTOR/MODULO on curvilinear plots.
 * V685 *acm*  1/13 DEFINE VARIABLE/REMOTE
 * V685 *acm*  6/13 new qualifier SAVE/NOBOUNDS
-* V685 *acm*  6/13 new qualifier SAVE/NOCOORDS
+* V685 *acm*  6/13 Dont add SAVE/NOCOORDS
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -917,7 +917,7 @@
 		DATA qualifiers  (nqual_at5a+51)/ 'SHUFFLE'/
 		DATA qualifiers  (nqual_at5a+52)/ 'ENDIAN'/
 		DATA qualifiers  (nqual_at5a+53)/ 'OUTTYPE'/
-		DATA qualifiers  (nqual_at5a+54)/ 'NOCOORDS'/
+		DATA qualifiers  (nqual_at5a+54)/ '*****'/
 
 * PLOT - command # 6
 	DATA commands(6)			/ 'PLOT'	/

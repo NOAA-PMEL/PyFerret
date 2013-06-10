@@ -1,7 +1,7 @@
 	SUBROUTINE CD_WRITE_VAR ( memory, cdfid, dset, vname, grid, lo,
      .                            hi, dat, edges_flag, do_bounds, 
      .                            scalefac, addoff, bad, mode_upcase_output, 
-     .                            do_coords, status )
+     .                            status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -71,7 +71,7 @@
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 *      4/12 *acm* fix for finding the record axis, never axes 5 or 6.
 * V685 6/13 *acm* new qualifier SAVE/NOBOUNDS
-* V685 6/13 *acm* new qualifier SAVE/NOCOORDS
+* V685 6/13 *acm* Dont add SAVE/NOCOORDS
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -102,7 +102,7 @@
 #include "netcdf_declareUnderscore.inc"
 
 * argument declarations
-      LOGICAL mode_upcase_output, do_coords
+      LOGICAL mode_upcase_output
       INTEGER cdfid, dset, grid, lo(nferdims), hi(nferdims), 
      .        edges_flag, do_bounds, status
       CHARACTER*(*) vname
@@ -172,16 +172,8 @@ c      EQUIVALENCE (r100_8, r100_4)
      .                        tmrecax, status )
       IF ( status .NE. merr_ok ) GOTO 5900
     
-      IF (do_coords .AND. (.NOT.got_it)) THEN
-         CALL CD_GET_GENERIC_BOUNDS
-     .      ( cdfid, varid, grid, lo, slab_min, slab_max, tmrecax, status )
-      ENDIF
-      IF (.NOT.do_coords) THEN
-         DO 20 idim = 1, nferdims
-            slab_min(idim) = lo(idim)
-            slab_max(idim) = hi(idim)
- 20      CONTINUE
-      ENDIF
+      IF (.NOT.got_it) CALL CD_GET_GENERIC_BOUNDS
+     . ( cdfid, varid, grid, lo, slab_min, slab_max, tmrecax, status )
 
       IF ( status .NE. merr_ok ) GOTO 5900
 

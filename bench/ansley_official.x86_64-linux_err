@@ -4,7 +4,7 @@ Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: back off SAVE/NOCOORDS
+Note: change bn_mode_logo_lab.jnl so it doesnt redefine pre-defined viewports
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Mon Jun 10 13:51:50 PDT 2013
+Beginning at Mon Jun 10 14:05:50 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1362,10 +1362,6 @@ define axis/x=130e:500:10/modulo=360 xsub
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Re-defining viewport UL
-Re-defining viewport UR
-Re-defining viewport LL
-Re-defining viewport LR
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Undecipherable value of netCDF attribute modulo on variable lon_moderr
@@ -3078,13 +3074,13 @@ Replacing definition of axis YAX_DUP_AXNAMES
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
 
 Bailing out of external function "tax_year":
 	 Function not valid for modulo time axis
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
@@ -3503,4 +3499,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Jun 10 13:53:34 PDT 2013
+Ended at Mon Jun 10 14:07:30 PDT 2013

@@ -85,7 +85,7 @@
 	if (error .ne. 0) goto 1000
 
         marktype = 1    ! polymarker type 1=dot
-        dotsize = 1
+        dotsize = 1.0
 
 *	COLOR OR MONOCHROME?
 	if (max_color .le. 2) goto 100

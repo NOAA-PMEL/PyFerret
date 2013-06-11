@@ -25,6 +25,7 @@ echof_off.F\
 equal_color.F\
 equal_range.F\
 equal_range_t.F\
+equal_thick.F\
 flow_set_up.F\
 get_axis_format.F\
 get_frame_size.F\

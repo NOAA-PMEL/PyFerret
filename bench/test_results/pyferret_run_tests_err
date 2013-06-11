@@ -1,8 +1,8 @@
-Using FERRET /home/stout/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Jun 10 10:49 /home/stout/ksmith/PyFerret/bin/pyferret -> pyferret.sh
-Using external functions from /home/stout/ksmith/PyFerret/ext_func/libs
+Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
+lrwxrwxrwx 1 ksmith tmap 11 Jun 10 21:53 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for PyFerret on 32-bit linux
+Note: RUN_TESTS.sh test results for PyFerret
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -209,18 +209,18 @@ Benchmark scripts that will be run:
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
-FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/stout/ksmith/Datasets
+FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/ksmith/Datasets
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/stout/ksmith/PyFerret/ext_func/libs
-FER_FONTS=/home/stout/ksmith/PyFerret/ppl/fonts
-FER_GO=. /home/stout/ksmith/PyFerret/go /home/stout/ksmith/PyFerret/examples /home/stout/ksmith/PyFerret/contrib
+FER_EXTERNAL_FUNCTIONS=/home/users/ksmith/PyFerret/ext_func/libs
+FER_FONTS=/home/users/ksmith/PyFerret/ppl/fonts
+FER_GO=. /home/users/ksmith/PyFerret/go /home/users/ksmith/PyFerret/examples /home/users/ksmith/PyFerret/contrib
 FER_GRIDS=.
-FER_LIBS=/home/stout/ksmith/PyFerret/lib
-FER_PALETTE=. /home/stout/ksmith/PyFerret/ppl
+FER_LIBS=/home/users/ksmith/PyFerret/lib
+FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Jun 10 10:50:43 PDT 2013
+Beginning at Mon Jun 10 22:21:47 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -431,17 +431,17 @@ Re-defining viewport UM6
  *** NOTE: /XLIMITS and /YLIMITS are deprecated.
  *** NOTE: Use /HLIMITS and /VLIMITS instead.
  **ERROR: invalid command: color=noexist
-          Colors are Black,Red,Green,Blue,LightBlue,Purple, and White
+          Colors are Black, Red, Green, Blue, LightBlue, Purple, and White
 plot/over/i=1:10/color=noexist i
  **ERROR: value out of legal range: thick=4
-          Legal range is 1 to 3
+          When color is not specified, only 1, 2, or 3 is acceptable
 plot/over/i=1:10/thick=4 i
  **ERROR: value out of legal range: size=-1
           Symbol size must be positive
 plot/over/i=1:10/size=-1 i
  Using every   2th vector in the Y direction
  **ERROR: invalid command: color=noexist
-          Colors are Black,Red,Green,Blue,LightBlue,Purple, and White
+          Colors are Black, Red, Green, Blue, LightBlue, Purple, and White
 cont/over/i=1:10/color=noexist i
  **ERROR: unknown command qualifier: thick=4
 cont/over/i=1:10/thick=4 i
@@ -3108,7 +3108,7 @@ define data/agg windy = 1,2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Adjusting Y-axis label size from 0.100 to 0.001, to avoid running off page.
- *** NOTE: /home/stout/ksmith/PyFerret/go/magnify.jnl
+ *** NOTE: /home/users/ksmith/PyFerret/go/magnify.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3249,4 +3249,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Mon Jun 10 10:53:58 PDT 2013
+Ended at Mon Jun 10 22:25:33 PDT 2013

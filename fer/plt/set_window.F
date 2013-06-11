@@ -120,7 +120,7 @@
 	REAL	dmaxx, dmaxy, xln, yln, xmn, xmx, ymn, ymx,
      .		scale, xstretch, ystretch, aspect, ref_len
 	REAL*4  rzero, rone, fcty, fctx, setpx, setpy,
-     .          xwlo, ywlo, xwhi, ywhi, 
+     .          xwlo, ywlo, xwhi, ywhi, dfltthick,
      .          redfrac, grnfrac, bluefrac, opaqfrac
 	CHARACTER	UPPER_CASE*1, GKS_X_CONID*16, warnmsg*80,
      .			arg1*1, buffer*24, xwind_id*80, short_buff*24
@@ -436,7 +436,7 @@ c 75        CONTINUE
 	   CALL NEW_GKS_WINDOW( n, xwind_id, window_title(:tlen), status )   ! status always OK
 	   physical_chg = .TRUE.
 * ... set up GKS bundles for the new "workstation" (window)
-	   CALL SETUP_LINE_BUNDLES( n, wstype )
+	   CALL WS_LINE_BUNDLES( n, wstype )
            no_plot_yet = .TRUE.
 	ELSE
 	   CONTINUE
@@ -485,7 +485,7 @@ c 75        CONTINUE
         qp = qual_given(slash_color)
         IF ( qp .GT. 0 ) THEN
             CALL EQUAL_COLOR(cmnd_buff(qual_start(qp):qual_end(qp)), 
-     .                       bkgcolor, status)
+     .                       bkgcolor, dfltthick, status)
             IF ( status .NE. ferr_ok ) RETURN
 *           Check if opacity is given before resetting the background
         ENDIF

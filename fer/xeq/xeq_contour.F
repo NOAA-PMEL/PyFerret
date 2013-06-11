@@ -114,6 +114,8 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *                  A time axis may be a T axis or F axis
 * V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
+* PyFr  *kms* 7/13 EQUAL_COLOR now returns a color ID, and EQUAL_THICK 
+*                  returns a pen ID from a color ID and a thickness.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -137,13 +139,14 @@
 	LOGICAL	  no_range, overlay, transpz, no_labels, fill, usa_line,
      .            do_key, spectrum, set_up, noaxes, axes, pattern, 
      .		  no_data, is_logh, is_logv
-	INTEGER	  TM_LENSTR1, status, slen, sp, ipen,
+	INTEGER	  TM_LENSTR1, status, slen, sp, ipen, icolor,
      .		  ax1_blks, ax1_start, loc, sigdig,
      .		  ax2_blks, ax2_start, patt, i, nparm, num_it, 
      .		  s1, s2, it_start(4), it_end(4), iax(4), density,
      .            loch, locv
         INTEGER   STR_UPCASE, i1
 	REAL	  vbuf, only_val, aspect, lab_size, lab_spacing
+        REAL*4    dfltthick
 	PARAMETER (aspect = 0.0)			!kob 12/96
 	CHARACTER TM_FMT*12, TM_INQ_PATH*2048, 
      .                  fname*128, buff*25, sfile*2048
@@ -239,8 +242,12 @@
 	      CALL WARN( '/PEN is deprecated. Use /COLOR.')
 	      denig_pen_msg_done = .TRUE.
 	   ENDIF
+*          get the color ID and default thickness
            CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                           ipen, status )
+     .                       icolor, dfltthick, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+*          get the pen ID from the color ID and default thickness
+           CALL EQUAL_THICK(' ', dfltthick, icolor, ipen, status)
            IF ( status .NE. ferr_ok ) GOTO 5000
 	ELSE
 	   ipen = -1	! auto-select in DISP_SET_UP

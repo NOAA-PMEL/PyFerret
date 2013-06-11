@@ -931,7 +931,8 @@ C	PEN
 	IF(M.LT.2.OR.IFLG(2).EQ.0)GOTO 10
 	IF(I.LT.1)I=0
 	IPEN(I)=IFIX(P(2))
-	if (ipen(i) .eq. 0) ipen(i) = 19  !JD 10.16.92 [post atc] for 'PEN N,0'
+C       Do not change pen 0 to pen 19 anymore - KMS
+C       if (ipen(i) .eq. 0) ipen(i) = 19  !JD 10.16.92 [post atc] for 'PEN N,0'
 6201	GOTO 10
 C	AXLEN
 6300	IF(IFLG1)XLEN=P(1)

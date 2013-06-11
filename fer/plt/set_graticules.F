@@ -50,6 +50,9 @@
 * V6.2  *acm& 2/09 Fix choice of color settings with /PEN and /THICK when we have 
 *                  increased the num of colors with MODE linecolors
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* PyFr  *kms* 7/13 EQUAL_COLOR now returns a color ID, and EQUAL_THICK 
+*                  returns a pen ID from a color ID and a thickness.
+*                  Only standard lines accepted for graticules at this time.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -68,9 +71,9 @@
 
 	INTEGER	TM_LENSTR1, STR_UPCASE, str_len, ii, i1, i2, i3, i4, 
      .      i5, i6, index1, index2, s1, s2, 
-     .      colorcode, tic1, ntic, itic, iflag, ncolors
+     .      colorcode, tic1, ntic, itic, iflag, ncolors, pencode
 
-        REAL thickness
+        REAL*4 thickness
 
 	CHARACTER buff*1058
         CHARACTER msg*60
@@ -209,23 +212,9 @@
               hgrat(4,itic) = 0.0
            ENDIF
 
-           thickness = 1   ! default to thin line
-           IF (thick) THEN
-              s1 = INDEX(buff(index1:index2), 'THI') + index1 - 1
-              s2 = INDEX(buff(s1:index2), ',') 
-              IF (s2 .EQ. 0) THEN
-                 s2 = index2
-              ELSE
-                 s2 = s2 + s1 - 2
-              ENDIF 
-              thickness = 2   ! default when /THICK specified
-              IF (INDEX(buff(s1:s2), '=') .GT. 0) THEN
-                 CALL EQUAL_VAL(buff(s1:s2), thickness, status )
-                 IF ( status .NE. ferr_ok ) GOTO 5000
-              ENDIF
-              IF (thickness.LE.0 .OR. thickness.GT.3) GOTO 5150 
-           ENDIF
- 
+           hcolor(itic) = 1
+           thickness = 1.0   ! default to a thin black line 
+
            IF (colr) THEN
               s1 = INDEX(buff(index1:index2), 'COL') + index1 - 1
               s2 = INDEX(buff(s1:index2), ',')
@@ -234,9 +223,8 @@
               ELSE
                  s2 = s2 + s1 - 2
               ENDIF 
-              hcolor(itic) = 1   ! default to black
               IF (INDEX(buff(s1:s2), '=') .GT. 0) THEN
-                 CALL EQUAL_COLOR( buff(s1:s2), colorcode, status )
+                 CALL EQUAL_COLOR(buff(s1:s2), colorcode, thickness, status)
                  IF ( status .NE. ferr_ok ) GOTO 5000
                  hcolor(itic) = colorcode
               ELSE
@@ -245,19 +233,33 @@
      .                    '. Using black')
                  CALL WARN (msg)
               ENDIF
-
-              IF (hcolor(itic).LE.0 .OR. hcolor(itic) .GT. 19) GOTO 5160
            ENDIF
 
-* if colorcode = 19 then line is thin, white.
-
-           ncolors = mode_arg(pmode_linecolors,1)
-           IF (ncolors .EQ. 6) THEN
-           IF (hcolor(itic) .LT. 19) 
-     .        hcolor(itic) = ncolors*(thickness-1) + hcolor(itic) ! set color and thick
+           IF (thick) THEN
+              s1 = INDEX(buff(index1:index2), 'THI') + index1 - 1
+              s2 = INDEX(buff(s1:index2), ',') 
+              IF (s2 .EQ. 0) THEN
+                 s2 = index2
+              ELSE
+                 s2 = s2 + s1 - 2
+              ENDIF 
+*             get the pen for the color and the thickness specified in buff
+              CALL EQUAL_THICK(buff(s1:s2), thickness, hcolor(itic), 
+     .                         pencode, status)
+              IF ( status .NE. ferr_ok ) GOTO 5000
            ELSE
-	      hcolor(itic) = ncolors*(thickness-1) + hcolor(itic) ! set color and thick
-	   ENDIF
+*             get the pen for the color and the default thickness
+              CALL EQUAL_THICK(' ', thickness, hcolor(itic), 
+     .                         pencode, status)
+              IF ( status .NE. ferr_ok ) GOTO 5000
+           ENDIF
+ 
+*          At this time, only standard lines are accepted
+           ncolors = mode_arg(pmode_linecolors,1)
+           IF ( (pencode .LT. 1) .OR. (pencode .GT. 3*ncolors) ) GOTO 5150
+
+*          Assign the pen to use
+           hcolor(itic) = pencode
 
            index1 = i5
            index2 = i6
@@ -372,23 +374,9 @@
               vgrat(4,itic) = 0.0
            ENDIF
 
-           thickness = 1   ! default to thin line
-           IF (thick) THEN
-              s1 = INDEX(buff(index1:index2), 'THI') + index1 - 1
-              s2 = INDEX(buff(s1:index2), ',') 
-              IF (s2 .EQ. 0) THEN
-                 s2 = index2
-              ELSE
-                 s2 = s2 + s1 - 2
-              ENDIF 
-              thickness = 2   ! default when /THICK specified
-              IF (INDEX(buff(s1:s2), '=') .GT. 0) THEN
-                 CALL EQUAL_VAL(buff(s1:s2), thickness, status )
-                 IF ( status .NE. ferr_ok ) GOTO 5000
-              ENDIF
-              IF (thickness.LE.0 .OR. thickness.GT.3) GOTO 5150 
-           ENDIF
- 
+           vcolor(itic) = 1
+           thickness = 1.0   ! default to thin black line
+
            IF (colr) THEN
               s1 = INDEX(buff(index1:index2), 'COL') + index1 - 1
               s2 = INDEX(buff(s1:index2), ',')
@@ -397,9 +385,8 @@
               ELSE
                  s2 = s2 + s1 - 2
               ENDIF 
-              vcolor(itic) = 1   ! default to black
               IF (INDEX(buff(s1:s2), '=') .GT. 0) THEN
-                  CALL EQUAL_COLOR( buff(s1:s2), colorcode, status )
+                 CALL EQUAL_COLOR(buff(s1:s2), colorcode, thickness, status)
                  IF ( status .NE. ferr_ok ) GOTO 5000
                  vcolor(itic) = colorcode
               ELSE
@@ -408,17 +395,33 @@
      .                    '. Using black')
                  CALL WARN (msg)
               ENDIF
-              IF (vcolor(itic).LE.0 .OR. vcolor(itic) .GT. 19) GOTO 5160
            ENDIF
 
-* if colorcode = 19 then line is thin, white.
-
-           IF (ncolors .EQ. 6) THEN
-           IF (vcolor(itic) .LT. 19) 
-     .        vcolor(itic) = ncolors*(thickness-1) + vcolor(itic) ! set color and thick
+           IF (thick) THEN
+              s1 = INDEX(buff(index1:index2), 'THI') + index1 - 1
+              s2 = INDEX(buff(s1:index2), ',') 
+              IF (s2 .EQ. 0) THEN
+                 s2 = index2
+              ELSE
+                 s2 = s2 + s1 - 2
+              ENDIF 
+*             get the pen for the color and the thickness specified in buff
+              CALL EQUAL_THICK(buff(s1:s2), thickness, vcolor(itic), 
+     .                         pencode, status)
+              IF ( status .NE. ferr_ok ) GOTO 5000
            ELSE
-	      vcolor(itic) = ncolors*(thickness-1) + vcolor(itic) ! set color and thick
-	   ENDIF
+*             get the pen for the color and the default thickness
+              CALL EQUAL_THICK(' ', thickness, vcolor(itic), 
+     .                         pencode, status)
+              IF ( status .NE. ferr_ok ) GOTO 5000
+           ENDIF
+ 
+*          At this time, only standard lines are accepted
+           ncolors = mode_arg(pmode_linecolors,1)
+           IF ( (pencode .LT. 1) .OR. (pencode .GT. 3*ncolors) ) GOTO 5150
+
+*          Assign the pen to use
+           vcolor(itic) = pencode
 
            index1 = i5
            index2 = i6
@@ -431,16 +434,12 @@
 * error exit
  5000	RETURN
  5100	CALL ERRMSG( ferr_syntax, status,
-     .		buff(:str_len)//' midmatched parentheses', *5000 )
+     .		buff(:str_len)//' mismatched parentheses', *5000 )
  5050	CALL ERRMSG( ferr_syntax, status,
      .		buff(:str_len), *5000 )
- 5150	CALL ERRMSG( ferr_invalid_command, status,
-     .		'"'//buff(:str_len)//
-     .          '": thickness must be between 1 and 3',
-     .		*5000 )
- 5160	CALL ERRMSG( ferr_invalid_command, status,
-     .		'"'//buff(s1:s2)//'": must be between 1 and 3',
-     .		*5000 )
+ 5150   CALL ERRMSG( ferr_invalid_command, status,
+     .          'Only standard line colors and thicknesses '//
+     .          'are accepted at this time', *5000 )
  5200	CALL ERRMSG( ferr_invalid_command, status,
      .		'zero vector length on /LENGTH=', *5000 )
 	END

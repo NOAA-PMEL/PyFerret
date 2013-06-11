@@ -1,4 +1,4 @@
-	SUBROUTINE EQUAL_COLOR( string, icolor, status )
+	SUBROUTINE EQUAL_COLOR( string, icolor, dfltthick, status )
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,12 +34,12 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* from a string of the form "name=value", return the "value" string
-* if the string is simply "name" then return ' ' (blank)
-* change the string to upper case
-
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* From a string of the form "name=value", assign the color ID of the 
+* color specified in the "value" string.  If the string is just "name",
+* color ID one is assigned.
+*
+* The default thickness of the pen for the color specified is returned
+* in dfltthick.  This is for when the color is specified by the pen number.
 
 * V510 *sh* 3/00 - based upon EQUAL_STRING
 *      *kob* 5/00 - minor change to declaration of colors array needed to
@@ -49,9 +49,17 @@
 * 1/03 *kob* g77 port - requires use of risc_buff for concats
 *
 * PyFr *kms*  6/13 - add support for (R,G,B) and (R,G,B,A)
+* 
+* PyFr *kms*  7/13 - add support for R,G,B and R,G,B,A (no parentheses);
+*                    return a color ID and the default pen thickness
+*                    instead of a pen ID; white is color ID 7
 *
 * calling argument declarations
+
+        IMPLICIT NONE
+
 	INTEGER		icolor, status
+        REAL*4          dfltthick
 	CHARACTER*(*)	string
 
 * internal parameter declarations
@@ -60,25 +68,31 @@
 
 * internal variable declarations
 	LOGICAL	MATCH4, TM_DIGIT
-	INTEGER	TM_LENSTR, TM_LENSTR1, STR_UPCASE, 
+	INTEGER	TM_LENSTR, TM_LENSTR1, STR_UPCASE, numlinecolors,
      .          equal_pos, slen, strt, vax_code, len_test, len_mchars
 	REAL	val
         REAL*4 redfrac, grnfrac, bluefrac, opaqfrac
-	CHARACTER	LEFINT*4, str*32
+	CHARACTER	LEFINT*4, str*32, parenstr*34
 	CHARACTER*12    COLORS(ncolor_string)
 
 * internal data declarations
 	DATA colors/'BLACK','RED','GREEN',
      .		    'BLUE','LIGHTBLUE','PURPLE','WHITE'/
 
-
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'plot_setup.parm'
+        include 'tmap_dims.parm'
 	include 'xrisc_buff.cmn'
+        include 'xprog_state.cmn'
+        include 'fgrdel.cmn'
+
 * initialize
 	slen	  = TM_LENSTR1( string )
 	equal_pos = INDEX( string, '=' )
+* in general, the default thickness is thin
+        dfltthick = 1.0
+        numlinecolors = mode_arg(pmode_linecolors,1)
 
 	IF ( equal_pos .EQ. 0 ) THEN
 	   str = ' '				! "name", alone
@@ -102,16 +116,42 @@
 	   IF ( strt .GT. slen ) THEN
 	      str = ' '
 	   ELSE
-	     vax_code = STR_UPCASE( str, string(strt:slen) )
+	      vax_code = STR_UPCASE( str, string(strt:slen) )
 	   ENDIF
 
 	ENDIF
 
 	IF ( TM_DIGIT(str) ) THEN 
+           vax_code = INDEX(str,',')
+           IF ( vax_code .GT. 1 ) THEN
+* ... color by R,G,B,A or R,G,B
+*             add the surrounding parentheses expected by PARSE_TUPLE_COLOR
+              parenstr = '(' // str // ')'
+              CALL PARSE_COLOR_TUPLE(parenstr, redfrac, grnfrac, 
+     .                               bluefrac, opaqfrac, status)
+              IF ( status .NE. ferr_ok ) RETURN
+*             Now create a temporary color using these RGBA values
+              CALL FGD_CREATE_TEMP_COLOR(icolor, redfrac, grnfrac, 
+     .                                   bluefrac, opaqfrac)
+           ELSE
 * ... color and thickness by number
-           READ ( str, *, ERR=5000 ) val
-cc	   IF ( val.LE. 0.0 .OR. val.GT.num_fancy_lines+1 ) GOTO 5200
-	   icolor = NINT( val )	! user-specified line style
+              READ ( str, *, ERR=5000 ) val
+              icolor = NINT( val )
+              IF ((icolor .LT. 0).OR.(icolor .GE. maxcolorobjs-1)) THEN
+                 GOTO 5200
+              ELSE IF ( icolor .LE. numlinecolors ) THEN
+*                Pen is thin with the color ID same as pen ID
+                 CONTINUE
+              ELSE IF ( icolor .LE. 2 * numlinecolors ) THEN
+*                Pen is medium thickness with color ID  1 - numlinecolors
+                 icolor = icolor - numlinecolors
+                 dfltthick = 2.0
+              ELSE IF ( icolor .LE. 3 * numlinecolors ) THEN
+*                Pen is thick with color ID  1 - numlinecolors
+                 icolor = icolor - 2 * numlinecolors
+                 dfltthick = 3.0
+              ENDIF
+           ENDIF
         ELSEIF ( str(1:1) .EQ. '(' ) THEN
 * ... color by (R,G,B,A) or (R,G,B)
            CALL PARSE_COLOR_TUPLE(str, redfrac, grnfrac, 
@@ -126,10 +166,9 @@ cc	   IF ( val.LE. 0.0 .OR. val.GT.num_fancy_lines+1 ) GOTO 5200
 	   DO 200 icolor = 1, ncolor_string
               len_mchars = TM_LENSTR(colors(icolor)(:4))
 	      IF ( MATCH4(str, len_test,
-     .             colors(icolor),len_mchars ) ) GOTO 210
+     .                    colors(icolor), len_mchars) ) GOTO 1000
  200	   CONTINUE
 	   GOTO 5100   ! unknown color
- 210	   IF (icolor .EQ. 7) icolor = 19   ! WHITE
 	ENDIF
 
 * success
@@ -141,11 +180,11 @@ cc	   IF ( val.LE. 0.0 .OR. val.GT.num_fancy_lines+1 ) GOTO 5200
  5100	risc_buff = string
 	CALL ERRMSG( ferr_invalid_command, status, 
      .		risc_buff(:TM_LENSTR1(risc_buff))//pCR//
-     .	'Colors are Black,Red,Green,Blue,LightBlue,Purple, and White',
-     .		*4999 )
+     .          'Colors are Black, Red, Green, Blue, '//
+     .          'LightBlue, Purple, and White', *4999 )
  5200	risc_buff = string
 	CALL ERRMSG( ferr_out_of_range, status, 
      .		risc_buff(:TM_LENSTR1(risc_buff))
-     .          //pCR//'Legal range is 1 to '
-     .		//LEFINT(num_fancy_lines+1,slen), *4999 )
+     .          //pCR//'Legal range is 0 to '
+     .		//LEFINT(maxcolorobjs-2,slen), *4999 )
 	END

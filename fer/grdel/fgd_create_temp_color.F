@@ -1,5 +1,5 @@
 *
-* Create a temporay color object for the default window
+* Create a temporary color object for the default window
 *
 
         SUBROUTINE FGD_CREATE_TEMP_COLOR(icolor, redfrac, greenfrac, 

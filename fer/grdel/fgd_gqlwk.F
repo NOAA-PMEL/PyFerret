@@ -13,14 +13,19 @@
 
         INCLUDE 'fgrdel.cmn'
 
-        maxpens = maxpenobjs
-        maxsyms = maxsymbolobjs
+*       Last pen reserved for the temporary pen
+        maxpens = maxpenobjs - 1
+*       Last symbol reserved for the temporary symbol
+        maxsyms = maxsymbolobjs - 1
+*       Fonts not used at this time
         maxfonts = maxfontobjs
+*       Brushes
         maxbrushes = maxbrushobjs
 *       Set to the number of hash styles supported
 *       although this might not be what it actually means
         maxpatterns = 7
-        maxcolors = maxcolorobjs
+*       Last color reserved for the temporary color
+        maxcolors = maxcolorobjs - 1
         stat = 0
 
         RETURN

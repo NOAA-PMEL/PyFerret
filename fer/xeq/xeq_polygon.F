@@ -68,6 +68,8 @@
 *                  increased the num of colors with MODE linecolors
 * V6.83 *acm*12/12 Add POLYGON/MODULO qualifier, for curvilienar coordinate plots, 
 *                  as is done for SHADE and CONTOUR plots
+* PyFr  *kms* 7/13 EQUAL_COLOR now returns a color ID, and EQUAL_THICK 
+*                  returns a pen ID from a color ID and a thickness.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -101,13 +103,14 @@
 	LOGICAL         line_it, fill_it, is_logh, is_logv, no_data, is_modx,
      .			do_mod_minus, do_mod_plus
 	INTEGER         sp, patt, TM_LENSTR1, STR_UPCASE
-	INTEGER		symbol, color, status,
-     .			loc, limit, slen, coord_ax, thick,
+	INTEGER		symbol, color, ipen, status,
+     .			loc, limit, slen, coord_ax,
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start,
      .			s1, s2, it_start(4), it_end(4),
      .			nparm,  num_it, i, iax(4), i1, loch, locv
 	REAL		val, only_val, sym_size, add_lon
+        REAL*4          thickness
 	CHARACTER	LEFINT*4, TM_FMT*20, fname*128, poly_opt*10,
      .                  buff*25
 
@@ -127,7 +130,7 @@
 	if (overlay) SOVER = .true.
 
 	if (sover) then
-CC      *jd* NLINES initializes SOVER, and resets MIN/MAX. Don't execute. 
+CC      *jd* NLINES initializes SOVER, and resets MIN/MAX. Do not execute. 
 CC       => Set values here instead.
 	   LINEN=0
 	   IBASE=1
@@ -153,7 +156,7 @@ CC       => Set values here instead.
 
 	symbol	  = qual_off	! or ??unspecified_int4??
 	sym_size  = 0.08	! default plot mark size
-	thick	  = 1		! default thickness
+        thickness = 1.0         ! default thickness
 	color	  = unspecified_int4
 	use_line = .FALSE.
         sp        = qual_given( slash_cont_spectrum  )
@@ -173,8 +176,9 @@ CC       => Set values here instead.
 * ... POLYGON/COLOR=n
 	loc = qual_given( slash_polygon_color )
 	IF ( loc .GT. 0  ) THEN
-	   CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                           color, status )
+*          get the color ID
+           CALL EQUAL_COLOR(cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                      color, thickness, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
 	   use_line = .TRUE.
 	ENDIF
@@ -184,18 +188,17 @@ CC       => Set values here instead.
 	IF ( loc .GT. 0  ) THEN
 	   use_line = .TRUE.
 	   IF ( color .EQ. unspecified_int4 ) color = 1  ! /THICK -> "BLACK"
-	   color = MOD(color-1,ncolors)+1  ! eliminate thickness
-	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			   val, status )	! syntax check
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   IF ( val .NE. unspecified_val4 ) THEN
-	      IF ( val.LE.0.0 .OR. val.GT.3 ) GOTO 5400
-	      thick = NINT( val )	! user-specified line style
-	   ELSE
-	      thick = 2  ! default if no value is specified
-	   ENDIF
-	   color = ncolors*(thick-1) + color
-	ENDIF
+*          convert the color ID into a pen ID using the specified thickness
+           CALL EQUAL_THICK(cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                      thickness, color, ipen, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+        ELSE
+*          convert the color ID into a pen ID using the default thickness
+           CALL EQUAL_THICK(' ', thickness, color, ipen, status)
+        ENDIF
+*       assign the pen ID to color
+        color = ipen
+
 * ... POLYGON/LINE_STYLE=n
 	loc = qual_given( slash_polygon_line )
 	IF ( loc .GT. 0  ) THEN

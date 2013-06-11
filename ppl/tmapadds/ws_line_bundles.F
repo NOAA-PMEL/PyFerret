@@ -1,4 +1,4 @@
-	SUBROUTINE WS_LINE_BUNDLE (zwsid,zwstype)
+        SUBROUTINE WS_LINE_BUNDLES(zwsid,zwstype)
 
 *
 *
@@ -35,10 +35,10 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-*	Routine to set up the line bundles for generic WSs.
-*	J Davison JISAO/PMEL/TMAP 3.23.89
-*	*jd* 2.19.92 mod to support atc gks
-*	*jd* 8.10.93 mod to support XGKS line colors -- force setting
+*       Routine to set up the line bundles for generic WSs.
+*       J Davison JISAO/PMEL/TMAP 3.23.89
+*       *jd* 2.19.92 mod to support atc gks
+*       *jd* 8.10.93 mod to support XGKS line colors -- force setting
 *       *js* 7.31.97 mod to change call to gqlwk to query_xgks_wkstn
 
 *       *acm* 8/2001  add polymarker call for PLOT/SYMBOL=DOT  
@@ -55,7 +55,8 @@
 *              "ferret -batch" output, and gif files.
 *       *acm* 2/2003 polymarker dot line bundles had not been set for pen > 6
 *  v600 *acm* 5/2006 User can change the number of line colors.
-* PyFr *kms* 5/13 Add alpha channel (opaque)
+*  PyFr *kms* 5/13 Add alpha channel (opaque)
+*  PyFr *kms* 7/13 Add white as color 7, grays start with 8; remove setup for monochrome
 
         IMPLICIT NONE
         INCLUDE 'parampl5_dat.decl'
@@ -64,95 +65,57 @@
         INCLUDE 'PLT.INC'
         INCLUDE 'pen_inc.decl'  ! with num_line_colors
         INCLUDE 'PEN.INC'
-	INCLUDE 'save_colors.cmn'
+        INCLUDE 'save_colors.cmn'
 
-	integer		zwsid,zwstype,i,j
-
-#ifdef atc_gks
-	integer 	ltype(6)
-	data	 	ltype/1,2,3,4,-1001,-1004/
-#else
-	integer 	ltype(6)
-	data		ltype/1,2,3,4,-3,-4/
-#endif
-
-	integer		max_pline,max_pmark,max_text,max_fill_area
-	integer		max_pattern,max_color,error
-	integer		fktr, marktype, index
-                                       
-	real		thickness, dotsize, grey, frac
-        real a, b, c
+        integer zwsid, zwstype
+        integer j, fktr, marktype, index
+        real    thickness, dotsize, grey, frac
 
 *******************************************************************************
-*	WHAT IS AVAILABLE ON THIS WORKSTATION?
-	call query_xgks_wkstn (zwstype,error,max_pline,max_pmark,
-     .	            max_text,max_fill_area,max_pattern,max_color)
-	if (error .ne. 0) goto 1000
 
         marktype = 1    ! polymarker type 1=dot
-        dotsize = 1
+        dotsize = 1.0
 
-*	COLOR OR MONOCHROME?
-	if (max_color .le. 2) goto 100
-
-*	COLOR WORKSTATIONS:
-        call FGD_GSCR(zwsid,2,1.0,0.0,0.0,1.0)   ! pre-defined colors
+*       COLOR WORKSTATIONS:
+*       pre-defined colors
+        call FGD_GSCR(zwsid,2,1.0,0.0,0.0,1.0)
         call FGD_GSCR(zwsid,3,0.0,1.0,0.0,1.0)
         call FGD_GSCR(zwsid,4,0.0,0.0,1.0,1.0)
         call FGD_GSCR(zwsid,5,0.0,1.0,1.0,1.0)
         call FGD_GSCR(zwsid,6,1.0,0.0,1.0,1.0) 
+        call FGD_GSCR(zwsid,7,1.0,1.0,1.0,1.0) 
      
 ! Set up initial values for further colors as grey
 ! range them between 0.6,0.6,0.6 and 0.9,0.9,0.9
 
-        IF (num_line_colors .GT. 6) THEN
-           frac = (0.9-0.6)/FLOAT(num_line_colors - 6)
-           IF ( num_line_colors .EQ. 7 ) THEN
+        IF (num_line_colors .GT. 7) THEN
+           frac = (0.9-0.6)/FLOAT(num_line_colors - 7)
+           IF ( num_line_colors .EQ. 8 ) THEN
                grey = 0.8
            ELSE
-               grey = 0.6
+               grey = 0.9
            ENDIF
-           DO 40 j = 7, num_line_colors
+           DO 40 j = 8, num_line_colors
               call FGD_GSCR(zwsid,j,grey,grey,grey,1.0)
-              grey = grey + frac
+              grey = grey - frac
   40       CONTINUE
         ENDIF
 
-*     color 19 defaults to white since 
-*     color 0 is the background so could be reset
-        call FGD_GSCR(zwsid,19,1.0,1.0,1.0,1.0)
-
-	IF (saved_line_colors .GT. 0) THEN
-	   CALL restore_saved_line_colors (zwsid)
-	ENDIF
+        IF (saved_line_colors .GT. 0) THEN
+           CALL restore_saved_line_colors (zwsid)
+        ENDIF
 
 ! Set line bundles
 
-	do 20 j = 1, num_line_colors
-	    
-	   do 10 fktr = 1,3     ! thickness
+        do 20 j = 1, num_line_colors
+           do 10 fktr = 1,3     ! thickness
               index = (fktr-1)*num_line_colors+j
               thickness = real(fktr)
-	      call FGD_GSPMR(zwsid,index,marktype,dotsize,j)
-	      call FGD_GSPLR(zwsid,index,1,thickness,j)
-       
-10	   continue
-20	continue
+              call FGD_GSPMR(zwsid,index,marktype,dotsize,j)
+              call FGD_GSPLR(zwsid,index,1,thickness,j)
+10         continue
+20      continue
 
-	return
+        return
 
-*	MONOCHROME WORKSTATIONS:
-100	do 120 j = 1,3
-           thickness = real(j)
-	   do 110 i = 1,6
-	      call FGD_GSPMR(zwsid,i+6*(j-1),marktype,dotsize,1)
-	      call FGD_GSPLR(zwsid,i+6*(j-1),ltype(i),thickness,1)
-110	   continue
-120	continue                   
-
-	return
-
-*	FATAL ERR
-1000	return
-
-	end
+        end

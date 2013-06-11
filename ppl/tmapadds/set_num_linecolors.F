@@ -73,7 +73,7 @@
 * save the color definitions.
 
         IF ( gks_open .AND. no_plots_yet .EQ. 1 ) 
-     .      CALL SETUP_LINE_BUNDLES (wsid, wstype)
+     .      CALL WS_LINE_BUNDLES (wsid, wstype)
 
         RETURN
 	END

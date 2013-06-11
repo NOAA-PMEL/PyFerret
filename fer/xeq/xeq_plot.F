@@ -99,6 +99,8 @@
 * V6.2  *acm& 2/09 Fix choice of color settings with /PEN and /THICK when we have 
 *                  increased the num of colors with MODE linecolors
 * V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
+* PyFr  *kms* 7/13 EQUAL_COLOR now returns a color ID, and EQUAL_THICK 
+*                  returns a pen ID from a color ID and a thickness.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -129,7 +131,7 @@
      .			is_logh, is_logv, nokey, no_data, no_range,
      .			continuous_key, do_key, spectrum
 	INTEGER		TM_LENSTR1, STR_UPCASE, STR_SAME,
-     .                  symbol, color, status,
+     .                  symbol, color, ipen, status,
      .			loc, limit, slen, thick, step_inc,
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start,
@@ -137,6 +139,7 @@
      .			nparm, dot_sym, num_it, i, iax(4), i1,
      .                  loch, locv
 	REAL		val, sym_size, dashstyle(4), only_val
+        REAL*4          thickness
 	CHARACTER	LEFINT*4, buff*128
 	
 	CHARACTER	TM_FMT*12, TM_INQ_PATH*2048, sfile*2048
@@ -250,48 +253,35 @@ CC       => Set values here instead.
 	   ENDIF
 	ENDIF
 * ... PLOT/COLOR=n
+        thickness = 1.0
 	loc = qual_given( slash_plot_color )
 	IF ( loc .GT. 0  ) THEN
 	   CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                           color, status )
+     .                       color, thickness, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
 	ENDIF
 * ... PLOT/THICKNESS=n
  	loc = qual_given( slash_plot_thick )
 	IF ( loc .GT. 0  ) THEN
-
-	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			   val, status )	! syntax check
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-
-           IF ((ncolors .EQ. 6) .AND. 
-     .               (val .NE. 1  .AND. color .EQ. 19) ) GOTO 5460  ! Only have thin white line
-
-	   IF ( val .NE. unspecified_val4 ) THEN
-	      IF ( val.LE.0.0 .OR. val.GT.3 ) GOTO 5400
-	      thick = NINT( val )	! user-specified line style
-	   ELSE
-	      thick = 2  ! default if no value is specified
-	   ENDIF
-
-	   IF ( color .EQ. qual_on ) THEN
-	   
-              IF ( symbol .EQ. dot_sym) THEN
-                 CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
-	         IF (color .GT. ncolors) color = MOD(color-1,ncolors)+1  ! eliminate thickness
-              ELSE
-                 color = color-10*(thick-1)
-              ENDIF
+           IF ( symbol .EQ. dot_sym) THEN
+              CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
+*             convert the color ID into a (thin) pen ID
+*             note that thickness is explicitly REAL*4 (not REAL)
+              thickness = 1.0
+              CALL EQUAL_THICK(' ', thickness, color, ipen, status)
+              IF ( status .NE. ferr_ok ) GOTO 5000
            ELSE
-	      IF (color .GT. ncolors) color = MOD(color-1,ncolors)+1  ! eliminate thickness
-	      color = ncolors*(thick-1) + color
-              IF ( symbol .EQ. dot_sym) THEN
-                 CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
-	         color = MOD(color-1,ncolors)+1  ! eliminate thickness
-              ENDIF
+              CALL EQUAL_THICK(cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                         thickness, color, ipen, status)
+              IF ( status .NE. ferr_ok ) GOTO 5000
            ENDIF
-
-	ENDIF
+        ELSE
+*          /THICK not given; convert color ID to pen ID using default thickness
+           CALL EQUAL_THICK(' ', thickness, color, ipen, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+        ENDIF
+*       assign the pen ID to color
+        color = ipen
 * ... PLOT/LINE_STYLE=n
 	loc = qual_given( slash_plot_line )
 	IF ( loc .GT. 0  ) THEN

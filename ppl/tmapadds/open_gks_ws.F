@@ -171,7 +171,7 @@ C
         call FGD_GSASF(asf)
 
 *       SET UP DEFAULT LINE BUNDLES FOR WS
-        call setup_line_bundles (wsid,wstype)
+        call ws_line_bundles (wsid,wstype)
 
         return
 

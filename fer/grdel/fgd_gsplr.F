@@ -2,11 +2,9 @@
 * Create a pen object.  (set polyline representation)
 *
 * The linewidth in GSK was a factor, so not very clear
-* what the units should be.  The line widths here scale
-* with the size of the view, but still not sure what
-* the units actually are.  The factor applied to the
-* line width was determined to reproduce Ferret line
-* widths in a default screen.
+* what the units should be.  The line widths in PyFerret
+* are assumed to be in units of 0.001 * length of the 
+* window diagonal in points.
 *
 
         SUBROUTINE FGD_GSPLR(windowid, pennum, linestyle,

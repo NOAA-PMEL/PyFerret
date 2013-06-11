@@ -104,6 +104,8 @@
 * V6.63 *acm* 7/10 Add VECTOR/KEY to force key even if /NOLAB
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *                  A time axis may be a T axis or F axis
+* PyFr  *kms* 7/13 EQUAL_COLOR now returns a color ID, and EQUAL_THICK 
+*                  returns a pen ID from a color ID and a thickness.
 
 
 	include 'tmap_dims.parm'
@@ -131,7 +133,7 @@
      .			is_logh, is_logv, no_key, yes_key,
      .			is_shade, use_cell
 	INTEGER		TM_LENSTR1, status, cx, 
-     .			loc, ipen, thick,
+     .			loc, icolor, ipen,
      .			dim1, dim2, asp,
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start,
@@ -141,6 +143,7 @@
      .                  loch, locv, ier, ist
         INTEGER   STR_UPCASE, i1
 	REAL		only_x, aspect, vbuf, xloc, yloc
+        REAL*4          thickness
 	CHARACTER	buff*25
 
 
@@ -222,6 +225,7 @@
 	ENDIF
 
 * user-specified pen color ?  (2/94)
+        thickness = 1.0
 	loc = MAX( qual_given(slash_pen), qual_given(slash_color))
 	IF ( loc .GT. 0 ) THEN
 	   IF (.NOT.denig_pen_msg_done .AND. qual_given(slash_pen).GT.0)
@@ -229,28 +233,26 @@
 	      CALL WARN( '/PEN is deprecated. Use /COLOR.')
 	      denig_pen_msg_done = .TRUE.
 	   ENDIF
-	   CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                           ipen, status )
+*          get the color ID
+           CALL EQUAL_COLOR(cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                      icolor, thickness, status)
            IF ( status .NE. ferr_ok ) GOTO 5000
-	ELSE
-	   ipen = -1	! auto-select in DISP_SET_UP
+        ELSE
+           icolor = -1  ! auto-select in DISP_SET_UP
 	ENDIF
+
 * ... VECTOR/THICKNESS=n
 	loc = qual_given( slash_vect_thick )
 	IF ( loc .GT. 0  ) THEN
-	   IF ( ipen .EQ. -1 ) ipen = 1  ! /THICK alone means "BLACK"
-	   ipen = MOD(ipen-1,ncolors)+1  ! eliminate thickness
-	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			   vbuf, status )	! syntax check
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   IF ( vbuf .NE. unspecified_val4 ) THEN
-	      IF ( vbuf.LE.0.0 .OR. vbuf.GT.3 ) GOTO 5400
-	      thick = NINT( vbuf )	! user-specified line style
-	   ELSE
-	      thick = 2  ! default if no value is specified
-	   ENDIF
-	   ipen = ncolors*(thick-1) + ipen
-	ENDIF
+           IF ( icolor .EQ. -1 ) icolor = 1  ! /THICK alone means "BLACK"
+*          convert the color ID into a pen ID using the specified thickness
+           CALL EQUAL_THICK(cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                      thickness, icolor, ipen, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+        ELSE
+*          convert the color ID into a pen ID using the default thickness
+           CALL EQUAL_THICK(' ', thickness, icolor, ipen, status)
+        ENDIF
 
 * for flowline plots, get the density
         density = 0

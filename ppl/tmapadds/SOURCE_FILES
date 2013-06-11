@@ -64,7 +64,6 @@ setfont.F\
 setlab_syms.F\
 setup_color_table.F\
 setup_defaults.F\
-setup_line_bundles.F\
 shade.F\
 shade_cell.F\
 shade_fill_it.F\
@@ -78,7 +77,7 @@ use_linear_levels.F\
 vec_arrows.F\
 whoi2bc.F\
 ws_fill_rep.F\
-ws_line_bundle.F\
+ws_line_bundles.F\
 ws_line_spectrum.F\
 ws_types_init.F\
 xgrinpt_blkdat.F\

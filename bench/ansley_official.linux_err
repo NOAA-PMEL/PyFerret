@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 42597823 Jun 10 14:09 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 42597823 Jun 11 14:46 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: back off SAVE/NOCOORDS for now. Fix to benchmark script that redefined pre-set viewports"
+Note: Increase the length of the abstract axis
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Mon Jun 10 14:14:55 PDT 2013
+Beginning at Tue Jun 11 14:52:39 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -562,11 +562,11 @@ Replacing definition of axis TAX
  **ERROR: command syntax: v2-and-minus
           - before and is illegal
 list v2-and-minus
- **ERROR: dimensions improperly specified: 9999999 words were requested.
+ **ERROR: dimensions improperly specified: 99999999 words were requested.
 list x
  *** NOTE: Check for unspecified limits on an ABSTRACT axis
  *** NOTE: Use the SHOW GRID command to see the axes
- **ERROR: dimensions improperly specified: 9999999 words were requested.
+ **ERROR: dimensions improperly specified: 99999999 words were requested.
 list i
  *** NOTE: Check for unspecified limits on an ABSTRACT axis
  *** NOTE: Use the SHOW GRID command to see the axes
@@ -3501,4 +3501,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Jun 10 14:17:29 PDT 2013
+Ended at Tue Jun 11 14:54:42 PDT 2013

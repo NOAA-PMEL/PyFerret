@@ -49,6 +49,7 @@
 * V62 *acm*  2/09 - Save original upper/lowercase spelling of axis names 
 *                   in line_name_orig for CANCEL MODE UPCASE
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V685 *acm*  6/13 Increase nominal length of abstract axis
 
 	include	'tmap_dims.parm'
 	include	'tmap_errors.parm'
@@ -73,7 +74,7 @@
 	line_name_orig( iline ) = 'ABSTRACT'
 	line_start    ( iline ) = 1.0D0
 	line_delta    ( iline ) = 1.0D0
-	line_dim      ( iline ) = 9999999
+	line_dim      ( iline ) = 99999999
 	line_regular  ( iline ) = .TRUE.
 	line_modulo   ( iline ) = .FALSE.
 	line_units    ( iline ) = ' '

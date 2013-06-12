@@ -48,6 +48,7 @@
 * V5.1 *sh* 12/99 - changed logic for matching un_name to insist on exact
 *	match with possible final "s". It was matching "Kelvin" to "in"
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V6.85 6/13 *acm* fix bug#2080: the check for degrees_C etc.
 
 * Include files
 	include 'tmap_dims.parm'
@@ -80,7 +81,7 @@
 
 	   IF ( TM_HAS_STRING( string, un_alt_name(iun) ) ) THEN
 * ... check that "deg" is not hiding "degrees C" or "deg K" ...
-	      IF ( iun .EQ. pun_degrees ) THEN
+	      IF ( un_alt_subsc( iun ) .EQ. pun_degrees ) THEN
 	         DO 105 ideg = 1, ndeg_temp
 	            IF (TM_HAS_STRING(string,deg_temp(ideg))) GOTO 110
  105	         CONTINUE

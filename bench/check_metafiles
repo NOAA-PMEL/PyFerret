@@ -8,14 +8,14 @@
 
 
 set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt linecolors.plt multi_line_labels.plt \
-pattern*.plt polygon*.plt vec_curv*.plt)
+pattern*.plt polygon*.plt vec_curv*.plt degC_axlab.plt)
 set gif_files = ( bn*.gif )
 set ps_files = (bn*.ps)
 set mb_files = (bat.plt_*)
 set num_plt_files = `ls -l *.plt | wc -l `
 
 set err_plt = 0
-set total_plt_files = 21
+set total_plt_files = 22
 foreach plt_file ($plt_files)
 #    set size = `ls -l $plt_file | cut -b 21-27`
 #    set size2 = `ls -l metafile_masters_64bit/$plt_file | cut -b 21-27`

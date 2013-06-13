@@ -65,7 +65,7 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
     }
 
     /* Scaling factor to use for these symbols "drawn" as 100x100 pixel paths */
-    scalefactor = symsize * instdata->viewfactor;
+    scalefactor = symsize * instdata->widthfactor;
     if ( scalefactor < 5.0 )
         scalefactor = 5.0;
     scalefactor *= unitfactor / 100.0;

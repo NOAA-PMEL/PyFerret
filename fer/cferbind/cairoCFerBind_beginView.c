@@ -30,8 +30,6 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
                                   double rgtfrac, double topfrac, int clipit)
 {
     CairoCFerBindData *instdata;
-    double  width;
-    double  height;
     int     result;
 
     /* Sanity check */
@@ -60,13 +58,6 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
     instdata->fracsides.bottom = btmfrac;
     instdata->fracsides.right = rgtfrac;
     instdata->fracsides.top = topfrac;
-
-    /* Assign the line width scaling factor for this view */
-    width   = rgtfrac - lftfrac;
-    width  *= (double) instdata->imagewidth / 1000.0;
-    height  = btmfrac - topfrac;
-    height *= (double) instdata->imageheight / 1000.0;
-    instdata->viewfactor = sqrt(width * width + height * height) / M_SQRT2;
 
     /* Assign clipping */
     result = self->clipView(self, clipit);

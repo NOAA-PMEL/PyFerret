@@ -90,6 +90,7 @@
 * PyFr *kms* 2/2013  Add /QUALITY=... /AALIAS /NOAALIAS /ENGINE=...
 * PyFr *kms* 4/2013  remove specific reference to /AALIAS /NOAALIAS in warning message
 * PyFr  *kms*  6/13  Add /COLOR= /OPACITY= to specify background color
+* PyFr  *kms*  7/13  Add /THICKEN= to specify line width scaling factor
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -139,7 +140,8 @@
      .                  slash_noaalias,
      .                  slash_engine,
      .                  slash_color,
-     .                  slash_opacity
+     .                  slash_opacity,
+     .                  slash_thicken
         LOGICAL         physical
 	PARAMETER     ( slash_size   = 0+1,
      .			slash_new    = 1+1,
@@ -153,6 +155,7 @@
      .                  slash_engine = 9+1,
      .                  slash_color  = 10+1,
      .                  slash_opacity = 11+1,
+     .                  slash_thicken = 12+1,
      .                  physical     = .TRUE. )
 
 * statement function - value between 0 and 1
@@ -479,6 +482,21 @@ c 75        CONTINUE
             ENDIF
         ENDIF
 
+* set line thickness scaling factor?
+        qp = qual_given(slash_thicken)
+        IF ( qp .GT. 0 ) THEN
+            CALL EQUAL_STRING(cmnd_buff(qual_start(qp):qual_end(qp)), 
+     .                        buffer, status)
+            IF ( status .NE. ferr_ok ) RETURN
+            IF ( buffer .EQ. ' ' ) THEN
+                buffer = 'thicken value ?'
+                GOTO 5050
+            ENDIF
+            READ ( buffer, *, ERR=5080 ) dfltthick
+            IF ( dfltthick .LE. 0.0 ) GOTO 5090
+            CALL FGD_SET_THICK_FACTOR(n, dfltthick)
+        ENDIF
+
 * background color is always color zero
         bkgcolor = 0
 * background color specified?
@@ -615,5 +633,8 @@ C
      .          'Unexpected error: no background color', *5000)
  5080   CALL ERRMSG( ferr_out_of_range, status, 
      .          'Invalid opacity specification', *5000)
+ 5090   CALL ERRMSG( ferr_out_of_range, status, 
+     .          'Invalid thicken specification; '//
+     .          'must be a positive number', *5000)
 	END
 

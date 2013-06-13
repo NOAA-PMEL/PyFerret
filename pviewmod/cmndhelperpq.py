@@ -141,7 +141,7 @@ class CmndHelperPQ(object):
             myfont = self.__viewer.font()
         try:
             size  = fontinfo["size"]
-            size *= self.__viewer.viewScalingFactor()
+            size *= self.__viewer.widthScalingFactor()
             myfont.setPixelSize( int(size + 0.5) )
         except KeyError:
             pass
@@ -242,7 +242,7 @@ class CmndHelperPQ(object):
             mypen = QPen()
         try:
             penwidth = float(peninfo["width"])
-            penwidth *= self.__viewer.viewScalingFactor()
+            penwidth *= self.__viewer.widthScalingFactor()
             mypen.setWidthF(penwidth)
         except KeyError:
             pass

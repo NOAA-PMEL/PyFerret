@@ -66,8 +66,8 @@ class PipedImagerPQ(QMainWindow):
         # when the image is defined
         # initialize the width and height to values that will create
         # a viewer (mainWindow) of the right size
-        self.__scenewidth = 840
-        self.__sceneheight = 720
+        self.__scenewidth = 816
+        self.__sceneheight = 692
         # initial default color for the background (opaque white)
         self.__lastclearcolor = QColor(0xFFFFFF)
         self.__lastclearcolor.setAlpha(0xFF)

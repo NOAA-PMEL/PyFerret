@@ -862,6 +862,61 @@ grdelBool grdelWindowDpi(grdelType window, float *dpix, float *dpiy)
     return 1;
 }
 
+/*
+ * Set the scaling factor for pen widths, symbol sizes, and font sizes.
+ *
+ * Arguments:
+ *     window: Window to use
+ *     widthfactor: scaling factor to use
+ *
+ * Returns success (nonzero) or failure (zero).
+ * If failure, grdelerrmsg contains an explanatory message.
+ */
+grdelBool grdelWindowSetWidthFactor(grdelType window, float widthfactor)
+{
+    GDWindow *mywindow;
+    grdelBool success;
+    PyObject *result;
+
+#ifdef VERBOSEDEBUG
+    fprintf(debuglogfile, "grdelWindowSetWidthFactor called: "
+            "window = %p, scalingfactor = %f\n", window, widthfactor);
+    fflush(debuglogfile);
+#endif
+
+    if ( grdelWindowVerify(window) == NULL ) {
+        strcpy(grdelerrmsg, "grdelWindowSetWidthFactor: "
+                            "window argument is not a grdel Window");
+        return 0;
+    }
+    mywindow = (GDWindow *) window;
+
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                    setWidthFactor(mywindow->bindings.cferbind, (double) widthfactor);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+    }
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, "setWidthFactor",
+                                     "d", (double) widthfactor);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowSetWidthFactor: error when calling the "
+                    "Python binding's setWidthFactor method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelWindowSetWidthFactor: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
+
+    return 1;
+}
 
 /*
  * Creates and returns a Window object.
@@ -1093,6 +1148,26 @@ void fgdwindpi_(int *success, void **window, float *dpix, float *dpiy)
     grdelBool result;
 
     result = grdelWindowDpi(*window, dpix, dpiy);
+    *success = result;
+}
+
+
+/*
+ * Assign the scaling factor for line widths, symbol sizes, and font sizes.
+ *
+ * Input Arguments:
+ *     window: Window to use
+ *     widthfactor: scaling factor to use
+ *
+ * Output Arguments:
+ *     success: non-zero if successful; zero if an error occurred.
+ *              Use fgderrmsg_ to retrieve the error message.
+ */
+void fgdwinsetwidthfactor_(int *success, void **window, float *widthfactor)
+{
+    grdelBool result;
+
+    result = grdelWindowSetWidthFactor(*window, *widthfactor);
     *success = result;
 }
 

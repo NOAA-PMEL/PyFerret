@@ -343,6 +343,16 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError()
 
+    def setWidthFactor(self, widthfactor):
+        '''
+        Assigns the scaling factor to be used for pen widths,
+        symbols sizes, and font sizes
+
+        Arguments:
+            widthfactor: positive float giving the new scaling factor to use
+        '''
+        raise AttributeError()
+
     def drawMultiline(self, ptsx, ptsy, pen):
         '''
         Draws connected line segments.

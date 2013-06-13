@@ -50,6 +50,9 @@
         REAL*4 windowdpix(maxwindowobjs),
      .         windowdpiy(maxwindowobjs)
 
+* Scaling factor for line widths and symbol sizes
+        REAL*4 thickfactor(maxwindowobjs)
+
 * Coordinate transformation information (independent of window)
 * View limits defined in [0,1] normalized device coordinates
         REAL*4 viewleftfrac(maxtransforms),
@@ -64,7 +67,7 @@
      .         viewrightcoord(maxtransforms),
      .         viewtopcoord(maxtransforms)
 
-* Size of the full window in inches.  Used when creating
+* Size of the full window in inches(?).  Used when creating
 * the window and updated when the window is resized.
         REAL*4 windowwidth(maxwindowobjs),
      .         windowheight(maxwindowobjs)
@@ -139,19 +142,23 @@
         CHARACTER*128 windowtitle
 
 * And finally the common block containing all these variables
-        COMMON /FGRDEL/ windowobjs, colorobjs, brushobjs,
-     .         fontobjs, penobjs, symbolobjs, colorrgba,
-     .         symbolsize, windowdpix, windowdpiy, windowwidth,
-     .         windowheight, ndcxmax, ndcymax, viewleftfrac,
-     .         viewbottomfrac, viewrightfrac, viewtopfrac,
-     .         viewleftcoord, viewbottomcoord, viewrightcoord,
-     .         viewtopcoord, 
+        COMMON /FGRDEL/ 
+     .         windowobjs, colorobjs, brushobjs, fontobjs, 
+     .         penobjs, symbolobjs, 
+     .
+     .         colorrgba, symbolsize, windowdpix, windowdpiy, 
+     .         thickfactor, windowwidth, windowheight, 
+     .         ndcxmax, ndcymax, viewleftfrac, viewbottomfrac, 
+     .         viewrightfrac, viewtopfrac, viewleftcoord, 
+     .         viewbottomcoord, viewrightcoord, viewtopcoord, 
+     .
      .         activewindow, activetransform, activebrush, 
      .         activepen, activesymbol, lastbrushcolor,
-     .         lastbstylen, brushcolor, pencolor,
-     .         symbolcolor, 
+     .         lastbstylen, brushcolor, pencolor, symbolcolor, 
+     .
      .         cliptoview, somethingdrawn, savetransparent, 
      .         antialias, 
+     .
      .         lastbrushstyle, defaultenginename, enginename, 
      .         windowtitle
 

@@ -101,6 +101,7 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
                           int filenamelen, const char *fileformat,
                           int formatlen, grdelBool transparentbkg);
 grdelBool grdelWindowDpi(grdelType window, float *dpix, float *dpiy);
+grdelBool grdelWindowSetWidthFactor(grdelType window, float widthfactor);
 
 /*
  * Fortran interfaces for the Window functions.
@@ -117,16 +118,16 @@ void fgdwinsetvis_(int *success, void **window, int *visible);
 void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
                  char *fileformat, int *formatlen, int *tranparentbkg);
 void fgdwindpi_(int *success, void **window, float *dpix, float *dpiy);
+void fgdwinsetwidthfactor_(int *success, void **window, float *widthfactor);
 
 /*
  * A "View" refers to a rectangular subsection of the Window, possibly
  * the full Window.  Drawing is performed after defining a View; however,
  * coordinates are given in "device units" (pixels, using the current
  * Window DPI, from the top left corner).  The defined View is used to
- * set the clipping rectangle, when desired, and to adjust line width,
- * symbol sizes, and font sizes.  When drawing in this View is complete,
- * the View is "ended".  Only one view can be active at a time, so
- * switching between views requires ending one view and beginning
+ * set the clipping rectangle, when desired.  When drawing in this View 
+ * is complete, the View is "ended".  Only one view can be active at a 
+ * time, so switching between views requires ending one view and beginning
  * another view.
  */
 

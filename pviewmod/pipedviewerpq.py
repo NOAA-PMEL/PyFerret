@@ -70,8 +70,10 @@ class PipedViewerPQ(QMainWindow):
         self.__cmndpipe = cmndpipe
         self.__rspdpipe = rspdpipe
         # default scene size
-        self.__scenewidth = 840
-        self.__sceneheight = 720
+        self.__scenewidth = 816
+        self.__sceneheight = 692
+        # scaling factor for line widths, symbol sizes, and font sizes
+        self.__widthfactor = 1.0
         # initial default color for the background (opaque white)
         self.__lastclearcolor = QColor(0xFFFFFF)
         self.__lastclearcolor.setAlpha(0xFF)
@@ -821,6 +823,11 @@ class PipedViewerPQ(QMainWindow):
             except KeyError:
                 bkgcolor = None
             self.saveSceneToFile(filename, fileformat, bkgcolor, False)
+        elif cmndact == "setWidthFactor":
+            newfactor = float(cmnd.get("factor", -1.0))
+            if newfactor <= 0.0:
+                raise ValueError( self.tr("Invalid width factor") )
+            self.__widthfactor = newfactor
         elif cmndact == "setTitle":
             self.setWindowTitle(cmnd["title"])
         elif cmndact == "imgname":
@@ -910,9 +917,6 @@ class PipedViewerPQ(QMainWindow):
         # Create the view rectangle in device coordinates
         vrectf = QRectF(leftpixel, toppixel,
                        rightpixel - leftpixel, bottompixel - toppixel)
-        # Assign the view factor for line widths, symbol sizes, and font sizes
-        self.__viewfactor = math.hypot(vrectf.width() / 1000.0,
-                                       vrectf.height() / 1000.0) / 1.414213562
         # Create the new picture and painter
         self.__activepicture = QPicture()
         self.__activepainter = QPainter(self.__activepicture)
@@ -1041,7 +1045,7 @@ class PipedViewerPQ(QMainWindow):
                          Qt.SquareCap, Qt.BevelJoin)
             self.__activepainter.setPen(mypen)
         # Unmodified symbols are 100x100 pixels 
-        scalefactor = ptsize * self.viewScalingFactor() / 100.0
+        scalefactor = ptsize * self.__widthfactor / 100.0
         if self.__maxsymbolwidth < 100.0 * scalefactor:
             self.__maxsymbolwidth = 100.0 * scalefactor
         if self.__maxsymbolheight < 100.0 * scalefactor:
@@ -1213,15 +1217,12 @@ class PipedViewerPQ(QMainWindow):
         if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
-    def viewScalingFactor(self):
+    def widthScalingFactor(self):
         '''
-        Return the scaling factor for line widths, point sizes, and
-        font sizes for the current view.  If the view is 1000 x 1000
-        pixels, 1.0 is returned.  The value changes linearly with the
-        length of the diagonal of the scene.
+        Return the scaling factor for line widths, symbol sizes, 
+        and font sizes for the current size of the full view. 
         '''
-        # the value is computed in the beginViewFromSides method
-        return self.__viewfactor 
+        return self.__widthfactor 
 
 
 class PipedViewerPQProcess(Process):

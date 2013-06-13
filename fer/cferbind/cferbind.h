@@ -64,6 +64,7 @@ typedef struct CFerBind_struct {
      grdelType (*createSymbol)(struct CFerBind_struct *self,
                                const char *symbolname, int namelen);
      grdelBool (*deleteSymbol)(struct CFerBind_struct *self, grdelType symbol);
+     grdelBool (*setWidthFactor)(struct CFerBind_struct *self, double widthfactor);
      grdelBool (*drawMultiline)(struct CFerBind_struct *self, double ptsx[],
                                 double ptsy[], int numpts, grdelType pen);
      grdelBool (*drawPoints)(struct CFerBind_struct *self, double ptsx[],

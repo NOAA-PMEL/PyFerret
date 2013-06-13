@@ -78,8 +78,8 @@ typedef struct CairoCFerBindData_struct {
      */
     CCFBSides fracsides;
     int clipit;
-    /* Scaling factor for line widths based on the view size */
-    double viewfactor;
+    /* Scaling factor for line widths, symbol sizes, and font sizes */
+    double widthfactor;
     /*
      * The surface and context are not created until a view is created,
      * and thus drawing is about to begin.  Ferret will modify the above
@@ -137,6 +137,7 @@ grdelBool cairoCFerBind_replaceBrushColor(CFerBind *self,
 grdelBool cairoCFerBind_deleteBrush(CFerBind *self, grdelType brush);
 grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int namelen);
 grdelBool cairoCFerBind_deleteSymbol(CFerBind *self, grdelType symbol);
+grdelBool cairoCFerBind_setWidthFactor(CFerBind *self, double widthfactor);
 grdelBool cairoCFerBind_drawMultiline(CFerBind *self, double ptsx[], double ptsy[],
                                       int numpts, grdelType pen);
 grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],

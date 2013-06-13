@@ -57,6 +57,7 @@ CFerBind *cairoCFerBind_createWindow(void)
     bindings->deleteBrush = cairoCFerBind_deleteBrush;
     bindings->createSymbol = cairoCFerBind_createSymbol;
     bindings->deleteSymbol = cairoCFerBind_deleteSymbol;
+    bindings->setWidthFactor = cairoCFerBind_setWidthFactor;
     bindings->drawMultiline = cairoCFerBind_drawMultiline;
     bindings->drawPoints = cairoCFerBind_drawPoints;
     bindings->drawPolygon = cairoCFerBind_drawPolygon;
@@ -82,6 +83,8 @@ CFerBind *cairoCFerBind_createWindow(void)
     instdata->imagewidth = 840;
     instdata->imageheight = 720;
     instdata->minsize = 128;
+    /* Assign the line width scaling factor */
+    instdata->widthfactor = 1.0;
     /* default clear color of opaque white */
     instdata->lastclearcolor.id = CCFBColorId;
     instdata->lastclearcolor.redfrac = 1.0;

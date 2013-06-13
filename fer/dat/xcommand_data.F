@@ -206,6 +206,7 @@
 *                  Add /QUALITY= /AAlias /NoAAlias /ENGINE= to SET WINDOW
 * PyFr  *kms* 3/13 Change /AAlias and /NoAAlias to /AntiAlia[s] and /NoAntiAl[ias]
 * PyFr  *kms* 6/13  Add /COLOR= /OPACITY= to specify background color
+* PyFr  *kms* 7/13  Add /THICKEN to SET WINDOW to specify line thickness scaling factor
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -240,6 +241,10 @@
 		DATA qualifiers  (nqual_at1b+9)	/ 'ENGINE'	/
 		DATA qualifiers  (nqual_at1b+10)/ 'COLOR'	/
 		DATA qualifiers  (nqual_at1b+11)/ 'OPACITY'	/
+		DATA qualifiers  (nqual_at1b+12)/ 'THICKEN'	/
+		DATA qualifiers  (nqual_at1b+13)/ '****'	/
+		DATA qualifiers  (nqual_at1b+14)/ '****'	/
+		DATA qualifiers  (nqual_at1b+15)/ '****'	/
 * SET REGION
 	   DATA subcommands      (nsub_at1 + 2)	/ 'REGION'	/
 	   DATA num_qualifs      (nsub_at1 + 2)	/ nqual1c	/

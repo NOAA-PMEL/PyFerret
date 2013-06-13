@@ -67,6 +67,7 @@
             CALL FGDERRMSG(errmsg, errmsglen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
+
 *       Create opaque black as the second color for this window
         redf = 0.0
         greenf = 0.0
@@ -79,6 +80,7 @@
             CALL FGDERRMSG(errmsg, errmsglen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
+
 *       Get the horizontal and vertical DPI,
 *       and store it so this is called only once.
         CALL FGDWINDPI(success, windowobjs(windowid), dpix, dpiy)
@@ -89,6 +91,7 @@
         ENDIF
         windowdpix(windowid) = dpix
         windowdpiy(windowid) = dpiy
+
 *       Resize the window based on these DPI values
         wdth = windowwidth(windowid) * dpix
         hght = windowheight(windowid) * dpiy
@@ -98,6 +101,7 @@
             CALL FGDERRMSG(errmsg, errmsglen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
+
 *       Set the antialias state
         IF ( antialias(windowid) ) THEN
             aaint = 1
@@ -110,6 +114,16 @@
             CALL FGDERRMSG(errmsg, errmsglen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
+
+*       Set the scaling factor for line widths and symbol sizes
+        CALL FGDWINSETWIDTHFACTOR(success, windowobjs(windowid), 
+     .                            thickfactor(windowid))
+        IF ( success .EQ. 0 ) THEN
+            errmsg = ' '
+            CALL FGDERRMSG(errmsg, errmsglen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+        ENDIF
+
         RETURN
         END
 

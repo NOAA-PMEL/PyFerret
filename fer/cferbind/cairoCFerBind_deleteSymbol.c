@@ -8,9 +8,6 @@
 /*
  * Delete a symbol object for this "Window".
  *
- * Currently stubbed since it is currently not used by Ferret;
- * thus always fails.
- *
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
  */

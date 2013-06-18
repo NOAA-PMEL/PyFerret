@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43420219 Jun 11 14:46 /home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 43420248 Jun 18 16:24 /home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/trunk_for_flat64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Increase the length of the abstract axis
+Note: fixing ticket 2081: write null string to netCDF
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/trunk_for_flat64/FERRET/bench
-Beginning at Tue Jun 11 14:53:23 PDT 2013
+Beginning at Tue Jun 18 16:31:41 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3398,6 +3398,12 @@ NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  LISTing to file append_to_this.nc
 ncks: WARNING Overwriting global attribute history
 ncks: WARNING Overwriting global attribute Conventions
@@ -3503,4 +3509,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Jun 11 14:55:25 PDT 2013
+Ended at Tue Jun 18 16:33:37 PDT 2013

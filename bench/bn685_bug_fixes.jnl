@@ -34,3 +34,6 @@ GO err684_save_expression
 
 GO bn_reset
 GO err684_degC_axlab
+
+GO bn_reset
+go err684_null_stringwrite

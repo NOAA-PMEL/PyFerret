@@ -115,6 +115,8 @@
 * V685 *acm*  3/13  List the full path or url in the history att for variable.
 * V685 6/13 *acm* new qualifier SAVE/NOBOUNDS
 * V685 6/13 *acm* Dont add SAVE/NOCOORDS
+* v685 6/13 *acm*  bug 2081. For string vars, if the len comes back as 0 the variable contains 
+*                  just null strings. Set maxstrlen to 1, else we can't define the variable.
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -411,9 +413,12 @@
            ENDIF
 
 * if a string variable, then find max len
+* If the len comes back as 0 the variable contains just null strings.
+* Set maxstrlen to 1, else we cant define the variable.
 	   IF (itsa_string) THEN
 	      maxstrlen = GET_MAX_C_STRING_LEN(
      .				   mr_c_pointer(mr), MGRID_SIZE(mr))
+	      IF (maxstrlen .LE. 0) maxstrlen = 1
 	   ELSE
 	      maxstrlen = 0
 	   ENDIF

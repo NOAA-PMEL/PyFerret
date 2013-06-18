@@ -1,0 +1,18 @@
+! err684_null_stringwrite.jnl
+! 18-Jun-2013 ACM
+!
+! Bug 2081
+! write a null string variable (0-length string) to NetCDF
+
+! This is ok
+let avar = {"a", "", "c"}
+save/file=a.nc/clobber avar
+
+! Write just a null value resulted in a NetCDF library error
+
+set mode ignore
+let anull = avar[i=2]
+
+save/clobber/file=a.nc anull
+set mode/last ignore
+

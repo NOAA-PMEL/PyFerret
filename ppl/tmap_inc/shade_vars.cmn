@@ -76,6 +76,7 @@
 *               as single-precision
 *	ribbon_miss	rgb codes for the missing-value rep. on ribbon plots.
 * PyFr *kms* 5/13 Add alpha channel (opaque) variables SA,MSA
+* PyFr *kms* 7/13 Add overriding_alpha for overriding alpha/opacity (/OPACITY=)
 
 	integer		spec_size,max_windows,pattern_num
 	parameter	(spec_size=250,max_windows=12,pattern_num=50)
@@ -100,6 +101,7 @@
 	REAL*4		msr(spec_size),msg(spec_size),msb(spec_size),msa(spec_size)
 	REAL*4		mslvl(spec_size)
 	REAL*4		ribbon_miss(4)
+	REAL*4		overriding_alpha
 
 	logical		fill_missing,even_histo,do_key,area_bundles
 	logical		vertical_key,kuser_loc(4),custom_colors
@@ -120,7 +122,7 @@
      .			   shd_min,shd_max,shd_levels,
      .			   kx_lo,kx_hi,ky_lo,ky_hi,
      .			   klab_size,klab_dig,klab_len,klab_incr,
-     .			   ncl,slvl,sr,sg,sb,sa,
+     .			   ncl,slvl,sr,sg,sb,sa,overriding_alpha,
      .			   lo_color_ndx(max_windows),
      .			   hi_color_ndx(max_windows),
      .			   area_bundles,protect_used_colors,

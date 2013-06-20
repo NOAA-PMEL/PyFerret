@@ -55,6 +55,7 @@
 * V685 6/13 *acm* new qualifier SAVE/NOBOUNDS
 * V685 6/13 *acm* new qualifier SAVE/NOCOORDS
 * V685 6/13 *acm* new qualifier SHOW DATA/HIDDEN
+* PyFr  *kms*  7/13 Add /OPACITY to CONTOUR, PLOT, POLYGON, SHADE, VECTOR
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -231,6 +232,8 @@
      .                  slash_cont_vgrat,
      .                  slash_cont_grat,
      .                  slash_cont_mod,
+     .                  slash_cont_thick,
+     .                  slash_cont_opacity,
      .
      .			slash_vect_over_plot,
      .			slash_vect_set_up,
@@ -250,6 +253,7 @@
      .			slash_vect_grat,
      .			slash_vect_key,
      .			slash_vect_mod,
+     .                  slash_vect_opacity,
      .
      .			slash_strm_over_plot,
      .			slash_strm_set_up,
@@ -276,6 +280,7 @@
      .			slash_shad_grat,
      .			slash_shad_mod,
      .			slash_shad_trim,
+     .			slash_shad_opacity,
      .
      .			slash_plot_over_plot,
      .			slash_plot_set_up,
@@ -301,7 +306,8 @@
      .			slash_plot_levels,
      .			slash_plot_spectrum,
      .			slash_plot_fast,
-     .			slash_plot_missing
+     .			slash_plot_missing,
+     .                  slash_plot_opacity
 
 	INTEGER		slash_wire_over,
      .			slash_wire_set_up,
@@ -508,6 +514,8 @@
      .			slash_cont_vgrat	= 1+40,
      .			slash_cont_grat	        = 1+41,
      .			slash_cont_mod	        = 1+42,
+     .                  slash_cont_thick        = 1+43,
+     .                  slash_cont_opacity      = 1+44,
      .
      .			slash_vect_over_plot	= 1+12,
      .			slash_vect_set_up	= 1+13,
@@ -527,6 +535,7 @@
      .			slash_vect_grat 	= 1+38,
      .			slash_vect_key	 	= 1+39,
      .			slash_vect_mod		= 1+40,
+     .                  slash_vect_opacity      = 1+41,
      .
      .			slash_strm_over_plot	= 1+12,
      .			slash_strm_set_up	= 1+12,
@@ -553,6 +562,7 @@
      .			slash_shad_vgrat	= 1+31,
      .			slash_shad_grat 	= 1+32,
      .			slash_shad_mod   	= 1+33,
+     .                  slash_shad_opacity      = 1+36,
      .
      .			slash_plot_over_plot	= 1+13,
      .			slash_plot_set_up	= 1+14,
@@ -578,7 +588,8 @@
      .			slash_plot_levels 	= 1+43,
      .			slash_plot_spectrum 	= 1+44,
      .			slash_plot_fast 	= 1+45,
-     .			slash_plot_missing 	= 1+46 )
+     .			slash_plot_missing 	= 1+46,
+     .                  slash_plot_opacity      = 1+47 )
 
 	PARAMETER     ( slash_wire_over		= 1+12,
      .			slash_wire_set_up	= 1+13,
@@ -637,7 +648,8 @@
      .			slash_polygon_hgrat,
      .			slash_polygon_vgrat,
      .			slash_polygon_grat,
-     .			slash_polygon_mod
+     .			slash_polygon_mod,
+     .                  slash_polygon_opacity
 
 	PARAMETER     ( slash_polygon_coord = 1 + 17,
      .			slash_polygon_line  = 1 + 21,
@@ -650,5 +662,6 @@
      .			slash_polygon_hgrat  = 1 + 38,
      .			slash_polygon_vgrat  = 1 + 39,
      .			slash_polygon_grat   = 1 + 40,
-     .			slash_polygon_mod    = 1 + 41 )
+     .			slash_polygon_mod    = 1 + 41,
+     .                  slash_polygon_opacity = 1 + 42 )
 

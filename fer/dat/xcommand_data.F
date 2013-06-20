@@ -207,6 +207,7 @@
 * PyFr  *kms* 3/13 Change /AAlias and /NoAAlias to /AntiAlia[s] and /NoAntiAl[ias]
 * PyFr  *kms* 6/13  Add /COLOR= /OPACITY= to specify background color
 * PyFr  *kms* 7/13  Add /THICKEN to SET WINDOW to specify line thickness scaling factor
+* PyFr  *kms*  7/13 Add /OPACITY to CONTOUR, PLOT, POLYGON, SHADE, VECTOR
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -868,9 +869,9 @@
 		DATA qualifiers  (nqual_at4a+39)/ 'HGRATICU'/	! tic liness, dash or line
 		DATA qualifiers  (nqual_at4a+40)/ 'VGRATICU'/	! tic liness, color or pen#
 		DATA qualifiers  (nqual_at4a+41)/ 'GRATICUL'/	! 
-		DATA qualifiers  (nqual_at4a+42)/  'MODULO'/	! modulo for curvilinear plots
-		DATA qualifiers  (nqual_at4a+43)/ '****'/	! 
-		DATA qualifiers  (nqual_at4a+44)/ '****'/	! 
+		DATA qualifiers  (nqual_at4a+42)/ 'MODULO'/	! modulo for curvilinear plots
+		DATA qualifiers  (nqual_at4a+43)/ 'THICKNES'/	! pen thickness
+		DATA qualifiers  (nqual_at4a+44)/ 'OPACITY'/	! overriding oapcity
 
 * LIST	 - command # 5
 	DATA commands(5)			/ 'LIST'	/
@@ -995,7 +996,7 @@
 		DATA qualifiers  (nqual_at6a+44)/ 'PALETTE'/	! 
 		DATA qualifiers  (nqual_at6a+45)/ 'FAST'/	! style for Ribbon plot
 		DATA qualifiers  (nqual_at6a+46)/ 'MISSING'/	! For missing-dat in ribbon plot
-		DATA qualifiers  (nqual_at6a+47)/ '****'/	! 
+		DATA qualifiers  (nqual_at6a+47)/ 'OPACITY'/	! overriding opacity
 
 * GO	 - command # 7
 	DATA commands(7)			/ 'GO  '	/
@@ -1294,7 +1295,7 @@
 		DATA qualifiers  (nqual_at13a+38)/ 'GRATICUL'/
 		DATA qualifiers  (nqual_at13a+39)/ 'KEY'/	!KEY 
 		DATA qualifiers  (nqual_at13a+40)/ 'MODULO'/
-		DATA qualifiers  (nqual_at13a+41)/ '****'/
+		DATA qualifiers  (nqual_at13a+41)/ 'OPACITY'/	! overriding opacity
 		DATA qualifiers  (nqual_at13a+42)/ '****'/
 		DATA qualifiers  (nqual_at13a+43)/ '****'/
 		DATA qualifiers  (nqual_at13a+44)/ '****'/
@@ -1428,7 +1429,7 @@
 		DATA qualifiers  (nqual_at18a+33)/ 'MODULO'/	! modulo for curvilinear plots
 		DATA qualifiers  (nqual_at18a+34)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at18a+35)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at18a+36)/ '****'/	! 
+		DATA qualifiers  (nqual_at18a+36)/ 'OPACITY'/	! overriding opacity
 		DATA qualifiers  (nqual_at18a+37)/ '****'/	! 
 
 * SPAWN - command # 19
@@ -1622,7 +1623,7 @@
 		DATA qualifiers  (nqual_at27a+39)/ 'VGRATICU'/	!vert tic lines
 		DATA qualifiers  (nqual_at27a+40)/ 'GRATICUL'/
 		DATA qualifiers  (nqual_at27a+41)/ 'MODULO'/
-		DATA qualifiers  (nqual_at27a+42)/ '****'/
+		DATA qualifiers  (nqual_at27a+42)/ 'OPACITY'/	! overriding opacity
 		DATA qualifiers  (nqual_at27a+43)/ '****'/
 
 * **** - command # 28

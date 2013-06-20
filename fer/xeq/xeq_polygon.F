@@ -70,6 +70,7 @@
 *                  as is done for SHADE and CONTOUR plots
 * PyFr  *kms* 7/13 EQUAL_COLOR now returns a color ID, and EQUAL_THICK 
 *                  returns a pen ID from a color ID and a thickness.
+* PyFr  *kms* 7/13 Added /OPACITY
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -100,17 +101,17 @@
 * internal variable declarations:
         LOGICAL         no_range, do_key, spectrum, pattern, use_line
 	LOGICAL		overlay, transpz, no_labels, set_up, noaxes, axes
-	LOGICAL         line_it, fill_it, is_logh, is_logv, no_data, is_modx,
+	LOGICAL         fill_it, is_logh, is_logv, no_data, is_modx,
      .			do_mod_minus, do_mod_plus
 	INTEGER         sp, patt, TM_LENSTR1, STR_UPCASE
-	INTEGER		symbol, color, ipen, status,
+	INTEGER		symbol, icolor, ipen, status,
      .			loc, limit, slen, coord_ax,
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start,
      .			s1, s2, it_start(4), it_end(4),
      .			nparm,  num_it, i, iax(4), i1, loch, locv
 	REAL		val, only_val, sym_size, add_lon
-        REAL*4          thickness
+        REAL*4          thickness, opacity
 	CHARACTER	LEFINT*4, TM_FMT*20, fname*128, poly_opt*10,
      .                  buff*25
 
@@ -157,8 +158,7 @@ CC       => Set values here instead.
 	symbol	  = qual_off	! or ??unspecified_int4??
 	sym_size  = 0.08	! default plot mark size
         thickness = 1.0         ! default thickness
-	color	  = unspecified_int4
-	use_line = .FALSE.
+	icolor	  = unspecified_int4
         sp        = qual_given( slash_cont_spectrum  )
 
         spectrum  = sp .GT. 0 
@@ -172,68 +172,89 @@ CC       => Set values here instead.
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
-* decode qualifiers
-* ... POLYGON/COLOR=n
-	loc = qual_given( slash_polygon_color )
-	IF ( loc .GT. 0  ) THEN
-*          get the color ID
-           CALL EQUAL_COLOR(cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                      color, thickness, status )
-           IF ( status .NE. ferr_ok ) GOTO 5000
-	   use_line = .TRUE.
-	ENDIF
-* ... POLYGON/THICKNESS=n
-
- 200	loc = qual_given( slash_polygon_thick )
-	IF ( loc .GT. 0  ) THEN
-	   use_line = .TRUE.
-	   IF ( color .EQ. unspecified_int4 ) color = 1  ! /THICK -> "BLACK"
-*          convert the color ID into a pen ID using the specified thickness
-           CALL EQUAL_THICK(cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                      thickness, color, ipen, status)
-           IF ( status .NE. ferr_ok ) GOTO 5000
-        ELSE
-*          convert the color ID into a pen ID using the default thickness
-           CALL EQUAL_THICK(' ', thickness, color, ipen, status)
-        ENDIF
-*       assign the pen ID to color
-        color = ipen
-
-* ... POLYGON/LINE_STYLE=n
-	loc = qual_given( slash_polygon_line )
-	IF ( loc .GT. 0  ) THEN
-	   use_line = .TRUE.
-	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			      val, status )	! syntax check
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   IF ( val .NE. unspecified_val4 ) THEN
-c	      limit = num_fancy_lines 			!was num_plain 1/94
-              limit = 3*mode_arg(pmode_linecolors,1)
-	      IF ( val.LE. 0.0 .OR. val.GT.limit ) GOTO 5200
-	      color = NINT( val )	! user-specified line style
-	   ELSEIF ( color .EQ. unspecified_int4 ) THEN
-	      color = qual_on		! auto selection of line style
-	   ENDIF
-	ENDIF
-
-
 * decide on line or fill or both
-	line_it   = use_line 
+        use_line   = ( qual_given(slash_polygon_color) .GT. 0 ) .OR.
+     .               ( qual_given(slash_polygon_thick) .GT. 0 ) .OR.
+     .               ( qual_given(slash_polygon_line)  .GT. 0 )
 
-	if (line_it) then
+	if (use_line) then
 	   fill_it = qual_given(slash_polygon_fill) .gt. 0 
      .               .or. spectrum .or. pattern
 	else
 	   fill_it   = .true.
 	end if
 
-	if (line_it .and. fill_it) then
+	if (use_line .and. fill_it) then
 	   poly_opt = '/LINE/FILL'
-	else if (line_it .and. .not. fill_it) then
+	else if (use_line .and. .not. fill_it) then
 	   poly_opt = '/LINE'
 	else
 	   poly_opt = ' '
 	end if
+
+* decode qualifiers
+* ... POLYGON/COLOR=n
+	loc = qual_given( slash_polygon_color )
+	IF ( loc .GT. 0  ) THEN
+*          get the color ID
+           CALL EQUAL_COLOR(cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                      icolor, thickness, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+        ELSEIF ( qual_given( slash_polygon_thick) .GT. 0 ) THEN
+           icolor = 1  ! /THICK -> "BLACK" if color not given
+	ENDIF
+
+* ... CONTOUR/OPACITY=n
+        loc = qual_given( slash_polygon_opacity )
+        IF ( loc .GT. 0 ) THEN
+           CALL EQUAL_VAL(cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                    val, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+           IF ( (val .LT. 0.0) .OR. (val .GT. 100.0) ) GOTO 5500
+           opacity = val / 100.0
+*          Assume the opacity is for the spectrum colors, 
+*          and not the pen, if filling is going to be done
+           IF ( icolor .NE. unspecified_int4 .AND. .NOT. fill_it )
+     .        CALL DUP_COLOR_SET_OPACITY(icolor, opacity)
+           CALL SET_OVERRIDE_OPACITY(opacity)
+        ELSE
+*          overriding opacity not specififed
+           opacity = -1.0
+           CALL SET_OVERRIDE_OPACITY(opacity)
+        ENDIF
+
+* ... POLYGON/THICKNESS=n
+ 200	loc = qual_given( slash_polygon_thick )
+	IF ( loc .GT. 0  ) THEN
+*          From above, icolor will be specified
+*          convert the color ID into a pen ID using the specified thickness
+           CALL EQUAL_THICK(cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                      thickness, icolor, ipen, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+        ELSEIF ( icolor .NE. unspecified_int4 ) THEN
+*          convert the color ID into a pen ID using the default thickness
+           CALL EQUAL_THICK(' ', thickness, icolor, ipen, status)
+        ELSE
+*          set ipen to unspecified_int4
+           ipen = icolor
+        ENDIF
+
+* ... POLYGON/LINE_STYLE=n
+	loc = qual_given( slash_polygon_line )
+	IF ( loc .GT. 0  ) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      val, status )	! syntax check
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF ( val .NE. unspecified_val4 ) THEN
+	      ipen = NINT( val )	! user-specified line style
+              limit = 3*mode_arg(pmode_linecolors,1)
+	      IF ( ipen .LT. 1 .OR. ipen .GT. limit ) GOTO 5200
+              IF ( opacity .GE. 0.0 )
+     .           CALL DUP_STD_PEN_SET_OPACITY(ipen, opacity)
+	   ELSEIF ( icolor .EQ. unspecified_int4 ) THEN
+	      ipen = qual_on		! auto selection of line style
+	   ENDIF
+	ENDIF
 
 * ... POLYGON/hgrat[=dash or line] default is dash
 *     hgrat line type: 0=tics only, 1=dash 2=line
@@ -299,7 +320,7 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
      .				no_range,
      .				only_val,
      .				symbol,
-     .				color,
+     .				ipen,
      .				use_line,
      .				is_logh, 
      .				is_logv,
@@ -336,7 +357,8 @@ c           nlev = 1
       ENDIF
 
 * protect colors already on-screen before a color overlay
-	IF ( overlay ) CALL PPL_SHASET( 'PROTECT' )
+*        PyFerret does not need to protect colors after using them
+*        IF ( overlay ) CALL PPL_SHASET( 'PROTECT' )
 
 * save old and reset to new color spectrum if requested
 	IF ( spectrum ) THEN
@@ -455,7 +477,8 @@ C Reset pplus lines
 
 * protect the new colors and restore the original color spectrum
            IF ( spectrum ) THEN
-              CALL PPL_SHASET( 'PROTECT' )
+*              PyFerret does not need to protect colors after using them
+*              CALL PPL_SHASET( 'PROTECT' )
               CALL PPL_SHASET( 'SPECTRUM' )
            ENDIF
 
@@ -467,6 +490,10 @@ C Reset pplus lines
 * Mark the levels as set; if we used histogram levels it is 0
 
           IF (need_histo) iautoc = 1
+
+* clear the overriding opacity
+        opacity = -1.0
+        CALL SET_OVERRIDE_OPACITY(opacity)
 
 * restore axes? (5/29/97) revised 3/02
 c	IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
@@ -514,4 +541,7 @@ c	IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
  5450	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'AXES arguments must be 0 or 1', *1000 )
+ 5500   CALL ERRMSG( ferr_out_of_range, status,
+     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .          'Value from 0 to 100 must be given', *1000 )
 	END

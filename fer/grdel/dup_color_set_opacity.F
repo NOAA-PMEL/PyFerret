@@ -1,7 +1,5 @@
-	SUBROUTINE SET_DEFAULT_COLORS (zwsid,zwstype,ndx_lo,range)
-	
-*
-*
+      SUBROUTINE DUP_COLOR_SET_OPACITY(icolor, opacity_frac)
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -34,33 +32,42 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-*	Sets the color map between ndx_lo and ndx_hi to ws default
-*	J Davison JISAO/PMEL/TMAP 8.1.89
-* PyFr *kms* 5/13 Add alpha channel (opaque)
 
-        IMPLICIT NONE
-        include         'shade_vars.cmn'
+*  For the active window, uses the RGB part of the given color ID and 
+*  the opacity fraction to create a new temporary color.  The ID of 
+*  this new color is returned in icolor.  Calls STOP if any problems.
 
-	integer		zwsid,ndx_lo,range,ndx_hi,zwstype,err,ndx
-	real		r_val,g_val,b_val,a_val
+        INCLUDE 'fgrdel.cmn'
 
-********************************************************************************
+* calling argument declarations:
+        INTEGER icolor
+        REAL*4 opacity_frac
 
-	ndx_hi	= ndx_lo + range - 1
+* local argument declarations:
+        INTEGER ier
+        REAL*4 redfrac, grnfrac, bluefrac, opaqfrac
 
-*	SET ALL COLORS TO THE DEFAULT
-	do 50 ndx = ndx_lo,ndx_hi
+*       Verify the opacity given is valid
+        IF ( (opacity_frac .LT. 0.0) .OR. (opacity_frac .GT. 1.0) )
+     .     STOP 'Invalid opacity_frac passed to DUP_COLOR_SET_OPACITY'
 
-*	   WHAT IS THE DEFAULT COLOR FOR EACH NDX?
-	   call FGD_GQPCR(zwstype,ndx,err,r_val,g_val,b_val,a_val)
-	   if (err .eq. 0) then
+*       Verify there is an active window
+        IF ( (activewindow .LT. 1) .OR. 
+     .       (activewindow .GT. maxwindowobjs) )
+     .     STOP 'No active window when calling DUP_COLOR_SET_OPACITY'
 
-*	   SET THE COLOR OF THIS NDX
-              if ( overriding_alpha .GE. 0.0 ) a_val = overriding_alpha
-   	      call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val,a_val)
-	   endif
-50	end do
+*       Get the color fractions for the given color
+        CALL FGD_GQCR(activewindow, icolor, ier, 
+     .                redfrac, grnfrac, bluefrac, opaqfrac)
+        IF ( ier .NE. 0 )
+     .     STOP 'Invalid icolor passed to DUP_COLOR_SET_OPACITY'
 
-	return
-	end
+*       Create a new temporary color with the new opacity
+        opaqfrac = opacity_frac
+        CALL FGD_CREATE_TEMP_COLOR(icolor, redfrac, grnfrac, 
+     .                                     bluefrac, opaqfrac)
+
+        RETURN
+
+        END
+

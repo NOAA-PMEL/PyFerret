@@ -83,7 +83,7 @@ class PipedViewerPQ(QMainWindow):
         self.__activepicture = None
         self.__activepainter = None
         # Antialias when drawing?
-        self.__antialias = False
+        self.__antialias = True
         # data for recreating the current view
         self.__fracsides = None
         self.__clipit = True
@@ -1076,9 +1076,7 @@ class PipedViewerPQ(QMainWindow):
                     If not given, the polygon will not be filled.
             "outline": dictionary describing the pen used to outline
                     the polygon; see CmndHelperPQ.getPenFromCmnd
-                    If not given, the border will be drawn with a
-                    cosmetic pen identical to the brush used to fill
-                    the polygon.
+                    If not given, the border will not be drawn.
 
         The coordinates are device coordinates from the upper left corner.
 
@@ -1088,7 +1086,7 @@ class PipedViewerPQ(QMainWindow):
         mypolygon = QPolygonF( [ QPointF(xypair[0], xypair[1]) \
                                      for xypair in mypoints ] )
         self.__activepainter.setRenderHint(QPainter.Antialiasing,
-                                           self.__antialias)
+                                           False)
         try:
             mybrush = self.__helper.getBrushFromCmnd(cmnd["fill"])
         except KeyError:
@@ -1098,8 +1096,7 @@ class PipedViewerPQ(QMainWindow):
         except KeyError:
             if ( mybrush == Qt.NoBrush ):
                 raise ValueError( self.tr('drawPolygon called without a Brush or Pen') )
-            # Use a cosmetic Pen matching the brush
-            mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
+            mypen = Qt.NoPen
         self.__activepainter.setBrush(mybrush)
         self.__activepainter.setPen(mypen)
         self.__activepainter.drawPolygon(mypolygon)
@@ -1123,9 +1120,7 @@ class PipedViewerPQ(QMainWindow):
                     If not given, the rectangle will not be filled.
             "outline": dictionary describing the pen used to outline
                     the rectangle; see CmndHelperPQ.getPenFromCmnd
-                    If not given, the border will be drawn with a
-                    cosmetic pen identical to the brush used to fill
-                    the rectangle.
+                    If not given, the border will not be drawn.
 
         The coordinates are device coordinates from the upper left corner.
 
@@ -1143,7 +1138,7 @@ class PipedViewerPQ(QMainWindow):
             raise ValueError("height of the rectangle in not positive")
         myrect = QRectF(sides.left(), sides.top(), width, height)
         self.__activepainter.setRenderHint(QPainter.Antialiasing,
-                                           self.__antialias)
+                                           False)
         try:
             mybrush = self.__helper.getBrushFromCmnd(cmnd["fill"])
         except KeyError:
@@ -1153,8 +1148,7 @@ class PipedViewerPQ(QMainWindow):
         except KeyError:
             if ( mybrush == Qt.NoBrush ):
                 raise ValueError( self.tr('drawPolygon called without a Brush or Pen') )
-            # Use a cosmetic Pen matching the brush
-            mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
+            mypen = Qt.NoPen
         self.__activepainter.setBrush(mybrush)
         self.__activepainter.setPen(mypen)
         self.__activepainter.drawRect(myrect)

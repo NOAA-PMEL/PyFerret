@@ -101,6 +101,7 @@
 * V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
 * PyFr  *kms* 7/13 EQUAL_COLOR now returns a color ID, and EQUAL_THICK 
 *                  returns a pen ID from a color ID and a thickness.
+* PyFr  *kms* 7/13 Added /OPACITY
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -131,7 +132,7 @@
      .			is_logh, is_logv, nokey, no_data, no_range,
      .			continuous_key, do_key, spectrum
 	INTEGER		TM_LENSTR1, STR_UPCASE, STR_SAME,
-     .                  symbol, color, ipen, status,
+     .                  symbol, icolor, ipen, status,
      .			loc, limit, slen, thick, step_inc,
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start,
@@ -139,7 +140,7 @@
      .			nparm, dot_sym, num_it, i, iax(4), i1,
      .                  loch, locv
 	REAL		val, sym_size, dashstyle(4), only_val
-        REAL*4          thickness
+        REAL*4          thickness, opacity
 	CHARACTER	LEFINT*4, buff*128
 	
 	CHARACTER	TM_FMT*12, TM_INQ_PATH*2048, sfile*2048
@@ -188,7 +189,7 @@ CC       => Set values here instead.
 	symbol	  = unspecified_int4
 	sym_size  = 0.08	! default plot mark size
 	thick	  = 1		! default thickness
-	color     = qual_on	! automatic selection as default
+	icolor    = qual_on	! automatic selection as default
 	step_inc  = 1
         do_dash   = 0		! default no dashes
 
@@ -230,7 +231,6 @@ CC       => Set values here instead.
 	      ENDIF
            ENDIF
 	   use_line = .FALSE.		! default to no line w/ symbol
-! 6/00	   color = 1			! default symbol color	      
 	ENDIF
 * ... PLOT/SYM_SIZE=float
 	loc = qual_given( slash_plot_symsize )
@@ -238,7 +238,7 @@ CC       => Set values here instead.
 	   IF ( symbol .EQ. unspecified_int4 ) THEN
 	       symbol = qual_on		! turn on symbols if needed
 	       use_line = .FALSE.
-	       color = 1	
+	       icolor = 1
 	   ENDIF
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
      .			      val, status )	! syntax check
@@ -257,9 +257,25 @@ CC       => Set values here instead.
 	loc = qual_given( slash_plot_color )
 	IF ( loc .GT. 0  ) THEN
 	   CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                       color, thickness, status )
+     .                       icolor, thickness, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
 	ENDIF
+* ... PLOT/OPACITY=n
+        loc = qual_given( slash_plot_opacity )
+        IF ( loc .GT. 0 ) THEN
+           CALL EQUAL_VAL(cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                    val, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+           IF ( (val .LT. 0.0) .OR. (val .GT. 100.0) ) GOTO 5500
+           opacity = val / 100.0
+           IF ( icolor .GE. 0 )
+     .        CALL DUP_COLOR_SET_OPACITY(icolor, opacity)
+           CALL SET_OVERRIDE_OPACITY(opacity)
+        ELSE
+*          overriding opacity not specififed
+           opacity = -1.0
+           CALL SET_OVERRIDE_OPACITY(opacity)
+        ENDIF
 * ... PLOT/THICKNESS=n
  	loc = qual_given( slash_plot_thick )
 	IF ( loc .GT. 0  ) THEN
@@ -268,20 +284,18 @@ CC       => Set values here instead.
 *             convert the color ID into a (thin) pen ID
 *             note that thickness is explicitly REAL*4 (not REAL)
               thickness = 1.0
-              CALL EQUAL_THICK(' ', thickness, color, ipen, status)
+              CALL EQUAL_THICK(' ', thickness, icolor, ipen, status)
               IF ( status .NE. ferr_ok ) GOTO 5000
            ELSE
               CALL EQUAL_THICK(cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                         thickness, color, ipen, status)
+     .                         thickness, icolor, ipen, status)
               IF ( status .NE. ferr_ok ) GOTO 5000
            ENDIF
         ELSE
 *          /THICK not given; convert color ID to pen ID using default thickness
-           CALL EQUAL_THICK(' ', thickness, color, ipen, status)
+           CALL EQUAL_THICK(' ', thickness, icolor, ipen, status)
            IF ( status .NE. ferr_ok ) GOTO 5000
         ENDIF
-*       assign the pen ID to color
-        color = ipen
 * ... PLOT/LINE_STYLE=n
 	loc = qual_given( slash_plot_line )
 	IF ( loc .GT. 0  ) THEN
@@ -290,10 +304,11 @@ CC       => Set values here instead.
      .			      val, status )	! syntax check
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   IF ( val .NE. unspecified_val4 ) THEN
-c	      limit = num_fancy_lines 			!was num_plain 1/94
               limit = 3*mode_arg(pmode_linecolors,1)
-	      IF ( val.LE. 0.0 .OR. val.GT.limit ) GOTO 5200
-	      color = NINT( val )	! user-specified line style
+	      ipen = NINT( val )	! user-specified line style
+	      IF ( ipen .LT. 1 .OR. ipen .GT. limit ) GOTO 5200
+              IF ( opacity .GE. 0.0 )
+     .           CALL DUP_STD_PEN_SET_OPACITY(ipen, opacity)
 	   ENDIF
 * ... default to no symbols when /LINE_STYLE, alone, is given
 * 	or for PLOT/VS/LINE  (1/27/95)
@@ -328,7 +343,7 @@ c	   IF (.NOT.versus)  GOTO 5470
 
 * If a thickness is given, set pen number to the thickness, pen=1,2,or 3
 
-	   color = 1
+	   ipen = 1
  	   loc = qual_given( slash_plot_thick )
 	   IF ( loc .GT. 0  ) THEN
 
@@ -340,7 +355,7 @@ c	   IF (.NOT.versus)  GOTO 5470
 	      ELSE
 	         thick = 2  ! default if no value is specified
 	      ENDIF
-	      color = thick 
+	      ipen = thick 
 	   ENDIF
 	   
 	   ribbon_plot = .TRUE.
@@ -525,7 +540,7 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
      .				no_labels,
      .				symbol,
      .				sym_size,
-     .				color,
+     .				ipen,
      .				use_line,
      .				step_inc,
      .				do_dash,
@@ -623,6 +638,10 @@ c done in plot_set_up.
 	   ENDIF
 	ENDIF
 
+* clear the overriding opacity
+        opacity = -1.0
+        CALL SET_OVERRIDE_OPACITY(opacity)
+
 * restore axes? (5/29/97  revised 3/2002
 c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
@@ -650,7 +669,8 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 	
 * Ribbon plot? protect the new colors and restore the original color spectrum
            IF ( spectrum ) THEN
-              CALL PPL_SHASET( 'PROTECT' )
+*              PyFerret does not need to protect colors after using them
+*              CALL PPL_SHASET( 'PROTECT' )
               CALL PPL_SHASET( 'SPECTRUM' )
            ENDIF
 
@@ -690,9 +710,6 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
  5450	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'AXES arguments must be 0 or 1', *1000 )
- 5460	CALL ERRMSG( ferr_out_of_range, status, 
-     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
-     .		'/COLOR=WHITE only available with /THICK=1', *1000 )
  5470	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .	'Ribbon plot PLOT/LEVELS valid only with /VS', *1000 )
@@ -708,4 +725,7 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
  5490	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .	'/COLOR not valid for PLOT/LEVELS ribbon plot', *1000 )
+ 5500   CALL ERRMSG( ferr_out_of_range, status,
+     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .          'Value from 0 to 100 must be given', *1000 )
 	END

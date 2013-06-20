@@ -68,7 +68,7 @@
 
 * internal variable declarations
 	LOGICAL	MATCH4, TM_DIGIT
-	INTEGER	TM_LENSTR, TM_LENSTR1, STR_UPCASE, numlinecolors,
+	INTEGER	TM_LENSTR, TM_LENSTR1, STR_UPCASE, ncolors,
      .          equal_pos, slen, strt, vax_code, len_test, len_mchars
 	REAL	val
         REAL*4 redfrac, grnfrac, bluefrac, opaqfrac
@@ -92,7 +92,7 @@
 	equal_pos = INDEX( string, '=' )
 * in general, the default thickness is thin
         dfltthick = 1.0
-        numlinecolors = mode_arg(pmode_linecolors,1)
+        ncolors = mode_arg(pmode_linecolors,1)
 
 	IF ( equal_pos .EQ. 0 ) THEN
 	   str = ' '				! "name", alone
@@ -139,16 +139,16 @@
               icolor = NINT( val )
               IF ((icolor .LT. 0).OR.(icolor .GE. maxcolorobjs-1)) THEN
                  GOTO 5200
-              ELSE IF ( icolor .LE. numlinecolors ) THEN
+              ELSE IF ( icolor .LE. ncolors ) THEN
 *                Pen is thin with the color ID same as pen ID
                  CONTINUE
-              ELSE IF ( icolor .LE. 2 * numlinecolors ) THEN
-*                Pen is medium thickness with color ID  1 - numlinecolors
-                 icolor = icolor - numlinecolors
+              ELSE IF ( icolor .LE. 2 * ncolors ) THEN
+*                Pen is medium thickness with color ID  1 - ncolors
+                 icolor = icolor - ncolors
                  dfltthick = 2.0
-              ELSE IF ( icolor .LE. 3 * numlinecolors ) THEN
-*                Pen is thick with color ID  1 - numlinecolors
-                 icolor = icolor - 2 * numlinecolors
+              ELSE IF ( icolor .LE. 3 * ncolors ) THEN
+*                Pen is thick with color ID  1 - ncolors
+                 icolor = icolor - 2 * ncolors
                  dfltthick = 3.0
               ENDIF
            ENDIF

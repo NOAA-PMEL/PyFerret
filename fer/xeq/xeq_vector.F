@@ -106,6 +106,7 @@
 *                  A time axis may be a T axis or F axis
 * PyFr  *kms* 7/13 EQUAL_COLOR now returns a color ID, and EQUAL_THICK 
 *                  returns a pen ID from a color ID and a thickness.
+* PyFr  *kms* 7/13 Added /OPACITY
 
 
 	include 'tmap_dims.parm'
@@ -143,7 +144,7 @@
      .                  loch, locv, ier, ist
         INTEGER   STR_UPCASE, i1
 	REAL		only_x, aspect, vbuf, xloc, yloc
-        REAL*4          thickness
+        REAL*4          thickness, opacity
 	CHARACTER	buff*25
 
 
@@ -237,21 +238,43 @@
            CALL EQUAL_COLOR(cmnd_buff(qual_start(loc):qual_end(loc)),
      .                      icolor, thickness, status)
            IF ( status .NE. ferr_ok ) GOTO 5000
+        ELSE IF ( qual_given( slash_vect_thick ) .GT. 0 ) THEN
+           icolor = 1  ! /THICK alone means "BLACK" if color not specified
         ELSE
            icolor = -1  ! auto-select in DISP_SET_UP
 	ENDIF
 
+* ... CONTOUR/OPACITY=n
+        loc = qual_given( slash_vect_opacity )
+        IF ( loc .GT. 0 ) THEN
+           CALL EQUAL_VAL(cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                    vbuf, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+           IF ( (vbuf .LT. 0.0) .OR. (vbuf .GT. 100.0) ) GOTO 5500
+           opacity = vbuf / 100.0
+           IF ( icolor .GE. 0 )
+     .        CALL DUP_COLOR_SET_OPACITY(icolor, opacity)
+           CALL SET_OVERRIDE_OPACITY(opacity)
+        ELSE
+*          overriding opacity not specififed
+           opacity = -1.0
+           CALL SET_OVERRIDE_OPACITY(opacity)
+        ENDIF
+
 * ... VECTOR/THICKNESS=n
 	loc = qual_given( slash_vect_thick )
 	IF ( loc .GT. 0  ) THEN
-           IF ( icolor .EQ. -1 ) icolor = 1  ! /THICK alone means "BLACK"
+*          From above, icolor will be specified
 *          convert the color ID into a pen ID using the specified thickness
            CALL EQUAL_THICK(cmnd_buff(qual_start(loc):qual_end(loc)),
      .                      thickness, icolor, ipen, status)
            IF ( status .NE. ferr_ok ) GOTO 5000
-        ELSE
+        ELSEIF ( icolor .GE. 0 ) THEN
 *          convert the color ID into a pen ID using the default thickness
            CALL EQUAL_THICK(' ', thickness, icolor, ipen, status)
+        ELSE
+*          set ipen to auto-select
+           ipen = icolor
         ENDIF
 
 * for flowline plots, get the density
@@ -514,6 +537,10 @@ C   Save the skip values in a symbol PPL_VEC_XSKIP, PPL_VEC_YSKIP
 * restore axes? (5/29/97  revised 3/2002
 c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
+* clear the overriding opacity
+        opacity = -1.0
+        CALL SET_OVERRIDE_OPACITY(opacity)
+
 * interrupt occurred during plot ?
 	IF ( ppl_interrupted ) GOTO 1000
 
@@ -540,4 +567,7 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
  5450	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'AXES arguments must be 0 or 1', *1000 )
+ 5500   CALL ERRMSG( ferr_out_of_range, status,
+     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .          'Value from 0 to 100 must be given', *1000 )
 	END

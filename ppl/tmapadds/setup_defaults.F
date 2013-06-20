@@ -170,6 +170,9 @@
 	sb(6) = 0.0
 	sa(6) = 1.0
 
+* negative overriding_alpha means not activated
+        overriding_alpha = -1.0;
+
 *       DO THE KEY --- move most of this setup to routine SHADE_KEY; values
 *       need to be initialized with each call.
 

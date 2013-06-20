@@ -102,6 +102,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *                  A time axis may be a T axis or F axis
 * V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
+* PyFr  *kms* 7/13 Added /OPACITY
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -132,7 +133,8 @@
      .		  ax2_blks, ax2_start, i, nparm, num_it, 
      .		  loc, s1, s2, it_start(4), it_end(4), iax(4),
      .            density, i1, loch, locv
-	REAL	  only_val, aspect
+	REAL	  only_val, aspect, vbuf
+        REAL*4    opacity
 	PARAMETER ( aspect = 0.0)			!kob 12/96
 
 	CHARACTER TM_FMT*12, TM_INQ_PATH*2048, 
@@ -161,8 +163,8 @@
 	   noaxes = .FALSE.
 	   axes = .FALSE.
 	ENDIF
-	is_logh   = qual_given( slash_is_logh        ).GT.0  ! Not valid quals
-	is_logv   = qual_given( slash_is_logv        ).GT.0  ! for shade
+	is_logh   = .FALSE.
+	is_logv   = .FALSE.
         spectrum  = sp .GT. 0 
         patt      = qual_given( slash_shad_pattern   )
         pattern   = patt .GT. 0
@@ -195,6 +197,21 @@
         ENDIF
 
         CALL set_graticules(loch, locv, status)
+
+* ... SHADE/OPACITY=n
+        loc = qual_given( slash_shad_opacity )
+        IF ( loc .GT. 0 ) THEN
+           CALL EQUAL_VAL(cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                    vbuf, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+           IF ( (vbuf .LT. 0.0) .OR. (vbuf .GT. 100.0) ) GOTO 5500
+           opacity = vbuf / 100.0
+           CALL SET_OVERRIDE_OPACITY(opacity)
+        ELSE
+*          overriding opacity not specififed
+           opacity = -1.0
+           CALL SET_OVERRIDE_OPACITY(opacity)
+        ENDIF
 
 
 * set up the axes and title and load the data into PPLUS
@@ -281,7 +298,8 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
            ENDIF
 
 * protect colors already on-screen before a color overlay
-           IF ( overlay ) CALL PPL_SHASET( 'PROTECT' )
+*           PyFerret does not need to protect colors after using them
+*           IF ( overlay ) CALL PPL_SHASET( 'PROTECT' )
 
 * save old and reset to new color spectrum if requested
            IF ( spectrum ) THEN
@@ -406,9 +424,14 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
 
 	   ENDIF
 
+* clear the overriding opacity
+        opacity = -1.0
+        CALL SET_OVERRIDE_OPACITY(opacity)
+
 * protect the new colors and restore the original color spectrum
            IF ( spectrum ) THEN
-              CALL PPL_SHASET( 'PROTECT' )
+*              PyFerret does not need to protect colors after using them
+*              CALL PPL_SHASET( 'PROTECT' )
               CALL PPL_SHASET( 'SPECTRUM' )
            ENDIF
 
@@ -454,5 +477,8 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
  5450	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'AXES arguments must be 0 or 1', *1000 )
+ 5500   CALL ERRMSG( ferr_out_of_range, status,
+     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .          'Value from 0 to 100 must be given', *1000 )
 	END
 

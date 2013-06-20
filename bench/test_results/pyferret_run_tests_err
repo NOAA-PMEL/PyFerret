@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Jun 13 12:16 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Jun 20 13:43 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -220,7 +220,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Thu Jun 13 13:28:48 PDT 2013
+Beginning at Thu Jun 20 14:19:14 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -443,7 +443,9 @@ plot/over/i=1:10/size=-1 i
  **ERROR: invalid command: color=noexist
           Colors are Black, Red, Green, Blue, LightBlue, Purple, and White
 cont/over/i=1:10/color=noexist i
- **ERROR: unknown command qualifier: thick=4
+ *** NOTE: /THICKNESS ignored unless /COLOR (or /PEN) given
+ **ERROR: dimensions improperly specified: overlay not valid in plane of plot
+          cont/over/i=1:10/thick=4 i
 cont/over/i=1:10/thick=4 i
  **ERROR: value out of legal range: sigdig=-1
           Value must be positive
@@ -3249,4 +3251,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Thu Jun 13 13:32:53 PDT 2013
+Ended at Thu Jun 20 14:23:00 PDT 2013

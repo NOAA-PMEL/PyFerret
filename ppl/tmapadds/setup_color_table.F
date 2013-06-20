@@ -94,12 +94,21 @@
 	      a_val	= sa(cl_0) + a_inc*(lvl - slvl(cl_0))
 
 *             NOW SET THE COLOR OF THIS INDEX/LEVEL
+              IF ( overriding_alpha .GE. 0.0 ) a_val = overriding_alpha
 	      call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val,a_val)
  50	   end do
 
 *	   SET R,G,B,A FOR FIRST AND LAST LEVELS
- 100	   call FGD_GSCR(zwsid,ndx_hi,sr(ncl),sg(ncl),sb(ncl),sa(ncl))
- 101	   call FGD_GSCR(zwsid,ndx_lo,sr(1),sg(1),sb(1),sa(1))
+ 100       IF ( overriding_alpha .GE. 0.0 ) THEN
+              call FGD_GSCR(zwsid,ndx_hi,sr(ncl),sg(ncl),sb(ncl),overriding_alpha)
+           ELSE
+              call FGD_GSCR(zwsid,ndx_hi,sr(ncl),sg(ncl),sb(ncl),sa(ncl))
+           ENDIF
+ 101       IF ( overriding_alpha .GE. 0.0 ) THEN
+              call FGD_GSCR(zwsid,ndx_lo,sr(1),sg(1),sb(1),overriding_alpha)
+           ELSE
+              call FGD_GSCR(zwsid,ndx_lo,sr(1),sg(1),sb(1),sa(1))
+           ENDIF
 
 	else if (rgb_mapping .eq. by_value) then
 	   if (ncl .eq. 0) then
@@ -123,9 +132,17 @@
 	   
 *	      LOCATE THIS LEVEL IN THE SPECIFIED SPECTRUM LEVELS
 	      if (lvl .lt. slvl(1)) then
-		 call FGD_GSCR(zwsid,ndx,sr(1),sg(1),sb(1),sa(1))
+                 IF ( overriding_alpha .GE. 0.0 ) THEN
+                    call FGD_GSCR(zwsid,ndx,sr(1),sg(1),sb(1),overriding_alpha)
+                 ELSE
+                    call FGD_GSCR(zwsid,ndx,sr(1),sg(1),sb(1),sa(1))
+                 ENDIF
 	      else if  (lvl .ge. slvl(ncl)) then
-		 call FGD_GSCR(zwsid,ndx,sr(ncl),sg(ncl),sb(ncl),sa(ncl))
+                 IF ( overriding_alpha .GE. 0.0 ) THEN
+                    call FGD_GSCR(zwsid,ndx,sr(ncl),sg(ncl),sb(ncl),overriding_alpha)
+                 ELSE
+                    call FGD_GSCR(zwsid,ndx,sr(ncl),sg(ncl),sb(ncl),sa(ncl))
+                 ENDIF
 	      else
 		 do 110 t_cl = cl_0,ncl-1
 		    if (lvl .lt. slvl(t_cl+1)) then
@@ -153,6 +170,7 @@
 		 a_val	= sa(cl_0) + a_inc*(lvl - slvl(cl_0))
 
 *                NOW SET THE COLOR OF THIS INDEX/LEVEL
+                 IF ( overriding_alpha .GE. 0.0 ) a_val = overriding_alpha
 		 call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val,a_val)
 	      end if
  150	   end do
@@ -160,8 +178,16 @@
 	   goto 2000
 
 *	   SET R,G,B FOR FIRST AND LAST LEVELS
- 200	   call FGD_GSCR(zwsid,ndx_hi,sr(ncl),sg(ncl),sb(ncl),sa(ncl))
- 201	   call FGD_GSCR(zwsid,ndx_lo,sr(1),sg(1),sb(1),sa(1))
+ 200       IF ( overriding_alpha .GE. 0.0 ) THEN
+              call FGD_GSCR(zwsid,ndx_hi,sr(ncl),sg(ncl),sb(ncl),overriding_alpha)
+           ELSE
+              call FGD_GSCR(zwsid,ndx_hi,sr(ncl),sg(ncl),sb(ncl),sa(ncl))
+           ENDIF
+ 201       IF ( overriding_alpha .GE. 0.0 ) THEN
+              call FGD_GSCR(zwsid,ndx_lo,sr(1),sg(1),sb(1),overriding_alpha)
+           ELSE
+              call FGD_GSCR(zwsid,ndx_lo,sr(1),sg(1),sb(1),sa(1))
+           ENDIF
 
 	else if (rgb_mapping .eq. by_level) then
 *	   ATOMIC COLORS -- AS MANY COLORS AS SET IN COLOR PALETTE
@@ -171,6 +197,7 @@
 	      b_val = sb(ndx - ndx_lo + 1)    
 	      a_val = sa(ndx - ndx_lo + 1)    
 
+              IF ( overriding_alpha .GE. 0.0 ) a_val = overriding_alpha
 	      call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val,a_val)
  1000	   end do
 	end if

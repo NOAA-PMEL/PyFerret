@@ -485,15 +485,11 @@ c 75        CONTINUE
 * set line thickness scaling factor?
         qp = qual_given(slash_thicken)
         IF ( qp .GT. 0 ) THEN
-            CALL EQUAL_STRING(cmnd_buff(qual_start(qp):qual_end(qp)), 
-     .                        buffer, status)
+            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)), 
+     .                     scale, status)
             IF ( status .NE. ferr_ok ) RETURN
-            IF ( buffer .EQ. ' ' ) THEN
-                buffer = 'thicken value ?'
-                GOTO 5050
-            ENDIF
-            READ ( buffer, *, ERR=5080 ) dfltthick
-            IF ( dfltthick .LE. 0.0 ) GOTO 5090
+            IF ( scale .LE. 0.0 ) GOTO 5070
+            dfltthick = scale
             CALL FGD_SET_THICK_FACTOR(n, dfltthick)
         ENDIF
 
@@ -508,30 +504,18 @@ c 75        CONTINUE
 *           Check if opacity is given before resetting the background
         ENDIF
 
-* opacity specified? (must be after /COLOR to reset alpha channel value if given)
+* opacity specified? (must be after /COLOR to reset alpha channel value)
         qp = qual_given(slash_opacity)
         IF ( qp .GT. 0 ) THEN
-            CALL EQUAL_STRING(cmnd_buff(qual_start(qp):qual_end(qp)), 
-     .                        buffer, status)
+            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)), 
+     .                     scale, status)
             IF ( status .NE. ferr_ok ) RETURN
-            IF ( buffer .EQ. ' ' ) THEN
-                buffer = 'opacity value ?'
-                GOTO 5050
-            ENDIF
-  
-*           Get the background color (either zero or the one just specified)
-            CALL FGD_GQCR(n, bkgcolor, ier, 
-     .                    redfrac, grnfrac, bluefrac, opaqfrac)
-            IF ( ier .NE. 0 ) GOTO 5070
-
-*           Get the new opacity
-            READ ( buffer, *, ERR=5080 ) opaqfrac
-            IF ((opaqfrac .LT. 0.0).OR.(opaqfrac .GT. 100.0)) GOTO 5080
-            opaqfrac = opaqfrac / 100.0
-            CALL FGD_CREATE_TEMP_COLOR(bkgcolor, redfrac, grnfrac, 
-     .                                           bluefrac, opaqfrac)
+            IF ( (scale .LT. 0.0) .OR. (scale .GT. 100.0) ) GOTO 5080
+            opaqfrac = scale / 100.0
+*           create a temporary color with the new opacity
+            CALL DUP_COLOR_SET_OPACITY(bkgcolor, opaqfrac)
         ENDIF
-
+  
         IF ( bkgcolor > 0 ) THEN
 *           Get the RGBA fractions for the new background
             CALL FGD_GQCR(n, bkgcolor, ier, 
@@ -629,12 +613,11 @@ C
  5050	CALL ERRMSG( ferr_out_of_range, status, buffer,*5000)
  5060	CALL ERRMSG( ferr_invalid_command,status,
      .          'no open window',*5000 )
- 5070   CALL ERRMSG( ferr_invalid_command, status,
-     .          'Unexpected error: no background color', *5000)
- 5080   CALL ERRMSG( ferr_out_of_range, status, 
-     .          'Invalid opacity specification', *5000)
- 5090   CALL ERRMSG( ferr_out_of_range, status, 
+ 5070   CALL ERRMSG( ferr_out_of_range, status, 
      .          'Invalid thicken specification; '//
-     .          'must be a positive number', *5000)
+     .          'a positive number must be given', *5000)
+ 5080   CALL ERRMSG( ferr_out_of_range, status, 
+     .          'Invalid opacity specification; '//
+     .          'a value from 0 to 100 must be given', *5000)
 	END
 

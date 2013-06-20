@@ -22,8 +22,7 @@
  *
  * If the brush argument is NULL, the rectangle will not be
  * filled.  If the pen argument is NULL, the rectangle edges
- * will be drawn using a solid cosmetic pen with the same
- * color/pattern as the brush.
+ * will not be drawn.
  *
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
@@ -41,6 +40,7 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
     double     adjheight;
     int        k;
     double     adjdashes[8];
+    int        antialias;
 
     /* Sanity checks */
     if ( (self->enginename != CairoCFerBindName) &&
@@ -91,6 +91,9 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
         unitfactor = CCFB_POINTS_PER_PIXEL;
     }
 
+    antialias = instdata->antialias;
+    cairoCFerBind_setAntialias(self, 0);
+
     /* Create the path that will be filled and/or stroked */
     cairo_new_path(instdata->context);
     adjleft = left * unitfactor;
@@ -111,11 +114,19 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
         else
             cairo_set_source_rgb(instdata->context, brushobj->color.redfrac,
                   brushobj->color.greenfrac, brushobj->color.bluefrac);
-        /* Fill the rectangle, but preserve the path for stroking */
-        cairo_fill_preserve(instdata->context);
+        if ( penobj != NULL ) {
+            /* Fill the rectangle, but preserve the path for stroking */
+            cairo_fill_preserve(instdata->context);
+        }
+        else {
+            /* Fill the polygon and removing the path */
+            cairo_fill(instdata->context);
+        }
         instdata->somethingdrawn = 1;
         instdata->imagechanged = 1;
     }
+
+    cairoCFerBind_setAntialias(self, antialias);
 
     /* Now stroke the path */
     if ( penobj != NULL ) {
@@ -145,19 +156,12 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
         /* Assign the line cap and join styles */
         cairo_set_line_cap(instdata->context, penobj->captype);
         cairo_set_line_join(instdata->context, penobj->jointype);
-    }
-    else {
-        /* Source already assigned; make a cosmetic solid line */
-        cairo_set_line_width(instdata->context, unitfactor);
-        cairo_set_dash(instdata->context, NULL, 0, 0.0);
-        cairo_set_line_cap(instdata->context, CAIRO_LINE_CAP_SQUARE);
-        cairo_set_line_join(instdata->context, CAIRO_LINE_JOIN_BEVEL);
-    }
 
-    /* stroke and remove the path */
-    cairo_stroke(instdata->context);
-    instdata->somethingdrawn = 1;
-    instdata->imagechanged = 1;
+        /* stroke and remove the path */
+        cairo_stroke(instdata->context);
+        instdata->somethingdrawn = 1;
+        instdata->imagechanged = 1;
+    }
 
     return 1;
 }

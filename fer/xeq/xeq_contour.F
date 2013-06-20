@@ -116,6 +116,7 @@
 * V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
 * PyFr  *kms* 7/13 EQUAL_COLOR now returns a color ID, and EQUAL_THICK 
 *                  returns a pen ID from a color ID and a thickness.
+* PyFr  *kms* 7/13 Added /THICK /OPACITY
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -146,7 +147,7 @@
      .            loch, locv
         INTEGER   STR_UPCASE, i1
 	REAL	  vbuf, only_val, aspect, lab_size, lab_spacing
-        REAL*4    dfltthick
+        REAL*4    dfltthick, opacity
 	PARAMETER (aspect = 0.0)			!kob 12/96
 	CHARACTER TM_FMT*12, TM_INQ_PATH*2048, 
      .                  fname*128, buff*25, sfile*2048
@@ -179,6 +180,8 @@
 	   noaxes = .FALSE.
 	   axes = .FALSE.
 	ENDIF
+	is_logh   = .FALSE.
+	is_logv   = .FALSE.
         sp        = qual_given( slash_cont_spectrum  )
         spectrum  = sp .GT. 0 .AND. fill
         is_shade  = .FALSE.
@@ -235,6 +238,7 @@
 	   sigdig = 2
 	ENDIF
 * ... CONTOUR/COLOR=color name or pen number
+        dfltthick = 1.0
 	loc = MAX( qual_given(slash_pen), qual_given(slash_color))
 	IF ( loc .GT. 0 ) THEN
 	   IF (.NOT.denig_pen_msg_done .AND. qual_given(slash_pen).GT.0)
@@ -246,12 +250,49 @@
            CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                       icolor, dfltthick, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
-*          get the pen ID from the color ID and default thickness
+	ELSE
+	   icolor = -1	! auto-select in DISP_SET_UP
+	ENDIF
+
+* ... CONTOUR/OPACITY=n
+        loc = qual_given( slash_cont_opacity )
+        IF ( loc .GT. 0 ) THEN
+           CALL EQUAL_VAL(cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                    vbuf, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+           IF ( (vbuf .LT. 0.0) .OR. (vbuf .GT. 100.0) ) GOTO 5500
+           opacity = vbuf / 100.0
+*          Assume the opacity is for the spectrum colors, 
+*          and not the pen, if fill is specified
+           IF ( icolor .GE. 0 .AND. .NOT. fill )
+     .        CALL DUP_COLOR_SET_OPACITY(icolor, opacity)
+           CALL SET_OVERRIDE_OPACITY(opacity)
+        ELSE
+*          overriding opacity not specififed
+           opacity = -1.0
+           CALL SET_OVERRIDE_OPACITY(opacity)
+        ENDIF
+
+* ... CONTOUR/THICKNESS=n
+        loc = qual_given( slash_cont_thick )
+        IF ( loc .GT. 0  ) THEN
+           IF ( icolor .GE. 0 ) THEN
+              CALL EQUAL_THICK(cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                         dfltthick, icolor, ipen, status)
+              IF ( status .NE. ferr_ok ) GOTO 5000
+           ELSE
+*             leave as the auto-select value (-1)
+              CALL WARN ('/THICKNESS ignored unless /COLOR (or /PEN) given')
+              ipen = icolor
+           ENDIF
+        ELSEIF ( icolor .GE. 0 ) THEN
+*          /THICK not given; convert color ID to pen ID using default thickness
            CALL EQUAL_THICK(' ', dfltthick, icolor, ipen, status)
            IF ( status .NE. ferr_ok ) GOTO 5000
-	ELSE
-	   ipen = -1	! auto-select in DISP_SET_UP
-	ENDIF
+        ELSE
+*          /THICK and /COLOR not given; leave as auto-select value (-1)
+           ipen = icolor
+        ENDIF
 
 * ... CONTOUR/hgrat[=dash or line] default is dash
 *     hgrat line type: 0=tics only, 1=dash, 2=line
@@ -364,7 +405,8 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
            ENDIF
 
 * protect colors already on-screen before a color overlay
-           IF ( overlay .AND. fill ) CALL PPL_SHASET( 'PROTECT' )
+*              PyFerret does not need to protect colors after using them
+*           IF ( overlay .AND. fill ) CALL PPL_SHASET( 'PROTECT' )
 
 * save old and reset to new color spectrum if requested
            IF ( spectrum ) THEN
@@ -507,7 +549,8 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
 
 * protect the new colors and restore the original color spectrum
            IF ( spectrum ) THEN
-              CALL PPL_SHASET( 'PROTECT' )
+*              PyFerret does not need to protect colors after using them
+*              CALL PPL_SHASET( 'PROTECT' )
               CALL PPL_SHASET( 'SPECTRUM' )
            ENDIF
 
@@ -519,6 +562,10 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
 * Mark the levels as set; if we used histogram levels it is 0
 
           IF (need_histo) iautoc = 1
+
+* clear the overriding opacity
+        opacity = -1.0
+        CALL SET_OVERRIDE_OPACITY(opacity)
 
 * restore axes? (5/29/97  revised 3/2002 
 
@@ -559,5 +606,8 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
  5450	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'AXES arguments must be 0 or 1', *1000 )
+ 5500   CALL ERRMSG( ferr_out_of_range, status,
+     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .          'Value from 0 to 100 must be given', *1000 )
 
 	END

@@ -89,12 +89,8 @@
 ! range them between 0.6,0.6,0.6 and 0.9,0.9,0.9
 
         IF (num_line_colors .GT. 7) THEN
-           frac = (0.9-0.6)/FLOAT(num_line_colors - 7)
-           IF ( num_line_colors .EQ. 8 ) THEN
-               grey = 0.8
-           ELSE
-               grey = 0.9
-           ENDIF
+           frac = (0.8-0.4)/FLOAT(num_line_colors - 7)
+           grey = 0.8
            DO 40 j = 8, num_line_colors
               call FGD_GSCR(zwsid,j,grey,grey,grey,1.0)
               grey = grey - frac

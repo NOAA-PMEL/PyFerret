@@ -1,6 +1,5 @@
-	SUBROUTINE SET_DEFAULT_COLORS (zwsid,zwstype,ndx_lo,range)
-	
-*
+        SUBROUTINE SET_OVERRIDE_OPACITY(opaq_frac)
+
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -34,33 +33,18 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-*	Sets the color map between ndx_lo and ndx_hi to ws default
-*	J Davison JISAO/PMEL/TMAP 8.1.89
-* PyFr *kms* 5/13 Add alpha channel (opaque)
 
         IMPLICIT NONE
-        include         'shade_vars.cmn'
+        INCLUDE 'shade_vars.cmn'
 
-	integer		zwsid,ndx_lo,range,ndx_hi,zwstype,err,ndx
-	real		r_val,g_val,b_val,a_val
+        REAL*4 opaq_frac
+        INTEGER istat
 
-********************************************************************************
-
-	ndx_hi	= ndx_lo + range - 1
-
-*	SET ALL COLORS TO THE DEFAULT
-	do 50 ndx = ndx_lo,ndx_hi
-
-*	   WHAT IS THE DEFAULT COLOR FOR EACH NDX?
-	   call FGD_GQPCR(zwstype,ndx,err,r_val,g_val,b_val,a_val)
-	   if (err .eq. 0) then
-
-*	   SET THE COLOR OF THIS NDX
-              if ( overriding_alpha .GE. 0.0 ) a_val = overriding_alpha
-   	      call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val,a_val)
-	   endif
-50	end do
-
-	return
-	end
+*     -1.0 means do not use the overriding opacity
+*     otherwise the opacity fraction must be in [0.0,1.0]
+        IF ( (opaq_frac .NE. -1.0) .AND. 
+     .       ((opaq_frac .LT. 0.0) .OR. (opaq_frac .GT. 1.0)) )
+     .     STOP 'Invalid opaq_frac given to SET_OVERRIDE_OPACITY'
+        overriding_alpha = opaq_frac
+        RETURN
+        END

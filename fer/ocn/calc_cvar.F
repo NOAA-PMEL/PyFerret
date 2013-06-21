@@ -49,6 +49,7 @@
 *	 5/15/90 - special unknown subscript checks for AIR components
 * V312: 5/94 - array "memory" as a calling argument
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
+* V685 *acm*  6/13 Increase nominal length of abstract axis
 
 * calling arguments:
 * inp	cx	- "context" of the desired result (variable,data set and region)
@@ -110,7 +111,7 @@
 	grid   = cx_grid( cx )
 	DO 1 idim = 1, 4
 	res_ss_lo(idim) = 0
-	res_ss_hi(idim) = 999999
+	res_ss_hi(idim) = 9999999
 	unk( idim ) = .FALSE.
  1	chg( idim ) = .FALSE.
 

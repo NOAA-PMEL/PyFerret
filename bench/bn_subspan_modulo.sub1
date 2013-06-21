@@ -13,7 +13,7 @@ show axis ($1)sub
 ! write the axis into a netCDF file
 let A = ($1)[g($1)=($1)sub]
 save/file=test_mod.cdf/clobber a
-sp ncdump -c test_mod.cdf | sed -e '/modulo/d' | ncgen -o test_nomod.cdf
+sp ncdump -c test_mod.cdf | sed -e '/modulo/d' | ncgen3 -o test_nomod.cdf
 cancel var A; cancel axis ($1)sub
 
 ! examine the axis that is read back

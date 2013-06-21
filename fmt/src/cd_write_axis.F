@@ -1,8 +1,7 @@
 	SUBROUTINE CD_WRITE_AXIS ( cdfid, dset, grid, idim, recdim,
      .                           loss, hiss, ax_type,  edges_flag, 
      .                           do_bounds, mode_upcase_output,  
-     .                           keepax_flag, name_from_grid, do_coords, 
-     .                           status )
+     .                           keepax_flag, name_from_grid, status )
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -96,7 +95,7 @@
 *                 just check the length. See ticket 2075.
 * V685 5/13 *acm* Allow specifying data type for axis
 * V685 6/13 *acm* new qualifier SAVE/NOBOUNDS
-* V685 6/13 *acm* new qualifier SAVE/NOCOORDS
+* V685 6/13 *acm* Dont add SAVE/NOCOORDS
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -132,8 +131,7 @@
 
 
 * argument declarations
-      LOGICAL recdim, mode_upcase_output, name_from_grid,
-     .	      do_coords
+      LOGICAL recdim, mode_upcase_output, name_from_grid
       INTEGER cdfid, dset, grid, idim, loss, hiss, ax_type, 
      .        edges_flag, keepax_flag, do_bounds, status
 
@@ -226,17 +224,13 @@
          cdfstat = NF_INQ_VARID( cdfid, name(:nlen), axid )
 #endif
 
-cc         IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
-* ... May be a dimension of that name in the file but not a coord var.
-*     That is OK, just check the length. See ticket 2075.
-
+         IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 	 IF (.NOT. recdim) THEN 
             slen = CD_AXLEN( cdfid, dimid, status )
             IF ( status .NE. merr_ok ) GOTO 5900
             IF ( keepax_flag .NE. 1 .AND. .NOT.abstract) THEN
 
 * ... check the length. 
-*     If axis is a dimension not a coordinate var, length must match.
                IF ( axlen .NE. slen ) THEN
 	          IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 
@@ -276,10 +270,7 @@ cc         IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
                   
 	       ENDIF
             ELSE 
-               IF (axlen .NE. slen ) THEN
-	          IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
-	          GOTO 5100
-	       ENDIF
+               IF (axlen .NE. slen ) GOTO 5100
                GOTO 1000
             ENDIF
 	 ENDIF
@@ -345,12 +336,7 @@ cc         IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 
       ENDIF
 
-      IF ( cdfstat .NE. NF_NOERR ) GOTO 5210
-
-* If user asked for no coordinate variable, we are done. Defined the
-* dimension just above, now skip all the stuff writing coordinates.
-
-      IF (.NOT. do_coords) GOTO 1000
+      IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
 
 * create the coordinate variable (12/92 -> double precision)
 #ifdef usingDODSf2cUnderscore
@@ -1040,11 +1026,6 @@ cc         IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
  5200 CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_WRITE_AXIS', cdfid,
      .       unspecified_int4, 'Failed creating coord variable '
-     .       //name(:nlen), no_errstring, *5900 )
-
- 5210 CALL TM_ERRMSG
-     .     ( cdfstat+pcdferr, status, 'CD_WRITE_AXIS', cdfid,
-     .       unspecified_int4, 'Failed creating dimension '
      .       //name(:nlen), no_errstring, *5900 )
 
  5220 CALL TM_ERRMSG

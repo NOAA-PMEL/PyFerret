@@ -1,0 +1,15 @@
+! err684_degC_axlab.jnl
+! ACM 6/2013
+! See ticket 2080. Units of degree_C interpreted as if degree_north.
+
+ppl clsplt
+set win/asp=1
+can mode logo
+set mode meta degC_axlab.plt
+
+let/units="degree_C"/title=temperature temp = {1,2,3,2,0}
+let/units="m"/title=depth depth = {1,5,1,5,0}
+plot/vs temp, depth
+
+set mode/last meta
+set mode/last logo

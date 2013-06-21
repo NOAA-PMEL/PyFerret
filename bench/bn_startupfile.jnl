@@ -12,8 +12,7 @@ SHOW DATA
 
 SHADE/I=71/L=1/TITLE="graticule on, latit labels off, 100 nlevels" temp
 
-! KMS - commented out for PyFerret - .plt not supported
-! SET MODE meta startup_tests2.plt
+SET MODE meta startup_tests2.plt
 PLOT/THICK/LINE/i=1:100/TITLE="Seven colors" \
  cos(i/20), cos(i/24), cos(i/28), cos(i/32), cos(i/36), cos(i/40), cos(i/44)
 

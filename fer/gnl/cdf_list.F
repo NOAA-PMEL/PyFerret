@@ -1,7 +1,7 @@
 	SUBROUTINE CDF_LIST ( memory, fname, append, crecdim, nvars,
      .			      mr_list, cx_list, title, enhead, mode,
      .			      clobber, edges_flag, do_bounds, 
-     .			      keepax_flag, out_type, do_coords, status )
+     .			      keepax_flag, out_type, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -114,7 +114,9 @@
 * V683 12/12 *acm*  Fix ticket 2004: appending data when writing packed variable
 * V685 *acm*  3/13  List the full path or url in the history att for variable.
 * V685 6/13 *acm* new qualifier SAVE/NOBOUNDS
-* V685 6/13 *acm* new qualifier SAVE/NOCOORDS
+* V685 6/13 *acm* Dont add SAVE/NOCOORDS
+* v685 6/13 *acm*  bug 2081. For string vars, if the len comes back as 0 the variable contains 
+*                  just null strings. Set maxstrlen to 1, else we can't define the variable.
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -135,7 +137,7 @@
         include 'netcdf4_settings.cmn'
 
 * calling argument declarations:
-        LOGICAL         append, enhead, clobber, do_coords
+        LOGICAL         append, enhead, clobber
 	INTEGER		nvars, mr_list(nvars), cx_list(nvars), mode,
      .			edges_flag, keepax_flag, do_bounds, status
 	REAL		memory( mem_blk_size, max_mem_blks )
@@ -234,7 +236,7 @@
 	 got_missing = .FALSE.
 	 got_fill = .FALSE.
 
-         IF (do_coords) CALL CD_DEFER_COORD_WRITE(0,0,0,0,0,pcd_defer_init)
+         CALL CD_DEFER_COORD_WRITE(0,0,0,0,0,pcd_defer_init)
 
 * open/create the file
          CALL CD_OPEN_OUT( fname, append, cdfid, clobber, 
@@ -411,9 +413,12 @@
            ENDIF
 
 * if a string variable, then find max len
+* If the len comes back as 0 the variable contains just null strings.
+* Set maxstrlen to 1, else we cant define the variable.
 	   IF (itsa_string) THEN
 	      maxstrlen = GET_MAX_C_STRING_LEN(
      .				   mr_c_pointer(mr), MGRID_SIZE(mr))
+	      IF (maxstrlen .LE. 0) maxstrlen = 1
 	   ELSE
 	      maxstrlen = 0
 	   ENDIF
@@ -532,7 +537,7 @@
      .               keepax_flag, netcdf4_type, xchunk_size, 
      .               ychunk_size, zchunk_size, tchunk_size, 
      .               deflate_lev, shuffle_flag, endian_code, 
-     .               do_coords, status )
+     .               status )
 
            IF ( status .NE. merr_ok ) GOTO 5800
 
@@ -1083,7 +1088,7 @@
 *
 * write the deferred coordinates
 *
-	IF (do_coords) CALL CD_WRITE_DEFER_COORD( cdfid, status )
+	CALL CD_WRITE_DEFER_COORD( cdfid, status )
 	IF ( status .NE. merr_OK ) GOTO 5800
 *
 * write the variables
@@ -1134,7 +1139,7 @@
            CALL CD_WRITE_VAR ( memory, cdfid, dset_num, varcode, grid, 
      .                        write_lo, write_hi, memory(1,mr_blk1(mr)), 
      .                        edges_flag, do_bounds, scalefac, addoff, 
-     .                        bad, mode_upcase_output, do_coords, status )
+     .                        bad, mode_upcase_output, status )
            IF ( status .NE. merr_ok ) GOTO 5800
  500	CONTINUE
 

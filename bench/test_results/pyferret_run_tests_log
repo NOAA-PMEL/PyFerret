@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Jun 20 13:43 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Jun 20 17:45 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -202,7 +202,6 @@ Benchmark scripts that will be run:
    bn685_bug_fixes.jnl
    bn_dsg_e_x.jnl
    bn_nco_append.jnl
-   bn_nocoords.jnl
    bn_nobounds.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
@@ -220,7 +219,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Thu Jun 20 14:19:14 PDT 2013
+Beginning at Thu Jun 20 19:23:19 PDT 2013
 *** Running test: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -388,12 +387,12 @@ SHOW DATA/FULL
     1> ./snoopy.dat  (default)
      quick and dirty
  name     title                             I         J         K         L         M         N
- P        my P variable                   1:9999999  1:9999999  1:9999999  1:9999999  1:9999999  1:9999999
+ P        my P variable                   1:99999999  1:99999999  1:99999999  1:99999999  1:99999999  1:99999999
                on grid ABSTRACT with -1.E+34 for missing data
-             X=0.5:9999999.5  Y=0.5:9999999.5  Z=0.5:10000000  E=0.5:9999999
- Q        Q                               1:9999999  1:9999999  1:9999999  1:9999999  1:9999999  1:9999999
+             X=0.5:1.E+08  Y=0.5:1.E+08  Z=0.5:1.E+08  E=0.5:1.E+08  F=0.5:1
+ Q        Q                               1:99999999  1:99999999  1:99999999  1:99999999  1:99999999  1:99999999
                on grid ABSTRACT with -1.E+34 for missing data
-             X=0.5:9999999.5  Y=0.5:9999999.5  Z=0.5:10000000  E=0.5:9999999
+             X=0.5:1.E+08  Y=0.5:1.E+08  Z=0.5:1.E+08  E=0.5:1.E+08  F=0.5:1
  
  /FORMAT = UNF
  /SKIP = 2
@@ -727,7 +726,7 @@ SHOW GRID
  Last successful data access was on grid XABSTRACT
     GRID XABSTRACT
  name       axis              # pts   start                end
- ABSTRACT  X              9999999 r   1                    9999999
+ ABSTRACT  X             99999999 r   1                    1.E+08
  normal    Y
  normal    Z
  normal    T
@@ -10291,8 +10290,7 @@ shade/nolabel sst, x_page, y_page
 !
 ! A more complex projection
 !
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta bnplot.plt
+set mode meta bnplot.plt
 go mp_orthographic 210 45
 set grid sst
 let masked_sst = sst * mp_mask
@@ -10429,9 +10427,7 @@ shade/nolabel sst, randn(x_page), randn(y_page)
 can mode meta
 shade/nolabel sst, x_page[j=1:12], y_page ! DELIBERATE ERROR
 shade/nolabel sst, x_page, asin(y_page) ! DELIBERATE ERROR
- 
-! KMS - commented out for PyFerret - error not caught by ferret
-! shade/nolabel sst, x_page, y_page ! DELIBERATE gsetviewport() ERROR
+shade/nolabel sst, x_page, y_page ! DELIBERATE gsetviewport() ERROR
  
  
 can win 1
@@ -10444,8 +10440,7 @@ shade/nolabel sst, x_page, y_page
 shade/nolabel sst, x_page[j=1:12], y_page ! DELIBERATE ERROR
 can mode ignore
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta bnplot.plt
+set mode meta bnplot.plt
 *** Running test: bn_symbols.jnl
 ! bn420_symbols
 ! benchmark to test machinery of symbol definition and use
@@ -10474,12 +10469,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "20-Jun-13"
-SESSION_TIME = "14:19"
-SESSION_PID = "22843"
-DELTA_CPU = "0.51992"
-CLOCK_SECS = "0.304"
+SESSION_TIME = "19:23"
+SESSION_PID = "31594"
+DELTA_CPU = "0.51892"
+CLOCK_SECS = "0.303"
 CURRENT_DATE = "20-Jun-13"
-CURRENT_TIME = "14:19:31"
+CURRENT_TIME = "19:23:35"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -10503,12 +10498,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "20-Jun-13"
-SESSION_TIME = "14:19"
-SESSION_PID = "22843"
+SESSION_TIME = "19:23"
+SESSION_PID = "31594"
 DELTA_CPU = "0.001"
-CLOCK_SECS = "0.305"
+CLOCK_SECS = "0.304"
 CURRENT_DATE = "20-Jun-13"
-CURRENT_TIME = "14:19:31"
+CURRENT_TIME = "19:23:35"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 S1 = "hello"
@@ -10519,8 +10514,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "20-Jun-13"
-SESSION_TIME = "14:19"
-SESSION_PID = "22843"
+SESSION_TIME = "19:23"
+SESSION_PID = "31594"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10531,14 +10526,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "20-Jun-13"
-SESSION_TIME = "14:19"
-SESSION_PID = "22843"
+SESSION_TIME = "19:23"
+SESSION_PID = "31594"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "20-Jun-13"
-SESSION_TIME = "14:19"
-SESSION_PID = "22843"
+SESSION_TIME = "19:23"
+SESSION_PID = "31594"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10670,12 +10665,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "20-Jun-13"
-SESSION_TIME = "14:19"
-SESSION_PID = "22843"
-DELTA_CPU = "0.025996"
-CLOCK_SECS = "0.331"
+SESSION_TIME = "19:23"
+SESSION_PID = "31594"
+DELTA_CPU = "0.022997"
+CLOCK_SECS = "0.326"
 CURRENT_DATE = "20-Jun-13"
-CURRENT_TIME = "14:19:31"
+CURRENT_TIME = "19:23:35"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -24903,12 +24898,12 @@ let xpts = cos(x/10)
  
 set win/asp=.4
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta polygon_plot.plt
+set mode meta polygon_plot.plt
 polygon/trans/i=1:100/nolable xpts+xsqr, ypts+ysqr, x*x/10
  
-! KMS - commented out for PyFerret - patterns not supported
+! KMS - changed for PyFerret - patterns not supported, so try translucent
 ! polygon/trans/line=6/fill/over/lev/i=1:100/pattern=ball_bearings/nolabel xpts+xsqr, ypts+ysqr+.5, x*x/10
+polygon/trans/line=6/fill/over/lev/i=1:100/opac=25/nolabel xpts+xsqr, ypts+ysqr+.5, x*x/10
  
 polygon/trans/line=4/over/i=1:100/nolabel xpts+xsqr-.25, ypts+ysqr, x*x/10
  
@@ -25205,7 +25200,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Thu Jun 20 14:19:51 PDT 2013
+Thu Jun 20 19:23:51 PDT 2013
  
 GO bn_reset
 cancel mode verify
@@ -25813,7 +25808,7 @@ show grid/dyn
 Dynamic grids:
     GRID (G003)                          use count:   2
  name       axis              # pts   start                end
- ABSTRACT  X              9999999 r   1                    9999999
+ ABSTRACT  X             99999999 r   1                    1.E+08
  (AX004)   LATITUDE             5 r   1S                   1N
  normal    Z
  TIME      TIME                 3mr   16-JAN 06:00         17-MAR 02:58
@@ -25847,7 +25842,7 @@ show grid/dyn
 Dynamic grids:
     GRID (G002)                          use count:   1
  name       axis              # pts   start                end
- ABSTRACT  X              9999999 r   1                    9999999
+ ABSTRACT  X             99999999 r   1                    1.E+08
  (AX005)   LATITUDE             5 r   1S                   1N
  normal    Z
  TIME      TIME                 3mr   16-JAN 06:00         17-MAR 02:58
@@ -30782,7 +30777,7 @@ SHOW GRID FFTA(sst[d=1,gx=temp[d=2],y=10s:2s:.2,l=1:5]) ! imposed T axis
 SHOW GRID SORTI(temp[d=2,gx=sst[d=1],y=10s:2s:.2])      ! abstract X axis
     GRID (G006)
  name       axis              # pts   start                end
- ABSTRACT  X              9999999 r   1                    9999999
+ ABSTRACT  X             99999999 r   1                    1.E+08
  (AX007)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
@@ -30807,7 +30802,7 @@ SHOW GRID "temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5",FFTA(sst[d=1,gx=temp[d=2],y=10
  normal    F
     GRID (G006)
  name       axis              # pts   start                end
- ABSTRACT  X              9999999 r   1                    9999999
+ ABSTRACT  X             99999999 r   1                    1.E+08
  (AX007)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
@@ -31203,8 +31198,7 @@ vector/flow/over/len=10  u,v
  
 GO bn_reset
 cancel mode verify
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta flowlines.plt
+set mode meta flowlines.plt
 can mode logo
  
 can region
@@ -35639,7 +35633,7 @@ sh grid
  Last successful data access was on grid XABSTRACT
     GRID XABSTRACT
  name       axis              # pts   start                end
- ABSTRACT  X              9999999 r   1                    9999999
+ ABSTRACT  X             99999999 r   1                    1.E+08
  normal    Y
  normal    Z
  normal    T
@@ -35657,7 +35651,7 @@ sh grid
     GRID YABSTRACT
  name       axis              # pts   start                end
  normal    X
- ABSTRACT  Y              9999999 r   1                    9999999
+ ABSTRACT  Y             99999999 r   1                    1.E+08
  normal    Z
  normal    T
  normal    E
@@ -35675,7 +35669,7 @@ sh grid
  name       axis              # pts   start                end
  normal    X
  normal    Y
- ABSTRACT  Z              9999999 r   1                    9999999
+ ABSTRACT  Z             99999999 r   1                    1.E+08
  normal    T
  normal    E
  normal    F
@@ -35693,7 +35687,7 @@ sh grid
  normal    X
  normal    Y
  normal    Z
- ABSTRACT  T              9999999 r   1                    9999999
+ ABSTRACT  T             99999999 r   1                    1.E+08
  normal    E
  normal    F
 let a = TSEQUENCE({"a","b","c","d","e"})
@@ -35972,8 +35966,7 @@ polygon/thick/color=red/palette=blue/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
 ! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta vec_curv.plt
+set mode meta vec_curv.plt
 can mode logo
 use coads_climatology
 set reg/l=1
@@ -36005,8 +35998,7 @@ vec/over/xskip=16/yskip=8/len=15 fsst*0+yy*mp_mask,fsst*0, x_page,y_page
  
 ! Irregular axes, and manual axis scaling
 set win/asp=1
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta vec_curv2.plt
+set mode meta vec_curv2.plt
  
 def axis/from_data/x/name=xirr {0,1,2,4,6,7,8,10,14,16,20,23,24}
 def axis/from_data/y/name=yirr {0,2,4,5,6,7,8,9,12,13,14,15,18}
@@ -37331,8 +37323,13 @@ plot/over/thick/dash/color=blue 50*sin(ypts/3)+700, 30*cos(ypts/3)+800, 20*cos(y
 !overlay on polygon plots
 GO bn_reset
 cancel mode verify
-! KMS - commented out for PyFerret - patterns not supported
-! GO err540_poly_overlay
+GO err540_poly_overlay
+!overlay on polygon plots
+ 
+polygon/thick/color=red/palette=blue/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
+! KMS - changed for PyFerret - patterns not supported, so try translucent
+! shade/over/i=1:2/j=0:2/patt i+j
+shade/over/i=1:2/j=0:2/opac=25 i+j
  
 !polytube failed on plot/over; go polytube, because YAXIS_MIN, _MAX not defined.
 GO bn_reset
@@ -37685,7 +37682,7 @@ shade a[i=1:100:10]
  dealloc  dynamic grid (G003)          (AX003)   YAX1_100  NORMAL    NORMAL    NORMAL    NORMAL
 setting up 2D plot
  -DELETE A        M:  3 dset:   1 I:    1   10  J:    1  100  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
-PPL plot 24   complete
+PPL plot 26   complete
 ppl list stats
 
 
@@ -39763,8 +39760,7 @@ list $1_strings[i=1013:1024] 	! via IS_MODULO
 ! ACM 4/2005 set mode meta to save this plot for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta dots.plt
+set mode meta dots.plt
 can mode logo
 plot/symbol=dot/i=1:1000 sin(62.8*i)
 plot/symbol=dot/color=red/over/i=1:1000 sin(62.8*(i+20))
@@ -39860,17 +39856,17 @@ LEV_DEL = "none"
 ! NOTE this script redefined the pre-defined viewports ul, ur, ll, lr...
  
  
-def view /xlim=0.:0.33/ylim=0.5:1 ul
-def view /xlim=0.33:0.66/ylim=0.5:1 um
-def view /xlim=0.66:1./ylim=0.5:1 ur
+def view /xlim=0.:0.33/ylim=0.5:1 ul3
+def view /xlim=0.33:0.66/ylim=0.5:1 um3
+def view /xlim=0.66:1./ylim=0.5:1 ur3
  
-def view /xlim=0.:0.33/ylim=0.:0.5 ll
-def view /xlim=0.33:0.66/ylim=0.:0.5 lm
-def view /xlim=0.66:1./ylim=0.:0.5 lr
+def view /xlim=0.:0.33/ylim=0.:0.5 ll3
+def view /xlim=0.33:0.66/ylim=0.:0.5 lm3
+def view /xlim=0.66:1./ylim=0.:0.5 lr3
  
  
 ! can mode labels would not plot the logo anyway
-set view ul
+set view ul3
 can mode labels
 can mode logo
 show modes
@@ -39906,13 +39902,13 @@ show modes
 contour/i=1:10/j=1:10 i/j
  
 ! restore the labels, logo still gone
-set view um
+set view um3
 set mode labels
 wire/view=0,0,2/i=1:20/j=1:20/title="My Egg Carton"/nolabel sin(i/3)*cos(j/4)
  
  
 ! put only labels, not logo
-set view ur
+set view ur3
 set mode labels
 can mode logo
 go ptest
@@ -39924,7 +39920,7 @@ PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 ! Labels restored, not logo.
 ! logo is not restored on an /overlay plot
-set view ll
+set view ll3
 set mode labels
 shade/i=1:10/j=1:10 i*j
 set mode logo
@@ -39932,11 +39928,11 @@ set mode logo
 plot/vs/over/line/color=green {1,4}, {1,9}
  
 ! but the logo is restored on the next plot command.
-set view lm
+set view lm3
 fill/i=1:10/j=1:10 i/j
  
 ! Verify for polygon command too
-set view lr
+set view lr3
 can mode logo
 can mode labels
 polygon/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
@@ -40247,8 +40243,7 @@ so Ferret will resize the entire title. Titles are sized according to the\
 ppl plot
 plot/over/i=1:100 i*sin(i/8)
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta multi_line_labels.plt
+set mode meta multi_line_labels.plt
 cancel mode logo
 plot/i=1:100/title="@p2two-line<NL>RED title"/set i*cos(i/8)
 ppl ylab "A four-line y label.<nl>second line<nl>third line<NL>fourth line"
@@ -40927,7 +40922,7 @@ SHOW GRID
  Last successful data access was on grid XABSTRACT
     GRID XABSTRACT
  name       axis              # pts   start                end
- ABSTRACT  X              9999999 r   1                    9999999
+ ABSTRACT  X             99999999 r   1                    1.E+08
  normal    Y
  normal    Z
  normal    T
@@ -43016,8 +43011,7 @@ plot/hg=small(color=red,dash,thick=1),large(color=blue,line,thick=3)/vg=large(li
  
 ! Log axes: VLOG and HLOG with large and small tics
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta graticules.plt
+set mode meta graticules.plt
 can mode logo
  
 set view left
@@ -47867,8 +47861,7 @@ GO err580_def_view_axes.jnl
 define view/x=0.2:0.4/y=.2:.4/text=0.75/axes v1
  
 set window/clear
-! KMS - commented out for PyFerret - .plt not supported
-! set mode metafile viewaxes.plt
+set mode metafile viewaxes.plt
  
 set view v1
 go ptest
@@ -47880,9 +47873,8 @@ PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 set window/clear
  
-! can mode meta
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta
+can mode meta
+set mode meta
  
 set view v1
 shade/i=1:12/j=1:12 i+j
@@ -48360,7 +48352,6 @@ sho command
        /NLIMITS/XLIMITS/YLIMITS/ZLIMITS/TLIMITS/ELIMITS/FLIMITS/CLOBBER
        /QUIET/WIDTH/EDGES/BOUNDS/NOBOUNDS/NOROWLAB/KEEP_AXI/NCFORMAT/XCHUNK
        /YCHUNK/ZCHUNK/TCHUNK/ECHUNK/FCHUNK/DEFLATE/SHUFFLE/ENDIAN/OUTTYPE
-       /NOCOORDS
  PLOT/I/J/K/L/M/N/X/Y/Z/T/E/F/OVERLAY/SET_UP/FRAME/D/TRANPOSE/VS/SYMBOL
        /NOLABEL/LINE/COLOR/THICKNES/XLIMITS/YLIMITS/TITLE/SIZE/NOAXES/STEP
        /DASH/AXES/HGRATICU/VGRATICU/HLIMITS/VLIMITS/HLOG/VLOG/GRATICUL/NOKEY
@@ -48421,7 +48412,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "20-Jun-13_14:21"
+WIN_TITLE = "20-Jun-13_19:25"
  
 set win/title="set the title"
 sho sym win_title
@@ -48439,7 +48430,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="20-Jun-13:14:21"
+ !-> set win/title="20-Jun-13:19:25"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48450,14 +48441,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 20-Jun-13
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 14:21
+ !-> DEFINE SYMBOL the_time = 19:25
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="20-Jun-13:14:21"
+ !-> SET WIN/TITLE="20-Jun-13:19:25"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "20-Jun-13:14:21"
+WIN_TITLE = "20-Jun-13:19:25"
 *** Running test: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -51265,8 +51256,7 @@ list/y=3/l=1/x=233 u[z=@var]
 ! 5/2006 ACM
 ! test setting more line colors
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta linecolors.plt
+set mode meta linecolors.plt
  
 set mode linec:12
 sho mode linecolors
@@ -54868,12 +54858,15 @@ can view
  
 ! shade over polygon
 set view upper; polygon/thick/color=red/palette=blue/axes=0,0,0,0 {1,2,1}, {2,1,0.5}
-! KMS - commented out for PyFerret - patterns not supported
+! KMS - changed for PyFerret - patterns not supported, so try translucent
 ! shade/over/i=1:2/j=0:2/patt i+j
+shade/over/i=1:2/j=0:2/opac=25 i+j
  
 set view lower; polygon/thick/color=red/palette=blue/axes=1,1,1,0 {1,2,1}, {2,1,0.5}
-! KMS - commented out for PyFerret - patterns not supported
+! KMS - changed for PyFerret - patterns not supported, so try translucent
 ! fill/over/i=1:2/j=0:2/patt i+j
+fill/over/i=1:2/j=0:2/opac=25 i+j
+ 
 can view
  
 ! Polygon over shade
@@ -58215,7 +58208,6 @@ sh command list
        /NLIMITS/XLIMITS/YLIMITS/ZLIMITS/TLIMITS/ELIMITS/FLIMITS/CLOBBER
        /QUIET/WIDTH/EDGES/BOUNDS/NOBOUNDS/NOROWLAB/KEEP_AXI/NCFORMAT/XCHUNK
        /YCHUNK/ZCHUNK/TCHUNK/ECHUNK/FCHUNK/DEFLATE/SHUFFLE/ENDIAN/OUTTYPE
-       /NOCOORDS
 define axis/x=1:100:1/units=deg x100
 define axis/t=1-jan-2000:31-jan-2000:1/units=days/t0=31-dec-1999 t31
 let a = x[gx=x100] + t[gt=t31]
@@ -58691,10 +58683,10 @@ SH GRID am
  normal    F
 *** Running test: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.51992"
-CLOCK_SECS = "0.305"
+DELTA_CPU = "0.513921"
+CLOCK_SECS = "0.3"
 CURRENT_DATE = "20-Jun-13"
-CURRENT_TIME = "14:21:55"
+CURRENT_TIME = "19:25:42"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -58703,8 +58695,8 @@ CURRENT_TIME = "14:21:55"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.051993"
-CLOCK_SECS = "0.357"
+DELTA_CPU = "0.048993"
+CLOCK_SECS = "0.349"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -58718,60 +58710,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.627904
+ !-> DEFINE VARIABLE ten_plots = 0.461929
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "0.985"
+CLOCK_SECS = "0.811"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.986"
+CLOCK_SECS = "0.812"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.06099
- !-> DEFINE VARIABLE sumcpu =0.06099
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.032995
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.047993
- !-> DEFINE VARIABLE sumcpu =0.108983
+ !-> DEFINE VARIABLE dt = 0.034995
+ !-> DEFINE VARIABLE sumcpu =0.06799
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.040994
- !-> DEFINE VARIABLE sumcpu =0.149977
+ !-> DEFINE VARIABLE dt = 0.035994
+ !-> DEFINE VARIABLE sumcpu =0.103984
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.041993
- !-> DEFINE VARIABLE sumcpu =0.19197
-!-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.038995
- !-> DEFINE VARIABLE sumcpu =0.230965
-!-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.041993
- !-> DEFINE VARIABLE sumcpu =0.272958
-!-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.037994
- !-> DEFINE VARIABLE sumcpu =0.310952
-!-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.036994
- !-> DEFINE VARIABLE sumcpu =0.347946
-!-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.036994
- !-> DEFINE VARIABLE sumcpu =0.38494
-!-> REPEAT: K=10
  !-> DEFINE VARIABLE dt = 0.036995
- !-> DEFINE VARIABLE sumcpu =0.421935
+ !-> DEFINE VARIABLE sumcpu =0.140979
+!-> REPEAT: K=5
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.174974
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.035994
+ !-> DEFINE VARIABLE sumcpu =0.210968
+!-> REPEAT: K=7
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.243963
+!-> REPEAT: K=8
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.275958
+!-> REPEAT: K=9
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.308953
+!-> REPEAT: K=10
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.340948
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.421935
-0.421935
+ !-> MESSAGE/CONTINUE 0.340948
+0.340948
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.41"
+CLOCK_SECS = "1.153"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "20-Jun-13"
-SESSION_TIME = "14:21"
+SESSION_TIME = "19:25"
 CURRENT_DATE = "20-Jun-13"
-CURRENT_TIME = "14:21:56"
+CURRENT_TIME = "19:25:43"
 *** Running test: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -58879,8 +58871,7 @@ GO err62_thick_tic_time_axis
  
 define axis/t=1-jan-1990:1-jan-2010:1/units=months tax
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta timetics.plt
+set mode meta timetics.plt
 let tt = l[gt=tax]
 set view upper; plot/thick/line cos(tt/20)
 set view lower; plot/thick/line/t=1-jan-1991:1-jan-1997 cos(tt/20)
@@ -58896,8 +58887,7 @@ sho mode linecolors
 can win/all
 set win/new
  
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta timetics2.plt
+set mode meta timetics2.plt
  
 ppl color,7,100,50,0   ! orange
 ppl color,8,0,55,0     ! dark green
@@ -58925,8 +58915,7 @@ GO err62_reset_after_inf
 ! Bug 1292
 ! The levels did not reset to default closed levels
  
-! KMS - commented out for PyFerret - .plt not supported
-! Set mode meta closed_lev.plt
+set mode meta closed_lev.plt
  
 use levitus_climatology
 set view left
@@ -62083,8 +62072,7 @@ GO err65_dots_in_dashes.jnl
 ! metafile batch mode
  
 can view
-! KMS - commented out for PyFerret - .plt not supported
-! set mode metafile dashbug.plt
+set mode metafile dashbug.plt
 set v ul; plot/dash x[gx=0:20:.5]
 set v ur; plot/dash x[gx=0:20:.1]
 set v ll; plot/dash x[gx=0:20:.05]
@@ -62828,7 +62816,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.85 (PyFerret 1.0.0beta)"                                       
  3    /  3:" ! Linux 2.6.18-348.6.1.el5 - 06/20/13"                                     
- 4    /  4:" ! 20-Jun-13 14:22     "                                                    
+ 4    /  4:" ! 20-Jun-13 19:26     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -65841,42 +65829,42 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.2365
- 2   / 2:  0.6486
- 3   / 3:  0.8526
- 4   / 4:  0.4678
- 5   / 5:  0.8534
+ 1   / 1:  0.8380
+ 2   / 2:  0.5017
+ 3   / 3:  0.5111
+ 4   / 4:  0.8732
+ 5   / 5:  0.7299
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.6091
- 2   / 2:  0.6873
- 3   / 3:  0.4097
- 4   / 4:  0.6676
- 5   / 5:  0.1166
+ 1   / 1:  0.2109
+ 2   / 2:  0.0062
+ 3   / 3:  0.6398
+ 4   / 4:  0.0825
+ 5   / 5:  0.3334
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.4849
- 2   / 2:  0.5047
- 3   / 3:  0.3656
- 4   / 4:  0.8134
- 5   / 5:  0.5142
- 6   / 6:  0.6674
+ 1   / 1:  0.7543
+ 2   / 2:  0.9985
+ 3   / 3:  0.3225
+ 4   / 4:  0.9092
+ 5   / 5:  0.0279
+ 6   / 6:  0.7659
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.1649
- 2   / 2:  0.8211
- 3   / 3:  0.7493
- 4   / 4:  0.8557
- 5   / 5:  0.3510
- 6   / 6:  0.5246
+ 1   / 1:  0.2824
+ 2   / 2:  0.5290
+ 3   / 3:  0.6807
+ 4   / 4:  0.6201
+ 5   / 5:  0.9968
+ 6   / 6:  0.1744
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
@@ -65908,42 +65896,42 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1: -1.112
- 2   / 2: -0.136
- 3   / 3: -1.403
- 4   / 4: -1.214
- 5   / 5:  0.258
+ 1   / 1:  1.596
+ 2   / 2:  3.783
+ 3   / 3:  1.685
+ 4   / 4:  1.420
+ 5   / 5:  0.140
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  1.038
- 2   / 2:  0.495
- 3   / 3: -0.852
- 4   / 4:  0.418
- 5   / 5: -2.090
+ 1   / 1: -0.452
+ 2   / 2: -0.913
+ 3   / 3:  0.444
+ 4   / 4:  0.494
+ 5   / 5:  1.394
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1: -0.624
- 2   / 2: -0.064
- 3   / 3:  1.666
- 4   / 4:  1.410
- 5   / 5: -0.754
- 6   / 6: -0.504
+ 1   / 1:  1.312
+ 2   / 2:  0.480
+ 3   / 3:  0.169
+ 4   / 4: -0.564
+ 5   / 5:  0.742
+ 6   / 6: -0.426
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1: -2.550
- 2   / 2:  0.578
- 3   / 3: -1.619
- 4   / 4:  1.236
- 5   / 5:  1.331
- 6   / 6:  0.872
+ 1   / 1: -0.407
+ 2   / 2: -1.530
+ 3   / 3:  0.753
+ 4   / 4: -1.159
+ 5   / 5: -0.210
+ 6   / 6: -1.998
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
@@ -65979,14 +65967,14 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
             VAR2   VAR2    VAR2
-0     / 1:  1.325  1.325  0.7976
-20    / 2:  1.178  1.178  0.7976
-40    / 3:  0.798  0.798 -0.0874
-60    / 4: -0.087 -0.087  0.6658
-80    / 5: -0.588 -0.532  0.6658
-100   / 6: -0.532 -0.532  0.6658
-120   / 7: -0.446 -0.446  0.6658
-140   / 8:  0.666  0.666  0.6658
+0     / 1:  1.258  1.258  0.9449
+20    / 2:  1.203  1.203  0.9449
+40    / 3:  0.945  0.945  0.1789
+60    / 4:  0.100  0.100  0.4641
+80    / 5: -0.609 -0.127  0.4641
+100   / 6: -0.127 -0.127  0.4641
+120   / 7:  0.179  0.179  0.4641
+140   / 8:  0.464  0.464  0.4641
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -72602,6 +72590,47 @@ set mode ignore
 save/clob/file=aa.nc/outtype=int sst[x=@ave,y=@ave]-sst[x=@ave,y=@ave,t=@ave]
  
 set mode/last ignore
+ 
+GO bn_reset
+cancel mode verify
+GO err684_degC_axlab
+! err684_degC_axlab.jnl
+! ACM 6/2013
+! See ticket 2080. Units of degree_C interpreted as if degree_north.
+ 
+ppl clsplt
+set win/asp=1
+can mode logo
+set mode meta degC_axlab.plt
+ 
+let/units="degree_C"/title=temperature temp = {1,2,3,2,0}
+let/units="m"/title=depth depth = {1,5,1,5,0}
+plot/vs temp, depth
+ 
+set mode/last meta
+set mode/last logo
+ 
+GO bn_reset
+cancel mode verify
+go err684_null_stringwrite
+! err684_null_stringwrite.jnl
+! 18-Jun-2013 ACM
+!
+! Bug 2081
+! write a null string variable (0-length string) to NetCDF
+ 
+! This is ok
+let avar = {"a", "", "c"}
+save/file=a.nc/clobber avar
+ 
+! Write just a null value resulted in a NetCDF library error
+ 
+set mode ignore
+let anull = avar[i=2]
+ 
+save/clobber/file=a.nc anull
+set mode/last ignore
+ 
 *** Running test: bn_dsg_e_x.jnl
 ! bn_dsg_e.jnl
 !
@@ -72695,148 +72724,6 @@ variables:
 		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 20-Jun-13" ;
 		:Conventions = "CF-1.0" ;
 }
-*** Running test: bn_nocoords.jnl
-! bn_nocoords.jnl
-!  5/2013
-! Save data with the /NOCOORDS option.
-! This puts dimensions in the dataset but
-! does not write coordinate axes.
- 
-use test_100x100.nc
-sh dat/att
-     currently SET data sets:
-    1> ./test_100x100.nc  (default)
- Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
-------------------------------------------------------------------------------------------
-  
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 20-Jun-13
-                                 Conventions     CHAR        6    F       CF-1.0
-  
-(XAX1_100)             DOUBLE    point_spacing   CHAR        4    T       even
-                                 axis            CHAR        1    T       X
-                                 orig_file_axnameCHAR        8    F       XAX1_100
-  
-(YAX1_100)             DOUBLE    point_spacing   CHAR        4    T       even
-                                 axis            CHAR        1    T       Y
-                                 orig_file_axnameCHAR        8    F       YAX1_100
-  
- A                     DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
-                                 _FillValue      DOUBLE      1    T       -1.E+34
-                                 long_name       CHAR        24   T       IF I EQ J THEN 1 ELSE A0
-  
- 
-save/clobber/file=aa.nc/nocoords/i=50:55/j=48:52 a
- 
-! This is what we SAVEd.
-list/i=50:55/j=48:52 a
-             VARIABLE : IF I EQ J THEN 1 ELSE A0
-             FILENAME : test_100x100.nc
-             SUBSET   : 6 by 5 points (X-Y)
-              50     51     52     53     54     55    
-              50     51     52     53     54     55
- 48   / 48:  0.000  0.000  0.000  0.000  0.000  0.000
- 49   / 49:  0.000  0.000  0.000  0.000  0.000  0.000
- 50   / 50:  1.000  0.000  0.000  0.000  0.000  0.000
- 51   / 51:  0.000  1.000  0.000  0.000  0.000  0.000
- 52   / 52:  0.000  0.000  1.000  0.000  0.000  0.000
- 
-can mem; can data/all
- 
-! The same data is in the file, but with no coordinate axes.
-use aa.nc
-sh dat/att
-     currently SET data sets:
-    1> ./aa.nc  (default)
- Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
-------------------------------------------------------------------------------------------
-  
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 20-Jun-13
-                                 Conventions     CHAR        6    F       CF-1.0
-  
- A                     DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
-                                 _FillValue      DOUBLE      1    T       -1.E+34
-                                 long_name       CHAR        24   T       IF I EQ J THEN 1 ELSE A0
-                                 history         CHAR        17   T       From test_100x100
-  
- 
-! When it uses this dataset, Ferret just creates abstract axes.
-list a
-             VARIABLE : IF I EQ J THEN 1 ELSE A0
-             FILENAME : aa.nc
-             SUBSET   : 6 by 5 points (X-Y)
-             1      2      3      4      5      6    
-             1      2      3      4      5      6
- 1   / 1:  0.000  0.000  0.000  0.000  0.000  0.000
- 2   / 2:  0.000  0.000  0.000  0.000  0.000  0.000
- 3   / 3:  1.000  0.000  0.000  0.000  0.000  0.000
- 4   / 4:  0.000  1.000  0.000  0.000  0.000  0.000
- 5   / 5:  0.000  0.000  1.000  0.000  0.000  0.000
- 
-! For writing a Discrete Geometries file, dont write coordinate variables.
-! Keep things in lowercase, keep original axis names, and add a global attribute.
-can dat/all
-can var/all
- 
-use dsg.nc
- 
-! Add a global attribute on the next SAVE
-define att/output ..featureType = "profile"
- 
-can mode upcase
-save/nocoord/file=dsg_nocoord.nc/keep/clobber rowsize, profile, time, latitude, longitude, pot_temp_degc, sal
-sp ncdump -h dsg_nocoord.nc
-netcdf dsg_nocoord {
-dimensions:
-	prof = 3 ;
-	obs = 34 ;
-variables:
-	int rowsize(prof) ;
-		rowsize:missing_value = -999 ;
-		rowsize:_FillValue = -999 ;
-		rowsize:long_name = "number of obs for this profile" ;
-		rowsize:history = "From FINAL_verification_data_all_PacOOS_NHL_OCNMS_CCCC_03072013.txt" ;
-	double profile(prof) ;
-		profile:missing_value = -1.e+34 ;
-		profile:_FillValue = -1.e+34 ;
-		profile:long_name = "profile ID: Cruise and Station" ;
-		profile:history = "From FINAL_verification_data_all_PacOOS_NHL_OCNMS_CCCC_03072013.txt" ;
-	double time(prof) ;
-		time:missing_value = -1.e+34 ;
-		time:_FillValue = -1.e+34 ;
-		time:long_name = "time" ;
-		time:units = "seconds since 1-jan-1970" ;
-		time:history = "From FINAL_verification_data_all_PacOOS_NHL_OCNMS_CCCC_03072013.txt" ;
-	double latitude(prof) ;
-		latitude:missing_value = -1.e+34 ;
-		latitude:_FillValue = -1.e+34 ;
-		latitude:long_name = "station latitude" ;
-		latitude:units = "degrees_north" ;
-		latitude:history = "From FINAL_verification_data_all_PacOOS_NHL_OCNMS_CCCC_03072013.txt" ;
-	double longitude(prof) ;
-		longitude:missing_value = -1.e+34 ;
-		longitude:_FillValue = -1.e+34 ;
-		longitude:long_name = "station longitude" ;
-		longitude:units = "degrees_east" ;
-		longitude:history = "From FINAL_verification_data_all_PacOOS_NHL_OCNMS_CCCC_03072013.txt" ;
-	float pot_temp_degc(obs) ;
-		pot_temp_degc:missing_value = -999.f ;
-		pot_temp_degc:_FillValue = -999.f ;
-		pot_temp_degc:long_name = "pot_temp_degc" ;
-		pot_temp_degc:history = "From FINAL_verification_data_all_PacOOS_NHL_OCNMS_CCCC_03072013.txt" ;
-	float sal(obs) ;
-		sal:missing_value = -999.f ;
-		sal:_FillValue = -999.f ;
-		sal:long_name = "sal" ;
-		sal:history = "From FINAL_verification_data_all_PacOOS_NHL_OCNMS_CCCC_03072013.txt" ;
-
-// global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 20-Jun-13" ;
-		:Conventions = "CF-1.0" ;
-		:featureType = "profile" ;
-}
- 
-set mode/last upcase
- 
 *** Running test: bn_nobounds.jnl
 ! bn_nobounds.jnl
 ! The SAVE/NOBOUNDS qualifier causes bounds never to be written
@@ -73832,12 +73719,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "20-Jun-13"
-SESSION_TIME = "14:22"
-SESSION_PID = "24257"
-DELTA_CPU = "0.529919"
-CLOCK_SECS = "0.319"
+SESSION_TIME = "19:26"
+SESSION_PID = "460"
+DELTA_CPU = "0.528918"
+CLOCK_SECS = "0.313"
 CURRENT_DATE = "20-Jun-13"
-CURRENT_TIME = "14:23:00"
+CURRENT_TIME = "19:26:39"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -73859,7 +73746,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "20-Jun-13_14:22"
+WIN_TITLE = "20-Jun-13_19:26"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -73910,4 +73797,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Thu Jun 20 14:23:00 PDT 2013
+Ended at Thu Jun 20 19:26:39 PDT 2013

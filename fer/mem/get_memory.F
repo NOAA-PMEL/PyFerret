@@ -59,6 +59,7 @@
 *                    label.  Bug showed up on IRIX with missing elements
 *		     of error statement
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V685 *acm*  6/13 Increase nominal length of abstract axis
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -136,7 +137,7 @@
 
  5000	RETURN
  5100	CONTINUE
-	IF ( num_words .EQ. 9999999 ) THEN
+	IF ( num_words .EQ. 99999999 ) THEN
           num_str = LEFINT(num_words,num_slen)
 	  CALL ERRMSG( ferr_dim_underspec, status,
      .	  num_str(:num_slen)//' words were requested. ', *5125)

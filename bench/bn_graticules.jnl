@@ -34,8 +34,7 @@ plot/hg=small(color=red,dash,thick=1),large(color=blue,line,thick=3)/vg=large(li
 
 ! Log axes: VLOG and HLOG with large and small tics
 
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta graticules.plt
+set mode meta graticules.plt
 can mode logo 
 
 set view left

@@ -11,12 +11,15 @@ can view
 
 ! shade over polygon
 set view upper; polygon/thick/color=red/palette=blue/axes=0,0,0,0 {1,2,1}, {2,1,0.5}
-! KMS - commented out for PyFerret - patterns not supported
+! KMS - changed for PyFerret - patterns not supported, so try translucent
 ! shade/over/i=1:2/j=0:2/patt i+j
+shade/over/i=1:2/j=0:2/opac=25 i+j
 
 set view lower; polygon/thick/color=red/palette=blue/axes=1,1,1,0 {1,2,1}, {2,1,0.5}
-! KMS - commented out for PyFerret - patterns not supported
+! KMS - changed for PyFerret - patterns not supported, so try translucent
 ! fill/over/i=1:2/j=0:2/patt i+j
+fill/over/i=1:2/j=0:2/opac=25 i+j
+
 can view
 
 ! Polygon over shade

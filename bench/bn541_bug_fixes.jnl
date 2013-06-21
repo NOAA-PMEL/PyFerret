@@ -40,8 +40,7 @@ GO err540_vs_dash
 
 !overlay on polygon plots
 GO bn_reset
-! KMS - commented out for PyFerret - patterns not supported
-! GO err540_poly_overlay
+GO err540_poly_overlay
 
 !polytube failed on plot/over; go polytube, because YAXIS_MIN, _MAX not defined.
 GO bn_reset

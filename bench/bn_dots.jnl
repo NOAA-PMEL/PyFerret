@@ -3,8 +3,7 @@
 ! ACM 4/2005 set mode meta to save this plot for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
 
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta dots.plt
+set mode meta dots.plt
 can mode logo
 plot/symbol=dot/i=1:1000 sin(62.8*i)
 plot/symbol=dot/color=red/over/i=1:1000 sin(62.8*(i+20))

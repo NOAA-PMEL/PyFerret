@@ -855,9 +855,6 @@ GO bn_reset
 GO bn_nco_append
 
 GO bn_reset
-go bn_nocoords
-
-GO bn_reset
 GO bn_nobounds
 
 !!!!!!!!!!!!! Note we should include tests for all the scat2grid functions. 

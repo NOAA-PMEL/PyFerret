@@ -9,12 +9,12 @@ let xpts = cos(x/10)
 
 set win/asp=.4
 
-! KMS - commented out for PyFerret - .plt not supported
-! set mode meta polygon_plot.plt
+set mode meta polygon_plot.plt
 polygon/trans/i=1:100/nolable xpts+xsqr, ypts+ysqr, x*x/10
 
-! KMS - commented out for PyFerret - patterns not supported
+! KMS - changed for PyFerret - patterns not supported, so try translucent
 ! polygon/trans/line=6/fill/over/lev/i=1:100/pattern=ball_bearings/nolabel xpts+xsqr, ypts+ysqr+.5, x*x/10
+polygon/trans/line=6/fill/over/lev/i=1:100/opac=25/nolabel xpts+xsqr, ypts+ysqr+.5, x*x/10
 
 polygon/trans/line=4/over/i=1:100/nolabel xpts+xsqr-.25, ypts+ysqr, x*x/10
 

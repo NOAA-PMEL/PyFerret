@@ -50,6 +50,7 @@
 
 * V420: 11/95 - from CGRID_SIZE
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V685 *acm*  6/13 Increase nominal length of abstract axis
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -72,7 +73,7 @@
 	      i6d = i6d * CX_DIM_LEN(idim,cx)
 	   ELSE
 	      axlen = CAXIS_LEN(idim,cx)
-	      IF ( axlen .EQ. 9999999 ) THEN
+	      IF ( axlen .EQ. 99999999 ) THEN
 	         axlen = 1	! kludge trap for ABSTRACT axis length
 	      ELSEIF ( axlen .GT. 5000 ) THEN
 	         axlen = 5000	! kludge 

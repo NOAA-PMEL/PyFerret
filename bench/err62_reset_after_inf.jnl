@@ -2,8 +2,7 @@
 ! Bug 1292
 ! The levels did not reset to default closed levels
 
-! KMS - commented out for PyFerret - .plt not supported
-! Set mode meta closed_lev.plt
+set mode meta closed_lev.plt
 
 use levitus_climatology
 set view left

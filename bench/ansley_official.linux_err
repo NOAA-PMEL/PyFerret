@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 42597828 Jun  6 15:16 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 42642356 Jun 18 16:42 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes through 5/6/2013
+Note:  fix for ticket 2081
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Fri Jun 7 12:02:12 PDT 2013
+Beginning at Tue Jun 18 16:53:54 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -562,11 +562,11 @@ Replacing definition of axis TAX
  **ERROR: command syntax: v2-and-minus
           - before and is illegal
 list v2-and-minus
- **ERROR: dimensions improperly specified: 9999999 words were requested.
+ **ERROR: dimensions improperly specified: 99999999 words were requested.
 list x
  *** NOTE: Check for unspecified limits on an ABSTRACT axis
  *** NOTE: Use the SHOW GRID command to see the axes
- **ERROR: dimensions improperly specified: 9999999 words were requested.
+ **ERROR: dimensions improperly specified: 99999999 words were requested.
 list i
  *** NOTE: Check for unspecified limits on an ABSTRACT axis
  *** NOTE: Use the SHOW GRID command to see the axes
@@ -1362,10 +1362,6 @@ define axis/x=130e:500:10/modulo=360 xsub
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Re-defining viewport UL
-Re-defining viewport UR
-Re-defining viewport LL
-Re-defining viewport LR
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Undecipherable value of netCDF attribute modulo on variable lon_moderr
@@ -3080,13 +3076,13 @@ Replacing definition of axis YAX_DUP_AXNAMES
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
 
 Bailing out of external function "tax_year":
 	 Function not valid for modulo time axis
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
@@ -3405,12 +3401,13 @@ NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- LISTing to file append_to_this.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- LISTing to file aa.nc
+ PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- LISTing to file dsg_nocoord.nc
+ LISTing to file append_to_this.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XIRREG
@@ -3510,4 +3507,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Jun 7 12:04:13 PDT 2013
+Ended at Tue Jun 18 16:56:05 PDT 2013

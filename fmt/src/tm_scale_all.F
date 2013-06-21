@@ -47,6 +47,7 @@
 * To write scaled data, scale all of it by ferretdat(1./inscale) - (inoff/inscale)
 * the scaling to be used is sent into this routine.
 * v6.8 3/14/2012 *acm* fix for scaled SHORT data and double-precision Ferret.
+* v6.85 6/2012   *acm* The min size for a SHORT integer is -32768
 
 * include files
       INCLUDE 'netcdf.inc'
@@ -68,7 +69,7 @@
 
       IF (vartyp .EQ. NF_SHORT) THEN
          sbad = 32767
-         sbadn = -32767
+         sbadn = -32768
          DO 100 i = 1, n
 	    array(i) = array(i)*factor + offset
 	    aa = array(i)

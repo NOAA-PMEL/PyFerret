@@ -197,7 +197,6 @@ bn_vec_mod.jnl
 bn685_bug_fixes.jnl
 bn_dsg_e_x.jnl
 bn_nco_append.jnl
-bn_nocoords.jnl
 bn_nobounds.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

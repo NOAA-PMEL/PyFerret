@@ -5,8 +5,7 @@
 ! metafile batch mode
 
 can view
-! KMS - commented out for PyFerret - .plt not supported
-! set mode metafile dashbug.plt
+set mode metafile dashbug.plt
 set v ul; plot/dash x[gx=0:20:.5]
 set v ur; plot/dash x[gx=0:20:.1]
 set v ll; plot/dash x[gx=0:20:.05]

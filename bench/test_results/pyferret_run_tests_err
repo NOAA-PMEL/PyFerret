@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Jun 20 13:43 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Jun 20 17:45 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -202,7 +202,6 @@ Benchmark scripts that will be run:
    bn685_bug_fixes.jnl
    bn_dsg_e_x.jnl
    bn_nco_append.jnl
-   bn_nocoords.jnl
    bn_nobounds.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
@@ -220,7 +219,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Thu Jun 20 14:19:14 PDT 2013
+Beginning at Thu Jun 20 19:23:19 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -766,11 +765,11 @@ Replacing definition of axis TAX
  **ERROR: command syntax: v2-and-minus
           - before and is illegal
 list v2-and-minus
- **ERROR: dimensions improperly specified: 9999999 words were requested.
+ **ERROR: dimensions improperly specified: 99999999 words were requested.
 list x
  *** NOTE: Check for unspecified limits on an ABSTRACT axis
  *** NOTE: Use the SHOW GRID command to see the axes
- **ERROR: dimensions improperly specified: 9999999 words were requested.
+ **ERROR: dimensions improperly specified: 99999999 words were requested.
 list i
  *** NOTE: Check for unspecified limits on an ABSTRACT axis
  *** NOTE: Use the SHOW GRID command to see the axes
@@ -1295,10 +1294,6 @@ define axis/x=130e:500:10/modulo=360 xsub
  Cached data cleared from memory
 *** Running test: bn_mode_logo_lab.jnl
  Cached data cleared from memory
-Re-defining viewport UL
-Re-defining viewport UR
-Re-defining viewport LL
-Re-defining viewport LR
 *** Running test: bn_modulo_attribute.jnl
  Cached data cleared from memory
  *** NOTE: Undecipherable value of netCDF attribute modulo on variable lon_moderr
@@ -3212,17 +3207,18 @@ NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  data in attribute missing_value not representable in output type NC_INT
 NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  data in attribute _FillValue not representable in output type NC_INT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
 *** Running test: bn_nco_append.jnl
 sh: ncks: command not found
  Cached data cleared from memory
  LISTing to file append_to_this.nc
-*** Running test: bn_nocoords.jnl
- Cached data cleared from memory
- LISTing to file aa.nc
- TEMPORARY data cleared from memory
- LISTing to file dsg_nocoord.nc
 *** Running test: bn_nobounds.jnl
  Cached data cleared from memory
  LISTing to file a.nc
@@ -3251,4 +3247,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Thu Jun 20 14:23:00 PDT 2013
+Ended at Thu Jun 20 19:26:39 PDT 2013

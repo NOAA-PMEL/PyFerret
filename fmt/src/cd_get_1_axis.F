@@ -626,6 +626,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * Use attributes to try to determine the orientation and 
 * direction of the axis
 
+      buff = line_units(iaxis)
       CALL CD_GET_LINE_DIRECTION (dset, ivar, iaxis, vname, 
      .   line_units(iaxis), do_warn)
 
@@ -643,10 +644,10 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 
       west_lon = west_lon 
      .  .OR.    ( line_direction(iaxis) .EQ. 'WE'
-     .      .AND. TM_HAS_STRING(line_units(iaxis),'west') )
+     .      .AND. TM_HAS_STRING(buff,'west') )
      .  .OR.    ( its_epic
      .      .AND. (INDEX(vupcase, 'LON') .GT. 0)
-     .      .AND. .NOT.TM_HAS_STRING(line_units(iaxis),'east') )
+     .      .AND. .NOT.TM_HAS_STRING(buff,'east') )
 
 * was a regular time axis forced on us by the user?
       IF (tregular) THEN
@@ -952,7 +953,9 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 
 * ============= END OF IRREGULAR AXIS PROCESSING ========================
 
-      IF ( reversed(iaxis) ) THEN
+* Dont issue the note if west_lon. 
+
+      IF ( reversed(iaxis) .AND. (.NOT.west_lon)) THEN
          CALL TM_NOTE('Axis coordinates are decreasing-ordered. '//
      .         'Reversing ordering for axis '//vname(:vlen), tt)
       ENDIF

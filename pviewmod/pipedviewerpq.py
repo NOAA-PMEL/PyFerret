@@ -94,6 +94,8 @@ class PipedViewerPQ(QMainWindow):
         self.__maxdraws = 1024
         # scaling factor for creating the displayed scene
         self.__scalefactor = 1.0
+        # automatically adjust the scaling factor to fit the window frame?
+        self.__autoscale = True
         # values used to decide if the scene needs to be updated 
         self.__lastpicdrawn = 0
         self.__createpixmap = True
@@ -125,9 +127,10 @@ class PipedViewerPQ(QMainWindow):
         self.createActions()
         self.createMenus()
         # Set the initial size of the viewer
-        mwwidth = self.__scenewidth + 8
-        mwheight = self.__sceneheight + 8 + self.menuBar().height() + \
-                                            self.statusBar().height()
+        mwwidth = self.__scenewidth + 4
+        mwheight = self.__sceneheight + 4 \
+                 + self.menuBar().height() \
+                 + self.statusBar().height()
         self.resize(mwwidth, mwheight)
         # check the command queue any time there are no window events to deal with
         self.__timer = QTimer(self)
@@ -193,6 +196,21 @@ class PipedViewerPQ(QMainWindow):
         # update, ignoring the visibility flags
         self.drawLastPictures(True)
         event.accept()
+
+    def resizeEvent(self, event):
+        '''
+        Monitor resizing in case auto-scaling of the image is selected.
+        '''
+        if self.__autoscale:
+            if self.autoScaleScene():
+                # continue with the window resize
+                event.accept()
+            else:
+                # another resize coming in, so ignore this one
+                event.ignore()
+        else:
+            # continue with the window resize
+            event.accept()
 
     def closeEvent(self, event):
         '''
@@ -437,8 +455,16 @@ class PipedViewerPQ(QMainWindow):
             self.__scenewidth = newwidth
             self.__sceneheight = newheight
             self.__createpixmap = True
-            # Redraw the scene from the beginning
-            self.redrawScene()
+            # If auto-scaling, set scaling factor to 1.0 and resize the window
+            if self.__autoscale:
+                self.__scalefactor = 1.0
+                barheights = self.menuBar().height() + self.statusBar().height()
+                self.resize(newwidth+4, newheight+4+barheights)
+                # the resize should redraw the scene
+            else:
+                # Redraw the scene from the beginning using the scaling factor
+                self.redrawScene()
+
 
     def inquireSceneScale(self):
         '''
@@ -446,14 +472,53 @@ class PipedViewerPQ(QMainWindow):
         '''
         labelwidth = int(self.__scenewidth * self.__scalefactor + 0.5)
         labelheight = int(self.__sceneheight * self.__scalefactor + 0.5)
-        scaledlg = ScaleDialogPQ(self.tr("Image Size Scaling"),
-                       self.tr("Scaling factor (both horiz. and vert.) for the image"),
-                       self.__scalefactor, labelwidth, labelheight,
-                       self.__minsize, self.__minsize, self)
+        scaledlg = ScaleDialogPQ(self.__scalefactor, labelwidth, labelheight,
+                       self.__minsize, self.__minsize, self.__autoscale, self)
         if scaledlg.exec_():
-            (newscale, okay) = scaledlg.getValues()
+            (newscale, autoscale, okay) = scaledlg.getValues()
             if okay:
-                self.scaleScene(newscale)
+                if autoscale:
+                    self.__autoscale = True
+                    self.autoScaleScene()
+                else:
+                    self.__autoscale = False
+                    self.scaleScene(newscale)
+
+    def autoScaleScene(self):
+        '''
+        Selects a scaling factor that maximizes the scene within the window 
+        frame without requiring scroll bars.  Intended to be called when
+        the window size is changed by the user and auto-scaling is turn on.
+
+        Returns:
+            True if the scene was resized
+            False if the a new resize command was issued
+        '''
+        barheights = self.menuBar().height() + self.statusBar().height()
+
+        cwheight = self.height() - barheights - 4
+        heightsf = float(cwheight) / float(self.__sceneheight)
+
+        cwwidth = self.width() - 4
+        widthsf = float(cwwidth) / float(self.__scenewidth)
+
+        if heightsf < widthsf:
+            factor = heightsf
+        else:
+            factor = widthsf
+
+        newcwheight = int(factor * self.__sceneheight + 0.5)
+        newcwwidth = int(factor * self.__scenewidth + 0.5)
+
+        # if the window does not have the correct aspect ratio, resize it so 
+        # it will; this will generate another call to this method.  Otherwise,
+        # scale the scene and be done.  Allow some slop to the small side.
+        if (cwheight - newcwheight <= 4) and (cwwidth - newcwwidth <= 4):
+            self.scaleScene(factor)
+            return True
+        else:
+            self.resize(newcwwidth+4, newcwheight+4+barheights)
+            return False
 
     def scaleScene(self, factor):
         '''

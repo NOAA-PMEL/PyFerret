@@ -48,16 +48,14 @@ HDF5_DIR	= /usr/local/hdf5_189
 NETCDF4_DIR	= /usr/local/netcdf_4211
 # NETCDF4_DIR	= /usr/local/netcdf-4.2.1.1
 
-## Java 1.6 jdk home directory - this may be predefined
+## Java home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,
 ## $(JAVA_HOME)/bin/javac and $(JAVA_HOME)/bin/jar is
 ## called to build threddsBrowser.jar; otherwise, it just
 ## uses javac and jar (from the path).
 # JAVA_HOME	= /usr/java/latest
-# JAVA_HOME	= /usr/lib/jvm/java-1.6.0-sun
-# JAVA_HOME	= /usr/lib/jvm/java-6-sun
-JAVA_HOME	= /usr/lib/jvm/java-sun
-# JAVA_HOME	= /usr/lib/jvm/java-1.6.0-openjdk
-# JAVA_HOME	= /usr/lib/jvm/java-6-openjdk
+# JAVA_HOME	= /usr/lib/jvm/java-oracle
+# JAVA_HOME	= /usr/lib/jvm/java-sun
+JAVA_HOME	= /usr/lib/jvm/java
 
 ##

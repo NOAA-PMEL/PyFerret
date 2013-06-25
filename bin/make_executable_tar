@@ -109,20 +109,20 @@ mkdir ${temp_dir}/ppl
 mkdir ${temp_dir}/ppl/fonts
 ${mycp} ${fer_files} ${temp_dir}/ppl/fonts
 
-# Copy fer/threddsBrowser/threddsBrowser.jar
-set tb_jar = ${ferret_dir}/fer/threddsBrowser/threddsBrowser.jar
+# Copy threddsBrowser/threddsBrowser.jar
+set tb_jar = ${ferret_dir}/threddsBrowser/threddsBrowser.jar
 if ( ! -r ${tb_jar} ) then
-   echo "No threddsBrowser.jar file found ${ferret_dir}/fer/threddsBrowser"
+   echo "No threddsBrowser.jar file found ${ferret_dir}/threddsBrowser"
    echo ""
    exit 1
 endif
 mkdir ${temp_dir}/lib
 ${mycp} ${tb_jar} ${temp_dir}/lib
 
-# Either copy fer/threddsBrowser/toolsUI/toolsUI-4.1.jar ...
-set toolsui_jar = ${ferret_dir}/fer/threddsBrowser/toolsUI/toolsUI-4.1.jar
+# Either copy threddsBrowser/toolsUI/toolsUI-4.1.jar ...
+set toolsui_jar = ${ferret_dir}/threddsBrowser/toolsUI/toolsUI-4.1.jar
 if ( ! -r ${toolsui_jar} ) then
-   echo "No toolsUI-4.1.jar file found ${ferret_dir}/fer/threddsBrowser/toolsUI"
+   echo "No toolsUI-4.1.jar file found ${ferret_dir}/threddsBrowser/toolsUI"
    echo ""
    exit 1
 endif
@@ -131,7 +131,7 @@ ${mycp} ${toolsui_jar} ${temp_dir}/lib
 # echo "To minimize size, the toolsUI-4.1.jar file is not included."
 # echo "The user needs to download the jar file from:"
 # echo "  ftp://ftp.unidata.ucar.edu/pub/netcdf-java/v4.1/toolsUI-4.1.jar"
-# echo "(or we can just grab it from <ferret_dir>/fer/threddsBrowser/toolsUI/)"
+# echo "(or we can just grab it from <ferret_dir>/threddsBrowser/toolsUI/)"
 # echo 'and put it under the $FER_LIBS ($FER_DIR/lib) subdirectory'
 
 # Create a symbolic link to a (possibly non-existant) toolsUI-4.1.jar file

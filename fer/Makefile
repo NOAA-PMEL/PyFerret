@@ -30,6 +30,8 @@
 # v6.7 4/11 *kms* - renamed old "all" target to "build" and made the "all"
 #                   target go to the desired default target ncdf4;
 #                   cleaned-up tags
+#  v6.8  7/13 *kms* - removed threddsBrowser (moved to top level since it is a separate app)
+
 # 
 # include platform specific macro definitions
 #
@@ -48,7 +50,7 @@ include ../platform_specific.mk.$(BUILDTYPE)
 GUI_FAKES = special/gui_fakes.o
 
 DIRS	= ccr ctx dat doo efi efn ef_utility fmt gnl ino mem  \
-	ocn plt rpn special stk utl xeq threddsBrowser
+	ocn plt rpn special stk utl xeq
 
 LIBS	= ccr ctx dat doo efi efn ef_utility fmt gnl ino mem \
 	ocn plt rpn stk utl xeq
@@ -91,7 +93,7 @@ EF_CMNS = common/EF_Util.cmn common/EF_Util.parm common/EF_mem_subsc.cmn
 all: ncdf4
 
 .PHONY: build
-build: update fmt_libraries fer_libraries ppl_libraries special_code ferret threddsBrowser
+build: update fmt_libraries fer_libraries ppl_libraries special_code ferret
 
 .PHONY: ncdf4
 ncdf4:
@@ -178,10 +180,6 @@ ppl_libraries:
 .PHONY: special_code
 special_code:
 	$(MAKE) -C special all
-
-.PHONY: threddsBrowser
-threddsBrowser:
-	$(MAKE) -C threddsBrowser all
 
 .PHONY: clean
 clean: fmt_clean ppl_clean fer_clean 

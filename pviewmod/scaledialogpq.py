@@ -66,7 +66,6 @@ class ScaleDialogPQ(QDialog):
         scalelabel = QLabel(self.tr("&Scale: "), self.__grpbox)
         self.__scaleedit = QLineEdit(self.FLTSTR_FORMAT % self.__scale, 
                                      self.__grpbox)
-        self.__scaleedit.selectAll()
         scalelabel.setBuddy(self.__scaleedit)
 
         widthbegin = QLabel(self.tr("Width: "), self.__grpbox)
@@ -160,6 +159,8 @@ class ScaleDialogPQ(QDialog):
     def unsetAutoScale(self, checked):
         if checked:
             self.__grpbox.setEnabled(True)
+            self.__scaleedit.setFocus()
+            self.__scaleedit.selectAll()
 
     def updateValues(self, newstring):
         (newscale, okay) = newstring.toFloat()

@@ -57,6 +57,7 @@ C
 #else
       include 'pplinc:PLTCOM.DAT'
 #endif
+      REAL*8 PERSPC
 C
 C     CHECK THE VIEW FLAG.
 C

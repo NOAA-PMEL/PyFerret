@@ -61,6 +61,7 @@ C
 #else
 	include 'pplinc:PLTCOM.DAT'
 #endif
+      REAL*8 TEMP
 C
       IF(DEGRES .NE. 0.0)THEN
 C

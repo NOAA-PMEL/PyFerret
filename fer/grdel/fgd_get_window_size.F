@@ -1,5 +1,5 @@
 *
-* Return the size of the active transform in pixels.
+* Return the size of the active window in pixels.
 *
 
         SUBROUTINE FGD_GET_WINDOW_SIZE(width, height)

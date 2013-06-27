@@ -325,12 +325,13 @@ c 75        CONTINUE
 	   vp_segn( vp_num ) = curr_seg_name
 	ENDIF
 	   
+
+        physical_chg = .FALSE.
 * /SIZE=q
 	qp = qual_given( slash_size )
-	physical_chg = ( qp .GT. 0 )
 * *kob* 1/01 - no changing of size if we are in the middle of animating
-	IF ( physical_chg .AND. .NOT.animate ) THEN
-
+	IF ( (qp .GT. 0) .AND. .NOT.animate ) THEN
+           physical_chg = .TRUE.
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(qp):qual_end(qp)),
      .			   scale, status )
 	   IF ( status .NE. ferr_ok ) RETURN
@@ -342,6 +343,7 @@ c 75        CONTINUE
 	qp = qual_given( slash_aspect )
 * *kob* 1/01 - no changing aspect ratio if we are in the middle of animating
 	IF ( qp .GT. 0  .AND. .NOT.animate) THEN
+           physical_chg = .TRUE.
 * ... decode the ratio and possible ":SIZE" or ":AXES" qualifier
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(qp):qual_end(qp)),
      .			   buffer, status )
@@ -526,7 +528,8 @@ c 75        CONTINUE
         ENDIF
 
 *set up sizing
-* (capitalized code from Denbo''s SUBROUTINE COLOR )
+        ASIZE = width * 1000
+        BSIZE = height * 1000
 	IF(ASIZE.GT.BSIZE)THEN
 	   FCTY=BSIZE/ASIZE
 	   FCTX=1.0
@@ -534,71 +537,29 @@ c 75        CONTINUE
 	   FCTX=ASIZE/BSIZE
 	   FCTY=1.0
 	ENDIF
-* ... define normalization transformation n (actually selected down below)
+
+* ... define the default normalization transformation for this window
 	IF ( chg_window ) THEN
-	   CALL FGD_GSWN(n, rzero,ASIZE, rzero,BSIZE)
-	   CALL FGD_GSVP(n, rzero, FCTX, rzero, FCTY )
+	   CALL FGD_GSWN(n, rzero, ASIZE, rzero, BSIZE)
+	   CALL FGD_GSVP(n, rzero, FCTX,  rzero, FCTY )
 	ENDIF
 
-	IF ( .NOT.physical_chg ) GOTO 1000
-c
-c	set up the size of the display window
-c
-	    CALL FGD_GQWKC(n,IER,ID,ITYPE)
-	    CALL QUERY_DISPLAY_SIZE(ITYPE,IER,IMETER,
-     .                              DMAXX,DMAXY,IRX,IRY)
+	wsid = n
+	wn_open  ( wsid ) = .TRUE.
+	wn_active( wsid ) = .TRUE.
 
-* special location specified on [0,1] scale ?
-	    IF ( relocate ) THEN
-	      xlowlef(n) = xmn * dmaxx
-	      ylowlef(n) = ymn * dmaxy
-	    ENDIF
-
-	    IF(WKSAUT)THEN
-		XLN=ASIZE*2.54E-5	! Denbo milli-inches to meters
-		YLN=BSIZE*2.54E-5
-
-* re-scale as requested
-	        xln = wn_scale(n) * xln
-	        yln = wn_scale(n) * yln
-
-* ... put lower left of each window at a different place if possible
-	        wkxmn = MIN( xlowlef(n), dmaxx-xln )
-	        wkymn = MIN( ylowlef(n), dmaxy-yln )
-	        	        
-		WKXMX=WKXMN+XLN
-		WKYMX=WKYMN+YLN
-C
-C	SET THE NDC WINDOW
-C
-		CALL FGD_GSWKWN(n, rzero,FCTX, rzero,FCTY)
-C
-C	SET DEVICE (WORKSTATION) VIEWPORT
-C
-		CALL SET_WINDOW_SIZE(n,WKXMN,WKXMX,WKYMN,WKYMX)
-	    ELSE
-C
-C	IF NOT AUTO WKXMN AND WKXMX ETC ARE FRACTIONS OF DMAXX
-C	AND DMAXY
-C
-		CALL FGD_GSWKWN(n, rzero,FCTX, rzero,FCTY)
-		XMN=DMAXX*WKXMN
-		XMX=DMAXX*WKXMX
-		YMN=DMAXY*WKYMN
-		YMX=DMAXY*WKYMX
-		CALL SET_WINDOW_SIZE(n,XMN,XMX,YMN,YMX)
-	    ENDIF
-
-* force immediate creation of the window on the screen
-	CALL FGD_GUWK( n, 1 )
+        IF ( physical_chg ) THEN
+*          set ASIZE and BSIZE to invalid values so the SIZE routine
+*          will not return immediately thinking there was no size change
+           ASIZE = 0.0
+           BSIZE = 0.0
+           CALL SIZE(width, height)
+        ENDIF
 
 * turn on normalization transform (same as window number and wsid)
  1000	CALL FGD_GSELNT(n)
 
 * successful completion
-	wsid = n
-	wn_open  ( wsid ) = .TRUE.
-	wn_active( wsid ) = .TRUE.
 	status = ferr_ok
 	RETURN
 

@@ -771,7 +771,7 @@
                           got_it = NC_GET_ATTRIB ( dset, varid, aname, 
      .                       do_warn, varcode, buff_size, attlen,
      .                       attoutflag, buff, vals)
-                          CALL CD_WRITE_ATTVAL(cdfid, varcode,
+                          CALL CD_WRITE_ATTVAL_DP (cdfid, varcode,
      .                          attname, vals, attlen, attype, status )
                           IF (status .NE. ferr_ok) GOTO 5400
 

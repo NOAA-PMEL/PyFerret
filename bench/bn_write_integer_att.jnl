@@ -1,0 +1,17 @@
+! bn_write_integer_att.jnl
+!  ACM 6/2013
+!
+! This file has an integer attribute 
+!    MHCHLA:numberOfObservations = 15736939 ;
+! With double-precision Ferret, we need to call CD_WRITE_ATTVAL_DP 
+! in cdf_list.F, so that the value, read in as a double, is written
+! out correctly (else get a netcdf data type matching error).
+
+use write_int_att.nc
+sh att mhchla
+set att/output=all mhchla
+save/file=a.nc/clobber mhchla
+
+sp ncdump a.nc | grep numberOfObservations
+
+

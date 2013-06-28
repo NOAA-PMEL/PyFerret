@@ -41,7 +41,7 @@ CFerBind *cairoCFerBind_createWindow(void)
     bindings->updateWindow = cairoCFerBind_updateWindow;
     bindings->clearWindow = cairoCFerBind_clearWindow;
     bindings->redrawWindow = cairoCFerBind_redrawWindow;
-    bindings->windowDpi = cairoCFerBind_windowDpi;
+    bindings->windowScreenInfo = cairoCFerBind_windowScreenInfo;
     bindings->resizeWindow = cairoCFerBind_resizeWindow;
     bindings->showWindow = cairoCFerBind_showWindow;
     bindings->saveWindow = cairoCFerBind_saveWindow;

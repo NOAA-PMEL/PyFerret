@@ -798,7 +798,7 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
 
 
 /*
- * Get the screen resolution of a window.
+ * Get information about the default screen (display) for a window.
  *
  * Input Arguments:
  *     window: Window to use
@@ -806,55 +806,58 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
  * Output Arguments:
  *     dpix: the number of dots per inch in the horizontal (X) direction
  *     dpiy: the number of dots per inch in the vertical (Y) direction
+ *     screenwidth: the width of the screen (display) in pixels (dots)
+ *     screenheight: the height of the screen (display) in pixels (dots)
  *
  * Returns success (nonzero) or failure (zero).
  * If failure, grdelerrmsg contains an explanatory message.
  */
-grdelBool grdelWindowDpi(grdelType window, float *dpix, float *dpiy)
+grdelBool grdelWindowScreenInfo(grdelType window, float *dpix, float *dpiy,
+                                int *screenwidth, int *screenheight)
 {
     GDWindow *mywindow;
-    double   *dpis;
+    grdelBool success;
     PyObject *result;
 
 #ifdef VERBOSEDEBUG
-    fprintf(debuglogfile, "grdelWindowDpi called: "
+    fprintf(debuglogfile, "grdelWindowScreenInfo called: "
             "window = %p\n", window);
     fflush(debuglogfile);
 #endif
 
     if ( grdelWindowVerify(window) == NULL ) {
-        strcpy(grdelerrmsg, "grdelWindowDpi: window argument is not a grdel Window");
+        strcpy(grdelerrmsg, "grdelWindowScreenInfo: window argument is not a grdel Window");
         return 0;
     }
     mywindow = (GDWindow *) window;
 
     if ( mywindow->bindings.cferbind != NULL ) {
-        dpis = mywindow->bindings.cferbind->windowDpi(mywindow->bindings.cferbind);
-        if ( dpis == NULL ) {
+        success = mywindow->bindings.cferbind->
+                            windowScreenInfo(mywindow->bindings.cferbind,
+                                        dpix, dpiy, screenwidth, screenheight);
+        if ( success == 0 ) {
             /* grdelerrmsg already assigned */
             return 0;
         }
-        *dpix = dpis[0];
-        *dpiy = dpis[1];
-        /* dpis belongs the windowDpi method (static array) */
     }
     else if ( mywindow->bindings.pyobject != NULL ) {
-        result = PyObject_CallMethod(mywindow->bindings.pyobject, "windowDpi", NULL);
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, "windowScreenInfo", NULL);
         if ( result == NULL ) {
-            sprintf(grdelerrmsg, "grdelWindowDpi: error when calling the Python "
-                                 "binding's windowDpi method: %s", pyefcn_get_error());
+            sprintf(grdelerrmsg, "grdelWindowScreenInfo: error when calling the Python "
+                                 "binding's windowScreenInfo method: %s", pyefcn_get_error());
             return 0;
         }
-        if ( ! PyArg_ParseTuple(result, "ff", dpix, dpiy) ) {
+        if ( ! PyArg_ParseTuple(result, "ffii", dpix, dpiy, 
+                                                screenwidth, screenheight) ) {
             Py_DECREF(result);
-            sprintf(grdelerrmsg, "grdelWindowDpi: Error when parsing the Python "
-                                 "binding's windowDpi return value: %s", pyefcn_get_error());
+            sprintf(grdelerrmsg, "grdelWindowScreenInfo: Error when parsing the Python "
+                                 "binding's windowScreenInfo return value: %s", pyefcn_get_error());
             return 0;
         }
         Py_DECREF(result);
     }
     else {
-        strcpy(grdelerrmsg, "grdelWindowDpi: unexpected error, "
+        strcpy(grdelerrmsg, "grdelWindowScreenInfo: unexpected error, "
                             "no bindings associated with this Window");
         return 0;
     }
@@ -1132,7 +1135,7 @@ void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
 
 
 /*
- * Get the screen resolution of a window.
+ * Get information about the default screen (display) for a window.
  *
  * Input Arguments:
  *     window: Window to use
@@ -1140,14 +1143,18 @@ void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
  * Output Arguments:
  *     dpix: the number of dots per inch in the horizontal (X) direction
  *     dpiy: the number of dots per inch in the vertical (Y) direction
+ *     screenwidth: width of the screen (display) in pixels (dots)
+ *     screenheight: height of the screen (display) in pixels (dots)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdwindpi_(int *success, void **window, float *dpix, float *dpiy)
+void fgdwinscreeninfo_(int *success, void **window, float *dpix, float *dpiy,
+                                     int *screenwidth, int*screenheight)
 {
     grdelBool result;
 
-    result = grdelWindowDpi(*window, dpix, dpiy);
+    result = grdelWindowScreenInfo(*window, dpix, dpiy, 
+                                   screenwidth, screenheight);
     *success = result;
 }
 

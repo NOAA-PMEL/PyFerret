@@ -160,16 +160,10 @@ C
 C	GKS COLOR AND SETUP
 C
 20	COLOUR=ICODE
-	IF(.NOT.GKSOPN)THEN
-#ifdef core
-            call crinit
-#else
-	    call gkinit
-	    CALL FGD_GCLRWK(WSID,0)
-#endif
-C
-	    GKSOPN=.TRUE.
-	ENDIF
+
+        IF ( .NOT. GKSOPN )
+     .      STOP 'COLOR called when GKSOPN is .FALSE.'
+
 	CALL PPLGFLUSH
 #ifdef core
         istat=setlineindex(icode)

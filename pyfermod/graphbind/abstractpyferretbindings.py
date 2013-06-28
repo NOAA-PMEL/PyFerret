@@ -156,11 +156,14 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError()
 
-    def windowDpi(self):
+    def windowScreenInfo(self):
         '''
-        Returns a two-tuple containing the screen resolution of
-        the Window, in dots (pixels) per inch, in the horizontal
-        (X) and vertical (Y) directions.
+        Returns the four-tuple (dpix, dpiy, screenwidth, screenheight) for
+        the default screen (display) of this Window
+           dpix: dots (pixels) per inch, in the horizontal (X) direction
+           dpiy: dots (pixels) per inch, in the vertical (Y) direction
+           screenwidth: width of the screen (display) in pixels (dots)
+           screenheight: height of the screen (display) in pixels (dots)
         '''
         raise AttributeError()
 

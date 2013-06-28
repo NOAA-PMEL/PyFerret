@@ -39,7 +39,7 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
     bindings->updateWindow = pyqtcairoCFerBind_updateWindow;
     bindings->clearWindow = pyqtcairoCFerBind_clearWindow;
     bindings->redrawWindow = pyqtcairoCFerBind_redrawWindow;
-    bindings->windowDpi = pyqtcairoCFerBind_windowDpi;
+    bindings->windowScreenInfo = pyqtcairoCFerBind_windowScreenInfo;
     bindings->resizeWindow = pyqtcairoCFerBind_resizeWindow;
     bindings->showWindow = pyqtcairoCFerBind_showWindow;
     bindings->saveWindow = pyqtcairoCFerBind_saveWindow;

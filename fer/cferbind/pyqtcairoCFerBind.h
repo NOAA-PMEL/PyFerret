@@ -12,7 +12,8 @@ grdelBool pyqtcairoCFerBind_deleteWindow(CFerBind *self);
 grdelBool pyqtcairoCFerBind_updateWindow(CFerBind *self);
 grdelBool pyqtcairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor);
 grdelBool pyqtcairoCFerBind_redrawWindow(CFerBind *self, grdelType fillcolor);
-double *  pyqtcairoCFerBind_windowDpi(CFerBind *self);
+grdelBool pyqtcairoCFerBind_windowScreenInfo(CFerBind *self, float *dpix, float *dpiy,
+                                             int *screenwidth, int *screenheight);
 grdelBool pyqtcairoCFerBind_resizeWindow(CFerBind *self, double width, double height);
 grdelBool pyqtcairoCFerBind_showWindow(CFerBind *self, int visible);
 grdelBool pyqtcairoCFerBind_saveWindow(CFerBind *self, const char *filename, int namelen,

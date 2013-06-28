@@ -10,9 +10,8 @@
 * Values used from fgrdel.cmn:
 *     enginename
 *     windowtitle
-*     windowwidth
-*     windowheight
 *     antialias
+*     thickfactor
 *
 
         SUBROUTINE FGD_GOPWK(windowid, connectid, windowtype)
@@ -30,7 +29,7 @@
         INTEGER engnamelen, wintitlelen, showit, 
      .          success, errmsglen, aaint
         CHARACTER*2048 errmsg
-        REAL*4 wdth, hght, dpix, dpiy, redf, greenf, bluef, opaquef
+        REAL*4 redf, greenf, bluef, opaquef
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR.
@@ -76,27 +75,6 @@
         CALL FGDCOLOR(colorobjs(2, windowid), windowobjs(windowid),
      .                redf, greenf, bluef, opaquef)
         IF ( colorobjs(2, windowid) .EQ. nullobj ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
-        ENDIF
-
-*       Get the horizontal and vertical DPI,
-*       and store it so this is called only once.
-        CALL FGDWINDPI(success, windowobjs(windowid), dpix, dpiy)
-        IF ( success .EQ. 0 ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
-        ENDIF
-        windowdpix(windowid) = dpix
-        windowdpiy(windowid) = dpiy
-
-*       Resize the window based on these DPI values
-        wdth = windowwidth(windowid) * dpix
-        hght = windowheight(windowid) * dpiy
-        CALL FGDWINSETSIZE(success, windowobjs(windowid), wdth, hght)
-        IF ( success .EQ. 0 ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)

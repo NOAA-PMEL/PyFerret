@@ -52,9 +52,7 @@
 * Internal declarations
       integer         TM_LENSTR1, nlen
       character*2     kwsid
-
-#ifdef xgks
-      character*88     window_name
+      character*88    window_name
 
       include         'gkspar.inc' 
       
@@ -69,71 +67,6 @@
 
 *     SET DEFERRAL STATE TO GENERATE OUTPUT AS SOON AS POSSIBLE
       call FGD_GSDS(ws_id,gasap,gsuppd)
-#else
-#ifdef atc_gks
-      integer         con_id
-
-      character*80    conid_options 
-      character*80    conid_opt/' -nc64 -ox 2 -u 2'/,conid_opt_def
-#else
-      include         'gkspar.inc' 
-
-      integer         i,fctid,mldr,mlodr,odr
-      integer         il,ia,rl,ra,sl,lstr(1),errind,ldr,lidr,lodr
-
-      character*80    idr,str(1)
-#endif
-
-      include 'gkscm1_inc.decl'
-      include 'GKSCM1.INC'
-      include 'ws_types.cmn'
-
-*******************************************************************************
-
-#ifdef atc_gks
-      con_id = ws_id
-      write (unit=kwsid,fmt='(i2)') ws_id
-      conid_opt_def = '-l FERRET'//kwsid//conid_opt
-#   ifdef unix
-      call getenv ('atcGKSconid',conid_options)
-#   else
-*     GET LOGICAL WITH TRNLNM
-#   endif
-      if (conid_options .eq. ' ') conid_options = conid_opt_def
-
-      if (wstype/100 .eq. ws_xwindow/100) then
-         call guesc050 (con_id,conid_options)
-         call guesc005 (con_id)
-      endif
-      call FGD_GOPWK(ws_id,con_id,wstype)
-#else
-#   ifdef unix
-*     Define the conid string by use of pack record (GPREC) and the FORTAN 
-*     binding GESC_CONID escape function.
-
-      il = 0
-      ia = 0
-      rl = 0
-      ra = 0
-      sl = 1
-      mldr = 10
-      lstr(1) = len (xname)
-      str(1)  = xname
-      call FGD_GPREC(il,ia,rl,ra,sl,lstr,str,mldr,errind,ldr,idr)
-
-      fctid = gecon
-      lidr  = 28
-      mlodr = 0
-      lodr  = 0
-      call FGD_GESC(fctid,lidr,idr,mlodr,lodr,odr)
-
-      call FGD_GOPWK(ws_id,0,0)
-#   else
-      call GKS$OPEN_WS (ws_id,xname,0)
-#   endif
-#endif
-
-#endif
       status = 3   ! Meaningless but may be used later
       return 
       end

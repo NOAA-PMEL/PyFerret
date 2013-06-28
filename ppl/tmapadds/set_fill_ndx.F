@@ -30,7 +30,7 @@
 	   call FGD_GSFAI(fill_ndx+lo_color_ndx(wsid))
 	else
 *	   HOW MANY COLORS HAVE WE?
-           call query_xgks_wkstn (wstype,error,max_pline,max_pmark,
+           call FGD_GQLWK (wstype,error,max_pline,max_pmark,
      .              max_text,max_fill_area,max_pattern,max_color)
 
 	   if (max_color .gt. 2) then 

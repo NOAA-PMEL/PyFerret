@@ -10,35 +10,32 @@
  * Returns the horizontal and vertical resolution of this "Window"
  * in units of dots (pixels) per inch.
  *
- * Returns a pair of doubles (a static array in this function)
- * containing the DPIs if successful.  If an error occurs,
- * grdelerrmsg is assigned an appropriate error message and NULL
- * is returned.
+ * If an error occurs, grdelerrmsg is assigned an appropriate error 
+ * message and zero is returned; otherwise one is returned.
  */
-double * pyqtcairoCFerBind_windowDpi(CFerBind *self)
+grdelBool pyqtcairoCFerBind_windowScreenInfo(CFerBind *self, 
+                            float *dpix, float *dpiy,
+                            int *screenwidth, int *screenheight)
 {
-    static double dpis[2];
     CairoCFerBindData *instdata;
     grdelBool success;
-    float dpix, dpiy;
 
     /* Sanity check */
     if ( self->enginename != PyQtCairoCFerBindName ) {
-        strcpy(grdelerrmsg, "pyqtcairoCFerBind_windowDpi: unexpected error, "
+        strcpy(grdelerrmsg, "pyqtcairoCFerBind_windowScreenInfo: unexpected error, "
                             "self is not a valid CFerBind struct");
-        return NULL;
+        return 0;
     }
     instdata = (CairoCFerBindData *) self->instancedata;
 
-    /* Get the DPIs from viewer */
-    success = grdelWindowDpi(instdata->viewer, &dpix, &dpiy);
+    /* Get the values from viewer */
+    success = grdelWindowScreenInfo(instdata->viewer, dpix, dpiy, 
+                                    screenwidth, screenheight);
     if ( ! success ) {
        /* grdelerrmsg already assigned */
-       return NULL;
+       return 0;
     }
 
-    dpis[0] = (double) dpix;
-    dpis[1] = (double) dpiy;
-    return dpis;
+    return 1;
 }
 

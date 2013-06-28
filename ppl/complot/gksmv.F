@@ -52,24 +52,18 @@ c                  Do not make a call to GPL on "move with the pen up".
 	include 'PLTCOM.DAT'
 	include 'gkscm1_inc.decl'
 	include 'GKSCM1.INC'
-	IF(.NOT.GKSOPN)THEN
-#ifdef core
-            call crinit
-#else
-	    call gkinit
-C
-	    CALL FGD_GCLRWK(WSID,0)
-#endif
-	    GKSOPN=.TRUE.
-	    LPEN=.NOT.PEN
-	ENDIF
+
+        IF ( .NOT. GKSOPN )
+     .      STOP 'GKSMV called when GKSOPN is .FALSE.'
+
 	IF(PEN)THEN
-	CALL GKPLOT(A,B,1)
+	   CALL GKPLOT(A,B,1)
 	ELSE
-	CALL GKPLOT(A,B,0)
+	   CALL GKPLOT(A,B,0)
 	ENDIF
 	RETURN
 	END
+
 *jd*	SUBROUTINE GKPLOT(XN,YN,IP,II) Number of args reduced to 3 for MAC 7.92
 	SUBROUTINE GKPLOT(XN,YN,IP)
 #ifdef core

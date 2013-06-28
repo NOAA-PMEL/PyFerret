@@ -266,24 +266,30 @@ class PyFerretBindings(AbstractPyFerretBindings):
         self.__window.submitCommand(cmnd)
         self.checkForErrorResponse()
 
-    def windowDpi(self):
+    def windowScreenInfo(self):
         '''
-        Returns a two-tuple containing the screen resolution of
-        the Window, in dots (pixels) per inch, in the horizontal
-        (X) and vertical (Y) directions.
+        Returns the four-tuple (dpix, dpiy, screenwidth, screenheight) for
+        the default screen (display) of this Window
+           dpix: dots (pixels) per inch, in the horizontal (X) direction
+           dpiy: dots (pixels) per inch, in the vertical (Y) direction
+           screenwidth: width of the screen (display) in pixels (dots)
+           screenheight: height of the screen (display) in pixels (dots)
         '''
-        cmnd = { "action":"dpi" }
+        cmnd = { "action":"screenInfo" }
         self.__window.submitCommand(cmnd)
         response = None
         try:
             # Wait indefinitely for a response
             # Make sure it is a valid response
             response = self.__window.checkForResponse(None)
-            if (type(response) != tuple) or (len(response) != 2):
+            if (type(response) != tuple) or (len(response) != 4):
                 raise ValueError
             dpix = float(response[0])
             dpiy = float(response[1])
-            if (dpix <= 0.0) or (dpiy <= 0.0):
+            screenwidth = int(response[2])
+            screenheight = int(response[3])
+            if (dpix <= 0.0) or (dpiy <= 0.0) or \
+               (screenwidth <= 0) or (screenheight <= 0):
                 raise ValueError
         except Exception:
             if not response:
@@ -296,7 +302,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
                 fullresponse += response
                 response = self.__window.checkForResponse()
             raise RuntimeError(fullresponse)
-        return (dpix, dpiy)
+        return (dpix, dpiy, screenwidth, screenheight)
 
     def showWindow(self, visible):
         '''

@@ -1,4 +1,4 @@
-	SUBROUTINE SET_WINDOW_SIZE (wsid,xmin,xmax,ymin,ymax)
+        SUBROUTINE SET_WINDOW_SIZE (ws_id,xmin,xmax,ymin,ymax)
 
 *
 *
@@ -35,13 +35,13 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-*	Routine to handle resizing windows -- uses GSWKVP for DEC GKS and 
-*	GUESC -5304 in ATC GKS.  ATC doesn't resize the window with GSWKVP.
-*	J Davison 3.24.92
-*	Mod 8.27.93 to handle XGKS resizing
-*       Mod 3.15.94 *jd* to call X event processing 
-*	*sh* 3.5.97 Mod to support metafile-only (no X) output through a
-*		cuckoo's egg implantation of meta_wsid in place of wsid
+*      Routine to handle resizing windows -- uses GSWKVP for DEC GKS and 
+*      GUESC -5304 in ATC GKS.  ATC doesn't resize the window with GSWKVP.
+*      J Davison 3.24.92
+*      Mod 8.27.93 to handle XGKS resizing
+*      Mod 3.15.94 *jd* to call X event processing 
+*      *sh* 3.5.97 Mod to support metafile-only (no X) output through a
+*                cuckoo's egg implantation of meta_wsid in place of wsid
 *      *acm* 8/27/04 New returns from resize_xgks_window; pixx,pixy which are
 *                    the size of the window in pixels.  Save these in common 
 *                    gkscm2.cmn, so that in gif and batch modes we can return 
@@ -51,55 +51,20 @@
 *
 
         IMPLICIT NONE
-#   ifndef atc_gks
-        include         'gkspar.inc'
-#   endif
-        include         'ws_types.cmn'
-	include         'gkscm2.cmn'
+        INCLUDE 'gkspar.inc'
+        INCLUDE 'ws_types.cmn'
+        INCLUDE 'gkscm2.cmn'
+        INCLUDE 'fgrdel.cmn'
 
+        INTEGER ws_id
+        REAL*4  xmin, xmax, ymin, ymax
 
-	integer		wsid,ierr,conid,wstype
-	real		xmin,xmax,ymin,ymax,xsize,ysize,xfactor,yfactor
+*       set the window size
+        CALL FGD_GSWKVP(ws_id, xmin, xmax, ymin, ymax);
+*       pixx and pixy used for PPL$XPIXEL and PPL$YPIXEL
+        pixx = NINT((xmax - xmin) * windowdpix(ws_id) * 100.0 / 2.54);
+        pixy = NINT((ymax - ymin) * windowdpiy(ws_id) * 100.0 / 2.54);
 
-        integer 	ia(3),lidr,lodr 
-        real 		ra(1)
-
-        character*80 	datarec(1), odr(1), str(1)
-
-*******************************************************************************
-        pixx = -1
-        pixy = -1
-
-#ifdef atc_gks
-	
-*	Use the escape -5304 from ATC to resize Xwindowse.  Units are in meters
-*       -- to be converted to pixels (raster units).
-
-	call FGD_GQWKC(wsid,ierr,conid,wstype)
-
-	if (wstype/100 .eq. ws_xwindow/100) then 
-*	   FIND CONVERSION FACTOR FROM PIXELS TO MM FOR THIS MONITOR
-           call guesc307 (wstype,ierr,xfactor,yfactor)
-	   if (ierr .ne. 0) goto 1000
-
-  	   xsize = xmax - xmin
-	   ysize = ymax - ymin
-
-	   ia(1) = wsid
-	   ia(2) = xsize * 1000.0 / xfactor
-	   ia(3) = ysize * 1000.0 / yfactor
-
-           call FGD_GPREC(3, ia, 0, ra, 0, 0, str, 80, ierr, lidr, datarec)
-           call guesc (-5304, lidr, datarec, 80, lodr, odr)
-	else 
-	   call FGD_GSWKVP(wsid,xmin,xmax,ymin,ymax)
-	endif
-#elif xgks
-	call resize_xgks_window (wsid,xmax-xmin,ymax-ymin,pixx,pixy)
-#else
-	call FGD_GSWKVP(wsid,xmin,xmax,ymin,ymax)
-#endif
-
-1000	return
-	end
+        RETURN
+        END
 

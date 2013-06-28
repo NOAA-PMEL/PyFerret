@@ -91,6 +91,7 @@
 * PyFr *kms* 4/2013  remove specific reference to /AALIAS /NOAALIAS in warning message
 * PyFr  *kms*  6/13  Add /COLOR= /OPACITY= to specify background color
 * PyFr  *kms*  7/13  Add /THICKEN= to specify line width scaling factor
+* PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -141,7 +142,11 @@
      .                  slash_engine,
      .                  slash_color,
      .                  slash_opacity,
-     .                  slash_thicken
+     .                  slash_thicken,
+     .                  slash_xpixels,
+     .                  slash_ypixels,
+     .                  slash_xinches,
+     .                  slash_yinches
         LOGICAL         physical
 	PARAMETER     ( slash_size   = 0+1,
      .			slash_new    = 1+1,
@@ -156,6 +161,10 @@
      .                  slash_color  = 10+1,
      .                  slash_opacity = 11+1,
      .                  slash_thicken = 12+1,
+     .                  slash_xpixels = 13+1,
+     .                  slash_ypixels = 14+1,
+     .                  slash_xinches = 15+1,
+     .                  slash_yinches = 16+1,
      .                  physical     = .TRUE. )
 
 * statement function - value between 0 and 1
@@ -324,7 +333,6 @@ c 75        CONTINUE
 	   vp_seg0( vp_num ) = curr_seg_name	! no segments left in viewport
 	   vp_segn( vp_num ) = curr_seg_name
 	ENDIF
-	   
 
         physical_chg = .FALSE.
 * /SIZE=q
@@ -383,40 +391,6 @@ c 75        CONTINUE
 	   IF ( .NOT.chg_window ) CALL SET_VIEWPORT( mvp_dflt )
 	ENDIF
 
-! note: /TEXT_PROMINENCE will not perform correctly within viewports as it
-! reshapes the windows
-!* /TEXT_PROMINENCE=factor
-!* ... works by blowing up plot size in Denbo inches while holding labels and
-!*     label positions relative to plot fixed
-!	qp = qual_given( slash_text )
-!	IF ( qp .GT. 0 ) THEN
-!	   CALL EQUAL_VAL( cmnd_buff(qual_start(qp):qual_end(qp)),
-!     .			   text_prom, status )
-!	   IF ( status .NE. ferr_ok ) RETURN
-!	   IF ( aspect.LE.0.0 ) GOTO 5050
-!	   text_prom = SQRT( text_prom )
-!	   xstretch = xstretch / text_prom
-!	   ystretch = ystretch / text_prom
-!	   wn_scale(n) = wn_scale(n) * text_prom
-!	ENDIF
-!
-!* communicate /ASPECT and /TEXT_PROMINENCE to PPLUIS
-!	CALL SET_PLOT_SIZE( xstretch, ystretch )
-
-* lower left location specified ?
-	qp = qual_given( slash_loc )
-	relocate = qp .GT. 0
-	IF ( relocate ) THEN
-	   CALL EQUAL_STRING( cmnd_buff(qual_start(qp):qual_end(qp)),
-     .			   buffer, status )
-	   IF ( status .NE. ferr_ok ) RETURN
-	   IF ( .NOT.TM_DIGIT( buffer ) )  GOTO 5030	! need a [0,1] value
-	   IF ( INDEX(buffer,',') .EQ. 0 ) GOTO 5030
-	   READ ( buffer, *, ERR=5030 ) xmn, ymn	! '*' not removed 10/95
-	   IF ( OUTSIDE_0_1(xmn) .OR. OUTSIDE_0_1(ymn) ) GOTO 5030
-	   physical_chg = .TRUE.
-	ENDIF
-
 * store appropriate segment range with each viewport
 	IF ( chg_window ) THEN
 * ... change windows --> segments will remain until previous window is cleared
@@ -443,13 +417,6 @@ c 75        CONTINUE
 * ... set up GKS bundles for the new "workstation" (window)
 	   CALL WS_LINE_BUNDLES( n, wstype )
            no_plot_yet = .TRUE.
-	ELSE
-	   CONTINUE
-! ... doesn't work:
-! "%GKS-E-ERROR_180, Specified escape function is not supported in routine GESC"
-!	   esc_data(4) = %LOC(n)
-!	   CALL GKS_ESCAPE( GKS_K_ESC_POP_WORKSTATION, esc_data, 16,
-!     .			    dummy, dummy, dummy )
 	ENDIF
 
 * deactivate previously active window
@@ -557,7 +524,7 @@ c 75        CONTINUE
         ENDIF
 
 * turn on normalization transform (same as window number and wsid)
- 1000	CALL FGD_GSELNT(n)
+        CALL FGD_GSELNT(n)
 
 * successful completion
 	status = ferr_ok
@@ -567,9 +534,6 @@ c 75        CONTINUE
  5000	RETURN
 ! 5010	CALL ERRMSG( ferr_erreq, status, buffer, *5000 )
  5020	CALL ERRMSG( ferr_syntax,status, buffer, *5000 )
- 5030	CALL ERRMSG( ferr_out_of_range,status,
-     .		'need x and y location between 0 and 1:"'
-     .		//buffer(:TM_LENSTR1(buffer))//'"',*5000)
  5040	CALL ERRMSG( ferr_unknown_arg, status, buffer, *5000 )
  5050	CALL ERRMSG( ferr_out_of_range, status, buffer,*5000)
  5060	CALL ERRMSG( ferr_invalid_command,status,

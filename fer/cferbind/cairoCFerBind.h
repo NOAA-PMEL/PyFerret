@@ -113,7 +113,8 @@ grdelBool cairoCFerBind_endView(CFerBind *self);
 grdelBool cairoCFerBind_updateWindow(CFerBind *self);
 grdelBool cairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor);
 grdelBool cairoCFerBind_redrawWindow(CFerBind *self, grdelType fillcolor);
-double *  cairoCFerBind_windowDpi(CFerBind *self);
+grdelBool cairoCFerBind_windowScreenInfo(CFerBind *self, float *dpix, float *dpiy,
+                                         int *screenwidth, int *screenheight);
 grdelBool cairoCFerBind_resizeWindow(CFerBind *self, double width, double height);
 grdelBool cairoCFerBind_showWindow(CFerBind *self, int visible);
 grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int namelen,

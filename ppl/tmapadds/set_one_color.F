@@ -75,7 +75,7 @@
 ******************************************************************************
 *	IF NO ARGS, RESET COLORS
 	if (m .eq. 0) then
-           call query_xgks_wkstn (wstype,err,max_pline,max_pmark,
+           call FGD_GQLWK (wstype,err,max_pline,max_pmark,
      .              max_text,max_fill_area,max_pattern,max_color)
 	   if (err .ne. 0) goto 1000
 

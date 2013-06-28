@@ -112,19 +112,10 @@ c
 #endif
 	CHARACTER*1 IMODE
 	DIMENSION IN(8)
-#ifdef unix
 	INTEGER*2 T4662N(3),T4662F(3),T4663(6)
-#else
-	byte INN(8)
-	byte T4662N(3),T4662F(3),T4663(6)
-#endif
 C
-#ifdef unix
 	include 'PLTCOM.DAT'
         include 'xgrinpt.cmn'
-#else
-	include 'pplinc:PLTCOM.DAT'
-#endif
         integer iwkid
 C
 #ifndef core
@@ -249,19 +240,12 @@ C
 	    SIZES(2) = 4
 	    SIZES(1) = 5
 
-#ifndef xgks
-	    PET = 1
-	    EAREA(1)=0.0
-	    EAREA(2)=0.1
-	    EAREA(3)=0.0
-	    EAREA(4)=0.1
-#else
             PET = 3
 	    EAREA(1)=10.0
 	    EAREA(2)=250.0
 	    EAREA(3)=10.0
 	    EAREA(4)=250.0
-#endif
+
 	    LDR=5
 	    IRECSZ=10
 
@@ -280,15 +264,12 @@ C
 	    CALL FGD_GQLCS(iwkid,1,1,7,ERRIND,MODE,ESW,XFORM,
      *	                   LOCX,LOCY,PET,EAREA,LDR,RECORD)
 	    PET = 3
-	    CALL FGD_GQWKC(iwkid,ERRIND,CONID,WSTYPE)
-	    CALL FGD_GQDSP(WSTYPE,ERRIND,DCUNIT,DCX,DCY,IRSX,IRSY)
+*           Note that FGD_GQDSP uses the window id 
+*           instead of window type as the first argument
+	    CALL FGD_GQDSP(iwkid,ERRIND,DCUNIT,DCX,DCY,IRSX,IRSY)
 	    EAREA(2)=DCX
 	    EAREA(4)=DCY
 
-#ifndef xgks
-	    CALL GINLC(iwkid,1,XFORM,LOCX,LOCY,PET,EAREA(1),EAREA(2),
-     *	    EAREA(3),EAREA(4),LDR,RECORD)
-#endif
 	    CALL FGD_GSLCM(iwkid,1,0,1)
 	    CALL FGD_GRQLC(iwkid,1,ISTAT,XFORM,LOCX,LOCY)  ! get mouse click (X,Y)
 	    CALL FGD_GQNT(XFORM,ERRIND,WIND,VIEW)

@@ -864,9 +864,11 @@ class PipedViewerPQ(QMainWindow):
             self.exitViewer()
         elif cmndact == "hide":
             self.hide()
-        elif cmndact == "dpi":
-            windowdpi = ( self.physicalDpiX(), self.physicalDpiY() )
-            self.__rspdpipe.send(windowdpi)
+        elif cmndact == "screenInfo":
+            info = ( self.physicalDpiX(), self.physicalDpiY(),
+                     QApplication.desktop().screen().width(), 
+                     QApplication.desktop().screen().height() )
+            self.__rspdpipe.send(info)
         elif cmndact == "antialias":
             self.__antialias = bool(cmnd.get("antialias", True))
         elif cmndact == "update":

@@ -80,7 +80,7 @@
 
 *******************************************************************************
 *	WHAT IS AVAILABLE ON THIS WORKSTATION?
-	call query_xgks_wkstn (zwstype,error,max_pline,max_pmark,
+	call FGD_GQLWK (zwstype,error,max_pline,max_pmark,
      .	            max_text,max_fill_area,max_pattern,max_color)
 	if (error .ne. 0) goto 1000
 

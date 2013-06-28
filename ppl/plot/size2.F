@@ -167,7 +167,7 @@ C
 
         LOGICAL TM_FPEQ_SNGL
         LOGICAL clip
-        INTEGER ier, id, itype, imeter, irx, iry
+        INTEGER ier, imeter, irx, iry
         REAL    dmaxx, dmaxy, fcty, fctx, xln, yln, xmn, xmx, ymn, ymx,
      .          t, scale, tmxclip, tmyclip, tmxorg, tmyorg, tmsize,
      .          tmscale, tmxll, tmyll
@@ -268,9 +268,10 @@ C
 * end of 9/1/88 and 9/13/88 FERRET mods
 c
 c set up the size of the display window
+c          Note: FGD_GQDSP uses the window id 
+c          instead of window type for the first argument
 c
-           CALL FGD_GQWKC(wsid,ier,id,itype)
-           CALL QUERY_DISPLAY_SIZE(itype,ier,imeter,dmaxx,dmaxy,irx,iry)
+           CALL FGD_GQDSP(wsid,ier,imeter,dmaxx,dmaxy,irx,iry)
 C
            IF ( wksaut ) THEN
               xln=asize*2.54E-5
@@ -332,33 +333,24 @@ C SET THE NDC WINDOW
 *              ENDIF
 
 C
-              IF ( wsid .GT. 0 )
-     .           CALL FGD_GSWKWN(wsid,0.0,fctx,0.0,fcty)
-C
 C SET DEVICE (WORKSTATION) VIEWPORT
 C
-*             jd mod 9.7.88 begin
-              IF (imeter .EQ. 0) THEN
-                 IF (wsid .GT. 0)
-     .              CALL SET_WINDOW_SIZE(wsid,wkxmn,wkxmx,wkymn,wkymx)
-              ELSE
-*                USE DENBO INCHES
-                 IF (wsid .GT. 0)
-     .              CALL SET_WINDOW_SIZE(wsid,0.0,dmaxx,0.0,dmaxy)
-              END IF
-*             jd mod 9.7.88 end
+              IF ( wsid .GT. 0 ) THEN
+                 CALL FGD_GSWKWN(wsid,0.0,fctx,0.0,fcty)
+                 CALL SET_WINDOW_SIZE(wsid,wkxmn,wkxmx,wkymn,wkymx)
+              ENDIF
            ELSE
 C
 C IF NOT AUTO WKXMN AND WKXMX ETC ARE FRACTIONS OF DMAXX AND DMAXY
 C
-              IF ( wsid .GT. 0 )
-     .             CALL FGD_GSWKWN(wsid,0.0,fctx,0.0,fcty)
               XMN=DMAXX*WKXMN
               XMX=DMAXX*WKXMX
               YMN=DMAXY*WKYMN
               YMX=DMAXY*WKYMX
-              IF (wsid .gt. 0)
-     .           CALL SET_WINDOW_SIZE(wsid,xmn,xmx,ymn,ymx)
+              IF ( wsid .GT. 0 ) THEN
+                 CALL FGD_GSWKWN(wsid,0.0,fctx,0.0,fcty)
+                 CALL SET_WINDOW_SIZE(wsid,xmn,xmx,ymn,ymx)
+              ENDIF
            ENDIF
 
 * select normalization transformation and turn on clipping

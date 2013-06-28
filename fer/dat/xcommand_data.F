@@ -208,6 +208,7 @@
 * PyFr  *kms* 6/13  Add /COLOR= /OPACITY= to specify background color
 * PyFr  *kms* 7/13  Add /THICKEN to SET WINDOW to specify line thickness scaling factor
 * PyFr  *kms*  7/13 Add /OPACITY to CONTOUR, PLOT, POLYGON, SHADE, VECTOR
+* PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -243,9 +244,13 @@
 		DATA qualifiers  (nqual_at1b+10)/ 'COLOR'	/
 		DATA qualifiers  (nqual_at1b+11)/ 'OPACITY'	/
 		DATA qualifiers  (nqual_at1b+12)/ 'THICKEN'	/
-		DATA qualifiers  (nqual_at1b+13)/ '****'	/
-		DATA qualifiers  (nqual_at1b+14)/ '****'	/
-		DATA qualifiers  (nqual_at1b+15)/ '****'	/
+		DATA qualifiers  (nqual_at1b+13)/ 'XPIXELS'	/
+		DATA qualifiers  (nqual_at1b+14)/ 'YPIXELS'	/
+		DATA qualifiers  (nqual_at1b+15)/ 'XINCHES'	/
+		DATA qualifiers  (nqual_at1b+16)/ 'YINCHES'	/
+		DATA qualifiers  (nqual_at1b+17)/ '****'	/
+		DATA qualifiers  (nqual_at1b+18)/ '****'	/
+		DATA qualifiers  (nqual_at1b+19)/ '****'	/
 * SET REGION
 	   DATA subcommands      (nsub_at1 + 2)	/ 'REGION'	/
 	   DATA num_qualifs      (nsub_at1 + 2)	/ nqual1c	/

@@ -54,17 +54,8 @@ c
 	include 'gkscm1_inc.decl'
 	include 'GKSCM1.INC'
 
-	IF(.NOT.GKSOPN)THEN
-#ifdef core
-            call crinit
-#else
-	    call gkinit
-C
-	    CALL FGD_GCLRWK(WSID,0)
-#endif
-	    GKSOPN=.TRUE.
-	    LPEN=.NOT.PEN
-	ENDIF
+        IF ( .NOT. GKSOPN )
+     .      STOP 'GKSMV_makedot called when GKSOPN is .FALSE.'
 
 	IF(PEN)THEN
 	  CALL GKPLOT_makedot(A,B,1)

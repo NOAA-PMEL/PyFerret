@@ -4,6 +4,9 @@
 *    windowid: ID number of the window to clear
 *    ctrlflag: ignored
 *
+* NOTE: if windowid is not valid, this call is ignored
+*       since this can arise from SET WINDOW /NEW /CLEAR
+*
 
         SUBROUTINE FGD_GCLRWK(windowid, ctrlflag)
 
@@ -21,10 +24,10 @@
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR. 
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GCLRWK: Invalid windowid value'
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GCLRWK: null windowobj'
+            RETURN
         ENDIF
 *       Background color is always color zero which is colornum one
         colornum = 1

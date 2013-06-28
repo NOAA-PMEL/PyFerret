@@ -47,35 +47,22 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
-	include 'xprog_state.cmn'
 	include	'gkscm1_inc.decl'	! with wsid
 	include	'GKSCM1.INC'	! with wsid
-	include	'pltcom_dat.decl'	! with gksopn
-	include	'PLTCOM.DAT'	! with gksopn
-	include 'xplot_setup.cmn'
 
 * calling argument declarations
 	INTEGER	status
 
-* internal variable declarations
-* ...
-
-* only relevant for GKS output
-	IF ( mode_gks ) THEN
-	  IF ( .NOT.animate .AND. wsid.EQ.0 
-     .              .AND. .NOT.mode_metafile ) GOTO 5100
-	ENDIF
+        IF ( wsid .EQ. 0 ) GOTO 5100
 
 * success
 	status = ferr_ok
-	RETURN
+ 5000	RETURN
 
 * not output device is ready
- 5000	RETURN
  5100	CALL ERRMSG( ferr_state_not_set, status,
      .		     'no graphical output'//pCR//
-     .		     'Use SET WINDOW or SET MODE METAFILE', *5000 )
+     .		     'Use SET WINDOW', *5000 )
 	END

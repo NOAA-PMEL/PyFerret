@@ -167,12 +167,8 @@
      .                  slash_yinches = 16+1,
      .                  physical     = .TRUE. )
 
-* statement function - value between 0 and 1
-	REAL x
-	LOGICAL OUTSIDE_0_1
-	OUTSIDE_0_1( x ) = x.LT.0.0 .OR. x.GT.1.0
-
 	rzero = 0.0
+	rone = 1.0
 
 * /TITLE=text
 * This text becomes the name of the workstation. The name gets truncated 
@@ -401,7 +397,6 @@ c 75        CONTINUE
 	      vp_segn(ivp) = 0
  80	   CONTINUE
            CALL SET_PLOT_SIZE( width, height )   ! from PPL COMMON PLT.INC
-	   rone = 1.0
 	   xwlo = xwhitelo 
 	   ywlo = ywhitelo
 	   xwhi = xwhitehi

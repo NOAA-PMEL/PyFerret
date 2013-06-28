@@ -36,4 +36,7 @@ GO bn_reset
 GO err684_degC_axlab
 
 GO bn_reset
-go err684_null_stringwrite
+GO err684_null_stringwrite
+
+GO bn_reset
+GO err684_FillValue_xml

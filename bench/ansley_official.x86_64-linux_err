@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43361305 Jun 18 16:39 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 43473363 Jun 27 16:11 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixing ticket 2081
+Note: tweaks to xml output for numeric attributes
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,13 +14,13 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/x86/FERRET/external_functions/ext_func
-FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
+FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go baker_15955/JavaSource/resources/iosp/scripts/ /home/users/ansley/baker_15955/JavaSource/resources/iosp/scripts/ /home/users/ansley/baker/JavaSource/resources/iosp/scripts/
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Tue Jun 18 16:52:34 PDT 2013
+Beginning at Thu Jun 27 16:39:52 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3407,6 +3407,8 @@ NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  LISTing to file append_to_this.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3417,6 +3419,9 @@ Replacing definition of axis XIRREG
  *** NOTE: Bounds given describe non-contiguous axis cells
  *** NOTE: Using the LOWER bound specified for each axis cell
  LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3507,4 +3512,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Jun 18 16:54:41 PDT 2013
+Ended at Thu Jun 27 16:41:45 PDT 2013

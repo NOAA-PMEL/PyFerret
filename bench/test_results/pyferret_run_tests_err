@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Jun 28 13:28 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Jun 28 14:17 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -203,6 +203,7 @@ Benchmark scripts that will be run:
    bn_dsg_e_x.jnl
    bn_nco_append.jnl
    bn_nobounds.jnl
+   bn_write_integer_att.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -219,7 +220,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Jun 28 13:31:51 PDT 2013
+Beginning at Fri Jun 28 14:29:53 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3213,6 +3214,8 @@ NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
 *** Running test: bn_nco_append.jnl
@@ -3228,6 +3231,13 @@ sh: ncks: command not found
  *** NOTE: Using the LOWER bound specified for each axis cell
  LISTing to file a.nc
  LISTing to file a.nc
+*** Running test: bn_write_integer_att.jnl
+ Cached data cleared from memory
+ LISTing to file a.nc
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
+ data in attribute numberOfObservations not representable in output type NC_INT
+LIST/FORMAT=CDF/file=a.nc/clobber mhchla
+Command file, command group, or REPEAT execution aborted
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3247,4 +3257,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Fri Jun 28 13:35:33 PDT 2013
+Ended at Fri Jun 28 14:33:13 PDT 2013

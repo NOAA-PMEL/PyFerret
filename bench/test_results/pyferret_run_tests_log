@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Jun 28 13:28 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Jun 28 14:17 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -203,6 +203,7 @@ Benchmark scripts that will be run:
    bn_dsg_e_x.jnl
    bn_nco_append.jnl
    bn_nobounds.jnl
+   bn_write_integer_att.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -219,7 +220,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Jun 28 13:31:51 PDT 2013
+Beginning at Fri Jun 28 14:29:53 PDT 2013
 *** Running test: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10469,12 +10470,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "28-Jun-13"
-SESSION_TIME = "13:32"
-SESSION_PID = "29626"
-DELTA_CPU = "0.52492"
-CLOCK_SECS = "0.306"
+SESSION_TIME = "14:30"
+SESSION_PID = "2374"
+DELTA_CPU = "0.38594"
+CLOCK_SECS = "0.247"
 CURRENT_DATE = "28-Jun-13"
-CURRENT_TIME = "13:32:10"
+CURRENT_TIME = "14:30:09"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -10498,12 +10499,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "28-Jun-13"
-SESSION_TIME = "13:32"
-SESSION_PID = "29626"
-DELTA_CPU = "0.001999"
-CLOCK_SECS = "0.307"
+SESSION_TIME = "14:30"
+SESSION_PID = "2374"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "0.248"
 CURRENT_DATE = "28-Jun-13"
-CURRENT_TIME = "13:32:10"
+CURRENT_TIME = "14:30:09"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 S1 = "hello"
@@ -10514,8 +10515,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "28-Jun-13"
-SESSION_TIME = "13:32"
-SESSION_PID = "29626"
+SESSION_TIME = "14:30"
+SESSION_PID = "2374"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10526,14 +10527,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "28-Jun-13"
-SESSION_TIME = "13:32"
-SESSION_PID = "29626"
+SESSION_TIME = "14:30"
+SESSION_PID = "2374"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "28-Jun-13"
-SESSION_TIME = "13:32"
-SESSION_PID = "29626"
+SESSION_TIME = "14:30"
+SESSION_PID = "2374"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10665,12 +10666,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "28-Jun-13"
-SESSION_TIME = "13:32"
-SESSION_PID = "29626"
-DELTA_CPU = "0.024996"
-CLOCK_SECS = "0.332"
+SESSION_TIME = "14:30"
+SESSION_PID = "2374"
+DELTA_CPU = "0.021997"
+CLOCK_SECS = "0.27"
 CURRENT_DATE = "28-Jun-13"
-CURRENT_TIME = "13:32:10"
+CURRENT_TIME = "14:30:09"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -25200,7 +25201,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Fri Jun 28 13:32:29 PDT 2013
+Fri Jun 28 14:30:26 PDT 2013
  
 GO bn_reset
 cancel mode verify
@@ -48412,7 +48413,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "28-Jun-13_13:33"
+WIN_TITLE = "28-Jun-13_14:31"
  
 set win/title="set the title"
 sho sym win_title
@@ -48430,7 +48431,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="28-Jun-13:13:33"
+ !-> set win/title="28-Jun-13:14:31"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48441,14 +48442,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 28-Jun-13
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 13:33
+ !-> DEFINE SYMBOL the_time = 14:31
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="28-Jun-13:13:33"
+ !-> SET WIN/TITLE="28-Jun-13:14:31"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "28-Jun-13:13:33"
+WIN_TITLE = "28-Jun-13:14:31"
 *** Running test: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -58683,10 +58684,10 @@ SH GRID am
  normal    F
 *** Running test: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.524919"
-CLOCK_SECS = "0.304"
+DELTA_CPU = "0.515921"
+CLOCK_SECS = "0.3"
 CURRENT_DATE = "28-Jun-13"
-CURRENT_TIME = "13:34:29"
+CURRENT_TIME = "14:32:15"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -58695,8 +58696,8 @@ CURRENT_TIME = "13:34:29"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.054991"
-CLOCK_SECS = "0.358"
+DELTA_CPU = "0.046993"
+CLOCK_SECS = "0.347"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -58710,60 +58711,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.627905
+ !-> DEFINE VARIABLE ten_plots = 0.444932
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0"
-CLOCK_SECS = "0.987"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "0.793"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.988"
+CLOCK_SECS = "0.793"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.06099
- !-> DEFINE VARIABLE sumcpu =0.06099
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.032995
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.06699
- !-> DEFINE VARIABLE sumcpu =0.12798
+ !-> DEFINE VARIABLE dt = 0.034994
+ !-> DEFINE VARIABLE sumcpu =0.067989
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.058991
- !-> DEFINE VARIABLE sumcpu =0.186971
+ !-> DEFINE VARIABLE dt = 0.034995
+ !-> DEFINE VARIABLE sumcpu =0.102984
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.041994
- !-> DEFINE VARIABLE sumcpu =0.228965
+ !-> DEFINE VARIABLE dt = 0.036994
+ !-> DEFINE VARIABLE sumcpu =0.139978
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.039994
- !-> DEFINE VARIABLE sumcpu =0.268959
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.173973
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.040994
- !-> DEFINE VARIABLE sumcpu =0.309953
+ !-> DEFINE VARIABLE dt = 0.035995
+ !-> DEFINE VARIABLE sumcpu =0.209968
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.348947
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.242963
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.036994
- !-> DEFINE VARIABLE sumcpu =0.385941
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.275958
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.036995
- !-> DEFINE VARIABLE sumcpu =0.422936
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.307953
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.036994
- !-> DEFINE VARIABLE sumcpu =0.45993
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.339948
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.45993
-0.45993
+ !-> MESSAGE/CONTINUE 0.339948
+0.339948
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.45"
+CLOCK_SECS = "1.134"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "28-Jun-13"
-SESSION_TIME = "13:34"
+SESSION_TIME = "14:32"
 CURRENT_DATE = "28-Jun-13"
-CURRENT_TIME = "13:34:30"
+CURRENT_TIME = "14:32:16"
 *** Running test: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -62816,7 +62817,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.85 (PyFerret 1.0.0beta)"                                       
  3    /  3:" ! Linux 2.6.18-348.6.1.el5 - 06/28/13"                                     
- 4    /  4:" ! 28-Jun-13 13:35     "                                                    
+ 4    /  4:" ! 28-Jun-13 14:32     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -65829,42 +65830,42 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.0603
- 2   / 2:  0.4782
- 3   / 3:  0.4585
- 4   / 4:  0.9541
- 5   / 5:  0.2549
+ 1   / 1:  0.7274
+ 2   / 2:  0.9258
+ 3   / 3:  0.7678
+ 4   / 4:  0.6365
+ 5   / 5:  0.0744
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.4335
- 2   / 2:  0.8577
- 3   / 3:  0.1824
- 4   / 4:  0.1924
- 5   / 5:  0.8942
+ 1   / 1:  0.1012
+ 2   / 2:  0.3679
+ 3   / 3:  0.7710
+ 4   / 4:  0.6220
+ 5   / 5:  0.3867
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.4594
- 2   / 2:  0.2416
- 3   / 3:  0.0677
- 4   / 4:  0.6201
- 5   / 5:  0.9852
- 6   / 6:  0.2676
+ 1   / 1:  0.1979
+ 2   / 2:  0.7672
+ 3   / 3:  0.6706
+ 4   / 4:  0.3451
+ 5   / 5:  0.4025
+ 6   / 6:  0.6937
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.6887
- 2   / 2:  0.0211
- 3   / 3:  0.6002
- 4   / 4:  0.0005
- 5   / 5:  0.7881
- 6   / 6:  0.2058
+ 1   / 1:  0.2476
+ 2   / 2:  0.2289
+ 3   / 3:  0.2039
+ 4   / 4:  0.0912
+ 5   / 5:  0.0129
+ 6   / 6:  0.6823
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
@@ -65896,42 +65897,42 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.758
- 2   / 2: -0.492
- 3   / 3: -0.308
- 4   / 4:  0.453
- 5   / 5:  1.790
+ 1   / 1: -0.374
+ 2   / 2: -0.695
+ 3   / 3: -0.797
+ 4   / 4:  1.556
+ 5   / 5: -2.287
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1: -0.820
- 2   / 2:  0.844
- 3   / 3: -0.571
- 4   / 4:  0.515
- 5   / 5: -1.347
+ 1   / 1:  1.905
+ 2   / 2:  1.048
+ 3   / 3:  0.958
+ 4   / 4: -1.912
+ 5   / 5: -0.763
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.5258
- 2   / 2:  0.3585
- 3   / 3:  0.4942
- 4   / 4:  0.2643
- 5   / 5: -0.7331
- 6   / 6: -0.8446
+ 1   / 1: -0.966
+ 2   / 2:  0.257
+ 3   / 3: -1.295
+ 4   / 4:  1.406
+ 5   / 5:  0.478
+ 6   / 6:  1.640
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.682
- 2   / 2: -0.023
- 3   / 3: -0.215
- 4   / 4: -0.312
- 5   / 5: -0.226
- 6   / 6: -1.310
+ 1   / 1:  0.9668
+ 2   / 2:  0.4770
+ 3   / 3:  0.2582
+ 4   / 4: -0.6638
+ 5   / 5: -0.7299
+ 6   / 6:  0.4051
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
@@ -65966,15 +65967,15 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-            VAR2   VAR2    VAR2
-0     / 1:  1.422  1.545  0.4509
-20    / 2:  1.545  1.422  0.4509
-40    / 3:  0.285  0.451  0.2854
-60    / 4:  0.451  0.285  0.4509
-80    / 5: -0.677 -0.013  0.4509
-100   / 6: -0.013 -0.013  0.4509
-120   / 7:  0.261  0.261  0.4509
-140   / 8:  0.627  0.627  0.6275
+            VAR2   VAR2   VAR2
+0     / 1:  1.900  1.900  1.163
+20    / 2:  1.368  1.368  1.163
+40    / 3:  1.163  1.163  0.415
+60    / 4:  0.415  0.415  0.415
+80    / 5: -0.140 -0.140  0.415
+100   / 6: -0.435 -0.140  0.415
+120   / 7:  0.313  0.077  0.415
+140   / 8:  0.077  0.313  0.415
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -72612,7 +72613,7 @@ set mode/last logo
  
 GO bn_reset
 cancel mode verify
-go err684_null_stringwrite
+GO err684_null_stringwrite
 ! err684_null_stringwrite.jnl
 ! 18-Jun-2013 ACM
 !
@@ -72631,6 +72632,93 @@ let anull = avar[i=2]
 save/clobber/file=a.nc anull
 set mode/last ignore
  
+ 
+GO bn_reset
+cancel mode verify
+GO err684_FillValue_xml
+! err684_FillValue_xml.jnl
+! ACM 6/2013
+!
+! See the dataset at http://ferret.pmel.noaa.gov/thredds/dodsC/woa09_1deg_monthly
+! where the "number of" variables have  _FillValues attributes = -2147483647
+! This value was being written to the xml headers as a float, without enough precision.
+! See las ticket #761, fixes in show_data_set_vars_xml.F
+ 
+! should be    <value>-2147483647</value>
+! instead of:  <value>-2.147484E+09</value>
+ 
+use fill_value_int.nc
+sh dat/var/xml
+<datasets>
+<dataset name="./fill_value_int.nc" default="true">
+<title>INT variable with _FillValue -2147483647</title>
+<var name="A_dd">
+<attribute name="units" type="char">
+   <value><![CDATA[1]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[Number of O2 Utilization Observations]]></value>
+</attribute>
+<attribute name="_FillValue" type="float">
+   <value>-2.147484E+09</value>
+</attribute>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[LONG]]></value>
+</attribute>
+<grid name="GEW1">
+<axes>
+<xaxis>LON</xaxis>
+</axes>
+</grid>
+</var>
+</dataset>
+</datasets>
+<axes>
+<axis name="LON">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>300.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>301.5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[longitude]]></value>
+</attribute>
+<attribute name="axis" type="char">
+   <value><![CDATA[X]]></value>
+</attribute>
+<attribute name="standard_name" type="char">
+   <value><![CDATA[longitude]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[lon]]></value>
+</attribute>
+</axis>
+</axes>
 *** Running test: bn_dsg_e_x.jnl
 ! bn_dsg_e.jnl
 !
@@ -72876,6 +72964,33 @@ variables:
 		:Conventions = "CF-1.0" ;
 }
  
+*** Running test: bn_write_integer_att.jnl
+! bn_write_integer_att.jnl
+!  ACM 6/2013
+!
+! This file has an integer attribute
+!    MHCHLA:numberOfObservations = 15736939 ;
+! With double-precision Ferret, we need to call CD_WRITE_ATTVAL_DP
+! in cdf_list.F, so that the value, read in as a double, is written
+! out correctly (else get a netcdf data type matching error).
+ 
+use write_int_att.nc
+sh att mhchla
+     attributes for dataset: ./write_int_att.nc
+ MHCHLA.missing_value = -9999999
+ MHCHLA._FillValue = -9999999
+ MHCHLA.actual_range = 0.00049, 91.76669
+ MHCHLA.coordsys = geographic 
+ MHCHLA.fraction_digits = 2
+ MHCHLA.long_name = Chlorophyll-a, Aqua MODIS, NPP, 0.05 degrees, Global, Science Quality 
+ MHCHLA.numberOfObservations = 15736939
+ MHCHLA.percentCoverage = 0.4216215
+ MHCHLA.standard_name = concentration_of_chlorophyll_in_sea_water 
+ MHCHLA.units = mg m-3 
+ MHCHLA.history = From http://oceanwatch.pfeg.noaa.gov/thredds/dodsC/satellite/MH/chla/mday 
+set att/output=all mhchla
+save/file=a.nc/clobber mhchla
+exit /program
 *** Running test: bn_all_ef.jnl
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -73719,12 +73834,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "28-Jun-13"
-SESSION_TIME = "13:35"
-SESSION_PID = "30970"
-DELTA_CPU = "0.555915"
-CLOCK_SECS = "0.322"
+SESSION_TIME = "14:33"
+SESSION_PID = "4156"
+DELTA_CPU = "0.337947"
+CLOCK_SECS = "0.2"
 CURRENT_DATE = "28-Jun-13"
-CURRENT_TIME = "13:35:33"
+CURRENT_TIME = "14:33:12"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -73746,7 +73861,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "28-Jun-13_13:35"
+WIN_TITLE = "28-Jun-13_14:33"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -73797,4 +73912,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Fri Jun 28 13:35:33 PDT 2013
+Ended at Fri Jun 28 14:33:13 PDT 2013

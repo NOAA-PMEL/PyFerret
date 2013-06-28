@@ -2901,5 +2901,6 @@ variables:
 *** Running test: bn_dsg_e_x.jnl
 *** Running test: bn_nco_append.jnl
 *** Running test: bn_nobounds.jnl
+*** Running test: bn_write_integer_att.jnl
 *** Running test: bn_all_ef.jnl
 *** Running test: bn_startupfile.jnl

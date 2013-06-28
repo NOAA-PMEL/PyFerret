@@ -93,7 +93,7 @@
         LOGICAL   NC_GET_ATTRIB, got_it, coordvar, newatt, have_units,
      .            have_title
 
-        CHARACTER TM_FMT*16, show_str*16
+        CHARACTER show_str*128
         CHARACTER uvarname*150, attname*128, attbuff*2048, buff*128,
      .            outstring*2048, aname*128, atype*10
 
@@ -197,9 +197,10 @@ C Write statement that uses number 2075 when we change to using these.)
      .          .TRUE., uvarname, blen, attlen, 
      .          attoutflag, attbuff, vals)
 
-* ?? if double-prec, check whether we need more precision to write the value?
+* For double-prec Ferret, check whether we need more precision to write the value
 
-             show_str = TM_FMT(vals(1), 7,16,slen)
+	     CALL FLOAT2STRING_FOR_XML (vals(1), attype, show_str, slen)
+
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)
              WRITE ( risc_buff, 2030 ) '_FillValue' 
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -218,9 +219,9 @@ C Write statement that uses number 2075 when we change to using these.)
              got_it = NC_GET_ATTRIB (dset, varid, attname, 
      .          .TRUE., uvarname, blen, attlen, 
      .          attoutflag, attbuff, vals)
+	     
+	     CALL FLOAT2STRING_FOR_XML (vals(1), attype, show_str, slen)
 
-             show_str = TM_FMT(vals(1), 7,16,slen)
-             slen = TM_LENSTR(show_str)
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)
              WRITE ( risc_buff, 2030 ) 'missing_value'
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -321,7 +322,8 @@ C Write statement that uses number 2075 when we change to using these.)
 		    slen = 1
 		    attbuff = ' '
 		    DO 150 i = 1, attlen
-                       buff = TM_FMT(vals(i), 7, 14, llen)
+                       CALL FLOAT2STRING_FOR_XML (vals(i), attype, buff, slen)
+
                        CALL ESCAPE_FOR_XML (buff, outstring, llen)
                        WRITE ( risc_buff, 2050 ) outstring(1:llen)
                        CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -418,7 +420,7 @@ C Write statement that uses number 2075 when we change to using these.)
 
 ! missing_flag and _FillValue same for user-variable 
 
-             show_str = TM_FMT(uvar_bad_data(ivar), 7,16,slen)
+             CALL FLOAT2STRING_FOR_XML (uvar_bad_data(ivar), attype, show_str, slen)
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)
              WRITE ( risc_buff, 2030 ) '_FillValue' 
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -427,8 +429,6 @@ C Write statement that uses number 2075 when we change to using these.)
              WRITE ( risc_buff, 2060 ) 
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-             show_str = TM_FMT(uvar_bad_data(ivar), 7,16,slen)
-             CALL ESCAPE_FOR_XML (show_str, outstring, slen)
              WRITE ( risc_buff, 2030 ) 'missing_value'
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
              WRITE (risc_buff, 2050) outstring(1:slen)
@@ -514,7 +514,7 @@ C Write statement that uses number 2075 when we change to using these.)
                       slen = 1
                       attbuff = ' '
                       DO 750 i = 1, attlen
-                         buff = TM_FMT(vals(i), 7, 14, llen)
+                         CALL FLOAT2STRING_FOR_XML (vals(i), attype, buff, slen)
                          CALL ESCAPE_FOR_XML (buff, outstring, llen)
                          WRITE ( risc_buff, 2050 ) outstring(1:llen)
                          CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)

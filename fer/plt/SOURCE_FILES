@@ -67,6 +67,8 @@ send_pltype.F\
 set_ax_sizes.F\
 set_graticules.F\
 set_plot_size.F\
+set_ppl_defaults.F\
+set_ppl_values.F\
 set_viewport.F\
 set_vp_symbols.F\
 set_window.F\
@@ -76,4 +78,5 @@ taxis_style.F\
 trim_axis_ends.F\
 viewport_number.F\
 vp_axlim2lim.F\
-whoi_date.F 
+whoi_date.F\
+window_size_from_opts.F

@@ -59,17 +59,20 @@
 	include 'xplot_state.cmn'
         include 'xprog_state.cmn'
 	include 'xrevision.cmn'
+        include 'gkscm1_inc.decl'
+        include 'GKSCM1.INC'   ! for wsid
 
 * local variable declarations
 	CHARACTER buff*24
-	REAL*4 xsize, ysize
-
-* local parameters
-        LOGICAL     physical
-        PARAMETER ( physical = .TRUE. )
 
 * PLOT5 re-initialization (to forget previous states)
-!	CALL PPLCMD ( from, line, 0, 'GET FERRET_PPLINIT', 1, 1 )
+
+*       set the default plot size
+        wn_width(wsid) = dflt_xinches
+        wn_height(wsid) = dflt_yinches
+*       set sizes and locations that scale with the plot size
+        CALL SET_PPL_DEFAULTS(wsid)
+
 	CALL PPLCMD ( from, line, 0, 'XFOR', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'YFOR', 1, 1 )
  	CALL PPLCMD ( from, line, 0, 'XLAB', 1, 1 )
@@ -86,10 +89,6 @@
   100   FORMAT (I3)
         CALL PPLCMD (from, line, 0, 'LINECOLORS '//buff(1:3)//' 1', 1, 1)
 
-	buff = ' '
-	WRITE ( buff, 3000 ) xwhitelo, ywhitelo
- 3000	FORMAT(F9.3,F9.3)
-	CALL PPLCMD ( from, line, 0, 'ORIGIN '//buff, 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'AXATIC 10,10', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'LABS', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'ALINE', 1, 1 )
@@ -98,23 +97,16 @@
 c	CALL PPLCMD ( from, line, 0, 'TXNMTC 0', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'TXNMTC -1', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'TITLE', 1, 1 )
-	CALL PPLCMD ( from, line, 0, 'LABSET,0.16,0.12,0.12,0.12', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'WINDOW ON', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'BOX OFF', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'CROSS 0', 1, 1 )
-	CALL PPLCMD ( from, line, 0, 'AXLSZE .1,.1', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'AXTYPE 1,1', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'AXLABP -1,-1', 1, 1)
 	CALL PPLCMD ( from, line, 0, 'TXLABP -1', 1, 1)
-	CALL PPLCMD ( from, line, 0, 'TXLSZE .1', 1, 1 )
-	CALL PPLCMD ( from, line, 0, 'TICS,.125,.25,.125,.25,-1,-1', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'AXLINT 2,2', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'CONPRE ', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'CONPST ', 1, 1 )
-	CALL PPLCMD ( from, line, 0, 'SIZE 10.2  8.8 ', 1, 1 )
         CALL SET_VIEWPORT( mvp_dflt )   ! remove viewports, restore axis sizes
-
-c        CALL COLOR (1)  ! ppl is not always in the right state to call this...
 
 * set up the default spectrum
         CALL PPL_SHASET( 'RESET' )

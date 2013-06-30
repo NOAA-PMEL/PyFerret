@@ -1,7 +1,5 @@
-	SUBROUTINE SET_PLOT_SIZE( xsize, ysize )
+        SUBROUTINE SET_PPL_DEFAULTS(windid)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -28,37 +26,51 @@
 *  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
 *  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
-*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY 
+*  SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
-*
-* adjust PPLUS SIZE command to re-size plot
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+*  Using wn_width and wn_height for windid, set the rest of ppl values
+*  to the scaled default values.
 
-* revision 0.0 - 9/16/88 
-* Unix/RISC port - 10/9/91 - unsave previous axis lengths held by
-*                            routine setup_keys
-*                          - also restore the origin
-* V230:  11/5/92 - removed axis resizing to SET_AX_SIZES
+        IMPLICIT NONE
 
- 
-	include 'plot_setup.parm'
+        INCLUDE 'tmap_dims.parm'
+        INCLUDE 'ferret.parm'
+        INCLUDE 'plot_setup.parm'
+        INCLUDE 'xplot_state.cmn'
 
-* calling argument declarations:
-	REAL*4	xsize, ysize
+* argument declaration
+        INTEGER windid
 
-* internal variable declarations:
-	CHARACTER buff*24
+* local variables
+        REAL pplscale
 
-* tell it to PPLUS
-	WRITE ( buff, 3000 ) xsize, ysize
-	CALL PPLCMD ( from, line, 0, 'SIZE '//buff, 1, 1 )
- 3000	FORMAT(2F12.3)
+* compute the scaled default sizes
+        pplscale = SQRT( wn_width(windid) * wn_height(windid)
+     .                   / (dflt_xinches * dflt_yinches) )
+        wn_pplscale(windid)  = pplscale
+        wn_xwhitelo(windid)  = dflt_xwhitelo  * pplscale
+        wn_ywhitelo(windid)  = dflt_ywhitelo  * pplscale
+        wn_xwhitehi(windid)  = dflt_xwhitehi  * pplscale
+        wn_ywhitehi(windid)  = dflt_ywhitehi  * pplscale
+        wn_tics_lgx(windid)  = dflt_tics_lg   * pplscale
+        wn_tics_lgy(windid)  = dflt_tics_lg   * pplscale
+        wn_tics_smx(windid)  = dflt_tics_sm   * pplscale
+        wn_tics_smy(windid)  = dflt_tics_sm   * pplscale
+        wn_axlsze_x(windid)  = dflt_axlsze    * pplscale
+        wn_axlsze_y(windid)  = dflt_axlsze    * pplscale
+        wn_txlsze(windid)    = dflt_axlsze    * pplscale
+        wn_labset_mn(windid) = dflt_letsiz_lg * pplscale
+        wn_labset_x(windid)  = dflt_letsiz_md * pplscale
+        wn_labset_y(windid)  = dflt_letsiz_md * pplscale
+        wn_labset_mv(windid) = dflt_letsiz_md * pplscale
 
-	RETURN
-	END
+* and tell PPL about these sizes
+        CALL SET_PPL_VALUES(windid)
+
+        RETURN
+        END
+

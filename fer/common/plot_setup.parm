@@ -2,6 +2,42 @@
 
 * V510 *sh* 3/00 - added ppl_dodsurl
 * V530 *acm* 3/01 - added ppl_calendar
+* *kms* PyFr  7/13 Added the dflt_*  parameters for ppl
+
+        REAL    dflt_xinches,
+     .          dflt_yinches,
+     .		dflt_xwhitelo,
+     .		dflt_ywhitelo,
+     .		dflt_xwhitehi,
+     .		dflt_ywhitehi,
+     .          dflt_tics_lg,
+     .          dflt_tics_sm,
+     .          dflt_axlsze,
+     .          dflt_letsiz_xl,
+     .          dflt_letsiz_lg,
+     .          dflt_letsiz_md,
+     .          dflt_letsiz_sm,
+     .          dflt_letsiz_xs
+        PARAMETER( dflt_xinches = 10.5,
+     .             dflt_yinches = 8.5,
+     .             dflt_xwhitelo = 1.375,
+     .             dflt_ywhitelo = 1.375,
+     .             dflt_xwhitehi = 1.375,
+     .             dflt_ywhitehi = 1.375,
+     .             dflt_tics_lg = 0.25,
+     .             dflt_tics_sm = 0.125,
+     .             dflt_axlsze = 0.1,
+     .             dflt_letsiz_xl = 0.20,
+     .             dflt_letsiz_lg = 0.16,
+     .             dflt_letsiz_md = 0.12,
+     .             dflt_letsiz_sm = 0.08,
+     .             dflt_letsiz_xs = 0.06 )
+ 
+        INTEGER dflt_xpixels,
+     .          dflt_ypixels
+        PARAMETER( dflt_xpixels = 882,
+     .             dflt_ypixels = 714 )
+
 
 * parameters to communicate with PLOT+
 	INTEGER		ppl_centered,

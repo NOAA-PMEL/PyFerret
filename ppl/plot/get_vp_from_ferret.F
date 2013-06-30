@@ -62,11 +62,7 @@
 	xorg  = vp_xorg(vp_num)
 	yorg  = vp_yorg(vp_num)
 	size  = ABS(vp_size(vp_num))    ! 3/93 mod *sh*
-	IF ( wsid .NE. 0 ) THEN
-	   scale = wn_scale(wsid)
-	ELSE
-	   scale = 1.0
-	ENDIF
+	scale = 1.0
 
 	clip    = vp_xclip(vp_num) .NE. unspecified_val4
 	IF ( clip ) THEN
@@ -74,8 +70,9 @@
 	   yclip = vp_yclip( vp_num )
 	ENDIF
 
-	xll = xlowlef(1)
-	yll = ylowlef(1)
+* let the system window manager deal with placing the window on the screen
+	xll = 0.0
+	yll = 0.0
 
 * 9/01 additions
 	IF (vp_by_axis( vp_num )) THEN

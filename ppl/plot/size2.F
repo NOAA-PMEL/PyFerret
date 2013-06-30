@@ -302,10 +302,11 @@ C
 !                   GOTO 200
 !               ENDIF
 * FERRET insert: ************************************************************
-* re-scale as requested by SET WINDOW command
-              xln = tmscale * xln
-              yln = tmscale * yln
-
+* re-scale as requested by SET WINDOW command 
+* do not do this anymore
+*              xln = tmscale * xln
+*              yln = tmscale * yln
+*
 * ... too big to fit ?
 *             bigness = MIN( dmaxx/xln, dmaxy/yln )
 *             IF ( bigness .LT. 1.0 ) THEN
@@ -313,10 +314,9 @@ C
 *                yln = yln * bigness
 *             ENDIF
 
-* ... put lower left of each window at a different place if possible
-* ... further modified 8/26/88 to have resettable lower left
-              wkxmn = MIN( tmxll, dmaxx-xln )
-              wkymn = MIN( tmyll, dmaxy-yln )
+* let the system window manager deal with placing the window on the screen
+              wkxmn = 0.0
+              wkymn = 0.0
 
 * end of FERRET insert: ******************************************************
 C

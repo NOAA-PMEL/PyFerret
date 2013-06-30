@@ -149,10 +149,10 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 	scale = 1.0 / SQRT( ABS(vp_size(vp_num)) )
 
 * ... V5.22 default behaviors (viewport not specified by axis)
-        xoei = xwhitelo  ! ppl xorigin
-        yoei = ywhitelo  ! ppl yorigin
-        xcei = xwhitehi  ! white space to right of X axis
-        ycei = ywhitehi  ! white space for docmtn at top of plot
+        xoei = wn_xwhitelo(wsid)  ! ppl xorigin
+        yoei = wn_ywhitelo(wsid)  ! ppl yorigin
+        xcei = wn_xwhitehi(wsid)  ! white space to right of X axis
+        ycei = wn_ywhitehi(wsid)  ! white space for docmtn at top of plot
         xov = vp_xorg(vp_num)
         xcv = xclip
         yov = vp_yorg(vp_num)

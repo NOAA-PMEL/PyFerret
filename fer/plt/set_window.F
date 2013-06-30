@@ -117,58 +117,47 @@
 * internal variable declarations:
 	LOGICAL TM_DIGIT, MATCH4, FGD_ENGINE_MATCH, 
      .		physical_chg, relocate, chg_window, axis_ref
-	INTEGER TM_LENSTR1, ier, id, itype, imeter, irx, iry, wn, n,
-     .          qp, ivp, colon_pos, slen, tlen, i, s1, idone, bkgcolor
+	INTEGER TM_LENSTR1, ier, id, itype, imeter, irx, iry, 
+     .          wn, n, qp, ivp, colon_pos, slen, tlen, i, s1, 
+     .          idone, bkgcolor, xpixels, ypixels
 	REAL	dmaxx, dmaxy, xln, yln, xmn, xmx, ymn, ymx,
      .		scale, xstretch, ystretch, aspect, ref_len
-	REAL*4  rzero, rone, fcty, fctx, setpx, setpy,
+	REAL*4  rzero, rone, fcty, fctx, 
      .          xwlo, ywlo, xwhi, ywhi, dfltthick,
-     .          redfrac, grnfrac, bluefrac, opaqfrac
+     .          redfrac, grnfrac, bluefrac, opaqfrac,
+     .          xinches, yinches
 	CHARACTER	UPPER_CASE*1, GKS_X_CONID*16, warnmsg*80,
      .			arg1*1, buffer*24, xwind_id*80, short_buff*24
-* ... for GKS escape call:
-	INTEGER esc_data(4), dummy
-	DATA esc_data/1,0,0,-9/				!kob 1/97
+
 * local parameter declarations:
-	INTEGER		slash_size,
-     .			slash_new,
-     .			slash_loc,
-     .			slash_aspect,
-     .			slash_clear,
-     .			slash_title,
-     .                  slash_quality,
-     .                  slash_aalias,
-     .                  slash_noaalias,
-     .                  slash_engine,
-     .                  slash_color,
-     .                  slash_opacity,
-     .                  slash_thicken,
-     .                  slash_xpixels,
-     .                  slash_ypixels,
-     .                  slash_xinches,
-     .                  slash_yinches
-        LOGICAL         physical
-	PARAMETER     ( slash_size   = 0+1,
-     .			slash_new    = 1+1,
-     .			slash_loc    = 2+1,
-     .			slash_aspect = 3+1,
-     .			slash_clear  = 4+1,
-     .			slash_title  = 5+1,
-     .                  slash_quality = 6+1,
-     .                  slash_aalias = 7+1,
-     .                  slash_noaalias = 8+1,
-     .                  slash_engine = 9+1,
-     .                  slash_color  = 10+1,
-     .                  slash_opacity = 11+1,
-     .                  slash_thicken = 12+1,
-     .                  slash_xpixels = 13+1,
-     .                  slash_ypixels = 14+1,
-     .                  slash_xinches = 15+1,
-     .                  slash_yinches = 16+1,
-     .                  physical     = .TRUE. )
+	INTEGER slash_new,
+     .          slash_clear,
+     .          slash_title,
+     .          slash_quality,
+     .          slash_aalias,
+     .          slash_noaalias,
+     .          slash_engine,
+     .          slash_color,
+     .          slash_opacity,
+     .          slash_thicken
+	PARAMETER ( slash_new      =  1+1,
+     .              slash_clear    =  4+1,
+     .              slash_title    =  5+1,
+     .              slash_quality  =  6+1,
+     .              slash_aalias   =  7+1,
+     .              slash_noaalias =  8+1,
+     .              slash_engine   =  9+1,
+     .              slash_color    = 10+1,
+     .              slash_opacity  = 11+1,
+     .              slash_thicken  = 12+1 )
 
 	rzero = 0.0
 	rone = 1.0
+
+* Decipher /SIZE /ASPECT /XPIXELS /YPIXELS /XINCHES /YINCHES
+        CALL WINDOW_SIZE_FROM_OPTS(xinches, yinches, 
+     .              xpixels, ypixels, physical_chg, status)
+        IF ( status .NE. ferr_ok ) RETURN
 
 * /TITLE=text
 * This text becomes the name of the workstation. The name gets truncated 
@@ -330,63 +319,6 @@ c 75        CONTINUE
 	   vp_segn( vp_num ) = curr_seg_name
 	ENDIF
 
-        physical_chg = .FALSE.
-* /SIZE=q
-	qp = qual_given( slash_size )
-* *kob* 1/01 - no changing of size if we are in the middle of animating
-	IF ( (qp .GT. 0) .AND. .NOT.animate ) THEN
-           physical_chg = .TRUE.
-	   CALL EQUAL_VAL( cmnd_buff(qual_start(qp):qual_end(qp)),
-     .			   scale, status )
-	   IF ( status .NE. ferr_ok ) RETURN
-	   IF ( scale .LE. 0.0 ) GOTO 5050
-	   wn_scale(n) = SQRT( scale )
-        ENDIF
-
-* /ASPECT=ratio[:"AXIS" or "EDGE"(default)]
-	qp = qual_given( slash_aspect )
-* *kob* 1/01 - no changing aspect ratio if we are in the middle of animating
-	IF ( qp .GT. 0  .AND. .NOT.animate) THEN
-           physical_chg = .TRUE.
-* ... decode the ratio and possible ":SIZE" or ":AXES" qualifier
-	   CALL EQUAL_STRING( cmnd_buff(qual_start(qp):qual_end(qp)),
-     .			   buffer, status )
-	   IF ( status .NE. ferr_ok ) RETURN
-	   IF ( buffer .EQ. ' ' ) THEN
-	      buffer = 'aspect ratio ?'
-	      GOTO 5050
-	   ENDIF
-	   colon_pos = INDEX( buffer,':' )
-	   IF ( colon_pos .GT. 0 ) THEN
-	      short_buff = buffer(:colon_pos-1)			! for AIX
-	      READ ( short_buff,* ,ERR=5020 ) aspect
-	      arg1 = UPPER_CASE( buffer(colon_pos+1:colon_pos+1) )
-	      axis_ref = arg1 .EQ. 'A'
-	      IF ( .NOT.(axis_ref .OR. arg1 .EQ. 'E') ) GOTO 5040
-	   ELSE
-	      READ ( buffer, * ,ERR=5020 ) aspect
-	      axis_ref = .FALSE.    ! default to "edge"  (10/9/91)
-	   ENDIF
-	   IF ( aspect.LE.0.0 ) GOTO 5050
-* ... set up the plot preserving plot area relative to default 6x8 plot
-* ... allowing an additional 2.2 and 2.8 in x and y resp. for labelling
-	   ystretch = SQRT( aspect )
-	   xstretch = 1.0 / ystretch
-	   IF ( axis_ref ) THEN
-	      ref_len = SQRT( 8.0 * 6.0 )
-	      setpx = xstretch*ref_len + 2.2
-	      setpy = ystretch*ref_len + 2.8
-	      CALL SET_PLOT_SIZE( setpx, setpy )
-	   ELSE
-	      ref_len = SQRT( 10.2 * 8.8 )
-	      setpx = xstretch*ref_len
-	      setpy = ystretch*ref_len
-	      CALL SET_PLOT_SIZE( setpx, setpy )
-	   ENDIF
-* ... clear previous plot and any viewports used within it
-	   IF ( .NOT.chg_window ) CALL SET_VIEWPORT( mvp_dflt )
-	ENDIF
-
 * store appropriate segment range with each viewport
 	IF ( chg_window ) THEN
 * ... change windows --> segments will remain until previous window is cleared
@@ -396,12 +328,6 @@ c 75        CONTINUE
 	      vp_seg0(ivp) = 0
 	      vp_segn(ivp) = 0
  80	   CONTINUE
-           CALL SET_PLOT_SIZE( width, height )   ! from PPL COMMON PLT.INC
-	   xwlo = xwhitelo 
-	   ywlo = ywhitelo
-	   xwhi = xwhitehi
-	   ywhi = ywhitehi
-           CALL SET_AX_SIZES( rone, rone, xwlo, ywlo, xwhi, ywhi )
 	ENDIF
 
 * create new window ?
@@ -413,6 +339,18 @@ c 75        CONTINUE
 	   CALL WS_LINE_BUNDLES( n, wstype )
            no_plot_yet = .TRUE.
 	ENDIF
+
+        IF ( physical_chg ) THEN
+* tell ppl of the new default sizes for this window
+           wn_width(n) = xinches
+           wn_height(n) = yinches
+           CALL SET_PPL_DEFAULTS(n)
+* ... clear previous plot and any viewports used within it
+           IF ( .NOT.chg_window ) CALL SET_VIEWPORT( mvp_dflt )
+        ELSEIF ( chg_window ) THEN
+* tell ppl of the sizes used for this window
+           CALL SET_PPL_VALUES(n)
+        ENDIF
 
 * deactivate previously active window
 
@@ -511,11 +449,20 @@ c 75        CONTINUE
 	wn_active( wsid ) = .TRUE.
 
         IF ( physical_chg ) THEN
-*          set ASIZE and BSIZE to invalid values so the SIZE routine
+*
+*          Set ASIZE and BSIZE to invalid values so the SIZE routine
 *          will not return immediately thinking there was no size change
+*
            ASIZE = 0.0
            BSIZE = 0.0
            CALL SIZE(width, height)
+*
+*          At this point the DPIs are known, so now we can figure out
+*          the scaling factor to send to the viewer so the image is the
+*          desired pixel size.
+*
+*          TODO:
+*
         ENDIF
 
 * turn on normalization transform (same as window number and wsid)

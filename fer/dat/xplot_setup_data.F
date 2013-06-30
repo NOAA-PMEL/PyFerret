@@ -67,10 +67,6 @@
      .		ul_yspace0	/0.2  /,
      .		ul_xorigin	/ 0.0 /,	! measured from Y axis
      .		ul_yorigin	/ 0.6 /,	! measured from top x axis
-     .		xwhitelo	/ 1.2 /,	! PLOT+ xorigin
-     .		ywhitelo	/ 1.4 /,	! PLOT+ yorigin
-     .		xwhitehi	/ 1.0 /,
-     .		ywhitehi	/ 1.4 /,
      .          animate         / .FALSE. /,
      .          first_frame     / .TRUE. /
 

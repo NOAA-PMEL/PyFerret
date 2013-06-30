@@ -12,15 +12,14 @@
 * V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT
 * V68  *acm* 1/12  explicit REAL*4 declarations for double-precision ferret with
 *		    single-precision pplus
+* PyFr *kms*  7/13  add the wn_* arrays to hold ppl lengths for each window
 
 	INTEGER		max_windows,
      .			max_viewport,
      .			mvp_dflt
-	REAL*4		wn_dflt_scale
 	PARAMETER     ( max_windows = 9,
      .			max_viewport= 200,
-     .			mvp_dflt = 0,
-     .			wn_dflt_scale = 0.83666 )	! SQRT(0.7)
+     .			mvp_dflt = 0 )
 
 	LOGICAL		wn_open,
      .			wn_active,
@@ -40,7 +39,24 @@
      .			saved_calendar_id,
      .			transparent
 
-	REAL*4		wn_scale,
+        REAL*4          wn_width,
+     .                  wn_height,
+     .                  wn_pplscale,
+     .                  wn_xwhitelo,
+     .                  wn_xwhitehi,
+     .                  wn_ywhitelo,
+     .                  wn_ywhitehi,
+     .                  wn_tics_lgx,
+     .                  wn_tics_smx,
+     .                  wn_tics_lgy,
+     .                  wn_tics_smy,
+     .                  wn_axlsze_x,
+     .                  wn_axlsze_y,
+     .                  wn_txlsze,
+     .                  wn_labset_mn,
+     .                  wn_labset_x,
+     .                  wn_labset_y,
+     .                  wn_labset_mv,
      .			vp_size ,
      .			vp_xorg ,
      .			vp_yorg ,
@@ -61,9 +77,24 @@
      .
      .			wn_open	 ( max_windows ),
      .			wn_active( max_windows ),
-     .			wn_scale ( max_windows ),
-     .			xlowlef  ( max_windows ),
-     .			ylowlef  ( max_windows ),
+     .                  wn_width ( max_windows ),
+     .                  wn_height ( max_windows ),
+     .                  wn_pplscale ( max_windows ),
+     .                  wn_xwhitelo ( max_windows ),
+     .                  wn_xwhitehi ( max_windows ),
+     .                  wn_ywhitelo ( max_windows ),
+     .                  wn_ywhitehi ( max_windows ),
+     .                  wn_tics_lgx ( max_windows ),
+     .                  wn_tics_smx ( max_windows ),
+     .                  wn_tics_lgy ( max_windows ),
+     .                  wn_tics_smy ( max_windows ),
+     .                  wn_axlsze_x ( max_windows ),
+     .                  wn_axlsze_y ( max_windows ),
+     .                  wn_txlsze ( max_windows ),
+     .                  wn_labset_mn ( max_windows ),
+     .                  wn_labset_x ( max_windows ),
+     .                  wn_labset_y ( max_windows ),
+     .                  wn_labset_mv ( max_windows ),
      .
      .			vp_num,
      .			vp_name ( mvp_dflt:max_viewport ),

@@ -57,11 +57,15 @@
 	include	'plot_setup.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
-	include 'xplot_setup.cmn'    ! added 10/9/91
-        include 'axis_inc.decl'  ! added 10/9/91 for ylen,yorg
-        include 'AXIS.INC'            ! added 10/9/91 for ylen,yorg
-	include 'xgrinpt.cmn'	! 6/99 w/ mouse input
-	
+	include 'xplot_setup.cmn'
+	include 'xgrinpt.cmn'	 ! mouse input
+        include 'axis_inc.decl'
+        include 'AXIS.INC'       ! ylen,yorg
+        include 'plt_inc.decl'
+        include 'PLT.INC'        ! width, height
+	include 'gkscm1_inc.decl'
+	include 'GKSCM1.INC'	 ! wsid
+
 * local variable declarations:
 	LOGICAL	ver_out, jnl_out
 	INTEGER TM_LENSTR1, slen, start, status
@@ -167,6 +171,15 @@
 * if so, parameters saved prior to distorting yaxis are invalidated
         IF ( ylen .NE. temp_ylen ) ppl_saved_yaxlen = ylen
         IF ( yorg .NE. temp_yorg ) ppl_saved_yorg   = yorg
+
+* save the current ppl lengths (no harm if they did not change)
+        wn_width(wsid) = width
+        wn_height(wsid) = height
+        wn_xwhitelo(wsid) = xorg
+        wn_ywhitelo(wsid) = yorg
+        wn_xwhitehi(wsid) = width - xlen - xorg
+        wn_ywhitehi(wsid) = height - ylen - yorg
+* TODO: need to save other values (see: SET_PPL_VALUES)
 
  1000	RETURN
 

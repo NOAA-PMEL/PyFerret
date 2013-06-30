@@ -175,7 +175,6 @@
 * close the specified window
  80     CALL FGD_GCLWK( n )
         wn_open ( n ) = .FALSE.
-        wn_scale( n ) = wn_dflt_scale
 
         RETURN
         END

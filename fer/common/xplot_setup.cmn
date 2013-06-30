@@ -67,11 +67,7 @@
      .		ul_labht0,
      .		ul_yspace0,
      .		ul_xorigin,
-     .		ul_yorigin,
-     .		xwhitelo,
-     .		ywhitelo,
-     .		xwhitehi,
-     .		ywhitehi
+     .		ul_yorigin
 
 	CHARACTER	ppl_buff*2048
 
@@ -100,10 +96,6 @@
      .		ul_yspace0,
      .		ul_xorigin,
      .		ul_yorigin,
-     .		xwhitelo,
-     .		ywhitelo,
-     .		xwhitehi,
-     .		ywhitehi,
      .		animate,
      .		first_frame,
      .		need_std,

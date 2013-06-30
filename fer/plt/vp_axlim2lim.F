@@ -45,21 +45,25 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
-	include 'tmap_dims.parm'
-	include 'ferret.parm'
-	include 'xprog_state.cmn'
-	include 'xplot_state.cmn'
-	include 'xplot_setup.cmn'
-        include 'plt_inc.decl'     ! with width/height
-        include 'PLT.INC'
-	
+       IMPLICIT NONE
+
+       INCLUDE 'tmap_dims.parm'
+       INCLUDE 'ferret.parm'
+       INCLUDE 'xprog_state.cmn'
+       INCLUDE 'xplot_state.cmn'
+       INCLUDE 'xplot_setup.cmn'
+       INCLUDE 'plt_inc.decl'     ! with width, height
+       INCLUDE 'PLT.INC'
+       INCLUDE 'axis_inc.decl'    ! with xorg, yorg, xlen, ylen
+       INCLUDE 'AXIS.INC'
+       
 * calling argument declarations:
-	REAL*4	scale, xlovp, ylovp, xhivp, yhivp,
-     .		xcei, ycei, xoei, yoei,
-     .		xloax, yloax, xhiax, yhiax
+       REAL*4  scale, xlovp, ylovp, xhivp, yhivp,
+     .         xcei, ycei, xoei, yoei,
+     .         xloax, yloax, xhiax, yhiax
 
 * internal variable declarations:
-	REAL*4	xcv, xov, ycv, yov, xwpi, ywpi
+       REAL*4  xcv, xov, ycv, yov, xwpi, ywpi
 
 * *** VIEWPORTS SPECIFIED BY AXIS ENDPOINTS ***
 * Previous to V5.4 all viewports were specified as the corners of the PLOT+
@@ -127,12 +131,10 @@
 
 * ... V5.22 default behaviors (viewport not specified by axis)
 
-        xWPi = scale*width
-        yWPi = scale*height
-        xoei = xwhitelo  ! ppl xorigin
-        yoei = ywhitelo  ! ppl yorigin
-        xcei = xwhitehi  ! white space to right of X axis
-        ycei = ywhitehi  ! white space for docmtn at top of plot
+        xoei = xorg  ! ppl xorigin
+        yoei = yorg  ! ppl yorigin
+        xcei = width - xlen - xorg  ! white space to right of X axis
+        ycei = height - ylen - yorg  ! white space for docmtn at top of plot
 
         xov = xloax
         xcv = xhiax
@@ -172,5 +174,5 @@
         yhivp = ycv
 
 * success
-	RETURN
-	END
+       RETURN
+       END

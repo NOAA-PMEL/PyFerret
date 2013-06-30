@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 12 Jun 10 11:17 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
+lrwxrwxrwx 1 ksmith tmap 12 Jun 30 16:12 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -202,8 +202,8 @@ Benchmark scripts that will be run:
    bn685_bug_fixes.jnl
    bn_dsg_e_x.jnl
    bn_nco_append.jnl
-   bn_nocoords.jnl
    bn_nobounds.jnl
+   bn_write_integer_att.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -220,7 +220,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Jun 10 11:19:04 PDT 2013
+Beginning at Sun Jun 30 16:28:12 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -780,11 +780,11 @@ Replacing definition of axis TAX
  **ERROR: command syntax: v2-and-minus
           - before and is illegal
 list v2-and-minus
- **ERROR: dimensions improperly specified: 9999999 words were requested.
+ **ERROR: dimensions improperly specified: 99999999 words were requested.
 list x
  *** NOTE: Check for unspecified limits on an ABSTRACT axis
  *** NOTE: Use the SHOW GRID command to see the axes
- **ERROR: dimensions improperly specified: 9999999 words were requested.
+ **ERROR: dimensions improperly specified: 99999999 words were requested.
 list i
  *** NOTE: Check for unspecified limits on an ABSTRACT axis
  *** NOTE: Use the SHOW GRID command to see the axes
@@ -1314,10 +1314,6 @@ define axis/x=130e:500:10/modulo=360 xsub
  Cached data cleared from memory
 *** Running test: bn_mode_logo_lab.jnl
  Cached data cleared from memory
-Re-defining viewport UL
-Re-defining viewport UR
-Re-defining viewport LL
-Re-defining viewport LR
 *** Running test: bn_modulo_attribute.jnl
  Cached data cleared from memory
  *** NOTE: Undecipherable value of netCDF attribute modulo on variable lon_moderr
@@ -3255,17 +3251,22 @@ NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  data in attribute missing_value not representable in output type NC_INT
 NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  data in attribute _FillValue not representable in output type NC_INT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: in GIF mode: ignoring SET MODE METAFILE
+ *** NOTE: in GIF mode: ignoring SET MODE METAFILE
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
 *** Running test: bn_nco_append.jnl
 sh: ncks: command not found
  Cached data cleared from memory
  LISTing to file append_to_this.nc
-*** Running test: bn_nocoords.jnl
- Cached data cleared from memory
- LISTing to file aa.nc
- TEMPORARY data cleared from memory
- LISTing to file dsg_nocoord.nc
 *** Running test: bn_nobounds.jnl
  Cached data cleared from memory
  LISTing to file a.nc
@@ -3274,6 +3275,9 @@ sh: ncks: command not found
  *** NOTE: Bounds given describe non-contiguous axis cells
  *** NOTE: Using the LOWER bound specified for each axis cell
  LISTing to file a.nc
+ LISTing to file a.nc
+*** Running test: bn_write_integer_att.jnl
+ Cached data cleared from memory
  LISTing to file a.nc
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
@@ -3296,4 +3300,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
-Ended at Mon Jun 10 11:20:22 PDT 2013
+Ended at Sun Jun 30 16:29:19 PDT 2013

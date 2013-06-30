@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 12 Jun 10 11:17 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
+lrwxrwxrwx 1 ksmith tmap 12 Jun 30 16:12 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -202,8 +202,8 @@ Benchmark scripts that will be run:
    bn685_bug_fixes.jnl
    bn_dsg_e_x.jnl
    bn_nco_append.jnl
-   bn_nocoords.jnl
    bn_nobounds.jnl
+   bn_write_integer_att.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -220,7 +220,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Jun 10 11:19:04 PDT 2013
+Beginning at Sun Jun 30 16:28:12 PDT 2013
 *** Running test: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -388,12 +388,12 @@ SHOW DATA/FULL
     1> ./snoopy.dat  (default)
      quick and dirty
  name     title                             I         J         K         L         M         N
- P        my P variable                   1:9999999  1:9999999  1:9999999  1:9999999  1:9999999  1:9999999
+ P        my P variable                   1:99999999  1:99999999  1:99999999  1:99999999  1:99999999  1:99999999
                on grid ABSTRACT with -1.E+34 for missing data
-             X=0.5:9999999.5  Y=0.5:9999999.5  Z=0.5:10000000  E=0.5:9999999
- Q        Q                               1:9999999  1:9999999  1:9999999  1:9999999  1:9999999  1:9999999
+             X=0.5:1.E+08  Y=0.5:1.E+08  Z=0.5:1.E+08  E=0.5:1.E+08  F=0.5:1
+ Q        Q                               1:99999999  1:99999999  1:99999999  1:99999999  1:99999999  1:99999999
                on grid ABSTRACT with -1.E+34 for missing data
-             X=0.5:9999999.5  Y=0.5:9999999.5  Z=0.5:10000000  E=0.5:9999999
+             X=0.5:1.E+08  Y=0.5:1.E+08  Z=0.5:1.E+08  E=0.5:1.E+08  F=0.5:1
  
  /FORMAT = UNF
  /SKIP = 2
@@ -726,7 +726,7 @@ SHOW GRID
  Last successful data access was on grid XABSTRACT
     GRID XABSTRACT
  name       axis              # pts   start                end
- ABSTRACT  X              9999999 r   1                    9999999
+ ABSTRACT  X             99999999 r   1                    1.E+08
  normal    Y
  normal    Z
  normal    T
@@ -10481,13 +10481,13 @@ FERRET_PLATFORM = "Linux 2.6.18-348.6.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "10-Jun-13"
-SESSION_TIME = "11:19"
-SESSION_PID = "16761"
-DELTA_CPU = "0.010997"
-CLOCK_SECS = "0.013"
-CURRENT_DATE = "10-Jun-13"
-CURRENT_TIME = "11:19:09"
+SESSION_DATE = "30-Jun-13"
+SESSION_TIME = "16:28"
+SESSION_PID = "8722"
+DELTA_CPU = "0.007998"
+CLOCK_SECS = "0.004"
+CURRENT_DATE = "30-Jun-13"
+CURRENT_TIME = "16:28:17"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10510,13 +10510,13 @@ FERRET_PLATFORM = "Linux 2.6.18-348.6.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "10-Jun-13"
-SESSION_TIME = "11:19"
-SESSION_PID = "16761"
+SESSION_DATE = "30-Jun-13"
+SESSION_TIME = "16:28"
+SESSION_PID = "8722"
 DELTA_CPU = "0.001"
-CLOCK_SECS = "0.014"
-CURRENT_DATE = "10-Jun-13"
-CURRENT_TIME = "11:19:09"
+CLOCK_SECS = "0.005"
+CURRENT_DATE = "30-Jun-13"
+CURRENT_TIME = "16:28:17"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10526,9 +10526,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "10-Jun-13"
-SESSION_TIME = "11:19"
-SESSION_PID = "16761"
+SESSION_DATE = "30-Jun-13"
+SESSION_TIME = "16:28"
+SESSION_PID = "8722"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10538,15 +10538,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "10-Jun-13"
-SESSION_TIME = "11:19"
-SESSION_PID = "16761"
+SESSION_DATE = "30-Jun-13"
+SESSION_TIME = "16:28"
+SESSION_PID = "8722"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "10-Jun-13"
-SESSION_TIME = "11:19"
-SESSION_PID = "16761"
+SESSION_DATE = "30-Jun-13"
+SESSION_TIME = "16:28"
+SESSION_PID = "8722"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10677,13 +10677,13 @@ FERRET_PLATFORM = "Linux 2.6.18-348.6.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "10-Jun-13"
-SESSION_TIME = "11:19"
-SESSION_PID = "16761"
-DELTA_CPU = "0.020997"
-CLOCK_SECS = "0.039"
-CURRENT_DATE = "10-Jun-13"
-CURRENT_TIME = "11:19:09"
+SESSION_DATE = "30-Jun-13"
+SESSION_TIME = "16:28"
+SESSION_PID = "8722"
+DELTA_CPU = "0.013998"
+CLOCK_SECS = "0.022"
+CURRENT_DATE = "30-Jun-13"
+CURRENT_TIME = "16:28:17"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -25211,7 +25211,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Mon Jun 10 11:19:17 PDT 2013
+Sun Jun 30 16:28:21 PDT 2013
  
 GO bn_reset
 cancel mode verify
@@ -25819,7 +25819,7 @@ show grid/dyn
 Dynamic grids:
     GRID (G003)                          use count:   2
  name       axis              # pts   start                end
- ABSTRACT  X              9999999 r   1                    9999999
+ ABSTRACT  X             99999999 r   1                    1.E+08
  (AX004)   LATITUDE             5 r   1S                   1N
  normal    Z
  TIME      TIME                 3mr   16-JAN 06:00         17-MAR 02:58
@@ -25853,7 +25853,7 @@ show grid/dyn
 Dynamic grids:
     GRID (G002)                          use count:   1
  name       axis              # pts   start                end
- ABSTRACT  X              9999999 r   1                    9999999
+ ABSTRACT  X             99999999 r   1                    1.E+08
  (AX005)   LATITUDE             5 r   1S                   1N
  normal    Z
  TIME      TIME                 3mr   16-JAN 06:00         17-MAR 02:58
@@ -30788,7 +30788,7 @@ SHOW GRID FFTA(sst[d=1,gx=temp[d=2],y=10s:2s:.2,l=1:5]) ! imposed T axis
 SHOW GRID SORTI(temp[d=2,gx=sst[d=1],y=10s:2s:.2])      ! abstract X axis
     GRID (G006)
  name       axis              # pts   start                end
- ABSTRACT  X              9999999 r   1                    9999999
+ ABSTRACT  X             99999999 r   1                    1.E+08
  (AX007)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
@@ -30813,7 +30813,7 @@ SHOW GRID "temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5",FFTA(sst[d=1,gx=temp[d=2],y=10
  normal    F
     GRID (G006)
  name       axis              # pts   start                end
- ABSTRACT  X              9999999 r   1                    9999999
+ ABSTRACT  X             99999999 r   1                    1.E+08
  (AX007)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
@@ -35626,7 +35626,7 @@ sh grid
  Last successful data access was on grid XABSTRACT
     GRID XABSTRACT
  name       axis              # pts   start                end
- ABSTRACT  X              9999999 r   1                    9999999
+ ABSTRACT  X             99999999 r   1                    1.E+08
  normal    Y
  normal    Z
  normal    T
@@ -35644,7 +35644,7 @@ sh grid
     GRID YABSTRACT
  name       axis              # pts   start                end
  normal    X
- ABSTRACT  Y              9999999 r   1                    9999999
+ ABSTRACT  Y             99999999 r   1                    1.E+08
  normal    Z
  normal    T
  normal    E
@@ -35662,7 +35662,7 @@ sh grid
  name       axis              # pts   start                end
  normal    X
  normal    Y
- ABSTRACT  Z              9999999 r   1                    9999999
+ ABSTRACT  Z             99999999 r   1                    1.E+08
  normal    T
  normal    E
  normal    F
@@ -35680,7 +35680,7 @@ sh grid
  normal    X
  normal    Y
  normal    Z
- ABSTRACT  T              9999999 r   1                    9999999
+ ABSTRACT  T             99999999 r   1                    1.E+08
  normal    E
  normal    F
 let a = TSEQUENCE({"a","b","c","d","e"})
@@ -39847,17 +39847,17 @@ LEV_DEL = "none"
 ! NOTE this script redefined the pre-defined viewports ul, ur, ll, lr...
  
  
-def view /xlim=0.:0.33/ylim=0.5:1 ul
-def view /xlim=0.33:0.66/ylim=0.5:1 um
-def view /xlim=0.66:1./ylim=0.5:1 ur
+def view /xlim=0.:0.33/ylim=0.5:1 ul3
+def view /xlim=0.33:0.66/ylim=0.5:1 um3
+def view /xlim=0.66:1./ylim=0.5:1 ur3
  
-def view /xlim=0.:0.33/ylim=0.:0.5 ll
-def view /xlim=0.33:0.66/ylim=0.:0.5 lm
-def view /xlim=0.66:1./ylim=0.:0.5 lr
+def view /xlim=0.:0.33/ylim=0.:0.5 ll3
+def view /xlim=0.33:0.66/ylim=0.:0.5 lm3
+def view /xlim=0.66:1./ylim=0.:0.5 lr3
  
  
 ! can mode labels would not plot the logo anyway
-set view ul
+set view ul3
 can mode labels
 can mode logo
 show modes
@@ -39893,13 +39893,13 @@ show modes
 contour/i=1:10/j=1:10 i/j
  
 ! restore the labels, logo still gone
-set view um
+set view um3
 set mode labels
 wire/view=0,0,2/i=1:20/j=1:20/title="My Egg Carton"/nolabel sin(i/3)*cos(j/4)
  
  
 ! put only labels, not logo
-set view ur
+set view ur3
 set mode labels
 can mode logo
 go ptest
@@ -39911,18 +39911,18 @@ PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 ! Labels restored, not logo.
 ! logo is not restored on an /overlay plot
-set view ll
+set view ll3
 set mode labels
 shade/i=1:10/j=1:10 i*j
 set mode logo
 plot/vs/over/line/color=white {1,4}, {1,9}
  
 ! but the logo is restored on the next plot command.
-set view lm
+set view lm3
 fill/i=1:10/j=1:10 i/j
  
 ! Verify for polygon command too
-set view lr
+set view lr3
 can mode logo
 can mode labels
 polygon/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
@@ -40920,7 +40920,7 @@ SHOW GRID
  Last successful data access was on grid XABSTRACT
     GRID XABSTRACT
  name       axis              # pts   start                end
- ABSTRACT  X              9999999 r   1                    9999999
+ ABSTRACT  X             99999999 r   1                    1.E+08
  normal    Y
  normal    Z
  normal    T
@@ -48346,7 +48346,6 @@ sho command
        /NLIMITS/XLIMITS/YLIMITS/ZLIMITS/TLIMITS/ELIMITS/FLIMITS/CLOBBER
        /QUIET/WIDTH/EDGES/BOUNDS/NOBOUNDS/NOROWLAB/KEEP_AXI/NCFORMAT/XCHUNK
        /YCHUNK/ZCHUNK/TCHUNK/ECHUNK/FCHUNK/DEFLATE/SHUFFLE/ENDIAN/OUTTYPE
-       /NOCOORDS
  PLOT/I/J/K/L/M/N/X/Y/Z/T/E/F/OVERLAY/SET_UP/FRAME/D/TRANPOSE/VS/SYMBOL
        /NOLABEL/LINE/COLOR/THICKNES/XLIMITS/YLIMITS/TITLE/SIZE/NOAXES/STEP
        /DASH/AXES/HGRATICU/VGRATICU/HLIMITS/VLIMITS/HLOG/VLOG/GRATICUL/NOKEY
@@ -48424,7 +48423,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="10-Jun-13:11:19"
+ !-> set win/title="30-Jun-13:16:28"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48433,16 +48432,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 10-Jun-13
+ !-> DEFINE SYMBOL the_date = 30-Jun-13
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 11:19
+ !-> DEFINE SYMBOL the_time = 16:28
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="10-Jun-13:11:19"
+ !-> SET WIN/TITLE="30-Jun-13:16:28"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "10-Jun-13:11:19"
+WIN_TITLE = "30-Jun-13:16:28"
 *** Running test: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -52700,7 +52699,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -52745,7 +52744,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -58032,7 +58031,6 @@ sh command list
        /NLIMITS/XLIMITS/YLIMITS/ZLIMITS/TLIMITS/ELIMITS/FLIMITS/CLOBBER
        /QUIET/WIDTH/EDGES/BOUNDS/NOBOUNDS/NOROWLAB/KEEP_AXI/NCFORMAT/XCHUNK
        /YCHUNK/ZCHUNK/TCHUNK/ECHUNK/FCHUNK/DEFLATE/SHUFFLE/ENDIAN/OUTTYPE
-       /NOCOORDS
 define axis/x=1:100:1/units=deg x100
 define axis/t=1-jan-2000:31-jan-2000:1/units=days/t0=31-dec-1999 t31
 let a = x[gx=x100] + t[gt=t31]
@@ -58508,10 +58506,10 @@ SH GRID am
  normal    F
 *** Running test: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.010997"
-CLOCK_SECS = "0.012"
-CURRENT_DATE = "10-Jun-13"
-CURRENT_TIME = "11:20:02"
+DELTA_CPU = "0.005998"
+CLOCK_SECS = "0.004"
+CURRENT_DATE = "30-Jun-13"
+CURRENT_TIME = "16:29:01"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -58520,8 +58518,8 @@ CURRENT_TIME = "11:20:02"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.051993"
-CLOCK_SECS = "0.068"
+DELTA_CPU = "0.047993"
+CLOCK_SECS = "0.054"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -58535,60 +58533,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.441933
+ !-> DEFINE VARIABLE ten_plots = 0.295954
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "0.509"
+CLOCK_SECS = "0.351"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.51"
+CLOCK_SECS = "0.352"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.050992
- !-> DEFINE VARIABLE sumcpu =0.050992
+ !-> DEFINE VARIABLE dt = 0.043994
+ !-> DEFINE VARIABLE sumcpu =0.043994
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.050993
- !-> DEFINE VARIABLE sumcpu =0.101985
+ !-> DEFINE VARIABLE dt = 0.043994
+ !-> DEFINE VARIABLE sumcpu =0.087988
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.034995
- !-> DEFINE VARIABLE sumcpu =0.13698
+ !-> DEFINE VARIABLE dt = 0.042993
+ !-> DEFINE VARIABLE sumcpu =0.130981
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.029995
- !-> DEFINE VARIABLE sumcpu =0.166975
+ !-> DEFINE VARIABLE dt = 0.043993
+ !-> DEFINE VARIABLE sumcpu =0.174974
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.030995
- !-> DEFINE VARIABLE sumcpu =0.19797
+ !-> DEFINE VARIABLE dt = 0.042993
+ !-> DEFINE VARIABLE sumcpu =0.217967
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.030995
- !-> DEFINE VARIABLE sumcpu =0.228965
+ !-> DEFINE VARIABLE dt = 0.042994
+ !-> DEFINE VARIABLE sumcpu =0.260961
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.029995
- !-> DEFINE VARIABLE sumcpu =0.25896
+ !-> DEFINE VARIABLE dt = 0.041994
+ !-> DEFINE VARIABLE sumcpu =0.302955
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.029996
- !-> DEFINE VARIABLE sumcpu =0.288956
+ !-> DEFINE VARIABLE dt = 0.040993
+ !-> DEFINE VARIABLE sumcpu =0.343948
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.028995
- !-> DEFINE VARIABLE sumcpu =0.317951
+ !-> DEFINE VARIABLE dt = 0.039995
+ !-> DEFINE VARIABLE sumcpu =0.383943
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.029996
- !-> DEFINE VARIABLE sumcpu =0.347947
+ !-> DEFINE VARIABLE dt = 0.024995
+ !-> DEFINE VARIABLE sumcpu =0.408938
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.347947
-0.347947
+ !-> MESSAGE/CONTINUE 0.408938
+0.408938
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.859"
+CLOCK_SECS = "0.762"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "10-Jun-13"
-SESSION_TIME = "11:20"
-CURRENT_DATE = "10-Jun-13"
-CURRENT_TIME = "11:20:03"
+SESSION_DATE = "30-Jun-13"
+SESSION_TIME = "16:29"
+CURRENT_DATE = "30-Jun-13"
+CURRENT_TIME = "16:29:02"
 *** Running test: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -62640,8 +62638,8 @@ list contents
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.85 (beta)"                                                     
- 3    /  3:" ! Linux 2.6.18-348.6.1.el5 64-bit - 06/10/13"                              
- 4    /  4:" ! 10-Jun-13 11:20     "                                                    
+ 3    /  3:" ! Linux 2.6.18-348.6.1.el5 64-bit - 06/30/13"                              
+ 4    /  4:" ! 30-Jun-13 16:29     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -65654,42 +65652,42 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.8593
- 2   / 2:  0.9786
- 3   / 3:  0.4533
- 4   / 4:  0.0200
- 5   / 5:  0.5993
+ 1   / 1:  0.1480
+ 2   / 2:  0.8677
+ 3   / 3:  0.1169
+ 4   / 4:  0.5694
+ 5   / 5:  0.5789
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.9583
- 2   / 2:  0.1675
- 3   / 3:  0.8051
- 4   / 4:  0.1485
- 5   / 5:  0.7249
+ 1   / 1:  0.2474
+ 2   / 2:  0.7081
+ 3   / 3:  0.1845
+ 4   / 4:  0.1697
+ 5   / 5:  0.5582
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.1688
- 2   / 2:  0.9156
- 3   / 3:  0.2449
- 4   / 4:  0.2538
- 5   / 5:  0.9209
- 6   / 6:  0.3416
+ 1   / 1:  0.7788
+ 2   / 2:  0.9107
+ 3   / 3:  0.1885
+ 4   / 4:  0.9029
+ 5   / 5:  0.7966
+ 6   / 6:  0.7338
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.9270
- 2   / 2:  0.8142
- 3   / 3:  0.0331
- 4   / 4:  0.4814
- 5   / 5:  0.6406
- 6   / 6:  0.5252
+ 1   / 1:  0.1926
+ 2   / 2:  0.8619
+ 3   / 3:  0.3981
+ 4   / 4:  0.2121
+ 5   / 5:  0.1928
+ 6   / 6:  0.3611
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
@@ -65721,42 +65719,42 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.5830
- 2   / 2:  0.2971
- 3   / 3:  0.3537
- 4   / 4: -0.3823
- 5   / 5:  0.6779
+ 1   / 1: -0.740
+ 2   / 2: -0.346
+ 3   / 3: -0.867
+ 4   / 4:  0.472
+ 5   / 5:  1.002
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.553
- 2   / 2: -2.106
- 3   / 3:  0.812
- 4   / 4: -0.771
- 5   / 5:  0.323
+ 1   / 1:  0.804
+ 2   / 2:  2.043
+ 3   / 3:  0.667
+ 4   / 4:  0.938
+ 5   / 5:  0.800
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1: -0.898
- 2   / 2:  1.893
- 3   / 3:  0.486
- 4   / 4:  1.322
- 5   / 5: -0.458
- 6   / 6:  0.618
+ 1   / 1:  1.632
+ 2   / 2: -0.618
+ 3   / 3:  2.140
+ 4   / 4: -0.593
+ 5   / 5:  0.725
+ 6   / 6: -0.668
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.303
- 2   / 2:  1.157
- 3   / 3: -1.390
- 4   / 4:  0.053
- 5   / 5:  2.277
- 6   / 6: -0.762
+ 1   / 1: -0.281
+ 2   / 2:  0.211
+ 3   / 3: -1.584
+ 4   / 4: -0.051
+ 5   / 5: -1.131
+ 6   / 6:  0.979
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
@@ -65792,14 +65790,14 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
             VAR2   VAR2    VAR2
-0     / 1:  1.223  1.736  0.8727
-20    / 2:  1.736  1.223  0.8727
-40    / 3:  0.873  0.873 -0.1520
-60    / 4: -0.152 -0.152  0.6079
-80    / 5: -0.707 -0.409  0.6079
-100   / 6: -0.409 -0.569  0.6079
-120   / 7: -0.569 -0.409  0.6079
-140   / 8:  0.608  0.608  0.6079
+0     / 1:  1.486  1.486  0.7870
+20    / 2:  0.787  0.980  0.7870
+40    / 3:  0.980  0.787  0.0020
+60    / 4: -0.282 -0.282  0.2693
+80    / 5: -0.566 -0.323  0.2693
+100   / 6: -0.323 -0.323  0.2693
+120   / 7:  0.002  0.002  0.2693
+140   / 8:  0.269  0.269  0.2693
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -70911,7 +70909,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70966,7 +70964,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71010,7 +71008,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71054,7 +71052,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71091,7 +71089,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71129,7 +71127,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71196,7 +71194,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71245,7 +71243,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71306,7 +71304,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71347,7 +71345,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71388,7 +71386,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71429,7 +71427,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71467,7 +71465,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71695,7 +71693,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71733,7 +71731,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71780,7 +71778,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71824,7 +71822,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71849,7 +71847,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71874,7 +71872,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
+ .                               history         CHAR        23   T       FERRET V6.85  30-Jun-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72303,7 +72301,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.85  10-Jun-13" ;
+		:history = "FERRET V6.85  30-Jun-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72332,7 +72330,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.85  10-Jun-13" ;
+		:history = "FERRET V6.85  30-Jun-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72383,7 +72381,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.85  10-Jun-13" ;
+		:history = "FERRET V6.85  30-Jun-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72415,6 +72413,134 @@ set mode ignore
 save/clob/file=aa.nc/outtype=int sst[x=@ave,y=@ave]-sst[x=@ave,y=@ave,t=@ave]
  
 set mode/last ignore
+ 
+GO bn_reset
+cancel mode verify
+GO err684_degC_axlab
+! err684_degC_axlab.jnl
+! ACM 6/2013
+! See ticket 2080. Units of degree_C interpreted as if degree_north.
+ 
+ppl clsplt
+set win/asp=1
+can mode logo
+set mode meta degC_axlab.plt
+ 
+let/units="degree_C"/title=temperature temp = {1,2,3,2,0}
+let/units="m"/title=depth depth = {1,5,1,5,0}
+plot/vs temp, depth
+ 
+set mode/last meta
+set mode/last logo
+ 
+GO bn_reset
+cancel mode verify
+GO err684_null_stringwrite
+! err684_null_stringwrite.jnl
+! 18-Jun-2013 ACM
+!
+! Bug 2081
+! write a null string variable (0-length string) to NetCDF
+ 
+! This is ok
+let avar = {"a", "", "c"}
+save/file=a.nc/clobber avar
+ 
+! Write just a null value resulted in a NetCDF library error
+ 
+set mode ignore
+let anull = avar[i=2]
+ 
+save/clobber/file=a.nc anull
+set mode/last ignore
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err684_FillValue_xml
+! err684_FillValue_xml.jnl
+! ACM 6/2013
+!
+! See the dataset at http://ferret.pmel.noaa.gov/thredds/dodsC/woa09_1deg_monthly
+! where the "number of" variables have  _FillValues attributes = -2147483647
+! This value was being written to the xml headers as a float, without enough precision.
+! See las ticket #761, fixes in show_data_set_vars_xml.F
+ 
+! should be    <value>-2147483647</value>
+! instead of:  <value>-2.147484E+09</value>
+ 
+use fill_value_int.nc
+sh dat/var/xml
+<datasets>
+<dataset name="./fill_value_int.nc" default="true">
+<title>INT variable with _FillValue -2147483647</title>
+<var name="A_dd">
+<attribute name="units" type="char">
+   <value><![CDATA[1]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[Number of O2 Utilization Observations]]></value>
+</attribute>
+<attribute name="_FillValue" type="float">
+   <value>     -2147483647</value>
+</attribute>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[LONG]]></value>
+</attribute>
+<grid name="GEW1">
+<axes>
+<xaxis>LON</xaxis>
+</axes>
+</grid>
+</var>
+</dataset>
+</datasets>
+<axes>
+<axis name="LON">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>300.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>301.5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[longitude]]></value>
+</attribute>
+<attribute name="axis" type="char">
+   <value><![CDATA[X]]></value>
+</attribute>
+<attribute name="standard_name" type="char">
+   <value><![CDATA[longitude]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[lon]]></value>
+</attribute>
+</axis>
+</axes>
 *** Running test: bn_dsg_e_x.jnl
 ! bn_dsg_e.jnl
 !
@@ -72505,151 +72631,9 @@ variables:
 		CYCLE_ORIG:history = "From z2" ;
 
 // global attributes:
-		:history = "FERRET V6.85  10-Jun-13" ;
+		:history = "FERRET V6.85  30-Jun-13" ;
 		:Conventions = "CF-1.0" ;
 }
-*** Running test: bn_nocoords.jnl
-! bn_nocoords.jnl
-!  5/2013
-! Save data with the /NOCOORDS option.
-! This puts dimensions in the dataset but
-! does not write coordinate axes.
- 
-use test_100x100.nc
-sh dat/att
-     currently SET data sets:
-    1> ./test_100x100.nc  (default)
- Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
-------------------------------------------------------------------------------------------
-  
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
-                                 Conventions     CHAR        6    F       CF-1.0
-  
-(XAX1_100)             DOUBLE    point_spacing   CHAR        4    T       even
-                                 axis            CHAR        1    T       X
-                                 orig_file_axnameCHAR        8    F       XAX1_100
-  
-(YAX1_100)             DOUBLE    point_spacing   CHAR        4    T       even
-                                 axis            CHAR        1    T       Y
-                                 orig_file_axnameCHAR        8    F       YAX1_100
-  
- A                     DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
-                                 _FillValue      DOUBLE      1    T       -1.E+34
-                                 long_name       CHAR        24   T       IF I EQ J THEN 1 ELSE A0
-  
- 
-save/clobber/file=aa.nc/nocoords/i=50:55/j=48:52 a
- 
-! This is what we SAVEd.
-list/i=50:55/j=48:52 a
-             VARIABLE : IF I EQ J THEN 1 ELSE A0
-             FILENAME : test_100x100.nc
-             SUBSET   : 6 by 5 points (X-Y)
-              50     51     52     53     54     55    
-              50     51     52     53     54     55
- 48   / 48:  0.000  0.000  0.000  0.000  0.000  0.000
- 49   / 49:  0.000  0.000  0.000  0.000  0.000  0.000
- 50   / 50:  1.000  0.000  0.000  0.000  0.000  0.000
- 51   / 51:  0.000  1.000  0.000  0.000  0.000  0.000
- 52   / 52:  0.000  0.000  1.000  0.000  0.000  0.000
- 
-can mem; can data/all
- 
-! The same data is in the file, but with no coordinate axes.
-use aa.nc
-sh dat/att
-     currently SET data sets:
-    1> ./aa.nc  (default)
- Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
-------------------------------------------------------------------------------------------
-  
- .                               history         CHAR        23   T       FERRET V6.85  10-Jun-13
-                                 Conventions     CHAR        6    F       CF-1.0
-  
- A                     DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
-                                 _FillValue      DOUBLE      1    T       -1.E+34
-                                 long_name       CHAR        24   T       IF I EQ J THEN 1 ELSE A0
-                                 history         CHAR        17   T       From test_100x100
-  
- 
-! When it uses this dataset, Ferret just creates abstract axes.
-list a
-             VARIABLE : IF I EQ J THEN 1 ELSE A0
-             FILENAME : aa.nc
-             SUBSET   : 6 by 5 points (X-Y)
-             1      2      3      4      5      6    
-             1      2      3      4      5      6
- 1   / 1:  0.000  0.000  0.000  0.000  0.000  0.000
- 2   / 2:  0.000  0.000  0.000  0.000  0.000  0.000
- 3   / 3:  1.000  0.000  0.000  0.000  0.000  0.000
- 4   / 4:  0.000  1.000  0.000  0.000  0.000  0.000
- 5   / 5:  0.000  0.000  1.000  0.000  0.000  0.000
- 
-! For writing a Discrete Geometries file, dont write coordinate variables.
-! Keep things in lowercase, keep original axis names, and add a global attribute.
-can dat/all
-can var/all
- 
-use dsg.nc
- 
-! Add a global attribute on the next SAVE
-define att/output ..featureType = "profile"
- 
-can mode upcase
-save/nocoord/file=dsg_nocoord.nc/keep/clobber rowsize, profile, time, latitude, longitude, pot_temp_degc, sal
-sp ncdump -h dsg_nocoord.nc
-netcdf dsg_nocoord {
-dimensions:
-	prof = 3 ;
-	obs = 34 ;
-variables:
-	int rowsize(prof) ;
-		rowsize:missing_value = -999 ;
-		rowsize:_FillValue = -999 ;
-		rowsize:long_name = "number of obs for this profile" ;
-		rowsize:history = "From FINAL_verification_data_all_PacOOS_NHL_OCNMS_CCCC_03072013.txt" ;
-	double profile(prof) ;
-		profile:missing_value = -1.e+34 ;
-		profile:_FillValue = -1.e+34 ;
-		profile:long_name = "profile ID: Cruise and Station" ;
-		profile:history = "From FINAL_verification_data_all_PacOOS_NHL_OCNMS_CCCC_03072013.txt" ;
-	double time(prof) ;
-		time:missing_value = -1.e+34 ;
-		time:_FillValue = -1.e+34 ;
-		time:long_name = "time" ;
-		time:units = "seconds since 1-jan-1970" ;
-		time:history = "From FINAL_verification_data_all_PacOOS_NHL_OCNMS_CCCC_03072013.txt" ;
-	double latitude(prof) ;
-		latitude:missing_value = -1.e+34 ;
-		latitude:_FillValue = -1.e+34 ;
-		latitude:long_name = "station latitude" ;
-		latitude:units = "degrees_north" ;
-		latitude:history = "From FINAL_verification_data_all_PacOOS_NHL_OCNMS_CCCC_03072013.txt" ;
-	double longitude(prof) ;
-		longitude:missing_value = -1.e+34 ;
-		longitude:_FillValue = -1.e+34 ;
-		longitude:long_name = "station longitude" ;
-		longitude:units = "degrees_east" ;
-		longitude:history = "From FINAL_verification_data_all_PacOOS_NHL_OCNMS_CCCC_03072013.txt" ;
-	float pot_temp_degc(obs) ;
-		pot_temp_degc:missing_value = -999.f ;
-		pot_temp_degc:_FillValue = -999.f ;
-		pot_temp_degc:long_name = "pot_temp_degc" ;
-		pot_temp_degc:history = "From FINAL_verification_data_all_PacOOS_NHL_OCNMS_CCCC_03072013.txt" ;
-	float sal(obs) ;
-		sal:missing_value = -999.f ;
-		sal:_FillValue = -999.f ;
-		sal:long_name = "sal" ;
-		sal:history = "From FINAL_verification_data_all_PacOOS_NHL_OCNMS_CCCC_03072013.txt" ;
-
-// global attributes:
-		:history = "FERRET V6.85  10-Jun-13" ;
-		:Conventions = "CF-1.0" ;
-		:featureType = "profile" ;
-}
- 
-set mode/last upcase
- 
 *** Running test: bn_nobounds.jnl
 ! bn_nobounds.jnl
 ! The SAVE/NOBOUNDS qualifier causes bounds never to be written
@@ -72677,7 +72661,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.85  10-Jun-13" ;
+		:history = "FERRET V6.85  30-Jun-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72708,7 +72692,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.85  10-Jun-13" ;
+		:history = "FERRET V6.85  30-Jun-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72770,7 +72754,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.85  10-Jun-13" ;
+		:history = "FERRET V6.85  30-Jun-13" ;
 		:Conventions = "CF-1.0" ;
 }
  
@@ -72798,9 +72782,40 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.85  10-Jun-13" ;
+		:history = "FERRET V6.85  30-Jun-13" ;
 		:Conventions = "CF-1.0" ;
 }
+ 
+*** Running test: bn_write_integer_att.jnl
+! bn_write_integer_att.jnl
+!  ACM 6/2013
+!
+! This file has an integer attribute
+!    MHCHLA:numberOfObservations = 15736939 ;
+! With double-precision Ferret, we need to call CD_WRITE_ATTVAL_DP
+! in cdf_list.F, so that the value, read in as a double, is written
+! out correctly (else get a netcdf data type matching error).
+ 
+use write_int_att.nc
+sh att mhchla
+     attributes for dataset: ./write_int_att.nc
+ MHCHLA.missing_value = -9999999
+ MHCHLA._FillValue = -9999999
+ MHCHLA.actual_range = 0.00049, 91.76669
+ MHCHLA.coordsys = geographic 
+ MHCHLA.fraction_digits = 2
+ MHCHLA.long_name = Chlorophyll-a, Aqua MODIS, NPP, 0.05 degrees, Global, Science Quality 
+ MHCHLA.numberOfObservations = 15736939
+ MHCHLA.percentCoverage = 0.4216215
+ MHCHLA.standard_name = concentration_of_chlorophyll_in_sea_water 
+ MHCHLA.units = mg m-3 
+ MHCHLA.history = From http://oceanwatch.pfeg.noaa.gov/thredds/dodsC/satellite/MH/chla/mday 
+set att/output=all mhchla
+save/file=a.nc/clobber mhchla
+ 
+sp ncdump a.nc | grep numberOfObservations
+		MHCHLA:numberOfObservations = 15736939 ;
+ 
  
 *** Running test: bn_all_ef.jnl
 SET MODE VERIFY
@@ -73644,13 +73659,13 @@ FERRET_PLATFORM = "Linux 2.6.18-348.6.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "10-Jun-13"
-SESSION_TIME = "11:20"
-SESSION_PID = "17889"
-DELTA_CPU = "0.021996"
-CLOCK_SECS = "0.018"
-CURRENT_DATE = "10-Jun-13"
-CURRENT_TIME = "11:20:22"
+SESSION_DATE = "30-Jun-13"
+SESSION_TIME = "16:29"
+SESSION_PID = "9944"
+DELTA_CPU = "0.022996"
+CLOCK_SECS = "0.019"
+CURRENT_DATE = "30-Jun-13"
+CURRENT_TIME = "16:29:19"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -73722,4 +73737,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Mon Jun 10 11:20:22 PDT 2013
+Ended at Sun Jun 30 16:29:19 PDT 2013

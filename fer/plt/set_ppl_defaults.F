@@ -32,8 +32,8 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 
-*  Using wn_width and wn_height for windid, set the rest of ppl values
-*  to the scaled default values.
+*  Using wn_xinches and wn_yinches for windid, 
+*  set the rest of ppl values to the scaled default values.
 
         IMPLICIT NONE
 
@@ -49,7 +49,7 @@
         REAL pplscale
 
 * compute the scaled default sizes
-        pplscale = SQRT( wn_width(windid) * wn_height(windid)
+        pplscale = SQRT( wn_xinches(windid) * wn_yinches(windid)
      .                   / (dflt_xinches * dflt_yinches) )
         wn_pplscale(windid)  = pplscale
         wn_xwhitelo(windid)  = dflt_xwhitelo  * pplscale

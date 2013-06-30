@@ -38,6 +38,7 @@
 * specified, physical_change will be .FALSE.
 *
 
+        IMPLICIT NONE
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'ferret.parm'
         INCLUDE 'errmsg.parm'
@@ -52,6 +53,9 @@
 
 * function declaractions
         CHARACTER UPPER_CASE*1
+*       the following are given below
+        REAL HEIGHT_FROM_AXIS_ASPECT, 
+     .       WIDTH_FROM_AXIS_ASPECT
 
 * local parameter declarations:
         INTEGER slash_size,
@@ -72,8 +76,8 @@
      .            xpixels_gvn, ypixels_gvn, 
      .            xinches_gvn, yinches_gvn
         INTEGER   qp, colon_pos
-        REAL      val, aspect
-        CHARACTER buffer*80
+        REAL      val, aspect, xtmp, ytmp
+        CHARACTER buffer*80, numbuff*24, asp_ref*1
 
 *       Set the default page size and image size
         xinches = dflt_xinches
@@ -113,21 +117,29 @@
 
         physical_chg = .TRUE.
 
+*       Default to edges for the aspect
+        asp_ref = 'E'
         IF ( aspect_gvn ) THEN
-*          Get the given aspect ratio - edges only supported at this time
+* ... decode the ratio and possible ":SIZE" or ":AXES" qualifier
            qp = qual_given( slash_aspect )
-           CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)),
-     .                    aspect, istat)
-           IF ( istat .NE. ferr_ok ) 
-     .        RETURN
-           IF ( aspect .EQ. unspecified_val4 ) THEN
+           CALL EQUAL_STRING(cmnd_buff(qual_start(qp):qual_end(qp)),
+     .                       buffer, istat)
+           IF ( istat .NE. ferr_ok ) RETURN
+           IF ( istat .EQ. unspecified_val4 ) THEN
               buffer = 'aspect ratio ?'
-              GOTO 5050
-           ENDIF
-           IF ( aspect .LE. 0.0 ) THEN
-              buffer = cmnd_buff(qual_start(qp):qual_end(qp))
               GOTO 5060
            ENDIF
+           colon_pos = INDEX(buffer, ':')
+           IF ( colon_pos .GT. 0 ) THEN
+              numbuff = buffer(:colon_pos-1)
+              READ (numbuff, *, ERR=5050) aspect
+              asp_ref = UPPER_CASE(buffer(colon_pos+1:colon_pos+1))
+              IF ( (asp_ref .NE. 'A') .AND. (asp_ref .NE. 'E') ) 
+     .           GOTO 5050
+           ELSE
+              READ (buffer, *, ERR=5050) aspect
+           ENDIF
+           IF ( aspect .LE. 0.0 ) GOTO 5070
         ENDIF
 
 *       Get the page size
@@ -135,28 +147,24 @@
            qp = qual_given( slash_xinches )
            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)),
      .                    val, istat)
+           IF ( istat .NE. ferr_ok ) RETURN
            IF ( val .EQ. unspecified_val4 ) THEN
               buffer = 'xinches value ?'
-              GOTO 5050
-           ENDIF
-           IF ( val .LE. 0.0 ) THEN
-              buffer = cmnd_buff(qual_start(qp):qual_end(qp))
               GOTO 5060
            ENDIF
+           IF ( val .LE. 0.0 ) GOTO 5070
            xinches = val
         ENDIF
         IF ( yinches_gvn ) THEN
            qp = qual_given( slash_yinches )
            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)),
      .                    val, istat)
+           IF ( istat .NE. ferr_ok ) RETURN
            IF ( val .EQ. unspecified_val4 ) THEN
               buffer = 'yinches value ?'
-              GOTO 5050
-           ENDIF
-           IF ( val .LE. 0.0 ) THEN
-              buffer = cmnd_buff(qual_start(qp):qual_end(qp))
               GOTO 5060
            ENDIF
+           IF ( val .LE. 0.0 ) GOTO 5070
            yinches = val
         ENDIF
 *       Get the aspect ratio if given by xinches and yinches
@@ -169,14 +177,12 @@
            qp = qual_given( slash_size )
            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)),
      .                    val, istat)
+           IF ( istat .NE. ferr_ok ) RETURN
            IF ( val .EQ. unspecified_val4 ) THEN
               buffer = 'size value ?'
-              GOTO 5050
-           ENDIF
-           IF ( val .LE. 0.0 ) THEN
-              buffer = cmnd_buff(qual_start(qp):qual_end(qp))
               GOTO 5060
            ENDIF
+           IF ( val .LE. 0.0 ) GOTO 5070
 *          make it so the image scaling factor will be close to SQRT(val)
            xpixels = NINT(96.0 * dflt_xinches * SQRT(val))
            ypixels = NINT(96.0 * dflt_yinches * SQRT(val))
@@ -186,28 +192,24 @@
            qp = qual_given( slash_xpixels )
            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)),
      .                    val, istat)
+           IF ( istat .NE. ferr_ok ) RETURN
            IF ( val .EQ. unspecified_val4 ) THEN
               buffer = 'xpixels value ?'
-              GOTO 5050
-           ENDIF
-           IF ( val .LE. 0.0 ) THEN
-              buffer = cmnd_buff(qual_start(qp):qual_end(qp))
               GOTO 5060
            ENDIF
+           IF ( val .LE. 0.0 ) GOTO 5070
            xpixels = NINT(val)
         ENDIF
         IF ( ypixels_gvn ) THEN
            qp = qual_given( slash_ypixels )
            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)),
      .                    val, istat)
+           IF ( istat .NE. ferr_ok ) RETURN
            IF ( val .EQ. unspecified_val4 ) THEN
               buffer = 'ypixels value ?'
-              GOTO 5050
-           ENDIF
-           IF ( val .LE. 0.0 ) THEN
-              buffer = cmnd_buff(qual_start(qp):qual_end(qp))
               GOTO 5060
            ENDIF
+           IF ( val .LE. 0.0 ) GOTO 5070
            ypixels = NINT(val)
         ENDIF
 *       Get the aspect ratio if given by xpixels and ypixels
@@ -216,12 +218,37 @@
 
 *       Fill in missing xinches and yinches
         IF ( xinches_gvn .AND. .NOT. yinches_gvn ) THEN
-           yinches = xinches * aspect
+           IF ( asp_ref .EQ. 'E' ) THEN
+              yinches = xinches * aspect
+           ELSE
+              yinches = HEIGHT_FROM_AXIS_ASPECT(xinches, aspect)
+           ENDIF
         ELSEIF ( yinches_gvn .AND. .NOT. xinches_gvn ) THEN 
-           xinches = yinches / aspect
+           IF ( asp_ref .EQ. 'E' ) THEN
+              xinches = yinches / aspect
+           ELSE
+              xinches = WIDTH_FROM_AXIS_ASPECT(yinches, aspect)
+           ENDIF
         ELSEIF ( .NOT. (xinches_gvn .OR. yinches_gvn) ) THEN
-           xinches = SQRT(xinches * yinches / aspect)
-           yinches = SQRT(xinches * yinches * aspect)
+           IF ( asp_ref .EQ. 'E' ) THEN
+              xtmp = SQRT(xinches * yinches / aspect)
+              ytmp = SQRT(xinches * yinches * aspect)
+              xinches = xtmp
+              yinches = ytmp
+           ELSE
+              xtmp = WIDTH_FROM_AXIS_ASPECT(yinches, aspect)
+              ytmp = HEIGHT_FROM_AXIS_ASPECT(xinches, aspect)
+*             Using the geometric means keeps the page area 
+*             the same and preserves the aspect ratio
+              xinches = SQRT(xtmp * xinches)
+              yinches = SQRT(yinches * ytmp)
+           ENDIF
+        ENDIF
+
+*       Change an axis aspect ratio to an edges aspect ratio
+        IF ( asp_ref .EQ. 'A' ) THEN
+           aspect = yinches / xinches
+           asp_ref = 'E'
         ENDIF
 
 *       Fill in missing xpixels and ypixels
@@ -230,8 +257,10 @@
         ELSEIF ( ypixels_gvn .AND. .NOT. xpixels_gvn ) THEN 
            xpixels = NINT(ypixels / aspect)
         ELSEIF ( .NOT. (xpixels_gvn .OR. ypixels_gvn) ) THEN
-           xpixels = NINT(SQRT(xpixels * ypixels / aspect))
-           ypixels = NINT(SQRT(xpixels * ypixels * aspect))
+           xtmp = SQRT(xpixels * ypixels / aspect)
+           ytmp = SQRT(xpixels * ypixels * aspect)
+           xpixels = NINT(xtmp)
+           ypixels = NINT(ytmp)
         ENDIF
 
 * successful completion
@@ -251,8 +280,121 @@
  5040   CALL ERRMSG(ferr_invalid_command, istat, 
      .        '/SIZE cannot be given along with '//
      .        'either /XPIXLES or /YPIXELS', *5000)
- 5050   CALL ERRMSG(ferr_syntax, istat, buffer, *5000 )
- 5060   CALL ERRMSG(ferr_out_of_range, istat, buffer, *5000)
+ 5050   buffer = cmnd_buff(qual_start(qp):qual_end(qp))
+ 5060   CALL ERRMSG(ferr_syntax, istat, buffer, *5000 )
+ 5070   buffer = cmnd_buff(qual_start(qp):qual_end(qp))
+        CALL ERRMSG(ferr_out_of_range, istat, buffer, *5000)
 
+        END
+
+***********************************************************************
+*       The following solve the equation:
+*          (h - hm1 - hm2) / (w - wm1 -wm2) = asp
+*       for h given w, or for w given h,
+*       where hm1, hm2, wm1, wm2 are the scaled standard margins
+*       and the scaling is SQRT(w * h / (std_w * std_h))
+*       This reduces down to solving:
+*          h^2 - h * w * (V + 2 * asp) + w^2 * asp^2 = 0
+*       for h or w, where V is a term of only standard height, width, and margins
+***********************************************************************
+
+        REAL FUNCTION HEIGHT_FROM_AXIS_ASPECT(xin, asp)
+
+        IMPLICIT NONE
+        INCLUDE 'plot_setup.parm'
+
+* calling argument declarations:
+        REAL*4 xin
+        REAL asp
+
+* local argument declarations:
+        REAL val, sqval, rootp, rootm, yout,
+     .       sc, xax, yax, aspp, aspm
+
+        val = ( dflt_ywhitelo + dflt_ywhitehi
+     .          - asp * dflt_xwhitelo - asp * dflt_xwhitehi )
+        val = val * val
+     .        / (dflt_xinches * dflt_yinches)
+        val = val + 2.0 * asp
+        sqval = val * val - 4.0 * asp * asp
+*       .GT. instead of .NE. allows for some floating point precision error
+        IF ( sqval .GT. 0.0 ) THEN
+*          figure out which root to use
+*          if margins all the same, then rootp for asp < 1, rootm for asp > 1
+           rootp = val + SQRT(sqval)
+           yout = 0.5 * xin * rootp
+           sc = SQRT(xin * yout / (dflt_xinches * dflt_yinches))
+           xax = xin - sc * (dflt_xwhitelo + dflt_xwhitehi)
+           yax = yout - sc * (dflt_ywhitelo + dflt_ywhitehi)
+           aspp = yax / xax
+
+           rootm = val - SQRT(sqval)
+           yout = 0.5 * xin * rootm
+           sc = SQRT(xin * yout / (dflt_xinches * dflt_yinches))
+           xax = xin - sc * (dflt_xwhitelo + dflt_xwhitehi)
+           yax = yout - sc * (dflt_ywhitelo + dflt_ywhitehi)
+           aspm = yax / xax
+
+           IF ( ABS(aspp - asp) .LT. ABS(aspm - asp) ) THEN
+              val = rootp
+           ELSE
+              val = rootm
+           ENDIF
+        ENDIF
+
+        yout = 0.5 * xin * val
+        HEIGHT_FROM_AXIS_ASPECT = yout
+        RETURN
+        END
+
+***********************************************************************
+
+        REAL FUNCTION WIDTH_FROM_AXIS_ASPECT(yin, asp)
+
+        IMPLICIT NONE
+        INCLUDE 'plot_setup.parm'
+
+* calling argument declarations:
+        REAL*4 yin
+        REAL asp
+
+* local argument declarations:
+        REAL val, sqval, rootp, rootm, xout,
+     .       sc, xax, yax, aspp, aspm
+
+        val = ( dflt_ywhitelo + dflt_ywhitehi
+     .          - asp * dflt_xwhitelo - asp * dflt_xwhitehi )
+        val = val * val
+     .        / (dflt_xinches * dflt_yinches)
+        val = val + 2.0 * asp
+        sqval = val * val - 4.0 * asp * asp
+*       .GT. instead of .NE. allows for some floating point precision error
+        IF ( sqval .GT. 0.0 ) THEN
+*          figure out which root to use
+*          if margins all the same, then rootp for asp > 1, rootm for asp < 1
+           rootp = val + SQRT(sqval)
+           xout = 0.5 * yin * rootp / (asp * asp)
+           sc = SQRT(xout * yin / (dflt_xinches * dflt_yinches))
+           xax = xout - sc * (dflt_xwhitelo + dflt_xwhitehi)
+           yax = yin - sc * (dflt_ywhitelo + dflt_ywhitehi)
+           aspp = yax / xax
+
+           rootm = val - SQRT(sqval)
+           xout = 0.5 * yin * rootm / (asp * asp)
+           sc = SQRT(xout * yin / (dflt_xinches * dflt_yinches))
+           xax = xout - sc * (dflt_xwhitelo + dflt_xwhitehi)
+           yax = yin - sc * (dflt_ywhitelo + dflt_ywhitehi)
+           aspm = yax / xax
+
+           IF ( ABS(aspp - asp) .LT. ABS(aspm - asp) ) THEN
+              val = rootp
+           ELSE
+              val = rootm
+           ENDIF
+        ENDIF
+
+        xout = 0.5 * yin * val / (asp * asp)
+        WIDTH_FROM_AXIS_ASPECT = xout
+        RETURN
         END
 

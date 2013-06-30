@@ -39,8 +39,10 @@
      .			saved_calendar_id,
      .			transparent
 
-        REAL*4          wn_width,
-     .                  wn_height,
+        REAL*4          wn_xinches,
+     .                  wn_yinches,
+     .                  wn_xpixels,
+     .                  wn_ypixels,
      .                  wn_pplscale,
      .                  wn_xwhitelo,
      .                  wn_xwhitehi,
@@ -77,8 +79,10 @@
      .
      .			wn_open	 ( max_windows ),
      .			wn_active( max_windows ),
-     .                  wn_width ( max_windows ),
-     .                  wn_height ( max_windows ),
+     .                  wn_xinches ( max_windows ),
+     .                  wn_yinches ( max_windows ),
+     .                  wn_xpixels ( max_windows ),
+     .                  wn_ypixels ( max_windows ),
      .                  wn_pplscale ( max_windows ),
      .                  wn_xwhitelo ( max_windows ),
      .                  wn_xwhitehi ( max_windows ),

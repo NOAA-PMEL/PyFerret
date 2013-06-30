@@ -68,8 +68,8 @@
 * PLOT5 re-initialization (to forget previous states)
 
 *       set the default plot size
-        wn_width(wsid) = dflt_xinches
-        wn_height(wsid) = dflt_yinches
+        wn_xinches(wsid) = dflt_xinches
+        wn_yinches(wsid) = dflt_yinches
 *       set sizes and locations that scale with the plot size
         CALL SET_PPL_DEFAULTS(wsid)
 

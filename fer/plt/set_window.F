@@ -342,8 +342,8 @@ c 75        CONTINUE
 
         IF ( physical_chg ) THEN
 * tell ppl of the new default sizes for this window
-           wn_width(n) = xinches
-           wn_height(n) = yinches
+           wn_xinches(n) = xinches
+           wn_yinches(n) = yinches
            CALL SET_PPL_DEFAULTS(n)
 * ... clear previous plot and any viewports used within it
            IF ( .NOT.chg_window ) CALL SET_VIEWPORT( mvp_dflt )

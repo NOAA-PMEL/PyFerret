@@ -52,7 +52,7 @@
         rone = 1.0
 
 *       calls PPL SIZE to set width and height (no resizing done)
-        CALL SET_PLOT_SIZE(wn_width(windid), wn_height(windid))
+        CALL SET_PLOT_SIZE(wn_xinches(windid), wn_yinches(windid))
 
 *       calls PPL AXLEN, PPL ORIGIN, as well as PPL SET VP_WIDTH and PPL SET VP_HEIGHT
         CALL SET_AX_SIZES(rone, rone, 

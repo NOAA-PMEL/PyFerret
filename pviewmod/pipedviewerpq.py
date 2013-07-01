@@ -482,7 +482,7 @@ class PipedViewerPQ(QMainWindow):
                     self.autoScaleScene()
                 else:
                     self.__autoscale = False
-                    self.scaleScene(newscale)
+                    self.scaleScene(newscale, False)
 
     def autoScaleScene(self):
         '''
@@ -496,6 +496,7 @@ class PipedViewerPQ(QMainWindow):
         '''
         barheights = self.menuBar().height() + self.statusBar().height()
 
+        # get the size for the central widget
         cwheight = self.height() - barheights - 4
         heightsf = float(cwheight) / float(self.__sceneheight)
 
@@ -514,18 +515,19 @@ class PipedViewerPQ(QMainWindow):
         # it will; this will generate another call to this method.  Otherwise,
         # scale the scene and be done.  Allow some slop to the small side.
         if (cwheight - newcwheight <= 4) and (cwwidth - newcwwidth <= 4):
-            self.scaleScene(factor)
+            self.scaleScene(factor, False)
             return True
         else:
             self.resize(newcwwidth+4, newcwheight+4+barheights)
             return False
 
-    def scaleScene(self, factor):
+    def scaleScene(self, factor, resizewin):
         '''
         Scales both the horizontal and vertical directions by factor.
         Scaling factors are not accumulative.  So if the scene was
         already scaled, that scaling is "removed" before this scaling
-        factor is applied.
+        factor is applied.  If resizewin is True, the main window is 
+        resize to accommodate this new scaled scene size.
         '''
         newfactor = float(factor)
         newlabwidth = int(newfactor * self.__scenewidth + 0.5)
@@ -551,7 +553,20 @@ class PipedViewerPQ(QMainWindow):
             self.__createpixmap = True
             # Redraw the scene from the beginning
             self.redrawScene()
-         # TODO: if autoscaling and not call from autoScaleScene, reset size of window frame
+        if resizewin:
+            # resize the main window 
+            barheights = self.menuBar().height() + self.statusBar().height()
+            mwheight = newlabheight + barheights + 4
+            mwwidth = newlabwidth + 4
+            # Do not exceed 7/8 of the available real estate on the screen.
+            # If autoscaling is in effect, the resize will trigger 
+            # any required adjustments.
+            scrnrect = QApplication.desktop().availableGeometry()
+            if mwwidth > 0.875 * scrnrect.width():
+                mwwidth = int(0.875 * scrnrect.width() + 0.5)
+            if mwheight > 0.875 * scrnrect.height():
+                mwheight = int(0.875 * scrnrect.height() + 0.5)
+            self.resize(mwwidth, mwheight)
 
     def inquireSaveFilename(self):
         '''
@@ -866,9 +881,9 @@ class PipedViewerPQ(QMainWindow):
         elif cmndact == "hide":
             self.hide()
         elif cmndact == "screenInfo":
+            scrnrect = QApplication.desktop().availableGeometry()
             info = ( self.physicalDpiX(), self.physicalDpiY(),
-                     QApplication.desktop().screen().width(), 
-                     QApplication.desktop().screen().height() )
+                     scrnrect.width(), scrnrect.height() )
             self.__rspdpipe.send(info)
         elif cmndact == "antialias":
             self.__antialias = bool(cmnd.get("antialias", True))
@@ -883,8 +898,8 @@ class PipedViewerPQ(QMainWindow):
         elif cmndact == "rescale":
             newscale = float(cmnd["factor"])
             if newscale <= 0.0:
-               raise ValueError("invalid scaling factor")
-            self.scaleScene(newscale)
+                raise ValueError("invalid scaling factor")
+            self.scaleScene(newscale, True)
         elif cmndact == "resize":
             mysize = self.__helper.getSizeFromCmnd(cmnd)
             self.resizeScene(mysize.width(), mysize.height())
@@ -1368,7 +1383,7 @@ if __name__ == "__main__":
     drawcmnds.append( { "action":"setTitle", "title":"Tester" } )
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"clear", "color":"black"} )
-    drawcmnds.append( { "action":"dpi"} )
+    drawcmnds.append( { "action":"screenInfo"} )
     drawcmnds.append( { "action":"antialias", "antialias":True } )
     drawcmnds.append( { "action":"resize",
                         "width":500,

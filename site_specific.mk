@@ -22,7 +22,7 @@ HDF5_DIR	= /usr/local/hdf5_189
 ## (contains include and lib or lib64 subdirectories)
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
-NETCDF4_DIR	= /usr/local/netcdf_4211
+NETCDF4_DIR	= /usr/local/netcdf_43
 
 ## Installation directory for readline static libraries
 ## (contains include and lib or lib64 subdirectories)

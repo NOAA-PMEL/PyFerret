@@ -33,12 +33,6 @@
      .             dflt_letsiz_sm = 0.08,
      .             dflt_letsiz_xs = 0.06 )
  
-        INTEGER dflt_xpixels,
-     .          dflt_ypixels
-        PARAMETER( dflt_xpixels = 882,
-     .             dflt_ypixels = 714 )
-
-
 * parameters to communicate with PLOT+
 	INTEGER		ppl_centered,
      .			ppl_left_just,

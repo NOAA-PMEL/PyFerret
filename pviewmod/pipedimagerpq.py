@@ -452,8 +452,8 @@ class PipedImagerPQ(QMainWindow):
 
         # if the window does not have the correct aspect ratio, resize it so 
         # it will; this will generate another call to this method.  Otherwise,
-        # scale the scene and be done.  Allow some slop to the small side.
-        if (cwheight - newcwheight <= 4) and (cwwidth - newcwwidth <= 4):
+        # scale the scene and be done.
+        if (abs(cwheight - newcwheight) <= 4) and (abs(cwwidth - newcwwidth) <= 4):
             self.scaleScene(factor, False)
             return True
         else:

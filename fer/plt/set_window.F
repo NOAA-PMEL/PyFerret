@@ -460,14 +460,23 @@ c 75        CONTINUE
 *
 *          At this point the DPIs are known, so now we can figure out
 *          the scaling factor to send to the viewer so the image is the
-*          desired pixel size.  The value for xpixels and ypixels were 
-*          assigned assuming quare pixels, which is now almost always
-*          the case.  But in case not, and to make up for integer rounding
-*          compute the scaling factor using both height and width.
+*          desired pixel size, if given.  
 *
-           xsc = xpixels / (xinches * windowdpix(n))
-           ysc = ypixels / (yinches * windowdpiy(n))
-           sc = SQRT(xsc * ysc)
+           IF ( (xpixels .GT. 0) .AND. (ypixels .GT. 0) ) THEN
+*             The value for xpixels and ypixels were assigned assuming 
+*             square pixels, which now is a very good assumption.
+*             But in case not, and to make up for integer rounding,
+*             compute the scaling factor using both height and width.
+              xsc = xpixels / (xinches * windowdpix(n))
+              ysc = ypixels / (yinches * windowdpiy(n))
+              sc = SQRT(xsc * ysc)
+           ELSE
+*             Do not scale the image.  Compute the size of the unscaled 
+*             raster image for recording the default.
+              xpixels = xinches * windowdpix(n)
+              ypixels = yinches * windowdpiy(n)
+              sc = 1.0
+           ENDIF
            CALL FGD_SEND_IMAGE_SCALE(n, sc)
 *
 *          Save xpixels and ypixels only for specifying the default

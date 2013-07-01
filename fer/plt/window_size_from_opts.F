@@ -82,11 +82,10 @@
 *       Set the default page size and image size
         xinches = dflt_xinches
         yinches = dflt_yinches
-        xpixels = dflt_xpixels
-        ypixels = dflt_ypixels
+        aspect  = dflt_yinches / dflt_xinches
+        xpixels = -1
+        ypixels = -1
         physical_chg = .FALSE.
-
-        aspect  = yinches / xinches
 
 *       No size changes during animation
         IF ( animate ) 
@@ -152,7 +151,7 @@
               buffer = 'xinches value ?'
               GOTO 5060
            ENDIF
-           IF ( val .LE. 0.0 ) GOTO 5070
+           IF ( val .LT. 1.0 ) GOTO 5070
            xinches = val
         ENDIF
         IF ( yinches_gvn ) THEN
@@ -164,7 +163,7 @@
               buffer = 'yinches value ?'
               GOTO 5060
            ENDIF
-           IF ( val .LE. 0.0 ) GOTO 5070
+           IF ( val .LT. 1.0 ) GOTO 5070
            yinches = val
         ENDIF
 *       Get the aspect ratio if given by xinches and yinches
@@ -182,10 +181,12 @@
               buffer = 'size value ?'
               GOTO 5060
            ENDIF
-           IF ( val .LE. 0.0 ) GOTO 5070
 *          make it so the image scaling factor will be close to SQRT(val)
            xpixels = NINT(96.0 * dflt_xinches * SQRT(val))
            ypixels = NINT(96.0 * dflt_yinches * SQRT(val))
+*          not exactly the limit, since this is prior to aspect 
+*          correction, but good enough
+           IF ( (xpixels .LT. 128) .OR. (ypixels .LT. 128) ) GOTO 5070
 *          Aspect will be adjusted below
         ENDIF
         IF ( xpixels_gvn ) THEN
@@ -197,8 +198,8 @@
               buffer = 'xpixels value ?'
               GOTO 5060
            ENDIF
-           IF ( val .LE. 0.0 ) GOTO 5070
            xpixels = NINT(val)
+           IF ( xpixels .LT. 128 ) GOTO 5070
         ENDIF
         IF ( ypixels_gvn ) THEN
            qp = qual_given( slash_ypixels )
@@ -209,8 +210,8 @@
               buffer = 'ypixels value ?'
               GOTO 5060
            ENDIF
-           IF ( val .LE. 0.0 ) GOTO 5070
            ypixels = NINT(val)
+           IF ( ypixels .LT. 128 ) GOTO 5070
         ENDIF
 *       Get the aspect ratio if given by xpixels and ypixels
         IF ( xpixels_gvn .AND. ypixels_gvn )
@@ -223,12 +224,14 @@
            ELSE
               yinches = HEIGHT_FROM_AXIS_ASPECT(xinches, aspect)
            ENDIF
+           IF ( yinches .LT. 1.0 ) GOTO 5080
         ELSEIF ( yinches_gvn .AND. .NOT. xinches_gvn ) THEN 
            IF ( asp_ref .EQ. 'E' ) THEN
               xinches = yinches / aspect
            ELSE
               xinches = WIDTH_FROM_AXIS_ASPECT(yinches, aspect)
            ENDIF
+           IF ( xinches .LT. 1.0 ) GOTO 5080
         ELSEIF ( .NOT. (xinches_gvn .OR. yinches_gvn) ) THEN
            IF ( asp_ref .EQ. 'E' ) THEN
               xtmp = SQRT(xinches * yinches / aspect)
@@ -243,6 +246,7 @@
               xinches = SQRT(xtmp * xinches)
               yinches = SQRT(yinches * ytmp)
            ENDIF
+           IF ( (xinches .LT. 1.0) .OR. (yinches .LT. 1.0) ) GOTO 5090
         ENDIF
 
 *       Change an axis aspect ratio to an edges aspect ratio
@@ -251,16 +255,20 @@
            asp_ref = 'E'
         ENDIF
 
-*       Fill in missing xpixels and ypixels
+*       Fill in missing xpixels and ypixels if one, or size, was given
+*       If none were given, leave as -1 to use screen dpi (no scaling).
         IF ( xpixels_gvn .AND. .NOT. ypixels_gvn ) THEN
            ypixels = NINT(xpixels * aspect)
+           IF ( ypixels .LT. 128 ) GOTO 5090
         ELSEIF ( ypixels_gvn .AND. .NOT. xpixels_gvn ) THEN 
            xpixels = NINT(ypixels / aspect)
-        ELSEIF ( .NOT. (xpixels_gvn .OR. ypixels_gvn) ) THEN
+           IF ( xpixels .LT. 128 ) GOTO 5090
+        ELSEIF ( size_gvn ) THEN
            xtmp = SQRT(xpixels * ypixels / aspect)
            ytmp = SQRT(xpixels * ypixels * aspect)
            xpixels = NINT(xtmp)
            ypixels = NINT(ytmp)
+           IF ( (xpixels .LT. 128) .OR. (ypixels .LT. 128) ) GOTO 5090
         ENDIF
 
 * successful completion
@@ -284,6 +292,10 @@
  5060   CALL ERRMSG(ferr_syntax, istat, buffer, *5000 )
  5070   buffer = cmnd_buff(qual_start(qp):qual_end(qp))
         CALL ERRMSG(ferr_out_of_range, istat, buffer, *5000)
+ 5080   CALL ERRMSG(ferr_out_of_range, istat, 
+     .     'The implied size in inches is too small', *5000)
+ 5090   CALL ERRMSG(ferr_out_of_range, istat, 
+     .     'The implied size in pixels is too small', *5000)
 
         END
 

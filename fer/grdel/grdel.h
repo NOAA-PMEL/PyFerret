@@ -96,6 +96,7 @@ grdelBool grdelWindowSetImageName(grdelType window, const char *imagename,
 grdelBool grdelWindowUpdate(grdelType window);
 grdelBool grdelWindowSetAntialias(grdelType window, int antialias);
 grdelBool grdelWindowSetSize(grdelType window, float width, float height);
+grdelBool grdelWindowSetScale(grdelType window, float scale);
 grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible);
 grdelBool grdelWindowSave(grdelType window, const char *filename,
                           int filenamelen, const char *fileformat,
@@ -115,6 +116,7 @@ void fgdwinredraw_(int *success, void **window, void **fillcolor);
 void fgdwinupdate_(int *success, void **window);
 void fgdwinsetantialias_(int *success, void **window, int *antialias);
 void fgdwinsetsize_(int *success, void **window, float *width, float *height);
+void fgdwinsetscale_(int *success, void **window, float *scale);
 void fgdwinsetvis_(int *success, void **window, int *visible);
 void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
                  char *fileformat, int *formatlen, int *tranparentbkg);

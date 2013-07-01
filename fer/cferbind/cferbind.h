@@ -39,6 +39,7 @@ typedef struct CFerBind_struct {
                              int *screenwidth, int *screenheight);
      grdelBool (*resizeWindow)(struct CFerBind_struct *self,
                                double width, double height);
+     grdelBool (*scaleWindow)(struct CFerBind_struct *self, double scale);
      grdelBool (*showWindow)(struct CFerBind_struct *self, int visible);
      grdelBool (*saveWindow)(struct CFerBind_struct *self, const char *filename,
                              int namelen, const char *formatname, int fmtnamelen,

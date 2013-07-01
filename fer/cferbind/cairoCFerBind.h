@@ -116,6 +116,7 @@ grdelBool cairoCFerBind_redrawWindow(CFerBind *self, grdelType fillcolor);
 grdelBool cairoCFerBind_windowScreenInfo(CFerBind *self, float *dpix, float *dpiy,
                                          int *screenwidth, int *screenheight);
 grdelBool cairoCFerBind_resizeWindow(CFerBind *self, double width, double height);
+grdelBool cairoCFerBind_scaleWindow(CFerBind *self, double scale);
 grdelBool cairoCFerBind_showWindow(CFerBind *self, int visible);
 grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int namelen,
                                    const char *formatname, int fmtnamelen, int transbkg);

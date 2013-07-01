@@ -107,9 +107,9 @@
 	include	'GKSCM1.INC'	                ! with gks common
 	include 'axis_inc.decl'		! axis lengths
 	include 'AXIS.INC'		        ! axis lengths
-!	include 'gksdefs.for'		! escape code
         include 'xplot_setup.cmn'       ! for animate boolean
         include 'xtoday.cmn'            ! with today_date and today_time
+        include 'fgrdel.cmn'            ! with windowdpix and windowdpiy
 
 * calling argument declarations:
 	INTEGER	status
@@ -121,11 +121,12 @@
      .          wn, n, qp, ivp, colon_pos, slen, tlen, i, s1, 
      .          idone, bkgcolor, xpixels, ypixels
 	REAL	dmaxx, dmaxy, xln, yln, xmn, xmx, ymn, ymx,
-     .		scale, xstretch, ystretch, aspect, ref_len
+     .		scale, xstretch, ystretch, aspect, ref_len,
+     .          xsc, ysc
 	REAL*4  rzero, rone, fcty, fctx, 
      .          xwlo, ywlo, xwhi, ywhi, dfltthick,
      .          redfrac, grnfrac, bluefrac, opaqfrac,
-     .          xinches, yinches
+     .          xinches, yinches, sc
 	CHARACTER	UPPER_CASE*1, GKS_X_CONID*16, warnmsg*80,
      .			arg1*1, buffer*24, xwind_id*80, short_buff*24
 
@@ -459,10 +460,22 @@ c 75        CONTINUE
 *
 *          At this point the DPIs are known, so now we can figure out
 *          the scaling factor to send to the viewer so the image is the
-*          desired pixel size.
+*          desired pixel size.  The value for xpixels and ypixels were 
+*          assigned assuming quare pixels, which is now almost always
+*          the case.  But in case not, and to make up for integer rounding
+*          compute the scaling factor using both height and width.
 *
-*          TODO:
+           xsc = xpixels / (xinches * windowdpix(n))
+           ysc = ypixels / (yinches * windowdpiy(n))
+           sc = SQRT(xsc * ysc)
+           CALL FGD_SEND_IMAGE_SCALE(n, sc)
 *
+*          Save xpixels and ypixels only for specifying the default
+*          size when saving raster graphics.
+*
+           wn_xpixels(n) = xpixels
+           wn_ypixels(n) = ypixels
+           
         ENDIF
 
 * turn on normalization transform (same as window number and wsid)

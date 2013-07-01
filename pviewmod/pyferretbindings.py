@@ -266,6 +266,18 @@ class PyFerretBindings(AbstractPyFerretBindings):
         self.__window.submitCommand(cmnd)
         self.checkForErrorResponse()
 
+    def scaleWindow(self, scale):
+        '''
+        Sets the current scaling factor for the Window.
+
+        Arguments:
+            scale: scaling factor to use
+        '''
+        cmnd = { "action":"rescale",
+                 "factor":scale }
+        self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
+
     def windowScreenInfo(self):
         '''
         Returns the four-tuple (dpix, dpiy, screenwidth, screenheight) for

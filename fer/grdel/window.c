@@ -661,6 +661,63 @@ grdelBool grdelWindowSetSize(grdelType window, float width, float height)
 }
 
 /*
+ * Sets the current scalinf factor of a Window.
+ *
+ * Arguments:
+ *     window: Window to use
+ *     scale: scaling factor for the Window
+ *
+ * Returns success (nonzero) or failure (zero).
+ * If failure, grdelerrmsg contains an explanatory message.
+ */
+grdelBool grdelWindowSetScale(grdelType window, float scale)
+{
+    GDWindow *mywindow;
+    grdelBool success;
+    PyObject *result;
+
+#ifdef VERBOSEDEBUG
+    fprintf(debuglogfile, "grdelWindowSetScale called: "
+            "window = %p, scale = %f\n", window, scale);
+    fflush(debuglogfile);
+#endif
+
+    if ( grdelWindowVerify(window) == NULL ) {
+        strcpy(grdelerrmsg, "grdelWindowSetScale: window argument is not "
+                            "a grdel Window");
+        return 0;
+    }
+    mywindow = (GDWindow *) window;
+
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                            scaleWindow(mywindow->bindings.cferbind,
+                                        (double) scale);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+    }
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, "scaleWindow",
+                                     "d", (double) scale);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowSetScale: error when calling the "
+                    "Python binding's scaleWindow method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelWindowSetScale: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
+
+    return 1;
+}
+
+/*
  * Display or hide a Window.  A graphics engine that does not
  * have the ability to display a Window will ignore this call.
  *
@@ -1083,6 +1140,24 @@ void fgdwinsetsize_(int *success, void **window, float *width, float *height)
     grdelBool result;
 
     result = grdelWindowSetSize(*window, *width, *height);
+    *success = result;
+}
+
+/*
+ * Sets the scaling factor of a Window.
+ *
+ * Input Arguments:
+ *     window: Window to use
+ *     scale: scaling factor for the Window
+ * Output Arguments:
+ *     success: non-zero if successful; zero if an error occurred.
+ *              Use fgderrmsg_ to retrieve the error message.
+ */
+void fgdwinsetscale_(int *success, void **window, float *scale)
+{
+    grdelBool result;
+
+    result = grdelWindowSetScale(*window, *scale);
     *success = result;
 }
 

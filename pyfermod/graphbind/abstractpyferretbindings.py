@@ -179,6 +179,15 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError()
 
+    def scaleWindow(self, scale):
+        '''
+        Sets the scaling factor for the Window
+
+        Arguments:
+            scale: scaling factor to use
+        '''
+        raise AttributeError()
+
     def showWindow(self, visible):
         '''
         Display or hide a Window.  A graphics engine that does not

@@ -551,6 +551,7 @@ class PipedViewerPQ(QMainWindow):
             self.__createpixmap = True
             # Redraw the scene from the beginning
             self.redrawScene()
+         # TODO: if autoscaling and not call from autoScaleScene, reset size of window frame
 
     def inquireSaveFilename(self):
         '''
@@ -879,6 +880,11 @@ class PipedViewerPQ(QMainWindow):
             except KeyError:
                 bkgcolor = None
             self.redrawScene(bkgcolor)
+        elif cmndact == "rescale":
+            newscale = float(cmnd["factor"])
+            if newscale <= 0.0:
+               raise ValueError("invalid scaling factor")
+            self.scaleScene(newscale)
         elif cmndact == "resize":
             mysize = self.__helper.getSizeFromCmnd(cmnd)
             self.resizeScene(mysize.width(), mysize.height())

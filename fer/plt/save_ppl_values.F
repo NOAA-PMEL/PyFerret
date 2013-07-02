@@ -80,7 +80,7 @@
         wn_labset_y(windid)  = hxlab
         wn_labset_mv(windid) = hlabs
         wn_con_hgt(windid)   = hgt
-        wn_con_dslab(windid) = dslab
+        wn_con_labsp(windid) = dslab
         wn_con_dshln(windid) = dashln
         wn_con_spcln(windid) = spacln
         wn_vec_len(windid)   = vlen

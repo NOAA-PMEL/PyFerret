@@ -117,7 +117,9 @@
 * PyFr  *kms*  6/13 EQUAL_COLOR now returns a color ID, and EQUAL_THICK 
 *                   returns a pen ID from a color ID and a thickness.
 * PyFr  *kms*  6/13 Added /THICK /OPACITY
-* PyFr  *kms*  7/13 scale text size by pplscale
+* PyFr  *kms*  7/13 Scale default lettering sizes by pplscale;
+*                   use scaled label heights and spacings instead of 
+*                   hard-coded values.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -133,6 +135,8 @@
         include 'PARAMPL5.DAT'  ! with inclen
         include 'cont_inc.decl' ! with iautoc and nlev
         include 'CONT.INC'
+        include 'gkscm1_inc.decl'
+        include 'GKSCM1.INC'    ! wsid
 	
 * calling argument declarations:
 	REAL	memory( mem_blk_size, max_mem_blks )
@@ -210,7 +214,7 @@
 	      lab_size = vbuf	
 	   ENDIF
 	ELSE
-	   lab_size = 0.08
+	   lab_size = wn_con_hgt(wsid)
 	ENDIF
 * ... CONTOUR/SPACING=float
 	loc = qual_given( slash_cont_spacing )
@@ -223,7 +227,7 @@
 	      lab_spacing = vbuf	
 	   ENDIF
 	ELSE
-	   lab_spacing = 5.0
+	   lab_spacing = wn_con_labsp(wsid)
 	ENDIF
 * ... CONTOUR/SIGDIG=integer
 	loc = qual_given( slash_cont_sigdig )

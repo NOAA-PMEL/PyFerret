@@ -83,9 +83,9 @@
            wn_labset_y(windid)  = dflt_letsize_label * pplscale
            wn_labset_mv(windid) = dflt_letsize_label * pplscale
            wn_con_hgt(windid)   = dflt_letsize_small * pplscale
+           wn_con_labsp(windid) = dflt_con_labsp     * pplscale
            wn_con_dshln(windid) = dflt_con_dshln     * pplscale
            wn_con_spcln(windid) = dflt_con_dshln     * pplscale
-           wn_con_dslab(windid) = dflt_dslab_sp      * pplscale
            wn_vec_len(windid)   = dflt_vec_len       * pplscale
         ENDIF
 
@@ -131,9 +131,9 @@
 
 *       the following can just be set directly (no extra actions)
         hgt    = wn_con_hgt(windid)
+        dslab  = wn_con_labsp(windid)
         dashln = wn_con_dshln(windid)
         spacln = wn_con_spcln(windid)
-        dslab  = wn_con_dslab(windid)
         vlen   = wn_vec_len(windid)
 
         RETURN

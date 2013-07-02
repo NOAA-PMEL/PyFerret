@@ -73,6 +73,7 @@
 	include 'ferret.parm'
 	include 'plot_setup.parm'
 	include 'xplot_setup.cmn'
+	include 'xplot_state.cmn'
 	include 'xcontext.cmn'
 	include 'xtext_info.cmn'
 	include 'axis_inc.decl'	! axis lengths
@@ -175,14 +176,15 @@
 	   CALL BOX_LABEL( ppl_movlab-ppl_dset, 
      .			   'DATA SET: '//line_buff(:lablen),
      .			   0.0, yoff,
-     .			   0.5*xlen,  1.5*letsize_dset_title,
+     .			   0.5*xlen,  1.5*letsize_dset_title*pplscale,
      .			   ur_labht, ppl_right_just,
      .			   lab_loc_axlen_plus, lab_loc_axlen_plus )
 
 * ... title of data set
 	   CALL GET_DSET_TITLE( dset_num, line_buff, lablen )
 	   CALL BOX_LABEL( ppl_movlab-ppl_datitl, line_buff(:lablen),
-     .			   0.5, 0.3, 0.8*xlen, 1.5*letsize_dset_title,
+     .			   0.5, 0.3*pplscale, 
+     .                     0.8*xlen, 1.5*letsize_dset_title*pplscale,
      .			   letsize_dset_title, ppl_centered,
      .			   lab_loc_axlen_times, lab_loc_axlen_plus )
 * ... OPeNDAP URL of data set
@@ -202,7 +204,7 @@
 	      CALL BOX_LABEL( ppl_movlab-ppl_dodsurl, 
      .			   'OPeNDAP URL: '//ds_des_name(dset_num)(:lablen),
      .			   0.0, yoff,
-     .			   0.4*xlen,  1.5*letsize_dset_title,
+     .			   0.4*xlen,  1.5*letsize_dset_title*pplscale,
      .			   ur_labht, ppl_right_just,
      .			   lab_loc_axlen_plus, lab_loc_axlen_plus )
 

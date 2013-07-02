@@ -748,7 +748,7 @@ C ACM added 8/2001 save cal id if vertical time axis
 	   ENDIF
 	   CALL BOX_LABEL( ppl_title,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.75*xlen, letsize_title,
+     .			   0.0, 0.0, 0.75*xlen, letsize_title*pplscale,
      .			   letsize_title, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 * ... see if a "year" label is required
@@ -783,8 +783,8 @@ C ACM added 8/2001 save cal id if vertical time axis
 	   IF ( aspect .GT. 0.0 ) THEN
 	      plot_title = 'adjustment for differing X/Y scales: '//
      .			  TM_FMT(s,3,16,slen)
-	      CALL PUT_LABEL( ppl_movlab-ppl_aspect, 0.0, +0.2,
-     .			      ppl_left_just, 0.09, 
+	      CALL PUT_LABEL( ppl_movlab-ppl_aspect, 0.0, 0.2*pplscale,
+     .			      ppl_left_just, letsize_small*pplscale, 
      .			      plot_title(:37+slen),
      .			      lab_loc_absolute, lab_loc_axlen_plus )
 	   ENDIF
@@ -793,10 +793,10 @@ C ACM added 8/2001 save cal id if vertical time axis
      .	     .OR. cx_hi_ww(dim1,ctx) .NE. cx_hi_ww(dim1,cty)
      .	     .OR. cx_lo_ww(dim2,ctx) .NE. cx_lo_ww(dim2,cty)
      .	     .OR. cx_hi_ww(dim2,ctx) .NE. cx_hi_ww(dim2,cty))THEN
-	         CALL PUT_LABEL( ppl_movlab-ppl_offset, 8.0, +0.2,
-     .			      ppl_right_just, 0.09, 
+	         CALL PUT_LABEL( ppl_movlab-ppl_offset, 0.0, 0.2*pplscale,
+     .			      ppl_right_just, letsize_small*pplscale, 
      .				'X and Y components are offset',
-     .			      lab_loc_absolute, lab_loc_axlen_plus )
+     .			      lab_loc_axlen_plus, lab_loc_axlen_plus )
 	   ENDIF
 	ENDIF
 

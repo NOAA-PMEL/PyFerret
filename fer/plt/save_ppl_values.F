@@ -1,4 +1,4 @@
-        SUBROUTINE SET_PPL_DEFAULTS(windid)
+        SUBROUTINE SAVE_PPL_VALUES(windid)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -32,8 +32,7 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 
-*  Using wn_xinches and wn_yinches for windid, 
-*  set the rest of ppl values to the scaled default values.
+*  save the ppl size values for this window in the wn_...() arrays
 
         IMPLICIT NONE
 
@@ -41,36 +40,50 @@
         INCLUDE 'ferret.parm'
         INCLUDE 'plot_setup.parm'
         INCLUDE 'xplot_state.cmn'
+        INCLUDE 'parampl5_dat.decl'
+        INCLUDE 'PARAMPL5.DAT'
+        INCLUDE 'plt_inc.decl'
+        INCLUDE 'PLT.INC'         ! width, height
+        INCLUDE 'axis_inc.decl'
+        INCLUDE 'AXIS.INC'        ! xlen, xcsize, xorg, ylen, ycsize, yorg
+        INCLUDE 'tics_inc.decl'
+        INCLUDE 'TICS.INC'        ! tsmx, tlx, tsmy, tly
+        INCLUDE 'taxis_inc.decl'
+        INCLUDE 'TAXIS.INC'       ! tcsize
+        INCLUDE 'labcom_inc.decl'
+        INCLUDE 'LABCOM.INC'      ! hlab1, hxlab, hylab, hlabs
+        INCLUDE 'cont_inc.decl'
+        INCLUDE 'CONT.INC'        ! hgt
+        INCLUDE 'dashzz_inc.decl'
+        INCLUDE 'DASHZZ.INC'      ! dslab, dashln, spacln
+        INCLUDE 'vector_inc.decl'
+        INCLUDE 'VECTOR.INC'      ! vlen
 
 * argument declaration
         INTEGER windid
 
-* local variables
-        REAL pplscale
-
-* compute the scaled default sizes
-        pplscale = SQRT( wn_xinches(windid) * wn_yinches(windid)
-     .                   / (dflt_xinches * dflt_yinches) )
-        wn_pplscale(windid)  = pplscale
-        wn_xwhitelo(windid)  = dflt_xwhitelo  * pplscale
-        wn_ywhitelo(windid)  = dflt_ywhitelo  * pplscale
-        wn_xwhitehi(windid)  = dflt_xwhitehi  * pplscale
-        wn_ywhitehi(windid)  = dflt_ywhitehi  * pplscale
-        wn_tics_lgx(windid)  = dflt_tics_lg   * pplscale
-        wn_tics_lgy(windid)  = dflt_tics_lg   * pplscale
-        wn_tics_smx(windid)  = dflt_tics_sm   * pplscale
-        wn_tics_smy(windid)  = dflt_tics_sm   * pplscale
-        wn_axlsze_x(windid)  = dflt_axlsze    * pplscale
-        wn_axlsze_y(windid)  = dflt_axlsze    * pplscale
-        wn_txlsze(windid)    = dflt_axlsze    * pplscale
-        wn_labset_mn(windid) = dflt_letsiz_lg * pplscale
-        wn_labset_x(windid)  = dflt_letsiz_md * pplscale
-        wn_labset_y(windid)  = dflt_letsiz_md * pplscale
-        wn_labset_mv(windid) = dflt_letsiz_md * pplscale
-
-* and tell PPL about these sizes
-        CALL SET_PPL_VALUES(windid)
+        wn_xinches(windid)   = width
+        wn_yinches(windid)   = height
+        wn_xwhitelo(windid)  = xorg
+        wn_ywhitelo(windid)  = yorg
+        wn_xwhitehi(windid)  = width - xlen - xorg
+        wn_ywhitehi(windid)  = height - ylen - yorg
+        wn_tics_smx(windid)  = tsmx
+        wn_tics_lgx(windid)  = tlx
+        wn_tics_smy(windid)  = tsmy
+        wn_tics_lgy(windid)  = tly
+        wn_axlsze_x(windid)  = xcsize
+        wn_axlsze_y(windid)  = ycsize
+        wn_txlsze(windid)    = tcsize
+        wn_labset_mn(windid) = hlab1
+        wn_labset_x(windid)  = hxlab
+        wn_labset_y(windid)  = hxlab
+        wn_labset_mv(windid) = hlabs
+        wn_con_hgt(windid)   = hgt
+        wn_con_dslab(windid) = dslab
+        wn_con_dshln(windid) = dashln
+        wn_con_spcln(windid) = spacln
+        wn_vec_len(windid)   = vlen
 
         RETURN
         END
-

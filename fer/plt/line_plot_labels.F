@@ -137,8 +137,8 @@
 	   slen = TM_LENSTR1( plot_title )
 	   CALL BOX_LABEL( dep_lab,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.6*dep_len, letsize_label,
-     .			   letsize_label, ppl_centered,
+     .			   0.0, 0.0, 0.6*dep_len, letsize_label*pplscale,
+     .			   letsize_label*pplscale, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 * ... keys for the dependent vars, or if one, only then title or axis label
 	   DO 600 ipl = var1, nmv
@@ -156,8 +156,8 @@
 	         IF ( versus ) THEN     ! ("xlen" changed to "dep_len" 11/92)
 	            CALL BOX_LABEL( dep_lab,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.6*dep_len, letsize_label,
-     .			   letsize_label, ppl_centered,
+     .			   0.0, 0.0, 0.6*dep_len, letsize_label*pplscale,
+     .			   letsize_label*pplscale, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 	         ENDIF
 	         IF ( .NOT.versus .OR. user_title ) THEN 
@@ -170,8 +170,8 @@
 	            ENDIF
 	            CALL BOX_LABEL( ppl_title,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.75*hlen, letsize_title,
-     .			   letsize_title, ppl_centered,
+     .			   0.0, 0.0, 0.75*hlen, letsize_title*pplscale,
+     .			   letsize_title*pplscale, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 	         ENDIF
 	      ELSE
@@ -192,8 +192,8 @@
               slen = TM_LENSTR1( plot_title )
               CALL BOX_LABEL( indep_lab,
      .                     plot_title(:slen),
-     .                     0.0, 0.0, 0.6*hlen, letsize_label,
-     .                     letsize_label, ppl_centered,
+     .                     0.0, 0.0, 0.6*hlen, letsize_label*pplscale,
+     .                     letsize_label*pplscale, ppl_centered,
      .                     lab_loc_absolute, lab_loc_absolute )
            ENDIF
 
@@ -264,8 +264,8 @@
 	   IF (iunits .NE. 4) THEN
 	      CALL BOX_LABEL( dep_lab,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.6*dep_len, letsize_label,
-     .			   letsize_label, ppl_centered,
+     .			   0.0, 0.0, 0.6*dep_len, letsize_label*pplscale,
+     .			   letsize_label*pplscale, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 	   ENDIF
 
@@ -274,8 +274,8 @@
 	      slen = TM_LENSTR1( plot_title )
 	      CALL BOX_LABEL( dep_lab,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.6*dep_len, letsize_label,
-     .			   letsize_label, ppl_centered,
+     .			   0.0, 0.0, 0.6*dep_len, letsize_label*pplscale,
+     .			   letsize_label*pplscale, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 	   ENDIF
 
@@ -304,8 +304,8 @@
                     slen1 = TM_LENSTR1( plot_title_1 )
 		    CALL BOX_LABEL( indep_lab,
      .                     plot_title_1(:slen1),
-     .                     0.0, 0.0, 0.75*hlen, letsize_label,
-     .                     letsize_label, ppl_centered,
+     .                     0.0, 0.0, 0.75*hlen, letsize_label*pplscale,
+     .                     letsize_label*pplscale, ppl_centered,
      .                     lab_loc_absolute, lab_loc_absolute )
 		    plot_title = 'Colored by '//plot_title(1:slen)
                  ELSE
@@ -328,8 +328,8 @@
               slen = TM_LENSTR1( plot_title )
               CALL BOX_LABEL( ppl_title,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.75*hlen, letsize_title,
-     .			   labsize, ppl_centered,
+     .			   0.0, 0.0, 0.75*hlen, letsize_title*pplscale,
+     .			   labsize*pplscale, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 
               plot_title_1 = plot_title ! ribbon plot: combine with color-by label

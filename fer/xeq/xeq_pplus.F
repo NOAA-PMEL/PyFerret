@@ -173,13 +173,7 @@
         IF ( yorg .NE. temp_yorg ) ppl_saved_yorg   = yorg
 
 * save the current ppl lengths (no harm if they did not change)
-        wn_xinches(wsid) = width
-        wn_yinches(wsid) = height
-        wn_xwhitelo(wsid) = xorg
-        wn_ywhitelo(wsid) = yorg
-        wn_xwhitehi(wsid) = width - xlen - xorg
-        wn_ywhitehi(wsid) = height - ylen - yorg
-* TODO: need to save other values (see: SET_PPL_VALUES)
+        CALL SAVE_PPL_VALUES(wsid)
 
  1000	RETURN
 

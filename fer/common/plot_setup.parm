@@ -13,25 +13,21 @@
      .          dflt_tics_lg,
      .          dflt_tics_sm,
      .          dflt_axlsze,
-     .          dflt_letsiz_xl,
-     .          dflt_letsiz_lg,
-     .          dflt_letsiz_md,
-     .          dflt_letsiz_sm,
-     .          dflt_letsiz_xs
-        PARAMETER( dflt_xinches = 10.5,
-     .             dflt_yinches = 8.5,
-     .             dflt_xwhitelo = 1.375,
-     .             dflt_ywhitelo = 1.375,
-     .             dflt_xwhitehi = 1.375,
-     .             dflt_ywhitehi = 1.375,
-     .             dflt_tics_lg = 0.25,
-     .             dflt_tics_sm = 0.125,
-     .             dflt_axlsze = 0.1,
-     .             dflt_letsiz_xl = 0.20,
-     .             dflt_letsiz_lg = 0.16,
-     .             dflt_letsiz_md = 0.12,
-     .             dflt_letsiz_sm = 0.08,
-     .             dflt_letsiz_xs = 0.06 )
+     .          dflt_dslab_sp,
+     .          dflt_con_dshln,
+     .          dflt_vec_len
+        PARAMETER( dflt_xinches  = 10.50,
+     .             dflt_yinches   = 8.50,
+     .             dflt_xwhitelo  = 1.25,
+     .             dflt_ywhitelo  = 1.375,
+     .             dflt_xwhitehi  = 1.50,
+     .             dflt_ywhitehi  = 1.375,
+     .             dflt_tics_lg   = 0.25,
+     .             dflt_tics_sm   = 0.125,
+     .             dflt_axlsze    = 0.10,
+     .             dflt_con_dshln = 0.04,
+     .             dflt_dslab_sp  = 5.00,
+     .             dflt_vec_len   = 0.50 )
  
 * parameters to communicate with PLOT+
 	INTEGER		ppl_centered,
@@ -66,7 +62,9 @@
 	REAL		letsize_logo,
      .			letsize_title,
      .			letsize_label,
-     .			letsize_dset_title
+     .			letsize_dset_title,
+     .                  letsize_large,
+     .                  letsize_small
 
 	PARAMETER     ( lab_loc_axlen_times = 2,
      .			lab_loc_axlen_plus  = 1,
@@ -85,7 +83,9 @@
      .			letsize_logo	   = 0.06,
      .			letsize_title	   = 0.20,
      .			letsize_label	   = 0.12,
-     .			letsize_dset_title = 0.12 )
+     .			letsize_dset_title = 0.12,
+     .                  letsize_large      = 0.16,
+     .                  letsize_small      = 0.09 )
 
 * parameters used to determine VECTOR sizes
 	REAL		vxax_len, vyax_len, max_vecperinch

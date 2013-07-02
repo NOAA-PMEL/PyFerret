@@ -71,7 +71,7 @@
         wn_xinches(wsid) = dflt_xinches
         wn_yinches(wsid) = dflt_yinches
 *       set sizes and locations that scale with the plot size
-        CALL SET_PPL_DEFAULTS(wsid)
+        CALL SET_PPL_VALUES(wsid, .TRUE.)
 
 	CALL PPLCMD ( from, line, 0, 'XFOR', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'YFOR', 1, 1 )

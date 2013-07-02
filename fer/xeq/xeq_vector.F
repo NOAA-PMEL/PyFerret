@@ -345,7 +345,7 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
 
         IF (.NOT. overlay .AND. no_data .AND. mode_nodata_lab) 
      .                  CALL PUT_LABEL( ppl_movlab, 0.5, 0.5,
-     .                  ppl_centered, letsize_title,
+     .                  ppl_centered, letsize_title*pplscale,
      .                  'No Valid Data',
      .                  lab_loc_axlen_times, lab_loc_axlen_times )
 

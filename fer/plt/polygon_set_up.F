@@ -1121,8 +1121,8 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	   ENDIF
 	   CALL BOX_LABEL( ppl_title,
      .			 plot_title(:slen),
-     .			 0.0, 0.0, 0.75*xlen, letsize_title,
-     .			 letsize_title, ppl_centered,
+     .			 0.0, 0.0, 0.75*xlen, letsize_title*pplscale,
+     .			 letsize_title*pplscale, ppl_centered,
      .			 lab_loc_absolute, lab_loc_absolute )
 * ... label axis labels:  units from the polygon coordinates
 
@@ -1132,8 +1132,8 @@ C	   plot_title = VAR_UNITS( cx_x )
 C	   slen = TM_LENSTR1( plot_title )
 	   CALL BOX_LABEL( x_lab,
      .			 plot_title(:slen),
-     .			 0.0, 0.0, 0.6*x_len, letsize_label,
-     .			 letsize_label, ppl_centered,
+     .			 0.0, 0.0, 0.6*x_len, letsize_label*pplscale,
+     .			 letsize_label*pplscale, ppl_centered,
      .			 lab_loc_absolute, lab_loc_absolute )
 
 	   plot_title = FULL_VAR_TITLE( cx_y, slen )
@@ -1142,8 +1142,8 @@ C	   plot_title = VAR_UNITS( cx_y )
 C	   slen = TM_LENSTR1( plot_title )
 	   CALL BOX_LABEL( y_lab,
      .			 plot_title(:slen),
-     .			 0.0, 0.0, 0.6*y_len, letsize_label,
-     .			 letsize_label, ppl_centered,
+     .			 0.0, 0.0, 0.6*y_len, letsize_label*pplscale,
+     .			 letsize_label*pplscale, ppl_centered,
      .			 lab_loc_absolute, lab_loc_absolute )
 	 ENDIF
 

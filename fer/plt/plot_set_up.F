@@ -354,8 +354,10 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      IF (iunits .NE. 4) 
      .           CALL BOX_LABEL( indep_lab,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.6*ind_len, letsize_label,
-     .			   letsize_label, ppl_centered,
+     .			   0.0, 0.0, 0.6*ind_len, 
+     .                     letsize_label*pplscale,
+     .			   letsize_label*pplscale, 
+     .                     ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 	   ENDIF
 * ... force axis scaling if the data has no range

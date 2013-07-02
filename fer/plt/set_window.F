@@ -345,12 +345,12 @@ c 75        CONTINUE
 * tell ppl of the new default sizes for this window
            wn_xinches(n) = xinches
            wn_yinches(n) = yinches
-           CALL SET_PPL_DEFAULTS(n)
+           CALL SET_PPL_VALUES(n, .TRUE.)
 * ... clear previous plot and any viewports used within it
            IF ( .NOT.chg_window ) CALL SET_VIEWPORT( mvp_dflt )
         ELSEIF ( chg_window ) THEN
 * tell ppl of the sizes used for this window
-           CALL SET_PPL_VALUES(n)
+           CALL SET_PPL_VALUES(n, .FALSE.)
         ENDIF
 
 * deactivate previously active window

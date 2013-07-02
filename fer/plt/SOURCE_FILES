@@ -61,13 +61,13 @@ put_key.F\
 put_label.F\
 re_orient.F\
 save_frame.F\
+save_ppl_values.F\
 seg_off.F\
 seg_on.F\
 send_pltype.F\
 set_ax_sizes.F\
 set_graticules.F\
 set_plot_size.F\
-set_ppl_defaults.F\
 set_ppl_values.F\
 set_viewport.F\
 set_vp_symbols.F\

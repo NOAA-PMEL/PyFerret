@@ -44,7 +44,8 @@
      .		active_win_id,
      .		sym_so_far
 
-	REAL	key_yspace0,
+	REAL	pplscale,
+     .          key_yspace0,
      .		key_yspace,
      .		key_xspace0,
      .		key_xspace,
@@ -72,6 +73,7 @@
 	CHARACTER	ppl_buff*2048
 
 	COMMON / XPLOT_SETUP /
+     .          pplscale,
      .		key_yspace0,
      .		key_yspace,
      .		key_xspace0,

@@ -84,6 +84,7 @@
 * V600 *acm* 5/06 - flag no_plot_yet for applying mode_linecolors setting ...
 * V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* PyFr *kms*  7/13 Scale default lettering sizes by pplscale
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -238,17 +239,17 @@
  3011	      FORMAT(A,' Ver. ',A)
 	   ENDIF
 	   CALL PUT_LABEL(	ppl_movlab, 0.0, 1.2*pplscale, 
-     .			ppl_centered, letsize_logo*pplscale,
+     .			ppl_centered, dflt_letsize_logo*pplscale,
      .			buffer(:len_program_name+len_progname_mod+11),
      .			lab_loc_axlen_plus, lab_loc_axlen_plus )
 * ... "NOAA/PMEL TMAP"
 	   CALL PUT_LABEL(	ppl_movlab, 0.0, 1.1*pplscale, 
-     .			ppl_centered, letsize_logo*pplscale,
+     .			ppl_centered, dflt_letsize_logo*pplscale,
      .			'NOAA/PMEL TMAP',
      .			lab_loc_axlen_plus, lab_loc_axlen_plus )
 * ... "8-SEP-1988 11:05"
 	   CALL PUT_LABEL(	ppl_movlab, 0.0, 1.0*pplscale, 
-     .			ppl_centered, letsize_logo*pplscale,
+     .			ppl_centered, dflt_letsize_logo*pplscale,
      .			'''date'' ''time''',
      .			lab_loc_axlen_plus, lab_loc_axlen_plus )
         ENDIF ! mode_logo

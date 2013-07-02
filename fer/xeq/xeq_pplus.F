@@ -50,6 +50,7 @@
 *			mode verify output, and journal file comments
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
+* PyFr  *kms*  7/13 save current PPL length/size values after execution 
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'

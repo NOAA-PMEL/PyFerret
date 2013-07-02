@@ -102,7 +102,8 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *                  A time axis may be a T axis or F axis
 * V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
-* PyFr  *kms* 7/13 Added /OPACITY
+* PyFr  *kms*  6/13 Added /OPACITY
+* PyFr  *kms*  7/13 scale text size by pplscale
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -292,7 +293,7 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
 
               IF (.NOT. overlay .AND. no_data .AND. mode_nodata_lab) 
      .                  CALL PUT_LABEL( ppl_movlab, 0.5, 0.5,
-     .                  ppl_centered, letsize_title*pplscale,
+     .                  ppl_centered, dflt_letsize_title*pplscale,
      .                  'No Valid Data',
      .                  lab_loc_axlen_times, lab_loc_axlen_times )
            ENDIF

@@ -90,8 +90,12 @@
 * PyFr *kms* 2/2013  Add /QUALITY=... /AALIAS /NOAALIAS /ENGINE=...
 * PyFr *kms* 4/2013  remove specific reference to /AALIAS /NOAALIAS in warning message
 * PyFr  *kms*  6/13  Add /COLOR= /OPACITY= to specify background color
-* PyFr  *kms*  7/13  Add /THICKEN= to specify line width scaling factor
-* PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW
+* PyFr  *kms*  6/13  Add /THICKEN= to specify line width scaling factor
+* PyFr  *kms*  6/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW;
+*                   Call WINDOW_SIZE_FROM_OPTS to deal with them
+* PyFr  *kms*  7/13 Call SET_PPL_VALUES to set scaled lengths and label sizes;
+*                   set physical_chg to .TRUE. if START_PPLUS called or 
+*                   if the engine changes
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -204,6 +208,8 @@ c 75        CONTINUE
 * main window opened yet ?
 	IF ( .NOT.pplus_started ) THEN
 	   CALL START_PPLUS
+*          this opens a window, so need to set phsical_chg .TRUE. to resize it
+           physical_chg = .TRUE.
 	ENDIF
 
 * are we in a valid GKS window environment ?
@@ -266,14 +272,14 @@ c 75        CONTINUE
             slen = TM_LENSTR1(buffer)
             IF ( MATCH4(buffer, slen, 'DRAFT', 5) ) THEN
                 IF ( .NOT. FGD_ENGINE_MATCH(n, 'PipedImager') ) THEN
-                    chg_window = .TRUE.
+                    physical_chg = .TRUE.
                     CALL CANCEL_WINDOW_NUM(n)
                     CALL FGD_SET_ENGINE(n, 'PipedImager', .FALSE., status)
                     IF ( status .NE. ferr_ok ) RETURN
                 ENDIF
             ELSE IF ( MATCH4(buffer, slen, 'HIGH', 4) ) THEN
                 IF ( .NOT. FGD_ENGINE_MATCH(n, 'PipedViewerPQ') ) THEN
-                    chg_window = .TRUE.
+                    physical_chg = .TRUE.
                     CALL CANCEL_WINDOW_NUM(n)
                     CALL FGD_SET_ENGINE(n, 'PipedViewerPQ', .FALSE., status)
                     IF ( status .NE. ferr_ok ) RETURN
@@ -299,7 +305,7 @@ c 75        CONTINUE
                 IF ( status .NE. ferr_ok ) RETURN
                 slen = TM_LENSTR1(buffer)
                 IF ( .NOT. FGD_ENGINE_MATCH(n, buffer(1:slen)) ) THEN
-                    chg_window = .TRUE.
+                    physical_chg = .TRUE.
                     CALL CANCEL_WINDOW_NUM(n)
                     CALL FGD_SET_ENGINE(n, buffer(1:slen), .TRUE., status)
                     IF ( status .NE. ferr_ok ) RETURN

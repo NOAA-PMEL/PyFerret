@@ -66,6 +66,13 @@
 * V581: *acm*/3/05 - increase length of strings for dataset title to 1024
 * V68  *acm*  4/11 - more on bug 1098. Call the url the OPeNDAP label, break it up.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* PyFr *kms*  7/13 Moved key_xspace0, key_yspace0, key_labht0, key_xorigin, 
+*                  key_yorigin, key_xwhite_space, key_ywhite_space, 
+*                  key_line_frac, ovkey_space, ovkey_yspace, ovkey_labht,
+*                  ovkey_xorigin, ovkey_yorigin, ul_labht0, ul_yspace0,
+*                  ul_xorigin, and ul_yorigin to plot_setup.parm,
+*                  since they are used as parameters, and prefixed with 
+*                  dflt_ those that need to be scaled by pplscale.
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -110,17 +117,18 @@
 	ELSE
 	   ul_ysqueeze = 0.65
 	ENDIF
-	ul_yspace = ul_yspace0 * ul_ysqueeze
-	ul_labht  = ul_labht0  * ul_ysqueeze
+	ul_yspace = dflt_ul_yspace0*pplscale * ul_ysqueeze
+	ul_labht  = dflt_ul_labht0*pplscale  * ul_ysqueeze
 
 * define the position labels ("LATITUDE:", "DEPTH:", etc)
 * ... stack them above one another in the upper left
-	ul_ypos = ul_yorigin + (nlabs-1)*ul_yspace
+	ul_ypos = dflt_ul_yorigin*pplscale + (nlabs-1)*ul_yspace
 	DO 300 idim = 1, nferdims
 	   IF ( ul_dolab(idim) ) THEN
 	      CALL ASCII_LIMITS( joint_cx, idim, line_buff, len )
 	         genl_buff = AX_TITLE( idim, cx_grid(joint_cx), tlen )
-	      CALL PUT_LABEL( ppl_movlab-idim, ul_xorigin, ul_ypos,
+	      CALL PUT_LABEL( ppl_movlab-idim, 
+     .                        dflt_ul_xorigin*pplscale, ul_ypos,
      .			      ppl_left_just,
      .			      ul_labht,
      .			      genl_buff(:tlen)//' : '//line_buff(:len), 
@@ -138,11 +146,12 @@
 	         line_buff = year
 	         lablen = 4
 	   ENDIF
-	   CALL PUT_LABEL( ppl_movlab-ppl_year, ul_xorigin, ul_ypos,
-     .			ppl_left_just,
-     .			ul_labht,
-     .			'YEAR : '//line_buff(:lablen),
-     .			lab_loc_absolute, lab_loc_axlen_plus )
+	   CALL PUT_LABEL( ppl_movlab-ppl_year, 
+     .                     dflt_ul_xorigin*pplscale, ul_ypos,
+     .			   ppl_left_just,
+     .			   ul_labht,
+     .			   'YEAR : '//line_buff(:lablen),
+     .			   lab_loc_absolute, lab_loc_axlen_plus )
 	   ul_ypos = ul_ypos - ul_yspace
 	ENDIF
 
@@ -151,7 +160,8 @@
            cal_buff = TM_GET_CALENDAR_NAME (cal_id)
            lablen = TM_LENSTR(cal_buff)
 
-	   CALL PUT_LABEL( ppl_movlab-ppl_calendar, ul_xorigin, ul_ypos,
+	   CALL PUT_LABEL( ppl_movlab-ppl_calendar, 
+     .                     dflt_ul_xorigin*pplscale, ul_ypos,
      .			   ppl_left_just,
      .			   ul_labht,
      .			   'CALENDAR: '//cal_buff(:lablen), 
@@ -167,25 +177,25 @@
 ! 5/91	   CALL GET_DSET_NAME( dset_num, line_buff, lablen )
 	   CALL GET_SHORT_DSET_NAME( dset_num, line_buff, lablen )
 
-           yoff = ul_yorigin
-           ur_labht = ul_labht0
+           yoff = dflt_ul_yorigin*pplscale
+           ur_labht = dflt_ul_labht0*pplscale
 	   IF ( ds_des_name(dset_num)(1:7) .EQ. 'http://' ) THEN
-              yoff = ul_yorigin - 0.5*ul_yspace
-              ur_labht = 0.75*ul_labht0
+              yoff = dflt_ul_yorigin*pplscale - 0.5*ul_yspace
+              ur_labht = 0.75*dflt_ul_labht0*pplscale
 	   ENDIF
 	   CALL BOX_LABEL( ppl_movlab-ppl_dset, 
      .			   'DATA SET: '//line_buff(:lablen),
      .			   0.0, yoff,
-     .			   0.5*xlen,  1.5*letsize_dset_title*pplscale,
+     .			   0.5*xlen,  1.5*dflt_letsize_dset_title*pplscale,
      .			   ur_labht, ppl_right_just,
      .			   lab_loc_axlen_plus, lab_loc_axlen_plus )
 
 * ... title of data set
 	   CALL GET_DSET_TITLE( dset_num, line_buff, lablen )
 	   CALL BOX_LABEL( ppl_movlab-ppl_datitl, line_buff(:lablen),
-     .			   0.5, 0.3*pplscale, 
-     .                     0.8*xlen, 1.5*letsize_dset_title*pplscale,
-     .			   letsize_dset_title, ppl_centered,
+     .			   0.5, 0.3*pplscale, 0.8*xlen, 
+     .                     1.5*dflt_letsize_dset_title*pplscale,
+     .			   dflt_letsize_dset_title*pplscale, ppl_centered,
      .			   lab_loc_axlen_times, lab_loc_axlen_plus )
 * ... OPeNDAP URL of data set
 * bug 1098 url is cut off; keep going to the last /
@@ -200,11 +210,11 @@
 	      lablen = INDEX(ds_des_name(dset_num)(8+lablen:),'/')
      .		     + 7 + lablen
 
-              yoff = ul_yorigin + 0.5*ul_yspace
+              yoff = dflt_ul_yorigin*pplscale + 0.5*ul_yspace
 	      CALL BOX_LABEL( ppl_movlab-ppl_dodsurl, 
      .			   'OPeNDAP URL: '//ds_des_name(dset_num)(:lablen),
      .			   0.0, yoff,
-     .			   0.4*xlen,  1.5*letsize_dset_title*pplscale,
+     .			   0.4*xlen,  1.5*dflt_letsize_dset_title*pplscale,
      .			   ur_labht, ppl_right_just,
      .			   lab_loc_axlen_plus, lab_loc_axlen_plus )
 

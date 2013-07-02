@@ -139,10 +139,16 @@ C       multiplying the index value by the DX or DY delta values.
 
 	ELSE
 
-	   DX = (XMAX - XMIN)/(NX - 1)
-	   DY = (YMAX - YMIN)/(NY - 1)
-	   IF (NX .EQ. 1) DX = 1.
-	   IF (NY .EQ. 1) DY = 1.
+	   IF (NX .EQ. 1) THEN
+              DX = 1.
+           ELSE
+	      DX = (XMAX - XMIN)/(NX - 1)
+           ENDIF
+	   IF (NY .EQ. 1) THEN
+              DY = 1.
+           ELSE
+	      DY = (YMAX - YMIN)/(NY - 1)
+           ENDIF
 
 	   DO 500 I=1,NX
 	      XX(IZLEN+I)=DX*(I-1)+XMIN

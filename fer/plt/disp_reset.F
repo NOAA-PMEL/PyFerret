@@ -51,6 +51,7 @@
 *                   Default number of colors. (Should reset the line colors??)
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* PyFr *kms*  7/13 reset to scaled lengths and sizes using SET_PPL_VALUES
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'

@@ -19,6 +19,14 @@
 * *acm* v68  1/12 move window title to xtoday.cmn.
 * *kms*      2/12 Add E and F dimensions to ul_dolab, plot_axis
 * *acm* v683 11/12 add sym_so_far - symbols on line plots. Used to be SAVEd in line_style.F
+* *kms* PyFr  7/13 Added pplscale for scaling standard lengths and text sizes:
+*                  Moved key_xspace0, key_yspace0, key_labht0, key_xorigin, 
+*                  key_yorigin, key_xwhite_space, key_ywhite_space, 
+*                  key_line_frac, ovkey_space, ovkey_yspace, ovkey_labht,
+*                  ovkey_xorigin, ovkey_yorigin, ul_labht0, ul_yspace0,
+*                  ul_xorigin, and ul_yorigin to plot_setup.parm,
+*                  since they are used as parameters, and prefixed with 
+*                  dflt_ those that need to be scaled by pplscale.
 
 	LOGICAL	key_doc(0:10),
      .		onedee_on,
@@ -45,59 +53,25 @@
      .		sym_so_far
 
 	REAL	pplscale,
-     .          key_yspace0,
      .		key_yspace,
-     .		key_xspace0,
      .		key_xspace,
-     .		key_labht0,
      .		key_labht,
      .		key_xsize,
      .		key_ysize,
-     .		key_xorigin,
-     .		key_yorigin,
-     .		key_xwhite_space,
-     .		key_ywhite_space,
-     .		key_line_frac,
-     .		ovkey_xspace,
-     .		ovkey_yspace,
-     .		ovkey_labht,
-     .		ovkey_xorigin,
-     .		ovkey_yorigin,
      .		ppl_saved_yorg,
-     .		ppl_saved_yaxlen,
-     .		ul_labht0,
-     .		ul_yspace0,
-     .		ul_xorigin,
-     .		ul_yorigin
+     .		ppl_saved_yaxlen
 
 	CHARACTER	ppl_buff*2048
 
 	COMMON / XPLOT_SETUP /
      .          pplscale,
-     .		key_yspace0,
      .		key_yspace,
-     .		key_xspace0,
      .		key_xspace,
-     .		key_labht0,
      .		key_labht,
      .		key_xsize,
      .		key_ysize,
-     .		key_xorigin,
-     .		key_yorigin,
-     .		key_xwhite_space,
-     .		key_ywhite_space,
-     .		key_line_frac,
-     .		ovkey_xspace,
-     .		ovkey_yspace,
-     .		ovkey_labht,
-     .		ovkey_xorigin,
-     .		ovkey_yorigin,
      .		ppl_saved_yorg,
      .		ppl_saved_yaxlen,
-     .		ul_labht0,
-     .		ul_yspace0,
-     .		ul_xorigin,
-     .		ul_yorigin,
      .		animate,
      .		first_frame,
      .		need_std,

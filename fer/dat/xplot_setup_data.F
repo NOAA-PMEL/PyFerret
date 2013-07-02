@@ -1,4 +1,4 @@
-	BLOCK DATA XPLOT_SETUP_DATA
+        BLOCK DATA XPLOT_SETUP_DATA
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -42,32 +42,22 @@
 * V540: *sh* 9/01 - added xwhitelo, ywhitelo, ...
 * V63  *acm* 10/09 Changes for gfortran build
 *      *kms*  2/12 Include tmap_dims.parm for nferdims needed by xplot_setup.cmn
+* PyFr *kms*  7/13 Moved key_xspace0, key_yspace0, key_labht0, key_xorigin, 
+*                  key_yorigin, key_xwhite_space, key_ywhite_space, 
+*                  key_line_frac, ovkey_space, ovkey_yspace, ovkey_labht,
+*                  ovkey_xorigin, ovkey_yorigin, ul_labht0, ul_yspace0,
+*                  ul_xorigin, and ul_yorigin to plot_setup.parm,
+*                  since they are used as parameters, and prefixed with 
+*                  dflt_ those that need to be scaled by pplscale.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
-	include 'ferret.parm'
-	include 'xplot_setup.cmn'
+        include 'ferret.parm'
+        include 'xplot_setup.cmn'
 
-	DATA
-     .		saved_ppl_yax	/ .FALSE. /,
-     .		key_xspace0	/ 3.0 /,	! nominal X space for keys
-     .		key_yspace0	/ 0.25 /,	! nominal Y space for keys
-     .		key_labht0	/ 0.12 /,	! nominal label height for keys
-     .		key_xorigin	/ 1.5  /,	! leftmost x loc. of keys
-     .		key_yorigin	/ -0.85 /,	! y loc. of topmost keys
-     .		key_xwhite_space/ 0.3  /,	! x space between keys
-     .		key_ywhite_space/ 0.02 /,	! y space between keys
-     .		key_line_frac   / 0.3 /,	! how much key for line specimen
-     .		ovkey_xspace	/ 2.1 /,
-     .		ovkey_yspace	/ 0.18 /,
-     .		ovkey_labht	/ 0.08 /,
-     .		ovkey_xorigin	/-1.1 /,
-     .		ovkey_yorigin	/-0.6 /,
-     .		ul_labht0	/0.12 /,
-     .		ul_yspace0	/0.2  /,
-     .		ul_xorigin	/ 0.0 /,	! measured from Y axis
-     .		ul_yorigin	/ 0.6 /,	! measured from top x axis
-     .          animate         / .FALSE. /,
-     .          first_frame     / .TRUE. /
+        DATA
+     .     saved_ppl_yax / .FALSE. /,
+     .     animate       / .FALSE. /,
+     .     first_frame   / .TRUE. /
 
-	END
+        END

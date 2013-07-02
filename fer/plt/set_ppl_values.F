@@ -67,26 +67,26 @@
      .                   / (dflt_xinches * dflt_yinches) )
         IF ( reset ) THEN
 * assign the scaled default sizes
-           wn_xwhitelo(windid)  = dflt_xwhitelo   * pplscale
-           wn_ywhitelo(windid)  = dflt_ywhitelo   * pplscale
-           wn_xwhitehi(windid)  = dflt_xwhitehi   * pplscale
-           wn_ywhitehi(windid)  = dflt_ywhitehi   * pplscale
-           wn_tics_lgx(windid)  = dflt_tics_lg    * pplscale
-           wn_tics_lgy(windid)  = dflt_tics_lg    * pplscale
-           wn_tics_smx(windid)  = dflt_tics_sm    * pplscale
-           wn_tics_smy(windid)  = dflt_tics_sm    * pplscale
-           wn_axlsze_x(windid)  = dflt_axlsze     * pplscale
-           wn_axlsze_y(windid)  = dflt_axlsze     * pplscale
-           wn_txlsze(windid)    = dflt_axlsze     * pplscale
-           wn_labset_mn(windid) = letsize_large   * pplscale
-           wn_labset_x(windid)  = letsize_label   * pplscale
-           wn_labset_y(windid)  = letsize_label   * pplscale
-           wn_labset_mv(windid) = letsize_label   * pplscale
-           wn_con_hgt(windid)   = letsize_small   * pplscale
-           wn_con_dshln(windid) = dflt_con_dshln  * pplscale
-           wn_con_spcln(windid) = dflt_con_dshln  * pplscale
-           wn_con_dslab(windid) = dflt_dslab_sp   * pplscale
-           wn_vec_len(windid)   = dflt_vec_len    * pplscale
+           wn_xwhitelo(windid)  = dflt_xwhitelo      * pplscale
+           wn_ywhitelo(windid)  = dflt_ywhitelo      * pplscale
+           wn_xwhitehi(windid)  = dflt_xwhitehi      * pplscale
+           wn_ywhitehi(windid)  = dflt_ywhitehi      * pplscale
+           wn_tics_lgx(windid)  = dflt_tics_lg       * pplscale
+           wn_tics_lgy(windid)  = dflt_tics_lg       * pplscale
+           wn_tics_smx(windid)  = dflt_tics_sm       * pplscale
+           wn_tics_smy(windid)  = dflt_tics_sm       * pplscale
+           wn_axlsze_x(windid)  = dflt_axlsze        * pplscale
+           wn_axlsze_y(windid)  = dflt_axlsze        * pplscale
+           wn_txlsze(windid)    = dflt_axlsze        * pplscale
+           wn_labset_mn(windid) = dflt_letsize_large * pplscale
+           wn_labset_x(windid)  = dflt_letsize_label * pplscale
+           wn_labset_y(windid)  = dflt_letsize_label * pplscale
+           wn_labset_mv(windid) = dflt_letsize_label * pplscale
+           wn_con_hgt(windid)   = dflt_letsize_small * pplscale
+           wn_con_dshln(windid) = dflt_con_dshln     * pplscale
+           wn_con_spcln(windid) = dflt_con_dshln     * pplscale
+           wn_con_dslab(windid) = dflt_dslab_sp      * pplscale
+           wn_vec_len(windid)   = dflt_vec_len       * pplscale
         ENDIF
 
 *       calls PPL SIZE to set width and height (no actual resizing done)

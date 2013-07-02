@@ -147,6 +147,7 @@
 *       *acm* 3/12 6D Ferret: Add E and F dimensions 
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
 *                  dimension is now an arg to SECS_TO_TSTEP.
+* PyFr *kms*  7/13 Scale default lettering sizes by pplscale
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -355,8 +356,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      .           CALL BOX_LABEL( indep_lab,
      .			   plot_title(:slen),
      .			   0.0, 0.0, 0.6*ind_len, 
-     .                     letsize_label*pplscale,
-     .			   letsize_label*pplscale, 
+     .                     dflt_letsize_label*pplscale,
+     .			   dflt_letsize_label*pplscale, 
      .                     ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 	   ENDIF

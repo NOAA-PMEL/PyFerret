@@ -48,6 +48,13 @@
 * V540: *sh* 9/01 - do not adjust Y axis origin of PLOT command if user
 *			specifies not to
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* PyFr *kms*  7/13 Moved key_xspace0, key_yspace0, key_labht0, key_xorigin, 
+*                  key_yorigin, key_xwhite_space, key_ywhite_space, 
+*                  key_line_frac, ovkey_space, ovkey_yspace, ovkey_labht,
+*                  ovkey_xorigin, ovkey_yorigin, ul_labht0, ul_yspace0,
+*                  ul_xorigin, and ul_yorigin to plot_setup.parm,
+*                  since they are used as parameters, and prefixed with 
+*                  dflt_ those that need to be scaled by pplscale.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -69,14 +76,15 @@
 	REAL	ysqueeze, yspace_needed, yspace_avail
 
 * how many columns of keys can fit on the plot ?
-	key_ncolmn  = MAX( 1, INT((xlen - key_xorigin)/key_xspace0) )
+	key_ncolmn  = MAX( 1, INT( (xlen - dflt_key_xorigin*pplscale)
+     .                            /(dflt_key_xspace0*pplscale) ) )
 	IF (key_ncolmn .GT. nvar) key_ncolmn = nvar	! 4/96
-	key_xspace  = MAX( xlen/5., (xlen - key_xorigin) / key_ncolmn )
-	key_xsize   = MAX( xlen/6., key_xspace - key_xwhite_space )
+	key_xspace  = MAX( xlen/5., (xlen - dflt_key_xorigin*pplscale)/key_ncolmn )
+	key_xsize   = MAX( xlen/6., key_xspace - dflt_key_xwhite_space*pplscale )
 
 * and how many rows do we need ?
 	nrow = ((nvar-1) / key_ncolmn) + 1
-	yspace_needed = nrow*key_yspace0
+	yspace_needed = nrow*dflt_key_yspace0*pplscale
 
 * where was the y origin before we tampered with it ?
 	IF ( saved_ppl_yax ) THEN
@@ -84,7 +92,7 @@
 	ELSE
 	   yspace_avail = yorg
 	ENDIF
-	yspace_avail = yspace_avail + key_yorigin
+	yspace_avail = yspace_avail + dflt_key_yorigin*pplscale
 
 * compute how much we will allow the key labels to shrink
 	IF ( nrow .LE. 2 ) THEN
@@ -124,22 +132,25 @@
 	      ppl_saved_yaxlen = ylen
 	      saved_ppl_yax = .TRUE.
 	   ENDIF 
-	   yorg = yspace_needed * ysqueeze - key_yorigin
+	   yorg = yspace_needed * ysqueeze - dflt_key_yorigin*pplscale
 	   ylen = (ppl_saved_yaxlen + ppl_saved_yorg) - yorg
-	   key_yspace = key_yspace0 * ysqueeze
-	   key_ysize  = (key_yspace0 - key_ywhite_space) * ysqueeze
-	   key_labht  = key_labht0 * ysqueeze
+	   key_yspace = dflt_key_yspace0*pplscale * ysqueeze
+	   key_ysize  = (dflt_key_yspace0*pplscale - 
+     .                   dflt_key_ywhite_space*pplscale) * ysqueeze
+	   key_labht  = dflt_key_labht0*pplscale * ysqueeze
 	ELSEIF ( change_ysize ) THEN
 * ... shrunken keys but don't tamper with y origin
 	   ysqueeze = yspace_avail / yspace_needed
-	   key_yspace = key_yspace0 * ysqueeze
-	   key_ysize  = (key_yspace0 - key_ywhite_space) * ysqueeze
-	   key_labht  = key_labht0 * ysqueeze
+	   key_yspace = dflt_key_yspace0*pplscale * ysqueeze
+	   key_ysize  = (dflt_key_yspace0*pplscale - 
+     .                   dflt_key_ywhite_space*pplscale) * ysqueeze
+	   key_labht  = dflt_key_labht0*pplscale * ysqueeze
 	ELSE
 * ... full-sized keys, don't tamper with y origin
-	   key_yspace = key_yspace0
- 	   key_ysize  = key_yspace0 - key_ywhite_space
-	   key_labht  = key_labht0
+	   key_yspace = dflt_key_yspace0*pplscale
+ 	   key_ysize  = dflt_key_yspace0*pplscale - 
+     .                  dflt_key_ywhite_space*pplscale
+	   key_labht  = dflt_key_labht0*pplscale
 	ENDIF
 
 * how many labels in the upper left corner?

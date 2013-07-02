@@ -79,7 +79,7 @@
 *       *acm* 3/12 6D Ferret: Add E and F dimensions 
 *                  A time axis may be a T axis or F axis, so idim is 
 *                  now an arg to TSTEP_TO_SECS, TSTEP_TO_DATE
-* PyFr  *kms* 7/13 Use scaled medium size label with PUT_LABEL
+* PyFr  *kms* 7/13 Use dflt_letsize_label with PUT_LABEL
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -220,10 +220,10 @@
 	ENDIF
 	IF ( x_or_y .EQ. 'X' ) THEN
 	   CALL PUT_LABEL( ppl_xlab, dummy, dummy, dummy,
-     .              letsize_label*pplscale, buff(:dlen), dummy, dummy )
+     .          dflt_letsize_label*pplscale, buff(:dlen), dummy, dummy )
 	ELSE
 	   CALL PUT_LABEL( ppl_ylab, dummy, dummy, dummy,
-     .              letsize_label*pplscale, buff(:dlen), dummy, dummy )
+     .          dflt_letsize_label*pplscale, buff(:dlen), dummy, dummy )
 	ENDIF
 	RETURN
       END

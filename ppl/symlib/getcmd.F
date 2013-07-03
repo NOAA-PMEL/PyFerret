@@ -1,4 +1,4 @@
-	SUBROUTINE GETCMD(LINE,ILEN,COM,X,IF,M,LABEL,N,LBSTRT)
+	SUBROUTINE GETCMD(LINE,ILEN,COM,X,IFLG,M,LABEL,N,LBSTRT)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -88,6 +88,7 @@ C     *JD* 8.2.91 Mod to support brain dead PPL -- no @ usage
 *                 where buflen is defined in cmndlen.inc
 * v685 *acm* 1/13 Fix ticket 1298. If a label comes in containing single
 *                 quotes, just pass that on. It's not a symbol translation.
+* PyFr *kms*  7/13 IF argument renamed to IFLG
 
         logical         tmapdebug
         common/tmdebug/ tmapdebug
@@ -101,7 +102,7 @@ C     *JD* 8.2.91 Mod to support brain dead PPL -- no @ usage
 	CHARACTER COM*(*),LABEL*(*),LINE*(*),SYM*30,VALUE*2048,FILE*80
 	CHARACTER ICOM*2048
 	LOGICAL RESULT,NUM,islab
-	DIMENSION X(*),IF(*)
+	DIMENSION X(*),IFLG(*)
 	INTEGER LBSTRT,WHCNT
 	integer*4 status,iflag
 
@@ -342,7 +343,7 @@ C
 	    LINCNT=WHLINE(WHLEV)
 	    WHLEV=WHLEV-1
 	ELSE
-	    CALL PARSEX(LINE,ILEN,X,IF,M,LABEL,N)
+	    CALL PARSEX(LINE,ILEN,X,IFLG,M,LABEL,N)
 	    LABEL(N+1:)=' '
 	    RETURN
 	ENDIF

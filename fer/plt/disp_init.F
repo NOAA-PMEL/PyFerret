@@ -238,17 +238,17 @@
      .				 show_str(1:slen)
  3011	      FORMAT(A,' Ver. ',A)
 	   ENDIF
-	   CALL PUT_LABEL(	ppl_movlab, 0.0, 1.2*pplscale, 
+	   CALL PUT_LABEL(	ppl_movlab, 0.0, 1.22*pplscale, 
      .			ppl_centered, dflt_letsize_logo*pplscale,
      .			buffer(:len_program_name+len_progname_mod+11),
      .			lab_loc_axlen_plus, lab_loc_axlen_plus )
 * ... "NOAA/PMEL TMAP"
-	   CALL PUT_LABEL(	ppl_movlab, 0.0, 1.1*pplscale, 
+	   CALL PUT_LABEL(	ppl_movlab, 0.0, 1.11*pplscale, 
      .			ppl_centered, dflt_letsize_logo*pplscale,
      .			'NOAA/PMEL TMAP',
      .			lab_loc_axlen_plus, lab_loc_axlen_plus )
 * ... "8-SEP-1988 11:05"
-	   CALL PUT_LABEL(	ppl_movlab, 0.0, 1.0*pplscale, 
+	   CALL PUT_LABEL(	ppl_movlab, 0.0, 1.00*pplscale, 
      .			ppl_centered, dflt_letsize_logo*pplscale,
      .			'''date'' ''time''',
      .			lab_loc_axlen_plus, lab_loc_axlen_plus )

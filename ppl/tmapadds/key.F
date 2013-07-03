@@ -98,6 +98,11 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V685 *acm* 4/13 For horizontal keys check that there is room for the labels and adjust
 *                 label size and/or increment
+* PyFr *kms*  7/13 Use HXLAB or HYLAB (which scales with plot size) as the (maximum, 
+*                  default) character height for the key labels; rename and remove 
+*                  local vars px and py equivalenced to local vars kpx and kpy; 
+*                  comment out calls to TM_FMT_SNGL_DIGITS that are immediately 
+*                  followed by a call to TM_FMT_SNGL
 
         IMPLICIT NONE
 	include 	'parampl5_dat.decl'
@@ -115,6 +120,8 @@
         include         'PLT.INC'
         include         'pen_inc.decl'
         include         'PEN.INC'
+        include         'labcom_inc.decl'
+        include         'LABCOM.INC' ! hxlab, hylab
 
         include         'shade_vars.cmn'
         include         'gkscm1_inc.decl'
@@ -124,23 +131,21 @@
 	include        'gkspar.inc'
 
 	integer		ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
-     .                  lab_add, nlab, lev1, levn, nspace
+     .                  lab_add, nlabels, lev1, levn, nspace
 
-	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5)
+	real		x_inc,y_inc,rem,kpx(5),kpy(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht
 	real		xx,yy,xxx,yyy, xx1, xxn, xxlen
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
      .                  val, del, x_inc_inf, y_inc_inf, frac, fixx
         real*8          val_n, val_last
-	character*12	text,TM_FMT_SNGL, TM_FMT_SNGL_DIGITS, 
+	character*12	text, TM_FMT_SNGL, TM_FMT_SNGL_DIGITS, 
      ,			txt_out, blanks
         character*20    buff
 	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, windof_hold, 
      .                  check_0, increase_digits, nofill
 
 	external	TM_FMT_SNGL, TM_FMT_SNGL_DIGITS
-
-	equivalence 	(px(1),kpx(1)),(py(1),kpy(1))
 
 	include 	'ppl_in_ferret.cmn'	
 
@@ -302,7 +307,7 @@
 	end if
 
 	if (klab_size .eq. 0.0) then
-           karht = amin1 (0.10*1000.0,
+           karht = amin1 (hxlab*1000.0,
      .		1.0*x_inc*real(incr)/real(max_len))/1000.0
 	else
 	   karht = ABS(klab_size)
@@ -317,12 +322,12 @@
 	   xxn = (kx_lo + x_inc*real(shd_levels))/1000.0
      .		 + karht*real(max_len) - xorg
 	   xxlen = xxn-xx1
-	   nlab = INT( 0.5+(shd_levels-lev1)/incr )
+	   nlabels = INT( 0.5+(shd_levels-lev1)/incr )
 	
-	   IF (nlab*max_len*karht .GT. xxlen) THEN
-	      karht = 0.85*xxlen/FLOAT(nlab*max_len)
-	      IF (karht .LT. 0.06) THEN
-	         karht = 0.08
+	   IF (nlabels*max_len*karht .GT. xxlen) THEN
+	      karht = 0.85*xxlen/FLOAT(nlabels*max_len)
+	      IF (karht .LT. 0.6 * hxlab) THEN
+	         karht = 0.08 * hxlab
 	         incr = incr*2
 	      ENDIF
 	   ENDIF
@@ -332,27 +337,27 @@
 	max_len = 0
 	val = zlev(lev1)
 	IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)  
+C	text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)  
 	text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)  
         if (max_len .lt. str_len) max_len = str_len
         
         nhi = MAX(2,shd_levels+1)
 	do 10 ndx = 2, nhi
-	   px(1) = kx_lo + real (ndx - 2) * x_inc
-	   px(2) = kx_lo + real (ndx - 2) * x_inc
-	   px(3) = kx_lo + real (ndx - 1) * x_inc
-	   px(4) = kx_lo + real (ndx - 1) * x_inc
+	   kpx(1) = kx_lo + real (ndx - 2) * x_inc
+	   kpx(2) = kx_lo + real (ndx - 2) * x_inc
+	   kpx(3) = kx_lo + real (ndx - 1) * x_inc
+	   kpx(4) = kx_lo + real (ndx - 1) * x_inc
 
-	   py(1) = ky_hi
-	   py(2) = ky_hi - 4.0 * y_inc 
-	   py(3) = ky_hi - 4.0 * y_inc
-	   py(4) = ky_hi
+	   kpy(1) = ky_hi
+	   kpy(2) = ky_hi - 4.0 * y_inc 
+	   kpy(3) = ky_hi - 4.0 * y_inc
+	   kpy(4) = ky_hi
 
            IF (kuser_loc(3) .OR. kuser_loc(4)) THEN
-              py(2) = ky_lo
-              py(3) = ky_lo
-              py(1) = ky_hi
-              py(4) = ky_hi
+              kpy(2) = ky_lo
+              kpy(3) = ky_lo
+              kpy(1) = ky_hi
+              kpy(4) = ky_hi
            ENDIF
 
            IF ( (ndx.EQ.2) .AND. (annotate_key.EQ.1) .AND. 
@@ -373,20 +378,20 @@
 
            ELSE
 
-*	   CALL FILL AREA FOR THIS COLOR/GRAY VALUE
-	   call set_fill_ndx (ndx)
-	   call FGD_GFA(4,px,py)
+*	      CALL FILL AREA FOR THIS COLOR/GRAY VALUE
+              CALL set_fill_ndx (ndx)
+              CALL FGD_GFA(4,kpx,kpy)
 
-	   kpx(5) = kpx(1)
-	   kpy(5) = kpy(1)
-	   IF (.NOT. cont_key) call FGD_GPL(5,kpx,kpy)
+              kpx(5) = kpx(1)
+              kpy(5) = kpy(1)
+              IF (.NOT. cont_key) CALL FGD_GPL(5,kpx,kpy)
 
            ENDIF ! neginf or posinf
 
            IF (ndx .GE. lev1 .AND. ndx .LE. levn) THEN
               val = zlev(ndx)
               IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	      text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+C	      text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 	      text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
 	      if (max_len .lt. str_len) max_len = str_len
            ENDIF
@@ -402,13 +407,13 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   if (shd_levels .eq. 1 .and. ndx .eq. 2) then
              val = zlev(lev1)
              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+C	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 	     text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
 
 	   else
              val = zlev(ndx)
              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+C	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 	     text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
 
              IF (ndx .EQ. 1 .AND. neginf) text = " "
@@ -443,8 +448,8 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
         ENDIF
 
 *  Set these to actual locations that were used for PPL LIST SHAKEY
-        ky_hi = py(1)
-        ky_lo = py(2)
+        ky_hi = kpy(1)
+        ky_lo = kpy(2)
 
 	goto 2000
 
@@ -530,7 +535,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
 *	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
         if (klab_size .eq. 0.0) then
-	   karht = amin1 (0.10*1000.0,500.0*rem/real(max_len))/1000.0
+	   karht = amin1 (hylab*1000.0,500.0*rem/real(max_len))/1000.0
 	else
 	   karht = ABS(klab_size)
 	end if
@@ -562,22 +567,22 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
         nhi = MAX(2,shd_levels+1)
 	do 1010 ndx = 2, nhi
-	   px(1) = kx_lo
-	   px(2) = kx_lo + 4.0*x_inc
-	   px(3) = kx_lo + 4.0*x_inc
-	   px(4) = kx_lo
+	   kpx(1) = kx_lo
+	   kpx(2) = kx_lo + 4.0*x_inc
+	   kpx(3) = kx_lo + 4.0*x_inc
+	   kpx(4) = kx_lo
 
            IF ( kuser_loc(1) .OR. kuser_loc(2)) THEN
-              px(1) = kx_lo
-              px(4) = kx_lo
-              px(2) = kx_hi
-              px(3) = kx_hi
+              kpx(1) = kx_lo
+              kpx(4) = kx_lo
+              kpx(2) = kx_hi
+              kpx(3) = kx_hi
            ENDIF
 
-	   py(1) = ky_lo + real (ndx - 2) * y_inc
-	   py(2) = ky_lo + real (ndx - 2) * y_inc
-	   py(3) = ky_lo + real (ndx - 1) * y_inc
-	   py(4) = ky_lo + real (ndx - 1) * y_inc
+	   kpy(1) = ky_lo + real (ndx - 2) * y_inc
+	   kpy(2) = ky_lo + real (ndx - 2) * y_inc
+	   kpy(3) = ky_lo + real (ndx - 1) * y_inc
+	   kpy(4) = ky_lo + real (ndx - 1) * y_inc
 
            IF ( (ndx.EQ.2) .AND. (annotate_key.EQ.1) .AND.
      .          (.NOT. neginf) ) CALL key_annotate 
@@ -599,7 +604,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
 *	   CALL FILL AREA FOR THIS COLOR/GRAY VALUE
 	      call set_fill_ndx (ndx)
-	      call FGD_GFA(4,px,py)
+	      call FGD_GFA(4,kpx,kpy)
 
               kpx(5) = kpx(1)
               kpy(5) = kpy(1)
@@ -634,8 +639,8 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
 	   xx = (kx_lo + 5.0*x_inc)/1000.0 - xorg 
 	   xx = (kx_lo + 4.5*x_inc)/1000.0 - xorg 
-	   xx = (px(2) + 500*karht)/1000.0 - xorg 
-	   IF (val .LT. 0. )xx = (px(2) + 100*karht)/1000.0 - xorg 
+	   xx = (kpx(2) + 500*karht)/1000.0 - xorg 
+	   IF (val .LT. 0. )xx = (kpx(2) + 100*karht)/1000.0 - xorg 
 
            IF (kuser_loc(1) .OR. kuser_loc(2)) 
      .              xx = (kx_hi+2.*x_inc)/1000 - xorg
@@ -676,8 +681,8 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
         ENDIF
 
 *  Set these to actual locations that were used for PPL LIST SHAKEY
-        kx_lo = px(1)
-        kx_hi = px(2)
+        kx_lo = kpx(1)
+        kx_hi = kpx(2)
 
 2000	windof = windof_hold
 

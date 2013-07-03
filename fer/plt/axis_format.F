@@ -220,10 +220,10 @@
 	ENDIF
 	IF ( x_or_y .EQ. 'X' ) THEN
 	   CALL PUT_LABEL( ppl_xlab, dummy, dummy, dummy,
-     .          dflt_letsize_label*pplscale, buff(:dlen), dummy, dummy )
+     .          dflt_letsize_label*textscale, buff(:dlen), dummy, dummy )
 	ELSE
 	   CALL PUT_LABEL( ppl_ylab, dummy, dummy, dummy,
-     .          dflt_letsize_label*pplscale, buff(:dlen), dummy, dummy )
+     .          dflt_letsize_label*textscale, buff(:dlen), dummy, dummy )
 	ENDIF
 	RETURN
       END

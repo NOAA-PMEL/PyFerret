@@ -72,7 +72,7 @@
 *                  ovkey_xorigin, ovkey_yorigin, ul_labht0, ul_yspace0,
 *                  ul_xorigin, and ul_yorigin to plot_setup.parm,
 *                  since they are used as parameters, and prefixed with 
-*                  dflt_ those that need to be scaled by pplscale.
+*                  dflt_ those that need to be scaled by pplscale or textscale.
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -118,7 +118,7 @@
 	   ul_ysqueeze = 0.65
 	ENDIF
 	ul_yspace = dflt_ul_yspace0*pplscale * ul_ysqueeze
-	ul_labht  = dflt_ul_labht0*pplscale  * ul_ysqueeze
+	ul_labht  = dflt_ul_labht0*textscale * ul_ysqueeze
 
 * define the position labels ("LATITUDE:", "DEPTH:", etc)
 * ... stack them above one another in the upper left
@@ -178,15 +178,15 @@
 	   CALL GET_SHORT_DSET_NAME( dset_num, line_buff, lablen )
 
            yoff = dflt_ul_yorigin*pplscale
-           ur_labht = dflt_ul_labht0*pplscale
+           ur_labht = dflt_ul_labht0*textscale
 	   IF ( ds_des_name(dset_num)(1:7) .EQ. 'http://' ) THEN
               yoff = dflt_ul_yorigin*pplscale - 0.5*ul_yspace
-              ur_labht = 0.75*dflt_ul_labht0*pplscale
+              ur_labht = 0.75*dflt_ul_labht0*textscale
 	   ENDIF
 	   CALL BOX_LABEL( ppl_movlab-ppl_dset, 
      .			   'DATA SET: '//line_buff(:lablen),
      .			   0.0, yoff,
-     .			   0.5*xlen,  1.5*dflt_letsize_dset_title*pplscale,
+     .			   0.5*xlen,  1.5*dflt_letsize_dset_title*textscale,
      .			   ur_labht, ppl_right_just,
      .			   lab_loc_axlen_plus, lab_loc_axlen_plus )
 
@@ -194,8 +194,8 @@
 	   CALL GET_DSET_TITLE( dset_num, line_buff, lablen )
 	   CALL BOX_LABEL( ppl_movlab-ppl_datitl, line_buff(:lablen),
      .			   0.5, 0.3*pplscale, 0.8*xlen, 
-     .                     1.5*dflt_letsize_dset_title*pplscale,
-     .			   dflt_letsize_dset_title*pplscale, ppl_centered,
+     .                     1.5*dflt_letsize_dset_title*textscale,
+     .			   dflt_letsize_dset_title*textscale, ppl_centered,
      .			   lab_loc_axlen_times, lab_loc_axlen_plus )
 * ... OPeNDAP URL of data set
 * bug 1098 url is cut off; keep going to the last /
@@ -214,7 +214,7 @@
 	      CALL BOX_LABEL( ppl_movlab-ppl_dodsurl, 
      .			   'OPeNDAP URL: '//ds_des_name(dset_num)(:lablen),
      .			   0.0, yoff,
-     .			   0.4*xlen,  1.5*dflt_letsize_dset_title*pplscale,
+     .			   0.4*xlen,  1.5*dflt_letsize_dset_title*textscale,
      .			   ur_labht, ppl_right_just,
      .			   lab_loc_axlen_plus, lab_loc_axlen_plus )
 

@@ -117,7 +117,7 @@
 * PyFr  *kms*  6/13 EQUAL_COLOR now returns a color ID, and EQUAL_THICK 
 *                   returns a pen ID from a color ID and a thickness.
 * PyFr  *kms*  6/13 Added /THICK /OPACITY
-* PyFr  *kms*  7/13 Scale default lettering sizes by pplscale;
+* PyFr  *kms*  7/13 Scale default lettering sizes by textscale;
 *                   use scaled label heights and spacings instead of 
 *                   hard-coded values.
 
@@ -404,7 +404,7 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
 
         IF (.NOT. overlay .AND. no_data .AND. mode_nodata_lab) 
      .                  CALL PUT_LABEL( ppl_movlab, 0.5, 0.5,
-     .                  ppl_centered, dflt_letsize_title*pplscale,
+     .                  ppl_centered, dflt_letsize_title*textscale,
      .                  'No Valid Data',
      .                  lab_loc_axlen_times, lab_loc_axlen_times )
            ENDIF

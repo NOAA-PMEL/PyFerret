@@ -144,7 +144,8 @@
      .          slash_engine,
      .          slash_color,
      .          slash_opacity,
-     .          slash_thicken
+     .          slash_thicken,
+     .          slash_textprom
 	PARAMETER ( slash_new      =  1+1,
      .              slash_clear    =  4+1,
      .              slash_title    =  5+1,
@@ -154,7 +155,8 @@
      .              slash_engine   =  9+1,
      .              slash_color    = 10+1,
      .              slash_opacity  = 11+1,
-     .              slash_thicken  = 12+1 )
+     .              slash_thicken  = 12+1,
+     .              slash_textprom = 17+1 )
 
 	rzero = 0.0
 	rone = 1.0
@@ -402,6 +404,17 @@ c 75        CONTINUE
             CALL FGD_SET_THICK_FACTOR(n, dfltthick)
         ENDIF
 
+* set text size scaling factor?
+        qp = qual_given(slash_textprom)
+        IF ( qp .GT. 0 ) THEN
+            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)), 
+     .                     scale, status)
+            IF ( status .NE. ferr_ok ) RETURN
+            IF ( scale .LE. 0.0 ) GOTO 5090
+*           Note: scale text by this factor as well as by pplscale
+            CALL SET_TEXT_SIZES(n, scale)
+        ENDIF
+
 * background color is always color zero
         bkgcolor = 0
 * background color specified?
@@ -456,18 +469,14 @@ c 75        CONTINUE
 	wn_active( wsid ) = .TRUE.
 
         IF ( physical_chg ) THEN
-*
 *          Set ASIZE and BSIZE to invalid values so the SIZE routine
 *          will not return immediately thinking there was no size change
-*
            ASIZE = 0.0
            BSIZE = 0.0
            CALL SIZE(width, height)
-*
 *          At this point the DPIs are known, so now we can figure out
 *          the scaling factor to send to the viewer so the image is the
 *          desired pixel size, if given.  
-*
            IF ( (xpixels .GT. 0) .AND. (ypixels .GT. 0) ) THEN
 *             The value for xpixels and ypixels were assigned assuming 
 *             square pixels, which now is a very good assumption.
@@ -483,14 +492,13 @@ c 75        CONTINUE
               ypixels = yinches * windowdpiy(n)
               sc = 1.0
            ENDIF
+*          Send the scaling factor, even if 1.0, 
+*          to ensure the displayed image is the correct size
            CALL FGD_SEND_IMAGE_SCALE(n, sc)
-*
 *          Save xpixels and ypixels only for specifying the default
 *          size when saving raster graphics.
-*
            wn_xpixels(n) = xpixels
            wn_ypixels(n) = ypixels
-           
         ENDIF
 
 * turn on normalization transform (same as window number and wsid)
@@ -514,5 +522,8 @@ c 75        CONTINUE
  5080   CALL ERRMSG( ferr_out_of_range, status, 
      .          'Invalid opacity specification; '//
      .          'a value from 0 to 100 must be given', *5000)
+ 5090   CALL ERRMSG( ferr_out_of_range, status, 
+     .          'Invalid text prominence specification; '//
+     .          'a positive number must be given', *5000)
 	END
 

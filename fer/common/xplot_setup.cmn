@@ -19,14 +19,16 @@
 * *acm* v68  1/12 move window title to xtoday.cmn.
 * *kms*      2/12 Add E and F dimensions to ul_dolab, plot_axis
 * *acm* v683 11/12 add sym_so_far - symbols on line plots. Used to be SAVEd in line_style.F
-* *kms* PyFr  7/13 Added pplscale for scaling standard lengths and text sizes:
+* *kms* PyFr  7/13 Added pplscale for scaling standard lengths and text heights;
+*                  Added textscale for further scaling of text heights;
 *                  Moved key_xspace0, key_yspace0, key_labht0, key_xorigin, 
 *                  key_yorigin, key_xwhite_space, key_ywhite_space, 
 *                  key_line_frac, ovkey_space, ovkey_yspace, ovkey_labht,
 *                  ovkey_xorigin, ovkey_yorigin, ul_labht0, ul_yspace0,
 *                  ul_xorigin, and ul_yorigin to plot_setup.parm,
 *                  since they are used as parameters, and prefixed with 
-*                  dflt_ those that need to be scaled by pplscale.
+*                  dflt_ those that need to be scaled by pplscale and 
+*                  possible textscale.
 
 	LOGICAL	key_doc(0:10),
      .		onedee_on,
@@ -53,6 +55,7 @@
      .		sym_so_far
 
 	REAL	pplscale,
+     .          textscale,
      .		key_yspace,
      .		key_xspace,
      .		key_labht,
@@ -65,6 +68,7 @@
 
 	COMMON / XPLOT_SETUP /
      .          pplscale,
+     .          textscale,
      .		key_yspace,
      .		key_xspace,
      .		key_labht,

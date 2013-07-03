@@ -1,10 +1,10 @@
 * LABCOM_INC.DECL - converted to Unix 2.26.91         
 * COMMON for PLOT+ with all variables declared
 * created for TMAP usage by Steve Hankin 7/88
-	REAL	HLAB1
-	REAL	HXLAB
-	REAL	HYLAB
-	REAL	HLABS
+	REAL*4	HLAB1
+	REAL*4	HXLAB
+	REAL*4	HYLAB
+	REAL*4	HLABS
 	INTEGER	ICOUNT
 	INTEGER	NLAB
 	INTEGER	ICROSS

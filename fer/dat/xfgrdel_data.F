@@ -77,8 +77,8 @@
         DATA viewtopcoord / maxtransforms * 1.0 /
 
 * Default window sizes.
-        DATA windowwidth / maxwindowobjs * 7.5 /
-        DATA windowheight / maxwindowobjs * 5.625 /
+        DATA windowwidth / maxwindowobjs * 10.5 /
+        DATA windowheight / maxwindowobjs * 8.5 /
 
 * Default engine for a new window.
 * Should not change after start-up.

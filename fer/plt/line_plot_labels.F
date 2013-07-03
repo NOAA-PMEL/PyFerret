@@ -42,7 +42,7 @@
 * Pulled out of plot_set_up.F 
 * 8/12 ACM 
 * V6.83 *acm* 11/30/2012 Need AXIS.INC for the axis lengths, xlen, ylen
-* PyFr *kms*  7/13 Scale default lettering sizes by pplscale
+* PyFr *kms*  7/13 Scale default lettering sizes by textscale
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -138,8 +138,8 @@
 	   slen = TM_LENSTR1( plot_title )
 	   CALL BOX_LABEL( dep_lab,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.6*dep_len, dflt_letsize_label*pplscale,
-     .			   dflt_letsize_label*pplscale, ppl_centered,
+     .			   0.0, 0.0, 0.6*dep_len, dflt_letsize_label*textscale,
+     .			   dflt_letsize_label*textscale, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 * ... keys for the dependent vars, or if one, only then title or axis label
 	   DO 600 ipl = var1, nmv
@@ -157,8 +157,8 @@
 	         IF ( versus ) THEN     ! ("xlen" changed to "dep_len" 11/92)
 	            CALL BOX_LABEL( dep_lab,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.6*dep_len, dflt_letsize_label*pplscale,
-     .			   dflt_letsize_label*pplscale, ppl_centered,
+     .			   0.0, 0.0, 0.6*dep_len, dflt_letsize_label*textscale,
+     .			   dflt_letsize_label*textscale, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 	         ENDIF
 	         IF ( .NOT.versus .OR. user_title ) THEN 
@@ -171,8 +171,8 @@
 	            ENDIF
 	            CALL BOX_LABEL( ppl_title,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.75*hlen, dflt_letsize_title*pplscale,
-     .			   dflt_letsize_title*pplscale, ppl_centered,
+     .			   0.0, 0.0, 0.75*hlen, dflt_letsize_title*textscale,
+     .			   dflt_letsize_title*textscale, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 	         ENDIF
 	      ELSE
@@ -193,8 +193,8 @@
               slen = TM_LENSTR1( plot_title )
               CALL BOX_LABEL( indep_lab,
      .                     plot_title(:slen),
-     .                     0.0, 0.0, 0.6*hlen, dflt_letsize_label*pplscale,
-     .                     dflt_letsize_label*pplscale, ppl_centered,
+     .                     0.0, 0.0, 0.6*hlen, dflt_letsize_label*textscale,
+     .                     dflt_letsize_label*textscale, ppl_centered,
      .                     lab_loc_absolute, lab_loc_absolute )
            ENDIF
 
@@ -265,8 +265,8 @@
 	   IF (iunits .NE. 4) THEN
 	      CALL BOX_LABEL( dep_lab,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.6*dep_len, dflt_letsize_label*pplscale,
-     .			   dflt_letsize_label*pplscale, ppl_centered,
+     .			   0.0, 0.0, 0.6*dep_len, dflt_letsize_label*textscale,
+     .			   dflt_letsize_label*textscale, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 	   ENDIF
 
@@ -275,8 +275,8 @@
 	      slen = TM_LENSTR1( plot_title )
 	      CALL BOX_LABEL( dep_lab,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.6*dep_len, dflt_letsize_label*pplscale,
-     .			   dflt_letsize_label*pplscale, ppl_centered,
+     .			   0.0, 0.0, 0.6*dep_len, dflt_letsize_label*textscale,
+     .			   dflt_letsize_label*textscale, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 	   ENDIF
 
@@ -299,14 +299,14 @@
                  slen = slen + 14
               ENDIF
 	         
-              labsize = dflt_letsize_title*pplscale
+              labsize = dflt_letsize_title*textscale
               IF (ipl.EQ.ribbon_var) THEN
 	         IF (versus) THEN
                     slen1 = TM_LENSTR1( plot_title_1 )
 		    CALL BOX_LABEL( indep_lab,
      .                     plot_title_1(:slen1),
-     .                     0.0, 0.0, 0.75*hlen, dflt_letsize_label*pplscale,
-     .                     dflt_letsize_label*pplscale, ppl_centered,
+     .                     0.0, 0.0, 0.75*hlen, dflt_letsize_label*textscale,
+     .                     dflt_letsize_label*textscale, ppl_centered,
      .                     lab_loc_absolute, lab_loc_absolute )
 		    plot_title = 'Colored by '//plot_title(1:slen)
                  ELSE
@@ -320,14 +320,14 @@
      .			 ( cmnd_buff(qual_start(ptitl):qual_end(ptitl)),
      .                    plot_title, status )
                     IF ( status .NE. ferr_ok ) GOTO 5000
-                    labsize = dflt_letsize_title*pplscale
+                    labsize = dflt_letsize_title*textscale
 	         ENDIF
               ENDIF
 
               slen = TM_LENSTR1( plot_title )
               CALL BOX_LABEL( ppl_title,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.75*hlen, dflt_letsize_title*pplscale,
+     .			   0.0, 0.0, 0.75*hlen, dflt_letsize_title*textscale,
      .			   labsize, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 

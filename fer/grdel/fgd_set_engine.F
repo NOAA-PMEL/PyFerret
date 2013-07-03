@@ -48,6 +48,7 @@
         IF ( slen .EQ. 0 ) THEN
             enginename(windowid) = defaultenginename
             antialias(windowid) = .TRUE.
+            thickfactor(windowid) = 1.0
             sts = FERR_OK
             RETURN
         ENDIF

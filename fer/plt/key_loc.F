@@ -52,7 +52,7 @@
 *                  ovkey_xorigin, ovkey_yorigin, ul_labht0, ul_yspace0,
 *                  ul_xorigin, and ul_yorigin to plot_setup.parm,
 *                  since they are used as parameters, and prefixed with 
-*                  dflt_ those that need to be scaled by pplscale.
+*                  dflt_ those that need to be scaled by pplscale or textscale.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -103,7 +103,7 @@ c	   ypos  = ovkey_yorigin - novkeys_on*ovkey_yspace
 * ... no - try to put the label within the plot rectangle at the left
 	      xsize  = dflt_ovkey_xspace*pplscale * 0.8
 	      xpos   = 0.1*pplscale
-	      lab_ht = dflt_ovkey_labht*pplscale  * 0.8
+	      lab_ht = dflt_ovkey_labht*textscale  * 0.8
 	      ysize  = dflt_ovkey_yspace*pplscale * 0.8
 	      ypos   = 0.1*pplscale + 
      .               (numlines-1+novkeys_on-novkeys_ll) *
@@ -113,7 +113,7 @@ c	   ypos  = ovkey_yorigin - novkeys_on*ovkey_yspace
 * ... yes - it will fit at the lower left
 	      xsize  = dflt_ovkey_xspace*pplscale
 	      xpos   = dflt_ovkey_xorigin*pplscale
-	      lab_ht = dflt_ovkey_labht*pplscale
+	      lab_ht = dflt_ovkey_labht*textscale
 	   ENDIF
 	   novkeys_on = novkeys_on + numlines
 

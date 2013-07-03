@@ -150,7 +150,8 @@
 *              within a grid cell
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
-* PyFr *kms*  7/13 Scale default lettering sizes by pplscale
+* PyFr *kms*  7/13 Scale default lengths by pplscale 
+*                  and default lettering sizes by textscale
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -749,8 +750,8 @@ C ACM added 8/2001 save cal id if vertical time axis
 	   ENDIF
 	   CALL BOX_LABEL( ppl_title,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.75*xlen, dflt_letsize_title*pplscale,
-     .			   dflt_letsize_title*pplscale, ppl_centered,
+     .			   0.0, 0.0, 0.75*xlen, dflt_letsize_title*textscale,
+     .			   dflt_letsize_title*textscale, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 * ... see if a "year" label is required
 	   year = unspecified_name4
@@ -785,7 +786,7 @@ C ACM added 8/2001 save cal id if vertical time axis
 	      plot_title = 'adjustment for differing X/Y scales: '//
      .			  TM_FMT(s,3,16,slen)
 	      CALL PUT_LABEL( ppl_movlab-ppl_aspect, 0.0, 0.2*pplscale,
-     .			      ppl_left_just, dflt_letsize_small*pplscale, 
+     .			      ppl_left_just, dflt_letsize_small*textscale, 
      .			      plot_title(:37+slen),
      .			      lab_loc_absolute, lab_loc_axlen_plus )
 	   ENDIF
@@ -795,7 +796,7 @@ C ACM added 8/2001 save cal id if vertical time axis
      .	     .OR. cx_lo_ww(dim2,ctx) .NE. cx_lo_ww(dim2,cty)
      .	     .OR. cx_hi_ww(dim2,ctx) .NE. cx_hi_ww(dim2,cty))THEN
 	         CALL PUT_LABEL( ppl_movlab-ppl_offset, 0.0, 0.2*pplscale,
-     .			      ppl_right_just, dflt_letsize_small*pplscale, 
+     .			      ppl_right_just, dflt_letsize_small*textscale, 
      .				'X and Y components are offset',
      .			      lab_loc_axlen_plus, lab_loc_axlen_plus )
 	   ENDIF

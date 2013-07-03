@@ -98,11 +98,11 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V685 *acm* 4/13 For horizontal keys check that there is room for the labels and adjust
 *                 label size and/or increment
-* PyFr *kms*  7/13 Use HXLAB or HYLAB (which scales with plot size) as the (maximum, 
-*                  default) character height for the key labels; rename and remove 
-*                  local vars px and py equivalenced to local vars kpx and kpy; 
-*                  comment out calls to TM_FMT_SNGL_DIGITS that are immediately 
-*                  followed by a call to TM_FMT_SNGL
+* PyFr *kms*  7/13 Use HXLAB or HYLAB (which scales with plot text size) as the 
+*                  (maximum, default) character height for the key labels; 
+*                  rename and remove local vars px and py equivalenced to local 
+*                  vars kpx and kpy; comment out calls to TM_FMT_SNGL_DIGITS 
+*                  that are immediately followed by a call to TM_FMT_SNGL
 
         IMPLICIT NONE
 	include 	'parampl5_dat.decl'

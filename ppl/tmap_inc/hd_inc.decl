@@ -3,16 +3,16 @@
 * created for TMAP usage by Steve Hankin 7/88
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 
-	REAL	XPTS
-	REAL	ZMIN
-	REAL	ZMAX
-	REAL	ZMEAN
-	REAL	ZSTD
-	REAL	XMIN
-	REAL	XMAX
+	REAL*4	XPTS
+	REAL*4	ZMIN
+	REAL*4	ZMAX
+	REAL*4	ZMEAN
+	REAL*4	ZSTD
+	REAL*4	XMIN
+	REAL*4	XMAX
 	INTEGER	NX
-	REAL	YMIN
-	REAL	YMAX
+	REAL*4	YMIN
+	REAL*4	YMAX
 	INTEGER	NY
 	INTEGER	JTYPE
 	INTEGER	NCH

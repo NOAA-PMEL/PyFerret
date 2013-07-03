@@ -54,7 +54,7 @@
 *                  ovkey_xorigin, ovkey_yorigin, ul_labht0, ul_yspace0,
 *                  ul_xorigin, and ul_yorigin to plot_setup.parm,
 *                  since they are used as parameters, and prefixed with 
-*                  dflt_ those that need to be scaled by pplscale.
+*                  dflt_ those that need to be scaled by pplscale or textscale.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -137,20 +137,20 @@
 	   key_yspace = dflt_key_yspace0*pplscale * ysqueeze
 	   key_ysize  = (dflt_key_yspace0*pplscale - 
      .                   dflt_key_ywhite_space*pplscale) * ysqueeze
-	   key_labht  = dflt_key_labht0*pplscale * ysqueeze
+	   key_labht  = dflt_key_labht0*textscale * ysqueeze
 	ELSEIF ( change_ysize ) THEN
 * ... shrunken keys but don't tamper with y origin
 	   ysqueeze = yspace_avail / yspace_needed
 	   key_yspace = dflt_key_yspace0*pplscale * ysqueeze
 	   key_ysize  = (dflt_key_yspace0*pplscale - 
      .                   dflt_key_ywhite_space*pplscale) * ysqueeze
-	   key_labht  = dflt_key_labht0*pplscale * ysqueeze
+	   key_labht  = dflt_key_labht0*textscale * ysqueeze
 	ELSE
 * ... full-sized keys, don't tamper with y origin
 	   key_yspace = dflt_key_yspace0*pplscale
  	   key_ysize  = dflt_key_yspace0*pplscale - 
      .                  dflt_key_ywhite_space*pplscale
-	   key_labht  = dflt_key_labht0*pplscale
+	   key_labht  = dflt_key_labht0*textscale
 	ENDIF
 
 * how many labels in the upper left corner?

@@ -1,13 +1,13 @@
 * MISS_INC.DECL - converted to Unix 2.26.91           
 * COMMON for PLOT+ with all variables declared
 * created for TMAP usage by Steve Hankin 7/88
-	REAL	CMXLE
-	REAL	CMXEQ
-	REAL	CMXGE
-	REAL	CMYLE
-	REAL	CMYEQ
-	REAL	CMYGE
-	REAL	CMZLE
-	REAL	CMZEQ
-	REAL	CMZGE
+	REAL*4	CMXLE
+	REAL*4	CMXEQ
+	REAL*4	CMXGE
+	REAL*4	CMYLE
+	REAL*4	CMYEQ
+	REAL*4	CMYGE
+	REAL*4	CMZLE
+	REAL*4	CMZEQ
+	REAL*4	CMZGE
 * requires: INCLUDE 'PPLV11INC:MISS.INC'                                    

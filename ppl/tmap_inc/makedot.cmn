@@ -6,6 +6,6 @@ C   ACM 10/17/01
 	integer	maxdot, ipt
 	parameter (maxdot=10000)
     
-	REAL xdot(maxdot),ydot(maxdot)
+	REAL*4 xdot(maxdot),ydot(maxdot)
         COMMON/MAKEDOT_CMN/ipt, xdot, ydot
 

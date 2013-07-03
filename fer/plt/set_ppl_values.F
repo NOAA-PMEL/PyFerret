@@ -58,6 +58,7 @@
         LOGICAL reset
 
 * local variables
+        REAL txtfactor
         REAL*4 rone
         CHARACTER*48 buff
 
@@ -66,7 +67,7 @@
         pplscale = SQRT( wn_xinches(windid) * wn_yinches(windid)
      .                   / (dflt_xinches * dflt_yinches) )
         IF ( reset ) THEN
-* assign the scaled default sizes
+* assign the scaled default lengths
            wn_xwhitelo(windid)  = dflt_xwhitelo      * pplscale
            wn_ywhitelo(windid)  = dflt_ywhitelo      * pplscale
            wn_xwhitehi(windid)  = dflt_xwhitehi      * pplscale
@@ -75,18 +76,15 @@
            wn_tics_lgy(windid)  = dflt_tics_lg       * pplscale
            wn_tics_smx(windid)  = dflt_tics_sm       * pplscale
            wn_tics_smy(windid)  = dflt_tics_sm       * pplscale
-           wn_axlsze_x(windid)  = dflt_axlsze        * pplscale
-           wn_axlsze_y(windid)  = dflt_axlsze        * pplscale
-           wn_txlsze(windid)    = dflt_axlsze        * pplscale
-           wn_labset_mn(windid) = dflt_letsize_large * pplscale
-           wn_labset_x(windid)  = dflt_letsize_label * pplscale
-           wn_labset_y(windid)  = dflt_letsize_label * pplscale
-           wn_labset_mv(windid) = dflt_letsize_label * pplscale
-           wn_con_hgt(windid)   = dflt_letsize_small * pplscale
            wn_con_labsp(windid) = dflt_con_labsp     * pplscale
            wn_con_dshln(windid) = dflt_con_dshln     * pplscale
            wn_con_spcln(windid) = dflt_con_dshln     * pplscale
            wn_vec_len(windid)   = dflt_vec_len       * pplscale
+*          reset the text scaling factor in SET_TEXT_SIZES
+           txtfactor = 1.0
+        ELSE
+*          just use the given text sizes in SET_TEXT_SIZES
+           txtfactor = 0.0
         ENDIF
 
 *       calls PPL SIZE to set width and height (no actual resizing done)
@@ -110,31 +108,14 @@
         ENDIF
         CALL PPLCMD(from, line, 0, buff, 1, 1)
 
-*       set the axis label sizes
-        buff = ' '
-        WRITE(buff, 110) wn_axlsze_x(windid), wn_axlsze_y(windid)
- 110    FORMAT('AXLSZE',2(',',F7.4))
-        CALL PPLCMD(from, line, 0, buff, 1, 1)
-
-*       set the time axis label size
-        buff = ' '
-        WRITE(buff, 120) wn_txlsze(windid)
- 120    FORMAT('TXLSZE,',F7.4)
-        CALL PPLCMD(from, line, 0, buff, 1, 1)
-
-*       set the label sizes
-        buff = ' '
-        WRITE(buff, 130) wn_labset_mn(windid), wn_labset_x(windid), 
-     .                   wn_labset_y(windid), wn_labset_mv(windid)
- 130    FORMAT('LABSET',4(',',F7.4))
-        CALL PPLCMD ( from, line, 0, buff, 1, 1 )
-
 *       the following can just be set directly (no extra actions)
-        hgt    = wn_con_hgt(windid)
         dslab  = wn_con_labsp(windid)
         dashln = wn_con_dshln(windid)
         spacln = wn_con_spcln(windid)
         vlen   = wn_vec_len(windid)
+
+*       set the text sizes
+        CALL SET_TEXT_SIZES(windid, txtfactor)
 
         RETURN
         END

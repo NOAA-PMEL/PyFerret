@@ -85,7 +85,6 @@
 * V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * PyFr *kms*  7/13 Scale default lengths by pplscale; 
-*                  use hlabs for standard label height;
 *                  do not reset minor tic size (not scaled!)
 
 	include 'tmap_dims.parm'
@@ -97,8 +96,6 @@
 	include 'xrevision.cmn'
         include 'axis_inc.decl'    ! with iaxset
         include 'AXIS.INC'
-        include 'labcom_inc.decl'  ! hlabs
-        include 'LABCOM.INC'
 
 * calling argument declarations:
 	LOGICAL no_labels
@@ -107,6 +104,7 @@
 * internal variable declarations:
 	CHARACTER	TM_FMT*12, buffer*40, buff30*30, show_str*12
         INTEGER         idim, ier, nc, slen
+        REAL            logoht
 
 * open metafile for this new plot
 	CALL SEND_PLTYPE( mode_metafile )        ! added 1/94
@@ -242,21 +240,22 @@
      .				 show_str(1:slen)
  3011	      FORMAT(A,' Ver. ',A)
 	   ENDIF
+           logoht = 0.5*dflt_letsize_label*textscale
 	   CALL PUT_LABEL( ppl_movlab, 
-     .                     0.0, pplscale + 1.8*hlabs, 
-     .                     ppl_centered, 0.5*hlabs,
+     .                     0.0, 1.0*pplscale + 3.6*logoht,
+     .                     ppl_centered, logoht,
      .                     buffer(:len_program_name+len_progname_mod+11),
      .                     lab_loc_axlen_plus, lab_loc_axlen_plus )
 * ... "NOAA/PMEL TMAP"
 	   CALL PUT_LABEL( ppl_movlab, 
-     .                     0.0, pplscale + 0.9*hlabs, 
-     .                     ppl_centered, 0.5*hlabs,
+     .                     0.0, 1.0*pplscale + 1.8*logoht,
+     .                     ppl_centered, logoht,
      .                     'NOAA/PMEL TMAP',
      .                     lab_loc_axlen_plus, lab_loc_axlen_plus )
 * ... "8-SEP-1988 11:05"
 	   CALL PUT_LABEL( ppl_movlab, 
-     .                     0.0, pplscale, 
-     .                     ppl_centered, 0.5*hlabs,
+     .                     0.0, 1.0*pplscale,
+     .                     ppl_centered, logoht,
      .                     '''date'' ''time''',
      .                     lab_loc_axlen_plus, lab_loc_axlen_plus )
         ENDIF ! mode_logo

@@ -151,7 +151,7 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 * PyFr *kms*  7/13 Scale default lengths by pplscale; 
-*                  use hlab1 and hlabs for lettering heights
+*                  use hlab1 for plot title lettering height
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -228,7 +228,7 @@ C plus those starting w/ xbox_bounds:
 	REAL		s, w1_lo, w1_hi, w2_lo, w2_hi, valy1,
      .			d1_regrid, d2_regrid, bad_x, bad_y, rlo, rhi,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
-     .                  first, last
+     .                  first, last, labelht
 	REAL*8		xaxlo, xaxhi, yaxlo, yaxhi, delta
 	REAL*4		rw1lo, rw2lo
 
@@ -752,11 +752,12 @@ C ACM added 8/2001 save cal id if vertical time axis
 	         plot_title = COMPOUND_TITLE( cx_list, nvars, slen )
 	      ENDIF
 	   ENDIF
+           labelht = hlab1
 	   CALL BOX_LABEL( ppl_title,
      .			   plot_title(:slen),
      .			   0.0, 0.0, 
-     .			   0.75*xlen, hlab1,
-     .			   hlab1, ppl_centered,
+     .			   0.75*xlen, labelht,
+     .			   labelht, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 * ... see if a "year" label is required
 	   year = unspecified_name4
@@ -787,12 +788,13 @@ C ACM added 8/2001 save cal id if vertical time axis
 * ... "scale ratio adjustment: nnn"
 * note: "plot_title" is just used as a buffer
 	IF ( vector ) THEN
+           labelht = 0.75*dflt_letsize_label*textscale
 	   IF ( aspect .GT. 0.0 ) THEN
 	      plot_title = 'adjustment for differing X/Y scales: '//
      .			  TM_FMT(s,3,16,slen)
 	      CALL PUT_LABEL( ppl_movlab-ppl_aspect, 
      .			      0.0, 0.2*pplscale,
-     .			      ppl_left_just, 0.75*hlabs,
+     .			      ppl_left_just, labelht,
      .			      plot_title(:37+slen),
      .			      lab_loc_absolute, lab_loc_axlen_plus )
 	   ENDIF
@@ -803,7 +805,7 @@ C ACM added 8/2001 save cal id if vertical time axis
      .	     .OR. cx_hi_ww(dim2,ctx) .NE. cx_hi_ww(dim2,cty))THEN
 	         CALL PUT_LABEL( ppl_movlab-ppl_offset, 
      .			         0.0, 0.2*pplscale,
-     .			         ppl_right_just, 0.75*hlabs,
+     .			         ppl_right_just, labelht,
      .			         'X and Y components are offset',
      .			         lab_loc_axlen_plus, lab_loc_axlen_plus )
 	   ENDIF

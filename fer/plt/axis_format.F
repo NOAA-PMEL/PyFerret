@@ -113,7 +113,7 @@
 	CHARACTER	AX_TITLE*32, WHOI_DATE*14, VAR_TITLE*128,
      .			INTERNAL_WHOI_DATE*14,
      .			fmt*4, buff*200
-	REAL		res_del, dt_min, time_unit
+	REAL		res_del, dt_min, time_unit, labelht
 	REAL*8		TSTEP_TO_SECS
 	INTEGER		n_res
 
@@ -221,11 +221,13 @@
 	   buff = AX_TITLE( idim, grid, dlen )	! risc_buff as of 6/95
 	ENDIF
 	IF ( x_or_y .EQ. 'X' ) THEN
+           labelht = hxlab
 	   CALL PUT_LABEL( ppl_xlab, dummy, dummy, dummy,
-     .                     hxlab, buff(:dlen), dummy, dummy )
+     .                     labelht, buff(:dlen), dummy, dummy )
 	ELSE
+           labelht = hylab
 	   CALL PUT_LABEL( ppl_ylab, dummy, dummy, dummy,
-     .                     hylab, buff(:dlen), dummy, dummy )
+     .                     labelht, buff(:dlen), dummy, dummy )
 	ENDIF
 	RETURN
       END

@@ -22,7 +22,6 @@
      .              dflt_ywhitehi,
      .              dflt_tics_lg,
      .              dflt_tics_sm,
-     .              dflt_axlsze,
      .              dflt_con_labsp,
      .              dflt_con_dshln,
      .              dflt_vec_len
@@ -34,7 +33,6 @@
      .              dflt_ywhitehi  =  1.375,
      .              dflt_tics_lg   =  0.25,
      .              dflt_tics_sm   =  0.125,
-     .              dflt_axlsze    =  0.10,
      .              dflt_con_labsp =  5.00,
      .              dflt_con_dshln =  0.04,
      .              dflt_vec_len   =  0.50 )
@@ -86,14 +84,11 @@
      .              ppl_calendar    = 11 )
 
 * parameters describing the locations and sizes of labels and keys;
-* need to be scaled by pplscale except for key_line_frac
+* need to be scaled by pplscale or textscale except for key_line_frac
         REAL        key_line_frac,
-     .              dflt_letsize_logo,
      .              dflt_letsize_title,
      .              dflt_letsize_label,
-     .              dflt_letsize_dset_title,
-     .              dflt_letsize_large,
-     .              dflt_letsize_small,
+     .              dflt_letsize_axis,
      .              dflt_key_xspace0,
      .              dflt_key_yspace0,
      .              dflt_key_labht0,
@@ -111,29 +106,26 @@
      .              dflt_ul_xorigin,
      .              dflt_ul_yorigin
 
-        PARAMETER ( key_line_frac           =  0.30,
-     .              dflt_letsize_logo       =  0.06,
-     .              dflt_letsize_title      =  0.20,
-     .              dflt_letsize_label      =  0.12,
-     .              dflt_letsize_dset_title =  0.12,
-     .              dflt_letsize_large      =  0.16,
-     .              dflt_letsize_small      =  0.09,
-     .              dflt_key_xspace0        =  3.00,
-     .              dflt_key_yspace0        =  0.25,
-     .              dflt_key_labht0         =  0.12,
-     .              dflt_key_xorigin        =  1.50,
-     .              dflt_key_yorigin        = -0.85,
-     .              dflt_key_xwhite_space   =  0.30,
-     .              dflt_key_ywhite_space   =  0.02,
-     .              dflt_ovkey_xspace       =  2.10,
-     .              dflt_ovkey_yspace       =  0.18,
-     .              dflt_ovkey_labht        =  0.08,
-     .              dflt_ovkey_xorigin      = -1.10,
-     .              dflt_ovkey_yorigin      = -0.60,
-     .              dflt_ul_labht0          =  0.12,
-     .              dflt_ul_yspace0         =  0.20,
-     .              dflt_ul_xorigin         =  0.00,
-     .              dflt_ul_yorigin         =  0.60 )
+        PARAMETER ( key_line_frac         =  0.30,
+     .              dflt_letsize_title    =  0.20,
+     .              dflt_letsize_label    =  0.12,
+     .              dflt_letsize_axis     =  0.10,
+     .              dflt_key_xspace0      =  3.00,
+     .              dflt_key_yspace0      =  0.25,
+     .              dflt_key_labht0       =  0.12,
+     .              dflt_key_xorigin      =  1.50,
+     .              dflt_key_yorigin      = -0.85,
+     .              dflt_key_xwhite_space =  0.30,
+     .              dflt_key_ywhite_space =  0.02,
+     .              dflt_ovkey_xspace     =  2.10,
+     .              dflt_ovkey_yspace     =  0.18,
+     .              dflt_ovkey_labht      =  0.08,
+     .              dflt_ovkey_xorigin    = -1.10,
+     .              dflt_ovkey_yorigin    = -0.60,
+     .              dflt_ul_labht0        =  0.12,
+     .              dflt_ul_yspace0       =  0.20,
+     .              dflt_ul_xorigin       =  0.00,
+     .              dflt_ul_yorigin       =  0.60 )
 
 * parameters used to determine VECTOR sizes
         REAL        vxax_len, vyax_len, max_vecperinch

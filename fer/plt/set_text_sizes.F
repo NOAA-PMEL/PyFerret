@@ -59,38 +59,39 @@
 *          Reset this windows text scaling factor
            textscale = factor * pplscale
            wn_textscale(windid) = textscale
-           wn_axlsze_x(windid)  = dflt_axlsze        * textscale
-           wn_axlsze_y(windid)  = dflt_axlsze        * textscale
-           wn_txlsze(windid)    = dflt_axlsze        * textscale
-           wn_labset_mn(windid) = dflt_letsize_large * textscale
+           wn_axlsze_x(windid)  = dflt_letsize_axis  * textscale
+           wn_axlsze_y(windid)  = dflt_letsize_axis  * textscale
+           wn_txlsze(windid)    = dflt_letsize_axis  * textscale
+           wn_labset_mn(windid) = dflt_letsize_title * textscale
            wn_labset_x(windid)  = dflt_letsize_label * textscale
            wn_labset_y(windid)  = dflt_letsize_label * textscale
            wn_labset_mv(windid) = dflt_letsize_label * textscale
-           wn_con_hgt(windid)   = dflt_letsize_small * textscale
+           wn_con_hgt(windid)   = 0.75 * dflt_letsize_label * textscale
         ELSE
 *          Assign this windows text scaling factor
            textscale = wn_textscale(windid)
         ENDIF
 
-*       set the axis label sizes
+*       set the X and Y axis value labels sizes
         buff = ' '
         WRITE(buff, 110) wn_axlsze_x(windid), wn_axlsze_y(windid)
  110    FORMAT('AXLSZE',2(',',F7.4))
         CALL PPLCMD(from, line, 0, buff, 1, 1)
 
-*       set the time axis label size
+*       set the time axis value labels size
         buff = ' '
         WRITE(buff, 120) wn_txlsze(windid)
  120    FORMAT('TXLSZE,',F7.4)
         CALL PPLCMD(from, line, 0, buff, 1, 1)
 
-*       set the label sizes
+*       set the title labels sizes
         buff = ' '
         WRITE(buff, 130) wn_labset_mn(windid), wn_labset_x(windid), 
      .                   wn_labset_y(windid), wn_labset_mv(windid)
  130    FORMAT('LABSET',4(',',F7.4))
         CALL PPLCMD ( from, line, 0, buff, 1, 1 )
 
+*       set the contour label values labels size
 *       the following can just be set directly (no extra actions)
         hgt = wn_con_hgt(windid)
 

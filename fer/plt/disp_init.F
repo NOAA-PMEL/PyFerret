@@ -84,8 +84,9 @@
 * V600 *acm* 5/06 - flag no_plot_yet for applying mode_linecolors setting ...
 * V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
-* PyFr *kms*  7/13 Scale default lengths by pplscale 
-*                  and default lettering sizes by textscale
+* PyFr *kms*  7/13 Scale default lengths by pplscale; 
+*                  use hlabs for standard label height;
+*                  do not reset minor tic size (not scaled!)
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -94,8 +95,10 @@
 	include 'xplot_state.cmn'
 	include 'xprog_state.cmn'
 	include 'xrevision.cmn'
-        include 'axis_inc.decl'  ! with iaxset
+        include 'axis_inc.decl'    ! with iaxset
         include 'AXIS.INC'
+        include 'labcom_inc.decl'  ! hlabs
+        include 'LABCOM.INC'
 
 * calling argument declarations:
 	LOGICAL no_labels
@@ -120,7 +123,7 @@
 *	CALL PPLCMD ( from, line, 0, 'ALINE ', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'TAXIS OFF', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'TITLE', 1, 1 )
-	CALL PPLCMD ( from, line, 0, 'TICS .125', 1, 1 )    ! chg 12/93
+*	CALL PPLCMD ( from, line, 0, 'TICS .125', 1, 1 )    ! chg 12/93
 	CALL PPLCMD ( from, line, 0, 'WINDOW ON', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'AXTYPE 1,1', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'XVALOFF 0', 1, 1 )
@@ -239,20 +242,23 @@
      .				 show_str(1:slen)
  3011	      FORMAT(A,' Ver. ',A)
 	   ENDIF
-	   CALL PUT_LABEL(	ppl_movlab, 0.0, 1.22*pplscale, 
-     .			ppl_centered, dflt_letsize_logo*textscale,
-     .			buffer(:len_program_name+len_progname_mod+11),
-     .			lab_loc_axlen_plus, lab_loc_axlen_plus )
+	   CALL PUT_LABEL( ppl_movlab, 
+     .                     0.0, pplscale + 1.8*hlabs, 
+     .                     ppl_centered, 0.5*hlabs,
+     .                     buffer(:len_program_name+len_progname_mod+11),
+     .                     lab_loc_axlen_plus, lab_loc_axlen_plus )
 * ... "NOAA/PMEL TMAP"
-	   CALL PUT_LABEL(	ppl_movlab, 0.0, 1.11*pplscale, 
-     .			ppl_centered, dflt_letsize_logo*textscale,
-     .			'NOAA/PMEL TMAP',
-     .			lab_loc_axlen_plus, lab_loc_axlen_plus )
+	   CALL PUT_LABEL( ppl_movlab, 
+     .                     0.0, pplscale + 0.9*hlabs, 
+     .                     ppl_centered, 0.5*hlabs,
+     .                     'NOAA/PMEL TMAP',
+     .                     lab_loc_axlen_plus, lab_loc_axlen_plus )
 * ... "8-SEP-1988 11:05"
-	   CALL PUT_LABEL(	ppl_movlab, 0.0, 1.00*pplscale, 
-     .			ppl_centered, dflt_letsize_logo*textscale,
-     .			'''date'' ''time''',
-     .			lab_loc_axlen_plus, lab_loc_axlen_plus )
+	   CALL PUT_LABEL( ppl_movlab, 
+     .                     0.0, pplscale, 
+     .                     ppl_centered, 0.5*hlabs,
+     .                     '''date'' ''time''',
+     .                     lab_loc_axlen_plus, lab_loc_axlen_plus )
         ENDIF ! mode_logo
 
 	RETURN

@@ -98,7 +98,7 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V685 *acm* 4/13 For horizontal keys check that there is room for the labels and adjust
 *                 label size and/or increment
-* PyFr *kms*  7/13 Use HXLAB or HYLAB (which scales with plot text size) as the 
+* PyFr *kms*  7/13 Use XCSIZE or YCSIZE (which scales with plot text size) as the 
 *                  (maximum, default) character height for the key labels; 
 *                  rename and remove local vars px and py equivalenced to local 
 *                  vars kpx and kpy; comment out calls to TM_FMT_SNGL_DIGITS 
@@ -120,8 +120,6 @@
         include         'PLT.INC'
         include         'pen_inc.decl'
         include         'PEN.INC'
-        include         'labcom_inc.decl'
-        include         'LABCOM.INC' ! hxlab, hylab
 
         include         'shade_vars.cmn'
         include         'gkscm1_inc.decl'
@@ -307,7 +305,7 @@
 	end if
 
 	if (klab_size .eq. 0.0) then
-           karht = amin1 (hxlab*1000.0,
+           karht = amin1 (xcsize*1000.0,
      .		1.0*x_inc*real(incr)/real(max_len))/1000.0
 	else
 	   karht = ABS(klab_size)
@@ -326,8 +324,8 @@
 	
 	   IF (nlabels*max_len*karht .GT. xxlen) THEN
 	      karht = 0.85*xxlen/FLOAT(nlabels*max_len)
-	      IF (karht .LT. 0.6 * hxlab) THEN
-	         karht = 0.08 * hxlab
+	      IF (karht .LT. 0.6 * xcsize) THEN
+	         karht = 0.08 * xcsize
 	         incr = incr*2
 	      ENDIF
 	   ENDIF
@@ -535,7 +533,7 @@ C	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 
 *	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
         if (klab_size .eq. 0.0) then
-	   karht = amin1 (hylab*1000.0,500.0*rem/real(max_len))/1000.0
+	   karht = amin1 (ycsize*1000.0,500.0*rem/real(max_len))/1000.0
 	else
 	   karht = ABS(klab_size)
 	end if

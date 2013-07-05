@@ -79,17 +79,19 @@
 *       *acm* 3/12 6D Ferret: Add E and F dimensions 
 *                  A time axis may be a T axis or F axis, so idim is 
 *                  now an arg to TSTEP_TO_SECS, TSTEP_TO_DATE
-* PyFr  *kms* 7/13 Use dflt_letsize_label with PUT_LABEL
+* PyFr  *kms* 7/13 Use hxlab and hylab from PPL with PUT_LABEL for axis titles
 
 	include 'tmap_dims.parm'
+	include 'ferret.parm'
+        include 'plot_setup.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'ferret.parm'
-	include 'plot_setup.parm'
 	include 'xplot_setup.cmn'
 	include 'xplot_state.cmn'
+        INCLUDE 'labcom_inc.decl'
+        INCLUDE 'LABCOM.INC'    ! hxlab, hylab
 * special equivalence needed only with risc compiler: bug fix
 	include 'xrisc.cmn'     ! for f77 bug
         CHARACTER rbuff(4)*14
@@ -220,10 +222,10 @@
 	ENDIF
 	IF ( x_or_y .EQ. 'X' ) THEN
 	   CALL PUT_LABEL( ppl_xlab, dummy, dummy, dummy,
-     .          dflt_letsize_label*textscale, buff(:dlen), dummy, dummy )
+     .                     hxlab, buff(:dlen), dummy, dummy )
 	ELSE
 	   CALL PUT_LABEL( ppl_ylab, dummy, dummy, dummy,
-     .          dflt_letsize_label*textscale, buff(:dlen), dummy, dummy )
+     .                     hylab, buff(:dlen), dummy, dummy )
 	ENDIF
 	RETURN
       END

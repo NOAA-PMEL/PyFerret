@@ -186,16 +186,16 @@
 	   CALL BOX_LABEL( ppl_movlab-ppl_dset, 
      .			   'DATA SET: '//line_buff(:lablen),
      .			   0.0, yoff,
-     .			   0.5*xlen,  1.5*dflt_letsize_dset_title*textscale,
+     .			   0.5*xlen, 1.5*dflt_letsize_label*textscale,
      .			   ur_labht, ppl_right_just,
      .			   lab_loc_axlen_plus, lab_loc_axlen_plus )
 
 * ... title of data set
 	   CALL GET_DSET_TITLE( dset_num, line_buff, lablen )
 	   CALL BOX_LABEL( ppl_movlab-ppl_datitl, line_buff(:lablen),
-     .			   0.5, 0.3*pplscale, 0.8*xlen, 
-     .                     1.5*dflt_letsize_dset_title*textscale,
-     .			   dflt_letsize_dset_title*textscale, ppl_centered,
+     .			   0.5, 0.3*pplscale, 
+     .			   0.8*xlen, 1.5*dflt_letsize_label*textscale,
+     .			   dflt_letsize_label*textscale, ppl_centered,
      .			   lab_loc_axlen_times, lab_loc_axlen_plus )
 * ... OPeNDAP URL of data set
 * bug 1098 url is cut off; keep going to the last /
@@ -214,7 +214,7 @@
 	      CALL BOX_LABEL( ppl_movlab-ppl_dodsurl, 
      .			   'OPeNDAP URL: '//ds_des_name(dset_num)(:lablen),
      .			   0.0, yoff,
-     .			   0.4*xlen,  1.5*dflt_letsize_dset_title*textscale,
+     .			   0.4*xlen, 1.5*dflt_letsize_label*textscale,
      .			   ur_labht, ppl_right_just,
      .			   lab_loc_axlen_plus, lab_loc_axlen_plus )
 

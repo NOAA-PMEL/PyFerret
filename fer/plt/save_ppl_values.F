@@ -77,7 +77,7 @@
         wn_txlsze(windid)    = tcsize
         wn_labset_mn(windid) = hlab1
         wn_labset_x(windid)  = hxlab
-        wn_labset_y(windid)  = hxlab
+        wn_labset_y(windid)  = hylab
         wn_labset_mv(windid) = hlabs
         wn_con_hgt(windid)   = hgt
         wn_con_labsp(windid) = dslab

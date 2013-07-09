@@ -32,9 +32,9 @@
         ipen = maxpenobjs
 *       linestyle = 1 is a solid line
         CALL FGD_GSPLR(activewindow, ipen, 1, thickness, icolor)
-*       also make a temporary symbol object (dot) at the same array index
+*       also make a temporary symbol object (dot) at the same array index;
 *       code in ferret expects this
-        dotsize = 1.0
+        dotsize = 6.0 + thickness
         CALL FGD_GSPMR(activewindow, ipen, 1, dotsize, icolor)
 
         RETURN

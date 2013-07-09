@@ -102,6 +102,15 @@
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
 
+*       Set the background color
+        CALL FGDWINCLEAR(success, windowobjs(windowid), 
+     .                   colorobjs(1,windowid))
+        IF ( success .EQ. 0 ) THEN
+            errmsg = ' '
+            CALL FGDERRMSG(errmsg, errmsglen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+        ENDIF
+
         RETURN
         END
 

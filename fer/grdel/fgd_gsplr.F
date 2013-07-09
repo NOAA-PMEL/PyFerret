@@ -3,8 +3,8 @@
 *
 * The linewidth in GSK was a factor, so not very clear
 * what the units should be.  The line widths in PyFerret
-* are assumed to be in units of 0.001 * length of the 
-* window diagonal in points.
+* are in units of points (1/72 inches); possibly further 
+* scaled by the line width scaling factor.
 *
 
         SUBROUTINE FGD_GSPLR(windowid, pennum, linestyle,

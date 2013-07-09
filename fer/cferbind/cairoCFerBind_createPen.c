@@ -15,9 +15,7 @@ const char *CCFBPenId = "CCFBPenId";
  *
  * Arguments:
  *     color     - color for the pen
- *     width     - unadjusted line width of the pen; this value will
- *                 be adjusted by the size of the current "View" when
- *                 used for drawing
+ *     width     - line width of the pen in points (1/72 inches)
  *     style     - name of the line style of the pen (case-insensitive);
  *                 currently, one of "solid", "dash", "dot", "dashdot"
  *     stlen     - actual length of style

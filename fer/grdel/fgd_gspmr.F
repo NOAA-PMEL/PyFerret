@@ -2,6 +2,11 @@
 * Create a symbol object.
 * (set polymarker representation)
 *
+* The marker size in GSK was a factor, so not very clear
+* what the units should be.  The marker size in PyFerret
+* are in units of points (1/72 inches); possibly further 
+* scaled by the line width scaling factor.
+*
 
         SUBROUTINE FGD_GSPMR(windowid, symnum, 
      .                 symtype, symsize, colorindex)
@@ -17,7 +22,6 @@
 
         INTEGER colornum, snlen, success, errmsglen
         CHARACTER*8 symname
-        REAL*4 adjsize
         CHARACTER*2048 errmsg
 
 *       Sanity checks
@@ -75,9 +79,6 @@
             STOP 'FGD_GSPMR: invalid symtype'
         ENDIF
 
-*       Adjust the symbol size to typical user coordinates
-        adjsize = 5.0 * symsize
-
 *       If a symbol object already exists, delete it
         IF ( symbolobjs(symnum, windowid) .NE. nullobj ) THEN
             CALL FGDSYMBOLDEL(success, symbolobjs(symnum, windowid))
@@ -100,7 +101,7 @@
         ENDIF
 
         symbolcolor(symnum, windowid) = colornum
-        symbolsize(symnum, windowid) = adjsize
+        symbolsize(symnum, windowid) = symsize
 
         RETURN
         END

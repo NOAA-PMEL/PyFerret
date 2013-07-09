@@ -130,7 +130,7 @@ class CmndHelperPQ(object):
 
         Recognized keys in the font dictionary are:
             "family": font family name (string)
-            "size": text size (number, scales with view size)
+            "size": text size in points (1/72 inches)
             "italic": italicize? (False/True)
             "bold": make bold? (False/True)
             "underline": underline?  (False/True)
@@ -140,9 +140,7 @@ class CmndHelperPQ(object):
         except KeyError:
             myfont = self.__viewer.font()
         try:
-            size  = fontinfo["size"]
-            size *= self.__viewer.widthScalingFactor()
-            myfont.setPixelSize( int(size + 0.5) )
+            myfont.setPointSizeF(fontinfo["size"])
         except KeyError:
             pass
         try:
@@ -229,7 +227,8 @@ class CmndHelperPQ(object):
             "color": color name or 24-bit RGB integer value
                          (eg, 0xFF0088)
             "alpha": alpha value from 0 (transparent) to 255 (opaque)
-            "width": pen width (number, scales with view size)
+            "width": pen width in points (1/72 inches); possibly 
+                     further scaled by the width scaling factor 
             "style": pen style name ("solid", "dash", "dot", "dashdot",
                          "dashdotdot")
             "capstyle": pen cap style name ("square", "flat", "round")
@@ -241,7 +240,7 @@ class CmndHelperPQ(object):
         except KeyError:
             mypen = QPen()
         try:
-            penwidth = float(peninfo["width"])
+            penwidth  = float(peninfo["width"])
             penwidth *= self.__viewer.widthScalingFactor()
             mypen.setWidthF(penwidth)
         except KeyError:

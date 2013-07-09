@@ -89,14 +89,19 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
     instdata->imagewidth = 840;
     instdata->imageheight = 720;
     instdata->minsize = 128;
-    /* Assign the line width scaling factor */
-    instdata->widthfactor = 1.0;
     /* default clear color of opaque white */
     instdata->lastclearcolor.id = CCFBColorId;
     instdata->lastclearcolor.redfrac = 1.0;
     instdata->lastclearcolor.greenfrac = 1.0;
     instdata->lastclearcolor.bluefrac = 1.0;
     instdata->lastclearcolor.opaquefrac = 1.0;
+    /* Assign the line width scaling factor */
+    if ( cairoCFerBind_setWidthFactor(bindings, 0.75) != 1 ) {
+        strcpy(grdelerrmsg, "pyqtcairoCFerBind_createWindow: "
+                            "Unexpected error setting width factor");
+        PyMem_Free(bindings);
+        return NULL;
+    }
     /* make sure the format is set correctly */
     instdata->imageformat = CCFBIF_PNG;
     /*

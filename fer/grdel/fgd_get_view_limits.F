@@ -15,7 +15,7 @@
 
         INCLUDE 'fgrdel.cmn'
         REAL*4 EPSIL
-        PARAMETER (EPSIL = 1.0E-4)
+        PARAMETER (EPSIL = 1.0E-3)
 
 *       Sanity checks - transform 0 is an implicit transform
         IF ( (activetransform .LT. 0) .OR.

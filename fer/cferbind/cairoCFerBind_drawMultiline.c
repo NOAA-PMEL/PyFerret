@@ -86,9 +86,10 @@ grdelBool cairoCFerBind_drawMultiline(CFerBind *self, double ptsx[],
     else
         cairo_set_source_rgb(instdata->context, penobj->color.redfrac,
                              penobj->color.greenfrac, penobj->color.bluefrac);
-    /* Assign the adjusted line width */
-    adjwidth = penobj->width * instdata->widthfactor;
-    if ( adjwidth < 1.0 )
+    /* Assign the adjusted line width, which is in points */
+    adjwidth  = penobj->width * instdata->widthfactor;
+    /* width of zero is a cosmetic pen - make it 1 pixel wide */
+    if ( adjwidth == 0.0 )
         adjwidth = 1.0;
     adjwidth *= unitfactor;
     cairo_set_line_width(instdata->context, adjwidth);

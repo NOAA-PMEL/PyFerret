@@ -74,7 +74,6 @@
 *******************************************************************************
 
         marktype = 1    ! polymarker type 1=dot
-        dotsize = 1.0
 
 *       COLOR WORKSTATIONS:
 *       pre-defined colors
@@ -106,9 +105,10 @@
         do 20 j = 1, num_line_colors
            do 10 fktr = 1,3     ! thickness
               index = (fktr-1)*num_line_colors+j
-              thickness = real(fktr)
-              call FGD_GSPMR(zwsid,index,marktype,dotsize,j)
-              call FGD_GSPLR(zwsid,index,1,thickness,j)
+              dotsize = 6.0 + fktr
+              CALL FGD_GSPMR(zwsid, index, marktype, dotsize, j)
+              thickness = fktr
+              CALL FGD_GSPLR(zwsid, index, 1, thickness, j)
 10         continue
 20      continue
 

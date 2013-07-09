@@ -81,17 +81,22 @@ CFerBind *cairoCFerBind_createWindow(void)
     /* Default Cairo surface type */
     instdata->imageformat = CCFBIF_REC;
     /* image size and minimum allowed value */
-    instdata->imagewidth = 840;
-    instdata->imageheight = 720;
+    instdata->imagewidth = (int) 10.5 * CCFB_WINDOW_DPI;
+    instdata->imageheight = (int) 8.5 * CCFB_WINDOW_DPI;
     instdata->minsize = 128;
-    /* Assign the line width scaling factor */
-    instdata->widthfactor = 1.0;
     /* default clear color of opaque white */
     instdata->lastclearcolor.id = CCFBColorId;
     instdata->lastclearcolor.redfrac = 1.0;
     instdata->lastclearcolor.greenfrac = 1.0;
     instdata->lastclearcolor.bluefrac = 1.0;
     instdata->lastclearcolor.opaquefrac = 1.0;
+    /* Assign the line width scaling factor */
+    if ( cairoCFerBind_setWidthFactor(bindings, 0.75) != 1 ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_createWindow: "
+                            "Unexpected error setting width factor");
+        PyMem_Free(bindings);
+        return NULL;
+    }
 
     return bindings;
 }

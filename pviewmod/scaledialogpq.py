@@ -40,7 +40,7 @@ class ScaleDialogPQ(QDialog):
         self.__minpixheight = int(minheight)
         self.__autoscale = bool(autoscale)
 
-        self.FLTSTR_FORMAT = "%#.2f"
+        self.FLTSTR_FORMAT = "%#.3f"
 
         self.setWindowTitle(self.tr("Image Size Scaling"))
 

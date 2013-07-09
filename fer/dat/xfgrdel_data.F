@@ -64,7 +64,7 @@
         DATA windowdpiy / maxwindowobjs * 0.0 /
 
 * Scaling factor for line widths and symbol sizes
-        DATA thickfactor / maxwindowobjs * 1.0 /
+        DATA thickfactor / maxwindowobjs * 0.75 /
 
 * Coordinate transformation data independent of windows
         DATA viewleftfrac / maxtransforms * 0.0 /

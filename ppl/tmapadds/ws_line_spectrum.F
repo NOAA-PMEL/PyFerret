@@ -85,7 +85,6 @@
 	if (error .ne. 0) goto 1000
 
         marktype = 1    ! polymarker type 1=dot
-        dotsize = 1.0
 
 *	COLOR OR MONOCHROME?
 	if (max_color .le. 2) goto 100
@@ -138,15 +137,13 @@
 	low_index = MAX(num_line_colors* nthick + 2, lo_color_ndx(zwsid))
 
 	do 20 j = 1, shd_levels
-	    
 	   do 10 fktr = 1,nthick     ! thickness
-              thickness = REAL(fktr)
-	      icolr = j + lo_color_ndx(zwsid) - 1
-              index = low_index + (fktr-1)* (shd_levels+1) + j
-
-	      CALL FGD_GSPMR(zwsid, index, marktype, dotsize, icolr)
-	      CALL FGD_GSPLR(zwsid, index, 1, thickness, icolr)
-
+              index = low_index + (fktr-1) * (shd_levels+1) + j
+              icolr = j + lo_color_ndx(zwsid) - 1
+              dotsize = 6.0 + fktr
+              CALL FGD_GSPMR(zwsid, index, marktype, dotsize, icolr)
+              thickness = fktr
+              CALL FGD_GSPLR(zwsid, index, 1, thickness, icolr)
 10	   continue
 20	continue
 
@@ -170,15 +167,13 @@
 	CALL FGD_GSCR(zwsid,ndx,r_val,g_val,b_val,a_val)
 
 	do 40 j = shd_levels + 1, shd_levels + 1
-	    
 	   do 30 fktr = 1,nthick     ! thickness
-              thickness = REAL(fktr)
-	      icolr = j + lo_color_ndx(zwsid) - 1
-              index = low_index + (fktr-1)* (shd_levels+1) + j
-
-	      CALL FGD_GSPMR(zwsid,index,marktype,dotsize,icolr)
-	      CALL FGD_GSPLR(zwsid,index,1,thickness,icolr)
-       
+              index = low_index + (fktr-1) * (shd_levels+1) + j
+              icolr = j + lo_color_ndx(zwsid) - 1
+              dotsize = 6.0 + fktr
+              CALL FGD_GSPMR(zwsid, index, marktype, dotsize, icolr)
+              thickness = fktr
+              CALL FGD_GSPLR(zwsid, index, 1, thickness, icolr)
 30	   continue
 40	continue
 

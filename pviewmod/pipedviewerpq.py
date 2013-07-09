@@ -70,10 +70,10 @@ class PipedViewerPQ(QMainWindow):
         self.__cmndpipe = cmndpipe
         self.__rspdpipe = rspdpipe
         # default scene size
-        self.__scenewidth = 816
-        self.__sceneheight = 692
-        # scaling factor for line widths, symbol sizes, and font sizes
-        self.__widthfactor = 1.0
+        self.__scenewidth = int(10.5 * self.physicalDpiX())
+        self.__sceneheight = int(8.5 * self.physicalDpiY())
+        # scaling factor for line widths and symbol sizes
+        self.setWidthScalingFactor(0.75)
         # initial default color for the background (opaque white)
         self.__lastclearcolor = QColor(0xFFFFFF)
         self.__lastclearcolor.setAlpha(0xFF)
@@ -127,8 +127,9 @@ class PipedViewerPQ(QMainWindow):
         self.createActions()
         self.createMenus()
         # Set the initial size of the viewer
-        mwwidth = self.__scenewidth + 4
-        mwheight = self.__sceneheight + 4 \
+        self.__framedelta = 4
+        mwwidth = self.__scenewidth + self.__framedelta
+        mwheight = self.__sceneheight + self.__framedelta \
                  + self.menuBar().height() \
                  + self.statusBar().height()
         self.resize(mwwidth, mwheight)
@@ -459,7 +460,8 @@ class PipedViewerPQ(QMainWindow):
             if self.__autoscale:
                 self.__scalefactor = 1.0
                 barheights = self.menuBar().height() + self.statusBar().height()
-                self.resize(newwidth+4, newheight+4+barheights)
+                self.resize(newwidth + self.__framedelta, 
+                            newheight + self.__framedelta + barheights)
                 # the resize should redraw the scene
             else:
                 # Redraw the scene from the beginning using the scaling factor
@@ -497,10 +499,10 @@ class PipedViewerPQ(QMainWindow):
         barheights = self.menuBar().height() + self.statusBar().height()
 
         # get the size for the central widget
-        cwheight = self.height() - barheights - 4
+        cwheight = self.height() - barheights - self.__framedelta
         heightsf = float(cwheight) / float(self.__sceneheight)
 
-        cwwidth = self.width() - 4
+        cwwidth = self.width() - self.__framedelta
         widthsf = float(cwwidth) / float(self.__scenewidth)
 
         if heightsf < widthsf:
@@ -514,11 +516,13 @@ class PipedViewerPQ(QMainWindow):
         # if the window does not have the correct aspect ratio, resize it so 
         # it will; this will generate another call to this method.  Otherwise,
         # scale the scene and be done.
-        if ( abs(cwheight - newcwheight) <= 4) and (abs(cwwidth - newcwwidth) <= 4):
+        if (abs(cwheight - newcwheight) <= self.__framedelta) and \
+           (abs(cwwidth - newcwwidth) <= self.__framedelta):
             self.scaleScene(factor, False)
             return True
         else:
-            self.resize(newcwwidth+4, newcwheight+4+barheights)
+            self.resize(newcwwidth + self.__framedelta, 
+                        newcwheight + self.__framedelta + barheights)
             return False
 
     def scaleScene(self, factor, resizewin):
@@ -556,16 +560,16 @@ class PipedViewerPQ(QMainWindow):
         if resizewin:
             # resize the main window 
             barheights = self.menuBar().height() + self.statusBar().height()
-            mwheight = newlabheight + barheights + 4
-            mwwidth = newlabwidth + 4
-            # Do not exceed 7/8 of the available real estate on the screen.
+            mwheight = newlabheight + barheights + self.__framedelta
+            mwwidth = newlabwidth + self.__framedelta
+            # Do not exceed 15/16 of the available real estate on the screen.
             # If autoscaling is in effect, the resize will trigger 
             # any required adjustments.
             scrnrect = QApplication.desktop().availableGeometry()
-            if mwwidth > 0.875 * scrnrect.width():
-                mwwidth = int(0.875 * scrnrect.width() + 0.5)
-            if mwheight > 0.875 * scrnrect.height():
-                mwheight = int(0.875 * scrnrect.height() + 0.5)
+            if mwwidth > 0.9375 * scrnrect.width():
+                mwwidth = int(0.9375 * scrnrect.width() + 0.5)
+            if mwheight > 0.9375 * scrnrect.height():
+                mwheight = int(0.9375 * scrnrect.height() + 0.5)
             self.resize(mwwidth, mwheight)
 
     def inquireSaveFilename(self):
@@ -915,7 +919,7 @@ class PipedViewerPQ(QMainWindow):
             newfactor = float(cmnd.get("factor", -1.0))
             if newfactor <= 0.0:
                 raise ValueError( self.tr("Invalid width factor") )
-            self.__widthfactor = newfactor
+            self.setWidthScalingFactor(newfactor)
         elif cmndact == "setTitle":
             self.setWindowTitle(cmnd["title"])
         elif cmndact == "imgname":
@@ -1105,7 +1109,8 @@ class PipedViewerPQ(QMainWindow):
             "points": point centers as a list of (x,y) coordinates
             "symbol": name of the symbol to use
                     (see CmndHelperPQ.getSymbolFromCmnd)
-            "size": size of the symbol (scales with view size)
+            "size": size of the symbol in points (1/72 inches); possibly
+                    further scaled by the width scaling factor
             "color": color name or 24-bit RGB integer value (eg, 0xFF0088)
             "alpha": alpha value from 0 (transparent) to 255 (opaque)
 
@@ -1133,7 +1138,7 @@ class PipedViewerPQ(QMainWindow):
                          Qt.SquareCap, Qt.BevelJoin)
             self.__activepainter.setPen(mypen)
         # Unmodified symbols are 100x100 pixels 
-        scalefactor = ptsize * self.__widthfactor / 100.0
+        scalefactor = ptsize * self.widthScalingFactor() / 100.0
         if self.__maxsymbolwidth < 100.0 * scalefactor:
             self.__maxsymbolwidth = 100.0 * scalefactor
         if self.__maxsymbolheight < 100.0 * scalefactor:
@@ -1299,10 +1304,20 @@ class PipedViewerPQ(QMainWindow):
         if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
+    def setWidthScalingFactor(self, factor):
+        '''
+        Assign the scaling factor for line widths and symbol sizes 
+        to convert from points (1/72 inches) to pixels, and to apply 
+        any additional width scaling specified by factor. 
+        '''
+        self.__widthfactor  = (self.physicalDpiX() + self.physicalDpiY()) / 144.0
+        self.__widthfactor *= factor
+        
     def widthScalingFactor(self):
         '''
-        Return the scaling factor for line widths, symbol sizes, 
-        and font sizes for the current size of the full view. 
+        Return the scaling factor for line widths and symbol sizes 
+        to convert from points (1/72 inches) to pixels, and to apply 
+        any additional width scaling specified by setWidthFactor. 
         '''
         return self.__widthfactor 
 

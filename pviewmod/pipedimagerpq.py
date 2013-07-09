@@ -66,8 +66,8 @@ class PipedImagerPQ(QMainWindow):
         # when the image is defined
         # initialize the width and height to values that will create
         # a viewer (mainWindow) of the right size
-        self.__scenewidth = 816
-        self.__sceneheight = 692
+        self.__scenewidth = int(10.5 * self.physicalDpiX())
+        self.__sceneheight = int(8.5 * self.physicalDpiY())
         # initial default color for the background (opaque white)
         self.__lastclearcolor = QColor(0xFFFFFF)
         self.__lastclearcolor.setAlpha(0xFF)
@@ -99,8 +99,9 @@ class PipedImagerPQ(QMainWindow):
         self.createActions()
         self.createMenus()
         # set the initial size of the viewer
-        mwwidth = self.__scenewidth + 4
-        mwheight = self.__sceneheight + 4 \
+        self.__framedelta = 4
+        mwwidth = self.__scenewidth + self.__framedelta
+        mwheight = self.__sceneheight + self.__framedelta \
                  + self.menuBar().height() \
                  + self.statusBar().height()
         self.resize(mwwidth, mwheight)
@@ -303,7 +304,8 @@ class PipedImagerPQ(QMainWindow):
             if self.__autoscale:
                 self.__scalefactor = 1.0
                 barheights = self.menuBar().height() + self.statusBar().height()
-                self.resize(newwidth+4, newheight+4+barheights)
+                self.resize(newwidth + self.__framedelta, 
+                            newheight + self.__framedelta + barheights)
             # clear the scene with the last clearing color
             self.clearScene(None)
 
@@ -436,10 +438,10 @@ class PipedImagerPQ(QMainWindow):
         barheights = self.menuBar().height() + self.statusBar().height()
 
         # get the size for the central widget
-        cwheight = self.height() - barheights - 4
+        cwheight = self.height() - barheights - self.__framedelta
         heightsf = float(cwheight) / float(self.__sceneheight)
 
-        cwwidth = self.width() - 4
+        cwwidth = self.width() - self.__framedelta
         widthsf = float(cwwidth) / float(self.__scenewidth)
 
         if heightsf < widthsf:
@@ -453,11 +455,13 @@ class PipedImagerPQ(QMainWindow):
         # if the window does not have the correct aspect ratio, resize it so 
         # it will; this will generate another call to this method.  Otherwise,
         # scale the scene and be done.
-        if (abs(cwheight - newcwheight) <= 4) and (abs(cwwidth - newcwwidth) <= 4):
+        if (abs(cwheight - newcwheight) <= self.__framedelta) and \
+           (abs(cwwidth - newcwwidth) <= self.__framedelta):
             self.scaleScene(factor, False)
             return True
         else:
-            self.resize(newcwwidth+4, newcwheight+4+barheights)
+            self.resize(newcwwidth + self.__framedelta, 
+                        newcwheight + self.__framedelta + barheights)
             return False
 
     def scaleScene(self, factor, resizewin):
@@ -495,16 +499,16 @@ class PipedImagerPQ(QMainWindow):
         if resizewin:
             # resize the main window 
             barheights = self.menuBar().height() + self.statusBar().height()
-            mwheight = newlabheight + barheights + 4
-            mwwidth = newlabwidth + 4
-            # Do not exceed 7/8 of the available real estate on the screen.
+            mwheight = newlabheight + barheights + self.__framedelta
+            mwwidth = newlabwidth + self.__framedelta
+            # Do not exceed 15/16 of the available real estate on the screen.
             # If autoscaling is in effect, the resize will trigger 
             # any required adjustments.
             scrnrect = QApplication.desktop().availableGeometry()
-            if mwwidth > 0.875 * scrnrect.width():
-                mwwidth = int(0.875 * scrnrect.width() + 0.5)
-            if mwheight > 0.875 * scrnrect.height():
-                mwheight = int(0.875 * scrnrect.height() + 0.5)
+            if mwwidth > 0.9375 * scrnrect.width():
+                mwwidth = int(0.9375 * scrnrect.width() + 0.5)
+            if mwheight > 0.9375 * scrnrect.height():
+                mwheight = int(0.9375 * scrnrect.height() + 0.5)
             self.resize(mwwidth, mwheight)
 
     def inquireSaveFilename(self):

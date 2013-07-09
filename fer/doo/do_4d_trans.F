@@ -70,8 +70,9 @@
 * 2/11 - One further fix to #1348: @DIN over 1 grid cell in Y
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V685 *acm* 7/13  Fix ticket 2083: single-y and multi-D transform
 
-        IMPLICIT NONE
+	IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'interp_stack.parm'
@@ -151,6 +152,7 @@
 	bad_com = mr_bad_data( com_mr )
 	bad_res = mr_bad_data( res_mr )
         point = .FALSE.
+	one_y = .FALSE.
 
 * determine the type of transform requested
 	at_ave = action .EQ. trans_4d_ave
@@ -267,7 +269,7 @@ C (Unless there is just one grid cell in the y direction.)
 
 	      ! for integral need area is radius*radius* delx * h
 	      ! delx already has units that include radius of earth.
-	      IF ( at_din ) then
+	      IF ( at_din .AND. yes_ax(y_dim) ) then
  		       boxes(j+box_offset(y_dim)) =  m_radius 
 	      ENDIF
 	      ! Single-point Y axis or Y not part of the integral

@@ -11,7 +11,6 @@ LET/D=1 a = temp
 ! These listings should show the X,Y, and T axes, valid one-point axes
 ! and also the Z axis which has 10 points.
 SH VAR/XML
-SH DAT/VAR/XML
 
 CANCEL VAR a
 
@@ -19,4 +18,4 @@ LET/D=1 temp_ave_t = temp[Z=37.5:112.5@AVE]
 ! These listings should show the X,Y, and T axes, valid one-point axes
 ! but not the Z axis, which has been averaged away.
 SH VAR/XML
-SH DAT/VAR/XML
+

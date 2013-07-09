@@ -31,9 +31,9 @@ LET/D=2 ddat_a = ZAXREPLACE(ddat_orig[d=1], cycle_orig[d=2], dummy)
 ! Note how there are intermediate variables associated with the 
 ! regridding operation
 
-SHOW DATA
+SHOW DATA 2
 
 ! Those intermediate variables should be skipped
 ! for SHOW DATA/VAR/XML 
 
-SHOW DATA/VAR/XML
+SHOW DATA/VAR/XML 2

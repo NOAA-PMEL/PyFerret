@@ -13,7 +13,6 @@
 !******* Needs further changes to integrate it with LAS    ******!
 
 use a_cartesian_bug1179.nc
-sh dat/var/xml
 sh var/xml
 
 ! List the xml for just the axes in this file. sho axis/all/xml

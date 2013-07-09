@@ -321,6 +321,10 @@
      .			slash_frame_format,
      .			slash_frame_file,
      .			slash_frame_transp,
+     .			slash_frame_xinches,
+     .			slash_frame_yinches,
+     .			slash_frame_xpixels,
+     .			slash_frame_ypixels,
      .
      .			slash_stat_brief,
      .
@@ -603,6 +607,10 @@
      .			slash_frame_format	= 0 + 1,
      .			slash_frame_file	= 1 + 1,
      .			slash_frame_transp	= 2 + 1,
+     .			slash_frame_xinches	= 3 + 1,
+     .			slash_frame_yinches	= 4 + 1,
+     .			slash_frame_xpixels	= 5 + 1,
+     .			slash_frame_ypixels	= 6 + 1,
      .
      .			slash_stat_brief	= 0 + 1,
 

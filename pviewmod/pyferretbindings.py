@@ -331,7 +331,8 @@ class PyFerretBindings(AbstractPyFerretBindings):
         self.__window.submitCommand(cmnd)
         self.checkForErrorResponse()
 
-    def saveWindow(self, filename, fileformat, bkgcolor):
+    def saveWindow(self, filename, fileformat, bkgcolor,
+                   xinches, yinches, xpixels, ypixels):
         '''
         Save the contents of the window to a file.  This might be called
         when there is no image to save; in this case the call should be
@@ -341,6 +342,10 @@ class PyFerretBindings(AbstractPyFerretBindings):
             filename: name of the file to create
             fileformat: name of the format to use
             bkgcolor: color for the background
+            xinches: horizontal size of vector image in inches
+            yinches: vertical size of vector image in inches
+            xpixels: horizontal size of raster image in pixels
+            ypixels: vertical size of raster image in pixels
 
         If fileformat is None or empty, the fileformat
         is guessed from the filename extension.
@@ -354,6 +359,8 @@ class PyFerretBindings(AbstractPyFerretBindings):
         cmnd["filename"] = filename
         if fileformat:
             cmnd["fileformat"] = fileformat
+        cmnd["vectsize"] = { "width":xinches, "height":yinches }
+        cmnd["rastsize"] = { "width":xpixels, "height":ypixels }
         self.__window.submitCommand(cmnd)
         self.checkForErrorResponse()
 

@@ -789,6 +789,10 @@ grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible)
  *     fileformat: name of the format to use
  *     formatlen: actual length of the format name
  *     transparentbkg: make the background transparent?
+ *     xinches: horizontal size of vector image in inches
+ *     yinches: vertical size of vector image in inches
+ *     xpixels: horizontal size of raster image in pixels
+ *     ypixels: vertical size of raster image in pixels
  *
  * If fileformat is NULL, the fileformat is guessed from the
  * filename extension.
@@ -798,7 +802,9 @@ grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible)
  */
 grdelBool grdelWindowSave(grdelType window, const char *filename,
                           int filenamelen, const char *fileformat,
-                          int formatlen, grdelBool transparentbkg)
+                          int formatlen, grdelBool transparentbkg,
+                          float xinches, float yinches, 
+                          int xpixels, int ypixels)
 {
     GDWindow *mywindow;
     grdelBool success;
@@ -822,7 +828,8 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
         success = mywindow->bindings.cferbind->
                             saveWindow(mywindow->bindings.cferbind,
                                        filename, filenamelen,
-                                       fileformat, formatlen, transparentbkg);
+                                       fileformat, formatlen, transparentbkg,
+                                       xinches, yinches, xpixels, ypixels);
         if ( ! success ) {
             /* grdelerrmsg already assigned */
             return 0;
@@ -834,9 +841,11 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
         else
             transparentbool = Py_False;
         result = PyObject_CallMethod(mywindow->bindings.pyobject,
-                                     "saveWindow", "s#s#O",
+                                     "saveWindow", "s#s#Oddii",
                                      filename, filenamelen,
-                                     fileformat, formatlen, transparentbool);
+                                     fileformat, formatlen, transparentbool,
+                                     (double) xinches, (double) yinches,
+                                     xpixels, ypixels);
         if ( result == NULL ) {
             sprintf(grdelerrmsg, "grdelWindowSave: error when calling the "
                     "Python binding's saveWindow method: %s", pyefcn_get_error());
@@ -1190,6 +1199,10 @@ void fgdwinsetvis_(int *success, void **window, int *visible)
  *     fileformat: name of the format to use
  *     formatlen: actual length of the format name
  *     transparentbkg: make the background transparent?
+ *     xinches: horizontal size of vector image in inches
+ *     yinches: vertical size of vector image in inches
+ *     xpixels: horizontal size of raster image in pixels
+ *     ypixels: vertical size of raster image in pixels
  *
  * If formatlen is zero, the fileformat is guessed from the
  * filename extension.
@@ -1199,12 +1212,14 @@ void fgdwinsetvis_(int *success, void **window, int *visible)
  *              Use fgderrmsg_ to retrieve the error message.
  */
 void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
-                 char *fileformat, int *formatlen, int *transparentbkg)
+                 char *fileformat, int *formatlen, int *transparentbkg,
+                 float *xinches, float *yinches, int *xpixels, int *ypixels)
 {
     grdelBool result;
 
     result = grdelWindowSave(*window, filename, *namelen,
-                             fileformat, *formatlen, *transparentbkg);
+                             fileformat, *formatlen, *transparentbkg,
+                             *xinches, *yinches, *xpixels, *ypixels);
     *success = result;
 }
 

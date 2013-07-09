@@ -208,7 +208,7 @@
 * PyFr  *kms* 6/13  Add /COLOR= /OPACITY= to specify background color
 * PyFr  *kms* 7/13  Add /THICKEN to SET WINDOW to specify line thickness scaling factor
 * PyFr  *kms*  7/13 Add /OPACITY to CONTOUR, PLOT, POLYGON, SHADE, VECTOR
-* PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW
+* PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW and FRAME
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -1327,11 +1327,16 @@
 	   DATA subcommands      (nsub_at15 + 0)/ '    '	/
 	   DATA num_qualifs      (nsub_at15 + 0)/ nqual15a	/
 	   DATA qualifier_pointer(nsub_at15 + 0)/ nqual_at15a	/
-* FRAME/FORMAT=GIF_or_HDF/FILE=filename/TRANSPARENT[=color]
+* FRAME/FORMAT=.../FILE=.../TRANSPARENT
+*      /XINCHES=.../YINCHES=.../XPIXELS=.../YPIXELS=...
 		DATA qualifiers  (nqual_at15a+0)/ 'FORMAT'	/
 		DATA qualifiers  (nqual_at15a+1)/ 'FILE'	/
 		DATA qualifiers  (nqual_at15a+2)/ 'TRANSPAR'	/
-		DATA qualifiers  (nqual_at15a+3)/ '****'	/
+		DATA qualifiers  (nqual_at15a+3)/ 'XINCHES'	/
+		DATA qualifiers  (nqual_at15a+4)/ 'YINCHES'	/
+		DATA qualifiers  (nqual_at15a+5)/ 'XPIXELS'	/
+		DATA qualifiers  (nqual_at15a+6)/ 'YPIXELS'	/
+		DATA qualifiers  (nqual_at15a+7)/ '****'	/
 
 * REPEAT - command # 16
 	DATA commands(16)			/ 'REPEAT'	/

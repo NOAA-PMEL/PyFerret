@@ -14,6 +14,7 @@
         INCLUDE 'ferret.parm'
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'xprog_state.cmn'
+        INCLUDE 'xplot_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
 *       Function return value definition
@@ -21,6 +22,8 @@
 
 *       Local variables
         INTEGER fnamelen, fmtlen, transpbkg, success, errmsglen
+        REAL*4 xinches, yinches
+        INTEGER xpixels, ypixels
         CHARACTER*8 fformat
         CHARACTER*2048 errmsg
 
@@ -47,8 +50,13 @@
             transpbkg = 0
         ENDIF
 *       Save the graphics to file
+        xinches = wn_xinches(activewindow)
+        yinches = wn_yinches(activewindow)
+        xpixels = NINT(wn_xpixels(activewindow))
+        ypixels = NINT(wn_ypixels(activewindow))
         CALL FGDWINSAVE(success, windowobjs(activewindow), filename,
-     .                  fnamelen, fformat, fmtlen, transpbkg)
+     .                  fnamelen, fformat, fmtlen, transpbkg,
+     .                  xinches, yinches, xpixels, ypixels)
         IF ( success .EQ. 0 ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)

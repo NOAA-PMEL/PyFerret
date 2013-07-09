@@ -1,4 +1,4 @@
-	SUBROUTINE XEQ_FRAME
+        SUBROUTINE XEQ_FRAME
 
 *
 *
@@ -38,8 +38,8 @@
 * execute the FRAME command
 * make a movie frame of the current output graphics
 
-* FRAME/FILM	- to trigger actual movie frame
-* FRAME/BITMAP	- to store the current workstation screen contents
+* FRAME/FILM        - to trigger actual movie frame
+* FRAME/BITMAP        - to store the current workstation screen contents
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
@@ -48,10 +48,10 @@
 * revision 0.0 - 5/7/87
 * V200:  11/14/89 - guts moved to SAVE_FRAME - laser output, too
 * V320: 5/94 - array "memory" as a calling argument
-* 	8/94 - added qualifiers /FORMAT and /FRAME to permit direct capture
-*		of GIF images
+*         8/94 - added qualifiers /FORMAT and /FRAME to permit direct capture
+*                of GIF images
 * V320: 1/95 - use gif_frame routine for both HDF and GIF
-*	call TM_PARK_LAST_VERSION for names
+*        call TM_PARK_LAST_VERSION for names
 * V500: 4/99 *sh* increased filename string length from 128 to 255
 * V602: *acm* 1/07 Changes for metafile-batch mode: Ignore FRAME in 
 *                  batch mode, except when in batch GIF mode.
@@ -60,24 +60,82 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
+* PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to FRAME
 
         IMPLICIT NONE
-	include 'tmap_dims.parm'
-	include 'ferret.parm'
-	include 'errmsg.parm'
-	include 'slash.parm'
-	include 'xprog_state.cmn'
-	include 'xplot_state.cmn'
-	include 'xplot_setup.cmn'
+        include 'tmap_dims.parm'
+        include 'ferret.parm'
+        include 'errmsg.parm'
+        include 'slash.parm'
+        include 'xprog_state.cmn'
+        include 'xplot_state.cmn'
+        include 'xplot_setup.cmn'
+        include 'gkscm1_inc.decl'
+        include 'GKSCM1.INC'      ! wsid
 
 * internal function return value declarations:
         INTEGER   TM_LENSTR1
 
 * internal variable declarations:
-        INTEGER   sts, loc, flen
+        REAL      val
+        REAL*4    xinches, yinches
+        INTEGER   sts, loc, flen, xloc, yloc,
+     .            xpixels, ypixels
         CHARACTER fformat*5, filename*1028
 
 * decode the qualifiers, if any
+
+* FRAME /XINCHES=... xor /YINCHES=...
+        xloc = qual_given( slash_frame_xinches )
+        yloc = qual_given( slash_frame_yinches )
+        IF ( (xloc .GT. 0) .AND. (yloc .GT. 0) ) THEN
+            GOTO 5010
+        ELSEIF ( xloc .GT. 0 ) THEN
+            CALL EQUAL_VAL(cmnd_buff(qual_start(xloc):qual_end(xloc)), 
+     .                     val, sts)
+            IF ( sts .NE. ferr_ok ) RETURN
+            IF ( sts .EQ. unspecified_val4 ) GOTO 5020
+            IF ( val .LT. 1.25 ) GOTO 5030
+            xinches = val
+            yinches = val * wn_yinches(wsid) / wn_xinches(wsid)
+        ELSEIF ( yloc .GT. 0 ) THEN
+            CALL EQUAL_VAL(cmnd_buff(qual_start(yloc):qual_end(yloc)), 
+     .                     val, sts)
+            IF ( sts .NE. ferr_ok ) RETURN
+            IF ( sts .EQ. unspecified_val4 ) GOTO 5040
+            IF ( val .LT. 1.25 ) GOTO 5050
+            yinches = val
+            xinches = val * wn_xinches(wsid) / wn_yinches(wsid)
+        ELSE
+            xinches = wn_xinches(wsid)
+            yinches = wn_yinches(wsid)
+        ENDIF
+
+* FRAME /XPIXELS=... xor /YPIXELS=...
+        xloc = qual_given( slash_frame_xpixels )
+        yloc = qual_given( slash_frame_ypixels )
+        IF ( (xloc .GT. 0) .AND. (yloc .GT. 0) ) THEN
+            GOTO 5015
+        ELSEIF ( xloc .GT. 0 ) THEN
+            CALL EQUAL_VAL(cmnd_buff(qual_start(xloc):qual_end(xloc)), 
+     .                     val, sts)
+            IF ( sts .NE. ferr_ok ) RETURN
+            IF ( sts .EQ. unspecified_val4 ) GOTO 5025
+            IF ( val .LT. 128 ) GOTO 5035
+            xpixels = NINT(val)
+            ypixels = NINT(val * wn_ypixels(wsid) / wn_xpixels(wsid))
+        ELSEIF ( yloc .GT. 0 ) THEN
+            CALL EQUAL_VAL(cmnd_buff(qual_start(yloc):qual_end(yloc)), 
+     .                     val, sts)
+            IF ( sts .NE. ferr_ok ) RETURN
+            IF ( sts .EQ. unspecified_val4 ) GOTO 5045
+            IF ( val .LT. 128 ) GOTO 5055
+            ypixels = NINT(val)
+            xpixels = NINT(val * wn_xpixels(wsid) / wn_ypixels(wsid))
+        ELSE
+            xpixels = NINT(wn_xpixels(wsid))
+            ypixels = NINT(wn_ypixels(wsid))
+        ENDIF
 
 * FRAME/TRANSPARENT
 
@@ -116,11 +174,28 @@
         CALL TM_PARK_LAST_VERSION(filename(:flen), sts)
 
 * save that baby
-        CALL SAVE_FRAME(filename(:flen), fformat, sts)
+        CALL SAVE_FRAME(filename(:flen), fformat, 
+     .                  xinches, yinches, xpixels, ypixels, sts)
 
-        RETURN
+ 5000   RETURN
 
 * error exits
- 5000   RETURN
+ 5010   CALL ERRMSG( ferr_invalid_command, sts,
+     .       'Only one of /XINCHES and /YINCHES can be given', *5000 )
+ 5015   CALL ERRMSG( ferr_invalid_command, sts,
+     .       'Only one of /XPIXELS and /YPIXELS can be given', *5000 )
+ 5020   CALL ERRMSG( ferr_syntax, sts, '/XINCHES=?', *5000 )
+ 5025   CALL ERRMSG( ferr_syntax, sts, '/XPIXELS=?', *5000 )
+ 5030   CALL ERRMSG( ferr_out_of_range, sts, 
+     .       '/XINCHES must be at least 1.25', *5000)
+ 5035   CALL ERRMSG( ferr_out_of_range, sts, 
+     .       '/XPIXELS must be at least 128', *5000)
+ 5040   CALL ERRMSG( ferr_syntax, sts, '/YINCHES=?', *5000 )
+ 5045   CALL ERRMSG( ferr_syntax, sts, '/YPIXELS=?', *5000 )
+ 5050   CALL ERRMSG( ferr_out_of_range, sts, 
+     .       '/YINCHES must be at least 1.25', *5000)
+ 5055   CALL ERRMSG( ferr_out_of_range, sts, 
+     .       '/YPIXELS must be at least 128', *5000)
+
         END
 

@@ -19,6 +19,10 @@
  *                  only raster image formats are supported
  *     fmtnamelen - actual length of format (zero if NULL)
  *     transbkg   - leave the background transparent?
+ *     xinches    - horizontal size of vector image in inches
+ *     yinches    - vertical size of vector image in inches
+ *     xpixels    - horizontal size of raster image in pixels
+ *     ypixels    - vertical size of raster image in pixels
  *
  * If filename is empty or NULL, the imagename argument for the
  * last call to pyqtcairoCFerBind_setImageName is used for the
@@ -37,8 +41,9 @@
  * is assigned an appropriate error message and zero is returned.
  */
 grdelBool pyqtcairoCFerBind_saveWindow(CFerBind *self, const char *filename,
-                            int namelen, const char *formatname,
-                            int fmtnamelen, int transbkg)
+                       int namelen, const char *formatname, int fmtnamelen, 
+                       int transbkg, double xinches, double yinches, 
+                       int xpixels, int ypixels)
 {
     CairoCFerBindData *instdata;
     grdelBool success;
@@ -51,9 +56,10 @@ grdelBool pyqtcairoCFerBind_saveWindow(CFerBind *self, const char *filename,
     }
     instdata = (CairoCFerBindData *) self->instancedata;
 
-    /* Tell the viewer to save the (possibly scaled) image */
+    /* Tell the viewer to save the image using the given size */
     success = grdelWindowSave(instdata->viewer, filename, namelen,
-                              formatname, fmtnamelen, transbkg);
+                              formatname, fmtnamelen, transbkg,
+                              xinches, yinches, xpixels, ypixels);
     if ( ! success ) {
         /* grdelerrmsg is already assigned */
         return 0;

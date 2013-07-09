@@ -46,7 +46,7 @@
 * PyFr  *kms* 1/13 Remove SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL;
 *                  Add /QUALITY= /AAlias /NoAAlias /ENGINE= to SET WINDOW
 * PyFr  *kms* 7/13 Add /THICKEN to SET WINDOW to specify line thickness scaling factor
-* PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW
+* PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW and FRAME
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -311,7 +311,7 @@
 	INTEGER		nsub15      , nsub_at16 ,
      .			nqual15a    , nqual_at16a
 	PARAMETER    (	nsub15   = 1, nsub_at16   = nsub_at15   + nsub15,
-     .			nqual15a = 4, nqual_at16a = nqual_at15a + nqual15a  )
+     .			nqual15a = 8, nqual_at16a = nqual_at15a + nqual15a  )
 
 * REPEAT		 - commmand # 16
 	INTEGER		nsub16       , nsub_at17 ,

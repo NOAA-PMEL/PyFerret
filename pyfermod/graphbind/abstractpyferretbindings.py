@@ -198,7 +198,8 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError()
 
-    def saveWindow(self, filename, fileformat, bkgcolor):
+    def saveWindow(self, filename, fileformat, bkgcolor, 
+                   xinches, yinches, xpixels, ypixels):
         '''
         Save the contents of the window to a file.  This might be called
         when there is no image to save; in this case the call should be
@@ -208,6 +209,10 @@ class AbstractPyFerretBindings(object):
             filename: name of the file to create
             fileformat: name of the format to use
             bkgcolor: color of the background
+            xinches: horizontal size of vector image in inches
+            yinches: vertical size of vector image in inches
+            xpixels: horizontal size of raster image in pixels
+            ypixels: vertical size of raster image in pixels
 
         If fileformat is NULL, the fileformat is guessed from the
         filename extension.

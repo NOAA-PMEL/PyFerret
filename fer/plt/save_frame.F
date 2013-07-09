@@ -1,4 +1,5 @@
-        SUBROUTINE SAVE_FRAME(filename, fformat, sts)
+        SUBROUTINE SAVE_FRAME(filename, fformat, xinches, yinches, 
+     .                        xpixels, ypixels, sts)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -53,11 +54,13 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
+* PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to FRAME
 
 * calling argument declarations:
         IMPLICIT NONE
-        INTEGER sts
         CHARACTER*(*) filename, fformat
+        REAL*4 xinches, yinches
+        INTEGER xpixels, ypixels, sts
 
 * function return value declarations
         INTEGER TM_LENSTR
@@ -88,15 +91,15 @@
         ENDIF
 
         CALL FGDWINSAVE(success, windowobjs(windowid), filename,
-     .                  namlen, fformat, fmtlen, transparent)
+     .                  namlen, fformat, fmtlen, transparent, 
+     .                  xinches, yinches, xpixels, ypixels)
         IF ( success .EQ. 0 ) GOTO 5100
 
 * successful completion
         sts = ferr_ok
-        RETURN
+ 5000   RETURN
 
 * error exit
- 5000   RETURN
  5100   errstr = ' '
         CALL FGDERRMSG(errstr, errstrlen)
         CALL ERRMSG(ferr_invalid_command, sts, errstr, *5000)

@@ -486,11 +486,11 @@ c 75        CONTINUE
               ysc = ypixels / (yinches * windowdpiy(n))
               sc = SQRT(xsc * ysc)
            ELSE
-*             Do not scale the image.  Compute the size of the unscaled 
-*             raster image for recording the default.
-              xpixels = xinches * windowdpix(n)
-              ypixels = yinches * windowdpiy(n)
-              sc = 1.0
+*             Traditional Ferret had a default /SIZE=0.7;
+*             thus scaling the width and height by SQRT(0.7)
+              sc = SQRT(0.7)
+              xpixels = xinches * windowdpix(n) * sc
+              ypixels = yinches * windowdpiy(n) * sc
            ENDIF
 *          Send the scaling factor, even if 1.0, 
 *          to ensure the displayed image is the correct size

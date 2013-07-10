@@ -68,6 +68,8 @@ C**
 * V610 *acm* 3/08 - add new MODE NLEVELS; default number of levels is now 40
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V685 *acm* 7/13 Ticket 1990: fixes for number of digits. More precision needed 
+*                 (Lavelle examples) 
 
 	parameter	(epsilon = 1e-6)
 
@@ -184,7 +186,13 @@ C
 		IF(DZ.EQ.0.)DZ=ABS(ZMAX)
 		IF(DZ.EQ.0.)DZ=10000.0
 		JJ=NSIGC-IFIX(ALOG10(DZ)+0.5)
-		IF(JJ.LE.0)JJ=-1
+		IF(JJ.LE.0) THEN
+		   IF (NSIGC .LT. 0) THEN
+		     JJ=nsigc+1
+		   ELSE
+		     JJ = -1
+		   ENDIF
+		ENDIF
 		DO 120 I=1,NL
 		J=NLEV+I
 		LCLR(J)=0

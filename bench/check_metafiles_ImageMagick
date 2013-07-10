@@ -27,7 +27,9 @@ rm -f diff*.ps
 rm -f master*.ps
 rm -f bat*.plt*.ps
 
-set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt linecolors.plt multi_line_labels.plt pattern*.plt polygon*.plt vec_curv*.plt timetics*.plt degC_axlab.plt)
+set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt \
+linecolors.plt multi_line_labels.plt pattern*.plt polygon*.plt \
+vec_curv*.plt timetics*.plt degC_axlab.plt axticlabel.plt)
 set gif_files = ( bn*.gif )
 set ps_files = (bn*.ps)
 set mb_files = (bat.plt_*)

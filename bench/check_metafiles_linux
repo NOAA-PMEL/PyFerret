@@ -6,16 +6,17 @@
 # acm  12/06 as suggested by Remik Ziemlinski, use awk rather than cut to get file sizes.
 # acm  11/10 Rename metafile_masters_vxx to metafile_masters_32bit and metafile_masters_64bit
 
+set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt \
+linecolors.plt multi_line_labels.plt pattern*.plt polygon*.plt \
+vec_curv*.plt timetics*.plt degC_axlab.plt axticlabel.plt)
 
-set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt linecolors.plt multi_line_labels.plt \
-pattern*.plt polygon*.plt vec_curv*.plt)
 set gif_files = ( bn*.gif )
 set ps_files = (bn*.ps)
 set mb_files = (bat.plt_*)
 set num_plt_files = `ls -l *.plt | wc -l `
 
 set err_plt = 0
-set total_plt_files = 22
+set total_plt_files = 23
 foreach plt_file ($plt_files)
 #    set size = `ls -l $plt_file | cut -b 21-27`
 #    set size2 = `ls -l metafile_masters_32bit/$plt_file | cut -b 21-27`

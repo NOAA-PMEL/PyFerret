@@ -1,6 +1,4 @@
-	CHARACTER*(*) FUNCTION FULL_UVAR_NAME(uvar, len)
-
-*
+	SUBROUTINE CD_GET_AGG_DSET_MEMBER (agg_dset, imemb, membset, status)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -34,48 +32,22 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+* Programmer Ansley Manke
+* NOAA/PMEL, Seattle, WA - TMAP 
 *
-* append to the given user variable name the data set information
-*	var[D=dset_name]
+* V685 3/13 *acm* More functionality for DEFINE DATA/AGGREGATE
+*
+* Given aggregate datset and member number, return the Ferret dataset 
+* sequence number for that member
+*
+* Argument declarations
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+	INTEGER agg_dset, imemb, membset, status
 
-* V402:
-* V420:  4/96 - document "(/D default)" on pdset_irrelevant variables
-*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* Local variable declarations
+	INTEGER NCF_GET_AGG_MEMBER
 
-* calling argument declarations:
-	INTEGER	uvar
-
-* local variable declarations:
-	INTEGER TM_LENSTR1, len, len2
-
-	include 'tmap_dims.parm'
-	include 'xdset_info.cmn_text'
-	external xdset_info_data
-	include 'ferret.parm'
-	include	'xvariables.cmn'
-
-* variable name and definition
-*	len = TM_LENSTR1(uvar_name_code(uvar))
-        CALL string_array_get_strlen1(uvar_name_code_head,uvar,len)
-	FULL_UVAR_NAME = uvar_name_code(uvar)(:len)
-	IF (uvar_dset(uvar) .GT. pdset_irrelevant) THEN
-	   len2 = TM_LENSTR1(ds_name(uvar_dset(uvar)))
-	   FULL_UVAR_NAME = FULL_UVAR_NAME(:len)//'[D='//
-     .			ds_name(uvar_dset(uvar))(:len2)//']'
-	   len = len + len2 + 4
-	ELSEIF (uvar_dset(uvar) .EQ. pdset_irrelevant) THEN
-	   FULL_UVAR_NAME = FULL_UVAR_NAME(:len)//' (/D default)'
-	   len = len + 13
-	ENDIF
-	IF (uvar_remote(uvar)) THEN
-	   FULL_UVAR_NAME = FULL_UVAR_NAME(:len)//' (/REMOTE)'
-	   len = len + 10
-	ENDIF
+	status = NCF_GET_AGG_MEMBER( agg_dset, imemb, membset)
 
 	RETURN
 	END
-
-

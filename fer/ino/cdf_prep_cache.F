@@ -47,6 +47,7 @@
 * V600 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
 *       *acm* 3/12 cleanup old VMS ifdef
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 
         include 'tmap_errors.parm'
         include 'tmap_dims.parm'
@@ -82,7 +83,7 @@
 	dset = cx_data_set(cx_cmnd)
 	IF ( dset .EQ. unspecified_int4 ) GOTO 5100
 	IF ( ds_type(dset) .NE. 'CDF' )   GOTO 5200
-	IF ( ds_type(dset) .NE. 'AGG' )   GOTO 5200
+	IF ( ds_type(dset) .NE. 'ENS' )   GOTO 5200
 	IF ( .NOT.TM_HAS_STRING(ds_des_name(dset)(:8), 'http://') )
      .					  GOTO 5200
 

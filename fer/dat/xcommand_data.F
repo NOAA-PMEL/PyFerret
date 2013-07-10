@@ -200,6 +200,8 @@
 * V685 *acm*  1/13 DEFINE VARIABLE/REMOTE
 * V685 *acm*  6/13 new qualifier SAVE/NOBOUNDS
 * V685 *acm*  6/13 Dont add SAVE/NOCOORDS
+* V685 *acm*  4/13 Add /HIDE on DEF DATA/AGG and SHOW DATA/HIDDEN
+
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -506,7 +508,7 @@
 	   DATA subcommands      (nsub_at2 + 6)	/ 'DATA'	/
 	   DATA num_qualifs      (nsub_at2 + 6)	/ nqual2g	/
 	   DATA qualifier_pointer(nsub_at2 + 6)	/ nqual_at2g	/
-* SHOW DATA_SET /ALL/BRIEF/FULL/VAR/FILE/XML/ATTR/OUTFILE/APPEND/CLOBBER
+* SHOW DATA_SET /ALL/BRIEF/FULL/VAR/FILE/XML/ATTR/OUTFILE/APPEND/CLOBBER/HIDDEN
 		DATA qualifiers  (nqual_at2g+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at2g+1)	/ 'BRIEF'	/
 		DATA qualifiers  (nqual_at2g+2)	/ 'FULL'	/
@@ -517,6 +519,11 @@
 		DATA qualifiers  (nqual_at2g+7)	/ 'OUTFILE'	/
 		DATA qualifiers  (nqual_at2g+8)	/ 'APPEND'	/
 		DATA qualifiers  (nqual_at2g+9)	/ 'CLOBBER'	/
+		DATA qualifiers  (nqual_at2g+10)/ 'HIDDEN'	/
+		DATA qualifiers  (nqual_at2g+11)/ '****'	/
+		DATA qualifiers  (nqual_at2g+12)/ '****'	/
+		DATA qualifiers  (nqual_at2g+13)/ '****'	/
+		DATA qualifiers  (nqual_at2g+14)/ '****'	/
 * SHOW MODE
 	   DATA subcommands      (nsub_at2 + 7)	/ 'MODE'	/
 	   DATA num_qualifs      (nsub_at2 + 7)	/ nqual2h	/
@@ -1174,7 +1181,7 @@
 	   DATA subcommands      (nsub_at10 + 10)/ 'DATA'	/
 	   DATA num_qualifs      (nsub_at10 + 10)/ nqual10k	/
 	   DATA qualifier_pointer(nsub_at10 + 10)/ nqual_at10k	/
-* DEFINE DATA / AGGREGATE / TITLE /E 
+* DEFINE DATA / AGGREGATE / TITLE /HIDE /E 
 		DATA qualifiers  (nqual_at10k+ 0)/ 'AGGREGATE' /
 		DATA qualifiers  (nqual_at10k+ 1)/ '****' / ! reserved for x
 		DATA qualifiers  (nqual_at10k+ 2)/ '****' / ! y
@@ -1184,7 +1191,7 @@
 		DATA qualifiers  (nqual_at10k+ 6)/ '****' / ! f
 		DATA qualifiers  (nqual_at10k+ 7)/ 'TITLE' /
 		DATA qualifiers  (nqual_at10k+ 8)/ 'QUIET' /
-		DATA qualifiers  (nqual_at10k+ 9)/ '****' /
+		DATA qualifiers  (nqual_at10k+ 9)/ 'HIDE' /
 
 * EXIT	 - command # 11
 	DATA commands(11)			/ 'EXIT'	/

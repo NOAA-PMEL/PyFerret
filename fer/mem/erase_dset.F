@@ -50,7 +50,6 @@
 *               list attribute structure.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
-        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'
@@ -78,6 +77,7 @@
 *	   IF (uvar_dset(ii) .EQ. dset) uvar_num_items(ii) =
 *     .					uvar_deleted
 	   IF (uvar_dset(ii) .EQ. dset) THEN
+	      CALL DELETE_USER_VAR(ii)
               CALL deleted_list_modify(uvar_num_items_head, ii,
      .	            uvar_deleted)
 

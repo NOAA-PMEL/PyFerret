@@ -94,16 +94,20 @@
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 
+* argument declarations
+	INTEGER ds_num, status
+
 * internal variable declarations
         LOGICAL   its_cdf
-	INTEGER   NCF_DELETE_DSET, ds_num,status,f_num,ivar,
-     .		  iparm,iaux,idim
+	INTEGER   NCF_DELETE_DSET, 
+     .            f_num,ivar, iparm, iaux, idim
 
 * initialize: do we have an open set?
 	IF (ds_name(ds_num) .EQ. char_init1024) GOTO 9000
 
 * save the data format
         its_cdf = ds_type(ds_num) .EQ. 'CDF'
+     .     .OR.   ds_type(ds_num) .EQ. 'ENS'
      .     .OR.   ds_type(ds_num) .EQ. 'ECDF' 
 
 * First clear variables associated only with data set number
@@ -224,7 +228,7 @@
 	  vf_lastvar(f_num)		=	int4_init
   150   CONTINUE
 
-        status = NCF_DELETE_DSET(ds_num)
+	status = NCF_DELETE_DSET(ds_num)
         GOTO 9900
 
  9000	status = merr_ok

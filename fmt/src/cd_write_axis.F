@@ -224,6 +224,18 @@
          cdfstat = NF_INQ_VARID( cdfid, name(:nlen), axid )
 #endif
 
+* The dimension matches but there is no coord var. Just return.
+* This lets us append variables to a DSG file.
+
+	 IF (cdfstat .EQ. nf_enotvar) THEN
+	    name = line_name_orig(iaxis)
+	    nlen = TM_LENSTR1( name )
+	    CALL WARN ('Dimension '//name(:nlen)//
+     .        ' found. No corresponding coordinate variable.'//
+     .        ' Writing with dimension only.')
+	    GOTO 1000  
+	 ENDIF
+
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 	 IF (.NOT. recdim) THEN 
             slen = CD_AXLEN( cdfid, dimid, status )

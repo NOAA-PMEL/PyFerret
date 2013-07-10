@@ -66,6 +66,10 @@
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V683 10/12*acm* If T and F dimensions, and if both are calendar axes, insist that
 *                 the calendars match.
+* V685 5/13 *acm* Discrete Sampling Geometries files: if there is a variable with
+*                 a cf_role attribute, assign its axis to the E direction. (If the
+*                 file has coordinate variables with assigned axes, keep the 
+*                 direction assigned in the file.)
 
 * argument definitions:
 *       dset        - TMAP data set pointer

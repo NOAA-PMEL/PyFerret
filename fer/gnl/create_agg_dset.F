@@ -37,6 +37,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP 
 *
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -65,8 +66,8 @@
 
 	IF (status .NE. ferr_ok) GOTO 5300 
 
-* Set the dataset type and title
-	ds_type(agg_dset) = 'AGG'
+* Set the dataset type and title (can add other directions)
+	IF (agg_dim .EQ. e_dim ) ds_type(agg_dset) = 'ENS'
 
 	ds_name(agg_dset) = dname
 	ds_des_name(agg_dset) = dname
@@ -81,8 +82,6 @@
 
 	CALL CREATE_AGG_AXIS (nsets, agg_dim, iline, status)
 	IF (status .NE. ferr_ok) GOTO 5300 
-
-c  ?? Add grid to the aggregate dataset in the linked-list structure?
 
 	RETURN
 	

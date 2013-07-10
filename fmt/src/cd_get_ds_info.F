@@ -35,8 +35,8 @@
 *
 *
 * Read the linked list structure for netcdf dataset information: 
-* given dset and idim return number of dimensions, variables, 
-* global attributes, and the record axis.
+* given dset, return number of dimensions, variables, global 
+* attributes, and the record axis.
 
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP

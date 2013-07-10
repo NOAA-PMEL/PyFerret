@@ -112,6 +112,7 @@
 	DATA	ds_delstep		/maxdsets*real8_init/
 	DATA	ds_regsteps		/maxdsets*.TRUE./
 	DATA	ds_accepts_remote	/maxdsets*.FALSE./
+	DATA	ds_hide			/maxdsets*.FALSE./
 	DATA	ds_basic_axes		/max6axes*int4_init/
 	DATA	ds_time_axis		/maxdsets*int4_init/
 

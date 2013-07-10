@@ -38,6 +38,7 @@
 * v675  *acm  4/12 Fix ticket 1934, simpler SHOW ATTRIBUTE syntax.
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
 *                 various SHOW commnands will not list info for E,F dimensions.
+* V685 4/13 *acm* Ability to define ensemble with /HIDDEN
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -53,8 +54,9 @@
 
 	INTEGER dset, status
 
-	LOGICAL sbrief, sfull, svars, sfile, sattr, sxml, clobber, 
-     .          append, only_1
+	LOGICAL TM_HAS_STRING, 
+     .          sbrief, sfull, svars, sfile, sattr, sxml, clobber, 
+     .          append, only_1, un_hide
 	INTEGER TM_LENSTR1, TM_LENSTR, FIND_DSET_NUMBER, 
      .		    sho_file, iset, len, len0,
      .		    slash_brief,
@@ -63,7 +65,7 @@
      .		    slash_file,
      .		    slash_attr,
      .		    slash_xml
-	CHARACTER name*32, default*10, outstring*2048
+	CHARACTER name*32, default*50, outstring*2048
 
 	PARAMETER ( slash_brief    = 1 + 1,
      .		    slash_full     = 1 + 2,
@@ -85,10 +87,15 @@
         IF (sattr) sbrief = .TRUE.
  	sxml  = qual_given( slash_xml  ) .GT. 0 
 
-* 	SHOW DATA/FILE=[/APPEND][/CLOBBER]
+* 	SHOW DATA/FILE=[/APPEND][/CLOBBER][/HIDDEN]
         sho_file = qual_given( slash_show_data_file )
 	clobber = qual_given( slash_show_data_clobber ) .GT. 0
 	append = qual_given( slash_show_data_append ) .GT. 0
+
+* SHOW DATA/HIDDEN  if ensembles are defined with /HIDE, then
+*             SHOW DAT/HIDDEN will show the member datasets.
+
+	un_hide = qual_given( slash_show_data_hidden ) .GT. 0
 
 	IF (sho_file .GT. 0) THEN
 	   CALL OPEN_SHOW_FILE (show_lun, sho_file,  
@@ -101,6 +108,7 @@
 	   name = cmnd_buff(arg_start(1):arg_end(1))
 	   dset = FIND_DSET_NUMBER( name )
 	   IF ( dset .EQ. unspecified_int4 ) GOTO 5000
+	   un_hide = .TRUE.
 	ENDIF
 
         IF (.NOT. sxml) THEN
@@ -119,6 +127,8 @@
 
 	   IF ( ds_name(iset) .EQ. char_init1024
      .	   .OR. (only_1 .AND. iset .NE. dset) ) GOTO 790
+
+           IF ( ds_hide(iset) .AND. .NOT.un_hide) GOTO 790
            dset = iset
 
 * ... is it the default data set?
@@ -129,6 +139,11 @@
 	      default = ' '
 	      len0 = 1
 	   ENDIF
+	   IF ( TM_HAS_STRING(ds_type(iset), 'ENS') ) THEN
+	      default = default(:len0)//'  Ferret-defined Ensemble dataset'
+	      len0 = TM_LENSTR1( default )
+	   ENDIF
+
 	   len = TM_LENSTR1( ds_des_name( iset ) )
            IF (sxml) THEN
 

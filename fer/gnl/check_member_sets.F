@@ -36,7 +36,8 @@
 * NOAA/PMEL, Seattle, WA - TMAP 
 *
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
-	
+* V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
+
         include 'tmap_errors.parm'
 #include "tmap_dset.parm"
         include 'tmap_dims.parm'
@@ -103,7 +104,7 @@
 	      IF   ( dset .LT. 1
      .	      .OR.   dset .GT. maxdsets )		GOTO 5200
 	      IF ( ds_name( dset ) .EQ. char_init1024) GOTO 5200
-	      IF ( ds_type( dset ) .EQ. 'AGG')	GOTO 5200
+	      IF ( ds_type( dset ) .EQ. 'ENS')	GOTO 5200
 	      GOTO 750
 	   ENDIF
 

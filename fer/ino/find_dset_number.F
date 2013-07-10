@@ -64,6 +64,7 @@
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * v604 *acm* 7/07 increase length of ds_name
 * V680 6/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -155,7 +156,7 @@ c *kob* 4/97
 ** what about aggregate datasets?
 
 	      IF ( TM_HAS_STRING(ds_type(dset),'CDF')   .OR. 
-     .		   TM_HAS_STRING(ds_type(dset),'AGG') ) THEN
+     .		   TM_HAS_STRING(ds_type(dset),'ENS') ) THEN
 	         vax_code = STR_CASE_BLIND_COMPARE( ds_name(dset),
      .						    dname(1:short_len) )
 	         IF (  vax_code .EQ. vms_str_success

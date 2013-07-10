@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43419096 Jul 10 14:20 /home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/trunk_for_flat64/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 43427005 Jul 10 15:14 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes in graphics for bug 1990
+Note:  finshing the DEFINE DAT/ENSEMBLE ehhancements: see ticket 2046
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,7 +13,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk_for_flat64/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
@@ -21,8 +21,8 @@ FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
-PWD=/home/users/ansley/build/trunk_for_flat64/FERRET/bench
-Beginning at Wed Jul 10 14:41:47 PDT 2013
+PWD=/home/users/ansley/build/flat_64/FERRET/bench
+Beginning at Wed Jul 10 15:23:13 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3270,16 +3270,31 @@ Replacing definition of axis FAX4DAY
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
 define data/agg windy = 1,2,3
- **ERROR: command syntax: Aggregate dataset not defined
+ **ERROR: error defining aggregate dataset: Aggregate dataset not defined
 define data/agg windy = 1,2,3
  *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: UWND
  *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: VWND
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
 define data/agg windy = 1,2
- **ERROR: command syntax: Aggregate dataset not defined
-define data/agg windy = 1,2
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: UIN
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: VIN
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 5
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets:
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets:
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 5
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 6
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 7
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3516,4 +3531,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jul 10 14:44:11 PDT 2013
+Ended at Wed Jul 10 15:24:59 PDT 2013

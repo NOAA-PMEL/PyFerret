@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43419096 Jul 10 14:20 /home/users/ansley/build/trunk_for_flat64/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/trunk_for_flat64/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 43427005 Jul 10 15:14 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes in graphics for bug 1990
+Note:  finshing the DEFINE DAT/ENSEMBLE ehhancements: see ticket 2046
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,7 +13,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk_for_flat64/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
@@ -21,8 +21,8 @@ FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
-PWD=/home/users/ansley/build/trunk_for_flat64/FERRET/bench
-Beginning at Wed Jul 10 14:41:47 PDT 2013
+PWD=/home/users/ansley/build/flat_64/FERRET/bench
+Beginning at Wed Jul 10 15:23:13 PDT 2013
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10447,15 +10447,15 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
 FERRET_PLATFORM = "Linux 2.6.32-358.11.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.3.0-snapshot2013060923 of Jun 11 2013 17:10:15 $"
+NETCDF_VERSION = "4.3.0 of May  3 2013 16:02:47 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "10-Jul-13"
-SESSION_TIME = "14:41"
-SESSION_PID = "2948"
-DELTA_CPU = "5.16321"
-CLOCK_SECS = "15.254"
+SESSION_TIME = "15:23"
+SESSION_PID = "15066"
+DELTA_CPU = "5.39918"
+CLOCK_SECS = "13.998"
 CURRENT_DATE = "10-Jul-13"
-CURRENT_TIME = "14:42:03"
+CURRENT_TIME = "15:23:27"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10476,15 +10476,15 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
 FERRET_PLATFORM = "Linux 2.6.32-358.11.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.3.0-snapshot2013060923 of Jun 11 2013 17:10:15 $"
+NETCDF_VERSION = "4.3.0 of May  3 2013 16:02:47 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "10-Jul-13"
-SESSION_TIME = "14:41"
-SESSION_PID = "2948"
-DELTA_CPU = "0.001"
-CLOCK_SECS = "15.255"
+SESSION_TIME = "15:23"
+SESSION_PID = "15066"
+DELTA_CPU = "0"
+CLOCK_SECS = "13.999"
 CURRENT_DATE = "10-Jul-13"
-CURRENT_TIME = "14:42:03"
+CURRENT_TIME = "15:23:27"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10495,8 +10495,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "10-Jul-13"
-SESSION_TIME = "14:41"
-SESSION_PID = "2948"
+SESSION_TIME = "15:23"
+SESSION_PID = "15066"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10507,14 +10507,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "10-Jul-13"
-SESSION_TIME = "14:41"
-SESSION_PID = "2948"
+SESSION_TIME = "15:23"
+SESSION_PID = "15066"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "10-Jul-13"
-SESSION_TIME = "14:41"
-SESSION_PID = "2948"
+SESSION_TIME = "15:23"
+SESSION_PID = "15066"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10548,7 +10548,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.85"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "10-JUL-2013 14:42:03"
+LAB3 = "10-JUL-2013 15:23:27"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10640,21 +10640,21 @@ say ($delayed_eval)         ! translate symbol and then evaluate
 ! cleanup
 cancel symbols/all
 show symbols/all
-PPL$XPIXEL = "760"
-PPL$YPIXEL = "760"
+PPL$XPIXEL = "406"
+PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
 FERRET_PLATFORM = "Linux 2.6.32-358.11.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.3.0-snapshot2013060923 of Jun 11 2013 17:10:15 $"
+NETCDF_VERSION = "4.3.0 of May  3 2013 16:02:47 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "10-Jul-13"
-SESSION_TIME = "14:41"
-SESSION_PID = "2948"
-DELTA_CPU = "0.006999"
-CLOCK_SECS = "15.263"
+SESSION_TIME = "15:23"
+SESSION_PID = "15066"
+DELTA_CPU = "0.007999"
+CLOCK_SECS = "14.01"
 CURRENT_DATE = "10-Jul-13"
-CURRENT_TIME = "14:42:03"
+CURRENT_TIME = "15:23:27"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -25616,7 +25616,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Wed Jul 10 14:42:13 PDT 2013
+Wed Jul 10 15:23:37 PDT 2013
  
 GO bn_reset
 cancel mode verify
@@ -48271,7 +48271,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS10-JUL-2013 14:42:54
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS10-JUL-2013 15:24:09
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -49593,6 +49593,7 @@ sho command
  SHOW EXPRSION/ALL
  SHOW LIST/ALL
  SHOW DATA/ALL/BRIEF/FULL/VARIABLE/FILES/XML/ATTR/OUTFILE/APPEND/CLOBBER
+       /HIDDEN
  SHOW MODE/ALL
  SHOW MOVIE/ALL
  SHOW VARIABLE/ALL/DATASET/DIAG/USER/XML/OUTFILE/APPEND/CLOBBER
@@ -49654,7 +49655,7 @@ sho command
  DEFINE SYMBOL
  DEFINE ATTRIBUT/D/TYPE/OUTPUT
  DEFINE PYFUNC/NAME
- DEFINE DATA/AGGREGAT/E/TITLE/QUIET
+ DEFINE DATA/AGGREGAT/E/TITLE/QUIET/HIDE
  EXIT/COMMAND/LOOP/SCRIPT/PROMPT/PROGRAM/CYCLE/TOPYTHON
  MESSAGE/CONTINUE/QUIET/JOURNAL/ERROR/OUTFILE/APPEND/CLOBBER
  VECTOR/I/J/K/L/M/N/X/Y/Z/T/E/F/OVERLAY/SET_UP/FRAME/D/TRANPOSE/ASPECT/NOLABEL
@@ -49698,7 +49699,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "10-Jul-13:14:41"
+WIN_TITLE = "10-Jul-13:15:23"
  
 set win/title="set the title"
 sho sym win_title
@@ -49716,7 +49717,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="10-Jul-13:14:41"
+ !-> set win/title="10-Jul-13:15:23"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -49727,14 +49728,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 10-Jul-13
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 14:41
+ !-> DEFINE SYMBOL the_time = 15:23
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="10-Jul-13:14:41"
+ !-> SET WIN/TITLE="10-Jul-13:15:23"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "10-Jul-13:14:41"
+WIN_TITLE = "10-Jul-13:15:23"
  
 GO bn_reset
 cancel mode verify
@@ -59930,10 +59931,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "36.4395"
-CLOCK_SECS = "102.856"
+DELTA_CPU = "36.5734"
+CLOCK_SECS = "77.935"
 CURRENT_DATE = "10-Jul-13"
-CURRENT_TIME = "14:43:30"
+CURRENT_TIME = "15:24:31"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -59942,8 +59943,8 @@ CURRENT_TIME = "14:43:30"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.034995"
-CLOCK_SECS = "103.046"
+DELTA_CPU = "0.035995"
+CLOCK_SECS = "77.999"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -59957,60 +59958,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.293955
+ !-> DEFINE VARIABLE ten_plots = 0.284956
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "104.154"
+CLOCK_SECS = "78.716"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "104.154"
+CLOCK_SECS = "78.717"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.032995
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.033995
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.06599
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.06799
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.097985
+ !-> DEFINE VARIABLE dt = 0.030995
+ !-> DEFINE VARIABLE sumcpu =0.098985
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.13098
+ !-> DEFINE VARIABLE dt = 0.030995
+ !-> DEFINE VARIABLE sumcpu =0.12998
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.163975
+ !-> DEFINE VARIABLE dt = 0.034995
+ !-> DEFINE VARIABLE sumcpu =0.164975
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.029995
- !-> DEFINE VARIABLE sumcpu =0.19397
+ !-> DEFINE VARIABLE dt = 0.030995
+ !-> DEFINE VARIABLE sumcpu =0.19597
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.032996
- !-> DEFINE VARIABLE sumcpu =0.226966
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.227965
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.259961
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.26496
 !-> REPEAT: K=9
  !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.291956
+ !-> DEFINE VARIABLE sumcpu =0.296955
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.029995
- !-> DEFINE VARIABLE sumcpu =0.321951
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.32895
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.321951
-0.321951
+ !-> MESSAGE/CONTINUE 0.32895
+0.32895
 sh sym CLOCK_SECS
-CLOCK_SECS = "105.734"
+CLOCK_SECS = "79.664"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "10-Jul-13"
-SESSION_TIME = "14:41"
+SESSION_TIME = "15:23"
 CURRENT_DATE = "10-Jul-13"
-CURRENT_TIME = "14:43:33"
+CURRENT_TIME = "15:24:33"
  
  
 ! ******** V6.3 Additions below ***********
@@ -63985,7 +63986,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.85  "                                                          
  3    /  3:" ! Linux 2.6.32-358.11.1.el6.x86_64 64-bit - 07/10/13"                      
- 4    /  4:" ! 10-Jul-13 14:41     "                                                    
+ 4    /  4:" ! 10-Jul-13 15:23     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -66448,42 +66449,42 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.0952
- 2   / 2:  0.1618
- 3   / 3:  0.2824
- 4   / 4:  0.0175
- 5   / 5:  0.3901
+ 1   / 1:  0.0991
+ 2   / 2:  0.6684
+ 3   / 3:  0.3958
+ 4   / 4:  0.2759
+ 5   / 5:  0.8399
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.6999
- 2   / 2:  0.3796
- 3   / 3:  0.7008
- 4   / 4:  0.2356
- 5   / 5:  0.0996
+ 1   / 1:  0.7102
+ 2   / 2:  0.5924
+ 3   / 3:  0.7609
+ 4   / 4:  0.7486
+ 5   / 5:  0.0447
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.2433
- 2   / 2:  0.0298
- 3   / 3:  0.7560
- 4   / 4:  0.0886
- 5   / 5:  0.0858
- 6   / 6:  0.4154
+ 1   / 1:  0.7256
+ 2   / 2:  0.2303
+ 3   / 3:  0.0313
+ 4   / 4:  0.6384
+ 5   / 5:  0.9708
+ 6   / 6:  0.8129
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.1555
- 2   / 2:  0.9295
- 3   / 3:  0.0713
- 4   / 4:  0.2446
- 5   / 5:  0.8672
- 6   / 6:  0.2736
+ 1   / 1:  0.9956
+ 2   / 2:  0.5949
+ 3   / 3:  0.8487
+ 4   / 4:  0.3195
+ 5   / 5:  0.1849
+ 6   / 6:  0.0895
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
@@ -66515,42 +66516,42 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.489
- 2   / 2:  1.169
- 3   / 3: -0.316
- 4   / 4:  1.108
- 5   / 5:  1.003
+ 1   / 1:  1.124
+ 2   / 2: -0.725
+ 3   / 3: -0.644
+ 4   / 4: -0.612
+ 5   / 5: -0.891
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1: -0.941
- 2   / 2: -1.065
- 3   / 3: -1.656
- 4   / 4:  1.039
- 5   / 5: -0.972
+ 1   / 1:  0.125
+ 2   / 2:  0.684
+ 3   / 3:  0.802
+ 4   / 4:  2.123
+ 5   / 5:  1.073
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1: -0.236
- 2   / 2:  1.634
- 3   / 3:  1.767
- 4   / 4: -0.630
- 5   / 5: -0.923
- 6   / 6:  1.269
+ 1   / 1:  0.620
+ 2   / 2: -0.208
+ 3   / 3: -1.590
+ 4   / 4:  2.036
+ 5   / 5:  1.499
+ 6   / 6: -0.240
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.306
- 2   / 2: -0.934
- 3   / 3: -0.086
- 4   / 4:  0.826
- 5   / 5: -1.257
- 6   / 6:  0.135
+ 1   / 1:  0.797
+ 2   / 2: -0.185
+ 3   / 3: -0.658
+ 4   / 4:  2.925
+ 5   / 5: -1.177
+ 6   / 6: -0.297
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
@@ -66585,15 +66586,15 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-            VAR2   VAR2   VAR2
-0     / 1:  1.962  1.962  1.182
-20    / 2:  1.182  1.225  1.182
-40    / 3:  1.225  1.182  0.562
-60    / 4:  0.562  0.562  0.562
-80    / 5: -0.853 -0.183  0.562
-100   / 6: -0.183 -0.183  0.562
-120   / 7: -0.149 -0.149  0.562
-140   / 8:  0.460  0.460  0.562
+            VAR2   VAR2    VAR2
+0     / 1:  1.163  1.746  0.4987
+20    / 2:  1.746  1.163  0.4987
+40    / 3:  0.456  0.499  0.4565
+60    / 4:  0.499  0.456  0.4565
+80    / 5: -0.248 -0.248  0.4565
+100   / 6: -0.791 -0.248  0.4565
+120   / 7:  0.308  0.061  0.4565
+140   / 8:  0.061  0.308  0.4987
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -71058,7 +71059,6 @@ cancel mode verify
 GO bn_aggregate_e
 ! bn_aggregate_e.jnl
 ! using the DEFINE ATTRIBUTE/E command
- 
 ! Datasets share sst, but only ens1 has airt.
  
 set mode diag
@@ -71070,7 +71070,7 @@ define data/agg/title fourfiles = ens1, ens3, ens2, ens4
 ! The grid of SST is known.
 show data fourfiles
      currently SET data sets:
-    5> FOURFILES  (default)
+    5> FOURFILES  (default)  Ferret-defined Ensemble dataset
  name     title                             I         J         K         L         M         N
  SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
  
@@ -71112,27 +71112,35 @@ let/d=ens2 airt = sst + 1
 let/d=ens3 airt = sst + 1
 let/d=ens4 airt = sst + 1
  
-define data/agg/title fourfiles = ens1, ens3, ens2, ens4
+define data/agg fourfiles = ens1, ens3, ens2, ens4
  allocate dynamic grid (G101)          COADSX116_COADSY52_6NORMAL    TIME12    ENSEMBLE  NORMAL
+ getgrid AIRT     C:  6 dset:   3 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME12    NORMAL    NORMAL
+ getgrid AIRT     C:  6 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME12    NORMAL    NORMAL
+ getgrid AIRT     C:  6 dset:   4 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME12    NORMAL    NORMAL
 show data fourfiles
      currently SET data sets:
-    5> FOURFILES  (default)
+    5> FOURFILES  (default)  Ferret-defined Ensemble dataset
  name     title                             I         J         K         L         M         N
  SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
- AIRT     AIR TEMPERATURE                ... Aggregate grid undetermined
+ getgrid EX#1     C:  7 dset:   5 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ getgrid AIRT     C:  9 dset:   5 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ getgrid AIRT     C: 11 dset:   3 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME12    NORMAL    NORMAL
+ getgrid AIRT     C: 11 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME12    NORMAL    NORMAL
+ getgrid AIRT     C: 11 dset:   4 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME12    NORMAL    NORMAL
+ allocate dynamic grid (G101)          COADSX116_COADSY52_6NORMAL    TIME12    ENSEMBLE  NORMAL
+ allocate dynamic grid (G101)          COADSX116_COADSY52_6NORMAL    TIME12    ENSEMBLE  NORMAL
+ AIRT     AIR TEMPERATURE                  1:10      1:9       ...       1:12      1:4       ...
  
  
 list/i=3 airt[T=@ave]
+ dealloc  dynamic grid (G101)          COADSX116_COADSY52_6NORMAL    TIME12    ENSEMBLE  NORMAL
  getgrid EX#1     C:  5 dset:   5 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- getgrid AIRT     C:  7 dset:   5 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- getgrid AIRT     C:  9 dset:   3 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME12    NORMAL    NORMAL
- getgrid AIRT     C:  9 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME12    NORMAL    NORMAL
- getgrid AIRT     C:  9 dset:   4 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME12    NORMAL    NORMAL
- allocate dynamic grid (G101)          COADSX116_COADSY52_6NORMAL    TIME12    ENSEMBLE  NORMAL
- allocate dynamic grid (G101)          COADSX116_COADSY52_6NORMAL    TIME12    ENSEMBLE  NORMAL
  allocate dynamic grid (G101)          COADSX116_COADSY52_6NORMAL    TIME12    ENSEMBLE  NORMAL
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   5 I:    3    3  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
@@ -71157,6 +71165,7 @@ list/i=3 airt[T=@ave]
  doing aggregate gathering AIRT on E axis:     4     4 dset:   4
  doing --> AIRT[T=01-JAN00:45:31-DEC06:34@AVE,D=5]
              VARIABLE : AIR TEMPERATURE (DEG C)
+             DATA SET : Ensemble
              FILENAME : FOURFILES
              SUBSET   : 9 by 4 points (LATITUDE-E)
              LONGITUDE: 105W
@@ -71193,6 +71202,7 @@ set mode/last ignore
  
 ! Rename the varibles in dataset 2, then define UWND and VWND as
 ! variables on the grid of dset 1.
+set dat 2
 set var/name=uin uwnd
 set var/name=vin vwnd
  
@@ -71200,11 +71210,11 @@ set var/name=vin vwnd
 ! those variables in dataset 1
  
 let/d=2/units="`uin,return=units`"/title="`uin,return=title`" \
- uwnd = uin[gxy=uwnd[d=1],gt=uwnd[d=1]@mod]
- !-> DEFINE VARIABLE/d=2/units="M/S"/title="ZONAL WIND"  uwnd = uin[gxy=uwnd[d=1],gt=uwnd[d=1]@mod]
+ uwnd = uin[d=2,gxy=uwnd[d=1],gt=uwnd[d=1]@mod]
+ !-> DEFINE VARIABLE/d=2/units="M/S"/title="ZONAL WIND"  uwnd = uin[d=2,gxy=uwnd[d=1],gt=uwnd[d=1]@mod]
 let/d=2/units="`vin,return=units`"/title="`vin,return=title`" \
- vwnd = vin[gxy=vwnd[d=1],gt=vwnd[d=1]@mod]
- !-> DEFINE VARIABLE/d=2/units="M/S"/title="MERIDIONAL WIND"  vwnd = vin[gxy=vwnd[d=1],gt=vwnd[d=1]@mod]
+ vwnd = vin[d=2,gxy=vwnd[d=1],gt=vwnd[d=1]@mod]
+ !-> DEFINE VARIABLE/d=2/units="M/S"/title="MERIDIONAL WIND"  vwnd = vin[d=2,gxy=vwnd[d=1],gt=vwnd[d=1]@mod]
  
 show data
      currently SET data sets:
@@ -71219,25 +71229,25 @@ show data
  UIN      ZONAL WIND                       1:30      1:30      ...       1:30      ...       ...
  VIN      MERIDIONAL WIND                  1:30      1:30      ...       1:30      ...       ...
  ------------------------------
- VWND[D=navy_uw] = VIN[GXY=VWND[D=1],GT=VWND[D=1]@MOD]
- UWND[D=navy_uw] = UIN[GXY=UWND[D=1],GT=UWND[D=1]@MOD]
+ VWND[D=navy_uw] = VIN[D=2,GXY=VWND[D=1],GT=VWND[D=1]@MOD]
+ UWND[D=navy_uw] = UIN[D=2,GXY=UWND[D=1],GT=UWND[D=1]@MOD]
  
  
 ! Define the ensemble dataset
 define data/agg windy = 1,2
  
-! The grid of the aggregate variables with LET/D not yet known.
+! The grid of the aggregate variables with LET/D is known.
 show data windy
      currently SET data sets:
-    3> WINDY  (default)
+    3> WINDY  (default)  Ferret-defined Ensemble dataset
  name     title                             I         J         K         L         M         N
- UWND     ZONAL WIND                     ... Aggregate grid undetermined
- VWND     MERIDIONAL WIND                ... Aggregate grid undetermined
+ UWND     ZONAL WIND                       1:30      1:30      ...       1:12      1:2       ...
+ VWND     MERIDIONAL WIND                  1:30      1:30      ...       1:12      1:2       ...
  
  
 ! Use variable from the new dataset
-list/l=3/y=30 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd[d=3,e=@ave]
-             LONGITUDE: 60W to 0E(360)
+list/l=3/y=30/x=-59:-51 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd[d=3,e=@ave]
+             LONGITUDE: 59W(-59) to 51W(-51)
              LATITUDE: 30N (interpolated)
              TIME: 17-MAR 02:58
  Column  1: UWND[D=coads_uw] is ZONAL WIND (M/S)
@@ -71245,45 +71255,278 @@ list/l=3/y=30 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd[d=3,e=@av
  Column  3: UWND[D=WINDY,E=1] is ZONAL WIND (M/S)
  Column  4: VWND[D=WINDY,E=2] is MERIDIONAL WIND (M/S)
  Column  5: UWND[D=WINDY,E=0.5:2.5@AVE] is ZONAL WIND (M/S)
-               UWND    UWND     UWND     VWND     UWND
-59W   /  1:  2.20244  0.93433  2.20244  0.93433  1.56839
-57W   /  2:  2.26128  0.81276  2.26128  0.81276  1.53702
-55W   /  3:  1.99826  0.68178  1.99826  0.68178  1.34002
-53W   /  4:  1.93361  0.50716  1.93361  0.50716  1.22038
-51W   /  5:  1.64932  0.33043  1.64932  0.33043  0.98987
-49W   /  6:  1.52182  0.13062  1.52182  0.13062  0.82622
-47W   /  7:  1.48404 -0.10567  1.48404 -0.10567  0.68918
-45W   /  8:  1.24261 -0.38424  1.24261 -0.38424  0.42919
-43W   /  9:  1.29955 -0.77322  1.29955 -0.77322  0.26316
-41W   / 10:  1.25602 -1.14732  1.25602 -1.14732  0.05435
-39W   / 11:  1.09151 -1.50534  1.09151 -1.50534 -0.20691
-37W   / 12:  0.72884 -1.83149  0.72884 -1.83149 -0.55133
-35W   / 13:  0.54488 -2.09539  0.54488 -2.09539 -0.77526
-33W   / 14:  0.51407 -2.30249  0.51407 -2.30249 -0.89421
-31W   / 15:  0.14337 -2.45003  0.14337 -2.45003 -1.15333
-29W   / 16: -0.15091 -2.55006 -0.15091 -2.55006 -1.35049
-27W   / 17: -0.34766 -2.61356 -0.34766 -2.61356 -1.48061
-25W   / 18: -0.15890 -2.65045 -0.15890 -2.65045 -1.40468
-23W   / 19: -0.22089 -2.60509 -0.22089 -2.60509 -1.41299
-21W   / 20: -0.49012 -2.39360 -0.49012 -2.39360 -1.44186
-19W   / 21: -0.79824 -2.18097 -0.79824 -2.18097 -1.48960
-17W   / 22: -0.93340 -2.09496 -0.93340 -2.09496 -1.51418
-15W   / 23: -0.84886 -2.22609 -0.84886 -2.22609 -1.53748
-13W   / 24: -0.54421 -2.58935 -0.54421 -2.58935 -1.56678
-11W   / 25: -0.18629 -3.16232 -0.18629 -3.16232 -1.67430
-9W    / 26:  1.50467 -3.49647  1.50467 -3.49647 -0.99590
-7W    / 27:     .... -3.56424     .... -3.56424 -3.56424
-5W    / 28:     .... -3.75906     .... -3.75906 -3.75906
-3W    / 29:     .... -4.06208     .... -4.06208 -4.06208
-1W    / 30:     .... -4.33855     .... -4.33855 -4.33855
+                 UWND     UWND     UWND      VWND     UWND
+59W    / -30:  2.20244  0.934329  2.20244  0.934329  1.56839
+57W    / -29:  2.26128  0.812758  2.26128  0.812758  1.53702
+55W    / -28:  1.99826  0.681776  1.99826  0.681776  1.34002
+53W    / -27:  1.93361  0.507158  1.93361  0.507158  1.22038
+51W    / -26:  1.64932  0.330430  1.64932  0.330430  0.98987
  
-! Now the grid of uwnd is known.
+! Use the other order. As long as we have a file variable, we're ok
+ 
+cancel data 3
+ 
+! Define the ensemble dataset
+define data/agg windy = 2,1
+ 
+! The grid of the aggregate variables with LET/D is known.
 show data windy
      currently SET data sets:
-    3> WINDY  (default)
+    3> WINDY  (default)  Ferret-defined Ensemble dataset
  name     title                             I         J         K         L         M         N
  UWND     ZONAL WIND                       1:30      1:30      ...       1:12      1:2       ...
- VWND     MERIDIONAL WIND                ... Aggregate grid undetermined
+ VWND     MERIDIONAL WIND                  1:30      1:30      ...       1:12      1:2       ...
+ 
+ 
+! Use variable from the new dataset
+list/l=3/y=30/x=-59:-51 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd[d=3,e=@ave]
+             LONGITUDE: 59W(-59) to 51W(-51)
+             LATITUDE: 30N (interpolated)
+             TIME: 17-MAR 02:58
+ Column  1: UWND[D=coads_uw] is ZONAL WIND (M/S)
+ Column  2: UWND[D=navy_uw] is ZONAL WIND (M/S)
+ Column  3: VWND[D=WINDY,E=1] is MERIDIONAL WIND (M/S)
+ Column  4: UWND[D=WINDY,E=2] is ZONAL WIND (M/S)
+ Column  5: VWND[D=WINDY,E=0.5:2.5@AVE] is MERIDIONAL WIND (M/S)
+                 UWND     UWND      VWND     UWND     VWND
+59W    / -30:  2.20244  0.934329  0.934329  2.20244  1.56839
+57W    / -29:  2.26128  0.812758  0.812758  2.26128  1.53702
+55W    / -28:  1.99826  0.681776  0.681776  1.99826  1.34002
+53W    / -27:  1.93361  0.507158  0.507158  1.93361  1.22038
+51W    / -26:  1.64932  0.330430  0.330430  1.64932  0.98987
+ 
+can data/all
+can var/all
+ 
+! DEFINE DATA/HIDE
+! SHOW DATA/HIDDEN
+! Alias ENSEMBLE for DEFINE DATA/AGG/E
+ 
+! If define the ensemble with /HIDE then SHOW DAT will skip the
+! member datasets and show only the ensemble.
+! show dat/hidden forces showing all
+ 
+sh command define
+ DEFINE
+ DEFINE REGION/I/J/K/L/M/N/X/Y/Z/T/E/F/DEFAULT/DX/DY/DZ/DT/DE/DF/DI/DJ/DK
+         /DL/DM/DN
+ DEFINE GRID/X/Y/Z/T/E/F/FILE/LIKE
+ DEFINE VARIABLE/TITLE/UNITS/QUIET/DATASET/BAD/REMOTE
+ DEFINE AXIS/X/Y/Z/T/E/F/FILE/UNITS/T0/NAME/FROMDATA/DEPTH/MODULO/NPOINTS
+         /EDGES/CALENDAR/BOUNDS/QUIET
+ DEFINE VIEWPORT/TEXT/XLIMITS/YLIMITS/SIZE/ORIGIN/CLIP/AXES
+ DEFINE ALIAS
+ DEFINE SYMBOL
+ DEFINE ATTRIBUT/D/TYPE/OUTPUT
+ DEFINE PYFUNC/NAME
+ DEFINE DATA/AGGREGAT/E/TITLE/QUIET/HIDE
+sh command show
+ SHOW/ALL
+ SHOW WINDOW/ALL
+ SHOW REGION/ALL
+ SHOW AXIS/ALL/I/J/K/L/M/N/X/Y/Z/T/E/F/XML/OUTFILE/APPEND/CLOBBER
+ SHOW EXPRSION/ALL
+ SHOW LIST/ALL
+ SHOW DATA/ALL/BRIEF/FULL/VARIABLE/FILES/XML/ATTR/OUTFILE/APPEND/CLOBBER
+       /HIDDEN
+ SHOW MODE/ALL
+ SHOW MOVIE/ALL
+ SHOW VARIABLE/ALL/DATASET/DIAG/USER/XML/OUTFILE/APPEND/CLOBBER
+ SHOW COMMANDS/ALL
+ SHOW MEMORY/ALL/TEMPORY/PERMANT/FREE
+ SHOW GRID/ALL/I/J/K/L/M/N/X/Y/Z/T/E/F/DYNAMIC/XML/OUTFILE/APPEND/CLOBBER
+ SHOW VIEWPORT/ALL
+ SHOW TRANFORM/ALL
+ SHOW ALIAS/ALL
+ SHOW SYMBOL/ALL
+ SHOW ATTRIBUT/ALL/DATASET/OUTPUT
+ SHOW NCCACHE
+ SHOW GIFFILE
+ SHOW FUNCTION/ALL/BRIEF/EXTERNAL/INTERNAL/DETAILS
+ SHOW QUERIES/ALL
+ 
+use ens1, ens2, ens3, ens4
+ensemble/HIDE/title="ensemble with hidden members" fourfiles = ens1, ens2, ens3, ens4
+ 
+! should just show the ensemble set
+sh dat
+     currently SET data sets:
+    5> FOURFILES  (default)  Ferret-defined Ensemble dataset
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
+ 
+ 
+! If ask for a member set by name or number, do show it
+sh dat 2
+     currently SET data sets:
+    2> ./ens2.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+sh dat ens3
+     currently SET data sets:
+    3> ./ens3.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+ 
+! should show all members plus ensemble
+sh dat/hidden
+     currently SET data sets:
+    1> ./ens1.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ AIRT     AIR TEMPERATURE                  1:10      1:9       ...       1:12      ...       ...
+ 
+    2> ./ens2.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    3> ./ens3.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    4> ./ens4.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    5> FOURFILES  (default)  Ferret-defined Ensemble dataset
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
+ 
+ 
+! Should show original member datasets
+can dat fourfiles
+sh dat
+     currently SET data sets:
+    1> ./ens1.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ AIRT     AIR TEMPERATURE                  1:10      1:9       ...       1:12      ...       ...
+ 
+    2> ./ens2.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    3> ./ens3.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    4> ./ens4.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+can dat/all
+ 
+! Cancel a member, then the ensemble gets canceled.
+! The hidden members should show up.
+ 
+use ens1, ens2, ens3, ens4
+ensemble/HIDE/title="uvars in dset 2"  my_ens = 1,2
+sh dat
+     currently SET data sets:
+    3> ./ens3.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    4> ./ens4.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    5> MY_ENS  (default)  Ferret-defined Ensemble dataset
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      1:2       ...
+ 
+can dat  2
+sh dat
+     currently SET data sets:
+    1> ./ens1.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ AIRT     AIR TEMPERATURE                  1:10      1:9       ...       1:12      ...       ...
+ 
+    3> ./ens3.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    4> ./ens4.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+ 
+! Cancel the ensemble, then hidden members get un-hidden.
+ 
+use ens1, ens2, ens3, ens4
+ensemble/HIDE/title="uvars in dset 2"  my_ens = 1,2,3,4
+ 
+! members hidden, showing only ensemble.
+sh dat
+     currently SET data sets:
+    5> MY_ENS  (default)  Ferret-defined Ensemble dataset
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
+ 
+can dat my_ens
+ 
+! Cancel ensemble dataset: members un-hidden
+sh dat
+     currently SET data sets:
+    1> ./ens1.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ AIRT     AIR TEMPERATURE                  1:10      1:9       ...       1:12      ...       ...
+ 
+    2> ./ens2.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    3> ./ens3.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    4> ./ens4.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+ 
+! Define several ensembles with /HIDE
+ensemble/HIDE/title="ensemble with hidden members" fourfiles = ens1, ens2, ens3, ens4
+ensemble/HIDE/title="ensemble with hidden members" some = ens1, ens2
+ensemble/HIDE/title="ensemble with hidden members" more = ens2, ens3, ens4
+ 
+! Shows all the ensembles
+sh dat
+     currently SET data sets:
+    5> FOURFILES     Ferret-defined Ensemble dataset
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
+ 
+    6> SOME     Ferret-defined Ensemble dataset
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      1:2       ...
+ 
+    7> MORE  (default)  Ferret-defined Ensemble dataset
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      1:3       ...
+ 
+ 
+! Cancel a member of all the ensembles.
+! Cancels dataset 2 and also the ensemble sets.
+can dat 2
+sh dat
+     currently SET data sets:
+    1> ./ens1.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ AIRT     AIR TEMPERATURE                  1:10      1:9       ...       1:12      ...       ...
+ 
+    3> ./ens3.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    4> ./ens4.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
  
  
  
@@ -71396,7 +71639,7 @@ list/L=1:8 taux[x=@ave,y=@ave]
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    8  M: -999 -999  N: -999 -999
  strip --> TAUX[Y=3.5S:3.5N@AV4,D=1]
- reading TAUX     M: 94 dset:   1 I:   91  108  J:   35   55  K: -999 -999  L:    1    8  M: -999 -999  N: -999 -999
+ reading TAUX     M:110 dset:   1 I:   91  108  J:   35   55  K: -999 -999  L:    1    8  M: -999 -999  N: -999 -999
  doing --> TAUX[Y=3.5S:3.5N@AV4,D=1]
              VARIABLE : ZONAL WIND STRESS (dynes/cm**2)
              FILENAME : gt4d011.cdf
@@ -71419,7 +71662,7 @@ list/L=1:8 taux[x=@sum,y=@sum]
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    8
  strip --> TAUX[Y=3.5S:3.5N@SM4,D=1]
- reading TAUX     M: 80 dset:   1 I:   91  108  J:   35   55  K: -999 -999  L:    1    8
+ reading TAUX     M: 96 dset:   1 I:   91  108  J:   35   55  K: -999 -999  L:    1    8
  doing --> TAUX[Y=3.5S:3.5N@SM4,D=1]
              VARIABLE : ZONAL WIND STRESS (dynes/cm**2)
              FILENAME : gt4d011.cdf
@@ -73498,7 +73741,7 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Wed Jul 10 14:44:08 2013: ncks -h -A -h z1.nc append_to_this.nc\n",
+		:history = "Wed Jul 10 15:24:57 2013: ncks -h -A -h z1.nc append_to_this.nc\n",
 			"FERRET V6.85   10-Jul-13" ;
 		:Conventions = "CF-1.0" ;
 }
@@ -73705,7 +73948,7 @@ yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.85  
  	Linux 2.6.32-358.11.1.el6.x86_64 64-bit - 07/10/13
- 	10-Jul-13 14:44     
+ 	10-Jul-13 15:24     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -77256,7 +77499,7 @@ yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.85  
  	Linux 2.6.32-358.11.1.el6.x86_64 64-bit - 07/10/13
- 	10-Jul-13 14:44     
+ 	10-Jul-13 15:24     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
@@ -77266,15 +77509,15 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
 FERRET_PLATFORM = "Linux 2.6.32-358.11.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.3.0-snapshot2013060923 of Jun 11 2013 17:10:15 $"
+NETCDF_VERSION = "4.3.0 of May  3 2013 16:02:47 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "10-Jul-13"
-SESSION_TIME = "14:44"
-SESSION_PID = "3349"
-DELTA_CPU = "0.040993"
-CLOCK_SECS = "0.302"
+SESSION_TIME = "15:24"
+SESSION_PID = "15468"
+DELTA_CPU = "0.039993"
+CLOCK_SECS = "0.174"
 CURRENT_DATE = "10-Jul-13"
-CURRENT_TIME = "14:44:09"
+CURRENT_TIME = "15:24:57"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -77296,7 +77539,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "10-Jul-13:14:44"
+WIN_TITLE = "10-Jul-13:15:24"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -77358,7 +77601,7 @@ yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v6.85  
  	Linux 2.6.32-358.11.1.el6.x86_64 64-bit - 07/10/13
- 	10-Jul-13 14:44     
+ 	10-Jul-13 15:24     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -77577,7 +77820,7 @@ yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.85  
  	Linux 2.6.32-358.11.1.el6.x86_64 64-bit - 07/10/13
- 	10-Jul-13 14:44     
+ 	10-Jul-13 15:24     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -77691,7 +77934,7 @@ yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.85  
  	Linux 2.6.32-358.11.1.el6.x86_64 64-bit - 07/10/13
- 	10-Jul-13 14:44     
+ 	10-Jul-13 15:24     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -77775,4 +78018,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Wed Jul 10 14:44:11 PDT 2013
+Ended at Wed Jul 10 15:24:59 PDT 2013

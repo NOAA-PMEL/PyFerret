@@ -220,6 +220,7 @@
 * V685 *acm* 1/13  Fix ticket 2026: dont automatically mark a 1-point longitude
 *                  axis as modulo.
 * V685 *adm*  1/13 DEFINE VARIABLE/REMOTE. Require /D= to accompany /REMOTE.
+* V685 *acm*  4/13 Add /HIDDEN on DEF DATA/AGG
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -279,7 +280,9 @@
      .              slash_def_aggregate,
      .              slash_def_agg_title,
      .              slash_def_agg_quiet,
-     .              slash_def_agg_e
+     .              slash_def_agg_e,
+     .              slash_def_agg_f,
+     .              slash_def_agg_hide
 
 	LOGICAL	    explct_defn
 	PARAMETER ( slash_dflt   = 1 + 12,
@@ -316,8 +319,10 @@
      .              slash_pyfunc_name = 1,
      .              slash_def_aggregate = 1 + 0,
      .              slash_def_agg_e     = 1 + 5,
+     .              slash_def_agg_f     = 1 + 6,
      .              slash_def_agg_title = 1 + 7,
      .              slash_def_agg_quiet = 1 + 8,
+     .              slash_def_agg_hide  = 1 + 9,
      .		    explct_defn  = .FALSE. )
 
 * calling argument declarations:
@@ -330,7 +335,7 @@
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet, agg_e,
-     .            letdset, its_remote
+     .            letdset, its_remote, agg_hide
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1,
@@ -2149,9 +2154,12 @@ C /units=months  is 1/12 of the length of the year
 
 * Is there a /E ? (later other directions)
 * This is NOT YET passed around to routines that need it.
-	iqual = qual_given( slash_def_agg_e )
-        agg_e = ( iqual .GT. 0 )
+        agg_e = qual_given( slash_def_agg_e ) .GT. 0
 	IF (agg_e) agg_dim = 5
+
+* define data/hide
+
+	agg_hide = qual_given( slash_def_agg_hide ) .GT. 0
 
 * Get the name of the dataset we are creating
 	CALL NAME_EQUAL_STRING( buff1, pos, status )
@@ -2162,7 +2170,7 @@ C /units=months  is 1/12 of the length of the year
 	IF ( .NOT.TM_LEGAL_NAME_OP(buff1) ) GOTO 5430
         IF ( TM_LENSTR1(buff1) .GT. 128 ) GOTO 5410
 
-	CALL INIT_AGGREGATE_DSET (buff1, buff2, dset, agg_quiet, status)
+	CALL INIT_AGGREGATE_DSET (buff1, buff2, dset, agg_quiet, agg_hide, status)
 	
 	IF (status .EQ. ferr_ok) cx_data_set( cx_last )	=  dset
 	IF (status .NE. ferr_ok) GOTO 6110
@@ -2321,7 +2329,7 @@ C /units=months  is 1/12 of the length of the year
  6100 CALL ERRMSG(ferr_syntax, status, 
      .    'DEFINE DATA valid only with /AGGREGATE: ', *5000)
 
- 6110 CALL ERRMSG(ferr_syntax, status, 
+ 6110 CALL ERRMSG(ferr_aggregate_error, status, 
      .    'Aggregate dataset not defined', *5000)
 
 	END

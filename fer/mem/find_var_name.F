@@ -68,6 +68,7 @@
 * V63  *acm* 10/09 Changes for gfortran build
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -279,7 +280,7 @@
            ivar = string_array_result(j)
 	   IF ( single_dset .AND. ds_var_setnum( ivar ) .NE. dset ) GOTO 200
  	   category = cat_file_var
- 	   IF (ds_type(dset) .EQ. 'AGG') category = cat_aggregate_var
+ 	   IF (ds_type(dset) .EQ. 'ENS') category = cat_aggregate_var
 	   variable = ivar
            test_name = buff
            RETURN

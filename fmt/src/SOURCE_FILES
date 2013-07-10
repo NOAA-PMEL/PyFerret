@@ -19,6 +19,8 @@ cd_dset_remoteok.F\
 cd_encode_url.F\
 cd_get_1_axis.F\
 cd_get_1_dep_var.F\
+cd_get_agg_dset_info.F\
+cd_get_agg_dset_member.F\
 cd_get_attrib.F\
 cd_get_attval.F\
 cd_get_attvalc.F\

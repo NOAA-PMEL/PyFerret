@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 42597979 Jul 10 14:06 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 42604426 Jul 10 16:12 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix for bug 1990
+Note: finshing the DEFINE DAT/ENSEMBLE ehhancements: see ticket 2046
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Wed Jul 10 14:07:09 PDT 2013
+Beginning at Wed Jul 10 16:14:09 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3268,16 +3268,31 @@ Replacing definition of axis FAX4DAY
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
 define data/agg windy = 1,2,3
- **ERROR: command syntax: Aggregate dataset not defined
+ **ERROR: error defining aggregate dataset: Aggregate dataset not defined
 define data/agg windy = 1,2,3
  *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: UWND
  *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: VWND
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
 define data/agg windy = 1,2
- **ERROR: command syntax: Aggregate dataset not defined
-define data/agg windy = 1,2
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: UIN
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: VIN
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 5
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets:
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets:
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 5
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 6
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 7
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3514,4 +3529,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jul 10 14:08:58 PDT 2013
+Ended at Wed Jul 10 16:16:04 PDT 2013

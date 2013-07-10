@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43363183 Jul  9 14:34 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 43367063 Jul 10 16:12 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: changes to shorten output in benchmark scripts testing xml output
+Note: DEFINE DAT/ENSEMBLE ehhancements: see ticket 2046
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Tue Jul 9 16:11:14 PDT 2013
+Beginning at Wed Jul 10 16:14:45 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3268,16 +3268,31 @@ Replacing definition of axis FAX4DAY
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
 define data/agg windy = 1,2,3
- **ERROR: command syntax: Aggregate dataset not defined
+ **ERROR: error defining aggregate dataset: Aggregate dataset not defined
 define data/agg windy = 1,2,3
  *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: UWND
  *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: VWND
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
 define data/agg windy = 1,2
- **ERROR: command syntax: Aggregate dataset not defined
-define data/agg windy = 1,2
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: UIN
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: VIN
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 5
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets:
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets:
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 5
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 6
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 7
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3409,6 +3424,8 @@ NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  LISTing to file append_to_this.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3512,4 +3529,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Jul 9 16:12:54 PDT 2013
+Ended at Wed Jul 10 16:16:57 PDT 2013

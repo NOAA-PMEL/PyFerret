@@ -49,7 +49,7 @@ foreach plt_file ($plt_files)
 
        set err_plt = 1
     endif
-    if ($num_plt_files != 22 ) set err_plt = 1
+    if ($num_plt_files != 23 ) set err_plt = 1
 end
    
 set err_gif = 0
@@ -61,7 +61,7 @@ foreach gif_file ($gif_files)
        rm -f $gif_file.diff_gif.gif
        compare $gif_file metafile_masters_64bit/$gif_file $gif_file.diff_gif.gif
        display  $gif_file &
-       display  metafile_masters_v64bit/$gif_file &
+       display  metafile_masters_64bit/$gif_file &
        display $gif_file.diff_gif.gif
 
        set err_gif = 1
@@ -77,7 +77,7 @@ foreach ps_file ($ps_files)
        rm -f $ps_file.diff_ps.ps
        compare $ps_file metafile_masters_64bit/$ps_file $ps_file.diff_ps.ps
        display $ps_file &
-       display metafile_masters_v64bit/$ps_file &
+       display metafile_masters_64bit/$ps_file &
        display $ps_file.diff_ps.ps
 
        set err_ps = 1

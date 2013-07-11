@@ -58,6 +58,9 @@
 * V65  *acm* 2/10- all warnings and notes to std error not std out
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * V6.85 2/13 *acm* Fix ticket 2038: making warning message for too-long string
+*      *kms*  7/13 Increased the size of errmsg to match the increased size 
+*                  of maxlen (from show_data_set_attrs); added check for
+*                  this in the future.
 
 * argument definitions:
 *	dset	 - dataset number
@@ -90,7 +93,9 @@
       INTEGER TM_LENSTR1, NCF_GET_VAR_ATTR,
      .        lena, lenb, attype, status, i, dset_num, attid
       CHARACTER*128 aname
-      CHARACTER*128 errmsg
+      INTEGER errmsglen
+      PARAMETER (errmsglen = 2048)
+      CHARACTER*(errmsglen) errmsg
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
@@ -102,6 +107,13 @@
 #else
       INTEGER*1 fhol(flen), ghol(flen)     ! c-type Hollerith string buffer
 #endif 
+
+       IF ( maxlen .GT. errmsglen ) THEN
+*         programming error; thus the STOP
+          WRITE(*,*) 'maxlen = ', maxlen, 
+     .               '; errmsglen = ', errmsglen
+          STOP 'errmsg not large enough in NC_GET_ATTRIB'
+       ENDIF
 
        NC_GET_ATTRIB = .FALSE.
        IF (dset .EQ. unspecified_int4) RETURN

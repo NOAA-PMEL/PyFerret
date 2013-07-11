@@ -1,4 +1,7 @@
  ! tests of external functions NCO and NCO_ATTR  
+ ! These functions use Unix NCO utilities, found at http://nco.sourceforge.net/
+ ! If NCO is not installed, it is fine to comment out this script when running
+ ! the Ferret benchmark suite.
 
 sh func nco*
 

@@ -45,8 +45,8 @@ HDF5_DIR	= /usr/local/hdf5_189
 ## If HDF5_DIR is empty, the shared-object libraries will be used.
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
-NETCDF4_DIR	= /usr/local/netcdf_4211
-# NETCDF4_DIR	= /usr/local/netcdf-4.2.1.1
+NETCDF4_DIR	= /usr/local/netcdf_43
+# NETCDF4_DIR	= /usr/local/netcdf-4.3
 
 ## Java home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,

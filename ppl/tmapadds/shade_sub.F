@@ -146,7 +146,7 @@ C       data statement of my_trans added for linux port *jd* 12.96
         INTEGER		cells(*), pmax
         INTEGER         j1, jn, jd, my, mx
 	LOGICAL		REGULARLY_SPACED,
-     .                  irregular, plot_cell
+     .                  irregular, plot_cell, do_cell
 
 * declarations for curvilinear coordinates
 	LOGICAL		ITS_CURVILINEAR, ITS_CURV_EDGES
@@ -295,8 +295,15 @@ c*       calls tha use fillarea when there is meta or ps output.
 c*       use_cell is determined in disp_set_up, called on the Ferret 
 c*       side from xeq_shade.
 
-      IF (use_cell) THEN
+* See ticket 2039:  When the cellarray plot is one of several in viewports,
+* the colors in the cellarray image are off by one. Have not found the cause. 
+* Work around it by refusing to make a cellarray call except for the first 
+* color map, either the first plot on the page, or if a PPL SHASET RESET has 
+* been issued.
 
+      do_cell = use_cell .AND. (lo_color_ndx(wsid).EQ.num_line_colors+1)
+
+      IF (do_cell) THEN
       
 * Collect color indices in cellarray cells array.
 * Set the data rectangle to represent whole grid cells.
@@ -391,7 +398,6 @@ c If all the data is missing don't make the cellarray call
                cy1 = -1*cy2
                cy2 = half
             ENDIF
-
             CALL FGD_GCA(cx1, cy1, cx2, cy2, mx,my, 1,1, mx,my, cells)
          ENDIF
 

@@ -60,6 +60,7 @@
 * V68    1/12 *acm* Real variables should be declared REAL (conversion to double prec.)
 *        3/12 *acm* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V680   5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 
 
 * codes for data sets
@@ -455,7 +456,7 @@
 
 	   ncfile = (TM_HAS_STRING(ds_type(dset), 'CDF') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'MC') .OR.
-     .               TM_HAS_STRING(ds_type(dset), 'AGG') .OR.
+     .               TM_HAS_STRING(ds_type(dset), 'ENS') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'GT')  )
 
 * note on EZ vars:

@@ -52,6 +52,7 @@
 *       *acm* 3/12 removing use of old GT and TS data formats
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 
 * calling argument declarations:
 	INTEGER	dset
@@ -72,7 +73,7 @@
 
 * netCDF
 	IF( ds_type(dset) .EQ. 'CDF' .OR. 
-     .      ds_type(dset) .EQ. 'AGG') THEN
+     .      ds_type(dset) .EQ. 'ENS') THEN
 * ... "record" axis is slowest (stored in ds_time_axis)
 * ... locate it in a grid to see what role it plays
            IF (ds_time_axis(dset) .EQ. unspecified_int4) RETURN

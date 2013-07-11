@@ -205,10 +205,12 @@
 * PyFr  *kms* 1/13 Remove SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL;
 *                  Add /QUALITY= /AAlias /NoAAlias /ENGINE= to SET WINDOW
 * PyFr  *kms* 3/13 Change /AAlias and /NoAAlias to /AntiAlia[s] and /NoAntiAl[ias]
+* V685 *acm*  4/13 Add /HIDE on DEF DATA/AGG and SHOW DATA/HIDDEN
 * PyFr  *kms* 6/13  Add /COLOR= /OPACITY= to specify background color
 * PyFr  *kms* 7/13  Add /THICKEN to SET WINDOW to specify line thickness scaling factor
 * PyFr  *kms*  7/13 Add /OPACITY to CONTOUR, PLOT, POLYGON, SHADE, VECTOR
 * PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW and FRAME
+
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -531,7 +533,7 @@
 	   DATA subcommands      (nsub_at2 + 6)	/ 'DATA'	/
 	   DATA num_qualifs      (nsub_at2 + 6)	/ nqual2g	/
 	   DATA qualifier_pointer(nsub_at2 + 6)	/ nqual_at2g	/
-* SHOW DATA_SET /ALL/BRIEF/FULL/VAR/FILE/XML/ATTR/OUTFILE/APPEND/CLOBBER
+* SHOW DATA_SET /ALL/BRIEF/FULL/VAR/FILE/XML/ATTR/OUTFILE/APPEND/CLOBBER/HIDDEN
 		DATA qualifiers  (nqual_at2g+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at2g+1)	/ 'BRIEF'	/
 		DATA qualifiers  (nqual_at2g+2)	/ 'FULL'	/
@@ -542,6 +544,11 @@
 		DATA qualifiers  (nqual_at2g+7)	/ 'OUTFILE'	/
 		DATA qualifiers  (nqual_at2g+8)	/ 'APPEND'	/
 		DATA qualifiers  (nqual_at2g+9)	/ 'CLOBBER'	/
+		DATA qualifiers  (nqual_at2g+10)/ 'HIDDEN'	/
+		DATA qualifiers  (nqual_at2g+11)/ '****'	/
+		DATA qualifiers  (nqual_at2g+12)/ '****'	/
+		DATA qualifiers  (nqual_at2g+13)/ '****'	/
+		DATA qualifiers  (nqual_at2g+14)/ '****'	/
 * SHOW MODE
 	   DATA subcommands      (nsub_at2 + 7)	/ 'MODE'	/
 	   DATA num_qualifs      (nsub_at2 + 7)	/ nqual2h	/
@@ -1199,7 +1206,7 @@
 	   DATA subcommands      (nsub_at10 + 10)/ 'DATA'	/
 	   DATA num_qualifs      (nsub_at10 + 10)/ nqual10k	/
 	   DATA qualifier_pointer(nsub_at10 + 10)/ nqual_at10k	/
-* DEFINE DATA / AGGREGATE / TITLE /E 
+* DEFINE DATA / AGGREGATE / TITLE /HIDE /E 
 		DATA qualifiers  (nqual_at10k+ 0)/ 'AGGREGATE' /
 		DATA qualifiers  (nqual_at10k+ 1)/ '****' / ! reserved for x
 		DATA qualifiers  (nqual_at10k+ 2)/ '****' / ! y
@@ -1209,7 +1216,7 @@
 		DATA qualifiers  (nqual_at10k+ 6)/ '****' / ! f
 		DATA qualifiers  (nqual_at10k+ 7)/ 'TITLE' /
 		DATA qualifiers  (nqual_at10k+ 8)/ 'QUIET' /
-		DATA qualifiers  (nqual_at10k+ 9)/ '****' /
+		DATA qualifiers  (nqual_at10k+ 9)/ 'HIDE' /
 
 * EXIT	 - command # 11
 	DATA commands(11)			/ 'EXIT'	/

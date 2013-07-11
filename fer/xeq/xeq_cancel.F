@@ -139,6 +139,8 @@
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 * V683 *acm*  8/12 add new CANCEL LIST/OUTTYPE=  
+* V685 *acm*  4/13 Changes for ensemble datasets, correctly handle flag for hiding 
+*                  ensemble members 
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -369,7 +371,7 @@
 	         ENDIF
 	      ENDIF
 
- 705	      CALL CANCEL_DATA_SET( iset, status )
+ 705	      CALL CANCEL_DATA_SET( iset, slash_all, status )
  710	   CONTINUE
 * ... if only one set remains then point to it
 	   iset = unspecified_int4
@@ -386,7 +388,7 @@
 	ELSEIF ( slash_all ) THEN
 	   DO 720 iset = 1, maxdsets
 	      IF ( ds_name(iset) .EQ. char_init1024) GOTO 720
-	      CALL CANCEL_DATA_SET( iset, status )
+	      CALL CANCEL_DATA_SET( iset, slash_all, status )
  720	   CONTINUE
 	ELSE
 	   GOTO 5010
@@ -712,11 +714,13 @@
 * ... Check the attribute structure for this axis name and change 
 *     attribute values as needed.
 
-       buff2 = ' '
-       CALL RESET_AX_ATT (line_name(axis), buff2, 
+        buff2 = ' '
+        IF (line_name(axis) .NE. char_init16) THEN
+           CALL RESET_AX_ATT (line_name(axis), buff2, 
      .           buff2, buff2, new_att_modulo,
      .           new_att_modulo_len, line_direction(axis), 
      .           line_regular(axis) )
+        ENDIF
 
 	RETURN
 

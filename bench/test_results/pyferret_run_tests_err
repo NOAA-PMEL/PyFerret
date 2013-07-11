@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Jun 28 14:17 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Jul 11 08:43 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -220,7 +220,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Jun 28 14:29:53 PDT 2013
+Beginning at Thu Jul 11 08:43:56 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2002,6 +2002,7 @@ Replacing definition of axis TIME
 *** Running test: bn_cdf_errmsg.jnl
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
+curl error details: 
  Cached data cleared from memory
  **TMAP ERR: non-existent or not on line
              this_is_not_a_file.nc
@@ -2245,6 +2246,7 @@ SHADE/LEV=300/I=1:100/J=1:100 i+j
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_test_opendap.jnl
+curl error details: 
  Cached data cleared from memory
 *** Running test: bn611_bug_fixes.jnl
  Cached data cleared from memory
@@ -2351,17 +2353,8 @@ LIST a_regrid[D=1,GT=b[D=2]@MOD]
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file a.nc
- LISTing to file b.nc
+/home/users/ksmith/PyFerret/bin/pyferret: line 55: 32650 Floating point exception(core dumped) ${python_exe} -i -c "import sys; import pyferret; (errval, errmsg) = pyferret.init(sys.argv[1:], True)" $*
+****** FERRET error: bn614_bug_fixes.jnl failed ******
 *** Running test: bn_mode_nodata_lab.jnl
  Cached data cleared from memory
 *** Running test: bn_proleptic_gregorian_calendar.jnl
@@ -2901,7 +2894,7 @@ Replacing definition of axis YAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_ca
+ *** NOTE: b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0002.SURF.nc b40.coup_carb.004.cam2.h0.0003.SURF.nc b40.coup_carb.004.cam2.h0.0004.SURF.nc b40.coup_carb.004.cam2.h0.0005.SURF.nc b40.coup_carb.004.cam2.h0.0006.SURF.nc b40.coup_carb.004.cam2.h0.0007.SURF.nc b40.coup_carb.004.cam2.h0.0008.SURF.nc b40.coup_carb.004.cam2.h0.0009.SURF.nc b40.coup_carb.004.cam2.h0.0010.SURF.nc b40.coup_carb.004.cam2.h0.0011.SURF.nc b40.coup_carb.004.cam2.h0.0012.SURF.nc b40.coup_carb.004.cam2.h0.0013.SURF.nc b40.coup_carb.004.cam2.h0.0014.SURF.nc b40.coup_carb.004.cam2.h0.0015.SURF.nc b40.coup_carb.004.cam2.h0.0016.SURF.nc b40.coup_carb.004.cam2.h0.0017.SURF.nc b40.coup_carb.004.cam2.h0.0018.SURF.nc b40.coup_carb.004.cam2.h0.0019.SURF.nc b40.coup_carb.004.cam2.h0.0020.SURF.nc b40.coup_carb.004.cam2.h0.0021.SURF.nc b40.coup_carb.004.cam2.h0.0022.SURF.nc b40.coup_carb.004.cam2.h0.0023.SURF.nc b40.coup_carb.004.cam2.h0.0024.SURF.nc b40.coup_carb.004.cam2.h0.0025.SURF.nc b40.coup_carb.004.cam2.h0.0026.SURF.nc b40.coup_carb.004.cam2.h0.0027.SURF.nc b40.coup_carb.004.cam2.h0.0028.SURF.nc b40.coup_carb.004.cam2.h0.0029.SURF.nc b40.coup_carb.004.cam2.h0.0030.SURF.nc b40.coup_carb.004.cam2.h0.0031.SURF.nc b40.coup_carb.004.cam2.h0.0032.SURF.nc b40.coup_carb.004.cam2.h0.0033.SURF.nc b40.coup_carb.004.c"
  *** NOTE: exceeds expected length. Maximum characters: 2048
  LISTing to file aa.nc
  PERMANENT data cleared from memory
@@ -2969,9 +2962,6 @@ Replacing definition of axis TAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
- *** NOTE: ./err672_vert_axislabel.jnl
- *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
  *** NOTE: Adjusting Y-axis label size from 0.100 to 0.030, to avoid running off page.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3085,16 +3075,31 @@ Replacing definition of axis FAX4DAY
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
 define data/agg windy = 1,2,3
- **ERROR: command syntax: Aggregate dataset not defined
+ **ERROR: error defining aggregate dataset: Aggregate dataset not defined
 define data/agg windy = 1,2,3
  *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: UWND
  *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: VWND
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
 define data/agg windy = 1,2
- **ERROR: command syntax: Aggregate dataset not defined
-define data/agg windy = 1,2
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: UIN
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: VIN
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 5
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets:
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets:
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 5
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 6
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 7
 *** Running test: bn_6d_lab_mode.jnl
  Cached data cleared from memory
 *** Running test: bn682_bug_fixes.jnl
@@ -3114,7 +3119,7 @@ define data/agg windy = 1,2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **netCDF error
-             Is a directory (OPeNDAP/netCDF Error code 21)
+             NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
              Data set: ./.
 SET DAT/FORM=CDF ./z1.nc
  PERMANENT data cleared from memory
@@ -3216,6 +3221,8 @@ NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
 *** Running test: bn_nco_append.jnl
@@ -3234,10 +3241,6 @@ sh: ncks: command not found
 *** Running test: bn_write_integer_att.jnl
  Cached data cleared from memory
  LISTing to file a.nc
-NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
- data in attribute numberOfObservations not representable in output type NC_INT
-LIST/FORMAT=CDF/file=a.nc/clobber mhchla
-Command file, command group, or REPEAT execution aborted
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3257,4 +3260,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Fri Jun 28 14:33:13 PDT 2013
+Ended at Thu Jul 11 08:47:46 PDT 2013

@@ -74,6 +74,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
 *                 various SHOW commnands will not list info for E,F dimensions.
+* v6.85  *acm* 4/13 Can show grid for variables in an ensemble aggregated dataset.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -100,11 +101,11 @@
 	
 * local variable declarations:
 	LOGICAL		first_time, its_delimited, is_undetermined
-	INTEGER 	TM_LENSTR1, TM_LENSTR, TM_GET_CALENDAR_ID, 
+	INTEGER 	TM_LENSTR1, TM_LENSTR, TM_GET_CALENDAR_ID, GRID_FROM_NAME,
      .			ivar, i, dlen, len, grid, taxis, slen(nferdims), tlen, 
      .			nfields, kvar, field_types(maxezvars), 
      .			cal_id, len_cal, j, num_indices, rlen(nferdims), iok,
-     .			listdims
+     .			listdims, idim, igrid, nv
 	CHARACTER	LEFINT*16, LOHI_STRING*48, TM_FMT*14, 
      .			TM_GET_CAL*32, 
      .			line*255, cal_name*32
@@ -152,11 +153,41 @@
            IF ( ds_var_code(ivar) .EQ. '-' ) GOTO 400  
 * ... output variable code, title and subscript bounds within grid
 
-	   is_undetermined = .FALSE.
-	   IF (ds_grid_start(1,ivar) .EQ. int4_init) THEN
-	      is_undetermined = .TRUE. 
+	   is_undetermined = .TRUE.
+	   DO 200 idim = 1, nferdims
+	      IF (ds_grid_start(1,ivar) .NE. int4_init) 
+     .            is_undetermined = .FALSE. 
+  200	   CONTINUE
+
+* Is this an aggregated dataset? - if so then we can go get the grid.
+* GRID_FROM_NAME increments the use count for the grid, so call
+* DEALLO_DYN_GRID to restore the count where it should be.
+
+           IF (is_undetermined .AND. ds_type(dset).EQ.'ENS') THEN
+	      igrid = GRID_FROM_NAME(ds_var_code(ivar), cx_last, status)
+	      CALL TM_DEALLO_DYN_GRID (igrid)  
+
+*  Fill the grid in as in is_aggregate_grid
+
+	      IF (igrid .NE. unspecified_int4) THEN
+	         DO 220 nv = 1, maxvars
+	            IF (ds_grid_number(nv) .EQ. igrid)  GOTO 225
+ 220	         CONTINUE
+ 225	         CONTINUE
+	      ENDIF
+
+	      IF (nv .LE. maxvars) THEN
+	         DO 230 idim = 1, nferdims
+	            ds_grid_start(idim,ivar)= ds_grid_start(idim,nv)
+	            ds_grid_end(idim,ivar)  = ds_grid_end(idim,nv)
+	            ds_ordering(idim,ivar)  = ds_ordering(idim,nv)
+ 230	         CONTINUE
+	         is_undetermined = .FALSE.
+              ENDIF
+           ENDIF
+
+           IF (.NOT.is_undetermined) THEN
 	      
-	   ELSE
               DO 100 i = 1, listdims
                  WRITE( rbuff(i+listdims),'(I8)' ) ds_grid_start(i,ivar)
                  IF (FLOAT(ds_grid_start(i,ivar)) .EQ. 0.0) THEN

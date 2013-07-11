@@ -46,6 +46,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * V6.83 *acm* 11/30/2012 If variable isn't a file variable, get the right definition.
 
+* V685 4/13 *acm* Better grid handling.
+
 * calling argument declarations:
 * uvar and dset point to the variable in the aggregate dataset
 * And cx_orig points to the context for that variable.
@@ -60,7 +62,7 @@
      .		nv, test_grid, this_grid, len_name, agg_dim, gnum, var,
      .		varid, idim, i, igrid, lo_cx
 
-	CHARACTER name*512
+	CHARACTER vname*512
 
 #include "netcdf.inc"
 	include	'tmap_errors.parm'
@@ -96,21 +98,21 @@
 
 	agg_cx = cx
 
-	name = uvar_text(uvar)
-	len_name = TM_LENSTR1(name)
+	vname = uvar_text(uvar)
+	len_name = TM_LENSTR1(vname)
 
 * are we pointing at a "LET var = [some expr with an agg var]"
 * If so then the vname is not in the agg dset. Find the 
 * var in the list of uvar_code, and get the right uvar_text
 * (this is a hack, something is wrong with my stack handling)
 
-	CALL CD_GET_VAR_ID (agg_dset, name, varid, status)
+	CALL CD_GET_VAR_ID (agg_dset, vname, varid, status)
 	IF (status .NE. ferr_ok) THEN 
 	   DO 30, i = uvar, 1, -1
- 	      IF (STR_SAME(name, uvar_name_code(i)) .EQ. 0) THEN
-	         name =  uvar_text(i)
-	         len_name = TM_LENSTR1(name)
-	         CALL CD_GET_VAR_ID (agg_dset, name, varid, status)
+ 	      IF (STR_SAME(vname, uvar_name_code(i)) .EQ. 0) THEN
+	         vname =  uvar_text(i)
+	         len_name = TM_LENSTR1(vname)
+	         CALL CD_GET_VAR_ID (agg_dset, vname, varid, status)
 	         IF (status .NE. ferr_ok) GOTO 5010 
 	         GOTO 40
                ENDIF
@@ -130,7 +132,7 @@
    80	      CONTINUE
 	   ENDIF
 
-	   CALL CD_GET_AGG_VAR_INFO (agg_dset, name, imemb, 
+	   CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, imemb, 
      .         fer_uvar, memb_dset, memb_grid, iline, nv, status)
 	   IF (fer_uvar .EQ. cat_file_var) THEN
 	      IF (memb_grid .NE. unspecified_int4) THEN
@@ -148,7 +150,7 @@
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   lo_cx  = is_cx( isp )
 	   hi_cx = cx_stack_ptr
-	   CALL GET_VAR_CONTEXT (  name(:len_name),
+	   CALL GET_VAR_CONTEXT (  vname(:len_name),
      .				lo_cx,
      .				hi_cx,
      .				status )
@@ -215,15 +217,10 @@
 * catalog this result checking for matching previously existing grid
 	CALL TM_GET_LIKE_DYN_GRID(igrid, its_dynamic, gnum, 
      .				grd_stk_ptr, status ) 
-	IF ( its_dynamic ) THEN
-	   IF ( mode_diagnostic )  CALL DIAG_OP
-     .           ('allocate', isact_class_impl_grid, gnum, 0)
-	ENDIF
 
 * set context for aggregate grid
 	cx_grid(agg_cx) = gnum
 	uvar_grid( uvar, dset ) = gnum 
-	ds_grid_number(var) = gnum 
 
 	cx_grid(agg_cx) = gnum
 	cx_data_set(agg_cx) = agg_dset
@@ -237,22 +234,34 @@
 	ds_grid_number(var) = gnum 
 
 * Get ds_grid_start, ds_grid_end, ds_ordering from the last file variable
-	DO 730 idim = 1, nferdims
+
+	IF (test_grid .NE. unspecified_int4) THEN
+	   DO 720 nv = 1, maxvars
+	       IF (ds_grid_number(nv) .EQ. test_grid)  GOTO 725
+ 720	   CONTINUE
+ 725	   CONTINUE
+        ENDIF
+
+	IF (nv .GT. maxvars) GOTO 5010
+
+        DO 730 idim = 1, nferdims
 	   ds_grid_start(idim,var)= ds_grid_start(idim,nv)
 	   ds_grid_end(idim,var)  = ds_grid_end(idim,nv)
 	   ds_ordering(idim,var)  = ds_ordering(idim,nv)
  730	CONTINUE
-	ds_ordering(agg_dim,var) = agg_dim
-	ds_grid_start(agg_dim,var) = 1
-	ds_grid_end(agg_dim,var) = line_dim(iline)
+        ds_ordering(agg_dim,var) = agg_dim
+        ds_grid_start(agg_dim,var) = 1
+        ds_grid_end(agg_dim,var) = line_dim(iline)
 
 	is_cx(isp) = agg_cx
 	is_uvar ( isp ) = uvar
 
 * Now we have the grid for the variable in the agg. dataset. Store the grid 
 * number for future use.
+
+CC dont think this is right. should be the MEMBER grids not the aggregate var grid.
 	DO 800 imemb = 1, agg_len
-	   CALL CD_PUT_AGG_MEMB_GRID (agg_dset, name, imemb, gnum, status)
+	   CALL CD_PUT_AGG_MEMB_GRID (agg_dset, vname, imemb, gnum, status)
  800	CONTINUE
 
 	RETURN
@@ -262,10 +271,10 @@
 	RETURN
  5300	CALL ERRMSG( ferr_aggregate_error, status,
      .   'grids for LET/D variables do not match for aggregate dataset'
-     .   //name,*5000 )
- 5010	name = uvar_text(uvar)
+     .   //vname,*5000 )
+ 5010	vname = uvar_text(uvar)
 	CALL ERRMSG( ferr_aggregate_error, status,
      .   'error defining grid for variable in aggregate dataset'
-     .   //name,*5000 )
+     .   //vname,*5000 )
 
 	END	

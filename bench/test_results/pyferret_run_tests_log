@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Jun 28 14:17 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Jul 11 08:43 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -220,7 +220,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Jun 28 14:29:53 PDT 2013
+Beginning at Thu Jul 11 08:43:56 PDT 2013
 *** Running test: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -624,7 +624,7 @@ show mode journal
       JOURNAL          SET         newjournal.jnl
 set mode journal ferret.jnl
 ppl list plot
-         WIDTH=   10.20  HEIGHT=    8.80  TKTYPE= 4010  BAUD=  110
+         WIDTH=   10.50  HEIGHT=    8.50  TKTYPE= 4010  BAUD=  110
          WINDOW= ON   BOX= OFF  CROSS= 0  PLTYPE=  3
          PLOT MODE=   A
          PLOT FILE= ferret.png                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
@@ -636,7 +636,7 @@ ppl list plot
 ppl listsym
 cancel mode ppllist
 ppl list plot
-         WIDTH=   10.20  HEIGHT=    8.80  TKTYPE= 4010  BAUD=  110
+         WIDTH=   10.50  HEIGHT=    8.50  TKTYPE= 4010  BAUD=  110
          WINDOW= ON   BOX= OFF  CROSS= 0  PLTYPE=  3
          PLOT MODE=   A
          PLOT FILE= ferret.png                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
@@ -10130,7 +10130,7 @@ set mode/last ignore
  
 ! notice the default window size is 10.2,width x 8.8,height
 ppl list plot
-         WIDTH=   10.20  HEIGHT=    8.80  TKTYPE= 4010  BAUD=  110
+         WIDTH=   10.50  HEIGHT=    8.50  TKTYPE= 4010  BAUD=  110
          WINDOW= ON   BOX= OFF  CROSS= 0  PLTYPE=  3
          PLOT MODE=   A
          PLOT FILE= ferret.png                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
@@ -10340,42 +10340,42 @@ go mp_hammer
 set grid sst
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Hammer
- !-> PPL %LABEL/nouser 2.5335,-0.4,0,0,.20 Hammer
+ !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 Hammer
  
 set view tm
 go mp_sinusoidal
 go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Sinusoidal
- !-> PPL %LABEL/nouser 2.5335,-0.4,0,0,.20 Sinusoidal
+ !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 Sinusoidal
  
 set view tr
 go mp_lambert_cyl
 go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Lambert Equal Area
- !-> PPL %LABEL/nouser 2.5335,-0.4,0,0,.20 Lambert Equal Area
+ !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 Lambert Equal Area
  
 set view ml
 go mp_bonne
 go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Bonne
- !-> PPL %LABEL/nouser 2.5335,-0.4,0,0,.20 Bonne
+ !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 Bonne
  
 set view mm
 go mp_mcbryde_fpp
 go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 McBryde Flat Polar
- !-> PPL %LABEL/nouser 2.5335,-0.4,0,0,.20 McBryde Flat Polar
+ !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 McBryde Flat Polar
  
 set view mr
 go mp_polyconic
 go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Polyconic
- !-> PPL %LABEL/nouser 2.5335,-0.4,0,0,.20 Polyconic
+ !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 Polyconic
  
 set view bl
 go mp_orthographic 300 45
@@ -10383,7 +10383,7 @@ go margins .2, .6, .2, .2
 let masked_sst = sst * mp_mask
 shade/nolab/nokey/noaxes masked_sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 OrthoGraphic
- !-> PPL %LABEL/nouser 2.5335,-0.4,0,0,.20 OrthoGraphic
+ !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 OrthoGraphic
  
 set view bm
 set region/x=240:420
@@ -10391,7 +10391,7 @@ go mp_stereographic_eq
 go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Stereographic Equatorial
- !-> PPL %LABEL/nouser 2.5335,-0.4,0,0,.20 Stereographic Equatorial
+ !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 Stereographic Equatorial
  
 set view br
 set region/x=0:360/y=00:90
@@ -10399,7 +10399,7 @@ go mp_stereographic_north
 go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Stereographic North
- !-> PPL %LABEL/nouser 2.5335,-0.4,0,0,.20 Stereographic North
+ !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 Stereographic North
  
 can region
 exit
@@ -10467,15 +10467,15 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
 FERRET_PLATFORM = "Linux 2.6.18-348.6.1.el5"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
+NETCDF_VERSION = "4.3.0 of Jul  1 2013 12:53:13 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "28-Jun-13"
-SESSION_TIME = "14:30"
-SESSION_PID = "2374"
-DELTA_CPU = "0.38594"
-CLOCK_SECS = "0.247"
-CURRENT_DATE = "28-Jun-13"
-CURRENT_TIME = "14:30:09"
+SESSION_DATE = "11-Jul-13"
+SESSION_TIME = "08:44"
+SESSION_PID = "31727"
+DELTA_CPU = "0.472927"
+CLOCK_SECS = "0.319"
+CURRENT_DATE = "11-Jul-13"
+CURRENT_TIME = "08:44:17"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -10496,15 +10496,15 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
 FERRET_PLATFORM = "Linux 2.6.18-348.6.1.el5"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
+NETCDF_VERSION = "4.3.0 of Jul  1 2013 12:53:13 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "28-Jun-13"
-SESSION_TIME = "14:30"
-SESSION_PID = "2374"
-DELTA_CPU = "0.001"
-CLOCK_SECS = "0.248"
-CURRENT_DATE = "28-Jun-13"
-CURRENT_TIME = "14:30:09"
+SESSION_DATE = "11-Jul-13"
+SESSION_TIME = "08:44"
+SESSION_PID = "31727"
+DELTA_CPU = "0.002"
+CLOCK_SECS = "0.32"
+CURRENT_DATE = "11-Jul-13"
+CURRENT_TIME = "08:44:17"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 S1 = "hello"
@@ -10514,9 +10514,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "28-Jun-13"
-SESSION_TIME = "14:30"
-SESSION_PID = "2374"
+SESSION_DATE = "11-Jul-13"
+SESSION_TIME = "08:44"
+SESSION_PID = "31727"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10526,15 +10526,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "28-Jun-13"
-SESSION_TIME = "14:30"
-SESSION_PID = "2374"
+SESSION_DATE = "11-Jul-13"
+SESSION_TIME = "08:44"
+SESSION_PID = "31727"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "28-Jun-13"
-SESSION_TIME = "14:30"
-SESSION_PID = "2374"
+SESSION_DATE = "11-Jul-13"
+SESSION_TIME = "08:44"
+SESSION_PID = "31727"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10657,21 +10657,21 @@ say ($delayed_eval)         ! translate symbol and then evaluate
 ! cleanup
 cancel symbols/all
 show symbols/all
-PPL$XPIXEL = "0"
-PPL$YPIXEL = "0"
+PPL$XPIXEL = "1260"
+PPL$YPIXEL = "1020"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
 FERRET_PLATFORM = "Linux 2.6.18-348.6.1.el5"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
+NETCDF_VERSION = "4.3.0 of Jul  1 2013 12:53:13 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "28-Jun-13"
-SESSION_TIME = "14:30"
-SESSION_PID = "2374"
-DELTA_CPU = "0.021997"
-CLOCK_SECS = "0.27"
-CURRENT_DATE = "28-Jun-13"
-CURRENT_TIME = "14:30:09"
+SESSION_DATE = "11-Jul-13"
+SESSION_TIME = "08:44"
+SESSION_PID = "31727"
+DELTA_CPU = "0.023996"
+CLOCK_SECS = "0.345"
+CURRENT_DATE = "11-Jul-13"
+CURRENT_TIME = "08:44:17"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -25201,7 +25201,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Fri Jun 28 14:30:26 PDT 2013
+Thu Jul 11 08:44:36 PDT 2013
  
 GO bn_reset
 cancel mode verify
@@ -35041,31 +35041,31 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 4.74E+00 CSIZE= 1.00E-01
+         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 4.72E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 1.20E+00  AUTO LABELLING
+         XORG= 0.00E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 4.74E+00 CSIZE= 1.00E-01
+         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 3.42E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 1.40E+00  AUTO LABELLING
+         YORG= 1.30E+00  AUTO LABELLING
  
 ! guidelines showing origin, axlen, white space
 def view /xlim=0.25:0.75/ylim=0.25:0.75/text=1/axes mid2
 set view mid2
 ppl origin 0,0
 define symbol xaxl `($PPL$WIDTH)/2`
- !-> define symbol xaxl 4.737
+ !-> define symbol xaxl 4.7235
 define symbol yaxl `($PPL$HEIGHT)/2`
- !-> define symbol yaxl 4.737
+ !-> define symbol yaxl 4.7235
 ppl axlen `1.2 + ($xaxl) + 1.0`,`1.4 + ($yaxl) + 1.4`
- !-> ppl axlen 6.937,7.537
+ !-> ppl axlen 6.9235,7.5235
 plot/vs/hlim=-1.2:`($xaxl)+1.0`:0.2/vlim=-1.4:`($yaxl)+1.4`:0.2/nolab/nolab {0,($xaxl)}, {0,($yaxl)}
- !-> plot/vs/hlim=-1.2:5.737:0.2/vlim=-1.4:6.137:0.2/nolab/nolab {0,4.737}, {0,4.737}
+ !-> plot/vs/hlim=-1.2:5.7235:0.2/vlim=-1.4:6.1235:0.2/nolab/nolab {0,4.7235}, {0,4.7235}
  
 ! again with scale determined automatically
 ! make guide lines
@@ -35085,37 +35085,37 @@ show view mid
  
  name             text    xlimits     ylimits    mode
  
- MID              0.72   0.25,0.75   0.25,0.75   axes
+ MID              0.50   0.25,0.75   0.25,0.75   axes
    current viewport is MID
 ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 5.57E+00 CSIZE= 1.00E-01
+         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 6.68E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 1.20E+00  AUTO LABELLING
+         XORG= 0.00E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 5.57E+00 CSIZE= 1.00E-01
+         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 6.68E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 1.40E+00  AUTO LABELLING
+         YORG= 0.00E+00  AUTO LABELLING
  
 ! guidelines showing origin, axlen, white space
 def view /xlim=0.25:0.75/ylim=0.25:0.75/text=1/axes mid2
 set view mid2
 ppl origin 0,0
 define symbol xaxl `($PPL$WIDTH)/2`
- !-> define symbol xaxl 4.737
+ !-> define symbol xaxl 4.7235
 define symbol yaxl `($PPL$HEIGHT)/2`
- !-> define symbol yaxl 4.737
+ !-> define symbol yaxl 4.7235
 ppl axlen `1.2 + ($xaxl) + 1.0`,`1.4 + ($yaxl) + 1.4`
- !-> ppl axlen 6.937,7.537
+ !-> ppl axlen 6.9235,7.5235
 plot/vs/hlim=-1.2:`($xaxl)+1.0`:0.2/vlim=-1.4:`($yaxl)+1.4`:0.2/nolab/line {0,($xaxl)}, {0,($yaxl)}
- !-> plot/vs/hlim=-1.2:5.737:0.2/vlim=-1.4:6.137:0.2/nolab/line {0,4.737}, {0,4.737}
+ !-> plot/vs/hlim=-1.2:5.7235:0.2/vlim=-1.4:6.1235:0.2/nolab/line {0,4.7235}, {0,4.7235}
  
 set wind/clear
  
@@ -35126,7 +35126,7 @@ show view mid
  
  name             text    xlimits     ylimits    mode
  
- MID              0.72   0.25,0.75   0.25,0.75   axes
+ MID              0.50   0.25,0.75   0.25,0.75   axes
    current viewport is ALLAX
  
 set wind/clear
@@ -35138,7 +35138,7 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.74E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          XORG= 0.00E+00  AUTO LABELLING
@@ -35146,7 +35146,7 @@ ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.74E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          YORG= 0.00E+00  AUTO LABELLING
@@ -35158,7 +35158,7 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.74E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          XORG= 0.00E+00  AUTO LABELLING
@@ -35166,10 +35166,10 @@ ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.74E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 1.40E+00  AUTO LABELLING
+         YORG= 0.00E+00  AUTO LABELLING
  
 def view/axes/xlim=0.5:1/ylim=0:0.5/text=1 ulax
 set view ulax
@@ -35178,15 +35178,15 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.74E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 1.20E+00  AUTO LABELLING
+         XORG= 0.00E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.74E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          YORG= 0.00E+00  AUTO LABELLING
@@ -35198,18 +35198,18 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.74E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 1.20E+00  AUTO LABELLING
+         XORG= 0.00E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.74E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 1.40E+00  AUTO LABELLING
+         YORG= 0.00E+00  AUTO LABELLING
  
 ! again with viewport scaling determined automatically
 set wind/clear
@@ -35219,7 +35219,7 @@ show view llax
  
  name             text    xlimits     ylimits    mode
  
- LLAX             0.60   0.00,0.50   0.00,0.50   axes
+ LLAX             0.99   0.00,0.50   0.00,0.50   axes
    current viewport is URAX
 set view llax
 PLOT/VS/LINE/I=1:314/nolab i*cos(i/20),i*sin(i/20)
@@ -35227,7 +35227,7 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.13E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.75E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          XORG= 0.00E+00  AUTO LABELLING
@@ -35235,7 +35235,7 @@ ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.13E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.75E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          YORG= 0.00E+00  AUTO LABELLING
@@ -35245,7 +35245,7 @@ show view lrax
  
  name             text    xlimits     ylimits    mode
  
- LRAX             0.60   0.00,0.50   0.50,1.00   axes
+ LRAX             0.67   0.00,0.50   0.50,1.00   axes
    current viewport is LLAX
 set view lrax
 PLOT/VS/LINE/I=1:314/nolab i*cos(i/20),i*sin(i/20)
@@ -35253,7 +35253,7 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.13E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 5.76E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          XORG= 0.00E+00  AUTO LABELLING
@@ -35261,17 +35261,17 @@ ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.13E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 5.76E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 1.40E+00  AUTO LABELLING
+         YORG= 0.00E+00  AUTO LABELLING
  
 def view/axes/xlim=0.5:1/ylim=0:0.5 ulax
 show view ulax
  
  name             text    xlimits     ylimits    mode
  
- ULAX             0.61   0.50,1.00   0.00,0.50   axes
+ ULAX             0.64   0.50,1.00   0.00,0.50   axes
    current viewport is LRAX
 set view ulax
 PLOT/VS/LINE/I=1:314/nolab i*cos(i/20),i*sin(i/20)
@@ -35279,15 +35279,15 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.08E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 5.92E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 1.20E+00  AUTO LABELLING
+         XORG= 0.00E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.08E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 5.92E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          YORG= 0.00E+00  AUTO LABELLING
@@ -35297,7 +35297,7 @@ show view urax
  
  name             text    xlimits     ylimits    mode
  
- URAX             0.61   0.50,1.00   0.50,1.00   axes
+ URAX             0.50   0.50,1.00   0.50,1.00   axes
    current viewport is ULAX
 set view urax
 PLOT/VS/LINE/I=1:314/nolab i*cos(i/20),i*sin(i/20)
@@ -35305,18 +35305,18 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.08E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.68E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 1.20E+00  AUTO LABELLING
+         XORG= 0.00E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.08E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.68E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 1.40E+00  AUTO LABELLING
+         YORG= 0.00E+00  AUTO LABELLING
  
 cancel view
 go ptest
@@ -35329,18 +35329,18 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 7.27E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.68E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 1.20E+00  AUTO LABELLING
+         XORG= 0.00E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.67E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 5.38E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 1.40E+00  AUTO LABELLING
+         YORG= 1.30E+00  AUTO LABELLING
 *** Running test: bn_strings.jnl
 ! bn_strings.jnl
  
@@ -40334,7 +40334,7 @@ ppl plot
  
 set view lower
 ppl axlen `($ppl$xlen)-1`
- !-> ppl axlen 7
+ !-> ppl axlen 6.75
  
 plot/i=1:100/axes=1,0,0,1/set/title="shortened the x axis to make space" i*cos(i/8)
 ppl xlab "a multi line x label<NL>here is line two<NL>here is line three<NL>here is line four"
@@ -41001,12 +41001,12 @@ set region/x=130:290/y=-45:45
 shade/title="shift shakey left and up"/set temp[l=1]
  
 let x1 = `($ppl$xorg)+($ppl$xlen)`
- !-> DEFINE VARIABLE x1 = 9.2
+ !-> DEFINE VARIABLE x1 = 9.125
 let y1 = `($ppl$yorg)+.4`
- !-> DEFINE VARIABLE y1 = 1.8
+ !-> DEFINE VARIABLE y1 = 1.775
  
 ppl shakey ,,.12,,,,`x1`,,`y1`
- !-> ppl shakey ,,.12,,,,9.2,,1.8
+ !-> ppl shakey ,,.12,,,,9.125,,1.775
 ppl shade
 ppl list shakey
 
@@ -41015,17 +41015,17 @@ ppl list shakey
 
 
          X LO     X HI     Y LO     Y HI
-         9.20     9.49     1.80     7.80
+         9.13     9.52     1.77     7.53
  
 shade/title="set only x2,y2"/set temp[l=1]
  
 let x2 = `($ppl$xorg)+($ppl$xlen)`
- !-> DEFINE VARIABLE x2 = 9.2
+ !-> DEFINE VARIABLE x2 = 9.125
 let y2 = `($ppl$yorg)+($ppl$ylen) - .4`
- !-> DEFINE VARIABLE y2 = 7
+ !-> DEFINE VARIABLE y2 = 6.725
  
 ppl shakey ,,.12,,,,,`x2`,,`y2`
- !-> ppl shakey ,,.12,,,,,9.2,,7
+ !-> ppl shakey ,,.12,,,,,9.125,,6.725
 ppl shade
 ppl list shakey
 
@@ -41034,7 +41034,7 @@ ppl list shakey
 
 
          X LO     X HI     Y LO     Y HI
-         8.91     9.20     1.00     7.00
+         8.73     9.13     0.98     6.72
  
  
 ! resetting location of horizontal shade keys
@@ -41042,14 +41042,14 @@ ppl list shakey
 shade/title="shakey labels above it"/set temp[l=1]
  
 let x1 = `($ppl$xorg)+0.1`
- !-> DEFINE VARIABLE x1 = 1.3
+ !-> DEFINE VARIABLE x1 = 1.475
 let y1 = `($ppl$yorg)+($ppl$ylen)+0.1`
- !-> DEFINE VARIABLE y1 = 7.5
+ !-> DEFINE VARIABLE y1 = 7.225
 let y2 = `($ppl$yorg)+($ppl$ylen)+0.5`
- !-> DEFINE VARIABLE y2 = 7.9
+ !-> DEFINE VARIABLE y2 = 7.625
  
 ppl shakey ,0,-.12,2,,,`x1`,,`y1`,`y2`
- !-> ppl shakey ,0,-.12,2,,,1.3,,7.5,7.9
+ !-> ppl shakey ,0,-.12,2,,,1.475,,7.225,7.625
 go unlabel 4
 go unlabel 5
 ppl shade
@@ -41060,18 +41060,18 @@ ppl list shakey
 
 
          X LO     X HI     Y LO     Y HI
-         1.30     9.30     7.50     7.90
+         1.48     9.23     7.22     7.63
  
  
 let x1 = `($ppl$xorg)+1`
- !-> DEFINE VARIABLE x1 = 2.2
+ !-> DEFINE VARIABLE x1 = 2.375
 let x2 = `($ppl$xorg)+($ppl$xlen)-1`
- !-> DEFINE VARIABLE x2 = 8.2
+ !-> DEFINE VARIABLE x2 = 8.125
 let y1 = `($ppl$yorg)`
- !-> DEFINE VARIABLE y1 = 1.4
+ !-> DEFINE VARIABLE y1 = 1.375
 shade/title="shorter, at bottom"/set temp[l=1]
 ppl shakey ,0,-.12,3,,,`x1`,`x2`,`y1`
- !-> ppl shakey ,0,-.12,3,,,2.2,8.2,1.4
+ !-> ppl shakey ,0,-.12,3,,,2.375,8.125,1.375
 ppl shade
 ppl list shakey
 
@@ -41080,17 +41080,17 @@ ppl list shakey
 
 
          X LO     X HI     Y LO     Y HI
-         2.20     8.20     1.40     1.76
+         2.38     8.13     1.38     1.73
  
 shade/title="on left, labelled on left"/set temp[l=1]
 ppl axlabp, 1,1
  
 let x1 = `($ppl$xorg)`  - .5
- !-> DEFINE VARIABLE x1 = 1.2  - .5
+ !-> DEFINE VARIABLE x1 = 1.375  - .5
 let x2 = `($ppl$xorg)`  - 0.1
- !-> DEFINE VARIABLE x2 = 1.2  - 0.1
+ !-> DEFINE VARIABLE x2 = 1.375  - 0.1
 ppl shakey ,1,-.1,2,,,`x1`,`x2`
- !-> ppl shakey ,1,-.1,2,,,0.7,1.1
+ !-> ppl shakey ,1,-.1,2,,,0.875,1.275
 ppl shade
  
 ppl axlabp, -1, -1
@@ -41098,10 +41098,10 @@ ppl axlabp, -1, -1
 set view upper
 ppl window off
 let y1 = -1* `($ppl$yorg)`
- !-> DEFINE VARIABLE y1 = -1* 1.4
+ !-> DEFINE VARIABLE y1 = -1* 1.375
 shade/title="In viewport, shakey located anywhere on page"/set temp[l=1]
 ppl shakey ,0,-.1,2,,,,,`y1`
- !-> ppl shakey ,0,-.1,2,,,,,-1.4
+ !-> ppl shakey ,0,-.1,2,,,,,-1.375
 ppl shade
 ppl list shakey
 
@@ -41110,7 +41110,7 @@ ppl list shakey
 
 
          X LO     X HI     Y LO     Y HI
-         1.20     9.20    -1.40    -1.28
+         1.38     9.13    -1.38    -1.26
 *** Running test: bn_eof_4d.jnl
 ! bn_eof_4d.jnl
 ! test EOFs on XYZT grids
@@ -44702,7 +44702,7 @@ ppl list shakey
 
          DEFAULT KEY POSITIONING
          X LO     X HI     Y LO     Y HI
-         9.40     9.69     1.40     7.40
+         9.40     9.80     1.38     7.13
  
 fill/lev=c {-1.1,1.1}*ysequence({1,1})
 ppl list shakey
@@ -44713,7 +44713,7 @@ ppl list shakey
 
          DEFAULT KEY POSITIONING
          X LO     X HI     Y LO     Y HI
-         9.40     9.69     1.40     7.40
+         9.40     9.80     1.38     7.13
  
  
 ! At lon = 0, we used to have an E; remove this.
@@ -45996,17 +45996,17 @@ set viewport vp_1
  
 fill/set/L=2 sst
 ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
- !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  8.97,  9.27, 1.4, 4.333
+ !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  9.225,  9.525, 1.375, 4.208
 ppl fill
  
 fill/set/L=2 sst* 10000
 ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
- !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  8.97,  9.27, 1.4, 4.333
+ !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  9.225,  9.525, 1.375, 4.208
 ppl fill
  
 fill/set/L=2 sst/ 10000
 ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
- !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  8.97,  9.27, 1.4, 4.333
+ !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  9.225,  9.525, 1.375, 4.208
 ppl fill
  
 !
@@ -46017,17 +46017,17 @@ set viewport vp_1
  
 shade/set/L=2 sst
 ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
- !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  8.97,  9.27, 1.4, 4.333
+ !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  9.225,  9.525, 1.375, 4.208
 ppl shade
  
 shade/set/L=2 sst* 10000
 ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
- !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  8.97,  9.27, 1.4, 4.333
+ !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  9.225,  9.525, 1.375, 4.208
 ppl shade
  
 shade/set/L=2 sst/ 10000
 ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
- !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  8.97,  9.27, 1.4, 4.333
+ !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  9.225,  9.525, 1.375, 4.208
 ppl shade
  
  
@@ -46078,7 +46078,7 @@ list tsulab
 ! to the end of the shortened second line.
  
 label/nouser 3.6,`($ppl$ylen)+0.2`,0,0,0.08, `tsulab`
- !-> PPL %LABEL/nouser 3.6,6.2,0,0,0.08, 1234567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567890<nl>abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+ !-> PPL %LABEL/nouser 3.6,5.95,0,0,0.08, 1234567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567890<nl>abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
  
 ! result of COMPRESSK_BY function does not vary in X
 GO bn_reset
@@ -47030,15 +47030,15 @@ ppl list labels
  @ASDeg C                                                                       
 
           XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
+ LAB 1  0.000E+00  6.550E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 2  0.000E+00  6.600E+00 0.120    0  SYSTEM  @ASLATITUDE : 1S
+ LAB 2  0.000E+00  6.350E+00 0.120    0  SYSTEM  @ASLATITUDE : 1S
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 3  8.000E+00  6.540E+00 0.090    0  SYSTEM  @ASDATA SET: coads_climatology
+ LAB 3  7.750E+00  6.290E+00 0.090    0  SYSTEM  @ASDATA SET: coads_climatology
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
- LAB 4  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
+ LAB 4  3.880E+00  6.080E+00 0.120    0  SYSTEM  @A
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 5  8.000E+00  6.750E+00 0.073    0  SYSTEM  @ASOPeNDAP URL: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/
+ LAB 5  7.750E+00  6.500E+00 0.071    0  SYSTEM  @ASOPeNDAP URL: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
  
  
@@ -47093,7 +47093,7 @@ use coads_climatology
  
 shade/set/lev=(-inf),(4,28,2)(inf) sst[l=1]
 ppl shakey,1,0,-0.1,,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
- !-> ppl shakey,1,0,-0.1,,,,,,7.5
+ !-> ppl shakey,1,0,-0.1,,,,,,7.225
 ppl shade
  
 can view
@@ -47128,13 +47128,13 @@ can view
 set view upper
 fill/x=20e:150e/set/lev=(-inf),(4,28,0.5)(inf)/y=0:90 sst[l=1]
 ppl shakey,1,0,-0.1,10,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
- !-> ppl shakey,1,0,-0.1,10,,,,,3.1
+ !-> ppl shakey,1,0,-0.1,10,,,,,2.975
 ppl fill
  
 set view lower
 shade/set/lev=(-inf),(4,28,0.5)(inf)/y=0:90/key=cont sst[l=1]
 ppl shakey,1,0,-0.1,10,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
- !-> ppl shakey,1,0,-0.1,10,,,,,3.1
+ !-> ppl shakey,1,0,-0.1,10,,,,,1.476
 ppl shade
  
 ! Some one-sided examples
@@ -47144,7 +47144,7 @@ fill/lev=(-2,28,1)(inf) sst[l=1]
  
 shade/set/lev=(-inf),(4,30,0.5)/key=cont/pal=rainbow sst[l=1]
 ppl shakey,1,0,-0.1,10,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
- !-> ppl shakey,1,0,-0.1,10,,,,,7.5
+ !-> ppl shakey,1,0,-0.1,10,,,,,1.476
 ppl shade
  
 let filler = missing(sst[l=1],-999)
@@ -47535,14 +47535,14 @@ set view ll
 shade/key=cont/title="cont key with shakey call"/set temp[l=1]
  
 let/quiet x1 = `($ppl$xorg)+0.1`
- !-> DEFINE VARIABLE/quiet x1 = 1.3
+ !-> DEFINE VARIABLE/quiet x1 = 1.475
 let/quiet y1 = `($ppl$yorg)+($ppl$ylen)+0.1`
- !-> DEFINE VARIABLE/quiet y1 = 4.923
+ !-> DEFINE VARIABLE/quiet y1 = 4.735
 let/quiet y2 = `($ppl$yorg)+($ppl$ylen)+0.5`
- !-> DEFINE VARIABLE/quiet y2 = 5.323
+ !-> DEFINE VARIABLE/quiet y2 = 5.135
  
 ppl shakey ,0,-.12,2,,,`x1`,,`y1`,`y2`
- !-> ppl shakey ,0,-.12,2,,,1.3,,4.923,5.323
+ !-> ppl shakey ,0,-.12,2,,,1.475,,4.735,5.135
 go unlabel 4
 go unlabel 5
 ppl shade
@@ -47553,18 +47553,18 @@ ppl list shakey
 
 
          X LO     X HI     Y LO     Y HI
-         1.30     6.31     4.92     5.32
+         1.48     6.15     4.74     5.14
  
 set view lr
 let/quiet x1 = `($ppl$xorg)+1`
- !-> DEFINE VARIABLE/quiet x1 = 2.2
+ !-> DEFINE VARIABLE/quiet x1 = 2.375
 let/quiet x2 = `($ppl$xorg)+($ppl$xlen)-1`
- !-> DEFINE VARIABLE/quiet x2 = 5.212
+ !-> DEFINE VARIABLE/quiet x2 = 1.975
 let/quiet y1 = `($ppl$yorg)`
- !-> DEFINE VARIABLE/quiet y1 = 1.4
+ !-> DEFINE VARIABLE/quiet y1 = 1.375
 shade/title="with shakey, restore default key style"/set temp[l=1]
 ppl shakey ,0,-.12,3,,,`x1`,`x2`,`y1`
- !-> ppl shakey ,0,-.12,3,,,2.2,5.212,1.4
+ !-> ppl shakey ,0,-.12,3,,,2.375,1.975,1.375
 ppl shade
  
 can view
@@ -47579,14 +47579,14 @@ set view ll
 fill/key=cont/title="cont key with shakey call"/set temp[l=1]
  
 let/quiet x1 = `($ppl$xorg)+0.1`
- !-> DEFINE VARIABLE/quiet x1 = 1.3
+ !-> DEFINE VARIABLE/quiet x1 = 1.475
 let/quiet y1 = `($ppl$yorg)+($ppl$ylen)+0.1`
- !-> DEFINE VARIABLE/quiet y1 = 4.923
+ !-> DEFINE VARIABLE/quiet y1 = 1.476
 let/quiet y2 = `($ppl$yorg)+($ppl$ylen)+0.5`
- !-> DEFINE VARIABLE/quiet y2 = 5.323
+ !-> DEFINE VARIABLE/quiet y2 = 1.876
  
 ppl shakey ,0,-.12,2,,,`x1`,,`y1`,`y2`
- !-> ppl shakey ,0,-.12,2,,,1.3,,4.923,5.323
+ !-> ppl shakey ,0,-.12,2,,,1.475,,1.476,1.876
 go unlabel 4
 go unlabel 5
 ppl fill
@@ -47597,18 +47597,18 @@ ppl list shakey
 
 
          X LO     X HI     Y LO     Y HI
-         1.30     6.31     4.92     5.32
+         1.48     1.48     1.48     1.88
  
 set view lr
 let/quiet x1 = `($ppl$xorg)+1`
- !-> DEFINE VARIABLE/quiet x1 = 2.2
+ !-> DEFINE VARIABLE/quiet x1 = 2.375
 let/quiet x2 = `($ppl$xorg)+($ppl$xlen)-1`
- !-> DEFINE VARIABLE/quiet x2 = 5.212
+ !-> DEFINE VARIABLE/quiet x2 = 0.376
 let/quiet y1 = `($ppl$yorg)`
- !-> DEFINE VARIABLE/quiet y1 = 1.4
+ !-> DEFINE VARIABLE/quiet y1 = 1.375
 fill/title="with shakey, restore default key style"/set temp[l=1]
 ppl shakey ,0,-.12,3,,,`x1`,`x2`,`y1`
- !-> ppl shakey ,0,-.12,3,,,2.2,5.212,1.4
+ !-> ppl shakey ,0,-.12,3,,,2.375,0.376,1.375
 ppl fill
 *** Running test: bn581_bug_fixes.jnl
 ! bn581_bug_fixes.jnl
@@ -48285,7 +48285,7 @@ sho command
  Commands in Program FERRET (PyFerret 1.0.0beta) version6.85:
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE/QUALITY/ANTIALIA/NOANTIAL
-      /ENGINE/COLOR/OPACITY/THICKEN/XPIXELS/YPIXELS/XINCHES/YINCHES
+      /ENGINE/COLOR/OPACITY/THICKEN/XPIXELS/YPIXELS/XINCHES/YINCHES/TEXTPROM
  SET REGION/I/J/K/L/M/N/X/Y/Z/T/E/F/DX/DY/DZ/DT/DE/DF/DI/DJ/DK/DL/DM/DN
  SET VIEWPORT
  SET EXPRSION
@@ -48310,6 +48310,7 @@ sho command
  SHOW EXPRSION/ALL
  SHOW LIST/ALL
  SHOW DATA/ALL/BRIEF/FULL/VARIABLE/FILES/XML/ATTR/OUTFILE/APPEND/CLOBBER
+       /HIDDEN
  SHOW MODE/ALL
  SHOW MOVIE/ALL
  SHOW VARIABLE/ALL/DATASET/DIAG/USER/XML/OUTFILE/APPEND/CLOBBER
@@ -48372,7 +48373,7 @@ sho command
  DEFINE SYMBOL
  DEFINE ATTRIBUT/D/TYPE/OUTPUT
  DEFINE PYFUNC/NAME
- DEFINE DATA/AGGREGAT/E/TITLE/QUIET
+ DEFINE DATA/AGGREGAT/E/TITLE/QUIET/HIDE
  EXIT/COMMAND/LOOP/SCRIPT/PROMPT/PROGRAM/CYCLE/TOPYTHON
  MESSAGE/CONTINUE/QUIET/JOURNAL/ERROR/OUTFILE/APPEND/CLOBBER
  VECTOR/I/J/K/L/M/N/X/Y/Z/T/E/F/OVERLAY/SET_UP/FRAME/D/TRANPOSE/ASPECT/NOLABEL
@@ -48380,7 +48381,7 @@ sho command
          /FLOWLINE/DENSITY/AXES/PEN/HLIMITS/VLIMITS/HGRATICU/VGRATICU/GRATICUL
          /KEY/MODULO/OPACITY
  PPLUS/RESET
- FRAME/FORMAT/FILE/TRANSPAR
+ FRAME/FORMAT/FILE/TRANSPAR/XINCHES/YINCHES/XPIXELS/YPIXELS
  REPEAT/I/J/K/L/M/N/X/Y/Z/T/E/F/ANIMATE/LOOP/RANGE/NAME
  STAT/BRIEF/I/J/K/L/M/N/X/Y/Z/T/E/F/D
  SHADE/I/J/K/L/M/N/X/Y/Z/T/E/F/OVERLAY/SET_UP/FRAME/D/TRANPOSE/TRIM/LINE
@@ -48413,7 +48414,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "28-Jun-13_14:31"
+WIN_TITLE = "11-Jul-13_08:45"
  
 set win/title="set the title"
 sho sym win_title
@@ -48431,7 +48432,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="28-Jun-13:14:31"
+ !-> set win/title="11-Jul-13:08:45"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48440,16 +48441,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 28-Jun-13
+ !-> DEFINE SYMBOL the_date = 11-Jul-13
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 14:31
+ !-> DEFINE SYMBOL the_time = 08:45
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="28-Jun-13:14:31"
+ !-> SET WIN/TITLE="11-Jul-13:08:45"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "28-Jun-13:14:31"
+WIN_TITLE = "11-Jul-13:08:45"
 *** Running test: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -51382,10 +51383,10 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO= 3.12E+02 HI= 3.12E+02 TIC= 2.00E-02 LEN= 8.00E+00 CSIZE= 1.00E-01
+         LO= 3.12E+02 HI= 3.12E+02 TIC= 2.00E-02 LEN= 7.75E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 1.20E+00  LABEL FORMAT=  (F8.3,'LONE')       
+         XORG= 1.38E+00  LABEL FORMAT=  (F8.3,'LONE')       
  
 ! But /HLIM=312.23:312.3801/... works.
 fill/hlim=312.23:312.3801/vlim=37.03:40.91 0*x[gx=xfull] * y[gy=yfull]
@@ -51393,10 +51394,10 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO= 3.12E+02 HI= 3.12E+02 TIC= 2.00E-02 LEN= 8.00E+00 CSIZE= 1.00E-01
+         LO= 3.12E+02 HI= 3.12E+02 TIC= 2.00E-02 LEN= 7.75E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 1.20E+00  LABEL FORMAT=  (F8.2,'LONE')       
+         XORG= 1.38E+00  LABEL FORMAT=  (F8.2,'LONE')       
  
 ! Bug 1275 stray characters appear in data lines listing string data
 GO bn_reset
@@ -52707,7 +52708,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -52752,7 +52753,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -55320,13 +55321,8 @@ LET/D=2 ddat_a = ZAXREPLACE(ddat_orig[d=1], cycle_orig[d=2], dummy)
 ! Note how there are intermediate variables associated with the
 ! regridding operation
  
-SHOW DATA
+SHOW DATA 2
      currently SET data sets:
-    1> ./z1.nc
- name     title                             I         J         K         L         M         N
- DDAT_ORIG
-          DDAT[GZ=ZAXIS_ORIG@ASN]          ...       ...       1:5       ...       ...       ...
- 
     2> ./z2.nc  (default)
  name     title                             I         J         K         L         M         N
  CYCLE_ORIG
@@ -55338,68 +55334,8 @@ SHOW DATA
 ! Those intermediate variables should be skipped
 ! for SHOW DATA/VAR/XML
  
-SHOW DATA/VAR/XML
+SHOW DATA/VAR/XML 2
 <datasets>
-<dataset name="./z1.nc" default="false">
-<title> </title>
-<var name="DDAT_ORIG">
-<attribute name="long_name" type="char">
-   <value><![CDATA[DDAT[GZ=ZAXIS_ORIG@ASN]]]></value>
-</attribute>
-<attribute name="_FillValue" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="missing_value" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="ferret_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<grid name="GII1">
-<axes>
-<zaxis>ZAXIS_ORIG</zaxis>
-</axes>
-</grid>
-</var>
-</dataset>
-</datasets>
-<axes>
-<axis name="ZAXIS_ORIG">
-<attribute name="direction" type="char">
-   <value><![CDATA[K]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>5</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>10</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>50</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="axis" type="char">
-   <value><![CDATA[Z]]></value>
-</attribute>
-<attribute name="standard_name" type="char">
-   <value><![CDATA[altitude]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[ZAXIS_ORIG]]></value>
-</attribute>
-</axis>
-</axes>
 <dataset name="./z2.nc" default="true">
 <title> </title>
 <var name="CYCLE_ORIG">
@@ -55599,13 +55535,13 @@ ppl list labels
  @ASDeg C                                                                       
 
           XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLATITUDE : 39N
+ LAB 1  0.000E+00  6.550E+00 0.120    0  SYSTEM  @ASLATITUDE : 39N
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 2  0.000E+00  6.600E+00 0.120    0  SYSTEM  @ASTIME : 16-JAN 06:00
+ LAB 2  0.000E+00  6.350E+00 0.120    0  SYSTEM  @ASTIME : 16-JAN 06:00
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 3  8.000E+00  6.630E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
+ LAB 3  7.750E+00  6.380E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
- LAB 4  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
+ LAB 4  3.880E+00  6.080E+00 0.120    0  SYSTEM  @A
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  
 ! and now valid data overlaid with all-missing data
@@ -55618,13 +55554,13 @@ ppl list labels
  @ASDeg C                                                                       
 
           XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLATITUDE : 9N
+ LAB 1  0.000E+00  6.550E+00 0.120    0  SYSTEM  @ASLATITUDE : 9N
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 2  0.000E+00  6.600E+00 0.120    0  SYSTEM  @ASTIME : 16-JAN 06:00
+ LAB 2  0.000E+00  6.350E+00 0.120    0  SYSTEM  @ASTIME : 16-JAN 06:00
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 3  8.000E+00  6.630E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
+ LAB 3  7.750E+00  6.380E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
- LAB 4  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
+ LAB 4  3.880E+00  6.080E+00 0.120    0  SYSTEM  @A
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 5 -3.700E-01 -5.500E-01 0.080    0  SYSTEM  @ASSST[Y=39N] No Valid Data
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -55637,17 +55573,17 @@ ppl list labels
  @ASDeg C                                                                       
 
           XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  0.000E+00  6.600E+00 0.120    0  SYSTEM  @ASTIME : 16-JAN 06:00
+ LAB 1  0.000E+00  6.350E+00 0.120    0  SYSTEM  @ASTIME : 16-JAN 06:00
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 2  8.000E+00  6.630E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
+ LAB 2  7.750E+00  6.380E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
- LAB 3  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
+ LAB 3  3.880E+00  6.080E+00 0.120    0  SYSTEM  @A
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 4  2.530E+00 -7.900E-01 0.120    0  SYSTEM  @ASSST[Y=9N]
+ LAB 4  2.490E+00 -7.900E-01 0.120    0  SYSTEM  @ASSST[Y=9N]
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 5  5.780E+00 -7.900E-01 0.119    0  SYSTEM  @ASSST[Y=49N] No Valid Data
+ LAB 5  5.610E+00 -7.900E-01 0.114    0  SYSTEM  @ASSST[Y=49N] No Valid Data
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 6  2.530E+00 -1.050E+00 0.120    0  SYSTEM  @ASSST[Y=19N]
+ LAB 6  2.490E+00 -1.050E+00 0.120    0  SYSTEM  @ASSST[Y=19N]
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
  
 ! For 2D plots create a new MODE NODATA_LAB which if on, puts
@@ -56452,173 +56388,7 @@ LET a = { 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52
 SET VAR/BAD=999/OUTTYPE=int a
 SAVE/CLOBBER/FILE=a.nc a
 SP ncdump a.nc >> all_ncdump.out
- 
- 
-GO bn_reset
-cancel mode verify
-GO err611_save_from_desc
-! err611_save_from_desc.jnl
-!
-! In Ferret v6.19+ this failed with
-!  ** netCDF error: Failed creating coord variable %%
- 
-use coads_clim.des
-save/clobber/file=a.nc/i=100 sst
- 
-GO bn_reset
-cancel mode verify
-GO err611_irregular_axis
- ! err611_irregular_axis.jnl
- 
- ! See bug 1483, all about detecting irregular and regular axes. Finally
- ! did the right thing and test double-precision coordinates in DP and
- ! if single precision axes comes in, test that in SP.
- 
-! The dataset was created as follows to have large time coordinates but
-! irregularly spaced.
- 
-! define axis/t=1-jan-2008:"1-jan-2008:00:02:22":1/units=seconds/t0="1-jan-0001" tax
-! let cc = L[gt=tax]
-! save/file=cc.nc/clobber cc
-! Use ncdump to write a cdl file and edit that file to remove one time
-! coordinate and one value of cc. Run ncgen and write cc_irreg.nc
- 
-! Previous versions of this detected the axis as regular.
- 
-use cc_irreg.nc
-sh grid cc
-    GRID GCZ1
- name       axis              # pts   start                end
- normal    X
- normal    Y
- normal    Z
- TAX       TIME               142 i   30-DEC-2007 00:00    30-DEC-2007 00:02
- normal    E
- normal    F
- 
- 
-GO bn_reset
-cancel mode verify
-GO err611_ef_string_result
-! err611_ef_string_result.jnl
-! testing the fix for bug 1621
-! call to EFCN_GET_RTN_TYPE wasn't hooked up in gcf_rtn_type.F
-!
- 
-define axis/t=1-jan-1980:1-jan-1990:4/unit=days tax
-define grid/t=tax gg
-let date_list = t[t=29000:29900:100]
-list tax_datestring(date_list,t[g=gg],"day")
-             VARIABLE : TAX_DATESTRING(DATE_LIST,T[G=GG],"day")
-             SUBSET   : 10 points (T)
- 29000   /  1:"09-JUN-1980"
- 29100   /  2:"17-SEP-1980"
- 29200   /  3:"26-DEC-1980"
- 29300   /  4:"05-APR-1981"
- 29400   /  5:"14-JUL-1981"
- 29500   /  6:"22-OCT-1981"
- 29600   /  7:"30-JAN-1982"
- 29700   /  8:"10-MAY-1982"
- 29800   /  9:"18-AUG-1982"
- 29900   / 10:"26-NOV-1982"
-let v = tax_datestring(date_list,t[g=gg],"day")
-list v
-             VARIABLE : TAX_DATESTRING(DATE_LIST,T[G=GG],"day")
-             SUBSET   : 10 points (T)
- 29000   /  1:"09-JUN-1980"
- 29100   /  2:"17-SEP-1980"
- 29200   /  3:"26-DEC-1980"
- 29300   /  4:"05-APR-1981"
- 29400   /  5:"14-JUL-1981"
- 29500   /  6:"22-OCT-1981"
- 29600   /  7:"30-JAN-1982"
- 29700   /  8:"10-MAY-1982"
- 29800   /  9:"18-AUG-1982"
- 29900   / 10:"26-NOV-1982"
- 
-! Combine tax_datestring call with *cat_str function
- 
-let yr = tax_datestring(date_list,t[g=gg],"second")
-let both = tcat_str(v, yr)
-list both
-             VARIABLE : TCAT_STR(V, YR)
-             SUBSET   : 20 points (T)
- 1    /  1:"09-JUN-1980"         
- 2    /  2:"17-SEP-1980"         
- 3    /  3:"26-DEC-1980"         
- 4    /  4:"05-APR-1981"         
- 5    /  5:"14-JUL-1981"         
- 6    /  6:"22-OCT-1981"         
- 7    /  7:"30-JAN-1982"         
- 8    /  8:"10-MAY-1982"         
- 9    /  9:"18-AUG-1982"         
- 10   / 10:"26-NOV-1982"         
- 11   / 11:"09-JUN-1980 00:00:00"
- 12   / 12:"17-SEP-1980 00:00:00"
- 13   / 13:"26-DEC-1980 00:00:00"
- 14   / 14:"05-APR-1981 00:00:00"
- 15   / 15:"14-JUL-1981 00:00:00"
- 16   / 16:"22-OCT-1981 00:00:00"
- 17   / 17:"30-JAN-1982 00:00:00"
- 18   / 18:"10-MAY-1982 00:00:00"
- 19   / 19:"18-AUG-1982 00:00:00"
- 20   / 20:"26-NOV-1982 00:00:00"
- 
-let xt = xcat_str(v, yr)
-list xt
-             VARIABLE : XCAT_STR(V, YR)
-             SUBSET   : 2 by 10 points (X-T)
-                         1                     2            
-                          1                     2
- 29000   /  1:"09-JUN-1980"         "09-JUN-1980 00:00:00"
- 29100   /  2:"17-SEP-1980"         "17-SEP-1980 00:00:00"
- 29200   /  3:"26-DEC-1980"         "26-DEC-1980 00:00:00"
- 29300   /  4:"05-APR-1981"         "05-APR-1981 00:00:00"
- 29400   /  5:"14-JUL-1981"         "14-JUL-1981 00:00:00"
- 29500   /  6:"22-OCT-1981"         "22-OCT-1981 00:00:00"
- 29600   /  7:"30-JAN-1982"         "30-JAN-1982 00:00:00"
- 29700   /  8:"10-MAY-1982"         "10-MAY-1982 00:00:00"
- 29800   /  9:"18-AUG-1982"         "18-AUG-1982 00:00:00"
- 29900   / 10:"26-NOV-1982"         "26-NOV-1982 00:00:00"
- 
- 
-GO bn_reset
-cancel mode verify
-GO err61_contour_subspan_reps
-! err61_contour_subspan_reps.jnl
-! Bug 1659.
-!
-!
-! CONTOUR (or FILL) doesn't work properly with a subspan modulo axis,
-! unlike SHADE. And we get different CONTOUR results if the subspan modulo
-! axis coordinates are supplied on the positive vs. the negative modulo branch.
- 
-use coads_climatology
-let a = sst[x=120:284,y=-2:2@ave]
-save/clob/file=a.nc a
- 
-can var a
-use a
-set reg/x=125e:70w
-shade/x=-360:360 a
-fill/ov/pal=greyscale/x=-360:360 a
-cont/ov/x=-360:360 a
- 
-! Now region in negative x
- 
-can dat/all; can var/all
- 
-use coads_climatology
-let b = sst[x=-240:-76,y=-2:2@ave]
-save/clob/file=b.nc b
- 
-can var b
-use b
-set reg/x=125e:70w
-shade/x=-360:360 b
-fill/ov/pal=greyscale/x=-360:360 b
-cont/ov/x=-360:360 b
- 
+****** FERRET error: bn614_bug_fixes.jnl failed ******
 *** Running test: bn_mode_nodata_lab.jnl
 ! bn_mode_nodata_lab
 ! turns off the No Valid Data label on plots
@@ -58684,10 +58454,10 @@ SH GRID am
  normal    F
 *** Running test: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.515921"
-CLOCK_SECS = "0.3"
-CURRENT_DATE = "28-Jun-13"
-CURRENT_TIME = "14:32:15"
+DELTA_CPU = "0.514921"
+CLOCK_SECS = "0.302"
+CURRENT_DATE = "11-Jul-13"
+CURRENT_TIME = "08:46:41"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -58696,8 +58466,8 @@ CURRENT_TIME = "14:32:15"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.046993"
-CLOCK_SECS = "0.347"
+DELTA_CPU = "0.055991"
+CLOCK_SECS = "0.358"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -58711,60 +58481,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.444932
+ !-> DEFINE VARIABLE ten_plots = 0.623905
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0.001"
-CLOCK_SECS = "0.793"
+CLOCK_SECS = "0.983"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.793"
+CLOCK_SECS = "0.983"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.032995
+ !-> DEFINE VARIABLE dt = 0.060991
+ !-> DEFINE VARIABLE sumcpu =0.060991
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.034994
- !-> DEFINE VARIABLE sumcpu =0.067989
+ !-> DEFINE VARIABLE dt = 0.06599
+ !-> DEFINE VARIABLE sumcpu =0.126981
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.034995
- !-> DEFINE VARIABLE sumcpu =0.102984
+ !-> DEFINE VARIABLE dt = 0.06599
+ !-> DEFINE VARIABLE sumcpu =0.192971
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.036994
- !-> DEFINE VARIABLE sumcpu =0.139978
+ !-> DEFINE VARIABLE dt = 0.06299
+ !-> DEFINE VARIABLE sumcpu =0.255961
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.173973
+ !-> DEFINE VARIABLE dt = 0.038995
+ !-> DEFINE VARIABLE sumcpu =0.294956
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.035995
- !-> DEFINE VARIABLE sumcpu =0.209968
+ !-> DEFINE VARIABLE dt = 0.041993
+ !-> DEFINE VARIABLE sumcpu =0.336949
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.242963
+ !-> DEFINE VARIABLE dt = 0.037995
+ !-> DEFINE VARIABLE sumcpu =0.374944
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.275958
+ !-> DEFINE VARIABLE dt = 0.036994
+ !-> DEFINE VARIABLE sumcpu =0.411938
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.307953
+ !-> DEFINE VARIABLE dt = 0.036993
+ !-> DEFINE VARIABLE sumcpu =0.448931
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.339948
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.485926
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.339948
-0.339948
+ !-> MESSAGE/CONTINUE 0.485926
+0.485926
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.134"
+CLOCK_SECS = "1.471"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "28-Jun-13"
-SESSION_TIME = "14:32"
-CURRENT_DATE = "28-Jun-13"
-CURRENT_TIME = "14:32:16"
+SESSION_DATE = "11-Jul-13"
+SESSION_TIME = "08:46"
+CURRENT_DATE = "11-Jul-13"
+CURRENT_TIME = "08:46:42"
 *** Running test: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -61151,6 +60921,7 @@ set view v8; plot/trans/nolab/ax=0,0,1,0/hlim=0:1/set tvar
 ! 5/2012:
 ! Do this on a dataset with just one variable.
 ! Dont do show axis/all. Just the axes for one variable is a lot of output.
+! Ferret v685, show/data/var/xml includes the output of show axis, so remove that.
  
 USE ocean_atlas_temp.cdf
  
@@ -61165,14 +60936,6 @@ show var/xml/append/outfile=($output_xml_file)
  !-> show var/xml/append/outfile=the_xml_file.xml
 show data/var/xml/append/outfile=($output_xml_file)
  !-> show data/var/xml/append/outfile=the_xml_file.xml
-show axis/xml/append/outfile=($output_xml_file) `temp,return=xaxis`
- !-> show axis/xml/append/outfile=the_xml_file.xml XAX_LEV9421_380
-show axis/xml/append/outfile=($output_xml_file) `temp,return=yaxis`
- !-> show axis/xml/append/outfile=the_xml_file.xml YAX_LEV94
-show axis/xml/append/outfile=($output_xml_file) `temp,return=zaxis`
- !-> show axis/xml/append/outfile=the_xml_file.xml ZAXLEVIT191_1
-show axis/xml/append/outfile=($output_xml_file) `temp,return=taxis`
- !-> show axis/xml/append/outfile=the_xml_file.xml TIME
 say/quiet/outfile=($output_xml_file)/append </data>
  !-> MESSAGE/CONTINUE/quiet/outfile=the_xml_file.xml/append </data>
  
@@ -61307,142 +61070,6 @@ sp cat the_xml_file.xml
    <value><![CDATA[ZAXLEVIT191_1]]></value>
 </attribute>
 </axis>
-<axis name="TIME">
-<attribute name="direction" type="char">
-   <value><![CDATA[L]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[hour since 0000-01-01 00:00:00]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>2</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>0000-01-16 06:00:00</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>0000-02-15 16:29:00</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="time_origin" type="char">
-   <value><![CDATA[0000-01-01 00:00:00]]></value>
-</attribute>
-<attribute name="calendar" type="char">
-   <value><![CDATA[GREGORIAN]]></value>
-</attribute>
-<attribute name="modulo_length" type="short">
-   <value>8765.82</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[TIME]]></value>
-</attribute>
-</axis>
-</axes>
-<axes>
-<axis name="XAX_LEV9421_380">
-<attribute name="direction" type="char">
-   <value><![CDATA[I]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[degrees_east]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>360</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>20.5</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>379.5</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[XAX_LEV9421_380]]></value>
-</attribute>
-</axis>
-</axes>
-<axes>
-<axis name="YAX_LEV94">
-<attribute name="direction" type="char">
-   <value><![CDATA[J]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[degrees_north]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>180</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>-89.5</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>89.5</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[YAX_LEV94]]></value>
-</attribute>
-</axis>
-</axes>
-<axes>
-<axis name="ZAXLEVIT191_1">
-<attribute name="direction" type="char">
-   <value><![CDATA[K]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[METERS]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>1</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>0</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>0</value>
-</attribute>
-<attribute name="positive" type="char">
-   <value><![CDATA[down]]></value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[ZAXLEVIT191_1]]></value>
-</attribute>
-</axis>
-</axes>
-<axes>
 <axis name="TIME">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
@@ -62816,8 +62443,8 @@ list contents
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.85 (PyFerret 1.0.0beta)"                                       
- 3    /  3:" ! Linux 2.6.18-348.6.1.el5 - 06/28/13"                                     
- 4    /  4:" ! 28-Jun-13 14:32     "                                                    
+ 3    /  3:" ! Linux 2.6.18-348.6.1.el5 - 07/11/13"                                     
+ 4    /  4:" ! 11-Jul-13 08:47     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -63282,185 +62909,6 @@ GO err664_xml_keep_case
 !******* Needs further changes to integrate it with LAS    ******!
  
 use a_cartesian_bug1179.nc
-sh dat/var/xml
-<datasets>
-<dataset name="./a_cartesian_bug1179.nc" default="true">
-<title> </title>
-<var name="temp">
-<attribute name="units" type="char">
-   <value><![CDATA[nounits]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[THETA_FO(SALT_EXTRAP,TEMP_EXTRAP,Z[G=TEMP_EXTRAP],0)]]></value>
-</attribute>
-<attribute name="missing_value" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="ferret_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<grid name="GHU1">
-<axes>
-<xaxis>GRID_X_T</xaxis>
-<yaxis>GRID_Y_T</yaxis>
-<zaxis>ZT</zaxis>
-<taxis>TIME</taxis>
-</axes>
-</grid>
-</var>
-</dataset>
-</datasets>
-<axes>
-<axis name="TIME">
-<attribute name="direction" type="char">
-   <value><![CDATA[L]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[days since 1900-01-01 00:00:00]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>1</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>1900-02-15 03:00:00</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>1900-02-15 03:00:00</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="time_origin" type="char">
-   <value><![CDATA[1900-01-01 00:00:00]]></value>
-</attribute>
-<attribute name="calendar" type="char">
-   <value><![CDATA[JULIAN]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[TIME]]></value>
-</attribute>
-</axis>
-<axis name="GRID_X_T">
-<attribute name="direction" type="char">
-   <value><![CDATA[I]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[degrees_east]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>1</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>79</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>79</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[Nominal Longitude of T-cell center]]></value>
-</attribute>
-<attribute name="cartesian_axis" type="char">
-   <value><![CDATA[X]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[grid_x_T]]></value>
-</attribute>
-</axis>
-<axis name="GRID_Y_T">
-<attribute name="direction" type="char">
-   <value><![CDATA[J]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[degrees_north]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>1</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>-0.25</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>-0.25</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[Nominal Latitude of T-cell center]]></value>
-</attribute>
-<attribute name="cartesian_axis" type="char">
-   <value><![CDATA[Y]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[grid_y_T]]></value>
-</attribute>
-</axis>
-<axis name="ZT">
-<attribute name="direction" type="char">
-   <value><![CDATA[K]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[meters]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>10</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>22.5</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>157.9952</value>
-</attribute>
-<attribute name="positive" type="char">
-   <value><![CDATA[down]]></value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value>uneven</value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[zt]]></value>
-</attribute>
-<attribute name="cartesian_axis" type="char">
-   <value><![CDATA[z]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[zt]]></value>
-</attribute>
-<attribute name="bounds" type="char">
-   <value>zt_bnds</value>
-</attribute>
-</axis>
-</axes>
 sh var/xml
  
 ! List the xml for just the axes in this file. sho axis/all/xml
@@ -63677,210 +63125,6 @@ SH VAR/XML
 </grid>
 </var>
 </global>
-SH DAT/VAR/XML
-<datasets>
-<dataset name="./a_cartesian_bug1179.nc" default="true">
-<title> </title>
-<var name="temp">
-<attribute name="units" type="char">
-   <value><![CDATA[nounits]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[THETA_FO(SALT_EXTRAP,TEMP_EXTRAP,Z[G=TEMP_EXTRAP],0)]]></value>
-</attribute>
-<attribute name="missing_value" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="ferret_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<grid name="GHU1">
-<axes>
-<xaxis>GRID_X_T</xaxis>
-<yaxis>GRID_Y_T</yaxis>
-<zaxis>ZT</zaxis>
-<taxis>TIME</taxis>
-</axes>
-</grid>
-</var>
-<var name="a">
-<attribute name="definition" type="char">
-   <value><![CDATA[TEMP]]></value>
-</attribute>
-<attribute name="_FillValue" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="missing_value" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="ferret_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[TEMP]]></value>
-</attribute>
-<grid name="GHU1">
-<axes>
-<xaxis>GRID_X_T</xaxis>
-<yaxis>GRID_Y_T</yaxis>
-<zaxis>ZT</zaxis>
-<taxis>TIME</taxis>
-</axes>
-</grid>
-</var>
-</dataset>
-</datasets>
-<axes>
-<axis name="TIME">
-<attribute name="direction" type="char">
-   <value><![CDATA[L]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[days since 1900-01-01 00:00:00]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>1</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>1900-02-15 03:00:00</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>1900-02-15 03:00:00</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="time_origin" type="char">
-   <value><![CDATA[1900-01-01 00:00:00]]></value>
-</attribute>
-<attribute name="calendar" type="char">
-   <value><![CDATA[JULIAN]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[TIME]]></value>
-</attribute>
-</axis>
-<axis name="ZT">
-<attribute name="direction" type="char">
-   <value><![CDATA[K]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[meters]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>10</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>22.5</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>157.9952</value>
-</attribute>
-<attribute name="positive" type="char">
-   <value><![CDATA[down]]></value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value>uneven</value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[zt]]></value>
-</attribute>
-<attribute name="cartesian_axis" type="char">
-   <value><![CDATA[z]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[zt]]></value>
-</attribute>
-<attribute name="bounds" type="char">
-   <value>zt_bnds</value>
-</attribute>
-</axis>
-<axis name="GRID_Y_T">
-<attribute name="direction" type="char">
-   <value><![CDATA[J]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[degrees_north]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>1</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>-0.25</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>-0.25</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[Nominal Latitude of T-cell center]]></value>
-</attribute>
-<attribute name="cartesian_axis" type="char">
-   <value><![CDATA[Y]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[grid_y_T]]></value>
-</attribute>
-</axis>
-<axis name="GRID_X_T">
-<attribute name="direction" type="char">
-   <value><![CDATA[I]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[degrees_east]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>1</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>79</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>79</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[Nominal Longitude of T-cell center]]></value>
-</attribute>
-<attribute name="cartesian_axis" type="char">
-   <value><![CDATA[X]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[grid_x_T]]></value>
-</attribute>
-</axis>
-</axes>
  
 CANCEL VAR a
  
@@ -63905,209 +63149,7 @@ SH VAR/XML
 </grid>
 </var>
 </global>
-SH DAT/VAR/XML
-<datasets>
-<dataset name="./a_cartesian_bug1179.nc" default="true">
-<title> </title>
-<var name="temp">
-<attribute name="units" type="char">
-   <value><![CDATA[nounits]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[THETA_FO(SALT_EXTRAP,TEMP_EXTRAP,Z[G=TEMP_EXTRAP],0)]]></value>
-</attribute>
-<attribute name="missing_value" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="ferret_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<grid name="GHU1">
-<axes>
-<xaxis>GRID_X_T</xaxis>
-<yaxis>GRID_Y_T</yaxis>
-<zaxis>ZT</zaxis>
-<taxis>TIME</taxis>
-</axes>
-</grid>
-</var>
-<var name="temp_ave_t">
-<attribute name="definition" type="char">
-   <value><![CDATA[TEMP[Z=37.5:112.5@AVE]]]></value>
-</attribute>
-<attribute name="_FillValue" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="missing_value" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="ferret_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[TEMP[Z=37.5:112.5@AVE]]]></value>
-</attribute>
-<grid name="GHU1">
-<axes>
-<xaxis>GRID_X_T</xaxis>
-<yaxis>GRID_Y_T</yaxis>
-<taxis>TIME</taxis>
-</axes>
-</grid>
-</var>
-</dataset>
-</datasets>
-<axes>
-<axis name="TIME">
-<attribute name="direction" type="char">
-   <value><![CDATA[L]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[days since 1900-01-01 00:00:00]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>1</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>1900-02-15 03:00:00</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>1900-02-15 03:00:00</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="time_origin" type="char">
-   <value><![CDATA[1900-01-01 00:00:00]]></value>
-</attribute>
-<attribute name="calendar" type="char">
-   <value><![CDATA[JULIAN]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[TIME]]></value>
-</attribute>
-</axis>
-<axis name="ZT">
-<attribute name="direction" type="char">
-   <value><![CDATA[K]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[meters]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>10</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>22.5</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>157.9952</value>
-</attribute>
-<attribute name="positive" type="char">
-   <value><![CDATA[down]]></value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value>uneven</value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[zt]]></value>
-</attribute>
-<attribute name="cartesian_axis" type="char">
-   <value><![CDATA[z]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[zt]]></value>
-</attribute>
-<attribute name="bounds" type="char">
-   <value>zt_bnds</value>
-</attribute>
-</axis>
-<axis name="GRID_Y_T">
-<attribute name="direction" type="char">
-   <value><![CDATA[J]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[degrees_north]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>1</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>-0.25</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>-0.25</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[Nominal Latitude of T-cell center]]></value>
-</attribute>
-<attribute name="cartesian_axis" type="char">
-   <value><![CDATA[Y]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[grid_y_T]]></value>
-</attribute>
-</axis>
-<axis name="GRID_X_T">
-<attribute name="direction" type="char">
-   <value><![CDATA[I]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[degrees_east]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>1</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>79</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>79</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[Nominal Longitude of T-cell center]]></value>
-</attribute>
-<attribute name="cartesian_axis" type="char">
-   <value><![CDATA[X]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[grid_x_T]]></value>
-</attribute>
-</axis>
-</axes>
+ 
  
 GO bn_reset
 cancel mode verify
@@ -65830,42 +64872,42 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.7274
- 2   / 2:  0.9258
- 3   / 3:  0.7678
- 4   / 4:  0.6365
- 5   / 5:  0.0744
+ 1   / 1:  0.6184
+ 2   / 2:  0.4541
+ 3   / 3:  0.7345
+ 4   / 4:  0.8288
+ 5   / 5:  0.8476
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.1012
- 2   / 2:  0.3679
- 3   / 3:  0.7710
- 4   / 4:  0.6220
- 5   / 5:  0.3867
+ 1   / 1:  0.9920
+ 2   / 2:  0.5242
+ 3   / 3:  0.9848
+ 4   / 4:  0.7818
+ 5   / 5:  0.4256
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.1979
- 2   / 2:  0.7672
- 3   / 3:  0.6706
- 4   / 4:  0.3451
- 5   / 5:  0.4025
- 6   / 6:  0.6937
+ 1   / 1:  0.0048
+ 2   / 2:  0.2385
+ 3   / 3:  0.8461
+ 4   / 4:  0.7652
+ 5   / 5:  0.3310
+ 6   / 6:  0.4746
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.2476
- 2   / 2:  0.2289
- 3   / 3:  0.2039
- 4   / 4:  0.0912
- 5   / 5:  0.0129
- 6   / 6:  0.6823
+ 1   / 1:  0.1066
+ 2   / 2:  0.4001
+ 3   / 3:  0.0384
+ 4   / 4:  0.2073
+ 5   / 5:  0.6072
+ 6   / 6:  0.6760
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
@@ -65897,42 +64939,42 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1: -0.374
- 2   / 2: -0.695
- 3   / 3: -0.797
- 4   / 4:  1.556
- 5   / 5: -2.287
+ 1   / 1:  1.618
+ 2   / 2: -0.116
+ 3   / 3: -0.725
+ 4   / 4:  1.700
+ 5   / 5: -0.386
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  1.905
- 2   / 2:  1.048
- 3   / 3:  0.958
- 4   / 4: -1.912
- 5   / 5: -0.763
+ 1   / 1: -0.105
+ 2   / 2: -0.441
+ 3   / 3:  0.773
+ 4   / 4:  1.635
+ 5   / 5:  0.580
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1: -0.966
- 2   / 2:  0.257
- 3   / 3: -1.295
- 4   / 4:  1.406
- 5   / 5:  0.478
- 6   / 6:  1.640
+ 1   / 1:  1.211
+ 2   / 2: -0.061
+ 3   / 3: -0.677
+ 4   / 4: -1.431
+ 5   / 5: -0.035
+ 6   / 6:  0.304
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.9668
- 2   / 2:  0.4770
- 3   / 3:  0.2582
- 4   / 4: -0.6638
- 5   / 5: -0.7299
- 6   / 6:  0.4051
+ 1   / 1:  1.118
+ 2   / 2: -0.173
+ 3   / 3:  2.352
+ 4   / 4: -0.258
+ 5   / 5:  0.194
+ 6   / 6:  0.480
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
@@ -65967,15 +65009,15 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-            VAR2   VAR2   VAR2
-0     / 1:  1.900  1.900  1.163
-20    / 2:  1.368  1.368  1.163
-40    / 3:  1.163  1.163  0.415
-60    / 4:  0.415  0.415  0.415
-80    / 5: -0.140 -0.140  0.415
-100   / 6: -0.435 -0.140  0.415
-120   / 7:  0.313  0.077  0.415
-140   / 8:  0.077  0.313  0.415
+            VAR2   VAR2    VAR2
+0     / 1:  1.432  1.432  0.4145
+20    / 2:  1.014  1.014  0.4145
+40    / 3:  0.414  0.414 -0.0239
+60    / 4: -0.197 -0.197  0.4145
+80    / 5: -0.260 -0.197  0.4145
+100   / 6: -0.024 -0.260  0.4145
+120   / 7: -0.453 -0.024  0.4145
+140   / 8:  0.685  0.685  0.6853
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -70343,7 +69385,6 @@ set mode/last diag
 *** Running test: bn_aggregate_e.jnl
 ! bn_aggregate_e.jnl
 ! using the DEFINE ATTRIBUTE/E command
- 
 ! Datasets share sst, but only ens1 has airt.
  
 set mode diag
@@ -70355,7 +69396,7 @@ define data/agg/title fourfiles = ens1, ens3, ens2, ens4
 ! The grid of SST is known.
 show data fourfiles
      currently SET data sets:
-    5> FOURFILES  (default)
+    5> FOURFILES  (default)  Ferret-defined Ensemble dataset
  name     title                             I         J         K         L         M         N
  SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
  
@@ -70397,27 +69438,35 @@ let/d=ens2 airt = sst + 1
 let/d=ens3 airt = sst + 1
 let/d=ens4 airt = sst + 1
  
-define data/agg/title fourfiles = ens1, ens3, ens2, ens4
+define data/agg fourfiles = ens1, ens3, ens2, ens4
  allocate dynamic grid (G005)          COADSX116_COADSY52_6NORMAL    TIME      ENSEMBLE  NORMAL
+ getgrid AIRT     C:  6 dset:   3 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME      NORMAL    NORMAL
+ getgrid AIRT     C:  6 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME      NORMAL    NORMAL
+ getgrid AIRT     C:  6 dset:   4 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME      NORMAL    NORMAL
 show data fourfiles
      currently SET data sets:
-    5> FOURFILES  (default)
+    5> FOURFILES  (default)  Ferret-defined Ensemble dataset
  name     title                             I         J         K         L         M         N
  SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
- AIRT     AIR TEMPERATURE                ... Aggregate grid undetermined
+ getgrid EX#1     C:  7 dset:   5 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ getgrid AIRT     C:  9 dset:   5 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ getgrid AIRT     C: 11 dset:   3 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME      NORMAL    NORMAL
+ getgrid AIRT     C: 11 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME      NORMAL    NORMAL
+ getgrid AIRT     C: 11 dset:   4 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME      NORMAL    NORMAL
+ allocate dynamic grid (G005)          COADSX116_COADSY52_6NORMAL    TIME      ENSEMBLE  NORMAL
+ allocate dynamic grid (G005)          COADSX116_COADSY52_6NORMAL    TIME      ENSEMBLE  NORMAL
+ AIRT     AIR TEMPERATURE                  1:10      1:9       ...       1:12      1:4       ...
  
  
 list/i=3 airt[T=@ave]
+ dealloc  dynamic grid (G005)          COADSX116_COADSY52_6NORMAL    TIME      ENSEMBLE  NORMAL
  getgrid EX#1     C:  5 dset:   5 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- getgrid AIRT     C:  7 dset:   5 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- getgrid AIRT     C:  9 dset:   3 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME      NORMAL    NORMAL
- getgrid AIRT     C:  9 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME      NORMAL    NORMAL
- getgrid AIRT     C:  9 dset:   4 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME      NORMAL    NORMAL
- allocate dynamic grid (G005)          COADSX116_COADSY52_6NORMAL    TIME      ENSEMBLE  NORMAL
- allocate dynamic grid (G005)          COADSX116_COADSY52_6NORMAL    TIME      ENSEMBLE  NORMAL
  allocate dynamic grid (G005)          COADSX116_COADSY52_6NORMAL    TIME      ENSEMBLE  NORMAL
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   5 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M:    1    4  N: -999 -999
@@ -70442,6 +69491,7 @@ list/i=3 airt[T=@ave]
  doing aggregate gathering AIRT on E axis:     4     4 dset:   4
  doing --> AIRT[T=01-JAN00:45:31-DEC06:34@AVE,D=5]
              VARIABLE : AIR TEMPERATURE (DEG C)
+             DATA SET : Ensemble
              FILENAME : FOURFILES
              SUBSET   : 9 by 4 points (LATITUDE-E)
              LONGITUDE: 105W
@@ -70478,6 +69528,7 @@ set mode/last ignore
  
 ! Rename the varibles in dataset 2, then define UWND and VWND as
 ! variables on the grid of dset 1.
+set dat 2
 set var/name=uin uwnd
 set var/name=vin vwnd
  
@@ -70485,11 +69536,11 @@ set var/name=vin vwnd
 ! those variables in dataset 1
  
 let/d=2/units="`uin,return=units`"/title="`uin,return=title`" \
- uwnd = uin[gxy=uwnd[d=1],gt=uwnd[d=1]@mod]
- !-> DEFINE VARIABLE/d=2/units="M/S"/title="ZONAL WIND"  uwnd = uin[gxy=uwnd[d=1],gt=uwnd[d=1]@mod]
+ uwnd = uin[d=2,gxy=uwnd[d=1],gt=uwnd[d=1]@mod]
+ !-> DEFINE VARIABLE/d=2/units="M/S"/title="ZONAL WIND"  uwnd = uin[d=2,gxy=uwnd[d=1],gt=uwnd[d=1]@mod]
 let/d=2/units="`vin,return=units`"/title="`vin,return=title`" \
- vwnd = vin[gxy=vwnd[d=1],gt=vwnd[d=1]@mod]
- !-> DEFINE VARIABLE/d=2/units="M/S"/title="MERIDIONAL WIND"  vwnd = vin[gxy=vwnd[d=1],gt=vwnd[d=1]@mod]
+ vwnd = vin[d=2,gxy=vwnd[d=1],gt=vwnd[d=1]@mod]
+ !-> DEFINE VARIABLE/d=2/units="M/S"/title="MERIDIONAL WIND"  vwnd = vin[d=2,gxy=vwnd[d=1],gt=vwnd[d=1]@mod]
  
 show data
      currently SET data sets:
@@ -70504,25 +69555,25 @@ show data
  UIN      ZONAL WIND                       1:30      1:30      ...       1:30      ...       ...
  VIN      MERIDIONAL WIND                  1:30      1:30      ...       1:30      ...       ...
  ------------------------------
- VWND[D=navy_uw] = VIN[GXY=VWND[D=1],GT=VWND[D=1]@MOD]
- UWND[D=navy_uw] = UIN[GXY=UWND[D=1],GT=UWND[D=1]@MOD]
+ VWND[D=navy_uw] = VIN[D=2,GXY=VWND[D=1],GT=VWND[D=1]@MOD]
+ UWND[D=navy_uw] = UIN[D=2,GXY=UWND[D=1],GT=UWND[D=1]@MOD]
  
  
 ! Define the ensemble dataset
 define data/agg windy = 1,2
  
-! The grid of the aggregate variables with LET/D not yet known.
+! The grid of the aggregate variables with LET/D is known.
 show data windy
      currently SET data sets:
-    3> WINDY  (default)
+    3> WINDY  (default)  Ferret-defined Ensemble dataset
  name     title                             I         J         K         L         M         N
- UWND     ZONAL WIND                     ... Aggregate grid undetermined
- VWND     MERIDIONAL WIND                ... Aggregate grid undetermined
+ UWND     ZONAL WIND                       1:30      1:30      ...       1:12      1:2       ...
+ VWND     MERIDIONAL WIND                  1:30      1:30      ...       1:12      1:2       ...
  
  
 ! Use variable from the new dataset
-list/l=3/y=30 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd[d=3,e=@ave]
-             LONGITUDE: 60W to 0E(360)
+list/l=3/y=30/x=-59:-51 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd[d=3,e=@ave]
+             LONGITUDE: 59W(-59) to 51W(-51)
              LATITUDE: 29N
              TIME: 17-MAR 02:58
  Column  1: UWND[D=coads_uw] is ZONAL WIND (M/S)
@@ -70530,45 +69581,278 @@ list/l=3/y=30 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd[d=3,e=@av
  Column  3: UWND[D=WINDY,E=1] is ZONAL WIND (M/S)
  Column  4: VWND[D=WINDY,E=2] is MERIDIONAL WIND (M/S)
  Column  5: UWND[D=WINDY,E=0.5:2.5@AVE] is ZONAL WIND (M/S)
-             UWND   UWND   UWND   VWND   UWND
-59W   /  1:  1.643  0.232  1.643  0.232  0.937
-57W   /  2:  1.404  0.110  1.404  0.110  0.757
-55W   /  3:  1.353 -0.018  1.353 -0.018  0.667
-53W   /  4:  1.210 -0.162  1.210 -0.162  0.524
-51W   /  5:  1.086 -0.309  1.086 -0.309  0.389
-49W   /  6:  1.064 -0.475  1.064 -0.475  0.295
-47W   /  7:  0.926 -0.683  0.926 -0.683  0.121
-45W   /  8:  0.769 -0.958  0.769 -0.958 -0.094
-43W   /  9:  0.935 -1.336  0.935 -1.336 -0.201
-41W   / 10:  0.820 -1.701  0.820 -1.701 -0.441
-39W   / 11:  0.563 -2.048  0.563 -2.048 -0.743
-37W   / 12: -0.022 -2.359 -0.022 -2.359 -1.190
-35W   / 13: -0.049 -2.603 -0.049 -2.603 -1.326
-33W   / 14:  0.190 -2.798  0.190 -2.798 -1.304
-31W   / 15: -0.477 -2.918 -0.477 -2.918 -1.697
-29W   / 16: -0.867 -2.985 -0.867 -2.985 -1.926
-27W   / 17: -0.958 -3.015 -0.958 -3.015 -1.986
-25W   / 18: -0.634 -3.013 -0.634 -3.013 -1.824
-23W   / 19: -0.547 -2.900 -0.547 -2.900 -1.724
-21W   / 20: -0.830 -2.622 -0.830 -2.622 -1.726
-19W   / 21: -1.225 -2.370 -1.225 -2.370 -1.797
-17W   / 22: -1.518 -2.282 -1.518 -2.282 -1.900
-15W   / 23: -0.955 -2.442 -0.955 -2.442 -1.699
-13W   / 24: -0.850 -2.698 -0.850 -2.698 -1.774
-11W   / 25: -0.059 -3.258 -0.059 -3.258 -1.658
-9W    / 26:  3.512 -3.659  3.512 -3.659 -0.073
-7W    / 27:   .... -3.850   .... -3.850 -3.850
-5W    / 28:   .... -4.196   .... -4.196 -4.196
-3W    / 29:   .... -4.650   .... -4.650 -4.650
-1W    / 30:   .... -5.051   .... -5.051 -5.051
+               UWND    UWND   UWND    VWND    UWND
+59W    / -30:  1.643  0.2317  1.643  0.2317  0.9371
+57W    / -29:  1.404  0.1102  1.404  0.1102  0.7573
+55W    / -28:  1.353 -0.0184  1.353 -0.0184  0.6674
+53W    / -27:  1.210 -0.1624  1.210 -0.1624  0.5237
+51W    / -26:  1.086 -0.3088  1.086 -0.3088  0.3887
  
-! Now the grid of uwnd is known.
+! Use the other order. As long as we have a file variable, we're ok
+ 
+cancel data 3
+ 
+! Define the ensemble dataset
+define data/agg windy = 2,1
+ 
+! The grid of the aggregate variables with LET/D is known.
 show data windy
      currently SET data sets:
-    3> WINDY  (default)
+    3> WINDY  (default)  Ferret-defined Ensemble dataset
  name     title                             I         J         K         L         M         N
  UWND     ZONAL WIND                       1:30      1:30      ...       1:12      1:2       ...
- VWND     MERIDIONAL WIND                ... Aggregate grid undetermined
+ VWND     MERIDIONAL WIND                  1:30      1:30      ...       1:12      1:2       ...
+ 
+ 
+! Use variable from the new dataset
+list/l=3/y=30/x=-59:-51 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd[d=3,e=@ave]
+             LONGITUDE: 59W(-59) to 51W(-51)
+             LATITUDE: 29N
+             TIME: 17-MAR 02:58
+ Column  1: UWND[D=coads_uw] is ZONAL WIND (M/S)
+ Column  2: UWND[D=navy_uw] is ZONAL WIND (M/S)
+ Column  3: VWND[D=WINDY,E=1] is MERIDIONAL WIND (M/S)
+ Column  4: UWND[D=WINDY,E=2] is ZONAL WIND (M/S)
+ Column  5: VWND[D=WINDY,E=0.5:2.5@AVE] is MERIDIONAL WIND (M/S)
+               UWND    UWND    VWND   UWND    VWND
+59W    / -30:  1.643  0.2317  0.2317  1.643  0.9371
+57W    / -29:  1.404  0.1102  0.1102  1.404  0.7573
+55W    / -28:  1.353 -0.0184 -0.0184  1.353  0.6674
+53W    / -27:  1.210 -0.1624 -0.1624  1.210  0.5237
+51W    / -26:  1.086 -0.3088 -0.3088  1.086  0.3887
+ 
+can data/all
+can var/all
+ 
+! DEFINE DATA/HIDE
+! SHOW DATA/HIDDEN
+! Alias ENSEMBLE for DEFINE DATA/AGG/E
+ 
+! If define the ensemble with /HIDE then SHOW DAT will skip the
+! member datasets and show only the ensemble.
+! show dat/hidden forces showing all
+ 
+sh command define
+ DEFINE
+ DEFINE REGION/I/J/K/L/M/N/X/Y/Z/T/E/F/DEFAULT/DX/DY/DZ/DT/DE/DF/DI/DJ/DK
+         /DL/DM/DN
+ DEFINE GRID/X/Y/Z/T/E/F/FILE/LIKE
+ DEFINE VARIABLE/TITLE/UNITS/QUIET/DATASET/BAD/REMOTE
+ DEFINE AXIS/X/Y/Z/T/E/F/FILE/UNITS/T0/NAME/FROMDATA/DEPTH/MODULO/NPOINTS
+         /EDGES/CALENDAR/BOUNDS/QUIET
+ DEFINE VIEWPORT/TEXT/XLIMITS/YLIMITS/SIZE/ORIGIN/CLIP/AXES
+ DEFINE ALIAS
+ DEFINE SYMBOL
+ DEFINE ATTRIBUT/D/TYPE/OUTPUT
+ DEFINE PYFUNC/NAME
+ DEFINE DATA/AGGREGAT/E/TITLE/QUIET/HIDE
+sh command show
+ SHOW/ALL
+ SHOW WINDOW/ALL
+ SHOW REGION/ALL
+ SHOW AXIS/ALL/I/J/K/L/M/N/X/Y/Z/T/E/F/XML/OUTFILE/APPEND/CLOBBER
+ SHOW EXPRSION/ALL
+ SHOW LIST/ALL
+ SHOW DATA/ALL/BRIEF/FULL/VARIABLE/FILES/XML/ATTR/OUTFILE/APPEND/CLOBBER
+       /HIDDEN
+ SHOW MODE/ALL
+ SHOW MOVIE/ALL
+ SHOW VARIABLE/ALL/DATASET/DIAG/USER/XML/OUTFILE/APPEND/CLOBBER
+ SHOW COMMANDS/ALL
+ SHOW MEMORY/ALL/TEMPORY/PERMANT/FREE
+ SHOW GRID/ALL/I/J/K/L/M/N/X/Y/Z/T/E/F/DYNAMIC/XML/OUTFILE/APPEND/CLOBBER
+ SHOW VIEWPORT/ALL
+ SHOW TRANFORM/ALL
+ SHOW ALIAS/ALL
+ SHOW SYMBOL/ALL
+ SHOW ATTRIBUT/ALL/DATASET/OUTPUT
+ SHOW NCCACHE
+ SHOW GIFFILE
+ SHOW FUNCTION/ALL/BRIEF/EXTERNAL/INTERNAL/DETAILS
+ SHOW QUERIES/ALL
+ 
+use ens1, ens2, ens3, ens4
+ensemble/HIDE/title="ensemble with hidden members" fourfiles = ens1, ens2, ens3, ens4
+ 
+! should just show the ensemble set
+sh dat
+     currently SET data sets:
+    5> FOURFILES  (default)  Ferret-defined Ensemble dataset
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
+ 
+ 
+! If ask for a member set by name or number, do show it
+sh dat 2
+     currently SET data sets:
+    2> ./ens2.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+sh dat ens3
+     currently SET data sets:
+    3> ./ens3.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+ 
+! should show all members plus ensemble
+sh dat/hidden
+     currently SET data sets:
+    1> ./ens1.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ AIRT     AIR TEMPERATURE                  1:10      1:9       ...       1:12      ...       ...
+ 
+    2> ./ens2.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    3> ./ens3.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    4> ./ens4.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    5> FOURFILES  (default)  Ferret-defined Ensemble dataset
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
+ 
+ 
+! Should show original member datasets
+can dat fourfiles
+sh dat
+     currently SET data sets:
+    1> ./ens1.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ AIRT     AIR TEMPERATURE                  1:10      1:9       ...       1:12      ...       ...
+ 
+    2> ./ens2.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    3> ./ens3.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    4> ./ens4.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+can dat/all
+ 
+! Cancel a member, then the ensemble gets canceled.
+! The hidden members should show up.
+ 
+use ens1, ens2, ens3, ens4
+ensemble/HIDE/title="uvars in dset 2"  my_ens = 1,2
+sh dat
+     currently SET data sets:
+    3> ./ens3.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    4> ./ens4.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    5> MY_ENS  (default)  Ferret-defined Ensemble dataset
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      1:2       ...
+ 
+can dat  2
+sh dat
+     currently SET data sets:
+    1> ./ens1.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ AIRT     AIR TEMPERATURE                  1:10      1:9       ...       1:12      ...       ...
+ 
+    3> ./ens3.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    4> ./ens4.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+ 
+! Cancel the ensemble, then hidden members get un-hidden.
+ 
+use ens1, ens2, ens3, ens4
+ensemble/HIDE/title="uvars in dset 2"  my_ens = 1,2,3,4
+ 
+! members hidden, showing only ensemble.
+sh dat
+     currently SET data sets:
+    5> MY_ENS  (default)  Ferret-defined Ensemble dataset
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
+ 
+can dat my_ens
+ 
+! Cancel ensemble dataset: members un-hidden
+sh dat
+     currently SET data sets:
+    1> ./ens1.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ AIRT     AIR TEMPERATURE                  1:10      1:9       ...       1:12      ...       ...
+ 
+    2> ./ens2.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    3> ./ens3.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    4> ./ens4.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+ 
+! Define several ensembles with /HIDE
+ensemble/HIDE/title="ensemble with hidden members" fourfiles = ens1, ens2, ens3, ens4
+ensemble/HIDE/title="ensemble with hidden members" some = ens1, ens2
+ensemble/HIDE/title="ensemble with hidden members" more = ens2, ens3, ens4
+ 
+! Shows all the ensembles
+sh dat
+     currently SET data sets:
+    5> FOURFILES     Ferret-defined Ensemble dataset
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
+ 
+    6> SOME     Ferret-defined Ensemble dataset
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      1:2       ...
+ 
+    7> MORE  (default)  Ferret-defined Ensemble dataset
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      1:3       ...
+ 
+ 
+! Cancel a member of all the ensembles.
+! Cancels dataset 2 and also the ensemble sets.
+can dat 2
+sh dat
+     currently SET data sets:
+    1> ./ens1.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ AIRT     AIR TEMPERATURE                  1:10      1:9       ...       1:12      ...       ...
+ 
+    3> ./ens3.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
+ 
+    4> ./ens4.nc
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      ...       ...
  
  
 *** Running test: bn_6d_lab_mode.jnl
@@ -71087,7 +70371,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71142,7 +70426,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71186,7 +70470,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71230,7 +70514,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71267,7 +70551,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71305,7 +70589,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71372,7 +70656,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71421,7 +70705,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71482,7 +70766,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71523,7 +70807,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71564,7 +70848,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71605,7 +70889,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71643,7 +70927,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71871,7 +71155,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71909,7 +71193,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71956,7 +71240,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -72000,7 +71284,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72025,7 +71309,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72050,7 +71334,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72479,7 +71763,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13" ;
+		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72508,7 +71792,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13" ;
+		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72559,7 +71843,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13" ;
+		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72660,7 +71944,7 @@ sh dat/var/xml
    <value><![CDATA[Number of O2 Utilization Observations]]></value>
 </attribute>
 <attribute name="_FillValue" type="float">
-   <value>-2.147484E+09</value>
+   <value>     -2147483647</value>
 </attribute>
 <attribute name="ferret_datatype" type="char">
    <value><![CDATA[FLOAT]]></value>
@@ -72719,6 +72003,26 @@ sh dat/var/xml
 </attribute>
 </axis>
 </axes>
+ 
+GO bn_reset
+cancel mode verify
+GO err684_axticlab
+! err684_axticlab
+! 7/10/2013 *acm
+!
+! ticket 1990: axis tic labels for higher precison data
+! had just 2 digits, and didnt capture the data range.
+ 
+set mode meta axticlabel.plt
+ 
+let/title="tic labels on dependent axis" var = {\
+1.715,1.7136,1.711,1.7083,1.7056,1.703,1.7003,1.6976,1.695,1.6923,\
+1.6897,1.687,1.6843,1.6817,1.679,1.6765,1.676,1.676}
+ 
+plot/line/sym/title="Vert axis labels should be 1.675 thru 1.715" var
+can mode meta
+ 
+ 
 *** Running test: bn_dsg_e_x.jnl
 ! bn_dsg_e.jnl
 !
@@ -72772,6 +72076,10 @@ sh grid sal
 ! bn_nco_append.jnl
 ! 5/2013 add a test appending files with ncks
  
+ ! These functions use Unix NCO utilities, found at http://nco.sourceforge.net/
+ ! If NCO is not installed, it is fine to comment out this script when running
+ ! the Ferret benchmark suite.
+ 
 ! Prior to v6.85 Ferret's NCO function always included -O for Override.
 ! Appending failed. In v6.85+, if -A is included then dont send -O to ncks.
 use z1
@@ -72809,7 +72117,7 @@ variables:
 		CYCLE_ORIG:history = "From z2" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13" ;
+		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13" ;
 		:Conventions = "CF-1.0" ;
 }
 *** Running test: bn_nobounds.jnl
@@ -72839,7 +72147,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13" ;
+		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72870,7 +72178,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13" ;
+		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72932,7 +72240,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13" ;
+		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13" ;
 		:Conventions = "CF-1.0" ;
 }
  
@@ -72960,7 +72268,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 28-Jun-13" ;
+		:history = "FERRET V6.85 (PyFerret 1.0.0beta) 11-Jul-13" ;
 		:Conventions = "CF-1.0" ;
 }
  
@@ -72990,7 +72298,11 @@ sh att mhchla
  MHCHLA.history = From http://oceanwatch.pfeg.noaa.gov/thredds/dodsC/satellite/MH/chla/mday 
 set att/output=all mhchla
 save/file=a.nc/clobber mhchla
-exit /program
+ 
+sp ncdump a.nc | grep numberOfObservations
+		MHCHLA:numberOfObservations = 15736939 ;
+ 
+ 
 *** Running test: bn_all_ef.jnl
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -73825,33 +73137,33 @@ exit
 exit/command
 *** Running test: bn_startupfile.jnl
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
-PPL$XPIXEL = "0"
-PPL$YPIXEL = "0"
+PPL$XPIXEL = "1260"
+PPL$YPIXEL = "1020"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.85"
 FERRET_PLATFORM = "Linux 2.6.18-348.6.1.el5"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.2.1.1 of Jan 31 2013 15:51:06 $"
+NETCDF_VERSION = "4.3.0 of Jul  1 2013 12:53:13 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "28-Jun-13"
-SESSION_TIME = "14:33"
-SESSION_PID = "4156"
-DELTA_CPU = "0.337947"
-CLOCK_SECS = "0.2"
-CURRENT_DATE = "28-Jun-13"
-CURRENT_TIME = "14:33:12"
+SESSION_DATE = "11-Jul-13"
+SESSION_TIME = "08:47"
+SESSION_PID = "660"
+DELTA_CPU = "0.531918"
+CLOCK_SECS = "0.319"
+CURRENT_DATE = "11-Jul-13"
+CURRENT_TIME = "08:47:45"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
 PPL$PLTNME = "ferret.png"
 PPL$TEKNME = "/dev/tty"
-PPL$XLEN = "8.000"
-PPL$YLEN = "6.000"
-PPL$XORG = "1.200"
-PPL$YORG = "1.400"
-PPL$WIDTH = "10.20"
-PPL$HEIGHT = "8.800"
+PPL$XLEN = "7.750"
+PPL$YLEN = "5.750"
+PPL$XORG = "1.375"
+PPL$YORG = "1.375"
+PPL$WIDTH = "10.50"
+PPL$HEIGHT = "8.500"
 PPL$LINE_COUNT = "0"
 PPL$XFACT1 = "1.000"
 PPL$XOFF1 = "0.000"
@@ -73861,12 +73173,12 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "28-Jun-13_14:33"
-VP_WIDTH = "10.2"
-VP_HEIGHT = "8.8"
+VP_WIDTH = "10.5"
+VP_HEIGHT = "8.5"
+WIN_TITLE = "11-Jul-13_08:47"
 VP_SCALE = "1"
-VP_RT_MARGIN = "1"
-VP_TOP_MARGIN = "1.4"
+VP_RT_MARGIN = "1.375"
+VP_TOP_MARGIN = "1.375"
 VP_XLO = "0"
 VP_XHI = "1"
 VP_YLO = "0"
@@ -73912,4 +73224,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Fri Jun 28 14:33:13 PDT 2013
+Ended at Thu Jul 11 08:47:46 PDT 2013

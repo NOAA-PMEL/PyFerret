@@ -34,19 +34,20 @@
 * v6.6  *acm* 1/10 - more qualifiers on LIST for netcdf4 control
 * V6.5  *acm* 3/10 new qualifiers on (some) SHOW commands and on MESSAGE: 
 *                  /OUTFILE= /APPEND /CLOBBER
-* V6.6  *kms* 5/10 add SET REDIRECT and CANCEL REDIRECT for stdout/stderr redirection
-*       *kms* 7/10 add OPEN alias for SET DATA /BROWSE
-* V664  8/10 *kms* Add DEFINE PYFUNC /NAME=<alias> python.module.name
-* V6.8  *acm* 1/12 Add SET DATA/STRICT 
-* PyFr  *kms* 3/11 Add CANCEL PYVAR /ALL /DATASET
-* PyFr  *kms* 1/12 Add SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
-* V68 *acm* 5/12   Add DEFINE DATA/AGGREGATE/TITLE/QUIET
-* V683  8/12 *acm*  New SET LIST/OUTTYPE CANCEL LIST/OUTTYPE, and SAVE/OUTTYPE 
-* V684 *adm* 12/12 Changes for VECTOR/MODULO on curvilinear plots.
-* PyFr  *kms* 1/13 Remove SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL;
+* V6.6 *kms*  5/10 add SET REDIRECT and CANCEL REDIRECT for stdout/stderr redirection
+*      *kms*  7/10 add OPEN alias for SET DATA /BROWSE
+* V664 *kms*  8/10 Add DEFINE PYFUNC /NAME=<alias> python.module.name
+* V6.8 *acm*  1/12 Add SET DATA/STRICT 
+* PyFr *kms*  3/11 Add CANCEL PYVAR /ALL /DATASET
+* PyFr *kms*  1/12 Add SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
+* V68  *acm*  5/12 Add DEFINE DATA/AGGREGATE/TITLE/QUIET
+* V683 *acm*  8/12 New SET LIST/OUTTYPE CANCEL LIST/OUTTYPE, and SAVE/OUTTYPE 
+* V684 *acm* 12/12 Changes for VECTOR/MODULO on curvilinear plots.
+* PyFr *kms*  1/13 Remove SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL;
+* V685 *acm*  4/13 Add /HIDDEN on DEF DATA/AGG
 *                  Add /QUALITY= /AAlias /NoAAlias /ENGINE= to SET WINDOW
-* PyFr  *kms* 7/13 Add /THICKEN to SET WINDOW to specify line thickness scaling factor
-* PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW and FRAME
+* PyFr *kms*  7/13 Add /THICKEN to SET WINDOW to specify line thickness scaling factor
+* PyFr *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW and FRAME
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -158,7 +159,7 @@
      .			nqual2d =20, nqual_at2e = nqual_at2d + nqual2d,	!'AXIS'
      .			nqual2e = 1, nqual_at2f = nqual_at2e + nqual2e,	!'EXPR'
      .			nqual2f = 1, nqual_at2g = nqual_at2f + nqual2f,	!'LIST'
-     .			nqual2g =10, nqual_at2h = nqual_at2g + nqual2g,	!'DATA'
+     .			nqual2g =15, nqual_at2h = nqual_at2g + nqual2g,	!'DATA'
      .			nqual2h = 1, nqual_at2i = nqual_at2h + nqual2h,	!'MODE'
      .			nqual2i = 1, nqual_at2j = nqual_at2i + nqual2i,	!'MOVI'
      .			nqual2j = 8, nqual_at2k = nqual_at2j + nqual2j,	!'VARI'

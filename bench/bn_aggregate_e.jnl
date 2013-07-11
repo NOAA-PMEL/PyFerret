@@ -1,6 +1,5 @@
 ! bn_aggregate_e.jnl
 ! using the DEFINE ATTRIBUTE/E command
-
 ! Datasets share sst, but only ens1 has airt. 
 
 set mode diag
@@ -19,7 +18,7 @@ let/d=ens2 airt = sst + 1
 let/d=ens3 airt = sst + 1
 let/d=ens4 airt = sst + 1
 
-define data/agg/title fourfiles = ens1, ens3, ens2, ens4
+define data/agg fourfiles = ens1, ens3, ens2, ens4
 show data fourfiles
 
 list/i=3 airt[T=@ave]
@@ -49,6 +48,7 @@ set mode/last ignore
 
 ! Rename the varibles in dataset 2, then define UWND and VWND as
 ! variables on the grid of dset 1.
+set dat 2
 set var/name=uin uwnd
 set var/name=vin vwnd
 
@@ -56,21 +56,97 @@ set var/name=vin vwnd
 ! those variables in dataset 1
 
 let/d=2/units="`uin,return=units`"/title="`uin,return=title`" \
- uwnd = uin[gxy=uwnd[d=1],gt=uwnd[d=1]@mod]
+ uwnd = uin[d=2,gxy=uwnd[d=1],gt=uwnd[d=1]@mod]
 let/d=2/units="`vin,return=units`"/title="`vin,return=title`" \
- vwnd = vin[gxy=vwnd[d=1],gt=vwnd[d=1]@mod]
+ vwnd = vin[d=2,gxy=vwnd[d=1],gt=vwnd[d=1]@mod]
 
 show data
 
 ! Define the ensemble dataset
 define data/agg windy = 1,2
 
-! The grid of the aggregate variables with LET/D not yet known.
+! The grid of the aggregate variables with LET/D is known.
 show data windy
 
 ! Use variable from the new dataset
-list/l=3/y=30 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd[d=3,e=@ave]
+list/l=3/y=30/x=-59:-51 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd[d=3,e=@ave]
 
-! Now the grid of uwnd is known.
+! Use the other order. As long as we have a file variable, we're ok
+
+cancel data 3
+
+! Define the ensemble dataset
+define data/agg windy = 2,1
+
+! The grid of the aggregate variables with LET/D is known.
 show data windy
+
+! Use variable from the new dataset
+list/l=3/y=30/x=-59:-51 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd[d=3,e=@ave]
+
+can data/all
+can var/all
+
+! DEFINE DATA/HIDE
+! SHOW DATA/HIDDEN
+! Alias ENSEMBLE for DEFINE DATA/AGG/E
+
+! If define the ensemble with /HIDE then SHOW DAT will skip the
+! member datasets and show only the ensemble.
+! show dat/hidden forces showing all
+
+sh command define
+sh command show
+
+use ens1, ens2, ens3, ens4
+ensemble/HIDE/title="ensemble with hidden members" fourfiles = ens1, ens2, ens3, ens4
+
+! should just show the ensemble set
+sh dat
+
+! If ask for a member set by name or number, do show it
+sh dat 2
+sh dat ens3
+
+! should show all members plus ensemble
+sh dat/hidden
+
+! Should show original member datasets
+can dat fourfiles
+sh dat
+can dat/all
+
+! Cancel a member, then the ensemble gets canceled.
+! The hidden members should show up.
+
+use ens1, ens2, ens3, ens4
+ensemble/HIDE/title="uvars in dset 2"  my_ens = 1,2
+sh dat
+can dat  2
+sh dat
+
+! Cancel the ensemble, then hidden members get un-hidden.
+
+use ens1, ens2, ens3, ens4
+ensemble/HIDE/title="uvars in dset 2"  my_ens = 1,2,3,4
+
+! members hidden, showing only ensemble.
+sh dat
+can dat my_ens
+
+! Cancel ensemble dataset: members un-hidden
+sh dat
+
+! Define several ensembles with /HIDE
+ensemble/HIDE/title="ensemble with hidden members" fourfiles = ens1, ens2, ens3, ens4
+ensemble/HIDE/title="ensemble with hidden members" some = ens1, ens2
+ensemble/HIDE/title="ensemble with hidden members" more = ens2, ens3, ens4
+
+! Shows all the ensembles
+sh dat
+
+! Cancel a member of all the ensembles. 
+! Cancels dataset 2 and also the ensemble sets.
+can dat 2
+sh dat
 

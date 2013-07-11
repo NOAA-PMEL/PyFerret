@@ -21,6 +21,7 @@ cs_semicolon.F\
 ctrl_c.F\
 define_aggregate_grid.F\
 define_special_grids.F\
+delete_one_line.F\
 do_query.F\
 dollar_arg.F\
 dollar_command.F\

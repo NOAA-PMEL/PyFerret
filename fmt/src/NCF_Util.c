@@ -168,7 +168,7 @@ int  FORTRAN(ncf_transfer_att)(int *, int *, int *, int *, int *);
 int  FORTRAN(ncf_init_agg_dset)( int *, char *);
 int  FORTRAN(ncf_add_agg_member)( int *, int *);
 int  FORTRAN(ncf_get_agg_count)( int *, int *);
-int  FORTRAN(ncf_add_agg_var_info)( int *, int *, int *, int *, int *, int *, int *, int *);
+int  FORTRAN(ncf_get_agg_member)( int *, int *, int *);
 int  FORTRAN(ncf_get_agg_var_info)( int *, int *, int *, int *, int *, int *, int *, int *);
 int  FORTRAN(ncf_put_agg_memb_grid)( int *, int *, int *, int *);
 
@@ -190,6 +190,8 @@ int NCF_ListTraverse_FoundVarAttName( char *, char * );
 int NCF_ListTraverse_FoundVarAttNameCase( char *, char * );
 int NCF_ListTraverse_FoundVarAttID( char *, char * );
 int NCF_ListTraverse_FoundVariMemb( char *, char * );
+int NCF_ListTraverse_FoundDsMemb( char *, char * );
+int NCF_ListTraverse_FoundDsMemb( char *, char * );
 
 /*
  * Find a dataset based on its integer ID and return the scalar information:
@@ -207,7 +209,9 @@ int FORTRAN(ncf_inq_ds)( int *dset, int *ndims, int *nvars, int *ngatts, int *re
   *ndims = nc_ptr->ndims;
   *nvars = nc_ptr->nvars;
   *ngatts = nc_ptr->ngatts;
-  *recdim = nc_ptr->recdim;
+
+/* dimension for Fortran, add 1 */
+  *recdim = nc_ptr->recdim+1;
 
   return_val = FERR_OK; 
   return return_val; 
@@ -3295,8 +3299,49 @@ int  FORTRAN(ncf_get_agg_count)( int *dset, int *num_agg_dsets)
   return return_val; 
 }
 
+
 /* ----
- * Add description for variable in aggregate aggregate dataset.
+ * Find a dataset based on its integer ID and for a given member number
+ * return the Ferret dataset number
+ * 
+ */
+
+int  FORTRAN(ncf_get_agg_member)( int *dset, int *imemb, int *membset)
+{
+  ncdset *nc_ptr=NULL;
+  ncagg *agg_ptr=NULL;
+  int status=LIST_OK;
+  int return_val;
+  int num_agg_dsets;
+  
+  LIST *agglist;
+
+  return_val = ATOM_NOT_FOUND;
+  if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL ) { return return_val; }
+
+   /*
+   * Get the list of aggregation members.  
+   */
+
+  agglist = ncf_get_ds_agglist(dset);
+
+  status = list_traverse(agglist, (char *) imemb, NCF_ListTraverse_FoundDsMemb, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) {
+    return_val = ATOM_NOT_FOUND;
+    return return_val;
+  }
+  
+  agg_ptr=(ncagg *)list_curr(agglist); 
+
+  *membset = agg_ptr->dsetnum;
+
+  return_val = FERR_OK; 
+  return return_val; 
+}
+
+
+/* ----
+ * Add description for variable in aggregate dataset.
  * Given the aggregate dataset, and the varid of the variable, and 
  * the aggregate sequence-number, save the variable type (1=file-variable, 
  * 3=user-var), the Ferret datset id, the grid, the Ferret line number
@@ -3614,6 +3659,22 @@ int NCF_ListTraverse_FoundVariMemb( char *data, char *curr )
   int ID=*((int *)data);
 
   if ( ID== vdescr_ptr->imemb)  {
+    return FALSE; /* found match */
+  } else
+    return TRUE;
+}
+
+
+/* ---- 
+ * See if there is an ID in data matches the dset-member id.
+ */
+int NCF_ListTraverse_FoundDsMemb( char *data, char *curr )
+{
+
+  ncagg *agg_ptr=(ncagg *)curr;
+  int ID=*((int *)data);
+
+  if ( ID== agg_ptr->dsetnum)  {
     return FALSE; /* found match */
   } else
     return TRUE;

@@ -1,6 +1,6 @@
-	CHARACTER*(*) FUNCTION FULL_UVAR_NAME(uvar, len)
 
-*
+	SUBROUTINE DELETE_ONE_LINE (axis, status)
+	
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -34,48 +34,59 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* append to the given user variable name the data set information
-*	var[D=dset_name]
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-
-* V402:
-* V420:  4/96 - document "(/D default)" on pdset_irrelevant variables
-*       *acm* 3/12 cleanup ifdefs and unnecessary include files
-
-* calling argument declarations:
-	INTEGER	uvar
-
-* local variable declarations:
-	INTEGER TM_LENSTR1, len, len2
+* Delete a single axis (from xeq_cancel)
 
 	include 'tmap_dims.parm'
-	include 'xdset_info.cmn_text'
-	external xdset_info_data
-	include 'ferret.parm'
-	include	'xvariables.cmn'
+#	include "tmap_dset.parm"
+	include 'tmap_errors.parm'
+	include	'ferret.parm'
+	include 'errmsg.parm'
+        include 'xtm_grid.cmn_text'
 
-* variable name and definition
-*	len = TM_LENSTR1(uvar_name_code(uvar))
-        CALL string_array_get_strlen1(uvar_name_code_head,uvar,len)
-	FULL_UVAR_NAME = uvar_name_code(uvar)(:len)
-	IF (uvar_dset(uvar) .GT. pdset_irrelevant) THEN
-	   len2 = TM_LENSTR1(ds_name(uvar_dset(uvar)))
-	   FULL_UVAR_NAME = FULL_UVAR_NAME(:len)//'[D='//
-     .			ds_name(uvar_dset(uvar))(:len2)//']'
-	   len = len + len2 + 4
-	ELSEIF (uvar_dset(uvar) .EQ. pdset_irrelevant) THEN
-	   FULL_UVAR_NAME = FULL_UVAR_NAME(:len)//' (/D default)'
-	   len = len + 13
-	ENDIF
-	IF (uvar_remote(uvar)) THEN
-	   FULL_UVAR_NAME = FULL_UVAR_NAME(:len)//' (/REMOTE)'
-	   len = len + 10
+	INTEGER axis, slen, status
+	CHARACTER*10 TM_FMT, buff
+	REAL	raxis
+
+	INTEGER TM_GET_GRID_OF_LINE, TM_GET_LINENUM, 
+     .		grid, num_protected_axes
+
+	raxis = axis
+	buff = TM_FMT(raxis, 6, 10, slen)
+	num_protected_axes = TM_GET_LINENUM( 'EZ' )  ! top protected axis
+
+	IF ( axis .EQ. unspecified_int4 ) GOTO 6210
+	IF ( axis .LE. num_protected_axes ) GOTO 6212
+	line_keep_flag(axis) = .FALSE.  ! see tm_garb_col_grids.F
+	IF (line_use_cnt(axis) .LE. 0) THEN
+	   IF ( axis .LE. max_lines ) THEN
+	      IF ( axis .LE. max_lines ) THEN
+	         IF (.NOT. line_regular(axis))
+     .                CALL PACK_LINE_STORAGE(axis)
+	         line_name(axis) = char_init16
+	      ELSE
+	         CALL TM_DEALLO_DYN_LINE(axis)
+	      ENDIF
+	   ENDIF
+	ELSE
+*     ... cannot delete - in use.  Locate the grid that is using it.
+	   grid = TM_GET_GRID_OF_LINE( axis )
+	   CALL WARN( 'Not deleted: '//line_name(axis))
+	   IF ( grid .NE. unspecified_int4 ) THEN
+	      CALL WARN( 
+     .		'Axis is in use by grid '//grid_name(grid))
+	   ELSE
+	      CALL ERRMSG(ferr_internal, status,
+     .				'axis use count err', *5000)
+	   ENDIF
 	ENDIF
 
+ 5000	CONTINUE
 	RETURN
+
+ 6210	CALL ERRMSG( ferr_invalid_command, status, 'unknown axis: '//
+     .		     buff(:slen), *5000 )
+ 6212	CALL ERRMSG( ferr_invalid_command, status, 'protected axis: '//
+     .		     buff(:slen), *5000 )
+
 	END
-
-

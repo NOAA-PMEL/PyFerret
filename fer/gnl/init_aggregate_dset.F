@@ -1,5 +1,5 @@
 	SUBROUTINE INIT_AGGREGATE_DSET (dname, dtitle, agg_dset, 
-     .     agg_quiet, status )
+     .     agg_quiet, agg_hide, status )
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -37,6 +37,9 @@
 * NOAA/PMEL, Seattle, WA - TMAP 
 *
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V685 4/13 *acm* Ability to define ensemble with /HIDDEN
+*                 Get grid of user-vars, allow more combinations with user vars
+*                 better error handling.
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -56,21 +59,20 @@
 * calling argument declarations:
 	CHARACTER*(*)	dname, dtitle
 	INTEGER		agg_dset, status
-	LOGICAL		agg_quiet
+	LOGICAL		agg_quiet, agg_hide
 
 * local variable declarations:
 	LOGICAL	match, has_uvars
 	INTEGER	TM_LENSTR, TM_LENSTR1, STR_SAME, NCF_DELETE_DSET,
      .		NCF_ADD_AGG_MEMBER, NCF_GET_AGG_MEMBER_INFO, 
-     .          iset, dset, item, ii,
+     .          KNOWN_GRID,
+     .		iset, dset, item, ii,
      .		perm(nferdims), nsets, member_sets(maxdsets), 
      .		imatch, nv, grid, igrid, idim, ivar, nvars, iline, 
-     .		slen, memb_var, memb_dset, memb_grid, 
-     .		type
+     .		slen, memb_var, memb_dset, memb_grid, ugrid, 
+     .		type, fvar
 	CHARACTER vname*128
 	CHARACTER TM_STRING*13
-
-
 
 * check to see if this name matches an already-open dataset name.
 * if so, thats an error
@@ -133,7 +135,7 @@
 	         IF ( (uvar_dset(nv) .EQ. iset) .AND.
      .                (STR_SAME(uvar_name_code(nv), vname) .EQ. 0) ) THEN
                     imatch = imatch + 1
-		 ENDIF
+	      ENDIF
   350	      CONTINUE
 
   400	   CONTINUE
@@ -171,7 +173,19 @@
 		 ENDIF
 	         IF ( (uvar_dset(nv) .EQ. iset)   .AND. 
      .                (STR_SAME(uvar_name_code(nv), vname) .EQ. 0) ) THEN
-		    imatch = imatch + 1  ! will check user-var grids later
+
+	            CALL GET_UVAR_GRID( nv, iset, status )
+	            IF ( status .NE. ferr_ok ) GOTO 5600
+	            igrid = KNOWN_GRID(iset,cat_user_var,nv)
+
+	            IF (igrid .NE. grid) THEN
+		    DO 555 idim = 1, nferdims
+		       IF ( grid_line(idim, grid) .NE.  
+     .                      grid_line(idim, igrid) ) GOTO 500
+  555	            CONTINUE
+                    ENDIF
+		    imatch = imatch + 1 
+
 		    has_uvars = .TRUE.
 	         ENDIF
   500	      CONTINUE
@@ -204,6 +218,8 @@
            IF ( uvar_dset(ivar) .NE. dset ) GOTO 1800
 	   vname = uvar_name_code(ivar)
 	   imatch = 1
+
+	   grid = unspecified_int4
 	   DO 1400 ii = 2, nsets
 	      iset = member_sets(ii)
               DO 1300 nv = 1, maxvars
@@ -211,6 +227,7 @@
      .                (STR_SAME(ds_var_code(nv), vname) .EQ. 0) ) THEN
                     imatch = imatch + 1
 		    grid = ds_grid_number(nv)
+		    fvar = nv
 
 		 ENDIF
  1300	      CONTINUE
@@ -219,54 +236,41 @@
               DO 1350 nv = 1, maxvars
 	         IF ( (uvar_dset(nv) .EQ. iset) .AND.
      .                (STR_SAME(uvar_name_code(nv), vname) .EQ. 0) ) THEN
+
                     imatch = imatch + 1
 		 ENDIF
  1350	      CONTINUE
 
  1400	   CONTINUE
 
-	   IF (imatch .NE. nsets) GOTO 1800 ! Variable not in all datasets
+	   IF (imatch .NE. nsets) THEN
+	      
+	      IF ( .NOT.agg_quiet ) 
+     .	         CALL WARN('Exclude variable from aggregate. '//
+     .	         'Does not appear in all member datasets: '//
+     .	         vname)
+               GOTO 1800 ! Variable not in all datasets
+	   ENDIF
 
-	   nvars = nvars + 1
+* If one dataset contains the variable then we will be able to define the grid.
+	   
+	   IF (grid .NE. unspecified_int4) THEN
 
-* Do not define the grid for the variable when it has members that are
-* user-variables 
+              nvars = nvars + 1
 
+	      grid = unspecified_int4
+	      CALL DEFINE_AGGREGATE_GRID (agg_dset, nvars, vname,
+     .           fvar, iline, grid, e_dim, member_sets, nsets)
+	      IF (status .NE. ferr_ok) GOTO 5000
 
-* Cannot check grids for user-variables at this point. Just go ahead and
-* add the variable to the datset.
-* ??? Inherit uvar settings for the aggregate dataset
+* Do not include variables that are entirely user-defined.
+	   ELSE
+	      IF ( .NOT.agg_quiet ) 
+     .	         CALL WARN('Exclude variable from aggregate. '//
+     .	         'Must be a file variable in at least one member dataset: '//
+     .	         vname)
 
-           DO 1720 nv = 1, max_uvar
-	     IF ( uvar_num_items(nv) .EQ. uvar_deleted ) THEN
-	        CALL deleted_list_modify(uvar_num_items_head, nv, uvar_on_hold)
-	        GOTO 1725
-	     ENDIF
- 1720      CONTINUE
- 1725      uvar_dset(nv)      = agg_dset
-* copy name code and text into slot and change as needed to upper case
-	   CALL string_array_modify_upcase(uvar_name_code_head, nv, 
-     .             uvar_name_code(ivar), LEN(uvar_name_code(ivar)))
-	   uvar_text(nv)      = uvar_text(ivar)
-	   uvar_bad_data(nv)  = uvar_bad_data(ivar)
-	   uvar_units(nv)     = uvar_units(ivar)
-	   uvar_title(nv)     = uvar_title(ivar)
-	   uvar_need_dset(nv) = uvar_need_dset(ivar)
-	   uvar_data_type(nv,agg_dset) = 
-     .        uvar_data_type(ivar,member_sets(1))
-	   uvar_num_items(nv) = uvar_num_items(ivar)
-	   DO 1730 item = 1, uvar_num_items(nv)
-	      uvar_item_type(item,nv)  = uvar_item_type(item,ivar)
-	      uvar_item_start(item,nv) = uvar_item_start(item,ivar)
-	      uvar_item_end(item,nv)   = uvar_item_end(item,ivar)
- 1730      CONTINUE
-
-	   dset = member_sets(1)
-	   uvar_grid(nv,agg_dset) = uvar_grid(ivar,dset) !  is -999 
-
-           CALL CD_ADD_VAR( agg_dset, uvar_name_code(nv), nv, 
-     .         uvar_title(nv), uvar_units(nv), uvar_data_type(nv,agg_dset), 
-     .         .FALSE., uvar_bad_data(nv), status)
+	   ENDIF
 
  1800	CONTINUE
 
@@ -289,6 +293,15 @@
 	ds_time_axis(agg_dset) = ds_time_axis(member_sets(1))
 	ds_format(agg_dset) = ds_format(member_sets(1))
 
+* If user requested /HIDE, then mark the member datasets for
+* hidden status on SHOW DATA commands
+	
+	IF (agg_hide) THEN
+ 	   DO 2100 iset = 1, nsets
+	      ds_hide (iset) = .TRUE. 
+ 2100	   CONTINUE
+	ENDIF
+
  5000   RETURN	
 
 * Errors: too-many datasets open so aggregate dataset can't be opened,
@@ -298,6 +311,9 @@
 
  9950	agg_dset = unspecified_int4
 	status = ferr_TMAP_error
+	GOTO 5000
+ 9960	CALL CANCEL_DATA_SET( agg_dset, .FALSE., status )
+	agg_dset = unspecified_int4
 	GOTO 5000
 
  5100   CALL ERRMSG( ferr_syntax,status,'dataset name already in use:'
@@ -309,12 +325,13 @@
      .		' Variables in member datasets already '
      .		//'have axis in the E direction', *9950 )
 
- 5500	status = NCF_DELETE_DSET(agg_dset)
-	CALL CANCEL_DATA_SET( agg_dset, status )
-	agg_dset = unspecified_int4
-
-	CALL ERRMSG( ferr_aggregate_error, status,
+ 5500	CALL ERRMSG( ferr_aggregate_error, status,
      .		'No valid datasets or datasets share no variables. ', 
-     .		*9950 )
+     .		*9960 )
+
+ 5600	CALL ERRMSG( ferr_aggregate_error, status,
+     .		'Could not get grid for user-defined variables '
+     .		//uvar_name_code(nv)(:TM_LENSTR1(uvar_name_code(nv))), 
+     .		*9960 )
 	END
 

@@ -46,6 +46,8 @@
                      problems with 64-bit build
  *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
 					 definition of macro DFTYPE in ferretmacros.h.
+ *acm*  5/13      - ticket 2066: For double-precision Ferret reading numeric data,
+                    sscanf needs %lf instead of %f, and dummy needs to be double prec.
 */
 
 

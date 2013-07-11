@@ -53,6 +53,8 @@ C                with "*(*)" for the linux port
 *                    need one more decimal place (ib)
 * V600 *acm* 1/06   prevent values of LOG10(0.0)
 * V68  *acm* 12/11  fix ticket 1907: precision of labels where axis range is in (-1,1)
+* V685 *acm* 7/13  Ticket 1990: fixes for number of digits. More precision needed 
+*                 (Lavelle examples) 
 
       CHARACTER*(*) IF 
 
@@ -105,6 +107,14 @@ C adjust back when creating the format.  (bug 1907)
       IB=IFIX(ALOG10(XX*1.00001)) 
       IF (xlo .LT. 0 ) ib = ib + 1
       IF (scale .NE. 0) id = id + nt
+
+* If delta is small, we need more precision.
+      IF (DX.LT.0.1) THEN
+         NT = NINT(ABS(ALOG10(DX)) + 0.5)
+	 IF (NT .GE. ID) ID = NT + 1
+      ENDIF
+
+
       WRITE(IF,999)IB+ID+3,ID 
 999   FORMAT('(F',I2,'.',I1,')')
       RETURN 

@@ -184,7 +184,9 @@
 	   CALL PURGE_DSET( dset )	! remove memory-resident variables
 	   CALL PURGE_ALL_UVARS		! delete (possibly dependent) uvars
 * (note: this purge is unnecessarily strict - could be refined in the future)
-	   CALL CANCEL_DATA_SET( dset, status )
+
+	   CALL CANCEL_DATA_SET( dset, .FALSE., status )
+	
 	   IF ( status .NE. ferr_ok ) RETURN
 	   already_init = .FALSE.
 	ENDIF

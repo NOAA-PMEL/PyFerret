@@ -180,6 +180,7 @@
 * V683 *acm*  8/12 add new SET LIST/OUTTYPE=  
 * PyFr  *kms* 1/13 Remove SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL;
 *                  Add /QUALITY= /AAlias /NoAAlias /ENGINE= to SET WINDOW
+* V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -1208,7 +1209,7 @@ c *kob* 4/97
                  DO 6010 i = 1, maxvars
                     IF (ds_grid_number(i) .EQ. igrd) THEN 
 		       is_nc = (ds_type(ds_var_setnum(i)).EQ.'CDF') .OR.
-     .                         (ds_type(ds_var_setnum(i)).EQ.'AGG')
+     .                         (ds_type(ds_var_setnum(i)).EQ.'ENS')
                        IF (.NOT. is_nc)  
      .                   GOTO 6088
                     ENDIF

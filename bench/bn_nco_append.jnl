@@ -1,6 +1,10 @@
 ! bn_nco_append.jnl
 ! 5/2013 add a test appending files with ncks
 
+ ! These functions use Unix NCO utilities, found at http://nco.sourceforge.net/
+ ! If NCO is not installed, it is fine to comment out this script when running
+ ! the Ferret benchmark suite.
+
 ! Prior to v6.85 Ferret's NCO function always included -O for Override.
 ! Appending failed. In v6.85+, if -A is included then dont send -O to ncks.
 use z1

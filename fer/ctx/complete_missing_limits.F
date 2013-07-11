@@ -105,20 +105,10 @@
 	DO 100 idim = 1, nferdims
 
 * get the axis number for the abstract axis
-* 10/02 - need to do this for each dimension, not just x_dim
 
-!!           grr = saved_abstract_grid
-!!           IF (grr .EQ. unspecified_int4) grr = mgrid_abstract
-
-!	   mabstract = grid_line( idim, mgrid_abstract )
-
-c!	   mabstract = grid_line( idim,  grr)
-
-c! testing... restore the above which was changed in v6.02
            grr = saved_abstract_grid
            IF (grr .EQ. unspecified_int4) grr = mgrid_abstract
 	   mabstract = grid_line( idim, mgrid_abstract )
-c!
 
 	   IF ( cx_by_ss(idim, cx) ) THEN
 	      its_unspec = cx_lo_ss(cx,idim) .EQ. unspecified_int4

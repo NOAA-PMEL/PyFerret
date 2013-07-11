@@ -56,6 +56,8 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * PyFr *kms*  1/13 Broke out the code actually cancelling a window 
 *                  into the subroutine CANCEL_WINDOW_NUM.
+* PyFr *kms*  7/13 Do not call START_PPLUS; if it is not started,
+*                  there are no windows open.
 
         include 'tmap_dims.parm'
 	include 'errmsg.parm'
@@ -79,16 +81,6 @@
 	INTEGER		slash_all
 	PARAMETER     ( slash_all = 0+1 )
 
-* main window opened yet ?
-	CALL START_PPLUS
-
-* windows only from GKS
-	IF ( .NOT.mode_gks ) THEN
-	   CALL WARN('Windows are only available with GKS output')
-	   CALL WARN('See HELP on SET MODE GKS')
-	   GOTO 1000
-	ENDIF
-        
 * get window numbers to close
 	IF ( qual_given( slash_all ) .GT. 0 ) THEN
 * ... /ALL
@@ -110,8 +102,9 @@
 	ENDIF	   
 
 * valid number ?
- 60	IF ( n_lo.LT.1 .OR. n_hi.GT.max_windows ) CALL ERRMSG
-     .		( ferr_out_of_range, status, 'legal numbers are 2-8', *5000 )
+ 60	IF ( n_lo.LT.1 .OR. n_hi.GT.max_windows ) 
+     .     CALL ERRMSG( ferr_out_of_range, status, 
+     .                  'legal numbers are 1-9', *5000 )
 
 * loop through all requested windows
 	DO 100 n = n_lo, n_hi

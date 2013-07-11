@@ -89,7 +89,7 @@
      .			not_vector	= .FALSE.)
 
 * set up the graphics environment
-	CALL START_PPLUS
+	CALL START_PPLUS(.FALSE.)
 
 * get the data (possibly ?? on a slightly oversized region)
 	CALL DISP_DATA_SET_UP( memory,

@@ -82,7 +82,7 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
      .          xcei, ycei, xoei, yoei
 
 * main window opened yet ?
-	IF ( .NOT.pplus_started ) CALL START_PPLUS
+	IF ( .NOT.pplus_started ) CALL START_PPLUS(.FALSE.)
 
 * only works under GKS
 	IF ( .NOT. gksopn ) RETURN

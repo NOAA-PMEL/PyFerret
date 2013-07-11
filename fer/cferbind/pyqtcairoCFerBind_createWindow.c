@@ -86,8 +86,8 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
     /* Cairo surface type - must be an image surface */
     instdata->imageformat = CCFBIF_PNG;
     /* image size and minimum allowed value */
-    instdata->imagewidth = 840;
-    instdata->imageheight = 720;
+    instdata->imagewidth = (int) 10.5 * CCFB_WINDOW_DPI;
+    instdata->imageheight = (int) 8.5 * CCFB_WINDOW_DPI;
     instdata->minsize = 128;
     /* default clear color of opaque white */
     instdata->lastclearcolor.id = CCFBColorId;

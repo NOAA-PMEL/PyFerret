@@ -462,7 +462,7 @@
                     WRITE (show_str, 2000) mode_arg(pmode_linecolors, 1)
  2000               FORMAT (I3)
                     IF (no_plot_yet) THEN
-                       CALL START_PPLUS
+                       CALL START_PPLUS(.FALSE.)
                        CALL PPLCMD (from, line, 0, 
      .                   'LINECOLORS '//show_str(1:3)//' 1', 1, 1)
                        CALL DISP_RESET

@@ -23,8 +23,8 @@ from PyQt4.QtCore import Qt, QPointF, QRect, QRectF, QSize, QString, QTimer
 from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, QDialog, \
                          QFileDialog, QImage, QLabel, QMainWindow, \
                          QMessageBox, QPainter, QPalette, QPen, QPicture, \
-                         QPixmap, QPolygonF, QPrintDialog, QPrinter, \
-                         QPushButton, QScrollArea
+                         QPixmap, QPolygonF, QPrinter, QPushButton, \
+                         QScrollArea
 
 try:
     from PyQt4.QtSvg  import QSvgGenerator
@@ -157,10 +157,6 @@ class PipedViewerPQ(QMainWindow):
                                 shortcut=self.tr("Ctrl+R"),
                                 statusTip=self.tr("Clear and redraw the image"),
                                 triggered=self.redrawScene)
-        # self.__hideact = QAction(self.tr("&Hide"), self,
-        #                         shortcut=self.tr("Ctrl+H"),
-        #                         statusTip=self.tr("Hide the viewer"),
-        #                         triggered=self.hide)
         self.__aboutact = QAction(self.tr("&About"), self,
                                 statusTip=self.tr("Show information about this viewer"),
                                 triggered=self.aboutMsg)
@@ -623,11 +619,13 @@ class PipedViewerPQ(QMainWindow):
             else:
                 raise RuntimeError( self.tr("Unexpected file format name '%1'") \
                                         .arg(fileFilter) )
-            self.saveSceneToFile(fileName, fileFormat, None, True)
+            self.saveSceneToFile(fileName, fileFormat, None, 
+                                 None, None)
             self.__lastfilename = fileName
             self.__lastformat = fileFormat
 
-    def saveSceneToFile(self, filename, imageformat, bkgcolor, showPrintDialog):
+    def saveSceneToFile(self, filename, imageformat, bkgcolor, 
+                        vectsize, rastsize):
         '''
         Save the current scene to the named file.  If imageformat
         is empty or None, the format is guessed from the filename
@@ -637,9 +635,14 @@ class PipedViewerPQ(QMainWindow):
         to this color, using a filled rectangle for vector images.
         If bkgcolor is not given, the last clearing color is used.
 
-        If showPrintDialog is True, the standard printer options
-        dialog will be shown for PostScript and PDF formats,
-        allowing customizations to the file to be created.
+        If given, vectsize is the size in inches of a saved vector 
+        image.  If vectsize is not given, a vector image will be 
+        saved at the current displayed scaled image size, unless
+        specified otherwise if showPrintDialog is True.  
+
+        If given, rastsize is the pixels size of a saved raster 
+        image.  If rastsize is not given, a raster image will be 
+        saved at the current displayed scaled image size.  
         '''
         # This could be called when there is no scene present.
         # If this is the case, ignore the call.
@@ -708,27 +711,25 @@ class PipedViewerPQ(QMainWindow):
                 # setPaperSize introduced in 4.4 and made setPageSize obsolete
                 # but RHEL5 Qt4 is 4.2
                 printer.setPageSize(QPrinter.Letter)
+            # No margins (setPageMargins introduced in 4.4)
+            printer.setFullPage(True)
             # Default orientation
             if ( self.__scenewidth > self.__sceneheight ):
                 printer.setOrientation(QPrinter.Landscape)
             else:
                 printer.setOrientation(QPrinter.Portrait)
-            # Since printing to file (and not a printer), use the full page
-            # Also, ferret already has incorporated a margin in the drawing
-            printer.setFullPage(True)
-            # Interactive modifications?
-            if showPrintDialog:
-                # bring up a dialog to allow the user to tweak the default settings
-                printdialog = QPrintDialog(printer, self)
-                printdialog.setWindowTitle(
-                            self.tr("Save Image PS/PDF Options (Margins Ignored)"))
-                if printdialog.exec_() != QDialog.Accepted:
-                    return
-            # Determine the scaling factor and offsets for centering and filling the page
-            pagerect = printer.pageRect()
-            (printleftx, printuppery, printfactor) = \
-                self.computeScaleAndOffset(pagerect.width(), pagerect.height(),
-                                           printer.resolution())
+            # get the width and height in inches of the image to be produced
+            if vectsize:
+                imagewidth = vectsize.width()
+                imageheight = vectsize.height()
+            else:
+                imagewidth = self.__scenewidth * self.__scalefactor \
+                             / float(self.physicalDpiX())
+                imageheight = self.__sceneheight * self.__scalefactor \
+                              / float(self.physicalDpiY())
+            # also get the image size in units of printer dots
+            printwidth = int(imagewidth * printer.resolution() + 0.5)
+            printheight = int(imageheight * printer.resolution() + 0.5)
             # Set up to send the drawing commands to the QPrinter
             painter = QPainter(printer)
             if bkgcolor:
@@ -736,23 +737,30 @@ class PipedViewerPQ(QMainWindow):
                 # with the given background color.
                 # Only draw if not completely transparent
                 if (bkgcolor.getRgb())[3] > 0:
-                    painter.fillRect(QRectF(pagerect), bkgcolor)
+                    painter.fillRect(QRectF(0, 0, printwidth, printheight), bkgcolor)
             else:
                 # Draw a rectangle filling the entire scene
                 # with the last clearing color.
                 # Only draw if not completely transparent
                 if (self.__lastclearcolor.getRgb())[3] > 0:
-                    painter.fillRect(QRectF(pagerect), self.__lastclearcolor)
+                    painter.fillRect(QRectF(0, 0, printwidth, printheight), self.__lastclearcolor)
             # Draw the scene to the printer
-            self.paintScene(painter, 0, printleftx, printuppery, printfactor,
+            widthscalefactor = imagewidth * self.physicalDpiX() / float(self.__scenewidth)
+            heightscalefactor = imageheight * self.physicalDpiY() / float(self.__sceneheight) 
+            self.paintScene(painter, 0, 0.0, 0.0, 
+                            0.5 * (widthscalefactor + heightscalefactor),
                             "Saving", False)
             painter.end()
         elif myformat == 'svg':
             # if HAS_QSvgGenerator is False, it should never get here
             generator = QSvgGenerator()
             generator.setFileName(myfilename)
-            imagewidth = int(self.__scenewidth * self.__scalefactor + 0.5)
-            imageheight = int(self.__sceneheight * self.__scalefactor + 0.5)
+            if vectsize:
+                imagewidth = int(vectsize.width() * self.physicalDpiX() + 0.5)
+                imageheight = int(vectsize.height() * self.physicalDpiY() + 0.5)
+            else:
+                imagewidth = int(self.__scenewidth * self.__scalefactor + 0.5)
+                imageheight = int(self.__sceneheight * self.__scalefactor + 0.5)
             generator.setSize( QSize(imagewidth, imageheight) )
             generator.setViewBox( QRect(0, 0, imagewidth, imageheight) )
             # paint the scene to this QSvgGenerator
@@ -771,13 +779,18 @@ class PipedViewerPQ(QMainWindow):
                 if (self.__lastclearcolor.getRgb())[3] > 0:
                     painter.fillRect( QRectF(0, 0, imagewidth, imageheight),
                                       self.__lastclearcolor )
-            self.paintScene(painter, 0, 0.0, 0.0, self.__scalefactor,
+            self.paintScene(painter, 0, 0.0, 0.0, 
+                            float(imagewidth + imageheight) \
+                            / float(self.__scenewidth + self.__sceneheight),
                             "Saving", False)
             painter.end()
         else:
-            # ARGB32_Premultiplied is reported significantly faster than ARGB32
-            imagewidth = int(self.__scenewidth * self.__scalefactor + 0.5)
-            imageheight = int(self.__sceneheight * self.__scalefactor + 0.5)
+            if rastsize:
+                imagewidth = int(rastsize.width() + 0.5)
+                imageheight = int(rastsize.height() + 0.5)
+            else:
+                imagewidth = int(self.__scenewidth * self.__scalefactor + 0.5)
+                imageheight = int(self.__sceneheight * self.__scalefactor + 0.5)
             image = QImage( QSize(imagewidth, imageheight),
                             QImage.Format_ARGB32_Premultiplied )
             # Initialize the image
@@ -791,46 +804,13 @@ class PipedViewerPQ(QMainWindow):
             image.fill(fillint)
             # paint the scene to this QImage
             painter = QPainter(image)
-            self.paintScene(painter, 0, 0.0, 0.0, self.__scalefactor,
+            self.paintScene(painter, 0, 0.0, 0.0, 
+                            float(imagewidth + imageheight) \
+                            / float(self.__scenewidth + self.__sceneheight),
                             "Saving", False)
             painter.end()
             # save the image to file
             image.save(myfilename, myformat)
-
-    def computeScaleAndOffset(self, printwidth, printheight, printresolution):
-        '''
-        Computes the scaling factor and upper left coordinates required so
-        the current scene will be centered and fill the page on described
-        by printwidth, printheight, and printresolution.
-
-        Arguments:
-            printwidth: width of the print page in pixels
-            printheight: height of the print page in pixels
-            printresolution: resolution of the print page in DPI
-
-        Returns:
-            (leftx, uppery, scalefactor) giving the required
-            left offset, top offset, and scaling factor for
-            the paintScene method.
-        '''
-        # get the widths and heights of the printer page and label in inches
-        fltprintresolution = float(printresolution)
-        fltprintwidth = float(printwidth) / fltprintresolution
-        fltprintheight = float(printheight) / fltprintresolution
-        fltscenewidth = float(self.__scenewidth) / float(self.physicalDpiX())
-        fltsceneheight = float(self.__sceneheight) / float(self.physicalDpiY())
-        # Determine the scaling factor for filling the page
-        scalefactor = min(fltprintwidth / fltscenewidth, 
-                          fltprintheight / fltsceneheight)
-        # Determine the offset to center the picture
-        leftx  = 0.5 * fltprintresolution * \
-                (fltprintwidth - scalefactor * fltscenewidth)
-        uppery = 0.5 * fltprintresolution * \
-                (fltprintheight - scalefactor * fltsceneheight)
-        # Account for the scaling factor in the offsets
-        leftx /= scalefactor
-        uppery /= scalefactor
-        return (leftx, uppery, scalefactor)
 
     def checkCommandPipe(self):
         '''
@@ -914,7 +894,10 @@ class PipedViewerPQ(QMainWindow):
                 bkgcolor = self.__helper.getColorFromCmnd(cmnd)
             except KeyError:
                 bkgcolor = None
-            self.saveSceneToFile(filename, fileformat, bkgcolor, False)
+            vectsize = self.__helper.getSizeFromCmnd(cmnd["vectsize"])
+            rastsize = self.__helper.getSizeFromCmnd(cmnd["rastsize"])
+            self.saveSceneToFile(filename, fileformat, bkgcolor, 
+                                 vectsize, rastsize)
         elif cmndact == "setWidthFactor":
             newfactor = float(cmnd.get("factor", -1.0))
             if newfactor <= 0.0:
@@ -1134,6 +1117,7 @@ class PipedViewerPQ(QMainWindow):
             self.__activepainter.setPen(Qt.NoPen)
         else:
             self.__activepainter.setBrush(Qt.NoBrush)
+            # pen width is 15% of the width of the symbol
             mypen = QPen(mybrush, 15.0, Qt.SolidLine,
                          Qt.SquareCap, Qt.BevelJoin)
             self.__activepainter.setPen(mypen)

@@ -79,7 +79,7 @@
 	PARAMETER     ( slash_reset = 0+1 )
 
 * turn on PLOT+ ?
-	CALL START_PPLUS
+	CALL START_PPLUS(.FALSE.)
 
 * save ylen and yorg in case the user manually changes those values in PLOT+
 * 10/9/91 addition 

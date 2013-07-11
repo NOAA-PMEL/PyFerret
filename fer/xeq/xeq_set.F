@@ -646,7 +646,7 @@ c *kob* 4/97
 	         CALL TM_SET_FREE_EVENT(1)
 * ... mode metafile may require immediate communication with PPLUS
 	      ELSEIF ( mode .EQ. pmode_metafile ) THEN
-                 IF ( .NOT. pplus_started ) CALL START_PPLUS
+                 IF ( .NOT. pplus_started ) CALL START_PPLUS(.FALSE.)
                  CALL PPLCMD(from, line, 0, 'PLTNME '//buff2, 1, 1)
                  mode_metafile = .TRUE.
 * ... mode diagnostic sends message to TMAP library
@@ -663,7 +663,7 @@ c *kob* 4/97
 	         ENDIF
 * ... mode ppllist directs PLOT+ listings to a file
 	      ELSEIF ( mode .EQ. pmode_ppllist ) THEN
-	         IF ( .NOT.pplus_started ) CALL START_PPLUS
+	         IF ( .NOT.pplus_started ) CALL START_PPLUS(.FALSE.)
                  IF ( lttout .NE. 6 )
      .              CLOSE( UNIT=lttout, ERR = 5830 )
                  CALL LIB_GET_LUN( lttout )
@@ -683,7 +683,7 @@ c *kob* 4/97
                  WRITE (show_str, 2000) mode_arg(pmode_linecolors, 1)
  2000            FORMAT (I3)
                  IF (no_plot_yet) THEN
-                    CALL START_PPLUS
+                    CALL START_PPLUS(.FALSE.)
                     CALL PPLCMD (from, line, 0, 
      .                'LINECOLORS '//show_str(1:3)//' 1', 1, 1)
                     CALL DISP_RESET
@@ -1867,7 +1867,7 @@ c *kob* 4/97
 
 * *kms* with the graphics delegate, treat it the same as set mode meta:"filename"
         buff2 = cmnd_buff(item_start(1):item_end(1))
-        IF ( .NOT. pplus_started ) CALL START_PPLUS
+        IF ( .NOT. pplus_started ) CALL START_PPLUS(.FALSE.)
         CALL PPLCMD(from, line, 0, 'PLTNME ' // buff2, 1, 1)
         mode_metafile = .TRUE.
         RETURN

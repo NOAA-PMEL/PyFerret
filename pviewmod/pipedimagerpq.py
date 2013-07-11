@@ -129,10 +129,6 @@ class PipedImagerPQ(QMainWindow):
                                 shortcut=self.tr("Ctrl+R"),
                                 statusTip=self.tr("Clear and redraw the image"),
                                 triggered=self.redrawScene)
-        # self.__hideact = QAction(self.tr("&Hide"), self,
-        #                         shortcut=self.tr("Ctrl+H"),
-        #                         statusTip=self.tr("Hide the viewer"),
-        #                         triggered=self.hide)
         self.__aboutact = QAction(self.tr("&About"), self,
                                 statusTip=self.tr("Show information about this viewer"),
                                 triggered=self.aboutMsg)
@@ -555,11 +551,11 @@ class PipedImagerPQ(QMainWindow):
             else:
                 raise RuntimeError( self.tr("Unexpected file format name '%1'") \
                                         .arg(fileFilter) )
-            self.saveSceneToFile(fileName, fileFormat, None)
+            self.saveSceneToFile(fileName, fileFormat, None, None)
             self.__lastfilename = fileName
             self.__lastformat = fileFormat
 
-    def saveSceneToFile(self, filename, imageformat, bkgcolor):
+    def saveSceneToFile(self, filename, imageformat, bkgcolor, rastsize):
         '''
         Save the current scene to the named file.
         
@@ -567,8 +563,12 @@ class PipedImagerPQ(QMainWindow):
         the filename extension.
 
         If bkgcolor is given, the entire scene is initialized
-        to this color, using a filled rectangle for vector images.
+        to this color.
         If bkgcolor is not given, the last clearing color is used.
+
+        If given, rastsize is the pixels size of the saved image.
+        If rastsize is not given, the saved image will be saved
+        at the current scaled image size.  
         '''
         # This could be called when there is no image present.
         # If this is the case, ignore the call.
@@ -596,8 +596,12 @@ class PipedImagerPQ(QMainWindow):
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.statusBar().showMessage( self.tr("Saving image") )
         try:
-            imagewidth = int(self.__scenewidth * self.__scalefactor + 0.5)
-            imageheight = int(self.__sceneheight * self.__scalefactor + 0.5)
+            if rastsize:
+                imagewidth = int(rastsize.width() + 0.5)
+                imageheight = int(rastsize.height() + 0.5)
+            else:
+                imagewidth = int(self.__scenewidth * self.__scalefactor + 0.5)
+                imageheight = int(self.__sceneheight * self.__scalefactor + 0.5)
             image = QImage( QSize(imagewidth, imageheight),
                             QImage.Format_ARGB32_Premultiplied )
             # Initialize the image
@@ -701,7 +705,8 @@ class PipedImagerPQ(QMainWindow):
                 bkgcolor = self.__helper.getColorFromCmnd(cmnd)
             except KeyError:
                 bkgcolor = None
-            self.saveSceneToFile(filename, fileformat, bkgcolor)
+            rastsize = self.__helper.getSizeFromCmnd(cmnd["rastsize"])
+            self.saveSceneToFile(filename, fileformat, bkgcolor, rastsize)
         elif cmndact == "setTitle":
             self.setWindowTitle(cmnd["title"])
         elif cmndact == "imgname":

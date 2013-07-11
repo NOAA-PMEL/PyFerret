@@ -1,4 +1,4 @@
-	SUBROUTINE START_PPLUS
+	SUBROUTINE START_PPLUS(fromsetwin)
 
 *
 *
@@ -70,6 +70,12 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
+* PyFr *kms*  7/13 Added fromsetwin argument to indicate whether this was
+*                  called from set_window or not.  If not, there is addition
+*                  initialization required.  
+*                  Remove functions calls already made by DISP_RESET.
+
+        IMPLICIT NONE
 
 	include 'tmap_dims.parm'
 	include 'plot_setup.parm'
@@ -90,10 +96,18 @@
 !	include	'gksdefs.bnd'		! gks parameters
         INCLUDE 'lunits_inc.decl'   ! std err unit number
 	INCLUDE 'LUNITS.INC'
-	
+        INCLUDE 'fgrdel.cmn'    ! windowdpix, windowdpiy
+
+* argument declarations:
+        LOGICAL fromsetwin
+
 * internal parameter declarations:
 	CHARACTER	dummy_filename*1
 	PARAMETER     ( dummy_filename	  = ' ' )
+
+* internal variable declarations
+        REAL*4  sc
+        INTEGER sts
 
 * external declarations to force loading of modules used by PPLUS
 	EXTERNAL	GET_VP_FROM_FERRET, CLEAR_VP, INTERRUPT,
@@ -102,12 +116,14 @@
 * still need to cold-start graphics ?
 	IF ( pplus_started ) RETURN
 
+* set to use the default graphics engine
+        CALL FGD_SET_ENGINE(wsid, '', .TRUE., sts)
+
 * tell PPLUS that it is under FERRET control without viewports
 	PPL_in_FERRET = .TRUE.
 	PPL_viewports_active = .FALSE.
 
 * Give PPLUS the unit number for std error, to write error messages
-
         lerror = err_lun
 
 * set PPLUS /WAIT vs /NOWAIT mode directly from FERRET mode
@@ -130,7 +146,7 @@
 	echof = .FALSE.
 	pplus_started = .TRUE.
 
-* define plot size
+* define plot values and sizes
 	CALL COLOR(1)
 	CALL DISP_RESET
 
@@ -141,20 +157,19 @@
 * start GKS on FERRET side
 	wn_open( wsid )   = .TRUE.
 	wn_active( wsid ) = .TRUE.
-!	wn_open( 1 )   = .TRUE.	! note that wsid only HAPPENS TO BE the
-!	wn_active( 1 ) = .TRUE. ! transformation number
 
-!	CALL DEFINE_COLORS( wsid )
-
-* set up the default spectrum
-        CALL PPL_SHASET( 'SPECTRUM=default' )
-
-* Set default (initial) number of color levels
-
-        CALL SET_DEFAULT_NLEVELS( mode_arg(pmode_nlevels, 1) )
-
-* set up axis lengths and PLOT+ symbols
-	CALL SET_VIEWPORT( mvp_dflt )
+* initialization needed if this is not called from SET_WINDOW
+        IF ( .NOT. fromsetwin ) THEN
+*          make sure the viewer knows the correct scene size
+           ASIZE = 0.0
+           BSIZE = 0.0
+           CALL SIZE(width, height)
+*          set the default scaling factor for the scene
+           sc = SQRT(0.7)
+           wn_xpixels(wsid) = wn_xinches(wsid) * windowdpix(wsid) * sc
+           wn_ypixels(wsid) = wn_yinches(wsid) * windowdpiy(wsid) * sc
+           CALL FGD_SEND_IMAGE_SCALE(wsid, sc)
+        ENDIF
 
 * set GKS to regenerate whenever workstation viewport is modified - avoids
 *  bug interaction with segments when the first plot is done directly via PPLUS

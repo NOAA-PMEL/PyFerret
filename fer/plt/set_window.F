@@ -209,7 +209,7 @@ c 75        CONTINUE
 
 * main window opened yet ?
 	IF ( .NOT.pplus_started ) THEN
-	   CALL START_PPLUS
+	   CALL START_PPLUS(.TRUE.)
 *          this opens a window, so need to set phsical_chg .TRUE. to resize it
            physical_chg = .TRUE.
 	ENDIF

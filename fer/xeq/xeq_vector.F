@@ -156,7 +156,7 @@
 	INTEGER ncolors
 
 * set up the graphics environment and get the data
-	CALL START_PPLUS
+	CALL START_PPLUS(.FALSE.)
 	CALL DISP_DATA_SET_UP( memory,
      .		ax1_start, ax1_blks, ax2_start, ax2_blks, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100

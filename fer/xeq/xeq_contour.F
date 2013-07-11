@@ -165,7 +165,7 @@
 
 * set up the graphics environment
 
-	CALL START_PPLUS
+	CALL START_PPLUS(.FALSE.)
 
 * get the data (possibly ?? on a slightly oversized region)
 !	cx_ovsiz(cx_last) = ovsiz_plane	! ... causes too many headaches !

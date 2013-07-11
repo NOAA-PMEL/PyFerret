@@ -57,8 +57,8 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
     cairo_t           *savecontext;
     cairo_status_t     result;
     char               savename[CCFB_NAME_SIZE];
-    double             width;
-    double             height;
+    double             savewidth;
+    double             saveheight;
     int                usealpha;
 
     /* Sanity checks - this should NOT be called by the PyQtCairo engine */
@@ -160,41 +160,41 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         /* Surface size is given in integer pixels */
         savesurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
                                                  xpixels, ypixels);
-        width = (double) xpixels;
-        height = (double) ypixels;
+        savewidth = (double) xpixels;
+        saveheight = (double) ypixels;
         usealpha = 1;
     }
     else if ( strcmp(fmtext, "PDF") == 0 ) {
         /* Surface size is given in (floating-point) points */
-        width = xinches * 72.0;
-        height = yinches * 72.0;
-        savesurface = cairo_pdf_surface_create(savename, width, height);
+        savewidth = xinches * 72.0;
+        saveheight = yinches * 72.0;
+        savesurface = cairo_pdf_surface_create(savename, savewidth, saveheight);
         usealpha = 0;
     }
     else if ( strcmp(fmtext, "PS") == 0 ) {
         /* Surface size is given in (floating-point) points */
-        width = xinches * 72.0;
-        height = yinches * 72.0;
-        if ( width > height ) {
+        savewidth = xinches * 72.0;
+        saveheight = yinches * 72.0;
+        if ( savewidth > saveheight ) {
             /*
              * Landscape orientation
-             * Swap width and height and then translate and rotate 
+             * Swap savewidth and saveheight and then translate and rotate 
              * (see below) per Cairo requirements.
              */
-            savesurface = cairo_ps_surface_create(savename, height, width);
+            savesurface = cairo_ps_surface_create(savename, saveheight, savewidth);
         }
         else {
             /* Portrait orientation */
-            savesurface = cairo_ps_surface_create(savename, width, height);
+            savesurface = cairo_ps_surface_create(savename, savewidth, saveheight);
         }
         /* Do not use alpha channel - prevents embedded image */
         usealpha = 0;
     }
     else if ( strcmp(fmtext, "SVG") == 0 ) {
         /* Surface size is given in (floating-point) points */
-        width = xinches * 72.0;
-        height = yinches * 72.0;
-        savesurface = cairo_svg_surface_create(savename, width, height);
+        savewidth = xinches * 72.0;
+        saveheight = yinches * 72.0;
+        savesurface = cairo_svg_surface_create(savename, savewidth, saveheight);
         usealpha = 1;
     }
     else {
@@ -225,32 +225,54 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         return 0;
     }
 
-    /* Set the scale on the destination so the source will just fit */
-    if ( (instdata->imageformat != CCFBIF_PNG) &&
-         (strcmp(fmtext, "PNG") == 0) ) {
-        /*
-         * The recording surface used units of points
-         * but this surfaces uses units of pixels,
-         * so include that factor in the scaling.
-         */
-        cairo_scale(savecontext, 
-                    width / (instdata->imagewidth * CCFB_POINTS_PER_PIXEL), 
-                    height / (instdata->imageheight * CCFB_POINTS_PER_PIXEL));
+    /* 
+     * Set the scale on the destination so the source will just fit. 
+     * Note that imagewidth and imageheight are always in units of pixels.
+     */
+    if ( strcmp(fmtext, "PNG") == 0 ) {
+        if ( instdata->imageformat == CCFBIF_PNG ) {
+            /* 
+             * savewidth, saveheight, imagewidth, and imageheight
+             * are all in units of pixels.  Both surface use units
+             * of pixels, so just scale to make the image fit.
+             */
+            cairo_scale(savecontext, 
+                        savewidth / instdata->imagewidth,
+                        saveheight / instdata->imageheight);
+        }
+        else {
+            /*
+             * savewidth, saveheight, imagewidth, and imageheight
+             * are all in units of pixels.  However, the recording 
+             * surface used units of points but this PNG surface 
+             * uses units of pixels, so include that factor in the 
+             * scaling.
+             */
+            cairo_scale(savecontext, 
+                        savewidth / (instdata->imagewidth * CCFB_POINTS_PER_PIXEL), 
+                        saveheight / (instdata->imageheight * CCFB_POINTS_PER_PIXEL));
+        }
     }
     else {
-        /* going from points to points, or pixels to pixels - simple scaling */
+        /*
+         * savewidth and saveheight are in units of points, but
+         * imagewidth and imageheight are in units of pixels.
+         * Both surfaces use points so just need to convert 
+         * imagewidth and imageheight to points for the scaling 
+         * factor.
+         */
         cairo_scale(savecontext, 
-                    width / instdata->imagewidth,
-                    height / instdata->imageheight);
+                    savewidth / (instdata->imagewidth * CCFB_POINTS_PER_PIXEL), 
+                    saveheight / (instdata->imageheight * CCFB_POINTS_PER_PIXEL));
     }
 
     /*
      * If landscape PostScript, translate and rotate the coordinate system
-     * to correct for swapped width and height (per Cairo requirements).
+     * to correct for swapped savewidth and saveheight (per Cairo requirements).
      */
     if ( strcmp(fmtext, "PS") == 0 ) {
-       if ( width > height ) {
-            /* surface was created with coordinates (0,0) to (height, width) */
+       if ( savewidth > saveheight ) {
+            /* surface was created with coordinates (0,0) to (saveheight, savewidth) */
             cairo_matrix_t transmat;
 
             /* Add a "comment" telling PostScript it is landscape */
@@ -258,11 +280,11 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
             cairo_ps_surface_dsc_comment(savesurface,
                                          "%%PageOrientation: Landscape");
             /* Translate and rotate 90 degrees */
-            cairo_matrix_init(&transmat, 0.0, -1.0, 1.0, 0.0, 0.0, width);
+            cairo_matrix_init(&transmat, 0.0, -1.0, 1.0, 0.0, 0.0, savewidth);
             cairo_set_matrix(savecontext, &transmat);
             /*
              * The transformed coordinate system goes from (0,0) at the top
-             * left corner to (width, height) at the bottom right corner.
+             * left corner to (savewidth, saveheight) at the bottom right corner.
              */
         }
         else {

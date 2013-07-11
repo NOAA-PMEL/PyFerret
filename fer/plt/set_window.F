@@ -99,6 +99,7 @@
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
+        include 'plot_setup.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
 	include 'errmsg.parm'
@@ -488,7 +489,7 @@ c 75        CONTINUE
            ELSE
 *             Traditional Ferret had a default /SIZE=0.7;
 *             thus scaling the width and height by SQRT(0.7)
-              sc = SQRT(0.7)
+              sc = dflt_imgscale
               xpixels = xinches * windowdpix(n) * sc
               ypixels = yinches * windowdpiy(n) * sc
            ENDIF

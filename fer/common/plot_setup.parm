@@ -16,6 +16,7 @@
 * default lengths for PPL - need to be scaled by pplscale
         REAL        dflt_xinches,
      .              dflt_yinches,
+     .              dflt_imgscale,
      .              dflt_xwhitelo,
      .              dflt_ywhitelo,
      .              dflt_xwhitehi,
@@ -27,6 +28,7 @@
      .              dflt_vec_len
         PARAMETER ( dflt_xinches   = 10.50,
      .              dflt_yinches   =  8.50,
+     .              dflt_imgscale  =  0.83666,
      .              dflt_xwhitelo  =  1.375,
      .              dflt_ywhitelo  =  1.375,
      .              dflt_xwhitehi  =  1.375,

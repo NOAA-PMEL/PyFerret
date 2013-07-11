@@ -164,8 +164,8 @@
            ASIZE = 0.0
            BSIZE = 0.0
            CALL SIZE(width, height)
-*          set the default scaling factor for the scene
-           sc = SQRT(0.7)
+*          set the default scaling factor for the scene - SQRT(0.7)
+           sc = dflt_imgscale
            wn_xpixels(wsid) = wn_xinches(wsid) * windowdpix(wsid) * sc
            wn_ypixels(wsid) = wn_yinches(wsid) * windowdpiy(wsid) * sc
            CALL FGD_SEND_IMAGE_SCALE(wsid, sc)

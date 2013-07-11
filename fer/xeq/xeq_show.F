@@ -179,6 +179,9 @@
 * V685 *acm*  2/13 LET/REMOTE changes: show internally-defined climatological axes
 *                  in xml output.
 * V685 *acm*  6/13 Fixes for SHOW VAR/D= on file variables.
+* PyFr *kms*  7/13 Add additional information to SHOW WINDOWS
+
+        IMPLICIT NONE
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -207,6 +210,7 @@
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
         include 'EF_Util.cmn'
         include 'netcdf.inc'
+        INCLUDE 'fgrdel.cmn'
 
 * local parameter declarations:
 	LOGICAL	    brief
@@ -281,7 +285,8 @@
      .		default*10, show_str*2048, arg*128, name*128, arg30*30
 	CHARACTER	varatt*641, varname*512, attname*128,
      .			efname*40, upname*40, aname*128, outstring*2048,
-     .                  dname*128
+     .                  dname*128, actstr*1, aastr*3, qualstr*6, 
+     .                  dispstr*3
    
 * 10/01 *kob* had to change decl of axesOrCorner for picky f95
         CHARACTER*6 axesOrCorner(2)
@@ -333,19 +338,41 @@
 
 * SHOW WINDOWS
  200	nothing = .TRUE.
-	CALL SPLIT_LIST(pttmode_explct, show_lun, ' OPEN ACTIVE', 12)
+	CALL SPLIT_LIST(pttmode_explct, show_lun, 
+     .  ' OPEN  ACTIVE  ANTIALIAS  QUALITY  DISPLAY  THICKEN  TEXTPROM', 
+     .  61)
+ 201    FORMAT(I4,6X,A1,7X,A3,5X,A6,5X,A3,5X,F4.2,6X,F4.2)
 	DO 210 i = 1, max_windows
-	   IF ( wn_open( i ) ) THEN
+	   IF ( wn_open(i) ) THEN
 	      nothing = .FALSE.
-	      IF ( wn_active( i ) ) THEN
-	         WRITE ( risc_buff, '(I4,T9,A)' ) i, '*'
-	         CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
-	         risc_buff = ' '
-	      ELSE
-	         WRITE ( risc_buff, '(I4)' ) i
-	         CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
-	         risc_buff = ' '
-	      ENDIF
+	      IF ( wn_active(i) ) THEN
+                 actstr = '*'
+              ELSE
+                 actstr = ' '
+              ENDIF
+              IF ( antialias(i) ) THEN
+                 aastr = 'YES'
+              ELSE
+                 aastr = ' NO'
+              ENDIF
+              IF ( enginename(i) .EQ. 'Cairo' ) THEN
+                 qualstr = '  HIGH'
+                 dispstr = ' NO'
+              ELSEIF ( enginename(i) .EQ. 'PipedViewerPQ' ) THEN
+                 qualstr = '  HIGH'
+                 dispstr = 'YES'
+              ELSEIF ( enginename(i) .EQ. 'PipedImager' ) THEN
+                 qualstr = ' DRAFT'
+                 dispstr = 'YES'
+              ELSE
+                 qualstr = 'CUSTOM'
+                 dispstr = ' ? '
+              ENDIF
+              risc_buff = ' '
+              WRITE ( risc_buff, 201 ) i, actstr, aastr, qualstr, 
+     .          dispstr, thickfactor(i), wn_textscale(i)/wn_pplscale(i)
+              CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
+              risc_buff = ' '
 	   ENDIF
  210	CONTINUE
 	IF ( nothing ) CALL SPLIT_LIST(pttmode_explct, show_lun,

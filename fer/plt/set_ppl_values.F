@@ -66,6 +66,7 @@
 
         pplscale = SQRT( wn_xinches(windid) * wn_yinches(windid)
      .                   / (dflt_xinches * dflt_yinches) )
+        wn_pplscale(windid) = pplscale
         IF ( reset ) THEN
 * assign the scaled default lengths
            wn_xwhitelo(windid)  = dflt_xwhitelo      * pplscale
@@ -80,10 +81,10 @@
            wn_con_dshln(windid) = dflt_con_dshln     * pplscale
            wn_con_spcln(windid) = dflt_con_dshln     * pplscale
            wn_vec_len(windid)   = dflt_vec_len       * pplscale
-*          reset the text scaling factor in SET_TEXT_SIZES
+*          reset the text sizes in SET_TEXT_SIZES
            txtfactor = 1.0
         ELSE
-*          just use the given text sizes in SET_TEXT_SIZES
+*          use the stored text sizes in SET_TEXT_SIZES
            txtfactor = 0.0
         ENDIF
 
@@ -116,6 +117,12 @@
 
 *       set the text sizes
         CALL SET_TEXT_SIZES(windid, txtfactor)
+
+*       set the symbol PPL$SCALE
+        buff = ' '
+        WRITE(buff, 110) pplscale
+ 110    FORMAT('SET PPL$SCALE ',F7.4)
+        CALL PPLCMD(from, line, 0, buff, 1, 1)
 
         RETURN
         END

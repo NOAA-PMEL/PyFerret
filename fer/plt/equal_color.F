@@ -131,8 +131,8 @@
      .                               bluefrac, opaqfrac, status)
               IF ( status .NE. ferr_ok ) RETURN
 *             Now create a temporary color using these RGBA values
-              CALL FGD_CREATE_TEMP_COLOR(icolor, redfrac, grnfrac, 
-     .                                   bluefrac, opaqfrac)
+              CALL FGD_CREATE_TEMP_COLOR(activewindow, icolor, 
+     .                        redfrac, grnfrac, bluefrac, opaqfrac)
            ELSE
 * ... color and thickness by number
               READ ( str, *, ERR=5000 ) val
@@ -158,8 +158,8 @@
      .                            bluefrac, opaqfrac, status)
            IF ( status .NE. ferr_ok ) RETURN
 *          Now create a temporary color using these RGBA values
-           CALL FGD_CREATE_TEMP_COLOR(icolor, redfrac, grnfrac, 
-     .                                bluefrac, opaqfrac)
+           CALL FGD_CREATE_TEMP_COLOR(activewindow, icolor, 
+     .                     redfrac, grnfrac, bluefrac, opaqfrac)
 	ELSE
 * ... compare with allowable colors
            len_test = TM_LENSTR(str)

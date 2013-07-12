@@ -20,8 +20,8 @@
         activewindow = windowid
 
 *       Begin a view in the active window by selecting
-*       the currently active transform.
-        CALL FGD_GSELNT(activetransform)
+*       the default transform (same as windowid)
+        CALL FGD_GSELNT(windowid)
 
         RETURN
         END

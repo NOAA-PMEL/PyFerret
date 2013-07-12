@@ -122,6 +122,8 @@
         include 'PARAMPL5.DAT'
         include 'lines_inc.decl'
         include 'LINES.INC'
+        include 'gkscm1_inc.decl'
+        include 'GKSCM1.INC'    ! wsid
 	
 * calling argument declarations:
 	REAL	memory( mem_blk_size, max_mem_blks )
@@ -269,7 +271,7 @@ CC       => Set values here instead.
            IF ( (val .LT. 0.0) .OR. (val .GT. 100.0) ) GOTO 5500
            opacity = val / 100.0
            IF ( icolor .GE. 0 )
-     .        CALL DUP_COLOR_SET_OPACITY(icolor, opacity)
+     .        CALL DUP_COLOR_SET_OPACITY(wsid, icolor, opacity)
            CALL SET_OVERRIDE_OPACITY(opacity)
         ELSE
 *          overriding opacity not specififed
@@ -308,7 +310,7 @@ CC       => Set values here instead.
 	      ipen = NINT( val )	! user-specified line style
 	      IF ( ipen .LT. 1 .OR. ipen .GT. limit ) GOTO 5200
               IF ( opacity .GE. 0.0 )
-     .           CALL DUP_STD_PEN_SET_OPACITY(ipen, opacity)
+     .           CALL DUP_STD_PEN_SET_OPACITY(wsid, ipen, opacity)
 	   ENDIF
 * ... default to no symbols when /LINE_STYLE, alone, is given
 * 	or for PLOT/VS/LINE  (1/27/95)

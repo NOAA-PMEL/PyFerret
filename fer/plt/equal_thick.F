@@ -52,6 +52,7 @@
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'xrisc_buff.cmn'
         INCLUDE 'xprog_state.cmn'
+        INCLUDE 'fgrdel.cmn'
 
 * calling argument declarations
         INTEGER icolor, ipen, istat
@@ -143,7 +144,7 @@
         ENDIF
 
 * create a temporary pen using this custom combination of color and thickness
-        CALL FGD_CREATE_TEMP_PEN(ipen, icolor, thickness)
+        CALL FGD_CREATE_TEMP_PEN(activewindow, ipen, icolor, thickness)
 
 * success
  4900   istat = ferr_ok

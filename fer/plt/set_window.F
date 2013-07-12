@@ -321,8 +321,17 @@ c 75        CONTINUE
             ENDIF
         ENDIF
 
+* create new window ?
+	IF ( .NOT. wn_open(n) ) THEN
+	   xwind_id = GKS_X_CONID( n )
+	   CALL NEW_GKS_WINDOW( n, xwind_id, window_title(:tlen), status )   ! status always OK
+	   physical_chg = .TRUE.
+* ... set up GKS bundles for the new "workstation" (window)
+	   CALL WS_LINE_BUNDLES( n, wstype )
+           no_plot_yet = .TRUE.
+	ENDIF
+
 * clear the screen ? (which deletes all segments from window)
-* (moved from near end of routine 
 	IF ( qual_given( slash_clear ) .GT. 0 .AND. .NOT.animate) THEN
            CALL CLEAR_WINDOW( n )
 	   vp_seg0( vp_num ) = curr_seg_name	! no segments left in viewport
@@ -340,30 +349,33 @@ c 75        CONTINUE
  80	   CONTINUE
 	ENDIF
 
-* create new window ?
-	IF ( .NOT. wn_open(n) ) THEN
-	   xwind_id = GKS_X_CONID( n )
-	   CALL NEW_GKS_WINDOW( n, xwind_id, window_title(:tlen), status )   ! status always OK
-	   physical_chg = .TRUE.
-* ... set up GKS bundles for the new "workstation" (window)
-	   CALL WS_LINE_BUNDLES( n, wstype )
-           no_plot_yet = .TRUE.
-	ENDIF
-
         IF ( physical_chg ) THEN
 * tell ppl of the new default sizes for this window
            wn_xinches(n) = xinches
            wn_yinches(n) = yinches
            CALL SET_PPL_VALUES(n, .TRUE.)
-* ... clear previous plot and any viewports used within it
-           IF ( .NOT.chg_window ) CALL SET_VIEWPORT( mvp_dflt )
         ELSEIF ( chg_window ) THEN
 * tell ppl of the sizes used for this window
            CALL SET_PPL_VALUES(n, .FALSE.)
         ENDIF
 
-* deactivate previously active window
+* define the default normalization transformation for this window
+        IF ( physical_chg .OR. chg_window ) THEN
+           ASIZE = width * 1000
+           BSIZE = height * 1000
+           IF(ASIZE.GT.BSIZE)THEN
+              FCTY=BSIZE/ASIZE
+              FCTX=1.0
+           ELSE
+              FCTX=ASIZE/BSIZE
+              FCTY=1.0
+           ENDIF
+           CALL FGD_GSWKWN(n, rzero, FCTX, rzero, FCTY)
+           CALL FGD_GSVP(n, rzero, FCTX, rzero, FCTY)
+           CALL FGD_GSWN(n, rzero, ASIZE, rzero, BSIZE)
+        ENDIF
 
+* deactivate previously active window
         DO 100 wn = 1, max_windows
            IF ( wn_active( wn ) ) THEN
               CALL FGD_GDAWK( wn )
@@ -371,8 +383,16 @@ c 75        CONTINUE
 	   ENDIF
  100	CONTINUE
 
-* activate window
-	CALL FGD_GACWK(n)
+* activate window and select the default transform (same as the windowid)
+        CALL FGD_GACWK(n)
+        wsid = n
+        wn_open  ( wsid ) = .TRUE.
+        wn_active( wsid ) = .TRUE.
+
+        IF ( physical_chg ) THEN
+* ... clear previous plot and any viewports used within it
+           CALL SET_VIEWPORT( mvp_dflt )
+        ENDIF
 
 * use anti-aliasing?
         qp = qual_given(slash_aalias)
@@ -435,8 +455,8 @@ c 75        CONTINUE
             IF ( status .NE. ferr_ok ) RETURN
             IF ( (scale .LT. 0.0) .OR. (scale .GT. 100.0) ) GOTO 5080
             opaqfrac = scale / 100.0
-*           create a temporary color with the new opacity
-            CALL DUP_COLOR_SET_OPACITY(bkgcolor, opaqfrac)
+*           create a temporary color with the new opacity for the active window
+            CALL DUP_COLOR_SET_OPACITY(n, bkgcolor, opaqfrac)
         ENDIF
   
         IF ( bkgcolor > 0 ) THEN
@@ -447,27 +467,6 @@ c 75        CONTINUE
             CALL FGD_GSCR(n, 0, redfrac, grnfrac, bluefrac, opaqfrac)
             CALL FGD_REDRAW_BACKGROUND(n)
         ENDIF
-
-*set up sizing
-        ASIZE = width * 1000
-        BSIZE = height * 1000
-	IF(ASIZE.GT.BSIZE)THEN
-	   FCTY=BSIZE/ASIZE
-	   FCTX=1.0
-	ELSE
-	   FCTX=ASIZE/BSIZE
-	   FCTY=1.0
-	ENDIF
-
-* ... define the default normalization transformation for this window
-	IF ( chg_window ) THEN
-	   CALL FGD_GSWN(n, rzero, ASIZE, rzero, BSIZE)
-	   CALL FGD_GSVP(n, rzero, FCTX,  rzero, FCTY )
-	ENDIF
-
-	wsid = n
-	wn_open  ( wsid ) = .TRUE.
-	wn_active( wsid ) = .TRUE.
 
         IF ( physical_chg ) THEN
 *          Set ASIZE and BSIZE to invalid values so the SIZE routine
@@ -501,9 +500,6 @@ c 75        CONTINUE
            wn_xpixels(n) = xpixels
            wn_ypixels(n) = ypixels
         ENDIF
-
-* turn on normalization transform (same as window number and wsid)
-        CALL FGD_GSELNT(n)
 
 * successful completion
 	status = ferr_ok

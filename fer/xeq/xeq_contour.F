@@ -270,7 +270,7 @@
 *          Assume the opacity is for the spectrum colors, 
 *          and not the pen, if fill is specified
            IF ( icolor .GE. 0 .AND. .NOT. fill )
-     .        CALL DUP_COLOR_SET_OPACITY(icolor, opacity)
+     .        CALL DUP_COLOR_SET_OPACITY(wsid, icolor, opacity)
            CALL SET_OVERRIDE_OPACITY(opacity)
         ELSE
 *          overriding opacity not specififed

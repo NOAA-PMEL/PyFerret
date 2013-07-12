@@ -1,4 +1,4 @@
-      SUBROUTINE DUP_STD_PEN_SET_OPACITY(ipen, opacity_frac)
+      SUBROUTINE DUP_STD_PEN_SET_OPACITY(windowid, ipen, opacity_frac)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -43,26 +43,26 @@
         INCLUDE 'fgrdel.cmn'
 
 * calling argument declarations:
-        INTEGER ipen
+        INTEGER windowid, ipen
         REAL*4 opacity_frac
 
 * local argument declarations:
         INTEGER ncolors, icolor, ier
         REAL*4 dfltthick, redfrac, grnfrac, bluefrac, opaqfrac
 
-*       Verify the pen given is valid
+*       Sanity checks
+        IF ( (windowid .LT. 1) .OR. 
+     .       (windowid .GT. maxwindowobjs) ) THEN
+            STOP 'DUP_STD_PEN_SET_OPACITY: Invalid windowid value'
+        ENDIF
+        IF ( windowobjs(windowid) .EQ. nullobj ) THEN
+            STOP 'DUP_STD_PEN_SET_OPACITY: null windowobj'
+        ENDIF
         ncolors = mode_arg(pmode_linecolors,1)
         IF ( (ipen .LT. 1) .OR. (ipen .GT. 3*ncolors) )
      .     STOP 'Invalid ipen passed to DUP_STD_PEN_SET_OPACITY'
-
-*       Verify the opacity given is valid
         IF ( (opacity_frac .LT. 0.0) .OR. (opacity_frac .GT. 1.0) )
      .     STOP 'Invalid opacity_frac passed to DUP_STD_PEN_SET_OPACITY'
-
-*       Verify there is an active window
-        IF ( (activewindow .LT. 1) .OR. 
-     .       (activewindow .GT. maxwindowobjs) )
-     .     STOP 'No active window when calling DUP_STD_PEN_SET_OPACITY'
 
 *       Get the color and thickness of the given standard pen
         IF ( ipen .LE. ncolors ) THEN
@@ -77,18 +77,18 @@
         ENDIF
 
 *       Get the RGB for the color of the pen
-        CALL FGD_GQCR(activewindow, icolor, ier, 
+        CALL FGD_GQCR(windowid, icolor, ier, 
      .                redfrac, grnfrac, bluefrac, opaqfrac)
         IF ( ier .NE. 0 )
      .     STOP 'Invalid icolor from ipen in DUP_STD_PEN_SET_OPACITY'
 
 *       Create a new temporary color with the new opacity
         opaqfrac = opacity_frac
-        CALL FGD_CREATE_TEMP_COLOR(icolor, redfrac, grnfrac, 
-     .                                     bluefrac, opaqfrac)
+        CALL FGD_CREATE_TEMP_COLOR(windowid, icolor, 
+     .                  redfrac, grnfrac, bluefrac, opaqfrac)
 
 *       Create a new temporary pen with the new temporary color
-        CALL FGD_CREATE_TEMP_PEN(ipen, icolor, dfltthick)
+        CALL FGD_CREATE_TEMP_PEN(windowid, ipen, icolor, dfltthick)
 
         RETURN
 

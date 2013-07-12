@@ -3,39 +3,40 @@
 * for the default window using the given color
 *
 
-        SUBROUTINE FGD_CREATE_TEMP_PEN(ipen, icolor, thickness)
+        SUBROUTINE FGD_CREATE_TEMP_PEN(windowid, 
+     .                        ipen, icolor, thickness)
 
         IMPLICIT NONE
 
-        INTEGER ipen, icolor
+        INTEGER windowid, ipen, icolor
         REAL*4 thickness
         REAL*4 dotsize
 
         INCLUDE 'fgrdel.cmn'
 
 *       Sanity checks
-        IF ( (activewindow .LT. 1) .OR. 
-     .       (activewindow .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_CREATE_TEMP_PEN: Invalid activewindow value'
+        IF ( (windowid .LT. 1) .OR. 
+     .       (windowid .GT. maxwindowobjs) ) THEN
+            STOP 'FGD_CREATE_TEMP_PEN: Invalid windowid value'
         ENDIF
-        IF ( windowobjs(activewindow) .EQ. nullobj ) THEN
-            STOP 'FGD_CREATE_TEMP_PEN: null activewindow'
+        IF ( windowobjs(windowid) .EQ. nullobj ) THEN
+            STOP 'FGD_CREATE_TEMP_PEN: null windowobj'
         ENDIF
         IF ( (icolor .LT. 0) .OR.
      .       (icolor .GE. maxcolorobjs) ) THEN
             STOP 'FGD_CREATE_TEMP_PEN: Invalid icolor'
         ENDIF
-        IF ( colorobjs(icolor+1, activewindow) .EQ. nullobj ) THEN
+        IF ( colorobjs(icolor+1, windowid) .EQ. nullobj ) THEN
             STOP 'FGD_CREATE_TEMP_PEN: null colorobj for icolor'
         ENDIF
 
         ipen = maxpenobjs
 *       linestyle = 1 is a solid line
-        CALL FGD_GSPLR(activewindow, ipen, 1, thickness, icolor)
+        CALL FGD_GSPLR(windowid, ipen, 1, thickness, icolor)
 *       also make a temporary symbol object (dot) at the same array index;
 *       code in ferret expects this
         dotsize = 6.0 + thickness
-        CALL FGD_GSPMR(activewindow, ipen, 1, dotsize, icolor)
+        CALL FGD_GSPMR(windowid, ipen, 1, dotsize, icolor)
 
         RETURN
         END

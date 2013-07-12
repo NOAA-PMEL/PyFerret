@@ -93,6 +93,8 @@
         include 'LINES.INC'
         include 'cont_inc.decl' ! with iautoc and nlev
         include 'CONT.INC'
+        include 'gkscm1_inc.decl'
+        include 'GKSCM1.INC'    ! wsid
 
 	
 * calling argument declarations:
@@ -215,7 +217,7 @@ CC       => Set values here instead.
 *          Assume the opacity is for the spectrum colors, 
 *          and not the pen, if filling is going to be done
            IF ( icolor .NE. unspecified_int4 .AND. .NOT. fill_it )
-     .        CALL DUP_COLOR_SET_OPACITY(icolor, opacity)
+     .        CALL DUP_COLOR_SET_OPACITY(wsid, icolor, opacity)
            CALL SET_OVERRIDE_OPACITY(opacity)
         ELSE
 *          overriding opacity not specififed
@@ -250,7 +252,7 @@ CC       => Set values here instead.
               limit = 3*mode_arg(pmode_linecolors,1)
 	      IF ( ipen .LT. 1 .OR. ipen .GT. limit ) GOTO 5200
               IF ( opacity .GE. 0.0 )
-     .           CALL DUP_STD_PEN_SET_OPACITY(ipen, opacity)
+     .           CALL DUP_STD_PEN_SET_OPACITY(wsid, ipen, opacity)
 	   ELSEIF ( icolor .EQ. unspecified_int4 ) THEN
 	      ipen = qual_on		! auto selection of line style
 	   ENDIF

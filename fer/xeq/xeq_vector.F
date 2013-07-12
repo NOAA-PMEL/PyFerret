@@ -124,6 +124,8 @@
         include 'axis_inc.decl'       ! with axis lengths	
         include 'AXIS.INC'       ! with axis lengths	
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
+        include 'gkscm1_inc.decl'
+        include 'GKSCM1.INC'    ! wsid
 
 
 * calling argument declarations:
@@ -254,7 +256,7 @@
            IF ( (vbuf .LT. 0.0) .OR. (vbuf .GT. 100.0) ) GOTO 5500
            opacity = vbuf / 100.0
            IF ( icolor .GE. 0 )
-     .        CALL DUP_COLOR_SET_OPACITY(icolor, opacity)
+     .        CALL DUP_COLOR_SET_OPACITY(wsid, icolor, opacity)
            CALL SET_OVERRIDE_OPACITY(opacity)
         ELSE
 *          overriding opacity not specififed

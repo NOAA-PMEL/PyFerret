@@ -2,25 +2,23 @@
 * Create a temporary color object for the default window
 *
 
-        SUBROUTINE FGD_CREATE_TEMP_COLOR(icolor, redfrac, greenfrac, 
-     .                                   bluefrac, opaquefrac)
+        SUBROUTINE FGD_CREATE_TEMP_COLOR(windowid, icolor, 
+     .                 redfrac, greenfrac, bluefrac, opaquefrac)
 
         IMPLICIT NONE
 
-        INTEGER icolor
+        INTEGER windowid, icolor
         REAL*4 redfrac, greenfrac, bluefrac, opaquefrac
 
         INCLUDE 'fgrdel.cmn'
 
-        INTEGER windowid, colorindex
-
 *       Sanity checks
-        IF ( (activewindow .LT. 1) .OR. 
-     .       (activewindow .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_CREATE_TEMP_COLOR: Invalid activewindow value'
+        IF ( (windowid .LT. 1) .OR. 
+     .       (windowid .GT. maxwindowobjs) ) THEN
+            STOP 'FGD_CREATE_TEMP_COLOR: Invalid windowid value'
         ENDIF
-        IF ( windowobjs(activewindow) .EQ. nullobj ) THEN
-            STOP 'FGD_CREATE_TEMP_COLOR: null activewindow'
+        IF ( windowobjs(windowid) .EQ. nullobj ) THEN
+            STOP 'FGD_CREATE_TEMP_COLOR: null windowobj'
         ENDIF
         IF ( (redfrac .LT. 0.0) .OR.  (redfrac .GT. 1.0) ) THEN
             STOP 'FGD_CREATE_TEMP_COLOR: Invalid redfrac'
@@ -35,7 +33,6 @@
             STOP 'FGD_CREATE_TEMP_COLOR: Invalid opaquefrac'
         ENDIF
 
-        windowid = activewindow
         icolor = maxcolorobjs - 1
         CALL FGD_GSCR(windowid, icolor,
      .                redfrac, greenfrac, bluefrac, opaquefrac)

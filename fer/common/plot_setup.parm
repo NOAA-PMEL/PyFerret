@@ -13,11 +13,20 @@
 *                  since they are used as parameters, and prefixed with 
 *                  dflt_ those that need to be scaled by pplscale.
 
-* default lengths for PPL - need to be scaled by pplscale
+* default plot size values for PPL
         REAL        dflt_xinches,
      .              dflt_yinches,
      .              dflt_imgscale,
-     .              dflt_xwhitelo,
+     .              dflt_thicken,
+     .              dflt_textprom
+        PARAMETER ( dflt_xinches   = 10.50,
+     .              dflt_yinches   =  8.50,
+     .              dflt_imgscale  =  0.83666,
+     .              dflt_thicken   =  0.75,
+     .              dflt_textprom  =  1.00 )
+
+* default lengths for PPL which need to be scaled by pplscale
+        REAL        dflt_xwhitelo,
      .              dflt_ywhitelo,
      .              dflt_xwhitehi,
      .              dflt_ywhitehi,
@@ -26,10 +35,7 @@
      .              dflt_con_labsp,
      .              dflt_con_dshln,
      .              dflt_vec_len
-        PARAMETER ( dflt_xinches   = 10.50,
-     .              dflt_yinches   =  8.50,
-     .              dflt_imgscale  =  0.83666,
-     .              dflt_xwhitelo  =  1.375,
+        PARAMETER ( dflt_xwhitelo  =  1.375,
      .              dflt_ywhitelo  =  1.375,
      .              dflt_xwhitehi  =  1.375,
      .              dflt_ywhitehi  =  1.375,
@@ -85,7 +91,7 @@
      .              ppl_dodsurl     = 10,
      .              ppl_calendar    = 11 )
 
-* parameters describing the locations and sizes of labels and keys;
+* parameters giving the locations and sizes of labels and keys;
 * need to be scaled by pplscale or textscale except for key_line_frac
         REAL        key_line_frac,
      .              dflt_letsize_title,

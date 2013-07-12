@@ -82,7 +82,7 @@
            wn_con_spcln(windid) = dflt_con_dshln     * pplscale
            wn_vec_len(windid)   = dflt_vec_len       * pplscale
 *          reset the text sizes in SET_TEXT_SIZES
-           txtfactor = 1.0
+           txtfactor = dflt_textprom
         ELSE
 *          use the stored text sizes in SET_TEXT_SIZES
            txtfactor = 0.0

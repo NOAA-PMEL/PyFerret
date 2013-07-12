@@ -24,6 +24,7 @@
 
         INCLUDE 'ferret.parm'
         INCLUDE 'errmsg.parm'
+        INCLUDE 'plot_setup.parm'
         INCLUDE 'fgrdel.cmn'
 
 *       Function declarations
@@ -48,7 +49,7 @@
         IF ( slen .EQ. 0 ) THEN
             enginename(windowid) = defaultenginename
             antialias(windowid) = .TRUE.
-            thickfactor(windowid) = 1.0
+            thickfactor(windowid) = dflt_thicken
             sts = FERR_OK
             RETURN
         ENDIF

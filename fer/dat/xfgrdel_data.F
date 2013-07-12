@@ -2,6 +2,7 @@
 
 * initialization of COMMON / FGRDEL /
         IMPLICIT NONE
+        INCLUDE 'plot_setup.parm' ! dflt_widht, dflt_height, dflt_thicken
         INCLUDE 'fgrdel.cmn'
 
         INTEGER totmaxcolorobjs
@@ -64,7 +65,7 @@
         DATA windowdpiy / maxwindowobjs * 0.0 /
 
 * Scaling factor for line widths and symbol sizes
-        DATA thickfactor / maxwindowobjs * 0.75 /
+        DATA thickfactor / maxwindowobjs * dflt_thicken /
 
 * Coordinate transformation data independent of windows
         DATA viewleftfrac / maxtransforms * 0.0 /
@@ -77,8 +78,8 @@
         DATA viewtopcoord / maxtransforms * 1.0 /
 
 * Default window sizes.
-        DATA windowwidth / maxwindowobjs * 10.5 /
-        DATA windowheight / maxwindowobjs * 8.5 /
+        DATA windowwidth / maxwindowobjs * dflt_xinches /
+        DATA windowheight / maxwindowobjs * dflt_yinches /
 
 * Default engine for a new window.
 * Should not change after start-up.

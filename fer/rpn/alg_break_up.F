@@ -55,6 +55,8 @@
 *                     a constant.
 * V600:  5/05  *acm* For attribute control, allow . inside names: 
 *                    change next_stat(10,4) to 4 -- 
+* V685:  7/13  *acm* Bug 2084. If a string starts with . and is not numeric, make an atom.
+*                    It'll generally be an error.
 
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -212,6 +214,12 @@
                  class = 3
                  state = 4
                  last_state = 4
+* Non-numeric text starting with a dot. Start the atom.
+		 IF (p.EQ.1) THEN
+                    natom = natom + 1
+                    at_start(natom) = p
+                    atom_open = .TRUE.
+                 ENDIF
               ENDIF
            ELSE
               natom = natom + 1

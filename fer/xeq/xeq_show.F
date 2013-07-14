@@ -341,7 +341,7 @@
 	CALL SPLIT_LIST(pttmode_explct, show_lun, 
      .  ' OPEN  ACTIVE  ANTIALIAS  QUALITY  DISPLAY  THICKEN  TEXTPROM', 
      .  61)
- 201    FORMAT(I4,6X,A1,7X,A3,5X,A6,5X,A3,5X,F4.2,6X,F4.2)
+ 201    FORMAT(I4,6X,A1,7X,A3,5X,A6,5X,A3,6X,F4.2,5X,F4.2)
 	DO 210 i = 1, max_windows
 	   IF ( wn_open(i) ) THEN
 	      nothing = .FALSE.

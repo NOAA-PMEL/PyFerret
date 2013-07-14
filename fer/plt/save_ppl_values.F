@@ -33,6 +33,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 
 *  save the ppl size values for this window in the wn_...() arrays
+*  currently not used because ferret changes these values for viewports
 
         IMPLICIT NONE
 

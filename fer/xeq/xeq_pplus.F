@@ -173,9 +173,6 @@
         IF ( ylen .NE. temp_ylen ) ppl_saved_yaxlen = ylen
         IF ( yorg .NE. temp_yorg ) ppl_saved_yorg   = yorg
 
-* save the current ppl lengths (no harm if they did not change)
-        CALL SAVE_PPL_VALUES(wsid)
-
  1000	RETURN
 
  3100   FORMAT('SET ',A1,'MOUSE ', A)       ! "SET ?MOUSE position_string"

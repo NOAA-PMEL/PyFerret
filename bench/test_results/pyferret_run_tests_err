@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Jul 11 08:43 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Jul 14 13:45 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -220,7 +220,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Thu Jul 11 08:43:56 PDT 2013
+Beginning at Sun Jul 14 13:45:59 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2353,8 +2353,17 @@ LIST a_regrid[D=1,GT=b[D=2]@MOD]
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
-/home/users/ksmith/PyFerret/bin/pyferret: line 55: 32650 Floating point exception(core dumped) ${python_exe} -i -c "import sys; import pyferret; (errval, errmsg) = pyferret.init(sys.argv[1:], True)" $*
-****** FERRET error: bn614_bug_fixes.jnl failed ******
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file b.nc
 *** Running test: bn_mode_nodata_lab.jnl
  Cached data cleared from memory
 *** Running test: bn_proleptic_gregorian_calendar.jnl
@@ -2973,7 +2982,6 @@ Replacing definition of axis TAXIS
  *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis RLATU79_961_9
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3260,4 +3268,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Thu Jul 11 08:47:46 PDT 2013
+Ended at Sun Jul 14 13:49:47 PDT 2013

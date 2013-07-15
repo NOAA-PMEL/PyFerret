@@ -243,6 +243,8 @@
 	include 'calendar.decl'
 	include 'calendar.cmn'	
         include 'netcdf.inc'
+        include 'gkscm1_inc.decl'
+        include 'GKSCM1.INC' ! wsid
 
 * local parameter declarations:
 	INTEGER	    slash_dflt,
@@ -1818,6 +1820,10 @@ C /units=months  is 1/12 of the length of the year
 * ... iterate a few times to approximate the correct scale factor
 	      DO i1 = 1, 3
 	        scale = 1.0 / SQRT( ABS(vp_size(ivp)) )
+                xoei = wn_xwhitelo(wsid)  ! ppl xorigin
+                yoei = wn_ywhitelo(wsid)  ! ppl yorigin
+                xcei = wn_xwhitehi(wsid)  ! white space to right of X axis
+                ycei = wn_ywhitehi(wsid)  ! white space for docmtn at top of plot
 	        CALL VP_AXLIM2LIM( scale,
      .				   vp_xorg(ivp),  vp_yorg(ivp),
      .				   vp_xclip(ivp), vp_yclip(ivp),

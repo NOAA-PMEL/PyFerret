@@ -131,11 +131,6 @@
 
 * ... V5.22 default behaviors (viewport not specified by axis)
 
-        xoei = xorg  ! ppl xorigin
-        yoei = yorg  ! ppl yorigin
-        xcei = width - xlen - xorg  ! white space to right of X axis
-        ycei = height - ylen - yorg  ! white space for docmtn at top of plot
-
         xov = xloax
         xcv = xhiax
         yov = yloax
@@ -150,19 +145,19 @@
         yov = yov - yoei/ywpi
 
 * ... make adjustments if the normalized limits exceed allowable
-        IF (xcv .GT. 1.0001) THEN
+        IF (xcv .GT. 1.0) THEN
           xcei = xcei + (1.0-xcv)*xwpi
           xcv = 1.0
         ENDIF
-        IF (ycv .GT. 1.0001) THEN
+        IF (ycv .GT. 1.0) THEN
           ycei = ycei + (1.0-ycv)*ywpi
           ycv = 1.0
         ENDIF
-        IF (xov .LT. -0.0001) THEN
+        IF (xov .LT. 0.0) THEN
           xoei = xoei + xov*xwpi
           xov = 0.0
         ENDIF
-        IF (yov .LT. -0.0001) THEN
+        IF (yov .LT. 0.0) THEN
           yoei = yoei + yov*ywpi
           yov = 0.0
         ENDIF

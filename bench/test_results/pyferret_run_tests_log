@@ -220,7 +220,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Sun Jul 14 13:45:59 PDT 2013
+Beginning at Sun Jul 14 21:01:09 PDT 2013
 *** Running test: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10470,12 +10470,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.0 of Jul  1 2013 12:53:13 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "14-Jul-13"
-SESSION_TIME = "13:46"
-SESSION_PID = "884"
-DELTA_CPU = "0.496923"
-CLOCK_SECS = "0.304"
+SESSION_TIME = "21:01"
+SESSION_PID = "6359"
+DELTA_CPU = "0.517921"
+CLOCK_SECS = "0.329"
 CURRENT_DATE = "14-Jul-13"
-CURRENT_TIME = "13:46:20"
+CURRENT_TIME = "21:01:36"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -10499,12 +10499,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.0 of Jul  1 2013 12:53:13 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "14-Jul-13"
-SESSION_TIME = "13:46"
-SESSION_PID = "884"
-DELTA_CPU = "0.001"
-CLOCK_SECS = "0.305"
+SESSION_TIME = "21:01"
+SESSION_PID = "6359"
+DELTA_CPU = "9.99E-04"
+CLOCK_SECS = "0.33"
 CURRENT_DATE = "14-Jul-13"
-CURRENT_TIME = "13:46:20"
+CURRENT_TIME = "21:01:36"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 S1 = "hello"
@@ -10515,8 +10515,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "14-Jul-13"
-SESSION_TIME = "13:46"
-SESSION_PID = "884"
+SESSION_TIME = "21:01"
+SESSION_PID = "6359"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10527,14 +10527,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "14-Jul-13"
-SESSION_TIME = "13:46"
-SESSION_PID = "884"
+SESSION_TIME = "21:01"
+SESSION_PID = "6359"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "14-Jul-13"
-SESSION_TIME = "13:46"
-SESSION_PID = "884"
+SESSION_TIME = "21:01"
+SESSION_PID = "6359"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10666,12 +10666,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.0 of Jul  1 2013 12:53:13 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "14-Jul-13"
-SESSION_TIME = "13:46"
-SESSION_PID = "884"
-DELTA_CPU = "0.023996"
-CLOCK_SECS = "0.329"
+SESSION_TIME = "21:01"
+SESSION_PID = "6359"
+DELTA_CPU = "0.024996"
+CLOCK_SECS = "0.356"
 CURRENT_DATE = "14-Jul-13"
-CURRENT_TIME = "13:46:20"
+CURRENT_TIME = "21:01:36"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -25201,7 +25201,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Sun Jul 14 13:46:39 PDT 2013
+Sun Jul 14 21:01:57 PDT 2013
  
 GO bn_reset
 cancel mode verify
@@ -35044,15 +35044,15 @@ ppl list xaxis
          LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 4.72E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 0.00E+00  AUTO LABELLING
+         XORG= 1.38E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 3.42E+00 CSIZE= 1.00E-01
+         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 4.72E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 1.30E+00  AUTO LABELLING
+         YORG= 1.38E+00  AUTO LABELLING
  
 ! guidelines showing origin, axlen, white space
 def view /xlim=0.25:0.75/ylim=0.25:0.75/text=1/axes mid2
@@ -35062,10 +35062,10 @@ define symbol xaxl `($PPL$WIDTH)/2`
  !-> define symbol xaxl 4.7235
 define symbol yaxl `($PPL$HEIGHT)/2`
  !-> define symbol yaxl 4.7235
-ppl axlen `1.2 + ($xaxl) + 1.0`,`1.4 + ($yaxl) + 1.4`
- !-> ppl axlen 6.9235,7.5235
-plot/vs/hlim=-1.2:`($xaxl)+1.0`:0.2/vlim=-1.4:`($yaxl)+1.4`:0.2/nolab/nolab {0,($xaxl)}, {0,($yaxl)}
- !-> plot/vs/hlim=-1.2:5.7235:0.2/vlim=-1.4:6.1235:0.2/nolab/nolab {0,4.7235}, {0,4.7235}
+ppl axlen `1.375 + ($xaxl) + 1.375`,`1.375 + ($yaxl) + 1.375`
+ !-> ppl axlen 7.4735,7.4735
+plot/vs/hlim=-1.375:`($xaxl)+1.375`:0.25/vlim=-1.375:`($yaxl)+1.375`:0.25/nolab/nolab {0,($xaxl)}, {0,($yaxl)}
+ !-> plot/vs/hlim=-1.375:6.0985:0.25/vlim=-1.375:6.0985:0.25/nolab/nolab {0,4.7235}, {0,4.7235}
  
 ! again with scale determined automatically
 ! make guide lines
@@ -35085,24 +35085,24 @@ show view mid
  
  name             text    xlimits     ylimits    mode
  
- MID              0.50   0.25,0.75   0.25,0.75   axes
+ MID              0.75   0.25,0.75   0.25,0.75   axes
    current viewport is MID
 ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 6.68E+00 CSIZE= 1.00E-01
+         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 5.45E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 0.00E+00  AUTO LABELLING
+         XORG= 1.38E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 6.68E+00 CSIZE= 1.00E-01
+         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 5.45E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 0.00E+00  AUTO LABELLING
+         YORG= 1.38E+00  AUTO LABELLING
  
 ! guidelines showing origin, axlen, white space
 def view /xlim=0.25:0.75/ylim=0.25:0.75/text=1/axes mid2
@@ -35112,10 +35112,10 @@ define symbol xaxl `($PPL$WIDTH)/2`
  !-> define symbol xaxl 4.7235
 define symbol yaxl `($PPL$HEIGHT)/2`
  !-> define symbol yaxl 4.7235
-ppl axlen `1.2 + ($xaxl) + 1.0`,`1.4 + ($yaxl) + 1.4`
- !-> ppl axlen 6.9235,7.5235
-plot/vs/hlim=-1.2:`($xaxl)+1.0`:0.2/vlim=-1.4:`($yaxl)+1.4`:0.2/nolab/line {0,($xaxl)}, {0,($yaxl)}
- !-> plot/vs/hlim=-1.2:5.7235:0.2/vlim=-1.4:6.1235:0.2/nolab/line {0,4.7235}, {0,4.7235}
+ppl axlen `1.375 + ($xaxl) + 1.375`,`1.375 + ($yaxl) + 1.375`
+ !-> ppl axlen 7.4735,7.4735
+plot/vs/hlim=-1.375:`($xaxl)+1.375`:0.25/vlim=-1.375:`($yaxl)+1.375`:0.25/nolab/line {0,($xaxl)}, {0,($yaxl)}
+ !-> plot/vs/hlim=-1.375:6.0985:0.25/vlim=-1.375:6.0985:0.25/nolab/line {0,4.7235}, {0,4.7235}
  
 set wind/clear
  
@@ -35126,7 +35126,7 @@ show view mid
  
  name             text    xlimits     ylimits    mode
  
- MID              0.50   0.25,0.75   0.25,0.75   axes
+ MID              0.75   0.25,0.75   0.25,0.75   axes
    current viewport is ALLAX
  
 set wind/clear
@@ -35169,7 +35169,7 @@ ppl list yaxis
          LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 0.00E+00  AUTO LABELLING
+         YORG= 1.38E+00  AUTO LABELLING
  
 def view/axes/xlim=0.5:1/ylim=0:0.5/text=1 ulax
 set view ulax
@@ -35181,7 +35181,7 @@ ppl list xaxis
          LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 0.00E+00  AUTO LABELLING
+         XORG= 1.38E+00  AUTO LABELLING
 ppl list yaxis
 
 
@@ -35201,7 +35201,7 @@ ppl list xaxis
          LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 0.00E+00  AUTO LABELLING
+         XORG= 1.38E+00  AUTO LABELLING
 ppl list yaxis
 
 
@@ -35209,7 +35209,7 @@ ppl list yaxis
          LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 0.00E+00  AUTO LABELLING
+         YORG= 1.38E+00  AUTO LABELLING
  
 ! again with viewport scaling determined automatically
 set wind/clear
@@ -35219,7 +35219,7 @@ show view llax
  
  name             text    xlimits     ylimits    mode
  
- LLAX             0.99   0.00,0.50   0.00,0.50   axes
+ LLAX             0.61   0.00,0.50   0.00,0.50   axes
    current viewport is URAX
 set view llax
 PLOT/VS/LINE/I=1:314/nolab i*cos(i/20),i*sin(i/20)
@@ -35227,7 +35227,7 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.75E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.03E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          XORG= 0.00E+00  AUTO LABELLING
@@ -35235,7 +35235,7 @@ ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.75E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.03E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          YORG= 0.00E+00  AUTO LABELLING
@@ -35245,7 +35245,7 @@ show view lrax
  
  name             text    xlimits     ylimits    mode
  
- LRAX             0.67   0.00,0.50   0.50,1.00   axes
+ LRAX             0.61   0.00,0.50   0.50,1.00   axes
    current viewport is LLAX
 set view lrax
 PLOT/VS/LINE/I=1:314/nolab i*cos(i/20),i*sin(i/20)
@@ -35253,7 +35253,7 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 5.76E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.03E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          XORG= 0.00E+00  AUTO LABELLING
@@ -35261,17 +35261,17 @@ ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 5.76E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.03E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 0.00E+00  AUTO LABELLING
+         YORG= 1.38E+00  AUTO LABELLING
  
 def view/axes/xlim=0.5:1/ylim=0:0.5 ulax
 show view ulax
  
  name             text    xlimits     ylimits    mode
  
- ULAX             0.64   0.50,1.00   0.00,0.50   axes
+ ULAX             0.61   0.50,1.00   0.00,0.50   axes
    current viewport is LRAX
 set view ulax
 PLOT/VS/LINE/I=1:314/nolab i*cos(i/20),i*sin(i/20)
@@ -35279,15 +35279,15 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 5.92E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.03E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 0.00E+00  AUTO LABELLING
+         XORG= 1.38E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 5.92E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.03E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          YORG= 0.00E+00  AUTO LABELLING
@@ -35297,7 +35297,7 @@ show view urax
  
  name             text    xlimits     ylimits    mode
  
- URAX             0.50   0.50,1.00   0.50,1.00   axes
+ URAX             0.61   0.50,1.00   0.50,1.00   axes
    current viewport is ULAX
 set view urax
 PLOT/VS/LINE/I=1:314/nolab i*cos(i/20),i*sin(i/20)
@@ -35305,18 +35305,18 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.68E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.03E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 0.00E+00  AUTO LABELLING
+         XORG= 1.38E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.68E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.03E+00 CSIZE= 1.00E-01
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 0.00E+00  AUTO LABELLING
+         YORG= 1.38E+00  AUTO LABELLING
  
 cancel view
 go ptest
@@ -48414,7 +48414,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "14-Jul-13_13:47"
+WIN_TITLE = "14-Jul-13_21:03"
  
 set win/title="set the title"
 sho sym win_title
@@ -48432,7 +48432,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="14-Jul-13:13:47"
+ !-> set win/title="14-Jul-13:21:03"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48443,14 +48443,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 14-Jul-13
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 13:47
+ !-> DEFINE SYMBOL the_time = 21:03
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="14-Jul-13:13:47"
+ !-> SET WIN/TITLE="14-Jul-13:21:03"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "14-Jul-13:13:47"
+WIN_TITLE = "14-Jul-13:21:03"
 *** Running test: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -58620,10 +58620,10 @@ SH GRID am
  normal    F
 *** Running test: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.51792"
-CLOCK_SECS = "0.304"
+DELTA_CPU = "0.514921"
+CLOCK_SECS = "0.302"
 CURRENT_DATE = "14-Jul-13"
-CURRENT_TIME = "13:48:42"
+CURRENT_TIME = "21:04:15"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -58632,8 +58632,8 @@ CURRENT_TIME = "13:48:42"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.053992"
-CLOCK_SECS = "0.358"
+DELTA_CPU = "0.044993"
+CLOCK_SECS = "0.347"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -58647,60 +58647,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.619906
+ !-> DEFINE VARIABLE ten_plots = 0.52992
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0"
-CLOCK_SECS = "0.978"
+DELTA_CPU = "9.99E-04"
+CLOCK_SECS = "0.877"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.979"
+CLOCK_SECS = "0.878"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.057991
- !-> DEFINE VARIABLE sumcpu =0.057991
+ !-> DEFINE VARIABLE dt = 0.050993
+ !-> DEFINE VARIABLE sumcpu =0.050993
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.039993
- !-> DEFINE VARIABLE sumcpu =0.097984
+ !-> DEFINE VARIABLE dt = 0.033994
+ !-> DEFINE VARIABLE sumcpu =0.084987
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.039994
- !-> DEFINE VARIABLE sumcpu =0.137978
+ !-> DEFINE VARIABLE dt = 0.034994
+ !-> DEFINE VARIABLE sumcpu =0.119981
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.041994
- !-> DEFINE VARIABLE sumcpu =0.179972
-!-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.037994
- !-> DEFINE VARIABLE sumcpu =0.217966
-!-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.041994
- !-> DEFINE VARIABLE sumcpu =0.25996
-!-> REPEAT: K=7
  !-> DEFINE VARIABLE dt = 0.036995
- !-> DEFINE VARIABLE sumcpu =0.296955
+ !-> DEFINE VARIABLE sumcpu =0.156976
+!-> REPEAT: K=5
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.190971
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.035994
+ !-> DEFINE VARIABLE sumcpu =0.226965
+!-> REPEAT: K=7
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.25996
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.036994
- !-> DEFINE VARIABLE sumcpu =0.333949
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.291955
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.036994
- !-> DEFINE VARIABLE sumcpu =0.370943
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.32395
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.035995
- !-> DEFINE VARIABLE sumcpu =0.406938
+ !-> DEFINE VARIABLE dt = 0.031996
+ !-> DEFINE VARIABLE sumcpu =0.355946
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.406938
-0.406938
+ !-> MESSAGE/CONTINUE 0.355946
+0.355946
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.387"
+CLOCK_SECS = "1.235"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "14-Jul-13"
-SESSION_TIME = "13:48"
+SESSION_TIME = "21:04"
 CURRENT_DATE = "14-Jul-13"
-CURRENT_TIME = "13:48:44"
+CURRENT_TIME = "21:04:16"
 *** Running test: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -62610,7 +62610,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.85 (PyFerret 1.0.0beta)"                                       
  3    /  3:" ! Linux 2.6.18-348.6.1.el5 - 07/14/13"                                     
- 4    /  4:" ! 14-Jul-13 13:49     "                                                    
+ 4    /  4:" ! 14-Jul-13 21:04     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -65038,42 +65038,42 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.9170
- 2   / 2:  0.0010
- 3   / 3:  0.8771
- 4   / 4:  0.4402
- 5   / 5:  0.0119
+ 1   / 1:  0.3015
+ 2   / 2:  0.7995
+ 3   / 3:  0.7150
+ 4   / 4:  0.1402
+ 5   / 5:  0.8424
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.5626
- 2   / 2:  0.0752
- 3   / 3:  0.6573
- 4   / 4:  0.3530
- 5   / 5:  0.8800
+ 1   / 1:  0.6744
+ 2   / 2:  0.9320
+ 3   / 3:  0.1878
+ 4   / 4:  0.8494
+ 5   / 5:  0.4511
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.9704
- 2   / 2:  0.9649
- 3   / 3:  0.7703
- 4   / 4:  0.2637
- 5   / 5:  0.9124
- 6   / 6:  0.4361
+ 1   / 1:  0.2526
+ 2   / 2:  0.5964
+ 3   / 3:  0.7611
+ 4   / 4:  0.1097
+ 5   / 5:  0.9013
+ 6   / 6:  0.5833
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.7337
- 2   / 2:  0.0930
- 3   / 3:  0.6740
- 4   / 4:  0.4263
- 5   / 5:  0.3964
- 6   / 6:  0.8674
+ 1   / 1:  0.6400
+ 2   / 2:  0.4978
+ 3   / 3:  0.9509
+ 4   / 4:  0.8775
+ 5   / 5:  0.6475
+ 6   / 6:  0.3771
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
@@ -65105,42 +65105,42 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.7431
- 2   / 2:  0.5652
- 3   / 3: -0.6768
- 4   / 4:  0.9086
- 5   / 5:  0.5296
+ 1   / 1: -1.856
+ 2   / 2:  0.463
+ 3   / 3: -0.746
+ 4   / 4: -2.040
+ 5   / 5:  0.464
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1: -1.225
- 2   / 2: -1.179
- 3   / 3:  1.351
- 4   / 4: -0.420
- 5   / 5:  0.524
+ 1   / 1:  0.457
+ 2   / 2:  0.625
+ 3   / 3:  0.166
+ 4   / 4:  2.143
+ 5   / 5:  1.725
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1: -0.875
- 2   / 2: -1.118
- 3   / 3:  0.572
- 4   / 4:  1.377
- 5   / 5:  0.355
- 6   / 6:  0.783
+ 1   / 1:  0.176
+ 2   / 2: -1.135
+ 3   / 3: -0.410
+ 4   / 4:  0.898
+ 5   / 5:  0.632
+ 6   / 6: -1.224
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1: -2.851
- 2   / 2: -1.267
- 3   / 3: -0.694
- 4   / 4: -0.258
- 5   / 5:  0.826
- 6   / 6:  0.029
+ 1   / 1:  0.372
+ 2   / 2: -2.325
+ 3   / 3: -0.993
+ 4   / 4: -0.226
+ 5   / 5: -0.384
+ 6   / 6:  0.751
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
@@ -65176,14 +65176,14 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
             VAR2   VAR2    VAR2
-0     / 1:  1.715  1.715  0.2833
-20    / 2:  1.012  1.012  0.2833
-40    / 3:  0.283  0.283 -0.3463
-60    / 4: -0.346 -0.346  0.2833
-80    / 5: -0.377 -0.377  0.2833
-100   / 6: -0.581 -0.476  0.2833
-120   / 7: -0.476 -0.476  0.2833
-140   / 8:  0.760  0.760  0.7601
+0     / 1:  1.470  1.470  0.4783
+20    / 2:  0.940  0.940  0.4783
+40    / 3:  0.478  0.478  0.3701
+60    / 4:  0.370  0.370  0.4783
+80    / 5: -0.259 -0.259  0.4783
+100   / 6: -0.848 -0.404  0.4783
+120   / 7: -0.404 -0.404  0.4783
+140   / 8:  0.891  0.891  0.8908
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -73312,12 +73312,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.0 of Jul  1 2013 12:53:13 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "14-Jul-13"
-SESSION_TIME = "13:49"
-SESSION_PID = "2252"
-DELTA_CPU = "0.525919"
+SESSION_TIME = "21:05"
+SESSION_PID = "7708"
+DELTA_CPU = "0.526919"
 CLOCK_SECS = "0.319"
 CURRENT_DATE = "14-Jul-13"
-CURRENT_TIME = "13:49:47"
+CURRENT_TIME = "21:05:19"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -73342,7 +73342,7 @@ PPL$COMMAND_FILE = "$$MEMBUF$$"
 VP_WIDTH = "10.5"
 VP_HEIGHT = "8.5"
 PPL$SCALE = "1.0000"
-WIN_TITLE = "14-Jul-13_13:49"
+WIN_TITLE = "14-Jul-13_21:05"
 VP_SCALE = "1"
 VP_RT_MARGIN = "1.375"
 VP_TOP_MARGIN = "1.375"
@@ -73391,4 +73391,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Sun Jul 14 13:49:47 PDT 2013
+Ended at Sun Jul 14 21:05:19 PDT 2013

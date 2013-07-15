@@ -28,8 +28,8 @@ set view mid2
 ppl origin 0,0
 define symbol xaxl `($PPL$WIDTH)/2`
 define symbol yaxl `($PPL$HEIGHT)/2`
-ppl axlen `1.2 + ($xaxl) + 1.0`,`1.4 + ($yaxl) + 1.4`
-plot/vs/hlim=-1.2:`($xaxl)+1.0`:0.2/vlim=-1.4:`($yaxl)+1.4`:0.2/nolab/nolab {0,($xaxl)}, {0,($yaxl)}
+ppl axlen `1.375 + ($xaxl) + 1.375`,`1.375 + ($yaxl) + 1.375`
+plot/vs/hlim=-1.375:`($xaxl)+1.375`:0.25/vlim=-1.375:`($yaxl)+1.375`:0.25/nolab/nolab {0,($xaxl)}, {0,($yaxl)}
 
 ! again with scale determined automatically
 ! make guide lines
@@ -55,8 +55,8 @@ set view mid2
 ppl origin 0,0
 define symbol xaxl `($PPL$WIDTH)/2`
 define symbol yaxl `($PPL$HEIGHT)/2`
-ppl axlen `1.2 + ($xaxl) + 1.0`,`1.4 + ($yaxl) + 1.4`
-plot/vs/hlim=-1.2:`($xaxl)+1.0`:0.2/vlim=-1.4:`($yaxl)+1.4`:0.2/nolab/line {0,($xaxl)}, {0,($yaxl)}
+ppl axlen `1.375 + ($xaxl) + 1.375`,`1.375 + ($yaxl) + 1.375`
+plot/vs/hlim=-1.375:`($xaxl)+1.375`:0.25/vlim=-1.375:`($yaxl)+1.375`:0.25/nolab/line {0,($xaxl)}, {0,($yaxl)}
 
 set wind/clear
 

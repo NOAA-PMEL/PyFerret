@@ -76,6 +76,10 @@
 
 * 9/01 additions
 	IF (vp_by_axis( vp_num )) THEN
+           xoei = wn_xwhitelo(wsid)  ! ppl xorigin
+           yoei = wn_ywhitelo(wsid)  ! ppl yorigin
+           xcei = wn_xwhitehi(wsid)  ! white space to right of X axis
+           ycei = wn_ywhitehi(wsid)  ! white space for docmtn at top of plot
 * ... adjust limits given as axis positions to limits of viewport
 	   CALL VP_AXLIM2LIM( scale, xorg, yorg, xclip, yclip,
      .                               xorg, yorg, xclip, yclip,

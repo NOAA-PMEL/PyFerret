@@ -2,7 +2,7 @@ Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
 lrwxrwxrwx 1 ksmith tmap 11 Jul 14 13:45 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for PyFerret
+Note: RUN_TESTS.sh test results for PyFerret on RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -220,7 +220,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Sun Jul 14 21:01:09 PDT 2013
+Beginning at Mon Jul 15 10:51:13 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3231,6 +3231,20 @@ NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: .HELLO
+list .hello
+ **ERROR: variable unknown or not in data set: A.UNITS
+ 
+list a.units
+ **ERROR: variable unknown or not in data set: A.UNITS
+list a.units
+ **ERROR: attribute undefined or invalid attribute name: ..HISTORY
+          attribute HISTORY not found for dataset
+list ..history
+ **ERROR: variable unknown or not in data set: ..HISTORY
+list ..history
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
 *** Running test: bn_nco_append.jnl
@@ -3268,4 +3282,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Sun Jul 14 21:05:19 PDT 2013
+Ended at Mon Jul 15 10:55:03 PDT 2013

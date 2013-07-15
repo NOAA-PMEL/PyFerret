@@ -1,0 +1,20 @@
+! err684_dotstart.jnl
+! 12-Jul-2013 ACM
+!
+! Bug 2084. Avoid a STOP if the expression starts with a .
+!           Issue a normal error message if its an invalid string.
+
+set mode ignore
+
+! This previously kicked out with  STOP ALG_BREAK_UP
+! Now will issue an error
+list .hello
+
+! Related syntax: var.att. Generate errors since no dataset is open
+list a.units
+list ..history
+
+! Just a dot is interpretd as a number.
+list .
+
+set mode/last ignore

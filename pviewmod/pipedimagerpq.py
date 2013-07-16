@@ -451,8 +451,9 @@ class PipedImagerPQ(QMainWindow):
         # if the window does not have the correct aspect ratio, resize it so 
         # it will; this will generate another call to this method.  Otherwise,
         # scale the scene and be done.
-        if (abs(cwheight - newcwheight) <= self.__framedelta) and \
-           (abs(cwwidth - newcwwidth) <= self.__framedelta):
+        if self.isMaximized() or \
+           ( (abs(cwheight - newcwheight) <= self.__framedelta) and \
+             (abs(cwwidth - newcwwidth) <= self.__framedelta) ):
             self.scaleScene(factor, False)
             return True
         else:
@@ -466,7 +467,7 @@ class PipedImagerPQ(QMainWindow):
         Scaling factors are not accumulative.  So if the scene was
         already scaled, that scaling is "removed" before this scaling
         factor is applied.  If resizewin is True, the main window is 
-        resize to accommodate this new scaled scene size.
+        resized to accommodate this new scaled scene size.
         '''
         newfactor = float(factor)
         newlabwidth = int(newfactor * self.__scenewidth + 0.5)
@@ -493,18 +494,18 @@ class PipedImagerPQ(QMainWindow):
                 self.statusBar().clearMessage()
                 QApplication.restoreOverrideCursor()
         if resizewin:
-            # resize the main window 
+            # resize the main window (if possible)
             barheights = self.menuBar().height() + self.statusBar().height()
             mwheight = newlabheight + barheights + self.__framedelta
             mwwidth = newlabwidth + self.__framedelta
-            # Do not exceed 15/16 of the available real estate on the screen.
+            # Do not exceed the available real estate on the screen.
             # If autoscaling is in effect, the resize will trigger 
             # any required adjustments.
             scrnrect = QApplication.desktop().availableGeometry()
-            if mwwidth > 0.9375 * scrnrect.width():
-                mwwidth = int(0.9375 * scrnrect.width() + 0.5)
-            if mwheight > 0.9375 * scrnrect.height():
-                mwheight = int(0.9375 * scrnrect.height() + 0.5)
+            if mwwidth > 0.95 * scrnrect.width():
+                mwwidth = int(0.9 * scrnrect.width() + 0.5)
+            if mwheight > 0.95 * scrnrect.height():
+                mwheight = int(0.9 * scrnrect.height() + 0.5)
             self.resize(mwwidth, mwheight)
 
     def inquireSaveFilename(self):

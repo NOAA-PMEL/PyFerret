@@ -50,7 +50,9 @@
 *			mode verify output, and journal file comments
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
-* PyFr  *kms*  7/13 save current PPL length/size values after execution 
+* PyFr  *kms*  7/13 Reset scaling with PPL /RESET
+
+        IMPLICIT NONE
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -66,6 +68,7 @@
         include 'PLT.INC'        ! width, height
 	include 'gkscm1_inc.decl'
 	include 'GKSCM1.INC'	 ! wsid
+        INCLUDE 'fgrdel.cmn'     ! windowdpix, windowdpiy
 
 * local variable declarations:
 	LOGICAL	ver_out, jnl_out
@@ -73,6 +76,7 @@
         REAL temp_ylen, temp_yorg
 	CHARACTER*16 vbuff
 	CHARACTER TM_INQ_PATH*2048, fname*128, sfile*2048
+        REAL*4 scl
 
 * local parameter declarations:
 	INTEGER		slash_reset
@@ -111,6 +115,11 @@
 	IF ( qual_given( slash_reset ) .GT. 0 ) THEN
 * ... reset plot environment to defaults
 	   CALL DISP_RESET
+*          set the default scaling factor for the scene - SQRT(0.7)
+           scl = dflt_imgscale
+           wn_xpixels(wsid) = wn_xinches(wsid) * windowdpix(wsid) * scl
+           wn_ypixels(wsid) = wn_yinches(wsid) * windowdpiy(wsid) * scl
+           CALL FGD_SEND_IMAGE_SCALE(wsid, scl)
 	ELSEIF ( num_args .GT. 0 ) THEN
 * ... pass a single command to PLOT5
 	   CALL PPLCMD (' ',' ',0,cmnd_buff(arg_start(1):len_cmnd),1,1)

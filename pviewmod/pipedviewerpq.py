@@ -19,7 +19,8 @@ try:
 except AttributeError:
     pass
 
-from PyQt4.QtCore import Qt, QPointF, QRect, QRectF, QSize, QString, QTimer
+from PyQt4.QtCore import Qt, QPointF, QRect, QRectF, QSize, QSizeF, \
+                         QString, QTimer
 from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, QDialog, \
                          QFileDialog, QImage, QLabel, QMainWindow, \
                          QMessageBox, QPainter, QPalette, QPen, QPicture, \
@@ -513,8 +514,9 @@ class PipedViewerPQ(QMainWindow):
         # if the window does not have the correct aspect ratio, resize it so 
         # it will; this will generate another call to this method.  Otherwise,
         # scale the scene and be done.
-        if (abs(cwheight - newcwheight) <= self.__framedelta) and \
-           (abs(cwwidth - newcwwidth) <= self.__framedelta):
+        if self.isMaximized() or \
+           ( (abs(cwheight - newcwheight) <= self.__framedelta) and \
+             (abs(cwwidth - newcwwidth) <= self.__framedelta) ):
             self.scaleScene(factor, False)
             return True
         else:
@@ -528,7 +530,7 @@ class PipedViewerPQ(QMainWindow):
         Scaling factors are not accumulative.  So if the scene was
         already scaled, that scaling is "removed" before this scaling
         factor is applied.  If resizewin is True, the main window is 
-        resize to accommodate this new scaled scene size.
+        resized to accommodate this new scaled scene size.
         '''
         newfactor = float(factor)
         newlabwidth = int(newfactor * self.__scenewidth + 0.5)
@@ -555,18 +557,18 @@ class PipedViewerPQ(QMainWindow):
             # Redraw the scene from the beginning
             self.redrawScene()
         if resizewin:
-            # resize the main window 
+            # resize the main window (if possible)
             barheights = self.menuBar().height() + self.statusBar().height()
             mwheight = newlabheight + barheights + self.__framedelta
             mwwidth = newlabwidth + self.__framedelta
-            # Do not exceed 15/16 of the available real estate on the screen.
+            # Do not exceed the available real estate on the screen.
             # If autoscaling is in effect, the resize will trigger 
             # any required adjustments.
             scrnrect = QApplication.desktop().availableGeometry()
-            if mwwidth > 0.9375 * scrnrect.width():
-                mwwidth = int(0.9375 * scrnrect.width() + 0.5)
-            if mwheight > 0.9375 * scrnrect.height():
-                mwheight = int(0.9375 * scrnrect.height() + 0.5)
+            if mwwidth > 0.95 * scrnrect.width():
+                mwwidth = int(0.9 * scrnrect.width())
+            if mwheight > 0.95 * scrnrect.height():
+                mwheight = int(0.9 * scrnrect.height())
             self.resize(mwwidth, mwheight)
 
     def inquireSaveFilename(self):
@@ -705,20 +707,6 @@ class PipedViewerPQ(QMainWindow):
                 printer.setOutputFormat(QPrinter.PdfFormat)
             # Print to file in color
             printer.setColorMode(printer.Color)
-            # Default paper size (letter)
-            try:
-                printer.setPaperSize(QPrinter.Letter)
-            except AttributeError:
-                # setPaperSize introduced in 4.4 and made setPageSize obsolete
-                # but RHEL5 Qt4 is 4.2
-                printer.setPageSize(QPrinter.Letter)
-            # No margins (setPageMargins introduced in 4.4)
-            printer.setFullPage(True)
-            # Default orientation
-            if ( self.__scenewidth > self.__sceneheight ):
-                printer.setOrientation(QPrinter.Landscape)
-            else:
-                printer.setOrientation(QPrinter.Portrait)
             # get the width and height in inches of the image to be produced
             if vectsize:
                 imagewidth = vectsize.width()
@@ -728,10 +716,25 @@ class PipedViewerPQ(QMainWindow):
                              / float(self.physicalDpiX())
                 imageheight = self.__sceneheight * self.__scalefactor \
                               / float(self.physicalDpiY())
+            try:
+                # Set custom paper size to just fit around the image
+                printer.setPaperSize(QSizeF(imagewidth, imageheight), 
+                                     QPrinter.Inch)
+            except AttributeError:
+                # setPaperSize introduced in 4.4 and made setPageSize 
+                # obsolete; but RHEL5 Qt4 is 4.2, so set to letter size
+                printer.setPageSize(QPrinter.Letter)
+            # No margins (setPageMargins introduced in 4.4)
+            printer.setFullPage(True)
+            # Default orientation
+            if ( imagewidth > imageheight ):
+                printer.setOrientation(QPrinter.Landscape)
+            else:
+                printer.setOrientation(QPrinter.Portrait)
             # also get the image size in units of printer dots
             printwidth = int(imagewidth * printer.resolution() + 0.5)
             printheight = int(imageheight * printer.resolution() + 0.5)
-            # Set up to send the drawing commands to the QPrinter
+            # Set up to draw to the QPrinter
             painter = QPainter(printer)
             if bkgcolor:
                 # Draw a rectangle filling the entire scene

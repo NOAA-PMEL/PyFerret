@@ -53,6 +53,8 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * PyFr *kms*  7/13 reset to scaled lengths and sizes using SET_PPL_VALUES
 
+        IMPLICIT NONE
+
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'plot_setup.parm'
@@ -71,6 +73,7 @@
 *       set the default plot size
         wn_xinches(wsid) = dflt_xinches
         wn_yinches(wsid) = dflt_yinches
+
 *       set sizes and locations that scale with the plot size
         CALL SET_PPL_VALUES(wsid, .TRUE.)
 
@@ -107,7 +110,9 @@ c	CALL PPLCMD ( from, line, 0, 'TXNMTC 0', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'AXLINT 2,2', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'CONPRE ', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'CONPST ', 1, 1 )
-        CALL SET_VIEWPORT( mvp_dflt )   ! remove viewports, restore axis sizes
+
+* remove viewports and clear window, restore axis sizes, update window
+        CALL SET_VIEWPORT( mvp_dflt ) 
 
 * set up the default spectrum
         CALL PPL_SHASET( 'RESET' )

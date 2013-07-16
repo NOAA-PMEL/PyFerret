@@ -118,10 +118,10 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 
 * For viewport/AXES viewports, update ASIZE and BSIZE here,
 * or else the first viewport plotted is in the wrong place.
-        IF (vp_by_axis(vp_num)) THEN
-           CALL FGD_GQOPS(istate)  ! In batch mode the graphics may not be active now. 
-           IF (istate .GE. 2) CALL SIZE (width,height)
-        ENDIF
+*
+* *kms* - always update in case size has changed;
+*         if nothing changed, SIZE does nothing
+        CALL SIZE (width,height)
 
 * NDC space goes 0 to fctx and 0 to fcty (corresponding to PLOT+ SIZE command)
 	IF(ASIZE.GT.BSIZE)THEN

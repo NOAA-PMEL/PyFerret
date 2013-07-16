@@ -38,6 +38,9 @@ CFerBind *cairoCFerBind_createWindow(void)
     bindings->beginView = cairoCFerBind_beginView;
     bindings->clipView = cairoCFerBind_clipView;
     bindings->endView = cairoCFerBind_endView;
+    bindings->beginSegment = cairoCFerBind_beginSegment;
+    bindings->endSegment = cairoCFerBind_endSegment;
+    bindings->deleteSegment = cairoCFerBind_deleteSegment;
     bindings->updateWindow = cairoCFerBind_updateWindow;
     bindings->clearWindow = cairoCFerBind_clearWindow;
     bindings->redrawWindow = cairoCFerBind_redrawWindow;

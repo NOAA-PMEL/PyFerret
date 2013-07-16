@@ -82,7 +82,7 @@ class AbstractPyFerretBindings(object):
         filename provided here may only be used as a default
         filename.
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def setAntialias(self, antialias):
         '''
@@ -90,7 +90,7 @@ class AbstractPyFerretBindings(object):
         in future drawing commands.  May not be implemented and thus raise
         an AttributeError.
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def beginView(self, leftfrac, bottomfrac, rightfrac, topfrac,
                         clipit):
@@ -111,7 +111,7 @@ class AbstractPyFerretBindings(object):
                          for the top side of the View
             clipit:      clip drawing to this View?
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def clipView(self, clipit):
         '''
@@ -120,20 +120,45 @@ class AbstractPyFerretBindings(object):
         Arguments:
             clipit: clip drawings to the current View?
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def endView(self):
         '''
         Closes the current View.  When this call returns, the graphics 
         drawn to the View should be visible in its Window.
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
+
+    def beginSegment(self, segid):
+        '''
+        Creates a "Segment object" for the given Window.
+        A Segment is just a group of drawing commands.
+
+        Arguments:
+            segid: ID for the Segment
+        '''
+        raise AttributeError('not implemented')
+
+    def endSegment(self):
+        '''
+        End the current "Segment" for the Window.
+        '''
+        raise AttributeError('not implemented')
+
+    def deleteSegment(self, segid):
+        '''
+        Deletes the drawing commands in the indicated Segment.
+
+        Arguments:
+            segid: ID for the Segment to be deleted
+        '''
+        raise AttributeError('not implemented')
 
     def updateWindow(self):
         '''
         Indicates the viewer should update the graphics displayed.
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def clearWindow(self, bkgcolor):
         '''
@@ -143,7 +168,7 @@ class AbstractPyFerretBindings(object):
         Arguments:
             bkgcolor: initialize (fill) the Window with this Color
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def redrawWindow(self, bkgcolor):
         '''
@@ -154,7 +179,7 @@ class AbstractPyFerretBindings(object):
             bkgcolor: initialize (fill) the Window with this Color
                       before redrawing the current drawing.
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def windowScreenInfo(self):
         '''
@@ -165,7 +190,7 @@ class AbstractPyFerretBindings(object):
            screenwidth: width of the screen (display) in pixels (dots)
            screenheight: height of the screen (display) in pixels (dots)
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def resizeWindow(self, width, height):
         '''
@@ -177,7 +202,7 @@ class AbstractPyFerretBindings(object):
 
         "device units" is pixels at the current window DPI
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def scaleWindow(self, scale):
         '''
@@ -186,7 +211,7 @@ class AbstractPyFerretBindings(object):
         Arguments:
             scale: scaling factor to use
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def showWindow(self, visible):
         '''
@@ -196,7 +221,7 @@ class AbstractPyFerretBindings(object):
         Arguments:
             visible: display (if True) or hide (if False) the Window
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def saveWindow(self, filename, fileformat, bkgcolor, 
                    xinches, yinches, xpixels, ypixels):
@@ -217,7 +242,7 @@ class AbstractPyFerretBindings(object):
         If fileformat is NULL, the fileformat is guessed from the
         filename extension.
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def createColor(self, redfrac, greenfrac, bluefrac, opaquefrac):
         '''
@@ -236,7 +261,7 @@ class AbstractPyFerretBindings(object):
 
         Raises an error if unable to create the Color object.
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def deleteColor(self, color):
         '''
@@ -245,7 +270,7 @@ class AbstractPyFerretBindings(object):
         Arguments:
             color: Color to be deleted
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def createFont(self, familyname, fontsize, italic, bold, underlined):
         '''
@@ -260,7 +285,7 @@ class AbstractPyFerretBindings(object):
 
         Raises an error if unable to create the Font object.
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def deleteFont(self, font):
         '''
@@ -269,7 +294,7 @@ class AbstractPyFerretBindings(object):
         Arguments:
             font: Font to be deleted
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def createPen(self, color, width, style, capstyle, joinstyle):
         '''
@@ -284,7 +309,7 @@ class AbstractPyFerretBindings(object):
 
         Raises an error if unable to create the Pen object.
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def replacePenColor(self, pen, newcolor):
         '''
@@ -296,7 +321,7 @@ class AbstractPyFerretBindings(object):
 
         Raises an error if unable to replace the Color in the Pen.
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def deletePen(self, pen):
         '''
@@ -305,7 +330,7 @@ class AbstractPyFerretBindings(object):
         Arguments:
             pen: Pen to be deleted
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def createBrush(self, color, style):
         '''
@@ -317,7 +342,7 @@ class AbstractPyFerretBindings(object):
 
         Raises an error if unable to create the Brush object.
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def replaceBrushColor(self, brush, newcolor):
         '''
@@ -329,7 +354,7 @@ class AbstractPyFerretBindings(object):
 
         Raises an error if unable to replace the Color in the Brush.
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def deleteBrush(self, brush):
         '''
@@ -338,7 +363,7 @@ class AbstractPyFerretBindings(object):
         Arguments:
             brush: Brush to be deleted
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def createSymbol(self, symbolname):
         '''
@@ -349,7 +374,7 @@ class AbstractPyFerretBindings(object):
 
         Raises an error if unable to create the Symbol object.
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def deleteSymbol(self, symbol):
         '''
@@ -358,7 +383,7 @@ class AbstractPyFerretBindings(object):
         Arguments:
             symbol: Symbol to be deleted
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def setWidthFactor(self, widthfactor):
         '''
@@ -368,7 +393,7 @@ class AbstractPyFerretBindings(object):
         Arguments:
             widthfactor: positive float giving the new scaling factor to use
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def drawMultiline(self, ptsx, ptsy, pen):
         '''
@@ -382,7 +407,7 @@ class AbstractPyFerretBindings(object):
         Coordinates are measured from the upper left corner
         in "device units" (pixels at the current window DPI).
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def drawPoints(self, ptsx, ptsy, symbol, color, ptsize):
         '''
@@ -398,7 +423,7 @@ class AbstractPyFerretBindings(object):
         Coordinates are measured from the upper left corner
         in "device units" (pixels at the current window DPI).
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def drawPolygon(self, ptsx, ptsy, brush, pen):
         '''
@@ -415,7 +440,7 @@ class AbstractPyFerretBindings(object):
         Coordinates are measured from the upper left corner
         in "device units" (pixels at the current window DPI).
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def drawRectangle(self, left, bottom, right, top, brush, pen):
         '''
@@ -434,7 +459,7 @@ class AbstractPyFerretBindings(object):
         Coordinates are measured from the upper left corner
         in "device units" (pixels at the current window DPI).
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 
     def drawText(self, text, startx, starty, font, color, rotate):
         '''
@@ -452,5 +477,5 @@ class AbstractPyFerretBindings(object):
         Coordinates are measured from the upper left corner
         in "device units" (pixels at the current window DPI).
         '''
-        raise AttributeError()
+        raise AttributeError('not implemented')
 

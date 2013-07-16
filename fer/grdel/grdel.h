@@ -156,6 +156,22 @@ void fgdviewclip_(int *success, void **window, int *clipit);
 void fgdviewend_(int *success, void **window);
 
 /*
+ * A segment is an collection of drawing commands with an ID.  Drawing
+ * commands in a segment can be deleted and the image recreated from
+ * the remaining drawing commands.
+ */
+grdelBool grdelWindowSegmentBegin(grdelType window, int segid);
+grdelBool grdelWindowSegmentEnd(grdelType window);
+grdelBool grdelWindowSegmentDelete(grdelType window, int segid);
+
+/*
+ * Fortran interfaces for the Window Segment functions.
+ */
+void fgdsegbegin_(int *success, void **window, int *segid);
+void fgdsegend_(int *success, void **window);
+void fgdsegdelete_(int *success, void **window, int *segid);
+
+/*
  * All Color, Font, Pens, Brush, or Symbol objects can only be used
  * in the Window from which they were created.
  */

@@ -32,6 +32,9 @@ typedef struct CFerBind_struct {
                             double rightfrac, double topfrac, int clipit);
      grdelBool (*clipView)(struct CFerBind_struct *self, int clipit);
      grdelBool (*endView)(struct CFerBind_struct *self);
+     grdelBool (*beginSegment)(struct CFerBind_struct *self, int segid);
+     grdelBool (*endSegment)(struct CFerBind_struct *self);
+     grdelBool (*deleteSegment)(struct CFerBind_struct *self, int segid);
      grdelBool (*updateWindow)(struct CFerBind_struct *self);
      grdelBool (*clearWindow)(struct CFerBind_struct *self, grdelType fillcolor);
      grdelBool (*redrawWindow)(struct CFerBind_struct *self, grdelType fillcolor);

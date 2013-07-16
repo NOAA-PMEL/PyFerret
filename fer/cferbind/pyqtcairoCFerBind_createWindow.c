@@ -50,6 +50,9 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
     bindings->beginView = cairoCFerBind_beginView;
     bindings->clipView = cairoCFerBind_clipView;
     bindings->endView = cairoCFerBind_endView;
+    bindings->beginSegment = cairoCFerBind_beginSegment;
+    bindings->endSegment = cairoCFerBind_endSegment;
+    bindings->deleteSegment = cairoCFerBind_deleteSegment;
     bindings->createColor = cairoCFerBind_createColor;
     bindings->deleteColor = cairoCFerBind_deleteColor;
     bindings->createFont = cairoCFerBind_createFont;

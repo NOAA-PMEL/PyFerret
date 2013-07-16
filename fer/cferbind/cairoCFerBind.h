@@ -110,6 +110,9 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
                                   double rgtfrac, double topfrac, int clipit);
 grdelBool cairoCFerBind_clipView(CFerBind *self, int clipit);
 grdelBool cairoCFerBind_endView(CFerBind *self);
+grdelBool cairoCFerBind_beginSegment(CFerBind *self, int segid);
+grdelBool cairoCFerBind_endSegment(CFerBind *self);
+grdelBool cairoCFerBind_deleteSegment(CFerBind *self, int segid);
 grdelBool cairoCFerBind_updateWindow(CFerBind *self);
 grdelBool cairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor);
 grdelBool cairoCFerBind_redrawWindow(CFerBind *self, grdelType fillcolor);

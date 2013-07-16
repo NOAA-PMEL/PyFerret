@@ -13,6 +13,10 @@
  *
  * Only one View can be active at any time.  So a switch between views
  * requires ending one view and beginning a another view.
+ *
+ * A segment is an collection of drawing commands with an ID.  Drawing
+ * commands in a segment can be deleted and the image recreated from
+ * the remaining drawing commands.
  */
 #include <Python.h> /* make sure Python.h is first */
 #include <string.h>
@@ -57,6 +61,7 @@ typedef struct GDWindow_ {
     const char *id;
     BindObj   bindings;
     grdelBool hasview;
+    grdelBool hasseg;
 } GDWindow;
 
 /*
@@ -105,6 +110,7 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
     window->bindings.cferbind = NULL;
     window->bindings.pyobject = NULL;
     window->hasview = 0;
+    window->hasseg = 0;
 
     /*
      * First try to create the C window bindings for this engine.
@@ -279,6 +285,7 @@ grdelBool grdelWindowDelete(grdelType window)
     /* Free the memory for the GDWindow */
     mywindow->id = NULL;
     mywindow->hasview = 0;
+    mywindow->hasseg = 0;
     mywindow->bindings.cferbind = NULL;
     mywindow->bindings.pyobject = NULL;
     PyMem_Free(window);
@@ -1554,6 +1561,244 @@ void fgdviewend_(int *success, void **window)
     grdelBool result;
 
     result = grdelWindowViewEnd(*window);
+    *success = result;
+}
+
+/*
+ * Starts a Segment in a Window.
+ * A "Segment" is a group of drawing commands.
+ *
+ * Input Arguments:
+ *     window: Window object to use
+ *     segid: ID for the Segment
+ * Output Arguments:
+ *     success: non-zero if successful; zero if an error occurred.
+ *              Use fgderrmsg_ to retrieve the error message.
+ */
+grdelBool grdelWindowSegmentBegin(grdelType window, int segid)
+{
+    GDWindow *mywindow;
+    grdelBool success;
+    PyObject *result;
+
+#ifdef VERBOSEDEBUG
+    fprintf(debuglogfile, "grdelWindowSegmentBegin called: "
+            "window = %p, "
+            "segid = %d\n",
+            window, segid);
+    fflush(debuglogfile);
+#endif
+
+    if ( grdelWindowVerify(window) == NULL ) {
+        strcpy(grdelerrmsg, "grdelWindowSegmentBegin: window argument "
+                            "is not a grdel Window");
+        return 0;
+    }
+    mywindow = (GDWindow *) window;
+    if ( mywindow->hasseg ) {
+        strcpy(grdelerrmsg, "grdelWindowSegmentBegin: window "
+                            "already has a Segment defined");
+        return 0;
+    }
+
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                            beginSegment(mywindow->bindings.cferbind, segid);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+    }
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, 
+                                     "beginSegment", "i", segid);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowSegmentBegin: Error when calling the "
+                    "Python binding's beginSegment method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelWindowSegmentBegin: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
+
+    mywindow->hasseg = 1;
+    return 1;
+}
+
+/*
+ * Ends the current Segment in a Window. 
+ *
+ * Arguments:
+ *     window: Window on which the segment was defined
+ *
+ * Returns success (nonzero) or failure (zero).
+ * If failure, grdelerrmsg contains an explanatory message.
+ */
+grdelBool grdelWindowSegmentEnd(grdelType window)
+{
+    GDWindow *mywindow;
+    grdelBool success;
+    PyObject *result;
+
+#ifdef VERBOSEDEBUG
+    fprintf(debuglogfile, "grdelWindowSegmentEnd called: "
+            "window = %p\n", window);
+    fflush(debuglogfile);
+#endif
+
+    if ( grdelWindowVerify(window) == NULL ) {
+        strcpy(grdelerrmsg, "grdelWindowSegmentEnd: window argument "
+                            "is not a grdel Window");
+        return 0;
+    }
+    mywindow = (GDWindow *) window;
+    if ( ! mywindow->hasseg ) {
+        strcpy(grdelerrmsg, "grdelWindowSegmentEnd: window does not "
+                            "have a segment defined");
+        return 0;
+    }
+
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                            endSegment(mywindow->bindings.cferbind);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+    }
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, "endSegment", NULL);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowSegmentEnd: error when calling the "
+                    "Python binding's endSegment method: %s", pyefcn_get_error());
+            return 0;
+        }
+	Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelWindowSegmentEnd: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
+
+    mywindow->hasseg = 0;
+    return 1;
+}
+
+/*
+ * Deletes the drawing commands in the indicated Segment of a Window. 
+ *
+ * Arguments:
+ *     window: Window on which the segment was defined
+ *     segid: ID for the Segment to delete
+ *
+ * Returns success (nonzero) or failure (zero).
+ * If failure, grdelerrmsg contains an explanatory message.
+ */
+grdelBool grdelWindowSegmentDelete(grdelType window, int segid)
+{
+    GDWindow *mywindow;
+    grdelBool success;
+    PyObject *result;
+
+#ifdef VERBOSEDEBUG
+    fprintf(debuglogfile, "grdelWindowSegmentDelete called: "
+            "window = %p, "
+            "segid = %d\n",
+            window, segid);
+    fflush(debuglogfile);
+#endif
+
+    if ( grdelWindowVerify(window) == NULL ) {
+        strcpy(grdelerrmsg, "grdelWindowSegmentDelete: window argument "
+                            "is not a grdel Window");
+        return 0;
+    }
+    mywindow = (GDWindow *) window;
+
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                            deleteSegment(mywindow->bindings.cferbind, segid);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+    }
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, 
+                                     "deleteSegment", "i", segid);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowSegmentDelete: error when calling the "
+                    "Python binding's deleteSegment method: %s", pyefcn_get_error());
+            return 0;
+        }
+	Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelWindowSegmentDelete: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
+
+    mywindow->hasseg = 0;
+    return 1;
+}
+
+/*
+ * Start a Segment in a Window. 
+ * A "Segment" is a group of drawing commands.
+ *
+ * Input Arguments:
+ *     window: Window object to use
+ *     segid: ID for the Segment
+ * Output Arguments:
+ *     success: non-zero if successful; zero if an error occurred.
+ *              Use fgderrmsg_ to retrieve the error message.
+ */
+void fgdsegbegin_(int *success, void **window, int *segid)
+{
+    grdelBool result;
+
+    result = grdelWindowSegmentBegin(*window, *segid);
+    *success = result;
+}
+
+/*
+ * Ends the current Segment in a Window. 
+ *
+ * Input Arguments:
+ *     window: Window object to use
+ * Output Arguments:
+ *     success: non-zero if successful; zero if an error occurred.
+ *              Use fgderrmsg_ to retrieve the error message.
+ */
+void fgdsegend_(int *success, void **window)
+{
+    grdelBool result;
+
+    result = grdelWindowSegmentEnd(*window);
+    *success = result;
+}
+
+/*
+ * Deletes the drawing commands in the indicated Segment of a Window. 
+ *
+ * Input Arguments:
+ *     window: Window object to use
+ *     segid: ID for the Segment
+ * Output Arguments:
+ *     success: non-zero if successful; zero if an error occurred.
+ *              Use fgderrmsg_ to retrieve the error message.
+ */
+void fgdsegdelete_(int *success, void **window, int *segid)
+{
+    grdelBool result;
+
+    result = grdelWindowSegmentDelete(*window, *segid);
     *success = result;
 }
 

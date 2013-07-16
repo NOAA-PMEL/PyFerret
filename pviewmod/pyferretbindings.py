@@ -207,6 +207,39 @@ class PyFerretBindings(AbstractPyFerretBindings):
         self.__window.submitCommand( { "action":"endView" } )
         self.checkForErrorResponse()
 
+    def beginSegment(self, segid):
+        '''
+        Creates a "Segment object" for the given Window.
+        A Segment is just a group of drawing commands.
+
+        Arguments:
+            segid: ID for the Segment
+        '''
+        cmnd = { "action":"beginSegment",
+                 "segid":segid }
+        self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
+
+    def endSegment(self):
+        '''
+        End the current "Segment" for the Window.
+        '''
+        cmnd = { "action":"endSegment" }
+        self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
+
+    def deleteSegment(self, segid):
+        '''
+        Deletes the drawing commands in the indicated Segment.
+
+        Arguments:
+            segid: ID for the Segment to be deleted
+        '''
+        cmnd = { "action":"deleteSegment",
+                 "segid":segid }
+        self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
+
     def updateWindow(self):
         '''
         Indicates the viewer should update the graphics displayed.

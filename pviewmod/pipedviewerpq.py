@@ -921,6 +921,15 @@ class PipedViewerPQ(QMainWindow):
             self.clipView(cmnd)
         elif cmndact == "endView":
             self.endView(True)
+        elif cmndact == "beginSegment":
+            # TODO:
+            pass
+        elif cmndact == "endSegment":
+            # TODO:
+            pass
+        elif cmndact == "deleteSegment":
+            # TODO:
+            pass
         elif cmndact == "drawMultiline":
             self.drawMultiline(cmnd)
         elif cmndact == "drawPoints":

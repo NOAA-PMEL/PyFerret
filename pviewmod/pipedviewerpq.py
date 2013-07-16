@@ -79,6 +79,7 @@ class PipedViewerPQ(QMainWindow):
         self.__lastclearcolor.setAlpha(0xFF)
         # List of QPictures creating the current scene
         self.__viewpics = [ ]
+        self.__segid = None
         # QPicture/QPainter pair for the current view
         self.__activepicture = None
         self.__activepainter = None
@@ -292,7 +293,7 @@ class PipedViewerPQ(QMainWindow):
         modrects = [ ]
         # draw the appropriate pictures
         k = first
-        for viewpic in self.__viewpics[first:]:
+        for (viewpic, _) in self.__viewpics[first:]:
             k += 1
             # show the progress message
             if endstr != None:
@@ -922,14 +923,11 @@ class PipedViewerPQ(QMainWindow):
         elif cmndact == "endView":
             self.endView(True)
         elif cmndact == "beginSegment":
-            # TODO:
-            pass
+            self.beginSegment(cmnd["segid"])
         elif cmndact == "endSegment":
-            # TODO:
-            pass
+            self.endSegment(True)
         elif cmndact == "deleteSegment":
-            # TODO:
-            pass
+            self.deleteSegment(cmnd["segid"])
         elif cmndact == "drawMultiline":
             self.drawMultiline(cmnd)
         elif cmndact == "drawPoints":
@@ -1042,12 +1040,59 @@ class PipedViewerPQ(QMainWindow):
         self.__activepainter = None
         # Only save the active picture if it contains something
         if self.__drawcount > 0:
-            self.__viewpics.append(self.__activepicture)
+            self.__viewpics.append((self.__activepicture, self.__segid))
             self.__drawcount = 0
-            if update:
-                # update the scene
-                self.drawLastPictures(False)
+        if update:
+            # update the scene
+            self.drawLastPictures(False)
         self.__activepicture = None
+
+    def beginSegment(self, segid):
+        '''
+        Associates a segment ID with the current empty view
+        (picture) and all future views until endSegment is 
+        called.  If the current view is not empty, the current 
+        view is ended and a new view started.  If there is not
+        a active view, the segment ID is just saved for the
+        next active view.
+        '''
+        if self.__activepainter and (self.__drawcount > 0):
+            self.endView(True)
+            self.beginViewFromSides(self.__fracsides, self.__clipit)
+        self.__segid = segid
+        
+    def endSegment(self, update):
+        '''
+        Ends the current active view and starts a new view.
+        Removes the current segment ID associated with views.
+        '''
+        if self.__activepainter and (self.__drawcount > 0):
+            self.endView(update)
+            self.beginViewFromSides(self.__fracsides, self.__clipit)
+        if update:
+            self.drawLastPictures(False)
+        self.__segid = None
+
+    def deleteSegment(self, segid):
+        '''
+        Removes all pictures associated with the given segment ID
+        '''
+        # if deleting the current segment, end the current segment
+        if segid == self.__segid:
+            self.endSegment(False)
+        # Go through all the pictures, determining which to save
+        newpicts = [ ]
+        for (viewpic, vsegid) in self.__viewpics:
+            if vsegid != segid:
+                newpicts.append((viewpic, vsegid))
+            else:
+                # picture was deleted, so will need to 
+                # regenerate the scene from the beginning
+                self.__clearpixmap = True
+                self.__lastpicdrawn = 0
+        self.__viewpics[:] = newpicts
+        # Do NOT update since there may be more segments to be deleted
+        # Rely on the receiving an update or redraw command at the end 
 
     def updateScene(self):
         '''
@@ -1059,6 +1104,7 @@ class PipedViewerPQ(QMainWindow):
         if self.__drawcount > 0:
             self.endView(True)
             self.beginViewFromSides(self.__fracsides, self.__clipit)
+        self.drawLastPictures(False)
 
     def drawMultiline(self, cmnd):
         '''
@@ -1413,6 +1459,8 @@ if __name__ == "__main__":
                                    "style":"solid",
                                    "capstyle":"round",
                                    "joinstyle":"round" } } )
+    drawcmnds.append( { "action":"beginSegment",
+                        "segid":"text" } )
     drawcmnds.append( { "action":"drawText",
                         "text":"y=480",
                         "font":{"family":"Times", "size":50},
@@ -1433,6 +1481,7 @@ if __name__ == "__main__":
                         "font":{"family":"Times", "size":50},
                         "fill":{"color":"red"},
                         "location":(50,330) } )
+    drawcmnds.append( { "action":"endSegment" } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"beginView",
@@ -1515,6 +1564,10 @@ if __name__ == "__main__":
                                 "capstyle":"round",
                                 "joinstyle":"round"} } )
     drawcmnds.append( { "action":"endView" } )
+    drawcmnds.append( { "action":"show" } )
+    drawcmnds.append( { "action":"deleteSegment",
+                        "segid":"text" } )
+    drawcmnds.append( { "action":"update" })
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"exit" } )
     # start PyQt

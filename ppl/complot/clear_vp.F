@@ -55,6 +55,8 @@
 *        (gclwk called in pltit when closing one plot and opening a new one)
 *        and that results in the error message when gdsg is called here.
 * V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
+* PyFr *kms*  7/13 No need to delete segments when clearing the whole window
+*                  in PyFerret; FGD_GCLRWK deletes them all in PyFerret
 
 	include 'xplot_state.cmn'		! viewport info
 	include 'gkscm1_inc.decl'	! with wsid
@@ -67,12 +69,7 @@
 
 *  clear entire screen
 	   IF ( wsid .NE. 0 ) THEN
-* explicitly delete segments to avoid XGKS memory leak
 	      DO 110 ivp =  mvp_dflt, max_viewport
-		 if ( vp_seg0(ivp) .NE. 0 ) THEN 
-	            DO 100 iseg = vp_seg0(ivp)+1 , vp_segn(ivp)
- 100	            CALL FGD_GDSG( iseg ) 
-	         ENDIF
 *  and mark segment as deleted
 	         vp_seg0(ivp) = 0
 	         vp_segn(ivp) = 0

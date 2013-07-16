@@ -46,7 +46,9 @@
 * V411:  9/5/95 - explicitly delete each segment before calling GCLRWK
 *	to avoid XGKS memory leak in that routine
 * V602: *acm* 1/07 Changes for metafile-batch mode
-* *kms* 1/12 "metafile" no longer closed since it is not a separate entity
+* PyFr *kms*  1/12 "metafile" no longer closed since it is not a separate entity
+* PyFr *kms*  7/13 No need to delete segments when clearing the whole window
+*                  in PyFerret; FGD_GCLRWK deletes them all in PyFerret
 
 	include 'plot_setup.parm'
 	include 'xplot_state.cmn'		! viewport info
@@ -59,14 +61,8 @@
 * internal variable declarations:
 
         CALL FGD_GQOPS (istate)
-* explicitly delete segments to avoid XGKS memory leak
+*  mark segment as deleted
 	DO 200 ivp =  mvp_dflt, max_viewport
-	   IF ( vp_segn(ivp) .NE. 0 ) THEN 
-	      DO 100 iseg = vp_seg0(ivp)+1 , vp_segn(ivp)
- 100	       IF ( gksopn .AND. (istate .GE. 2) )
-     .            CALL FGD_GDSG( iseg ) 
-	   ENDIF
-*  and mark segment as deleted
 	   vp_seg0(ivp) = 0
 	   vp_segn(ivp) = 0
  200	CONTINUE

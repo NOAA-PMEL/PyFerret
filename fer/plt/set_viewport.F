@@ -52,6 +52,10 @@
 * V602: *acm* 1/07 Changes for metafile-batch mode
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* PyFr *kms*  7/13 No need to delete segments when clearing the whole window
+*                  in PyFerret; FGD_GCLRWK deletes them all in PyFerret.
+*                  No need to protect colors in PyFerret.
+*                  Send an update to make sure the changes are immediately seen.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -99,15 +103,10 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 	IF ( old_vp .EQ. mvp_dflt .OR. vp_num .EQ. mvp_dflt ) THEN
 * return to full screen - clear away everything
 	   CALL CLEAR_WINDOW( wsid )
-	   DO 100 i = mvp_dflt, max_viewport
-	      vp_seg0(i) = 0
-	      vp_segn(i) = 0
- 100	   CONTINUE
 	ELSE
 * set new viewport - delete any segments showing in this viewport
 	   DO 200 iseg = vp_seg0(vp_num)+1, vp_segn(vp_num)
  200	   CALL FGD_GDSG( iseg ) 
-           CALL PPL_SHASET( 'PROTECT' ) ! protect the colors already on-screen
 	ENDIF
 
 * indicate where new segments in this viewport of this window begin
@@ -201,6 +200,9 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 	      CALL FGD_GSCLIP(gnclip)
 	   ENDIF
 	ENDIF
+
+* make sure the scene is updated to the cleared viewport
+        CALL FGD_GUWK(wsid, 1)
 
 * success
 	RETURN

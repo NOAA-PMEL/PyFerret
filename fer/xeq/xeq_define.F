@@ -1695,6 +1695,8 @@ C /units=months  is 1/12 of the length of the year
  614	   CALL FGD_GDSG( iseg ) 
 	   vp_seg0 ( ivp ) = 0
 	   vp_segn ( ivp ) = 0
+*          make sure the change is immediately seen
+           CALL FGD_GUWK(wsid, 1)
 	ENDIF
 
 * pre-set all values to defaults

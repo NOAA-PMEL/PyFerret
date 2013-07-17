@@ -54,14 +54,15 @@ svn checkout -q ${repository} ${fer_name}
 rm -rf ${fer_name}/html_docs
 
 # Remove threddsBrowser/toolsUI/toolsUI-4.1.jar for the check-out directory
-# Have the user download this file from ucar
-echo ""
-echo "NOTE: To minimize size, the toolsUI-4.1.jar file is not included."
-echo "The user needs to download the jar file from:"
-echo "  ftp://ftp.unidata.ucar.edu/pub/netcdf-java/v4.1/toolsUI-4.1.jar"
-echo "(or we can just grab it from <ferret_dir>/threddsBrowser/toolsUI/)"
-echo 'and put it under the $FER_LIBS ($FER_DIR/lib) subdirectory'
-rm ${fer_name}/threddsBrowser/toolsUI/toolsUI-4.1.jar
+# Have the user download this file from ucar 
+# NO LONGER AVAILABLE from ucar; keep it in
+# echo ""
+# echo "NOTE: To minimize size, the toolsUI-4.1.jar file is not included."
+# echo "The user needs to download the jar file from:"
+# echo "  ftp://ftp.unidata.ucar.edu/pub/netcdf-java/v4.1/toolsUI-4.1.jar"
+# echo "(or we can just grab it from <ferret_dir>/threddsBrowser/toolsUI/)"
+# echo 'and put it under the $FER_LIBS ($FER_DIR/lib) subdirectory'
+# rm ${fer_name}/threddsBrowser/toolsUI/toolsUI-4.1.jar
 
 # Remove the bench/metafile_masters_* directories as this time.  GKS metafiles
 # no longer produced, and currently not creating the PostScript files in RUN_TESTS.sh

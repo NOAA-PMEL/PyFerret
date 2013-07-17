@@ -718,8 +718,12 @@ class PipedViewerPQ(QMainWindow):
                               / float(self.physicalDpiY())
             try:
                 # Set custom paper size to just fit around the image
-                printer.setPaperSize(QSizeF(imagewidth, imageheight), 
-                                     QPrinter.Inch)
+                # printer.setPaperSize(QSizeF(imagewidth, imageheight),
+                #                      QPrinter.Inch)
+                # The above has issues with Qt 4.6 at GFDL - 
+                # still puts it on the default letter size page.
+                # So just always use a letter size page.
+                printer.setPaperSize(QPrinter.Letter)
             except AttributeError:
                 # setPaperSize introduced in 4.4 and made setPageSize 
                 # obsolete; but RHEL5 Qt4 is 4.2, so set to letter size

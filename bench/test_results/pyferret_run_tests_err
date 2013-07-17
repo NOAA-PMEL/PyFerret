@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Jul 14 13:45 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Jul 17 09:54 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for PyFerret on RHEL5-64
+Note: RUN_TESTS.sh test results for PyFerret under RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -220,7 +220,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Jul 15 10:51:13 PDT 2013
+Beginning at Wed Jul 17 10:01:05 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -456,6 +456,14 @@ Replacing definition of axis LON_FIELD_I_AXIS
 Replacing definition of axis LON_FIELD_J_AXIS
 Replacing definition of axis LAT_FIELD_I_AXIS
 Replacing definition of axis LAT_FIELD_J_AXIS
+Unable to delete drawing segments when writing directly to an image file
+Unable to delete drawing segments when writing directly to an image file
+Unable to delete drawing segments when writing directly to an image file
+Unable to delete drawing segments when writing directly to an image file
+Unable to delete drawing segments when writing directly to an image file
+Unable to delete drawing segments when writing directly to an image file
+Unable to delete drawing segments when writing directly to an image file
+Unable to delete drawing segments when writing directly to an image file
  **ERROR: inconsistent sizes of data regions: Y coord field lies
           in different plane from data to be plotted
 shade/nolabel sst, x_page, y_page
@@ -463,8 +471,19 @@ shade/nolabel sst, x_page, y_page
 shade/nolabel sst, 0*x_page, y_page
  **ERROR: all data have same value: Y coordinate field
 shade/nolabel sst, x_page, 0*y_page
+Unable to delete drawing segments when writing directly to an image file
+Unable to delete drawing segments when writing directly to an image file
+Unable to delete drawing segments when writing directly to an image file
+Unable to delete drawing segments when writing directly to an image file
+Unable to delete drawing segments when writing directly to an image file
+Unable to delete drawing segments when writing directly to an image file
+Unable to delete drawing segments when writing directly to an image file
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
+Unable to delete drawing segments when writing directly to an image file
+Unable to delete drawing segments when writing directly to an image file
+Unable to delete drawing segments when writing directly to an image file
+Unable to delete drawing segments when writing directly to an image file
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
 *** Running test: bn_symbols.jnl
@@ -3282,4 +3301,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Mon Jul 15 10:55:03 PDT 2013
+Ended at Wed Jul 17 10:04:50 PDT 2013

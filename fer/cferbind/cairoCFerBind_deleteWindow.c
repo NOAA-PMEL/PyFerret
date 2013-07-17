@@ -18,6 +18,7 @@
 grdelBool cairoCFerBind_deleteWindow(CFerBind *self)
 {
     CairoCFerBindData *instdata;
+    CCFBPicture *delpic;
 
     /* Sanity check */
     if ( (self->enginename != CairoCFerBindName) &&
@@ -44,6 +45,16 @@ grdelBool cairoCFerBind_deleteWindow(CFerBind *self)
         cairo_surface_destroy(instdata->surface);
         instdata->surface = NULL;
     }
+    /* Delete any stored pictures */
+    while ( instdata->firstpic != NULL ) {
+        delpic = instdata->firstpic;
+        instdata->firstpic = delpic->next;
+        cairo_surface_finish(delpic->surface);
+        cairo_surface_destroy(delpic->surface);
+        PyMem_Free(delpic);
+    }
+    instdata->lastpic = NULL;
+
     PyMem_Free(self->instancedata);
     self->instancedata = NULL;
     PyMem_Free(self);

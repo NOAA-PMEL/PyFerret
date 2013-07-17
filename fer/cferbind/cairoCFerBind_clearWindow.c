@@ -21,6 +21,7 @@ grdelBool cairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor)
 {
     CairoCFerBindData *instdata;
     CCFBColor *colorobj;
+    CCFBPicture *delpic;
 
     /* Sanity checks */
     if ( (self->enginename != CairoCFerBindName) &&
@@ -49,7 +50,6 @@ grdelBool cairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor)
                                 "something drawn without a surface");
             return 0;
         }
-        cairo_show_page(instdata->context);
         cairo_destroy(instdata->context);
         instdata->context = NULL;
         cairo_surface_finish(instdata->surface);
@@ -57,6 +57,16 @@ grdelBool cairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor)
         instdata->surface = NULL;
         instdata->somethingdrawn = 0;
     }
+
+    /* Delete any stored pictures */
+    while ( instdata->firstpic != NULL ) {
+        delpic = instdata->firstpic;
+        instdata->firstpic = delpic->next;
+        cairo_surface_finish(delpic->surface);
+        cairo_surface_destroy(delpic->surface);
+        PyMem_Free(delpic);
+    }
+    instdata->lastpic = NULL;
 
     /* Copy the given color structure values to lastclearcolor */
     instdata->lastclearcolor = *colorobj;

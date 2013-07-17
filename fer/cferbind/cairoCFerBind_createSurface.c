@@ -131,6 +131,7 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
                                 "problems creating a context from a surface");
             cairo_destroy(instdata->context);
             instdata->context = NULL;
+            cairo_surface_finish(instdata->surface);
             cairo_surface_destroy(instdata->surface);
             instdata->surface = NULL;
             return 0;

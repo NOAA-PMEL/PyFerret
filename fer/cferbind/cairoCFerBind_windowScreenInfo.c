@@ -23,10 +23,10 @@ grdelBool cairoCFerBind_windowScreenInfo(CFerBind *self,
         return 0;
     }
 
-    *dpix = CCFB_WINDOW_DPI;
-    *dpiy = CCFB_WINDOW_DPI;
-    *screenwidth = 1920;
-    *screenheight = 1080;
+    *dpix = (float) CCFB_WINDOW_DPI;
+    *dpiy = (float) CCFB_WINDOW_DPI;
+    *screenwidth = (int) (20 * CCFB_WINDOW_DPI);
+    *screenheight = (int) (11.25 * CCFB_WINDOW_DPI);
     return 1;
 }
 

@@ -49,6 +49,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
                         int xpixels, int ypixels)
 {
     CairoCFerBindData *instdata;
+    cairo_status_t     status;
     const char        *imagename;
     int                imgnamelen;
     int                j, k;
@@ -60,6 +61,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
     double             savewidth;
     double             saveheight;
     int                usealpha;
+    CCFBPicture       *thispic;
 
     /* Sanity checks - this should NOT be called by the PyQtCairo engine */
     if ( self->enginename != CairoCFerBindName ) {
@@ -68,12 +70,37 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         return 0;
     }
     instdata = (CairoCFerBindData *) self->instancedata;
-    /* This might be called with no image present; if so, ignore the call */
-    if ( (instdata->surface == NULL) || (instdata->context == NULL) ) {
+
+    /* This might be called with no images present; if so, ignore the call */
+    if ( (instdata->surface == NULL) && (instdata->firstpic == NULL) ) {
         return 1;
     }
+
+    /* Make sure the context is not in an error state */
+    if ( instdata->context != NULL ) {
+        status = cairo_status(instdata->context);
+        if ( status != CAIRO_STATUS_SUCCESS ) {
+            sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
+                                 "cairo context error: %s", 
+                                 cairo_status_to_string(status));
+            return 0;
+        }
+    }
+
     /* Just to be safe */
-    cairo_surface_flush(instdata->surface);
+    if ( instdata->surface != NULL ) {
+        cairo_surface_flush(instdata->surface);
+
+        /* Make sure the surface is not in an error state */
+        status = cairo_surface_status(instdata->surface);
+        if ( status != CAIRO_STATUS_SUCCESS ) {
+            sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
+                                 "cairo surface error: %s", 
+                                 cairo_status_to_string(status));
+            return 0;
+        }
+    }
+
 
     /* Check the surface type */
     if ( (instdata->imageformat != CCFBIF_PNG) &&
@@ -221,6 +248,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         strcpy(grdelerrmsg, "cairoCFerBind_saveWindow: problems creating "
                             "a temporary context for the temporary surface");
         cairo_destroy(savecontext);
+        cairo_surface_finish(savesurface);
         cairo_surface_destroy(savesurface);
         return 0;
     }
@@ -311,9 +339,15 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         cairo_paint(savecontext);
     }
 
-    /* Draw the transparent-background image onto this temporary surface */
-    cairo_set_source_surface(savecontext, instdata->surface, 0.0, 0.0);
-    cairo_paint(savecontext);
+    /* Draw the transparent-background images onto this temporary surface */
+    for (thispic = instdata->firstpic; thispic != NULL; thispic = thispic->next) {
+        cairo_set_source_surface(savecontext, thispic->surface, 0.0, 0.0);
+        cairo_paint(savecontext);
+    }
+    if ( instdata->surface != NULL ) {
+        cairo_set_source_surface(savecontext, instdata->surface, 0.0, 0.0);
+        cairo_paint(savecontext);
+    }
 
     /* Just to be safe */
     cairo_show_page(savecontext);

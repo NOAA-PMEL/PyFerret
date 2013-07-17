@@ -58,6 +58,13 @@ typedef struct CCFBBrush_Struct {
     cairo_pattern_t *pattern;
 } CCFBBrush;
 
+/* Structure for creating a linked list of image or recording surfaces */
+typedef struct CCFBPicture_Struct {
+    struct CCFBPicture_Struct *next;
+    cairo_surface_t *surface;
+    int segid;
+} CCFBPicture;
+
 typedef struct CairoCFerBindData_struct {
     /* image size in pixels */
     int imagewidth;
@@ -72,31 +79,33 @@ typedef struct CairoCFerBindData_struct {
     int antialias;
     /* Use colors with an alpha channel (ARGB32)? */
     int usealpha;
-    /*
-     * data for recreating the current view
-     * only used to define the clipping rectangle
-     */
+    /* data for recreating the current view */
     CCFBSides fracsides;
     int clipit;
     /* Scaling factor for line widths, symbol sizes, and font sizes */
     double widthfactor;
+    /* Linked list of image or recording surfaces, with segment IDs */
+    CCFBPicture *firstpic;
+    CCFBPicture *lastpic;
+    int segid;
     /*
-     * The surface and context are not created until a view is created,
-     * and thus drawing is about to begin.  Ferret will modify the above
-     * values, possibly multiple times, prior to the start of drawing.
+     * The current surface and context.  These are not created until 
+     * a view is created and drawing is about to begin.  Ferret will 
+     * modify the above values, possibly multiple times, prior to the 
+     * start of drawing.
      */
     cairo_surface_t *surface;
     cairo_t *context;
     /* Flag that something has been drawn to the current surface */
     int somethingdrawn;
     /*
-     * Flag that something about the image has changed since the
-     * last update.  Only really used by the PyQtCairo engine.
+     * Flag that something about the image has changed since the last 
+     * update.  Only really used by the PipedImager/PyQtCairo engine.
      */
     int imagechanged;
     /*
      * The image displayer.
-     * Only assigned and used by the PipedImager engine
+     * Only assigned and used by the PipedImager/PyQtCairo engine.
      */
     grdelType viewer;
 } CairoCFerBindData;

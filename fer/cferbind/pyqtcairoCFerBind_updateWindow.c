@@ -6,6 +6,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "pyqtcairoCFerBind.h"
 #include "pyferret.h"
 
 /*
@@ -17,7 +18,10 @@
 grdelBool pyqtcairoCFerBind_updateWindow(CFerBind *self)
 {
     CairoCFerBindData *instdata;
-    cairo_status_t status;
+    cairo_surface_t   *savesurface;
+    cairo_t           *savecontext;
+    cairo_status_t     status;
+    CCFBPicture       *thispic;
     int width;
     int height;
     int stride;
@@ -37,41 +41,89 @@ grdelBool pyqtcairoCFerBind_updateWindow(CFerBind *self)
         /* Nothing new about the image; ignore the call */
         return 1;
     }
-    if ( (instdata->context == NULL) || (instdata->surface == NULL) ) {
+    if ( (instdata->surface == NULL) && (instdata->firstpic == NULL) ) {
         strcpy(grdelerrmsg, "pyqtcairoCFerBind_updateWindow: unexpected error, "
                             "trying to update an empty image");
         return 0;
     }
 
     /* Make sure the context is not in an error state */
-    status = cairo_status(instdata->context);
-    if ( status != CAIRO_STATUS_SUCCESS ) {
-        sprintf(grdelerrmsg, "pyqtcairoCFerBind_updateWindow: "
-                             "cairo context error: %s", 
-                             cairo_status_to_string(status));
-        return 0;
+    if ( instdata->context != NULL ) {
+        status = cairo_status(instdata->context);
+        if ( status != CAIRO_STATUS_SUCCESS ) {
+            sprintf(grdelerrmsg, "pyqtcairoCFerBind_updateWindow: "
+                                 "cairo context error: %s", 
+                                 cairo_status_to_string(status));
+            return 0;
+        }
     }
 
-    /* Make sure all drawing to the surface is completed (paranoia) */
-    cairo_surface_flush(instdata->surface);
+    if ( instdata->surface != NULL ) {
+        /* Make sure all drawing to the surface is completed (paranoia) */
+        cairo_surface_flush(instdata->surface);
+        /* Make sure the surface is not in an error state */
+        status = cairo_surface_status(instdata->surface);
+        if ( status != CAIRO_STATUS_SUCCESS ) {
+            sprintf(grdelerrmsg, "pyqtcairoCFerBind_updateWindow: "
+                                 "cairo surface error: %s", 
+                                 cairo_status_to_string(status));
+            return 0;
+        }
+    }
 
-    /* Make sure the surface is not in an error state */
-    status = cairo_surface_status(instdata->surface);
-    if ( status != CAIRO_STATUS_SUCCESS ) {
-        sprintf(grdelerrmsg, "pyqtcairoCFerBind_updateWindow: "
-                             "cairo surface error: %s", 
-                             cairo_status_to_string(status));
-        return 0;
+    if ( instdata->firstpic != NULL ) {
+        /* create a temporary surface to combine all the pictures */
+        savesurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+                            instdata->imagewidth, instdata->imageheight);
+        if ( cairo_surface_status(savesurface) != CAIRO_STATUS_SUCCESS ) {
+            strcpy(grdelerrmsg, "pyqtCairoCFerBind_updateWindow: problems "
+                                "creating a combined pictures image surface");
+            cairo_surface_finish(savesurface);
+            cairo_surface_destroy(savesurface);
+            return 0;
+        }
+        savecontext = cairo_create(savesurface);
+        if ( cairo_status(savecontext) != CAIRO_STATUS_SUCCESS ) {
+            strcpy(grdelerrmsg, "pyqtCairoCFerBind_updateWindow: problems creating "
+                                "a context for the combined pictures image surface");
+            cairo_destroy(savecontext);
+            cairo_surface_finish(savesurface);
+            cairo_surface_destroy(savesurface);
+            return 0;
+        }
+        /* Draw the transparent-background images onto this temporary surface */
+        for (thispic = instdata->firstpic; thispic != NULL; thispic = thispic->next) {
+            cairo_set_source_surface(savecontext, thispic->surface, 0.0, 0.0);
+            cairo_paint(savecontext);
+        }
+        if ( instdata->surface != NULL ) {
+            cairo_set_source_surface(savecontext, instdata->surface, 0.0, 0.0);
+            cairo_paint(savecontext);
+        }
+        /* Just to be safe */
+        cairo_show_page(savecontext);
+        /* Done with the temporary context */
+        cairo_destroy(savecontext);
+        /* Just to be safe */
+        cairo_surface_flush(savesurface);
+    }
+    else {
+        /* Just use the one current surface */
+        savesurface = instdata->surface;
     }
 
     /* Get the image dimension and data from the image surface */
-    width = cairo_image_surface_get_width(instdata->surface);
-    height = cairo_image_surface_get_height(instdata->surface);
-    stride = cairo_image_surface_get_stride(instdata->surface);
-    imagedata = cairo_image_surface_get_data(instdata->surface);
+    width = cairo_image_surface_get_width(savesurface);
+    height = cairo_image_surface_get_height(savesurface);
+    stride = cairo_image_surface_get_stride(savesurface);
+    imagedata = cairo_image_surface_get_data(savesurface);
     if ( imagedata == NULL ) {
         strcpy(grdelerrmsg, "pyqtcairoCFerBind_updateWindow: "
                             "cairo_image_surface_get_data failed");
+        if ( savesurface != instdata->surface ) {
+            cairo_surface_finish(savesurface);
+            cairo_surface_destroy(savesurface);
+        }
         return 0;
     }
 
@@ -79,6 +131,10 @@ grdelBool pyqtcairoCFerBind_updateWindow(CFerBind *self)
     if ( bindings == NULL ) {
         strcpy(grdelerrmsg, "pyqtcairoCFerBind_updateWindow: unexpected error "
                             "viewer is not a grdelWindow");
+        if ( savesurface != instdata->surface ) {
+            cairo_surface_finish(savesurface);
+            cairo_surface_destroy(savesurface);
+        }
         return 0;
     }
 
@@ -87,6 +143,10 @@ grdelBool pyqtcairoCFerBind_updateWindow(CFerBind *self)
     if ( databytearray == NULL ) {
         sprintf(grdelerrmsg, "pyqtcairoCFerBind_updateWindow: error when creating "
                 "the image data bytearray: %s", pyefcn_get_error());
+        if ( savesurface != instdata->surface ) {
+            cairo_surface_finish(savesurface);
+            cairo_surface_destroy(savesurface);
+        }
         return 0;
     }
     result = PyObject_CallMethod(bindings->pyobject, "newSceneImage",
@@ -94,9 +154,18 @@ grdelBool pyqtcairoCFerBind_updateWindow(CFerBind *self)
     if ( result == NULL ) {
         sprintf(grdelerrmsg, "pyqtcairoCFerBind_updateWindow: error when calling the "
                 "Python binding's newSceneImage method: %s", pyefcn_get_error());
+        if ( savesurface != instdata->surface ) {
+            cairo_surface_finish(savesurface);
+            cairo_surface_destroy(savesurface);
+        }
         return 0;
     }
     Py_DECREF(result);
+
+    if ( savesurface != instdata->surface ) {
+        cairo_surface_finish(savesurface);
+        cairo_surface_destroy(savesurface);
+    }
 
     instdata->imagechanged = 0;
 

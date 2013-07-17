@@ -28,7 +28,22 @@ grdelBool cairoCFerBind_beginSegment(CFerBind *self, int segid)
     }
     instdata = (CairoCFerBindData *) self->instancedata;
 
-    /* TODO: */
+    /* Ignore this call if not an image or recording surface */
+    if ( (instdata->imageformat != CCFBIF_PNG) &&
+         (instdata->imageformat != CCFBIF_REC) ) {
+        return 1;
+    }
+     
+    /* If something drawn, create that picture with the old segment ID */
+    if ( instdata->somethingdrawn ) {
+        if ( ! cairoCFerBind_endView(self) ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+    }
+
+    /* assign the new segment ID to use */
+    instdata->segid = segid;
 
     return 1;
 }

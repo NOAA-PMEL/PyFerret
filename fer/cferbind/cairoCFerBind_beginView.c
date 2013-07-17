@@ -30,7 +30,7 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
                                   double rgtfrac, double topfrac, int clipit)
 {
     CairoCFerBindData *instdata;
-    int     result;
+    int result;
 
     /* Sanity check */
     if ( (self->enginename != CairoCFerBindName) &&

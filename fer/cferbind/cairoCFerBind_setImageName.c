@@ -47,6 +47,7 @@ grdelBool cairoCFerBind_setImageName(CFerBind *self, const char imagename[],
     char fmtext[8];
     CCFBImageFormat imageformat;
     CairoCFerBindData *instdata;
+    CCFBPicture *delpic;
 
     /* Sanity checks - this should NOT be called by the PyQtCairo engine */
     if ( self->enginename != CairoCFerBindName ) {
@@ -130,7 +131,6 @@ grdelBool cairoCFerBind_setImageName(CFerBind *self, const char imagename[],
 
     /* Delete any existing context and surface */
     if ( instdata->context != NULL ) {
-        cairo_show_page(instdata->context);
         cairo_destroy(instdata->context);
         instdata->context = NULL;
     }
@@ -141,6 +141,15 @@ grdelBool cairoCFerBind_setImageName(CFerBind *self, const char imagename[],
     }
     instdata->somethingdrawn = 0;
 
+    /* Delete any existing linked-list pictures */
+    while ( instdata->firstpic != NULL ) {
+        delpic = instdata->firstpic;
+        instdata->firstpic = delpic->next;
+        cairo_surface_finish(delpic->surface);
+        cairo_surface_destroy(delpic->surface);
+        PyMem_Free(delpic);
+    }
+    instdata->lastpic = NULL;
     /*
      * Defer creating a new surface and context until a drawing
      * request is made.  Ferret may change size and other details

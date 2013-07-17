@@ -88,7 +88,7 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
     instdata = (CairoCFerBindData *) bindings->instancedata;
     /* Cairo surface type - must be an image surface */
     instdata->imageformat = CCFBIF_PNG;
-    /* image size and minimum allowed value */
+    /* default image size and minimum allowed value */
     instdata->imagewidth = (int) 10.5 * CCFB_WINDOW_DPI;
     instdata->imageheight = (int) 8.5 * CCFB_WINDOW_DPI;
     instdata->minsize = 128;
@@ -98,15 +98,9 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
     instdata->lastclearcolor.greenfrac = 1.0;
     instdata->lastclearcolor.bluefrac = 1.0;
     instdata->lastclearcolor.opaquefrac = 1.0;
-    /* Assign the line width scaling factor */
-    if ( cairoCFerBind_setWidthFactor(bindings, 0.75) != 1 ) {
-        strcpy(grdelerrmsg, "pyqtcairoCFerBind_createWindow: "
-                            "Unexpected error setting width factor");
-        PyMem_Free(bindings);
-        return NULL;
-    }
-    /* make sure the format is set correctly */
-    instdata->imageformat = CCFBIF_PNG;
+    /* default line width scaling factor */
+    instdata->widthfactor = CCFB_WINDOW_DPI * 0.75 / 72.0;
+
     /*
      * Get bindings to PipedImagerPQ for displaying the image.
      * This prevents duplication of Python-calling code for those

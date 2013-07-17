@@ -13,6 +13,8 @@
  */
 grdelBool cairoCFerBind_endSegment(CFerBind *self)
 {
+    CairoCFerBindData *instdata;
+
     /* Sanity check */
     if ( (self->enginename != CairoCFerBindName) &&
          (self->enginename != PyQtCairoCFerBindName) ) {
@@ -20,8 +22,24 @@ grdelBool cairoCFerBind_endSegment(CFerBind *self)
                             "self is not a valid CFerBind struct");
         return 0;
     }
+    instdata = (CairoCFerBindData *) self->instancedata;
 
-    /* TODO: */
+    /* Ignore this call if not an image or recording surface */
+    if ( (instdata->imageformat != CCFBIF_PNG) &&
+         (instdata->imageformat != CCFBIF_REC) ) {
+        return 1;
+    }
+     
+    /* If something drawn, create that picture with the old segment ID */
+    if ( instdata->somethingdrawn ) {
+        if ( ! cairoCFerBind_endView(self) ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+    }
+
+    /* assign the "no-segment" ID */
+    instdata->segid = 0;
 
     return 1;
 }

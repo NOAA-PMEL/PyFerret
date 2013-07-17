@@ -21,6 +21,7 @@ grdelBool cairoCFerBind_resizeWindow(CFerBind *self, double width, double height
     CairoCFerBindData *instdata;
     int newwidth;
     int newheight;
+    CCFBPicture *delpic;
 
     /* Sanity check */
     if ( (self->enginename != CairoCFerBindName) &&
@@ -51,9 +52,8 @@ grdelBool cairoCFerBind_resizeWindow(CFerBind *self, double width, double height
     instdata->imagewidth = newwidth;
     instdata->imageheight = newheight;
 
-    /* Delete any existing context and surface which uses the old size */
+    /* Delete any existing context and surface (which uses the old size) */
     if ( instdata->context != NULL ) {
-        cairo_show_page(instdata->context);
         cairo_destroy(instdata->context);
         instdata->context = NULL;
     }
@@ -63,6 +63,16 @@ grdelBool cairoCFerBind_resizeWindow(CFerBind *self, double width, double height
         instdata->surface = NULL;
     }
     instdata->somethingdrawn = 0;
+
+    /* Delete any existing linked-list pictures (which use the old size) */
+    while ( instdata->firstpic != NULL ) {
+        delpic = instdata->firstpic;
+        instdata->firstpic = delpic->next;
+        cairo_surface_finish(delpic->surface);
+        cairo_surface_destroy(delpic->surface);
+        PyMem_Free(delpic);
+    }
+    instdata->lastpic = NULL;
 
     return 1;
 }

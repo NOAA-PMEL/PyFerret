@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Jul 17 09:54 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Jul 19 13:32 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for PyFerret under RHEL5-64
+Note: RUN_TESTS.sh test results for PyFerret on RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -220,7 +220,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Wed Jul 17 10:01:05 PDT 2013
+Beginning at Fri Jul 19 13:33:49 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3264,6 +3264,18 @@ list a.units
 list ..history
  **ERROR: variable unknown or not in data set: ..HISTORY
 list ..history
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis AXI
+Replacing definition of axis AXI_COARSE
+Replacing definition of axis AXI
+Replacing definition of axis AXI_COARSE
+Replacing definition of axis AXI
+Replacing definition of axis AXI_COARSE
+Replacing definition of axis AXI
+Replacing definition of axis AXI_COARSE
+Replacing definition of axis AXI
+Replacing definition of axis AXI_COARSE
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
 *** Running test: bn_nco_append.jnl
@@ -3301,4 +3313,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Wed Jul 17 10:04:50 PDT 2013
+Ended at Fri Jul 19 13:37:38 PDT 2013

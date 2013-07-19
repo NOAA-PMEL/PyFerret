@@ -1,0 +1,77 @@
+ ! err684_vfine_to_coarse
+ ! see ticket 2070.
+
+def ax/x/edge axi = {0,31,61,92}
+def ax/x/edge axi_coarse = {0, 92}
+let vdat = {3.034547, 3.078104, 3.059311}
+let v = vdat[gx=axi@asn]
+let v_coarse = v[gx=axi_coarse@max]
+
+list v_coarse
+list v eq v_coarse[gx=v@ave]
+
+
+! Y direction
+can var/all
+
+def ax/y/edge axi = {0,31,61,92}
+def ax/y/edge axi_coarse = {0, 92}
+let vdat = ySEQUENCE({3.034547, 3.078104, 3.059311})
+let v = vdat[gy=axi@asn]
+let v_coarse = v[gy=axi_coarse@max]
+
+list v_coarse
+list v eq v_coarse[gy=v@ave]
+
+
+! Z direction
+can var/all
+
+def ax/z/edge axi = {0,31,61,92}
+def ax/z/edge axi_coarse = {0, 92}
+let vdat = zSEQUENCE({3.034547, 3.078104, 3.059311})
+let v = vdat[gz=axi@asn]
+let v_coarse = v[gz=axi_coarse@max]
+
+list v_coarse
+list v eq v_coarse[gz=v@ave]
+
+
+! T direction
+can var/all
+
+def ax/t/edge axi = {0,31,61,92}
+def ax/t/edge axi_coarse = {0, 92}
+let vdat = TSEQUENCE({3.034547, 3.078104, 3.059311})
+let v = vdat[gt=axi@asn]
+let v_coarse = v[gt=axi_coarse@max]
+
+list v_coarse
+list v eq v_coarse[gt=v@ave]
+
+
+! E direction
+can var/all
+
+def ax/e/edge axi = {0,31,61,92}
+def ax/e/edge axi_coarse = {0, 92}
+let vdat = ESEQUENCE({3.034547, 3.078104, 3.059311})
+let v = vdat[ge=axi@asn]
+let v_coarse = v[ge=axi_coarse@max]
+
+list v_coarse
+list v eq v_coarse[ge=v@ave]
+
+
+
+! F direction
+can var/all
+
+def ax/f/edge axi = {0,31,61,92}
+def ax/f/edge axi_coarse = {0, 92}
+let vdat = FSEQUENCE({3.034547, 3.078104, 3.059311})
+let v = vdat[gf=axi@asn]
+let v_coarse = v[gf=axi_coarse@max]
+
+list v_coarse
+list v eq v_coarse[gf=v@ave]

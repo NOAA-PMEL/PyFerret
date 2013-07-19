@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43427005 Jul 10 15:14 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 46415498 Jul 18 11:27 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  finshing the DEFINE DAT/ENSEMBLE ehhancements: see ticket 2046
+Note: pre-release of Ferretr v6.85 to GFDL
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Wed Jul 10 15:23:13 PDT 2013
+Beginning at Thu Jul 18 11:28:11 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3421,6 +3421,20 @@ NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ **ERROR: command syntax: .HELLO
+list .hello
+ **ERROR: variable unknown or not in data set: A.UNITS
+ 
+list a.units
+ **ERROR: variable unknown or not in data set: A.UNITS
+list a.units
+ **ERROR: attribute undefined or invalid attribute name: ..HISTORY
+          attribute HISTORY not found for dataset
+list ..history
+ **ERROR: variable unknown or not in data set: ..HISTORY
+list ..history
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file append_to_this.nc
@@ -3531,4 +3545,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jul 10 15:24:59 PDT 2013
+Ended at Thu Jul 18 11:29:56 PDT 2013

@@ -118,7 +118,7 @@ debug:
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g"  \
 		"FFLAGS = $(FFLAGS) -O0 -g" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O0 -g" \
-		"DEBUG_TITLE = beta 6.85 1Jul13" \
+		"DEBUG_TITLE = beta 6.85 7-18-13" \
 		"GUI_FAKES=special/gui_fakes.o" build
 
 .PHONY: ferret

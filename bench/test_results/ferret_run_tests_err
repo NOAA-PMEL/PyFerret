@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 12 Jul  3 16:54 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
+lrwxrwxrwx 1 ksmith tmap 12 Jul 19 13:07 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for Ferret
+Note: RUN_TESTS.sh test results for Ferret on RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -220,7 +220,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Wed Jul  3 16:57:08 PDT 2013
+Beginning at Fri Jul 19 13:08:26 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -3130,16 +3130,31 @@ Replacing definition of axis FAX4DAY
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
 define data/agg windy = 1,2,3
- **ERROR: command syntax: Aggregate dataset not defined
+ **ERROR: error defining aggregate dataset: Aggregate dataset not defined
 define data/agg windy = 1,2,3
  *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: UWND
  *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: VWND
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
 define data/agg windy = 1,2
- **ERROR: command syntax: Aggregate dataset not defined
-define data/agg windy = 1,2
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: UIN
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: VIN
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 5
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets:
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets:
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 5
+ *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 6
+ *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 7
 *** Running test: bn_6d_lab_mode.jnl
  Cached data cleared from memory
 *** Running test: bn682_bug_fixes.jnl
@@ -3263,6 +3278,35 @@ NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: in GIF mode: ignoring SET MODE METAFILE
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: .HELLO
+list .hello
+ **ERROR: variable unknown or not in data set: A.UNITS
+ 
+list a.units
+ **ERROR: variable unknown or not in data set: A.UNITS
+list a.units
+ **ERROR: attribute undefined or invalid attribute name: ..HISTORY
+          attribute HISTORY not found for dataset
+list ..history
+ **ERROR: variable unknown or not in data set: ..HISTORY
+list ..history
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis AXI
+Replacing definition of axis AXI_COARSE
+Replacing definition of axis AXI
+Replacing definition of axis AXI_COARSE
+Replacing definition of axis AXI
+Replacing definition of axis AXI_COARSE
+Replacing definition of axis AXI
+Replacing definition of axis AXI_COARSE
+Replacing definition of axis AXI
+Replacing definition of axis AXI_COARSE
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
 *** Running test: bn_nco_append.jnl
@@ -3302,4 +3346,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
-Ended at Wed Jul  3 16:58:17 PDT 2013
+Ended at Fri Jul 19 13:09:44 PDT 2013

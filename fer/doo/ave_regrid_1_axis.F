@@ -79,6 +79,8 @@
 *      *kms*  2/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * v685 *acm* 06/13 Fix ticket 2070: regridding when source cell encloses 
 *                  dest cell.
+* v685 *acm*  7/13 Fix bug in F axis loop, and fix nonX directions in the
+*                  code for source cell enclosing dest cell.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -285,8 +287,8 @@
 	      ELSE
 * ... divide by distance to get average
 	         dst(i, dstss, k, l, m, n) = sum / distance
-		 IF (src_encloses) dst(dstss,j,k,l,m,n) = 
-     .			         src(srcss_lo,j,k,l,m,n)
+		 IF (src_encloses) dst(i,dstss,k,l,m,n) = 
+     .			         src(i,srcss_lo,k,l,m,n)
 	      ENDIF
 
  260	   CONTINUE
@@ -363,8 +365,8 @@
 	      ELSE
 * ... divide by distance to get average
 	         dst(i, j, dstss, l, m, n) = sum / distance
-		 IF (src_encloses) dst(dstss,j,k,l,m,n) = 
-     .			         src(srcss_lo,j,k,l,m,n)
+		 IF (src_encloses) dst(i,j,dstss,l,m,n) = 
+     .			         src(i,j,srcss_lo,l,m,n)
 	      ENDIF
 
  360	   CONTINUE
@@ -443,8 +445,8 @@
 	      ELSE
 * ... divide by distance to get average
 	         dst(i, j, k, dstss, m, n) = sum / distance
-		 IF (src_encloses) dst(dstss,j,k,l,m,n) = 
-     .			         src(srcss_lo,j,k,l,m,n)
+		 IF (src_encloses) dst(i,j,k,dstss,m,n) = 
+     .			         src(i,j,k,srcss_lo,m,n)
 	      ENDIF
 
  460	   CONTINUE
@@ -523,8 +525,8 @@
 	      ELSE
 * ... divide by distance to get average
 	         dst(i, j, k, l, dstss, n) = sum / distance
-		 IF (src_encloses) dst(dstss,j,k,l,m,n) = 
-     .			         src(srcss_lo,j,k,l,m,n)
+		 IF (src_encloses) dst(i,j,k,l,dstss,n) = 
+     .			         src(i,j,k,l,srcss_lo,n)
 	      ENDIF
 
  560	   CONTINUE
@@ -533,8 +535,8 @@
 * along F axis
         ELSEIF ( axis .EQ. f_dim ) THEN
 
-           DO 690 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
            DO 690 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO 690 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
            DO 690 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
            DO 690 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
            DO 690 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
@@ -548,7 +550,7 @@
               IF ( (srcss_lo .EQ. unspecified_int4
      .	     .OR.  srcss_hi .EQ. unspecified_int4)
      .       .AND. .NOT.(ok_neg111) ) THEN
-	         dst(i,j,k,l,dstss,n) = bad_dst
+	         dst(i,j,k,l,m,dstss) = bad_dst
 	         goto 660
 	      ENDIF
 
@@ -603,8 +605,8 @@
 	      ELSE
 * ... divide by distance to get average
 	         dst(i, j, k, l, m, dstss) = sum / distance
-		 IF (src_encloses) dst(dstss,j,k,l,m,n) = 
-     .			         src(srcss_lo,j,k,l,m,n)
+		 IF (src_encloses) dst(i,j,k,l,m,dstss) = 
+     .			         src(i,j,k,l,m,srcss_lo)
 	      ENDIF
 
  660	   CONTINUE

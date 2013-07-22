@@ -1,0 +1,90 @@
+use "/home/data/socat/SOCAT2_data_table_b900_f2d1_5213.nc"
+
+
+let siz = `fco2_recomputed,return=isize`
+
+let rtol = $1"1"
+let npts = $2"`siz`"
+IF `npts gt 500000` THEN set mem/siz=200
+
+sh sym clock_secs
+let/title="`fco2_recomputed,return=title`"/units="`fco2_recomputed,return=units`"  \
+ fco_with_gaps = separate(fco2_recomputed[i=1:`npts`], rowsize)
+
+! stat fco2_recomputed[i=1:`npts`]
+! let fcn = (fco_with_gaps[i=1:`npts`]-(($stat_mean)))/($stat_std)
+! let fc = missing(fcn,0)
+
+let/units="`longitude,return=units`"/title="`longitude,return=title`" \
+lon_with_gaps = separate(longitude[i=1:`npts`], rowsize)
+
+! stat longitude[i=1:`npts`]
+!let/units="`longitude,return=units`"/title="`longitude,return=title` (moduloed)" \
+! lon_mod = lon_modx(lon_with_gaps[i=1:`npts`])
+! let lon = (lon_mod[i=1:`npts`]-(($stat_mean)))/($stat_std)
+
+let/title="`latitude,return=title`"/units="`latitude,return=units`" \
+ lat_with_gaps = separate(latitude[i=1:`npts`], rowsize)
+
+! stat latitude[i=1:`npts`]
+! let lat = (lat_with_gaps[i=1:`npts`]-(($stat_mean)))/($stat_std)
+
+! let ypts = fc+lon+lat
+
+let ypts = dist3(fco_with_gaps, lon_with_gaps, lat_with_gaps)
+
+load ypts
+sh sym clock_secs
+pause
+
+let nf = npts
+let ntol = 1
+let rest = 1
+let cont = 1
+
+keymark 1
+
+let decimate = piecewise(ypts, rtol,  ntol, rest, cont)
+
+let nout = decimate[j=1,i=@ngd]
+sh sym clock_secs
+load decimate
+sh sym clock_secs
+
+def sym plottitle = Sampled with Tolerance `rtol`: Returned `nout` of original `nf` Points
+let sample_pts = xsequence(decimate[j=1,i=1:`nout`])
+
+! 1000000 takes a minute to plot, interactive mode
+
+! STYLES:
+
+! /line/fast/miss=blank
+! /sym=dot/miss=blank
+
+go basemap x=-180:180 y=-90:90 20
+
+
+let/title="`fco2_recomputed,return=title` sampled"/units="`fco2_recomputed,return=units`" fco2sample = samplei(fco_with_gaps[i=1:`npts`], sample_pts)
+LET/units="`longitude,return=units`"/title="`longitude,return=title`" lonsample = samplei(lon_mod[i=1:`npts`], sample_pts)
+LET/units="`latitude,return=units`"/title="`latitude,return=title`" latsample = samplei(lat_with_gaps[i=1:`npts`], sample_pts)
+
+
+def sym plottitle = "`fco2_recomputed,return=title`<nl>($plottitle)" 
+def sym vlevels = (-inf)(160,260,20)(260,450,10)(440,560,20)(inf)
+
+sh sym clock_secs
+!plot/over/pal=rnb/vs/ribbon/sym=dot/miss=blank/nolab/levels=($vlevels)/key lonsample, latsample, fco2sample
+!sh sym clock_secs
+
+!frame/file=sample_ribbon.gif
+
+! or
+
+go polymark poly/over/pal=rnb/nolab/levels=($vlevels)/key lonsample, latsample, fco2sample, square, 0.075
+sh sym clock_secs
+frame/file=sample_poly.gif
+
+
+let x_var_data = lonsample
+let y_var_data = latsample
+let var_data = fco2sample

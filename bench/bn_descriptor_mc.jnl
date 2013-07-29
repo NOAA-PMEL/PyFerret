@@ -1,0 +1,14 @@
+! bn_descriptor_mc.jnl 
+! 7/2013 ACM
+! See ticket 2087
+!
+! Allow extension ".mc" to indicate a descriptor file, as discussed in
+! http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2013/msg00355.html
+!  
+use des.mc
+list/x=180/y=0 sst
+
+! Also implement /FORMAT=desriptor for both USE and SET DATA
+
+use/format=desc des.my_descriptor
+list /x=300/y=10 sst

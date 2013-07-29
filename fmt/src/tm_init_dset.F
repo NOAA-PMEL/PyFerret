@@ -223,6 +223,10 @@
      		ds_dset_type = ' MC'
 	        explicit_ext = .TRUE.
 	   ENDIF
+	   IF (TM_HAS_STRING(dset_name(dlen-2:dlen), '.mc')) THEN
+     		ds_dset_type = ' MC'
+	        explicit_ext = .TRUE.
+	   ENDIF
 	ENDIF
         IF ( ds_dset_type .EQ. 'CDF' ) THEN
            ext  = def_cdf       ! default netCDF file extension

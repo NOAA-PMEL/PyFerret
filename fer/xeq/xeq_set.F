@@ -178,6 +178,7 @@
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 * V683 *acm*  8/12 add new SET LIST/OUTTYPE=  
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
+* V685 *acm*  7/13 Added FILE/FORMAT=descriptor
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -522,8 +523,13 @@ c *kob* 4/97
      .                   data_form, status )              
               IF ( status .NE. ferr_ok ) GOTO 5000
               dset_cdf = data_form .EQ. 'CDF'
-              IF ( .NOT.dset_cdf ) GOTO 5710   ! only CDF allowed (so far)
-              ds_dset_type = 'CDF'   ! used and cleared in tm_init_dset
+              IF ( dset_cdf ) THEN
+                 ds_dset_type = 'CDF'   ! used and cleared in tm_init_dset
+              ELSEIF (data_form .EQ. 'DES') THEN
+	         ds_dset_type = ' MC'
+	      ELSE
+	         GOTO 5710
+	      ENDIF
            ENDIF
 
 * initialize a TMAP-supported data set

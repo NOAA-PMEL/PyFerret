@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 46415498 Jul 18 11:27 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 43427133 Jul 29 11:05 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: pre-release of Ferretr v6.85 to GFDL
+Note: tickets 2070, 2087
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Thu Jul 18 11:28:11 PDT 2013
+Beginning at Mon Jul 29 11:11:55 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3435,6 +3435,18 @@ list ..history
 list ..history
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis AXI
+Replacing definition of axis AXI_COARSE
+Replacing definition of axis AXI
+Replacing definition of axis AXI_COARSE
+Replacing definition of axis AXI
+Replacing definition of axis AXI_COARSE
+Replacing definition of axis AXI
+Replacing definition of axis AXI_COARSE
+Replacing definition of axis AXI
+Replacing definition of axis AXI_COARSE
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file append_to_this.nc
@@ -3456,6 +3468,8 @@ Replacing definition of axis XIRREG
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -3545,4 +3559,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Jul 18 11:29:56 PDT 2013
+Ended at Mon Jul 29 11:13:21 PDT 2013

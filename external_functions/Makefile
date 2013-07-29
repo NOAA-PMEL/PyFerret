@@ -50,7 +50,7 @@ install:
 		done
 
 clean:
-	for i in $(DIRS); \
+	for i in $(MOREDIRS); \
 		do \
 			(cd $$i; echo "cleaning" $@ "in $$i..."; \
 			$(MAKE) clean);\

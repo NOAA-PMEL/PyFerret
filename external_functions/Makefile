@@ -25,8 +25,8 @@ include ../platform_specific.mk.$(BUILDTYPE)
 #
 
 DIRS = contributed cmprsi_by examples fft statistics
-MOREDIRS = contributed cmprsi_by examples fft statistics gridding featurecollections
-# DIRS = contributed examples fft sort cflib closest_in_list hinterp featurecollections romea odd_formats cat statistics tax_times gridding zaxr 
+MOREDIRS = gridding featurecollections
+# OTHERDIRS = sort cflib closest_in_list hinterp romea odd_formats cat tax_times zaxr 
 
 #
 # Targets
@@ -34,12 +34,6 @@ MOREDIRS = contributed cmprsi_by examples fft statistics gridding featurecollect
 
 .PHONY : all
 all: optimized
-more:
-	for i in $(MOREDIRS); \
-		do \
-			(cd $$i; echo "making" $@ "in $$i..."; \
-			$(MAKE) );\
-		done
 
 .PHONY : optimized
 optimized:
@@ -57,6 +51,14 @@ build:
             fi ; \
         done
 
+.PHONY: buildmore
+buildmore:
+	for i in $(MOREDIRS) ; do \
+            if ! $(MAKE) -C $$i ; then \
+                exit 1 ; \
+            fi ; \
+        done
+
 .PHONY: install
 install:
 	for i in $(DIRS) ; do \
@@ -65,9 +67,17 @@ install:
             fi ; \
         done
 
+.PHONY: installmore
+installmore:
+	for i in $(MOREDIRS) ; do \
+            if ! $(MAKE) -C $$i install ; then \
+                exit 1 ; \
+            fi ; \
+        done
+
 .PHONY: clean
 clean:
-	for i in $(DIRS) ; do \
+	for i in $(DIRS) $(MOREDIRS) ; do \
             if ! $(MAKE) -C $$i clean ; then \
                 exit 1 ; \
             fi ; \

@@ -1,0 +1,45 @@
+&FORMAT_RECORD
+   D_TYPE             = '  MC'
+   D_FORMAT           = '  1A'
+/
+
+&BACKGROUND_RECORD
+   D_TITLE            = ''
+   D_T0TIME           = '01-JAN-0000 00:00:00'
+   D_TIME_UNIT        = 3600
+   D_TIME_MODULO      = .FALSE.
+   D_CALTYPE          = 'GREGORIAN'
+/
+
+&MESSAGE_RECORD
+   D_MESSAGE          = ' '
+   D_ALERT_ON_OPEN    = .FALSE.
+   D_ALERT_ON_OUTPUT  = .FALSE.
+/
+
+&EXTRA_RECORD
+/
+
+&STEPFILE_RECORD
+   S_FILENAME         = 'coads_clim.002'
+   S_AUX_SET_NUM      = 0
+   S_START            = 1826.97
+   S_END              = 2557.455
+   S_DELTA            = 730.485
+   S_NUM_OF_FILES     = 1
+   S_REGVARFLAG       = ' '
+/
+
+&STEPFILE_RECORD
+   S_FILENAME         = 'coads_clim.003'
+   S_AUX_SET_NUM      = 0
+   S_START            = 3287.94
+   S_END              = 4018.425
+   S_DELTA            = 730.485
+   S_NUM_OF_FILES     = 1
+   S_REGVARFLAG       = ' '
+/
+
+&STEPFILE_RECORD
+   S_FILENAME         = '**END OF STEPFILES**'
+/

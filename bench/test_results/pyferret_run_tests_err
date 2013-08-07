@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Jul 19 13:32 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Aug  7 14:58 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for PyFerret on RHEL5-64
+Note: RUN_TESTS.sh test results for PyFerret under RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -204,6 +204,7 @@ Benchmark scripts that will be run:
    bn_nco_append.jnl
    bn_nobounds.jnl
    bn_write_integer_att.jnl
+   bn_descriptor_mc.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -220,7 +221,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Jul 19 13:33:49 PDT 2013
+Beginning at Wed Aug  7 14:59:57 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -471,19 +472,8 @@ shade/nolabel sst, x_page, y_page
 shade/nolabel sst, 0*x_page, y_page
  **ERROR: all data have same value: Y coordinate field
 shade/nolabel sst, x_page, 0*y_page
-Unable to delete drawing segments when writing directly to an image file
-Unable to delete drawing segments when writing directly to an image file
-Unable to delete drawing segments when writing directly to an image file
-Unable to delete drawing segments when writing directly to an image file
-Unable to delete drawing segments when writing directly to an image file
-Unable to delete drawing segments when writing directly to an image file
-Unable to delete drawing segments when writing directly to an image file
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
-Unable to delete drawing segments when writing directly to an image file
-Unable to delete drawing segments when writing directly to an image file
-Unable to delete drawing segments when writing directly to an image file
-Unable to delete drawing segments when writing directly to an image file
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
 *** Running test: bn_symbols.jnl
@@ -3294,6 +3284,8 @@ sh: ncks: command not found
 *** Running test: bn_write_integer_att.jnl
  Cached data cleared from memory
  LISTing to file a.nc
+*** Running test: bn_descriptor_mc.jnl
+ Cached data cleared from memory
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3313,4 +3305,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Fri Jul 19 13:37:38 PDT 2013
+Ended at Wed Aug  7 15:03:38 PDT 2013

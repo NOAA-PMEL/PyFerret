@@ -1215,7 +1215,9 @@ class PipedViewerPQ(QMainWindow):
                     If not given, the polygon will not be filled.
             "outline": dictionary describing the pen used to outline
                     the polygon; see CmndHelperPQ.getPenFromCmnd
-                    If not given, the border will not be drawn.
+                    If not given, the border will be drawn with a
+                    cosmetic pen identical to the brush used to fill
+                    the polygon.
 
         The coordinates are device coordinates from the upper left corner.
 
@@ -1235,7 +1237,8 @@ class PipedViewerPQ(QMainWindow):
         except KeyError:
             if ( mybrush == Qt.NoBrush ):
                 raise ValueError( self.tr('drawPolygon called without a Brush or Pen') )
-            mypen = Qt.NoPen
+            # Use a cosmetic Pen matching the brush
+            mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
         self.__activepainter.setBrush(mybrush)
         self.__activepainter.setPen(mypen)
         self.__activepainter.drawPolygon(mypolygon)
@@ -1259,7 +1262,9 @@ class PipedViewerPQ(QMainWindow):
                     If not given, the rectangle will not be filled.
             "outline": dictionary describing the pen used to outline
                     the rectangle; see CmndHelperPQ.getPenFromCmnd
-                    If not given, the border will not be drawn.
+                    If not given, the border will be drawn with a
+                    cosmetic pen identical to the brush used to fill
+                    the rectangle.
 
         The coordinates are device coordinates from the upper left corner.
 
@@ -1287,7 +1292,8 @@ class PipedViewerPQ(QMainWindow):
         except KeyError:
             if ( mybrush == Qt.NoBrush ):
                 raise ValueError( self.tr('drawPolygon called without a Brush or Pen') )
-            mypen = Qt.NoPen
+            # Use a cosmetic Pen matching the brush
+            mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
         self.__activepainter.setBrush(mybrush)
         self.__activepainter.setPen(mypen)
         self.__activepainter.drawRect(myrect)

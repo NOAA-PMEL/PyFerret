@@ -238,9 +238,13 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         return 0;
     }
 
-    /* set the resolution for fallback raster images in vector drawings */
-    cairo_surface_set_fallback_resolution(savesurface,
-                      (double) CCFB_WINDOW_DPI, (double) CCFB_WINDOW_DPI);
+    /* 
+     * Set a low resolution for fallback raster images in vector drawings.
+     * We really do not want this to be used or even created.
+     */
+    if ( strcmp(fmtext, "PNG") != 0 ) {
+        cairo_surface_set_fallback_resolution(savesurface, 32.0, 32.0);
+    }
 
     /* Create a temporary context for this temporary surface */
     savecontext = cairo_create(savesurface);
@@ -323,8 +327,12 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         }
     }
 
-    if ( ! transbkg ) {
-        /* Fill with the last clearing color */
+    /* 
+     * If not a transparent background, or if the alpha channel 
+     * is not supported, fill in the background (with an opaque 
+     * color if the alpha channel is not supported).
+     */
+    if ( (! transbkg) || (! usealpha) ) {
         if ( usealpha )
             cairo_set_source_rgba(savecontext,
                                   instdata->lastclearcolor.redfrac,

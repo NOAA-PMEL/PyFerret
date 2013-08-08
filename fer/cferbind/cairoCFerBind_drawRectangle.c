@@ -22,7 +22,8 @@
  *
  * If the brush argument is NULL, the rectangle will not be
  * filled.  If the pen argument is NULL, the rectangle edges
- * will not be drawn.
+ * will be drawn using a solid cosmetic pen with the same
+ * color/pattern as the brush.
  *
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
@@ -41,6 +42,7 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
     int        k;
     double     adjdashes[8];
     int        antialias;
+    /* cairo_matrix_t current_transform; */
 
     /* Sanity checks */
     if ( (self->enginename != CairoCFerBindName) &&
@@ -91,6 +93,7 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
         unitfactor = CCFB_POINTS_PER_PIXEL;
     }
 
+    /* Turn off antialiasing for this operation */
     antialias = instdata->antialias;
     cairoCFerBind_setAntialias(self, 0);
 
@@ -102,9 +105,20 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
     adjheight = (bottom - top) * unitfactor;
     cairo_rectangle(instdata->context, adjleft, adjtop, adjwidth, adjheight);
 
-    /* First fill the path, if appropriate */
-    if ( brushobj != NULL ) {
-        /* Fill pattern or solid color */
+    if ( (brushobj != NULL) && (penobj == NULL) ) {
+        /* Simultaneously add a cosmetic pen around the fill */
+        /*
+         * cairo_push_group(instdata->context); 
+         */
+
+        /* Clear any transformation so it is not applied twice */
+        /*
+         * cairo_get_matrix(instdata->context, &current_transform);
+         * cairo_identity_matrix(instdata->context);
+         */
+
+        /* Draw with opaque colors in this group */
+
         if ( brushobj->pattern != NULL )
             cairo_set_source(instdata->context, brushobj->pattern);
         else if ( instdata->usealpha )
@@ -114,22 +128,48 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
         else
             cairo_set_source_rgb(instdata->context, brushobj->color.redfrac,
                   brushobj->color.greenfrac, brushobj->color.bluefrac);
-        if ( penobj != NULL ) {
+
+        /* Fill the rectangle, but preserve the path for stroking */
+        cairo_fill_preserve(instdata->context);
+
+        /* Stroke the path with a solid cosmetic line */
+        cairo_set_line_width(instdata->context, unitfactor);
+        cairo_set_dash(instdata->context, NULL, 0, 0.0);
+        cairo_set_line_cap(instdata->context, CAIRO_LINE_CAP_SQUARE);
+        cairo_set_line_join(instdata->context, CAIRO_LINE_JOIN_BEVEL);
+        cairo_stroke(instdata->context);
+
+        /* Reset the original transformation */
+        /*
+         * cairo_set_matrix(instdata->context, &current_transform);
+         */
+
+        /* Draw this group using the brush alpha value (if appropriate) */
+        /*
+         * cairo_pop_group_to_source(instdata->context);
+         * if ( instdata->usealpha )
+         *     cairo_paint_with_alpha(instdata->context, brushobj->color.opaquefrac);
+         * else
+         *     cairo_paint(instdata->context);
+         */
+    }
+    else {
+        /* First fill if requested */
+        if ( brushobj != NULL ) {
+            /* Fill pattern or solid color */
+            if ( brushobj->pattern != NULL )
+                cairo_set_source(instdata->context, brushobj->pattern);
+            else if ( instdata->usealpha )
+                cairo_set_source_rgba(instdata->context, brushobj->color.redfrac,
+                      brushobj->color.greenfrac, brushobj->color.bluefrac,
+                      brushobj->color.opaquefrac);
+            else
+                cairo_set_source_rgb(instdata->context, brushobj->color.redfrac,
+                      brushobj->color.greenfrac, brushobj->color.bluefrac);
             /* Fill the rectangle, but preserve the path for stroking */
             cairo_fill_preserve(instdata->context);
         }
-        else {
-            /* Fill the polygon and removing the path */
-            cairo_fill(instdata->context);
-        }
-        instdata->somethingdrawn = 1;
-        instdata->imagechanged = 1;
-    }
 
-    cairoCFerBind_setAntialias(self, antialias);
-
-    /* Now stroke the path */
-    if ( penobj != NULL ) {
         /* Assign the line color to the context */
         if ( instdata->usealpha )
             cairo_set_source_rgba(instdata->context, penobj->color.redfrac,
@@ -150,6 +190,7 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
             adjdashes[k] = penobj->dashes[k] * adjwidth;
         cairo_set_dash(instdata->context, adjdashes, penobj->numdashes, 0.0);
         if ( cairo_status(instdata->context) != CAIRO_STATUS_SUCCESS ) {
+            cairoCFerBind_setAntialias(self, antialias);
             strcpy(grdelerrmsg, "cairoCFerBind_drawRectangle: unexpected error, "
                                 "problems setting pen dashes");
             return 0;
@@ -160,10 +201,13 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
 
         /* stroke and remove the path */
         cairo_stroke(instdata->context);
-        instdata->somethingdrawn = 1;
-        instdata->imagechanged = 1;
     }
 
+    /* Restore the original antialiasing state */
+    cairoCFerBind_setAntialias(self, antialias);
+
+    instdata->somethingdrawn = 1;
+    instdata->imagechanged = 1;
     return 1;
 }
 

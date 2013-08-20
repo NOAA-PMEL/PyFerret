@@ -185,7 +185,7 @@
       INTEGER i,j,k,l
       INTEGER j1, k1, l1
       INTEGER j2, k2, l2
-      INTEGER imax,kmax, iout, kout, isum
+      INTEGER imax,kmax, iout, kout, isum, kend
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -247,7 +247,8 @@
 
 	    i1 = 1
             DO 200 iout=arg_lo_ss(X_AXIS,ARG2),arg_hi_ss(X_AXIS,ARG2)
-               DO 100 kout = 1, arg_2(iout,j2,k2,l2)
+	       kend = INT(arg_2(iout,j2,k2,l2))
+               DO 100 kout = 1, kend
                   result(iout,j,kout,l) = arg_1(i1,j1,k1,l1)
                   i1 = i1 + 1
  100           CONTINUE

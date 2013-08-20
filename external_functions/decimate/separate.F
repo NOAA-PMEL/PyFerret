@@ -34,7 +34,7 @@
 
 * Ansley Manke June 2013
 * Given a data variable and a ROWSIZE indicating trajectory length,
-* replace the last datum in each trajectory with the bad-value.
+* Insert a bad-value between trajectories.
 *
 *
 *  In this subroutine we provide information about
@@ -87,7 +87,7 @@
       CALL ef_set_desc(id,
      . 'Insert a bad-value between features' )
 
-      CALL ef_set_num_args(id, 2)
+      CALL ef_set_num_args(id, 3)
       CALL ef_set_has_vari_args(id, NO)
       CALL ef_set_axis_inheritance_6d(id, ABSTRACT, NORMAL, NORMAL, 
      .                                             NORMAL, NORMAL, NORMAL)
@@ -102,6 +102,12 @@
       CALL ef_set_arg_name(id, arg, 'Rowsize')
       CALL ef_set_arg_desc(id, arg,
      .          'array with per-feature row lengths')
+      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
+
+      arg = 3
+      CALL ef_set_arg_name(id, arg, 'FixLongitudes')
+      CALL ef_set_arg_desc(id, arg,
+     .          '1 if A is longitudes needing modulo fixes, 0 otherwise')
       CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
 
 *                                                                      ^
@@ -161,7 +167,7 @@
 
 *  In this subroutine we compute the result
 * 
-      SUBROUTINE separate_compute(id, arg_1, arg_2, result)
+      SUBROUTINE separate_compute(id, arg_1, arg_2, arg_3, result)
 
       IMPLICIT NONE
       INCLUDE 'ferret_cmn/EF_Util.cmn'
@@ -173,18 +179,17 @@
      .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
       REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
      .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
+     .           mem3lot:mem3hit, mem3loe:mem3hie, mem3lof:mem3hif)
 
-      REAL result(memreslox:memreshix, memresloy:memreshiy, 
-     .            memresloz:memreshiz, memreslot:memreshit,
-     .            memresloe:memreshie, memreslof:memreshif)
+! We just know this is on the X axis and will be passed in and out correct.y.
+      REAL result(memreslox:memreshix)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
 * information for each variable's axes. 
 
-      INTEGER res_lo_ss(6),
-     .        res_hi_ss(6),
-     .        res_incr (6)
+      INTEGER res_lo_ss(6), res_hi_ss(6), res_incr (6)
       INTEGER arg_lo_ss(6,EF_MAX_ARGS),
      .        arg_hi_ss(6,EF_MAX_ARGS),
      .        arg_incr (6,EF_MAX_ARGS)
@@ -199,6 +204,8 @@
 
       INTEGER i, i1, ir, k, m
       INTEGER nx, ne, msum, rend
+      REAL fixlon, tol, nothing
+      LOGICAL ifix
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -206,10 +213,12 @@
 
       k = res_lo_ss(Z_AXIS)  ! index for unused dimensions
 
-
       nx = arg_hi_ss(X_AXIS, ARG1) - arg_lo_ss(X_AXIS, ARG1) + 1
       ne = arg_hi_ss(E_AXIS, ARG2) - arg_lo_ss(E_AXIS, ARG2) + 1
 
+      CALL ef_get_one_val(id, arg3, fixlon)
+      ifix =  (fixlon .GT. 0.8)
+      tol = 200.
 
       i1 = 1
       ir = 1
@@ -219,12 +228,21 @@
 	 msum = msum + rend
 	 IF (msum .GT. nx) msum = nx+1
 	 DO i = i1, msum
-	    result(ir,k,k,k,k,k) = arg_1(i,k,k,k,k,k)
+	    result(ir) = arg_1(i,k,k,k,k,k)
+	    IF (ir.GT.1 .AND. ifix .AND. 
+     .              result(ir ).NE.bad_flag_result .AND. 
+     .              result(ir-1).NE.bad_flag_result) THEN
+	       IF ( result(ir)-result(ir-1) .GT. tol) 
+     .               result(ir) = result(ir) - 360.
+	       IF ( result(ir)-result(ir-1) .LT. -1*tol) 
+     .               result(ir) = result(ir) + 360.
+               
+            ENDIF
 	    ir = ir + 1
 	    IF (ir .GT. res_hi_ss(X_AXIS)) GOTO 9000
 	 ENDDO
 	 i1 = msum+1
-	 result(ir,k,k,k,k,k) = bad_flag_result
+	 result(ir) = bad_flag_result
 	 ir = ir + 1
 	 IF (ir .GT. res_hi_ss(X_AXIS)) GOTO 9000
       ENDDO

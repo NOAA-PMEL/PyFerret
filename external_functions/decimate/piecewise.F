@@ -302,7 +302,7 @@ C     I3 = 3 INDICATES CONTINUITY IS REQUIRED
       INTEGER i1, j1, k1, l1, m1, n1
       INTEGER i2, j2, k2, l2, m2, n2
       INTEGER nx, nout, ilo, ip
-      REAL a3, a4, a5
+      REAL a3, a4, a5, bad_y
       CHARACTER*100 errtxt
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
@@ -359,7 +359,8 @@ C     I3 = 3 INDICATES CONTINUITY IS REQUIRED
  100     CONTINUE
  150  CONTINUE
 
-      CALL STL2(xpts, arg_1, arg_2, nx, result(1,1,k,k,k,k), 
+      bad_y = bad_flag(ARG1)
+      CALL STL2(xpts, arg_1, arg_2, nx, bad_y, result(1,1,k,k,k,k), 
      .   result(1,2,k,k,k,k), result(1,3,k,k,k,k), nout, IP)
 
 * Truncate result(j=1) to next lowest integer - its going to be
@@ -376,7 +377,7 @@ C     I3 = 3 INDICATES CONTINUITY IS REQUIRED
 
       END
 
-      SUBROUTINE STL2(X, Y, E, M, U, V, W, K, IP)
+      SUBROUTINE STL2(X, Y, E, M, bad_y, U, V, W, K, IP)
 
 C PIECEWISE LINEAR APPROXIMATIONS OF FEWEST
 C LINE SEGMENTS WITHIN GIVEN TOLERANCES.
@@ -455,16 +456,21 @@ C  ONE.  IF ANY CHECK FAILS, THE PROGRAM
 C  RETURNS WITH K SET EQUAL TO 0.  IN THIS
 C  CASE NO FURTHER PROCESSING IS ATTEMPTED.
 
+      IMPLICIT NONE
 * Calling arguments
-      REAL X(*), Y(*), E(*), U(*), V(*), W(*)
+      REAL X(*), Y(*), E(*), U(*), V(*), W(*), bad_y
       INTEGER M, K, IP
 
 * Local declarations
       INTEGER N, ITCH, I, J, L, KEEP, INIT, INDC, IGRAZE,
      .        IDIOT, IT, IPIV, KP
-      REAL EPSLN, SGN, XEYE, YEYE, TEMP1, SMIN, DX, TEST,
+      REAL EPSLN, SGN, XEYE, YEYE, TEMP1, SMIN, DX, 
      .     SVX, SVY, SVMN, TEMP2, XINIT, YINIT, SLOPE, SMAX, 
-     .     SVMX
+     .     SVMX, TEST
+
+      integer nothing, istop
+
+	istop = 34566
 
       N = M
       ITCH = IP
@@ -482,7 +488,18 @@ C INITIALIZATION FOR ENTIRE PROGRAM
       SGN = 1.0
       KEEP = 1
       I = 1
-      U(1) = X(1)
+      
+      if (y(i) .eq. bad_y) THEN
+         do while (y(i) .eq. bad_y)
+            i = i + 1
+         enddo
+         i = i - 1
+      endif
+      if (i.eq.istop) then
+         nothing = 0
+      endif
+
+      U(i) = X(i)
       J = 2
       INIT = 1
       INDC = 0
@@ -519,6 +536,17 @@ C NOT RESTRICTED TO TOLERANCE BAND
       IPIV = I
       IGRAZE = I
       I = I + 1
+      if (i.eq.istop) then
+         nothing = 0
+      endif
+
+      if (y(i) .eq. bad_y) THEN
+         do while (y(i) .eq. bad_y)
+            i = i + 1
+         enddo
+         i = i - 1
+      endif
+
       GO TO 150
    40 CONTINUE
       IF (XEYE.GE.X(I)) I = I + 1
@@ -534,6 +562,9 @@ C DETERMINATION OF INDIVIDUAL SEGMENT
    60 CONTINUE
       IF (I.EQ.N) GO TO 260
       I = I + 1
+      if (i.eq.istop) then
+         nothing = 0
+      endif
    70 CONTINUE
 C TEST FOR NEW *MAX* SLOPE
       DX = X(I) - XEYE
@@ -634,6 +665,9 @@ C END OF CURRENT SEGMENT
       IF (IABS(IABS(ITCH)-4).NE.2) GO TO 300
 C DETERMINE KNOT ON EDGE OF TOLERANCE BAND
       TEMP1 = 0.0
+      if (i.eq.istop) then
+         nothing = 0
+      endif
       IF (ITCH.LT.0) TEMP1 = EPSLN - SGN*E(I-1)
       TEMP1 = (Y(I)-Y(I-1)+TEMP1)/(X(I)-X(I-1))
       U(J) = (Y(I)+EPSLN-YEYE-TEMP1*X(I)+TEMP2*XEYE)/(TEMP2-TEMP1)

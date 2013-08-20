@@ -49,3 +49,6 @@ GO err684_dotstart
 
 GO bn_reset
 GO err684_vfine_to_coarse
+
+GO bn_reset
+GO err684_repeated_coordindates

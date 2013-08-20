@@ -168,6 +168,8 @@
 * V6.83 12/12 *acm* ticket 1996: NOTE if reversing an axis
 * V685 *acm* 1/13  Fix ticket 2026: dont automatically treat a 1-point longitude
 *                  axis as modulo.
+* V685 *acm* 8/13  Fix ticket 2088: Report the correct index location in axis when
+*                  unrepairable repeated axis coords on axis
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -886,7 +888,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
          ENDIF
 
  540	 IF (misordered) THEN
-	    words(1) = TM_LEFINT(i1, istat)
+	    words(1) = TM_LEFINT(i1-ipt1+1, istat)
 	    CALL TM_NOTE(
      .           'unrepairable repeated axis coords on axis '//
      .           vname(:vlen)//' at subscript '//words(1), tt)

@@ -40,6 +40,7 @@ eofsvd_stat.F\
 eofsvd_tfunc.F\
 ereverse.F\
 expnd_by_len.F\
+expnd_by_len_str.F\
 expndi_by.F\
 expndi_by_t.F\
 expndi_by_z.F\
@@ -137,6 +138,7 @@ sortm.F\
 sortm_str.F\
 sortn.F\
 sortn_str.F\
+str_mask.F\
 svdeof-4.F\
 tauto_cor.F\
 tax_datestring.F\

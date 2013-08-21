@@ -120,7 +120,7 @@
      .           mem2loz:mem2hiz, mem2lot:mem2hit)
       REAL arg_3(2,mem3lox:mem3hix, mem3loy:mem3hiy, 
      .     mem3loz:mem3hiz, mem3lot:mem3hit)
-      REAL result(2,memreslox:memreshix, memresloy:memreshiy,
+      REAL result(memreslox:memreshix, memresloy:memreshiy,
      .            memresloz:memreshiz, memreslot:memreshit)
 
 * After initialization, the 'res_' arrays contain indexing information 
@@ -178,7 +178,7 @@
 		     text2 = text3
 		     slen2 = slen3
 		  ENDIF
-                  CALL EF_PUT_STRING (text2, slen2, result(1,i,j,k,l))
+                  CALL EF_PUT_STRING (text2, slen2, result(i,j,k,l))
 
                   l1 = l1 + arg_incr(T_AXIS,ARG1)
                   l2 = l2 + arg_incr(T_AXIS,ARG2)

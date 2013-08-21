@@ -60,15 +60,15 @@
       CALL ef_set_desc(id, 
      . 'Returns a variable expanded by the lengths given in arg 2' )
       CALL ef_set_num_args(id, 3)
-      CALL ef_set_axis_inheritance(id, ABSTRACT, NORMAL, 
-     .     NORMAL, NORMAL)
+      CALL ef_set_axis_inheritance_6d(id, ABSTRACT, NORMAL, 
+     .     NORMAL, NORMAL, NORMAL, NORMAL)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'var')
       CALL ef_set_arg_unit(id, arg, ' ')
 
       CALL ef_set_arg_desc(id, arg,'1D variable to expand')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'len')
@@ -76,7 +76,7 @@
 
       CALL ef_set_arg_desc(id, arg, 
      .     'lengths to expand each element of argument 1')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'nx')
@@ -84,7 +84,8 @@
 
       CALL ef_set_arg_desc(id, arg, 
      .      'length of result (sum of lengths in arg 2)')
-      CALL ef_set_arg_unit(id, arg, ' ')
+      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
+
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -137,43 +138,47 @@
 
       REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
-     .           mem1loz:mem1hiz, mem1lot:mem1hit)
+     .           mem1loz:mem1hiz, mem1lot:mem1hit, 
+     .           mem1loe:mem1hie, mem1lof:mem1hif)
       REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, 
-     .           mem2loz:mem2hiz, mem2lot:mem2hit)
+     .           mem2loz:mem2hiz, mem2lot:mem2hit, 
+     .           mem2loe:mem2hie, mem2lof:mem2hif)
       REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, 
-     .           mem3loz:mem3hiz, mem3lot:mem3hit)
+     .           mem3loz:mem3hiz, mem3lot:mem3hit, 
+     .           mem3loe:mem3hie, mem3lof:mem3hif)
       REAL result(memreslox:memreshix, memresloy:memreshiy,
-     .            memresloz:memreshiz, memreslot:memreshit)
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshiz, memreslof:memreshif)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
 * information for each variable's axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
+      INTEGER res_lo_ss(6), res_hi_ss(6), res_incr(6)
+      INTEGER arg_lo_ss(6,1:EF_MAX_ARGS), arg_hi_ss(6,1:EF_MAX_ARGS),
+     .     arg_incr(6,1:EF_MAX_ARGS)
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
 
-      INTEGER i,j,k,l
-      INTEGER i1, j1, k1, l1
-      INTEGER i2, j2, k2, l2
-      INTEGER m, n, count
+      INTEGER i,j,k,l,m,n
+      INTEGER i1, j1, k1, l1, m1, n1
+      INTEGER i2, j2, k2, l2, m2, n2
+      INTEGER count, indx
       CHARACTER*100 errtxt
       REAL val
 
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
 * check that the lists are 1D
 
       errtxt = 'Argument 1 must be a 1D list'
       n = arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1
-      DO i = Y_AXIS, T_AXIS
+      DO i = Y_AXIS, F_AXIS
          m = arg_hi_ss(i,ARG1) - arg_lo_ss(i,ARG1) + 1 
          IF (n.GT.1 .AND. m.GT.1) GOTO 9000
          n = MAX(n,m)
@@ -181,7 +186,7 @@
 
       errtxt = 'Argument 2 must be a 1D list'
       n = arg_hi_ss(X_AXIS,ARG2) - arg_lo_ss(X_AXIS,ARG2) + 1
-      DO i = Y_AXIS, T_AXIS
+      DO i = Y_AXIS, F_AXIS
          m = arg_hi_ss(i,ARG2) - arg_lo_ss(i,ARG2) + 1
          IF (n.GT.1 .AND. m.GT.1) GOTO 9000
          n = MAX(n,m)
@@ -193,31 +198,43 @@
       j2=arg_lo_ss(Y_AXIS,ARG2)
       k2=arg_lo_ss(Z_AXIS,ARG2)
       l2=arg_lo_ss(T_AXIS,ARG2)
+      m2=arg_lo_ss(E_AXIS,ARG2)
+      n2=arg_lo_ss(F_AXIS,ARG2)
 
       i = res_lo_ss(X_AXIS)
       j = res_lo_ss(Y_AXIS)
       k = res_lo_ss(Z_AXIS)
       l = res_lo_ss(T_AXIS)
+      m = res_lo_ss(E_AXIS)
+      n = res_lo_ss(F_AXIS)
 
-      DO 200 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
-      DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
-      DO 200 k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
+      DO 200 n1 = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
+      DO 200 m1 = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
       DO 200 l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
-         IF ( arg_1(i1,j1,k1,l1) .EQ. bad_flag(1) ) GOTO 300  ! done
-         IF ( arg_2(i2,j2,k2,l2) .EQ. bad_flag(2) ) GOTO 300
+      DO 200 k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
+      DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+      DO 200 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+         IF ( arg_2(i2,j2,k2,l2,m2,n2) .NE. bad_flag(2) ) THEN
 
-	 val = arg_1(i1,j1,k1,l1)         ! variable value
-         count = INT(arg_2(i2,j2,k2,l2))  ! number to put
+            val = arg_1(i1,j1,k1,l1,m1,n1)
+	    IF ( arg_1(i1,j1,k1,l1,m1,n1) .EQ. bad_flag(1) ) 
+     .	       val = bad_flag_result
 
-         DO 100 n = 1, count
-            result(i,j,k,l) = val
-            i = i + 1
- 100     CONTINUE
+            count = INT(arg_2(i2,j2,k2,l2,m2,n2))    ! number to replicate
+
+            DO 100 indx = 1, count
+               result(i,j,k,l,m,n) = val
+               i = i + 1
+ 100        CONTINUE
+
+         ENDIF  ! arg_2 bad
 
       i2 = i2 + arg_incr(X_AXIS,ARG2)
       j2 = j2 + arg_incr(Y_AXIS,ARG2)
       k2 = k2 + arg_incr(Z_AXIS,ARG2)
       l2 = l2 + arg_incr(T_AXIS,ARG2)
+      m2 = m2 + arg_incr(E_AXIS,ARG2)
+      n2 = n2 + arg_incr(F_AXIS,ARG2)
  200  CONTINUE
 
  300  CONTINUE

@@ -1,4 +1,4 @@
-        SUBROUTINE XEQ_FRAME
+        SUBROUTINE XEQ_FRAME(memory)
 
 *
 *
@@ -61,6 +61,8 @@
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 * PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to FRAME
+* PyFr  *kms*  8/13 Add /ANNOTATE to FRAME; declare memory argument 
+*                   now needed for SAVE_FRAME
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -73,6 +75,8 @@
         include 'gkscm1_inc.decl'
         include 'GKSCM1.INC'      ! wsid
 
+        REAL memory(*)
+
 * internal function return value declarations:
         INTEGER   TM_LENSTR1
 
@@ -81,7 +85,7 @@
         REAL*4    xinches, yinches
         INTEGER   sts, loc, flen, xloc, yloc,
      .            xpixels, ypixels
-        CHARACTER fformat*5, filename*1028
+        CHARACTER annovar*1028, fformat*5, filename*1028
 
 * decode the qualifiers, if any
 
@@ -137,6 +141,18 @@
             ypixels = NINT(wn_ypixels(wsid))
         ENDIF
 
+* FRAME/ANNOTATE=...
+        loc = qual_given( slash_frame_annotate )
+        IF ( loc .GT. 0 ) THEN
+            CALL EQUAL_STR_LC(
+     .              cmnd_buff(qual_start(loc):qual_end(loc)), 
+     .              annovar, sts)
+            IF ( sts .NE. ferr_ok ) RETURN
+            IF ( annovar .EQ. ' ' ) GOTO 5060
+        ELSE
+            annovar = ' '
+        ENDIF
+
 * FRAME/TRANSPARENT
 
         transparent = 0
@@ -174,7 +190,7 @@
         CALL TM_PARK_LAST_VERSION(filename(:flen), sts)
 
 * save that baby
-        CALL SAVE_FRAME(filename(:flen), fformat, 
+        CALL SAVE_FRAME(memory, filename(:flen), fformat, annovar,
      .                  xinches, yinches, xpixels, ypixels, sts)
 
  5000   RETURN
@@ -196,6 +212,7 @@
      .       '/YINCHES must be at least 1.25', *5000)
  5055   CALL ERRMSG( ferr_out_of_range, sts, 
      .       '/YPIXELS must be at least 128', *5000)
+ 5060   CALL ERRMSG( ferr_syntax, sts, '/ANNOTATE=?', *5000 )
 
         END
 

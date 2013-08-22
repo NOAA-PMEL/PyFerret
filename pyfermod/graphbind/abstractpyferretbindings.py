@@ -224,7 +224,7 @@ class AbstractPyFerretBindings(object):
         raise AttributeError('not implemented')
 
     def saveWindow(self, filename, fileformat, bkgcolor, 
-                   xinches, yinches, xpixels, ypixels):
+                   xinches, yinches, xpixels, ypixels, annotations):
         '''
         Save the contents of the window to a file.  This might be called
         when there is no image to save; in this case the call should be
@@ -238,9 +238,15 @@ class AbstractPyFerretBindings(object):
             yinches: vertical size of vector image in inches
             xpixels: horizontal size of raster image in pixels
             ypixels: vertical size of raster image in pixels
+            annotations: tuple of annotation strings
 
         If fileformat is NULL, the fileformat is guessed from the
         filename extension.
+
+        If annotations is not None, the strings given in the tuple
+        are to be displayed above the image.  These annotations add 
+        height, as needed, to the saved image (i.e., yinches or 
+        ypixels is the height of the image below these annotations).
         '''
         raise AttributeError('not implemented')
 

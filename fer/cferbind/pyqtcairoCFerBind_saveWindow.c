@@ -23,6 +23,8 @@
  *     yinches    - vertical size of vector image in inches
  *     xpixels    - horizontal size of raster image in pixels
  *     ypixels    - vertical size of raster image in pixels
+ *     annotations - array of annotation strings
+ *     numannotations - number of annotation strings
  *
  * If filename is empty or NULL, the imagename argument for the
  * last call to pyqtcairoCFerBind_setImageName is used for the
@@ -43,7 +45,8 @@
 grdelBool pyqtcairoCFerBind_saveWindow(CFerBind *self, const char *filename,
                        int namelen, const char *formatname, int fmtnamelen, 
                        int transbkg, double xinches, double yinches, 
-                       int xpixels, int ypixels)
+                       int xpixels, int ypixels,
+                       char **annotations, int numannotations)
 {
     CairoCFerBindData *instdata;
     grdelBool success;
@@ -59,7 +62,8 @@ grdelBool pyqtcairoCFerBind_saveWindow(CFerBind *self, const char *filename,
     /* Tell the viewer to save the image using the given size */
     success = grdelWindowSave(instdata->viewer, filename, namelen,
                               formatname, fmtnamelen, transbkg,
-                              xinches, yinches, xpixels, ypixels);
+                              xinches, yinches, xpixels, ypixels,
+                              annotations, numannotations);
     if ( ! success ) {
         /* grdelerrmsg is already assigned */
         return 0;

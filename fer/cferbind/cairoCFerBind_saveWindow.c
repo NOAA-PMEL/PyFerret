@@ -24,6 +24,8 @@
  *     yinches    - vertical size of vector image in inches
  *     xpixels    - horizontal size of raster image in pixels
  *     ypixels    - vertical size of raster image in pixels
+ *     annotations - array of annotation strings
+ *     numannotations - number of annotation strings
  *
  * If filename is empty or NULL, the imagename argument for the
  * last call to cairoCFerBind_setImageName is used for the
@@ -46,7 +48,8 @@
 grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, 
                         int namelen, const char *formatname, int fmtnamelen, 
                         int transbkg, double xinches, double yinches, 
-                        int xpixels, int ypixels)
+                        int xpixels, int ypixels, 
+                        char **annotations, int numannotations)
 {
     CairoCFerBindData *instdata;
     cairo_status_t     status;

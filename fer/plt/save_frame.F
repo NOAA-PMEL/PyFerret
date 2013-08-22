@@ -1,5 +1,5 @@
-        SUBROUTINE SAVE_FRAME(filename, fformat, xinches, yinches, 
-     .                        xpixels, ypixels, sts)
+        SUBROUTINE SAVE_FRAME(memory, filename, fformat, annovar,
+     .                        xinches, yinches, xpixels, ypixels, sts)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -55,10 +55,12 @@
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 * PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to FRAME
+* PyFr  *kms*  8/13 Add /ANNOTATE to FRAME; include memory argument
 
 * calling argument declarations:
         IMPLICIT NONE
-        CHARACTER*(*) filename, fformat
+        REAL memory(*)
+        CHARACTER*(*) filename, fformat, annovar
         REAL*4 xinches, yinches
         INTEGER xpixels, ypixels, sts
 
@@ -66,12 +68,18 @@
         INTEGER TM_LENSTR
 
 * internal variable declarations:
-        INTEGER windowid, namlen, fmtlen, success, errstrlen
+        INTEGER windowid, namlen, fmtlen, success, errstrlen, 
+     .          mr, cx, k, memlo, memhi, steplo, stephi, 
+     .          firststr, numstr
         CHARACTER*2048 errstr
 
-        include 'errmsg.parm'
-        include 'xplot_state.cmn'
-        include 'fgrdel.cmn'
+        INCLUDE 'tmap_dims.parm'
+        INCLUDE 'ferret.parm'
+        INCLUDE 'errmsg.parm'
+        INCLUDE 'xcontext.cmn'
+        INCLUDE 'xplot_state.cmn'
+        INCLUDE 'xvariables.cmn'
+        INCLUDE 'fgrdel.cmn'
 
         namlen = TM_LENSTR(filename)
         fmtlen = TM_LENSTR(fformat)
@@ -90,9 +98,47 @@
             STOP 'SAVE_FRAME: null windowobj'
         ENDIF
 
+*       Get the annotation strings to add at the top
+        IF ( annovar .NE. ' ' ) THEN
+*           Get the string array given by the variable named in annovar
+            CALL GET_FER_COMMAND(memory, 'LOAD ' // annovar, sts, *5200)
+            IF ( sts .NE. FERR_OK ) GOTO 5200
+*           Get the string data into memory
+            CALL GET_CMND_DATA(memory, cx_last, ptype_string, sts)
+            IF ( sts .NE. FERR_OK ) GOTO 5200
+            mr = is_mr(isp)
+            cx = is_cx(isp)
+*           Starting place in memory for this array of pointers to C strings
+            firststr = (mr_blk1(mr) - 1) * mem_blk_size
+*           If the whole array was not specified, a new copy of the data
+*           has been made in memory with unit increments (or so it appears).
+            numstr = 0
+            DO 120 k = 1,nferdims
+                memlo = mr_lo_ss(mr,k)
+                memhi = mr_hi_ss(mr,k)
+                steplo = cx_lo_ss(cx,k)
+                stephi = cx_hi_ss(cx,k)
+                IF ( (memlo .NE. unspecified_int4) .OR.
+     .               (memhi .NE. unspecified_int4) ) THEN
+                   IF ( (steplo .NE. memlo) .OR.
+     .                  (stephi .NE. memhi) ) GOTO 5400
+                   IF ( numstr .EQ. 0 ) THEN
+                       numstr = stephi - steplo + 1
+                   ELSE
+                       numstr = numstr * (stephi - steplo + 1)
+                   ENDIF
+                ENDIF
+  120       CONTINUE
+            IF ( numstr .LE. 0 ) GOTO 5400
+        ELSE
+            firststr = 0
+            numstr = 0
+        ENDIF
+
         CALL FGDWINSAVE(success, windowobjs(windowid), filename,
      .                  namlen, fformat, fmtlen, transparent, 
-     .                  xinches, yinches, xpixels, ypixels)
+     .                  xinches, yinches, xpixels, ypixels,
+     .                  memory, firststr, numstr)
         IF ( success .EQ. 0 ) GOTO 5100
 
 * successful completion
@@ -103,6 +149,12 @@
  5100   errstr = ' '
         CALL FGDERRMSG(errstr, errstrlen)
         CALL ERRMSG(ferr_invalid_command, sts, errstr, *5000)
-
+ 5200   errstr = 'problems evaluating ' // annovar
+        CALL ERRMSG(ferr_invalid_command, sts, errstr, *5000)
+ 5300   errstr = annovar//' is not a string array'
+        CALL ERRMSG(ferr_invalid_command, sts, errstr, *5000)
+ 5400   errstr = annovar//' is not a valid string array'
+        CALL ERRMSG(ferr_invalid_command, sts, errstr, *5000)
+ 
         END
 

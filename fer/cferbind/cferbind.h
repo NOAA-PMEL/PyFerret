@@ -47,7 +47,8 @@ typedef struct CFerBind_struct {
      grdelBool (*saveWindow)(struct CFerBind_struct *self, const char *filename,
                              int namelen, const char *formatname, int fmtnamelen,
                              int transbkg, double xinches, double yinches,
-                             int xpixels, int ypixels);
+                             int xpixels, int ypixels,
+                             char **annotations, int numannotations);
      grdelType (*createColor)(struct CFerBind_struct *self, double redfrac,
                               double greenfrac, double bluefrac, double opaquefrac);
      grdelBool (*deleteColor)(struct CFerBind_struct *self, grdelType color);

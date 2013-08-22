@@ -20,6 +20,7 @@ grdelBool pyqtcairoCFerBind_showWindow(CFerBind *self, int visible);
 grdelBool pyqtcairoCFerBind_saveWindow(CFerBind *self, const char *filename, int namelen,
                                        const char *formatname, int fmtnamelen, int transbkg,
                                        double xinches, double yinches, 
-                                       int xpixels, int ypixels);
+                                       int xpixels, int ypixels,
+                                       char **annotations, int numannotations);
 
 #endif

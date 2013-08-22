@@ -102,7 +102,8 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
                           int filenamelen, const char *fileformat,
                           int formatlen, grdelBool transparentbkg,
                           float xinches, float yinches, 
-                          int xpixels, int ypixels);
+                          int xpixels, int ypixels,
+                          char **annotations, int numannotations);
 grdelBool grdelWindowScreenInfo(grdelType window, float *dpix, float *dpiy,
                                 int *screenwidth, int* screenheight);
 grdelBool grdelWindowSetWidthFactor(grdelType window, float widthfactor);
@@ -122,7 +123,8 @@ void fgdwinsetscale_(int *success, void **window, float *scale);
 void fgdwinsetvis_(int *success, void **window, int *visible);
 void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
                  char *fileformat, int *formatlen, int *tranparentbkg,
-                 float *xinches, float *yinches, int *xpixels, int *ypixels);
+                 float *xinches, float *yinches, int *xpixels, int *ypixels,
+                 void **memory, int *firststr, int *numstr);
 void fgdwinscreeninfo_(int *success, void **window, float *dpix, float *dpiy,
                        int *screenwidth, int* screenheight);
 void fgdwinsetwidthfactor_(int *success, void **window, float *widthfactor);

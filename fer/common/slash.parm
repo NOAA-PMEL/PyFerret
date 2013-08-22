@@ -56,6 +56,8 @@
 * V685 6/13 *acm* new qualifier SAVE/NOCOORDS
 * V685 6/13 *acm* new qualifier SHOW DATA/HIDDEN
 * PyFr  *kms*  7/13 Add /OPACITY to CONTOUR, PLOT, POLYGON, SHADE, VECTOR
+* PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to FRAME
+* PyFr  *kms*  8/13 Add /ANNOTATE to FRAME
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -325,6 +327,7 @@
      .			slash_frame_yinches,
      .			slash_frame_xpixels,
      .			slash_frame_ypixels,
+     .			slash_frame_annotate,
      .
      .			slash_stat_brief,
      .
@@ -611,6 +614,7 @@
      .			slash_frame_yinches	= 4 + 1,
      .			slash_frame_xpixels	= 5 + 1,
      .			slash_frame_ypixels	= 6 + 1,
+     .			slash_frame_annotate	= 7 + 1,
      .
      .			slash_stat_brief	= 0 + 1,
 

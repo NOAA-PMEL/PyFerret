@@ -800,6 +800,8 @@ grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible)
  *     yinches: vertical size of vector image in inches
  *     xpixels: horizontal size of raster image in pixels
  *     ypixels: vertical size of raster image in pixels
+ *     annotations: array of annotation strings
+ *     numannotations: number of annotation strings
  *
  * If fileformat is NULL, the fileformat is guessed from the
  * filename extension.
@@ -811,12 +813,16 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
                           int filenamelen, const char *fileformat,
                           int formatlen, grdelBool transparentbkg,
                           float xinches, float yinches, 
-                          int xpixels, int ypixels)
+                          int xpixels, int ypixels,
+                          char **annotations, int numannotations)
 {
     GDWindow *mywindow;
     grdelBool success;
     PyObject *transparentbool;
+    PyObject *annostuple;
+    PyObject *annostrobj;
     PyObject *result;
+    int k;
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelWindowSave called: "
@@ -836,7 +842,8 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
                             saveWindow(mywindow->bindings.cferbind,
                                        filename, filenamelen,
                                        fileformat, formatlen, transparentbkg,
-                                       xinches, yinches, xpixels, ypixels);
+                                       xinches, yinches, xpixels, ypixels,
+                                       annotations, numannotations);
         if ( ! success ) {
             /* grdelerrmsg already assigned */
             return 0;
@@ -847,12 +854,35 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
             transparentbool = Py_True;
         else
             transparentbool = Py_False;
+        if ( numannotations > 0 ) {
+            annostuple = PyTuple_New((Py_ssize_t) numannotations);
+            if ( annostuple == NULL ) {
+                strcpy(grdelerrmsg, "grdelWindowSave: unexpected error, "
+                                    "unable to create a tuple for the annotations");
+                return 0;
+            }
+            for (k = 0; k < numannotations; k++) {
+                annostrobj = PyString_FromString(annotations[k]);
+                if ( annostrobj == NULL ) {
+                    Py_DECREF(annostuple);
+                    strcpy(grdelerrmsg, "grdelWindowSave: unexpected error, "
+                                        "unable to create a annotation string object");
+                    return 0;
+                }
+                PyTuple_SET_ITEM(annostuple, (Py_ssize_t) k, annostrobj);
+            }
+        }
+        else {
+            annostuple = Py_None;
+            /* PyObect_CallMethod will steal the reference to annostuple (N instead of O) */
+            Py_INCREF(Py_None);
+        }
         result = PyObject_CallMethod(mywindow->bindings.pyobject,
-                                     "saveWindow", "s#s#Oddii",
+                                     "saveWindow", "s#s#OddiiN",
                                      filename, filenamelen,
                                      fileformat, formatlen, transparentbool,
                                      (double) xinches, (double) yinches,
-                                     xpixels, ypixels);
+                                     xpixels, ypixels, annostuple);
         if ( result == NULL ) {
             sprintf(grdelerrmsg, "grdelWindowSave: error when calling the "
                     "Python binding's saveWindow method: %s", pyefcn_get_error());
@@ -1210,6 +1240,9 @@ void fgdwinsetvis_(int *success, void **window, int *visible)
  *     yinches: vertical size of vector image in inches
  *     xpixels: horizontal size of raster image in pixels
  *     ypixels: vertical size of raster image in pixels
+ *     memory: ferret memory containing annotation C strings
+ *     firststr: offset into memory of the first annotation C string
+ *     numstr: number of annotation C strings
  *
  * If formatlen is zero, the fileformat is guessed from the
  * filename extension.
@@ -1220,13 +1253,15 @@ void fgdwinsetvis_(int *success, void **window, int *visible)
  */
 void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
                  char *fileformat, int *formatlen, int *transparentbkg,
-                 float *xinches, float *yinches, int *xpixels, int *ypixels)
+                 float *xinches, float *yinches, int *xpixels, int *ypixels,
+                 void **memory, int *firststr, int *numstr)
 {
     grdelBool result;
 
     result = grdelWindowSave(*window, filename, *namelen,
                              fileformat, *formatlen, *transparentbkg,
-                             *xinches, *yinches, *xpixels, *ypixels);
+                             *xinches, *yinches, *xpixels, *ypixels,
+                             (char **) &(memory[*firststr]), *numstr);
     *success = result;
 }
 

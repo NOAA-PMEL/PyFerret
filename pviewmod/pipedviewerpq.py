@@ -22,10 +22,10 @@ except AttributeError:
 from PyQt4.QtCore import Qt, QPointF, QRect, QRectF, QSize, QSizeF, \
                          QString, QTimer
 from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, QDialog, \
-                         QFileDialog, QImage, QLabel, QMainWindow, \
+                         QFileDialog, QFont, QImage, QLabel, QMainWindow, \
                          QMessageBox, QPainter, QPalette, QPen, QPicture, \
                          QPixmap, QPolygonF, QPrinter, QPushButton, \
-                         QScrollArea
+                         QScrollArea, QTextDocument
 
 try:
     from PyQt4.QtSvg  import QSvgGenerator
@@ -121,6 +121,7 @@ class PipedViewerPQ(QMainWindow):
         # default file name and format for saving the image
         self.__lastfilename = "ferret.png"
         self.__lastformat = "png"
+        self.__addedannomargin = 12
         # Control whether the window will be destroyed or hidden
         self.__shuttingdown = False
         # command helper object
@@ -623,12 +624,12 @@ class PipedViewerPQ(QMainWindow):
                 raise RuntimeError( self.tr("Unexpected file format name '%1'") \
                                         .arg(fileFilter) )
             self.saveSceneToFile(fileName, fileFormat, None, 
-                                 None, None)
+                                 None, None, None)
             self.__lastfilename = fileName
             self.__lastformat = fileFormat
 
     def saveSceneToFile(self, filename, imageformat, bkgcolor, 
-                        vectsize, rastsize):
+                        vectsize, rastsize, annotations):
         '''
         Save the current scene to the named file.  If imageformat
         is empty or None, the format is guessed from the filename
@@ -646,6 +647,11 @@ class PipedViewerPQ(QMainWindow):
         If given, rastsize is the pixels size of a saved raster 
         image.  If rastsize is not given, a raster image will be 
         saved at the current displayed scaled image size.  
+
+        If annotations is not None, the strings given in the tuple
+        are to be displayed above the image.  These annotations add 
+        height, as needed, to the saved image (i.e., vectsize or 
+        rastsize gives the height of the image below these annotations).
         '''
         # This could be called when there is no scene present.
         # If this is the case, ignore the call.
@@ -694,6 +700,20 @@ class PipedViewerPQ(QMainWindow):
             raise ValueError( self.tr("Your version of Qt does not " \
                                       "support generation of SVG files") )
 
+        if annotations:
+            annopicture = QPicture()
+            annopainter = QPainter(annopicture)
+            annotextdoc = QTextDocument()
+            # Leave room for the added margins to the width
+            annotextdoc.setTextWidth(self.__scenewidth - 2.0 * self.__addedannomargin)
+            annotextdoc.setHtml("<br />".join(annotations))
+            annotextdoc.drawContents(annopainter)
+            annopainter.end()
+            annosize = annotextdoc.documentLayout().documentSize()
+        else:
+            annopicture = None
+            annosize = None
+
         if (myformat == 'ps') or (myformat == 'pdf'):
             # Setup the QPrinter that will be used to create the PS or PDF file
             printer = QPrinter(QPrinter.HighResolution)
@@ -716,6 +736,12 @@ class PipedViewerPQ(QMainWindow):
                              / float(self.physicalDpiX())
                 imageheight = self.__sceneheight * self.__scalefactor \
                               / float(self.physicalDpiY())
+            # Add in any height needed for the annotations
+            if annopicture:
+                annoheight = (annosize.height() + 2 * self.__addedannomargin) * \
+                             imageheight / self.__sceneheight
+                imageheight += annoheight
+            # Set the image size
             try:
                 # Set custom paper size to just fit around the image
                 # printer.setPaperSize(QSizeF(imagewidth, imageheight),
@@ -736,8 +762,9 @@ class PipedViewerPQ(QMainWindow):
             else:
                 printer.setOrientation(QPrinter.Portrait)
             # also get the image size in units of printer dots
-            printwidth = int(imagewidth * printer.resolution() + 0.5)
-            printheight = int(imageheight * printer.resolution() + 0.5)
+            printres = printer.resolution()
+            printwidth = int(imagewidth * printres + 0.5)
+            printheight = int(imageheight * printres + 0.5)
             # Set up to draw to the QPrinter
             painter = QPainter(printer)
             if bkgcolor:
@@ -751,13 +778,35 @@ class PipedViewerPQ(QMainWindow):
                 # with the last clearing color.
                 # Only draw if not completely transparent
                 if (self.__lastclearcolor.getRgb())[3] > 0:
-                    painter.fillRect(QRectF(0, 0, printwidth, printheight), self.__lastclearcolor)
-            # Draw the scene to the printer
+                    painter.fillRect(QRectF(0, 0, printwidth, printheight), 
+                                     self.__lastclearcolor)
+            # Scaling magicfactor for the scene to the saved image
             widthscalefactor = imagewidth * self.physicalDpiX() / float(self.__scenewidth)
-            heightscalefactor = imageheight * self.physicalDpiY() / float(self.__sceneheight) 
-            self.paintScene(painter, 0, 0.0, 0.0, 
-                            0.5 * (widthscalefactor + heightscalefactor),
-                            "Saving", False)
+            # Check if there are annotations to add
+            if annopicture:
+                # Scale the scene now for the annotations
+                painter.scale(widthscalefactor, widthscalefactor)
+                # some factor that makes it work (12.5 = 3 * 300 / 72)
+                magicfactor = 12.5
+                # Draw a solid white rectangle with black outline for the annotations
+                painter.setBrush(QBrush(Qt.white, Qt.SolidPattern))
+                painter.setPen(QPen(QBrush(Qt.black, Qt.SolidPattern), 
+                                    2.0 * magicfactor, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin))
+                painter.drawRect(QRectF(1.0 * magicfactor, 1.0 * magicfactor, 
+                    ((annosize.width() + 2.0 * self.__addedannomargin) - 2.0) * magicfactor, 
+                    ((annosize.height() + 2.0 * self.__addedannomargin) - 2.0) * magicfactor))
+                # And add the annotations within this box
+                painter.drawPicture(QPointF(self.__addedannomargin * magicfactor,
+                                            self.__addedannomargin * magicfactor), 
+                                    annopicture)
+                # Draw the scene to the printer - scaling already in effect
+                self.paintScene(painter, 0, 0.0, 
+                        (annosize.height() + 2.0 * self.__addedannomargin) * magicfactor, 
+                        1.0, "Saving", False)
+            else:
+                # No annotations so just do the normal drawing
+                self.paintScene(painter, 0, 0.0, 0.0, 
+                                widthscalefactor, "Saving", False)                
             painter.end()
         elif myformat == 'svg':
             # if HAS_QSvgGenerator is False, it should never get here
@@ -769,6 +818,12 @@ class PipedViewerPQ(QMainWindow):
             else:
                 imagewidth = int(self.__scenewidth * self.__scalefactor + 0.5)
                 imageheight = int(self.__sceneheight * self.__scalefactor + 0.5)
+            # Add in any height needed for the annotations
+            if annopicture:
+                annoheight = (annosize.height() + 2 * self.__addedannomargin) * \
+                             imageheight / self.__sceneheight
+                imageheight += annoheight
+            # Set the image size
             generator.setSize( QSize(imagewidth, imageheight) )
             generator.setViewBox( QRect(0, 0, imagewidth, imageheight) )
             # paint the scene to this QSvgGenerator
@@ -787,10 +842,30 @@ class PipedViewerPQ(QMainWindow):
                 if (self.__lastclearcolor.getRgb())[3] > 0:
                     painter.fillRect( QRectF(0, 0, imagewidth, imageheight),
                                       self.__lastclearcolor )
-            self.paintScene(painter, 0, 0.0, 0.0, 
-                            float(imagewidth + imageheight) \
-                            / float(self.__scenewidth + self.__sceneheight),
-                            "Saving", False)
+            # Scaling magicfactor for the scene to the saved image
+            widthscalefactor = imagewidth / float(self.__scenewidth)
+            # Check if there are annotations to add
+            if annopicture:
+                # Scale the scene now for the annotations
+                painter.scale(widthscalefactor, widthscalefactor)
+                # Draw a solid white rectangle with black outline for the annotations
+                painter.setBrush(QBrush(Qt.white, Qt.SolidPattern))
+                painter.setPen(QPen(QBrush(Qt.black, Qt.SolidPattern), 
+                                    2.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin))
+                painter.drawRect(QRectF(1.0, 1.0, 
+                            annosize.width() + 2.0 * self.__addedannomargin - 2.0, 
+                            annosize.height() + 2.0 * self.__addedannomargin - 2.0))
+                # And add the annotations within this box
+                painter.drawPicture(QPointF(self.__addedannomargin,self.__addedannomargin), 
+                                    annopicture)
+                # Draw the scene to the printer - scaling already in effect
+                self.paintScene(painter, 0, 
+                                0.0, annosize.height() + 2.0 * self.__addedannomargin, 
+                                1.0, "Saving", False)
+            else:
+                # No annotations so just do the normal drawing
+                self.paintScene(painter, 0, 0.0, 0.0, 
+                                widthscalefactor, "Saving", False)                
             painter.end()
         else:
             if rastsize:
@@ -799,6 +874,12 @@ class PipedViewerPQ(QMainWindow):
             else:
                 imagewidth = int(self.__scenewidth * self.__scalefactor + 0.5)
                 imageheight = int(self.__sceneheight * self.__scalefactor + 0.5)
+            # Add in any height needed for the annotations
+            if annopicture:
+                annoheight = (annosize.height() + 2 * self.__addedannomargin) * \
+                             imageheight / self.__sceneheight
+                imageheight += annoheight
+            # Create the image
             image = QImage( QSize(imagewidth, imageheight),
                             QImage.Format_ARGB32_Premultiplied )
             # Initialize the image
@@ -812,10 +893,30 @@ class PipedViewerPQ(QMainWindow):
             image.fill(fillint)
             # paint the scene to this QImage
             painter = QPainter(image)
-            self.paintScene(painter, 0, 0.0, 0.0, 
-                            float(imagewidth + imageheight) \
-                            / float(self.__scenewidth + self.__sceneheight),
-                            "Saving", False)
+            # Scaling magicfactor for the scene to the saved image
+            widthscalefactor = imagewidth / float(self.__scenewidth)
+            # Check if there are annotations to add
+            if annopicture:
+                # Scale the scene now for the annotations
+                painter.scale(widthscalefactor, widthscalefactor)
+                # Draw a solid white rectangle with black outline for the annotations
+                painter.setBrush(QBrush(Qt.white, Qt.SolidPattern))
+                painter.setPen(QPen(QBrush(Qt.black, Qt.SolidPattern), 
+                                    2.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin))
+                painter.drawRect(QRectF(1.0, 1.0, 
+                            annosize.width() + 2.0 * self.__addedannomargin - 2.0, 
+                            annosize.height() + 2.0 * self.__addedannomargin - 2.0))
+                # And add the annotations within this box
+                painter.drawPicture(QPointF(self.__addedannomargin,self.__addedannomargin), 
+                                    annopicture)
+                # Draw the scene to the printer - scaling already in effect
+                self.paintScene(painter, 0, 
+                                0.0, annosize.height() + 2.0 * self.__addedannomargin, 
+                                1.0, "Saving", False)
+            else:
+                # No annotations so just do the normal drawing
+                self.paintScene(painter, 0, 0.0, 0.0, 
+                                widthscalefactor, "Saving", False)                
             painter.end()
             # save the image to file
             image.save(myfilename, myformat)
@@ -904,8 +1005,9 @@ class PipedViewerPQ(QMainWindow):
                 bkgcolor = None
             vectsize = self.__helper.getSizeFromCmnd(cmnd["vectsize"])
             rastsize = self.__helper.getSizeFromCmnd(cmnd["rastsize"])
+            annotations = cmnd["annotations"]
             self.saveSceneToFile(filename, fileformat, bkgcolor, 
-                                 vectsize, rastsize)
+                                 vectsize, rastsize, annotations)
         elif cmndact == "setWidthFactor":
             newfactor = float(cmnd.get("factor", -1.0))
             if newfactor <= 0.0:
@@ -1445,6 +1547,7 @@ if __name__ == "__main__":
     pentagonpts = ( (504.5, 100.0), (100.0, 393.9),
                     (254.5, 869.4), (754.5, 869.4),
                     (909.0, 393.9),  )
+
     # create the list of commands to submit
     drawcmnds = []
     drawcmnds.append( { "action":"setTitle", "title":"Tester" } )
@@ -1476,22 +1579,22 @@ if __name__ == "__main__":
                         "segid":"text" } )
     drawcmnds.append( { "action":"drawText",
                         "text":"y=480",
-                        "font":{"family":"Times", "size":50},
+                        "font":{"family":"Times", "size":16},
                         "fill":{"color":"red"},
                         "location":(50,480) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"y=430",
-                        "font":{"family":"Times", "size":50},
+                        "font":{"family":"Times", "size":16},
                         "fill":{"color":"red"},
                         "location":(50,430) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"y=380",
-                        "font":{"family":"Times", "size":50},
+                        "font":{"family":"Times", "size":16},
                         "fill":{"color":"red"},
                         "location":(50,380) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"y=330",
-                        "font":{"family":"Times", "size":50},
+                        "font":{"family":"Times", "size":16},
                         "fill":{"color":"red"},
                         "location":(50,330) } )
     drawcmnds.append( { "action":"endSegment" } )
@@ -1580,9 +1683,24 @@ if __name__ == "__main__":
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"deleteSegment",
                         "segid":"text" } )
-    drawcmnds.append( { "action":"update" })
+    drawcmnds.append( { "action":"update" } )
     drawcmnds.append( { "action":"show" } )
+    annotations = ( "The 1<sup>st</sup> CO<sub>2</sub> annotations line",
+                    "Another line with <i>lengthy</i> details that should " + \
+                    "wrap to a 2<sup>nd</sup> annotation line",
+                    "<b>Final</b> annotation line" )
+    drawcmnds.append( { "action":"save",
+                        "filename":"test.pdf",
+                        "vectsize":{"width":7.0, "height":7.0},
+                        "rastsize":{"width":750, "height":750},
+                        "annotations":annotations } )
+    drawcmnds.append( { "action":"save",
+                        "filename":"test.png",
+                        "vectsize":{"width":7.0, "height":7.0},
+                        "rastsize":{"width":750, "height":750},
+                        "annotations":annotations } )
     drawcmnds.append( { "action":"exit" } )
+
     # start PyQt
     app = QApplication(["PipedViewerPQ"])
     # create a PipedViewerPQ in this process

@@ -706,7 +706,7 @@ class PipedViewerPQ(QMainWindow):
             annotextdoc = QTextDocument()
             # Leave room for the added margins to the width
             annotextdoc.setTextWidth(self.__scenewidth - 2.0 * self.__addedannomargin)
-            annotextdoc.setHtml("<br />".join(annotations))
+            annotextdoc.setHtml("<p>" + "<br />".join(annotations) + "</p>")
             annotextdoc.drawContents(annopainter)
             annopainter.end()
             annosize = annotextdoc.documentLayout().documentSize()
@@ -780,28 +780,28 @@ class PipedViewerPQ(QMainWindow):
                 if (self.__lastclearcolor.getRgb())[3] > 0:
                     painter.fillRect(QRectF(0, 0, printwidth, printheight), 
                                      self.__lastclearcolor)
-            # Scaling magicfactor for the scene to the saved image
+            # Scaling printfactor for the scene to the saved image
             widthscalefactor = imagewidth * self.physicalDpiX() / float(self.__scenewidth)
             # Check if there are annotations to add
             if annopicture:
                 # Scale the scene now for the annotations
                 painter.scale(widthscalefactor, widthscalefactor)
-                # some factor that makes it work (12.5 = 3 * 300 / 72)
-                magicfactor = 12.5
+                # factor that makes it work after scaling (12.5 = 1200 / 96)
+                printfactor = printres / self.physicalDpiX()
                 # Draw a solid white rectangle with black outline for the annotations
                 painter.setBrush(QBrush(Qt.white, Qt.SolidPattern))
                 painter.setPen(QPen(QBrush(Qt.black, Qt.SolidPattern), 
-                                    2.0 * magicfactor, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin))
-                painter.drawRect(QRectF(1.0 * magicfactor, 1.0 * magicfactor, 
-                    ((annosize.width() + 2.0 * self.__addedannomargin) - 2.0) * magicfactor, 
-                    ((annosize.height() + 2.0 * self.__addedannomargin) - 2.0) * magicfactor))
+                                    2.0 * printfactor, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin))
+                painter.drawRect(QRectF(1.0 * printfactor, 1.0 * printfactor, 
+                    (self.__scenewidth - 2.0) * printfactor, 
+                    ((annosize.height() + 2.0 * self.__addedannomargin) - 2.0) * printfactor))
                 # And add the annotations within this box
-                painter.drawPicture(QPointF(self.__addedannomargin * magicfactor,
-                                            self.__addedannomargin * magicfactor), 
+                painter.drawPicture(QPointF(self.__addedannomargin * printfactor,
+                                            self.__addedannomargin * printfactor), 
                                     annopicture)
                 # Draw the scene to the printer - scaling already in effect
                 self.paintScene(painter, 0, 0.0, 
-                        (annosize.height() + 2.0 * self.__addedannomargin) * magicfactor, 
+                        (annosize.height() + 2.0 * self.__addedannomargin) * printfactor, 
                         1.0, "Saving", False)
             else:
                 # No annotations so just do the normal drawing
@@ -824,6 +824,8 @@ class PipedViewerPQ(QMainWindow):
                              imageheight / self.__sceneheight
                 imageheight += annoheight
             # Set the image size
+            generator.setResolution(
+                    int(0.5 * (self.physicalDpiX() + self.physicalDpiY()) + 0.5) )
             generator.setSize( QSize(imagewidth, imageheight) )
             generator.setViewBox( QRect(0, 0, imagewidth, imageheight) )
             # paint the scene to this QSvgGenerator
@@ -842,7 +844,7 @@ class PipedViewerPQ(QMainWindow):
                 if (self.__lastclearcolor.getRgb())[3] > 0:
                     painter.fillRect( QRectF(0, 0, imagewidth, imageheight),
                                       self.__lastclearcolor )
-            # Scaling magicfactor for the scene to the saved image
+            # Scaling printfactor for the scene to the saved image
             widthscalefactor = imagewidth / float(self.__scenewidth)
             # Check if there are annotations to add
             if annopicture:
@@ -853,7 +855,7 @@ class PipedViewerPQ(QMainWindow):
                 painter.setPen(QPen(QBrush(Qt.black, Qt.SolidPattern), 
                                     2.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin))
                 painter.drawRect(QRectF(1.0, 1.0, 
-                            annosize.width() + 2.0 * self.__addedannomargin - 2.0, 
+                            self.__scenewidth - 2.0, 
                             annosize.height() + 2.0 * self.__addedannomargin - 2.0))
                 # And add the annotations within this box
                 painter.drawPicture(QPointF(self.__addedannomargin,self.__addedannomargin), 
@@ -893,7 +895,7 @@ class PipedViewerPQ(QMainWindow):
             image.fill(fillint)
             # paint the scene to this QImage
             painter = QPainter(image)
-            # Scaling magicfactor for the scene to the saved image
+            # Scaling printfactor for the scene to the saved image
             widthscalefactor = imagewidth / float(self.__scenewidth)
             # Check if there are annotations to add
             if annopicture:
@@ -904,7 +906,7 @@ class PipedViewerPQ(QMainWindow):
                 painter.setPen(QPen(QBrush(Qt.black, Qt.SolidPattern), 
                                     2.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin))
                 painter.drawRect(QRectF(1.0, 1.0, 
-                            annosize.width() + 2.0 * self.__addedannomargin - 2.0, 
+                            self.__scenewidth - 2.0, 
                             annosize.height() + 2.0 * self.__addedannomargin - 2.0))
                 # And add the annotations within this box
                 painter.drawPicture(QPointF(self.__addedannomargin,self.__addedannomargin), 

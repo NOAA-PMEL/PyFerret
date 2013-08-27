@@ -16,11 +16,13 @@
 #
 ifeq ($(strip $(CAIRO_DIR)),)
 	CAIRO_LIBDIR	=
-	CAIRO_INCLUDE	=
+#	This is only for code in Pango that did use the proper cairo extension
+	CAIRO_INCLUDE	= -I/usr/include/cairo
 else
 #	CAIRO_LIBDIR	= $(CAIRO_DIR)/lib
 	CAIRO_LIBDIR	= $(CAIRO_DIR)/lib64
-	CAIRO_INCLUDE	= -I$(CAIRO_DIR)/include
+#	The second include is only for code in Pango that did use the proper cairo include
+	CAIRO_INCLUDE	= -I$(CAIRO_DIR)/include -I$(CAIRO_DIR)/include/cairo
 endif
 
 ifeq ($(strip $(HDF5_DIR)),)
@@ -46,6 +48,9 @@ endif
 			  -I$(DIR_PREFIX)/pyfermod \
 			  -I$(DIR_PREFIX)/external_functions/ef_utility \
 			  $(CAIRO_INCLUDE) \
+			  -I/usr/include/pango-1.0 \
+			  -I/usr/include/glib-2.0 \
+			  -I/usr/lib64/glib-2.0/include \
 			  -I$(NETCDF4_DIR)/include
 
 	MYDEFINES	= -Dcrptd_cat_argument \

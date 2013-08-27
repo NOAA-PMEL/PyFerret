@@ -26,6 +26,8 @@
         INTEGER xpixels, ypixels
         CHARACTER*8 fformat
         CHARACTER*2048 errmsg
+        REAL*8 memory(2)
+        INTEGER firststr, numstrs
 
 *       Sanity checks
         IF ( (activewindow .LT. 1) .OR. 
@@ -54,9 +56,15 @@
         yinches = wn_yinches(activewindow)
         xpixels = NINT(wn_xpixels(activewindow))
         ypixels = NINT(wn_ypixels(activewindow))
+*       Just some dummy variables to indicate no annotations
+        memory(1) = 0
+        memory(2) = 0
+        firststr = 0
+        numstrs = 0
         CALL FGDWINSAVE(success, windowobjs(activewindow), filename,
      .                  fnamelen, fformat, fmtlen, transpbkg,
-     .                  xinches, yinches, xpixels, ypixels)
+     .                  xinches, yinches, xpixels, ypixels,
+     .                  memory, firststr, numstrs)
         IF ( success .EQ. 0 ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)

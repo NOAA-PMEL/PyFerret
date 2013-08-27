@@ -70,6 +70,8 @@ if hdf5_libdir:
 else:
     addn_link_args = [ "-lnetcdff", "-lnetcdf", ]
 
+addn_link_args.extend([ "-lpangocairo-1.0", "-lpango-1.0", "-lgobject-2.0" ])
+
 # Link to the appropriate cairo library.
 # The pixman-1, freetype, fontconfig, png12, Xrender, and X11 libraries
 # are only used to resolve cairo library function calls when statically

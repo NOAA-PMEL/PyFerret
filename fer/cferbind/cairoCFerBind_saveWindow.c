@@ -4,6 +4,7 @@
 #include <cairo/cairo-pdf.h>
 #include <cairo/cairo-ps.h>
 #include <cairo/cairo-svg.h>
+#include <pango/pangocairo.h>
 #include <stdio.h>
 #include <string.h>
 #include "grdel.h"
@@ -57,13 +58,24 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
     int                imgnamelen;
     int                j, k;
     char               fmtext[8];
+    char              *allannos;
+    cairo_surface_t   *annosurface;
+    cairo_t           *annocontext;
+    double             padding;
+    double             penwidth;
+    double             annowidth;
+    double             annoheight;
     cairo_surface_t   *savesurface;
     cairo_t           *savecontext;
+    PangoLayout       *annolayout;
+    double             layoutheight;
     cairo_status_t     result;
     char               savename[CCFB_NAME_SIZE];
     double             savewidth;
     double             saveheight;
     int                usealpha;
+    double             scalefactor;
+    double             offset;
     CCFBPicture       *thispic;
 
     /* Sanity checks - this should NOT be called by the PyQtCairo engine */
@@ -104,6 +116,14 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         }
     }
 
+    /* 
+     * Only allow annotations with recording surfaces.
+     * Batch mode is deprecated and it is too complicated.
+     */
+    if ( (numannotations > 0) && (instdata->imageformat != CCFBIF_REC) ) {
+        strcpy(grdelerrmsg, "Annotations cannot be used with batch mode");
+        return 0;
+    }
 
     /* Check the surface type */
     if ( (instdata->imageformat != CCFBIF_PNG) &&
@@ -185,19 +205,125 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         return 0;
     }
 
+    if ( numannotations > 0 ) {
+        /* Allocate memory for the string with all the annotations */
+        for (k = 0, j = 0; k < numannotations; k++, j++)
+            j += strlen(annotations[k]);
+        allannos = (char *) PyMem_Malloc(j * sizeof(char));
+        if ( allannos == NULL ) {
+            strcpy(grdelerrmsg, "cairoCFerBind_saveWindow: "
+                   "out of memory for concatenated annotations");
+            return 0;
+        }
+        /* Copy the annotations with newlines inbetween */
+        for (k = 0, j = 0; k < numannotations; k++, j++) {
+            strcpy(&(allannos[j]), annotations[k]);
+            j += strlen(annotations[k]);
+            allannos[j] = '\n';
+        }
+        /* Remove the last newline */
+	allannos[j-1] = '\0';
+        /* padding and pen width in points */
+        padding = 12.0;
+        penwidth = 2.0;
+        /*
+         * Create the SVG recording surface for the annotations;
+         * keep the same width, less padding, as the image; the 
+         * height is actually arbitrary.
+         */
+        annowidth = (double) (instdata->imagewidth * CCFB_POINTS_PER_PIXEL 
+                              - 2 * padding);
+        annoheight = (double) (instdata->imageheight * CCFB_POINTS_PER_PIXEL
+                               - 2 * padding);
+        annosurface = cairo_svg_surface_create_for_stream(
+                                        NULL, NULL, annowidth, annoheight);
+        if ( cairo_surface_status(annosurface) != CAIRO_STATUS_SUCCESS ) {
+            strcpy(grdelerrmsg, "cairoCFerBind_saveWindow: "
+                                "problems creating a temp surface for annotations");
+            cairo_surface_destroy(annosurface);
+            PyMem_Free(allannos);
+            return 0;
+        }
+        annocontext = cairo_create(annosurface);
+        if ( cairo_status(annocontext) != CAIRO_STATUS_SUCCESS ) {
+            strcpy(grdelerrmsg, "cairoCFerBind_saveWindow: "
+                                "problems creating a temp context from a surface");
+            cairo_destroy(annocontext);
+            cairo_surface_finish(annosurface);
+            cairo_surface_destroy(annosurface);
+            PyMem_Free(allannos);
+            return 0;
+        }
+        /* Create the Pango layout for the annotations */
+	annolayout = pango_cairo_create_layout(annocontext);
+	pango_layout_set_width(annolayout, pango_units_from_double(annowidth));
+        pango_layout_set_wrap(annolayout, PANGO_WRAP_WORD_CHAR);
+        pango_layout_set_markup(annolayout, allannos, j-1);
+        /* Apply the annotations to this cairo surface */
+        pango_cairo_show_layout(annocontext, annolayout);
+        /* Get the actual size of the annotations in "device units" (points) */
+        pango_layout_get_pixel_size(annolayout, &j, &k);
+        layoutheight = (double) k;
+        /* Done with the Pango layout */
+        g_object_unref(annolayout);
+        /* Make sure the context is not in an error state */
+        status = cairo_status(annocontext);
+        if ( status != CAIRO_STATUS_SUCCESS ) {
+            sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
+                                 "cairo annotation context error: %s", 
+                                 cairo_status_to_string(status));
+            cairo_destroy(annocontext);
+            cairo_surface_finish(annosurface);
+            cairo_surface_destroy(annosurface);
+            PyMem_Free(allannos);
+            return 0;
+        }
+        /* Only need the surface, not the context */
+        cairo_destroy(annocontext);
+
+        cairo_surface_flush(annosurface);
+        /* Make sure the surface is not in an error state */
+        status = cairo_surface_status(annosurface);
+        if ( status != CAIRO_STATUS_SUCCESS ) {
+            sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
+                                 "cairo annotation surface error: %s", 
+                                 cairo_status_to_string(status));
+            cairo_surface_finish(annosurface);
+            cairo_surface_destroy(annosurface);
+            PyMem_Free(allannos);
+            return 0;
+        }
+    }
+    else {
+        annosurface = NULL;
+        padding = 0;
+        penwidth = 0;
+        layoutheight = 0;
+    }
+
     /* Create a temporary surface for the desired format */
     if ( strcmp(fmtext, "PNG") == 0 ) {
         /* Surface size is given in integer pixels */
-        savesurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
-                                                 xpixels, ypixels);
         savewidth = (double) xpixels;
         saveheight = (double) ypixels;
+        scalefactor  = savewidth / instdata->imagewidth;
+        scalefactor += saveheight / instdata->imageheight;
+        /* layoutheight, padding, and recording surfaces are in points */
+        scalefactor /= 2.0 * CCFB_POINTS_PER_PIXEL;
+        saveheight += scalefactor * (layoutheight + 2.0 * padding);
+        savesurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+                                  (int) savewidth, (int) saveheight );
         usealpha = 1;
     }
     else if ( strcmp(fmtext, "PDF") == 0 ) {
         /* Surface size is given in (floating-point) points */
         savewidth = xinches * 72.0;
         saveheight = yinches * 72.0;
+        scalefactor  = savewidth / instdata->imagewidth;
+        scalefactor += saveheight / instdata->imageheight;
+        /* instdata image size is in pixels */
+        scalefactor /= 2.0 * CCFB_POINTS_PER_PIXEL;
+        saveheight += scalefactor * (layoutheight + 2.0 * padding);
         savesurface = cairo_pdf_surface_create(savename, savewidth, saveheight);
         usealpha = 0;
     }
@@ -205,6 +331,11 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         /* Surface size is given in (floating-point) points */
         savewidth = xinches * 72.0;
         saveheight = yinches * 72.0;
+        scalefactor  = savewidth / instdata->imagewidth;
+        scalefactor += saveheight / instdata->imageheight;
+        /* instdata image size is in pixels */
+        scalefactor /= 2.0 * CCFB_POINTS_PER_PIXEL;
+        saveheight += scalefactor * (layoutheight + 2.0 * padding);
         if ( savewidth > saveheight ) {
             /*
              * Landscape orientation
@@ -217,13 +348,18 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
             /* Portrait orientation */
             savesurface = cairo_ps_surface_create(savename, savewidth, saveheight);
         }
-        /* Do not use alpha channel - prevents embedded image */
+        /* Do not use alpha channel; otherwise it will be created with an embedded image */
         usealpha = 0;
     }
     else if ( strcmp(fmtext, "SVG") == 0 ) {
         /* Surface size is given in (floating-point) points */
         savewidth = xinches * 72.0;
         saveheight = yinches * 72.0;
+        scalefactor  = savewidth / instdata->imagewidth;
+        scalefactor += saveheight / instdata->imageheight;
+        /* instdata image size is in pixels */
+        scalefactor /= 2.0 * CCFB_POINTS_PER_PIXEL;
+        saveheight += scalefactor * (layoutheight + 2.0 * padding);
         savesurface = cairo_svg_surface_create(savename, savewidth, saveheight);
         usealpha = 1;
     }
@@ -255,51 +391,19 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         strcpy(grdelerrmsg, "cairoCFerBind_saveWindow: problems creating "
                             "a temporary context for the temporary surface");
         cairo_destroy(savecontext);
-        cairo_surface_finish(savesurface);
         cairo_surface_destroy(savesurface);
         return 0;
     }
 
-    /* 
-     * Set the scale on the destination so the source will just fit. 
-     * Note that imagewidth and imageheight are always in units of pixels.
-     */
-    if ( strcmp(fmtext, "PNG") == 0 ) {
-        if ( instdata->imageformat == CCFBIF_PNG ) {
-            /* 
-             * savewidth, saveheight, imagewidth, and imageheight
-             * are all in units of pixels.  Both surface use units
-             * of pixels, so just scale to make the image fit.
-             */
-            cairo_scale(savecontext, 
-                        savewidth / instdata->imagewidth,
-                        saveheight / instdata->imageheight);
-        }
-        else {
-            /*
-             * savewidth, saveheight, imagewidth, and imageheight
-             * are all in units of pixels.  However, the recording 
-             * surface used units of points but this PNG surface 
-             * uses units of pixels, so include that factor in the 
-             * scaling.
-             */
-            cairo_scale(savecontext, 
-                        savewidth / (instdata->imagewidth * CCFB_POINTS_PER_PIXEL), 
-                        saveheight / (instdata->imageheight * CCFB_POINTS_PER_PIXEL));
-        }
-    }
-    else {
-        /*
-         * savewidth and saveheight are in units of points, but
-         * imagewidth and imageheight are in units of pixels.
-         * Both surfaces use points so just need to convert 
-         * imagewidth and imageheight to points for the scaling 
-         * factor.
+    if ( (strcmp(fmtext, "PNG") == 0) && (instdata->imageformat == CCFBIF_PNG) ) {
+        /* 
+         * Both surface use units of pixels, so fix the scaling 
+         * factor computed for recording surfaces, which use points.
          */
-        cairo_scale(savecontext, 
-                    savewidth / (instdata->imagewidth * CCFB_POINTS_PER_PIXEL), 
-                    saveheight / (instdata->imageheight * CCFB_POINTS_PER_PIXEL));
+        scalefactor *= CCFB_POINTS_PER_PIXEL;
     }
+    /* Set the scale on the destination so the source will just fit. */
+    cairo_scale(savecontext, scalefactor, scalefactor);
 
     /*
      * If landscape PostScript, translate and rotate the coordinate system
@@ -350,13 +454,60 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         cairo_paint(savecontext);
     }
 
-    /* Draw the transparent-background images onto this temporary surface */
+    /* Check using layoutheight just in case there was no text */
+    if ( layoutheight > 0.0 ) {
+        /* 
+         * Draw the annotations in a white-filled, black-outlined 
+         * rectangle at the top of the temporary surface.
+         */
+        cairo_new_path(savecontext);
+        cairo_rectangle(savecontext, 0.5 * penwidth, 0.5 * penwidth,
+              (instdata->imagewidth * CCFB_POINTS_PER_PIXEL - penwidth),
+              layoutheight + 2.0 * padding - penwidth);
+        /* white fill */
+        if ( usealpha )
+            cairo_set_source_rgba(savecontext, 1.0, 1.0, 1.0, 1.0);
+        else
+            cairo_set_source_rgb(savecontext, 1.0, 1.0, 1.0);
+        cairo_fill_preserve(savecontext);
+        /* black outline */
+        if ( usealpha )
+            cairo_set_source_rgba(savecontext, 0.0, 0.0, 0.0, 1.0);
+        else
+            cairo_set_source_rgb(savecontext, 0.0, 0.0, 0.0);
+        cairo_set_line_width(savecontext, penwidth);
+        cairo_set_dash(savecontext, NULL, 0, 0.0);
+        cairo_set_line_cap(savecontext, CAIRO_LINE_CAP_SQUARE);
+        cairo_set_line_join(savecontext, CAIRO_LINE_JOIN_MITER);
+        cairo_stroke(savecontext);
+        /* 
+         * Draw the transparent-background annotations image
+         * onto this temporary surface within the rectangle.
+         */
+        cairo_set_source_surface(savecontext, annosurface, padding, padding);
+        cairo_paint(savecontext);
+        offset = layoutheight + 2.0 * padding;
+    }
+    else {
+        offset = 0.0;
+    }
+
+    if ( annosurface != NULL ) {
+        /* Done with the annotation surface */
+        cairo_surface_finish(annosurface);
+        cairo_surface_destroy(annosurface);
+    }
+
+    /* 
+     * Draw the transparent-background images onto this 
+     * temporary surface, beneath any annotations rectangle.
+     */
     for (thispic = instdata->firstpic; thispic != NULL; thispic = thispic->next) {
-        cairo_set_source_surface(savecontext, thispic->surface, 0.0, 0.0);
+        cairo_set_source_surface(savecontext, thispic->surface, 0.0, offset);
         cairo_paint(savecontext);
     }
     if ( instdata->surface != NULL ) {
-        cairo_set_source_surface(savecontext, instdata->surface, 0.0, 0.0);
+        cairo_set_source_surface(savecontext, instdata->surface, 0.0, offset);
         cairo_paint(savecontext);
     }
 

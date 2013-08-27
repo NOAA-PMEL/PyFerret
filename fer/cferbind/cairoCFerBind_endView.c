@@ -77,7 +77,6 @@ grdelBool cairoCFerBind_endView(CFerBind *self)
             return 0;
         }
 
-
         /* Assign the current surface and segment ID to this picture */
         thispic->next = NULL;
         thispic->surface = instdata->surface;

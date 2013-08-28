@@ -364,7 +364,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         self.__window.submitCommand(cmnd)
         self.checkForErrorResponse()
 
-    def saveWindow(self, filename, fileformat, bkgcolor,
+    def saveWindow(self, filename, fileformat, transparent,
                    xinches, yinches, xpixels, ypixels, annotations):
         '''
         Save the contents of the window to a file.  This might be called
@@ -374,7 +374,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         Arguments:
             filename: name of the file to create
             fileformat: name of the format to use
-            bkgcolor: color for the background
+            transparent: use a transparent background?
             xinches: horizontal size of vector image in inches
             yinches: vertical size of vector image in inches
             xpixels: horizontal size of raster image in pixels
@@ -384,20 +384,21 @@ class PyFerretBindings(AbstractPyFerretBindings):
         If fileformat is None or empty, the fileformat
         is guessed from the filename extension.
 
+        If transparent is False, the entire scene is initialized
+        to the last clearing color.  If transparent is True, the
+        entire scene is initialized as transparent.
+
         If annotations is not None, the strings given in the tuple
         are to be displayed above the image.  These annotations add 
         height, as needed, to the saved image (i.e., yinches or 
         ypixels is the height of the image below these annotations).
         '''
-        if bkgcolor:
-            # Make a copy of the bkgcolor dictionary
-            cmnd = dict(bkgcolor)
-        else:
-            cmnd = { }
+        cmnd = { }
         cmnd["action"] = "save"
         cmnd["filename"] = filename
         if fileformat:
             cmnd["fileformat"] = fileformat
+        cmnd["transparent"] = transparent
         cmnd["vectsize"] = { "width":xinches, "height":yinches }
         cmnd["rastsize"] = { "width":xpixels, "height":ypixels }
         cmnd["annotations"] = annotations

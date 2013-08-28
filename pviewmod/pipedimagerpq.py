@@ -556,16 +556,15 @@ class PipedImagerPQ(QMainWindow):
             self.__lastfilename = fileName
             self.__lastformat = fileFormat
 
-    def saveSceneToFile(self, filename, imageformat, bkgcolor, rastsize):
+    def saveSceneToFile(self, filename, imageformat, transparent, rastsize):
         '''
         Save the current scene to the named file.
         
         If imageformat is empty or None, the format is guessed from
         the filename extension.
 
-        If bkgcolor is given, the entire scene is initialized
-        to this color.
-        If bkgcolor is not given, the last clearing color is used.
+        If transparent is False, the entire scene is initialized
+        to the last clearing color.
 
         If given, rastsize is the pixels size of the saved image.
         If rastsize is not given, the saved image will be saved
@@ -606,11 +605,11 @@ class PipedImagerPQ(QMainWindow):
             image = QImage( QSize(imagewidth, imageheight),
                             QImage.Format_ARGB32_Premultiplied )
             # Initialize the image
-            if bkgcolor:
-                fillint = self.__helper.computeARGB32PreMultInt(bkgcolor)
-            else:
+            if not transparent:
                 # Clear the image with self.__lastclearcolor
                 fillint = self.__helper.computeARGB32PreMultInt(self.__lastclearcolor)
+            else:
+                fillint = 0
             image.fill(fillint)
             # draw the scaled scene to this QImage
             painter = QPainter(image)

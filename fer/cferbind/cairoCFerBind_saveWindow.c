@@ -38,10 +38,9 @@
  * A filename consisting of only an extension (e.g., ".png")
  * will be treated as not having an extension.
  *
- * If transbkg is non-zero, a temporary image is created, filled
- * with the last clearing color, and then the current image (with
- * a transparent background) is drawn onto this temporary image.
- * The temporary image is then saved to file.
+ * If transbkg is non-zero, the saved image is filled with the 
+ * last clearing color before drawing the current image with a 
+ * transparent background.
  *
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.

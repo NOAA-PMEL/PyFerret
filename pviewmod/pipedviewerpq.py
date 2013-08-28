@@ -628,16 +628,16 @@ class PipedViewerPQ(QMainWindow):
             self.__lastfilename = fileName
             self.__lastformat = fileFormat
 
-    def saveSceneToFile(self, filename, imageformat, bkgcolor, 
+    def saveSceneToFile(self, filename, imageformat, transparent, 
                         vectsize, rastsize, annotations):
         '''
         Save the current scene to the named file.  If imageformat
         is empty or None, the format is guessed from the filename
         extension.
 
-        If bkgcolor is given, the entire scene is initialized
-        to this color, using a filled rectangle for vector images.
-        If bkgcolor is not given, the last clearing color is used.
+        If transparent is False, the entire scene is initialized
+        to the last clearing color used, using a filled rectangle 
+        for vector images.
 
         If given, vectsize is the size in inches of a saved vector 
         image.  If vectsize is not given, a vector image will be 
@@ -767,13 +767,7 @@ class PipedViewerPQ(QMainWindow):
             printheight = int(imageheight * printres + 0.5)
             # Set up to draw to the QPrinter
             painter = QPainter(printer)
-            if bkgcolor:
-                # Draw a rectangle filling the entire scene
-                # with the given background color.
-                # Only draw if not completely transparent
-                if (bkgcolor.getRgb())[3] > 0:
-                    painter.fillRect(QRectF(0, 0, printwidth, printheight), bkgcolor)
-            else:
+            if not transparent:
                 # Draw a rectangle filling the entire scene
                 # with the last clearing color.
                 # Only draw if not completely transparent
@@ -830,14 +824,7 @@ class PipedViewerPQ(QMainWindow):
             generator.setViewBox( QRect(0, 0, imagewidth, imageheight) )
             # paint the scene to this QSvgGenerator
             painter = QPainter(generator)
-            if bkgcolor:
-                # Draw a rectangle filling the entire scene
-                # with the given background color.
-                # Only draw if not completely transparent
-                if (bkgcolor.getRgb())[3] > 0:
-                    painter.fillRect( QRectF(0, 0, imagewidth, imageheight),
-                                      bkgcolor )
-            else:
+            if not transparent:
                 # Draw a rectangle filling the entire scene
                 # with the last clearing color.
                 # Only draw if not completely transparent
@@ -887,11 +874,11 @@ class PipedViewerPQ(QMainWindow):
             # Initialize the image
             # Note that completely transparent gives black for formats not supporting 
             # the alpha channel (JPEG) whereas ARGB32 with 0x00FFFFFF gives white
-            if bkgcolor:
-                fillint = self.__helper.computeARGB32PreMultInt(bkgcolor)
-            else:
+            if not transparent:
                 # Clear the image with self.__lastclearcolor
                 fillint = self.__helper.computeARGB32PreMultInt(self.__lastclearcolor)
+            else:
+                fillint = 0
             image.fill(fillint)
             # paint the scene to this QImage
             painter = QPainter(image)
@@ -1001,14 +988,11 @@ class PipedViewerPQ(QMainWindow):
         elif cmndact == "save":
             filename = cmnd["filename"]
             fileformat = cmnd.get("fileformat", None)
-            try:
-                bkgcolor = self.__helper.getColorFromCmnd(cmnd)
-            except KeyError:
-                bkgcolor = None
+            transparent = cmnd.get("transparent", False)
             vectsize = self.__helper.getSizeFromCmnd(cmnd["vectsize"])
             rastsize = self.__helper.getSizeFromCmnd(cmnd["rastsize"])
             annotations = cmnd["annotations"]
-            self.saveSceneToFile(filename, fileformat, bkgcolor, 
+            self.saveSceneToFile(filename, fileformat, transparent, 
                                  vectsize, rastsize, annotations)
         elif cmndact == "setWidthFactor":
             newfactor = float(cmnd.get("factor", -1.0))

@@ -1,0 +1,5 @@
+! err685_repeated_coordindates.jnl
+!  The NOTE about repeated axis coordaintes reported the wrong index location.
+
+use latestOb.nc
+

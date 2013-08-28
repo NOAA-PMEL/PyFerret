@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Aug  7 14:58 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Aug 28 14:49 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret under RHEL5-64
@@ -221,7 +221,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Wed Aug  7 14:59:57 PDT 2013
+Beginning at Wed Aug 28 14:50:15 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3266,6 +3266,13 @@ Replacing definition of axis AXI
 Replacing definition of axis AXI_COARSE
 Replacing definition of axis AXI
 Replacing definition of axis AXI_COARSE
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: unrepairable repeated axis coords on axis trdim at subscript 2
+ *** NOTE: A dummy axis of subscripts will be used
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file sst_new.nc
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
 *** Running test: bn_nco_append.jnl
@@ -3305,4 +3312,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Wed Aug  7 15:03:38 PDT 2013
+Ended at Wed Aug 28 14:54:16 PDT 2013

@@ -663,6 +663,10 @@ void FORTRAN(expnd_by_len_init)(int *);
 void FORTRAN(expnd_by_len_result_limits)(int *);
 void FORTRAN(expnd_by_len_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
+void FORTRAN(expnd_by_len_str_init)(int *);
+void FORTRAN(expnd_by_len_str_result_limits)(int *);
+void FORTRAN(expnd_by_len_str_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+
 void FORTRAN(expndi_by_init)(int *);
 void FORTRAN(expndi_by_result_limits)(int *);
 void FORTRAN(expndi_by_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
@@ -1002,6 +1006,9 @@ void FORTRAN(write_webrow_init)(int *);
 void FORTRAN(write_webrow_result_limits)(int *);
 void FORTRAN(write_webrow_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
+void FORTRAN(str_mask_init)(int *);
+void FORTRAN(str_mask_compute)(int *, DFTYPE *, DFTYPE *);
+
 
 
 /*
@@ -1045,7 +1052,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 159
+#define N_INTEF 161
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1207,9 +1214,11 @@ struct {
    strcpy(I_EFnames[153].funcname, "eofsvd_stat");
    strcpy(I_EFnames[154].funcname, "eofsvd_tfunc");
    strcpy(I_EFnames[155].funcname, "expnd_by_len");
-   strcpy(I_EFnames[156].funcname, "fc_isubset");
-   strcpy(I_EFnames[157].funcname, "expndi_by_z_counts");
-   strcpy(I_EFnames[158].funcname, "expndi_id_by_z_counts");
+   strcpy(I_EFnames[156].funcname, "expnd_by_len_str");
+   strcpy(I_EFnames[157].funcname, "fc_isubset");
+   strcpy(I_EFnames[158].funcname, "expndi_by_z_counts");
+   strcpy(I_EFnames[159].funcname, "expndi_id_by_z_counts");
+   strcpy(I_EFnames[160].funcname, "str_mask");
 
 /*    
  *  ------------------------------------ 
@@ -3817,6 +3826,11 @@ else if ( !strcmp(name,"expnd_by_len_init_") ) return (void *)FORTRAN(expnd_by_l
 else if ( !strcmp(name,"expnd_by_len_result_limits_") ) return (void *)FORTRAN(expnd_by_len_result_limits);
 else if ( !strcmp(name,"expnd_by_len_compute_") ) return (void *)FORTRAN(expnd_by_len_compute);
 
+/* expnd_by_len_str.F */
+else if ( !strcmp(name,"expnd_by_len_str_init_") ) return (void *)FORTRAN(expnd_by_len_str_init);
+else if ( !strcmp(name,"expnd_by_len_str_result_limits_") ) return (void *)FORTRAN(expnd_by_len_str_result_limits);
+else if ( !strcmp(name,"expnd_by_len_str_compute_") ) return (void *)FORTRAN(expnd_by_len_str_compute);
+
 /* expndi_by.F */
 else if ( !strcmp(name,"expndi_by_init_") ) return (void *)FORTRAN(expndi_by_init);
 else if ( !strcmp(name,"expndi_by_result_limits_") ) return (void *)FORTRAN(expndi_by_result_limits);
@@ -4124,6 +4138,11 @@ else if ( !strcmp(name,"list_value_xml_compute_") ) return (void *)FORTRAN(list_
 else if ( !strcmp(name,"write_webrow_init_") ) return (void *)FORTRAN(write_webrow_init);
 else if ( !strcmp(name,"write_webrow_result_limits_") ) return (void *)FORTRAN(write_webrow_result_limits);
 else if ( !strcmp(name,"write_webrow_compute_") ) return (void *)FORTRAN(write_webrow_compute);
+
+
+else if ( !strcmp(name,"str_mask_init_") ) return (void *)FORTRAN(str_mask_init);
+else if ( !strcmp(name,"str_mask_compute_") ) return (void *)FORTRAN(str_mask_compute);
+
 
 return NULL;
  }

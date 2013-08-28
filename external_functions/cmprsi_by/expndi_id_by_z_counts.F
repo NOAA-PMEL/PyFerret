@@ -184,8 +184,8 @@
 
       INTEGER i,j,k,l
       INTEGER i1, j1, k1, l1
-      INTEGER iout, kout, isum
-      REAL size, xlen, zlen
+      INTEGER iout, kout, isum, kend, xlen, zlen
+      REAL size
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -222,7 +222,8 @@
 
 	    i1 = 1
             DO 200 iout = 1, xlen
-               DO 100 kout = 1, arg_1(iout,j1,k1,l1)
+	       kend = INT(arg_2(iout,j2,k2,l2))
+               DO 100 kout = 1, kend
                   result(iout,j,kout,l) = iout
                   i1 = i1 + 1
  100           CONTINUE

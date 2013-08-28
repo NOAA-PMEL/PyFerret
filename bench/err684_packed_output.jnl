@@ -1,0 +1,16 @@
+! err684_packed_output.jnl
+! See ticket 2089
+! By default keep the output type, means we need to
+! re-pack packed data.
+
+use err684_packed_output.nc
+list/i=1:3 sst
+
+! data is SHORT, is not scaled
+
+save/clobber/file=sst_new.nc sst 
+
+can data/all
+use sst_new.nc
+list/i=1:3 sst
+

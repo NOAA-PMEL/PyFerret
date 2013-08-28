@@ -80,6 +80,8 @@
  * *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
  *                    definition of macro DFTYPE in ferretmacros.h.
  * *acm*  5/12 V6.8 - Additions for creating aggregate datasets
+ * *acm*  8/13	      Fix bug 2089. Mark the scale_factor and add_offset attributes  
+ *                    to-be-output when writing variables.
  */
 
 #include <Python.h> /* make sure Python.h is first */
@@ -180,7 +182,7 @@ LIST *ncf_get_ds_agglist( int *);
 LIST *ncf_get_ds_var_attlist (int *, int *);
 LIST *ncf_get_ds_var_gridlist (int *, int *);
 
-int initialize_output_flag (char *);
+int initialize_output_flag (char *, int *);
 int NCF_ListTraverse_FoundDsetName( char *, char * );
 int NCF_ListTraverse_FoundDsetID( char *, char * );
 int NCF_ListTraverse_FoundVarName( char *, char * );
@@ -1434,7 +1436,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 										/* Initialize output flag. Attributes written by default by Ferret
 											 will be set to outflag = 1. 
 										*/
-										att.outflag = initialize_output_flag (att.name);
+										att.outflag = initialize_output_flag (att.name, var.is_axis);
 										
 									} /* end of the if (nc_status == NC_NOERR)  */
 								}
@@ -1962,7 +1964,7 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
     /* Initialize output flag. Attributes written by default by Ferret
 	   will be set to outflag = 1. 
 	*/
-          att.outflag = initialize_output_flag (att.name);
+          att.outflag = initialize_output_flag (att.name, var.is_axis);
 
       /*Save attribute in linked list of attributes for this variable */	
 
@@ -2895,10 +2897,10 @@ int  FORTRAN(ncf_set_var_out_flag)( int *dset, int *varid, int *all_outflag)
 	  /*
 	  * Reset the attribute output flag to the Ferret default value
 	    (output missing flag, etc, but not nonstd attributes from
-		the intput file or user definitions.)
+		the input file or user definitions.)
 	  */
 
-	  att_ptr->outflag = initialize_output_flag(att_ptr->name);
+	  att_ptr->outflag = initialize_output_flag(att_ptr->name, var_ptr->is_axis);
 
 	  }  /* end of iatt loop*/   
   }
@@ -3488,7 +3490,7 @@ int  FORTRAN(ncf_get_agg_var_info)( int *dset, int *varid, int *imemb, int* vtyp
    depending on the value of the modulo attribute.
   */
 
-int initialize_output_flag (char *attname)
+int initialize_output_flag (char *attname, int *is_axis)
 {
 	int return_val;
     return_val = 0;
@@ -3515,7 +3517,6 @@ int initialize_output_flag (char *attname)
 	if (strcmp(attname,"time_origin")==0)
 	{return_val = 1;
 	}
-
     /* attributes on variables */
 	if (strcmp(attname,"missing_value")==0)
 	{return_val = 1;
@@ -3534,6 +3535,16 @@ int initialize_output_flag (char *attname)
 	}
 	if (strcmp(attname,"bounds")==0)
 	{return_val = 1;
+	}
+    /* write scale attributes on non-coordinate variables */
+	if (is_axis==0)
+	{
+	   if (strcmp(attname,"scale_factor")==0)
+	   {return_val = 1;
+	   }
+	   if (strcmp(attname,"add_offset")==0)
+	   {return_val = 1;
+	   }
 	}
 	return return_val;
 

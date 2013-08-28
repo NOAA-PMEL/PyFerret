@@ -22,35 +22,35 @@ let fco2_norm = (fco2_recomputed - ($stat_mean))/($stat_std)
 
 sh sym clock_secs
 let/title="`fco2_recomputed,return=title` normalized"/units="`fco2_recomputed,return=units`" \
- fco_norm_with_gaps = separate(fco2_norm[i=1:`npts`], rowsize)
+ fco_norm_with_gaps = separate(fco2_norm[i=1:`npts`], rowsize, 0)
 
 let/title="`fco2_recomputed,return=title`"/units="`fco2_recomputed,return=units`" \
- fco_with_gaps = separate(fco2_recomputed[i=1:`npts`], rowsize)
+ fco_with_gaps = separate(fco2_recomputed[i=1:`npts`], rowsize, 0)
 
 let/units="`longitude,return=units`"/title="`longitude,return=title`" \
- lon_with_gaps = separate(longitude[i=1:`npts`], rowsize)
+ lon_with_gaps = separate(longitude[i=1:`npts`], rowsize, 1)
 
 let/title="`latitude,return=title`"/units="`latitude,return=units`" lat_with_gaps =  \
- separate(latitude[i=1:`npts`], rowsize)
+ separate(latitude[i=1:`npts`], rowsize, 0)
 
 let npts = `lat_with_gaps,return=isize`
 
 
 ! Compute and save the distance between successive lon/lat locations on the globe
 !  Takes about 8 seconds on dunkel.
-!sh sym clock_secs
-!let/title="distance on sphere"/units="m" ypts_lonlat = dist2(lon_with_gaps, lat_with_gaps, `parm`)
-!save/clobber/file=lonlat_dist_on_sphere.nc  ypts_lonlat
-!sh sym clock_secs
-!can var ypts_lonlat
-!pause
+! sh sym clock_secs
+! let/title="distance on sphere"/units="m" ypts_lonlat = dist2(lon_with_gaps, lat_with_gaps, `parm`)
+! save/clobber/file="/home/data/ansley/lonlat_dist_on_sphere.nc"  ypts_lonlat
+! sh sym clock_secs
+! can var ypts_lonlat
+! pause
 
 
 
-use lonlat_dist_on_sphere
+use "/home/data/ansley/lonlat_dist_on_sphere.nc"
 ! Normalize the distance on the globe.
 stat ypts_lonlat[d=2]
-let dist_norm = (ypts_lonlat[d=2] - ($stat_mean))/($stat_std)
+let dist_norm = (ypts_lonlat[d=2] - (($stat_mean)))/($stat_std)
 
 set data 1
 
@@ -70,11 +70,16 @@ load decimate_lonlat
 sh sym clock_secs
 
 say Sample with Tolerance `($rtol)` on lon/lat distance on sphere: Returned `nout_lonlat` of original `nf` Points, `nout_lonlat/nf`
+pause
 
 def sym nout_lonlat = `nout_lonlat`
 say `nout_lonlat/nf`
 
-let sample_on_lonlat = xsequence(decimate_lonlat[j=1,i=1:($nout_lonlat)])
+
+let xsample_on_lonlat = xsequence(decimate_lonlat[j=1,i=1:($nout_lonlat)])
+def axis/x=1:($nout_lonlat):1 xsample_axis
+let sample_on_lonlat = xsample_on_lonlat[gx=xsample_axis@asn] 
+
 
 let fco2sample_lonlat = samplei(fco_with_gaps[i=1:`npts`], sample_on_lonlat)
 let fco2norm_sample_lonlat = samplei(fco_norm_with_gaps[i=1:`npts`], sample_on_lonlat)
@@ -89,14 +94,12 @@ def sym rtol = 10*($tol)
 
 let decimate_fco2 = piecewise(fco2norm_sample_lonlat[i=1:($nout_lonlat)], ($rtol), ntol, rest, cont)
 
-let nout_fco2 = decimate_fco2[j=1,i=@ngd]
-def sym nout_fco2 `nout_fco2`
-
 sh sym clock_secs
-load nout_fco2
+def sym nout_fco2 = `decimate_fco2[j=1,i=@ngd]`
 sh sym clock_secs
 
-say Sample again on fco2, with Tolerance `($rtol)`: Returned `nout_fco2` of previous ($nout_lonlat) Points , `nout_fco2/($nout_lonlat)`
+say Sample again on fco2, with Tolerance `($rtol)`: Returned ($nout_fco2) of previous ($nout_lonlat) Points , `($nout_fco2)/($nout_lonlat)`
+pause
 
 let sample_on_both = xsequence(decimate_fco2[j=1,i=1:($nout_lonlat)])
 
@@ -126,34 +129,39 @@ LET/title="`latitude,return=title`"/units="`latitude,return=units`" \
 def sym plottitle = "`fco2_recomputed,return=title`<nl>($plottitle)" 
 def sym vlevels = (-inf)(160,260,20)(260,450,10)(440,560,20)(inf)
 
-sh sym clock_secs
-!plot/over/pal=rnb/vs/ribbon/sym=dot/miss=blank/nolab/levels=($vlevels)/key lonsample, latsample, fco2sample
-!sh sym clock_secs
+let ribbon = 1
+IF `ribbon EQ 1` THEN
 
-!frame/file=sample_ribbon.gif
+sh sym clock_secs
+plot/over/pal=rnb/vs/ribbon/line/miss=blank/nolab/levels=($vlevels)/key lonsample, latsample, fco2sample
+sh sym clock_secs
+pause
+frame/file=sample_ribbon.gif
+
+exit/script
+ENDIF  ! ribbon
 
 ! or
 
 
 !  Plot the twice-sampled data.
+! Note it doesn't help things to pre-load lonsample, latsample etc
+! when we define vars in GO POLYMARK, the uvars all get purged.
+
 let twice = 1
 
 if `twice EQ 1` THEN
 
-  load lonsample[i=1:`nout_fco2`];   sh sym clock_secs
-  load latsample[i=1:`nout_fco2`];   sh sym clock_secs
-  load fco2sample[i=1:`nout_fco2`];   sh sym clock_secs
-
 
   sh sym clock_secs
   go polymark poly/over/pal=rnb/nolab/levels=($vlevels)/key \
-  lonsample[i=1:`nout_fco2`] latsample[i=1:`nout_fco2`] fco2sample[i=1:`nout_fco2`] square 0.15
+  lonsample latsample fco2sample square 0.15
   sh sym clock_secs
 
 
 !  label/nouser `($ppl$xlen)/2`, -0.8, 0, 0, 0.12, \
 !  @CR2-step decimation. lon/lat distance, parm ($parm): Sample w/ piecwise linear approx,<nl>\
-!  1st on path distance, then on fCO2. Start `npts` to ($nout_fco2) pts
+!  1st on path distance, then on fCO2. Start `npts` to ($($nout_fco2)) pts
   frame/file=sample_tol($tol)_parm($parm).gif
 
 
@@ -161,15 +169,11 @@ ELSE
 
 
 !  Plot the data sampled only using path distance.
-   sh sym clock_secs
 
-  load lonsample_lonlat[i=1:($nout_lonlat)];   sh sym clock_secs
-  load  latsample_lonlat[i=1:($nout_lonlat)];   sh sym clock_secs
-  load  fco2sample_lonlat[i=1:($nout_lonlat)]
-
+set mode diag
+  sh sym clock_secs
   go polymark poly/over/pal=rnb/nolab/levels=($vlevels)/key \
-  lonsample_lonlat[i=1:($nout_lonlat)] latsample_lonlat[i=1:($nout_lonlat)] fco2sample_lonlat[i=1:($nout_lonlat)] square 0.15
-
+  lonsample_lonlat latsample_lonlat fco2sample_lonlat square 0.15
 sh sym clock_secs
 
 !  label/nouser `($ppl$xlen)/2`, -0.8, 0, 0, 0.12, \

@@ -23,7 +23,7 @@
  *     yinches    - vertical size of vector image in inches
  *     xpixels    - horizontal size of raster image in pixels
  *     ypixels    - vertical size of raster image in pixels
- *     annotations - array of annotation strings
+ *     annotations - array of annotation strings; pointers are always 8 bytes apart
  *     numannotations - number of annotation strings
  *
  * If filename is empty or NULL, the imagename argument for the
@@ -46,7 +46,7 @@ grdelBool pyqtcairoCFerBind_saveWindow(CFerBind *self, const char *filename,
                        int namelen, const char *formatname, int fmtnamelen, 
                        int transbkg, double xinches, double yinches, 
                        int xpixels, int ypixels,
-                       char **annotations, int numannotations)
+                       void **annotations, int numannotations)
 {
     CairoCFerBindData *instdata;
     grdelBool success;

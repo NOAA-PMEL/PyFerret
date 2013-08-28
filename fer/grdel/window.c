@@ -800,7 +800,8 @@ grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible)
  *     yinches: vertical size of vector image in inches
  *     xpixels: horizontal size of raster image in pixels
  *     ypixels: vertical size of raster image in pixels
- *     annotations: array of annotation strings
+ *     annotations: array of annotation strings; 
+ *                  pointers are always 8 bytes apart
  *     numannotations: number of annotation strings
  *
  * If fileformat is NULL, the fileformat is guessed from the
@@ -814,7 +815,7 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
                           int formatlen, grdelBool transparentbkg,
                           float xinches, float yinches, 
                           int xpixels, int ypixels,
-                          char **annotations, int numannotations)
+                          void **annotations, int numannotations)
 {
     GDWindow *mywindow;
     grdelBool success;
@@ -862,7 +863,7 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
                 return 0;
             }
             for (k = 0; k < numannotations; k++) {
-                annostrobj = PyString_FromString(annotations[k]);
+                annostrobj = PyString_FromString((char *) annotations[k * 8 / sizeof(void *)]);
                 if ( annostrobj == NULL ) {
                     Py_DECREF(annostuple);
                     strcpy(grdelerrmsg, "grdelWindowSave: unexpected error, "
@@ -1240,7 +1241,8 @@ void fgdwinsetvis_(int *success, void **window, int *visible)
  *     yinches: vertical size of vector image in inches
  *     xpixels: horizontal size of raster image in pixels
  *     ypixels: vertical size of raster image in pixels
- *     memory: ferret memory containing annotation C strings
+ *     memory: ferret memory containing annotation C strings; 
+ *             pointers are always 8 bytes apart
  *     firststr: offset into memory of the first annotation C string
  *     numstr: number of annotation C strings
  *
@@ -1261,7 +1263,8 @@ void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
     result = grdelWindowSave(*window, filename, *namelen,
                              fileformat, *formatlen, *transparentbkg,
                              *xinches, *yinches, *xpixels, *ypixels,
-                             (char **) &(memory[*firststr]), *numstr);
+                             &(memory[(*firststr) * 8 / sizeof(void *)]), 
+                             *numstr);
     *success = result;
 }
 

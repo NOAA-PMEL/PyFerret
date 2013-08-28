@@ -103,7 +103,7 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
                           int formatlen, grdelBool transparentbkg,
                           float xinches, float yinches, 
                           int xpixels, int ypixels,
-                          char **annotations, int numannotations);
+                          void **annotations, int numannotations);
 grdelBool grdelWindowScreenInfo(grdelType window, float *dpix, float *dpiy,
                                 int *screenwidth, int* screenheight);
 grdelBool grdelWindowSetWidthFactor(grdelType window, float widthfactor);

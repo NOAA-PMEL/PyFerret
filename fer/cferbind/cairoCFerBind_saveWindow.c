@@ -25,7 +25,7 @@
  *     yinches    - vertical size of vector image in inches
  *     xpixels    - horizontal size of raster image in pixels
  *     ypixels    - vertical size of raster image in pixels
- *     annotations - array of annotation strings
+ *     annotations - array of annotation strings; pointers are always 8 bytes apart
  *     numannotations - number of annotation strings
  *
  * If filename is empty or NULL, the imagename argument for the
@@ -49,7 +49,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
                         int namelen, const char *formatname, int fmtnamelen, 
                         int transbkg, double xinches, double yinches, 
                         int xpixels, int ypixels, 
-                        char **annotations, int numannotations)
+                        void **annotations, int numannotations)
 {
     CairoCFerBindData *instdata;
     cairo_status_t     status;
@@ -207,7 +207,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
     if ( numannotations > 0 ) {
         /* Allocate memory for the string with all the annotations */
         for (k = 0, j = 0; k < numannotations; k++, j++)
-            j += strlen(annotations[k]);
+            j += strlen((char *) annotations[k * 8 / sizeof(void *)]);
         allannos = (char *) PyMem_Malloc(j * sizeof(char));
         if ( allannos == NULL ) {
             strcpy(grdelerrmsg, "cairoCFerBind_saveWindow: "
@@ -216,8 +216,8 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         }
         /* Copy the annotations with newlines inbetween */
         for (k = 0, j = 0; k < numannotations; k++, j++) {
-            strcpy(&(allannos[j]), annotations[k]);
-            j += strlen(annotations[k]);
+            strcpy(&(allannos[j]), (char *) annotations[k * 8 / sizeof(void *)]);
+            j += strlen((char *) annotations[k * 8 / sizeof(void *)]);
             allannos[j] = '\n';
         }
         /* Remove the last newline */

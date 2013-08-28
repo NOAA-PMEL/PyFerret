@@ -134,7 +134,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int nam
                                    const char *formatname, int fmtnamelen, int transbkg,
                                    double xinches, double yinches, 
                                    int xpixels, int ypixels,
-                                   char **annotations, int numannotations);
+                                   void **annotations, int numannotations);
 grdelType cairoCFerBind_createColor(CFerBind *self, double redfrac,
                         double greenfrac, double bluefrac, double opaquefrac);
 grdelBool cairoCFerBind_deleteColor(CFerBind *self, grdelType color);

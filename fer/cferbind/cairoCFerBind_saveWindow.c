@@ -256,7 +256,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         }
         /* Create the Pango layout for the annotations */
 	annolayout = pango_cairo_create_layout(annocontext);
-	pango_layout_set_width(annolayout, pango_units_from_double(annowidth));
+	pango_layout_set_width(annolayout, (int) (PANGO_SCALE * annowidth + 0.5));
         pango_layout_set_wrap(annolayout, PANGO_WRAP_WORD_CHAR);
         pango_layout_set_markup(annolayout, allannos, j-1);
         /* Apply the annotations to this cairo surface */

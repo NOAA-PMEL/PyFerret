@@ -170,6 +170,8 @@
 *                  axis as modulo.
 * V685 *acm* 8/13  Fix ticket 2088: Report the correct index location in axis when
 *                  unrepairable repeated axis coords on axis
+* V685 *acm* 8/13  Fix ticket 2090: If there is enough coord storage to read just the coords
+*                  but not bounds, still read and check coordiantes for regular spacing.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -741,9 +743,13 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * adequate storage for the irregular coordinates and box edges ?
 * 2*npts + 1 for edges plus coordinate values.
 
+* First, just require npts amount of storage. Read the coords and 
+* test for regular spacing. If regular then we're good.  If not, then
+* check that there's enough to store the grid cell bounds.
+
          line_start(iaxis) = unspecified_val8
          line_delta(iaxis) = unspecified_val8
-         IF ((next_line_mem_pos+2*npts+1).GT.maxlinestore) GOTO 5300
+         IF ((next_line_mem_pos+ npts+1).GT.maxlinestore) GOTO 5300
 
 * read the CDF coordinate values into double precision axis storage
          ipt1 = next_line_mem_pos
@@ -900,7 +906,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * Check if axis is actually regularly spaced (though not flagged as "even")
 * Fix bug 1483; look at each delta rather than trying to compare with first delta.
 
-        IF (its_irregular) GOTO 380  ! If the file says its irreg, treat is at such
+        IF (its_irregular) GOTO 380  ! If the file says its irreg, treat it at such
 
 * See if double-precision coordinates are regularly-spaced
         IF (vartype .EQ. ncdouble) THEN
@@ -943,7 +949,12 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * Compute the default locations of boundaries between grid boxes (midpoints)
 * Note: this may be modified by a subsequent "EDGES" or "BOUNDS" definition
 
- 380    CALL TM_IRREGAX_MID( ipt1, npts )
+* Here is where we need to require 2*npts amount of available coordinate storage.
+
+ 380    CONTINUE
+        IF ((next_line_mem_pos+2*npts+1).GT.maxlinestore) GOTO 5300
+ 
+        CALL TM_IRREGAX_MID( ipt1, npts )
       ENDIF
 
       IF (got_bnds .AND. npts .EQ. 1) THEN

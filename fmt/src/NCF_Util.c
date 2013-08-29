@@ -182,7 +182,7 @@ LIST *ncf_get_ds_agglist( int *);
 LIST *ncf_get_ds_var_attlist (int *, int *);
 LIST *ncf_get_ds_var_gridlist (int *, int *);
 
-int initialize_output_flag (char *, int *);
+static int initialize_output_flag (char *, int);
 int NCF_ListTraverse_FoundDsetName( char *, char * );
 int NCF_ListTraverse_FoundDsetID( char *, char * );
 int NCF_ListTraverse_FoundVarName( char *, char * );
@@ -3490,7 +3490,7 @@ int  FORTRAN(ncf_get_agg_var_info)( int *dset, int *varid, int *imemb, int* vtyp
    depending on the value of the modulo attribute.
   */
 
-int initialize_output_flag (char *attname, int *is_axis)
+static int initialize_output_flag (char *attname, int is_axis)
 {
 	int return_val;
     return_val = 0;

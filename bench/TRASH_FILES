@@ -140,6 +140,7 @@ redirect_stdout.txt
 redirect.txt
 revision.nc
 snoopy.dat
+sst_new.nc
 startup_tests2.plt
 startup_tests.jnl
 startup_tests.plt

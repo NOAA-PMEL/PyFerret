@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 12 Jul 19 13:07 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
+lrwxrwxrwx 1 ksmith tmap 12 Aug 29 10:44 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret on RHEL5-64
@@ -220,7 +220,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Jul 19 13:08:26 PDT 2013
+Beginning at Thu Aug 29 10:52:28 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -3307,6 +3307,13 @@ Replacing definition of axis AXI
 Replacing definition of axis AXI_COARSE
 Replacing definition of axis AXI
 Replacing definition of axis AXI_COARSE
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: unrepairable repeated axis coords on axis trdim at subscript 2
+ *** NOTE: A dummy axis of subscripts will be used
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file sst_new.nc
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
 *** Running test: bn_nco_append.jnl
@@ -3346,4 +3353,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
-Ended at Fri Jul 19 13:09:44 PDT 2013
+Ended at Thu Aug 29 10:53:47 PDT 2013

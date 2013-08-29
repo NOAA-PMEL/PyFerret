@@ -34,6 +34,7 @@
 *
 */
 
+#include <string.h>
 
 /* Code from http://geekhideout.com/urlcode.shtml
 Comments:
@@ -53,6 +54,7 @@ published from: United States.
 ACM 2/2013: v6.85 For addition of LET/REMOTE qualifier. 
 url_encode was edited to send input string and output string as 
 arguments and to return the length of the encoded string.
+*/
 
 /* Converts a hex character to its integer value */
 char from_hex(char ch) {

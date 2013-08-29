@@ -1,0 +1,10 @@
+! err685_string_dim_name.jnl
+! Ticket 2091. If the string variable shares its dimension name,
+! want to just mark it as a file variable not a coord variable.
+
+! Previously issued warnings about string coordinate variable.
+use trajectory_trajectory_name.nc
+
+! Previously trajectory was not listed among the file variables.
+list ..varnames
+

@@ -82,6 +82,8 @@
 /* *acm*  5/12       V6.8 Additions for creating aggregate datasets
 /* *acm*  8/13	      Fix bug 2089. Mark the scale_factor and add_offset attributes  
 /*                    to-be-output when writing variables.
+/* *acm*  8/13        Fix bug 2091. If a string variable has the same name as a dimension,
+/*                    DO NOT mark it as an axis.
 */
 
 #include "ferretmacros.h"
@@ -1275,7 +1277,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 				if (var.type == NC_CHAR) var.outtype = NC_CHAR;
 				var.outtype = var.type;  /* ?? */
 				
-				/* is this a coordinate variable? 
+				/* is this a coordinate variable? If not a string, set the flag.
 				 */
 				if (nc.ndims > 0) {
 					var.is_axis = FALSE;
@@ -1283,6 +1285,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 					i = 0;
 					while (i < nc.ndims && var.is_axis == FALSE) {
 						if  (strcasecmp(var.name, nc.dims[i].name) == 0) var.is_axis = TRUE;
+						if  (var.type == NC_CHAR) var.is_axis = FALSE;
 						i = i + 1;
 					}
 				}

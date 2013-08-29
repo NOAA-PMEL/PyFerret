@@ -55,3 +55,6 @@ GO err684_repeated_coordindates
 
 GO bn_reset
 GO err684_packed_output
+
+GO bn_reset
+GO err684_string_dim_name

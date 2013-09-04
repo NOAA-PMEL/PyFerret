@@ -1,0 +1,136 @@
+
+! one cruise
+! use "/home/data/socat/dsg_files4/cruise_33KM20070920.nc"
+use "/home/data/socat/dsg_files4/SOCAT2_data_table_b900_f2d1_5213_month_lon360_sort.nc"
+
+! def sym ncruises = 50
+! def sym ncruises = 200
+! def sym ncruises = 600
+! def sym ncruises = 1000
+def sym ncruises = `rowsize,return=msize`
+
+if ($ncruises"0|*>1") THEN 
+   let mmax = `rowsize[m=1:($ncruises)@sum]` ! 1st m cruises
+   let npts = mmax
+ELSE
+   let npts = `fco2_recomputed,return=isize`
+ENDIF
+
+set mem/siz=400
+
+! Keep only cruises which are not suspended or excluded
+let flag1 = if strcmp (qc_flag,"S") NE 0 then 1
+let flag2 = if strcmp (qc_flag,"X") NE 0 then 1
+
+let flag = flag1*flag2
+let fco_keep = apply_qc (fco2_recomputed[i=1:`npts`], rowsize, flag)
+
+!plot/i=1:`npts` fco2_recomputed, fco_keep
+
+
+! replace the last datum in each trajectory with the bad-value.
+! For the longitudes, also fix the crossings of the dateline.
+
+let fco_with_gaps = separate(fco_keep[i=1:`npts`], rowsize, 0)
+
+
+let lon_with_gaps = separate(longitude[i=1:`npts`], rowsize, 1)
+let lat_with_gaps = separate(latitude[i=1:`npts`], rowsize, 0)
+
+let npts = `lat_with_gaps,return=isize`
+
+can view
+! Sample using the piecewise linear approximation, applied to the 
+! distance along the globe of the lon-lat path.
+
+let nf = npts
+let control = 2
+let lontol = 0.5
+let lattol = `lontol`
+let fco2tol =`lontol*2`
+
+let decimate_lonlat = piecewise3(\
+lon_with_gaps, lat_with_gaps, fco_with_gaps, control, lontol, lattol, fco2tol)
+
+sh sym clock_secs
+let nout_lonlat = `decimate_lonlat[i=@ngd]`
+sh sym clock_secs
+
+def sym nout_lonlat = `nout_lonlat`
+
+let xsamplepts = xsequence(decimate_lonlat[i=1:($nout_lonlat)])
+def axis/x=1:($nout_lonlat):1 xsample_axis
+let samplepts = xsamplepts[gx=xsample_axis@asn] 
+
+
+! If there is a missing value in the fco2's make a gap in lon/lat there as well. Otherwise 
+! The ribbon plot with /miss=blank still fills halfway to the next location with a color, 
+! and that next location may be the next cruise, halfway around the world.
+
+let lons = if fco_with_gaps then lon_with_gaps
+let lats = if fco_with_gaps then lat_with_gaps
+
+LET/title="`fco2_recomputed,return=title` sampled"/units="`fco2_recomputed,return=units`" \
+ fco2sample = samplei(fco_with_gaps, samplepts)
+
+LET/title="`longitude,return=title`"/units="`longitude,return=units`" \
+ lonsample = samplei(lons, samplepts)
+
+LET/title="`latitude,return=title`"/units="`latitude,return=units`" \
+ latsample = samplei(lats, samplepts)
+
+
+
+sh sym clock_secs; load fco2sample; sh sym clock_secs
+
+def sym plottitle = Sampled with piecewise linear: `nout_lonlat` of original `nf` Points
+
+
+def sym plottitle = "`fco2_recomputed,return=title`<nl>($plottitle)" 
+
+say Sampled with piecewise linear: `nout_lonlat` of original `nf` Points, `nout_lonlat/nf`
+
+
+keymark 1
+! set win/new
+! go basemap x=-180:180 y=-90:90 20
+
+! Make a map in the style of SOCAT maps
+
+! set up for annotations-style LAS map 
+! Needs Faddpath to a set of LAS plot scripts
+
+DEFINE SYMBOL region_Y_range = 180
+DEFINE SYMBOL region_X_range = 360
+DEFINE SYMBOL ferret_view = xy
+DEFINE SYMBOL ferret_annotations = 1
+
+GO LAS_open_window
+
+DEFINE  SYMBOL basemap_palette = grayscale
+DEFINE SYMBOL basemap_levels = (-10000,-1000,1000)(-1000,0,100)
+USE etopo20
+SHADE/NOLABELS/NOKEY/PALETTE=($basemap_palette)/LEVELS=($basemap_levels) rose[x=-180:180,y=-90:90]
+
+DEFINE SYMBOL fland_palette =green_deep
+DEFINE SYMBOL fland_resolution 20
+GO fland ($fland_resolution) ($fland_palette)
+SET DATA 1
+
+! NOTE the automatic levels winds up looking all-green on the decimated 
+! data
+
+def sym vlevels = v
+def sym vlevels = (-inf)(160,260,20)(260,450,10)(440,560,20)(inf)
+
+sh sym clock_secs
+plot/over/pal=rnb/vs/ribbon/line/miss=blank/nolab/levels=($vlevels)/key/set lonsample, latsample, fco2sample
+go key_at_top
+ppl ribbon/over
+
+GO fland ($fland_resolution) ($fland_palette)
+sh sym clock_secs
+frame/file=sample_ribbon_($ncruises)Cruises.png
+
+sh sym clock_secs
+

@@ -152,7 +152,7 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 * V685  *acm* 9/13 Fixing ticket 2092. Check that the pplus internal storage
 *                  for coordinate data will be enough for the grid and if not
-*                  return an error message.
+*                  return an error message. 
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:

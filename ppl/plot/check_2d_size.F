@@ -46,7 +46,7 @@ C**
 C**
 c V685  *acm* 9/13 Fixing ticket 2092. Check that the pplus internal storage
 c                  for coordinate data will be enough for the grid and if not
-c                  return an error message.
+c                  return an error message. 
 c
 c	mx	dimensioned x size of z(mx,my)
 c	my	dimensioned y size of z

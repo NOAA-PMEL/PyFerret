@@ -70,13 +70,13 @@ C
 
 	IF (mx .GT. IZSE) THEN
 	   err_string = 
-     .      'horizontal axis coordinate axis too long for 2D graphics call'
+     .      'grid in horizontal direction too large for 2D graphics call'
 	   status = ferr_out_of_range
 	ENDIF
 
 	IF (my .GT. IZSE) THEN
 	   err_string = 
-     .      'vertical axis coordinate axis too long for 2D graphics call'
+     .      'grid in vertical direction too large for 2D graphics call'
 	   status = ferr_out_of_range
 	ENDIF
 

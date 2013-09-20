@@ -863,6 +863,10 @@ GO bn_write_integer_att
 GO bn_reset
 GO bn_descriptor_mc
 
+GO bn_reset
+GO bn_plot_startcolor
+
+
 !!!!!!!!!!!!! Note we should include tests for all the scat2grid functions. 
 !!!!!!!!! completed and improved the docs for scat2grid_bin and scat2grid_nbin functions 
 

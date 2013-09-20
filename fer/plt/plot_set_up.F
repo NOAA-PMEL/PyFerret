@@ -1,6 +1,6 @@
       SUBROUTINE PLOT_SET_UP( memory,
      .				overlay, transpz, versus, no_labels,
-     .				symbol, sym_size, color, use_line,
+     .				symbol, sym_size, color, color1, use_line,
      .				step_inc, do_dash, dashstyle,
      .                          is_logx, is_logy, nokey,
      .				all_1_dep, only_val, mv_list, cx_list, 
@@ -147,6 +147,7 @@
 *       *acm* 3/12 6D Ferret: Add E and F dimensions 
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
 *                  dimension is now an arg to SECS_TO_TSTEP.
+* V6.85 *acm* 9/13 New qualifier PLOT/STARTCOLOR for first color in multi-line plot
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -170,7 +171,7 @@
 * calling argument declarations:
 	LOGICAL		overlay, transpz, versus, no_labels, use_line,
      .			is_logx, is_logy, nokey, all_1_dep
-	INTEGER		symbol, color, step_inc, do_dash,
+	INTEGER		symbol, color, color1, step_inc, do_dash,
      .			nmv, mv_list( nmv ), cx_list( nmv ), status
 	REAL		memory( mem_blk_size, max_mem_blks ), sym_size,
      .                  dashstyle(*), only_val
@@ -725,9 +726,10 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   nline_on     = nline_on     + 1
 	   nline_in_mem = nline_in_mem + 1
 * ... assign line style for the data plotting:
-	   CALL LINE_STYLE(symbol, sym_size, color, use_line,
+	   CALL LINE_STYLE(symbol, sym_size, color, color1, use_line,
      .			   do_dash, dashstyle, nline_in_mem, nline_on)
  200	CONTINUE
+        nline_on = nline_on + color1 - 1
 
 * axis scaling and formatting
 * ... independent axis

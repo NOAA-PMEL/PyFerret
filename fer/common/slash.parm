@@ -53,6 +53,7 @@
 * V685 6/13 *acm* new qualifier SAVE/NOBOUNDS
 * V685 6/13 *acm* new qualifier SAVE/NOCOORDS
 * V685 6/13 *acm* new qualifier SHOW DATA/HIDDEN
+* V685 *acm*  9/13 new qualifier PLOT/STARTCOLOR
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -299,7 +300,8 @@
      .			slash_plot_levels,
      .			slash_plot_spectrum,
      .			slash_plot_fast,
-     .			slash_plot_missing
+     .			slash_plot_missing,
+     .			slash_plot_start
 
 	INTEGER		slash_wire_over,
      .			slash_wire_set_up,
@@ -576,7 +578,8 @@
      .			slash_plot_levels 	= 1+43,
      .			slash_plot_spectrum 	= 1+44,
      .			slash_plot_fast 	= 1+45,
-     .			slash_plot_missing 	= 1+46 )
+     .			slash_plot_missing 	= 1+46,
+     .			slash_plot_start	= 1+47)
 
 	PARAMETER     ( slash_wire_over		= 1+12,
      .			slash_wire_set_up	= 1+13,

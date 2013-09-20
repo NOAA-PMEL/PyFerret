@@ -127,7 +127,7 @@
 * V671 *acm*  5/11  For the 1D form of polygon plots, the check for adequate 
 *                   PLOT+ memory was not adequate - we need x,y, and variable 
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
-
+* V6.85 *acm* 9/13 Change to CALL LINE_STYLE, implementing PLOT/STARTCOLOR qualifier 
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -712,7 +712,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 * NOW set the line style
         do_dash = 0
-	CALL LINE_STYLE( symbol, 0.08, line_type, use_line, 
+	CALL LINE_STYLE( symbol, 0.08, line_type, line_type, use_line, 
      .                   do_dash, dashstyle, 1, 1 )
 
 * release context stack buffers

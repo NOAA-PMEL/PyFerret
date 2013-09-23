@@ -864,7 +864,7 @@ GO bn_reset
 GO bn_descriptor_mc
 
 GO bn_reset
-GO bn_plot_startcolor
+GO bn_plot_color_only
 
 
 !!!!!!!!!!!!! Note we should include tests for all the scat2grid functions. 

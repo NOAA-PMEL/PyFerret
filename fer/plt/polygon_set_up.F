@@ -127,7 +127,8 @@
 * V671 *acm*  5/11  For the 1D form of polygon plots, the check for adequate 
 *                   PLOT+ memory was not adequate - we need x,y, and variable 
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
-* V6.85 *acm* 9/13 Change to CALL LINE_STYLE, implementing PLOT/STARTCOLOR qualifier 
+* V6.85 *acm* 9/13 Change to CALL LINE_STYLE, implementing new PLOT/COLOR w/o 
+*                  argument for all-color line plot
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'

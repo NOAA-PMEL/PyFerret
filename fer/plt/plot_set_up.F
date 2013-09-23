@@ -147,7 +147,7 @@
 *       *acm* 3/12 6D Ferret: Add E and F dimensions 
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
 *                  dimension is now an arg to SECS_TO_TSTEP.
-* V6.85 *acm* 9/13 New qualifier PLOT/STARTCOLOR for first color in multi-line plot
+* V6.85 *acm* 9/13 New PLOT/COLOR w/o argument for all-color line plot
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'

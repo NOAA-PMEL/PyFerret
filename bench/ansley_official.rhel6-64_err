@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43440715 Sep 20 16:43 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 59872635 Sep 23 10:57 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: PLOT/STARTCOLOR qualifier
+Note: ticket 2094, PLOT/COLOR with no argument starts with pen 2
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Fri Sep 20 16:52:30 PDT 2013
+Beginning at Mon Sep 23 10:58:01 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3493,12 +3493,12 @@ Replacing definition of axis XIRREG
  TEMPORARY data cleared from memory
  *** NOTE: New # of line colors will take effect on next new window: SET WIN/NEW then define pen colors
  *** NOTE: New number of line colors will take effect on next new window: SET WIN/NEW or SET WIN/CLEAR
- **ERROR: command syntax: startcolor=2
-          /STARTCOLOR is not valid for PLOT/OVERLAY
-plot/i=1:100/over/startcolor=2 0.6*sin(i/7)
- **ERROR: command syntax: startcolor=6
-          /STARTCOLOR not valid for ribbon plot. Use /PALETTE and /LEVELS to control colors.
-plot/i=1:100/ribbon/startcolor=6 sin(i/6),0.6*sin(i/7)
+ **ERROR: command syntax: COLOR
+          /COLOR must have an argument for PLOT/OVERLAY
+plot/i=1:100/over/COLOR 0.6*sin(i/7)
+ **ERROR: command syntax: COLOR
+          /COLOR not valid for PLOT/LEVELS ribbon plot
+plot/i=1:100/ribbon/COLOR sin(i/6),0.6*sin(i/7)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -3588,4 +3588,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Sep 20 16:54:12 PDT 2013
+Ended at Mon Sep 23 11:00:03 PDT 2013

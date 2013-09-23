@@ -1,21 +1,21 @@
-! bn_plot_startcolor.jnl
+! bn_plot_color_only.jnl
 ! 9/20/2013 ACM
 ! ticket 2094
-
+!  PLOT/COLOR with no argument skips the black pen and starts with the next one.
 
 let pi=atan(1.)*4.
 let a = (-1)*pi*4 + i[i=1:500]*(8*pi/500)
 let b = sin(a)/a
 
-! The color may be specified as a color (from the standard pre-defined 6 color names)
-set view upper
-plot/startcolor=green/thick b, b[i=@shf:20]
 
-! or it may be a color number corresponding to default or user-defined colors.
+set view upper
+plot/color b, b[i=@shf:20]
+
+! With user-defined colors
 ppl color 2, 0, 50, 100
 ppl color 3, 100, 50, 0
 set view lower
-plot/startcolor=2/thick=3/dash=(0.05,0.1,0.2,0.1) b, b[i=@shf:20]
+plot/color/thick=3/dash=(0.05,0.1,0.2,0.1) b, b[i=@shf:20]
 
 ! With extra user-defined colors
 can view
@@ -28,9 +28,10 @@ ppl color,10,100,70,100 ! magenta
 ppl color,11,80,70,60   ! tan
 ppl color,12,100,88,0   ! yellow
 
-plot/thick/startcolor=7 /line/i=1:100 \
+plot/thick/color/line/i=1:100 \
  cos(i/20), cos(i/24), cos(i/28), cos(i/32), \
- cos(i/36), cos(i/40)
+ cos(i/36), cos(i/40), cos(i/44), cos(i/48), \
+ cos(i/52), cos(i/56), cos(i/60), cos(i/64)
 
 cancel mode linecolors
 can win/all; set win/new
@@ -49,29 +50,24 @@ plot/thick/i=1:50/over 0.6*sin(i/9)
 
 ! colors 2, 3, 4, 5
 set view lower
-plot/thick/i=1:50/vlim=-1.1:1.1/STARTCOLOR=2 sin(i/6)
+plot/thick/i=1:50/vlim=-1.1:1.1/COLOR sin(i/6)
 plot/thick/i=1:50/over sin(i/7)
 plot/thick/i=1:50/over 0.6*sin(i/8)
 plot/thick/i=1:50/over 0.6*sin(i/9)
 
 ! intentional errors
-! /STARTCOLOR not allowed on PLOT/OVER. Only for first plot.
+! /COLOR (w/o argument) not allowed on PLOT/OVER.
 
 can view
 set mode ignore
 
 plot/i=1:100 sin(i/6)
-plot/i=1:100/over/startcolor=2 0.6*sin(i/7)
+plot/i=1:100/over/COLOR 0.6*sin(i/7)
 
-
-! PLOT/STARTCOLOR not allowed on PLOT/RIBBON.
+! PLOT/COLOR not allowed on PLOT/RIBBON.
 
 can view
-set mode ignore
-
-
-! PLOT/STARTCOLOR not valid with ribbon plots.
-plot/i=1:100/ribbon/startcolor=6 sin(i/6),0.6*sin(i/7)
+plot/i=1:100/ribbon/COLOR sin(i/6),0.6*sin(i/7)
 
 set mode/last ignore
 

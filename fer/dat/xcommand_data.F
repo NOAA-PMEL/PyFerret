@@ -201,7 +201,6 @@
 * V685 *acm*  6/13 new qualifier SAVE/NOBOUNDS
 * V685 *acm*  6/13 Dont add SAVE/NOCOORDS
 * V685 *acm*  4/13 Add /HIDE on DEF DATA/AGG and SHOW DATA/HIDDEN
-* V685 *acm*  9/13 new qualifier PLOT/STARTCOLOR
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -983,7 +982,7 @@
 		DATA qualifiers  (nqual_at6a+44)/ 'PALETTE'/	! 
 		DATA qualifiers  (nqual_at6a+45)/ 'FAST'/	! style for Ribbon plot
 		DATA qualifiers  (nqual_at6a+46)/ 'MISSING'/	! For missing-dat in ribbon plot
-		DATA qualifiers  (nqual_at6a+47)/ 'STARTCOLOR'/	! first line with color i
+		DATA qualifiers  (nqual_at6a+47)/ '****'/	! 
 
 * GO	 - command # 7
 	DATA commands(7)			/ 'GO  '	/

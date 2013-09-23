@@ -42,7 +42,6 @@
 * V683  8/12 *acm*  New SET LIST/OUTTYPE CANCEL LIST/OUTTYPE, and SAVE/OUTTYPE 
 * V684 *acm* 12/12 Changes for VECTOR/MODULO on curvilinear plots.
 * V685 *acm*  4/13 Add /HIDDEN on DEF DATA/AGG
-* V685 *acm*  9/13 new qualifier PLOT/STARTCOLOR
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -233,7 +232,7 @@
 	INTEGER		nsub6      , nsub_at7  ,
      .			nqual6a    , nqual_at7a
 	PARAMETER    (	nsub6   = 1, nsub_at7   = nsub_at6   + nsub6,
-     .			nqual6a =49, nqual_at7a = nqual_at6a + nqual6a  )
+     .			nqual6a =48, nqual_at7a = nqual_at6a + nqual6a  )
 
 * GO		 - commmand # 7
 	INTEGER		nsub7      , nsub_at8   ,

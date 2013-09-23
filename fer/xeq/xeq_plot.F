@@ -99,7 +99,7 @@
 * V6.2  *acm& 2/09 Fix choice of color settings with /PEN and /THICK when we have 
 *                  increased the num of colors with MODE linecolors
 * V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
-* V6.85 *acm* 9/13 New qualifier PLOT/STARTCOLOR for first color in multi-line plot
+* V6.85 *acm* 9/13 New qualifier PLOT/%%%%%%% for first color in multi-line plot
 * http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2013/msg00536.html
 
 	include 'tmap_dims.parm'
@@ -251,25 +251,19 @@ CC       => Set values here instead.
               ENDIF
 	   ENDIF
 	ENDIF
-* ... PLOT/COLOR=n
+* ... PLOT/COLOR[=n]
+        color1 = 1
 	loc = qual_given( slash_plot_color )
 	IF ( loc .GT. 0  ) THEN
+	   color1 = color
 	   CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                           color, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
-	ENDIF
-	
-* ... PLOT/STARTCOLOR=n
-        color1 = 1
-	loc = qual_given( slash_plot_start )
-	IF ( loc .GT. 0  ) THEN
-	   IF ( overlay ) GOTO 5510  ! startcolor not allowed on /OVERLAY plots
-	   CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                           color1, status )
-           IF ( status .NE. ferr_ok ) THEN
-	      CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                           color1, status )
-              IF ( status .NE. ferr_ok ) GOTO 5000
+           s1 = INDEX( cmnd_buff(qual_start(loc):qual_end(loc)), '=' )	   
+           IF ( s1 .EQ. 0 ) THEN
+	      color = color1
+	      color1 = 2
+	      IF ( overlay ) GOTO 5510  ! /COLOR w/o argument not allowed for overlay
 	   ENDIF
 	ENDIF
 
@@ -352,9 +346,6 @@ c	   IF (.NOT.versus)  GOTO 5470
 * If a color was given, that's not valid for Ribbon plots.
 	   loc = qual_given( slash_plot_color )
 	   IF ( loc .GT. 0  ) GOTO 5490
-
-	   loc = qual_given( slash_plot_start )
-	   IF ( loc .GT. 0  ) GOTO 5500
 
 * If a thickness is given, set pen number to the thickness, pen=1,2,or 3
 
@@ -740,11 +731,7 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
  5490	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .	'/COLOR not valid for PLOT/LEVELS ribbon plot', *1000 )
- 5500	CALL ERRMSG( ferr_syntax, status, 
-     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
-     .	'/STARTCOLOR not valid for ribbon plot. '//
-     .	'Use /PALETTE and /LEVELS to control colors.', *1000 )
  5510	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
-     .	'/STARTCOLOR is not valid for PLOT/OVERLAY', *1000 )
+     .	'/COLOR must have an argument for PLOT/OVERLAY', *1000 )
 	END

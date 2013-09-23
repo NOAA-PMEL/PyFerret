@@ -65,7 +65,7 @@
 * V590 *acm* 5/06  settable number of line colors, no longer hard-wired to 6 colors.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * v683 *acm* 11/12 Put sym_so_far into common - previously SAVEd here, no longer working.
-* V6.85 *acm* 9/13 New qualifier PLOT/STARTCOLOR for first color in multi-line plot
+* V6.85 *acm* 9/13 New PLOT/COLOR w/o argument for all-color line plot
 
 	include 'tmap_dims.parm'
 	include	'slash.parm'

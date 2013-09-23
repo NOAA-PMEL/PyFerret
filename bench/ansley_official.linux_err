@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 42615720 Sep 17 12:11 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 42613680 Sep 23 11:18 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Issue NOTE when reading a reversed axis from netCDF, regular or irregular spacing.
+Note: ticket 2094, PLOT/COLOR with no argument starts with pen 2
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Tue Sep 17 12:15:30 PDT 2013
+Beginning at Mon Sep 23 11:28:42 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3489,6 +3489,16 @@ Replacing definition of axis XIRREG
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: New # of line colors will take effect on next new window: SET WIN/NEW then define pen colors
+ *** NOTE: New number of line colors will take effect on next new window: SET WIN/NEW or SET WIN/CLEAR
+ **ERROR: command syntax: COLOR
+          /COLOR must have an argument for PLOT/OVERLAY
+plot/i=1:100/over/COLOR 0.6*sin(i/7)
+ **ERROR: command syntax: COLOR
+          /COLOR not valid for PLOT/LEVELS ribbon plot
+plot/i=1:100/ribbon/COLOR sin(i/6),0.6*sin(i/7)
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -3576,4 +3586,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Sep 17 12:17:17 PDT 2013
+Ended at Mon Sep 23 11:30:29 PDT 2013

@@ -102,6 +102,8 @@
 * PyFr  *kms* 7/13 EQUAL_COLOR now returns a color ID, and EQUAL_THICK 
 *                  returns a pen ID from a color ID and a thickness.
 * PyFr  *kms* 7/13 Added /OPACITY
+* V6.85 *acm* 9/13 New qualifier PLOT/%%%%%%% for first color in multi-line plot
+* http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2013/msg00536.html
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -134,7 +136,7 @@
      .			is_logh, is_logv, nokey, no_data, no_range,
      .			continuous_key, do_key, spectrum
 	INTEGER		TM_LENSTR1, STR_UPCASE, STR_SAME,
-     .                  symbol, icolor, ipen, status,
+     .                  symbol, icolor, ipen, icolor1, ipen1, status,
      .			loc, limit, slen, thick, step_inc,
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start,
@@ -254,13 +256,21 @@ CC       => Set values here instead.
               ENDIF
 	   ENDIF
 	ENDIF
-* ... PLOT/COLOR=n
+* ... PLOT/COLOR[=n]
+        icolor1 = 1
         thickness = 1.0
 	loc = qual_given( slash_plot_color )
 	IF ( loc .GT. 0  ) THEN
+	   icolor1 = icolor
 	   CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                       icolor, thickness, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
+           s1 = INDEX( cmnd_buff(qual_start(loc):qual_end(loc)), '=' )	   
+           IF ( s1 .EQ. 0 ) THEN
+	      icolor = icolor1
+	      icolor1 = 2
+	      IF ( overlay ) GOTO 5510  ! /COLOR w/o argument not allowed for overlay
+	   ENDIF
 	ENDIF
 * ... PLOT/OPACITY=n
         loc = qual_given( slash_plot_opacity )
@@ -535,6 +545,7 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
 	nokey = qual_given(slash_plot_nokey) .GT. 0
 
 * set up the axes and title and load the data into PPLUS
+
 	CALL PLOT_SET_UP   ( 	memory,
      .				overlay,
      .				transpz,
@@ -543,6 +554,7 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
      .				symbol,
      .				sym_size,
      .				ipen,
+     .				icolor1,
      .				use_line,
      .				step_inc,
      .				do_dash,
@@ -730,4 +742,7 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
  5500   CALL ERRMSG( ferr_out_of_range, status,
      .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .          'Value from 0 to 100 must be given', *1000 )
+ 5510	CALL ERRMSG( ferr_syntax, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .	'/COLOR must have an argument for PLOT/OVERLAY', *1000 )
 	END

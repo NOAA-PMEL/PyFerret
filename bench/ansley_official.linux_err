@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 42604330 Jul 29 11:06 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 42613680 Sep 23 11:18 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: tickets 2070, 2087
+Note: ticket 2094, PLOT/COLOR with no argument starts with pen 2
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Mon Jul 29 11:18:03 PDT 2013
+Beginning at Mon Sep 23 11:28:42 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -773,6 +773,7 @@ LIST/i=2:4:2 VAR
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
  *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis BACKWARDS_AXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of grid GX
@@ -846,8 +847,6 @@ Replacing definition of axis X10
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Not deleted: X10
- *** NOTE: Axis is in use by grid G10X5
- PERMANENT data cleared from memory
 
 Bailing out of external function "eof_space":
 	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
@@ -857,6 +856,8 @@ Bailing out of external function "eof_stat":
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+ *** NOTE: Axis is in use by grid G10X5
+ PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1973,6 +1974,7 @@ sho att/all .
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1981,6 +1983,7 @@ sho att/all .
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2059,6 +2062,7 @@ Replacing definition of grid MYGRID
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
@@ -2076,6 +2080,7 @@ Replacing definition of grid MYGRID
 NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  data in attribute missing_value not representable in output type NC_INT
 LIST/FORMAT=CDF/file=a.nc/clobber/x=132w/k=1 temp
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
 set var/outtype=char broiled
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
@@ -2107,6 +2112,7 @@ Replacing definition of axis X2AX
  *** NOTE: Changing the value of attribute (TIME7).time_origin
  *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
 Replacing definition of axis TIME
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
@@ -2318,6 +2324,7 @@ curl error details:
  *** NOTE: modulo = "j"
  *** NOTE: Undecipherable value of netCDF attribute modulo on variable time_moderr
  *** NOTE: modulo = "j"
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
  *** NOTE: They will not be convertible:
  *** NOTE: regarding ./climatological_axes.cdf ...
@@ -2326,6 +2333,7 @@ curl error details:
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
  *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis BACKWARDS_AXIS
  *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis Y1010_REV
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3088,9 +3096,11 @@ Replacing definition of axis YAX_DUP_AXNAMES
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: broiled
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3450,6 +3460,15 @@ Replacing definition of axis AXI
 Replacing definition of axis AXI_COARSE
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: unrepairable repeated axis coords on axis trdim at subscript 2
+ *** NOTE: A dummy axis of subscripts will be used
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file sst_new.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file append_to_this.nc
@@ -3468,6 +3487,16 @@ Replacing definition of axis XIRREG
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: New # of line colors will take effect on next new window: SET WIN/NEW then define pen colors
+ *** NOTE: New number of line colors will take effect on next new window: SET WIN/NEW or SET WIN/CLEAR
+ **ERROR: command syntax: COLOR
+          /COLOR must have an argument for PLOT/OVERLAY
+plot/i=1:100/over/COLOR 0.6*sin(i/7)
+ **ERROR: command syntax: COLOR
+          /COLOR not valid for PLOT/LEVELS ribbon plot
+plot/i=1:100/ribbon/COLOR sin(i/6),0.6*sin(i/7)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -3557,4 +3586,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Jul 29 11:19:42 PDT 2013
+Ended at Mon Sep 23 11:30:29 PDT 2013

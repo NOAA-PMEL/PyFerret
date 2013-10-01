@@ -498,6 +498,7 @@
  
 	      w0 = cleft
 	      slen1 = MIN( w0, TM_LENSTR1( vcode(1) ) )
+              IF (cleft .EQ. 0) slen1 = TM_LENSTR1( vcode(1) )
 	      w0 = w0 + width(1)
 	      line_buff(w0-slen1:w0-1) = vcode(1)(:slen1)
               w0 = w0 + 1

@@ -212,7 +212,6 @@
 * PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW and FRAME
 * PyFr  *kms*  8/13 Add /ANNOTATE to FRAME
 
-
         IMPLICIT NONE
 	include 'ferret.parm'
 	include 'xcommand.cmn'

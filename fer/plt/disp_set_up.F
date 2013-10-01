@@ -152,6 +152,9 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 * PyFr *kms*  7/13 Scale default lengths by pplscale; 
 *                  use hlab1 for plot title lettering height
+* V685  *acm* 9/13 Fixing ticket 2092. Check that the pplus internal storage
+*                  for coordinate data will be enough for the grid and if not
+*                  return an error message. 
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -204,7 +207,7 @@ C plus those starting w/ xbox_bounds:
      .                  xstyle*3, ystyle*3, cmnd_name*8, year*4, buff*8,
      .			letter*1, buff1*16, buff2*16, buff30*30,
      .                  TM_GET_CALENDAR_NAME*32, cal_name_1*32, 
-     .                  cal_name_2*32
+     .                  cal_name_2*32, err_string*128
         CHARACTER*1     axdir(4)
 
 	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, TM_FPEQ, 
@@ -647,9 +650,16 @@ C ACM added 8/2001 save cal id if vertical time axis
      .			memory(1, yblk1), mvy_temp, s )
 	if (overlay) SOVER = .true.
 
+
+* The coordinates are loaded into PPLUS arrays. Check that the grid
+* isn't too large.
+	CALL CHECK_2D_SIZE (size1, size2, err_string, status)
+	IF (status .NE. ferr_ok) GOTO 5720
+
 * load contour data into PPLUS and (possibly) regrid to regular grid
 	rw1lo = w1_lo
 	rw2lo = w2_lo
+
 	CALL PPLLDC_envelope ( icode, memory(1, xblk1), size1, size2,
      .		      1, size1, 1, size2, s1_axis, s2_axis, 
      .		      n1_regrid, n2_regrid, rw1lo, rw2lo,
@@ -856,5 +866,7 @@ C ACM added 8/2001 save cal id if vertical time axis
  5710   CALL ERRMSG( ferr_out_of_range, status,
      .     'data too large to compute Std Dev'//pCR//
      .      cmnd_buff(:len_cmnd), *5100 )
+ 5720   CALL ERRMSG( ferr_out_of_range, status,
+     .     err_string//pCR//cmnd_buff(:len_cmnd), *5100 )
 
 	END

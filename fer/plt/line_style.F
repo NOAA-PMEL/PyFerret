@@ -1,4 +1,4 @@
-	SUBROUTINE LINE_STYLE( symbol, sym_size, color,
+	SUBROUTINE LINE_STYLE( symbol, sym_size, color, color1,
      .			       use_line, do_dash, dashstyle,
      .			       line_number, so_far )
 
@@ -65,6 +65,7 @@
 * V590 *acm* 5/06  settable number of line colors, no longer hard-wired to 6 colors.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * v683 *acm* 11/12 Put sym_so_far into common - previously SAVEd here, no longer working.
+* V6.85 *acm* 9/13 New PLOT/COLOR w/o argument for all-color line plot
 
 	include 'tmap_dims.parm'
 	include	'slash.parm'
@@ -79,7 +80,7 @@
 
 * calling argument declarations
 	LOGICAL use_line
-	INTEGER symbol, color, line_number, so_far, do_dash
+	INTEGER symbol, color, color1, line_number, so_far, do_dash
 	REAL	sym_size, dashstyle(*)
 
 * internal variable declarations
@@ -166,6 +167,8 @@
            ELSE
               ltyp = ityp
            ENDIF
+	   ltyp = ltyp  + color1 - 1
+
         ENDIF
 
 	WRITE ( ppl_buff, 3000 ) line_number, ltyp

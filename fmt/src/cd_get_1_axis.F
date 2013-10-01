@@ -172,6 +172,9 @@
 *                  unrepairable repeated axis coords on axis
 * V685 *acm* 8/13  Fix ticket 2090: If there is enough coord storage to read just the coords
 *                  but not bounds, still read and check coordiantes for regular spacing.
+* V685 *acm* 9/13  Move the NOTE about reversing a decreasing-ordered axis, so that
+*                  it shows up for regularly spaced ones.
+
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -789,7 +792,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
          ENDIF
 
 * if the coordinates are decreasing-ordered then reverse them
-* Notify user of reversal
+
          IF (npts .GT. 1) THEN
             first_delta = line_mem(ipt1+1) - line_mem(ipt1)
             reversed(iaxis) = first_delta .LT. 0.0
@@ -966,6 +969,10 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 
 * ============= END OF IRREGULAR AXIS PROCESSING ========================
 
+
+ 390  CONTINUE
+
+* Notify user of reversal
 * Dont issue the note if west_lon. 
 
       IF ( reversed(iaxis) .AND. (.NOT.west_lon)) THEN
@@ -985,7 +992,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * fall entirely within year 0001.  These files represent a climatology,
 * and Ferret deals with them correctly.
 
- 390    IF ( (since_T0.GT.2)
+      IF ( (since_T0.GT.2)
      .  .AND.(line_t0(iaxis).EQ.'01-JAN-0001 00:00:00') 
      .  .AND.(cal_id .EQ. GREGORIAN) ) THEN
 

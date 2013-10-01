@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43436321 Aug 27 17:11 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 59872635 Sep 23 10:57 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix ticket 2090
+Note: ticket 2094, PLOT/COLOR with no argument starts with pen 2
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Tue Aug 27 17:13:04 PDT 2013
+Beginning at Mon Sep 23 10:58:01 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -775,6 +775,7 @@ LIST/i=2:4:2 VAR
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
  *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis BACKWARDS_AXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of grid GX
@@ -1975,6 +1976,7 @@ sho att/all .
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1983,6 +1985,7 @@ sho att/all .
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2061,6 +2064,7 @@ Replacing definition of grid MYGRID
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
@@ -2078,6 +2082,7 @@ Replacing definition of grid MYGRID
 NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  data in attribute missing_value not representable in output type NC_INT
 LIST/FORMAT=CDF/file=a.nc/clobber/x=132w/k=1 temp
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
 set var/outtype=char broiled
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
@@ -2109,6 +2114,7 @@ Replacing definition of axis X2AX
  *** NOTE: Changing the value of attribute (TIME7).time_origin
  *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
 Replacing definition of axis TIME
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
@@ -2320,6 +2326,7 @@ curl error details:
  *** NOTE: modulo = "j"
  *** NOTE: Undecipherable value of netCDF attribute modulo on variable time_moderr
  *** NOTE: modulo = "j"
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
  *** NOTE: They will not be convertible:
  *** NOTE: regarding ./climatological_axes.cdf ...
@@ -2328,6 +2335,7 @@ curl error details:
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
  *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis BACKWARDS_AXIS
  *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis Y1010_REV
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3090,9 +3098,11 @@ Replacing definition of axis YAX_DUP_AXNAMES
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: broiled
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3456,6 +3466,8 @@ Replacing definition of axis AXI_COARSE
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  LISTing to file append_to_this.nc
 ncks: WARNING Overwriting global attribute history
 ncks: WARNING Overwriting global attribute Conventions
@@ -3477,6 +3489,16 @@ Replacing definition of axis XIRREG
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: New # of line colors will take effect on next new window: SET WIN/NEW then define pen colors
+ *** NOTE: New number of line colors will take effect on next new window: SET WIN/NEW or SET WIN/CLEAR
+ **ERROR: command syntax: COLOR
+          /COLOR must have an argument for PLOT/OVERLAY
+plot/i=1:100/over/COLOR 0.6*sin(i/7)
+ **ERROR: command syntax: COLOR
+          /COLOR not valid for PLOT/LEVELS ribbon plot
+plot/i=1:100/ribbon/COLOR sin(i/6),0.6*sin(i/7)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -3566,4 +3588,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Aug 27 17:15:12 PDT 2013
+Ended at Mon Sep 23 11:00:03 PDT 2013

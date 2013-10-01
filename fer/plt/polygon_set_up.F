@@ -128,7 +128,8 @@
 *                   PLOT+ memory was not adequate - we need x,y, and variable 
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 * PyFr *kms*  7/13 Scale default lettering sizes by textscale
-
+* V6.85 *acm* 9/13 Change to CALL LINE_STYLE, implementing new PLOT/COLOR w/o 
+*                  argument for all-color line plot
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -713,7 +714,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 * NOW set the line style
         do_dash = 0
-	CALL LINE_STYLE( symbol, 0.08, line_type, use_line, 
+	CALL LINE_STYLE( symbol, 0.08, line_type, line_type, use_line, 
      .                   do_dash, dashstyle, 1, 1 )
 
 * release context stack buffers

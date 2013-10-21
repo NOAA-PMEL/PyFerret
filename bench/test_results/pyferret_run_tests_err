@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Aug 28 14:49 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Oct 21 09:59 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for PyFerret under RHEL5-64
+Note: RUN_TESTS.sh test results for PyFerret on RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -205,6 +205,7 @@ Benchmark scripts that will be run:
    bn_nobounds.jnl
    bn_write_integer_att.jnl
    bn_descriptor_mc.jnl
+   bn_plot_color_only.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -221,7 +222,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Wed Aug 28 14:50:15 PDT 2013
+Beginning at Mon Oct 21 10:01:33 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -975,6 +976,7 @@ LIST/i=2:4:2 VAR
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
  *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis BACKWARDS_AXIS
 *** Running test: bn_cache_hits.jnl
  Cached data cleared from memory
 *** Running test: bn_regrid_to_user.jnl
@@ -1865,6 +1867,7 @@ sho att/all .
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1873,6 +1876,7 @@ sho att/all .
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1946,6 +1950,7 @@ set att (COADSX81_81).axis = "Z"
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
@@ -1963,6 +1968,7 @@ set att (COADSX81_81).axis = "Z"
 NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  data in attribute missing_value not representable in output type NC_INT
 LIST/FORMAT=CDF/file=a.nc/clobber/x=132w/k=1 temp
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
 set var/outtype=char broiled
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
@@ -1996,6 +2002,7 @@ Replacing definition of axis X2AX
 Replacing definition of axis TIME
  *** NOTE: grid  used by data set coads_climatology
  *** NOTE: Redefinition may alter apparent contents of data set
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
@@ -2199,6 +2206,7 @@ set axis/stride=2 NORMAL
  *** NOTE: modulo = "j"
  *** NOTE: Undecipherable value of netCDF attribute modulo on variable time_moderr
  *** NOTE: modulo = "j"
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
  *** NOTE: They will not be convertible:
  *** NOTE: regarding ./climatological_axes.cdf ...
@@ -2207,6 +2215,7 @@ set axis/stride=2 NORMAL
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
  *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis BACKWARDS_AXIS
  *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis Y1010_REV
 *** Running test: bn603_bug_fixes.jnl
  Cached data cleared from memory
@@ -2941,9 +2950,11 @@ Replacing definition of axis YAX_DUP_AXNAMES
  LISTing to file a.nc
 *** Running test: bn_NaN_note.jnl
  Cached data cleared from memory
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: broiled
+ *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
 *** Running test: bn671_bug_fixes.jnl
 
 Bailing out of external function "tax_year":
@@ -3273,6 +3284,8 @@ Replacing definition of axis AXI_COARSE
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file sst_new.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
 *** Running test: bn_nco_append.jnl
@@ -3293,6 +3306,16 @@ sh: ncks: command not found
  LISTing to file a.nc
 *** Running test: bn_descriptor_mc.jnl
  Cached data cleared from memory
+*** Running test: bn_plot_color_only.jnl
+ Cached data cleared from memory
+ *** NOTE: New # of line colors will take effect on next new window: SET WIN/NEW then define pen colors
+ *** NOTE: New number of line colors will take effect on next new window: SET WIN/NEW or SET WIN/CLEAR
+ **ERROR: command syntax: COLOR
+          /COLOR must have an argument for PLOT/OVERLAY
+plot/i=1:100/over/COLOR 0.6*sin(i/7)
+ **ERROR: command syntax: COLOR
+          /COLOR not valid for PLOT/LEVELS ribbon plot
+plot/i=1:100/ribbon/COLOR sin(i/6),0.6*sin(i/7)
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3312,4 +3335,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Wed Aug 28 14:54:16 PDT 2013
+Ended at Mon Oct 21 10:05:54 PDT 2013

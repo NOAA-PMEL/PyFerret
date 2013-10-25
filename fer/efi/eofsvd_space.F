@@ -477,6 +477,10 @@
          IF (ier .NE. 0) then
             GOTO 5010
          ENDIF
+	 IF (neof .EQ. 0) THEN
+	    err_msg = 'There are no spatial locations having complete time series.'
+	    GOTO 5010
+	 ENDIF
 
 *  Put the data into the array taf(neof,nt). Input to solver routine,
 *  returned as taf.

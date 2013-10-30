@@ -55,8 +55,12 @@
 
 
 * get the short name of this dataset
+
 	 dset_name = ds_name(dset)
-	GET_UNIQUE_DSNAME = dset_name
+
+* If no name, return.
+
+	 GET_UNIQUE_DSNAME = dset_name
 	 IF ( ds_name(dset) .EQ. char_init40 ) GOTO 120
 
          DO 110 iset = 1,maxdsets

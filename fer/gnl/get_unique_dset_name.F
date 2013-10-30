@@ -1,4 +1,4 @@
-	CHARACTER*(*) FUNCTION GET_UNIQUE_DSNAME ( dset )
+	CHARACTER*(*) FUNCTION GET_UNIQUE_DSET_NAME ( dset )
 
 *
 *
@@ -60,7 +60,7 @@
 
 * If no name, return.
 
-	 GET_UNIQUE_DSNAME = dset_name
+	 GET_UNIQUE_DSET_NAME = dset_name
 	 IF ( ds_name(dset) .EQ. char_init40 ) GOTO 120
 
          DO 110 iset = 1,maxdsets
@@ -68,13 +68,13 @@
 	   IF (iset .EQ. dset) GOTO 110
 	   ic = STR_SAME (dset_name, ds_name(iset))
            IF (ic .EQ. 0) THEN
-	       GET_UNIQUE_DSNAME = ds_des_name(dset)
+	       GET_UNIQUE_DSET_NAME = ds_des_name(dset)
                GOTO 120
 	   ENDIF
            
   110   CONTINUE
 
-        GET_UNIQUE_DSNAME = dset_name
+        GET_UNIQUE_DSET_NAME = dset_name
 
   120   CONTINUE
 	RETURN

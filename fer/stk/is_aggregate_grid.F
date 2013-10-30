@@ -46,7 +46,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * V6.83 *acm* 11/30/2012 If variable isn't a file variable, get the right definition.
 
-* V685 4/13 *acm* Better grid handling.
+* V685  4/13 *acm* Better grid handling.
+* V685 10/13 *acm* Fix ticket 1098, error defining ensemble when LET/D variables are present.
 
 * calling argument declarations:
 * uvar and dset point to the variable in the aggregate dataset
@@ -56,13 +57,13 @@
 
 * internal variable declarations:
 	LOGICAL its_dynamic
-	INTEGER NCF_GET_AGG_COUNT, TM_LENSTR1, STR_SAME,
+	INTEGER NCF_GET_AGG_COUNT, TM_LENSTR1, STR_SAME, KNOWN_GRID,
      .		cx_orig, agg_cx, hi_cx, big_cx, isp_orig, agg_dset, 
      .		agg_len, imemb, fer_uvar, memb_dset, memb_grid, iline, 
      .		nv, test_grid, this_grid, len_name, agg_dim, gnum, var,
-     .		varid, idim, i, igrid, lo_cx
+     .		varid, idim, i, igrid, lo_cx, slen
 
-	CHARACTER vname*512
+	CHARACTER vname*512, buff*512, nm*3
 
 #include "netcdf.inc"
 	include	'tmap_errors.parm'
@@ -134,12 +135,12 @@
 
 	   CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, imemb, 
      .         fer_uvar, memb_dset, memb_grid, iline, nv, status)
-	   IF (fer_uvar .EQ. cat_file_var) THEN
-	      IF (memb_grid .NE. unspecified_int4) THEN
-	         test_grid = memb_grid
-		 this_grid = memb_grid
-		 GOTO 90
-	      ENDIF
+	   IF (fer_uvar .EQ. cat_user_var .AND. memb_grid .EQ. unspecified_int4) 
+     .           memb_grid = KNOWN_GRID(memb_dset, cat_user_var, nv) 
+	   IF (memb_grid .NE. unspecified_int4) THEN
+	      test_grid = memb_grid
+	      this_grid = memb_grid
+	      GOTO 90
 	   ENDIF
 
 * Get ready to call is_uvar_grid. 

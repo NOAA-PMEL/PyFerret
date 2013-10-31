@@ -72,6 +72,7 @@ get_ave_lims.F\
 get_max_string_len.F\
 get_max_string_len_sub.F\
 get_string_element.F\
+get_unique_dset_name.F\
 get_window_lims.F\
 getunit.F\
 gname_from_number.F\

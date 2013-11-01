@@ -52,7 +52,32 @@ list eofsvd_tfunc(spacetime)
 ! a zero mean for each time series).
 ! In this case, EOF(1) o TAF(1) + EOF(2) o TAF(2) = (cosT, sinT)
 
+! Missing-data cases
+!
+! If there are locations where the timeseries is all missing or incomplete 
+! (as in a dataset where missing data represents land), return a result 
+! based only locations with complete timeseries.
+
+def axis /X=1:3:1 xaxis
+let spacetime = if (i eq 1) then cosT else sinT + 1
+let space12 = if i ne 3 then spacetime
+
+list eofsvd_stat(space12)
+list eofsvd_space(space12)
+list eofsvd_tfunc(space12)
+
+
+! If there are no complete time series, the functions should bail with an error
+
+let spacegap = if L ne 2 then spacetime
+
+set mode ignore
+list eofsvd_stat(spacegap)
+list eofsvd_space(spacegap)
+list eofsvd_tfunc(spacegap)
+
 ! clean-up
+set mode/last ignore
 can var spacetime
 set grid abstract
 can grid xytgrid

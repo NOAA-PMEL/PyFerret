@@ -91,46 +91,46 @@
 
       CALL ef_set_num_args(id, 7) 
       CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance_6d(id, ABSTRACT, NORMAL, NORMAL, 
-     .                                      NORMAL, NORMAL,   NORMAL)
-      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
+      CALL ef_set_axis_inheritance(id, ABSTRACT, NORMAL, 
+     .                                              NORMAL,   NORMAL)
+      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
       CALL ef_set_num_work_arrays(id, 6)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'V1')
       CALL ef_set_arg_desc(id, arg, '1st variable to sample')
-      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'V2')
       CALL ef_set_arg_desc(id, arg, '2nd variable to sample')
-      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'V3')
       CALL ef_set_arg_desc(id, arg, '3rd variable to sample')
-      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 4
       CALL ef_set_arg_name(id, arg, 'Control parameter')
       CALL ef_set_arg_desc(id, arg,
      .          'Control parameter (e.g. 6 for ntol=rest=cont=1)')
-      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 5
       CALL ef_set_arg_name(id, arg, 'Tol1')
       CALL ef_set_arg_desc(id, arg, 'Tolerance for V1')
-      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 6
       CALL ef_set_arg_name(id, arg, 'Tol2')
       CALL ef_set_arg_desc(id, arg, 'Tolerance for V2')
-      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 7
       CALL ef_set_arg_name(id, arg, 'Tol3')
       CALL ef_set_arg_desc(id, arg, 'Tolerance for V3')
-      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
 
 
@@ -166,15 +166,15 @@
 *                                                                     V
 
       INTEGER my_hi_i
-      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
-     .        arg_hi_ss(6,EF_MAX_ARGS),
-     .        arg_incr (6,EF_MAX_ARGS)
+      INTEGER arg_lo_ss(4,EF_MAX_ARGS),
+     .        arg_hi_ss(4,EF_MAX_ARGS),
+     .        arg_incr (4,EF_MAX_ARGS)
 
 *
 *     Use utility functions to get context information about the arguments.
 *
 
-      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       my_hi_i = arg_hi_ss(X_AXIS,1) - arg_lo_ss(X_AXIS,1) + 1
 
@@ -205,55 +205,55 @@
 * 
 * Set the work arrays, X/Y/Z/T/E/F dimensions
 *
-* ef_set_work_array_dims_6d(id, array #,
-*                           xlo, ylo, zlo, tlo, elo, flo,
-*                           xhi, yhi, zhi, thi, ehi, fhi)
+* ef_set_work_array_dims(id, array #,
+*                           xlo, ylo, zlo, tlo, 
+*                           xhi, yhi, zhi, thi)
 *
 
-      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
-     .        arg_hi_ss(6,EF_MAX_ARGS),
-     .        arg_incr (6,EF_MAX_ARGS)
+      INTEGER arg_lo_ss(4,EF_MAX_ARGS),
+     .        arg_hi_ss(4,EF_MAX_ARGS),
+     .        arg_incr (4,EF_MAX_ARGS)
       INTEGER npts, iwork
 
-      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       npts = 1 + arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1)
   
 * input x-axis coordinates
       iwork = 1
-      CALL ef_set_work_array_dims_6d(id, iwork,
-     .                                1, 1, 1, 1, 1, 1,
-     .                             npts, 1, 1, 1, 1, 1)
+      CALL ef_set_work_array_dims(id, iwork,
+     .                                1, 1, 1, 1,
+     .                             npts, 1, 1, 1)
 
 * internal computation, u1 for y1
       iwork = 2
-      CALL ef_set_work_array_dims_6d(id, iwork,
-     .                                1, 1, 1, 1, 1, 1,
-     .                             npts, 1, 1, 1, 1, 1)
+      CALL ef_set_work_array_dims(id, iwork,
+     .                                1, 1, 1, 1,
+     .                             npts, 1, 1, 1)
 
 * internal computation, u2 for y2
       iwork = 3
-      CALL ef_set_work_array_dims_6d(id, iwork,
-     .                                1, 1, 1, 1, 1, 1,
-     .                             npts, 1, 1, 1, 1, 1)
+      CALL ef_set_work_array_dims(id, iwork,
+     .                                1, 1, 1, 1,
+     .                             npts, 1, 1, 1)
 
 * internal computation, u3 for y3
       iwork = 4
-      CALL ef_set_work_array_dims_6d(id, iwork,
-     .                                1, 1, 1, 1, 1, 1,
-     .                             npts, 1, 1, 1, 1, 1)
+      CALL ef_set_work_array_dims(id, iwork,
+     .                                1, 1, 1, 1,
+     .                             npts, 1, 1, 1)
 
 * internal computation, v
       iwork = 5
-      CALL ef_set_work_array_dims_6d(id, iwork,
-     .                                1, 1, 1, 1, 1, 1,
-     .                             npts, 1, 1, 1, 1, 1)
+      CALL ef_set_work_array_dims(id, iwork,
+     .                                1, 1, 1, 1,
+     .                           2*npts, 1, 1, 1)
 
 * internal computation, w
       iwork = 6
-      CALL ef_set_work_array_dims_6d(id, iwork,
-     .                                1, 1, 1, 1, 1, 1,
-     .                             npts, 1, 1, 1, 1, 1)
+      CALL ef_set_work_array_dims(id, iwork,
+     .                                1, 1, 1, 1,
+     .                           2*npts, 1, 1, 1)
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -275,23 +275,22 @@
       INTEGER id
 
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
-     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+     .           mem1lot:mem1hit)
       REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
-     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
+     .           mem2lot:mem2hit)
       REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
-     .           mem3lot:mem3hit, mem3loe:mem3hie, mem3lof:mem3hif)
+     .           mem3lot:mem3hit)
       REAL arg_4(mem4lox:mem4hix, mem4loy:mem4hiy, mem4loz:mem4hiz, 
-     .           mem4lot:mem4hit, mem4loe:mem4hie, mem4lof:mem4hif)
+     .           mem4lot:mem4hit)
       REAL arg_5(mem5lox:mem5hix, mem5loy:mem5hiy, mem5loz:mem5hiz, 
-     .           mem5lot:mem5hit, mem5loe:mem5hie, mem5lof:mem5hif)
+     .           mem5lot:mem5hit)
       REAL arg_6(mem6lox:mem6hix, mem6loy:mem6hiy, mem6loz:mem6hiz, 
-     .           mem6lot:mem6hit, mem6loe:mem6hie, mem6lof:mem6hif)
+     .           mem6lot:mem6hit)
       REAL arg_7(mem7lox:mem7hix, mem7loy:mem7hiy, mem7loz:mem7hiz, 
-     .           mem7lot:mem7hit, mem7loe:mem7hie, mem7lof:mem7hif)
+     .           mem7lot:mem7hit)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
-     .            memresloz:memreshiz, memreslot:memreshit,
-     .            memresloe:memreshie, memreslof:memreshif)
+     .            memresloz:memreshiz, memreslot:memreshit)
 
 * Ignore the Y/Z/T/E/F dimensions in the work array since
 * they are not used and Fortran is column major
@@ -308,12 +307,12 @@
 * for the result axes.  The 'arg_' arrays will contain the indexing 
 * information for each variable's axes. 
 
-      INTEGER res_lo_ss(6),
-     .        res_hi_ss(6),
-     .        res_incr (6)
-      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
-     .        arg_hi_ss(6,EF_MAX_ARGS),
-     .        arg_incr (6,EF_MAX_ARGS)
+      INTEGER res_lo_ss(4),
+     .        res_hi_ss(4),
+     .        res_incr (4)
+      INTEGER arg_lo_ss(4,EF_MAX_ARGS),
+     .        arg_hi_ss(4,EF_MAX_ARGS),
+     .        arg_incr (4,EF_MAX_ARGS)
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
@@ -328,8 +327,8 @@
       REAL val, tol(3), bad_y
       CHARACTER*100 errtxt
 
-      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
 * Control parameter IP
@@ -354,41 +353,62 @@
 
       k = res_lo_ss(Z_AXIS)  ! index for unused dimensions
 
-
 * STL2 modified to truncate result to next lowest integer
 
       bad_y = bad_flag(ARG1)
       CALL STL2(xpts, arg_1, tol(1), nx, bad_y, bad_flag_result, 
      .   u1, v, w, nout1, IP)
+      IF (nout1 .GT. res_hi_ss(X_AXIS)) THEN
+        write (errtxt,*) 'first call to STL2 returns too many data', nout1
+	 GOTO 999
+      ENDIF
 
       bad_y = bad_flag(ARG2)
       CALL STL2(xpts, arg_2, tol(2), nx, bad_y, bad_flag_result, 
      .   u2, v, w, nout2, IP)
+      IF (nout1 .GT. res_hi_ss(X_AXIS)) THEN
+        write (errtxt,*) 'second call to STL2 returns too many data', nout2
+	 GOTO 999
+      ENDIF
 
       bad_y = bad_flag(ARG3)
       CALL STL2(xpts, arg_3, tol(3), nx, bad_y, bad_flag_result, 
      .   u3, v, w, nout3, IP)
+      IF (nout1 .GT. res_hi_ss(X_AXIS)) THEN
+        write (errtxt,*) 'third call to STL2 returns too many data', nout3
+	 GOTO 999
+      ENDIF
 
 * Truncate result(j=1) to next lowest integer - its going to be
 * the set of coordinate values to sample at.
 
-      DO 100 i = 1, nout1+nout2+1
+      DO 100 i = 1, nout1+nout2
 	 w(i) = 0.
  100  CONTINUE
 
       CALL merge (u1,nout1,u2,nout2,w,nmerge1)
+      IF (nout1 .GT. res_hi_ss(X_AXIS)) THEN
+        write (errtxt,*) 'nmerge1 too large', nmerge1
+	 GOTO 999
+      ENDIF
 
-      DO 200 i = 1, res_hi_ss(1)
-	 result(i,k,k,k,k,k) = 0.
+      DO 200 i = 1, nout1+nout2
+	 v(i) = 0.
  200  CONTINUE
 
-      CALL merge (w,nmerge1,u3,nout3,result(1,k,k,k,k,k),nmerge2)
+      CALL merge (w,nmerge1,u3,nout3,v,nmerge2)
+	      IF (nout1 .GT. res_hi_ss(X_AXIS)) THEN
+        write (errtxt,*) 'nmerge2 too large', nmerge2
+	 GOTO 999
+      ENDIF
 
-      DO 300 i = nmerge2+1, res_hi_ss(X_AXIS)
-	 result(i,k,k,k,k,k) = bad_flag_result
+      DO 300 i = 1, nmerge2
+        result(i,k,k,k) = v(i)
  300  CONTINUE
 
-      arg_7(1,k,k,k,k,k)  = nmerge2
+      DO 400 i = nmerge2+1, res_hi_ss(X_AXIS)
+        result(i,k,k,k) = bad_flag_result
+ 400  CONTINUE
 
       RETURN
  999  CALL EF_BAIL_OUT(id, errtxt)
@@ -865,6 +885,7 @@ c http://en.wikibooks.org/wiki/Algorithm_Implementation/Sorting/Merge_sort#Fortr
 	 endif
       enddo
       nout = j
+
       return
  
       end ! subroutine merge

@@ -221,6 +221,7 @@
 *                  axis as modulo.
 * V685 *adm*  1/13 DEFINE VARIABLE/REMOTE. Require /D= to accompany /REMOTE.
 * V685 *acm*  4/13 Add /HIDDEN on DEF DATA/AGG
+* V685 *acm* 10/13 Fix ticket 2096, DEFINE GRID with check on units
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -533,7 +534,8 @@
 	      iline = TM_GET_LINENUM( buff1 )
 	      IF ( iline .NE. unspecified_int4 ) THEN
 * ... line given by name - don't allow inappropriate units
- 	         orient_t = orient.EQ.t_dim .OR. orient.EQ.f_dim
+ 	         orient_t = idim.EQ.t_dim .OR. idim.EQ.f_dim
+		 iunit = line_unit_code ( iline )
  	         IF ( iunit.NE.0 ) THEN
  	            IF ( (  orient_t .AND.
      .		     (iunit.LT.pun_1st_time .OR. iunit.GT.pun_last_time) )

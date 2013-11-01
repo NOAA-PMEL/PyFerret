@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 59872635 Sep 23 10:57 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 43440940 Oct 30 15:07 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2094, PLOT/COLOR with no argument starts with pen 2
+Note: fixing ticket 2098, ensemble with LET/D variables
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Mon Sep 23 10:58:01 PDT 2013
+Beginning at Wed Oct 30 15:11:27 PDT 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3220,10 +3220,26 @@ Replacing definition of axis TAXIS
 Replacing definition of axis TNEW
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+
+Bailing out of external function "eofsvd_stat":
+	There are no spatial locations having complete time series.
+
+Bailing out of external function "eofsvd_space":
+	There are no spatial locations having complete time series.
+
+Bailing out of external function "eofsvd_tfunc":
+	There are no spatial locations having complete time series.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis YAXIS
 Replacing definition of axis TAXIS
+Replacing definition of axis XAXIS
+ **ERROR: error in external function
+list eofsvd_stat(spacegap)
+ **ERROR: error in external function
+list eofsvd_space(spacegap)
+ **ERROR: error in external function
+list eofsvd_tfunc(spacegap)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3466,6 +3482,9 @@ Replacing definition of axis AXI_COARSE
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis ZAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file append_to_this.nc
@@ -3588,4 +3607,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Sep 23 11:00:03 PDT 2013
+Ended at Wed Oct 30 15:13:08 PDT 2013

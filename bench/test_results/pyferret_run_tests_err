@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Oct 21 09:59 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Nov  1 15:19 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret on RHEL5-64
@@ -222,7 +222,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Oct 21 10:01:33 PDT 2013
+Beginning at Fri Nov  1 15:20:18 PDT 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3066,7 +3066,23 @@ DEFINE VARIABLE A = ifv I LT 5 THEN I ELSE -9
 *** Running test: bn_xml_header.jnl
  Cached data cleared from memory
 *** Running test: bn_eof_simple.jnl
+
+Bailing out of external function "eofsvd_stat":
+	There are no spatial locations having complete time series.
+
+Bailing out of external function "eofsvd_space":
+	There are no spatial locations having complete time series.
+
+Bailing out of external function "eofsvd_tfunc":
+	There are no spatial locations having complete time series.
  Cached data cleared from memory
+Replacing definition of axis XAXIS
+ **ERROR: error in external function
+list eofsvd_stat(spacegap)
+ **ERROR: error in external function
+list eofsvd_space(spacegap)
+ **ERROR: error in external function
+list eofsvd_tfunc(spacegap)
 *** Running test: bn_eof_simple2.jnl
  Cached data cleared from memory
 *** Running test: bn_interpolate_6d.jnl
@@ -3286,6 +3302,8 @@ Replacing definition of axis AXI_COARSE
  LISTing to file sst_new.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
 *** Running test: bn_nco_append.jnl
@@ -3335,4 +3353,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Mon Oct 21 10:05:54 PDT 2013
+Ended at Fri Nov  1 15:24:20 PDT 2013

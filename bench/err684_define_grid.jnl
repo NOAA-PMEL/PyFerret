@@ -1,0 +1,12 @@
+! err684_define_grid.jnl
+! 25-Oct-2013 ACM
+!
+! Bug 2096, defining grid with some user-defined axes. Previously
+! this resulted in err msg with inappropriate orientation for Z axis
+
+define axis/z=0:100:2/depth/unit=meters zax
+define axis/x=-178:-157:1/units=degrees_east lon_ax
+define axis/y=54:66:0.5/units=degrees_north lat_ax
+
+define grid/x=lon_ax/y=lat_ax/z=zax three_d_grd
+

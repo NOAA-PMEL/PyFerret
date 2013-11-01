@@ -75,6 +75,7 @@
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
 *                 various SHOW commnands will not list info for E,F dimensions.
 * v6.85  *acm* 4/13 Can show grid for variables in an ensemble aggregated dataset.
+* v6.85  *acm* 10/13 See ticket 1098, extraneous lines when error getting grid.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -165,6 +166,7 @@
 
            IF (is_undetermined .AND. ds_type(dset).EQ.'ENS') THEN
 	      igrid = GRID_FROM_NAME(ds_var_code(ivar), cx_last, status)
+	      IF (status .NE. ferr_ok) GOTO 5000
 	      CALL TM_DEALLO_DYN_GRID (igrid)  
 
 *  Fill the grid in as in is_aggregate_grid

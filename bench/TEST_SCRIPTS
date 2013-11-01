@@ -199,5 +199,7 @@ bn_dsg_e_x.jnl
 bn_nco_append.jnl
 bn_nobounds.jnl
 bn_write_integer_att.jnl
+bn_descriptor_mc.jnl
+bn_plot_color_only.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

@@ -161,11 +161,7 @@
 
 	rzero = 0.0
 	rone = 1.0
-
-* Decipher /SIZE /ASPECT /XPIXELS /YPIXELS /XINCHES /YINCHES
-        CALL WINDOW_SIZE_FROM_OPTS(xinches, yinches, 
-     .              xpixels, ypixels, physical_chg, status)
-        IF ( status .NE. ferr_ok ) RETURN
+        physical_chg = .FALSE.
 
 * /TITLE=text
 * This text becomes the name of the workstation. The name gets truncated 
@@ -211,7 +207,7 @@ c 75        CONTINUE
 * main window opened yet ?
 	IF ( .NOT.pplus_started ) THEN
 	   CALL START_PPLUS(.TRUE.)
-*          this opens a window, so need to set phsical_chg .TRUE. to resize it
+*          this opens a window, so need to set physical_chg .TRUE. to resize it
            physical_chg = .TRUE.
 	ENDIF
 
@@ -349,6 +345,11 @@ c 75        CONTINUE
  80	   CONTINUE
 	ENDIF
 
+* Decipher /SIZE /ASPECT /XPIXELS /YPIXELS /XINCHES /YINCHES
+        CALL WINDOW_SIZE_FROM_OPTS(n, xinches, yinches, 
+     .              xpixels, ypixels, physical_chg, status)
+        IF ( status .NE. ferr_ok ) RETURN
+
         IF ( physical_chg ) THEN
 * tell ppl of the new default sizes for this window
            wn_xinches(n) = xinches
@@ -400,27 +401,14 @@ c 75        CONTINUE
            BSIZE = 0.0
            CALL SET_VIEWPORT( mvp_dflt )
 
-*          At this point the DPIs are known, so now we can figure out
-*          the scaling factor to send to the viewer so the image is the
-*          desired pixel size, if given.  
-           IF ( (xpixels .GT. 0) .AND. (ypixels .GT. 0) ) THEN
-*             The value for xpixels and ypixels were assigned assuming 
-*             square pixels, which now is a very good assumption.
-*             But in case not, and to make up for integer rounding,
-*             compute the scaling factor using both height and width.
-              xsc = xpixels / (xinches * windowdpix(n))
-              ysc = ypixels / (yinches * windowdpiy(n))
-              sc = SQRT(xsc * ysc)
-           ELSE
-*             Traditional Ferret had a default /SIZE=0.7;
-*             thus scaling the width and height by SQRT(0.7)
-              sc = dflt_imgscale
-              xpixels = xinches * windowdpix(n) * sc
-              ypixels = yinches * windowdpiy(n) * sc
-           ENDIF
-*          Send the scaling factor, even if 1.0, 
-*          to ensure the displayed image is the correct size
+*          Send the scaling factor to the viewer so the image is 
+*          the desired pixel size.  To make up for integer rounding, 
+*          compute the scaling factor using both height and width.
+           xsc = xpixels / (xinches * windowdpix(n))
+           ysc = ypixels / (yinches * windowdpiy(n))
+           sc = SQRT(xsc * ysc)
            CALL FGD_SEND_IMAGE_SCALE(n, sc)
+
 *          Save xpixels and ypixels only for specifying the default
 *          size when saving raster graphics.
            wn_xpixels(n) = xpixels

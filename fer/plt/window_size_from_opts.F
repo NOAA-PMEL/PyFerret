@@ -1,4 +1,4 @@
-        SUBROUTINE WINDOW_SIZE_FROM_OPTS(xinches, yinches, 
+        SUBROUTINE WINDOW_SIZE_FROM_OPTS(windid, xinches, yinches, 
      .                    xpixels, ypixels, physical_chg, istat)
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -33,9 +33,13 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
 * Deal with SET WINDOW size options.  If there are no size options
-* specified, physical_change will be .FALSE.
+* specified and physical_chg if .FALSE., the routine immediately
+* returns without changing any values.  If any size options are 
+* given, physical_chg is set to .TRUE. and the size options are
+* processed.  If no size options are given but physical_chg is
+* .TRUE., default values based on the window DPI values are assigned.
+* This assumes that the window given by windid exists for FGD_GQDSP.
 *
 
         IMPLICIT NONE
@@ -45,10 +49,11 @@
         INCLUDE 'plot_setup.parm'
         INCLUDE 'xplot_setup.cmn'
         INCLUDE 'xprog_state.cmn'
+        INCLUDE 'fgrdel.cmn'
 
 * calling argument declarations:
         REAL*4  xinches, yinches 
-        INTEGER xpixels, ypixels, istat
+        INTEGER windid, xpixels, ypixels, istat
         LOGICAL physical_chg
 
 * function declaractions
@@ -75,17 +80,10 @@
         LOGICAL   size_gvn, aspect_gvn, 
      .            xpixels_gvn, ypixels_gvn, 
      .            xinches_gvn, yinches_gvn
-        INTEGER   qp, colon_pos
+        INTEGER   qp, colon_pos, dspunit, imaxx, imaxy
         REAL      val, aspect, xtmp, ytmp
+        REAL*4    dmaxx, dmaxy
         CHARACTER buffer*80, numbuff*24, asp_ref*1
-
-*       Set the default page size and image size
-        xinches = dflt_xinches
-        yinches = dflt_yinches
-        aspect  = dflt_yinches / dflt_xinches
-        xpixels = -1
-        ypixels = -1
-        physical_chg = .FALSE.
 
 *       No size changes during animation
         IF ( animate ) 
@@ -99,8 +97,10 @@
         yinches_gvn = qual_given( slash_yinches ) .GT. 0
 
 *       Check if there are any sizing options specified
-        IF ( .NOT. (size_gvn .OR. aspect_gvn .OR. xpixels_gvn .OR.
-     .              ypixels_gvn .OR. xinches_gvn .OR. yinches_gvn) ) 
+        IF ( .NOT. (physical_chg .OR. 
+     .              size_gvn .OR. aspect_gvn .OR. 
+     .              xpixels_gvn .OR. ypixels_gvn .OR. 
+     .              xinches_gvn .OR. yinches_gvn) ) 
      .     GOTO 4990
 
 *       Check for conflicting sizing options
@@ -114,7 +114,19 @@
         IF ( size_gvn .AND. (xpixels_gvn .OR. ypixels_gvn) )
      .     GOTO 5040
 
+*       size options specified
         physical_chg = .TRUE.
+
+*       Set the default page size and image size independent of window DPI
+        xinches = dflt_xinches
+        yinches = dflt_yinches
+        aspect  = dflt_yinches / dflt_xinches
+        xpixels = -1
+        ypixels = -1
+
+*       make sure we have the correct dpi's for this window
+        CALL FGD_GQDSP(windid, istat, dspunit,
+     .                 dmaxx, dmaxy, imaxx, imaxy)
 
 *       Default to edges for the aspect
         asp_ref = 'E'
@@ -170,25 +182,7 @@
         IF ( xinches_gvn .AND. yinches_gvn )
      .     aspect = DBLE(yinches) / DBLE(xinches)
 
-*       Get the image size
-        IF ( size_gvn ) THEN
-*          for backwards compatibility; not really recommended anymore
-           qp = qual_given( slash_size )
-           CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)),
-     .                    val, istat)
-           IF ( istat .NE. ferr_ok ) RETURN
-           IF ( val .EQ. unspecified_val4 ) THEN
-              buffer = 'size value ?'
-              GOTO 5060
-           ENDIF
-*          make it so the image scaling factor will be close to SQRT(val)
-           xpixels = NINT(96.0 * dflt_xinches * SQRT(val))
-           ypixels = NINT(96.0 * dflt_yinches * SQRT(val))
-*          not exactly the limit, since this is prior to aspect 
-*          correction, but good enough
-           IF ( (xpixels .LT. 128) .OR. (ypixels .LT. 128) ) GOTO 5070
-*          Aspect will be adjusted below
-        ENDIF
+*       Get the raster image size
         IF ( xpixels_gvn ) THEN
            qp = qual_given( slash_xpixels )
            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)),
@@ -246,29 +240,67 @@
               xinches = SQRT(xtmp * xinches)
               yinches = SQRT(yinches * ytmp)
            ENDIF
-           IF ( (xinches .LT. 1.0) .OR. (yinches .LT. 1.0) ) GOTO 5090
+           IF ( (xinches .LT. 1.0) .OR. (yinches .LT. 1.0) ) GOTO 5080
         ENDIF
 
 *       Change an axis aspect ratio to an edges aspect ratio
         IF ( asp_ref .EQ. 'A' ) THEN
-           aspect = yinches / xinches
+           aspect = DBLE(yinches) / DBLE(xinches)
            asp_ref = 'E'
         ENDIF
 
-*       Fill in missing xpixels and ypixels if one, or size, was given
-*       If none were given, leave as -1 to use screen dpi (no scaling).
+*       Fill in missing xpixels and ypixels if only one was given
         IF ( xpixels_gvn .AND. .NOT. ypixels_gvn ) THEN
            ypixels = NINT(xpixels * aspect)
            IF ( ypixels .LT. 128 ) GOTO 5090
         ELSEIF ( ypixels_gvn .AND. .NOT. xpixels_gvn ) THEN 
            xpixels = NINT(ypixels / aspect)
            IF ( xpixels .LT. 128 ) GOTO 5090
-        ELSEIF ( size_gvn ) THEN
-           xtmp = SQRT(xpixels * ypixels / aspect)
-           ytmp = SQRT(xpixels * ypixels * aspect)
-           xpixels = NINT(xtmp)
-           ypixels = NINT(ytmp)
+        ENDIF
+
+*       Process /size if given instead of /xpixel and /ypixel
+*       For backwards compatibility; not really recommended anymore
+        IF ( size_gvn ) THEN
+           qp = qual_given( slash_size )
+           CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)),
+     .                    val, istat)
+           IF ( istat .NE. ferr_ok ) RETURN
+           IF ( val .EQ. unspecified_val4 ) THEN
+              buffer = 'size value ?'
+              GOTO 5060
+           ENDIF
+        ELSE IF ( xinches_gvn .OR. yinches_gvn ) THEN
+*          If page size given, set default /SIZE=1.0
+           val = 1.0
+        ELSE
+*          Traditional Ferret had a default /SIZE=0.7
+           val = dflt_imgscale
+        ENDIF
+
+        IF ( .NOT. (xpixels_gvn .OR. ypixels_gvn) ) THEN
+           IF ( xinches_gvn .OR. yinches_gvn ) THEN
+*             page size given but not pixel size;
+*             make it so the image scaling factor will be close to SQRT(val)
+              xpixels = NINT(windowdpix(windid) * xinches * SQRT(val))
+              ypixels = NINT(windowdpiy(windid) * yinches * SQRT(val))
+           ELSE
+*             neither page size not pixel size given;
+*             make it so the page size is close to SQRT(val) times the default 
+*             page size and the image scaling factor will be close to 1.0
+              xinches = xinches * SQRT(val)
+              yinches = yinches * SQRT(val)
+              IF ( (xinches .LT. 1.0) .OR. (yinches .LT. 1.0) ) 
+     .           GOTO 5080
+              xpixels = NINT(windowdpix(windid) * xinches)
+              ypixels = NINT(windowdpiy(windid) * yinches)
+           ENDIF
            IF ( (xpixels .LT. 128) .OR. (ypixels .LT. 128) ) GOTO 5090
+        ELSEIF ( .NOT. (xinches_gvn .OR. yinches_gvn) ) THEN
+*          pixel size was specified, but page size was not; 
+*          make it so the image scaling factor will be close to 1.0
+           xinches = DBLE(xpixels) / DBLE(windowdpix(windid))
+           yinches = DBLE(ypixels) / DBLE(windowdpiy(windid))
+           IF ( (xinches .LT. 1.0) .OR. (yinches .LT. 1.0) ) GOTO 5080
         ENDIF
 
 * successful completion

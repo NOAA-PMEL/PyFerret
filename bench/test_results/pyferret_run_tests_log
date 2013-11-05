@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Nov  1 15:19 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Nov  5 11:39 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for PyFerret on RHEL5-64
+Note: RUN_TESTS.sh test results for PyFerret under RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -222,7 +222,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Nov  1 15:20:18 PDT 2013
+Beginning at Tue Nov  5 11:40:38 PST 2013
 *** Running test: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10342,42 +10342,42 @@ go mp_hammer
 set grid sst
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Hammer
- !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 Hammer
+ !-> PPL %LABEL/nouser 2.293,-0.4,0,0,.20 Hammer
  
 set view tm
 go mp_sinusoidal
 go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Sinusoidal
- !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 Sinusoidal
+ !-> PPL %LABEL/nouser 2.293,-0.4,0,0,.20 Sinusoidal
  
 set view tr
 go mp_lambert_cyl
 go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Lambert Equal Area
- !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 Lambert Equal Area
+ !-> PPL %LABEL/nouser 2.293,-0.4,0,0,.20 Lambert Equal Area
  
 set view ml
 go mp_bonne
 go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Bonne
- !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 Bonne
+ !-> PPL %LABEL/nouser 2.293,-0.4,0,0,.20 Bonne
  
 set view mm
 go mp_mcbryde_fpp
 go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 McBryde Flat Polar
- !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 McBryde Flat Polar
+ !-> PPL %LABEL/nouser 2.293,-0.4,0,0,.20 McBryde Flat Polar
  
 set view mr
 go mp_polyconic
 go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Polyconic
- !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 Polyconic
+ !-> PPL %LABEL/nouser 2.293,-0.4,0,0,.20 Polyconic
  
 set view bl
 go mp_orthographic 300 45
@@ -10385,7 +10385,7 @@ go margins .2, .6, .2, .2
 let masked_sst = sst * mp_mask
 shade/nolab/nokey/noaxes masked_sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 OrthoGraphic
- !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 OrthoGraphic
+ !-> PPL %LABEL/nouser 2.293,-0.4,0,0,.20 OrthoGraphic
  
 set view bm
 set region/x=240:420
@@ -10393,7 +10393,7 @@ go mp_stereographic_eq
 go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Stereographic Equatorial
- !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 Stereographic Equatorial
+ !-> PPL %LABEL/nouser 2.293,-0.4,0,0,.20 Stereographic Equatorial
  
 set view br
 set region/x=0:360/y=00:90
@@ -10401,7 +10401,7 @@ go mp_stereographic_north
 go margins .2, .6, .2, .2
 shade/nolab/nokey/noaxes sst, x_page, y_page
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Stereographic North
- !-> PPL %LABEL/nouser 2.5255,-0.4,0,0,.20 Stereographic North
+ !-> PPL %LABEL/nouser 2.293,-0.4,0,0,.20 Stereographic North
  
 can region
 cancel viewport
@@ -10472,13 +10472,13 @@ FERRET_PLATFORM = "Linux 2.6.18-371.el5"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.0 of Jul  1 2013 12:53:13 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 1-Nov-13"
-SESSION_TIME = "15:20"
-SESSION_PID = "7152"
-DELTA_CPU = "0.529919"
-CLOCK_SECS = "0.323"
-CURRENT_DATE = " 1-Nov-13"
-CURRENT_TIME = "15:20:39"
+SESSION_DATE = " 5-Nov-13"
+SESSION_TIME = "11:40"
+SESSION_PID = "30854"
+DELTA_CPU = "0.350946"
+CLOCK_SECS = "0.2"
+CURRENT_DATE = " 5-Nov-13"
+CURRENT_TIME = "11:40:59"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -10501,13 +10501,13 @@ FERRET_PLATFORM = "Linux 2.6.18-371.el5"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.0 of Jul  1 2013 12:53:13 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 1-Nov-13"
-SESSION_TIME = "15:20"
-SESSION_PID = "7152"
-DELTA_CPU = "9.99E-04"
-CLOCK_SECS = "0.325"
-CURRENT_DATE = " 1-Nov-13"
-CURRENT_TIME = "15:20:39"
+SESSION_DATE = " 5-Nov-13"
+SESSION_TIME = "11:40"
+SESSION_PID = "30854"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "0.201"
+CURRENT_DATE = " 5-Nov-13"
+CURRENT_TIME = "11:40:59"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 S1 = "hello"
@@ -10517,9 +10517,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 1-Nov-13"
-SESSION_TIME = "15:20"
-SESSION_PID = "7152"
+SESSION_DATE = " 5-Nov-13"
+SESSION_TIME = "11:40"
+SESSION_PID = "30854"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10529,15 +10529,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 1-Nov-13"
-SESSION_TIME = "15:20"
-SESSION_PID = "7152"
+SESSION_DATE = " 5-Nov-13"
+SESSION_TIME = "11:40"
+SESSION_PID = "30854"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 1-Nov-13"
-SESSION_TIME = "15:20"
-SESSION_PID = "7152"
+SESSION_DATE = " 5-Nov-13"
+SESSION_TIME = "11:40"
+SESSION_PID = "30854"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10668,13 +10668,13 @@ FERRET_PLATFORM = "Linux 2.6.18-371.el5"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.0 of Jul  1 2013 12:53:13 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 1-Nov-13"
-SESSION_TIME = "15:20"
-SESSION_PID = "7152"
-DELTA_CPU = "0.023997"
-CLOCK_SECS = "0.348"
-CURRENT_DATE = " 1-Nov-13"
-CURRENT_TIME = "15:20:39"
+SESSION_DATE = " 5-Nov-13"
+SESSION_TIME = "11:40"
+SESSION_PID = "30854"
+DELTA_CPU = "0.015997"
+CLOCK_SECS = "0.217"
+CURRENT_DATE = " 5-Nov-13"
+CURRENT_TIME = "11:40:59"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -25204,7 +25204,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Fri Nov  1 15:20:58 PDT 2013
+Tue Nov  5 11:41:18 PST 2013
  
 GO bn_reset
 cancel mode verify
@@ -35044,31 +35044,31 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 4.72E+00 CSIZE= 1.00E-01
+         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 4.32E+00 CSIZE= 9.15E-02
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 1.38E+00  AUTO LABELLING
+         XORG= 1.26E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 4.72E+00 CSIZE= 1.00E-01
+         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 4.32E+00 CSIZE= 9.15E-02
           LEFT AXIS= ON  RIGHT AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 1.38E+00  AUTO LABELLING
+         YORG= 1.26E+00  AUTO LABELLING
  
 ! guidelines showing origin, axlen, white space
 def view /xlim=0.25:0.75/ylim=0.25:0.75/text=1/axes mid2
 set view mid2
 ppl origin 0,0
 define symbol xaxl `($PPL$WIDTH)/2`
- !-> define symbol xaxl 4.7235
+ !-> define symbol xaxl 4.3205
 define symbol yaxl `($PPL$HEIGHT)/2`
- !-> define symbol yaxl 4.7235
+ !-> define symbol yaxl 4.3205
 ppl axlen `1.375 + ($xaxl) + 1.375`,`1.375 + ($yaxl) + 1.375`
- !-> ppl axlen 7.4735,7.4735
+ !-> ppl axlen 7.0705,7.0705
 plot/vs/hlim=-1.375:`($xaxl)+1.375`:0.25/vlim=-1.375:`($yaxl)+1.375`:0.25/nolab/nolab {0,($xaxl)}, {0,($yaxl)}
- !-> plot/vs/hlim=-1.375:6.0985:0.25/vlim=-1.375:6.0985:0.25/nolab/nolab {0,4.7235}, {0,4.7235}
+ !-> plot/vs/hlim=-1.375:5.6955:0.25/vlim=-1.375:5.6955:0.25/nolab/nolab {0,4.3205}, {0,4.3205}
  
 ! again with scale determined automatically
 ! make guide lines
@@ -35094,31 +35094,31 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 5.45E+00 CSIZE= 1.00E-01
+         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 4.99E+00 CSIZE= 9.15E-02
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 1.38E+00  AUTO LABELLING
+         XORG= 1.26E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 5.45E+00 CSIZE= 1.00E-01
+         LO=-1.00E+00 HI= 1.00E+00 TIC= 2.00E-01 LEN= 4.99E+00 CSIZE= 9.15E-02
           LEFT AXIS= ON  RIGHT AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 1.38E+00  AUTO LABELLING
+         YORG= 1.26E+00  AUTO LABELLING
  
 ! guidelines showing origin, axlen, white space
 def view /xlim=0.25:0.75/ylim=0.25:0.75/text=1/axes mid2
 set view mid2
 ppl origin 0,0
 define symbol xaxl `($PPL$WIDTH)/2`
- !-> define symbol xaxl 4.7235
+ !-> define symbol xaxl 4.3205
 define symbol yaxl `($PPL$HEIGHT)/2`
- !-> define symbol yaxl 4.7235
+ !-> define symbol yaxl 4.3205
 ppl axlen `1.375 + ($xaxl) + 1.375`,`1.375 + ($yaxl) + 1.375`
- !-> ppl axlen 7.4735,7.4735
+ !-> ppl axlen 7.0705,7.0705
 plot/vs/hlim=-1.375:`($xaxl)+1.375`:0.25/vlim=-1.375:`($yaxl)+1.375`:0.25/nolab/line {0,($xaxl)}, {0,($yaxl)}
- !-> plot/vs/hlim=-1.375:6.0985:0.25/vlim=-1.375:6.0985:0.25/nolab/line {0,4.7235}, {0,4.7235}
+ !-> plot/vs/hlim=-1.375:5.6955:0.25/vlim=-1.375:5.6955:0.25/nolab/line {0,4.3205}, {0,4.3205}
  
 set wind/clear
  
@@ -35141,7 +35141,7 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.32E+00 CSIZE= 9.15E-02
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          XORG= 0.00E+00  AUTO LABELLING
@@ -35149,7 +35149,7 @@ ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.32E+00 CSIZE= 9.15E-02
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          YORG= 0.00E+00  AUTO LABELLING
@@ -35161,7 +35161,7 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.32E+00 CSIZE= 9.15E-02
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          XORG= 0.00E+00  AUTO LABELLING
@@ -35169,10 +35169,10 @@ ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.32E+00 CSIZE= 9.15E-02
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 1.38E+00  AUTO LABELLING
+         YORG= 1.26E+00  AUTO LABELLING
  
 def view/axes/xlim=0.5:1/ylim=0:0.5/text=1 ulax
 set view ulax
@@ -35181,15 +35181,15 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.32E+00 CSIZE= 9.15E-02
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 1.38E+00  AUTO LABELLING
+         XORG= 1.26E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.32E+00 CSIZE= 9.15E-02
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          YORG= 0.00E+00  AUTO LABELLING
@@ -35201,18 +35201,18 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.32E+00 CSIZE= 9.15E-02
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 1.38E+00  AUTO LABELLING
+         XORG= 1.26E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.72E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 4.32E+00 CSIZE= 9.15E-02
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 1.38E+00  AUTO LABELLING
+         YORG= 1.26E+00  AUTO LABELLING
  
 ! again with viewport scaling determined automatically
 set wind/clear
@@ -35230,7 +35230,7 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.03E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 5.51E+00 CSIZE= 9.15E-02
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          XORG= 0.00E+00  AUTO LABELLING
@@ -35238,7 +35238,7 @@ ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.03E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 5.51E+00 CSIZE= 9.15E-02
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          YORG= 0.00E+00  AUTO LABELLING
@@ -35256,7 +35256,7 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.03E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 5.51E+00 CSIZE= 9.15E-02
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          XORG= 0.00E+00  AUTO LABELLING
@@ -35264,10 +35264,10 @@ ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.03E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 5.51E+00 CSIZE= 9.15E-02
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 1.38E+00  AUTO LABELLING
+         YORG= 1.26E+00  AUTO LABELLING
  
 def view/axes/xlim=0.5:1/ylim=0:0.5 ulax
 show view ulax
@@ -35282,15 +35282,15 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.03E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 5.51E+00 CSIZE= 9.15E-02
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 1.38E+00  AUTO LABELLING
+         XORG= 1.26E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.03E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 5.51E+00 CSIZE= 9.15E-02
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          YORG= 0.00E+00  AUTO LABELLING
@@ -35308,18 +35308,18 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.03E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 5.51E+00 CSIZE= 9.15E-02
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 1.38E+00  AUTO LABELLING
+         XORG= 1.26E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.03E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 5.51E+00 CSIZE= 9.15E-02
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 1.38E+00  AUTO LABELLING
+         YORG= 1.26E+00  AUTO LABELLING
  
 cancel view
 go ptest
@@ -35332,18 +35332,18 @@ ppl list xaxis
 
 
          XAXIS QUALITIES
-         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.70E+00 CSIZE= 1.00E-01
+         LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.13E+00 CSIZE= 9.15E-02
           TOP AXIS= ON  BOTTOM AXIS= ON 
          MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         XORG= 1.38E+00  AUTO LABELLING
+         XORG= 1.26E+00  AUTO LABELLING
 ppl list yaxis
 
 
          YAXIS QUALITIES
-         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.70E+00 CSIZE= 1.00E-01
+         LO=-2.50E+02 HI= 3.00E+02 TIC= 5.00E+01 LEN= 6.13E+00 CSIZE= 9.15E-02
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
-         YORG= 1.38E+00  AUTO LABELLING
+         YORG= 1.26E+00  AUTO LABELLING
 *** Running test: bn_strings.jnl
 ! bn_strings.jnl
  
@@ -47096,7 +47096,7 @@ use coads_climatology
  
 shade/set/lev=(-inf),(4,28,2)(inf) sst[l=1]
 ppl shakey,1,0,-0.1,,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
- !-> ppl shakey,1,0,-0.1,,,,,,7.225
+ !-> ppl shakey,1,0,-0.1,,,,,,4.607
 ppl shade
  
 can view
@@ -47131,13 +47131,13 @@ can view
 set view upper
 fill/x=20e:150e/set/lev=(-inf),(4,28,0.5)(inf)/y=0:90 sst[l=1]
 ppl shakey,1,0,-0.1,10,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
- !-> ppl shakey,1,0,-0.1,10,,,,,2.975
+ !-> ppl shakey,1,0,-0.1,10,,,,,1.919
 ppl fill
  
 set view lower
 shade/set/lev=(-inf),(4,28,0.5)(inf)/y=0:90/key=cont sst[l=1]
 ppl shakey,1,0,-0.1,10,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
- !-> ppl shakey,1,0,-0.1,10,,,,,2.975
+ !-> ppl shakey,1,0,-0.1,10,,,,,1.919
 ppl shade
  
 ! Some one-sided examples
@@ -47147,7 +47147,7 @@ fill/lev=(-2,28,1)(inf) sst[l=1]
  
 shade/set/lev=(-inf),(4,30,0.5)/key=cont/pal=rainbow sst[l=1]
 ppl shakey,1,0,-0.1,10,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
- !-> ppl shakey,1,0,-0.1,10,,,,,7.225
+ !-> ppl shakey,1,0,-0.1,10,,,,,4.607
 ppl shade
  
 let filler = missing(sst[l=1],-999)
@@ -48417,7 +48417,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "1-Nov-13_15:22"
+WIN_TITLE = "5-Nov-13_11:42"
  
 set win/title="set the title"
 sho sym win_title
@@ -48435,7 +48435,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 1-Nov-13:15:22"
+ !-> set win/title=" 5-Nov-13:11:42"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48444,16 +48444,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date =  1-Nov-13
+ !-> DEFINE SYMBOL the_date =  5-Nov-13
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 15:22
+ !-> DEFINE SYMBOL the_time = 11:42
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="1-Nov-13:15:22"
+ !-> SET WIN/TITLE="5-Nov-13:11:42"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "1-Nov-13:15:22"
+WIN_TITLE = "5-Nov-13:11:42"
 *** Running test: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -52712,7 +52712,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -52757,7 +52757,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -58624,10 +58624,10 @@ SH GRID am
  normal    F
 *** Running test: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.52292"
-CLOCK_SECS = "0.303"
-CURRENT_DATE = " 1-Nov-13"
-CURRENT_TIME = "15:23:10"
+DELTA_CPU = "0.354945"
+CLOCK_SECS = "0.195"
+CURRENT_DATE = " 5-Nov-13"
+CURRENT_TIME = "11:43:23"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -58636,8 +58636,8 @@ CURRENT_TIME = "15:23:10"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.047992"
-CLOCK_SECS = "0.352"
+DELTA_CPU = "0.041993"
+CLOCK_SECS = "0.237"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -58651,60 +58651,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.537918
+ !-> DEFINE VARIABLE ten_plots = 0.551917
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "0.89"
+CLOCK_SECS = "0.79"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.89"
+CLOCK_SECS = "0.79"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.035995
- !-> DEFINE VARIABLE sumcpu =0.035995
+ !-> DEFINE VARIABLE dt = 0.036994
+ !-> DEFINE VARIABLE sumcpu =0.036994
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.074989
+ !-> DEFINE VARIABLE dt = 0.040994
+ !-> DEFINE VARIABLE sumcpu =0.077988
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.039994
- !-> DEFINE VARIABLE sumcpu =0.114983
+ !-> DEFINE VARIABLE dt = 0.040994
+ !-> DEFINE VARIABLE sumcpu =0.118982
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.039994
- !-> DEFINE VARIABLE sumcpu =0.154977
+ !-> DEFINE VARIABLE dt = 0.041993
+ !-> DEFINE VARIABLE sumcpu =0.160975
 !-> REPEAT: K=5
  !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.193971
+ !-> DEFINE VARIABLE sumcpu =0.199969
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.232965
+ !-> DEFINE VARIABLE dt = 0.040994
+ !-> DEFINE VARIABLE sumcpu =0.240963
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.036995
- !-> DEFINE VARIABLE sumcpu =0.26996
+ !-> DEFINE VARIABLE dt = 0.036994
+ !-> DEFINE VARIABLE sumcpu =0.277957
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.035994
- !-> DEFINE VARIABLE sumcpu =0.305954
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.314952
 !-> REPEAT: K=9
  !-> DEFINE VARIABLE dt = 0.034995
- !-> DEFINE VARIABLE sumcpu =0.340949
+ !-> DEFINE VARIABLE sumcpu =0.349947
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.374944
+ !-> DEFINE VARIABLE dt = 0.034994
+ !-> DEFINE VARIABLE sumcpu =0.384941
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.374944
-0.374944
+ !-> MESSAGE/CONTINUE 0.384941
+0.384941
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.267"
+CLOCK_SECS = "1.176"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = " 1-Nov-13"
-SESSION_TIME = "15:23"
-CURRENT_DATE = " 1-Nov-13"
-CURRENT_TIME = "15:23:11"
+SESSION_DATE = " 5-Nov-13"
+SESSION_TIME = "11:43"
+CURRENT_DATE = " 5-Nov-13"
+CURRENT_TIME = "11:43:24"
 *** Running test: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -62613,8 +62613,8 @@ list contents
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.85 (PyFerret 1.0.0beta)"                                       
- 3    /  3:" ! Linux 2.6.18-371.el5 - 11/01/13"                                         
- 4    /  4:" !  1-Nov-13 15:23     "                                                    
+ 3    /  3:" ! Linux 2.6.18-371.el5 - 11/05/13"                                         
+ 4    /  4:" !  5-Nov-13 11:43     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -65042,42 +65042,42 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.4093
- 2   / 2:  0.0085
- 3   / 3:  0.3478
- 4   / 4:  0.4919
- 5   / 5:  0.6039
+ 1   / 1:  0.0421
+ 2   / 2:  0.2139
+ 3   / 3:  0.9474
+ 4   / 4:  0.5332
+ 5   / 5:  0.7064
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.7825
- 2   / 2:  0.9221
- 3   / 3:  0.0078
- 4   / 4:  0.1911
- 5   / 5:  0.3005
+ 1   / 1:  0.8658
+ 2   / 2:  0.2378
+ 3   / 3:  0.4455
+ 4   / 4:  0.0622
+ 5   / 5:  0.7393
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.9230
- 2   / 2:  0.8471
- 3   / 3:  0.9224
- 4   / 4:  0.3917
- 5   / 5:  0.7363
- 6   / 6:  0.5625
+ 1   / 1:  0.7190
+ 2   / 2:  0.3696
+ 3   / 3:  0.0589
+ 4   / 4:  0.5492
+ 5   / 5:  0.0703
+ 6   / 6:  0.6171
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.3185
- 2   / 2:  0.2776
- 3   / 3:  0.6960
- 4   / 4:  0.5376
- 5   / 5:  0.5529
- 6   / 6:  0.8296
+ 1   / 1:  0.8996
+ 2   / 2:  0.2077
+ 3   / 3:  0.8097
+ 4   / 4:  0.4594
+ 5   / 5:  0.0850
+ 6   / 6:  0.6264
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
@@ -65109,42 +65109,42 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.6267
- 2   / 2:  0.1850
- 3   / 3:  0.0871
- 4   / 4: -0.0868
- 5   / 5: -0.3336
+ 1   / 1:  0.3474
+ 2   / 2: -0.0562
+ 3   / 3: -0.5832
+ 4   / 4:  0.2281
+ 5   / 5: -0.3713
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.408
- 2   / 2:  1.147
- 3   / 3:  0.397
- 4   / 4: -0.822
- 5   / 5: -1.445
+ 1   / 1:  0.831
+ 2   / 2: -1.342
+ 3   / 3: -0.916
+ 4   / 4:  0.880
+ 5   / 5:  1.276
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  1.137
- 2   / 2: -0.446
- 3   / 3: -0.151
- 4   / 4:  0.342
- 5   / 5:  0.614
- 6   / 6:  1.365
+ 1   / 1: -0.284
+ 2   / 2: -0.776
+ 3   / 3: -0.319
+ 4   / 4:  0.596
+ 5   / 5:  2.189
+ 6   / 6: -0.105
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.772
- 2   / 2:  1.148
- 3   / 3:  2.320
- 4   / 4:  0.729
- 5   / 5:  2.584
- 6   / 6:  0.285
+ 1   / 1:  0.234
+ 2   / 2:  0.617
+ 3   / 3: -1.610
+ 4   / 4:  0.006
+ 5   / 5: -0.332
+ 6   / 6: -0.133
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
@@ -65180,14 +65180,14 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
             VAR2   VAR2    VAR2
-0     / 1:  1.944  1.944  0.4690
-20    / 2:  1.552  1.552  0.4690
-40    / 3:  0.469  0.469  0.3944
-60    / 4:  0.394  0.394  0.4690
-80    / 5: -0.064 -0.064  0.4690
-100   / 6: -0.138 -0.138  0.4690
-120   / 7: -0.267 -0.138  0.4690
-140   / 8:  0.580  0.580  0.5799
+0     / 1:  1.369  1.369  0.5937
+20    / 2:  1.325  1.325  0.5937
+40    / 3:  0.594  0.594  0.0585
+60    / 4:  0.058  0.058  0.1104
+80    / 5: -0.820 -0.310  0.1104
+100   / 6: -0.310 -0.310  0.1104
+120   / 7: -0.292 -0.292  0.1104
+140   / 8:  0.110  0.110  0.1104
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -70818,7 +70818,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70873,7 +70873,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70917,7 +70917,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70961,7 +70961,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70998,7 +70998,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71036,7 +71036,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71103,7 +71103,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71152,7 +71152,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71213,7 +71213,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71254,7 +71254,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71295,7 +71295,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71336,7 +71336,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71374,7 +71374,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71602,7 +71602,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71640,7 +71640,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71687,7 +71687,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71731,7 +71731,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71756,7 +71756,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71781,7 +71781,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13
+ .                               history         CHAR        43   T       FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13
                                  Conventions     CHAR        6    F       CF-1.0
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72210,7 +72210,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13" ;
+		:history = "FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72239,7 +72239,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13" ;
+		:history = "FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72290,7 +72290,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13" ;
+		:history = "FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72806,7 +72806,7 @@ variables:
 		CYCLE_ORIG:history = "From z2" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13" ;
+		:history = "FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13" ;
 		:Conventions = "CF-1.0" ;
 }
 *** Running test: bn_nobounds.jnl
@@ -72836,7 +72836,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13" ;
+		:history = "FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72867,7 +72867,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13" ;
+		:history = "FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72929,7 +72929,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13" ;
+		:history = "FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13" ;
 		:Conventions = "CF-1.0" ;
 }
  
@@ -72957,7 +72957,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.85 (PyFerret 1.0.0beta)  1-Nov-13" ;
+		:history = "FERRET V6.85 (PyFerret 1.0.0beta)  5-Nov-13" ;
 		:Conventions = "CF-1.0" ;
 }
  
@@ -73948,13 +73948,13 @@ FERRET_PLATFORM = "Linux 2.6.18-371.el5"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.0 of Jul  1 2013 12:53:13 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = " 1-Nov-13"
-SESSION_TIME = "15:24"
-SESSION_PID = "8558"
-DELTA_CPU = "0.537917"
-CLOCK_SECS = "0.319"
-CURRENT_DATE = " 1-Nov-13"
-CURRENT_TIME = "15:24:20"
+SESSION_DATE = " 5-Nov-13"
+SESSION_TIME = "11:44"
+SESSION_PID = "32218"
+DELTA_CPU = "0.379942"
+CLOCK_SECS = "0.236"
+CURRENT_DATE = " 5-Nov-13"
+CURRENT_TIME = "11:44:20"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -73979,7 +73979,7 @@ PPL$COMMAND_FILE = "$$MEMBUF$$"
 VP_WIDTH = "10.5"
 VP_HEIGHT = "8.5"
 PPL$SCALE = "1.0000"
-WIN_TITLE = "1-Nov-13_15:24"
+WIN_TITLE = "5-Nov-13_11:44"
 VP_SCALE = "1"
 VP_RT_MARGIN = "1.375"
 VP_TOP_MARGIN = "1.375"
@@ -74028,4 +74028,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Fri Nov  1 15:24:20 PDT 2013
+Ended at Tue Nov  5 11:44:20 PST 2013

@@ -18,6 +18,8 @@ do_4d_sum.F\
 do_4d_trans.F\
 do_4d_var.F\
 do_asn_regrid.F\
+do_aux_var_regrid.F\
+do_aux_var_regrid_1d.F\
 do_ave_int.F\
 do_ave_regrid.F\
 do_average.F\

@@ -180,6 +180,7 @@
 *                  in xml output.
 * V685 *acm*  6/13 Fixes for SHOW VAR/D= on file variables.
 * PyFr *kms*  7/13 Add additional information to SHOW WINDOWS
+* V685+ *sh*  9/13 Added SHOW VARIABLE/TREE  (a.k.a. /DEPENDENCIES)
 
         IMPLICIT NONE
 
@@ -206,6 +207,7 @@
 	include	'xfr_grid.cmn'
 	include	'xgks_devices.cmn'
 	include	'xalgebra.cmn'
+	include	'xdependency_tree.cmn'
 	include	'xgrid_chg_fcns.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
         include 'EF_Util.cmn'
@@ -279,7 +281,8 @@
      .          vseq, attid, save_deleted_list_result(max_uvar),
      .          cache_size, cache_nelems, cache_preemption,
      .          sho_file, idim, ndims, nvars, ngatts, recdim, npts,
-     .          vartype, outflag, num_clim_1, num_clim_n
+     .          vartype, outflag, num_clim_1, num_clim_n,
+     .          base_cx, base_isp
 	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p
 	CHARACTER EXPR_NAME*8, TM_FMT*12,
      .		default*10, show_str*2048, arg*128, name*128, arg30*30
@@ -796,6 +799,58 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	   CALL SHOW_DIAG_VARS( arg, memory(1,v1_blk1) )
 	   CALL FREE_MEMORY( v1_blk1, v1_nblks )
 	ENDIF
+
+* ... SHOW VARIABLE/TREE [expr]
+        IF ( qual_given(slash_show_var_tree) .GT. 0 ) THEN 
+*     /TREE=USER and /TREE=FILE
+	   iqual = qual_given( slash_show_var_tree )
+	   CALL EQUAL_STRING(cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .			   show_str, status )  ! show_str is just a buffer
+	   IF ( status .NE. ferr_ok ) RETURN
+	   IF     ( show_str(1:1) .EQ. ' '
+     .         .OR. show_str(1:1) .EQ. 'U') THEN
+             dependency_tree_show_uvars = .TRUE.  ! show user vars only
+             dependency_tree_show_fvars = .FALSE.
+	   ELSEIF ( show_str(1:1) .EQ. 'F' ) THEN
+             dependency_tree_show_uvars = .FALSE. ! show file vars only
+             dependency_tree_show_fvars = .TRUE.
+	   ELSEIF ( show_str(1:1) .EQ. 'A' ) THEN
+             dependency_tree_show_uvars = .TRUE.  ! show all vars
+             dependency_tree_show_fvars = .TRUE.
+           ELSE
+              GOTO 5150
+           ENDIF
+           base_isp = 8
+           base_cx = 8
+           CALL INIT_DEPENDENCIES( cx_last, .TRUE., base_isp, status )
+           IF (status.NE. ferr_ok) GOTO 5050
+           IF (slash_all .OR. num_args.EQ.0) THEN
+*       SHOW VAR/TREE  [no expression] with or without /ALL -- shows all uvars
+              CALL DELETE_OLD_EXPR
+              CALL deleted_list_get_undel(uvar_num_items_head, 
+     .                          deleted_list_result(1),
+     .                          max_uvar, num_indices )
+              DO 1008 i = 1, num_indices
+                 CALL CRAWL_DEPENDENCIES
+     .                          ( memory,
+     .                          uvar_name_code(deleted_list_result(i)), 
+     .                          base_cx, status )
+                 IF (status .NE. ferr_ok) GOTO 5050
+ 1008         CONTINUE
+	   ELSE
+*       SHOW VAR/TREE  expr1, expr2, ...
+*  ... multiplicity of items is handled by BREAK_UP_EXPR in CRAWL_DEPENDENCIES
+              CALL CRAWL_DEPENDENCIES
+     .                   ( memory,
+     .                     cmnd_buff(item_start(1):item_end(num_items)), 
+     .                     base_cx, status )
+              IF (status .NE. ferr_ok) GOTO 5050
+           ENDIF
+           CALL DISPLAY_DEPENDENCY( memory(1,dependency_block1) )
+           CALL EXIT_DEPENDENCY_MODE
+           RETURN
+        ENDIF
+
 * ... SHOW VARIABLES/USER
 	IF ( slash_all .OR. qual_given(slash_show_var_diag) .EQ. 0 ) THEN
 * ... get dset number if appropriate:  SHOW VAR/USER/D=dset ...
@@ -1844,6 +1899,7 @@ c     .                               sbrief, sdetail, i2)
 
 
 * error exit
+ 5050   CALL RELEASE_WORK_SPC
  5000	RETURN
  5071	CALL ERRMSG( ferr_unknown_data_set, status,
      .			name(:TM_LENSTR1(name)), *5000 )
@@ -1851,6 +1907,9 @@ c     .                               sbrief, sdetail, i2)
      .         'dataset not found for varname.attname '//
      .          varname(:TM_LENSTR1(varname)), *5000 )
  5100   CALL ERRMSG( ferr_unknown_variable, status, arg, *5000)
+ 5150   CALL ERRMSG( ferr_unknown_qualifier, status,
+     .          'SHOW VAR/TREE= may take arguments ALL, FILE, and USER (default)',
+     .          *5000)
  5200	CALL ERRMSG( ferr_unknown_variable, status, varname, *5000 )
  5300   CALL ERRMSG( ferr_invalid_command, status, 'grid for '//
      .              cmnd_buff(item_start(ivar):item_end(ivar))

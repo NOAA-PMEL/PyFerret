@@ -104,7 +104,8 @@
 * V615 11/08*acm*   For linux, pass dummy status flag to DEALLO_UNFORMED_GRID. 
 *                   The status flag that is passed back must remain set to 
 *                   non-ferr_ok to exit properly from the command.
-*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*       *acm* 3/12  Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V685+ 9/13 *sh*   support for auxiliary var regridding: temp[gz(depth)=zax]
 
 * calling argument declarations:
 	INTEGER	status
@@ -114,11 +115,12 @@
 
 * internal variable declarations:
 	LOGICAL	ITSA_GCVAR, its_dynamic, its_gc, need_another_pass,
-     .		saved_ifthen_type, do_err, agg_has_uvar, ok_remote
+     .		saved_ifthen_type, do_err, agg_has_uvar, ok_remote,
+     .		getting_aux_var
 	INTEGER KNOWN_GRID, STR_SAME,
      .		TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR, 
-     .		NCF_GET_AGG_COUNT,
-     .		hi_cx, lo_cx, big_cx, start, end, grid,
+     .		NCF_GET_AGG_COUNT, iaux,
+     .		hi_cx, lo_cx, big_cx, aux_cx, start, end, grid,
      .		i, dset, uvar, item, itype, idim, gnum, nitem, uv_grd,
      .		var, len_name, pass_number, cx_save, this_dset,
      .		ifthen_data_type, varid, alen, attype, attlen,
@@ -167,6 +169,7 @@
 	is_phase(isp) = ABS( is_phase(isp) )
 	cx_save = cx_stack_ptr		! restored on pass #2 (2/99)
 	saved_ifthen_type = .FALSE.
+	getting_aux_var = .FALSE.
 
 * process the next item in the expression from the uvar buffer (last to first)
  100	is_phase(isp) = is_phase(isp) + 1
@@ -184,7 +187,7 @@
 	ELSEIF ( itype .EQ. alg_variable    ) THEN
 	   GOTO 305
 	ELSEIF ( itype .EQ. alg_attrib_val  ) THEN
-	   GOTO 315
+	   GOTO 359
 	ELSEIF ( itype .EQ. alg_string      ) THEN
 	   GOTO 400
 	ELSEIF ( itype .EQ. alg_constant    ) THEN
@@ -260,6 +263,30 @@
 	   CALL DEALLO_UNFORMED_GRID (status_deallo)
 	   GOTO 5000
 	ENDIF
+***
+* A digression from the usual grid-getting:
+* When regridding using auxiliary variable(s) has been requested, we have to
+* ensure that the grids of the aux variables are known as a part of the get-grid phase.
+* (Note that aux var grids do not get merged into the parent grid)
+	IF  ( cx_unstand_grid(hi_cx)
+     .	.AND. cx_naux(hi_cx) .GT. 0 ) THEN
+	   CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   aux_cx = cx_stack_ptr
+	   DO 330 iaux = 1, cx_naux(hi_cx)
+	      CALL GET_AUX_VAR_CONTEXT( hi_cx, aux_cx, iaux, status )
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+	      IF ( cx_grid( aux_cx ) .EQ. unspecified_int4 ) THEN
+	         CALL TRANSFER_CONTEXT(aux_cx, hi_cx)
+	         cx_stack_ptr = cx_stack_ptr - 1
+	         GOTO 900   ! go get this aux var grid
+	      ENDIF
+ 330	   CONTINUE
+*  ... return now to normal grid determination for the variable being regridded
+	   cx_stack_ptr = cx_stack_ptr - 1
+	ENDIF
+***
+
 * handle variable regridded to a uvar which has unknown grid (8/99) 
 	IF ( cx_unstand_grid(hi_cx)
      . .AND. cx_grid(hi_cx) .LT. unspecified_int4 ) GOTO 800
@@ -317,7 +344,7 @@ C lo and hi of the ensemble axis if so, and get all the grids.
 
 * variable.attname: parse name, get needed parts of context for attribute
 
- 315	name = uvar_text(uvar)(start:end)
+ 359	name = uvar_text(uvar)(start:end)
 	len_name = end-start+1
 
 ! If there is a region spec on the variable, ignore it. If the region spec

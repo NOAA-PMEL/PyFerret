@@ -67,12 +67,15 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V685 3/13 *sh* support for auxiliary regridding variables
+*		 and SHOW VAR/DEPENDENCIES (unknown variable err not reported)
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xprog_state.cmn'
 	include	'xcontext.cmn'
+	include	'xdependency_tree.cmn'
 #include "netcdf.inc"
 
 * calling argument declarations:
@@ -174,6 +177,13 @@
 	CALL APPLY_CONTEXT_MODS ( mods_cx, var_cx, nest_context, status )
 	IF ( status .NE. ferr_ok ) GOTO 5900
 
+* always apply mods that describe the auxiliary regridding variables
+	cx_naux(var_cx) = cx_naux(mods_cx)
+	DO 102 idim = 1, nferdims
+	   cx_aux_arg_start(idim,var_cx) = cx_aux_arg_start(idim,mods_cx)
+	   cx_aux_arg_end  (idim,var_cx) = cx_aux_arg_end  (idim,mods_cx)
+ 102	CONTINUE
+
 * identify the simple variable name
  111    continue  ! testing
         CALL FIND_VAR_NAME( cx_data_set( var_cx ),
@@ -249,8 +259,11 @@
 * error exits:
  5000	CALL ERRMSG
      .			  ( ferr_syntax, status, full_var_name, *5900 )
- 5100	CALL ERRMSG
+ 5100	IF ( dependency_tree_mode ) THEN
+	   status = ferr_unknown_variable   ! set the status, but don't report
+	ELSE
+	   CALL ERRMSG
      .		( ferr_unknown_variable, status, full_var_name, *5900 )
-
+	ENDIF
  5900	RETURN
 	END

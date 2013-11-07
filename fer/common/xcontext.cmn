@@ -13,6 +13,7 @@
 * V550: *acm*10/02- Change cx_name to char*24
 *        2/12 *kms* Add E and F dimensions (set to nferdims),
 *                   added cx_lo_s5 & 6, cx_hi_s5 & 6
+* V685+ 3/13 *sh* added auxiliary regridding variables
 
 * the declarations below represent a stack of depth max_context for saving
 * the nested contexts.  The bottom few entries in the stack have special uses:
@@ -48,6 +49,11 @@
 *	cx_ovsiz	- flags whether data should be oversized
 *	cx_xtra_doc	- documentation flags (as in XPLOT_SETUP)
 *	cx_formatted	- flags if the latest input used formatted style
+*
+*       cx_naux         - number of auxiliary variables used in regridding
+*       cx_aux_var,cat  - var and cat of auxiliary vars (always in parent dset)
+*	cx_valid_aux	- Boolean telling if aux var name was found
+*	cx_aux_arg_start,end - EQUIV. to cx_aux_var,cat. name string pointers
 
 * allocate some protected contexts at the top of the context stack
 	INTEGER		max_cx
@@ -68,7 +74,10 @@
      .		cx_type     ( max_cx ),
      .		cx_ovsiz    ( max_cx ),
      .		cx_impl_grid( max_cx ),
-     .		cx_cal_id   ( min_context:max_cx )
+     .		cx_cal_id   ( min_context:max_cx ),
+     .		cx_naux     ( max_cx ),
+     .		cx_aux_var  (nferdims, max_cx),
+     .		cx_aux_cat  (nferdims, max_cx)
 
 
 	LOGICAL	cx_unstand_grid	( max_cx ),
@@ -79,7 +88,8 @@
      .		cx_grid_needs_dset,
      .		cx_xtra_doc	( 0:10 ),
      .		cx_has_impl_grid( max_cx ),
-     .		cx_formatted	( nferdims )
+     .		cx_formatted	( nferdims ),
+     .		cx_valid_aux 	(nferdims, max_cx)
 
 	REAL	cx_bad_data	( max_cx ),
      .		cx_trans_arg	( nferdims, min_context:max_cx )
@@ -102,6 +112,10 @@
      .		cx_data_set,
      .		cx_category,
      .		cx_variable,
+     .		cx_naux,
+     .		cx_aux_var,
+     .		cx_aux_cat,
+     .		cx_valid_aux,
      .		cx_grid,
      .		cx_type,
      .		cx_ovsiz,
@@ -143,3 +157,10 @@
      .		( cx_hi_s4, cx_hi_ss(1,4) ),
      .		( cx_hi_s5, cx_hi_ss(1,5) ),
      .		( cx_hi_s6, cx_hi_ss(1,6) )
+
+* equivalences to assist with parsiong auxiliary variable names
+	INTEGER cx_aux_arg_start (nferdims, max_cx),
+     .		cx_aux_arg_end   (nferdims, max_cx)
+	EQUIVALENCE
+     .		( cx_aux_arg_start, cx_aux_var  ),
+     .		( cx_aux_arg_end,   cx_aux_cat )

@@ -61,6 +61,7 @@
 * V420: 9/8/95 - added initializations for implicit grid creation
 * V580: 11/04  - new cx_cal_id 
 *        2/12 *kms* Add the E and F dimensions (set to nferdims in tmap_dims.parm)
+* V685 3/13 *sh* - support for auxiliary regridding variables
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -97,6 +98,8 @@
 	DATA	((cx_trans_arg(i,j),i=1,nferdims),j=1,max_cx)/ ndcx *bad_val4	 /
 	DATA	((cx_by_ss(i,j),i=1,nferdims),j=1,max_cx)/ ndcx *.FALSE.	 /
 	DATA	((cx_given(i,j),i=1,nferdims),j=1,max_cx)/ ndcx *.FALSE.	 /
+	DATA	((cx_aux_var (i,j),i=1,nferdims),j=1,max_cx)/ ndcx *unspecified_int4 /
+	DATA	((cx_aux_cat (i,j),i=1,nferdims),j=1,max_cx)/ ndcx *unspecified_int4 /
 
 * initialize undefined negative subscripts
 	DATA	((cx_lo_ww(i,j),i=1,nferdims),j=min_context,-3)

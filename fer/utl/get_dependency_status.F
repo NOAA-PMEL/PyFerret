@@ -1,4 +1,4 @@
-	SUBROUTINE INIT_CONTEXT_MODS ( cx )
+	SUBROUTINE GET_DEPENDENCY_STATUS ( memory, expr, status_string, slen, status )
 
 *
 *
@@ -35,69 +35,64 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* prepare a clean,empty cx to receive a list of modifications
+* set up the xdependency_tree COMMON area by running the dependency crawl
+* return a line describing the outcome
 
-* programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
-*
-* revision 0.0 - ????
-* revision 0.1 -  4/1/89  - added regridding transformations
-* V200:  6/28/89 - 4D symmetrical - init trans_arg, too, eliminate %%_relative
-*		 - init cx_dset_gvn, cx_grid_needs_dset
-* V420: 9/8/95 - added initializations for implicit grid creation
-* 
-*       8/97 *kob* - initalize cx_calendar - used to indicate whether a date
-*                    contains a string 
-* V510 *sh* - added cx_formatted
-*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-* V685 3/2013 *sh* initialize auxiliary regrid variable info
+
+* V685+  *sh* 11/13 
 
 	include 'tmap_dims.parm'
-	include	'ferret.parm'
-	include	'xcontext.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xvariables.cmn'
+	include 'xdependency_tree.cmn'
 
 * calling argument declarations:
-	INTEGER	cx
+	INTEGER status, slen
+	INTEGER	memory(mem_blk_size, max_mem_blks )
+	CHARACTER*(*) expr, status_string
 
 * internal variable declarations:
-	INTEGER	idim, ivar
+	INTEGER TM_LENSTR1, base_isp, base_cx
 
-* initialize everything but region
-	cx_variable( cx ) = unspecified_int4
-	cx_category( cx ) = unspecified_int4
-	cx_data_set( cx ) = unspecified_int4
-	cx_dset_gvn( cx ) = .FALSE.
-	cx_grid( cx )     = unspecified_int4
-	cx_unstand_grid( cx ) = .FALSE.
-	cx_grid_needs_dset    = .FALSE.
-	cx_has_impl_grid( cx ) = .FALSE.
-	cx_calendar(cx) = .FALSE.
-	
+        base_isp = 8
+        base_cx = 8
+        CALL INIT_DEPENDENCIES( cx_last, .TRUE., base_isp, status )
+        IF (status.NE. ferr_ok) GOTO 5000
 
-* initialize region
-* note: ss specifications are not used in storing modifications
-	DO 100 idim = 1, nferdims
-	   cx_lo_ss ( cx, idim )  = unspecified_int4
-	   cx_hi_ss ( cx, idim )  = unspecified_int4
-	   cx_lo_ww ( idim, cx )  = unspecified_val8
-	   cx_hi_ww ( idim, cx )  = unspecified_val8
-	   cx_delta ( idim, cx )  = unspecified_val8
-	   cx_trans ( idim, cx )  = trans_no_transform
-	   cx_trans_arg(idim,cx)  = bad_val4
-	   cx_by_ss ( idim, cx )  = .FALSE.		!for bookkeeping
-	   cx_given( idim, cx )  = .FALSE.
-	   cx_regrid_trans(idim,cx) = unspecified_int4 
-	   cx_formatted( idim )	  = .FALSE.
-100	CONTINUE
+        CALL CRAWL_DEPENDENCIES (memory, expr, base_cx, status)
+        IF (status .NE. ferr_ok) GOTO 5000
 
-* initialize info about auxiliary regridding variables
-	cx_naux( cx ) = 0
-	DO 200 ivar = 1, nferdims
-	   cx_aux_var  (ivar, cx) = unspecified_int4
-	   cx_aux_cat  (ivar, cx) = unspecified_int4
- 200	CONTINUE
+	IF (    dependency_status .EQ. df_valid_var) THEN
+	   status_string = 'AVAILABLE'
+        ELSEIF (dependency_status .EQ. df_unknown_auxvar) THEN
+	   status_string = 'UNKNOWN AUXILIARY VARIABLE'
+	ELSEIF (dependency_status .EQ. df_unknown_var) THEN
+	   status_string = 'UNKNOWN VARIABLE'
+	ELSEIF (dependency_status .EQ. df_unknown_grid) THEN
+	   status_string = 'UNKNOWN GRID'
+	ELSEIF (dependency_status .EQ. df_syntax_error) THEN
+	   status_string = 'ERROR IN EXPRESSION'
+	ELSEIF (dependency_status .EQ. df_unknown_dataset) THEN
+	   status_string = 'UNKNOWN DATASET'
+	ELSEIF (dependency_status .EQ. df_recursion_error) THEN
+	   status_string = 'ILLEGAL RECURSIVE VARIABLES'
+	ELSE
+	   STOP 'repl_exprns_depend_tree'
+	ENDIF
+	slen = TM_LENSTR1(status_string)
 
+* if status incicates a problem, append a substring from the variable definitions
+	IF (dependency_status .NE. df_valid_var ) THEN
+	   status_string(slen+1:slen+2) = ': '
+	   CALL DEPEND_STAT_VAR( memory(1,dependency_block1),
+     .					status_string(slen+3:) )
+	   slen = TM_LENSTR1(status_string)
+	ENDIF
 
+ 5000	CALL RELEASE_WORK_SPC
 	RETURN
 	END
+

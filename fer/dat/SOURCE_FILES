@@ -5,6 +5,7 @@ xcalc_vars_data.F\
 xcommand_data.F\
 xcontext_data.F\
 xcontrol_data.F\
+xdependency_tree_data.F\
 xdset_parms_data.F\
 xfgrdel_data.F\
 xfr_grid_data.F\

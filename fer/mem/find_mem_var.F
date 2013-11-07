@@ -72,6 +72,7 @@
 * V533: 6/01 *sh* - added @EVNT - check as in trans_run_sum
 *	          - check that the data type matches
 *		  - check that the delta value matches
+* V685 4/13 *sh* support for auxiliary variables used in regridding
 
 * (V510) How on cache hits on external functions (EFs) work:
 * uvar_given is used to encapsulate information about cache reuse for EF
@@ -312,6 +313,15 @@
 	      IF ( cx_regrid_trans( idim, cx ) .NE.
      .		   mr_regrid_trans( idim, mv   ) ) GOTO 100
  90	   CONTINUE
+* ... check for auxiliary regridding match
+	   IF ( mr_naux( mv ) .NE. cx_naux( cx ) ) GOTO 100
+	   IF ( cx_naux( cx ) .GT. 0 ) THEN
+	      DO 91 idim = 1, nferdims
+	         IF ( cx_aux_var(idim,cx) .NE. mr_aux_var(idim, mv)
+     .	        .OR.  cx_aux_cat(idim,cx) .NE. mr_aux_cat(idim, mv) )
+     .								GOTO 100 
+ 91	      CONTINUE
+	   ENDIF
 	ENDIF
 
 * ... if user-defined then watch out for special limit match requirements

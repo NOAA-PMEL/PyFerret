@@ -1,4 +1,4 @@
-	SUBROUTINE INIT_CONTEXT_MODS ( cx )
+	SUBROUTINE EXIT_DEPENDENCy_MODE
 
 *
 *
@@ -35,69 +35,20 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* prepare a clean,empty cx to receive a list of modifications
+* reset COMMON values that indicate the special mode used for assesing 
+* user variable dependency trees
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
-* revision 0.0 - ????
-* revision 0.1 -  4/1/89  - added regridding transformations
-* V200:  6/28/89 - 4D symmetrical - init trans_arg, too, eliminate %%_relative
-*		 - init cx_dset_gvn, cx_grid_needs_dset
-* V420: 9/8/95 - added initializations for implicit grid creation
-* 
-*       8/97 *kob* - initalize cx_calendar - used to indicate whether a date
-*                    contains a string 
-* V510 *sh* - added cx_formatted
-*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-* V685 3/2013 *sh* initialize auxiliary regrid variable info
+* V685+ 11/13 *sh*  
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
-	include	'xcontext.cmn'
+	include 'xdependency_tree.cmn'
 
-* calling argument declarations:
-	INTEGER	cx
+	dependency_tree_mode = .FALSE.
+	CALL RELEASE_WORK_SPC
 
-* internal variable declarations:
-	INTEGER	idim, ivar
-
-* initialize everything but region
-	cx_variable( cx ) = unspecified_int4
-	cx_category( cx ) = unspecified_int4
-	cx_data_set( cx ) = unspecified_int4
-	cx_dset_gvn( cx ) = .FALSE.
-	cx_grid( cx )     = unspecified_int4
-	cx_unstand_grid( cx ) = .FALSE.
-	cx_grid_needs_dset    = .FALSE.
-	cx_has_impl_grid( cx ) = .FALSE.
-	cx_calendar(cx) = .FALSE.
-	
-
-* initialize region
-* note: ss specifications are not used in storing modifications
-	DO 100 idim = 1, nferdims
-	   cx_lo_ss ( cx, idim )  = unspecified_int4
-	   cx_hi_ss ( cx, idim )  = unspecified_int4
-	   cx_lo_ww ( idim, cx )  = unspecified_val8
-	   cx_hi_ww ( idim, cx )  = unspecified_val8
-	   cx_delta ( idim, cx )  = unspecified_val8
-	   cx_trans ( idim, cx )  = trans_no_transform
-	   cx_trans_arg(idim,cx)  = bad_val4
-	   cx_by_ss ( idim, cx )  = .FALSE.		!for bookkeeping
-	   cx_given( idim, cx )  = .FALSE.
-	   cx_regrid_trans(idim,cx) = unspecified_int4 
-	   cx_formatted( idim )	  = .FALSE.
-100	CONTINUE
-
-* initialize info about auxiliary regridding variables
-	cx_naux( cx ) = 0
-	DO 200 ivar = 1, nferdims
-	   cx_aux_var  (ivar, cx) = unspecified_int4
-	   cx_aux_cat  (ivar, cx) = unspecified_int4
- 200	CONTINUE
-
-
-	RETURN
+     	RETURN
 	END

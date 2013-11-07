@@ -1,7 +1,9 @@
-	SUBROUTINE INIT_CONTEXT_MODS ( cx )
+	SUBROUTINE AUX_REGRID_LIMS( dst_cx, src_cx, axis_list, naxis,
+     .			aux1, mr1, cx1,
+     .			aux2, mr2, cx2,
+     .			aux3, mr3, cx3,
+     .			status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -35,69 +37,43 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* prepare a clean,empty cx to receive a list of modifications
+* Given a context describing data to be regridded to a destination grid
+* create the description of the needed source data in the source context
+* Use the auxiliary variables to determine the index range of data needed
+* For example, if the regrid has requested depth from 0 to 100 and in the 
+* auxiliary variable containing depths all of the values LE 100
+* are in K=1:6 then we need only request source data over the range K=1:7 
+
+* When called the source context should be a copy of the destination context 
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* revision 0.0 - ????
-* revision 0.1 -  4/1/89  - added regridding transformations
-* V200:  6/28/89 - 4D symmetrical - init trans_arg, too, eliminate %%_relative
-*		 - init cx_dset_gvn, cx_grid_needs_dset
-* V420: 9/8/95 - added initializations for implicit grid creation
-* 
-*       8/97 *kob* - initalize cx_calendar - used to indicate whether a date
-*                    contains a string 
-* V510 *sh* - added cx_formatted
-*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-* V685 3/2013 *sh* initialize auxiliary regrid variable info
 
-	include 'tmap_dims.parm'
-	include	'ferret.parm'
-	include	'xcontext.cmn'
+*V685 4/13 *sh*
+
+	IMPLICIT NONE
+	include	'errmsg.parm'
 
 * calling argument declarations:
-	INTEGER	cx
-
-* internal variable declarations:
-	INTEGER	idim, ivar
-
-* initialize everything but region
-	cx_variable( cx ) = unspecified_int4
-	cx_category( cx ) = unspecified_int4
-	cx_data_set( cx ) = unspecified_int4
-	cx_dset_gvn( cx ) = .FALSE.
-	cx_grid( cx )     = unspecified_int4
-	cx_unstand_grid( cx ) = .FALSE.
-	cx_grid_needs_dset    = .FALSE.
-	cx_has_impl_grid( cx ) = .FALSE.
-	cx_calendar(cx) = .FALSE.
-	
-
-* initialize region
-* note: ss specifications are not used in storing modifications
-	DO 100 idim = 1, nferdims
-	   cx_lo_ss ( cx, idim )  = unspecified_int4
-	   cx_hi_ss ( cx, idim )  = unspecified_int4
-	   cx_lo_ww ( idim, cx )  = unspecified_val8
-	   cx_hi_ww ( idim, cx )  = unspecified_val8
-	   cx_delta ( idim, cx )  = unspecified_val8
-	   cx_trans ( idim, cx )  = trans_no_transform
-	   cx_trans_arg(idim,cx)  = bad_val4
-	   cx_by_ss ( idim, cx )  = .FALSE.		!for bookkeeping
-	   cx_given( idim, cx )  = .FALSE.
-	   cx_regrid_trans(idim,cx) = unspecified_int4 
-	   cx_formatted( idim )	  = .FALSE.
-100	CONTINUE
-
-* initialize info about auxiliary regridding variables
-	cx_naux( cx ) = 0
-	DO 200 ivar = 1, nferdims
-	   cx_aux_var  (ivar, cx) = unspecified_int4
-	   cx_aux_cat  (ivar, cx) = unspecified_int4
- 200	CONTINUE
+	INTEGER	src_cx, axis, dst_cx, naxis, axis_list(*), status,
+     .		mr1, cx1, mr2, cx2, mr3, cx3 
+        REAL*8  aux1(*), aux2(*), aux3(*)
 
 
+* this is just a dispatch routine that fans out to routines
+* based upon the number of dimensions in the regridding
+
+	IF ( naxis .EQ. 1 ) THEN
+	   CALL AUX_REGRID_LIMS_1D( dst_cx, src_cx, axis_list, naxis,
+     .			            aux1, mr1, cx1, status )
+	ELSE
+	   CALL ERRMSG(ferr_internal, status, 'aux_regrid_lims', *5000 )
+	ENDIF
+
+* success
+        status = ferr_ok
 	RETURN
+
+* error exit
+ 5000	RETURN
 	END

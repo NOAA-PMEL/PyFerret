@@ -46,6 +46,7 @@
 *acm* 4/12 Remove MODE FOURDEE, using _E, _F, _M, _N instead, throughout.
 * V6.8  *acm  8/12 changes for SET LIST/OUTTYPE
 *acm* 8/12 New MODE shrink_ylab, see tickets 1896, 1958.
+* V685 *sh* 11/13 - added allowed_err. SHOW VAR/TREE to display despite errors
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -177,6 +178,7 @@
      .          grat_on,
      .          shade_trim,
      .          silent_err,
+     .          allowed_err,
      .          one_cmnd_mode
 
 
@@ -238,7 +240,7 @@
      .		journal_file, ppllist_file,
      .		xwind_node, xwind_node_len,
      .		genl_storage, its_script, grat_on,
-     .          shade_trim, silent_err, one_cmnd_mode,
+     .          shade_trim, silent_err, allowed_err, one_cmnd_mode,
      .		ppl_wait, mode_name,
      .          scriptfile_name, show_file, list_outtype
 

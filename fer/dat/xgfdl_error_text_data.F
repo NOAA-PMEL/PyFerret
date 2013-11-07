@@ -65,7 +65,9 @@
 * V6.7 *acm*  1/11 - Fix ticket 1768: undefined messages for no-such-attribute
 *                    and error in attribute caused nulls to be written to std out.
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
-* V684 9/12 *acm*  - Add error code for file not found (error message for font files not found)
+* V684 9/12 *acm*  - Add error code for file not found
+*                    (error message for font files not found)
+* V658+ *sh* 10/13 - added ferr_unknown_auxvar
 
         IMPLICIT NONE
 	include 'errmsg.parm'	! parameter definitions
@@ -111,7 +113,8 @@
      .		/ 'unknown_qualifier' /
 
 	DATA err_text( ferr_unknown_variable - greport )
-     .		/ 'variable unknown or not in data set'				/
+     .		/ 'variable unknown or not in data set'		/
+
 	DATA report_err_code( ferr_unknown_variable - greport )
      .		/ 'unknown_variable' /
 
@@ -294,8 +297,12 @@
 	DATA report_err_code( ferr_aggregate_error - greport )
      .		/ 'filefound_error' /
 
+	DATA err_text( ferr_unknown_auxvar - greport )
+     .		/ 'auxiliary variable unknown or not in data set' /
+
 	DATA err_text( ferr_nomessge - greport )
      .		/ ' '/
+
 	DATA report_err_code( ferr_nomessge - greport )
      .		/ 'no_message' /
 

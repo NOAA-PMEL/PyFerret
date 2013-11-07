@@ -104,6 +104,7 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V684 *acm* 12/12 Add data type of DOUBLE for return=dtype
+* V685 *sh*  11/13 Add return=status and return=ready
 
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
@@ -113,6 +114,7 @@
 	include 'xrisc.cmn'
 	include 'xcontext.cmn'
 	include 'xtext_info.cmn'
+	include 'xdependency_tree.cmn'
 	include 'xtm_grid.cmn_text'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
@@ -132,14 +134,14 @@
 
 * internal variable declarations:
 	LOGICAL   need_formatting, zero_fill, coordvar,
-     .            do_err, do_eval
+     .            do_err, do_eval, get_ready
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
      .		  FIND_DSET_NUMBER, str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i2, use_digits, true_end,
      .		  qual_end, brkt, idim, use_width, dset, varid, 
      .            vartype, nvdims, vdims(8), nvatts, ist, ind,
      .            attype, attlen, inxt, attoutflag,outflag, fertype, 
-     .            attid, ieq, dqote
+     .            attid, ieq, dqote, base_isp, base_cx
 	REAL	  result, val
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
 	CHARACTER TM_FMT*18, LEFINT*16, VAR_TITLE*(max_len),
@@ -332,6 +334,28 @@
 
 * is this a single number request or a RETURN= query?
  160	IF ( info_query ) THEN
+
+* 11/2013
+* return=ISREADY and return=STATUS are special.  They must function
+*   correctly even in the face of unknown variables and unknown datasets.
+*   So they must be handled before we attempt even to get the context for the
+*   given expression.
+	   IF (repl(1:4).EQ. 'STAT' .OR. repl(1:4) .EQ. 'ISRE') THEN
+	      get_ready = repl(1:4) .EQ. 'ISRE'
+	      CALL GET_DEPENDENCY_STATUS(memory, cmnd(istart:iend),
+     .					 repl, str_len, status) 
+              IF (status.NE. ferr_ok) GOTO 5050
+	      IF (get_ready) THEN
+*  return=READY gives merely a 1 or 0 
+	         IF (    dependency_status .EQ. df_valid_var) THEN
+	            repl = '1'
+	         ELSE
+	            repl = '0'
+	         ENDIF
+	      ENDIF
+	      GOTO 500
+	   ENDIF
+
 * ... evaluate the context without computing the expression
 *	this is a major performance consideration, but not 100% reliable
 	   has_uvar_gc = .FALSE.
@@ -381,7 +405,8 @@
      .       'use RETURN= shape,size,grid,title,bad,t0,units,dset, '//pCR//
      .	     '  dsetnum,dsetpath,dsettitle,*size,*start,*end,'//pCR//
      .       '  *units,*axis,nc_scale,nc_offset,user_scale,user_offset,'//pCR//
-     .       '  calendar,dtype,xmod,tmod,isdepth'
+     .       '  calendar,dtype,xmod,tmod,status,IsDepth,IsReady'
+!     .       '  calendar,dtype,xmod,tmod,status,IsDepth,IsReady,IsLoaded' ! w IsLoaded
 
 * ... RETURN=SHAPE
 
@@ -640,8 +665,17 @@
 	      ELSE 
 	         repl = 'NORMAL'
 	      ENDIF
-	   
 
+* ... RETURN=ISLOADED
+!	   ELSEIF ( repl(1:4) .EQ. "ISLO" ) THEN
+!* see is an mr variable matching this cx is already in memory
+!	      CALL FIND_MEM_VAR( cx, mr, search_by_value )
+!	      IF ( mr.EQ.mr_nonexist ) THEN
+!	         repl = '0'
+!	      ELSE
+!	         repl = '1'
+!	      ENDIF
+!	   
 * ... RETURN=*SIZE, *START, *END, *UNITS, *AXIS
 	   ELSE	
 * ... axis specific requests - must start with i,j,k,l,m,n or x,y,z,t,e,f
@@ -787,6 +821,7 @@
 	RETURN
 
 * error exits
+ 5050	CALL RELEASE_WORK_SPC
  5000   RETURN
  5100	risc_buff = cmnd(:lencmnd)
 	CALL ERRMSG( ferr_syntax, status,

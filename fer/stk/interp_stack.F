@@ -96,6 +96,7 @@
 *                   its own axis with [gt=var]
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V685+ 9/13 *sh* add support for aux var regridding: temp[gz(depth)=zax]
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -607,6 +608,8 @@ c	   GOTO 5000
 	      CALL IS_TRANS( memory, DO_DIST_LOC, *2500, status )
 	   ELSEIF ( act .EQ. isact_regrid		) THEN
 	      CALL IS_REGRID( memory, *2500, status )
+	   ELSEIF ( act .EQ. isact_auxvar_regrid	) THEN
+	      CALL IS_AUXVAR_REGRID( memory, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_autogrid		) THEN
 	      CALL IS_AUTOGRID( *2500, status )
 	   ELSEIF ( act .EQ. isact_4d_var		) THEN	! 7/96

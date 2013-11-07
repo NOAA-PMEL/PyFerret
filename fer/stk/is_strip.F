@@ -71,6 +71,7 @@
 * V602  8/06 *jli* chages for native strides 
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V685+ 9/13 *sh* support for auxiliary var regridding: temp[gz(depth)=zax]
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -258,15 +259,29 @@
 
 	ELSEIF( aclass .EQ. isact_class_regrid ) THEN
 * SET UP FOR REGRIDDING
-	   CALL REGRID_LIMS( lo_cx, hi_cx, axis, status, *6000 ) !ab ret -> mod
-	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF (cx_naux(lo_cx) .EQ. 0 ) THEN
+* ... normal regridding
+	      CALL REGRID_LIMS( lo_cx, hi_cx, axis, status, *6000 ) !ab ret -> mod
+	      IF ( status .NE. ferr_ok ) GOTO 5000
 * ... see if no regridding was required after all
-	   IF ( .NOT.cx_unstand_grid(lo_cx) ) THEN
-	      cx_stack_ptr = cx_stack_ptr - 1	
-	      RETURN 1					! mod 2/90
+	      IF ( .NOT.cx_unstand_grid(lo_cx) ) THEN
+	         cx_stack_ptr = cx_stack_ptr - 1	
+	         RETURN 1					! mod 2/90
+	      ENDIF
+	      is_act ( lo_isp ) = isact_regrid
+	   ELSE
+* ... auxiliary variable regridding - set up to get the first aux var
+	      CALL GET_AUX_VAR_CONTEXT( lo_cx, hi_cx, 1, status )
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+* ! temporary diagnostic making sure that grids of aux vars are found during get-grid phase
+	      IF ( cx_grid(hi_cx) .EQ. unspecified_int4 ) 
+     .		CALL ERRMSG(ferr_internal, status, 'auxvar grid??', *5000)
+	      is_phase ( lo_isp ) = isphase_get_aux_var
+	      is_sum ( lo_isp ) = 1        ! get the first aux var named
+	      is_act ( lo_isp ) = isact_auxvar_regrid
 	   ENDIF
-	   is_act ( lo_isp ) = isact_regrid
 	   aclass = isact_class_regrid
+
 
 	ELSEIF( aclass .EQ. isact_class_modulo ) THEN    ! 12/94 addition
 * SET UP TO ASSEMBLE BASE COMPONENTS ONTO A MODULO AXIS
@@ -490,6 +505,11 @@
 	CALL PUSH_INTERP_STACK( isp, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	is_cx( isp ) = hi_cx
+	IF (  is_act (lo_isp) .EQ. isact_auxvar_regrid
+     .	.AND. cx_category(hi_cx) .EQ. cat_user_var ) THEN
+* ... setup to evaluate auxiliary var that is user-defined (uvar)
+	   is_uvar( isp ) = cx_variable( hi_cx )
+	ENDIF
 
 * successful completion
  1000	RETURN 1

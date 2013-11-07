@@ -16,6 +16,7 @@ cx_ww_pos.F\
 del_cx_dim.F\
 flesh_out_axis.F\
 forget_past_context_mods.F\
+get_aux_var_context.F\
 get_context_bad_flag.F\
 get_context_grid.F\
 get_cx_dims.F\

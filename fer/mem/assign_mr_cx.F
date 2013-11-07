@@ -42,6 +42,7 @@
 * V530:  8/00 *sh* save data type, too
 * V530:  6/01 *sh* save the delta value, too
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V685+ 10/13 *sh* added auxiliary regridding "aux" variables
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -67,15 +68,18 @@
 	mr_grid     ( mr )	= grid
 	mr_bad_data ( mr )	= cx_bad_data( cx )
 	mr_unstand_grid( mr )   = cx_unstand_grid( cx )
+	mr_naux     ( mr )      = cx_naux     ( cx )
 
 * region, transformations and regridding transforms
 	DO 100 idim = 1,nferdims
 	   trans = cx_trans( idim, cx )
-	   mr_trans( idim, mr )   = trans
-	   mr_lo_ss( mr, idim )   = cx_lo_ss( cx, idim )
-	   mr_hi_ss( mr, idim )   = cx_hi_ss( cx, idim )
-	   mr_delta( idim, mr )   = cx_delta( idim, cx )
-	   mr_trans_arg(idim, mr) = cx_trans_arg(idim, cx)
+	   mr_trans  ( idim, mr )   = trans
+	   mr_lo_ss  ( mr, idim )   = cx_lo_ss  ( cx, idim )
+	   mr_hi_ss  ( mr, idim )   = cx_hi_ss  ( cx, idim )
+	   mr_delta  ( idim, mr )   = cx_delta  ( idim, cx )
+	   mr_aux_var( idim, mr )   = cx_aux_var( idim, cx )
+	   mr_aux_cat( idim, mr )   = cx_aux_cat( idim, cx )
+	   mr_trans_arg(idim, mr)   = cx_trans_arg(idim, cx)
 	   mr_regrid_trans( idim, mr ) = cx_regrid_trans( idim, cx )
 
 * round out to world coordinate box edges except in some special cases:

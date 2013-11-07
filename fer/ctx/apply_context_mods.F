@@ -67,6 +67,9 @@
 * *acm* v580 11/04 Transfer cx_cal_id, the calendar ID used when computing 
 *                  world coordinates
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V685 3/13 *sh* support for aux var regridding: var[gz(depth)=zax]
+
+	IMPLICIT NONE
 
 	include 'tmap_dims.parm'
 	include 'errmsg.parm'
@@ -82,7 +85,7 @@
 
 * internal variable declarations:
 !	LOGICAL		itsa_uvar
-	INTEGER		idim, var, trans
+	INTEGER		idim, var, trans, i
 !	CHARACTER	ALG_TRANS_CODE*3
 
 * first see if data_set or variable is being modified
@@ -161,7 +164,16 @@
      .	   cx_delta( idim, dest_cx ) = cx_delta( idim, mods_cx ) 
 
  100	CONTINUE
-	
+
+* transfer aux var info
+	cx_naux( dest_cx ) = cx_naux( mods_cx )
+	IF ( cx_naux(dest_cx) .GE. 1 ) THEN
+	   DO 200 i = 1, cx_naux( dest_cx )
+	      cx_aux_arg_start(i, dest_cx) = cx_aux_arg_start(i, mods_cx)
+	      cx_aux_arg_end  (i, dest_cx) = cx_aux_arg_end  (i, mods_cx)
+ 200	   CONTINUE
+	ENDIF
+
 	status = ferr_ok
  5000	RETURN
 ! 5100	CALL ERRMSG( ferr_trans_nest, status,

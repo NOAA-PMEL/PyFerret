@@ -52,12 +52,15 @@
 * V420: 9/95	- Support for implicit grids (cx_has_impl_grid)
 * V530:  8/00 *sh* - transfer data type, too
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V685 3/13 *sh* support for aux var regridding: var[gz(depth)=zax]
+
+	IMPLICIT NONE
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 
-	INTEGER	source, dest, idim
+	INTEGER	source, dest, idim, i
 
 * all contexts contain axis region information
 	DO 100 idim = 1, nferdims
@@ -86,6 +89,14 @@
 * do not inherit cx_has_impl_grid.  It is a flag to say which cx
 * actually  **allocated** the grid
 *	cx_has_impl_grid( dest ) = .FALSE.
+
+* transfer aux var info
+	cx_naux( dest ) = cx_naux( source )
+	DO 300 i = 1, nferdims
+	   cx_aux_arg_start(i, dest) = cx_aux_arg_start(i, source)
+	   cx_aux_arg_end  (i, dest) = cx_aux_arg_end  (i, source)
+ 300	CONTINUE
+
 
 	RETURN
 	END

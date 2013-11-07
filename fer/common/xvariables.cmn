@@ -58,6 +58,7 @@
 *                  added mr_lo_s5 & 6, mr_hi_s5 & 6;
 *                  reordered to remove padding
 * V685 1/13  *acm* implement LET/REMOTE
+* V685+ 9/13 *sh*  added aux var regridding
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -129,6 +130,8 @@
 *			still easily keep track of when all claims on the
 *			component have been released.
 *	
+*       mr_naux   	- number of auxiliary variables used in regridding
+*  	mr_aux_var,_cat	- var and cat of auxiliary vars (always in parent dset)
 *	uvar_title	- title text for plots, etc. of user-defined variables
 *	uvar_title_w_text
 *			- logical to determine if variable definition is part 
@@ -247,6 +250,9 @@
      .		mr_variable	( max_mrs ),
      .		mr_grid   	( max_mrs ),
      .		mr_type   	( max_mrs ),
+     .		mr_naux   	( max_mrs ),
+     .		mr_aux_var	( nferdims, max_mrs ),
+     .		mr_aux_cat	( nferdims, max_mrs ),
      .		mblk_flink      ( 0:pmax_mem_blks ),
      .		mblk_blink      ( 0:pmax_mem_blks ),
      .		mblk_size       ( 0:pmax_mem_blks ),
@@ -343,6 +349,9 @@
      .			mr_nblks	,
      .			mr_grid 	,
      .			mr_type 	,
+     .			mr_naux		,
+     .			mr_aux_var	,
+     .			mr_aux_cat	,
      .			mr_regrid_trans
 
 	CHARACTER*128	uvar_title, uvar_name_code

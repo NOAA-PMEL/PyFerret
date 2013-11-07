@@ -39,6 +39,7 @@ from multiprocessing import Pipe, Process
 import sys
 import time
 import os
+import signal
 import math
 
 
@@ -70,6 +71,8 @@ class PipedViewerPQ(QMainWindow):
         super(PipedViewerPQ, self).__init__()
         self.__cmndpipe = cmndpipe
         self.__rspdpipe = rspdpipe
+        # ignore Ctrl-C
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
         # default scene size
         self.__scenewidth = int(10.5 * self.physicalDpiX())
         self.__sceneheight = int(8.5 * self.physicalDpiY())

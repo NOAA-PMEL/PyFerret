@@ -31,6 +31,7 @@ from multiprocessing import Pipe, Process
 import sys
 import time
 import os
+import signal
 
 
 class PipedImagerPQ(QMainWindow):
@@ -56,6 +57,8 @@ class PipedImagerPQ(QMainWindow):
         super(PipedImagerPQ, self).__init__()
         self.__cmndpipe = cmndpipe
         self.__rspdpipe = rspdpipe
+        # ignore Ctrl-C
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
         # unmodified image for creating the scene
         self.__sceneimage = None
         # bytearray of data for the above image

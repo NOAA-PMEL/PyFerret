@@ -86,6 +86,18 @@ static void pyefcn_signal_handler(int signum)
     longjmp(jumpbuffer, 1);
 }
 
+/* 
+ * Ctrl-C handler that just calls the CTRLC_AST Fortran subroutine 
+ * defined in fer/gnl/ctrl_c.F (which has no arguments). 
+ */
+static void pyferret_sigint_handler(int signum) {
+    /* ignore any further Ctrl-C entries until done */
+    signal(SIGINT, SIG_IGN);
+    /* Now call the Fortran routine */
+    ctrlc_ast_();
+    /* Go back to catching Ctrl-C */
+    signal(SIGINT, pyferret_sigint_handler);
+}
 
 static char pyferretStartDocstring[] =
     "Initializes Ferret.  This allocates the initial amount of memory for \n"
@@ -430,8 +442,8 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
     else
         one_cmnd_mode_int = 1;
 
-    /* Catch let ferret deal with ctrl-C while in ferret mode */
-    oldsighand = signal(SIGINT, ctrlc_ast_);
+    /* Let ferret deal with ctrl-C while in ferret mode */
+    oldsighand = signal(SIGINT, pyferret_sigint_handler);
     if ( oldsighand == SIG_ERR ) {
         PyErr_SetString(PyExc_SystemError, "Unable to catch SIGTERM while in Ferret");
         return NULL;

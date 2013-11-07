@@ -92,6 +92,8 @@ static void (*orig_sigint_handler)(int signum);
 
 /* function called when Ctrl-C is given */
 static void cd_read_sigint_handler(int signum) {
+    /* ignore any further Ctrl-C */
+    signal(SIGINT, SIG_IGN);
     /* Return to the setjmp call but return a value of 1 */
     longjmp(cd_read_sigint_jmp_buf, 1);
 }

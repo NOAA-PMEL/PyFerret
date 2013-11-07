@@ -1,8 +1,19 @@
 #ifndef PYFERRET_H_
 #define PYFERRET_H_
 
+/* Python.h should already have been included */
+
+/* Ferret memory cache */
 extern double *memory;
+
+/* PlotPlus memory */
 extern float *ppl_memory;
+
+/* global pyferret Python module object used for readline */
+extern PyObject *pyferret_module_pyobject;
+
+/* global pyferret.graphbind Python module object used for createWindow */
+extern PyObject *pyferret_graphbind_module_pyobject;
 
 #define MAX_FERRET_NDIM 6
 

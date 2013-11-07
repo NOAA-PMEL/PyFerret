@@ -86,42 +86,19 @@ static char static_line[STATIC_LINE_LEN];
  */
 static char *pyferret_readline(char *prompt)
 {
-    PyObject *nameobj;
-    PyObject *moduleobj;
     PyObject *resultobj;
     char *resultstr;
     int   resultstrlen;
 
-    /* get the pyferret module - assumes Python is running */
-    nameobj = PyString_FromString("pyferret");
-    if ( nameobj == NULL ) {
-        sprintf(static_line, "**ERROR pyferret_readline in tm_ftoc_readline.c: "
-                             "problems creating a Python string from 'pyferret': %s\n",
-                             pyefcn_get_error());
-        return NULL;
-    }
-    moduleobj = PyImport_Import(nameobj);
-    if ( moduleobj == NULL ) {
-        sprintf(static_line, "**ERROR pyferret_readline in tm_ftoc_readline.c: "
-                             "problems importing the pyferret module: %s\n",
-                             pyefcn_get_error());
-        Py_DECREF(nameobj);
-        return NULL;
-    }
-    /* done with nameobj */
-    Py_DECREF(nameobj);
-
     /* call pyferret._readline - a NULL prompt turns into a Python None argument */
-    resultobj = PyObject_CallMethod(moduleobj, "_readline", "s", prompt);
+    resultobj = PyObject_CallMethod(pyferret_module_pyobject, 
+                                    "_readline", "s", prompt);
     if ( resultobj == NULL ) {
         sprintf(static_line, "**ERROR pyferret_readline in tm_ftoc_readline.c: "
                              "problems with the call to pyferret._readline: %s\n",
                              pyefcn_get_error());
-        Py_DECREF(moduleobj);
         return NULL;
     }
-    /* done with moduleobj */
-    Py_DECREF(moduleobj);
 
     /* first check if None was returned == EOF */
     if ( resultobj == Py_None ) {
@@ -177,9 +154,11 @@ static char *do_gets(char *prompt)
         /* Server mode - just read the next line directly */
         int linelen;
 
-        /* Prompt the user and get the answer */
+        /* Prompt the user */
         fputs(prompt, stdout);
         fflush(stdout);
+
+        /* Get the answer */
         if ( fgets(static_line, STATIC_LINE_LEN - 1, stdin) == NULL )
             return NULL;
 
@@ -200,24 +179,23 @@ static char *do_gets(char *prompt)
 }
 
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-tm_ftoc_readline( prompt, buff )
-#else
-tm_ftoc_readline_( prompt, buff )
-#endif
 /* c jacket routine to make gnu readline callable from FORTRAN */
-  char *prompt, *buff;
+void FORTRAN(tm_ftoc_readline)(char *prompt, char *buff)
 {
-  char *ptr;
+    char *ptr;
 
-/* invoke gnu readline with line recall and editing */
-  ptr = do_gets ( prompt );
+    /* invoke either gets or readline with line recall and editing */
+    ptr = do_gets(prompt);
 
-/* copy the line into the buffer provided from FORTRAN */
-  if (ptr != (char *)NULL)
-    strcpy( buff, ptr );
-  else
-    buff[0] = '\004';   /* ^D  */
+    /* copy the line into the buffer provided from FORTRAN */
+    if ( ptr != (char *) NULL ) {
+        strcpy(buff, ptr);
+    }
+    else {
+        buff[0] = '\004';   /* ^D  */
+        buff[1] = '\0';
+    }
 
-  return (0);
+    return;
 }
+

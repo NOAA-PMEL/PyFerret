@@ -96,8 +96,6 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
                const char *title, int titlelen, grdelBool visible)
 {
     GDWindow *window;
-    PyObject *modulename;
-    PyObject *module;
     PyObject *visiblebool;
 
     /* Allocate memory for this GDWindow */
@@ -135,38 +133,21 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
         return window;
     }
 
-    /* C bindings failed, try Pythong bindings */
+    /* C bindings failed, try Python bindings */
 
     /*
      * Call pyferret.graphbind.createWindow, which, if successful,
      * will create and return an instance of the bindings for this
      * graphics engine.
      */
-    modulename = PyString_FromString("pyferret.graphbind");
-    if ( modulename == NULL ) {
-        PyErr_Clear();
-        strcpy(grdelerrmsg, "grdelWindowCreate: problems creating "
-               "a Python string from the module name: pyferret.graphbind");
-        PyMem_Free(window);
-        return NULL;
-    }
-    module = PyImport_Import(modulename);
-    Py_DECREF(modulename);
-    if ( module == NULL ) {
-        PyErr_Clear();
-        strcpy(grdelerrmsg, "grdelWindowCreate: unable to import module: "
-                            "pyferret.graphbind");
-        PyMem_Free(window);
-        return NULL;
-    }
     if ( visible )
         visiblebool = Py_True;
     else
         visiblebool = Py_False;
-    window->bindings.pyobject = PyObject_CallMethod(module, "createWindow",
-                                         "s#s#O", engine, enginelen,
-                                         title, titlelen, visiblebool);
-    Py_DECREF(module);
+    window->bindings.pyobject = 
+            PyObject_CallMethod(pyferret_graphbind_module_pyobject, 
+                                "createWindow", "s#s#O", engine, enginelen,
+                                title, titlelen, visiblebool);
     if ( window->bindings.pyobject == NULL ) {
         sprintf(grdelerrmsg, "grdelWindowCreate: error when calling createWindow "
                              "in pyferret.graphbind: %s", pyefcn_get_error());

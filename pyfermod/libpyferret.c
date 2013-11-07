@@ -48,6 +48,12 @@
 #include "grdel.h"
 #include "pyferret.h"
 
+/* global pyferret Python module object used for readline */
+PyObject *pyferret_module_pyobject = NULL;
+
+/* global pyferret.graphbind Python module object used for createWindow */
+PyObject *pyferret_graphbind_module_pyobject = NULL;
+
 /* Ferret's OK return status value */
 #define FERR_OK 3
 
@@ -138,6 +144,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     int status;
     int ttoutLun = TTOUT_LUN;
     int one_cmnd_mode_int;
+    PyObject *modulename;
 
     /* If already initialized, return False */
     if ( ferretInitialized ) {
@@ -242,6 +249,29 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     /* Set the verify flag */
     if ( verifyFlag == 0 )
         turnoff_verify_(&status);
+
+    /* Get the PyObject representing the pyferret module */
+    modulename = PyString_FromString("pyferret");
+    if ( modulename == NULL ) {
+        return NULL;
+    }
+    pyferret_module_pyobject = PyImport_Import(modulename);
+    Py_DECREF(modulename);
+    if ( pyferret_module_pyobject == NULL ) {
+        return NULL;
+    }
+
+    /* Get the PyObject representing the pyferret.graphbind module */
+    modulename = PyString_FromString("pyferret.graphbind");
+    if ( modulename == NULL ) {
+        Py_DECREF(pyferret_module_pyobject);
+        return NULL;
+    }
+    pyferret_graphbind_module_pyobject = PyImport_Import(modulename);
+    Py_DECREF(modulename);
+    if ( pyferret_graphbind_module_pyobject == NULL ) {
+        return NULL;
+    }
 
     /* Set and possibly output program name and revision number */
     proclaim_c_(&ttoutLun, "\t", &quietFlag);
@@ -1093,6 +1123,12 @@ static PyObject *pyferretStop(PyObject *self)
     /* Set to uninitialized */
     ferretInitialized = 0;
 
+    /* Release the references to the pyferret and pyferret.graphbind modules */
+    Py_DECREF(pyferret_graphbind_module_pyobject);
+    pyferret_graphbind_module_pyobject = NULL;
+    Py_DECREF(pyferret_module_pyobject);
+    pyferret_module_pyobject = NULL;
+
     /* Run commands to clear/reset Ferret's state */
     ferret_dispatch_c(ferMemory, "SET GRID ABSTRACT", sBuffer);
     ferret_dispatch_c(ferMemory, "CANCEL WINDOW /ALL", sBuffer);
@@ -1143,6 +1179,12 @@ static PyObject *pyferretQuit(PyObject *self)
 
     /* Set to uninitialized */
     ferretInitialized = 0;
+
+    /* Release the references to the pyferret and pyferret.graphbind modules */
+    Py_DECREF(pyferret_graphbind_module_pyobject);
+    pyferret_graphbind_module_pyobject = NULL;
+    Py_DECREF(pyferret_module_pyobject);
+    pyferret_module_pyobject = NULL;
 
     /* Let Ferret do its orderly shutdown - including closing viewers */
     ferret_dispatch_c(ferMemory, "EXIT /PROGRAM", sBuffer);

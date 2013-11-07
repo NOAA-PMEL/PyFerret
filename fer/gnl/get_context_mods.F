@@ -144,7 +144,9 @@
 * V6.8  *acm* 3/12 remove block that checks for qual_given(slash_T0). Neither 
 *                  slash_t0 nor orient are defined here.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
-* V6.84 *acm* 3/12 fix ticket 1951: context information in square brackets.
+* V6.85 *sh* 3/13 support for auxiliary regridding variables:
+*                  temp[gz(depth)=zax@ave]
+*	          Note that errors will be silent in dependency_tree_mode
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -154,6 +156,12 @@
 *	/q=val_1:val_2:val_inc	specifies a range and an increment
 *	/q=val_1:val_2@XXX	specifies a range with a transformation XXX
 *	/q=@XXX			specifies a transformation XXX, only
+
+* this routine also handles the items modifying a var name in square brackets
+*        D=dset_or_var
+*        Gxyzt = var_grid_or_axis@XXXX
+*  ... and added v6.85:
+*	 Gxyzt(varx,vary,...)=var_grid_or_axis@XXXX ! regrid with aux vars
 
 
 * logical arguments:
@@ -173,6 +181,7 @@
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 	include 'xtext_info.cmn'
+	include 'xdependency_tree.cmn'
 	include 'xrisc.cmn'		! for RISC/FORTRAN
 
 * calling arguments:
@@ -186,22 +195,27 @@
      .			atsin, colon, colon2, atcolon, first_time(nferdims),
      .			kludge_gx_to_x(nferdims), set_implicitly(nferdims),
      .			fmat_lo, fmat_hi, logical_dummy, single_char,
-     .			has_g_eq_unkn_uvar, gdset_included
+     .			has_g_eq_unkn_uvar, gdset_included, has_auxvar,
+     .			regrid_dims(nferdims)
 	INTEGER		ATOM_POS, STR_CASE_BLIND_COMPARE, STR_UPCASE,
      .			TM_GET_GRIDNUM, KNOWN_GRID, FIND_DSET_NUMBER,
      .			REGION_NUMBER, TM_GET_LINENUM, TM_AXIS_DIRECTION,
+     .			TM_LENSTR1,
      .			equal_pos, colon_pos, atsin_pos, atcolon_pos, grid,
-     .			suborval, lo_start, lo_end, namlen,
+     .			suborval, lo_start, lo_end, namlen, rgdim,
      .			hi_start, hi_end, item, idim, del_start, del_end,
      .			colon2_pos, vax_code, istart, iend, itrans,
      .			dset, variable, category, name_end, next_char, i,
-     .			impl_grid, axis, other, naxes, iqual
+     .			impl_grid, axis, other, naxes, aux_arg_namlen,
+     .			aux_lparen_pos, aux_rparen_pos, aux_arg_count,
+     .			iqual
 	CHARACTER*(1)	UPPER_CASE, region_qual(nferdims,2), other_qual(2),
      .			letter, letter2
 	CHARACTER	name*512, comment*12, transnam*6, buff*32, 
      .                  cal_name*32, letters*3
 	REAL*8		temp
 	INTEGER		dstart, dend, lbrac, state, gdset, itest, nend, ii
+
 
 * internal parameter declarations:
 	CHARACTER*1	tab
@@ -234,6 +248,7 @@
         DO 10 idim = 1, nferdims
 	kludge_gx_to_x(idim) = .FALSE.
 	set_implicitly(idim) = .FALSE.
+	regrid_dims(idim) = .FALSE.
  10     first_time(idim) = .TRUE.
 	has_g_eq_unkn_uvar = .FALSE.
 
@@ -355,9 +370,16 @@
  100       IF ( letter.EQ.'D' ) GOTO 500 ! already done
 	   IF ( letter.NE.'G' ) GOTO 190
 
+* only a single regridding specifier is allowed if auxvar regridding is used
+	   IF (cx_unstand_grid(mods_cx) .AND. cx_naux(mods_cx).NE. 0) THEN
+	      name = 'only a single regrid allowed when using'
+	      GOTO 5300
+	   ENDIF  
+
 * G= or G*= non-standard grid specifier ...
 * full format is (e.g.) GX=SALT@AVE (atsin and beyond optional)
 * (7/95) or may also include data set for grid as in G=vname[D=dset]
+* (3/13) or may also have aux vars as in Gxy(curvx,curvy)=vname[D=dset]@ave
 	   equal_pos = ATOM_POS( text_buff(istart:iend), '=' )
 	   IF ( equal_pos .EQ. atom_not_found
      .	   .OR. equal_pos .EQ. atom_illegal_pos ) GOTO 5020
@@ -377,18 +399,103 @@
 	   nend = name_end
 
 * allow multiple axes at once as in "GXY=ggg" (12/99 hack)
+* ... or "GXY(curvx,curvy)=ggg"  (3/13)
+	   has_auxvar = .FALSE.
 	   IF (.NOT.single_char) THEN
-* count the number of axis specifiers
+* count the number of axis specifiers and identify them
 	      DO 102 i = istart+1, equal_pos
                  letter2 = text_buff(i:i)
-	         IF (  letter2 .EQ. ' '
+		 IF (  letter2 .EQ. ' '
      .	          .OR. letter2 .EQ. '='
-     .	          .OR. letter2 .EQ. tab ) GOTO 103
+     .            .OR. letter2 .EQ. '('
+     .	          .OR. letter2 .EQ. tab ) THEN
+	            GOTO 103
+	         ELSE
+*   .... identify the axis that is being regridded
+                    DO suborval = 1,2
+	            DO idim     = 1,nferdims
+	               IF ( letter2.EQ.region_qual(idim,suborval) ) THEN
+	                  IF (regrid_dims(idim)) THEN
+	                     name = 'auxiliary axis named more than once in'
+	                     GOTO 5300
+	                  ELSE
+	                     regrid_dims(idim) = .TRUE.
+	                     GOTO 102
+	                  ENDIF
+	               ENDIF
+		    ENDDO
+	            ENDDO
+	            GOTO 5400    ! logic corruption -- should never happen
+	         ENDIF
  102          CONTINUE
-! can never get here ...
+	      GOTO 5400          ! logic corruption -- should never happen
  103	      naxes = i - istart - 1
 c	      next_char = istart + naxes - 1
 	      next_char = istart
+	      has_auxvar = letter2 .EQ. '('
+	   ENDIF
+
+* if auxiliary regridding variables have been given, parse em here
+	   IF (has_auxvar) THEN
+	     IF (naxes .GT. 1) THEN
+		name =
+     .		'this Ferret version doesnt support multi aux regrid args' 
+	        GOTO 5300
+	     ENDIF
+	     aux_lparen_pos = i
+	     aux_rparen_pos = INDEX(text_buff(i:equal_pos), ')' )
+	     IF (aux_rparen_pos .EQ. 0) THEN
+	        name = 'unpaired parentheses in'
+	        GOTO 5300
+	     ELSEIF (aux_rparen_pos .LT. 3) THEN
+	        name = 'empty parentheses in'
+	        GOTO 5300
+	     ENDIF
+	     aux_rparen_pos = aux_rparen_pos + i - 1
+* ... infer the aux argument count in the parens from the number of commas
+	     aux_arg_count = 1
+	     aux_arg_namlen = 0
+*    ... argument order must match collating order of axes as in gyx(argx,argy)=
+	     DO rgdim = 1, nferdims
+	         IF (regrid_dims(rgdim)) GOTO 704   ! too lazy to renumber
+	     ENDDO
+	     GOTO 5400   ! can never get here
+ 704	     cx_aux_arg_start(rgdim, mods_cx) = i+1
+	     cx_aux_arg_end  (rgdim, mods_cx) = i
+	     DO 104 i = aux_lparen_pos+1, aux_rparen_pos-1
+	        IF (text_buff(i:i) .EQ. ' ') GOTO 104
+	        IF (text_buff(i:i) .NE. ',') THEN
+*    ... add one character to the name length
+	          aux_arg_namlen = aux_arg_namlen + 1
+	          cx_aux_arg_end(rgdim,mods_cx) =
+     .				cx_aux_arg_end(rgdim,mods_cx) + 1
+	        ELSE
+*    ... start of a new argument name
+	          IF (aux_arg_namlen .EQ. 0) THEN
+	            name = 'missing auxiliary variable name in'
+	            GOTO 5300
+	          ENDIF
+	          aux_arg_count = aux_arg_count + 1
+*    ... match this arg to its axis from the "gxy" syntax
+	          DO rgdim = rgdim+1, nferdims
+	             IF (regrid_dims(rgdim)) THEN
+	                cx_aux_arg_start(rgdim, mods_cx) = i
+	                GOTO 104
+	             ENDIF
+	          ENDDO
+*    ... there are more arguments than there were axes named in "gxy"
+	          name = 'no. of auxliary variables must match no. of axes in'
+	          GOTO 5300
+	        ENDIF
+ 104	     CONTINUE
+	     IF (aux_arg_namlen .EQ. 0) THEN
+	        name = 'missing auxiliary variable name in'
+	        GOTO 5300
+	     ELSEIF (aux_arg_count .NE. naxes) THEN
+	        name = 'no. of auxliary variables must match no. of axes in'
+	        GOTO 5300
+	     ENDIF
+	     cx_naux(mods_cx) = naxes
 	   ENDIF
 
 * initialize for next axis as in "GXY="
@@ -1003,4 +1110,10 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
      .	'multiple specifications on '//ww_dim_name(idim)//' axis'
      .	 //pCR//
      .	 risc_buff(:len_rbuff), *5000)
+ 5300	CALL ERRMSG( ferr_syntax, status, 
+     .  name(:TM_LENSTR1(name))//' regrid of style gz(depth)=zax'
+     .	 //pCR//
+     .	 risc_buff(:len_rbuff), *5000)
+ 5400	CALL ERRMSG( ferr_internal, status, 
+     .  'get_context_mods logic corrptn', *5000)
 	END

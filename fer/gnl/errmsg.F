@@ -89,6 +89,7 @@
 *                       written to std out. 
 * *acm*  5/06 V600   -- Concatenate multiple lines for FER_LAST_ERROR with backslash.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* *sh* 11/13 V685    -- if allowed_err, then quickly exit
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -125,6 +126,7 @@
 * initialize
 	last_error = status			! save it for "HELP"
 	status_out = status			! transfer error code to output
+	IF (allowed_err) GOTO 500		! error condition ignored
 	gui_status = status
 
 * initialize string for symbol FER_LAST_ERROR

@@ -1,0 +1,52 @@
+* XDEPENDENCY_TREE.CMN
+* variables needed to manage and assess dependency tree
+
+* created 10/1/2013
+
+
+	COMMON/ XDEPENDENCY_TREE / dependency_nrows,
+     .		                   dependency_status,
+     .		                   dependency_status_rec,
+     .				   dependency_root_level,
+     .				   dependency_dflt_dset,
+     .				   dependency_max_recs,
+     .				   dependency_block1,
+     .				   dependency_current_tree_start,
+     .				   dependency_tree_mode,
+     .				   dependency_tree_show_uvars,
+     .				   dependency_tree_show_fvars
+
+
+	INTEGER			   dependency_nrows,
+     .				   dependency_status,
+     .				   dependency_status_rec,
+     .				   dependency_root_level,
+     .				   dependency_dflt_dset,
+     .				   dependency_max_recs,
+     .				   dependency_block1,
+     .				   dependency_current_tree_start
+	LOGICAL 		   dependency_tree_mode,
+     .				   dependency_tree_show_uvars,
+     .				   dependency_tree_show_fvars
+
+* number of fields needed per dependency element on the tree
+	INTEGER		dependency_nfields
+	PARAMETER     ( dependency_nfields = 9 )
+
+* dependency flag values -- ordered by increasing error severity
+	INTEGER		df_defined_earlier,
+     .			df_valid_var, 
+     .			df_unknown_grid, 
+     .			df_unknown_auxvar,
+     .			df_unknown_var,
+     .			df_unknown_dataset, 
+     .			df_syntax_error,
+     .			df_recursion_error
+	PARAMETER     ( df_defined_earlier = 1,
+     .			df_valid_var       = 2, 
+     .			df_unknown_grid	   = 3, 
+     .			df_unknown_auxvar  = 4,
+     .			df_unknown_var     = 5,
+     .			df_unknown_dataset = 6, 
+     .			df_syntax_error	   = 7,
+     .			df_recursion_error = 8 )

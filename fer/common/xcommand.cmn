@@ -42,6 +42,7 @@
 * V683  8/12 *acm*  New SET LIST/OUTTYPE CANCEL LIST/OUTTYPE, and SAVE/OUTTYPE 
 * V684 *acm* 12/12 Changes for VECTOR/MODULO on curvilinear plots.
 * V685 *acm*  4/13 Add /HIDDEN on DEF DATA/AGG
+* V685+ *sh*  9/13 Add SHOW VARIABLE/TREE and alias VTREE
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -156,7 +157,7 @@
      .			nqual2g =15, nqual_at2h = nqual_at2g + nqual2g,	!'DATA'
      .			nqual2h = 1, nqual_at2i = nqual_at2h + nqual2h,	!'MODE'
      .			nqual2i = 1, nqual_at2j = nqual_at2i + nqual2i,	!'MOVI'
-     .			nqual2j = 8, nqual_at2k = nqual_at2j + nqual2j,	!'VARI'
+     .			nqual2j = 9, nqual_at2k = nqual_at2j + nqual2j,	!'VARI'
      .			nqual2k = 1, nqual_at2l = nqual_at2k + nqual2k,	!'COMM'
      .			nqual2l = 5, nqual_at2m = nqual_at2l + nqual2l,	!'MEMO'
      .			nqual2m =20, nqual_at2n = nqual_at2m + nqual2m,	!'GRID'
@@ -409,7 +410,7 @@
      .			total_num_commands	= 30,
      .			total_num_subcommands	= nsub_at31 - 1,
      .			total_num_qualifiers	= nqual_at31a - 1,
-     .	                num_predefined_alias    = 22,
+     .	                num_predefined_alias    = 23,
      .			max_queries		= 50 )
 
 * declarations

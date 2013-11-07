@@ -53,6 +53,7 @@
 * V685 6/13 *acm* new qualifier SAVE/NOBOUNDS
 * V685 6/13 *acm* new qualifier SAVE/NOCOORDS
 * V685 6/13 *acm* new qualifier SHOW DATA/HIDDEN
+* V685+ 9/13 *sh* new qualifier SHOW VARIABLES/TREE
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -111,6 +112,10 @@
      .			slash_show_var_diag,
      .			slash_show_var_user,
      .			slash_show_var_xml,
+     .			slash_show_var_file,
+     .			slash_show_var_append,
+     .			slash_show_var_clobber,
+     .			slash_show_var_tree,
      .
      .			slash_show_grid_x0,
      .			slash_show_grid_i0,
@@ -125,10 +130,6 @@
      .			slash_show_data_hidden,
      .
      .			slash_show_func_detail,
-     .
-     .			slash_show_var_file,
-     .			slash_show_var_append,
-     .			slash_show_var_clobber,
      .
      .			slash_list_head,
      .			slash_list_nohead,
@@ -388,6 +389,7 @@
      .			slash_show_var_file = 6,
      .			slash_show_var_append = 7,
      .			slash_show_var_clobber = 8,
+     .			slash_show_var_tree = 9,
      .
      .			slash_show_grid_x0 = 7,
      .			slash_show_grid_i0 = 1,

@@ -112,6 +112,7 @@
 *                 LIST commands, etc, will not list info for E,F dimensions.
 * V683  *acm* 8/12 - add new MODE SHRINK_YLAB
 * V683  *acm* 8/12 - frame file FERRET.MGM  > ferret.gif
+* V685  *sh* 11/13 - added allowed_err for SH VAR/TREE
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -348,6 +349,7 @@ c     .	( mode_name(i),i=pmode_shrink_ylab+1,max_modes )/pmode_unused/
 	DATA	xwind_node		/ ' ' /
 	DATA	mode_grat_buff		/ ' ' /
         DATA    silent_err              / .FALSE. /  ! will set true for SHOW VAR/XML
+        DATA    allowed_err             / .FALSE. /  ! briefly set true in SHOW VAR/TREE
         DATA    grat_on                 / .FALSE. /
         DATA    num_linecolors          / 6 /
 

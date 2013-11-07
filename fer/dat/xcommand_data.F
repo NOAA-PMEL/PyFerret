@@ -201,6 +201,7 @@
 * V685 *acm*  6/13 new qualifier SAVE/NOBOUNDS
 * V685 *acm*  6/13 Dont add SAVE/NOCOORDS
 * V685 *acm*  4/13 Add /HIDE on DEF DATA/AGG and SHOW DATA/HIDDEN
+* V685+ *sh*  9/13 Add SHOW VARIABLE/TREE and alias VTREE
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -548,6 +549,7 @@
 		DATA qualifiers  (nqual_at2j+5)	/ 'OUTFILE'	/
 		DATA qualifiers  (nqual_at2j+6)	/ 'APPEND'	/
 		DATA qualifiers  (nqual_at2j+7)	/ 'CLOBBER'	/
+		DATA qualifiers  (nqual_at2j+8)	/ 'TREE'	/ ! was /DEPENDENCY
 * SHOW COMMANDS
 	   DATA subcommands      (nsub_at2 +10)	/ 'COMMANDS'	/
 	   DATA num_qualifs      (nsub_at2 +10)	/ nqual2k	/
@@ -1718,13 +1720,16 @@
      .		alias_name(22)	/ 'ENSEMBLE' /,
      .		alias_len(22)	/ 22 /,
      .		alias(22)	/ 'DEFINE DATA/AGGREGAT/E' /
+     .		alias_name(23)	/ 'VTREE' /,
+     .		alias_len(23)	/ 13 /,
+     .		alias(23)	/ 'SHOW VAR/TREE' /
 
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
-     .                   / 128*unspecified_name4 /,
-     .		(alias_len(i),i=num_predefined_alias+1,150) / 128*4 /,
+     .                   / 127*unspecified_name4 /,
+     .		(alias_len(i),i=num_predefined_alias+1,150) / 127*4 /,
      .		(alias(i),i=num_predefined_alias+1,150)
-     .                   / 128*unspecified_name4 /
+     .                   / 127*unspecified_name4 /
 
 
 	DATA queries(1) / 'STATUS' /,

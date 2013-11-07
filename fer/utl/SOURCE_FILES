@@ -45,6 +45,10 @@ deallo_all_grids.F\
 deallo_grid.F\
 deallo_unformed_grid.F\
 dense_contig_region.F\
+depend_stat_var.F\
+depend_stat_var_sub.F\
+display_dependency.F\
+display_dependency_sub.F\
 extract_dp_line.F\
 extract_dp_line2.F\
 extract_line.F\
@@ -69,6 +73,7 @@ gcf_parent_uvar.F\
 gcf_rtn_type.F\
 geog_var.F\
 get_ave_lims.F\
+get_dependency_status.F\
 get_max_string_len.F\
 get_max_string_len_sub.F\
 get_string_element.F\
@@ -120,6 +125,7 @@ permute_ptr_sub.F\
 permute_sub.F\
 region_number.F\
 regularly_spaced.F\
+report_dependency.F\
 reset_secs_from_bc.F\
 reverse_grid_axis.F\
 reverse_grid_axis_sub.F\
@@ -133,6 +139,7 @@ shellr.F\
 short_mod_copy.F\
 split_list.F\
 ss_neighbors.F\
+store_dependency.F\
 store_string.F\
 store_sys_strings.F\
 str_match.F\

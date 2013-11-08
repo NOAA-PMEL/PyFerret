@@ -57,6 +57,7 @@
 *                  the string concatenation.
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead
+* *sh* 11/2013 - allow an "=" as the end of an alias, soo "vtree=all" becomes legal
 
 
 * calling argument declarations:
@@ -65,7 +66,7 @@
 
 * internal variable declarations:
 	INTEGER	TM_LENSTR1, ALIAS_ID, 
-     .          alen, true_len, i, spos, bpos, cpos
+     .          alen, true_len, i, spos, bpos, cpos, epos
 
         CHARACTER*1     tab
 #ifdef NO_INTRINSIC_IN_PARAMETER
@@ -81,15 +82,19 @@
 	include 'xrisc.cmn'
 #endif
 
-* what is the alias command name length - terminated by "/" or " "
+* what is the alias command name length - terminated by "/" or " " (or tab or "=")
         alen = 8
         spos = INDEX(buffer(:alen),'/')
         bpos = INDEX(buffer(:alen),' ') 
 * 8/97 check for tab - it can be end of alias
 	cpos = INDEX(buffer(:alen),tab)
 	IF ( cpos .EQ. 0 ) cpos = clen + 1
-	if ( bpos .EQ. 0 ) bpos = clen + 1
+	IF ( bpos .EQ. 0 ) bpos = clen + 1
 	bpos = MIN( cpos, bpos )
+* 11/13 similar check for "="
+	epos = INDEX(buffer(:alen),'=')
+	IF ( epos .EQ. 0 ) epos = clen + 1
+	bpos = MIN( epos, bpos )
         IF ( spos .NE. 0 ) alen = spos - 1
         alen = MIN( alen, bpos - 1 )
         

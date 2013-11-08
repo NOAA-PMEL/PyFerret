@@ -63,7 +63,7 @@
 
 
 * internal variable declarations:
-	LOGICAL tell_dset, dup
+	LOGICAL tell_dset, dup, state_dflt_dataset
 	INTEGER	TM_LENSTR1,rec, ntrees, size, tree_size, tree_rec1,
      .		var, cat, tree_level, dset, uvar, item, ndone,
      .		blanks, llen, istart, iend, len2, dnamlen, tree, i
@@ -84,12 +84,8 @@
 	ENDIF
 	ndone = 0
 
-* announce the default dataset at the outset
-	IF (dependency_dflt_dset .NE. pdset_irrelevant) THEN
-	   dsetname = GET_UNIQUE_DSET_NAME( dependency_dflt_dset )
-	   CALL SPLIT_LIST( pttmode_explct, show_lun, 
-     .		'   in default dataset '//dsetname, 0)
-	ENDIF
+* do we need to announce the default dataset
+	state_dflt_dataset = dependency_dflt_dset .NE. pdset_irrelevant
 
 	DO 1000 tree = 1, ntrees
 
@@ -250,7 +246,15 @@
 	         line_buff(llen+1:) = ' = ' //VAR_TITLE( cat )
 	      ENDIF
    
-* display a line
+* name the default dataset just once
+	IF (state_dflt_dataset) THEN
+	   dsetname = GET_UNIQUE_DSET_NAME( dependency_dflt_dset )
+	   CALL SPLIT_LIST( pttmode_explct, show_lun, 
+     .		'   in default dataset '//dsetname, 0)
+	   state_dflt_dataset = .FALSE.
+	ENDIF
+
+* display a line of the tree
 	      CALL SPLIT_LIST( pttmode_explct, show_lun, 
      .	      	'   '//line_buff, 0)
 

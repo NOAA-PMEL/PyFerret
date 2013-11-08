@@ -279,6 +279,7 @@
      .          sho_file, idim, ndims, nvars, ngatts, recdim, npts,
      .          vartype, outflag, num_clim_1, num_clim_n,
      .          base_cx, base_isp
+        INTEGER saved_num_indices, saved_index_list(max_uvar)
 	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p
 	CHARACTER EXPR_NAME*8, TM_FMT*12,
      .		default*10, show_str*2048, arg*128, name*128, arg30*30
@@ -803,10 +804,16 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
               CALL deleted_list_get_undel(uvar_num_items_head, 
      .                          deleted_list_result(1),
      .                          max_uvar, num_indices )
-              DO 1008 i = 1, num_indices
+              IF (num_indices .EQ. 0) GOTO 1010
+* ... we need to save a private copy of the index list, else it gets corrupted
+*       by a call to delete_list_get_undel in INIT_DEPENDENCIES
+              saved_num_indices = num_indices
+              DO 1007 i = 1, saved_num_indices
+ 1007         saved_index_list(i) = deleted_list_result(i)
+              DO 1008 i = 1, saved_num_indices
                  CALL CRAWL_DEPENDENCIES
      .                          ( memory,
-     .                          uvar_name_code(deleted_list_result(i)), 
+     .                          uvar_name_code(saved_index_list(i)), 
      .                          base_cx, status )
                  IF (status .NE. ferr_ok) GOTO 5050
  1008         CONTINUE
@@ -820,7 +827,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
               IF (status .NE. ferr_ok) GOTO 5050
            ENDIF
            CALL DISPLAY_DEPENDENCY( memory(1,dependency_block1) )
-           CALL EXIT_DEPENDENCY_MODE
+ 1010      CALL EXIT_DEPENDENCY_MODE
            RETURN
         ENDIF
 

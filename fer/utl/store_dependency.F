@@ -89,8 +89,8 @@
 	dset   = cx_data_set(cx)
 	IF (dset .EQ. unspecified_int4) dset = pdset_irrelevant
 	desist = .FALSE.
-	known_var = cx_status .NE. ferr_unknown_variable
-     .	      .AND. cx_status .NE. ferr_unknown_auxvar
+	known_var = cx_status .EQ. ferr_ok
+!     .	      .OR.  cx_status .EQ. ferr_unknown_auxvar  ! ???
 
 * increment pointer to the next item to be stored
 	row = dependency_nrows + 1
@@ -160,9 +160,34 @@
 * always the very first one at the next lower level.
 	IF (  known_var
      .	.AND. row .GT. dependency_current_tree_start ) THEN
-	   in_target_defn = .TRUE.  ! while we are inside the defn of target
-	   current_lev = tree_lev
+
+* look for case 1:  twin sibling var that need not be reported
 	   DO 100 i = row-1, dependency_current_tree_start, -1
+	      IF     ( level(i) .GT. tree_lev ) THEN
+	         GOTO 100                 ! inside of a child variable - ignore
+	      ELSEIF ( level(i) .LT. tree_lev ) THEN
+	         GOTO 110		  ! gone beyond start of this variable
+	      ENDIF
+* ...  flag cannot be used in the dup test because it gets reset for df_defined_earlier
+*      since parent_uv is set to unspecified_int4 only for df_valid_var it serves
+*      as a signal that the flag had been valid before it was reset to defined_earlier
+	      dup =   parent_uv(i)    .EQ. parent_uv(row)
+     .          .AND. dataset(i)      .EQ. dataset(row)
+     .		.AND. var_or_start(i) .EQ. var_or_start(row)
+     .		.AND. cat_or_end  (i) .EQ. cat_or_end  (row)
+	      IF (dup) THEN
+* ... found a twin -- do not report it
+	         desist = .TRUE.
+	         row = row - 1
+	         dependency_nrows = row
+	         GOTO 500
+	      ENDIF
+ 100	   CONTINUE
+
+* look for cases 1 and 3
+ 110	   in_target_defn = .TRUE.	! while we are inside the defn of target
+	   current_lev = tree_lev
+	   DO 200 i = row-1, dependency_current_tree_start, -1
 	      IF ( level(i) .LT. current_lev ) THEN
 	         in_target_defn = .FALSE.
 	         direct_parentage = .TRUE.
@@ -170,7 +195,10 @@
 	      ELSE
 	         direct_parentage = .FALSE.  ! never true while in_target_defn
 	      ENDIF
-	      dup =   flag(i)         .EQ. flag(row)
+* ...  flag cannot be used in the dup test because it gets reset for df_defined_earlier
+*      since parent_uv is set to unspecified_int4 only for df_valid_var it serves
+*      as a signal that the flag had been valid before it was reset to defined_earlier
+	      dup =   parent_uv(i)    .EQ. parent_uv(row)
      .          .AND. dataset(i)      .EQ. dataset(row)
      .		.AND. var_or_start(i) .EQ. var_or_start(row)
      .		.AND. cat_or_end  (i) .EQ. cat_or_end  (row)
@@ -180,8 +208,8 @@
 	         desist = .TRUE.
 	         IF (in_target_defn .AND. level(i).EQ.tree_lev) THEN
 * ... case 1: twin sibling var need not be reported
-	            row = row - 1
-	            dependency_nrows = row
+*	SHOULD NEVER ARRIVE HERE
+	            CALL WARN("store_dependency")
 	         ELSEIF (direct_parentage) THEN
 * ... case 3: a recursive definition has been found
 	            flag(row) = df_recursion_error
@@ -191,7 +219,8 @@
 	         ENDIF
 	         GOTO 500
 	      ENDIF
- 100	   CONTINUE
+ 200	   CONTINUE
+
 	ENDIF
 
 * maintain the forward link pointer

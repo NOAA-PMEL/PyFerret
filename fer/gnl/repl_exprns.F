@@ -405,8 +405,8 @@
      .       'use RETURN= shape,size,grid,title,bad,t0,units,dset, '//pCR//
      .	     '  dsetnum,dsetpath,dsettitle,*size,*start,*end,'//pCR//
      .       '  *units,*axis,nc_scale,nc_offset,user_scale,user_offset,'//pCR//
-     .       '  calendar,dtype,xmod,tmod,status,IsDepth,IsReady'
-!     .       '  calendar,dtype,xmod,tmod,status,IsDepth,IsReady,IsLoaded' ! w IsLoaded
+     .       '  calendar,dtype,xmod,tmod,status,isDepth,isReady'
+!     .       '  calendar,dtype,xmod,tmod,status,isDepth,isReady,isLoaded' ! w isLoaded
 
 * ... RETURN=SHAPE
 

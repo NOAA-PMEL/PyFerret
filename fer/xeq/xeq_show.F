@@ -262,7 +262,7 @@
      .		nothing, sdetail, only_1, done_1, sfull, svars, sfile, 
      .		sbrief, first, sxml, clobber, append, firstxml, got_it, 
      .		coordvar, sattr, do_err, sho_out, its_gif, sh_att_dset, 
-     .		lineok
+     .		lineok, sho_tree
 	INTEGER TM_LENSTR1, TM_LENSTR, UVAR_NUMBER, STR_UPCASE,
      .		REGION_NUMBER, GRID_FROM_NAME, FIND_DSET_NUMBER,
      .		EFCN_MATCH_TEMPLATE, TM_GET_LINENUM, STR_SAME,
@@ -751,9 +751,10 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 
 * 	SHOW VARIABLES/FILE=[/APPEND][/CLOBBER]
 
-        sho_file = qual_given( slash_show_var_file )
-	clobber = qual_given( slash_show_var_clobber ) .GT. 0
-	append = qual_given( slash_show_var_append ) .GT. 0
+        sho_file  = qual_given( slash_show_var_file    )
+	clobber   = qual_given( slash_show_var_clobber ) .GT. 0
+	append    = qual_given( slash_show_var_append  ) .GT. 0
+        sho_tree  = qual_given( slash_show_var_tree    ) .GT. 0
 
 	IF (sho_file .GT. 0) THEN
 	   CALL OPEN_SHOW_FILE (show_lun, sho_file, 
@@ -762,7 +763,8 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	ENDIF
 
 * ... SHOW VARIABLES/DIAGNOSTIC
-        IF ( slash_all .OR. qual_given(slash_show_var_diag) .GT. 0 ) THEN
+        IF ( (slash_all .AND. .NOT.sho_tree)
+     .  .OR. qual_given(slash_show_var_diag) .GT. 0 ) THEN
 	   IF ( num_args .GT. 0 ) THEN
 	      arg = cmnd_buff(arg_start(1):arg_end(1))
 	   ELSE
@@ -775,21 +777,22 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	ENDIF
 
 * ... SHOW VARIABLE/TREE [expr]
-        IF ( qual_given(slash_show_var_tree) .GT. 0 ) THEN 
+        IF ( sho_tree ) THEN 
 *     /TREE=USER and /TREE=FILE
 	   iqual = qual_given( slash_show_var_tree )
 	   CALL EQUAL_STRING(cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			   show_str, status )  ! show_str is just a buffer
 	   IF ( status .NE. ferr_ok ) RETURN
-	   IF     ( show_str(1:1) .EQ. ' '
+	   IF     ( show_str(1:1) .EQ. 'A'
+     .     .OR.     slash_all             ) THEN
+             dependency_tree_show_uvars = .TRUE.  ! show all vars
+             dependency_tree_show_fvars = .TRUE.
+	   ELSEIF ( show_str(1:1) .EQ. ' '
      .         .OR. show_str(1:1) .EQ. 'U') THEN
              dependency_tree_show_uvars = .TRUE.  ! show user vars only
              dependency_tree_show_fvars = .FALSE.
 	   ELSEIF ( show_str(1:1) .EQ. 'F' ) THEN
              dependency_tree_show_uvars = .FALSE. ! show file vars only
-             dependency_tree_show_fvars = .TRUE.
-	   ELSEIF ( show_str(1:1) .EQ. 'A' ) THEN
-             dependency_tree_show_uvars = .TRUE.  ! show all vars
              dependency_tree_show_fvars = .TRUE.
            ELSE
               GOTO 5150

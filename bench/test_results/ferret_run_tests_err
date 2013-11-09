@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 12 Nov  1 15:10 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
+lrwxrwxrwx 1 ksmith tmap 12 Nov  8 15:46 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret on RHEL5-64
@@ -206,6 +206,7 @@ Benchmark scripts that will be run:
    bn_write_integer_att.jnl
    bn_descriptor_mc.jnl
    bn_plot_color_only.jnl
+   bn_vtree.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -222,7 +223,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Nov  1 15:41:14 PDT 2013
+Beginning at Fri Nov  8 15:54:00 PST 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -322,13 +323,13 @@ MESSAGE/CONTINUE `sst*/3,return=lunits`
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype,xmod,tmod,isdepth
+            calendar,dtype,xmod,tmod,status,isDepth,isReady
           sst,return=Xsize
 MESSAGE/CONTINUE `sst,return=Xsize`
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype,xmod,tmod,isdepth
+            calendar,dtype,xmod,tmod,status,isDepth,isReady
           sst,return=trash
 MESSAGE/CONTINUE `sst,return=trash`
 *** Running test: bn_letd.jnl
@@ -1379,7 +1380,7 @@ ls: input.txt: No such file or directory
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype,xmod,tmod,isdepth
+            calendar,dtype,xmod,tmod,status,isDepth,isReady
           axy, return=xx
 MESSAGE/CONTINUE `axy, return=xx`
  PERMANENT data cleared from memory
@@ -3380,6 +3381,14 @@ plot/i=1:100/over/COLOR 0.6*sin(i/7)
  **ERROR: command syntax: COLOR
           /COLOR not valid for PLOT/LEVELS ribbon plot
 plot/i=1:100/ribbon/COLOR sin(i/6),0.6*sin(i/7)
+*** Running test: bn_vtree.jnl
+ Cached data cleared from memory
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ **ERROR: illegal limits: X axis limits don't match variable def'n: A
+          Are you giving explicit limits when SET REGION would suffice ?
+list f
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3401,4 +3410,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
-Ended at Fri Nov  1 15:42:36 PDT 2013
+Ended at Fri Nov  8 15:55:09 PST 2013

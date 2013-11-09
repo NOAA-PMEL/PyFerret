@@ -55,25 +55,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <netcdf.h>
-#include <signal.h>
-#include <setjmp.h>
 
 #include "ferretmacros.h"
 #include "list.h"
 #include "NCF_Util.h"
 
-
-/* jump buffer for returning to the point prior to calling nc_* functions */
-static jmp_buf cd_read_scale_sigint_jmp_buf;
-
-/* pointer to previous function called when Ctrl-C is given */
-static void (*orig_sigint_handler)(int signum);
-
-/* function called when Ctrl-C is given */
-static void cd_read_scale_sigint_handler(int signum) {
-    /* Return to the setjmp call but return a value of 1 */
-    longjmp(cd_read_scale_sigint_jmp_buf, 1);
-}
 
 /* prototype */
 void tm_scale_buffer(DFTYPE *dat, double *dbuff,
@@ -140,30 +126,9 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
     imap[ndim-i] = tmp;
   }
 
-  /* 
-   * Capture the program state at this moment (zero is returned)
-   * or returning via longjmp after a Ctrl-C (non-zero is returned)
-   */
-  if ( setjmp(cd_read_scale_sigint_jmp_buf) != 0 ) {
-      /* restore the original Ctrl-C handler */
-      signal(SIGINT, orig_sigint_handler);
-      /* call CTRLC_AST (in fer/gnl/ctrl_c.F) to set the interrupted flag */
-      ctrlc_ast_();
-      /* return NC_INTERRUPT in cdfstat to indicate the read interrupt */
-      *cdfstat = NC_INTERRUPT;
-      return;
-  }
-
-  /* Put in our own Ctrl-C handler */
-  orig_sigint_handler = signal(SIGINT, cd_read_scale_sigint_handler);
-  if ( orig_sigint_handler == SIG_ERR )
-      abort();
-
   /* get the type of the variable on disk */
   *cdfstat = nc_inq_vartype(*cdfid, vid, &vtyp);
   if (*cdfstat != NC_NOERR) {
-      /* restore the original Ctrl-C handler */
-      signal(SIGINT, orig_sigint_handler);
       return;
   }
 
@@ -172,8 +137,6 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
 
   if (vtyp == NC_CHAR) 
 	{
-          /* restore the original Ctrl-C handler */
-          signal(SIGINT, orig_sigint_handler);
 	  *status = 111;
 	  return;
 	}
@@ -253,9 +216,6 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
 #endif
 	  }
   }
-
-  /* restore the original Ctrl-C handler */
-  signal(SIGINT, orig_sigint_handler);
 
   return;
 }

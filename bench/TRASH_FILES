@@ -14,6 +14,7 @@ a.jnl
 a.nc
 a1.nc
 a2.nc
+another_file_vars.nc
 anothername.gif
 append_to_this.nc
 asc.nc
@@ -112,6 +113,7 @@ longvname.nc
 lonlat.dat
 lonlat.nc
 multi_line_labels.plt
+my_file_vars.nc
 mypack.nc
 mytype.nc
 names
@@ -127,6 +129,7 @@ nc4_inttemp_shuffle_set_list_deflate_chunk.nc
 nc4_nodeflate3.nc
 newjournal.jnl
 noleap.nc
+other_file_vars.nc
 out.cdf
 out.nc
 pattern_plot1.plt

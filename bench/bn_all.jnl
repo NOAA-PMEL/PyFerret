@@ -102,7 +102,7 @@ SET MODE VERIFY
 !
 ! 11/06 *acm* New bn602_bug_fixes for version 6.02
 * V610  *acm* 3/08 - add new MODE NLEVELS
-* V685+ (?)  *sh* 11/13 - added bn_vtree to test SHOW VAR/TREE
+* V685  *sh* 11/13 - added bn_vtree to test SHOW VAR/TREE
 
 ! Include this statement to compare the outupt of 6D Ferret with 
 ! previous 4D benchmark logs.
@@ -866,8 +866,6 @@ GO bn_descriptor_mc
 
 GO bn_reset
 GO bn_plot_color_only
-
-! *********** v6.85?? Additions (Ansley to finalize version)  ***********
 
 GO bn_reset
 GO bn_vtree

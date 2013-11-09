@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43440940 Oct 30 15:07 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 43548918 Nov  8 16:52 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixing ticket 2098, ensemble with LET/D variables
+Note: Steves updates. Also error message not NOTE on USER commands
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,16 +13,17 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
+FER_EXTERNAL_FUNCIONS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
+FER_GO=. ./go ./examples /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Wed Oct 30 15:11:27 PDT 2013
+Beginning at Fri Nov 8 16:53:35 PST 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -111,13 +112,13 @@ MESSAGE/CONTINUE `sst*/3,return=lunits`
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype,xmod,tmod,isdepth
+            calendar,dtype,xmod,tmod,status,isDepth,isReady
           sst,return=Xsize
 MESSAGE/CONTINUE `sst,return=Xsize`
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype,xmod,tmod,isdepth
+            calendar,dtype,xmod,tmod,status,isDepth,isReady
           sst,return=trash
 MESSAGE/CONTINUE `sst,return=trash`
  PERMANENT data cleared from memory
@@ -1428,7 +1429,7 @@ Replacing definition of axis YAX
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype,xmod,tmod,isdepth
+            calendar,dtype,xmod,tmod,status,isDepth,isReady
           axy, return=xx
 MESSAGE/CONTINUE `axy, return=xx`
  PERMANENT data cleared from memory
@@ -3520,6 +3521,15 @@ plot/i=1:100/over/COLOR 0.6*sin(i/7)
 plot/i=1:100/ribbon/COLOR sin(i/6),0.6*sin(i/7)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis ZAX
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ **ERROR: illegal limits: X axis limits don't match variable def'n: A
+          Are you giving explicit limits when SET REGION would suffice ?
+list f
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -3607,4 +3617,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Oct 30 15:13:08 PDT 2013
+Ended at Fri Nov 8 16:55:23 PST 2013

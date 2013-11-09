@@ -117,6 +117,7 @@
 * V664 *kms* 8/10 Add second alternate return from XEQ_EXIT to exit the dispatch
 *                 loop but just re-enter the loop if not under pfyrret
 *       *acm* 3/12 removing use USER command
+*V685 *acm* 11/13 Issue an ERROR not a NOTE if USER command is tried.
 
 	include 'tmap_dims.parm'
 	include 'xalt_messages.cmn_text'
@@ -236,8 +237,9 @@ c	DO 2 i = 1, 200
 	GOTO 300
  190	CALL XEQ_SPAWN
 	GOTO 300
- 200	CALL WARN ('USER command not available in this version') ! CALL XEQ_USER_COMMAND( memory )
-	GOTO 300
+ 200	CONTINUE! CALL XEQ_USER_COMMAND( memory )
+        CALL ERRMSG(ferr_syntax, status, 
+     .    'USER command not available in this Ferret version ', *300)
  210	CALL XEQ_WIRE( memory )
 	GOTO 300
  220	CALL XEQ_QUERY

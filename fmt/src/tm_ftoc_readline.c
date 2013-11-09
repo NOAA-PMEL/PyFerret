@@ -124,10 +124,13 @@ tm_ftoc_readline_( prompt, buff )
   ptr = do_gets ( prompt );
 
 /* copy the line into the buffer provided from FORTRAN */
-  if (ptr != (char *)NULL)
+  if (ptr != (char *)NULL) {
     strcpy( buff, ptr );
-  else
+  }
+  else {
     buff[0] = '\004';   /* ^D  */
+    buff[1] = '\0';
+  }
 
   return (0);
 }

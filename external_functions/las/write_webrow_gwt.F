@@ -1,5 +1,5 @@
 *
-* write_webrow.F
+* write_webrow_gwt.F
 *
 * Ansley Manke
 * April 2009
@@ -42,7 +42,7 @@
 *
 
 
-      SUBROUTINE write_webrow_init(id)
+      SUBROUTINE write_webrow_gwt_init(id)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
 
@@ -99,7 +99,7 @@
 
 
 
-      SUBROUTINE write_webrow_result_limits(id)
+      SUBROUTINE write_webrow_gwt_result_limits(id)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
 
@@ -128,7 +128,7 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE write_webrow_compute(id, arg_1, arg_2, arg_3, arg_4, result)
+      SUBROUTINE write_webrow_gwt_compute(id, arg_1, arg_2, arg_3, arg_4, result)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'

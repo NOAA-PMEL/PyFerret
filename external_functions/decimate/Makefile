@@ -25,7 +25,7 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 # Targets
 #
 
-all:	piecewise.so piecewise3.so separate.so sample_fast_i.so apply_qc.so
+all:	piecewise.so piecewise3.so piecewise3_z.so separate.so sample_fast_i.so sample_rows.so apply_qc.so
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug" "CFLAGS = $(CFLAGS) -g -Ddebug"  all

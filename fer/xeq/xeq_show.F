@@ -266,7 +266,7 @@
      .		nothing, sdetail, only_1, done_1, sfull, svars, sfile, 
      .		sbrief, first, sxml, clobber, append, firstxml, got_it, 
      .		coordvar, sattr, do_err, sho_out, sh_att_dset,
-     .		lineok
+     .		lineok, sho_tree
 	INTEGER TM_LENSTR1, TM_LENSTR, UVAR_NUMBER, STR_UPCASE,
      .		REGION_NUMBER, GRID_FROM_NAME, FIND_DSET_NUMBER,
      .		EFCN_MATCH_TEMPLATE, TM_GET_LINENUM, STR_SAME,
@@ -283,6 +283,7 @@
      .          sho_file, idim, ndims, nvars, ngatts, recdim, npts,
      .          vartype, outflag, num_clim_1, num_clim_n,
      .          base_cx, base_isp
+        INTEGER saved_num_indices, saved_index_list(max_uvar)
 	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p
 	CHARACTER EXPR_NAME*8, TM_FMT*12,
      .		default*10, show_str*2048, arg*128, name*128, arg30*30
@@ -777,9 +778,10 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 
 * 	SHOW VARIABLES/FILE=[/APPEND][/CLOBBER]
 
-        sho_file = qual_given( slash_show_var_file )
-	clobber = qual_given( slash_show_var_clobber ) .GT. 0
-	append = qual_given( slash_show_var_append ) .GT. 0
+        sho_file  = qual_given( slash_show_var_file    )
+	clobber   = qual_given( slash_show_var_clobber ) .GT. 0
+	append    = qual_given( slash_show_var_append  ) .GT. 0
+        sho_tree  = qual_given( slash_show_var_tree    ) .GT. 0
 
 	IF (sho_file .GT. 0) THEN
 	   CALL OPEN_SHOW_FILE (show_lun, sho_file, 
@@ -788,7 +790,8 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	ENDIF
 
 * ... SHOW VARIABLES/DIAGNOSTIC
-        IF ( slash_all .OR. qual_given(slash_show_var_diag) .GT. 0 ) THEN
+        IF ( (slash_all .AND. .NOT.sho_tree)
+     .  .OR. qual_given(slash_show_var_diag) .GT. 0 ) THEN
 	   IF ( num_args .GT. 0 ) THEN
 	      arg = cmnd_buff(arg_start(1):arg_end(1))
 	   ELSE
@@ -801,21 +804,22 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	ENDIF
 
 * ... SHOW VARIABLE/TREE [expr]
-        IF ( qual_given(slash_show_var_tree) .GT. 0 ) THEN 
+        IF ( sho_tree ) THEN 
 *     /TREE=USER and /TREE=FILE
 	   iqual = qual_given( slash_show_var_tree )
 	   CALL EQUAL_STRING(cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			   show_str, status )  ! show_str is just a buffer
 	   IF ( status .NE. ferr_ok ) RETURN
-	   IF     ( show_str(1:1) .EQ. ' '
+	   IF     ( show_str(1:1) .EQ. 'A'
+     .     .OR.     slash_all             ) THEN
+             dependency_tree_show_uvars = .TRUE.  ! show all vars
+             dependency_tree_show_fvars = .TRUE.
+	   ELSEIF ( show_str(1:1) .EQ. ' '
      .         .OR. show_str(1:1) .EQ. 'U') THEN
              dependency_tree_show_uvars = .TRUE.  ! show user vars only
              dependency_tree_show_fvars = .FALSE.
 	   ELSEIF ( show_str(1:1) .EQ. 'F' ) THEN
              dependency_tree_show_uvars = .FALSE. ! show file vars only
-             dependency_tree_show_fvars = .TRUE.
-	   ELSEIF ( show_str(1:1) .EQ. 'A' ) THEN
-             dependency_tree_show_uvars = .TRUE.  ! show all vars
              dependency_tree_show_fvars = .TRUE.
            ELSE
               GOTO 5150
@@ -830,10 +834,16 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
               CALL deleted_list_get_undel(uvar_num_items_head, 
      .                          deleted_list_result(1),
      .                          max_uvar, num_indices )
-              DO 1008 i = 1, num_indices
+              IF (num_indices .EQ. 0) GOTO 1010
+* ... we need to save a private copy of the index list, else it gets corrupted
+*       by a call to delete_list_get_undel in INIT_DEPENDENCIES
+              saved_num_indices = num_indices
+              DO 1007 i = 1, saved_num_indices
+ 1007         saved_index_list(i) = deleted_list_result(i)
+              DO 1008 i = 1, saved_num_indices
                  CALL CRAWL_DEPENDENCIES
      .                          ( memory,
-     .                          uvar_name_code(deleted_list_result(i)), 
+     .                          uvar_name_code(saved_index_list(i)), 
      .                          base_cx, status )
                  IF (status .NE. ferr_ok) GOTO 5050
  1008         CONTINUE
@@ -847,7 +857,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
               IF (status .NE. ferr_ok) GOTO 5050
            ENDIF
            CALL DISPLAY_DEPENDENCY( memory(1,dependency_block1) )
-           CALL EXIT_DEPENDENCY_MODE
+ 1010      CALL EXIT_DEPENDENCY_MODE
            RETURN
         ENDIF
 

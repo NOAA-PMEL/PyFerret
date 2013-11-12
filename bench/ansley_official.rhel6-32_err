@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/v685Release/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43545379 Nov 12 14:28 /home/users/ansley/build/v685Release/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 42809389 Nov 12 15:10 /home/users/ansley/build/v685Release/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/v685Release/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: V6.85 for rhel6-64
+Note: v6.85 on flat 32-bit
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/v685Release/FERRET/bench
-Beginning at Tue Nov 12 14:29:41 PST 2013
+Beginning at Tue Nov 12 15:12:09 PST 2013
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1418,7 +1418,6 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-rm: cannot remove `input.txt': No such file or directory
 ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2306,6 +2305,60 @@ set axis/stride=2 NORMAL
  LISTing to file tripolar_missing_lon.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+**ERROR in External Function add_9:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/add_9.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function appende:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/appende.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function avet:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/avet.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function dates:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/dates.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function expndi_by_z_counts:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/expndi_by_z_counts.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function expndi_id_by_z_counts:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/expndi_id_by_z_counts.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function factorial:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/factorial.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function fft_amp:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/fft_amp.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function ffta_sample:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/ffta_sample.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function fft_phas:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/fft_phas.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function fill_xy:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/fill_xy.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function minmax:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/minmax.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function pass_thru:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/pass_thru.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function percent_good_t:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/percent_good_t.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function storage:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/storage.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function string_arg:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/string_arg.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function student_t_cutoff:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/student_t_cutoff.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function subtract:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/subtract.so: wrong ELF class: ELFCLASS64".
 curl error details: 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3528,19 +3581,22 @@ Replacing definition of axis ZAX
  **ERROR: illegal limits: X axis limits don't match variable def'n: A
           Are you giving explicit limits when SET REGION would suffice ?
 list f
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **ERROR: command syntax: unknown region name: @w
-set region/@w
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **ERROR: command syntax: writev5d(tr, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
-          unknown function "writev5d"
-DEFINE VARIABLE/QUIET vflag = writev5d(tr, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
- **ERROR: variable unknown or not in data set: VFLAG
-LOAD/TEMPORARY vflag
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
+**ERROR in External Function add_9:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/add_9.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function avet:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/avet.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function pass_thru:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/pass_thru.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function storage:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/storage.so: wrong ELF class: ELFCLASS64".
+**ERROR in External Function add_9:
+  Dynamic linking call dlopen() returns --
+  "/home/users/ansley/build/v685Release/FERRET/external_functions/ext_func/add_9.so: wrong ELF class: ELFCLASS64".
+**ERROR Ferret crash; signal = 11
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  Cached data cleared from memory
@@ -3617,4 +3673,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Nov 12 14:31:27 PST 2013
+Ended at Tue Nov 12 15:14:02 PST 2013

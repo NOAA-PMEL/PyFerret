@@ -1,5 +1,5 @@
 *
-*  scat2grid_bin_xyt.F
+*  scat2grid_bin_xyt
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -121,7 +121,7 @@
       arg = 4
       CALL ef_set_arg_name(id, arg, 'F')
       CALL ef_set_arg_desc(id, arg,
-     .        'F(X,Y,T) data at scattered XYT locations')
+     .        'variable at scattered XYT locations')
       CALL ef_set_axis_influence_6d(id, arg,
      .                              NO, NO, NO, NO, NO, NO)
 
@@ -251,7 +251,7 @@
 *  arg_1  xpts  \
 *  arg_2  ypts  / Scattered x,y,t triples to be gridded.
 *  arg_3  tpts /
-*  arg_4  fpts /
+*  arg_4  variable, /
 *  arg_5  xaxis of new grid
 *  arg_6  yaxis of new grid
 *  arg_7  taxis of new grid

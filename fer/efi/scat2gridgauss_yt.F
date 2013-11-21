@@ -1,5 +1,5 @@
 *
-*  scat2gridgauss_yt.F
+*  scat2gridgauss_yt
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -38,7 +38,7 @@
 * Nov 7, 2002 from scat2gridgauss_xy
 
 * Returns variable interpolated onto an equally-spaced Y-T grid.
-* Input is scattered triples: (y, t, f(y,t)); f may be function of x, z, e, f
+* Input is scattered triples: (y, t, variable) , f may be function of x, z, e, f
 * Output is gridded data in y, t.  Calls routine "gausswt2".
 *
 
@@ -119,7 +119,7 @@
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F')
       CALL ef_set_arg_desc(id, arg,
-     .        'F(Y,T) data at scattered YT locations. ' //
+     .        'variable at scattered YT locations. ' //
      .        'May also be fcn of X,Z,E,F')
       CALL ef_set_axis_influence_6d(id, arg,
      .                              YES, NO, YES, NO, YES, YES)
@@ -248,8 +248,8 @@
      .                           arg_9, result, yax, tax, grid, wate)
 
 *  arg_1  ypts \
-*  arg_2  tpts  > Scattered y,t,f(y,t) triples to be gridded.
-*  arg_3  fpts /    fpts can be fcn of x,z,e,f
+*  arg_2  tpts  > Scattered y,t,variable,  triples to be gridded.
+*  arg_3  variable, /    variable, can be fcn of x,z,e,f
 *  arg_4  yaxis of output grid
 *  arg_5  taxis of output grid
 *  arg_6  interpolation parameter   yscale

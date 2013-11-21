@@ -1,5 +1,5 @@
 *
-*  scat2gridgauss_xy_v0.F
+*  scat2gridgauss_xy_v0
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -52,14 +52,14 @@ c            cutoff parameter, for backwards compatibility.
 *   12/7/2000  Add error checking on gridding parameters
 *              X and Y scattered points are 1-D lists on any axis.
 *
-*    5/2001    Let F(x,y) be a function of Z and/or T
+*    5/2001    Let variable,  be a function of Z and/or T
 * v5.41 5/02   Fix bug (typo); Gridding to modulo X axis wasnt done.
 
 *  11/12/2002  Remove option 2) above: the spatial location of the scattered points
 *              is a 1-D list.
 
 * Returns variable interpolated onto an equally-spaced X-Y grid.
-* Input is scattered triples: (x, y, f(x,y)); f may be function of time, z
+* Input is scattered triples: (x, y, variable) , f may be function of time, z
 * Output is gridded data in x, y and time.  Calls routine "gausswt2_v0".
 *
 
@@ -140,7 +140,7 @@ c            cutoff parameter, for backwards compatibility.
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F')
       CALL ef_set_arg_desc(id, arg,
-     .        'F(X,Y) data at scattered XY locations. ' //
+     .        'variable at scattered XY locations. ' //
      .        'May also be fcn of Z,T,E,F')
       CALL ef_set_axis_influence_6d(id, arg,
      .                              NO, NO, YES, YES, YES, YES)
@@ -269,8 +269,8 @@ c            cutoff parameter, for backwards compatibility.
      .                           arg_9, result, xax, yax, grid, wate)
 
 *  arg_1  xpts \
-*  arg_2  ypts  > Scattered x,y,f(x,y) triples to be gridded.
-*  arg_3  fpts /    fpts can be fcn of z, t, e, f
+*  arg_2  ypts  > Scattered x,y,variable,  triples to be gridded.
+*  arg_3  variable, /    variable, can be fcn of z, t, e, f
 *  arg_4  xaxis of new grid
 *  arg_5  yaxis of new grid
 *  arg_6  interpolation parameter   xscale

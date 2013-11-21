@@ -1,5 +1,5 @@
 *
-*  scat2grid_t.F
+*  scat2grid_t
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis

@@ -1,5 +1,5 @@
 *
-*  scat2gridgauss_xz.F
+*  scat2gridgauss_xz
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -49,13 +49,13 @@
 *
 *   12/7/2000  Add error checking on gridding parameters
 *
-*    5/2001    Let F(x,z) be a function of Y and/or T
+*    5/2001    Let variable,  be a function of Y and/or T
 *
 *  11/12/2002  Remove option 2) above: the spatial location of the scattered points
 *              is a 1-D list.
 
 * Returns variable interpolated onto an equally-spaced X-Y grid.
-* Input is scattered triples: (x, z, f(x,z)); may be functions of y and/or time.
+* Input is scattered triples: (x, z, variable, ); may be functions of y and/or time.
 * Output is gridded data in x, y, z, and time.  Calls routine "gausswt2".
 *
 
@@ -137,7 +137,7 @@
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F')
       CALL ef_set_arg_desc(id, arg,
-     .        'F(X,Z) data at scattered XZ locations. ' //
+     .        'variable at scattered XZ locations. ' //
      .        'May also be fcn of Y,T,E,F')
       CALL ef_set_axis_influence_6d(id, arg,
      .                              NO, YES, NO, YES, YES, YES)
@@ -266,8 +266,8 @@
      .                           arg_9, result, xax, zax, grid, wate)
 
 *  arg_1  xpts \
-*  arg_2  zpts  > Scattered x,z,f(x,z) triples to be gridded.
-*  arg_3  fpts /    Can be fcn of y,t,e,f
+*  arg_2  zpts  > Scattered x,z,variable,  triples to be gridded.
+*  arg_3  variable, /    Can be fcn of y,t,e,f
 *  arg_4  X axis of new grid
 *  arg_5  Z axis of new grid
 *  arg_6  interpolation parameter   xscale

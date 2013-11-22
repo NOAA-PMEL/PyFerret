@@ -871,6 +871,11 @@ GO bn_reset
 GO bn_vtree
 
 
+! *********** v6.85+ Additions ***********
+GO bn_reset
+GO bn686_bug_fixes
+
+
 !!!!!!!!!!!!! Note we should include tests for all the scat2grid functions. 
 !!!!!!!!! completed and improved the docs for scat2grid_bin and scat2grid_nbin functions 
 

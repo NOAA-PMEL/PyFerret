@@ -367,6 +367,42 @@ c	   IF (.NOT.versus)  GOTO 5470
 	   ribbon_plot = .TRUE.
 	ENDIF
 
+* Style: fast for one-color per point, default is to interpolate
+* colors between points
+
+           loc = qual_given( slash_plot_fast  )
+           IF ( loc.GT.0 ) THEN
+     		CALL PPLCMD ( from, line, 0, 'RIBFAST 1', 1, 1 )
+           ELSE
+     		CALL PPLCMD ( from, line, 0, 'RIBFAST 0', 1, 1 )
+           ENDIF
+
+* Missing: how to represent missing color-values. Default is
+* thin black line. Can request /missing=dash, /missing=blank, 
+* /missing= color-palette (e.g. gray_light). The color palette 
+* will typically be a one-color plot, or if a multicolor palette 
+* is given its first color will be used.
+
+* (call this BEFORE setting the main color palette for ribbon plot; so that
+* the setting for palette type: percent, by_level, or by_value is set for the
+* specified palette.)
+
+           loc = qual_given( slash_plot_missing  )
+           IF ( loc.GT.0 ) THEN
+              CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .             buff, status )
+              IF ( status .NE. ferr_ok ) RETURN
+
+	      IF (STR_SAME (buff(1:4), 'blan') .EQ. 0) THEN
+                 CALL PPLCMD ( from, line, 0, 'RIBMISS BLANK', 1, 1 )
+              ELSEIF ( buff .EQ. ' ' ) THEN
+                 CALL PPLCMD ( from, line, 0, 'RIBMISS DEFAULT', 1, 1 )
+	      ELSE
+                 CALL PPLCMD ( from, line, 0, 'RIBMISS SPECTRUM='//buff, 1, 1 )
+	      ENDIF
+           ELSE
+	      CALL PPLCMD ( from, line, 0, 'RIBMISS DEFAULT', 1, 1 )
+           ENDIF
 
 * ... PLOT/PALETTE=  for multi-colored "ribbon" line 
 *     3-agument plot/lev/palette xpts, ypts, var
@@ -392,38 +428,6 @@ c	   IF (.NOT.versus)  GOTO 5470
 
            ENDIF
 
-* Style: fast for one-color per point, default is to interpolate
-* colors between points
-
-           loc = qual_given( slash_plot_fast  )
-           IF ( loc.GT.0 ) THEN
-     		CALL PPLCMD ( from, line, 0, 'RIBFAST 1', 1, 1 )
-           ELSE
-     		CALL PPLCMD ( from, line, 0, 'RIBFAST 0', 1, 1 )
-           ENDIF
-
-* Missing: how to represent missing color-values. Default is
-* thin black line. Can request /missing=dash, /missing=blank, 
-* /missing= color-palette (e.g. gray_light). The color palette 
-* will typically be a one-color plot, or if a multicolor palette 
-* is given its first color will be used.
-
-           loc = qual_given( slash_plot_missing  )
-           IF ( loc.GT.0 ) THEN
-              CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .             buff, status )
-              IF ( status .NE. ferr_ok ) RETURN
-
-	      IF (STR_SAME (buff(1:4), 'blan') .EQ. 0) THEN
-                 CALL PPLCMD ( from, line, 0, 'RIBMISS BLANK', 1, 1 )
-              ELSEIF ( buff .EQ. ' ' ) THEN
-                 CALL PPLCMD ( from, line, 0, 'RIBMISS DEFAULT', 1, 1 )
-	      ELSE
-                 CALL PPLCMD ( from, line, 0, 'RIBMISS SPECTRUM='//buff, 1, 1 )
-	      ENDIF
-           ELSE
-	      CALL PPLCMD ( from, line, 0, 'RIBMISS DEFAULT', 1, 1 )
-           ENDIF
 
 * default key
 	   do_key =  (qual_given(slash_plot_key)  .GT. 0)

@@ -273,9 +273,10 @@
      .		    slash_let_remote,
      .		    slash_define_vp_by_ax,
      .              slash_bounds,
-     .              slash_type,
-     .              slash_dset,
-     .              slash_output,
+     .              slash_def_att_type,
+     .              slash_def_att_dset,
+     .              slash_def_att_output,
+     .              slash_def_att_quiet,
      .              slash_def_ax_quiet,
      .              slash_pyfunc_name,
      .              slash_def_aggregate,
@@ -314,9 +315,10 @@
      .		    slash_let_bad    = 1 + 4,
      .		    slash_let_remote = 1 + 5,
      .		    slash_define_vp_by_ax = 1 + 6,
-     .              slash_type       = 1+1,
-     .              slash_dset       = 1+0,
-     .              slash_output     = 1+2,
+     .              slash_def_att_type    = 1 + 1,
+     .              slash_def_att_dset    = 1 + 0,
+     .              slash_def_att_output  = 1 + 2,
+     .              slash_def_att_quiet   = 1 + 3,
      .              slash_pyfunc_name = 1,
      .              slash_def_aggregate = 1 + 0,
      .              slash_def_agg_e     = 1 + 5,
@@ -336,7 +338,7 @@
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet, agg_e,
-     .            letdset, its_remote, agg_hide
+     .            letdset, its_remote, agg_hide, def_att_quiet
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1,
@@ -1884,7 +1886,7 @@ C /units=months  is 1/12 of the length of the year
 	RETURN
 
 **************************************************************************
-* DEFINE ATTRIBUTE /D= /TYPE= /OUTPUT
+* DEFINE ATTRIBUTE /D= /TYPE= /OUTPUT /QUIET
  900	IF ( num_args .LT. 1 ) GOTO 5900
 	CALL NAME_EQUAL_STRING_VATT ( buff1, pos, status )
 	IF ( status .NE. ferr_ok )  GOTO 5000
@@ -1897,7 +1899,7 @@ C /units=months  is 1/12 of the length of the year
         ENDIF
 
 * ... get dset number if present:  DEF ATT/D=dset ...
-	iqual = qual_given( slash_dset ) 
+	iqual = qual_given( slash_def_att_dset ) 
         IF ( iqual .GT. 0 ) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      buff2, status )  
@@ -1914,7 +1916,7 @@ C /units=months  is 1/12 of the length of the year
 
 *...DEF ATT/TYPE=string or float  get attribute type if present 
 *   (??? or other types on output?)
-	iqual = qual_given( slash_type) 
+	iqual = qual_given( slash_def_att_type) 
         attype_spec = ptype_unknown
         IF ( iqual .GT. 0 ) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
@@ -1931,8 +1933,12 @@ C /units=months  is 1/12 of the length of the year
 
 * ... DEFINE ATT/OUTPUT varname.attname.  By default output flag is set to 1
       attoutflag = 1
-      iqual = qual_given( slash_output ) 
+      iqual = qual_given( slash_def_att_output ) 
       IF ( iqual .GT. 0 ) attoutflag = 1 
+
+* ... DEFINE ATT/QUIET varname.attname
+      attoutflag = 1
+      def_att_quiet = qual_given( slash_def_att_quiet ) .GT. 0
 
 * get the requested data somehow
 
@@ -2008,7 +2014,7 @@ C /units=months  is 1/12 of the length of the year
 * Change attribute value
         IF (.NOT. new_att) THEN
            CALL EDIT_ATTRIBUTE(  memory(1, mr_blk1(mr)), mr, 
-     .               buff1, dset, attype_spec, status )
+     .               buff1, dset, attype_spec, def_att_quiet, status )
         ENDIF
 
 

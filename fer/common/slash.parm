@@ -202,6 +202,7 @@
      .                  slash_set_attr_dset,
      .                  slash_set_attr_output,
      .                  slash_set_attr_like,
+     .                  slash_set_attr_quiet,
      .
      .                  slash_set_redirect_tee,
      .                  slash_set_redirect_journal,
@@ -479,6 +480,7 @@
      .                  slash_set_attr_dset     = 2,
      .                  slash_set_attr_output   = 3,
      .                  slash_set_attr_like     = 4,
+     .                  slash_set_attr_quiet    = 5,
      .
      .                  slash_set_redirect_tee     = 1,
      .                  slash_set_redirect_journal = 2,

@@ -256,7 +256,7 @@
      .                  coordvar, new_att_modulo, batch, its_gif, 
      .                  got_it, redir_stdout, redir_stderr, redir_tee,
      .                  redir_journal, redir_append, redir_clobber, 
-     .                  fexist, use_strict, is_nc, have_outtype
+     .                  fexist, use_strict, is_nc, have_outtype, set_att_quiet
 
 * local parameter declarations:
 	INTEGER		slash_set_last
@@ -1360,7 +1360,7 @@ c *kob* 4/97
 
         RETURN
 
-* SET ATTRIBUTE/TYPE= /DATASET= /OUTPUT[=] /LIKE=
+* SET ATTRIBUTE/TYPE= /DATASET= /OUTPUT[=] /LIKE= /QUIET
  1400 IF ( num_args .LT. 1 ) GOTO 5900
       CALL NAME_EQUAL_STRING_VATT ( buff1, pos, status )
       IF ( status .NE. ferr_ok )  GOTO 5000
@@ -1400,6 +1400,8 @@ c *kob* 4/97
       ELSE
          IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5100
       ENDIF
+
+      set_att_quiet = qual_given( slash_set_attr_quiet ) .GT. 0
 
 * SET ATRIBUTE/TYPE=  varname.attname
 * types are: BYTE, CHAR or STRING, SHORT or INT2, INT or INT4, FLOAT, DOUBLE
@@ -1599,7 +1601,7 @@ c *kob* 4/97
      .       (isetout .EQ. 0) ) THEN 
            mr = is_mr( 1 )
            CALL EDIT_ATTRIBUTE(  memory(1, mr_blk1(mr)), mr, 
-     .               buff1, dset_num, attype_spec, status )
+     .               buff1, dset_num, attype_spec, set_att_quiet, status )
   
 ! errmsg already called in edit_attribute so just exit
            IF (status .NE. ferr_ok) GOTO 5000

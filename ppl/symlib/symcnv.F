@@ -14,7 +14,7 @@ C**	Subprogram called:
 C**		CALL SYMCNV(SYM,SYS)
 C**
 C**	Parameters:
-C**		SYM -- Symbol name (char*30)
+C**		SYM -- Symbol name (char*120)
 C**		SYS -- Symbol is SYSTEM type (logical)
 C**
 C**	Description:
@@ -69,11 +69,14 @@ C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 * v580 *acm* 9/04 Longer strings: changes for multi-line labels; symbols may be *2048.
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
         LOGICAL TM_NUMBER      
 
 	LOGICAL SYS,SYS2
-	CHARACTER SYM*(*),FRMT*30,SYM2*30,VALUE*2048
+	CHARACTER SYM*(*),FRMT*120,SYM2*120,VALUE*2048
+	INTEGER symlen
+	PARAMETER (symlen = 120)
 	SYS=.FALSE.
 	IF(SYM(1:1).EQ.'*')THEN
 	    SYS=.TRUE.
@@ -82,7 +85,7 @@ C                with "*(*)" for the linux port
 	ENDIF
 200	I=INDEX(SYM,'(')+1
 	J=INDEX(SYM,')')-1
-	CALL UPPER(SYM,30)
+	CALL UPPER(SYM,symlen)
 	IF(I.EQ.1.OR.J.EQ.-1)RETURN
 	if(i.eq.j)then
 

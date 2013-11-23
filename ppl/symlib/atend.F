@@ -60,19 +60,14 @@ C**	    Modified:
 C**		15-JUN-86	by Donald W. Denbo
 C**		  changes for memory buffer added
 C**
-C**
-#ifdef unix
+C*** V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+
 	include 'SYSTEM.INC'
 	include 'CMDCOM.INC'
 	include 'SYMKEY.INC'
 	INCLUDE 'LUNITS.INC'
-#else
-	INCLUDE 'cmdinc:SYSTEM.INC'
-	INCLUDE 'cmdinc:CMDCOM.INC'
-	INCLUDE 'cmdinc:SYMKEY.INC'
-	include 'pplinc:lunits.inc'
-#endif
-	CHARACTER KFILE*30,SYM*30
+
+	CHARACTER KFILE*30,SYM*120
 	DONEF=CMDLEV.EQ.1
 	IF(DONEF)THEN
 C

@@ -47,7 +47,8 @@ C**
 C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
-#ifdef unix
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'LINES.INC'
 	INCLUDE 'HD.INC'
@@ -60,21 +61,8 @@ C                with "*(*)" for the linux port
 	INCLUDE 'AXISL.INC'
 	INCLUDE 'TAXIS.INC'
 	INCLUDE 'SWITCH.INC'
-#else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:LINES.INC'
-        INCLUDE 'pplinc:HD.INC'
-	INCLUDE 'pplinc:PPL.INC'
-        INCLUDE 'pplinc:DATA.INC'
-        INCLUDE 'pplinc:CMRD.INC'
-        INCLUDE 'pplinc:CMRDL.INC'
-        INCLUDE 'pplinc:LABELS.INC'
-        INCLUDE 'pplinc:LABCOM.INC'
-        INCLUDE 'pplinc:AXISL.INC'
-        INCLUDE 'pplinc:TAXIS.INC'
-        INCLUDE 'CMDINC:SWITCH.INC'
-#endif
-	character sym*30,str*120,file*(*)
+
+	character sym*120,str*120,file*(*)
 C     NREC=NUMBER OF RECORDS TO BE READ 
 C     NGRP=NUMBER OF GROUPS TO BE READ PER RECORD 
 C     NVAR=NUMBER OF VARIABLE PER GROUP 

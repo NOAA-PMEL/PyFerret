@@ -43,6 +43,7 @@ C                with "*(*)" for the linux port
 * V685 *acm* 1/13 Increase number of symbols, # short to 5000,
 *                 # long to 500. Move the test for all-symbols-set
 *                 outside the loop. (Should do proper error handling...)
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
 	character file*(*)
 	integer flen,lun
@@ -62,7 +63,7 @@ c	have two regions of storage long (2048 characters)
 c	and short (132 characters),  this should minimize
 c	space requirements on a fortran system
 c
-	character syml(VLONG)*30,syms(VSHORT)*30
+	character syml(VLONG)*120,syms(VSHORT)*120
 	character vall(VLONG)*2048,vals(VSHORT)*132
 	integer lunl(VLONG),luns(VSHORT)
 	integer lenl(VLONG),lens(VSHORT)
@@ -190,7 +191,7 @@ c
 	do 90 i=1,mxlong
 	    if(lunl(i).eq.lun)then
 		sym=syml(i)
-		ilen=lnblk(sym,30)
+		ilen=lnblk(sym,120)
 		inext=i+1
 		long=.true.
 		return
@@ -200,7 +201,7 @@ c
 	do 100 i=1,mxshort
 	    if(luns(i).eq.lun)then
 		sym=syms(i)
-		ilen=lnblk(sym,30)
+		ilen=lnblk(sym,120)
 		inext=i+1
 		long=.false.
 		return
@@ -217,7 +218,7 @@ c
 	    do 110 i=inext,mxlong
 		if(lunl(i).eq.lun)then
 		    sym=syml(i)
-		    ilen=lnblk(sym,30)
+		    ilen=lnblk(sym,120)
 		    inext=i+1
 		    long=.true.
 		    return
@@ -227,7 +228,7 @@ c
 	    do 115 i=1,mxshort
 		if(luns(i).eq.lun)then
 		    sym=syms(i)
-		    ilen=lnblk(sym,30)
+		    ilen=lnblk(sym,120)
 		    inext=i+1
 		    return
 		endif
@@ -238,7 +239,7 @@ c
 	    do 120 i=inext,mxshort
 		if(luns(i).eq.lun)then
 		    sym=syms(i)
-		    ilen=lnblk(sym,30)
+		    ilen=lnblk(sym,120)
 		    inext=i+1
 		    return
 		endif

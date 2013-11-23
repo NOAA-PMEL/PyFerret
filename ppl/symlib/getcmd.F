@@ -50,7 +50,7 @@ C**
 C**	Parameters:
 C**		LINE -- Line from command input file (char*2048)
 C**		ILEN -- Length of LINE
-C**		COM -- Command value parsed  (char*30)
+C**		COM -- Command value parsed  (char*120)
 C**		X -- Numerical array
 C**		IF -- Flag array
 C**		M -- Length of numerical and flag array
@@ -88,6 +88,7 @@ C     *JD* 8.2.91 Mod to support brain dead PPL -- no @ usage
 *                 where buflen is defined in cmndlen.inc
 * v685 *acm* 1/13 Fix ticket 1298. If a label comes in containing single
 *                 quotes, just pass that on. It's not a symbol translation.
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
         logical         tmapdebug
         common/tmdebug/ tmapdebug
@@ -98,7 +99,7 @@ C     *JD* 8.2.91 Mod to support brain dead PPL -- no @ usage
 	INCLUDE 'LUNITS.INC'
         INCLUDE 'cmndlen.inc'
 
-	CHARACTER COM*(*),LABEL*(*),LINE*(*),SYM*30,VALUE*2048,FILE*80
+	CHARACTER COM*(*),LABEL*(*),LINE*(*),SYM*120,VALUE*2048,FILE*80
 	CHARACTER ICOM*2048
 	LOGICAL RESULT,NUM,islab
 	DIMENSION X(*),IF(*)

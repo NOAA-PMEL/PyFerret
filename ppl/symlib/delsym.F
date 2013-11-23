@@ -48,7 +48,7 @@ C**	Subprogram called:
 C**		CALL DELSYM(SYM,IER)
 C**
 C**	Parameters:
-C**		SYM -- Symbol name (char*30)
+C**		SYM -- Symbol name (char*120)
 C**		IER -- error code
 C**			0 = sucess
 C**			1 = symbol not found
@@ -64,14 +64,11 @@ C**
 C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
-#ifdef unix
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'SYMKEY.INC'
-#else
-	INCLUDE 'cmdinc:SYSTEM.INC'
-	INCLUDE 'cmdinc:SYMKEY.INC'
-#endif
+
 	LOGICAL SYS
 	CHARACTER SYM*(*)
 	CALL SYMCNV(SYM,SYS)

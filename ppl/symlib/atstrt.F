@@ -70,22 +70,16 @@ C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 C v552 *acm* 3/03 Longer strings: changes for multi-line labels
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
-#ifdef unix
 	INCLUDE 'CMDCOM.INC'
 	INCLUDE 'SYMKEY.INC'
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'SWITCH.INC'
 	INCLUDE 'LUNITS.INC'
-#else
-	INCLUDE 'cmdinc:CMDCOM.INC'
-	INCLUDE 'cmdinc:SYMKEY.INC'
-	INCLUDE 'cmdinc:SYSTEM.INC'
-	INCLUDE 'cmdinc:SWITCH.INC'
-	include 'pplinc:lunits.inc'
-#endif
+
 	CHARACTER FILE*(*),LINE*(*),TO*80,TEMP*2048
-	CHARACTER SYM*30
+	CHARACTER SYM*120
 	INTEGER LEN
 	IER=0
 	CMDLEV=CMDLEV+1

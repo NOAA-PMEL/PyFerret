@@ -42,6 +42,7 @@
 
 * 5/12  Fix the way the size is rescaled.
 *       Issue a note when the label size is reset.
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
 	REAL ywid, ywidt, abssz
 	LOGICAL noylab
@@ -53,7 +54,7 @@
 
 	REAL xl, frac, dhylab
 	CHARACTER*100 note
-	CHARACTER*30 arg30
+	CHARACTER*120 argsym
 	INTEGER i1, i2, len
 
 * This is irrelevant if there is no margin anyway (viewport defined with /AXES
@@ -73,14 +74,14 @@
 
 	i1 = 1
 	i2 = 1
- 1710   CALL LSTSYM(arg30,note,len,i1,i2)	! get next symbol
+ 1710   CALL LSTSYM(argsym,note,len,i1,i2)	! get next symbol
 	IF(i2.EQ.0)THEN
-           IF(arg30(:12) .EQ. 'LAST_GO_FILE')THEN
+           IF(argsym(:12) .EQ. 'LAST_GO_FILE')THEN
 	      CALL WARN (note)
 	   ELSE
               GOTO 1710
 	   ENDIF
-	      CALL LSTSYM(arg30,note,len,i1,i2) 
+	      CALL LSTSYM(argsym,note,len,i1,i2) 
 	   ENDIF
 	ENDIF
 

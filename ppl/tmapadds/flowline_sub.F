@@ -56,6 +56,7 @@ C**
 *      *acm* 10/01  remove VMS includes
 *  ACM  12/01 bug fix: jjndex not jjindex!
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
         include 'ferret.parm'
         include 'parampl5_dat.decl'
@@ -123,7 +124,7 @@ C  Local declarations
      .     jmn, j, iz, jz, iss, jss, imx, jmx, iln, slen
       LOGICAL bflg
 
-      CHARACTER*30 veclab, buff*30, symbuff*30
+      CHARACTER*120 veclab, buff, symbuff
       EXTERNAL lnblk
 
 C     Curvilinear coordinates declarations

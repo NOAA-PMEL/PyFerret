@@ -75,9 +75,10 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port 
 
 C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
 
-	CHARACTER LINE*(*),VALUE*2048,SYM*30,OPR*1,ARG(4)*30
+	CHARACTER LINE*(*),VALUE*2048,SYM*120,OPR*1,ARG(4)*120
 	CHARACTER FUNCT*30,FRMT*30
 	LOGICAL NUM,FUNC
 

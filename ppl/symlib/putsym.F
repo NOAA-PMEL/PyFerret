@@ -48,7 +48,7 @@ C**	Subprogram called:
 C**		CALL PUTSYM(STR,LABEL,NC,IER)
 C**
 C**	Parameters:
-C**		STR -- Symbol name (char*30)
+C**		STR -- Symbol name (char*120)
 C**		LABEL -- Value of symbol (char*2048)
 C**		NC -- length of LABEL
 C**		IER -- error code
@@ -67,6 +67,7 @@ C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'SYMKEY.INC'
@@ -74,10 +75,14 @@ C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 	LOGICAL SYS
 	INTEGER LUN
 	CHARACTER STR*(*),LABEL*(*)
+	
+	INTEGER symlen
+	PARAMETER (symlen = 120)
+
 	CALL SYMCNV(STR,SYS)
 	IER=0
 	LUN=KEYLN1
-	ilen=lnblk(str,30)
+	ilen=lnblk(str,symlen)
 	IF(SYS)GOTO 100
 	IF(SMKEY2)LUN=KEYLN2
 100	call dbmstore(lun,str,ilen,label,nc,ier)

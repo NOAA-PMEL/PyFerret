@@ -140,6 +140,7 @@
 * V683 *acm*  8/12 add new CANCEL LIST/OUTTYPE=  
 * V685 *acm*  4/13 Changes for ensemble datasets, correctly handle flag for hiding 
 *                  ensemble members 
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -193,7 +194,7 @@
      .                  canout, new_att_modulo, its_gif, batch, 
      .                  redir_cancel_stdout, redir_cancel_stderr
 
-	CHARACTER	arg*4, buff*512, arg30*30, varname*512,
+	CHARACTER	arg*4, buff*512, argsym*120, varname*512,
      .                  attname*128, show_str*12, buff2*3, DUMMY*512
 
 * local parameter declarations:
@@ -326,13 +327,13 @@
 	      blen = item_end(item)-item_start(item)+1
 * interpret and check the data set specified
 	      IF ( TM_DIGIT_TEST(buff) ) THEN
-	         arg30 = buff(:blen)			! 10/95 for AIX
+	         argsym = buff(:blen)			! 10/95 for AIX
 
 *  (1/03 *acm*) See xeq_set
 #ifdef MANDATORY_FORMAT_WIDTHS
-	         READ ( arg30,*,ERR=610 ) iset
+	         READ ( argsym,*,ERR=610 ) iset
 #else
-	         READ ( arg30,'(I)',ERR=610 ) iset
+	         READ ( argsym,'(I)',ERR=610 ) iset
 #endif
 
 * ... check for valid number given
@@ -1092,9 +1093,9 @@ c	ENDIF
 * cancel all symbols
 * (this lovely piece of code is borrowed from the PLOT+ routine getcmd.F)
 	   i=0
- 1705      CALL LSTSYM(arg30,buff,blen,i,ier)	! get next symbol name (arg30)
+ 1705      CALL LSTSYM(argsym,buff,blen,i,ier)	! get next symbol name (argsym)
            IF(ier.EQ.0)THEN
-	      CALL DELSYM(arg30,ier)
+	      CALL DELSYM(argsym,ier)
 	      GOTO 1705
 	   ENDIF
 	   RETURN
@@ -1103,13 +1104,13 @@ c	ENDIF
 	IF ( num_items .EQ. 0 ) GOTO 5010
 * (this lovely piece of code is borrowed from the PLOT+ routine getcmd.F)
 	i=0
- 1710   CALL LSTSYM(arg30,buff,blen,i,ier)	! get next symbol name (arg30)
+ 1710   CALL LSTSYM(argsym,buff,blen,i,ier)	! get next symbol name (argsym)
         IF(ier.EQ.0)THEN
 * ... check the given templates 
 	   DO 1720 i1 = 1, num_items
 	      nth = STR_UPCASE(buff,
      .			cmnd_buff(item_start(i1):item_end(i1)))
-	      IF ( MATCH_TEMPLATE(arg30,buff) ) CALL DELSYM(arg30,ier)
+	      IF ( MATCH_TEMPLATE(argsym,buff) ) CALL DELSYM(argsym,ier)
  1720	   CONTINUE
            GOTO 1710
 	ENDIF

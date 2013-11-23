@@ -222,6 +222,7 @@
 * V685 *adm*  1/13 DEFINE VARIABLE/REMOTE. Require /D= to accompany /REMOTE.
 * V685 *acm*  4/13 Add /HIDDEN on DEF DATA/AGG
 * V685 *acm* 10/13 Fix ticket 2096, DEFINE GRID with check on units
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -370,7 +371,7 @@
      .            new_att_modulo_len, madj
 	CHARACTER TM_FMT*16, 
      .            reg_name*24, buff1*128, buff2*128, buff3*128, 
-     .            buff30*30, cal_name*32, buff*512,
+     .            buffsym*120, cal_name*32, buff*512,
      .            basic_orients(nferdims)*2, err_string*2048, replmsg*24,
      .		  mon_names(12)*3, varname*512, attname*128, t2*2,
      .            new_att_units*128, new_att_calendar*128,
@@ -1871,9 +1872,9 @@ C /units=months  is 1/12 of the length of the year
 	IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5410
 
 * if this symbol already exists then delete it
-        buff30 = buff1	! must be exactly 30 characters for PLOT+ compat
-	CALL GETSYM( buff30, err_string, i2, i1 )
-	IF ( i1 .EQ. 0 ) CALL DELSYM(buff30,i1)
+        buffsym = buff1
+	CALL GETSYM( buffsym, err_string, i2, i1 )
+	IF ( i1 .EQ. 0 ) CALL DELSYM(buffsym,i1)
 
 * remove backslash escape characters 
 ! OLD COMMENT: exactly 255 for PPL; no longer the case as of Ferret v6.01
@@ -1881,7 +1882,7 @@ C /units=months  is 1/12 of the length of the year
 	CALL DE_ESCAPE_STRING( err_string, slen )
 
 * define the symbol
-	CALL PUTSYM( buff30, err_string, slen, i2)
+	CALL PUTSYM( buffsym, err_string, slen, i2)
 ! ... no check on returned error code (could be "internal error")
 	RETURN
 

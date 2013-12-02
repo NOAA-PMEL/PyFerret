@@ -202,5 +202,7 @@ bn_write_integer_att.jnl
 bn_descriptor_mc.jnl
 bn_plot_color_only.jnl
 bn_vtree.jnl
+bn686_bug_fixes.jnl
+bn_long_symnames.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

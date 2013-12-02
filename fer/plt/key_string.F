@@ -49,6 +49,7 @@
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars and name to 256 (ds_name)
 * V67  *acm* 3/11- fix ticket 1821
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V685+ *acm* 12/13 For 6D Ferret, the array coming in as flags is longer for extra dimensions
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -60,7 +61,7 @@
 	external xdset_info_data
 
 * calling argument declarations
-	LOGICAL	flags(0:10)
+	LOGICAL	flags(*)
 	INTEGER	cx, slen
 
 * local variable declarations:

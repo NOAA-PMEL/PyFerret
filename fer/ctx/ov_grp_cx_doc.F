@@ -46,6 +46,7 @@
 * V200:	  2/2/90
 * V230:  7/22/92 - added overlay argument to ADDL_CX_DOC
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V685+ *acm* 12/13 For 6D Ferret, the array coming in as flags is longer for extra dimensions
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -54,7 +55,7 @@
 
 * calling argument declarations
 	INTEGER ncx, ov_cx(ncx)
-	LOGICAL	flags(0:10)
+	LOGICAL	flags(*)
 
 * internal variable declarations
 	INTEGER	i

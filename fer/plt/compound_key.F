@@ -42,11 +42,12 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V685+ *acm* 12/13 For 6D Ferret, the array coming in as flags is longer for extra dimensions
 
 * V200:   1/4/89
 
 * calling argument declarations:
-	INTEGER	ncx, cx_list(ncx), flags(0:10), tlen
+	INTEGER	ncx, cx_list(ncx), flags(*), tlen
 
 * internal variable declarations:
 	CHARACTER*200	KEY_STRING

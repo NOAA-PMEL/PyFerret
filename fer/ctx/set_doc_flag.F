@@ -46,12 +46,13 @@
 * V314: 8/24/94 *kob* IBM port - variable flag should be declared as logical and
 *				 not integer...caught by AIX xlf compiler
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V685+ *acm* 12/13 For 6D Ferret, the array coming in as flags is longer for extra dimensions
 
 	include	'ferret.parm'
 
 * calling argument declarations
 * move flags variable from integer to logical declaration *kob* 8/94
-	LOGICAL	init, flags(0:10)
+	LOGICAL	init, flags(*)
 	INTEGER select
 
 * internal variable declarations

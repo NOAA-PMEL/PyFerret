@@ -20,7 +20,7 @@
 * *kms*      2/12 Add E and F dimensions to ul_dolab, plot_axis
 * *acm* v683 11/12 add sym_so_far - symbols on line plots. Used to be SAVEd in line_style.F
 
-	LOGICAL	key_doc(0:10),
+	LOGICAL	key_doc(0:12),
      .		onedee_on,
      .		twodee_on,
      .		saved_ppl_yax,

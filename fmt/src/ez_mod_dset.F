@@ -49,6 +49,7 @@
 * V581 *acm*/3/05 - increase length of strings for dataset title to 1024 
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* V685+ 12/13 *acm* 6D Ferret: passed-in array had fixed dimensino of 4
 
 * Arguments:
 *	dset	- data set number
@@ -60,7 +61,7 @@
 *	status	- (output)
 *
 	CHARACTER*(*)	title, ezform
-	INTEGER*4	dset, grid, skip, order(4), status,idim
+	INTEGER*4	dset, grid, skip, order(*), status,idim
 *
 * Include files
 	include 'tmap_dims.parm'  

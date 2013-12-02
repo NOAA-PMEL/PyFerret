@@ -1237,9 +1237,11 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
                     CALL SHOW_GRID_XML(show_lun, grid, unspecified_int4 )
                  ELSE
 	            WRITE ( risc_buff, 4210 ) grid_name( grid )
+		    IF (dset.NE.unspecified_int4 .AND. dset.NE.pdset_irrelevant) THEN
 	            IF ( TM_HAS_STRING(ds_type(dset), 'ENS') ) THEN
 		       dlen = TM_LENSTR1(grid_name(grid) )
 		       WRITE ( risc_buff, 4211) grid_name(grid)(:dlen)
+		    ENDIF
 		    ENDIF
 	            CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 

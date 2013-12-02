@@ -52,7 +52,7 @@
 *     dset    - dset (if netcdf file, for getting name and attribute 
 *               info from linked-list structure  
 *     grid    - TMAP grid id
-*     idim    - axis orientation (1-4)
+*     idim    - axis orientation (1-nferdims)
 *     nlen    - length of name
 
 * include files
@@ -71,9 +71,9 @@
       INTEGER TM_LENSTR1, iaxis, varid, vartype, nvdims, vdims(8), 
      .        nvatts, status, llen, ic, all_outflag
 
-      CHARACTER*1 ww_dim_name(4), c
+      CHARACTER*1 ww_dim_name(nferdims), c
       CHARACTER*130 buff
-      DATA ww_dim_name/'X', 'Y', 'Z', 'T'/
+      DATA ww_dim_name/'X', 'Y', 'Z', 'T', 'E', 'F'/
 
 * initialize
       iaxis = grid_line(idim, grid)

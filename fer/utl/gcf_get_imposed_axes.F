@@ -70,7 +70,7 @@
 	include 'xvariables.cmn'     ! for TIMES2
 
 * calling argument declarations
-	INTEGER	gcfcn, cx_base, axes(4), status
+	INTEGER	gcfcn, cx_base, axes(*), status
 
 * internal variable declarations
 	LOGICAL known_limits

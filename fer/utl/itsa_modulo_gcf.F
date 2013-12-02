@@ -55,7 +55,7 @@
 	include 'xgrid_chg_fcns.cmn'
 
 * calling argument declarations:
-	INTEGER	cx, idim, axis_will_be(4)
+	INTEGER	cx, idim, axis_will_be(nferdims)
 
 * internal variable declarations:
 	INTEGER	 WHICH_GCFCN, gcfcn

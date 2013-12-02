@@ -45,12 +45,13 @@
 *                  cancelled, get the original upper/lowercase spelling of the axis name.
 * V63   9/09 *acm* Fixing bug 1686: if line_name_orig is not set, use line_name
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V6.85+ 12/13*acm* catch up to 6-D Ferret
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
 *               info from linked-list structure  
 *     grid    - TMAP grid id
-*     idim    - axis orientation (1-4)
+*     idim    - axis orientation (1-nferdims)
 *     nlen    - length of name
 
 * include files
@@ -71,9 +72,9 @@
      .  attlen, maxlen, attoutflag, alen
       REAL val
 
-      CHARACTER*1 ww_dim_name(4)
+      CHARACTER*1 ww_dim_name(nferdims)
       CHARACTER varname*130, buff*128, attname*128
-      DATA ww_dim_name/'X', 'Y', 'Z', 'T'/
+      DATA ww_dim_name/'X', 'Y', 'Z', 'T', 'E', 'F'/
 
 * initialize
       iaxis = grid_line(idim, grid)

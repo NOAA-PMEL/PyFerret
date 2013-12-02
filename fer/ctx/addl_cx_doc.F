@@ -50,6 +50,7 @@
 *                 and what was being included.  removed them
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V685+ *acm* 12/13 For 6D Ferret, the array coming in as flags is longer for extra dimensions
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -57,7 +58,7 @@
 
 * calling argument declarations
 	INTEGER joint_cx, addl_cx 
-	LOGICAL	overlay, flags(0:10) 
+	LOGICAL	overlay, flags(*) 
 
 * internal variable declarations
 	INTEGER	idim, CX_DIM_LEN

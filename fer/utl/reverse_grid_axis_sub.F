@@ -108,6 +108,8 @@
  300	   CONTINUE
 
 	ELSEIF ( axis .EQ. t_dim ) THEN
+	   DO 400 n = dlof, dhif
+	   DO 400 m = dloe, dhie
 	   DO 400 l = dlot, turn_pt
 	   DO 400 k = dloz, dhiz
 	   DO 400 j = dloy, dhiy

@@ -1,5 +1,5 @@
 *
-*  scat2gridlaplace_xt.F
+*  scat2gridlaplace_xt
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -37,7 +37,7 @@
 * July 28 1998
 *
 * Returns variable interpolated onto an equally-spaced X-T grid.
-* Input is scattered triples: (x, t, f(x,t)); may be functions of Y,Z,E,F.
+* Input is scattered triples: (x, t, variable) , may be functions of Y,Z,E,F.
 * Output is gridded data in X,Y,Z,T,E,F.  Calls routine "zgrid_laplace".
 *
 * Nov 13, 2000 1) Allow modulo axes: if modulo take points from other end
@@ -48,7 +48,7 @@
 *                 points as modulo too.
 *
 *   12/7/2000  Add error checking on gridding parameters
-*    5/2001    Let F(x,y) be a function of Z and/or T
+*    5/2001    Let variable,  be a function of Z and/or T
 *
 *  11/12/2002  Remove option 2) above: the spatial location of the scattered points
 *              is a 1-D list.
@@ -58,14 +58,14 @@
 *              done on the unrestricted output grid.
 *  8/26/2008   The functions call zgrid from the PPLUS code. This function has
 *              some hard-wired workspace limited to 50K points. Instead allocate
-*              work arrays here and pass them to zgrid_laplace.F in this directory
+*              work arrays here and pass them to zgrid_laplace in this directory
 *              with no changes other than the work array declarations.
 *
 *  *kms* 4/2012 Removed extending result grid axes with ef_unspecified_int4: 
 *               this appears to destroy the axes of the result grid as demonstrated
 *               by the listing in bn_scat2grid_test.jnl.  Now it is up to the
 *               the user to give (not truncate) the result grid axes:
-*      let sgrid = scat2gridlaplace_xy(xpts, ypts, fpts, x[gx=xax5], y[gy=yax5], 5., 5)
+*      let sgrid = scat2gridlaplace_xy(xpts, ypts, variable, x[gx=xax5], y[gy=yax5], 5., 5)
 *      load sgrid  ! <--- without this, the following uses a 1-element Y axis
 *      list/x=4:5/y=1 sgrid
 
@@ -145,7 +145,7 @@
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F')
       CALL ef_set_arg_desc(id, arg,
-     .        'F(X,T) data at scattered XT locations. ' //
+     .        'variable at scattered XT locations. ' //
      .        'May also be fcn of Y,Z,E,F')
       CALL ef_set_axis_influence_6d(id, arg,
      .                              NO, YES, YES, NO, YES, YES)
@@ -298,8 +298,8 @@
      .                            fscat, zpij, knxt)
 
 *  arg_1  xpts \
-*  arg_2  tpts  > scattered x,t,f(x,t) triples to be gridded. F can be fcn of y,z,e,f
-*  arg_3  Fpts /
+*  arg_2  tpts  > scattered x,t,variable,  triples to be gridded. F can be fcn of y,z,e,f
+*  arg_3  variable, /
 *  arg_4  xaxis of new grid
 *  arg_5  taxis of new grid
 *  arg_6  interpolation parameter   kay
@@ -713,7 +713,7 @@ C**
 C**	subroutine zgrid(z,nxsize,nysize,nx,ny,x1,y1,dx,dy, 
 C**     1	xp,yp,zp,n,cay,nrng) 
 C** 
-C**    @(#)zgrid.f	1.1    3/10/88
+C**    @(#)zgrid	1.1    3/10/88
 C**
 C**
 C***********************************************************************

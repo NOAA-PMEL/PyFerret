@@ -47,7 +47,8 @@ C**
 C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
-#ifdef unix
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'HD.INC'
 	INCLUDE 'TAXIS.INC'
@@ -65,28 +66,10 @@ C                with "*(*)" for the linux port
 	INCLUDE 'COMTHDR.INC'
 	INCLUDE 'COMEPV.INC'
 	INCLUDE 'COMEPS.INC'
-#else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:HD.INC'
-        INCLUDE 'pplinc:TAXIS.INC'
-        INCLUDE 'pplinc:AXISL.INC'
-        INCLUDE 'pplinc:CMRD.INC'
-        INCLUDE 'pplinc:CMRDL.INC'
-        INCLUDE 'pplinc:DATA.INC'
-        INCLUDE 'pplinc:EPICLUN.INC'
-        INCLUDE 'pplinc:LINES.INC'
-        INCLUDE 'pplinc:LABCOM.INC'
-        INCLUDE 'pplinc:LABELS.INC'
-        INCLUDE 'pplinc:LUNITS.INC'
-        INCLUDE 'CMDINC:SYSTEM.INC'
-        INCLUDE 'CMDINC:SWITCH.INC'
-        INCLUDE 'EPICINC:COMTHDR.INC'
-        INCLUDE 'EPICINC:COMEPV.INC'
-        INCLUDE 'epicinc:COMEPS.INC'
-#endif
+
 	LOGICAL LEOF,LFIRST,LSTICK
 	CHARACTER*10 CEPIC1,CEPIC2,FILE*(*)
-	CHARACTER YES*3,NO*2,SYM*30,CSYM*6
+	CHARACTER YES*3,NO*2,SYM*120,CSYM*6
 	INTEGER PBUF
 	DATA YES,NO/'YES','NO'/
 C

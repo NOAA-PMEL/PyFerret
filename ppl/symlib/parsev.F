@@ -72,6 +72,7 @@ C                with "*(*)" for the linux port
 C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 * v580 *acm* 8/04 Change use of 256 to buflen+1, 
 *                 where buflen is defined in cmndlen.inc
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
         INCLUDE 'cmndlen.inc'
 
@@ -253,7 +254,7 @@ C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 
-	CHARACTER STRING*(*),TEMP*2048,FRMT*30
+	CHARACTER STRING*(*),TEMP*2048,FRMT*120
 	INTEGER SLEN
 	LOGICAL NUM
 

@@ -38,6 +38,8 @@
 *	Mod to set SYM='*PPL$PLTNME' to metafile.plt by default *jd* 1.7.94
 *	Mod to not reference "getlog" routine for linux port *kob* 3.11.97	
 *       Mod to set SYM='*PPL$PLTNME' to value of meta_file *js* 7.25.97
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+
 C**
 C**    @(#)opnppl.F	1.1    3/10/88
 C**
@@ -123,7 +125,7 @@ C	CHARACTER EFILE*81
         INTEGER*4 LIB$GET_FOREIGN,STAT,LIB$GET_SYMBOL,LEN,IFLAG
         INCLUDE '($JPIDEF)'
 #endif
-	CHARACTER TEMP*81,TERM*20,SYM*30
+	CHARACTER TEMP*81,TERM*20,SYM*120
 C
 	CHARACTER TYPE*81
 C

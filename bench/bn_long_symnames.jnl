@@ -1,0 +1,30 @@
+! bn_long_symnames.jnl
+! *ACM* 11/22/2013
+! Allow longer names for Ferret symbols
+
+! Define a couple of symbols longer than previous limit of 30
+define symbol ferret_temperature_equilibrator_min = -2
+define symbol ferret_temperature_equilibrator_max = 35
+
+! SHOW
+show symbol ferret_temperature_*
+
+! CANCEL
+can sym ferret_temperature_equilibrator_max
+show symbol ferret_temperature_*
+
+! DEFINE and redefine
+define symbol ferret_temperature_equilibrator_min = 0
+define symbol ferret_temperature_equilibrator_max = 35
+
+can sym *max
+
+show symbol ferret_temperature_*
+
+
+! bn_symbols had a line to 
+! demonstrate the 30 character cap on symbol length
+! Lets demonstrate the 120 character cap on symbol length
+define symbol q23456789012345678901234567890q23456789012345678901234567890q23456789012345678901234567890q23456789012345678901234567890 = 5
+define symbol q23456789012345678901234567890q23456789012345678901234567890q23456789012345678901234567890q23456789012345678901234567xxxaaaa = 6
+show symbol q*

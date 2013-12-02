@@ -125,6 +125,7 @@ C              do not make small tics by default.
 * V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
 c
 c	fromi	command file or device (/dev/tty or TT: for terminal)
@@ -255,7 +256,7 @@ CCCCCCC data	        tmapdebug/.false./
 
         LOGICAL TM_HAS_STRING
 	CHARACTER DTE*10,TEMP*2048,TEMP2*2048,FILE*81,FROM*80,LINE*2048
-	CHARACTER SYM*30,ICOM7*7
+	CHARACTER SYM*120,ICOM7*7
 	CHARACTER FROMI*10,LINEI*10
 	CHARACTER COMBUF(ICMDIM)*2048
 	CHARACTER YES*3,NO*2,err_msg*40
@@ -1811,7 +1812,7 @@ c
 	include 'system_inc.decl'
 	include 'SYSTEM.INC'
 
-	CHARACTER FILE*(*),SYM*30
+	CHARACTER FILE*(*),SYM*120
 	IER=0
 	IF(N.EQ.0)THEN
 	    IF(FILE.EQ.' ')THEN

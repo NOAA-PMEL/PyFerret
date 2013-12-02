@@ -86,6 +86,8 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * PyFr *kms*  7/13 Scale default lengths by pplscale; 
 *                  do not reset minor tic size (not scaled!)
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -102,7 +104,7 @@
 	INTEGER ncx, cx_list(ncx)
 
 * internal variable declarations:
-	CHARACTER	TM_FMT*12, buffer*40, buff30*30, show_str*12
+	CHARACTER	TM_FMT*12, buffer*40, buffsym*30, show_str*12
         INTEGER         idim, ier, nc, slen
         REAL            logoht
 
@@ -137,61 +139,61 @@
 
 * if the axis min and max symbols already exist then delete them
 
-        buff30 = 'XAXIS_MIN'
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
-        buff30 = 'XAXIS_MAX'
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
-        buff30 = 'YAXIS_MIN'
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
-        buff30 = 'YAXIS_MAX'
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
-        buff30 = 'X_REVERSED '
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
-        buff30 = 'Y_REVERSED '
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
+        buffsym = 'XAXIS_MIN'
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'XAXIS_MAX'
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'YAXIS_MIN'
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'YAXIS_MAX'
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'X_REVERSED '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'Y_REVERSED '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
 
 * If LABNUM symbols exist from a previous plot, delete them.
 
-        buff30 = 'LABNUM_X '
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
-        buff30 = 'LABNUM_Y '
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
-        buff30 = 'LABNUM_Z '
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
-        buff30 = 'LABNUM_T '
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
+        buffsym = 'LABNUM_X '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LABNUM_Y '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LABNUM_Z '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LABNUM_T '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
            
-        buff30 = 'LABNUM_DSET '
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
-        buff30 = 'LABNUM_ASPECT '
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
-        buff30 = 'LABNUM_YEAR '
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
-        buff30 = 'LABNUM_DATITL '
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
-        buff30 = 'LABNUM_OFFSET '
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
-        buff30 = 'LABNUM_DODS '
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
-        buff30 = 'LABNUM_CALEND '
-	CALL GETSYM( buff30, buffer, nc, ier )
-	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
+        buffsym = 'LABNUM_DSET '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LABNUM_ASPECT '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LABNUM_YEAR '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LABNUM_DATITL '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LABNUM_OFFSET '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LABNUM_DODS '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LABNUM_CALEND '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
 
 * free the color table on a full window
         IF ( vp_num .EQ. mvp_dflt ) CALL PPL_SHASET( 'RESET' )

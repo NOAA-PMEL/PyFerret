@@ -1,5 +1,5 @@
 *
-*  scat2grid_nobs_xy.F
+*  scat2grid_nobs_xy
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -41,7 +41,7 @@
 * onto an equally-spaced X-Y grid.  Input is scattered locations xpts, ypts
 * and the desired result grid. Output is # observations in each grid cell
 * when data is gridded in x and y.  Calls routine "nobs" based on Billy
-* Kessler's gaussmap-subs.f.
+* Kessler's gaussmap-subs.
 *
 *
 * In this subroutine we provide information about

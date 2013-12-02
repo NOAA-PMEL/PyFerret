@@ -174,7 +174,8 @@
 *                  but not bounds, still read and check coordiantes for regular spacing.
 * V685 *acm* 9/13  Move the NOTE about reversing a decreasing-ordered axis, so that
 *                  it shows up for regularly spaced ones.
-
+* V685 *acm* 11/13 REALLY make the check for axis length in single precision when the
+*                  coordinate variable came in as a single-precision variable.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -242,7 +243,8 @@
 
       REAL    rbuff, delta, first_delta, val, epsilon, lm_len, 
      .        scale, offset
-      REAL*8  TM_LONW2LONE, TM_WW_AXLEN, tmp8, axwwlen , rdelta, 
+      REAL*4  r4delta
+      REAL*8  TM_LONW2LONE, TM_WW_AXLEN, tmp8, axwwlen, 
      .        dscale, doffset,  micro_adj, madj
       CHARACTER*12 TM_LEFINT
       CHARACTER vname*128, ename*128, vupcase*128, words(8)*24,
@@ -912,6 +914,8 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
         IF (its_irregular) GOTO 380  ! If the file says its irreg, treat it at such
 
 * See if double-precision coordinates are regularly-spaced
+	epsilon = 0.
+	depsilon = 0.
         IF (vartype .EQ. ncdouble) THEN
            dlast_coord = line_mem(ipte)
            dfirs_coord = line_mem(ipt1)
@@ -1203,12 +1207,22 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
      .       .AND. (.NOT.setmodfalse)
      .       .AND. npts.GT.1 ) THEN
 
-           delta = axwwlen ! single precision
+           r4delta = axwwlen ! single precision
+           delta = r4delta
            IF (TM_FPEQ(delta, 360.0) .OR. delta .LT. 360.0) THEN
               line_modulo(iaxis) = .TRUE.
               IF (line_modulo_len(iaxis).EQ.0.0D0)
      .                    line_modulo_len(iaxis) = 360.D0
            ENDIF
+
+	   IF (vartype.NE.ncdouble .AND. .NOT.line_modulo(iaxis) .AND. epsilon.NE.0.) THEN	      
+              IF (TM_FPEQ_EPS(epsilon, delta, 360.0) .OR. delta.LT.360.0) THEN
+                 line_modulo(iaxis) = .TRUE.
+                 IF (line_modulo_len(iaxis).EQ.0.0D0)
+     .                    line_modulo_len(iaxis) = 360.D0
+              ENDIF
+           ENDIF
+
         ENDIF
 
 * if it is a calendar time axis and the first point is in year 0000 or 0001
@@ -1252,6 +1266,7 @@ c             line_modulo_len(iaxis) = 0.0D0
              ELSE
 	        lm_len = line_modulo_len(iaxis)
                 delta = axwwlen ! single precision
+		IF (vartype.NE.ncdouble) delta = r4delta
                 ok = TM_FPEQ(delta, lm_len)
              ENDIF
              IF (.NOT.  ok)

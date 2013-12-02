@@ -213,13 +213,18 @@ C  Get file name
       slen = 21
       WRITE (iunit, 1000) buff(1:slen)
  1000 FORMAT(A)
-      buff = "<webRowSet xmlns='http://java.sun.com/xml/ns/jdbc' " //
-     .       "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
-      slen = 104
-      WRITE (iunit, 1000) buff(1:slen)
 
-      buff = "xsi:schemaLocation='http://java.sun.com/xml/ns/jdbc " //
-     .       "http://java.sun.com/xml/ns/jdbc/webrowset.xsd'>"
+c      buff = "<webRowSet xmlns='http://java.sun.com/xml/ns/jdbc' " //
+c     .       "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+c      slen = 104
+c      WRITE (iunit, 1000) buff(1:slen)
+c
+c      buff = "xsi:schemaLocation='http://java.sun.com/xml/ns/jdbc " //
+c     .       "http://java.sun.com/xml/ns/jdbc/webrowset.xsd'>"
+c      slen = 99
+c      WRITE (iunit, 1000) buff(1:slen)
+      
+      buff = "<webRowSet>"
       slen = 99
       WRITE (iunit, 1000) buff(1:slen)
 

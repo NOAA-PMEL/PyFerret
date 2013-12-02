@@ -43,6 +43,7 @@ message/continue ($s1) and ($s`3`)	! no good - grave accent evaluated AFTER
 message/continue ($s1) and ($s($num))	! nested symbol translation gets ($S3)
 
 ! demonstrate the 30 character cap on symbol length
+! In Ferret v6.85+ this becomse a 120-character length.
 define symbol q23456789012345678901234567890 = 4
 show symbol q*
 define symbol q23456789012345678901234567890aaaaa = 5

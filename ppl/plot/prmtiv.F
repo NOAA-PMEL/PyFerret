@@ -53,6 +53,7 @@ C        1/06  xvaloff,yvaloff add this amount to each x or y axis label.
 C              (axis data was read as double precision and converted to single 
 C              after applying an offset.)
 * V683 12/12 *acm* Fix for applying a font setting in multiple line labels
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 C**
 C**
 C***********************************************************************
@@ -154,7 +155,7 @@ C
 
 C
 C
-	CHARACTER FRMTX*20,SYM*30
+	CHARACTER FRMTX*20,SYM*120
 	LOGICAL SVQIET,SVLOG,CLEAR
 
 	LOGICAL mouse_input, need_justify, need_arrow

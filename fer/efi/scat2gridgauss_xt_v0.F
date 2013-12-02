@@ -1,5 +1,5 @@
 *
-*  scat2gridgauss_xt_v0.F
+*  scat2gridgauss_xt_v0
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -40,7 +40,7 @@ c V62 *ACM* 2/2009 Call gausswt2_v0, with the original treatment of the
 c            cutoff parameter, for backwards compatibility.
 
 * Returns variable interpolated onto an equally-spaced X-T grid.
-* Input is scattered triples: (x, t, f(x,t)); f may be function of y, z, e, f
+* Input is scattered triples: (x, t, variable) , f may be function of y, z, e, f
 * Output is gridded data in x, t.  Calls routine "gausswt2_v0".
 *
 
@@ -121,7 +121,7 @@ c            cutoff parameter, for backwards compatibility.
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F')
       CALL ef_set_arg_desc(id, arg,
-     .        'F(X,T) data at scattered XT locations. ' //
+     .        'variable at scattered XT locations. ' //
      .        'May also be fcn of Y,Z,E,F')
       CALL ef_set_axis_influence_6d(id, arg,
      .                              NO, YES, YES, NO, YES, YES)
@@ -250,8 +250,8 @@ c            cutoff parameter, for backwards compatibility.
      .                           arg_9, result, xax, tax, grid, wate)
 
 *  arg_1  xpts \
-*  arg_2  tpts  > Scattered x,t,f(x,t) triples to be gridded.
-*  arg_3  fpts /    fpts can be fcn of y, z, e, f
+*  arg_2  tpts  > Scattered x,t,variable,  triples to be gridded.
+*  arg_3  variable, /    variable, can be fcn of y, z, e, f
 *  arg_4  xaxis of new grid
 *  arg_5  taxis of new grid
 *  arg_6  interpolation parameter   xscale

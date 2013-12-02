@@ -181,6 +181,7 @@
 * V685 *acm*  6/13 Fixes for SHOW VAR/D= on file variables.
 * PyFr *kms*  7/13 Add additional information to SHOW WINDOWS
 * V685+ *sh*  9/13 Added SHOW VARIABLE/TREE  (a.k.a. /DEPENDENCIES)
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
         IMPLICIT NONE
 
@@ -286,7 +287,7 @@
         INTEGER saved_num_indices, saved_index_list(max_uvar)
 	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p
 	CHARACTER EXPR_NAME*8, TM_FMT*12,
-     .		default*10, show_str*2048, arg*128, name*128, arg30*30
+     .		default*10, show_str*2048, arg*128, name*128, argsym*120
 	CHARACTER	varatt*641, varname*512, attname*128,
      .			efname*40, upname*40, aname*128, outstring*2048,
      .                  dname*128, actstr*1, aastr*3, qualstr*6, 
@@ -1455,36 +1456,36 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 * SPECIAL SYMBOLS
 	i1=0
  1702   i1 = i1 + 1
-        CALL SPECIAL_SYMBOL(i1, arg30,show_str,len) ! get next symbol namees
-	len0 = TM_LENSTR1(arg30)
-        IF(arg30 .NE. ' ')THEN
+        CALL SPECIAL_SYMBOL(i1, argsym,show_str,len) ! get next symbol namees
+	len0 = TM_LENSTR1(argsym)
+        IF(argsym .NE. ' ')THEN
 	   IF ( num_args .GE. 1 ) THEN
 * ... check the names specified by template matching 
 	      DO 1703 i = 1, num_items
 	         n = STR_UPCASE(arg,
      .			cmnd_buff(item_start(i):item_end(i)))
-	         IF ( MATCH_TEMPLATE(arg30(:len0),arg) ) GOTO 1705
+	         IF ( MATCH_TEMPLATE(argsym(:len0),arg) ) GOTO 1705
  1703         CONTINUE
 	      GOTO 1702			! no match
 	   ENDIF
 * ... display the symbol definition
- 1705      CALL SPECIAL_SYMBOL(0, arg30,show_str,len) ! get the sym value
+ 1705      CALL SPECIAL_SYMBOL(0, argsym,show_str,len) ! get the sym value
            CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			arg30(:len0)//' = "'//show_str(:len)//'"', 0)
+     .			argsym(:len0)//' = "'//show_str(:len)//'"', 0)
            GOTO 1702
 	ENDIF
 
 * PLOT+ SYMBOLS
  1709   i1=0
- 1710   CALL LSTSYM(arg30,show_str,len,i1,i2)	! get next symbol
-	len0 = TM_LENSTR1(arg30)
+ 1710   CALL LSTSYM(argsym,show_str,len,i1,i2)	! get next symbol
+	len0 = TM_LENSTR1(argsym)
         IF(i2.EQ.0)THEN
 	   IF ( num_args .GE. 1 ) THEN
 * ... check the names specified by template matching 
 	      DO 1720 i = 1, num_items
 	         n = STR_UPCASE(arg,
      .			cmnd_buff(item_start(i):item_end(i)))
-	         IF ( MATCH_TEMPLATE(arg30(:len0),arg) ) GOTO 1750
+	         IF ( MATCH_TEMPLATE(argsym(:len0),arg) ) GOTO 1750
  1720	      CONTINUE
 	      GOTO 1710			! no match
 	   ENDIF
@@ -1492,10 +1493,10 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 * *kob* 10/97 added check for len = 0
  1750	   IF ( len .GT. 0 ) THEN
 	       CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			arg30(:len0)//' = "'//show_str(:len)//'"', 0)
+     .			argsym(:len0)//' = "'//show_str(:len)//'"', 0)
 	   ELSE 
                CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			arg30(:len0)//' = ""', 0)
+     .			argsym(:len0)//' = ""', 0)
 	   ENDIF
            GOTO 1710
 	ENDIF

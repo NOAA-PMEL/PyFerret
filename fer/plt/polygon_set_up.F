@@ -130,6 +130,7 @@
 * PyFr *kms*  7/13 Scale default lettering sizes by textscale
 * V6.85 *acm* 9/13 Change to CALL LINE_STYLE, implementing new PLOT/COLOR w/o 
 *                  argument for all-color line plot
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -177,7 +178,7 @@
 	CHARACTER	VAR_UNITS*64, LEFINT*6, TM_GET_CALENDAR_NAME*32, 
      .			x_ax*1, y_ax*1,buff*8, buff2*4, t1_date*14,
      .                  cal_name*32, cal_name_saved*32, buff3*16,
-     .			buff4*16, LEFT_REAL*16, fmt*4, buffer*40, buff30*30
+     .			buff4*16, LEFT_REAL*16, fmt*4, buffer*40, buffsym*30
 	INTEGER         TM_UNIT_ID
 	INTEGER		TM_LENSTR1, CX_DIM_LEN,	TM_GET_CALENDAR_ID, 
      .			STR_SAME,
@@ -908,11 +909,11 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	IF (is_modx .AND. add_lon.EQ.0) THEN
 	   IF (overlay) THEN ! Get existing xaxis limits
 
-              buff30 = 'XAXIS_MIN'
-              CALL GETSYM( buff30, buffer, nc, ier )
+              buffsym = 'XAXIS_MIN'
+              CALL GETSYM( buffsym, buffer, nc, ier )
               READ (buffer, *) vmin
-              buff30 = 'XAXIS_MAX'
-              CALL GETSYM( buff30, buffer, nc, ier )
+              buffsym = 'XAXIS_MAX'
+              CALL GETSYM( buffsym, buffer, nc, ier )
               READ (buffer, *) vmax
 	   ELSE IF ( pxdenig .GT. 0 ) THEN 
               tax = grid_line(f_dim,cx_grid(cx_x ))

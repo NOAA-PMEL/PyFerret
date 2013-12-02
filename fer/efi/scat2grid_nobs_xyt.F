@@ -1,5 +1,5 @@
 *
-*  scat2grid_nobs_xyt.F
+*  scat2grid_nobs_xyt
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -42,7 +42,7 @@
 * and the desired result grid.  Output is # observations in each grid cell
 * when data is gridded in x and y. The time axis must have the same units and origin
 * as the scattered time points. Calls routine "nobs" based on Billy
-* Kessler's gaussmap-subs.f.
+* Kessler's gaussmap-subs.
 *
 *
 * In this subroutine we provide information about

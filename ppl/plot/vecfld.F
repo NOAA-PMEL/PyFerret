@@ -72,6 +72,7 @@ C**
 * V6.65 *acm* 10/10 Draw curvilinear vectors as straight lines.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V684 *adm* 12/12 Changes for VECTOR/MODULO on curvilinear plots.
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -112,7 +113,7 @@ C
 	integer ic,i,j,lnblk,iln, overedge
 	integer TM_LENSTR1, slen, i1, i2
 
-	CHARACTER VECLAB*2048, buff*80, symbuff*30
+	CHARACTER VECLAB*2048, buff*80, symbuff*120
 
 C
 C	VECTOR,X,Y,VFACT,LABEL

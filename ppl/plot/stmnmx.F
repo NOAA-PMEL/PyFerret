@@ -44,6 +44,7 @@
 * *sh* - 12/8/93 corrected bug: vectors blow on divied by zero attempt
 * *jd* - 4.20.99 Don't delete symbols {X,Y}{MIN,MAX} in overlay plots
 * V580 *acm* 8/04  Allow for PPL POLYGON as well as PPL FILLPOL after a POLY/SET command.
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
 	DIMENSION X(NSIZE)
 C**
@@ -72,7 +73,7 @@ C**
         include 'pltl_inc.decl'
         include 'PLTL.INC'
 
-	CHARACTER SYM*30,VAL*10
+	CHARACTER SYM*120,VAL*10
 C
 	SYM='*PPL$LINE_COUNT'
 	WRITE(VAL,'(I2)')LINEN

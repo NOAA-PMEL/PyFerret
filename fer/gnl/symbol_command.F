@@ -73,6 +73,7 @@
 *                         statements.  use an octal constant instead 
 * 9/06 *acm* 6.01  fixing bug 1439 long symbol values; change length of symval to 2048
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
 * calling argument declarations:
 	LOGICAL	  did_sub
@@ -89,7 +90,7 @@
 	LOGICAL coaching
 	INTEGER	STR_UPCASE, lenbuff, spos, epos, nchar, ierr,
      .		i, i2, coach_start, coach_end, sym_end
-	CHARACTER symname*30, c1*1,
+	CHARACTER symname*120, c1*1,
      .					symval*2048
 !     .					symval*255 ! to match PPLUS
 

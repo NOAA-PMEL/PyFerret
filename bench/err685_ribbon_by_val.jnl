@@ -1,0 +1,11 @@
+! err685_ribbon_by_val.jnl
+! 11/21/2013 
+! See ticket 2111: Palette that is by_lev or by_value
+! in combination with a /missing=  caused errors
+
+us coads_climatology
+let ypts = y[gy=sst]
+let xpts = sst[L=1,x=150]
+let fpts = sst[L=1,x=150]
+plot/vs/line/thick/ribbon/MISS=black/PAL=ocean_temp xpts, ypts, fpts
+

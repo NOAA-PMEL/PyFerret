@@ -36,7 +36,7 @@ plot/vs/over/color=blue/thickness=2/line/nolab t1+500*xcircle,0.05*ycircle+val1
 plot/vs/over/nolab/sym=2/color=blue/thickness=2 t1,val1	! mark point with an "X"
 \pause
 
-! *** mark-up over a Hofmuller diagram ***
+! *** mark-up over a Hovmoller diagram ***
 shade/x=180 sst
 let y0 = 30
 polygon/over/color=black/thickness=2/pal=gray/pat=lite_up_left_to_right t0+500*xsqr, y0+15*ysqr

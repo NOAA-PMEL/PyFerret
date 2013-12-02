@@ -1,0 +1,6 @@
+! bn686_bug_fixes.jnl
+! test various fixes that went into version 6.86
+! 11/2013 ACM
+
+GO bn_reset
+GO err685_ribbon_by_val

@@ -43,26 +43,19 @@
 * *sh* - 1/27/89 corrected bug: min/max search improperly rejects LIMITs points
 * *sh* - 12/8/93 corrected bug: vectors blow on divied by zero attempt
 * *jd* - 4.20.99 Don't delete symbols {X,Y}{MIN,MAX} in overlay plots
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
 C
 C	RESET MIN MAX SYMBOLS AND SET LINE_COUNT TO ZERO
 C
-#ifdef unix
         include 'switch_inc.decl'
         include 'SWITCH.INC'
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
         include 'lines_inc.decl'
         include 'LINES.INC'
-#else
-        INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
-        INCLUDE 'PPLV11INC:PARAMPL5.DAT'
-        INCLUDE 'TMAP_PPLV11INC:LINES_INC.DECL'
-        INCLUDE 'PPLV11INC:LINES.INC'
-        INCLUDE 'TMAP_PPLV11INC:SWITCH_INC.DECL'
-        INCLUDE 'PPLV11INC:SWITCH.INC'
-#endif
-	CHARACTER SYM*30,TEMP*2
+
+	CHARACTER SYM*120,TEMP*2
 C
 	SYM='*PPL$LINE_COUNT'
 	TEMP='0'

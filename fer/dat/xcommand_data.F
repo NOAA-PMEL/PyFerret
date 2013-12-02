@@ -211,7 +211,8 @@
 * PyFr  *kms*  7/13 Add /OPACITY to CONTOUR, PLOT, POLYGON, SHADE, VECTOR
 * PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW and FRAME
 * PyFr  *kms*  8/13 Add /ANNOTATE to FRAME
-* V685+ *sh*  9/13 Add SHOW VARIABLE/TREE and alias VTREE
+* V685 *sh*  9/13  Add SHOW VARIABLE/TREE and alias VTREE
+* V685 *acm* 11/13 Add /QUIET for DEFINE ATTRIBUTE
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -412,7 +413,7 @@
 		DATA qualifiers  (nqual_at1n+1)	/ 'DATASET'	/
 		DATA qualifiers  (nqual_at1n+2)	/ 'OUTPUT'	/
 		DATA qualifiers  (nqual_at1n+3)	/ 'LIKE'	/
-		DATA qualifiers  (nqual_at1n+4)	/ '****'	/
+		DATA qualifiers  (nqual_at1n+4)	/ 'QUIET'	/
 		DATA qualifiers  (nqual_at1n+5)	/ '****'	/
 		DATA qualifiers  (nqual_at1n+6)	/ '****'	/
 		DATA qualifiers  (nqual_at1n+7)	/ '****'	/
@@ -1192,11 +1193,11 @@
 	   DATA subcommands      (nsub_at10 + 8)/ 'ATTRIBUT'	/
 	   DATA num_qualifs      (nsub_at10 + 8)/ nqual10i	/
 	   DATA qualifier_pointer(nsub_at10 + 8)/ nqual_at10i	/
-* DEFINE ATTRIBUTE /D /TYPE /OUTPUT ****
+* DEFINE ATTRIBUTE /D /TYPE /OUTPUT /QUIET 
 		DATA qualifiers  (nqual_at10i+ 0)/ 'D' /
 		DATA qualifiers  (nqual_at10i+ 1)/ 'TYPE' /
 		DATA qualifiers  (nqual_at10i+ 2)/ 'OUTPUT' /
-		DATA qualifiers  (nqual_at10i+ 3)/ '****' /
+		DATA qualifiers  (nqual_at10i+ 3)/ 'QUIET' /
 * DEFINE PYFUNC
 	   DATA subcommands      (nsub_at10 + 9)/ 'PYFUNC'	/
 	   DATA num_qualifs      (nsub_at10 + 9)/ nqual10j	/

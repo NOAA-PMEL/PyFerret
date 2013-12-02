@@ -157,8 +157,7 @@
      .			slash_list_deflate,
      .			slash_list_shuffle,
      .			slash_list_endian,
-     .			slash_list_outtype,
-     .			slash_list_nocoords
+     .			slash_list_outtype
 
 	INTEGER		
      .			slash_set_data_ez,
@@ -208,6 +207,7 @@
      .                  slash_set_attr_dset,
      .                  slash_set_attr_output,
      .                  slash_set_attr_like,
+     .                  slash_set_attr_quiet,
      .
      .                  slash_set_redirect_tee,
      .                  slash_set_redirect_journal,
@@ -444,8 +444,7 @@
      .			slash_list_deflate = 1+50,
      .			slash_list_shuffle = 1+51,
      .			slash_list_endian  = 1+52,
-     .			slash_list_outtype = 1+53,
-     .			slash_list_nocoords = 1+54 )
+     .			slash_list_outtype = 1+53 )
 
 	PARAMETER     (
      .			slash_set_data_ez	= 1,
@@ -496,6 +495,7 @@
      .                  slash_set_attr_dset     = 2,
      .                  slash_set_attr_output   = 3,
      .                  slash_set_attr_like     = 4,
+     .                  slash_set_attr_quiet    = 5,
      .
      .                  slash_set_redirect_tee     = 1,
      .                  slash_set_redirect_journal = 2,

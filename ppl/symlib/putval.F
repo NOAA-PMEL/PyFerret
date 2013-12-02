@@ -48,7 +48,7 @@ C**	Subprogram called:
 C**		CALL PUTVAL(STR,X,IPRES,IER)
 C**
 C**	Parameters:
-C**		STR -- Symbol name (char*30)
+C**		STR -- Symbol name (char*120)
 C**		X -- Real value of symbol
 C**		IPRES -- number of digits, i.e, 1PG10.IPRES
 C**		IER -- error code
@@ -67,8 +67,9 @@ C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 C * v552 *acm* 3/03 Longer strings: changes for multi-line labels
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
-	CHARACTER STR*(*),VAL*2048,FRMT*30
+	CHARACTER STR*(*),VAL*2048,FRMT*120
 	IP=IPRES
 	IF(IPRES.GT.10.OR.IPRES.LT.0)IP=4
 	IL=IP+7

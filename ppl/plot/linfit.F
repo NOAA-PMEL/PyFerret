@@ -39,6 +39,7 @@ C**    @(#)linfit.F	1.1    3/10/88
 C**
 * v580 *acm* 8/04 Change use of 256 to buflen+1, 
 *                 where buflen is defined in cmndlen.inc
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 C**
 C***********************************************************************
 C**
@@ -56,7 +57,7 @@ C**
 	INCLUDE 'SYSTEM.INC'
         INCLUDE 'cmndlen.inc'
 
-	CHARACTER OUT*80,SYM*30
+	CHARACTER OUT*80,SYM*120
 C
 C	DO A LEAST SQUARES FIT ON LINE 'ILNE', PLACE THE RESULT INTO
 C	THE ECHO FILE AND INTO 'LINEN+1' AND CLEAN UP VARIABLES

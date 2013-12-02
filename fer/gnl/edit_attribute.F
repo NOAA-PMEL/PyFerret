@@ -1,7 +1,7 @@
 
 
       SUBROUTINE EDIT_ATTRIBUTE( grid_data, mr, varattname, dset, 
-     .         attype_spec, status )
+     .         attype_spec, att_quiet, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -244,6 +244,7 @@
 
 * calling argument declarations:
 
+      LOGICAL att_quiet
       INTEGER mr, attype_spec, dset, status
       REAL grid_data(mr_lo_ss(mr,1):mr_hi_ss(mr,1),
      .               mr_lo_ss(mr,2):mr_hi_ss(mr,2),
@@ -358,10 +359,10 @@
          ENDIF
 
          vlen = TM_LENSTR1(errbuff)
-         IF (attype .NE. attype_old) 
+         IF (attype .NE. attype_old .AND. (.NOT.att_quiet)) 
      .         CALL WARN ('Changing the type of attribute '//
      .         errbuff(:vlen))
-         CALL WARN ('Changing the value of attribute '//
+         IF (.NOT.att_quiet) CALL WARN ('Changing the value of attribute '//
      .         errbuff(:vlen))
 
          CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
@@ -370,13 +371,13 @@
       ELSE 
          attype = NCFLOAT
          vlen = TM_LENSTR1(errbuff)
-         IF (attype .NE. attype_old) 
+         IF (attype .NE. attype_old .AND. (.NOT.att_quiet)) 
      .         CALL WARN ('Changing the type of attribute '//
      .         errbuff(:vlen))
-         CALL WARN ('Changing the value of attribute '//
+         IF (.NOT.att_quiet) CALL WARN ('Changing the value of attribute '//
      .         errbuff(:vlen))
 
-         IF (attlen .NE. attlen_old .AND. attype .EQ. attype_old) 
+         IF (attlen .NE. attlen_old .AND. attype .EQ. attype_old .AND. (.NOT.att_quiet)) 
      .         CALL WARN ('Changing the length  of attribute '//
      .         errbuff(:vlen))
 

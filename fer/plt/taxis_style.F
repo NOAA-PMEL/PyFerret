@@ -54,6 +54,8 @@
 ** V650  1/10 *acm*-  Bug 670 fixed: added TXTYPE MULTIYR, multi-decade
 * V66    7/10 *kms* - undiscovered bug fixed: 'TXTYPE_SETTING' was used 
 *                     directly instead of buff30 in call to GETSYM
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+
 
 	include 'ferret.parm'
 	include 'plot_setup.parm'
@@ -184,7 +186,7 @@
 * ---
 * Define a symbol TXTYPE_SETTING
 * if this symbol already exists then delete it
-        buff30 = 'TXTYPE_SETTING'	! must be exactly 30 chars
+        buff30 = 'TXTYPE_SETTING'
 	CALL GETSYM( buff30, buff, i2, i1 )
 	IF ( i1 .EQ. 0 ) CALL DELSYM(buff30,i1)
 

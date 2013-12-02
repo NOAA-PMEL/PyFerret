@@ -41,6 +41,7 @@
 * V65 *acm   2/10 If Open-ended levels were used, symbol LEV_OPNLEVS saves 
 * the /LEV command needed to duplicate the levels
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
 *    LEV_MIN  - lowest level used on last CONTOUR, SHADE, or FILL call.
 *    LEV_MAX -  highest level used last
@@ -65,7 +66,7 @@
 
       REAL zmax, zmin, dz, diff, diff_dz
 
-      CHARACTER ppl_buff*2048, TM_FMT_SNGL*10, buff*10, symbuff*30
+      CHARACTER ppl_buff*2048, TM_FMT_SNGL*10, buff*10, symbuff*120
       INTEGER TM_LENSTR1, STR_SAME, i, ier, ilen, slen, ist
       LOGICAL TM_FPEQ_SNGL, reglevs
 

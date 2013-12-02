@@ -116,9 +116,9 @@ ncdf4_static:
 debug:
 	mkdir -p ../lib
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g"  \
-		"FFLAGS = $(FFLAGS) -O0 -g" \
+		"FFLAGS = $(FFLAGS) -O0 -g -fbounds-check" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O0 -g" \
-		"DEBUG_TITLE = beta 6.85 7-18-13" \
+		"DEBUG_TITLE = beta 6.851" \
 		"GUI_FAKES=special/gui_fakes.o" build
 
 .PHONY: ferret

@@ -70,6 +70,7 @@
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
+* V685+ *acm* 3/13 For Ensemble ds_type, check datset number before testing its type
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -326,7 +327,9 @@
            ivar = string_array_result(j)
 	   IF ( single_dset .AND. ds_var_setnum( ivar ) .NE. dset ) GOTO 200
  	   category = cat_file_var
- 	   IF (ds_type(dset) .EQ. 'ENS') category = cat_aggregate_var
+ 	   IF (dset.NE.unspecified_int4) THEN
+	      IF (ds_type(dset) .EQ. 'ENS') category = cat_aggregate_var
+ 	   ENDIF
 	   variable = ivar
            test_name = buff
            RETURN

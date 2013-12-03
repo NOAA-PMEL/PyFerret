@@ -14,8 +14,10 @@ void FORTRAN(pl_get_error)(char *buf) {
 int FORTRAN(pl_open)(char *script_name) {
   fprintf(stderr, "Attempt to use pl_open with Perl disabled\n");
   exit(1);
+  return -1;
 }
 
 int FORTRAN(pl_close)() {
+  return -1;
 }
 

@@ -45,6 +45,7 @@
 *
 * V500:  4/9/98   - extracted from merge_context
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V685  *acm* 12/13 Fix bug in 6D Ferret decclarations, lo_off and hi_off
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -52,7 +53,7 @@
 	include	'xvariables.cmn'
 
 * calling argument declarations
-	INTEGER	dflt_cx, mrg_cx, com_cx, idim, lo_off(4), hi_off(4)
+	INTEGER	dflt_cx, mrg_cx, com_cx, idim, lo_off(*), hi_off(*)
 
 * local variable declarations
 	INTEGER	temp_ss, ui4

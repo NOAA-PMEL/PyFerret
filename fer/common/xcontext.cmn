@@ -14,6 +14,7 @@
 *        2/12 *kms* Add E and F dimensions (set to nferdims),
 *                   added cx_lo_s5 & 6, cx_hi_s5 & 6
 * V685+ 3/13 *sh* added auxiliary regridding variables
+* V685+ 12/13 *acm* For 6D Ferret, cx_xtra_doc should have 2 more elements
 
 * the declarations below represent a stack of depth max_context for saving
 * the nested contexts.  The bottom few entries in the stack have special uses:
@@ -86,7 +87,7 @@
      .		cx_dset_gvn	( max_cx ),
      .		cx_calendar	( min_context:max_cx ),
      .		cx_grid_needs_dset,
-     .		cx_xtra_doc	( 0:10 ),
+     .		cx_xtra_doc	( 0:12 ),
      .		cx_has_impl_grid( max_cx ),
      .		cx_formatted	( nferdims ),
      .		cx_valid_aux 	(nferdims, max_cx)

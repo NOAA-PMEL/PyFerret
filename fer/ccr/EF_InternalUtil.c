@@ -2700,7 +2700,7 @@ int FORTRAN(efcn_get_num_reqd_args)( int *id_ptr )
 
   static int return_val=0; /* static because it needs to exist after the return statement */
 
-  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return return_val; }
 
   return_val = ef_ptr->internals_ptr->num_reqd_args;
 

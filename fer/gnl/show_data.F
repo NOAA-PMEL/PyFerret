@@ -139,9 +139,11 @@
 	      default = ' '
 	      len0 = 1
 	   ENDIF
+	   IF (dset.NE.unspecified_int4 .AND. dset.NE.pdset_irrelevant) THEN
 	   IF ( TM_HAS_STRING(ds_type(iset), 'ENS') ) THEN
 	      default = default(:len0)//'  Ferret-defined Ensemble dataset'
 	      len0 = TM_LENSTR1( default )
+	   ENDIF
 	   ENDIF
 
 	   len = TM_LENSTR1( ds_des_name( iset ) )

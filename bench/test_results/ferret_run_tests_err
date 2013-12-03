@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 12 Nov  8 15:46 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.85
+lrwxrwxrwx 1 ksmith tmap 13 Dec  2 15:35 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.851
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for Ferret on RHEL5-64
+Note: RUN_TESTS.sh test results for optimized build of ferret on RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -207,6 +207,8 @@ Benchmark scripts that will be run:
    bn_descriptor_mc.jnl
    bn_plot_color_only.jnl
    bn_vtree.jnl
+   bn686_bug_fixes.jnl
+   bn_long_symnames.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -223,7 +225,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Nov  8 15:54:00 PST 2013
+Beginning at Mon Dec  2 15:37:01 PST 2013
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -3389,6 +3391,12 @@ plot/i=1:100/ribbon/COLOR sin(i/6),0.6*sin(i/7)
  **ERROR: illegal limits: X axis limits don't match variable def'n: A
           Are you giving explicit limits when SET REGION would suffice ?
 list f
+*** Running test: bn686_bug_fixes.jnl
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+*** Running test: bn_long_symnames.jnl
+ Cached data cleared from memory
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3410,4 +3418,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
  *** NOTE: in GIF mode: ignoring SET MODE METAFILE
-Ended at Fri Nov  8 15:55:09 PST 2013
+Ended at Mon Dec  2 15:37:55 PST 2013

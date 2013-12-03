@@ -30,7 +30,7 @@
 *                  dflt_ those that need to be scaled by pplscale and 
 *                  possible textscale.
 
-	LOGICAL	key_doc(0:10),
+	LOGICAL	key_doc(0:12),
      .		onedee_on,
      .		twodee_on,
      .		saved_ppl_yax,

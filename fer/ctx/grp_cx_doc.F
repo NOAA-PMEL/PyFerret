@@ -48,11 +48,12 @@
 * V200:	  2/2/90
 * V230:  7/22/92 - added overlay argument to ADDL_CX_DOC
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V685+ *acm* 12/13 For 6D Ferret, the array coming in as flags is longer for extra dimensions
 
 	include	'ferret.parm'
 
 * calling argument declarations
-	LOGICAL	flags(0:10)
+	LOGICAL	flags(*)
 	INTEGER	ncx, cx_list(ncx), joint_cx
 
 * internal variable declarations

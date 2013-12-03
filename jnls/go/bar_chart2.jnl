@@ -106,3 +106,6 @@ cancel region    ! probably unnecessary ...
 $1/$4"vs|clear>vs|overlay>overlay/vs|"/@bar/D=bar_plot.dat bar_px,bar_py
 SET GRID/SAVE
 SET REGION save
+
+
+set mode/last verify

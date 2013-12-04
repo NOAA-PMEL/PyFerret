@@ -15,7 +15,7 @@
 #
 
 DIRS = contributed cmprsi_by examples fft statistics
-MOREDIRS = contributed cmprsi_by examples fft statistics gridding featurecollections
+MOREDIRS = contributed cmprsi_by decimate examples extrema featurecollections gridding fft las statistics tax_times
 # DIRS = contributed examples fft sort cflib closest_in_list hinterp featurecollections romea odd_formats cat statistics tax_times gridding zaxr 
 
 #
@@ -50,6 +50,7 @@ install:
 		done
 
 clean:
+	rm -f ext_func/*
 	for i in $(MOREDIRS); \
 		do \
 			(cd $$i; echo "cleaning" $@ "in $$i..."; \

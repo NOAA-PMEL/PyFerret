@@ -41,7 +41,8 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 # Targets
 #
 
-all:	write_webrow.so write_webrow_gwt.so list_value_xml.so
+#all:	write_webrow.so write_webrow_gwt.so list_value_xml.so
+all:	write_webrow_gwt.so
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

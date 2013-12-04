@@ -38,7 +38,7 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 
 #all:    chdir.so neutral.so fill_xy.so pco2.so
 #all:    chdir.so neutral.so fill_xy.so
-all:	fill_xy.so
+all:	
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

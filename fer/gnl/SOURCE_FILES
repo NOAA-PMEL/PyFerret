@@ -64,8 +64,6 @@ netcdf4_list_settings.F\
 netcdf4_set_list_settings.F\
 netcdf4_show_list_settings.F\
 no_journal.F\
-objective.F\
-objective_sub.F\
 parse_comma_list.F\
 parse_command.F\
 pop_cs.F\

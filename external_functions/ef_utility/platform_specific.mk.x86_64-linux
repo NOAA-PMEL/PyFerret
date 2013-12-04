@@ -27,7 +27,7 @@ SYSLIBS		=
 CPP		= /lib/cpp
 CPP_FLAGS	= -P -traditional -Ddouble_p $(INCLUDES)
 CFLAGS_DEBUG	= -O0 -g -Ddebug
-FFLAGS_DEBUG	= -O0 -g -Ddebug
+FFLAGS_DEBUG	= -O0 -g  -fbounds-check -Ddebug
 
 ## cancel the default rule for .f -> .o to prevent objects from being built
 ## from .f files that are out-of-date with respect to their corresponding .F file

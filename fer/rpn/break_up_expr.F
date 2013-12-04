@@ -60,6 +60,7 @@
 * V62   2/09 *acm* init_uvar has an extra argument, for keeping upper/lowrercase 
 *                  spelling of user-var names (no other changes in this routine).
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V685+ 12/13    - *acm*  bounds checking; dont refer to parts of the string outside its bounds.
 
         include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -112,8 +113,10 @@ c        tlen = MIN( size_rbuff, LEN(text) )
 * as an attribute of the dataset.  Here just gloss over this by
 * temporarily replacing the two dots with a string.
 
-        t2 = text(1:2)
-        IF (t2 .EQ. '..') text(1:2) = 'aa'
+	IF (LEN(text) .GT. 1) THEN
+           t2 = text(1:2)
+           IF (t2 .EQ. '..') text(1:2) = 'aa'
+	ENDIF
 
 * a similar hack when the expression is (coordvar).attname 
 * ALG_BREAK_UP can parse this, but doesnt like more complicated expressions
@@ -124,9 +127,10 @@ c        tlen = MIN( size_rbuff, LEN(text) )
         paren = 0
         IF ( INDEX(text, ').' )  .NE. 0) THEN
            paren = INDEX(text, ').' )
-           DO 80 i = 1, paren-1
+           DO 80 i = paren-1,1,-1
               startparen = INDEX(text(i:paren), '(' )
    80      CONTINUE
+           IF (startparen .EQ. 0) GOTO 5400
            text(startparen:startparen) = 'A'
            TEXT(paren:paren) = 'A'
         ENDIF
@@ -140,9 +144,10 @@ c        tlen = MIN( size_rbuff, LEN(text) )
         IF ( INDEX(text, ')[' )  .NE. 0 .AND. 
      .       INDEX(text, '].' )  .NE. 0) THEN
            paren = INDEX(text, ')[' )
-           DO 90 i = 1, paren-1
+           DO 90 i = paren-1,1,-1
               startparen = INDEX(text(i:paren), '(' )
    90      CONTINUE
+           IF (startparen .EQ. 0) GOTO 5400
            text(startparen:startparen) = 'A'
            TEXT(paren:paren) = 'A'
         ENDIF
@@ -151,7 +156,9 @@ c        tlen = MIN( size_rbuff, LEN(text) )
 
 * ----
 * Restore text before the hack
-        text(1:2) = t2
+	IF (LEN(text) .GT. 1) THEN
+           text(1:2) = t2
+	ENDIF
         
         IF (paren .GT. 0) THEN
            text(startparen:startparen) = '('
@@ -226,5 +233,8 @@ c        tlen = MIN( size_rbuff, LEN(text) )
 	CALL ERRMSG( ferr_invalid_command, status,
      .		'Number of expressions in line must be less than'
      .		//err_string(:4), *5000 )
+ 5400   CALL ERRMSG( ferr_invalid_command, status,
+     .		'Mismatched parentheses'
+     .		//text(1:paren), *5000 )
 	END
 

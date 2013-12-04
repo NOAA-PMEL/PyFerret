@@ -67,6 +67,7 @@
 *                  levels.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V685+ 12/13    - *acm*  bounds checking; dont refer to parts of the string outside its bounds.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -89,7 +90,8 @@
 * internal variable declarations:
 	LOGICAL TM_DIGIT, lev_given, len_given,
      .		is_delta, is_std, is_mean, is_min, is_max, is_hist,
-     .          is_centered, is_openlev, is_cv, get_more
+     .          is_centered, is_openlev, is_cv, get_more,
+     .		has_std , has_mean, has_min, has_max
 	INTEGER	TM_LENSTR1,TM_LENSTR, lev_loc, len_loc, str_1, str_len, 
      .          ii, ilen, ier, ist, nc, set_default_levs
 	REAL	val
@@ -212,11 +214,34 @@
 		    is_cv = .TRUE.
 	         ENDIF
 
+* set up some logicals -- with bounds checking we cannot refer to, e.g. 
+* str_buff(str_len-2:str_len)  if str_len is less than 3...
+
+		 has_std = .FALSE.
+		 IF (str_len .GE. 3) THEN
+		    has_std = str_buff(str_len-2:str_len) .EQ. 'STD'
+		 ENDIF
+
+		 has_mean = .FALSE.
+                 IF (str_len .GE. 4) THEN
+		    has_mean = str_buff(str_len-3:str_len) .EQ. 'MEAN'
+		 ENDIF
+		 
+		 has_min = .FALSE.
+		 IF (str_len .GE. 3) THEN
+		    has_min = str_buff(str_len-2:str_len) .EQ. 'MIN'
+		 ENDIF
+
+		 has_max = .FALSE.
+		 IF (str_len .GE. 3) THEN
+		    has_max = str_buff(str_len-2:str_len) .EQ. 'MAX'
+		 ENDIF
+
+
 	         IF ( str_len .GT. 0 ) THEN
 	            set_delta = str_buff(str_len:str_len) .EQ. 'D'
 	            is_delta = str_buff(str_len:str_len) .EQ. 'D'
-                    IF (str_len .GE. 3 .AND. 
-     .		        str_buff(str_len-2:str_len) .EQ. 'STD') THEN
+                    IF (has_std) THEN
                           set_delta = .FALSE.
 			  is_delta = .FALSE.
 		          is_std = .TRUE.
@@ -234,8 +259,7 @@
 	            ENDIF
 	            IF (str_len .EQ. 0 ) GOTO 5120
 
-                    IF (str_len .GE. 4 .AND. 
-     .		        str_buff(str_len-3:str_len) .EQ. 'MEAN') THEN
+                    IF (has_mean) THEN
                        is_mean = .TRUE.
                        set_mean = .TRUE.
                        centered = .TRUE.
@@ -245,8 +269,7 @@
                     ENDIF 
 	            IF (str_len .EQ. 0 ) GOTO 5120
 
-                    IF (str_len .GE. 3 .AND. 
-     .		        str_buff(str_len-2:str_len) .EQ. 'MIN') THEN
+                    IF (has_min) THEN
                        is_min = .TRUE.
                        set_min = .TRUE.
                        str_len = str_len - 3
@@ -254,8 +277,7 @@
                     ENDIF 
 	            IF (str_len .EQ. 0 ) GOTO 5120
 
-                    IF (str_len .GE. 3 .AND. 
-     .		        str_buff(str_len-2:str_len) .EQ. 'MAX') THEN
+                    IF (has_max) THEN
                        is_max = .TRUE.
                        set_max = .TRUE.
                        str_len = str_len - 3

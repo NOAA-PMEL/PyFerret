@@ -53,7 +53,7 @@
 	include	'ferret.parm'
 
 * calling argument declarations
-	LOGICAL	flags(*)
+	LOGICAL	flags(0:12)
 	INTEGER	ncx, cx_list(ncx), joint_cx
 
 * internal variable declarations

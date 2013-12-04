@@ -40,13 +40,14 @@
 * occur at the marker <NL>.  Return numlines, the number of lines found.
 *
 * based on tm_break_str.F
+* V685+ 12/13    - *acm*  bounds checking: dont refer to parts of the string outside its bounds.
 *
 * Arguments
 	INTEGER		numlines, linestart(*), lineend(*)
 	CHARACTER*(*)	instring
        
 *
-        CHARACTER*4     newline
+        CHARACTER*4     newline, upstring
 	INTEGER		STR_UPCASE, TM_LENSTR1,
      .                  icode, inlen, lincnt, nlin, i, nchar
 
@@ -84,7 +85,13 @@
 
 * New line found?
 
-           ICODE = str_upcase (newline, instring(i:i+3))  
+           IF (i.LT.inlen-3) THEN
+	      upstring = instring(i:i+3)
+	   ELSE
+	      upstring = instring(i:inlen)
+	   ENDIF
+	      
+           icode = STR_UPCASE (newline, upstring)  
            IF (newline .EQ. '<NL>') THEN
 	      nlin = i + 4
               GOTO 500

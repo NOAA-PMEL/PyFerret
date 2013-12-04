@@ -19,6 +19,7 @@
 * *acm* v68  1/12 move window title to xtoday.cmn.
 * *kms*      2/12 Add E and F dimensions to ul_dolab, plot_axis
 * *acm* v683 11/12 add sym_so_far - symbols on line plots. Used to be SAVEd in line_style.F
+* V685+ *acm* 12/13 For 6D Ferret, key_doc longer for extra dimensions
 
 	LOGICAL	key_doc(0:12),
      .		onedee_on,

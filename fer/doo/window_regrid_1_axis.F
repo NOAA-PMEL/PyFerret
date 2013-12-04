@@ -66,6 +66,7 @@
 *                 contain -111 among them. Tests for unspecified_int4
 *                 are not used in this routine.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V685+ 12/13 *acm* Typo in the F-axis code.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -365,7 +366,7 @@
 	      DO 610 srcss = src_lo, src_hi
 
 * ... ignore missing source data
-	         IF ( src(i,j,k,srcss,m,n) .EQ. bad_src ) GOTO 610
+	         IF ( src(i,j,k,l,m,srcss) .EQ. bad_src ) GOTO 610
 
 * ... contribution from this source box
 	         IF     ( trans .EQ. prgrd_min ) THEN

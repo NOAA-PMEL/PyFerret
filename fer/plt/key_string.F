@@ -61,7 +61,7 @@
 	external xdset_info_data
 
 * calling argument declarations
-	LOGICAL	flags(*)
+	LOGICAL	flags(0:12)
 	INTEGER	cx, slen
 
 * local variable declarations:

@@ -47,7 +47,7 @@
 * V200:   1/4/89
 
 * calling argument declarations:
-	INTEGER	ncx, cx_list(ncx), flags(*), tlen
+	INTEGER	ncx, cx_list(ncx), flags(0:12), tlen
 
 * internal variable declarations:
 	CHARACTER*200	KEY_STRING

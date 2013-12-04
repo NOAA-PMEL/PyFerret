@@ -70,7 +70,8 @@
 * V6.11 *acm*  4/08 - Fis bug 1566; EXIT/SCRIPT and IF blocks.
 * V664  *kms*  8/10 - Add EXIT/TOPYTHON and second alternate return to exit the 
 *                     ferret_dispatch loop but just re-enter the loop if not under pfyrret
-	
+* V685+ 12/13    - *acm*  bounds checking; dont refer to cs_cmnd_num(csp) if csp = 0
+
         include 'tmap_dims.parm'
 	include 'command.parm'
 	include 'errmsg.parm'
@@ -155,6 +156,7 @@
 	ELSE
 * no qualifier supplied on a "quit" in a command file: Exit current script
 	   CALL POP_CS
+	   IF (csp .EQ. 0) RETURN
 	   IF (cs_cmnd_num(csp+1) .EQ. cmnd_if .AND. cs_cmnd_num(csp) .EQ. cmnd_go) CALL POP_CS 
 	   RETURN
 	ENDIF

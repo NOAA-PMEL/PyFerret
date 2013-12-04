@@ -44,6 +44,7 @@
 * V320:  8/18/94 - *KOB* IBM port - changed declaration of MATCH4 from	
 *				    integer to logical
 * V603   5/07    - *acm* Just return if the test string is length 0.
+* V685+ 12/13    - *acm* bounds checking; return if len(string) is 0.
 
 * calling argument declarations:
 	CHARACTER string*(*)
@@ -57,6 +58,8 @@
 	include 'xcommand.cmn'
 
 * length of test string
+	IF (LEN(string) .EQ. 0) GOTO 200
+
         alen = TM_LENSTR1( string )
         len_test = TM_LENSTR(string(:alen))
         IF (len_test .EQ. 0) GOTO 200

@@ -64,6 +64,7 @@
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid. 
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V685+ 12/13 *acm*  bounds checking: tm_digit needs more care in the argument sent in.
 
         include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -79,7 +80,7 @@
 	CHARACTER*(*)	text
 
 * internal variable declarations:
-	LOGICAL		TM_DIGIT, TM_LEGAL_NAME
+	LOGICAL		TM_DIGIT, TM_LEGAL_NAME, is_digit
 	INTEGER		STR_MATCH, GCF_FIND_FCN, TM_LENSTR1,
      .			imatch, i, i2, j, brac_pos, aend,
      .			num_indices, dot, new_nat, first, second, slen
@@ -143,10 +144,17 @@
 	   ENDIF
 
 * constant ?
-	  IF ( TM_DIGIT( text(at_start(i):at_start(i)) ) ) THEN
-	      at_type(i) = alg_constant
-	      at_id(i)   = unspecified_int4
-	      GOTO 100
+          is_digit = TM_DIGIT( text(at_start(i):at_start(i)) )
+	  IF ( is_digit ) THEN
+	      IF (at_end(i).GT.at_start(i) .AND. text(at_start(i):at_start(i)).EQ.'.') THEN
+	         IF (text(at_start(i)+1:at_start(i)+1) .EQ. '.') is_digit = .FALSE.
+	      ENDIF
+	      IF (is_digit) THEN
+ 	         at_type(i) = alg_constant
+	         at_id(i)   = unspecified_int4
+ 
+	         GOTO 100
+	      ENDIF
 	   ENDIF
 
 

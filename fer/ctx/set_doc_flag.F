@@ -52,7 +52,7 @@
 
 * calling argument declarations
 * move flags variable from integer to logical declaration *kob* 8/94
-	LOGICAL	init, flags(*)
+	LOGICAL	init, flags(0:12)
 	INTEGER select
 
 * internal variable declarations

@@ -55,6 +55,7 @@
 * V65  *acm* 1/10  Make sure parameters values are consistent with 
 *                              whats in netcdf.inc from netcdf4.
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* v6.85+ 12/13 *acm* take more care with string length,needed when bounds checking
 
 * argument definitions:
 *	dset	 - dataset number
@@ -104,7 +105,7 @@
        IF (varid .LT. 0) RETURN
 
 * initialize
-       maxlen = size_rbuff
+       maxlen = LEN(string)
        string(:maxlen) = ' '
        too_long = .FALSE.
 

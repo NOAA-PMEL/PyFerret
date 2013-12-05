@@ -149,6 +149,7 @@
 *                  dimension is now an arg to SECS_TO_TSTEP.
 * PyFr *kms*  7/13 Scale default lettering sizes by textscale
 * V6.85 *acm* 9/13 New PLOT/COLOR w/o argument for all-color line plot
+* V685+ *acm  12/13 In dependent axis setup, make sure variable the_taxis is set.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -798,6 +799,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   ENDIF
 * ... dependent axis scaling
 *  force axis scaling if the data has no range
+           IF (the_taxis .EQ. 0) the_taxis = dep_dim
+
 	   IF ( pdeplim .GT. 0 ) THEN
 	      IF (pylim.GT.0 .AND. .NOT.denig_xylim_msg_done) THEN
 	         CALL WARN( '/XLIMITS and /YLIMITS are deprecated.')

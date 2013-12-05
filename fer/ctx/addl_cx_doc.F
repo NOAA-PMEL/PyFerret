@@ -58,7 +58,7 @@
 
 * calling argument declarations
 	INTEGER joint_cx, addl_cx 
-	LOGICAL	overlay, flags(*) 
+	LOGICAL	overlay, flags(0:12) 
 
 * internal variable declarations
 	INTEGER	idim, CX_DIM_LEN

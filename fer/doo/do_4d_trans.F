@@ -71,6 +71,7 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685 *acm* 7/13  Fix ticket 2083: single-y and multi-D transform
+* V685+*acm* 12/13 Bug in y boxes; only when y axis in the transf.
 
 	IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -265,7 +266,7 @@ C (Unless there is just one grid cell in the y direction.)
 	      boxes(j+cos_offset) = ABS( SIN(ybxhi) - SIN(ybxlo) )
 
 	      ! surface area of sphere depends only on h not on ybox
-	      IF (.NOT.at_din) boxes(j+box_offset(y_dim)) = 1.  
+	      IF (.NOT.at_din .AND. yes_ax(y_dim)) boxes(j+box_offset(y_dim)) = 1.  
 
 	      ! for integral need area is radius*radius* delx * h
 	      ! delx already has units that include radius of earth.

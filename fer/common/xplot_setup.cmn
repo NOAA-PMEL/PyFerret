@@ -29,6 +29,7 @@
 *                  since they are used as parameters, and prefixed with 
 *                  dflt_ those that need to be scaled by pplscale and 
 *                  possible textscale.
+* V685+ *acm* 12/13 For 6D Ferret, key_doc longer for extra dimensions
 
 	LOGICAL	key_doc(0:12),
      .		onedee_on,

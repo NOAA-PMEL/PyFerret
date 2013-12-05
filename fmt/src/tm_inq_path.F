@@ -72,6 +72,7 @@
 *                         ifdef AIX and just use risc_buff by default
 * 2/05 *acm* V58+  increase length of path_list string for FDS and other cases
 *                  where environment variables get very long (bug 1169)
+* V685+ 12/13    - *acm*  bounds checking: dont refer to parts of the string outside its bounds.
 
 * arguments:
 *	fname	   - filename - possibly lacking extension
@@ -98,6 +99,8 @@
         CHARACTER TM_PATH_LIST*8192, path_list*8192
 #endif
         INTEGER TM_LENSTR1, STR_SAME, plen,flen,i,postslash
+	LOGICAL is_http
+
 !!!! bug 2/93        EQUIVALENCE ( path_list, risc_buff )
 
 * path may be an environment variable (UNIX) with a path list or
@@ -109,6 +112,14 @@
 * of filename.
       postslash = 0
       flen = TM_LENSTR1(fname)
+
+* Set up a logical. With strict bounds checking, a string of length 3
+* cant be used in  *** IF ( fname(1:4) .EQ. 'http') THEN ***
+
+       is_http = .FALSE.
+       IF (flen .GT. 3) THEN
+          is_http  = (fname(1:4) .EQ. 'http')
+       ENDIF
 
 * if a pathname exists, we want to extract it from the file name,  and
 * pass them to tm_path_list as two separate, but lovely, entities.
@@ -144,7 +155,7 @@
          path_list = ' '
          plen = 1
 * *kob* 11/00 Allow DODS files as MC sets - just use full http address
-      ELSEIF ( fname(1:4) .EQ. 'http') THEN
+      ELSEIF ( is_http ) THEN
          TM_INQ_PATH=fname(:flen)
          status = merr_ok
          GOTO 9900

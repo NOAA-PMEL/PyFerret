@@ -114,6 +114,7 @@
 *                  expressions increase to 14.
 * V68  *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V68  *acm* 7/12 return 16 digits by default for grave-accent expressions
+* V685+ *acm* 12/13  bounds checking: dont refer to parts of the string outside its bounds.
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -164,7 +165,7 @@
 	LOGICAL	TM_LEGAL_NAME, known_qualifier, atsin_qualifier,
      .          surround_quote, doub_quote, subst, first_paren,
      .          itsa_qualifier(local_max_arg_list), 
-     .          MATCH4, escape, apply_cx
+     .          MATCH4, escape, apply_cx, ptrslash
 	INTEGER TM_LENSTR
 	INTEGER	buff_len, bang_position, ptr, quote_end,
      .		word_num, look_ahead, look_back, isub_word, csgo,
@@ -228,7 +229,7 @@
 * find length of command line ("!" is a valid terminator to permit comments)
 	bang_position = INDEX ( cmnd_buff, '!' )
 * ... 11/95 allow "!" to be be "escaped"
-	IF ( bang_position .GT. 0 ) THEN
+	IF ( bang_position .GT. 1 ) THEN
 #ifdef NO_DOUBLE_ESCAPE_SLASH
 	   IF ( cmnd_buff(bang_position-1:bang_position) .EQ. '\!' ) THEN
 #else
@@ -433,11 +434,17 @@
 
 * start searching for the end of the word: blank,tab,"/" or ", if its a quote
  400	CONTINUE
+
+* Define a logical to stay away from cmnd_buff(ptr-1:ptr-1) when ptr = 1
+        ptrslash = .FALSE.
+	IF (ptr .GT. 1) THEN
 #ifdef NO_DOUBLE_ESCAPE_SLASH
-	   IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\' ) THEN
+	   IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\' ) ptrslash = .TRUE.
 #else
-	   IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) THEN
+	   IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) ptrslash = .TRUE.
 #endif
+        ENDIF
+	   IF (ptrslash) THEN
 	      GOTO 410
   
 	   ELSEIF ( cmnd_buff(ptr:ptr) .EQ. '"' 
@@ -514,11 +521,13 @@
 	   ENDIF
 
 * "/" can be escaped using "\/"
+	   IF (ptr .GT. 1) THEN
 #ifdef NO_DOUBLE_ESCAPE_SLASH
-	   IF (cmnd_buff(ptr-1:ptr) .EQ. '\/') GOTO 410
+	      IF (cmnd_buff(ptr-1:ptr) .EQ. '\/') GOTO 410
 #else
-	   IF (cmnd_buff(ptr-1:ptr) .EQ. '\\/') GOTO 410
+	      IF (cmnd_buff(ptr-1:ptr) .EQ. '\\/') GOTO 410
 #endif
+	   ENDIF
 	
 * probable terminator found - make sure it's not hiding a comma or =
 * first check ahead that the next non-blank/tab is not comma or =
@@ -536,7 +545,9 @@
  405	   CONTINUE
 
 * now look back to make sure this isn'a a gap following an = or comma
- 406	   DO 408 look_back = ptr-1, 1, -1
+ 406	   CONTINUE
+           IF (ptr .GT. 1) THEN
+           DO 408 look_back = ptr-1, 1, -1
 	      IF (   cmnd_buff( look_back:look_back ) .EQ. ' '
      .	      .OR. cmnd_buff( look_back:look_back ) .EQ. tab ) GOTO 408
 	      IF (   cmnd_buff( look_back:look_back ) .EQ. ','
@@ -547,6 +558,7 @@
 		 GOTO 420	! yes - we found a terminator
 	      ENDIF
  408	   CONTINUE
+           ENDIF
 		 GOTO 420	! yes - we found a terminator
 
 * manual DO-loop to permit embedded quotation marks

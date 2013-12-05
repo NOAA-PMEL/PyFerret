@@ -55,7 +55,7 @@
 
 * calling argument declarations
 	INTEGER ncx, ov_cx(ncx)
-	LOGICAL	flags(*)
+	LOGICAL	flags(0:12)
 
 * internal variable declarations
 	INTEGER	i

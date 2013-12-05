@@ -38,7 +38,8 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 # Targets
 #
 
-all:	student_t_cutoff.so minmax.so
+#all:	student_t_cutoff.so minmax.so
+all:	student_t_cutoff.so
   
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

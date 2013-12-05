@@ -19,6 +19,7 @@
         CHARACTER*2048 errmsg
         REAL*8 tempbrush, fillbrush
         REAL*4 left, bottom, right, top
+        LOGICAL rectdrawn;
 
 *       Sanity checks
         IF ( (activewindow .LT. 1) .OR.
@@ -62,29 +63,33 @@
 
 *       Quick check for a rectangle as specified by Ferret
 *       (Drawing rectangles much faster than generic polygons.)
-        IF ( (npts .EQ. 4) .AND. 
-     .       (ptsx(1) .EQ. ptsx(2)) .AND.
-     .       (ptsx(3) .EQ. ptsx(4)) .AND.
-     .       (ptsy(1) .EQ. ptsy(4)) .AND.
-     .       (ptsy(2) .EQ. ptsy(3)) ) THEN
-            IF ( ptsx(1) .LT. ptsx(3) ) THEN
-                left = ptsx(1)
-                right = ptsx(3)
-            ELSE
-                left = ptsx(3)
-                right = ptsx(1)
-            ENDIF
-            IF ( ptsy(1) .LT. ptsy(2) ) THEN
-                bottom = ptsy(1)
-                top = ptsy(2)
-            ELSE
-                bottom = ptsy(2)
-                top = ptsy(1)
-            ENDIF
-*           Fill rectangle area (no outline)
-            CALL FGDDRAWRECT(success, windowobjs(activewindow),
+        rectdrawn = .FALSE.
+        IF ( npts .EQ. 4 ) THEN
+            IF ( (ptsx(1) .EQ. ptsx(2)) .AND.
+     .           (ptsx(3) .EQ. ptsx(4)) .AND.
+     .           (ptsy(1) .EQ. ptsy(4)) .AND.
+     .           (ptsy(2) .EQ. ptsy(3)) ) THEN
+                IF ( ptsx(1) .LT. ptsx(3) ) THEN
+                    left = ptsx(1)
+                    right = ptsx(3)
+                ELSE
+                    left = ptsx(3)
+                    right = ptsx(1)
+                ENDIF
+                IF ( ptsy(1) .LT. ptsy(2) ) THEN
+                    bottom = ptsy(1)
+                    top = ptsy(2)
+                ELSE
+                    bottom = ptsy(2)
+                    top = ptsy(1)
+                ENDIF
+*               Fill rectangle area (no outline)
+                CALL FGDDRAWRECT(success, windowobjs(activewindow),
      .                  left, bottom, right, top, fillbrush, nullobj)
-        ELSE
+                rectdrawn = .TRUE.
+            ENDIF
+        ENDIF
+        IF ( .NOT. rectdrawn ) THEN
 *           Fill generic polygon area (no outline)
             CALL FGDDRAWPOLYGON(success, windowobjs(activewindow),
      .                          ptsx, ptsy, npts, fillbrush, nullobj)

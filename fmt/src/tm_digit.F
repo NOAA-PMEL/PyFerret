@@ -48,7 +48,7 @@
 *	path names often begin with "./name"
 * 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an character constant instead
-
+* V685+ 12/13    - *acm*  bounds checking: dont refer to parts of the string outside its bounds.
 
 #include "gt_lib.parm"
 
@@ -56,7 +56,7 @@
 	CHARACTER*(*)	string
 
 * internal variable declarations:
-	INTEGER		i
+	INTEGER		i, slen
 	CHARACTER*1	c
 	
 * local parameter declarations:
@@ -67,8 +67,14 @@
 	PARAMETER     ( tab = CHAR(9))
 #endif
 
+	slen = LEN(string)
+	IF (slen .EQ. 0) THEN
+	   TM_DIGIT = .FALSE.
+	   RETURN
+	ENDIF
+
 * skip leading blanks
-	DO 100 i = 1, LEN(string)
+	DO 100 i = 1, slen
 	   c = string(i:i)
 	   IF ( c .NE. ' ' .AND. c .NE. tab ) GOTO 200
  100	CONTINUE
@@ -83,13 +89,16 @@
      .		.OR. c .GE. '0' .AND. c .LE. '9'
 
 * kludge check for "./name" (11/94 for AIX port)
-	IF (c.EQ.'.' .AND. LEN(string).GE.2 )
-     .		TM_DIGIT = string(2:2) .NE. PathSeparator
+	IF (slen.GE.2 ) THEN
+	   IF (c.EQ.'.') TM_DIGIT = string(2:2) .NE. PathSeparator
 
 * Check for .. starting a string, dataset global attributes
 
-        IF(c .EQ. '.' .AND. string(i+1:i+1) .EQ. '.') TM_DIGIT = .FALSE.
-
+           IF (i .LT. slen) THEN
+              IF(c .EQ. '.' .AND. string(i+1:i+1) .EQ. '.') TM_DIGIT = .FALSE.
+	   ENDIF
+	
+	ENDIF
 
 	RETURN
 

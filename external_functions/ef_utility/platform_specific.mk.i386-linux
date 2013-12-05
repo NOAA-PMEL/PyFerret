@@ -28,9 +28,9 @@ LD_DYN_FLAGS	= -fPIC -m32 -shared -Wl,--no-undefined
 SYSLIBS		= -L$(INSTALL_FER_DIR)/lib/$(PYTHON_EXE)/site-packages/pyferret -lpyferret
 
 CPP		= /lib/cpp
-CPP_FLAGS	= -P -traditional $(INCLUDES)
-CFLAGS_DEBUG	= -O0 -g
-FFLAGS_DEBUG	= -O0 -g
+CPP_FLAGS	= -P -traditional -Ddouble_p $(INCLUDES)
+CFLAGS_DEBUG	= -O0 -g -Ddebug
+FFLAGS_DEBUG	= -O0 -g -fbounds-check -Ddebug
 
 ## cancel the default rule for .f -> .o to prevent objects from being built
 ## from .f files that are out-of-date with respect to their corresponding .F file

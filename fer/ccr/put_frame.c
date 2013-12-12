@@ -54,6 +54,7 @@
  *
  * *acm*  1/12 - Ferret 6.8 ifdef double_p for double-precision ferret,
  *               see the definition of macro DFTYPE in ferret.h
+ * *acm* 12/13 - Removed unused routine put_temp_frame_batch
  */
 
 #ifdef MAC_SSIZE
@@ -154,25 +155,5 @@ if (GIFFlush(&ws->mf, filename) != OK){
 
 }
 
-void FORTRAN(put_temp_frame_batch)(int *ws_id, char *filename, int *length)
-{
-  char format[BUFSIZ], errmsg[BUFSIZ];
-  int status;
-  DFTYPE red;
-  DFTYPE green;
-  DFTYPE blue;
-  int trans;
-  char *tname = tempnam("/tmp", "fer");
-  WS_STATE_ENTRY *ws = OPEN_WSID(*ws_id);
-  status = 0;
-  strcpy(filename, tname);
-  strcat(filename, ".gif");
-  red = 0;
-  green = 0;
-  blue = 0;
-  trans = 1;
-  FORTRAN(put_frame_batch)(ws_id, filename, format, &trans, &red, &green, &blue, errmsg, &status);
-  *length = strlen(filename);
-  free(tname);
-}
+
 

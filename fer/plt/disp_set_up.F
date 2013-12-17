@@ -153,6 +153,7 @@
 * V685  *acm* 9/13 Fixing ticket 2092. Check that the pplus internal storage
 *                  for coordinate data will be enough for the grid and if not
 *                  return an error message. 
+* V686 *acm* 12/13 Symbokls AX_HORIZ and AX_VERT may be x,y,z,t,e,f  
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -202,7 +203,7 @@ C plus those starting w/ xbox_bounds:
      .			letter*1, buff1*16, buff2*16, buff30*30,
      .                  TM_GET_CALENDAR_NAME*32, cal_name_1*32, 
      .                  cal_name_2*32, err_string*128
-        CHARACTER*1     axdir(4)
+        CHARACTER*1     axdir(6)
 
 	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, TM_FPEQ, 
      .			user_title, time_axis,
@@ -229,7 +230,7 @@ C plus those starting w/ xbox_bounds:
 	REAL*8		xaxlo, xaxhi, yaxlo, yaxhi, delta
 	REAL*4		rw1lo, rw2lo
 
-        DATA axdir / 'X', 'Y', 'Z', 'T' /
+        DATA axdir / 'X', 'Y', 'Z', 'T', 'E', 'F' /
 
 * signal that plot set-up has begun
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_explct, ttout_lun,

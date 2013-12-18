@@ -91,7 +91,7 @@
 	REAL      vals(100)
 
         LOGICAL   NC_GET_ATTRIB, got_it, coordvar, newatt, have_units,
-     .            have_title
+     .            have_title, have_dims
 
         CHARACTER show_str*128
         CHARACTER uvarname*150, attname*128, attbuff*2048, buff*128,
@@ -566,8 +566,37 @@ c             IF ( status .NE. ferr_ok ) GOTO 5100
       DO 800, i = 1, line_ceiling
          IF (line_write(i)) CALL SHOW_LINE_XML( show_lun, i)
  800  CONTINUE
+
       risc_buff = '</axes>'
       CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
+
+* were there string variables?  If so write basic info about their string dimensions.
+
+      have_dims = .FALSE.
+      DO 900 ivar = 1, maxvars
+         IF ( ds_var_setnum(ivar) .NE. dset ) GOTO 900
+         IF ( ds_var_code(ivar) .EQ. '-' ) GOTO 900  
+         uvarname = ds_var_code(ivar)
+
+         CALL CD_GET_VAR_ID (dset, uvarname, varid, status)
+         CALL CD_GET_VAR_INFO (dset, varid, uvarname, vtype, nvdims,
+     .         vdims, nvatts, coordvar, all_outflag, status)
+         IF (vtype .EQ. NCCHAR ) THEN
+            IF (.NOT.have_dims) THEN
+               have_dims = .TRUE.
+               risc_buff = '<dimensions>'
+               CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
+            ENDIF
+
+	    CALL CD_GET_DS_DIMS (dset, vdims(1), buff, npts, status)
+            CALL SHOW_DIM_XML(buff, npts, show_lun)
+         ENDIF
+ 900  CONTINUE
+                  
+      IF (have_dims) THEN
+         risc_buff = '</dimensions>'
+         CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
+       ENDIF
 
 * Restore the default data set
 

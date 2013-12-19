@@ -4,3 +4,11 @@
 go xml_header_script.jnl xml_use_coads.jnl xml_out.xml
 sp cat xml_out.xml
 
+! Here's one where the dataset has a string variable
+
+can dat/all
+
+go xml_header_script.jnl xml_use_numstring.jnl xml_out_string.xml
+
+! Find instances of dimension and list the next several lines
+sp grep -A5 dimension xml_out_string.xml

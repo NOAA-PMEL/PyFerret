@@ -1,4 +1,4 @@
-	INTEGER FUNCTION CD_WRITE_STRDIM ( cdfid, maxstrlen, status )
+	INTEGER FUNCTION CD_WRITE_STRDIM ( cdfid, maxstrlen, dimname, status )
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -45,6 +45,8 @@
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V686 12/13*acm* For string variables from datasets, keep the string-dimension name and length
+*                 from the original dataset on output.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -62,14 +64,19 @@
 #include "netcdf_declareUnderscore.inc"
 
 * argument declarations
+
+      CHARACTER*(*) dimname
       INTEGER cdfid, maxstrlen, status
 
 * local variable declarations:
-      CHARACTER CD_CHILDAX_NAME*128, dimname*128
-      INTEGER cdfstat, clen, nlen, dimid
+      CHARACTER CD_CHILDAX_NAME*128
+      INTEGER TM_LENSTR, cdfstat, clen, nlen, dimid
 
 * initialize
-      dimname = CD_CHILDAX_NAME('STRING', 1, maxstrlen, nlen )
+      
+      nlen = TM_LENSTR(dimname)
+      IF (nlen .LT. 1) 
+     .    dimname = CD_CHILDAX_NAME('STRING', 1, maxstrlen, nlen )
 
 * is the dimension already defined ?
 #ifdef usingDODSf2cUnderscore

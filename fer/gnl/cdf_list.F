@@ -117,6 +117,8 @@
 * V685 6/13 *acm* Dont add SAVE/NOCOORDS
 * v685 6/13 *acm*  bug 2081. For string vars, if the len comes back as 0 the variable contains 
 *                  just null strings. Set maxstrlen to 1, else we can't define the variable.
+* V686 12/13*acm* For string variables from datasets, keep the string-dimension name and length
+*                 from the original dataset on output.
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -157,7 +159,7 @@
      .			final_status, type, maxstrlen, 
      .			write_lo(nferdims), write_hi(nferdims), 
      .			make_lo(nferdims), make_hi(nferdims),
-     .                  dset_last, dset_num, attid
+     .                  dset_last, dset_num, attid, len
 
 * *kob* 3/99- up SANITARY_VAR_CODE and local variable varcode to 64 chars
 *             and VAR_UNITS to 64
@@ -531,12 +533,20 @@
            IF (dset.EQ.-1 .AND. cx_data_set( cx ).GT.0)
      .        dset_num = cx_data_set( cx )  
 
+           IF (type .EQ. NF_CHAR) THEN
+	     buff2 = ""
+             IF (dset_num .GE. 1) THEN
+                CALL CD_GET_DS_DIMS (dset_num, vdims(1), buff2, len, status)
+                IF (maxstrlen .LE. len) maxstrlen = len
+             ENDIF
+           ENDIF
+
            CALL CD_MAKE_VAR( cdfid, dset_num, varcode, type, maxstrlen,
      .               grid, make_lo, make_hi, recdim, enhead, new, 
      .               edges_flag, do_bounds, mode_upcase_output, 
      .               keepax_flag, netcdf4_type, xchunk_size, 
      .               ychunk_size, zchunk_size, tchunk_size, 
-     .               deflate_lev, shuffle_flag, endian_code, 
+     .               deflate_lev, shuffle_flag, endian_code, buff2,
      .               status )
 
            IF ( status .NE. merr_ok ) GOTO 5800

@@ -120,6 +120,9 @@
      .	     labname(ppl_dodsurl)/'DODS'/,
      .	     labname(ppl_calendar)/'CALEND'/
 
+
+
+
 * if label has single tic marks double them so PLOT+ doesnt interpret symbols
 	IF ( INDEX(string,"'date'") .GT. 0 ) THEN
 * ... hack to let PLOT+ date time symbols be evaluated (using single tics)
@@ -218,7 +221,7 @@
 * ... define a PLOT+ symbol containing the label number "SET LABNUM_X 4"
 *	or LABNUM_DSET, LABNUM_YEAR, etc.
 	   ii = ppl_movlab - labnum
-	   IF ( ii.GE.1 .AND. ii.LE.4 ) THEN
+	   IF ( ii.GE.1 .AND. ii.LE.nferdims ) THEN
 	      WRITE ( ppl_buff, 3500 )
      .			"num_"//ww_dim_name(ii), buf4(:flen)
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )

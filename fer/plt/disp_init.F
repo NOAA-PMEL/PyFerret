@@ -169,6 +169,12 @@
         buffsym = 'LABNUM_T '
 	CALL GETSYM( buffsym, buffer, nc, ier )
 	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LABNUM_E '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LABNUM_F '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
            
         buffsym = 'LABNUM_DSET '
 	CALL GETSYM( buffsym, buffer, nc, ier )

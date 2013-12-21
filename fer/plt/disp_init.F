@@ -85,7 +85,7 @@
 * V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
-
+* V686 *acm* 12 13 set up the label symbols LABNUM_E and LABNUM_F
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'

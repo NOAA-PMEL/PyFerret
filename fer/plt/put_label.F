@@ -76,6 +76,7 @@
 *      *kms* 5/12 Always use generic REAL instead of specific SNGL 
 *                 (SNGL must have a double-precision or complex argument)
 * V68  *acm* 5/12  Dont write the font to xlab, ylab if they are blank strings.
+* V686 *acm* 12 13 set up the label symbols LABNUM_E and LABNUM_F
 
 	include 'tmap_dims.parm'
 	include 'plot_setup.parm'
@@ -119,8 +120,6 @@
      .	     labname(ppl_offset)/'OFFSET'/,
      .	     labname(ppl_dodsurl)/'DODS'/,
      .	     labname(ppl_calendar)/'CALEND'/
-
-
 
 
 * if label has single tic marks double them so PLOT+ doesnt interpret symbols

@@ -3,7 +3,7 @@
 * V510 *sh* 3/00 - added ppl_dodsurl
 * V530 *acm* 3/01 - added ppl_calendar
 * V686 *acm*12/13 - Need 2 more moveable labels in the upper-left block
-*                   for E and F dimension location labels.
+*                   for E and F dimension location labels LABNUM_E and LABNUM_F
 
 * parameters to communicate with PLOT+
 	INTEGER		ppl_centered,

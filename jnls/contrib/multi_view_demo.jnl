@@ -12,8 +12,8 @@
 ! Written On  :  16/June/2007
 ! Comments    :  None
 ! Modifications : Ansley Manke 2-Jan-2014 Ferret v6.86: 
-!                 fix incorrect syntax. No equals sign in
-!                 palette=rainbow2_cmyk
+!                 Fix incorrect syntax. No equals sign in
+!                   palette=rainbow2_cmyk
 !
 !-------------------------------------------------------------------------
 

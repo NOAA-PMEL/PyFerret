@@ -1,6 +1,12 @@
-! bn686_bug_fixes.jnl
+! bn686_bug_fixes
 ! test various fixes that went into version 6.86
 ! 11/2013 ACM
 
 GO bn_reset
 GO err685_ribbon_by_val
+
+GO bn_reset
+GO err685_ppl_palette
+
+GO bn_reset
+GO err685_show_grid_e

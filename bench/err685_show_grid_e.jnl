@@ -1,0 +1,12 @@
+! err685_show_grid_e.jnl
+! See ticket 2122
+! SHOW GRID/E and SHOW GRID/F failed
+
+def ax /e=1:12:1 ense
+def ax /f=1:10:1 verf
+def ax /t=1980:2013:1 yrt
+def grid /e=ense/t=yrt/f=verf gensy
+sh grid gensy
+sh grid /e gensy
+sh grid /f gensy
+

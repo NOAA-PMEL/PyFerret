@@ -20,3 +20,6 @@ fill sst[l=@ave]
 pattern   tiny_squares.pat
 fill/lev=(15,21,2)/over/nolab/pal=black sst[l=@ave]
 
+! restore defaults
+palette default
+pattern solid

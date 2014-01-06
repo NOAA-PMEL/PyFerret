@@ -881,6 +881,9 @@ GO bn_long_symnames
 GO bn_reset
 GO bn_strdim
 
+GO bn_reset
+GO bn_single_colorlev
+
 
 !!!!!!!!!!!!! Note we should include tests for all the scat2grid functions. 
 !!!!!!!!! completed and improved the docs for scat2grid_bin and scat2grid_nbin functions 

@@ -98,6 +98,10 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V685 *acm* 4/13 For horizontal keys check that there is room for the labels and adjust
 *                 label size and/or increment
+* v686 *acm* 1/14 Fix ticket 2123: labeling color bar when there is just one level.
+*                 Remove the special code that labeled the top and bottom of a single-level
+*                 color key with the lower boundary of the level. See the 5/96 commend above) 
+*                 Instead label with the upper and lower edges of that color level.
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -401,14 +405,6 @@
 
 *	   WRITE OUT CORRESPONDING VALUE
 
-CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE		
-	   if (shd_levels .eq. 1 .and. ndx .eq. 2) then
-             val = zlev(lev1)
-             IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
-	     text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
-
-	   else
              val = zlev(ndx)
              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
@@ -416,7 +412,6 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
              IF (ndx .EQ. 1 .AND. neginf) text = " "
              IF (ndx .EQ. shd_levels+1 .AND. posinf) text = " "
-	   end if
 
 	   xx = (kx_lo + x_inc*real(ndx-1))/1000.0
      .		 - karht*real(str_len)/2.0 - xorg
@@ -628,19 +623,11 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
         IF (incr .GT. 0) THEN
         do 1020 ndx = lev1,shd_levels+1,incr
 *	   WRITE OUT CORRESPONDING VALUE
-
-CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE		
-	   if (shd_levels .eq. 1 .and. ndx .eq. 2) then
-             val = zlev(lev1)
-             IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
-	   else
              val = zlev(ndx)
              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
              IF (ndx .EQ. 1 .AND. neginf) text = " "
              IF (ndx .EQ. levn+1 .AND. posinf) text = " "
-	   end if
 
 	   xx = (kx_lo + 5.0*x_inc)/1000.0 - xorg 
 	   xx = (kx_lo + 4.5*x_inc)/1000.0 - xorg 

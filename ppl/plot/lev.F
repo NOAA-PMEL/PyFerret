@@ -70,6 +70,7 @@ C**
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V685 *acm* 7/13 Ticket 1990: fixes for number of digits. More precision needed 
 *                 (Lavelle examples) 
+* v686 *acm* 1/14 Fix ticket 2123: labeling color bar when there is just one level
 
 	parameter	(epsilon = 1e-6)
 
@@ -167,6 +168,8 @@ CC		Bug fix for non zero levels that ought to be zero *jd*
 		ENDIF
 
 100		CONTINUE
+
+	        IF (NL .EQ. 1) ZLEV(2) = zlev(1)
 C
 C	FIND MIN AND MAX
 C

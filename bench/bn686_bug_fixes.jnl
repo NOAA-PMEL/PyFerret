@@ -10,3 +10,6 @@ GO err685_ppl_palette
 
 GO bn_reset
 GO err685_show_grid_e
+
+GO bn_reset
+GO err685_lowercaseAxis

@@ -13,3 +13,7 @@ GO err685_show_grid_e
 
 GO bn_reset
 GO err685_lowercaseAxis
+
+GO bn_reset
+GO err685_redefine_uvar_att.jnl
+

@@ -1,0 +1,8 @@
+! err685_redefine_uvar_att.jnl
+! ticket 2127 Redefine an attribute for a
+!   user variable, with bounds-checking on, 
+!   returned a runtime error.
+
+let a = 1
+define att/type=string  a.ival = 99
+define att/type=STRING  a.ival = 99

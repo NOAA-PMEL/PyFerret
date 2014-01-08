@@ -61,6 +61,7 @@
 *        3/12 *acm* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V680   5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
+* v686 *acm*  1/14 Fix ticket 2127: dont check file type if the variable not a file variable.
 
 
 * codes for data sets
@@ -452,9 +453,10 @@
      .			     cat, var, mod_cx, status )
 
         IF (var .EQ. munknown_var_name)  GOTO 5000
+
 	IF ( cat .EQ. cat_file_var ) ez = ds_type(dset) .EQ. pds_type_ez
 
-	   ncfile = (TM_HAS_STRING(ds_type(dset), 'CDF') .OR.
+	IF (dset .GT. 0) ncfile = (TM_HAS_STRING(ds_type(dset), 'CDF') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'MC') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'ENS') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'GT')  )

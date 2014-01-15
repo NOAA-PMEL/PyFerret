@@ -17,3 +17,5 @@ GO err685_lowercaseAxis
 GO bn_reset
 GO err685_redefine_uvar_att.jnl
 
+GO bn_reset
+GO err685_use_no_extension

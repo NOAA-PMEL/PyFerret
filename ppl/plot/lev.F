@@ -169,7 +169,8 @@ CC		Bug fix for non zero levels that ought to be zero *jd*
 
 100		CONTINUE
 
-	        IF (NL .EQ. 1) ZLEV(2) = zlev(1)
+* Get labels on colorbar right if there is just one level.
+	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 C
 C	FIND MIN AND MAX
 C

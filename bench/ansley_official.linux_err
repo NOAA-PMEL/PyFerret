@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 42713317 Jan 15 11:15 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 42713729 Jan 15 15:42 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: candidate for Ferret v6.86 release
+Note: fixing ticket 2128
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Wed Jan 15 11:16:29 PST 2014
+Beginning at Wed Jan 15 15:43:18 PST 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3542,6 +3542,21 @@ list f
  *** NOTE: Changing the value of attribute a.ival
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ **TMAP ERR: non-existent or not on line
+             nosuchfile.nc
+SET DAT/FORM=CDF nosuchfile.nc
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for nosuchfile(.nc ,.cdf,.des)
+SET DAT/FORM=CDF nosuchfile
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for snoopy(.nc ,.cdf,.des)
+SET DAT/FORM=CDF snoopy
+ **netCDF error
+             NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
+             Data set: ./snoopy.dat
+SET DAT/FORM=CDF snoopy.dat
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
@@ -3637,4 +3652,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jan 15 11:18:07 PST 2014
+Ended at Wed Jan 15 15:44:51 PST 2014

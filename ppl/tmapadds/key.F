@@ -102,6 +102,9 @@
 *                 Remove the special code that labeled the top and bottom of a single-level
 *                 color key with the lower boundary of the level. See the 5/96 commend above) 
 *                 Instead label with the upper and lower edges of that color level.
+* v686 *acm* 1/14 Fixes for labels on horizontal keys: make sure they don't get too small, and
+*                 don't let them run over each other. Locate the horizontal colorbar close to
+*                 the plot with labels above them. Behavior of args to SHAKEY is unchanged.
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -127,19 +130,19 @@
 	include        'gkspar.inc'
 
 	integer		ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
-     .                  lab_add, nlab
+     .                  lab_add, nlab, i
 
-	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5)
-	real		xmaxx,ymaxx,vwidth,vheight,karht
+	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
+	real		xmaxx,ymaxx,vwidth,vheight,karht, ksiz_test
 	real		xx,yy,xxx,yyy, xx1, xxn, xxlen
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
-     .                  val, del, x_inc_inf, y_inc_inf, frac, fixx
+     .                  val, del, x_inc_inf, y_inc_inf, frac, fixx, inc_min
         real*8          val_n, val_last
 	character*12	text,TM_FMT_SNGL, TM_FMT_SNGL_DIGITS, 
      ,			txt_out, blanks
         character*20    buff
 	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, windof_hold, 
-     .                  check_0, increase_digits, nofill
+     .                  check_0, increase_digits, nofill, cont_key_keep, no_lines
 
 	external	TM_FMT_SNGL, TM_FMT_SNGL_DIGITS
 
@@ -154,6 +157,8 @@
 *	CANCEL WINDOW ON IF SET
 	windof_hold = windof
 	windof = .false.
+
+	cont_key_keep = cont_key
 
 * Decide whether to check for small numeric values in the key labels.
 * If delta is large, we dont want 0.000005 to be labelled in an exponential
@@ -233,13 +238,21 @@
            kx_lo_def = 1000.0 *  xorg
            kx_hi_def = 1000.0 * (xorg + xlen)
            ky_lo_def = 1000.0 * (yorg + ylen + 0.25*min (rem,ymaxx))
+           ky_hi_def = yorg+ylen+ymaxx
+           ky_hi_def = height-0.1*rem
            ky_hi_def = 1000.0 * min (yorg+ylen+ymaxx,vheight-0.1*rem)
+
+           ky_lo_def = 1000.0 * (yorg + ylen + 0.05)
+           ky_hi_def = 1000.0 * (yorg + ylen + 0.05+ 0.2*rem)
+
         else
            rem = height - (ylen + yorg)
 	   ymaxx = 0.25*ylen
            kx_lo_def = 1000.0 *  xorg 
            kx_hi_def = 1000.0 * (xorg + xlen)
            ky_lo_def = 1000.0 * (yorg + ylen + 0.25*min (rem,ymaxx))
+           ky_hi_def = yorg+ylen+ymaxx
+           ky_hi_def = height-0.1*rem
            ky_hi_def = 1000.0 * min (yorg+ylen+ymaxx,height-0.1*rem)
         end if
 
@@ -264,7 +277,8 @@
               ky_lo = ky_hi - 0.4*(ky_hi_def - ky_lo_def)
            ELSEIF (kuser_loc(3) .AND. (.NOT.kuser_loc(4)) ) THEN
               ky_hi = ky_lo + 0.4*(ky_hi_def - ky_lo_def)
-           ENDIF 
+           ENDIF
+	   y_inc = 0.1 * (ky_hi - ky_lo)
 
 * When not kuser_loc, we will use the default locations
 
@@ -273,10 +287,10 @@
            kx_hi = kx_hi_def
            ky_lo = ky_lo_def
            ky_hi = ky_hi_def
+	   y_inc = 0.25 * (ky_hi - ky_lo)
         ENDIF
 
 	x_inc = (kx_hi - kx_lo)/MAX (1.0, real (shd_levels))
-	y_inc = 0.1 * (ky_hi - ky_lo)
         
         x_inc_inf = x_inc
 
@@ -288,7 +302,7 @@
               x_inc = (1.-2.*frac)*(kx_hi - kx_lo)/ REAL(shd_levels-2)
               kx_lo = kx_lo + (x_inc_inf-x_inc)
            ENDIF
-        ELSE IF (neginf .OR. posinf) THEN
+        ELSEIF (neginf .OR. posinf) THEN
            IF (shd_levels .GT. ncount) THEN 
               x_inc_inf = frac* (kx_hi - kx_lo)
               x_inc = (1.-frac)*(kx_hi - kx_lo)/ REAL(shd_levels-1)
@@ -296,7 +310,19 @@
            ENDIF
         ENDIF
 
+* Don't draw lines between color levels when they will be too close together (see ticket 1535)
+
+c	inc_min = 50
+c	no_lines = .FALSE.
+c	IF ( (x_inc .LT. inc_min) .AND. (INT(0.5 + inc_min/x_inc) .GE. 2) ) no_lines = .TRUE.
+c	IF ( (INT(0.5 + inc_min/x_inc) .GE. 2) ) no_lines = .TRUE.
+c	IF ( no_lines ) cont_key = .TRUE.
+
 *	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
+
+* make sure there is a space between one label and the next
+	 max_len = max_len+1  
+
 	if (klab_incr .eq. 0) then
 	   incr = (shd_levels/25) + 1
            IF (width/vwidth .GT. 1.5) incr = 2*incr
@@ -304,12 +330,10 @@
 	   incr = klab_incr
 	end if
 
-	if (klab_size .eq. 0.0) then
-           karht = amin1 (0.10*1000.0,
+	karht = amin1 (0.10*1000.0,
      .		1.0*x_inc*real(incr)/real(max_len))/1000.0
-	else
-	   karht = ABS(klab_size)
-	end if
+        ksize_test = 0.
+	if (klab_size .NE. 0) karht = ABS(klab_size)  
 
 * Is there room for the labels at their current size?
 * If not adjust the size and/or increment
@@ -324,11 +348,26 @@
 	
 	   IF (nlab*max_len*karht .GT. xxlen) THEN
 	      karht = 0.85*xxlen/FLOAT(nlab*max_len)
-	      IF (karht .LT. 0.06) THEN
-	         karht = 0.08
-	         incr = incr*2
-	      ENDIF
 	   ENDIF
+
+	   ksiz_test = 0.06
+           IF (klab_size .NE. 0) THEN
+	      IF (ABS(klab_size) .LT. ksiz_test) ksiz_test = ABS(klab_size)
+	   ENDIF
+
+	   IF (karht .LT. ksiz_test) THEN
+	      incr = incr*1.5
+	      nlab = INT( 0.5+(shd_levels-lev1)/incr )
+	      karht = 0.85*xxlen/FLOAT(nlab*max_len)
+	   ENDIF
+
+	   ksiz_test = 0.075
+           IF (klab_size .NE. 0) ksiz_test = ABS(klab_size)
+	   DO WHILE (karht .LT. ksiz_test)
+	      incr = incr+1
+	      nlab = INT( 0.5+(shd_levels-lev1)/incr )
+	      karht = 0.85*xxlen/FLOAT(nlab*max_len)
+	   ENDDO
 	ENDIF
 
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
@@ -386,6 +425,7 @@
 
 	   kpx(5) = kpx(1)
 	   kpy(5) = kpy(1)
+
 	   IF (.NOT. cont_key) call gpl (5,kpx,kpy)
 
            ENDIF ! neginf or posinf
@@ -422,7 +462,7 @@
 * If klab_size negative put the key labels on the top rather than the 
 * bottom of the key
 
-           IF (klab_size .LT. 0) THEN
+           IF (klab_size .LE. 0) THEN
               yy = (ky_hi)/1000.0 - yorg + karht
            ENDIF
 
@@ -450,6 +490,7 @@
 1000	CONTINUE
 
 * Define default x and y lo and hi locations
+
 
         if (ppl_in_ferret) then
            call get_view_size (vwidth,vheight)
@@ -525,6 +566,14 @@
               IF (NEGINF) ky_lo = ky_lo + (y_inc_inf-y_inc)
            ENDIF
         ENDIF
+
+* Don't draw lines between color levels when they will be too close together (see ticket 1535)
+
+c	inc_min = 50
+c	no_lines = .FALSE.
+c	IF ( (y_inc .LT. inc_min) .AND. (INT(0.5 + inc_min/y_inc) .GE. 2) ) no_lines = .TRUE.
+c	IF ( (INT(0.5 + inc_min/y_inc) .GE. 2) ) no_lines = .TRUE.
+c	IF ( no_lines ) cont_key = .TRUE.
 
 *	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
         if (klab_size .eq. 0.0) then
@@ -605,6 +654,7 @@
 
               kpx(5) = kpx(1)
               kpy(5) = kpy(1)
+
               IF (.NOT. cont_key) call gpl (5,kpx,kpy)
 
            ENDIF ! neginf or posinf
@@ -677,6 +727,7 @@
         kx_hi = px(2)
 
 2000	windof = windof_hold
+	cont_key = cont_key_keep
 
 	return
 	end

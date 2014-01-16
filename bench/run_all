@@ -28,7 +28,6 @@
 #            (bn_curv now saves only one).
 # acm   9/06 Change so that all ncdump output is directed to a file all_ncdump.out. 
 #            append this to the log file 
-# acm  1/14  Do a directory listing on the benchmark directory when it is set.
 
 # usage % run_all
 
@@ -103,7 +102,6 @@ endif
 # which external function libraries to use
 echo "Enter the directory containing the external function libraries"
 set efdir = $<
-ls -1 $efdir
 
 # *acm* 4/5/05 optionally do externally-linked external function tests 
 # 

@@ -234,16 +234,12 @@
            if (vheight .le. ylen + yorg) goto 2000
 
            rem = vheight - (ylen + yorg)
-	   ymaxx = 0.25*ylen
+
            kx_lo_def = 1000.0 *  xorg
            kx_hi_def = 1000.0 * (xorg + xlen)
-           ky_lo_def = 1000.0 * (yorg + ylen + 0.25*min (rem,ymaxx))
-           ky_hi_def = yorg+ylen+ymaxx
-           ky_hi_def = height-0.1*rem
-           ky_hi_def = 1000.0 * min (yorg+ylen+ymaxx,vheight-0.1*rem)
 
-           ky_lo_def = 1000.0 * (yorg + ylen + 0.05)
-           ky_hi_def = 1000.0 * (yorg + ylen + 0.05+ 0.2*rem)
+           ky_lo_def = 1000.0 * (yorg + ylen)
+           ky_hi_def = 1000.0 * (yorg + ylen + 0.16*rem)
 
         else
            rem = height - (ylen + yorg)
@@ -368,6 +364,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	      nlab = INT( 0.5+(shd_levels-lev1)/incr )
 	      karht = 0.85*xxlen/FLOAT(nlab*max_len)
 	   ENDDO
+	   IF (karht .GT. ksiz_test) karht = ksiz_test
 	ENDIF
 
 *	GENERATE THE KEY FOR EACH COLOR/SHADE

@@ -104,7 +104,8 @@
 * V683 9/12 *acm* Fix ticket 1531: nc is the default dataset type if not given 
 *                 with the command qualifier or the extension is not recognized.
 * V686 1/14 *acm* Fix ticket 2128: If USE is given without a file extension, check
-*                 for descriptor file too, after .cdf and .nc.
+*                 for descriptor file too, after .nc and .cdf.
+* V686 1/14 *acm* Fix ticket 2129: A bug in the fix to 2128.
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -231,7 +232,7 @@
 	   ENDIF
 	ENDIF
         IF ( ds_dset_type .EQ. 'CDF' ) THEN
-           ext  = def_cdf       ! default netCDF file extension
+           ext  = def_ext       ! default netCDF file extension
            path = cdf_path
         ELSE
            ext  = def_ext       ! default TMAP file extension
@@ -269,11 +270,10 @@
 * 4/02 *acm* try .des extension
 	   IF ( status .NE. merr_ok ) THEN
 	      ext  = def_des
-	      path = cdf_path
-	      ds_dset_type = 'CDF'
+	      path = tmap_sets
+	      ds_dset_type = ' MC'
            ENDIF
 	   des_name = TM_INQ_PATH(dset_name,path,ext,.FALSE.,status)
-	   IF ( ext .EQ. def_des .AND. status .EQ. merr_ok ) ds_dset_type = ' MC'
 
 	   IF ( status .NE. merr_ok ) THEN
 	      ext  = def_nc

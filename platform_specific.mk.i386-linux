@@ -93,7 +93,7 @@ endif
 			  -L $(DIR_PREFIX)/pyferret_install/lib/$(PYTHON_EXE)/site-packages/pyferret
 
 # PyFerret version number
-	PYFERRET_VERSION = 1.0.0
+	PYFERRET_VERSION = 1.0.1
 
 ## cancel the default rule for .f -> .o to prevent objects from being built
 ## from .f files that are out-of-date with respect to their corresponding .F file

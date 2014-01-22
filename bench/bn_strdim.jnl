@@ -1,0 +1,20 @@
+! bn_strdim.jnl
+! Keep the string dimension name and size from the intput file
+! on writing the string variable.
+
+use strdimfile.nc
+
+! Previously Ferret created the string dimension name and length
+! Now it keeps the file's name and length.
+
+save/file=a.nc/clobber labels
+sp ncdump -h a.nc
+
+! The behavior is unchanged for user-defined variables
+! Dimension name is created from STRING and the length
+! length is the max length of strings in the variable.
+
+let/title="mystrings" strvar = {"alpha", "beta", "gamma"}
+save/file=a.nc/clobber strvar
+sp ncdump -h a.nc
+

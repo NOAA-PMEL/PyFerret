@@ -87,7 +87,7 @@
 * PyFr *kms*  7/13 Scale default lengths by pplscale; 
 *                  do not reset minor tic size (not scaled!)
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
-
+* V686 *acm* 12 13 set up the label symbols LABNUM_E and LABNUM_F
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -170,6 +170,12 @@
 	CALL GETSYM( buffsym, buffer, nc, ier )
 	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
         buffsym = 'LABNUM_T '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LABNUM_E '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LABNUM_F '
 	CALL GETSYM( buffsym, buffer, nc, ier )
 	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
            

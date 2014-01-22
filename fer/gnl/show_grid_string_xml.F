@@ -74,9 +74,11 @@
  2030   FORMAT ('<axes>' )
  2040   FORMAT( '<', A1, 'axis>' ,A , '</', A1, 'axis>' )
  2050   FORMAT ('</axes>')
- 2060   FORMAT ('</grid>')
+ 2060   FORMAT ('</grid>') 
+ 2070   FORMAT ('<dimension>', A, '</dimension>')
 
-* list the 4 axes of the grid
+
+* list the axes of the grid
 
         CALL ESCAPE_FOR_XML (grid_name(grid), outstring, slen)
 	WRITE ( risc_buff, 2020 ) outstring(1:slen)
@@ -87,10 +89,9 @@
 * First the string-length dimension
 
 	slen = TM_LENSTR(stringdimname)
-	axdir = 'd'
 
 	CALL ESCAPE_FOR_XML (stringdimname, outstring, slen)
-	WRITE (risc_buff, 2040 ) axdir, outstring(1:slen),  axdir
+	WRITE (risc_buff, 2070 ) outstring(1:slen) 
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 	DO 110 idim = 1, nferdims

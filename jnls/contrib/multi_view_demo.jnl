@@ -11,7 +11,9 @@
 ! Written By  :  Jaison Kurian
 ! Written On  :  16/June/2007
 ! Comments    :  None
-! Modifications : None
+! Modifications : Ansley Manke 2-Jan-2014 Ferret v6.86: 
+!                 Fix incorrect syntax. No equals sign in
+!                   palette=rainbow2_cmyk
 !
 !-------------------------------------------------------------------------
 
@@ -22,7 +24,7 @@
 
         use coads_climatology
         set reg/x=30:120/y=-30:30/k=1
-        palette=rainbow2_cmyk 
+        palette rainbow2_cmyk 
         set window/clear 
 
 \  pause
@@ -142,7 +144,7 @@
 \   use levitus_climatology ; cancel reg/all
 \   let zero_at_mld = temp[d=2] - (temp[d=2,k=1]-1)
 \   let mld         = zero_at_mld[Z=@LOC:0]
-\   palette=orange_purple ; PPL AXLSZE 0.12,0.12 ;  PPL AXNMTC 1,1
+\   palette orange_purple ; PPL AXLSZE 0.12,0.12 ;  PPL AXNMTC 1,1
 
    ! LET US PLOT MLD OVER A DEPTH-LAT/LON SECTION OF TEMPERATURE.
    !    HERE WE WILL DEFINE TWO IDENTICAL VIEWPORTS, WITH DIFFERENT
@@ -336,7 +338,7 @@
 \  cancel mode verify
 
    set reg/x=30:120/y=-30:30
-   palette=rainbow2_cmyk
+   palette rainbow2_cmyk
    set window/aspect=1.3 ; set window/clear
 
    ppl axlint 3,3 ; ppl axnmtc 0,0 ; ppl axlabp 0,0 ; ppl tics ,,,,1,1

@@ -4,7 +4,7 @@
      .                           keepax_flag, netcdf4_type, xchunk_size, 
      .                           ychunk_size, zchunk_size, tchunk_size, 
      .                           deflate_lev, shuffle_flag, endian_code,
-     .                           status )
+     .                           stringdimname, status )
 
 *
 *
@@ -83,6 +83,8 @@
 *                  Ferret uses internally.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V685 6/13 *acm* Dont add SAVE/NOCOORDS
+* V686 12/13*acm* For string variables from datasets, keep the string-dimension name and length
+*                 from the original dataset on output.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -128,7 +130,7 @@
      .        recdim, keepax_flag, do_bounds, netcdf4_type, xchunk_size, 
      .        ychunk_size, zchunk_size, tchunk_size, 
      .        deflate_lev, shuffle_flag, endian_code, status
-      CHARACTER*(*) varname
+      CHARACTER*(*) varname, stringdimname
 
 * local variable declarations:
       LOGICAL TM_ABSTRACT_AXIS, CD_USE_RECDIM, 
@@ -266,7 +268,7 @@
                IF ( status .NE. merr_ok ) GOTO 5900
             ENDIF
  250     CONTINUE
-	 IF (itsa_strvar) strdim = CD_WRITE_STRDIM(cdfid, maxstrlen, status)
+	 IF (itsa_strvar) strdim = CD_WRITE_STRDIM(cdfid, maxstrlen, stringdimname, status)
          IF ( status .NE. merr_ok ) GOTO 5900
       ELSE
 * 1/95 - create the full-span or sub-span axes as appropriate
@@ -286,7 +288,7 @@
               IF ( status .NE. merr_ok ) GOTO 5900
 	    ENDIF
  260     CONTINUE
-	 IF (itsa_strvar) strdim = CD_WRITE_STRDIM(cdfid, maxstrlen, status)
+	 IF (itsa_strvar) strdim = CD_WRITE_STRDIM(cdfid, maxstrlen, stringdimname, status)
          IF ( status .NE. merr_ok ) GOTO 5900
       ENDIF
 

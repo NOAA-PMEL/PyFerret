@@ -182,6 +182,7 @@
 *                  Add /QUALITY= /AAlias /NoAAlias /ENGINE= to SET WINDOW
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V685 *acm*  7/13 Added FILE/FORMAT=descriptor
+* V686 *acm*  1/14 Fix ticket 2126: set axis was messing up line_name storage
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -1286,7 +1287,8 @@ c *kob* 4/97
 * ... Check the attribute structure for this axis name and change 
 *     attribute values as needed.
 
-       CALL RESET_AX_ATT (line_name(axis), new_att_units, 
+       buff2 = line_name(axis)
+       CALL RESET_AX_ATT (buff2, new_att_units, 
      .           new_att_t0, new_att_calendar, new_att_modulo,
      .           new_att_modulo_len, line_direction(axis), 
      .           line_regular(axis) )

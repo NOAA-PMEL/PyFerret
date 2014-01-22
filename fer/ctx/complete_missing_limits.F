@@ -73,6 +73,7 @@
 *                  reverting does not break anything...
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V690 1/14 *sh* removed special behavior for mode_stupid
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -93,7 +94,9 @@
      .          idim, cat, var, grid, mabstract, line, status, grr
 
 * possible skip this routine
-	IF (mode_stupid) GOTO 1000
+! commented this out 1/2014 cuz it causes a crash in aux var processing
+! and it isn't clear why Ferret should function correctly when this line is here
+!	IF (mode_stupid) GOTO 1000
 
 * initialize
 	var  = cx_variable( cx )

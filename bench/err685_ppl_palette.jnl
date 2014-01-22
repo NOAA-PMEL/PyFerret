@@ -1,0 +1,29 @@
+! err685_ppl_palette.jnl
+! Further fix for ticket 2049. If the palette or pattern file
+! name given in PPL SHASET SPECTRUM=  or  PPL PATSET PATTERN=
+! started with a space, the command failed.
+
+pal  rnb2
+use levitus_climatology; shade/k=1 temp
+
+pal  bluescale.spk  
+use levitus_climatology; shade/k=1 temp
+
+! pyferret does not yet support patterns
+! pattern    4patterns
+use coads_climatology
+shade/pal=black/lev=(10,30,5,-3)/key/L=1 sst
+
+pal   default
+! pyferret does not yet support patterns
+! pattern   solid
+
+fill sst[l=@ave]
+! pyferret does not yet support patterns
+! pattern   tiny_squares.pat
+fill/lev=(15,21,2)/over/nolab/pal=black sst[l=@ave]
+
+! restore defaults
+palette default
+! pyferret does not yet support patterns
+! pattern solid

@@ -51,6 +51,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
 * PyFr  *kms*  7/13 Reset scaling with PPL /RESET
+* V6.86 *acm* 1/14 In above fix, let there be spaces before the file spec.
 
         IMPLICIT NONE
 
@@ -95,6 +96,7 @@
            IF ( INDEX(cmnd_buff(arg_start(1):len_cmnd),'SPECTRUM') .GT. 0 ) THEN
 	      start = INDEX(cmnd_buff,'SPECTRUM=') + 10
               fname = cmnd_buff(start:len_cmnd)
+              CALL TM_PACK_STRING( fname, fname, 1, 128, slen )
 	      slen = TM_LENSTR1(fname)
               sfile = TM_INQ_PATH (fname(:slen),'FER_PALETTE','.spk',
      .        	 .false.,status)
@@ -104,6 +106,7 @@
            IF ( INDEX(cmnd_buff(arg_start(1):len_cmnd),'PATTERN') .GT. 0 ) THEN
 	      start = INDEX(cmnd_buff,'PATTERN=') + 9
               fname = cmnd_buff(start:len_cmnd)
+              CALL TM_PACK_STRING( fname, fname, 1, 128, slen )
 	      slen = TM_LENSTR1(fname)
               sfile = TM_INQ_PATH (fname(:slen),'FER_PALETTE','.pat',
      .        	 .false.,status)

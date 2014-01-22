@@ -58,7 +58,9 @@
 * PyFr  *kms*  7/13 Add /OPACITY to CONTOUR, PLOT, POLYGON, SHADE, VECTOR
 * PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to FRAME
 * PyFr  *kms*  8/13 Add /ANNOTATE to FRAME
-* V685+ 9/13 *sh* new qualifier SHOW VARIABLES/TREE
+* V686 9/13 *sh* new qualifier SHOW VARIABLES/TREE
+* V686 1/14 *acm* Ticket 2122: Fix param values for 
+*                  SHOW GRID/FILE, SHOW GRID/CLOBBER, SHOW GRID/APPEND
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -408,9 +410,9 @@
      .
      .			slash_show_grid_x0 = 7,
      .			slash_show_grid_i0 = 1,
-     .			slash_show_grid_file = 12,
-     .			slash_show_grid_clobber = 13,
-     .			slash_show_grid_append = 14,
+     .			slash_show_grid_file = 16,
+     .			slash_show_grid_clobber = 17,
+     .			slash_show_grid_append = 18,
      .
      .			slash_show_data_brief = 2,
      .			slash_show_data_file = 8,

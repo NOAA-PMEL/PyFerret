@@ -1,0 +1,27 @@
+! err685_lowercaseAxis.jnl
+! Ticket  2126
+! If the axis name is lower case in the file, and we do SET AXIS commands 
+! to reset units etc, the axis is "lost" to commands like SHOW AXIS
+
+use lowercaseTime.nc
+sh dat
+! This axis has uppercase in the file
+set axis/t0=1-jan-2001/units=days uppercasetime
+
+! All this was correct
+show axis uppercasetime
+show grid bb
+
+! This variable has axis time, lowercase in the file
+sh grid aa
+set axis/t0=1-jan-2001/units=days time
+
+! showed no output
+show axis time
+
+! The axis did get changed but is inconsistently listed in the 
+! internal arrays that store axis info.
+
+list/L=1:5 aa
+
+

@@ -103,6 +103,9 @@
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V683 9/12 *acm* Fix ticket 1531: nc is the default dataset type if not given 
 *                 with the command qualifier or the extension is not recognized.
+* V686 1/14 *acm* Fix ticket 2128: If USE is given without a file extension, check
+*                 for descriptor file too, after .nc and .cdf.
+* V686 1/14 *acm* Fix ticket 2129: A bug in the fix to 2128.
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -146,7 +149,7 @@
 	CHARACTER*4	known_type(num_known)
 	CHARACTER*4	format_rev(num_revs,num_known)
 	CHARACTER*13	TM_STRING
-	CHARACTER	def_ext*4, def_cdf*4, def_nc*3, ext*4, 
+	CHARACTER	def_ext*4, def_cdf*4, def_nc*3, def_des*4, ext*4, 
      .                  cdf_path*12, path*12
         CHARACTER*2048   TM_CLEAN_FILENAME
 	CHARACTER*42	reading_nml
@@ -165,7 +168,7 @@
      .				   '    ',
      .				   '    '/
 	DATA		def_ext  /'.nc'/, def_cdf/'.cdf'/
-        DATA            def_nc/'.nc'/
+        DATA            def_nc/'.nc'/, def_des/'.des'/
 
         DATA            cdf_path/'FER_DATA'/
 
@@ -229,7 +232,7 @@
 	   ENDIF
 	ENDIF
         IF ( ds_dset_type .EQ. 'CDF' ) THEN
-           ext  = def_cdf       ! default netCDF file extension
+           ext  = def_ext       ! default netCDF file extension
            path = cdf_path
         ELSE
            ext  = def_ext       ! default TMAP file extension
@@ -252,7 +255,7 @@
 	ENDIF
 	IF ( status .NE. merr_ok .AND. explicit_ext ) GOTO 9950
 	IF ( status .NE. merr_ok) THEN
-* interchange and try the other (.des/.cdf) data set type
+* interchange and try the other (.nc) extension
 	   IF ( ext .EQ. def_ext ) THEN
 	      ext  = def_cdf	! was .des
 	      path = cdf_path
@@ -264,14 +267,13 @@
 	   ENDIF
 	   des_name = TM_INQ_PATH(dset_name,path,ext,.FALSE.,status)
 
-* 4/02 *acm* try .nc extension
+* 4/02 *acm* try .des extension
 	   IF ( status .NE. merr_ok ) THEN
-	      ext  = def_nc
-	      path = cdf_path
-	      ds_dset_type = 'CDF'
+	      ext  = def_des
+	      path = tmap_sets
+	      ds_dset_type = ' MC'
            ENDIF
 	   des_name = TM_INQ_PATH(dset_name,path,ext,.FALSE.,status)
-
 
 	   IF ( status .NE. merr_ok ) THEN
 	      ext  = def_nc
@@ -542,7 +544,7 @@
      .			unspecified_int4, no_stepfile,
      .			'Searched $FER_DESCR and $FER_DATA for '
      .                  //risc_buff(:TM_LENSTR1(risc_buff))//
-     .                  '('//def_ext//','//def_cdf//',.nc)',
+     .                  '('//def_ext//','//def_cdf//','//def_des//')',
      .			no_errstring, *9950)
 
  5500	risc_buff = dset_name

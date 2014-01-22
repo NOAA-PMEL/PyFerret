@@ -15,6 +15,7 @@
 !				NOLEAP   or 365_DAY
 !				ALL_LEAP or 366_DAY
 !				360_DAY
+!				JULIAN   (added in 2014)
 !
 !		year_start =    start year for axis
 !
@@ -28,8 +29,11 @@
 !            go def_monthaxis_days.jnl NOLEAP 2002 2005 mytaxis 
 !            go def_monthaxis_days.jnl ALL_LEAP 2002 2005 mytaxis
 !            go def_monthaxis_days.jnl 360_DAY 2002 2005 mytaxis 
+!            go def_monthaxis_days.jnl JULIAN 2002 2005 mytaxis 
 !
 ! Notes: For the present, the JULIAN calendar is not included.
+!        Julian calendar added in 20141/8/2014
+!        
 !
 ! Calls:
 !
@@ -40,6 +44,7 @@
 ! $Revision: $
 ! History:
 ! Modification:
+!   1/8/2014 Ansley Manke added Julian calendar 
 !
 !**************************************************************
 
@@ -60,11 +65,51 @@ IF `(calendar EQ "STANDARD") OR (calendar EQ "GREGORIAN")` THEN
 	define axis/units="days"/T0="01-JAN-`year_ref`"/edges/cal="GREGORIAN" ($axisname) = DAYS1900(year,month,1)-DAYS1900(`year_ref`,1,1)
 
 !=====================================================
-!ELIF `(calendar EQ "JULIAN")` THEN
-!	let indices = L[L=1:`1+nbyears*12`]
-!	let month = MOD(indices-1,12)+1
-!	let year = year_start + INT((indices-1)/12)
-!	define axis/units="days"/T0="01-JAN-`year_ref`"/edges/cal="JULIAN" ($axisname) = DAYS1900(year,month,1)-DAYS1900(`year_ref`,1,1)
+ELIF `(calendar EQ "JULIAN")` THEN
+
+! A couple of 4-year cycles of month lengths for the Julian calendar.
+
+let nbdays={\
+31,29,31,30,31,30,31,31,30,31,30,31,\
+31,28,31,30,31,30,31,31,30,31,30,31,\
+31,28,31,30,31,30,31,31,30,31,30,31,\
+31,28,31,30,31,30,31,31,30,31,30,31,\
+31,29,31,30,31,30,31,31,30,31,30,31,\
+31,28,31,30,31,30,31,31,30,31,30,31,\
+31,28,31,30,31,30,31,31,30,31,30,31,\
+31,28,31,30,31,30,31,31,30,31,30,31}
+
+! Start with the correct year. If start year is a leap year, then use 
+! nbdays from 1:48, or to start in a year after a leap year 13:60, etc.
+
+LET y1 = 1+ 12*(MOD(year_start,4))
+LET y2 = y1 + 47
+
+LET nyears = `year_end - year_start + 1`
+
+! A modulo axis 4 years long
+DEFINE AXIS/MODULO=48/X boxaxis = i[i=1:48]
+
+! The month lengths for a 4-year cycle
+LET boxes = nbdays[gx=boxaxis@asn]
+
+! Use modulo replication to extend this as long as we want.
+LET all_boxes  = boxes[x=`y1`:`12*nyears+y1-1`]
+
+! Box edges will be the running sum, plus a 0 at the start.
+! i.e. (0,31) are edges for January; (31,60) for February, etc.
+
+LET month_edges = XCAT (0,  all_boxes[x=@iin] )
+
+! Now add the number of days in the years from year_ref to the start of year_start
+
+LET days_in_year = {366,365,365,365}
+LET n_prior_cycles = INT((year_start-year_ref)/4)
+LET this_cycle = IF (MOD(year_start,4) GT 0) THEN days_in_year[i=1:`MOD(year_start,4)`@SUM] ELSE 0
+LET days_to_add = n_prior_cycles*days_in_year[i=@SUM] + this_cycle
+
+define axis/cal="JULIAN"/T0="1-jan-`year_ref`:00:00"/edges/units=days ($axisname) = month_edges + days_to_add
+
 
 !=====================================================
 ELIF `(calendar EQ "NOLEAP") OR (calendar EQ "365_DAY")` THEN

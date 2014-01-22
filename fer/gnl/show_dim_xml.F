@@ -1,4 +1,4 @@
-      SUBROUTINE SHOW_DIM_XML( lun, dname, npts)
+	SUBROUTINE SHOW_DIM_XML( dim_name, dim_len, lun )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -33,52 +33,57 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* display basic facts about a dimension that is not a coordinate variable
+* display basic facts about the given dimension (which is not a coordiante axis) 
+* in xml-style format 
 
-* programmer - Ansley Manke, based on line_facts_xml.F
+* programmer - Ansley Manke, based on show_line_xml.F
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* 27-Jan-2011
-* 
+* Dec-2013
+
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include	'ferret.parm'
-	include 'xprog_state.cmn'
-	include 'xtext_info.cmn'
 	include 'xrisc.cmn'
-	include 'xdset_info.cmn_text'
 
 * calling argument declarations
-	INTEGER 	lun, npts
-	CHARACTER*(*)   dname
+	CHARACTER*(*)   dim_name
+	INTEGER 	dim_len, lun
 
 * local variable declarations:
-	INTEGER		slen, status
-	CHARACTER	TM_FMT*16, show_str*16, outstring*128
+	INTEGER		slen
+	CHARACTER	TM_FMT*32, outbuff*20
+        CHARACTER       attname*128, attbuff*2048, 
+     .                  outstring*2048
 
- 2010	FORMAT ( '<axis name="', A, '">' )
- 2020	FORMAT ( '<attribute name="length" type="short">' )
- 2030   FORMAT ('   <value>', A, '</value>')
- 2040   FORMAT ('</attribute>')
- 2050	FORMAT ( '</axis>' )
+ 2010	FORMAT ( '<dimension name="', A, '">' )
+ 2030	FORMAT ('<attribute name="', A, '" type="short">' )
+ 2050   FORMAT ('   <value>', A, '</value>')
+ 2060   FORMAT ('</attribute>')
+ 2080	FORMAT ( '</dimension>' )
 
-	CALL ESCAPE_FOR_XML (dname, outstring, slen)
+	CALL ESCAPE_FOR_XML (dim_name, outstring, slen)
 	WRITE ( risc_buff, 2010 ) outstring(1:slen)
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	
+* Length of dimension
 
-* dimension length
+	attname = 'length'
+	CALL ESCAPE_FOR_XML(attname, outstring, slen)
+	WRITE ( risc_buff, 2030 ) outstring(:slen)
+	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-        show_str = TM_FMT(FLOAT(npts), 16,16,slen)
-        CALL ESCAPE_FOR_XML (show_str, outstring, slen)
-        WRITE ( risc_buff, 2020 ) outstring(1:slen)
-        CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	attbuff = TM_FMT(FLOAT(dim_len), 7, 14, slen)
+	CALL ESCAPE_FOR_XML (attbuff, outstring, slen)
+	WRITE ( risc_buff, 2050 ) outstring(1:slen)
+	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-* close tag
+	WRITE ( risc_buff, 2060 )
+	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-        WRITE ( risc_buff, 2050 ) 
+* closing tag
+
+	WRITE ( risc_buff, 2080 ) 
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 	RETURN
 	END
-
-
-

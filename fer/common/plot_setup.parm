@@ -12,6 +12,8 @@
 *                  ul_xorigin, and ul_yorigin from xplot_setup.cmn,
 *                  since they are used as parameters, and prefixed with 
 *                  dflt_ those that need to be scaled by pplscale.
+* V686 *acm*12/13 - Need 2 more moveable labels in the upper-left block
+*                   for E and F dimension location labels LABNUM_E and LABNUM_F
 
 * default plot size values for PPL
         REAL        dflt_xinches,
@@ -79,17 +81,17 @@
         PARAMETER ( lab_loc_axlen_times = 2,
      .              lab_loc_axlen_plus  = 1,
      .              lab_loc_absolute    = 0,
-     .              ppl_title       = -1,
-     .              ppl_xlab        = -2,
-     .              ppl_ylab        = -3,
-     .              ppl_movlab      = -4,
-     .              ppl_dset        = 5,
-     .              ppl_aspect      = 6,
-     .              ppl_year        = 7,
-     .              ppl_datitl      = 8,
-     .              ppl_offset      = 9,
-     .              ppl_dodsurl     = 10,
-     .              ppl_calendar    = 11 )
+     .              ppl_title           = -1,
+     .              ppl_xlab            = -2,
+     .              ppl_ylab            = -3,
+     .              ppl_movlab          = -4,
+     .              ppl_dset            = 7,
+     .              ppl_aspect          = 8,
+     .              ppl_year            = 9,
+     .              ppl_datitl          = 10,
+     .              ppl_offset          = 11,
+     .              ppl_dodsurl         = 12,
+     .              ppl_calendar        = 13 )
 
 * parameters giving the locations and sizes of labels and keys;
 * need to be scaled by pplscale or textscale except for key_line_frac

@@ -1,0 +1,16 @@
+! bn_single_colorlev.jnl
+! Ticket 2123, mis-labeled color bars when 
+! single level is specified with a range of values
+
+use coads_climatology
+
+! Previously this labeled both top and bottom with 20
+shade/lev=(20,25,5)/L=1 sst
+
+! These cases were correct, and the reason for the above behavior
+shade/lev=(5)/L=1 INT(sst)
+shade/lev=(25)/L=1 INT(sst)
+
+! Label upper and lower end of the color bar with the range
+fill/lev=(20,30,10)/L=1 sst
+

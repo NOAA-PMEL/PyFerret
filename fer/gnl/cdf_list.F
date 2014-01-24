@@ -119,6 +119,7 @@
 *                  just null strings. Set maxstrlen to 1, else we can't define the variable.
 * V686 12/13*acm* For string variables from datasets, keep the string-dimension name and length
 *                 from the original dataset on output.
+* V686 1/14 *acm* Fix ticket 2136: Appending a string variable to a dataset.
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -535,7 +536,7 @@
 
            IF (type .EQ. NF_CHAR) THEN
 	     buff2 = ""
-             IF (dset_num .GE. 1) THEN
+             IF (dset_num .GE. 1 .AND.(.NOT.itsa_uvar)) THEN
                 CALL CD_GET_DS_DIMS (dset_num, vdims(1), buff2, len, status)
                 IF (maxstrlen .LE. len) maxstrlen = len
              ENDIF

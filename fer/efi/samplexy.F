@@ -79,6 +79,7 @@
 *  2/2002 acm -- check xpt and ypt (x and y points to sample) that values arent missing.
 * 11/2005 acm -- Allow use of this on any X axis, not just regular ones 
 *                (see bug report 1358)
+*  1/2014 acm -- Fix ticket 2137: use correct indices when computing dx, dy.
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -435,7 +436,7 @@ C  variables for checking axis characteristics (modulo axes)
       CALL ef_get_axis_info_6d(id, ARG1, ax_name, ax_units,
      .                         backward, modulo, regular)
       IF ( regular(1) ) THEN
-         dx = xaxdat(2,1,1,1,1,1) - xaxdat(1,1,1,1,1,1)
+         dx = xaxdat(ilo+1,1,1,1,1,1) - xaxdat(ilo,1,1,1,1,1)
          dxlo = dx/2.
          dxhi = dx/2.
       ELSE
@@ -446,7 +447,7 @@ C  variables for checking axis characteristics (modulo axes)
       ENDIF
 
       IF ( regular(2) ) THEN
-         dy = yaxdat(2,1,1,1,1,1) - yaxdat(1,1,1,1,1,1)
+         dy = yaxdat(jlo+1,1,1,1,1,1) - yaxdat(jlo,1,1,1,1,1)
          dylo = dy/2.
          dyhi = dy/2.
       ELSE

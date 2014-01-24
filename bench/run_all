@@ -108,6 +108,7 @@ set do_shared_obj = $<
 
 
 # which external function libraries to use
+set efdir = n
 if ( $do_shared_obj == "y" ) then
   echo "Enter the directory containing the external function libraries"
   set efdir = $<

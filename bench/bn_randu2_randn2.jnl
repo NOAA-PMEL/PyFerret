@@ -3,6 +3,14 @@
 ! Note that most of these results will differe from one
 ! run of the benchmarks to the next.
 
+! Changes to make it easier to see that theser results vary from
+! one run to another because they are calls to random-number functions
+
+! 1/2014 *acm* To make it easier to clean up the logs for comparison, write
+! each output line with the text randu2_randn2 at the start of each line.
+
+can mode ver
+
 let xbig = x[i=1:20000:1]
 let xx = x[i=1:6:1]
 
@@ -11,42 +19,42 @@ let xx = x[i=1:6:1]
 
 ! ******** This result may differ with each run of the benchmark scripts
 load randu2(xbig,-1)
-list/i=1:5 randu2(xbig,-1)
+list/format=("randu2_randn2", f12.3)/i=1:5 randu2(xbig,-1)
 can mem
-list/i=1:5 randu2(xbig,-1)
+list/format=("randu2_randn2", f12.3)/i=1:5 randu2(xbig,-1)
 
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
-list randu2(xx,0)
+list/format=("randu2_randn2", f12.3) randu2(xx,0)
 can mem
-list randu2(xx,0)
+list/format=("randu2_randn2", f12.3) randu2(xx,0)
 
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
-list randu2(xx,12436)
+list/format=("randu2_randn2", f12.3) randu2(xx,12436)
 can mem
-list randu2(xx,12436)
+list/format=("randu2_randn2", f12.3) randu2(xx,12436)
 
 !same tests with RANDN2
 
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with clock-set seed. These should be different
 load randn2(xbig,-1)
-list/i=1:5 randn2(xbig,-1)
+list/format=("randu2_randn2", f12.3)/i=1:5 randn2(xbig,-1)
 can mem
-list/i=1:5 randn2(xbig,-1)
+list/format=("randu2_randn2", f12.3)/i=1:5 randn2(xbig,-1)
 
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
-list randn2(xx,0)
+list/format=("randu2_randn2", f12.3) randn2(xx,0)
 can mem
-list randn2(xx,0)
+list/format=("randu2_randn2", f12.3) randn2(xx,0)
 
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
-list randn2(xx,12436)
+list/format=("randu2_randn2", f12.3) randn2(xx,12436)
 can mem
-list randn2(xx,12436)
+list/format=("randu2_randn2", f12.3) randn2(xx,12436)
 
 ! A test from the median-smoothing benchmark
 
@@ -54,12 +62,6 @@ list randn2(xx,12436)
 define axis/z=0:1000:20/depth zax
 let var2 = cos(z[gz=zax]/30) + randu2(1+k[gz=zax],-1)
 plot/trans var2, var2[z=@med:3], var2[z=@med:9]
-list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
+list/format=("randu2_randn2", 3f12.3)/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
 
-! ******** This result may differ with each run of the benchmark scripts
-! one for randn2
-LET xpts = 180 + 50*COS(2*3.14*I[I=1:50]/60)
-LET ypts = 15  + 20*SIN(2*3.14*I[I=1:50]/60)
-LET sst = 25 - ypts + RANDN2(ypts,-1)
-plot/vs xpts,ypts
-GO polymark POLYGON/KEY/LEV=v xpts,ypts,sst,star
+set mode/last ver

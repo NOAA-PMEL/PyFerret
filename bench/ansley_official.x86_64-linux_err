@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version ../fer/ferret_c
--rwxr-xr-x 1 ansley tmap 75568479 Jan 24 14:35 ../fer/ferret_c
-Using external functions from n
-Running the tests of external functions n
+Running FERRET version /home/users/tmap/ferret/x86_64-linux/bin/ferret
+lrwxrwxrwx 1 ansley tmap 11 Jan 15 11:14 /home/users/tmap/ferret/x86_64-linux/bin/ferret -> ferret_v686
+Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
+Running the tests of external functions y
 Benchmark run by ansley
-Note: new outupt text in bn_randu2_randn2
+Note: better official
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,15 +13,14 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=n
-FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go /home/users/ansley/baker_trunk/JavaSource/resources/ferret/scripts/ /home/users/ansley/socat/CUSTOMIZATION/shared/JavaSource/resources/ferret/scripts/ /home/users/ansley/las.v8.1/JavaSource/resources/iosp/scripts/
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/x86/FERRET/external_functions/ext_func
+FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Fri Jan 24 15:36:41 PST 2014
-ls: n/: No such file or directory
+Beginning at Mon Jan 27 11:13:00 PST 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3505,7 +3504,6 @@ Replacing definition of axis XIRREG
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
-Fortran runtime error: Array reference out of bounds for array 'grid_line', lower bound of dimension 2 exceeded (in file 'get_aux_var_context.F', at line 133)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3521,3 +3519,141 @@ plot/i=1:100/ribbon/COLOR sin(i/6),0.6*sin(i/7)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis ZAX
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ **ERROR: illegal limits: X axis limits don't match variable def'n: A
+          Are you giving explicit limits when SET REGION would suffice ?
+list f
+ *** NOTE: Not deleted: ENSEMBLE
+ *** NOTE: Axis is in use by grid (G088)
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Changing the value of attribute a.ival
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **TMAP ERR: non-existent or not on line
+             nosuchfile.nc
+SET DAT/FORM=CDF nosuchfile.nc
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for nosuchfile(.nc ,.cdf,.des)
+SET DAT/FORM=CDF nosuchfile
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for snoopy(.nc ,.cdf,.des)
+SET DAT/FORM=CDF snoopy
+ **netCDF error
+             NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
+             Data set: ./snoopy.dat
+SET DAT/FORM=CDF snoopy.dat
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: unknown region name: @w
+set region/@w
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: writev5d(tr, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
+          unknown function "writev5d"
+DEFINE VARIABLE/QUIET vflag = writev5d(tr, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
+ **ERROR: variable unknown or not in data set: VFLAG
+LOAD/TEMPORARY vflag
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ Cached data cleared from memory
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
+plot/i=1:10/j=1:20/nolabel i+j
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i,i+j"
+plot/i=1:10/j=1:20/nolabel i,i+j
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j,i"
+plot/i=1:10/j=1:20/nolabel i+j,i
+ **ERROR: dimensions improperly specified: differing axes:
+          first line is on Y axis
+          line 2 is on X axis
+plot/i=1:10/j=1:20/nolabel j,i
+ **ERROR: dimensions improperly specified: unequal line lengths:
+          First expression has 20 points.
+          Expression 2 has 10 points:
+          "plot/i=1:10/j=1:20/vs/line/nolabel j,i"
+plot/i=1:10/j=1:20/vs/line/nolabel j,i
+ **ERROR: dimensions improperly specified: must be a 2D region
+          contour/i=1:10/j=1:20/nolabel i
+contour/i=1:10/j=1:20/nolabel i
+ **ERROR: invalid command: can only CONTOUR  single fields
+          Use /OVERLAY for multiple variables
+contour/i=1:10/j=1:20/nolabel i/j,j/i
+ **ERROR: invalid command: VECTOR requires paired components
+vector/i=1:10/j=1:20/nolabel i/j
+ **ERROR: invalid command: VECTOR requires paired components
+vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
+Re-defining viewport LM6
+Re-defining viewport UM6
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+Re-defining viewport LM6
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+Re-defining viewport UM6
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
+plot/i=1:10/j=1:20/nolabel i+j
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i,i+j"
+plot/i=1:10/j=1:20/nolabel i,i+j
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j,i"
+plot/i=1:10/j=1:20/nolabel i+j,i
+ **ERROR: dimensions improperly specified: differing axes:
+          first line is on Y axis
+          line 2 is on X axis
+plot/i=1:10/j=1:20/nolabel j,i
+ **ERROR: dimensions improperly specified: unequal line lengths:
+          First expression has 20 points.
+          Expression 2 has 10 points:
+          "plot/i=1:10/j=1:20/vs/line/nolabel j,i"
+plot/i=1:10/j=1:20/vs/line/nolabel j,i
+ **ERROR: dimensions improperly specified: must be a 2D region
+          contour/i=1:10/j=1:20/nolabel i
+contour/i=1:10/j=1:20/nolabel i
+ **ERROR: invalid command: can only CONTOUR  single fields
+          Use /OVERLAY for multiple variables
+contour/i=1:10/j=1:20/nolabel i/j,j/i
+ **ERROR: invalid command: VECTOR requires paired components
+vector/i=1:10/j=1:20/nolabel i/j
+ **ERROR: invalid command: VECTOR requires paired components
+vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
+Re-defining viewport LM6
+Re-defining viewport UM6
+ *** NOTE: Cannot create new windows when batch mode set
+Ended at Mon Jan 27 11:14:39 PST 2014

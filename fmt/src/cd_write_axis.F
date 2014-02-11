@@ -96,6 +96,8 @@
 * V685 5/13 *acm* Allow specifying data type for axis
 * V685 6/13 *acm* new qualifier SAVE/NOBOUNDS
 * V685 6/13 *acm* Dont add SAVE/NOCOORDS
+* V686 1/14 *acm* When appending to a file with a dimension but no coord var, to not write
+*                 a NOTE. They just clutter things up.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -230,9 +232,11 @@
 	 IF (cdfstat .EQ. nf_enotvar) THEN
 	    name = line_name_orig(iaxis)
 	    nlen = TM_LENSTR1( name )
-	    CALL WARN ('Dimension '//name(:nlen)//
-     .        ' found. No corresponding coordinate variable.'//
-     .        ' Writing with dimension only.')
+	    
+	    ! Do we want this warning? 
+c	    CALL WARN ('Dimension '//name(:nlen)//
+c     .        ' found. No corresponding coordinate variable.'//
+c     .        ' Writing with dimension only.')
 	    GOTO 1000  
 	 ENDIF
 

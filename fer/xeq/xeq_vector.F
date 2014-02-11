@@ -129,7 +129,7 @@
 	LOGICAL		overlay, transpz, no_labels, no_x_rng,
      .			set_up, noaxes, axes, no_data, flows, 
      .			is_logh, is_logv, no_key, yes_key,
-     .			is_shade, use_cell
+     .			is_shade, use_cell, inc_grid
 	INTEGER		TM_LENSTR1, status, cx, 
      .			loc, ipen, thick,
      .			dim1, dim2, asp,
@@ -288,6 +288,8 @@
         CALL set_graticules(loch, locv, status)
 
 * set up title and load the x component data into PPLUS
+
+	inc_grid = .FALSE.
 	CALL DISP_SET_UP   ( 	memory,
      . 			 	vector,
      .				is_shade,
@@ -308,6 +310,7 @@
      .				memory( 1, ax1_start ),
      .				memory( 1, ax2_start ),
      .				ipen,
+     .				inc_grid,
      .				status )
 
 	IF ( status .NE. ferr_ok ) GOTO 5000

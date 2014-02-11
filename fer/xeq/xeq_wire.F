@@ -75,7 +75,7 @@
 
 * internal variable declarations:
 	LOGICAL	  no_range, overlay, no_labels, transpz, got_vpoint,
-     .		  is_logh, is_logv, is_shade, use_cell
+     .		  is_logh, is_logv, is_shade, use_cell, set_up, inc_grid
 	INTEGER	  status, qp,
      .		  ax1_blks, ax1_start,
      .		  ax2_blks, ax2_start, density
@@ -141,10 +141,15 @@
 * prepare PLOT+ environment
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
+	
+* /set_up only requested ?
+	set_up    = qual_given( slash_cont_set_up    ).GT.0
 
         density = 0	! not used; vec/flow needs it in set up
 
 * set up the axes and title and load the data into PPLUS
+
+	inc_grid = set_up
 	CALL DISP_SET_UP   ( 	memory,
      .				not_vector,
      .                          is_shade,
@@ -165,6 +170,7 @@
      .				memory( 1, ax1_start ),
      .				memory( 1, ax2_start ),
      .				-1, 			! auto pen select
+     .				set_up,
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
@@ -176,7 +182,7 @@
      .       CALL PPLCMD ( from, line, 0, 'VPOINT '//vpoint, 1, 1 )
 
 * /set_up only requested ?
-	IF ( qual_given( slash_wire_set_up ) .GT. 0 ) GOTO 1000
+	IF ( set_up ) GOTO 1000
 
 * draw it 
 	IF ( overlay ) THEN

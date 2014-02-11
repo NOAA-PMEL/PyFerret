@@ -23,7 +23,8 @@ let flag1 = if strcmp (qc_flag,"S") NE 0 then 1
 let flag2 = if strcmp (qc_flag,"X") NE 0 then 1
 
 let flag = flag1*flag2
-let fco_keep = apply_qc (fco2_recomputed[i=1:`npts`], rowsize, flag)
+!let fco_keep = apply_qc (fco2_recomputed[i=1:`npts`], rowsize, flag)
+let fco_keep = fco2_recomputed
 
 !plot/i=1:`npts` fco2_recomputed, fco_keep
 

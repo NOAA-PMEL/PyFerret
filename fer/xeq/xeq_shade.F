@@ -125,13 +125,14 @@
 * internal variable declarations:
 	LOGICAL	  no_range, overlay, transpz, no_labels, do_key,
      .            spectrum, set_up, noaxes, axes, pattern, no_data,
-     .		  is_logh, is_logv, is_shade, use_cell
+     .		  is_logh, is_logv, is_shade, use_cell, inc_grid
 
 	INTEGER	  TM_LENSTR1, STR_UPCASE, status, slen, sp, patt,
      .		  ax1_blks, ax1_start,
      .		  ax2_blks, ax2_start, i, nparm, num_it, 
      .		  loc, s1, s2, it_start(4), it_end(4), iax(4),
      .            density, i1, loch, locv
+        INTEGER	  grid, mvx
 	REAL	  only_val, aspect
 	PARAMETER ( aspect = 0.0)			!kob 12/96
 
@@ -198,6 +199,7 @@
 
 
 * set up the axes and title and load the data into PPLUS
+	inc_grid = set_up
 	CALL DISP_SET_UP   (    memory,
      .				not_vector,
      .				is_shade,
@@ -217,7 +219,8 @@
      .				is_uvar,
      .				memory( 1, ax1_start ),
      .				memory( 1, ax2_start ),
-     .				-1, 			! auto pen select
+     .				-1, 			! auto pen select,
+     .				inc_grid,
      .				status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 
@@ -437,8 +440,12 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 	      IF ( status .NE. ferr_ok ) GOTO 5000
 	   ENDIF
 
+
 * release the memory used for axis buffers
- 1000 	CALL FREE_MEMORY( ax2_start, ax2_blks )
+ 1000 	CONTINUE
+ 
+
+	CALL FREE_MEMORY( ax2_start, ax2_blks )
  	CALL FREE_MEMORY( ax1_start, ax2_blks )
 	CALL UNPROTECT_CMND_DATA			! 1/94
  5100	RETURN

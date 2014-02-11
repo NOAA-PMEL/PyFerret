@@ -117,6 +117,7 @@
 	    IF (line_shift_origin(line2) .NEQV. line_shift_origin(line1))
      .           GOTO 1000
 	    IF (line_tunit(line2) .NE. line_tunit(line1)) GOTO 1000
+	    IF (line_cal_name(line1) .NE. line_cal_name(line2)) GOTO 1000
 	  ENDIF
 
 * dynamic line info

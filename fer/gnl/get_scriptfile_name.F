@@ -50,7 +50,7 @@
 #include "gt_lib.parm"
 
 * calling argument declarations:
-	CHARACTER*2048	name
+	CHARACTER*(*)	name
         INTEGER ipath
 
 * Get the name and set a flag if the name begins with a path.

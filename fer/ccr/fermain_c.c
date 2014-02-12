@@ -462,7 +462,7 @@ main (int oargc, char *oargv[])
   
     if (its_script)
     {
-	FORTRAN(get_scriptfile_name)(script_file, &ipath);
+	FORTRAN(get_scriptfile_name)(script_file, &ipath, 2048);
       if ( ipath ) {
 	  strcat( init_command, "; GO \"" ); 
 	  strcat( init_command, script_file );

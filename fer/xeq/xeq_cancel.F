@@ -385,10 +385,18 @@
 	   cx_data_set( cx_last ) = iset
 
 	ELSEIF ( slash_all ) THEN
+* First cancel any ensemble sets
+	   DO 718 iset = 1, maxdsets
+	      IF ( ds_name(iset) .EQ. char_init1024) GOTO 718
+	      IF ( ds_type(iset) .EQ. 'ENS') 
+     .		CALL CANCEL_DATA_SET( iset, slash_all, status )
+ 718	   CONTINUE
+* Now any others. 
 	   DO 720 iset = 1, maxdsets
 	      IF ( ds_name(iset) .EQ. char_init1024) GOTO 720
 	      CALL CANCEL_DATA_SET( iset, slash_all, status )
  720	   CONTINUE
+
 	ELSE
 	   GOTO 5010
 	ENDIF

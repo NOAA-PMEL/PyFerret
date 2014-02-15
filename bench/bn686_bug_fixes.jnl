@@ -22,3 +22,6 @@ GO err685_use_no_extension
 
 GO bn_reset
 GO err685_samplexy
+
+GO bn_reset
+GO err685_shade_set

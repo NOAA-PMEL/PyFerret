@@ -1,4 +1,4 @@
-! err666_long_list_varnames.jnl
+! err686_long_list_varnames.jnl
 !
 ! bug 2114
 ! Reading a file with 54 variables. The names of variables get long,

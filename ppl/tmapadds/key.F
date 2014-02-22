@@ -105,6 +105,12 @@
 * v686 *acm* 1/14 Fixes for labels on horizontal keys: make sure they don't get too small, and
 *                 don't let them run over each other. Locate the horizontal colorbar close to
 *                 the plot with labels above them. Behavior of args to SHAKEY is unchanged.
+* v686 *acm* 2/14 Fix ticket 2124: Do the fix for 2124 only here, not in subr. LEV.
+
+
+
+* Get labels on colorbar right if there is just one level.
+c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -170,6 +176,7 @@
 
         lev1 = 1
         levn = nlev2
+	IF (levn.EQ.1) ZLEV(2) = zlev(1)
         IF (neginf) lev1 = 2
         IF (posinf) levn = nlev2 - 1
 

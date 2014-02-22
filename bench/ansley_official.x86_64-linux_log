@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43484384 Feb 21 16:10 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 43484375 Feb 21 16:33 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: bug 2114: long list of varnames on ASCII read
+Note: ticket 2142
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Fri Feb 21 16:18:59 PST 2014
+Beginning at Fri Feb 21 16:52:48 PST 2014
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10218,44 +10218,6 @@ polygon/thick/color=red/palette=blue {1,2,1}, {2,1,0.5}
  
 set mode/last logo
  
-! test fix for bug 883
-can dat/all
- 
-can view
-use climatological_axes
-def axis/t=1-jan-2000:31-jan-2010:1/units=days timax
-let tseries = t[gt=timax]
-! evaluate info about an expression, with a different grid than the
-! epression being SHADED, inside a SHADE/SET
-shade/set tseries*z[gz=1:5:1]
-say `tseries[GT=month_irreg@mod],r=tunit`
- !-> MESSAGE/CONTINUE DAYS
-DAYS
-ppl shade !GAVE A BLANK PLOT
- 
-shade/set tseries*z[gz=1:5:1]
-ppl shade !but this works
- 
-shade/set tseries*z[gz=1:5:1]
-say `tseries,r=tunit`
- !-> MESSAGE/CONTINUE DAYS
-DAYS
-ppl shade !and this works
- 
-let a = tseries*z[gz=1:5:1]
-shade/set a
-say `tseries[GT=month_irreg@mod],r=tunit`
- !-> MESSAGE/CONTINUE DAYS
-DAYS
-ppl shade !and this works
- 
-shade/title="`tseries[GT=month_irreg],r=tunit`" tseries*z[gz=1:5:1]
- !-> shade/title="DAYS" tseries*z[gz=1:5:1]
- 
-can var/all; can mem
-can axis timax
-set mode/last logo
- 
  
 !added in bn450 10/97 *kob*
 ! moved to right after bn450_plot to capture metafiles *kob* 2/98
@@ -10484,12 +10446,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.0 of Jul  1 2013 12:53:13 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "21-Feb-14"
-SESSION_TIME = "16:18"
-SESSION_PID = "24124"
-DELTA_CPU = "6.62899"
-CLOCK_SECS = "8.969"
+SESSION_TIME = "16:52"
+SESSION_PID = "28140"
+DELTA_CPU = "6.10207"
+CLOCK_SECS = "8.363"
 CURRENT_DATE = "21-Feb-14"
-CURRENT_TIME = "16:19:08"
+CURRENT_TIME = "16:52:56"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10513,12 +10475,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.0 of Jul  1 2013 12:53:13 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "21-Feb-14"
-SESSION_TIME = "16:18"
-SESSION_PID = "24124"
+SESSION_TIME = "16:52"
+SESSION_PID = "28140"
 DELTA_CPU = "0.001"
-CLOCK_SECS = "8.97"
+CLOCK_SECS = "8.364"
 CURRENT_DATE = "21-Feb-14"
-CURRENT_TIME = "16:19:08"
+CURRENT_TIME = "16:52:56"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10529,8 +10491,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "21-Feb-14"
-SESSION_TIME = "16:18"
-SESSION_PID = "24124"
+SESSION_TIME = "16:52"
+SESSION_PID = "28140"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10541,14 +10503,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "21-Feb-14"
-SESSION_TIME = "16:18"
-SESSION_PID = "24124"
+SESSION_TIME = "16:52"
+SESSION_PID = "28140"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "21-Feb-14"
-SESSION_TIME = "16:18"
-SESSION_PID = "24124"
+SESSION_TIME = "16:52"
+SESSION_PID = "28140"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10584,7 +10546,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.86"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "21-FEB-2014 16:19:08"
+LAB3 = "21-FEB-2014 16:52:56"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10685,12 +10647,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.0 of Jul  1 2013 12:53:13 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "21-Feb-14"
-SESSION_TIME = "16:18"
-SESSION_PID = "24124"
-DELTA_CPU = "0.012998"
-CLOCK_SECS = "8.983"
+SESSION_TIME = "16:52"
+SESSION_PID = "28140"
+DELTA_CPU = "0.011998"
+CLOCK_SECS = "8.376"
 CURRENT_DATE = "21-Feb-14"
-CURRENT_TIME = "16:19:08"
+CURRENT_TIME = "16:52:56"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -13068,7 +13030,7 @@ show grid/dyn
 Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
- (AX001)   X                    7 r   0.1                  9.1
+ (AX002)   X                    7 r   0.1                  9.1
  (AX004)   Y                    3 r   95                   109
  normal    Z
  normal    T
@@ -13076,7 +13038,7 @@ Dynamic grids:
  normal    F
     GRID (G003)                          use count:   1
  name       axis              # pts   start                end
- (AX001)   X                    7 r   0.1                  9.1
+ (AX002)   X                    7 r   0.1                  9.1
  (AX003)   Y                   10 r   101                  110
  normal    Z
  normal    T
@@ -13084,7 +13046,7 @@ Dynamic grids:
  normal    F
 Dynamic axes:
     AXIS (AX004)                         use count:   1
-    AXIS (AX001)                         use count:   2
+    AXIS (AX002)                         use count:   2
     AXIS (AX003)                         use count:   1
  
 ! ambiguous coordinate tests
@@ -13139,7 +13101,7 @@ show grid/x
  Last successful data access was on grid (G003)
     GRID (G003)
  name       axis              # pts   start                end
- (AX001)   X                    5 i   1                    6561
+ (AX002)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
@@ -13215,14 +13177,14 @@ show grid/dyn
 Dynamic grids:
     GRID (G003)                          use count:   1
  name       axis              # pts   start                end
- (AX001)   X                    5 i   1                    6561
+ (AX002)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
  normal    E
  normal    F
 Dynamic axes:
-    AXIS (AX001)                         use count:   1
+    AXIS (AX002)                         use count:   1
  
 ! this expression does NOT inherit the X axis -- the result is
 !	i) ambiguous X axis coordinates
@@ -13252,7 +13214,7 @@ Dynamic grids:
  normal    F
     GRID (G003)                          use count:   1
  name       axis              # pts   start                end
- (AX001)   X                    5 i   1                    6561
+ (AX002)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
@@ -13260,7 +13222,7 @@ Dynamic grids:
  normal    F
 Dynamic axes:
     AXIS (AX004)                         use count:   1
-    AXIS (AX001)                         use count:   1
+    AXIS (AX002)                         use count:   1
  
 list/j=46:50/l=1/k=1 temp[i=101:120:4]+x[g=temp,i=101:120:4]
              VARIABLE : TEMP[I=101:120:4]+X[G=TEMP,I=101:120:4]
@@ -13336,7 +13298,7 @@ Dynamic grids:
  normal    F
     GRID (G003)                          use count:   1
  name       axis              # pts   start                end
- (AX001)   X                    5 i   1                    6561
+ (AX002)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
@@ -13344,7 +13306,7 @@ Dynamic grids:
  normal    F
 Dynamic axes:
     AXIS (AX004)                         use count:   1
-    AXIS (AX001)                         use count:   1
+    AXIS (AX002)                         use count:   1
  
 ! regular dynamic axis
 ! ... by subscript
@@ -13419,7 +13381,7 @@ Dynamic grids:
  normal    F
     GRID (G003)                          use count:   1
  name       axis              # pts   start                end
- (AX001)   X                    5 i   1                    6561
+ (AX002)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
@@ -13427,7 +13389,7 @@ Dynamic grids:
  normal    F
 Dynamic axes:
     AXIS (AX004)                         use count:   1
-    AXIS (AX001)                         use count:   1
+    AXIS (AX002)                         use count:   1
  
 ! ========
 ! 2/96: repeat the very same commands using GX=lo:hi:delta notation
@@ -13597,7 +13559,7 @@ Dynamic grids:
  normal    F
     GRID (G003)                          use count:   1
  name       axis              # pts   start                end
- (AX001)   X                    5 i   1                    6561
+ (AX002)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
@@ -13606,7 +13568,7 @@ Dynamic grids:
 Dynamic axes:
     AXIS (AX003)                         use count:   1
     AXIS (AX005)                         use count:   1
-    AXIS (AX001)                         use count:   1
+    AXIS (AX002)                         use count:   1
  
 ! the same tests but now on a nested definition
 ! regular dynamic axis
@@ -13937,14 +13899,14 @@ Dynamic grids:
     GRID (G003)                          use count:   1
  name       axis              # pts   start                end
  PSXT      LONGITUDE          160mr   130.5E               70.5W
- (AX001)   LATITUDE             6 r   3.5S                 4N
+ (AX002)   LATITUDE             6 r   3.5S                 4N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
  normal    E
  normal    F
 Dynamic axes:
     AXIS (AX005)                         use count:   1
-    AXIS (AX001)                         use count:   1
+    AXIS (AX002)                         use count:   1
  
 ! nested modulo (the dynamic axis is **NOT** modulo)
 ! ... by subscript
@@ -14126,7 +14088,7 @@ show grid/dyn
 Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
- (AX001)   LONGITUDE            9 r   101W                 53W
+ (AX002)   LONGITUDE            9 r   101W                 53W
  PSYT      LATITUDE           100 i   28.836S              48.568N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
@@ -14141,7 +14103,7 @@ Dynamic grids:
  normal    E
  normal    F
 Dynamic axes:
-    AXIS (AX001)                         use count:   1
+    AXIS (AX002)                         use count:   1
     AXIS (AX003)                         use count:   1
  
 ! calendar axes
@@ -14786,7 +14748,7 @@ show data/full
                on grid G016_NYZ with -1.E+34 for missing data
              X=130E:140E  
  JK       J1+K1                            ...       5:10      5:15      ...       ...       ...
-               on grid G008_NXT with -1.E+34 for missing data
+               on grid G007_NXT with -1.E+34 for missing data
              Y=21.11S:12.52S  Z=40:190  
  IJK      TEMP[L=@AVE]                    70:72      1:100     1:27      ...       ...       ...
        (T=15-MAR-1983 09:30:15-MAR-1983 11:30)
@@ -16767,7 +16729,7 @@ plot temp
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 81   complete
+PPL plot 76   complete
 plot/over temp[g=u]
  dealloc  dynamic grid PS3DT2          PSXT1     PSYT      PSZT      TIME2     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -16784,7 +16746,7 @@ plot/over temp[g=u]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 82   complete
+PPL plot 77   complete
 plot/over temp[g=g5day]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -16803,7 +16765,7 @@ plot/over temp[g=g5day]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 83   complete
+PPL plot 78   complete
 plot/over temp[g=g5_10]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -16827,7 +16789,7 @@ plot/over temp[g=g5_10]
  doing --> TEMP[Z=5@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 84   complete
+PPL plot 79   complete
 plot/over temp[g=u@ave]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -16844,7 +16806,7 @@ plot/over temp[g=u@ave]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 85   complete
+PPL plot 80   complete
 plot/over temp[g=g5day@ave]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -16863,7 +16825,7 @@ plot/over temp[g=g5day@ave]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 86   complete
+PPL plot 81   complete
 plot/over temp[g=g5_10@ave]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -16887,7 +16849,7 @@ plot/over temp[g=g5_10@ave]
  doing --> TEMP[Z=5@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 87   complete
+PPL plot 82   complete
 plot/over temp[g=u@asn]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -16906,7 +16868,7 @@ plot/over temp[g=u@asn]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 88   complete
+PPL plot 83   complete
 plot/over temp[g=g5day@asn]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -16927,7 +16889,7 @@ plot/over temp[g=g5day@asn]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 89   complete
+PPL plot 84   complete
 plot/over temp[g=u,gx=u@ave]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -16950,7 +16912,7 @@ plot/over temp[g=u,gx=u@ave]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 90   complete
+PPL plot 85   complete
 plot/over temp[g=g5day,gx=g5day@ave]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -16971,7 +16933,7 @@ plot/over temp[g=g5day,gx=g5day@ave]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 91   complete
+PPL plot 86   complete
 plot/over temp[g=g5_10,gx=g5_10@ave]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -16997,7 +16959,7 @@ plot/over temp[g=g5_10,gx=g5_10@ave]
  doing --> TEMP[Z=5@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 92   complete
+PPL plot 87   complete
 plot/over temp[g=g5_10@asn]   ! invalid interpretation of data
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17021,7 +16983,7 @@ plot/over temp[g=g5_10@asn]   ! invalid interpretation of data
  doing --> TEMP[Z=5@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 93   complete
+PPL plot 88   complete
  
 ! Y axis
 set region/x=180/y=20s:20n/z=5/t=21-JAN-1982
@@ -17036,7 +16998,7 @@ plot temp
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 94   complete
+PPL plot 89   complete
 plot/over temp[g=u]
  dealloc  dynamic grid PS3DT2          PSXT1     PSYT      PSZT      TIME2     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17049,7 +17011,7 @@ plot/over temp[g=u]
  regrid  TEMP     M:190 dset:   1 I:   50   50  J:    5   88  K:    1    1  L:    2    3  M: -999 -999  N: -999 -999
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 95   complete
+PPL plot 90   complete
 plot/over temp[g=g5day]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17064,7 +17026,7 @@ plot/over temp[g=g5day]
  -DELETE TEMP     M:193 dset:   1 I:   50   51  J:    5   89  K:    1    1  L:    2    3  M: -999 -999  N: -999 -999
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 96   complete
+PPL plot 91   complete
 plot/over temp[g=g5_10]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17084,7 +17046,7 @@ plot/over temp[g=g5_10]
  doing --> TEMP[Z=5@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 97   complete
+PPL plot 92   complete
 plot/over temp[g=u@ave]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17097,7 +17059,7 @@ plot/over temp[g=u@ave]
  regrid  TEMP     M:200 dset:   1 I:   50   50  J:    5   88  K:    1    1  L:    2    3  M: -999 -999  N: -999 -999
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 98   complete
+PPL plot 93   complete
 plot/over temp[g=g5day@ave]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17112,7 +17074,7 @@ plot/over temp[g=g5day@ave]
  -DELETE TEMP     M:203 dset:   1 I:   50   51  J:    5   89  K:    1    1  L:    2    3  M: -999 -999  N: -999 -999
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 99   complete
+PPL plot 94   complete
 plot/over temp[g=g5_10@ave]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17132,7 +17094,7 @@ plot/over temp[g=g5_10@ave]
  doing --> TEMP[Z=5@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 100  complete
+PPL plot 95   complete
 plot/over temp[g=u@asn]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17147,7 +17109,7 @@ plot/over temp[g=u@asn]
  -DELETE TEMP     M:210 dset:   1 I:   50   50  J:    5   88  K:    1    1  L:    2    3  M: -999 -999  N: -999 -999
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 101  complete
+PPL plot 96   complete
 plot/over temp[g=g5day@asn]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17164,7 +17126,7 @@ plot/over temp[g=g5day@asn]
  -DELETE TEMP     M:214 dset:   1 I:   50   50  J:    5   88  K:    1    1  L:    2    3  M: -999 -999  N: -999 -999
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 102  complete
+PPL plot 97   complete
 plot/over temp[g=u,gy=u@ave]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17183,7 +17145,7 @@ plot/over temp[g=u,gy=u@ave]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 103  complete
+PPL plot 98   complete
 plot/over temp[g=g5day,gy=g5day@ave]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17200,7 +17162,7 @@ plot/over temp[g=g5day,gy=g5day@ave]
  -DELETE TEMP     M:220 dset:   1 I:   50   51  J:    5   88  K:    1    1  L:    2    3  M: -999 -999  N: -999 -999
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 104  complete
+PPL plot 99   complete
 plot/over temp[g=g5_10,gy=g5_10@ave]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17222,7 +17184,7 @@ plot/over temp[g=g5_10,gy=g5_10@ave]
  doing --> TEMP[Z=5@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 105  complete
+PPL plot 100  complete
 plot/over temp[g=g5_10@asn]  ! invalid interpretation of data
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17244,7 +17206,7 @@ plot/over temp[g=g5_10@asn]  ! invalid interpretation of data
  doing --> TEMP[Z=5@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 106  complete
+PPL plot 101  complete
  
 ! T axis
 use gtsa056_2	!kob  4/99
@@ -17272,7 +17234,7 @@ plot temp
  doing --> TEMP[X=180E@ITP,D=2]
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-PPL plot 107  complete
+PPL plot 102  complete
 plot/over temp[g=u]
  dealloc  dynamic grid PS3DT1          PSXT1     PSYT      PSZT      TIME1     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17292,7 +17254,7 @@ plot/over temp[g=u]
  doing moduloing TEMP on T axis:     1     2 dset:   2
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-PPL plot 108  complete
+PPL plot 103  complete
 plot/over temp[g=g5day]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17309,7 +17271,7 @@ plot/over temp[g=g5day]
  -DELETE TEMP     M:244 dset:   2 I:   50   51  J:   44   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-PPL plot 109  complete
+PPL plot 104  complete
 plot/over temp[g=g5_10]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17331,7 +17293,7 @@ plot/over temp[g=g5_10]
  doing --> TEMP[Y=0@ITP,D=2]
  doing --> TEMP[Z=5@ITP,D=2]
 setting up plot
-PPL plot 110  complete
+PPL plot 105  complete
 plot/over temp[g=u@ave]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17351,7 +17313,7 @@ plot/over temp[g=u@ave]
  doing moduloing TEMP on T axis:     1     2 dset:   2
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-PPL plot 111  complete
+PPL plot 106  complete
 plot/over temp[g=g5day@ave]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17368,7 +17330,7 @@ plot/over temp[g=g5day@ave]
  -DELETE TEMP     M:259 dset:   2 I:   50   51  J:   44   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-PPL plot 112  complete
+PPL plot 107  complete
 plot/over temp[g=g5_10@ave]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17390,7 +17352,7 @@ plot/over temp[g=g5_10@ave]
  doing --> TEMP[Y=0@ITP,D=2]
  doing --> TEMP[Z=5@ITP,D=2]
 setting up plot
-PPL plot 113  complete
+PPL plot 108  complete
 plot/over temp[g=u@asn]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17414,7 +17376,7 @@ plot/over temp[g=u@asn]
  doing moduloing TEMP on T axis:     1     2 dset:   2
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-PPL plot 114  complete
+PPL plot 109  complete
 plot/over temp[g=g5_10@asn]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17436,7 +17398,7 @@ plot/over temp[g=g5_10@asn]
  doing --> TEMP[Y=0@ITP,D=2]
  doing --> TEMP[Z=5@ITP,D=2]
 setting up plot
-PPL plot 115  complete
+PPL plot 110  complete
 plot/over temp[g=u,gt=u@ave]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17460,7 +17422,7 @@ plot/over temp[g=u,gt=u@ave]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1     NORMAL    NORMAL
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-PPL plot 116  complete
+PPL plot 111  complete
 plot/over temp[g=g5day,gt=g5day@ave]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17477,7 +17439,7 @@ plot/over temp[g=g5day,gt=g5day@ave]
  -DELETE TEMP     M:284 dset:   2 I:   50   51  J:   44   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-PPL plot 117  complete
+PPL plot 112  complete
 plot/over temp[g=g5_10,gt=g5_10@ave]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17499,7 +17461,7 @@ plot/over temp[g=g5_10,gt=g5_10@ave]
  doing --> TEMP[Y=0@ITP,D=2]
  doing --> TEMP[Z=5@ITP,D=2]
 setting up plot
-PPL plot 118  complete
+PPL plot 113  complete
 plot/over temp[g=g5day,gt=g5day@asn]  ! invalid interpretation of data
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -17514,7 +17476,7 @@ plot/over temp[g=g5day,gt=g5day@asn]  ! invalid interpretation of data
  -DELETE TEMP     M:292 dset:   2 I:   50   51  J:   44   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-PPL plot 119  complete
+PPL plot 114  complete
  
 set mode/last interp
 cancel region
@@ -17850,10 +17812,10 @@ list a2[gx=xoffset@ave, gy=yoffset@ave]
  eval    A2       C:  8 dset:   0 I:    1    2  J:    1    2  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  allocate dynamic grid (G010)          X2PT      NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  pseudo  X        M:295 dset:   0 I:    1    2  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          NORMAL    Y2PT      NORMAL    NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G008)          NORMAL    Y2PT      NORMAL    NORMAL    NORMAL    NORMAL
  pseudo  Y        M:296 dset:   0 I: -999 -999  J:    1    2  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE Y        M:296 dset:   0 I: -999 -999  J:    1    2  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          NORMAL    Y2PT      NORMAL    NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          NORMAL    Y2PT      NORMAL    NORMAL    NORMAL    NORMAL
  -DELETE X        M:295 dset:   0 I:    1    2  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  dealloc  dynamic grid (G010)          X2PT      NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  regrid  A2       M:295 dset:   0 I:    1    2  J:    1    7  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
@@ -17886,10 +17848,10 @@ list a2[gx=xoffset@sum, gy=yoffset@sum] ! should sum to 10+11+11+12=44
  eval    A2       C:  8 dset:   0 I:    1    2  J:    1    2  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  allocate dynamic grid (G010)          X2PT      NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  pseudo  X        M:296 dset:   0 I:    1    2  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          NORMAL    Y2PT      NORMAL    NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G008)          NORMAL    Y2PT      NORMAL    NORMAL    NORMAL    NORMAL
  pseudo  Y        M:295 dset:   0 I: -999 -999  J:    1    2  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE Y        M:295 dset:   0 I: -999 -999  J:    1    2  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          NORMAL    Y2PT      NORMAL    NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          NORMAL    Y2PT      NORMAL    NORMAL    NORMAL    NORMAL
  -DELETE X        M:296 dset:   0 I:    1    2  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  dealloc  dynamic grid (G010)          X2PT      NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  regrid  A2       M:296 dset:   0 I:    1    2  J:    1    7  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
@@ -17923,10 +17885,10 @@ list a2[gx=xoffset@var, gy=yoffset@var]
  eval    A2       C:  8 dset:   0 I:    1    2  J:    1    2  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  allocate dynamic grid (G010)          X2PT      NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  pseudo  X        M:295 dset:   0 I:    1    2  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          NORMAL    Y2PT      NORMAL    NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G008)          NORMAL    Y2PT      NORMAL    NORMAL    NORMAL    NORMAL
  pseudo  Y        M:296 dset:   0 I: -999 -999  J:    1    2  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE Y        M:296 dset:   0 I: -999 -999  J:    1    2  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          NORMAL    Y2PT      NORMAL    NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          NORMAL    Y2PT      NORMAL    NORMAL    NORMAL    NORMAL
  -DELETE X        M:295 dset:   0 I:    1    2  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  dealloc  dynamic grid (G010)          X2PT      NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  regrid  A2       M:295 dset:   0 I:    1    2  J:    1    7  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
@@ -18124,18 +18086,18 @@ list a5[gx=x5@max]   ! note: top dest axis point, only, looks at point above
  allocate dynamic grid (G010)          X5_EDGES  NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  dealloc  dynamic grid (G010)          X5_EDGES  NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  allocate dynamic grid (G010)          X5_EDGES  NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
- allocate dynamic grid (G007)          X5        NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
- dealloc  dynamic grid (G007)          X5        NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
- allocate dynamic grid (G007)          X5        NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G008)          X5        NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          X5        NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G008)          X5        NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   2 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          X5        NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
- strip regrid on X: A5 --> (G007)           @MAX
+ allocate dynamic grid (G008)          X5        NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
+ strip regrid on X: A5 --> (G008)           @MAX
  eval    A5       C:  7 dset:   0 I:    1    6  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  allocate dynamic grid (G010)          X5_EDGES  NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  pseudo  X        M:296 dset:   0 I:    1    6  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  dealloc  dynamic grid (G010)          X5_EDGES  NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  regrid  A5       M:295 dset:   0 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          X5        NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          X5        NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
              VARIABLE : X[GX=X5_EDGES]
                         regrid: 1 delta on X@MAX
              SUBSET   : 5 points (X)
@@ -18145,7 +18107,7 @@ list a5[gx=x5@max]   ! note: top dest axis point, only, looks at point above
  4   / 4:  3.50000
  5   / 5:  5.50000
 let a5 = x[gx=x5_edges, i=3]
- dealloc  dynamic grid (G007)          X5        NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          X5        NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  -DELETE A5       M:295 dset:   0 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE A5       M:297 dset:   0 I:    1    6  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  dealloc  dynamic grid (G010)          X5_EDGES  NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
@@ -25652,7 +25614,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Fri Feb 21 16:19:15 PST 2014
+Fri Feb 21 16:53:03 PST 2014
  
 GO bn_reset
 cancel mode verify
@@ -26276,7 +26238,7 @@ Dynamic grids:
     GRID (G017)                          use count:   2
  name       axis              # pts   start                end
  ABSTRACT  X             99999999 r   1                    1.E+08
- (AX002)   LATITUDE             5 r   1S                   1N
+ (AX001)   LATITUDE             5 r   1S                   1N
  normal    Z
  TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
  normal    E
@@ -26284,13 +26246,13 @@ Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX002)   LATITUDE             5 r   1S                   1N
+ (AX001)   LATITUDE             5 r   1S                   1N
  normal    Z
  TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
  normal    E
  normal    F
 Dynamic axes:
-    AXIS (AX002)                         use count:   2
+    AXIS (AX001)                         use count:   2
 cancel memory/all
 let/quiet a = sst[l=1,y=1s:1n:.5]
 list SAMPLEI(a,{30,40,50})
@@ -26481,9 +26443,9 @@ list SAMPLEI(Y[y=110:200:10],{3,4,7})
 cancel memory/all
 set mode diagnostic
 list SAMPLEI(sst[l=1,y=5N],{31,33,35,37,44,46,48})
- dealloc  dynamic grid (G017)          NORMAL    (AX002)   NORMAL    NORMAL    NORMAL    NORMAL
- dealloc  dynamic grid (G006)          ABSTRACT  (AX002)   NORMAL    NORMAL    NORMAL    NORMAL
- dealloc  dynamic grid (G006)          ABSTRACT  (AX002)   NORMAL    NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G017)          NORMAL    (AX001)   NORMAL    NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          ABSTRACT  (AX001)   NORMAL    NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          ABSTRACT  (AX001)   NORMAL    NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid (C01,V02 C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid (C09,V02 C: 10 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -29181,15 +29143,15 @@ stat $1[gx=xtrop]
  !-> stat sst[gx=xtrop]
  dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- strip regrid on X: SST --> (G007)           @LIN
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ strip regrid on X: SST --> (G008)           @LIN
  reading SST      M: 52 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  regrid  SST      M: 49 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  
              SEA SURFACE TEMPERATURE
              regrid: 1 deg on X
@@ -29208,7 +29170,7 @@ stat $1[gx=xtrop]
  Mean    value: 17.605 (unweighted average)
  Standard deviation: 9.8848
 CONFUSE
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  -DELETE SST      M: 49 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
@@ -29221,15 +29183,15 @@ stat $1[gx=xtrop]
  -DELETE I        M: 49 dset:   0 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- strip regrid on X: SST --> (G007)           @LIN
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ strip regrid on X: SST --> (G008)           @LIN
  reading SST      M: 49 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  regrid  SST      M: 27 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  
              SEA SURFACE TEMPERATURE
              regrid: 1 deg on X
@@ -29252,21 +29214,21 @@ let $1x = $1[gx=xtrop]
  !-> DEFINE VARIABLE sstx = sst[gx=xtrop]
 stat $1x
  !-> stat sstx
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  -DELETE SST      M: 27 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid SSTX     C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  eval    SSTX     C:  6 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- strip regrid on X: SST --> (G007)           @LIN
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ strip regrid on X: SST --> (G008)           @LIN
  reading SST      M: 27 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  regrid  SST      M: 47 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  
              SST[GX=XTROP]
              LONGITUDE: 129.5E to 79.5W
@@ -29284,7 +29246,7 @@ stat $1x
  Mean    value: 17.605 (unweighted average)
  Standard deviation: 9.8848
 CONFUSE
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  pass #2 EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -29296,14 +29258,14 @@ stat $1x
  -DELETE I        M: 44 dset:   0 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  eval    SSTX     C:  6 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- strip regrid on X: SST --> (G007)           @LIN
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ strip regrid on X: SST --> (G008)           @LIN
  reading SST      M: 44 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  regrid  SST      M: 43 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  
              SST[GX=XTROP]
              LONGITUDE: 129.5E to 79.5W
@@ -29322,24 +29284,24 @@ stat $1x
  Standard deviation: 9.8848
  
 define grid/x=xtrop gx
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  -DELETE SSTX     M: 40 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE SSTX     M: 46 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  -DELETE SST      M: 43 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE SST      M: 47 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
 stat $1[g=gx]
  !-> stat sst[g=gx]
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- strip regrid on X: SST --> (G007)           @LIN
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ strip regrid on X: SST --> (G008)           @LIN
  reading SST      M: 47 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  regrid  SST      M: 43 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  
              SEA SURFACE TEMPERATURE
              regrid: 1 deg on X
@@ -29358,7 +29320,7 @@ stat $1[g=gx]
  Mean    value: 17.605 (unweighted average)
  Standard deviation: 9.8848
 CONFUSE
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  -DELETE SST      M: 43 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
@@ -29371,15 +29333,15 @@ stat $1[g=gx]
  -DELETE I        M: 43 dset:   0 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- strip regrid on X: SST --> (G007)           @LIN
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ strip regrid on X: SST --> (G008)           @LIN
  reading SST      M: 43 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  regrid  SST      M: 46 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  
              SEA SURFACE TEMPERATURE
              regrid: 1 deg on X
@@ -29401,19 +29363,19 @@ stat $1[g=gx]
 define axis/y=20s:20n:1 ytrop
 stat $1[gx=xtrop,gy=ytrop]
  !-> stat sst[gx=xtrop,gy=ytrop]
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  -DELETE SST      M: 46 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
- dealloc  dynamic grid (G007)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
- allocate dynamic grid (G007)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1  151  J:    1   41  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
- strip regrid on X: SST --> (G007)           @LIN
+ allocate dynamic grid (G008)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
+ strip regrid on X: SST --> (G008)           @LIN
  reading SST      M: 46 dset:   1 I:   55  131  J:   35   56  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  regrid XY
  regrid  SST      M: 40 dset:   1 I:    1  151  J:    1   41  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
  
              SEA SURFACE TEMPERATURE
              regrid: 1 deg on X, 1 deg on Y
@@ -29432,7 +29394,7 @@ stat $1[gx=xtrop,gy=ytrop]
  Mean    value: 26.908 (unweighted average)
  Standard deviation: 1.778
 CONFUSE
- dealloc  dynamic grid (G007)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
  -DELETE SST      M: 40 dset:   1 I:    1  151  J:    1   41  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
@@ -29445,16 +29407,16 @@ stat $1[gx=xtrop,gy=ytrop]
  -DELETE I        M: 40 dset:   0 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
- dealloc  dynamic grid (G007)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
- allocate dynamic grid (G007)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1  151  J:    1   41  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
- strip regrid on X: SST --> (G007)           @LIN
+ allocate dynamic grid (G008)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
+ strip regrid on X: SST --> (G008)           @LIN
  reading SST      M: 40 dset:   1 I:   55  131  J:   35   56  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  regrid XY
  regrid  SST      M: 39 dset:   1 I:    1  151  J:    1   41  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
  
              SEA SURFACE TEMPERATURE
              regrid: 1 deg on X, 1 deg on Y
@@ -29475,7 +29437,7 @@ stat $1[gx=xtrop,gy=ytrop]
  
 define grid/like=$1/x=xtrop/y=ytrop gxyt
  !-> define grid/like=sst/x=xtrop/y=ytrop gxyt
- dealloc  dynamic grid (G007)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
  -DELETE SST      M: 39 dset:   1 I:    1  151  J:    1   41  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  getgrid EX#1     C:  6 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4     NORMAL    NORMAL
@@ -30013,18 +29975,18 @@ stat $1[gx=xtrop]
  !-> stat sst5[gx=xtrop]
  dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- strip regrid on X: SST5 --> (G007)           @LIN
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ strip regrid on X: SST5 --> (G008)           @LIN
  eval    SST5     C:  7 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  reading SST      M: 50 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  constan cnst     M: 42 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE cnst     M: 42 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  regrid  SST5     M: 42 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  
              SST+5
              regrid: 1 deg on X
@@ -30043,7 +30005,7 @@ stat $1[gx=xtrop]
  Mean    value: 22.605 (unweighted average)
  Standard deviation: 9.8848
 CONFUSE
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  -DELETE SST5     M: 42 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
@@ -30056,18 +30018,18 @@ stat $1[gx=xtrop]
  -DELETE I        M: 42 dset:   0 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- strip regrid on X: SST5 --> (G007)           @LIN
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ strip regrid on X: SST5 --> (G008)           @LIN
  eval    SST5     C:  7 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  reading SST      M: 42 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  constan cnst     M: 45 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE cnst     M: 45 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  regrid  SST5     M: 45 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  
              SST+5
              regrid: 1 deg on X
@@ -30090,24 +30052,24 @@ let $1x = $1[gx=xtrop]
  !-> DEFINE VARIABLE sst5x = sst5[gx=xtrop]
 stat $1x
  !-> stat sst5x
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  -DELETE SST5     M: 45 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid SST5X    C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  eval    SST5X    C:  6 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- strip regrid on X: SST5 --> (G007)           @LIN
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ strip regrid on X: SST5 --> (G008)           @LIN
  eval    SST5     C:  9 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  reading SST      M: 45 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  constan cnst     M: 58 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE cnst     M: 58 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  regrid  SST5     M: 58 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  
              SST5[GX=XTROP]
              LONGITUDE: 129.5E to 79.5W
@@ -30125,7 +30087,7 @@ stat $1x
  Mean    value: 22.605 (unweighted average)
  Standard deviation: 9.8848
 CONFUSE
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  pass #2 EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -30137,17 +30099,17 @@ stat $1x
  -DELETE I        M: 61 dset:   0 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  eval    SST5X    C:  6 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- strip regrid on X: SST5 --> (G007)           @LIN
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ strip regrid on X: SST5 --> (G008)           @LIN
  eval    SST5     C:  9 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  reading SST      M: 61 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  constan cnst     M: 62 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE cnst     M: 62 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  regrid  SST5     M: 62 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  
              SST5[GX=XTROP]
              LONGITUDE: 129.5E to 79.5W
@@ -30168,20 +30130,20 @@ stat $1x
 define grid/x=xtrop gx
 stat $1[g=gx]
  !-> stat sst5[g=gx]
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- strip regrid on X: SST5 --> (G007)           @LIN
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ strip regrid on X: SST5 --> (G008)           @LIN
  eval    SST5     C:  7 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  reading SST      M: 65 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  constan cnst     M: 66 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE cnst     M: 66 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  regrid  SST5     M: 66 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  
              SST+5
              regrid: 1 deg on X
@@ -30200,7 +30162,7 @@ stat $1[g=gx]
  Mean    value: 22.605 (unweighted average)
  Standard deviation: 9.8848
 CONFUSE
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  pass #2 EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -30212,18 +30174,18 @@ stat $1[g=gx]
  -DELETE I        M: 68 dset:   0 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
- strip regrid on X: SST5 --> (G007)           @LIN
+ allocate dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ strip regrid on X: SST5 --> (G008)           @LIN
  eval    SST5     C:  7 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  reading SST      M: 68 dset:   1 I:   55  131  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  constan cnst     M: 69 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE cnst     M: 69 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  regrid  SST5     M: 69 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  
              SST+5
              regrid: 1 deg on X
@@ -30245,7 +30207,7 @@ stat $1[g=gx]
 define axis/y=20s:20n:1 ytrop
 stat $1[gx=xtrop,gy=ytrop]
  !-> stat sst5[gx=xtrop,gy=ytrop]
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:    1  151  J:    1   41  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  strip regrid on X: SST5 --> GXYT             @LIN
@@ -30463,7 +30425,7 @@ let $1xyt = $1[g=gxyt]
  dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME4     NORMAL    NORMAL
  -DELETE SST5X    M: 60 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE SST5X    M: 64 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XTROP     COADSY    NORMAL    TIME4     NORMAL    NORMAL
  -DELETE SST5     M: 58 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE SST5     M: 62 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE SST5     M: 66 dset:   1 I:    1  151  J:    1   90  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
@@ -31064,7 +31026,7 @@ say `a,return=isize`
  getgrid (C09,V11 C: 12 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  pass #2 (C09,V11 C: 12 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          ABSTRACT  ABSTRACT  NORMAL    NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G008)          ABSTRACT  ABSTRACT  NORMAL    NORMAL    NORMAL    NORMAL
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
@@ -31188,7 +31150,7 @@ cancel mode verify
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  -DELETE (C09,V11 M: 79 dset:   0 I:    1    3  J:    1    3  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE (C09,V11 M: 90 dset:   0 I:    1    3  J:    1    3  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          ABSTRACT  ABSTRACT  NORMAL    NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          ABSTRACT  ABSTRACT  NORMAL    NORMAL    NORMAL    NORMAL
  -DELETE (C01,V11 M: 84 dset:   0 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE (C01,V11 M: 93 dset:   0 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
@@ -31556,7 +31518,7 @@ SHOW GRID temp[d=2,gx=sst[d=1],y=10s:2s:.2]             ! implicit Y axis
     GRID (G018)
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX002)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
  normal    E
@@ -31574,7 +31536,7 @@ SHOW GRID FFTA(sst[d=1,gx=temp[d=2],y=10s:2s:.2,l=1:5]) ! imposed T axis
     GRID (G011)
  name       axis              # pts   start                end
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX002)   LATITUDE            41 r   10S                  2S
  normal    Z
  (AX011)   T (CYC/hour)         2 r   0.00034224           0.00068448
  normal    E
@@ -31583,7 +31545,7 @@ SHOW GRID SORTI(temp[d=2,gx=sst[d=1],y=10s:2s:.2])      ! abstract X axis
     GRID (G018)
  name       axis              # pts   start                end
  ABSTRACT  X             99999999 r   1                    1.E+08
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX002)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
  normal    E
@@ -31600,7 +31562,7 @@ SHOW GRID "temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5",FFTA(sst[d=1,gx=temp[d=2],y=10
     GRID (G011)
  name       axis              # pts   start                end
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX002)   LATITUDE            41 r   10S                  2S
  normal    Z
  (AX005)   T (CYC/hour)         2 r   0.00034224           0.00068448
  normal    E
@@ -31608,7 +31570,7 @@ SHOW GRID "temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5",FFTA(sst[d=1,gx=temp[d=2],y=10
     GRID (G018)
  name       axis              # pts   start                end
  ABSTRACT  X             99999999 r   1                    1.E+08
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX002)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
  normal    E
@@ -31633,14 +31595,14 @@ SHOW GRID
     GRID (G011)
  name       axis              # pts   start                end
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX002)   LATITUDE            41 r   10S                  2S
  normal    Z
  (AX011)   T (CYC/hour)         2 r   0.00034224           0.00068448
  normal    E
  normal    F
 list/j=1:5 j
              VARIABLE : J
-                        axis (AX001)
+                        axis (AX002)
              SUBSET   : 5 points (LATITUDE)
  9.2S   / 5:  5.00000
  9.4S   / 4:  4.00000
@@ -31652,7 +31614,7 @@ SHOW GRID MYGRID
     GRID MYGRID
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX002)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
  normal    E
@@ -31662,14 +31624,14 @@ Dynamic grids:
     GRID (G011)                          use count:   1
  name       axis              # pts   start                end
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX002)   LATITUDE            41 r   10S                  2S
  normal    Z
  (AX011)   T (CYC/hour)         2 r   0.00034224           0.00068448
  normal    E
  normal    F
 Dynamic axes:
     AXIS (AX011)                         use count:   1
-    AXIS (AX001)                         use count:   2
+    AXIS (AX002)                         use count:   2
     AXIS (AX020)                         use count:   1
  
  
@@ -38518,7 +38480,7 @@ shade a[i=1:100:10]
  dealloc  dynamic grid (G005)          (AX010)   YAX1_100  NORMAL    NORMAL    NORMAL    NORMAL
 setting up 2D plot
  -DELETE A        M:  3 dset:   1 I:    1   10  J:    1  100  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
-PPL plot 284  complete
+PPL plot 279  complete
 ppl list stats
 
 
@@ -39954,37 +39916,37 @@ set mode diag; l200n/order=x $2[l=1,i=0:14:2]; set mode/last diag
  !-> list/width=200/nohead/order=x v2d_reg[l=1,i=0:14:2]
  dealloc  dynamic grid GFJ3            XAX_SUBSPANORMAL    NORMAL    TAX_SUBSPANORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          (AX014)   NORMAL    NORMAL    TAX_SUBSPANORMAL    NORMAL
- dealloc  dynamic grid (G007)          (AX014)   NORMAL    NORMAL    TAX_SUBSPANORMAL    NORMAL
- allocate dynamic grid (G007)          (AX014)   NORMAL    NORMAL    TAX_SUBSPANORMAL    NORMAL
+ allocate dynamic grid (G008)          (AX014)   NORMAL    NORMAL    TAX_SUBSPANORMAL    NORMAL
+ dealloc  dynamic grid (G008)          (AX014)   NORMAL    NORMAL    TAX_SUBSPANORMAL    NORMAL
+ allocate dynamic grid (G008)          (AX014)   NORMAL    NORMAL    TAX_SUBSPANORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    8  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          (AX014)   NORMAL    NORMAL    TAX_SUBSPANORMAL    NORMAL
- strip regrid on X: V2D_REG --> (G007)           @XACT
+ allocate dynamic grid (G008)          (AX014)   NORMAL    NORMAL    TAX_SUBSPANORMAL    NORMAL
+ strip regrid on X: V2D_REG --> (G008)           @XACT
  found   V2D_REG  M: 69 dset:   1 I:    0   14  J: -999 -999  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  regrid  V2D_REG  M: 70 dset:   1 I:    1    8  J: -999 -999  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          (AX014)   NORMAL    NORMAL    TAX_SUBSPANORMAL    NORMAL
+ dealloc  dynamic grid (G008)          (AX014)   NORMAL    NORMAL    TAX_SUBSPANORMAL    NORMAL
              ....  12.0000  14.0000  16.0000  11.0000  13.0000  15.0000     ....
 l200n/order=x $2[l=1,i=0:14:7]
  !-> list/width=200/nohead/order=x v2d_reg[l=1,i=0:14:7]
         ............
 set mode diag; l200n $2[i=1,l=1:15:2]; set mode/last diag
  !-> list/width=200/nohead v2d_reg[i=1,l=1:15:2]
- dealloc  dynamic grid (G007)          (AX017)   NORMAL    NORMAL    TAX_SUBSPANORMAL    NORMAL
+ dealloc  dynamic grid (G008)          (AX017)   NORMAL    NORMAL    TAX_SUBSPANORMAL    NORMAL
  -DELETE V2D_REG  M: 71 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          XAX_SUBSPANORMAL    NORMAL    (AX014)   NORMAL    NORMAL
- dealloc  dynamic grid (G007)          XAX_SUBSPANORMAL    NORMAL    (AX014)   NORMAL    NORMAL
- allocate dynamic grid (G007)          XAX_SUBSPANORMAL    NORMAL    (AX014)   NORMAL    NORMAL
+ allocate dynamic grid (G008)          XAX_SUBSPANORMAL    NORMAL    (AX014)   NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XAX_SUBSPANORMAL    NORMAL    (AX014)   NORMAL    NORMAL
+ allocate dynamic grid (G008)          XAX_SUBSPANORMAL    NORMAL    (AX014)   NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    8  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          XAX_SUBSPANORMAL    NORMAL    (AX014)   NORMAL    NORMAL
- strip regrid on T: V2D_REG --> (G007)           @XACT
+ allocate dynamic grid (G008)          XAX_SUBSPANORMAL    NORMAL    (AX014)   NORMAL    NORMAL
+ strip regrid on T: V2D_REG --> (G008)           @XACT
  strip moduloing V2D_REG on T axis:     1    15 dset:   1
  rdstride V2D_REG  C:  9 dset:   1 I:    1    1  J: -999 -999  K: -999 -999  L:    1    5  M: -999 -999  N: -999 -999
  doing moduloing V2D_REG on T axis:     1     5 dset:   1
  -DELETE V2D_REG  M: 71 dset:   1 I:    1    1  J: -999 -999  K: -999 -999  L:    1    5  M: -999 -999  N: -999 -999
  nulrgd  V2D_REG  M: 71 dset:   1 I:    1    1  J: -999 -999  K: -999 -999  L:    1    8  M: -999 -999  N: -999 -999
  -DELETE V2D_REG  M: 72 dset:   1 I:    1    1  J: -999 -999  K: -999 -999  L:    1   15  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          XAX_SUBSPANORMAL    NORMAL    (AX014)   NORMAL    NORMAL
+ dealloc  dynamic grid (G008)          XAX_SUBSPANORMAL    NORMAL    (AX014)   NORMAL    NORMAL
  16-JAN-0000 / 1:   11.000
  16-MAR-0000 / 2:   71.000
  15-MAY-0000 / 3:  131.000
@@ -48319,7 +48281,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS21-FEB-2014 16:19:47
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS21-FEB-2014 16:53:36
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -49747,7 +49709,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "21-Feb-14:16:18"
+WIN_TITLE = "21-Feb-14:16:52"
  
 set win/title="set the title"
 sho sym win_title
@@ -49765,7 +49727,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="21-Feb-14:16:18"
+ !-> set win/title="21-Feb-14:16:52"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -49776,14 +49738,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 21-Feb-14
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 16:18
+ !-> DEFINE SYMBOL the_time = 16:52
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="21-Feb-14:16:18"
+ !-> SET WIN/TITLE="21-Feb-14:16:52"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "21-Feb-14:16:18"
+WIN_TITLE = "21-Feb-14:16:52"
  
 GO bn_reset
 cancel mode verify
@@ -55224,6 +55186,8 @@ list var[gt=month_reg@MODNGD], var[gt=month_reg@MODNBD], var[gt=month_reg@MODNGD
 16-JUL      /  7:   7.00   3.00  10.00  10.00
 16-AUG      /  8:   0.00  10.00  10.00  10.00
 15-SEP      /  9:   8.00   2.00  10.00  10.00
+Unable to allocate 500000.0 Mwords of memory.
+Restoring previous memory of 0.2 Mwords.
 16-OCT      / 10:  10.00   0.00  10.00  10.00
 15-NOV      / 11:  10.00   0.00  10.00  10.00
 16-DEC      / 12:  10.00   0.00  10.00  10.00
@@ -55479,8 +55443,6 @@ set mem/siz=90
 sh sym ferret_memory
 FERRET_MEMORY = "90"
 show memory
-Unable to allocate 500000.0 Mwords of memory.
-Restoring previous memory of 0.2 Mwords.
  Current size of FERRET memory cache: 90 MegaWords  (1 word = 4 bytes)
  
 set mem/size=0.05
@@ -59979,10 +59941,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "45.812"
-CLOCK_SECS = "70.884"
+DELTA_CPU = "45.4671"
+CLOCK_SECS = "71.569"
 CURRENT_DATE = "21-Feb-14"
-CURRENT_TIME = "16:20:10"
+CURRENT_TIME = "16:53:59"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -59991,8 +59953,8 @@ CURRENT_TIME = "16:20:10"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.045993"
-CLOCK_SECS = "70.963"
+DELTA_CPU = "0.041994"
+CLOCK_SECS = "71.642"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -60006,60 +59968,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.365945
+ !-> DEFINE VARIABLE ten_plots = 0.32695
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "71.767"
+CLOCK_SECS = "72.418"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "71.767"
+CLOCK_SECS = "72.419"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.035995
- !-> DEFINE VARIABLE sumcpu =0.035995
+ !-> DEFINE VARIABLE dt = 0.037994
+ !-> DEFINE VARIABLE sumcpu =0.037994
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.044993
- !-> DEFINE VARIABLE sumcpu =0.080988
-!-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.040993
- !-> DEFINE VARIABLE sumcpu =0.121981
-!-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.035994
- !-> DEFINE VARIABLE sumcpu =0.157975
-!-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.041994
- !-> DEFINE VARIABLE sumcpu =0.199969
-!-> REPEAT: K=6
  !-> DEFINE VARIABLE dt = 0.036995
- !-> DEFINE VARIABLE sumcpu =0.236964
+ !-> DEFINE VARIABLE sumcpu =0.074989
+!-> REPEAT: K=3
+ !-> DEFINE VARIABLE dt = 0.035994
+ !-> DEFINE VARIABLE sumcpu =0.110983
+!-> REPEAT: K=4
+ !-> DEFINE VARIABLE dt = 0.039994
+ !-> DEFINE VARIABLE sumcpu =0.150977
+!-> REPEAT: K=5
+ !-> DEFINE VARIABLE dt = 0.037994
+ !-> DEFINE VARIABLE sumcpu =0.188971
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.039994
+ !-> DEFINE VARIABLE sumcpu =0.228965
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.043993
- !-> DEFINE VARIABLE sumcpu =0.280957
+ !-> DEFINE VARIABLE dt = 0.039994
+ !-> DEFINE VARIABLE sumcpu =0.268959
 !-> REPEAT: K=8
  !-> DEFINE VARIABLE dt = 0.039994
- !-> DEFINE VARIABLE sumcpu =0.320951
+ !-> DEFINE VARIABLE sumcpu =0.308953
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.044993
- !-> DEFINE VARIABLE sumcpu =0.365944
+ !-> DEFINE VARIABLE dt = 0.038994
+ !-> DEFINE VARIABLE sumcpu =0.347947
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.039994
- !-> DEFINE VARIABLE sumcpu =0.405938
+ !-> DEFINE VARIABLE dt = 0.042993
+ !-> DEFINE VARIABLE sumcpu =0.39094
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.405938
-0.405938
+ !-> MESSAGE/CONTINUE 0.39094
+0.39094
 sh sym CLOCK_SECS
-CLOCK_SECS = "73.004"
+CLOCK_SECS = "73.659"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "21-Feb-14"
-SESSION_TIME = "16:18"
+SESSION_TIME = "16:52"
 CURRENT_DATE = "21-Feb-14"
-CURRENT_TIME = "16:20:12"
+CURRENT_TIME = "16:54:01"
  
  
 ! ******** V6.3 Additions below ***********
@@ -61376,7 +61338,7 @@ plot temp
  eval    EX#1     C:  4 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    3  170  M: -999 -999  N: -999 -999
  found   TEMP     M: 36 dset:   2 I:   50   51  J:   45   50  K:    1    2  L:    1  172  M: -999 -999  N: -999 -999
 setting up plot
-PPL plot 758  complete
+PPL plot 753  complete
 plot/over temp[g=u]
  dealloc  dynamic grid PS3DT1          PSXT1     PSYT1     PSZT2     TIME14    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -61394,7 +61356,7 @@ plot/over temp[g=u]
  regrid  TEMP     M: 27 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    1    2  M: -999 -999  N: -999 -999
  doing moduloing TEMP on T axis:     1     2 dset:   2
 setting up plot
-PPL plot 759  complete
+PPL plot 754  complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT2     TIME14    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -61407,7 +61369,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day]
  regrid  TEMP     M: 23 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  -DELETE TEMP     M: 26 dset:   2 I:   50   51  J:   45   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
 setting up plot
-PPL plot 760  complete
+PPL plot 755  complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890]
  dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT2     TAX5DAY   NORMAL    NORMAL
  -DELETE TEMP     M: 23 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
@@ -61424,7 +61386,7 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890]
  regrid  TEMP     M: 23 dset:   2 I:    7    7  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  -DELETE TEMP     M: 26 dset:   2 I:   50   51  J:   45   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
 setting up plot
-PPL plot 761  complete
+PPL plot 756  complete
 plot/over temp[g=u@ave]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -61442,7 +61404,7 @@ plot/over temp[g=u@ave]
  regrid  TEMP     M: 19 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    1    2  M: -999 -999  N: -999 -999
  doing moduloing TEMP on T axis:     1     2 dset:   2
 setting up plot
-PPL plot 762  complete
+PPL plot 757  complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@ave]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT2     TIME14    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -61455,7 +61417,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@ave]
  regrid  TEMP     M: 17 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  -DELETE TEMP     M: 18 dset:   2 I:   50   51  J:   45   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
 setting up plot
-PPL plot 763  complete
+PPL plot 758  complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
  dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT2     TAX5DAY   NORMAL    NORMAL
  -DELETE TEMP     M: 17 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
@@ -61474,7 +61436,7 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
  regrid  TEMP     M: 16 dset:   2 I:    7    7  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  -DELETE TEMP     M: 13 dset:   2 I:   45   56  J:   45   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
 setting up plot
-PPL plot 764  complete
+PPL plot 759  complete
 plot/over temp[g=u@asn]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -61496,7 +61458,7 @@ plot/over temp[g=u@asn]
  -DELETE TEMP     M: 15 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    1    2  M: -999 -999  N: -999 -999
  doing moduloing TEMP on T axis:     1     2 dset:   2
 setting up plot
-PPL plot 765  complete
+PPL plot 760  complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@asn]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT2     TIME14    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -61514,7 +61476,7 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@asn]
  regrid  TEMP     M: 10 dset:   2 I:    7    7  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  -DELETE TEMP     M: 11 dset:   2 I:    7    7  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
 setting up plot
-PPL plot 766  complete
+PPL plot 761  complete
 plot/over temp[g=u,gt=u@ave]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -61526,7 +61488,7 @@ plot/over temp[g=u,gt=u@ave]
  found   TEMP     M: 24 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    3  170  M: -999 -999  N: -999 -999
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT2     TIME14    NORMAL    NORMAL
 setting up plot
-PPL plot 767  complete
+PPL plot 762  complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@ave]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT2     TIME14    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -61539,7 +61501,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5da
  regrid  TEMP     M: 25 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  -DELETE TEMP     M: 11 dset:   2 I:   50   51  J:   45   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
 setting up plot
-PPL plot 768  complete
+PPL plot 763  complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gt=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
  dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT2     TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -61555,7 +61517,7 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gt=g5_10g00abcdefg
  regrid  TEMP     M: 11 dset:   2 I:    7    7  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  -DELETE TEMP     M: 21 dset:   2 I:   50   51  J:   45   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
 setting up plot
-PPL plot 769  complete
+PPL plot 764  complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@asn]  ! invalid interpretation of data
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -61568,7 +61530,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5da
  regrid  TEMP     M:  9 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  -DELETE TEMP     M: 21 dset:   2 I:   50   51  J:   45   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
 setting up plot
-PPL plot 770  complete
+PPL plot 765  complete
  
  
 set mode/last diag
@@ -62507,6 +62469,9 @@ say/quiet/outfile=($output_xml_file)/append </data>
 ! the file is still open. Close it by listing to another file.
 list/clobber/file=dummy.dat 1
  
+ 
+! Note with the fix to ticket 883, the ordering of the axis listing is
+! different. This is unimportant to using the xml files.
 sp cat the_xml_file.xml
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <data>
@@ -64034,7 +63999,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.86  "                                                          
  3    /  3:" ! Linux 2.6.18-371.4.1.el5 64-bit - 02/21/14"                              
- 4    /  4:" ! 21-Feb-14 16:18     "                                                    
+ 4    /  4:" ! 21-Feb-14 16:52     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -66497,98 +66462,98 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.414
-randu2_randn2       0.558
-randu2_randn2       0.375
-randu2_randn2       0.555
-randu2_randn2       0.949
+randu2_randn2       0.681
+randu2_randn2       0.743
+randu2_randn2       0.436
+randu2_randn2       0.652
+randu2_randn2       0.473
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.964
-randu2_randn2       0.479
-randu2_randn2       0.961
-randu2_randn2       0.632
-randu2_randn2       0.280
-             VARIABLE : RANDU2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.954
-randu2_randn2       0.310
-randu2_randn2       0.921
-randu2_randn2       0.785
-randu2_randn2       0.249
-randu2_randn2       0.058
-             VARIABLE : RANDU2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.104
-randu2_randn2       0.224
-randu2_randn2       0.632
-randu2_randn2       0.244
-randu2_randn2       0.079
-randu2_randn2       0.655
-             VARIABLE : RANDU2(XX,12436)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.343
-randu2_randn2       0.598
-randu2_randn2       0.888
-randu2_randn2       0.608
-randu2_randn2       0.446
-randu2_randn2       0.900
-             VARIABLE : RANDU2(XX,12436)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.343
-randu2_randn2       0.598
-randu2_randn2       0.888
-randu2_randn2       0.608
-randu2_randn2       0.446
-randu2_randn2       0.900
-             VARIABLE : RANDN2(XBIG,-1)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 5 points (X)
-             X        : 0.5 to 5.5
-randu2_randn2      -0.379
-randu2_randn2       1.452
-randu2_randn2      -0.512
-randu2_randn2       3.584
-randu2_randn2      -0.859
-             VARIABLE : RANDN2(XBIG,-1)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 5 points (X)
-             X        : 0.5 to 5.5
-randu2_randn2       0.835
-randu2_randn2      -0.771
-randu2_randn2       0.700
-randu2_randn2      -1.518
-randu2_randn2       0.400
-             VARIABLE : RANDN2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2      -0.263
+randu2_randn2       0.506
+randu2_randn2       0.923
 randu2_randn2       0.018
-randu2_randn2       0.304
-randu2_randn2      -0.563
-randu2_randn2       2.338
-randu2_randn2       0.027
+randu2_randn2       0.795
+randu2_randn2       0.353
+             VARIABLE : RANDU2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.347
+randu2_randn2       0.528
+randu2_randn2       0.107
+randu2_randn2       0.444
+randu2_randn2       0.354
+randu2_randn2       0.039
+             VARIABLE : RANDU2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.115
+randu2_randn2       0.810
+randu2_randn2       0.381
+randu2_randn2       0.355
+randu2_randn2       0.591
+randu2_randn2       0.541
+             VARIABLE : RANDU2(XX,12436)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.343
+randu2_randn2       0.598
+randu2_randn2       0.888
+randu2_randn2       0.608
+randu2_randn2       0.446
+randu2_randn2       0.900
+             VARIABLE : RANDU2(XX,12436)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.343
+randu2_randn2       0.598
+randu2_randn2       0.888
+randu2_randn2       0.608
+randu2_randn2       0.446
+randu2_randn2       0.900
+             VARIABLE : RANDN2(XBIG,-1)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 5 points (X)
+             X        : 0.5 to 5.5
+randu2_randn2       1.837
+randu2_randn2      -0.932
+randu2_randn2      -1.212
+randu2_randn2       1.208
+randu2_randn2      -0.143
+             VARIABLE : RANDN2(XBIG,-1)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 5 points (X)
+             X        : 0.5 to 5.5
+randu2_randn2      -1.640
+randu2_randn2       0.130
+randu2_randn2       0.396
+randu2_randn2      -1.003
+randu2_randn2      -1.198
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.392
-randu2_randn2      -1.679
-randu2_randn2      -0.401
-randu2_randn2       0.620
-randu2_randn2      -0.041
-randu2_randn2       0.526
+randu2_randn2       1.169
+randu2_randn2      -0.710
+randu2_randn2       0.108
+randu2_randn2      -0.075
+randu2_randn2      -0.919
+randu2_randn2      -1.430
+             VARIABLE : RANDN2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2      -0.492
+randu2_randn2      -0.695
+randu2_randn2      -0.478
+randu2_randn2       1.278
+randu2_randn2       0.788
+randu2_randn2       0.102
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -66613,14 +66578,14 @@ randu2_randn2      -0.124
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.903       1.903       0.993
-randu2_randn2       1.065       1.065       0.993
-randu2_randn2       0.993       0.993      -0.023
-randu2_randn2      -0.023      -0.023       0.178
-randu2_randn2      -0.288      -0.288       0.178
-randu2_randn2      -0.758      -0.368       0.178
-randu2_randn2      -0.368      -0.368       0.178
-randu2_randn2       0.178       0.178       0.178
+randu2_randn2       1.443       1.443       1.049
+randu2_randn2       1.427       1.427       1.049
+randu2_randn2       1.049       1.049       0.312
+randu2_randn2       0.312       0.312       0.401
+randu2_randn2      -0.470      -0.470       0.401
+randu2_randn2      -0.747      -0.470       0.401
+randu2_randn2      -0.365      -0.365       0.401
+randu2_randn2       0.401       0.401       0.401
  
 GO bn_reset
 cancel mode verify
@@ -70770,7 +70735,7 @@ plot temp
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
  doing --> TEMP[F=23-JAN-198200:00:00@ITP,D=1]
 setting up plot
-PPL plot 868  complete
+PPL plot 863  complete
 plot/over temp[g=g5day]
  dealloc  dynamic grid GGR1            PSXT1     PSYT5_89  PSZT1_2   TIME21    EAXIS     FAXIS
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -70785,7 +70750,7 @@ plot/over temp[g=g5day]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 869  complete
+PPL plot 864  complete
 plot/over temp[g=g5day@ave]
  dealloc  dynamic grid G5DAY           PSXT1     PSYT5_89  PSZT1_2   TIME21    EAXIS     FAX20
  -DELETE TEMP     M: 58 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    1
@@ -70804,7 +70769,7 @@ plot/over temp[g=g5day@ave]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 870  complete
+PPL plot 865  complete
 plot/over temp[g=g5day@asn]
  dealloc  dynamic grid G5DAY           PSXT1     PSYT5_89  PSZT1_2   TIME21    EAXIS     FAX20
  -DELETE TEMP     M: 58 dset:   1 I: -999 -999  J: -999 -999  K:    1    1  L:    2    3  M:    1    2  N:    1    1
@@ -70823,7 +70788,7 @@ plot/over temp[g=g5day@asn]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 871  complete
+PPL plot 866  complete
  
 ! F axis
 set region/x=180/y=20s:20n/e=2/t=21-JAN-1982/z=5
@@ -70844,7 +70809,7 @@ plot temp
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
  doing --> TEMP[F=23-JAN-198200:00:00@ITP,D=1]
 setting up plot
-PPL plot 872  complete
+PPL plot 867  complete
 plot/over temp[g=g5day]
  dealloc  dynamic grid GGR1            PSXT1     PSYT5_89  PSZT1_2   TIME21    EAXIS     FAXIS
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -70857,7 +70822,7 @@ plot/over temp[g=g5day]
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 873  complete
+PPL plot 868  complete
 plot/over temp[g=g5day@ave]
  dealloc  dynamic grid G5DAY           PSXT1     PSYT5_89  PSZT1_2   TIME21    EAXIS     FAX20
  -DELETE TEMP     M: 74 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L: -999 -999  M:    2    2  N:    1    1
@@ -70873,7 +70838,7 @@ plot/over temp[g=g5day@ave]
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 874  complete
+PPL plot 869  complete
 plot/over temp[g=g5day@asn]
  dealloc  dynamic grid G5DAY           PSXT1     PSYT5_89  PSZT1_2   TIME21    EAXIS     FAX20
  -DELETE TEMP     M: 70 dset:   1 I: -999 -999  J:    1   84  K:    1    1  L: -999 -999  M:    2    2  N:    1    1
@@ -70889,7 +70854,7 @@ plot/over temp[g=g5day@asn]
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-PPL plot 875  complete
+PPL plot 870  complete
  
 set mode/last interp
 cancel region
@@ -74329,7 +74294,7 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Fri Feb 21 16:20:33 2014: ncks -h -A -h z1.nc append_to_this.nc\n",
+		:history = "Fri Feb 21 16:54:23 2014: ncks -h -A -h z1.nc append_to_this.nc\n",
 			"FERRET V6.86   21-Feb-14" ;
 		:Conventions = "CF-1.0" ;
 }
@@ -75473,7 +75438,7 @@ duplicate.cdf
 duplicate.des
 duplicate.nc
  
-! The one that's used is .cdf
+! The one that's used is .nc
 use duplicate
 sh dat
      currently SET data sets:
@@ -75518,6 +75483,82 @@ list  samplexy(sst[x=290:310,y=0:20], lon, lat)
  15-FEB      / 2:  26.60  26.52  26.35
  17-MAR      / 3:  26.68  26.61  26.49
  
+ 
+GO bn_reset
+cancel mode verify
+GO err685_shade_set
+! err685_shade_set.jnl
+!
+! test fix for bug 883
+! Inside a SHADE/SET, and several other plot commands,
+! if we do an operation that evalueates an expression, the
+! plot is then blank.
+ 
+can dat/all
+ 
+can view
+use climatological_axes
+def axis/t=1-jan-2000:31-jan-2010:1/units=days timax
+let tseries = t[gt=timax]
+! evaluate info about an expression, with a different grid than the
+! epression being SHADED, inside a SHADE/SET
+shade/set tseries*z[gz=1:5:1]
+say `tseries[GT=month_irreg@mod],r=tunit`
+ !-> MESSAGE/CONTINUE DAYS
+DAYS
+ppl shade !GAVE A BLANK PLOT
+ 
+shade/set tseries*z[gz=1:5:1]
+ppl shade !but this works
+ 
+shade/set tseries*z[gz=1:5:1]
+say `tseries,r=tunit`
+ !-> MESSAGE/CONTINUE DAYS
+DAYS
+ppl shade !and this works
+ 
+let a = tseries*z[gz=1:5:1]
+shade/set a
+say `tseries[GT=month_irreg@mod],r=tunit`
+ !-> MESSAGE/CONTINUE DAYS
+DAYS
+ppl shade !and this works
+ 
+shade/title="`tseries[GT=month_irreg],r=tunit`" tseries*z[gz=1:5:1]
+ !-> shade/title="DAYS" tseries*z[gz=1:5:1]
+ 
+can var/all; can mem
+can axis timax
+set mode/last logo
+ 
+GO bn_reset
+cancel mode verify
+GO err686_individual_levels
+! err686_individual_levels.jnl
+! Ticket 2142
+! The bug appeared just in a beta release of v686. The behavior needs a test.
+ 
+use coads_climatology
+ 
+cancel symbol lev*
+shade/l=1/lev=(10)(20)(30)(40) sst
+ 
+! The levels should be min,max,del = 10,40,10
+sh sym lev*
+LEV_TEXT = "(10)(20)(30)(40)"
+LEV_MIN = "10"
+LEV_MAX = "40"
+LEV_NUM = "3"
+LEV_DEL = "10"
+ 
+cancel symbol lev*
+contour/l=1/lev=(10)(15)(20)(25)(30) sst
+sh sym lev*
+LEV_TEXT = "(10)(15)(20)(25)(30)"
+LEV_MIN = "10"
+LEV_MAX = "30"
+LEV_NUM = "4"
+LEV_DEL = "5"
  
 GO bn_reset
 cancel mode verify
@@ -75648,7 +75689,7 @@ GO bn687_bug_fixes
 GO bn_reset
 cancel mode verify
 GO err686_long_list_varnames
-! err666_long_list_varnames.jnl
+! err686_long_list_varnames.jnl
 !
 ! bug 2114
 ! Reading a file with 54 variables. The names of variables get long,
@@ -75748,7 +75789,7 @@ yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.86  
  	Linux 2.6.18-371.4.1.el5 64-bit - 02/21/14
- 	21-Feb-14 16:20     
+ 	21-Feb-14 16:54     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -79307,7 +79348,7 @@ yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.86  
  	Linux 2.6.18-371.4.1.el5 64-bit - 02/21/14
- 	21-Feb-14 16:20     
+ 	21-Feb-14 16:54     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
@@ -79320,12 +79361,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.0 of Jul  1 2013 12:53:13 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "21-Feb-14"
-SESSION_TIME = "16:20"
-SESSION_PID = "24528"
-DELTA_CPU = "0.033994"
-CLOCK_SECS = "0.278"
+SESSION_TIME = "16:54"
+SESSION_PID = "28544"
+DELTA_CPU = "0.032994"
+CLOCK_SECS = "0.313"
 CURRENT_DATE = "21-Feb-14"
-CURRENT_TIME = "16:20:37"
+CURRENT_TIME = "16:54:28"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -79347,7 +79388,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "21-Feb-14:16:20"
+WIN_TITLE = "21-Feb-14:16:54"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -79409,7 +79450,7 @@ yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v6.86  
  	Linux 2.6.18-371.4.1.el5 64-bit - 02/21/14
- 	21-Feb-14 16:20     
+ 	21-Feb-14 16:54     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -79628,7 +79669,7 @@ yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.86  
  	Linux 2.6.18-371.4.1.el5 64-bit - 02/21/14
- 	21-Feb-14 16:20     
+ 	21-Feb-14 16:54     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -79742,7 +79783,7 @@ yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.86  
  	Linux 2.6.18-371.4.1.el5 64-bit - 02/21/14
- 	21-Feb-14 16:20     
+ 	21-Feb-14 16:54     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -79826,4 +79867,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Fri Feb 21 16:20:39 PST 2014
+Ended at Fri Feb 21 16:54:30 PST 2014

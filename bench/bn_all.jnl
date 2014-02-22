@@ -885,6 +885,12 @@ GO bn_reset
 GO bn_single_colorlev
 
 
+
+! *********** v6.87 Additions ***********
+GO bn_reset
+GO bn687_bug_fixes
+
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

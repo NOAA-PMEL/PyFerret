@@ -1,0 +1,70 @@
+! err666_long_list_varnames.jnl
+!
+! bug 2114
+! Reading a file with 54 variables. The names of variables get long,
+! and the list gets truncated by the SET DATA command.
+!
+
+columns/skip=1/var="\
+sta,\
+type,\
+month,\
+day,\
+year,\
+hour,\
+minute,\
+longitude,\
+latitude,\
+bottomD,\
+sampledepth,\
+dep,\
+temp,\
+sal,\
+xCO2_water_sst_wet_ppm,\
+xCO2_water_equi_temp_wet_ppm,\
+xCO2_water_sst_dry_ppm,\
+xCO2_water_equi_temp_dry_ppm,\
+fCO2_water_sst_100humidity_uatm,\
+fCO2_water_corr_25_uatm,\
+fCO2_water_corr_to_20,\
+fCO2_water_equi_uatm,\
+pCO2_water_sst_100humidity_uatm,\
+pCO2_water_equi_temp,\
+pCO2_theta_SW_corrected_to_sst,\
+Temperature_equi,\
+Pressure_atm,\
+Pressure_equi,\
+wind_direc_deg,\
+wind_speed,\
+ship_speed,\
+ship_direc,\
+Humidity,\
+woa_sss,\
+woa_land_marker,\
+pressure_ncep_slp,\
+speed_calc_knots,\
+etopo2_depth,\
+fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm,\
+fCO2_insitu_from_xCO2_water_sst_dry_ppm,\
+fCO2_from_pCO2_water_water_equi_temp,\
+fCO2_from_pCO2_water_sst_100humidity_uatm,\
+fCO2_insitu_from_fCO2_water_equi_uatm,\
+fCO2_insitu_from_fCO2_water_sst_100humidty_uatm,\
+fCO2_from_pCO2_water_water_equi_temp_ncep,\
+fCO2_from_pCO2_water_sst_100humidity_uatm_ncep,\
+fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa,\
+fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa,\
+fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep,\
+fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep,\
+fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa,\
+fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa,\
+fCO2_rec,\
+fco2_source" \
+longvarnames.tsv
+
+! The list was cut off after woa_land_marker. 
+! Try to load a variable later than that in the list.
+
+list etopo2_depth
+
+

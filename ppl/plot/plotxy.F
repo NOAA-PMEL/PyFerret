@@ -58,6 +58,9 @@ C
 *	Mod *sh* 11/97 to add PLOTPOL command
 
 *  ACM  8-30-2000 Go back to calling the line dash subroutine.   
+*  ACM 10/2012    Modulo-ing for PLOT/VS longitudes overlaid on a map.
+*  ACM  2/2013    ticket 2141. Fix the modulo operation when the longitude
+*                 range is over 360.
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -274,51 +277,28 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	          datx = X(K)
 	          daty = X(IY+K)
 
-		  IF (MOD_VS_X .AND. datx .LT. xlo) THEN  ! here plot to edge?
+		  IF (MOD_VS_X .AND. datx .LT. xlo) THEN 
 		     xadd = 360.
 		     datx = datx + xadd
-
-* Plot to lower edge, then pick up the pen and move to the upper edge.
-		     IF (xadd .NE. xaddlast) THEN
-		        CALL TRANS(I,xlo,daty,XT,YT)
-		        CALL PLOT(xt,yt,idn,0)
-	                CALL TRANS(I,xhi,daty,XT,YT)
-	                CALL PLOT(XT,YT,0,0)
-	                CALL PLOT(XT,YT,IDN,0)
-		     ENDIF
 
 		  ELSE IF (MOD_VS_X .AND. datx .GT. xhi) THEN  
 		     xadd = -360.
 		     datx = datx + xadd
-		     
-* Plot to lower edge, then pick up the pen and move to the upper edge.
-		     IF (xadd .NE. xaddlast) THEN
-		        CALL TRANS(I,xhi,daty,XT,YT)
-		        CALL PLOT(xt,yt,idn,0)
-	                CALL TRANS(I,xlo,daty,XT,YT)
-	                CALL PLOT(XT,YT,0,0)
-	                CALL PLOT(XT,YT,IDN,0)
-		     ENDIF
 
 		  ELSE
-* Plot to near edge, then pick up the pen and move to the far edge.
-		     IF (xaddlast .NE. 0.) THEN
-		        IF (xaddlast .EQ. 360.) THEN
-		           CALL TRANS(I,xhi,daty,XT,YT)
-		           CALL PLOT(xt,yt,idn,0)
-	                   CALL TRANS(I,xlo,daty,XT,YT)
-	                   CALL PLOT(XT,YT,0,0)
-	                   CALL PLOT(XT,YT,IDN,0)
-			ELSE
-		           CALL TRANS(I,xlo,daty,XT,YT)
-		           CALL PLOT(xt,yt,idn,0)
-		           CALL TRANS(I,xhi,daty,XT,YT)
-	                   CALL PLOT(XT,YT,0,0)
-	                   CALL PLOT(XT,YT,IDN,0)
-			ENDIF
-		     ENDIF
 		     xadd = 0.
 
+		  ENDIF
+
+* New modulo wrap: Plot to next point on the last wrap, then pick up the pen, go to 
+* the new point on new wrap, then go on.
+		  IF (xadd .NE. xaddlast) THEN
+		     datxlast = datx - xadd + xaddlast
+		     CALL TRANS(I,datxlast,daty,XT,YT)
+		     CALL PLOT(xt,yt,idn,0)
+		     CALL TRANS(I,datx,daty,XT,YT)
+		     CALL PLOT(XT,YT,0,0)
+		     CALL PLOT(XT,YT,IDN,0)
 		  ENDIF
 
 		  CALL TRANS(I,datx,daty,XT,YT)

@@ -111,7 +111,7 @@
          maxlen = 20
          ldigits = lab_digits+1
          text = TM_FMT_SNGL_DIGITS (zmin,ldigits,maxlen,slen)
-	 xx = px(1)/1000.0 - xorg - (slen)* height
+	 xx = px(1)/1000.0 - xorg - (slen+1)* height
          yy = py(1)/1000.0 - yorg - 0.5* height
 	 
       ENDIF

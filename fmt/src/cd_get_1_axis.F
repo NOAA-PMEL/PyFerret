@@ -1,5 +1,6 @@
         SUBROUTINE CD_GET_1_AXIS(dset, cdfid, ivar, iaxis, its_epic,
-     .                           reversed, tregular, use_strict, status)
+     .                           reversed, tregular, use_strict, 
+     .                           bad_bndsid, status)
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -176,6 +177,7 @@
 *                  it shows up for regularly spaced ones.
 * V685 *acm* 11/13 REALLY make the check for axis length in single precision when the
 *                  coordinate variable came in as a single-precision variable.
+* V6.87 4/14 *acm* ticket 2146: if invalid bounds, make the bounds a dependent variale.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -208,7 +210,7 @@
 * argument declarations
         LOGICAL  its_epic, reversed(max_lines:line_ceiling), tregular, 
      .           use_strict
-        INTEGER  cdfid, dset, ivar, iaxis, status
+        INTEGER  cdfid, dset, ivar, iaxis, bad_bndsid, status
 
 * local parameter definitions:
       INTEGER     str_eq
@@ -279,6 +281,7 @@
       got_torg = .FALSE.
       days_neg4713 = 0.D0
       next_line_storage = next_line_mem_pos
+      bad_bndsid = 0
 
 * (From Wikipedia on precision:)
 * Single precision, called "float" in the C language family, and "real" 
@@ -1082,6 +1085,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
            CALL TM_NOTE('Substituting coordinate midpoints', tt)
            CALL TM_IRREGAX_MID( next_line_mem_pos,
      .                          line_dim   (iaxis) )
+           bad_bndsid = edgid
         ENDIF
 
 ****************************************************************************
@@ -1155,6 +1159,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
            CALL TM_NOTE('Substituting coordinate midpoints', tt)
            CALL TM_IRREGAX_MID( next_line_mem_pos,
      .                          line_dim   (iaxis) )
+           bad_bndsid = bndid
       
         ENDIF
 

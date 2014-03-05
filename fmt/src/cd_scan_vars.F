@@ -95,6 +95,7 @@
 * V68  *acm* 1/12- added use_strict argument for ticket 1910: micro-adjusting on 
 *                  repeated coordinates in netCDF/OPeDNAP datasets
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V6.87 4/14 *acm* ticket 2146: if invalid bounds, make the bounds a dependent variale.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -134,7 +135,8 @@
       LOGICAL NC_GET_ATTRIB, 
      .        TM_LEGAL_NAME, MATCH_NAME,
      .        got_it, got_bad, its_epic, 
-     .        got_a_variable, failed_axis, coordvar
+     .        got_a_variable, failed_axis, 
+     .        coordvar
       INTEGER STR_UPCASE, STR_CASE_BLIND_COMPARE, TM_LENSTR1, 
      .        TM_LENSTR, NCF_INQ_DS, 
      .        nvars,  ndims, ngatts, recdim, 
@@ -143,7 +145,7 @@
      .        istat, npts, epic_t2,
      .        nbvar, ivar, len_test, len_mchars, 
      .        attype, attlen, attoutflag, maxlen, iatt, 
-     .        varid, all_outflag, dset_num, attid
+     .        varid, all_outflag, dset_num, attid, bad_bndsid
 
       REAL vals  ! potential numerical attributes
       CHARACTER*128 aname
@@ -303,7 +305,7 @@
 * classify each as a coordinate variable (axis) or as a dependent
 * variable. If a coordinate variable then TRY to interpret it,
 * (in cd_get_1_axis) but if it proves to be invalid, then process
-* it, instead, as a dependent varoable
+* it, instead, as a dependent variable
 	las_pos  = 1    ! reduces redundant search for space
 	got_a_variable = .FALSE.
 	
@@ -389,8 +391,14 @@
 
 * PROCESS AN AXIS	   
  100        CALL CD_GET_1_AXIS(dset, cdfid, ivcd, iaxis,
-     .                         its_EPIC, reversed, tregular, use_strict, status)
+     .                         its_EPIC, reversed, tregular, use_strict, 
+     .                         bad_bndsid, status)
            IF ( status .NE. merr_ok ) GOTO 5900
+	   IF (bad_bndsid .GT. 0) THEN
+	     CALL CD_GET_1_DEP_VAR ( dset, cdfid, bad_bndsid, las_pos, global_bad, 
+     .				   ivtm, status )
+             GOTO 501
+           ENDIF
 	   IF (iaxis .NE. 0) GOTO 1000		! iaxis>0 if axis was made
 	   failed_axis = .TRUE.			! go on and treat as a dep. var
 
@@ -398,7 +406,7 @@
  500	   CALL CD_GET_1_DEP_VAR ( dset, cdfid, ivcd, las_pos, global_bad, 
      .				   ivtm, status )
 
-           IF (status .NE. merr_ok) GOTO 5900
+ 501       IF (status .NE. merr_ok) GOTO 5900
 	   IF ( ivtm .NE. 0 ) THEN
 	      las_pos = ivtm	! optimizes next hunt for slot
 	      IF (.NOT.got_a_variable) THEN
@@ -408,6 +416,9 @@
 	   ENDIF
 	   IF ( failed_axis ) ds_var_titl_mod(ivtm) = 
      .				'invalid coordinate axis'
+           
+	   IF (bad_bndsid .GT. 0) ds_var_titl_mod(ivtm) = 
+     .				'invalid axis bounds'
 
 * EPIC KLUDGE: if an EPIC file has an invalid "TIME" axis we want, not only
 * "TIME" as a dependent variable, but also "TIME2"

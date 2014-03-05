@@ -394,11 +394,14 @@
      .                         its_EPIC, reversed, tregular, use_strict, 
      .                         bad_bndsid, status)
            IF ( status .NE. merr_ok ) GOTO 5900
+
+* invalid bounds or edges found. Make the bounds a dependent variable
 	   IF (bad_bndsid .GT. 0) THEN
 	     CALL CD_GET_1_DEP_VAR ( dset, cdfid, bad_bndsid, las_pos, global_bad, 
      .				   ivtm, status )
              GOTO 501
            ENDIF
+
 	   IF (iaxis .NE. 0) GOTO 1000		! iaxis>0 if axis was made
 	   failed_axis = .TRUE.			! go on and treat as a dep. var
 
@@ -417,8 +420,10 @@
 	   IF ( failed_axis ) ds_var_titl_mod(ivtm) = 
      .				'invalid coordinate axis'
            
-	   IF (bad_bndsid .GT. 0) ds_var_titl_mod(ivtm) = 
-     .				'invalid axis bounds'
+	   IF (bad_bndsid .GT. 0) THEN
+	      ds_var_titl_mod(ivtm) = 'invalid axis bounds'
+	      bad_bndsid = 0
+	   ENDIF
 
 * EPIC KLUDGE: if an EPIC file has an invalid "TIME" axis we want, not only
 * "TIME" as a dependent variable, but also "TIME2"

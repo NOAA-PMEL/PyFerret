@@ -43,13 +43,13 @@
 * revision 0.0 - 4/29/87
 * V230: restore original context following REPEAT command
 * V300 - 2/2/93 - added semicolon-separated command groups
-* V420 - added IF (single line version controls input source)
-*      - generate warning if multi-line IF is unclosed
+* V420 - added IF (single risc_buff version controls input source)
+*      - generate warning if multi-risc_buff IF is unclosed
 * V500 4/99 *sh* - remove the informative message about an unclosed IF
 *    This is not an error in IF cond THEN stmt; QUIT ENDIF 
 * V530:  8/00 *sh* - when restoring the original context after a REPEAT it
 *	is necessary to set the unsaved region (as per cx_by_ss) to unspecified
-*	(The need to do this represents a bug somewhere up the line -- region
+*	(The need to do this represents a bug somewhere up the risc_buff -- region
 *		information is used without regard to cx_by_ss)
 *	see err522_repeat_leftover.jnl
 * V554 1/04 *acm* - add cs_repeatname for named /RANGE loop control; reset repeat controls.
@@ -60,9 +60,11 @@
 *                   along with  the rest of the context after a REPEAT
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V688  3/14 *acm* for ticket 2044, write note ! Exit from <script>
 
 * internal variable declarations:
-	INTEGER	LIB_FREE_LUN,stat,axis,ivar,cvar
+	INTEGER	LIB_FREE_LUN,TM_LENSTR1,stat,axis,ivar,cvar,csp_to,ll,
+     .          slen, plen
         INTEGER j, num_indices
 
 	include 'tmap_dims.parm'
@@ -74,6 +76,7 @@
         include 'xcontext.cmn'
         include 'xalgebra.cmn'
         include 'xvariables.cmn'
+	include	'xrisc.cmn'
 
 
 * internal error ?
@@ -91,11 +94,17 @@
 
 * clean up old level
 	IF ( cs_cmnd_num( csp ) .EQ. cmnd_go ) THEN
+
+* ... If mode journal, write note with script name 
+	   IF (mode_verify) THEN
+              risc_buff = '! Exit from GO '//cs_text(csp)
+              CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, ll)
+	   ENDIF
+
 * ... close input GO file
-* back out of yonghua's routine call because of 64bit problems *kob**     
-*      CALL my_close(cmnd_lun)
 	   CLOSE( UNIT = cmnd_lun, ERR = 10 )
  10	   stat = LIB_FREE_LUN( cmnd_lun )
+
 	ELSEIF ( cs_cmnd_num( csp ) .EQ. cmnd_repeat ) THEN
 * ... restore context prior to REPEAT loop (along repeat axis only)
            axis = cs_axis( csp )

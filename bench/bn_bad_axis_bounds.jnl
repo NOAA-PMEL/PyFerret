@@ -1,0 +1,6 @@
+! bn_bad_axis_bounds
+! Ticket 2146 If there are invalid axis bounds
+! make them into a dependent variable.
+
+use badbounds.nc
+show data

@@ -360,6 +360,12 @@ void FORTRAN(samplexyt_work_size)(int *);
 void FORTRAN(samplexyt_compute)(int *, DFTYPE *, DFTYPE *,
       DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
+void FORTRAN(samplexyt_nrst_init)(int *);
+void FORTRAN(samplexyt_nrst_result_limits)(int *);
+void FORTRAN(samplexyt_nrst_work_size)(int *);
+void FORTRAN(samplexyt_nrst_compute)(int *, DFTYPE *, DFTYPE *,
+      DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+
 void FORTRAN(scat2gridgauss_xy_init)(int *);
 void FORTRAN(scat2gridgauss_xy_work_size)(int *);
 void FORTRAN(scat2gridgauss_xy_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
@@ -1056,8 +1062,6 @@ void FORTRAN(write_webrow_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *
 void FORTRAN(str_mask_init)(int *);
 void FORTRAN(str_mask_compute)(int *, DFTYPE *, DFTYPE *);
 
-
-
 /*
  *  End of declarations for internally linked external functions
  *  ------------------------------------ */
@@ -1100,7 +1104,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 161
+#define N_INTEF 162
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1267,6 +1271,7 @@ struct {
    strcpy(I_EFnames[158].funcname, "expndi_by_z_counts");
    strcpy(I_EFnames[159].funcname, "expndi_id_by_z_counts");
    strcpy(I_EFnames[160].funcname, "str_mask");
+   strcpy(I_EFnames[161].funcname, "samplexyt_nrst");
 
 /*    
  *  ------------------------------------ 
@@ -3510,6 +3515,12 @@ else if ( !strcmp(name,"samplexyt_init_") ) return (void *)FORTRAN(samplexyt_ini
 else if ( !strcmp(name,"samplexyt_result_limits_") ) return (void *)FORTRAN(samplexyt_result_limits);
 else if ( !strcmp(name,"samplexyt_work_size_") ) return (void *)FORTRAN(samplexyt_work_size);
 else if ( !strcmp(name,"samplexyt_compute_") ) return (void *)FORTRAN(samplexyt_compute);
+
+/* samplexyt_nrst.F */
+else if ( !strcmp(name,"samplexyt_nrst_init_") ) return (void *)FORTRAN(samplexyt_nrst_init);
+else if ( !strcmp(name,"samplexyt_nrst_result_limits_") ) return (void *)FORTRAN(samplexyt_nrst_result_limits);
+else if ( !strcmp(name,"samplexyt_nrst_work_size_") ) return (void *)FORTRAN(samplexyt_nrst_work_size);
+else if ( !strcmp(name,"samplexyt_nrst_compute_") ) return (void *)FORTRAN(samplexyt_nrst_compute);
 
 /* samplexy_curv.F */
 else if ( !strcmp(name,"samplexy_curv_init_") ) return (void *)FORTRAN(samplexy_curv_init);

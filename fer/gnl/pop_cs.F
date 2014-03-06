@@ -60,7 +60,8 @@
 *                   along with  the rest of the context after a REPEAT
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-* V688  3/14 *acm* for ticket 2044, write note ! Exit from <script>
+* V687  3/14 *acm* for ticket 2044, write note ! Exit from <script>
+* V687  3/14 *acm* for ticket 2044, write note ! Exit_GO
 
 * internal variable declarations:
 	INTEGER	LIB_FREE_LUN,TM_LENSTR1,stat,axis,ivar,cvar,csp_to,ll,
@@ -97,7 +98,7 @@
 
 * ... If mode journal, write note with script name 
 	   IF (mode_verify) THEN
-              risc_buff = '! Exit from GO '//cs_text(csp)
+              risc_buff = '! Exit_GO '
               CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, ll)
 	   ENDIF
 

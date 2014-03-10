@@ -96,6 +96,7 @@ samplexy_curv.F\
 samplexy_curv_avg.F\
 samplexy_curv_nrst.F\
 samplexyt.F\
+samplexyt_nrst.F\
 samplexz.F\
 sampleyz.F\
 scat2ddups.F\

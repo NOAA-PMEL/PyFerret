@@ -206,5 +206,7 @@ bn686_bug_fixes.jnl
 bn_long_symnames.jnl
 bn_strdim.jnl
 bn_single_colorlev.jnl
+bn687_bug_fixes.jnl
+bn_bad_axis_bounds.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

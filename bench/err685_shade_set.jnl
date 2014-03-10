@@ -1,0 +1,36 @@
+! err685_shade_set.jnl
+!
+! test fix for bug 883
+! Inside a SHADE/SET, and several other plot commands,
+! if we do an operation that evalueates an expression, the
+! plot is then blank.
+
+can dat/all
+
+can view
+use climatological_axes
+def axis/t=1-jan-2000:31-jan-2010:1/units=days timax
+let tseries = t[gt=timax]
+! evaluate info about an expression, with a different grid than the 
+! epression being SHADED, inside a SHADE/SET 
+shade/set tseries*z[gz=1:5:1]
+say `tseries[GT=month_irreg@mod],r=tunit`
+ppl shade !GAVE A BLANK PLOT
+
+shade/set tseries*z[gz=1:5:1]
+ppl shade !but this works
+
+shade/set tseries*z[gz=1:5:1]
+say `tseries,r=tunit`
+ppl shade !and this works
+
+let a = tseries*z[gz=1:5:1]
+shade/set a
+say `tseries[GT=month_irreg@mod],r=tunit`
+ppl shade !and this works
+
+shade/title="`tseries[GT=month_irreg],r=tunit`" tseries*z[gz=1:5:1]
+
+can var/all; can mem
+can axis timax
+set mode/last logo

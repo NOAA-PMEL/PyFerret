@@ -73,7 +73,7 @@
 
 * local variable declarations:
 	LOGICAL	ver_out, jnl_out
-	INTEGER TM_LENSTR1, slen, start, status
+	INTEGER TM_LENSTR1, STR_UPCASE, i, slen, start, status
         REAL temp_ylen, temp_yorg
 	CHARACTER*16 vbuff
 	CHARACTER TM_INQ_PATH*2048, fname*128, sfile*2048
@@ -180,6 +180,14 @@
 	   ENDIF
 	ENDIF
 
+	i = STR_UPCASE( vbuff, cmnd_buff(arg_start(1):arg_end(1)))
+	IF (( INDEX(vbuff,'SHADE')   .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'CONTOUR') .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'FILL')    .GT. 0 ).OR.
+     .      ( INDEX(vbuff,'WIRE')    .GT. 0 )    ) THEN
+	   CALL DECREMENT_PLOT_GRID  ! see ticket 883
+	ENDIF
+
 * check to see if ylen or yorg has been changed
 * if so, parameters saved prior to distorting yaxis are invalidated
         IF ( ylen .NE. temp_ylen ) ppl_saved_yaxlen = ylen
@@ -195,4 +203,3 @@
      .	fname(:slen)//'.spk" to set plot colors or pattern.', *1000)
 
 	END
-

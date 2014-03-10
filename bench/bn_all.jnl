@@ -871,7 +871,7 @@ GO bn_reset
 GO bn_vtree
 
 
-! *********** v6.85+ Additions ***********
+! *********** v6.86 Additions ***********
 GO bn_reset
 GO bn686_bug_fixes
 
@@ -885,8 +885,17 @@ GO bn_reset
 GO bn_single_colorlev
 
 
-!!!!!!!!!!!!! Note we should include tests for all the scat2grid functions. 
-!!!!!!!!! completed and improved the docs for scat2grid_bin and scat2grid_nbin functions 
+! *********** v6.87 Additions ***********
+GO bn_reset
+GO bn687_bug_fixes
+
+GO bn_reset
+GO bn_bad_axis_bounds
+
+
+!  *********** Always do a bn_reset  *********** 
+!  *********** make sure things clean up well **
+GO bn_reset
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

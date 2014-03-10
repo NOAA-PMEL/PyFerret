@@ -106,6 +106,8 @@
 * V686 1/14 *acm* Fix ticket 2128: If USE is given without a file extension, check
 *                 for descriptor file too, after .nc and .cdf.
 * V686 1/14 *acm* Fix ticket 2129: A bug in the fix to 2128.
+* V686 1/27/14 *acm* further fix for 2129: make sure a search for a .nc or .cdf file is
+*                 done in path FER_DATA.
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -236,7 +238,7 @@
            path = cdf_path
         ELSE
            ext  = def_ext       ! default TMAP file extension
-           path = tmap_sets    ! FER_DESCR
+           path = cdf_path
         ENDIF
 * if there is an explicit extension, we don't want to pass the default
 * extension on, because the error messages are misleading *kob*
@@ -262,7 +264,7 @@
 	      ds_dset_type = 'CDF'
 	   ELSE
 	      ext  = def_ext	! was .cdf
-	      path = tmap_sets
+	      path = cdf_path
 	      ds_dset_type = ' '
 	   ENDIF
 	   des_name = TM_INQ_PATH(dset_name,path,ext,.FALSE.,status)

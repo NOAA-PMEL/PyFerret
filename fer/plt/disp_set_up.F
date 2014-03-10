@@ -2,7 +2,7 @@
      .				vector, shade, use_cell, aspect, overlay, 
      .				transpz, no_labels, no_x_rng, valx1, 
      .				density, is_logx, is_logy, mr_list, nmv, 
-     .				cx_list, uvar, s1_axis, s2_axis, pen, 
+     .				cx_list, uvar, s1_axis, s2_axis, pen, inc_grid,
      .				status )
 
 *
@@ -196,7 +196,7 @@ C plus those starting w/ xbox_bounds:
 
 * calling argument declarations:
 	LOGICAL		vector, overlay, transpz, no_labels, no_x_rng,
-     .			is_logx, is_logy, flows, shade 
+     .			is_logx, is_logy, flows, shade, inc_grid
 	INTEGER		nmv, mr_list( nmv ), cx_list( nmv ), uvar,
      .			density, pen, status
 	REAL		memory( mem_blk_size, max_mem_blks )
@@ -307,6 +307,16 @@ C   set up memory for the flag grid
 
 * save axis pointers so PLOT+ can get box boundaries
 	bb_grid = grid
+
+* On a plot/set, the intervening commads may change the default grid.
+* Increment the grid. It will be decremented at the end of xeq_pplus
+
+	bb_grid_inccount = 0
+	IF (inc_grid) THEN
+	   bb_grid_inccount = 1
+	   CALL TM_USE_DYN_GRID(grid)  ! see ticket 883
+	ENDIF
+
 	IF ( transpz ) THEN
 	   bb_yaxis = dim1
 	   bb_xaxis = dim2

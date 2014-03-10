@@ -203,7 +203,7 @@
 * same grid for this variable in all datasets 
 	   
            nvars = nvars + 1
-	   IF (has_uvars) grid = unspecified_int4
+c	   IF (has_uvars) grid = unspecified_int4
 	   CALL DEFINE_AGGREGATE_GRID (agg_dset, nvars, vname,
      .           ivar, iline, grid, e_dim, member_sets, nsets)
 	   IF (status .NE. ferr_ok) GOTO 5000
@@ -258,7 +258,7 @@
 
               nvars = nvars + 1
 
-	      grid = unspecified_int4
+c	      grid = unspecified_int4
 	      CALL DEFINE_AGGREGATE_GRID (agg_dset, nvars, vname,
      .           fvar, iline, grid, e_dim, member_sets, nsets)
 	      IF (status .NE. ferr_ok) GOTO 5000
@@ -292,6 +292,9 @@
 	ds_mod_title(agg_dset) = ' '
 	ds_time_axis(agg_dset) = ds_time_axis(member_sets(1))
 	ds_format(agg_dset) = ds_format(member_sets(1))
+ 
+* set use counts and clean up temporary grids and axes for agg. dset
+	CALL TM_GARB_COL_GRIDS(agg_dset)
 
 * If user requested /HIDE, then mark the member datasets for
 * hidden status on SHOW DATA commands

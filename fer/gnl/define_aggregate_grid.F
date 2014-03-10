@@ -1,7 +1,38 @@
 	SUBROUTINE DEFINE_AGGREGATE_GRID (agg_dset, nvars, vname,
      .      fvar, iline, grid, agg_dim, member_sets, nsets)
 
-
+*  This software was developed by the Thermal Modeling and Analysis
+*  Project(TMAP) of the National Oceanographic and Atmospheric
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  hereafter referred to as NOAA/PMEL/TMAP.
+*
+*  Access and use of this software shall impose the following
+*  obligations and understandings on the user. The user is granted the
+*  right, without any fee or cost, to use, copy, modify, alter, enhance
+*  and distribute this software, and any derivative works thereof, and
+*  its supporting documentation for any purpose whatsoever, provided
+*  that this entire notice appears in all copies of the software,
+*  derivative works and supporting documentation.  Further, the user
+*  agrees to credit NOAA/PMEL/TMAP in any publications that result from
+*  the use of this software or in any product that includes this
+*  software. The names TMAP, NOAA and/or PMEL, however, may not be used
+*  in any advertising or publicity to endorse or promote any products
+*  or commercial entity unless specific written permission is obtained
+*  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
+*  is not obligated to provide the user with any support, consulting,
+*  training or assistance of any kind with regard to the use, operation
+*  and performance of this software nor to provide the user with any
+*  updates, revisions, new versions or "bug fixes".
+*
+*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
+*  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
+*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+*  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+*  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*
 * Define ensemble axis and grid using that axis. For uvars, grid is 
 * set to unspecified_int4 when calling this. Will defer the grid check for later.
 
@@ -33,46 +64,42 @@
 	CHARACTER*(*) vname
 
 * local variable declarations:
-	LOGICAL	its_dynamic
+	LOGICAL	its_dynamic, itsa_uvar
 	INTEGER STR_SAME,
      .		big_cx, igrid, idim, gnum, nv, type, 
      .		ii, iset, slen, vtype, status
 
 * Just for testing, get info back from the attribute-handling structure
-	CHARACTER varname*128
+	CHARACTER varname*128, name*128
 	INTEGER vartype, nvdims, vdims(8), nvatts, all_outflag, varid
 	LOGICAL coordvar
 
 * Define aggregate grid
 
-	igrid = unspecified_int4
-	IF (grid .NE. unspecified_int4) THEN
-	   CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   big_cx = cx_stack_ptr
-	   is_big_cx( isp ) = big_cx
-	   CALL ALLO_GRID( cx_grid(big_cx), status )
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   CALL INIT_GRID( cx_grid(big_cx), char_init16, mnormal )
-	
-	   igrid = cx_grid(big_cx)
-	   DO 700 idim = 1, nferdims
-	      grid_line(idim, igrid) = grid_line(idim,grid)
-  700	   CONTINUE
-	   grid_line(agg_dim, igrid) = iline
+      igrid = unspecified_int4
+      IF (grid .NE. unspecified_int4) THEN
+         igrid = 0
+         CALL TM_NEXT_TMP_GRID (igrid, 710)
+  710    CALL TM_ALLO_TMP_GRID (igrid, status)
+         IF (status .NE. ferr_ok) GOTO 5000
 
-* catalog this result checking for matching previously existing grid
-	   CALL TM_GET_LIKE_DYN_GRID(igrid, its_dynamic, gnum, 
-     .				grd_stk_ptr, status )  
+         DO 700 idim = 1, nferdims
+            grid_line(idim, igrid) = grid_line(idim,grid)
+  700    CONTINUE
+         grid_line(agg_dim, igrid) = iline
+         
+* Make up a unique grid name for aggregate grid
+           IF (agg_dim .EQ. 5) grid_name(igrid) = 'GEN'
+           IF (agg_dim .EQ. 6) grid_name(igrid) = 'GFN'
+           CALL TM_NEW_GRID_NAME( grid_name(igrid), name )
+           grid_name(igrid) = name
 
-	   IF ( its_dynamic ) THEN
-	      IF ( mode_diagnostic )  CALL DIAG_OP
-     .           ('allocate', isact_class_impl_grid, gnum, 0)
-	   ENDIF
-	ENDIF
+	   gnum = igrid
+      ENDIF
 
 * ds_var slot, fill with aggregate variable in aggregate dataset.
 
+      itsa_uvar = .FALSE.
       DO 720 nv = 1, maxvars
 	      IF ( STR_SAME(ds_var_code(nv),char_init) .EQ. 0 ) GOTO 725
  720	CONTINUE
@@ -138,4 +165,5 @@
  750	CONTINUE
 
  5000	RETURN
+     
 	END

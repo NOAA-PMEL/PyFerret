@@ -56,8 +56,11 @@ C
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 
+*  ACM 10/2012    Modulo-ing for PLOT/VS longitudes overlaid on a map.
 * 1/2013  *acm* Fix ticket 2029, call to WS_LINE_SPECTRUM was missing an 
 *               argument for setting up metafile plots.
+*  ACM  2/2013    ticket 2141. Fix the modulo operation when the longitude
+*                 range is over 360.
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -100,7 +103,7 @@ C
      .		line_ndx, thick_offset, nseg, iseg, indx, inc
 	INTEGER GET_NDX, ibase, iline2
 
-	logical	isbad, last_bad, bad_blank
+	logical	isbad, last_bad, bad_blank, new_branch
 
         real            xadd, xaddlast, datx, daty, datxlast,datylast
         integer         ndx,type
@@ -119,6 +122,7 @@ C
 
 	xadd = 0.
 	xadlast = 0.
+	new_branch = .FALSE.
 C
 C  JTYPE IS DATA TYPE (0 FOR 2D, 1 FOR 1D)
 C
@@ -254,65 +258,37 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	          daty = X(IY+K)
 
 
-		  IF (MOD_VS_X .AND. datx .LT. xlo) THEN  ! here plot to edge?
+
+		  IF (MOD_VS_X .AND. datx .LT. xlo) THEN 
 		     xadd = 360.
 		     datx = datx + xadd
-
-* Plot to lower edge, then pick up the pen and move to the upper edge.
-		     IF (xadd .NE. xaddlast) THEN
-		        CALL TRANS(I,xlo,(datylast+daty)/2.,XT,YT)
-		        CALL PLOT(xt,yt,idn,0)
-		        datxlast = xhi
-	                CALL TRANS(I,datxlast,(datylast+daty)/2.,xlast,ylast)
-	                CALL PLOT(xlast,ylast,0,0)
-	                CALL PLOT(xlast,ylast,idn,0)
-		     ENDIF
 
 		  ELSE IF (MOD_VS_X .AND. datx .GT. xhi) THEN  
 		     xadd = -360.
 		     datx = datx + xadd
-		     
-* Plot to lower edge, then pick up the pen and move to the upper edge.
-		     IF (xadd .NE. xaddlast) THEN
-		        CALL TRANS(I,xhi,(datylast+daty)/2.,XT,YT)
-		        CALL PLOT(xt,yt,idn,0)
-		        datxlast = xlo
-	                CALL TRANS(I,datxlast,(datylast+daty)/2.,xlast,ylast)
-	                CALL PLOT(xlast,ylast,0,0)
-	                CALL PLOT(xlast,ylast,idn,0)
-		     ENDIF
 
 		  ELSE
-* Plot to near edge, then pick up the pen and move to the far edge.
-		     IF (xaddlast .NE. 0.) THEN
-		        IF (xadd .EQ. 360.) THEN
-		           CALL TRANS(I,xhi,(datylast+daty)/2.,XT,YT)
-		           CALL PLOT(xt,yt,idn,0)
-		           datxlast = xlo
-	                   CALL TRANS(I,datxlast,(datylast+daty)/2.,xlast,ylast)
-	                   CALL PLOT(xlast,ylast,0,0)
-	                   CALL PLOT(xlast,ylast,idn,0)
-			ELSE
-		           CALL TRANS(I,xlo,(datylast+daty)/2.,XT,YT)
-		           CALL PLOT(xt,yt,idn,0)
-		           datxlast = xhi
-		           CALL TRANS(I,datxlast,(datylast+daty)/2.,xlast,ylast)
-	                   CALL PLOT(xlast,ylast,0,0)
-	                   CALL PLOT(xlast,ylast,idn,0)
-			ENDIF
-		     ENDIF
 		     xadd = 0.
 
 		  ENDIF
 
-		  xaddlast = xadd
+		  IF (xadd .NE. xaddlast) THEN
+		     datxlast = datx - xadd + xaddlast
+		     CALL TRANS(I,datxlast,daty,XT,YT)
+		     CALL PLOT(xt,yt,idn,0)
+		     CALL TRANS(I,datx,daty,XT,YT)
+		     CALL PLOT(XT,YT,0,0)
+		     CALL PLOT(XT,YT,IDN,0)
+		     new_branch = .TRUE.
+		  ENDIF
 
 	          CALL TRANS(I,datx,daty,XT,YT)
+		  xaddlast = xadd
 
 		  xhalf = xlast + (xt - xlast)/2
 		  yhalf = ylast + (yt - ylast)/2
 
-		  IF (RIBBON_FAST .OR. last_bad) THEN 
+		  IF (RIBBON_FAST .OR. last_bad .AND.(.NOT.new_branch)) THEN 
 ! go halfway between the last point and this one, using previous color.
                      IF (last_bad .AND. bad_blank) THEN 
 		        CALL PLOT(xhalf,yhalf,0,0)
@@ -327,7 +303,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	          colr_ndx = GET_NDX (datum,colr_ndx)
 	          line_ndx = colr_ndx + thick_offset + low_index - 1
 
-	          IF (colr_ndx .EQ. -999) THEN
+	          IF (colr_ndx .EQ. -999 .AND.(.NOT.new_branch)) THEN
 		     isbad = .true.
 		     colr_ndx = bad_ribbon_ndx
 		     line_ndx = colr_ndx + low_index - 1
@@ -346,7 +322,8 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 
 		     IF (.NOT.RIBBON_FAST .AND. 
      .                    .NOT.isbad .AND. .NOT.last_bad .AND.
-     .                    ABS(colr_ndx-last_colr_ndx) .GT. 1) THEN
+     .                    ABS(colr_ndx-last_colr_ndx) .GT. 1 .AND.
+     .                    (.NOT.new_branch)) THEN
 		        nseg = ABS(colr_ndx-last_colr_ndx) 
 		        frac = 1./FLOAT(nseg)
 		        dx = (xt-xlast)
@@ -368,7 +345,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 80	                CONTINUE
 			XT = xi  ! should already be??
 			YT = yi
-                     ELSE
+                     ELSEIF (.NOT.new_branch) THEN
 	                CALL PLOT(xhalf,yhalf,IDN,0)
 			CALL COLOR (line_ndx)
 	                CALL PLOT(xhalf,yhalf,IDN,0)
@@ -401,6 +378,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		  CALL PLOT(XT,YT,IDN,0) 
 
 	          IF(IDN.EQ.0)IDN=1
+		  new_branch = .FALSE.
 	        END IF
 72	      CONTINUE
 	    END IF

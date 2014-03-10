@@ -28,7 +28,9 @@
 #            (bn_curv now saves only one).
 # acm   9/06 Change so that all ncdump output is directed to a file all_ncdump.out. 
 #            append this to the log file 
-
+# acm*  1/14 Change the order of the questions asked: test efs? If so what directory are they in?
+#            Also list the contents of the external fucntions directory
+#
 # usage % run_all
 
 # unable to redirect input on Solaris
@@ -99,14 +101,23 @@ if ( $status == 0 ) then
 	set machine = "x$machine"
 endif
 
-# which external function libraries to use
-echo "Enter the directory containing the external function libraries"
-set efdir = $<
-
 # *acm* 4/5/05 optionally do externally-linked external function tests 
 # 
 echo "Run tests of externally-linked external functions? Enter y or n"
 set do_shared_obj = $<
+
+
+# which external function libraries to use
+set efdir = n
+if ( $do_shared_obj == "y" ) then
+  echo "Enter the directory containing the external function libraries"
+  set efdir = $<
+  echo "Contents of "$efdir" :"
+  echo " "
+  ls -1 $efdir
+  echo " "
+endif
+
 
 # background info to go in the benchmark file
 echo "Enter your name"

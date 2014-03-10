@@ -1,0 +1,15 @@
+! err686_individual_levels.jnl
+! Ticket 2142
+! The bug appeared just in a beta release of v686. The behavior needs a test.
+
+use coads_climatology
+
+cancel symbol lev*
+shade/l=1/lev=(10)(20)(30)(40) sst
+
+! The levels should be min,max,del = 10,40,10
+sh sym lev*
+
+cancel symbol lev*
+contour/l=1/lev=(10)(15)(20)(25)(30) sst
+sh sym lev*

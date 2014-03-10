@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Jan 21 16:19 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Mar 10 11:29 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug build of PyFerret on RHEL5-64
+Note: RUN_TESTS.sh test results for debug build PyFerret on RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -211,6 +211,8 @@ Benchmark scripts that will be run:
    bn_long_symnames.jnl
    bn_strdim.jnl
    bn_single_colorlev.jnl
+   bn687_bug_fixes.jnl
+   bn_bad_axis_bounds.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -227,7 +229,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Tue Jan 21 16:40:43 PST 2014
+Beginning at Mon Mar 10 11:38:34 PDT 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3375,6 +3377,15 @@ SET DAT/FORM=CDF snoopy
              NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
              Data set: ./snoopy.dat
 SET DAT/FORM=CDF snoopy.dat
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_long_symnames.jnl
  Cached data cleared from memory
 *** Running test: bn_strdim.jnl
@@ -3383,6 +3394,15 @@ SET DAT/FORM=CDF snoopy.dat
  LISTing to file a.nc
 *** Running test: bn_single_colorlev.jnl
  Cached data cleared from memory
+*** Running test: bn687_bug_fixes.jnl
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+*** Running test: bn_bad_axis_bounds.jnl
+ Cached data cleared from memory
+ *** NOTE: Axis definition error on axis: MONTH_IRREG. Bounds describe cells that overlap one another
+ *** NOTE: Error in bounds "MONTH_IRREG_bnds" or bounds do not enclose point on axis MONTH_IRREG
+ *** NOTE: Substituting coordinate midpoints
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3402,4 +3422,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Tue Jan 21 16:44:35 PST 2014
+Ended at Mon Mar 10 11:42:50 PDT 2014

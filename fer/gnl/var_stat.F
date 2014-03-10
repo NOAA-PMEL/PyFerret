@@ -70,6 +70,7 @@
 *                  Rename the file to match the function name var_stat.F
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
 *                 various SHOW commnands will not list info for E,F dimensions.
+* V6.68  acm 3/14 ticket 2148: fix truncated ntot or nbad in stat listing
 
 	include 'tmap_dims.parm'
 	include 'errmsg.parm'
@@ -97,7 +98,7 @@
 	REAL*8	sum, sum2, xmean, zmean, x, xdelta, variance_c
 
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, vname_buff
-	CHARACTER	TM_FMT*12, LEFINT*8, AX_TITLE*32, CX_SIZE_STR*24,
+	CHARACTER	TM_FMT*12, LEFINT*16, AX_TITLE*32, CX_SIZE_STR*24,
      .			line_buff*130, title*32, bl13*13, symbuff*30
 	PARAMETER (bl13 = '             ' )
 

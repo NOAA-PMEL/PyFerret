@@ -4,7 +4,7 @@
 ! The directory contains files with all three extensions
 sp ls duplicate.*
 
-! The one that's used is .cdf
+! The one that's used is .nc
 use duplicate
 sh dat
 

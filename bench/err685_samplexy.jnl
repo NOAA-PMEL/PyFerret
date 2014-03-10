@@ -1,0 +1,10 @@
+! err685_samplexy.jnl
+! Fix for ticket 2137. out-of-bounds error 
+! sending sub-range of variable into samplexy
+
+! running this, with bounds-checking on, resulted in a bounds error.
+use coads_climatology
+let lon = {300,301,302}
+let lat = {11,12,13}
+list  samplexy(sst[x=290:310,y=0:20], lon, lat)
+

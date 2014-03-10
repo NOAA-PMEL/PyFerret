@@ -26,5 +26,8 @@ say/quiet/outfile=($output_xml_file)/append </data>
 ! the file is still open. Close it by listing to another file.
 list/clobber/file=dummy.dat 1  
 
+
+! Note with the fix to ticket 883, the ordering of the axis listing is
+! different. This is unimportant to using the xml files.
 sp cat the_xml_file.xml
 

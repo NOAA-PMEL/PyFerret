@@ -44,6 +44,7 @@ deallo_all_axes.F\
 deallo_all_grids.F\
 deallo_grid.F\
 deallo_unformed_grid.F\
+decrement_plot_grid.F\
 dense_contig_region.F\
 depend_stat_var.F\
 depend_stat_var_sub.F\

@@ -71,6 +71,7 @@ C**
 * V685 *acm* 7/13 Ticket 1990: fixes for number of digits. More precision needed 
 *                 (Lavelle examples) 
 * v686 *acm* 1/14 Fix ticket 2123: labeling color bar when there is just one level
+* v686 *acm* 2/14 Fix ticket 2124: Do the above fix only in the subroutine KEY.
 
 	parameter	(epsilon = 1e-6)
 
@@ -169,8 +170,6 @@ CC		Bug fix for non zero levels that ought to be zero *jd*
 
 100		CONTINUE
 
-* Get labels on colorbar right if there is just one level.
-	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 C
 C	FIND MIN AND MAX
 C

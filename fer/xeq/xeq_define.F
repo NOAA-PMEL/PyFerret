@@ -223,6 +223,7 @@
 * V685 *acm*  4/13 Add /HIDDEN on DEF DATA/AGG
 * V685 *acm* 10/13 Fix ticket 2096, DEFINE GRID with check on units
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* V687 *acm*  1/14 Fixing ticket 2135; grid_use_cnt on DEFINE DATA/AGG datasets
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -2191,9 +2192,11 @@ C /units=months  is 1/12 of the length of the year
         IF ( TM_LENSTR1(buff1) .GT. 128 ) GOTO 5410
 
 	CALL INIT_AGGREGATE_DSET (buff1, buff2, dset, agg_quiet, agg_hide, status)
-	
-	IF (status .EQ. ferr_ok) cx_data_set( cx_last )	=  dset
+
 	IF (status .NE. ferr_ok) GOTO 6110
+
+* Make this the current dataset
+	cx_data_set( cx_last ) =  dset
 
 	RETURN
 **************************************************************************

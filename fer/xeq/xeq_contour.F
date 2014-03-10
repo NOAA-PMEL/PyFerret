@@ -144,7 +144,7 @@
 * internal variable declarations:
 	LOGICAL	  no_range, overlay, transpz, no_labels, fill, usa_line,
      .            do_key, spectrum, set_up, noaxes, axes, pattern, 
-     .		  no_data, is_logh, is_logv
+     .		  no_data, is_logh, is_logv, inc_grid
 	INTEGER	  TM_LENSTR1, status, slen, sp, ipen, icolor,
      .		  ax1_blks, ax1_start, loc, sigdig,
      .		  ax2_blks, ax2_start, patt, i, nparm, num_it, 
@@ -328,6 +328,7 @@
         density = 0	! not used; vec/flow needs it in set up
 
 * set up the axes and title and load the data into PPLUS
+	inc_grid = set_up
 	CALL DISP_SET_UP   ( 	memory,
      . 			 	not_vector,
      .				is_shade,
@@ -348,6 +349,7 @@
      .				memory( 1, ax1_start ),
      .				memory( 1, ax2_start ),
      .				ipen,
+     .				inc_grid,
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 

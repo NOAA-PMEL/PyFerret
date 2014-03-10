@@ -110,6 +110,7 @@
 * v686 *acm* 1/14 Fixes for labels on horizontal keys: make sure they don't get too small, and
 *                 don't let them run over each other. Locate the horizontal colorbar close to
 *                 the plot with labels above them. Behavior of args to SHAKEY is unchanged.
+* v686 *acm* 2/14 Fix ticket 2124: Do the fix for 2124 only here, not in subr. LEV.
 
         IMPLICIT NONE
 	include 	'parampl5_dat.decl'
@@ -145,7 +146,7 @@
      .                  val, del, x_inc_inf, y_inc_inf, frac, fixx, inc_min
         real*8          val_n, val_last
 	character*12	text, TM_FMT_SNGL, TM_FMT_SNGL_DIGITS, 
-     ,			txt_out, blanks
+     .			txt_out, blanks
         character*20    buff
 	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, windof_hold, 
      .                  check_0, increase_digits, nofill, cont_key_keep, no_lines
@@ -174,6 +175,7 @@
 
         lev1 = 1
         levn = nlev2
+	IF (levn.EQ.1) ZLEV(2) = zlev(1)
         IF (neginf) lev1 = 2
         IF (posinf) levn = nlev2 - 1
 

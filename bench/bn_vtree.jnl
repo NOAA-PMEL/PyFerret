@@ -60,32 +60,32 @@ go bn_vtree.sub b
 ! grid-changing functions 
 go bn_vtree.sub RESHAPE(fvx,fvz)
 
-! file variable aux var
-LET Zpts = Z[Z=0:500:100]
-define axis/z/units=meters zax = zpts
-LET fv1z = fv1[gz(fvz)=zpts] + fvx
-go bn_vtree.sub fv1z
-
-! user-defined aux vars
-let depth = z[g=fvz]
-LET fv1z = fv1[gz(depth)=zpts] + fvx
-go bn_vtree.sub fv1z
-
-let depth = z[g=fvz]+ 0*fvz[k=1]
-LET fv1z = fv1[gz(depth)=zpts] + fvx
-go bn_vtree.sub fv1z
-
-! unknown aux var
-LET fv1z = fv1[gz(noexist)=zpts] + fvx
-go bn_vtree.sub fv1z
-
-! unknown variable with known aux var
-LET fv1z = noexist[gz(depth)=zpts] + fvx
-go bn_vtree.sub fv1z
-
-! unknown variable with unknown aux var
-LET fv1z = noexist[gz(unknown_aux)=zpts] + fvx
-go bn_vtree.sub fv1z
+!! file variable aux var
+!LET Zpts = Z[Z=0:500:100]
+!define axis/z/units=meters zax = zpts
+!LET fv1z = fv1[gz(fvz)=zpts] + fvx
+!go bn_vtree.sub fv1z
+!
+!! user-defined aux vars
+!let depth = z[g=fvz]
+!LET fv1z = fv1[gz(depth)=zpts] + fvx
+!go bn_vtree.sub fv1z
+!
+!let depth = z[g=fvz]+ 0*fvz[k=1]
+!LET fv1z = fv1[gz(depth)=zpts] + fvx
+!go bn_vtree.sub fv1z
+!
+!! unknown aux var
+!LET fv1z = fv1[gz(noexist)=zpts] + fvx
+!go bn_vtree.sub fv1z
+!
+!! unknown variable with known aux var
+!LET fv1z = noexist[gz(depth)=zpts] + fvx
+!go bn_vtree.sub fv1z
+!
+!! unknown variable with unknown aux var
+!LET fv1z = noexist[gz(unknown_aux)=zpts] + fvx
+!go bn_vtree.sub fv1z
 
 ! aggregate (ensemble) dataset of file variables
 define data/agg my_agg = my_file_vars, other_file_vars, another_file_vars

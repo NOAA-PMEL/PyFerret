@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Mar 10 11:29 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Mar 11 13:12 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug build PyFerret on RHEL5-64
+Note: RUN_TESTS.sh test results for debug built PyFerret on RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -229,9 +229,31 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Mar 10 11:38:34 PDT 2014
+Beginning at Tue Mar 11 13:13:50 PDT 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
         SET EXPRESSION has not been given or implied
         SET EXPRESSION has not been given or implied
  **ERROR: unknown command qualifier: help
@@ -461,6 +483,8 @@ cont/over/i=1:10/thick=4 i
 cont/over/i=1:10/sigdig=-1 i
 *** Running test: bn_curv.jnl
  Cached data cleared from memory
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
 Replacing definition of axis LON_FIELD_I_AXIS
 Replacing definition of axis LON_FIELD_J_AXIS
 Replacing definition of axis LAT_FIELD_I_AXIS
@@ -484,6 +508,8 @@ shade/nolabel sst, x_page, 0*y_page
 shade/nolabel sst, x_page[j=1:12], y_page
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
 *** Running test: bn_symbols.jnl
  Cached data cleared from memory
  **ERROR: command syntax: illegal name: TEST*
@@ -885,6 +911,8 @@ Replacing definition of axis XAX2
 Replacing definition of axis XAX2
 *** Running test: bn_polygon.jnl
  Cached data cleared from memory
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
 *** Running test: bn500_bug_fixes.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -1022,6 +1050,8 @@ plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
  Using every   2th vector in the Y direction
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
  Using every   2th vector in the X direction
  Using every   2th vector in the Y direction
  PERMANENT data cleared from memory
@@ -1174,6 +1204,10 @@ list a[gx=xnrst@mod]
  Cached data cleared from memory
 *** Running test: bn_vec_curv.jnl
  Cached data cleared from memory
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
 *** Running test: bn_delimited_read.jnl
  Cached data cleared from memory
 Replacing definition of axis TAX
@@ -1307,6 +1341,8 @@ define axis/x=130e:500:10/modulo=360 xsub
  *** NOTE: Stride value not a factor of axis length
 *** Running test: bn_dots.jnl
  Cached data cleared from memory
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
  *** NOTE: /THICKNESS ignored  on /SYMBOL=DOT
  *** NOTE: /SIZE= ignored  on /SYMBOL=DOT
 *** Running test: bn_lev_symbols.jnl
@@ -1343,6 +1379,10 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
 *** Running test: bn_multi_line_labels.jnl
  Cached data cleared from memory
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
 *** Running test: bn552_bug_fixes.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -1461,6 +1501,8 @@ SHOW VAR/XML
  Using every   5th vector in the X direction
  Using every   3th vector in the Y direction
  Using every   2th vector in the X direction
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
  *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
 Replacing definition of axis TAX
 Replacing definition of axis TAX
@@ -1799,6 +1841,10 @@ DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/T/CALENDAR=noleap myt
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2019,6 +2065,10 @@ Replacing definition of axis TIME
  Cached data cleared from memory
 *** Running test: bn_linecolors.jnl
  Cached data cleared from memory
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
  Using every   3th vector in the X direction
  Using every   4th vector in the Y direction
  *** NOTE: New number of line colors will take effect on next new window: SET WIN/NEW or SET WIN/CLEAR
@@ -2662,10 +2712,16 @@ Replacing definition of axis CAXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
  *** NOTE: New # of line colors will take effect on next new window: SET WIN/NEW then define pen colors
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
  *** NOTE: New number of line colors will take effect on next new window: SET WIN/NEW or SET WIN/CLEAR
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis ZAXLEVITR
@@ -2828,6 +2884,8 @@ LIST/FORMAT=CDF/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_set_axis_regular.jnl
@@ -3266,6 +3324,10 @@ NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  data in attribute _FillValue not representable in output type NC_INT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
@@ -3274,6 +3336,8 @@ NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: .HELLO
@@ -3398,6 +3462,8 @@ SET DAT/FORM=CDF snoopy.dat
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_bad_axis_bounds.jnl
  Cached data cleared from memory
  *** NOTE: Axis definition error on axis: MONTH_IRREG. Bounds describe cells that overlap one another
@@ -3422,4 +3488,6 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Mon Mar 10 11:42:50 PDT 2014
+ *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+ *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+Ended at Tue Mar 11 13:18:11 PDT 2014

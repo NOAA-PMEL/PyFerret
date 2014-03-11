@@ -84,8 +84,8 @@ CFerBind *cairoCFerBind_createWindow(void)
     /* Default Cairo surface type */
     instdata->imageformat = CCFBIF_REC;
     /* default image size and minimum allowed value */
-    instdata->imagewidth = (int) 10.5 * CCFB_WINDOW_DPI;
-    instdata->imageheight = (int) 8.5 * CCFB_WINDOW_DPI;
+    instdata->imagewidth = (int) (10.5 * CCFB_WINDOW_DPI);
+    instdata->imageheight = (int) (8.5 * CCFB_WINDOW_DPI);
     instdata->minsize = 128;
     /* default clear color of opaque white */
     instdata->lastclearcolor.id = CCFBColorId;

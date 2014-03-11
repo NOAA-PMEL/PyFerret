@@ -656,6 +656,8 @@ c *kob* 4/97
 	      ELSEIF ( mode .EQ. pmode_metafile ) THEN
                  IF ( .NOT. pplus_started ) CALL START_PPLUS(.FALSE.)
                  CALL PPLCMD(from, line, 0, 'PLTNME '//buff2, 1, 1)
+                 CALL WARN('the use of "SET MODE METAFILE" is deprecated;')
+                 CALL WARN('instead use "FRAME /FILE=... /FORMAT=..."')
                  mode_metafile = .TRUE.
 * ... mode diagnostic sends message to TMAP library
 	      ELSEIF ( mode .EQ. pmode_diagnostic ) THEN
@@ -1880,6 +1882,8 @@ c *kob* 4/97
         buff2 = cmnd_buff(item_start(1):item_end(1))
         IF ( .NOT. pplus_started ) CALL START_PPLUS(.FALSE.)
         CALL PPLCMD(from, line, 0, 'PLTNME ' // buff2, 1, 1)
+        CALL WARN('the use of "SET GIFFILE" is deprecated;')
+        CALL WARN('instead use "FRAME /FILE=... /FORMAT=..."')
         mode_metafile = .TRUE.
         RETURN
 

@@ -120,6 +120,8 @@
 * V686 12/13*acm* For string variables from datasets, keep the string-dimension name and length
 *                 from the original dataset on output.
 * V686 1/14 *acm* Fix ticket 2136: Appending a string variable to a dataset.
+* V687 3/14 *acm* Correct the writing of missing and fill attributes when writing a scaled
+*                 user-defined variable.	
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -173,7 +175,7 @@
      .                  c1*1, aname*128, short*128
 
 	REAL*8		user_lo, user_hi, delta, loest_ww, hiest_ww,
-     .                  miss_in, fill_in
+     .                  miss_in, fill_in, r_scale, r_off
 
 * local parameter declarations:
         LOGICAL    already_warned
@@ -642,6 +644,12 @@
 		    IF (attoutflag .NE. 0) got_it = NC_GET_ATTRIB_DP 
      .                (dset, varid, attname, do_warn, varcode, attlen, 
      .                attoutflag, miss_in)
+     
+		    IF (dset .EQ. -1) THEN
+		       r_scale = 1./scalefac
+		       r_off = -1.*addoff* r_scale
+		       miss_in = miss_in* r_scale + r_off
+		    ENDIF
                  ELSE
                    attname = '_FillValue'
                    CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
@@ -684,8 +692,8 @@
      .                      ' to match output type of variable '//
      .                      typnam(outtype)(1:slen) )
                        ENDIF
-                       attype = outtype
                     ENDIF
+                    attype = outtype
    
                     IF (attoutflag .EQ. 1) THEN
                        IF (no_missing_flag.EQ.0) THEN
@@ -694,9 +702,17 @@
      .                    attype, status )
                           IF (status .NE. ferr_ok) GOTO 5400
 			  got_missing = .TRUE.
+
+			  IF (dset .EQ. -1) THEN 
+		             CALL CD_WRITE_ATTVAL_DP(
+     .                       cdfid, varcode, '_FillValue', dvals, attlen, 
+     .                       attype, status )
+                             IF (status .NE. ferr_ok) GOTO 5400
+			     got_fill = .TRUE.
+			  ENDIF
                        ENDIF
 
-		       IF (scalefac .NE. 1.D0  .OR. addoff .NE. 0.D0) THEN
+		       IF (.NOT.got_fill .AND. (scalefac.NE.1.D0  .OR. addoff.NE.0.D0) )THEN
 		       attname = '_FillValue'
 		       CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
      .                     istat)

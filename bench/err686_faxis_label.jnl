@@ -1,0 +1,25 @@
+! err686_faxis_label.jnl
+! 3/11/2014 ACM
+! ticket 2149
+! If the time axis has a calendar label, region label for F axis 
+! shouldn't automatically get it. 
+
+! Define a variable with a Julian calendar axis, and an abstract F axis
+
+define axis/t=1-jan-2000:1-jan-2010:1/units=days/calendar=julian jtime
+define axis/f=1:10:1 faxis
+
+use err64_small_latlon.nc
+let bath_tf = bathy  +  _N[gf=faxis] + 0*t[gt=jtime]
+shade/n=3/L=6 bath_tf
+
+! This label should be just F : 3
+sh sym lab($labnum_f)
+
+! Might an F axis have a calendar?
+define axis/f=1-jan-2000:12-jan-2000:1/units=days/calendar=julian naxis
+let bath_tf = bathy  +  _N[gf=naxis] + 0*t[gt=jtime]
+shade/n=3/L=6 bath_tf
+
+! If so its label will show Julian too.
+sh sym lab($labnum_f)

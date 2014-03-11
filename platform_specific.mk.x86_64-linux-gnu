@@ -1,0 +1,121 @@
+#
+# platform_specific.mk.x86_64-linux
+#
+# This file is included in Makefiles under the
+# fer, fmt, and ppl directories and defines platform specific macros
+#
+
+#
+# DIR_PREFIX, HDF5_DIR, and NETCDF4_DIR are from site_specific.mk
+# which should have been included prior to this include.
+#
+
+#
+# Directories for the libraries.  Convention has the 64-bit libraries
+# in a .../lib64 directory, but they may be in a .../lib directory.
+#
+ifeq ($(strip $(CAIRO_DIR)),)
+	CAIRO_LIBDIR	=
+#	This is only for code in Pango that did use the proper cairo extension
+	CAIRO_INCLUDE	= -I/usr/include/cairo
+else
+	CAIRO_LIBDIR	= $(CAIRO_DIR)/lib
+#	CAIRO_LIBDIR	= $(CAIRO_DIR)/lib64
+#	The second include is only for code in Pango that did use the proper cairo include
+	CAIRO_INCLUDE	= -I$(CAIRO_DIR)/include -I$(CAIRO_DIR)/include/cairo
+endif
+
+ifeq ($(strip $(HDF5_DIR)),)
+	HDF5_LIBDIR	=
+else
+	HDF5_LIBDIR	= $(HDF5_DIR)/lib
+#	HDF5_LIBDIR	= $(HDF5_DIR)/lib64
+endif
+
+	NETCDF4_LIBDIR	= $(NETCDF4_DIR)/lib
+#	NETCDF4_LIBDIR	= $(NETCDF4_DIR)/lib64
+
+#
+# Local defines
+#
+	MYINCLUDES	= -I$(PYTHONINCDIR) \
+			  -I$(DIR_PREFIX)/fer/common \
+			  -I$(DIR_PREFIX)/fer/grdel \
+			  -I$(DIR_PREFIX)/fer/cferbind \
+			  -I$(DIR_PREFIX)/fmt/cmn \
+			  -I$(DIR_PREFIX)/ppl/include \
+			  -I$(DIR_PREFIX)/ppl/tmap_inc \
+			  -I$(DIR_PREFIX)/pyfermod \
+			  -I$(DIR_PREFIX)/external_functions/ef_utility \
+			  $(CAIRO_INCLUDE) \
+			  -I/usr/include/pango-1.0 \
+			  -I/usr/include/glib-2.0 \
+			  -I/usr/lib64/glib-2.0/include \
+                          -I/usr/lib/x86_64-linux-gnu/glib-2.0/include \
+			  -I$(NETCDF4_DIR)/include
+
+	MYDEFINES	= -Dcrptd_cat_argument \
+			  -Ddouble_p \
+			  -Dgfortran \
+			  -Dreclen_in_bytes \
+			  -Dunix \
+			  -Dxgks \
+			  -DG77_SIGNAL \
+			  -DG77 \
+			  -DINTERNAL_READ_FORMAT_BUG \
+			  -DLINUX \
+			  -DMANDATORY_FORMAT_WIDTHS \
+			  -DNEED_IAND \
+			  -DNO_DOUBLE_ESCAPE_SLASH \
+			  -DNO_OPEN_CARRIAGECONTROL \
+			  -DNO_OPEN_READONLY \
+			  -DNO_OPEN_RECORDTYPE \
+			  -DNO_OPEN_SHARED \
+			  -DNO_PASSED_CONCAT \
+			  -DNO_PREPEND_STRING \
+			  -DSTAR_1_SUPPORTED \
+			  -DVOID_SIGHANDLER \
+			  -DX_REFRESH \
+			  -DXT_CODE
+
+	CPP		= $(shell which cpp)
+	CC		= $(shell which gcc)
+	FC		= $(shell which gfortran)
+	F77		= $(shell which gfortran)
+	RANLIB		= $(shell which ranlib)
+
+	CPP_FLAGS	= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
+	CFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
+	FFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC -fno-automatic -fdollar-ok \
+			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash \
+			  -fimplicit-none -fdefault-real-8 -fdefault-double-8
+	PPLUS_FFLAGS	= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC -fno-automatic -fdollar-ok \
+			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash
+
+# LD and LD_DYN_FLAGS only used for generating ferret_ef_mem_subsc.so
+	LD		= $(shell which gfortran)
+	LD_DYN_FLAGS	= -m64 -fPIC -shared -rdynamic -Xlinker --no-undefined \
+			  -L $(DIR_PREFIX)/pyferret_install/lib64/$(PYTHON_EXE)/site-packages/pyferret \
+			  -L $(DIR_PREFIX)/pyferret_install/lib/$(PYTHON_EXE)/site-packages/pyferret
+
+# PyFerret version number
+	PYFERRET_VERSION = 1.0.1
+
+## cancel the default rule for .f -> .o to prevent objects from being built
+## from .f files that are out-of-date with respect to their corresponding .F file
+#%.o : %.f
+#
+## use cpp to preprocess the .F files to .f files and then compile the .f files
+#%.o : %.F
+#	rm -f $*.f
+#	$(CPP) -P -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
+#	$(F77) $(FFLAGS) -c $*.f
+
+# Directly compile the .F source files to the .o object files
+# since gfortran can handle the C compiler directives in Fortran code
+%.o : %.F
+	$(FC) $(FFLAGS) -c $*.F -o $*.o
+
+#
+# End of platform_specific.mk.x86_64-linux
+#

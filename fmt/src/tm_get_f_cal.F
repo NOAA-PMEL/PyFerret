@@ -1,4 +1,4 @@
-        SUBROUTINE ASSIGN_MODEMETA
+      CHARACTER*(*) FUNCTION TM_GET_F_CAL (grid)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -33,22 +33,25 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* Simply assign mode_metafile to .TRUE. without all the other
-* effects of a SET MODE META command.  Intended only to be used
-* by the SET_BATCH_GRAPHICS C function when assigning batch mode
-* (which is done at the start of the program).
-* 
+C     Return the calendar name associated with F axis of a grid
+C     Ansley Manke 3/01
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files, add disclaimer
 
-        INCLUDE 'ferret.parm'
-        INCLUDE 'tmap_dims.parm'
-        INCLUDE 'xprog_state.cmn'
+      INCLUDE 'tmap_dims.parm'
+      INCLUDE 'xtm_grid.cmn_text'
+      INCLUDE 'ferret.parm'
+      INCLUDE 'calendar.decl'
+      INCLUDE 'calendar.cmn'
 
-        mode_metafile = .TRUE.
-        CALL WARN('the use of the "-batch" command-line option ' //
-     .            'is deprecated;')
-        CALL WARN('instead use the "FRAME /FILE=... /FORMAT=..." ' //
-     .            'Ferret command')
+C  Calling argument declarations:
+      INTEGER grid
 
-        RETURN
-        END
+C  Internal argument declarations:
+      INTEGER fax
+
+      fax = grid_line (f_dim, grid)
+
+      TM_GET_F_CAL = line_cal_name (fax)
+
+      RETURN
+      END

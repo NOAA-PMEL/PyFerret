@@ -2,14 +2,15 @@
 ## Makefiles in an installed PyFerret directory.  (This file
 ## is not used when building PyFerret from source.)
 
-## Use $(HOSTTYPE) to build natively for the machine you are
-## using, or directly specify the version to build:
-##   x86_64-linux  for 64-bit RHEL and most other Linux systems
-##   i386-linux    for 32-bit RHEL and most other Linux systems
+## Machine type for which to build Ferret/PyFerret
+##   x86_64-linux      for 64-bit RHEL
+##   x86_64-linux-gnu  for 64-bit Ubuntu and many "free" Linux systems
+##   i386-linux        for 32-bit RHEL
 ## This value is used to determine which platform_specific.mk
 ## file to include in the Makefiles.
 BUILDTYPE = $(HOSTTYPE)
 # BUILDTYPE = x86_64-linux
+# BUILDTYPE = x86_64-linux-gnu
 # BUILDTYPE = i386-linux
 
 ## INSTALL_FER_DIR and PYTHON_EXE are only used to construct

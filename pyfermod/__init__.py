@@ -236,7 +236,7 @@ def init(arglist=None, enterferret=True):
             just_exit = True
         if just_exit:
             # print the ferret header then exit completely
-            start(journal=False, verify=False, metaname="ferret.png")
+            start(journal=False, verify=False, unmapped=True)
             result = run("exit /program")
             # should not get here
             raise SystemExit
@@ -451,7 +451,7 @@ def init(arglist=None, enterferret=True):
     # start ferret without journaling
     start(memsize=my_memsize, journal=False, verify=my_verify,
           restrict=my_restrict, server=my_server, metaname=my_metaname,
-          transparent= my_transparent, unmapped=my_unmapped, quiet=my_quiet)
+          transparent=my_transparent, unmapped=my_unmapped, quiet=my_quiet)
 
     # define all the Ferret standard Python external functions
     for fname in std_pyefs:

@@ -137,7 +137,7 @@
 	include        'gkspar.inc'
 
 	integer		ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
-     .                  lab_add, nlab, i, lev1, levn, nspace
+     .                  lab_add, nlab, i, kount, lev1, levn, nspace
 
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht, ksiz_test
@@ -196,7 +196,8 @@
         lab_add = 0
         increase_digits = .TRUE.
 
-        DO WHILE (increase_digits .AND. ABS(lab_digits) .LE. klab_len )
+	kount = 0
+        DO WHILE (increase_digits .AND. ABS(lab_digits) .LE. klab_len .AND.kount.LT.10)
            buff = ' '
            val = zlev(lev1)
            IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
@@ -224,7 +225,7 @@
               IF (lab_digits .LT. 0) lab_digits = lab_digits - 1
               lab_add = lab_add + 1
            ENDIF
-
+	   kount = kount + 1
         ENDDO
 
 	IF (vertical_key) GOTO 1000
@@ -364,10 +365,12 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 	   ksiz_test = 0.075 * xcsize
            IF (klab_size .NE. 0) ksiz_test = ABS(klab_size)
-	   DO WHILE (karht .LT. ksiz_test)
+	   kount = 0
+	   DO WHILE (karht .LT. ksiz_test .AND. karht.GT.0. .AND. kount.LT.10)
 	      incr = incr+1
 	      nlab = INT( 0.5+(shd_levels-lev1)/incr )
 	      karht = 0.85*xxlen/FLOAT(nlab*max_len)
+	      kount = kount + 1
 	   ENDDO
 	   IF (karht .GT. ksiz_test) karht = ksiz_test
 	ENDIF

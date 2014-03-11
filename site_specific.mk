@@ -5,10 +5,14 @@
 ## Do not use $(shell pwd) since this is included in Makefiles in other directories.
 DIR_PREFIX	= $(HOME)/pyferret_dev
 
-## Machine for which to build Ferret
-## Use $(HOSTTYPE) to build natively for the machine you are using
+## Machine type for which to build Ferret/PyFerret
+##   x86_64-linux      for 64-bit RHEL
+##   x86_64-linux-gnu  for 64-bit Ubuntu and many "free" Linux systems
+##   i386-linux        for 32-bit RHEL
+##   i386-apple-darwin for MacOS
 BUILDTYPE	= $(HOSTTYPE)
 # BUILDTYPE	= x86_64-linux
+# BUILDTYPE	= x86_64-linux-gnu
 # BUILDTYPE	= i386-linux
 # BUILDTYPE	= i386-apple-darwin
 

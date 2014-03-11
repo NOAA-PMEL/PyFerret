@@ -56,6 +56,7 @@
 * v570  *acm* 5/04 - When showing calendar, need  cal_id .LE. max_calendars, not .LT.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
+* v687  *acm* 3/14 Fix ticket 2149: TM_GET_CAL gets the calendar label from the T axis.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -77,7 +78,7 @@
      .			max_len, len_trans, llen, trans, i,
      .			grid, cal_id, len_cal
 	CHARACTER	ALG_TRANS_TITL*20, LOHI_WORLD*44, LEFINT*4, 
-     .			TM_FMT*10, TM_GET_CAL*32,
+     .			TM_FMT*10, TM_GET_CAL*32, TM_GET_F_CAL*32,
      .			trans_title*40, cal_name*32
 	REAL		trans_arg
 
@@ -124,11 +125,12 @@
 
 * calendar name requiring comment ?
 
-	IF ((idim.EQ.t_dim .OR. idim.EQ.f_dim)  .AND. 
+	IF ((idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. 
      .      cx_lo_ww( idim, cx ) .NE. unspecified_val8 ) THEN
 
 	   grid = cx_grid(cx)
-	   cal_name = TM_GET_CAL (grid)
+	   IF (idim.EQ.t_dim) cal_name = TM_GET_CAL (grid)
+	   IF (idim.EQ.f_dim) cal_name = TM_GET_F_CAL (grid)
 	   cal_id = TM_GET_CALENDAR_ID (cal_name)
 	   IF (cal_id .GT. gregorian .AND. cal_id .LE. max_calendars) THEN
 	      len_cal = TM_LENSTR(cal_name)

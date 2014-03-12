@@ -9,11 +9,13 @@ DIR_PREFIX	= $(HOME)/pyferret_dev
 ##   x86_64-linux      for 64-bit RHEL
 ##   x86_64-linux-gnu  for 64-bit Ubuntu and many "free" Linux systems
 ##   i386-linux        for 32-bit RHEL
+##   i386-linux-gnu    for 32-bit Ubuntu and many "free" Linux systems
 ##   i386-apple-darwin for MacOS
 BUILDTYPE	= $(HOSTTYPE)
 # BUILDTYPE	= x86_64-linux
 # BUILDTYPE	= x86_64-linux-gnu
 # BUILDTYPE	= i386-linux
+# BUILDTYPE	= i386-linux-gnu
 # BUILDTYPE	= i386-apple-darwin
 
 ## Python 2.x executable to invoke for build and install.
@@ -46,11 +48,11 @@ HDF5_DIR	= /usr/local/hdf5_189
 
 ## Installation directory for NetCDF static or shared object libraries
 ## (contains include and lib or lib64 subdirectories)
-## If HDF5_DIR is empty, the shared-object libraries will be used.
+## If HDF5_DIR (above) is empty, the shared-object netcdf libraries will be used.
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
 NETCDF4_DIR	= /usr/local/netcdf_4311
-# NETCDF4_DIR	= /usr/local/netcdf-4.3
+# NETCDF4_DIR	= /usr/local/netcdf-4.3.1.1
 
 ## Java home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,
@@ -58,6 +60,7 @@ NETCDF4_DIR	= /usr/local/netcdf_4311
 ## called to build threddsBrowser.jar; otherwise, it just
 ## uses javac and jar (from the path).
 # JAVA_HOME	= /usr/java/latest
+# JAVA_HOME	= /usr/lib/jvm/default-java
 # JAVA_HOME	= /usr/lib/jvm/java-oracle
 # JAVA_HOME	= /usr/lib/jvm/java-sun
 JAVA_HOME	= /usr/lib/jvm/java

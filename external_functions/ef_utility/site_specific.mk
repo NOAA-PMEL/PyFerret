@@ -6,12 +6,14 @@
 ##   x86_64-linux      for 64-bit RHEL
 ##   x86_64-linux-gnu  for 64-bit Ubuntu and many "free" Linux systems
 ##   i386-linux        for 32-bit RHEL
+##   i386-linux-gnu    for 32-bit Ubuntu and many "free" Linux systems
 ## This value is used to determine which platform_specific.mk
 ## file to include in the Makefiles.
 BUILDTYPE = $(HOSTTYPE)
 # BUILDTYPE = x86_64-linux
 # BUILDTYPE = x86_64-linux-gnu
 # BUILDTYPE = i386-linux
+# BUILDTYPE = i386-linux-gnu
 
 ## INSTALL_FER_DIR and PYTHON_EXE are only used to construct
 ## the location of pyferret library.  The library should be

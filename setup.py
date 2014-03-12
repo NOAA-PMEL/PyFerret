@@ -11,12 +11,13 @@ incdir_list = [ "pyfermod",
                 os.path.join("fer", "ef_utility"),
                 os.path.join("fer", "grdel"), ]
 
-# Non-standard directories containing libraries to link
+# NETCDF4_LIBDIR must be given, either for the static library or the shared-object library
 netcdf4_libdir = os.getenv("NETCDF4_LIBDIR")
 if netcdf4_libdir:
     netcdf4_libdir = netcdf4_libdir.strip()
 if not netcdf4_libdir:
     raise ValueError("Environment variable NETCDF4_LIBDIR is not defined")
+# HDF5_LIBDIR is only given if the HDF5 and NetCDF libraries are to be statically linked in
 hdf5_libdir = os.getenv("HDF5_LIBDIR")
 if hdf5_libdir:
     hdf5_libdir = hdf5_libdir.strip()
@@ -70,6 +71,7 @@ if hdf5_libdir:
 else:
     addn_link_args = [ "-lnetcdff", "-lnetcdf", ]
 
+# The Pango text-rendering libraries
 addn_link_args.extend([ "-lpangocairo-1.0", "-lpango-1.0", "-lgobject-2.0" ])
 
 # Link to the appropriate cairo library.

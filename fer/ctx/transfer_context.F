@@ -95,6 +95,7 @@
 	DO 300 i = 1, nferdims
 	   cx_aux_arg_start(i, dest) = cx_aux_arg_start(i, source)
 	   cx_aux_arg_end  (i, dest) = cx_aux_arg_end  (i, source)
+	   cx_aux_stat     (i, dest) = cx_aux_stat     (i, source)
  300	CONTINUE
 
 

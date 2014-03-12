@@ -33,7 +33,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* renamed to GET_FER_COMMAND for gfortran build, which has some call called GET_COMMAND
+* renamed to GET_FER_COMMAND for gfortran build, which has a call, "GET_COMMAND"
 *
 * get next command line and decode it placing information in COMMON
 * source of command may be calling argument string, operator, command file,
@@ -94,6 +94,7 @@
 *                 user for the next command
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V690 *sh* 2/14 initialize max_context, now a variable to support aux vars
 
 #ifdef MIXING_NAG_F90_AND_C
 	USE F90_UNIX
@@ -124,11 +125,13 @@
 	include 'xplot_state.cmn'
 	include 'xcontrol.cmn'
 	include 'xinterrupt.cmn'
+	include 'xcontext.cmn'
 	include 'xgui.cmn'
 
 * initialize
 	gui_status = ferr_ok	! start w/ a clean bill o' health
 	double_eof = 0
+	max_context = max_noframe_context  ! 2/2014
 
 * if a command was given then execute it immediately
 	IF ( called_string .NE. ' ' ) THEN

@@ -15,6 +15,9 @@
 *                   added cx_lo_s5 & 6, cx_hi_s5 & 6
 * V685+ 3/13 *sh* added auxiliary regridding variables
 * V685+ 12/13 *acm* For 6D Ferret, cx_xtra_doc should have 2 more elements
+* V690 12/13 *sh* added cx_implicit_aux, cx_aux_given, cx_g_eq_regrid,
+*		 cx_aux_stat for automated curvilinear regridding
+*	         max_context made a variable to allow frames above it
 
 * the declarations below represent a stack of depth max_context for saving
 * the nested contexts.  The bottom few entries in the stack have special uses:
@@ -52,17 +55,25 @@
 *	cx_formatted	- flags if the latest input used formatted style
 *
 *       cx_naux         - number of auxiliary variables used in regridding
-*       cx_aux_var,cat  - var and cat of auxiliary vars (always in parent dset)
+*       cx_aux_var,cat  - var and cat of auxiliary vars (in parent dset)
 *	cx_valid_aux	- Boolean telling if aux var name was found
 *	cx_aux_arg_start,end - EQUIV. to cx_aux_var,cat. name string pointers
+*	cx_aux_given	- flags whether an aux var was specified
+*	cx_aux_stat	- flags if aux axis has been regridded or remains free 
+
+* The following variables exist only for the most recent "mods_cx"
+*	cx_g_eq_regrid  - flags whether g or gz or delta requested a new axis
+*	cx_grid_needs_dset - flags whether the specified target grid makes
+*		             sense only if the context dset is available
 
 * allocate some protected contexts at the top of the context stack
 	INTEGER		max_cx
-	PARAMETER     ( max_cx = max_context + 2 )
+	PARAMETER     ( max_cx = max_noframe_context + 2 )
 
 	REAL*8	cx_lo_ww	 ( nferdims, min_context:max_cx ),
      .		cx_hi_ww	 ( nferdims, min_context:max_cx ),
      .		cx_delta	 ( nferdims, max_cx )
+	INTEGER	max_context
 	INTEGER	cx_lo_ss	 ( min_context:max_cx, nferdims ),
      .		cx_hi_ss	 ( min_context:max_cx, nferdims ),
      .		cx_trans	 ( nferdims, min_context:max_cx ),
@@ -78,8 +89,8 @@
      .		cx_cal_id   ( min_context:max_cx ),
      .		cx_naux     ( max_cx ),
      .		cx_aux_var  (nferdims, max_cx),
-     .		cx_aux_cat  (nferdims, max_cx)
-
+     .		cx_aux_cat  (nferdims, max_cx),
+     .		cx_aux_stat (nferdims, max_cx )
 
 	LOGICAL	cx_unstand_grid	( max_cx ),
      .		cx_by_ss	( nferdims, min_context:max_cx ),
@@ -87,10 +98,13 @@
      .		cx_dset_gvn	( max_cx ),
      .		cx_calendar	( min_context:max_cx ),
      .		cx_grid_needs_dset,
+     .		cx_aux_given    ( nferdims, max_cx ),
+     .		cx_g_eq_regrid  ( nferdims),
      .		cx_xtra_doc	( 0:12 ),
      .		cx_has_impl_grid( max_cx ),
      .		cx_formatted	( nferdims ),
-     .		cx_valid_aux 	(nferdims, max_cx)
+     .		cx_valid_aux 	(nferdims, max_cx ),
+     .		cx_implicit_aux ( max_cx )
 
 	REAL	cx_bad_data	( max_cx ),
      .		cx_trans_arg	( nferdims, min_context:max_cx )
@@ -116,7 +130,10 @@
      .		cx_naux,
      .		cx_aux_var,
      .		cx_aux_cat,
+     .		cx_aux_stat,
+     .		max_context,
      .		cx_valid_aux,
+     .		cx_implicit_aux,
      .		cx_grid,
      .		cx_type,
      .		cx_ovsiz,
@@ -128,6 +145,8 @@
      .		cx_dset_gvn,
      .		cx_calendar,
      .		cx_grid_needs_dset,
+     .		cx_aux_given,
+     .		cx_g_eq_regrid,
      .		cx_has_impl_grid,
      .		cx_formatted,
      .		cx_name

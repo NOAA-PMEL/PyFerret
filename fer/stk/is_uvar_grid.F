@@ -105,7 +105,7 @@
 *                   The status flag that is passed back must remain set to 
 *                   non-ferr_ok to exit properly from the command.
 *       *acm* 3/12  Add E and F dimensions (use nferdims in tmap_dims.parm)
-* V685+ 9/13 *sh*   support for auxiliary var regridding: temp[gz(depth)=zax]
+* V690 9/13-2/14 *sh*   support for auxiliary var regridding: temp[gz(depth)=zax]
 
 * calling argument declarations:
 	INTEGER	status
@@ -713,8 +713,14 @@ c        ENDIF
 	   this_dset = pdset_irrelevant
 	ENDIF
 
+* store the importenat stuff!
 	uvar_grid( uvar, this_dset ) = gnum
 	uvar_data_type(uvar, this_dset) = cx_type(big_cx)
+	DO  i = 1, nferdims
+	   uvar_aux_var (uvar, i, this_dset) = cx_aux_var (i, big_cx)
+	   uvar_aux_cat (uvar, i, this_dset) = cx_aux_cat (i, big_cx)
+	   uvar_aux_stat(uvar, i           ) = cx_aux_stat(i, big_cx)
+	ENDDO
 
 * * * SECOND PASS CHECK * * *
 * need a second pass to include pseudo_vars in calculation ?

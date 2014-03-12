@@ -65,7 +65,7 @@
 	INTEGER	mr, cx
 
 * equivalences
-	REAL	cx_value( max_context )
+	REAL	cx_value( max_cx )
 	EQUIVALENCE ( cx_variable, cx_value )
 
 * --- end of introductory code ---

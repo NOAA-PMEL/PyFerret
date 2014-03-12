@@ -46,7 +46,7 @@
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
-*V685 3/13 *sh*
+*V690 3/13-1/14 *sh*
 
 	IMPLICIT NONE
 
@@ -62,22 +62,20 @@
 	INTEGER	src_cx, axis, dst_cx, naxis, axis_list(naxis), status,
      .		mr1, cx1, mr2, cx2, mr3, cx3 
         REAL*8  aux1(m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
-     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
-     .          aux2(m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
-     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
-     .          aux3(m3lox:m3hix,m3loy:m3hiy,m3loz:m3hiz,
-     .               m3lot:m3hit,m3loe:m3hie,m3lof:m3hif )
+     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif )
 
 * internal variable declarations:
-	LOGICAL increasing
+	LOGICAL increasing, increasing_here, looking_for_first
 	INTEGER	KNOWN_GRID, 
-     .		idim, src_grid, i, j, k, l, m, n, kkmin, kkmax
+     .		idim, src_grid, i, j, k, l, m, n, trans,
+     .		kdstmin, kdstmax, kkmin, kkmax, klo, khi, kdel
 	REAL*8  TM_WORLD, axmax, axmin, v, v1, bad_aux
 
 * initialize
 	bad_aux = mr_bad_data( mr1 )
 
 * insert source grid (the defining grid for this variable)
+* TEMPORARY -- ?move this block of code to AUX_VAR_REGRID when 2D curv is added?
 	src_grid = KNOWN_GRID( cx_data_set(src_cx),
      .			       cx_category(src_cx),
      .			       cx_variable(src_cx)  )
@@ -88,64 +86,146 @@
         DO 100 idim = 1, nferdims
            cx_aux_var  (idim, src_cx) = unspecified_int4
            cx_aux_cat  (idim, src_cx) = unspecified_int4
+           cx_aux_stat (idim, src_cx) = paux_stat_na
  100    CONTINUE
+	trans = cx_regrid_trans(z_dim,src_cx)    !  TEMPORARY: z_dim HARD CODED!!!
+
+* increasing or decreasing? determine by finding and examining
+* the first two valid values encountered in any column of the indicated axis
+        DO 110 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
+        DO 110 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
+        DO 110 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+        DO 110 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+        DO 110 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+	   looking_for_first = .TRUE.
+           DO 105 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	      v = aux1(i,j,k,l,m,n)
+	      IF (v .EQ. bad_aux) THEN
+	         GO TO 105
+	      ELSEIF (looking_for_first) THEN
+	         v1 = v
+	         looking_for_first = .FALSE.
+	      ELSE
+	         increasing = v .GT. v1
+	         GOTO 112
+	      ENDIF
+ 105	   CONTINUE
+ 110	CONTINUE
+* ... no line of this data had 2 valid values!  But continue anyway
+
+* make sure that the auxiliary variable is monotonic
+* note:  missing values in the array are allowed, but only at the edges
+*        If a missing value is encountered in the body of the auxiliary var
+*        regridding will not proceed beyong that subscript in the regrid line
+ 112	DO 120 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
+        DO 120 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
+        DO 120 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+        DO 120 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+        DO 120 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+	   looking_for_first = .TRUE.
+           DO 115 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	      v = aux1(i,j,k,l,m,n)
+	      IF (v .EQ. bad_aux) THEN
+	         IF (looking_for_first) GOTO 115
+	      ELSEIF (looking_for_first) THEN
+	         v1 = v
+	         looking_for_first = .FALSE.
+	      ELSE
+	         increasing_here = v .GT. v1
+	         IF (increasing .NEQV. increasing_here) GOTO 5100  ! not monot.
+	         v1 = v
+	      ENDIF
+ 115	   CONTINUE
+ 120	CONTINUE
+
 
 ***** determine the minimal index limits needed to do the regrid *****
 * SINGLE AXIS CODE ONLY (GET_CONTEXT_MODS setup to dis-allow multiple args for now)
 * ... what are the desired world coordinate limts?
-	idim = axis_list(1)    ! TEMPORARY CODE FINISH ME !!!!! XXXX
-	kkmin = cx_hi_ss ( dst_cx, idim )
-	kkmax = cx_lo_ss ( dst_cx, idim )
-	axmax = TM_WORLD(kkmin, cx_grid(dst_cx), idim, box_middle)
-	axmin = TM_WORLD(kkmax, cx_grid(dst_cx), idim, box_middle)
+ 130	idim    = axis_list(1)	! since this is 1D regridding
+	kdstmin = cx_lo_ss ( dst_cx, idim )
+	kdstmax = cx_hi_ss ( dst_cx, idim )
+	IF (trans .EQ. pauxrgrd_linear 
+     . .OR. trans .EQ. unspecified_int4  ) THEN
+* ... linear interp requires source data below/above target grid point coordinate
+* ... trans.EQ.unspec is for 3-argument plotting
+	   axmin   = TM_WORLD(kdstmin, cx_grid(dst_cx), idim, box_middle)
+	   axmax   = TM_WORLD(kdstmax, cx_grid(dst_cx), idim, box_middle)
+	ELSEIF (trans .EQ. pauxrgrd_pwlave ) THEN
+* ... averaging over cell requires source data over entire cell (larger region)
+	   axmin   = TM_WORLD(kdstmin, cx_grid(dst_cx), idim, box_lo_lim)
+	   axmax   = TM_WORLD(kdstmax, cx_grid(dst_cx), idim, box_hi_lim)
+	ELSE
+	   CALL ERRMSG( ferr_internal, status, 'unkwn rgrd trans', *5000)
+	ENDIF
+* when searching for the lo/hi index limts of the source data needed
+* reverse the direction of traversing the array for decreasing-ordered data
+* for a decreasing aux array min>max, lo>hi at this stage
+	IF (increasing) THEN
+	   klo   = cx_lo_s3(cx1)
+	   khi   = cx_hi_s3(cx1)
+	   kdel  = 1
+	ELSE
+	   khi  = cx_lo_s3(cx1)
+	   klo  = cx_hi_s3(cx1)
+	   kdel = -1
+	ENDIF
+	kkmin = khi
+	kkmax = klo 
 
-* search through aux1 for the lowest and highest indices needed
-* ==> CODE ONLY WORKS FOR MONOTONIC INCREASING AT THIS STAGE !!!
+* find the smallest index range in the aux array that contains all of the aux
+* values lying within the axmin to axmax value range on the destination axis 
+* ==> CODE ONLY WORKS FOR Z AXIS               AT THIS STAGE !!!
 
-        DO 210 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
-        DO 210 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
-        DO 210 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-        DO 210 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-        DO 210 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
-	   v1 = aux1(i,j,cx_lo_s3(cx1),l,m,n)
-	   increasing = aux1(i,j,cx_hi_s3(cx1),l,m,n) .GT. v1
+        DO 290 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
+        DO 290 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
+        DO 290 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+        DO 290 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+        DO 290 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 
-* ... first search in increasing order for the largest index containing a
-*     value smaller than axmax, the requested max coordinate value
-           DO 200 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+* ... search from low values to high for the upper index limit 
+           DO 210 k = klo, khi, kdel
 	      v = aux1(i,j,k,l,m,n)
 	      IF ( v .EQ. bad_aux ) THEN
-	         GOTO 5200
-* ... check monotonicity
-	      ELSEIF (k .GT. cx_lo_s3(cx1)) THEN
-	         IF (increasing) THEN
-	            IF (v .LE. v1) GOTO 5100
+	         GOTO 210
+	      ELSEIF (v .LT. axmax) THEN
+	         IF ( increasing ) THEN
+	            IF (kkmax .LT. k) kkmax = k
 	         ELSE
-	            IF (v .GE. v1) GOTO 5100
+	            IF (kkmax .GT. k) kkmax = k
 	         ENDIF
+	      ELSE
+	         GOTO 220
 	      ENDIF
+ 210       CONTINUE
 
-* ... point lies within desired bounds? shift max index if necessary
-	      IF (v .LT. axmax) THEN
-	         IF (kkmax .LT. k) kkmax = k
-	      ENDIF
- 200       CONTINUE
-
-
-* ... second search in decreasing order for the smallest index containing a
-*     value larger than axmin, the requested min coordinate value
-           DO 202 k = cx_hi_s3(cx1), cx_lo_s3(cx1), -1
+* ... search from high values to low for the lower index limit 
+ 220	   DO 230 k = khi, klo, -1*kdel
 	      v = aux1(i,j,k,l,m,n)
-
-* ... point lies within desired bounds? shift min index if necessary
-	      IF (v .GT. axmin) THEN
-	         IF (kkmin .GT. k) kkmin = k
+	      IF ( v .EQ. bad_aux ) THEN
+	         GOTO 230
+	      ELSEIF (v .GT. axmin) THEN
+	         IF (increasing) THEN
+	            IF (kkmin .GT. k) kkmin = k
+	         ELSE
+	            IF (kkmin .LT. k) kkmin = k
+	         ENDIF
+	      ELSE
+	         GOTO 290
 	      ENDIF
- 202       CONTINUE
+ 230	   CONTINUE
 
- 210    CONTINUE
+ 290    CONTINUE
+
+* for decreasing-ordered aux array swap the lo/hi limits just found
+	IF (.NOT.increasing) THEN
+	   k     = kkmin
+	   kkmin = kkmax
+	   kkmax = k
+	ENDIF
 
 * round out, so that regridding interpolations will be possible at the edges
+* (the value tests above were based on strict inequality so we always do this) 
 	IF (kkmin .GT. cx_lo_ss(cx1,idim) ) kkmin = kkmin - 1
 	IF (kkmax .LT. cx_hi_ss(cx1,idim) ) kkmax = kkmax + 1
 

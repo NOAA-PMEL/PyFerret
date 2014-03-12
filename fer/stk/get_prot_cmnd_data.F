@@ -89,10 +89,13 @@
 * V540: *sh* 11/00 - "last" var init moved to DELETE_OLD_EXPR
 * v552: *acm* 4/03   Increase length of variable names to 128 characters
 * V600 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
+* V690 *sh* 12/13  manage auto-curvilinear mode
+*	           aux vars returned on the ISP stack in frame above is_aux_ptr
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
+	include 'interp_stack.parm'
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 	include 'xprog_state.cmn'
@@ -103,11 +106,19 @@
 	REAL	memory(*) 
 
 * local variable declarations
-	INTEGER		TM_LENSTR1, nu, cx_expr
+	LOGICAL		auto_auxvar_changed
+	INTEGER		TM_LENSTR1, nu, cx_expr, idim
 	CHARACTER	EXPR_NAME*8, VAR_CODE*128, buff*128
 
 * initialize grid stack pointer (pushes down from top)
 	grd_stk_ptr = max_grids
+
+* initialize aux stack frames at top of isp stack
+	max_usable_intrp = max_intrp
+	max_context = max_noframe_context  ! just to be clear (not needed)
+
+* determine if in auto-curvilinear mode
+	CALL SET_AUTO_CURVI_MODES( auto_auxvar_changed )
 
 * delete any memory left-overs from last command
 	CALL DELETE_MRS_IN_PROGRESS
@@ -124,10 +135,12 @@
 * ... and store them in the uvar list names as "EX#n"
 * ... eg. LIST U^2,V^2 breaks into "U^2" and "V^2"
 * ... or re-use the last expression ?
-	IF ( num_args .GT. 0 ) THEN
+	IF ( num_args .GT. 0 
+     .  .OR. auto_auxvar_changed ) THEN
 	   IF ( last_cmnd_buff(:len_last_cmnd)
      .     .NE.      cmnd_buff(arg_start(1):arg_end(1)) 
-     .	   .OR. num_uvars_in_cmnd .EQ. cmnd_uvars_not_given 		) THEN
+     .	   .OR. num_uvars_in_cmnd .EQ. cmnd_uvars_not_given
+     .	   .OR. auto_auxvar_changed 		) THEN
 	      CALL DELETE_OLD_EXPR
 	      last_cmnd_buff = cmnd_buff(arg_start(1):arg_end(1))
 	      len_last_cmnd  = arg_end(1) - arg_start(1) + 1
@@ -151,6 +164,14 @@
 	   cx_stack_ptr = cx_stack_ptr + 1
 	   cx_expr = cx_stack_ptr
 
+* ... a frame of size nferdims to hold aux vars needed for plotting and listing
+	   max_usable_intrp = max_usable_intrp - nferdims
+	   max_context      = max_context      - nferdims
+	   DO idim = 1, nferdims
+	      is_mr(max_usable_intrp+idim) = unspecified_int4
+	      is_cx(max_usable_intrp+idim) = unspecified_int4  ! bookkeeping
+	   ENDDO
+
 * ... evaluate the next sub-expression
 	   CALL TRANSFER_CONTEXT( cx_cmnd, cx_expr )
 	   CALL INTERP_STACK( memory, nu, cx_expr,
@@ -159,8 +180,12 @@
 
 * check for legal data type
 	   IF ( dtype .NE. ptype_native ) THEN
-	      IF (mr_type(is_mr(nu)) .NE. dtype ) GOTO 5100
+	      IF (mr_type(is_mr(isp)) .NE. dtype ) GOTO 5100
 	   ENDIF
+
+* tag the result for what it is
+* note that since aux vars may now be returned on the ISP stack, isp may be GT nu
+	   is_act(isp) = isact_var_ready
 
 ! temp diagnostic
 	   IF ( cx_stack_ptr .NE. cx_cmnd+nu ) WRITE (6,*) 'get_cmnd_???'

@@ -203,6 +203,8 @@
 * V685 *acm*  4/13 Add /HIDE on DEF DATA/AGG and SHOW DATA/HIDDEN
 * V685 *sh*  9/13  Add SHOW VARIABLE/TREE and alias VTREE
 * V685 *acm* 11/13 Add /QUIET for DEFINE ATTRIBUTE
+* V690 *sh* 12/13 Add /CURVILINEAR and /SIGMA to action commands
+*		  Add SET,CANCEL,SHOW VARIABLE/SIGMA/CURVI
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -350,7 +352,10 @@
 		DATA qualifiers  (nqual_at1j+6)	/ 'SCALEFAC'	/
 		DATA qualifiers  (nqual_at1j+7)	/ 'OFFSET'	/
 		DATA qualifiers  (nqual_at1j+8)	/ 'OUTTYPE'	/
-		DATA qualifiers  (nqual_at1j+9)	/ '****'	/
+		DATA qualifiers  (nqual_at1j+9)	/ 'SIGMA'	/
+		DATA qualifiers  (nqual_at1j+10)/ 'CURVILINEAR'	/
+		DATA qualifiers  (nqual_at1j+11)/ '****'	/
+		DATA qualifiers  (nqual_at1j+12)/ '****'	/
 * SET GRID
 	   DATA subcommands      (nsub_at1 +10)	/ 'GRID'	/
 	   DATA num_qualifs      (nsub_at1 +10)	/ nqual1k	/
@@ -551,6 +556,10 @@
 		DATA qualifiers  (nqual_at2j+6)	/ 'APPEND'	/
 		DATA qualifiers  (nqual_at2j+7)	/ 'CLOBBER'	/
 		DATA qualifiers  (nqual_at2j+8)	/ 'TREE'	/ ! was /DEPENDENCY
+		DATA qualifiers  (nqual_at2j+9)	/ 'SIGMA'	/
+		DATA qualifiers  (nqual_at2j+10)/ 'CURVILINEAR'	/
+		DATA qualifiers  (nqual_at2j+11)/ '****'	/
+		DATA qualifiers  (nqual_at2j+12)/ '****'	/
 * SHOW COMMANDS
 	   DATA subcommands      (nsub_at2 +10)	/ 'COMMANDS'	/
 	   DATA num_qualifs      (nsub_at2 +10)	/ nqual2k	/
@@ -747,9 +756,12 @@
 	   DATA subcommands      (nsub_at3 +10)	/ 'VARIABLE'	/
 	   DATA num_qualifs      (nsub_at3 +10)	/ nqual3k	/
 	   DATA qualifier_pointer(nsub_at3 +10)	/ nqual_at3k	/
-		DATA qualifiers  (nqual_at3k+0)	/ 'ALL ' /
-		DATA qualifiers  (nqual_at3k+1)	/ 'DATASET' /
-		DATA qualifiers  (nqual_at3k+2)	/ '****' /
+		DATA qualifiers  (nqual_at3k+0)	/ 'ALL '	/
+		DATA qualifiers  (nqual_at3k+1)	/ 'DATASET'	/
+		DATA qualifiers  (nqual_at3k+2)	/ 'SIGMA'	/
+		DATA qualifiers  (nqual_at3k+3)	/ 'CURVILINEAR'	/
+		DATA qualifiers  (nqual_at3k+4)	/ '****'	/
+		DATA qualifiers  (nqual_at3k+5)	/ '****'	/
 * CANCEL AXIS
 	   DATA subcommands      (nsub_at3 +11)	/ 'AXIS'	/
 	   DATA num_qualifs      (nsub_at3 +11)	/ nqual3l	/
@@ -926,7 +938,12 @@
 		DATA qualifiers  (nqual_at5a+51)/ 'SHUFFLE'/
 		DATA qualifiers  (nqual_at5a+52)/ 'ENDIAN'/
 		DATA qualifiers  (nqual_at5a+53)/ 'OUTTYPE'/
-		DATA qualifiers  (nqual_at5a+54)/ '*****'/
+		DATA qualifiers  (nqual_at5a+54)/ 'CURVILIN'/
+		DATA qualifiers  (nqual_at5a+55)/ 'SIGMA'/
+		DATA qualifiers  (nqual_at5a+56)/ '****'/
+		DATA qualifiers  (nqual_at5a+57)/ '****'/
+		DATA qualifiers  (nqual_at5a+58)/ '****'/
+		DATA qualifiers  (nqual_at5a+59)/ '****'/
 
 * PLOT - command # 6
 	DATA commands(6)			/ 'PLOT'	/

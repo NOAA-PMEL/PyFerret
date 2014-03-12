@@ -48,6 +48,7 @@
 *	 grids associated with a uvar and clean out any memory-cached 
 *	 results that may depend on this grid
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* v690 *sh* also purge any file vars that depend upon uvars as aux vars 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -84,6 +85,8 @@
 
 
  500	CONTINUE
+
+	CALL PURGE_AUX_VAR_DEPENDENTS
 
 	RETURN
 	END

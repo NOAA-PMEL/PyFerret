@@ -58,11 +58,15 @@
 	INTEGER	work(dependency_max_recs, dependency_nfields)
 
 * internal variable declarations:
-	LOGICAL initialize, tell_dset
-	INTEGER TM_LENSTR1, llen, cat, var, dset, blanks, tree_level,
+	LOGICAL initialize, tell_dset, its_aux
+	INTEGER TM_LENSTR1, llen, cat, var, dset, blanks, 
      .		istart, iend, len2, dnamlen
 	CHARACTER*1024 GET_UNIQUE_DSET_NAME, VAR_CODE, VAR_TITLE, line_buff,
      .		dsetname
+
+	INTEGER tree_level
+
+	PARAMETER (its_aux = .FALSE.)
 
 * initialize
 	tree_level = isp_stk_lev - dependency_root_level
@@ -160,7 +164,7 @@
 # endif
 
 * save the item in the dependency tree
-	CALL STORE_DEPENDENCY(cx, tree_level,  uvar, item, cx_status,
+	CALL STORE_DEPENDENCY(its_aux, cx, tree_level,  uvar, item, cx_status,
      .			work(1,1), work(1,2), work(1,3), work(1,4), 
      .			work(1,5), work(1,6), work(1,7), work(1,8), desist )
 

@@ -1,5 +1,5 @@
 	SUBROUTINE STORE_DEPENDENCY
-     .		( cx, tree_lev,  uvar, item, cx_status,
+     .		( its_aux, cx, tree_lev,  uvar, item, cx_status,
      .		  next, level, flag, dataset, var_or_start, cat_or_end,
      .		  parent_uv, uv_item, desist )
 
@@ -45,7 +45,9 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
 
-* V685+  *sh* 10/13 
+* V685  *sh* 10/13 
+* V690  *sh* 11/13 - fixed problem in aux regridding variable dependencies
+*                    by adding a new calling arg
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -56,7 +58,7 @@
 
 
 * calling argument declarations:
-	LOGICAL	desist
+	LOGICAL	its_aux, desist
 	INTEGER cx, tree_lev, uvar, item, cx_status
 	INTEGER	next         (dependency_max_recs),
      .		level        (dependency_max_recs),
@@ -79,7 +81,7 @@
 
 
 * internal variable declarations:
-	LOGICAL	known_var, dup, in_target_defn, direct_parentage
+	LOGICAL	known_var, dup, in_target_defn, direct_parentage, aux_broken_chain
 	INTEGER	var, cat, dset, df_flag, row, current_lev, i,
      .		this_flag
 
@@ -112,6 +114,8 @@
 	   this_flag = df_unknown_grid
 	ELSEIF ( cx_status .NE. ferr_ok ) THEN
 	   this_flag = df_syntax_error
+	ELSEIF ( its_aux ) THEN
+	   this_flag = df_valid_aux_var
 	ELSE
 	   this_flag = df_valid_var
 	ENDIF
@@ -138,26 +142,29 @@
 	ENDIF
 
 * check for duplications:
-* 1. Where there are multiple references to any var in same definition as in
+* 1. in-line duplication
+*  Where there are multiple references to any var in same definition as in
 *    LET target = b + b 
-* it is not necessary to report the variable b twice
-* 2. Where there are multiple references to a user-defined vaiable in separate
-* definitions as in
+*  it is not necessary to report the variable b twice
+* 2. back-reference duplication
+*  Where there are multiple references to a user-defined vaiable in separate
+*  definitions as in
 *    LET target = b + c
 *    LET b = c
 *    LET c = d
 *    LET d = 1
-* it is not necessry to report the dependencies of c twice.  The variable
-* in_target_defn is used to track case 2 duplication (this) versus case 1
-* 3. The existence of recursion is apparent through a duplicated defnition
+*  it is not necessry to report the dependencies of c twice.  The variable
+*  in_target_defn is used to track case 2 duplication (this) versus case 1
+* 3. recursion
+*  The existence of recursion is apparent through a duplicated defnition
 *    that lies in the direct line of decent from another, as in this example
 *    where "P" indicates a parent and "S" indicates a sibling variable
 *    LET P0 = P1 + S1
 *    LET P1 = P2 + S2
 *    LET P2 = P3 + S3
-* LET P3 = S1 would not create a recursion, but LET P3 = P1 would
-* As we look backwards in the dependency tree the direct descendent parent is
-* always the very first one at the next lower level.
+*  LET P3 = S1 would not create a recursion, but LET P3 = P1 would
+*  As we look backwards in the dependency tree the direct descendent parent is
+*  always the very first one at the next lower level.
 	IF (  known_var
      .	.AND. row .GT. dependency_current_tree_start ) THEN
 
@@ -185,12 +192,20 @@
  100	   CONTINUE
 
 * look for cases 1 and 3
- 110	   in_target_defn = .TRUE.	! while we are inside the defn of target
+ 110	   in_target_defn = .NOT.its_aux    ! TRUE while we are inside the defn of target
+	   aux_broken_chain = .FALSE.
 	   current_lev = tree_lev
 	   DO 200 i = row-1, dependency_current_tree_start, -1
+	      IF ( flag(i) .EQ. df_valid_aux_var ) THEN
+	         aux_broken_chain = .TRUE.    ! the chain of dependency stops at an aux var dependency
+	         direct_parentage = .FALSE.
+	      ENDIF
 	      IF ( level(i) .LT. current_lev ) THEN
 	         in_target_defn = .FALSE.
-	         direct_parentage = .TRUE.
+! doesnt this need to break the direct_parentage line permanently for all above?
+! finding recursion through an aux var connection is still a problem, even if the parent is a uservar
+! XXXXXXXXXXX   FIX PROBLEM:  FALSE RECURSIONS FROM AUX VAR DIRECT PARENTAGE
+	         IF (.NOT.aux_broken_chain) direct_parentage = .TRUE.
 	         current_lev = level(i)
 	      ELSE
 	         direct_parentage = .FALSE.  ! never true while in_target_defn
@@ -205,19 +220,21 @@
 	      IF (dup) THEN
 * ... the row we are adding is already in the dependency tree
 *     so desist in the analysis of this variable
-	         desist = .TRUE.
 	         IF (in_target_defn .AND. level(i).EQ.tree_lev) THEN
 * ... case 1: twin sibling var need not be reported
 *	SHOULD NEVER ARRIVE HERE
-	            CALL WARN("store_dependency")
+	            CALL WARN("crptn_store_dep")
 	         ELSEIF (direct_parentage) THEN
 * ... case 3: a recursive definition has been found
 	            flag(row) = df_recursion_error
+	            desist = .TRUE.
+	            GOTO 500
 	         ELSEIF (cat_or_end(i) .EQ. cat_user_var) THEN
 * ... case 2: uvar used in separate vars needs only a cross-ref the second time
 	            flag(row) = df_defined_earlier
+	            desist = .TRUE.
+	            GOTO 500
 	         ENDIF
-	         GOTO 500
 	      ENDIF
  200	   CONTINUE
 

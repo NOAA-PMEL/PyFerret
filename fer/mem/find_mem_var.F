@@ -72,7 +72,8 @@
 * V533: 6/01 *sh* - added @EVNT - check as in trans_run_sum
 *	          - check that the data type matches
 *		  - check that the delta value matches
-* V685 4/13 *sh* support for auxiliary variables used in regridding
+* 2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V685 4/13-3/14 *sh* support for auxiliary variables used in regridding
 
 * (V510) How on cache hits on external functions (EFs) work:
 * uvar_given is used to encapsulate information about cache reuse for EF
@@ -97,7 +98,6 @@
 * Some of the internal grid-changing functions (e.g. RESHAPE) require
 * slightly different rules for setting uvar_given -- see gcf_impose_axes.F
 *
-*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -123,6 +123,12 @@
 * in "STUPID" mode the program cannot find anything in memory
 *  (4/99) if mode_arg is 1 we are are using "weak_cache", so do not skip out
 	IF (mode_stupid .AND. mode_arg(pmode_stupid,1).NE.1) GOTO 5000
+
+* if the context carries a paux_stat_needed requirement, then a cache hit should
+* not be made, because there is an auxiliary variable to be loaded as well
+	DO idim = 1, nferdims
+	   IF (cx_aux_stat(idim, cx) .EQ. paux_stat_needed) GOTO 5000
+	ENDDO
 
 * initialize
 	defining_grid = cx_grid( cx )

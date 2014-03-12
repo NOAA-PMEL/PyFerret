@@ -91,6 +91,7 @@
 *      2/12  *kms* Add M, N, E, F, EBOX, FBOX, EBOXLO, FBOXLO, EBOXHI, and FBOXHI
 *                  pseudo-variables
 *       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
+* V690 12/13 *sh* added auxiliary regridding transforms
 
         IMPLICIT NONE
 	include	'ferret.parm'
@@ -693,52 +694,96 @@ c     .     alg_trans_dflt_arg( 38) / bad_val4      /
 	DATA
      .		alg_regrid_title( prgrd_exact )		/ ' '	/,
      .		alg_regrid_code ( prgrd_exact )		/ 'XAK'	/,	
-     .		alg_regrid_title( prgrd_linear_interp )	/ 'lin. interp.' /,
+     .		alg_regrid_vizb ( prgrd_exact )		/ .FALSE.	/,
+     .		alg_regrid_title( prgrd_linear_interp )	/ 'lin. interp.'/,
      .		alg_regrid_code ( prgrd_linear_interp )	/ 'LIN'	/,
+     .		alg_regrid_vizb ( prgrd_linear_interp )	/ .TRUE.	/,
      .		alg_regrid_title( prgrd_average )	/ 'box avgd'	/,
      .		alg_regrid_code ( prgrd_average )	/ 'AVE'	/,
+     .		alg_regrid_vizb ( prgrd_average )	/ .TRUE. 	/,
      .		alg_regrid_title( prgrd_xy_ave )	/ 'area avgd'	/,
      .		alg_regrid_code ( prgrd_xy_ave )	/ 'AAV'	/,
-     .		alg_regrid_title( prgrd_xy_lin )	/ 'lin. interp.'	/,
+     .		alg_regrid_vizb ( prgrd_xy_ave )	/ .FALSE.	/,
+     .		alg_regrid_title( prgrd_xy_lin )	/ 'area intrp.' /,
      .		alg_regrid_code ( prgrd_xy_lin )	/ 'LIN'	/,
+     .		alg_regrid_vizb ( prgrd_xy_lin )	/ .FALSE.	/,
      .		alg_regrid_title( prgrd_xact_pts )	/ 'exact match'	/,
      .		alg_regrid_code ( prgrd_xact_pts )	/ 'XACT'	/
+     .		alg_regrid_vizb ( prgrd_xact_pts )	/ .TRUE.	/,
      .		alg_regrid_title( prgrd_associate )	/ 'index assn'	/,
      .		alg_regrid_code ( prgrd_associate )	/ 'ASN'	/,
+     .		alg_regrid_vizb ( prgrd_associate )	/ .TRUE.	/,
      .		alg_regrid_title( prgrd_variance )	/ 'variance'	/,
      .		alg_regrid_code ( prgrd_variance )	/ 'VAR'	/,
+     .		alg_regrid_vizb ( prgrd_variance )	/ .TRUE.	/,
      .		alg_regrid_title( prgrd_min )		/ 'minimum'	/,
      .		alg_regrid_code ( prgrd_min )		/ 'MIN'	/,
+     .		alg_regrid_vizb(  prgrd_min )		/ .TRUE.	/,
      .		alg_regrid_title( prgrd_max )		/ 'maximum'	/,
      .		alg_regrid_code ( prgrd_max )		/ 'MAX'	/,
+     .		alg_regrid_vizb(  prgrd_max )		/ .TRUE.	/,
      .		alg_regrid_title( prgrd_sum )		/ 'sum'	/,
      .		alg_regrid_code ( prgrd_sum )		/ 'SUM'	/,
+     .		alg_regrid_vizb(  prgrd_sum )		/ .TRUE.	/,
      .		alg_regrid_title( prgrd_good_pt )	/ '# gd pts'	/,
      .		alg_regrid_code ( prgrd_good_pt )	/ 'NGD'	/,
+     .		alg_regrid_vizb ( prgrd_good_pt )	/ .TRUE.	/,
      .		alg_regrid_title( prgrd_modulo )	/ 'modulo ave'	/,
      .		alg_regrid_code ( prgrd_modulo )	/ 'MOD'	/
+     .		alg_regrid_vizb ( prgrd_modulo )	/ .TRUE.	/,
      .		alg_regrid_title( prgrd_modvar )	/ 'modulo var'	/,
      .		alg_regrid_code ( prgrd_modvar )	/ 'MODVAR'	/
+     .		alg_regrid_vizb ( prgrd_modvar )	/ .TRUE.	/,
      .		alg_regrid_title( prgrd_modngd )	/ '# gd mod pts'/,
      .		alg_regrid_code ( prgrd_modngd )	/ 'MODNGD'	/
+     .		alg_regrid_vizb ( prgrd_modngd )	/ .TRUE.	/,
      .		alg_regrid_title( prgrd_modnbd )	/ '#bad mod pts'/,
      .		alg_regrid_code ( prgrd_modnbd )	/ 'MODNBD'	/
+     .		alg_regrid_vizb ( prgrd_modnbd )	/ .TRUE.	/,
      .		alg_regrid_title( prgrd_modsum )	/ 'modulo sum'	/,
      .		alg_regrid_code ( prgrd_modsum )	/ 'MODSUM'	/
+     .		alg_regrid_vizb ( prgrd_modsum )	/ .TRUE.	/,
      .		alg_regrid_title( prgrd_modmin )	/ 'modulo min'	/,
      .		alg_regrid_code ( prgrd_modmin )	/ 'MODMIN'	/
+     .		alg_regrid_vizb ( prgrd_modmin )	/ .TRUE.	/,
      .		alg_regrid_title( prgrd_modmax )	/ 'modulo max'	/,
      .		alg_regrid_code ( prgrd_modmax )	/ 'MODMAX'	/
+     .		alg_regrid_vizb ( prgrd_modmax )	/ .TRUE.	/,
      .		alg_regrid_title( prgrd_nearest )	/ 'nearst coord'/,
      .		alg_regrid_code ( prgrd_nearest )	/ 'NRST'	/
+     .		alg_regrid_vizb ( prgrd_nearest )	/ .TRUE.	/,
      .		(alg_regrid_title(i),i=prgrd_nearest+1,max_regrid_trans)
      .				/11*unspecified_name4/,
      .		(alg_regrid_code (i),i=prgrd_nearest+1,max_regrid_trans)
-     .				/11*unspecified_name4/
-c     .		(alg_regrid_title(i),i=prgrd_nearest+1,max_regrid_trans)
-c     .			/(max_regrid_trans-prgrd_nearest)*unspecified_name4/,
-c     .		(alg_regrid_code (i),i=prgrd_nearest+1,max_regrid_trans)
-c     .				/11*unspecified_name4/
+     .				/11*unspecified_name4/,
+     .		(alg_regrid_vizb (i),i=prgrd_nearest+1,max_regrid_trans)
+     .				/11*.FALSE./
+
+
+	DATA
+     .		alg_regrid_title(pauxrgrd_linear)	/ 'lin. interp.'/,
+     .		alg_regrid_code (pauxrgrd_linear)	/ 'LIN'	        /,
+     .		alg_regrid_vizb (pauxrgrd_linear)	/ .TRUE.	/,
+     .		alg_regrid_title(pauxrgrd_average)	/ 'box avgd'    /,
+     .		alg_regrid_code (pauxrgrd_average)	/ 'AVE'	        /,
+     .		alg_regrid_vizb (pauxrgrd_average)	/ .FALSE.	/,
+     .		alg_regrid_title(pauxrgrd_pwlave )	
+     .						/ 'pc-wise linear ave'  /,
+     .		alg_regrid_code (pauxrgrd_pwlave )	/ 'PLAVE'      /,
+     .		alg_regrid_vizb (pauxrgrd_pwlave )	/ .TRUE.	/,
+     .		alg_regrid_title(pauxrgrd_thick_ave)
+     .						/ 'box ave from thkness'/,
+     .		alg_regrid_code (pauxrgrd_thick_ave)/ unspecified_name4 /,
+     .		alg_regrid_vizb (pauxrgrd_thick_ave)	/ .FALSE.	/,
+     .		(alg_regrid_title(i),
+     .				i=pauxrgrd_thick_ave+1,max_auxregrid_trans)
+     .				/2*unspecified_name4/,
+     .		(alg_regrid_code (i),
+     .				i=pauxrgrd_thick_ave+1,max_auxregrid_trans)
+     .				/2*unspecified_name4/,
+     .		(alg_regrid_vizb (i),
+     .				i=pauxrgrd_thick_ave+1,max_auxregrid_trans)
+     .				/2*.FALSE./
 
 * translation table for substituting 1D transformations with 4D transforms
 	DATA	num_4d_trans/ 6 /

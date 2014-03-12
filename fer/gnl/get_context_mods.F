@@ -144,9 +144,13 @@
 * V6.8  *acm* 3/12 remove block that checks for qual_given(slash_T0). Neither 
 *                  slash_t0 nor orient are defined here.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
-* V6.85 *sh* 3/13 support for auxiliary regridding variables:
+* V6.90 *sh* 12/13 support for auxiliary regridding variables:
 *                  temp[gz(depth)=zax@ave]
-*	          Note that errors will be silent in dependency_tree_mode
+*		   including special interpretation of gz(depth)=100 (a point)
+*		   ensure that the same axis region isn't set twice (line 200)
+*		   Detect 'sigma' and 'curvi' automation flags
+*	           Note that errors will be silent in dependency_tree_mode
+*		   Set cx_g_eq_regrid logical (used to be local "regrid_dims")
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -175,7 +179,7 @@
 	include 'errmsg.parm'	
 	include 'ferret.parm'	
 	include 'gfdl_vms.parm'	
-	include 'interp_stack.parm'	
+	include 'interp_stack.parm'
 	include 'xalgebra.cmn'
 	include 'xprog_state.cmn'
 	include 'xcontext.cmn'
@@ -191,12 +195,11 @@
 	LOGICAL		report_unknown
 
 * internal variables:
-	LOGICAL		INVALID_R8_TO_I4, TM_DIGIT,
+	LOGICAL		INVALID_R8_TO_I4, TM_DIGIT, MATCH4,
      .			atsin, colon, colon2, atcolon, first_time(nferdims),
-     .			kludge_gx_to_x(nferdims), set_implicitly(nferdims),
+     .			morph_gx_to_x(nferdims), set_implicitly(nferdims),
      .			fmat_lo, fmat_hi, logical_dummy, single_char,
-     .			has_g_eq_unkn_uvar, gdset_included, has_auxvar,
-     .			regrid_dims(nferdims)
+     .			has_g_eq_unkn_uvar, gdset_included, has_auxvar
 	INTEGER		ATOM_POS, STR_CASE_BLIND_COMPARE, STR_UPCASE,
      .			TM_GET_GRIDNUM, KNOWN_GRID, FIND_DSET_NUMBER,
      .			REGION_NUMBER, TM_GET_LINENUM, TM_AXIS_DIRECTION,
@@ -208,8 +211,8 @@
      .			dset, variable, category, name_end, next_char, i,
      .			impl_grid, axis, other, naxes, aux_arg_namlen,
      .			aux_lparen_pos, aux_rparen_pos, aux_arg_count,
-     .			iqual
-	CHARACTER*(1)	UPPER_CASE, region_qual(nferdims,2), other_qual(2),
+     .			iqual,this_dim
+	CHARACTER*(1)	UPPER_CASE, region_qual(nferdims,2),
      .			letter, letter2
 	CHARACTER	name*512, comment*12, transnam*6, buff*32, 
      .                  cal_name*32, letters*3
@@ -232,9 +235,11 @@
      .			done_looking = 9)
 
 	DATA (region_qual(idim,1),idim=1,nferdims) / 'I','J','K','L','M','N' /,
-     .       (region_qual(idim,2),idim=1,nferdims) / 'X','Y','Z','T','E','F' /,
-     .       other_qual(1) / 'D' /,	! /DATA_SET=
-     .       other_qual(2) / 'G' /	! /GRID=
+     .       (region_qual(idim,2),idim=1,nferdims) / 'X','Y','Z','T','E','F' /
+!     .       other_qual(1) / 'D' /,	! /DATA_SET=
+!     .       other_qual(2) / 'G' /	! /GRID=
+!     .       other_qual(3) / 'S' /	! var[z=100,SIGMA]
+!     .       other_qual(4) / 'C' /	! var[x=140e,Y=0,CURVILINEAR]
 
 * local parameter declarations (as in xeq_define)
 	INTEGER	    slash_calendar
@@ -244,12 +249,12 @@
 	dset = cx_data_set( dflt_cx)
         axis = unspecified_int4
         grid = unspecified_int4
-
         DO 10 idim = 1, nferdims
-	kludge_gx_to_x(idim) = .FALSE.
-	set_implicitly(idim) = .FALSE.
-	regrid_dims(idim) = .FALSE.
- 10     first_time(idim) = .TRUE.
+	   morph_gx_to_x(idim)  = .FALSE.
+	   set_implicitly(idim) = .FALSE.
+	   cx_g_eq_regrid(idim) = .FALSE.
+	   first_time(idim)     = .TRUE.
+ 10	CONTINUE
 	has_g_eq_unkn_uvar = .FALSE.
 
 * check in advance for the use of pre-specified ("/@") limits and D=
@@ -335,11 +340,24 @@
 	   risc_buff  = text_buff(istart:iend)		! 8/92
 	   len_rbuff  = MIN(size_rbuff, iend-istart+1)	! 8/92
 	   letter = UPPER_CASE(text_buff(istart:istart))! 8/92
+	   has_auxvar = .FALSE.				! 12/13
 
 * ignore any region information that contains grave accents
 	   IF ( INDEX(risc_buff,'`') .GT. 0 ) GOTO 500
 
-* all valid specifiers are single characters or double character
+* identify 'SIGMA' and 'CURVI' qualifiers
+	   IF (MATCH4(risc_buff,len_rbuff,
+     .			  'SIGM',   4          ) ) THEN
+	      cx_aux_given(z_dim,mods_cx) = .TRUE.
+	      GOTO 500
+	   ELSEIF (MATCH4(risc_buff,len_rbuff,
+     .			  'CURV',   4          ) ) THEN
+	      cx_aux_given(x_dim,mods_cx) = .TRUE.
+	      cx_aux_given(y_dim,mods_cx) = .TRUE.
+	      GOTO 500
+	   ENDIF
+
+* all other valid specifiers are single characters or double character
 * regrid specifiers of the form G*, when * is I,J,K,L,M,N,X,Y,Z,T,E or F.
 * Is this ?
 	   IF ( iend .GT. istart ) THEN
@@ -367,7 +385,7 @@
 	   ENDIF
 
 * maybe its /D= (data_set) or /G= (grid#)
- 100       IF ( letter.EQ.'D' ) GOTO 500 ! already done
+ 100	   IF ( letter.EQ.'D' ) GOTO 500 ! already done
 	   IF ( letter.NE.'G' ) GOTO 190
 
 * only a single regridding specifier is allowed if auxvar regridding is used
@@ -400,7 +418,6 @@
 
 * allow multiple axes at once as in "GXY=ggg" (12/99 hack)
 * ... or "GXY(curvx,curvy)=ggg"  (3/13)
-	   has_auxvar = .FALSE.
 	   IF (.NOT.single_char) THEN
 * count the number of axis specifiers and identify them
 	      DO 102 i = istart+1, equal_pos
@@ -415,11 +432,11 @@
                     DO suborval = 1,2
 	            DO idim     = 1,nferdims
 	               IF ( letter2.EQ.region_qual(idim,suborval) ) THEN
-	                  IF (regrid_dims(idim)) THEN
+	                  IF (cx_g_eq_regrid(idim)) THEN
 	                     name = 'auxiliary axis named more than once in'
 	                     GOTO 5300
 	                  ELSE
-	                     regrid_dims(idim) = .TRUE.
+	                     cx_g_eq_regrid(idim) = .TRUE.
 	                     GOTO 102
 	                  ENDIF
 	               ENDIF
@@ -433,15 +450,23 @@
 c	      next_char = istart + naxes - 1
 	      next_char = istart
 	      has_auxvar = letter2 .EQ. '('
+	      this_dim = idim  ! 1/2014 hack cuz idim isn't reliable
 	   ENDIF
 
 * if auxiliary regridding variables have been given, parse em here
 	   IF (has_auxvar) THEN
+* ... first check for valid usage
 	     IF (naxes .GT. 1) THEN
 		name =
      .		'this Ferret version doesnt support multi aux regrid args' 
 	        GOTO 5300
 	     ENDIF
+	     IF (idim .NE. z_dim) THEN
+		name =
+     .		'only the Z axis can be used in' 
+	        GOTO 5300
+	     ENDIF
+
 	     aux_lparen_pos = i
 	     aux_rparen_pos = INDEX(text_buff(i:equal_pos), ')' )
 	     IF (aux_rparen_pos .EQ. 0) THEN
@@ -457,11 +482,12 @@ c	      next_char = istart + naxes - 1
 	     aux_arg_namlen = 0
 *    ... argument order must match collating order of axes as in gyx(argx,argy)=
 	     DO rgdim = 1, nferdims
-	         IF (regrid_dims(rgdim)) GOTO 704   ! too lazy to renumber
+	         IF (cx_g_eq_regrid(rgdim)) GOTO 704   ! too lazy to renumber
 	     ENDDO
 	     GOTO 5400   ! can never get here
  704	     cx_aux_arg_start(rgdim, mods_cx) = i+1
 	     cx_aux_arg_end  (rgdim, mods_cx) = i
+	     cx_aux_stat     (rgdim, mods_cx) = paux_stat_used
 	     DO 104 i = aux_lparen_pos+1, aux_rparen_pos-1
 	        IF (text_buff(i:i) .EQ. ' ') GOTO 104
 	        IF (text_buff(i:i) .NE. ',') THEN
@@ -478,7 +504,7 @@ c	      next_char = istart + naxes - 1
 	          aux_arg_count = aux_arg_count + 1
 *    ... match this arg to its axis from the "gxy" syntax
 	          DO rgdim = rgdim+1, nferdims
-	             IF (regrid_dims(rgdim)) THEN
+	             IF (cx_g_eq_regrid(rgdim)) THEN
 	                cx_aux_arg_start(rgdim, mods_cx) = i
 	                GOTO 104
 	             ENDIF
@@ -524,8 +550,19 @@ c	      next_char = istart + naxes - 1
 	      IF ( TM_DIGIT(name(i:i)) .AND. .NOT.single_char ) THEN
 	         IF (.NOT.first_time(idim) ) GOTO 5200
 	         IF (naxes .GT. 1) GOTO 5205	! cannot say GXY=lo:hi:delta
-	         kludge_gx_to_x(idim) = .TRUE.
-	         GOTO 201	! treat it like X=lo:hi:delta
+	         morph_gx_to_x(idim) = .TRUE.
+* 1/2014
+* ... treat gx=lo:hi:delta@ave as an implicit ax regrid like x=lo:hi:delta@ave
+*     similarly treat gz(depth)=0:100:10 as an implicit axis
+*     and also gz(depth)=100 as a single point axis
+*     but gz(depth)=0:100@ave is a special case where we need to parse the
+*     ""@ave" as a regridding transform, before we can behave like x=lo:hi:del
+	         this_dim = idim   ! 1/2014 hack cuz idim isn't reliable
+	         IF (.NOT.(has_auxvar.AND.atsin)) THEN
+	            GOTO 201
+	         ELSE
+	            GOTO 170
+	         ENDIF
 	      ENDIF
 * ... see if grid has been given by grid name
               grid = TM_GET_GRIDNUM( name(:name_end) )
@@ -694,15 +731,33 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 *11111111111
            ENDIF
 * ... explicit transformations given ?
-	   IF ( atsin ) THEN
+ 170	   IF ( atsin ) THEN
 	      IF ( namlen-atsin_pos .LT. 3 ) GOTO 5020		! 3+ char trans
 	      transnam = ' '
  	      vax_code = STR_UPCASE(transnam,name(atsin_pos+1:namlen))
-	      DO 180 itrans = 1, max_regrid_trans
- 180	      IF ( transnam .EQ. alg_regrid_code( itrans ) ) GOTO 182
+	      IF (cx_naux(mods_cx) .EQ. 0) THEN
+* ... identify the ordinary regridding transformation
+	         DO 180 itrans = 1, max_regrid_trans
+	            IF ( transnam .EQ. alg_regrid_code( itrans ) ) GOTO 182
+ 180		 CONTINUE
+	      ELSE
+* ... identify the auxiliary variable regridding transformation
+	         DO 181 itrans = max_regrid_trans+1, max_auxregrid_trans
+		    IF ( transnam .EQ. alg_regrid_code( itrans ) ) GOTO 182
+ 181		 CONTINUE
+	      ENDIF
 	      comment = '?? transform'
 	      GOTO 5020			! unknown regrid transform
- 182          IF ( single_char ) THEN   ! apply transform to all axes
+* ... trap (temporary?) for use of "@AVE" on auxiliary regridding
+ 182	      IF (itrans .EQ. pauxrgrd_average) THEN
+	         CALL WARN_OCCASIONALLY(
+     .		   'Box-averaging not available for auxiliary variable '//
+     .		   'regridding.'//pCR//
+     .		   '           Using @PLAVE instead, '//
+     .		   'e.g. gz(depth)=0:100@plave', 10, 101)
+	         itrans = pauxrgrd_pwlave
+	      ENDIF
+              IF ( single_char ) THEN   ! apply transform to all axes
                  DO 184 idim = 1, nferdims
  184             IF ( cx_regrid_trans(idim,mods_cx)
      .           .EQ. unspecified_int4 ) cx_regrid_trans(idim,mods_cx)
@@ -710,7 +765,12 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
               ELSE                      ! apply transform to specified axis
                  cx_regrid_trans( idim, mods_cx ) = itrans
               ENDIF
-              cx_unstand_grid( mods_cx ) = .TRUE.
+!              cx_unstand_grid( mods_cx ) = .TRUE.
+	   ENDIF
+! this 201 branch is a hack to allow the syntax "gz(depth)=lo:hi@ave" to
+!     use the preceding code to read the transformation
+	   IF ( has_auxvar ) THEN
+	      IF (morph_gx_to_x(this_dim) ) GOTO 201 ! 1/2014
 	   ENDIF
 	   IF (.NOT.single_char) GOTO 105	! back for another axis
 	   GOTO 500
@@ -724,8 +784,11 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 	   GOTO 500			! ignore unknown specifier
 	ENDIF
 
+* trap attempts to define the same axis region twice
+ 200	IF (.NOT.first_time(idim)) GOTO 5220
+	IF ( morph_gx_to_x(idim) ) GOTO 5200
+
 * specified by value or subscript ?
- 200	IF ( kludge_gx_to_x(idim) ) GOTO 5200
  201	cx_by_ss( idim, mods_cx ) = suborval .EQ. 1
 
 * syntax check: look for "=", ":" and "@"
@@ -785,8 +848,16 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 	ENDIF
 
 *  ... GX=lo:hi is legal ONLY with a delta supplied
-	IF ( kludge_gx_to_x(idim) .AND. .NOT.colon2 ) GOTO 5210
- 
+	IF ( morph_gx_to_x(idim) ) THEN
+	    IF ( has_auxvar ) THEN
+*         GZ(depth)=pt and gz(depth)=lo:hi@plave are allowed.
+*         GZ(depth)=lo:hi is not allowed
+             IF (colon .AND. .NOT.colon2 .AND. .NOT.atsin) GOTO 5210
+	    ELSE
+	      IF (.NOT.colon2)				   GOTO 5210
+	    ENDIF
+	ENDIF
+
 * ... ":" following @ (as in @SHF:-1) ?
 	IF ( atsin ) THEN
 	   atcolon_pos = ATOM_POS( text_buff(atsin_pos+1:iend), ':' )
@@ -817,7 +888,6 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 	   GOTO 5220
         ELSEIF ( .NOT.set_implicitly(idim) ) THEN  ! 8/92 modified 2/23/92
 * ... initialize this dimension if it's the first reference to it
-
 	   cx_given ( idim, mods_cx ) = .TRUE.
 	   cx_delta ( idim, mods_cx ) =  unspecified_val8
         ENDIF
@@ -893,7 +963,7 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 	   IF ( status .NE. ferr_ok ) RETURN
 
 * get the dynamic regridding transformation, e.g. x=lo:hi:del@tran
-	   IF ( atsin ) THEN
+	   IF ( atsin .AND. .NOT.has_auxvar ) THEN
 	      comment = '?? transform'
 	      risc_buff = text_buff(atsin_pos:atsin_pos+3)
 	      len_rbuff = 4
@@ -909,7 +979,8 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 
 	ELSE
 * get the axis transformation, e.g. x=lo:hi@tran
-	   IF ( atsin ) THEN
+* ... but not gz(depth)=0:100@ave, which was handled as an aux var regrid
+	   IF ( atsin .AND. .NOT.has_auxvar) THEN
 	      DO 320 itrans = 1, num_transforms
 	         vax_code = STR_CASE_BLIND_COMPARE(
      .				text_buff( atsin_pos+1:atsin_pos+3 ) ,
@@ -936,6 +1007,24 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 	   ENDIF
 	ENDIF
 	
+* 12/13
+* interpret gz(depth)=100 (a point) as a regrid to a dynamic axis of length 1
+* similarly gz(depth)=0:100@ave is an implied regrid to a single point axis
+	IF (has_auxvar) THEN
+* ... identify the axis being regridding in this qualifier
+	  DO rgdim = 1, nferdims
+	     IF (cx_g_eq_regrid(rgdim)) THEN
+	        IF (rgdim .NE. z_dim) CYCLE  ! ignore all axes but Z
+* set up for dynamic axis by inserting a special cx_delta signal
+	        IF (cx_lo_ww(z_dim,mods_cx) .EQ. unspecified_val8) CYCLE
+	        IF (cx_delta(z_dim,mods_cx) .NE. unspecified_val8) CYCLE
+	        IF (cx_lo_ww(z_dim,mods_cx) .EQ. cx_hi_ww(z_dim,mods_cx)
+     .	       .OR. cx_regrid_trans(z_dim,mods_cx) .EQ. pauxrgrd_pwlave)
+     .					cx_delta(z_dim,mods_cx) = pauto_1pt_ax
+	     ENDIF
+	   ENDDO
+	ENDIF
+
 * make sure low limit is less than high
 * ... date strings: stored negatively as seconds since BC
 * 8/97 *kob* check cx_calendar rather than if fmat_hi or fmat_lo is set to 

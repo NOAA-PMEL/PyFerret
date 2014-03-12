@@ -58,7 +58,9 @@
 *                  added mr_lo_s5 & 6, mr_hi_s5 & 6;
 *                  reordered to remove padding
 * V685 1/13  *acm* implement LET/REMOTE
-* V685+ 9/13 *sh*  added aux var regridding
+* V690 9/13-1/14 *sh*  added aux var regridding,
+*	           including is_aux_ptr, and uvar_curvi_var/cat
+*		   added space at the top of the isp stack for nferdims auxvars
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -146,6 +148,9 @@
 *	uvar_item_end	- positions in text for ends   of item text substrings
 *	uvar_grid	- defining grid for the expression
 *	uvar_data_type	- data type for the expression
+*	uvar_aux_var	- points to the curvi aux coord var for each axis
+*	uvar_aux_cat	- points to the curvi aux coord var for each axis
+*	uvar_aux_stat	- tells if aux axis has been regridded or remains free
 *	uvar_need_dset  - flag if the uvar def'n is independent of dset
 *	uvar_given	- indicate degree to which definition of uvar specifies
 *			  limits along each axis
@@ -166,6 +171,7 @@
 *	is_uvar  	- pointer to text,name,etc. of uvar
 *	is_mr		- pointer to memory grid for result
 *	is_sum   	- stores a value that is accumulated at stack level
+*	is_aux_ptr      - pointer to nferdims of curvilinear vars at stack top
 
 *	uvar_remote	- is the user-variable a LET/REMOTE variable
 *	rvar_on_server	- indicates if F-TDS server knows about the LET def
@@ -207,7 +213,7 @@
 	PARAMETER     (	max_uvar      	  = 2000,! total # uvars incl. "EX#."
      .			max_uvar_items    =  200,! complexity of uvar expression
      .			uvar_text_len	  = 2048,! max length of uvar expression
-     .			max_intrp	  =  400 ,! max length of uvar expression
+     .			max_intrp	  =  400 ,! max depth of interp stack
      .			max_rvar	  = 2000  )
 
 ********************************************************************************
@@ -217,8 +223,8 @@
      .		mem_blk_size,
      .		max_mem_blks
 
-* Reordered as REAL*8, REAL (which may be REAL*8 or REAL*4), INTEGER, LOGICAL, CHARACTER
-* to eliminate padding requirements from the compiler.
+* Reordered as REAL*8, REAL (which may be REAL*8 or REAL*4), INTEGER, LOGICAL,
+* CHARACTER to eliminate padding requirements from the compiler.
 * uvar_name_code_head should be immediately followed by uvar_name_code_padding
 * uvar_num_items_head should be immediately followed by uvar_num_items_padding
 	COMMON / XMR / 
@@ -269,6 +275,9 @@
      .		uvar_parent	 ( max_uvar ),
      .		uvar_grid	 ( max_uvar, 0:max_gfdl_dsets ),
      .		uvar_data_type	 ( max_uvar, 0:max_gfdl_dsets ),
+     .		uvar_aux_var	 ( max_uvar, nferdims, 0:max_gfdl_dsets ),
+     .		uvar_aux_cat	 ( max_uvar, nferdims, 0:max_gfdl_dsets ),
+     .		uvar_aux_stat	 ( max_uvar, nferdims ),
      .		uvar_item_start	 ( max_uvar_items, max_uvar ),
      .		uvar_item_end	 ( max_uvar_items, max_uvar ),
      .		uvar_item_type	 ( max_uvar_items, max_uvar ),
@@ -281,6 +290,7 @@
      .		rvar_varid	 ( max_rvar ),
      .          deleted_list_result(max_uvar),
      .          string_array_result(max_uvar),
+     .		max_usable_intrp,
      .		isp,
      .		is_act		( max_intrp ),
      .		is_cx		( max_intrp ),
@@ -290,6 +300,7 @@
      .		is_axis 	( max_intrp ),
      .		is_uvar 	( max_intrp ),
      .		is_mr		( max_intrp ),
+     .		is_aux_ptr 	( max_intrp ),
      .
      .		mr_unstand_grid	 ( max_mrs ),
      .		uvar_by_ss	 ( nferdims, max_uvar ),
@@ -372,6 +383,9 @@
         INTEGER		uvar_num_items  ,
      .			uvar_grid	,
      .			uvar_data_type	,
+     .			uvar_aux_var	,
+     .			uvar_aux_cat	,
+     .			uvar_aux_stat	,
      .			uvar_item_start	,
      .			uvar_item_end	,
      .			uvar_item_type	,
@@ -387,6 +401,7 @@
      .			rvar_varid
 
 	INTEGER		isp,
+     .			max_usable_intrp,
      .			is_act  ,
      .			is_cx ,
      .			is_big_cx ,
@@ -394,7 +409,8 @@
      .			is_obj  ,
      .			is_axis ,
      .			is_uvar ,
-     .			is_mr
+     .			is_mr,
+     .			is_aux_ptr
 	REAL		is_sum
 
 * equivalences to assist with declaration statements

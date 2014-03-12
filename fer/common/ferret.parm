@@ -31,6 +31,11 @@
 *		   zero as valid. 
 *       2/12 *kms* Add e_dim, and f_dim parameters, nferdims is in tmap_dims.parm
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V690 12/13-3/14 *sh* added max_auxregrid_trans for aux variable regridding,
+*		  and the pcurv_ parameters for automated aux var regridding
+*		  pauto_1pt_ax, pinfer_frm_aux
+*		  added patnam_sigma, patnam_curvx, patnam_curvy
+* 		  turned max_context into a variable to allow aux frames above it
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -382,6 +387,38 @@
      .			prgrd_from_ntrmed	= -7,
      .			pinterpolate		= 0 )
 
+* auxiliary regridding transformations
+	INTEGER		max_auxregrid_trans,
+     .			pauxrgrd_linear,
+     .			pauxrgrd_average,
+     .			pauxrgrd_pwlave,
+     .			pauxrgrd_thick_ave
+	PARAMETER     (	max_auxregrid_trans= max_regrid_trans+6,
+     .			pauxrgrd_linear    = max_regrid_trans+1,
+     .			pauxrgrd_average   = max_regrid_trans+2,
+     .			pauxrgrd_pwlave    = max_regrid_trans+3,
+     .			pauxrgrd_thick_ave = max_regrid_trans+4 )
+
+* auxiliary variable pointer merging
+*	paux_stat_na	   - no inherited aux coord
+*	paux_stat_passed   - aux coords inherited passively
+*	paux_stat_needed   - aux coords inherited and desired in graphics
+*	paux_stat_used	   - aux coords inherited but already regridded
+*	paux_stat_conflict - vars w differing aux coordinates in one expression
+*	paux_stat_notfound - named aux var not found in this dataset
+	INTEGER		paux_stat_na     ,
+     .			paux_stat_passed ,
+     .			paux_stat_needed ,
+     .			paux_stat_used   ,
+     .			paux_stat_conflict,
+     .			paux_stat_notfound
+	PARAMETER     ( paux_stat_na       = 1,
+     .			paux_stat_passed   = 2,
+     .			paux_stat_needed   = 3,
+     .			paux_stat_used     = 4,
+     .			paux_stat_conflict = 5,
+     .			paux_stat_notfound = 6)
+
 * codes to designate classes of items used within algebraic expressions
 	INTEGER		alg_operator,
      .			alg_constant,
@@ -428,8 +465,8 @@
 
 * codes to distinguish between context choices
 * (contexts describe space/time/variable/transformation/data_set,etc.)
-	INTEGER		max_context, min_context, max_cx_predefined
-	PARAMETER     ( max_context = 400,
+	INTEGER		max_noframe_context, min_context, max_cx_predefined
+	PARAMETER     ( max_noframe_context = 400,
      .			max_cx_predefined = 100,
      .			min_context = 1 - max_cx_predefined )
 
@@ -444,8 +481,8 @@
      .			cx_buff = 1,
      .			cx_last = 2,
      .			cx_cmnd = 3,
-     .			cx_plot = max_context+1,
-     .			cx_unused_yet = max_context+2,
+     .			cx_plot = max_noframe_context+1,
+     .			cx_unused_yet = max_noframe_context+2,
      .			cx_stack_ptr_base = cx_cmnd )
 
 * aid for documentation flags used to create strings describing variables
@@ -636,3 +673,21 @@
      .			ptype_double = 7,
      .			ptype_native = 999 )
 
+* status flags during automated auxiliary variable (curvilinear) regridding
+	INTEGER		pcurv_NA,
+     .			pcurv_needed,
+     .			pcurv_regridded
+	PARAMETER     ( pcurv_NA        = 1,
+     .			pcurv_needed    = 2,
+     .			pcurv_regridded = 3 )
+
+* special values used in setting up auxiliary and curvilinear regridding
+	INTEGER		pauto_1pt_ax, pinfer_frm_aux
+	PARAMETER     ( pauto_1pt_ax   = -123456,
+     .			pinfer_frm_aux = -123455 )
+
+* special attribute names
+	CHARACTER*11	patnam_sigma, patnam_curvx, patnam_curvy
+	PARAMETER     ( patnam_sigma = '__SigmaRef_',
+     .		        patnam_curvx = '__CurvxRef_',
+     .		        patnam_curvy = '__CurvxRef_'  )

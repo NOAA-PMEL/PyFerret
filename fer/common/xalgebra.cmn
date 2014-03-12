@@ -16,6 +16,8 @@
 *       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 *      4/12  *acm* Increased num_pseudo_vars from 30 to 40
 *                  dont need MODE FOURDEE, use _E, _F, _M, _N.
+* V690 12/13 *sh* added auxiliary regridding transformations and updated
+*		  transformation descriptions
 
 	INTEGER		num_operators ,num_functions, num_pseudo_vars,
      .			num_4d_pseudo_vars, num_log_structs, num_punctuations,
@@ -53,6 +55,7 @@
      .				csp_cvar,
      .				alg_trans_its_int,
      .				alg_trans_has_arg,
+     .				alg_regrid_vizb,	 
      .				alg_op,
      .				alg_fcn,	 
      .				alg_fcn_descr,
@@ -63,7 +66,7 @@
      .				alg_cvar,
      .				countervar_name,
      .				alg_trans_text,	 
-     .				alg_trans_title,	 
+     .				alg_trans_title,
      .				alg_regrid_code,
      .				alg_regrid_title,
      .				alg_arg_name,
@@ -83,7 +86,9 @@
      .			num_4d_trans
         INTEGER         csp_cvar         ( num_counter_vars )
 	LOGICAL		alg_trans_its_int( num_transforms ),
-     .			alg_trans_has_arg( num_transforms )
+     .			alg_trans_has_arg( num_transforms ),
+     .			alg_regrid_vizb  ( max_auxregrid_trans )
+
 	CHARACTER*4	alg_op           ( num_operators )
 	CHARACTER*8	alg_fcn	         ( num_functions )
 	CHARACTER*80	alg_fcn_descr    ( num_functions )
@@ -95,9 +100,8 @@
         CHARACTER*128   countervar_name  ( num_counter_vars )
 	CHARACTER*3	alg_trans_text	 ( num_transforms )
 	CHARACTER*20	alg_trans_title	 ( num_transforms )
-!	CHARACTER*3	alg_regrid_code	 ( max_regrid_trans )   ! chg 11/95
-	CHARACTER*6	alg_regrid_code	 ( max_regrid_trans )
-	CHARACTER*12	alg_regrid_title ( max_regrid_trans )
+	CHARACTER*6	alg_regrid_code	 ( max_auxregrid_trans )
+	CHARACTER*20	alg_regrid_title ( max_auxregrid_trans )
 
 	CHARACTER	alg_arg_name	 ( max_fcn_args )*80,
      .			alg_arg_units	 ( max_fcn_args )*24,

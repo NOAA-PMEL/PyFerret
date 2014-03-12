@@ -44,7 +44,7 @@
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
-* V685+ 9/13 *sh*  
+* V690 9/13 *sh*  -- with provisions for aux variables tested and refined
 
 * calling argument declarations:
 	INTEGER	status
@@ -130,8 +130,8 @@
 	      CALL GET_AUX_VAR_CONTEXT( hi_cx, aux_cx, iaux, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
  	   ENDIF
-	   CALL REPORT_DEPENDENCY( aux_cx, isp, uvar, item,
-     .				   work, status, desist)
+	   CALL REPORT_AUX_DEPENDENCY( aux_cx, isp, uvar, item,
+     .				       work, status, desist     )
            IF (.NOT.desist
      .    .AND. cx_category(aux_cx) .EQ. cat_user_var) THEN
 * ... if its a uvar go show dependencies INSIDE of the aux variable definition

@@ -96,7 +96,7 @@
 *                   its own axis with [gt=var]
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
-* V685+ 9/13 *sh* add support for aux var regridding: temp[gz(depth)=zax]
+* V690 9/13-2/14 *sh* add support for aux var regridding: temp[gz(depth)=zax]
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -222,9 +222,10 @@
 
 * initialize base level of the interpretation stack
 * ... ( see PUSH_INTERP_STACK for isp>isp_base )
- 6	isp = isp_base			! stack pointer
-	is_cx  ( isp ) = dflt_cx	! context for stack activities
-	is_uvar( isp ) = uvar_pointer	! pointer to text buffer
+ 6	isp = isp_base			     ! stack pointer
+	is_cx     ( isp ) = dflt_cx	     ! context for stack activities
+	is_uvar   ( isp ) = uvar_pointer     ! pointer to text buffer
+	is_aux_ptr( isp ) = max_usable_intrp ! pointer to aux vars for plotting
 
 * when called the request is ALWAYS for an untransformed implicitly defined
 * user variable (e.g. "LIST U" or "LIST SIN(X+Y)"
@@ -396,6 +397,14 @@
 	   GOTO 5000
 	ENDIF
 
+
+* ... strip off getting aux variables?
+*     note that regridding already stripped, so this is always for 3-arg plots
+	IF ( cx_naux(cx) .GT. 0 ) THEN
+	   CALL IS_STRIP( isact_class_aux_plot_vars, no_dim, *10, status )
+	   GOTO 5000
+	ENDIF
+
 * ... reduce algebraic expression to its components ?
 
 	IF ( cat .EQ. cat_user_var	) THEN
@@ -513,7 +522,6 @@ c	   GOTO 5000
 	   CALL RELEASE_WORK_SPC
 	   RETURN
 	ELSE
-* ... no - go back for more
 *    ... since the stack activity at this level is now completed it contains a
 *	 component that is needed by the next lower level.  Change its activity
 *	 to reflect its belonging to the lower level (needed when an algebraic
@@ -522,6 +530,8 @@ c	   GOTO 5000
 	   act = is_act( isp - 1 )
 	   is_act( isp ) = act
 	   isp = isp - 1
+
+* ... not done - go back for more
 
 ******************************************************************************
 * * * * * PERFORM TRANSFORMATIONS, ARITHMETIC, RE-GRIDDING, ETC. * * * * * *
@@ -608,7 +618,8 @@ c	   GOTO 5000
 	      CALL IS_TRANS( memory, DO_DIST_LOC, *2500, status )
 	   ELSEIF ( act .EQ. isact_regrid		) THEN
 	      CALL IS_REGRID( memory, *2500, status )
-	   ELSEIF ( act .EQ. isact_auxvar_regrid	) THEN
+	   ELSEIF ( act .EQ. isact_auxvar_regrid
+     .         .OR. act .EQ. isact_aux_plot_vars	) THEN
 	      CALL IS_AUXVAR_REGRID( memory, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_autogrid		) THEN
 	      CALL IS_AUTOGRID( *2500, status )

@@ -59,6 +59,7 @@
 * V680  6/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If cancelled, the 
 *                 output will not list info for E,F dimensions.
+* V690  1/14 *sh* report 3-argument var-getting operation
 
 * calling argument declarations:
         IMPLICIT NONE
@@ -202,6 +203,16 @@
      .			cx_data_set(cx)
  3090	   FORMAT
      . (1X,A5,' aggregate gathering ',A,' on ',A1,' axis:',2I6,' dset:',I4)
+	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
+
+* getting arguments needed for curvilinear plotting
+	ELSEIF( act_class .EQ. isact_class_aux_plot_vars ) THEN
+	   WRITE ( risc_buff, 3100 ) doing, var(1:slen),
+     .                  ww_dim_name( idim ),
+     .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim),
+     .			cx_data_set(cx)
+ 3100	   FORMAT
+     . (1X,A5,' getting aux vars ',A,' on ',A1,' axis:',2I6,' dset:',I4)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 	ELSE

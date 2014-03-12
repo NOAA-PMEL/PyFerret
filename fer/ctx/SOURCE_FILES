@@ -1,8 +1,10 @@
 SRCS_F = \
 add_rdc_xform.F\
 addl_cx_doc.F\
+apply_auto_curv.F\
 apply_context_mods.F\
 apply_delta_context.F\
+aux_axis_from_arg.F\
 cgrid_axis.F\
 cgrid_size.F\
 cgrid_size_max.F\
@@ -16,6 +18,7 @@ cx_ww_pos.F\
 del_cx_dim.F\
 flesh_out_axis.F\
 forget_past_context_mods.F\
+get_auto_aux_vars.F\
 get_aux_var_context.F\
 get_context_bad_flag.F\
 get_context_grid.F\

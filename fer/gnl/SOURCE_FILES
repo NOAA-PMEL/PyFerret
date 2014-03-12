@@ -40,11 +40,13 @@ finalize.F\
 float2string_for_xml.F\
 get_dataset_name.F\
 get_fer_command.F\
+get_fvars_list_by_attname_and_val.F\
 get_context_mods.F\
 get_input_varname.F\
 get_mode_arg.F\
 get_ppl_memory_size.F\
 get_scriptfile_name.F\
+get_uvars_list_by_attname_and_val.F\
 init_aggregate_dset.F\
 init_journal.F\
 init_memory.F\
@@ -111,5 +113,6 @@ turnoff_verify.F\
 var_stat.F\
 version_only.F\
 warn.F\
+warn_occasionally.F\
 write_dods_fmt.F \
 write_multi.F 

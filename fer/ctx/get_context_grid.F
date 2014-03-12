@@ -138,6 +138,8 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
 *                  dimension is now an arg to SECS_TO_TSTEP.
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V690 12/13 *sh* set default regrid transforms for aux var regridding transform
+*	          set up dynamic axis if cx_delta=pauto_1pt_ax
 
 	include 'errmsg.parm'
 	include 'ferret.parm'
@@ -204,6 +206,7 @@
 	   IF (cx_delta(idim,cx) .NE. unspecified_val8) THEN
 * ... make sure the specified delta makes sense (this test moved 1/96)
 	      IF ( cx_delta(idim,cx) .NE. unspecified_val8
+     .	     .AND. cx_delta(idim,cx) .NE. pauto_1pt_ax
      .	     .AND. cx_delta(idim,cx) .LE. 0.0D0		) GOTO 5200
 	      has_impl_axis = .TRUE.
 	   ENDIF
@@ -261,6 +264,20 @@
 	            dlo = cx_lo_ww(idim,cx)
 	            dhi = cx_hi_ww(idim,cx)
 	            delta = cx_delta(idim,cx)
+	            IF (delta .EQ. pauto_1pt_ax) THEN
+	               IF (dlo .EQ. dhi) THEN
+* generate a single point axis.  The delta of such a line is arbitrary.
+	                  IF (dlo .EQ. 0.0) THEN
+	                     delta = 0.00001
+	                  ELSE
+	                     delta = dlo * 0.00001
+	                  ENDIF
+	               ELSE
+	                  delta = dhi - dlo
+	                  dlo   = (dlo + dhi)/2
+	                  dhi   = dlo 
+	               ENDIF
+	            ENDIF
 	            IF (idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
 * 8/97 *kob* use cx_calender to check if time is date rather than time step
 	               IF ( cx_calendar(cx) ) THEN
@@ -380,7 +397,11 @@
 	   IF ( use_axis .EQ. std_axis ) THEN
 	      cx_regrid_trans( idim, cx ) = prgrd_exact
 	   ELSEIF ( cx_regrid_trans(idim,cx) .EQ. unspecified_int4 ) THEN
-	      cx_regrid_trans( idim, cx ) = prgrd_linear_interp
+	      IF (cx_naux(cx) .EQ. 0) THEN
+	         cx_regrid_trans( idim, cx ) = prgrd_linear_interp
+	      ELSE
+	         cx_regrid_trans( idim, cx ) = pauxrgrd_linear
+	      ENDIF
 	   ENDIF
  100	CONTINUE
 

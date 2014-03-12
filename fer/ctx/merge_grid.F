@@ -112,6 +112,8 @@
 * v685 *acm* 4/13   Call WARN for warning message
 * v685 *acm* 5/13   Fix ticket 2051, setting uvar_given(idim,uvar) when the
 *                   user-variable has multiple sub-expressions
+* v690 *sh* 2/14  Determine the curvilinear (aux var) dependencies of the merged
+*		  expression
 
 	include 'tmap_dims.parm'
 	include 'grid_chg_fcns.parm'
@@ -139,7 +141,9 @@
      .			mrg_grd, mrg_ax, mrg_len, com_grd, com_ax, com_len,
      .			idim, i, icom, imrg, com_uvar, com_class, mrg_class,
      .			uv_class, ax_choice(6,5), joint_match(0:3,0:3),
-     .			lims_gvn, gcfcn, axis_source(nferdims), uvar_test
+     .			lims_gvn, gcfcn, axis_source(nferdims), uvar_test,
+     .			naux, blen
+	CHARACTER	VAR_CODE*128, buff*128
 
 * local parameter declarations
 	INTEGER		EXP,   IMP,   WRN1,   NP,   NA,  WRN2
@@ -299,6 +303,61 @@
 	ENDIF
 
 * loop through the axes
+
+* 2/2014 - pass the aux var dependencies from the component to the merged result
+* merged result will contain a conflict wherever components point to different
+* aux variables for the same axis
+	naux = 0
+	DO idim = 1, nferdims
+	   IF (cx_aux_var(idim,com_cx) .NE. unspecified_int4) THEN
+	      naux = naux + 1
+	      IF (cx_aux_stat(idim,mrg_cx).EQ.paux_stat_conflict ) THEN
+* ... if previous merges had a conflict, it doesn't go away
+	         CONTINUE
+	      ELSEIF (cx_aux_stat(idim,mrg_cx).EQ.paux_stat_na) THEN
+	         cx_aux_var (idim,mrg_cx) = cx_aux_var (idim,com_cx)
+	         cx_aux_cat (idim,mrg_cx) = cx_aux_cat (idim,com_cx)
+	         cx_aux_stat(idim,mrg_cx) = cx_aux_stat(idim,com_cx)
+	      ELSEIF ( ( cx_aux_var(idim,mrg_cx)
+     .	            .NE. cx_aux_var(idim,com_cx) ) 
+     .		  .OR. ( cx_aux_cat(idim,mrg_cx)
+     .		    .NE. cx_aux_cat(idim,com_cx) )  ) THEN
+	         cx_aux_stat(idim,mrg_cx) = paux_stat_conflict
+	         cx_aux_var (idim,mrg_cx) = unspecified_int4
+	         cx_aux_cat (idim,mrg_cx) = unspecified_int4
+	         IF (mode_diagnostic) THEN
+* ... "Z axis auxiliary coordinates of expression in conflict.
+*     "Variable TEMP coordinates are from DEPTH1"
+*     "Other components indicate DEPTH2 
+	             buff = ww_dim_name(idim)//
+     .	' axis auxiliary coordinates of expression are in conflict.'
+	             CALL SPLIT_LIST(pttmode_explct, ttout_lun, buff, 0)
+	             buff = 'Variable '//VAR_CODE(cx_category(com_cx),
+     .						  cx_variable(com_cx))
+	             blen = TM_LENSTR1(buff)
+	             buff(blen+1:) = 'coordinates are from '//
+     .			VAR_CODE(cx_aux_cat(idim,com_cx),
+     .				 cx_aux_var(idim,com_cx) )//'.'
+	             CALL SPLIT_LIST(pttmode_explct, ttout_lun, buff, 0)
+	             buff = 'Other components indicate '//
+     .			VAR_CODE(cx_aux_cat(idim,mrg_cx),
+     .				 cx_aux_var(idim,mrg_cx) )//'.'
+	             CALL SPLIT_LIST(pttmode_explct, ttout_lun, buff, 0)
+	          ENDIF
+	       ELSEIF (cx_aux_stat(idim,mrg_cx).EQ.paux_stat_needed) THEN
+* ... new compoonent uses same aux as previously merged
+	         cx_aux_stat(idim,mrg_cx) = paux_stat_needed
+	       ENDIF
+	   ELSEIF (cx_aux_stat(idim,mrg_cx) .NE. paux_stat_na
+     .	     .AND. cx_aux_stat(idim,mrg_cx) .NE. paux_stat_passed ) THEN
+	       naux = naux + 1
+	   ENDIF
+	   IF (cx_aux_stat(idim,com_cx) .EQ. paux_stat_needed)
+     .			cx_aux_stat(idim,mrg_cx) = paux_stat_needed
+	ENDDO
+	cx_naux(mrg_cx) = naux
+
+* pass the axes and theirimplied dependencies to the merged result
 	DO 500 idim = 1, nferdims
 
 * get axes and lengths of data along them

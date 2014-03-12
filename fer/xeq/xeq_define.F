@@ -224,6 +224,7 @@
 * V685 *acm* 10/13 Fix ticket 2096, DEFINE GRID with check on units
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V687 *acm*  1/14 Fixing ticket 2135; grid_use_cnt on DEFINE DATA/AGG datasets
+* V690 *sh*   1/14 Formatting improvement to DEFINE ATTRIB error message
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -340,7 +341,7 @@
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet, agg_e,
-     .            letdset, its_remote, agg_hide, def_att_quiet
+     .            letdset, its_remote, agg_hide, def_att_quiet, purge_all
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1,
@@ -357,7 +358,7 @@
      .            dflt_cal_id, nmonths, ndays, d_before_mon(12), 
      .            mon_by_d(366), d_in_mon(12), len_cal, n2, n3, s2len,
      .            prev_cal_id, j, num_indices, varid, attype_spec,
-     .            mr_perm(max_intrp), attoutflag, attlen, coordvar, 
+     .            attoutflag, attlen, coordvar, 
      .            dset_to_add, dir, type, attype, attid, ibuff, i0,  
      .            agg_dim, ivar
 
@@ -594,7 +595,8 @@
 * find name to define
 * 2 syntaxes are allowed: "DEFINE VAR NAME=TEXT", "DEFINE VAR NAME TEXT"
 * in the latter be careful that "TEXT" may contain "="
- 400	IF ( num_args .LT. 1 ) GOTO 5300
+ 400	purge_all = .FALSE.  ! initialize
+        IF ( num_args .LT. 1 ) GOTO 5300
 	CALL NAME_EQUAL_STRING( buff1, pos, status )
 	CALL NAME_EQUAL_STRING_LC( varname, pos, status )
 	IF ( status .NE. ferr_ok )  GOTO 5000
@@ -695,7 +697,7 @@
 	   IF ( var .NE. munknown_var_name ) CALL PURGE_ALL_UVARS
 	ENDIF
 
-* do we need to delete a previous definition of this var ?
+* do we need to delete a previous definition of this same-named var ?
 * Note: need to purge old defs ALSO if the same name is now redefined in a 
 *	new data set -- expressions using this name chg interpretation  
 *	DO 410 i1 = 1, max_uvar
@@ -715,10 +717,27 @@
 	      IF ( uvar_dset(i1) .EQ. dset ) THEN
 	         CALL DELETE_USER_VAR(i1)
 	      ENDIF
-* ... reuse of name  makes all past assumptions incorrect
-	      CALL PURGE_ALL_UVARS	! not done above for pdset_irrelevant
+* ... reuse of name  makes all stored uvars possibly invalid
+*     Also invalidates any memory-cached results that used aux of this name
+	      purge_all = .TRUE.
 *	   ENDIF
  410	CONTINUE
+
+* if this name is used as the target of an aux (curvilinear) coordinate var
+* (re)defining it may invalidate cached results
+        CALL GET_FVARS_LIST_BY_ATTNAME_AND_VAL
+     .	  (patnam_sigma, buff1, max_uvar,
+     .     string_array_result, deleted_list_result, num_indices)
+        purge_all = purge_all .OR. (num_indices .GT. 0)
+        IF (.NOT.purge_all) THEN
+           CALL GET_UVARS_LIST_BY_ATTNAME_AND_VAL
+     .	        (patnam_sigma, buff1, max_uvar,
+     .           string_array_result, deleted_list_result, num_indices)
+           purge_all = purge_all .OR. (num_indices .GT. 0)
+        ENDIF
+
+* purge user variables and aux var dependencies if needed
+        IF (purge_all) CALL PURGE_ALL_UVARS !not done above for pdset_irrelevant
 
 * now file the expression in the user-defined variable area
 	CALL INIT_UVAR ( buff1, cmnd_buff(pos:len_cmnd), buff3, buff2, dset,
@@ -2318,9 +2337,10 @@ C /units=months  is 1/12 of the length of the year
      .           cmnd_buff(pos:len_cmnd)//' is '// buff1(:slen)//
      .           'TYPE given is '// buff2(:slen), *5000 )
 
-5940    slen = TM_LENSTR1(buff2)
-        CALL ERRMSG( ferr_invalid_command, status,
-     .		'attribute type must be string or float'// buff2(:slen), *5000 )
+5940  slen = TM_LENSTR1(buff2)
+      CALL ERRMSG( ferr_invalid_command, status,
+     .	buff2(:slen)//' not allowed as argument of DEF ATT/TYPE='//pCR//
+     .  'Must be STRING or FLOAT ',*5000 )
 
 5960  slen = TM_LENSTR1(buff1)
       CALL ERRMSG( ferr_invalid_command, status,

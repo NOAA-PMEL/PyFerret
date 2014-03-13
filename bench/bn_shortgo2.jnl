@@ -1,0 +1,6 @@
+! bn_shortgo2.jnl
+! short script extracted from bn_negative_t for bn_enter_exit_GO
+
+DEFINE AXIS/T=-10:10:2 tax
+LET tvar = t[gt=tax]
+GO bn_short.sub tvar ave

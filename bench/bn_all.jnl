@@ -892,6 +892,9 @@ GO bn687_bug_fixes
 GO bn_reset
 GO bn_bad_axis_bounds
 
+GO bn_reset
+GO bn_enter_exit_GO
+
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

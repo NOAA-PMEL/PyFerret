@@ -61,7 +61,7 @@
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V687  3/14 *acm* for ticket 2044, write note ! Exit from <script>
-* V687  3/14 *acm* for ticket 2044, write note ! Exit_GO
+* V687  3/14 *acm* for ticket 2044, write note ! Exit_GO only if SET REDIRECT is turned on.
 
 * internal variable declarations:
 	INTEGER	LIB_FREE_LUN,TM_LENSTR1,stat,axis,ivar,cvar,csp_to,ll,
@@ -96,8 +96,8 @@
 * clean up old level
 	IF ( cs_cmnd_num( csp ) .EQ. cmnd_go ) THEN
 
-* ... If mode journal, write note with script name 
-	   IF (mode_verify) THEN
+* ... Write note with script name, only if SET REDIRECT is turned on.
+	   IF (redirect_stdout_flags .NE. redirect_none) THEN
               risc_buff = '! Exit_GO '
               CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, ll)
 	   ENDIF

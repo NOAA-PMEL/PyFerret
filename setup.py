@@ -86,12 +86,10 @@ if cairo_libdir:
 else:
    addn_link_args.append("-lcairo")
 
-# Link in the appropriate system libraries and make sure
-# everything is resolved in the final linking step.
+# Link in the appropriate system libraries 
 if hdf5_libdir:
    addn_link_args.append("-lcurl -lz")
-addn_link_args.extend([ "-lgfortran", "-ldl", "-lm", 
-                        "-fPIC", "-Wl,--no-undefined", ])
+addn_link_args.extend([ "-lgfortran", "-ldl", "-lm", "-fPIC", ])
 
 # Get the list of C source files in pyfermod
 src_list = [ ]

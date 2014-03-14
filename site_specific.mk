@@ -17,6 +17,7 @@ BUILDTYPE	= $(HOSTTYPE)
 # BUILDTYPE	= i386-linux
 # BUILDTYPE	= i386-linux-gnu
 # BUILDTYPE	= i386-apple-darwin
+# BUILDTYPE	= intel-mac
 
 ## Python 2.x executable to invoke for build and install.
 PYTHON_EXE	= python2.6
@@ -64,5 +65,6 @@ NETCDF4_DIR	= /usr/local/netcdf_4311
 # JAVA_HOME	= /usr/lib/jvm/java-oracle
 # JAVA_HOME	= /usr/lib/jvm/java-sun
 JAVA_HOME	= /usr/lib/jvm/java
+# JAVA_HOME	= /Library/Java/JavaVirtualMachines/jdk1.7.jdk/Contents/Home
 
 ##

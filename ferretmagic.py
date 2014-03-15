@@ -53,7 +53,7 @@ from IPython.core.magic_arguments import argument, magic_arguments, parse_argstr
 from IPython.utils.py3compat import unicode_to_str
 from pexpect import ExceptionPexpect
 
-_DEFAULT_PLOTSIZE = "720.0,612.0"
+_DEFAULT_PLOTSIZE = "756.0,612.0"
 _DEFAULT_MEMSIZE = 50.0
 
 #----------------------------------------------------
@@ -62,8 +62,8 @@ class ferretMagicError(Exception):
 
 @magics_class
 class ferretMagics(Magics):
-    """A set of magics useful for interactive work with ferret via pyferret.
-
+    """
+    A set of magics useful for interactive work with ferret via pyferret.
     """
 #----------------------------------------------------
     def __init__(self, shell):
@@ -71,7 +71,6 @@ class ferretMagics(Magics):
         Parameters
         ----------
         shell : IPython shell
-
         """
         super(ferretMagics, self).__init__(shell)
         try:
@@ -81,12 +80,24 @@ class ferretMagics(Magics):
 
 #----------------------------------------------------
     def ferret_run_code(self, args, code):
+        """
+        Parameters
+        ----------
+        args : control arguments for running (py)ferret
+        code : ferret commands to run
+        """
 
-        # Temporary directory
-        temp_dir = tempfile.mkdtemp(prefix='ipyferret_').replace('\\', '/')
+        # Temporary directory under the current directory so PDF link files are accessible
+        temp_dir = tempfile.mkdtemp(dir='.', prefix='ipyferret_').replace('\\', '/')
         txt_filename = temp_dir + '/output.txt' 
         if args.plotname:
             plot_filename = str(args.plotname)
+            if args.pdf:
+                if not plot_filename.endswith('.pdf'):
+                    plot_filename += '.pdf'
+            else:
+                if not plot_filename.endswith('.png'):
+                    plot_filename += '.png'
         elif args.pdf:
             plot_filename = temp_dir + '/image.pdf'
         else:
@@ -108,17 +119,15 @@ class ferretMagics(Magics):
             plot_size = _DEFAULT_PLOTSIZE.split(',')
         plot_width  = float(plot_size[0])
         plot_height = float(plot_size[1])
-        plot_aspect = float(plot_height) / float(plot_width)
+        plot_aspect = plot_height / plot_width
 
         # Publish
         key = 'ferretMagic.ferret'
 
         #-------------------------------
-        # Set window; use a standard-sized window and just set the aspect ratio
-        if args.antialias:
-            (errval, errmsg) = pyferret.run('set window /antialias /aspect=%(plot_aspect)f 1' % locals())
-        else:
-            (errval, errmsg) = pyferret.run('set window /noantialias /aspect=%(plot_aspect)f 1' % locals())
+        # Set window; use a large window with the given aspect ratio
+        # Always anti-alias at this large size
+        (errval, errmsg) = pyferret.run('set window /size=16 /thick=4 /aspect=%(plot_aspect)f 1' % locals())
 
         # STDOUT handling
         (errval, errmsg) = pyferret.run('set redirect /clobber /file="%(txt_filename)s" stdout' % locals())
@@ -127,82 +136,83 @@ class ferretMagics(Magics):
         # Run code
         pyferret_error = False
         for input in code:
-            input = unicode_to_str(input)
-            # ignore empty lines
+            # Ignore blank lines
             if input:
+                input = unicode_to_str(input)
                 (errval, errmsg) = pyferret.run(input)
                 if errval != pyferret.FERR_OK:
                     publish_display_data(key, {'text/html': 
                         '<pre style="background-color:#F79F81; border-radius: 4px 4px 4px 4px; font-size: smaller">' +
                         'yes? %s\n' % input +
-                        'error val = %i\nerror msg = %s' % (errval, errmsg) +
+                        '** (LAST) ERROR MESSAGE: %s' % errmsg +
                         '</pre>' 
                     })
                     pyferret_error = True
                     break
-            # Create image file; if no final image, no image file will be created
-            # Any existing image with that filename will be versioned away ('.~n~' appended)
-            if not pyferret_error:
-                if args.pdf:
-                    inch_width = plot_width / 72.0
-                    (errval, errmsg) = pyferret.run('frame /xinch=%(inch_width)f /file="%(plot_filename)s" /format=PDF' % locals())
-                else:
-                    (errval, errmsg) = pyferret.run('frame /xpixel=%(plot_width)f /file="%(plot_filename)s" /format=PNG' % locals())
-                if errval != pyferret.FERR_OK:
-                    pyferret_error = True
-            # Close stdout
-            (errval, errmsg) = pyferret.run('cancel redirect')
-            # Close window
-            (errval, errmsg) = pyferret.run('cancel window 1')
-            #-------------------------------
+        # Create image file; if no final image, no image file will be created
+        # Any existing image with that filename will be versioned away ('.~n~' appended)
+        if not pyferret_error:
+            if args.pdf:
+                inch_width = plot_width / 72.0
+                (errval, errmsg) = pyferret.run('frame /xinch=%(inch_width)f /file="%(plot_filename)s" /format=PDF' % locals())
+            else:
+                (errval, errmsg) = pyferret.run('frame /xpixel=%(plot_width)f /file="%(plot_filename)s" /format=PNG' % locals())
+            if errval != pyferret.FERR_OK:
+                pyferret_error = True
+        # Close stdout
+        (errval, errmsg) = pyferret.run('cancel redirect')
+        # Close window
+        (errval, errmsg) = pyferret.run('cancel window 1')
+        #-------------------------------
 
-            # Publish
-            display_data = []
+        # Publish
+        display_data = []
 
-            # Publish text output if not empty
-            if os.path.getsize(txt_filename) != 0 : 
-                try:
-                    text_outputs = []
-                    text_outputs.append('<pre style="background-color:#ECF6CE; border-radius: 4px 4px 4px 4px; font-size: smaller">')
-                    f = open(txt_filename, "r")
-                    for line in f:
-                        text_outputs.append(line)
-                    f.close()
-                    text_outputs.append("</pre>")
-                    text_output = "".join(text_outputs)
-                    display_data.append((key, {'text/html': text_output}))
-                except:
-                    pass
+        # Publish text output if not empty
+        if os.path.isfile(txt_filename) and (os.path.getsize(txt_filename) > 0): 
+            try:
+                text_outputs = []
+                text_outputs.append('<pre style="background-color:#ECF6CE; border-radius: 4px 4px 4px 4px; font-size: smaller">')
+                f = open(txt_filename, "r")
+                for line in f:
+                    text_outputs.append(line)
+                f.close()
+                text_outputs.append("</pre>")
+                text_output = "".join(text_outputs)
+                display_data.append((key, {'text/html': text_output}))
+            except:
+                pass
 
-            # Publish image if present
-            if not pyferret_error:
-               if args.pdf:
-                   if os.path.isfile(plot_filename):
-                       # Create link to pdf; file visible from cell from files directory
-                       text_outputs = []
-                       text_outputs.append('<pre style="background-color:#F2F5A9; border-radius: 4px 4px 4px 4px; font-size: smaller">')
-                       text_outputs.append('Message: <a href="files/%(plot_filename)s" target="_blank">%(plot_filename)s</a> created.' % locals())
-                       text_outputs.append('</pre>')
-                       text_output = "".join(text_outputs)
-                       display_data.append((key, {'text/html': text_output}))
-                       # If the user did not provide the PDF filename, 
-                       # do not delete the temporary directory since the PDF is in there.
-                       if args.plotname:
-                           rmtree(temp_dir)
-                   else:
-                       # Delete temporary directory - nothing to preserve
+        # Publish image if present
+        if not pyferret_error:
+           if args.pdf:
+               if os.path.isfile(plot_filename):
+                   # Create link to pdf; file visible from cell from files directory
+                   text_outputs = []
+                   text_outputs.append('<pre style="background-color:#F2F5A9; border-radius: 4px 4px 4px 4px; font-size: smaller">')
+                   text_outputs.append('Message: <a href="files/%(plot_filename)s" target="_blank">%(plot_filename)s</a> created.' % locals())
+                   text_outputs.append('</pre>')
+                   text_output = "".join(text_outputs)
+                   display_data.append((key, {'text/html': text_output}))
+                   # If the user did not provide the PDF filename, 
+                   # do not delete the temporary directory since the PDF is in there.
+                   if args.plotname:
                        rmtree(temp_dir)
                else:
-                   try:
-                       f = open(plot_filename, 'rb')
-                       image = f.read().encode('base64')
-                       f.close()
-                       display_data.append((key, {'text/html': '<div class="myoutput">' + 
-                           '<img src="data:image/png;base64,%(image)s"/></div>' % locals()}))
-                   except:
-                       pass
-                   # Delete temporary directory - PNG encoded in the string
+                   # Delete temporary directory - nothing to preserve
                    rmtree(temp_dir)
+           else:
+               # Display the image in the notebook
+               try:
+                   f = open(plot_filename, 'rb')
+                   image = f.read().encode('base64')
+                   f.close()
+                   display_data.append((key, {'text/html': '<div class="myoutput">' + 
+                       '<img src="data:image/png;base64,%(image)s"/></div>' % locals()}))
+               except:
+                   pass
+               # Delete temporary directory - PNG encoded in the string
+               rmtree(temp_dir)
 
         # Publication
         for source, data in display_data:
@@ -218,10 +228,6 @@ class ferretMagics(Magics):
     @argument(
         '-s', '--size',
         help='Pixel size of PNG plots or point size of PDF plots as "width,height". Default is ' + _DEFAULT_PLOTSIZE
-        )
-    @argument(
-        '-a', '--antialias', default=False, action='store_true',
-        help='Use anti-aliasing to improve the appearance of images and get smoother edges.' 
         )
     @argument(
         '-p', '--pdf', default=False, action='store_true',
@@ -256,10 +262,6 @@ class ferretMagics(Magics):
     @argument(
         '-s', '--size',
         help='Pixel size of PNG plots or point size of PDF plots as "width,height". Default is ' + _DEFAULT_PLOTSIZE
-        )
-    @argument(
-        '-a', '--antialias', default=False, action='store_true',
-        help='Use anti-aliasing technics to improve the appearance of images and get smoother edges.' 
         )
     @argument(
         '-p', '--pdf', default=False, action='store_true',

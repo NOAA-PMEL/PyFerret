@@ -53,8 +53,9 @@ from IPython.core.magic_arguments import argument, magic_arguments, parse_argstr
 from IPython.utils.py3compat import unicode_to_str
 from pexpect import ExceptionPexpect
 
-_DEFAULT_PLOTSIZE = "756.0,612.0"
-_DEFAULT_MEMSIZE = 50.0
+_PUBLISH_KEY = 'ferretMagic.ferret'
+_DEFAULT_PLOTSIZE = '756.0,612.0'
+_DEFAULT_MEMSIZE = 400.0
 
 #----------------------------------------------------
 class ferretMagicError(Exception):
@@ -74,7 +75,7 @@ class ferretMagics(Magics):
         """
         super(ferretMagics, self).__init__(shell)
         try:
-            pyferret.start(journal=False, unmapped=True, quiet=True)
+            pyferret.start(memsize=(_DEFAULT_MEMSIZE/8.0), verify=False, journal=False, unmapped=True, quiet=True)
         except ExceptionPexpect:
             raise ferretMagicError('pyferret cannot be started')
 
@@ -87,9 +88,15 @@ class ferretMagics(Magics):
         code : ferret commands to run
         """
 
-        # Temporary directory under the current directory so PDF link files are accessible
+        # Temporary directory; create under the current directory 
+        # so PDF link files are accessible
         temp_dir = tempfile.mkdtemp(dir='.', prefix='ipyferret_').replace('\\', '/')
-        txt_filename = temp_dir + '/output.txt' 
+
+        # Redirect stdout and stderr to file
+        out_filename = temp_dir + '/output.txt' 
+        (errval, errmsg) = pyferret.run('set redirect /clobber /file="%s" stdout stderr' % out_filename)
+
+        # Filename for saving the final plot (if any)
         if args.plotname:
             plot_filename = str(args.plotname)
             if args.pdf:
@@ -103,16 +110,17 @@ class ferretMagics(Magics):
         else:
             plot_filename = temp_dir + '/image.png'
 
-        # Memory setting in double-precision "mega-words"
-        if args.memory:
-            mem_size = float(args.memory)
-            if mem_size <= 0.0:
-                mem_size = _DEFAULT_MEMSIZE
-        else:
-            mem_size = _DEFAULT_MEMSIZE
-        (errval, errmsg) = pyferret.run('set memory/size=%f' % mem_size)
 
-        # Plot size and aspect ratio
+        # Make it quiet by default
+        (errval, errmsg) = pyferret.run('cancel mode verify')
+
+        if args.memory:
+            # Reset memory size in megabytes
+            mem_size = float(args.memory)
+            if mem_size > 0.0:
+                (errval, errmsg) = pyferret.run('set memory /size=%f' % (mem_size/8.0))
+
+        # Get image size and aspect ratio
         if args.size:
             plot_size = args.size.split(',')
         else:
@@ -121,18 +129,15 @@ class ferretMagics(Magics):
         plot_height = float(plot_size[1])
         plot_aspect = plot_height / plot_width
 
-        # Publish
-        key = 'ferretMagic.ferret'
+        # Set window size with the required aspect ratio; 
+        # always anti-alias with windows of these sizes
+        if args.bigger:
+            # Use a double-size window with some extra (0.5) line thickness 
+            (errval, errmsg) = pyferret.run('set window /size=4 /thick=2.5 /aspect=%f 1' % plot_aspect)
+        else:
+            # Use a standard-size window with usual line thickness
+            (errval, errmsg) = pyferret.run('set window /size=1 /thick=1 /aspect=%f 1' % plot_aspect)
 
-        #-------------------------------
-        # Set window; use a large window with the given aspect ratio
-        # Always anti-alias at this large size
-        (errval, errmsg) = pyferret.run('set window /size=16 /thick=4 /aspect=%(plot_aspect)f 1' % locals())
-
-        # STDOUT handling
-        (errval, errmsg) = pyferret.run('set redirect /clobber /file="%(txt_filename)s" stdout' % locals())
-        # Cancel mode verify
-        (errval, errmsg) = pyferret.run('cancel mode verify')
         # Run code
         pyferret_error = False
         for input in code:
@@ -141,7 +146,7 @@ class ferretMagics(Magics):
                 input = unicode_to_str(input)
                 (errval, errmsg) = pyferret.run(input)
                 if errval != pyferret.FERR_OK:
-                    publish_display_data(key, {'text/html': 
+                    publish_display_data(_PUBLISH_KEY, {'text/html': 
                         '<pre style="background-color:#F79F81; border-radius: 4px 4px 4px 4px; font-size: smaller">' +
                         'yes? %s\n' % input +
                         '** (LAST) ERROR MESSAGE: %s' % errmsg +
@@ -149,37 +154,40 @@ class ferretMagics(Magics):
                     })
                     pyferret_error = True
                     break
-        # Create image file; if no final image, no image file will be created
+
+        # Create the image file; if no final image, no image file will be created.
         # Any existing image with that filename will be versioned away ('.~n~' appended)
         if not pyferret_error:
             if args.pdf:
-                inch_width = plot_width / 72.0
-                (errval, errmsg) = pyferret.run('frame /xinch=%(inch_width)f /file="%(plot_filename)s" /format=PDF' % locals())
+                (errval, errmsg) = pyferret.run('frame /xinch=%f /file="%s" /format=PDF' % (plot_width/72.0, plot_filename) )
             else:
-                (errval, errmsg) = pyferret.run('frame /xpixel=%(plot_width)f /file="%(plot_filename)s" /format=PNG' % locals())
+                (errval, errmsg) = pyferret.run('frame /xpixel=%f /file="%s" /format=PNG' % (plot_width, plot_filename))
             if errval != pyferret.FERR_OK:
                 pyferret_error = True
-        # Close stdout
-        (errval, errmsg) = pyferret.run('cancel redirect')
-        # Close window
+
+        # Close the window
         (errval, errmsg) = pyferret.run('cancel window 1')
+
+        # Close the stdout and stderr redirect file
+        (errval, errmsg) = pyferret.run('cancel redirect')
+
         #-------------------------------
 
         # Publish
         display_data = []
 
-        # Publish text output if not empty
-        if os.path.isfile(txt_filename) and (os.path.getsize(txt_filename) > 0): 
+        # Publish captured stdout text, if any
+        if os.path.isfile(out_filename) and (os.path.getsize(out_filename) > 0): 
             try:
                 text_outputs = []
                 text_outputs.append('<pre style="background-color:#ECF6CE; border-radius: 4px 4px 4px 4px; font-size: smaller">')
-                f = open(txt_filename, "r")
+                f = open(out_filename, "r")
                 for line in f:
                     text_outputs.append(line)
                 f.close()
                 text_outputs.append("</pre>")
                 text_output = "".join(text_outputs)
-                display_data.append((key, {'text/html': text_output}))
+                display_data.append((_PUBLISH_KEY, {'text/html': text_output}))
             except:
                 pass
 
@@ -190,10 +198,10 @@ class ferretMagics(Magics):
                    # Create link to pdf; file visible from cell from files directory
                    text_outputs = []
                    text_outputs.append('<pre style="background-color:#F2F5A9; border-radius: 4px 4px 4px 4px; font-size: smaller">')
-                   text_outputs.append('Message: <a href="files/%(plot_filename)s" target="_blank">%(plot_filename)s</a> created.' % locals())
+                   text_outputs.append('Message: <a href="files/%s" target="_blank">%s</a> created.' % (plot_filename, plot_filename))
                    text_outputs.append('</pre>')
                    text_output = "".join(text_outputs)
-                   display_data.append((key, {'text/html': text_output}))
+                   display_data.append((_PUBLISH_KEY, {'text/html': text_output}))
                    # If the user did not provide the PDF filename, 
                    # do not delete the temporary directory since the PDF is in there.
                    if args.plotname:
@@ -207,8 +215,8 @@ class ferretMagics(Magics):
                    f = open(plot_filename, 'rb')
                    image = f.read().encode('base64')
                    f.close()
-                   display_data.append((key, {'text/html': '<div class="myoutput">' + 
-                       '<img src="data:image/png;base64,%(image)s"/></div>' % locals()}))
+                   display_data.append((_PUBLISH_KEY, {'text/html': '<div class="myoutput">' + 
+                       '<img src="data:image/png;base64,%s"/></div>' % image}))
                except:
                    pass
                # Delete temporary directory - PNG encoded in the string
@@ -223,11 +231,15 @@ class ferretMagics(Magics):
     @magic_arguments()
     @argument(
         '-m', '--memory', type=float,
-        help='Physical memory used by ferret expressed in megawords. Default is %s megawords = %s megabytes.' % (str(_DEFAULT_MEMSIZE), str(8.0*_DEFAULT_MEMSIZE))
+        help='Memory, in megabytes, to be used by ferret henceforth. Startup default is %s' % str(_DEFAULT_MEMSIZE)
         )
     @argument(
         '-s', '--size',
-        help='Pixel size of PNG plots or point size of PDF plots as "width,height". Default is ' + _DEFAULT_PLOTSIZE
+        help='Pixel size of PNG images, or point size of PDF images, as "width,height". Default is ' + _DEFAULT_PLOTSIZE
+        )
+    @argument(
+        '-b', '--bigger', default=False, action='store_true',
+        help='Produce a sharper plot by doubling the standard plot window size before scaling'
         )
     @argument(
         '-p', '--pdf', default=False, action='store_true',
@@ -257,11 +269,15 @@ class ferretMagics(Magics):
     @magic_arguments()
     @argument(
         '-m', '--memory', type=float,
-        help='Physical memory used by ferret expressed in megawords. Default is %s megawords = %s megabytes.' % (str(_DEFAULT_MEMSIZE), str(8.0*_DEFAULT_MEMSIZE))
+        help='Memory, in megabytes, to be used by ferret henceforth. Startup default is %s' % str(_DEFAULT_MEMSIZE)
         )
     @argument(
         '-s', '--size',
-        help='Pixel size of PNG plots or point size of PDF plots as "width,height". Default is ' + _DEFAULT_PLOTSIZE
+        help='Pixel size of PNG images, or point size of PDF images, as "width,height". Default is ' + _DEFAULT_PLOTSIZE
+        )
+    @argument(
+        '-b', '--bigger', default=False, action='store_true',
+        help='Produce a sharper plot by doubling the standard plot window size before scaling'
         )
     @argument(
         '-p', '--pdf', default=False, action='store_true',
@@ -280,8 +296,8 @@ class ferretMagics(Magics):
         '''
         Line-level magic to run a command in ferret. 
 
-            In [12]: for i in [100,500,1000]:
-               ....:     %ferret_run -a -s 400,400 'plot sin(i[i=1:%(i)s]*0.1)' % locals()
+            In [12]: for val in [100,500,1000]:
+               ....:     %ferret_run -s 400,400 -b 'plot sin(i[i=1:%(val)s]*0.1)' % locals()
 
         '''
         args = parse_argstring(self.ferret_run, line)

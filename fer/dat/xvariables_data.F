@@ -59,6 +59,7 @@
 * Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
 *       2/12 *kms* Add E and F dimensions (set to nferdims in tmap_dims.parm)
+* V685+: 3/14 *sh* - initialize max_usable_intrp
 
         IMPLICIT NONE
 #include "tmap_dset.parm"
@@ -90,6 +91,9 @@
 
 * interp stack pointer at stack base
 	DATA isp / 1 /
+
+* interp stack pointer movable top
+	DATA max_usable_intrp / max_intrp /
 
 * bulk storage initialization
 	DATA (mblk_flink(i),i=1,pmax_mem_blks)

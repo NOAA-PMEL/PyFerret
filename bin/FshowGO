@@ -1,0 +1,19 @@
+#! /bin/sh
+# FshowGo
+# Search for Enter_GO and Exit_GO lines in a log from a Ferret script
+# Format them indenting to show the nesting of calls.
+# 
+# Ferret writes Enter_GO and Exit_GO to Std Output if SET REDIRECT has been turned on.
+#
+# example 
+# > ferret
+#
+# yes? set redirect/tee/clobber/file=mylog.out
+# yes? go myscript.jnl
+# yes? exit
+# 
+# > FshowGo mylog.out
+#
+
+gawk '/Enter_GO/ {FS=" "; count++; x=0; while(++x<=count){printf "  "};printf "GO ";{for(i=3;i<=NF;i++) printf "%s ",$i };printf "\n"} /Exit_GO/ {count--}' $*
+

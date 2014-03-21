@@ -60,11 +60,15 @@ NETCDF4_DIR	= /usr/local/netcdf_4311
 ## $(JAVA_HOME)/bin/javac and $(JAVA_HOME)/bin/jar is
 ## called to build threddsBrowser.jar; otherwise, it just
 ## uses javac and jar (from the path).
+# JAVA_HOME	= /usr/java/default
 # JAVA_HOME	= /usr/java/latest
 # JAVA_HOME	= /usr/lib/jvm/default-java
 # JAVA_HOME	= /usr/lib/jvm/java-oracle
 # JAVA_HOME	= /usr/lib/jvm/java-sun
 JAVA_HOME	= /usr/lib/jvm/java
 # JAVA_HOME	= /Library/Java/JavaVirtualMachines/jdk1.7.jdk/Contents/Home
+
+# PyFerret version number - do not change this
+PYFERRET_VERSION = 1.0.2
 
 ##

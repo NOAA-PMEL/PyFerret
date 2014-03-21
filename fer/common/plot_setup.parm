@@ -24,7 +24,7 @@
         PARAMETER ( dflt_xinches   = 10.50,
      .              dflt_yinches   =  8.50,
      .              dflt_imgscale  =  0.83666,
-     .              dflt_thicken   =  0.75,
+     .              dflt_thicken   =  1.00,
      .              dflt_textprom  =  1.00 )
 
 * default lengths for PPL which need to be scaled by pplscale

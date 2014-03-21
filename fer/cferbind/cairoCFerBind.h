@@ -11,7 +11,7 @@
 #define CCFB_NAME_SIZE 512
 
 /* DPI to use for the Cairo "Window" */
-#define CCFB_WINDOW_DPI 120
+#define CCFB_WINDOW_DPI 96
 
 /* Factor for converting pixels to points */
 #define CCFB_POINTS_PER_PIXEL (72.0 / (double) CCFB_WINDOW_DPI)

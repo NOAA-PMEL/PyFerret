@@ -37,15 +37,11 @@ Usage
 #
 #-----------------------------------------------------------------------------
 
-import sys
 import os.path
 import tempfile
-from glob import glob
-from shutil import rmtree
-
-import numpy as np
+import math
 import pyferret
-from xml.dom import minidom
+from shutil import rmtree
 
 from IPython.core.displaypub import publish_display_data
 from IPython.core.magic import Magics, magics_class, line_magic, cell_magic, needs_local_scope
@@ -132,11 +128,16 @@ class ferretMagics(Magics):
         # Set window size with the required aspect ratio; 
         # always anti-alias with windows of these sizes
         if args.bigger:
-            # Use a double-size window with some extra (0.5) line thickness 
-            (errval, errmsg) = pyferret.run('set window /size=4 /thick=2.5 /aspect=%f 1' % plot_aspect)
+            # Double the size (both width and height) of the standard window 
+            # and add some extra (0.5) thickness to lines
+            canvas_width = 2.0 * math.sqrt(10.5 * 8.5 / plot_aspect)
+            line_thicken = 2.0
         else:
             # Use a standard-size window with usual line thickness
-            (errval, errmsg) = pyferret.run('set window /size=1 /thick=1 /aspect=%f 1' % plot_aspect)
+            canvas_width = math.sqrt(10.5 * 8.5 / plot_aspect)
+            line_thicken = 1.0
+        (errval, errmsg) = pyferret.run('set window /xinches=%f /thick=%f /aspect=%f 1' % \
+                                        (canvas_width, line_thicken, plot_aspect))
 
         # Run code
         pyferret_error = False

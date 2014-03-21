@@ -278,29 +278,11 @@
         ENDIF
 
         IF ( .NOT. (xpixels_gvn .OR. ypixels_gvn) ) THEN
-           IF ( xinches_gvn .OR. yinches_gvn ) THEN
-*             page size given but not pixel size;
-*             make it so the image scaling factor will be close to SQRT(val)
-              xpixels = NINT(windowdpix(windid) * xinches * SQRT(val))
-              ypixels = NINT(windowdpiy(windid) * yinches * SQRT(val))
-           ELSE
-*             neither page size not pixel size given;
-*             make it so the page size is close to SQRT(val) times the default 
-*             page size and the image scaling factor will be close to 1.0
-              xinches = xinches * SQRT(val)
-              yinches = yinches * SQRT(val)
-              IF ( (xinches .LT. 1.0) .OR. (yinches .LT. 1.0) ) 
-     .           GOTO 5080
-              xpixels = NINT(windowdpix(windid) * xinches)
-              ypixels = NINT(windowdpiy(windid) * yinches)
-           ENDIF
+*          Pixel size not specified; use the (possibly default) 
+*          page size at the window DPI, and scale by any /size value
+           xpixels = NINT(windowdpix(windid) * xinches * SQRT(val))
+           ypixels = NINT(windowdpiy(windid) * yinches * SQRT(val))
            IF ( (xpixels .LT. 128) .OR. (ypixels .LT. 128) ) GOTO 5090
-        ELSEIF ( .NOT. (xinches_gvn .OR. yinches_gvn) ) THEN
-*          pixel size was specified, but page size was not; 
-*          make it so the image scaling factor will be close to 1.0
-           xinches = DBLE(xpixels) / DBLE(windowdpix(windid))
-           yinches = DBLE(ypixels) / DBLE(windowdpiy(windid))
-           IF ( (xinches .LT. 1.0) .OR. (yinches .LT. 1.0) ) GOTO 5080
         ENDIF
 
 * successful completion

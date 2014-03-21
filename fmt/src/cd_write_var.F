@@ -1,7 +1,7 @@
 	SUBROUTINE CD_WRITE_VAR ( memory, cdfid, dset, vname, grid, lo,
      .                            hi, dat, edges_flag, do_bounds, 
      .                            scalefac, addoff, bad, mode_upcase_output, 
-     .                            status )
+     .                            keepax_flag, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -72,6 +72,8 @@
 *      4/12 *acm* fix for finding the record axis, never axes 5 or 6.
 * V685 6/13 *acm* new qualifier SAVE/NOBOUNDS
 * V685 6/13 *acm* Dont add SAVE/NOCOORDS
+* V687 3/14 *acm* Fix ticket 1750. Write Ferret-internal axis names to cdf files, unless
+*                 the user has said /KEEP_AXISNAMES
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -104,7 +106,7 @@
 * argument declarations
       LOGICAL mode_upcase_output
       INTEGER cdfid, dset, grid, lo(nferdims), hi(nferdims), 
-     .        edges_flag, do_bounds, status
+     .        edges_flag, do_bounds, keepax_flag, status
       CHARACTER*(*) vname
       REAL dat(*), bad
       REAL*8 scalefac, addoff
@@ -130,7 +132,7 @@
       REAL*8 TM_WORLD
       
       INTEGER bndid, nlen, elen, reset
-      CHARACTER name*128, buff*128, CD_AXIS_OUTNAME*128
+      CHARACTER name*128, buff*128, CD_AXIS_OUTNAME*128, CD_AXIS_NAME*128
 
       REAL*4 r100_4(200)
       REAL*8 new_box_lo, old_box_hi, reset_bnd_lo, missflag
@@ -398,7 +400,8 @@ c      EQUIVALENCE (r100_8, r100_4)
          IF ( (.NOT.line_regular(iaxis) .OR. writebounds) 
      .         .AND. (edges_flag .EQ. 0) ) THEN
 
-            name = CD_AXIS_OUTNAME( dset, grid, tmrecax, nlen )
+            name = CD_AXIS_NAME( dset, grid, tmrecax, nlen )
+            IF (keepax_flag .EQ. 1) name = CD_AXIS_OUTNAME( dset, grid, tmrecax, nlen )
 
 * If mode upcase_output is set, then upcase axis name.
 

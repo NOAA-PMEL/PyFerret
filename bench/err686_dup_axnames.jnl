@@ -1,0 +1,47 @@
+! err686_dup_axnames
+! Ticket 1750
+!
+! Make some datasets. Same axis length and name, 
+! different coordinates.
+
+def ax/x=1:4:1 xaxis_test
+let a = x[gx=xaxis_test]
+save/clob/file=a.nc a
+def ax/x=11:14:1 xaxis_test
+let b = x[gx=xaxis_test]
+save/clob/file=b.nc b
+can var/all; can dat/all
+
+! Check axis coords.
+use a; use b
+sh dat
+sh grid a[d=1]
+sh grid b[d=2]
+
+! Write b with its Ferret internal axis name XAXIS_TEST1
+save/clob/file=c.nc a[d=1],b
+sp ncdump -h c.nc
+
+! Yet more combinations
+save/clob/file=c.nc b, a[d=1]
+sp ncdump -h c.nc
+
+! We can use /KEEP_AXISNAMES, changes XAXIS_TEST1 to XAXIS_TEST
+save/clobber/file=c.nc b
+sp ncdump -h c.nc
+
+! Subsets also use XAXIS_TEST1 
+save/clobber/file=c.nc/i=2:4 b
+sp ncdump -h c.nc
+
+! Unless we use /KEEP_AXISNAMES - which removes renaming
+! due to subsetting and also due to internal names
+save/clobber/file=c.nc/i=2:4/keep b
+sp ncdump -h c.nc
+
+! If we try /KEEP_AXISNAMES but there is a conflict, it's an err
+set mode ignore
+save/clobber/keep/file=nc b,a[d=1]
+
+set mode/last ignore
+

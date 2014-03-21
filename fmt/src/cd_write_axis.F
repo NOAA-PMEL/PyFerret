@@ -98,6 +98,8 @@
 * V685 6/13 *acm* Dont add SAVE/NOCOORDS
 * V686 1/14 *acm* When appending to a file with a dimension but no coord var, to not write
 *                 a NOTE. They just clutter things up.
+* V687 3/14 *acm* Fix ticket 1750. Write Ferret-internal axis names to cdf files, unless
+*                 the user has said /KEEP_AXISNAMES
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -159,7 +161,8 @@
 * *kob* 3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,
 *                    name to 64 from 24 to match longer line_name
 * *acm* 6/06 - change axis name lengths to 128
-      CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_OUTNAME*128, TM_FMT*12,
+      CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_NAME*128, CD_AXIS_OUTNAME*128, 
+     .       TM_FMT*12,
      .       name*128, name_in*128, units*48, datebuff*40, 
      .       buff*140, buff2*140, attname*128, dimstr*12, varstr*12
 
@@ -172,7 +175,8 @@
       iaxis = grid_line(idim, grid)
       dset_num = dset
 
-      name = CD_AXIS_OUTNAME( dset_num, grid, idim, nlen )
+      name = CD_AXIS_NAME( dset_num, grid, idim, nlen )
+      IF (keepax_flag .EQ. 1)  name = CD_AXIS_OUTNAME( dset_num, grid, idim, nlen )
       name_in = name
 
       npts = line_dim(iaxis)

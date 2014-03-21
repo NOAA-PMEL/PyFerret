@@ -1,0 +1,17 @@
+! err686_cancel_invalid_var
+! ticket 2159
+
+! The cancel variable ran into an incorrect setting 
+! for variable-in-memory 
+
+set mode ignore
+let b = 1
+shade b
+
+set mode/last ignore
+cancel var b
+
+! Shade plot of a less-than-one cell region. Its where the bug came from.
+use coads_climatology
+shade/x=161.1:161.3/y=0.2:0.4/L=1 sst
+

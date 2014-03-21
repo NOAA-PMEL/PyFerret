@@ -245,6 +245,7 @@ C plus those starting w/ xbox_bounds:
 	x_axtyp   = 1
 	y_axtyp   = 1
         plot_mem_used = 0
+	mvx_temp  = 0
 
 	IF ( vector ) THEN
 	   mvy	  = mr_list( 2 )
@@ -850,7 +851,8 @@ C ACM added 8/2001 save cal id if vertical time axis
  5150	CALL ERRMSG( ferr_dim_underspec, status, 
      .			'overlay not valid in plane of plot'//pCR//
      .					cmnd_buff(:len_cmnd), *5100 )
- 5160	CALL ERRMSG( ferr_dim_underspec, status, 
+ 5160	IF (mvx_temp .NE. 0) CALL DELETE_VARIABLE( mvx_temp )
+        CALL ERRMSG( ferr_dim_underspec, status, 
      .			'must be a 2D region'//pCR//
      .					cmnd_buff(:len_cmnd), *5100 )
 

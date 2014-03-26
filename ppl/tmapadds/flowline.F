@@ -75,6 +75,8 @@ C   int *shdcls, int shdcnt, int den)
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
+	include 'vector_inc.decl'
+	include 'VECTOR.INC'
         INCLUDE 'xcurvilinear.cmn'
 
 

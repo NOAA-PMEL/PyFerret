@@ -137,6 +137,7 @@ C     Curvilinear coordinates declarations
 
 C First check that the curvilinear coordinate data is all present and accounted for.
 
+      curv_missing = .FALSE.
       IF (curvilinear) THEN
          do j = 1, ny
          do i = 1, nx
@@ -181,7 +182,6 @@ C   Figure out the interval for the flag grid
 
 C  Get mean velocity for scaling the arrows
 
-      curv_missing = .FALSE.
       sqsum = 0.
       vel = 0.
       velmean = 0.
@@ -228,7 +228,7 @@ C     flag boxes.
 
       i2 = 1
       j2 = 1
-      DO 100 i=1, siz
+      DO i=1, siz
          dis = 2
          IF (den .LT. 5) dis = 3
          IF (den .GT. 5) dis = 1
@@ -282,6 +282,7 @@ C     flag boxes.
                x_curv = xx
                y_curv = yy
                CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
+
                xxc=x_curv
                yyc=y_curv
                CALL plot (xxc,yyc,0,0)
@@ -561,7 +562,6 @@ C  we began the curve.
                x_curv = xx
                y_curv = yy
                CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
-
                xxc=x_curv
                yyc=y_curv
                CALL plot (xxc,yyc,0,0)
@@ -798,7 +798,7 @@ C  Draw arrow head
             j2 = j2 + 1
          ENDIF
 
- 100  CONTINUE
+      ENDDO
 
 C  From vector
 C

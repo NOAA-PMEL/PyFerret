@@ -1,5 +1,6 @@
 	LOGICAL FUNCTION ITSA_MODULO_CURVI_AXIS( xfield, yfield, mr_xpos, 
-     .                                           mr_ypos, idim )
+     .                                           mr_ypos, idim, 
+     .                                           dim1, dim2)
 
 *
 *
@@ -43,6 +44,8 @@
 
 *       V420: 04/97
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V687 *acm* 3/14  Ticket 2151: The coordinate variables may be in other dimensions
+*                  than XY, e.g. XZ or YZ for a sigma-coordinate vertical axis.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -55,15 +58,96 @@
 *       calling argument declarations:
 	LOGICAL ITSA_MODULO_CURVI_AXIS_SUB
 	REAL    xfield(*), yfield(*)
-	INTEGER	mr_xpos, mr_ypos, idim
+	INTEGER	mr_xpos, mr_ypos, idim, dim1, dim2
 
-c *kob* 8/97 had to move the continuation marker to col 5 - it was in col 8
-c       this bombed aix compiler, though it seems to work on others
+*	Internal declarations
+	INTEGER slox_dim1, shix_dim1, slox_dim2, shix_dim2, 
+     .          sloy_dim1, shiy_dim1, sloy_dim2, shiy_dim2
+
+* The typical xlon, ylat case
+	IF (dim1 .EQ. 1) THEN
+	   slox_dim1 = mr_lo_s1(mr_xpos)
+	   shix_dim1 = mr_hi_s1(mr_xpos)
+	   sloy_dim1 = mr_lo_s1(mr_ypos)
+	   shiy_dim1 = mr_hi_s1(mr_ypos)
+	ENDIF
+
+* Coordinate field 1 represents something else
+	IF (dim1 .EQ. 2) THEN
+	   slox_dim1 = mr_lo_s2(mr_xpos)
+	   shix_dim1 = mr_hi_s2(mr_xpos)
+	   sloy_dim1 = mr_lo_s2(mr_ypos)
+	   shiy_dim1 = mr_hi_s2(mr_ypos)
+	ENDIF
+	IF (dim1 .EQ. 3) THEN
+	   slox_dim1 = mr_lo_s3(mr_xpos)
+	   shix_dim1 = mr_hi_s3(mr_xpos)
+	   sloy_dim1 = mr_lo_s3(mr_ypos)
+	   shiy_dim1 = mr_hi_s3(mr_ypos)
+	ENDIF
+	IF (dim1 .EQ. 4) THEN
+	   slox_dim1 = mr_lo_s4(mr_xpos)
+	   shix_dim1 = mr_hi_s4(mr_xpos)
+	   sloy_dim1 = mr_lo_s4(mr_ypos)
+	   shiy_dim1 = mr_hi_s4(mr_ypos)
+	ENDIF
+	IF (dim1 .EQ. 5) THEN
+	   slox_dim1 = mr_lo_s5(mr_xpos)
+	   shix_dim1 = mr_hi_s5(mr_xpos)
+	   sloy_dim1 = mr_lo_s5(mr_ypos)
+	   shiy_dim1 = mr_hi_s5(mr_ypos)
+	ENDIF
+	IF (dim1 .EQ. 6) THEN
+	   slox_dim1 = mr_lo_s6(mr_xpos)
+	   shix_dim1 = mr_hi_s6(mr_xpos)
+	   sloy_dim1 = mr_lo_s6(mr_ypos)
+	   shiy_dim1 = mr_hi_s6(mr_ypos)
+	ENDIF
+
+
+* The typical xlon, ylat case
+	IF (dim2 .EQ. 2) THEN
+	   slox_dim2 = mr_lo_s2(mr_xpos)
+	   shix_dim2 = mr_hi_s2(mr_xpos)
+	   sloy_dim2 = mr_lo_s2(mr_xpos)
+	   shiy_dim2 = mr_hi_s2(mr_xpos)
+	ENDIF
+
+* Coordinate field 2 represents something else
+	IF (dim2 .EQ. 1) THEN
+	   slox_dim2 = mr_lo_s1(mr_xpos)
+	   shix_dim2 = mr_hi_s1(mr_xpos)
+	   sloy_dim2 = mr_lo_s1(mr_xpos)
+	   shiy_dim2 = mr_hi_s1(mr_xpos)
+	ENDIF
+	IF (dim2 .EQ. 3) THEN
+	   slox_dim2 = mr_lo_s3(mr_xpos)
+	   shix_dim2 = mr_hi_s3(mr_xpos)
+	   sloy_dim2 = mr_lo_s3(mr_xpos)
+	   shiy_dim2 = mr_hi_s3(mr_xpos)
+	ENDIF
+	IF (dim2 .EQ. 4) THEN
+	   slox_dim2 = mr_lo_s4(mr_xpos)
+	   shix_dim2 = mr_hi_s4(mr_xpos)
+	   sloy_dim2 = mr_lo_s4(mr_xpos)
+	   shiy_dim2 = mr_hi_s4(mr_xpos)
+	ENDIF
+	IF (dim2 .EQ. 5) THEN
+	   slox_dim2 = mr_lo_s5(mr_xpos)
+	   shix_dim2 = mr_hi_s5(mr_xpos)
+	   sloy_dim2 = mr_lo_s5(mr_xpos)
+	   shiy_dim2 = mr_hi_s5(mr_xpos)
+	ENDIF
+	IF (dim2 .EQ. 6) THEN
+	   slox_dim2 = mr_lo_s6(mr_xpos)
+	   shix_dim2 = mr_hi_s6(mr_xpos)
+	   sloy_dim2 = mr_lo_s6(mr_xpos)
+	   shiy_dim2 = mr_hi_s6(mr_xpos)
+	ENDIF
+
 	ITSA_MODULO_CURVI_AXIS = ITSA_MODULO_CURVI_AXIS_SUB( xfield, yfield,
-     1    mr_lo_s1(mr_xpos), mr_hi_s1(mr_xpos),
-     2    mr_lo_s2(mr_xpos), mr_hi_s2(mr_xpos),
-     3    mr_lo_s1(mr_ypos), mr_hi_s1(mr_ypos),
-     4    mr_lo_s2(mr_ypos), mr_hi_s2(mr_ypos),
+     .          slox_dim1, shix_dim1, slox_dim2, shix_dim2, 
+     .          sloy_dim1, shiy_dim1, sloy_dim2, shiy_dim2,
      5    idim )
 
 	RETURN

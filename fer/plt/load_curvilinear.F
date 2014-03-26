@@ -50,6 +50,7 @@
 * V63   9/09 *acm* Fix bug 1688: curvlinear plots when the curv. coords are NOT
 *                  longitude and latitude.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V687 *acm* 3/14  Ticket 2147: Need double-precision bad-values for coordinate variables 
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -81,6 +82,8 @@
 * missing value flags
 	badx = mr_bad_data(mr_xpos)
 	bady = mr_bad_data(mr_ypos)
+	badxcurv = mr_bad_data(mr_xpos)
+	badycurv = mr_bad_data(mr_ypos)
 
 * subscript limits
 	minss_dim1 = cx_lo_ss(cx_val,dim1)
@@ -187,7 +190,8 @@
      .		         (yspan_1_dim1
      .		     .OR. y1span .EQ. CAXIS_MODLEN(dim1,cx_ypos))
      .		.AND.
-     .		         ITSA_MODULO_CURVI_AXIS(xpos,ypos,mr_xpos,mr_ypos,1)
+     .		         ITSA_MODULO_CURVI_AXIS(xpos,ypos,mr_xpos,mr_ypos,1,
+     .		             dim1, dim2)
 	ENDIF
 
 	dim2_modulo = ITSA_MODULO_AXIS(cx_val,dim2)
@@ -198,7 +202,8 @@
      .		         (yspan_1_dim2
      .		     .OR. y2span .EQ. CAXIS_MODLEN(dim2,cx_ypos))
      .		.AND.
-     .		         ITSA_MODULO_CURVI_AXIS(xpos,ypos,mr_xpos,mr_ypos,2)
+     .		         ITSA_MODULO_CURVI_AXIS(xpos,ypos,mr_xpos,mr_ypos,2,
+     .		             dim1, dim2)
 	ENDIF
 
 * See what the units of the curvi coordinate fields are. Set a flag if the

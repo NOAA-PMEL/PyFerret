@@ -73,29 +73,7 @@ C   int *shdcls, int shdcnt, int den)
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
-	include 'xvariables.cmn'
-	include 'xcontext.cmn'
-	include 'xprog_state.cmn'
-	include 'xtext_info.cmn'
-	include 'axis_inc.decl'
-	include 'AXIS.INC'
-	include 'plt_inc.decl'
-	include 'PLT.INC'
-	include 'miss_inc.decl'
-	include 'MISS.INC'
-	include 'hd_inc.decl'
-	include 'HD.INC'
-	include 'cont_inc.decl'
-	include 'CONT.INC'
-	include 'zgrid_inc.decl'
-	include 'ZGRID.INC'
-	include 'zgridd_inc.decl'
-	include 'ZGRIDD.INC'
-	include 'vector_inc.decl'
-	include 'VECTOR.INC'
-#ifdef NO_PASSED_CONCAT	
-	include 'xrisc.cmn'
-#endif
+        INCLUDE 'xcurvilinear.cmn'
 
 
 *******************************************************************************
@@ -124,5 +102,12 @@ C   Size of the flag grid, allocated in disp_set_up.F
 
       CALL flowline_sub (u, v, flag, siz, density, nxs, nys, 
      .                   px, py, xf, yf)
+
+      IF (curv_missing) THEN
+ 5100	 CALL ERRMSG(ferr_not_implemented, status,
+     .     'Missing curvilienar coordinate data in VECTOR/FLOW command', 
+     .     *5000)
+      ENDIF
+ 5000 RETURN
 
       END

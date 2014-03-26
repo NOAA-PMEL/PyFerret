@@ -90,9 +90,11 @@
      .	     y11, y12, y21, y22,
      .       diff, dx_approx
 	CHARACTER*1 dim
+	LOGICAL TM_FPEQ
 
         REAL branch_test, lon_degrees
 
+	curv_missing = .FALSE.
         branch_test = 190.
         lon_degrees = 360.
 	
@@ -244,17 +246,17 @@ c	IF ( .NOT.(dim1_modulo.OR.dim1_edges) ) THEN
 	y22 = yfield(yhi_dim1, yhi_dim2)
 
 * check that all of the needed interpolants exist
-	IF ( x11.EQ.badx
-     .	.OR. x12.EQ.badx
-     .	.OR. x21.EQ.badx
-     .	.OR. x22.EQ.badx) THEN
+	IF ( TM_FPEQ(x11,badxcurv)
+     .	.OR. TM_FPEQ(x12,badxcurv)
+     .	.OR. TM_FPEQ(x21,badxcurv)
+     .	.OR. TM_FPEQ(x22,badxcurv)) THEN
 	   dim = 'X'
 	   GOTO 5100
 	ELSEIF (
-     .	     y11.EQ.bady
-     .	.OR. y12.EQ.bady
-     .	.OR. y21.EQ.bady
-     .	.OR. y22.EQ.bady ) THEN
+     .	     TM_FPEQ(y11,badycurv)
+     .	.OR. TM_FPEQ(y12,badycurv)
+     .	.OR. TM_FPEQ(y21,badycurv)
+     .	.OR. TM_FPEQ(y22,badycurv) ) THEN
 	   dim = 'Y'
 	   GOTO 5100
 	ENDIF
@@ -332,7 +334,11 @@ C coordinates on the same branch as x11
 
 * error exit
  5000	RETURN
- 5100	CALL ERRMSG( ferr_out_of_range, status,
-     .		dim//' coordinates'//pCR//
-     .		'missing value where val is needed', *5000)
+ 5100	CONTINUE
+	curv_missing = .TRUE.
+	GOTO 5000
+c	CALL ERRMSG( ferr_out_of_range, status,
+c     .		dim//' coordinates'//pCR//
+c     .		'missing value where val is needed', *5000)
+
 	END 

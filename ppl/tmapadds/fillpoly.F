@@ -153,6 +153,7 @@ C
       IF (curvilinear) THEN
 
          CALL CURV_COORD(x, y, npts, 1.0, 1.0, status) ! xform the pts
+	 IF (curv_missing) RETURN
 
 * add offset for modulo transformation.
 

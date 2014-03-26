@@ -122,7 +122,7 @@ C  Local declarations
      .     i, ii, jj, ii1, ij1, i2, j2, mx, my, ipt, acnt, icol, 
      .     scol, dis, iindex, jjndex, ii1index, iacc, iisav, iscl, imn, 
      .     jmn, j, iz, jz, iss, jss, imx, jmx, iln, slen
-      LOGICAL bflg
+      LOGICAL TM_FPEQ_SNGL, bflg
 
       CHARACTER*120 veclab, buff, symbuff
       EXTERNAL lnblk
@@ -134,6 +134,29 @@ C     Curvilinear coordinates declarations
 #else
       REAL x_curv, y_curv
 #endif
+
+C First check that the curvilinear coordinate data is all present and accounted for
+
+	do j = 1, ny
+	do i = 1, nx
+	   IF ( TM_FPEQ_SNGL(u(i,j),badx) ) THEN 
+	      curv_missing = .TRUE.
+	      GOTO 5100
+	   ENDIF
+	enddo
+	enddo
+	      
+	do j = 1, ny
+	do i = 1, nx
+	 IF (j.eq.17 .AND. i .GE. 113) THEN
+	   ii = 1
+	 ENDIF
+	   IF ( TM_FPEQ_SNGL(v(i,j),bady) ) THEN 
+	      curv_missing = .TRUE.
+	      GOTO 5100
+	   ENDIF
+	enddo
+	enddo
 
 C  From vector
       CALL COLOR(IPEN(1))
@@ -214,7 +237,7 @@ C     flag boxes.
 
       i2 = 1
       j2 = 1
-      DO i=1, siz
+      DO 100 i=1, siz
          dis = 2
          IF (den .LT. 5) dis = 3
          IF (den .GT. 5) dis = 1
@@ -268,7 +291,7 @@ C     flag boxes.
                x_curv = xx
                y_curv = yy
                CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
-
+	       IF (curv_missing) GOTO 5100
                xxc=x_curv
                yyc=y_curv
                CALL plot (xxc,yyc,0,0)
@@ -463,6 +486,7 @@ C  and for latitude.
                         y_curv = xold
                         CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, 
      .                      status) ! xform the pts
+                        IF (curv_missing) GOTO 5100
                         xxc=x_curv
                         yyc=y_curv
                         CALL plot (xxc,yyc,0,0)
@@ -478,6 +502,7 @@ C  and for latitude.
                      y_curv = yy
                      CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, 
      .                   status) ! xform the pts
+                     IF (curv_missing) GOTO 5100
                      xxc=x_curv
                      yyc=y_curv
                      CALL plot (xxc,yyc,1,0)
@@ -548,6 +573,7 @@ C  we began the curve.
                x_curv = xx
                y_curv = yy
                CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
+	       IF (curv_missing) GOTO 5100
 
                xxc=x_curv
                yyc=y_curv
@@ -734,6 +760,7 @@ C  travelling the other direction, so subtract
                         y_curv = xold
                         CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, 
      .                      status) ! xform the pts
+                        IF (curv_missing) GOTO 5100
                         xxc=x_curv
                         yyc=y_curv
                         CALL plot (xxc,yyc,0,0)
@@ -748,6 +775,7 @@ C  travelling the other direction, so subtract
                      y_curv = yy
                      CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, 
      .                   status) ! xform the pts
+                     IF (curv_missing) GOTO 5100
                      xxc=x_curv
                      yyc=y_curv
                      CALL plot (xxc,yyc,1,0)
@@ -785,7 +813,7 @@ C  Draw arrow head
             j2 = j2 + 1
          ENDIF
 
-      ENDDO
+ 100  CONTINUE
 
 C  From vector
 C
@@ -847,4 +875,6 @@ c	XL = XX1 + 2.* hlabs/XF+0.2/xf
 3333	IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
 
       RETURN
+* error exit
+ 5100 RETURN
       END

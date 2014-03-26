@@ -101,8 +101,9 @@
         DO 100 i = i1, i2
         DO 100 j = j1, j2
            xx = xfield(i,j)
-	   IF ( xx .EQ. badx) THEN
-              GOTO 5100 
+	   IF ( xx .EQ. badxcurv) THEN
+c              GOTO 5100 
+              GOTO 100 
            ELSE
               IF ( xx .GE. dn.AND.  xx .LE. up ) THEN
                  ilo = MIN(i,ilo)
@@ -135,8 +136,9 @@
         DO 200 i = i1, i2
         DO 200 j = j1, j2
            yy = yfield(i,j)
-	   IF ( yy .EQ. bady) THEN
-              GOTO 5200 
+	   IF ( yy .EQ. badycurv) THEN
+c              GOTO 5200 
+              GOTO 200 
            ELSE
               IF ( yy .GE. dn .AND. yy .LE. up ) THEN
                  jlo = MIN(j, jlo)

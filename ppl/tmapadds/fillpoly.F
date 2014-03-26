@@ -79,6 +79,8 @@ C
 *                        plots in viewports that were defined with /AXES.
 *     v5.81 *acm* 4/05 Changes for FILL/MOD. Draw replications for curvilinear datasets
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
+*                 and 4-arg plot commands. 
 
 #ifdef double_p
       real*8 x(128),y(128), xplus

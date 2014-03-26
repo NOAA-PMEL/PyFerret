@@ -38,6 +38,8 @@
 * 2/23/2005 acm
 * Do the fill for a shade plot, perhaps with a modulo offset in X
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
+*                 and 4-arg plot commands. 
 
         include 'miss_inc.decl'
         include 'MISS.INC'

@@ -66,6 +66,8 @@
 * V630  *acm* 9/09 change a message only
 C  v67  2/2011 *acm* Fix ticket 1799; do contouring in larger sections.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
+*                 and 4-arg plot commands. 
 
 ****************************************************************************
 C**

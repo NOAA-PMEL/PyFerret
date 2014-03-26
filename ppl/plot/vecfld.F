@@ -73,6 +73,8 @@ C**
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V684 *adm* 12/12 Changes for VECTOR/MODULO on curvilinear plots.
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
+*                 and 4-arg plot commands. 
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND

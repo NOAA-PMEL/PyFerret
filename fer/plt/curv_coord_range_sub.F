@@ -50,6 +50,8 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
+*                 and 4-arg plot commands. 
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'

@@ -65,6 +65,8 @@ C   int *shdcls, int shdcnt, int den)
 * ACM  9/9/02 Make px and py declarations px(*); for regular grids these
 *             are dummy arrays.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
+*                 and 4-arg plot commands. (not implemented in flowline plots)
 
 
 	include		'parampl5_dat.decl'

@@ -1,0 +1,22 @@
+! err686_redef_ascii_att.jnl
+! Bug 2161
+! DEFINE ATT to redefine title or units for variable 
+! in ascii dataset caused crash
+
+columns/delim=" " EZ.DAT
+sh att v1
+
+! A new attribuge causes no problems
+define att/output v1.comment = "First var from EZ.DAT"
+sh att v1
+
+! Initial definition of units is ok.
+! Re-defining the title or units causes crash
+define att/output v1.long_name = "vee one"
+
+! Initial definition of units is ok.
+! Re-defining units causes crash
+define att/output v1.units="km"
+define att/output v1.units="meters"
+
+sh att v1

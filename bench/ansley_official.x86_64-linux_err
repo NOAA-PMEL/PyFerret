@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 53303783 Mar 26 13:31 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 53303709 Mar 26 15:36 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: missing 2-D coordinate data in 3-arg and 4-arg plot commands
+Note: fixing ticket 2161: redefine long_name or units for ascii-file var
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Wed Mar 26 13:32:08 PDT 2014
+Beginning at Wed Mar 26 15:37:53 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3596,6 +3596,10 @@ LIST/FORMAT=CDF/clobber/keep/file=nc b,a[d=1]
 shade b
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Changing the value of attribute v1.long_name
+ *** NOTE: Changing the value of attribute v1.units
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  *** NOTE: Axis definition error on axis: MONTH_IRREG. Bounds describe cells that overlap one another
  *** NOTE: Error in bounds "MONTH_IRREG_bnds" or bounds do not enclose point on axis MONTH_IRREG
  *** NOTE: Substituting coordinate midpoints
@@ -3693,4 +3697,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Mar 26 13:33:53 PDT 2014
+Ended at Wed Mar 26 15:39:36 PDT 2014

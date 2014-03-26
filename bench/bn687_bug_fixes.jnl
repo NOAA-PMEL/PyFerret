@@ -13,3 +13,6 @@ GO err686_dup_axnames
 
 GO bn_reset
 GO err686_cancel_invalid_var
+
+GO bn_reset
+GO err686_redef_ascii_att

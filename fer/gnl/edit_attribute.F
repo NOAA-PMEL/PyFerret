@@ -62,7 +62,7 @@
 * V680   5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * v686 *acm*  1/14 Fix ticket 2127: dont check file type if the variable not a file variable.
-
+* v687 *acm*  3/14 Fix ticket 2161: editing long_name or units of var in ascii files
 
 * codes for data sets
 	INTEGER		set_not_open,set_open,file_not_open
@@ -406,7 +406,7 @@
 
 * Replace information in Ferret variables as in SET VAR
 
-	grid = unspecified_int4
+	grid = int4_init
 	bad = real4_init
 	scalefac = real4_init
 	offset = real4_init
@@ -472,7 +472,7 @@
 	   IF ( have_mods ) THEN
 	      CALL PURGE_FILE_VAR( var ) ! remove memory-resident variables
 	      CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
-	      CALL EZ_MOD_VARS( dset,var,
+	      CALL EZ_MOD_VARS( dset,var,varid,
      .			        newname,title,units,grid,bad,tmap_status )
 	      IF ( tmap_status .NE. merr_ok ) THEN
 	         status = ferr_TMAP_error

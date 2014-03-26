@@ -63,6 +63,7 @@ do_smth_median.F\
 do_smth_min.F\
 do_smth_parzn.F\
 do_smth_welch.F\
+do_stddev.F\
 do_string_goodbad.F\
 do_string_shift.F\
 do_sum.F\

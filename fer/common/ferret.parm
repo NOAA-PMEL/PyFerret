@@ -270,7 +270,7 @@
      .                  trans_wgted_eq,
      .                  trans_sum,
      .                  trans_run_sum,
-     .                  trans_std_dev,   ! unused
+     .                  trans_std_dev,
      .                  trans_variance,
      .                  trans_npoints,   ! unused
      .                  trans_good_pt,
@@ -305,7 +305,6 @@
      .			trans_smth_welch   = 16,
      .                  trans_wgted_eq	   = 17,
      .                  trans_run_sum	   = 18,
-     .                  trans_std_dev      = 19,
      .			trans_fill_interp  = 20,
      .			trans_fill_near    = 21 )
 	PARAMETER     (	trans_nrst_dist_abv = 22,
@@ -332,7 +331,8 @@
      .                  trans_4d_good_pt   = trans_compress_code + 15,
      .                  trans_4d_bad_pt	   = trans_compress_code + 16,
      .                  trans_reduced 	   = trans_compress_code + 17,
-     .                  trans_4d_sum 	   = trans_compress_code + 18)
+     .                  trans_4d_sum 	   = trans_compress_code + 18,
+     .                  trans_std_dev      = trans_compress_code + 19)
 
 * codes to designate regridding transformations
 ! unused but required to compile V4.11 code:

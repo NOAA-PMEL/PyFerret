@@ -134,7 +134,8 @@
      .			DO_4D_VAR,DO_4D_NGD,DO_4D_NBD,DO_4D_SUM,
      .			DO_NEAREST_DIST_ABOVE, DO_NEAREST_DIST_BELOW,
      .			DO_NEAREST_INDEX_ABOVE,DO_NEAREST_INDEX_BELOW,
-     .			DO_EVENT, DO_SMTH_MEDIAN, DO_SMTH_MIN, DO_SMTH_MAX
+     .			DO_EVENT, DO_SMTH_MEDIAN, DO_SMTH_MIN, DO_SMTH_MAX,
+     .			DO_STDDEV
 
 * calling arguments:
 * in	isp_base	- stack level at which to begin calculations
@@ -610,6 +611,8 @@ c	   GOTO 5000
 	      CALL IS_TRANS( memory, DO_RUN_SUM, *2500, status )
 	   ELSEIF ( act .EQ. isact_variance		) THEN
 	      CALL IS_TRANS( memory, DO_VARIANCE, *2500, status )
+	   ELSEIF ( act .EQ. isact_std_dev		) THEN
+	      CALL IS_TRANS( memory, DO_STDDEV, *2500, status )
 	   ELSEIF ( act .EQ. isact_good_pt		) THEN
 	      CALL IS_TRANS( memory, DO_NGOOD, *2500, status )
 	   ELSEIF ( act .EQ. isact_bad_pt		) THEN

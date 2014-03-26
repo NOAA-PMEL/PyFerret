@@ -1,4 +1,4 @@
-	INTEGER FUNCTION DO_VARIANCE(	idim, arg,
+	INTEGER FUNCTION DO_STDDEV (	idim, arg,
      .					com, com_mr, com_cx,
      .					res, res_mr, res_cx,
      .					box	)
@@ -62,8 +62,7 @@
 * internal variable declarations:
 	LOGICAL stddev
 
-	stddev = .FALSE.
-
+	stddev = .TRUE.
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
@@ -75,7 +74,7 @@
      .			 res, res_mr, res_cx,
      .			 box, stddev )
 
-	DO_VARIANCE = ferr_ok
+	DO_STDDEV = ferr_ok
 
 	RETURN
 	END

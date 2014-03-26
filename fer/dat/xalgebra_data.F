@@ -680,16 +680,13 @@
      .          alg_trans_num  ( 41 )	/ trans_4d_sum	        /,
      .		alg_trans_its_int ( 41)	/ .FALSE.		/,
      .		alg_trans_has_arg ( 41)	/ .FALSE.		/,
-     .		alg_trans_dflt_arg( 41)/ bad_val4		/
-c     .     alg_trans_text ( 38 )   / 'RDC'         /,   ! hidden
-c     .     alg_trans_title( 38 )   / 'reduced'     /,
-c     .     alg_trans_num  ( 38 )   / trans_reduced /,
-c     .     alg_trans_its_int ( 38) / .FALSE.       /,
-c     .     alg_trans_has_arg ( 38) / .FALSE.       /,
-c     .     alg_trans_dflt_arg( 38) / bad_val4      /
+     .		alg_trans_dflt_arg( 41)/ bad_val4		/,
+     .		alg_trans_text ( 42 )	/ 'STD'  		/, 
+     .		alg_trans_title( 42 )	/ 'standard deviation'  /,
+     .		alg_trans_num  ( 42 )	/ trans_std_dev  	/
 
-        DATA    (alg_trans_num(i),i = 42, num_transforms)
-     .            /19*unspecified_int4 /
+        DATA    (alg_trans_num(i),i = 43, num_transforms)
+     .            /18*unspecified_int4 /
 
 	DATA
      .		alg_regrid_title( prgrd_exact )		/ ' '	/,

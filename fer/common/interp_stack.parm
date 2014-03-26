@@ -119,7 +119,7 @@
      .          	isact_wgted_eq,
      .          	isact_sum,
      .          	isact_run_sum,
-     .			isact_std_dev,   ! unused
+     .			isact_std_dev,
      .			isact_variance,
      .			isact_npoints,   ! unused
      .			isact_good_pt,

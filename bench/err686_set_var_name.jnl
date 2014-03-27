@@ -1,0 +1,34 @@
+! err686_set_var_name.jnl
+! ticket 2152
+! rename user var or file var. Err message was
+! wrong if the name already exists.
+
+SET MODE IGNORE
+
+let a = 1
+let b = 2
+! Intentional error, new name is already a defined variable
+set var/name=b a
+! This rename is ok
+set var/name=c a
+sh var
+
+use gt4d011.cdf
+! Intentional error, new name already in file
+set var/name=temp salt
+show dat
+! This rename is ok
+set var/name=salinity salt
+show dat
+
+! Test LET/D variables:
+let/d=1 myvar = taux - tauy
+! This is an error, new name already in file
+set var/name=psi myvar
+! This is ok, new let/d name associated with the file
+set var/name=diff myvar
+show dat
+
+
+
+SET MODE/LAST ignore

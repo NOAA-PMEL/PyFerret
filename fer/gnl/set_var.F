@@ -163,9 +163,11 @@
 * SET VAR/NAME does not work for GT, TS datasets where sanity check is done
 * in gt_find_rec.F comparing var name to the name in the dataset.
 
-	   gtts = ( (ds_type(dset) .EQ. pds_type_gt)  .OR. 
+	   IF (dset .GT. 0) THEN
+	      gtts = ( (ds_type(dset) .EQ. pds_type_gt)  .OR. 
      .              (ds_type(dset) .EQ. pds_type_ts) )
-	   IF ( gtts ) GOTO 5600
+	      IF ( gtts ) GOTO 5600
+	   ENDIF
 
 	   have_mods = .TRUE.
            CALL EQUAL_STR_LC 
@@ -176,7 +178,7 @@
 
 * check that the name isnt already in the data set.
            CALL FIND_VAR_NAME ( dset, newname, idum, testvar )
-	   len_rbuff = TM_LENSTR1(newname)
+	   len_rbuff = TM_LENSTR1(newname_lc)
            IF (  testvar .NE. munknown_var_name ) GOTO 5400
 
 	   IF ( .NOT.TM_LEGAL_NAME(newname) ) THEN
@@ -665,10 +667,17 @@
      .               'illegal new name given for '
      .			//risc_buff(:len_rbuff),
      .               						*5000 )
- 5400	CALL ERRMSG( ferr_invalid_command, status,
+ 5400	IF (dset .GT. 0) THEN
+           CALL ERRMSG( ferr_invalid_command, status,
      .               'illegal new name.  Variable '
-     .			//risc_buff(:len_rbuff)//' exists in dataset ',
+     .			//newname_lc(:len_rbuff)//' exists in dataset ',
      .                                                          *5000 )
+        ELSE
+           CALL ERRMSG( ferr_invalid_command, status,
+     .               'illegal new name.  Variable '
+     .			//newname_lc(:len_rbuff)//' already defined ',
+     .                                                          *5000 )
+        ENDIF
  5500	CALL ERRMSG( ferr_grid_definition, status, grid_name, *5000 )
 
  5550	CALL ERRMSG( ferr_unknown_arg, status, 'argument required', *5000)

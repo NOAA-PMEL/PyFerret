@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version ../fer/ferret_c
--rwxr-xr-x 1 ansley tmap 53377000 Mar 26 17:19 ../fer/ferret_c
+Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 53377474 Mar 27 13:58 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: new @STD transform and other recent fixes
+Note: tickets 2133, 2152
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -21,8 +21,8 @@ FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
-PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Wed Mar 26 17:23:09 PDT 2014
+PWD=/home/users/ansley/build/flat_64/FERRET/bench
+Beginning at Thu Mar 27 14:00:09 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3602,6 +3602,19 @@ shade b
  *** NOTE: Changing the value of attribute v1.units
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ **ERROR: attribute undefined or invalid attribute name: temp.noexist[d=levitus_climatology]
+          attribute noexist not found for variable TEMP
+show att temp.noexist[d=levitus_climatology]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: illegal new name.  Variable b already defined
+set var/name=b a
+ **ERROR: invalid command: illegal new name.  Variable temp exists in dataset
+set var/name=temp salt
+ **ERROR: invalid command: illegal new name.  Variable psi exists in dataset
+set var/name=psi myvar
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  *** NOTE: Axis definition error on axis: MONTH_IRREG. Bounds describe cells that overlap one another
  *** NOTE: Error in bounds "MONTH_IRREG_bnds" or bounds do not enclose point on axis MONTH_IRREG
  *** NOTE: Substituting coordinate midpoints
@@ -3701,4 +3714,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Mar 26 17:24:39 PDT 2014
+Ended at Thu Mar 27 14:01:39 PDT 2014

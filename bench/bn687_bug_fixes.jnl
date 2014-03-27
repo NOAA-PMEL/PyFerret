@@ -16,3 +16,9 @@ GO err686_cancel_invalid_var
 
 GO bn_reset
 GO err686_redef_ascii_att
+
+GO bn_reset
+GO err686_sho_nonexist_att
+
+GO bn_reset
+GO err686_set_var_name

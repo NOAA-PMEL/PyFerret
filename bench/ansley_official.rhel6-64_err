@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version ../fer/ferret_c
--rwxr-xr-x 1 ansley tmap 53372521 Mar 17 15:44 ../fer/ferret_c
-Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func/
+-rwxr-xr-x 1 ansley tmap 53377000 Mar 26 17:19 ../fer/ferret_c
+Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: after Steve's checkin, aux variables
+Note: new @STD transform and other recent fixes
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,7 +13,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func/
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
@@ -22,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Mon Mar 17 15:54:45 PDT 2014
+Beginning at Wed Mar 26 17:23:09 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2870,6 +2870,7 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  *** NOTE: LON1_15: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
  *** NOTE: LAT1800_1800: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
  *** NOTE: ENS: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
+ *** NOTE: TIME13: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
  *** NOTE: Units on axis "ENS" are not recognized: count
  *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
@@ -3578,12 +3579,37 @@ SET DAT/FORM=CDF snoopy.dat
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+Replacing definition of axis XAXIS_TEST
+ LISTing to file b.nc
+ LISTing to file c.nc
+ LISTing to file c.nc
+ LISTing to file c.nc
+ LISTing to file c.nc
+ LISTing to file c.nc
+ LISTing to file nc
+ **TMAP ERR: error in line definition
+             file coords dont match variable coords on axis XAXIS_TEST
+LIST/FORMAT=CDF/clobber/keep/file=nc b,a[d=1]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: dimensions improperly specified: must be a 2D region
+          shade b
+shade b
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Changing the value of attribute v1.long_name
+ *** NOTE: Changing the value of attribute v1.units
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  *** NOTE: Axis definition error on axis: MONTH_IRREG. Bounds describe cells that overlap one another
  *** NOTE: Error in bounds "MONTH_IRREG_bnds" or bounds do not enclose point on axis MONTH_IRREG
  *** NOTE: Substituting coordinate midpoints
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3675,4 +3701,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Mar 17 15:56:18 PDT 2014
+Ended at Wed Mar 26 17:24:39 PDT 2014

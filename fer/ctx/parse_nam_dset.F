@@ -56,6 +56,7 @@
 *		from the COMMON area.
 * V500: *sh* 3/99 -- added comment WATCH IMPLICIT GRID MANAGEMENT
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V687  *acm* 3/14 ticket 2133. Check for attribute name before looking for variable
 
 	include 'tmap_dims.parm'	
 	include	'ferret.parm'
@@ -70,7 +71,7 @@
 * internal variable declarations:
 	INTEGER		IGRID, var_cx, stk_stat,
      .			full_name_len, left_bracket, right_bracket,
-     .			name_len, brac_nest, i
+     .			name_len, brac_nest, i, dot
  	LOGICAL		name_only
 * 1/97 addition
 	INTEGER	num_it, it_start(max_item_list), it_end(max_item_list)
@@ -152,6 +153,11 @@
 
 * identify the simple variable name
 * (var = munknown_var_name will flag failure for the whole routine)
+* Look for a dot, indicating a varname.attname.
+
+	dot = INDEX(full_var_name(1:name_len),'.')
+	IF (dot .GT. 0) name_len = dot-1
+
 	CALL FIND_VAR_NAME( dset, full_var_name(1:name_len), cat, var )
 
 * relinquish the stack space used for the variable

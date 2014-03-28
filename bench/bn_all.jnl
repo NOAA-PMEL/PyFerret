@@ -887,7 +887,7 @@ GO bn_single_colorlev
 
 ! *********** v6.9 Additions ***********
 GO bn_reset
-GO bn687_bug_fixes
+GO bn69_bug_fixes
 
 GO bn_reset
 GO bn_bad_axis_bounds

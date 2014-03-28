@@ -205,6 +205,7 @@
 * V685 *acm* 11/13 Add /QUIET for DEFINE ATTRIBUTE
 * V690 *sh* 12/13 Add /CURVILINEAR and /SIGMA to action commands
 *		  Add SET,CANCEL,SHOW VARIABLE/SIGMA/CURVI
+* V687  3/14 *acm* add SET AXIS/NAME
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -367,7 +368,7 @@
 	   DATA subcommands      (nsub_at1 +11)	/ 'AXIS'	/
 	   DATA num_qualifs      (nsub_at1 +11)	/ nqual1l	/
 	   DATA qualifier_pointer(nsub_at1 +11)	/ nqual_at1l	/
-* SET AXIS / MODULO /DEPTH /CALENDAR /UNITS /T0 /STRIDE /OFFSET /REGULAR /OUTTYPE
+* SET AXIS / MODULO /DEPTH /CALENDAR /UNITS /T0 /STRIDE /OFFSET /REGULAR /OUTTYPE /NAME
 		DATA qualifiers  (nqual_at1l+0)	/ 'MODULO'	/
 		DATA qualifiers  (nqual_at1l+1)	/ 'DEPTH'	/
 		DATA qualifiers  (nqual_at1l+2)	/ 'CALENDAR'	/
@@ -377,7 +378,7 @@
 		DATA qualifiers  (nqual_at1l+6)	/ 'OFFSET'	/
 		DATA qualifiers  (nqual_at1l+7)	/ 'REGULAR'	/
 		DATA qualifiers  (nqual_at1l+8)	/ 'OUTTYPE'	/
-		DATA qualifiers  (nqual_at1l+9)	/ '****'	/
+		DATA qualifiers  (nqual_at1l+9)	/ 'NAME'	/
 * SET MEMORY
 	   DATA subcommands      (nsub_at1 +12)	/ 'MEMORY'	/
 	   DATA num_qualifs      (nsub_at1 +12)	/ nqual1m	/

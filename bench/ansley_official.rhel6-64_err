@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 53377474 Mar 27 13:58 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 53378727 Mar 28 11:22 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: tickets 2133, 2152
+Note: ticket 2160: SET AXIS/NAME=
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Thu Mar 27 14:00:09 PDT 2014
+Beginning at Fri Mar 28 11:40:40 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3625,6 +3625,20 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file b.nc
+ LISTing to file c.nc
+ **ERROR: invalid command: illegal new name. Axis days2000 is already defined
+set axis/name=days2000 x_in_meters
+ **ERROR: invalid command: illegal new name given for axis
+set axis/name x_in_meters
+ **ERROR: invalid command: illegal new name given for axis 45
+set axis/name=45 x_in_meters
+ **ERROR: invalid command: illegal new name given for axis .fr
+set axis/name=.fr x_in_meters
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -3714,4 +3728,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Mar 27 14:01:39 PDT 2014
+Ended at Fri Mar 28 11:42:11 PDT 2014

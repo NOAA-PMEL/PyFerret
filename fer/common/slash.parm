@@ -57,6 +57,7 @@
 * V686 1/14 *acm&* Ticket 2122: Fix param values for 
 *                  SHOW GRID/FILE, SHOW GRID/CLOBBER, SHOW GRID/APPEND
 * V690 12/13 *sh* /SIGMA and /CURVILINEAR
+* V687  3/14 *acm* add SET AXIS/NAME
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -203,6 +204,7 @@
      .                  slash_set_axis_offset,
      .                  slash_set_axis_regular,
      .                  slash_set_axis_outtype,
+     .                  slash_set_axis_name,
      .
      .			slash_set_memory_words,
      .			slash_set_nccache_size,
@@ -488,6 +490,7 @@
      .                  slash_set_axis_offset   = 7,
      .			slash_set_axis_regular  = 8,
      .			slash_set_axis_outtype  = 9,
+     .			slash_set_axis_name     = 10,
      .
      .			slash_set_memory_words	= 1,
      .			slash_set_nccache_size	= 1,

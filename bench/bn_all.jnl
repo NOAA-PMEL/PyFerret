@@ -885,7 +885,7 @@ GO bn_reset
 GO bn_single_colorlev
 
 
-! *********** v6.87 Additions ***********
+! *********** v6.9 Additions ***********
 GO bn_reset
 GO bn687_bug_fixes
 
@@ -897,6 +897,9 @@ GO bn_enter_exit_GO
 
 GO bn_reset
 GO bn_stddev
+
+GO bn_reset
+GO bn_set_axis_name
 
 
 !  *********** Always do a bn_reset  *********** 

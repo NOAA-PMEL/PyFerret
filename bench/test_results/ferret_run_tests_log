@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 11 Mar 31 12:29 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.9
+lrwxrwxrwx 1 ksmith tmap 11 Mar 31 15:35 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.9
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug build of Ferret on RHEL5-64
@@ -232,7 +232,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Mar 31 12:43:43 PDT 2014
+Beginning at Mon Mar 31 15:37:06 PDT 2014
 *** Running test: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10497,12 +10497,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.1.1 of Feb 25 2014 11:38:15 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "31-Mar-14"
-SESSION_TIME = "12:43"
-SESSION_PID = "22345"
-DELTA_CPU = "0.008997"
-CLOCK_SECS = "0.005"
+SESSION_TIME = "15:37"
+SESSION_PID = "26205"
+DELTA_CPU = "0.011997"
+CLOCK_SECS = "0.007"
 CURRENT_DATE = "31-Mar-14"
-CURRENT_TIME = "12:43:51"
+CURRENT_TIME = "15:37:13"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10526,12 +10526,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.1.1 of Feb 25 2014 11:38:15 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "31-Mar-14"
-SESSION_TIME = "12:43"
-SESSION_PID = "22345"
-DELTA_CPU = "0.001"
-CLOCK_SECS = "0.006"
+SESSION_TIME = "15:37"
+SESSION_PID = "26205"
+DELTA_CPU = "0.002"
+CLOCK_SECS = "0.008"
 CURRENT_DATE = "31-Mar-14"
-CURRENT_TIME = "12:43:51"
+CURRENT_TIME = "15:37:13"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10542,8 +10542,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "31-Mar-14"
-SESSION_TIME = "12:43"
-SESSION_PID = "22345"
+SESSION_TIME = "15:37"
+SESSION_PID = "26205"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10554,14 +10554,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "31-Mar-14"
-SESSION_TIME = "12:43"
-SESSION_PID = "22345"
+SESSION_TIME = "15:37"
+SESSION_PID = "26205"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "31-Mar-14"
-SESSION_TIME = "12:43"
-SESSION_PID = "22345"
+SESSION_TIME = "15:37"
+SESSION_PID = "26205"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10695,12 +10695,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.1.1 of Feb 25 2014 11:38:15 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "31-Mar-14"
-SESSION_TIME = "12:43"
-SESSION_PID = "22345"
-DELTA_CPU = "0.021998"
-CLOCK_SECS = "0.091"
+SESSION_TIME = "15:37"
+SESSION_PID = "26205"
+DELTA_CPU = "0.032995"
+CLOCK_SECS = "0.137"
 CURRENT_DATE = "31-Mar-14"
-CURRENT_TIME = "12:43:51"
+CURRENT_TIME = "15:37:13"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -25236,7 +25236,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Mon Mar 31 12:43:58 PDT 2014
+Mon Mar 31 15:37:20 PDT 2014
  
 GO bn_reset
 cancel mode verify
@@ -33310,9 +33310,6 @@ SORTN(DAT)
 SORTN_STR(STR)
     Returns indices of string data, sorted on the N axis in increasing order, null strings at the end
     STR: String variable to sort in N (STRING)
-SORTI_STR(DAT)
-    Returns indices of string data, sorted on the I axis in increasing order
-    DAT: String variable to sort in I (STRING)
 sh func/ext sample*
 SAMPLEI(TO_BE_SAMPLED,X_INDICES)
     sample a field at a list of X indices
@@ -33415,28 +33412,6 @@ SAMPLEYZ(DAT_TO_SAMPLE,YPTS,ZPTS)
     DAT_TO_SAMPLE: variable (x,y,z,t,e,f) to sample
     YPTS: Y values of sample points
     ZPTS: Z values of sample points
-SAMPLEXYT_NRST(DAT_TO_SAMPLE,XPTS,YPTS,TPTS)
-    Returns data sampled at a set of (X,Y,T) points, using nearest grid intersection
-    DAT_TO_SAMPLE: variable (x,y,z,t,e,f) to sample
-    XPTS: X values of sample points
-    YPTS: Y values of sample points
-    TPTS: T values of sample points
-SAMPLEI_MULTI(I_INDICES,DAT_TO_SAMPLE)
-    Returns data sampled according to I indices which may vary in JKL
-    I_INDICES: indices upon which to sample
-    DAT_TO_SAMPLE: data to sample using I indices
-SAMPLEJ_MULTI(J_INDICES,DAT_TO_SAMPLE)
-    Returns data sampled according to J indices which may vary in IKL
-    J_INDICES: ordered indices
-    DAT_TO_SAMPLE: data to sample using J indices
-SAMPLEK_MULTI(K_INDICES,DAT_TO_SAMPLE)
-    Returns data sampled according to K indices which may vary in IJL
-    K_INDICES: ordered indices
-    DAT_TO_SAMPLE: data to sample using K indices
-SAMPLEL_MULTI(L_INDICES,DAT_TO_SAMPLE)
-    Returns data sampled according to L indices which may vary in IJK
-    L_INDICES: ordered indices
-    DAT_TO_SAMPLE: data to sample using L indices
 SAMPLEXYT_NRST(DAT_TO_SAMPLE,XPTS,YPTS,TPTS)
     Returns data sampled at a set of (X,Y,T) points, using nearest grid intersection
     DAT_TO_SAMPLE: variable (x,y,z,t,e,f) to sample
@@ -48468,7 +48443,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "31-Mar-14:12:44"
+WIN_TITLE = "31-Mar-14:15:38"
  
 set win/title="set the title"
 sho sym win_title
@@ -48486,7 +48461,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="31-Mar-14:12:44"
+ !-> set win/title="31-Mar-14:15:38"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48497,14 +48472,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 31-Mar-14
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 12:44
+ !-> DEFINE SYMBOL the_time = 15:38
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="31-Mar-14:12:44"
+ !-> SET WIN/TITLE="31-Mar-14:15:38"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "31-Mar-14:12:44"
+WIN_TITLE = "31-Mar-14:15:38"
 *** Running test: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -51534,10 +51509,6 @@ IS_ELEMENT_OF_STR_N(VAR,VALUES)
     Returns 1 if 1st arg contains any of the values in 2nd arg, 2 if case-insensitve match, else 0
     VAR: string (STRING)
     VALUES: strings to search (STRING)
-IS_ELEMENT_OF_STR(VAR,VALUES)
-    Returns 1 if first argument contains any of the values in argument 2, else 0
-    VAR: data to test (STRING)
-    VALUES: strings to search for (STRING)
  
 ! FILL on data with subspan modulo axis, got wrong data
 GO bn_reset
@@ -54398,22 +54369,14 @@ SAMPLEXYT_NRST(DAT_TO_SAMPLE,XPTS,YPTS,TPTS)
 ADD_9(A,B,C,D,E,F,G,H,I)
 APPENDE(ENS,VAR)
 AVET(A)
-BIN_INDEX_WT(INDEX,WT,INDXMAX)
 DATES(Offsets)
 EXPNDI_ID_BY_Z_COUNTS(counts,max profile len)
 FACTORIAL(A)
 FFT_AMP(A)
 FFTA_SAMPLE(A)
 FFT_PHAS(A)
-IS_ELEMENT_OF_STR(VAR,VALUES)
 PASS_THRU(A)
 PERCENT_GOOD_T(A)
-SAMPLEI_MULTI(I_INDICES,DAT_TO_SAMPLE)
-SAMPLEJ_MULTI(J_INDICES,DAT_TO_SAMPLE)
-SAMPLEK_MULTI(K_INDICES,DAT_TO_SAMPLE)
-SAMPLEL_MULTI(L_INDICES,DAT_TO_SAMPLE)
-SAMPLEXYT_NRST(DAT_TO_SAMPLE,XPTS,YPTS,TPTS)
-SORTI_STR(DAT)
 STORAGE(A)
 STRING_ARG(Flags,NString)
 STUDENT_T_CUTOFF(P,nf)
@@ -58518,10 +58481,10 @@ SH GRID am
  normal    F
 *** Running test: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.008997"
+DELTA_CPU = "0.010997"
 CLOCK_SECS = "0.006"
 CURRENT_DATE = "31-Mar-14"
-CURRENT_TIME = "12:44:57"
+CURRENT_TIME = "15:38:20"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -58530,8 +58493,8 @@ CURRENT_TIME = "12:44:57"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.06799"
-CLOCK_SECS = "0.118"
+DELTA_CPU = "0.072989"
+CLOCK_SECS = "0.126"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -58545,60 +58508,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.290956
+ !-> DEFINE VARIABLE ten_plots = 0.292956
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.001"
-CLOCK_SECS = "0.486"
+DELTA_CPU = "0"
+CLOCK_SECS = "0.493"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.488"
+CLOCK_SECS = "0.495"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.035995
- !-> DEFINE VARIABLE sumcpu =0.035995
-!-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.035995
- !-> DEFINE VARIABLE sumcpu =0.07199
-!-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.105985
-!-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.144979
-!-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.034994
- !-> DEFINE VARIABLE sumcpu =0.179973
-!-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.030995
- !-> DEFINE VARIABLE sumcpu =0.210968
-!-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.032996
- !-> DEFINE VARIABLE sumcpu =0.243964
-!-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.027996
- !-> DEFINE VARIABLE sumcpu =0.27196
-!-> REPEAT: K=9
  !-> DEFINE VARIABLE dt = 0.029995
- !-> DEFINE VARIABLE sumcpu =0.301955
-!-> REPEAT: K=10
+ !-> DEFINE VARIABLE sumcpu =0.029995
+!-> REPEAT: K=2
  !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.33595
+ !-> DEFINE VARIABLE sumcpu =0.06399
+!-> REPEAT: K=3
+ !-> DEFINE VARIABLE dt = 0.030995
+ !-> DEFINE VARIABLE sumcpu =0.094985
+!-> REPEAT: K=4
+ !-> DEFINE VARIABLE dt = 0.037994
+ !-> DEFINE VARIABLE sumcpu =0.132979
+!-> REPEAT: K=5
+ !-> DEFINE VARIABLE dt = 0.030995
+ !-> DEFINE VARIABLE sumcpu =0.163974
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.032996
+ !-> DEFINE VARIABLE sumcpu =0.19697
+!-> REPEAT: K=7
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.229965
+!-> REPEAT: K=8
+ !-> DEFINE VARIABLE dt = 0.030994
+ !-> DEFINE VARIABLE sumcpu =0.260959
+!-> REPEAT: K=9
+ !-> DEFINE VARIABLE dt = 0.030996
+ !-> DEFINE VARIABLE sumcpu =0.291955
+!-> REPEAT: K=10
+ !-> DEFINE VARIABLE dt = 0.034994
+ !-> DEFINE VARIABLE sumcpu =0.326949
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.33595
-0.33595
+ !-> MESSAGE/CONTINUE 0.326949
+0.326949
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.971"
+CLOCK_SECS = "0.978"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "31-Mar-14"
-SESSION_TIME = "12:44"
+SESSION_TIME = "15:38"
 CURRENT_DATE = "31-Mar-14"
-CURRENT_TIME = "12:44:58"
+CURRENT_TIME = "15:38:21"
 *** Running test: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -62511,7 +62474,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.9 (beta)"                                                      
  3    /  3:" ! Linux 2.6.18-371.4.1.el5 64-bit - 03/31/14"                              
- 4    /  4:" ! 31-Mar-14 12:45     "                                                    
+ 4    /  4:" ! 31-Mar-14 15:38     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -64944,40 +64907,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.411
-randu2_randn2       0.393
-randu2_randn2       0.568
-randu2_randn2       0.685
-randu2_randn2       0.623
+randu2_randn2       0.366
+randu2_randn2       0.453
+randu2_randn2       0.168
+randu2_randn2       0.168
+randu2_randn2       0.625
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.333
-randu2_randn2       0.788
-randu2_randn2       0.339
-randu2_randn2       0.133
-randu2_randn2       0.914
-             VARIABLE : RANDU2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.426
-randu2_randn2       0.369
-randu2_randn2       0.400
+randu2_randn2       0.289
+randu2_randn2       0.817
+randu2_randn2       0.329
 randu2_randn2       0.467
-randu2_randn2       0.450
-randu2_randn2       0.579
+randu2_randn2       0.632
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.448
-randu2_randn2       0.385
-randu2_randn2       0.652
-randu2_randn2       0.179
-randu2_randn2       0.853
-randu2_randn2       0.250
+randu2_randn2       0.221
+randu2_randn2       0.871
+randu2_randn2       0.518
+randu2_randn2       0.869
+randu2_randn2       0.823
+randu2_randn2       0.076
+             VARIABLE : RANDU2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.133
+randu2_randn2       0.307
+randu2_randn2       0.968
+randu2_randn2       0.061
+randu2_randn2       0.360
+randu2_randn2       0.176
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65002,40 +64965,40 @@ randu2_randn2       0.900
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.623
-randu2_randn2      -0.766
-randu2_randn2      -0.898
-randu2_randn2       0.536
-randu2_randn2      -0.703
+randu2_randn2       0.503
+randu2_randn2      -0.100
+randu2_randn2      -0.195
+randu2_randn2      -0.083
+randu2_randn2       0.759
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
+randu2_randn2      -1.014
+randu2_randn2       0.051
+randu2_randn2       0.428
+randu2_randn2       2.756
+randu2_randn2      -0.107
+             VARIABLE : RANDN2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2      -1.086
+randu2_randn2       0.503
+randu2_randn2       0.481
+randu2_randn2      -2.318
+randu2_randn2       0.989
+randu2_randn2       0.355
+             VARIABLE : RANDN2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
 randu2_randn2      -0.942
-randu2_randn2       0.468
-randu2_randn2       0.507
-randu2_randn2       0.967
-randu2_randn2      -1.265
-             VARIABLE : RANDN2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.627
-randu2_randn2       0.384
-randu2_randn2       0.018
-randu2_randn2       2.396
-randu2_randn2      -1.976
-randu2_randn2       1.601
-             VARIABLE : RANDN2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.626
-randu2_randn2      -1.249
-randu2_randn2      -0.928
-randu2_randn2      -1.172
-randu2_randn2       0.583
-randu2_randn2      -0.516
+randu2_randn2       0.175
+randu2_randn2      -0.470
+randu2_randn2      -1.165
+randu2_randn2       0.158
+randu2_randn2      -0.485
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65060,14 +65023,14 @@ randu2_randn2      -0.124
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.780       1.780       0.326
-randu2_randn2       1.467       1.467       0.326
-randu2_randn2       0.326       0.326       0.193
-randu2_randn2       0.193       0.193       0.326
-randu2_randn2      -0.737      -0.466       0.326
-randu2_randn2      -0.466      -0.545       0.326
-randu2_randn2      -0.545      -0.466       0.326
-randu2_randn2       0.383       0.383       0.383
+randu2_randn2       1.054       1.700       1.034
+randu2_randn2       1.700       1.054       1.034
+randu2_randn2       1.034       1.034       0.471
+randu2_randn2       0.471       0.471       0.471
+randu2_randn2      -0.082      -0.082       0.471
+randu2_randn2      -0.226      -0.082       0.471
+randu2_randn2       0.015       0.015       0.471
+randu2_randn2       0.429       0.429       0.471
 *** Running test: bn_axis_cf.jnl
 ! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
@@ -75671,12 +75634,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.1.1 of Feb 25 2014 11:38:15 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "31-Mar-14"
-SESSION_TIME = "12:45"
-SESSION_PID = "23554"
-DELTA_CPU = "0.029995"
-CLOCK_SECS = "0.088"
+SESSION_TIME = "15:38"
+SESSION_PID = "27420"
+DELTA_CPU = "0.026995"
+CLOCK_SECS = "0.096"
 CURRENT_DATE = "31-Mar-14"
-CURRENT_TIME = "12:45:29"
+CURRENT_TIME = "15:38:52"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -75698,7 +75661,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "31-Mar-14:12:45"
+WIN_TITLE = "31-Mar-14:15:38"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -75751,4 +75714,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Mon Mar 31 12:45:29 PDT 2014
+Ended at Mon Mar 31 15:38:52 PDT 2014

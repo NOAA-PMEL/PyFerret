@@ -14,7 +14,7 @@
 # Macro Definitions
 #
 
-DIRS = contributed cmprsi_by examples fft statistics
+DIRS = contributed examples fft statistics
 MOREDIRS = contributed cmprsi_by decimate examples extrema featurecollections gridding fft las statistics tax_times
 # DIRS = contributed examples fft sort cflib closest_in_list hinterp featurecollections romea odd_formats cat statistics tax_times gridding zaxr 
 

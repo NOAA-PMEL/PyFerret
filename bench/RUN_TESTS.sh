@@ -126,7 +126,7 @@ cp ./default.ferret $HOME/.ferret
 
 if ! echo "$fver" | grep -q "pyferret"; then
 #  command-line options for ferret
-   feropts="-gif -noverify"
+   feropts="-noverify"
 else
 #  command-line options for pyferret
    feropts="-quiet -nodisplay -noverify"

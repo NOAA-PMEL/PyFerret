@@ -204,5 +204,12 @@ bn_plot_color_only.jnl
 bn_vtree.jnl
 bn686_bug_fixes.jnl
 bn_long_symnames.jnl
+bn_strdim.jnl
+bn_single_colorlev.jnl
+bn69_bug_fixes.jnl
+bn_bad_axis_bounds.jnl
+bn_enter_exit_GO.jnl
+bn_stddev.jnl
+bn_set_axis_name.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

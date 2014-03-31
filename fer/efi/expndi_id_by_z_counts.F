@@ -6,15 +6,8 @@
 * 
 * Create a variable with profile ID, where argument 1 is the length
 * of the variable to be put into an XZ structure from it with the 
-* separation between Z columns given by the lengths specified in 
-* argument 2. Argument 2 is a list of length N, where N is the number of 
-* Z columns to create, and each item in the list is the length of that 
-* column (the length of the cruise or profile). Thus the Z columns created 
-* are "ragged" Typical use is that arg 1 is a collection of vertical casts 
-* appended end-to-end and that arg 2 is the number of values in each cast.
-* The sum of the values in arg 2 is the length of argument 1. 
-
-*  Args 3 and 4 are constants -- the size of the X and Z axes, respectively
+* Z length specified by column 2.  This creates an "ID" variable to
+* go along with the XZ variable defined by expndi_by_z_counts.
  
 *  In this subroutine we provide information about
 *  the function.  The user configurable information 
@@ -63,7 +56,7 @@
 *                                                                      V
 
       CALL ef_set_desc(id,
-     .  'Create 2D list, ID by profile-length on an XZ grid. (Typ. to split Z-profiles)' )
+     .  'Create 2D list, ID by profile-length on an XZ grid.' )
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_has_vari_args(id, NO)

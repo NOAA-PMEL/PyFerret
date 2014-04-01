@@ -64,12 +64,14 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685 4/13 *sh* parse the auxiliary regridding context terms ("*aux*"), too
 *	         and don't report errors in dependency_tree_mode
+* V690 12/13 *sh* bug fix when variable name unrecognized in VTREE mode
 
 	IMPLICIT NONE
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
         include 'tmap_dims.parm'
+	include 'xfr_grid.cmn'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
@@ -106,13 +108,18 @@
 	      cx_variable(var_cx) = unspecified_int4
 	      cx_category(var_cx) = unspecified_int4
 	      unreported_error = .TRUE.
+	      IF (cx_has_impl_grid(var_cx)) THEN
+	         IF (cx_impl_grid(var_cx).NE.grd_stk_ptr )
+     .					CALL WARN('crptn_get_var_ctxt')
+	         CALL DEALLO_GRID(i) ! 12/13 bug fix
+	      ENDIF
 	   ELSE
 	      GOTO 5000
 	   ENDIF
 	ENDIF
 
-* if auxiliary regridding variables were detected, identify them
-	IF (cx_naux(var_cx) .GT. 0) THEN
+* if explicit auxiliary regridding variables were detected, identify them
+	IF (cx_naux(var_cx).GT.0 .AND. .NOT.cx_implicit_aux(var_cx)) THEN
 	   iarg = 0
 * ... cx_naux always matches the number of valid cx_aux_arg_start values
 	   DO idim = 1, nferdims
@@ -134,8 +141,9 @@
      .				     cat,
      .				     var )
 	         IF (var .NE. munknown_var_name) THEN
-	            cx_aux_cat(idim,var_cx) = cat
-	            cx_aux_var(idim,var_cx) = var
+	            cx_aux_cat (idim,var_cx) = cat
+	            cx_aux_var (idim,var_cx) = var
+	            cx_aux_stat(idim,var_cx) = paux_stat_used
 	         ELSE
 	            cx_valid_aux(iarg,var_cx) = .FALSE. ! a name not found
 	            IF (.NOT. unreported_error) THEN
@@ -156,7 +164,6 @@
 * This should happen ONLY when this is called from IS_UVAR_GRID
 	IF ( cx_unstand_grid(var_cx)
      . .AND. cx_grid(var_cx) .LT. unspecified_int4 ) GOTO 100
-
 
 * apply the hidden @RDC transform if appropriate
 	CALL ADD_RDC_XFORM( var_cx, status)

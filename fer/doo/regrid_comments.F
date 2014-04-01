@@ -47,6 +47,7 @@
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 * V68  *acm* 1/12  changes for double-precision ferret.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V690 *sh* 1/14 document sigma and curvilinear aux var regridding
 
         IMPLICIT NONE
 	include	'tmap_dims.parm'
@@ -69,8 +70,8 @@
 	INTEGER	TM_LENSTR1, KNOWN_GRID,
      .		var, categ, dset, mlen, maxlen, idim, std_grid, n,
      .		axis, slen
-	CHARACTER TM_FMT*16, GNAME_FROM_NUMBER*128, units*24, trans*8
-      character*80 mybuff
+	CHARACTER TM_FMT*16, GNAME_FROM_NUMBER*128, VAR_CODE*128,
+     .		  ALG_TRANS_TITL*20, units*24, trans*8, mybuff*128, sep*1
 
 * initialize
 	IF ( .NOT. cx_unstand_grid(cx) ) THEN
@@ -84,6 +85,7 @@
 	non_atlin = .FALSE.		! assume entirely @LIN transforms
 	maxlen  = LEN( REGRID_COMMENTS )
 	IF ( maxlen .LT. 12 ) GOTO 5000
+	stat_grid =  grid_name(cx_grid(cx))(1:1) .NE. '('
 
 * starting blank unavoidable with FORTRAN strings -- removed later
 	REGRID_COMMENTS = ' '
@@ -94,7 +96,6 @@
 	add_on = .FALSE.
 
 * static (named) grids are documented by name
-	stat_grid =  grid_name(cx_grid(cx))(1:1) .NE. '('
 	IF ( stat_grid ) THEN
 	   REGRID_COMMENTS = GNAME_FROM_NUMBER(dset, cx_grid(cx), mlen)
 	   mybuff = GNAME_FROM_NUMBER(dset, cx_grid(cx), mlen)
@@ -107,7 +108,7 @@
 	       GOTO 50
 	     ENDIF
  10	   CONTINUE
-	   RETURN
+	   GOTO 900
 	ENDIF
 
 * count number of axes regridded and unusual transforms
@@ -141,7 +142,8 @@
 	      ELSE
 	         add_on = .TRUE.
 	      ENDIF
-	      IF ( line_regular(axis) .AND. .NOT.stat_grid ) THEN
+	      IF ( line_regular(axis) .AND. .NOT.stat_grid 
+     .	    .AND.  line_dim    (axis) .GT.  1               ) THEN
 * ... delta
 #ifdef double_p
 	         REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
@@ -188,6 +190,24 @@
 	   ENDIF
  120	CONTINUE
 
+* sigma and curvilinear regridding
+* if an auxiliary variable regrid then document "using DEPTH" or whatever
+ 900	IF (cx_naux(cx) .GT. 0) THEN
+	   mybuff = ' using'
+	   slen = 6
+	   sep = ' '
+	   DO idim = 1, nferdims
+	      IF (cx_aux_cat(idim,cx) .NE. unspecified_int4) THEN
+	         mybuff = mybuff(:slen) // sep //
+     .			  VAR_CODE(cx_aux_cat(idim,cx),
+     .				   cx_aux_var(idim,cx)  )
+	         slen = TM_LENSTR1(mybuff)
+	         sep = ','
+	      ENDIF
+	   ENDDO
+	   REGRID_COMMENTS = REGRID_COMMENTS(:mlen)//mybuff
+	   mlen = MIN(maxlen,mlen+slen)
+	ENDIF
 
 * signal if the string has been truncated for being too long
 	IF ( mlen .EQ. maxlen ) REGRID_COMMENTS(maxlen:maxlen) = '*'

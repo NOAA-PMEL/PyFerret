@@ -1,0 +1,24 @@
+! bn687_bug_fixes
+! test various fixes that went into version 6.87
+! 02/2014 ACM
+
+GO bn_reset
+GO err686_long_list_varnames
+
+GO bn_reset
+GO err686_faxis_label
+
+GO bn_reset
+GO err686_dup_axnames
+
+GO bn_reset
+GO err686_cancel_invalid_var
+
+GO bn_reset
+GO err686_redef_ascii_att
+
+GO bn_reset
+GO err686_sho_nonexist_att
+
+GO bn_reset
+GO err686_set_var_name

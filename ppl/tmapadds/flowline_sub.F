@@ -123,7 +123,7 @@ C  Local declarations
      .     i, i1, ii, jj, ii1, ij1, i2, j2, mx, my, ipt, acnt, icol, 
      .     scol, dis, iindex, jjndex, ii1index, iacc, iisav, iscl, imn, 
      .     jmn, j, iz, jz, iss, jss, imx, jmx, iln, slen
-      LOGICAL bflg
+      LOGICAL TM_FPEQ_SNGL, bflg
 
       CHARACTER*120 veclab, buff, symbuff
       EXTERNAL lnblk
@@ -135,6 +135,20 @@ C     Curvilinear coordinates declarations
 #else
       REAL x_curv, y_curv
 #endif
+
+C First check that the curvilinear coordinate data is all present and accounted for.
+
+      curv_missing = .FALSE.
+      IF (curvilinear) THEN
+         do j = 1, ny
+         do i = 1, nx
+            x_curv = i
+	    y_curv = j
+	    CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status)
+	    IF (curv_missing) GOTO 5100
+	 enddo
+	 enddo
+      ENDIF
 
 C  From vector
       CALL COLOR(IPEN(1))
@@ -549,7 +563,6 @@ C  we began the curve.
                x_curv = xx
                y_curv = yy
                CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
-
                xxc=x_curv
                yyc=y_curv
                CALL plot (xxc,yyc,0,0)
@@ -847,5 +860,8 @@ c	XL = XX1 + 2.* hlabs/XF+0.2/xf
 
 3333	IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
 
+      RETURN
+* error exit
+ 5100 curv_missing = .TRUE.
       RETURN
       END

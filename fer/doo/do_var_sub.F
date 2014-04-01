@@ -1,7 +1,7 @@
 	SUBROUTINE DO_VAR_SUB(	idim, com_lo, com_hi,
      .				com, com_mr, com_cx,
      .				res, res_mr, res_cx,
-     .				box )
+     .				box, stddev )
 
 *
 *
@@ -56,6 +56,8 @@
 * V672+: 1/12 - previous checkin had wrong indices for result. Return to 
 *               divide by n, not n+1
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+*
+* v687  3/14  *acm* Option to return standard deviation
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -66,6 +68,7 @@
 	include	'xmem_subsc.cmn'
 
 * internal variable declarations:
+	LOGICAL stddev
 	INTEGER CGRID_AXIS, i, j, k, l, m, n,
      .          grid, pt, lo, hi, axis, npt
 	REAL	BOX_SIZE, bad_com, bad_res
@@ -125,7 +128,7 @@
                  mean = dsum / bsum
               ENDIF
 
-* ... Pass #2: determine variance
+* ... Pass #2: determine variance or std dev
 
 * Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
 
@@ -146,7 +149,11 @@
                   ENDIF
  205          CONTINUE
 * because of checking above, npt .GT. 1
-              res(pt,j,k,l,m,n) = dsum / FLOAT(npt)
+	      IF (stddev) THEN
+                 res(pt,j,k,l,m,n) = SQRT( dsum / FLOAT(npt) )
+	      ELSE
+                 res(pt,j,k,l,m,n) = dsum / FLOAT(npt)
+	      ENDIF
  210	   CONTINUE
 
 * ALONG Y AXIS
@@ -174,7 +181,7 @@
                  mean = dsum / bsum
               ENDIF
 
-* ... Pass #2: determine variance
+* ... Pass #2: determine variance or std dev
 
 * Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
 
@@ -195,7 +202,11 @@
                   ENDIF
  305          CONTINUE
 * because of checking above, npt .GT. 1
-              res(i,pt,k,l,m,n) = dsum / FLOAT(npt)
+	      IF (stddev) THEN
+                 res(i,pt,k,l,m,n)  = SQRT( dsum / FLOAT(npt) )
+	      ELSE
+                 res(i,pt,k,l,m,n) = dsum / FLOAT(npt)
+	      ENDIF
  310	   CONTINUE
 
 
@@ -223,7 +234,7 @@
                  mean = dsum / bsum
               ENDIF
 
-* ... Pass #2: determine variance
+* ... Pass #2: determine variance or std dev
 
 * Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
 
@@ -244,7 +255,11 @@
                   ENDIF
  405          CONTINUE
 * because of checking above, npt .GT. 1
-              res(i,j,pt,l,m,n) = dsum / FLOAT(npt)
+	      IF (stddev) THEN
+                 res(i,j,pt,l,m,n)  = SQRT( dsum / FLOAT(npt) )
+	      ELSE
+                 res(i,j,pt,l,m,n) = dsum / FLOAT(npt)
+	      ENDIF
  410	   CONTINUE
 
 * ALONG T AXIS
@@ -271,7 +286,7 @@
                  mean = dsum / bsum
               ENDIF
 
-* ... Pass #2: determine variance
+* ... Pass #2: determine variance or std dev
 
 * Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
 
@@ -292,7 +307,11 @@
                   ENDIF
  505          CONTINUE
 * because of checking above, npt .GT. 1
-              res(i,j,k,pt,m,n) = dsum/ FLOAT(npt)
+	      IF (stddev) THEN
+                 res(i,j,k,pt,m,n)  = SQRT( dsum / FLOAT(npt) )
+	      ELSE
+                 res(i,j,k,pt,m,n) = dsum / FLOAT(npt)
+	      ENDIF
  510	   CONTINUE
 
 * ALONG E AXIS
@@ -319,7 +338,7 @@
                  mean = dsum / bsum
               ENDIF
 
-* ... Pass #2: determine variance
+* ... Pass #2: determine variance or std dev
 
 * Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
 
@@ -340,7 +359,11 @@
                   ENDIF
  605          CONTINUE
 * because of checking above, npt .GT. 1
-              res(i,j,k,l,pt,n) = dsum/ FLOAT(npt)
+	      IF (stddev) THEN
+                 res(i,j,k,l,pt,n)  = SQRT( dsum / FLOAT(npt) )
+	      ELSE
+                 res(i,j,k,l,pt,n) = dsum / FLOAT(npt)
+	      ENDIF
  610	   CONTINUE
 
 * ALONG F AXIS
@@ -367,7 +390,7 @@
                  mean = dsum / bsum
               ENDIF
 
-* ... Pass #2: determine variance
+* ... Pass #2: determine variance or std dev
 
 * Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
 
@@ -388,7 +411,11 @@
                   ENDIF
  705          CONTINUE
 * because of checking above, npt .GT. 1
-              res(i,j,k,l,m,pt) = dsum/ FLOAT(npt)
+	      IF (stddev) THEN
+                 res(i,j,k,l,m,pt) = SQRT( dsum / FLOAT(npt) )
+	      ELSE
+                 res(i,j,k,l,m,pt) = dsum / FLOAT(npt)
+	      ENDIF
  710	   CONTINUE
 
 	ENDIF

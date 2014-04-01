@@ -1,4 +1,4 @@
-	SUBROUTINE DO_AUX_VAR_REGRID( memory, axis_list, naxis, 
+	SUBROUTINE DO_AUX_VAR_REGRID( memory, axis_list, naxis, aux_has_cell_pts,
      .				      src,  msrc,  src_cx,
      .				      dst,  mdst,  dst_cx,
      .				      aux1, maux1, aux1_cx,
@@ -50,10 +50,12 @@
         include 'tmap_dims.parm'
         include 'errmsg.parm'
 	include	'ferret.parm'
+	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 
 * calling argument declarations:
+	LOGICAL	aux_has_cell_pts
 	INTEGER	naxis, axis_list(naxis), status,
      .		msrc, mdst, maux1, maux2, maux3,
      .		src_cx, dst_cx, aux1_cx, aux2_cx, aux3_cx
@@ -61,31 +63,27 @@
         REAL    src(*), dst(*), aux1(*), aux2(*), aux3(*)
 
 
-* local variable declarations
-	INTEGER	wkblk
-
-* initialize local variables
-	status = ferr_ok
-
 	IF ( naxis .EQ. 1) THEN
 * Ansley:  note that this needs to be generalized for other axes than Z
-* allocate a work array for a single profile of Z depths
-	   CALL GET_WORK_SPC( m1hiz-m1loz+1, wkblk, status )
-           IF ( status .NE. ferr_ok ) GOTO 5000
+* allocate a work arrays for a single profile of Z depths
+* nwk_dst enuf to hold a line of the destination grid
+	   IF (axis_list(1) .NE. z_dim)
+     .			CALL ERRMSG( ferr_internal, status, 'non-z aux', *5000)
 
-* do the 1D regridding
-	   CALL DO_AUX_VAR_REGRID_1D( axis_list(1), 
-     .				      src,  msrc,  src_cx,
-     .				      dst,  mdst,  dst_cx,
-     .				      aux1, maux1, aux1_cx,
-     .				      memory(1,wkblk) )
+* do the 1D regridding using linear interpolation
+	   CALL DO_AUX_VAR_REGRID_1D(
+     .			axis_list(1), aux_has_cell_pts,
+     .			src,  msrc,  src_cx,
+     .			dst,  mdst,  dst_cx,
+     .			aux1, maux1, aux1_cx,
+     .			cx_lo_ss(src_cx,z_dim),cx_hi_ss(src_cx,z_dim),
+     .			cx_lo_ss(dst_cx,z_dim),cx_hi_ss(dst_cx,z_dim) )
 	ELSE
 *  ==> insert horizontal curvilinear regridding (naxis.EQ.2) here
-	   STOP 'do_aux_var_regrid'
+	   STOP 'do_aux_var_regrid >1d'
 	ENDIF
 
 * success
-	CALL RELEASE_WORK_SPC
 	RETURN
 
 * error

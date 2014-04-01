@@ -5,13 +5,15 @@
 *                   the x coordinates are something other than degrees
 * V68  *acm* 1/12  explicit REAL*4 declarations for double-precision ferret with
 *		    single-precision pplus
+* V687 *acm* 3/14  Ticket 2147: Need double-precision bad-values for coordinate variables 
+
 	COMMON/ XCURVILINEAR/
-     .		curvilinear,
-     .		dim1_modulo, dim2_modulo,
-     .		dim1_edges,  dim2_edges,
      .		wwxmax, wwxmin,
      .		wwymax, wwymin,
      .		badx, bady,
+     .		curvilinear,
+     .		dim1_modulo, dim2_modulo,
+     .		dim1_edges,  dim2_edges,
      .		minss_dim1, maxss_dim1,
      .		minss_dim2, maxss_dim2,
      .		xpos_loss_dim1, xpos_hiss_dim1,
@@ -27,7 +29,8 @@
      .		yspan_1_dim1,
      .		yspan_1_dim2,
      .          xmodulo,
-     .          units_degrees
+     .          units_degrees,
+     .		curv_missing
 
 	LOGICAL	curvilinear,
      .		dim1_modulo, dim2_modulo,
@@ -37,7 +40,8 @@
      .		yspan_1_dim1,
      .		yspan_1_dim2,
      .          xmodulo,
-     .          units_degrees
+     .          units_degrees,
+     .		curv_missing
 	INTEGER
      .		minss_dim1, maxss_dim1,
      .		minss_dim2, maxss_dim2,
@@ -52,4 +56,10 @@
 	REAL*4	badx, bady,
      .		wwxmax, wwxmin,
      .		wwymax, wwymin
+
+
+
+	COMMON/ XCURV_8/
+     .		badxcurv, badycurv
+	REAL	badxcurv, badycurv
 

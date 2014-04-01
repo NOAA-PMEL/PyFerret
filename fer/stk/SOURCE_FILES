@@ -54,6 +54,7 @@ is_subspan_fill.F\
 is_sample.F\
 is_trans.F\
 is_uvar_grid.F\
+its_auto_curvi.F\
 known_grid.F\
 make_pseudo_var.F\
 non_array_subsc.F\
@@ -75,6 +76,6 @@ string_context.F\
 string_operate.F\
 string_concatenate.F\
 string_conditional.F\
+transfer_isp.F\
 unprotect_cmnd_data.F\
 xerror.F 
-

@@ -66,6 +66,8 @@
 * V630  *acm* 9/09 change a message only
 C  v67  2/2011 *acm* Fix ticket 1799; do contouring in larger sections.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
+*                 and 4-arg plot commands. 
 
 ****************************************************************************
 C**
@@ -494,6 +496,7 @@ c
  722       CONTINUE
 
            CALL CURV_COORD(x_curv, y_curv, kmax, 1.0, 1.0, status) ! xform the pts
+	   IF (curv_missing) GOTO 1000
 
            DO 724 icurv=1, kmax
               x(icurv)=(x_curv(icurv)+xadd)*xf + xoff
@@ -841,10 +844,12 @@ c
 	endif
 c
         IF (curvilinear .AND. .NOT.curvilinear) THEN
+	print *, 'IF (curvilinear .AND. .NOT.curvilinear) in contur.F'
            x_curv(1)=(xendl-xoff)/xf
            y_curv(1)=(yendl-yoff)/yf
 
            CALL CURV_COORD(x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
+	   IF (curv_missing) GOTO 1000
 
            xendl=x_curv(1)*xf + xoff
            yendl=y_curv(1)*yf + yoff

@@ -44,6 +44,7 @@
 *
 * revision 0.0 - 2/19/87
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* v690 2/2014 *sh* stack max limited to max_usable_intrp to fit aux frames at top
  
         include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -60,13 +61,14 @@
 	source_level = level
 
 * push the stack pointer
-	CALL STACK_PTR_UP( isp, max_intrp, status )
+	CALL STACK_PTR_UP( isp, max_usable_intrp, status )
 	IF ( status .NE. ferr_ok ) RETURN
 
 * copy some stack info
-	is_obj ( isp ) = is_obj ( source_level )
-	is_uvar( isp ) = is_uvar( source_level )
-	is_cx  ( isp ) = is_cx  ( source_level )
+	is_obj    ( isp ) = is_obj      ( source_level )
+	is_uvar   ( isp ) = is_uvar     ( source_level )
+	is_cx     ( isp ) = is_cx       ( source_level )
+	is_aux_ptr( isp ) = is_aux_ptr  ( source_level )
 
 * ! temp - blank out rest of stack to avoid undetected bugs
 	is_act      ( isp ) = unspecified_int4

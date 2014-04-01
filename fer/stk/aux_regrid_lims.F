@@ -66,7 +66,9 @@
 	IF ( naxis .EQ. 1 ) THEN
 	   CALL AUX_REGRID_LIMS_1D( dst_cx, src_cx, axis_list, naxis,
      .			            aux1, mr1, cx1, status )
+	   IF (status .NE. ferr_ok) GOTO 5000
 	ELSE
+* TEMPORARY: insert routine to get 2D curvilinear index bounds here 
 	   CALL ERRMSG(ferr_internal, status, 'aux_regrid_lims', *5000 )
 	ENDIF
 

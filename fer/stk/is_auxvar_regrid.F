@@ -33,7 +33,12 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* regrid the data from the source grid to the destination grid
+* this routine controls the fetching of auxiliary variables if more than
+* one; the determination of the curvilinier index region and fetching of
+* the target; and (optionally) performing the regridding.  The regridding
+* step is skipped when this routine is called under isact_aux_plot_vars
+*
+* regridding:  regrid the data from the source grid to the destination grid
 * using auxiliary variables to guide the numerics of the regrid
 * architype is a conversion from density to depth "TEMP[gz(depth)=zax]"
 * where "depth" is a field of depths defined on the same density axis
@@ -52,6 +57,7 @@
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
+	include	'xtext_info.cmn'
 	include	'xprog_state.cmn'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
@@ -64,12 +70,15 @@
 * exit #1 is to signal completion of the activity at this stack level
 
 * internal variable declarations:
-	LOGICAL	ITS_UN_CACHED, not_reusable
-	INTEGER i, icom, idim, mr, lo_cx, hi_cx, lo_isp, hi_isp, naxis,
+	LOGICAL	ITS_UN_CACHED, not_reusable, first, aux_has_cell_pts
+	INTEGER TM_LENSTR1, CAXIS_LEN, AUX_AXIS_FROM_ARG,
+     .		i, j, icom, idim, mr, lo_cx, hi_cx, lo_isp, hi_isp, naxis,
      .		aux_mr_list(nferdims), mr1, mr2, mr3,
      .		aux_cx_list(nferdims), cx1, cx2, cx3,
      .		isp_ptr, axis_list(nferdims),
-     .		dst_cx, src_cx, com_cx, dst_mr, src_mr, frame_bottom, impl_grid 
+     .		dst_cx, src_cx, com_cx, dst_mr, src_mr, frame_bottom, impl_grid,
+     .		slen, s1, sn, naux, ptr
+	CHARACTER*128 VAR_CODE, src_name, com_name
 
         EQUIVALENCE
      .          ( aux_mr_list(1), mr1 ),
@@ -110,7 +119,7 @@
      . .AND. is_sum(isp) .EQ. 1                     )  THEN
 * ... first time called.  Set up is_obj pointer
 	   lo_isp = isp
-	   is_obj(isp+1) = lo_isp ! so the auxvar just obtained points to the regrid op
+	   is_obj(isp+1) = lo_isp ! so auxvar just obtained points to regrid op
 	ELSE
 	   lo_isp   = is_obj(isp)    ! the isp level of the regrid operation
 	ENDIF
@@ -119,7 +128,12 @@
 	IF (cx_type(lo_cx) .EQ. ptype_string) GOTO 5010
 
 * set pointers to the auxiliary variables
-* (if we are still getting more aux variables some of these pointers will be wrong)
+* (if we are have more aux variables to get some of these pointers will be wrong)
+* ... first pre-fill with known values
+	DO 5 i = 1, 3
+	   aux_mr_list(i) = dummy_mr
+	   aux_cx_list(i) = unspecified_int4 
+ 5	CONTINUE
         i = 0
         DO 10 idim = 1, nferdims
            IF (cx_aux_var(idim,lo_cx) .NE. unspecified_int4) THEN
@@ -128,12 +142,9 @@
               axis_list(i) = idim
               aux_mr_list(i) = is_mr(isp_ptr)  ! see equivs
               aux_cx_list(i) = is_cx(isp_ptr)  ! see equivs
-	   ELSE
-	      aux_mr_list(idim) = dummy_mr
-	      aux_cx_list(idim) = unspecified_int4  
           ENDIF
  10    CONTINUE
-* i should equal naxis at this point, but no need to confirm
+* naxis should equal i at this point, but no need to confirm
 
 * sanity check
         IF (naxis.GT.1) CALL ERRMSG(ferr_prog_limit, status,
@@ -155,6 +166,7 @@
 	      CALL GET_AUX_VAR_CONTEXT( lo_cx, hi_cx, is_sum(lo_isp),
      .					status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
+	      is_axis(lo_isp) = AUX_AXIS_FROM_ARG(lo_cx, is_sum(lo_isp))
 
 	   ELSE
 * *** SET UP TO GET THE SOURCE DATA ***
@@ -185,9 +197,9 @@
 
 	ELSEIF (  is_phase(lo_isp) .EQ. isphase_get_source_var ) THEN 
  
-* ***  TIME TO REGRID ****
+* ***  TIME TO REGRID OR RETURN "3 ARGUMENTS" (2 for Z)  FOR PLOTTING****
 * ... we have all of the needed components.
-	   is_phase(lo_isp) = isphase_do_aux_regrid  ! just nice words to say (never used)
+	   is_phase(lo_isp) = isphase_do_aux_regrid  ! (never used)
 
 * if the scenario is
 *       yes? LET TEMPZ = TEMP[gz(DEPTH)=zax]
@@ -196,11 +208,53 @@
 *
 *   stack level            stack contents
 *   ----- -----      -----------------------------------
-* hi_isp:isp+1      variable on native grid (TEMP)
+* hi_isp:isp+naux   variable on native grid (TEMP)
 *        isp        auxiliary variable (DEPTH)
 * lo_isp:isp-1      requested regrid result (TEMP[dz(DEPTH)=zax])
 *        isp-2      evaluating TEMPZ
 *        isp-3      evaluating EXP#
+
+
+  	   hi_isp = isp + cx_naux(lo_cx)   ! the source data (just obtained)
+	   src_cx = is_cx(hi_isp)
+	   dst_cx = lo_cx
+	   src_mr = is_mr(hi_isp)
+
+*******************************
+* RETURN AUX VARS FOR "3 ARGUMENT" PLOTS
+* No regridding to do.
+* Transfer the isp stack contents of the component variable (hi_isp)
+* to the destination level (lo_isp) and reset the stack pointer
+* Park the auxiliary variables in the special parking area at the stack top
+* XXX TEMPORARY: tbd - also park a copy of their cx at the top of the cx stack?
+	   IF (is_act(lo_isp) .EQ. isact_aux_plot_vars) THEN
+* park the auxiliary variable(s) at the top of the isp stack
+	      i = 0
+	      DO idim = 1, nferdims
+	         IF (cx_aux_var(idim,lo_cx) .NE. unspecified_int4) THEN
+* XXX TEMPORARY - warn of same auxvar parked twice.  Better would be to ERROR
+*	when saved context regions and mr don't match btwn now and earlier
+	            ptr = is_aux_ptr(lo_isp) + idim
+	            IF (is_mr(ptr) .NE. unspecified_int4)
+     .			CALL WARN("is_auxvar_regrid dup auxvar parked")
+	            CALL TRANSFER_ISP(isp+i, ptr)		! save it
+	            is_axis(ptr) = idim			        ! bookkeeping
+* ... also park a copy of the aux var context at the top of the cx stack
+	            is_cx(ptr) = max_context+idim
+	            CALL TRANSFER_CONTEXT(is_cx(isp+i),is_cx(ptr))
+* ... set the aux axis limits to the limits required getting the target var
+	            CALL TRANSFER_AXIS(idim, src_cx, is_cx(ptr))
+	            i = i + 1
+	         ENDIF
+	      ENDDO
+	      IF (i .NE. cx_naux(lo_cx)) CALL WARN("is_auxvar_regrid crptn")
+* the component just obtained is *the* result (no regridding to do)
+	      CALL TRANSFER_CONTEXT( src_cx, dst_cx )
+	      is_mr(lo_isp) = src_mr
+	      CALL MR_IN_USE( src_mr )  ! hack cuz we will "un-use" it below
+	      GOTO 400     ! clean up the stack
+	   ENDIF
+*******************************
 
 * Make the destination context like the source data context on all except
 * the regrid axis.  That one keeps the user-requested size.
@@ -211,10 +265,30 @@
 * as it is, pre-fill with missing, and create cx_valid based on available
 * limits of the source data and the auxiliary variable)
 
-  	   hi_isp = isp + 1        ! the source data (just obtained)
-	   src_cx = is_cx(hi_isp)
-	   dst_cx = lo_cx
-	   src_mr = is_mr(hi_isp)
+* insist that on the axes being regridded the size of the auxiliary fields is
+* either the same as the source data or +1 larger.  +1 indicates cell boundary
+* coordinates in the auxiliary variable(s).  Determine whether point locations
+* or bounds were provided.
+	   first = .TRUE.
+	   DO i = 1, naxis
+	      idim = axis_list(i)
+* ... check all relevant aux vars
+	      DO  j = 1, naxis 
+	         com_cx = aux_cx_list(j)
+	         IF (CAXIS_LEN(idim,com_cx) .NE. CAXIS_LEN(idim,src_cx)+1
+     .	       .AND. CAXIS_LEN(idim,com_cx) .NE. CAXIS_LEN(idim,src_cx) )
+     .									GOTO 5500
+	         IF ( first ) THEN
+	            aux_has_cell_pts = CAXIS_LEN(idim,com_cx)
+     .			          .EQ. CAXIS_LEN(idim,src_cx)
+	            first = .FALSE.
+	         ELSE
+	            IF (aux_has_cell_pts .NEQV. 
+     .			CAXIS_LEN(idim,com_cx).EQ.CAXIS_LEN(idim,src_cx) )
+     .									GOTO 5500
+	         ENDIF
+	      ENDDO
+	   ENDDO
 
 	   CALL TRANSFER_CONTEXT( src_cx, cx_buff )
 	   DO 300 i = 1, naxis 
@@ -223,7 +297,7 @@
 	      cx_regrid_trans( idim, cx_buff ) = cx_regrid_trans( idim, dst_cx )
 	      cx_delta(idim,cx_buff) = unspecified_val8
  300	   CONTINUE
-	   cx_unstand_grid( cx_buff ) = cx_unstand_grid( cx_buff )
+	   cx_unstand_grid( cx_buff ) = cx_unstand_grid( dst_cx )
 	   cx_grid        ( cx_buff ) = cx_grid        ( dst_cx )
 	   cx_impl_grid   ( cx_buff ) = cx_impl_grid   ( dst_cx )
 	   cx_naux        ( cx_buff ) = cx_naux        ( dst_cx )
@@ -246,14 +320,14 @@
 * diagnostic message ?
 	   IF (mode_diagnostic) THEN
 	      CALL DIAGNOSTIC_OUT('auxgrd ',dst_mr,  point_to_mr)
-	   ENDIF
+	   ENDIF 
 
 * ... set up 4D array limits as unsubscripted variables in COMMON
 	   aux_mr_list(4) = src_mr
 	   aux_mr_list(5) = dst_mr
            CALL NON_ARRAY_SUBSC( aux_mr_list, 5 )    ! 5 arguments to pass
 
-	   CALL DO_AUX_VAR_REGRID( memory, axis_list, naxis,
+	   CALL DO_AUX_VAR_REGRID( memory, axis_list, naxis, aux_has_cell_pts,
      .	   		memory(1,mr_blk1(src_mr )), src_mr,  src_cx,
      .			memory(1,mr_blk1(dst_mr )), dst_mr,  dst_cx,
      .			memory(1,mr_blk1(mr1)), mr1, cx1,
@@ -264,6 +338,7 @@
 	   IF (status .NE. ferr_ok) GOTO 5000
 
 * clean up 
+ 400	   CONTINUE
 * (the following code was adapted from IS_DO_OP)
 
 * the "frame_bottom" is the isp level that will be left when the components of
@@ -314,6 +389,16 @@
  5010	CALL ERRMSG( ferr_invalid_command, status,
      .		'cant do auxiliary variable regridding on string variables',
      .		 *5000)
+ 5500	com_name = VAR_CODE(cx_category(com_cx),
+     .                      cx_variable(com_cx) )
+        src_name = VAR_CODE(cx_category(src_cx),
+     .                      cx_variable(src_cx) )
+        i = TM_LENSTR1(com_name)
+        j = TM_LENSTR1(src_name)
+        CALL ERRMSG( ferr_invalid_command, status,
+     .          'auxiliary variable '//com_name(:i)//
+     .          ' has non-conformable length on '//ww_dim_name(idim)//
+     .          ' axis for regridding '//src_name(:j), *5000 )
 	END	
 
 

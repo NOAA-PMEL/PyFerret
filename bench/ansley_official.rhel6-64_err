@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43549329 Feb 24 12:09 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 53378727 Mar 28 11:22 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2141
+Note: ticket 2160: SET AXIS/NAME=
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Mon Feb 24 12:12:58 PST 2014
+Beginning at Fri Mar 28 11:40:40 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -292,10 +292,10 @@ message/continue ($t2"|solong>really hello|bye|")
 list temp[gx=noexist]
  **ERROR: command syntax: P=NOEXIST
 list temp[gx=u,p=noexist]
- **ERROR: command syntax: used GX=lo:hi:delta with X=lo:hi (ditto for Y,Z, or T)
+ **ERROR: command syntax: multiple specifications on X axis
           X=160E:160W
 list temp[gx=130e:80w:10,x=160e:160w]
- **ERROR: command syntax: used GX=lo:hi:delta with X=lo:hi (ditto for Y,Z, or T)
+ **ERROR: command syntax: multiple specifications on X axis
           I=2:5
 list temp[gx=130e:80w:10,i=2:5]
  **ERROR: command syntax: used GX=lo:hi:delta with X=lo:hi (ditto for Y,Z, or T)
@@ -471,10 +471,6 @@ list/format=cdf/l=13/append/file=test_abs.cdf l1
  *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis Y1010_REV
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: regridding: no target grid specified
-load temp[g=@lin]
- **ERROR: regridding: no target grid specified
-load temp[gx=@ave]
  **ERROR: regridding: G=W - more than 1 target grid
 load temp[g=u,g=w]
  **ERROR: unknown defining grid: G=X --> g=user-or-pseudo-var not allowed
@@ -2874,6 +2870,7 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  *** NOTE: LON1_15: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
  *** NOTE: LAT1800_1800: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
  *** NOTE: ENS: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
+ *** NOTE: TIME13: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
  *** NOTE: Units on axis "ENS" are not recognized: count
  *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
@@ -3528,7 +3525,7 @@ Replacing definition of axis ZAX
           Are you giving explicit limits when SET REGION would suffice ?
 list f
  *** NOTE: Not deleted: ENSEMBLE
- *** NOTE: Axis is in use by grid (G102)
+ *** NOTE: Axis is in use by grid (G103)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3578,6 +3575,68 @@ SET DAT/FORM=CDF snoopy.dat
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+Replacing definition of axis XAXIS_TEST
+ LISTing to file b.nc
+ LISTing to file c.nc
+ LISTing to file c.nc
+ LISTing to file c.nc
+ LISTing to file c.nc
+ LISTing to file c.nc
+ LISTing to file nc
+ **TMAP ERR: error in line definition
+             file coords dont match variable coords on axis XAXIS_TEST
+LIST/FORMAT=CDF/clobber/keep/file=nc b,a[d=1]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: dimensions improperly specified: must be a 2D region
+          shade b
+shade b
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Changing the value of attribute v1.long_name
+ *** NOTE: Changing the value of attribute v1.units
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: attribute undefined or invalid attribute name: temp.noexist[d=levitus_climatology]
+          attribute noexist not found for variable TEMP
+show att temp.noexist[d=levitus_climatology]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: illegal new name.  Variable b already defined
+set var/name=b a
+ **ERROR: invalid command: illegal new name.  Variable temp exists in dataset
+set var/name=temp salt
+ **ERROR: invalid command: illegal new name.  Variable psi exists in dataset
+set var/name=psi myvar
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Axis definition error on axis: MONTH_IRREG. Bounds describe cells that overlap one another
+ *** NOTE: Error in bounds "MONTH_IRREG_bnds" or bounds do not enclose point on axis MONTH_IRREG
+ *** NOTE: Substituting coordinate midpoints
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file b.nc
+ LISTing to file c.nc
+ **ERROR: invalid command: illegal new name. Axis days2000 is already defined
+set axis/name=days2000 x_in_meters
+ **ERROR: invalid command: illegal new name given for axis
+set axis/name x_in_meters
+ **ERROR: invalid command: illegal new name given for axis 45
+set axis/name=45 x_in_meters
+ **ERROR: invalid command: illegal new name given for axis .fr
+set axis/name=.fr x_in_meters
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3669,4 +3728,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Feb 24 12:14:26 PST 2014
+Ended at Fri Mar 28 11:42:11 PDT 2014

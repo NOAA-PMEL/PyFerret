@@ -47,6 +47,7 @@
 * V6.8  *acm  8/12 changes for SET LIST/OUTTYPE
 *acm* 8/12 New MODE shrink_ylab, see tickets 1896, 1958.
 * V685 *sh* 11/13 - added allowed_err. SHOW VAR/TREE to display despite errors
+* V690 *sh* 12/13 - added mode_auto_*, for automated curvilinear and sigma vars
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -55,7 +56,7 @@
      .			max_qual_list = 60 ,	! increased from 50 3/12
      .			max_arg_list  = 128 ,	! was 20 pre-4/96
      .			max_item_list = 250 ,
-     .			max_modes     = 32 ,
+     .			max_modes     = 40 ,
      .			mode_stack_size = 7,
      .			max_ifstk     = 10 )
 
@@ -73,7 +74,8 @@
      .			pmode_gks, pmode_xwindows, pmode_metafile,
      .			pmode_ppllist, pmode_gui, pmode_logo, pmode_labels,
      .                  pmode_grat, pmode_linecolors, pmode_upcase_output,
-     .                  pmode_nlevels, pmode_nodata_lab, pmode_shrink_ylab
+     .                  pmode_nlevels, pmode_nodata_lab, pmode_shrink_ylab,
+     .                  pmode_curvilinear, pmode_sigma
 
 	PARAMETER     ( pmode_diagnostic	= 1,
      .			pmode_verify		= 2,
@@ -90,7 +92,7 @@
      .			pmode_segment		= 13,
      .			pmode_wait		= 14,
      .			pmode_reject		= 15,
-     .			pmode_desperate		= 16)
+     .			pmode_desperate		= 16 )
 	PARAMETER     ( 
      .			pmode_rpn		= 17,
      .			pmode_gks		= 18,
@@ -105,7 +107,9 @@
      .                  pmode_upcase_output     = 27,
      .                  pmode_nlevels           = 28,
      .                  pmode_nodata_lab        = 29,
-     .                  pmode_shrink_ylab       = 30)
+     .                  pmode_shrink_ylab       = 30,
+     .			pmode_curvilinear	= 31,
+     .			pmode_sigma		= 32 )
 
 	CHARACTER	pmode_unused*10
 	PARAMETER     ( pmode_unused = '%% unused %%' )
@@ -179,7 +183,9 @@
      .          shade_trim,
      .          silent_err,
      .          allowed_err,
-     .          one_cmnd_mode
+     .          one_cmnd_mode,
+     .		mode_auto_curvi, mode_auto_curvi_last,
+     .		mode_auto_sigma, mode_auto_sigma_last
 
 
 ! Note: available_char_var is unused
@@ -235,13 +241,15 @@
      .		saved_dset,
      .		saved_abstract_grid,
      .		denig_xylim_msg_done, denig_pen_msg_done,
-     .		in_get_grid_mode,
+     .		in_get_grid_mode, 
+     .		mode_auto_curvi, mode_auto_curvi_last,
+     .		mode_auto_sigma, mode_auto_sigma_last,
      .		frame_compress, available_char_var,
      .		journal_file, ppllist_file,
      .		xwind_node, xwind_node_len,
      .		genl_storage, its_script, grat_on,
      .          shade_trim, silent_err, allowed_err, one_cmnd_mode,
-     .		ppl_wait, mode_name,
+     .		ppl_wait, mode_name, 
      .          scriptfile_name, show_file, list_outtype
 
 * individual mode variable names

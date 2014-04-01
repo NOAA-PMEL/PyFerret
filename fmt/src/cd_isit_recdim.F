@@ -1,5 +1,5 @@
 	INTEGER FUNCTION CD_ISIT_RECDIM( cdfid, dset, grid, idim,
-     .     mode_upcase_output, status )
+     .     mode_upcase_output, keepax_flag, status )
 
 *
 *
@@ -53,6 +53,8 @@
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V687 3/14 *acm* Fix ticket 1750. Write Ferret-internal axis names to cdf files, unless
+*                 the user has said /KEEP_AXISNAMES
 
 * argument definitions:
 *       dset    - dset (if netcdf file, for getting name and attribute 
@@ -63,7 +65,9 @@
 *	status	- return status
 
 * argument declarations:
-	INTEGER	      cdfid, dset, grid, idim, status
+
+	LOGICAL	mode_upcase_output
+	INTEGER cdfid, dset, grid, idim, keepax_flag, status
 
 * include files
         include 'netcdf.inc'
@@ -75,13 +79,14 @@
 #include "netcdf_declareUnderscore.inc"
 
 * local variable declarations:
-      LOGICAL this_ax_exists, recax_exists, coordvar, mode_upcase_output
+      LOGICAL this_ax_exists, recax_exists, coordvar
       INTEGER ndims, nvars, ngatts, recdim, cdfstat, nlen, dimid,
      .        varid, vartype, nvdims, vdims(8), nvatts, all_outflag
-      CHARACTER CD_AXIS_OUTNAME*128, name*128, name_in*128
+      CHARACTER CD_AXIS_OUTNAME*128, CD_AXIS_NAME*128, name*128, name_in*128
 
 * get the axis name
-        name = CD_AXIS_OUTNAME( dset, grid, idim, nlen )
+         name = CD_AXIS_NAME( dset, grid, idim, nlen )
+         IF (keepax_flag .EQ. 1)  name = CD_AXIS_OUTNAME( dset, grid, idim, nlen )
 
 * If mode upcase_output is set, then the axis name
 * has been written to the file upcased.

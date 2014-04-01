@@ -75,7 +75,7 @@
 	INTEGER	 var_cx, aux_var_cx, aux_arg_num, status
 
 * internal variable declarations:
-	INTEGER	 TM_LENSTR1,
+	INTEGER	 TM_LENSTR1, AUX_AXIS_FROM_ARG,
      .		 the_axis, var_axis, aux_var_axis, i, j, idim
 	CHARACTER*128 VAR_CODE, var_name, aux_var_name
 
@@ -88,29 +88,23 @@
 * remove regridding requests - aux vars must always be on native grids
 	cx_has_impl_grid( aux_var_cx ) = .FALSE.
 	cx_unstand_grid ( aux_var_cx ) = .FALSE.
-	cx_naux         ( aux_var_cx ) = 0
 	cx_grid		( aux_var_cx ) = unspecified_int4  ! cannot assume parent grid 
 
 * which auxiliary var is the subject of interest?
 * e.g. for "temp[gz(depth)=zax]" the argument "depth" is found in the z dim
-	i = 1
-	the_axis = unspecified_int4
-	DO 100 idim = 1, nferdims
-	   IF (cx_aux_var(idim, var_cx) .NE. unspecified_int4) THEN
-	      IF (i .EQ. aux_arg_num) THEN
-	         the_axis = idim
-	         GOTO 190
-	      ELSE
-	         i = i + 1  ! not the right argument
-	      ENDIF
-	   ENDIF
- 100	CONTINUE
-* ... should never land here
-	CALL ERRMSG( ferr_internal, status, 'aux_var_crptn', *5000 )
+	the_axis = AUX_AXIS_FROM_ARG(var_cx, aux_arg_num)
 
 * pull the auxiliary variable identity from the parent context
- 190	cx_category(aux_var_cx) = cx_aux_cat(the_axis, var_cx)
+	cx_category(aux_var_cx) = cx_aux_cat(the_axis, var_cx)
 	cx_variable(aux_var_cx) = cx_aux_var(the_axis, var_cx)
+
+* remove traces of further aux var dependency
+	cx_naux         ( aux_var_cx ) = 0
+	DO idim = 1, nferdims
+	   cx_aux_cat (idim,aux_var_cx) = unspecified_int4  ! just bookkeeping
+	   cx_aux_var (idim,aux_var_cx) = unspecified_int4  ! just bookkeeping
+	   cx_aux_stat(idim,aux_var_cx) = paux_stat_na
+	ENDDO
 
 * insert bad data flag for variable
 	CALL GET_CONTEXT_BAD_FLAG( aux_var_cx )
@@ -119,12 +113,13 @@
 	CALL KNOWN_DATA_TYPE( aux_var_cx )
 
 * determine the defining grid of the auxiliary variable
-	IF (cx_grid(var_cx) .NE. unspecified_int4 ) THEN
-	   CALL GET_CONTEXT_GRID ( aux_var_cx, status )
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   IF ( cx_grid(aux_var_cx) .EQ. unspecified_int4 ) RETURN
+	CALL GET_CONTEXT_GRID ( aux_var_cx, status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+! check <0 to trap "hack" from GET_CONTEXT_MODS
+	IF ( cx_grid(aux_var_cx) .EQ. unspecified_int4
+     .	.OR. cx_grid(    var_cx) .EQ. unspecified_int4
+     .  .OR. cx_grid(    var_cx) .LE. 0                  ) RETURN 
 ! return here is only reasonable during getgrid phase.  Not during eval phase.
-	ENDIF
 
 * set up the axes of the aux variable
 * only the regridding axis(s) of the aux grid may differ from the parent
@@ -141,7 +136,9 @@
               cx_by_ss ( idim, aux_var_cx )  = .FALSE.       !for bookkeeping
               cx_given( idim, aux_var_cx )   = .FALSE.
 	   ELSEIF (aux_var_axis .EQ. var_axis) THEN
-	      GOTO 500
+	      GOTO 500		! already fleshed out through TRANSFER_CONTEXT
+	   ELSEIF (aux_var_axis .NE. mnormal) THEN
+	      GOTO 5400
 	   ENDIF
 	   CALL FLESH_OUT_AXIS( idim, aux_var_cx, status )  ! always ferr_ok
 	   IF (status .NE. ferr_ok) 
@@ -159,8 +156,19 @@
 	i = TM_LENSTR1(aux_var_name)
 	j = TM_LENSTR1(    var_name)
 	CALL ERRMSG( ferr_invalid_command, status,
-     .          'auxiliary regridding variable '//
-     .		aux_var_name(:i)//' lacks a '//
-     .		ww_dim_name(the_axis)//' axis:'//
-     .	        'needed to regrid '//var_name(:j), *5000 )
+     .          'auxiliary variable '//
+     .		aux_var_name(:i)//' lacks the '//
+     .		ww_dim_name(the_axis)//' axis '//
+     .	        'it needs to regrid '//var_name(:j), *5000 )
+ 5400	aux_var_name = VAR_CODE(cx_category(aux_var_cx),
+     .			        cx_variable(aux_var_cx) )
+	var_name     = VAR_CODE(cx_category(var_cx),
+     .			        cx_variable(var_cx) )
+	i = TM_LENSTR1(aux_var_name)
+	j = TM_LENSTR1(    var_name)
+	CALL ERRMSG( ferr_invalid_command, status,
+     .          'auxiliary variable '//
+     .		aux_var_name(:i)//' has a '//
+     .		ww_dim_name(idim)//' axis '//
+     .	        'not found on variable '//var_name(:j), *5000 )
 	END

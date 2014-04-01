@@ -54,6 +54,8 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
+*                 and 4-arg plot commands. 
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -87,10 +89,11 @@
      .	     x11, x12, x21, x22,
      .	     y11, y12, y21, y22, aa
 	CHARACTER*1 dim
-        LOGICAL lo, hi
+        LOGICAL TM_FPEQ, lo, hi
 
         REAL branch_test, lon_degrees
 
+	curv_missing = .FALSE.
         branch_test = 190.
         lon_degrees = 360.
 
@@ -202,18 +205,18 @@
 	y21 = yfield(ylo_dim1, yhi_dim2)
 	y22 = yfield(yhi_dim1, yhi_dim2)
 
-* check that all of the needed interpolants exist
-	IF ( x11.EQ.badx
-     .	.OR. x12.EQ.badx
-     .	.OR. x21.EQ.badx
-     .	.OR. x22.EQ.badx) THEN
+* check that all of the needed interpolants exist3/24/2014
+	IF ( TM_FPEQ(x11,badxcurv)
+     .	.OR. TM_FPEQ(x12,badxcurv)
+     .	.OR. TM_FPEQ(x21,badxcurv)
+     .	.OR. TM_FPEQ(x22,badxcurv)) THEN
 	   dim = 'X'
 	   GOTO 5100
 	ELSEIF (
-     .	     y11.EQ.bady
-     .	.OR. y12.EQ.bady
-     .	.OR. y21.EQ.bady
-     .	.OR. y22.EQ.bady ) THEN
+     .	     TM_FPEQ(y11,badycurv)
+     .	.OR. TM_FPEQ(y12,badycurv)
+     .	.OR. TM_FPEQ(y21,badycurv)
+     .	.OR. TM_FPEQ(y22,badycurv) ) THEN
 	   dim = 'Y'
 	   GOTO 5100
 	ENDIF
@@ -288,7 +291,11 @@ C coordinates on the same branch as x11
 
 * error exit
  5000	RETURN
- 5100	CALL ERRMSG( ferr_out_of_range, status,
-     .		dim//' coordinates'//pCR//
-     .		'missing value where val is needed', *5000)
+ 5100	CONTINUE
+	curv_missing = .TRUE.
+	GOTO 5000
+c	CALL ERRMSG( ferr_out_of_range, status,
+c     .		dim//' coordinates'//pCR//
+c     .		'missing value where val is needed', *5000)
+
 	END 

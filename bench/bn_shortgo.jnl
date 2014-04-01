@@ -1,0 +1,4 @@
+! bn_shortgo.jnl
+! short script for bn_enter_exit_GO
+
+plot/i=1:15/color=red/thick i

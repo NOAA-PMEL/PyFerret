@@ -41,6 +41,7 @@ new_mr_w_edges.F\
 purge_all_memory.F\
 purge_all_pystat_vars.F\
 purge_all_uvars.F\
+purge_aux_var_dependents.F\
 purge_dset.F\
 purge_file_var.F\
 purge_mr_axis.F\

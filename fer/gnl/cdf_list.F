@@ -122,6 +122,8 @@
 * V686 1/14 *acm* Fix ticket 2136: Appending a string variable to a dataset.
 * V687 3/14 *acm* Correct the writing of missing and fill attributes when writing a scaled
 *                 user-defined variable.	
+* V687 3/14 *acm* Fix ticket 1750. Write Ferret-internal axis names to cdf files, unless
+*                 the user has said /KEEP_AXISNAMES
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -1166,7 +1168,7 @@
            CALL CD_WRITE_VAR ( memory, cdfid, dset_num, varcode, grid, 
      .                        write_lo, write_hi, memory(1,mr_blk1(mr)), 
      .                        edges_flag, do_bounds, scalefac, addoff, 
-     .                        bad, mode_upcase_output, status )
+     .                        bad, mode_upcase_output, keepax_flag, status )
            IF ( status .NE. merr_ok ) GOTO 5800
  500	CONTINUE
 

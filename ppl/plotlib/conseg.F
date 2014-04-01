@@ -81,7 +81,10 @@ C      *acm* v581 5/2005 Add CONTOUR/MOD capability for modulo
 C                 replications on curvilinear data
 C V602 *acm* 2/07 check status coming out of CURV_COORD_RANGE; part of fix to bug 1485
 C V617 *acm* 1/09 Initialize the status flag (fixes bug 1622)
+* V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
+*                 and 4-arg plot commands. 
 
+	include 'miss_inc.decl'
 	include 'MISS.INC'
         include 'xcurvilinear.cmn'
         include 'errmsg.parm'
@@ -118,7 +121,7 @@ C       Plot will be rotated by 'ang' degrees.
            IF (status .NE. ferr_ok) goto 1000
         ENDIF
       
-        big = ABS(bad_val4)
+        big = ABS(CMXGE)
         lmin = big
         lmax = -1*big
         xadd = 0.

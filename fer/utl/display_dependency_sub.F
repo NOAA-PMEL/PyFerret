@@ -40,7 +40,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
 
-* V685+  *sh* 11/13 
+* V685  *sh* 11/13 
+* V690  *sh* 11/13 - minor adjustments to support auxiliary regridding variables 
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -63,7 +64,7 @@
 
 
 * internal variable declarations:
-	LOGICAL tell_dset, dup, state_dflt_dataset
+	LOGICAL tell_dset, dup, state_dflt_dataset, valid_var
 	INTEGER	TM_LENSTR1,rec, ntrees, size, tree_size, tree_rec1,
      .		var, cat, tree_level, dset, uvar, item, ndone,
      .		blanks, llen, istart, iend, len2, dnamlen, tree, i
@@ -102,14 +103,17 @@
 	      GOTO 20
 	   ENDIF
 
-* decide if this one has already been displayed
+* decide if this tree has already been displayed
 	   rec = 1
  30	   IF (next(rec) .GT. rec) THEN
 	      IF (is_done(rec)) THEN
 	         DO 50 i = rec, next(rec)-1
-	            IF (flag(i) .NE. df_valid_var) GOTO 50
-                    dup = flag        (i) .EQ. flag        (tree_rec1)
-     .              .AND. dataset     (i) .EQ. dataset     (tree_rec1)
+	            valid_var = flag(i) .EQ. df_valid_var
+     .		          .OR.  flag(i) .EQ. df_valid_aux_var
+	            IF (.NOT.valid_var) GOTO 50
+!                    dup = flag        (i) .EQ. flag        (tree_rec1)   ! unneeded test??
+                    dup = 
+     .                    dataset     (i) .EQ. dataset     (tree_rec1)
      .              .AND. var_or_start(i) .EQ. var_or_start(tree_rec1)
      .              .AND. cat_or_end  (i) .EQ. cat_or_end  (tree_rec1)
 	            IF (dup) GOTO 900    ! already displayed as part of a previous tree
@@ -152,7 +156,8 @@
 	            line_buff(llen+1:) = dsetname
 	            llen = llen + dnamlen
 	         ENDIF
-	         line_buff(llen+1:) = '   (unknown variable)'
+	         line_buff(llen+1:) =
+     .			' ??                           <== UNKNOWN VARIABLE ******'
 	      ELSEIF ( flag(rec) .EQ. df_unknown_dataset ) THEN
 	         istart = uvar_item_start(item, uvar)
 	         iend   = uvar_item_end  (item, uvar)
@@ -162,7 +167,8 @@
 	            line_buff(llen+1:) = dsetname
 	            llen = llen + dnamlen
 	         ENDIF
-	         line_buff(llen+1:) = '   (unknown dataset)'
+	         line_buff(llen+1:) = 
+     .			' ??                           <== UNKNOWN DATASET ******'
 	      ELSEIF ( flag(rec) .EQ. df_unknown_grid ) THEN
 	         istart = uvar_item_start(item, uvar)
 	         iend   = uvar_item_end  (item, uvar)
@@ -276,20 +282,23 @@
 	   dset = dataset(rec)
 	   uvar = parent_uv(rec)
 	   item = uv_item(rec)
+	   valid_var = flag(rec) .EQ. df_valid_var 
+     .	          .OR. flag(rec) .EQ. df_valid_aux_var 
 
 * format one record
-	   IF     ( flag(rec) .EQ. df_valid_var 
+	   IF     ( valid_var
      .	 .AND.      cat       .EQ. cat_user_var       ) THEN
 	      GOTO 2100					! skip user variables
 	   ELSEIF ( flag(rec) .EQ. df_defined_earlier
      .	  .OR.      flag(rec) .EQ. df_recursion_error ) THEN
 	      GOTO 2100					! skip irrelevant flags
-	   ELSEIF ( flag(rec) .EQ. df_valid_var
+	   ELSEIF ( valid_var
      .	 .AND.      cat       .EQ. cat_file_var       ) THEN
 * valid file variable
 * ... if this record has already been displayed do not do so again
 	      DO 2050 i = 1, rec-1
-                 dup = flag        (i) .EQ. flag        (rec)
+                 dup = (flag(rec) .EQ. df_valid_var 
+     .	           .OR. flag(rec) .EQ. df_valid_aux_var )
      .           .AND. dataset     (i) .EQ. dataset     (rec)
      .           .AND. var_or_start(i) .EQ. var_or_start(rec)
      .           .AND. cat_or_end  (i) .EQ. cat_or_end  (rec)

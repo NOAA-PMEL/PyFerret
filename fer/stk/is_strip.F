@@ -71,7 +71,7 @@
 * V602  8/06 *jli* chages for native strides 
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
-* V685+ 9/13 *sh* support for auxiliary var regridding: temp[gz(depth)=zax]
+* V690+ 11/13 *sh* support for auxiliary var regridding: temp[gz(depth)=zax]
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -91,8 +91,8 @@
 * internal variable declarations:
 	LOGICAL	ITSA_MODULO_REGRID, TM_ITS_SUBSPAN_MODULO, NC_GET_ATTRIB,
      .		itsa_uvar, modulo_dest_regrid, allatonce, attoutflag, got_it
-	INTEGER	CGRID_SIZE_MAX, CAXIS_LEN, CAXIS_MODLEN, CX_DIM_LEN,
-     .		CGRID_AXIS, POTENT_SIZE,
+	INTEGER	CGRID_SIZE_MAX, CAXIS_LEN, CAXIS_MODLEN, CX_DIM_LEN, 
+     .		AUX_AXIS_FROM_ARG, CGRID_AXIS, POTENT_SIZE,
      .		ISUBSCR_CX, TM_AXES_REVERSED, CGRID_SIZE, MODULO_PARITY,
      .		nrev, reversed(nferdims), idel,
      .		trans, grid, dset, lo_off, hi_off, aclass,
@@ -261,7 +261,7 @@
 * SET UP FOR REGRIDDING
 	   IF (cx_naux(lo_cx) .EQ. 0 ) THEN
 * ... normal regridding
-	      CALL REGRID_LIMS( lo_cx, hi_cx, axis, status, *6000 ) !ab ret -> mod
+	      CALL REGRID_LIMS( lo_cx, hi_cx, axis, status, *6000 ) !ab ret->mod
 	      IF ( status .NE. ferr_ok ) GOTO 5000
 * ... see if no regridding was required after all
 	      IF ( .NOT.cx_unstand_grid(lo_cx) ) THEN
@@ -271,17 +271,30 @@
 	      is_act ( lo_isp ) = isact_regrid
 	   ELSE
 * ... auxiliary variable regridding - set up to get the first aux var
+* TEMPORARY:  ONLY HAS LOGIC TO SUPPORT 1D AT THIS POINT.  Hard-coded "1"'s
 	      CALL GET_AUX_VAR_CONTEXT( lo_cx, hi_cx, 1, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
-* ! temporary diagnostic making sure that grids of aux vars are found during get-grid phase
+* ! temporary diagnostic check that grids of aux vars are found in get-grid phase
 	      IF ( cx_grid(hi_cx) .EQ. unspecified_int4 ) 
      .		CALL ERRMSG(ferr_internal, status, 'auxvar grid??', *5000)
+	      axis = AUX_AXIS_FROM_ARG(lo_cx, 1)
 	      is_phase ( lo_isp ) = isphase_get_aux_var
 	      is_sum ( lo_isp ) = 1        ! get the first aux var named
 	      is_act ( lo_isp ) = isact_auxvar_regrid
 	   ENDIF
 	   aclass = isact_class_regrid
 
+
+	ELSEIF( aclass .EQ. isact_class_aux_plot_vars ) THEN
+* SET UP TO GET AUXILIARY ARGUMETS FOR 3-ARG PLOTS ONTO THE STACK
+* ...  set up to get the first aux var
+* NOTE:  ONLY HAS LOGIC TO SUPPORT 1D AT THIS POINT.  Hard-coded "1"'s
+	   CALL GET_AUX_VAR_CONTEXT( lo_cx, hi_cx, 1, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   axis = AUX_AXIS_FROM_ARG(lo_cx, 1)
+	   is_phase ( lo_isp ) = isphase_get_aux_var
+	   is_sum ( lo_isp ) = 1        ! get the first aux var named
+	   is_act ( lo_isp ) = isact_aux_plot_vars  ! a no-op place holder
 
 	ELSEIF( aclass .EQ. isact_class_modulo ) THEN    ! 12/94 addition
 * SET UP TO ASSEMBLE BASE COMPONENTS ONTO A MODULO AXIS

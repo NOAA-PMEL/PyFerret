@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 43590786 Mar 11 11:34 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 53303709 Mar 26 15:36 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2149
+Note: fixing ticket 2161: redefine long_name or units for ascii-file var
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,13 +14,13 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/x86/FERRET/external_functions/ext_func
-FER_GO=. /home/users/ansley/ans_ferret/users/wittenberg/andrew_jnls/collect_scripts  . /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go /home/users/ansley/tomcat/content/las/conf/server/data/scripts/ /home/users/ansley/baker_trunk/JavaSource/resources/iosp/scripts/
+FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
-FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl /home/users/ansley/ans_ferret/users/wittenberg/andrew_jnls/collect_palettes  . /home/users/tmap/ferret/x86_64-linux/ppl
+FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Tue Mar 11 11:43:23 PDT 2014
+Beginning at Wed Mar 26 15:37:53 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -290,10 +290,10 @@ message/continue ($t2"|solong>really hello|bye|")
 list temp[gx=noexist]
  **ERROR: command syntax: P=NOEXIST
 list temp[gx=u,p=noexist]
- **ERROR: command syntax: used GX=lo:hi:delta with X=lo:hi (ditto for Y,Z, or T)
+ **ERROR: command syntax: multiple specifications on X axis
           X=160E:160W
 list temp[gx=130e:80w:10,x=160e:160w]
- **ERROR: command syntax: used GX=lo:hi:delta with X=lo:hi (ditto for Y,Z, or T)
+ **ERROR: command syntax: multiple specifications on X axis
           I=2:5
 list temp[gx=130e:80w:10,i=2:5]
  **ERROR: command syntax: used GX=lo:hi:delta with X=lo:hi (ditto for Y,Z, or T)
@@ -469,10 +469,6 @@ list/format=cdf/l=13/append/file=test_abs.cdf l1
  *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis Y1010_REV
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: regridding: no target grid specified
-load temp[g=@lin]
- **ERROR: regridding: no target grid specified
-load temp[gx=@ave]
  **ERROR: regridding: G=W - more than 1 target grid
 load temp[g=u,g=w]
  **ERROR: unknown defining grid: G=X --> g=user-or-pseudo-var not allowed
@@ -845,6 +841,10 @@ Replacing definition of axis X10
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Not deleted: X10
+ *** NOTE: Axis is in use by grid G10X5
+ PERMANENT data cleared from memory
 
 Bailing out of external function "eof_space":
 	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
@@ -854,10 +854,6 @@ Bailing out of external function "eof_stat":
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
- TEMPORARY data cleared from memory
- *** NOTE: Not deleted: X10
- *** NOTE: Axis is in use by grid G10X5
- PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2872,6 +2868,7 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  *** NOTE: LON1_15: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
  *** NOTE: LAT1800_1800: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
  *** NOTE: ENS: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
+ *** NOTE: TIME13: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
  *** NOTE: Units on axis "ENS" are not recognized: count
  *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
@@ -3580,9 +3577,35 @@ SET DAT/FORM=CDF snoopy.dat
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+Replacing definition of axis XAXIS_TEST
+ LISTing to file b.nc
+ LISTing to file c.nc
+ LISTing to file c.nc
+ LISTing to file c.nc
+ LISTing to file c.nc
+ LISTing to file c.nc
+ LISTing to file nc
+ **TMAP ERR: error in line definition
+             file coords dont match variable coords on axis XAXIS_TEST
+LIST/FORMAT=CDF/clobber/keep/file=nc b,a[d=1]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: dimensions improperly specified: must be a 2D region
+          shade b
+shade b
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Changing the value of attribute v1.long_name
+ *** NOTE: Changing the value of attribute v1.units
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  *** NOTE: Axis definition error on axis: MONTH_IRREG. Bounds describe cells that overlap one another
  *** NOTE: Error in bounds "MONTH_IRREG_bnds" or bounds do not enclose point on axis MONTH_IRREG
  *** NOTE: Substituting coordinate midpoints
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3674,4 +3697,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Mar 11 11:45:01 PDT 2014
+Ended at Wed Mar 26 15:39:36 PDT 2014

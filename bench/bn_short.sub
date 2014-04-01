@@ -1,0 +1,5 @@
+! bn_short.sub
+! short script extracted from bn_negative_t.sub for bn_enter_exit_GO
+
+LIST/nohead/norow $1[t=-5:9@$2]	! neg/pos t endpoints
+

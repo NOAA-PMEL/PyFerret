@@ -1,0 +1,11 @@
+! err686_sho_nonexist_att.jnl
+! See ticket 2133
+
+!  Too many error messages were issued on this error
+set mode ignore
+
+use levitus_climatology
+show att temp.noexist[d=levitus_climatology]
+
+set mode/last ignore
+

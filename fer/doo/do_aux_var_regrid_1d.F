@@ -1,8 +1,9 @@
-	SUBROUTINE DO_AUX_VAR_REGRID_1D( axis,
+	SUBROUTINE DO_AUX_VAR_REGRID_1D( axis, aux_has_cell_pts,
      .				         src,  msrc, src_cx,
      .				         dst,  mdst, dst_cx,
      .				         pos,  mpos, pos_cx,
-     .					 work )
+     .					 kmin_src, kmax_src, 
+     .					 kmin_dst, kmax_dst ) 
 
 *
 *
@@ -50,7 +51,7 @@
 *      pos == com2
 
 
-* v685 4/13 *sh*
+* v690 11/13 *sh*
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -59,20 +60,22 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
-
+	
 * calling argument declarations:
+	LOGICAL	aux_has_cell_pts
 	INTEGER	axis,
-     .		msrc, mdst, mpos, src_cx, dst_cx, pos_cx
+     .		msrc, mdst, mpos, src_cx, dst_cx, pos_cx,
+     .		kmin_src, kmax_src, kmin_dst, kmax_dst
         REAL    src( m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,
      .               m4lot:m4hit,m4loe:m4hie,m4lof:m4hif ),
      .          dst( m5lox:m5hix,m5loy:m5hiy,m5loz:m5hiz,
      .               m5lot:m5hit,m5loe:m5hie,m5lof:m5hif ),
      .          pos( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
-     .               m1lot:m1hit,m2loe:m1hie,m1lof:m1hif ),
-     .		work(*)
+     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif )
 
 
 * internal variable declarations:
+	LOGICAL	new_aux_line, has_valid, ascending
         INTEGER CX_DIM_LEN,
      .          idim,
      .          i,   j,   k,   l,   m,   n,
@@ -82,9 +85,15 @@
      .          pi0, pj0, pk0, pl0, pm0, pn0,
      .          dsi, dsj, dsk, dsl, dsm, dsn,
      .          dpi, dpj, dpk, dpl, dpm, dpn
-        INTEGER klo, khi, ndx_lo, wkblk
+        INTEGER ndx_lo, wkblk, kdmax, ii, trans, klook, khiok
         REAL    bad_src, bad_dst, bad_pos, zval, frac
         REAL*8  TM_WORLD
+* internally declared work arrays
+	INTEGER	indices(kmin_dst:kmax_dst+1)
+	REAL	  posline(kmin_src:kmax_src),srcline(kmin_src:kmax_src),
+     .		  dstline(kmin_dst:kmax_dst),
+     .		dstcoords(kmin_dst:kmax_dst+1),coef(kmin_dst:kmax_dst+1)
+
 
 * equivalence conveniences
 * "inc" is the increments for each axis of each component
@@ -107,10 +116,13 @@
 
 *==========================
 
+* initialize
 * flag(s) for bad or missing values
         bad_src = mr_bad_data( msrc )
         bad_dst = mr_bad_data( mdst )
         bad_pos = mr_bad_data( mpos )
+	kdmax = kmax_dst
+	trans = cx_regrid_trans(z_dim,dst_cx) !  TEMPORARY: z_dim HARD CODED!!!
 
 * compute the delta increment for each axis
 * this allows "promotion" of degenerate axes
@@ -135,94 +147,126 @@
 	   poslo(idim) = cx_lo_ss(pos_cx,idim) - posinc(idim)
  20	CONTINUE
 
+* extract the list of target coordinates
+	IF (trans .EQ. pauxrgrd_linear ) THEN
+	   DO 30 k = kmin_dst, kmax_dst
+              dstcoords(k) = TM_WORLD(k,cx_grid(dst_cx),z_dim,box_middle)
+ 30	   CONTINUE
+	ELSEIF (trans .EQ. pauxrgrd_pwlave ) THEN
+	   DO 32 k = kmin_dst, kmax_dst
+              dstcoords(k) = TM_WORLD(k,cx_grid(dst_cx),z_dim,box_lo_lim)
+ 32	   CONTINUE
+	   dstcoords(kmax_dst+1) =
+     .		    TM_WORLD(kmax_dst,cx_grid(dst_cx),z_dim,box_hi_lim)
+	   kdmax = kdmax + 1
+	ELSE
+	   STOP 'do_aux_var_regrid_trns'   ! checked in AUX_REGRID_LIMS
+	ENDIF
+
 * initial code does only the Z axis, based upon "ZAXREPLACE(V,ZVALS,ZAX)"
 * of old ... regrid a sigma-coordinate-style (layered) variable, V (src), onto
 * a depth axis, ZAX, (Z axis of dst) guided by the depths in ZVALS (pos)
 
 
-***************************************
-*   ** to Ansley **
-* ==> Note 1 The current code handles the Z axis regridding, only.  It needs to be
-* generalized to allow the same operation over any axis.
-* 
-* ==> NOTE 2 The looping logic could be optimized to recognize that it is very 
-*  rare that the position array has T, E, orF axes. In fact, it would be acceptable
-* to forbid this case. This would allow EXTRACT_Z_LINE to be called firstjust once
-* for all of the looping over T, E, and F
-****************************************
-
-* ... loop over the X,Y,T,E,F range of the input fields
-	ns = sn0
-	np = pn0
-	DO 1450 n = mr_lo_s6(mdst), mr_hi_s6(mdst)
-	 ns = ns + dsn
-	 np = np + dpn
-	 ms = sm0
-	 mp = pm0
-	 DO 1450 m = mr_lo_s5(mdst), mr_hi_s5(mdst)
-	  ms = ms + dsm
-	  mp = mp + dpm
+* loop over the X,Y,T,E,F range of the input fields
+	new_aux_line = .TRUE.
+	is = si0
+	ip = pi0
+	DO 1000 i = mr_lo_s1(mdst), mr_hi_s1(mdst)
+	 is = is + dsi
+	 IF (dpi .NE. 0) THEN
+	   ip = ip + dpi
+	   new_aux_line = .TRUE.
+	 ENDIF
+	 js = sj0
+	 jp = pj0
+	 DO 1000 j = mr_lo_s2(mdst), mr_hi_s2(mdst)
+	  js = js + dsj
+	  IF (dpj .NE. 0) THEN
+	    jp = jp + dpj
+	    new_aux_line = .TRUE.
+	  ENDIF
 	  ls = sl0
 	  lp = pl0
-	  DO 1450 l = mr_lo_s4(mdst), mr_hi_s4(mdst)
+!   ... k is the axis of the EXTRACT ...
+	  DO 1000 l = mr_lo_s4(mdst), mr_hi_s4(mdst)
 	   ls = ls + dsl
-	   lp = lp + dpl
-	   js = sj0
-	   jp = pj0
-	   DO 1450 j = mr_lo_s2(mdst), mr_hi_s2(mdst)
-	    js = js + dsj
-	    jp = jp + dpj
-	    is = si0
-	    ip = pi0
-	    DO 1450 i = mr_lo_s1(mdst), mr_hi_s1(mdst)
-	     is = is + dsi
-	     ip = ip + dpi
+	   IF (dpl .NE. 0) THEN
+	     lp = lp + dpl
+	     new_aux_line = .TRUE.
+	   ENDIF
+	   ms = sm0
+	   mp = pm0
+	   DO 1000 m = mr_lo_s5(mdst), mr_hi_s5(mdst)
+	    ms = ms + dsm
+	    IF (dpm .NE. 0) THEN
+	      mp = mp + dpm
+	      new_aux_line = .TRUE.
+	    ENDIF
+	    ns = sn0
+	    np = pn0
+	    DO 1000 n = mr_lo_s6(mdst), mr_hi_s6(mdst)
+	     ns = ns + dsn
+	     IF (dpn .NE. 0) THEN
+	       np = np + dpn
+	       new_aux_line = .TRUE.
+	     ENDIF
 
-* ... extract the vertical profile at this I,J,L location
-             CALL EXTRACT_Z_LINE ( pos, bad_pos, ip, jp, lp, mp, np,
-     .               cx_lo_s3(pos_cx), cx_hi_s3(pos_cx), 
-     .               m1lox, m1hix, m1loy, m1hiy, m1loz, m1hiz,
-     .               m1lot, m1hit, m1loe, m1hie, m1lof, m1hif,
-     .               work, klo, khi )
 
-             IF ( klo .GE. 1 ) THEN
+* compute on the source and destination coords only if they differ from last
+	     IF (new_aux_line) THEN
+* extract the line of source coord vals from the aux variable at this location
+	        DO 500 k = kmin_src, kmax_src
+ 500		posline(k) = pos(ip, jp, k, lp, mp, np)
 
-* loop over the desired output Z-axis points
-                ndx_lo = 1    ! initial guess
-	        DO 1410 k = mr_lo_s3(mdst), mr_hi_s3(mdst)  ! destination Z axis
+* for each destination point, find the source index just below this value
+* and the weight coefficient to attach to that index 
+* ... note that the indices are referenced to a starting index of 1
+	        CALL HUNT_INDICES(posline, kmin_src, kmax_src,
+     .				  bad_pos, dstcoords,
+     .				  indices, coef, kmin_dst, kdmax,
+     .				  klook, khiok, ascending )
+	        has_valid = klook .NE. unspecified_int4
+		IF (trans .EQ. pauxrgrd_pwlave ) khiok = khiok-1
+		new_aux_line = .FALSE.
+	     ENDIF
 
-* ... next Z axis value (com3) to locate
-#ifdef double_p
-                   zval = TM_WORLD(k,cx_grid(dst_cx),z_dim,box_middle)
-#else
-                   zval = SNGL(TM_WORLD(k,cx_grid(dst_cx),z_dim,box_middle))
-#endif
-* ... search the position field for the index just below this value
-* ... note that ndx_lo is always referenced to a starting index of 1
-                   CALL HUNT_R4(work, klo, khi, zval, ndx_lo, frac)
-                   IF ( frac .LT. 0.0 ) THEN
-* ... no luck -- the Z axis value we seek is outside the range in com2
-                      dst(i,j,k,l,m,n) = bad_dst
-                   ELSEIF ( src(is,js,sk0+ndx_lo,ls,ms,ns)
-     .                      .EQ. bad_src ) THEN
-                      dst(i,j,k,l,m,n) = bad_dst
-                   ELSEIF ( frac .EQ. 1.0 ) THEN                  ! exactly on point
-                      dst(i,j,k,l,m,n) =
-     .                   src(is,js,sk0+ndx_lo,ls,ms,ns)
-                   ELSEIF ( src(is,js,sk0+ndx_lo+1,ls,ms,ns)
-     .                      .EQ. bad_src ) THEN
-                      dst(i,j,k,l,m,n) = bad_dst
-                   ELSE
-* ... interpolate data com1 field to get result
-                      dst(i,j,k,l,m,n) = 
-     .                   frac  * src(is,js,sk0+ndx_lo,  ls,ms,ns)
-     .              + (1-frac) * src(is,js,sk0+ndx_lo+1,ls,ms,ns)
-                   ENDIF
- 1410           CONTINUE
+	     IF (has_valid) THEN
+* extract the line of source vals 
+	        DO 600 k = kmin_src, kmax_src
+ 600	        srcline(k) = src(is, js, k, ls, ms, ns)
 
-             ENDIF
+* perform the regridding
+	        IF (trans .EQ. pauxrgrd_linear ) THEN
+* ... by linear interpolation to target cell coordinate points
+	           CALL DO_AUX_REGRID_LINE_LIN (axis,
+     .				  srcline,
+     .				  kmin_src, kmax_src,
+     .				  indices,  coef,
+     .				  kmin_dst, kmax_dst,
+     .				  klook,    khiok,
+     .				  bad_src,  bad_dst, ascending,
+     .				  dstline             )
+	        ELSEIF (trans .EQ. pauxrgrd_pwlave ) THEN
+* ... by within-target-cell averaging
+	           CALL DO_AUX_REGRID_LINE_AVE (axis,
+     .				  srcline,  posline,
+     .				  kmin_src, kmax_src,
+     .				  indices,  coef,
+     .				  kmin_dst, kmax_dst,
+     .				  klook,    khiok,
+     .				  bad_src,  bad_dst, ascending,
+     .				  dstline             )
+	        ENDIF
 
- 1450	CONTINUE
+* put the line of results into the destination array
+	        DO 900 k = klook, khiok
+ 900	        dst(i, j, k, l, m, n) = dstline(k)
+	     ENDIF
+
+ 1000	CONTINUE
+
+* successful completion.  Clean up.
         CALL RELEASE_WORK_SPC
         RETURN
 

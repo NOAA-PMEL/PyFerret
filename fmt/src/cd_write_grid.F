@@ -65,6 +65,8 @@
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V685 6/13 *acm* new qualifier SAVE/NOBOUNDS
 * V685 6/13 *acm* Dont add SAVE/NOCOORDS
+* V687 3/14 *acm* Fix ticket 1750. Write Ferret-internal axis names to cdf files, unless
+*                 the user has said /KEEP_AXISNAMES
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -100,7 +102,7 @@
       LOGICAL gmod, name_from_grid
       INTEGER TM_LENSTR1, 
      .        defid, defdim, nlen, slen, cdfstat, iaxis, idim, glen, i
-      CHARACTER CD_CHILDAX_NAME*132, CD_AXIS_OUTNAME*132,
+      CHARACTER CD_CHILDAX_NAME*132, CD_AXIS_OUTNAME*132, CD_AXIS_NAME*132,
      .		names*132, lname*132
       CHARACTER*1 ww_dim_name(nferdims)
       DATA ww_dim_name/'X', 'Y', 'Z', 'T', 'E', 'F'/
@@ -140,7 +142,10 @@
       DO 50 idim = 1, nferdims
          iaxis = grid_line(idim, grid)
 
-         lname = CD_AXIS_OUTNAME(dset, grid, idim, slen)
+         lname = CD_AXIS_NAME( dset, grid, idim, slen )
+         IF (keepax_flag .EQ. 1)  lname = 
+     .        CD_AXIS_OUTNAME( dset, grid, idim, slen )
+
          IF ( iaxis .EQ. mpsnorm ) THEN
             names = names(:nlen)//' '//'NORMAL'
          ELSEIF ( lo(idim) .EQ. unspecified_int4 ) THEN

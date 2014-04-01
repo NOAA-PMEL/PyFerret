@@ -1,0 +1,12 @@
+! bn_std.jnl
+! New StdDev transform
+
+use coads_climatology
+list/x=100/y=10 sst[t=@STD]
+list/x=100/L=1 sst[y=@STD]
+list/y=10/L=1 sst[x=@STD]
+
+use gt4d011.cdf
+list/y=3/l=1/x=233 u[z=@STD]
+list/y=3/l=1 temp[x=@std]
+list/y=3/l=1 temp[z=@std,x=@std]

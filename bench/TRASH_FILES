@@ -18,6 +18,7 @@ another_file_vars.nc
 anothername.gif
 append_to_this.nc
 asc.nc
+axticlabel.plt
 b1566.jnl
 bat.plt_1
 bat.plt_2
@@ -41,6 +42,8 @@ bnplot-4.plt
 bnplot.gif
 bnplot.plt
 bnplot.ps
+c.nc
+c1.nc
 c1.nc
 c2.nc
 cc.nc
@@ -55,6 +58,7 @@ dashbug.gif
 dashbug.plt
 dashbug.png
 dat.dat
+degC_axlab.plt
 dots.plt
 dsg_nocoord.nc
 dummy1.string_tst
@@ -117,6 +121,7 @@ my_file_vars.nc
 mypack.nc
 mytype.nc
 names
+nc
 nc4_deflate4bigchunk.nc
 nc4_deflate4_defaultchunk.nc
 nc4_deflate4.nc

@@ -38,8 +38,12 @@
 * 2/23/2005 acm
 * Do the fill for a shade plot, perhaps with a modulo offset in X
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
+*                 and 4-arg plot commands. 
 
        IMPLICIT NONE
+       INCLUDE 'miss_inc.decl'
+       INCLUDE 'MISS.INC'
        INCLUDE 'parampl5_dat.decl'
        INCLUDE 'PARAMPL5.DAT'
        INCLUDE 'hd_inc.decl'
@@ -56,7 +60,7 @@
 * local definitions
 
       REAL    minrowx, maxrowx, big
-      INTEGER GET_NDX, i, j, i1, fill_ndx, npt, pt1, next_ndx,
+      INTEGER GET_NDX, i, j,i1, fill_ndx, npt, pt1, next_ndx,
      .        itop, jtop
       REAL    ddat
       INTEGER nothing
@@ -69,7 +73,7 @@
       real x_curv(200), y_curv(200)
 #endif
 
-      big = ABS(bad_val4)
+      big = ABS(CMZGE)
 
       status = ferr_ok
       lmin = -1*big
@@ -186,7 +190,11 @@ c      IF (curvilinear ) THEN
 	      npt = 2*npt
 	      CALL CURV_COORD_ADD (x_curv, y_curv, npt, xinv, yinv, xadd,
      .            first, xfield_is_modulo, status) ! xform the pts
-               
+	      IF (curv_missing) THEN
+	         i = i - 1
+		 GOTO 40
+              ENDIF
+	      
 	      IF ( status .NE. 0 ) RETURN
               minrowx = MIN( minrowx, x_curv(1) )
               minrowx = MIN( minrowx, x_curv(2) )

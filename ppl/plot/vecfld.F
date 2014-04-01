@@ -73,6 +73,8 @@ C**
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V684 *adm* 12/12 Changes for VECTOR/MODULO on curvilinear plots.
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
+*                 and 4-arg plot commands. 
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -193,7 +195,7 @@ C
 	DY=(ytx-ytm)/MAX(NY-1,1)
         IPT = 0
 
-	big = ABS(bad_val4)
+	big = ABS(CMZGE)
 	lmin = -1*big
 	lmax = big
 
@@ -247,6 +249,7 @@ C Set up to plot the vector in pieces to make a curve.
            x_curv(1)=xx1
            y_curv(1)=yy1
            CALL CURV_COORD(x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
+	   IF (curv_missing) GOTO 100
 
            xx1=x_curv(1)
            yy1=y_curv(1)
@@ -295,6 +298,7 @@ C then draw the line to the arrow head.
               y_curv(1) = head_j
 
               CALL CURV_COORD(x_curv, y_curv, 1, 1.0, 1.0, status)
+	      IF (curv_missing) GOTO 100
 
               IF (x_curv(1) .ne. cmzeq) xxc = x_curv(1)
               IF (y_curv(1) .ne. cmzeq) yyc = y_curv(1) 

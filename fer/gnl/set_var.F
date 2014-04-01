@@ -81,6 +81,7 @@
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V683 8/12  *acm* Move writing of notes about output precision to cdf_list.F
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
+* V690 *sh* 1/14   Added SET VARIABLE/SIGMA=varname
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -111,22 +112,26 @@
 	REAL		bad, scalefac, offset, val, dummy
 	CHARACTER	grid_name*64, title*128, units*128, newname*128,
      .                  is_nan*3, flag*10, typflag*10, varattname*512,
-     .                  varname*128, attname*128, buf*2, newname_lc*128
+     .                  varname*128, attname*128, buf*2, newname_lc*128,
+     .			sigma_ref*128
 
 * Initialize
 
-	grid = unspecified_int4
-	bad = real4_init
-	scalefac = real4_init
-	offset = real4_init
+	grid      = unspecified_int4
+	bad       = real4_init
+	scalefac  = real4_init
+	offset    = real4_init
         have_mods = .FALSE.
-        gtts = .FALSE.
-        ncfile = .FALSE.
-        ez = .FALSE.
-	newname = char_init128
-	title = char_init128
-	units = char_init64
+        gtts      = .FALSE.
+        ncfile    = .FALSE.
+        ez        = .FALSE.
+	newname   = char_init128
+	title     = char_init128
+	units     = char_init64
 	grid_name = char_init16
+	sigma_ref = char_init128
+
+* note:  this routine manages 
 
 * decode specified variable name of form VNAME[D=dset]
 	dset = unspecified_int4			! default is global variable
@@ -158,9 +163,11 @@
 * SET VAR/NAME does not work for GT, TS datasets where sanity check is done
 * in gt_find_rec.F comparing var name to the name in the dataset.
 
-	   gtts = ( (ds_type(dset) .EQ. pds_type_gt)  .OR. 
+	   IF (dset .GT. 0) THEN
+	      gtts = ( (ds_type(dset) .EQ. pds_type_gt)  .OR. 
      .              (ds_type(dset) .EQ. pds_type_ts) )
-	   IF ( gtts ) GOTO 5600
+	      IF ( gtts ) GOTO 5600
+	   ENDIF
 
 	   have_mods = .TRUE.
            CALL EQUAL_STR_LC 
@@ -171,7 +178,7 @@
 
 * check that the name isnt already in the data set.
            CALL FIND_VAR_NAME ( dset, newname, idum, testvar )
-	   len_rbuff = TM_LENSTR1(newname)
+	   len_rbuff = TM_LENSTR1(newname_lc)
            IF (  testvar .NE. munknown_var_name ) GOTO 5400
 
 	   IF ( .NOT.TM_LEGAL_NAME(newname) ) THEN
@@ -270,6 +277,8 @@
 * *kob* 7/03 - Add check for bad=NaN
 	   CALL EQUAL_STRING (cmnd_buff(qual_start(loc):qual_end(loc)),
      .                         is_nan, status)
+           IF ( status .NE. ferr_ok ) RETURN     ! *sh* 1/14 added status check
+	   IF (is_nan .EQ. ' ') GOTO 5550
 	   IF (TM_HAS_STRING(is_nan, 'NaN')) THEN
               CALL SET_NAN(bad)
 	   ELSE
@@ -279,6 +288,18 @@
 	   ENDIF
 	ELSE
 	   bad = real4_init
+	ENDIF
+
+* SET VAR/SIGMA=
+* creates an attribute __sigma_ref_ that contains the desired auxiliary variable name
+	loc = qual_given( slash_set_var_sigma )
+	IF ( loc .GT. 0 ) THEN
+	   have_mods = .TRUE.
+	   CALL EQUAL_STRING (cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        sigma_ref, status)
+           IF ( status .NE. ferr_ok ) RETURN
+	   IF (sigma_ref .EQ. ' ') GOTO 5550
+	   IF ( .NOT.TM_LEGAL_NAME(sigma_ref) ) GOTO 5560
 	ENDIF
 
 * SET VAR/OUTTYPE= INTYPE, FLOAT, INT, SHORT
@@ -360,6 +381,7 @@
         IF (dset .EQ. unspecified_int4) dset = -1 ! user variable
         CALL CD_GET_VAR_ID (dset, vname, varid, status)
 
+
 * note on EZ vars:
 * modifying the variable info invalidates data in memory
 *        the purging of memory variables below is unnecessarily strict in both
@@ -369,6 +391,30 @@
 *	 they depend on the FVAR being changed)
 	IF ( ez ) THEN
 	   IF ( have_mods ) THEN
+
+* The following block of code -- setting the sigma reference -- appears identically
+* in 3 places.  Similar duplication of code for the other attributes.
+* The reason is that the management of dset and varid is context dependent.
+* CD_GET_VAR_ID is for example called 3 times immediately preceding this block
+* Cleanup would be desirable: a single, reliable routine that returns varid;
+* called just once; and then factor out the duplicated code
+	      IF ( sigma_ref .NE. char_init128 ) THEN
+                 attlen = TM_LENSTR1(sigma_ref)
+                 attname = patnam_sigma
+                 CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+                 IF (attid .GT. 0) THEN
+                    CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .                attname, attype, attlen, attoutflag, status )
+                    CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
+     .              sigma_ref, dummy, status)
+                 ELSE
+                    attype = NCCHAR
+                    attoutflag = 1
+                    CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, 
+     .                 attlen, attoutflag, sigma_ref, dummy, status )
+                 ENDIF
+              ENDIF
+
 	      CALL PURGE_FILE_VAR( var ) ! remove memory-resident variables
 	      CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
 	      CALL EZ_MOD_VARS( dset,var,varid,
@@ -431,7 +477,7 @@
               ENDIF
            ENDIF
 
-	   IF ( title .NE. char_init80 ) THEN
+	   IF ( title .NE. char_init128 ) THEN  ! changed from char_init80 1/14
               ds_var_title( var ) = title
 
               attlen = TM_LENSTR1(title)
@@ -448,6 +494,24 @@
                  CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, 
      .              attlen, attoutflag, title, dummy, status )
               ENDIF
+           ENDIF
+
+	   IF ( sigma_ref .NE. char_init128 ) THEN
+              attlen = TM_LENSTR1(sigma_ref)
+              attname = patnam_sigma
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+              IF (attid .GT. 0) THEN
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .             attname, attype, attlen, attoutflag, status )
+                 CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
+     .           sigma_ref, dummy, status)
+              ELSE
+                 attype = NCCHAR
+                 attoutflag = 1
+                 CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, 
+     .              attlen, attoutflag, sigma_ref, dummy, status )
+              ENDIF
+	      CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
            ENDIF
 
            IF (scalefac .NE. real4_init .AND. ncfile) THEN
@@ -512,6 +576,24 @@
                  CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, 
      .              attlen, attoutflag, title, dummy, status )
               ENDIF
+           ENDIF
+
+	   IF ( sigma_ref .NE. char_init128 ) THEN
+              attlen = TM_LENSTR1(sigma_ref)
+              attname = patnam_sigma
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+              IF (attid .GT. 0) THEN
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .             attname, attype, attlen, attoutflag, status )
+                 CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
+     .           sigma_ref, dummy, status)
+              ELSE
+                 attype = NCCHAR
+                 attoutflag = 1
+                 CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, 
+     .              attlen, attoutflag, sigma_ref, dummy, status )
+              ENDIF
+	      CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
            ENDIF
 
 	   IF ( bad  .NE. real4_init  ) THEN
@@ -585,11 +667,24 @@
      .               'illegal new name given for '
      .			//risc_buff(:len_rbuff),
      .               						*5000 )
- 5400	CALL ERRMSG( ferr_invalid_command, status,
+ 5400	IF (dset .GT. 0) THEN
+           CALL ERRMSG( ferr_invalid_command, status,
      .               'illegal new name.  Variable '
-     .			//risc_buff(:len_rbuff)//' exists in dataset ',
+     .			//newname_lc(:len_rbuff)//' exists in dataset ',
      .                                                          *5000 )
+        ELSE
+           CALL ERRMSG( ferr_invalid_command, status,
+     .               'illegal new name.  Variable '
+     .			//newname_lc(:len_rbuff)//' already defined ',
+     .                                                          *5000 )
+        ENDIF
  5500	CALL ERRMSG( ferr_grid_definition, status, grid_name, *5000 )
+
+ 5550	CALL ERRMSG( ferr_unknown_arg, status, 'argument required', *5000)
+
+ 5560	CALL ERRMSG( ferr_invalid_command, status,
+     .			'referenced variable is not an acceptable name', *5000)
+
  5600	CALL ERRMSG( ferr_invalid_command, status,
      .               'Cannot SET VARIABLE/NAME= with GT or TS datasets',
      .               						*5000 )

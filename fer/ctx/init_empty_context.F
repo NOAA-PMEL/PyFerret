@@ -41,6 +41,7 @@
 * 9/97 *kob* - initialize cx_calendar as well
 * V530:  8/00 *sh* - initialize data type to unspecified
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V690 *sh* 2/14 init auxiliary var-related context variables
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -61,8 +62,13 @@
 	   cx_trans ( idim, cx )   = trans_no_transform
 	   cx_by_ss ( idim, cx )   = .TRUE.
 	   cx_given ( idim, cx )   = .TRUE.		! <== (*)
-	   cx_trans_arg(idim, cx)  = bad_val4
-	   cx_delta ( idim, cx )   = unspecified_val8
+	   cx_aux_given( idim, cx ) = .FALSE.
+	   cx_aux_stat ( idim, cx ) = paux_stat_na
+	   cx_aux_var  ( idim, cx ) = unspecified_int4
+	   cx_aux_cat  ( idim, cx ) = unspecified_int4
+	   cx_aux_stat ( idim, cx ) = paux_stat_na
+	   cx_trans_arg( idim, cx ) = bad_val4
+	   cx_delta    ( idim, cx ) = unspecified_val8
 	   cx_regrid_trans(idim,cx)=unspecified_int4
  100	CONTINUE
 

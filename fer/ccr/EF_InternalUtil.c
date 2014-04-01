@@ -1046,7 +1046,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
   char *path_ptr=NULL, path[8192]="";
   char paths[8192]="", cmd[EF_MAX_DESCRIPTION_LENGTH]="";
   int count=0, status=LIST_OK;
-  int i_intEF; int N_INTEF;
+  int i_intEF;
 
   static int return_val=0; /* static because it needs to exist after the return statement */
     

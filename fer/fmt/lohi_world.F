@@ -57,6 +57,8 @@
 * V300:   2/3/93 - the 9/11/90 bug fix prevents the default region for being
 *                  formatted
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V690 *sh* 1/14 - added kludge to display limits from aux var regrid by avg
+*	e.g. gz(depth)=0:100@ave
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -74,9 +76,18 @@
 	CHARACTER*(*) to_word
 
 * internal variable declarations:
+	LOGICAL	aux_span_compress
 	INTEGER	sub_len, ndec, grid, status, cx_try
 	REAL*8	TM_WORLD, bc_to_t0, lo, hi, temp
 	CHARACTER*40	LOHI_STRING
+
+* initialize
+	IF (cx .GE. 1) THEN
+	   aux_span_compress = cx_unstand_grid(cx)
+     .			 .AND. cx_regrid_trans(idim,cx) .EQ. pauxrgrd_pwlave
+	ELSE
+	   aux_span_compress = .FALSE.
+	ENDIF
 
 * grid number is used to determine formatting option
 * ( cx<0 for stored (named) regions )  (cx=cx_last for default region)
@@ -104,8 +115,12 @@
 	IF ( grid .EQ. unspecified_int4 ) grid = mgrid_abstract
 
 * is this just a single grid box with the world coord bod edges given ?
+* 1/14: for gz(depth)=0:100@ave we have a valid single point target axis
+* on which we want to document the axis limits (in cx_lo/hi_ww), rather
+* than the point coordinate.  Look at cx_regrid_trans to decide.
  200    IF ( cx_lo_ss(cx,idim) .NE. unspecified_int4
-     .	.AND.cx_lo_ss(cx,idim) .EQ. cx_hi_ss(cx,idim) ) THEN
+     .	.AND.cx_lo_ss(cx,idim) .EQ. cx_hi_ss(cx,idim) 
+     .	.AND. .NOT.aux_span_compress				) THEN
 	   lo = TM_WORLD( cx_lo_ss(cx,idim),grid, idim, box_middle )
 	   hi = lo
 	ELSE

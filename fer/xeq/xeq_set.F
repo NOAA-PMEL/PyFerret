@@ -183,6 +183,7 @@
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V685 *acm*  7/13 Added FILE/FORMAT=descriptor
 * V686 *acm*  1/14 Fix ticket 2126: set axis was messing up line_name storage
+* V687 *acm*  3/14 New SET AXIS/NAME=
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -240,7 +241,8 @@
      .                  iflag, isetout, ivar, dot, strided_axis, igrd, 
      .                  offset, attid, attype, attoutflag, attlen, i1, 
      .                  dset, istat, cache_size, cache_nelems, 
-     .                  cache_preemption, numpts, redir_file_lun
+     .                  cache_preemption, numpts, redir_file_lun, 
+     .                  iline, iset
         REAL*8          TM_WW_AXLEN, axwwlen, new_att_modulo_len
         REAL*8          delta, dlo, dhi, firstval, lastval
 	REAL		val_buf, cache_size_mb
@@ -988,6 +990,43 @@ c *kob* 4/97
 
         ENDIF
 
+* /NAME
+
+	loc = qual_given(slash_set_axis_name) 
+	IF (loc .GT. 0 ) THEN
+	   IF ( num_args .EQ. 0 ) GOTO 6680
+
+	   CALL EQUAL_STR_LC(
+     .                   cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                   buff1, status )
+	   IF ( status .NE. ferr_ok ) GOTO 6680
+
+* check that the name isnt an already-defined axis
+
+	   iline = TM_GET_LINENUM (buff1)
+	   IF (iline .NE. unspecified_int4) GOTO 6690
+
+	   IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 6692
+
+* Replace the name in the linked-list structure.
+
+          iset = -2  ! stored info on user-defined axes
+          CALL CD_GET_VAR_ID (iset, line_name(axis), varid, status )
+	  IF (varid .GT. 0) CALL CD_RENAME_VAR(iset, varid, buff1, status)
+
+	   DO 1240 iset = 1, maxdsets
+	      IF ( ds_name(iset) .EQ. char_init1024) GOTO 1240
+	      CALL CD_GET_VAR_ID (iset, line_name(axis), varid, status )
+              IF (varid .GT. 0) CALL CD_RENAME_VAR(iset, varid, buff1, status)
+ 1240	   CONTINUE
+
+* Replace the name in Ferret's line storage.
+	   line_name(axis) = buff1
+
+        ENDIF
+
+
+
 *  /UNITS
 * Note we do not change line direction with a resetting of units; line
 * direction UD, DU, WE, SN stay as they were when they were input.
@@ -997,7 +1036,7 @@ c *kob* 4/97
         IF (loc .GT. 0 ) THEN
            IF ( num_args .EQ. 0 ) GOTO 6410
 
-	   CALL EQUAL_STRING(
+	   CALL EQUAL_STR_LC(
      .                   cmnd_buff(qual_start(loc):qual_end(loc)),
      .                   buff1, status )
            IF ( status .NE. ferr_ok ) GOTO 6510
@@ -1999,6 +2038,21 @@ c *kob* 4/97
  6670   CALL ERRMSG( ferr_invalid_command, status,
      .           'stride must be greater than zero',
      .               *5000 )
+     
+ 
+ 6680	CALL ERRMSG( ferr_invalid_command, status,
+     .	         'SET AXIS/NAME= what? ', 
+     .               *5000 )
+
+ 6690	CALL ERRMSG( ferr_invalid_command, status,
+     .               'illegal new name. Axis '
+     .			//buff1(:TM_LENSTR1(buff1))//' is already defined ',
+     .                                                          *5000 )
+ 6692	CALL ERRMSG( ferr_invalid_command, status,
+     .               'illegal new name given for axis '
+     .			//buff1(:TM_LENSTR1(buff1)),
+     .               						*5000 )
+ 
  
  5900 CALL ERRMSG( ferr_invalid_command, status,
      .		'SET what name.attribute?', *5000 )

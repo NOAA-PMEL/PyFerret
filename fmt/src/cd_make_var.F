@@ -85,6 +85,8 @@
 * V685 6/13 *acm* Dont add SAVE/NOCOORDS
 * V686 12/13*acm* For string variables from datasets, keep the string-dimension name and length
 *                 from the original dataset on output.
+* V687 3/14 *acm* Fix ticket 1750. Write Ferret-internal axis names to cdf files, unless
+*                 the user has said /KEEP_AXISNAMES
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -144,9 +146,9 @@
 * *kob*  - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME, lname,
 *          cdfname, vname and gname to 64 from 24
 * acm* vname to 128
-      CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_OUTNAME*128, lname*128,
-     .		cdfname*128, vname*128, gname*64, buff*128, DIMDIR*1,
-     .          TM_FMT*12, c_str*12, d_str*12
+      CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_OUTNAME*128, CD_AXIS_NAME*128, 
+     .		lname*128, cdfname*128, vname*128, gname*64, buff*128, 
+     .		DIMDIR*1, TM_FMT*12, c_str*12, d_str*12
 
       INTEGER dlen, clen
       INTEGER chunks(nferdims)  
@@ -216,7 +218,7 @@
 * determine whether this variable uses the record dimension.  The request
 * from the user will be over-ruled
       what_recdim = CD_ISIT_RECDIM( cdfid, dset, grid, t_dim, 
-     .               mode_upcase_output, status )
+     .               mode_upcase_output, keepax_flag, status )
       IF ( what_recdim .EQ. pcdf_yes ) THEN
          recdim = t_dim
       ELSEIF ( what_recdim .EQ. pcdf_no ) THEN
@@ -308,7 +310,9 @@
 
       DO 300 idim = 1, nferdims
          iaxis = grid_line(idim,grid)
-         buff = CD_AXIS_OUTNAME( dset, grid, idim, nlen )
+         buff = CD_AXIS_NAME( dset, grid, idim, nlen )
+         IF (keepax_flag .EQ. 1) buff = CD_AXIS_OUTNAME( dset, grid, idim, nlen )
+
 	 IF (name_from_grid(idim)) THEN 
 * using the basic name straight from the grid
             buff = line_name(iaxis)

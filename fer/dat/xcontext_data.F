@@ -100,6 +100,7 @@
 	DATA	((cx_given(i,j),i=1,nferdims),j=1,max_cx)/ ndcx *.FALSE.	 /
 	DATA	((cx_aux_var (i,j),i=1,nferdims),j=1,max_cx)/ ndcx *unspecified_int4 /
 	DATA	((cx_aux_cat (i,j),i=1,nferdims),j=1,max_cx)/ ndcx *unspecified_int4 /
+	DATA	((cx_aux_stat(i,j),i=1,nferdims),j=1,max_cx)/ ndcx *paux_stat_na /
 
 * initialize undefined negative subscripts
 	DATA	((cx_lo_ww(i,j),i=1,nferdims),j=min_context,-3)

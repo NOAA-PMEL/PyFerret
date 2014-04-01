@@ -148,12 +148,14 @@
 * V683 *acm*  8/12 add new SAVE/OUTTYPE=  
 * V685 *acm*  6/13 new qualifier SAVE/NOBOUNDS
 * V685 *acm*  6/13 Dont add SAVE/NOCOORDS
+* V690 *sh*   1/14 Automated 3-argument auxiliary (curvilinear) plotting
 
 	include 'tmap_dims.parm'
         include 'tmap_errors.parm'
 	include	'ferret.parm'
 	include	'slash.parm'
 	include 'errmsg.parm'
+	include 'interp_stack.parm'
         include 'gfdl_vms.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
@@ -165,19 +167,24 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * local variable declarations
-	LOGICAL		normal_file, fexist, heading, list_to_tty, do_multi,
+	LOGICAL		is_secure
+	LOGICAL		ITS_AUTO_CURVI,
+     .			normal_file, fexist, heading, list_to_tty, do_multi,
      .			do_epic, do_cdf, do_unform, do_stream,
      .			do_comma_del, do_tab_del, do_dods, do_xml,
      .			permute, all_at_once, list_at_eof, head_enh,
-     .			clobber, quiet, have_outtype
-     .                    
+     .			clobber, quiet, have_outtype, curvi_axes(nferdims)
+
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, STR_CASE_BLIND_COMPARE,
      .                  STR_UPCASE, GET_MAX_STRING_LEN,
      .			status, mr, cx, inext, ilist, wsize, vax_code,
      .			rlen, flen, reclen, i, cx1, qfile, idim,
      .			ndim, wkblk, perm(7), mr_perm(max_intrp),
-     .                  npermuted, recsofar, do_stream_phase, nvars, 
-     .                  edges_flag, keepax_flag, nn, slen, do_bounds
+     .                  npermuted, recsofar, do_stream_phase, nvars,
+     .                  edges_flag, keepax_flag, nn, slen, do_bounds,
+     .			my_mr(max_intrp), my_cx(max_intrp), frame_bottom,
+     .			nvars2list
+
 	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
      .			buff*2048, fstatus*8, faccess*12, fformatted*12,
      .			cdf_recax*1, fposition*12, out_type*6
@@ -195,8 +202,6 @@
      .			slash_rigid   = 22+1,
      .			slash_clobber = 35+1,
      .                  slash_quiet   = 36+1)
-
-	LOGICAL is_secure
 
 * formatting information given ?
 	i = qual_given( slash_format )
@@ -335,11 +340,34 @@ c     .		 .AND. .NOT.do_comma_del
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	ENDIF
 
+* consolidate the given variables and the aux vars they depend on into one list
+	inext = 0
+	DO i = 1, num_uvars_in_cmnd 
+	   inext = inext + 1
+	   my_mr(inext) = is_mr(i)
+	   my_cx(inext) = is_cx(i)
+* ... now put its aux vars into the list
+	   IF ( ITS_AUTO_CURVI(i,curvi_axes) ) THEN
+* TEMPORARY: need to ensure that 'coordinates' attributes are written to point
+*	     variables to their auxiliary variables
+*	     For uvars there may be no __SigmaRef_. Just uvar_aux_cat/var 
+	      DO idim = 1, nferdims
+	         IF (curvi_axes(idim)) THEN
+	            inext = inext + 1
+	            frame_bottom = is_aux_ptr(i)
+	            my_mr(inext) = is_mr(frame_bottom+idim)
+	            my_cx(inext) = is_cx(frame_bottom+idim)
+	         ENDIF
+	      ENDDO
+	   ENDIF
+	ENDDO
+	nvars2list = inext   ! equals num_uvars_in_cmnd plus aux vars
+
 * set up possible loop - if variable by variable output is requested
 * this loop will be used - else all variables are output at once
 	inext = 1
- 100	mr = is_mr( inext )
-	cx = is_cx( inext )
+ 100	mr = my_mr( inext )
+	cx = my_cx( inext )
 
 * ... determine heading request
 	heading  = list_heading    ! default from SET LIST
@@ -519,11 +547,11 @@ c     .		 .AND. .NOT.do_comma_del
      .		    ERR		= 5010 )
 	   ELSEIF ( do_stream .AND. do_stream_phase.EQ.0 ) THEN	! 12/94
 	      reclen = 1  ! in bytes
-	      DO 60 i = 1, num_uvars_in_cmnd
-	         IF ( mr_type(is_mr(i)) .EQ. ptype_string ) THEN
+	      DO 60 i = 1, nvars2list
+	         IF ( mr_type(my_mr(i)) .EQ. ptype_string ) THEN
 	            reclen = MAX(reclen,
-     .			GET_MAX_STRING_LEN(is_cx(i), is_mr(i),
-     .					   memory(1,mr_blk1(is_mr(i))))+1 )
+     .			GET_MAX_STRING_LEN(my_cx(i), my_mr(i),
+     .					   memory(1,mr_blk1(my_mr(i))))+1 )
 	         ELSE
 	            reclen = MAX(reclen,4)
 	         ENDIF
@@ -552,13 +580,13 @@ c     .		 .AND. .NOT.do_comma_del
 * reserve working arrays (different needs for each listing type)
 	IF ( do_epic ) THEN
 	   wsize = 1
-	   DO 110 ilist = 1, num_uvars_in_cmnd
- 110	   wsize = MAX ( wsize, CX_DIM_LEN(t_dim,is_cx(ilist)) )
+	   DO 110 ilist = 1, nvars2list
+ 110	   wsize = MAX ( wsize, CX_DIM_LEN(t_dim,my_cx(ilist)) )
 	   wsize = 3. * wsize
 	ELSEIF ( do_multi ) THEN
-	   wsize = num_uvars_in_cmnd* (2*nferdims+6)
+	   wsize = nvars2list* (2*nferdims+6)
 	ELSEIF ( all_at_once ) THEN
-	   wsize = num_uvars_in_cmnd
+	   wsize = nvars2list
 	ELSE
 * ... allocate enough space for the longest axis
 	   wsize = 1
@@ -576,7 +604,7 @@ c     .		 .AND. .NOT.do_comma_del
 
 * special handling of EPIC data - no permutations
 	IF ( do_epic ) THEN
-	   CALL EPIC_LIST( raw_name, is_mr, is_cx, 
+	   CALL EPIC_LIST( raw_name, my_mr, my_cx, 
      .			   memory(1, wkblk), wsize, status )
 	   GOTO 1000
 	ENDIF
@@ -586,11 +614,11 @@ c     .		 .AND. .NOT.do_comma_del
 * ... if no axis order was specified determine the permutation
 c bug fix: see err540_write_order.jnl move inside loop:
 c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
-	   DO 200 ilist = 1, num_uvars_in_cmnd
-	      IF (.NOT.permute) CALL GET_CX_DIMS(is_cx(ilist),ndim,perm)
+	   DO 200 ilist = 1, nvars2list
+	      IF (.NOT.permute) CALL GET_CX_DIMS(my_cx(ilist),ndim,perm)
 	      CALL CREATE_PERMUTATION(	memory,
-     .					is_cx  (ilist),
-     .					is_mr  (ilist),
+     .					my_cx  (ilist),
+     .					my_mr  (ilist),
      .					perm,
      .					mr_perm(ilist), status )
 	      IF ( status .NE. ferr_ok ) GOTO 500
@@ -627,13 +655,13 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 
 	ELSEIF ( do_cdf ) THEN
 	   CALL CDF_LIST( memory, raw_name( 1:TM_LENSTR1(raw_name)), 
-     .                    list_at_eof, cdf_recax, num_uvars_in_cmnd,
-     .			  mr_perm, is_cx, buff, head_enh,
+     .                    list_at_eof, cdf_recax, nvars2list,
+     .			  mr_perm, my_cx, buff, head_enh,
      .			  pcdf_mode_normal, clobber, edges_flag, do_bounds,
      .                    keepax_flag, out_type, status )
 
 	ELSEIF( all_at_once ) THEN
-	   CALL LIST_MULTI( memory, mr_perm, is_cx, heading, perm,
+	   CALL LIST_MULTI( memory, mr_perm, my_cx, heading, perm,
      .			    wsize, memory(1, wkblk), status )
 	ELSE
 	   CALL NON_ARRAY_SUBSC( mr_perm, 1 )
@@ -661,7 +689,7 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 * ... loop back for next variable if appropriate
 	      inext = inext + 1
 	      IF ( do_stream) do_stream_phase = do_stream_phase + 1
-	      IF ( status.EQ.ferr_OK .AND. inext.LE.num_uvars_in_cmnd ) THEN
+	      IF ( status.EQ.ferr_OK .AND. inext.LE.nvars2list ) THEN
 	         GOTO 100
 	      ELSE
 	         GOTO 1000

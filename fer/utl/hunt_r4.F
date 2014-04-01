@@ -43,6 +43,7 @@
 
 * V450:  7/97 - new, cloned from double prec. version hunt.F
 *             - also return "frac" - the interpolation factor for ndx_lo 
+* V690 *sh* 11/13 - ensure that if exact match, the frac=1.0 case is always used
 
 	integer		lo_dim,hi_dim,ndx_lo,ndx_mid,ndx_hi,inc
 
@@ -72,7 +73,6 @@
 	   if (ndx_hi .gt. hi_dim) then 
 *	      HUNT OVER -- OFF HIGH END OF GRID
 	      ndx_hi = hi_dim + 1
-!	   else if (x2 .ge. x1(ndx_hi) .eqv. ascnd) then (ORIGINAL CODE)
 	   else if (x2 .gt. x1(ndx_hi) .eqv. ascnd) then
 	      ndx_lo = ndx_hi
 	      inc    = inc + inc
@@ -100,6 +100,9 @@
 
 	   IF (ndx_lo.GE.lo_dim .AND. ndx_lo.LT.hi_dim) THEN
 	      IF (x2 .EQ. x1(ndx_lo)) THEN
+	         frac = 1.0
+	      ELSEIF (x2 .EQ. x1(ndx_hi)) THEN
+	         ndx_lo = ndx_hi		! 11/13 addition
 	         frac = 1.0
 	      ELSE
 	         frac = (x1(ndx_hi)-x2) / (x1(ndx_hi)-x1(ndx_lo))

@@ -60,7 +60,10 @@
 	REAL	arg, com(*), res(*), box(*)
 
 * internal variable declarations:
-* ...
+	LOGICAL stddev
+
+	stddev = .FALSE.
+
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
@@ -70,7 +73,7 @@
      .			 cx_lo_ss(com_cx,idim), cx_hi_ss(com_cx,idim),
      .			 com, com_mr, com_cx,
      .			 res, res_mr, res_cx,
-     .			 box )
+     .			 box, stddev )
 
 	DO_VARIANCE = ferr_ok
 

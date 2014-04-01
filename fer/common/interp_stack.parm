@@ -4,6 +4,7 @@
 * 10/98 *jc* added isact_reduce
 * 6/01 *sh* added isact_event_mask
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V690 12/13 *sh* for auto-curvilinear Ferret
 
 * minimum working space provided to transformations
 	INTEGER		iswksiz
@@ -19,7 +20,8 @@
      .			isact_class_reconcile,
      .			isact_class_sample,
      .			isact_class_subspan_fill,
-     .			isact_class_aggregate_gather
+     .			isact_class_aggregate_gather,
+     .			isact_class_aux_plot_vars
 	PARAMETER     ( isact_class_trans    = 1,
      .			isact_class_regrid   = 2,
      .			isact_class_gather   = 3,
@@ -29,7 +31,8 @@
      .			isact_class_reconcile  = 7,
      .			isact_class_sample   = 8,
      .			isact_class_subspan_fill = 9,
-     .			isact_class_aggregate_gather = 10 )
+     .			isact_class_aggregate_gather = 10,
+     .			isact_class_aux_plot_vars = 11 )
 
 * to help in defining classes of activity codes ...
 	INTEGER		isact_trans_code
@@ -56,7 +59,10 @@
      .			isact_subspan_fill,
      .			isact_aggregate_gather,
      .			isact_get_agg_grid,
-     .			isact_auxvar_regrid
+     .			isact_auxvar_regrid,
+     .			isact_var_ready,
+     .			isact_auxvar_ready,
+     .			isact_aux_plot_vars
 	PARAMETER     ( isact_request		= 1,
      .			isact_algebra		= 2,
      .			isact_rotate		= 3,
@@ -77,6 +83,9 @@
      .			isact_aggregate_gather	= 19,
      .			isact_get_agg_grid      = 20,
      .			isact_auxvar_regrid	= 21,
+     .			isact_var_ready         = 22,
+     .			isact_auxvar_ready      = 23,
+     .			isact_aux_plot_vars     = 24,
      .          	isact_reduce = 16 ) ! never used: GC fcns perform axis reduction
 
 * transformations (which are also stack activities)
@@ -110,7 +119,7 @@
      .          	isact_wgted_eq,
      .          	isact_sum,
      .          	isact_run_sum,
-     .			isact_std_dev,   ! unused
+     .			isact_std_dev,
      .			isact_variance,
      .			isact_npoints,   ! unused
      .			isact_good_pt,

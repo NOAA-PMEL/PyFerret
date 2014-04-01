@@ -64,6 +64,8 @@
 * V610  2/08 *acm* Always define a symbol LAST_GO_FILE with the name of the jnl script.
 * V618  1/09 *acm* The last character of symbol LAST_GO_FILE was chopped off. Fix this.
 * V66   *kms* 5/10 LIB_GET_LUN is a subroutine, not a function
+* V687  *ACM* 3/14 for ticket 2044 write note !Enter_GO with script and arguments, only 
+*                  if SET REDIRECT is turned on.
 
 ! Note: A known "bug" of the 12/94 GO_FILE symbol is that the PLOT+ symbol
 !	GO_FILE gets defined only **after** PLOT+ has already placed a window
@@ -87,7 +89,7 @@
 	LOGICAL	go_help
 	INTEGER	TM_LENSTR1,
      .		temp_lun, status, TMAP_status,
-     .          file_opened, ier, ist, len_string
+     .          file_opened, ier, ist, len_string, slen
         CHARACTER TM_INQ_PATH*2048, cbuff*2048
 
 * internal parameter declarations
@@ -163,6 +165,13 @@
 * GO line will be parsed by DOLLAR_ARG - un-do parsing of PARSE_COMMAND
 	CALL ALL_1_ARG
 	cs_text( csp ) = cmnd_buff(arg_start(1):arg_end(1))
+	
+* ... Write note with script and arguments, only if SET REDIRECT is turned on.
+        IF (redirect_stdout_flags .NE. redirect_none) THEN
+	   risc_buff = '! Enter_GO '//cs_text(csp)(:TM_LENSTR1(cs_text(csp)) )
+	   slen = 0
+	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, slen)
+	ENDIF
 
 * define the PLOT+ symbol 'GO_FILE' if PLOT+ is running and the GO command
 * was given at the keyboard

@@ -1,4 +1,5 @@
 SRCS_F = \
+alg_regrid_trans_titl.F\
 alg_trans_titl.F\
 ascii_limits.F\
 ax_title.F\

@@ -69,6 +69,7 @@
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V685 3/13 *sh* support for auxiliary regridding variables
 *		 and SHOW VAR/DEPENDENCIES (unknown variable err not reported)
+* V690 12/13 *sh* set auto-curvilinear actions that are needed
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -87,8 +88,9 @@
      .                  full_name_len, left_bracket, right_bracket, 
      .			name_len, atsign, idim,  brac_nest, i,
      .                  dset, varid, attype, attlen, attoutflag,
-     .                  attid, dot
- 	LOGICAL		name_only, do_err
+     .                  attid, dot,
+     .			curv_vars(nferdims), curv_cats(nferdims)
+ 	LOGICAL		name_only, do_err, aux_given
 * 1/97 addition
 	INTEGER	num_it, it_start(max_item_list), it_end(max_item_list)
         CHARACTER varname*512, attname*128, newname*512
@@ -177,21 +179,59 @@
 	CALL APPLY_CONTEXT_MODS ( mods_cx, var_cx, nest_context, status )
 	IF ( status .NE. ferr_ok ) GOTO 5900
 
-* always apply mods that describe the auxiliary regridding variables
-	cx_naux(var_cx) = cx_naux(mods_cx)
-	DO 102 idim = 1, nferdims
-	   cx_aux_arg_start(idim,var_cx) = cx_aux_arg_start(idim,mods_cx)
-	   cx_aux_arg_end  (idim,var_cx) = cx_aux_arg_end  (idim,mods_cx)
- 102	CONTINUE
-
 * identify the simple variable name
- 111    continue  ! testing
         CALL FIND_VAR_NAME( cx_data_set( var_cx ),
      .			    newname(1:name_len),
      .			    cx_category( var_cx ),
      .			    cx_variable( var_cx ) )
 
-	IF ( cx_variable( var_cx ) .EQ. munknown_var_name ) GOTO 5100
+* always apply mods that describe the auxiliary regridding variables
+	cx_naux(var_cx) = cx_naux(mods_cx)
+	DO 102 idim = 1, nferdims
+	   cx_aux_arg_start(idim,var_cx) = cx_aux_arg_start(idim,mods_cx)
+	   cx_aux_arg_end  (idim,var_cx) = cx_aux_arg_end  (idim,mods_cx)
+	   cx_aux_stat     (idim,var_cx) = cx_aux_stat     (idim,mods_cx) 
+ 102	CONTINUE
+
+	IF ( cx_variable( var_cx ) .EQ. munknown_var_name ) THEN
+* bail out if this variable cannot be identified
+	   GOTO 5100
+	ELSEIF (cx_category(var_cx) .EQ. cat_file_var
+     .     .OR. cx_category(var_cx) .EQ. cat_user_var ) THEN
+* fill in the default aux vars associated with this variable
+	   CALL GET_AUTO_AUX_VARS( cx_variable(var_cx),
+     .				   cx_category(var_cx),
+     .				   cx_data_set(var_cx),
+     .				   curv_vars, curv_cats )
+	   DO idim = 1, nferdims
+	      IF ( curv_vars(idim) .NE. unspecified_int4
+     .	     .AND. cx_aux_stat(idim,var_cx) .EQ. paux_stat_na  ) THEN
+	         cx_aux_cat (idim,var_cx) = curv_cats(idim)
+	         cx_aux_var (idim,var_cx) = curv_vars(idim)
+	         cx_aux_stat(idim,var_cx) = paux_stat_passed
+	      ENDIF
+	   ENDDO
+	ENDIF
+
+* set up automated curvilinear actions:  aux variable loads and regridding
+* cases include
+*  [z=pt, sigma], [z=lo:hi:delta,sigma], [z=lo:hi@ave,sigma], [gz=zax,sigma]
+	cx_implicit_aux(var_cx) = .FALSE.   ! set default
+	aux_given = .FALSE.
+	DO idim = 1, nferdims
+	   aux_given = aux_given .OR. cx_aux_given(idim,mods_cx)
+	ENDDO
+	IF ( aux_given ) THEN
+	   IF ( cx_category(var_cx) .NE. cat_file_var
+     .	  .AND. cx_category(var_cx) .NE. cat_user_var ) GOTO 5200
+!	   IF (cx_mod_sigma .AND.
+!     .	     .NOT. (cx_given(z_dim,mods_cx)) GOTO 5300
+!	   IF (cx_mod_curvi .AND.
+!     .	     .NOT.(cx_given(x_dim,mods_cx).AND.cx_given(y_dim,mods_cx))
+!     .					 ) GOTO 5350
+	   CALL APPLY_AUTO_CURV(newname(:full_name_len), var_cx, status)
+	   IF (status .NE. ferr_ok) GOTO 5900
+	ENDIF
 
 * set the data type of the variable'
 	IF ( cx_category(var_cx) .EQ. cat_file_var ) THEN
@@ -249,7 +289,7 @@
      .         cx_type(var_cx) = ptype_string
            ENDIF
 	ELSE
-	   cx_type(var_cx) = unspecified_int4 ! inheritedt from definition
+	   cx_type(var_cx) = unspecified_int4 ! inherited from definition
 	ENDIF
 
 * successful completion:
@@ -257,13 +297,23 @@
 	RETURN
 
 * error exits:
- 5000	CALL ERRMSG
-     .			  ( ferr_syntax, status, full_var_name, *5900 )
+ 5000	CALL ERRMSG( ferr_syntax, status, full_var_name, *5900 )
  5100	IF ( dependency_tree_mode ) THEN
 	   status = ferr_unknown_variable   ! set the status, but don't report
+	   GOTO 5900
 	ELSE
 	   CALL ERRMSG
      .		( ferr_unknown_variable, status, full_var_name, *5900 )
 	ENDIF
+ 5200	CALL ERRMSG( ferr_syntax, status,
+     .		'SIGMA and CURVI can only be used on LET variables'//
+     .		' and file variables: '//full_var_name, *5900 )
+! 5300	CALL ERRMSG( ferr_syntax, status,
+!     .		'SIGMA must be accompanied by explicit Z limits: '
+!     .		//full_var_name, *5900 )
+! 5350	CALL ERRMSG( ferr_syntax, status,
+!     .		'CURVI must be accompanied by explicit X and Y limits: '
+!     .		//full_var_name, *5900 )
+
  5900	RETURN
 	END

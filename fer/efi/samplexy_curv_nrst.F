@@ -279,8 +279,11 @@
       REAL xpt, ypt, ydiff, yd
       REAL xptmin, xptmax, xcoordmin, xcoordmax
       REAL add_xcoord, xadd, xcoord, sqdd
+      REAL xcoord_diff, xcoordlast, tol
       REAL xval, yval, sqdmin
       CHARACTER*255 err_msg
+
+      parameter (tol = 140.)
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -460,6 +463,8 @@ C Check that sample x and y are simple lists of points - same length
       DO 700 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
 * Find all locations of xpt in arg_2, longitudes of data
+* When a change of sign corresponds with crossing a branch cut, that
+* is not saved as a location where xpt-minus-coordinate changes sign.
 
          xadd = 0.
          xpt = arg_4(i4,j4,k4,l4,m4,n4)
@@ -469,6 +474,10 @@ C Check that sample x and y are simple lists of points - same length
 
          nloc = 0
 
+         i2 = arg_lo_ss(X_AXIS,ARG2)
+	 j2 = arg_lo_ss(Y_AXIS,ARG2)
+	 xcoordlast = arg_2(i2,j2,k2,l2,m2,n2) + xadd
+
          DO 200 j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
             i2 = arg_lo_ss(X_AXIS,ARG2)
             xcoord = arg_2(i2,j2,k2,l2,m2,n2) + xadd
@@ -477,6 +486,8 @@ C Check that sample x and y are simple lists of points - same length
 
             DO 100 i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
                xcoord = arg_2(i2,j2,k2,l2,m2,n2) + xadd
+	       xcoord_diff = ABS(xcoordlast-xcoord)
+	       IF (xcoord_diff.GE.tol) icross = -1*icross
 
                iloc = 1
                IF ((xpt-xcoord) .LT. 0. ) iloc = -1
@@ -489,6 +500,7 @@ C Check that sample x and y are simple lists of points - same length
                   icross = 1
                   IF ((xpt - xcoord) .LT. 0.) icross = -1
                ENDIF
+	       xcoordlast = xcoord 
   100       CONTINUE
 
   200    CONTINUE

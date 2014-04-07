@@ -75,6 +75,7 @@ C**
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
 *                 and 4-arg plot commands. 
+* Patrick's example with vector drawn across branch cut.
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -109,13 +110,15 @@ C
 
 	real xfuser,yfuser,xlousr,ylousr,zave,xt,yt
 	real xx2,yy2,zz,vfact,xtm,ytm,xtx,ytx,xx1,yy1,vx,vy,vclen
-	real thfact,xn,yn,xl,yl,dy,dx, alen, big,lmin,lmax, xadd
+	real thfact,xn,yn,xl,yl,dy,dx, alen, big,lmin,lmax, xadd, tol
 
 	logical done_nleft, done_nright
 	integer ic,i,j,lnblk,iln, overedge
 	integer TM_LENSTR1, slen, i1, i2
 
 	CHARACTER VECLAB*2048, buff*80, symbuff*120
+	
+	parameter (tol = 140.)
 
 C
 C	VECTOR,X,Y,VFACT,LABEL
@@ -207,6 +210,9 @@ C
 
 	DO 100 I=1,NX,VSKPX
 	DO 100 J=1,NY,VSKPY
+	IF (i.eq.52 .AND. j.eq.76) THEN
+	   slen = 1
+	ENDIF
 
         IF (IPT .GT. maxdot) THEN
            CALL doit_makedot(IPT,XDOT,YDOT)
@@ -333,7 +339,13 @@ C  draw an arrow head.
  60        CONTINUE
 
  70        CONTINUE
-           CALL PLOT(xxc+xadd,yyc,1,0)
+
+C Has the vector crossed a branch cut? If so don't draw across the plot...
+           IF ( ABS((xxc+xadd)-(xx1+xadd)).GT.tol .AND. units_degrees) THEN
+	      CALL PLOT(xxc+xadd,yyc,0,0)
+	   ELSE
+              CALL PLOT(xxc+xadd,yyc,1,0)
+	   ENDIF
            IF (xadd .EQ. 0) THEN
 	      lmin = MIN(lmin, xxc)
               lmax = MAX(lmax, xxc)

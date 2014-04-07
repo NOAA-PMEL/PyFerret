@@ -14,6 +14,15 @@ set var/name=c a
 sh var
 
 use gt4d011.cdf
+! again, with user-variables and an open dataset the message is as above
+
+let a = 1
+let b = 2
+set var/name=b a
+
+! Intentional error, new name already in file
+
+
 ! Intentional error, new name already in file
 set var/name=temp salt
 show dat
@@ -29,6 +38,7 @@ set var/name=psi myvar
 set var/name=diff myvar
 show dat
 
-
+! another error, new name is a user-var
+yes? set var/name=diff w
 
 SET MODE/LAST ignore

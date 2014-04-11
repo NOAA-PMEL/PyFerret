@@ -67,6 +67,8 @@
 * V685 6/13 *acm* Dont add SAVE/NOCOORDS
 * V687 3/14 *acm* Fix ticket 1750. Write Ferret-internal axis names to cdf files, unless
 *                 the user has said /KEEP_AXISNAMES
+* V69+ 4/14 *acm* After the above fix, need a tweak to be able to append to files having 
+*                 dimensions that are not coordinate variables
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -99,7 +101,7 @@
       CHARACTER*(*) gname
 
 * local variable declarations:
-      LOGICAL gmod, name_from_grid
+      LOGICAL gmod, name_from_grid, dim_only
       INTEGER TM_LENSTR1, 
      .        defid, defdim, nlen, slen, cdfstat, iaxis, idim, glen, i
       CHARACTER CD_CHILDAX_NAME*132, CD_AXIS_OUTNAME*132, CD_AXIS_NAME*132,
@@ -203,7 +205,7 @@
      .           idim.EQ.recdim,
      .           lo(idim), hi(idim), pcdf_full_span, 
      .           edges_flag, do_bounds, mode_upcase_output,
-     .           keepax_flag, name_from_grid, status ) 
+     .           keepax_flag, name_from_grid, dim_only, status ) 
 
             IF ( status .NE. merr_ok ) GOTO 5900
          ENDIF

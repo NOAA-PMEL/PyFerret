@@ -1,7 +1,8 @@
 	SUBROUTINE CD_WRITE_AXIS ( cdfid, dset, grid, idim, recdim,
      .                           loss, hiss, ax_type,  edges_flag, 
      .                           do_bounds, mode_upcase_output,  
-     .                           keepax_flag, name_from_grid, status )
+     .                           keepax_flag, name_from_grid, dim_only, 
+     .				 status )
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -100,6 +101,8 @@
 *                 a NOTE. They just clutter things up.
 * V687 3/14 *acm* Fix ticket 1750. Write Ferret-internal axis names to cdf files, unless
 *                 the user has said /KEEP_AXISNAMES
+* V69+ 4/14 *acm* After the above fix, need a tweak to be able to append to files having 
+*                 dimensions that are not coordinate variables
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -145,7 +148,7 @@
       LOGICAL TM_ABSTRACT_AXIS, TM_DATE_OK, MATCH_NAME, NC_GET_ATTRIB,
      .       abstract, do_warn, got_modulo, got_calendar, got_units, 
      .       got_positive, got_spacing, got_axis, got_cartesian, got_it,
-     .       coordvar, do_off, do_scale
+     .       coordvar, do_off, do_scale, dim_only
       PARAMETER (do_warn = .TRUE. )
       INTEGER TM_LENSTR1, CD_AXLEN, STR_SAME, STR_DNCASE,
      .        dimid, iaxis, axid, cdfstat, lo, hi,
@@ -174,6 +177,7 @@
 * initialize
       iaxis = grid_line(idim, grid)
       dset_num = dset
+      dim_only = .FALSE.
 
       name = CD_AXIS_NAME( dset_num, grid, idim, nlen )
       IF (keepax_flag .EQ. 1)  name = CD_AXIS_OUTNAME( dset_num, grid, idim, nlen )
@@ -190,8 +194,16 @@
       IF (mode_upcase_output) THEN
          CALL STR_UPCASE( name_in, name)
          CALL STR_UPCASE( name, name_in)
-      ENDIF
 
+* If not mode upcase_output, then keep the incoming case. 
+      ELSE 
+         name = CD_AXIS_NAME( dset_num, grid, idim, nlen )
+         name_in = CD_AXIS_OUTNAME( dset_num, grid, idim, llen )
+	 IF (STR_SAME(name, name_in) .EQ. 0) THEN 
+	    name = name_in
+	    nlen = llen
+	 ENDIF
+      ENDIF
 
 * determine lo/hi limits of the axis to be written
       IF ( abstract ) THEN
@@ -214,6 +226,15 @@
          nlen = MIN(nlen,maxchildlen)
       ENDIF
 
+* Is it just a dimension, not a coordinate variable
+
+      buff = CD_AXIS_OUTNAME( dset_num, grid, idim, llen )
+      CALL CD_DIM_ONLY (cdfid, buff, llen, dim_only)
+      IF (dim_only) THEN
+         name = buff
+         GOTO 1000  
+      ENDIF
+
 #ifdef usingDODSf2cUnderscore
       cdfstat = NF_INQ_DIMID_( cdfid, name(:nlen), dimid)
 #else
@@ -229,20 +250,6 @@
 #else
          cdfstat = NF_INQ_VARID( cdfid, name(:nlen), axid )
 #endif
-
-* The dimension matches but there is no coord var. Just return.
-* This lets us append variables to a DSG file.
-
-	 IF (cdfstat .EQ. nf_enotvar) THEN
-	    name = line_name_orig(iaxis)
-	    nlen = TM_LENSTR1( name )
-	    
-	    ! Do we want this warning? 
-c	    CALL WARN ('Dimension '//name(:nlen)//
-c     .        ' found. No corresponding coordinate variable.'//
-c     .        ' Writing with dimension only.')
-	    GOTO 1000  
-	 ENDIF
 
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 	 IF (.NOT. recdim) THEN 

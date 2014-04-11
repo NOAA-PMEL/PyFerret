@@ -15,6 +15,7 @@ cd_conventions_out.F\
 cd_defer_coord_write.F\
 cd_delete_attribute.F\
 cd_dods_control.F\
+cd_dim_only.F\
 cd_dset_remoteok.F\
 cd_encode_url.F\
 cd_get_1_axis.F\

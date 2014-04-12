@@ -63,10 +63,11 @@
 
 * local variable declarations:
 
-      INTEGER TM_LENSTR1, clen, slen
-      LOGICAL CD_GET_ATTRIB, got_it, do_warn
+      INTEGER TM_LENSTR1, STR_SAME, clen, slen
+      LOGICAL CD_GET_ATTRIB, got_it, do_warn, append_flag
       PARAMETER (do_warn = .TRUE. )
       CHARACTER*132 buff
+      CHARACTER*1 nl
 
 * initialize
       slen = MIN( TM_LENSTR1(string), 120 )
@@ -75,14 +76,34 @@
       got_it = CD_GET_ATTRIB( cdfid, NCGLOBAL, 'Conventions',
      .                     .NOT.do_warn, ' ', buff, clen, 132 )
 
-* is the last conventions stamp the same as this ?
+* is the last conventions attribute the same as this ?
       IF ( clen .GE. slen ) THEN
          IF ( buff(clen-slen+1:clen) .EQ. string(:slen) ) RETURN
       ENDIF
+      
+* is the last conventions attribute just a "CF-xx?
+* If so just replace with the current string  ...
+      append_flag = append
+      IF ( STR_SAME (buff(1:3), 'CF-') .EQ.0 .AND.
+     .     clen .LE. 12 ) append_flag = .FALSE.
 
-* insert new attribute
-      CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'Conventions',
-     .                     string(:slen), append, status )
+* Insert new CF conventions text
+* If there is a conventions att, append current one.
+* For conventions, just add it with a comma.
+
+      IF (append_flag) THEN
+c         nl = NEW_LINE('a')
+c         CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'Conventions', 
+c     .                     ','//nl(:1)//' '//string(:slen),
+c     .                     append_flag, status )
+         CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'Conventions', 
+     .                     ', '//string(:slen),
+     .                     append_flag, status )
+      ELSE
+         CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'Conventions', string(:slen),
+     .                     append_flag, status )
+      ENDIF
+
       IF ( status .NE. merr_ok ) GOTO 5000
 
 * successful completion

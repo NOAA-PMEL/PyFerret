@@ -70,6 +70,7 @@
       LOGICAL CD_GET_ATTRIB, got_it, do_warn, append_flag
       PARAMETER (do_warn = .TRUE. )
       CHARACTER*2048 history
+      CHARACTER*1 nl
 
 * initialize
       slen = MIN( TM_LENSTR1(string), 120 )
@@ -90,9 +91,19 @@
       IF ( STR_SAME (history(1:8), 'FERRET V') .EQ.0 .AND.
      .     hlen .LE. 30 ) append_flag = .FALSE.
 
-* insert new signature
-      CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'history', string(:slen),
+* insert new signature.
+* If there is an existing history att, append signature after
+* a newline. NEW_LINE is a gfortran function.
+
+      IF (append_flag) THEN
+         nl = NEW_LINE('a')
+         CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'history',  
+     .                     ','//nl(:1)//' '//string(:slen),
      .                     append_flag, status )
+      ELSE
+         CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'history', string(:slen),
+     .                     append_flag, status )
+      ENDIF
       IF ( status .NE. merr_ok ) GOTO 5000
 
 * successful completion

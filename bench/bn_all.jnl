@@ -902,6 +902,16 @@ GO bn_reset
 GO bn_set_axis_name
 
 
+! *********** v6.9+ Additions ***********
+GO bn_reset
+GO bn691_bug_fixes
+
+GO bn_reset
+GO bn_append_dsg
+
+GO bn_reset
+GO bn_conventions_history
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

@@ -71,6 +71,7 @@
       PARAMETER (do_warn = .TRUE. )
       CHARACTER*2048 history
       CHARACTER*1 nl
+      PARAMETER( nl = CHAR(10) )
 
 * initialize
       slen = MIN( TM_LENSTR1(string), 120 )
@@ -93,10 +94,9 @@
 
 * insert new signature.
 * If there is an existing history att, append signature after
-* a newline. NEW_LINE is a gfortran function.
+* a newline.
 
       IF (append_flag) THEN
-         nl = NEW_LINE('a')
          CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'history',  
      .                     ','//nl(:1)//' '//string(:slen),
      .                     append_flag, status )

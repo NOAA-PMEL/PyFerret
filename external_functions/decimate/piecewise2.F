@@ -356,7 +356,12 @@
  100  CONTINUE
 
       CALL merge (u1,nout1,u2,nout2,w,nmerge1,wrk5hix)
-      IF (nout1 .GT. res_hi_ss(X_AXIS)) THEN
+      
+      IF ((nmerge1 .EQ. res_hi_ss(X_AXIS)) .OR. 
+     .    (nmerge1 .EQ. res_hi_ss(X_AXIS)+1) ) THEN
+        nmerge1 = res_hi_ss(X_AXIS)  ! Returning all the data
+
+      ELSE IF (nout1 .GT. res_hi_ss(X_AXIS)) THEN
         write (errtxt,*) 'nmerge1 too large', nmerge1
 	 GOTO 999
       ENDIF

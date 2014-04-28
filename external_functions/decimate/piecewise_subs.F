@@ -109,6 +109,7 @@ C INITIALIZATION FOR ENTIRE PROGRAM
       I = 1
 
       CALL PIECEWISE3_CHECKGAP (Y, bad_y, x, u, i, j, n, skipbad)
+      IF (I.EQ.N) GOTO 260
       IF (skipbad) GOTO 30
 
       U(i) = X(i)
@@ -151,7 +152,10 @@ C NOT RESTRICTED TO TOLERANCE BAND
       I = I + 1
 
       CALL PIECEWISE3_CHECKGAP (Y, bad_y, x, u, i, j, n, skipbad)
-      IF (skipbad) GOTO 30
+      IF (skipbad) THEN
+         IF (I.EQ.N) GOTO 260
+	 GOTO 30
+      ENDIF
 
       GO TO 150
    40 CONTINUE
@@ -172,7 +176,10 @@ C DETERMINATION OF INDIVIDUAL SEGMENT
 C New i, so does it point to a bad-val?
 
       CALL PIECEWISE3_CHECKGAP (Y, bad_y, x, u, i, j, n, skipbad)
-      IF (skipbad) GOTO 30
+      IF (skipbad) THEN
+         IF (I.EQ.N) GOTO 260
+	 GOTO 30
+      ENDIF
 
    70 CONTINUE
  
@@ -469,10 +476,14 @@ c http://en.wikibooks.org/wiki/Algorithm_Implementation/Sorting/Merge_sort#Fortr
       do i = 2, k
          IF (c(i) .GT. c(i-1)) then
 	    j = j + 1
+	    IF (j.GT.nmax) THEN
+	       j = nmax
+	       GOTO 200
+	    ENDIF
 	    c(j) = c(i)
 	 endif
       enddo
-      nout = j
+ 200  nout = j
 
       return
  

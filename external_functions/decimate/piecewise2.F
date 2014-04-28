@@ -310,6 +310,14 @@
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
+* Initialize
+      nx = 0
+      nout1 = 0
+      nout2 = 0
+      nout3 = 0
+      nmerge1 = 0
+      nmerge2 = 0
+
 * Control parameter IP
 
       CALL ef_get_one_val(id, ARG3, val)
@@ -330,6 +338,9 @@
 
       k = res_lo_ss(Z_AXIS)  ! index for unused dimensions
 
+* Find piecewise fit for each array then merge the indices
+* Set the work arrays to 0's so we arent using spurious data
+
 * STL2 modified to truncate result to next lowest integer
 
       bad_y = bad_flag(ARG1)
@@ -340,6 +351,10 @@
 	 GOTO 999
       ENDIF
 
+      DO 100 i = nout1+1, wrk2hix
+         u1(i) = 0.
+ 100  CONTINUE
+
       bad_y = bad_flag(ARG2)
       CALL STL2(xpts, arg_2, tol(2), nx, bad_y, bad_flag_result, 
      .   u2, v, w, nout2, IP)
@@ -347,6 +362,10 @@
         write (errtxt,*) 'second call to STL2 returns too many data', nout2
 	 GOTO 999
       ENDIF
+
+      DO 200 i = nout2+1, wrk3hix
+         u2(i) = 0.
+ 200  CONTINUE
 
 * Truncate result(j=1) to next lowest integer - its going to be
 * the set of coordinate values to sample at.

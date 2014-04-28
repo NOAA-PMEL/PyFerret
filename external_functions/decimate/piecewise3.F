@@ -218,7 +218,8 @@
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       npts = 1 + arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1)
-  
+      npts = 2*npts
+
 * input x-axis coordinates
       iwork = 1
       CALL ef_set_work_array_dims(id, iwork,
@@ -331,6 +332,14 @@
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
+* Initialize
+      nx = 0
+      nout1 = 0
+      nout2 = 0
+      nout3 = 0
+      nmerge1 = 0
+      nmerge2 = 0
+
 * Control parameter IP
 
       CALL ef_get_one_val(id, ARG4, val)
@@ -353,6 +362,9 @@
 
       k = res_lo_ss(Z_AXIS)  ! index for unused dimensions
 
+* Find piecewise fit for each array then merge the indices
+* Set the work arrays to 0's so we arent using spurious data
+
 * STL2 modified to truncate result to next lowest integer
 
       bad_y = bad_flag(ARG1)
@@ -362,39 +374,54 @@
         write (errtxt,*) 'first call to STL2 returns too many data', nout1
 	 GOTO 999
       ENDIF
+      
+      DO 100 i = nout1+1, wrk2hix
+         u1(i) = 0.
+ 100  CONTINUE
 
       bad_y = bad_flag(ARG2)
       CALL STL2(xpts, arg_2, tol(2), nx, bad_y, bad_flag_result, 
      .   u2, v, w, nout2, IP)
-      IF (nout1 .GT. res_hi_ss(X_AXIS)) THEN
+      IF (nout2 .GT. res_hi_ss(X_AXIS)) THEN
         write (errtxt,*) 'second call to STL2 returns too many data', nout2
 	 GOTO 999
       ENDIF
 
+      DO 200 i = nout2+1, wrk3hix
+         u2(i) = 0.
+ 200  CONTINUE
+
       bad_y = bad_flag(ARG3)
       CALL STL2(xpts, arg_3, tol(3), nx, bad_y, bad_flag_result, 
      .   u3, v, w, nout3, IP)
-      IF (nout1 .GT. res_hi_ss(X_AXIS)) THEN
+      IF (nout3 .GT. res_hi_ss(X_AXIS)) THEN
         write (errtxt,*) 'third call to STL2 returns too many data', nout3
 	 GOTO 999
       ENDIF
 
+      DO 300 i = nout3+1, wrk4hix
+         u3(i) = 0.
+ 300  CONTINUE
+
 * Truncate result(j=1) to next lowest integer - its going to be
 * the set of coordinate values to sample at.
 
-      DO 100 i = 1, nout1+nout2
+      DO 400 i = 1, wrk6hix
 	 w(i) = 0.
- 100  CONTINUE
+ 400  CONTINUE
 
       CALL merge (u1,nout1,u2,nout2,w,nmerge1,wrk6hix)
-      IF (nout1 .GT. res_hi_ss(X_AXIS)) THEN
+      IF (nmerge1 .GT. res_hi_ss(X_AXIS)) THEN
         write (errtxt,*) 'nmerge1 too large', nmerge1
 	 GOTO 999
       ENDIF
 
-      DO 200 i = 1, nout1+nout2
+      DO 500 i = 1, wrk5hix
 	 v(i) = 0.
- 200  CONTINUE
+ 500  CONTINUE
+      DO 510 i = nmerge1+1, wrk6hix
+	 w(i) = 0.
+ 510  CONTINUE
 
       CALL merge (w,nmerge1,u3,nout3,v,nmerge2,wrk5hix)
       IF ((nmerge2 .EQ. res_hi_ss(X_AXIS)) .OR. 
@@ -404,13 +431,13 @@
 	 GOTO 999
       ENDIF
 
-      DO 300 i = 1, nmerge2
+      DO 600 i = 1, nmerge2
         result(i,k,k,k) = v(i)
- 300  CONTINUE
+ 600  CONTINUE
 
-      DO 400 i = nmerge2+1, res_hi_ss(X_AXIS)
+      DO 700 i = nmerge2+1, res_hi_ss(X_AXIS)
         result(i,k,k,k) = bad_flag_result
- 400  CONTINUE
+ 700  CONTINUE
 
       RETURN
  999  CALL EF_BAIL_OUT(id, errtxt)

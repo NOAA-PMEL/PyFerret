@@ -314,9 +314,7 @@
       nx = 0
       nout1 = 0
       nout2 = 0
-      nout3 = 0
       nmerge1 = 0
-      nmerge2 = 0
 
 * Control parameter IP
 

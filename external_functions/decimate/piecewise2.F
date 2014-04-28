@@ -370,9 +370,9 @@
 * Truncate result(j=1) to next lowest integer - its going to be
 * the set of coordinate values to sample at.
 
-      DO 100 i = 1, nout1+nout2
+      DO 300 i = 1, nout1+nout2
 	 w(i) = 0.
- 100  CONTINUE
+ 300  CONTINUE
 
       CALL merge (u1,nout1,u2,nout2,w,nmerge1,wrk5hix)
       
@@ -385,13 +385,13 @@
 	 GOTO 999
       ENDIF
 
-      DO 200 i = 1, nmerge1
+      DO 400 i = 1, nmerge1
         result(i,k,k,k) = w(i)
- 200  CONTINUE
+ 400  CONTINUE
 
-      DO 300 i = nmerge1+1, res_hi_ss(X_AXIS)
+      DO 500 i = nmerge1+1, res_hi_ss(X_AXIS)
         result(i,k,k,k) = bad_flag_result
- 300  CONTINUE
+ 500  CONTINUE
 
       RETURN
  999  CALL EF_BAIL_OUT(id, errtxt)

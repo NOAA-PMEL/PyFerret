@@ -154,7 +154,7 @@
       DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
       
          result(i) = bad_flag_result
-         IF (arg_2(i2) .NE. bad_flag_result) THEN
+         IF (arg_2(i2) .NE. bad_flag(ARG2)) THEN
             isample = INT(arg_2(i2))
             result(i) = arg_1(isample)
 	 ENDIF

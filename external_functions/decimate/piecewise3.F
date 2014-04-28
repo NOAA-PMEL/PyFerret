@@ -364,6 +364,8 @@
 
 * Find piecewise fit for each array then merge the indices
 * Set the work arrays to 0's so we arent using spurious data
+* If the function returns too many points, just return all indices
+
 
 * STL2 modified to truncate result to next lowest integer
 
@@ -371,37 +373,43 @@
       CALL STL2(xpts, arg_1, tol(1), nx, bad_y, bad_flag_result, 
      .   u1, v, w, nout1, IP)
       IF (nout1 .GT. res_hi_ss(X_AXIS)) THEN
-        write (errtxt,*) 'first call to STL2 returns too many data', nout1
-	 GOTO 999
+         nout1 = nx
+         DO 100 i = 1, nx
+	    u1(i) = FLOAT(i)
+ 100     CONTINUE
       ENDIF
       
-      DO 100 i = nout1+1, wrk2hix
+      DO 110 i = nout1+1, wrk2hix
          u1(i) = 0.
- 100  CONTINUE
+ 110  CONTINUE
 
       bad_y = bad_flag(ARG2)
       CALL STL2(xpts, arg_2, tol(2), nx, bad_y, bad_flag_result, 
      .   u2, v, w, nout2, IP)
       IF (nout2 .GT. res_hi_ss(X_AXIS)) THEN
-        write (errtxt,*) 'second call to STL2 returns too many data', nout2
-	 GOTO 999
+         nout2 = nx
+         DO 200 i = 1, nx
+	    u2(i) = FLOAT(i)
+ 200     CONTINUE
       ENDIF
 
-      DO 200 i = nout2+1, wrk3hix
+      DO 210 i = nout2+1, wrk3hix
          u2(i) = 0.
- 200  CONTINUE
+ 210  CONTINUE
 
       bad_y = bad_flag(ARG3)
       CALL STL2(xpts, arg_3, tol(3), nx, bad_y, bad_flag_result, 
      .   u3, v, w, nout3, IP)
       IF (nout3 .GT. res_hi_ss(X_AXIS)) THEN
-        write (errtxt,*) 'third call to STL2 returns too many data', nout3
-	 GOTO 999
+         nout3 = nx
+         DO 300 i = 1, nx
+	    u3(i) = FLOAT(i)
+ 300     CONTINUE
       ENDIF
 
-      DO 300 i = nout3+1, wrk4hix
+      DO 310 i = nout3+1, wrk4hix
          u3(i) = 0.
- 300  CONTINUE
+ 310  CONTINUE
 
 * Truncate result(j=1) to next lowest integer - its going to be
 * the set of coordinate values to sample at.

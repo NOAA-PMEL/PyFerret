@@ -113,10 +113,18 @@
 
       INTEGER id
 
+* Single precision Ferret: string arg and result need to be twice the length.
+      INTEGER strdf
+#ifdef double_p
+      PARAMETER (strdf = 1)
+#else
+      PARAMETER (strdf = 2)
+#endif
+
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(2,mem1lox:mem1hix, mem1loy:mem1hiy, 
+      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy, 
      .     mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL result(2,memreslox:memreshix, memresloy:memreshiy, 
+      REAL result(strdf,memreslox:memreshix, memresloy:memreshiy, 
      .     memresloz:memreshiz, memreslot:memreshit)
       REAL*8 tax(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit/2)

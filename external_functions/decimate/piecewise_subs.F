@@ -86,10 +86,29 @@ C  CASE NO FURTHER PROCESSING IS ATTEMPTED.
 * Local declarations
       LOGICAL skipbad
       INTEGER N, ITCH, I, J, L, KEEP, INIT, INDC, IGRAZE,
-     .        IDIOT, IT, IPIV, KP
+     .        IDIOT, IT, IPIV, KP, ilo, ihi, icount
       REAL EPSLN, SGN, XEYE, YEYE, TEMP1, SMIN, DX, 
      .     SVX, SVY, SVMN, TEMP2, XINIT, YINIT, SLOPE, SMAX, 
      .     SVMX, TEST
+
+* If there is a trivial amount of data in the input array then we are done
+      ilo = 0
+      ihi = 0
+      icount = 0
+      DO i = 1, m
+         IF (y(i) .NE. bad_y) THEN
+	    icount = icount + 1
+	    IF (ilo .EQ. 0) ilo = i
+	    ihi = i
+	 ENDIF
+      ENDDO
+
+      IF (icount .LE. 2) THEN
+         k = icount
+	 IF (ilo .GT. 0) u(1) = ilo
+	 IF (ihi .GT. 0) u(icount) = ihi
+	 GOTO 600
+      ENDIF
 
       N = M
       ITCH = IP
@@ -380,6 +399,7 @@ C RECOMPUTATION OF KNOT FOR CONTINUITY
          u(i) = INT(u(i))
   500 CONTINUE
 
+  600 CONTINUE
       RETURN
       END
 

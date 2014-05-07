@@ -1,0 +1,9 @@
+! bn691_bug_fixes
+! test various fixes that went into version 6.91
+! 04/2014 ACM
+
+GO bn_reset
+GO err69_arg_type_error
+
+GO bn_reset
+GO err69_bad_bounds

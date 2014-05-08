@@ -178,6 +178,9 @@
 * V685 *acm* 11/13 REALLY make the check for axis length in single precision when the
 *                  coordinate variable came in as a single-precision variable.
 * V6.87 4/14 *acm* ticket 2146: if invalid bounds, make the bounds a dependent variale.
+* V691  4/41 *acm* Ticket 2170: bub with invalid bounds when point-spacing=true attribute.
+* Ticket 2172: If the axis is actually too long, reset the modulo flags
+* so it is treated as not modulo.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -407,6 +410,11 @@
       got_edges = NC_GET_ATTRIB( dset, ivar, 'edges',
      .                       do_warn, vname(:vlen), maxlen,
      .                       attlen, attoutflag, ename, val)
+
+* We will be checking bounds or edges. Read the coords too
+* in case we are going to mark the axis as irregular.
+
+      IF (got_edges .OR. got_bnds) line_regular(iaxis) = .FALSE.
 
 * optional "true_size" parameter for 2 point representations of even axes
       IF ( line_regular(iaxis) ) THEN
@@ -1157,37 +1165,39 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
      .         '" or bounds do not enclose point on axis '//
      .         vname(:vlen), tt)
            CALL TM_NOTE('Substituting coordinate midpoints', tt)
-           CALL TM_IRREGAX_MID( next_line_mem_pos,
-     .                          line_dim   (iaxis) )
+           IF (.NOT.line_regular(iaxis) ) CALL TM_IRREGAX_MID(
+     .                          next_line_mem_pos, line_dim (iaxis) )
            bad_bndsid = bndid
       
-        ENDIF
+        ELSE  ! Only check for centered bounds if the bounds are valid
 
 * For axes specified with BOUNDS, check whether coordinates are also 
 * centered in the boxes, and whether the size of the boxes are equal.
 * If there is one point, use upper and lower bound as given in the file 
 * to determine line_delta.
 
-        IF (TM_CHECK_BNDS_CENTERED(iaxis)) THEN
+           IF (TM_CHECK_BNDS_CENTERED(iaxis)) THEN
 * It's actually regular - save it as such
-           IF (.NOT. line_regular(iaxis)) THEN
-              line_regular(iaxis) = .TRUE.
-              line_start  (iaxis) = line_mem(ipt1)
-              IF (npts .GT. 1) THEN
-                 line_delta  (iaxis) = 
-     .               (line_mem(ipte)-line_mem(ipt1))/DBLE(npts-1)
-              ELSE
-	         ibx1 = ipt1 + npts
-                 line_delta(iaxis) = line_mem(ibx1+1)-line_mem(ibx1)
+              IF (.NOT. line_regular(iaxis)) THEN
+                 line_regular(iaxis) = .TRUE.
+                 line_start  (iaxis) = line_mem(ipt1)
+                 IF (npts .GT. 1) THEN
+                    line_delta  (iaxis) = 
+     .                (line_mem(ipte)-line_mem(ipt1))/DBLE(npts-1)
+                 ELSE
+   	         ibx1 = ipt1 + npts
+                    line_delta(iaxis) = line_mem(ibx1+1)-line_mem(ibx1)
+                 ENDIF
+                 line_subsc1 (iaxis) = unspecified_int4
+                 last_coord = line_start(iaxis) + 
+     .                DBLE(npts-1)*line_delta(iaxis)
+                 firs_coord = line_start(iaxis)
               ENDIF
-              line_subsc1 (iaxis) = unspecified_int4
-              last_coord = line_start(iaxis) + 
-     .               DBLE(npts-1)*line_delta(iaxis)
-              firs_coord = line_start(iaxis)
+           ELSE
+              line_regular(iaxis) = .FALSE.
            ENDIF
-        ELSE
-           line_regular(iaxis) = .FALSE.
-        ENDIF
+	
+        ENDIF  ! valid bounds, also checked centered
 
  600    CONTINUE
 
@@ -1263,6 +1273,9 @@ c           secsperyear = cals_yeardays(cal_id)* 24*60*60
 * double coordinate storage. If coords are single precision do the 
 * check in single precision.
 
+* Ticket 2172: If the axis is actually too long, reset the modulo flags
+* so it is treated as not modulo.
+
         IF (line_modulo(iaxis).AND.line_modulo_len(iaxis).NE.0.D0) THEN
            IF (line_modulo_len(iaxis) .LT. axwwlen) THEN
 c             line_modulo_len(iaxis) = 0.0D0
@@ -1274,10 +1287,13 @@ c             line_modulo_len(iaxis) = 0.0D0
 		IF (vartype.NE.ncdouble) delta = r4delta
                 ok = TM_FPEQ(delta, lm_len)
              ENDIF
-             IF (.NOT.  ok)
-     .          CALL TM_NOTE(
+             IF (.NOT.  ok) THEN
+	        line_modulo_len(iaxis) = 0
+		line_modulo(iaxis) = .FALSE.
+                CALL TM_NOTE(
      .          'Ignored modulo length exceeding axis length: '
      .          //vname(:vlen), tt )
+             ENDIF
            ENDIF
         ENDIF
 

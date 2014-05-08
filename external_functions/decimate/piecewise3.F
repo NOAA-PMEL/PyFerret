@@ -94,7 +94,7 @@
       CALL ef_set_axis_inheritance(id, ABSTRACT, NORMAL, 
      .                                              NORMAL,   NORMAL)
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
-      CALL ef_set_num_work_arrays(id, 6)
+      CALL ef_set_num_work_arrays(id, 7)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'V1')
@@ -255,6 +255,12 @@
       CALL ef_set_work_array_dims(id, iwork,
      .                                1, 1, 1, 1,
      .                           2*npts+10, 1, 1, 1)
+
+* data w/o gaps
+      iwork = 7
+      CALL ef_set_work_array_dims(id, iwork,
+     .                                1, 1, 1, 1,
+     .                           npts+10, 1, 1, 1)
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -267,7 +273,7 @@
 *  In this subroutine we compute the result
 * 
       SUBROUTINE piecewise3_compute(id, arg_1, arg_2, arg_3, arg_4, 
-     .        arg_5, arg_6, arg_7, result, xpts, u1, u2, u3, v, w)
+     .        arg_5, arg_6, arg_7, result, xpts, u1, u2, u3, v, w, yf)
 
       IMPLICIT NONE
       INCLUDE 'ferret_cmn/EF_Util.cmn'
@@ -303,6 +309,7 @@
       REAL u3(wrk4lox:wrk4hix)
       REAL  v(wrk5lox:wrk5hix)
       REAL  w(wrk6lox:wrk6hix)
+      REAL yf(wrk7lox:wrk7hix)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -323,8 +330,8 @@
 *                                                                      |
 *                                                                      V
 
-      INTEGER i,  k
-      INTEGER nx, nout1, nout2, nout3, nmerge1, nmerge2, ip
+      INTEGER i, j, k, l
+      INTEGER nx, nout1, nout2, nout3, nmerge1, nmerge2, ip, icount
       REAL val, tol(3), bad_y
       CHARACTER*100 errtxt
 
@@ -397,8 +404,26 @@
          u2(i) = 0.
  210  CONTINUE
 
+      
+* Skip over gaps in the data array, keeping good data and indices where
+* good data lies. Decimate this instead.
+
       bad_y = bad_flag(ARG3)
-      CALL STL2(xpts, arg_3, tol(3), nx, bad_y, bad_flag_result, 
+
+      j = arg_lo_ss(Y_AXIS, ARG3)
+      k = arg_lo_ss(Z_AXIS, ARG3)
+      l = arg_lo_ss(T_AXIS, ARG3)
+
+      icount = 0
+      DO 220 i = 1, nx
+         IF (arg_3(i,j,k,l) .NE. bad_y) THEN
+	    icount = icount + 1
+	    xpts(icount) = xpts(i)
+	    yf(icount) = arg_3(i,j,k,l)
+	 ENDIF
+ 220  CONTINUE
+
+      CALL STL2(xpts, yf, tol(3), icount, bad_y, bad_flag_result, 
      .   u3, v, w, nout3, IP)
       IF (nout3 .GT. res_hi_ss(X_AXIS)) THEN
          nout3 = nx

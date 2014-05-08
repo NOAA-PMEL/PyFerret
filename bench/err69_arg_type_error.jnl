@@ -2,16 +2,16 @@
 ! See ticket 2169
 ! 
 set mode ignore
-sh func  my_tax_datestring
-sh func /detail my_tax_datestring
+sh func  tax_datestring
+sh func /detail tax_datestring
 
 define axis/t=1-jan-2000:31-jan-2000:1/units=days my_tax
 let tt = t[gt=my_tax]
 
 ! Intentional errors
-list my_tax_datestring (tt[L=3], tt, 5)
-list my_tax_datestring (tt[L=3], tt, "minutes")
-list my_tax_datestring (tt[L=3], "my_tax", "minutes")
+list tax_datestring (tt[L=3], tt, 5)
+list tax_datestring (tt[L=3], tt, "minutes")
+list tax_datestring (tt[L=3], "my_tax", "minutes")
 
 set mode /last ignore
 

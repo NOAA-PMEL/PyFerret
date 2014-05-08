@@ -1,0 +1,16 @@
+ ! NOAA/PMEL TMAP
+ ! FERRET v6.91 (beta)
+ ! Linux 2.6.32-431.5.1.el6.x86_64 64-bit - 04/07/14
+ !  7-Apr-14 16:41     
+
+sp cp global.nc  global_copy.nc
+use global_copy.nc
+! Lon in 0-360
+let/title="longitude"/units="degrees_east" lon360 = IF longitude LT 0 THEN longitude+360 else longitude
+define attribute/output lon360.ioos_category = "Location"
+define attribute/output lon360.standard_name = "Longitude"
+define attribute/output lon360.history = "added to test_save_dsg.nc"
+save/quiet/append/file=global_copy.nc lon360
+sp ncdump -h global.nc
+sp ncdump -h global_copy.nc
+q

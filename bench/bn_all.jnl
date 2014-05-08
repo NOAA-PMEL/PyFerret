@@ -901,13 +901,15 @@ GO bn_stddev
 GO bn_reset
 GO bn_set_axis_name
 
-
 ! *********** v6.9+ Additions ***********
 GO bn_reset
 GO bn691_bug_fixes
 
 GO bn_reset
 GO bn_append_dsg
+
+GO bn_reset
+GO bn_global_atts
 
 GO bn_reset
 GO bn_conventions_history

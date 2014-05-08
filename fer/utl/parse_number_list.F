@@ -41,6 +41,8 @@
 * V500: *sh* 12/98
 *	   2/99 - bug fix - 2 commas together
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files. Add disclaimer.
+* V69+  *acm* 5/14 ticket 2174: check that the expression is just a constant
+*                  before reading from the buffer into the array.
 
 * calling argument declarations
 	INTEGER		nmax, n, status
@@ -48,7 +50,8 @@
 	CHARACTER*(*)	string
 
 * internal variable declarations
-	INTEGER 	comma_pos, last_comma_pos, slen
+	LOGICAL		TM_NUMBER
+	INTEGER 	TM_LENSTR1, comma_pos, last_comma_pos, slen
 	CHARACTER	buff*64
 
 	include 'ferret.parm'
@@ -82,7 +85,11 @@
 	      IF ( buff .EQ. ' ' ) THEN
 	         array(n) = bad_val4
 	      ELSE
-	         READ ( buff, *, ERR=5000 ) array(n)
+	         IF (TM_NUMBER (buff)) THEN
+	            READ ( buff, *, ERR=5000 ) array(n)
+	         ELSE
+		    GOTO 5200
+	         ENDIF
 	      ENDIF
 	   ENDIF
 	   GOTO 1000
@@ -94,7 +101,11 @@
 	   IF ( buff .EQ. ' ' ) THEN
 	      array(n) = bad_val4
 	   ELSE
-	      READ ( buff, *, ERR=5000 ) array(n)
+	      IF (TM_NUMBER (buff)) THEN
+	         READ ( buff, *, ERR=5000 ) array(n)
+	      ELSE
+	         GOTO 5200
+	      ENDIF
 	   ENDIF
 	ENDIF
 	last_comma_pos = last_comma_pos + comma_pos
@@ -114,4 +125,8 @@
  5000	CALL ERRMSG( ferr_syntax, status, string(last_comma_pos+1:),
      .							*4999 )
  5100	CALL ERRMSG( ferr_internal, status, string, *4999 )
+ 5200   CALL ERRMSG( ferr_syntax, status, 
+     .          'must be a constant '//
+     .		buff(:TM_LENSTR1(buff)), *4999 )
+
 	END

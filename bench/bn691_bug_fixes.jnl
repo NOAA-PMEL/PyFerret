@@ -7,3 +7,7 @@ GO err69_arg_type_error
 
 GO bn_reset
 GO err69_bad_bounds
+
+GO bn_reset
+GO err69_const_array
+

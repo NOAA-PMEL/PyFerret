@@ -1,0 +1,26 @@
+! err69_const_array.jnl
+! 5/8/2014  ACM
+! See ticket 2174 
+! expressions are not allowed in constant-array definitions.
+
+set mode ignore
+
+! The code to read constant-array definitions into memory was simply doing
+! a read on each comma-separated portion of the command-line defining it.
+! Need to first determine if the buffer represents a simple constant.
+
+! These already returned an error as cos(1) can't be read with a Fortran read.
+list {cos(1), sin(0)}
+
+! Previously the first was read as {0,180} and the second as {0.1,0.2,1}, and
+! the third as {30,2000} !
+! They should be reported as syntax errors
+
+list {0-180, 180}
+list {0.1, 0.2, 1./5.}
+list {5*3+1, 2+3}
+
+! These are ok, and always have been
+list/prec=8 {-0.001, 1.23e-2, -45.e3}
+
+set mode/last ignore

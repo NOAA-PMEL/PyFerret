@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version ../fer/ferret_c
--rwxr-xr-x 1 ansley tmap 53385947 Apr 11 17:07 ../fer/ferret_c
-Using external functions from ../external_functions/ext_func
+Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 53392622 May  8 13:01 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func/
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2166: conventions and history attributes
+Note: fix ticket 2174, and new benchmark test
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,16 +13,16 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func/
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
+FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go /home/users/ansley/baker_trunk/JavaSource/resources/iosp/scripts/
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Fri Apr 11 17:32:09 PDT 2014
+Beginning at Thu May 8 13:11:40 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3645,11 +3645,30 @@ set axis/name=.fr x_in_meters
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis TAX
  **ERROR: invalid command: string/numeric data type mix-up. Argument 3 : TAX_DATESTRING
 list tax_datestring (tt[L=3], tt, 5)
  **ERROR: invalid command: string/numeric data type mix-up. Argument 2 : TAX_DATESTRING
-list tax_datestring (tt[L=3], "tax", "minutes")
+list tax_datestring (tt[L=3], "my_tax", "minutes")
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Error in bounds "TAX_BB_PTSPAC_bnds" or bounds do not enclose point on axis TAX_BB_PTSPAC
+ *** NOTE: Substituting coordinate midpoints
+ *** NOTE: Error in bounds "TAX_BB_EVEN_NOENC_bnds" or bounds do not enclose point on axis TAX_BB_EVEN_NOENC
+ *** NOTE: Substituting coordinate midpoints
+ *** NOTE: Error in bounds "TAX_BB_IRR_bnds" or bounds do not enclose point on axis TAX_BB_IRR
+ *** NOTE: Substituting coordinate midpoints
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: must be a constant COS(1)
+list {cos(1), sin(0)}
+ **ERROR: command syntax: must be a constant 0-180
+list {0-180, 180}
+ **ERROR: command syntax: must be a constant  1./5.
+list {0.1, 0.2, 1./5.}
+ **ERROR: command syntax: must be a constant 5*3+1
+list {5*3+1, 2+3}
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3746,4 +3765,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Apr 11 17:33:50 PDT 2014
+Ended at Thu May 8 13:13:12 PDT 2014

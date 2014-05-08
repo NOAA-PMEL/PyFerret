@@ -740,6 +740,10 @@ void FORTRAN(expndi_id_by_z_counts_init)(int *);
 void FORTRAN(expndi_id_by_z_counts_result_limits)(int *);
 void FORTRAN(expndi_id_by_z_counts_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
+void FORTRAN(expndi_by_m_counts_init)(int *);
+void FORTRAN(expndi_by_m_counts_custom_axes)(int *);
+void FORTRAN(expndi_by_m_counts_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+
 void FORTRAN(fc_isubset_init)(int *);
 void FORTRAN(fc_isubset_result_limits)(int *);
 void FORTRAN(fc_isubset_custom_axes)(int *);
@@ -1104,7 +1108,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 162
+#define N_INTEF 163
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1270,8 +1274,9 @@ struct {
    strcpy(I_EFnames[157].funcname, "fc_isubset");
    strcpy(I_EFnames[158].funcname, "expndi_by_z_counts");
    strcpy(I_EFnames[159].funcname, "expndi_id_by_z_counts");
-   strcpy(I_EFnames[160].funcname, "str_mask");
-   strcpy(I_EFnames[161].funcname, "samplexyt_nrst");
+   strcpy(I_EFnames[160].funcname, "expndi_by_m_counts");
+   strcpy(I_EFnames[161].funcname, "str_mask");
+   strcpy(I_EFnames[162].funcname, "samplexyt_nrst");
 
 /*    
  *  ------------------------------------ 
@@ -3967,6 +3972,11 @@ else if ( !strcmp(name,"expndi_by_z_counts_compute_") ) return (void *)FORTRAN(e
 else if ( !strcmp(name,"expndi_id_by_z_counts_init_") ) return (void *)FORTRAN(expndi_id_by_z_counts_init);
 else if ( !strcmp(name,"expndi_id_by_z_counts_result_limits_") ) return (void *)FORTRAN(expndi_id_by_z_counts_result_limits);
 else if ( !strcmp(name,"expndi_id_by_z_counts_compute_") ) return (void *)FORTRAN(expndi_id_by_z_counts_compute);
+
+/* expndi_by_m_counts.F */
+else if ( !strcmp(name,"expndi_by_m_counts_init_") ) return (void *)FORTRAN(expndi_by_m_counts_init);
+else if ( !strcmp(name,"expndi_by_m_counts_custom_axes_") ) return (void *)FORTRAN(expndi_by_m_counts_custom_axes);
+else if ( !strcmp(name,"expndi_by_m_counts_compute_") ) return (void *)FORTRAN(expndi_by_m_counts_compute);
 
 /* fc_isubset.F */
 else if ( !strcmp(name,"fc_isubset_init_") ) return (void *)FORTRAN(fc_isubset_init);

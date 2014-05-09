@@ -13,4 +13,17 @@ define attribute/output lon360.history = "added to test_save_dsg.nc"
 save/quiet/append/file=global_copy.nc lon360
 sp ncdump -h global.nc
 sp ncdump -h global_copy.nc
-q
+
+! This dataset has global attributes history and Conventions that include
+! a Ferret version and CF version that Ferret will replace.
+
+sp ncgen -o anew_global.nc anew_global.cdl
+use anew_global.nc
+sh att .
+let var = 8
+save/append/file=anew_global.nc  var
+can dat/all; use anew_global.nc
+sh att .
+
+
+

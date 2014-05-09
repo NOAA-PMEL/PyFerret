@@ -54,6 +54,8 @@ C              (axis data was read as double precision and converted to single
 C              after applying an offset.)
 * V683 12/12 *acm* Fix for applying a font setting in multiple line labels
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* V69+  5/14 *acm* Fix for ascii font in multi-line labels, ticket 2176
+
 C**
 C**
 C***********************************************************************
@@ -304,8 +306,8 @@ C
             fontprefix = ""
             penprefix = ""
             DO 20 j = 1, numlines
-               CALL getlabfonts (xlab, lnbeg, lnend, j, npnew, nfnew, 
-     .           newfont, newpen, nchr)
+               CALL getlabfonts (label, lnbeg, lnend, j, fontprefix, 
+     .           npnew, nfnew, newfont, newpen, nchr)
 
 	       IF(IPOS.LT.0)THEN
 		  YL=Y-(XWID+2.0*HXLAB)/YFF
@@ -436,8 +438,8 @@ c	    ENDIF
             fontprefix = ""
             penprefix = ""
             DO 30 j = 1, numlines
-               CALL getlabfonts (ylab, lnbeg, lnend, j, npnew, nfnew, 
-     .           newfont, newpen, nchr)
+               CALL getlabfonts (label, lnbeg, lnend, j, fontprefix, 
+     .           npnew, nfnew, newfont, newpen, nchr)
 
 	       IF(IPOS.LT.0)THEN
 	           XL=XX-(YWID+HYLAB)/XFF
@@ -629,12 +631,9 @@ C
             fontprefix = ""
             penprefix = ""
             DO 40 j = 1, numlines
-               CALL getlabfonts (label, lnbeg, lnend, j, npnew, nfnew, 
-     .           newfont, newpen, nchr)
+               CALL getlabfonts (label, lnbeg, lnend, j, fontprefix, 
+     .           npnew, nfnew, newfont, newpen, nchr)
 
-	       XMN=SYMWID(CHSIZE,NCHR+npen+nfont,
-     .                 penprefix(1:npen)//fontprefix(1:nfont)//
-     .                 label(lnbeg(j):lnend(j)))
 	       SHFT=0.0
 	       IF(IPOS.GT.0)THEN
 	   	   SHFT=-XMN
@@ -677,3 +676,4 @@ C
 
 	RETURN
 	END
+c!!!!!!!!!!!!!!!!!!!!!

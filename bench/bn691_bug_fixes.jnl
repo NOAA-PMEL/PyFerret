@@ -11,3 +11,5 @@ GO err69_bad_bounds
 GO bn_reset
 GO err69_const_array
 
+GO bn_reset
+GO err69_multi_label_ascii

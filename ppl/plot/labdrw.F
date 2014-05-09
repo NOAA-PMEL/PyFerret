@@ -47,6 +47,7 @@ C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 C *acm* v552 3/03 Longer strings and changes for multi-line labels.
+* V69+  5/14 *acm* Fix for ascii font in multi-line labels, ticket 2176
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'AXIS.INC'
@@ -95,8 +96,8 @@ C  Y label. center each line
         fontprefix = ""
         penprefix = ""
         DO 10 j = 1, numlines
-           CALL getlabfonts (ylab, lnbeg, lnend, j, npnew, nfnew, 
-     .           newfont, newpen, nchr)
+           CALL getlabfonts (ylab, lnbeg, lnend, j, fontprefix, 
+     .           npnew, nfnew, newfont, newpen, nchr)
 
 	   YL=YLO+(YLEN-SYMWID(HYLAB, NCHR+npen+nfont,
      .                 penprefix(1:npen)//fontprefix(1:nfont)//
@@ -145,8 +146,8 @@ cc For fixing bug 1582: missing label on horizontal axis.
 cc This crept in with multi-line labels. no need for IF(LABELX.LT.0) here.
 cc	IF(LABELX.LT.0)THEN
 
-           CALL getlabfonts (xlab, lnbeg, lnend, j, npnew, nfnew, 
-     .           newfont, newpen, nchr)
+           CALL getlabfonts (ylab, lnbeg, lnend, j, fontprefix, 
+     .           npnew, nfnew, newfont, newpen, nchr)
 
 	   XL=XLO+(XLEN-SYMWID(HXLAB,NCHR+npen+nfont,
      .                 penprefix(1:npen)//fontprefix(1:nfont)//
@@ -209,8 +210,8 @@ C	Determine starting y position of main label
         penprefix = ""
 
         DO 50 j = 1, numlines
-           CALL getlabfonts (lab1, lnbeg, lnend, j, npnew, nfnew, 
-     .           newfont, newpen, nchr)
+           CALL getlabfonts (lab1, lnbeg, lnend, j, fontprefix, 
+     .           npnew, nfnew, newfont, newpen, nchr)
 	   XL=XLO+(XLEN-
      .          SYMWID(htnew,NCHR,lab1(lnbeg(j):lnend(j))))*.5/XF
 

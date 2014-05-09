@@ -1,5 +1,5 @@
-      SUBROUTINE getlabfonts (lab, lnbeg, lnend, jln, npnew, nfnew, 
-     .           newfont, newpen, nchr)
+      SUBROUTINE getlabfonts (lab, lnbeg, lnend, jln, fontprefix,
+     .          npnew, nfnew, newfont, newpen, nchr)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -40,47 +40,71 @@
 *                  one line to the next in multi-line lables, allow for
 *                  @Cnnn syntax.
 * V683 12/12 *acm* Fix for applying a font setting in multiple line labels
+* V69+  5/14 *acm* Fix for ascii font in multi-line labels, ticket 2176
 
 * Argument declarations
 
-      CHARACTER*(*) lab, newfont, newpen
+      CHARACTER*(*) lab, newfont, newpen, fontprefix
       INTEGER lnbeg(*), lnend(*), npnew, nfnew, nchr, jln
 
 * Local variable definitions
 
-      CHARACTER*1 fcode, fnext
-      INTEGER TM_LOC_STRING, ioc, loc
-      LOGICAL digit, isc
+      CHARACTER*1 fcode, fnext, ichr
+      INTEGER TM_LOC_STRING, ioc, loc, ii, eloc
+      LOGICAL digit, isc, ascfnt
 
       npnew = 0
       nfnew = 0
       newfont = ""
       newpen = ""
 
+* Is the current setting an ASCII font
+      ascfnt = (fontprefix(1:2).EQ.'@A' .OR. fontprefix(1:2).EQ.'@a') 
+
       nchr = lnend(jln) - lnbeg(jln) + 1
       ioc = 0
       loc = TM_LOC_STRING(lab(lnbeg(jln):lnend(jln)),"@",ioc)
 
       IF ( loc .GT. 0) THEN
-         fcode = lab(lnbeg(jln)+loc:lnbeg(jln)+loc)
-	 fnext = lab(lnbeg(jln)+loc+1:lnbeg(jln)+loc+1)
 
-	 digit = (fcode .EQ. 'C'  .OR.  fcode .EQ. 'c') 
-	 digit = ( fnext .GE. '0' .AND. fnext .LE. '9')
-	 isc = ((fcode .EQ. 'C'  .OR.  fcode .EQ. 'c') .AND.digit) 
+* Is the ASCII font escaped before the first font/pen setting?
+         DO ii = lnbeg(jln), lnbeg(jln)+loc
+            ichr = lab(ii:ii)
+            IF (ichar(ichr) .eq.27 .AND. i .LT. lnbeg(jln)+loc+1) THEN
+               ascfnt = .FALSE.
+	       eloc = ii
+	       GOTO 100
+	    ENDIF
+         ENDDO
+ 100     CONTINUE
 
-         IF (fcode .EQ. 'P'  .OR.  fcode .EQ. 'p') THEN
-            newpen(1:3) = lab(lnbeg(jln)+loc-1:lnbeg(jln)+loc+1)
-            npnew = 3
-         ELSE IF ((fcode .EQ. 'C'  .OR.  fcode .EQ. 'c') .AND.digit) THEN
-            newpen(1:5) = lab(lnbeg(jln)+loc-1:lnbeg(jln)+loc+3)
-            npnew = 5
-         ELSE
-            newfont(1:3) = lab(lnbeg(jln)+loc-1:lnbeg(jln)+loc+1)
-            nfnew = 3
+* Font/pen settings are only applied if it's not the ascii font or
+* the @ was escaped.
 
-         ENDIF
+	 IF (.NOT. ascfnt) THEN
+            fcode = lab(lnbeg(jln)+loc:lnbeg(jln)+loc)
+	    fnext = lab(lnbeg(jln)+loc+1:lnbeg(jln)+loc+1)
+   
+	    digit = (fcode .EQ. 'C'  .OR.  fcode .EQ. 'c') 
+	    digit = ( fnext .GE. '0' .AND. fnext .LE. '9')
+	    isc = ((fcode .EQ. 'C'  .OR.  fcode .EQ. 'c') .AND.digit) 
+
+            IF (fcode .EQ. 'P'  .OR.  fcode .EQ. 'p') THEN
+               newpen(1:3) = lab(lnbeg(jln)+loc-1:lnbeg(jln)+loc+1)
+               npnew = 3
+            ELSE IF ((fcode .EQ. 'C'  .OR.  fcode .EQ. 'c') .AND.digit) THEN
+               newpen(1:5) = lab(lnbeg(jln)+loc-1:lnbeg(jln)+loc+3)
+               npnew = 5
+            ELSE 
+               newfont(1:3) = lab(lnbeg(jln)+loc-1:lnbeg(jln)+loc+1)
+               nfnew = 3
+
+            ENDIF
+	 ENDIF
          nloc = loc
+
+* Is the current setting an ASCII font
+         ascfnt = (fontprefix(1:2).EQ.'@A' .OR. fontprefix(1:2).EQ.'@a') 
 
 ! Save the last pen and font change on this line.
 
@@ -88,21 +112,41 @@
             ioc = ioc + 1
             nloc = TM_LOC_STRING(lab(lnbeg(jln):lnend(jln)),"@",ioc)
             IF (nloc .GT. 0) THEN
-               fcode = lab(lnbeg(jln)+nloc:lnbeg(jln)+nloc)
-               IF (fcode .EQ. 'P'  .OR.  fcode .EQ. 'p') THEN
-                 newpen(1:3) = lab(lnbeg(jln)+nloc-1:lnbeg(jln)+nloc+1)
-                 npnew = 3
-               ELSE IF (fcode .EQ. 'C'  .OR.  fcode .EQ. 'c') THEN
-                 newpen(1:5) = lab(lnbeg(jln)+nloc-1:lnbeg(jln)+nloc+3)
-                 npnew = 5
-               ELSE
 
-                 newfont(1:3) = lab(lnbeg(jln)+nloc-1:lnbeg(jln)+nloc+1)
-                 nfnew = 3
-               ENDIF
-            ENDIF
-         ENDDO
-      ENDIF
+* Is the ASCII font escaped before the first font/pen setting?
+               DO ii = eloc+1, lnbeg(jln)+nloc+1
+                  ichr = lab(ii:ii)
+                  IF (ichar(ichr) .eq.27 .AND. i .LT. lnbeg(jln)+nloc+1)  THEN
+                     ascfnt = .FALSE.
+	             GOTO 200
+                  ENDIF
+               ENDDO
+ 200           CONTINUE
+
+* Font/pen settings are only applied if it's not the ascii font or
+* the @ was escaped.
+
+	       IF (.NOT. ascfnt) THEN
+                  fcode = lab(lnbeg(jln)+nloc:lnbeg(jln)+nloc)
+                  IF (fcode .EQ. 'P'  .OR.  fcode .EQ. 'p') THEN
+                    newpen(1:3) = lab(lnbeg(jln)+nloc-1:lnbeg(jln)+nloc+1)
+                    npnew = 3
+                  ELSE IF (fcode .EQ. 'C'  .OR.  fcode .EQ. 'c') THEN
+                    newpen(1:5) = lab(lnbeg(jln)+nloc-1:lnbeg(jln)+nloc+3)
+                    npnew = 5
+                  ELSE
+
+                    newfont(1:3) = lab(lnbeg(jln)+nloc-1:lnbeg(jln)+nloc+1)
+                    nfnew = 3
+                  ENDIF
+
+	       ENDIF ! .not.ascfnt
+
+            ENDIF ! nloc.gt.0
+	    	       
+         ENDDO ! while nloc eq 0
+
+      ENDIF    ! loc gt 0
 
       RETURN
       END

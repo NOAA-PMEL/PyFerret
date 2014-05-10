@@ -1,6 +1,6 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 52545317 May  9 16:35 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 52545317 May  9 17:07 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Fri May 9 16:43:53 PDT 2014
+Beginning at Fri May 9 17:13:22 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3673,8 +3673,6 @@ list {5*3+1, 2+3}
  TEMPORARY data cleared from memory
 cp: cannot stat `global.nc': No such file or directory
 ncdump: global.nc: No such file or directory
-can't open file anew_global.cdl for reading: 
-No such file or directory
  LISTing to file anew_global.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3770,4 +3768,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri May 9 16:45:26 PDT 2014
+Ended at Fri May 9 17:15:03 PDT 2014

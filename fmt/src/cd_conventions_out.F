@@ -79,7 +79,7 @@ c      appnd =  1 ! to append
 c      appnd =  0 ! to write the string sent in
 c      appnd = -1 ! to write altered history string
 
-      appnd = 1
+      appnd = 0
       append_flag = .TRUE.
 
 * update (or create) conventions record

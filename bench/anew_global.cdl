@@ -1,0 +1,40 @@
+netcdf anew {
+dimensions:
+	xax5 = 5 ;
+	yax5 = 5 ;
+variables:
+	double xax5(xax5) ;
+		xax5:units = "degrees_east" ;
+		xax5:modulo = " " ;
+		xax5:point_spacing = "even" ;
+		xax5:axis = "X" ;
+		xax5:standard_name = "longitude" ;
+	double yax5(yax5) ;
+		yax5:units = "degrees_north" ;
+		yax5:point_spacing = "even" ;
+		yax5:axis = "Y" ;
+		yax5:standard_name = "latitude" ;
+	float ROSE(yax5, xax5) ;
+		ROSE:missing_value = -1.e+34f ;
+		ROSE:_FillValue = -1.e+34f ;
+		ROSE:long_name = "Elev" ;
+		ROSE:units = "METERS" ;
+
+// global attributes:
+		:history = "Subset of etopo20,\n",
+			" FERRET V6.71    9-May-14" ;
+		:Conventions = "Existing conventions note, CF-1.0" ;
+data:
+
+ xax5 = 20.1666667, 20.5, 20.8333333, 21.1666666, 21.4999999 ;
+
+ yax5 = -89.8333333, -89.5, -89.1666667, -88.8333334, -88.5000001 ;
+
+ ROSE =
+  2804, 2804, 2804, 2804, 2804,
+  2831, 2831, 2831, 2831, 2831,
+  2808, 2808, 2808, 2808, 2808,
+  2804, 2804, 2804, 2804, 2804,
+  2831, 2831, 2831, 2831, 2831 ;
+
+}

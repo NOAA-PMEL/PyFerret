@@ -42,6 +42,7 @@
 * NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
 *
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V69+ 5/14 *acm* Fixes for ticket 2177: datasets with _FillValue, no missing_value
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -68,8 +69,8 @@
 	INTEGER NCF_GET_ATTR_FROM_ID,
      .		com_mr, res_mr, com_cx, res_cx,	dflt_cx, com_isp, res_isp,
      .		frag, idim, top, imemb, memb_dset, len, igrid, iline,
-     .		varid, attlen, maxlen, fer_uvar, nv
-	REAL	vbad
+     .		varid, attlen, maxlen, fer_uvar, nv, is_phas_keep
+	REAL	vbad, cx_bad_pre
 	CHARACTER*128 VAR_CODE, vname
 	CHARACTER*10 buff
 
@@ -85,6 +86,7 @@
 	dflt_cx	   = is_big_cx( res_isp )
 	idim       = is_axis( res_isp )
 	frag	   = is_sum ( res_isp )
+	cx_bad_pre = cx_bad_data(com_cx)
 
 * diagnostic mode output: " doing aggregate gather VAR_NAME[x=lo:hi@TRN:n,D=#]"
 * Put in the M index value just for this output
@@ -117,6 +119,7 @@
 	ENDIF
 
 * copy data just received into the result
+	is_phas_keep = is_phase(isp)
 	CALL COPY_AGG_INTO( memory(1,mr_blk1(com_mr)), com_mr, com_cx,
      .			memory(1,mr_blk1(res_mr)), res_mr, is_phase(isp) )
 
@@ -165,7 +168,13 @@
 	   got_it = NC_GET_ATTRIB( memb_dset, varid, 'missing_value',
      .                .FALSE., vname, maxlen, attlen,
      .                attoutflag, buff, vbad )
-           IF (.NOT.got_it) vbad = bad_val4
+           IF (.NOT.got_it) THEN
+	      
+	      got_it = NC_GET_ATTRIB( memb_dset, varid, '_FillValue',
+     .                .FALSE., vname, maxlen, attlen,
+     .                attoutflag, buff, vbad )
+              IF (.NOT.got_it)  vbad = bad_val4
+	   ENDIF
 
 	   cx_grid( com_cx ) = igrid
 	   cx_data_set(com_cx) = memb_dset
@@ -181,6 +190,18 @@
 
 	   CALL FLESH_OUT_AXIS( idim, com_cx, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
+
+* updated value for bad? If so update the data in the result
+* taking that bad-value into account
+
+           IF (vbad .NE. cx_bad_pre) THEN
+	      cx_bad_data(res_cx) = cx_bad_data(dflt_cx)
+     	      CALL COPY_AGG_INTO( memory(1,mr_blk1(com_mr)), com_mr, com_cx,
+     .          memory(1,mr_blk1(res_mr)), res_mr, is_phas_keep )
+     
+           ENDIF
+
+
 	ENDIF  ! or end this above flesh_out??
 	
 	is_uvar(com_isp) = cx_variable(com_cx)

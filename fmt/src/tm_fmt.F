@@ -325,6 +325,7 @@
 	      ind = INDEX(outstring, '0E')
 	   ENDDO
 	ENDIF
+	str_len = TM_LENSTR1( outstring )
 
 	TM_FMT = outstring
 	RETURN

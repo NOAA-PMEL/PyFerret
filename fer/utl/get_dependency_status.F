@@ -1,4 +1,5 @@
-	SUBROUTINE GET_DEPENDENCY_STATUS ( memory, expr, status_string, slen, status )
+	SUBROUTINE GET_DEPENDENCY_STATUS
+     .			( memory, expr, status_string, slen, status )
 
 *
 *
@@ -42,6 +43,7 @@
 * written for VAX computer under VMS operating system
 
 * V685+  *sh* 11/13 
+* V690  *sg* 5/14 - bug fix: changed declaraation type of "memory"
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -51,7 +53,7 @@
 
 * calling argument declarations:
 	INTEGER status, slen
-	INTEGER	memory(mem_blk_size, max_mem_blks )
+	REAL	memory(mem_blk_size, max_mem_blks )
 	CHARACTER*(*) expr, status_string
 
 * internal variable declarations:

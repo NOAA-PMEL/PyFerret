@@ -146,7 +146,7 @@ cc For fixing bug 1582: missing label on horizontal axis.
 cc This crept in with multi-line labels. no need for IF(LABELX.LT.0) here.
 cc	IF(LABELX.LT.0)THEN
 
-           CALL getlabfonts (ylab, lnbeg, lnend, j, fontprefix, 
+           CALL getlabfonts (xlab, lnbeg, lnend, j, fontprefix, 
      .           npnew, nfnew, newfont, newpen, nchr)
 
 	   XL=XLO+(XLEN-SYMWID(HXLAB,NCHR+npen+nfont,

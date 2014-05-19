@@ -306,7 +306,7 @@ C
             fontprefix = ""
             penprefix = ""
             DO 20 j = 1, numlines
-               CALL getlabfonts (label, lnbeg, lnend, j, fontprefix, 
+               CALL getlabfonts (xlab, lnbeg, lnend, j, fontprefix, 
      .           npnew, nfnew, newfont, newpen, nchr)
 
 	       IF(IPOS.LT.0)THEN
@@ -438,7 +438,7 @@ c	    ENDIF
             fontprefix = ""
             penprefix = ""
             DO 30 j = 1, numlines
-               CALL getlabfonts (label, lnbeg, lnend, j, fontprefix, 
+               CALL getlabfonts (ylab, lnbeg, lnend, j, fontprefix, 
      .           npnew, nfnew, newfont, newpen, nchr)
 
 	       IF(IPOS.LT.0)THEN
@@ -633,6 +633,9 @@ C
             DO 40 j = 1, numlines
                CALL getlabfonts (label, lnbeg, lnend, j, fontprefix, 
      .           npnew, nfnew, newfont, newpen, nchr)
+               XMN=SYMWID(CHSIZE,NCHR+npen+nfont, 
+     .           penprefix(1:npen)//fontprefix(1:nfont)// 
+     .           label(lnbeg(j):lnend(j))) 
 
 	       SHFT=0.0
 	       IF(IPOS.GT.0)THEN

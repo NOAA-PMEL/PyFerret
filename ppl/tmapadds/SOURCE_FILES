@@ -62,6 +62,7 @@ set_one_color.F\
 set_open_levels.F\
 set_pat_size.F\
 set_regular_plot.F\
+set_ribbon_ndx.F\
 set_window_size.F\
 setax_syms.F\
 setfont.F\

@@ -16,3 +16,6 @@ GO err69_multi_label_ascii
 
 GO bn_reset
 GO err69_ens_badvalue
+
+GO bn_reset
+GO err69_ribbon_by_levels

@@ -209,6 +209,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		
 		last_bad = .FALSE.
 	        colr_ndx = GET_NDX (X(IY+J+ILINE2),colr_ndx)
+		CALL SET_RIBBON_NDX (colr_ndx)
 
 	        line_ndx = colr_ndx + thick_offset + low_index - 1
 	        IF (colr_ndx .EQ. -999) THEN 
@@ -254,7 +255,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	          IDN=0
 	        ELSE
 		
-	        CALL PLOT(XT,YT,IDN,0)
+	          CALL PLOT(XT,YT,IDN,0)
 
 		
 	          datx = X(K)
@@ -288,15 +289,19 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	          CALL TRANS(I,datx,daty,XT,YT)
 		  xaddlast = xadd
 
-		  xhalf = xlast + (xt - xlast)/2
-		  yhalf = ylast + (yt - ylast)/2
+! in LINE/FAST mode go halfway between the last point and this one, using previous color.
+	          IF (ITYPE(I).NE.3) THEN
+		     xhalf = xlast + (xt - xlast)/2
+		     yhalf = ylast + (yt - ylast)/2
 
-		  IF (RIBBON_FAST .OR. last_bad .AND.(.NOT.new_branch)) THEN 
-! go halfway between the last point and this one, using previous color.
-                     IF (last_bad .AND. bad_blank) THEN 
-		        CALL PLOT(xhalf,yhalf,0,0)
-		     ELSE
-		        CALL PLOT(xhalf,yhalf,IDN,0)
+		     IF ((.NOT.new_branch)) THEN 
+		     IF (RIBBON_FAST .OR. last_bad) THEN 
+                        IF (last_bad .AND. bad_blank) THEN 
+		           CALL PLOT(xhalf,yhalf,0,0)
+		        ELSE
+		           CALL PLOT(xhalf,yhalf,IDN,0)
+		        ENDIF
+		     ENDIF
 		     ENDIF
 		  ENDIF
 
@@ -304,6 +309,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		  IF (datum .EQ. -3.E33) datum = CMZGE  ! This value set in pplldx.
 		  
 	          colr_ndx = GET_NDX (datum,colr_ndx)
+		  CALL SET_RIBBON_NDX (colr_ndx)
 	          line_ndx = colr_ndx + thick_offset + low_index - 1
 
 	          IF (colr_ndx .EQ. -999 .AND.(.NOT.new_branch)) THEN
@@ -311,13 +317,14 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		     colr_ndx = bad_ribbon_ndx
 		     line_ndx = colr_ndx + low_index - 1
 
-		     IF (bad_blank .AND. .NOT.last_bad) CALL PLOT(xhalf,yhalf,IDN,0)
+		     IF ((bad_blank .AND. .NOT.last_bad) .AND. 
+     .                   (ITYPE(I).NE.3)) CALL PLOT(xhalf,yhalf,IDN,0)
 		     IF (bad_blank) IDN = 0
 		  ENDIF
 		  
 	          IF (line_ndx .LT. 1) line_ndx = 1
 
-	          IF (colr_ndx .NE. last_colr_ndx) THEN
+	          IF ( colr_ndx.NE.last_colr_ndx) THEN
 		     
 * In default (not fast) mode, draw sub-segments filling in all the colors
 * corresponding to the index range between the color at this point and the
@@ -326,7 +333,8 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		     IF (.NOT.RIBBON_FAST .AND. 
      .                    .NOT.isbad .AND. .NOT.last_bad .AND.
      .                    ABS(colr_ndx-last_colr_ndx) .GT. 1 .AND.
-     .                    (.NOT.new_branch)) THEN
+     .                    (.NOT.new_branch) .AND. ITYPE(I).NE.3) THEN
+
 		        nseg = ABS(colr_ndx-last_colr_ndx) 
 		        frac = 1./FLOAT(nseg)
 		        dx = (xt-xlast)
@@ -349,9 +357,9 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 			XT = xi  ! should already be??
 			YT = yi
                      ELSEIF (.NOT.new_branch) THEN
-	                CALL PLOT(xhalf,yhalf,IDN,0)
-			CALL COLOR (line_ndx)
-	                CALL PLOT(xhalf,yhalf,IDN,0)
+	                IF (ITYPE(I).NE.3) CALL PLOT(xhalf,yhalf,IDN,0)
+			IF (colr_ndx.NE.last_colr_ndx) CALL COLOR (line_ndx)
+	                IF (ITYPE(I).NE.3) CALL PLOT(xhalf,yhalf,IDN,0)
 	                CALL PLOT(XT,YT,IDN,0)
 		     ENDIF
 		  ENDIF

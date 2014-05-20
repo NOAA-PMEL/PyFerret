@@ -128,6 +128,7 @@ C              do not make small tics by default.
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* v691 5/14 *acm* Change name MOD to TEKMOD
 
 c
 c	fromi	command file or device (/dev/tty or TT: for terminal)
@@ -493,7 +494,7 @@ C       More brain dead mods:
            GOTO 10
         ENDIF
 	CALL PLTYPE(ICODE)
-	CALL TKTYPE(MOD)
+	CALL TKTYPE(TEKMOD)
 	GOTO 10
 C     SIZE
 700	WIDTH=P(1)
@@ -508,8 +509,8 @@ C     SMOOTH
 	CALL SMOOTH(pplmem,NX,NY,NX,NY,IFIX(P(1)))
 	GOTO 10
 C     TKTYPE
-1000	MOD=IFIX(P(1))
-	CALL TKTYPE(MOD)
+1000	TEKMOD=IFIX(P(1))
+	CALL TKTYPE(TEKMOD)
 	GOTO 10
 C     XLAB
 1100	XLAB=LABEL
@@ -719,7 +720,7 @@ C
 	ENDIF
 	CALL BAUD(IR)
 	CALL PLTYPE(ICODE)
-	CALL TKTYPE(MOD)
+	CALL TKTYPE(TEKMOD)
 	GOTO 10
 4301	IF(.NOT.QUIETF)WRITE(LTTOUT,'(1X,A30,'' NOT FOUND'')')LABEL
 	GOTO 10

@@ -11,15 +11,17 @@ C**
 C***********************************************************************
 C**
 C**
+* v691 5/14 *acm* Change name MOD to TEKMOD
 c
-	COMMON/PLT/ ICODE,WIDTH,HEIGHT,MOD,IR,LUN,BATMODE
+	INTEGER TEKMOD
+	COMMON/PLT/ ICODE,WIDTH,HEIGHT,TEKMOD,IR,LUN,BATMODE
 c
 c	icode	plot type
 c	width	plot width (inches)
 c	height	plot height (inches)
-c	mod	tek model number
+c	tekmod	tek model number
 c	ir	baud rate
 c	lun	output unit number (unused?)
-c	batnide	1=batch (for handling -batch giffile.gif)
+c	batmode	1=batch (for handling -batch giffile.gif)
 c
 c*******************************************************************

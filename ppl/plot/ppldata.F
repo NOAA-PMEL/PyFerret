@@ -60,6 +60,7 @@ C     for compatibility with Ferret use of symbols.
 *                If this is changed, also change it in fer/dat/xprog_state_data.F
 * V62  2/08 *acm*increase default number of contour levels to NLEV=30 (MODE NLEVELS)
 *                If this is changed, also change it in fer/dat/xprog_state_data.F
+* v691 5/14 *acm* Change name MOD to TEKMOD
 
 	INCLUDE 'PARAMPL5.DAT'
 	include 'axis_inc.decl'
@@ -184,8 +185,10 @@ C
 	DATA MNX,MNY,IMULT,IMCNT,DXM,DYM/4*0,10*1.4,10*1.2/
 	DATA XLENM,YLENM,IXM,IYM,MXBOT,MYLEF/10*5.5,10*4.,2*0,2*0/
 C
-	DATA ICODE,WIDTH,HEIGHT,MOD,IR,LUN,BATMODE/
-     .		3,10.0,8.0,4010,110,8,0/
+c	DATA ICODE,WIDTH,HEIGHT,TEKMOD,IR,LUN,BATMODE/
+c     .		3,10.0,8.0,4010,110,8,0/
+	DATA ICODE,WIDTH,HEIGHT,IR,LUN,BATMODE/
+     .		3,10.0,8.0,110,8,0/
 C
 	DATA IBASE,PBUF/1,0/
 C

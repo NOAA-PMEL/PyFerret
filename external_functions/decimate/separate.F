@@ -202,7 +202,9 @@
 *                                                                      |
 *                                                                      V
 
-      INTEGER i, i1, ir, k, m
+      INTEGER i, ir, k, m
+      INTEGER i1,j1,k1,l1,m1,n1
+      INTEGER i2,j2,k2,l2,m2,n2
       INTEGER nx, ne, msum, rend
       REAL fixlon, tol, nothing
       LOGICAL ifix
@@ -211,8 +213,6 @@
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-      k = res_lo_ss(Z_AXIS)  ! index for unused dimensions
-
       nx = arg_hi_ss(X_AXIS, ARG1) - arg_lo_ss(X_AXIS, ARG1) + 1
       ne = arg_hi_ss(E_AXIS, ARG2) - arg_lo_ss(E_AXIS, ARG2) + 1
 
@@ -220,15 +220,29 @@
       ifix =  (fixlon .GT. 0.8)
       tol = 200.
 
+      i1 = arg_lo_ss(X_AXIS, ARG1)
+      j1 = arg_lo_ss(Y_AXIS, ARG1)
+      k1 = arg_lo_ss(Z_AXIS, ARG1)
+      l1 = arg_lo_ss(T_AXIS, ARG1)
+      m1 = arg_lo_ss(E_AXIS, ARG1)
+      n1 = arg_lo_ss(F_AXIS, ARG1)
+
+      i2 = arg_lo_ss(X_AXIS, ARG2)
+      j2 = arg_lo_ss(Y_AXIS, ARG2)
+      k2 = arg_lo_ss(Z_AXIS, ARG2)
+      l2 = arg_lo_ss(T_AXIS, ARG2)
+      m2 = arg_lo_ss(E_AXIS, ARG2)
+      n2 = arg_lo_ss(F_AXIS, ARG2)
+
       i1 = 1
       ir = 1
       msum = 0
       DO m = arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS, ARG2)
-         rend = arg_2(k,k,k,k,m,k)
+         rend = arg_2(i2,j2,k2,l2,m,n2)
 	 msum = msum + rend
 	 IF (msum .GT. nx) msum = nx+1
 	 DO i = i1, msum
-	    result(ir) = arg_1(i,k,k,k,k,k)
+	    result(ir) = arg_1(i,j1,k1,l2,m2,n2)
 	    IF (ir.GT.1 .AND. ifix .AND. 
      .              result(ir ).NE.bad_flag_result .AND. 
      .              result(ir-1).NE.bad_flag_result) THEN

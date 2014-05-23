@@ -359,12 +359,13 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 80	                CONTINUE
 			XT = xi  ! should already be??
 			YT = yi
-                     ELSE
+                      ELSEIF (.NOT.new_branch) THEN
 	                IF (ITYPE(I).NE.3) CALL PLOT(xhalf,yhalf,IDN,0)
 			IF (colr_ndx.NE.last_colr_ndx) CALL COLOR (line_ndx)
 	                IF (ITYPE(I).NE.3) CALL PLOT(xhalf,yhalf,IDN,0)
 	                IF (.NOT.new_branch) CALL PLOT(XT,YT,IDN,0)
 		     ENDIF
+		     IF (colr_ndx.NE.last_colr_ndx) CALL COLOR (line_ndx)
 		  ENDIF
 
 	          CALL PLOT(XT,YT,IDN,0)

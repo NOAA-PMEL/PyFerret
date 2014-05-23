@@ -21,4 +21,7 @@ GO bn_reset
 GO err69_ribbon_by_levels
 
 GO bn_reset
+GO err69_ribbon_histogram
+
+GO bn_reset
 GO err69_repl_scinot

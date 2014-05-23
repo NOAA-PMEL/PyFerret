@@ -36,6 +36,7 @@
 *
 *
 *	Routine to set up the line bundles for color-line plots
+* V691 *acm* 5/14 Fix when defining line bundles for a by-levels palette
 
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
@@ -137,7 +138,10 @@
 	nthick = 3
 	low_index = MAX(num_line_colors* nthick + 2, lo_color_ndx(zwsid))
 
-	do 20 j = 1, shd_levels
+
+        ncolors = shd_levels
+        if (rgb_mapping .eq. by_level) ncolors = ncl
+	do 20 j = 1, ncolors
 	    
 	   do 10 fktr = 1,nthick     ! thickness
               thickness = REAL(fktr)

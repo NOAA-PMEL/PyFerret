@@ -61,6 +61,9 @@ C
 *               argument for setting up metafile plots.
 *  ACM  2/2013    ticket 2141. Fix the modulo operation when the longitude
 *                 range is over 360.
+* ACM   5/2014  Fixes for changes of color in combination with handling
+*               modulo longitude data
+*               
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -356,11 +359,11 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 80	                CONTINUE
 			XT = xi  ! should already be??
 			YT = yi
-                     ELSEIF (.NOT.new_branch) THEN
+                     ELSE
 	                IF (ITYPE(I).NE.3) CALL PLOT(xhalf,yhalf,IDN,0)
 			IF (colr_ndx.NE.last_colr_ndx) CALL COLOR (line_ndx)
 	                IF (ITYPE(I).NE.3) CALL PLOT(xhalf,yhalf,IDN,0)
-	                CALL PLOT(XT,YT,IDN,0)
+	                IF (.NOT.new_branch) CALL PLOT(XT,YT,IDN,0)
 		     ENDIF
 		  ENDIF
 

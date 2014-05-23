@@ -45,10 +45,8 @@
 
 	IF (colr_ndx .EQ. -999) RETURN
 
-	if (rgb_mapping .eq. by_level) then
 *	   USE ATOMIC COLORS -- REUSE AS NECESSARY
-	   colr_ndx = mod(INT((colr_ndx - 2)),INT(ncl)) + 2
-	end if
+	if (rgb_mapping .eq. by_level) colr_ndx = mod(colr_ndx-2,ncl) + 2
 
 	return
 	end

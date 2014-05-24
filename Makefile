@@ -18,8 +18,10 @@ optimized :
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) "CFLAGS = $(CFLAGS) -O" pymod_optimized
-	$(MAKE) "FFLAGS = $(FFLAGS) -O" -C $(DIR_PREFIX)/efmem
-	$(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/pyferret_install" -C $(DIR_PREFIX)/external_functions optimized
+	if [ "$(BUILDTYPE)" != "intel-mac" ] ; then \
+            $(MAKE) "FFLAGS = $(FFLAGS) -O" -C $(DIR_PREFIX)/efmem ; \
+            $(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/pyferret_install" -C $(DIR_PREFIX)/external_functions optimized ; \
+        fi
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 .PHONY : debug
@@ -28,8 +30,10 @@ debug :
 	$(MAKE) -C $(DIR_PREFIX)/fer debug
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" pymod_debug
-	$(MAKE) "FFLAGS = $(FFLAGS) -O0 -g" -C $(DIR_PREFIX)/efmem
-	$(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/pyferret_install" -C $(DIR_PREFIX)/external_functions debug
+	if [ "$(BUILDTYPE)" != "intel-mac" ] ; then \
+            $(MAKE) "FFLAGS = $(FFLAGS) -O0 -g" -C $(DIR_PREFIX)/efmem ; \
+            $(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/pyferret_install" -C $(DIR_PREFIX)/external_functions debug ; \
+        fi
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 ## The following builds libpyferret.so, then installs that shared-object

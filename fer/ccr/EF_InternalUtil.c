@@ -1255,20 +1255,25 @@ struct {
   sprintf(path, "%s/ferret_ef_mem_subsc.so", path_ptr);
   ferret_ef_mem_subsc_so_ptr = dlopen(path, RTLD_LAZY | RTLD_GLOBAL);
   if ( ferret_ef_mem_subsc_so_ptr == NULL ) {
-     fprintf(stderr, "**ERROR: efcn_scan: dlopen of %s\n"
-                     "  failed -- %s\n", path, dlerror());
-     return_val = -1;
-     return return_val;
+     /*
+      * fprintf(stderr, "**ERROR: efcn_scan: dlopen of %s\n"
+      *                 "  failed -- %s\n", path, dlerror());
+      * return_val = -1;
+      * return return_val;
+      */
+     copy_ferret_ef_mem_subsc_ptr = NULL;
   }
-  copy_ferret_ef_mem_subsc_ptr = 
-          (void (*)(void)) dlsym(ferret_ef_mem_subsc_so_ptr,
-                                 "copy_ferret_ef_mem_subsc_");
-  if ( copy_ferret_ef_mem_subsc_ptr == NULL ) {
-     fprintf(stderr, "**ERROR: efcn_scan: copy_ferret_ef_mem_subsc_\n"
-                     "  not found in $FER_LIBS/ferret_ef_mem_subsc.so\n"
-                     "  -- %s\n", dlerror());
-     return_val = -1;
-     return return_val;
+  else {
+     copy_ferret_ef_mem_subsc_ptr = 
+             (void (*)(void)) dlsym(ferret_ef_mem_subsc_so_ptr,
+                                    "copy_ferret_ef_mem_subsc_");
+     if ( copy_ferret_ef_mem_subsc_ptr == NULL ) {
+        fprintf(stderr, "**ERROR: efcn_scan: copy_ferret_ef_mem_subsc_\n"
+                        "  not found in $FER_LIBS/ferret_ef_mem_subsc.so\n"
+                        "  -- %s\n", dlerror());
+        return_val = -1;
+        return return_val;
+     }
   }
 
   /*

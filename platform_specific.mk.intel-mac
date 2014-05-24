@@ -71,9 +71,8 @@
 			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash
 
 # LD and LD_DYN_FLAGS only used for generating ferret_ef_mem_subsc.so
-	LD		= $(shell which gfortran)
-	LD_DYN_FLAGS	= -m64 -fPIC -shared -Wl,-bundle \
-			  -L $(DIR_PREFIX)/pyferret_install/lib/$(PYTHON_EXE)/site-packages/pyferret
+	LD		= echo
+	LD_DYN_FLAGS	= 
 
 ## cancel the default rule for .f -> .o to prevent objects from being built
 ## from .f files that are out-of-date with respect to their corresponding .F file
@@ -91,5 +90,5 @@
 	$(FC) $(FFLAGS) -c $*.F -o $*.o
 
 #
-# End of platform_specific.mk.x86_64-linux
+# End of platform_specific.mk.intel-mac
 #

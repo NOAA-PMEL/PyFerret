@@ -2,7 +2,7 @@
 
 # mycp needs to recursively copy subdirectories for the lib/python* directories
 # verbose flag used to create info messages when running this script
-mycp="/bin/cp -v -r --preserve=timestamp"
+mycp="/bin/cp -v -R -p"
 mylns="/bin/ln -v -s"
 
 echo ""

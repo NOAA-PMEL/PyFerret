@@ -6,11 +6,11 @@ RGB_Mapping By_Level
    2     0   60   30  ! green
    3   100   90    0  ! yellow
    4   100    0    0  ! bright red
-   5    80   90   30  ! light green  ! 100   88   92  ! pink 
+   5    80   90   10  ! light green  ! 100   88   92  ! pink 
    6    70    0  100  ! purple
    7    80   73   59  ! tan
    8     0  100  100  ! cyan
-   9   100   50    0  ! orange
+   9   100   70    0  ! orange
   10     0    0    0  ! black 
 
 ! A = 1

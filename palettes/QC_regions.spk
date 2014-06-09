@@ -1,0 +1,14 @@
+RGB_Mapping By_level
+ 
+! Level    Red  Green   Blue
+ 1   100   10    0  ! bright red
+ 2     0    0  100  ! blue
+ 3    50  100   10  ! light green 
+ 4   100   90    0  ! yellow
+ 5    85    0  100  ! purple
+ 6     0  100  100  ! light blue
+ 7    90   88   69  ! Lt tan    
+ 8   100   70   00  ! orange 100   50    0
+ 9     0   60   30  ! green
+
+

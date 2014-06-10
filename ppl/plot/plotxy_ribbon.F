@@ -102,7 +102,7 @@ C
 
 	REAL datum, xlast, ylast, frac, dx, dy, xi, yi, xhalf, yhalf
 	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
-     .		nvertex, low_index, colr_ndx, last_colr_ndx, 
+     .		nvertex, low_index, colr_ndx, last_colr_ndx, ncolors, 
      .		line_ndx, thick_offset, nseg, iseg, indx, inc
 	INTEGER GET_NDX, ibase, iline2
 
@@ -170,9 +170,12 @@ C  Set the contour/color levels
 
 * IPEN contains the thickness setting.
 
+	  ncolors = shd_levels
+	  if (rgb_mapping .eq. by_level) ncolors = ncl
+
 	  thick_offset = 0
-	  IF (ipen(i) .EQ. 2) thick_offset = (shd_levels+1) 
-	  IF (ipen(i) .EQ. 3) thick_offset = 2*(shd_levels+1) 
+	  IF (ipen(i) .EQ. 2) thick_offset = (ncolors+1) 
+	  IF (ipen(i) .EQ. 3) thick_offset = 2*(ncolors+1) 
 
 C     SET PLOT MODE
 
@@ -219,6 +222,8 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		   colr_ndx = bad_ribbon_ndx
 		   line_ndx = colr_ndx + low_index - 1
 		   last_bad = .TRUE.
+		ELSE
+		   nothing = 0
 		ENDIF
 
 		CALL COLOR (line_ndx) 
@@ -323,7 +328,9 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		     IF ((bad_blank .AND. .NOT.last_bad) .AND. 
      .                   (ITYPE(I).NE.3)) CALL PLOT(xhalf,yhalf,IDN,0)
 		     IF (bad_blank) IDN = 0
-		  ENDIF
+		ELSE
+		   nothing = 0
+		ENDIF
 		  
 	          IF (line_ndx .LT. 1) line_ndx = 1
 

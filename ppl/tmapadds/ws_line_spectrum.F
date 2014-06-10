@@ -146,7 +146,7 @@
 	   do 10 fktr = 1,nthick     ! thickness
               thickness = REAL(fktr)
 	      icolr = j + lo_color_ndx(zwsid) - 1
-              index = low_index + (fktr-1)* (shd_levels+1) + j
+              index = low_index + (fktr-1)* (ncolors+1) + j
 
 	      call gspmr (zwsid,index,marktype,dotsize,icolr)
 	      call gsplr (zwsid,index,1,thickness,icolr)
@@ -171,7 +171,7 @@
 	ndx = lo_color_ndx(zwsid)+shd_levels
 	call gscr (zwsid,ndx,r_val,g_val,b_val)
 
-	do 40 j = shd_levels + 1, shd_levels + 1
+	do 40 j = ncolors + 1, ncolors + 1
 	    
 	   do 30 fktr = 1,nthick     ! thickness
               thickness = REAL(fktr)

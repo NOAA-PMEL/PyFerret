@@ -18,6 +18,8 @@
 *	KUSER_LOC indicates whether user key locations are to be used
 *       ANNOTATE_KEY Flag: annotate min/max data field when open-ended levels used
 *	CUSTOM_COLORS determines whether a custom color map is to be defined
+*	CENTERED_LABELS determines whether colorbar labels are made between lines,
+*                       or if not set, on the lines between colors
 
 *	SHD_MIN,SHD_MAX are the minimum and maximum data values shaded
 *	SHD_LEVELS is the number of levels to use in shading
@@ -75,6 +77,8 @@
 * *acm* 1/13/12 For DP Ferret/ SP Pplus: explicitly declare REALs 
 *               as single-precision
 *	ribbon_miss	rgb codes for the missing-value rep. on ribbon plots.
+* V6.92 *acm* 6/14 New color /key options: any of /key=vertical,horizontal,centerlabel
+
 
 	integer		spec_size,max_windows,pattern_num
 	parameter	(spec_size=250,max_windows=12,pattern_num=50)
@@ -101,7 +105,7 @@
 	REAL*4		ribbon_miss(3)
 
 	logical		fill_missing,even_histo,do_key,area_bundles
-	logical		vertical_key,kuser_loc(4),custom_colors
+	logical		vertical_key,kuser_loc(4),custom_colors,center_key_labels
 	logical		protect_used_colors
 
 	logical		buffer_empty, upperflg, upper_first
@@ -115,7 +119,7 @@
      .			   x_lo,x_hi,y_lo,y_hi,
      .			   bad_val, bad_ribbon_ndx,
      .			   fill_missing,even_histo,do_key,vertical_key,
-     .			   kuser_loc,custom_colors,
+     .			   kuser_loc,custom_colors,center_key_labels,
      .			   shd_min,shd_max,shd_levels,
      .			   kx_lo,kx_hi,ky_lo,ky_hi,
      .			   klab_size,klab_dig,klab_len,klab_incr,

@@ -106,11 +106,9 @@
 *                 don't let them run over each other. Locate the horizontal colorbar close to
 *                 the plot with labels above them. Behavior of args to SHAKEY is unchanged.
 * v686 *acm* 2/14 Fix ticket 2124: Do the fix for 2124 only here, not in subr. LEV.
-
-
-
 * Get labels on colorbar right if there is just one level.
 c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
+* V6.92 *acm* 6/14 New color /key options: any of /key=vertical,horizontal,centerlabel
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -136,13 +134,14 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	include        'gkspar.inc'
 
 	integer		ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
-     .                  lab_add, nlab, i, kount
+     .                  lab_add, nlab, i, kount, shd_lev_hi
 
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht, ksiz_test
 	real		xx,yy,xxx,yyy, xx1, xxn, xxlen
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
-     .                  val, del, x_inc_inf, y_inc_inf, frac, fixx, inc_min
+     .                  val, del, x_inc_inf, y_inc_inf, frac, fixx, inc_min, 
+     .                  center_add
         real*8          val_n, val_last
 	character*12	text,TM_FMT_SNGL, TM_FMT_SNGL_DIGITS, 
      ,			txt_out, blanks
@@ -165,6 +164,9 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	windof = .false.
 
 	cont_key_keep = cont_key
+
+	center_add = 0.
+	if (center_key_labels) center_add = 0.5
 
 * Decide whether to check for small numeric values in the key labels.
 * If delta is large, we dont want 0.000005 to be labelled in an exponential
@@ -448,7 +450,9 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
         IF (incr .GT. 0) THEN
 
-	do 20 ndx = lev1,shd_levels+1,incr
+	shd_lev_hi = shd_levels+1
+	IF (center_key_labels) shd_lev_hi = shd_levels
+	do 20 ndx = lev1,shd_lev_hi,incr
 
 *	   WRITE OUT CORRESPONDING VALUE
 
@@ -460,7 +464,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
              IF (ndx .EQ. 1 .AND. neginf) text = " "
              IF (ndx .EQ. shd_levels+1 .AND. posinf) text = " "
 
-	   xx = (kx_lo + x_inc*real(ndx-1))/1000.0
+	   xx = (kx_lo + x_inc*(center_add+real(ndx-1)))/1000.0
      .		 - karht*real(str_len)/2.0 - xorg
 	   yy = (ky_hi - 5.0 * y_inc)/1000.0 - yorg - 1.5*karht
            IF (kuser_loc(3) .OR. kuser_loc(4) ) 
@@ -678,7 +682,10 @@ c	IF ( no_lines ) cont_key = .TRUE.
         IF (lev1 .NE. 1) ystart = y_inc
 
         IF (incr .GT. 0) THEN
-        do 1020 ndx = lev1,shd_levels+1,incr
+
+	shd_lev_hi = shd_levels+1
+	IF (center_key_labels) shd_lev_hi = shd_levels
+        do 1020 ndx = lev1,shd_lev_hi,incr
 *	   WRITE OUT CORRESPONDING VALUE
              val = zlev(ndx)
              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
@@ -712,8 +719,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
               ENDIF
            ENDIF
 
-	   yy = (ky_lo + y_inc*real (ndx-1))/1000.0 - yorg - 0.5*karht
-!	   yy = (ky_lo + y_inc*real (ndx-1))/1000.0 - yorg   (this caused bug 1330!)
+	   yy = ( ky_lo + y_inc* (center_add+ real(ndx-1)) )/1000.0 - 
+     .        yorg - 0.5*karht
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
 

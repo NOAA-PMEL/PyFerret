@@ -914,6 +914,9 @@ GO bn_global_atts
 GO bn_reset
 GO bn_conventions_history
 
+GO bn_reset
+GO bn_center_key_labels
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

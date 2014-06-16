@@ -63,6 +63,7 @@ C
 *                 range is over 360.
 * ACM   5/2014  Fixes for changes of color in combination with handling
 *               modulo longitude data
+* V6.92 *acm* 6/14 New color /key options: any of /key=vertical,horizontal,centerlabel
 *               
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
@@ -423,7 +424,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
         CALL COLOR(1)
 *       DO THE KEY
         IF (do_key .AND. .NOT.interrupted) CALL key     ! 1/89 - *sh*
-        CALL shade_key_cont(0)
+ 
 
 	RETURN
 

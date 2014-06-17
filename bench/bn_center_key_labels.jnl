@@ -4,7 +4,6 @@
 ! Arguments to /KEY qualifier on color plots
 ! /CENTERLABEL  for label between lines on colorbar
 ! /HORIZONTAL   for horizontal key 
-! /VERTICAL
 
 use levitus_climatology.cdf
 shade/lev=10/key=cent,horiz temp

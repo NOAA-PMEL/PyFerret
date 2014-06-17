@@ -77,7 +77,7 @@
 * *acm* 1/13/12 For DP Ferret/ SP Pplus: explicitly declare REALs 
 *               as single-precision
 *	ribbon_miss	rgb codes for the missing-value rep. on ribbon plots.
-* V6.92 *acm* 6/14 New color /key options: any of /key=vertical,horizontal,centerlabel
+* V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 
 
 	integer		spec_size,max_windows,pattern_num

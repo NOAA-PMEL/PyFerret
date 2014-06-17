@@ -114,7 +114,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *                  A time axis may be a T axis or F axis
 * V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
-* V6.92 *acm* 6/14 New color /key options: any of /key=vertical,horizontal,centerlabel
+* V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -336,8 +336,7 @@ c           nlev = 1
            IF ( do_key ) THEN
               CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
 
-* ... /KEY[=continuous,horizontal,vertical,centerlabel ?
-*       if they say both horiz and vert, it'll be vert.
+* ... /KEY[=continuous,horizontal,centerlabel ?
 
               loc = qual_given( slash_shad_key )
 
@@ -359,10 +358,6 @@ c           nlev = 1
 	         IF ( TM_HAS_STRING(buff, 'HOR') ) THEN
                     changed_key = .TRUE.
                     CALL PPLCMD (from, line, 0, 'S_KEY 3', 1, 1 )
-                 ENDIF
-	         IF ( TM_HAS_STRING(buff, 'VER') ) THEN
-                    changed_key = .TRUE.
-                    CALL PPLCMD (from, line, 0, 'S_KEY 4', 1, 1 )
                  ENDIF
                  IF (.NOT. changed_key) GOTO 5460
 		 ENDIF

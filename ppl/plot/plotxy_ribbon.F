@@ -63,7 +63,7 @@ C
 *                 range is over 360.
 * ACM   5/2014  Fixes for changes of color in combination with handling
 *               modulo longitude data
-* V6.92 *acm* 6/14 New color /key options: any of /key=vertical,horizontal,centerlabel
+* V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 *               
 
         include         'xinterrupt.cmn' ! 1/89 *sh*

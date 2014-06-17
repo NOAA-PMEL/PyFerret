@@ -102,7 +102,7 @@
 * V6.85 *acm* 9/13 New qualifier PLOT/%%%%%%% for first color in multi-line plot
 * http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2013/msg00536.html
 
-* V6.92 *acm* 6/14 New color /key options: any of /key=vertical,horizontal,centerlabel
+* V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -442,8 +442,7 @@ c	   IF (.NOT.versus)  GOTO 5470
               CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
 
 
-* ... /KEY[=continuous,horizontal,vertical,centerlabel ?
-*       if they say both horiz and vert, it'll be vert.
+* ... /KEY[=continuous,horizontal,centerlabel ?
 
               loc = qual_given( slash_plot_key )
 
@@ -464,10 +463,6 @@ c	   IF (.NOT.versus)  GOTO 5470
 	         IF ( TM_HAS_STRING(buff, 'HOR') ) THEN
                     changed_key = .TRUE.
                     CALL PPLCMD (from, line, 0, 'S_KEY 3', 1, 1 )
-                 ENDIF
-	         IF ( TM_HAS_STRING(buff, 'VER') ) THEN
-                    changed_key = .TRUE.
-                    CALL PPLCMD (from, line, 0, 'S_KEY 4', 1, 1 )
                  ENDIF
                  IF (.NOT. changed_key) GOTO 5520
                  ENDIF

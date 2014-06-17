@@ -108,7 +108,7 @@
 * v686 *acm* 2/14 Fix ticket 2124: Do the fix for 2124 only here, not in subr. LEV.
 * Get labels on colorbar right if there is just one level.
 c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
-* V6.92 *acm* 6/14 New color /key options: any of /key=vertical,horizontal,centerlabel
+* V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'

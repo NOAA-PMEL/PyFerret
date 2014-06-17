@@ -129,7 +129,7 @@ C              do not make small tics by default.
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * v691 5/14 *acm* Change name MOD to TEKMOD
-* V6.92 *acm* 6/14 New color /key options: any of /key=vertical,horizontal,centerlabel
+* V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 
 c
 c	fromi	command file or device (/dev/tty or TT: for terminal)
@@ -1699,7 +1699,7 @@ C       SHASET
 9170    call shade_set                                             
         goto 10
                                                  
-C       S_KEY   (continuous color key)                                                   
+C       S_KEY   (continuous color key, center labels, horizontal)                                                   
 9165    ICODE=IFIX(P(1))
         IF (ICODE .EQ. 1) call shade_key_cont (ICODE)
         call shade_key (ICODE)

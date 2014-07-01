@@ -167,7 +167,8 @@
       CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_NAME*128, CD_AXIS_OUTNAME*128, 
      .       TM_FMT*12,
      .       name*128, name_in*128, units*48, datebuff*40, 
-     .       buff*140, buff2*140, attname*128, dimstr*12, varstr*12
+     .       buff*140, buff2*140, attname*128, dimstr*12, varstr*12, 
+     .       name_bnds*140
 
 !      REAL*8 val8_cdf, val8_tmap
 * 12/97
@@ -444,13 +445,16 @@
 
 * If the user has not asked for bounds and if its a regular axis then
 *  do not write bounds attribute. (The bounds themselves arent written.)
-         IF ( (STR_SAME(attname, 'bounds') .EQ. 0) .AND. 
+            IF ( (STR_SAME(attname, 'bounds') .EQ. 0) .AND. 
      .        ((line_regular(iaxis)) .AND. do_bounds.LE.0) ) 
      .               attoutflag = 0
 
 * If they asked for /NOBOUNDS, dont write bounds even if the axis is irregular.
-         IF ( (STR_SAME(attname, 'bounds') .EQ. 0) .AND. 
-     .        ( do_bounds.LT.0) ) attoutflag = 0
+            IF ( STR_SAME(attname, 'bounds') .EQ. 0) THEN
+	       name_bnds = name(:nlen)//'_bnds'
+               IF (name_bnds.NE.buff) buff = name_bnds
+	       IF ( do_bounds.LT.0) attoutflag = 0
+            ENDIF
 
 * If there is a _FillValue attributes on axes, refuse to write it.
 
@@ -921,8 +925,17 @@
      .  .AND. ( edges_flag .EQ. 0) 
      .  .AND. ( attoutflag .NE. 2) ) THEN
 
-         name = name(:nlen)//'_bnds'
-         elen = nlen + 5
+* bounds attribute may already be set up.  If so use it, otherwise define bounds.
+         got_it = NC_GET_ATTRIB ( dset_num, varid, attname, 
+     .               do_warn, name_in, maxlen, attlen, attoutflag, 
+     .               buff, vals)
+         IF (got_it) THEN
+            name = name_bnds
+            elen = TM_LENSTR1(name)
+	 ELSE
+	    name = name(:nlen)//'_bnds'
+	    elen = nlen + 5
+	 ENDIF
 
 * ... define the first dimension of bounds variable (what about record axis??)
 

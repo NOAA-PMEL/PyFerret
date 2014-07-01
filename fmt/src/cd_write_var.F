@@ -115,12 +115,12 @@
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
-      INTEGER TM_LENSTR1, 
+      INTEGER TM_LENSTR1, STR_SAME,
      .        start(nferdims), count(nferdims), idim, iaxis, cdfstat, vlen,
      .        slab_min(nferdims), slab_max(nferdims), tmrecax, cdrecax, dims, varid,
      .        hilim, i100, i, j, k, l, m, n, recaxvar, lorec, hirec, rectyp,
      .	      vartyp, nvdim, vdims(8), nvatts, bndstart(2), bndcount(2),
-     .        mblk1, nblks, npts, savecount
+     .        mblk1, nblks, npts, savecount, llen
       LOGICAL CD_GET_BOUNDS, TM_ABSTRACT_AXIS, TM_DFPEQ, 
      .        got_it, scaled, writebounds
       CHARACTER*13 TM_STRING
@@ -402,12 +402,21 @@ c      EQUIVALENCE (r100_8, r100_4)
 
             name = CD_AXIS_NAME( dset, grid, tmrecax, nlen )
             IF (keepax_flag .EQ. 1) name = CD_AXIS_OUTNAME( dset, grid, tmrecax, nlen )
-
-* If mode upcase_output is set, then upcase axis name.
+    
+* If mode upcase_output is set, then upcase the name
 
             IF (mode_upcase_output) THEN
                CALL STR_UPCASE( buff, name)
                name = buff
+            
+* If not mode upcase_output, then keep the incoming case. 
+            ELSE 
+               name = CD_AXIS_NAME( dset, grid, tmrecax, nlen )
+               buff = CD_AXIS_OUTNAME( dset, grid, tmrecax, llen )
+               IF (STR_SAME(name, buff) .EQ. 0) THEN 
+	          name = buff
+	          nlen = llen
+               ENDIF
             ENDIF
 
             name = name(:nlen)//'_bnds'

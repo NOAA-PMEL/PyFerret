@@ -70,7 +70,7 @@
 * Is the ASCII font escaped before the first font/pen setting?
          DO ii = lnbeg(jln), lnbeg(jln)+loc
             ichr = lab(ii:ii)
-            IF (ichar(ichr) .eq.27 .AND. i .LT. lnbeg(jln)+loc+1) THEN
+            IF (ichar(ichr) .eq.27 .AND. ii .LT. lnbeg(jln)+loc+1) THEN
                ascfnt = .FALSE.
 	       eloc = ii
 	       GOTO 100

@@ -103,6 +103,8 @@
 *                 the user has said /KEEP_AXISNAMES
 * V69+ 4/14 *acm* After the above fix, need a tweak to be able to append to files having 
 *                 dimensions that are not coordinate variables
+* V69+ 7/14 *acm* Further fix to 1750. Ticket 2182: Keep case of axis name consistent when
+*                 creating and writing axis bounds.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 

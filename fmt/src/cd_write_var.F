@@ -74,6 +74,8 @@
 * V685 6/13 *acm* Dont add SAVE/NOCOORDS
 * V687 3/14 *acm* Fix ticket 1750. Write Ferret-internal axis names to cdf files, unless
 *                 the user has said /KEEP_AXISNAMES
+* V69+ 7/14 *acm* Further fix to 1750. Ticket 2182: Keep case of axis name consistent when
+*                 creating and writing axis bounds.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file

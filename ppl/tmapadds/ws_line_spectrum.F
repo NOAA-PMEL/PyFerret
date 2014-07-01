@@ -168,7 +168,7 @@
            g_val = ribbon_miss(2)/100.
            b_val = ribbon_miss(3)/100.
 	ENDIF
-	ndx = lo_color_ndx(zwsid)+shd_levels
+	ndx = lo_color_ndx(zwsid)+ncolors
 	call gscr (zwsid,ndx,r_val,g_val,b_val)
 
 	do 40 j = ncolors + 1, ncolors + 1

@@ -87,6 +87,7 @@
 * *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
 *					 definition of macro DFTYPE in ferret.h
 *      *kms*  3/12 Add E and F dimensions 
+*      *acm*  6/14 New separate function for DSG files 
 */
 
 
@@ -1066,6 +1067,10 @@ void FORTRAN(write_webrow_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *
 void FORTRAN(str_mask_init)(int *);
 void FORTRAN(str_mask_compute)(int *, DFTYPE *, DFTYPE *);
 
+void FORTRAN(separate_init)(int *);
+void FORTRAN(separate_result_limits)(int *);
+void FORTRAN(separate_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+
 /*
  *  End of declarations for internally linked external functions
  *  ------------------------------------ */
@@ -1108,7 +1113,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 163
+#define N_INTEF 164
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1277,6 +1282,7 @@ struct {
    strcpy(I_EFnames[160].funcname, "expndi_by_m_counts");
    strcpy(I_EFnames[161].funcname, "str_mask");
    strcpy(I_EFnames[162].funcname, "samplexyt_nrst");
+   strcpy(I_EFnames[163].funcname, "separate");
 
 /*    
  *  ------------------------------------ 
@@ -4261,9 +4267,13 @@ else if ( !strcmp(name,"write_webrow_init_") ) return (void *)FORTRAN(write_webr
 else if ( !strcmp(name,"write_webrow_result_limits_") ) return (void *)FORTRAN(write_webrow_result_limits);
 else if ( !strcmp(name,"write_webrow_compute_") ) return (void *)FORTRAN(write_webrow_compute);
 
-
 else if ( !strcmp(name,"str_mask_init_") ) return (void *)FORTRAN(str_mask_init);
 else if ( !strcmp(name,"str_mask_compute_") ) return (void *)FORTRAN(str_mask_compute);
+
+else if ( !strcmp(name,"separate_init_") ) return (void *)FORTRAN(separate_init);
+else if ( !strcmp(name,"separate_result_limits_") ) return (void *)FORTRAN(separate_result_limits);
+else if ( !strcmp(name,"separate_compute_") ) return (void *)FORTRAN(separate_compute);
+
 
 
 return NULL;

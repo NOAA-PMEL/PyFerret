@@ -128,6 +128,7 @@ scat2grid_nobs_xy.F\
 scat2grid_nobs_xyt.F\
 scat2grid_subs.F\
 secs_to_ymdhms.F\
+separate.F\
 sorti.F\
 sorti_str.F\
 sortj.F\

@@ -94,8 +94,8 @@ endif
 # LD and LD_DYN_FLAGS only used for generating ferret_ef_mem_subsc.so
 	LD		= $(shell which gfortran)
 	LD_DYN_FLAGS	= -m64 -fPIC -shared -rdynamic -Xlinker --no-undefined \
-			  -L $(DIR_PREFIX)/pyferret_install/lib64/$(PYTHON_EXE)/site-packages/pyferret \
-			  -L $(DIR_PREFIX)/pyferret_install/lib/$(PYTHON_EXE)/site-packages/pyferret
+			  -L$(DIR_PREFIX)/pyferret_install/lib64/$(PYTHON_EXE)/site-packages/pyferret \
+			  -L$(DIR_PREFIX)/pyferret_install/lib/$(PYTHON_EXE)/site-packages/pyferret
 
 ## cancel the default rule for .f -> .o to prevent objects from being built
 ## from .f files that are out-of-date with respect to their corresponding .F file

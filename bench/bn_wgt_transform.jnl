@@ -1,0 +1,32 @@
+! bn_wgt_transform.jnl  test new @WGT transform,
+! returns weights used in the equiv. xy@ave transform
+
+! Define two global lon/lat grids
+def axis/x=1:360:1/units=degrees_east x1deg
+def axis/y=-89.5:89.5:1/units=degrees_north y1deg
+let var1deg = x[gx=x1deg] + y[gy=y1deg]
+
+def axis/x=1.5:359.5:2/units=degrees_east x2deg
+def axis/y=-89:89:2/units=degrees_north y2deg
+let var2deg = x[gx=x2deg] + y[gy=y2deg]
+
+! The sum of weights should equal hte surface area of the earth
+! in m2
+let weights12 = var1deg[gxy=var2deg@wgt]
+list weights12[x=@sum,y=@sum]
+let weights21 = var2deg[gxy=var1deg@wgt]
+list weights21[x=@sum,y=@sum]
+
+! intentional errors
+! 
+set mode ignore
+list var1deg[x=180,gy=var2deg@wgt]
+
+use gt4d011
+def axis/z=0:100:5/depth/units=m zreg
+load/y=2/l=1 salt[gz=zreg@wgt]
+
+def axis/t=15-sep-1982:1-jan-1983:1/units=days  tday
+shade/y=2/x=128w salt[gz=zreg@wgt,gt=tday@wgt]
+
+can mode ignore

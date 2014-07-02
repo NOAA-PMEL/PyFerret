@@ -750,9 +750,9 @@
      .		alg_regrid_title( prgrd_nearest )	/ 'nearst coord'/,
      .		alg_regrid_code ( prgrd_nearest )	/ 'NRST'	/
      .		alg_regrid_vizb ( prgrd_nearest )	/ .TRUE.	/,
-     .		alg_regrid_title( prgrd_wgt )		/ 'xy avg weight'/,
+     .		alg_regrid_title( prgrd_wgt )		/ 'weights in xy avg'/,
      .		alg_regrid_code ( prgrd_wgt )		/ 'WGT'	/
-     .		alg_regrid_vizb ( prgrd_wgt )		/ .FALSE.	/,
+     .		alg_regrid_vizb ( prgrd_wgt )		/ .TRUE.	/,
      .		(alg_regrid_title(i),i=prgrd_wgt+1,max_regrid_trans)
      .				/9*unspecified_name4/,
      .		(alg_regrid_code (i),i=prgrd_wgt+1,max_regrid_trans)

@@ -39,7 +39,7 @@
 *	Mod to not reference "getlog" routine for linux port *kob* 3.11.97	
 *       Mod to set SYM='*PPL$PLTNME' to value of meta_file *js* 7.25.97
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
-
+* v691 5/14 *acm* Change name MOD to TEKMOD
 C**
 C**    @(#)opnppl.F	1.1    3/10/88
 C**
@@ -183,11 +183,11 @@ C
 #endif
 
 	IF(TYPE(1:LEN).EQ.'TEK41XX'.OR.TYPE(1:LEN).EQ.'TEK4105')THEN
-		MOD=4107
-		CALL TKTYPE(MOD)
+		TEKMOD=4107
+		CALL TKTYPE(TEKMOD)
 	ELSE IF(TYPE(1:LEN).EQ.'TEK4014')THEN
-		MOD=4014
-		CALL TKTYPE(MOD)
+		TEKMOD=4014
+		CALL TKTYPE(TEKMOD)
 	ENDIF
 C
 C	OPEN ECHO FILE

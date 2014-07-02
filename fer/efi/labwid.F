@@ -3,7 +3,6 @@
 *
 * Ansley Manke
 * March 1, 2005
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -43,6 +42,8 @@
 * function, will be linked internally; but it is convenient to implement
 * it as an external function.
 
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V69+  5/14 *acm* Fix for ascii font in multi-line labels, ticket 2176
 
       SUBROUTINE labwid_init(id)
 
@@ -182,8 +183,8 @@
       ht = height
 
       DO 40 n = 1, numlines
-         CALL getlabfonts (strng, lnbeg, lnend, n, npnew, nfnew, 
-     .           newfont, newpen, nchr)
+         CALL getlabfonts (strng, lnbeg, lnend, n, fontprefix, 
+     .           npnew, nfnew, newfont, newpen, nchr)
 
          risc_buff = strng(lnbeg(n):lnend(n))
          xmn = SYMWID(ht,nchr+npen+nfont,

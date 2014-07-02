@@ -278,11 +278,13 @@
       LOGICAL need_modulo
       REAL ylocations(2)
       REAL xpt, ypt, ydiff, yd, add_xcoord, xadd, xcoord
+      REAL xcoord_diff, xcoordlast, tol
       REAL xptmin, xptmax, xcoordmin, xcoordmax
       REAL fxbot, fxtop, fbb, ftb, fbt, ftt
       REAL xbot, xtop, ybot, ytop
       REAL xfrac, yfrac
       CHARACTER*255 err_msg
+      parameter (tol = 140.)
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -462,6 +464,8 @@ C Check that sample x and y are simple lists of points - same length
       DO 700 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
 * Find all locations of xpt in arg_2, longitudes of data
+* When a change of sign corresponds with crossing a branch cut, that
+* is not saved as a location where xpt-minus-coordinate changes sign.
 
          xadd = 0.
          xpt = arg_4(i4,j4,k4,l4,m4,n4)
@@ -470,30 +474,34 @@ C Check that sample x and y are simple lists of points - same length
      .      xadd = add_xcoord
 
          nloc = 0
+         i2 = arg_lo_ss(X_AXIS,ARG2)
+	 j2 = arg_lo_ss(Y_AXIS,ARG2)
+	 xcoordlast = arg_2(i2,j2,k2,l2,m2,n2) + xadd
 
          DO 200 j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
             i2 = arg_lo_ss(X_AXIS,ARG2)
             xcoord = arg_2(i2,j2,k2,l2,m2,n2) + xadd
-c               icross = SIGN(1, (xpt - xcoord) )
             icross = 1
             IF ((xpt - xcoord) .LT. 0.) icross = -1
 
             DO 100 i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
                xcoord = arg_2(i2,j2,k2,l2,m2,n2) + xadd
+	       xcoord_diff = ABS(xcoordlast-xcoord)
+	       IF (xcoord_diff .GE. tol) icross = -1*icross
 
-c               iloc = SIGN(1, (xpt-xcoord) )
                iloc = 1
-               IF ((xpt-xcoord) .LT. 0. ) iloc = -1
+
+               IF ((xpt-xcoord) .LT. 0.) iloc = -1
 
                IF (icross .NE. iloc)THEN
                   nloc = nloc + 1
                   xlocations(nloc,1,1,1,1,1) =
      .                       MAX(i2-1,arg_lo_ss(X_AXIS,ARG2))
                   xlocations(nloc,2,1,1,1,1) = j2
-c                  icross = SIGN(1, (xpt - xcoord) )
                   icross = 1
                   IF ((xpt - xcoord) .LT. 0.) icross = -1
                ENDIF
+	       xcoordlast = xcoord 
   100       CONTINUE
 
   200    CONTINUE

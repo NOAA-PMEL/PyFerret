@@ -1,7 +1,8 @@
 	SUBROUTINE CD_WRITE_AXIS ( cdfid, dset, grid, idim, recdim,
      .                           loss, hiss, ax_type,  edges_flag, 
      .                           do_bounds, mode_upcase_output,  
-     .                           keepax_flag, name_from_grid, status )
+     .                           keepax_flag, name_from_grid, dim_only, 
+     .				 status )
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -100,6 +101,10 @@
 *                 a NOTE. They just clutter things up.
 * V687 3/14 *acm* Fix ticket 1750. Write Ferret-internal axis names to cdf files, unless
 *                 the user has said /KEEP_AXISNAMES
+* V69+ 4/14 *acm* After the above fix, need a tweak to be able to append to files having 
+*                 dimensions that are not coordinate variables
+* V69+ 7/14 *acm* Further fix to 1750. Ticket 2182: Keep case of axis name consistent when
+*                 creating and writing axis bounds.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -145,7 +150,7 @@
       LOGICAL TM_ABSTRACT_AXIS, TM_DATE_OK, MATCH_NAME, NC_GET_ATTRIB,
      .       abstract, do_warn, got_modulo, got_calendar, got_units, 
      .       got_positive, got_spacing, got_axis, got_cartesian, got_it,
-     .       coordvar, do_off, do_scale
+     .       coordvar, do_off, do_scale, dim_only
       PARAMETER (do_warn = .TRUE. )
       INTEGER TM_LENSTR1, CD_AXLEN, STR_SAME, STR_DNCASE,
      .        dimid, iaxis, axid, cdfstat, lo, hi,
@@ -164,7 +169,8 @@
       CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_NAME*128, CD_AXIS_OUTNAME*128, 
      .       TM_FMT*12,
      .       name*128, name_in*128, units*48, datebuff*40, 
-     .       buff*140, buff2*140, attname*128, dimstr*12, varstr*12
+     .       buff*140, buff2*140, attname*128, dimstr*12, varstr*12, 
+     .       name_bnds*140
 
 !      REAL*8 val8_cdf, val8_tmap
 * 12/97
@@ -174,6 +180,7 @@
 * initialize
       iaxis = grid_line(idim, grid)
       dset_num = dset
+      dim_only = .FALSE.
 
       name = CD_AXIS_NAME( dset_num, grid, idim, nlen )
       IF (keepax_flag .EQ. 1)  name = CD_AXIS_OUTNAME( dset_num, grid, idim, nlen )
@@ -190,8 +197,16 @@
       IF (mode_upcase_output) THEN
          CALL STR_UPCASE( name_in, name)
          CALL STR_UPCASE( name, name_in)
-      ENDIF
 
+* If not mode upcase_output, then keep the incoming case. 
+      ELSE 
+         name = CD_AXIS_NAME( dset_num, grid, idim, nlen )
+         name_in = CD_AXIS_OUTNAME( dset_num, grid, idim, llen )
+	 IF (STR_SAME(name, name_in) .EQ. 0) THEN 
+	    name = name_in
+	    nlen = llen
+	 ENDIF
+      ENDIF
 
 * determine lo/hi limits of the axis to be written
       IF ( abstract ) THEN
@@ -214,6 +229,15 @@
          nlen = MIN(nlen,maxchildlen)
       ENDIF
 
+* Is it just a dimension, not a coordinate variable
+
+      buff = CD_AXIS_OUTNAME( dset_num, grid, idim, llen )
+      CALL CD_DIM_ONLY (cdfid, buff, llen, dim_only)
+      IF (dim_only) THEN
+         name = buff
+         GOTO 1000  
+      ENDIF
+
 #ifdef usingDODSf2cUnderscore
       cdfstat = NF_INQ_DIMID_( cdfid, name(:nlen), dimid)
 #else
@@ -229,20 +253,6 @@
 #else
          cdfstat = NF_INQ_VARID( cdfid, name(:nlen), axid )
 #endif
-
-* The dimension matches but there is no coord var. Just return.
-* This lets us append variables to a DSG file.
-
-	 IF (cdfstat .EQ. nf_enotvar) THEN
-	    name = line_name_orig(iaxis)
-	    nlen = TM_LENSTR1( name )
-	    
-	    ! Do we want this warning? 
-c	    CALL WARN ('Dimension '//name(:nlen)//
-c     .        ' found. No corresponding coordinate variable.'//
-c     .        ' Writing with dimension only.')
-	    GOTO 1000  
-	 ENDIF
 
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 	 IF (.NOT. recdim) THEN 
@@ -437,13 +447,16 @@ c     .        ' Writing with dimension only.')
 
 * If the user has not asked for bounds and if its a regular axis then
 *  do not write bounds attribute. (The bounds themselves arent written.)
-         IF ( (STR_SAME(attname, 'bounds') .EQ. 0) .AND. 
+            IF ( (STR_SAME(attname, 'bounds') .EQ. 0) .AND. 
      .        ((line_regular(iaxis)) .AND. do_bounds.LE.0) ) 
      .               attoutflag = 0
 
 * If they asked for /NOBOUNDS, dont write bounds even if the axis is irregular.
-         IF ( (STR_SAME(attname, 'bounds') .EQ. 0) .AND. 
-     .        ( do_bounds.LT.0) ) attoutflag = 0
+            IF ( STR_SAME(attname, 'bounds') .EQ. 0) THEN
+	       name_bnds = name(:nlen)//'_bnds'
+               IF (name_bnds.NE.buff) buff = name_bnds
+	       IF ( do_bounds.LT.0) attoutflag = 0
+            ENDIF
 
 * If there is a _FillValue attributes on axes, refuse to write it.
 
@@ -914,8 +927,17 @@ c     .        ' Writing with dimension only.')
      .  .AND. ( edges_flag .EQ. 0) 
      .  .AND. ( attoutflag .NE. 2) ) THEN
 
-         name = name(:nlen)//'_bnds'
-         elen = nlen + 5
+* bounds attribute may already be set up.  If so use it, otherwise define bounds.
+         got_it = NC_GET_ATTRIB ( dset_num, varid, attname, 
+     .               do_warn, name_in, maxlen, attlen, attoutflag, 
+     .               buff, vals)
+         IF (got_it) THEN
+            name = name_bnds
+            elen = TM_LENSTR1(name)
+	 ELSE
+	    name = name(:nlen)//'_bnds'
+	    elen = nlen + 5
+	 ENDIF
 
 * ... define the first dimension of bounds variable (what about record axis??)
 

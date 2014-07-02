@@ -1,0 +1,29 @@
+! err69_multi_label_ascii.jnl
+! 5/2014  ACM 
+! ticket 2176
+! Multi-line labels and ascii fonts.
+
+plot/vs/nolab {0,1},{0,1}
+
+
+label .05 .96 0 0 .12 "@CR@P4Single Line examples. Ascii font with and without escape for new color:"
+label .05 .9 0 0 .16 "@ASNo_escapes@c002good_1@c003friend_2"
+label .05 .83 0 0 .16 "@ASEscape_new_colors@c002red_1@c003green_2"
+
+
+label .05 .65 0 0 .12 "@CR@P4Multi Line ascii examples:"
+
+label .05 .56 0 0 .12 "@CR@P4without escape"
+label .05 .5 0 0 .16 "@ASNo_escapes<NL>@c002good_1<NL>@c003friend_2"
+
+label .55 .56 0 0 .12 "@CR@P4with escape:"
+label .55 .5 0 0 .16 "@ASEscape_new_colors<NL>@c002red_1<NL>@c003green_2"
+
+! escape just the special characters. 
+label .05 .26 0 0 .12 "@CR@P4Settings around underscores:"
+label .05 .2 0 0 .16 "hello@AS_@SRthere<NL>@c002good@AS_@SR1<NL>@c003friend@AS_@SR2"
+
+! escape new pen setting, not the font
+label .55 .26 0 0 .12 "@CR@P4Escape just the color changes:"
+label .55 .2 0 0 .16 "@ASEscape_color_not_font<NL>@P2@SRred_1<NL>@P3@SRgreen_2"
+

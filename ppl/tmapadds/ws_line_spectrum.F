@@ -37,6 +37,7 @@
 *
 *	Routine to set up the line bundles for color-line plots
 * PyFr *kms* 5/13 Add alpha channel (opaque)
+* V691 *acm* 5/14 Fix when defining line bundles for a by-levels palette
 
         IMPLICIT NONE
 	include 'pltcom_dat.decl'
@@ -69,8 +70,8 @@
 	data		ltype/1,2,3,4,-3,-4/
 #endif
 
-	integer		max_pline,max_pmark,max_text,max_fill_area
-	integer		max_pattern,max_color,error
+	integer		max_pline, max_pmark, max_text, max_fill_area
+	integer		max_pattern, max_color, error, ncolors
 	integer		fktr, marktype, index, line_color_reserve,
      .			icolr, nthick, status, usable_colors, ndx
 
@@ -136,13 +137,16 @@
 	nthick = 3
 	low_index = MAX(num_line_colors* nthick + 2, lo_color_ndx(zwsid))
 
-	do 20 j = 1, shd_levels
+
+        ncolors = shd_levels
+        if (rgb_mapping .eq. by_level) ncolors = ncl
+	do 20 j = 1, ncolors
 	   do 10 fktr = 1,nthick     ! thickness
-              index = low_index + (fktr-1) * (shd_levels+1) + j
+              thickness = REAL(fktr)
               icolr = j + lo_color_ndx(zwsid) - 1
-              dotsize = 6.0 + fktr
+              index = low_index + (fktr-1) * (ncolors+1) + j
+              dotsize = 6.0 + thickness
               CALL FGD_GSPMR(zwsid, index, marktype, dotsize, icolr)
-              thickness = fktr
               CALL FGD_GSPLR(zwsid, index, 1, thickness, icolr)
 10	   continue
 20	continue
@@ -163,16 +167,16 @@
            b_val = ribbon_miss(3)/100.
            a_val = ribbon_miss(4)/100.
 	ENDIF
-	ndx = lo_color_ndx(zwsid)+shd_levels
+	ndx = lo_color_ndx(zwsid)+ncolors
 	CALL FGD_GSCR(zwsid,ndx,r_val,g_val,b_val,a_val)
 
-	do 40 j = shd_levels + 1, shd_levels + 1
+	do 40 j = ncolors + 1, ncolors + 1
 	   do 30 fktr = 1,nthick     ! thickness
-              index = low_index + (fktr-1) * (shd_levels+1) + j
+              thickness = REAL(fktr)
               icolr = j + lo_color_ndx(zwsid) - 1
-              dotsize = 6.0 + fktr
+              index = low_index + (fktr-1) * (ncolors+1) + j
+              dotsize = 6.0 + thickness
               CALL FGD_GSPMR(zwsid, index, marktype, dotsize, icolr)
-              thickness = fktr
               CALL FGD_GSPLR(zwsid, index, 1, thickness, icolr)
 30	   continue
 40	continue

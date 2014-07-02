@@ -41,6 +41,7 @@
 * the fine structure in the data. 
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V691 *acm* 5/14  Define symbols containing histogram levels
 
         IMPLICIT NONE
         include 'parampl5_dat.decl'
@@ -65,6 +66,10 @@
 * internal variable declarations:
 
       INTEGER i, ngood, ibin, n_per_bin
+
+      CHARACTER ppl_buff*2048, TM_FMT_SNGL*10, buff*10
+      INTEGER TM_LENSTR1, ier, ilen, slen, ist
+      LOGICAL TM_FPEQ_SNGL
 
       ngood = 0
       DO i = 1, nsize
@@ -91,9 +96,29 @@
       zlev(1) = wrk(1)
       zlev(nlev2) = wrk(ngood)
 
-!      ... could smooth these some.
+*      ... could smooth these some.
 
       IAUTOC = 0  ! levels are already set so dont do it in set_levels.
+
+      USE_HIST = .TRUE.
+
+* Define the LEV_HISTO_LEVELS symbol here. It may be wanted in a PLOT/SET command
+* before setlab_syms would be executed.
+
+       IF (USE_HIST) THEN  
+          ppl_buff = 'LEV_HISTO_LEVELS '
+	  ilen = TM_LENSTR1(ppl_buff)+1
+          DO 200 i =1, nlev2
+	     buff = TM_FMT_SNGL(zlev(i), -2, 10, slen)
+             ppl_buff = ppl_buff(:ilen)//buff(:slen)
+	     ilen = TM_LENSTR1(ppl_buff)
+	     IF (i.LT.nlev2) ppl_buff = ppl_buff(:ilen)//','
+	     ilen = TM_LENSTR1(ppl_buff)
+  200     CONTINUE
+         ier = 0
+         ist = 0
+         CALL SETSYM (ppl_buff, ilen, ier, ist)
+      ENDIF
 
       RETURN
       END

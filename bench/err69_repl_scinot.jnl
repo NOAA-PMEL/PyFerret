@@ -1,0 +1,15 @@
+! err69_repl_scinot.jnl
+! ticket 2175
+! The returned number had a bunch of trailing spaces
+
+let a = 1.e-10
+say (`a`)
+
+let a = -1.e-10
+say (`a`)
+
+let a = -1.23e-10
+say (`a`)
+
+let a = -1.23e-2
+say (`a`)

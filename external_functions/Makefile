@@ -24,8 +24,8 @@ include ../platform_specific.mk.$(BUILDTYPE)
 # Macro Definitions
 #
 
-DIRS = contributed examples fft statistics
-MOREDIRS = contributed cmprsi_by decimate examples extrema featurecollections gridding fft las statistics tax_times
+DIRS = contributed decimate examples fft las statistics stringfcns
+MOREDIRS = contributed cmprsi_by decimate examples extrema featurecollections gridding fft las statistics stringfcns tax_times
 # DIRS = contributed examples fft sort cflib closest_in_list hinterp featurecollections romea odd_formats cat statistics tax_times gridding zaxr 
 
 #

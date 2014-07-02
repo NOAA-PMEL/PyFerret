@@ -211,5 +211,10 @@ bn_bad_axis_bounds.jnl
 bn_enter_exit_GO.jnl
 bn_stddev.jnl
 bn_set_axis_name.jnl
+bn691_bug_fixes.jnl
+bn_append_dsg.jnl
+bn_global_atts.jnl
+bn_conventions_history.jnl
+bn_center_key_labels.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

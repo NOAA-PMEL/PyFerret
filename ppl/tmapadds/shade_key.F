@@ -1,4 +1,4 @@
-        SUBROUTINE SHADE_KEY
+        SUBROUTINE SHADE_KEY (isetting)
         
 *
 *
@@ -45,6 +45,7 @@
 *           reset any of the four, and others will be filled in by making 
 *           the key the default size in that direction.  See key.F
 * v581 *acm* 3/05 put flag cont_key into common CONT.INC
+* V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 
         IMPLICIT NONE
         include         'shade_vars.cmn'
@@ -59,7 +60,7 @@
 	include		'cont_inc.decl'
 	include		'CONT.INC'
 
-        INTEGER i
+        INTEGER isetting, i
 
 *******************************************************************************
 
@@ -73,6 +74,15 @@ c	do_key	     	= .true.   ! Still initialize this in setup_defaults.F
         do 100 i = 1, 4
            kuser_loc(i) = .false.
   100   continue
+
+	IF (isetting .EQ. 0) THEN
+	   center_key_labels = .FALSE.
+	   vertical_key = .TRUE.
+	ENDIF
+
+* Option centered_labels on key (e.g. on discrete color settings, by-levels.)
+
+	IF (isetting .EQ. 2) center_key_labels = .TRUE.
 
 	klab_size = 0.0
 	klab_dig  = 3
@@ -91,6 +101,7 @@ c	do_key	     	= .true.   ! Still initialize this in setup_defaults.F
      .	vertical_key = .false.
 	if (m .ge. 2 .and. iflg(2) .ne. 0 .and. p(2).eq.1.0) 
      .	vertical_key = .TRUE.
+        IF (isetting .EQ. 3) vertical_key = .FALSE.
 
 	if (m .ge. 3 .and. iflg(3) .ne. 0) klab_size = p(3)
 	if (m .ge. 4 .and. iflg(4) .ne. 0) klab_incr = ifix (p(4))

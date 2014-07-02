@@ -2,11 +2,12 @@
 * COMMON for PLOT+ with all variables declared
 * created for TMAP usage by Steve Hankin 7/88
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* v691 5/14 *acm* Change name MOD to TEKMOD
 
 	INTEGER	ICODE
 	REAL*4	WIDTH
 	REAL*4	HEIGHT
-	INTEGER	MOD
+	INTEGER TEKMOD
 	INTEGER	IR
 	INTEGER	LUN
 * requires: INCLUDE 'PPLV11INC:PLT.INC'                                     

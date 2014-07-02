@@ -1,0 +1,14 @@
+! err69_ens_badvalue.jnl 
+!
+! Datasets have _FillValue but not missing_value attributes.
+! In this case the missing data info was not correctly handled 
+! when defining an ensemble.
+
+use maize_1.nc, maize_2.nc, maize_3.nc
+
+! Note the _FillValue,  flag 
+sho att maize_yield
+ensemble ens = 1,2,3
+
+! MAIZE_YIELD[M=@NGD] should have values of 0, 2, and 3.
+list/y=29.25  MAIZE_YIELD[d=1], MAIZE_YIELD[d=2], MAIZE_YIELD[d=3],  MAIZE_YIELD[m=@ngd]

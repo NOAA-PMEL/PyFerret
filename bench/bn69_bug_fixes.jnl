@@ -1,5 +1,5 @@
-! bn687_bug_fixes
-! test various fixes that went into version 6.87
+! bn69_bug_fixes
+! test various fixes that went into version 6.9
 ! 02/2014 ACM
 
 GO bn_reset

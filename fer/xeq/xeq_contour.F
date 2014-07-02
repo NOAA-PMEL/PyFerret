@@ -120,6 +120,7 @@
 * PyFr  *kms*  7/13 Scale default lettering sizes by textscale;
 *                   use scaled label heights and spacings instead of 
 *                   hard-coded values.
+* V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -142,10 +143,12 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
-	LOGICAL	  no_range, overlay, transpz, no_labels, fill, usa_line,
+	LOGICAL	TM_HAS_STRING, 
+     .            no_range, overlay, transpz, no_labels, fill, usa_line,
      .            do_key, spectrum, set_up, noaxes, axes, pattern, 
-     .		  no_data, is_logh, is_logv, inc_grid
-	INTEGER	  TM_LENSTR1, status, slen, sp, ipen, icolor,
+     .		  no_data, is_logh, is_logv, inc_grid, 
+     .		  changed_key
+	INTEGER	  TM_LENSTR, TM_LENSTR1, status, slen, sp, ipen, icolor, 
      .		  ax1_blks, ax1_start, loc, sigdig,
      .		  ax2_blks, ax2_start, patt, i, nparm, num_it, 
      .		  s1, s2, it_start(4), it_end(4), iax(4), density,
@@ -158,7 +161,7 @@
      .                  fname*128, buff*25, sfile*2048
 
 * internal parameter declarations:
-	LOGICAL		norm_dims_only, not_vector, continuous_key, 
+	LOGICAL		norm_dims_only, not_vector, 
      .                  is_shade, use_cell
 	PARAMETER     ( norm_dims_only  = .FALSE.,
      .			not_vector	= .FALSE. )
@@ -386,16 +389,32 @@ c           nlev = 1
            IF ( do_key ) THEN
               CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
 
-* ... /KEY=continouus ?
-              loc = qual_given( slash_cont_key )
+* ... /KEY[=continuous,horizontal,centerlabel ?
+
+              loc = qual_given( slash_shad_key )
+
               IF ( loc .GT. 0) THEN
-	         CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+		 CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        buff, status )
                  IF ( status .NE. ferr_ok ) GOTO 5000
-	         IF ( buff(1:3) .EQ. 'CON' ) THEN
-                    continuous_key = .TRUE.
+		 
+		 IF (TM_LENSTR(buff) .GT. 0) THEN
+	         changed_key = .FALSE.
+	         IF ( TM_HAS_STRING(buff, 'CON') ) THEN
+                    changed_key = .TRUE.
                     CALL PPLCMD (from, line, 0, 'S_KEY 1', 1, 1 )
                  ENDIF
+	         IF ( TM_HAS_STRING(buff, 'CEN') ) THEN
+                    changed_key = .TRUE.
+                    CALL PPLCMD (from, line, 0, 'S_KEY 2', 1, 1 )
+                 ENDIF
+	         IF ( TM_HAS_STRING(buff, 'HOR') ) THEN
+                    changed_key = .TRUE.
+                    CALL PPLCMD (from, line, 0, 'S_KEY 3', 1, 1 )
+                 ENDIF
+                 IF (.NOT. changed_key) GOTO 5460
+		 ENDIF
+
               ENDIF
 
            ELSE
@@ -578,8 +597,8 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
 
 c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
-* restore default (non-continuous) key style?
-        IF (continuous_key ) CALL PPLCMD (from, line, 0, 'S_KEY 0', 1, 1 )
+* restore default key style?
+        IF (changed_key ) CALL PPLCMD (from, line, 0, 'S_KEY 0', 1, 1 )
 
 * interrupt occurred during plot ?
 	IF ( ppl_interrupted ) GOTO 1000
@@ -613,6 +632,9 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
  5450	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'AXES arguments must be 0 or 1', *1000 )
+ 5460	CALL ERRMSG( ferr_syntax, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'Unrecognized argument to KEY command', *1000 )
  5500   CALL ERRMSG( ferr_out_of_range, status,
      .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .          'Value from 0 to 100 must be given', *1000 )

@@ -156,6 +156,7 @@
 *                  for coordinate data will be enough for the grid and if not
 *                  return an error message. 
 * V686 *acm* 12/13 Symbokls AX_HORIZ and AX_VERT may be x,y,z,t,e,f  
+* V691  *acm*  5/14 Clean up temp memory used for computing histogram levels
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -717,6 +718,9 @@ C ACM added 8/2001 save cal id if vertical time axis
 
 	  CALL compute_histo_bins (memory(1,xblk1), memory(1,hblk1), 
      .       bad_x, nsiz, status) 
+     
+* ... clean up temporary variable
+	  CALL DELETE_VARIABLE( mvh_temp )
        ENDIF
 
 * For cases where regrid was set in AXIS_INTERVALS not because of a 

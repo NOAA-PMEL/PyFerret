@@ -105,6 +105,8 @@
 * V6.85 *acm* 9/13 New qualifier PLOT/%%%%%%% for first color in multi-line plot
 * http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2013/msg00536.html
 
+* V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
+
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -131,11 +133,12 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
-	LOGICAL		overlay, transpz, versus,
+	LOGICAL		TM_HAS_STRING, 
+     .			overlay, transpz, versus,
      .			no_labels, set_up, noaxes, axes, use_line,
      .			is_logh, is_logv, nokey, no_data, no_range,
-     .			continuous_key, do_key, spectrum
-	INTEGER		TM_LENSTR1, STR_UPCASE, STR_SAME,
+     .			changed_key, do_key, spectrum
+	INTEGER		TM_LENSTR1, TM_LENSTR, STR_UPCASE, STR_SAME,
      .                  symbol, icolor, ipen, icolor1, ipen1, status,
      .			loc, limit, slen, thick, step_inc,
      .			ax1_blks, ax1_start,
@@ -444,16 +447,30 @@ c	   IF (.NOT.versus)  GOTO 5470
            IF ( do_key ) THEN
               CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
 
-* ... /KEY[=continouus] ?
+
+* ... /KEY[=continuous,horizontal,centerlabel ?
+
               loc = qual_given( slash_plot_key )
 
               IF ( loc .GT. 0) THEN
-	         CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+		 CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        buff, status )
                  IF ( status .NE. ferr_ok ) GOTO 5000
-	         IF ( buff(1:3) .EQ. 'CON' ) THEN
-                    continuous_key = .TRUE.
+		 IF (TM_LENSTR(buff) .GT. 0) THEN
+	         changed_key = .FALSE.
+	         IF ( TM_HAS_STRING(buff, 'CON') ) THEN
+                    changed_key = .TRUE.
                     CALL PPLCMD (from, line, 0, 'S_KEY 1', 1, 1 )
+                 ENDIF
+	         IF ( TM_HAS_STRING(buff, 'CEN') ) THEN
+                    changed_key = .TRUE.
+                    CALL PPLCMD (from, line, 0, 'S_KEY 2', 1, 1 )
+                 ENDIF
+	         IF ( TM_HAS_STRING(buff, 'HOR') ) THEN
+                    changed_key = .TRUE.
+                    CALL PPLCMD (from, line, 0, 'S_KEY 3', 1, 1 )
+                 ENDIF
+                 IF (.NOT. changed_key) GOTO 5520
                  ENDIF
               ENDIF
 
@@ -663,6 +680,9 @@ c done in plot_set_up.
 * restore axes? (5/29/97  revised 3/2002
 c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
+* restore default color key style?
+        IF (changed_key ) CALL PPLCMD (from, line, 0, 'S_KEY 0', 1, 1 )
+
 * restore dash settings? (5/29/97  revised 3/2002
         IF ( do_dash .EQ. 1 ) CALL PPL_DASH_RESTORE
 
@@ -749,4 +769,8 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
  5510	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .	'/COLOR must have an argument for PLOT/OVERLAY', *1000 )
+     
+ 5520	CALL ERRMSG( ferr_syntax, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'Unrecognized argument to KEY command', *1000 )
 	END

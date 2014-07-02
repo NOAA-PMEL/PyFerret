@@ -63,26 +63,74 @@
 
 * local variable declarations:
 
-      INTEGER TM_LENSTR1, clen, slen
-      LOGICAL CD_GET_ATTRIB, got_it, do_warn
+      INTEGER TM_LENSTR1, STR_SAME, TM_LOC_STRING, 
+     .        clen, slen, ioc, loc, appnd
+      LOGICAL CD_GET_ATTRIB, got_it, do_warn, append_flag
       PARAMETER (do_warn = .TRUE. )
       CHARACTER*132 buff
+      CHARACTER*1 nl
 
 * initialize
       slen = MIN( TM_LENSTR1(string), 120 )
+
+
+* append flag will be set as follows:
+c      appnd =  1 ! to append
+c      appnd =  0 ! to write the string sent in
+c      appnd = -1 ! to write altered history string
+
+      appnd = 0
+      append_flag = .TRUE.
 
 * update (or create) conventions record
       got_it = CD_GET_ATTRIB( cdfid, NCGLOBAL, 'Conventions',
      .                     .NOT.do_warn, ' ', buff, clen, 132 )
 
-* is the last conventions stamp the same as this ?
+* is the last conventions attribute the same as this ?
       IF ( clen .GE. slen ) THEN
          IF ( buff(clen-slen+1:clen) .EQ. string(:slen) ) RETURN
       ENDIF
+      
+* is the last conventions attribute just a "CF-xx?
+* If so just replace with the current string  ...
+      append_flag = append
+      IF ( STR_SAME (buff(1:3), 'CF-') .EQ.0 .AND.
+     .     clen .LE. 12 ) THEN
+        appnd = 0
+        append_flag = .FALSE.
 
-* insert new attribute
-      CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'Conventions',
-     .                     string(:slen), append, status )
+      ELSE
+
+* does the last history end with a CF-xx ?
+* If so just replace with the current CF-xx...
+
+         append_flag = append
+         ioc = 0
+         loc = TM_LOC_STRING(buff,'CF-',ioc)
+         IF ( loc .GT. 1 ) THEN
+	    buff = buff(:loc-1)//', '//string(:slen)
+	    appnd = -1
+	    append_flag = .FALSE.
+	 ENDIF
+      ENDIF
+
+* Insert new CF conventions text
+* If there is a conventions att, append current one.
+* For conventions, just add it with a comma.
+
+      IF (appnd .EQ. 1) THEN
+         CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'Conventions', 
+     .                     ', '//string(:slen),
+     .                     append_flag, status )
+      ELSE IF (appnd .EQ. 0) THEN
+         CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'Conventions', string(:slen),
+     .                     append_flag, status )
+      ELSE IF (appnd .EQ. -1) THEN
+         slen = TM_LENSTR1(buff)
+         CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'Conventions', buff(:slen),
+     .                     append_flag, status )
+      ENDIF
+
       IF ( status .NE. merr_ok ) GOTO 5000
 
 * successful completion

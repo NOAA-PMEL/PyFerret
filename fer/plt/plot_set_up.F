@@ -150,6 +150,7 @@
 * PyFr *kms*  7/13 Scale default lettering sizes by textscale
 * V6.85 *acm* 9/13 New PLOT/COLOR w/o argument for all-color line plot
 * V685+ *acm  12/13 In dependent axis setup, make sure variable the_taxis is set.
+* V691  *acm*  5/14 For ribbon line plots, set up for histogram levels
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -201,7 +202,7 @@
      .			slen2, slen3, tax, plot_mem_used, nload, i,
      .			pxlim, pylim, phlim, pvlim,pindeplim, pdeplim,
      .			dep_axtyp, indep_axtyp, the_taxis, ribbon_var, 
-     .			junits, iaxis
+     .			junits, iaxis, hblk1, mvh_temp
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new
@@ -639,9 +640,26 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 
 * Compute the mean and standard dev for ribbon-color variable, 
 * needed for computing color levels. Results stored in PPLUS common.
+* If histogram-based levels are requested, compute the 
+* histogram bins.
 
 	   IF (ribbon_plot .AND. ipl.EQ.ribbon_var) THEN
               CALL COMPUTE_MNSTD (dep_dat, mr_bad_data(mv), .TRUE., npts, status)
+
+              IF (need_histo) THEN
+* create temporary buffer to contain workspace
+                 CALL CREATE_TEMP_MEM_VAR( cx, mvh_temp, status )
+                 IF ( status .NE. ferr_ok ) RETURN
+                 hblk1 = mr_blk1( mvh_temp )
+                 plot_mem_used = plot_mem_used + npts
+
+                 CALL compute_histo_bins (dep_dat, memory(1,hblk1), 
+     .            mr_bad_data(mv), npts, status) 
+     
+* ... clean up temporary variable
+                 CALL DELETE_VARIABLE( mvh_temp )
+              ENDIF
+
 	   ENDIF
 
 * ... check that there is a range of dependent data for PLOT+ auto-scaling

@@ -1,0 +1,25 @@
+! err69_bad_bounds.jnl
+! See ticket 2170
+
+set mode ignore
+
+! time axis has a point_spacing=even attribute
+! and an invalid set of bounds.
+! caused Ferret to mis-read the time axis
+use badbounds_even.nc
+list var, tbox[gt=var]
+
+! Same time axis but with a different error in the bounds
+! also has a point-spacing=even attribute
+! caused Ferret to mis-read the time axis
+use badbounds_non_enclose
+list var, tbox[gt=var]
+
+! Same definition except that the coordinates are irregularly
+! spaced, no point-spacing attribute.
+use badbounds_uneven
+list var, tbox[gt=var]
+
+sh axis TAX_BB*
+
+set mode/last ignore

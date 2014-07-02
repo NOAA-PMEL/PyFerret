@@ -82,6 +82,7 @@
 * V683 8/12  *acm* Move writing of notes about output precision to cdf_list.F
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V690 *sh* 1/14   Added SET VARIABLE/SIGMA=varname
+* V690 *acm*  3/14 Fix ticket 2152, error messages on illegal SET VAR/NAME
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -667,7 +668,9 @@
      .               'illegal new name given for '
      .			//risc_buff(:len_rbuff),
      .               						*5000 )
- 5400	IF (dset .GT. 0) THEN
+ 5400	CALL PARSE_NAM_DSET( newname, cx_last, dset,
+     .			     cat, var, mod_cx, status )
+	IF (cat .EQ. cat_file_var) THEN
            CALL ERRMSG( ferr_invalid_command, status,
      .               'illegal new name.  Variable '
      .			//newname_lc(:len_rbuff)//' exists in dataset ',

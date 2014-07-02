@@ -11,13 +11,14 @@ C**
 C***********************************************************************
 C**
 C**
+* v691 5/14 *acm* Change name MOD to TEKMOD
 c
-	COMMON/PLT/ ICODE,WIDTH,HEIGHT,MOD,IR,LUN 
+	COMMON/PLT/ ICODE,WIDTH,HEIGHT,TEKMOD,IR,LUN
 c
 c	icode	plot type
 c	width	plot width (inches)
 c	height	plot height (inches)
-c	mod	tek model number
+c	tekmod	tek model number
 c	ir	baud rate
 c	lun	output unit number (unused?)
 c

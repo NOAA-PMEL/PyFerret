@@ -87,6 +87,8 @@
 *                 from the original dataset on output.
 * V687 3/14 *acm* Fix ticket 1750. Write Ferret-internal axis names to cdf files, unless
 *                 the user has said /KEEP_AXISNAMES
+* V69+ 4/14 *acm* After the above fix, need a tweak to be able to append to files having 
+*                 dimensions that are not coordinate variables
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -136,8 +138,9 @@
 
 * local variable declarations:
       LOGICAL TM_ABSTRACT_AXIS, CD_USE_RECDIM, 
-     .        itsa_slab, need_child(nferdims), itsa_strvar, name_from_grid(nferdims)
-      INTEGER TM_LENSTR1, CD_ISIT_RECDIM, CD_WRITE_STRDIM,
+     .        itsa_slab, need_child(nferdims), itsa_strvar, 
+     .        name_from_grid(nferdims), dim_only(nferdims)
+      INTEGER TM_LENSTR1, CD_ISIT_RECDIM, CD_WRITE_STRDIM, STR_SAME,
      .        dimid(8), iaxis, cdfstat, dims, idim, varid, vartyp,
      .        nvdims, vdims(8), nvatts, nlen, glen, vlen, ax_type,
      .        lo2(nferdims), hi2(nferdims), what_recdim, strdim, dimsize,
@@ -266,7 +269,8 @@
                CALL CD_WRITE_AXIS( cdfid, dset, grid, idim, .FALSE.,
      .                   lo(idim), hi(idim), pcdf_child_span, 
      .                   .FALSE., .FALSE., mode_upcase_output, 
-     .                   keepax_flag, name_from_grid(idim), status)
+     .                   keepax_flag, name_from_grid(idim), dim_only(idim), 
+     .                   status)
                IF ( status .NE. merr_ok ) GOTO 5900
             ENDIF
  250     CONTINUE
@@ -275,6 +279,7 @@
       ELSE
 * 1/95 - create the full-span or sub-span axes as appropriate
          DO 260 idim = 1, nferdims
+	    dim_only(idim) = .FALSE.
 	    IF ( grid_line(idim, grid) .NE. mpsnorm
      .      .AND. lo(idim) .NE. unspecified_int4     ) THEN
 	      IF (need_child(idim)) THEN
@@ -286,7 +291,7 @@
      .			       idim.EQ.recdim, lo(idim), hi(idim), 
      .			       ax_type, edges_flag, do_bounds, 
      .                         mode_upcase_output, keepax_flag, 
-     .                         name_from_grid(idim), status )
+     .                         name_from_grid(idim), dim_only(idim), status )
               IF ( status .NE. merr_ok ) GOTO 5900
 	    ENDIF
  260     CONTINUE
@@ -318,7 +323,20 @@
             buff = line_name(iaxis)
 	 ENDIF
          lname = buff
-         IF (mode_upcase_output) CALL STR_UPCASE( lname, buff)
+         IF (mode_upcase_output) THEN
+	    CALL STR_UPCASE( lname, buff)
+	 ELSE
+	    IF (STR_SAME(CD_AXIS_NAME(dset, grid, idim, nlen), 
+     .                   CD_AXIS_OUTNAME(dset, grid, idim, nlen)) .EQ. 0) THEN
+	       buff = CD_AXIS_OUTNAME(dset, grid, idim, nlen)
+               lname = buff
+            ENDIF
+         ENDIF
+	 
+	 IF (dim_only(idim)) THEN 
+	    buff = CD_AXIS_OUTNAME(dset, grid, idim, nlen)
+            lname = buff
+         ENDIF
 
          IF ( iaxis .EQ. mpsnorm
      .   .OR. lo(idim) .EQ. unspecified_int4 ) GOTO 300

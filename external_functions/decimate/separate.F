@@ -228,16 +228,20 @@
 	 msum = msum + rend
 	 IF (msum .GT. nx) msum = nx+1
 	 DO i = i1, msum
-	    result(ir) = arg_1(i,k,k,k,k,k)
-	    IF (ir.GT.1 .AND. ifix .AND. 
-     .              result(ir ).NE.bad_flag_result .AND. 
-     .              result(ir-1).NE.bad_flag_result) THEN
-	       IF ( result(ir)-result(ir-1) .GT. tol) 
-     .               result(ir) = result(ir) - 360.
-	       IF ( result(ir)-result(ir-1) .LT. -1*tol) 
-     .               result(ir) = result(ir) + 360.
-               
-            ENDIF
+	    IF (arg_1(i,k,k,k,k,k) .NE. bad_flag(ARG1)) THEN
+	       result(ir) = arg_1(i,k,k,k,k,k)
+	       IF (ir.GT.1 .AND. ifix) THEN
+	          IF (result(ir ).NE.bad_flag_result .AND. 
+     .                 result(ir-1).NE.bad_flag_result) THEN
+	             IF ( result(ir)-result(ir-1) .GT. tol) 
+     .                  result(ir) = result(ir) - 360.
+	             IF ( result(ir)-result(ir-1) .LT. -1*tol) 
+     .                  result(ir) = result(ir) + 360.   
+                  ENDIF
+               ENDIF
+	    ELSE
+	       result(ir) = bad_flag_result
+	    ENDIF
 	    ir = ir + 1
 	    IF (ir .GT. res_hi_ss(X_AXIS)) GOTO 9000
 	 ENDDO

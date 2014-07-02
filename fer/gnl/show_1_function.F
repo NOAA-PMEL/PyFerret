@@ -265,6 +265,8 @@
 	   ENDIF
 	   IF (itype .EQ. parg_type_string) THEN
 	       risc_buff = risc_buff(:ll) // ' (STRING)'
+	   ELSE
+	       IF (detail) risc_buff = risc_buff(:ll) // ' (FLOAT)'
 	   ENDIF
 	   ll = TM_LENSTR1(risc_buff)
 

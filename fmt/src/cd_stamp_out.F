@@ -66,13 +66,24 @@
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
-      INTEGER TM_LENSTR1, STR_SAME, hlen, slen
+      INTEGER TM_LENSTR1, STR_SAME, TM_LOC_STRING, 
+     .        hlen, slen, ioc, loc, appnd
       LOGICAL CD_GET_ATTRIB, got_it, do_warn, append_flag
       PARAMETER (do_warn = .TRUE. )
       CHARACTER*2048 history
+      CHARACTER*1 nl
+      PARAMETER( nl = CHAR(10) )
 
 * initialize
       slen = MIN( TM_LENSTR1(string), 120 )
+
+* append flag will be set as follows:
+c      appnd =  1 ! to append
+c      appnd =  0 ! to write the string sent in
+c      appnd = -1 ! to write altered history string
+
+      appnd = 0
+      append_flag = .TRUE.
 
 * update (or create) history record
       got_it = CD_GET_ATTRIB( cdfid, NCGLOBAL, 'history',
@@ -86,13 +97,39 @@
 
 * is the last history stamp just a FERRET Vxx  date?
 * If so just replace with the current FERRET Vxxx ...
-      append_flag = append
-      IF ( STR_SAME (history(1:8), 'FERRET V') .EQ.0 .AND.
-     .     hlen .LE. 30 ) append_flag = .FALSE.
 
-* insert new signature
-      CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'history', string(:slen),
+      IF ( STR_SAME (history(1:8), 'FERRET V') .EQ.0 .AND.
+     .     hlen .LE. 30 ) THEN 
+        appnd = 0
+	append_flag = .FALSE.
+      ELSE
+
+* does the last history end with a FERRET Vxx  date?
+* If so just replace with the current FERRET Vxxx ...
+
+         ioc = 0
+         loc = TM_LOC_STRING(history,'FERRET V',ioc)
+         IF ( loc .GT. 1 ) THEN
+	    history = history(:loc-1)//string(:slen)
+	    appnd = -1
+	    append_flag = .FALSE.
+	 ENDIF
+      ENDIF
+
+* Replace or append to signature.
+
+      IF (appnd .EQ. 1) THEN
+         CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'history',  
+     .                     ','//nl(:1)//' '//string(:slen),
      .                     append_flag, status )
+      ELSE IF (appnd .EQ. 0) THEN
+         CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'history', string(:slen),
+     .                     append_flag, status )
+      ELSE IF (appnd .EQ. -1) THEN
+         slen = TM_LENSTR1(history)
+         CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'history', history(:slen),
+     .                     append_flag, status )
+      ENDIF
       IF ( status .NE. merr_ok ) GOTO 5000
 
 * successful completion

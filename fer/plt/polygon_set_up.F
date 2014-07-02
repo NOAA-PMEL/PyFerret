@@ -131,6 +131,7 @@
 * V6.85 *acm* 9/13 Change to CALL LINE_STYLE, implementing new PLOT/COLOR w/o 
 *                  argument for all-color line plot
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* V691  *acm*  5/14 Clean up temp memory used for computing histogram levels
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -774,6 +775,9 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 	  CALL compute_histo_bins (x_dat, memory(1,hblk1), 
      .       mr_bad_data(mr_color), ncolor, status) 
+
+* ... clean up temporary variable
+	  CALL DELETE_VARIABLE( mvh_temp )
        ENDIF
 
 * ... check for adequate PLOT+ memory to store the npts for each poly. 

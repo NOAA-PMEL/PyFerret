@@ -48,6 +48,7 @@ C**
 *     MOD *JD* 10.91 to eliminate PLOT COMPLETE msg if in ferret
 *     MOD *sh* 6/99 with changes to IGRNPT call
 * v552 *acm* 3/03 Changes for multi-line labels.
+* V69+  5/14 *acm* Fix for ascii font in multi-line labels, ticket 2176
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'AXIS.INC'
@@ -101,8 +102,8 @@ c        line_spacing = 1.4
         fontprefix = ""
         penprefix = ""
         DO 20 j = 1, numlines
-           CALL getlabfonts (labs(i), lnbeg, lnend, j, npnew, nfnew, 
-     .           newfont, newpen, ncr)
+           CALL getlabfonts (labs(i), lnbeg, lnend, j, fontprefix, 
+     .           npnew, nfnew, newfont, newpen, ncr)
 
 	   NCR = lnend(j) - lnbeg(j) + 1
 	   XMN=SYMWID(HLB,NCR+npen+nfont,

@@ -1,0 +1,34 @@
+! bn691_bug_fixes
+! test various fixes that went into version 6.91
+! 04/2014 ACM
+
+GO bn_reset
+GO err69_arg_type_error
+
+GO bn_reset
+GO err69_bad_bounds
+
+GO bn_reset
+GO err69_const_array
+
+GO bn_reset
+GO err69_multi_label_ascii
+
+GO bn_reset
+GO err69_ens_badvalue
+
+GO bn_reset
+GO err69_ribbon_by_levels
+
+GO bn_reset
+GO err69_ribbon_histogram
+
+GO bn_reset
+GO err69_repl_scinot
+
+GO bn_reset
+GO err69_repl_scinot
+
+GO bn_reset
+GO err691_bnds_case
+

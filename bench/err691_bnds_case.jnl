@@ -1,0 +1,8 @@
+! err691_bnds_case
+! 6/30/14
+! Ticket 2182 bounds variable incorrectly created with upper-cased axis name
+
+def ax/t tax = {1,2,4,8}
+let tval = t[gt=tax]
+can mode upcase_output
+save/clob/file=tval.nc tval

@@ -81,14 +81,22 @@
 
       INTEGER id
 
+* Single precision Ferret: string arg and result need to be twice the length.
+      INTEGER strdf
+#ifdef double_p
+      PARAMETER (strdf = 1)
+#else
+      PARAMETER (strdf = 2)
+#endif
+
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(2,mem1lox:mem1hix, mem1loy:mem1hiy, 
+      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy, 
      .     mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL arg_2(2,mem2lox:mem2hix, mem2loy:mem2hiy, 
+      REAL arg_2(strdf,mem2lox:mem2hix, mem2loy:mem2hiy, 
      .     mem2loz:mem2hiz, mem2lot:mem2hit)
-      REAL arg_3(2,mem3lox:mem3hix, mem3loy:mem3hiy, 
+      REAL arg_3(strdf,mem3lox:mem3hix, mem3loy:mem3hiy, 
      .     mem3loz:mem3hiz, mem3lot:mem3hit)
-      REAL result(2,memreslox:memreshix, memresloy:memreshiy, 
+      REAL result(strdf,memreslox:memreshix, memresloy:memreshiy, 
      .     memresloz:memreshiz, memreslot:memreshit)
 
 * After initialization, the 'res_' arrays contain indexing information 

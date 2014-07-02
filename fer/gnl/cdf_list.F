@@ -259,7 +259,7 @@
         IF ( status .NE. merr_ok ) GOTO 5800
 
 * update Conventions attribute in the file
-        buff1 = 'CF-1.0'
+        buff1 = 'CF-1.6'
 
         CALL CD_CONVENTIONS_OUT( append, cdfid, buff1, status )
         IF ( status .NE. merr_ok ) GOTO 5800

@@ -87,8 +87,8 @@
      .          typ1, typ2, typ3, typ4, typ5, typ6, typ7, typ8, typ9,
      .          typr, pdim1, pdim2, pdim3, pdim4, pdim5, pdim6, pdim7,
      .          pdim8, pdim9, pdimr, frame_bottom, com_cx, res_mr,
-     .          itype
-        CHARACTER*40 alt_name
+     .          itype, arg_first_mismatch, slen
+        CHARACTER*40 TM_FMT, alt_name
 
 * convenience equivalences
 	INTEGER	com(10), typ(9), pdim(9)
@@ -147,6 +147,7 @@
 
 * trap attempts to pass arguments of the wrong type (1/99)
 
+        arg_first_mismatch = 0
         check_alt_fcn = .FALSE.
 	DO 100 icom = 1, num_com
 	   iarg = GCF_ARG_EVAL_ORDER(ifcn, icom)
@@ -161,6 +162,8 @@
 	      IF (itype .NE. parg_type_float_or_string)  
      .           check_alt_fcn = .TRUE.
 	   ENDIF
+	   IF (check_alt_fcn .AND. arg_first_mismatch.EQ.0)
+     .        arg_first_mismatch = iarg
  100	CONTINUE
 
 * Does the function designate an alternate function for strings?
@@ -341,7 +344,9 @@
  5200	CONTINUE
 * Could not match argument types
         risc_buff = alg_text
+	alt_name = TM_FMT(FLOAT(arg_first_mismatch), 2, 40, slen)
 	CALL ERRMSG( ferr_invalid_command, status,
-     .		'string/numeric data type mix-up: '//risc_buff, *5000 )
+     .		'string/numeric data type mix-up. Argument '//
+     .		alt_name(:slen)//' : '//risc_buff, *5000 )
 	END
 

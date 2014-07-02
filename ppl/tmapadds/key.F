@@ -248,8 +248,8 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
            kx_lo_def = 1000.0 *  xorg
            kx_hi_def = 1000.0 * (xorg + xlen)
 
-           ky_lo_def = 1000.0 * (yorg + ylen)
-           ky_hi_def = 1000.0 * (yorg + ylen + 0.16*rem)
+           ky_lo_def = 1000.0 * (yorg + ylen + 0.05)
+           ky_hi_def = 1000.0 * (yorg + ylen + 0.05 + 0.16*rem)
 
         else
            rem = height - (ylen + yorg)

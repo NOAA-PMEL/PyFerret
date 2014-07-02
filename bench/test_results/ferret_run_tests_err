@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 12 Jul  1 11:48 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.92
+lrwxrwxrwx 1 ksmith tmap 12 Jul  1 16:51 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.92
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for ferret debug build on RHEL5-64
@@ -237,7 +237,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Tue Jul  1 11:50:35 PDT 2014
+Beginning at Tue Jul  1 16:52:10 PDT 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3532,4 +3532,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Tue Jul  1 11:56:56 PDT 2014
+Ended at Tue Jul  1 16:58:21 PDT 2014

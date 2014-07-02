@@ -1,7 +1,8 @@
 	SUBROUTINE XYAVE_REGRID( cx_lims,
      .				 dst_lox, dst_hix, dst_loy, dst_hiy,
      .				 src, msrc, dst, mdst,
-     .			         src_cx, dst_cx, i21,j21)
+     .			         src_cx, dst_cx, i21, j21,
+     .			         aweight)
 
 *
 *
@@ -77,6 +78,7 @@
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * 6/06 - Fix to Andrew*s correction for XY integ., bug1348
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V692 6/14 *acm* new regrid transform xy ave regrid: ticket 2180
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -86,8 +88,8 @@
 	include 'xvariables.cmn'
 
 * calling argument declarations:
-	INTEGER	cx_lims, msrc, mdst, dst_lox, dst_hix,
-     .          dst_loy, dst_hiy, src_cx, dst_cx 
+	INTEGER	cx_lims, msrc, mdst, dst_lox, dst_hix, 
+     .          dst_loy, dst_hiy,src_cx, dst_cx, aweight
 	INTEGER	i21(dst_lox:dst_hix+1),
      .		j21(dst_loy:dst_hiy+1)
 
@@ -100,14 +102,14 @@
 	LOGICAL GEOG_COS_FACTOR,
      .          need_cos, ok_negi111, ok_negj111
 
-	INTEGER idst, isrc, jdst, jsrc, dim1, dim2,
-     .          src_grid, dst_grid, k, l, m, n,
-     .          isrc_lo, isrc_hi, jsrc_lo, jsrc_hi,
+	INTEGER idst, isrc, jdst, jsrc, dim1, dim2, 
+     .          src_grid, dst_grid,k, l, m, n, 
+     .          isrc_lo, isrc_hi, jsrc_lo, jsrc_hi, 
      .          idst_lo, idst_hi, jdst_lo, jdst_hi
 
 	REAL	AXIS_DISTANCE, BOX_SIZE,
      .          xdist, ydist, area, sum, darea, bad_src, bad_dst,
-     .          cos_fact, area_earth, ybxlo, ybxhi
+     .          cos_fact, area_earth, ybxlo, ybxhi, yh
 
         REAL*8	TWORLD,
      .          xsrc_lo, xsrc_hi, ysrc_lo, ysrc_hi,
@@ -148,7 +150,6 @@
      .			   jdst_lo, jdst_hi, dst_grid,
      .			   dim2, j21 )
 
-    
 * Range of subscripts might be negative, and contain -111 among them.
 * ok_negi111, ok_negj111 distinguish between this and the flag unspecified_int4.
 
@@ -157,7 +158,6 @@
 
         ok_negj111 = ( j21(jdst_lo) .LT. unspecified_int4 .AND.
      .                 j21(jdst_hi) .GT. unspecified_int4 )
-
 
 * loop over Z, T, E, and F ranges of 6-D data
 	DO 100 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
@@ -201,23 +201,19 @@
 	   DO 51 jsrc = jsrc_lo, jsrc_hi
 	   cos_fact = 1.0
 	   IF ( need_cos ) THEN
-!             cos_fact = COS(deg2rad*TWORLD(jsrc,src_grid,dim2,box_middle)) !old method!
-!             yc = TWORLD(jsrc,src_grid,dim2,box_middle)
-!             bx = BOX_SIZE( jsrc, src_grid, dim2 )
-!             yh_2 = 0.5*deg2rad * bx
-!             yc = deg2rad * yc
-!             cos_fact = COS(yc) * 2.*ABS( SIN(yh_2) )
 
-C The above are all OK if the coordinate point is in the middle of the box.
-C If the coordinate is not in the middle of the cell then it should be
-C ABS(SIN(ybxhi)-SIN(ybxlo))  
-C See this thread:
-C http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2009/msg00506.html
-C And also ticket 1348.
+C Use COS(yc)* ABS(SIN(yh/2)/(yh/2)) 
+C As a check, the sum of weights as calculated with
+C @WGT, matches the surface of the earth.
 
               ybxlo = deg2rad* TWORLD(jsrc,src_grid,dim2,box_lo_lim)
               ybxhi = deg2rad* TWORLD(jsrc,src_grid,dim2,box_hi_lim)
-              cos_fact = ABS( SIN(ybxhi) - SIN(ybxlo) )
+
+	      yh = ybxhi-ybxlo
+	       
+	      ! cos(yc) * abs(sin(yh/2))/(yh/2) 
+	      cos_fact = COS( deg2rad*TWORLD(jsrc,src_grid,dim2,box_middle) )*
+     .           ABS(SIN(yh/2)/(yh/2))
 
 	   ENDIF
 
@@ -237,16 +233,25 @@ C And also ticket 1348.
 * ... contribution from this source box
 *     1/area_earth factor cancels out in result average
               IF (xdist .gt. 0.  .AND.  ydist .GT. 0) THEN
-	         darea = ydist*(cos_fact*xdist) / area_earth
-	         area  = area + darea
-	         sum   = sum  + darea * src(isrc,jsrc,k,l,m,n)
+		 IF (aweight.EQ.1) THEN 
+	            darea = ydist*(cos_fact*xdist)
+		    area = area + darea
+		 ELSE
+	            darea = ydist*(cos_fact*xdist) / area_earth
+	            area  = area + darea
+	            sum   = sum  + darea * src(isrc,jsrc,k,l,m,n)
+		 ENDIF
               ENDIF
 
  50	      CONTINUE
  51	   CONTINUE
 * ... divide by area to get average
 	   IF ( area .GT. 0.0 ) THEN
-	      dst(idst,jdst,k,l,m,n) = sum / area
+	      IF (aweight.EQ.1) THEN
+	         dst(idst,jdst,k,l,m,n) = area
+	      ELSE
+	         dst(idst,jdst,k,l,m,n) = sum / area
+	      ENDIF
 	   ELSE
 	      dst(idst,jdst,k,l,m,n) = bad_dst
 	   ENDIF

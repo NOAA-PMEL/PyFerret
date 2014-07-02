@@ -85,6 +85,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V68+ 4/12  *acm*   Fix ticket 1931: the work space for XY linear regridding
 *                    was computed incorrectly.
+* V692 6/14 *acm* new regrid transform xy ave regrid: ticket 2180
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -109,7 +110,8 @@
 	INTEGER hi_isp, lo_isp, axis, cx_valid, idim,
      .		rgrd_trans, mrlist(5), wk_size, wk_size2,
      .		dst_cx, src_cx, dst_mr, src_mr, ngd_mr, ave_mr,
-     .		blk1, axis_list(nferdims), naxis, i, nbd_mr, nxsrc
+     .		blk1, axis_list(nferdims), naxis, i, nbd_mr, nxsrc, 
+     .		aweight
 	CHARACTER dtype*4
 
 *        ... interpretation stack setup at the time this is called ...
@@ -133,7 +135,8 @@
 * what is the regridding transformation for this axis ?
 	rgrd_trans = cx_regrid_trans( axis, dst_cx )
 	xy_regrid = ( (rgrd_trans .EQ. prgrd_xy_ave) .OR. 
-     .                (rgrd_trans .EQ. prgrd_xy_lin) )
+     .                (rgrd_trans .EQ. prgrd_xy_lin).OR. 
+     .                (rgrd_trans .EQ. prgrd_wgt) )
 	IF ( xy_regrid ) THEN
 	   IF ( mode_diagnostic ) WRITE (ttout_lun,*) 'regrid XY'
 	   IF (axis.NE.x_dim) CALL ERRMSG
@@ -248,7 +251,8 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 	CALL NON_ARRAY_SUBSC( mrlist, 2 )
 
 * reserve working array space
-	IF ( rgrd_trans .EQ. prgrd_xy_ave) THEN
+	IF ( (rgrd_trans .EQ. prgrd_xy_ave) .OR.
+     .       (rgrd_trans .EQ. prgrd_wgt) ) THEN
 	   CALL GET_WORK_SPC( wk_size+wk_size2, blk1, status )
 	ELSEIF (rgrd_trans .EQ. prgrd_xy_lin) THEN
 	   nxsrc = cx_hi_ss(src_cx,x_dim)-cx_lo_ss(src_cx,x_dim) + 1
@@ -282,13 +286,16 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
      .			memory(1,mr_blk1(dst_mr)), dst_mr,
      .			memory(1, blk1), src_cx, dst_cx,
      .                  wk_size+1 )
-	ELSEIF ( rgrd_trans .EQ. prgrd_xy_ave ) THEN
+	ELSEIF ( (rgrd_trans .EQ. prgrd_xy_ave) .OR.
+     .           (rgrd_trans .EQ. prgrd_wgt) ) THEN
 	   IF ( itsa_string ) GOTO 5010
+	   aweight = 0
+	   IF (rgrd_trans .EQ. prgrd_wgt) aweight = 1
 	   CALL DO_XYAVE_REGRID( cx_valid,
      .			memory(1,mr_blk1(src_mr)), src_mr,
      .			memory(1,mr_blk1(dst_mr)), dst_mr,
      .			memory(1, blk1), src_cx, dst_cx,
-     .                  wk_size+1, wk_size+wk_size2 )
+     .                  wk_size+1, wk_size+wk_size2, aweight )
 	ELSEIF ( rgrd_trans .EQ. prgrd_xy_lin ) THEN
 	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_XYLIN_REGRID( cx_valid,

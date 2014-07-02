@@ -36,6 +36,7 @@
 *		  pauto_1pt_ax, pinfer_frm_aux
 *		  added patnam_sigma, patnam_curvx, patnam_curvy
 * 		  turned max_context into a variable to allow aux frames above it
+* V692 6/14 *acm* new regrid transform xy ave regrid: ticket 2180
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -359,6 +360,7 @@
      .			prgrd_modmin,
      .			prgrd_modmax,
      .			prgrd_nearest,
+     .			prgrd_wgt,
      .			prgrd_from_source,
      .			prgrd_from_ntrmed,
      .			pinterpolate
@@ -383,6 +385,7 @@
      .			prgrd_modmin		= 17,
      .			prgrd_modmax		= 18,
      .			prgrd_nearest		= 19,
+     .			prgrd_wgt		= 21,
      .			prgrd_from_source	= -6,
      .			prgrd_from_ntrmed	= -7,
      .			pinterpolate		= 0 )

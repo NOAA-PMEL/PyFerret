@@ -92,6 +92,7 @@
 *                  pseudo-variables
 *       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 * V690 12/13 *sh* added auxiliary regridding transforms
+* V692 6/14 *acm* new regrid transform xy ave regrid: ticket 2180
 
         IMPLICIT NONE
 	include	'ferret.parm'
@@ -749,12 +750,15 @@
      .		alg_regrid_title( prgrd_nearest )	/ 'nearst coord'/,
      .		alg_regrid_code ( prgrd_nearest )	/ 'NRST'	/
      .		alg_regrid_vizb ( prgrd_nearest )	/ .TRUE.	/,
-     .		(alg_regrid_title(i),i=prgrd_nearest+1,max_regrid_trans)
-     .				/11*unspecified_name4/,
-     .		(alg_regrid_code (i),i=prgrd_nearest+1,max_regrid_trans)
-     .				/11*unspecified_name4/,
-     .		(alg_regrid_vizb (i),i=prgrd_nearest+1,max_regrid_trans)
-     .				/11*.FALSE./
+     .		alg_regrid_title( prgrd_wgt )		/ 'xy avg weight'/,
+     .		alg_regrid_code ( prgrd_wgt )		/ 'WGT'	/
+     .		alg_regrid_vizb ( prgrd_wgt )		/ .FALSE.	/,
+     .		(alg_regrid_title(i),i=prgrd_wgt+1,max_regrid_trans)
+     .				/9*unspecified_name4/,
+     .		(alg_regrid_code (i),i=prgrd_wgt+1,max_regrid_trans)
+     .				/9*unspecified_name4/,
+     .		(alg_regrid_vizb (i),i=prgrd_wgt+1,max_regrid_trans)
+     .				/9*.FALSE./
 
 
 	DATA

@@ -159,9 +159,14 @@
  50	naxis = 1
 	axis_list(1) = axis	
 	has_strides = .FALSE.
-	xy_regrid = (cx_regrid_trans(axis,src_cx) .EQ. prgrd_xy_ave).OR. 
-     .           (cx_regrid_trans(axis,src_cx) .EQ. prgrd_xy_lin)
+	xy_regrid = (cx_regrid_trans(axis,src_cx) .EQ. prgrd_xy_ave) .OR. 
+     .           (cx_regrid_trans(axis,src_cx) .EQ. prgrd_xy_lin) .OR. 
+     .           (cx_regrid_trans(axis,src_cx) .EQ. prgrd_wgt)
 	IF ( xy_regrid)   THEN
+	  IF (cx_regrid_trans(axis,src_cx) .EQ. prgrd_wgt) THEN
+	     IF (cx_regrid_trans(1,src_cx) .NE. prgrd_wgt .OR.
+     .           cx_regrid_trans(2,src_cx) .NE. prgrd_wgt) GOTO 5200
+           ENDIF
 	   naxis = 2
 	   axis_list(2) = y_dim
 	ELSEIF ( may_have_strides ) THEN
@@ -272,6 +277,9 @@
  5100	CALL ERRMSG( ferr_regrid, status,
      .          '@MOD regridding to a non-modulo axis: '
      .          //VAR_CODE(cx_category(dst_cx),cx_variable(dst_cx)),
+     .		*5000)
+ 5200	CALL ERRMSG( ferr_regrid, status,
+     .          '@WGT is only for XY direction ',
      .		*5000)
 
 	END

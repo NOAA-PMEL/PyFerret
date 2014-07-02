@@ -1,5 +1,6 @@
 	SUBROUTINE DO_XYAVE_REGRID( cx_lims, src, msrc, dst, mdst,
-     .				    work, src_cx, dst_cx, iwork2, itot )
+     .				    work, src_cx, dst_cx, iwork2, itot, 
+     .				    aweight )
 
 *
 *
@@ -54,14 +55,15 @@
 	include	'xcontext.cmn'
 
 * calling argument declarations:
-	INTEGER	cx_lims, axis, msrc, mdst, iwork2, itot, src_cx, dst_cx
+	INTEGER	cx_lims, axis, msrc, mdst, iwork2, itot, src_cx, dst_cx,
+     .		aweight
 	REAL	src(*), dst(*), work(itot)
 
 	CALL XYAVE_REGRID( cx_lims,
      .			   cx_lo_ss(cx_lims,x_dim), cx_hi_ss(cx_lims,x_dim),
      .			   cx_lo_ss(cx_lims,y_dim), cx_hi_ss(cx_lims,y_dim),
      .			   src, msrc, dst, mdst, src_cx, dst_cx, 
-     .                     work(1), work(iwork2) )
+     .                     work(1), work(iwork2), aweight )
 
 	RETURN
 	END

@@ -67,7 +67,6 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
-* V692 6/14 *acm* new regrid transform xy ave regrid: ticket 2180
 
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'

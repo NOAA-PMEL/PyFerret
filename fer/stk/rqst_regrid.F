@@ -72,7 +72,6 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
 *                  dimension is now an arg to SECS_TO_TSTEP. Note the input 
 *                  argument "axis" in this routine is a dimension, 1, 2, ... 
-* V692 6/14 *acm* new regrid transform xy ave regrid: ticket 2180
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -166,8 +165,7 @@
      .      .OR. rgrd_trans .EQ. prgrd_variance
      .      .OR. rgrd_trans .EQ. prgrd_sum
      .      .OR. rgrd_trans .EQ. prgrd_good_pt
-     .      .OR. rgrd_trans .EQ. prgrd_average
-     .      .OR. rgrd_trans .EQ. prgrd_wgt ) THEN
+     .      .OR. rgrd_trans .EQ. prgrd_average ) THEN
 	   where_loest = box_lo_lim
 	   where_hiest = box_hi_lim
 	ELSEIF ( rgrd_trans .EQ. prgrd_associate ) THEN

@@ -425,12 +425,6 @@
            ENDIF
         ENDIF
 
-* @WGT only for xy average
-        IF ( cx_regrid_trans(x_dim,cx) .EQ. prgrd_wgt
-     . .AND. cx_regrid_trans(y_dim,cx) .NE. prgrd_wgt ) GOTO 5500
-        IF ( cx_regrid_trans(x_dim,cx) .NE. prgrd_wgt
-     . .AND. cx_regrid_trans(y_dim,cx) .EQ. prgrd_wgt ) GOTO 5500
-
  5000	RETURN
 
 * error exits
@@ -449,8 +443,5 @@
  5400	CALL ERRMSG( ferr_invalid_command, status,
      .		'Cannot use dates - not a calendar axis: '//
      .		VAR_CODE(cx_category(cx),cx_variable(cx)),
-     .								*5000)
- 5500	CALL ERRMSG( ferr_invalid_command, status,
-     .		'@WGT is only for xy regridding  ',
      .								*5000)
 	END

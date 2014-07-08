@@ -107,7 +107,7 @@
 
 	REAL	AXIS_DISTANCE, BOX_SIZE,
      .          xdist, ydist, area, sum, darea, bad_src, bad_dst,
-     .          cos_fact, area_earth, ybxlo, ybxhi
+     .          cos_fact, area_earth, ybxlo, ybxhi, yh 
 
         REAL*8	TWORLD,
      .          xsrc_lo, xsrc_hi, ysrc_lo, ysrc_hi,
@@ -210,7 +210,7 @@ C And also ticket 1348.
               ybxhi = deg2rad* TWORLD(jsrc,src_grid,dim2,box_hi_lim)
 	      
 	      yh = ybxhi-ybxlo  
-              cos_fact = ABS( SIN(ybxhi) - SIN(ybxlo) )/ hy
+              cos_fact = ABS( SIN(ybxhi) - SIN(ybxlo) )/ yh
 
 	   ENDIF
 

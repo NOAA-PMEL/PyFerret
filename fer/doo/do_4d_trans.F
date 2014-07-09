@@ -263,8 +263,7 @@ C (Unless there is just one grid cell in the y direction.)
 	      IF (j .EQ. cx_hi_s2(com_cx) .AND. .NOT.one_y)
      .                ybxhi = deg2rad* cx_hi_ww(y_dim,res_cx)
 
-	      yh = ybxhi-ybxlo  
-	      boxes(j+cos_offset) = ABS( SIN(ybxhi) - SIN(ybxlo) )/yh
+	      boxes(j+cos_offset) = ABS( SIN(ybxhi) - SIN(ybxlo) )
 
 	      ! surface area of sphere depends only on h not on ybox
 	      IF (.NOT.at_din .AND. yes_ax(y_dim)) boxes(j+box_offset(y_dim)) = 1.  

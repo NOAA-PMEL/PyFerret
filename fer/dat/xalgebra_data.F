@@ -92,7 +92,6 @@
 *                  pseudo-variables
 *       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 * V690 12/13 *sh* added auxiliary regridding transforms
-* V692 6/14 *acm* new regrid transform xy ave regrid: ticket 2180
 
         IMPLICIT NONE
 	include	'ferret.parm'
@@ -684,10 +683,16 @@
      .		alg_trans_dflt_arg( 41)/ bad_val4		/,
      .		alg_trans_text ( 42 )	/ 'STD'  		/, 
      .		alg_trans_title( 42 )	/ 'standard deviation'  /,
-     .		alg_trans_num  ( 42 )	/ trans_std_dev  	/
+     .		alg_trans_num  ( 42 )	/ trans_std_dev  	/,
+     .		alg_trans_text ( 43 )	/ 'WGT'  		/, 
+     .		alg_trans_title( 43 )	/ 'weights for avg,int'  /,
+     .		alg_trans_num  ( 43 )	/ trans_avg_wgt  	/,
+     .		alg_trans_text ( 44 )	/ 'WG4'  		/, 
+     .		alg_trans_title( 44 )	/ '4D weights, avg,int'  /,
+     .		alg_trans_num  ( 44 )	/ trans_4d_avg_wgt  	/
 
-        DATA    (alg_trans_num(i),i = 43, num_transforms)
-     .            /18*unspecified_int4 /
+        DATA    (alg_trans_num(i),i = 45, num_transforms)
+     .            /16*unspecified_int4 /
 
 	DATA
      .		alg_regrid_title( prgrd_exact )		/ ' '	/,
@@ -750,15 +755,12 @@
      .		alg_regrid_title( prgrd_nearest )	/ 'nearst coord'/,
      .		alg_regrid_code ( prgrd_nearest )	/ 'NRST'	/
      .		alg_regrid_vizb ( prgrd_nearest )	/ .TRUE.	/,
-     .		alg_regrid_title( prgrd_wgt )		/ 'weights in xy avg'/,
-     .		alg_regrid_code ( prgrd_wgt )		/ 'WGT'	/
-     .		alg_regrid_vizb ( prgrd_wgt )		/ .TRUE.	/,
-     .		(alg_regrid_title(i),i=prgrd_wgt+1,max_regrid_trans)
-     .				/9*unspecified_name4/,
-     .		(alg_regrid_code (i),i=prgrd_wgt+1,max_regrid_trans)
-     .				/9*unspecified_name4/,
-     .		(alg_regrid_vizb (i),i=prgrd_wgt+1,max_regrid_trans)
-     .				/9*.FALSE./
+     .		(alg_regrid_title(i),i=prgrd_nearest+1,max_regrid_trans)
+     .				/11*unspecified_name4/,
+     .		(alg_regrid_code (i),i=prgrd_nearest+1,max_regrid_trans)
+     .				/11*unspecified_name4/,
+     .		(alg_regrid_vizb (i),i=prgrd_nearest+1,max_regrid_trans)
+     .				/11*.FALSE./
 
 
 	DATA
@@ -787,7 +789,7 @@
      .				/2*.FALSE./
 
 * translation table for substituting 1D transformations with 4D transforms
-	DATA	num_4d_trans/ 6 /
+	DATA	num_4d_trans/ 7 /
 	DATA	alg_1d_to_4d(1) /trans_average/,
      .		alg_4d_trans(1) /trans_4d_ave/,
      .		alg_1d_to_4d(2) /trans_integ_def/,
@@ -799,7 +801,9 @@
      .		alg_1d_to_4d(5) /trans_bad_pt/,
      .		alg_4d_trans(5) /trans_4d_bad_pt/,
      .		alg_1d_to_4d(6) /trans_sum/,
-     .		alg_4d_trans(6) /trans_4d_sum/
+     .		alg_4d_trans(6) /trans_4d_sum/,
+     .		alg_1d_to_4d(7) /trans_avg_wgt/,
+     .		alg_4d_trans(7) /trans_4d_avg_wgt/
 
 	END
 

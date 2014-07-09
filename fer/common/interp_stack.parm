@@ -5,6 +5,7 @@
 * 6/01 *sh* added isact_event_mask
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V690 12/13 *sh* for auto-curvilinear Ferret
+* V692  7/14 *acm* added isact_avg_wgt
 
 * minimum working space provided to transformations
 	INTEGER		iswksiz
@@ -129,7 +130,9 @@
      .			isact_nrst_dist_blw,
      .			isact_nrst_indx_abv,
      .			isact_nrst_indx_blw,
-     .			isact_event_mask
+     .			isact_event_mask,
+     .			isact_avg_wgt,
+     .			isact_avg_4d_wgt
 
 	PARAMETER (
      .		isact_interp		= isact_trans_code + trans_interpolate,
@@ -173,7 +176,9 @@
      .		isact_nrst_dist_blw = isact_trans_code + trans_nrst_dist_blw,
      .		isact_nrst_indx_abv = isact_trans_code + trans_nrst_indx_abv,
      .		isact_nrst_indx_blw = isact_trans_code + trans_nrst_indx_blw,
-     .		isact_event_mask    = isact_trans_code + trans_event_mask)
+     .		isact_event_mask    = isact_trans_code + trans_event_mask,
+     .		isact_avg_wgt       = isact_trans_code + trans_avg_wgt,
+     .		isact_avg_4d_wgt    = isact_trans_code + trans_4d_avg_wgt)
 
 * classes of stack objects
 	INTEGER		isobj_uvar,

@@ -15,7 +15,6 @@ cd_conventions_out.F\
 cd_defer_coord_write.F\
 cd_delete_attribute.F\
 cd_dods_control.F\
-cd_dset_erddap.F\
 cd_dim_only.F\
 cd_dset_remoteok.F\
 cd_encode_url.F\
@@ -309,7 +308,6 @@ deleted_list_get_del.c\
 deleted_list_get_undel.c\
 deleted_list_init.c\
 deleted_list_modify.c\
-erddap_from_url.c\
 ez_delimited_read.c\
 my_close.c\
 my_open.c\

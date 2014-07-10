@@ -74,6 +74,8 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       *acm* 3/12 cleanup old VMS ifdef
 * V687  2.14 *acm* fix ticket 2144: Make buffer for list of varnames longer
+* V692  7/14 *acm* fix ticket 2182: For ez datasets opened w/o a grid spec, 
+*                  count the records and define an axis
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -99,10 +101,11 @@
 	LOGICAL         have_type
 	INTEGER		TM_LENSTR1, TM_DSET_NUMBER, GRID_FROM_NAME,
      .			tmap_status, loc, skip, grid, columns,
-     .			order(nferdimsp1), idim, s1, slen, ndigits
-	CHARACTER	TM_INQ_PATH*2048, var_list*2048,
+     .			order(nferdimsp1), idim, s1, slen, ndigits, nread,
+     .                  ndims, nvars, ngatts, recdim
+	CHARACTER	TM_INQ_PATH*2048, TM_FMT*12, var_list*2048,
      .			path_name*2048, ezform*80, title*128, grid_name*64,
-     .			type*2048, ctype*16, delim*24
+     .			type*2048, ctype*16, delim*24, buff*20
 	REAL		rval
 
 * local parameter declarations
@@ -305,9 +308,31 @@
            IF ( status .NE. ferr_ok ) RETURN
 	   IF ( .NOT.VALID_GRID( grid ) ) GOTO 5500
 	ELSEIF ( .NOT.already_init ) THEN
-* ... insert the default defining grid
-	   have_mods = .TRUE.
-	   grid = mgrid_ez_dflt
+
+* ... insert the default defining grid for STREAM
+	   if (ezform(:3) .EQ. 'STR') then
+	      have_mods = .TRUE.
+	      grid = mgrid_ez_dflt
+	   ELSE
+
+* ... For ascii and unformatted sets, get the datset count and define a 
+*     basic x axis, not the ez abstract axis
+	      CALL EZ_COUNT_DSET ( dset, ezform, nread, status )
+              IF ( status .NE. ferr_ok ) RETURN
+
+	      IF (columns .GT. 1) THEN
+	         CALL CD_GET_DS_INFO (dset, ndims, nvars, ngatts,
+     .            recdim, status)
+                 nread = nread*columns/nvars
+	      ENDIF
+
+	      buff = TM_FMT(FLOAT(nread), 10, 12, slen)
+	      grid_name = 'X[GX=1:'//buff(:slen)//':1]'
+	      grid = GRID_FROM_NAME( grid_name, cx_last, status )
+              IF ( status .NE. ferr_ok ) RETURN
+	      IF ( .NOT.VALID_GRID( grid ) ) GOTO 5500
+	      have_mods = .TRUE.
+	   endif
 	ELSE
 	   grid = int4_init
 	ENDIF

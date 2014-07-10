@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 79065947 Jul  2 09:21 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 53423932 Jul 10 10:00 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: new  @WGH transformation, see ticket 2180 with benchmark tests
+Note: ticket 2182: actual axis length for EZ datasets
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,10 +22,9 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Wed Jul 2 09:32:34 PDT 2014
+Beginning at Thu Jul 10 10:03:34 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-        SET EXPRESSION has not been given or implied
         SET EXPRESSION has not been given or implied
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
@@ -306,7 +305,7 @@ list temp[i=2:5,gx=130e:80w:10]
 list temp[gx=130e:80w]
  **ERROR: variable unknown or not in data set: NOEXIST
 list temp[gx=u]	+ noexist
- **ERROR: illegal limits: TEMP on grid (G003) does not exist at K=30
+ **ERROR: illegal limits: TEMP on grid (G004) does not exist at K=30
           Axis extremes are K=1:27
 list temp[gx=u,k=30]
  **ERROR: illegal limits: TEMP does not contain K=20
@@ -322,7 +321,7 @@ list tu
 list tu
  **ERROR: variable unknown or not in data set: NOEXIST
 list tu
- **ERROR: illegal limits: TEMP on grid (G003) does not exist at K=30
+ **ERROR: illegal limits: TEMP on grid (G004) does not exist at K=30
           Axis extremes are K=1:27
 list tu
  **ERROR: illegal limits: TEMP does not contain K=20
@@ -1085,7 +1084,7 @@ Replacing definition of axis TAX2
  *** NOTE: regarding ./test_axes.nc ...
  *** NOTE: Climatological axes test_irreg, test_seas defined
  *** NOTE: Not deleted: TEST_IRREG
- *** NOTE: Axis is in use by grid (G022)
+ *** NOTE: Axis is in use by grid (G023)
  *** NOTE: Not deleted: XEVEN
  *** NOTE: Axis is in use by grid EVEN
  *** NOTE: Not deleted: XODD
@@ -1190,18 +1189,18 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAXLEVITR1_160
  *** NOTE: Axis is in use by grid GG1
- *** NOTE: Not deleted: TIME4
- *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: TIME5
  *** NOTE: Axis is in use by grid GLB1
+ *** NOTE: Not deleted: TIME4
+ *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: COADSX
  *** NOTE: Axis is in use by grid GG
  *** NOTE: Not deleted: COADSY
  *** NOTE: Axis is in use by grid GG1
+ *** NOTE: Not deleted: TEST_IRREG
+ *** NOTE: Axis is in use by grid (G023)
  *** NOTE: Not deleted: YAXLEVITR1_90
  *** NOTE: Axis is in use by grid GG2
- *** NOTE: Not deleted: TEST_IRREG
- *** NOTE: Axis is in use by grid (G022)
  *** NOTE: Not deleted: ZAXLEVITR1_1
  *** NOTE: Axis is in use by grid GG2
  *** NOTE: Not deleted: (AX020)
@@ -1310,10 +1309,10 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAXLEVITR1_160
  *** NOTE: Axis is in use by grid GG1
- *** NOTE: Not deleted: TIME4
- *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: TIME5
  *** NOTE: Axis is in use by grid GLB1
+ *** NOTE: Not deleted: TIME4
+ *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: COADSX
  *** NOTE: Axis is in use by grid GG
  *** NOTE: Not deleted: COADSY
@@ -3525,7 +3524,7 @@ Replacing definition of axis ZAX
           Are you giving explicit limits when SET REGION would suffice ?
 list f
  *** NOTE: Not deleted: ENSEMBLE
- *** NOTE: Axis is in use by grid (G103)
+ *** NOTE: Axis is in use by grid (G089)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3695,13 +3694,8 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: invalid command: @WGT is only for xy regridding
-list var1deg[x=180,gy=var2deg@wgt]
- **ERROR: regridding: @WGT is only for XY direction
-load/y=2/l=1 salt[gz=zreg@wgt]
-Replacing definition of axis TDAY
- **ERROR: regridding: @WGT is only for XY direction
-shade/y=2/x=128w salt[gz=zreg@wgt,gt=tday@wgt]
+Replacing definition of axis X2
+Replacing definition of axis Y2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3793,4 +3787,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jul 2 09:35:50 PDT 2014
+Ended at Thu Jul 10 10:05:05 PDT 2014

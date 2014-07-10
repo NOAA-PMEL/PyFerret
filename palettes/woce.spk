@@ -1,0 +1,7 @@
+RGB_Mapping By_value
+ 
+! Level  Red  Green  Blue
+      2    0  100    0  ! light green
+      3  100   85   10  ! gold 100   85    0 
+      4  100    0    0  ! bright red
+

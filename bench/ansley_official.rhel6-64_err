@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 53423932 Jul 10 10:00 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 79247232 Jul 11 11:17 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2182: actual axis length for EZ datasets
+Note: Fix to @WGT: ticket 2183
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -21,8 +21,8 @@ FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
-PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Thu Jul 10 10:03:34 PDT 2014
+PWD=/home/users/ansley/build/current_trunk/FERRET/bench
+Beginning at Fri Jul 11 11:25:01 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3787,4 +3787,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Jul 10 10:05:05 PDT 2014
+Ended at Fri Jul 11 11:26:57 PDT 2014

@@ -56,6 +56,7 @@
 * V533: *sh* 6/01 - added trans_event_mask
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V692 7/14 *acm* ticket 2183: handle @WGT transform as for integrals
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -68,6 +69,8 @@
 	   REGION_CLASS = 3    ! uvlim_*_xact
 	ELSEIF ( cx_trans( idim,cx ) .EQ. trans_integ_indef
      .      .OR. cx_trans( idim,cx ) .EQ. trans_run_sum
+     .      .OR. cx_trans( idim,cx ) .EQ. trans_avg_wgt
+     .      .OR. cx_trans( idim,cx ) .EQ. trans_4d_avg_wgt
      .      .OR. cx_trans( idim,cx ) .EQ. trans_event_mask ) THEN
 	   REGION_CLASS = 1    ! uvlim_*_lo
 	ELSEIF ( cx_trans( idim,cx ) .EQ. trans_wgted_eq ) THEN

@@ -25,3 +25,16 @@ let mywt = var[t=@wgt]
 
 let secperday = 24*3600
 list/x=1/y=1 mywt, mywt/secperday
+
+! Test reusing results. (ticket 2183)
+use gt4d011.cdf
+! The last value is a partial grid cell
+list/y=1.5/x=130w/z=8:43.5/t=1-sep-1982 temp[z=@wgt]
+
+! Now load the result over a larger region
+list/y=1.5/x=130w/z=0:82/t=1-sep-1982 temp[z=@wgt]
+
+! This finds the previous result in memory - needs to 
+! reuse the correct one.
+
+list/y=1.5/x=130w/z=8:43.5/t=1-sep-1982 temp[z=@wgt]

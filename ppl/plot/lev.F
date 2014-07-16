@@ -15,6 +15,8 @@ C**
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'cont_inc.decl'
 	INCLUDE 'CONT.INC'
+	INCLUDE 'shade_vars.cmn'
+
 
 	CHARACTER PRSE*2048
 
@@ -72,6 +74,9 @@ C**
 *                 (Lavelle examples) 
 * v686 *acm* 1/14 Fix ticket 2123: labeling color bar when there is just one level
 * v686 *acm* 2/14 Fix ticket 2124: Do the above fix only in the subroutine KEY.
+* v692 *acm* 7/14 For centered key labels add a level to corresp to the upper bound
+*                 of the top color on thecolorbar, excluding the inf triangle.
+
 
 	parameter	(epsilon = 1e-6)
 
@@ -79,7 +84,6 @@ C**
 	DIMENSION VAL(4),INTIF(4)
         INTEGER ntop
         LOGICAL   TM_FPEQ_SNGL
-
 
 	IF(LABEL.EQ.' ')THEN
 	    NLEV=NLEV_DFLT
@@ -148,6 +152,7 @@ C
 		    CALL CMDERR(11,STRING,ISLEN,IERR)
 		    RETURN
 		ENDIF
+		
 		DO 100 I=1,NL
 		J=NLEV+I
 
@@ -261,5 +266,12 @@ C
 400	    CONTINUE
 	ENDIF
 	GOTO 200
-10	RETURN
+10	CONTINUE
+
+	IF (center_key_labels) THEN
+	   dz = zlev(nlev) - zlev(nlev-1)
+	   nlev = nlev + 1
+	   zlev(nlev) = zlev(nlev-1) + dz
+	ENDIF
+	RETURN
 	END

@@ -423,9 +423,14 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 
         CALL COLOR(1)
 *       DO THE KEY
-        IF (do_key .AND. .NOT.interrupted) CALL key     ! 1/89 - *sh*
- 
-
+C     Generate a color/gray scale key.
+C     Restore standard key style afterward (do this here, to 
+C     catch both plot and plot/set calls).
+C     
+        if (do_key .AND. .NOT.interrupted) THEN
+            call key ! 1/89 - *sh*
+           CALL SHADE_KEY_CONT (0)
+        ENDIF
 	RETURN
 
 	END

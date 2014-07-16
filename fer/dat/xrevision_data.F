@@ -110,13 +110,14 @@
 * V6.92   internal, new color /key options any of 
 *           /key=vertical,horizontal,centerlabel
 * V6.921   internal, @WGT and defined axis for EZ reads
+* V6.922   final tweaks to /key=centerlab, internal tag for SOCAT testing
 
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.921   /
+	DATA revision_level	/  6.922   /
 
 ! Note we can put a debug title in the Ferret startup header lines
 ! by putting a title into the Makefile: $(MAKE) "DEBUG_TITLE=beta" update

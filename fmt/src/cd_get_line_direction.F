@@ -37,6 +37,8 @@
 *  code to determine the direction of a coordinate axis. Pulled out of cd_get_1_axis
 *  V683 ACM 9/2012
 *
+*  V692 ACM 7/2014 A cf_role attribute indicates the E direction.
+*
 *      include files: 
       
         IMPLICIT NONE
@@ -158,6 +160,20 @@
          ELSE
             axis_dir = char_init01
          ENDIF
+      ENDIF
+
+* ... check for a cf_role attribute, if still undetermined.
+*     Put these axes in the E direction. This attribute may
+*     be on a non-coordinate varable. Those are found in 
+*     cd_get_generic_grids.
+
+      IF (line_direction(iaxis) .EQ. 'NA') THEN
+
+         maxlen = 20
+         got_it = NC_GET_ATTRIB(dset, ivar, 'cf_role',
+     .              do_warn, vname(:vlen), maxlen, attlen, 
+     .              attoutflag, buff, val)
+         IF (got_it) line_direction(iaxis) = 'EE'
       ENDIF
 
 * ... check for a _CoordinateAxisType attribute, if still undetermined

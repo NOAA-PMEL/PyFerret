@@ -32,3 +32,5 @@ GO err69_repl_scinot
 GO bn_reset
 GO err691_bnds_case
 
+GO bn_reset
+GO err69_plot_vs_labs

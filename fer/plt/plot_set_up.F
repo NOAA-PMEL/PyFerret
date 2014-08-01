@@ -640,7 +640,6 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * histogram bins.
 
 	   IF (ribbon_plot .AND. ipl.EQ.ribbon_var) THEN
-              CALL COMPUTE_MNSTD (dep_dat, mr_bad_data(mv), .TRUE., npts, status)
 
               IF (need_histo) THEN
 * create temporary buffer to contain workspace
@@ -654,6 +653,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      
 * ... clean up temporary variable
                  CALL DELETE_VARIABLE( mvh_temp )
+              ELSE
+                 CALL COMPUTE_MNSTD (dep_dat, mr_bad_data(mv), need_std, npts, status)
               ENDIF
 
 	   ENDIF

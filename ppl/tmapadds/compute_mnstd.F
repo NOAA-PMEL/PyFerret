@@ -43,7 +43,7 @@ C**
 * V666:  1/11 - fix bug 1778: missing data not treated correctly. Dont use CMZGE,
 *               so variance result is the same as other Ferret variance calculations
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
-
+* V69+ *acm* 7/14 ticket 2186: more-robust mean and std deviation if big outliers
 	
 	include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
@@ -53,8 +53,6 @@ C**
 	include 'CONT.INC'
 	include 'miss_inc.decl'
 	include 'MISS.INC'
-
-
 
 * calling argument declarations:
 	LOGICAL need_std
@@ -67,13 +65,13 @@ C**
 
 * internal variable declarations:
 #ifdef double_p
-	REAL*8 sum, dev, sumsq_dev, variance
+	REAL*8 sum, dev, sumsq_dev, variance, tol_lo, tol_hi, zmean2
 #else
-	REAL sum, dev, sumsq_dev, variance
+	REAL sum, dev, sumsq_dev, variance, tol_lo, tol_hi, zmean2
 #endif
 
 	REAL*8 x, xmean, sum2, sumc, variance_c, xdelta
-	INTEGER n
+	INTEGER n, n2
 
 c  Already have zmin, zmax
 
@@ -125,7 +123,95 @@ c Compute data mean.
            variance_c = sum2/FLOAT(n - 1)
 	   zstd = SQRT(variance_c)
 
-        ENDIF
+* Ignore any data outside 3 STD
+           
+	   tol_lo = zmean - 3.*zstd
+	   tol_hi = zmean + 3.*zstd
+	   
+c Recompute data mean.
+ 
+	   sum = 0.0
+	   n2 = 0
+	   DO 200 i = 1, nsize
+              x = z(i)
+              IF ( x.NE.badz .AND. x.GT.tol_lo .AND. x.LT.tol_hi) THEN
+                 sum = sum + Z(i)
+                 n2 = n2 + 1
+              ENDIF
+  200      CONTINUE
+
+	   IF (n2 .EQ. 0) GOTO 5000
+	   IF (n2 .EQ. n) GOTO 4900
+
+#ifdef double_p
+	   zmean2 = sum/DBLE(n2)
+#else
+	   zmean2 = sum/FLOAT(n2)
+#endif
+	   n2 = 0
+	   xmean = 0.D0
+	   sum2 = 0.D0
+ 
+	   DO i = 1, nsize
+	      x = Z(i)
+	      IF ( x.NE.badz .AND. x.GT.tol_lo .AND. x.LT.tol_hi) THEN
+                 n2 = n2 + 1
+		 x = x - zmean2
+                 xdelta = x - xmean
+                 xmean = xmean + xdelta/FLOAT(n2)
+                 sum2 = sum2 + xdelta*(x - xmean)  ! This expression uses the new value of mean
+ 	      ENDIF
+	   ENDDO
+
+	   IF (FLOAT(n2)/FLOAT(n) .GT. 0.9) THEN
+              zmean = zmean2
+              variance_c = sum2/FLOAT(n2 - 1)
+              zstd = SQRT(variance_c)
+           ENDIF
+
+c Once more.
+           tol_lo = zmean - 3.*zstd
+           tol_hi = zmean + 3.*zstd
+ 
+           sum = 0.0
+           n2 = 0
+           DO 300 i = 1, nsize
+              x = z(i)
+              IF ( x.NE.badz .AND. x.GT.tol_lo .AND. x.LT.tol_hi) THEN
+                 sum = sum + Z(i)
+                 n2 = n2 + 1
+              ENDIF
+  300      CONTINUE
+           IF (n2 .EQ. 0) GOTO 5000
+#ifdef double_p
+           zmean2 = sum/DBLE(n2)
+#else
+           zmean2 = sum/FLOAT(n2)
+#endif
+	   n2 = 0
+	   xmean = 0.D0
+	   sum2 = 0.D0
+ 
+	   DO i = 1, nsize
+	      x = Z(i)
+	      IF ( x.NE.badz .AND. x.GT.tol_lo .AND. x.LT.tol_hi) THEN
+                 n2 = n2 + 1
+		 x = x - zmean2
+                 xdelta = x - xmean
+                 xmean = xmean + xdelta/FLOAT(n2)
+                 sum2 = sum2 + xdelta*(x - xmean)  ! This expression uses the new value of mean
+ 	      ENDIF
+	   ENDDO
+
+	   IF (FLOAT(n2)/FLOAT(n) .GT. 0.9) THEN
+              zmean = zmean2
+              variance_c = sum2/FLOAT(n2 - 1)
+              zstd = SQRT(variance_c)
+           ENDIF
+
+        ENDIF  ! need_std
+
+ 4900   CONTINUE
 
 * If user is resetting the mean, do that here
 	IF (centered) zmean = 0.

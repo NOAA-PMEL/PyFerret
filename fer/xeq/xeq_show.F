@@ -183,6 +183,7 @@
 * V690 *sh* 12/13 Added SHOW TRANSFORMS of auxiliary variable regridding
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V690 *sh* 1/14 Add SHOW VAR/SIGMA
+* V691+*acm* 8/14 Fix ticket 2188: SHOW MEMORY should say memory words are 8 bytes.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -1257,9 +1258,17 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 * SHOW MEMORY
  1200   show_str = TM_FMT( FLOAT(mem_blk_size) * 
      .                     FLOAT(max_mem_blks) / 1.E6, 3, 12, len)
+     
+#ifdef double_p
+	WRITE (risc_buff, *)
+     .	   'Current size of FERRET memory cache: '
+     .		//show_str(:len)//' MegaWords  (1 word = 8 bytes)'
+#else
 	WRITE (risc_buff, *)
      .	   'Current size of FERRET memory cache: '
      .		//show_str(:len)//' MegaWords  (1 word = 4 bytes)'
+#endif
+
 	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	risc_buff = ' '
 	IF ( qual_given( slash_mem_free ) .GT. 0 ) THEN

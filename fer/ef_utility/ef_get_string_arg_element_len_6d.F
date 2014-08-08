@@ -42,6 +42,8 @@
 * was passed as an argument to the external function.
 *
 *       3/12 *kms* Added E and F dimensions, appended _6D to subroutine name
+* V691+*acm* 8/14  Fix ticket 2190: long strings were being cut off.
+*
 
       IMPLICIT NONE
       INCLUDE 'tmap_dims.parm'
@@ -57,7 +59,7 @@
      .                          lot, hit, loe, hie, lof, hif
       INTEGER mr_list(EF_MAX_ARGS)
       CHARACTER buff*128
-      PARAMETER (max_line_len = 512)
+      PARAMETER (max_line_len = 2048)
       
       INTEGER arg_lo_ss(nferdims,EF_MAX_ARGS),
      .        arg_hi_ss(nferdims,EF_MAX_ARGS),

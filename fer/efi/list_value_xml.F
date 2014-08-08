@@ -4,6 +4,7 @@
 * Ansley Manke
 * May 24, 2011
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V691+*acm* 8/14  Fix ticket 2190: long strings were being cut off.
 *
 * This function writes a string value to an xml string, and with a given tag 
 * and option to enclose it in CDATA escape. e.g.
@@ -237,7 +238,6 @@
 *     Get the value (string)
       CALL ef_get_string_arg_element_6d(id, ARG2, arg_2,
      .                                  i,j,k,l,m,n,vlen,value)
-
       i = arg_lo_ss(X_AXIS,ARG3)
       j = arg_lo_ss(Y_AXIS,ARG3)
       k = arg_lo_ss(Z_AXIS,ARG3)
@@ -276,6 +276,7 @@
 	 vlen = TM_LENSTR1(second)
 	 slen = TM_LENSTR1(third)
          outstring = first(1:tlen)//second(1:vlen)//third(1:slen)
+	 vlen = tlen+vlen+slen
       ELSE
          write (first,  1030) tag(1:tlen)
          write (second, 1040) value(1:vlen)
@@ -284,6 +285,7 @@
 	 vlen = TM_LENSTR1(second)
 	 slen = TM_LENSTR1(third)
          outstring = first(1:tlen)//second(1:vlen)//third(1:slen)
+	 vlen = tlen+vlen+slen
       ENDIF
       vlen = TM_LENSTR1(outstring)
 

@@ -40,3 +40,6 @@ GO err69_levels_v
 
 GO bn_reset
 GO err69_letd_dsetnum
+
+GO bn_reset
+GO err69_long_string_to_xml

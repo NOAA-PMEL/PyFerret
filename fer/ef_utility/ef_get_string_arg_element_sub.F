@@ -41,6 +41,8 @@
 * and we can call GET_STRING_ELEMENT to get a string element.
 *
 *       3/12 *kms* Added E and F dimensions
+* V691+*acm* 8/14  Fix ticket 2190: long strings were being cut off.
+*
 
       SUBROUTINE EF_GET_STRING_ARG_ELEMENT_SUB( lox, hix, loy, hiy,
      .                  loz, hiz, lot, hit, loe, hie, lof, hif, arg,
@@ -53,7 +55,7 @@
       CHARACTER*(*) text
       REAL*8 arg(lox:hix, loy:hiy, loz:hiz, lot:hit, loe:hie, lof:hif)
 
-      CHARACTER GET_STRING_ELEMENT*512
+      CHARACTER GET_STRING_ELEMENT*2048
 
       text = GET_STRING_ELEMENT(lox, hix, loy, hiy, loz, hiz,
      .                          lot, hit, loe, hie, lof, hif, arg,

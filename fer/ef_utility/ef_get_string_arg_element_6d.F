@@ -41,6 +41,8 @@ c* This returns an element of the string array which was passed as an argument
 c* to the function and for convenience, its length.
 *
 *       3/12 *kms* Added E and F dimensions, appended _6D to subroutine name
+* V691+*acm* 8/14  Fix ticket 2190: long strings were being cut off.
+*
 
 
       SUBROUTINE EF_GET_STRING_ARG_ELEMENT_6D(id, iarg, arg,
@@ -61,7 +63,7 @@ c* to the function and for convenience, its length.
      .                          lot, hit, loe, hie, lof, hif
       INTEGER mr_list(EF_MAX_ARGS)
       CHARACTER buff*128
-      PARAMETER (max_line_len = 512)
+      PARAMETER (max_line_len = 2048)
       
       INTEGER arg_lo_ss(nferdims,EF_MAX_ARGS),
      .        arg_hi_ss(nferdims,EF_MAX_ARGS),

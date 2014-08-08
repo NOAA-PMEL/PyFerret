@@ -37,3 +37,6 @@ GO err69_plot_vs_labs
 
 GO bn_reset
 GO err69_levels_v
+
+GO bn_reset
+GO err69_letd_dsetnum

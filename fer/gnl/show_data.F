@@ -39,6 +39,7 @@
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
 *                 various SHOW commnands will not list info for E,F dimensions.
 * V685 4/13 *acm* Ability to define ensemble with /HIDDEN
+* V691+ 8/14 *acm* Fix ticket 2194: SHOW with /OUTFILE
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -190,7 +191,7 @@
 	      IF ( .NOT.sbrief ) CALL SHOW_DATA_SET_VARS
      .                             (show_lun, iset, svars, status)
 	      IF ( sfile       ) CALL SHOW_DATA_FILES      
-     .                             (ttout_lun, iset)
+     .                             (show_lun, iset)
 	      IF ( sattr       ) CALL SHOW_DATA_SET_ATTRS      
      .                             (show_lun, iset)
            ENDIF

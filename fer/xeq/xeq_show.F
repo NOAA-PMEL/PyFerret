@@ -941,6 +941,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
            ENDIF
            CALL DISPLAY_DEPENDENCY( memory(1,dependency_block1) )
  1010      CALL EXIT_DEPENDENCY_MODE
+            IF (sho_file .GT. 0) CLOSE( UNIT = show_lun, ERR = 5000 )
            RETURN
         ENDIF
 
@@ -951,7 +952,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	   IF ( iqual .GT. 0 ) THEN
 	      CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      show_str, status )  ! show_str is just a buffer
-	      IF ( status .NE. ferr_ok ) RETURN
+	      IF ( status .NE. ferr_ok ) GOTO 4030
 	      IF ( show_str .EQ. ' ' ) THEN
 	         rqst_dset = pdset_irrelevant	! global variables
 	      ELSE
@@ -959,7 +960,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	         IF ( rqst_dset .EQ. unspecified_int4) THEN
 	            CALL WARN('Unknown data set: '
      .			//show_str(:TM_LENSTR1(show_str)))
-	            RETURN
+	            GOTO 4030
 	         ENDIF
 	      ENDIF
 	   ELSE
@@ -1194,8 +1195,9 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
            risc_buff = '</global>'
            CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
         ENDIF
-	
+ 4030	CONTINUE
 	IF (sho_file .GT. 0) CLOSE( UNIT = show_lun, ERR = 5000 )
+
 	IF ( limited_show ) RETURN
 
 * SHOW COMMAND [name]

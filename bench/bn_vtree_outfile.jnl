@@ -1,0 +1,182 @@
+! bn_tree_outfile.jnl
+
+! 8/2014 -- demonstrate SHOW VARIABLE/TREE/OUTFILE
+
+CANCEL DATA/ALL
+! pure abstract variable -- no dataset
+let a = 1
+
+! 
+show var/tree/outfile=a.txt/clobber a
+show var/tree/outfile=a.txt/clobber a
+sp cat a.txt
+
+let b = 1
+let c = SIN(b)
+show var/tree/outfile=a.txt/clobber c
+sp cat a.txt
+
+! create dummy datasets so we'll have named file variables to play with
+let fv1 = 1
+let fvx = x[i=1:3]
+let fvz = Z[k=1:3]
+SAVE/CLOBBER/QUIET/FILE=my_file_vars.nc fv1, fvx, fvz
+SAVE/CLOBBER/QUIET/FILE=other_file_vars.nc fv1
+SAVE/CLOBBER/QUIET/FILE=another_file_vars.nc fv1
+CAN VAR/ALL
+use  my_file_vars, other_file_vars, another_file_vars
+set data 1
+
+! ================
+
+! more pure abstract variables
+let a = 1
+let b = 1
+let c = SIN(b)
+go bn_vtree_outfile.sub c
+
+! file variables
+go bn_vtree_outfile.sub fv1
+show var/tree/outfile=a.txt/clobber/d=other_file_vars fv1
+sp cat a.txt
+
+! expressions
+let a = fv1 + fvx
+go bn_vtree_outfile.sub a
+
+let a = fv1[d=1] - fv1[d=2]
+vtree=file a
+vtree=all a
+vtree=all /d=1 a
+vtree=all /d=2 a
+\say "********************************"
+
+! unrecognized variable names
+go bn_vtree_outfile.sub noexist
+
+! unrecognized dataset
+go bn_vtree_outfile.sub v[d=noexist]
+
+! unrecognized dataset and variable
+go bn_vtree_outfile.sub novar[d=nodset]
+
+let b = noexist
+go bn_vtree_outfile.sub b
+
+! grid-changing functions 
+go bn_vtree_outfile.sub RESHAPE(fvx,fvz)
+
+! file variable aux var
+LET Zpts = Z[Z=0:500:100]
+define axis/z/units=meters zax = zpts
+LET fv1z = fv1[gz(fvz)=zpts] + fvx
+go bn_vtree_outfile.sub fv1z
+
+! user-defined aux vars
+let depth = z[g=fvz]
+LET fv1z = fv1[gz(depth)=zpts] + fvx
+go bn_vtree_outfile.sub fv1z
+
+let depth = z[g=fvz]+ 0*fvz[k=1]
+LET fv1z = fv1[gz(depth)=zpts] + fvx
+go bn_vtree_outfile.sub fv1z
+
+! unknown aux var
+LET fv1z = fv1[gz(noexist)=zpts] + fvx
+go bn_vtree_outfile.sub fv1z
+
+! unknown variable with known aux var
+LET fv1z = noexist[gz(depth)=zpts] + fvx
+go bn_vtree_outfile.sub fv1z
+
+! unknown variable with unknown aux var
+LET fv1z = noexist[gz(unknown_aux)=zpts] + fvx
+go bn_vtree_outfile.sub fv1z
+
+! aggregate (ensemble) dataset of file variables
+define data/agg my_agg = my_file_vars, other_file_vars, another_file_vars
+go bn_vtree_outfile.sub fv1
+
+! aggregation in which some members are uvars
+let/d=other_file_vars   fvx = fv1 + x[gx=fvx[d=1],i=1:3]
+let/d=another_file_vars fvx = 2*fv1 + x[gx=fvx[d=1],i=1:3]
+define data/agg my_uvar_agg = my_file_vars, other_file_vars, another_file_vars
+go bn_vtree_outfile.sub fvx
+
+! recursions
+! ... a circular parent dependency is a recursion; sibling dependency is not
+let p0 = s1 + p1
+let p1 = s2 + p2
+let p2 = s3 + p3
+let p3 = p1 + S3
+go bn_vtree_outfile.sub p0    ! recursion
+let p3 = s1 + S3
+go bn_vtree_outfile.sub p0    ! ok
+
+! suppressing duplicated siblings (twins)
+let fv = fv1 + fv1 + fv1
+let uv = fvx + fvx + fvx
+show var/tree/outfile=a.txt/clobber/d=my_file_vars    fv
+show var/tree/outfile=a.txt/append/d=my_uvar_agg     fv
+show var/tree/outfile=a.txt/append/d=other_file_vars uv
+show var/tree/outfile=a.txt/append/d=my_uvar_agg     uv
+sp cat a.txt
+\say "***************************"
+
+! suppressing duplicates elsewhere in the family tree ("defined above")
+let b = c
+let c = 1
+let v1 = a  + b + b^2
+let v2 = v1 + b + a + a        ! a appears after v1
+let v3 = a + v1 + b + a + a    ! a appears before v1
+go bn_vtree_outfile.sub v2
+go bn_vtree_outfile.sub v3
+
+! collections of trees handled as a group
+! display from large tree size to small, suppressing definitions already displayed
+cancel var/all
+let a = f
+let b = fv1[d=my_file_vars]
+let c = 1
+let d = b + c
+let e = 1
+go bn_vtree_outfile.sub "a, b, c, noexist, d, e, fvx[d=my_file_vars]"
+
+! reporting other errors in definitions
+  set mode ignore
+
+  ! unidentified grid
+  let a = i[i=1:5]
+  let b = a[g=noexist]
+  go bn_vtree_outfile.sub b
+  list b
+
+  ! syntax error - format of longitude
+  let c = a[x=45s]
+  go bn_vtree_outfile.sub c
+  list c
+
+  ! syntax error - extra comma
+  let d = a[i=1,,j=2]
+  go bn_vtree_outfile.sub d
+  list d
+
+  ! syntax error - unknown pseudovariable
+  let e = a[p=1]
+  go bn_vtree_outfile.sub e
+  list e
+
+  ! out of limit region -- not detectable as error, because grids are never determined
+  let f = a[i=10]
+  go bn_vtree_outfile.sub f
+  list f
+
+  set mode/last ignore
+
+! dependency through attribute sharing (not yet implemented)
+let a = fvz.long_name[d=1]
+show var/tree/outfile=a.txt/clobber a
+sp cat a.txt
+let a = ..history[d=1]
+show var/tree/outfile=a.txt/clobber a
+sp cat a.txt

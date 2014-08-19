@@ -1,0 +1,19 @@
+\cancel mode verify
+
+say "/TREE=ALL"
+vtree=all/clobber/outfile=a.txt ($1)
+say "/TREE=USER"
+vtree=user/append/outfile=a.txt ($1)
+say "/TREE=FILE"
+vtree=file/append/outfile=a.txt ($1)
+
+if `($1),return=IsReady` then
+  say ($1) is ready and `($1),return=status`
+else
+  say the problem is `($1),return=status`
+endif
+
+say "************************"
+sp cat a.txt
+
+!set mode/last verify

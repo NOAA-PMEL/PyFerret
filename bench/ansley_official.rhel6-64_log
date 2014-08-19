@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 53545516 Aug 19 10:29 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 53545612 Aug 19 12:19 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: bug 2194: SHOW command with the /OUTFILE qualifier (and not /xml)
+Note: more fixes for vtree, bug 2194
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
-Beginning at Tue Aug 19 10:31:57 PDT 2014
+Beginning at Tue Aug 19 12:37:04 PDT 2014
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10456,12 +10456,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.1.1 of Feb 25 2014 10:43:06 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "19-Aug-14"
-SESSION_TIME = "10:31"
-SESSION_PID = "22765"
-DELTA_CPU = "4.43633"
-CLOCK_SECS = "6.661"
+SESSION_TIME = "12:37"
+SESSION_PID = "24665"
+DELTA_CPU = "4.43332"
+CLOCK_SECS = "6.46"
 CURRENT_DATE = "19-Aug-14"
-CURRENT_TIME = "10:32:03"
+CURRENT_TIME = "12:37:11"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10485,12 +10485,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.1.1 of Feb 25 2014 10:43:06 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "19-Aug-14"
-SESSION_TIME = "10:31"
-SESSION_PID = "22765"
+SESSION_TIME = "12:37"
+SESSION_PID = "24665"
 DELTA_CPU = "0.001"
-CLOCK_SECS = "6.661"
+CLOCK_SECS = "6.461"
 CURRENT_DATE = "19-Aug-14"
-CURRENT_TIME = "10:32:03"
+CURRENT_TIME = "12:37:11"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10501,8 +10501,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "19-Aug-14"
-SESSION_TIME = "10:31"
-SESSION_PID = "22765"
+SESSION_TIME = "12:37"
+SESSION_PID = "24665"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10513,14 +10513,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "19-Aug-14"
-SESSION_TIME = "10:31"
-SESSION_PID = "22765"
+SESSION_TIME = "12:37"
+SESSION_PID = "24665"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "19-Aug-14"
-SESSION_TIME = "10:31"
-SESSION_PID = "22765"
+SESSION_TIME = "12:37"
+SESSION_PID = "24665"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10556,7 +10556,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.925"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "19-AUG-2014 10:32:03"
+LAB3 = "19-AUG-2014 12:37:11"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10657,12 +10657,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.1.1 of Feb 25 2014 10:43:06 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "19-Aug-14"
-SESSION_TIME = "10:31"
-SESSION_PID = "22765"
-DELTA_CPU = "0.007998"
-CLOCK_SECS = "6.67"
+SESSION_TIME = "12:37"
+SESSION_PID = "24665"
+DELTA_CPU = "0.008998"
+CLOCK_SECS = "6.47"
 CURRENT_DATE = "19-Aug-14"
-CURRENT_TIME = "10:32:03"
+CURRENT_TIME = "12:37:11"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -25632,7 +25632,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Tue Aug 19 10:32:10 PDT 2014
+Tue Aug 19 12:37:18 PDT 2014
  
 GO bn_reset
 cancel mode verify
@@ -48311,7 +48311,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS19-AUG-2014 10:32:35
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS19-AUG-2014 12:37:47
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -49742,7 +49742,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "19-Aug-14:10:31"
+WIN_TITLE = "19-Aug-14:12:37"
  
 set win/title="set the title"
 sho sym win_title
@@ -49760,7 +49760,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="19-Aug-14:10:31"
+ !-> set win/title="19-Aug-14:12:37"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -49771,14 +49771,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 19-Aug-14
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 10:31
+ !-> DEFINE SYMBOL the_time = 12:37
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="19-Aug-14:10:31"
+ !-> SET WIN/TITLE="19-Aug-14:12:37"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "19-Aug-14:10:31"
+WIN_TITLE = "19-Aug-14:12:37"
  
 GO bn_reset
 cancel mode verify
@@ -59991,10 +59991,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "36.4135"
-CLOCK_SECS = "58.32"
+DELTA_CPU = "36.2465"
+CLOCK_SECS = "62.862"
 CURRENT_DATE = "19-Aug-14"
-CURRENT_TIME = "10:32:55"
+CURRENT_TIME = "12:38:07"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -60003,8 +60003,8 @@ CURRENT_TIME = "10:32:55"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.031996"
-CLOCK_SECS = "58.379"
+DELTA_CPU = "0.031995"
+CLOCK_SECS = "62.924"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -60018,60 +60018,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.286956
+ !-> DEFINE VARIABLE ten_plots = 0.279958
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.001"
-CLOCK_SECS = "59.153"
+DELTA_CPU = "0"
+CLOCK_SECS = "63.571"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "59.154"
+CLOCK_SECS = "63.571"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.033994
- !-> DEFINE VARIABLE sumcpu =0.033994
+ !-> DEFINE VARIABLE dt = 0.031996
+ !-> DEFINE VARIABLE sumcpu =0.031996
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.067989
+ !-> DEFINE VARIABLE dt = 0.033994
+ !-> DEFINE VARIABLE sumcpu =0.06599
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.101984
-!-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.035994
- !-> DEFINE VARIABLE sumcpu =0.137978
-!-> REPEAT: K=5
  !-> DEFINE VARIABLE dt = 0.033996
- !-> DEFINE VARIABLE sumcpu =0.171974
-!-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.205969
-!-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.035994
- !-> DEFINE VARIABLE sumcpu =0.241963
-!-> REPEAT: K=8
+ !-> DEFINE VARIABLE sumcpu =0.099986
+!-> REPEAT: K=4
+ !-> DEFINE VARIABLE dt = 0.034994
+ !-> DEFINE VARIABLE sumcpu =0.13498
+!-> REPEAT: K=5
  !-> DEFINE VARIABLE dt = 0.029995
- !-> DEFINE VARIABLE sumcpu =0.271958
+ !-> DEFINE VARIABLE sumcpu =0.164975
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.031996
+ !-> DEFINE VARIABLE sumcpu =0.196971
+!-> REPEAT: K=7
+ !-> DEFINE VARIABLE dt = 0.034994
+ !-> DEFINE VARIABLE sumcpu =0.231965
+!-> REPEAT: K=8
+ !-> DEFINE VARIABLE dt = 0.032996
+ !-> DEFINE VARIABLE sumcpu =0.264961
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.029996
- !-> DEFINE VARIABLE sumcpu =0.301954
+ !-> DEFINE VARIABLE dt = 0.034994
+ !-> DEFINE VARIABLE sumcpu =0.299955
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.335949
+ !-> DEFINE VARIABLE dt = 0.030995
+ !-> DEFINE VARIABLE sumcpu =0.33095
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.335949
-0.335949
+ !-> MESSAGE/CONTINUE 0.33095
+0.33095
 sh sym CLOCK_SECS
-CLOCK_SECS = "60.244"
+CLOCK_SECS = "64.704"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "19-Aug-14"
-SESSION_TIME = "10:31"
+SESSION_TIME = "12:37"
 CURRENT_DATE = "19-Aug-14"
-CURRENT_TIME = "10:32:57"
+CURRENT_TIME = "12:38:09"
  
  
 ! ******** V6.3 Additions below ***********
@@ -64049,7 +64049,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.925  "                                                         
  3    /  3:" ! Linux 2.6.32-431.23.3.el6.x86_64 64-bit - 08/19/14"                      
- 4    /  4:" ! 19-Aug-14 10:31     "                                                    
+ 4    /  4:" ! 19-Aug-14 12:37     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -66518,40 +66518,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.671
-randu2_randn2       0.960
-randu2_randn2       0.298
-randu2_randn2       0.355
-randu2_randn2       0.030
+randu2_randn2       0.237
+randu2_randn2       0.972
+randu2_randn2       0.840
+randu2_randn2       0.755
+randu2_randn2       0.674
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.577
-randu2_randn2       0.307
-randu2_randn2       0.132
-randu2_randn2       0.760
-randu2_randn2       0.251
+randu2_randn2       0.151
+randu2_randn2       0.389
+randu2_randn2       0.590
+randu2_randn2       0.112
+randu2_randn2       0.613
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.217
-randu2_randn2       0.715
-randu2_randn2       0.448
-randu2_randn2       0.011
-randu2_randn2       0.396
-randu2_randn2       0.311
+randu2_randn2       0.978
+randu2_randn2       0.023
+randu2_randn2       0.598
+randu2_randn2       0.602
+randu2_randn2       0.768
+randu2_randn2       0.481
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.853
-randu2_randn2       0.494
-randu2_randn2       0.004
-randu2_randn2       0.158
-randu2_randn2       0.176
-randu2_randn2       0.395
+randu2_randn2       0.418
+randu2_randn2       0.012
+randu2_randn2       0.900
+randu2_randn2       0.514
+randu2_randn2       0.037
+randu2_randn2       0.735
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -66576,40 +66576,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.414
-randu2_randn2       0.268
-randu2_randn2      -0.591
-randu2_randn2       2.911
-randu2_randn2       0.134
+randu2_randn2       0.661
+randu2_randn2       0.559
+randu2_randn2      -0.133
+randu2_randn2      -0.063
+randu2_randn2       1.064
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.826
-randu2_randn2       0.113
-randu2_randn2      -0.370
-randu2_randn2      -1.303
-randu2_randn2       1.053
+randu2_randn2      -1.418
+randu2_randn2       2.149
+randu2_randn2       0.917
+randu2_randn2      -0.234
+randu2_randn2       1.145
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.908
-randu2_randn2       0.280
-randu2_randn2       0.354
-randu2_randn2      -1.840
-randu2_randn2       1.583
-randu2_randn2      -0.431
+randu2_randn2       0.212
+randu2_randn2      -0.731
+randu2_randn2      -1.020
+randu2_randn2      -0.873
+randu2_randn2       1.769
+randu2_randn2      -1.720
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.193
-randu2_randn2      -0.995
-randu2_randn2      -0.061
-randu2_randn2       1.366
-randu2_randn2      -0.752
-randu2_randn2      -1.577
+randu2_randn2       0.467
+randu2_randn2       0.153
+randu2_randn2      -1.861
+randu2_randn2       0.995
+randu2_randn2      -0.221
+randu2_randn2       1.382
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -66634,14 +66634,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.828       1.828       0.273
-randu2_randn2       1.006       1.006       0.273
-randu2_randn2       0.273       0.273       0.202
-randu2_randn2      -0.261      -0.100       0.202
-randu2_randn2      -0.100      -0.261       0.202
-randu2_randn2      -0.339      -0.100       0.202
-randu2_randn2       0.202      -0.002       0.202
-randu2_randn2      -0.002       0.202       0.202
+randu2_randn2       1.105       1.105       0.696
+randu2_randn2       1.017       1.017       0.696
+randu2_randn2       0.696       0.696       0.211
+randu2_randn2       0.121       0.121       0.588
+randu2_randn2      -0.506      -0.506       0.588
+randu2_randn2      -0.824      -0.506       0.588
+randu2_randn2       0.211       0.211       0.588
+randu2_randn2       0.588       0.588       0.588
  
 GO bn_reset
 cancel mode verify
@@ -74392,7 +74392,7 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Tue Aug 19 10:33:16 2014: ncks -h -A -h z1.nc append_to_this.nc\n",
+		:history = "Tue Aug 19 12:38:28 2014: ncks -h -A -h z1.nc append_to_this.nc\n",
 			"FERRET V6.925   19-Aug-14" ;
 		:Conventions = "CF-1.6" ;
 }
@@ -77415,22 +77415,22 @@ GO bn_show_outfile
 ! show axis/outfile
  
  
-sho ax/clobber/outfile="test.txt" month_irreg
-sho ax/clobber/outfile="test.txt" month_irreg
+sho ax/clobber/outfile=a.txt month_irreg
+sho ax/clobber/outfile=a.txt month_irreg
  
 SAY ---------------- Just axis month_irreg
 ---------------- Just axis month_irreg
-sp cat test.txt
+sp cat a.txt
  name       axis              # pts   start                end
  MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 365.2425 (modulo length = axis span)
  
-show axis/append/outfile="test.txt" PS*
+show axis/append/outfile=a.txt PS*
  
 SAY ---------------- appending all axes starting with PS
 ---------------- appending all axes starting with PS
-sp cat test.txt
+sp cat a.txt
  name       axis              # pts   start                end
  MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
 T0 = 01-JAN-0000 00:00:00
@@ -77464,11 +77464,11 @@ T0 = 01-JAN-0000 00:00:00
 ! show grid/outfile
  
 use coads_climatology
-show grid/clobber/outfile="test.txt" sst
+show grid/clobber/outfile=a.txt sst
  
 SAY ---------------- Just the grid of sst
 ---------------- Just the grid of sst
-sp cat test.txt
+sp cat a.txt
     GRID GSQ1
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
@@ -77483,22 +77483,22 @@ sp cat test.txt
 use coads_climatology
 let two = 2
 let myvar = sst*2
-show var/clobber/outfile="test.txt" myvar, two
+show var/clobber/outfile=a.txt myvar, two
  
 SAY ---------------- show var output from two user vars
 ---------------- show var output from two user vars
-sp cat test.txt
+sp cat a.txt
  MYVAR = SST*2
  TWO = 2
 cancel var/all
  
 ! show data/outfile
  
-show data/append/outfile="test.txt"
+show data/append/outfile=a.txt
  
 SAY ---------------- appending show data
 ---------------- appending show data
-sp cat test.txt
+sp cat a.txt
  MYVAR = SST*2
  TWO = 2
      currently SET data sets:
@@ -77509,23 +77509,23 @@ sp cat test.txt
  
 ! combinations of /append and /clobber
  
-show data/clobber/outfile="test.txt"
-show data/clobber/outfile="test.txt"
+show data/clobber/outfile=a.txt
+show data/clobber/outfile=a.txt
  
 SAY ---------------- Just show data, two show data/clobber commands in a row
 ---------------- Just show data, two show data/clobber commands in a row
-sp cat test.txt
+sp cat a.txt
      currently SET data sets:
     1> ./coads_climatology.cdf  (default)
  name     title                             I         J         K         L         M         N
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3       ...       ...
  
  
-show grid/clobber/outfile="test.txt" sst
+show grid/clobber/outfile=a.txt sst
  
 SAY ---------------- Just grid of sst
 ---------------- Just grid of sst
-sp cat test.txt
+sp cat a.txt
     GRID GSQ1
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
@@ -77538,22 +77538,22 @@ sp cat test.txt
 use coads_climatology
 use levitus_climatology
  
-show data/clobber/outfile="test.txt" 1
+show data/clobber/outfile=a.txt 1
  
 SAY ---------------- Just dataset 1
 ---------------- Just dataset 1
-sp cat test.txt
+sp cat a.txt
      currently SET data sets:
     1> ./coads_climatology.cdf
  name     title                             I         J         K         L         M         N
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3       ...       ...
  
  
-show data/append/outfile="test.txt" levitus_climatology
+show data/append/outfile=a.txt levitus_climatology
  
 SAY ---------------- appending datset 2 by name
 ---------------- appending datset 2 by name
-sp cat test.txt
+sp cat a.txt
      currently SET data sets:
     1> ./coads_climatology.cdf
  name     title                             I         J         K         L         M         N
@@ -77564,17 +77564,502 @@ sp cat test.txt
  name     title                             I         J         K         L         M         N
  TEMP     TEMPERATURE                      1:160     1:90      1:1       ...       ...       ...
  
-show grid/clobber/outfile="test.txt" PS3*
+show grid/clobber/outfile=a.txt PS3*
  
 SAY ---------------- only showing all grids starting with PS3
 ---------------- only showing all grids starting with PS3
-sp cat test.txt
+sp cat a.txt
       PS3DT
       PS3DU
       PS3DW
       PS3DT2
  
-set mode/last verify
+SAY ---------------- tests sending output of vtree to a file
+---------------- tests sending output of vtree to a file
+GO bn_vtree_outfile
+! bn_tree_outfile.jnl
+ 
+! 8/2014 -- demonstrate SHOW VARIABLE/TREE/OUTFILE
+ 
+CANCEL DATA/ALL
+! pure abstract variable -- no dataset
+let a = 1
+ 
+!
+show var/tree/outfile=a.txt/clobber a
+show var/tree/outfile=a.txt/clobber a
+sp cat a.txt
+   A = 1
+ 
+let b = 1
+let c = SIN(b)
+show var/tree/outfile=a.txt/clobber c
+sp cat a.txt
+   C = SIN(B)
+     B = 1
+ 
+! create dummy datasets so we'll have named file variables to play with
+let fv1 = 1
+let fvx = x[i=1:3]
+let fvz = Z[k=1:3]
+SAVE/CLOBBER/QUIET/FILE=my_file_vars.nc fv1, fvx, fvz
+SAVE/CLOBBER/QUIET/FILE=other_file_vars.nc fv1
+SAVE/CLOBBER/QUIET/FILE=another_file_vars.nc fv1
+CAN VAR/ALL
+use  my_file_vars, other_file_vars, another_file_vars
+set data 1
+ 
+! ================
+ 
+! more pure abstract variables
+let a = 1
+let b = 1
+let c = SIN(b)
+go bn_vtree_outfile.sub c
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+c is ready and AVAILABLE
+************************
+   in default dataset my_file_vars
+   C = SIN(B)
+     B = 1
+   in default dataset my_file_vars
+   C = SIN(B)
+     B = 1
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+fv1 is ready and AVAILABLE
+************************
+   in default dataset my_file_vars
+   FV1
+   FV1[d=my_file_vars]
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+a is ready and AVAILABLE
+************************
+   in default dataset my_file_vars
+   A = FV1 + FVX
+     FV1
+     FVX
+   in default dataset my_file_vars
+   A = FV1 + FVX
+   FV1[d=my_file_vars]
+   FVX[d=my_file_vars]
+   FV1[d=my_file_vars]
+   FV1[d=other_file_vars]
+   in default dataset my_file_vars
+   A = FV1[D=1] - FV1[D=2]
+     FV1
+     FV1[d=other_file_var]
+   in default dataset my_file_vars
+   A = FV1[D=1] - FV1[D=2]
+     FV1
+     FV1[d=other_file_var]
+   in default dataset other_file_vars
+   A = FV1[D=1] - FV1[D=2]
+     FV1[d=my_file_var]
+     FV1
+********************************
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+the problem is UNKNOWN VARIABLE: NOEXIST
+************************
+   in default dataset my_file_vars
+   NOEXIST ??                           <== UNKNOWN VARIABLE ******
+   in default dataset my_file_vars
+   NOEXIST ??                           <== UNKNOWN VARIABLE ******
+   NOEXIST  (unknown variable)
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+the problem is UNKNOWN DATASET: V[D=NOEXIST]
+************************
+   in default dataset my_file_vars
+   V[D=NOEXIST] ??                           <== UNKNOWN DATASET ******
+   in default dataset my_file_vars
+   V[D=NOEXIST] ??                           <== UNKNOWN DATASET ******
+   V[D=NOEXIST]  (unknown dataset)
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+the problem is UNKNOWN DATASET: NOVAR[D=NODSET]
+************************
+   in default dataset my_file_vars
+   NOVAR[D=NODSET] ??                           <== UNKNOWN DATASET ******
+   in default dataset my_file_vars
+   NOVAR[D=NODSET] ??                           <== UNKNOWN DATASET ******
+   NOVAR[D=NODSET]  (unknown dataset)
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+the problem is UNKNOWN VARIABLE: NOEXIST
+************************
+   in default dataset my_file_vars
+   B = NOEXIST
+     NOEXIST ??                           <== UNKNOWN VARIABLE ******
+   in default dataset my_file_vars
+   B = NOEXIST
+     NOEXIST ??                           <== UNKNOWN VARIABLE ******
+   NOEXIST  (unknown variable)
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+RESHAPE(fvx,fvz) is ready and AVAILABLE
+************************
+   in default dataset my_file_vars
+   FVX
+   FVZ
+   FVX[d=my_file_vars]
+   FVZ[d=my_file_vars]
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+fv1z is ready and AVAILABLE
+************************
+   in default dataset my_file_vars
+   FV1Z = FV1[GZ(FVZ)=ZPTS] + FVX
+     FV1
+       FVZ
+     FVX
+   in default dataset my_file_vars
+   FV1Z = FV1[GZ(FVZ)=ZPTS] + FVX
+   FV1[d=my_file_vars]
+   FVZ[d=my_file_vars]
+   FVX[d=my_file_vars]
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+fv1z is ready and AVAILABLE
+************************
+   in default dataset my_file_vars
+   FV1Z = FV1[GZ(DEPTH)=ZPTS] + FVX
+     FV1
+       DEPTH = Z[G=FVZ]
+     FVX
+   in default dataset my_file_vars
+   FV1Z = FV1[GZ(DEPTH)=ZPTS] + FVX
+       DEPTH = Z[G=FVZ]
+   FV1[d=my_file_vars]
+   FVX[d=my_file_vars]
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+fv1z is ready and AVAILABLE
+************************
+   in default dataset my_file_vars
+   FV1Z = FV1[GZ(DEPTH)=ZPTS] + FVX
+     FV1
+       DEPTH = Z[G=FVZ]+ 0*FVZ[K=1]
+         FVZ
+     FVX
+   in default dataset my_file_vars
+   FV1Z = FV1[GZ(DEPTH)=ZPTS] + FVX
+       DEPTH = Z[G=FVZ]+ 0*FVZ[K=1]
+   FV1[d=my_file_vars]
+   FVZ[d=my_file_vars]
+   FVX[d=my_file_vars]
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+the problem is UNKNOWN AUXILIARY VARIABLE: NOEXIST
+************************
+   in default dataset my_file_vars
+   FV1Z = FV1[GZ(NOEXIST)=ZPTS] + FVX
+       NOEXIST   (unknown auxiliary variable)
+     FVX
+   in default dataset my_file_vars
+   FV1Z = FV1[GZ(NOEXIST)=ZPTS] + FVX
+       NOEXIST   (unknown auxiliary variable)
+   NOEXIST  (unknown auxiliary variable)
+   FVX[d=my_file_vars]
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+the problem is UNKNOWN VARIABLE: NOEXIST[GZ(DEPTH)=ZPTS]
+************************
+   in default dataset my_file_vars
+   FV1Z = NOEXIST[GZ(DEPTH)=ZPTS] + FVX
+     NOEXIST[GZ(DEPTH)=ZPTS] ??                           <== UNKNOWN VARIABLE ******
+       DEPTH = Z[G=FVZ]+ 0*FVZ[K=1]
+         FVZ
+     FVX
+   in default dataset my_file_vars
+   FV1Z = NOEXIST[GZ(DEPTH)=ZPTS] + FVX
+     NOEXIST[GZ(DEPTH)=ZPTS] ??                           <== UNKNOWN VARIABLE ******
+       DEPTH = Z[G=FVZ]+ 0*FVZ[K=1]
+   NOEXIST[GZ(DEPTH)=ZPTS]  (unknown variable)
+   FVZ[d=my_file_vars]
+   FVX[d=my_file_vars]
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+the problem is UNKNOWN VARIABLE: NOEXIST[GZ(UNKNOWN_AUX)=ZPTS]
+************************
+   in default dataset my_file_vars
+   FV1Z = NOEXIST[GZ(UNKNOWN_AUX)=ZPTS] + FVX
+     NOEXIST[GZ(UNKNOWN_AUX)=ZPTS] ??                           <== UNKNOWN VARIABLE ******
+       UNKNOWN_AUX   (unknown auxiliary variable)
+     FVX
+   in default dataset my_file_vars
+   FV1Z = NOEXIST[GZ(UNKNOWN_AUX)=ZPTS] + FVX
+     NOEXIST[GZ(UNKNOWN_AUX)=ZPTS] ??                           <== UNKNOWN VARIABLE ******
+       UNKNOWN_AUX   (unknown auxiliary variable)
+   NOEXIST[GZ(UNKNOWN_AUX)=ZPTS]  (unknown variable)
+   UNKNOWN_AUX  (unknown auxiliary variable)
+   FVX[d=my_file_vars]
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+fv1 is ready and AVAILABLE
+************************
+   in default dataset MY_AGG
+   FV1   (aggregate variable)
+     FV1[d=my_file_var]
+     FV1[d=other_file_var]
+     FV1[d=another_file_var]
+   in default dataset MY_AGG
+   FV1   (aggregate variable)
+ 
+   FV1[d=my_file_vars]
+   FV1[d=other_file_vars]
+   FV1[d=another_file_vars]
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+fvx is ready and AVAILABLE
+************************
+   in default dataset MY_UVAR_AGG
+   FVX   (aggregate variable)
+     FVX[d=my_file_var]
+     FVX[d=other_file_var] = FV1 + X[GX=FVX[D=1],I=1:3]
+       FV1[d=other_file_var]
+     FVX[d=another_file_var] = 2*FV1 + X[GX=FVX[D=1],I=1:3]
+       FV1[d=another_file_var]
+   in default dataset MY_UVAR_AGG
+   FVX   (aggregate variable)
+     FVX[d=other_file_var] = FV1 + X[GX=FVX[D=1],I=1:3]
+     FVX[d=another_file_var] = 2*FV1 + X[GX=FVX[D=1],I=1:3]
+ 
+   FVX[d=my_file_vars]
+   FV1[d=other_file_vars]
+   FV1[d=another_file_vars]
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+the problem is ILLEGAL RECURSIVE VARIABLES: P1
+************************
+   in default dataset MY_UVAR_AGG
+   P0 = S1 + P1
+     S1 ??                           <== UNKNOWN VARIABLE ******
+     P1 = S2 + P2
+       S2 ??                           <== UNKNOWN VARIABLE ******
+       P2 = S3 + P3
+         S3 ??                           <== UNKNOWN VARIABLE ******
+         P3 = P1 + S3
+           P1 =   *** WARNING: RECURSIVE DEFINITION.  See above
+           S3 ??                           <== UNKNOWN VARIABLE ******
+   in default dataset MY_UVAR_AGG
+   P0 = S1 + P1
+     S1 ??                           <== UNKNOWN VARIABLE ******
+     P1 = S2 + P2
+       S2 ??                           <== UNKNOWN VARIABLE ******
+       P2 = S3 + P3
+         S3 ??                           <== UNKNOWN VARIABLE ******
+         P3 = P1 + S3
+           P1 =   *** WARNING: RECURSIVE DEFINITION.  See above
+           S3 ??                           <== UNKNOWN VARIABLE ******
+   S1  (unknown variable)
+   S2  (unknown variable)
+   S3  (unknown variable)
+   S3  (unknown variable)
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+the problem is UNKNOWN VARIABLE: S1
+************************
+   in default dataset MY_UVAR_AGG
+   P0 = S1 + P1
+     S1 ??                           <== UNKNOWN VARIABLE ******
+     P1 = S2 + P2
+       S2 ??                           <== UNKNOWN VARIABLE ******
+       P2 = S3 + P3
+         S3 ??                           <== UNKNOWN VARIABLE ******
+         P3 = S1 + S3
+           S1 ??                           <== UNKNOWN VARIABLE ******
+           S3 ??                           <== UNKNOWN VARIABLE ******
+   in default dataset MY_UVAR_AGG
+   P0 = S1 + P1
+     S1 ??                           <== UNKNOWN VARIABLE ******
+     P1 = S2 + P2
+       S2 ??                           <== UNKNOWN VARIABLE ******
+       P2 = S3 + P3
+         S3 ??                           <== UNKNOWN VARIABLE ******
+         P3 = S1 + S3
+           S1 ??                           <== UNKNOWN VARIABLE ******
+           S3 ??                           <== UNKNOWN VARIABLE ******
+   S1  (unknown variable)
+   S2  (unknown variable)
+   S3  (unknown variable)
+   S1  (unknown variable)
+   S3  (unknown variable)
+   in default dataset my_file_vars
+   FV = FV1 + FV1 + FV1
+   in default dataset MY_UVAR_AGG
+   FV = FV1 + FV1 + FV1
+     FV1   (aggregate variable)
+   in default dataset other_file_vars
+   UV = FVX + FVX + FVX
+     FVX = FV1 + X[GX=FVX[D=1],I=1:3]
+   in default dataset MY_UVAR_AGG
+   UV = FVX + FVX + FVX
+     FVX   (aggregate variable)
+       FVX[d=other_file_var] = FV1 + X[GX=FVX[D=1],I=1:3]
+       FVX[d=another_file_var] = 2*FV1 + X[GX=FVX[D=1],I=1:3]
+***************************
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+v2 is ready and AVAILABLE
+************************
+   in default dataset MY_UVAR_AGG
+   V2 = V1 + B + A + A
+     V1 = A  + B + B^2
+       A = FV1[D=1] - FV1[D=2]
+         FV1[d=my_file_var]
+         FV1[d=other_file_var]
+       B = C
+         C = 1
+     B =  (defined above)
+     A =  (defined above)
+   in default dataset MY_UVAR_AGG
+   V2 = V1 + B + A + A
+     V1 = A  + B + B^2
+       A = FV1[D=1] - FV1[D=2]
+       B = C
+         C = 1
+     B =  (defined above)
+     A =  (defined above)
+   FV1[d=my_file_vars]
+   FV1[d=other_file_vars]
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+v3 is ready and AVAILABLE
+************************
+   in default dataset MY_UVAR_AGG
+   V3 = A + V1 + B + A + A
+     A = FV1[D=1] - FV1[D=2]
+       FV1[d=my_file_var]
+       FV1[d=other_file_var]
+     V1 = A  + B + B^2
+       A =  (defined above)
+       B = C
+         C = 1
+     B =  (defined above)
+   in default dataset MY_UVAR_AGG
+   V3 = A + V1 + B + A + A
+     A = FV1[D=1] - FV1[D=2]
+     V1 = A  + B + B^2
+       A =  (defined above)
+       B = C
+         C = 1
+     B =  (defined above)
+   FV1[d=my_file_vars]
+   FV1[d=other_file_vars]
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+the problem is UNKNOWN VARIABLE: F
+************************
+   in default dataset MY_UVAR_AGG
+   D = B + C
+     B = FV1[D=MY_FILE_VARS]
+       FV1[d=my_file_var]
+     C = 1
+   A = F
+     F ??                           <== UNKNOWN VARIABLE ******
+   NOEXIST ??                           <== UNKNOWN VARIABLE ******
+   E = 1
+   FVX[d=my_file_var]
+   in default dataset MY_UVAR_AGG
+   D = B + C
+     B = FV1[D=MY_FILE_VARS]
+     C = 1
+   A = F
+     F ??                           <== UNKNOWN VARIABLE ******
+   NOEXIST ??                           <== UNKNOWN VARIABLE ******
+   E = 1
+   F  (unknown variable)
+   FV1[d=my_file_vars]
+   NOEXIST  (unknown variable)
+   FVX[d=my_file_vars]
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+the problem is UNKNOWN GRID: A[G=NOEXIST]
+************************
+   in default dataset MY_UVAR_AGG
+   B = A[G=NOEXIST]
+     A[G=NOEXIST]   (unknown grid)
+   in default dataset MY_UVAR_AGG
+   B = A[G=NOEXIST]
+     A[G=NOEXIST]   (unknown grid)
+   A[G=NOEXIST]  (unknown grid)
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+the problem is ERROR IN EXPRESSION: A[X=45S]
+************************
+   in default dataset MY_UVAR_AGG
+   C = A[X=45S]
+     A[X=45S]   *** WARNING: ERROR IN DEFINITION
+   in default dataset MY_UVAR_AGG
+   C = A[X=45S]
+     A[X=45S]   *** WARNING: ERROR IN DEFINITION
+   A[X=45S]   *** WARNING: SYNTAX ERROR
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+the problem is ERROR IN EXPRESSION: A[I=1,,J=2]
+************************
+   in default dataset MY_UVAR_AGG
+   D = A[I=1,,J=2]
+     A[I=1,,J=2]   *** WARNING: ERROR IN DEFINITION
+   in default dataset MY_UVAR_AGG
+   D = A[I=1,,J=2]
+     A[I=1,,J=2]   *** WARNING: ERROR IN DEFINITION
+   A[I=1,,J=2]   *** WARNING: SYNTAX ERROR
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+the problem is ERROR IN EXPRESSION: A[P=1]
+************************
+   in default dataset MY_UVAR_AGG
+   E = A[P=1]
+     A[P=1]   *** WARNING: ERROR IN DEFINITION
+   in default dataset MY_UVAR_AGG
+   E = A[P=1]
+     A[P=1]   *** WARNING: ERROR IN DEFINITION
+   A[P=1]   *** WARNING: SYNTAX ERROR
+/TREE=ALL
+/TREE=USER
+/TREE=FILE
+f is ready and AVAILABLE
+************************
+   in default dataset MY_UVAR_AGG
+   F = A[I=10]
+     A = I[I=1:5]
+   in default dataset MY_UVAR_AGG
+   F = A[I=10]
+     A = I[I=1:5]
+   in default dataset MY_UVAR_AGG
+   A = FVZ.LONG_NAME[D=1]
+   in default dataset MY_UVAR_AGG
+   A = ..HISTORY[D=1]
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
 yes? ! run bn_all_ef tests
@@ -77583,7 +78068,7 @@ yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.925  
  	Linux 2.6.32-431.23.3.el6.x86_64 64-bit - 08/19/14
- 	19-Aug-14 10:33     
+ 	19-Aug-14 12:38     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -81144,7 +81629,7 @@ yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.925  
  	Linux 2.6.32-431.23.3.el6.x86_64 64-bit - 08/19/14
- 	19-Aug-14 10:33     
+ 	19-Aug-14 12:38     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 8 bytes)
@@ -81157,12 +81642,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.1.1 of Feb 25 2014 10:43:06 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "19-Aug-14"
-SESSION_TIME = "10:33"
-SESSION_PID = "23204"
-DELTA_CPU = "0.040992"
-CLOCK_SECS = "0.306"
+SESSION_TIME = "12:38"
+SESSION_PID = "25135"
+DELTA_CPU = "0.040993"
+CLOCK_SECS = "0.3"
 CURRENT_DATE = "19-Aug-14"
-CURRENT_TIME = "10:33:24"
+CURRENT_TIME = "12:38:38"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -81184,7 +81669,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "19-Aug-14:10:33"
+WIN_TITLE = "19-Aug-14:12:38"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -81248,7 +81733,7 @@ yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v6.925  
  	Linux 2.6.32-431.23.3.el6.x86_64 64-bit - 08/19/14
- 	19-Aug-14 10:33     
+ 	19-Aug-14 12:38     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -81467,7 +81952,7 @@ yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.925  
  	Linux 2.6.32-431.23.3.el6.x86_64 64-bit - 08/19/14
- 	19-Aug-14 10:33     
+ 	19-Aug-14 12:38     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -81581,7 +82066,7 @@ yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.925  
  	Linux 2.6.32-431.23.3.el6.x86_64 64-bit - 08/19/14
- 	19-Aug-14 10:33     
+ 	19-Aug-14 12:38     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -81665,4 +82150,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Tue Aug 19 10:33:26 PDT 2014
+Ended at Tue Aug 19 12:38:40 PDT 2014

@@ -13,12 +13,12 @@
 
 sho ax/clobber/outfile="test.txt" month_irreg
 sho ax/clobber/outfile="test.txt" month_irreg
-SAY ---------------- 
+
 SAY ---------------- Just axis month_irreg
 sp cat test.txt
 
 show axis/append/outfile="test.txt" PS*
-SAY ---------------- 
+
 SAY ---------------- appending all axes starting with PS
 sp cat test.txt
 
@@ -26,7 +26,7 @@ sp cat test.txt
 
 use coads_climatology
 show grid/clobber/outfile="test.txt" sst
-SAY ---------------- 
+
 SAY ---------------- Just the grid of sst
 sp cat test.txt
 
@@ -36,7 +36,7 @@ use coads_climatology
 let two = 2
 let myvar = sst*2
 show var/clobber/outfile="test.txt" myvar, two
-SAY ---------------- 
+
 SAY ---------------- show var output from two user vars 
 sp cat test.txt
 cancel var/all
@@ -44,7 +44,7 @@ cancel var/all
 ! show data/outfile
 
 show data/append/outfile="test.txt"
-SAY ---------------- 
+
 SAY ---------------- appending show data
 sp cat test.txt
 
@@ -52,12 +52,12 @@ sp cat test.txt
 
 show data/clobber/outfile="test.txt"
 show data/clobber/outfile="test.txt"
-SAY ---------------- 
+
 SAY ---------------- Just show data, two show data/clobber commands in a row
 sp cat test.txt
 
 show grid/clobber/outfile="test.txt" sst
-SAY ---------------- 
+
 SAY ---------------- Just grid of sst
 sp cat test.txt
 
@@ -65,16 +65,16 @@ use coads_climatology
 use levitus_climatology
 
 show data/clobber/outfile="test.txt" 1
-SAY ---------------- 
+
 SAY ---------------- Just dataset 1
 sp cat test.txt
 
 show data/append/outfile="test.txt" levitus_climatology
-SAY ---------------- 
+
 SAY ---------------- appending datset 2 by name
 sp cat test.txt
 show grid/clobber/outfile="test.txt" PS3*
-SAY ---------------- 
+
 SAY ---------------- only showing all grids starting with PS3
 sp cat test.txt
 

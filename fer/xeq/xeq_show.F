@@ -1293,7 +1293,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
  	sxml  = qual_given( slash_grid_xml  ) .GT. 0 
 
 
-* 	SHOW GRID/FILE=[/APPEND][/CLOBBER]
+* 	SHOW GRID/OUTFILE=[/APPEND][/CLOBBER]
         sho_file = qual_given( slash_show_grid_file )
 	clobber = qual_given( slash_show_grid_clobber ) .GT. 0
 	append = qual_given( slash_show_grid_append ) .GT. 0

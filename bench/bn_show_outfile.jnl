@@ -6,28 +6,28 @@
 
 ! test various combinations of /append and /clobber
 
-can mode verify
+!can mode verify
 
 ! show axis/outfile
 
 
 sho ax/clobber/outfile="test.txt" month_irreg
 sho ax/clobber/outfile="test.txt" month_irreg
-SAY --- 
-SAY --- Just axis month_irreg
+SAY ---------------- 
+SAY ---------------- Just axis month_irreg
 sp cat test.txt
 
-sh ax/append/outfile=test.txt PS*
-SAY --- 
-SAY --- appending all axes starting with PS
+show axis/append/outfile="test.txt" PS*
+SAY ---------------- 
+SAY ---------------- appending all axes starting with PS
 sp cat test.txt
 
 ! show grid/outfile
 
 use coads_climatology
-sh grid/outfile=test.txt/clobber sst
-SAY --- 
-SAY --- Just the grid of sst
+show grid/clobber/outfile="test.txt" sst
+SAY ---------------- 
+SAY ---------------- Just the grid of sst
 sp cat test.txt
 
 ! show var/outfile
@@ -35,48 +35,47 @@ sp cat test.txt
 use coads_climatology
 let two = 2
 let myvar = sst*2
-sh var/outfile=test.txt/append myvar, two
-SAY --- 
-SAY --- just two user vars 
+show var/clobber/outfile="test.txt" myvar, two
+SAY ---------------- 
+SAY ---------------- show var output from two user vars 
 sp cat test.txt
+cancel var/all
 
 ! show data/outfile
 
-sh dat/append/outfile=test.txt
-SAY --- 
-SAY --- appending show data
+show data/append/outfile="test.txt"
+SAY ---------------- 
+SAY ---------------- appending show data
 sp cat test.txt
 
 ! combinations of /append and /clobber
 
-sh dat/clobber/outfile=test.txt
-sh dat/clobber/outfile=test.txt
-SAY --- 
-SAY --- Just axis month_irreg
+show data/clobber/outfile="test.txt"
+show data/clobber/outfile="test.txt"
+SAY ---------------- 
+SAY ---------------- Just show data, two show data/clobber commands in a row
 sp cat test.txt
 
-sh grid/outfile=test.txt/clobber sst
-SAY --- 
-SAY --- Just grid of sst
+show grid/clobber/outfile="test.txt" sst
+SAY ---------------- 
+SAY ---------------- Just grid of sst
 sp cat test.txt
 
 use coads_climatology
 use levitus_climatology
 
-sh dat/clobber/outfile=test.txt 1
-SAY --- 
-SAY --- Just dataset 1
+show data/clobber/outfile="test.txt" 1
+SAY ---------------- 
+SAY ---------------- Just dataset 1
 sp cat test.txt
 
-sh dat/append/outfile=test.txt levitus_climatology
-sh grid/all/append/outfile=test.txt 
-SAY --- 
-SAY --- appending datset 2 by name
+show data/append/outfile="test.txt" levitus_climatology
+SAY ---------------- 
+SAY ---------------- appending datset 2 by name
 sp cat test.txt
-
-sh grid/outfile=text.txt/clobber PS3*
-SAY --- 
-SAY --- only showing all grids starting with PS3
+show grid/clobber/outfile="test.txt" PS3*
+SAY ---------------- 
+SAY ---------------- only showing all grids starting with PS3
 sp cat test.txt
 
 set mode/last verify

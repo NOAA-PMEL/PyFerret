@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 53672220 Aug  7 16:27 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 53545516 Aug 19 10:29 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2189
+Note: bug 2194: SHOW command with the /OUTFILE qualifier (and not /xml)
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
-Beginning at Thu Aug 7 16:53:58 PDT 2014
+Beginning at Tue Aug 19 10:31:57 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3690,6 +3690,9 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file out.xml
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file anew_global.nc
@@ -3702,6 +3705,8 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
 Replacing definition of axis X2
 Replacing definition of axis Y2
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3793,4 +3798,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Aug 7 16:55:33 PDT 2014
+Ended at Tue Aug 19 10:33:26 PDT 2014

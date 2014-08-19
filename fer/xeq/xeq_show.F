@@ -184,6 +184,7 @@
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V690 *sh* 1/14 Add SHOW VAR/SIGMA
 * V691+*acm* 8/14 Fix ticket 2188: SHOW MEMORY should say memory words are 8 bytes.
+* V691+ 8/14 *acm* Fix ticket 2194: SHOW with /OUTFILE and not /XML. 
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -554,6 +555,9 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
            risc_buff = '</axes>'
            CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
         ENDIF
+	
+	IF (sho_file .GT. 0) CLOSE( UNIT = show_lun, ERR = 5000 )
+
 	IF ( limited_show ) RETURN
 
 * SHOW EXPRESSION
@@ -1190,7 +1194,8 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
            risc_buff = '</global>'
            CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
         ENDIF
-
+	
+	IF (sho_file .GT. 0) CLOSE( UNIT = show_lun, ERR = 5000 )
 	IF ( limited_show ) RETURN
 
 * SHOW COMMAND [name]
@@ -1422,6 +1427,8 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * successful completion
+        IF (sho_file .GT. 0) CLOSE( UNIT = show_lun, ERR = 5000 )
+
  1390 	RETURN
 
 * SHOW VIEWPORT view1,view2,...

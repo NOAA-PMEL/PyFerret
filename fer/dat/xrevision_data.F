@@ -113,13 +113,14 @@
 * V6.922   final tweaks to /key=centerlab, internal tag for SOCAT testing
 * v6.923   fix ticket 2187
 * v6.924   fix ticket 2186 
+* v6.925   fix ticket 2194
 
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.924   /
+	DATA revision_level	/  6.925   /
 
 ! Note we can put a debug title in the Ferret startup header lines
 ! by putting a title into the Makefile: $(MAKE) "DEBUG_TITLE=beta" update

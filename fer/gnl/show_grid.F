@@ -67,6 +67,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
 *                 various SHOW commnands will not list info for E,F dimensions.
+* V691+ 8/14 *acm* Fix ticket 2194: SHOW with /OUTFILE and not /XML. 
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -99,9 +100,9 @@
 * list and describe the axes of the grid
 	risc_buff = ' '
 	WRITE ( risc_buff, 3000 )
-	CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	DO 110 idim = 1, listdims
-	   CALL LINE_FACTS( ttout_lun, idim, grid, idim )
+	   CALL LINE_FACTS( show_lun, idim, grid, idim )
  110	CONTINUE
 
 * list the data on any axis that has been especially requested

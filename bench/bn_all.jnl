@@ -920,6 +920,9 @@ GO bn_center_key_labels
 GO bn_reset
 GO bn_wgt_transform
 
+GO bn_reset
+GO bn_show_outfile
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

@@ -59,7 +59,7 @@
 	INTEGER		status
 
 * local declarations
-	REAL		dz, fm, znp, zmp, dzmax
+	REAL		dz, fm, znp, zmp, dzmax, del
 	INTEGER		m, jj
         LOGICAL		TM_FPEQ_SNGL
 

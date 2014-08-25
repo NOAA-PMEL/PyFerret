@@ -4,7 +4,8 @@
 
 	include 'netcdf.inc'
 
-	INTEGER cdfid, nlen, dim_only
+	INTEGER cdfid, nlen
+	LOGICAL dim_only
 	CHARACTER*(*) name
 
 	INTEGER cdfstat, dimid, axid

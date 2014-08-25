@@ -73,7 +73,8 @@
 	INTEGER	work(dependency_max_recs, dependency_nfields)
 
 * internal variable declarations
-	INTEGER	tree_level, its_aux
+	INTEGER	tree_level
+	LOGICAL its_aux
 
 	PARAMETER (its_aux = .TRUE.)
 

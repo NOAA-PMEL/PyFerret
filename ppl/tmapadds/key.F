@@ -112,6 +112,8 @@
 *                 the plot with labels above them. Behavior of args to SHAKEY is unchanged.
 * v686 *acm* 2/14 Fix ticket 2124: Do the fix for 2124 only here, not in subr. LEV.
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
+*                  For centered labels add a level to corresp to the upper bound of 
+*                  the top color on thecolorbar, excluding any upper inf triangle.
 
         IMPLICIT NONE
 
@@ -251,8 +253,8 @@
            kx_lo_def = 1000.0 *  xorg
            kx_hi_def = 1000.0 * (xorg + xlen)
 
-           ky_lo_def = 1000.0 * (yorg + ylen)
-           ky_hi_def = 1000.0 * (yorg + ylen + 0.16*rem)
+           ky_lo_def = 1000.0 * (yorg + ylen + 0.05)
+           ky_hi_def = 1000.0 * (yorg + ylen + 0.05 + 0.16*rem)
 
         else
            rem = height - (ylen + yorg)
@@ -449,6 +451,8 @@ C	      text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 
 	shd_lev_hi = shd_levels+1
 	IF (center_key_labels) shd_lev_hi = shd_levels
+	IF (center_key_labels .AND. posinf) shd_lev_hi = shd_lev_hi-1
+
 	do 20 ndx = lev1,shd_lev_hi,incr
 
 *	   WRITE OUT CORRESPONDING VALUE
@@ -674,6 +678,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 	shd_lev_hi = shd_levels+1
 	IF (center_key_labels) shd_lev_hi = shd_levels
+	IF (center_key_labels .AND. posinf) shd_lev_hi = shd_lev_hi-1
+
         do 1020 ndx = lev1,shd_lev_hi,incr
 *	   WRITE OUT CORRESPONDING VALUE
              val = zlev(ndx)

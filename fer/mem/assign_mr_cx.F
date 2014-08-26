@@ -43,6 +43,7 @@
 * V530:  6/01 *sh* save the delta value, too
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685+ 10/13 *sh* added auxiliary regridding "aux" variables
+* V692 7/14 *acm* ticket 2183: handle @WGT transform as for integrals
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -89,6 +90,8 @@
 *      (e.g. DEFINE UAVE = U[K=1:3@AVE])
 
 	   IF ( (trans .EQ. trans_integ_indef) .OR.
+     .          (trans .EQ. trans_avg_wgt) .OR.
+     .          (trans .EQ. trans_4d_avg_wgt) .OR.
      .          ( (trans .GT. trans_compress_code) .AND.
      .            (trans .NE. trans_max) .AND.
      .            (trans .NE. trans_min) ) .OR.

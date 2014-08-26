@@ -74,6 +74,7 @@
 *		  - check that the delta value matches
 * 2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685 4/13-3/14 *sh* support for auxiliary variables used in regridding
+* V692 7/14 *acm* ticket 2183: handle @WGT transform as for integrals
 
 * (V510) How on cache hits on external functions (EFs) work:
 * uvar_given is used to encapsulate information about cache reuse for EF
@@ -276,7 +277,9 @@
 	IF ( has_trans ) THEN
 	   DO 70 idim = 1, nferdims
 	      IF ( normal(idim) ) GOTO 70
-	      IF ( cx_trans( idim, cx ) .EQ. trans_integ_indef ) THEN
+	      IF ( cx_trans( idim, cx ) .EQ. trans_integ_indef .OR. 
+     .             cx_trans( idim, cx ) .EQ. trans_avg_wgt .OR. 
+     .             cx_trans( idim, cx ) .EQ. trans_4d_avg_wgt) THEN
 	         IF ( mr_lo_ww(idim,mv).NE.cx_lo_ww(idim,cx) ) GOTO 100
                  IF ( mr_hi_ww(idim,mv).NE.cx_hi_ww(idim,cx) ) THEN
                     ww_hi_bound = TM_WORLD( cx_hi_ss(cx,idim),

@@ -54,12 +54,13 @@
 	include		'cont_inc.decl'
 	include		'CONT.INC'
         include         'errmsg.parm'
+        include         'shade_vars.cmn'
 	
 * argument declarations
 	INTEGER		status
 
 * local declarations
-	REAL		dmin, dmax, dz, fm, znp, zmp, dzmax
+	REAL		dmin, dmax, dz, fm, znp, zmp, dzmax, del
 	INTEGER		i, m, jj
         LOGICAL		TM_FPEQ_SNGL
 
@@ -224,6 +225,23 @@ c	      NLEV2=0
 	   ELSE
 	      NLEV2=NLEV
               IF (neginf) zlev(1) = MIN( zlev(1), zmin-1. )
+
+* For centered labels add a level to corresp to the upper bound of 
+* the top color on thecolorbar, excluding the inf triangle.
+
+              IF (center_key_labels) THEN
+	         IF (posinf) THEN
+	            del = zlev(nlev-1) - zlev(nlev-2)
+	            nlev = nlev + 1
+	            zlev(nlev-1) = zlev(nlev-1) + del
+		 ELSE
+	            del = zlev(nlev) - zlev(nlev-1)
+	            nlev = nlev + 1
+	            zlev(nlev) = zlev(nlev-1) + del
+                 ENDIF
+	         nlev2 = nlev
+              ENDIF
+
               IF (posinf) zlev(nlev) = MAX (zlev(nlev), zmax+1. )
 
 C Compute the digits in the contour levels, and line characteristics

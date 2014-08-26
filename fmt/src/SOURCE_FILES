@@ -99,6 +99,7 @@ cd_write_grid.F\
 cd_write_strdim.F\
 cd_write_var.F\
 encode_strings_data.F\
+ez_count_dset.F\
 ez_init_dset.F\
 ez_init_permute.F\
 ez_mod_dset.F\

@@ -43,6 +43,8 @@
 * and we can call GET_STRING_ELEMENT to get the length of a string element.
 *
 *  acm 12/03  from ef_get_arg_string
+* V691+*acm* 8/14  Fix ticket 2190: long strings were being cut off.
+*
 *
 *       3/12 *kms* Added E and F dimensions
 
@@ -52,9 +54,9 @@
      .        slen, max_line_len
       REAL*8 arg(lox:hix, loy:hiy, loz:hiz, lot:hit, loe:hie, lof:hif)
 
-      CHARACTER*512 text
+      CHARACTER*2048 text
 
-      CHARACTER GET_STRING_ELEMENT*512
+      CHARACTER GET_STRING_ELEMENT*2048
     
       text = GET_STRING_ELEMENT(lox, hix, loy, hiy, loz, hiz,
      .                          lot, hit, loe, hie, lof, hif, arg,

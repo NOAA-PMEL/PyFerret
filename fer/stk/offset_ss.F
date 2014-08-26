@@ -53,6 +53,7 @@
 * V581: 3/05 *acm* Fix bug 1207: CDB, CIB, CDA, CIA are one-sided: return
 *                  offset only in one direction.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V692 7/14 *acm* ticket 2183: handle @WGT transform as for integrals
 
 * calling argument declarations:
 	INTEGER idim, cx, lo_off, hi_off, status
@@ -165,7 +166,15 @@
      .
      .	     offset_lo  	( trans_event_mask )	/  0 /,
      .	     offset_hi  	( trans_event_mask )	/  0 /,
-     .	     offset_supplied	( trans_event_mask )	/ .FALSE. /
+     .	     offset_supplied	( trans_event_mask )	/ .FALSE. /,
+     .
+     .       offset_lo  	( trans_avg_wgt )	/  0  /,
+     .	     offset_hi  	( trans_avg_wgt )	/  0  /,
+     .	     offset_supplied	( trans_avg_wgt )	/ .FALSE. /,
+     .
+     .       offset_lo  	( trans_4d_avg_wgt )	/  0  /,
+     .	     offset_hi  	( trans_4d_avg_wgt )	/  0  /,
+     .	     offset_supplied	( trans_4d_avg_wgt )	/ .FALSE. /
 
 * --- end of introductory code ---
 * initiailize

@@ -11,3 +11,15 @@ sh dat
 sh att profile
 sh grid rowsize
 sh grid sal
+
+! This file from the datset "West Coast Carbon cruises" in our 
+! example erdadp, has the cf_role attribute on a coordinate variable.
+!  prof, time, latitude, longitude, and rowsize are on the E axis
+!  press_db and pco2 are on the X asis
+
+use WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc
+
+sh dat 2
+sh att (profile)
+sh grid rowsize
+sh grid pco2

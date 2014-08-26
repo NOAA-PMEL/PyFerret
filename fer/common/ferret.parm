@@ -37,6 +37,7 @@
 *		  pauto_1pt_ax, pinfer_frm_aux
 *		  added patnam_sigma, patnam_curvx, patnam_curvy
 * 		  turned max_context into a variable to allow aux frames above it
+* V692 7/14 *acm* new transform @WGT, ticket 2180
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -286,7 +287,9 @@
      .			trans_nrst_dist_blw,
      .			trans_nrst_indx_abv,
      .			trans_nrst_indx_blw,
-     .			trans_event_mask
+     .			trans_event_mask,
+     .			trans_avg_wgt,
+     .			trans_4d_avg_wgt
 
 	PARAMETER     ( trans_compress_code = 30,
      .			trans_no_transform = 1,
@@ -314,7 +317,9 @@
      .			trans_nrst_indx_abv = 24,
      .			trans_nrst_indx_blw = 25,
      .			trans_event_mask    = 26,
-     .			max_plane_transform = trans_event_mask )
+     .			trans_avg_wgt       = 27,
+     .			trans_4d_avg_wgt    = 28,
+     .			max_plane_transform = trans_4d_avg_wgt )
 
 	PARAMETER     ( trans_average      = trans_compress_code + 1,
      .			trans_interpolate  = trans_compress_code + 2,

@@ -683,10 +683,16 @@
      .		alg_trans_dflt_arg( 41)/ bad_val4		/,
      .		alg_trans_text ( 42 )	/ 'STD'  		/, 
      .		alg_trans_title( 42 )	/ 'standard deviation'  /,
-     .		alg_trans_num  ( 42 )	/ trans_std_dev  	/
+     .		alg_trans_num  ( 42 )	/ trans_std_dev  	/,
+     .		alg_trans_text ( 43 )	/ 'WGT'  		/, 
+     .		alg_trans_title( 43 )	/ 'weights for avg,int'  /,
+     .		alg_trans_num  ( 43 )	/ trans_avg_wgt  	/,
+     .		alg_trans_text ( 44 )	/ 'WG4'  		/, 
+     .		alg_trans_title( 44 )	/ '4D weights, avg,int'  /,
+     .		alg_trans_num  ( 44 )	/ trans_4d_avg_wgt  	/
 
-        DATA    (alg_trans_num(i),i = 43, num_transforms)
-     .            /18*unspecified_int4 /
+        DATA    (alg_trans_num(i),i = 45, num_transforms)
+     .            /16*unspecified_int4 /
 
 	DATA
      .		alg_regrid_title( prgrd_exact )		/ ' '	/,
@@ -783,7 +789,7 @@
      .				/2*.FALSE./
 
 * translation table for substituting 1D transformations with 4D transforms
-	DATA	num_4d_trans/ 6 /
+	DATA	num_4d_trans/ 7 /
 	DATA	alg_1d_to_4d(1) /trans_average/,
      .		alg_4d_trans(1) /trans_4d_ave/,
      .		alg_1d_to_4d(2) /trans_integ_def/,
@@ -795,7 +801,9 @@
      .		alg_1d_to_4d(5) /trans_bad_pt/,
      .		alg_4d_trans(5) /trans_4d_bad_pt/,
      .		alg_1d_to_4d(6) /trans_sum/,
-     .		alg_4d_trans(6) /trans_4d_sum/
+     .		alg_4d_trans(6) /trans_4d_sum/,
+     .		alg_1d_to_4d(7) /trans_avg_wgt/,
+     .		alg_4d_trans(7) /trans_4d_avg_wgt/
 
 	END
 

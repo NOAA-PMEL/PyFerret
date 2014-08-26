@@ -1,0 +1,7 @@
+! err69_letd_dsetnum.jnl
+!  Ticket 2189. Previously the grave-accent expression didn't get
+!  translated, and the let command failed.
+
+use coads_climatology
+let/d=`sst,r=dsetnum` a = 1
+sh dat

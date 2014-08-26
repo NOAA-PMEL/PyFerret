@@ -1,0 +1,18 @@
+! err69_fill_trans.jnl
+! ticket 2196. Visible only if bounds-checking is turned on.
+! 9/22/2014
+
+DEFINE AXIS/x=1:15:1 xaxis
+let var =  {1,2,3,,,,,,,4,,5,6,7,8}
+LET myvar = var[gx=xaxis@asn]
+
+list myvar
+list myvar[x=6@fnr:2]
+
+! This caused attempt to load variable at index i = -4
+list myvar[x=6@fnr:10]
+
+! Likewise the way @FAV is computed, this caused Ferret
+! to try to get data at i=-3
+list myvar[x=6@fav:18]
+

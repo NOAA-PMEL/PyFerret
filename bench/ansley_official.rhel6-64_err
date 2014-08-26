@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 53401459 Jul  1 11:25 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 53545612 Aug 19 12:19 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixing ticket 2182
+Note: more fixes for vtree, bug 2194
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,10 +22,9 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
-Beginning at Tue Jul 1 11:30:46 PDT 2014
+Beginning at Tue Aug 19 12:37:04 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-        SET EXPRESSION has not been given or implied
         SET EXPRESSION has not been given or implied
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
@@ -306,7 +305,7 @@ list temp[i=2:5,gx=130e:80w:10]
 list temp[gx=130e:80w]
  **ERROR: variable unknown or not in data set: NOEXIST
 list temp[gx=u]	+ noexist
- **ERROR: illegal limits: TEMP on grid (G003) does not exist at K=30
+ **ERROR: illegal limits: TEMP on grid (G004) does not exist at K=30
           Axis extremes are K=1:27
 list temp[gx=u,k=30]
  **ERROR: illegal limits: TEMP does not contain K=20
@@ -322,7 +321,7 @@ list tu
 list tu
  **ERROR: variable unknown or not in data set: NOEXIST
 list tu
- **ERROR: illegal limits: TEMP on grid (G003) does not exist at K=30
+ **ERROR: illegal limits: TEMP on grid (G004) does not exist at K=30
           Axis extremes are K=1:27
 list tu
  **ERROR: illegal limits: TEMP does not contain K=20
@@ -1085,7 +1084,7 @@ Replacing definition of axis TAX2
  *** NOTE: regarding ./test_axes.nc ...
  *** NOTE: Climatological axes test_irreg, test_seas defined
  *** NOTE: Not deleted: TEST_IRREG
- *** NOTE: Axis is in use by grid (G022)
+ *** NOTE: Axis is in use by grid (G023)
  *** NOTE: Not deleted: XEVEN
  *** NOTE: Axis is in use by grid EVEN
  *** NOTE: Not deleted: XODD
@@ -1190,18 +1189,18 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAXLEVITR1_160
  *** NOTE: Axis is in use by grid GG1
- *** NOTE: Not deleted: TIME4
- *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: TIME5
  *** NOTE: Axis is in use by grid GLB1
+ *** NOTE: Not deleted: TIME4
+ *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: COADSX
  *** NOTE: Axis is in use by grid GG
  *** NOTE: Not deleted: COADSY
  *** NOTE: Axis is in use by grid GG1
+ *** NOTE: Not deleted: TEST_IRREG
+ *** NOTE: Axis is in use by grid (G023)
  *** NOTE: Not deleted: YAXLEVITR1_90
  *** NOTE: Axis is in use by grid GG2
- *** NOTE: Not deleted: TEST_IRREG
- *** NOTE: Axis is in use by grid (G022)
  *** NOTE: Not deleted: ZAXLEVITR1_1
  *** NOTE: Axis is in use by grid GG2
  *** NOTE: Not deleted: (AX020)
@@ -1310,10 +1309,10 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAXLEVITR1_160
  *** NOTE: Axis is in use by grid GG1
- *** NOTE: Not deleted: TIME4
- *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: TIME5
  *** NOTE: Axis is in use by grid GLB1
+ *** NOTE: Not deleted: TIME4
+ *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: COADSX
  *** NOTE: Axis is in use by grid GG
  *** NOTE: Not deleted: COADSY
@@ -1414,7 +1413,6 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-rm: cannot remove `input.txt': No such file or directory
 ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3526,7 +3524,7 @@ Replacing definition of axis ZAX
           Are you giving explicit limits when SET REGION would suffice ?
 list f
  *** NOTE: Not deleted: ENSEMBLE
- *** NOTE: Axis is in use by grid (G103)
+ *** NOTE: Axis is in use by grid (G089)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3686,7 +3684,15 @@ Replacing definition of axis TAX
  LISTing to file tval.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-rm: cannot remove `test_save_dsg.nc': No such file or directory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file out.xml
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file anew_global.nc
@@ -3695,6 +3701,20 @@ rm: cannot remove `test_save_dsg.nc': No such file or directory
  LISTing to file conventions_history.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis X2
+Replacing definition of axis Y2
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ **ERROR: illegal limits: X axis limits don't match variable def'n: A
+          Are you giving explicit limits when SET REGION would suffice ?
+list f
+ *** NOTE: Not deleted: ENSEMBLE
+ *** NOTE: Axis is in use by grid (G091)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3786,4 +3806,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Jul 1 11:32:16 PDT 2014
+Ended at Tue Aug 19 12:38:40 PDT 2014

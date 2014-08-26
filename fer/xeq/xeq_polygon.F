@@ -71,6 +71,7 @@
 * PyFr  *kms* 7/13 EQUAL_COLOR now returns a color ID, and EQUAL_THICK 
 *                  returns a pen ID from a color ID and a thickness.
 * PyFr  *kms* 7/13 Added /OPACITY
+* V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -101,11 +102,12 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
-        LOGICAL         no_range, do_key, spectrum, pattern, use_line
-	LOGICAL		overlay, transpz, no_labels, set_up, noaxes, axes
-	LOGICAL         fill_it, is_logh, is_logv, no_data, is_modx,
-     .			do_mod_minus, do_mod_plus
-	INTEGER         sp, patt, TM_LENSTR1, STR_UPCASE
+	LOGICAL     TM_HAS_STRING, no_range, do_key, spectrum, pattern,
+     .			use_line, overlay, transpz, no_labels, set_up, 
+     .			noaxes, axes, line_it, fill_it, is_logh, is_logv, 
+     .			no_data, is_modx, do_mod_minus, do_mod_plus, 
+     .			changed_key
+	INTEGER     sp, patt, TM_LENSTR1, TM_LENSTR, STR_UPCASE
 	INTEGER		symbol, icolor, ipen, status,
      .			loc, limit, slen, coord_ax,
      .			ax1_blks, ax1_start,
@@ -290,16 +292,30 @@ CC       => Set values here instead.
 	IF ( do_key ) THEN
 	   CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
 
-* ... /KEY=continouus ?
-              loc = qual_given(slash_polygon_key )
+* ... /KEY[=continuous,horizontal,centerlabel ?
+	      
+	      loc = qual_given(slash_polygon_key )
               IF ( loc .GT. 0) THEN
-	         CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+		 CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        buff, status )
                  IF ( status .NE. ferr_ok ) GOTO 5000
-	         IF ( buff(1:3) .EQ. 'CON' ) THEN
-                    continuous_key = .TRUE.
+		 IF (TM_LENSTR(buff) .GT. 0) THEN
+	         changed_key = .FALSE.
+	         IF ( TM_HAS_STRING(buff, 'CON') ) THEN
+                    changed_key = .TRUE.
                     CALL PPLCMD (from, line, 0, 'S_KEY 1', 1, 1 )
                  ENDIF
+	         IF ( TM_HAS_STRING(buff, 'CEN') ) THEN
+                    changed_key = .TRUE.
+                    CALL PPLCMD (from, line, 0, 'S_KEY 2', 1, 1 )
+                 ENDIF
+	         IF ( TM_HAS_STRING(buff, 'HOR') ) THEN
+                    changed_key = .TRUE.
+                    CALL PPLCMD (from, line, 0, 'S_KEY 3', 1, 1 )
+                 ENDIF
+                 IF (.NOT. changed_key) GOTO 5460
+		 ENDIF
+
               ENDIF
 
 	ELSE
@@ -543,6 +559,9 @@ c	IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
  5450	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'AXES arguments must be 0 or 1', *1000 )
+ 5460	CALL ERRMSG( ferr_syntax, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'Unrecognized argument to KEY command', *1000 )
  5500   CALL ERRMSG( ferr_out_of_range, status,
      .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .          'Value from 0 to 100 must be given', *1000 )

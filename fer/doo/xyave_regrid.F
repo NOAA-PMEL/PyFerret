@@ -107,7 +107,7 @@
 
 	REAL	AXIS_DISTANCE, BOX_SIZE,
      .          xdist, ydist, area, sum, darea, bad_src, bad_dst,
-     .          cos_fact, area_earth, ybxlo, ybxhi
+     .          cos_fact, area_earth, ybxlo, ybxhi, yh 
 
         REAL*8	TWORLD,
      .          xsrc_lo, xsrc_hi, ysrc_lo, ysrc_hi,
@@ -201,23 +201,16 @@
 	   DO 51 jsrc = jsrc_lo, jsrc_hi
 	   cos_fact = 1.0
 	   IF ( need_cos ) THEN
-!             cos_fact = COS(deg2rad*TWORLD(jsrc,src_grid,dim2,box_middle)) !old method!
-!             yc = TWORLD(jsrc,src_grid,dim2,box_middle)
-!             bx = BOX_SIZE( jsrc, src_grid, dim2 )
-!             yh_2 = 0.5*deg2rad * bx
-!             yc = deg2rad * yc
-!             cos_fact = COS(yc) * 2.*ABS( SIN(yh_2) )
 
-C The above are all OK if the coordinate point is in the middle of the box.
-C If the coordinate is not in the middle of the cell then it should be
-C ABS(SIN(ybxhi)-SIN(ybxlo))  
 C See this thread:
 C http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2009/msg00506.html
 C And also ticket 1348.
 
               ybxlo = deg2rad* TWORLD(jsrc,src_grid,dim2,box_lo_lim)
               ybxhi = deg2rad* TWORLD(jsrc,src_grid,dim2,box_hi_lim)
-              cos_fact = ABS( SIN(ybxhi) - SIN(ybxlo) )
+	      
+	      yh = ybxhi-ybxlo  
+              cos_fact = ABS( SIN(ybxhi) - SIN(ybxlo) )/ yh
 
 	   ENDIF
 

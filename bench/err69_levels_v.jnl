@@ -1,0 +1,14 @@
+! err69_levels_v.jnl
+! Ferret ticket 2186, and LAS ticket 1598
+! the data has values in the range 300 to 500,
+! and several values over 100000.  The variance-
+! based levels returned useless levels. Changes 
+! made to throw out data outside 3 std when 
+! computing the mean and std dev for color levels.
+
+use "lev_v_bug.nc"
+shade/lev=v var2d
+
+! previously the computed levels spanned -8000 to 16000.
+sh sym *lev*
+

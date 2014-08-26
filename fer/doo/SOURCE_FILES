@@ -9,6 +9,7 @@ dd1step.F\
 dd2step.F\
 diag_op.F\
 do_4d_ave.F\
+do_4d_ave_wgt.F\
 do_4d_int_def.F\
 do_4d_nbd.F\
 do_4d_ngd.F\
@@ -17,6 +18,7 @@ do_4d_string_trans.F\
 do_4d_sum.F\
 do_4d_trans.F\
 do_4d_var.F\
+do_4d_wgt.F\
 do_asn_regrid.F\
 do_aux_var_regrid.F\
 do_aux_var_regrid_1d.F\
@@ -25,6 +27,7 @@ do_aux_var_regrid_line_lin.F\
 do_ave_int.F\
 do_ave_regrid.F\
 do_average.F\
+do_avg_wgt.F\
 do_deriv_bkwd.F\
 do_deriv_cntr.F\
 do_deriv_frwd.F\
@@ -69,6 +72,7 @@ do_string_shift.F\
 do_sum.F\
 do_var_sub.F\
 do_variance.F\
+do_wgt.F\
 do_window_regrid.F\
 do_xact_regrid.F\
 do_xyave_regrid.F\

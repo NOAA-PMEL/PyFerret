@@ -1683,7 +1683,7 @@ C       SHASET
                                                  
 C       S_KEY   (continuous color key, center labels, horizontal)                                                   
 9165    ICODE=IFIX(P(1))
-        IF (ICODE .EQ. 1) call shade_key_cont (ICODE)
+        IF (ICODE .LE. 1) call shade_key_cont (ICODE)
         call shade_key (ICODE)
         goto 10       
                                 

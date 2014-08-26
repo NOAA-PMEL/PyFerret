@@ -1,0 +1,40 @@
+! bn_wgt_transform.jnl  test new @WGT transform,
+! returns weights used in the equiv. average or integral transform
+! ACM 7/2014
+
+! Define an XYT grid
+
+def axis/x=2:360:2/units=degrees_east x2
+def axis/y=-89:89:2/units=degrees_north y2
+let var = x[gx=x2] + y[gy=y2] + t[gt=month_irreg]
+let weights= var[x=@wgt,y=@wgt,t=@wgt]
+
+! Varies in y with latitude correction
+shade/l=1 weights
+
+! Sum of xy transform is the surface area of the earth, meters
+let weights= var[x=@wgt,y=@wgt]
+list/l=1 weights[i=@sum,j=@sum]
+
+! Varies in T because of irregular t axis
+shade/x=1 weights
+
+
+! The result t=@WGT returned in seconds
+let mywt = var[t=@wgt]
+
+let secperday = 24*3600
+list/x=1/y=1 mywt, mywt/secperday
+
+! Test reusing results. (ticket 2183)
+use gt4d011.cdf
+! The last value is a partial grid cell
+list/y=1.5/x=130w/z=8:43.5/t=1-sep-1982 temp[z=@wgt]
+
+! Now load the result over a larger region
+list/y=1.5/x=130w/z=0:82/t=1-sep-1982 temp[z=@wgt]
+
+! This finds the previous result in memory - needs to 
+! reuse the correct one.
+
+list/y=1.5/x=130w/z=8:43.5/t=1-sep-1982 temp[z=@wgt]

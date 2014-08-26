@@ -151,6 +151,7 @@
 *		   Detect 'sigma' and 'curvi' automation flags
 *	           Note that errors will be silent in dependency_tree_mode
 *		   Set cx_g_eq_regrid logical (used to be local "regrid_dims")
+* V6.91+ *acm* 8/14 Fix ticket 2189
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -295,6 +296,11 @@
 	         IF (  text_buff( istart+1:istart+1 ) .NE. ' '
      .	         .AND. text_buff( istart+1:istart+1 ) .NE. '='
      .	         .AND. text_buff( istart+1:istart+1 ) .NE. tab ) GOTO 50
+* We just want to go on if there is a grave-accent expression, e.g. 
+*  `var,r=dsetnum` inside the "d="
+                 do ii = istart+2,iend
+	            IF (  text_buff(ii:ii) .EQ. '`') GOTO 50
+		 enddo
 !	      ENDIF
 * ... D=data_set given
 	      equal_pos = ATOM_POS( text_buff(istart:iend), '=' )

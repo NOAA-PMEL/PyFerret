@@ -151,6 +151,7 @@
 * V6.85 *acm* 9/13 New PLOT/COLOR w/o argument for all-color line plot
 * V685+ *acm  12/13 In dependent axis setup, make sure variable the_taxis is set.
 * V691  *acm*  5/14 For ribbon line plots, set up for histogram levels
+* V691  *acm*  7/14 Fix ticket 2187: axis labels for PLOT/VS plots.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -346,11 +347,9 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   var1 = 2	! since first var is independent axis
 	   ndv  = nmv - 1	! # of dependent variables
-	   IF ( use_keys .AND. (.NOT. nokey)) THEN
-	      plot_title = KEY_STRING( cx_list(1), key_doc, slen )
-	   ELSE
-	      plot_title = FULL_VAR_TITLE( cx_list(1), slen )
-	   ENDIF
+	   use_keys = .FALSE.
+	   plot_title = FULL_VAR_TITLE( cx_list(1), slen )
+
 * ... label the independent axis as the first var given
 	   IF ( .NOT.no_labels ) THEN
 	      buff1 = VAR_UNITS(cx_x)
@@ -644,7 +643,6 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * histogram bins.
 
 	   IF (ribbon_plot .AND. ipl.EQ.ribbon_var) THEN
-              CALL COMPUTE_MNSTD (dep_dat, mr_bad_data(mv), .TRUE., npts, status)
 
               IF (need_histo) THEN
 * create temporary buffer to contain workspace
@@ -658,6 +656,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      
 * ... clean up temporary variable
                  CALL DELETE_VARIABLE( mvh_temp )
+              ELSE
+                 CALL COMPUTE_MNSTD (dep_dat, mr_bad_data(mv), need_std, npts, status)
               ENDIF
 
 	   ENDIF

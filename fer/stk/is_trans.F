@@ -75,8 +75,11 @@
 *                   message if a 4-D transform was requested but the dimensions 
 *                   are not available in the grid.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V691+ *acm* 8/14 Fix ticket 2196. Fill transformations component index range should 
+*                  be limited to the range of the axis.
 
 	include 'tmap_dims.parm'
+	include 'xtm_grid.cmn_text'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -100,7 +103,7 @@
      .		slen, cx_valid,
      .		res_isp, com_isp, res_cx, com_cx, com_mr, res_mr, idim,
      .		trans, grid, lo_off, hi_off, ss_lo, ss_hi, wksiz, wkblk,
-     .		mrlist(2), axes(nferdims), idim1, i, ndim
+     .		mrlist(2), axes(nferdims), idim1, i, ndim, axis
 	REAL	arg
 	REAL*8	TM_WORLD, ww, ww_lo, ww_hi
 	CHARACTER VAR_TRANS*150, buff*150
@@ -312,6 +315,16 @@
      .			cx_lo_ss(com_cx,idim) = cx_lo_ss(res_cx,idim) + lo_off
 	      IF ( cx_hi_ss(res_cx,idim) .LT. cx_hi_ss(cx_valid,idim) )
      .			cx_hi_ss(com_cx,idim) = cx_hi_ss(res_cx,idim) + hi_off
+
+* The above can send the index range outside the line dimensions. Ticket 2196.
+* If its modulo that's ok otherwise limit to the index rangen for the axis
+
+	      axis = grid_line( idim, cx_grid(com_cx) )
+	      IF (.NOT. line_modulo(axis)) THEN
+	         cx_lo_ss(com_cx,idim) = MAX(1, cx_lo_ss(com_cx,idim))
+	         cx_hi_ss(com_cx,idim) = MIN(line_dim(axis), cx_hi_ss(com_cx,idim))
+	      ENDIF
+
 	      cx_by_ss(idim,res_cx) = .TRUE.
 	      CALL FLESH_OUT_AXIS( idim, com_cx, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000

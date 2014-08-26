@@ -49,6 +49,7 @@
 * V553: 9/03 *kob* - increase locbuff to 512 from 100 - it was cutting strings
 *                    short*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *       3/12 *kms*   int_buff and size_ibuff declared locally
+* V691+:8/14 *acm* - increase locbuff to 2048 - it was cutting strings
 
         IMPLICIT NONE
 	include	'tmap_dims.parm'
@@ -62,7 +63,7 @@
 
 * internal variable declarations
 	INTEGER  GET_C_STRING_LEN, flen
-	CHARACTER*512 locbuff
+	CHARACTER*2048 locbuff
         INTEGER size_ibuff
         PARAMETER ( size_ibuff = 2048 )
         INTEGER*2 int_buff(size_ibuff/2)

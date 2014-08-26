@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Jul  1 17:03 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Aug 25 16:46 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for pyferret debug build on RHEL5-64
+Note: RUN_TESTS.sh test result for debug build of PyFerret on RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -221,6 +221,8 @@ Benchmark scripts that will be run:
    bn_global_atts.jnl
    bn_conventions_history.jnl
    bn_center_key_labels.jnl
+   bn_wgt_transform.jnl
+   bn_show_outfile.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -237,7 +239,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Tue Jul  1 17:03:47 PDT 2014
+Beginning at Mon Aug 25 16:47:19 PDT 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
  *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -262,7 +264,6 @@ Beginning at Tue Jul  1 17:03:47 PDT 2014
  *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
  *** NOTE: the use of "SET MODE METAFILE" is deprecated;
  *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-        SET EXPRESSION has not been given or implied
         SET EXPRESSION has not been given or implied
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
@@ -3569,9 +3570,18 @@ list {5*3+1, 2+3}
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file tval.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- LISTing to file tval.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file out.xml
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_append_dsg.jnl
  Cached data cleared from memory
 rm: cannot remove `test_save_dsg.nc': No such file or directory
@@ -3583,6 +3593,16 @@ rm: cannot remove `test_save_dsg.nc': No such file or directory
  LISTing to file conventions_history.nc
 *** Running test: bn_center_key_labels.jnl
  Cached data cleared from memory
+*** Running test: bn_wgt_transform.jnl
+ Cached data cleared from memory
+*** Running test: bn_show_outfile.jnl
+ Cached data cleared from memory
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ **ERROR: illegal limits: X axis limits don't match variable def'n: A
+          Are you giving explicit limits when SET REGION would suffice ?
+list f
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3604,4 +3624,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
  *** NOTE: the use of "SET MODE METAFILE" is deprecated;
  *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Tue Jul  1 17:07:48 PDT 2014
+Ended at Mon Aug 25 16:51:53 PDT 2014

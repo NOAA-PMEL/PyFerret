@@ -1,0 +1,21 @@
+! err69_plot_vs_labs.jnl
+! ticket 2187: the axis labels on the dependent axis
+! for PLOT/VS is wrong.  LABX and LABY contain the labels used.
+
+use coads_climatology
+
+let a = sst[L=1]
+let b = a[x=180e:100w@ave]
+let c = a[x=150w:90w@ave]
+let d = a[x=150w:90w@ave]
+set v left;  plot/vs b,c; sh sym labx,laby
+set v right; plot/vs c,b; sh sym labx,laby
+
+can view
+plot/vs/ribbon c,b,d; sh sym labx,laby
+
+set v left;  plot/trans/vs b,c; sh sym labx,laby
+set v right; plot/trans/vs c,b; sh sym labx,laby
+
+can view
+plot/vs/trans/ribbon c,b,d; sh sym labx,laby

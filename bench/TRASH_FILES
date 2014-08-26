@@ -12,6 +12,7 @@ aa.nc
 abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
 a.jnl
 a.nc
+a.txt
 anew_global.nc
 another_file_vars.nc
 anothername.gif
@@ -137,6 +138,7 @@ noleap.nc
 other_file_vars.nc
 out.cdf
 out.nc
+out.xml
 pattern_plot1.plt
 pattern_plot2.plt
 permutedBinaryTest.dat

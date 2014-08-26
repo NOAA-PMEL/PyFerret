@@ -63,6 +63,7 @@
 *                  SHOW GRID/FILE, SHOW GRID/CLOBBER, SHOW GRID/APPEND
 * V690 12/13 *sh* /SIGMA and /CURVILINEAR
 * V687  3/14 *acm* add SET AXIS/NAME
+* V691+ 8/14 *acm* Fix ticket 2194: SHOW with /OUTFILE and not /XML. 
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -425,8 +426,8 @@
      .			slash_show_grid_x0 = 7,
      .			slash_show_grid_i0 = 1,
      .			slash_show_grid_file = 16,
-     .			slash_show_grid_clobber = 17,
-     .			slash_show_grid_append = 18,
+     .			slash_show_grid_append = 17,
+     .			slash_show_grid_clobber = 18,
      .
      .			slash_show_data_brief = 2,
      .			slash_show_data_file = 8,

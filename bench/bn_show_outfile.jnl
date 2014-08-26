@@ -1,0 +1,83 @@
+! bn_show_outfile
+! Adding tests for SHOW/OUTFILE= 
+! Previously only tests when SHOW/XML/OUTFILE=
+!  Bugs in SHOW/OUTFILE reported in ticket 2194
+!  8/18/2014
+
+! test various combinations of /append and /clobber
+
+!can mode verify
+
+! show axis/outfile
+
+
+sho ax/clobber/outfile=a.txt month_irreg
+sho ax/clobber/outfile=a.txt month_irreg
+
+SAY ---------------- Just axis month_irreg
+sp cat a.txt
+
+show axis/append/outfile=a.txt PS*
+
+SAY ---------------- appending all axes starting with PS
+sp cat a.txt
+
+! show grid/outfile
+
+use coads_climatology
+show grid/clobber/outfile=a.txt sst
+
+SAY ---------------- Just the grid of sst
+sp cat a.txt
+
+! show var/outfile
+
+use coads_climatology
+let two = 2
+let myvar = sst*2
+show var/clobber/outfile=a.txt myvar, two
+
+SAY ---------------- show var output from two user vars 
+sp cat a.txt
+cancel var/all
+
+! show data/outfile
+
+show data/append/outfile=a.txt
+
+SAY ---------------- appending show data
+sp cat a.txt
+
+! combinations of /append and /clobber
+
+show data/clobber/outfile=a.txt
+show data/clobber/outfile=a.txt
+
+SAY ---------------- Just show data, two show data/clobber commands in a row
+sp cat a.txt
+
+show grid/clobber/outfile=a.txt sst
+
+SAY ---------------- Just grid of sst
+sp cat a.txt
+
+use coads_climatology
+use levitus_climatology
+
+show data/clobber/outfile=a.txt 1
+
+SAY ---------------- Just dataset 1
+sp cat a.txt
+
+show data/append/outfile=a.txt levitus_climatology
+
+SAY ---------------- appending datset 2 by name
+sp cat a.txt
+show grid/clobber/outfile=a.txt PS3*
+
+SAY ---------------- only showing all grids starting with PS3
+sp cat a.txt
+
+SAY ---------------- tests sending output of vtree to a file
+GO bn_vtree_outfile
+

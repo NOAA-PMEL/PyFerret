@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Aug 25 16:46 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Aug 26 14:00 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test result for debug build of PyFerret on RHEL5-64
+Note: RUN_TESTS.sh test results for debug build of pyferret on RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -239,7 +239,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Aug 25 16:47:19 PDT 2014
+Beginning at Tue Aug 26 14:30:37 PDT 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
  *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -3061,6 +3061,9 @@ Replacing definition of axis TAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
+ *** NOTE: ./err672_vert_axislabel.jnl
+ *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
  *** NOTE: Adjusting Y-axis label size from 0.100 to 0.030, to avoid running off page.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3072,6 +3075,7 @@ Replacing definition of axis TAXIS
  *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis RLATU79_961_9
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3624,4 +3628,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
  *** NOTE: the use of "SET MODE METAFILE" is deprecated;
  *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Mon Aug 25 16:51:53 PDT 2014
+Ended at Tue Aug 26 14:34:37 PDT 2014

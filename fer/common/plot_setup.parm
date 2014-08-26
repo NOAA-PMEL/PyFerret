@@ -21,8 +21,8 @@
      .              dflt_imgscale,
      .              dflt_thicken,
      .              dflt_textprom
-        PARAMETER ( dflt_xinches   = 10.50,
-     .              dflt_yinches   =  8.50,
+        PARAMETER ( dflt_xinches   = 10.20,
+     .              dflt_yinches   =  8.80,
      .              dflt_imgscale  =  0.83666,
      .              dflt_thicken   =  1.00,
      .              dflt_textprom  =  1.00 )
@@ -37,10 +37,10 @@
      .              dflt_con_labsp,
      .              dflt_con_dshln,
      .              dflt_vec_len
-        PARAMETER ( dflt_xwhitelo  =  1.375,
-     .              dflt_ywhitelo  =  1.375,
-     .              dflt_xwhitehi  =  1.375,
-     .              dflt_ywhitehi  =  1.375,
+        PARAMETER ( dflt_xwhitelo  =  1.20,
+     .              dflt_ywhitelo  =  1.40,
+     .              dflt_xwhitehi  =  1.00,
+     .              dflt_ywhitehi  =  1.40,
      .              dflt_tics_lg   =  0.25,
      .              dflt_tics_sm   =  0.125,
      .              dflt_con_labsp =  5.00,

@@ -28,12 +28,14 @@ set view mid2
 ppl origin 0,0
 define symbol xaxl `($PPL$WIDTH)/2`
 define symbol yaxl `($PPL$HEIGHT)/2`
-ppl axlen `1.375 + ($xaxl) + 1.375`,`1.375 + ($yaxl) + 1.375`
-plot/vs/hlim=-1.375:`($xaxl)+1.375`:0.25/vlim=-1.375:`($yaxl)+1.375`:0.25/nolab/nolab {0,($xaxl)}, {0,($yaxl)}
+ppl axlen `1.2 + ($xaxl) + 1.0`,`1.4 + ($yaxl) + 1.4`
+plot/vs/hlim=-1.2:`($xaxl)+1.0`:0.2/vlim=-1.4:`($yaxl)+1.4`:0.2/nolab/nolab {0,($xaxl)}, {0,($yaxl)}
+
+! pause
+set window/clear
 
 ! again with scale determined automatically
 ! make guide lines
-set window/clear
 set view allax
 plot/vs/line/hlim=0:1/vlim=0:1/nolab {0.5,0.5,,0,1},{0,1,,0.5,0.5}
 plot/vs/line/over/nolab {0.25,0.25,,0,1},{0,1,,0.25,0.25}
@@ -55,9 +57,10 @@ set view mid2
 ppl origin 0,0
 define symbol xaxl `($PPL$WIDTH)/2`
 define symbol yaxl `($PPL$HEIGHT)/2`
-ppl axlen `1.375 + ($xaxl) + 1.375`,`1.375 + ($yaxl) + 1.375`
-plot/vs/hlim=-1.375:`($xaxl)+1.375`:0.25/vlim=-1.375:`($yaxl)+1.375`:0.25/nolab/line {0,($xaxl)}, {0,($yaxl)}
+ppl axlen `1.2 + ($xaxl) + 1.0`,`1.4 + ($yaxl) + 1.4`
+plot/vs/hlim=-1.2:`($xaxl)+1.0`:0.2/vlim=-1.4:`($yaxl)+1.4`:0.2/nolab/line {0,($xaxl)}, {0,($yaxl)}
 
+! pause
 set wind/clear
 
 ! a full window plot
@@ -65,6 +68,7 @@ set view allax
 plot/vs/hlim=-1:1/vlim=-1:1/line/i=1:200/noyadj cos(i/15),sin(i/15)
 show view mid
 
+! pause
 set wind/clear
 
 def view/axes/xlim=0:0.5/ylim=0:0.5/text=1 llax
@@ -91,9 +95,10 @@ PLOT/VS/LINE/I=1:314/noyadj i*cos(i/20),i*sin(i/20)
 ppl list xaxis
 ppl list yaxis
 
-! again with viewport scaling determined automatically
+! pause
 set wind/clear
 
+! again with viewport scaling determined automatically
 def view/axes/xlim=0:0.5/ylim=0:0.5 llax
 show view llax
 set view llax
@@ -122,7 +127,9 @@ PLOT/VS/LINE/I=1:314/nolab i*cos(i/20),i*sin(i/20)
 ppl list xaxis
 ppl list yaxis
 
+! pause
 cancel view
+
 go ptest
 ppl list xaxis
 ppl list yaxis

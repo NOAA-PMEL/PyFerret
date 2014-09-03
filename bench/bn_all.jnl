@@ -923,6 +923,9 @@ GO bn_wgt_transform
 GO bn_reset
 GO bn_show_outfile
 
+GO bn_reset
+GO bn_date1900_array
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

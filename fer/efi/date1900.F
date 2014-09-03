@@ -39,6 +39,9 @@
 *               an argument rather than a return from function; under
 *               64-bit the return always yielded 0.
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V69+ *acm* 9/14 Make DATE1900 accept an array of date strings, 
+*                 returning an array of coordinates
+
 
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -88,15 +91,15 @@
 *                                                                      V
 
       CALL ef_set_desc (id,
-     .   'Convert a date into Julian days since 1-Jan-1900' )
+     .   'Convert date strings into Julian days since 1-Jan-1900' )
 
       CALL ef_set_num_args(id, 1)
 
       CALL ef_set_axis_inheritance_6d(id,
-     .                                NORMAL, NORMAL,
+     .                                IMPLIED_BY_ARGS, NORMAL,
      .                                NORMAL, NORMAL,
      .                                NORMAL, NORMAL)
-      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
+      CALL ef_set_piecemeal_ok_6d(id, YES, NO, NO, NO, NO, NO)
 
       CALL ef_set_num_work_arrays(id, 0)
 
@@ -108,7 +111,7 @@
       CALL ef_set_arg_desc(id, arg,
      .         'dd-MMM-yy or dd-MMM-yyyy  (e.g. "20-Dec-00")')
       CALL ef_set_axis_influence_6d(id, arg,
-     .                              NO, NO, NO, NO, NO, NO)
+     .                              YES, NO, NO, NO, NO, NO)
 
 *                                                                      ^
 *                                                                      |
@@ -117,40 +120,6 @@
 
       RETURN 
       END
-
-
-
-*
-* In this subroutine we provide information about the lo and hi
-* limits associated with each abstract or custom axis.   The user 
-* configurable information consists of the following:
-*
-* lo_ss               lo subscript for an axis
-*
-* hi_ss               hi subscript for an axis
-*
-
-      SUBROUTINE date1900_result_limits(id)
-
-      IMPLICIT NONE
-      INCLUDE 'EF_Util.cmn'
-
-      INTEGER id
-
-* **********************************************************************
-*                                           USER CONFIGURABLE PORTION |
-*                                                                     |
-*                                                                     V
-
-
-*                                                                     ^
-*                                                                     |
-*                                           USER CONFIGURABLE PORTION |
-* **********************************************************************
-
-      RETURN 
-      END
-
 
 *
 * In this subroutine we compute the result
@@ -178,6 +147,19 @@
      .            memresloz:memreshiz, memreslot:memreshit,
      .            memresloe:memreshie, memreslof:memreshif)
 
+     
+
+* After initialization, the 'res_' arrays contain indexing information 
+* for the result axes.  The 'arg_' arrays will contain the indexing 
+* information for each variable''s axes. 
+
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6),
+     .        res_incr (6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 ************************************************************************
@@ -185,26 +167,39 @@
 *                                                                      |
 *                                                                      V
 
-        INTEGER slen
-        CHARACTER str_date*12
-        REAL res
-        INTEGER TM_LENSTR1
+      INTEGER slen, i, j, k, l, m, n
+      CHARACTER str_date*12
+      REAL res
+      INTEGER TM_LENSTR1
 
-        CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
-        CALL ef_get_arg_string(id, 1, str_date)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
+
+C  result and arg_1 have same array dimension limits
+
+      DO 100 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+      DO 100 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+      DO 100 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+      DO 100 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+      DO 100 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      DO 100 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+
+         CALL ef_get_string_arg_element_6d(id, ARG1, arg_1,
+     .                       i, j, k, l, m, n, slen, str_date)
 
 * make it a null-terminated string
-        slen = MIN(TM_LENSTR1(str_date)+1,12)
-        str_date(slen:slen) = CHAR(0)
+         slen = MIN(TM_LENSTR1(str_date)+1,12)
+         str_date(slen:slen) = CHAR(0)
 
-        CALL DATE_DECODE(str_date, res)
-        IF ( res .EQ. -1E34 ) THEN
-          result(memreslox, memresloy, memresloz,
-     .           memreslot, memresloe, memreslof) = bad_flag_result
-        ELSE
-          result(memreslox, memresloy, memresloz,
-     .           memreslot, memresloe, memreslof) = res
-        ENDIF
+         CALL DATE_DECODE(str_date, res)
+         IF ( res .EQ. -1E34 ) THEN
+            result(i, j, k, l, m, n) = bad_flag_result
+         ELSE
+            result(i, j, k, l, m, n) = res
+         ENDIF
+
+ 100  CONTINUE
 
 *                                                                      ^
 *                                                                      |

@@ -181,5 +181,5 @@ let a = ..history[d=1]
 show var/tree/outfile=a.txt/clobber a
 sp cat a.txt
 
-set mode/last verify
+set mode verify
 

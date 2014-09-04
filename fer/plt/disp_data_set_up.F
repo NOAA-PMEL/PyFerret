@@ -58,6 +58,7 @@
 * V533: *sh* 6/01 - include CGRID_SIZE in determination of axis buffer sizes
 *	            only if PLOT/VS
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -76,7 +77,7 @@
 	LOGICAL plot_vs
 	INTEGER	MR_DIM_LEN, CX_DIM_LEN, CGRID_SIZE,
      .		idim, ndim, dim(nferdims), mr1, ax_len, cx, ivar,
-     .		factor, loc
+     .		factor, loc, grid_blocks
 	CHARACTER buff*4
 
 * check for PLOT/VS -- significant in axis buffer sizes
@@ -136,9 +137,13 @@
 	ENDIF
 
 * allocate working storage
-	CALL GET_MEMORY( ax_len, ax1_start, ax1_blks, status )
+
+* COMPUTE # BLOCKS NEEDED
+	grid_blocks = ( ax_len + mem_blk_size - 1 ) / mem_blk_size
+
+	CALL GET_MEMORY( ax_len, grid_blocks, ax1_start, ax1_blks, status )
 	IF ( status .NE. ferr_ok ) GOTO 5020
-	CALL GET_MEMORY( ax_len, ax2_start, ax2_blks, status )
+	CALL GET_MEMORY( ax_len, grid_blocks, ax2_start, ax2_blks, status )
 	IF ( status .NE. ferr_ok ) GOTO 5010
 
 * successful completion

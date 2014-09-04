@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 53545612 Aug 19 12:19 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 53429590 Sep  4 11:38 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: more fixes for vtree, bug 2194
+Note:  fix for ticket 1758. remove dup run of err69_repl_scinot, date1900 for arrays, fix bug 2196
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,7 +13,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
@@ -21,8 +21,8 @@ FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
-PWD=/home/users/ansley/build/current_trunk/FERRET/bench
-Beginning at Tue Aug 19 12:37:04 PDT 2014
+PWD=/home/users/ansley/build/flat_64/FERRET/bench
+Beginning at Thu Sep 4 11:42:17 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -581,9 +581,10 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: request exceeds memory setting: A negative number of words were requested.
+ **ERROR: request exceeds memory setting: 24000 Mwords were requested.
 load num
- *** NOTE: The current grid is most likely too large
+ *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+ *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
@@ -3678,8 +3679,6 @@ list {5*3+1, 2+3}
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
 Replacing definition of axis TAX
  LISTing to file tval.nc
  PERMANENT data cleared from memory
@@ -3691,6 +3690,20 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file out.xml
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAXIS
+ **ERROR: request exceeds memory setting: 2369 Mwords were requested.
+load bigvar
+ *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+ *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
+Replacing definition of axis LONGTIME
+ **ERROR: request exceeds memory setting: 4735 Mwords were requested.
+load bigvar
+ *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+ *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3715,6 +3728,8 @@ Replacing definition of axis Y2
 list f
  *** NOTE: Not deleted: ENSEMBLE
  *** NOTE: Axis is in use by grid (G091)
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3806,4 +3821,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Aug 19 12:38:40 PDT 2014
+Ended at Thu Sep 4 11:44:19 PDT 2014

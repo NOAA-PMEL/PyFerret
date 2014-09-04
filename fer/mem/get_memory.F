@@ -1,4 +1,4 @@
-	SUBROUTINE GET_MEMORY ( num_words, mblk, num_blocks, status )
+	SUBROUTINE GET_MEMORY ( num_words, grid_blocks, mblk, num_blocks, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -33,7 +33,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* find and reserve a section of contiguous memory sufficient to hold num_words 
+* find and reserve a section of contiguous memory sufficient to hold grid_blocks 
 * procedure:
 * first check the list of free memory regions to see if there is one big enough
 * if not then delete variables working from the tail of the priority chain
@@ -60,6 +60,7 @@
 *		     of error statement
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685 *acm*  6/13 Increase nominal length of abstract axis
+* V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -68,18 +69,15 @@
 	include 'xvariables.cmn'
 
 * calling argument declarations:
-	INTEGER	num_words, mblk, num_blocks, status
+	INTEGER	num_words, grid_blocks, mblk, num_blocks, status
 
 * internal variable declarations:
 	INTEGER	mr, next, prev, size, new_mblk, num_slen
+	REAL	rgrid_blocks
 	CHARACTER  LEFINT*12, num_str*12
 
-* Number of words reasonable?
-	if (num_words .lt. 0) goto 5200
-	   
-
-* COMPUTE # BLOCKS NEEDED
-	num_blocks = ( num_words + mem_blk_size - 1 ) / mem_blk_size
+* Check for unspecified limits on abstract axis
+	IF ( num_words .EQ. 99999999 ) GOTO 5100
 
 * LOOK FOR A MEMORY REGION ALREADY AVAILABLE
 * ... use linked list into free memory regions
@@ -90,7 +88,7 @@
 
 * ... another region to check out - is it big enough ?
 	size = mblk_size ( mblk )
-	IF ( size .LT. num_blocks ) THEN
+	IF ( size .LT. grid_blocks ) THEN
 	   mblk = mblk_flink( mblk )
 	   GOTO 100
 	ELSE
@@ -100,10 +98,10 @@
 * NOTHING BIG ENOUGH IS AVAILABLE AT PRESENT
 * delete from tail of deletion priority chain looking for something big enough
  200	mr = mr_del_blink(0)
-	IF ( mr .EQ. 0 ) GOTO 5100
+	IF ( mr .EQ. 0 ) GOTO 5200
 	CALL DELETE_VARIABLE( mr )
 	size = mr_del_last_size
-	IF ( size .LT. num_blocks ) THEN
+	IF ( size .LT. grid_blocks ) THEN
 	   GOTO 200
 	ELSE
 	   mblk = mr_del_last_mblk
@@ -113,22 +111,23 @@
  500	prev = mblk_blink( mblk )
 	next = mblk_flink( mblk )
 
-	IF ( size .EQ. num_blocks ) THEN
+	IF ( size .EQ. grid_blocks ) THEN
 * ... perfect size - remove it from the free list
 	   mblk_flink( prev ) = next
 	   mblk_blink( next ) = prev
 
 	ELSE
 * ... unnecessarily big - bite off only what we need
-	   new_mblk = mblk + num_blocks
+	   new_mblk = mblk + grid_blocks
 	   mblk_flink( new_mblk ) = next
 	   mblk_blink( new_mblk ) = prev
-	   mblk_size ( new_mblk ) = size - num_blocks
+	   mblk_size ( new_mblk ) = size - grid_blocks
 	   mblk_flink( prev )     = new_mblk
 	   mblk_blink( next )     = new_mblk
 	ENDIF
 
 * success - set up the requested region and give it to them
+        num_blocks = grid_blocks
 	mblk_size ( mblk ) = num_blocks
 	status = ferr_ok
 
@@ -136,25 +135,22 @@
 	mblk_blink( mblk ) = unspecified_int4	! temp diag
 
  5000	RETURN
- 5100	CONTINUE
-	IF ( num_words .EQ. 99999999 ) THEN
-          num_str = LEFINT(num_words,num_slen)
-	  CALL ERRMSG( ferr_dim_underspec, status,
-     .	  num_str(:num_slen)//' words were requested. ', *5125)
- 5125	  CALL WARN('Check for unspecified limits on an ABSTRACT axis')
-          CALL WARN('Use the SHOW GRID command to see the axes')
-	ELSE
-          num_str = LEFINT(INT((num_words+0.99999E6)/1.0E6),num_slen)
-	  CALL ERRMSG( ferr_insuff_memory,status,
-     .	  num_str(:num_slen)//' Mwords were requested. ', *5130)
- 5130	  CALL WARN('You can use SET MEMORY/SIZE=xxx to increase memory.')
-          CALL WARN('The "Memory use" section of the FERRET '
-     .              //'Users Guide has further tips.') 
-	ENDIF
-        GOTO 5000
+ 5100	num_str = LEFINT(num_words,num_slen)
+	CALL ERRMSG( ferr_dim_underspec, status,
+     .    num_str(:num_slen)//' words were requested. ', *5105)
+ 5105	CALL WARN('Check for unspecified limits on an ABSTRACT axis')
+	CALL WARN('Use the SHOW GRID command to see the axes')
+	RETURN
  5200	CONTINUE
+        rgrid_blocks = FLOAT(mem_blk_size)* FLOAT(grid_blocks)/ 1.e6
+	num_str = LEFINT(INT(rgrid_blocks),num_slen)
+
 	CALL ERRMSG( ferr_insuff_memory,status,
-     .	'A negative number of words were requested. ', *5210)
- 5210	CALL WARN('The current grid is most likely too large')
+     .	  num_str(:num_slen)//' Mwords were requested. ', *5130)
+ 5130	CALL WARN('You can use SET MEMORY/SIZE=xxx to increase memory.')
+	CALL WARN('The "Memory use" section of the FERRET '
+     .              //'Users Guide has further tips.') 
+        GOTO 5000
 	RETURN
 	END
+

@@ -1,0 +1,24 @@
+! err69_load_big_grid
+! ticket 1758
+! error about "a negative number of words requested... grid too large"
+! in fact all large grids misreports size.  Now computations are done
+! in real numbers and in block not word sizes.
+
+set mode ignore
+
+def axis/x=1:360:1 xaxis
+def axis/y=1:180:1 yaxis
+def axis/z=1:20:1 zaxis
+
+! this gave the error about "a negative number of words requested... grid too large"
+define axis/t=1-jan-2000:1-jan-2005:1/units=days  longtime
+let bigvar = x[gx=xaxis]+y[gy=yaxis] + z[gz=zaxis] + t[gt=longtime]
+sh grid bigvar
+load bigvar
+
+! also was an incorrect size.
+define axis/t=1-jan-2000:1-jan-2010:1/units=days  longtime
+sh grid bigvar
+load bigvar
+
+cancel mode ignore

@@ -76,6 +76,7 @@
 *                 the user has said /KEEP_AXISNAMES
 * V69+ 7/14 *acm* Further fix to 1750. Ticket 2182: Keep case of axis name consistent when
 *                 creating and writing axis bounds.
+* V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -122,7 +123,7 @@
      .        slab_min(nferdims), slab_max(nferdims), tmrecax, cdrecax, dims, varid,
      .        hilim, i100, i, j, k, l, m, n, recaxvar, lorec, hirec, rectyp,
      .	      vartyp, nvdim, vdims(8), nvatts, bndstart(2), bndcount(2),
-     .        mblk1, nblks, npts, savecount, llen
+     .        mblk1, nblks, npts, savecount, llen, grid_blocks
       LOGICAL CD_GET_BOUNDS, TM_ABSTRACT_AXIS, TM_DFPEQ, 
      .        got_it, scaled, writebounds
       CHARACTER*13 TM_STRING
@@ -328,7 +329,10 @@ c      EQUIVALENCE (r100_8, r100_4)
 
 * allocate memory for missing-data
 
-            CALL GET_MEMORY( npts*4, mblk1, nblks, status )
+* COMPUTE # BLOCKS NEEDED
+            grid_blocks = ( npts*4 + mem_blk_size - 1 ) / mem_blk_size
+
+            CALL GET_MEMORY( npts*4, grid_blocks, mblk1, nblks, status )
             IF ( status .NE. merr_ok ) GOTO 5900
 
             CALL CD_GET_MISSING_FLAG (cdfid, varid, vname, .TRUE., 

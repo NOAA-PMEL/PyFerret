@@ -49,6 +49,7 @@
 *      2/00 *sh* bug fix - initialize mr_grid
 * V533 7/01 *sh* - set data type
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -61,11 +62,13 @@
 	INTEGER	size, mr, status
 
 * internal variable declarations
-	INTEGER start_block, num_blocks, idim
+	INTEGER start_block, num_blocks, grid_blocks, idim
 
 * --- end of introductory code ---
 
-	CALL GET_MEMORY( size, start_block, num_blocks, status )
+* COMPUTE # BLOCKS NEEDED
+	grid_blocks = ( size + mem_blk_size - 1 ) / mem_blk_size
+	CALL GET_MEMORY( size, grid_blocks, start_block, num_blocks, status )
 
 * get a free slot in the memory variable table
 	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )

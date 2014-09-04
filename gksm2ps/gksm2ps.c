@@ -109,7 +109,6 @@ int     scaling_completed = 0;          /* 1 when plot has been scaled to page *
 int     absolute_scale = 0;             /* 1 when wsvp size plot is desired */
 int     color_lines = 0;                /* 1 when color is used for lines */
 int     rename_file = 1;                /* 1 if input files will be renamed */
-int     thicken = 2;                    /* 1 to thicken the lines 1->2, 2->4, 3->6*/
 int     use_cmyk = 0;                   /* 1 if PS output should be CMYK rather than RGB  *kob* 11/02 */
 
 int	xborder = 18;			/* border on paper */
@@ -120,8 +119,6 @@ int	pgwidth  = 612;			/* 8.5" page width (points) */
 int	pgheight = 792;			/* 11" page height (points) */
 
 int marksizemult = 4;
-
-float wid;
 
 enum    wktype {cps, phaser};           /* Output graphics device */
 enum    wktype device = cps;
@@ -433,7 +430,6 @@ initpage ()		/* Initializes PostScript */
    fprintf(ps_output, "/ct 256 array def\n" );
    fprintf(ps_output, "\n" );
    fprintf(ps_output, "%% begin the plot\n" );
-   fprintf(ps_output, "1 setlinejoin\n" );
    fprintf(ps_output, "1 lw\n" );
    fprintf(ps_output, "/Courier findfont setfont\n\n" );
    fprintf(ps_output, "  ct 0 [1.000000 1.000000 1.000000] put\n" );
@@ -448,12 +444,7 @@ out_line_type( index )		/* output the line type */
 out_line_width( width )		/* output the line width */
    float width;
 {
-   wid = width;
-   if (thicken!=1)
-   {
-	   wid = thicken*width;
-   }
-   fprintf(ps_output, "%f lw\n", wid );
+   fprintf(ps_output, "%f lw\n", width );
 }
 
 out_mark_type( index )		/* output the marker type */
@@ -1100,7 +1091,7 @@ main (argc, argv)
       if (strcmp(argv[i], "-H")==0 || strcmp(argv[i], "-h")==0 || strcmp(argv[i], "-?")==0 || strcmp(argv[i], "-help")==0) {
 	 printf("gksm2ps: Send PostScript translation of GKSM metafiles to a file\n");
 	 printf("  usage: gksm2ps [-h] [-p landscape||portrait] [-l ps||cps] [-d cps||phaser] \\\n");
-	 printf("         [-X || -o <ps_output_file>] [-R] [-a] [-g WxH+X+Y] [-v] [-C] [-t] file(s)\n\n");	
+	 printf("         [-X || -o <ps_output_file>] [-R] [-a] [-g WxH+X+Y] [-v] [-C] file(s)\n\n");	
 	 printf("     -h: print this help message\n");
 	 printf("     -p: page orientation, landscape or portrait (default fits to page)\n");
 	 printf("     -l: line styles,  ps == monochrome (default), cps == color\n");
@@ -1111,8 +1102,7 @@ main (argc, argv)
 	 printf("     -a: make hard copy the size of the original plot (default fits to page)\n");
 	 printf("     -g: WxH+X+Y  WIDTH, HEIGHT, XOFFSET, & YOFFSET in points (72 pts = 1 in)\n");
 	 printf("     -v: list version number of gksm2ps and do nothing else\n");
-	 printf("     -C: Output a CMYK postscript file (default is RGB)\n");
-	 printf("     -t: Thicken all lines by integer factor specified: 1, 2,.. (default=2) \n\n");
+	 printf("     -C: Output a CMYK postscript file (default is RGB)\n\n");
 
 	 printf("file(s): The specific metafile(s) to be translated.\n\n");
 	 exit(0);
@@ -1165,15 +1155,6 @@ main (argc, argv)
 
       else if ( !strcmp(argv[i], "-R")) {
          rename_file = 0;
-      }
-
-      else if ( !strcmp(argv[i], "-t")) {
-		 i++;
-		 if (i < argc)
-		 {
-		 if (strstr (argv[i], "-")) i--;
-		 else if (atoll(argv[i]) > 0) thicken = atoll(argv[i]);
-		 }
       }
 
       else if ( !strcmp(argv[i], "-version") || !strcmp(argv[i], "-v") ) {

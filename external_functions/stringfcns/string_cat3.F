@@ -81,7 +81,6 @@
 
       INTEGER id
 
-* Single precision Ferret: string arg and result need to be twice the length.
       INTEGER strdf
 #ifdef double_p
       PARAMETER (strdf = 1)

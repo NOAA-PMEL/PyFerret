@@ -1,0 +1,22 @@
+! err69_write_attribute.jnl
+! Bug 1863
+
+use gt4d011.cdf
+sh grid temp
+let a = temp[x=@ave,y=@ave,L=1]
+
+! The attribute we ask not to write is not written for this variable
+can att/output (`a,r=zaxis`).point_spacing
+save/q/clob/file="a.nc"/bounds a
+sp ncdump -h a.nc | grep "`a,r=zaxis`"
+
+! But it was being written for this one. It should not.
+let b =  temp[x=@ave,y=@ave,L=1,d=1]
+save/q/clob/file="a.nc"/bounds b
+sp ncdump -h a.nc | grep "`b,r=zaxis`"
+
+! A variable that depends on more than one dataset.
+use coads_climatology
+let c = temp[x=@ave,y=@ave,L=1,d=1] + sst[x=@ave,y=@ave,t=@ave,d=2]
+save/q/clob/file="a.nc"/bounds c
+sp ncdump -h a.nc | grep  "`c,r=zaxis`"

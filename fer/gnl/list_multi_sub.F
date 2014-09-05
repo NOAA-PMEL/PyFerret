@@ -84,6 +84,7 @@
 *                    is that they'll be read into some other software e.g.
 *                    spreadsheets, so the user wants the missing flags in there.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V691+ *acm* 9/14 Ticket 2199: for string variables don't list a BAD FLAG in the header.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -352,7 +353,9 @@
 
 	   bad_buff = ' '
 	   blen = 1
-           IF (do_comma_del .OR. do_tab_del) THEN
+! do not write a bad-flag notation for string variables.
+           IF ((do_comma_del .OR. do_tab_del) .AND. 
+     .         (mr_type(mr_list(ivar)) .NE. ptype_string)) THEN
              bad_buff = '   BAD FLAG : '// 
      .                  TM_FMT(bad(ivar),prec_digits,16,blen)
              blen = blen + 14

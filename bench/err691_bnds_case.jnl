@@ -6,3 +6,5 @@ def ax/t tax = {1,2,4,8}
 let tval = t[gt=tax]
 can mode upcase_output
 save/clob/file=tval.nc tval
+
+set mode/last upcase_output

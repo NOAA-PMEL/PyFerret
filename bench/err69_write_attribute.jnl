@@ -1,0 +1,62 @@
+! err69_write_attribute.jnl
+! Bug 1863
+
+use gt4d011.cdf
+sh grid temp
+let a = temp[x=@ave,y=@ave,L=1]
+
+! The attribute we ask not to write is not written for this variable
+can att/output (`a,r=zaxis`).point_spacing
+save/q/clob/file="a.nc"/bounds a
+sp ncdump -h a.nc | grep -i "`a,r=zaxis`"
+
+! But it was being written for this one. It should not.
+let b =  temp[x=@ave,y=@ave,L=1,d=1]
+save/q/clob/file="a.nc"/bounds b
+sp ncdump -h a.nc | grep -i "`b,r=zaxis`"
+
+! A variable that depends on more than one dataset.
+use coads_climatology
+let c = temp[x=@ave,y=@ave,L=1,d=1] + sst[x=@ave,y=@ave,t=@ave,d=2]
+save/q/clob/file="a.nc"/bounds c
+sp ncdump -h a.nc | grep -i  "`c,r=zaxis`"
+
+can data/all
+can var/all
+
+! When there are two datasets with the same axis name but different depths,
+! the second axis name is changed internally.
+
+DEFINE AXIS/z/depth zzdep = {0,10,20,30,50,75,100,150,200,300,400,600,800,1000,1200,1500,2000,3000,4000,5000}
+
+LET temp = z[gz=zzdep]
+save/clobber/file=aa.nc temp
+save/clobber/keep/file=bb.nc temp[k=1:15]
+can var/all
+can axis zzdep
+
+use aa
+use bb
+set data 1
+
+show att (`temp,r=zaxis`)
+
+let a = temp[d=1,x=@ave,y=@ave]
+can att/output (`a,r=zaxis`).point_spacing
+save/clobber/file=a.nc a
+sp ncdump -h a.nc | grep -i `a,r=zaxis`
+
+set data 2
+let a = temp[d=2,x=@ave,y=@ave]
+can att/output (`a,r=zaxis`).point_spacing
+save/clobber/file=a.nc a
+sp ncdump -h a.nc | grep -i `a,r=zaxis`
+
+let a = temp[d=2,gz=temp[d=1]]
+
+can att/output (`a,r=zaxis`).point_spacing
+
+save/clobber/file=a.nc a
+sp ncdump -h a.nc | grep -i `a,r=zaxis`
+
+sp rm aa.nc bb.nc

@@ -47,6 +47,7 @@
 * V533   6/01 *sh* - use CGRID_SIZE_DELTA to allow mem vars with delta values
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -60,19 +61,27 @@
 
 * internal variable declarations:
 	INTEGER	CGRID_SIZE_DELTA,
-     .		grid_size, start_block, num_blocks
+     .		grid_size, start_block, num_blocks, grid_blocks
+	REAL R_CGRID_SIZE_DELTA, rgrid_size
 
 * amount of storage space required
-	grid_size = CGRID_SIZE_DELTA( cx )
+* Compute as a real - grid sizes may overflow integer storage.
+
+	rgrid_size = R_CGRID_SIZE_DELTA( cx )  ! as a real
+
 * ... note: later we will want an array of word sizes indexed by type
 #ifdef double_p
-	IF (cx_type(cx) .EQ. ptype_string) grid_size = grid_size
+	IF (cx_type(cx) .EQ. ptype_string) rgrid_size = rgrid_size
 #else
-	IF (cx_type(cx) .EQ. ptype_string) grid_size = grid_size*2 ! 8 byte ptr
+	IF (cx_type(cx) .EQ. ptype_string) rgrid_size = rgrid_size*2 ! 8 byte ptr
 #endif
 
 * claim the storage space
-	CALL GET_MEMORY( grid_size, start_block, num_blocks, status )
+
+* COMPUTE # BLOCKS NEEDED
+	grid_blocks = ( INT(rgrid_size) + mem_blk_size - 1 ) / mem_blk_size
+
+	CALL GET_MEMORY( INT(rgrid_size), grid_blocks, start_block, num_blocks, status )
 	IF ( status .NE. ferr_ok ) RETURN
 
 * catalog it in the memory variable table

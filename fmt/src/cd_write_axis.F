@@ -105,6 +105,9 @@
 *                 dimensions that are not coordinate variables
 * V69+ 7/14 *acm* Further fix to 1750. Ticket 2182: Keep case of axis name consistent when
 *                 creating and writing axis bounds.
+* V69+ 7/14 *acm* Ticket 1863: When output-flag was reset on an attribute, wasn't being applied
+*                 if the variable wasn't associated with the dataset where that axis lives.
+
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -158,7 +161,7 @@
       INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, cal_id, varid,
      .        llen, vartype, nvdims, nvatts, iatt, attype, attlen,
      .        attoutflag, istat, maxlen, vdims(8), newid, all_outflag,
-     .        attid, dset_num, outtype, axis_packed, dlen, vlen
+     .        attid, dset_num, outtype, axis_packed, dlen, vlen, iset
       REAL vals(100)
 
 !      LOGICAL condensed
@@ -185,11 +188,28 @@
       name = CD_AXIS_NAME( dset_num, grid, idim, nlen )
       IF (keepax_flag .EQ. 1)  name = CD_AXIS_OUTNAME( dset_num, grid, idim, nlen )
       name_in = name
+      
+      name_from_grid = .FALSE.
+
+* If the datset is user-variable or unknown, see if the axis is from a dataset. The
+* OUTFLAG information for writing attributes is in the datset linked-list structure.
+
+      IF (dset .LE. 0) THEN
+         buff2  = name
+         DO 50 iset = 1, maxdsets
+	    IF (ds_name(iset) .NE. char_init1024) THEN
+	       CALL CD_GET_VAR_ID (iset, buff2, varid, status)
+	       IF (status .EQ. merr_ok) THEN
+	          dset_num = iset
+		  GOTO 60
+	       ENDIF
+	    ENDIF
+   50 	CONTINUE
+   60 	CONTINUE
+      ENDIF
 
       npts = line_dim(iaxis)
       abstract = TM_ABSTRACT_AXIS( iaxis )
-      
-      name_from_grid = .FALSE.
 
 * If mode upcase_output is set, then upcase both name and name_in which is 
 * being stored for later use.

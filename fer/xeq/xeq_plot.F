@@ -128,6 +128,8 @@
         include 'LINES.INC'
         include 'gkscm1_inc.decl'
         include 'GKSCM1.INC'    ! wsid
+        include 'cont_inc.decl' ! with iautoc and nlev
+        include 'CONT.INC'
 	
 * calling argument declarations:
 	REAL	memory( mem_blk_size, max_mem_blks )
@@ -592,6 +594,8 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
      .				memory( 1, ax2_start ),
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
+	
+	IF (need_histo) iautoc = 1
 
 c when it's an overlay, 'No Valid Data' is part of the plot key,
 c done in plot_set_up.

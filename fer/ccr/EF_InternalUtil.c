@@ -90,6 +90,7 @@
 *					 definition of macro DFTYPE in ferret.h
 *      *kms*  3/12 Add E and F dimensions 
 *      *acm*  6/14 New separate function for DSG files 
+*      *acm*  9/14 Make DATE1900 accept an array of date strings, returning an array of coordinates
 */
 
 
@@ -646,7 +647,6 @@ void FORTRAN(rect_to_curv_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *
                                        DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(date1900_init)(int *);
-void FORTRAN(date1900_result_limits)(int *);
 void FORTRAN(date1900_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(days1900toymdhms_init)(int *);
@@ -3823,7 +3823,6 @@ else if ( !strcmp(name,"rect_to_curv_compute_") ) return (void *)FORTRAN(rect_to
 
 /* date1900.F */
 else if ( !strcmp(name,"date1900_init_") ) return (void *)FORTRAN(date1900_init);
-else if ( !strcmp(name,"date1900_result_limits_") ) return (void *)FORTRAN(date1900_result_limits);
 else if ( !strcmp(name,"date1900_compute_") ) return (void *)FORTRAN(date1900_compute);
 
 /* days1900toymdhms.F */

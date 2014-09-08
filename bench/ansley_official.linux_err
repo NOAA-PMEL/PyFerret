@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 52576367 Aug  8 09:43 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 52577970 Sep  4 13:50 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2189
+Note: catch up to changes 9/4/2014
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Fri Aug 8 09:49:39 PDT 2014
+Beginning at Thu Sep 4 13:54:55 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -579,9 +579,10 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: request exceeds memory setting: A negative number of words were requested.
+ **ERROR: request exceeds memory setting: 24000 Mwords were requested.
 load num
- *** NOTE: The current grid is most likely too large
+ *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+ *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
@@ -845,9 +846,6 @@ Replacing definition of axis X10
  *** NOTE: Axis is in use by grid G10X5
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
 
 Bailing out of external function "eof_space":
 	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
@@ -857,6 +855,9 @@ Bailing out of external function "eof_stat":
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3676,8 +3677,6 @@ list {5*3+1, 2+3}
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
 Replacing definition of axis TAX
  LISTing to file tval.nc
  PERMANENT data cleared from memory
@@ -3686,6 +3685,23 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file out.xml
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAXIS
+ **ERROR: request exceeds memory setting: 2369 Mwords were requested.
+load bigvar
+ *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+ *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
+Replacing definition of axis LONGTIME
+ **ERROR: request exceeds memory setting: 4735 Mwords were requested.
+load bigvar
+ *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+ *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3700,6 +3716,18 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
 Replacing definition of axis X2
 Replacing definition of axis Y2
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ **ERROR: illegal limits: X axis limits don't match variable def'n: A
+          Are you giving explicit limits when SET REGION would suffice ?
+list f
+ *** NOTE: Not deleted: ENSEMBLE
+ *** NOTE: Axis is in use by grid (G091)
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3791,4 +3819,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Aug 8 09:51:34 PDT 2014
+Ended at Thu Sep 4 13:57:15 PDT 2014

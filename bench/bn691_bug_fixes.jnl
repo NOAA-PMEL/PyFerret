@@ -43,3 +43,12 @@ GO err69_long_string_to_xml
 
 GO bn_reset
 GO err69_fill_trans
+
+GO bn_reset
+GO err69_load_big_grid
+
+GO bn_reset
+GO err69_write_attribute
+
+GO bn_reset
+GO err69_isready_status_errmsgs

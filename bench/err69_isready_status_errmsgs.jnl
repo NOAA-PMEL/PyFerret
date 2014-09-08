@@ -1,0 +1,15 @@
+! err69_isready_status_errmsgs
+! ticket 2197
+!  RETURN=isready or RETURN=status caused error reporting
+!  to go silent.
+
+set mode ignore
+list a
+say `a,return=isready`
+say `c,return=status`
+list a
+list b
+shade a
+
+set mode/last ignore
+

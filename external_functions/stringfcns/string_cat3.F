@@ -4,6 +4,7 @@
 * Ansley Manke
 * May 2006
 *
+*
 * Returns concatenation of 3 strings
 *
 * In this subroutine we provide information about
@@ -81,7 +82,6 @@
 
       INTEGER id
 
-* Single precision Ferret: string arg and result need to be twice the length.
       INTEGER strdf
 #ifdef double_p
       PARAMETER (strdf = 1)

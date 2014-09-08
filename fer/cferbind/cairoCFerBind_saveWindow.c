@@ -221,7 +221,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
             allannos[j] = '\n';
         }
         /* Remove the last newline */
-	allannos[j-1] = '\0';
+        allannos[j-1] = '\0';
         /* padding and pen width in points */
         padding = 12.0;
         penwidth = 2.0;
@@ -254,8 +254,8 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
             return 0;
         }
         /* Create the Pango layout for the annotations */
-	annolayout = pango_cairo_create_layout(annocontext);
-	pango_layout_set_width(annolayout, (int) (PANGO_SCALE * annowidth + 0.5));
+        annolayout = pango_cairo_create_layout(annocontext);
+        pango_layout_set_width(annolayout, (int) (PANGO_SCALE * annowidth + 0.5));
         pango_layout_set_wrap(annolayout, PANGO_WRAP_WORD_CHAR);
         pango_layout_set_markup(annolayout, allannos, j-1);
         /* Apply the annotations to this cairo surface */

@@ -6,6 +6,7 @@
 # *sh* 2/02 -- updated to add expndi_by_z
 # *acm*2/02 -- cmprsi_by has been replaced by family of compress_by
 #              functions, which are internally linked.
+# acm* 4/13 -- new expndi_by_m_counts
 #
 
 #
@@ -37,7 +38,7 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 #
 
 # all:	expndi_by.so expndi_by_z.so expndi_by_t.so cmprsi_by.so expndi_by_z_counts.so 
-all:	
+all:	expndi_by_m_counts.so 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

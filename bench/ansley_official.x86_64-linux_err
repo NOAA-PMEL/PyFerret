@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 56423847 Aug 22 10:11 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 53360450 Sep  8 10:39 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: after fix to ticket 2196 @FLN
+Note: fix ticket 1863: write attributes
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Fri Aug 22 10:12:30 PDT 2014
+Beginning at Mon Sep 8 10:44:09 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -579,9 +579,10 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: request exceeds memory setting: A negative number of words were requested.
+ **ERROR: request exceeds memory setting: 24000 Mwords were requested.
 load num
- *** NOTE: The current grid is most likely too large
+ *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+ *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
@@ -845,9 +846,6 @@ Replacing definition of axis X10
  *** NOTE: Axis is in use by grid G10X5
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
 
 Bailing out of external function "eof_space":
 	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
@@ -857,6 +855,9 @@ Bailing out of external function "eof_stat":
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3518,6 +3519,14 @@ Replacing definition of axis ZAX
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ **ERROR: unknown defining grid: G=NOEXIST
+list b
+ **ERROR: command syntax: 45S
+list c
+ **ERROR: command syntax: ,
+list d
+ **ERROR: command syntax: P=1
+list e
  **ERROR: illegal limits: X axis limits don't match variable def'n: A
           Are you giving explicit limits when SET REGION would suffice ?
 list f
@@ -3676,8 +3685,6 @@ list {5*3+1, 2+3}
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
 Replacing definition of axis TAX
  LISTing to file tval.nc
  PERMANENT data cleared from memory
@@ -3691,6 +3698,37 @@ Replacing definition of axis TAX
  LISTing to file out.xml
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAXIS
+ **ERROR: request exceeds memory setting: 2369 Mwords were requested.
+load bigvar
+ *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+ *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
+Replacing definition of axis LONGTIME
+ **ERROR: request exceeds memory setting: 4735 Mwords were requested.
+load bigvar
+ *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+ *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Ambiguous coordinates on X axis: TEMP[X=@AVE,Y=@AVE,L=1,D=1] + SST[X=@AVE,Y=@AVE,T=@AVE,D=2]
+ *** NOTE: Ambiguous coordinates on Y axis: TEMP[X=@AVE,Y=@AVE,L=1,D=1] + SST[X=@AVE,Y=@AVE,T=@AVE,D=2]
+ LISTing to file aa.nc
+ LISTing to file bb.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: variable unknown or not in data set: A
+list a
+ **ERROR: variable unknown or not in data set: A
+list a
+ **ERROR: variable unknown or not in data set: B
+list b
+ **ERROR: variable unknown or not in data set: A
+shade a
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3710,11 +3748,21 @@ Replacing definition of axis Y2
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ **ERROR: unknown defining grid: G=NOEXIST
+list b
+ **ERROR: command syntax: 45S
+list c
+ **ERROR: command syntax: ,
+list d
+ **ERROR: command syntax: P=1
+list e
  **ERROR: illegal limits: X axis limits don't match variable def'n: A
           Are you giving explicit limits when SET REGION would suffice ?
 list f
  *** NOTE: Not deleted: ENSEMBLE
  *** NOTE: Axis is in use by grid (G091)
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3806,4 +3854,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Aug 22 10:14:24 PDT 2014
+Ended at Mon Sep 8 10:46:33 PDT 2014

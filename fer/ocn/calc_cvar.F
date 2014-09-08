@@ -50,6 +50,7 @@
 * V312: 5/94 - array "memory" as a calling argument
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 * V685 *acm*  6/13 Increase nominal length of abstract axis
+* V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
 
 * calling arguments:
 * inp	cx	- "context" of the desired result (variable,data set and region)
@@ -57,7 +58,6 @@
 *			  component variables of the calculation
 * out	mres	- memory variable number of requested result
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -67,16 +67,6 @@
 	include	'xcalc_vars.cmn'
 	include	'xprog_state.cmn'
 	include	'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INSTANCE_TABLE.PARM'
-	INCLUDE	'FERRET_CMN:GFDL.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XCALC_VARS.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 	INTEGER		max_components
 	PARAMETER     ( max_components = 20 )
@@ -90,7 +80,7 @@
 	INTEGER		CGRID_SIZE, MGRID_SIZE, CGRID_AXIS, MR_DIM_LEN,
      .			nmr, mxtra, cx_xtra, cx_lrg, grid_size, temp_grid_size,
      .			var, ncomp, icomp, iend, k, i, idim, mr, fp, grid,
-     .			temp_start_blk, temp_nblks, dlo, dhi,
+     .			temp_start_blk, temp_nblks, dlo, dhi, grid_blocks,
      .			loest_ss, hiest_ss, res_ss_lo(4), res_ss_hi(4)
 	REAL		dt
 	REAL*8		TM_WORLD
@@ -561,7 +551,10 @@
  400	cx_variable( cx_xtra ) = pvcoe
 	CALL RE_ASSIGN_VARIABLE( mxtra, cx_xtra )
 	temp_grid_size = MGRID_SIZE( mrl(1) )	! working space for "AIR"
-	CALL GET_MEMORY( temp_grid_size,temp_start_blk,temp_nblks,status )
+
+* COMPUTE # BLOCKS NEEDED
+	grid_blocks = ( temp_grid_size + mem_blk_size - 1 ) / mem_blk_size
+	CALL GET_MEMORY( temp_grid_size, grid_blocks,temp_start_blk,temp_nblks,status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 	CALL EXPL_CORIOLIS( 
      .		memory( 1, mr_blk1( mrl(1) ) ), mrl(1)	, ! u
@@ -576,7 +569,8 @@
  410	cx_variable( cx_xtra ) = pucoe
 	CALL RE_ASSIGN_VARIABLE( mxtra, cx_xtra )
 	temp_grid_size = MGRID_SIZE( mrl(1) )	! working space for "AIR"
-	CALL GET_MEMORY( temp_grid_size,temp_start_blk,temp_nblks,status )
+	grid_blocks = ( temp_grid_size + mem_blk_size - 1 ) / mem_blk_size
+	CALL GET_MEMORY( temp_grid_size, grid_blocks,temp_start_blk,temp_nblks,status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 	CALL EXPL_CORIOLIS( 
      .		memory( 1, mr_blk1( mrl(1) ) ), mrl(1)	, ! u

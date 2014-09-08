@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 13 Aug 25 15:54 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.925
+lrwxrwxrwx 1 ksmith tmap 13 Sep  8 14:07 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.925
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug build of Ferret on RHEL5-64
@@ -223,6 +223,7 @@ Benchmark scripts that will be run:
    bn_center_key_labels.jnl
    bn_wgt_transform.jnl
    bn_show_outfile.jnl
+   bn_date1900_array.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -239,7 +240,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Aug 25 16:10:20 PDT 2014
+Beginning at Mon Sep  8 14:08:23 PDT 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -796,9 +797,10 @@ list v2-and-minus[i=5:15@ddc]
  Cached data cleared from memory
  LISTing to file permutedBinaryTest.dat
  LISTing to file junk.dat
- **ERROR: request exceeds memory setting: A negative number of words were requested.
+ **ERROR: request exceeds memory setting: 24000 Mwords were requested.
 load num
- *** NOTE: The current grid is most likely too large
+ *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+ *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
@@ -3345,6 +3347,14 @@ plot/i=1:100/ribbon/COLOR sin(i/6),0.6*sin(i/7)
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ **ERROR: unknown defining grid: G=NOEXIST
+list b
+ **ERROR: command syntax: 45S
+list c
+ **ERROR: command syntax: ,
+list d
+ **ERROR: command syntax: P=1
+list e
  **ERROR: illegal limits: X axis limits don't match variable def'n: A
           Are you giving explicit limits when SET REGION would suffice ?
 list f
@@ -3512,6 +3522,37 @@ list {5*3+1, 2+3}
  LISTing to file out.xml
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAXIS
+ **ERROR: request exceeds memory setting: 2369 Mwords were requested.
+load bigvar
+ *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+ *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
+Replacing definition of axis LONGTIME
+ **ERROR: request exceeds memory setting: 4735 Mwords were requested.
+load bigvar
+ *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+ *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Ambiguous coordinates on X axis: TEMP[X=@AVE,Y=@AVE,L=1,D=1] + SST[X=@AVE,Y=@AVE,T=@AVE,D=2]
+ *** NOTE: Ambiguous coordinates on Y axis: TEMP[X=@AVE,Y=@AVE,L=1,D=1] + SST[X=@AVE,Y=@AVE,T=@AVE,D=2]
+ LISTing to file aa.nc
+ LISTing to file bb.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: variable unknown or not in data set: A
+list a
+ **ERROR: variable unknown or not in data set: A
+list a
+ **ERROR: variable unknown or not in data set: B
+list b
+ **ERROR: variable unknown or not in data set: A
+shade a
 *** Running test: bn_append_dsg.jnl
  Cached data cleared from memory
 rm: cannot remove `test_save_dsg.nc': No such file or directory
@@ -3530,9 +3571,19 @@ rm: cannot remove `test_save_dsg.nc': No such file or directory
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ **ERROR: unknown defining grid: G=NOEXIST
+list b
+ **ERROR: command syntax: 45S
+list c
+ **ERROR: command syntax: ,
+list d
+ **ERROR: command syntax: P=1
+list e
  **ERROR: illegal limits: X axis limits don't match variable def'n: A
           Are you giving explicit limits when SET REGION would suffice ?
 list f
+*** Running test: bn_date1900_array.jnl
+ Cached data cleared from memory
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3552,4 +3603,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Mon Aug 25 16:12:08 PDT 2014
+Ended at Mon Sep  8 14:10:20 PDT 2014

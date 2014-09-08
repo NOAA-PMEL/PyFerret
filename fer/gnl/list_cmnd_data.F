@@ -87,6 +87,7 @@
 *                    start each row labelling the coordinate values. (bug 1273)
 * V650: *acm* 2/10 - Clean up line with coordinates on listings with tabs/commas
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V691+ *acm* 9/14 Ticket 2199: for string variables don't list a BAD FLAG in the header.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -268,6 +269,7 @@
 	     line_buff = ' '
 	     WRITE ( line_buff, '(1PG14.7)' ) cx_bad_data(cx)
 	     line_buff = TM_FMT(cx_bad_data(cx),prec_digits,16,vlen)
+	     IF (itsa_string) line_buff = ' '
 	     CALL SPLIT_LIST( pttmode_explct, list_lun,
      .			'             BAD FLAG : '//
      .		        line_buff, 38 )

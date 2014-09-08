@@ -186,6 +186,7 @@
 * V690 *sh* 1/14 Add SHOW VAR/SIGMA
 * V691+*acm* 8/14 Fix ticket 2188: SHOW MEMORY should say memory words are 8 bytes.
 * V691+ 8/14 *acm* Fix ticket 2194: SHOW with /OUTFILE and not /XML. 
+* V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
 
         IMPLICIT NONE
 
@@ -287,10 +288,10 @@
      .          cache_size, cache_nelems, cache_preemption,
      .          sho_file, idim, ndims, nvars, ngatts, recdim, npts,
      .          vartype, outflag, num_clim_1, num_clim_n,
-     .          base_cx, base_isp
+     .          base_cx, base_isp, grid_blocks
         INTEGER saved_num_indices, saved_index_list(max_uvar),
      .                             arr_buff(max_uvar)
-	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p
+	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p, rsize
 	CHARACTER EXPR_NAME*8, TM_FMT*12, VAR_CODE*128,
      .		default*10, show_str*2048, arg*128, name*128, argsym*120
 	CHARACTER	varatt*641, varname*512, attname*128,
@@ -907,7 +908,12 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	   ELSE
 	      arg = unspecified_name4
 	   ENDIF
-	   CALL GET_MEMORY( max_mrs, v1_blk1, v1_nblks, status )
+	   rsize = FLOAT(max_mrs)
+	   
+* COMPUTE # BLOCKS NEEDED
+	   grid_blocks = ( INT(rsize) + mem_blk_size - 1 ) / mem_blk_size
+
+	   CALL GET_MEMORY( INT(rsize), grid_blocks, v1_blk1, v1_nblks, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   CALL SHOW_DIAG_VARS( arg, memory(1,v1_blk1) )
 	   CALL FREE_MEMORY( v1_blk1, v1_nblks )

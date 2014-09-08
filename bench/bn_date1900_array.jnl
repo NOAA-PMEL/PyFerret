@@ -1,0 +1,18 @@
+! bn_date1900_array.jnl
+! Let date1900 accept an array of date strings, returning a list
+! of coordinate values, days since 1-jan-1900.
+
+
+sh func/details date1900
+
+! Function always worked just on one date string.
+list date1900("01-jan-2001")
+
+
+! Now the argument can be an array
+let datestrings = {"01-jan-2001", "02-jan-2001", "30-Jul-2002"}
+list date1900(datestrings)
+
+def axis/t/units=days/t0=1-jan-1900 taxis = date1900(datestrings)
+list t[gt=taxis]
+

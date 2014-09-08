@@ -73,6 +73,7 @@
 * v552  4/03 *acm* up VAR_TRANS to 150 characters (variables are up to 128, plus
 *                  space for the transformation specifier)
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -96,7 +97,7 @@
      .		TM_HAS_STRING
 	INTEGER	TM_LENSTR1, CGRID_SIZE, STR_UPCASE,
      .		CX_DIM_LEN,
-     .		mblk1, nblks, col_mblk1, col_nblks, slen,
+     .		mblk1, nblks, grid_blocks, col_mblk1, col_nblks, slen,
      .		ssorww(4), out_lun,
      .		i, flen, fmlen, npts, cx, ndim, dim(4), cxpts(2:5)
 	REAL	missing
@@ -138,17 +139,17 @@
 
 * Decode the specification of subscript or world coordinate
 * /OPT2 = "C" (all coordinates) or "I" (all indices) or "CCIN", ...
-	DO 200 i = 1, 4
+	DO 200 i = 1, nferdims
  200	ssorww(i) = by_ww			! default to "C"
 	IF ( opt2_string .NE. ' ' ) THEN
 	   i = STR_UPCASE( opt2_string, opt2_string )
 	   slen = TM_LENSTR1( opt2_string )
 	   IF ( slen.NE.1 .AND. slen.NE.4 ) GOTO 5400
 	   IF ( slen.EQ.1 ) THEN     ! replicate single char shorthand
-	      DO 210 i = 2, 4
+	      DO 210 i = 2, nferdims
  210	      opt2_string(i:i) = opt2_string(1:1)
 	   ENDIF
-	   DO 220 i = 1, 4
+	   DO 220 i = 1, nferdims
 	      IF ( opt2_string(i:i) .EQ. 'C' ) THEN
 	         ssorww(i) = by_ww
 	      ELSEIF ( opt2_string(i:i) .EQ. 'I' ) THEN
@@ -170,13 +171,13 @@
 * make sure the field of data provided doesn't create ambiguities on the
 * unsampled axes  (i.e. multiple points provided but no sampling coordinates)
 	cx = cx_list(1)
-	DO 300 i = 1, 4
+	DO 300 i = 1, nferdims
 	   IF ( ssorww(i) .EQ. by_nothin
      .	   .AND. CX_DIM_LEN(i, cx) .GT. 1 ) GOTO 5500
  300	CONTINUE	
 
 * make sure there is no attempt to sample on a normal axis
-	DO 400 i = 1, 4
+	DO 400 i = 1, nferdims
 	   IF ( ssorww(i) .NE. by_nothin
      .	   .AND. cx_lo_ss(cx,i) .EQ. unspecified_int4 ) GOTO 5700
  400	CONTINUE	
@@ -197,13 +198,20 @@
 	flen = TM_LENSTR1( fname )
 	fmlen = TM_LENSTR1( fmt )
 
-* allocate memory for consolidated 4D coordinates
-	CALL GET_MEMORY( npts*4, mblk1, nblks, status )
+* allocate memory for consolidated 6D coordinates
+
+
+* COMPUTE # BLOCKS NEEDED
+ 
+	grid_blocks = ( npts*nferdims + mem_blk_size - 1 ) / mem_blk_size
+
+	CALL GET_MEMORY( npts*nferdims, grid_blocks, mblk1, nblks, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * allocate memory for output record buffer if needed
 	IF ( columns .GT. 0 ) THEN
-	   CALL GET_MEMORY( columns, col_mblk1, col_nblks, status )
+	   grid_blocks = ( columns + mem_blk_size - 1 ) / mem_blk_size
+	   CALL GET_MEMORY( columns, grid_blocks, col_mblk1, col_nblks, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	ELSE
 	   col_mblk1 = 1	! dummy, unused

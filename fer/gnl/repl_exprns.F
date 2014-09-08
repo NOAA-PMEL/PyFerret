@@ -105,6 +105,9 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V684 *acm* 12/12 Add data type of DOUBLE for return=dtype
 * V685 *sh*  11/13 Add return=status and return=ready
+* V69+ *acm*  9/14 Ticket 2197. After return=status and return=ready need to unset the
+*                  flag dependency_tree_mode to turn regular error reporting back on.
+
 
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
@@ -134,7 +137,7 @@
 
 * internal variable declarations:
 	LOGICAL   need_formatting, zero_fill, coordvar,
-     .            do_err, do_eval, get_ready
+     .            do_err, do_eval, get_ready, was_dep
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
      .		  FIND_DSET_NUMBER, str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i2, use_digits, true_end,
@@ -344,6 +347,7 @@
 	      get_ready = repl(1:4) .EQ. 'ISRE'
 	      CALL GET_DEPENDENCY_STATUS(memory, cmnd(istart:iend),
      .					 repl, str_len, status) 
+	      CALL EXIT_DEPENDENCY_MODE
               IF (status.NE. ferr_ok) GOTO 5050
 	      IF (get_ready) THEN
 *  return=READY gives merely a 1 or 0 
@@ -816,8 +820,10 @@
            lencmnd = lencmnd - ((true_end-istart+3) - str_len)
         ENDIF
 
+
 * successful translation of a grave-accented expression
  1000	did_sub = .TRUE.
+
 	RETURN
 
 * error exits

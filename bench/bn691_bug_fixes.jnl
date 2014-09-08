@@ -49,3 +49,6 @@ GO err69_load_big_grid
 
 GO bn_reset
 GO err69_write_attribute
+
+GO bn_reset
+GO err69_isready_status_errmsgs

@@ -218,5 +218,6 @@ bn_conventions_history.jnl
 bn_center_key_labels.jnl
 bn_wgt_transform.jnl
 bn_show_outfile.jnl
+bn_date1900_array.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

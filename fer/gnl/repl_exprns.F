@@ -107,7 +107,8 @@
 * V685 *sh*  11/13 Add return=status and return=ready
 * V69+ *acm*  9/14 Ticket 2197. After return=status and return=ready need to unset the
 *                  flag dependency_tree_mode to turn regular error reporting back on.
-
+* V69+ *acm*  9/14 Ticket 981. If the variable is a constant-array, evaluate it to get
+*                  the grid size rather than returning the nominal length.
 
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
@@ -137,14 +138,14 @@
 
 * internal variable declarations:
 	LOGICAL   need_formatting, zero_fill, coordvar,
-     .            do_err, do_eval, get_ready, was_dep
+     .            do_err, do_eval, get_ready, was_dep, const_arr_var
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
      .		  FIND_DSET_NUMBER, str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i2, use_digits, true_end,
      .		  qual_end, brkt, idim, use_width, dset, varid, 
      .            vartype, nvdims, vdims(8), nvatts, ist, ind,
      .            attype, attlen, inxt, attoutflag,outflag, fertype, 
-     .            attid, ieq, dqote, base_isp, base_cx
+     .            attid, ieq, dqote, base_isp, base_cx, cat, var
 	REAL	  result, val
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
 	CHARACTER TM_FMT*18, LEFINT*16, VAR_TITLE*(max_len),
@@ -382,6 +383,7 @@
 
                  cx = is_cx(1)	! always comes back as the first context
 
+
 * ... if the result has any axes with unknown limits then we have to do a
 *	full evaluation. This happens (only?) from grid-changing fcns that
 *	return ABSTRACT axes, on which limits may depend on data values
@@ -400,6 +402,13 @@
 	            ENDIF
  190	         CONTINUE
               ENDIF  ! `d=1,return=varnames`
+
+* If it's a constant-array variable, we'd like to return its actual size, not the
+* nominal length of the abstract axis. This should not be a performance problem.
+
+              CALL ISIT_CONST_ARR_VAR ( cx, const_arr_var, status )
+              IF (const_arr_var) CALL EVAL_EXPR ( memory, cx_last,
+     .		                     cmnd(istart:iend), apply_cx, status )
 
 	   ENDIF
 * ... RETURN= information request: "repl" contains the keyword

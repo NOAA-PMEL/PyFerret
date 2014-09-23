@@ -50,6 +50,7 @@ init_aggregate_dset.F\
 init_journal.F\
 init_memory.F\
 initialize.F\
+isit_const_arr_var.F\
 isit_coord_var.F\
 line_facts.F\
 line_facts_xml.F\

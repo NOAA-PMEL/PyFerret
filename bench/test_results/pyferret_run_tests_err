@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Sep  8 13:59 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Sep 23 13:47 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug build of PyFerret on RHEL5-64
@@ -224,6 +224,7 @@ Benchmark scripts that will be run:
    bn_wgt_transform.jnl
    bn_show_outfile.jnl
    bn_date1900_array.jnl
+   bn_spawn_size.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -240,7 +241,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Sep  8 14:02:27 PDT 2014
+Beginning at Tue Sep 23 13:49:39 PDT 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
  *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -3658,6 +3659,8 @@ list e
 list f
 *** Running test: bn_date1900_array.jnl
  Cached data cleared from memory
+*** Running test: bn_spawn_size.jnl
+ Cached data cleared from memory
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3679,4 +3682,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
  *** NOTE: the use of "SET MODE METAFILE" is deprecated;
  *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Mon Sep  8 14:07:03 PDT 2014
+Ended at Tue Sep 23 13:54:17 PDT 2014

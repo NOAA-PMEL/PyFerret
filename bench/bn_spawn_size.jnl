@@ -1,0 +1,27 @@
+! bn_spawn_size.jnl
+! Return the size of the result of a spawn, not 
+! the nominalabstract axis length.
+
+! ticket 981
+
+let files = {spawn:"ls *cdf*.jnl"}
+list files
+say `files,return=isize`
+
+! Evaluate size without loading the variable first
+let datfiles = {spawn:"ls *.dat"}
+say `datfiles,return=isize`
+
+! expression syntax
+say `{spawn:"ls xml*.jnl"},return=isize`
+list {spawn:"ls xml*.jnl"}
+
+! Test variables based on output of a spawn.
+! These already worked correctly, has a grid-changing function.
+
+LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
+say `filesets, return=isize`
+
+let files = {spawn:"ls *cdf*.jnl"}
+let name_len = strindex(files, ".sub")
+say `name_len, return=isize`

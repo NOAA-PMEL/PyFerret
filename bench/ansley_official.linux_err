@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 52577970 Sep  4 13:50 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 52579935 Sep  9 16:47 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: catch up to changes 9/4/2014
+Note: ticket 981
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Thu Sep 4 13:54:55 PDT 2014
+Beginning at Tue Sep 9 16:49:00 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3519,6 +3519,14 @@ Replacing definition of axis ZAX
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ **ERROR: unknown defining grid: G=NOEXIST
+list b
+ **ERROR: command syntax: 45S
+list c
+ **ERROR: command syntax: ,
+list d
+ **ERROR: command syntax: P=1
+list e
  **ERROR: illegal limits: X axis limits don't match variable def'n: A
           Are you giving explicit limits when SET REGION would suffice ?
 list f
@@ -3704,6 +3712,25 @@ load bigvar
  *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Ambiguous coordinates on X axis: TEMP[X=@AVE,Y=@AVE,L=1,D=1] + SST[X=@AVE,Y=@AVE,T=@AVE,D=2]
+ *** NOTE: Ambiguous coordinates on Y axis: TEMP[X=@AVE,Y=@AVE,L=1,D=1] + SST[X=@AVE,Y=@AVE,T=@AVE,D=2]
+ LISTing to file aa.nc
+ LISTing to file bb.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: variable unknown or not in data set: A
+list a
+ **ERROR: variable unknown or not in data set: A
+list a
+ **ERROR: variable unknown or not in data set: B
+list b
+ **ERROR: variable unknown or not in data set: A
+shade a
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file anew_global.nc
@@ -3721,11 +3748,21 @@ Replacing definition of axis Y2
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
  *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+ **ERROR: unknown defining grid: G=NOEXIST
+list b
+ **ERROR: command syntax: 45S
+list c
+ **ERROR: command syntax: ,
+list d
+ **ERROR: command syntax: P=1
+list e
  **ERROR: illegal limits: X axis limits don't match variable def'n: A
           Are you giving explicit limits when SET REGION would suffice ?
 list f
  *** NOTE: Not deleted: ENSEMBLE
  *** NOTE: Axis is in use by grid (G091)
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3819,4 +3856,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Sep 4 13:57:15 PDT 2014
+Ended at Tue Sep 9 16:50:55 PDT 2014

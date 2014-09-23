@@ -1223,7 +1223,7 @@ c	ENDIF
  5830	CALL ERRMSG( ferr_erreq, status, 'Cannot close file', *5000 )
  5920   slen = TM_LENSTR(buff)
         CALL ERRMSG( ferr_invalid_command, status,
-     .   'variable, axis, or attribute does not exist'//
+     .   'variable, axis, or attribute does not exist: '//
      .    buff(:slen), *5000 )
  6210	CALL ERRMSG( ferr_invalid_command, status, 'unknown axis: '//
      .		     cmnd_buff(item_start(item):item_end(item)), *5000 )

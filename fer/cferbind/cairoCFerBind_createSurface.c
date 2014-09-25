@@ -118,12 +118,6 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
             instdata->surface = NULL;
             return 0;
         }
-        /* 
-         * Set a low resolution for fallback raster images in vector drawings.
-         * We really do not want this to be used or even created.
-         */
-        if ( instdata->imageformat != CCFBIF_PNG )
-            cairo_surface_set_fallback_resolution(instdata->surface, 32.0, 32.0);
     }
 
     /* Create the Context if it does not exist */

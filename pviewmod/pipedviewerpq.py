@@ -1330,8 +1330,8 @@ class PipedViewerPQ(QMainWindow):
         except KeyError:
             if ( mybrush == Qt.NoBrush ):
                 raise ValueError( self.tr('drawPolygon called without a Brush or Pen') )
-            # Use a cosmetic Pen matching the brush
-            mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
+            # Use a "cosmetic" Pen matching the brush
+            mypen = QPen(mybrush, 1.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
         self.__activepainter.setBrush(mybrush)
         self.__activepainter.setPen(mypen)
         self.__activepainter.drawPolygon(mypolygon)
@@ -1385,8 +1385,8 @@ class PipedViewerPQ(QMainWindow):
         except KeyError:
             if ( mybrush == Qt.NoBrush ):
                 raise ValueError( self.tr('drawPolygon called without a Brush or Pen') )
-            # Use a cosmetic Pen matching the brush
-            mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
+            # Use a "cosmetic" Pen matching the brush
+            mypen = QPen(mybrush, 1.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
         self.__activepainter.setBrush(mybrush)
         self.__activepainter.setPen(mypen)
         self.__activepainter.drawRect(myrect)

@@ -139,8 +139,8 @@ grdelBool cairoCFerBind_drawPolygon(CFerBind *self, double ptsx[], double ptsy[]
         /* Fill the rectangle, but preserve the path for stroking */
         cairo_fill_preserve(instdata->context);
 
-        /* Stroke the path with a solid cosmetic line */
-        cairo_set_line_width(instdata->context, unitfactor);
+        /* Stroke the path with a solid cosmetic (one pixel width) line */
+        cairo_set_line_width(instdata->context, 1.0 * unitfactor);
         cairo_set_dash(instdata->context, NULL, 0, 0.0);
         cairo_set_line_cap(instdata->context, CAIRO_LINE_CAP_SQUARE);
         cairo_set_line_join(instdata->context, CAIRO_LINE_JOIN_BEVEL);
@@ -187,7 +187,7 @@ grdelBool cairoCFerBind_drawPolygon(CFerBind *self, double ptsx[], double ptsy[]
                   penobj->color.greenfrac, penobj->color.bluefrac);
         /* Assign the adjusted line width */
         adjwidth = penobj->width * instdata->widthfactor;
-        /* width of zero is a cosmetic pen - make it 1 pixel wide */
+        /* width of zero is a cosmetic pen - make it one pixel wide */
         if ( adjwidth == 0.0 )
             adjwidth = 1.0;
         adjwidth *= unitfactor;

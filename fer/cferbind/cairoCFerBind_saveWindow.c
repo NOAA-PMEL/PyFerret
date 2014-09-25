@@ -376,14 +376,6 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         return 0;
     }
 
-    /* 
-     * Set a low resolution for fallback raster images in vector drawings.
-     * We really do not want this to be used or even created.
-     */
-    if ( strcmp(fmtext, "PNG") != 0 ) {
-        cairo_surface_set_fallback_resolution(savesurface, 32.0, 32.0);
-    }
-
     /* Create a temporary context for this temporary surface */
     savecontext = cairo_create(savesurface);
     if ( cairo_status(savecontext) != CAIRO_STATUS_SUCCESS ) {
@@ -401,8 +393,6 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
          */
         scalefactor *= CCFB_POINTS_PER_PIXEL;
     }
-    /* Set the scale on the destination so the source will just fit. */
-    cairo_scale(savecontext, scalefactor, scalefactor);
 
     /*
      * If landscape PostScript, translate and rotate the coordinate system
@@ -432,6 +422,9 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
                                          "%%PageOrientation: Portrait");
         }
     }
+
+    /* Set the scale on the destination so the source will just fit. */
+    cairo_scale(savecontext, scalefactor, scalefactor);
 
     /* 
      * If not a transparent background, or if the alpha channel 

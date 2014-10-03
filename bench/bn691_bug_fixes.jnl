@@ -52,3 +52,9 @@ GO err69_write_attribute
 
 GO bn_reset
 GO err69_isready_status_errmsgs
+
+GO bn_reset
+GO err69_isready_status_errmsgs
+
+GO bn_reset
+GO err69_countervar_context

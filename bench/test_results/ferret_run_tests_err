@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 13 Sep  8 14:07 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.925
+lrwxrwxrwx 1 ksmith tmap 13 Oct  6 10:15 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.925
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug build of Ferret on RHEL5-64
@@ -224,6 +224,7 @@ Benchmark scripts that will be run:
    bn_wgt_transform.jnl
    bn_show_outfile.jnl
    bn_date1900_array.jnl
+   bn_spawn_size.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -240,7 +241,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Sep  8 14:08:23 PDT 2014
+Beginning at Mon Oct  6 10:33:31 PDT 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3553,6 +3554,18 @@ list a
 list b
  **ERROR: variable unknown or not in data set: A
 shade a
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: variable unknown or not in data set: A
+list a
+ **ERROR: variable unknown or not in data set: A
+list a
+ **ERROR: variable unknown or not in data set: B
+list b
+ **ERROR: variable unknown or not in data set: A
+shade a
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_append_dsg.jnl
  Cached data cleared from memory
 rm: cannot remove `test_save_dsg.nc': No such file or directory
@@ -3584,6 +3597,8 @@ list e
 list f
 *** Running test: bn_date1900_array.jnl
  Cached data cleared from memory
+*** Running test: bn_spawn_size.jnl
+ Cached data cleared from memory
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3603,4 +3618,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Mon Sep  8 14:10:20 PDT 2014
+Ended at Mon Oct  6 10:35:24 PDT 2014

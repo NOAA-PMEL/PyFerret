@@ -41,6 +41,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 * V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
+* V69+  *acm*10/14 Bug 2200: assign mr subscripts correctly
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -84,8 +85,8 @@
 	cx_hi_ss    ( cx, idim ) = unspecified_int4
         cx_by_ss    ( idim, cx ) = .TRUE.
 
-	mr_lo_ss    ( cx, idim ) = unspecified_int4
-	mr_hi_ss    ( cx, idim ) = unspecified_int4
+	mr_lo_ss    ( mr, idim ) = unspecified_int4
+	mr_hi_ss    ( mr, idim ) = unspecified_int4
 
 	cx_trans    ( idim, cx ) = trans_no_transform
 	cx_trans_arg( idim, cx ) = bad_val4

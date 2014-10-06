@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Sep 25 15:25 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+lrwxrwxrwx 1 ksmith tmap 11 Oct  6 10:59 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug build of pyferret on RHEL5-64
+Note: RUN_TESTS.sh test results for debug build of PyFerret on RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -241,7 +241,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Thu Sep 25 15:38:51 PDT 2014
+Beginning at Mon Oct  6 11:01:20 PDT 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
  *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -3628,6 +3628,18 @@ list a
 list b
  **ERROR: variable unknown or not in data set: A
 shade a
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: variable unknown or not in data set: A
+list a
+ **ERROR: variable unknown or not in data set: A
+list a
+ **ERROR: variable unknown or not in data set: B
+list b
+ **ERROR: variable unknown or not in data set: A
+shade a
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_append_dsg.jnl
  Cached data cleared from memory
 rm: cannot remove `test_save_dsg.nc': No such file or directory
@@ -3682,4 +3694,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
  *** NOTE: the use of "SET MODE METAFILE" is deprecated;
  *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Thu Sep 25 15:43:31 PDT 2014
+Ended at Mon Oct  6 11:05:52 PDT 2014

@@ -1,0 +1,11 @@
+! err69_countervar_context.jnl
+! ACM 10/3/2014
+! Ticket 2200.  Context from SET REGION should not
+! apply in named-repeat loop.  The loop would run,
+! but returned values of 0.
+
+let a = b
+set region/i=20:30
+repeat/name=b/range=1:3 (say `a`)
+
+can region

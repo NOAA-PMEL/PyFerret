@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 53432284 Oct  3 11:23 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 53432380 Oct  7 10:09 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Fixingn ticket 2200
+Note: ticaket 2203: backspace within a label with backslash(es)
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -15,14 +15,14 @@ FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go /home/users/ansley/baker/JavaSource/resources/iosp/scripts/
+FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Fri Oct 3 11:25:50 PDT 2014
+Beginning at Tue Oct 7 10:10:50 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3747,6 +3747,8 @@ shade a
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  LISTing to file anew_global.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3870,4 +3872,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Oct 3 11:27:28 PDT 2014
+Ended at Tue Oct 7 10:12:51 PDT 2014

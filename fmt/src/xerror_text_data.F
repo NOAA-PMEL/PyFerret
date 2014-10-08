@@ -157,4 +157,6 @@
      .		/'error opening remote data file                    '/,
      .	msg_regular(merr_chunk_spec-pregular)
      .		/'error specifying chunk sizes                      '/
+     .	msg_regular(merr_time_string-pregular)
+     .		/'error creating time string                        '/
 	END

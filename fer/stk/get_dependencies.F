@@ -42,6 +42,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V685+ 9/13 *sh*  
+* V692 10/14 *acm* Ticket 2204: initialize the new context before
+*                  putting info init
 
         include 'tmap_errors.parm'
         include 'tmap_dims.parm'
@@ -67,6 +69,8 @@
 	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	cx = cx_stack_ptr
+* Make the new context empty 
+	CALL INIT_EMPTY_CONTEXT ( cx )
 	cx_data_set(cx) = dset
 	cx_variable(cx) = uvar
 	cx_category(cx) = cat_user_var
@@ -95,6 +99,7 @@
 * a uvar has just been reported.  Are we done ?
  300	IF ( isp .EQ. isp_orig ) THEN
 * ... yes - clean up and go home
+	   IF (status .NE. ferr_ok) GOTO 5000
 	   IF ( cx_stack_ptr .NE. cx_orig ) WRITE (6,*) 'cx_stk_lev_crptn'
 	   RETURN
 	ELSE

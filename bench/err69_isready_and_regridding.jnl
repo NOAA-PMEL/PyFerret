@@ -1,0 +1,36 @@
+! err69_isready_and_regridding.jnl
+! Ticket 2204: A `var,return=isready` sends Ferret into a hanged 
+! state after other contexts have been defined
+
+can dat/all
+
+! create & load a file with a Gregorian time axis
+def ax/t/unit=days/t0=1-jan-1979 tax_g = {15,45,75,105,135}
+let a = t[gt=tax_g]
+save/clob/file=a.nc a
+can var a
+can ax tax_g
+use a.nc
+
+! create a variable on a Julian time axis
+def ax/edge/t=1-feb-1980:1-feb-2003/np=276/cal=julian/unit="hour"/t0=1-jan-1900 tax_j
+let b = t[gt=tax_j]
+
+! put the Gregorian data on the Julian axis
+let a2 = a
+let a2_on_b = a2[gt=b]
+
+! create a climatological axis (Julian)
+def ax/t/unit=days/t0=1-jan-0001/modulo=365.25/cal=julian tax_jc = {15.5,45.125,74.75,105.25,135.75,166.25,196.75,227.75,258.25,288.75,319.25,349.75}
+
+let b_one = missing(1+0*b,1)      !set everything to 1
+let nyr = b_one[gl=tax_jc@modsum] !# years that include each month
+
+! Execute some commands which put things into context storage
+
+say `a2_on_b,r=title`
+say `nyr[l=1]`
+
+! This got us into a weird hanged state
+IF `a2_on_b,r=isready` THEN
+ENDIF

@@ -59,6 +59,9 @@ C *acm* 10/09  Fix bug 1708: YAXIS2 call for log plots caused the tics for the
 C *acm*  5/12  Only draw the axis labels the first time the axes are made.
 C              Axes are repeated so axis lines and graticule lines are on top
 C              of other plot elements but the labels dont need to be.
+C *acm* 10/14  bug 2205. Polygon plots have extra calls because polygons can get 
+C              drawn on topof axes. This(?) causes the main label to not get 
+C              finished. For polygon plots only, draw the main label twice.
 C**
 C**    @(#)daxis.F	1.1    3/10/88
 C**
@@ -224,6 +227,7 @@ C
 C	DRAW AXIS LABELS
 C
 1000	CONTINUE
-        IF (mainlab .EQ. 1) CALL LABDRW(XF,YF,IFX,IFY)
+        IF (mainlab .GE. 1) CALL LABDRW(XF,YF,IFX,IFY,.TRUE.)
+        IF (mainlab .EQ. 2) CALL LABDRW(XF,YF,IFX,IFY,.FALSE.)
 	RETURN
 	END

@@ -1,4 +1,4 @@
-	SUBROUTINE LABDRW(XF,YF,IFX,IFY)
+	SUBROUTINE LABDRW(XF,YF,IFX,IFY,xylabels)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -48,6 +48,7 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port 
 C *acm* v552 3/03 Longer strings and changes for multi-line labels.
 * V69+  5/14 *acm* Fix for ascii font in multi-line labels, ticket 2176
+C *acm* 10/14  Fix bug 2205. See daxis.F
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'AXIS.INC'
@@ -64,6 +65,7 @@ C *acm* v552 3/03 Longer strings and changes for multi-line labels.
 	INCLUDE 'AXISL.INC'
 	INCLUDE 'AXLWID.INC'
 
+	LOGICAL xylabels
 	CHARACTER IFX*(*),IFY*(*)
         INTEGER j, lablen, numlines, slen
         REAL htnew, wid
@@ -77,6 +79,7 @@ c        line_spacing = 0.4
         lablen = 2048
 
 C	DRAW LABELS
+	IF (.NOT.xylabels) GOTO 40
 	IF(MAKEP.EQ.'VIEW')GOTO 40
 	IF(LABELY.EQ.0.OR.ITFLG.EQ.-1)GOTO 20
 

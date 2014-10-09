@@ -91,7 +91,6 @@
 * V6.5  3/10 *acm* When re-plotting axes, do not redraw the main label.
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
-C *acm* 10/14  bug 2205. See daxis.F
 *
 *****************************************************
 
@@ -207,7 +206,6 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 	ENDIF
 
 	mainlab = 1  ! Flag: Draw the main label in calls to DAXIS
-	IF(MAKEP.EQ.'FILLPOL' .OR. MAKEP.EQ.'POLYGON') mainlab = 2
 
 	IF(((MAKEP.EQ.'CONTOUR'.OR.MAKEP.EQ.'VIEW'.or.
      *     makep.eq.'FILL'.or.makep.eq.'PIXEL'.or.

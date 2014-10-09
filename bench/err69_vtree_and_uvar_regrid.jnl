@@ -1,0 +1,8 @@
+! err69_vtree_and_uvar_regrid.jnl
+! Ticket 2206: This lead to a crash.
+! 10/9/2014
+
+let a = t[gt=1:2:1]
+let b2 = a
+let c = b2[gt=a]
+GO bn_vtree.sub c

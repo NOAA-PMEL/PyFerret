@@ -62,6 +62,8 @@ GO err69_countervar_context
 GO bn_reset
 GO err69_label_backspace
 
-
 GO bn_reset
 GO err69_isready_and_regridding
+
+GO bn_reset
+GO err69_vtree_and_uvar_regrid

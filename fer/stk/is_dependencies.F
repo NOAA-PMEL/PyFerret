@@ -240,6 +240,11 @@
      .				hi_cx,
      .				var_status )
 
+* get_var_context increments line_use_cnt, and defines a grid.  Store
+* the uvar_grid so that the axes may be canceled later.
+
+        IF (cx_category(hi_cx) .EQ. cat_user_var) uvar_grid(uvar,dset) = cx_grid(hi_cx)  ! tikkt 2201
+
 * have we returned here after reporting auxvar dependencies?
 * if so we have already reported this variable
 	IF (delayed_by_auxvars) THEN

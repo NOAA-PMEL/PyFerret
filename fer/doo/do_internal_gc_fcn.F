@@ -96,6 +96,7 @@
 *                   of argument/return-type variable and predimensional (data size)
 *                   array parameter (pointer size to one in double-precision Ferret).
 * V68   5/12 *acm* Add ESEQUENCE, FSEQUENCE, SAMPLEM, SAMPLEN
+* V693 10/14 *acm* ticket 2210: check for negative arguments to SUBSTRING
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -158,7 +159,8 @@
         INTEGER max_cmnd_len
         PARAMETER ( max_cmnd_len = 2048 )
         CHARACTER GET_STRING_ELEMENT*(max_cmnd_len), buff*(max_cmnd_len)
-        INTEGER nnew, slen
+	CHARACTER*10 TM_FMT, argval
+        INTEGER nnew, slen, narg
 
 * equivalence conveniences
 * "inc" is the increments for each axis of each component
@@ -967,6 +969,15 @@
 * Convert the offset and length to integers
               ioff = com2(1,i2,j2,k2,l2,m2,n2)
               ilen = com3(1,i3,j3,k3,l3,m3,n3)
+* argument checking:
+	      IF (ioff.LT.0) THEN
+	         narg = 2
+		 GOTO 5100
+	      ENDIF
+	      IF (ilen.LT.0)  THEN
+	         narg = 3
+		 GOTO 5100
+	      ENDIF
               CALL C_SUBSTR(com1(1,i1,j1,k1,l1,m1,n1),
      .                      ioff, ilen, res(1,i,j,k,l,m,n))
  3450   CONTINUE
@@ -1005,4 +1016,9 @@
 
 * error exits
  5000	RETURN
+ 5100	argval = TM_FMT(FLOAT(narg), 2, 40, slen)
+	CALL ERRMSG(ferr_out_of_range, status,
+     .   'Negative argument to function. Argument '//
+     .    argval(:slen)//' : SUBSTRING', *5000 )
+
 	END

@@ -1,0 +1,55 @@
+! err69_repeat_in_if.jnl
+! Ticket 2211:  IF-THEN-ELSE inside a REPEAT inside a non-executed IF block
+!   (see also err62_if_inside_repeat, which had less-involved cases.)
+
+cancel mode verify
+
+IF 0 THEN
+   repeat/name=s/range=1:1 (\
+      if 1 then;\
+        say loop 1 inside repeat;\
+      else;\
+        DEFINE SYMBOL mystring= ();\
+      endif;\
+      )
+ELSE
+  say loop 1 this should be echoed
+ENDIF
+
+IF 0 THEN
+  say loop 2 this should not be echoed
+ELSE
+   repeat/name=s/range=1:1 (\
+      if 1 then;\
+        say loop 2 inside repeat;\
+      else;\
+        DEFINE SYMBOL mystring= ();\
+      endif;\
+      )
+ENDIF
+
+IF 1 THEN
+   repeat/name=s/range=1:1 (\
+      if 1 then;\
+        say loop 3 inside repeat;\
+      else;\
+        DEFINE SYMBOL mystring= ();\
+      endif;\
+      )
+ELSE
+   say loop 3 this string should not be shown
+ENDIF
+
+IF 1 THEN
+   say loop 4 this string should be echoed
+ELSE
+   repeat/name=s/range=1:1 (\
+      if 1 then;\
+        say loop 4 inside repeat;\
+      else;\
+        DEFINE SYMBOL mystring= ();\
+      endif;\
+      )
+ENDIF
+
+set mode/last verify

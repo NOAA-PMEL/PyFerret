@@ -70,3 +70,6 @@ GO err69_vtree_and_uvar_regrid
 
 GO bn_reset
 GO err69_vtree_cancel_axis
+
+GO bn_reset
+GO err69_repeat_in_if

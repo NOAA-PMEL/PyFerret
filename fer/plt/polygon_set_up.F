@@ -961,6 +961,18 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
               IF (tax.EQ.mnormal) tax = grid_line(t_dim,cx_grid(cx_x ))
               cal_name = line_cal_name(tax)
               cal_id = TM_GET_CALENDAR_ID ( cal_name )
+
+*  Check for valid log axis before proceeding if log and limits are given
+	      IF (is_logx) THEN
+	          CALL AXIS_ENDS(x_ax, coord_dim, cx_grid(cx_x), vmin, 
+     .			     vmax, delta, x_is_log, x_axtyp, status )
+	         IF ( status .NE. ferr_ok ) THEN
+                    first = vmin
+                    last  = vmax
+                    GOTO 5400
+                 ENDIF
+              ENDIF
+
 	      CALL EQUAL_RANGE( 
      .			cmnd_buff(qual_start(pxdenig):qual_end(pxdenig)),
      .			x_dim, vmin, vmax, delta,
@@ -1025,6 +1037,18 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
               IF (tax.EQ.mnormal) tax = grid_line(t_dim,cx_grid(cx_x ))
               cal_name = line_cal_name(tax)
               cal_id = TM_GET_CALENDAR_ID ( cal_name )
+
+*  Check for valid log axis before proceeding if log and limits are given
+	      IF (y_is_log) THEN 
+                 CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
+     .			     vmin,vmax,delta, y_is_log, y_axtyp, status )
+	         IF ( status .NE. ferr_ok ) THEN
+		    first = vmin
+		    last = vmax
+		    GOTO 5400
+	         ENDIF
+	      ENDIF
+
 	      CALL EQUAL_RANGE( 
      .			cmnd_buff(qual_start(pydenig):qual_end(pydenig)),
      .			y_dim, vmin, vmax, delta,

@@ -55,8 +55,8 @@
 * V6.01 10/06 *acm*  Fix bug 1446 in the loop DO 200 when testing for a tab character, the
 *              index should be i not ic1. The perils of cut-and-pasting text from elsewhere!
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-* V69+  *acm* 10/14 Fix tickets 2211 repeat loop in a non-executed IF clause,
-*                   and 1860, bug in the one-liner fix below.
+* V6.93 *acm* roll back fix to ticket 2211: repeat loop inside a non-executed IF clause.
+
 
 * calling argument declarations:
 	INTEGER		slen
@@ -64,14 +64,11 @@
 * RETURN 1 - used when the current command should be **skipped**
 
 * internal variable declarations:
-	INTEGER	STR_CASE_BLIND_COMPARE, ic1, ic2, nparen,
+	INTEGER	STR_CASE_BLIND_COMPARE, ic1,
      .		status	! not returned
         INTEGER STR_UPCASE, i, end_then, cmnd_len
-	LOGICAL TM_HAS_STRING, 
-     .		its_endif, its_else, its_elif, its_if, one_liner, 
-     .		its_repeat, its_endrep
+	LOGICAL its_endif, its_else, its_elif, its_if, one_liner
 
-	CHARACTER*1 cc
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -100,57 +97,8 @@
 ! should never arrive here ...
 	ic1 = 1
 
- 100	CONTINUE
-
-* Are we looking for the end of a repeat?  
-	its_repeat = .FALSE.
-	its_endrep = .FALSE.
-	
-	its_repeat   =
-     .	     (STR_CASE_BLIND_COMPARE(cmnd_string(ic1:ic1+2),'REP')
-     .		 .EQ. vms_str_success)
-
-	IF ( if_doing(ifstk) .EQ. pif_skip_to_endrep .OR. its_repeat ) THEN
-	
-           its_endrep = .FALSE.
-	   IF (TM_HAS_STRING(cmnd_string(ic1:slen), ')') ) THEN
-
-              IF (ic1 .EQ. slen) its_endrep = .TRUE.
-* See if close-paren is the last thing on the line
-* We dont need to do fancier checking, matched parentheses or
-* seeing if things are in quotes. The lines of a repeat loop
-* are sent here with the continuation characters at the end of
-* the line. Only the last will have a closing paren.
-
-* IF the line contains the entire repeat loop, we dont need to put this 
-* on the if stack. Check for its_repeat and its_endrep both true.
-
-	      DO ic2 = slen, ic1+1, -1
-	         cc = cmnd_string(ic2:ic2)
-
-	         its_endrep   =
-     .	         (STR_CASE_BLIND_COMPARE(cc,')')
-     .		 .EQ. vms_str_success)
-
-	         IF (cmnd_string(ic2:ic2).NE. ' ' .AND.
-     .               cmnd_string(ic2:ic2).NE. tab) GOTO 200
-	      END DO
- 200	      CONTINUE 
-
-           ENDIF
-	   IF(.NOT. its_repeat) THEN
-	      IF (its_endrep) THEN 
-	         ifstk = ifstk - 1
-	         RETURN 1
-	      ELSE
-	         RETURN 1
-	      ENDIF
-	   ENDIF
-
-	ENDIF
-	
 * check for IF or ENDIF
-	its_endif =
+ 100	its_endif =
      .	      STR_CASE_BLIND_COMPARE(cmnd_string(ic1:ic1+3),'ENDI')
      .		 .EQ. vms_str_success
 	its_if   =
@@ -159,52 +107,40 @@
      .  .OR. (STR_CASE_BLIND_COMPARE(cmnd_string(ic1:ic1+2),'IF'//tab)
      .		 .EQ. vms_str_success)
 
-
 * Fix bug 918: do NOT always execute IF and ENDIF statements!
 cc	IF (its_if .OR. its_endif) RETURN
 
         IF ((its_if .OR. its_endif) .AND. 
      .      if_doing(ifstk) .EQ. pif_doing_clause) RETURN
 
-        IF (its_repeat .AND. (.NOT. its_endrep)) THEN
-	   IF (if_doing(ifstk).EQ.pif_skip_to_endif .OR. 
-     .	       if_doing(ifstk).EQ.pif_skip_to_clause) THEN
-	      ifstk = ifstk + 1
-	      if_doing(ifstk) = pif_skip_to_endrep
-	   ENDIF
-	ENDIF
-
-* now check each of the possible IF execution states
-
-
-	IF (if_conditional .AND. its_if ) THEN    ! nested IF?
+	IF (if_conditional .AND. its_if ) THEN     ! nested IF?
 	   IF (if_doing(ifstk).NE.pif_doing_clause) THEN	! skipped IF?
 
 * --- here is cause of bug 1368: if the current statement is a one-line IF statement, 
 * --- and we are skipping commands, we want to just skip this one too.
-* --- Check whether the current command is a one-line IF conditioncc command
+* --- Check whether the current command is a one-line IF condition THEN command
 * --- and if so skip it, otherwise bump the IF stack.
+
 
             one_liner = .FALSE.
             IF (its_if) THEN
-               end_then = INDEX(risc_buff(:slen), 'THEN')
+               end_then = INDEX(risc_buff(:slen), 'THEN') 
 
-               IF (end_then .GT. 0) THEN ! has a THEN
+               IF (end_then .GT. 0) THEN ! is there a THEN?
 	          end_then = INDEX(risc_buff(:slen), 'THEN') + 4
-                  cmnd_len = INDEX(risc_buff(:slen), '!') - 1  ! check for comment at end
-                  IF (cmnd_len .EQ. -1) cmnd_len = slen
+	          cmnd_len = INDEX(risc_buff(:slen), '!') - 1  ! check for comment at end
+	          IF (cmnd_len .EQ. -1) cmnd_len = slen
 
 * See if there is a command after the THEN
-                  DO 300 i = end_then,cmnd_len
-                      IF (cmnd_string(i:i).NE. ' '
-     .              .AND. cmnd_string(i:i).NE. tab) one_liner = .TRUE.
-  300             CONTINUE
-
-               ENDIF ! has a THEN
-
+	          DO 200 i = end_then,cmnd_len
+                     IF (cmnd_string(i:i).NE. ' '
+     .             .AND. cmnd_string(i:i).NE. tab) one_liner = .TRUE.
+  200            CONTINUE
+               ENDIF ! is there a THEN?
+	       
             ENDIF  
 
-	    IF ( num_args .LE. 2 .AND. .NOT. one_liner) THEN  ! multi-line nested IF?
+	    IF ( num_args .LE. 2 .AND. .NOT. one_liner) THEN   ! multi-line nested IF?
 * ...       bump the IF stack - set up to skip this entire IF clause
 	         IF ( ifstk .GE. max_ifstk ) GOTO 5400
 	         ifstk = ifstk + 1
@@ -217,12 +153,12 @@ cc	         if_doing(ifstk) = if_doing(ifstk-1)
 	ENDIF
         
 * Skipped if inside a repeat?  will have a ; or a ) after it.
-* One more fix: if the ; or ) follows a !cc ignore.
+* One more fix: if the ; or ) follows a ! then ignore.
 
-	IF (if_conditional .AND. its_endif ) THEN    ! nested IF?
+	IF (if_conditional .AND. its_endif ) THEN     ! nested IF?
 	   IF (if_doing(ifstk).NE.pif_doing_clause) THEN	! skipped IF?
 
-           IF (INDEX(risc_buff, ')') .GT. INDEX(risc_buff,'ENDIF')) THEN
+           IF (INDEX(risc_buff, ')') .GT. INDEX(risc_buff,'ENDIF'))THEN
 	      IF (INDEX(risc_buff, '!') .GT. 0) THEN
                 IF (INDEX(risc_buff, ')') .LT. INDEX(risc_buff,'!'))
      .            its_endif = .FALSE.
@@ -231,9 +167,9 @@ cc	         if_doing(ifstk) = if_doing(ifstk-1)
               ENDIF
 	   ENDIF
 
-           IF (INDEX(risc_buff, ';') .GT. INDEX(risc_buff,'ENDIF')) THEN
+           IF (INDEX(risc_buff, ';') .GT. INDEX(risc_buff,'ENDIF'))THEN
 	      IF (INDEX(risc_buff, '!') .GT. 0) THEN
-                IF (INDEX(risc_buff, ';') .LT. INDEX(risc_buff,'!')) 
+                IF (INDEX(risc_buff, ';') .LT. INDEX(risc_buff,'!'))
      .            its_endif = .FALSE.
               ELSE
                  its_endif = .FALSE.
@@ -245,7 +181,7 @@ cc	         if_doing(ifstk) = if_doing(ifstk-1)
 
 	IF (its_endif) RETURN  ! process the endif, always
 
-
+* now check each of the possible IF execution states
 	IF ( if_doing(ifstk) .EQ. pif_skip_to_endif ) THEN
 * skip everything until ENDIF is encountered
 	   RETURN 1
@@ -264,10 +200,6 @@ cc	         if_doing(ifstk) = if_doing(ifstk-1)
      .		    .EQ. vms_str_success
 	   IF (its_else .OR. its_elif) RETURN
 * nope - just an ordinary command ... keep skipping 
-	   RETURN 1
-
-	ELSEIF ( if_doing(ifstk) .EQ. pif_skip_to_endrep ) THEN
-* skip everything until end of REPEAT is encountered
 	   RETURN 1
 
 	ELSE

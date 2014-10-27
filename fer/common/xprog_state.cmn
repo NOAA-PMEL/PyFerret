@@ -48,8 +48,6 @@
 *acm* 8/12 New MODE shrink_ylab, see tickets 1896, 1958.
 * V685 *sh* 11/13 - added allowed_err. SHOW VAR/TREE to display despite errors
 * V690 *sh* 12/13 - added mode_auto_*, for automated curvilinear and sigma vars
-* V693 *acm* 10/14- Ticket 2211. Add pif_skip_to_endrep to keep track of a repeat 
-*                   loop insidean unevaluated IF clause
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -140,8 +138,7 @@
      .			pif_skip_to_endrep
 	PARAMETER     ( pif_skip_to_endif  = 1,
      .			pif_doing_clause   = 2,
-     .			pif_skip_to_clause = 3,
-     .			pif_skip_to_endrep = 4 )
+     .			pif_skip_to_clause = 3 )
 
 *       Values for the redirect_*_flags.  Designed to be bit flags
 *       file = 0001, journal = 0010, commented = 0100, tee = 1000

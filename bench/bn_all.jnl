@@ -930,7 +930,7 @@ GO bn_reset
 GO bn_spawn_size
 
 GO bn_reset
-GO polygon_log
+GO bn_polygon_log
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

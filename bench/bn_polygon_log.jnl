@@ -1,0 +1,33 @@
+! bn_polygon_log.jnl
+! polygon plots on a log axis need tests
+
+let xsqr = YSEQUENCE({0,.1,.1,0})
+let ysqr = YSEQUENCE({0,0,.1,.1})
+let xpts = cos(x/10) + 2
+let ypts = x/10+1
+
+! Polygon plot
+
+set view ul
+polygon/title="NOT LOG"/i=1:100 xpts+xsqr, ypts+ysqr, x*x/10
+
+! Poly/vlog and /hlog
+! (known bug: Whats up with the colorbar labels?)
+set view ur; poly/title=VLOG/i=1:100/vlog xpts+xsqr,ypts+ysqr,x*x/10
+set view ll; poly/title=HLOG/i=1:100/hlog xpts+xsqr,ypts+ysqr,x*x/10
+set view lr;poly/title=BOTH/i=1:100/vlog/hlog xpts+xsqr,ypts+ysqr,x*x/10
+
+! These are errors - log of negative values on axis
+
+set mode ignore
+
+let ybad = x/10 - 1
+let xbad = cos(x/10) + 0.8
+
+can view
+polygon/i=1:100/nolab xbad+xsqr,ybad+ysqr,x*x/10
+
+poly/i=1:100/vlog xbad+xsqr,ybad+ysqr,x*x/10
+poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
+
+set mode/last ignore

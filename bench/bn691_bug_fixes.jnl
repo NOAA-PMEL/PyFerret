@@ -73,3 +73,7 @@ GO err69_vtree_cancel_axis
 
 GO bn_reset
 GO err69_repeat_in_if
+
+GO bn_reset
+GO err69_if_then_split
+

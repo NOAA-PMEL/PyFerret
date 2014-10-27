@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 13 Oct 27 10:50 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.927
+lrwxrwxrwx. 1 ksmith oerdnewp 13 Oct 27 12:16 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.927
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug build of Ferret on RHEL6-64
@@ -241,7 +241,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Oct 27 10:52:09 PDT 2014
+Beginning at Mon Oct 27 12:18:03 PDT 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3577,6 +3577,8 @@ shade a
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_append_dsg.jnl
  Cached data cleared from memory
 rm: cannot remove `test_save_dsg.nc': No such file or directory
@@ -3629,4 +3631,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Mon Oct 27 10:58:42 PDT 2014
+Ended at Mon Oct 27 12:25:33 PDT 2014

@@ -134,8 +134,7 @@
 
 	INTEGER		pif_skip_to_endif,
      .			pif_doing_clause,
-     .			pif_skip_to_clause,
-     .			pif_skip_to_endrep
+     .			pif_skip_to_clause
 	PARAMETER     ( pif_skip_to_endif  = 1,
      .			pif_doing_clause   = 2,
      .			pif_skip_to_clause = 3 )

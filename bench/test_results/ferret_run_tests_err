@@ -1,8 +1,8 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 13 Oct 27 12:16 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.927
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Oct 28 14:58 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.93
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug build of Ferret on RHEL6-64
+Note: RUN_TEST.sh test results for debug build of Ferret on RHEL6-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -225,6 +225,7 @@ Benchmark scripts that will be run:
    bn_show_outfile.jnl
    bn_date1900_array.jnl
    bn_spawn_size.jnl
+   bn_polygon_log.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -241,7 +242,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Oct 27 12:18:03 PDT 2014
+Beginning at Tue Oct 28 14:59:05 PDT 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2997,7 +2998,6 @@ Replacing definition of axis TAXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
- *** NOTE: ./err672_vert_axislabel.jnl
  *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
  *** NOTE: Adjusting Y-axis label size from 0.100 to 0.030, to avoid running off page.
  PERMANENT data cleared from memory
@@ -3575,10 +3575,6 @@ shade a
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
 *** Running test: bn_append_dsg.jnl
  Cached data cleared from memory
 rm: cannot remove `test_save_dsg.nc': No such file or directory
@@ -3612,6 +3608,12 @@ list f
  Cached data cleared from memory
 *** Running test: bn_spawn_size.jnl
  Cached data cleared from memory
+*** Running test: bn_polygon_log.jnl
+ Cached data cleared from memory
+ **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.850
+poly/i=1:100/vlog xbad+xsqr,ybad+ysqr,x*x/10
+ **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.689E-02
+poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3631,4 +3633,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Mon Oct 27 12:25:33 PDT 2014
+Ended at Tue Oct 28 15:05:16 PDT 2014

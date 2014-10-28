@@ -101,12 +101,12 @@
 	ENDIF
 
 * return subscript limits
-        IF ( cat .EQ. cat_file_var ) THEN
-           lo_ss = ds_grid_start(idim, var)
-           hi_ss = ds_grid_end  (idim, var)
-        ELSE
+        IF ( cat .EQ. cat_pystat_var ) THEN
            lo_ss = pyvar_grid_start(idim, var)
            hi_ss = pyvar_grid_end  (idim, var)
+        ELSE
+           lo_ss = ds_grid_start(idim, var)
+           hi_ss = ds_grid_end  (idim, var)
         ENDIF
         RETURN
 

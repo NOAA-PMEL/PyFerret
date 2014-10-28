@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 53432284 Oct  3 11:23 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 manke oerdnewp 53434396 Oct 27 11:28 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Fixingn ticket 2200
+Note: v6.928 (beta) for GFDL. Tickets 2211 and 1860
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,16 +13,16 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go /home/users/ansley/baker/JavaSource/resources/iosp/scripts/
+FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
-PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Fri Oct 3 11:25:50 PDT 2014
+PWD=/home/users/ansley/build/current_trunk/FERRET/bench
+Beginning at Mon Oct 27 11:29:02 PDT 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1414,6 +1414,7 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+rm: cannot remove `input.txt': No such file or directory
 ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3485,11 +3486,6 @@ Replacing definition of axis ZAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file append_to_this.nc
-ncks: WARNING Overwriting global attribute history
-ncks: WARNING Overwriting global attribute Conventions
-ncks: WARNING Overwriting attribute point_spacing for output variable ZAXIS_ORIG
-ncks: WARNING Overwriting attribute axis for output variable ZAXIS_ORIG
-ncks: WARNING Overwriting attribute standard_name for output variable ZAXIS_ORIG
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XIRREG
@@ -3532,8 +3528,6 @@ list e
  **ERROR: illegal limits: X axis limits don't match variable def'n: A
           Are you giving explicit limits when SET REGION would suffice ?
 list f
- *** NOTE: Not deleted: ENSEMBLE
- *** NOTE: Axis is in use by grid (G089)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3747,6 +3741,20 @@ shade a
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+rm: cannot remove `test_save_dsg.nc': No such file or directory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  LISTing to file anew_global.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3773,12 +3781,16 @@ list e
  **ERROR: illegal limits: X axis limits don't match variable def'n: A
           Are you giving explicit limits when SET REGION would suffice ?
 list f
- *** NOTE: Not deleted: ENSEMBLE
- *** NOTE: Axis is in use by grid (G091)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.850
+poly/i=1:100/vlog xbad+xsqr,ybad+ysqr,x*x/10
+ **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.689E-02
+poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3870,4 +3882,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Oct 3 11:27:28 PDT 2014
+Ended at Mon Oct 27 11:30:42 PDT 2014

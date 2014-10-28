@@ -114,13 +114,16 @@
 * v6.923   fix ticket 2187
 * v6.924   fix ticket 2186 
 * v6.925   fix ticket 2194
+* v6.926   fix ticket 2203, 2200
+* v6.927   fix ticket 2205, 2206
+* v6.93    release
 
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.925   /
+	DATA revision_level	/  6.93   /
 
 ! Note we can put a debug title in the Ferret startup header lines
 ! by putting a title into the Makefile: $(MAKE) "DEBUG_TITLE=beta" update

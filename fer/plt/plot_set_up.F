@@ -50,7 +50,7 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 7/8/87  - based on DISP_SET_UP rev 1.1
-* revision 0.1 - 7/21/87 - added transpose option and AXIS_ENDS
+* revision 0.1 - 7/21/87 - added transpose option and 
 * revision 0.2 - 8/26/87 - added TAXIS ON for time axis plots
 * revision 0.3 - 2/29/88 - allowed for non-geometric axes, time axis formats,
 *			   non-inverted Z data,
@@ -152,6 +152,8 @@
 * V685+ *acm  12/13 In dependent axis setup, make sure variable the_taxis is set.
 * V691  *acm*  5/14 For ribbon line plots, set up for histogram levels
 * V691  *acm*  7/14 Fix ticket 2187: axis labels for PLOT/VS plots.
+* V693  *acm* 10/14 Fix 2122: Check for a valid axis if they've asked for a 
+*                   log axis before proceeding with vlimits or hlimits
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -378,6 +380,18 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
               IF (tax .EQ. 0) tax = grid_line(t_dim,cx_grid(cx_list(var1)) )
               cal_name = line_cal_name(tax)
               cal_id_1 = TM_GET_CALENDAR_ID ( cal_name )
+
+* Check for a valid axis if they've asked for a log axis before proceeding
+	      IF (indep_is_log) THEN
+	         CALL AXIS_ENDS(indep_ax,indep_dim,grid1,ind_min,ind_max,
+     .                       delta, indep_is_log, indep_axtyp, status)
+	         IF ( status .NE. ferr_OK ) THEN
+                    first = ind_min
+                    last  = ind_max
+                    GOTO 5170
+                 ENDIF
+	      ENDIF
+
 	      CALL EQUAL_RANGE(
      .			cmnd_buff(qual_start(pindeplim):qual_end(pindeplim)),
      .			indep_dim, ind_min, ind_max, delta,
@@ -595,6 +609,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                  iunits = TM_UNIT_ID(buff1)
                  IF (iunits .EQ. 4) THEN
 	            delta = unspecified_val8
+		    
 	            CALL AXIS_ENDS(dep_ax,dep_dim,grid1,dep_min,dep_max,
      .                      delta, dep_is_log, dep_axtyp, status)
 
@@ -764,6 +779,18 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	            CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	            denig_xylim_msg_done = .TRUE.
 	         ENDIF
+		 
+*  Check for valid log axis before proceeding
+	         IF (indep_is_log) THEN
+	         CALL AXIS_ENDS  ( indep_ax, indep_dim, grid1,
+     .				   ind_min, ind_max, delta, 
+     .				   indep_is_log, indep_axtyp, status )
+	            IF ( status .NE. ferr_OK ) THEN
+                       first = ind_min
+                       last  = ind_max
+                       GOTO 5170
+                    ENDIF
+	         ENDIF
 	         CALL EQUAL_RANGE(
      .			cmnd_buff(qual_start(pindeplim):qual_end(pindeplim)),
      .			indep_dim, ind_min, ind_max, delta,
@@ -799,7 +826,6 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      .				SECS_TO_TSTEP( grid1, the_taxis, ind_min ),
      .				SECS_TO_TSTEP( grid1, the_taxis, ind_max ) )
 	      ELSE
-
 	         CALL AXIS_ENDS  ( indep_ax, indep_dim, grid1,
      .				   ind_min, ind_max, delta, 
      .				   indep_is_log, indep_axtyp, status )
@@ -817,6 +843,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   ENDIF
 * ... dependent axis scaling
 *  force axis scaling if the data has no range
+
            IF (the_taxis .EQ. 0) the_taxis = dep_dim
 
 	   IF ( pdeplim .GT. 0 ) THEN
@@ -825,6 +852,17 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF
+*  Check for valid log axis before proceeding
+	      IF (dep_is_log) THEN
+	         CALL AXIS_ENDS( dep_ax, the_taxis, grid, dep_min, dep_max, 
+     .                        delta, dep_is_log, dep_axtyp, status )
+	         IF ( status .NE. ferr_OK ) THEN
+                    first = dep_min
+                    last  = dep_max
+                    GOTO 5170
+                 ENDIF
+	      ENDIF
+
 	      CALL EQUAL_RANGE(
      .			cmnd_buff(qual_start(pdeplim):qual_end(pdeplim)),
      .			dep_dim, dep_min, dep_max, delta,
@@ -841,6 +879,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 
 	   ELSEIF ( all_1_dep ) THEN
 	      IF (only_val .EQ. bad_val4) val1 = 0.0	! 10/99
+	      
 	      CALL AXIS_ENDS( dep_ax, the_taxis, grid,val1-1.D0,val1+1.D0,1.D0,
      .                        dep_is_log, dep_axtyp, status )   
 	      IF ( status .NE. ferr_OK ) THEN
@@ -852,6 +891,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
 	      dep_min = DBLE( lo )
 	      dep_max = DBLE( hi )
+	      
 	      CALL AXIS_ENDS( dep_ax, the_taxis, grid, dep_min, dep_max, 
      .                        delta, dep_is_log, dep_axtyp, status )
 	      IF ( status .NE. ferr_OK ) THEN

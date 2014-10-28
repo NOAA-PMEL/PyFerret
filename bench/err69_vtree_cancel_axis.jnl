@@ -1,0 +1,19 @@
+! err69_vtree_cancel_axis
+! Ticket 2201: After a return=isready, 
+! cannot cancel the axis used by the var
+! 10-Oct-2014
+
+define axis/x=0:360:1 xax1
+define axis/x=0:360:10 xax2
+
+let a = x[gx=xax1]
+say `a,return=title`
+
+let b = a[gx=xax2]
+say `b,return=isready`
+
+cancel var a b
+cancel axis xax1
+cancel axis xax2
+
+

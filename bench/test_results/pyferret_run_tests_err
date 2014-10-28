@@ -1,8 +1,8 @@
-Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Oct  6 10:59 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
-Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
+Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
+lrwxrwxrwx. 1 ksmith oerdnewp 11 Oct 28 15:21 /home/flat/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+Using external functions from /home/flat/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug build of PyFerret on RHEL5-64
+Note: RUN_TEST.sh test results for debug build of PyFerret on RHEL6-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -225,23 +225,24 @@ Benchmark scripts that will be run:
    bn_show_outfile.jnl
    bn_date1900_array.jnl
    bn_spawn_size.jnl
+   bn_polygon_log.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
-FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/ksmith/Datasets
+FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/flat/ksmith/Datasets
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ksmith/PyFerret/ext_func/libs
-FER_FONTS=/home/users/ksmith/PyFerret/ppl/fonts
-FER_GO=. /home/users/ksmith/PyFerret/go /home/users/ksmith/PyFerret/examples /home/users/ksmith/PyFerret/contrib
+FER_EXTERNAL_FUNCTIONS=/home/flat/ksmith/PyFerret/ext_func/libs
+FER_FONTS=/home/flat/ksmith/PyFerret/ppl/fonts
+FER_GO=. /home/flat/ksmith/PyFerret/go /home/flat/ksmith/PyFerret/examples /home/flat/ksmith/PyFerret/contrib
 FER_GRIDS=.
-FER_LIBS=/home/users/ksmith/PyFerret/lib
-FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
+FER_LIBS=/home/flat/ksmith/PyFerret/lib
+FER_PALETTE=. /home/flat/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Oct  6 11:01:20 PDT 2014
+Beginning at Tue Oct 28 15:21:55 PDT 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
  *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -1413,7 +1414,7 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 rm: cannot remove `input.txt': No such file or directory
-ls: input.txt: No such file or directory
+ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3065,7 +3066,6 @@ Replacing definition of axis TAXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
- *** NOTE: ./err672_vert_axislabel.jnl
  *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
  *** NOTE: Adjusting Y-axis label size from 0.100 to 0.030, to avoid running off page.
  PERMANENT data cleared from memory
@@ -3232,7 +3232,7 @@ define data/agg windy = 1,2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Adjusting Y-axis label size from 0.100 to 0.001, to avoid running off page.
- *** NOTE: /home/users/ksmith/PyFerret/go/magnify.jnl
+ *** NOTE: /home/flat/ksmith/PyFerret/go/magnify.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3390,9 +3390,9 @@ Replacing definition of axis AXI_COARSE
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
 *** Running test: bn_nco_append.jnl
-sh: ncks: command not found
  Cached data cleared from memory
  LISTing to file append_to_this.nc
+sh: ncks: command not found
 *** Running test: bn_nobounds.jnl
  Cached data cleared from memory
  LISTing to file a.nc
@@ -3640,6 +3640,15 @@ list b
 shade a
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_append_dsg.jnl
  Cached data cleared from memory
 rm: cannot remove `test_save_dsg.nc': No such file or directory
@@ -3673,6 +3682,12 @@ list f
  Cached data cleared from memory
 *** Running test: bn_spawn_size.jnl
  Cached data cleared from memory
+*** Running test: bn_polygon_log.jnl
+ Cached data cleared from memory
+ **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.850
+poly/i=1:100/vlog xbad+xsqr,ybad+ysqr,x*x/10
+ **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.689E-02
+poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3694,4 +3709,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
  *** NOTE: the use of "SET MODE METAFILE" is deprecated;
  *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Mon Oct  6 11:05:52 PDT 2014
+Ended at Tue Oct 28 15:23:33 PDT 2014

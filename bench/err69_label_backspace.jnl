@@ -1,0 +1,7 @@
+! err69_label_backspace
+! Ticket 2203:  \\ before a character backspaces before
+! making the character. This broke in the 64-bit versions.
+
+plot/vs/nolab {0,1},{0,1}
+label .5 .5 0 0 1 "El Nin\\^@MA45@SRo\!"
+

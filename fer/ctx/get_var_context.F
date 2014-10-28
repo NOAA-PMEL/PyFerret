@@ -65,6 +65,9 @@
 * V685 4/13 *sh* parse the auxiliary regridding context terms ("*aux*"), too
 *	         and don't report errors in dependency_tree_mode
 * V690 12/13 *sh* bug fix when variable name unrecognized in VTREE mode
+* V693 10/14 *acm fix ticket 2206: If the grid number is a placeholder, don't 
+*                 go call flesh_out_axis etc (See the comment in get_context_mods, where
+*                 the grid is an encoding of the start/end limits of the regrid spec)
 
 	IMPLICIT NONE
 
@@ -180,7 +183,7 @@
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * can't do more if the grid isn't known
-	IF ( cx_grid(var_cx) .EQ. unspecified_int4 ) GOTO 100
+	IF ( cx_grid(var_cx) .LE. unspecified_int4 ) GOTO 100
 
 * data set info may be irrelevant
 * indicate that now so memory searches will be correct

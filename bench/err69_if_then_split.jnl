@@ -1,0 +1,42 @@
+! err69_if_then_split.jnl
+! bug1860
+!  In an IF  clause not being executed,
+!  an IF expression THEN command which 
+!  is split over two lines caused an error
+
+say "This works:"
+if 1 then
+  if `1 or \
+      1` then
+    say "hi"
+  endif
+endif
+
+say "This works:"
+if 1 then
+  if `1 or \
+      1` then
+    say "hi"
+  endif
+endif
+
+say "This works:"
+if 0 then
+  let condition = 1 or \
+                  1
+  if `condition` then
+    say "hi"
+  endif
+endif
+
+say "This failed:"
+if 0 then
+  if `1 or \
+      1` then
+    say "hi"
+  endif
+endif
+
+
+say end of  err69_if_then_split
+

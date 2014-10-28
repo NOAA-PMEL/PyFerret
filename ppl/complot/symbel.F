@@ -70,6 +70,8 @@ C *ACM* 6/02   When there is a period or decimal point in the text, make
 C              a GKS dot there too, so it'll show up in small labels.
 C *acm* 7/02   Take out the MARKER calls that made dots. This caused trouble 
 C              when making encapsulated postscript from postscript.  
+C *acm* 10/14  Ticket 2203: on the 64-bit machines, the \\ for backspace
+C              should be \ .
 C
 C	CALL SYMBEL(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
 C
@@ -274,6 +276,14 @@ C
 	IF(.NOT.ASCFNT.AND.(ICHR.EQ.'@'.OR.
      *		(ICHR.GE.'\'.AND.ICHR.LE.'_')))GOTO 80
 #endif
+
+* Some compliers store '\\' as a single character, others see it
+* as '\'.  
+
+	IF (KBKSP.NE.'\\') THEN
+	   IF(.NOT.ASCFNT.AND.(ICHR.EQ.'@'.OR.
+     *		(ICHR.GE.'\'.AND.ICHR.LE.'_')))GOTO 80
+	ENDIF 
 C
 C	CALCULATE POINTER
 C

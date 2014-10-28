@@ -35,16 +35,16 @@ INSTALL_FER_DIR	= $(FER_DIR)
 ## Do not give a location on other systems.  For these systems
 ## the system-wide shared-object Cairo libraries which are also
 ## used by Qt4 must be used.
-# CAIRO_DIR	=
-CAIRO_DIR	= /usr/local/cairo_188
+CAIRO_DIR	=
+# CAIRO_DIR	= /usr/local/cairo_188
 
 ## Installation directory for HDF5 static libraries
 ## (contains include and lib or lib64 subdirectories)
 ## Do not give a location if linking to netcdf shared-object libraries
 # HDF5_DIR	= /usr
 # HDF5_DIR	= /usr/local
-HDF5_DIR	= /usr/local/hdf5_189
 # HDF5_DIR	= /usr/local/hdf5-1.8.9
+HDF5_DIR	= /usr/local/hdf5_189_64
 # HDF5_DIR	= 
 
 ## Installation directory for NetCDF static or shared object libraries
@@ -52,8 +52,8 @@ HDF5_DIR	= /usr/local/hdf5_189
 ## If HDF5_DIR (above) is empty, the shared-object netcdf libraries will be used.
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
-NETCDF4_DIR	= /usr/local/netcdf_4311
 # NETCDF4_DIR	= /usr/local/netcdf-4.3.1.1
+NETCDF4_DIR	= /usr/local/netcdf_4311_64
 
 ## Java home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,
@@ -69,6 +69,6 @@ JAVA_HOME	= /usr/lib/jvm/java
 # JAVA_HOME	= /Library/Java/JavaVirtualMachines/jdk1.7.jdk/Contents/Home
 
 # PyFerret version number - do not change this
-PYFERRET_VERSION = 1.0.3
+PYFERRET_VERSION = 1.1.0
 
 ##

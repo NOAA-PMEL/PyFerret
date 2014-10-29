@@ -55,8 +55,6 @@
 * V6.01 10/06 *acm*  Fix bug 1446 in the loop DO 200 when testing for a tab character, the
 *              index should be i not ic1. The perils of cut-and-pasting text from elsewhere!
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-* V6.93 *acm* roll back fix to ticket 2211: repeat loop inside a non-executed IF clause.
-
 
 * calling argument declarations:
 	INTEGER		slen
@@ -124,20 +122,16 @@ cc	IF (its_if .OR. its_endif) RETURN
 
             one_liner = .FALSE.
             IF (its_if) THEN
-               end_then = INDEX(risc_buff(:slen), 'THEN') 
-
-               IF (end_then .GT. 0) THEN ! is there a THEN?
-	          end_then = INDEX(risc_buff(:slen), 'THEN') + 4
-	          cmnd_len = INDEX(risc_buff(:slen), '!') - 1  ! check for comment at end
-	          IF (cmnd_len .EQ. -1) cmnd_len = slen
+               end_then = INDEX(risc_buff(:slen), 'THEN') + 4
+               cmnd_len = INDEX(risc_buff(:slen), '!') - 1  ! check for comment at end
+               IF (cmnd_len .EQ. -1) cmnd_len = slen
 
 * See if there is a command after the THEN
-	          DO 200 i = end_then,cmnd_len
-                     IF (cmnd_string(i:i).NE. ' '
-     .             .AND. cmnd_string(i:i).NE. tab) one_liner = .TRUE.
-  200            CONTINUE
-               ENDIF ! is there a THEN?
-	       
+               DO 200 i = end_then,cmnd_len
+                   IF (cmnd_string(i:i).NE. ' '
+     .           .AND. cmnd_string(i:i).NE. tab) one_liner = .TRUE.
+  200          CONTINUE
+
             ENDIF  
 
 	    IF ( num_args .LE. 2 .AND. .NOT. one_liner) THEN   ! multi-line nested IF?

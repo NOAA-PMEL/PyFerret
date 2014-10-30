@@ -1,0 +1,28 @@
+! err69_isready_bugs.jnl
+! Tickets 2201 and 2215   
+
+! ticket 2201: isready operation meant we couldn't cancel the second axis
+
+def ax/x=0:360:1 xax_isready_1
+def ax/x=0:360:10 xax_isready_2
+let a = x[gx=xax_isready_1]
+say `a,r=title`
+let b = a[gx=xax_isready_2]
+load b
+say `b,r=isready`
+
+
+can var a
+can axis xax_isready_1
+can var b
+can axis xax_isready_2
+
+! Ticket 2215, only with an unreleased Ferret; the first fix to 2201.
+
+let a = x[gx=1:3:1]
+let b = a - a[gx=a]
+let c = 1
+let/unit="m" f = b*c
+say `f,r=isready`
+
+say `f,r=unit`

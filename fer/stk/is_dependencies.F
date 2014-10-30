@@ -45,6 +45,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V690 9/13 *sh*  -- with provisions for aux variables tested and refined
+* V693 10/14*acm* -- Fix tickets 2201, 2215
 
 * calling argument declarations:
 	INTEGER	status
@@ -240,10 +241,16 @@
      .				hi_cx,
      .				var_status )
 
+* Ticket 2201:
 * get_var_context increments line_use_cnt, and defines a grid.  Store
-* the uvar_grid so that the axes may be canceled later.
+* the uvar_grid so that the axes may be canceled later.  
+* Ticket 2115: If it's a grid as defined in get_context where we've 
+* encoded the start/end limits of the uvar name into the grid (see 
+* get_context_mods) do not store that grid number.
 
-        IF (cx_category(hi_cx) .EQ. cat_user_var) uvar_grid(uvar,dset) = cx_grid(hi_cx)  ! tikkt 2201
+        IF (cx_category(hi_cx) .EQ. cat_user_var) THEN
+	   IF (cx_grid(hi_cx) .GE. unspecified_int4) uvar_grid(uvar,dset) = cx_grid(hi_cx)  
+	ENDIF
 
 * have we returned here after reporting auxvar dependencies?
 * if so we have already reported this variable

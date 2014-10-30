@@ -44,6 +44,7 @@ CAIRO_DIR	=
 # HDF5_DIR	= /usr
 # HDF5_DIR	= /usr/local
 # HDF5_DIR	= /usr/local/hdf5-1.8.9
+# HDF5_DIR	= /usr/local/hdf5_189
 HDF5_DIR	= /usr/local/hdf5_189_64
 # HDF5_DIR	= 
 
@@ -53,6 +54,7 @@ HDF5_DIR	= /usr/local/hdf5_189_64
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
 # NETCDF4_DIR	= /usr/local/netcdf-4.3.1.1
+# NETCDF4_DIR	= /usr/local/netcdf_4311
 NETCDF4_DIR	= /usr/local/netcdf_4311_64
 
 ## Java home directory - this may be predefined

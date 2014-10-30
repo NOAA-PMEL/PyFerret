@@ -68,19 +68,7 @@
 
       CHARACTER ppl_buff*2048, TM_FMT_SNGL*10, buff*10, symbuff*120
       INTEGER TM_LENSTR1, STR_SAME, i, ier, ilen, slen, ist
-      LOGICAL MATCH_TEMPLATE, TM_FPEQ_SNGL, reglevs
-
-* Remove current LEV* symbols, so only the last-used will be defined
-
-
-* (this is borrowed from xeq_cancel)
-
-         i=0
- 1710 CALL LSTSYM(symbuff,ppl_buff,slen,i,ier)     ! get next symbol name (symbuff)
-      IF(ier.EQ.0)THEN
-         IF ( MATCH_TEMPLATE(symbuff,'LEV') ) CALL DELSYM(symbuff,ier)
-         GOTO 1710
-      ENDIF
+      LOGICAL TM_FPEQ_SNGL, reglevs
 
 * Lowest and highest Z level
 

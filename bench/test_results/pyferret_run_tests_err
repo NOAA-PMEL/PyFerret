@@ -1,8 +1,8 @@
-Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx. 1 ksmith oerdnewp 11 Oct 30 11:45 /home/flat/ksmith/PyFerret/bin/pyferret -> pyferret.sh
-Using external functions from /home/flat/ksmith/PyFerret/ext_func/libs
+Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
+lrwxrwxrwx 1 ksmith tmap 11 Nov  5 16:36 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug build of PyFerret on RHEL6-64
+Note: RUN_TESTS.sh test results for debug build of PyFerret on RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -231,18 +231,18 @@ Benchmark scripts that will be run:
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
-FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/flat/ksmith/Datasets
+FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/ksmith/Datasets
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/flat/ksmith/PyFerret/ext_func/libs
-FER_FONTS=/home/flat/ksmith/PyFerret/ppl/fonts
-FER_GO=. /home/flat/ksmith/PyFerret/go /home/flat/ksmith/PyFerret/examples /home/flat/ksmith/PyFerret/contrib
+FER_EXTERNAL_FUNCTIONS=/home/users/ksmith/PyFerret/ext_func/libs
+FER_FONTS=/home/users/ksmith/PyFerret/ppl/fonts
+FER_GO=. /home/users/ksmith/PyFerret/go /home/users/ksmith/PyFerret/examples /home/users/ksmith/PyFerret/contrib
 FER_GRIDS=.
-FER_LIBS=/home/flat/ksmith/PyFerret/lib
-FER_PALETTE=. /home/flat/ksmith/PyFerret/ppl
+FER_LIBS=/home/users/ksmith/PyFerret/lib
+FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Thu Oct 30 11:47:12 PDT 2014
+Beginning at Wed Nov  5 16:37:14 PST 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
  *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -1414,7 +1414,7 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 rm: cannot remove `input.txt': No such file or directory
-ls: cannot access input.txt: No such file or directory
+ls: input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3233,7 +3233,7 @@ define data/agg windy = 1,2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Adjusting Y-axis label size from 0.100 to 0.001, to avoid running off page.
- *** NOTE: /home/flat/ksmith/PyFerret/go/magnify.jnl
+ *** NOTE: /home/users/ksmith/PyFerret/go/magnify.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3391,9 +3391,9 @@ Replacing definition of axis AXI_COARSE
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
 *** Running test: bn_nco_append.jnl
+sh: ncks: command not found
  Cached data cleared from memory
  LISTing to file append_to_this.nc
-sh: ncks: command not found
 *** Running test: bn_nobounds.jnl
  Cached data cleared from memory
  LISTing to file a.nc
@@ -3712,4 +3712,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
  *** NOTE: the use of "SET MODE METAFILE" is deprecated;
  *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Thu Oct 30 11:48:53 PDT 2014
+Ended at Wed Nov  5 16:42:11 PST 2014

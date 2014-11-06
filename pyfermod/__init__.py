@@ -128,8 +128,7 @@ def init(arglist=None, enterferret=True):
 
        -help:        print this help message and quit
 
-       -quiet        do not display the startup header or
-                     warning of import failures
+       -quiet        do not display the startup header
 
        -batch:       draw to <filename> (default "ferret.png") instead of
                      displaying to the console.  The file format will be
@@ -253,7 +252,9 @@ def init(arglist=None, enterferret=True):
 
     # Create the list of standard ferret PyEFs to create
     std_pyefs = [ ]
-    # The stats_* functions - depend on scipy
+    # stats_* functions that do not need scipy
+    std_pyefs.append("stats.stats_histogram")
+    # stats_* functions that depend on scipy
     try:
         import scipy
         std_pyefs.extend((
@@ -414,11 +415,11 @@ def init(arglist=None, enterferret=True):
                   "stats.stats_helper",
                   ))
     except ImportError:
-        if not my_quiet:
-            print >>sys.stderr, "    WARNING: Unable to import scipy;\n" \
-                                "             most stats_* Ferret functions will not be added."
-    # stats_* functions that do not need scipy
-    std_pyefs.append("stats.stats_histogram")
+        # if not my_quiet:
+        #     print >>sys.stderr, "    WARNING: Unable to import scipy;\n" \
+        #                         "             most stats_* Ferret functions will not be added."
+        pass
+
     # shapefile_* functions
     try:
         import shapefile
@@ -432,9 +433,11 @@ def init(arglist=None, enterferret=True):
                   "fershp.shapefile_writexyzval",
                   ))
     except ImportError:
-        if not my_quiet:
-            print >>sys.stderr, "    WARNING: Unable to import shapefile;\n" \
-                                "             shapefile_* Ferret functions will not be added."
+        # if not my_quiet:
+        #     print >>sys.stderr, "    WARNING: Unable to import shapefile;\n" \
+        #                         "             shapefile_* Ferret functions will not be added."
+        pass
+
     # regrid functions
     try:
         import ESMP
@@ -443,10 +446,11 @@ def init(arglist=None, enterferret=True):
                   "regrid.curv3srect",
                   ))
     except ImportError:
-        if not my_quiet:
-            print >>sys.stderr, "    WARNING: Unable to import ESMP;\n" \
-                                "             curv2rect* Ferret functions will not be added.\n" \
-                                "             Use curv_to_rect* functions instead"
+        # if not my_quiet:
+        #     print >>sys.stderr, "    WARNING: Unable to import ESMP;\n" \
+        #                         "             curv2rect* Ferret functions will not be added.\n" \
+        #                         "             Use curv_to_rect* functions instead"
+        pass
 
     # start ferret without journaling
     start(memsize=my_memsize, journal=False, verify=my_verify,

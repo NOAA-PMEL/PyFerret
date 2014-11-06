@@ -56,8 +56,9 @@
 *       *ACm* 4/24/01 INT(tot_days/366. + 307./366.)  is 0 under linux,
 *                     when the expression is 1.  Use simple IF test on
 *		      tot_days instead to see if we're before or after day 59.
-* V63  *acm* 10/09 Changes for gfortran build
-* V692 *acm* 10/14 Trap errors in year, month, day etc before making the string
+* V692 *acm* 10/14 Trap errors in year, month, day etc before making the string 
+* V693 *acm* 11/13 back off previous change. Out-of-range time info is handled
+*                  elsewhere (Prev. change caused ticket 2116).
 
 * Argument definitions
 	REAL*8		num_secs
@@ -317,13 +318,7 @@ c acm	   tmp_days = tot_days - leapadj*INT(tot_days/366. + 307./366.)
 	   stop 'Illegal calendar in tm_secs_to_date()'
 	END IF
 
-* Put it in a string, first sanity-check the values.
-	IF (year.GT.9999 .OR. year.LT.0) GOTO 5100
-	IF (month.LT.1 .OR. month.GT.12) GOTO 5100
-	IF (day.LT.1 .OR. day.GT.31) GOTO 5100
-	IF (hour.LT.0 .OR. hour.GT.23) GOTO 5100
-	IF (minute.LT.0 .OR. minute.GT.59) GOTO 5100
-	IF (second.LT.0 .OR. second.GT.59) GOTO 5100
+* Put it in a string
 
 	WRITE (tempstr,1000,ERR=5000) day, month_names(month), 
      .      year, hour, minute, second
@@ -336,10 +331,7 @@ c acm	   tmp_days = tot_days - leapadj*INT(tot_days/366. + 307./366.)
  5000	CALL TM_ERRMSG (merr_erreq, status, 'TM_SECS_TO_DATE',
      .			no_descfile, no_stepfile,
      .			no_errstring, no_errstring, *9000)
-* Date syntax error
- 5100	CALL TM_ERRMSG (merr_time_string, status, 'TM_SECS_TO_DATE',
-     .			no_descfile, no_stepfile,
-     .			no_errstring, no_errstring, *9000)
+
  9000	STOP
 
 * finished

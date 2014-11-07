@@ -59,8 +59,8 @@
 
 * local variables
       CHARACTER*256 myline
-      CHARACTER*17  axstr(4), fltstr
-      INTEGER       j, k, q, starti(4), grid, listdims
+      CHARACTER*17  axstr(nferdims), fltstr
+      INTEGER       j, k, q, starti(nferdims), grid, listdims
       REAL*8        lo, hi
 
       listdims = nferdims

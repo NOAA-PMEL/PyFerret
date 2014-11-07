@@ -29,12 +29,23 @@ Usage
 
 {ferret_PUTDATA_DOC}
 
+``%ferret_lock``
+
+{ferret_LOCK_DOC}
+
+``%ferret_unlock``
+
+{ferret_UNLOCK_DOC}
+
 """
 
 #-----------------------------------------------------------------------------
 #  Patrick.Brockmann@lsce.ipsl.fr
 #  Started 2013/08/28 then put on github.com 2013/09/06
+#  https://github.com/PBrockmann/ipython-ferretmagic
 #
+#  Lock functions are taken from ipythonPexpect magic
+#  https://cdcvs.fnal.gov/redmine/projects/ipython_ext/repository/revisions/master/raw/ipythonPexpect.py
 #-----------------------------------------------------------------------------
 
 import os.path
@@ -75,6 +86,9 @@ class ferretMagics(Magics):
         except ExceptionPexpect:
             raise ferretMagicError('pyferret cannot be started')
 
+        self._shell = shell
+        self._shell.ferret_locked = False
+
 #----------------------------------------------------
     def ferret_run_code(self, args, code):
         """
@@ -90,7 +104,8 @@ class ferretMagics(Magics):
 
         # Redirect stdout and stderr to file
         out_filename = temp_dir + '/output.txt' 
-        (errval, errmsg) = pyferret.run('set redirect /clobber /file="%s" stdout stderr' % out_filename)
+        if not(args.quiet):
+            (errval, errmsg) = pyferret.run('set redirect /clobber /file="%s" stdout' % out_filename)
 
         # Filename for saving the final plot (if any)
         if args.plotname:
@@ -127,17 +142,14 @@ class ferretMagics(Magics):
 
         # Set window size with the required aspect ratio; 
         # always anti-alias with windows of these sizes
+        canvas_width = math.sqrt(plot_width * plot_height / plot_aspect)
         if args.bigger:
-            # Double the size (both width and height) of the standard window 
-            # and add some extra (0.5) thickness to lines
-            canvas_width = 2.0 * math.sqrt(10.5 * 8.5 / plot_aspect)
-            line_thicken = 2.0
-        else:
-            # Use a standard-size window with usual line thickness
-            canvas_width = math.sqrt(10.5 * 8.5 / plot_aspect)
-            line_thicken = 1.0
-        (errval, errmsg) = pyferret.run('set window /xinches=%f /thick=%f /aspect=%f 1' % \
-                                        (canvas_width, line_thicken, plot_aspect))
+            # Double the width and height of the window, but the image will
+            # be saved at the original requested size.  
+            # Reducing the raster image when saving it sharpens the image.
+            canvas_width *= 2.0
+        (errval, errmsg) = pyferret.run('set window /xpixel=%f /aspect=%f 1' % \
+                                        (canvas_width, plot_aspect))
 
         # Run code
         pyferret_error = False
@@ -147,12 +159,13 @@ class ferretMagics(Magics):
                 input = unicode_to_str(input)
                 (errval, errmsg) = pyferret.run(input)
                 if errval != pyferret.FERR_OK:
+                    errmsg = errmsg.replace('\\', '<br />')
                     publish_display_data(_PUBLISH_KEY, {'text/html': 
                         '<pre style="background-color:#F79F81; border-radius: 4px 4px 4px 4px; font-size: smaller">' +
                         'yes? %s\n' % input +
-                        '** (LAST) ERROR MESSAGE: %s' % errmsg +
+                        '%s' % errmsg +
                         '</pre>' 
-                    })
+			})
                     pyferret_error = True
                     break
 
@@ -170,7 +183,8 @@ class ferretMagics(Magics):
         (errval, errmsg) = pyferret.run('cancel window 1')
 
         # Close the stdout and stderr redirect file
-        (errval, errmsg) = pyferret.run('cancel redirect')
+        if not(args.quiet):
+        	(errval, errmsg) = pyferret.run('cancel redirect')
 
         #-------------------------------
 
@@ -223,6 +237,10 @@ class ferretMagics(Magics):
                # Delete temporary directory - PNG encoded in the string
                rmtree(temp_dir)
 
+	# Error in ferret code - Delete temporary directory 
+	else: 
+           rmtree(temp_dir)
+
         # Publication
         for source, data in display_data:
               publish_display_data(source, data)
@@ -240,11 +258,15 @@ class ferretMagics(Magics):
         )
     @argument(
         '-b', '--bigger', default=False, action='store_true',
-        help='Produce a sharper plot by doubling the standard plot window size before scaling'
+        help='Produce a sharper plot by doubling the standard plot window size before scaling.'
         )
     @argument(
         '-p', '--pdf', default=False, action='store_true',
         help='Generate the output plot as a PDF file.'
+        )
+    @argument(
+        '-q', '--quiet', default=False, action='store_true',
+        help='Do not display stdout.'
         )
     @argument(
         '-f', '--plotname',
@@ -278,11 +300,15 @@ class ferretMagics(Magics):
         )
     @argument(
         '-b', '--bigger', default=False, action='store_true',
-        help='Produce a sharper plot by doubling the standard plot window size before scaling'
+        help='Produce a sharper plot by doubling the standard plot window size before scaling.'
         )
     @argument(
         '-p', '--pdf', default=False, action='store_true',
         help='Generate the output plot as a PDF file.'
+        )
+    @argument(
+        '-q', '--quiet', default=False, action='store_true',
+        help='Do not display stdout.'
         )
     @argument(
         '-f', '--plotname',
@@ -292,8 +318,9 @@ class ferretMagics(Magics):
         'string',
         nargs='*'
         )
+    @needs_local_scope
     @line_magic
-    def ferret_run(self, line):
+    def ferret_run(self, line, local_ns=None):
         '''
         Line-level magic to run a command in ferret. 
 
@@ -302,7 +329,8 @@ class ferretMagics(Magics):
 
         '''
         args = parse_argstring(self.ferret_run, line)
-        code = [self.shell.ev(" ".join(args.string))]
+        #code = [self.shell.ex(" ".join(args.string))]
+        code = [eval(" ".join(args.string), local_ns)]
         self.ferret_run_code(args, code)
 
 #----------------------------------------------------
@@ -331,7 +359,7 @@ class ferretMagics(Magics):
 
         args = parse_argstring(self.ferret_getdata, line)
 
-        code = unicode_to_str(args.code[0])
+        code = unicode_to_str(''.join(args.code))
         pythonvariable = code.split('=')[0]
         ferretvariable = code.split('=')[1]
         exec('%s = pyferret.getdata("%s", %s)' % (pythonvariable, ferretvariable, args.create_mask) )
@@ -383,13 +411,66 @@ class ferretMagics(Magics):
             '</pre>' 
         })
 
+    @line_magic
+    def ferret_lock(self, line):
+        '''
+        Lock the notebook to send EVERY executed cell through pyferret
+      
+        Do %ferret_unlock to unlock
+
+        '''
+    
+        self._shell.ferret_locked = True
+
+        print 'WARNING: All future cell execution will be processed through pyferret!'
+        print 'To return to IPython, issue %ferret_unlock'
+
+    @line_magic
+    def ferret_unlock(self, line):
+        '''
+          Unlock the notebook to return to regular IPython
+        '''
+
+    
+        self._shell.ferret_locked = False
+    
+        print 'Notebook will use IPython'
+
+# Let's rewrite InteractiveShell.run_cell to do automatic processing with pyferret,
+# if desired
+from IPython.core.interactiveshell import InteractiveShell
+
+# Let's copy the original "run_cell" method (we do this only once so we can reload)
+if not getattr(InteractiveShell, "run_cell_a", False):
+  InteractiveShell.run_cell_a = InteractiveShell.run_cell
+
+# Now rewrite run_cell
+def run_cell_new(self, raw_cell, store_history=False, silent=False, shell_futures=True):
+  
+  # Are we locked in pyferret?
+  if getattr(self, "ferret_locked", False):
+  
+    # Don't alter cells that start with %%ferret or with %ferret_unlock
+    if raw_cell[:8] == '%%ferret' or raw_cell[:15] == '%ferret_unlock':
+      pass
+    else:
+      # We're going to add a %%ferret to the top
+      raw_cell = "%%ferret\n" + raw_cell
+
+  self.run_cell_a(raw_cell, store_history, silent, shell_futures)
+
+# And assign it
+InteractiveShell.run_cell = run_cell_new
+
 
 #----------------------------------------------------
 __doc__ = __doc__.format(
     ferret_DOC = ' '*8 + ferretMagics.ferret.__doc__,
     ferret_RUN_DOC = ' '*8 + ferretMagics.ferret_run.__doc__,
     ferret_GETDATA_DOC = ' '*8 + ferretMagics.ferret_getdata.__doc__,
-    ferret_PUTDATA_DOC = ' '*8 + ferretMagics.ferret_putdata.__doc__
+    ferret_PUTDATA_DOC = ' '*8 + ferretMagics.ferret_putdata.__doc__,
+    ferret_LOCK_DOC = ' '*8 + ferretMagics.ferret_lock.__doc__,
+    ferret_UNLOCK_DOC = ' '*8 + ferretMagics.ferret_unlock.__doc__
     )
 
 def load_ipython_extension(ip):

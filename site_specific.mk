@@ -35,8 +35,8 @@ INSTALL_FER_DIR	= $(FER_DIR)
 ## Do not give a location on other systems.  For these systems
 ## the system-wide shared-object Cairo libraries which are also
 ## used by Qt4 must be used.
-# CAIRO_DIR	=
-CAIRO_DIR	= /usr/local/cairo_188
+CAIRO_DIR	=
+# CAIRO_DIR	= /usr/local/cairo_188
 
 ## Installation directory for HDF5 static libraries
 ## (contains include and lib or lib64 subdirectories)
@@ -44,8 +44,8 @@ CAIRO_DIR	= /usr/local/cairo_188
 # HDF5_DIR	= /usr
 # HDF5_DIR	= /usr/local
 # HDF5_DIR	= /usr/local/hdf5-1.8.9
-HDF5_DIR	= /usr/local/hdf5_189
-# HDF5_DIR	= /usr/local/hdf5_189_64
+# HDF5_DIR	= /usr/local/hdf5_189
+HDF5_DIR	= /usr/local/hdf5_189_64
 # HDF5_DIR	= 
 
 ## Installation directory for NetCDF static or shared object libraries
@@ -54,8 +54,8 @@ HDF5_DIR	= /usr/local/hdf5_189
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
 # NETCDF4_DIR	= /usr/local/netcdf-4.3.1.1
-NETCDF4_DIR	= /usr/local/netcdf_4311
-# NETCDF4_DIR	= /usr/local/netcdf_4311_64
+# NETCDF4_DIR	= /usr/local/netcdf_4311
+NETCDF4_DIR	= /usr/local/netcdf_4311_64
 
 ## Java home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,

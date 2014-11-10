@@ -411,10 +411,6 @@
       INTEGER nx, ny, nt, k, m, n, k1, m1, n1,
      .        iw, jw, kw, lw, mw, nw
       REAL frac_timeser
-      
-      WRITE (err_msg,*)
-     .  'Function eof_stat_tgap not available in this version of Ferret. Use EOFSVD_STAT'
-      CALL ef_bail_out (id, err_msg)
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)

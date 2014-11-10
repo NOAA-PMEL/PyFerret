@@ -53,6 +53,10 @@ install:
 clean:
 	-rm -f *.o *.so
 
+tarfile:
+	tar cf fer_eof_gappyt_fcns.tar *.so
+	gzip -9 fer_eof_gappyt_fcns.tar
+
 #
 # End of Makefile
 #

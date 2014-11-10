@@ -1,6 +1,5 @@
 *
-*  eof_tfunc.F
-*
+*  eof_stat_tgap.F
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -35,12 +34,13 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 * Ansley Manke
-* Sep 1998
+* July 1999
 * Aug 2000 change fcn description; argument can be fcn of Z as well as x,y,t
-* May 2001 Use simpler solver EOFIN when frac_timeser = 1.
-* Jul 2001 Move to statically linked code in fer/efi.
+* May 2001 change to simpler solver EOFIN  (time series all need to be filled
+*
+* Jul 2001 Move to statically linked code in fer/efi. 
 * Jul 2001 move count_eof and pack_eof to file eofsubs.f, rename solve_eof
-*          to solve_eof_tfunc.
+*          to solve_eof_stat_tgap.
 *          Make the function work w/ data having multiple depths: compute
 *          EOF solution for each depth.
 * Aug 2001 move to fer/efi directory, to be statically linked to Ferret.  
@@ -48,6 +48,8 @@
 * Feb 2003 Add a test that NEOF <= max_neof, which is dictated by work
 *          arrays in the solvers in TRIDIN in eofsubs.F
 * Jun 2003 Workspace arrays need to be initialized for each vertical level.
+* Sep 2005 Remove the max_eof test; make all workspace be allocated as 
+*          external function work arrays.
 *
 * Compute EOF/s and time amplitude funcions from a 2-d field, or for each level 
 * of a 3-D field.  Based on programs (coadseof.f, etc.) by Dai McClurg and 
@@ -55,7 +57,13 @@
 * time series EOFIN, or optionally his implementation of Chelton's '82 method 
 * for finding EOFs of gappy time series.
 *
-* Return time amplitude functions.
+* Return statistics: number of eof's computed, percent variance explained
+* by each EOF, and the eigenvalue for each EOF.
+* x-axis is abstract length nx*ny; listing the statistics for each EOF.
+* y-axis is length 3: 
+*    1st is the # of eof's computed
+*    2nd is the Pct variation for each eof
+*    3rd is the eigenvalue for each eof.
 *
 *
 * In this SUBROUTINE we provide information about
@@ -93,7 +101,7 @@
 *
 
 
-      SUBROUTINE eof_tfunc_init(id)
+      SUBROUTINE eof_stat_tgap_init(id)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
@@ -104,14 +112,19 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      CALL ef_set_desc(id,
-     .   'Compute EOF time functions from XYT field with gappy time series')
+
+      CHARACTER*100 fcn_desc
+
+   10 FORMAT ('EOF statistics from XYT field (gappy time series). j=1:#EOFs, ',
+     .        'j=2:%variation, j=3:eigenvalues' )
+      WRITE (fcn_desc, 10) 
+      CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 2)
 
       CALL ef_set_axis_inheritance_6d(id,
-     .                                ABSTRACT,        NORMAL,
-     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                ABSTRACT,        ABSTRACT,
+     .                                IMPLIED_BY_ARGS, NORMAL,
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
       CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
@@ -122,15 +135,15 @@
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_desc(id, arg,
-     .                     'Variable in x,y,t; may be fcn of z,e,f')
+     .        'Variable in x,y,t; may be fcn of z,e,f')
       CALL ef_set_axis_influence_6d(id, arg,
-     .                              NO, NO, YES, YES, YES, YES)
+     .                              NO, NO, YES, NO, YES, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'frac_timeser')
       CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_desc(id, arg,
-     . 'Use only those time series with this fraction valid data')
+     . 'Use only those time series with this fraction valid data.')
       CALL ef_set_axis_influence_6d(id, arg,
      .                              NO, NO, NO, NO, NO, NO)
 
@@ -152,7 +165,7 @@
 * hiss               hi subscript for an axis
 *
 
-      SUBROUTINE eof_tfunc_result_limits(id)
+      SUBROUTINE eof_stat_tgap_result_limits(id)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
@@ -185,6 +198,8 @@
 
       CALL ef_set_axis_limits(id, X_AXIS, my_lo_l, my_hi_l)
 
+      CALL ef_set_axis_limits(id, Y_AXIS, 1, 3)
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
@@ -197,7 +212,7 @@
 * In this subroutine we request an amount of storage to be supplied
 * by Ferret and passed as an additional argument.
 *
-      SUBROUTINE eof_tfunc_work_size(id)
+      SUBROUTINE eof_stat_tgap_work_size(id)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
@@ -211,14 +226,14 @@
 *                                                                      V
 
 *
-* Set the work arrays, X/Y/Z/T/E/F dimensions
+* Set the work arrays,  X/Y/Z/T/E/F dimensions
 *
 * ef_set_work_array_dims_6d(id, array #,
 *                           xlo, ylo, zlo, tlo, elo, flo,
 *                           xhi, yhi, zhi, thi, ehi, fhi)
 *
-      COMMON /eof_tfuncSTOR/ mx
-      INTEGER mx1, my1, mt1, mxmt, mxmx, mx
+      COMMON /eof_stat_tgapSTOR/ mx
+      INTEGER mx1, my1, mt1, mx, mxmt, mxmx
 
       INTEGER iwork
       INTEGER arg_lo_ss(6,EF_MAX_ARGS),
@@ -233,7 +248,7 @@
 
       mx = mx1 * my1 + 10
       mxmt = mx * mt1 + 10
-      mxmx = mx * mx + 10
+      mxmx = mx* mx + 10
 
 *  val
       iwork = 1
@@ -297,21 +312,25 @@
       RETURN 
       END
 
+
+
+
 *
 * In this SUBROUTINE we compute the result
 *
 
-      SUBROUTINE  eof_tfunc_compute(id, arg_1, arg_2, result, 
+      SUBROUTINE  eof_stat_tgap_compute(id, arg_1, arg_2, result, 
      .       val, taf, pct, vec, c, ddat_1d, isave_jsave, ok, eofwork)
 
 *  arg_1  variable, function of (x,y,t)
-*  result neof*NT time amplitude functions
+
+*  result(i, 1,. ,. )    # eigenfunctions.
+*  result(i, 2,. ,. )    pct variation for eigenfuncton i.
+*  result(i, 3,. ,. )    eigenvalue for eigenfuncton i.
 
 *  Work arrays:
 *  val, taf, pct, vec, c, ddat_1d, isave_jsave, ok
-
 *  val(neof)	eigenvalues (Lambda)
-*  result == vec(neof,neof) eigenvectors (Lambda*U). Same units as data.
 *  taf(neof,nt)	time amplitude functions (V). Dimensionless.
 *  pct(neof)	% variance represented by each EOF.
 *  c(neof,neof)	work space for cov matrix (garbage output)
@@ -323,10 +342,10 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      COMMON /eof_tfuncSTOR/ mx
-      INTEGER mx
-
       INTEGER id
+
+      COMMON /eof_stat_tgapSTOR/ mx
+      INTEGER mx
 
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
      .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
@@ -386,16 +405,15 @@
 *                                                                      |
 *                                                                      V
 
-      INTEGER neof, ier
+      INTEGER neof, max_neof, ier
       CHARACTER*255 err_msg, err_out
 
       INTEGER nx, ny, nt, k, m, n, k1, m1, n1,
      .        iw, jw, kw, lw, mw, nw
       REAL frac_timeser
-
-
+      
       WRITE (err_msg,*)
-     .  'Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC'
+     .  'Function eof_stat_tgap not available in this version of Ferret. Use EOFSVD_STAT'
       CALL ef_bail_out (id, err_msg)
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
@@ -511,8 +529,8 @@
             eofwork(iw,jw,kw,lw,mw,nw) = 0.
   709    CONTINUE
 
-*  Find the number of EOFS to solve for.
-*  neof = number of (x,y) points with frac_timeser good data.  
+*  Find the number of eofs to solve for.
+*  neof = number of (x,y) points with frac_timeser  good data.  
 *  Set OK to mark where they are.  (note this also allows for 
 *  working around continental boundaries or other areas where 
 *  entire time series are missing)
@@ -520,7 +538,7 @@
          CALL count_neof (arg_1, neof, ok, nx, ny, nt, k1, m1, n1,
      .                    arg_lo_ss, arg_hi_ss, arg_incr, mx,
      .                    bad_flag(ARG1), frac_timeser, err_msg, ier)
-         IF (ier .NE. 0) then
+         IF (ier .ne. 0) then
             GOTO 5010
          ENDIF
 
@@ -532,7 +550,7 @@
 
 *  Solve for the EOF's: eigenvectors, time functions, percent variance explained.
 
-         CALL solve_eof_tfunc (ddat_1d, neof, nt, k, m, n, val, vec, 
+         CALL solve_eof_stat_tgap (ddat_1d, neof, nt, k, m, n, val, vec, 
      .            taf, pct, c, result, isave_jsave, eofwork, res_lo_ss,
      .            res_hi_ss, res_incr, bad_flag(ARG1), bad_flag_result,
      .            frac_timeser, err_msg, ier)
@@ -559,7 +577,7 @@
 
 ***********************************************************************
 
-      SUBROUTINE solve_eof_tfunc (ddat_1d, neof, nt, k, m, n, val, vec, 
+      SUBROUTINE solve_eof_stat_tgap (ddat_1d, neof, nt, k, m, n, val, vec, 
      .            taf, pct, c, result, isave_jsave, eofwork, res_lo_ss,
      .            res_hi_ss, res_incr, bad_flag_dat, bad_flag_result, 
      .            frac_timeser, err_msg, ier)
@@ -591,7 +609,7 @@
       INTEGER ier
 
 * local variables
-      INTEGER i, j, l, cnt
+      INTEGER i, j, l
 
       IF (frac_timeser .LT. 1.) THEN
          CALL EOFIN_CHEL_GAP (ddat_1d, neof, nt, val, vec, taf, pct, c, 
@@ -601,22 +619,32 @@
          CALL EOFIN(ddat_1d, neof, nt, val, vec, taf, pct, c, eofwork)
       ENDIF
 
-*  Result is the time functions. 
+*  Result for j = 1 is the # eigenfunctions.
 
-      j = res_lo_ss(Y_AXIS)
-      DO 120 i = 1, neof
-         cnt = 1
-         DO 110 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-            result(i,j,k,l,m,n) = taf(i,cnt)
-            cnt = cnt + 1
+      j =  res_lo_ss(Y_AXIS)
+      DO 130 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+         DO 110 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+            result(i,j,k,l,m,n) = neof
   110    CONTINUE
-  120 CONTINUE
+  130 CONTINUE
 
-      DO 220 i = neof+1, res_hi_ss(X_AXIS)
+*  Result for j = 2 is the percent variation explained by the eigenfunctions
+
+      j =  j + res_incr(Y_AXIS)
+      DO 230 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
          DO 210 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-            result(i,j,k,l,m,n) = bad_flag_result
+            result(i,j,k,l,m,n) = pct(i)
   210    CONTINUE
-  220 CONTINUE
+  230 CONTINUE
+
+*  Result for j = 3 is the eigenvalue for each eigenfunction
+
+      j =  j + res_incr(Y_AXIS)
+      DO 330 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+         DO 310 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            result(i,j,k,l,m,n) = val(i)
+  310    CONTINUE
+  330 CONTINUE
 
       RETURN
       END

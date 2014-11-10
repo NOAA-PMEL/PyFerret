@@ -1,5 +1,6 @@
 *
-*  eof_space.F
+*  eof_tfunc_tgap.F
+*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -37,19 +38,16 @@
 * Sep 1998
 * Aug 2000 change fcn description; argument can be fcn of Z as well as x,y,t
 * May 2001 Use simpler solver EOFIN when frac_timeser = 1.
-*
-* Jul 2001 Move to statically linked code in fer/efi. 
-* Jul 2001 Move count_eof and pack_eof to file eofsubs.f, rename solve_eof
-*          to solve_eof_space.
+* Jul 2001 Move to statically linked code in fer/efi.
+* Jul 2001 move count_eof and pack_eof to file eofsubs.f, rename solve_eof
+*          to solve_eof_tfunc_tgap.
 *          Make the function work w/ data having multiple depths: compute
 *          EOF solution for each depth.
 * Aug 2001 move to fer/efi directory, to be statically linked to Ferret.  
-*	   Change INCLUDE statements to remove directory spec.  
+*	   Change INCLUDE statements to remove directory spec.
 * Feb 2003 Add a test that NEOF <= max_neof, which is dictated by work
 *          arrays in the solvers in TRIDIN in eofsubs.F
 * Jun 2003 Workspace arrays need to be initialized for each vertical level.
-* Sep 2005 Remove the max_eof test; make all workspace be allocated as 
-*          external function work arrays.
 *
 * Compute EOF/s and time amplitude funcions from a 2-d field, or for each level 
 * of a 3-D field.  Based on programs (coadseof.f, etc.) by Dai McClurg and 
@@ -57,10 +55,10 @@
 * time series EOFIN, or optionally his implementation of Chelton's '82 method 
 * for finding EOFs of gappy time series.
 *
-* Return Spatial EOF's
+* Return time amplitude functions.
 *
 *
-* In this subroutine we provide information about
+* In this SUBROUTINE we provide information about
 * the function.  The user configurable information 
 * consists of the following:
 *
@@ -95,10 +93,10 @@
 *
 
 
-      SUBROUTINE eof_space_init(id)
+      SUBROUTINE eof_tfunc_tgap_init(id)
 
       IMPLICIT NONE
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
 
@@ -106,16 +104,18 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      CALL ef_set_desc(id, 
-     . 'Compute EOF spacial fields from XYT field with gappy time series')
+      CALL ef_set_desc(id,
+     .   'Compute EOF time functions from XYT field with gappy time series')
 
       CALL ef_set_num_args(id, 2)
 
       CALL ef_set_axis_inheritance_6d(id,
+     .                                ABSTRACT,        NORMAL,
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
-     .                                IMPLIED_BY_ARGS, ABSTRACT,
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
       CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
+
+
       CALL ef_set_num_work_arrays(id, 9)
 
       arg = 1
@@ -124,7 +124,7 @@
       CALL ef_set_arg_desc(id, arg,
      .                     'Variable in x,y,t; may be fcn of z,e,f')
       CALL ef_set_axis_influence_6d(id, arg,
-     .                              YES, YES, YES, NO, YES, YES)
+     .                              NO, NO, YES, YES, YES, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'frac_timeser')
@@ -133,6 +133,7 @@
      . 'Use only those time series with this fraction valid data')
       CALL ef_set_axis_influence_6d(id, arg,
      .                              NO, NO, NO, NO, NO, NO)
+
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -151,11 +152,11 @@
 * hiss               hi subscript for an axis
 *
 
-      SUBROUTINE eof_space_result_limits(id)
+      SUBROUTINE eof_tfunc_tgap_result_limits(id)
 
       IMPLICIT NONE
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
       INTEGER arg_lo_ss(6,EF_MAX_ARGS),
@@ -182,7 +183,7 @@
       my_lo_l = 1
       my_hi_l = nx * ny
 
-      CALL ef_set_axis_limits(id, T_AXIS, my_lo_l, my_hi_l)
+      CALL ef_set_axis_limits(id, X_AXIS, my_lo_l, my_hi_l)
 
 *                                                                     ^
 *                                                                     |
@@ -196,11 +197,11 @@
 * In this subroutine we request an amount of storage to be supplied
 * by Ferret and passed as an additional argument.
 *
-      SUBROUTINE eof_space_work_size(id)
+      SUBROUTINE eof_tfunc_tgap_work_size(id)
 
       IMPLICIT NONE
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -216,8 +217,8 @@
 *                           xlo, ylo, zlo, tlo, elo, flo,
 *                           xhi, yhi, zhi, thi, ehi, fhi)
 *
-      COMMON /EOFXYSTOR/ mx
-      INTEGER mx1, my1, mt1, mx, mxmt, mxmx
+      COMMON /eof_tfunc_tgapSTOR/ mx
+      INTEGER mx1, my1, mt1, mxmt, mxmx, mx
 
       INTEGER iwork
       INTEGER arg_lo_ss(6,EF_MAX_ARGS),
@@ -300,11 +301,11 @@
 * In this SUBROUTINE we compute the result
 *
 
-      SUBROUTINE  eof_space_compute(id, arg_1, arg_2, result, 
+      SUBROUTINE  eof_tfunc_tgap_compute(id, arg_1, arg_2, result, 
      .       val, taf, pct, vec, c, ddat_1d, isave_jsave, ok, eofwork)
 
 *  arg_1  variable, function of (x,y,t)
-*  result NX*NY eigenvectors
+*  result neof*NT time amplitude functions
 
 *  Work arrays:
 *  val, taf, pct, vec, c, ddat_1d, isave_jsave, ok
@@ -319,13 +320,13 @@
 *		original ALPHA, BETA, BB, and P arrays.
 
       IMPLICIT NONE
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
+
+      COMMON /eof_tfunc_tgapSTOR/ mx
+      INTEGER mx
 
       INTEGER id
-
-      COMMON /EOFXYSTOR/ mx
-      INTEGER mx
 
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
      .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
@@ -391,9 +392,10 @@
       INTEGER nx, ny, nt, k, m, n, k1, m1, n1,
      .        iw, jw, kw, lw, mw, nw
       REAL frac_timeser
-      
+
+
       WRITE (err_msg,*)
-     .  'Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE'
+     .  'Function eof_tfunc_tgap not available in this version of Ferret. Use EOFSVD_TFUNC'
       CALL ef_bail_out (id, err_msg)
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
@@ -509,10 +511,9 @@
             eofwork(iw,jw,kw,lw,mw,nw) = 0.
   709    CONTINUE
 
-
-*  Find the number of eofs to solve for.
+*  Find the number of EOFS to solve for.
 *  neof = number of (x,y) points with frac_timeser good data.  
-*  Set OK to mark where they are.   (note this also allows for 
+*  Set OK to mark where they are.  (note this also allows for 
 *  working around continental boundaries or other areas where 
 *  entire time series are missing)
 
@@ -531,7 +532,7 @@
 
 *  Solve for the EOF's: eigenvectors, time functions, percent variance explained.
 
-         CALL solve_eof_space (ddat_1d, neof, nt, k, m, n, val, vec, 
+         CALL solve_eof_tfunc_tgap (ddat_1d, neof, nt, k, m, n, val, vec, 
      .            taf, pct, c, result, isave_jsave, eofwork, res_lo_ss,
      .            res_hi_ss, res_incr, bad_flag(ARG1), bad_flag_result,
      .            frac_timeser, err_msg, ier)
@@ -558,14 +559,14 @@
 
 ***********************************************************************
 
-      SUBROUTINE solve_eof_space (ddat_1d, neof, nt, k, m, n, val, vec, 
+      SUBROUTINE solve_eof_tfunc_tgap (ddat_1d, neof, nt, k, m, n, val, vec, 
      .            taf, pct, c, result, isave_jsave, eofwork, res_lo_ss,
      .            res_hi_ss, res_incr, bad_flag_dat, bad_flag_result, 
      .            frac_timeser, err_msg, ier)
 
       IMPLICIT NONE
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
 * arguments
       INTEGER neof, nt, k, m, n
@@ -590,7 +591,7 @@
       INTEGER ier
 
 * local variables
-      INTEGER i, j, l, mm, nn, is, js
+      INTEGER i, j, l, cnt
 
       IF (frac_timeser .LT. 1.) THEN
          CALL EOFIN_CHEL_GAP (ddat_1d, neof, nt, val, vec, taf, pct, c, 
@@ -600,32 +601,20 @@
          CALL EOFIN(ddat_1d, neof, nt, val, vec, taf, pct, c, eofwork)
       ENDIF
 
-*  Result is the eigenvectors.
+*  Result is the time functions. 
 
-      DO 130 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-         DO 120 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-            DO 110 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-               result(i,j,k,l,m,n) = bad_flag_result
-  110       CONTINUE
-  120    CONTINUE
-  130 CONTINUE
+      j = res_lo_ss(Y_AXIS)
+      DO 120 i = 1, neof
+         cnt = 1
+         DO 110 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            result(i,j,k,l,m,n) = taf(i,cnt)
+            cnt = cnt + 1
+  110    CONTINUE
+  120 CONTINUE
 
-      DO 220 nn = 1, neof
-         DO 210 mm = 1, neof
-            IF (res_lo_ss(X_AXIS) .EQ. ef_unspecified_int4) THEN
-               is = ef_unspecified_int4
-            ELSE
-               is = res_lo_ss(X_AXIS) + isave_jsave(mm,1,1,1,1,1) - 1
-            ENDIF
-
-            IF (res_lo_ss(Y_AXIS) .EQ. ef_unspecified_int4) THEN
-               js = ef_unspecified_int4
-            ELSE
-               js = res_lo_ss(Y_AXIS) + isave_jsave(mm,2,1,1,1,1) - 1
-            ENDIF
-
-            result(is,js,k,nn,m,n) = vec(mm,nn)
-
+      DO 220 i = neof+1, res_hi_ss(X_AXIS)
+         DO 210 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            result(i,j,k,l,m,n) = bad_flag_result
   210    CONTINUE
   220 CONTINUE
 

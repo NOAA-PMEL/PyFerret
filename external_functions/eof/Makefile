@@ -53,6 +53,8 @@ install:
 clean:
 	-rm -f *.o *.so
 
+# To make a tarfile with the older functions that work on gappy timeseries:
+# make; make tarfile
 tarfile:
 	tar cf fer_eof_gappyt_fcns.tar *.so
 	gzip -9 fer_eof_gappyt_fcns.tar

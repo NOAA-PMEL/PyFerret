@@ -15,7 +15,6 @@
 !
 ! 2/12 *kms* add E and F dimensions
 !            moved to EF_mem_subsc.defcmn so EF_mem_subsc is the external declaration
-! 6/12 *kms* added EXTERNAL since this block is part of Ferret
 ! 8/12 *kms* added FERRET_ prefix to common block name to identify source 
 !            (primarily for PyFerret where this becomes global under Python)
 !
@@ -27,7 +26,6 @@
 
         INTEGER, PARAMETER :: ef_max_mem_args = 12
 
-        EXTERNAL FERRET_EF_MEM_SUBSC
         COMMON / FERRET_EF_MEM_SUBSC / &
             mem1lox, mem2lox, mem3lox, mem4lox,  mem5lox,  mem6lox, &
             mem7lox, mem8lox, mem9lox, mem10lox, mem11lox, mem12lox, &

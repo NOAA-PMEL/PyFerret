@@ -66,6 +66,14 @@ x86_64-linux:
 		GKLIB="../xgks/src/lib/libxgks.a" \
 		LIB="-lX11 -lm"
 
+x86_64-linux-gnu:	
+	${MAKE} gksm2ps \
+		CC=gcc \
+		CFLAGS="-m64 -I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm" \
+		LDFLAGS= \
+		GKLIB="../xgks/src/lib/libxgks.a" \
+		LIB="-lX11 -lm"
+
 gksm2ps:
 	$(CC) $(CFLAGS) $(LDFLAGS) -o gksm2ps gksm2ps.c xpreview.c \
 	 resize_xgks_window.c set_background.c gksm.c batch_graphics.c \

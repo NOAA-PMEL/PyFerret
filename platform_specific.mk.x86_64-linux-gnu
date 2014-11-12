@@ -50,8 +50,7 @@ endif
 			  $(CAIRO_INCLUDE) \
 			  -I/usr/include/pango-1.0 \
 			  -I/usr/include/glib-2.0 \
-			  -I/usr/lib64/glib-2.0/include \
-                          -I/usr/lib/x86_64-linux-gnu/glib-2.0/include \
+			  -I/usr/lib/x86_64-linux-gnu/glib-2.0/include \
 			  -I$(NETCDF4_DIR)/include
 
 	MYDEFINES	= -Dcrptd_cat_argument \

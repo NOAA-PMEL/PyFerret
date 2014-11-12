@@ -45,7 +45,7 @@ SUB_OBJS = eofsubs.o
 # Targets
 #
 
-all:	eofsvd_space.so eof_space_fix.so eof_tfunc_fix.so eof_stat_fix.so
+all:	eofsubs.o eof_space_tgap.so eof_tfunc_tgap.so eof_stat_tgap.so
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
@@ -55,6 +55,13 @@ install:
 
 clean:
 	-rm -f *.o *.so
+
+# To make a tarfile with the older functions that work on gappy timeseries:
+# make; make tarfile
+tarfile:
+	rm -f fer_eof_gappy_timeseries_fcns.tar*
+	tar cf fer_eof_gappy_timeseries_fcns.tar *.so
+	gzip -9 fer_eof_gappy_timeseries_fcns.tar
 
 #
 # End of Makefile

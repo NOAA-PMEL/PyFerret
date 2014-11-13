@@ -1,7 +1,7 @@
 * 
 *  expndi_by_m_counts.F
 * 
-*  Ansley Manke (from expndi_by_m_counts)
+*  Ansley Manke (from expndi_by_z_counts)
 *  4/2014
 * 
 * Expand argument 1 by creating a 2D XE structure from it with the 
@@ -24,7 +24,7 @@
 *  num_args           Required number of arguments
 * 
 *  axis_inheritance   Type of axis for the result
-*                        ( CUSTOM, IMPLIED_BY_Z_ARGS, NORMAL, ABSTRACT )
+*                        ( CUSTOM, IMPLIED_BY_Z_ARGS, q, ABSTRACT )
 *                        CUSTOM          - user defined axis
 *                        IMPLIED_BY_Z_ARGS - same axis as the incoming argument
 *                        NORMAL          - the result is normal to this axis
@@ -66,8 +66,8 @@
 
       CALL ef_set_num_args(id, 3)
       CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance_6d(id, CUSTOM, NORMAL, NORMAL, 
-     .                                    NORMAL, CUSTOM, NORMAL)
+      CALL ef_set_axis_inheritance_6d(id, CUSTOM, NORMAL, 
+     .     NORMAL, NORMAL, CUSTOM, NORMAL)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'dat')
@@ -77,7 +77,7 @@
       arg = 2
       CALL ef_set_arg_name(id, arg, 'counts')
       CALL ef_set_arg_desc(id, arg,
-     .          '1-D list: count of values in each trajectory')
+     .          '1-D list on E axis: count of values in each trajectory')
       CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
 
       arg = 3
@@ -93,58 +93,37 @@
       RETURN 
       END
 
-
-
-*
-* In this subroutine we define limits for custom axes.
-*
-* lo_ss               lo subscript for an axis
-*
-* hi_ss               hi subscript for an axis
-*
-
+ 
       SUBROUTINE expndi_by_m_counts_custom_axes(id)
-
+ 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
-
+ 
       INTEGER id
 
-* **********************************************************************
-*                                           USER CONFIGURABLE PORTION |
-*                                                                     |
-*                                                                     V
-
       REAL size, ene
-      integer arg, idim, ilen, ndim
-      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+      integer arg, idim, nm
+
+       INTEGER arg_lo_ss(6,EF_MAX_ARGS),
      .        arg_hi_ss(6,EF_MAX_ARGS),
      .        arg_incr (6,EF_MAX_ARGS)
-
 *
 *     Use utility functions to get context information about the arguments.
 *
-* output E axis size
-      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
+       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
+ 
+* output X axis size: Longest feature
 
-      ndim = 6
-      arg = 2
-      ene = 1
-      DO idim = 1, ndim
-        ilen = arg_hi_ss(idim,arg) - arg_lo_ss(idim,arg) + 1
-        IF (ene.GT.1 .AND. ilen.GT.1) 
-     .    CALL EF_BAIL_OUT(id, 'Arg 1 must be a 1D list')
-	
-        ene = MAX(ene, FLOAT(ilen))
-      ENDDO
-
-      CALL ef_set_custom_axis(id, E_AXIS, 1.0, ene, 1.0, 'Row', NO)
-
-
-* output X axis size
       CALL ef_get_one_val(id, ARG3, size)
-      CALL ef_set_custom_axis(id, X_AXIS, 1, size, 1., 'Obs', NO)
+      CALL ef_set_custom_axis(id, X_AXIS, 1.0, size, 1.0, 'Obs', NO)
 
+
+* output E axis size: Rowsize
+      arg = 2
+      nm = arg_hi_ss(E_AXIS,arg)-arg_lo_ss(E_AXIS,arg) + 1
+      ene = FLOAT(nm)
+      CALL ef_set_custom_axis(id, E_AXIS, 1., ene, 1., 'Row', NO)
+ 
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
@@ -152,11 +131,7 @@
 
       RETURN 
       END
-
-
-
-
-
+ 
 *
 * In this subroutine we provide information about the lo and hi
 * limits associated with each abstract or custom axis.   The user 
@@ -179,32 +154,25 @@
 *                                                                     V
 
       REAL size
-      integer ne, arg, idim, ilen, ndim
-      INTEGER arg_lo_ss(6,EF_MAX_ARGS), arg_hi_ss(6,EF_MAX_ARGS),
-     .     arg_incr(6,EF_MAX_ARGS)
+      integer nm, arg, idim
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
 *
 *     Use utility functions to get context information about the arguments.
 *
-* output E axis size
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-      ndim = 6
-      arg = 2
-      ne = 1
-      DO idim = 1, ndim
-        ilen = arg_hi_ss(idim,arg)-arg_lo_ss(idim,arg) + 1
-        IF (ne.GT.1 .AND. ilen.GT.1)
-     .    CALL EF_BAIL_OUT(id, 'Arg 1 must be a 1D list')
-	
-        ne = MAX(ne, ilen)
-      ENDDO
-
-      CALL ef_set_axis_limits(id, E_AXIS, 1, ne)
-
-* output X axis size
+* output X axis size: Longest feature
       CALL ef_get_one_val(id, ARG3, size)
-      CALL ef_set_axis_limits(id, X_AXIS, 1, INT(ABS(size)))
+      nm = INT(ABS(size))
+      CALL ef_set_axis_limits(id, X_AXIS, 1, nm)
+
+* output E axis size
+      arg = 1
+      nm = arg_hi_ss(E_AXIS,arg)-arg_lo_ss(E_AXIS,arg) + 1
+      CALL ef_set_axis_limits(id, E_AXIS, 1, nm)
 
 *                                                                     ^
 *                                                                     |
@@ -213,12 +181,6 @@
 
       RETURN 
       END
-
-
-
-
-
-
 
 * 
 *  In this subroutine we compute the result
@@ -262,7 +224,7 @@
       INTEGER i,j,k,l,m,n
       INTEGER i1, j1, k1, l1, m1, n1
       INTEGER i2, j2, k2, l2, m2, n2
-      INTEGER imax, mmax, iout, isum, mrow
+      INTEGER imax, iout, isum, mmax, mrow, mout
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -293,14 +255,14 @@
 
 * pre-fill the entire output result with missing value flags
 *  (since length of each profile may have different number of pts)
-      DO 100 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-      DO 100 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-      DO 100 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-      DO 100 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 100 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-      DO 100 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      DO 50 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+      DO 50 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+      DO 50 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+      DO 50 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      DO 50 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+      DO 50 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
          result(i,j,k,l,m,n) = bad_flag_result
- 100  CONTINUE
+ 50   CONTINUE
 
 * fill in the points as specified by the counts
 
@@ -325,17 +287,15 @@
 
          m1 = arg_lo_ss(E_AXIS,ARG1)
          m2 = arg_lo_ss(E_AXIS,ARG2)
+ 
+	    i1 = 1
+            DO 200 mout=arg_lo_ss(E_AXIS,ARG2),arg_hi_ss(E_AXIS,ARG2)
+               DO 100 iout = 1, arg_2(i2,j2,k2,l2,mout,n1)
+                  result(iout,j,k,l,mout,n) = arg_1(i1,j1,k1,l1,m1,n1)
 
-         DO 300 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-
-	    mrow = INT( arg_2(i2,j2,k2,l2,m2,n2) )
-            DO 200 iout = 1, mrow
-               result(iout,j,k,l,m,n) = arg_1(i1,j1,k1,l1,m1,n1)
-               i1 = i1 + 1
+                  i1 = i1 + 1
+ 100           CONTINUE
  200        CONTINUE
-
-            m2 = m2 + 1
- 300     CONTINUE
 
          j1 = j1 + arg_incr(Y_AXIS,ARG1)
          j2 = j2 + arg_incr(Y_AXIS,ARG2)

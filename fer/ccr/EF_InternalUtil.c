@@ -742,6 +742,7 @@ void FORTRAN(expndi_id_by_z_counts_result_limits)(int *);
 void FORTRAN(expndi_id_by_z_counts_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(expndi_by_m_counts_init)(int *);
+void FORTRAN(expndi_by_m_counts_result_limits)(int *);
 void FORTRAN(expndi_by_m_counts_custom_axes)(int *);
 void FORTRAN(expndi_by_m_counts_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
@@ -3980,6 +3981,7 @@ else if ( !strcmp(name,"expndi_id_by_z_counts_compute_") ) return (void *)FORTRA
 
 /* expndi_by_m_counts.F */
 else if ( !strcmp(name,"expndi_by_m_counts_init_") ) return (void *)FORTRAN(expndi_by_m_counts_init);
+else if ( !strcmp(name,"expndi_by_m_counts_result_limits_") ) return (void *)FORTRAN(expndi_by_m_counts_result_limits);
 else if ( !strcmp(name,"expndi_by_m_counts_custom_axes_") ) return (void *)FORTRAN(expndi_by_m_counts_custom_axes);
 else if ( !strcmp(name,"expndi_by_m_counts_compute_") ) return (void *)FORTRAN(expndi_by_m_counts_compute);
 

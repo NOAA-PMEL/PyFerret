@@ -141,5 +141,12 @@
       ENDIF
       dset = dset_num
 
+* If the name is just a dot, it is the fake global-attributes variable
+
+      IF (slen.EQ.1 .AND. buff(1:1) .EQ. ".") THEN
+         varid = 0
+	 status = merr_ok
+      ENDIF
+
  5000 RETURN
       END

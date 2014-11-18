@@ -1,0 +1,79 @@
+! bn_permute_ascii.jnl
+! test permutations when reading ascii data, in E and F directions
+! 11/18/2014
+! see ticket 2217: was not working for grids in E and F
+
+
+! First with T axis
+
+! unpermuted
+def axis/t=1:12:1 t12
+define axis/x=1:4:1 x4ax
+def grid/x=x4ax/t=t12 txgrid
+ FILE/SKIP=4/VAR="Tm"/COL=12/order=tx/GRID=txgrid fxdata.dat
+sh dat
+list tm
+
+! permuted
+def axis/t=1:12:1 t12
+define axis/x=1:4:1 x4ax
+def grid/x=x4ax/t=t12 txgrid
+FILE/SKIP=4/VAR="Tm"/COL=12/order=tx/GRID=txgrid fxdata.dat
+sh dat
+list tm
+
+! Then same with F axis
+can data/all
+
+def axis/f=1:12:1 f12
+define axis/x=1:4:1 x4ax
+def grid/x=x4ax/f=f12 fxgrid
+ FILE/SKIP=4/VAR="Tm"/COL=12/order=fx/GRID=fxgrid fxdata.dat
+sh dat
+list tm
+
+! Read same data in y-z-t
+can data/all
+
+def axis/t=1:6:1 t6ax
+define axis/z=1:4:1 z4ax
+define axis/y=1:2:1 y2ax
+def grid/y=y2ax/z=z4ax/t=t6ax grid3d
+FILE/SKIP=4/VAR="Tm"/COL=12/GRID=grid3d fxdata.dat
+sh dat
+list tm
+
+! And permuted
+
+can data/all
+
+def axis/t=1:6:1 t6ax
+define axis/z=1:4:1 z4ax
+define axis/y=1:2:1 y2ax
+def grid/y=y2ax/z=z4ax/t=t6ax grid3d
+FILE/SKIP=4/VAR="Tm"/COL=12/order=tyz/GRID=grid3d fxdata.dat
+sh dat
+list tm
+
+! Now with Y-Z-E
+
+can data/all
+
+def axis/e=1:6:1 e6ax
+define axis/z=1:4:1 z4ax
+define axis/y=1:2:1 y2ax
+def grid/y=y2ax/z=z4ax/e=e6ax grid3d
+FILE/SKIP=4/VAR="Tm"/COL=12/GRID=grid3d fxdata.dat
+sh dat
+list tm
+
+can data/all
+
+def axis/e=1:6:1 e6ax
+define axis/z=1:4:1 z4ax
+define axis/y=1:2:1 y2ax
+def grid/y=y2ax/z=z4ax/e=e6ax grid3d
+FILE/SKIP=4/VAR="Tm"/COL=12/order=eyz/GRID=grid3d fxdata.dat
+sh dat
+list tm
+

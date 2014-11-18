@@ -35,15 +35,16 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* work routine for EZ_READ when /ORDER is not the default X-Y-Z-T
-* Determine the single-dimensioned array index equivalent to the 4D
-* (i,j,k,l) of the "next" word to be stored
+* work routine for EZ_READ when /ORDER is not the default X-Y-Z-T-E-F
+* Determine the single-dimensioned array index equivalent to the 6D
+* (i,j,k,l,m,n) of the "next" word to be stored
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
 
 * revision 0.00 -  3/4/94 *sh*
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V694 11/14 *acm* Ticket 2217: permuted ASCII reading in 6D
 
 * calling arguments:
 * None - all indexing is done in COMMON to maximize speed (and because
@@ -56,18 +57,22 @@
         include 'xez_order.cmn_text'
 
 * convenience equivalences
-	INTEGER	nx, ny, nz,
-     .		 i,  j,  k,  l,
-     .		o1, o2, o3, o4
-	EQUIVALENCE (eznn(1),nx), (eznn(2),ny), (eznn(3),nz),
-     .		    (ezii(1),i),(ezii(2),j),(ezii(3),k),(ezii(4),l),
+	INTEGER	nx, ny, nz, nt, ne, nf,
+     .		 i,  j,  k,  l, m, n,
+     .		o1, o2, o3, o4, o5, o6
+	EQUIVALENCE (eznn(1),nx), (eznn(2),ny), (eznn(3),nz), 
+     .		    (eznn(4),nt), (eznn(5),ne),
+     .		    (ezii(1),i),(ezii(2),j),(ezii(3),k),
+     .		    (ezii(4),l),(ezii(5),m),(ezii(6),n),
      .		    (ezorder(1),o1), (ezorder(2),o2), 
-     .		    (ezorder(3),o3), (ezorder(4),o4) 
+     .		    (ezorder(3),o3), (ezorder(4),o4), 
+     .		    (ezorder(5),o5), (ezorder(6),o6) 
 
 
 * local variable definitions:
 
-* increment all 4 subscripts in appropriate permutation
+* increment all nferdims subscripts in appropriate permutation
+
 	ezii(o1) = ezii(o1) + 1
 	IF ( ezii(o1) .GE. eznn(o1) ) THEN
 	   ezii(o1) = 0
@@ -78,12 +83,28 @@
 	      IF ( ezii(o3) .GE. eznn(o3) ) THEN
 	         ezii(o3) = 0
 	         ezii(o4) = ezii(o4) + 1
+
+
+	         IF ( ezii(o4) .GE. eznn(o4) ) THEN
+	            ezii(o4) = 0
+	            ezii(o5) = ezii(o5) + 1
+
+		    
+	            IF ( ezii(o5) .GE. eznn(o5) ) THEN
+	               ezii(o5) = 0
+	               ezii(o6) = ezii(o6) + 1
+	            ENDIF
+
+	         ENDIF
+
 	      ENDIF
 	   ENDIF
 	ENDIF
 
 * compute the 1D index
-	EZ_PERMUTED_INDEX = ( nx*(ny*(nz*l + k) + j) + i ) + 1
+
+	EZ_PERMUTED_INDEX = 
+     .     ( nx*(ny*(nz*(nt*(ne*n + m) + l) + k) + j) + i ) + 1
 
 	RETURN
 

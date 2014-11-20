@@ -1,0 +1,16 @@
+! err693_upcase_quoted_name.jnl
+! ticket 2050. Names are saved in uppercase
+! form unless there are duplicates other than case.
+! Then searching for the name in quotes looked 
+! only with a case-sensitive search.  
+
+let abc = 12
+cancel mode upcase
+
+save/file=aa.nc/clobber abc
+can dat/all; can var/all
+
+use aa.nc
+! previously this failed to find the name.
+list 'abc'
+

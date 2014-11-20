@@ -936,6 +936,9 @@ GO bn_polygon_log
 ! *********** v6.94Additions ***********
 
 GO bn_reset
+GO bn694_bug_fixes
+
+GO bn_reset
 GO bn_permute_ascii
 
 !  *********** Always do a bn_reset  *********** 

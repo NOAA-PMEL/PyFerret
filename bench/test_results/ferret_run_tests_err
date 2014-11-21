@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 13 Nov 20 16:54 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.931
+lrwxrwxrwx 1 ksmith tmap 13 Nov 20 17:54 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.931
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug build of Ferret on RHEL5-64
@@ -226,6 +226,7 @@ Benchmark scripts that will be run:
    bn_date1900_array.jnl
    bn_spawn_size.jnl
    bn_polygon_log.jnl
+   bn694_bug_fixes.jnl
    bn_permute_ascii.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
@@ -243,7 +244,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Thu Nov 20 16:56:10 PST 2014
+Beginning at Thu Nov 20 17:55:34 PST 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -790,8 +791,6 @@ list x
 list i
  *** NOTE: Check for unspecified limits on an ABSTRACT axis
  *** NOTE: Use the SHOW GRID command to see the axes
- **ERROR: variable unknown or not in data set: 'i'
-list 'i'
  **ERROR: command syntax: v2-and-minus[i=5:15@ddc]
           - before and is illegal
 list v2-and-minus[i=5:15@ddc]
@@ -3618,6 +3617,11 @@ list f
 poly/i=1:100/vlog xbad+xsqr,ybad+ysqr,x*x/10
  **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.689E-02
 poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
+*** Running test: bn694_bug_fixes.jnl
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file aa.nc
 *** Running test: bn_permute_ascii.jnl
  Cached data cleared from memory
 Replacing definition of grid GRID3D
@@ -3640,4 +3644,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Thu Nov 20 16:58:13 PST 2014
+Ended at Thu Nov 20 17:57:28 PST 2014

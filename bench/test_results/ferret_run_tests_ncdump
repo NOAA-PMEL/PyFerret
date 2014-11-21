@@ -2933,6 +2933,7 @@ variables:
 *** Running test: bn_date1900_array.jnl
 *** Running test: bn_spawn_size.jnl
 *** Running test: bn_polygon_log.jnl
+*** Running test: bn694_bug_fixes.jnl
 *** Running test: bn_permute_ascii.jnl
 *** Running test: bn_all_ef.jnl
 *** Running test: bn_startupfile.jnl

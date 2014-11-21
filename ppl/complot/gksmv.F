@@ -47,6 +47,12 @@ c	construct device dependent plotting code
 c
 c v6.61 ACM 4/2010 Fix bug 1396 - dots between dashes on some displays.
 c                  Do not make a call to GPL on "move with the pen up".      
+C
+C v6.93 KMS 11/2014 Rename IPT, X, and Y in GKPLOT to ipline, xpline, 
+C                   and ypline, and move to a common block so that it 
+C                   does not depend on local variables being static 
+C                   (similar to what was done in gksmv_makedot.F).  
+C                   Increase the maximum back up to 10000.
 
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
@@ -79,29 +85,23 @@ C
             call moveabs2(xn,yn)
         endif
 #else
-*	*jd* 1.9.90  Max was 10,000
-	integer	max
-	parameter (max=100)
-*	*jd* 1.9.90
+       INCLUDE 'gkplot.cmn'
+       DATA ipline/0/
 
-	DIMENSION X(max),Y(max)
-
-	DATA IPT/0/
-
-	IF(IP.EQ.0)THEN
-	    CALL DOIT(IPT,X,Y)
-	    IPT=1
-	ELSE
-	    IPT=IPT+1
-	    IF(IPT.GT.max)THEN
-		CALL DOIT(max,X,Y)
-		IPT=2
-		X(1)=X(max)
-		Y(1)=Y(max)
-	    ENDIF
-	ENDIF
-	X(IPT)=XN
-	Y(IPT)=YN
+       IF ( IP .EQ. 0 ) THEN
+           CALL DOIT(ipline,xpline,ypline)
+           ipline=1
+       ELSE
+           ipline=ipline+1
+           IF ( ipline .GT. maxpline ) THEN
+              CALL DOIT(maxpline,xpline,ypline)
+              ipline=2
+              xpline(1) = xpline(maxpline)
+              ypline(1) = ypline(maxpline)
+           ENDIF
+       ENDIF
+       xpline(ipline) = XN
+       ypline(ipline) = YN
 #endif
 	RETURN
 	ENTRY PPLGFLUSH
@@ -109,8 +109,8 @@ C
         return
         end
 #else
-	CALL DOIT(IPT,X,Y)
-	IPT=0
+	CALL DOIT(ipline,xpline,ypline)
+	ipline=0
 	RETURN
 	END
 	SUBROUTINE DOIT(IPT,X,Y)
@@ -120,10 +120,8 @@ C
 	    X(2)=X(1)
 	    Y(2)=Y(1)
 	    IPT=2
-c	ENDIF
-c	CALL GPL(IPT,X,Y)
 	ELSE
-	  CALL GPL(IPT,X,Y)
+	    CALL GPL(IPT,X,Y)
 	ENDIF
 	RETURN
 	END

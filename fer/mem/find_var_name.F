@@ -286,7 +286,7 @@
 	   CALL string_array_find_caseblind(ds_var_code_head,
      .                                   varname,
      .                                   len_test-2,
-     .                                   string_array_result1(1),
+     .                                   string_array_result(1),
      .                                   max_uvar,
      .                                   num_indices)
 	ENDIF

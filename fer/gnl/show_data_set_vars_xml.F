@@ -93,6 +93,8 @@
         LOGICAL   NC_GET_ATTRIB, got_it, coordvar, newatt, have_units,
      .            have_title, have_dims
 
+
+	CHARACTER TM_FMT*16
         CHARACTER show_str*128
         CHARACTER uvarname*150, attname*128, attbuff*2048, buff*128,
      .            outstring*2048, aname*128, atype*10
@@ -198,6 +200,13 @@ C Write statement that uses number 2075 when we change to using these.)
      .          attoutflag, attbuff, vals)
 
 * For double-prec Ferret, check whether we need more precision to write the value
+* If the _FillValue or missing_value are NaN on input, change them to Ferret's 
+* default missing value as Ferret does when writing data.
+
+	     show_str = TM_FMT(vals(1), 7,16,slen)
+	     IF (STR_SAME(show_str, 'NaN') .EQ. 0) THEN
+	       vals(1) = bad_val4
+	    ENDIF
 
 	     CALL FLOAT2STRING_FOR_XML (vals(1), attype, show_str, slen)
 
@@ -220,6 +229,11 @@ C Write statement that uses number 2075 when we change to using these.)
      .          .TRUE., uvarname, blen, attlen, 
      .          attoutflag, attbuff, vals)
 	     
+	     show_str = TM_FMT(vals(1), 7,16,slen)
+	     IF (STR_SAME(show_str, 'NaN') .EQ. 0) THEN
+	       vals(1) = bad_val4
+	    ENDIF
+
 	     CALL FLOAT2STRING_FOR_XML (vals(1), attype, show_str, slen)
 
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)

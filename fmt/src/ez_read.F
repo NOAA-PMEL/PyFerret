@@ -77,6 +77,7 @@
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
 * V68  *acm* 1/12 The variables should be declared REAL (conversion to double prec.)
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V694 11/14 *acm* Ticket 2217: permuted ASCII reading in 6D
 
 * Arguments:
 *	dset	- data set number
@@ -179,7 +180,7 @@
 
 * is the input permuted?
 	permuted = .FALSE.
-	DO 110 i = 1, 4
+	DO 110 i = 1, nferdims
 	   IF ( ds_ordering(i,vfirst) .NE. i ) permuted = .TRUE.
  110	CONTINUE
 !	permuted = .TRUE.   ! debug statement

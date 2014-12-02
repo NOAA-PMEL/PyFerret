@@ -1,0 +1,6 @@
+C     Common block for GKPLOT routine under complot/gskmv.F
+      INTEGER maxpline, ipline
+      PARAMETER (maxpline=10000)
+      REAL xpline(maxpline),ypline(maxpline)
+      COMMON/GKPLOTCMN/ipline, xpline, ypline
+

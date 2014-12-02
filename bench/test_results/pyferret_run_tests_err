@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
-lrwxrwxrwx 1 ksmith tmap 11 Nov  5 16:36 /home/users/ksmith/PyFerret/bin/pyferret -> pyferret.sh
+-rwxr-xr-x 1 ksmith tmap 1188 Dec  2 10:24 /home/users/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug build of PyFerret on RHEL5-64
@@ -226,6 +226,8 @@ Benchmark scripts that will be run:
    bn_date1900_array.jnl
    bn_spawn_size.jnl
    bn_polygon_log.jnl
+   bn694_bug_fixes.jnl
+   bn_permute_ascii.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -242,7 +244,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Wed Nov  5 16:37:14 PST 2014
+Beginning at Tue Dec  2 10:25:32 PST 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
  *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -825,8 +827,6 @@ list x
 list i
  *** NOTE: Check for unspecified limits on an ABSTRACT axis
  *** NOTE: Use the SHOW GRID command to see the axes
- **ERROR: variable unknown or not in data set: 'i'
-list 'i'
  **ERROR: command syntax: v2-and-minus[i=5:15@ddc]
           - before and is illegal
 list v2-and-minus[i=5:15@ddc]
@@ -3691,6 +3691,14 @@ list f
 poly/i=1:100/vlog xbad+xsqr,ybad+ysqr,x*x/10
  **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.689E-02
 poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
+*** Running test: bn694_bug_fixes.jnl
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file aa.nc
+*** Running test: bn_permute_ascii.jnl
+ Cached data cleared from memory
+Replacing definition of grid GRID3D
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3712,4 +3720,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
  *** NOTE: the use of "SET MODE METAFILE" is deprecated;
  *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Wed Nov  5 16:42:11 PST 2014
+Ended at Tue Dec  2 10:30:04 PST 2014

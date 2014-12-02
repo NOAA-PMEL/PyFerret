@@ -221,5 +221,7 @@ bn_show_outfile.jnl
 bn_date1900_array.jnl
 bn_spawn_size.jnl
 bn_polygon_log.jnl
+bn694_bug_fixes.jnl
+bn_permute_ascii.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

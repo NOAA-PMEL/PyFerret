@@ -71,6 +71,8 @@
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
 *                 various SHOW commnands will not list info for E,F dimensions.
 * V6.68  acm 3/14 ticket 2148: fix truncated ntot or nbad in stat listing
+* v6.931 acm 11/14 Delete ALL the stat* symbols that may be left over from 
+*                  a previous evaluation. STAT/BRIEF does not reset them all.
 
 	include 'tmap_dims.parm'
 	include 'errmsg.parm'
@@ -308,20 +310,43 @@
            rbuff(2) = 'bad'
            rbuff(3) = 'bad'
         ENDIF
+
+! First delete all the STAT* symbols that may be set
+! Leave none left over from a previous evaluation
+
+	symbuff = 'STAT_MIN'
+	CALL GETSYM( symbuff, title, i2, i1 )
+	IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
+
+	symbuff = 'STAT_MAX'
+	CALL GETSYM( symbuff, title, i2, i1 )
+	IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
+
+	symbuff = 'STAT_MEAN'
+	CALL GETSYM( symbuff, title, i2, i1 )
+	IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
+
+	symbuff = 'STAT_STD'
+	CALL GETSYM( symbuff, title, i2, i1 )
+	IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
+
+	symbuff = 'STAT_NGOOD'
+	CALL GETSYM( symbuff, title, i2, i1 )
+	IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
+
+	symbuff = 'STAT_NBAD'
+	CALL GETSYM( symbuff, title, i2, i1 )
+	IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
+
+
 	IF ( mr_type(mv) .NE. ptype_string ) THEN
            symbuff = 'STAT_MIN'
-	   CALL GETSYM( symbuff, title, i2, i1 )
-	   IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
            slen = TM_LENSTR1(rbuff(1))
       	   CALL PUTSYM( symbuff, rbuff(1), slen, i2)
            symbuff = 'STAT_MAX'
-	   CALL GETSYM( symbuff, title, i2, i1 )
-	   IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
            slen = TM_LENSTR1(rbuff(2))
       	   CALL PUTSYM( symbuff, rbuff(2), slen, i2)
            symbuff = 'STAT_MEAN'
-	   CALL GETSYM( symbuff, title, i2, i1 )
-	   IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
            slen = TM_LENSTR1(rbuff(3))
       	   CALL PUTSYM( symbuff, rbuff(3), slen, i2)
         ENDIF
@@ -339,8 +364,6 @@
 ! Define Ferret symbols with std 
 	   IF ( mr_type(mv) .NE. ptype_string ) THEN
               symbuff = 'STAT_STD'
-	      CALL GETSYM( symbuff, title, i2, i1 )
-	      IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
               slen = TM_LENSTR1(rbuff(1))
       	      CALL PUTSYM( symbuff, rbuff(1), slen, i2)
 
@@ -350,8 +373,6 @@
 	IF ( full .AND. ngood.LE.1 .AND.
      .        mr_type(mv) .NE. ptype_string) THEN
            symbuff = 'STAT_STD'
-           CALL GETSYM( symbuff, title, i2, i1 )
-           IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
            slen = 3
            CALL PUTSYM( symbuff, 'bad', slen, i2)
 	ENDIF
@@ -360,16 +381,12 @@
 	IF ( full .AND. mr_type(mv) .NE. ptype_string ) THEN
 
            symbuff = 'STAT_NGOOD'
-           CALL GETSYM( symbuff, title, i2, i1 )
-           IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
            datum = ngood
            rbuff(1) = TM_FMT(datum , sig_fig, 12, slen)
            slen = TM_LENSTR1(rbuff(1))
            CALL PUTSYM( symbuff, rbuff(1), slen, i2)
 
            symbuff = 'STAT_NBAD'
-           CALL GETSYM( symbuff, title, i2, i1 )
-           IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
            datum = nbad
            rbuff(1) = TM_FMT(datum , sig_fig, 12, slen)
            slen = TM_LENSTR1(rbuff(1))

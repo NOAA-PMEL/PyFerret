@@ -306,6 +306,9 @@
  170    CONTINUE
 
 * check file variables from this data set
+* Quoted variable may have been saved in the data structure uppercased:
+* Look first with the spelling given, then if not found use case-blind search.
+*
 *	DO 200 ivar = 1, maxvars
 *	   IF ( single_dset .AND. ds_var_setnum( ivar ) .NE. dset ) GOTO 200
 *           len_mchars = TM_LENSTR(ds_var_code(ivar))
@@ -323,6 +326,17 @@
      .                                string_array_result(1),
      .                                max_uvar,
      .                                num_indices)
+	IF (num_indices .EQ. 0 .AND. test_name(1:1) .EQ. "'") THEN
+	   len_test = TM_LENSTR(test_name)
+	   varname = test_name(2:len_test-1)
+	   CALL string_array_find_caseblind(ds_var_code_head,
+     .                                   varname,
+     .                                   len_test-2,
+     .                                   string_array_result(1),
+     .                                   max_uvar,
+     .                                   num_indices)
+	ENDIF
+
         DO 200 j = 1, num_indices
            ivar = string_array_result(j)
 	   IF ( single_dset .AND. ds_var_setnum( ivar ) .NE. dset ) GOTO 200

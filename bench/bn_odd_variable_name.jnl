@@ -11,7 +11,10 @@ list 'v2-and-minus'  		! Now the proper syntax
 list x 				! Deliberate error
 list 'X'			! Now the proper syntax
 list i  			! Deliberate error
-list 'i'  			! Deliberate error
+
+! v694 No longer an error: See ticket 2050
+list 'i'  			! 
+
 list 'I'			! Now the proper syntax
 list 'V1' - 'v1'
 list 'I'[i=6:15@sbx:10] - 'X'[i=6:15@ave]

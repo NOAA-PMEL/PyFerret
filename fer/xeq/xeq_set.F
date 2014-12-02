@@ -184,6 +184,8 @@
 * V685 *acm*  7/13 Added FILE/FORMAT=descriptor
 * V686 *acm*  1/14 Fix ticket 2126: set axis was messing up line_name storage
 * V687 *acm*  3/14 New SET AXIS/NAME=
+* V694 11/14 *acm* Ticket 2217: permuted ASCII reading in 6D (fix to an error message)
+
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -1971,7 +1973,7 @@ c *kob* 4/97
      .		     'illegal qualifier or argument'//pCR//cmnd_buff(:len_cmnd),
      .			*5000 )
  5720	CALL ERRMSG( ferr_invalid_command, status,
-     .		     '/ORDER must be permutation of XYZT (with minus signs)'//
+     .		     '/ORDER must be permutation of XYZTEF (with minus signs)'//
      .			pCR//cmnd_buff(:len_cmnd), *5000 )
  5800	CALL ERRMSG( ferr_syntax, status,
      .		     'To reconfigure use SET MEMORY/SIZE=megawords'

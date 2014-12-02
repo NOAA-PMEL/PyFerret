@@ -51,7 +51,7 @@
 * Internal declarations
 	LOGICAL TM_FPEQ
 	CHARACTER TM_FMT*16
-	INTEGER TM_LENSTR, ival
+	INTEGER TM_LENSTR, STR_SAME, ival
 	REAL test_val
   
   888	FORMAT(i16.0)
@@ -59,6 +59,17 @@
 * Convert using TM_FMT
 
 	strng = TM_FMT(val, 7,16,slen)
+
+* If it's NaN, we are done.  See show_data_set_vars_xml. If the
+* attribute is the _FillValue or missing_value, it has already 
+* been converted to Ferret's default missing value, to match what
+* Ferret will write into data varaibles.
+
+	IF (STR_SAME(strng, 'NaN') .EQ. 0) THEN
+	print *, '  ATTRIBUTE is NaN'
+	   slen = 3
+	   GOTO 5000
+	ENDIF
 
 	IF (attype .EQ. nf_float .OR. attype .EQ. nf_double) THEN
 	   slen = TM_LENSTR(strng)
@@ -86,6 +97,7 @@
 	   ENDIF
 	ENDIF
 
+ 5000	CONTINUE
 	RETURN
 	END
 

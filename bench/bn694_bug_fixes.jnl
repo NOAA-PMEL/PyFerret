@@ -1,0 +1,6 @@
+! bn694_bug_fixes
+! test various fixes that went into version 6.94
+! 11/2014 ACM
+
+GO bn_reset
+GO err693_upcase_quoted_name

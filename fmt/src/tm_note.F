@@ -44,7 +44,13 @@
 * *sh* 2/28/95 - allow message to be sent to alternative location
 * *js* 12.12.97- changed to use tm_split_list
 * 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
-
+* 12/13 *sh* - enhancement to support multi-line outputs in one call by
+*	embedding pCR characters into string as line separators
+*       Note that the Ferret stack of output calls could use some cleanup since
+*	Ferret lib routines call TMAP_FORMAT lib TM_SPLIT_MESSAGE which in turn
+*	calls back into Ferret lib to SPLIT_LIST
+*	WRITE_MULTI is a Ferret lib routine that has the functionality we need.
+*	But it calls TM_SPLIT_MESSAGE. By calling it here we add to the mess 
 
 * calling argument declarations:
         INTEGER lunit
@@ -70,7 +76,7 @@
 c	   WRITE ( lunit, 3000 ) string(:slen)
 c 3000	   FORMAT ( ' *** NOTE: ',A )
 	   risc_buff = string
-	   call tm_split_message(lunit, ' *** NOTE: '//risc_buff)
+	   CALL WRITE_MULTI(lunit, ' *** NOTE: '//risc_buff)
 	ENDIF
 
 	RETURN

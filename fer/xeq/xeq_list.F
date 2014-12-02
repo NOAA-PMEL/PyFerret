@@ -149,6 +149,7 @@
 * V685 *acm*  6/13 new qualifier SAVE/NOBOUNDS
 * V685 *acm*  6/13 Dont add SAVE/NOCOORDS
 * V690 *sh*   1/14 Automated 3-argument auxiliary (curvilinear) plotting
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
 	include 'tmap_dims.parm'
         include 'tmap_errors.parm'
@@ -350,7 +351,7 @@ c     .		 .AND. .NOT.do_comma_del
 	   IF ( ITS_AUTO_CURVI(i,curvi_axes) ) THEN
 * TEMPORARY: need to ensure that 'coordinates' attributes are written to point
 *	     variables to their auxiliary variables
-*	     For uvars there may be no __SigmaRef_. Just uvar_aux_cat/var 
+*	     For uvars there may be no __LayerzRef_. Just uvar_aux_cat/var 
 	      DO idim = 1, nferdims
 	         IF (curvi_axes(idim)) THEN
 	            inext = inext + 1

@@ -148,7 +148,7 @@
 *                  temp[gz(depth)=zax@ave]
 *		   including special interpretation of gz(depth)=100 (a point)
 *		   ensure that the same axis region isn't set twice (line 200)
-*		   Detect 'sigma' and 'curvi' automation flags
+*		   Detect 'layerz' and 'curvi' automation flags
 *	           Note that errors will be silent in dependency_tree_mode
 *		   Set cx_g_eq_regrid logical (used to be local "regrid_dims")
 * V6.91+ *acm* 8/14 Fix ticket 2189
@@ -239,7 +239,7 @@
      .       (region_qual(idim,2),idim=1,nferdims) / 'X','Y','Z','T','E','F' /
 !     .       other_qual(1) / 'D' /,	! /DATA_SET=
 !     .       other_qual(2) / 'G' /	! /GRID=
-!     .       other_qual(3) / 'S' /	! var[z=100,SIGMA]
+!     .       other_qual(3) / 'S' /	! var[z=100,LAYERZ]
 !     .       other_qual(4) / 'C' /	! var[x=140e,Y=0,CURVILINEAR]
 
 * local parameter declarations (as in xeq_define)
@@ -351,9 +351,9 @@
 * ignore any region information that contains grave accents
 	   IF ( INDEX(risc_buff,'`') .GT. 0 ) GOTO 500
 
-* identify 'SIGMA' and 'CURVI' qualifiers
+* identify 'LAYERZ' and 'CURVI' qualifiers
 	   IF (MATCH4(risc_buff,len_rbuff,
-     .			  'SIGM',   4          ) ) THEN
+     .			  'LAYE',   4          ) ) THEN
 	      cx_aux_given(z_dim,mods_cx) = .TRUE.
 	      GOTO 500
 	   ELSEIF (MATCH4(risc_buff,len_rbuff,

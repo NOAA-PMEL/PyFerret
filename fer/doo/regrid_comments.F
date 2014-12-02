@@ -48,6 +48,7 @@
 * V68  *acm* 1/12  changes for double-precision ferret.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V690 *sh* 1/14 document sigma and curvilinear aux var regridding
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
         IMPLICIT NONE
 	include	'tmap_dims.parm'
@@ -190,7 +191,7 @@
 	   ENDIF
  120	CONTINUE
 
-* sigma and curvilinear regridding
+* layerz and curvilinear regridding
 * if an auxiliary variable regrid then document "using DEPTH" or whatever
  900	IF (cx_naux(cx) .GT. 0) THEN
 	   mybuff = ' using'

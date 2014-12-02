@@ -67,6 +67,8 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
+* V690 *sh* suppress comment about regridding for 1pt 'false regridding'
+*       used on  curvilinear variables.  It will be documented in ASCII_LIMITS.
 
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -84,7 +86,7 @@
 	INTEGER cx
 
 * internal variable declarations
-	LOGICAL	add_on, all_q, vcalc 
+	LOGICAL	add_on, all_q, vcalc, false_regrid
 	INTEGER	TM_LENSTR, TM_LENSTR1, CX_DIM_LEN,
      .		var, categ, dset, cairt, cairt_dset,
      .		mlen, t_len, maxlen, idim, trans, slen, k_lo
@@ -278,7 +280,14 @@
  100	CONTINUE
 
 * re-gridded ?
-	IF ( cx_unstand_grid(cx) ) THEN
+*    ... check for 'false 1pt regrid'
+	false_regrid = .FALSE.
+	DO idim = 1, nferdims
+	   IF (cx_aux_stat(idim,cx) .EQ. paux_stat_false_1pt_regrid)
+     .		false_regrid = .TRUE.
+	ENDDO
+	IF (   cx_unstand_grid(cx)
+     .	 .AND. .NOT.false_regrid ) THEN
 	   IF ( add_on ) THEN
 	      var_title_mod = var_title_mod(:mlen) //' - '
 	      mlen = MIN( maxlen, mlen + 3 )

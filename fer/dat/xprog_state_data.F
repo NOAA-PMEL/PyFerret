@@ -114,6 +114,7 @@
 * V683  *acm* 8/12 - frame file FERRET.MGM  > ferret.gif
 * V685  *sh* 11/13 - added allowed_err for SH VAR/TREE
 * V690  *sh* 12/13 - added mode_curvilinear, mode_sigma
+* V694 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -214,7 +215,7 @@
      .					/ mode_stack_size*.FALSE.   /
      .		(mode_state( pmode_curvilinear,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.FALSE.   /
-     .		(mode_state( pmode_sigma,i), i=1,mode_stack_size)
+     .		(mode_state( pmode_layerz,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.FALSE.   /
 
 	DATA	mode_name ( pmode_diagnostic  )	/ 'DIAGNOSTIC  ' /,
@@ -248,7 +249,7 @@
      .		mode_name ( pmode_nodata_lab  ) / 'NODATA_LAB'   /,
      .		mode_name ( pmode_shrink_ylab ) / 'SHRINK_YLAB'  /,
      .		mode_name ( pmode_curvilinear ) / 'CURVILINEAR'  /,
-     .		mode_name ( pmode_sigma       ) / 'SIGMA'        /,
+     .		mode_name ( pmode_layerz      ) / 'LAYERZ'       /,
      .		mode_name ( 33     ) / pmode_unused /,
      .		mode_name ( 34     ) / pmode_unused /,
      .		mode_name ( 35     ) / pmode_unused /,
@@ -320,7 +321,7 @@
      .				/ mode_stack_size*unspecified_int4 /
      .		(mode_arg  ( pmode_curvilinear,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /
-     .		(mode_arg  ( pmode_sigma,i), i=1,mode_stack_size)
+     .		(mode_arg  ( pmode_layerz,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /
 
 * If the value of nlevels is changed, also change NLEV in plot/ppldata.F
@@ -359,11 +360,11 @@
 	DATA	denig_xylim_msg_done / .FALSE. /
 	DATA	denig_pen_msg_done / .FALSE. /
 
-* auto sigma and curvilinear states
-	DATA	mode_auto_curvi      /.FALSE./,
-     .		mode_auto_curvi_last /.FALSE./,
-     .		mode_auto_sigma      /.FALSE./,
-     .		mode_auto_sigma_last /.FALSE./
+* auto layerz and curvilinear states
+	DATA	mode_auto_curvi       /.FALSE./,
+     .		mode_auto_curvi_last  /.FALSE./,
+     .		mode_auto_layerz      /.FALSE./,
+     .		mode_auto_layerz_last /.FALSE./
 
 * miscellaneous
 	DATA	saved_dset		/ unspecified_int4 /

@@ -81,6 +81,8 @@
 *                  dimension is now an arg to SECS_TO_TSTEP.
 * V683  *acm*10/12  Fix bug 1972: cx_calendar and cx_cal_id are changed only
 *                   if it's the T dimension not the T or F dimension.
+* V690  *sh* 4/14  For curvilinear axes keep ww limits as-is (may exceed axis limits)  
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -223,8 +225,16 @@
            ENDIF
 
 
-* POSITIONS WERE SPECIFIED BY WORLD COORDINATES
+	ELSEIF ( cx_aux_stat( idim, cx ) .EQ. paux_stat_false_1pt_regrid
+     .	   .AND. cx_unstand_grid( cx		)	             ) THEN
+* 4/14 - WORLD COORDINATES ON A CURVILINEAR OR LAYERZ AXIS
+	      cx_lo_ss(cx,idim) = unspecified_int4
+	      cx_hi_ss(cx,idim) = unspecified_int4
+*  leave ww limits as-is. Values refer to the aux var range, not the native axis 
+	        CONTINUE
+
 	ELSE
+* WORLD COORDINATE POSITIONS
 * is there valid position data for this axis ?
 	   IF ( cx_lo_ww( idim, cx ) .EQ. unspecified_val8 ) THEN
 * ... no position data but maybe it's a file variable with only 1 point
@@ -236,7 +246,7 @@
 * ... compute world positions as grid box edges
 	      cx_lo_ww(idim, cx) = TM_WORLD( lo_ss, grid, idim, box_lo_lim )
 	      cx_hi_ww(idim, cx) = TM_WORLD( hi_ss, grid, idim, box_hi_lim )
-	    ENDIF
+	   ENDIF
 
 	   point = cx_lo_ww(idim,cx) .EQ. cx_hi_ww(idim,cx)
 

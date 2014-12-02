@@ -46,7 +46,7 @@
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
-*V690 3/13-1/14 *sh*
+*V690 3/13-4/14 *sh*
 
 	IMPLICIT NONE
 
@@ -75,7 +75,7 @@
 	bad_aux = mr_bad_data( mr1 )
 
 * insert source grid (the defining grid for this variable)
-* TEMPORARY -- ?move this block of code to AUX_VAR_REGRID when 2D curv is added?
+* XXXX TEMPORARY -- ?move this block of code to AUX_VAR_REGRID when 2D curv is added?
 	src_grid = KNOWN_GRID( cx_data_set(src_cx),
      .			       cx_category(src_cx),
      .			       cx_variable(src_cx)  )
@@ -88,7 +88,22 @@
            cx_aux_cat  (idim, src_cx) = unspecified_int4
            cx_aux_stat (idim, src_cx) = paux_stat_na
  100    CONTINUE
-	trans = cx_regrid_trans(z_dim,src_cx)    !  TEMPORARY: z_dim HARD CODED!!!
+
+! XXXXX TEMPORARY -- z_dim hard-coded
+	trans = cx_regrid_trans(z_dim,src_cx)
+
+! trash - delete me
+!* determine the regridding transformation
+!* if a single point result, z=pt or z=lo:hi@ave, get regrid trans from axis trans  
+!	IF ( cx_regrid_trans(z_dim,src_cx) .NE. unspecified_int4 ) THEN
+!	   trans = cx_regrid_trans(z_dim,src_cx)
+!	ELSEIF ( cx_trans(z_dim,src_cx) .EQ. trans_interpolate ) THEN
+!	   trans = pauxrgrd_linear
+!	ELSEIF ( cx_trans(z_dim,src_cx) .EQ. trans_average ) THEN
+!	   trans = pauxrgrd_pwlave
+!	ELSE
+!	   CALL ERRMSG( ferr_internal, status, '??lims_curv_rgrd_trans??', *5000)
+!	ENDIF
 
 * increasing or decreasing? determine by finding and examining
 * the first two valid values encountered in any column of the indicated axis
@@ -145,8 +160,12 @@
  130	idim    = axis_list(1)	! since this is 1D regridding
 	kdstmin = cx_lo_ss ( dst_cx, idim )
 	kdstmax = cx_hi_ss ( dst_cx, idim )
-	IF (trans .EQ. pauxrgrd_linear 
-     . .OR. trans .EQ. unspecified_int4  ) THEN
+	IF (cx_aux_stat(idim,dst_cx) .EQ. paux_stat_false_1pt_regrid) THEN
+* ... false 1pt regridding (no target axis ... just a single point value)
+	   axmin = cx_lo_ww(idim, dst_cx)
+	   axmax = cx_hi_ww(idim, dst_cx)
+	ELSEIF (trans .EQ. pauxrgrd_linear 
+     .     .OR. trans .EQ. unspecified_int4  ) THEN
 * ... linear interp requires source data below/above target grid point coordinate
 * ... trans.EQ.unspec is for 3-argument plotting
 	   axmin   = TM_WORLD(kdstmin, cx_grid(dst_cx), idim, box_middle)

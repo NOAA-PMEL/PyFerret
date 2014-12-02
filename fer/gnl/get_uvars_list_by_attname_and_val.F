@@ -43,6 +43,7 @@
 * Note: if the incoming string is unspecified_name4, then all attrib vals match
 
 * V690: 2/14 *sh* 
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
         IMPLICIT NONE
 #include "tmap_dset.parm"
@@ -81,7 +82,7 @@
 	DO ivar = 1, num_indices
 
 	   CALL CD_GET_VAR_ID (dsetm1, uvar_name_code(ivar), varid, status)
-           found_one = NC_GET_ATTRIB ( dsetm1, varid, patnam_sigma,
+           found_one = NC_GET_ATTRIB ( dsetm1, varid, patnam_layerz,
      .                            .FALSE., uvar_name_code(ivar), maxlen,
      .                            attlen, attoutflag, retstring,
      .                            attvals )

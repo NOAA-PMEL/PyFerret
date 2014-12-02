@@ -59,6 +59,7 @@
 * V690 12/13 *sh* /SIGMA and /CURVILINEAR
 * V687  3/14 *acm* add SET AXIS/NAME
 * V691+ 8/14 *acm* Fix ticket 2194: SHOW with /OUTFILE and not /XML. 
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -99,7 +100,7 @@
      .			slash_canc_data_noerr,
      .
      .			slash_canc_var_data,
-     .			slash_canc_var_sigma,
+     .			slash_canc_var_layerz,
      .			slash_canc_var_curvi,
      .
      .			slash_canc_attr_output,
@@ -122,7 +123,7 @@
      .			slash_show_var_append,
      .			slash_show_var_clobber,
      .			slash_show_var_tree,
-     .			slash_show_var_sigma,
+     .			slash_show_var_layerz,
      .			slash_show_var_curvi,
      .
      .			slash_show_grid_x0,
@@ -162,7 +163,7 @@
      .			slash_list_endian,
      .			slash_list_outtype,
      .			slash_list_curvi,
-     .			slash_list_sigma
+     .			slash_list_layerz
 
 	INTEGER		
      .			slash_set_data_ez,
@@ -190,7 +191,7 @@
      .			slash_set_var_scale,
      .			slash_set_var_offset,
      .			slash_set_var_outtype,
-     .			slash_set_var_sigma,
+     .			slash_set_var_layerz,
      .			slash_set_var_curvi,
      .
      .			slash_set_grid_save,
@@ -387,7 +388,7 @@
      .			slash_canc_data_noerr  = 2,
      .
      .			slash_canc_var_data	= 2,
-     .			slash_canc_var_sigma	= 3,
+     .			slash_canc_var_layerz	= 3,
      .			slash_canc_var_curvi	= 4,
      .
      .			slash_canc_attr_output	= 1,
@@ -405,7 +406,7 @@
      .			slash_show_var_append = 7,
      .			slash_show_var_clobber = 8,
      .			slash_show_var_tree = 9,
-     .			slash_show_var_sigma = 10,
+     .			slash_show_var_layerz = 10,
      .			slash_show_var_curvi = 11,
      .
      .			slash_show_grid_x0 = 7,
@@ -448,7 +449,7 @@
      .			slash_list_endian  = 1+52,
      .			slash_list_outtype = 1+53,
      .			slash_list_curvi   = 1+54,
-     .			slash_list_sigma   = 1+55 )
+     .			slash_list_layerz   = 1+55 )
 
 	PARAMETER     (
      .			slash_set_data_ez	= 1,
@@ -476,7 +477,7 @@
      .			slash_set_var_scale	= 7,
      .			slash_set_var_offset	= 8,
      .			slash_set_var_outtype	= 9,
-     .			slash_set_var_sigma	= 10,
+     .			slash_set_var_layerz	= 10,
      .			slash_set_var_curvi	= 11,
      .
      .			slash_set_grid_save	= 1,

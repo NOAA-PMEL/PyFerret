@@ -83,6 +83,7 @@
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V690 *sh* 1/14   Added SET VARIABLE/SIGMA=varname
 * V690 *acm*  3/14 Fix ticket 2152, error messages on illegal SET VAR/NAME
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -114,7 +115,7 @@
 	CHARACTER	grid_name*64, title*128, units*128, newname*128,
      .                  is_nan*3, flag*10, typflag*10, varattname*512,
      .                  varname*128, attname*128, buf*2, newname_lc*128,
-     .			sigma_ref*128
+     .			layerz_ref*128
 
 * Initialize
 
@@ -130,7 +131,7 @@
 	title     = char_init128
 	units     = char_init64
 	grid_name = char_init16
-	sigma_ref = char_init128
+	layerz_ref= char_init128
 
 * note:  this routine manages 
 
@@ -291,16 +292,16 @@
 	   bad = real4_init
 	ENDIF
 
-* SET VAR/SIGMA=
-* creates an attribute __sigma_ref_ that contains the desired auxiliary variable name
-	loc = qual_given( slash_set_var_sigma )
+* SET VAR/LAYERZ=
+* creates an attribute __layerz_ref_ that contains the desired auxiliary variable name
+	loc = qual_given( slash_set_var_layerz )
 	IF ( loc .GT. 0 ) THEN
 	   have_mods = .TRUE.
 	   CALL EQUAL_STRING (cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                        sigma_ref, status)
+     .                        layerz_ref, status)
            IF ( status .NE. ferr_ok ) RETURN
-	   IF (sigma_ref .EQ. ' ') GOTO 5550
-	   IF ( .NOT.TM_LEGAL_NAME(sigma_ref) ) GOTO 5560
+	   IF (layerz_ref .EQ. ' ') GOTO 5550
+	   IF ( .NOT.TM_LEGAL_NAME(layerz_ref) ) GOTO 5560
 	ENDIF
 
 * SET VAR/OUTTYPE= INTYPE, FLOAT, INT, SHORT
@@ -393,26 +394,26 @@
 	IF ( ez ) THEN
 	   IF ( have_mods ) THEN
 
-* The following block of code -- setting the sigma reference -- appears identically
+* The following block of code -- setting the layerz reference -- appears identically
 * in 3 places.  Similar duplication of code for the other attributes.
 * The reason is that the management of dset and varid is context dependent.
 * CD_GET_VAR_ID is for example called 3 times immediately preceding this block
 * Cleanup would be desirable: a single, reliable routine that returns varid;
 * called just once; and then factor out the duplicated code
-	      IF ( sigma_ref .NE. char_init128 ) THEN
-                 attlen = TM_LENSTR1(sigma_ref)
-                 attname = patnam_sigma
+	      IF ( layerz_ref .NE. char_init128 ) THEN
+                 attlen = TM_LENSTR1(layerz_ref)
+                 attname = patnam_layerz
                  CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
                  IF (attid .GT. 0) THEN
                     CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
      .                attname, attype, attlen, attoutflag, status )
                     CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
-     .              sigma_ref, dummy, status)
+     .              layerz_ref, dummy, status)
                  ELSE
                     attype = NCCHAR
                     attoutflag = 1
                     CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, 
-     .                 attlen, attoutflag, sigma_ref, dummy, status )
+     .                 attlen, attoutflag, layerz_ref, dummy, status )
                  ENDIF
               ENDIF
 
@@ -497,20 +498,20 @@
               ENDIF
            ENDIF
 
-	   IF ( sigma_ref .NE. char_init128 ) THEN
-              attlen = TM_LENSTR1(sigma_ref)
-              attname = patnam_sigma
+	   IF ( layerz_ref .NE. char_init128 ) THEN
+              attlen = TM_LENSTR1(layerz_ref)
+              attname = patnam_layerz
               CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
               IF (attid .GT. 0) THEN
                  CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
      .             attname, attype, attlen, attoutflag, status )
                  CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
-     .           sigma_ref, dummy, status)
+     .           layerz_ref, dummy, status)
               ELSE
                  attype = NCCHAR
                  attoutflag = 1
                  CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, 
-     .              attlen, attoutflag, sigma_ref, dummy, status )
+     .              attlen, attoutflag, layerz_ref, dummy, status )
               ENDIF
 	      CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
            ENDIF
@@ -579,20 +580,20 @@
               ENDIF
            ENDIF
 
-	   IF ( sigma_ref .NE. char_init128 ) THEN
-              attlen = TM_LENSTR1(sigma_ref)
-              attname = patnam_sigma
+	   IF ( layerz_ref .NE. char_init128 ) THEN
+              attlen = TM_LENSTR1(layerz_ref)
+              attname = patnam_layerz
               CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
               IF (attid .GT. 0) THEN
                  CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
      .             attname, attype, attlen, attoutflag, status )
                  CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
-     .           sigma_ref, dummy, status)
+     .           layerz_ref, dummy, status)
               ELSE
                  attype = NCCHAR
                  attoutflag = 1
                  CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, 
-     .              attlen, attoutflag, sigma_ref, dummy, status )
+     .              attlen, attoutflag, layerz_ref, dummy, status )
               ENDIF
 	      CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
            ENDIF

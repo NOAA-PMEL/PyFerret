@@ -39,10 +39,11 @@
 *
 * return a list of all file variables that have a particular given value for
 * a given string attribute
-* intended usage:  find variables that have _SIGMA_REF_'="DEPTH"
+* intended usage:  find variables that have __LAYERZ_REF__'="DEPTH"
 * Note: if the incoming string is unspecified_name4, then all attrib vals match
 
 * V690: 2/14 *sh* 
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
         IMPLICIT NONE
 #include "tmap_dset.parm"
@@ -79,7 +80,7 @@
 
 	   CALL CD_GET_VAR_ID (dset, ds_var_code(ivar), varid, status)
 
-           found_one = NC_GET_ATTRIB ( dset, varid, patnam_sigma,
+           found_one = NC_GET_ATTRIB ( dset, varid, patnam_layerz,
      .                               .FALSE., ds_var_code(ivar), maxlen,
      .                               attlen, attoutflag, retstring,
      .                               attvals )

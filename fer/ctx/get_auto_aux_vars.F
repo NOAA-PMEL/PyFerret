@@ -37,17 +37,18 @@
 *
 *
 * determine if curvilinear coordinates are applicable on a particular variable
-* by looking for the __SigmaRef_ and __CurviRef__ attributes
+* by looking for the __LayerzRef_ and __CurviRef_ attributes
 * These may have been set either automatically, based upon CF 'coordinates'
 * and 'formula_terms' attributes found in a netCDF file, or have been set
-* manually using the SET VARIABLE/SIGMA and /CURV commands
+* manually using the SET VARIABLE/LAYERZ and /CURV commands
 
 * inputs: var, cat, dset -- describe the variable for which we are seeking
 *		auxiliary coordinates
 * outputs: curv_vars, curv_cats -- the identities of the aux variables
 
-
 * *sh* 12/13
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -65,7 +66,7 @@
 	INTEGER	  TM_LENSTR1, 
      .		  idim, dset, attlen, attoutflag, maxlen, varid, slen,
      .		  status, aux_var, aux_cat
-	REAL	  attvals(10)   ! only if __SigmaRef_ mis-defined as numeric!
+	REAL	  attvals(10)   ! only if __LayerzRef_ mis-defined as numeric!
 	CHARACTER VAR_CODE*128, refvarname*128, varname*128,
      .		  dsetname*128
 
@@ -97,9 +98,9 @@
 *       the same varname is used for LET/D definitions in two datasets
 	CALL CD_GET_VAR_ID (dset, varname, varid, status)  ! status check??
 
-* get the attribute value of '__SigmaRef_' (patnam_sigma)
+* get the attribute value of '__LayerzRef_' (patnam_layerz)
         maxlen = LEN(refvarname)
-        got_it = NC_GET_ATTRIB ( dset, varid, patnam_sigma,
+        got_it = NC_GET_ATTRIB ( dset, varid, patnam_layerz,
      .                           .FALSE., varname, maxlen,
      .                           attlen, attoutflag, refvarname,
      .                           attvals )
@@ -111,11 +112,11 @@
      .			    refvarname,
      .			    aux_cat, aux_var )
 	IF (aux_var .EQ. munknown_var_name) THEN
-* .... "Variable TEMP associated with non-existent sigma variable DEPTH"
+* .... "Variable TEMP associated with non-existent layerz variable DEPTH"
 *      "in levitus_climatology"
 	   CALL GET_SHORT_DSET_NAME(dataset, dsetname, slen )
 	   CALL WARN('Variable '//varname(:TM_LENSTR1(varname)) //
-     .		' associated with non-existent sigma variable ' //
+     .		' associated with non-existent layerz variable ' //
      .		refvarname(:TM_LENSTR1(refvarname)) // pCR //
      .		'           in ' //dsetname(:slen) )
 	ELSE

@@ -60,6 +60,7 @@
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If cancelled, the 
 *                 output will not list info for E,F dimensions.
 * V690  1/14 *sh* report 3-argument var-getting operation
+*		  allow for "false 1 point" regridding
 
 * calling argument declarations:
         IMPLICIT NONE
@@ -68,6 +69,7 @@
 
 * internal variable declarations:
 	INTEGER	  TM_LENSTR1, slen, clen, ii, i, listdims
+	CHARACTER*3   ALG_TRANS_CODE
 	CHARACTER*128 VAR_CODE,  var
 	CHARACTER*150 VAR_TRANS, out_buff
 
@@ -104,12 +106,20 @@
  3010      FORMAT (1X,A5,' --> ',A)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
-* REGRIDDING
+* REGRIDDING (4/14 - incl false 1pt regridding)
 	ELSEIF( act_class .EQ. isact_class_regrid ) THEN
-	   WRITE ( risc_buff, 3020 ) doing, ww_dim_name(idim),
+	   IF (cx_aux_stat(idim,cx) .EQ. paux_stat_false_1pt_regrid ) THEN
+	      WRITE ( risc_buff, 3019 ) doing,
+     .		       var(1:slen),
+     .		       ww_dim_name(idim),
+     .                 alg_regrid_code(cx_regrid_trans(idim,cx))
+ 3019	      FORMAT (1X,A5,' false regrid of ',A,' --> ',A1,'@',A)
+	   ELSE
+	      WRITE ( risc_buff, 3020 ) doing, ww_dim_name(idim),
      .		       var(1:slen), grid_name(cx_grid(cx))(:16),
      .                 alg_regrid_code(cx_regrid_trans(idim,cx))
- 3020	   FORMAT (1X,A5,' regrid on ',A1,': ',A,' --> ',A,' @',A)
+ 3020	      FORMAT (1X,A5,' regrid on ',A1,': ',A,' --> ',A,' @',A)
+	   ENDIF
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 * SPLITTING/GATHERING

@@ -38,6 +38,7 @@
 * process /CURVILINEAR qualifiers from all commands
 
 * *sh* 12/13
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -58,15 +59,15 @@
      .		  .OR. (  (cmnd_num .EQ. cmnd_list)
      .	             .AND. qual_given(slash_list_curvi).GT.0 )
 
-	mode_auto_sigma_last = mode_auto_sigma
-	mode_auto_sigma = mode_state(pmode_sigma,1)
+	mode_auto_layerz_last = mode_auto_layerz
+	mode_auto_layerz = mode_state(pmode_layerz,1)
      .		  .OR. (  (cmnd_num .EQ. cmnd_list)
-     .	             .AND. qual_given(slash_list_sigma).GT.0 )
+     .	             .AND. qual_given(slash_list_layerz).GT.0 )
 
 
 	auto_auxvar_changed =
-     .	     mode_auto_curvi .NEQV. mode_auto_curvi_last
-     . .OR.  mode_auto_sigma .NEQV. mode_auto_sigma_last
+     .	     mode_auto_curvi  .NEQV. mode_auto_curvi_last
+     . .OR.  mode_auto_layerz .NEQV. mode_auto_layerz_last
 
 
 	RETURN

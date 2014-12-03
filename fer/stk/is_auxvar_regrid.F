@@ -302,8 +302,9 @@
 	   cx_impl_grid   ( cx_buff ) = cx_impl_grid   ( dst_cx )
 	   cx_naux        ( cx_buff ) = cx_naux        ( dst_cx )
            DO 310 idim = 1, nferdims
-              cx_aux_var(idim, cx_buff) = cx_aux_var(idim, dst_cx)
-              cx_aux_cat(idim, cx_buff) = cx_aux_cat(idim, dst_cx)
+              cx_aux_var (idim, cx_buff) = cx_aux_var (idim, dst_cx)
+              cx_aux_cat (idim, cx_buff) = cx_aux_cat (idim, dst_cx)
+              cx_aux_stat(idim, cx_buff) = cx_aux_stat(idim, dst_cx)
  310       CONTINUE
 	   CALL TRANSFER_CONTEXT( cx_buff, dst_cx )  ! (nervous. is it ok to clobber this?)
 

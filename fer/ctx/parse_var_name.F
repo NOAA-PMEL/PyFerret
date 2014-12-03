@@ -70,6 +70,7 @@
 * V685 3/13 *sh* support for auxiliary regridding variables
 *		 and SHOW VAR/DEPENDENCIES (unknown variable err not reported)
 * V690 12/13 *sh* set auto-curvilinear actions that are needed
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -215,7 +216,7 @@
 
 * set up automated curvilinear actions:  aux variable loads and regridding
 * cases include
-*  [z=pt, sigma], [z=lo:hi:delta,sigma], [z=lo:hi@ave,sigma], [gz=zax,sigma]
+*  [z=pt, layerz], [z=lo:hi:delta,layerz], [z=lo:hi@ave,layerz], [gz=zax,layerz]
 	cx_implicit_aux(var_cx) = .FALSE.   ! set default
 	aux_given = .FALSE.
 	DO idim = 1, nferdims
@@ -224,7 +225,7 @@
 	IF ( aux_given ) THEN
 	   IF ( cx_category(var_cx) .NE. cat_file_var
      .	  .AND. cx_category(var_cx) .NE. cat_user_var ) GOTO 5200
-!	   IF (cx_mod_sigma .AND.
+!	   IF (cx_mod_layerz .AND.
 !     .	     .NOT. (cx_given(z_dim,mods_cx)) GOTO 5300
 !	   IF (cx_mod_curvi .AND.
 !     .	     .NOT.(cx_given(x_dim,mods_cx).AND.cx_given(y_dim,mods_cx))
@@ -306,10 +307,10 @@
      .		( ferr_unknown_variable, status, full_var_name, *5900 )
 	ENDIF
  5200	CALL ERRMSG( ferr_syntax, status,
-     .		'SIGMA and CURVI can only be used on LET variables'//
+     .		'LAYERZ and CURVI can only be used on LET variables'//
      .		' and file variables: '//full_var_name, *5900 )
 ! 5300	CALL ERRMSG( ferr_syntax, status,
-!     .		'SIGMA must be accompanied by explicit Z limits: '
+!     .		'LAYERZ must be accompanied by explicit Z limits: '
 !     .		//full_var_name, *5900 )
 ! 5350	CALL ERRMSG( ferr_syntax, status,
 !     .		'CURVI must be accompanied by explicit X and Y limits: '

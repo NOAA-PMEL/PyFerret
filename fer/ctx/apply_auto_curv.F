@@ -33,15 +33,15 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *  setup auto-curvilinear loading of aux vars and regridding
-*      z = lo:hi@ave        ==> a curvi regrid to a 1pt axis via pcwz avrging
+*      z = pt               ==> an interpolation computed as a hidden curvi regrid
+*      z = lo:hi@ave        ==> a compressing xform computed as a hidden curvi
+*				regridding operation using pcwz averaging
+* 
 *      z = lo:hi:delta      ==> a curvi regrid via linear interpolation
 *      z = lo:hi:delta@ave  ==> a curvi regrid via piececwise averaging
-*      z = pt               ==> a curvi regrid to a 1pt axis via linear interp
-* ... and for convenience also
-*      gz = axis, sigma
-*      gz = lo:hi:delta,sigma
 
-* V690 12/13 *sh* 
+* V690 12/13 *sh* - hidden curvi regrids added 4/14
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
 	IMPLICIT NONE
 
@@ -58,6 +58,7 @@
 	CHARACTER*(*) full_var_name
 
 * internal variable declarations
+	LOGICAL	single_pt
 	INTEGER	idim, impl_grid
 	REAL	range, midpt
 
@@ -79,11 +80,25 @@
 * a regrid implies that the aux axis status is "used"
 	  cx_aux_stat(idim,cx) = paux_stat_used 
 
+* single point result?
+	   single_pt = cx_lo_ww(idim,cx) .EQ. cx_hi_ww(idim,cx)
+     .	  .OR.    ( cx_trans(idim,cx) .EQ. trans_average
+     .        .AND. cx_delta(idim,cx) .EQ. unspecified_val8 )
+
 * modify the xform or regridding xform to be an aux var regrid xform
-	   IF ( cx_regrid_trans(idim,cx) .EQ. prgrd_average
-     .	  .    OR. cx_trans       (idim,cx) .EQ. trans_average) THEN
+	   IF     ( single_pt ) THEN   ! Z=pt or Z=lo:hi@ave
+	      IF ( cx_trans(idim,cx) .EQ. trans_no_transform ) THEN
+	         cx_regrid_trans(idim,cx) = pauxrgrd_linear
+	      ELSEIF ( cx_trans(idim,cx) .EQ. trans_average ) THEN 
+	         cx_regrid_trans(idim,cx) = pauxrgrd_pwlave
+	      ELSE
+	         GOTO 5200
+	      ENDIF
+	      cx_trans(idim,cx) = trans_no_transform
+	   ELSEIF ( cx_regrid_trans(idim,cx) .EQ. prgrd_average 
+     .	       .OR. cx_trans(idim,cx)        .EQ. trans_average ) THEN
 	      CALL WARN_OCCASIONALLY(
-     .		   'Box-averaging not available for sigma axis '//
+     .		   'Box-averaging not available for layerz axis '//
      .		   'regridding.'//pCR//
      .		   '           Using piecewise linear averaging instead, '//
      .		   'equivalent to gz(depth)=0:100@plave', 10, 101)
@@ -100,21 +115,29 @@
 	   IF (cx_g_eq_regrid(idim)) THEN
 * GZ=axis or GZ=lo:hi:delta
 	      cx_aux_stat(idim,cx) = paux_stat_used  ! gz syntax sets itself up
-	   ELSEIF (cx_regrid_trans(idim,cx) .EQ. pauxrgrd_pwlave
-     .	     .AND. cx_delta(idim,cx)        .EQ. unspecified_val8) THEN
-* Z=lo:hi@ave ==> regrid to a single point axis with these lo:hi end points
-	      range = cx_hi_ww(idim,cx) - cx_lo_ww(idim,cx)
-	      midpt = (cx_hi_ww(idim,cx) + cx_lo_ww(idim,cx)) / 2.
-	      cx_lo_ww(idim,cx) = midpt - range/2
-	      cx_hi_ww(idim,cx) = midpt + range/2
-	      cx_delta(idim,cx) = pauto_1pt_ax
+	   ELSEIF (single_pt) THEN
+* set up a "false regridding" by falsely setting cx_unstand_grid
+* and setting cx_aux_stat as a flag that it is not a real regrid
+* This is because we want to invoke the curvilinear regridding machinery
+* but we want the result to remain on the original grid -- not unique 1pt grids
+* Else layerz_temp[Z=50] and layerz_temp[Z=100] would get differing grids
+	      cx_unstand_grid(cx) = .TRUE.
+	      cx_aux_stat(idim,cx) = paux_stat_false_1pt_regrid
+!	   ELSEIF (cx_regrid_trans(idim,cx) .EQ. pauxrgrd_pwlave
+!     .	     .AND. cx_delta(idim,cx)        .EQ. unspecified_val8) THEN
+!* Z=lo:hi@ave ==> regrid to a single point axis with these lo:hi end points
+!	      range = cx_hi_ww(idim,cx) - cx_lo_ww(idim,cx)
+!	      midpt = (cx_hi_ww(idim,cx) + cx_lo_ww(idim,cx)) / 2.
+!	      cx_lo_ww(idim,cx) = midpt - range/2
+!	      cx_hi_ww(idim,cx) = midpt + range/2
+!	      cx_delta(idim,cx) = pauto_1pt_ax
 	   ELSEIF ( cx_delta(idim,cx) .NE. unspecified_val8 ) THEN
 * z=lo:hi:delta and z=lo:hi:delta@ave
 	      CONTINUE
-	   ELSEIF (cx_given(idim,cx)
-     .	    .AND. cx_lo_ww(idim,cx) .EQ. cx_hi_ww(idim,cx)) THEN
-* Z=pt ==> regrid to a 1 point axis axis by interpolation
-	      cx_delta(idim,cx) = pauto_1pt_ax
+!	   ELSEIF (cx_given(idim,cx)
+!     .	     .AND. cx_lo_ww(idim,cx) .EQ. cx_hi_ww(idim,cx)) THEN
+!* Z=pt ==> regrid to a 1 point axis axis by interpolation
+!	      cx_delta(idim,cx) = pauto_1pt_ax
 	   ELSE
 * no regridding after all -- just getting the aux vars for plotting
 	      cx_aux_stat(idim,cx) = paux_stat_needed
@@ -122,9 +145,10 @@
 	   cx_implicit_aux(cx) = .TRUE.
 	   cx_naux(cx) = cx_naux(cx) + 1
 
-* curvilinear and sigma regridding always imply a new target axis
+* curvilinear and layerz regridding that are not single_pt imply a new target axis
 * if it was not already created by GET_CONTEXT_MODS then create it here
-	   IF (.NOT.(    cx_aux_stat(idim,cx).EQ.paux_stat_needed
+	   IF (.NOT.(    single_pt
+     .	            .OR. cx_aux_stat(idim,cx).EQ.paux_stat_needed
      .	            .OR. cx_unstand_grid(cx)
      .		    .OR. cx_has_impl_grid(cx))      ) THEN
 	      CALL ALLO_GRID_TO_CX(cx,impl_grid,status)
@@ -139,7 +163,7 @@
 * error exits
  5200	IF (idim .EQ. z_dim) THEN
 	   CALL ERRMSG( ferr_invalid_command, status,
-     .	     'xform not (yet) supported on sigma-Z var: '
+     .	     'xform not (yet) supported on layerz var: '
      .		//full_var_name, *5000)
 	ELSE
 	   CALL ERRMSG( ferr_invalid_command, status,

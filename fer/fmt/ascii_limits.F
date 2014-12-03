@@ -57,6 +57,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 * v687  *acm* 3/14 Fix ticket 2149: TM_GET_CAL gets the calendar label from the T axis.
+* v690 *sh* 4/14 show regridding by "false 1 pt" curvilinear regrid 
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -79,7 +80,8 @@
      .			grid, cal_id, len_cal
 	CHARACTER	ALG_TRANS_TITL*20, LOHI_WORLD*44, LEFINT*4, 
      .			TM_FMT*10, TM_GET_CAL*32, TM_GET_F_CAL*32,
-     .			trans_title*40, cal_name*32
+     .			VAR_CODE*128,
+     .			trans_title*128, cal_name*32
 	REAL		trans_arg
 
 * initialize
@@ -119,6 +121,22 @@
 	         len_trans = len_trans + 4 + llen
 	      ENDIF
 	   ENDIF
+	   string = string(1:slen)//' ('//trans_title(:len_trans)//')'	
+	   slen = MIN( max_len, slen+len_trans+3 )
+	ELSEIF (cx_aux_stat(idim,cx) .EQ. paux_stat_false_1pt_regrid) THEN
+* ... add "averaged using DEPTH" or "interpolated using DEPTH"
+	   IF     (cx_regrid_trans(idim, cx) .EQ. pauxrgrd_linear ) THEN
+	      trans_title = 'interpolated using'
+	   ELSEIF (cx_regrid_trans(idim, cx) .EQ. pauxrgrd_pwlave ) THEN
+	      trans_title = 'pc wise lin avgd using'
+	   ELSE
+	      trans_title = '??crptn??'
+	   ENDIF	 
+	   len_trans = TM_LENSTR( trans_title )
+*      append name of auxiliary variable
+	   trans_title(len_trans+2:) = VAR_CODE(cx_aux_cat(idim,cx),
+     .				                cx_aux_var(idim,cx)  )
+	   len_trans = TM_LENSTR( trans_title )
 	   string = string(1:slen)//' ('//trans_title(:len_trans)//')'	
 	   slen = MIN( max_len, slen+len_trans+3 )
 	ENDIF

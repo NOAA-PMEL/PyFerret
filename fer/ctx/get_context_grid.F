@@ -140,6 +140,7 @@
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V690 12/13 *sh* set default regrid transforms for aux var regridding transform
 *	          set up dynamic axis if cx_delta=pauto_1pt_ax
+*      4/14  *sh* return the standard grid if this is "false regridding" - 1 pt curvi
 
 	include 'errmsg.parm'
 	include 'ferret.parm'
@@ -162,7 +163,7 @@
 
 * internal variable declarations:
         LOGICAL   GEOG_COS_FACTOR, GEOG_LABEL,
-     .		  its_dyn, has_impl_axis, explicit_unstd
+     .		  its_dyn, has_impl_axis, explicit_unstd, use_std_grid
 	INTEGER	  KNOWN_GRID, 
      .		  use_grid, ilo, ihi,
      .		  cat, var, dset, std_grid, std_axis, use_axis, idim,
@@ -315,7 +316,15 @@
 	ENDIF
 
 * use the standard grid ?
-	IF ( .NOT. cx_unstand_grid( cx ) ) THEN
+* 4/14 cx_unstand_grid may indicate a "false regrid" used for single point curvi results
+* note that false regridding may not have been checked in all possible combos of
+* delta values on other axes, etc.
+	use_std_grid = .NOT. cx_unstand_grid( cx )
+	DO idim = 1, nferdims
+	   IF (cx_aux_stat(idim,cx) .EQ. paux_stat_false_1pt_regrid)
+     .			use_std_grid = .TRUE.
+	ENDDO
+	IF ( use_std_grid ) THEN
 	   cx_grid( cx ) = std_grid
 	   RETURN
 	ENDIF

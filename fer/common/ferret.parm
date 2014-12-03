@@ -38,6 +38,8 @@
 *		  added patnam_sigma, patnam_curvx, patnam_curvy
 * 		  turned max_context into a variable to allow aux frames above it
 * V692 7/14 *acm* new transform @WGT, ticket 2180
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -418,13 +420,15 @@
      .			paux_stat_needed ,
      .			paux_stat_used   ,
      .			paux_stat_conflict,
-     .			paux_stat_notfound
+     .			paux_stat_notfound,
+     .			paux_stat_false_1pt_regrid
 	PARAMETER     ( paux_stat_na       = 1,
      .			paux_stat_passed   = 2,
      .			paux_stat_needed   = 3,
      .			paux_stat_used     = 4,
      .			paux_stat_conflict = 5,
-     .			paux_stat_notfound = 6)
+     .			paux_stat_notfound = 6,
+     .			paux_stat_false_1pt_regrid = 7 )
 
 * codes to designate classes of items used within algebraic expressions
 	INTEGER		alg_operator,
@@ -694,7 +698,8 @@
      .			pinfer_frm_aux = -123455 )
 
 * special attribute names
-	CHARACTER*11	patnam_sigma, patnam_curvx, patnam_curvy
-	PARAMETER     ( patnam_sigma = '__SigmaRef_',
-     .		        patnam_curvx = '__CurvxRef_',
-     .		        patnam_curvy = '__CurvxRef_'  )
+	CHARACTER*12	patnam_layerz, patnam_curvx, patnam_curvy
+	PARAMETER     ( patnam_layerz = '__LayerzRef_',
+     .		        patnam_curvx  = '__CurvxRef_',
+     .		        patnam_curvy  = '__CurvyRef_'  )
+

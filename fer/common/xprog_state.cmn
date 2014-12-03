@@ -48,6 +48,7 @@
 *acm* 8/12 New MODE shrink_ylab, see tickets 1896, 1958.
 * V685 *sh* 11/13 - added allowed_err. SHOW VAR/TREE to display despite errors
 * V690 *sh* 12/13 - added mode_auto_*, for automated curvilinear and sigma vars
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -75,7 +76,7 @@
      .			pmode_ppllist, pmode_gui, pmode_logo, pmode_labels,
      .                  pmode_grat, pmode_linecolors, pmode_upcase_output,
      .                  pmode_nlevels, pmode_nodata_lab, pmode_shrink_ylab,
-     .                  pmode_curvilinear, pmode_sigma
+     .                  pmode_curvilinear, pmode_layerz
 
 	PARAMETER     ( pmode_diagnostic	= 1,
      .			pmode_verify		= 2,
@@ -109,7 +110,7 @@
      .                  pmode_nodata_lab        = 29,
      .                  pmode_shrink_ylab       = 30,
      .			pmode_curvilinear	= 31,
-     .			pmode_sigma		= 32 )
+     .			pmode_layerz		= 32 )
 
 	CHARACTER	pmode_unused*10
 	PARAMETER     ( pmode_unused = '%% unused %%' )
@@ -185,7 +186,7 @@
      .          allowed_err,
      .          one_cmnd_mode,
      .		mode_auto_curvi, mode_auto_curvi_last,
-     .		mode_auto_sigma, mode_auto_sigma_last
+     .		mode_auto_layerz, mode_auto_layerz_last
 
 
 ! Note: available_char_var is unused
@@ -243,7 +244,7 @@
      .		denig_xylim_msg_done, denig_pen_msg_done,
      .		in_get_grid_mode, 
      .		mode_auto_curvi, mode_auto_curvi_last,
-     .		mode_auto_sigma, mode_auto_sigma_last,
+     .		mode_auto_layerz, mode_auto_layerz_last,
      .		frame_compress, available_char_var,
      .		journal_file, ppllist_file,
      .		xwind_node, xwind_node_len,

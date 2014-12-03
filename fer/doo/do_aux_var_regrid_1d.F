@@ -51,7 +51,8 @@
 *      pos == com2
 
 
-* v690 11/13 *sh*
+* v690 11/13-4/14 *sh*
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -75,7 +76,7 @@
 
 
 * internal variable declarations:
-	LOGICAL	new_aux_line, has_valid, ascending
+	LOGICAL	new_aux_line, has_valid, ascending, false_1pt_regrid
         INTEGER CX_DIM_LEN,
      .          idim,
      .          i,   j,   k,   l,   m,   n,
@@ -85,7 +86,8 @@
      .          pi0, pj0, pk0, pl0, pm0, pn0,
      .          dsi, dsj, dsk, dsl, dsm, dsn,
      .          dpi, dpj, dpk, dpl, dpm, dpn
-        INTEGER ndx_lo, wkblk, kdmax, ii, trans, klook, khiok
+        INTEGER ndx_lo, wkblk, kdmax, ii, trans, klook, khiok,
+     .		koffset_false
         REAL    bad_src, bad_dst, bad_pos, zval, frac
         REAL*8  TM_WORLD
 * internally declared work arrays
@@ -117,12 +119,17 @@
 *==========================
 
 * initialize
+	kdmax = kmax_dst
+	false_1pt_regrid = cx_aux_stat(axis,dst_cx)
+     .		      .EQ. paux_stat_false_1pt_regrid
+*   koofset_false fixes ss of -999 used as a valid position in the dest axis.
+	koffset_false = kmin_dst - m5loz
+	trans = cx_regrid_trans(axis,dst_cx) !  TEMPORARY: 1 dim HARD CODED!!!
+
 * flag(s) for bad or missing values
         bad_src = mr_bad_data( msrc )
         bad_dst = mr_bad_data( mdst )
         bad_pos = mr_bad_data( mpos )
-	kdmax = kmax_dst
-	trans = cx_regrid_trans(z_dim,dst_cx) !  TEMPORARY: z_dim HARD CODED!!!
 
 * compute the delta increment for each axis
 * this allows "promotion" of degenerate axes
@@ -149,22 +156,33 @@
 
 * extract the list of target coordinates
 	IF (trans .EQ. pauxrgrd_linear ) THEN
-	   DO 30 k = kmin_dst, kmax_dst
-              dstcoords(k) = TM_WORLD(k,cx_grid(dst_cx),z_dim,box_middle)
- 30	   CONTINUE
+	   IF (false_1pt_regrid) THEN
+* ... false 1pt regridding - e.g. Z=100
+	      dstcoords(kmin_dst) = cx_lo_ww(axis, dst_cx)
+	   ELSE
+	      DO k = kmin_dst, kmax_dst
+                 dstcoords(k) = TM_WORLD(k,cx_grid(dst_cx),axis,box_middle)
+	      ENDDO
+	   ENDIF
 	ELSEIF (trans .EQ. pauxrgrd_pwlave ) THEN
-	   DO 32 k = kmin_dst, kmax_dst
-              dstcoords(k) = TM_WORLD(k,cx_grid(dst_cx),z_dim,box_lo_lim)
- 32	   CONTINUE
-	   dstcoords(kmax_dst+1) =
-     .		    TM_WORLD(kmax_dst,cx_grid(dst_cx),z_dim,box_hi_lim)
+	   IF (false_1pt_regrid) THEN
+* ... false 1pt regridding - e.g. Z=100:200@ave
+	      dstcoords(kmin_dst  ) = cx_lo_ww(axis, dst_cx)
+	      dstcoords(kmin_dst+1) = cx_hi_ww(axis, dst_cx)
+	   ELSE
+	      DO k = kmin_dst, kmax_dst
+                 dstcoords(k) = TM_WORLD(k,cx_grid(dst_cx),axis,box_lo_lim)
+	      ENDDO
+	      dstcoords(kmax_dst+1) =
+     .		    TM_WORLD(kmax_dst,cx_grid(dst_cx),axis,box_hi_lim)
+	   ENDIF
 	   kdmax = kdmax + 1
 	ELSE
 	   STOP 'do_aux_var_regrid_trns'   ! checked in AUX_REGRID_LIMS
 	ENDIF
 
 * initial code does only the Z axis, based upon "ZAXREPLACE(V,ZVALS,ZAX)"
-* of old ... regrid a sigma-coordinate-style (layered) variable, V (src), onto
+* of old ... regrid a layer-Z-coordinate variable, V (src), onto
 * a depth axis, ZAX, (Z axis of dst) guided by the depths in ZVALS (pos)
 
 
@@ -260,8 +278,9 @@
 	        ENDIF
 
 * put the line of results into the destination array
-	        DO 900 k = klook, khiok
- 900	        dst(i, j, k, l, m, n) = dstline(k)
+	        DO k = klook, khiok
+	          dst(i, j, k-koffset_false, l, m, n) = dstline(k)
+	        ENDDO
 	     ENDIF
 
  1000	CONTINUE

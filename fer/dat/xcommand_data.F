@@ -213,9 +213,10 @@
 * PyFr  *kms*  8/13 Add /ANNOTATE to FRAME
 * V685 *sh*  9/13  Add SHOW VARIABLE/TREE and alias VTREE
 * V685 *acm* 11/13 Add /QUIET for DEFINE ATTRIBUTE
-* V690 *sh* 12/13 Add /CURVILINEAR and /SIGMA to action commands
-*		  Add SET,CANCEL,SHOW VARIABLE/SIGMA/CURVI
+* V690 *sh* 12/13 Add /CURVILINEAR and /LAYERZ to action commands (formerly /SIGMA)
+*		  Add SET,CANCEL,SHOW VARIABLE/LAYERZ/CURVI  	  (formerly /SIGMA)
 * V687  3/14 *acm* add SET AXIS/NAME
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -377,7 +378,7 @@
 		DATA qualifiers  (nqual_at1j+6)	/ 'SCALEFAC'	/
 		DATA qualifiers  (nqual_at1j+7)	/ 'OFFSET'	/
 		DATA qualifiers  (nqual_at1j+8)	/ 'OUTTYPE'	/
-		DATA qualifiers  (nqual_at1j+9)	/ 'SIGMA'	/
+		DATA qualifiers  (nqual_at1j+9)	/ 'LAYERZ'	/
 		DATA qualifiers  (nqual_at1j+10)/ 'CURVILINEAR'	/
 		DATA qualifiers  (nqual_at1j+11)/ '****'	/
 		DATA qualifiers  (nqual_at1j+12)/ '****'	/
@@ -583,7 +584,7 @@
 		DATA qualifiers  (nqual_at2j+6)	/ 'APPEND'	/
 		DATA qualifiers  (nqual_at2j+7)	/ 'CLOBBER'	/
 		DATA qualifiers  (nqual_at2j+8)	/ 'TREE'	/ ! was /DEPENDENCY
-		DATA qualifiers  (nqual_at2j+9)	/ 'SIGMA'	/
+		DATA qualifiers  (nqual_at2j+9)	/ 'LAYERZ'	/
 		DATA qualifiers  (nqual_at2j+10)/ 'CURVILINEAR'	/
 		DATA qualifiers  (nqual_at2j+11)/ '****'	/
 		DATA qualifiers  (nqual_at2j+12)/ '****'	/
@@ -785,7 +786,7 @@
 	   DATA qualifier_pointer(nsub_at3 +10)	/ nqual_at3k	/
 		DATA qualifiers  (nqual_at3k+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at3k+1)	/ 'DATASET'	/
-		DATA qualifiers  (nqual_at3k+2)	/ 'SIGMA'	/
+		DATA qualifiers  (nqual_at3k+2)	/ 'LAYERZ'	/
 		DATA qualifiers  (nqual_at3k+3)	/ 'CURVILINEAR'	/
 		DATA qualifiers  (nqual_at3k+4)	/ '****'	/
 		DATA qualifiers  (nqual_at3k+5)	/ '****'	/
@@ -966,7 +967,7 @@
 		DATA qualifiers  (nqual_at5a+52)/ 'ENDIAN'/
 		DATA qualifiers  (nqual_at5a+53)/ 'OUTTYPE'/
 		DATA qualifiers  (nqual_at5a+54)/ 'CURVILIN'/
-		DATA qualifiers  (nqual_at5a+55)/ 'SIGMA'/
+		DATA qualifiers  (nqual_at5a+55)/ 'LAYERZ'/
 		DATA qualifiers  (nqual_at5a+56)/ '****'/
 		DATA qualifiers  (nqual_at5a+57)/ '****'/
 		DATA qualifiers  (nqual_at5a+58)/ '****'/

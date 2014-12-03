@@ -45,7 +45,8 @@
 *       V420: 04/97
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V687 *acm* 3/14  Ticket 2151: The coordinate variables may be in other dimensions
-*                  than XY, e.g. XZ or YZ for a sigma-coordinate vertical axis.
+*                  than XY, e.g. XZ or YZ for a layerz-coordinate vertical axis.
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'

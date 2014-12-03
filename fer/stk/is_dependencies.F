@@ -45,7 +45,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V690 9/13 *sh*  -- with provisions for aux variables tested and refined
-* V693 10/14*acm* -- Fix tickets 2201, 2215
+* V693+ 12/14 *sh* - repair improper handling of dynamic grids
 
 * calling argument declarations:
 	INTEGER	status
@@ -241,17 +241,6 @@
      .				hi_cx,
      .				var_status )
 
-* Ticket 2201:
-* get_var_context increments line_use_cnt, and defines a grid.  Store
-* the uvar_grid so that the axes may be canceled later.  
-* Ticket 2115: If it's a grid as defined in get_context where we've 
-* encoded the start/end limits of the uvar name into the grid (see 
-* get_context_mods) do not store that grid number.
-
-        IF (cx_category(hi_cx) .EQ. cat_user_var) THEN
-	   IF (cx_grid(hi_cx) .GE. unspecified_int4) uvar_grid(uvar,dset) = cx_grid(hi_cx)  
-	ENDIF
-
 * have we returned here after reporting auxvar dependencies?
 * if so we have already reported this variable
 	IF (delayed_by_auxvars) THEN
@@ -333,6 +322,14 @@
 	
 * clean up: release context and isp stack space
  1000	CONTINUE
+* ... if a dynamic grid was created for this variable release it
+*     Note that this fix is not fully understood.  In IS_DEPENDENCIES
+*     we don't actually care about grid allocations and use counts, however
+*     dynamic grids get created by GET_VAR_CONTEXT, etc. so we have to clean up
+	IF (cx_has_impl_grid(cx_stack_ptr)) THEN
+	   CALL DEALLO_DYN_GRID(cx_grid(cx_stack_ptr))
+	   cx_has_impl_grid(cx_stack_ptr) = .FALSE.
+	ENDIF
 	cx_stack_ptr = cx_stack_ptr - 1
 	isp = isp - 1
 

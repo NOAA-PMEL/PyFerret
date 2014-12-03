@@ -183,10 +183,11 @@
 * V685 *sh*  9/13 Added SHOW VARIABLE/TREE  (a.k.a. /DEPENDENCIES)
 * V690 *sh* 12/13 Added SHOW TRANSFORMS of auxiliary variable regridding
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
-* V690 *sh* 1/14 Add SHOW VAR/SIGMA
+* V690 *sh* 1/14 Add SHOW VAR/LAYERZ (formerly /SIGMA)
 * V691+*acm* 8/14 Fix ticket 2188: SHOW MEMORY should say memory words are 8 bytes.
 * V691+ 8/14 *acm* Fix ticket 2194: SHOW with /OUTFILE and not /XML. 
 * V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
         IMPLICIT NONE
 
@@ -786,15 +787,15 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	   ENDIF
 	ENDIF
 
-* ... SHOW VARIABLE/SIGMA varname [,varname2, ...]
-	IF (qual_given(slash_show_var_sigma) .GT. 0) THEN
+* ... SHOW VARIABLE/LAYERZ varname [,varname2, ...]
+	IF (qual_given(slash_show_var_layerz) .GT. 0) THEN
 	   IF (slash_all .OR. num_args.EQ.0) THEN
-*    ... get list of varIDs of all variables that have __SigmaRef_ attribute
+*    ... get list of varIDs of all variables that have __LayerzRef_ attribute
               CALL GET_FVARS_LIST_BY_ATTNAME_AND_VAL
-     .            (patnam_sigma, unspecified_name4, max_uvar,
+     .            (patnam_layerz, unspecified_name4, max_uvar,
      .             arr_buff, saved_index_list, num_indices)
               CALL GET_UVARS_LIST_BY_ATTNAME_AND_VAL
-     .	          (patnam_sigma, unspecified_name4, max_uvar-num_indices,
+     .	          (patnam_layerz, unspecified_name4, max_uvar-num_indices,
      .             arr_buff(num_indices+1),
      .             saved_index_list(num_indices+1), n )
               num_indices = num_indices + n
@@ -827,9 +828,9 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
                  saved_index_list(i1) = rqst_dset
               ENDDO
            ENDIF
-* loop through the requested variables displaying sigma info
+* loop through the requested variables displaying layerz info
            DO i1 = 1, num_indices
-* get the attribute value of '__SigmaRef_' (patnam_sigma)
+* get the attribute value of '__LayerzRef_' (patnam_layerz)
               varid = arr_buff(i1)
               dset  = saved_index_list(i1)
               maxlen = size_rbuff
@@ -837,49 +838,49 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
      .                              nvdims, vdims, nvatts, coordvar, 
      .                              all_outflag, status)
               len = TM_LENSTR1(varname)
-              got_it = NC_GET_ATTRIB ( dset, varid, patnam_sigma,
+              got_it = NC_GET_ATTRIB ( dset, varid, patnam_layerz,
      .                                 .TRUE., varname, maxlen,
      .                                 attlen, attoutflag, risc_buff,
      .                                 attvals )
               IF (.NOT.got_it) THEN
 * ... we only arrive here if request was for named vars: SH VAR/SIG a, b, c
-* ... no explicit sigma reference defined for this variable
+* ... no explicit layerz reference defined for this variable
                  show_str =
-     .         '  No variable holds vertical (sigma) coordinates of '
+     .         '  No variable holds vertical (layerz) coordinates of '
      .                // varname(:len)
 
-* look for inherited sigma dependencies 
+* look for inherited layerz dependencies 
 	         dset = unspecified_int4    ! to be determined during parse
 	         CALL PARSE_NAM_DSET( varname, cx_last, dset,
      .			              cat, var, mods_cx, status )
                  IF (cat .EQ. cat_user_var) THEN
-* ... trigger grid-getting, which also gets sigma associations
+* ... trigger grid-getting, which also gets layerz associations
 	           grid = GRID_FROM_NAME
      .                    (cmnd_buff(item_start(i1):item_end(i1)),
      .			  cx_last, status )
                    IF (uvar_aux_stat(var, z_dim).EQ.paux_stat_conflict) THEN
                       show_str = '   Components in the definition of ' // 
      .                  varname(:len) //
-     .                  ' have conflicting SIGMA references'
+     .                  ' have conflicting LAYERZ references'
                    ELSEIF (uvar_aux_stat(var,z_dim).EQ.paux_stat_passed
      .                .OR. uvar_aux_stat(var,z_dim).EQ.paux_stat_needed) THEN
                       risc_buff = VAR_CODE(uvar_aux_cat(var,z_dim,dset),
      .                                     uvar_aux_var(var,z_dim,dset))
                       attlen = TM_LENSTR1(risc_buff)
                       show_str = '  ' // risc_buff(:attlen) //
-     .                  ' holds the vertical (sigma) coordinates of ' //
+     .                  ' holds the vertical (layerz) coordinates of ' //
      .                  varname(:len)
                    ELSEIF (uvar_aux_stat(var,z_dim).EQ.paux_stat_used) THEN
                       show_str = '  The definition of ' // 
      .                  varname(:len) //
      .                  ' contains explicit regrids of'//
-     .                  ' its SIGMA coordinates'
+     .                  ' its LAYERZ coordinates'
                    ENDIF 
                  ENDIF
               ELSE
-* ... show the explicit __sigma_ref_ attribute value
+* ... show the explicit __layerz_ref_ attribute value
                 show_str = '  ' // risc_buff(:attlen) //
-     .         ' holds the designated vertical (sigma) coordinates of ' //
+     .         ' holds the designated vertical (layerz) coordinates of ' //
      .          varname(:len)
               ENDIF
 	      CALL SPLIT_LIST(pttmode_explct, show_lun, show_str, 0)

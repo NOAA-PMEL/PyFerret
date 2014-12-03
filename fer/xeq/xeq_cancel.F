@@ -142,7 +142,8 @@
 * V685 *acm*  4/13 Changes for ensemble datasets, correctly handle flag for hiding 
 *                  ensemble members 
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
-* V690 *sh* 1/14 add CAN VAR/SIGMA
+* V690 *sh* 1/14 add CAN VAR/LAYERZ
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -552,9 +553,9 @@
 	   iset = unspecified_int4
 	ENDIF
 
-* /SIGMA
-	IF (qual_given(slash_canc_var_sigma) .GT. 0) THEN 
-	   IF (slash_all) CALL TM_NOTE('/ALL ignored when /SIGMA is specified.',
+* /LAYERZ
+	IF (qual_given(slash_canc_var_layerz) .GT. 0) THEN 
+	   IF (slash_all) CALL TM_NOTE('/ALL ignored when /LAYERZ is specified.',
      .				        err_lun)
 	   IF (num_args .EQ. 0) GOTO 5010
 	   DO item = 1, num_args
@@ -568,7 +569,7 @@
 * ... not sure ... how are LET/D vars found?
 	      IF (category .EQ. cat_user_var) dset = -1  ! signals a uvar ??
 	      CALL CD_GET_VAR_ID (dset, buff, varid, status)
-              CALL CD_DELETE_ATTRIBUTE (dset, varid, patnam_sigma, status )
+              CALL CD_DELETE_ATTRIBUTE (dset, varid, patnam_layerz, status )
 	      CALL PURGE_ALL_UVARS
 	   ENDDO
 	   RETURN

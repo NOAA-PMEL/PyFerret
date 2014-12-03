@@ -225,6 +225,7 @@
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V687 *acm*  1/14 Fixing ticket 2135; grid_use_cnt on DEFINE DATA/AGG datasets
 * V690 *sh*   1/14 Formatting improvement to DEFINE ATTRIB error message
+* V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -729,12 +730,12 @@
 * if this name is used as the target of an aux (curvilinear) coordinate var
 * (re)defining it may invalidate cached results
         CALL GET_FVARS_LIST_BY_ATTNAME_AND_VAL
-     .	  (patnam_sigma, buff1, max_uvar,
+     .	  (patnam_layerz, buff1, max_uvar,
      .     string_array_result, deleted_list_result, num_indices)
         purge_all = purge_all .OR. (num_indices .GT. 0)
         IF (.NOT.purge_all) THEN
            CALL GET_UVARS_LIST_BY_ATTNAME_AND_VAL
-     .	        (patnam_sigma, buff1, max_uvar,
+     .	        (patnam_layerz, buff1, max_uvar,
      .           string_array_result, deleted_list_result, num_indices)
            purge_all = purge_all .OR. (num_indices .GT. 0)
         ENDIF

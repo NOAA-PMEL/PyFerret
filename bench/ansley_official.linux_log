@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 53500500 Nov 20 15:19 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 52585366 Dec  2 14:55 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2050: variable names in quotes and uppercasing
+Note: fix metafile writes for large number of points in line
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Thu Nov 20 15:21:10 PST 2014
+Beginning at Tue Dec 2 14:59:27 PST 2014
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10451,15 +10451,15 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.931"
 FERRET_PLATFORM = "Linux 2.6.18-398.el5PAE 32-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.3.3-rc2 of Oct  6 2014 16:16:52 $"
+NETCDF_VERSION = "4.3.1.1 of Feb 25 2014 11:50:21 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "20-Nov-14"
-SESSION_TIME = "15:21"
-SESSION_PID = "11928"
-DELTA_CPU = "5.32319"
-CLOCK_SECS = "15.34"
-CURRENT_DATE = "20-Nov-14"
-CURRENT_TIME = "15:21:26"
+SESSION_DATE = " 2-Dec-14"
+SESSION_TIME = "14:59"
+SESSION_PID = "30366"
+DELTA_CPU = "5.14622"
+CLOCK_SECS = "8.927"
+CURRENT_DATE = " 2-Dec-14"
+CURRENT_TIME = "14:59:36"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10480,15 +10480,15 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.931"
 FERRET_PLATFORM = "Linux 2.6.18-398.el5PAE 32-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.3.3-rc2 of Oct  6 2014 16:16:52 $"
+NETCDF_VERSION = "4.3.1.1 of Feb 25 2014 11:50:21 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "20-Nov-14"
-SESSION_TIME = "15:21"
-SESSION_PID = "11928"
-DELTA_CPU = "0"
-CLOCK_SECS = "15.341"
-CURRENT_DATE = "20-Nov-14"
-CURRENT_TIME = "15:21:26"
+SESSION_DATE = " 2-Dec-14"
+SESSION_TIME = "14:59"
+SESSION_PID = "30366"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "8.928"
+CURRENT_DATE = " 2-Dec-14"
+CURRENT_TIME = "14:59:36"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10498,9 +10498,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "20-Nov-14"
-SESSION_TIME = "15:21"
-SESSION_PID = "11928"
+SESSION_DATE = " 2-Dec-14"
+SESSION_TIME = "14:59"
+SESSION_PID = "30366"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10510,15 +10510,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "20-Nov-14"
-SESSION_TIME = "15:21"
-SESSION_PID = "11928"
+SESSION_DATE = " 2-Dec-14"
+SESSION_TIME = "14:59"
+SESSION_PID = "30366"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "20-Nov-14"
-SESSION_TIME = "15:21"
-SESSION_PID = "11928"
+SESSION_DATE = " 2-Dec-14"
+SESSION_TIME = "14:59"
+SESSION_PID = "30366"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10554,7 +10554,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.931"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "20-NOV-2014 15:21:26"
+LAB3 = "02-DEC-2014 14:59:36"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10652,15 +10652,15 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.931"
 FERRET_PLATFORM = "Linux 2.6.18-398.el5PAE 32-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.3.3-rc2 of Oct  6 2014 16:16:52 $"
+NETCDF_VERSION = "4.3.1.1 of Feb 25 2014 11:50:21 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "20-Nov-14"
-SESSION_TIME = "15:21"
-SESSION_PID = "11928"
-DELTA_CPU = "0.011998"
-CLOCK_SECS = "15.352"
-CURRENT_DATE = "20-Nov-14"
-CURRENT_TIME = "15:21:26"
+SESSION_DATE = " 2-Dec-14"
+SESSION_TIME = "14:59"
+SESSION_PID = "30366"
+DELTA_CPU = "0.010999"
+CLOCK_SECS = "8.938"
+CURRENT_DATE = " 2-Dec-14"
+CURRENT_TIME = "14:59:36"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -23983,29 +23983,29 @@ list i  			! Deliberate error
  
 ! v694 No longer an error: See ticket 2050
 list 'i'  			!
-             VARIABLE : SIN(2+I/10)
+             VARIABLE : SIN(4+I/10)
              FILENAME : weird_name1.cdf
              SUBSET   : 20 points (X)
- 1    /  1:  0.863209
- 2    /  2:  0.808496
- 3    /  3:  0.745705
- 4    /  4:  0.675463
- 5    /  5:  0.598472
- 6    /  6:  0.515501
- 7    /  7:  0.427380
- 8    /  8:  0.334988
- 9    /  9:  0.239249
- 10   / 10:  0.141120
- 11   / 11:  0.041581
- 12   / 12: -0.058374
- 13   / 13: -0.157746
- 14   / 14: -0.255541
- 15   / 15: -0.350783
- 16   / 16: -0.442520
- 17   / 17: -0.529836
- 18   / 18: -0.611858
- 19   / 19: -0.687766
- 20   / 20: -0.756802
+ 1    /  1: -0.818277
+ 2    /  2: -0.871576
+ 3    /  3: -0.916166
+ 4    /  4: -0.951602
+ 5    /  5: -0.977530
+ 6    /  6: -0.993691
+ 7    /  7: -0.999923
+ 8    /  8: -0.996165
+ 9    /  9: -0.982453
+ 10   / 10: -0.958924
+ 11   / 11: -0.925815
+ 12   / 12: -0.883455
+ 13   / 13: -0.832267
+ 14   / 14: -0.772764
+ 15   / 15: -0.705540
+ 16   / 16: -0.631267
+ 17   / 17: -0.550686
+ 18   / 18: -0.464602
+ 19   / 19: -0.373877
+ 20   / 20: -0.279415
  
 list 'I'			! Now the proper syntax
              VARIABLE : SIN(4+I/10)
@@ -25656,7 +25656,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Thu Nov 20 15:21:39 PST 2014
+Tue Dec  2 14:59:45 PST 2014
  
 GO bn_reset
 cancel mode verify
@@ -48338,7 +48338,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS20-NOV-2014 15:22:34
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS02-DEC-2014 15:00:22
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -49769,7 +49769,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "20-Nov-14:15:21"
+WIN_TITLE = "2-Dec-14:14:59"
  
 set win/title="set the title"
 sho sym win_title
@@ -49787,7 +49787,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="20-Nov-14:15:21"
+ !-> set win/title=" 2-Dec-14:14:59"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -49796,16 +49796,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 20-Nov-14
+ !-> DEFINE SYMBOL the_date =  2-Dec-14
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 15:21
+ !-> DEFINE SYMBOL the_time = 14:59
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="20-Nov-14:15:21"
+ !-> SET WIN/TITLE="2-Dec-14:14:59"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "20-Nov-14:15:21"
+WIN_TITLE = "2-Dec-14:14:59"
  
 GO bn_reset
 cancel mode verify
@@ -54107,7 +54107,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT191_108)          DOUBLE    units           CHAR        12   T       degrees_east
@@ -54152,7 +54152,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT191_108)          DOUBLE    units           CHAR        12   T       degrees_east
@@ -60019,10 +60019,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "41.3417"
-CLOCK_SECS = "118.785"
-CURRENT_DATE = "20-Nov-14"
-CURRENT_TIME = "15:23:09"
+DELTA_CPU = "40.5448"
+CLOCK_SECS = "80.297"
+CURRENT_DATE = " 2-Dec-14"
+CURRENT_TIME = "15:00:48"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -60031,8 +60031,8 @@ CURRENT_TIME = "15:23:09"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.042993"
-CLOCK_SECS = "118.898"
+DELTA_CPU = "0.038995"
+CLOCK_SECS = "80.387"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -60046,60 +60046,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.305954
+ !-> DEFINE VARIABLE ten_plots = 0.294954
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "120.444"
+CLOCK_SECS = "81.429"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "120.445"
+CLOCK_SECS = "81.43"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.032995
+ !-> DEFINE VARIABLE dt = 0.032996
+ !-> DEFINE VARIABLE sumcpu =0.032996
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.06499
+ !-> DEFINE VARIABLE dt = 0.030995
+ !-> DEFINE VARIABLE sumcpu =0.063991
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.034995
- !-> DEFINE VARIABLE sumcpu =0.099985
+ !-> DEFINE VARIABLE dt = 0.029995
+ !-> DEFINE VARIABLE sumcpu =0.093986
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.13398
-!-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.032994
- !-> DEFINE VARIABLE sumcpu =0.166974
-!-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.028996
- !-> DEFINE VARIABLE sumcpu =0.19597
-!-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.228965
-!-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.26296
-!-> REPEAT: K=9
  !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.294955
+ !-> DEFINE VARIABLE sumcpu =0.125981
+!-> REPEAT: K=5
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.157976
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.034995
+ !-> DEFINE VARIABLE sumcpu =0.192971
+!-> REPEAT: K=7
+ !-> DEFINE VARIABLE dt = 0.034994
+ !-> DEFINE VARIABLE sumcpu =0.227965
+!-> REPEAT: K=8
+ !-> DEFINE VARIABLE dt = 0.035995
+ !-> DEFINE VARIABLE sumcpu =0.26396
+!-> REPEAT: K=9
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.296955
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.32895
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.33395
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.32895
-0.32895
+ !-> MESSAGE/CONTINUE 0.33395
+0.33395
 sh sym CLOCK_SECS
-CLOCK_SECS = "122.917"
+CLOCK_SECS = "82.976"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "20-Nov-14"
-SESSION_TIME = "15:21"
-CURRENT_DATE = "20-Nov-14"
-CURRENT_TIME = "15:23:13"
+SESSION_DATE = " 2-Dec-14"
+SESSION_TIME = "14:59"
+CURRENT_DATE = " 2-Dec-14"
+CURRENT_TIME = "15:00:50"
  
  
 ! ******** V6.3 Additions below ***********
@@ -64076,8 +64076,8 @@ list contents
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.931  "                                                         
- 3    /  3:" ! Linux 2.6.18-398.el5PAE 32-bit - 11/20/14"                               
- 4    /  4:" ! 20-Nov-14 15:21     "                                                    
+ 3    /  3:" ! Linux 2.6.18-398.el5PAE 32-bit - 12/02/14"                               
+ 4    /  4:" !  2-Dec-14 14:59     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -66546,40 +66546,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.603
-randu2_randn2       0.794
-randu2_randn2       0.529
-randu2_randn2       0.900
-randu2_randn2       0.856
+randu2_randn2       0.901
+randu2_randn2       0.100
+randu2_randn2       0.474
+randu2_randn2       0.462
+randu2_randn2       0.070
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.153
-randu2_randn2       0.653
-randu2_randn2       0.119
-randu2_randn2       0.985
+randu2_randn2       0.725
+randu2_randn2       0.155
+randu2_randn2       0.842
+randu2_randn2       0.605
+randu2_randn2       0.701
+             VARIABLE : RANDU2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.694
+randu2_randn2       0.780
 randu2_randn2       0.400
+randu2_randn2       0.876
+randu2_randn2       0.458
+randu2_randn2       0.560
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.786
-randu2_randn2       0.940
-randu2_randn2       0.219
-randu2_randn2       0.948
-randu2_randn2       0.631
-randu2_randn2       0.434
-             VARIABLE : RANDU2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.051
-randu2_randn2       0.604
-randu2_randn2       0.829
-randu2_randn2       0.371
-randu2_randn2       0.414
-randu2_randn2       0.888
+randu2_randn2       0.241
+randu2_randn2       0.958
+randu2_randn2       0.141
+randu2_randn2       0.858
+randu2_randn2       0.110
+randu2_randn2       0.550
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -66604,40 +66604,40 @@ randu2_randn2       0.900
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.628
-randu2_randn2       0.936
-randu2_randn2       1.283
-randu2_randn2      -1.221
-randu2_randn2       1.085
+randu2_randn2       1.416
+randu2_randn2      -0.772
+randu2_randn2      -0.571
+randu2_randn2      -2.244
+randu2_randn2      -0.389
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.176
-randu2_randn2       0.881
-randu2_randn2       0.987
-randu2_randn2       0.157
-randu2_randn2       1.549
+randu2_randn2      -0.632
+randu2_randn2      -0.761
+randu2_randn2       0.564
+randu2_randn2       0.927
+randu2_randn2       1.457
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -0.221
-randu2_randn2       0.512
-randu2_randn2       1.272
-randu2_randn2       0.361
-randu2_randn2      -1.091
-randu2_randn2      -0.550
+randu2_randn2      -0.539
+randu2_randn2      -0.765
+randu2_randn2      -2.178
+randu2_randn2       0.332
+randu2_randn2      -1.013
+randu2_randn2       1.608
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -0.097
-randu2_randn2       0.048
-randu2_randn2      -0.507
-randu2_randn2       0.304
-randu2_randn2       1.752
-randu2_randn2      -0.380
+randu2_randn2       1.971
+randu2_randn2      -0.294
+randu2_randn2       0.369
+randu2_randn2      -0.305
+randu2_randn2      -2.382
+randu2_randn2       0.169
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -66662,14 +66662,14 @@ randu2_randn2      -0.124
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.274       1.648       0.423
-randu2_randn2       1.648       1.274       0.423
-randu2_randn2       0.423       0.423       0.288
-randu2_randn2       0.288       0.288       0.327
-randu2_randn2      -0.849      -0.751       0.327
-randu2_randn2      -0.751      -0.751       0.327
-randu2_randn2       0.057       0.057       0.327
-randu2_randn2       0.327       0.327       0.327
+randu2_randn2       1.846       1.846       0.557
+randu2_randn2       1.084       1.084       0.557
+randu2_randn2       0.557       0.557       0.295
+randu2_randn2       0.295       0.295       0.295
+randu2_randn2      -0.109      -0.034       0.295
+randu2_randn2      -0.034      -0.109       0.295
+randu2_randn2      -0.161      -0.034       0.295
+randu2_randn2       0.155       0.155       0.295
  
 GO bn_reset
 cancel mode verify
@@ -72451,7 +72451,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72502,7 +72502,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72541,7 +72541,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72580,7 +72580,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72611,7 +72611,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72643,7 +72643,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72704,7 +72704,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72749,7 +72749,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72804,7 +72804,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72840,7 +72840,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72876,7 +72876,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72912,7 +72912,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72944,7 +72944,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73174,7 +73174,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          FLOAT     units           CHAR        13   T       degrees_north
@@ -73206,7 +73206,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          FLOAT     units           CHAR        13   T       degrees_north
@@ -73247,7 +73247,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73285,7 +73285,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -73310,7 +73310,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -73335,7 +73335,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -73775,7 +73775,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73804,7 +73804,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73855,7 +73855,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74420,8 +74420,8 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Thu Nov 20 15:23:54 2014: ncks -h -A -h z1.nc append_to_this.nc\n",
-			"FERRET V6.931   20-Nov-14" ;
+		:history = "Tue Dec  2 15:01:17 2014: ncks -h -A -h z1.nc append_to_this.nc\n",
+			"FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
 }
@@ -74455,7 +74455,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74486,7 +74486,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74548,7 +74548,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74576,7 +74576,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75756,7 +75756,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75779,7 +75779,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76007,7 +76007,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76037,7 +76037,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76058,7 +76058,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76079,7 +76079,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76101,7 +76101,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76522,7 +76522,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -76538,7 +76538,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -76554,7 +76554,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.931   20-Nov-14
+ .                               history         CHAR        25   T       FERRET V6.931    2-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -77541,7 +77541,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 }
  
 GO bn_reset
@@ -77634,7 +77634,7 @@ variables:
 		LON360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0FERRET V6.931   20-Nov-14" ;
+		:history = "CruiseDsgNcFile 1.0FERRET V6.931    2-Dec-14" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -77661,7 +77661,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- FERRET V6.931   20-Nov-14 
+ FERRET V6.931    2-Dec-14 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -77693,7 +77693,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the fileFERRET V6.931   20-Nov-14 
+ ..history = The history of the fileFERRET V6.931    2-Dec-14 
  ..Conventions = Conventions for variables named V2CF-1.6 
  
 GO bn_reset
@@ -78614,8 +78614,8 @@ list {spawn:"ls xml*.jnl"}
  
 LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
 say `filesets, return=isize`
- !-> MESSAGE/CONTINUE 878
-878
+ !-> MESSAGE/CONTINUE 837
+837
  
 let files = {spawn:"ls *cdf*.jnl"}
 let name_len = strindex(files, ".sub")
@@ -79016,8 +79016,8 @@ yes?
 yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.931  
- 	Linux 2.6.18-398.el5PAE 32-bit - 11/20/14
- 	20-Nov-14 15:24     
+ 	Linux 2.6.18-398.el5PAE 32-bit - 12/02/14
+ 	 2-Dec-14 15:01     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -79871,7 +79871,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -79896,7 +79896,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -79920,7 +79920,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -79959,7 +79959,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -79994,7 +79994,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -80035,7 +80035,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -80092,7 +80092,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -80149,7 +80149,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -80204,7 +80204,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -80252,7 +80252,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -80346,7 +80346,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -80416,7 +80416,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -80467,7 +80467,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -80542,7 +80542,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -80569,7 +80569,7 @@ variables:
 		X_:long_name_mod = "axis ABSTRACT" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -80593,7 +80593,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -80620,11 +80620,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -80655,7 +80655,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -80727,7 +80727,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -80771,7 +80771,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -80813,7 +80813,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -80921,7 +80921,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -80962,7 +80962,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -80985,7 +80985,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -81011,7 +81011,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -81031,7 +81031,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -81052,7 +81052,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -81095,7 +81095,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -81135,7 +81135,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -81173,7 +81173,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -81202,7 +81202,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -81235,7 +81235,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -81261,7 +81261,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -81307,7 +81307,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -81414,7 +81414,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 		:dt_internal = 15. ;
 }
@@ -81456,7 +81456,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -81539,7 +81539,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -81576,7 +81576,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -81616,7 +81616,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -81667,7 +81667,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -81726,7 +81726,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -81771,7 +81771,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -81814,7 +81814,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -81849,7 +81849,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -81883,7 +81883,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -81913,7 +81913,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -81942,7 +81942,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -82003,7 +82003,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -82048,7 +82048,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -82067,37 +82067,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
-		:Conventions = "CF-1.6" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	double A(XAX) ;
-		A:missing_value = -1.e+34 ;
-		A:_FillValue = -1.e+34 ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82127,7 +82097,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
+		:Conventions = "CF-1.6" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	double A(XAX) ;
+		A:missing_value = -1.e+34 ;
+		A:_FillValue = -1.e+34 ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82180,7 +82180,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -82222,7 +82222,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -82240,7 +82240,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 err611_set_var_ez.jnl --- 
@@ -82259,7 +82259,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -82277,7 +82277,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -82294,7 +82294,7 @@ variables:
 		A:long_name = "{1.1,2.2,3.3}" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82315,7 +82315,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82378,7 +82378,7 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_keep_axisnames.jnl --- test SAVE/KEEP_AXISNAMES
@@ -82405,7 +82405,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -82432,7 +82432,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, degrees_east, degrees_north, std names on axes:
@@ -82498,7 +82498,7 @@ variables:
 		ZUP:long_name = "Z[GZ=ZAXUP]" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Convert forms of DEG, degrees to degrees_east:
@@ -82530,7 +82530,7 @@ variables:
 		Y_:long_name_mod = "axis YFIFTEEN" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Downcase units, e.g. in time axis DAYS since
@@ -82563,7 +82563,7 @@ variables:
 		XYTVAR:history = "From bn_strides" ;
 
 // global attributes:
-		:history = "FERRET V6.931   20-Nov-14" ;
+		:history = "FERRET V6.931    2-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 -----
@@ -82578,8 +82578,8 @@ yes?
 yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.931  
- 	Linux 2.6.18-398.el5PAE 32-bit - 11/20/14
- 	20-Nov-14 15:24     
+ 	Linux 2.6.18-398.el5PAE 32-bit - 12/02/14
+ 	 2-Dec-14 15:01     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 8 bytes)
@@ -82589,15 +82589,15 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.931"
 FERRET_PLATFORM = "Linux 2.6.18-398.el5PAE 32-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.3.3-rc2 of Oct  6 2014 16:16:52 $"
+NETCDF_VERSION = "4.3.1.1 of Feb 25 2014 11:50:21 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "20-Nov-14"
-SESSION_TIME = "15:24"
-SESSION_PID = "12641"
-DELTA_CPU = "0.034993"
-CLOCK_SECS = "0.223"
-CURRENT_DATE = "20-Nov-14"
-CURRENT_TIME = "15:24:10"
+SESSION_DATE = " 2-Dec-14"
+SESSION_TIME = "15:01"
+SESSION_PID = "30871"
+DELTA_CPU = "0.033994"
+CLOCK_SECS = "0.343"
+CURRENT_DATE = " 2-Dec-14"
+CURRENT_TIME = "15:01:30"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -82619,7 +82619,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "20-Nov-14:15:24"
+WIN_TITLE = "2-Dec-14:15:01"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -82682,8 +82682,8 @@ yes?
 yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v6.931  
- 	Linux 2.6.18-398.el5PAE 32-bit - 11/20/14
- 	20-Nov-14 15:24     
+ 	Linux 2.6.18-398.el5PAE 32-bit - 12/02/14
+ 	 2-Dec-14 15:01     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -82901,8 +82901,8 @@ yes?
 yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.931  
- 	Linux 2.6.18-398.el5PAE 32-bit - 11/20/14
- 	20-Nov-14 15:24     
+ 	Linux 2.6.18-398.el5PAE 32-bit - 12/02/14
+ 	 2-Dec-14 15:01     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -83015,8 +83015,8 @@ yes?
 yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.931  
- 	Linux 2.6.18-398.el5PAE 32-bit - 11/20/14
- 	20-Nov-14 15:24     
+ 	Linux 2.6.18-398.el5PAE 32-bit - 12/02/14
+ 	 2-Dec-14 15:01     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -83100,4 +83100,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Thu Nov 20 15:24:13 PST 2014
+Ended at Tue Dec 2 15:01:32 PST 2014

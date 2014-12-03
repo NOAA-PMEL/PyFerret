@@ -63,12 +63,12 @@ typedef Gpoint *POINTPTR;
 
 /* Item-header length of data-record */
 #define ITEM_DREC_LENGTH	6
-#define ITEM_LENGTH_FMT    	"%6d"
+#define ITEM_LENGTH_FMT    	"%8d"
 
 /* Data-record integer values */
 #define INT_FIELD_LENGTH	6
-#define INT_FMT			"%6d"
-#define INT_FMT_SCAN		"%6c"
+#define INT_FMT			"%8d"
+#define INT_FMT_SCAN		"%8c"
 #define READINT(fptr, i)	fscanf((fptr), " %d%*[ ]", (int*)(&(i)))
 
 /* Data-record floating-point values */

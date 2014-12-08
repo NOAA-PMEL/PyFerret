@@ -1,5 +1,7 @@
 ! err69_isready_bugs.jnl
 ! Tickets 2201 and 2215   
+! updated error script 12/14 *sh* - to ensure that bench log file
+! has verification of this problem and its fix, as well as the bench error file
 
 ! ticket 2201: isready operation meant we couldn't cancel the second axis
 
@@ -16,6 +18,10 @@ can var a
 can axis xax_isready_1
 can var b
 can axis xax_isready_2
+
+! 12/14 additions:
+show grid/dynamic             ! look for "err: grid over-allocated" messages
+show axis xax_isready_1, xax_isready_2   ! did they both get canceled?
 
 ! Ticket 2215, only with an unreleased Ferret; the first fix to 2201.
 

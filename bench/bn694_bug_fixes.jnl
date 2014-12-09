@@ -4,3 +4,6 @@
 
 GO bn_reset
 GO err693_upcase_quoted_name
+
+GO bn_reset
+GO err693_var_att_in_gcfcn

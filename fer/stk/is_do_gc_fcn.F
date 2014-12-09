@@ -58,6 +58,7 @@
 * V68   3/12 *KMS/ACM* see 6D branch: working on string bugs. Remove overloading
 *                   of argument/return-type variable and predimensional (data size)
 *                   array parameter (pointer size to one in double-precision Ferret).
+* V694  *acm* 1214 Fixing ticket 2220: varname.attname in a function argument
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -71,7 +72,7 @@
 	include	'xtext_info.cmn'
 	include	'xfr_grid.cmn'	! w/ mgrid_abstract
 	include 'xgrid_chg_fcns.cmn'
-	include 'xrisc_buff.cmn'
+	include 'xrisc_buff.cmn' 
 
 * calling arguments
 	INTEGER		uvar, lo_isp, status
@@ -87,7 +88,7 @@
      .          typ1, typ2, typ3, typ4, typ5, typ6, typ7, typ8, typ9,
      .          typr, pdim1, pdim2, pdim3, pdim4, pdim5, pdim6, pdim7,
      .          pdim8, pdim9, pdimr, frame_bottom, com_cx, res_mr,
-     .          itype, arg_first_mismatch, slen
+     .          itype, arg_first_mismatch, slen, iset
         CHARACTER*40 TM_FMT, alt_name
 
 * convenience equivalences
@@ -229,7 +230,10 @@
            ELSE
               STOP 'IS_DO_GC_FCN typr is neither pfcn_rtn_string nor pfcn_rtn_float'
            ENDIF
-           uvar_data_type(uvar, cx_data_set(res_cx)) = cx_type(res_cx) 
+
+           iset = cx_data_set(res_cx)
+           IF (iset .EQ. unspecified_int4) iset = pdset_irrelevant
+           uvar_data_type(uvar, iset) = cx_type(res_cx) 
         ENDIF
 
 * need to fill in those axes that the function "imposes"

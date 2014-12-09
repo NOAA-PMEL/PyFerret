@@ -106,6 +106,7 @@
 *                   non-ferr_ok to exit properly from the command.
 *       *acm* 3/12  Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V690 9/13-2/14 *sh*   support for auxiliary var regridding: temp[gz(depth)=zax]
+* V694  *acm* 1214 Fixing ticket 2220
 
 * calling argument declarations:
 	INTEGER	status
@@ -393,10 +394,6 @@ C lo and hi of the ensemble axis if so, and get all the grids.
         CALL  BREAK_VARATTNAME (  name(:len_name), dset, varname, 
      .                            attname, varid, do_err, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
-
-        uvar_text(uvar) = name
-	uvar_item_start( item, uvar ) = 1
-	uvar_item_end  ( item, uvar ) = len_name
 
 * Get attribute type and length
         

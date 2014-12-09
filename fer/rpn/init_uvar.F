@@ -93,6 +93,8 @@
 *                  use when writing out user-defined variables when MODE UPCASE_OUTPUT 
 *                  is cancelled.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V694  *acm* 1214 Fixing ticket 2220: a variablename.attname argument to a function
+*                  needs to be added as a child variable
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'	
@@ -206,6 +208,14 @@
 * ...(10/99)also treat sst[y=5s:5n:1] as a "complex" argument (has impl grid)
 	      istart = at_start (gc_arg_start)
 	      iend   = at_end   (gc_arg_start)
+
+	      IF ( at_type(gc_arg_start) .EQ. alg_attrib_val) THEN
+* ... make a varname.attname argument into a separate child variable
+	         child_start = gc_arg_start
+	         child_end = iat - 1
+	         GOTO 800
+              ENDIF
+
 	      IF ( (at_type(gc_arg_start) .EQ. alg_child_var)
      .	     .OR.  ( (iat .EQ. gc_arg_start+1)
      .         .AND. (at_type(gc_arg_start) .NE. alg_constant)

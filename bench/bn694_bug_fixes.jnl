@@ -7,3 +7,10 @@ GO err693_upcase_quoted_name
 
 GO bn_reset
 GO err693_var_att_in_gcfcn
+
+GO bn_reset
+GO err693_isready_hang
+
+GO bn_reset
+GO err693_attr_in_gcfcn
+

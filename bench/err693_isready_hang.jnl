@@ -1,0 +1,12 @@
+! err693_isready_hang.jnl
+! ACM 12/10/2014
+! ticket 2219.  The last of these commands caused Ferret to hang.
+
+use gt4d011
+def ax/t/t0="`u,r=t0`"/unit="`u,r=tunit`" time = t[gt=u]
+let a = u
+IF `a,r=isready` THEN; let/title="`a,r=title`" a1 = a; ENDIF
+IF `a,r=isready` THEN; let/title="`a,r=title`" a2 = a; ENDIF
+IF `a,r=isready` THEN; let/title="`a,r=title`" a3 = a; ENDIF
+IF `a,r=isready` THEN; let/title="`a,r=title`" a4 = a; ENDIF
+IF `a,r=isready` THEN; let/title="`a,r=title`" a5 = a; ENDIF

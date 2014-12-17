@@ -1,5 +1,5 @@
 *
-* lon_lat_time_list.F
+* lon_lat_time_string.F
 *
 *
 *  In this subroutine we provide information about
@@ -37,7 +37,7 @@
 *
 
 
-      SUBROUTINE lon_lat_time_list_init(id)
+      SUBROUTINE lon_lat_time_string_init(id)
 
       IMPLICIT NONE
       INCLUDE 'ferret_cmn/EF_Util.cmn'
@@ -99,7 +99,7 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE lon_lat_time_list_compute(id, arg_1, arg_2, arg_3, arg_4, 
+      SUBROUTINE lon_lat_time_string_compute(id, arg_1, arg_2, arg_3, arg_4, 
      .          arg_5, result)
 
       IMPLICIT NONE

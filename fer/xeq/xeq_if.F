@@ -55,6 +55,10 @@
 * V500:  6/99 - bug fix for final quote in IF 1  THEN SAY "I is too big" ENDIF
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V693+ *sh* 12/14 1- init ifstk_skipping to count nested IFs while skipping
+*                  2- screen for ELIF used in a single line syntax
+*	           3- on error csp drop must occur before call to ERRMSG
+*	           4- improved error message for "IF some expression THEN ..."
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -91,6 +95,7 @@
 	         ifstk = ifstk + 1
 	         if_doing(ifstk) = pif_skip_to_endif
 	         if_cs(ifstk) = if_cs(ifstk-1)
+	         ifstk_skipping = 0     ! counts nested IFs while skipping
 	      ENDIF
 	      RETURN
 	   ENDIF
@@ -105,10 +110,17 @@
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * whether single line or multi the second argument should be "THEN"
-	vax_code = STR_CASE_BLIND_COMPARE(
-     .				cmnd_buff(arg_start(2):arg_end(2)),
+* a common user error is to use arithmetic expression for the conditional
+* without grave accents.  In this case the THEN exists, but is not argument 2
+	DO iarg = 2, num_args
+	   vax_code = STR_CASE_BLIND_COMPARE(
+     .				cmnd_buff(arg_start(iarg):arg_end(iarg)),
      .				'THEN' )
-	IF (vax_code .NE. vms_str_success) GOTO 5200
+	   IF (vax_code .EQ. vms_str_success) GOTO 100
+	ENDDO
+* ... no THEN was provided
+	GOTO 5200
+ 100	IF (iarg .GT. 2) GOTO 5210
 
 * determine the nature of the IF clause -- single line or multi
 	IF ( num_args .GT. 2 ) THEN
@@ -128,7 +140,7 @@
 * pattern: *** IF condition THEN true_clause ELSE false_clause (ENDIF) ***
 	   true_clause_start = 3
 * try to find "ELSE"
-	   DO 100 iarg = 3, num_args
+	   DO iarg = 3, num_args
 	      IF (cs_text(csp)(arg_start(iarg):arg_end(iarg))
      .						.EQ. 'ELSE' ) THEN
 		 has_false_clause   = .TRUE.
@@ -136,14 +148,29 @@
 	         false_clause_start = iarg + 1		         
 	         GOTO 200
 	      ENDIF
- 100	   CONTINUE
+	   ENDDO
 	   has_false_clause = .FALSE.
 
-* is there an implicit or an explicit "ENDIF"?
- 200	   DO 300 iarg = num_args, 3, -1
+* check for ELIF used in a single line syntax -- trap as a syntax error
+* (just out of laziness.  In 15 years no one has asked for this.)
+ 200	   DO iarg = 3, num_args
 	      IF (cs_text(csp)(arg_start(iarg):arg_end(iarg))
-     .						.EQ. 'ENDIF' ) THEN
-	         IF (iarg .NE. num_args ) GOTO 5300
+     .						.EQ. 'ELIF' ) THEN
+	         CALL STACK_PTR_DN( csp, 0, tmp_stat )
+	         GOTO 5250
+	      ENDIF
+	   ENDDO
+
+* is there an implicit or an explicit "ENDIF"?
+	   DO 300 iarg = num_args, 3, -1
+	      IF (cs_text(csp)(arg_start(iarg):arg_end(iarg))
+     .						.EQ. 'ENDIF' 
+     .	     .OR. cs_text(csp)(arg_start(iarg):arg_end(iarg))
+     .						.EQ. 'ENDI'   ) THEN
+	         IF (iarg .NE. num_args ) THEN
+	            CALL STACK_PTR_DN( csp, 0, tmp_stat )
+	            GOTO 5300
+	         ENDIF
 	         IF (has_false_clause) THEN
 	            false_clause_end = num_args - 1
 	         ELSE
@@ -219,14 +246,18 @@
 	
 * error exit
 * ... control stack pointer, CSP, corrected in GFD_ERROR_HANDLER
- 4999	CALL STACK_PTR_DN( csp, 0, tmp_stat )
  5000	RETURN
  5100	CALL ERRMSG( ferr_syntax, status, 'IF what ?', *5000)
-* ... need to pop stack for errors below here
  5200	CALL ERRMSG( ferr_syntax, status, 'IF without THEN'//
-     .			pCR//cmnd_buff(:len_cmnd), *4999 )
+     .			pCR//cmnd_buff(:len_cmnd), *5000 )
+ 5210	CALL ERRMSG( ferr_syntax, status,
+     .	'"IF condition THEN" requires a simple 0 or 1 (or True or False)'//
+     .			pCR//cmnd_buff(:len_cmnd), *5000 )
+ 5250	CALL ERRMSG( ferr_syntax, status,
+     .			'ELIF cannot be used in single line IF'//
+     .			pCR//cmnd_buff(:len_cmnd), *5000 )
  5300	CALL ERRMSG( ferr_syntax, status, 'Trash after ENDIF'//
-     .			pCR//cmnd_buff(:len_cmnd), *4999 )
+     .			pCR//cmnd_buff(:len_cmnd), *5000 )
  5400	CALL ERRMSG( ferr_invalid_command, status, 'IFs nested too deep',
      .							*5000 )
 	END

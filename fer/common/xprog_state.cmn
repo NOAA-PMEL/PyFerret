@@ -49,6 +49,7 @@
 * V685 *sh* 11/13 - added allowed_err. SHOW VAR/TREE to display despite errors
 * V690 *sh* 12/13 - added mode_auto_*, for automated curvilinear and sigma vars
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+*                  added ifstk_skipping
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -164,7 +165,8 @@
      .		saved_abstract_grid,
      .		xwind_node_len,
      .		genl_storage(25),
-     .		ifstk, if_cs(max_ifstk), if_doing(max_ifstk),
+     .		ifstk, ifstk_skipping,
+     .		if_cs(max_ifstk), if_doing(max_ifstk),
      .          num_linecolors
 
 
@@ -223,7 +225,7 @@
 	COMMON/ XPROG_STATE /
      .		interactive, prompt, prompt_len, 
      .		input_source, mouse_input,
-     .		if_conditional, ifstk, if_cs, if_doing,
+     .		if_conditional, ifstk, ifstk_skipping, if_cs, if_doing,
      .          num_linecolors,
      .		cmnd_buff, last_cmnd_buff,
      .          mode_grat_buff,

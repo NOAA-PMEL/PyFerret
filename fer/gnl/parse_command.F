@@ -116,6 +116,12 @@
 * V68  *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V68  *acm* 7/12 return 16 digits by default for grave-accent expressions
 * V685+ *acm* 12/13  bounds checking: dont refer to parts of the string outside its bounds.
+* V693 *sh* 12/14 moved arg_start/end inits into PARSE_COMMAND (housekeeping)
+*	          Changes in GET_FERRET_CMND simplify this routine:
+*                 1) comments are never passed into this routine
+*                 2) nor "yes? " or "...? "
+*                 3) continuation lines are assembled before getting here
+
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -160,7 +166,7 @@
 *
 **kob*12/97!!! NOTE:local_max_arg_list must match max_arg_list in xprog_state
         INTEGER local_max_arg_list
-        PARAMETER (local_max_arg_list = 256)
+        PARAMETER (local_max_arg_list = 128)
 
 * modified def of MATCH4 from INTEGER to LOGICAL *kob* IBM port 8/94
 	LOGICAL	TM_LEGAL_NAME, known_qualifier, atsin_qualifier,
@@ -201,96 +207,113 @@
 	cmnd_num 	= 0		! in case of comment line
 	cmnd_buff (buff_len:buff_len) = ' '	! always end with blank
 
+* inits moved into this code from get_ferret_command (housekeeping)
+        DO i = 1, local_max_arg_list
+           arg_start(i) = 0
+           arg_end(i) = 0
+	ENDDO
+
 * full length of text
 	cmnd_len = TM_LENSTR (cmnd_buff)
 
-* ignore "yes?" at start of command
- 2	IF (cmnd_buff(1:5) .EQ. 'yes? '
-     . .OR. cmnd_buff(1:5) .EQ. '...? ' ) THEN
-	   IF ( cmnd_len .LT. 6 ) THEN
-	     cmnd_buff = ' '
-	     cmnd_len = 0
-	   ELSE
-	     cmnd_buff = cmnd_buff(6:cmnd_len)
-	     cmnd_len = cmnd_len - 5
-	     GOTO 2		! in case there are multiple "yes?"'s
-	   ENDIF
-	ENDIF
+! 12/14 handled in GET_FER_COMMAND
+!* ignore "yes?" at start of command
+! 2	IF (cmnd_buff(1:5) .EQ. 'yes? '
+!     . .OR. cmnd_buff(1:5) .EQ. '...? ' ) THEN
+!	   IF ( cmnd_len .LT. 6 ) THEN
+!	     cmnd_buff = ' '
+!	     cmnd_len = 0
+!	   ELSE
+!	     cmnd_buff = cmnd_buff(6:cmnd_len)
+!	     cmnd_len = cmnd_len - 5
+!	     GOTO 2		! in case there are multiple "yes?"'s
+!	   ENDIF
+!	ENDIF
 
-* comment line ?
-	IF ( (cmnd_len .LE. 0
-     .   .OR. cmnd_buff(1:1) .EQ. '*'
-     .   .OR. cmnd_buff(1:1) .EQ. '!' ) 
-     . .AND. .NOT.has_continuation_cmnd ) THEN
-	   RETURN
-	ENDIF
-	IF ( cmnd_buff(1:1) .EQ. '/'
-     .	.AND. .NOT.has_continuation_cmnd ) GOTO 5050
+! 12/14 handled in GET_FER_COMMAND
+!* comment line ?
+!	IF ( (cmnd_len .LE. 0
+!     .   .OR. cmnd_buff(1:1) .EQ. '*'
+!     .   .OR. cmnd_buff(1:1) .EQ. '!' ) 
+!     . .AND. .NOT.has_continuation_cmnd ) THEN
+!	   RETURN
+!	ENDIF
+!	IF ( cmnd_buff(1:1) .EQ. '/'
+!     .	.AND. .NOT.has_continuation_cmnd ) GOTO 5050
 
-* find length of command line ("!" is a valid terminator to permit comments)
-	bang_position = INDEX ( cmnd_buff, '!' )
-* ... 11/95 allow "!" to be be "escaped"
-	IF ( bang_position .GT. 1 ) THEN
-#ifdef NO_DOUBLE_ESCAPE_SLASH
-	   IF ( cmnd_buff(bang_position-1:bang_position) .EQ. '\!' ) THEN
-#else
-	   IF ( cmnd_buff(bang_position-1:bang_position) .EQ. '\\!' ) THEN
-#endif
-* ... ... this block of code could replace INDEX() but doesn't for performance
-	      DO 6 bang_position = bang_position+1, cmnd_len
-#ifdef NO_DOUBLE_ESCAPE_SLASH
-	         IF (cmnd_buff(bang_position:bang_position).EQ.'!'
-     .         .AND. cmnd_buff(bang_position-1:bang_position-1).NE.'\')
-     .				GOTO 8
-#else
-	         IF (cmnd_buff(bang_position:bang_position).EQ.'!'
-     .         .AND. cmnd_buff(bang_position-1:bang_position-1).NE.'\\')
-     .				GOTO 8
-#endif
- 6	      CONTINUE
-	      bang_position = 0
-	   ENDIF
-	ENDIF
- 8	IF ( bang_position .GT. 0 ) THEN
-	   DO 10 cmnd_len = bang_position-1, 1, -1
-	      IF (  cmnd_buff(cmnd_len:cmnd_len) .NE. ' '
-     .	      .AND. cmnd_buff(cmnd_len:cmnd_len) .NE. tab ) GOTO 15
- 10	   CONTINUE
-	   IF (.NOT.has_continuation_cmnd) RETURN	! no text before !
-	ENDIF
-
-* prepend continuation from a previous line if any
- 15	IF ( has_continuation_cmnd ) THEN
-	   len_cmnd_copy = len_cmnd_copy - 1  ! final char is continuation
-	   IF (len_cmnd_copy .GT. 0) THEN
-	     IF ( cmnd_len .GT. 0) THEN
-	        cmnd_buff = cmnd_copy(:len_cmnd_copy) // cmnd_buff(:cmnd_len)
-	     ELSE
-	        cmnd_buff = cmnd_copy(:len_cmnd_copy)
-	     ENDIF
-	   ENDIF
-	   cmnd_len = len_cmnd_copy + cmnd_len
-	   IF ( cmnd_len .GE. 2048 ) GOTO 5005 ! must match cmnd_buff_len
-	ENDIF
+!* find length of command line ("!" is a valid terminator to permit comments)
+!* 2/14 WILL NEVER GET HERE
+!*       no comments should ever be sent into this routine.
+!*       REMOVE THIS BLOCK
+!	bang_position = INDEX ( cmnd_buff, '!' )
+!* ... 11/95 allow "!" to be be "escaped"
+!	IF ( bang_position .GT. 1 ) THEN
+!#ifdef NO_DOUBLE_ESCAPE_SLASH
+!	   IF ( cmnd_buff(bang_position-1:bang_position) .EQ. '\!' ) THEN
+!#else
+!	   IF ( cmnd_buff(bang_position-1:bang_position) .EQ. '\\!' ) THEN
+!#endif
+!	      CALL WARN("PARSE_COMMAND SHOULD NEVER BE HERE - I")
+!* ... ... this block of code could replace INDEX() but doesn't for performance
+!	      DO 6 bang_position = bang_position+1, cmnd_len
+!#ifdef NO_DOUBLE_ESCAPE_SLASH
+!	         IF (cmnd_buff(bang_position:bang_position).EQ.'!'
+!     .         .AND. cmnd_buff(bang_position-1:bang_position-1).NE.'\')
+!     .				GOTO 8
+!#else
+!	         IF (cmnd_buff(bang_position:bang_position).EQ.'!'
+!     .         .AND. cmnd_buff(bang_position-1:bang_position-1).NE.'\\')
+!     .				GOTO 8
+!#endif
+! 6	      CONTINUE
+!	      bang_position = 0
+!	   ENDIF
+!	ENDIF
+! 8	IF ( bang_position .GT. 0 ) THEN
+!	   DO 10 cmnd_len = bang_position-1, 1, -1
+!	      IF (  cmnd_buff(cmnd_len:cmnd_len) .NE. ' '
+!     .	      .AND. cmnd_buff(cmnd_len:cmnd_len) .NE. tab ) GOTO 15
+! 10	   CONTINUE
+!	   IF (.NOT.has_continuation_cmnd) RETURN	! no text before !
+!	ENDIF
+!
+!* prepend continuation from a previous line if any
+!* 12/14 -- WILL NEVER GET HERE
+!*          continuations handled in get_fer_command
+!*          REMOVE THIS BLOCK
+! 15	IF ( has_continuation_cmnd ) THEN
+!	   CALL WARN("PARSE_COMMAND SHOULD NEVER BE HERE - II")
+!	   len_cmnd_copy = len_cmnd_copy - 1  ! final char is continuation
+!	   IF (len_cmnd_copy .GT. 0) THEN
+!	     IF ( cmnd_len .GT. 0) THEN
+!	        cmnd_buff = cmnd_copy(:len_cmnd_copy) // cmnd_buff(:cmnd_len)
+!	     ELSE
+!	        cmnd_buff = cmnd_copy(:len_cmnd_copy)
+!	     ENDIF
+!	   ENDIF
+!	   cmnd_len = len_cmnd_copy + cmnd_len
+!!	   IF ( cmnd_len .GE. 2048 ) GOTO 5005 ! must match cmnd_buff_len
+!	ENDIF
 
 * save a copy of the command with untranslated symbols for use by REPEAT
-* and for building the complete command when continuation lines are used.
+!* and for building the complete command when continuation lines are used.
 
 	cmnd_copy = cmnd_buff
 	len_cmnd_copy = cmnd_len
 
-* is this an incomplete line requiring continuation (terminated w/ backslash)?
-	has_continuation_cmnd =
-#ifdef NO_DOUBLE_ESCAPE_SLASH
-     .				cmnd_buff(cmnd_len:cmnd_len) .EQ. '\' 
-#else
-     .				cmnd_buff(cmnd_len:cmnd_len) .EQ. '\\'
-#endif
-	IF ( has_continuation_cmnd
-     . .OR. cmnd_len .EQ. 0        ) THEN
-	   cmnd_num = 0
-	   RETURN
-	ENDIF
+! 12/14 handled in GET_FER_COMMAND
+!* is this an incomplete line requiring continuation (terminated w/ backslash)?
+!	has_continuation_cmnd =
+!#ifdef NO_DOUBLE_ESCAPE_SLASH
+!     .				cmnd_buff(cmnd_len:cmnd_len) .EQ. '\' 
+!#else
+!     .				cmnd_buff(cmnd_len:cmnd_len) .EQ. '\\'
+!#endif
+!	IF ( has_continuation_cmnd
+!     . .OR. cmnd_len .EQ. 0        ) THEN
+!	   cmnd_num = 0
+!	   RETURN
+!	ENDIF
 
 * * * * * * * * *
 * remove parens enclosing entire command or command group
@@ -876,14 +899,6 @@ cc  Allow it to be zero-length
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 * error exits
  5000	RETURN
-
-! 5005   risc_buff = cmnd_buff(cmnd_len-19:cmnd_len)
-! 	CALL ERRMSG( ferr_line_too_long, status,
-!     .		     risc_buff(:20), *5000 )
-
- 5005	CALL ERRMSG( ferr_syntax, status,
-     .			'command line too long -- exceeds 2048', *5000 )
-! 2048 must match cmnd_buff_len
 
  5010	CALL ERRMSG( ferr_syntax, status,
      .			'unpaired quotation marks, grave accent or brackets',

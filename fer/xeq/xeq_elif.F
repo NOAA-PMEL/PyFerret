@@ -44,6 +44,7 @@
 * V420:  4/96
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V693+ *sh* 12/14 Simplified blocks skipped by IF using ifstk_skipping
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -65,6 +66,7 @@
 * is this the end of the clause that has been executing?
 	IF ( if_doing(ifstk) .EQ. pif_doing_clause ) THEN
 	   if_doing(ifstk) = pif_skip_to_endif
+	   ifstk_skipping = 0   ! skipping is controlled by this IF-nest level
 	   RETURN
 	ENDIF
 

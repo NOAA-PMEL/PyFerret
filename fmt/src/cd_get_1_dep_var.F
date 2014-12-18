@@ -313,7 +313,7 @@ c        ENDIF
 * if neither missing flag nor _FillValue was defined, use NaN.
              IF ( .NOT.got_missing .AND. .NOT.got_bad) THEN
                 CALL SET_NAN (ds_missing_flag(ivtm))
-		CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm) )
+		CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm), bad_r4)
 		IF (do_warn .AND. tmap_diag_on) CALL WARN(
      .'No missing_value or _FillValue attribute. Using NaN for variable: ' 
      . //vname(:vlen)) 
@@ -321,7 +321,7 @@ c        ENDIF
              ENDIF
 
 *  *kob* call SWITCH_NAN to make sure if NaN exisits, its in ds_missing_flag
-	     CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm))
+	     CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm), bad_r4)
 
 * see what special FERRET attributes can be read: axis ordering and
 * sub-hyperslab bounds

@@ -46,18 +46,17 @@
 
 #include "ferretmacros.h"
 
-#define bad_val4 1.0e-34
-
-void FORTRAN(switch_nan)(bad, missing)
+void FORTRAN(switch_nan)(bad, missing, bad_val)
      DFTYPE *bad;
      DFTYPE *missing;
+     DFTYPE *bad_val;
 {
   if (isnan(*bad) || isnan(*missing))
     { 
       if (isnan(*bad)) 
 	{
 	  *missing = *bad;
-	  *bad = bad_val4;
+	  *bad = *bad_val;
 	}
     }
 }

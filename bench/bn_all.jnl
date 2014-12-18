@@ -941,6 +941,9 @@ GO bn694_bug_fixes
 GO bn_reset
 GO bn_permute_ascii
 
+GO bn_reset
+GO bn_lon_lat_time_string
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

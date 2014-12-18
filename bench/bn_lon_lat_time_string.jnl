@@ -1,0 +1,19 @@
+! bn_lon_lat_time_string.jnl
+! Test function written for LAS, to create profile labels from
+! a list of lnogitudes, latitudes, times, and a prefix string.
+
+show function lon_lat_time_string
+
+! Longitudes are translated to 0:360 range
+let lon = {-172.44, 210.01, -19.5}
+
+! latitudes are labeled N or S
+let lat = {3.12, 4.9, -15.03}
+
+! Time steps are interpreted in terms of a time axis
+let time = {1,2,3}
+define axis/t=1-jan-2001:31-jan-2001:1/units=days/t0=1-jan-2001 taxis
+let tt = t[gt=taxis]
+
+list lon_lat_time_string(lon, lat, time, tt, "my_string")
+

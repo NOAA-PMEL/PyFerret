@@ -1,0 +1,30 @@
+! testing ticket 1368 - first found in Ferret v5.812 (Jan 28, 2010)
+
+! this is still a bug in V69+ 
+! the initial IF command is not being closed by the first ENDIF
+! it is skipping down to the elif command
+
+define symbol xend 180
+let key_flag = 0
+
+! test 1 - line 1 false condition should suppress both outputs
+IF `($xend) GT 360` THEN
+   SAY "ERROR - THIS MESSAGE SHOULD NOT DISPLAY"
+   IF key_flag EQ 0 THEN SAY "point E2"
+ENDIF
+
+
+! test 2 - line 1 false condition should cause else clause - "point G"
+let dxymin = 0.20
+if `dxymin lt 0.12` then
+  SAY "ERROR - this message should be silent"
+elif `dxymin lt 0.25` then
+  SAY "CORRECT.  this message should display"
+endif
+
+! test 3 - this is from bug #918 -- looks like the same bug as #1368
+IF 0 THEN
+  let a = 1
+  IF a THEN
+  ENDIF
+ENDIF

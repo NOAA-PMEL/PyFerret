@@ -1,0 +1,29 @@
+! testing ticker 1681
+
+!The third block of the following script issues an error:
+!ERROR: invalid command: ENDIF can only be used in an IF clause
+!
+!Looks like a parsing bug -- it seems the ENDIF inside the REPEAT is being
+!applied to the outermost IF. Note that the error goes away if we change
+!the outer 0 to a 1.
+
+
+say "test1"
+if 0 then
+  repeat/RANGE=1:2 (if 0 then; say "hello1"; endif)
+endif
+
+say "test2"
+if 0 then
+  repeat/RANGE=1:2 (\\
+    if 0 then;\\
+      say "hello2"; endif)
+endif
+
+say "test3"
+if 0 then
+  repeat/RANGE=1:2 (\\
+    if 0 then;\\
+      say "hello3";\\
+    endif)
+endif

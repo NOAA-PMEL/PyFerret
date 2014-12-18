@@ -64,6 +64,8 @@
 * v67   2/11 *acm* Do the notes about no missing/fillvalue for each variable,
 *             when in diagnostic mode. So move that back to cd_get_1_dep_var.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* V6931 12/14 *acm* Fix ticket 2223: switch_nan needs to use the Ferret missing-
+*                   value flag.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set

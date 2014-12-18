@@ -41,7 +41,9 @@
 
 /* *kob* - 2/18/99 *
 /* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
-*					 definition of macro DFTYPE in ferretmacros.h.
+/*					 definition of macro DFTYPE in ferretmacros.h.
+/* *acm* V6931 12/14 Fix ticket 2223: need to use the Ferret missing-value flag
+/*					 which is now passed in as an argument.
 */
 
 #include "ferretmacros.h"

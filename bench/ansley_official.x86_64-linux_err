@@ -1,6 +1,6 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 53375444 Dec 18 10:46 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 53378090 Dec 18 12:07 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Thu Dec 18 10:49:03 PST 2014
+Beginning at Mon Dec 22 10:19:42 PST 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -129,12 +129,28 @@ can var
  LISTing to file v1file.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+ **ERROR: invalid command: ENDIF can only be used in an IF clause
+ENDIF
+ **ERROR: command syntax: ELIF cannot be used in single line IF
+          IF 0 THEN say ERROR ELIF 1 THEN say "CORRECT if you see this"
+IF 0 THEN say ERROR ELIF 1 THEN say "CORRECT if you see this"
+ **ERROR: command syntax: Trash after ENDIF
+          IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
+IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
  **ERROR: invalid command: ELSE can only be used between IF and ENDIF
 else
  **ERROR: invalid command: ENDIF can only be used in an IF clause
 endif
  **ERROR: invalid command: ELIF can only be used between IF and ENDIF
 elif
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
@@ -802,6 +818,18 @@ Replacing definition of grid TGRID
  **ERROR: command syntax: dash=(1., 2.)
           DASH[=(dn1,up1,dn2,up2)] takes 4 arguments or no argument
 plot/dash=(1., 2.)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+
+Bailing out of external function "eof_stat":
+	 Function EOF_STAT not available in this version of Ferret. Use EOFSVD_STAT
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
  **ERROR: value out of legal range: dash=(-1., 2., 3., 4.)
           DASH arguments must be positive
 plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
@@ -825,18 +853,6 @@ plot/hlog fcn
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
-
-Bailing out of external function "eof_space":
-	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
-
-Bailing out of external function "eof_stat":
-	 Function EOF_STAT not available in this version of Ferret. Use EOFSVD_STAT
-
-Bailing out of external function "eof_tfunc":
-	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
 Replacing definition of axis DAYT
 Replacing definition of grid TGRID
  **ERROR: error in external function
@@ -2329,34 +2345,34 @@ set axis/stride=2 NORMAL
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis BACKWARDS_AXIS
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis Y1010_REV
  PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- Cached data cleared from memory
- Cached data cleared from memory
- Cached data cleared from memory
- Cached data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
 curl error details: 
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ Cached data cleared from memory
+ Cached data cleared from memory
+ Cached data cleared from memory
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
@@ -2395,6 +2411,34 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
@@ -2420,6 +2464,9 @@ Replacing definition of axis TIME
 Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TIME
@@ -2444,6 +2491,9 @@ Replacing definition of axis TIME
 Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TIME
@@ -3048,6 +3098,9 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+
+Bailing out of external function "tax_year":
+	 Function not valid for modulo time axis
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
@@ -3074,9 +3127,6 @@ set mode desperate 1234567890123456789
 Replacing definition of axis YAX_DUP_AXNAMES
  LISTing to file h.nc
  LISTing to file gh.nc
-
-Bailing out of external function "tax_year":
-	 Function not valid for modulo time axis
  LISTing to file justh.nc
  LISTing to file justg.nc
  PERMANENT data cleared from memory
@@ -3803,6 +3853,21 @@ Replacing definition of axis TIME
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of grid GRID3D
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3898,4 +3963,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Dec 18 10:50:54 PST 2014
+Ended at Mon Dec 22 10:21:30 PST 2014

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 53440039 Dec 10 11:45 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 53487040 Dec 18 14:09 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: add benchmark tests for recent fixes: 2219, 2220, 2210
+Note: fixes to Block If handling; NetCDF 4.3.2; new lon_lat_time_string function for LAS; fix for missing-value used when file has NaN
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,7 +13,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
@@ -21,8 +21,8 @@ FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
-PWD=/home/users/ansley/build/current_trunk/FERRET/bench
-Beginning at Wed Dec 10 12:17:20 PST 2014
+PWD=/home/users/ansley/build/flat_64/FERRET/bench
+Beginning at Mon Dec 22 10:11:17 PST 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -131,12 +131,28 @@ can var
  LISTing to file v1file.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+ **ERROR: invalid command: ENDIF can only be used in an IF clause
+ENDIF
+ **ERROR: command syntax: ELIF cannot be used in single line IF
+          IF 0 THEN say ERROR ELIF 1 THEN say "CORRECT if you see this"
+IF 0 THEN say ERROR ELIF 1 THEN say "CORRECT if you see this"
+ **ERROR: command syntax: Trash after ENDIF
+          IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
+IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
  **ERROR: invalid command: ELSE can only be used between IF and ENDIF
 else
  **ERROR: invalid command: ENDIF can only be used in an IF clause
 endif
  **ERROR: invalid command: ELIF can only be used between IF and ENDIF
 elif
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
@@ -2131,7 +2147,7 @@ curl error details:
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **Internet Data error
-             NetCDF: Malformed or inaccessible DAP DDS (OPeNDAP/netCDF Error code -72)
+             NetCDF: file not found (OPeNDAP/netCDF Error code -90)
              Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf
 SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf"
  **Internet Data error
@@ -2397,6 +2413,34 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
@@ -2422,6 +2466,9 @@ Replacing definition of axis TIME
 Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TIME
@@ -2446,6 +2493,9 @@ Replacing definition of axis TIME
 Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TIME
@@ -3805,7 +3855,25 @@ Replacing definition of axis TIME
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of grid GRID3D
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3897,4 +3965,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Dec 10 12:18:47 PST 2014
+Ended at Mon Dec 22 10:12:48 PST 2014

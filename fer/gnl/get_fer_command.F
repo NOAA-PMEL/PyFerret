@@ -95,12 +95,13 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V690 *sh* 2/14 initialize max_context, now a variable to support aux vars
-* V693 *sh* 12/14 moved arg_start/end inits into PARSE_COMMAND (housekeeping)
+* V693+ *sh* 12/14 moved arg_start/end inits into PARSE_COMMAND (housekeeping)
 *                 Moved other house-keeping from PARSE_COMMAND here
-*	          1) Trim leading "yes? " and "...? "
-*                 2) Trim bang-comments off.
-*                 3) Do not call PARSE_COMMAND for pure comments.
-*		  4) Process continuation lines
+*	            1) Trim leading "yes? " and "...? "
+*                   2) Trim bang-comments off.
+*                   3) Do not call PARSE_COMMAND for pure comments.
+*		    4) Process continuation lines
+*                 Issue warning if GO file EOF found while in the midst of IF
 
 #ifdef MIXING_NAG_F90_AND_C
 	USE F90_UNIX
@@ -244,7 +245,12 @@ c        IF(has_more.NE.1) goto 210
 	prefix = ' '
 	GOTO 1000
 * end of command file - return to next lower control stack level
- 210	CALL POP_CS
+* if we were in the midst of an open IF block, issue a warning
+ 210	IF (if_conditional) THEN
+	   IF (csp .LE. if_cs(ifstk) ) CALL WARN(
+     .			'Unclosed IF statement ... assuming ENDIF')
+	ENDIF
+	CALL POP_CS
 	IF ( csp.EQ.0 .AND. mode_gui ) THEN		! GUI code ...
 	   gui_status = ferr_ok	! a clean bill o' health at GO termination
 	   RETURN 1

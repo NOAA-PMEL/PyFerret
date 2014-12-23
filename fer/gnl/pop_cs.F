@@ -64,8 +64,7 @@
 * V687  3/14 *acm* for ticket 2044, write note ! Exit_GO only if SET REDIRECT is turned on.
 * V693+ 12/14 *sh* rolling back 4/99 change: an unclosed IF needs a warning
 *                  and handle nested unclosed IFs 
-* v6932 12/22 *acm* Exec to GFDL for Andrew testing: comment out the warning about
-*                  unclosed IFs: need to issue it only if end of script not EXIT/SCRIPT
+* v6932 12/14 *sh* unclosed IF warning moved to GET_FER_COMMAND
 
 * internal variable declarations:
 	INTEGER	LIB_FREE_LUN,TM_LENSTR1,stat,axis,ivar,cvar,csp_to,ll,
@@ -91,11 +90,6 @@
 * we will issue a warning and then implicitly close the IF
 	IF (if_conditional) THEN
 	   IF (csp .LE. if_cs(ifstk) ) THEN
-cc
-cc For the moment, comment this out. Warning should not be issued if we are exiting
-cc the script because of an EXIT/SCRIPT
-cc	      CALL WARN('Unclosed IF statement ... assuming ENDIF')
-cc
 	      ifstk_skipping = 0
 * ... set ifstk to the level it was at the previous csp
 	      DO i = ifstk, 1, -1

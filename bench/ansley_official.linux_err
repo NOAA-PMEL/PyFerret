@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 53378090 Dec 18 12:07 /home/users/ansley/build/x86/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 52594613 Dec 23 12:40 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix to IF-block flow bugs: 2214, 2211, 1860, 1446, 1681, 1706, 1368
+Note: fix for ticket 2225, isready dynamic grids crash.  fix for warning messages on unclosed IFs
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,14 +13,14 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/x86/FERRET/external_functions/ext_func
-FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/linux/FERRET/external_functions/ext_func
+FER_GO=. /home/users/tmap/ferret/linux/go /home/users/tmap/ferret/linux/examples /home/users/tmap/ferret/linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
-FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
+FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
-FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
-PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Mon Dec 22 09:49:38 PST 2014
+FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
+PWD=/home/users/ansley/build/linux/FERRET/bench
+Beginning at Tue Dec 23 12:42:09 PST 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -129,12 +129,6 @@ can var
  LISTing to file v1file.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
  **ERROR: invalid command: ENDIF can only be used in an IF clause
 ENDIF
  **ERROR: command syntax: ELIF cannot be used in single line IF
@@ -818,6 +812,16 @@ Replacing definition of grid TGRID
  **ERROR: command syntax: dash=(1., 2.)
           DASH[=(dn1,up1,dn2,up2)] takes 4 arguments or no argument
 plot/dash=(1., 2.)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
+ **ERROR: value out of legal range: dash=(-1., 2., 3., 4.)
+          DASH arguments must be positive
+plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ Using every   2th vector in the Y direction
+ Using every   2th vector in the Y direction
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ Using every   2th vector in the X direction
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
@@ -830,16 +834,6 @@ Bailing out of external function "eof_stat":
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
- **ERROR: value out of legal range: dash=(-1., 2., 3., 4.)
-          DASH arguments must be positive
-plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- Using every   2th vector in the Y direction
- Using every   2th vector in the Y direction
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- Using every   2th vector in the X direction
  Using every   2th vector in the Y direction
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2345,20 +2339,20 @@ set axis/stride=2 NORMAL
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis BACKWARDS_AXIS
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis Y1010_REV
  PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 curl error details: 
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
  Cached data cleared from memory
  Cached data cleared from memory
  Cached data cleared from memory
@@ -2411,34 +2405,6 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
@@ -2464,9 +2430,6 @@ Replacing definition of axis TIME
 Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TIME
@@ -2491,9 +2454,6 @@ Replacing definition of axis TIME
 Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TIME
@@ -3098,9 +3058,6 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-
-Bailing out of external function "tax_year":
-	 Function not valid for modulo time axis
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
@@ -3117,6 +3074,9 @@ Replacing definition of axis YAX
  LISTing to file aa.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+
+Bailing out of external function "tax_year":
+	 Function not valid for modulo time axis
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
 set mode desperate 1.E+10
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
@@ -3846,8 +3806,6 @@ poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
  LISTing to file aa.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
 Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3855,7 +3813,8 @@ Replacing definition of axis TIME
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3963,4 +3922,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Dec 22 09:51:35 PST 2014
+Ended at Tue Dec 23 12:44:02 PST 2014

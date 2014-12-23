@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 53487040 Dec 18 14:09 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 53449876 Dec 23 11:51 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes to Block If handling; NetCDF 4.3.2; new lon_lat_time_string function for LAS; fix for missing-value used when file has NaN
+Note:  fix for ticket 2225, isready dynamic grids crash.  fix for warning messages on unclosed IFs
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,7 +13,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
@@ -21,8 +21,8 @@ FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
-PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Mon Dec 22 10:11:17 PST 2014
+PWD=/home/users/ansley/build/current_trunk/FERRET/bench
+Beginning at Tue Dec 23 12:17:39 PST 2014
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -131,12 +131,6 @@ can var
  LISTing to file v1file.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
  **ERROR: invalid command: ENDIF can only be used in an IF clause
 ENDIF
  **ERROR: command syntax: ELIF cannot be used in single line IF
@@ -2147,7 +2141,7 @@ curl error details:
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **Internet Data error
-             NetCDF: file not found (OPeNDAP/netCDF Error code -90)
+             NetCDF: Malformed or inaccessible DAP DDS (OPeNDAP/netCDF Error code -72)
              Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf
 SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf"
  **Internet Data error
@@ -2413,34 +2407,6 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
@@ -2466,9 +2432,6 @@ Replacing definition of axis TIME
 Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TIME
@@ -2493,9 +2456,6 @@ Replacing definition of axis TIME
 Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TIME
@@ -3848,8 +3808,6 @@ poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
  LISTing to file aa.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
 Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3857,7 +3815,8 @@ Replacing definition of axis TIME
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3965,4 +3924,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Dec 22 10:12:48 PST 2014
+Ended at Tue Dec 23 12:19:12 PST 2014

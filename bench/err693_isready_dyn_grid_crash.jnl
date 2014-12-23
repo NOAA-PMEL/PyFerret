@@ -1,0 +1,5 @@
+let/unit="m" b = x[gx=1:5:1]
+say "`b,r=unit`"     ! this causes dynamic grid of b to be created
+let c = x[gx=1:5:2]
+let b2 = b+0*c[gx=b] ! dynamic grid of b exists, but not grid of c
+VTREE b2

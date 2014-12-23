@@ -223,5 +223,6 @@ bn_spawn_size.jnl
 bn_polygon_log.jnl
 bn694_bug_fixes.jnl
 bn_permute_ascii.jnl
+bn_lon_lat_time_string.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

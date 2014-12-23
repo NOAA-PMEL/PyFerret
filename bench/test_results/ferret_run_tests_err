@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 13 Dec 16 14:41 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.931
+lrwxrwxrwx 1 ksmith tmap 13 Dec 23 14:37 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.932
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug build of Ferret on RHEL5-64
+Note: RUN_TESTS.sh test results for debug Ferret on RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -228,6 +228,7 @@ Benchmark scripts that will be run:
    bn_polygon_log.jnl
    bn694_bug_fixes.jnl
    bn_permute_ascii.jnl
+   bn_lon_lat_time_string.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -244,7 +245,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Tue Dec 16 14:43:19 PST 2014
+Beginning at Tue Dec 23 14:39:13 PST 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -353,12 +354,22 @@ can var
  LISTing to file v1file.nc
 *** Running test: bn_if.jnl
  Cached data cleared from memory
+ **ERROR: invalid command: ENDIF can only be used in an IF clause
+ENDIF
+ **ERROR: command syntax: ELIF cannot be used in single line IF
+          IF 0 THEN say ERROR ELIF 1 THEN say "CORRECT if you see this"
+IF 0 THEN say ERROR ELIF 1 THEN say "CORRECT if you see this"
+ **ERROR: command syntax: Trash after ENDIF
+          IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
+IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
  **ERROR: invalid command: ELSE can only be used between IF and ENDIF
 else
  **ERROR: invalid command: ENDIF can only be used in an IF clause
 endif
  **ERROR: invalid command: ELIF can only be used between IF and ENDIF
 elif
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
 *** Running test: bn_expressions.jnl
  Cached data cleared from memory
  **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
@@ -2030,7 +2041,7 @@ curl error details:
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **Internet Data error
-             NetCDF: Malformed or inaccessible DAP DDS (OPeNDAP/netCDF Error code -72)
+             NetCDF: file not found (OPeNDAP/netCDF Error code -90)
              Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf
 SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf"
  **Internet Data error
@@ -2240,8 +2251,6 @@ set axis/stride=2 NORMAL
  Cached data cleared from memory
  Cached data cleared from memory
 *** Running test: bn605_bug_fixes.jnl
-**ERROR in efcn_gather_info(): lon_lat_time_string_init_ is not found.
-  dlerror: "/home/users/ksmith/Ferret/ext_func/libs/lon_lat_time_string.so: undefined symbol: lon_lat_time_string_init_"
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3636,9 +3645,25 @@ poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_permute_ascii.jnl
  Cached data cleared from memory
 Replacing definition of grid GRID3D
+*** Running test: bn_lon_lat_time_string.jnl
+ Cached data cleared from memory
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3658,4 +3683,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Tue Dec 16 15:00:38 PST 2014
+Ended at Tue Dec 23 14:41:15 PST 2014

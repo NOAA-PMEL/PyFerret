@@ -13,6 +13,9 @@ GO bn_reset
 GO err693_isready_hang
 
 GO bn_reset
+GO err693_isready_dyn_grid_crash   ! 12/23/2014
+
+GO bn_reset
 GO err693_attr_in_gcfcn
 
 ! IF-THEN flow tests

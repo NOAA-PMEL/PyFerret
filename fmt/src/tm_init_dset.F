@@ -108,6 +108,7 @@
 * V686 1/14 *acm* Fix ticket 2129: A bug in the fix to 2128.
 * V686 1/27/14 *acm* further fix for 2129: make sure a search for a .nc or .cdf file is
 *                 done in path FER_DATA.
+* V693+ *sh* 12/14 added blank separator into error message 5600
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -558,7 +559,7 @@
 
  5600	CALL TM_ERRMSG (merr_notsupport, status, 'TM_INIT_DSET',
      .			dset_num, no_stepfile,
-     .			'Dataset type not supported for double-precision Ferret'
+     .		'Dataset type not supported for double-precision Ferret '
      .			//dset_name,
      .			no_errstring, *9900)
 

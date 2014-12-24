@@ -1,0 +1,14 @@
+! testing ticket 1446
+
+! the presence of a tab preceding the "!" comment caused a parsing error
+
+! the behavior of this even in v69+ today is problematic in that
+! it echos an ENDIF statement that should be a plain old skip
+
+IF 0 THEN
+  LET a = 12
+  IF `a` THEN	! a comment
+    say "IF YOU ARE SEEING THIS AN ERROR HAS OCCURED "
+  ENDIF
+ENDIF
+

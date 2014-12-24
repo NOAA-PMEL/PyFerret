@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x 1 ksmith tmap 1188 Dec  2 16:06 /home/users/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x 1 ksmith tmap 1188 Dec 24 11:29 /home/users/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug build of PyFerret on RHEL5-64
+Note: RUN_TESTS.sh test results for debug PyFerret on RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -228,6 +228,7 @@ Benchmark scripts that will be run:
    bn_polygon_log.jnl
    bn694_bug_fixes.jnl
    bn_permute_ascii.jnl
+   bn_lon_lat_time_string.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -244,7 +245,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Tue Dec  2 16:07:59 PST 2014
+Beginning at Wed Dec 24 11:29:44 PST 2014
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -375,12 +376,22 @@ can var
  LISTing to file v1file.nc
 *** Running test: bn_if.jnl
  Cached data cleared from memory
+ **ERROR: invalid command: ENDIF can only be used in an IF clause
+ENDIF
+ **ERROR: command syntax: ELIF cannot be used in single line IF
+          IF 0 THEN say ERROR ELIF 1 THEN say "CORRECT if you see this"
+IF 0 THEN say ERROR ELIF 1 THEN say "CORRECT if you see this"
+ **ERROR: command syntax: Trash after ENDIF
+          IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
+IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
  **ERROR: invalid command: ELSE can only be used between IF and ENDIF
 else
  **ERROR: invalid command: ENDIF can only be used in an IF clause
 endif
  **ERROR: invalid command: ELIF can only be used between IF and ENDIF
 elif
+           *** NOTE: Unclosed IF statement ... assuming ENDIF
 *** Running test: bn_expressions.jnl
  Cached data cleared from memory
  **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
@@ -2090,7 +2101,7 @@ curl error details:
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **Internet Data error
-             NetCDF: Malformed or inaccessible DAP DDS (OPeNDAP/netCDF Error code -72)
+             NetCDF: file not found (OPeNDAP/netCDF Error code -90)
              Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf
 SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf"
  **Internet Data error
@@ -3652,6 +3663,12 @@ shade a
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: value out of legal range: Negative argument to function. Argument 3 : SUBSTRING
+list substring("hello",1,-2)
+ **ERROR: value out of legal range: Negative argument to function. Argument 3 : SUBSTRING
+list substring("hello",1,-3)
 *** Running test: bn_append_dsg.jnl
  Cached data cleared from memory
 rm: cannot remove `test_save_dsg.nc': No such file or directory
@@ -3696,9 +3713,31 @@ poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file aa.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_permute_ascii.jnl
  Cached data cleared from memory
 Replacing definition of grid GRID3D
+*** Running test: bn_lon_lat_time_string.jnl
+ Cached data cleared from memory
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3720,4 +3759,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Tue Dec  2 16:12:06 PST 2014
+Ended at Wed Dec 24 11:34:26 PST 2014

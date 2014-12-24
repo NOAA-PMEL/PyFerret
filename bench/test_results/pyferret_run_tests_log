@@ -1,8 +1,8 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x 1 ksmith tmap 1188 Dec  2 16:06 /home/users/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x 1 ksmith tmap 1188 Dec 24 11:29 /home/users/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug build of PyFerret on RHEL5-64
+Note: RUN_TESTS.sh test results for debug PyFerret on RHEL5-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -228,6 +228,7 @@ Benchmark scripts that will be run:
    bn_polygon_log.jnl
    bn694_bug_fixes.jnl
    bn_permute_ascii.jnl
+   bn_lon_lat_time_string.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -244,7 +245,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Tue Dec  2 16:07:59 PST 2014
+Beginning at Wed Dec 24 11:29:44 PST 2014
 *** Running test: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -1203,8 +1204,8 @@ say "demonstrate that these leading blanks:\
 demonstrate that these leading blanks:       really are preserved
  
 ! continuation prompts are ignored, too
-yes? say "demonstrate that these leading blanks:\
-...?        really are preserved"
+say "demonstrate that these leading blanks:\
+       really are preserved"
 demonstrate that these leading blanks:       really are preserved
  
 ! weird little blank line inputs
@@ -1267,7 +1268,7 @@ message/continue here is: $1"some text" and some more stuff
 here is: hello and some more stuff
  
 message/cont here is a big $1 and $3&some text&      ! default provided
- !-> message/cont here is a big hello and some text      ! default provided
+ !-> message/cont here is a big hello and some text
 here is a big hello and some text
  
 message/cont $3			! error - no default
@@ -1375,7 +1376,7 @@ go bn_dollar.sub ((x+y),(x-5))	! ignore comma, get single arg
 ! V510 3/00
 set mode ignore
   message/continue "$1"                ! final quote used to get mis-applied
- !-> message/continue "hello"                ! final quote used to get mis-applied
+ !-> message/continue "hello"
 hello
 set mode/last ignore
 go bn_dollar.sub \"hello\"                 ! quotations as part of argument
@@ -1440,7 +1441,7 @@ message/continue "2 squared + 2 squared =`2^2` + `2+2`"
 2 squared + 2 squared =4 + 4
  
 message/continue "50/0 =`50/0`"	! invalid result
- !-> message/continue "50/0 =bad"	! invalid result
+ !-> message/continue "50/0 =bad"
 50/0 =bad
  
 repeat/i=1:3 message/continue "I=`I`"
@@ -1468,7 +1469,7 @@ I=7
 !cancel region/X ! removed - temporary experiment 3/00 *sh*
  
 message/continue "2+2=``2+2``"	! double grave accents get condensed
- !-> message/continue "2+2=`2+2`"	! double grave accents get condensed
+ !-> message/continue "2+2=`2+2`"
 2+2=`2+2`
  
 message/continue A default substitution: $9"default string|2+2=`2+2`"
@@ -1488,7 +1489,7 @@ message/continue "1/300=`1/300,p=5`"
  !-> message/continue "1/300=0.0033333"
 1/300=0.0033333
 message/continue "1/300=`1/300,p=-5`"	! decimal places
- !-> message/continue "1/300=0.00333"	! decimal places
+ !-> message/continue "1/300=0.00333"
 1/300=0.00333
 message/continue "1/300=`1/300 , precision=10`"
  !-> message/continue "1/300=0.003333333333"
@@ -2075,6 +2076,19 @@ CORRECT:sym sub
 ---->CORRECT
 ---->CORRECT again
 ---->nested: all is well after multi-line IF
+CORRECT
+CORRECT
+LOOP=1
+more
+LOOP=2
+more
+LOOP=1
+LOOP=2
+semicolon group
+more
+semicolon group
+CORRECT
+WE SEE THIS CUZ OF IMPLIED CLOSE TO THE PREVIOUS
 >>> --> DELIBERATE WARNING: UNCLOSED IF in NESTED GO FILE<<<
 ---->... now inside of nested IF clause
 ---->CORRECT
@@ -2085,10 +2099,6 @@ SAY ">>> --> DELIBERATE WARNING: UNCLOSED IF <<<"
 IF yes THEN
   say ---->... now inside of IF clause
 ---->... now inside of IF clause
- 
- 
- 
- 
 *** Running test: bn_expressions.jnl
 ! bn450_expressions.JNL
 ! test all manner of expressions
@@ -10497,18 +10507,18 @@ show symbols/all
 PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.931"
+FERRET_VERSION = "6.932"
 FERRET_PLATFORM = "Linux 2.6.18-398.el5"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.3.1.1 of Feb 25 2014 11:38:15 $"
+NETCDF_VERSION = "4.3.2 of Dec 16 2014 15:13:45 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 2-Dec-14"
-SESSION_TIME = "16:08"
-SESSION_PID = "13398"
-DELTA_CPU = "0.52292"
-CLOCK_SECS = "0.305"
-CURRENT_DATE = " 2-Dec-14"
-CURRENT_TIME = "16:08:20"
+SESSION_DATE = "24-Dec-14"
+SESSION_TIME = "11:30"
+SESSION_PID = "30782"
+DELTA_CPU = "0.415935"
+CLOCK_SECS = "0.292"
+CURRENT_DATE = "24-Dec-14"
+CURRENT_TIME = "11:30:08"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -10526,18 +10536,18 @@ show symbol/all
 PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.931"
+FERRET_VERSION = "6.932"
 FERRET_PLATFORM = "Linux 2.6.18-398.el5"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.3.1.1 of Feb 25 2014 11:38:15 $"
+NETCDF_VERSION = "4.3.2 of Dec 16 2014 15:13:45 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 2-Dec-14"
-SESSION_TIME = "16:08"
-SESSION_PID = "13398"
-DELTA_CPU = "0.001"
-CLOCK_SECS = "0.306"
-CURRENT_DATE = " 2-Dec-14"
-CURRENT_TIME = "16:08:20"
+SESSION_DATE = "24-Dec-14"
+SESSION_TIME = "11:30"
+SESSION_PID = "30782"
+DELTA_CPU = "0.002"
+CLOCK_SECS = "0.293"
+CURRENT_DATE = "24-Dec-14"
+CURRENT_TIME = "11:30:08"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 S1 = "hello"
@@ -10547,9 +10557,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 2-Dec-14"
-SESSION_TIME = "16:08"
-SESSION_PID = "13398"
+SESSION_DATE = "24-Dec-14"
+SESSION_TIME = "11:30"
+SESSION_PID = "30782"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10559,15 +10569,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 2-Dec-14"
-SESSION_TIME = "16:08"
-SESSION_PID = "13398"
+SESSION_DATE = "24-Dec-14"
+SESSION_TIME = "11:30"
+SESSION_PID = "30782"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 2-Dec-14"
-SESSION_TIME = "16:08"
-SESSION_PID = "13398"
+SESSION_DATE = "24-Dec-14"
+SESSION_TIME = "11:30"
+SESSION_PID = "30782"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10695,18 +10705,18 @@ show symbols/all
 PPL$XPIXEL = "979"
 PPL$YPIXEL = "844"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.931"
+FERRET_VERSION = "6.932"
 FERRET_PLATFORM = "Linux 2.6.18-398.el5"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.3.1.1 of Feb 25 2014 11:38:15 $"
+NETCDF_VERSION = "4.3.2 of Dec 16 2014 15:13:45 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 2-Dec-14"
-SESSION_TIME = "16:08"
-SESSION_PID = "13398"
-DELTA_CPU = "0.022996"
-CLOCK_SECS = "0.329"
-CURRENT_DATE = " 2-Dec-14"
-CURRENT_TIME = "16:08:20"
+SESSION_DATE = "24-Dec-14"
+SESSION_TIME = "11:30"
+SESSION_PID = "30782"
+DELTA_CPU = "0.025996"
+CLOCK_SECS = "0.319"
+CURRENT_DATE = "24-Dec-14"
+CURRENT_TIME = "11:30:08"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -14157,7 +14167,7 @@ Dynamic axes:
  
 ! calendar axes
 list/k=1/y=0/x=180 temp[t=15-JAN-1982:11-FEB-1982:`24*6`@ave]   ! 6-day ave
- !-> list/k=1/y=0/x=180 temp[t=15-JAN-1982:11-FEB-1982:144@ave]   ! 6-day ave
+ !-> list/k=1/y=0/x=180 temp[t=15-JAN-1982:11-FEB-1982:144@ave]
              VARIABLE : TEMPERATURE (deg. C)
                         regrid: 144 hour on T@AVE
              FILENAME : gtsa056_1.cdf
@@ -14185,7 +14195,7 @@ list/k=1/y=0/x=180/l=1 temp[t=15-JAN-1982:11-FEB-1982:`24*6`@ave]
              TIME     : 15-JAN-1982 00:00
           27.85
 list/l=1:3 T[t=15-JAN-1982:11-FEB-1982:`24*2`]			! pseudo-var
- !-> list/l=1:3 T[t=15-JAN-1982:11-FEB-1982:48]			! pseudo-var
+ !-> list/l=1:3 T[t=15-JAN-1982:11-FEB-1982:48]
              VARIABLE : T
                         axis (AX001)
              SUBSET   : 3 points (TIME)
@@ -19876,27 +19886,27 @@ GO bn_negative_t.sub tvar ave  ! like var and din
 ! tvar axis runs from -10 to 10 by 1's
  
 LIST $1[t=-5:5@$2]	! neg/pos t endpoints
- !-> LIST tvar[t=-5:5@ave]	! neg/pos t endpoints
+ !-> LIST tvar[t=-5:5@ave]
              VARIABLE : T[GT=TAX]
              T        : -5 to 5 (averaged)
           0.0000
 LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
- !-> LIST tvar[t=-5:-8@ave]	! neg/neq t endpoints
+ !-> LIST tvar[t=-5:-8@ave]
              VARIABLE : T[GT=TAX]
              T        : -8 to -5 (averaged)
          -6.667
 LIST $1[l=2:7@$2]	! neg/pos l endpoints
- !-> LIST tvar[l=2:7@ave]	! neg/pos l endpoints
+ !-> LIST tvar[l=2:7@ave]
              VARIABLE : T[GT=TAX]
              T        : -9 to 3 (averaged)
          -3.000
 LIST $1[l=2:4@$2]	! neg/neg l endpoints
- !-> LIST tvar[l=2:4@ave]	! neg/neg l endpoints
+ !-> LIST tvar[l=2:4@ave]
              VARIABLE : T[GT=TAX]
              T        : -9 to -3 (averaged)
          -6.000
 LIST $1[l=@$2]	! unspecified limits (neg/pos)
- !-> LIST tvar[l=@ave]	! unspecified limits (neg/pos)
+ !-> LIST tvar[l=@ave]
              VARIABLE : T[GT=TAX]
              T        : -11 to 11 (averaged)
           0.0000
@@ -19912,7 +19922,7 @@ GO bn_negative_t.sub tvar iin
 ! tvar axis runs from -10 to 10 by 1's
  
 LIST $1[t=-5:5@$2]	! neg/pos t endpoints
- !-> LIST tvar[t=-5:5@iin]	! neg/pos t endpoints
+ !-> LIST tvar[t=-5:5@iin]
              VARIABLE : T[GT=TAX]
                         indef. integ. on T
              SUBSET   : 5 points (T)
@@ -19922,14 +19932,14 @@ LIST $1[t=-5:5@$2]	! neg/pos t endpoints
  2    / 7:  -8.00
  4    / 8:   0.00
 LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
- !-> LIST tvar[t=-5:-8@iin]	! neg/neq t endpoints
+ !-> LIST tvar[t=-5:-8@iin]
              VARIABLE : T[GT=TAX]
                         indef. integ. on T
              SUBSET   : 2 points (T)
  -8   / 2:  -8.00
  -6   / 3: -20.00
 LIST $1[l=2:7@$2]	! neg/pos l endpoints
- !-> LIST tvar[l=2:7@iin]	! neg/pos l endpoints
+ !-> LIST tvar[l=2:7@iin]
              VARIABLE : T[GT=TAX]
                         indef. integ. on T
              SUBSET   : 6 points (T)
@@ -19940,7 +19950,7 @@ LIST $1[l=2:7@$2]	! neg/pos l endpoints
  0    / 6: -40.00
  2    / 7: -36.00
 LIST $1[l=2:4@$2]	! neg/neg l endpoints
- !-> LIST tvar[l=2:4@iin]	! neg/neg l endpoints
+ !-> LIST tvar[l=2:4@iin]
              VARIABLE : T[GT=TAX]
                         indef. integ. on T
              SUBSET   : 3 points (T)
@@ -19948,7 +19958,7 @@ LIST $1[l=2:4@$2]	! neg/neg l endpoints
  -6   / 3: -28.00
  -4   / 4: -36.00
 LIST $1[l=@$2]	! unspecified limits (neg/pos)
- !-> LIST tvar[l=@iin]	! unspecified limits (neg/pos)
+ !-> LIST tvar[l=@iin]
              VARIABLE : T[GT=TAX]
                         indef. integ. on T
              SUBSET   : 11 points (T)
@@ -19975,27 +19985,27 @@ GO bn_negative_t.sub tvar sum
 ! tvar axis runs from -10 to 10 by 1's
  
 LIST $1[t=-5:5@$2]	! neg/pos t endpoints
- !-> LIST tvar[t=-5:5@sum]	! neg/pos t endpoints
+ !-> LIST tvar[t=-5:5@sum]
              VARIABLE : T[GT=TAX]
              T        : -5 to 5 (summed)
           0.0000
 LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
- !-> LIST tvar[t=-5:-8@sum]	! neg/neq t endpoints
+ !-> LIST tvar[t=-5:-8@sum]
              VARIABLE : T[GT=TAX]
              T        : -8 to -5 (summed)
          -14.00
 LIST $1[l=2:7@$2]	! neg/pos l endpoints
- !-> LIST tvar[l=2:7@sum]	! neg/pos l endpoints
+ !-> LIST tvar[l=2:7@sum]
              VARIABLE : T[GT=TAX]
              T        : -9 to 3 (summed)
          -18.00
 LIST $1[l=2:4@$2]	! neg/neg l endpoints
- !-> LIST tvar[l=2:4@sum]	! neg/neg l endpoints
+ !-> LIST tvar[l=2:4@sum]
              VARIABLE : T[GT=TAX]
              T        : -9 to -3 (summed)
          -18.00
 LIST $1[l=@$2]	! unspecified limits (neg/pos)
- !-> LIST tvar[l=@sum]	! unspecified limits (neg/pos)
+ !-> LIST tvar[l=@sum]
              VARIABLE : T[GT=TAX]
              T        : -11 to 11 (summed)
           0.0000
@@ -20011,7 +20021,7 @@ GO bn_negative_t.sub tvar rsu
 ! tvar axis runs from -10 to 10 by 1's
  
 LIST $1[t=-5:5@$2]	! neg/pos t endpoints
- !-> LIST tvar[t=-5:5@rsu]	! neg/pos t endpoints
+ !-> LIST tvar[t=-5:5@rsu]
              VARIABLE : T[GT=TAX]
                         running sum on T
              SUBSET   : 5 points (T)
@@ -20021,14 +20031,14 @@ LIST $1[t=-5:5@$2]	! neg/pos t endpoints
  2    / 7: -4.000
  4    / 8:  0.000
 LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
- !-> LIST tvar[t=-5:-8@rsu]	! neg/neq t endpoints
+ !-> LIST tvar[t=-5:-8@rsu]
              VARIABLE : T[GT=TAX]
                         running sum on T
              SUBSET   : 2 points (T)
  -8   / 2:  -8.00
  -6   / 3: -14.00
 LIST $1[l=2:7@$2]	! neg/pos l endpoints
- !-> LIST tvar[l=2:7@rsu]	! neg/pos l endpoints
+ !-> LIST tvar[l=2:7@rsu]
              VARIABLE : T[GT=TAX]
                         running sum on T
              SUBSET   : 6 points (T)
@@ -20039,7 +20049,7 @@ LIST $1[l=2:7@$2]	! neg/pos l endpoints
  0    / 6: -20.00
  2    / 7: -18.00
 LIST $1[l=2:4@$2]	! neg/neg l endpoints
- !-> LIST tvar[l=2:4@rsu]	! neg/neg l endpoints
+ !-> LIST tvar[l=2:4@rsu]
              VARIABLE : T[GT=TAX]
                         running sum on T
              SUBSET   : 3 points (T)
@@ -20047,7 +20057,7 @@ LIST $1[l=2:4@$2]	! neg/neg l endpoints
  -6   / 3: -14.00
  -4   / 4: -18.00
 LIST $1[l=@$2]	! unspecified limits (neg/pos)
- !-> LIST tvar[l=@rsu]	! unspecified limits (neg/pos)
+ !-> LIST tvar[l=@rsu]
              VARIABLE : T[GT=TAX]
                         running sum on T
              SUBSET   : 11 points (T)
@@ -20074,7 +20084,7 @@ GO bn_negative_t.sub tvar shf
 ! tvar axis runs from -10 to 10 by 1's
  
 LIST $1[t=-5:5@$2]	! neg/pos t endpoints
- !-> LIST tvar[t=-5:5@shf]	! neg/pos t endpoints
+ !-> LIST tvar[t=-5:5@shf]
              VARIABLE : T[GT=TAX]
                         shifted by 1 pts on T
              SUBSET   : 5 points (T)
@@ -20084,14 +20094,14 @@ LIST $1[t=-5:5@$2]	! neg/pos t endpoints
  2    / 7:  4.000
  4    / 8:  6.000
 LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
- !-> LIST tvar[t=-5:-8@shf]	! neg/neq t endpoints
+ !-> LIST tvar[t=-5:-8@shf]
              VARIABLE : T[GT=TAX]
                         shifted by 1 pts on T
              SUBSET   : 2 points (T)
  -8   / 2: -6.000
  -6   / 3: -4.000
 LIST $1[l=2:7@$2]	! neg/pos l endpoints
- !-> LIST tvar[l=2:7@shf]	! neg/pos l endpoints
+ !-> LIST tvar[l=2:7@shf]
              VARIABLE : T[GT=TAX]
                         shifted by 1 pts on T
              SUBSET   : 6 points (T)
@@ -20102,7 +20112,7 @@ LIST $1[l=2:7@$2]	! neg/pos l endpoints
  0    / 6:  2.000
  2    / 7:  4.000
 LIST $1[l=2:4@$2]	! neg/neg l endpoints
- !-> LIST tvar[l=2:4@shf]	! neg/neg l endpoints
+ !-> LIST tvar[l=2:4@shf]
              VARIABLE : T[GT=TAX]
                         shifted by 1 pts on T
              SUBSET   : 3 points (T)
@@ -20110,7 +20120,7 @@ LIST $1[l=2:4@$2]	! neg/neg l endpoints
  -6   / 3: -4.000
  -4   / 4: -2.000
 LIST $1[l=@$2]	! unspecified limits (neg/pos)
- !-> LIST tvar[l=@shf]	! unspecified limits (neg/pos)
+ !-> LIST tvar[l=@shf]
              VARIABLE : T[GT=TAX]
                         shifted by 1 pts on T
              SUBSET   : 11 points (T)
@@ -20137,27 +20147,27 @@ GO bn_negative_t.sub tvar min   ! like @max
 ! tvar axis runs from -10 to 10 by 1's
  
 LIST $1[t=-5:5@$2]	! neg/pos t endpoints
- !-> LIST tvar[t=-5:5@min]	! neg/pos t endpoints
+ !-> LIST tvar[t=-5:5@min]
              VARIABLE : T[GT=TAX]
              T        : -5 to 5 (minimum)
          -4.000
 LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
- !-> LIST tvar[t=-5:-8@min]	! neg/neq t endpoints
+ !-> LIST tvar[t=-5:-8@min]
              VARIABLE : T[GT=TAX]
              T        : -8 to -5 (minimum)
          -8.000
 LIST $1[l=2:7@$2]	! neg/pos l endpoints
- !-> LIST tvar[l=2:7@min]	! neg/pos l endpoints
+ !-> LIST tvar[l=2:7@min]
              VARIABLE : T[GT=TAX]
              T        : -9 to 3 (minimum)
          -8.000
 LIST $1[l=2:4@$2]	! neg/neg l endpoints
- !-> LIST tvar[l=2:4@min]	! neg/neg l endpoints
+ !-> LIST tvar[l=2:4@min]
              VARIABLE : T[GT=TAX]
              T        : -9 to -3 (minimum)
          -8.000
 LIST $1[l=@$2]	! unspecified limits (neg/pos)
- !-> LIST tvar[l=@min]	! unspecified limits (neg/pos)
+ !-> LIST tvar[l=@min]
              VARIABLE : T[GT=TAX]
              T        : -11 to 11 (minimum)
          -10.00
@@ -20173,7 +20183,7 @@ GO bn_negative_t.sub tvar ddf
 ! tvar axis runs from -10 to 10 by 1's
  
 LIST $1[t=-5:5@$2]	! neg/pos t endpoints
- !-> LIST tvar[t=-5:5@ddf]	! neg/pos t endpoints
+ !-> LIST tvar[t=-5:5@ddf]
              VARIABLE : T[GT=TAX]
                         forward derivative on T
              SUBSET   : 5 points (T)
@@ -20183,14 +20193,14 @@ LIST $1[t=-5:5@$2]	! neg/pos t endpoints
  2    / 7:  1.000
  4    / 8:  1.000
 LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
- !-> LIST tvar[t=-5:-8@ddf]	! neg/neq t endpoints
+ !-> LIST tvar[t=-5:-8@ddf]
              VARIABLE : T[GT=TAX]
                         forward derivative on T
              SUBSET   : 2 points (T)
  -8   / 2:  1.000
  -6   / 3:  1.000
 LIST $1[l=2:7@$2]	! neg/pos l endpoints
- !-> LIST tvar[l=2:7@ddf]	! neg/pos l endpoints
+ !-> LIST tvar[l=2:7@ddf]
              VARIABLE : T[GT=TAX]
                         forward derivative on T
              SUBSET   : 6 points (T)
@@ -20201,7 +20211,7 @@ LIST $1[l=2:7@$2]	! neg/pos l endpoints
  0    / 6:  1.000
  2    / 7:  1.000
 LIST $1[l=2:4@$2]	! neg/neg l endpoints
- !-> LIST tvar[l=2:4@ddf]	! neg/neg l endpoints
+ !-> LIST tvar[l=2:4@ddf]
              VARIABLE : T[GT=TAX]
                         forward derivative on T
              SUBSET   : 3 points (T)
@@ -20209,7 +20219,7 @@ LIST $1[l=2:4@$2]	! neg/neg l endpoints
  -6   / 3:  1.000
  -4   / 4:  1.000
 LIST $1[l=@$2]	! unspecified limits (neg/pos)
- !-> LIST tvar[l=@ddf]	! unspecified limits (neg/pos)
+ !-> LIST tvar[l=@ddf]
              VARIABLE : T[GT=TAX]
                         forward derivative on T
              SUBSET   : 11 points (T)
@@ -20236,7 +20246,7 @@ GO bn_negative_t.sub tvar ddb   ! @ddc like ddf and ddb
 ! tvar axis runs from -10 to 10 by 1's
  
 LIST $1[t=-5:5@$2]	! neg/pos t endpoints
- !-> LIST tvar[t=-5:5@ddb]	! neg/pos t endpoints
+ !-> LIST tvar[t=-5:5@ddb]
              VARIABLE : T[GT=TAX]
                         backwards derivative on T
              SUBSET   : 5 points (T)
@@ -20246,14 +20256,14 @@ LIST $1[t=-5:5@$2]	! neg/pos t endpoints
  2    / 7:  1.000
  4    / 8:  1.000
 LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
- !-> LIST tvar[t=-5:-8@ddb]	! neg/neq t endpoints
+ !-> LIST tvar[t=-5:-8@ddb]
              VARIABLE : T[GT=TAX]
                         backwards derivative on T
              SUBSET   : 2 points (T)
  -8   / 2:  1.000
  -6   / 3:  1.000
 LIST $1[l=2:7@$2]	! neg/pos l endpoints
- !-> LIST tvar[l=2:7@ddb]	! neg/pos l endpoints
+ !-> LIST tvar[l=2:7@ddb]
              VARIABLE : T[GT=TAX]
                         backwards derivative on T
              SUBSET   : 6 points (T)
@@ -20264,7 +20274,7 @@ LIST $1[l=2:7@$2]	! neg/pos l endpoints
  0    / 6:  1.000
  2    / 7:  1.000
 LIST $1[l=2:4@$2]	! neg/neg l endpoints
- !-> LIST tvar[l=2:4@ddb]	! neg/neg l endpoints
+ !-> LIST tvar[l=2:4@ddb]
              VARIABLE : T[GT=TAX]
                         backwards derivative on T
              SUBSET   : 3 points (T)
@@ -20272,7 +20282,7 @@ LIST $1[l=2:4@$2]	! neg/neg l endpoints
  -6   / 3:  1.000
  -4   / 4:  1.000
 LIST $1[l=@$2]	! unspecified limits (neg/pos)
- !-> LIST tvar[l=@ddb]	! unspecified limits (neg/pos)
+ !-> LIST tvar[l=@ddb]
              VARIABLE : T[GT=TAX]
                         backwards derivative on T
              SUBSET   : 11 points (T)
@@ -20299,7 +20309,7 @@ GO bn_negative_t.sub tvar sbx  ! like sbn, swl, shn, spz
 ! tvar axis runs from -10 to 10 by 1's
  
 LIST $1[t=-5:5@$2]	! neg/pos t endpoints
- !-> LIST tvar[t=-5:5@sbx]	! neg/pos t endpoints
+ !-> LIST tvar[t=-5:5@sbx]
              VARIABLE : T[GT=TAX]
                         box smoothed by 3 pts on T
              SUBSET   : 5 points (T)
@@ -20309,14 +20319,14 @@ LIST $1[t=-5:5@$2]	! neg/pos t endpoints
  2    / 7:  2.000
  4    / 8:  4.000
 LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
- !-> LIST tvar[t=-5:-8@sbx]	! neg/neq t endpoints
+ !-> LIST tvar[t=-5:-8@sbx]
              VARIABLE : T[GT=TAX]
                         box smoothed by 3 pts on T
              SUBSET   : 2 points (T)
  -8   / 2: -8.000
  -6   / 3: -6.000
 LIST $1[l=2:7@$2]	! neg/pos l endpoints
- !-> LIST tvar[l=2:7@sbx]	! neg/pos l endpoints
+ !-> LIST tvar[l=2:7@sbx]
              VARIABLE : T[GT=TAX]
                         box smoothed by 3 pts on T
              SUBSET   : 6 points (T)
@@ -20327,7 +20337,7 @@ LIST $1[l=2:7@$2]	! neg/pos l endpoints
  0    / 6:  0.000
  2    / 7:  2.000
 LIST $1[l=2:4@$2]	! neg/neg l endpoints
- !-> LIST tvar[l=2:4@sbx]	! neg/neg l endpoints
+ !-> LIST tvar[l=2:4@sbx]
              VARIABLE : T[GT=TAX]
                         box smoothed by 3 pts on T
              SUBSET   : 3 points (T)
@@ -20335,7 +20345,7 @@ LIST $1[l=2:4@$2]	! neg/neg l endpoints
  -6   / 3: -6.000
  -4   / 4: -4.000
 LIST $1[l=@$2]	! unspecified limits (neg/pos)
- !-> LIST tvar[l=@sbx]	! unspecified limits (neg/pos)
+ !-> LIST tvar[l=@sbx]
              VARIABLE : T[GT=TAX]
                         box smoothed by 3 pts on T
              SUBSET   : 11 points (T)
@@ -20362,27 +20372,27 @@ GO bn_negative_t.sub tvar loc:-2.2
 ! tvar axis runs from -10 to 10 by 1's
  
 LIST $1[t=-5:5@$2]	! neg/pos t endpoints
- !-> LIST tvar[t=-5:5@loc:-2.2]	! neg/pos t endpoints
+ !-> LIST tvar[t=-5:5@loc:-2.2]
              VARIABLE : T of -2.2 in T[GT=TAX]
              T        : -5 to 5 (location of -2.2)
          -2.200
 LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
- !-> LIST tvar[t=-5:-8@loc:-2.2]	! neg/neq t endpoints
+ !-> LIST tvar[t=-5:-8@loc:-2.2]
              VARIABLE : T of -2.2 in T[GT=TAX]
              T        : -8 to -5 (location of -2.2)
         ....
 LIST $1[l=2:7@$2]	! neg/pos l endpoints
- !-> LIST tvar[l=2:7@loc:-2.2]	! neg/pos l endpoints
+ !-> LIST tvar[l=2:7@loc:-2.2]
              VARIABLE : T of -2.2 in T[GT=TAX]
              T        : -9 to 3 (location of -2.2)
          -2.200
 LIST $1[l=2:4@$2]	! neg/neg l endpoints
- !-> LIST tvar[l=2:4@loc:-2.2]	! neg/neg l endpoints
+ !-> LIST tvar[l=2:4@loc:-2.2]
              VARIABLE : T of -2.2 in T[GT=TAX]
              T        : -9 to -3 (location of -2.2)
         ....
 LIST $1[l=@$2]	! unspecified limits (neg/pos)
- !-> LIST tvar[l=@loc:-2.2]	! unspecified limits (neg/pos)
+ !-> LIST tvar[l=@loc:-2.2]
              VARIABLE : T of -2.2 in T[GT=TAX]
              T        : -11 to 11 (location of -2.2)
          -2.200
@@ -20398,7 +20408,7 @@ GO bn_negative_t.sub tvar weq:-2.2
 ! tvar axis runs from -10 to 10 by 1's
  
 LIST $1[t=-5:5@$2]	! neg/pos t endpoints
- !-> LIST tvar[t=-5:5@weq:-2.2]	! neg/pos t endpoints
+ !-> LIST tvar[t=-5:5@weq:-2.2]
              VARIABLE : T[GT=TAX]
                         weighted equal of -2.2 on T
              SUBSET   : 5 points (T)
@@ -20408,14 +20418,14 @@ LIST $1[t=-5:5@$2]	! neg/pos t endpoints
  2    / 7:    ....
  4    / 8:    ....
 LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
- !-> LIST tvar[t=-5:-8@weq:-2.2]	! neg/neq t endpoints
+ !-> LIST tvar[t=-5:-8@weq:-2.2]
              VARIABLE : T[GT=TAX]
                         weighted equal of -2.2 on T
              SUBSET   : 2 points (T)
  -8   / 2:....
  -6   / 3:....
 LIST $1[l=2:7@$2]	! neg/pos l endpoints
- !-> LIST tvar[l=2:7@weq:-2.2]	! neg/pos l endpoints
+ !-> LIST tvar[l=2:7@weq:-2.2]
              VARIABLE : T[GT=TAX]
                         weighted equal of -2.2 on T
              SUBSET   : 6 points (T)
@@ -20426,7 +20436,7 @@ LIST $1[l=2:7@$2]	! neg/pos l endpoints
  0    / 6:    ....
  2    / 7:    ....
 LIST $1[l=2:4@$2]	! neg/neg l endpoints
- !-> LIST tvar[l=2:4@weq:-2.2]	! neg/neg l endpoints
+ !-> LIST tvar[l=2:4@weq:-2.2]
              VARIABLE : T[GT=TAX]
                         weighted equal of -2.2 on T
              SUBSET   : 3 points (T)
@@ -20434,7 +20444,7 @@ LIST $1[l=2:4@$2]	! neg/neg l endpoints
  -6   / 3:....
  -4   / 4:....
 LIST $1[l=@$2]	! unspecified limits (neg/pos)
- !-> LIST tvar[l=@weq:-2.2]	! unspecified limits (neg/pos)
+ !-> LIST tvar[l=@weq:-2.2]
              VARIABLE : T[GT=TAX]
                         weighted equal of -2.2 on T
              SUBSET   : 11 points (T)
@@ -20477,27 +20487,27 @@ GO bn_negative_t.sub tgap ngd   ! like @nbd
 ! tvar axis runs from -10 to 10 by 1's
  
 LIST $1[t=-5:5@$2]	! neg/pos t endpoints
- !-> LIST tgap[t=-5:5@ngd]	! neg/pos t endpoints
+ !-> LIST tgap[t=-5:5@ngd]
              VARIABLE : IF MOD(T,4) EQ 0 THEN  TVAR (# of points)
              T        : -5 to 5 (number of valid)
           3.000
 LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
- !-> LIST tgap[t=-5:-8@ngd]	! neg/neq t endpoints
+ !-> LIST tgap[t=-5:-8@ngd]
              VARIABLE : IF MOD(T,4) EQ 0 THEN  TVAR (# of points)
              T        : -8 to -5 (number of valid)
           1.000
 LIST $1[l=2:7@$2]	! neg/pos l endpoints
- !-> LIST tgap[l=2:7@ngd]	! neg/pos l endpoints
+ !-> LIST tgap[l=2:7@ngd]
              VARIABLE : IF MOD(T,4) EQ 0 THEN  TVAR (# of points)
              T        : -9 to 3 (number of valid)
           3.000
 LIST $1[l=2:4@$2]	! neg/neg l endpoints
- !-> LIST tgap[l=2:4@ngd]	! neg/neg l endpoints
+ !-> LIST tgap[l=2:4@ngd]
              VARIABLE : IF MOD(T,4) EQ 0 THEN  TVAR (# of points)
              T        : -9 to -3 (number of valid)
           2.000
 LIST $1[l=@$2]	! unspecified limits (neg/pos)
- !-> LIST tgap[l=@ngd]	! unspecified limits (neg/pos)
+ !-> LIST tgap[l=@ngd]
              VARIABLE : IF MOD(T,4) EQ 0 THEN  TVAR (# of points)
              T        : -11 to 11 (number of valid)
           5.000
@@ -20513,7 +20523,7 @@ GO bn_negative_t.sub tgap fav  ! like fln (fnr not implemented)
 ! tvar axis runs from -10 to 10 by 1's
  
 LIST $1[t=-5:5@$2]	! neg/pos t endpoints
- !-> LIST tgap[t=-5:5@fav]	! neg/pos t endpoints
+ !-> LIST tgap[t=-5:5@fav]
              VARIABLE : IF MOD(T,4) EQ 0 THEN  TVAR
                         ave-filled by 3 pts on T
              SUBSET   : 5 points (T)
@@ -20523,14 +20533,14 @@ LIST $1[t=-5:5@$2]	! neg/pos t endpoints
  2    / 7:  2.000
  4    / 8:  4.000
 LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
- !-> LIST tgap[t=-5:-8@fav]	! neg/neq t endpoints
+ !-> LIST tgap[t=-5:-8@fav]
              VARIABLE : IF MOD(T,4) EQ 0 THEN  TVAR
                         ave-filled by 3 pts on T
              SUBSET   : 2 points (T)
  -8   / 2: -8.000
  -6   / 3: -6.000
 LIST $1[l=2:7@$2]	! neg/pos l endpoints
- !-> LIST tgap[l=2:7@fav]	! neg/pos l endpoints
+ !-> LIST tgap[l=2:7@fav]
              VARIABLE : IF MOD(T,4) EQ 0 THEN  TVAR
                         ave-filled by 3 pts on T
              SUBSET   : 6 points (T)
@@ -20541,7 +20551,7 @@ LIST $1[l=2:7@$2]	! neg/pos l endpoints
  0    / 6:  0.000
  2    / 7:  2.000
 LIST $1[l=2:4@$2]	! neg/neg l endpoints
- !-> LIST tgap[l=2:4@fav]	! neg/neg l endpoints
+ !-> LIST tgap[l=2:4@fav]
              VARIABLE : IF MOD(T,4) EQ 0 THEN  TVAR
                         ave-filled by 3 pts on T
              SUBSET   : 3 points (T)
@@ -20549,7 +20559,7 @@ LIST $1[l=2:4@$2]	! neg/neg l endpoints
  -6   / 3: -6.000
  -4   / 4: -4.000
 LIST $1[l=@$2]	! unspecified limits (neg/pos)
- !-> LIST tgap[l=@fav]	! unspecified limits (neg/pos)
+ !-> LIST tgap[l=@fav]
              VARIABLE : IF MOD(T,4) EQ 0 THEN  TVAR
                         ave-filled by 3 pts on T
              SUBSET   : 11 points (T)
@@ -20598,7 +20608,7 @@ GO bn_negative_t.sub blin nul
 ! tvar axis runs from -10 to 10 by 1's
  
 LIST $1[t=-5:5@$2]	! neg/pos t endpoints
- !-> LIST blin[t=-5:5@nul]	! neg/pos t endpoints
+ !-> LIST blin[t=-5:5@nul]
              VARIABLE : A[GT=TDST@LIN]
              SUBSET   : 5 points (T)
  -4   / 4: -4.000
@@ -20607,13 +20617,13 @@ LIST $1[t=-5:5@$2]	! neg/pos t endpoints
  2    / 7:  2.000
  4    / 8:  4.000
 LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
- !-> LIST blin[t=-5:-8@nul]	! neg/neq t endpoints
+ !-> LIST blin[t=-5:-8@nul]
              VARIABLE : A[GT=TDST@LIN]
              SUBSET   : 2 points (T)
  -8   / 2: -8.000
  -6   / 3: -6.000
 LIST $1[l=2:7@$2]	! neg/pos l endpoints
- !-> LIST blin[l=2:7@nul]	! neg/pos l endpoints
+ !-> LIST blin[l=2:7@nul]
              VARIABLE : A[GT=TDST@LIN]
              SUBSET   : 6 points (T)
  -8   / 2: -8.000
@@ -20623,14 +20633,14 @@ LIST $1[l=2:7@$2]	! neg/pos l endpoints
  0    / 6:  0.000
  2    / 7:  2.000
 LIST $1[l=2:4@$2]	! neg/neg l endpoints
- !-> LIST blin[l=2:4@nul]	! neg/neg l endpoints
+ !-> LIST blin[l=2:4@nul]
              VARIABLE : A[GT=TDST@LIN]
              SUBSET   : 3 points (T)
  -8   / 2: -8.000
  -6   / 3: -6.000
  -4   / 4: -4.000
 LIST $1[l=@$2]	! unspecified limits (neg/pos)
- !-> LIST blin[l=@nul]	! unspecified limits (neg/pos)
+ !-> LIST blin[l=@nul]
              VARIABLE : A[GT=TDST@LIN]
              SUBSET   : 11 points (T)
  -10   /  1:   ....
@@ -20656,7 +20666,7 @@ GO bn_negative_t.sub bave nul
 ! tvar axis runs from -10 to 10 by 1's
  
 LIST $1[t=-5:5@$2]	! neg/pos t endpoints
- !-> LIST bave[t=-5:5@nul]	! neg/pos t endpoints
+ !-> LIST bave[t=-5:5@nul]
              VARIABLE : A[GT=TDST@AVE]
              SUBSET   : 5 points (T)
  -4   / 4: -4.000
@@ -20665,13 +20675,13 @@ LIST $1[t=-5:5@$2]	! neg/pos t endpoints
  2    / 7:  2.000
  4    / 8:  4.000
 LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
- !-> LIST bave[t=-5:-8@nul]	! neg/neq t endpoints
+ !-> LIST bave[t=-5:-8@nul]
              VARIABLE : A[GT=TDST@AVE]
              SUBSET   : 2 points (T)
  -8   / 2: -8.000
  -6   / 3: -6.000
 LIST $1[l=2:7@$2]	! neg/pos l endpoints
- !-> LIST bave[l=2:7@nul]	! neg/pos l endpoints
+ !-> LIST bave[l=2:7@nul]
              VARIABLE : A[GT=TDST@AVE]
              SUBSET   : 6 points (T)
  -8   / 2: -8.000
@@ -20681,14 +20691,14 @@ LIST $1[l=2:7@$2]	! neg/pos l endpoints
  0    / 6:  0.000
  2    / 7:  2.000
 LIST $1[l=2:4@$2]	! neg/neg l endpoints
- !-> LIST bave[l=2:4@nul]	! neg/neg l endpoints
+ !-> LIST bave[l=2:4@nul]
              VARIABLE : A[GT=TDST@AVE]
              SUBSET   : 3 points (T)
  -8   / 2: -8.000
  -6   / 3: -6.000
  -4   / 4: -4.000
 LIST $1[l=@$2]	! unspecified limits (neg/pos)
- !-> LIST bave[l=@nul]	! unspecified limits (neg/pos)
+ !-> LIST bave[l=@nul]
              VARIABLE : A[GT=TDST@AVE]
              SUBSET   : 11 points (T)
  -10   /  1: -9.000
@@ -20714,7 +20724,7 @@ GO bn_negative_t.sub basn nul
 ! tvar axis runs from -10 to 10 by 1's
  
 LIST $1[t=-5:5@$2]	! neg/pos t endpoints
- !-> LIST basn[t=-5:5@nul]	! neg/pos t endpoints
+ !-> LIST basn[t=-5:5@nul]
              VARIABLE : A[GT=TDST@ASN]
              SUBSET   : 5 points (T)
  -4   / 4: -6.000
@@ -20723,13 +20733,13 @@ LIST $1[t=-5:5@$2]	! neg/pos t endpoints
  2    / 7: -3.000
  4    / 8: -2.000
 LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
- !-> LIST basn[t=-5:-8@nul]	! neg/neq t endpoints
+ !-> LIST basn[t=-5:-8@nul]
              VARIABLE : A[GT=TDST@ASN]
              SUBSET   : 2 points (T)
  -8   / 2: -8.000
  -6   / 3: -7.000
 LIST $1[l=2:7@$2]	! neg/pos l endpoints
- !-> LIST basn[l=2:7@nul]	! neg/pos l endpoints
+ !-> LIST basn[l=2:7@nul]
              VARIABLE : A[GT=TDST@ASN]
              SUBSET   : 6 points (T)
  -8   / 2: -8.000
@@ -20739,14 +20749,14 @@ LIST $1[l=2:7@$2]	! neg/pos l endpoints
  0    / 6: -4.000
  2    / 7: -3.000
 LIST $1[l=2:4@$2]	! neg/neg l endpoints
- !-> LIST basn[l=2:4@nul]	! neg/neg l endpoints
+ !-> LIST basn[l=2:4@nul]
              VARIABLE : A[GT=TDST@ASN]
              SUBSET   : 3 points (T)
  -8   / 2: -8.000
  -6   / 3: -7.000
  -4   / 4: -6.000
 LIST $1[l=@$2]	! unspecified limits (neg/pos)
- !-> LIST basn[l=@nul]	! unspecified limits (neg/pos)
+ !-> LIST basn[l=@nul]
              VARIABLE : A[GT=TDST@ASN]
              SUBSET   : 11 points (T)
  -10   /  1: -9.000
@@ -20850,7 +20860,7 @@ CANCEL REGION
 GO bn_xact_regrid.sub X
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GX=XDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GX=XDcoarse@XACT]
              VARIABLE : X[GX=XSCOARSE]
                         regrid: 1 delta on X@XACT
              SUBSET   : 5 points (X)
@@ -20860,7 +20870,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GX=XDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GX=XDfine@XACT]
              VARIABLE : X[GX=XSCOARSE]
                         regrid: 0.5 delta on X@XACT
              SUBSET   : 9 points (X)
@@ -20874,7 +20884,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  4.5  / 8:   ....
  5    / 9:  5.000
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GX=XDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GX=XDcoarse@XACT]
              VARIABLE : X[GX=XSFINE]
                         regrid: 1 delta on X@XACT
              SUBSET   : 5 points (X)
@@ -20884,7 +20894,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GX=XDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GX=XDfine@XACT]
              VARIABLE : X[GX=XSOFFSETBIG]
                         regrid: 0.5 delta on X@XACT
              SUBSET   : 9 points (X)
@@ -20898,7 +20908,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GX=XDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GX=XDfine@XACT]
              VARIABLE : X[GX=XSOFFSETSMALL]
                         regrid: 0.5 delta on X@XACT
              SUBSET   : 9 points (X)
@@ -20912,7 +20922,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GX=XDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GX=XDcoarse@XACT]
              VARIABLE : X[GX=XSFINEOFFSET]
                         regrid: 1 delta on X@XACT
              SUBSET   : 5 points (X)
@@ -20925,7 +20935,7 @@ SET REGION/X=2:4
 GO bn_xact_regrid.sub X
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GX=XDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GX=XDcoarse@XACT]
              VARIABLE : X[GX=XSCOARSE]
                         regrid: 1 delta on X@XACT
              SUBSET   : 3 points (X)
@@ -20933,7 +20943,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  3   / 3:  3.000
  4   / 4:  4.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GX=XDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GX=XDfine@XACT]
              VARIABLE : X[GX=XSCOARSE]
                         regrid: 0.5 delta on X@XACT
              SUBSET   : 5 points (X)
@@ -20943,7 +20953,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  3.5  / 6:   ....
  4    / 7:  4.000
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GX=XDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GX=XDcoarse@XACT]
              VARIABLE : X[GX=XSFINE]
                         regrid: 1 delta on X@XACT
              SUBSET   : 3 points (X)
@@ -20951,7 +20961,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  3   / 3:  3.000
  4   / 4:  4.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GX=XDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GX=XDfine@XACT]
              VARIABLE : X[GX=XSOFFSETBIG]
                         regrid: 0.5 delta on X@XACT
              SUBSET   : 5 points (X)
@@ -20961,7 +20971,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  3.5  / 6:  3.500
  4    / 7:   ....
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GX=XDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GX=XDfine@XACT]
              VARIABLE : X[GX=XSOFFSETSMALL]
                         regrid: 0.5 delta on X@XACT
              SUBSET   : 5 points (X)
@@ -20971,7 +20981,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  3.5  / 6:  3.500
  4    / 7:   ....
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GX=XDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GX=XDcoarse@XACT]
              VARIABLE : X[GX=XSFINEOFFSET]
                         regrid: 1 delta on X@XACT
              SUBSET   : 3 points (X)
@@ -20982,7 +20992,7 @@ SET REGION/X=1:5
 GO bn_xact_regrid.sub X
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GX=XDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GX=XDcoarse@XACT]
              VARIABLE : X[GX=XSCOARSE]
                         regrid: 1 delta on X@XACT
              SUBSET   : 5 points (X)
@@ -20992,7 +21002,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GX=XDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GX=XDfine@XACT]
              VARIABLE : X[GX=XSCOARSE]
                         regrid: 0.5 delta on X@XACT
              SUBSET   : 9 points (X)
@@ -21006,7 +21016,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  4.5  / 8:   ....
  5    / 9:  5.000
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GX=XDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GX=XDcoarse@XACT]
              VARIABLE : X[GX=XSFINE]
                         regrid: 1 delta on X@XACT
              SUBSET   : 5 points (X)
@@ -21016,7 +21026,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GX=XDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GX=XDfine@XACT]
              VARIABLE : X[GX=XSOFFSETBIG]
                         regrid: 0.5 delta on X@XACT
              SUBSET   : 9 points (X)
@@ -21030,7 +21040,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GX=XDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GX=XDfine@XACT]
              VARIABLE : X[GX=XSOFFSETSMALL]
                         regrid: 0.5 delta on X@XACT
              SUBSET   : 9 points (X)
@@ -21044,7 +21054,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GX=XDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GX=XDcoarse@XACT]
              VARIABLE : X[GX=XSFINEOFFSET]
                         regrid: 1 delta on X@XACT
              SUBSET   : 5 points (X)
@@ -21057,7 +21067,7 @@ SET REGION/X=1.5:4.5
 GO bn_xact_regrid.sub X
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GX=XDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GX=XDcoarse@XACT]
              VARIABLE : X[GX=XSCOARSE]
                         regrid: 1 delta on X@XACT
              SUBSET   : 3 points (X)
@@ -21065,7 +21075,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  3   / 3:  3.000
  4   / 4:  4.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GX=XDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GX=XDfine@XACT]
              VARIABLE : X[GX=XSCOARSE]
                         regrid: 0.5 delta on X@XACT
              SUBSET   : 7 points (X)
@@ -21077,7 +21087,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  4    / 7:  4.000
  4.5  / 8:   ....
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GX=XDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GX=XDcoarse@XACT]
              VARIABLE : X[GX=XSFINE]
                         regrid: 1 delta on X@XACT
              SUBSET   : 3 points (X)
@@ -21085,7 +21095,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  3   / 3:  3.000
  4   / 4:  4.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GX=XDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GX=XDfine@XACT]
              VARIABLE : X[GX=XSOFFSETBIG]
                         regrid: 0.5 delta on X@XACT
              SUBSET   : 7 points (X)
@@ -21097,7 +21107,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  4    / 7:   ....
  4.5  / 8:  4.500
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GX=XDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GX=XDfine@XACT]
              VARIABLE : X[GX=XSOFFSETSMALL]
                         regrid: 0.5 delta on X@XACT
              SUBSET   : 7 points (X)
@@ -21109,7 +21119,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  4    / 7:   ....
  4.5  / 8:  4.500
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GX=XDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GX=XDcoarse@XACT]
              VARIABLE : X[GX=XSFINEOFFSET]
                         regrid: 1 delta on X@XACT
              SUBSET   : 3 points (X)
@@ -21120,7 +21130,7 @@ SET REGION/X=0:6
 GO bn_xact_regrid.sub X
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GX=XDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GX=XDcoarse@XACT]
              VARIABLE : X[GX=XSCOARSE]
                         regrid: 1 delta on X@XACT
              SUBSET   : 5 points (X)
@@ -21130,7 +21140,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GX=XDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GX=XDfine@XACT]
              VARIABLE : X[GX=XSCOARSE]
                         regrid: 0.5 delta on X@XACT
              SUBSET   : 9 points (X)
@@ -21144,7 +21154,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  4.5  / 8:   ....
  5    / 9:  5.000
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GX=XDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GX=XDcoarse@XACT]
              VARIABLE : X[GX=XSFINE]
                         regrid: 1 delta on X@XACT
              SUBSET   : 5 points (X)
@@ -21154,7 +21164,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GX=XDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GX=XDfine@XACT]
              VARIABLE : X[GX=XSOFFSETBIG]
                         regrid: 0.5 delta on X@XACT
              SUBSET   : 9 points (X)
@@ -21168,7 +21178,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GX=XDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GX=XDfine@XACT]
              VARIABLE : X[GX=XSOFFSETSMALL]
                         regrid: 0.5 delta on X@XACT
              SUBSET   : 9 points (X)
@@ -21182,7 +21192,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GX=XDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GX=XDcoarse@XACT]
              VARIABLE : X[GX=XSFINEOFFSET]
                         regrid: 1 delta on X@XACT
              SUBSET   : 5 points (X)
@@ -21197,7 +21207,7 @@ CANCEL REGION
 GO bn_xact_regrid.sub Y
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GY=YDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GY=YDcoarse@XACT]
              VARIABLE : Y[GY=YSCOARSE]
                         regrid: 1 delta on Y@XACT
              SUBSET   : 5 points (Y)
@@ -21207,7 +21217,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GY=YDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GY=YDfine@XACT]
              VARIABLE : Y[GY=YSCOARSE]
                         regrid: 0.5 delta on Y@XACT
              SUBSET   : 9 points (Y)
@@ -21221,7 +21231,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  4.5  / 8:   ....
  5    / 9:  5.000
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GY=YDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GY=YDcoarse@XACT]
              VARIABLE : Y[GY=YSFINE]
                         regrid: 1 delta on Y@XACT
              SUBSET   : 5 points (Y)
@@ -21231,7 +21241,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GY=YDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GY=YDfine@XACT]
              VARIABLE : Y[GY=YSOFFSETBIG]
                         regrid: 0.5 delta on Y@XACT
              SUBSET   : 9 points (Y)
@@ -21245,7 +21255,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GY=YDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GY=YDfine@XACT]
              VARIABLE : Y[GY=YSOFFSETSMALL]
                         regrid: 0.5 delta on Y@XACT
              SUBSET   : 9 points (Y)
@@ -21259,7 +21269,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GY=YDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GY=YDcoarse@XACT]
              VARIABLE : Y[GY=YSFINEOFFSET]
                         regrid: 1 delta on Y@XACT
              SUBSET   : 5 points (Y)
@@ -21272,7 +21282,7 @@ SET REGION/Y=2:4
 GO bn_xact_regrid.sub Y
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GY=YDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GY=YDcoarse@XACT]
              VARIABLE : Y[GY=YSCOARSE]
                         regrid: 1 delta on Y@XACT
              SUBSET   : 3 points (Y)
@@ -21280,7 +21290,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  3   / 3:  3.000
  4   / 4:  4.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GY=YDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GY=YDfine@XACT]
              VARIABLE : Y[GY=YSCOARSE]
                         regrid: 0.5 delta on Y@XACT
              SUBSET   : 5 points (Y)
@@ -21290,7 +21300,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  3.5  / 6:   ....
  4    / 7:  4.000
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GY=YDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GY=YDcoarse@XACT]
              VARIABLE : Y[GY=YSFINE]
                         regrid: 1 delta on Y@XACT
              SUBSET   : 3 points (Y)
@@ -21298,7 +21308,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  3   / 3:  3.000
  4   / 4:  4.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GY=YDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GY=YDfine@XACT]
              VARIABLE : Y[GY=YSOFFSETBIG]
                         regrid: 0.5 delta on Y@XACT
              SUBSET   : 5 points (Y)
@@ -21308,7 +21318,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  3.5  / 6:  3.500
  4    / 7:   ....
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GY=YDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GY=YDfine@XACT]
              VARIABLE : Y[GY=YSOFFSETSMALL]
                         regrid: 0.5 delta on Y@XACT
              SUBSET   : 5 points (Y)
@@ -21318,7 +21328,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  3.5  / 6:  3.500
  4    / 7:   ....
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GY=YDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GY=YDcoarse@XACT]
              VARIABLE : Y[GY=YSFINEOFFSET]
                         regrid: 1 delta on Y@XACT
              SUBSET   : 3 points (Y)
@@ -21329,7 +21339,7 @@ SET REGION/Y=1:5
 GO bn_xact_regrid.sub Y
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GY=YDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GY=YDcoarse@XACT]
              VARIABLE : Y[GY=YSCOARSE]
                         regrid: 1 delta on Y@XACT
              SUBSET   : 5 points (Y)
@@ -21339,7 +21349,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GY=YDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GY=YDfine@XACT]
              VARIABLE : Y[GY=YSCOARSE]
                         regrid: 0.5 delta on Y@XACT
              SUBSET   : 9 points (Y)
@@ -21353,7 +21363,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  4.5  / 8:   ....
  5    / 9:  5.000
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GY=YDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GY=YDcoarse@XACT]
              VARIABLE : Y[GY=YSFINE]
                         regrid: 1 delta on Y@XACT
              SUBSET   : 5 points (Y)
@@ -21363,7 +21373,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GY=YDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GY=YDfine@XACT]
              VARIABLE : Y[GY=YSOFFSETBIG]
                         regrid: 0.5 delta on Y@XACT
              SUBSET   : 9 points (Y)
@@ -21377,7 +21387,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GY=YDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GY=YDfine@XACT]
              VARIABLE : Y[GY=YSOFFSETSMALL]
                         regrid: 0.5 delta on Y@XACT
              SUBSET   : 9 points (Y)
@@ -21391,7 +21401,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GY=YDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GY=YDcoarse@XACT]
              VARIABLE : Y[GY=YSFINEOFFSET]
                         regrid: 1 delta on Y@XACT
              SUBSET   : 5 points (Y)
@@ -21404,7 +21414,7 @@ SET REGION/Y=1.5:4.5
 GO bn_xact_regrid.sub Y
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GY=YDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GY=YDcoarse@XACT]
              VARIABLE : Y[GY=YSCOARSE]
                         regrid: 1 delta on Y@XACT
              SUBSET   : 3 points (Y)
@@ -21412,7 +21422,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  3   / 3:  3.000
  4   / 4:  4.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GY=YDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GY=YDfine@XACT]
              VARIABLE : Y[GY=YSCOARSE]
                         regrid: 0.5 delta on Y@XACT
              SUBSET   : 7 points (Y)
@@ -21424,7 +21434,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  4    / 7:  4.000
  4.5  / 8:   ....
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GY=YDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GY=YDcoarse@XACT]
              VARIABLE : Y[GY=YSFINE]
                         regrid: 1 delta on Y@XACT
              SUBSET   : 3 points (Y)
@@ -21432,7 +21442,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  3   / 3:  3.000
  4   / 4:  4.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GY=YDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GY=YDfine@XACT]
              VARIABLE : Y[GY=YSOFFSETBIG]
                         regrid: 0.5 delta on Y@XACT
              SUBSET   : 7 points (Y)
@@ -21444,7 +21454,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  4    / 7:   ....
  4.5  / 8:  4.500
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GY=YDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GY=YDfine@XACT]
              VARIABLE : Y[GY=YSOFFSETSMALL]
                         regrid: 0.5 delta on Y@XACT
              SUBSET   : 7 points (Y)
@@ -21456,7 +21466,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  4    / 7:   ....
  4.5  / 8:  4.500
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GY=YDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GY=YDcoarse@XACT]
              VARIABLE : Y[GY=YSFINEOFFSET]
                         regrid: 1 delta on Y@XACT
              SUBSET   : 3 points (Y)
@@ -21467,7 +21477,7 @@ SET REGION/Y=0:6
 GO bn_xact_regrid.sub Y
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GY=YDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GY=YDcoarse@XACT]
              VARIABLE : Y[GY=YSCOARSE]
                         regrid: 1 delta on Y@XACT
              SUBSET   : 5 points (Y)
@@ -21477,7 +21487,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GY=YDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GY=YDfine@XACT]
              VARIABLE : Y[GY=YSCOARSE]
                         regrid: 0.5 delta on Y@XACT
              SUBSET   : 9 points (Y)
@@ -21491,7 +21501,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  4.5  / 8:   ....
  5    / 9:  5.000
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GY=YDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GY=YDcoarse@XACT]
              VARIABLE : Y[GY=YSFINE]
                         regrid: 1 delta on Y@XACT
              SUBSET   : 5 points (Y)
@@ -21501,7 +21511,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GY=YDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GY=YDfine@XACT]
              VARIABLE : Y[GY=YSOFFSETBIG]
                         regrid: 0.5 delta on Y@XACT
              SUBSET   : 9 points (Y)
@@ -21515,7 +21525,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GY=YDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GY=YDfine@XACT]
              VARIABLE : Y[GY=YSOFFSETSMALL]
                         regrid: 0.5 delta on Y@XACT
              SUBSET   : 9 points (Y)
@@ -21529,7 +21539,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GY=YDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GY=YDcoarse@XACT]
              VARIABLE : Y[GY=YSFINEOFFSET]
                         regrid: 1 delta on Y@XACT
              SUBSET   : 5 points (Y)
@@ -21544,7 +21554,7 @@ CANCEL REGION
 GO bn_xact_regrid.sub Z
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GZ=ZDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GZ=ZDcoarse@XACT]
              VARIABLE : Z[GZ=ZSCOARSE]
                         regrid: 1 delta on Z@XACT
              SUBSET   : 5 points (Z)
@@ -21554,7 +21564,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GZ=ZDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GZ=ZDfine@XACT]
              VARIABLE : Z[GZ=ZSCOARSE]
                         regrid: 0.5 delta on Z@XACT
              SUBSET   : 9 points (Z)
@@ -21568,7 +21578,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  4.5  / 8:   ....
  5    / 9:  5.000
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GZ=ZDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GZ=ZDcoarse@XACT]
              VARIABLE : Z[GZ=ZSFINE]
                         regrid: 1 delta on Z@XACT
              SUBSET   : 5 points (Z)
@@ -21578,7 +21588,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GZ=ZDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GZ=ZDfine@XACT]
              VARIABLE : Z[GZ=ZSOFFSETBIG]
                         regrid: 0.5 delta on Z@XACT
              SUBSET   : 9 points (Z)
@@ -21592,7 +21602,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GZ=ZDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GZ=ZDfine@XACT]
              VARIABLE : Z[GZ=ZSOFFSETSMALL]
                         regrid: 0.5 delta on Z@XACT
              SUBSET   : 9 points (Z)
@@ -21606,7 +21616,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GZ=ZDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GZ=ZDcoarse@XACT]
              VARIABLE : Z[GZ=ZSFINEOFFSET]
                         regrid: 1 delta on Z@XACT
              SUBSET   : 5 points (Z)
@@ -21619,7 +21629,7 @@ SET REGION/Z=2:4
 GO bn_xact_regrid.sub Z
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GZ=ZDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GZ=ZDcoarse@XACT]
              VARIABLE : Z[GZ=ZSCOARSE]
                         regrid: 1 delta on Z@XACT
              SUBSET   : 3 points (Z)
@@ -21627,7 +21637,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  3   / 3:  3.000
  4   / 4:  4.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GZ=ZDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GZ=ZDfine@XACT]
              VARIABLE : Z[GZ=ZSCOARSE]
                         regrid: 0.5 delta on Z@XACT
              SUBSET   : 5 points (Z)
@@ -21637,7 +21647,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  3.5  / 6:   ....
  4    / 7:  4.000
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GZ=ZDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GZ=ZDcoarse@XACT]
              VARIABLE : Z[GZ=ZSFINE]
                         regrid: 1 delta on Z@XACT
              SUBSET   : 3 points (Z)
@@ -21645,7 +21655,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  3   / 3:  3.000
  4   / 4:  4.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GZ=ZDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GZ=ZDfine@XACT]
              VARIABLE : Z[GZ=ZSOFFSETBIG]
                         regrid: 0.5 delta on Z@XACT
              SUBSET   : 5 points (Z)
@@ -21655,7 +21665,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  3.5  / 6:  3.500
  4    / 7:   ....
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GZ=ZDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GZ=ZDfine@XACT]
              VARIABLE : Z[GZ=ZSOFFSETSMALL]
                         regrid: 0.5 delta on Z@XACT
              SUBSET   : 5 points (Z)
@@ -21665,7 +21675,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  3.5  / 6:  3.500
  4    / 7:   ....
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GZ=ZDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GZ=ZDcoarse@XACT]
              VARIABLE : Z[GZ=ZSFINEOFFSET]
                         regrid: 1 delta on Z@XACT
              SUBSET   : 3 points (Z)
@@ -21676,7 +21686,7 @@ SET REGION/Z=1:5
 GO bn_xact_regrid.sub Z
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GZ=ZDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GZ=ZDcoarse@XACT]
              VARIABLE : Z[GZ=ZSCOARSE]
                         regrid: 1 delta on Z@XACT
              SUBSET   : 5 points (Z)
@@ -21686,7 +21696,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GZ=ZDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GZ=ZDfine@XACT]
              VARIABLE : Z[GZ=ZSCOARSE]
                         regrid: 0.5 delta on Z@XACT
              SUBSET   : 9 points (Z)
@@ -21700,7 +21710,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  4.5  / 8:   ....
  5    / 9:  5.000
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GZ=ZDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GZ=ZDcoarse@XACT]
              VARIABLE : Z[GZ=ZSFINE]
                         regrid: 1 delta on Z@XACT
              SUBSET   : 5 points (Z)
@@ -21710,7 +21720,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GZ=ZDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GZ=ZDfine@XACT]
              VARIABLE : Z[GZ=ZSOFFSETBIG]
                         regrid: 0.5 delta on Z@XACT
              SUBSET   : 9 points (Z)
@@ -21724,7 +21734,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GZ=ZDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GZ=ZDfine@XACT]
              VARIABLE : Z[GZ=ZSOFFSETSMALL]
                         regrid: 0.5 delta on Z@XACT
              SUBSET   : 9 points (Z)
@@ -21738,7 +21748,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GZ=ZDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GZ=ZDcoarse@XACT]
              VARIABLE : Z[GZ=ZSFINEOFFSET]
                         regrid: 1 delta on Z@XACT
              SUBSET   : 5 points (Z)
@@ -21751,7 +21761,7 @@ SET REGION/Z=1.5:4.5
 GO bn_xact_regrid.sub Z
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GZ=ZDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GZ=ZDcoarse@XACT]
              VARIABLE : Z[GZ=ZSCOARSE]
                         regrid: 1 delta on Z@XACT
              SUBSET   : 3 points (Z)
@@ -21759,7 +21769,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  3   / 3:  3.000
  4   / 4:  4.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GZ=ZDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GZ=ZDfine@XACT]
              VARIABLE : Z[GZ=ZSCOARSE]
                         regrid: 0.5 delta on Z@XACT
              SUBSET   : 7 points (Z)
@@ -21771,7 +21781,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  4    / 7:  4.000
  4.5  / 8:   ....
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GZ=ZDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GZ=ZDcoarse@XACT]
              VARIABLE : Z[GZ=ZSFINE]
                         regrid: 1 delta on Z@XACT
              SUBSET   : 3 points (Z)
@@ -21779,7 +21789,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  3   / 3:  3.000
  4   / 4:  4.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GZ=ZDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GZ=ZDfine@XACT]
              VARIABLE : Z[GZ=ZSOFFSETBIG]
                         regrid: 0.5 delta on Z@XACT
              SUBSET   : 7 points (Z)
@@ -21791,7 +21801,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  4    / 7:   ....
  4.5  / 8:  4.500
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GZ=ZDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GZ=ZDfine@XACT]
              VARIABLE : Z[GZ=ZSOFFSETSMALL]
                         regrid: 0.5 delta on Z@XACT
              SUBSET   : 7 points (Z)
@@ -21803,7 +21813,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  4    / 7:   ....
  4.5  / 8:  4.500
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GZ=ZDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GZ=ZDcoarse@XACT]
              VARIABLE : Z[GZ=ZSFINEOFFSET]
                         regrid: 1 delta on Z@XACT
              SUBSET   : 3 points (Z)
@@ -21814,7 +21824,7 @@ SET REGION/Z=0:6
 GO bn_xact_regrid.sub Z
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GZ=ZDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GZ=ZDcoarse@XACT]
              VARIABLE : Z[GZ=ZSCOARSE]
                         regrid: 1 delta on Z@XACT
              SUBSET   : 5 points (Z)
@@ -21824,7 +21834,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GZ=ZDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GZ=ZDfine@XACT]
              VARIABLE : Z[GZ=ZSCOARSE]
                         regrid: 0.5 delta on Z@XACT
              SUBSET   : 9 points (Z)
@@ -21838,7 +21848,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  4.5  / 8:   ....
  5    / 9:  5.000
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GZ=ZDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GZ=ZDcoarse@XACT]
              VARIABLE : Z[GZ=ZSFINE]
                         regrid: 1 delta on Z@XACT
              SUBSET   : 5 points (Z)
@@ -21848,7 +21858,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GZ=ZDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GZ=ZDfine@XACT]
              VARIABLE : Z[GZ=ZSOFFSETBIG]
                         regrid: 0.5 delta on Z@XACT
              SUBSET   : 9 points (Z)
@@ -21862,7 +21872,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GZ=ZDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GZ=ZDfine@XACT]
              VARIABLE : Z[GZ=ZSOFFSETSMALL]
                         regrid: 0.5 delta on Z@XACT
              SUBSET   : 9 points (Z)
@@ -21876,7 +21886,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GZ=ZDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GZ=ZDcoarse@XACT]
              VARIABLE : Z[GZ=ZSFINEOFFSET]
                         regrid: 1 delta on Z@XACT
              SUBSET   : 5 points (Z)
@@ -21891,7 +21901,7 @@ CANCEL REGION
 GO bn_xact_regrid.sub T
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GT=TDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GT=TDcoarse@XACT]
              VARIABLE : T[GT=TSCOARSE]
                         regrid: 1 delta on T@XACT
              SUBSET   : 5 points (T)
@@ -21901,7 +21911,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GT=TDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GT=TDfine@XACT]
              VARIABLE : T[GT=TSCOARSE]
                         regrid: 0.5 delta on T@XACT
              SUBSET   : 9 points (T)
@@ -21915,7 +21925,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  4.5  / 8:   ....
  5    / 9:  5.000
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GT=TDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GT=TDcoarse@XACT]
              VARIABLE : T[GT=TSFINE]
                         regrid: 1 delta on T@XACT
              SUBSET   : 5 points (T)
@@ -21925,7 +21935,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GT=TDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GT=TDfine@XACT]
              VARIABLE : T[GT=TSOFFSETBIG]
                         regrid: 0.5 delta on T@XACT
              SUBSET   : 9 points (T)
@@ -21939,7 +21949,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GT=TDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GT=TDfine@XACT]
              VARIABLE : T[GT=TSOFFSETSMALL]
                         regrid: 0.5 delta on T@XACT
              SUBSET   : 9 points (T)
@@ -21953,7 +21963,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GT=TDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GT=TDcoarse@XACT]
              VARIABLE : T[GT=TSFINEOFFSET]
                         regrid: 1 delta on T@XACT
              SUBSET   : 5 points (T)
@@ -21966,7 +21976,7 @@ SET REGION/T=2:4
 GO bn_xact_regrid.sub T
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GT=TDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GT=TDcoarse@XACT]
              VARIABLE : T[GT=TSCOARSE]
                         regrid: 1 delta on T@XACT
              SUBSET   : 3 points (T)
@@ -21974,7 +21984,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  3   / 3:  3.000
  4   / 4:  4.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GT=TDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GT=TDfine@XACT]
              VARIABLE : T[GT=TSCOARSE]
                         regrid: 0.5 delta on T@XACT
              SUBSET   : 5 points (T)
@@ -21984,7 +21994,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  3.5  / 6:   ....
  4    / 7:  4.000
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GT=TDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GT=TDcoarse@XACT]
              VARIABLE : T[GT=TSFINE]
                         regrid: 1 delta on T@XACT
              SUBSET   : 3 points (T)
@@ -21992,7 +22002,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  3   / 3:  3.000
  4   / 4:  4.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GT=TDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GT=TDfine@XACT]
              VARIABLE : T[GT=TSOFFSETBIG]
                         regrid: 0.5 delta on T@XACT
              SUBSET   : 5 points (T)
@@ -22002,7 +22012,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  3.5  / 6:  3.500
  4    / 7:   ....
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GT=TDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GT=TDfine@XACT]
              VARIABLE : T[GT=TSOFFSETSMALL]
                         regrid: 0.5 delta on T@XACT
              SUBSET   : 5 points (T)
@@ -22012,7 +22022,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  3.5  / 6:  3.500
  4    / 7:   ....
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GT=TDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GT=TDcoarse@XACT]
              VARIABLE : T[GT=TSFINEOFFSET]
                         regrid: 1 delta on T@XACT
              SUBSET   : 3 points (T)
@@ -22023,7 +22033,7 @@ SET REGION/T=1:5
 GO bn_xact_regrid.sub T
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GT=TDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GT=TDcoarse@XACT]
              VARIABLE : T[GT=TSCOARSE]
                         regrid: 1 delta on T@XACT
              SUBSET   : 5 points (T)
@@ -22033,7 +22043,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GT=TDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GT=TDfine@XACT]
              VARIABLE : T[GT=TSCOARSE]
                         regrid: 0.5 delta on T@XACT
              SUBSET   : 9 points (T)
@@ -22047,7 +22057,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  4.5  / 8:   ....
  5    / 9:  5.000
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GT=TDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GT=TDcoarse@XACT]
              VARIABLE : T[GT=TSFINE]
                         regrid: 1 delta on T@XACT
              SUBSET   : 5 points (T)
@@ -22057,7 +22067,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GT=TDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GT=TDfine@XACT]
              VARIABLE : T[GT=TSOFFSETBIG]
                         regrid: 0.5 delta on T@XACT
              SUBSET   : 9 points (T)
@@ -22071,7 +22081,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GT=TDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GT=TDfine@XACT]
              VARIABLE : T[GT=TSOFFSETSMALL]
                         regrid: 0.5 delta on T@XACT
              SUBSET   : 9 points (T)
@@ -22085,7 +22095,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GT=TDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GT=TDcoarse@XACT]
              VARIABLE : T[GT=TSFINEOFFSET]
                         regrid: 1 delta on T@XACT
              SUBSET   : 5 points (T)
@@ -22098,7 +22108,7 @@ SET REGION/T=1.5:4.5
 GO bn_xact_regrid.sub T
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GT=TDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GT=TDcoarse@XACT]
              VARIABLE : T[GT=TSCOARSE]
                         regrid: 1 delta on T@XACT
              SUBSET   : 3 points (T)
@@ -22106,7 +22116,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  3   / 3:  3.000
  4   / 4:  4.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GT=TDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GT=TDfine@XACT]
              VARIABLE : T[GT=TSCOARSE]
                         regrid: 0.5 delta on T@XACT
              SUBSET   : 7 points (T)
@@ -22118,7 +22128,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  4    / 7:  4.000
  4.5  / 8:   ....
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GT=TDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GT=TDcoarse@XACT]
              VARIABLE : T[GT=TSFINE]
                         regrid: 1 delta on T@XACT
              SUBSET   : 3 points (T)
@@ -22126,7 +22136,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  3   / 3:  3.000
  4   / 4:  4.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GT=TDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GT=TDfine@XACT]
              VARIABLE : T[GT=TSOFFSETBIG]
                         regrid: 0.5 delta on T@XACT
              SUBSET   : 7 points (T)
@@ -22138,7 +22148,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  4    / 7:   ....
  4.5  / 8:  4.500
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GT=TDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GT=TDfine@XACT]
              VARIABLE : T[GT=TSOFFSETSMALL]
                         regrid: 0.5 delta on T@XACT
              SUBSET   : 7 points (T)
@@ -22150,7 +22160,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  4    / 7:   ....
  4.5  / 8:  4.500
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GT=TDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GT=TDcoarse@XACT]
              VARIABLE : T[GT=TSFINEOFFSET]
                         regrid: 1 delta on T@XACT
              SUBSET   : 3 points (T)
@@ -22161,7 +22171,7 @@ SET REGION/T=0:6
 GO bn_xact_regrid.sub T
 ! PERFORM REGRIDDINGS
 LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
- !-> LIST Scoarse[GT=TDcoarse@XACT]! same src and dst axis
+ !-> LIST Scoarse[GT=TDcoarse@XACT]
              VARIABLE : T[GT=TSCOARSE]
                         regrid: 1 delta on T@XACT
              SUBSET   : 5 points (T)
@@ -22171,7 +22181,7 @@ LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
- !-> LIST Scoarse[GT=TDfine@XACT]	! coarse data onto fine grid
+ !-> LIST Scoarse[GT=TDfine@XACT]
              VARIABLE : T[GT=TSCOARSE]
                         regrid: 0.5 delta on T@XACT
              SUBSET   : 9 points (T)
@@ -22185,7 +22195,7 @@ LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
  4.5  / 8:   ....
  5    / 9:  5.000
 LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
- !-> LIST Sfine[GT=TDcoarse@XACT]	! fine data onto coarse grid
+ !-> LIST Sfine[GT=TDcoarse@XACT]
              VARIABLE : T[GT=TSFINE]
                         regrid: 1 delta on T@XACT
              SUBSET   : 5 points (T)
@@ -22195,7 +22205,7 @@ LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
  4   / 4:  4.000
  5   / 5:  5.000
 LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
- !-> LIST Soffsetbig[GT=TDfine@XACT]   ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetbig[GT=TDfine@XACT]
              VARIABLE : T[GT=TSOFFSETBIG]
                         regrid: 0.5 delta on T@XACT
              SUBSET   : 9 points (T)
@@ -22209,7 +22219,7 @@ LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
- !-> LIST Soffsetsmall[GT=TDfine@XACT] ! non-aligning grid points coarse to fine
+ !-> LIST Soffsetsmall[GT=TDfine@XACT]
              VARIABLE : T[GT=TSOFFSETSMALL]
                         regrid: 0.5 delta on T@XACT
              SUBSET   : 9 points (T)
@@ -22223,7 +22233,7 @@ LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
  4.5  / 8:  4.500
  5    / 9:   ....
 LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
- !-> LIST Sfineoffset[GT=TDcoarse@XACT]! non-aligning grid points fine to coarse
+ !-> LIST Sfineoffset[GT=TDcoarse@XACT]
              VARIABLE : T[GT=TSFINEOFFSET]
                         regrid: 1 delta on T@XACT
              SUBSET   : 5 points (T)
@@ -25270,7 +25280,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Tue Dec  2 16:08:37 PST 2014
+Wed Dec 24 11:30:28 PST 2014
  
 GO bn_reset
 cancel mode verify
@@ -39286,7 +39296,7 @@ list/nohead/l=1001:1009 time_series[gt=($TAXNAME)@mod]
  
 ! test modulo string arrays
 list $1_strings[i=5:7]  	! via IS_SUBSPAN_FILL
- !-> list vreg_strings[i=5:7]  	! via IS_SUBSPAN_FILL
+ !-> list vreg_strings[i=5:7]
              VARIABLE : MY_STRINGS[GX=XAX_SUBSPAN@ASN]
              FILENAME : test_subspan_modulo.nc
              SUBSET   : 3 points (X)
@@ -39294,7 +39304,7 @@ list $1_strings[i=5:7]  	! via IS_SUBSPAN_FILL
  46   / 6:"a6"
  93.5 / 7:""  
 list $1_strings[i=1013:1024] 	! via IS_MODULO
- !-> list vreg_strings[i=1013:1024] 	! via IS_MODULO
+ !-> list vreg_strings[i=1013:1024]
              VARIABLE : MY_STRINGS[GX=XAX_SUBSPAN@ASN]
              FILENAME : test_subspan_modulo.nc
              SUBSET   : 12 points (X)
@@ -39815,7 +39825,7 @@ list/nohead/l=1001:1009 time_series[gt=($TAXNAME)@mod]
  
 ! test modulo string arrays
 list $1_strings[i=5:7]  	! via IS_SUBSPAN_FILL
- !-> list virr_strings[i=5:7]  	! via IS_SUBSPAN_FILL
+ !-> list virr_strings[i=5:7]
              VARIABLE : MY_STRINGS[GX=XIRREG_SUBSPAN@ASN]
              FILENAME : test_subspan_modulo.nc
              SUBSET   : 3 points (X)
@@ -39823,7 +39833,7 @@ list $1_strings[i=5:7]  	! via IS_SUBSPAN_FILL
  46   / 6:"a6"
  93.5 / 7:""  
 list $1_strings[i=1013:1024] 	! via IS_MODULO
- !-> list virr_strings[i=1013:1024] 	! via IS_MODULO
+ !-> list virr_strings[i=1013:1024]
              VARIABLE : MY_STRINGS[GX=XIRREG_SUBSPAN@ASN]
              FILENAME : test_subspan_modulo.nc
              SUBSET   : 12 points (X)
@@ -46843,7 +46853,7 @@ show data/full
      NCEP Ocean Analysis
  name     title                             I         J         K         L         M         N
  TEMP     temperature                      1:1       1:1       1:19      1:1       ...       ...
-             degree_Celsius on grid GGH1 with 1.E-34 & NaN for missing data
+             degree_Celsius on grid GGH1 with -1.E+34 & NaN for missing data
              X=139.8E:140.8E  Y=0.5S:0.5N  Z=0:375  
  
   time range: 15-FEB-1980 12:00
@@ -47714,9 +47724,9 @@ GO err580_irreg_bounds.jnl
 ! the bounds seem to be ignored; axis is seen as regular.
 ! Bug 1160 reported by Andrew.
  
-yes? def ax/t/edge time = {0,1,3}
-yes? let a = t[gt=time]
-yes? show grid/t a
+def ax/t/edge time = {0,1,3}
+let a = t[gt=time]
+show grid/t a
     GRID (G001)
  name       axis              # pts   start                end
  normal    X
@@ -47730,17 +47740,17 @@ yes? show grid/t a
        1>  0.5                   1          0
        2>  2                     2          1
  
-yes? save/clob/file=a.nc a
+save/clob/file=a.nc a
 sp echo "err580_irreg_bounds.jnl --- " >> all_ncdump.out
-yes? sp ncdump a.nc >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
  
 can data/all
 can var/all
 can mem
  
 !  T axis was marked as regular
-yes? use a.nc
-yes? show grid/t a
+use a.nc
+show grid/t a
     GRID GSI1
  name       axis              # pts   start                end
  normal    X
@@ -48352,7 +48362,7 @@ list element_index_str_n (axy[k=1:2,j=1:2], {"a10", "a2", "d4", "c5"})
  
 ! ferret version
 sh sym FERRET_VERSION
-FERRET_VERSION = "6.931"
+FERRET_VERSION = "6.932"
  
 ! history attribute
 let a = 12
@@ -48370,7 +48380,7 @@ LAB1 = "X : 0.5 to 314.5"
  
 ! show commands without an argument, lists version number at the top
 sho command
- Commands in Program FERRET (PyFerret 1.1.0) version6.931:
+ Commands in Program FERRET (PyFerret 1.1.1) version6.932:
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE/QUALITY/ANTIALIA/NOANTIAL
       /ENGINE/COLOR/OPACITY/THICKEN/XPIXELS/YPIXELS/XINCHES/YINCHES/TEXTPROM
@@ -48505,7 +48515,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "2-Dec-14_16:09"
+WIN_TITLE = "24-Dec-14_11:32"
  
 set win/title="set the title"
 sho sym win_title
@@ -48523,7 +48533,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 2-Dec-14:16:09"
+ !-> set win/title="24-Dec-14:11:32"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48532,16 +48542,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date =  2-Dec-14
+ !-> DEFINE SYMBOL the_date = 24-Dec-14
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 16:09
+ !-> DEFINE SYMBOL the_time = 11:32
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="2-Dec-14:16:09"
+ !-> SET WIN/TITLE="24-Dec-14:11:32"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "2-Dec-14:16:09"
+WIN_TITLE = "24-Dec-14:11:32"
 *** Running test: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -51674,8 +51684,6 @@ GO err581_if_conditional.jnl
 ! This should skip to the end, not trying to execute anything inside the IF 0 THEN
  
 if 0 then
-     endif
-  endif
 endif
  
 say "finished the if block"
@@ -51710,7 +51718,6 @@ let key_flag = 0
  
 IF `($xend) GT 360` THEN
  !-> IF 0 THEN
-  ENDIF
 ENDIF
 let dxymin = 0.20
 if `dxymin lt 0.12` then
@@ -51725,7 +51732,6 @@ endif
  
 IF `($xend) GT 360` THEN
  !-> IF 0 THEN
-   ENDIF
 ELSE
   say "this is the ELSE that should execute"
 this is the ELSE that should execute
@@ -51822,10 +51828,8 @@ ELIF ($refmap_type%|xline>1|*>0%) THEN    ! ELSE IF "xline"
  !-> ELIF 1 THEN
   define region/default/dy=$6"-30:30|1>-30:30|*>-20:20"/dx=$6"0:0|1>0:0|2>0:0|*>`max(-($ref_dx),-50)`:`min(($ref_dx),50)`" band
  !-> define region/default/dy=-20:20/dx=-50:50 band
- 
 ELIF ($refmap_type%|yline>1|*>0%) THEN    ! ELSE IF "yline"
  !-> ELIF 0 THEN
-   ENDIF
 ENDIF
 ! init the land mask data set
 set data coads_climatology
@@ -51864,17 +51868,12 @@ IF ($refmap_type%|box>1|*>0) THEN    ! IF "box"
  !-> IF 0 THEN
 ELIF ($refmap_type%|xline>1|*>0) THEN    ! ELSE IF "xline"
  !-> ELIF 1 THEN
- 
   IF ($refmap_ycompress) THEN
  !-> IF 0 THEN
   ENDIF
- 
   plot/over/vs/nolab/line=8/i=1:2 refmap_xrng, refmap_ymid+(i-i)
- 
 ELIF ($refmap_type%|yline>1|*>0) THEN    ! ELSE IF "yline"
  !-> ELIF 0 THEN
-  ENDIF
-  ENDIF
 ENDIF
  
  
@@ -52155,8 +52154,8 @@ GO err581_define_1pt_bounds.jnl
 ! again, and even that result is now very wrong!! Same results in both v5.81
 ! for Linux and v5.70 for Irix.
  
-yes? def ax/x/bounds xax = {0,3,5},{-2,2,2,4,4,6}
-yes? list xboxlo[gx=xax],xboxhi[gx=xax],x[gx=xax]
+def ax/x/bounds xax = {0,3,5},{-2,2,2,4,4,6}
+list xboxlo[gx=xax],xboxhi[gx=xax],x[gx=xax]
              X: -2 to 6
  Column  1: XBOXLO is XBOXLO (axis XAX)
  Column  2: XBOXHI is XBOXHI (axis XAX)
@@ -52166,8 +52165,8 @@ yes? list xboxlo[gx=xax],xboxhi[gx=xax],x[gx=xax]
 3   / 2:  2.000  4.000  3.000
 5   / 3:  4.000  6.000  5.000
  
-yes? def ax/x/bounds xax = {0},{-2,2}
-yes? list xboxlo[gx=xax],xboxhi[gx=xax],x[gx=xax]
+def ax/x/bounds xax = {0},{-2,2}
+list xboxlo[gx=xax],xboxhi[gx=xax],x[gx=xax]
              X: 0
  Column  1: XBOXLO is XBOXLO (axis XAX)
  Column  2: XBOXHI is XBOXHI (axis XAX)
@@ -52175,8 +52174,8 @@ yes? list xboxlo[gx=xax],xboxhi[gx=xax],x[gx=xax]
          XBOXLO  XBOXHI    X
 I / *:    -2.000  2.000  0.0000
  
-yes? def ax/x/bounds xax = {0,3,5},{-2,2,2,4,4,6}
-yes? list xboxlo[gx=xax],xboxhi[gx=xax],x[gx=xax]
+def ax/x/bounds xax = {0,3,5},{-2,2,2,4,4,6}
+list xboxlo[gx=xax],xboxhi[gx=xax],x[gx=xax]
              X: -2 to 6
  Column  1: XBOXLO is XBOXLO (axis XAX)
  Column  2: XBOXHI is XBOXHI (axis XAX)
@@ -52252,9 +52251,9 @@ go polymark poly/lev=(-5,30,1)/pal=white/fill/line=1/nolab/over v1 v2 v3 circle 
  
 ! And, from Andrew with other reversed axes.
  
-yes? ppl cross 1
-yes? plot/vl=4:-4/hl=4:-4/vs/line/title="there should be just one triangle" {1,2,3,1},{0,2,1,0}
-yes? poly/ov/col=2/pal=yellow {1,2,3,1},{0,2,1,0}
+ppl cross 1
+plot/vl=4:-4/hl=4:-4/vs/line/title="there should be just one triangle" {1,2,3,1},{0,2,1,0}
+poly/ov/col=2/pal=yellow {1,2,3,1},{0,2,1,0}
  
 ppl cross 0
  
@@ -52422,12 +52421,10 @@ GO err600_if_comments_tab.jnl
 ! thrown off and we got an error about an invalid ENDIF
  
 IF 0 THEN
-   ENDIF
 ENDIF
  
 ! Here there is a tab before the ! which throws off the parsing...
 IF 0 THEN
-   ENDIF
 ENDIF
  
 ! err600_set_var_title.jnl
@@ -52800,7 +52797,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -52845,7 +52842,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -54321,6 +54318,7 @@ IS_ELEMENT_OF_STR_N(VAR,VALUES)
 LABWID(STR,HT)
 LANCZOS(A,F1,F2,N)
 LIST_VALUE_XML(tag,value,cdata_flag,outputfile)
+LON_LAT_TIME_STRING(longitude,latitude,time,time_axis,string to prepend)
 LSL_LOWPASS(A,cutoff_period,filter_span)
 MINMAX(A)
 MINUTES24(formatted time)
@@ -54440,6 +54438,7 @@ FFT_AMP(A)
 FFTA_SAMPLE(A)
 FFT_PHAS(A)
 LENGTH_OF_STRINGS(--)
+LON_LAT_TIME_STRING(longitude,latitude,time,time_axis,string to prepend)
 MAXSTRLEN(A)
 PASS_THRU(A)
 PASS_THRU_STRING(A)
@@ -55276,7 +55275,7 @@ list nat
  
 list (`temp,return=xaxis`)[d=2].nattrs
  !-> list (XAX_LEV9421_380)[d=2].nattrs
-             VARIABLE : (XAX_LEV9421_380)[d=ocean_atlas_temp].NATTRS
+             VARIABLE : (XAX_LEV9421_380)[D=ocean_atlas_temp].NATTRS
              FILENAME : ocean_atlas_temp.cdf
           4.000
  
@@ -55314,7 +55313,7 @@ list/d=3 a
              FILENAME : ocean_atlas_temp.cdf
         "Deg C"
 list temp[d=3].units
-             VARIABLE : TEMP[d=ocean_atlas_temp].UNITS
+             VARIABLE : TEMP[D=ocean_atlas_temp].UNITS
              FILENAME : gt4d011.cdf
         "Deg C"
 list/d=3 temp.history
@@ -55332,7 +55331,7 @@ use coads_climatology
 ! But this does
 let a = sst[d=1].dimnames
 list a[i=2]
-             VARIABLE : SST[d=coads_climatology].DIMNAMES
+             VARIABLE : SST[D=coads_climatology].DIMNAMES
              FILENAME : coads_climatology.cdf
              X        : 2
         "COADSY"
@@ -55348,7 +55347,7 @@ use coads_climatology
 define symbol ferret_plot_var sst[x=30:39,y=-90:90]
 list ($ferret_plot_var).long_name
  !-> list sst[x=30:39,y=-90:90].long_name
-             VARIABLE : SST.LONG_NAME
+             VARIABLE : SST[X=30:39,Y=-90:90].LONG_NAME
              FILENAME : coads_climatology.cdf
         "SEA SURFACE TEMPERATURE"
  
@@ -55356,7 +55355,7 @@ use coads_climatology
 define symbol ferret_plot_var sst[d=1,x=30:35,y=-90:90]
 list ($ferret_plot_var).units
  !-> list sst[d=1,x=30:35,y=-90:90].units
-             VARIABLE : SST[d=coads_climatology].UNITS
+             VARIABLE : SST[D=coads_climatology,X=30:35,Y=-90:90].UNITS
              FILENAME : coads_climatology.cdf
         "Deg C"
  
@@ -55365,7 +55364,7 @@ use levitus_climatology
 define symbol ferret_plot_var sst[d=1,x=30:35,y=-90:90]
 list ($ferret_plot_var).history
  !-> list sst[d=1,x=30:35,y=-90:90].history
-             VARIABLE : SST[d=coads_climatology].HISTORY
+             VARIABLE : SST[D=coads_climatology,X=30:35,Y=-90:90].HISTORY
              FILENAME : levitus_climatology.cdf
         "From coads_climatology"
  
@@ -55382,7 +55381,7 @@ def sym yaxnam  "(`temp[d=1],return=yaxis`)"
  
 list ($xaxnam)[d=1].modulo
  !-> list (XAXLEVITR1_160)[d=1].modulo
-             VARIABLE : (XAXLEVITR1_160)[d=levitus_climatology].MODULO
+             VARIABLE : (XAXLEVITR1_160)[D=levitus_climatology].MODULO
              FILENAME : coads_climatology.cdf
         " "
 list ($yaxnam).point_spacing[d=1]
@@ -55586,12 +55585,12 @@ GO err611_exit_if.jnl
 ! This only in v6.11 GFDL release bug
 ! Fixed in xeq_exit.F
  
-yes? sp echo if 1 then > a.jnl
-yes? sp echo exit/script >> a.jnl
-yes? sp echo endif >> a.jnl
-yes? sp echo go a > b.jnl
-yes? sp echo say hello >> b.jnl
-yes? go b  !the following fails to say "hello"
+sp echo if 1 then > a.jnl
+sp echo exit/script >> a.jnl
+sp echo endif >> a.jnl
+sp echo go a > b.jnl
+sp echo say hello >> b.jnl
+go b  !the following fails to say "hello"
 go a
 if 1 then
 exit/script
@@ -55862,12 +55861,12 @@ GO err611_exit_if.jnl
 ! This only in v6.11 GFDL release bug
 ! Fixed in xeq_exit.F
  
-yes? sp echo if 1 then > a.jnl
-yes? sp echo exit/script >> a.jnl
-yes? sp echo endif >> a.jnl
-yes? sp echo go a > b.jnl
-yes? sp echo say hello >> b.jnl
-yes? go b  !the following fails to say "hello"
+sp echo if 1 then > a.jnl
+sp echo exit/script >> a.jnl
+sp echo endif >> a.jnl
+sp echo go a > b.jnl
+sp echo say hello >> b.jnl
+go b  !the following fails to say "hello"
 go a
 if 1 then
 exit/script
@@ -58728,10 +58727,10 @@ SH GRID am
  normal    F
 *** Running test: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.51992"
-CLOCK_SECS = "0.304"
-CURRENT_DATE = " 2-Dec-14"
-CURRENT_TIME = "16:10:42"
+DELTA_CPU = "0.525919"
+CLOCK_SECS = "0.307"
+CURRENT_DATE = "24-Dec-14"
+CURRENT_TIME = "11:32:51"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -58740,8 +58739,8 @@ CURRENT_TIME = "16:10:42"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.050992"
-CLOCK_SECS = "0.355"
+DELTA_CPU = "0.060991"
+CLOCK_SECS = "0.367"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -58755,60 +58754,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.575912
+ !-> DEFINE VARIABLE ten_plots = 0.716891
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0.001"
-CLOCK_SECS = "0.932"
+CLOCK_SECS = "1.085"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.933"
+CLOCK_SECS = "1.086"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.050992
- !-> DEFINE VARIABLE sumcpu =0.050992
+ !-> DEFINE VARIABLE dt = 0.051992
+ !-> DEFINE VARIABLE sumcpu =0.051992
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.041994
- !-> DEFINE VARIABLE sumcpu =0.092986
+ !-> DEFINE VARIABLE dt = 0.047993
+ !-> DEFINE VARIABLE sumcpu =0.099985
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.040994
- !-> DEFINE VARIABLE sumcpu =0.13398
+ !-> DEFINE VARIABLE dt = 0.046992
+ !-> DEFINE VARIABLE sumcpu =0.146977
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.042993
- !-> DEFINE VARIABLE sumcpu =0.176973
+ !-> DEFINE VARIABLE dt = 0.047992
+ !-> DEFINE VARIABLE sumcpu =0.194969
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.039994
- !-> DEFINE VARIABLE sumcpu =0.216967
+ !-> DEFINE VARIABLE dt = 0.045993
+ !-> DEFINE VARIABLE sumcpu =0.240962
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.040994
- !-> DEFINE VARIABLE sumcpu =0.257961
+ !-> DEFINE VARIABLE dt = 0.046993
+ !-> DEFINE VARIABLE sumcpu =0.287955
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.037994
- !-> DEFINE VARIABLE sumcpu =0.295955
+ !-> DEFINE VARIABLE dt = 0.043994
+ !-> DEFINE VARIABLE sumcpu =0.331949
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.037994
- !-> DEFINE VARIABLE sumcpu =0.333949
+ !-> DEFINE VARIABLE dt = 0.042993
+ !-> DEFINE VARIABLE sumcpu =0.374942
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.036995
- !-> DEFINE VARIABLE sumcpu =0.370944
+ !-> DEFINE VARIABLE dt = 0.041994
+ !-> DEFINE VARIABLE sumcpu =0.416936
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.036994
- !-> DEFINE VARIABLE sumcpu =0.407938
+ !-> DEFINE VARIABLE dt = 0.041993
+ !-> DEFINE VARIABLE sumcpu =0.458929
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.407938
-0.407938
+ !-> MESSAGE/CONTINUE 0.458929
+0.458929
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.342"
+CLOCK_SECS = "1.547"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = " 2-Dec-14"
-SESSION_TIME = "16:10"
-CURRENT_DATE = " 2-Dec-14"
-CURRENT_TIME = "16:10:43"
+SESSION_DATE = "24-Dec-14"
+SESSION_TIME = "11:32"
+CURRENT_DATE = "24-Dec-14"
+CURRENT_TIME = "11:32:52"
 *** Running test: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -61517,7 +61516,7 @@ set var/title=deflate_x30_y30 sst
 save/file=nc4_deflate4.nc/clobber/ncformat=4/deflate=1/xchunk=30/ychunk=30/tchunk=1 sst
  
 ! With /NCFORMAT=3 the other stuff is meaningless.  Will see NOTEs
-yes? save/file=nc4_nodeflate3.nc/clobber/ncformat=3/deflate=1/xchunk=30/ychunk=30/tchunk=1 sst
+save/file=nc4_nodeflate3.nc/clobber/ncformat=3/deflate=1/xchunk=30/ychunk=30/tchunk=1 sst
  
 ! --------------------------
 ! Compare choices of chunking.
@@ -62719,9 +62718,9 @@ list contents
              VARIABLE : { SPAWN:"cat redirect_journal.txt" }
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
- 2    /  2:" ! FERRET v6.931 (PyFerret 1.1.0)"                                          
- 3    /  3:" ! Linux 2.6.18-398.el5 - 12/02/14"                                         
- 4    /  4:" !  2-Dec-14 16:11     "                                                    
+ 2    /  2:" ! FERRET v6.932 (PyFerret 1.1.1)"                                          
+ 3    /  3:" ! Linux 2.6.18-398.el5 - 12/24/14"                                         
+ 4    /  4:" ! 24-Dec-14 11:33     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -65155,98 +65154,98 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.370
-randu2_randn2       0.169
-randu2_randn2       0.422
-randu2_randn2       0.978
-randu2_randn2       0.198
+randu2_randn2       0.920
+randu2_randn2       0.903
+randu2_randn2       0.734
+randu2_randn2       0.653
+randu2_randn2       0.161
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.568
-randu2_randn2       0.854
-randu2_randn2       0.655
-randu2_randn2       0.765
+randu2_randn2       0.393
+randu2_randn2       0.036
+randu2_randn2       0.479
+randu2_randn2       0.589
+randu2_randn2       0.645
+             VARIABLE : RANDU2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.331
+randu2_randn2       0.959
+randu2_randn2       0.275
+randu2_randn2       0.499
+randu2_randn2       0.135
+randu2_randn2       0.557
+             VARIABLE : RANDU2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.675
+randu2_randn2       0.543
+randu2_randn2       0.190
+randu2_randn2       0.114
+randu2_randn2       0.104
+randu2_randn2       0.206
+             VARIABLE : RANDU2(XX,12436)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.343
+randu2_randn2       0.598
+randu2_randn2       0.888
+randu2_randn2       0.608
+randu2_randn2       0.446
+randu2_randn2       0.900
+             VARIABLE : RANDU2(XX,12436)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.343
+randu2_randn2       0.598
+randu2_randn2       0.888
+randu2_randn2       0.608
+randu2_randn2       0.446
+randu2_randn2       0.900
+             VARIABLE : RANDN2(XBIG,-1)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 5 points (X)
+             X        : 0.5 to 5.5
+randu2_randn2      -0.303
 randu2_randn2       0.490
-             VARIABLE : RANDU2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.024
-randu2_randn2       0.638
-randu2_randn2       0.703
-randu2_randn2       0.039
-randu2_randn2       0.992
-randu2_randn2       0.994
-             VARIABLE : RANDU2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.142
-randu2_randn2       0.550
-randu2_randn2       0.181
-randu2_randn2       0.043
-randu2_randn2       0.258
-randu2_randn2       0.102
-             VARIABLE : RANDU2(XX,12436)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.343
-randu2_randn2       0.598
-randu2_randn2       0.888
-randu2_randn2       0.608
-randu2_randn2       0.446
-randu2_randn2       0.900
-             VARIABLE : RANDU2(XX,12436)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.343
-randu2_randn2       0.598
-randu2_randn2       0.888
-randu2_randn2       0.608
-randu2_randn2       0.446
-randu2_randn2       0.900
+randu2_randn2      -0.895
+randu2_randn2      -0.557
+randu2_randn2      -1.048
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       2.390
-randu2_randn2       0.223
-randu2_randn2      -0.770
-randu2_randn2       0.383
-randu2_randn2       2.460
-             VARIABLE : RANDN2(XBIG,-1)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 5 points (X)
-             X        : 0.5 to 5.5
-randu2_randn2      -0.847
-randu2_randn2      -0.740
-randu2_randn2       0.531
-randu2_randn2       0.367
-randu2_randn2      -0.926
+randu2_randn2       0.553
+randu2_randn2      -0.600
+randu2_randn2       0.079
+randu2_randn2      -0.921
+randu2_randn2      -1.560
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.188
-randu2_randn2      -1.029
-randu2_randn2       2.016
-randu2_randn2       1.532
-randu2_randn2       0.962
-randu2_randn2       0.219
+randu2_randn2      -0.563
+randu2_randn2      -0.418
+randu2_randn2       0.019
+randu2_randn2      -0.545
+randu2_randn2      -1.356
+randu2_randn2      -0.271
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -0.247
-randu2_randn2       0.007
-randu2_randn2       0.231
-randu2_randn2      -1.660
-randu2_randn2      -0.373
-randu2_randn2       1.051
+randu2_randn2       0.069
+randu2_randn2      -0.866
+randu2_randn2      -0.159
+randu2_randn2      -0.431
+randu2_randn2      -1.179
+randu2_randn2       1.069
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65271,14 +65270,14 @@ randu2_randn2      -0.124
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.654       1.654       0.375
-randu2_randn2       0.855       0.855       0.375
-randu2_randn2       0.375       0.375       0.333
-randu2_randn2       0.333       0.333       0.375
-randu2_randn2       0.013       0.013       0.375
-randu2_randn2      -0.863       0.005       0.375
-randu2_randn2       0.005       0.005       0.375
-randu2_randn2       0.381       0.381       0.381
+randu2_randn2       1.404       1.404       0.330
+randu2_randn2       1.054       1.054       0.330
+randu2_randn2       0.330       0.330       0.326
+randu2_randn2       0.326       0.326       0.330
+randu2_randn2      -0.099      -0.099       0.330
+randu2_randn2      -0.206      -0.206       0.330
+randu2_randn2      -0.446      -0.206       0.330
+randu2_randn2       0.348       0.348       0.348
 *** Running test: bn_axis_cf.jnl
 ! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
@@ -70946,7 +70945,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71001,7 +71000,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71045,7 +71044,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71089,7 +71088,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71126,7 +71125,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71164,7 +71163,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71231,7 +71230,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71280,7 +71279,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71341,7 +71340,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71382,7 +71381,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71423,7 +71422,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71464,7 +71463,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71502,7 +71501,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71730,7 +71729,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71768,7 +71767,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71815,7 +71814,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71859,7 +71858,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71884,7 +71883,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71909,7 +71908,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72338,7 +72337,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72367,7 +72366,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72418,7 +72417,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72982,7 +72981,7 @@ variables:
 		CYCLE_ORIG:history = "From z2" ;
 
 // global attributes:
-		:history = "FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running test: bn_nobounds.jnl
@@ -73012,7 +73011,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73043,7 +73042,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73105,7 +73104,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73133,7 +73132,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74298,7 +74297,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74321,7 +74320,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74541,7 +74540,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74571,7 +74570,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74592,7 +74591,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74613,7 +74612,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74635,7 +74634,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74806,7 +74805,7 @@ show dat
  
  
 ! another error, new name is a user-var
-yes? set var/name=diff w
+set var/name=diff w
  
 SET MODE/LAST ignore
 *** Running test: bn_bad_axis_bounds.jnl
@@ -74858,7 +74857,7 @@ GO bn_short.sub tvar ave
 ! short script extracted from bn_negative_t.sub for bn_enter_exit_GO
  
 LIST/nohead/norow $1[t=-5:9@$2]	! neg/pos t endpoints
- !-> LIST/nohead/norow tvar[t=-5:9@ave]	! neg/pos t endpoints
+ !-> LIST/nohead/norow tvar[t=-5:9@ave]
    2.000
  
 ! Exit_GO
@@ -75044,7 +75043,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75060,7 +75059,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75076,7 +75075,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75992,6 +75991,19 @@ say `f,r=isready`
 say `f,r=unit`
  !-> MESSAGE/CONTINUE m
 m
+ 
+GO bn_reset
+cancel mode verify
+GO err691_substring_arg
+! err693_substring_arg
+! ACM 12/10/2014
+! ticket 2210. Argument checking was not done for the SUBSTRING function
+ 
+set mode ignore
+list substring("hello",1,-2)
+list substring("hello",1,-3)
+ 
+set mode/last ignore
 *** Running test: bn_append_dsg.jnl
 ! bn_append_dsg.jnl
 !From SOCAT 3: appending to a dsg file where the new variable is on the obs
@@ -76067,7 +76079,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 }
 *** Running test: bn_global_atts.jnl
  ! NOAA/PMEL TMAP
@@ -76157,7 +76169,7 @@ variables:
 		LON360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14" ;
+		:history = "CruiseDsgNcFile 1.0FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -76184,7 +76196,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- FERRET V6.931 (PyFerret 1.1.0)  2-Dec-14 
+ FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -76213,7 +76225,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the fileFERRET V6.931 (PyFerret 1.1.0)  2-Dec-14 
+ ..history = The history of the fileFERRET V6.932 (PyFerret 1.1.1) 24-Dec-14 
  ..Conventions = Conventions for variables named V2CF-1.6 
 *** Running test: bn_center_key_labels.jnl
 ! bn_center_key_labels
@@ -77112,8 +77124,8 @@ list {spawn:"ls xml*.jnl"}
  
 LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
 say `filesets, return=isize`
- !-> MESSAGE/CONTINUE 830
-830
+ !-> MESSAGE/CONTINUE 842
+842
  
 let files = {spawn:"ls *cdf*.jnl"}
 let name_len = strindex(files, ".sub")
@@ -77158,6 +77170,7 @@ set mode/last ignore
 ! bn694_bug_fixes
 ! test various fixes that went into version 6.94
 ! 11/2014 ACM
+! 12/2014 *sh* added IF-THEN flow fixes, including review of past tickets
  
 GO bn_reset
 cancel mode verify
@@ -77180,6 +77193,234 @@ list 'abc'
              VARIABLE : 12
              FILENAME : aa.nc
           12.00
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err693_isready_hang
+! err693_isready_hang.jnl
+! ACM 12/10/2014
+! ticket 2219.  The last of these commands caused Ferret to hang.
+ 
+use gt4d011
+def ax/t/t0="`u,r=t0`"/unit="`u,r=tunit`" time = t[gt=u]
+ !-> def ax/t/t0="14-JAN-1980 14:00:00"/unit="hour" time = t[gt=u]
+let a = u
+IF `a,r=isready` THEN; let/title="`a,r=title`" a1 = a; ENDIF
+ !-> IF 1         THEN
+ !-> DEFINE VARIABLE/title="U" a1 = a
+IF `a,r=isready` THEN; let/title="`a,r=title`" a2 = a; ENDIF
+ !-> IF 1         THEN
+ !-> DEFINE VARIABLE/title="U" a2 = a
+IF `a,r=isready` THEN; let/title="`a,r=title`" a3 = a; ENDIF
+ !-> IF 1         THEN
+ !-> DEFINE VARIABLE/title="U" a3 = a
+IF `a,r=isready` THEN; let/title="`a,r=title`" a4 = a; ENDIF
+ !-> IF 1         THEN
+ !-> DEFINE VARIABLE/title="U" a4 = a
+IF `a,r=isready` THEN; let/title="`a,r=title`" a5 = a; ENDIF
+ !-> IF 1         THEN
+ !-> DEFINE VARIABLE/title="U" a5 = a
+ 
+GO bn_reset
+cancel mode verify
+GO err693_isready_dyn_grid_crash   ! 12/23/2014
+let/unit="m" b = x[gx=1:5:1]
+say "`b,r=unit`"     ! this causes dynamic grid of b to be created
+ !-> MESSAGE/CONTINUE "m"
+m
+let c = x[gx=1:5:2]
+let b2 = b+0*c[gx=b] ! dynamic grid of b exists, but not grid of c
+VTREE b2
+   B2 = B+0*C[GX=B]
+     B = X[GX=1:5:1]
+     C = X[GX=1:5:2]
+ 
+GO bn_reset
+cancel mode verify
+GO err693_attr_in_gcfcn
+! err693_attr_in_gcfcn.jnl
+! ACM 12/10/2014
+! bug 2220 varname.attname as an argument to grid-changing functions.
+! All except the last of these caused various ungraceful stops.
+ 
+let/units="m" a = 1
+list is_element_of_str(a.units,{"m","a"})
+             VARIABLE : IS_ELEMENT_OF_STR(A.UNITS,{"m","a"})
+             X        : 1
+          1.000
+ 
+let/units="m" a = 1
+let b = a.units
+list is_element_of_str(b,{"m","a"})
+             VARIABLE : IS_ELEMENT_OF_STR(B,{"m","a"})
+             X        : 1
+          1.000
+ 
+ 
+use levitus_climatology
+ 
+list is_element_of_str_n (temp.long_name, {"Temperature", "temp"})
+             VARIABLE : IS_ELEMENT_OF_STR_N (TEMP.LONG_NAME, {"Temperature", "temp"})
+             FILENAME : levitus_climatology.cdf
+             X        : 1
+          2.000
+ 
+let a = temp.units
+list is_element_of_str (a, {"Kelvin", "Celsius", "DEG C"})
+             VARIABLE : IS_ELEMENT_OF_STR (A, {"Kelvin", "Celsius", "DEG C"})
+             FILENAME : levitus_climatology.cdf
+             X        : 1
+          1.000
+ 
+ 
+ 
+! IF-THEN flow tests
+GO bn_reset
+cancel mode verify
+GO err693_if_then_flow_2214
+! bug 2214
+! If we put the "say hi" in parentheses, this seems to work.
+! But parentheses haven't previously been required, so there are a lot of
+! scripts that don't have them.
+ 
+* 12/14 note (sh) - Ferret handles this situation correctly because
+* PARSE_COMMAND acts on the semi-colons in the full command line *before*
+* it acts on the "IF".  Thus the thress semicolon-connected commands
+* follow the same logical path through Ferret as if they were separated
+* onto three lines
+ 
+IF 0 THEN; rep/i=1:1 say ERROR; ENDIF
+ 
+IF 1 THEN; rep/i=1:1 say CORRECT; ENDIF
+!-> REPEAT: I=1
+CORRECT
+ 
+(IF 0 THEN; rep/i=1:1 say ERROR; ENDIF)
+ 
+(IF 1 THEN; rep/i=1:1 say CORRECT; ENDIF)
+!-> REPEAT: I=1
+CORRECT
+ 
+!yes? quit
+!yes? quit
+!yes? ^Z
+!Suspended
+ 
+GO bn_reset
+cancel mode verify
+GO err693_if_then_flow_2211
+! bug #2211
+ 
+ 
+IF 0 THEN
+ELSE
+   exit/script
+ 
+GO bn_reset
+cancel mode verify
+GO err693_if_then_flow_1860
+! from bug 1860
+! continue line found within grave accents
+ 
+CANCEL MODE VERIFY
+This works:
+CORRECT IF THIS DISPLAYS
+This works:
+CORRECT IF THIS DISPLAYS
+This works:
+CORRECT IF THIS DISPLAYS
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err693_if_then_flow_1446
+! testing ticket 1446
+ 
+! the presence of a tab preceding the "!" comment caused a parsing error
+ 
+! the behavior of this even in v69+ today is problematic in that
+! it echos an ENDIF statement that should be a plain old skip
+ 
+IF 0 THEN
+ENDIF
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err693_if_then_flow_1681
+! testing ticker 1681
+ 
+!The third block of the following script issues an error:
+!ERROR: invalid command: ENDIF can only be used in an IF clause
+!
+!Looks like a parsing bug -- it seems the ENDIF inside the REPEAT is being
+!applied to the outermost IF. Note that the error goes away if we change
+!the outer 0 to a 1.
+ 
+ 
+say "test1"
+test1
+if 0 then
+endif
+ 
+say "test2"
+test2
+if 0 then
+endif
+ 
+say "test3"
+test3
+if 0 then
+endif
+ 
+GO bn_reset
+cancel mode verify
+GO err693_if_then_flow_1706
+! testing ticket 1706
+!
+def sym a say hi\\; say hi
+ 
+IF 0 THEN
+ENDIF
+ 
+! some versions (not v550 but yes v63 but not v6301) fail to say "here"
+IF 1 THEN
+   say here
+here
+ENDIF
+ 
+GO bn_reset
+cancel mode verify
+GO err693_if_then_flow_1368   ! Jan 28, 2010, Ferret version 5.812
+! testing ticket 1368 - first found in Ferret v5.812 (Jan 28, 2010)
+ 
+! this is still a bug in V69+
+! the initial IF command is not being closed by the first ENDIF
+! it is skipping down to the elif command
+ 
+define symbol xend 180
+let key_flag = 0
+ 
+! test 1 - line 1 false condition should suppress both outputs
+IF `($xend) GT 360` THEN
+ !-> IF 0 THEN
+ENDIF
+ 
+ 
+! test 2 - line 1 false condition should cause else clause - "point G"
+let dxymin = 0.20
+if `dxymin lt 0.12` then
+ !-> if 0 then
+elif `dxymin lt 0.25` then
+ !-> elif 1 then
+  SAY "CORRECT.  this message should display"
+CORRECT.  this message should display
+endif
+ 
+! test 3 - this is from bug #918 -- looks like the same bug as #1368
+IF 0 THEN
+ENDIF
  
 *** Running test: bn_permute_ascii.jnl
 ! bn_permute_ascii.jnl
@@ -77486,6 +77727,45 @@ list tm
  2   / 2: -28.52  -8.19
  3   / 3: -28.53  -8.29
  4   / 4: -28.54  -8.39
+ 
+*** Running test: bn_lon_lat_time_string.jnl
+! bn_lon_lat_time_string.jnl
+! Test function written for LAS, to create profile labels from
+! a list of lnogitudes, latitudes, times, and a prefix string.
+ 
+show function lon_lat_time_string
+LON_LAT_TIME_STRING(longitude,latitude,time,time_axis,string to prepend)
+    Generate names based on longitude,latitude,time,and a string
+    longitude: Station longitude
+    latitude: Station latitude
+    time: numeric times
+    time_axis: Varible with a time axis to use to convert time to time strings
+    string to prepend: A label to start the names with (STRING)
+LON_LAT_TIME_STRING(longitude,latitude,time,time_axis,string to prepend)
+    Generate names based on longitude,latitude,time,and a string
+    longitude: Station longitude
+    latitude: Station latitude
+    time: numeric times
+    time_axis: Varible with a time axis to use to convert time to time strings
+    string to prepend: A label to start the names with (STRING)
+ 
+! Longitudes are translated to 0:360 range
+let lon = {-172.44, 210.01, -19.5}
+ 
+! latitudes are labeled N or S
+let lat = {3.12, 4.9, -15.03}
+ 
+! Time steps are interpreted in terms of a time axis
+let time = {1,2,3}
+define axis/t=1-jan-2001:31-jan-2001:1/units=days/t0=1-jan-2001 taxis
+let tt = t[gt=taxis]
+ 
+list lon_lat_time_string(lon, lat, time, tt, "my_string")
+             VARIABLE : LON_LAT_TIME_STRING(LON, LAT, TIME, TT, "my_string")
+             SUBSET   : 3 points (X)
+ 1   / 1:"my_string_187.6E_3.12N_02-JAN-2001" 
+ 2   / 2:"my_string_210E_4.9N_03-JAN-2001"    
+ 3   / 3:"my_string_340.5E_15.03S_04-JAN-2001"
  
 *** Running test: bn_all_ef.jnl
 SET MODE VERIFY
@@ -78324,18 +78604,18 @@ exit/command
 PPL$XPIXEL = "979"
 PPL$YPIXEL = "844"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.931"
+FERRET_VERSION = "6.932"
 FERRET_PLATFORM = "Linux 2.6.18-398.el5"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.3.1.1 of Feb 25 2014 11:38:15 $"
+NETCDF_VERSION = "4.3.2 of Dec 16 2014 15:13:45 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = " 2-Dec-14"
-SESSION_TIME = "16:12"
-SESSION_PID = "14942"
-DELTA_CPU = "0.533917"
-CLOCK_SECS = "0.317"
-CURRENT_DATE = " 2-Dec-14"
-CURRENT_TIME = "16:12:06"
+SESSION_DATE = "24-Dec-14"
+SESSION_TIME = "11:34"
+SESSION_PID = "32341"
+DELTA_CPU = "0.538917"
+CLOCK_SECS = "0.329"
+CURRENT_DATE = "24-Dec-14"
+CURRENT_TIME = "11:34:26"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -78360,7 +78640,7 @@ PPL$COMMAND_FILE = "$$MEMBUF$$"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 PPL$SCALE = "1.0000"
-WIN_TITLE = "2-Dec-14_16:12"
+WIN_TITLE = "24-Dec-14_11:34"
 VP_SCALE = "1"
 VP_RT_MARGIN = "1"
 VP_TOP_MARGIN = "1.4"
@@ -78411,4 +78691,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Tue Dec  2 16:12:06 PST 2014
+Ended at Wed Dec 24 11:34:26 PST 2014

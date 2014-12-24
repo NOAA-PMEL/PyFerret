@@ -73,3 +73,6 @@ GO err69_vtree_cancel_axis
 
 GO bn_reset
 GO err69_isready_bugs
+
+GO bn_reset
+GO err691_substring_arg

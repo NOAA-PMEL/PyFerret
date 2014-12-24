@@ -1,6 +1,39 @@
 ! bn694_bug_fixes
 ! test various fixes that went into version 6.94
 ! 11/2014 ACM
+! 12/2014 *sh* added IF-THEN flow fixes, including review of past tickets
 
 GO bn_reset
 GO err693_upcase_quoted_name
+
+GO bn_reset
+GO err693_isready_hang
+
+GO bn_reset
+GO err693_isready_dyn_grid_crash   ! 12/23/2014
+
+GO bn_reset
+GO err693_attr_in_gcfcn
+
+! IF-THEN flow tests
+GO bn_reset
+GO err693_if_then_flow_2214
+
+GO bn_reset
+GO err693_if_then_flow_2211
+
+GO bn_reset
+GO err693_if_then_flow_1860
+
+GO bn_reset
+GO err693_if_then_flow_1446
+
+GO bn_reset
+GO err693_if_then_flow_1681
+
+GO bn_reset
+GO err693_if_then_flow_1706
+
+GO bn_reset
+GO err693_if_then_flow_1368   ! Jan 28, 2010, Ferret version 5.812
+

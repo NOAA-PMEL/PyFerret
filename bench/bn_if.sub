@@ -1,5 +1,6 @@
 ! bn430_if.sub
 ! 5/6/96
+! for V693+ deepen the tests of implied ENDIF and unclosed IF test at the end
 
 ! test closed and unclosed IF in a nested GO command
 
@@ -20,6 +21,62 @@ ELSE
 ENDIF
 say ---->nested: all is well after multi-line IF
 
+! ********************
+! Single line IF statements with implied ENDIF
+
+IF 0 THEN say "ERROR if you see this"      <== implied ENDIF
+
+IF 0 THEN \
+     SAY "ERROR if you see this"            <== implied ENDIF
+
+IF 0 THEN
+     SAY "ERROR if you see this"            <== NO implied ENDIF
+ENDIF
+
+IF 1 THEN say "CORRECT" ELSE say "ERROR if you see this"   <== implied ENDIF
+
+IF 1 THEN SAY CORRECT ELSE \
+     SAY "ERROR if you see this"            <== implied ENDIF
+
+! *************
+! unclosed IF conditions get closed with a warning
+REPEAT/I=1:2 (SAY "LOOP=`i`"; IF 1 THEN; SAY more)
+REPEAT/I=1:2 (SAY "LOOP=`i`"; IF 0 THEN; SAY more)
+
+(SAY "semicolon group"; IF 1 THEN; SAY more)
+(SAY "semicolon group"; IF 0 THEN; SAY more)
+
+! ***************
+! deliberate IF syntax errors
+SET MODE IGNORE
+! this should be detected as an error as it attempts to mix the
+!      single line IF syntax and the multi-line IF syntax
+IF 1 THEN SAY CORRECT ELSE
+     SAY "WE SEE THIS CUZ OF IMPLIED CLOSE TO THE PREVIOUS"
+ENDIF   ! DELIBERATE ERROR -- THIS EXECUTED AS A STAND_ALONE COMMAND
+
+! this should be detected as an error as ELIF cannot be in single line IF
+IF 0 THEN say ERROR ELIF 1 THEN say "CORRECT if you see this"
+
+! another error: trash after ENDIF
+IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
+
+SET MODE/LAST IGNORE
+
+
 SAY ">>> --> DELIBERATE WARNING: UNCLOSED IF in NESTED GO FILE<<<"
 IF yes THEN
   say ---->... now inside of nested IF clause
+  IF 0 THEN
+    IF 1 THEN
+
+! note: these deserve a test, as well, but they only serve as documentation
+! here in this script, since they are skipped by the preceding "IF 0"
+     IF 0 THEN
+       REPEAT (SAY "ERROR -- NOT ALLOWED"; ENDIF)
+
+     IF 0 THEN
+       (SAY "ERROR -- NOT ALLOWED"; ENDIF)
+
+
+

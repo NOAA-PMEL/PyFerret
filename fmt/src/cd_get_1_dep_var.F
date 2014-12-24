@@ -64,6 +64,8 @@
 * v67   2/11 *acm* Do the notes about no missing/fillvalue for each variable,
 *             when in diagnostic mode. So move that back to cd_get_1_dep_var.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* V6931 12/14 *acm* Fix ticket 2223: switch_nan needs to use the Ferret missing-
+*                   value flag.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -313,7 +315,7 @@ c        ENDIF
 * if neither missing flag nor _FillValue was defined, use NaN.
              IF ( .NOT.got_missing .AND. .NOT.got_bad) THEN
                 CALL SET_NAN (ds_missing_flag(ivtm))
-		CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm) )
+		CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm), bad_r4)
 		IF (do_warn .AND. tmap_diag_on) CALL WARN(
      .'No missing_value or _FillValue attribute. Using NaN for variable: ' 
      . //vname(:vlen)) 
@@ -321,7 +323,7 @@ c        ENDIF
              ENDIF
 
 *  *kob* call SWITCH_NAN to make sure if NaN exisits, its in ds_missing_flag
-	     CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm))
+	     CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm), bad_r4)
 
 * see what special FERRET attributes can be read: axis ordering and
 * sub-hyperslab bounds

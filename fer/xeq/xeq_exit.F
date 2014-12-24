@@ -71,6 +71,8 @@
 * V664  *kms*  8/10 - Add EXIT/TOPYTHON and second alternate return to exit the 
 *                     ferret_dispatch loop but just re-enter the loop if not under pyferret
 * V685+ 12/13    - *acm*  bounds checking; dont refer to cs_cmnd_num(csp) if csp = 0
+* V694 *acm*  12/14   Fix ticket 2221. When in -script mode exit/prompt should just exit
+*                     all the way out of Ferret.
 
         include 'tmap_dims.parm'
 	include 'command.parm'
@@ -87,6 +89,15 @@
 * make sure no arguments were given
 	IF ( num_args .GT. 0 ) CALL ERRMSG( ferr_invalid_subcmnd, 
      .			status, cmnd_buff(arg_start(1):len_cmnd), *5000 )
+
+* When in -script mode exit-to-prompt should just exit. (ticket 2221).
+
+	IF ( qual_given(slash_exit_prompt) .GT. 0) THEN
+	   IF (its_script) THEN
+	      qual_given(slash_exit_prompt) = 0
+  	      qual_given(slash_exit_program) = 1
+	   ENDIF
+	ENDIF
 
 	IF (qual_given(slash_exit_cycle) .GT. 0) THEN
 * Skip to end of current repeat loop

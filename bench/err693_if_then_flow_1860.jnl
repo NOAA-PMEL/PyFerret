@@ -1,0 +1,41 @@
+! from bug 1860
+! continue line found within grave accents
+
+CANCEL MODE VERIFY
+
+if 0 then
+  if `1 or \
+      1` then
+    say "ERROR IF THIS DISPLAYS"
+  endif
+endif
+
+say "This works:"
+if 1 then
+  if `1 or \
+      1` then
+    say "CORRECT IF THIS DISPLAYS"
+  endif
+endif
+
+say "This works:"
+if 1 then
+  if `1 or \
+      1` then
+    say "CORRECT IF THIS DISPLAYS"
+  endif
+endif
+
+say "This works:"
+if 0 then
+  let condition = 1 or \
+                  1
+  if `condition` then
+    say "ERROR IF THIS DISPLAYS"
+  endif
+else
+  say "CORRECT IF THIS DISPLAYS"
+endif
+
+SET MODE/LAST VERIFY
+

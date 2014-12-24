@@ -62,11 +62,14 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V687  3/14 *acm* for ticket 2044, write note ! Exit from <script>
 * V687  3/14 *acm* for ticket 2044, write note ! Exit_GO only if SET REDIRECT is turned on.
+* V693+ 12/14 *sh* rolling back 4/99 change: an unclosed IF needs a warning
+*                  and handle nested unclosed IFs 
+* v6932 12/14 *sh* unclosed IF warning moved to GET_FER_COMMAND
 
 * internal variable declarations:
 	INTEGER	LIB_FREE_LUN,TM_LENSTR1,stat,axis,ivar,cvar,csp_to,ll,
      .          slen, plen
-        INTEGER j, num_indices
+        INTEGER i, j, num_indices
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -87,14 +90,21 @@
 * we will issue a warning and then implicitly close the IF
 	IF (if_conditional) THEN
 	   IF (csp .LE. if_cs(ifstk) ) THEN
-! no! 4/99	      CALL WARN('Unclosed IF statement ... assuming ENDIF')
-	      ifstk = ifstk - 1
-	      IF (ifstk .EQ. 0 ) if_conditional = .FALSE.
+	      ifstk_skipping = 0
+* ... set ifstk to the level it was at the previous csp
+	      DO i = ifstk, 1, -1
+                 IF (csp .GT. if_cs(i)) THEN
+	            ifstk = i
+	            GOTO 5  ! if_conditional remains true
+	         ENDIF
+	      ENDDO
+	      ifstk = 0
+	      if_conditional = .FALSE.
 	   ENDIF
 	ENDIF
 
 * clean up old level
-	IF ( cs_cmnd_num( csp ) .EQ. cmnd_go ) THEN
+ 5	IF ( cs_cmnd_num( csp ) .EQ. cmnd_go ) THEN
 
 * ... Write note with script name, only if SET REDIRECT is turned on.
 	   IF (redirect_stdout_flags .NE. redirect_none) THEN

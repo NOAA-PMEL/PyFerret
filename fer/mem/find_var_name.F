@@ -71,6 +71,7 @@
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V685+ *acm* 3/13 For Ensemble ds_type, check datset number before testing its type
+* v694 *acm* 12/14 Fix ticket 2050: case of variables in quotes
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -326,15 +327,17 @@
      .                                string_array_result(1),
      .                                max_uvar,
      .                                num_indices)
-	IF (num_indices .EQ. 0 .AND. test_name(1:1) .EQ. "'") THEN
-	   len_test = TM_LENSTR(test_name)
-	   varname = test_name(2:len_test-1)
-	   CALL string_array_find_caseblind(ds_var_code_head,
+	IF (len_test.GT.0) THEN
+	   IF (num_indices.EQ.0 .AND. test_name(1:1).EQ."'") THEN
+	      len_test = TM_LENSTR(test_name)
+	      varname = test_name(2:len_test-1)
+	      CALL string_array_find_caseblind(ds_var_code_head,
      .                                   varname,
      .                                   len_test-2,
      .                                   string_array_result(1),
      .                                   max_uvar,
      .                                   num_indices)
+	   ENDIF
 	ENDIF
 
         DO 200 j = 1, num_indices

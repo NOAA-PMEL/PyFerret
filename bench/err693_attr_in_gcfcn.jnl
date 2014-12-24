@@ -1,0 +1,21 @@
+! err693_attr_in_gcfcn.jnl
+! ACM 12/10/2014
+! bug 2220 varname.attname as an argument to grid-changing functions. 
+! All except the last of these caused various ungraceful stops.
+
+let/units="m" a = 1
+list is_element_of_str(a.units,{"m","a"})
+
+let/units="m" a = 1
+let b = a.units
+list is_element_of_str(b,{"m","a"})
+
+
+use levitus_climatology
+
+list is_element_of_str_n (temp.long_name, {"Temperature", "temp"})
+
+let a = temp.units
+list is_element_of_str (a, {"Kelvin", "Celsius", "DEG C"})
+
+

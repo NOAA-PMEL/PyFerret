@@ -1,4 +1,4 @@
-	SUBROUTINE XEQ_ELSE
+	LOGICAL FUNCTION ITSA_1LINEIF( cmnd, slen )
 
 *
 *
@@ -35,52 +35,52 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Process the ELSE in a multi-line IF compound statement
+* determine whether the given command string is a one-line IF command of the
+* form
+*      IF 0_or_1 THEN command_which_include_ELSE [ENDIF optional]
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-*
-* V420:  4/96
-*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-* V693+ *sh* 12/14 Simplified blocks skipped by IF using ifstk_skipping
 
-	include 'tmap_dims.parm'
-	include	'ferret.parm'
-	include 'errmsg.parm'
-	include 'xprog_state.cmn'
+* V693+  *sh* 12/14  (borrowing code from PROCESS_IF.F
+
+* calling argument declarations
+	CHARACTER*(*) cmnd
+	INTEGER	slen
 
 * local variable declarations
-	INTEGER	status
+	INTEGER i, pos_then
 
-* initial sanity checks
-	IF ( .NOT.if_conditional ) GOTO 5010
+        CHARACTER*1     tab
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
 
-* check that something was given to "if" on
-	IF ( num_args .GE. 1 ) GOTO 5100
 
-* is this the end of the clause that has been executing?
-	IF ( if_doing(ifstk) .EQ. pif_doing_clause ) THEN
-	   if_doing(ifstk) = pif_skip_to_endif
-	   ifstk_skipping = 0   ! skipping is controlled by this IF-nest level
+* NOTE: this code **ASSUMES*
+*  1) that the starting characters of the command string are "IF "
+*  2) that there is no bang-comment string
+*  3) that the string is already up-cased
 
-* or the start of the clause to execute
-	ELSEIF ( if_doing(ifstk) .EQ. pif_skip_to_clause ) THEN
-	   if_doing(ifstk) = pif_doing_clause
 
-* anything else is an internal error
-	ELSE
-	   GOTO 5200
+* the test is simply that the command contains "THEN" and there is further
+* text found after it
+
+	pos_then = INDEX(cmnd(:slen), 'THEN')
+	IF ( pos_then .GT. 0 ) THEN
+	   DO i = pos_then+4, slen
+              IF (cmnd(i:i).NE. ' ' .AND. cmnd(i:i).NE. tab) GOTO 100
+	   ENDDO
+* ... no characters found after THEN -- this is not a one-liner
 	ENDIF
 
+	ITSA_1LINEIF = .FALSE.
 	RETURN
-	
-* error exit
-* ... control stack pointer, CSP, corrected in GFD_ERROR_HANDLER
- 5000	RETURN
- 5010	CALL ERRMSG( ferr_invalid_command, status,
-     .		'ELSE can only be used between IF and ENDIF', *5000)
- 5100	CALL ERRMSG( ferr_syntax, status,
-     .		'ELSE statement stands alone. Continue on next line"'//
-     .			pCR//cmnd_buff(:len_cmnd), *5000 )
- 5200	CALL ERRMSG( ferr_internal, status, 'IF-ELSE', *5000)
+
+* we found a "THEN" and we also found more text after it
+ 100	ITSA_1LINEIF = .TRUE.
+	RETURN
+
 	END

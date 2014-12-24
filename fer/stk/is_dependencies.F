@@ -46,6 +46,7 @@
 *
 * V690 9/13 *sh*  -- with provisions for aux variables tested and refined
 * V693+ 12/14 *sh* - repair improper handling of dynamic grids
+*       later same month: tweak the repair to fix bug #2225
 
 * calling argument declarations:
 	INTEGER	status
@@ -326,7 +327,8 @@
 *     Note that this fix is not fully understood.  In IS_DEPENDENCIES
 *     we don't actually care about grid allocations and use counts, however
 *     dynamic grids get created by GET_VAR_CONTEXT, etc. so we have to clean up
-	IF (cx_has_impl_grid(cx_stack_ptr)) THEN
+	IF ( cx_has_impl_grid(cx_stack_ptr)
+     . .AND. cx_grid(cx_stack_ptr).NE. unspecified_int4 ) THEN
 	   CALL DEALLO_DYN_GRID(cx_grid(cx_stack_ptr))
 	   cx_has_impl_grid(cx_stack_ptr) = .FALSE.
 	ENDIF

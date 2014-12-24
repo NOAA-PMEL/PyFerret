@@ -23,7 +23,7 @@ BUILDTYPE = $(HOSTTYPE)
 PYTHON_EXE = python2.6
 # PYTHON_EXE = python2.7
 ## The assignment of PYTHONINCDIR should not need any modifications
-PYTHONINCDIR   := $(shell $(PYTHON_EXE) -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()")
+PYTHONINCDIR := $(shell $(PYTHON_EXE) -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()")
 
 ## Installation directory for built Ferret.  Using the "install"
 ## Makefile target circumvents the need to create the fer_*.tar.gz
@@ -53,9 +53,9 @@ HDF5_DIR = /usr/local/hdf5_189
 ## If HDF5_DIR (above) is empty, the shared-object netcdf libraries will be used.
 # NETCDF4_DIR = /usr
 # NETCDF4_DIR = /usr/local
-# NETCDF4_DIR = /usr/local/netcdf-4.3.1.1
-NETCDF4_DIR = /usr/local/netcdf_4311
-# NETCDF4_DIR = /usr/local/netcdf_4311_64
+# NETCDF4_DIR = /usr/local/netcdf-4.3.2
+NETCDF4_DIR = /usr/local/netcdf_432
+# NETCDF4_DIR = /usr/local/netcdf_432_64
 
 ## Java home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,
@@ -71,6 +71,6 @@ JAVA_HOME = /usr/lib/jvm/java
 # JAVA_HOME = /Library/Java/JavaVirtualMachines/jdk1.7.jdk/Contents/Home
 
 # PyFerret version number - do not change this
-PYFERRET_VERSION = 1.1.0
+PYFERRET_VERSION = 1.1.1
 
 ##

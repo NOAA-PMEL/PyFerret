@@ -1,4 +1,5 @@
-	SUBROUTINE PROCESS_IF( cmnd_string, slen, * )
+	SUBROUTINE PROCESS_IF( cmnd_string, slen,
+     .			       do_verify, prefix, raw_cmnd, * )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -55,17 +56,24 @@
 * V6.01 10/06 *acm*  Fix bug 1446 in the loop DO 200 when testing for a tab character, the
 *              index should be i not ic1. The perils of cut-and-pasting text from elsewhere!
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V693+ *sh* echoing of command lines is done here when inside of an IF block
+*        To avoid the confusing output of "ENDIF" during a skipped IF block
+*        count skipped nested IF statements using ifstk_skipping
+*        Note that this routine has been pretty trashed by repeated edits
+*        It should really be re-written, but seems risky (else I'd do it)
 
 * calling argument declarations:
+	LOGICAL		do_verify
 	INTEGER		slen
-	CHARACTER	cmnd_string*(*)
+	CHARACTER	cmnd_string*(*), prefix*5, raw_cmnd*(*)
 * RETURN 1 - used when the current command should be **skipped**
 
 * internal variable declarations:
 	INTEGER	STR_CASE_BLIND_COMPARE, ic1,
      .		status	! not returned
-        INTEGER STR_UPCASE, i, end_then, cmnd_len
-	LOGICAL its_endif, its_else, its_elif, its_if, one_liner
+        INTEGER STR_UPCASE, i, cmnd_len
+	LOGICAL ITSA_1LINEIF, 
+     .		its_endif, its_else, its_elif, its_if, one_liner
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -76,6 +84,7 @@
         include 'xrisc.cmn'
 
 * internal parameter declarations:
+	INTEGER		TM_LENSTR1
         CHARACTER*1     tab
 #ifdef NO_INTRINSIC_IN_PARAMETER
 	PARAMETER     ( tab = o'011' )
@@ -109,7 +118,7 @@
 cc	IF (its_if .OR. its_endif) RETURN
 
         IF ((its_if .OR. its_endif) .AND. 
-     .      if_doing(ifstk) .EQ. pif_doing_clause) RETURN
+     .      if_doing(ifstk) .EQ. pif_doing_clause) GOTO 1000
 
 	IF (if_conditional .AND. its_if ) THEN     ! nested IF?
 	   IF (if_doing(ifstk).NE.pif_doing_clause) THEN	! skipped IF?
@@ -119,89 +128,95 @@ cc	IF (its_if .OR. its_endif) RETURN
 * --- Check whether the current command is a one-line IF condition THEN command
 * --- and if so skip it, otherwise bump the IF stack.
 
-
-            one_liner = .FALSE.
             IF (its_if) THEN
-               end_then = INDEX(risc_buff(:slen), 'THEN') + 4
-               cmnd_len = INDEX(risc_buff(:slen), '!') - 1  ! check for comment at end
-               IF (cmnd_len .EQ. -1) cmnd_len = slen
+	       one_liner = ITSA_1LINEIF(risc_buff(:slen),slen)
+	    ELSE
+	       one_liner = .FALSE.
+	    ENDIF
 
-* See if there is a command after the THEN
-               DO 200 i = end_then,cmnd_len
-                   IF (cmnd_string(i:i).NE. ' '
-     .           .AND. cmnd_string(i:i).NE. tab) one_liner = .TRUE.
-  200          CONTINUE
-
-            ENDIF  
-
-	    IF ( num_args .LE. 2 .AND. .NOT. one_liner) THEN   ! multi-line nested IF?
-* ...       bump the IF stack - set up to skip this entire IF clause
-	         IF ( ifstk .GE. max_ifstk ) GOTO 5400
-	         ifstk = ifstk + 1
-cc	         if_doing(ifstk) = if_doing(ifstk-1)
-	         if_doing(ifstk) = pif_skip_to_endif
-	         if_cs(ifstk) = if_cs(ifstk-1)
-                 RETURN 1
+	    IF ( num_args .LE. 2 .AND. .NOT. one_liner) THEN  ! multi-line nested IF?
+* ...       bump the nested IF counting stack 
+	         ifstk_skipping = ifstk_skipping + 1
+                 RETURN 1    ! skip this command
 	      ENDIF
 	   ENDIF
 	ENDIF
         
-* Skipped if inside a repeat?  will have a ; or a ) after it.
-* One more fix: if the ; or ) follows a ! then ignore.
-
 	IF (if_conditional .AND. its_endif ) THEN     ! nested IF?
 	   IF (if_doing(ifstk).NE.pif_doing_clause) THEN	! skipped IF?
 
-           IF (INDEX(risc_buff, ')') .GT. INDEX(risc_buff,'ENDIF'))THEN
-	      IF (INDEX(risc_buff, '!') .GT. 0) THEN
-                IF (INDEX(risc_buff, ')') .LT. INDEX(risc_buff,'!'))
-     .            its_endif = .FALSE.
-              ELSE
-                 its_endif = .FALSE.
-              ENDIF
-	   ENDIF
-
-           IF (INDEX(risc_buff, ';') .GT. INDEX(risc_buff,'ENDIF'))THEN
-	      IF (INDEX(risc_buff, '!') .GT. 0) THEN
-                IF (INDEX(risc_buff, ';') .LT. INDEX(risc_buff,'!'))
-     .            its_endif = .FALSE.
-              ELSE
-                 its_endif = .FALSE.
-              ENDIF
+	      IF (ifstk_skipping .GT. 0) THEN
+	         ifstk_skipping = ifstk_skipping - 1 ! decrement nest level
+	         RETURN 1    ! skip this ENDIF command
+	      ENDIF
+! commented out this code 12/14 -- is it needed?
+* Skipped if inside a repeat?  will have a ; or a ) after it.
+* One more fix: if the ; or ) follows a ! then ignore.
+!           IF (INDEX(risc_buff, ')') .GT. INDEX(risc_buff,'ENDIF'))THEN
+!	      IF (INDEX(risc_buff, '!') .GT. 0) THEN
+!                IF (INDEX(risc_buff, ')') .LT. INDEX(risc_buff,'!'))
+!     .            its_endif = .FALSE.
+!              ELSE
+!                 its_endif = .FALSE.
+!              ENDIF
+!	   ENDIF
+!
+!           IF (INDEX(risc_buff, ';') .GT. INDEX(risc_buff,'ENDIF'))THEN
+!	      IF (INDEX(risc_buff, '!') .GT. 0) THEN
+!                IF (INDEX(risc_buff, ';') .LT. INDEX(risc_buff,'!'))
+!     .            its_endif = .FALSE.
+!              ELSE
+!                 its_endif = .FALSE.
+!              ENDIF
 	   ENDIF
         ENDIF
 
-        ENDIF
-
-	IF (its_endif) RETURN  ! process the endif, always
+	IF (its_endif) GOTO 1000  ! process any ENDIF not being skipped
 
 * now check each of the possible IF execution states
 	IF ( if_doing(ifstk) .EQ. pif_skip_to_endif ) THEN
 * skip everything until ENDIF is encountered
-	   RETURN 1
+	   RETURN 1   ! skip this command
 
 	ELSEIF ( if_doing(ifstk) .EQ. pif_doing_clause ) THEN
 * execute everything cuz we're "doing" the clause
-	   RETURN
+	   GOTO 1000
 
 	ELSEIF ( if_doing(ifstk) .EQ. pif_skip_to_clause ) THEN
-* check for ELSE or ELIF
+
+* check for ELSE or ELIF at the level from which skipping was initiated
 	   its_else  =
      .	      STR_CASE_BLIND_COMPARE(cmnd_string(ic1:ic1+3),'ELSE')
      .	 	    .EQ. vms_str_success
 	   its_elif  =
      .	      STR_CASE_BLIND_COMPARE(cmnd_string(ic1:ic1+3),'ELIF')
      .		    .EQ. vms_str_success
-	   IF (its_else .OR. its_elif) RETURN
+	   IF ((its_else .OR. its_elif) 
+     .	. AND. ifstk_skipping .EQ. 0  ) GOTO 1000
+
 * nope - just an ordinary command ... keep skipping 
-	   RETURN 1
+	   RETURN 1    ! skip this command
 
 	ELSE
 * unknown if condition
 	   GOTO 5000
 
 	ENDIF
- 1000	RETURN
+
+* this command needs to be executed
+* echo it if requested to do so
+ 1000	IF (do_verify) THEN
+	   slen = TM_LENSTR1(raw_cmnd)
+	   IF (prefix .EQ. ' ') THEN
+* ... separate SPLIT_LIST call to avoid single char ' ' prefix
+	      CALL SPLIT_LIST(pttmode_ops, ttout_lun,
+     .				 raw_cmnd, slen  )
+	   ELSE
+	      CALL SPLIT_LIST(pttmode_ops, ttout_lun,
+     .			prefix//raw_cmnd, slen+5 )
+	   ENDIF
+	ENDIF
+	RETURN
 
 
  5000	CALL ERRMSG(ferr_internal, status, 'ifstk!!', *1000)

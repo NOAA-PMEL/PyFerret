@@ -226,6 +226,7 @@
 * V687 *acm*  1/14 Fixing ticket 2135; grid_use_cnt on DEFINE DATA/AGG datasets
 * V690 *sh*   1/14 Formatting improvement to DEFINE ATTRIB error message
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+*                  prevent IF, ELIF, ELSE, and ENDIF from being aliased
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -250,6 +251,8 @@
         include 'netcdf.inc'
         include 'gkscm1_inc.decl'
         include 'GKSCM1.INC' ! wsid
+        include 'xrisc.cmn'
+
 
 * local parameter declarations:
 	INTEGER	    slash_dflt,
@@ -341,6 +344,7 @@
 	LOGICAL	  TM_DIGIT, TM_LEGAL_NAME, TM_LINE_MATCH, TM_GRID_MATCH,
      .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, MATCH_NAME,
      .            NC_GET_ATTRIB, TM_LENSTR, TM_LEGAL_NAME_OP, TM_HAS_STRING,
+     .            ITSA_1LINEIF, MATCH4,
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet, agg_e,
@@ -381,7 +385,7 @@
      .		  mon_names(12)*3, varname*512, attname*128, t2*2,
      .            new_att_units*128, new_att_calendar*128,
      .            new_att_t0*128, dcode*2, axdir*1, t0string*128, 
-     .            ustring*128
+     .            ustring*128, reserved_flow_name(3)*4
 
         CHARACTER*1 tab
 #ifdef NO_INTRINSIC_IN_PARAMETER
@@ -392,6 +396,8 @@
 
 	DATA	  basic_orients / 'WE','SN','UD','TI','E','F' /,
      .		  replmsg/'Replacing definition of '/
+        DATA      reserved_flow_name / 'ELIF','ELSE','ENDI' /
+
 * statement function - value between 0 and 1
 	REAL x, vx, vy
 	LOGICAL OUTSIDE_0_1
@@ -870,7 +876,7 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 * if orientation is unclear then assume it is X
 	IF ( orient .EQ. unspecified_int4 ) THEN
 	   CALL WARN (
-     .	     "Orientation not specified via /X,/Y,/Z,/T,/E, or /F. X assumed.")
+     .	     "Orientation not specified via /X,/Y,/Z,.... X assumed.")
 	   orient = x_dim
 	ENDIF
 	orient_t = orient.EQ.t_dim .OR. orient.EQ.f_dim
@@ -1877,6 +1883,29 @@ C /units=months  is 1/12 of the length of the year
 	IF ( pos .EQ. 0 ) GOTO 5400
 	IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5410
 
+* determine the name of the command being aliased
+        DO i1 =  pos, arg_end(num_args)
+           IF (cmnd_buff(i1:i1) .EQ. ' '
+     .    .OR. cmnd_buff(i1:i1) .EQ. tab ) THEN
+              i2 = i1 - 1   ! last char of command being aliased
+              GOTO 705
+           ENDIF
+        ENDDO
+        i2 = arg_end(num_args)
+
+* prevent IF, ELIF, ELSE and ENDIF from being aliased, as this would mess
+* up flow control in PROCESS_IF and elsewhere
+* ... special test for IF command, cuz 1-line IFs are OK to alias 
+ 705    IF ( MATCH4(cmnd_buff(pos:i2),i2-pos+1,'IF',2) ) THEN
+           i1 = STR_UPCASE (risc_buff, cmnd_buff)
+           IF (.NOT.ITSA_1LINEIF(risc_buff(pos:arg_end(num_args)),
+     .                           arg_end(num_args)-pos+1)) GOTO 5200
+        ENDIF
+        DO i1 = 1, 3
+           IF (MATCH4(cmnd_buff(pos:i2),i2-pos+1,
+     .                reserved_flow_name(i1),4   )) GOTO 5200
+        ENDDO
+
 * find a slot to save this alias
         i1 = ALIAS_ID( buff1 )
         IF ( i1 .EQ. unspecified_int4 ) THEN
@@ -2224,6 +2253,8 @@ C /units=months  is 1/12 of the length of the year
 * error exit
  5000	RETURN
  5100 	CALL ERRMSG( ferr_syntax,status,'illegal name: '//buff3,*5000 )
+ 5200 	CALL ERRMSG( ferr_invalid_command ,status,
+     .          'cannot alias IF, ELIF, ELSE and ENDIF',*5000 )
  5300	CALL ERRMSG( ferr_invalid_command, status,
      .		'DEFINE what name?', *5000 )
  5305	CALL ERRMSG( ferr_TMAP_error, status, ' ', *5000 )

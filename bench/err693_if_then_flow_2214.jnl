@@ -1,0 +1,23 @@
+! bug 2214
+! If we put the "say hi" in parentheses, this seems to work.
+! But parentheses haven't previously been required, so there are a lot of
+! scripts that don't have them.
+
+* 12/14 note (sh) - Ferret handles this situation correctly because
+* PARSE_COMMAND acts on the semi-colons in the full command line *before*
+* it acts on the "IF".  Thus the thress semicolon-connected commands
+* follow the same logical path through Ferret as if they were separated
+* onto three lines
+
+IF 0 THEN; rep/i=1:1 say ERROR; ENDIF
+
+IF 1 THEN; rep/i=1:1 say CORRECT; ENDIF
+
+(IF 0 THEN; rep/i=1:1 say ERROR; ENDIF)
+
+(IF 1 THEN; rep/i=1:1 say CORRECT; ENDIF)
+
+!yes? quit
+!yes? quit
+!yes? ^Z
+!Suspended

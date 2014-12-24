@@ -1,0 +1,9 @@
+! err693_substring_arg
+! ACM 12/10/2014
+! ticket 2210. Argument checking was not done for the SUBSTRING function
+
+set mode ignore
+list substring("hello",1,-2)
+list substring("hello",1,-3)
+
+set mode/last ignore

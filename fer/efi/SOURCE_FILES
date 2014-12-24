@@ -72,6 +72,7 @@ is_element_of_str_n.F\
 labwid.F\
 lanczos.F\
 list_value_xml.F\
+lon_lat_time_string.F\
 lsl_lowpass.F\
 maxminmax.F\
 minmax.F\

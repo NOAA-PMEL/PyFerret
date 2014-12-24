@@ -47,19 +47,22 @@
 
 /* *kob* - 2/18/99 */
 /* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
-*					 definition of macro DFTYPE in ferretmacros.h.
+/*					 definition of macro DFTYPE in ferretmacros.h.
+/* *acm* V6931 12/14 Fix ticket 2223: need to use the Ferret missing-value flag
+/*					 which is now passed in as an argument.
 */
 
-void FORTRAN(switch_nan)(bad, missing)
+void FORTRAN(switch_nan)(bad, missing, bad_val)
      DFTYPE *bad;
      DFTYPE *missing;
+     DFTYPE *bad_val;
 {
   if (isnan(*bad) || isnan(*missing))
     { 
       if (isnan(*bad)) 
 	{
 	  *missing = *bad;
-	  *bad = bad_val4;
+	  *bad = *bad_val;
 	}
     }
 }

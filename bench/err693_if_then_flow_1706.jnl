@@ -1,0 +1,11 @@
+! testing ticket 1706
+! 
+def sym a say hi\\; say hi
+
+IF 0 THEN
+ENDIF
+
+! some versions (not v550 but yes v63 but not v6301) fail to say "here"
+IF 1 THEN
+   say here
+ENDIF

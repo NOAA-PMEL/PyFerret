@@ -38,7 +38,7 @@
  * A filename consisting of only an extension (e.g., ".png")
  * will be treated as not having an extension.
  *
- * If transbkg is non-zero, the saved image is filled with the 
+ * If transbkg is zero, the saved image is filled with the 
  * last clearing color before drawing the current image with a 
  * transparent background.
  *
@@ -324,7 +324,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         scalefactor /= 2.0 * CCFB_POINTS_PER_PIXEL;
         saveheight += scalefactor * (layoutheight + 2.0 * padding);
         savesurface = cairo_pdf_surface_create(savename, savewidth, saveheight);
-        usealpha = 0;
+        usealpha = 1;
     }
     else if ( strcmp(fmtext, "PS") == 0 ) {
         /* Surface size is given in (floating-point) points */

@@ -61,7 +61,7 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
             height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
             instdata->surface = cairo_pdf_surface_create(instdata->imagename,
                                                          width, height);
-            instdata->usealpha = 0;
+            instdata->usealpha = 1;
             fmtname = "PDF";
             break;
         case CCFBIF_PS:
@@ -82,7 +82,7 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
                 instdata->surface = cairo_ps_surface_create(instdata->imagename,
                                                             width, height);
             }
-            /* Do not use alpha channel - prevents embedded image */
+            /* Do not use alpha channel to avoid embedded image */
             instdata->usealpha = 0;
             fmtname = "PS";
             break;

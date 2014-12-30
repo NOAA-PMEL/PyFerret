@@ -61,7 +61,7 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
             height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
             instdata->surface = cairo_pdf_surface_create(instdata->imagename,
                                                          width, height);
-            instdata->usealpha = 1;
+            instdata->usealpha = 0;
             fmtname = "PDF";
             break;
         case CCFBIF_PS:

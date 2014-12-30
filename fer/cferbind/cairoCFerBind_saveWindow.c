@@ -324,7 +324,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         scalefactor /= 2.0 * CCFB_POINTS_PER_PIXEL;
         saveheight += scalefactor * (layoutheight + 2.0 * padding);
         savesurface = cairo_pdf_surface_create(savename, savewidth, saveheight);
-        usealpha = 1;
+        usealpha = 0;
     }
     else if ( strcmp(fmtext, "PS") == 0 ) {
         /* Surface size is given in (floating-point) points */

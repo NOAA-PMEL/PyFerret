@@ -98,13 +98,25 @@
 	row = dependency_nrows + 1
 	dependency_nrows = row
 
-* store the things that are always valid
-	next (row) = 0		! for clean housekeeping, not used
-	level(row) = tree_lev
-	dataset (row) = dset
-
 * determine flag to save
-	IF (     cx_status .EQ. ferr_unknown_variable ) THEN
+	IF ( cx_status .EQ. pcx_vtree_regrid_report ) THEN
+* ... special treatment for regridding report (12/14)
+*     cx_vtree_unknown_grid tells if this is an unknown target error report
+*     if its an error then cx_vtree_var_or_start / _cat_or_end hold "[]" posn
+*     if not an error then cx_vtree_var_or_start / _cat_or_end hold
+*         var & cat        if the regrid points to a target variable
+*     or  unspecified_int4 if the regrid points to a named grid or axis
+*     we do not report named grid or axis regridding.  Not a dependency.
+*     Multiple target regrid variables get recorded in cx_vtree_regrid_ntarget
+	   IF ( cx_vtree_unknown_grid      ) THEN
+	      this_flag = df_unknown_grid
+	   ELSEIF (cx_vtree_regrid_ntarget .EQ. 0 ) THEN
+	      RETURN                   ! no report
+	   ELSE
+	      this_flag = df_valid_var
+	      dset = cx_vtree_regrid_dset
+	   ENDIF
+	ELSEIF ( cx_status .EQ. ferr_unknown_variable ) THEN
 	   this_flag = df_unknown_var
 	ELSEIF ( cx_status .EQ. ferr_unknown_data_set ) THEN
 	   this_flag = df_unknown_dataset
@@ -119,8 +131,13 @@
 	ELSE
 	   this_flag = df_valid_var
 	ENDIF
-	flag(row) = this_flag
 	 
+* store the things that are always valid
+	next (row) = 0		! for clean housekeeping, not used
+	level(row) = tree_lev
+	dataset (row) = dset
+	flag(row) = this_flag
+
 * store things differently depending upon whether variable is known
 	IF ( cx_status .EQ. ferr_unknown_auxvar ) THEN
 	   var_or_start(row) = uvar_item_start(item, uvar)
@@ -129,6 +146,11 @@
      .					  + cat - 1
 	   parent_uv   (row) = uvar
 	   uv_item     (row) = item
+	ELSEIF ( cx_status .EQ. pcx_vtree_regrid_report ) THEN
+	   var_or_start(row) = cx_vtree_var_or_start
+	   cat_or_end  (row) = cx_vtree_cat_or_end
+	   parent_uv   (row) = uvar
+	   uv_item     (row) = pcx_vtree_regrid_report
 	ELSEIF ( cx_status .NE. ferr_ok ) THEN
 	   var_or_start(row) = uvar_item_start(item, uvar)
 	   cat_or_end  (row) = uvar_item_end  (item, uvar)

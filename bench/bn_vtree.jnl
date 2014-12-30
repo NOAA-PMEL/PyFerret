@@ -1,6 +1,7 @@
 ! bn_tree.jnl
 
 ! 11/2013 -- demonstrate SHOW VARIABLE/TREE and RETRUN=STATUS
+! 12/14 update to test regridding output using bn_vtree_regrid.jnl
 
 CANCEL DATA/ALL
 ! pure abstract variable -- no dataset
@@ -171,3 +172,7 @@ let a = fvz.long_name[d=1]
 show var/tree a
 let a = ..history[d=1]
 show var/tree a
+
+! *****
+! 12/14 addition to test regridding dependencies
+go bn_vtree_regrid

@@ -18,6 +18,7 @@
 * V690 12/13 *sh* added cx_implicit_aux, cx_aux_given, cx_g_eq_regrid,
 *		 cx_aux_stat for automated curvilinear regridding
 *	         max_context made a variable to allow frames above it
+* V693+ added cx_vtree* vars for ticket #2195 - reporting regridding dependency
 
 * the declarations below represent a stack of depth max_context for saving
 * the nested contexts.  The bottom few entries in the stack have special uses:
@@ -79,6 +80,10 @@
      .		cx_trans	 ( nferdims, min_context:max_cx ),
      .		cx_regrid_trans  ( nferdims, max_cx )
 	INTEGER	cx_stack_ptr,
+     .		cx_vtree_var_or_start,
+     .		cx_vtree_cat_or_end,
+     .		cx_vtree_regrid_dset,
+     .		cx_vtree_regrid_ntarget,
      .		cx_data_set ( max_cx ),
      .		cx_category ( max_cx ),
      .		cx_variable ( max_cx ),
@@ -92,7 +97,8 @@
      .		cx_aux_cat  (nferdims, max_cx),
      .		cx_aux_stat (nferdims, max_cx )
 
-	LOGICAL	cx_unstand_grid	( max_cx ),
+	LOGICAL	cx_vtree_unknown_grid,
+     .     	cx_unstand_grid	( max_cx ),
      .		cx_by_ss	( nferdims, min_context:max_cx ),
      .		cx_given	( nferdims, min_context:max_cx ),
      .		cx_dset_gvn	( max_cx ),
@@ -127,6 +133,11 @@
      .		cx_data_set,
      .		cx_category,
      .		cx_variable,
+     .		cx_vtree_var_or_start,
+     .		cx_vtree_cat_or_end,
+     .		cx_vtree_regrid_dset,
+     .		cx_vtree_regrid_ntarget,
+     .		cx_vtree_unknown_grid,
      .		cx_naux,
      .		cx_aux_var,
      .		cx_aux_cat,

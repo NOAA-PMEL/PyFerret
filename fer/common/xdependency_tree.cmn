@@ -33,6 +33,10 @@
 	INTEGER		dependency_nfields
 	PARAMETER     ( dependency_nfields = 9 )
 
+* special flag for report of a regrid dependency, rather than a variable
+	INTEGER		pcx_vtree_regrid_report
+	PARAMETER     ( pcx_vtree_regrid_report = -12345 )
+
 * dependency flag values -- ordered by increasing error severity
 	INTEGER		df_defined_earlier,
      .			df_valid_aux_var, 

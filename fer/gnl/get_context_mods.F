@@ -152,6 +152,7 @@
 *	           Note that errors will be silent in dependency_tree_mode
 *		   Set cx_g_eq_regrid logical (used to be local "regrid_dims")
 * V6.91+ *acm* 8/14 Fix ticket 2189
+* V693+ *sh* 12/14 keep track of regridding using cx_vtree* for ticket #2195
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -257,6 +258,9 @@
 	   first_time(idim)     = .TRUE.
  10	CONTINUE
 	has_g_eq_unkn_uvar = .FALSE.
+	cx_vtree_unknown_grid = .FALSE.
+	cx_vtree_regrid_ntarget = 0
+	cx_vtree_var_or_start = unspecified_int4  ! just for bookkeeping
 
 * check in advance for the use of pre-specified ("/@") limits and D=
 * (the results of D= may be relevant in G=var)
@@ -662,6 +666,15 @@ c	      next_char = istart + naxes - 1
 	         IF ( category .EQ. cat_pseudo_var ) GOTO 5055
 *33333333333333333
 	         IF ( variable .NE. munknown_var_name ) THEN
+* ... bookkeeping for determining the dependency tree (VTREE)
+	            cx_vtree_regrid_ntarget = cx_vtree_regrid_ntarget + 1
+	            IF (cx_vtree_regrid_ntarget .EQ. 1
+     .	           .AND. .NOT.cx_vtree_unknown_grid ) THEN
+	               cx_vtree_var_or_start = variable
+	               cx_vtree_cat_or_end   = category
+	               cx_vtree_regrid_dset  = gdset
+	            ENDIF
+
 	            grid = KNOWN_GRID(gdset,category,variable)
 		    cx_grid_needs_dset = .NOT.cx_dset_gvn( mods_cx )
 * ... 6/00 bug fix for syntax X[gx=var[d=dset]] -- look for [d=...]
@@ -711,14 +724,30 @@ c	      next_char = istart + naxes - 1
 	            ENDIF
 *33333333333333333
 	         ELSEIF ( single_char ) THEN
-	            GOTO 5050		! (G=axis_name not allowed)
+	            IF (dependency_tree_mode) THEN
+	              cx_vtree_unknown_grid = .TRUE.
+	            ELSE
+	               GOTO 5050		! (G=axis_name not allowed)
+	            ENDIF
 *33333333333333333
 	         ELSE
 * ... as a last resort maybe it is an axis name (9/95)
 c	            axis = TM_GET_LINENUM( name(:nend) )
 	            axis = TM_GET_LINENUM( name(:name_end) )
 		    IF ( axis .EQ. unspecified_int4 ) THEN
-	               GOTO 5050	! final defeat
+	              IF (dependency_tree_mode) THEN
+* ... 12/14 hack to let an unknown grid error condition slip through if we
+*	are merely evaluating the dependency tree.
+	                cx_vtree_unknown_grid = .TRUE.
+*       It is normal for LET-defined variables
+*	that the grid may remain unknown until the children grids
+*	are determined, so hopefully it is OK here, too.  If not then we
+*	might try inserting an innocuous grid, such as
+!	                IF (cx_grid(mods_cx) .EQ. unspecified_int4)
+!     .			    cx_grid(mods_cx) = EZ or ABSTRACT
+	              ELSE
+	                GOTO 5050		! final defeat 
+	              ENDIF
 	            ELSEIF ( TM_AXIS_DIRECTION(axis) .NE. idim
      .		       .AND. TM_AXIS_DIRECTION(axis) .NE. 0 ) THEN	! 7/96
 	               GOTO 5052
@@ -1090,6 +1119,7 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 * If a grid qualifiers wer given then a grid name from at least 1 was mandatory
         IF ( cx_unstand_grid(mods_cx)
      . .AND. .NOT.cx_has_impl_grid(mods_cx)
+     . .AND. .NOT.cx_vtree_unknown_grid
      . .AND. cx_grid(mods_cx) .EQ. unspecified_int4 ) GOTO 5024
 
 * @AVE or @DIN applied to both X and Y performed as a 2D integral (for COSINE

@@ -47,6 +47,7 @@
 * V690 9/13 *sh*  -- with provisions for aux variables tested and refined
 * V693+ 12/14 *sh* - repair improper handling of dynamic grids
 *       later same month: tweak the repair to fix bug #2225
+*	and always report TWO dependency lines when regridding occurs
 
 * calling argument declarations:
 	INTEGER	status
@@ -242,6 +243,14 @@
      .				hi_cx,
      .				var_status )
 
+* some house-keeping if a regridding dependency was detected
+	IF ( cx_unstand_grid(hi_cx)
+     . .AND. cx_vtree_unknown_grid ) THEN
+* ... point to character position of "[]" relative to full uvar_text
+	   cx_vtree_var_or_start = cx_vtree_var_or_start + start - 1
+	   cx_vtree_cat_or_end   = cx_vtree_cat_or_end   + start - 1
+	ENDIF
+
 * have we returned here after reporting auxvar dependencies?
 * if so we have already reported this variable
 	IF (delayed_by_auxvars) THEN
@@ -255,6 +264,11 @@
 	IF ( var_status .NE. ferr_unknown_auxvar ) THEN
 	   CALL REPORT_DEPENDENCY( hi_cx, isp, uvar, item,
      .				   work, var_status, desist )
+* ... a special line to report regridding dependency
+	   IF (cx_unstand_grid(hi_cx)
+     .	 .AND. cx_naux(hi_cx) .EQ. 0  )
+     .	   CALL REPORT_DEPENDENCY( hi_cx, isp+1, uvar, item,
+     .				   work, pcx_vtree_regrid_report, desist )
 	ENDIF
 
 * if the variable used auxiliary variables for regridding set up new isp

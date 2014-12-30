@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x 1 ksmith tmap 1188 Dec 24 11:29 /home/users/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x 1 ksmith tmap 1188 Dec 30 11:09 /home/users/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug PyFerret on RHEL5-64
@@ -245,7 +245,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Wed Dec 24 11:29:44 PST 2014
+Beginning at Tue Dec 30 11:11:08 PST 2014
 *** Running test: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10512,13 +10512,13 @@ FERRET_PLATFORM = "Linux 2.6.18-398.el5"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 15:13:45 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "24-Dec-14"
-SESSION_TIME = "11:30"
-SESSION_PID = "30782"
-DELTA_CPU = "0.415935"
-CLOCK_SECS = "0.292"
-CURRENT_DATE = "24-Dec-14"
-CURRENT_TIME = "11:30:08"
+SESSION_DATE = "30-Dec-14"
+SESSION_TIME = "11:11"
+SESSION_PID = "20386"
+DELTA_CPU = "0.512921"
+CLOCK_SECS = "0.323"
+CURRENT_DATE = "30-Dec-14"
+CURRENT_TIME = "11:11:31"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -10541,13 +10541,13 @@ FERRET_PLATFORM = "Linux 2.6.18-398.el5"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 15:13:45 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "24-Dec-14"
-SESSION_TIME = "11:30"
-SESSION_PID = "30782"
-DELTA_CPU = "0.002"
-CLOCK_SECS = "0.293"
-CURRENT_DATE = "24-Dec-14"
-CURRENT_TIME = "11:30:08"
+SESSION_DATE = "30-Dec-14"
+SESSION_TIME = "11:11"
+SESSION_PID = "20386"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "0.325"
+CURRENT_DATE = "30-Dec-14"
+CURRENT_TIME = "11:11:31"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 S1 = "hello"
@@ -10557,9 +10557,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "24-Dec-14"
-SESSION_TIME = "11:30"
-SESSION_PID = "30782"
+SESSION_DATE = "30-Dec-14"
+SESSION_TIME = "11:11"
+SESSION_PID = "20386"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10569,15 +10569,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "24-Dec-14"
-SESSION_TIME = "11:30"
-SESSION_PID = "30782"
+SESSION_DATE = "30-Dec-14"
+SESSION_TIME = "11:11"
+SESSION_PID = "20386"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "24-Dec-14"
-SESSION_TIME = "11:30"
-SESSION_PID = "30782"
+SESSION_DATE = "30-Dec-14"
+SESSION_TIME = "11:11"
+SESSION_PID = "20386"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10710,13 +10710,13 @@ FERRET_PLATFORM = "Linux 2.6.18-398.el5"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 15:13:45 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "24-Dec-14"
-SESSION_TIME = "11:30"
-SESSION_PID = "30782"
-DELTA_CPU = "0.025996"
-CLOCK_SECS = "0.319"
-CURRENT_DATE = "24-Dec-14"
-CURRENT_TIME = "11:30:08"
+SESSION_DATE = "30-Dec-14"
+SESSION_TIME = "11:11"
+SESSION_PID = "20386"
+DELTA_CPU = "0.026996"
+CLOCK_SECS = "0.351"
+CURRENT_DATE = "30-Dec-14"
+CURRENT_TIME = "11:11:31"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -25280,7 +25280,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Wed Dec 24 11:30:28 PST 2014
+Tue Dec 30 11:11:52 PST 2014
  
 GO bn_reset
 cancel mode verify
@@ -48515,7 +48515,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "24-Dec-14_11:32"
+WIN_TITLE = "30-Dec-14_11:13"
  
 set win/title="set the title"
 sho sym win_title
@@ -48533,7 +48533,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="24-Dec-14:11:32"
+ !-> set win/title="30-Dec-14:11:13"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48542,16 +48542,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 24-Dec-14
+ !-> DEFINE SYMBOL the_date = 30-Dec-14
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 11:32
+ !-> DEFINE SYMBOL the_time = 11:13
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="24-Dec-14:11:32"
+ !-> SET WIN/TITLE="30-Dec-14:11:13"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "24-Dec-14:11:32"
+WIN_TITLE = "30-Dec-14:11:13"
 *** Running test: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -52797,7 +52797,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -52842,7 +52842,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -58727,10 +58727,10 @@ SH GRID am
  normal    F
 *** Running test: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.525919"
-CLOCK_SECS = "0.307"
-CURRENT_DATE = "24-Dec-14"
-CURRENT_TIME = "11:32:51"
+DELTA_CPU = "0.607907"
+CLOCK_SECS = "0.356"
+CURRENT_DATE = "30-Dec-14"
+CURRENT_TIME = "11:14:12"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -58739,8 +58739,8 @@ CURRENT_TIME = "11:32:51"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.060991"
-CLOCK_SECS = "0.367"
+DELTA_CPU = "0.05999"
+CLOCK_SECS = "0.416"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -58754,60 +58754,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.716891
+ !-> DEFINE VARIABLE ten_plots = 0.622906
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.001"
-CLOCK_SECS = "1.085"
+DELTA_CPU = "9.99E-04"
+CLOCK_SECS = "1.04"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.086"
+CLOCK_SECS = "1.041"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.051992
- !-> DEFINE VARIABLE sumcpu =0.051992
+ !-> DEFINE VARIABLE dt = 0.041994
+ !-> DEFINE VARIABLE sumcpu =0.041994
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.047993
- !-> DEFINE VARIABLE sumcpu =0.099985
-!-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.046992
- !-> DEFINE VARIABLE sumcpu =0.146977
-!-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.047992
- !-> DEFINE VARIABLE sumcpu =0.194969
-!-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.045993
- !-> DEFINE VARIABLE sumcpu =0.240962
-!-> REPEAT: K=6
  !-> DEFINE VARIABLE dt = 0.046993
- !-> DEFINE VARIABLE sumcpu =0.287955
+ !-> DEFINE VARIABLE sumcpu =0.088987
+!-> REPEAT: K=3
+ !-> DEFINE VARIABLE dt = 0.047992
+ !-> DEFINE VARIABLE sumcpu =0.136979
+!-> REPEAT: K=4
+ !-> DEFINE VARIABLE dt = 0.047993
+ !-> DEFINE VARIABLE sumcpu =0.184972
+!-> REPEAT: K=5
+ !-> DEFINE VARIABLE dt = 0.044994
+ !-> DEFINE VARIABLE sumcpu =0.229966
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.046992
+ !-> DEFINE VARIABLE sumcpu =0.276958
 !-> REPEAT: K=7
  !-> DEFINE VARIABLE dt = 0.043994
- !-> DEFINE VARIABLE sumcpu =0.331949
+ !-> DEFINE VARIABLE sumcpu =0.320952
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.042993
- !-> DEFINE VARIABLE sumcpu =0.374942
+ !-> DEFINE VARIABLE dt = 0.041993
+ !-> DEFINE VARIABLE sumcpu =0.362945
 !-> REPEAT: K=9
  !-> DEFINE VARIABLE dt = 0.041994
- !-> DEFINE VARIABLE sumcpu =0.416936
+ !-> DEFINE VARIABLE sumcpu =0.404939
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.041993
- !-> DEFINE VARIABLE sumcpu =0.458929
+ !-> DEFINE VARIABLE dt = 0.041994
+ !-> DEFINE VARIABLE sumcpu =0.446933
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.458929
-0.458929
+ !-> MESSAGE/CONTINUE 0.446933
+0.446933
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.547"
+CLOCK_SECS = "1.489"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "24-Dec-14"
-SESSION_TIME = "11:32"
-CURRENT_DATE = "24-Dec-14"
-CURRENT_TIME = "11:32:52"
+SESSION_DATE = "30-Dec-14"
+SESSION_TIME = "11:14"
+CURRENT_DATE = "30-Dec-14"
+CURRENT_TIME = "11:14:14"
 *** Running test: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -62719,8 +62719,8 @@ list contents
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.932 (PyFerret 1.1.1)"                                          
- 3    /  3:" ! Linux 2.6.18-398.el5 - 12/24/14"                                         
- 4    /  4:" ! 24-Dec-14 11:33     "                                                    
+ 3    /  3:" ! Linux 2.6.18-398.el5 - 12/30/14"                                         
+ 4    /  4:" ! 30-Dec-14 11:14     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -65154,98 +65154,98 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.920
-randu2_randn2       0.903
-randu2_randn2       0.734
-randu2_randn2       0.653
-randu2_randn2       0.161
+randu2_randn2       0.941
+randu2_randn2       0.224
+randu2_randn2       0.918
+randu2_randn2       0.815
+randu2_randn2       0.048
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.393
-randu2_randn2       0.036
-randu2_randn2       0.479
-randu2_randn2       0.589
-randu2_randn2       0.645
-             VARIABLE : RANDU2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.331
-randu2_randn2       0.959
-randu2_randn2       0.275
-randu2_randn2       0.499
-randu2_randn2       0.135
-randu2_randn2       0.557
-             VARIABLE : RANDU2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.675
-randu2_randn2       0.543
-randu2_randn2       0.190
-randu2_randn2       0.114
-randu2_randn2       0.104
-randu2_randn2       0.206
-             VARIABLE : RANDU2(XX,12436)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.343
-randu2_randn2       0.598
-randu2_randn2       0.888
-randu2_randn2       0.608
-randu2_randn2       0.446
-randu2_randn2       0.900
-             VARIABLE : RANDU2(XX,12436)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.343
-randu2_randn2       0.598
-randu2_randn2       0.888
-randu2_randn2       0.608
-randu2_randn2       0.446
-randu2_randn2       0.900
-             VARIABLE : RANDN2(XBIG,-1)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 5 points (X)
-             X        : 0.5 to 5.5
-randu2_randn2      -0.303
-randu2_randn2       0.490
-randu2_randn2      -0.895
-randu2_randn2      -0.557
-randu2_randn2      -1.048
-             VARIABLE : RANDN2(XBIG,-1)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 5 points (X)
-             X        : 0.5 to 5.5
-randu2_randn2       0.553
-randu2_randn2      -0.600
-randu2_randn2       0.079
-randu2_randn2      -0.921
-randu2_randn2      -1.560
-             VARIABLE : RANDN2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2      -0.563
-randu2_randn2      -0.418
+randu2_randn2       0.693
 randu2_randn2       0.019
-randu2_randn2      -0.545
-randu2_randn2      -1.356
-randu2_randn2      -0.271
+randu2_randn2       0.072
+randu2_randn2       0.424
+randu2_randn2       0.582
+             VARIABLE : RANDU2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.814
+randu2_randn2       0.377
+randu2_randn2       0.227
+randu2_randn2       0.768
+randu2_randn2       0.967
+randu2_randn2       0.071
+             VARIABLE : RANDU2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.400
+randu2_randn2       0.971
+randu2_randn2       0.486
+randu2_randn2       0.513
+randu2_randn2       0.944
+randu2_randn2       0.076
+             VARIABLE : RANDU2(XX,12436)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.343
+randu2_randn2       0.598
+randu2_randn2       0.888
+randu2_randn2       0.608
+randu2_randn2       0.446
+randu2_randn2       0.900
+             VARIABLE : RANDU2(XX,12436)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.343
+randu2_randn2       0.598
+randu2_randn2       0.888
+randu2_randn2       0.608
+randu2_randn2       0.446
+randu2_randn2       0.900
+             VARIABLE : RANDN2(XBIG,-1)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 5 points (X)
+             X        : 0.5 to 5.5
+randu2_randn2       1.021
+randu2_randn2       0.043
+randu2_randn2       1.236
+randu2_randn2      -0.462
+randu2_randn2       0.578
+             VARIABLE : RANDN2(XBIG,-1)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 5 points (X)
+             X        : 0.5 to 5.5
+randu2_randn2      -1.578
+randu2_randn2      -0.115
+randu2_randn2       0.080
+randu2_randn2      -0.887
+randu2_randn2      -0.004
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.069
-randu2_randn2      -0.866
-randu2_randn2      -0.159
-randu2_randn2      -0.431
-randu2_randn2      -1.179
-randu2_randn2       1.069
+randu2_randn2      -0.536
+randu2_randn2      -1.434
+randu2_randn2       0.094
+randu2_randn2      -0.304
+randu2_randn2      -0.841
+randu2_randn2       0.768
+             VARIABLE : RANDN2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2      -0.552
+randu2_randn2      -1.029
+randu2_randn2      -0.203
+randu2_randn2      -1.135
+randu2_randn2       0.698
+randu2_randn2       0.273
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65270,14 +65270,14 @@ randu2_randn2      -0.124
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.404       1.404       0.330
-randu2_randn2       1.054       1.054       0.330
-randu2_randn2       0.330       0.330       0.326
-randu2_randn2       0.326       0.326       0.330
-randu2_randn2      -0.099      -0.099       0.330
-randu2_randn2      -0.206      -0.206       0.330
-randu2_randn2      -0.446      -0.206       0.330
-randu2_randn2       0.348       0.348       0.348
+randu2_randn2       1.426       1.426       0.658
+randu2_randn2       1.249       1.249       0.658
+randu2_randn2       0.658       0.658       0.355
+randu2_randn2       0.355       0.355       0.355
+randu2_randn2      -0.051      -0.051       0.355
+randu2_randn2      -0.400      -0.256       0.355
+randu2_randn2      -0.256      -0.256       0.355
+randu2_randn2      -0.031      -0.031       0.355
 *** Running test: bn_axis_cf.jnl
 ! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
@@ -70945,7 +70945,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71000,7 +71000,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71044,7 +71044,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71088,7 +71088,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71125,7 +71125,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71163,7 +71163,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71230,7 +71230,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71279,7 +71279,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71340,7 +71340,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71381,7 +71381,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71422,7 +71422,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71463,7 +71463,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71501,7 +71501,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71729,7 +71729,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71767,7 +71767,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71814,7 +71814,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71858,7 +71858,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71883,7 +71883,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71908,7 +71908,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72337,7 +72337,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72366,7 +72366,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72417,7 +72417,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72981,7 +72981,7 @@ variables:
 		CYCLE_ORIG:history = "From z2" ;
 
 // global attributes:
-		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running test: bn_nobounds.jnl
@@ -73011,7 +73011,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73042,7 +73042,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73104,7 +73104,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73132,7 +73132,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73285,6 +73285,7 @@ set mode/last ignore
 ! bn_tree.jnl
  
 ! 11/2013 -- demonstrate SHOW VARIABLE/TREE and RETRUN=STATUS
+! 12/14 update to test regridding output using bn_vtree_regrid.jnl
  
 CANCEL DATA/ALL
 ! pure abstract variable -- no dataset
@@ -73382,12 +73383,12 @@ vtree=all /d=2 a
 go bn_vtree.sub noexist
 /TREE=ALL
    in default dataset my_file_vars
-   NOEXIST ??                           <== UNKNOWN VARIABLE ******
+   NOEXIST ??			<== UNKNOWN VARIABLE ******
 /TREE=USER
    in default dataset my_file_vars
-   NOEXIST ??                           <== UNKNOWN VARIABLE ******
+   NOEXIST ??			<== UNKNOWN VARIABLE ******
 /TREE=FILE
-   NOEXIST  (unknown variable)
+   *unknown variable: NOEXIST
 the problem is UNKNOWN VARIABLE: NOEXIST
 ************************
  
@@ -73395,12 +73396,12 @@ the problem is UNKNOWN VARIABLE: NOEXIST
 go bn_vtree.sub v[d=noexist]
 /TREE=ALL
    in default dataset my_file_vars
-   V[D=NOEXIST] ??                           <== UNKNOWN DATASET ******
+   V[D=NOEXIST] ??			<== UNKNOWN DATASET ******
 /TREE=USER
    in default dataset my_file_vars
-   V[D=NOEXIST] ??                           <== UNKNOWN DATASET ******
+   V[D=NOEXIST] ??			<== UNKNOWN DATASET ******
 /TREE=FILE
-   V[D=NOEXIST]  (unknown dataset)
+   *unknown dataset: V[D=NOEXIST]
 the problem is UNKNOWN DATASET: V[D=NOEXIST]
 ************************
  
@@ -73408,12 +73409,12 @@ the problem is UNKNOWN DATASET: V[D=NOEXIST]
 go bn_vtree.sub novar[d=nodset]
 /TREE=ALL
    in default dataset my_file_vars
-   NOVAR[D=NODSET] ??                           <== UNKNOWN DATASET ******
+   NOVAR[D=NODSET] ??			<== UNKNOWN DATASET ******
 /TREE=USER
    in default dataset my_file_vars
-   NOVAR[D=NODSET] ??                           <== UNKNOWN DATASET ******
+   NOVAR[D=NODSET] ??			<== UNKNOWN DATASET ******
 /TREE=FILE
-   NOVAR[D=NODSET]  (unknown dataset)
+   *unknown dataset: NOVAR[D=NODSET]
 the problem is UNKNOWN DATASET: NOVAR[D=NODSET]
 ************************
  
@@ -73422,13 +73423,13 @@ go bn_vtree.sub b
 /TREE=ALL
    in default dataset my_file_vars
    B = NOEXIST
-     NOEXIST ??                           <== UNKNOWN VARIABLE ******
+     NOEXIST ??			<== UNKNOWN VARIABLE ******
 /TREE=USER
    in default dataset my_file_vars
    B = NOEXIST
-     NOEXIST ??                           <== UNKNOWN VARIABLE ******
+     NOEXIST ??			<== UNKNOWN VARIABLE ******
 /TREE=FILE
-   NOEXIST  (unknown variable)
+   *unknown variable: NOEXIST
 the problem is UNKNOWN VARIABLE: NOEXIST
 ************************
  
@@ -73520,7 +73521,7 @@ go bn_vtree.sub fv1z
    FV1Z = FV1[GZ(NOEXIST)=ZPTS] + FVX
        NOEXIST   (unknown auxiliary variable)
 /TREE=FILE
-   NOEXIST  (unknown auxiliary variable)
+   *unknown auxiliary variable: NOEXIST
    FVX[d=my_file_vars]
 the problem is UNKNOWN AUXILIARY VARIABLE: NOEXIST
 ************************
@@ -73531,17 +73532,17 @@ go bn_vtree.sub fv1z
 /TREE=ALL
    in default dataset my_file_vars
    FV1Z = NOEXIST[GZ(DEPTH)=ZPTS] + FVX
-     NOEXIST[GZ(DEPTH)=ZPTS] ??                           <== UNKNOWN VARIABLE ******
+     NOEXIST[GZ(DEPTH)=ZPTS] ??			<== UNKNOWN VARIABLE ******
        DEPTH = Z[G=FVZ]+ 0*FVZ[K=1]
          FVZ
      FVX
 /TREE=USER
    in default dataset my_file_vars
    FV1Z = NOEXIST[GZ(DEPTH)=ZPTS] + FVX
-     NOEXIST[GZ(DEPTH)=ZPTS] ??                           <== UNKNOWN VARIABLE ******
+     NOEXIST[GZ(DEPTH)=ZPTS] ??			<== UNKNOWN VARIABLE ******
        DEPTH = Z[G=FVZ]+ 0*FVZ[K=1]
 /TREE=FILE
-   NOEXIST[GZ(DEPTH)=ZPTS]  (unknown variable)
+   *unknown variable: NOEXIST[GZ(DEPTH)=ZPTS]
    FVZ[d=my_file_vars]
    FVX[d=my_file_vars]
 the problem is UNKNOWN VARIABLE: NOEXIST[GZ(DEPTH)=ZPTS]
@@ -73553,17 +73554,17 @@ go bn_vtree.sub fv1z
 /TREE=ALL
    in default dataset my_file_vars
    FV1Z = NOEXIST[GZ(UNKNOWN_AUX)=ZPTS] + FVX
-     NOEXIST[GZ(UNKNOWN_AUX)=ZPTS] ??                           <== UNKNOWN VARIABLE ******
+     NOEXIST[GZ(UNKNOWN_AUX)=ZPTS] ??			<== UNKNOWN VARIABLE ******
        UNKNOWN_AUX   (unknown auxiliary variable)
      FVX
 /TREE=USER
    in default dataset my_file_vars
    FV1Z = NOEXIST[GZ(UNKNOWN_AUX)=ZPTS] + FVX
-     NOEXIST[GZ(UNKNOWN_AUX)=ZPTS] ??                           <== UNKNOWN VARIABLE ******
+     NOEXIST[GZ(UNKNOWN_AUX)=ZPTS] ??			<== UNKNOWN VARIABLE ******
        UNKNOWN_AUX   (unknown auxiliary variable)
 /TREE=FILE
-   NOEXIST[GZ(UNKNOWN_AUX)=ZPTS]  (unknown variable)
-   UNKNOWN_AUX  (unknown auxiliary variable)
+   *unknown variable: NOEXIST[GZ(UNKNOWN_AUX)=ZPTS]
+   *unknown auxiliary variable: UNKNOWN_AUX
    FVX[d=my_file_vars]
 the problem is UNKNOWN VARIABLE: NOEXIST[GZ(UNKNOWN_AUX)=ZPTS]
 ************************
@@ -73624,30 +73625,30 @@ go bn_vtree.sub p0    ! recursion
 /TREE=ALL
    in default dataset MY_UVAR_AGG
    P0 = S1 + P1
-     S1 ??                           <== UNKNOWN VARIABLE ******
+     S1 ??			<== UNKNOWN VARIABLE ******
      P1 = S2 + P2
-       S2 ??                           <== UNKNOWN VARIABLE ******
+       S2 ??			<== UNKNOWN VARIABLE ******
        P2 = S3 + P3
-         S3 ??                           <== UNKNOWN VARIABLE ******
+         S3 ??			<== UNKNOWN VARIABLE ******
          P3 = P1 + S3
            P1 =   *** WARNING: RECURSIVE DEFINITION.  See above
-           S3 ??                           <== UNKNOWN VARIABLE ******
+           S3 ??			<== UNKNOWN VARIABLE ******
 /TREE=USER
    in default dataset MY_UVAR_AGG
    P0 = S1 + P1
-     S1 ??                           <== UNKNOWN VARIABLE ******
+     S1 ??			<== UNKNOWN VARIABLE ******
      P1 = S2 + P2
-       S2 ??                           <== UNKNOWN VARIABLE ******
+       S2 ??			<== UNKNOWN VARIABLE ******
        P2 = S3 + P3
-         S3 ??                           <== UNKNOWN VARIABLE ******
+         S3 ??			<== UNKNOWN VARIABLE ******
          P3 = P1 + S3
            P1 =   *** WARNING: RECURSIVE DEFINITION.  See above
-           S3 ??                           <== UNKNOWN VARIABLE ******
+           S3 ??			<== UNKNOWN VARIABLE ******
 /TREE=FILE
-   S1  (unknown variable)
-   S2  (unknown variable)
-   S3  (unknown variable)
-   S3  (unknown variable)
+   *unknown variable: S1
+   *unknown variable: S2
+   *unknown variable: S3
+   *unknown variable: S3
 the problem is ILLEGAL RECURSIVE VARIABLES: P1
 ************************
 let p3 = s1 + S3
@@ -73655,31 +73656,31 @@ go bn_vtree.sub p0    ! ok
 /TREE=ALL
    in default dataset MY_UVAR_AGG
    P0 = S1 + P1
-     S1 ??                           <== UNKNOWN VARIABLE ******
+     S1 ??			<== UNKNOWN VARIABLE ******
      P1 = S2 + P2
-       S2 ??                           <== UNKNOWN VARIABLE ******
+       S2 ??			<== UNKNOWN VARIABLE ******
        P2 = S3 + P3
-         S3 ??                           <== UNKNOWN VARIABLE ******
+         S3 ??			<== UNKNOWN VARIABLE ******
          P3 = S1 + S3
-           S1 ??                           <== UNKNOWN VARIABLE ******
-           S3 ??                           <== UNKNOWN VARIABLE ******
+           S1 ??			<== UNKNOWN VARIABLE ******
+           S3 ??			<== UNKNOWN VARIABLE ******
 /TREE=USER
    in default dataset MY_UVAR_AGG
    P0 = S1 + P1
-     S1 ??                           <== UNKNOWN VARIABLE ******
+     S1 ??			<== UNKNOWN VARIABLE ******
      P1 = S2 + P2
-       S2 ??                           <== UNKNOWN VARIABLE ******
+       S2 ??			<== UNKNOWN VARIABLE ******
        P2 = S3 + P3
-         S3 ??                           <== UNKNOWN VARIABLE ******
+         S3 ??			<== UNKNOWN VARIABLE ******
          P3 = S1 + S3
-           S1 ??                           <== UNKNOWN VARIABLE ******
-           S3 ??                           <== UNKNOWN VARIABLE ******
+           S1 ??			<== UNKNOWN VARIABLE ******
+           S3 ??			<== UNKNOWN VARIABLE ******
 /TREE=FILE
-   S1  (unknown variable)
-   S2  (unknown variable)
-   S3  (unknown variable)
-   S1  (unknown variable)
-   S3  (unknown variable)
+   *unknown variable: S1
+   *unknown variable: S2
+   *unknown variable: S3
+   *unknown variable: S1
+   *unknown variable: S3
 the problem is UNKNOWN VARIABLE: S1
 ************************
  
@@ -73780,8 +73781,8 @@ go bn_vtree.sub "a, b, c, noexist, d, e, fvx[d=my_file_vars]"
        FV1[d=my_file_var]
      C = 1
    A = F
-     F ??                           <== UNKNOWN VARIABLE ******
-   NOEXIST ??                           <== UNKNOWN VARIABLE ******
+     F ??			<== UNKNOWN VARIABLE ******
+   NOEXIST ??			<== UNKNOWN VARIABLE ******
    E = 1
    FVX[d=my_file_var]
 /TREE=USER
@@ -73790,13 +73791,13 @@ go bn_vtree.sub "a, b, c, noexist, d, e, fvx[d=my_file_vars]"
      B = FV1[D=MY_FILE_VARS]
      C = 1
    A = F
-     F ??                           <== UNKNOWN VARIABLE ******
-   NOEXIST ??                           <== UNKNOWN VARIABLE ******
+     F ??			<== UNKNOWN VARIABLE ******
+   NOEXIST ??			<== UNKNOWN VARIABLE ******
    E = 1
 /TREE=FILE
-   F  (unknown variable)
+   *unknown variable: F
    FV1[d=my_file_vars]
-   NOEXIST  (unknown variable)
+   *unknown variable: NOEXIST
    FVX[d=my_file_vars]
 the problem is UNKNOWN VARIABLE: F
 ************************
@@ -73811,14 +73812,16 @@ the problem is UNKNOWN VARIABLE: F
 /TREE=ALL
    in default dataset MY_UVAR_AGG
    B = A[G=NOEXIST]
-     A[G=NOEXIST]   (unknown grid)
+     A = I[I=1:5]
+       regrid to [G=NOEXIST] ??		<== UNKNOWN GRID ******
 /TREE=USER
    in default dataset MY_UVAR_AGG
    B = A[G=NOEXIST]
-     A[G=NOEXIST]   (unknown grid)
+     A = I[I=1:5]
+       regrid to [G=NOEXIST] ??		<== UNKNOWN GRID ******
 /TREE=FILE
-   A[G=NOEXIST]  (unknown grid)
-the problem is UNKNOWN GRID: A[G=NOEXIST]
+   *unknown grid: [G=NOEXIST]
+the problem is UNKNOWN GRID: [G=NOEXIST]
 ************************
   list b
  
@@ -73834,7 +73837,7 @@ the problem is UNKNOWN GRID: A[G=NOEXIST]
    C = A[X=45S]
      A[X=45S]   *** WARNING: ERROR IN DEFINITION
 /TREE=FILE
-   A[X=45S]   *** WARNING: SYNTAX ERROR
+      *WARNING: syntax error: A[X=45S]
 the problem is ERROR IN EXPRESSION: A[X=45S]
 ************************
   list c
@@ -73851,7 +73854,7 @@ the problem is ERROR IN EXPRESSION: A[X=45S]
    D = A[I=1,,J=2]
      A[I=1,,J=2]   *** WARNING: ERROR IN DEFINITION
 /TREE=FILE
-   A[I=1,,J=2]   *** WARNING: SYNTAX ERROR
+      *WARNING: syntax error: A[I=1,,J=2]
 the problem is ERROR IN EXPRESSION: A[I=1,,J=2]
 ************************
   list d
@@ -73868,7 +73871,7 @@ the problem is ERROR IN EXPRESSION: A[I=1,,J=2]
    E = A[P=1]
      A[P=1]   *** WARNING: ERROR IN DEFINITION
 /TREE=FILE
-   A[P=1]   *** WARNING: SYNTAX ERROR
+      *WARNING: syntax error: A[P=1]
 the problem is ERROR IN EXPRESSION: A[P=1]
 ************************
   list e
@@ -73900,6 +73903,154 @@ let a = ..history[d=1]
 show var/tree a
    in default dataset MY_UVAR_AGG
    A = ..HISTORY[D=1]
+ 
+! *****
+! 12/14 addition to test regridding dependencies
+go bn_vtree_regrid
+! bn_vtree_regrid.jnl
+! exercise 12/14 enhancements to display regrid target on a separate line
+ 
+! case 1: target grid known,   regridded variable known
+let myvar = 1           ! var to be regridded is known
+let gvar = x[x=1:5]    ! target regridding var is known
+let a = myvar[g=gvar] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree a
+   in default dataset MY_UVAR_AGG
+   A = MYVAR[G=GVAR] + UNVAR + KVAR
+     MYVAR = 1
+       regrid to GVAR = X[X=1:5]
+     UNVAR ??			<== UNKNOWN VARIABLE ******
+     KVAR = 1
+ 
+! case 2: target grid known,   regridded variable unknown
+canc var/all
+! myvar unknown
+let gvar = x[x=1:5]    ! target regridding var is known
+let a = myvar[g=gvar] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree a
+   in default dataset MY_UVAR_AGG
+   A = MYVAR[G=GVAR] + UNVAR + KVAR
+     MYVAR[G=GVAR] ??			<== UNKNOWN VARIABLE ******
+       regrid to GVAR = X[X=1:5]
+     UNVAR ??			<== UNKNOWN VARIABLE ******
+     KVAR = 1
+ 
+! case 3: target grid unknown, regridded variable known
+canc var/all
+let myvar = 1           ! var to be regridded is known
+! gvar unknown
+let a = myvar[g=gvar] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree a
+   in default dataset MY_UVAR_AGG
+   A = MYVAR[G=GVAR] + UNVAR + KVAR
+     MYVAR = 1
+       regrid to [G=GVAR] ??		<== UNKNOWN GRID ******
+     UNVAR ??			<== UNKNOWN VARIABLE ******
+     KVAR = 1
+ 
+! case 4: target grid unknown, regridded variable unknown
+canc var/all
+! myvar unknown
+! gvar  unknown
+let a = myvar[g=gvar] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree a
+   in default dataset MY_UVAR_AGG
+   A = MYVAR[G=GVAR] + UNVAR + KVAR
+     MYVAR[G=GVAR] ??			<== UNKNOWN VARIABLE ******
+       regrid to [G=GVAR] ??		<== UNKNOWN GRID ******
+     UNVAR ??			<== UNKNOWN VARIABLE ******
+     KVAR = 1
+ 
+! **************************************
+! same tests but now with a dataset named with the target grid
+use coads_climatology
+use levitus_climatology   ! default to d=2
+ 
+! case 1: target grid known,   regridded variable known
+canc var/all
+let myvar = 1           ! var to be regridded is known
+let a = myvar[g=sst[d=1]] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree=all a
+   in default dataset levitus_climatology
+   A = MYVAR[G=SST[D=1]] + UNVAR + KVAR
+     MYVAR = 1
+       regrid to [G=SST[D=1]] ??		<== UNKNOWN GRID ******
+     UNVAR ??			<== UNKNOWN VARIABLE ******
+     KVAR = 1
+ 
+! case 2: target grid known,   regridded variable unknown
+canc var/all
+! myvar unknown
+let a = myvar[g=sst[d=1]] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree=all a
+   in default dataset levitus_climatology
+   A = MYVAR[G=SST[D=1]] + UNVAR + KVAR
+     MYVAR[G=SST[D=1]] ??			<== UNKNOWN VARIABLE ******
+       regrid to [G=SST[D=1]] ??		<== UNKNOWN GRID ******
+     UNVAR ??			<== UNKNOWN VARIABLE ******
+     KVAR = 1
+ 
+! case 3: target grid unknown, regridded variable known
+canc var/all
+let myvar = 1           ! var to be regridded is known
+! gvar unknown
+let a = myvar[g=gvar[d=1]] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree=all a
+   in default dataset levitus_climatology
+   A = MYVAR[G=GVAR[D=1]] + UNVAR + KVAR
+     MYVAR = 1
+       regrid to [G=GVAR[D=1]] ??		<== UNKNOWN GRID ******
+     UNVAR ??			<== UNKNOWN VARIABLE ******
+     KVAR = 1
+ 
+! case 4: target grid unknown, regridded variable unknown
+canc var/all
+! myvar unknown
+! gvar  unknown
+let a = myvar[g=gvar[d=1]] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree=all a
+   in default dataset levitus_climatology
+   A = MYVAR[G=GVAR[D=1]] + UNVAR + KVAR
+     MYVAR[G=GVAR[D=1]] ??			<== UNKNOWN VARIABLE ******
+       regrid to [G=GVAR[D=1]] ??		<== UNKNOWN GRID ******
+     UNVAR ??			<== UNKNOWN VARIABLE ******
+     KVAR = 1
+ 
+! *******************
+! file variable listing, only
+canc var/all
+let myvar = 1
+let fvar = airt[d=1]
+let kvar = 1  ! known var
+* /TREE=FILE with know regrid target
+let a = myvar[g=sst[d=1]] + fvar + kvar
+sho var/tree=file a
+   *unknown grid: [G=SST[D=1]]
+   *unknown variable: AIRT[D=1]
+ 
+* /TREE=FILE with unknow regrid target
+let a = myvar[g=unknown] + fvar + kvar
+sho var/tree=file a
+   *unknown grid: [G=UNKNOWN]
+   *unknown variable: AIRT[D=1]
+ 
+ 
 *** Running test: bn686_bug_fixes.jnl
 ! bn686_bug_fixes
 ! test various fixes that went into version 6.86
@@ -74297,7 +74448,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74320,7 +74471,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74540,7 +74691,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74570,7 +74721,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74591,7 +74742,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74612,7 +74763,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74634,7 +74785,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75043,7 +75194,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75059,7 +75210,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75075,7 +75226,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14
+ .                               history         CHAR        40   T       FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75905,10 +76056,12 @@ GO bn_vtree.sub c
 /TREE=ALL
    C = B2[GT=A]
      B2 = A
+       regrid to A = T[GT=1:2:1]
        A = T[GT=1:2:1]
 /TREE=USER
    C = B2[GT=A]
      B2 = A
+       regrid to A = T[GT=1:2:1]
        A = T[GT=1:2:1]
 /TREE=FILE
 c is ready and AVAILABLE
@@ -76079,7 +76232,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 }
 *** Running test: bn_global_atts.jnl
  ! NOAA/PMEL TMAP
@@ -76169,7 +76322,7 @@ variables:
 		LON360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14" ;
+		:history = "CruiseDsgNcFile 1.0FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -76196,7 +76349,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- FERRET V6.932 (PyFerret 1.1.1) 24-Dec-14 
+ FERRET V6.932 (PyFerret 1.1.1) 30-Dec-14 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -76225,7 +76378,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the fileFERRET V6.932 (PyFerret 1.1.1) 24-Dec-14 
+ ..history = The history of the fileFERRET V6.932 (PyFerret 1.1.1) 30-Dec-14 
  ..Conventions = Conventions for variables named V2CF-1.6 
 *** Running test: bn_center_key_labels.jnl
 ! bn_center_key_labels
@@ -76637,30 +76790,30 @@ a is ready and AVAILABLE
 the problem is UNKNOWN VARIABLE: NOEXIST
 ************************
    in default dataset my_file_vars
-   NOEXIST ??                           <== UNKNOWN VARIABLE ******
+   NOEXIST ??			<== UNKNOWN VARIABLE ******
    in default dataset my_file_vars
-   NOEXIST ??                           <== UNKNOWN VARIABLE ******
-   NOEXIST  (unknown variable)
+   NOEXIST ??			<== UNKNOWN VARIABLE ******
+   *unknown variable: NOEXIST
 /TREE=ALL
 /TREE=USER
 /TREE=FILE
 the problem is UNKNOWN DATASET: V[D=NOEXIST]
 ************************
    in default dataset my_file_vars
-   V[D=NOEXIST] ??                           <== UNKNOWN DATASET ******
+   V[D=NOEXIST] ??			<== UNKNOWN DATASET ******
    in default dataset my_file_vars
-   V[D=NOEXIST] ??                           <== UNKNOWN DATASET ******
-   V[D=NOEXIST]  (unknown dataset)
+   V[D=NOEXIST] ??			<== UNKNOWN DATASET ******
+   *unknown dataset: V[D=NOEXIST]
 /TREE=ALL
 /TREE=USER
 /TREE=FILE
 the problem is UNKNOWN DATASET: NOVAR[D=NODSET]
 ************************
    in default dataset my_file_vars
-   NOVAR[D=NODSET] ??                           <== UNKNOWN DATASET ******
+   NOVAR[D=NODSET] ??			<== UNKNOWN DATASET ******
    in default dataset my_file_vars
-   NOVAR[D=NODSET] ??                           <== UNKNOWN DATASET ******
-   NOVAR[D=NODSET]  (unknown dataset)
+   NOVAR[D=NODSET] ??			<== UNKNOWN DATASET ******
+   *unknown dataset: NOVAR[D=NODSET]
 /TREE=ALL
 /TREE=USER
 /TREE=FILE
@@ -76668,11 +76821,11 @@ the problem is UNKNOWN VARIABLE: NOEXIST
 ************************
    in default dataset my_file_vars
    B = NOEXIST
-     NOEXIST ??                           <== UNKNOWN VARIABLE ******
+     NOEXIST ??			<== UNKNOWN VARIABLE ******
    in default dataset my_file_vars
    B = NOEXIST
-     NOEXIST ??                           <== UNKNOWN VARIABLE ******
-   NOEXIST  (unknown variable)
+     NOEXIST ??			<== UNKNOWN VARIABLE ******
+   *unknown variable: NOEXIST
 /TREE=ALL
 /TREE=USER
 /TREE=FILE
@@ -76742,7 +76895,7 @@ the problem is UNKNOWN AUXILIARY VARIABLE: NOEXIST
    in default dataset my_file_vars
    FV1Z = FV1[GZ(NOEXIST)=ZPTS] + FVX
        NOEXIST   (unknown auxiliary variable)
-   NOEXIST  (unknown auxiliary variable)
+   *unknown auxiliary variable: NOEXIST
    FVX[d=my_file_vars]
 /TREE=ALL
 /TREE=USER
@@ -76751,15 +76904,15 @@ the problem is UNKNOWN VARIABLE: NOEXIST[GZ(DEPTH)=ZPTS]
 ************************
    in default dataset my_file_vars
    FV1Z = NOEXIST[GZ(DEPTH)=ZPTS] + FVX
-     NOEXIST[GZ(DEPTH)=ZPTS] ??                           <== UNKNOWN VARIABLE ******
+     NOEXIST[GZ(DEPTH)=ZPTS] ??			<== UNKNOWN VARIABLE ******
        DEPTH = Z[G=FVZ]+ 0*FVZ[K=1]
          FVZ
      FVX
    in default dataset my_file_vars
    FV1Z = NOEXIST[GZ(DEPTH)=ZPTS] + FVX
-     NOEXIST[GZ(DEPTH)=ZPTS] ??                           <== UNKNOWN VARIABLE ******
+     NOEXIST[GZ(DEPTH)=ZPTS] ??			<== UNKNOWN VARIABLE ******
        DEPTH = Z[G=FVZ]+ 0*FVZ[K=1]
-   NOEXIST[GZ(DEPTH)=ZPTS]  (unknown variable)
+   *unknown variable: NOEXIST[GZ(DEPTH)=ZPTS]
    FVZ[d=my_file_vars]
    FVX[d=my_file_vars]
 /TREE=ALL
@@ -76769,15 +76922,15 @@ the problem is UNKNOWN VARIABLE: NOEXIST[GZ(UNKNOWN_AUX)=ZPTS]
 ************************
    in default dataset my_file_vars
    FV1Z = NOEXIST[GZ(UNKNOWN_AUX)=ZPTS] + FVX
-     NOEXIST[GZ(UNKNOWN_AUX)=ZPTS] ??                           <== UNKNOWN VARIABLE ******
+     NOEXIST[GZ(UNKNOWN_AUX)=ZPTS] ??			<== UNKNOWN VARIABLE ******
        UNKNOWN_AUX   (unknown auxiliary variable)
      FVX
    in default dataset my_file_vars
    FV1Z = NOEXIST[GZ(UNKNOWN_AUX)=ZPTS] + FVX
-     NOEXIST[GZ(UNKNOWN_AUX)=ZPTS] ??                           <== UNKNOWN VARIABLE ******
+     NOEXIST[GZ(UNKNOWN_AUX)=ZPTS] ??			<== UNKNOWN VARIABLE ******
        UNKNOWN_AUX   (unknown auxiliary variable)
-   NOEXIST[GZ(UNKNOWN_AUX)=ZPTS]  (unknown variable)
-   UNKNOWN_AUX  (unknown auxiliary variable)
+   *unknown variable: NOEXIST[GZ(UNKNOWN_AUX)=ZPTS]
+   *unknown auxiliary variable: UNKNOWN_AUX
    FVX[d=my_file_vars]
 /TREE=ALL
 /TREE=USER
@@ -76822,28 +76975,28 @@ the problem is ILLEGAL RECURSIVE VARIABLES: P1
 ************************
    in default dataset MY_UVAR_AGG
    P0 = S1 + P1
-     S1 ??                           <== UNKNOWN VARIABLE ******
+     S1 ??			<== UNKNOWN VARIABLE ******
      P1 = S2 + P2
-       S2 ??                           <== UNKNOWN VARIABLE ******
+       S2 ??			<== UNKNOWN VARIABLE ******
        P2 = S3 + P3
-         S3 ??                           <== UNKNOWN VARIABLE ******
+         S3 ??			<== UNKNOWN VARIABLE ******
          P3 = P1 + S3
            P1 =   *** WARNING: RECURSIVE DEFINITION.  See above
-           S3 ??                           <== UNKNOWN VARIABLE ******
+           S3 ??			<== UNKNOWN VARIABLE ******
    in default dataset MY_UVAR_AGG
    P0 = S1 + P1
-     S1 ??                           <== UNKNOWN VARIABLE ******
+     S1 ??			<== UNKNOWN VARIABLE ******
      P1 = S2 + P2
-       S2 ??                           <== UNKNOWN VARIABLE ******
+       S2 ??			<== UNKNOWN VARIABLE ******
        P2 = S3 + P3
-         S3 ??                           <== UNKNOWN VARIABLE ******
+         S3 ??			<== UNKNOWN VARIABLE ******
          P3 = P1 + S3
            P1 =   *** WARNING: RECURSIVE DEFINITION.  See above
-           S3 ??                           <== UNKNOWN VARIABLE ******
-   S1  (unknown variable)
-   S2  (unknown variable)
-   S3  (unknown variable)
-   S3  (unknown variable)
+           S3 ??			<== UNKNOWN VARIABLE ******
+   *unknown variable: S1
+   *unknown variable: S2
+   *unknown variable: S3
+   *unknown variable: S3
 /TREE=ALL
 /TREE=USER
 /TREE=FILE
@@ -76851,29 +77004,29 @@ the problem is UNKNOWN VARIABLE: S1
 ************************
    in default dataset MY_UVAR_AGG
    P0 = S1 + P1
-     S1 ??                           <== UNKNOWN VARIABLE ******
+     S1 ??			<== UNKNOWN VARIABLE ******
      P1 = S2 + P2
-       S2 ??                           <== UNKNOWN VARIABLE ******
+       S2 ??			<== UNKNOWN VARIABLE ******
        P2 = S3 + P3
-         S3 ??                           <== UNKNOWN VARIABLE ******
+         S3 ??			<== UNKNOWN VARIABLE ******
          P3 = S1 + S3
-           S1 ??                           <== UNKNOWN VARIABLE ******
-           S3 ??                           <== UNKNOWN VARIABLE ******
+           S1 ??			<== UNKNOWN VARIABLE ******
+           S3 ??			<== UNKNOWN VARIABLE ******
    in default dataset MY_UVAR_AGG
    P0 = S1 + P1
-     S1 ??                           <== UNKNOWN VARIABLE ******
+     S1 ??			<== UNKNOWN VARIABLE ******
      P1 = S2 + P2
-       S2 ??                           <== UNKNOWN VARIABLE ******
+       S2 ??			<== UNKNOWN VARIABLE ******
        P2 = S3 + P3
-         S3 ??                           <== UNKNOWN VARIABLE ******
+         S3 ??			<== UNKNOWN VARIABLE ******
          P3 = S1 + S3
-           S1 ??                           <== UNKNOWN VARIABLE ******
-           S3 ??                           <== UNKNOWN VARIABLE ******
-   S1  (unknown variable)
-   S2  (unknown variable)
-   S3  (unknown variable)
-   S1  (unknown variable)
-   S3  (unknown variable)
+           S1 ??			<== UNKNOWN VARIABLE ******
+           S3 ??			<== UNKNOWN VARIABLE ******
+   *unknown variable: S1
+   *unknown variable: S2
+   *unknown variable: S3
+   *unknown variable: S1
+   *unknown variable: S3
    in default dataset my_file_vars
    FV = FV1 + FV1 + FV1
    in default dataset MY_UVAR_AGG
@@ -76949,8 +77102,8 @@ the problem is UNKNOWN VARIABLE: F
        FV1[d=my_file_var]
      C = 1
    A = F
-     F ??                           <== UNKNOWN VARIABLE ******
-   NOEXIST ??                           <== UNKNOWN VARIABLE ******
+     F ??			<== UNKNOWN VARIABLE ******
+   NOEXIST ??			<== UNKNOWN VARIABLE ******
    E = 1
    FVX[d=my_file_var]
    in default dataset MY_UVAR_AGG
@@ -76958,25 +77111,27 @@ the problem is UNKNOWN VARIABLE: F
      B = FV1[D=MY_FILE_VARS]
      C = 1
    A = F
-     F ??                           <== UNKNOWN VARIABLE ******
-   NOEXIST ??                           <== UNKNOWN VARIABLE ******
+     F ??			<== UNKNOWN VARIABLE ******
+   NOEXIST ??			<== UNKNOWN VARIABLE ******
    E = 1
-   F  (unknown variable)
+   *unknown variable: F
    FV1[d=my_file_vars]
-   NOEXIST  (unknown variable)
+   *unknown variable: NOEXIST
    FVX[d=my_file_vars]
 /TREE=ALL
 /TREE=USER
 /TREE=FILE
-the problem is UNKNOWN GRID: A[G=NOEXIST]
+the problem is UNKNOWN GRID: [G=NOEXIST]
 ************************
    in default dataset MY_UVAR_AGG
    B = A[G=NOEXIST]
-     A[G=NOEXIST]   (unknown grid)
+     A = I[I=1:5]
+       regrid to [G=NOEXIST] ??		<== UNKNOWN GRID ******
    in default dataset MY_UVAR_AGG
    B = A[G=NOEXIST]
-     A[G=NOEXIST]   (unknown grid)
-   A[G=NOEXIST]  (unknown grid)
+     A = I[I=1:5]
+       regrid to [G=NOEXIST] ??		<== UNKNOWN GRID ******
+   *unknown grid: [G=NOEXIST]
 /TREE=ALL
 /TREE=USER
 /TREE=FILE
@@ -76988,7 +77143,7 @@ the problem is ERROR IN EXPRESSION: A[X=45S]
    in default dataset MY_UVAR_AGG
    C = A[X=45S]
      A[X=45S]   *** WARNING: ERROR IN DEFINITION
-   A[X=45S]   *** WARNING: SYNTAX ERROR
+      *WARNING: syntax error: A[X=45S]
 /TREE=ALL
 /TREE=USER
 /TREE=FILE
@@ -77000,7 +77155,7 @@ the problem is ERROR IN EXPRESSION: A[I=1,,J=2]
    in default dataset MY_UVAR_AGG
    D = A[I=1,,J=2]
      A[I=1,,J=2]   *** WARNING: ERROR IN DEFINITION
-   A[I=1,,J=2]   *** WARNING: SYNTAX ERROR
+      *WARNING: syntax error: A[I=1,,J=2]
 /TREE=ALL
 /TREE=USER
 /TREE=FILE
@@ -77012,7 +77167,7 @@ the problem is ERROR IN EXPRESSION: A[P=1]
    in default dataset MY_UVAR_AGG
    E = A[P=1]
      A[P=1]   *** WARNING: ERROR IN DEFINITION
-   A[P=1]   *** WARNING: SYNTAX ERROR
+      *WARNING: syntax error: A[P=1]
 /TREE=ALL
 /TREE=USER
 /TREE=FILE
@@ -77124,8 +77279,8 @@ list {spawn:"ls xml*.jnl"}
  
 LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
 say `filesets, return=isize`
- !-> MESSAGE/CONTINUE 842
-842
+ !-> MESSAGE/CONTINUE 843
+843
  
 let files = {spawn:"ls *cdf*.jnl"}
 let name_len = strindex(files, ".sub")
@@ -77235,6 +77390,7 @@ VTREE b2
    B2 = B+0*C[GX=B]
      B = X[GX=1:5:1]
      C = X[GX=1:5:2]
+       regrid to B = X[GX=1:5:1]
  
 GO bn_reset
 cancel mode verify
@@ -78609,13 +78765,13 @@ FERRET_PLATFORM = "Linux 2.6.18-398.el5"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 15:13:45 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "24-Dec-14"
-SESSION_TIME = "11:34"
-SESSION_PID = "32341"
-DELTA_CPU = "0.538917"
-CLOCK_SECS = "0.329"
-CURRENT_DATE = "24-Dec-14"
-CURRENT_TIME = "11:34:26"
+SESSION_DATE = "30-Dec-14"
+SESSION_TIME = "11:15"
+SESSION_PID = "21935"
+DELTA_CPU = "0.537917"
+CLOCK_SECS = "0.331"
+CURRENT_DATE = "30-Dec-14"
+CURRENT_TIME = "11:15:49"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -78640,7 +78796,7 @@ PPL$COMMAND_FILE = "$$MEMBUF$$"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 PPL$SCALE = "1.0000"
-WIN_TITLE = "24-Dec-14_11:34"
+WIN_TITLE = "30-Dec-14_11:15"
 VP_SCALE = "1"
 VP_RT_MARGIN = "1"
 VP_TOP_MARGIN = "1.4"
@@ -78691,4 +78847,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Wed Dec 24 11:34:26 PST 2014
+Ended at Tue Dec 30 11:15:49 PST 2014

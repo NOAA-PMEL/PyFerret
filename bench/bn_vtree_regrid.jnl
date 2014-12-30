@@ -1,0 +1,92 @@
+! bn_vtree_regrid.jnl
+! exercise 12/14 enhancements to display regrid target on a separate line 
+
+! case 1: target grid known,   regridded variable known
+let myvar = 1           ! var to be regridded is known
+let gvar = x[x=1:5]    ! target regridding var is known
+let a = myvar[g=gvar] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree a
+
+! case 2: target grid known,   regridded variable unknown
+canc var/all
+! myvar unknown
+let gvar = x[x=1:5]    ! target regridding var is known
+let a = myvar[g=gvar] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree a
+
+! case 3: target grid unknown, regridded variable known
+canc var/all
+let myvar = 1           ! var to be regridded is known
+! gvar unknown
+let a = myvar[g=gvar] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree a
+
+! case 4: target grid unknown, regridded variable unknown
+canc var/all
+! myvar unknown
+! gvar  unknown
+let a = myvar[g=gvar] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree a
+
+! **************************************
+! same tests but now with a dataset named with the target grid
+use coads_climatology
+use levitus_climatology   ! default to d=2
+
+! case 1: target grid known,   regridded variable known
+canc var/all
+let myvar = 1           ! var to be regridded is known
+let a = myvar[g=sst[d=1]] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree=all a
+
+! case 2: target grid known,   regridded variable unknown
+canc var/all
+! myvar unknown
+let a = myvar[g=sst[d=1]] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree=all a
+
+! case 3: target grid unknown, regridded variable known
+canc var/all
+let myvar = 1           ! var to be regridded is known
+! gvar unknown
+let a = myvar[g=gvar[d=1]] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree=all a
+
+! case 4: target grid unknown, regridded variable unknown
+canc var/all
+! myvar unknown
+! gvar  unknown
+let a = myvar[g=gvar[d=1]] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree=all a
+
+! *******************
+! file variable listing, only
+canc var/all
+let myvar = 1  
+let fvar = airt[d=1]
+let kvar = 1  ! known var
+* /TREE=FILE with know regrid target
+let a = myvar[g=sst[d=1]] + fvar + kvar
+sho var/tree=file a
+
+* /TREE=FILE with unknow regrid target
+let a = myvar[g=unknown] + fvar + kvar
+sho var/tree=file a
+
+

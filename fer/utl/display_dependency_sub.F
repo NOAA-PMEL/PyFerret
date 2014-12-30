@@ -41,7 +41,8 @@
 * written for VAX computer under VMS operating system
 
 * V685  *sh* 11/13 
-* V690  *sh* 11/13 - minor adjustments to support auxiliary regridding variables 
+* V690  *sh* 11/13 - minor adjustments to support aux regridding variables 
+* V693+ *sh* 12/14 - display regridding dependency on a separate line
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -128,7 +129,7 @@
 
 * initialize this record
 	      tree_level = level(rec)
-	      var  = var_or_start(rec)
+ 	      var  = var_or_start(rec)
 	      cat  = cat_or_end  (rec)
 	      dset = dataset(rec)
 	      uvar = parent_uv(rec)
@@ -146,6 +147,12 @@
 	         dsetname(dnamlen:dnamlen) = ']'
 	      ENDIF
 
+* document regridding dependencies as special, prefixed by "regrid to "
+	      IF ( item .EQ. pcx_vtree_regrid_report ) THEN
+	         line_buff(blanks+1:) = 'regrid to '
+	         blanks = blanks + 10
+	      ENDIF
+
 * document this variable
 	      IF ( flag(rec) .EQ. df_unknown_var ) THEN
 	         istart = uvar_item_start(item, uvar)
@@ -157,7 +164,7 @@
 	            llen = llen + dnamlen
 	         ENDIF
 	         line_buff(llen+1:) =
-     .			' ??                           <== UNKNOWN VARIABLE ******'
+     .			' ??			<== UNKNOWN VARIABLE ******'
 	      ELSEIF ( flag(rec) .EQ. df_unknown_dataset ) THEN
 	         istart = uvar_item_start(item, uvar)
 	         iend   = uvar_item_end  (item, uvar)
@@ -168,17 +175,23 @@
 	            llen = llen + dnamlen
 	         ENDIF
 	         line_buff(llen+1:) = 
-     .			' ??                           <== UNKNOWN DATASET ******'
+     .			' ??			<== UNKNOWN DATASET ******'
 	      ELSEIF ( flag(rec) .EQ. df_unknown_grid ) THEN
-	         istart = uvar_item_start(item, uvar)
-	         iend   = uvar_item_end  (item, uvar)
+	         IF ( item .EQ. pcx_vtree_regrid_report ) THEN
+	            istart = var
+	            iend   = cat
+	         ELSE
+	            istart = uvar_item_start(item, uvar)
+	            iend   = uvar_item_end  (item, uvar)
+	         ENDIF
 	         line_buff(blanks+1:) = uvar_text(uvar)(istart:iend)
 	         llen = (iend-istart+1) + blanks
 	         IF (tell_dset) THEN
 	            line_buff(llen+1:) = dsetname
 	            llen = llen + dnamlen
 	         ENDIF
-	         line_buff(llen+1:) = '   (unknown grid)'
+	         line_buff(llen+1:) =
+     .			' ??		<== UNKNOWN GRID ******'
 	      ELSEIF ( flag(rec) .EQ. df_syntax_error ) THEN
 	         istart = uvar_item_start(item, uvar)
 	         iend   = uvar_item_end  (item, uvar)
@@ -304,7 +317,12 @@
      .           .AND. cat_or_end  (i) .EQ. cat_or_end  (rec)
 	         IF (dup) GOTO 2100
  2050	      CONTINUE
-	      line_buff = VAR_CODE(cat,var)		! valid file variable
+	      llen = 0
+	      IF ( item .EQ. pcx_vtree_regrid_report ) THEN
+	         line_buff = 'regrid to '
+	         llen = 10
+	      ENDIF
+	      line_buff(llen+1:) = VAR_CODE(cat,var)	! valid file variable
 	      llen = TM_LENSTR1(line_buff)
 	      dsetname = '[d='
 	      dsetname(4:) = GET_UNIQUE_DSET_NAME( dset )
@@ -314,23 +332,33 @@
 	   ELSEIF ( flag(rec) .EQ. df_unknown_var ) THEN
 	      istart = uvar_item_start(item, uvar)
 	      iend   = uvar_item_end  (item, uvar)
-	      line_buff = uvar_text(uvar)(istart:iend)//'  (unknown variable)'
+	      line_buff = '*unknown variable: '//
+     .			uvar_text(uvar)(istart:iend)
 	   ELSEIF ( flag(rec) .EQ. df_unknown_dataset ) THEN
 	      istart = uvar_item_start(item, uvar)
 	      iend   = uvar_item_end  (item, uvar)
-	      line_buff = uvar_text(uvar)(istart:iend)//'  (unknown dataset)'
+	      line_buff = '*unknown dataset: '//
+     .			uvar_text(uvar)(istart:iend)
 	   ELSEIF ( flag(rec) .EQ. df_unknown_grid ) THEN
-	      istart = uvar_item_start(item, uvar)
-	      iend   = uvar_item_end  (item, uvar)
-	      line_buff = uvar_text(uvar)(istart:iend)//'  (unknown grid)'
+	      IF ( item .EQ. pcx_vtree_regrid_report ) THEN
+	         istart = var
+	         iend   = cat
+	      ELSE
+	         istart = uvar_item_start(item, uvar)
+	         iend   = uvar_item_end  (item, uvar)
+	      ENDIF
+	      line_buff = '*unknown grid: '//
+     .			uvar_text(uvar)(istart:iend)
 	   ELSEIF ( flag(rec) .EQ. df_syntax_error ) THEN
 	      istart = uvar_item_start(item, uvar)
 	      iend   = uvar_item_end  (item, uvar)
-	      line_buff = uvar_text(uvar)(istart:iend)//'   *** WARNING: SYNTAX ERROR'
+	      line_buff = '   *WARNING: syntax error: '//
+     .			uvar_text(uvar)(istart:iend)
 	   ELSEIF ( flag(rec) .EQ. df_unknown_auxvar ) THEN
 	      istart = uvar_item_start(item, uvar) + var - 1
 	      iend   = uvar_item_start(item, uvar) + cat - 1
-	      line_buff = uvar_text(uvar)(istart:iend)//'  (unknown auxiliary variable)'
+	      line_buff = '*unknown auxiliary variable: '//
+     .			uvar_text(uvar)(istart:iend)
 	   ENDIF
 
 	   CALL SPLIT_LIST( pttmode_explct, show_lun, '   '//line_buff, 0)

@@ -726,6 +726,8 @@ c	      next_char = istart + naxes - 1
 	         ELSEIF ( single_char ) THEN
 	            IF (dependency_tree_mode) THEN
 	              cx_vtree_unknown_grid = .TRUE.
+	              cx_vtree_var_or_start = equal_pos + 1
+	              cx_vtree_cat_or_end   = equal_pos + name_end
 	            ELSE
 	               GOTO 5050		! (G=axis_name not allowed)
 	            ENDIF
@@ -739,6 +741,8 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 * ... 12/14 hack to let an unknown grid error condition slip through if we
 *	are merely evaluating the dependency tree.
 	                cx_vtree_unknown_grid = .TRUE.
+	                cx_vtree_var_or_start = equal_pos + 1
+	                cx_vtree_cat_or_end   = equal_pos + name_end
 *       It is normal for LET-defined variables
 *	that the grid may remain unknown until the children grids
 *	are determined, so hopefully it is OK here, too.  If not then we

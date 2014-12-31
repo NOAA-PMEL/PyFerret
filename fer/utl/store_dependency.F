@@ -151,6 +151,7 @@
 	   cat_or_end  (row) = cx_vtree_cat_or_end
 	   parent_uv   (row) = uvar
 	   uv_item     (row) = pcx_vtree_regrid_report
+     .			     - cx_vtree_regrid_ntarget  ! encode # of targets
 	ELSEIF ( cx_status .NE. ferr_ok ) THEN
 	   var_or_start(row) = uvar_item_start(item, uvar)
 	   cat_or_end  (row) = uvar_item_end  (item, uvar)

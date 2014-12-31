@@ -89,4 +89,31 @@ sho var/tree=file a
 let a = myvar[g=unknown] + fvar + kvar
 sho var/tree=file a
 
+! ********************
+! regridding to multiple targets
 
+define axis/x=140e:160e:1 x1
+define axis/y=20s:20n:1   y1
+LET myvar = X[gx=x1] + Y[gy=y1]
+
+define axis/y=5s:5n:.5 yp5
+
+go bn_vtree.sub myvar[g=temp]
+
+! second target *is* a named variable
+go bn_vtree.sub myvar[g=temp,gy=sst[d=1]]
+go bn_vtree.sub myvar[gx=temp,gy=sst[d=1]]
+go bn_vtree.sub myvar[gy=sst[d=1],gx=temp]  ! reverse order, only
+
+! second target is not a named variable
+go bn_vtree.sub myvar[g=temp,gy=yp5]
+go bn_vtree.sub myvar[gx=temp,gy=yp5]
+go bn_vtree.sub myvar[g=temp,y=5s:5n:.5]
+go bn_vtree.sub myvar[g=sst[d=1],y=5s:5n:.5]
+
+! second target is an unknown variable
+go bn_vtree.sub myvar[g=temp,gy=mybad]
+go bn_vtree.sub myvar[gy=temp,g=mybad[d=1]]
+go bn_vtree.sub myvar[g=myvar,gy=mybad]
+go bn_vtree.sub myvar[gy=yp5,g=mybad]
+go bn_vtree.sub myvar[g=mybad,y=5s:5n:.5]

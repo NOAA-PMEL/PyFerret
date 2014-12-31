@@ -337,15 +337,21 @@
 	
 * clean up: release context and isp stack space
  1000	CONTINUE
-* ... if a dynamic grid was created for this variable release it
-*     Note that this fix is not fully understood.  In IS_DEPENDENCIES
-*     we don't actually care about grid allocations and use counts, however
-*     dynamic grids get created by GET_VAR_CONTEXT, etc. so we have to clean up
-	IF ( cx_has_impl_grid(cx_stack_ptr)
-     . .AND. cx_grid(cx_stack_ptr).NE. unspecified_int4 ) THEN
-	   CALL DEALLO_DYN_GRID(cx_grid(cx_stack_ptr))
-	   cx_has_impl_grid(cx_stack_ptr) = .FALSE.
+! this is in effect a precautionary "assert"
+	IF (cx_has_impl_grid(cx_stack_ptr)) THEN
+	   CALL WARN('crptn_is_dependencies')
+           CALL DEALLO_GRID(i)
 	ENDIF
+! commented out (removed) 12/31 in favor of related code in GET_VAR_CONTEXT
+!* ... if a dynamic grid was created for this variable release it
+!*     Note that this fix is not fully understood.  In IS_DEPENDENCIES
+!*     we don't actually care about grid allocations and use counts, however
+!*     dynamic grids get created by GET_VAR_CONTEXT, etc. so we have to clean up
+!	IF ( cx_has_impl_grid(cx_stack_ptr)
+!     . .AND. cx_grid(cx_stack_ptr).NE. unspecified_int4 ) THEN
+!	   CALL DEALLO_DYN_GRID(cx_grid(cx_stack_ptr))
+!	   cx_has_impl_grid(cx_stack_ptr) = .FALSE.
+!	ENDIF
 	cx_stack_ptr = cx_stack_ptr - 1
 	isp = isp - 1
 

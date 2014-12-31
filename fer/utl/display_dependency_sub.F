@@ -68,7 +68,8 @@
 	LOGICAL tell_dset, dup, state_dflt_dataset, valid_var
 	INTEGER	TM_LENSTR1,rec, ntrees, size, tree_size, tree_rec1,
      .		var, cat, tree_level, dset, uvar, item, ndone,
-     .		blanks, llen, istart, iend, len2, dnamlen, tree, i
+     .		blanks, llen, istart, iend, len2, dnamlen, tree, i,
+     .		regrid_ntargets
 	CHARACTER*1024 GET_UNIQUE_DSET_NAME, VAR_CODE, VAR_TITLE, line_buff,
      .		dsetname
 
@@ -136,6 +137,14 @@
 	      item = uv_item(rec)
 	      line_buff = ' '
 	      blanks = 2 * (tree_level-1)
+	      IF ( item .LE. pcx_vtree_regrid_report ) THEN
+* ... regrid_ntargets is encoded into the item number
+	         regrid_ntargets = pcx_vtree_regrid_report
+     .			         - item
+	         IF (flag(rec) .EQ. df_unknown_grid)
+     .			regrid_ntargets = regrid_ntargets + 1
+	         item = pcx_vtree_regrid_report
+	      ENDIF
 
 * prepare the dataset name if it needs to be documented
 	      tell_dset = dset .NE. pdset_irrelevant
@@ -143,14 +152,19 @@
 	      IF ( tell_dset ) THEN
 	         dsetname = '[d='
 	         dsetname(4:) = GET_UNIQUE_DSET_NAME( dset )
-	         dnamlen = TM_LENSTR1(dsetname)
+	         dnamlen = TM_LENSTR1(dsetname) + 1
 	         dsetname(dnamlen:dnamlen) = ']'
 	      ENDIF
 
-* document regridding dependencies as special, prefixed by "regrid to "
+* document regridding dependencies as special, prefixed by "grid from "
 	      IF ( item .EQ. pcx_vtree_regrid_report ) THEN
-	         line_buff(blanks+1:) = 'regrid to '
-	         blanks = blanks + 10
+	         IF (regrid_ntargets .EQ. 1) THEN
+	            line_buff(blanks+1:) = 'grid from '
+	            blanks = blanks + 10
+	         ELSE
+	            line_buff(blanks+1:) = 'grid from multi targets including '
+	            blanks = blanks + 34
+	         ENDIF
 	      ENDIF
 
 * document this variable
@@ -298,6 +312,25 @@
 	   valid_var = flag(rec) .EQ. df_valid_var 
      .	          .OR. flag(rec) .EQ. df_valid_aux_var 
 
+	   IF ( item .LE. pcx_vtree_regrid_report ) THEN
+* ... regrid_ntargets is encoded into the item number
+	      regrid_ntargets = pcx_vtree_regrid_report
+     .		              - item
+	      IF (flag(rec) .EQ. df_unknown_grid)
+     .			regrid_ntargets = regrid_ntargets + 1
+	      item = pcx_vtree_regrid_report
+* ... special prefix for regridding lines
+	      IF (regrid_ntargets .EQ. 1) THEN
+	         line_buff = 'grid from '
+	         llen = 10
+	      ELSE
+	         line_buff = 'grid from multi targets including '
+	         llen = 34
+	      ENDIF
+	   ELSE
+	      llen = 0
+	   ENDIF
+
 * format one record
 	   IF     ( valid_var
      .	 .AND.      cat       .EQ. cat_user_var       ) THEN
@@ -317,11 +350,6 @@
      .           .AND. cat_or_end  (i) .EQ. cat_or_end  (rec)
 	         IF (dup) GOTO 2100
  2050	      CONTINUE
-	      llen = 0
-	      IF ( item .EQ. pcx_vtree_regrid_report ) THEN
-	         line_buff = 'regrid to '
-	         llen = 10
-	      ENDIF
 	      line_buff(llen+1:) = VAR_CODE(cat,var)	! valid file variable
 	      llen = TM_LENSTR1(line_buff)
 	      dsetname = '[d='

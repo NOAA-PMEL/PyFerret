@@ -1,0 +1,40 @@
+! err693_ribbon_start_missing
+! 1/6/2015 ACM
+!
+! Bug 2226: If data starts with a missing-value and we're using (-inf) then 
+! the ribbon plot started with the lowest color instead of plotting as for missing
+! Only the cases starting with missing data were incorrect previous to fixing this bug.
+
+DEFINE SYMBOL ribbon_command = PLOT/VS/RIBBON/LINE/SYM/FAST/LEVELS=(-inf)(160,560,20)(INF)/THICK=3
+
+let/units=degrees_east xvar = {-177,-174,-186}
+let/units=degrees_north yvar = {-43, -45, -42}
+let vvar = {,271, 319}
+! This previously started with purple, not a gray missing-value point
+($ribbon_command)/title="(-inf) in levels" xvar,yvar,vvar
+
+let/units=degrees_east xvar = {-177,-174,-186,-184,-196}
+let/units=degrees_north yvar = {-43, -45, -42, -45, -42}
+let vvar = {,,,271,319}
+($ribbon_command)/title="start with several missing" xvar,yvar,vvar
+
+let/units=degrees_east xvar = {-177,-174,-186,-184,-196}
+let/units=degrees_north yvar = {-43, -45, -42, -45, -42}
+let vvar = {,,271,319,1000}
+($ribbon_command)/title="end large positive value" xvar,yvar,vvar
+
+let/units=degrees_east xvar = {-177,-174,-186,-184,-196}
+let/units=degrees_north yvar = {-43, -45, -42, -45, -42}
+let vvar = {,271,319,1000,}
+($ribbon_command)/title="end with large positive and missing" xvar,yvar,vvar
+
+let/units=degrees_east xvar = {-177,-174,-186,-184,-196}
+let/units=degrees_north yvar = {-43, -45, -42, -45, -42}
+let vvar = {1.e7,,,271,319}
+($ribbon_command)/title="start with large positive" xvar,yvar,vvar
+
+let/units=degrees_east xvar = {-177,-174,-186,-184,-196}
+let/units=degrees_north yvar = {-43, -45, -42, -45, -42}
+let vvar = {,1.e7,,271,319}
+($ribbon_command)/title="start with missing then large positive" xvar,yvar,vvar
+

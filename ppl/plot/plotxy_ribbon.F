@@ -64,7 +64,8 @@ C
 * ACM   5/2014  Fixes for changes of color in combination with handling
 *               modulo longitude data
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
-*               
+* V6.94 *acm* 1/15 fix ticket 2216: when using (-inf), a color-by variable
+*                  starting with missing was colored incorrectly.
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -215,7 +216,11 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		IF(YGE.AND.X(IY+J).GE.CMYGE)GOTO 70
 		
 		last_bad = .FALSE.
-	        colr_ndx = GET_NDX (X(IY+J+ILINE2),colr_ndx)
+		
+		datum = X(IY+J+ILINE2)
+		IF (datum .EQ. -3.E33) datum = CMZGE  ! This value set in pplldx.
+		  
+	        colr_ndx = GET_NDX (datum,colr_ndx)
 		CALL SET_RIBBON_NDX (colr_ndx)
 
 	        line_ndx = colr_ndx + thick_offset + low_index - 1

@@ -1,0 +1,16 @@
+RGB_Mapping By_Level
+ 
+! Level    Red  Green   Blue
+
+   1     0    0  100  ! blue		A
+   2     0   60   30  ! green		B
+   3   100   90    0  ! yellow		C
+   4   100    0    0  ! bright red	D
+   5    73   64   45  ! tan             E  Experimental
+   6    70    0  100  ! purple		F
+   7    80   90   10  ! light green     N New 
+   8    100  70  100  ! pink		Q Conflicting
+   9     0  100  100  ! cyan		U Updated
+  10   100   70    0  ! orange		S Suspended
+  11    20   20   20  ! Dk Gray		X Excluded
+

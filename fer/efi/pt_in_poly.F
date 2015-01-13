@@ -151,21 +151,18 @@ C            1 IF THE POINT IS INSIDE OF THE POLYGON.
 
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-* These are going to be a double precision array, to contain axis 
-* coordinates so allocate 2* the size of the axes
-
-      nx = 2*( arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1 )
-      ny = 2*( arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1) + 1 )
+* Coordinate data from argument 1
 
       array_num = 1
       CALL ef_set_work_array_dims_6d(id, array_num,
-     .                                1, 1, 1, 1, 1, 1,
-     .                               nx, 1, 1, 1, 1, 1)
+     .                               arg_lo_ss(X_AXIS,ARG1), 1, 1, 1, 1, 1,
+     .                               arg_hi_ss(X_AXIS,ARG1), 1, 1, 1, 1, 1)
 
       array_num = 2
       CALL ef_set_work_array_dims_6d(id, array_num,
-     .                                1, 1, 1, 1, 1, 1,
-     .                               ny, 1, 1, 1, 1, 1)
+     .                               arg_lo_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1,
+     .                               arg_hi_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1)
+
 
 * Set two arrays the size of the number of vertices.
 
@@ -212,6 +209,11 @@ C   A VERTICAL LINE IS DRAWN THRU THE POINT IN QUESTION. IF IT
 C   CROSSES THE POLYGON AN ODD NUMBER OF TIMES, THEN THE 
 C   POINT IS INSIDE OF THE POLYGON. 
 C 
+C Originally written as an external function, this version uses
+C internal Ferret functions STR_UPCASE and TM_HAS_STRING to upcase
+C the axis units string and compare its value to legal longitude
+C units strings.
+C
 C .................................................................. 
 C 
 
@@ -249,10 +251,15 @@ C
      .        arg_incr (6,EF_MAX_ARGS)
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
+      
+      CHARACTER ax_name(6)*16, ax_units(6)*16, dummy*16
+      LOGICAL backward(6), mdulo(6), regular(6)
 
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, ii, jj, iarg, inout, nv
-      REAL xvmin, xvmax, yvmin, yvmax, px, py
+      REAL xvmin, xvmax, yvmin, yvmax, px, py, xmin, xmax
+      INTEGER STR_UPCASE
+      LOGICAL TM_HAS_STRING, mod_lo, mod_hi
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -266,12 +273,13 @@ C
       CALL ef_get_coordinates (id, iarg, Y_AXIS, 
      .       arg_lo_ss(Y_AXIS, ARG1), arg_hi_ss(Y_AXIS, ARG1), ycoords)
 
-! Size of the list of polygon vertices
+* Size of the list of polygon vertices
 
       nv = arg_hi_ss(X_AXIS,ARG2) - arg_lo_ss(X_AXIS,ARG2) + 1 
       nv = MAX(nv, arg_hi_ss(Y_AXIS,ARG2) - arg_lo_ss(Y_AXIS,ARG2) + 1 )
       nv = MAX(nv, arg_hi_ss(Z_AXIS,ARG2) - arg_lo_ss(Z_AXIS,ARG2) + 1 )
       nv = MAX(nv, arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1 )
+
 
 * Get the bounding box around the polygon. Do not check points if they are
 * outside this bounding box
@@ -282,6 +290,42 @@ C
       yvmax = -1*yvmin
 
       CALL POLY_BOUND_BOX(arg_2, arg_3, nv, xvmin, xvmax, yvmin, yvmax)
+
+* If x axis of arg 1 is longitude, see if the xpts are outside the range of the x axis. Do we need to work 
+* in a different modulo branch?
+* Get the units of the x axis of arg1
+
+      CALL ef_get_axis_info_6d(id, ARG1, ax_name, ax_units,
+     .                         backward, mdulo, regular)
+      dummy = ax_units(1) 
+      i = STR_UPCASE (dummy, ax_units(1))
+      
+      mod_lo = .FALSE.
+      mod_hi = .FALSE.
+
+      IF ( TM_HAS_STRING(ax_units(1), 'EAST')
+     .   .OR. TM_HAS_STRING(ax_units(1), 'WEST')
+     .   .OR. TM_HAS_STRING(ax_units(1), 'degreeE')
+     .   .OR. TM_HAS_STRING(ax_units(1), 'degreesE')
+     .   .OR. TM_HAS_STRING(ax_units(1), 'degree_E')
+     .   .OR. TM_HAS_STRING(ax_units(1), 'degrees_E')
+     .   .OR. TM_HAS_STRING(ax_units(1), 'degreeW')
+     .   .OR. TM_HAS_STRING(ax_units(1), 'degreesW')
+     .   .OR. TM_HAS_STRING(ax_units(1), 'degree_W')
+     .   .OR. TM_HAS_STRING(ax_units(1), 'degrees_W')
+     .   .OR. TM_HAS_STRING(ax_units(1), 'LON') ) THEN
+
+
+         xmin = 1.e34
+         xmax = -1.e34
+         do i = wrk1lox,wrk1hix 
+            xmin = MIN(xmin, xcoords(i))
+            xmax = MAX(xmax, xcoords(i))
+         enddo
+
+         mod_lo = (xvmin .LT. xmin)
+         mod_hi = (xvmax .GT. xmax)
+      ENDIF
 
 * Loop over all points, checking if they are inside or outside the polygon.
 
@@ -306,6 +350,28 @@ C
             ELSE
                result(i,j,k,l,m,n) = -1
             ENDIF
+	    
+	    IF (mod_lo) THEN
+            IF (px-360 .GE. xvmin .AND. px-360 .LE. xvmax .AND.
+     .          py .GE. yvmin .AND. py .LE. yvmax ) THEN
+               CALL PNPOLY (px-360, py, arg_2, arg_3, nv, 
+     .                      workx, worky, inout )
+               result(i,j,k,l,m,n)= FLOAT(inout)
+            ELSE
+               result(i,j,k,l,m,n) = -1
+            ENDIF
+	    ENDIF  ! mod_lo
+
+	    IF (mod_hi) THEN
+            IF (px+360 .GE. xvmin .AND. px+360 .LE. xvmax .AND.
+     .          py .GE. yvmin .AND. py .LE. yvmax ) THEN
+               CALL PNPOLY (px+360, py, arg_2, arg_3, nv, 
+     .                      workx, worky, inout )
+               result(i,j,k,l,m,n)= FLOAT(inout)
+            ELSE
+               result(i,j,k,l,m,n) = -1
+            ENDIF
+	    ENDIF  ! mod_hi
 
             i1 = i1 + arg_incr(X_AXIS,ARG1)
  100     CONTINUE

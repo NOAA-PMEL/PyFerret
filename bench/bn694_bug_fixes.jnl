@@ -39,3 +39,6 @@ GO err693_if_then_flow_1368   ! Jan 28, 2010, Ferret version 5.812
 
 GO bn_reset
 GO err693_ribbon_start_missing
+
+GO bn_reset
+GO err691_pt_in_poly

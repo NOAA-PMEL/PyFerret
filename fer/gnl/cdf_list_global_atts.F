@@ -56,9 +56,9 @@
      .          bufflen
 	REAL	vals(100)
         CHARACTER*128 varname, attname, aname
-        CHARACTER*2048 buff
+        CHARACTER*10240 buff
 
-        bufflen = 2048
+        bufflen = 10240
         varid = 0
         do_warn = .TRUE.
 
@@ -81,7 +81,7 @@
      .                  attype, attlen, attoutflag, status )
 
               IF (attoutflag .EQ. 0) GOTO 80
-              IF (attlen .GT. 100 .AND. attype .NE. ptype_char) 
+              IF (attlen .GT. 100 .AND. attype .NE. NCCHAR) 
      .            attlen = 100
               got_it = NC_GET_ATTRIB ( dset, varid, aname, do_warn, 
      .           varname, bufflen, attlen, attoutflag, buff, vals)

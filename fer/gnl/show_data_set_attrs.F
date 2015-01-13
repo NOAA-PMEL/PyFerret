@@ -76,12 +76,12 @@
      .                  nvars, ngatts, recdim, iatt, attype, attlen,
      .                  slen,  llen, vlen, vtype, nvdims,
      .                  vdims(8),  nvatts, status, blen, i, len_attbuff,
-     .                  attoutflag, all_outflag, attid
-        REAL            vals(10)
+     .                  max_vals, attoutflag, all_outflag, attid
+        REAL            vals(1000)
 	CHARACTER	TM_FMT*14, varname*512, attname*128, 
-     .                  buff*14, attbuff*2048, oflag*1
+     .                  buff*14, attbuff*10240, oflag*1
         CHARACTER*6     typ(0:7)
-        PARAMETER       (len_attbuff = 2048)
+        PARAMETER       (len_attbuff = 10240, max_vals=1000)
         
 * See netcdf.h for the data types
 	DATA typ/'NaN',          ! NAT = 'Not A Type' (c.f. NaN)
@@ -133,6 +133,7 @@
      .              attype, attlen, attoutflag, status )
 
 	         blen = len_attbuff
+		 IF (attype .NE. NCCHAR) attlen = MIN(attlen, max_vals)
 	         got_it = NC_GET_ATTRIB (dset, varid, attname, 
      .                                .TRUE., varname, blen, attlen, 
      .                                attoutflag, attbuff, vals)

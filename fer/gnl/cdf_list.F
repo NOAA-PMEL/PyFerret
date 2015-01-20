@@ -538,8 +538,9 @@
            IF (dset.EQ.-1 .AND. cx_data_set( cx ).GT.0)
      .        dset_num = cx_data_set( cx )  
 
-* When its a file variable use the max string length from the originating dataset.
-           IF (type .EQ. NF_CHAR) THEN
+* When its a netCDF/OPeNDAP file variable use the max string length from the originating dataset.
+           buff2 = " "
+           IF (type .EQ. NF_CHAR .AND. dset .GE. 1) THEN
 	     buff2 = ""
 	     its_nc = ( .NOT. TM_HAS_STRING(ds_type(dset),'EZ') )
              IF (dset_num.GE.1 .AND.(.NOT.itsa_uvar) .AND.its_nc) THEN

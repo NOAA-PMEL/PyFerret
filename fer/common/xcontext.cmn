@@ -80,9 +80,9 @@
      .		cx_trans	 ( nferdims, min_context:max_cx ),
      .		cx_regrid_trans  ( nferdims, max_cx )
 	INTEGER	cx_stack_ptr,
-     .		cx_vtree_var_or_start,
-     .		cx_vtree_cat_or_end,
-     .		cx_vtree_regrid_dset,
+     .		cx_vtree_var_or_start( nferdims ),
+     .		cx_vtree_cat_or_end  ( nferdims ),
+     .		cx_vtree_regrid_dset ( nferdims ),
      .		cx_vtree_regrid_ntarget,
      .		cx_data_set ( max_cx ),
      .		cx_category ( max_cx ),
@@ -97,7 +97,7 @@
      .		cx_aux_cat  (nferdims, max_cx),
      .		cx_aux_stat (nferdims, max_cx )
 
-	LOGICAL	cx_vtree_unknown_grid,
+	LOGICAL	cx_vtree_unknown_grid( nferdims ),
      .     	cx_unstand_grid	( max_cx ),
      .		cx_by_ss	( nferdims, min_context:max_cx ),
      .		cx_given	( nferdims, min_context:max_cx ),

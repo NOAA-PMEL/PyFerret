@@ -87,6 +87,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
+* V69x *sh* 21/1/15 clarify data type of arguments sent to QUERY_DISPLAY_SIZE
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -115,14 +116,15 @@
 	INTEGER TM_LENSTR1, ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS,
      .          ier, id, itype, imeter, irx, iry, wn, n,
      .          qp, ivp, colon_pos, tlen, i, s1, idone
+	REAL*8	dmaxx, dmaxy
 #ifdef double_p
-	REAL	dmaxx, dmaxy, xln, yln, xmn, xmx, ymn, ymx,
+	REAL	xln, yln, xmn, xmx, ymn, ymx,
      .		bigness, scale, xstretch, ystretch, aspect,
      .		ref_len
 	REAL*4  rzero, rone, fcty, fctx, setpx, setpy,
      .          xwlo, ywlo, xwhi, ywhi
 #else
-	REAL    dmaxx, dmaxy, fcty, fctx, xln, yln, xmn, xmx, ymn, ymx,
+	REAL    fcty, fctx, xln, yln, xmn, xmx, ymn, ymx,
      .          bigness, scale, xstretch, ystretch, aspect,
      .          ref_len, rzero, rone, setpx, setpy,
      .          xwlo, ywlo, xwhi, ywhi

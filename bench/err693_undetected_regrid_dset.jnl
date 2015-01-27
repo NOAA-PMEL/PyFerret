@@ -1,0 +1,15 @@
+! err693_undetected_regrid_dset.jnl    - Jan 2015
+
+! in GET_CONTEXT_MODS no check is made whether dataset name/number is
+! valid following   "gdset = FIND_DSET_NUMBER( name(dstart:dend) )"
+
+use coads_climatology
+use levitus_climatology   ! default to d=2
+
+canc var/all
+let myvar = temp
+let a = myvar[g=temp[d=bad_d]]    ! THIS SHOULD BE DETECTED AS AN ERROR
+
+set mode ignore
+stat/l=1/x=180/y=0 a    ! this *SHOULD* trigger an error.  Yes.  Detect it.
+set mode/last ignore

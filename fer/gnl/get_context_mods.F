@@ -153,6 +153,7 @@
 *		   Set cx_g_eq_regrid logical (used to be local "regrid_dims")
 * V6.91+ *acm* 8/14 Fix ticket 2189
 * V693+ *sh* 12/14 keep track of regridding using cx_vtree* for ticket #2195
+*                  also fix err693_undetected_regrid_dset.jnl
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -258,9 +259,7 @@
 	   first_time(idim)     = .TRUE.
  10	CONTINUE
 	has_g_eq_unkn_uvar = .FALSE.
-	cx_vtree_unknown_grid = .FALSE.
 	cx_vtree_regrid_ntarget = 0
-	cx_vtree_var_or_start = unspecified_int4  ! just for bookkeeping
 
 * check in advance for the use of pre-specified ("/@") limits and D=
 * (the results of D= may be relevant in G=var)
@@ -652,6 +651,7 @@ c	      next_char = istart + naxes - 1
 		    dend = ii
 
 	            gdset = FIND_DSET_NUMBER( name(dstart:dend) )
+	            IF (gdset .EQ. unspecified_int4) GOTO 5058   ! added 1/201
 	            gdset_included = .TRUE.
 *33333333333333333
 	         ELSE
@@ -666,15 +666,18 @@ c	      next_char = istart + naxes - 1
 	         IF ( category .EQ. cat_pseudo_var ) GOTO 5055
 *33333333333333333
 	         IF ( variable .NE. munknown_var_name ) THEN
+	            IF (dependency_tree_mode) THEN
 * ... bookkeeping for determining the dependency tree (VTREE)
-	            cx_vtree_regrid_ntarget = cx_vtree_regrid_ntarget + 1
-	            IF (cx_vtree_regrid_ntarget .EQ. 1
-     .	           .AND. .NOT.cx_vtree_unknown_grid ) THEN
-	               cx_vtree_var_or_start = variable
-	               cx_vtree_cat_or_end   = category
-	               cx_vtree_regrid_dset  = gdset
+	               cx_vtree_regrid_ntarget = cx_vtree_regrid_ntarget + 1
+	               cx_vtree_unknown_grid(cx_vtree_regrid_ntarget)
+     .								= .FALSE. 
+	               cx_vtree_var_or_start(cx_vtree_regrid_ntarget) 
+     .								= variable
+	               cx_vtree_cat_or_end  (cx_vtree_regrid_ntarget)
+     .								= category
+	               cx_vtree_regrid_dset (cx_vtree_regrid_ntarget)
+     .								= gdset
 	            ENDIF
-
 	            grid = KNOWN_GRID(gdset,category,variable)
 		    cx_grid_needs_dset = .NOT.cx_dset_gvn( mods_cx )
 * ... 6/00 bug fix for syntax X[gx=var[d=dset]] -- look for [d=...]
@@ -725,9 +728,15 @@ c	      next_char = istart + naxes - 1
 *33333333333333333
 	         ELSEIF ( single_char ) THEN
 	            IF (dependency_tree_mode) THEN
-	              cx_vtree_unknown_grid = .TRUE.
-	              cx_vtree_var_or_start = equal_pos + 1
-	              cx_vtree_cat_or_end   = equal_pos + name_end
+	              cx_vtree_regrid_ntarget = cx_vtree_regrid_ntarget + 1
+	              cx_vtree_unknown_grid(cx_vtree_regrid_ntarget)
+     .							= .TRUE.
+	              cx_vtree_var_or_start(cx_vtree_regrid_ntarget)
+     .							= equal_pos + 1
+	              cx_vtree_cat_or_end  (cx_vtree_regrid_ntarget)
+     .							= equal_pos + name_end
+	              cx_vtree_regrid_dset (cx_vtree_regrid_ntarget)
+     .							= unspecified_int4
 	            ELSE
 	               GOTO 5050		! (G=axis_name not allowed)
 	            ENDIF
@@ -740,9 +749,15 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 	              IF (dependency_tree_mode) THEN
 * ... 12/14 hack to let an unknown grid error condition slip through if we
 *	are merely evaluating the dependency tree.
-	                cx_vtree_unknown_grid = .TRUE.
-	                cx_vtree_var_or_start = equal_pos + 1
-	                cx_vtree_cat_or_end   = equal_pos + name_end
+	                 cx_vtree_regrid_ntarget = cx_vtree_regrid_ntarget + 1
+	                 cx_vtree_unknown_grid(cx_vtree_regrid_ntarget)
+     .							= .TRUE.
+	                 cx_vtree_var_or_start(cx_vtree_regrid_ntarget)
+     .							= equal_pos + 1
+	                 cx_vtree_cat_or_end  (cx_vtree_regrid_ntarget)
+     .							= equal_pos + name_end
+	                 cx_vtree_regrid_dset (cx_vtree_regrid_ntarget)
+     .							= unspecified_int4
 *       It is normal for LET-defined variables
 *	that the grid may remain unknown until the children grids
 *	are determined, so hopefully it is OK here, too.  If not then we
@@ -1120,10 +1135,10 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 500	CONTINUE
 
 * SPECIAL CASES for entire context
-* If a grid qualifiers wer given then a grid name from at least 1 was mandatory
+* If grid qualifiers were given then a grid name from at least 1 was mandatory
         IF ( cx_unstand_grid(mods_cx)
+     . .AND. .NOT.dependency_tree_mode
      . .AND. .NOT.cx_has_impl_grid(mods_cx)
-     . .AND. .NOT.cx_vtree_unknown_grid
      . .AND. cx_grid(mods_cx) .EQ. unspecified_int4 ) GOTO 5024
 
 * @AVE or @DIN applied to both X and Y performed as a 2D integral (for COSINE
@@ -1187,6 +1202,8 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
      .			' --> g=user-or-pseudo-var not allowed', *5000 )
  5056	CALL ERRMSG( ferr_syntax, status, 
      .	 'invalid nested brackets: '//risc_buff(:len_rbuff),*5000)
+ 5058	CALL ERRMSG
+     .		( ferr_unknown_data_set, status, name(dstart:dend), *5000 )
  5060	CALL ERRMSG( ferr_invalid_command, status, 
      .	 'use @SHF only with IJK or L: '//risc_buff(:len_rbuff),*5000)
  5100	CALL ERRMSG( ferr_syntax, status, 

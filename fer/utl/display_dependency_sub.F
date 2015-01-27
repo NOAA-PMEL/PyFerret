@@ -43,6 +43,7 @@
 * V685  *sh* 11/13 
 * V690  *sh* 11/13 - minor adjustments to support aux regridding variables 
 * V693+ *sh* 12/14 - display regridding dependency on a separate line
+*            01/15 - each regrid target gets separate line
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -68,8 +69,7 @@
 	LOGICAL tell_dset, dup, state_dflt_dataset, valid_var
 	INTEGER	TM_LENSTR1,rec, ntrees, size, tree_size, tree_rec1,
      .		var, cat, tree_level, dset, uvar, item, ndone,
-     .		blanks, llen, istart, iend, len2, dnamlen, tree, i,
-     .		regrid_ntargets
+     .		blanks, llen, istart, iend, len2, dnamlen, tree, i
 	CHARACTER*1024 GET_UNIQUE_DSET_NAME, VAR_CODE, VAR_TITLE, line_buff,
      .		dsetname
 
@@ -137,14 +137,6 @@
 	      item = uv_item(rec)
 	      line_buff = ' '
 	      blanks = 2 * (tree_level-1)
-	      IF ( item .LE. pcx_vtree_regrid_report ) THEN
-* ... regrid_ntargets is encoded into the item number
-	         regrid_ntargets = pcx_vtree_regrid_report
-     .			         - item
-	         IF (flag(rec) .EQ. df_unknown_grid)
-     .			regrid_ntargets = regrid_ntargets + 1
-	         item = pcx_vtree_regrid_report
-	      ENDIF
 
 * prepare the dataset name if it needs to be documented
 	      tell_dset = dset .NE. pdset_irrelevant
@@ -156,15 +148,10 @@
 	         dsetname(dnamlen:dnamlen) = ']'
 	      ENDIF
 
-* document regridding dependencies as special, prefixed by "grid from "
+* document regridding dependencies as special, prefixed by "regrid to "
 	      IF ( item .EQ. pcx_vtree_regrid_report ) THEN
-	         IF (regrid_ntargets .EQ. 1) THEN
-	            line_buff(blanks+1:) = 'grid from '
-	            blanks = blanks + 10
-	         ELSE
-	            line_buff(blanks+1:) = 'grid from multi targets including '
-	            blanks = blanks + 34
-	         ENDIF
+	         line_buff(blanks+1:) = 'regrid to '
+	         blanks = blanks + 10
 	      ENDIF
 
 * document this variable
@@ -312,21 +299,10 @@
 	   valid_var = flag(rec) .EQ. df_valid_var 
      .	          .OR. flag(rec) .EQ. df_valid_aux_var 
 
-	   IF ( item .LE. pcx_vtree_regrid_report ) THEN
-* ... regrid_ntargets is encoded into the item number
-	      regrid_ntargets = pcx_vtree_regrid_report
-     .		              - item
-	      IF (flag(rec) .EQ. df_unknown_grid)
-     .			regrid_ntargets = regrid_ntargets + 1
-	      item = pcx_vtree_regrid_report
+	   IF ( item .EQ. pcx_vtree_regrid_report ) THEN
 * ... special prefix for regridding lines
-	      IF (regrid_ntargets .EQ. 1) THEN
-	         line_buff = 'grid from '
-	         llen = 10
-	      ELSE
-	         line_buff = 'grid from multi targets including '
-	         llen = 34
-	      ENDIF
+	      line_buff = 'regrid to '
+	      llen = 10
 	   ELSE
 	      llen = 0
 	   ENDIF

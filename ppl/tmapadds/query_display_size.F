@@ -39,6 +39,7 @@
 *     is needed. This routine handles both ATC and DEC GKS queries.
 *     J Davison 3.24.92
 *     Mod 8.27.93 *jd* to deal w xgks
+*     Ferret V69+ *sh* 1/21/15 - disambiguate datatype of x and y
 
 #ifdef unix
 #   ifndef atc_gks
@@ -51,7 +52,8 @@
 #endif
 
       integer     wstype,ierr,imeter,ix,iy
-      real        dx_in,dy_in,x,y,xfactor,yfactor
+      real        dx_in,dy_in,xfactor,yfactor
+      REAL*8      x, y
 
 ******************************************************************************
 

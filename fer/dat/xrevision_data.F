@@ -118,14 +118,15 @@
 * v6.927   fix ticket 2205, 2206
 * v6.93    release
 * v6.931   to gfdl
-* v6.932   to John Maurer, bug 2223
+* v6.932   to John Maurer, bug 2223 and branch v_6_9_32_GFDL23Dec
+* v6.933   to GFDL branch v_6_9_33_GFDL27Jan15
 
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.932   /
+	DATA revision_level	/  6.933   /
 
 ! Note we can put a debug title in the Ferret startup header lines
 ! by putting a title into the Makefile: $(MAKE) "DEBUG_TITLE=beta" update

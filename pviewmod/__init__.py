@@ -64,10 +64,10 @@ class PipedViewer(object):
         or None if there was no response in the allotted time.
         '''
         if self.__rspdrecvpipe.poll(timeout):
-            response = self.__rspdrecvpipe.recv()
+            myresponse = self.__rspdrecvpipe.recv()
         else:
-            response = None
-        return response
+            myresponse = None
+        return myresponse
 
     def waitForViewerExit(self):
         '''

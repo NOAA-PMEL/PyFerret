@@ -99,27 +99,6 @@ class PipedImagerPQ(QMainWindow):
         # command helper object
         self.__helper = CmndHelperPQ(self)
         # create the menubar
-        self.createActions()
-        self.createMenus()
-        # set the initial size of the viewer
-        self.__framedelta = 4
-        mwwidth = self.__scenewidth + self.__framedelta
-        mwheight = self.__sceneheight + self.__framedelta \
-                 + self.menuBar().height() \
-                 + self.statusBar().height()
-        self.resize(mwwidth, mwheight)
-        # check the command queue any time there are no window events to deal with
-        self.__timer = QTimer(self)
-        self.__timer.timeout.connect(self.checkCommandPipe)
-        self.__timer.setInterval(0)
-        self.__timer.start()
-
-    def createActions(self):
-        '''
-        Create the actions used by the menus in this viewer.  Ownership
-        of the actions are not transferred in addAction, thus the need
-        to maintain references here.
-        '''
         self.__scaleact = QAction(self.tr("&Scale"), self,
                                 shortcut=self.tr("Ctrl+S"),
                                 statusTip=self.tr("Scale the image (canvas and image change size)"),
@@ -141,6 +120,19 @@ class PipedImagerPQ(QMainWindow):
         self.__exitact = QAction(self.tr("&Exit"), self,
                                 statusTip=self.tr("Shut down the viewer"),
                                 triggered=self.exitViewer)
+        self.createMenus()
+        # set the initial size of the viewer
+        self.__framedelta = 4
+        mwwidth = self.__scenewidth + self.__framedelta
+        mwheight = self.__sceneheight + self.__framedelta \
+                 + self.menuBar().height() \
+                 + self.statusBar().height()
+        self.resize(mwwidth, mwheight)
+        # check the command queue any time there are no window events to deal with
+        self.__timer = QTimer(self)
+        self.__timer.timeout.connect(self.checkCommandPipe)
+        self.__timer.setInterval(0)
+        self.__timer.start()
 
     def createMenus(self):
         '''
@@ -232,13 +224,13 @@ class PipedImagerPQ(QMainWindow):
         newpixmap.fill(self.__lastclearcolor)
         if self.__sceneimage != None:
             # Draw the scaled image to the pixmap
-            painter = QPainter(newpixmap)
+            mypainter = QPainter(newpixmap)
             trgrect = QRectF(0.0, 0.0, float(labelwidth),
                                        float(labelheight))
             srcrect = QRectF(0.0, 0.0, float(self.__scenewidth),
                                        float(self.__sceneheight))
-            painter.drawImage(trgrect, self.__sceneimage, srcrect, Qt.AutoColor)
-            painter.end()
+            mypainter.drawImage(trgrect, self.__sceneimage, srcrect, Qt.AutoColor)
+            mypainter.end()
         # Assign the new pixmap to the label
         self.__label.setPixmap(newpixmap)
         # set the label size and values
@@ -259,7 +251,7 @@ class PipedImagerPQ(QMainWindow):
         # get the color to use for clearing (the background color)
         if bkgcolor:
             if bkgcolor.isValid():
-                    self.__lastclearcolor = bkgcolor
+                self.__lastclearcolor = bkgcolor
         # Remove the image and its bytearray
         self.__sceneimage = None
         self.__scenedata = None
@@ -273,7 +265,7 @@ class PipedImagerPQ(QMainWindow):
         # get the background color
         if bkgcolor:
             if bkgcolor.isValid():
-                    self.__lastclearcolor = bkgcolor
+                self.__lastclearcolor = bkgcolor
         # Update the scene label using the current clearing color and image
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.statusBar().showMessage( self.tr("Redrawing image") )
@@ -343,20 +335,19 @@ class PipedImagerPQ(QMainWindow):
         if not self.__loadingimage:
             # prepare for a new image data from subsequent calls
             # get dimensions of the new image
-            imgwidth = int( imageinfo["width"] )
-            imgheight = int( imageinfo["height"] )
-            imgstride = int( imageinfo["stride"] )
-            if (imgwidth < self.__minsize) or (imgheight < self.__minsize):
-                raise ValueError( self.tr("image width and height cannot be less than %1") \
-                                      .arg(str(self.__minsize)) )
+            myimgwidth = int( imageinfo["width"] )
+            myimgheight = int( imageinfo["height"] )
+            myimgstride = int( imageinfo["stride"] )
+            if (myimgwidth < self.__minsize) or (myimgheight < self.__minsize):
+                raise ValueError("image width and height cannot be less than %s" % str(self.__minsize))
             # Newer PyQt versions allow separate specification of the stride
-            if imgstride != 4 * imgwidth:
-                raise ValueError( self.tr("image stride is not four times the image width") )
+            if myimgstride != 4 * myimgwidth:
+                raise ValueError("image stride is not four times the image width")
             # create the bytearray to contain the new scene data
             # automatically initialized to zero
-            self.__scenedata = bytearray(imgstride * imgheight)
-            self.__scenewidth = imgwidth
-            self.__sceneheight = imgheight
+            self.__scenedata = bytearray(myimgstride * myimgheight)
+            self.__scenewidth = myimgwidth
+            self.__sceneheight = myimgheight
             # set the flag for subsequent calls to this method
             self.__loadingimage = True
             # change the cursor to warn the user this may take some time
@@ -365,31 +356,31 @@ class PipedImagerPQ(QMainWindow):
             self.statusBar().showMessage( self.tr("Loading new image") )
             return
         # loading an image; add the next block of data
-        blocknum = int( imageinfo["blocknum"] )
-        numblocks = int( imageinfo["numblocks"] )
-        startindex = int( imageinfo["startindex"] )
-        blockdata = imageinfo["blockdata"]
-        if (blocknum < 1) or (blocknum > numblocks):
+        myblocknum = int( imageinfo["blocknum"] )
+        mynumblocks = int( imageinfo["numblocks"] )
+        mystartindex = int( imageinfo["startindex"] )
+        myblockdata = imageinfo["blockdata"]
+        if (myblocknum < 1) or (myblocknum > mynumblocks):
             self.statusBar().clearMessage()
             QApplication.restoreOverrideCursor()
-            raise ValueError( self.tr("invalid image data block number or number of blocks") )
-        if (startindex < 0) or (startindex >= len(self.__scenedata)):
+            raise ValueError("invalid image data block number or number of blocks")
+        if (mystartindex < 0) or (mystartindex >= len(self.__scenedata)):
             self.statusBar().clearMessage()
             QApplication.restoreOverrideCursor()
-            raise ValueError( self.tr("invalid start index for an image data block") )
-        blocksize = len(blockdata)
-        endindex = startindex + blocksize
-        if (blocksize < 1) or (endindex > len(self.__scenedata)):
+            raise ValueError("invalid start index for an image data block")
+        myblocksize = len(myblockdata)
+        myendindex = mystartindex + myblocksize
+        if (myblocksize < 1) or (myendindex > len(self.__scenedata)):
             self.statusBar().clearMessage()
             QApplication.restoreOverrideCursor()
-            raise ValueError( self.tr("invalid length of an image data block") )
+            raise ValueError("invalid length of an image data block")
         # update the status message to show progress
         self.statusBar().showMessage( self.tr("Loading new image (block %1 of %2)") \
-                                          .arg(str(blocknum)).arg(str(numblocks)) )
+                                          .arg(str(myblocknum)).arg(str(mynumblocks)) )
         # assign the data
-        self.__scenedata[startindex:endindex] = blockdata
+        self.__scenedata[mystartindex:myendindex] = myblockdata
         # if this is the last block of data, create and display the scene image
-        if blocknum == numblocks:
+        if myblocknum == mynumblocks:
             self.__loadingimage = False
             self.statusBar().showMessage( self.tr("Creating new image") )
             try:
@@ -553,8 +544,7 @@ class PipedImagerPQ(QMainWindow):
                     fileFormat = fmt
                     break
             else:
-                raise RuntimeError( self.tr("Unexpected file format name '%1'") \
-                                        .arg(fileFilter) )
+                raise RuntimeError("Unexpected file format name '%s'" % fileFilter)
             self.saveSceneToFile(fileName, fileFormat, None, None)
             self.__lastfilename = fileName
             self.__lastformat = fileFormat
@@ -605,7 +595,7 @@ class PipedImagerPQ(QMainWindow):
             else:
                 imagewidth = int(self.__scenewidth * self.__scalefactor + 0.5)
                 imageheight = int(self.__sceneheight * self.__scalefactor + 0.5)
-            image = QImage( QSize(imagewidth, imageheight),
+            myimage = QImage( QSize(imagewidth, imageheight),
                             QImage.Format_ARGB32_Premultiplied )
             # Initialize the image
             if not transparent:
@@ -613,17 +603,17 @@ class PipedImagerPQ(QMainWindow):
                 fillint = self.__helper.computeARGB32PreMultInt(self.__lastclearcolor)
             else:
                 fillint = 0
-            image.fill(fillint)
+            myimage.fill(fillint)
             # draw the scaled scene to this QImage
-            painter = QPainter(image)
+            mypainter = QPainter(myimage)
             trgrect = QRectF(0.0, 0.0, float(imagewidth),
                                        float(imageheight))
             srcrect = QRectF(0.0, 0.0, float(self.__scenewidth),
                                        float(self.__sceneheight))
-            painter.drawImage(trgrect, self.__sceneimage, srcrect, Qt.AutoColor)
-            painter.end()
+            mypainter.drawImage(trgrect, self.__sceneimage, srcrect, Qt.AutoColor)
+            mypainter.end()
             # save the image to file
-            image.save(myfilename, myformat)
+            myimage.save(myfilename, myformat)
         finally:
             self.statusBar().clearMessage()
             QApplication.restoreOverrideCursor()
@@ -668,7 +658,7 @@ class PipedImagerPQ(QMainWindow):
         try:
             cmndact = cmnd["action"]
         except KeyError:
-            raise ValueError( self.tr("Unknown command %1").arg(str(cmnd)) )
+            raise ValueError("Unknown command %s" % str(cmnd))
 
         if cmndact == "clear":
             try:
@@ -713,18 +703,17 @@ class PipedImagerPQ(QMainWindow):
         elif cmndact == "setTitle":
             self.setWindowTitle(cmnd["title"])
         elif cmndact == "imgname":
-            value = cmnd.get("name", None)
-            if value:
-                self.__lastfilename = value;
-            value = cmnd.get("format", None)
-            if value:
-                self.__lastformat = value.lower();
+            myvalue = cmnd.get("name", None)
+            if myvalue:
+                self.__lastfilename = myvalue
+            myvalue = cmnd.get("format", None)
+            if myvalue:
+                self.__lastformat = myvalue.lower()
         elif cmndact == "show":
             if self.isHidden():
                 self.showNormal()
         else:
-            raise ValueError( self.tr("Unknown command action %1") \
-                                  .arg(str(cmndact)) )
+            raise ValueError("Unknown command action %s" % str(cmndact))
 
 
 class PipedImagerPQProcess(Process):
@@ -739,6 +728,8 @@ class PipedImagerPQProcess(Process):
         Process.__init__(self)
         self.__cmndpipe = cmndpipe
         self.__rspdpipe = rspdpipe
+        self.__app = None
+        self.__viewer = None
 
     def run(self):
         '''
@@ -747,10 +738,10 @@ class PipedImagerPQProcess(Process):
         '''
         self.__app = QApplication(["PipedImagerPQ"])
         self.__viewer = PipedImagerPQ(self.__cmndpipe, self.__rspdpipe)
-        result = self.__app.exec_()
+        myresult = self.__app.exec_()
         self.__cmndpipe.close()
         self.__rspdpipe.close()
-        SystemExit(result)
+        SystemExit(myresult)
 
 
 #
@@ -808,7 +799,7 @@ if __name__ == "__main__":
                 (150, 250),
                 (100, 450) )
     # start PyQt
-    app = QApplication(["PipedImagerPQ"])
+    testapp = QApplication(["PipedImagerPQ"])
     # create the list of commands to submit
     drawcmnds = []
     drawcmnds.append( { "action":"setTitle", "title":"Tester" } )
@@ -816,62 +807,62 @@ if __name__ == "__main__":
     drawcmnds.append( { "action":"clear", "color":"black"} )
     drawcmnds.append( { "action":"screenInfo"} )
     # create the image to be displayed
-    image = QImage(500, 500, QImage.Format_ARGB32_Premultiplied)
+    testimage = QImage(500, 500, QImage.Format_ARGB32_Premultiplied)
     # initialize a black background
-    image.fill(0xFF000000)
+    testimage.fill(0xFF000000)
     # draw some things in the image
-    painter = QPainter(image)
-    painter.setBrush( QBrush(QColor(0, 255, 0, 128), Qt.SolidPattern) )
-    painter.setPen( QPen(QBrush(QColor(255, 0, 0, 255), Qt.SolidPattern),
+    testpainter = QPainter(testimage)
+    testpainter.setBrush( QBrush(QColor(0, 255, 0, 128), Qt.SolidPattern) )
+    testpainter.setPen( QPen(QBrush(QColor(255, 0, 0, 255), Qt.SolidPattern),
                          5.0, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin) )
-    painter.drawRect( QRectF(5.0, 255.0, 240.0, 240.0) )
-    painter.setBrush( QBrush(QColor(0, 0, 255, 255), Qt.SolidPattern) )
-    painter.setPen( QPen(QBrush(QColor(0, 0, 0, 255), Qt.SolidPattern),
+    testpainter.drawRect( QRectF(5.0, 255.0, 240.0, 240.0) )
+    testpainter.setBrush( QBrush(QColor(0, 0, 255, 255), Qt.SolidPattern) )
+    testpainter.setPen( QPen(QBrush(QColor(0, 0, 0, 255), Qt.SolidPattern),
                          5.0, Qt.DashLine, Qt.RoundCap, Qt.RoundJoin) )
-    painter.drawPolygon( QPolygonF(
+    testpainter.drawPolygon( QPolygonF(
             [ QPointF(.25 * ptx, .25 * pty + 250) for (ptx, pty) in pentagonpts ] ) )
-    painter.setBrush( Qt.NoBrush )
-    painter.setPen( QPen(QBrush(QColor(255, 255, 255, 255), Qt.SolidPattern),
+    testpainter.setBrush( Qt.NoBrush )
+    testpainter.setPen( QPen(QBrush(QColor(255, 255, 255, 255), Qt.SolidPattern),
                          3.0, Qt.DashLine, Qt.RoundCap, Qt.RoundJoin) )
-    painter.drawPolyline( QPolygonF(
+    testpainter.drawPolyline( QPolygonF(
             [ QPointF(pts, pty) for (pts, pty) in linepts ] ) )
-    painter.end()
+    testpainter.end()
     # add the image command
-    imgwidth = image.width()
-    imgheight = image.height()
-    imgstride = image.bytesPerLine()
+    testimgwidth = testimage.width()
+    testimgheight = testimage.height()
+    testimgstride = testimage.bytesPerLine()
     # not a good way to get the pixel data
-    imgdata = bytearray(imgheight * imgstride)
+    testimgdata = bytearray(testimgheight * testimgstride)
     k = 0
-    for pty in xrange(imgheight):
-        for ptx in xrange(imgwidth):
-            pixval = image.pixel(ptx, pty)
+    for pty in xrange(testimgheight):
+        for ptx in xrange(testimgwidth):
+            pixval = testimage.pixel(ptx, pty)
             (aval, rgbval) = divmod(pixval, 256 * 256 * 256)
             (rval, gbval) = divmod(rgbval, 256 * 256)
             (gval, bval) = divmod(gbval, 256)
-            imgdata[k] = bval
+            testimgdata[k] = bval
             k += 1
-            imgdata[k] = gval
+            testimgdata[k] = gval
             k += 1
-            imgdata[k] = rval
+            testimgdata[k] = rval
             k += 1
-            imgdata[k] = aval
+            testimgdata[k] = aval
             k += 1
-    blocksize = 2000
-    numblocks = (imgheight * imgstride + blocksize - 1) // blocksize
+    testblocksize = 2000
+    testnumblocks = (testimgheight * testimgstride + testblocksize - 1) // testblocksize
     drawcmnds.append( { "action":"newImage",
-                        "width":imgwidth,
-                        "height":imgheight,
-                        "stride":imgstride } )
-    for k in xrange(numblocks):
-        if k < (numblocks - 1):
-            blkdata = imgdata[k*blocksize:(k+1)*blocksize]
+                        "width":testimgwidth,
+                        "height":testimgheight,
+                        "stride":testimgstride } )
+    for k in xrange(testnumblocks):
+        if k < (testnumblocks - 1):
+            blkdata = testimgdata[k*testblocksize:(k+1)*testblocksize]
         else:
-            blkdata = imgdata[k*blocksize:]
+            blkdata = testimgdata[k*testblocksize:]
         drawcmnds.append( { "action":"newImage",
                             "blocknum":k+1,
-                            "numblocks":numblocks,
-                            "startindex":k*blocksize,
+                            "numblocks":testnumblocks,
+                            "startindex":k*testblocksize,
                             "blockdata":blkdata } )
     # finish the command list
     drawcmnds.append( { "action":"show" } )
@@ -879,13 +870,13 @@ if __name__ == "__main__":
     # create a PipedImagerPQ in this process
     cmndrecvpipe, cmndsendpipe = Pipe(False)
     rspdrecvpipe, rspdsendpipe = Pipe(False)
-    viewer = PipedImagerPQ(cmndrecvpipe, rspdsendpipe)
+    testviewer = PipedImagerPQ(cmndrecvpipe, rspdsendpipe)
     # create a command submitter dialog
-    tester = _CommandSubmitterPQ(viewer, cmndsendpipe,
+    tester = _CommandSubmitterPQ(testviewer, cmndsendpipe,
                                    rspdrecvpipe, drawcmnds)
     tester.show()
     # let it all run
-    result = app.exec_()
-    if result != 0:
-        sys.exit(result)
+    testresult = testapp.exec_()
+    if testresult != 0:
+        sys.exit(testresult)
 

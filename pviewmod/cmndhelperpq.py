@@ -354,8 +354,7 @@ class CmndHelperPQ(object):
             path.addRect(-35.0, -35.0, 70.0, 70.0)
             sympath = SymbolPath(path, False)
         else:
-            raise ValueError( self.tr( \
-                  "Unrecognized symbol '%1'").arg(str(symbol)) )
+            raise ValueError("Unrecognized symbol '%s'" % str(symbol))
         # save and return the SymbolPath
         self.__symbolpaths[symbol] = sympath
         return sympath
@@ -417,8 +416,7 @@ class CmndHelperPQ(object):
         colordata = colorinfo["color"]
         mycolor = QColor(colordata)
         if not mycolor.isValid():
-            raise ValueError( self.__scene.tr( \
-                  "Invalid color '%1'").arg(str(colordata)) )
+            raise ValueError("Invalid color '%s'" % str(colordata))
         try:
             mycolor.setAlpha(int(colorinfo["alpha"]))
         except KeyError:

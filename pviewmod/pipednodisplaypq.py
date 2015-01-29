@@ -1,12 +1,12 @@
 '''
-PipedViewerPQ is a graphics viewer application written in PyQt4
+PipedNoDisplayPQ is a graphics application written in PyQt4
 that receives its drawing and other commands primarily from another
 application through a pipe.  A limited number of commands are
 provided by the viewer itself to allow saving and some manipulation
 of the displayed image.  The controlling application, however, may
 be unaware of these modifications made to the image.
 
-PipedViewerPQProcess is used to create and run a PipedViewerPQ.
+PipedNoDisplayPQProcess is used to create and run a PipedNoDisplayPQ.
 
 This package was developed by the Thermal Modeling and Analysis
 Project (TMAP) of the National Oceanographic and Atmospheric
@@ -14,18 +14,16 @@ Administration's (NOAA) Pacific Marine Environmental Lab (PMEL).
 '''
 
 import sip
+from time import sleep
 try:
     sip.setapi('QVariant', 2)
 except AttributeError:
     pass
 
-from PyQt4.QtCore import Qt, QPointF, QRect, QRectF, QSize, QSizeF, \
-                         QString, QTimer
-from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, QDialog, \
-                         QFileDialog, QImage, QLabel, QMainWindow, \
-                         QMessageBox, QPainter, QPalette, QPen, QPicture, \
-                         QPixmap, QPolygonF, QPrinter, QPushButton, \
-                         QScrollArea, QTextDocument
+from PyQt4.QtCore import Qt, QCoreApplication, QObject, QPointF, QRect, QRectF, \
+                         QSize, QSizeF, QTimer
+from PyQt4.QtGui  import QBrush, QColor, QImage, QPainter, QPen, QPicture, \
+                         QPolygonF, QPrinter, QTextDocument
 
 try:
     from PyQt4.QtSvg  import QSvgGenerator
@@ -34,7 +32,6 @@ except ImportError:
     HAS_QSvgGenerator = False
 
 from cmndhelperpq import CmndHelperPQ
-from scaledialogpq import ScaleDialogPQ
 from multiprocessing import Pipe, Process
 import sys
 import time
@@ -43,11 +40,11 @@ import signal
 import math
 
 
-class PipedViewerPQ(QMainWindow):
+class PipedNoDisplayPQ(QObject):
     '''
-    A PyQt graphics viewer that receives generic drawing commands
+    A PyQt graphics engine that receives generic drawing commands
     through a pipe.  Uses a list of QPictures to record the drawings
-    which are then used to display, manipulate, and save the image.
+    which are then used to manipulate and save the image.
 
     A drawing command is a dictionary with string keys that will be
     interpreted into the appropriate PyQt command(s).  For example,
@@ -59,23 +56,28 @@ class PipedViewerPQ(QMainWindow):
           "location":(250,350) }
 
     The command { "action":"exit" } will shutdown the viewer and is
-    the only way the viewer can be closed.  GUI actions can only hide
-    the viewer.
+    the only way the viewer can be closed.
     '''
 
     def __init__(self, cmndpipe, rspdpipe):
         '''
-        Create a PyQt viewer which reads commands from the Pipe
-        cmndpipe and writes responses back to rspdpipe.
+        Create a PyQt no-display graphics engine which reads commands 
+        from the Pipe cmndpipe and writes responses back to rspdpipe.
         '''
-        super(PipedViewerPQ, self).__init__()
+        super(PipedNoDisplayPQ, self).__init__()
         self.__cmndpipe = cmndpipe
         self.__rspdpipe = rspdpipe
         # ignore Ctrl-C
         signal.signal(signal.SIGINT, signal.SIG_IGN)
+        # default DPI used for this no-display graphics engine
+        self.__physicalDpiX = 96.0
+        self.__physicalDpiY = 96.0
+        # default "display screen" size for this no-display graphics engine
+        self.__screenwidth = 1920.0
+        self.__screenheight = 1028.0
         # default scene size
-        self.__scenewidth = int(10.5 * self.physicalDpiX())
-        self.__sceneheight = int(8.5 * self.physicalDpiY())
+        self.__scenewidth = int(10.5 * self.__physicalDpiX)
+        self.__sceneheight = int(8.5 * self.__physicalDpiY)
         # scaling factor for line widths and symbol sizes
         self.__widthfactor = None
         self.setWidthScalingFactor(0.75)
@@ -98,162 +100,33 @@ class PipedViewerPQ(QMainWindow):
         # Limit the number of drawing commands per picture
         # to avoid the appearance of being "stuck"
         self.__maxdraws = 1024
-        # scaling factor for creating the displayed scene
+        # scaling factor for creating the final scene
         self.__scalefactor = 1.0
-        # automatically adjust the scaling factor to fit the window frame?
-        self.__autoscale = True
-        # values used to decide if the scene needs to be updated 
-        self.__lastpicdrawn = 0
-        self.__createpixmap = True
-        self.__clearpixmap = True
         # Calculations of modified rectangular regions in QPictures
         # currently do not account for width and height of QPictures
         # played inside them.  So keep a expansion value.
         self.__maxsymbolwidth = 0.0
         self.__maxsymbolheight = 0.0
-        # create the label, that will serve as the canvas, in a scrolled area
-        self.__scrollarea = QScrollArea(self)
-        self.__label = QLabel(self.__scrollarea)
-        # set the initial label size and other values for the scrolled area
-        self.__label.setMinimumSize(self.__scenewidth, self.__sceneheight)
-        self.__label.resize(self.__scenewidth, self.__sceneheight)
-        # setup the scrolled area
-        self.__scrollarea.setWidget(self.__label)
-        self.__scrollarea.setBackgroundRole(QPalette.Dark)
-        self.setCentralWidget(self.__scrollarea)
         self.__minsize = 128
         # default file name and format for saving the image
         self.__lastfilename = "ferret.png"
         self.__lastformat = "png"
         self.__addedannomargin = 12
-        # Control whether the window will be destroyed or hidden
-        self.__shuttingdown = False
         # command helper object
         self.__helper = CmndHelperPQ(self)
-        # Create the menubar
-        self.__scaleact = QAction(self.tr("&Scale"), self,
-                                shortcut=self.tr("Ctrl+S"),
-                                statusTip=self.tr("Scale the image (canvas and image change size)"),
-                                triggered=self.inquireSceneScale)
-        self.__saveact = QAction(self.tr("Save &As..."), self,
-                                shortcut=self.tr("Ctrl+A"),
-                                statusTip=self.tr("Save the image to file"),
-                                triggered=self.inquireSaveFilename)
-        self.__redrawact = QAction(self.tr("&Redraw"), self,
-                                shortcut=self.tr("Ctrl+R"),
-                                statusTip=self.tr("Clear and redraw the image"),
-                                triggered=self.redrawScene)
-        self.__aboutact = QAction(self.tr("&About"), self,
-                                statusTip=self.tr("Show information about this viewer"),
-                                triggered=self.aboutMsg)
-        self.__aboutqtact = QAction(self.tr("About &Qt"), self,
-                                statusTip=self.tr("Show information about the Qt library"),
-                                triggered=self.aboutQtMsg)
-        self.__exitact = QAction(self.tr("&Exit"), self,
-                                statusTip=self.tr("Shut down the viewer"),
-                                triggered=self.exitViewer)
-        self.createMenus()
-        # Set the initial size of the viewer
-        self.__framedelta = 4
-        mwwidth = self.__scenewidth + self.__framedelta
-        mwheight = self.__sceneheight + self.__framedelta \
-                 + self.menuBar().height() \
-                 + self.statusBar().height()
-        self.resize(mwwidth, mwheight)
         # check the command queue any time there are no window events to deal with
         self.__timer = QTimer(self)
         self.__timer.timeout.connect(self.checkCommandPipe)
         self.__timer.setInterval(0)
         self.__timer.start()
 
-    def createMenus(self):
-        '''
-        Create the menu items for the viewer
-        using the previously created actions.
-        '''
-        menuBar = self.menuBar()
-        sceneMenu = menuBar.addMenu(menuBar.tr("&Image"))
-        sceneMenu.addAction(self.__scaleact)
-        sceneMenu.addAction(self.__saveact)
-        sceneMenu.addAction(self.__redrawact)
-        # sceneMenu.addSeparator()
-        # sceneMenu.addAction(self.__hideact)
-        helpMenu = menuBar.addMenu(menuBar.tr("&Help"))
-        helpMenu.addAction(self.__aboutact)
-        helpMenu.addAction(self.__aboutqtact)
-        helpMenu.addSeparator()
-        helpMenu.addAction(self.__exitact)
-
-    def showEvent(self, event):
-        '''
-        When the viewer is going to be shown, make sure all
-        the current pictures are displayed in the scene.
-        '''
-        # update, ignoring the visibility flags
-        self.drawLastPictures(True)
-        event.accept()
-
-    def resizeEvent(self, event):
-        '''
-        Monitor resizing in case auto-scaling of the image is selected.
-        '''
-        if self.__autoscale:
-            if self.autoScaleScene():
-                # continue with the window resize
-                event.accept()
-            else:
-                # another resize coming in, so ignore this one
-                event.ignore()
-        else:
-            # continue with the window resize
-            event.accept()
-
-    def closeEvent(self, event):
-        '''
-        Override so the viewer cannot be closed from the
-        user selecting the windowframe close ('X') button.
-        Instead only hide the window.
-        '''
-        if self.__shuttingdown:
-            event.accept()
-        else:
-            event.ignore()
-            self.hide()
-
     def exitViewer(self):
         '''
-        Close and exit the viewer.
+        stop the graphics engine
         '''
         self.__timer.stop()
-        self.__shuttingdown = True
-        self.close()
 
-    def aboutMsg(self):
-        QMessageBox.about(self, self.tr("About PipedViewerPQ"),
-            self.tr("\n" \
-            "PipedViewerPQ is a graphics viewer application that " \
-            "receives its drawing and other commands primarily from " \
-            "another application through a pipe.  A limited number " \
-            "of commands are provided by the viewer itself to allow " \
-            "saving and some manipulation of the displayed image.  " \
-            "The controlling application, however, may be unaware " \
-            "of these modifications made to the image. " \
-            "\n\n" \
-            "Normally, the controlling program will exit the viewer " \
-            "when it is no longer needed.  The Help -> Exit menu item " \
-            "should not normally be used.  It is provided when problems " \
-            "occur and the controlling program cannot shut down the " \
-            "viewer properly. " \
-            "\n\n" \
-            "PipedViewerPQ was developed by the Thermal Modeling and Analysis " \
-            "Project (TMAP) of the National Oceanographic and Atmospheric " \
-            "Administration's (NOAA) Pacific Marine Environmental Lab (PMEL). "))
-
-    def aboutQtMsg(self):
-        QMessageBox.aboutQt(self, self.tr("About Qt"))
-
-    def paintScene(self, painter, first, leftx, uppery, scalefactor,
-                   statusmsg, returnregion):
+    def paintScene(self, painter, first, leftx, uppery, scalefactor, returnregion):
         '''
         Draws the pictures self.__viewpics[first:] using the QPainter
         painter.  This QPainter should have been initialized
@@ -263,11 +136,7 @@ class PipedViewerPQ(QMainWindow):
         The point (leftx, uppery) is the offset of the origin after
         scaling using scalefactor.  (All are floating point values.)
 
-        The status bar will be updated with a message derived from
-        statusmsg before drawing each picture.  Upon completion, the
-        status bar will be cleared.
-
-        If returnregion is True, a list of QRect objects describing
+       If returnregion is True, a list of QRect objects describing
         the modified regions will be computed and returned.  If
         returnregion is False, the modified region will not be computed
         and an empty list will be returned.
@@ -275,29 +144,13 @@ class PipedViewerPQ(QMainWindow):
         The call to painter.end() will need to be made after calling
         this function.
         '''
-        # change the cursor to warn the user this may take some time
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        # create the incomplete status message
-        if (first + 1) < len(self.__viewpics):
-            mymsg = self.tr("%s (piece %%1 of %%2)" % statusmsg)
-            endstr = str(len(self.__viewpics))
-        else:
-            mymsg = self.tr("%s (piece %%1)" % statusmsg)
-            endstr = None
         # get the origin for drawing the pictures after scaling
         myorigin = QPointF(leftx, uppery)
         # set the scaling factor for the pictures
         painter.scale(scalefactor, scalefactor)
         modrects = [ ]
         # draw the appropriate pictures
-        k = first
         for (viewpic, _) in self.__viewpics[first:]:
-            k += 1
-            # show the progress message
-            if endstr != None:
-                self.statusBar().showMessage( mymsg.arg(str(k)).arg(endstr) )
-            else:
-                self.statusBar().showMessage( mymsg.arg(str(k)) )
             # draw the picture
             painter.drawPicture(myorigin, viewpic)
             if returnregion:
@@ -315,61 +168,7 @@ class PipedViewerPQ(QMainWindow):
                     height = int( math.ceil(height * scalefactor) )
                     # Add this rectangle to the list
                     modrects.append( QRect(xval, yval, width, height) )
-        # done - clear the status message
-        self.statusBar().clearMessage()
-        # restore the cursor back to normal
-        QApplication.restoreOverrideCursor()
         return modrects
-
-    def drawLastPictures(self, ignorevis):
-        '''
-        Update the scene with pictures yet to be drawn.
-        If ignorevis is True, the update will be done
-        even if the viewer is not visible; otherwise
-        drawing to the scene label is only done if the
-        viewer is visible.
-        '''
-        if not ignorevis:
-            if self.isHidden() or self.isMinimized():
-                # Not shown, so do not waste time drawing
-                return
-        if self.__createpixmap:
-            # Create and assign a cleared pixmap
-            mypixmap = QPixmap(self.__label.size())
-            mypixmap.fill(self.__lastclearcolor)
-            self.__label.setPixmap(mypixmap)
-            self.__createpixmap = False
-            self.__clearpixmap = False
-            wascleared = True
-        elif self.__clearpixmap:
-            # Clear the existing pixmap
-            self.__label.pixmap().fill(self.__lastclearcolor)
-            self.__clearpixmap = False
-            wascleared = True
-        elif len(self.__viewpics) > self.__lastpicdrawn:
-            # New pictures to add to an existing scene
-            wascleared = False
-        else:
-            # Nothing changed so just return
-            return
-        # Only create the QPainter if there are pictures
-        # to draw (this is more than just a clear)
-        if len(self.__viewpics) > self.__lastpicdrawn:
-            painter = QPainter(self.__label.pixmap())
-            modrects = self.paintScene(painter, self.__lastpicdrawn, \
-                                       0.0, 0.0, self.__scalefactor, \
-                                       "Drawing", not wascleared)
-            painter.end()
-        # Notify the label of changes to the scene
-        if wascleared:
-            # the entire scene changed
-            self.__label.update()
-        else:
-            # the scene changed only in the modrects areas
-            for rect in modrects:
-                self.__label.update(rect)
-        # Update the record of which pictures have been displayed
-        self.__lastpicdrawn = len(self.__viewpics)
 
     def clearScene(self, bkgcolor):
         '''
@@ -382,7 +181,7 @@ class PipedViewerPQ(QMainWindow):
         # If there is an active View with content,
         # end it now, but do not update the scene
         if self.__activepainter and (self.__drawcount > 0):
-            self.endView(False)
+            self.endView()
             restartview = True
         else:
             restartview = False
@@ -390,15 +189,10 @@ class PipedViewerPQ(QMainWindow):
         if bkgcolor:
             if bkgcolor.isValid():
                 self.__lastclearcolor = bkgcolor
-        # Delete all the pictures from the list and
-        # mark that the pixmap needs to be cleared
+        # Delete all the pictures from the list
         self.__viewpics[:] = [ ]
         self.__maxsymbolwidth = 0.0
         self.__maxsymbolheight = 0.0
-        self.__clearpixmap = True
-        self.__lastpicdrawn = 0
-        # Update the scene label if visible
-        self.drawLastPictures(False)
         # If there was an non-empty active View, restart it
         if restartview:
             self.beginViewFromSides(self.__fracsides, self.__clipit)
@@ -413,19 +207,13 @@ class PipedViewerPQ(QMainWindow):
         '''
         # If there is an active View, end it now, but do not update the scene
         if self.__activepainter:
-            self.endView(False)
+            self.endView()
             hadactiveview = True
         else:
             hadactiveview = False
         if bkgcolor:
             if bkgcolor.isValid():
                 self.__lastclearcolor = bkgcolor
-        # mark that the pixmap needs to be cleared
-        # and all the pictures redrawn
-        self.__clearpixmap = True
-        self.__lastpicdrawn = 0
-        # Update the scene label if visible
-        self.drawLastPictures(False)
         # If there was an active View, restart it in this new system
         if hadactiveview:
             self.beginViewFromSides(self.__fracsides, self.__clipit)
@@ -441,93 +229,18 @@ class PipedViewerPQ(QMainWindow):
         if newheight < self.__minsize:
             newheight = self.__minsize
         if (newwidth != self.__scenewidth) or (newheight != self.__sceneheight):
-            # Resize the label and set label values
-            # so the scrollarea knows of the new size
-            labelwidth = int(newwidth * self.__scalefactor + 0.5)
-            labelheight = int(newheight * self.__scalefactor + 0.5)
-            self.__label.setMinimumSize(labelwidth, labelheight)
-            self.__label.resize(labelwidth, labelheight)
-            # mark that the pixmap needs to be recreated
             self.__scenewidth = newwidth
             self.__sceneheight = newheight
-            self.__createpixmap = True
-            # If auto-scaling, set scaling factor to 1.0 and resize the window
-            if self.__autoscale:
-                self.__scalefactor = 1.0
-                barheights = self.menuBar().height() + self.statusBar().height()
-                self.resize(newwidth + self.__framedelta, 
-                            newheight + self.__framedelta + barheights)
-                # the resize should redraw the scene
-            else:
-                # Redraw the scene from the beginning using the scaling factor
-                self.redrawScene()
+            # Redraw the scene from the beginning using the scaling factor
+            self.redrawScene()
 
 
-    def inquireSceneScale(self):
-        '''
-        Prompt the user for the desired scaling factor for the scene.
-        '''
-        labelwidth = int(self.__scenewidth * self.__scalefactor + 0.5)
-        labelheight = int(self.__sceneheight * self.__scalefactor + 0.5)
-        scaledlg = ScaleDialogPQ(self.__scalefactor, labelwidth, labelheight,
-                       self.__minsize, self.__minsize, self.__autoscale, self)
-        if scaledlg.exec_():
-            (newscale, autoscale, okay) = scaledlg.getValues()
-            if okay:
-                if autoscale:
-                    self.__autoscale = True
-                    self.autoScaleScene()
-                else:
-                    self.__autoscale = False
-                    self.scaleScene(newscale, False)
-
-    def autoScaleScene(self):
-        '''
-        Selects a scaling factor that maximizes the scene within the window 
-        frame without requiring scroll bars.  Intended to be called when
-        the window size is changed by the user and auto-scaling is turn on.
-
-        Returns:
-            True if the scene was resized
-            False if the a new resize command was issued
-        '''
-        barheights = self.menuBar().height() + self.statusBar().height()
-
-        # get the size for the central widget
-        cwheight = self.height() - barheights - self.__framedelta
-        heightsf = float(cwheight) / float(self.__sceneheight)
-
-        cwwidth = self.width() - self.__framedelta
-        widthsf = float(cwwidth) / float(self.__scenewidth)
-
-        if heightsf < widthsf:
-            factor = heightsf
-        else:
-            factor = widthsf
-
-        newcwheight = int(factor * self.__sceneheight + 0.5)
-        newcwwidth = int(factor * self.__scenewidth + 0.5)
-
-        # if the window does not have the correct aspect ratio, resize it so 
-        # it will; this will generate another call to this method.  Otherwise,
-        # scale the scene and be done.
-        if self.isMaximized() or \
-           ( (abs(cwheight - newcwheight) <= self.__framedelta) and \
-             (abs(cwwidth - newcwwidth) <= self.__framedelta) ):
-            self.scaleScene(factor, False)
-            return True
-        else:
-            self.resize(newcwwidth + self.__framedelta, 
-                        newcwheight + self.__framedelta + barheights)
-            return False
-
-    def scaleScene(self, factor, resizewin):
+    def scaleScene(self, factor):
         '''
         Scales both the horizontal and vertical directions by factor.
         Scaling factors are not accumulative.  So if the scene was
         already scaled, that scaling is "removed" before this scaling
-        factor is applied.  If resizewin is True, the main window is 
-        resized to accommodate this new scaled scene size.
+        factor is applied.
         '''
         newfactor = float(factor)
         newlabwidth = int(newfactor * self.__scenewidth + 0.5)
@@ -545,86 +258,11 @@ class PipedViewerPQ(QMainWindow):
         if (newlabwidth != oldlabwidth) or (newlabheight != oldlabheight):
             # Set the new scaling factor
             self.__scalefactor = newfactor
-            # Resize the label and set label values
-            # so the scrollarea knows of the new size
-            self.__label.setMinimumSize(newlabwidth, newlabheight)
-            self.__label.resize(newlabwidth, newlabheight)
-            # mark that the pixmap needs to be recreated
-            self.__createpixmap = True
             # Redraw the scene from the beginning
             self.redrawScene()
-        if resizewin:
-            # resize the main window (if possible)
-            barheights = self.menuBar().height() + self.statusBar().height()
-            mwheight = newlabheight + barheights + self.__framedelta
-            mwwidth = newlabwidth + self.__framedelta
-            # Do not exceed the available real estate on the screen.
-            # If autoscaling is in effect, the resize will trigger 
-            # any required adjustments.
-            scrnrect = QApplication.desktop().availableGeometry()
-            if mwwidth > 0.95 * scrnrect.width():
-                mwwidth = int(0.9 * scrnrect.width())
-            if mwheight > 0.95 * scrnrect.height():
-                mwheight = int(0.9 * scrnrect.height())
-            self.resize(mwwidth, mwheight)
-
-    def inquireSaveFilename(self):
-        '''
-        Prompt the user for the name of the file into which to save the scene.
-        The file format will be determined from the filename extension.
-        '''
-        formattypes = [ ( "png",
-                          self.tr("PNG - Portable Networks Graphics (*.png)") ),
-                        ( "jpeg",
-                          self.tr("JPEG - Joint Photographic Experts Group (*.jpeg *.jpg *.jpe)") ),
-                        ( "tiff",
-                          self.tr("TIFF - Tagged Image File Format (*.tiff *.tif)") ),
-                        ( "pdf",
-                          self.tr("PDF - Portable Document Format (*.pdf)") ),
-                        ( "ps",
-                          self.tr("PS - PostScript (*.ps)") ),
-                        ( "bmp",
-                          self.tr("BMP - Windows Bitmap (*.bmp)") ),
-                        ( "ppm",
-                          self.tr("PPM - Portable Pixmap (*.ppm)") ),
-                        ( "xpm",
-                          self.tr("XPM - X11 Pixmap (*.xpm)") ),
-                        ( "xbm",
-                          self.tr("XBM - X11 Bitmap (*.xbm)") ), ]
-        if HAS_QSvgGenerator:
-            formattypes.insert(5, ( "svg",
-                          self.tr("SVG - Scalable Vector Graphics (*.svg)") ) )
-        # tr returns QStrings so the following does not work
-        # filters = ";;".join( [ t[1] for t in formattypes ] )
-        filters = QString(formattypes[0][1])
-        for typePair in formattypes[1:]:
-            filters.append(";;")
-            filters.append(typePair[1])
-        # getSaveFileNameAndFilter does not want to accept a default filter
-        # for (fmt, fmtQName) in formattypes:
-        #     if self.__lastformat == fmt:
-        #         dfltfilter = fmtQName
-        #         break
-        # else:
-        #     dfltfilter = formattypes[0][1]
-        # getSaveFileNameAndFilter is a PyQt (but not Qt?) method
-        (fileName, fileFilter) = QFileDialog.getSaveFileNameAndFilter(self,
-                                      self.tr("Save the current image as "),
-                                      self.__lastfilename, filters)
-        if fileName:
-            for (fmt, fmtQName) in formattypes:
-                if fmtQName.compare(fileFilter) == 0:
-                    fileFormat = fmt
-                    break
-            else:
-                raise RuntimeError("Unexpected file format name '%s'" % fileFilter)
-            self.saveSceneToFile(fileName, fileFormat, None, 
-                                 None, None, None)
-            self.__lastfilename = fileName
-            self.__lastformat = fileFormat
 
     def saveSceneToFile(self, filename, imageformat, transparent, 
-                        vectsize, rastsize, myannotations):
+                        vectsize, rastsize, annotations):
         '''
         Save the current scene to the named file.  If imageformat
         is empty or None, the format is guessed from the filename
@@ -643,7 +281,7 @@ class PipedViewerPQ(QMainWindow):
         image.  If rastsize is not given, a raster image will be 
         saved at the current displayed scaled image size.  
 
-        If myannotations is not None, the strings given in the tuple
+        If annotations is not None, the strings given in the tuple
         are to be displayed above the image.  These annotations add 
         height, as needed, to the saved image (i.e., vectsize or 
         rastsize gives the height of the image below these annotations).
@@ -694,13 +332,13 @@ class PipedViewerPQ(QMainWindow):
         if (not HAS_QSvgGenerator) and (myformat == 'svg'):
             raise ValueError("Your version of Qt does not support generation of SVG files")
 
-        if myannotations:
+        if annotations:
             annopicture = QPicture()
             annopainter = QPainter(annopicture)
             annotextdoc = QTextDocument()
             # Leave room for the added margins to the width
             annotextdoc.setTextWidth(self.__scenewidth - 2.0 * self.__addedannomargin)
-            annotextdoc.setHtml("<p>" + "<br />".join(myannotations) + "</p>")
+            annotextdoc.setHtml("<p>" + "<br />".join(annotations) + "</p>")
             annotextdoc.drawContents(annopainter)
             annopainter.end()
             annosize = annotextdoc.documentLayout().documentSize()
@@ -727,9 +365,9 @@ class PipedViewerPQ(QMainWindow):
                 imageheight = vectsize.height()
             else:
                 imagewidth = self.__scenewidth * self.__scalefactor \
-                             / float(self.physicalDpiX())
+                             / float(self.__physicalDpiX)
                 imageheight = self.__sceneheight * self.__scalefactor \
-                              / float(self.physicalDpiY())
+                              / float(self.__physicalDpiY)
             # Add in any height needed for the annotations
             if annopicture:
                 annoheight = (annosize.height() + 2 * self.__addedannomargin) * \
@@ -771,13 +409,13 @@ class PipedViewerPQ(QMainWindow):
                     painter.fillRect(QRectF(0, 0, printwidth, printheight), 
                                      self.__lastclearcolor)
             # Scaling printfactor for the scene to the saved image
-            widthscalefactor = imagewidth * self.physicalDpiX() / float(self.__scenewidth)
+            widthscalefactor = imagewidth * self.__physicalDpiX / float(self.__scenewidth)
             # Check if there are annotations to add
             if annopicture:
                 # Scale the scene now for the annotations
                 painter.scale(widthscalefactor, widthscalefactor)
                 # factor that makes it work after scaling (12.5 = 1200 / 96)
-                printfactor = printres / self.physicalDpiX()
+                printfactor = printres / self.__physicalDpiX
                 # Draw a solid white rectangle with black outline for the annotations
                 painter.setBrush(QBrush(Qt.white, Qt.SolidPattern))
                 painter.setPen(QPen(QBrush(Qt.black, Qt.SolidPattern), 
@@ -792,19 +430,19 @@ class PipedViewerPQ(QMainWindow):
                 # Draw the scene to the printer - scaling already in effect
                 self.paintScene(painter, 0, 0.0, 
                         (annosize.height() + 2.0 * self.__addedannomargin) * printfactor, 
-                        1.0, "Saving", False)
+                        1.0, False)
             else:
                 # No annotations so just do the normal drawing
                 self.paintScene(painter, 0, 0.0, 0.0, 
-                                widthscalefactor, "Saving", False)                
+                                widthscalefactor, False)                
             painter.end()
         elif myformat == 'svg':
             # if HAS_QSvgGenerator is False, it should never get here
             generator = QSvgGenerator()
             generator.setFileName(myfilename)
             if vectsize:
-                imagewidth = int(vectsize.width() * self.physicalDpiX() + 0.5)
-                imageheight = int(vectsize.height() * self.physicalDpiY() + 0.5)
+                imagewidth = int(vectsize.width() * self.__physicalDpiX + 0.5)
+                imageheight = int(vectsize.height() * self.__physicalDpiY + 0.5)
             else:
                 imagewidth = int(self.__scenewidth * self.__scalefactor + 0.5)
                 imageheight = int(self.__sceneheight * self.__scalefactor + 0.5)
@@ -814,8 +452,8 @@ class PipedViewerPQ(QMainWindow):
                              imageheight / self.__sceneheight
                 imageheight += annoheight
             # Set the image size
-            generator.setResolution(
-                    int(0.5 * (self.physicalDpiX() + self.physicalDpiY()) + 0.5) )
+            generator.setResolution( 
+                int(0.5 * (self.__physicalDpiX + self.__physicalDpiY + 0.5)) )
             generator.setSize( QSize(imagewidth, imageheight) )
             generator.setViewBox( QRect(0, 0, imagewidth, imageheight) )
             # paint the scene to this QSvgGenerator
@@ -846,11 +484,11 @@ class PipedViewerPQ(QMainWindow):
                 # Draw the scene to the printer - scaling already in effect
                 self.paintScene(painter, 0, 
                                 0.0, annosize.height() + 2.0 * self.__addedannomargin, 
-                                1.0, "Saving", False)
+                                1.0, False)
             else:
                 # No annotations so just do the normal drawing
                 self.paintScene(painter, 0, 0.0, 0.0, 
-                                widthscalefactor, "Saving", False)                
+                                widthscalefactor, False)                
             painter.end()
         else:
             if rastsize:
@@ -897,11 +535,11 @@ class PipedViewerPQ(QMainWindow):
                 # Draw the scene to the printer - scaling already in effect
                 self.paintScene(painter, 0, 
                                 0.0, annosize.height() + 2.0 * self.__addedannomargin, 
-                                1.0, "Saving", False)
+                                1.0, False)
             else:
                 # No annotations so just do the normal drawing
                 self.paintScene(painter, 0, 0.0, 0.0, 
-                                widthscalefactor, "Saving", False)                
+                                widthscalefactor, False)                
             painter.end()
             # save the image to file
             image.save(myfilename, myformat)
@@ -946,7 +584,7 @@ class PipedViewerPQ(QMainWindow):
         try:
             cmndact = cmnd["action"]
         except KeyError:
-            raise ValueError("Unknown command '%s'" % str(cmnd))
+            raise ValueError("Unknown command %s" % str(cmnd))
 
         if cmndact == "clear":
             try:
@@ -957,11 +595,10 @@ class PipedViewerPQ(QMainWindow):
         elif cmndact == "exit":
             self.exitViewer()
         elif cmndact == "hide":
-            self.hide()
+            pass
         elif cmndact == "screenInfo":
-            scrnrect = QApplication.desktop().availableGeometry()
-            info = ( self.physicalDpiX(), self.physicalDpiY(),
-                     scrnrect.width(), scrnrect.height() )
+            info = ( self.__physicalDpiX, self.__physicalDpiY, 
+                     self.__screenwidth, self.__screenheight )
             self.__rspdpipe.send(info)
         elif cmndact == "antialias":
             self.__antialias = bool(cmnd.get("antialias", True))
@@ -977,7 +614,7 @@ class PipedViewerPQ(QMainWindow):
             newscale = float(cmnd["factor"])
             if newscale <= 0.0:
                 raise ValueError("invalid scaling factor")
-            self.scaleScene(newscale, True)
+            self.scaleScene(newscale)
         elif cmndact == "resize":
             mysize = self.__helper.getSizeFromCmnd(cmnd)
             self.resizeScene(mysize.width(), mysize.height())
@@ -987,16 +624,16 @@ class PipedViewerPQ(QMainWindow):
             transparent = cmnd.get("transparent", False)
             vectsize = self.__helper.getSizeFromCmnd(cmnd["vectsize"])
             rastsize = self.__helper.getSizeFromCmnd(cmnd["rastsize"])
-            myannotations = cmnd["annotations"]
+            annotations = cmnd["annotations"]
             self.saveSceneToFile(filename, fileformat, transparent, 
-                                 vectsize, rastsize, myannotations)
+                                 vectsize, rastsize, annotations)
         elif cmndact == "setWidthFactor":
             newfactor = float(cmnd.get("factor", -1.0))
             if newfactor <= 0.0:
                 raise ValueError("Invalid width factor")
             self.setWidthScalingFactor(newfactor)
         elif cmndact == "setTitle":
-            self.setWindowTitle(cmnd["title"])
+            pass
         elif cmndact == "imgname":
             value = cmnd.get("name", None)
             if value:
@@ -1005,18 +642,17 @@ class PipedViewerPQ(QMainWindow):
             if value:
                 self.__lastformat = value.lower()
         elif cmndact == "show":
-            if self.isHidden():
-                self.showNormal()
+            pass
         elif cmndact == "beginView":
             self.beginView(cmnd)
         elif cmndact == "clipView":
             self.clipView(cmnd)
         elif cmndact == "endView":
-            self.endView(True)
+            self.endView()
         elif cmndact == "beginSegment":
             self.beginSegment(cmnd["segid"])
         elif cmndact == "endSegment":
-            self.endSegment(True)
+            self.endSegment()
         elif cmndact == "deleteSegment":
             self.deleteSegment(cmnd["segid"])
         elif cmndact == "drawMultiline":
@@ -1068,7 +704,7 @@ class PipedViewerPQ(QMainWindow):
         '''
         # If a view is still active, automatically end it
         if self.__activepainter:
-            self.endView(True)
+            self.endView()
         # Get the location for the new view in terms of scene pixels.
         width = float(self.__scenewidth)
         height = float(self.__sceneheight)
@@ -1079,13 +715,13 @@ class PipedViewerPQ(QMainWindow):
         # perform the checks after turning into units of pixels
         # to make sure the values are significantly different
         if (0.0 > leftpixel) or (leftpixel >= rightpixel) or (rightpixel > width):
-            raise ValueError("Invalid left, right view fractions: " \
-                             "left in pixels = %s, right in pixels = %s" \
-                             % (str(leftpixel), str(rightpixel)) )
+            raise ValueError( "Invalid left, right view fractions: " \
+                              "left in pixels = %s, right in pixels = %s" \
+                              % (str(leftpixel), str(rightpixel)) )
         if (0.0 > toppixel) or (toppixel >= bottompixel) or (bottompixel > height):
-            raise ValueError("Invalid bottom, top view fractions: " \
-                             "top in pixels = %s, bottom in pixels = %s" \
-                             % (str(toppixel), str(bottompixel)) )
+            raise ValueError( "Invalid bottom, top view fractions: " \
+                              "top in pixels = %s, bottom in pixels = %s" \
+                              % (str(toppixel), str(bottompixel)) )
         # Create the view rectangle in device coordinates
         vrectf = QRectF(leftpixel, toppixel,
                        rightpixel - leftpixel, bottompixel - toppixel)
@@ -1120,11 +756,10 @@ class PipedViewerPQ(QMainWindow):
             self.__activepainter.setClipping(False)
             self.__clipit = False
 
-    def endView(self, update):
+    def endView(self):
         '''
         Ends the current view and appends it to the list of pictures
-        drawn in the scene.  If update is True, the displayed scene
-        is updated.
+        drawn in the scene.
         '''
         self.__activepainter.end()
         self.__activepainter = None
@@ -1132,9 +767,6 @@ class PipedViewerPQ(QMainWindow):
         if self.__drawcount > 0:
             self.__viewpics.append((self.__activepicture, self.__segid))
             self.__drawcount = 0
-        if update:
-            # update the scene
-            self.drawLastPictures(False)
         self.__activepicture = None
 
     def beginSegment(self, segid):
@@ -1147,20 +779,18 @@ class PipedViewerPQ(QMainWindow):
         next active view.
         '''
         if self.__activepainter and (self.__drawcount > 0):
-            self.endView(True)
+            self.endView()
             self.beginViewFromSides(self.__fracsides, self.__clipit)
         self.__segid = segid
         
-    def endSegment(self, update):
+    def endSegment(self):
         '''
         Ends the current active view and starts a new view.
         Removes the current segment ID associated with views.
         '''
         if self.__activepainter and (self.__drawcount > 0):
-            self.endView(update)
+            self.endView()
             self.beginViewFromSides(self.__fracsides, self.__clipit)
-        if update:
-            self.drawLastPictures(False)
         self.__segid = None
 
     def deleteSegment(self, segid):
@@ -1169,32 +799,25 @@ class PipedViewerPQ(QMainWindow):
         '''
         # if deleting the current segment, end the current segment
         if segid == self.__segid:
-            self.endSegment(False)
+            self.endSegment()
         # Go through all the pictures, determining which to save
         newpicts = [ ]
         for (viewpic, vsegid) in self.__viewpics:
             if vsegid != segid:
                 newpicts.append((viewpic, vsegid))
-            else:
-                # picture was deleted, so will need to 
-                # regenerate the scene from the beginning
-                self.__clearpixmap = True
-                self.__lastpicdrawn = 0
         self.__viewpics[:] = newpicts
         # Do NOT update since there may be more segments to be deleted
         # Rely on the receiving an update or redraw command at the end 
 
     def updateScene(self):
         '''
-        Updates the displayed graphics to include all drawn elements.
+        If there is a current view with something drawn, ends this view 
+        and then starts a new view with the same limits.  Used for 
+        limiting the number of drawing elements in a view.
         '''
-        # If there is an active picture containing something,
-        # end the view, thus adding and display this picture,
-        # then restart the view.
         if self.__drawcount > 0:
-            self.endView(True)
+            self.endView()
             self.beginViewFromSides(self.__fracsides, self.__clipit)
-        self.drawLastPictures(False)
 
     def drawMultiline(self, cmnd):
         '''
@@ -1430,7 +1053,8 @@ class PipedViewerPQ(QMainWindow):
                 self.__activepainter.rotate(rotdeg)
             except KeyError:
                 pass
-            self.__activepainter.drawText(0, 0, self.tr(mytext))
+            mystring = QCoreApplication.translate("PipedNoDisplayPQ", mytext)
+            self.__activepainter.drawText(0, 0, mystring)
             self.__drawcount += 1
         finally:
             # return the painter to the default state
@@ -1445,7 +1069,7 @@ class PipedViewerPQ(QMainWindow):
         to convert from points (1/72 inches) to pixels, and to apply 
         any additional width scaling specified by factor. 
         '''
-        self.__widthfactor  = (self.physicalDpiX() + self.physicalDpiY()) / 144.0
+        self.__widthfactor  = (self.__physicalDpiX + self.__physicalDpiY) / 144.0
         self.__widthfactor *= factor
         
     def widthScalingFactor(self):
@@ -1457,13 +1081,13 @@ class PipedViewerPQ(QMainWindow):
         return self.__widthfactor 
 
 
-class PipedViewerPQProcess(Process):
+class PipedNoDisplayPQProcess(Process):
     '''
-    A Process specifically tailored for creating a PipedViewerPQ.
+    A Process specifically tailored for creating a PipedNoDisplayPQ.
     '''
     def __init__(self, cmndpipe, rspdpipe):
         '''
-        Create a Process that will produce a PipedViewerPQ
+        Create a Process that will produce a PipedNoDisplayPQ
         attached to the given Pipes when run.
         '''
         Process.__init__(self)
@@ -1474,11 +1098,11 @@ class PipedViewerPQProcess(Process):
 
     def run(self):
         '''
-        Create a PipedViewerPQ that is attached
+        Create a PipedNoDisplayPQ that is attached
         to the Pipe of this instance.
         '''
-        self.__app = QApplication(["PipedViewerPQ"])
-        self.__viewer = PipedViewerPQ(self.__cmndpipe, self.__rspdpipe)
+        self.__app = QCoreApplication(["PipedNoDisplayPQ"])
+        self.__viewer = PipedNoDisplayPQ(self.__cmndpipe, self.__rspdpipe)
         myresult = self.__app.exec_()
         self.__cmndpipe.close()
         self.__rspdpipe.close()
@@ -1486,27 +1110,23 @@ class PipedViewerPQProcess(Process):
 
 
 #
-# The following are for testing this (and the cmndhelperpq) modules
+# The following is for testing this and the cmndhelperpq modules
 #
 
-class _CommandSubmitterPQ(QDialog):
+class _NoDisplayCommandSubmitterPQ(object):
     '''
     Testing dialog for controlling the addition of commands to a pipe.
     Used for testing PipedViewerPQ in the same process as the viewer.
     '''
-    def __init__(self, parent, cmndpipe, rspdpipe, cmndlist):
-        '''
-        Create a QDialog with a single QPushButton for controlling
-        the submission of commands from cmndlist to cmndpipe.
-        '''
-        QDialog.__init__(self, parent)
+    def __init__(self, cmndpipe, rspdpipe, cmndlist):
         self.__cmndlist = cmndlist
         self.__cmndpipe = cmndpipe
         self.__rspdpipe = rspdpipe
         self.__nextcmnd = 0
-        self.__button = QPushButton("Submit next command", self)
-        self.__button.pressed.connect(self.submitNextCommand)
-        self.show()
+        self.__timer = QTimer()
+        self.__timer.timeout.connect(self.submitNextCommand())
+        self.__timer.setInterval(1000)
+        self.__timer.start(1000)
 
     def submitNextCommand(self):
         '''
@@ -1522,8 +1142,9 @@ class _CommandSubmitterPQ(QDialog):
         except IndexError:
             self.__rspdpipe.close()
             self.__cmndpipe.close()
-            self.close()
-
+        sleep(5)
+        while self.__rspdpipe.poll():
+            print "Response: %s" % str(self.__rspdpipe.recv())
 
 if __name__ == "__main__":
     # vertices of a pentagon (roughly) centered in a 1000 x 1000 square
@@ -1668,34 +1289,30 @@ if __name__ == "__main__":
                         "segid":"text" } )
     drawcmnds.append( { "action":"update" } )
     drawcmnds.append( { "action":"show" } )
-    annotations = ( "The 1<sup>st</sup> CO<sub>2</sub> annotations line",
-                    "Another line with <i>lengthy</i> details that should " + \
-                    "wrap to a 2<sup>nd</sup> annotation line",
-                    "<b>Final</b> annotation line" )
+    testannotations = ( "The 1<sup>st</sup> CO<sub>2</sub> annotations line",
+                        "Another line with <i>lengthy</i> details that should " + \
+                        "wrap to a 2<sup>nd</sup> annotation line",
+                        "<b>Final</b> annotation line" )
     drawcmnds.append( { "action":"save",
                         "filename":"test.pdf",
                         "vectsize":{"width":7.0, "height":7.0},
                         "rastsize":{"width":750, "height":750},
-                        "annotations":annotations } )
+                        "annotations":testannotations } )
     drawcmnds.append( { "action":"save",
                         "filename":"test.png",
                         "vectsize":{"width":7.0, "height":7.0},
                         "rastsize":{"width":750, "height":750},
-                        "annotations":annotations } )
+                        "annotations":testannotations } )
     drawcmnds.append( { "action":"exit" } )
 
-    # start PyQt
-    app = QApplication(["PipedViewerPQ"])
-    # create a PipedViewerPQ in this process
     cmndrecvpipe, cmndsendpipe = Pipe(False)
     rspdrecvpipe, rspdsendpipe = Pipe(False)
-    viewer = PipedViewerPQ(cmndrecvpipe, rspdsendpipe)
-    # create a command submitter dialog
-    tester = _CommandSubmitterPQ(viewer, cmndsendpipe,
-                                 rspdrecvpipe, drawcmnds)
-    tester.show()
-    # let it all run
-    result = app.exec_()
-    if result != 0:
-        sys.exit(result)
+    proc = PipedNoDisplayPQProcess(cmndrecvpipe, rspdsendpipe)
+    proc.start()
 
+    for testcmnd in drawcmnds:
+        print "Command: %s" % str(testcmnd)
+        cmndsendpipe.send(testcmnd)
+        sleep(1)
+        while rspdrecvpipe.poll():
+            print "Response: %s" % str(rspdrecvpipe.recv())

@@ -62,6 +62,7 @@ C              of other plot elements but the labels dont need to be.
 C *acm* 10/14  bug 2205. Polygon plots have extra calls because polygons can get 
 C              drawn on topof axes. This(?) causes the main label to not get 
 C              finished. For polygon plots only, draw the main label twice.
+* V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 C**
 C**    @(#)daxis.F	1.1    3/10/88
 C**
@@ -124,7 +125,7 @@ C always solid, black.
 	    CALL BOX
 	END IF
 C	SETUP AXIS
-	CALL SETLAB(XF,YF,LTT,LTB,LYL,LYR,LXT,LXB,IFX,IFY)
+	CALL SETLAB(XF,YF,LTT,LTB,LYL,LYR,LXT,LXB,IFX,IFY,LTBb)
 
 	IF (ii .EQ. 2 .OR. mainlab .EQ. 0) THEN
 	   LTT = 0
@@ -133,6 +134,7 @@ C	SETUP AXIS
 	   LYR = 0
 	   LXT = 0
 	   LXB = 0
+	   LTBb= 0
 	ENDIF
 	noylab =  (ylab .EQ. ' ') 
 C
@@ -143,9 +145,11 @@ C
 	  IY=ITY
 C	  YAXIS1 = LINEAR ,  YAXIS2 = LOG
 C
-          IF(ITFLG.EQ.-1)THEN
-              CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
+          IF(ITFLG.EQ.-1 .OR. ITFLG.EQ.2)THEN
+              IF(ITFLG.EQ.-1) CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
      *        YF,XLO,XF,TCSIZE,XHI,HGRAT, HCOLOR, HLINE)
+              IF(ITFLG.EQ.2) CALL TAYIS(ITYPETb,TLOb,IT1b,IT2b,DT,NMTCTb,LTBb,IFDBb,ISDBb,
+     *        YF,XLO,XF,TCSIZEb,XHI,HGRAT, HCOLOR, HLINE)
             hline = .FALSE.
 	  ELSE IF(ITYPEY.EQ.1)THEN
 	   CALL YAXIS1(XLO,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYL,IFY,YF,
@@ -161,9 +165,11 @@ C
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
       IF(IAXON(4).EQ.1)THEN
 	IY=-ITY
-        IF(ITFLG.EQ.-1)THEN
-            CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
+        IF(ITFLG.EQ.-1 .OR. ITFLG.EQ.2)THEN
+            IF(ITFLG.EQ.-1) CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
      *      YF,XHI,XF,TCSIZE,XLO,HGRAT, HCOLOR, HLINE)
+            IF(ITFLG.EQ.2) CALL TAYIS(ITYPETb,TLOb,IT1b,IT2b,DT,NMTCTb,LTTb,IFDBb,ISDBb,
+     *      YF,XHI,XF,TCSIZEb,XLO,HGRAT, HCOLOR, HLINE)
            hline = .FALSE.
 	ELSE IF(ITYPEY.EQ.1)THEN
 	    CALL YAXIS1(XHI,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYR,IFY,YF,
@@ -183,7 +189,7 @@ C
 C	  XAXIS1 = LINEAR, XAXIS2 = LOG, TAXIS CALLS EITHER TAXIS0,
 C					 TAXIS1 OR TAXIS3
 C
-          IF(ITFLG.EQ.1)THEN
+          IF(ITFLG.EQ.1 .OR. ITFLG.EQ.2)THEN
               CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
      *        XF,YHI,YF,TCSIZE,YLO,VGRAT, VCOLOR, VLINE)
               vline = .FALSE.
@@ -200,7 +206,7 @@ C
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
       IF(MXBOT.EQ.0.AND.IAXON(2).EQ.1)THEN
           IX=ITX
-          IF(ITFLG.EQ.1)THEN
+          IF(ITFLG.EQ.1 .OR. ITFLG.EQ.2)THEN
               CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
      *        XF,YLO,YF,TCSIZE,YHI,VGRAT, VCOLOR, VLINE)
               vline = .FALSE.

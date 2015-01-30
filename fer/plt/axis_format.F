@@ -1,6 +1,7 @@
 	SUBROUTINE AXIS_FORMAT( x_or_y, idim, grid, lo_val, hi_val,
      .				del_val, curvilinear, cx_curv,
-     .				its_calendar, tstyle, no_labels )
+     .				its_calendar, calendar_both, 
+     .				tstyle, no_labels )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -79,6 +80,7 @@
 *       *acm* 3/12 6D Ferret: Add E and F dimensions 
 *                  A time axis may be a T axis or F axis, so idim is 
 *                  now an arg to TSTEP_TO_SECS, TSTEP_TO_DATE
+* V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -95,7 +97,7 @@
         EQUIVALENCE ( rbuff, risc_buff )
 
 * calling argument declarations:
-	LOGICAL		its_calendar, curvilinear, no_labels
+	LOGICAL		its_calendar, calendar_both, curvilinear, no_labels
 	INTEGER		idim, grid, cx_curv
 	CHARACTER	x_or_y*1, tstyle*3
 	REAL*8		lo_val, hi_val, del_val
@@ -109,7 +111,7 @@
 	INTEGER		TM_LENSTR1, dlen, places, ndec, dummy
 	CHARACTER	AX_TITLE*32, WHOI_DATE*14, VAR_TITLE*128,
      .			INTERNAL_WHOI_DATE*14,
-     .			fmt*4, buff*200
+     .			fmt*4, buff*200, tsetting*2
 	REAL		res_del, dt_min, time_unit
 	REAL*8		TSTEP_TO_SECS
 	INTEGER		n_res
@@ -171,14 +173,16 @@
 	      dt_min = time_unit / 60.
 
 * ... TAXIS command
+	      tsetting = 'ON'
+	      IF (calendar_both) tsetting = 'BO'
 	      IF ( x_or_y .EQ. 'Y' ) THEN
-	         WRITE ( ppl_buff, 3010 ) dt_min
+	         WRITE ( ppl_buff, 3010 ) dt_min, tsetting
 	      ELSE
-	         WRITE ( ppl_buff, 3012 ) dt_min
+	         WRITE ( ppl_buff, 3012 ) dt_min, tsetting
 	      ENDIF
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
- 3010	      FORMAT ('TAXIS/YAXIS ',G13.5,',ON')
- 3012	      FORMAT ('TAXIS ',G13.5,',ON')
+ 3010	      FORMAT ('TAXIS/YAXIS ',G13.5,',',A2)
+ 3012	      FORMAT ('TAXIS ',G13.5,',',A2)
 
 * ... TIME command (time axis limits)
               rbuff(1) = WHOI_DATE(grid, idim, lo_val )      ! f77 bug

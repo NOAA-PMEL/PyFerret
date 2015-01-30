@@ -153,6 +153,7 @@
 * V691  *acm*  7/14 Fix ticket 2187: axis labels for PLOT/VS plots.
 * V693  *acm* 10/14 Fix 2122: Check for a valid axis if they've asked for a 
 *                   log axis before proceeding with vlimits or hlimits
+* V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -188,7 +189,7 @@
      .                  flip, time_axis,
      .			all_1_ind, formatted,
      .			indep_is_log, dep_is_log, use_nice,
-     .                  this_no_range(50), set_axis
+     .                  this_no_range(50), set_axis, timeax_both
 	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
      .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14, 
@@ -831,11 +832,12 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                     last  = ind_max
                     GOTO 5170
                  ENDIF
-
+	
+	         timeax_both = .FALSE.
 	         CALL AXIS_FORMAT( indep_ax, indep_dim, grid1,
      .				   ind_min, ind_max, delta,
      .				   pnot_curv, 0,
-     .				   time_axis, tstyle, no_labels )
+     .				   time_axis, timeax_both, tstyle, no_labels )
 	      ENDIF
 	   ENDIF
 * ... dependent axis scaling

@@ -130,6 +130,7 @@ C              do not make small tics by default.
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * v691 5/14 *acm* Change name MOD to TEKMOD
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
+* V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 
 c
 c	fromi	command file or device (/dev/tty or TT: for terminal)
@@ -270,7 +271,7 @@ CCCCCCC data	        tmapdebug/.false./
 	CHARACTER COMBUF(ICMDIM)*2048
 	CHARACTER YES*3,NO*2,err_msg*40
 	LOGICAL LEOF
-	LOGICAL IFLG1,IFLG2,LABON,VALOFF
+	LOGICAL IFLG1,IFLG2,LABON,VALOFF,TBOTH
 	DIMENSION X1(5),Y1(5),Y2(4),X3(2),IX3(5)
 	DIMENSION X4(4)
 	CHARACTER COMM(123)*7
@@ -427,6 +428,8 @@ C       Changed ICOM to CHAR*7 comparison for CALENDAR command. *jd* 10.99
 21	IFLG1=(M.GE.1.AND.IFLG(1).NE.0)
 	IFLG2=(M.GE.2.AND.IFLG(2).NE.0)
 	LABON=(LABEL.EQ.'ON'.OR.LABEL.EQ.'on')
+	TBOTH=(LABEL.EQ.'BO'.OR.LABEL.EQ.'bo')
+	IF (TBOTH) LABON = .TRUE.
 	VALOFF=(INDEX(LABEL,'OFF')+INDEX(LABEL,'off')).NE.0
 C       Mod below for brain dead version *JD* 8.2.91
         if (tmapdebug) then
@@ -876,6 +879,7 @@ C     TAXIS
 		ITFLG=1
 	    ENDIF
 	ENDIF
+	IF (TBOTH) ITFLG=2
 	DO 5401 I=1,M
 	    IF(I.GE.3)GOTO 5402
 	    IF(IFLG(I).NE.0)X3(I)=P(I)
@@ -1152,7 +1156,9 @@ C	TIME
 		GOTO 10
 	    ENDIF
 	    IAUTOT=0
-C
+
+	    IF (itflg .EQ. 2) GOTO 9230
+
 C	GET TMIN,TMAX,TSTART FROM LABEL
 C
 C	IF NO FIRST PARAMETER SKIP TMIN PROCESSING
@@ -1231,8 +1237,97 @@ C
 
 9203	    TLO=1.-DIFF(IT1,ITSTRT)/DT
 	    GOTO 10
+c------------------------------------------------------------------------------------
+
+C Time definition for second time axis (forecast/time plot)
+9230    CONTINUE
+
+C	GET TMIN,TMAX,TSTART FROM LABEL
+C
+C	IF NO FIRST PARAMETER SKIP TMIN PROCESSING
+C
+	    IF(M.GE.1.AND.IFLG(1).EQ.0)GOTO 9231
+	    IC=INDEX(LABEL,',')
+	    IF(IC.EQ.0)IC=buflen+1
+	    IS=INDEX(LABEL,' ')
+	    IS=MIN0(IS,IC)
+
+	    TMPCHR = LABEL(1:IS-1)
+
+	    IF ( TMPCHR(12:12) .EQ. ' ' ) THEN
+		IT1b=TMPCHR(2:11)         ! old format
+	 	IT1b(11:14) = '0019'
+	    ELSE
+		IT1b(1:12)=TMPCHR(4:15)   ! enhanced format
+		IF (tmpchr(11:12) .EQ. ' ') IT1b(11:12)='00' 
+		IT1b(13:14) = TMPCHR(2:3) ! century
+	    ENDIF
+
+	    IF(ITSTRTb.EQ.' ')ITSTRTb=IT1b
+	    IF(IC.NE.0)IS=IS+1
+9240	    IF(LABEL(IS:IS).EQ.' ')THEN
+		IS=IS+1
+		IF(IS.GT.2048)GOTO 9233
+		GOTO 9240
+	    ELSE IF(LABEL(IS:IS).EQ.',')THEN
+		LABEL=LABEL(IS+1:)
+		GOTO 9232
+	    ELSE
+		LABEL=LABEL(IS:)
+	    ENDIF
+C
+C	IF NO SECOND PARAMETER SKIP TMAX PROCESSING
+C
+9231	    IF(M.GE.2.AND.IFLG(2).EQ.0)GOTO 9232
+	    IC=INDEX(LABEL,',')
+	    IF(IC.EQ.0)IC=buflen+1
+	    IS=INDEX(LABEL,' ')
+	    IS=MIN0(IS,IC)
+
+	    TMPCHR = LABEL(1:IS-1)
+
+	    IF ( TMPCHR(12:12) .EQ. ' ' ) THEN
+		IT2b=TMPCHR(2:11)         ! old format
+		IT2b(11:14) = '0019'
+	    ELSE
+		IT2b(1:12)=TMPCHR(4:15)   ! enhanced format
+		IF (TMPCHR(11:12) .EQ. ' ') IT2b(11:12)='00' 
+		IT2b(13:14) = TMPCHR(2:3) ! century
+	    ENDIF
+
+	    IF(IC.NE.0)IS=IS+1
+9250	    IF(LABEL(IS:IS).EQ.' ')THEN
+		IS=IS+1
+		IF(IS.GT.2048)GOTO 9233
+		GOTO 9250
+	    ELSE
+		LABEL=LABEL(IS:)
+	    ENDIF
+
+9232	    TMPCHR = LABEL(1:15)
+
+	    IF ( TMPCHR(12:12) .EQ. ' ' ) THEN
+		ITSTRTb=TMPCHR(2:11)         ! old format
+		ITSTRTb(11:14) = '0019'
+	    ELSE
+		ITSTRTb(1:12)=TMPCHR(4:15)   ! enhanced format
+		IF (TMPCHR(11:12) .EQ. ' ') ITSTRTb(11:12)='00' 
+		ITSTRTb(13:14) = TMPCHR(2:3) ! century
+	    ENDIF
+	    
+
+
+9233	    TLOb=1.-DIFF(IT1b,ITSTRTb)/DT
+	    GOTO 10
+
+c------------------------------------------------------------------------------------
+
+
 C	TXTYPE
 9300	    CALL UPPER(LABEL,2048)
+	IF (itflg .EQ. 2) GOTO 9330
+
+	
 C
 C	IF NO FIRST PARAMETER SKIP PROCESSING
 C
@@ -1285,20 +1380,115 @@ C
 	    IF (INDEX(LABEL,'DMY').NE.0) MONYRLAB = .TRUE.
 	    LABELT=ITXTPE*ITXLBP
 	    GOTO 10
+
+	
+c------------------------------------------------------------------------------------
+9330	    CONTINUE
+C
+C	IF NO FIRST PARAMETER SKIP PROCESSING
+C
+	    IF(M.GE.1.AND.IFLG(1).EQ.0)GOTO 9331
+	    IF(LABEL(1:1).EQ.'D')THEN
+		ITYPETb=0
+	    ELSE IF(LABEL(1:1).EQ.'M')THEN
+		ITYPETb=1
+	    ELSE
+		ITYPETb=3
+	    ENDIF
+C
+C	PROCESS TIME AXIS STYLE
+C
+9331	    IF(ITYPETb.EQ.0)THEN
+		IF(INDEX(LABEL,'HRD').NE.0)THEN
+		    ITXTPEb=2
+		ELSE
+		    ITXTPEb=1
+		ENDIF
+	    ELSE IF(ITYPETb.EQ.1)THEN
+		IF(INDEX(LABEL,'DAYM').NE.0)THEN
+		    ITXTPEb=2
+		ELSE
+		    ITXTPEb=1
+		ENDIF
+		MONYRLAB = .FALSE.
+		IF (INDEX(LABEL,'DMY').NE.0) MONYRLAB = .TRUE.
+	    ELSE
+		IF(INDEX(LABEL,'MON1').NE.0)THEN
+		    ITXTPEb=3
+		ELSE IF(INDEX(LABEL,'MONY').NE.0)THEN
+		    ITXTPEb=2
+		ELSE
+		    ITXTPEb=1
+		ENDIF
+
+*               Century axis mod
+	        CENFLAG = .FALSE.
+	        IF(INDEX(LABEL,'MULTIY').NE.0) CENFLAG = .TRUE.
+
+*               multi-decade axis mod
+	        MULTICENFLAG = .FALSE. 
+	        IF(INDEX(LABEL,'MULTID').NE.0) THEN
+		   CENFLAGb = .TRUE. 
+		   MULTICENFLAGb = .TRUE. 
+	        ENDIF
+	    ENDIF
+	    MONYRLABb = .FALSE.  ! Option for MON and DAY types. 
+	    IF (INDEX(LABEL,'DMY').NE.0) MONYRLABb = .TRUE.
+	    LABELTb=ITXTPEb*ITXLBPb
+	    
+	    GOTO 10
+c------------------------------------------------------------------------------------
+
 C	TXLSZE
-9400	    IF(IFLG1)TCSIZE=P(1)
+9400	    CONTINUE
+	    IF (itflg .EQ. 2) THEN
+	       IF(IFLG1)TCSIZEb=P(1)
+	    ELSE
+	       IF(IFLG1)TCSIZE=P(1)
+	       IF (itflg.EQ.0.AND.IFLG1) TCSIZEb=P(1) 
+	    ENDIF
+	    
 	    GOTO 10
 C	TXLINT
-9500	    IF(IFLG1)IFDB=P(1)
-	    IF(IFLG2)ISDB=P(2)
+9500	    CONTINUE
+	    IF (itflg .EQ. 2) THEN
+	       IF(IFLG1)IFDBb=P(1)
+	       IF(IFLG2)ISDBb=P(2)
+	    ELSE
+	       IF(IFLG1)IFDB=P(1)
+	       IF(IFLG2)ISDB=P(2)
+	       IF (itflg.EQ.0) THEN
+	          IF(IFLG1)IFDBb=P(1)
+	          IF(IFLG2)ISDBb=P(2)
+	       ENDIF
+
+	    ENDIF
 	    GOTO 10
 C	TXNMTC
-9600	    IF(IFLG1)NMTCT=P(1)
+9600	    CONTINUE
+	    IF (itflg .EQ. 2) THEN
+	       IF(IFLG1)NMTCTb=P(1)
+	    ELSE
+	       IF(IFLG1)NMTCT=P(1)
+	       IF (itflg.EQ.0 .AND.IFLG1)NMTCTb=P(1) 
+	    ENDIF
 	    GOTO 10
 C	TXLABP
-9700	    IF(IFLG1)THEN
-		ITXLBP=P(1)
-		LABELT=ITXTPE*ITXLBP
+9700	    CONTINUE
+	    IF (itflg .EQ. 2) THEN
+	       IF(IFLG1)THEN
+		  ITXLBPb=P(1)
+		  LABELTb=ITXTPE*ITXLBP
+	       ENDIF
+	    ELSE
+	       IF(IFLG1)THEN
+		  ITXLBP=P(1)
+		  LABELT=ITXTPE*ITXLBP
+		  IF (itflg.EQ.0) THEN
+ 		     ITXLBPb=P(1)
+		     LABELTb=ITXTPE*ITXLBP
+		  ENDIF
+	       ENDIF
 	    ENDIF
 	    GOTO 10
 C	AUTOLAB

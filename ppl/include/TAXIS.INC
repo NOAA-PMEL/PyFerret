@@ -11,10 +11,13 @@ C**
 C***********************************************************************
 C**
 C**
+* V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 c
 	COMMON/TXSCOM/ TLO,DT,TCSIZE,ITYPET, 
      *	NMTCT,LABELT,IFDB,ISDB,ITFLG,VANG,IVFLG,IAUTOT,
-     *	ITXTPE,ITXLBP
+     *	ITXTPE,ITXLBP,TLOb,DTb,TCSIZEb,ITYPETb, 
+     *	NMTCTb,LABELTb,IFDBb,ISDBb,ITFLGb,VANGb,IVFLGb,IAUTOTb,
+     *	ITXTPEb,ITXLBPb
 c
 c	tlo	x value corresponding to the start time (index number)
 c	dt	sampling rate in minutes (minutes)
@@ -29,6 +32,7 @@ c	isdb	labeling interval secondary labels
 c	itflg	=-1 y time axis on
 c		=0    time axis off
 c		=1  x time axis on
+c		=2  x and y time axis on, F-T plot.
 c	vang	rotation angle for stick plots (degrees)
 c	ivflg	=0 normal line plot
 c		=1 PLOTV command used

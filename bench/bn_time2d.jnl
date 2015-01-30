@@ -1,0 +1,19 @@
+! bn_time2d.jnl
+! 1/30/2015 ACM
+
+! initial changes to handle 2d time variable: forecast and time
+! plot both axes as formatted time axes.
+
+use twodtime.nc
+sh dat
+sh att time
+
+!  The file has the t axis as just a dimension. Define another
+!  axis with time units
+
+def axis/t=1:8:1/units=month/t0=1-nov-2014 taxis
+let time2d = time[gt=taxis@asn]
+set att/like=time time2d
+
+shade time2d
+shade/trans time2d

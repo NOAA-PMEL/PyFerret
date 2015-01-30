@@ -155,6 +155,7 @@
 *                  return an error message. 
 * V686 *acm* 12/13 Symbokls AX_HORIZ and AX_VERT may be x,y,z,t,e,f  
 * V691  *acm*  5/14 Clean up temp memory used for computing histogram levels
+* V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -207,7 +208,7 @@ C plus those starting w/ xbox_bounds:
         CHARACTER*1     axdir(6)
 
 	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, TM_FPEQ, 
-     .			user_title, time_axis,
+     .			user_title, time_axis, time_axis_dim1, timeax_both, 
      .			regrid_1, regrid_2, no_y_rng, edges_ok,
      .			ITS_GIF_GRAPHICS, its_gif, REGULARLY_SPACED,
      .                  irregular
@@ -592,9 +593,14 @@ C   set up memory for the flag grid
               GOTO 5700
            ENDIF
 
+	   timeax_both = .FALSE.
 	   CALL AXIS_FORMAT( 'X', dim1, grid, xaxlo, xaxhi, delta,
-     .						curvilinear, cx_xpos,
-     .						time_axis,xstyle,no_labels)
+     .                       curvilinear, cx_xpos,
+     .                       time_axis,timeax_both,xstyle,no_labels)
+
+           time_axis_dim1 = time_axis
+
+* second axis
 
 	   time_axis = GEOG_LABEL( dim2, grid )  .AND. 
      .                  (dim2.EQ.t_dim .OR. dim2.EQ.f_dim)
@@ -655,9 +661,10 @@ C ACM added 8/2001 save cal id if vertical time axis
               last  = xaxhi
               GOTO 5700
            ENDIF 
+	   timeax_both = (time_axis .AND. time_axis_dim1) 
 	   CALL AXIS_FORMAT( 'Y', dim2, grid, yaxlo, yaxhi, delta,
-     .						curvilinear, cx_ypos,
-     .						time_axis,ystyle,no_labels)
+     .                       curvilinear, cx_ypos,
+     .                       time_axis,timeax_both,ystyle,no_labels)
 
 *   When not an overlay, set the axis type to log or reverse log
 	   IF (is_logx .OR. is_logy) THEN

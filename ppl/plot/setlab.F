@@ -1,4 +1,4 @@
-	SUBROUTINE SETLAB(XF,YF,LTT,LTB,LYL,LYR,LXT,LXB,IFX,IFY)
+	SUBROUTINE SETLAB(XF,YF,LTT,LTB,LYL,LYR,LXT,LXB,IFX,IFY,LTBb)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -46,16 +46,12 @@ C**
 C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+* V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 
-#ifdef unix
 	INCLUDE 'AXIS.INC'
 	INCLUDE 'TAXIS.INC'
 	INCLUDE 'AXISL.INC'
-#else
-        INCLUDE 'pplinc:AXIS.INC'
-        INCLUDE 'pplinc:TAXIS.INC'
-        INCLUDE 'pplinc:AXISL.INC'
-#endif
+
 	CHARACTER IFX*(*),IFY*(*)
 
 	EXTERNAL scale
@@ -68,6 +64,7 @@ C     SETUP AXIS
 	LYR=0 
 	LXT=0 
 	LXB=0 
+	LXBb=0 
 	IF(LABELY.EQ.-1)THEN 
 	    LYL=-1 
 	ELSE IF(LABELY.EQ.1)THEN 
@@ -82,6 +79,11 @@ C     SETUP AXIS
 	    LTB=LABELT 
 	ELSE IF(LABELT.GT.0)THEN 
 	    LTT=LABELT 
+	END IF 
+	IF(LABELTb.LT.0)THEN 
+	    LTBb=LABELTb 
+	ELSE IF(LABELTb.GT.0)THEN 
+	    LTTb=LABELTb 
 	END IF 
 	CALL SCALE(XF,YF,XORG,YORG,XLO,YLO) 
 	IF(IFRX.EQ.' ')THEN 

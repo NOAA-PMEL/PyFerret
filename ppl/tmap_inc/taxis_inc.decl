@@ -1,6 +1,8 @@
 * TAXIS_INC.DECL - converted to Unix 2.26.91          
 * COMMON for PLOT+ with all variables declared
 * created for TMAP usage by Steve Hankin 7/88
+* *acm*  1/15 V694   Changes to allow two time axes on plot (F-T)
+
 	REAL	TLO
 	REAL	DT
 	REAL	TCSIZE
@@ -15,4 +17,20 @@
 	INTEGER	IAUTOT
 	INTEGER	ITXTPE
 	INTEGER	ITXLBP
+
+	
+	REAL	TLOb
+	REAL	DTb
+	REAL	TCSIZEb
+	INTEGER	ITYPETb
+	INTEGER	NMTCTb
+	INTEGER	LABELTb
+	INTEGER	IFDBb
+	INTEGER	ISDBb
+	INTEGER	ITFLGb
+	REAL	VANGb
+	INTEGER	IVFLGb
+	INTEGER	IAUTOTb
+	INTEGER	ITXTPEb
+	INTEGER	ITXLBPb
 * requires: INCLUDE 'PPLV11INC:TAXIS.INC'                                   

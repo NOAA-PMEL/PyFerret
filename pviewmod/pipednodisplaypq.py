@@ -22,8 +22,8 @@ except AttributeError:
 
 from PyQt4.QtCore import Qt, QCoreApplication, QObject, QPointF, QRect, QRectF, \
                          QSize, QSizeF, QTimer
-from PyQt4.QtGui  import QBrush, QColor, QImage, QPainter, QPen, QPicture, \
-                         QPolygonF, QPrinter, QTextDocument
+from PyQt4.QtGui  import QBrush, QColor, QImage, QPainter, QPen, \
+                         QPicture, QPolygonF, QPrinter, QTextDocument
 
 try:
     from PyQt4.QtSvg  import QSvgGenerator
@@ -38,7 +38,6 @@ import time
 import os
 import signal
 import math
-
 
 class PipedNoDisplayPQ(QObject):
     '''
@@ -67,6 +66,10 @@ class PipedNoDisplayPQ(QObject):
         super(PipedNoDisplayPQ, self).__init__()
         self.__cmndpipe = cmndpipe
         self.__rspdpipe = rspdpipe
+        # The following causes crashes, thus assuming the answer is False
+        # from PyQt4.QtGui import QFontDatabase
+        # self.__supportsthreddedfontrendering = QFontDatabase.supportsThreadedFontRendering()
+        self.__supportsthreddedfontrendering = False
         # ignore Ctrl-C
         signal.signal(signal.SIGINT, signal.SIG_IGN)
         # default DPI used for this no-display graphics engine
@@ -125,6 +128,9 @@ class PipedNoDisplayPQ(QObject):
         stop the graphics engine
         '''
         self.__timer.stop()
+        self.__cmndpipe.close()
+        self.__rspdpipe.close()
+        QCoreApplication.exit(0)
 
     def paintScene(self, painter, first, leftx, uppery, scalefactor, returnregion):
         '''
@@ -332,7 +338,7 @@ class PipedNoDisplayPQ(QObject):
         if (not HAS_QSvgGenerator) and (myformat == 'svg'):
             raise ValueError("Your version of Qt does not support generation of SVG files")
 
-        if annotations:
+        if annotations and self.__supportsthreddedfontrendering:
             annopicture = QPicture()
             annopainter = QPainter(annopicture)
             annotextdoc = QTextDocument()
@@ -624,7 +630,10 @@ class PipedNoDisplayPQ(QObject):
             transparent = cmnd.get("transparent", False)
             vectsize = self.__helper.getSizeFromCmnd(cmnd["vectsize"])
             rastsize = self.__helper.getSizeFromCmnd(cmnd["rastsize"])
-            annotations = cmnd["annotations"]
+            try:
+                annotations = cmnd["annotations"]
+            except KeyError:
+                annotations = None
             self.saveSceneToFile(filename, fileformat, transparent, 
                                  vectsize, rastsize, annotations)
         elif cmndact == "setWidthFactor":
@@ -1027,6 +1036,10 @@ class PipedNoDisplayPQ(QObject):
                     start of text.  The coordinates are device
                     coordinates from the upper left corner.
         '''
+        # from http://qt-project.org/doc/qt-4.8/threads-modules.html#painting-in-threads
+        # "Note that on X11 systems without FontConfig support, Qt cannot render text outside of the GUI thread"
+        if not self.__supportsthreddedfontrendering:
+            return
         mytext = cmnd["text"]
         startpt = cmnd["location"]
         self.__activepainter.setRenderHint(QPainter.Antialiasing,
@@ -1113,39 +1126,6 @@ class PipedNoDisplayPQProcess(Process):
 # The following is for testing this and the cmndhelperpq modules
 #
 
-class _NoDisplayCommandSubmitterPQ(object):
-    '''
-    Testing dialog for controlling the addition of commands to a pipe.
-    Used for testing PipedViewerPQ in the same process as the viewer.
-    '''
-    def __init__(self, cmndpipe, rspdpipe, cmndlist):
-        self.__cmndlist = cmndlist
-        self.__cmndpipe = cmndpipe
-        self.__rspdpipe = rspdpipe
-        self.__nextcmnd = 0
-        self.__timer = QTimer()
-        self.__timer.timeout.connect(self.submitNextCommand())
-        self.__timer.setInterval(1000)
-        self.__timer.start(1000)
-
-    def submitNextCommand(self):
-        '''
-        Submit the next command from the command list to the command pipe,
-        or shutdown if there are no more commands to submit.
-        '''
-        try:
-            print "Command: %s" % str(self.__cmndlist[self.__nextcmnd])
-            self.__cmndpipe.send(self.__cmndlist[self.__nextcmnd])
-            self.__nextcmnd += 1
-            while self.__rspdpipe.poll():
-                print "Response: %s" % str(self.__rspdpipe.recv())
-        except IndexError:
-            self.__rspdpipe.close()
-            self.__cmndpipe.close()
-        sleep(5)
-        while self.__rspdpipe.poll():
-            print "Response: %s" % str(self.__rspdpipe.recv())
-
 if __name__ == "__main__":
     # vertices of a pentagon (roughly) centered in a 1000 x 1000 square
     pentagonpts = ( (504.5, 100.0), (100.0, 393.9),
@@ -1179,29 +1159,6 @@ if __name__ == "__main__":
                                    "style":"solid",
                                    "capstyle":"round",
                                    "joinstyle":"round" } } )
-    drawcmnds.append( { "action":"beginSegment",
-                        "segid":"text" } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"y=480",
-                        "font":{"family":"Times", "size":16},
-                        "fill":{"color":"red"},
-                        "location":(50,480) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"y=430",
-                        "font":{"family":"Times", "size":16},
-                        "fill":{"color":"red"},
-                        "location":(50,430) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"y=380",
-                        "font":{"family":"Times", "size":16},
-                        "fill":{"color":"red"},
-                        "location":(50,380) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"y=330",
-                        "font":{"family":"Times", "size":16},
-                        "fill":{"color":"red"},
-                        "location":(50,330) } )
-    drawcmnds.append( { "action":"endSegment" } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"beginView",
@@ -1285,24 +1242,10 @@ if __name__ == "__main__":
                                 "joinstyle":"round"} } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
-    drawcmnds.append( { "action":"deleteSegment",
-                        "segid":"text" } )
-    drawcmnds.append( { "action":"update" } )
-    drawcmnds.append( { "action":"show" } )
-    testannotations = ( "The 1<sup>st</sup> CO<sub>2</sub> annotations line",
-                        "Another line with <i>lengthy</i> details that should " + \
-                        "wrap to a 2<sup>nd</sup> annotation line",
-                        "<b>Final</b> annotation line" )
-    drawcmnds.append( { "action":"save",
-                        "filename":"test.pdf",
-                        "vectsize":{"width":7.0, "height":7.0},
-                        "rastsize":{"width":750, "height":750},
-                        "annotations":testannotations } )
     drawcmnds.append( { "action":"save",
                         "filename":"test.png",
                         "vectsize":{"width":7.0, "height":7.0},
-                        "rastsize":{"width":750, "height":750},
-                        "annotations":testannotations } )
+                        "rastsize":{"width":750, "height":750} } )
     drawcmnds.append( { "action":"exit" } )
 
     cmndrecvpipe, cmndsendpipe = Pipe(False)
@@ -1313,6 +1256,17 @@ if __name__ == "__main__":
     for testcmnd in drawcmnds:
         print "Command: %s" % str(testcmnd)
         cmndsendpipe.send(testcmnd)
-        sleep(1)
+        sleep(0.5)
         while rspdrecvpipe.poll():
             print "Response: %s" % str(rspdrecvpipe.recv())
+    
+    cmndsendpipe.close()
+    sleep(1)
+    while rspdrecvpipe.poll():
+        print "Response: %s" % str(rspdrecvpipe.recv())
+    rspdrecvpipe.close()
+    cmndrecvpipe.close()
+    rspdsendpipe.close()
+
+    proc.join(None)
+    SystemExit(proc.exitcode)

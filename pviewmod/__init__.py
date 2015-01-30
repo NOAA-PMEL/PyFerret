@@ -44,10 +44,16 @@ class PipedViewer(object):
                 raise TypeError("The PQ viewers requires PyQt4")
             self.__vprocess = PipedImagerPQProcess(self.__cmndrecvpipe,
                                                    self.__rspdsendpipe)
+        elif viewertype == "PipedNoDisplayPQ":
+            try:
+                from pipednodisplaypq import PipedNoDisplayPQProcess
+            except ImportError:
+                raise TypeError("The PQ viewers requires PyQt4")
+            self.__vprocess = PipedNoDisplayPQProcess(self.__cmndrecvpipe,
+                                                      self.__rspdsendpipe)
         else:
             raise TypeError("Unknown viewer type %s" % str(viewertype))
         self.__vprocess.start()
-        self.__shutdown = False
 
     def submitCommand(self, cmnd):
         '''
@@ -219,14 +225,31 @@ if __name__ == "__main__":
                                 "joinstyle":"round"} } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
-    drawcmnds.append( { "action":"exit" } )
+    testannotations = ( "The 1<sup>st</sup> CO<sub>2</sub> annotations line",
+                        "Another line with <i>lengthy</i> details that should " + \
+                        "wrap to a 2<sup>nd</sup> annotation line",
+                        "<b>Final</b> annotation line" )
+
     # Test each known viewer.
-    for viewername in ( "PipedViewerPQ", ):
+    for viewername in ( "PipedViewerPQ", "PipedImagerPQ", "PipedNoDisplayPQ" ):
         print "Testing Viewer %s" % viewername
         # create the viewer
         pviewer = PipedViewer(viewername)
+        mydrawcmnds = drawcmnds[:]
+        mydrawcmnds.append( { "action":"save",
+                              "filename":viewername + "_test.pdf",
+                              "vectsize":{"width":7.0, "height":7.0},
+                              "rastsize":{"width":750, "height":750},
+                              "annotations":testannotations } )
+        mydrawcmnds.append( { "action":"save",
+                              "filename":viewername + "_test.png",
+                              "vectsize":{"width":7.0, "height":7.0},
+                              "rastsize":{"width":750, "height":750},
+                              "annotations":testannotations } )
+        mydrawcmnds.append( { "action":"exit" } )
+        
         # submit the commands, pausing after each "show" command
-        for cmd in drawcmnds:
+        for cmd in mydrawcmnds:
             print "Command: %s" % str(cmd)
             pviewer.submitCommand(cmd)
             response = pviewer.checkForResponse()

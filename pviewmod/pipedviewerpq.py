@@ -987,7 +987,10 @@ class PipedViewerPQ(QMainWindow):
             transparent = cmnd.get("transparent", False)
             vectsize = self.__helper.getSizeFromCmnd(cmnd["vectsize"])
             rastsize = self.__helper.getSizeFromCmnd(cmnd["rastsize"])
-            myannotations = cmnd["annotations"]
+            try:
+                myannotations = cmnd["annotations"]
+            except KeyError:
+                myannotations = None 
             self.saveSceneToFile(filename, fileformat, transparent, 
                                  vectsize, rastsize, myannotations)
         elif cmndact == "setWidthFactor":

@@ -248,7 +248,7 @@
 	         IF ( lo_com.EQ.bad_res .OR. hi_com.EQ.bad_res ) THEN
 	            res(i,j,k,l,m,n) = bad_res
 	         ELSE
-	            res(i,j,k,l,m,n) = (hi_com-lo_com) / box(m)
+	            res(i,j,k,l,m,n) = (hi_com-lo_com) / box(n)
 	         ENDIF
 	         lo_com = hi_com
  600	      CONTINUE

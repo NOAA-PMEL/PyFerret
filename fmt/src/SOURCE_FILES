@@ -73,6 +73,7 @@ cd_rd_ymd_arr.F\
 cd_read.F\
 cd_read_remote.F\
 cd_rec_synch.F\
+cd_rename_dim.F\
 cd_rename_var.F\
 cd_replace_attr.F\
 cd_replace_attr_dp.F\

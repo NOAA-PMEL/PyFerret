@@ -84,6 +84,10 @@
 /*                    to-be-output when writing variables.
 /* *acm*  8/13        Fix bug 2091. If a string variable has the same name as a dimension,
 /*                    DO NOT mark it as an axis.
+*  *acm*  v694 1/15   For ticket 2227: if a dimension from a nc file is not also a 
+*                     1-D coordinate var, don't write the axis Ferret creates. Do report
+*                     in dimnames outputs the dimension names as used by Ferret e.g. a
+*                     renamed axis TIME -> TIME1
 */
 
 #include "ferretmacros.h"
@@ -166,6 +170,8 @@ int  FORTRAN(ncf_add_var_num_att_dp)( int *, int *, char *, int *, int *, int *,
 int  FORTRAN(ncf_add_var_str_att)( int *, int *, char *, int *, int *, int *, char *);
 
 int  FORTRAN(ncf_rename_var)( int *, int *, char *);
+int  FORTRAN(ncf_rename_dim)( int *, int *, char *);
+
 int  FORTRAN(ncf_repl_var_att)( int *, int *, char *, int *, int *, DFTYPE *, char *);
 int  FORTRAN(ncf_repl_var_att_dp)( int *, int *, char *, int *, int *, double *, char *);
 int  FORTRAN(ncf_set_att_flag)( int *, int *, char *, int *);
@@ -1154,6 +1160,8 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 			if (nc_status != NC_NOERR) return nc_status;
 			strcpy (nc.dims[i].name, fdims.name);
 			nc.dims[i].size = fdims.size;
+/*			strcpy (nc.dimname[i], fdims.name);
+			nc.dimsize = fdims.size; */
 		}
 	}
 	
@@ -1277,7 +1285,8 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 				if (var.type == NC_CHAR) var.outtype = NC_CHAR;
 				var.outtype = var.type;  /* ?? */
 				
-				/* is this a coordinate variable? If not a string, set the flag.
+				/* Is this a coordinate variable? If not a string, set the flag.
+				/* A multi-dimensional variable that shares a dimension name is not a coord. var.
 				 */
 				if (nc.ndims > 0) {
 					var.is_axis = FALSE;
@@ -1286,6 +1295,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 					while (i < nc.ndims && var.is_axis == FALSE) {
 						if  (strcasecmp(var.name, nc.dims[i].name) == 0) var.is_axis = TRUE;
 						if  (var.type == NC_CHAR) var.is_axis = FALSE;
+						if  (var.ndims > 1) var.is_axis = FALSE;
 						i = i + 1;
 					}
 				}
@@ -2406,6 +2416,36 @@ int  FORTRAN(ncf_rename_var)( int *dset, int *varid, char newvarname[])
   return_val = FERR_OK;
   return return_val;
 }
+
+
+/* ----
+ * Find a dimension in the datset using dataset ID
+ * Replace the dimension name with the new one passed in.
+ */
+
+int  FORTRAN(ncf_rename_dim)( int *dset, int *dimid, char newdimname[])
+
+{
+  ncdset *nc_ptr=NULL;
+  int status=LIST_OK;
+  int return_val;
+	
+   /*
+   * Get the dataset pointer.  
+   */
+  return_val = ATOM_NOT_FOUND;  
+  if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL ) return return_val;
+
+  /* Insert the new name. */
+  
+  strcpy (nc_ptr->dims[*dimid-1].name, newdimname);
+
+/* just return for now. */
+  return_val = FERR_OK;
+  return return_val;
+}
+
+
 
 /* ----
  * Find an attribute based on its variable ID and dataset ID

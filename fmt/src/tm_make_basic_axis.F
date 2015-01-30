@@ -46,6 +46,9 @@
 * V550 *sh* 11/02 - initialize line_modulo_len (just for good house keeping)
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 * V63  *acm* 9/09 - Fix bug 1686: set line_name_orig
+* v694 1/15 *acm* for ticket 2227: if a dimension from a nc file is not also a 
+*                 1-D coordinate var, don't write the axis Ferret creates
+ 
 
 * argument definitions:
 *       name      - name for axis
@@ -94,6 +97,7 @@
       line_shift_origin(iaxis) = .FALSE.
       line_tunit(iaxis)     = real4_init
       line_direction(iaxis) = 'NA'
+      line_dim_only(iaxis)   = .TRUE.
 
 * successful completion
       status = merr_ok

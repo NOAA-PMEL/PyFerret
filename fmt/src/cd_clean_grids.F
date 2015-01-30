@@ -65,6 +65,8 @@
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* v694 1/15 *acm* for ticket 2227: if a dimension from a nc file is not also a 
+*                 1-D coordinate var, don't write the axis Ferret creates
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -95,16 +97,18 @@
 
 * local variable declarations:
       LOGICAL TM_SAME_GRID_DEF, 
-     .        dup_name, dup_guts
+     .        dup_name, dup_guts, coordvar
       INTEGER TM_GET_LINEMATCH,  TM_GET_LINENUM, TM_GET_GRIDNUM, 
      .        TM_LENSTR1, STR_SAME,
      .        igrid, iaxis, count, idim, i_dup, ivar,
      .        npts, istat,  reused(max_lines:line_ceiling),
-     .        varid, attid, attype, attlen, attoutflag, len 
+     .        varid, attid, attype, attlen, attoutflag, len,
+     .        vartype, nvdims, nvatts, outflag, dimid
 * upped vname to 64 - also removed the *24 from the CHARACTER
 * upped vname to 128 
       CHARACTER vname*128, buff*128, attname*128
-      REAL dummy
+      REAL dummy, vdims(8)
+	
 
 ***** AXES ******
 * check for duplicate name / guts of axes
@@ -195,11 +199,17 @@
 * attribute of the coordinate variable in the linked-list attribute structure,
 * and change the axis name itself.
 
+*** Here if the name is a dimension not a coordinate variable in the original
+*** dataset, we want to do a CD_RENAME_DIM, so that we rename in the dset structure 
+*** the dimension but not (for example) the 2-D variable with the same name.
+
  301	iaxis = 0		! to get start of linked list
  400	CALL TM_NEXT_TMP_LINE( iaxis, *402)
           vname = line_name(iaxis)
           len = TM_LENSTR1(vname)
           CALL CD_GET_VAR_ID (dset, vname, varid, status)
+          CALL CD_GET_VAR_INFO (dset, varid, vname, vartype, 
+     .            nvdims, vdims, nvatts, coordvar, outflag, status)
 
 	  IF ( reused(iaxis) .NE. unspecified_int4 ) THEN
 	    line_name(iaxis) = char_init16   ! destroy new duplicate defn
@@ -209,7 +219,10 @@
 
             IF (status .EQ. merr_ok .AND. 
      .          STR_SAME(vname, buff) .NE. 0) THEN
-               CALL CD_RENAME_VAR (dset, varid, buff, status)
+
+               CALL CD_GET_DIM_ID (dset, vname, dimid)
+               CALL CD_RENAME_DIM (dset, dimid, buff, status)
+               IF (nvdims.EQ.1) CALL CD_RENAME_VAR (dset, varid, buff, status)
                
 * Replace or add the orig_file_axname attribute
                attname = 'orig_file_axname'
@@ -232,7 +245,10 @@
 
             IF (status .EQ. merr_ok .AND. 
      .          STR_SAME(vname, buff) .NE. 0) THEN
-               CALL CD_RENAME_VAR (dset, varid, buff, status)
+
+               CALL CD_GET_DIM_ID (dset, vname, dimid)
+               CALL CD_RENAME_DIM (dset, dimid, buff, status)
+               IF (nvdims.EQ.1) CALL CD_RENAME_VAR (dset, varid, buff, status)
 
 * Replace or add the orig_file_axname attribute
                attname = 'orig_file_axname'

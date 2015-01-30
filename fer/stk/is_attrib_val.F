@@ -46,8 +46,13 @@
 * V600 8/18/05
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V694  1/15 *acm* as part of changes for ticket 2227 (handling of dimensions
+*                  that are not also 1-D coordinate variables), when returning 
+*                  ..dimnames, now list of all dimensions in the dataset.
  
         include 'tmap_dims.parm'
+#       include "tmap_dset.parm"
+        include 'xdset_info.cmn_text'
 #include "netcdf.inc"
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -69,9 +74,9 @@
      .		mr, cx, size, uvar, n, dset, 
      .          varid, attype, attlen, ndims, nvars, 
      .          ngatts, recdim, ivar, vartype, nvdims,
-     .          vdims(8), iatt, nvatts, idim, nd, vd, na,
+     .          vdims(8), dsdims(200), iatt, nvatts, idim, nd, vd, na,
      .          attoutflag, all_outflag, xdim, i1, i2, slen,
-     .          i, indx, nv, dot, cat, attid
+     .          i, indx, nv, dot, cat, attid, npts, dimid, nddims
 
 * --- end of introductory code ---
 * initialize
@@ -88,6 +93,12 @@
         
         IF (dset .LT. -1 .OR. (.NOT.cx_dset_gvn(cx) )) 
      .      dset = cx_data_set( is_cx(isp-1) )
+
+        CALL CD_GET_DS_INFO (dset, nddims, nvars, ngatts, 
+     .               recdim, status)
+        DO 100 idim = 1, nddims
+	   dsdims(idim) = idim
+ 100	CONTINUE
 
 * reserve and catalog space for the result
 
@@ -147,28 +158,31 @@
               got_it = .TRUE.
  
            ELSE IF (STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
+	   
 
-* Get and store the coordinate variable names.
+* Get and store the dimension names.
 
               n = i2 - i1 + 1
 	      CALL INIT_C_STRING_ARRAY( n,
      .				     memory(1,mr_blk1(mr)),
      .				     mr_c_pointer(mr)    )
+                IF (ds_type(dset) .NE. 'CDF') GOTO 5200
+
+* All the dimensions from the dataset
+
               n = 0
               nv = 0
-              DO 220 i = 1, nvars  
+              nvdims = nddims
+	      
+              DO 220 idim = 1, nvdims
                  name = ' '
-                 CALL CD_GET_VAR_INFO (dset, i, name, vartype,
-     .                nvdims, vdims, nvatts, coordvar, all_outflag, 
-     .                status)
-                 IF (coordvar) THEN
-                    nv = nv + 1
-                    IF (nv .GE. i1 .AND. nv .LE. i2) THEN
-                       slen = TM_LENSTR1(name)
-                       CALL STORE_STRING(name(1:slen), mr, n, status)
-                       n = n + 1
-                    ENDIF
-                 ENDIF
+		 CALL CD_GET_DS_DIMS (dset, dsdims(idim), name, npts, status)
+		 nv = nv + 1
+		 IF (nv .GE. i1 .AND. nv .LE. i2) THEN
+                    slen = TM_LENSTR1(name)
+                    CALL STORE_STRING(name(1:slen), mr, n, status)
+                    n = n + 1
+		 ENDIF
  220          CONTINUE
               got_it = .TRUE.
 
@@ -191,6 +205,8 @@
               got_it = .TRUE.
 
            ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0 ) THEN
+              IF (ds_type(dset) .NE. 'CDF') GOTO 5200
+
               memory( 1, mr_blk1(mr)) = ndims
               got_it = .TRUE.
 
@@ -295,16 +311,20 @@
                 got_it = .TRUE.
 
              ELSE IF (STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
+
+* Get the datset dimension names - not all dimensions are a coordinate variable.
+
                 IF (nvdims .GT. 0) THEN
 
 	           CALL INIT_C_STRING_ARRAY( nvdims,
      .				     memory(1,mr_blk1(mr)),
      .				     mr_c_pointer(mr)    )
+                IF (ds_type(dset) .NE. 'CDF') GOTO 5200
+
                    n = 0
                    DO 700 idim = i1, i2
-                      CALL CD_GET_VAR_INFO (dset, vdims(idim), dname, 
-     .                   vartype, nd, vd, na, coordvar, all_outflag, 
-     .                   status)
+		      CALL CD_GET_DS_DIMS (dset, dsdims(vdims(idim)), 
+     .				     dname, npts, status)
                       slen = TM_LENSTR1(dname)
                       CALL STORE_STRING(dname(1:slen), mr, n, status)
                       n = n + 1
@@ -313,10 +333,13 @@
                 got_it = .TRUE.
 
              ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0 ) THEN
+                IF (ds_type(dset) .NE. 'CDF') GOTO 5200
+
                 memory( 1, mr_blk1(mr)) = nvdims
                 got_it = .TRUE.
 
              ELSE IF (STR_SAME(attname, 'nctype') .EQ. 0 ) THEN
+
                 memory( 1, mr_blk1(mr)) = vartype
                 got_it = .TRUE.
 
@@ -389,6 +412,9 @@
  5000	RETURN
  5100   status = ferr_out_of_range
         err_string = "invalid dataset attribute index"
+        CALL ERRMSG( status, status, err_string, *5000 )
+ 5200   status = ferr_invalid_command
+        err_string = "implemented only for netCDF/OPeNDAP datasets"
         CALL ERRMSG( status, status, err_string, *5000 )
 	END	
 

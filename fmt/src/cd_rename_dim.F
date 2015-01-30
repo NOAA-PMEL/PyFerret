@@ -1,7 +1,6 @@
-	SUBROUTINE TM_allo_tmp_line( line, status )
+      SUBROUTINE CD_RENAME_DIM (dset, dimid, newname, status)
 
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -33,47 +32,48 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*
+*
+* Read the linked list structure for netcdf dimension information: 
+* given dset and dimension id, replace name of dimension with new name.
 
-* Allocate a temporary line from the dynamic line area (above max_lines)
+* Programmer Ansley Manke
+* NOAA/PMEL, Seattle, WA - TMAP
 
-* Steve Hankin  NOAA/PMEL/TMAP
+* V694 1/15  
 
-* V510 *sh* 3/00 - guts of routine in  TM_ALLO_DYN_LINE_SUB
-* V581*acm*  6/05 For fix to bug 1271, add flag line_shift_origin
-* v694 1/15 *acm* for ticket 2227: if a dimension from a nc file is not also a 
-*                 1-D coordinate var, don't write the axis Ferret creates
+* include files
+#include "gt_lib.parm"
+      INCLUDE "tmap_errors.parm"
 
-* Include files
-	include 'tmap_dims.parm'
-	include 'implicit.parm'
-	include 'tmap_errors.parm'
-#include "tmap_dset.parm"
-	include 'xtm_grid.cmn_text'
+* Argument declarations
 
-* Argument definitions
-	INTEGER line, status
+      CHARACTER*(*) newname
+      INTEGER dset, dimid, status
 
-	CALL TM_ALLO_DYN_LINE_SUB( tmp_line_hook, line, status )
-	IF ( status .NE. merr_ok) RETURN
+* Internal declarations
 
-* initialize the line to a null content
-	line_name(line)	     = char_init16
-        line_t0(line)        = char_init20
-        line_shift_origin(line) = .FALSE.
-        line_tunit(line)     = real4_init
-        line_parent(line)    = 0
-        line_regular(line)   = .TRUE.
-        line_class(line)     =  pline_class_basic
-        line_direction(line) = 'NA'
-        line_modulo(line)    = .FALSE.
-        line_units(line)     = char_init16
-	line_unit_code(line) = int4_init
-        line_start(line)     = real8_init
-        line_delta(line)     = real8_init
-        line_dim(line)       = int4_init
+      INCLUDE 'netcdf.inc'
 
-	line_subsc1(line)    = int4_init
-	line_dim_only(line)  = .FALSE.
+      INTEGER TM_LENSTR1, NCF_RENAME_DIM,
+     .        slen, flen, dset_num
+      PARAMETER (flen=512)      ! size of variable name string
 
-	RETURN
-	END
+#ifdef sun
+      BYTE      fhol(flen)      ! c-type Hollerith string buffer
+#else
+      INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
+#endif 
+
+      status = atom_not_found
+
+      dset_num = dset
+      IF (dset_num .LT. -2) dset_num = -2
+
+      slen = TM_LENSTR1( newname )
+      CALL TM_FTOC_STRNG( newname(1:slen), fhol, flen )
+
+      status = NCF_RENAME_DIM(dset_num, dimid, fhol)
+      
+ 5000 RETURN
+      END

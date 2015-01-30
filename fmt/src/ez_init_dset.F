@@ -78,6 +78,8 @@
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* V694 1/15 *acm* variable coordvar should be a logical not an integer
+
 
 	CHARACTER*4	ez_rev
 	CHARACTER*1	tab
@@ -118,14 +120,14 @@
 
 *
 * Local definitions
-        LOGICAL         TM_LEGAL_NAME, vars_gvn, its_delimited
+        LOGICAL         TM_LEGAL_NAME, vars_gvn, its_delimited, coordvar
 	CHARACTER*24	type_names(maxezvars)
 	CHARACTER*128	var_names(maxezvars)
 	INTEGER*4	TM_LENSTR1, STR_SAME,
      .			set_cnt, bpos, epos, ncnt, var_pos, num_names,
      .			nvar, jcnt, stp_cnt, nstp, field_type(maxezvars),
      .			num_types, i, j, name_limit, idummy(maxezvars),
-     .			l1, l2, ivar, vartype, coordvar, varid
+     .			l1, l2, ivar, vartype, varid
 	CHARACTER	TM_STRING*13, TM_LEFINT*4, buff*48, 
      .			line_buff*2048
 
@@ -421,7 +423,7 @@
 * and its variables
 
         CALL CD_STORE_DSET (dset, status)
-        coordvar = 0
+        coordvar = .FALSE.
         varid = 0
 
         DO 200 ivar = 1, maxvars

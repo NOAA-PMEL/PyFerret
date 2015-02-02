@@ -376,6 +376,9 @@
               ELSEIF ( enginename(i) .EQ. 'PipedImager' ) THEN
                  qualstr = ' DRAFT'
                  dispstr = 'YES'
+              ELSEIF ( enginename(i) .EQ. 'NoDisplayPQ' ) THEN
+                 qualstr = '  HIGH'
+                 dispstr = ' NO'
               ELSE
                  qualstr = 'CUSTOM'
                  dispstr = ' ? '

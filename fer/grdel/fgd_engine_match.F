@@ -6,7 +6,7 @@
 *     windowid - window number to use
 *     engname - name (or partial name) of the engine;
 *               standard recognized names are Cairo, 
-*               PipedViewerPQ, or PipedImager 
+*               PipedViewerPQ, PipedImager, and NoDisplayPQ
 * Returns
 *     .TRUE. if the window uses the indicated engine; 
 *     otherwise .FALSE.
@@ -58,6 +58,13 @@
         idx = INDEX('PipedImager', engname(1:slen))
         IF ( idx .EQ. 1 ) THEN
             FGD_ENGINE_MATCH = enginename(windowid) .EQ. 'PipedImager'
+            RETURN
+        ENDIF
+
+        idx = INDEX('NoDisplayPQ', engname(1:slen))
+        IF ( idx .EQ. 1 ) THEN
+            FGD_ENGINE_MATCH = 
+     .          enginename(windowid) .EQ. 'NoDisplayPQ'
             RETURN
         ENDIF
 

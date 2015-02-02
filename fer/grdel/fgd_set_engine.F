@@ -7,7 +7,8 @@
 *     newname - name (or partial name) of the engine;
 *               standard recognized names are Cairo, 
 *               CAIRO, PipedViewerPQ, PIPEDVIEWERPQ, 
-*               PipedImager, and PIPEDIMAGER
+*               PipedImager, PIPEDIMAGER, NoDisplayPQ,
+*               an NODISPLAYPQ
 *               Need all-uppercase for /ENGINE="..."
 *     forceit - change the engine name regardless of 
 *               no-display command-line options?
@@ -97,6 +98,17 @@
         IF ( idx .EQ. 1 ) THEN
             enginename(windowid) = 'PipedImager'
             antialias(windowid) = .FALSE.
+            sts = FERR_OK
+            RETURN
+        ENDIF
+
+        idx = INDEX('NoDisplayPQ', newname(1:slen))
+        IF ( idx .NE. 1 ) THEN
+            idx = INDEX('NODISPLAYPQ', newname(1:slen))
+        ENDIF
+        IF ( idx .EQ. 1 ) THEN
+            enginename(windowid) = 'NoDisplayPQ'
+            antialias(windowid) = .TRUE.
             sts = FERR_OK
             RETURN
         ENDIF

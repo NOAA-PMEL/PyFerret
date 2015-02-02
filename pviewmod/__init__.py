@@ -1,7 +1,7 @@
 '''
 The PipedViewer class is used to create, send commands, and shutdown viewers 
-in this module.  Currently, the only known viewer types are "PipedViewerPQ" 
-and "PipedImagerPQ".
+in this module.  Currently, the only known viewer types are "PipedViewerPQ", 
+"PipedImagerPQ", and "NoDisplayPQ".
 
 This package was developed by the Thermal Modeling and Analysis Project 
 (TMAP) of the National Oceanographic and Atmospheric Administration's (NOAA) 
@@ -26,6 +26,7 @@ class PipedViewer(object):
         Currently supported viewer types are:
             "PipedViewerPQ": PipedViewerPQ using PyQt4
             "PipedImagerPQ": PipedImagerPQ using PyQt4
+            "NoDisplayPQ": PipedNoDisplayPQ using PyQt4
         '''
         super(PipedViewer, self).__init__()
         (self.__cmndrecvpipe, self.__cmndsendpipe) = Pipe(False)
@@ -44,7 +45,7 @@ class PipedViewer(object):
                 raise TypeError("The PQ viewers requires PyQt4")
             self.__vprocess = PipedImagerPQProcess(self.__cmndrecvpipe,
                                                    self.__rspdsendpipe)
-        elif viewertype == "PipedNoDisplayPQ":
+        elif viewertype == "NoDisplayPQ":
             try:
                 from pipednodisplaypq import PipedNoDisplayPQProcess
             except ImportError:
@@ -231,7 +232,7 @@ if __name__ == "__main__":
                         "<b>Final</b> annotation line" )
 
     # Test each known viewer.
-    for viewername in ( "PipedViewerPQ", "PipedImagerPQ", "PipedNoDisplayPQ" ):
+    for viewername in ( "PipedViewerPQ", "PipedImagerPQ", "NoDisplayPQ" ):
         print "Testing Viewer %s" % viewername
         # create the viewer
         pviewer = PipedViewer(viewername)

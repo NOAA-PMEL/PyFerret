@@ -100,12 +100,12 @@ typedef struct CairoCFerBindData_struct {
     int somethingdrawn;
     /*
      * Flag that something about the image has changed since the last 
-     * update.  Only really used by the PipedImager/PyQtCairo engine.
+     * update.  Only really used by the PipedImager engine.
      */
     int imagechanged;
     /*
      * The image displayer.
-     * Only assigned and used by the PipedImager/PyQtCairo engine.
+     * Only assigned and used by the PipedImager engine.
      */
     grdelType viewer;
 } CairoCFerBindData;

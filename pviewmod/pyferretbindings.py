@@ -774,6 +774,31 @@ class PViewerPQPyFerretBindings(PyFerretBindings):
         return result
 
 
+class PNoDisplayPQPyFerretBindings(PyFerretBindings):
+    '''
+    PyFerretBindings using a PipedNoDisplayPQ as the viewer.
+    '''
+
+    def createWindow(self, title, visible):
+        '''
+        Creates PyFerret bindings using a PipedNoDisplayPQ.
+
+        Arguments:
+            title: display title for the Window
+            visible: display Window on start-up?
+
+        Raises a RuntimeError if an active window is already associated
+        with these bindings, or if there were problems with creating
+        the window.
+
+        Returns True.
+        '''
+        result = self.createPipedViewerWindow("NoDisplayPQ",
+                                              title, visible)
+        return result
+
+
+
 class PImagerPQPyFerretBindings(PyFerretBindings):
     '''
     PyFerretBindings using PipedImagerPQ as the viewer.

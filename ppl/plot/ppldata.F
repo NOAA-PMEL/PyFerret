@@ -61,6 +61,7 @@ C     for compatibility with Ferret use of symbols.
 * V62  2/08 *acm*increase default number of contour levels to NLEV=30 (MODE NLEVELS)
 *                If this is changed, also change it in fer/dat/xprog_state_data.F
 * v691 5/14 *acm* Change name MOD to TEKMOD
+* V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 
 	INCLUDE 'PARAMPL5.DAT'
 	include 'axis_inc.decl'
@@ -216,6 +217,9 @@ C
 	DATA TLO,DT,TCSIZE,ITYPET/1.,1440.,.10,3/
 	DATA NMTCT,LABELT,IFDB,ISDB,ITFLG/0,-1,1,1,0/
 	DATA VANG,IVFLG,IAUTOT/0.,0,1/ 
+	DATA TLOb,DTb,TCSIZEb,ITYPETb/1.,1440.,.10,3/
+	DATA NMTCTb,LABELTb,IFDBb,ISDBb,ITFLGb/0,-1,1,1,0/
+	DATA VANGb,IVFLGb,IAUTOTb/0.,0,1/ 
 C
 	DATA TSMX,TLX,TSMY,TLY,IX,IY/.125,.25,.125,.25,0,0/ 
 C

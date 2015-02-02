@@ -944,6 +944,12 @@ GO bn_permute_ascii
 GO bn_reset
 GO bn_lon_lat_time_string
 
+GO bn_reset
+GO bn_save_justdim
+
+GO bn_reset
+GO bn_time2d
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

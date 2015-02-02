@@ -173,11 +173,12 @@
      .				status	)
 	IF ( status .NE. ferr_ok ) GOTO 5900
 
-* save the bracket position for VTREE unknown grid report
-	IF (cx_vtree_unknown_grid) THEN
-	   cx_vtree_var_or_start = left_bracket
-	   cx_vtree_cat_or_end   = right_bracket
-	ENDIF
+! no.  save exact position when error is detected in GET_CONTEXT_MODS
+!* save the bracket position for VTREE unknown grid report
+!	IF (cx_vtree_unknown_grid) THEN
+!	   cx_vtree_var_or_start = left_bracket
+!	   cx_vtree_cat_or_end   = right_bracket
+!	ENDIF
 
 * apply those context mods that don't need to know the grid
 * apply them now, before looking for the variable name, because the data set is

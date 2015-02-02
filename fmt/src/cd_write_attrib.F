@@ -85,16 +85,20 @@
 
 * local variable declarations:
       INTEGER TM_LENSTR1, 
-     .        vlen, alen, slen, cdfstat, varid, attype, attlen, len_app
-      CHARACTER buff*2048
+     .        vlen, alen, slen, tlen, cdfstat, varid, attype, attlen, 
+     .        len_app, bufflen
+      CHARACTER buff*10240
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
+
+      bufflen = 10240
 
 * initialize
       vlen = TM_LENSTR1( vname )
       alen = TM_LENSTR1( att )
       slen = LEN( string )
+      tlen = TM_LENSTR1(string)
       attype = 0 
       attlen = 0 
       cdfstat = NF_NOERR
@@ -120,18 +124,18 @@
 
       IF ( cdfstat .EQ. NF_NOERR ) THEN
          IF ( attype.NE.NF_BYTE .AND. attype.NE.NF_CHAR ) GOTO 5200
-         IF ( attlen+slen .GT. 2048 .AND. append ) THEN
+         IF ( attlen+tlen .GT. bufflen .AND. append ) THEN
             buff = att
             CALL TM_NOTE( 'CDF attribute '//buff(:alen)//
      .           ' is too long', tt )
-            IF ( attlen .GT. 2046 ) THEN
+            IF ( attlen .GT. bufflen ) THEN
                CALL TM_NOTE( 'no text could be appended', tt )
                GOTO 1000
             ELSE
                CALL TM_NOTE( 'it may be truncated', tt )
             ENDIF
          ENDIF
-         IF ( attlen .GT. 2048 .AND. (.NOT.append) ) THEN
+         IF ( attlen .GT. bufflen .AND. (.NOT.append) ) THEN
             buff = att
             CALL TM_NOTE( 'CDF attribute '//buff(:alen)//
      .           ' is too long', tt )
@@ -158,7 +162,7 @@
          ENDIF
             
          risc_buff = string
-         len_app = 2048 - attlen - 1
+         len_app = bufflen - attlen - 1
 #ifdef usingDODSf2cUnderscore
          IF (len_app .GT. 0) THEN
             cdfstat = NF_PUT_ATT_TEXT_(cdfid, varid, att(:alen),

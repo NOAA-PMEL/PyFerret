@@ -107,6 +107,8 @@
 *                 creating and writing axis bounds.
 * V69+ 7/14 *acm* Ticket 1863: When output-flag was reset on an attribute, wasn't being applied
 *                 if the variable wasn't associated with the dataset where that axis lives.
+* v694 1/15 *acm* for ticket 2227: if a dimension from a nc file is not also a 
+*                 1-D coordinate var, don't write the axis Ferret creates
 
 
 * argument definitions:
@@ -186,7 +188,7 @@
       dim_only = .FALSE.
 
       name = CD_AXIS_NAME( dset_num, grid, idim, nlen )
-      IF (keepax_flag .EQ. 1)  name = CD_AXIS_OUTNAME( dset_num, grid, idim, nlen )
+      IF (keepax_flag .EQ. 1) name = CD_AXIS_OUTNAME( dset_num, grid, idim, nlen )
       name_in = name
       
       name_from_grid = .FALSE.
@@ -221,7 +223,10 @@
 * If not mode upcase_output, then keep the incoming case. 
       ELSE 
          name = CD_AXIS_NAME( dset_num, grid, idim, nlen )
+         IF (keepax_flag .EQ. 1) name = CD_AXIS_OUTNAME( dset_num, grid, idim, nlen )
+
          name_in = CD_AXIS_OUTNAME( dset_num, grid, idim, llen )
+
 	 IF (STR_SAME(name, name_in) .EQ. 0) THEN 
 	    name = name_in
 	    nlen = llen
@@ -387,6 +392,12 @@
       ENDIF
 
       IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
+
+* If the dimension was a dimension only (not a 1-D coordinate variable) in the 
+* source datset, just create the dimension in the output file. Don't write out
+* the basic axis that Ferret defined.
+
+      IF (line_dim_only(iaxis)) GOTO 1000
 
 * create the coordinate variable (12/92 -> double precision)
 #ifdef usingDODSf2cUnderscore

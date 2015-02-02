@@ -48,6 +48,7 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port 
 C *acm* v552 3/03 Longer strings and changes for multi-line labels.
 * V69+  5/14 *acm* Fix for ascii font in multi-line labels, ticket 2176
+* V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'AXIS.INC'
@@ -78,7 +79,7 @@ c        line_spacing = 0.4
 
 C	DRAW LABELS
 	IF(MAKEP.EQ.'VIEW')GOTO 40
-	IF(LABELY.EQ.0.OR.ITFLG.EQ.-1)GOTO 20
+	IF(LABELY.EQ.0.OR.(ITFLG.EQ.-1.OR.ITFLG.EQ.2))GOTO 20
 
 C  Y label. center each line 
 
@@ -125,7 +126,7 @@ C  Set up to use any font settings from this line on subsequent lines.
 
 C  X label
 
-20	IF(LABELX.EQ.0.OR.ITFLG.EQ.1)GOTO 40
+20	IF(LABELX.EQ.0.OR.(ITFLG.EQ.1.OR.ITFLG.EQ.2))GOTO 40
         CALL tm_break_lines (xlab, lnbeg, lnend, numlines)
 
 	IF(LABELX.LT.0)THEN
@@ -195,7 +196,7 @@ C  Main label
 C	Determine starting y position of main label
 
         ITFLG2=0
-        IF(ITFLG.EQ.1)ITFLG2=1
+        IF(ITFLG.EQ.1.OR.ITFLG.EQ.2)ITFLG2=1
 	IF (LABELX .GE. 0) THEN
 	  YTEMP = XWID - 1.9*ABS(XCSIZE) + 2.5*htnew
 	ELSE

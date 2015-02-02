@@ -3,10 +3,12 @@
 * character string concatenations ("//")
 * this common declares a buffer with a fixed length string in which to copy
 * the CHAR*(*) string
+* 1/2015 Increase size of rbuff
+
+* ***  Note that there is also a risc_buff defined in fer/common/xrisc.cmn ***
 
 	INTEGER     size_rbuff
-*	PARAMETER ( size_rbuff = 256 )
-	PARAMETER ( size_rbuff = 2048 )  ! Increased ferret 6.01 8/2006
+	PARAMETER ( size_rbuff = 10240)
 
 	COMMON/ XRISC_BUFF / len_rbuff, risc_buff
 	CHARACTER  risc_buff*(size_rbuff)

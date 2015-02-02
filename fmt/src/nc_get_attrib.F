@@ -94,26 +94,19 @@
      .        lena, lenb, attype, status, i, dset_num, attid
       CHARACTER*128 aname
       INTEGER errmsglen
-      PARAMETER (errmsglen = 2048)
+      PARAMETER (errmsglen = 500)
       CHARACTER*(errmsglen) errmsg
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
 
       INTEGER slen, flen
-      PARAMETER (flen=size_rbuff)        ! size of attribute string
+      PARAMETER (flen=10240)        ! size of attribute string
 #ifdef sun
       BYTE      fhol(flen), ghol(flen)      ! c-type Hollerith string buffer
 #else
       INTEGER*1 fhol(flen), ghol(flen)     ! c-type Hollerith string buffer
 #endif 
-
-       IF ( maxlen .GT. errmsglen ) THEN
-*         programming error; thus the STOP
-          WRITE(*,*) 'maxlen = ', maxlen, 
-     .               '; errmsglen = ', errmsglen
-          STOP 'errmsg not large enough in NC_GET_ATTRIB'
-       ENDIF
 
        NC_GET_ATTRIB = .FALSE.
        IF (dset .EQ. unspecified_int4) RETURN
@@ -178,6 +171,8 @@
 * warning exit
 
  5000 lenb = TM_LENSTR1( string )
+      lenb = MIN(lenb, maxlen)
+      lenb = MIN(lenb, 128)
  
       lena = TM_LENSTR1( attrib )
       errmsg = string(:lenb)//'"'//attrib(:lena)//
@@ -185,10 +180,10 @@
       lenb = TM_LENSTR1( errmsg )
       IF ( do_warn ) CALL TM_NOTE( errmsg(:lenb), tt )
       IF ( do_warn .AND. too_long ) THEN
-         IF (maxlen .GE. 3) WRITE (errmsg, 1000) maxlen
-         IF (maxlen .LT. 3) WRITE (errmsg, 1001) maxlen
-1000     FORMAT ('exceeds expected length. Maximum characters: ',I4, ' ')
-1001     FORMAT ('exceeds expected length. Maximum characters: ',I2, ' ')
+         IF (maxlen .GE. 3) WRITE (errmsg, 1000) maxlen, attlen
+         IF (maxlen .LT. 3) WRITE (errmsg, 1001) maxlen, attlen
+1000     FORMAT ('exceeds expected length. Maximum characters: ',I4, ' Length is', I8)
+1001     FORMAT ('exceeds expected length. Maximum characters: ',I2, ' Length is', I8)
          lenb = TM_LENSTR1( errmsg )
          CALL TM_NOTE( errmsg(:lenb), tt )
          WRITE (errmsg, 1010) maxlen

@@ -4,7 +4,11 @@ C	Common variables used in modifications to time axis labeling
 C
 C *acm*  3/10  Bug 670 fixed: New flag MULTICENFLAG for multi-decade plots, 
 C              do not make small tics by default.
+* *acm*  1/15 V694   Changes to allow two time axes on plot (F-T)
 
 
-	LOGICAL*4 cenflag, monyrlab, multicenflag
-	COMMON/CENTURY/cenflag, monyrlab, multicenflag
+
+	LOGICAL*4 cenflag, monyrlab, multicenflag,
+     .		 cenflagb, monyrlabb, multicenflagb
+	COMMON/CENTURY/cenflag, monyrlab, multicenflag,
+     .		 cenflagb, monyrlabb, multicenflagb

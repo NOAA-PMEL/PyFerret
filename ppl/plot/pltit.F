@@ -92,6 +92,7 @@
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
 * PyFr  11/11 *kms* added call to consider updating the drawing when done
+* V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 *
 *****************************************************
 
@@ -239,6 +240,7 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	CALL COLOR(IPEN(0))
 	IF(.NOT.SOVER)THEN
 	    CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL)
+
 	    IF (ABS(XF) .GT. CMZGE .OR. ABS(YF) .GT. CMZGE) GOTO 3333  ! fill/contour but 1 grid point
 	    CALL DAXIS(XF,YF,NMX,NMY,MAINLAB)
 
@@ -261,12 +263,12 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 		TLO = 1. - DIFF(IT1,ITSTRT)/DT
 	        THI=TLO+DIFF(IT1,IT2)/DT
 	    ENDIF
-	    IF(ITFLG.EQ.1)THEN
+	    IF(ITFLG.EQ.1 .OR. ITFLG.EQ.2)THEN
 		XTI=XHI
 		XTL=XLO
 		XHI=THI
 		XLO=TLO
-	    ELSE IF(ITFLG.EQ.-1)THEN
+	    ELSE IF(ITFLG.EQ.-1 .OR. ITFLG.EQ.2)THEN
 		XTI=YHI
 		XTL=YLO
 		YHI=THI
@@ -487,10 +489,10 @@ C
 	CALL WINDOW(0.,0.,0.,0.)
 C
 	IF ( .NOT.interrupted ) CALL DAXIS2(XF,YF,NMX,NMY) ! 1/89 - *sh*
-	IF(ITFLG.EQ.1)THEN
+	IF(ITFLG.EQ.1 .OR. ITFLG.EQ.2)THEN
 	    XHI=XTI
 	    XLO=XTL
-	ELSE IF(ITFLG.EQ.-1)THEN
+	ELSE IF(ITFLG.EQ.-1 .OR. ITFLG.EQ.2)THEN
 	    YHI=XTI
 	    YLO=XTL
 	ENDIF

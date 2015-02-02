@@ -62,6 +62,7 @@ C                with "*(*)" for the linux port
 * V552 *acm* 3/03 For SHAKEY info, write out location of key, whether it was
 *                 automatically set or set by user with SHASET
 * PyFr *kms* 5/13 Add alpha channel (opaque)
+* V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
@@ -313,7 +314,7 @@ C     TAXIS
       WRITE(LLUN,9984) IT1(13:14)//IT1(1:12),SYM,
      *IT2(13:14)//IT2(1:12),SYM2,ITSTRT(13:14)//ITSTRT(1:12),
      *SYM3,NMTCT,LABELT,
-     *IFDB,ISDB,TAXTYP(ITFLG),onoff(iautot)
+     *IFDB,ISDB,TAXTYP(MIN(ITFLG,1)),onoff(iautot)
 
 9984  FORMAT(9X,'  TMIN=',A14,1x,A21,/9X,'  TMAX=',A14,1x,A21/9X,
      *'TSTART=',A14,1x,A21,/9X,'NMTC=',I3,' LABEL=',I3,' IFDB=',I3,

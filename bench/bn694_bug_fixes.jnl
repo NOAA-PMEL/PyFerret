@@ -2,6 +2,7 @@
 ! test various fixes that went into version 6.94
 ! 11/2014 ACM
 ! 12/2014 *sh* added IF-THEN flow fixes, including review of past tickets
+! 1/2015 *sh* added test for undetected bad dataset name in regrid target 
 
 GO bn_reset
 GO err693_upcase_quoted_name
@@ -36,4 +37,13 @@ GO err693_if_then_flow_1706
 
 GO bn_reset
 GO err693_if_then_flow_1368   ! Jan 28, 2010, Ferret version 5.812
+
+GO bn_reset
+GO err693_ribbon_start_missing
+
+GO bn_reset
+GO err691_pt_in_poly
+
+GO bn_reset
+GO err693_undetected_regrid_dset
 

@@ -224,5 +224,7 @@ bn_polygon_log.jnl
 bn694_bug_fixes.jnl
 bn_permute_ascii.jnl
 bn_lon_lat_time_string.jnl
+bn_save_justdim.jnl
+bn_time2d.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

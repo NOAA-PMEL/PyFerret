@@ -43,6 +43,7 @@
 * V685  *sh* 11/13 
 * V690  *sh* 11/13 - minor adjustments to support aux regridding variables 
 * V693+ *sh* 12/14 - display regridding dependency on a separate line
+*            01/15 - each regrid target gets separate line
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -143,7 +144,7 @@
 	      IF ( tell_dset ) THEN
 	         dsetname = '[d='
 	         dsetname(4:) = GET_UNIQUE_DSET_NAME( dset )
-	         dnamlen = TM_LENSTR1(dsetname)
+	         dnamlen = TM_LENSTR1(dsetname) + 1
 	         dsetname(dnamlen:dnamlen) = ']'
 	      ENDIF
 
@@ -298,6 +299,14 @@
 	   valid_var = flag(rec) .EQ. df_valid_var 
      .	          .OR. flag(rec) .EQ. df_valid_aux_var 
 
+	   IF ( item .EQ. pcx_vtree_regrid_report ) THEN
+* ... special prefix for regridding lines
+	      line_buff = 'regrid to '
+	      llen = 10
+	   ELSE
+	      llen = 0
+	   ENDIF
+
 * format one record
 	   IF     ( valid_var
      .	 .AND.      cat       .EQ. cat_user_var       ) THEN
@@ -317,11 +326,6 @@
      .           .AND. cat_or_end  (i) .EQ. cat_or_end  (rec)
 	         IF (dup) GOTO 2100
  2050	      CONTINUE
-	      llen = 0
-	      IF ( item .EQ. pcx_vtree_regrid_report ) THEN
-	         line_buff = 'regrid to '
-	         llen = 10
-	      ENDIF
 	      line_buff(llen+1:) = VAR_CODE(cat,var)	! valid file variable
 	      llen = TM_LENSTR1(line_buff)
 	      dsetname = '[d='

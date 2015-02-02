@@ -85,13 +85,14 @@
       LOGICAL too_long
       INTEGER TM_LENSTR1, NCF_GET_VAR_ATTR,
      .        lena, lenb, attype, status, i, dset_num, attid
-      CHARACTER*128 aname, buff
+      CHARACTER*128 aname
+      CHARACTER*500 buff
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
 
       INTEGER slen, flen
-      PARAMETER (flen=size_rbuff)        ! size of attribute string
+      PARAMETER (flen=10240)        ! size of attribute string
 #ifdef sun
       BYTE      fhol(flen), ghol(flen)      ! c-type Hollerith string buffer
 #else
@@ -160,17 +161,20 @@
 * warning exit
 
  5000 lenb = TM_LENSTR1( string )
+      lenb = MIN(lenb, maxlen)
+      lenb = MIN(lenb, 128)
  
       lena = TM_LENSTR1( attrib )
+
       buff = string(:lenb)//'"'//attrib(:lena)//
      .             '" in netCDF variable: '//vname
       lenb = TM_LENSTR1( buff )
       IF ( do_warn ) CALL TM_NOTE( buff(:lenb), tt )
       IF ( do_warn .AND. too_long ) THEN
-         IF (maxlen .GE. 3) WRITE (buff, 1000) maxlen
-         IF (maxlen .LT. 3) WRITE (buff, 1001) maxlen
-1000     FORMAT ('exceeds expected length. Maximum characters: ',I4, ' ')
-1001     FORMAT ('exceeds expected length. Maximum characters: ',I2, ' ')
+         IF (maxlen .GE. 3) WRITE (buff, 1000) maxlen, attlen
+         IF (maxlen .LT. 3) WRITE (buff, 1001) maxlen, attlen
+1000     FORMAT ('exceeds expected length. Maximum characters: ',I4, ' Length is', I8)
+1001     FORMAT ('exceeds expected length. Maximum characters: ',I2, ' Length is', I8)
          lenb = TM_LENSTR1( buff )
          CALL TM_NOTE( buff(:lenb), tt )
          WRITE (buff, 1010) maxlen

@@ -48,6 +48,7 @@
 * v5.41 *acm*   6/20/02 remove unneeded calls to GETSYM.
 * V554  9/03 *acm* Fix precision bug double precision, for fine grids in 
 *                  curvlinear coordinates. See also pltit.F, plotz.F
+* V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 
         real            x,diff,rxax,rxmon,rxchr,thi,xti,xtl
         real            xmn,xmx,xt,yt
@@ -111,7 +112,6 @@ c     *	.OR.MAKEP.EQ.'VECTOR'
      *          .or.makep.eq.'FLOWLINE'
      *          .or.makep.eq.'FILL'.or.makep.eq.'PIXEL'
 
-
 	VECTR=MAKEP.EQ.'PLOTV'.OR.MAKEP.EQ.'PLOTUV'
      *	.OR.MAKEP.EQ.'VELVCT'
 	IY=NXS/2
@@ -143,8 +143,47 @@ C
 	    endif
 	    THI=TLO+DIFF(IT1,IT2)/DT
 	ENDIF
+
+
+	IF(ITFLG.EQ.2)THEN
+	    IF (IAUTOT .EQ. 1 .AND.
+     1	        (IFORM(1:3).EQ.'EPI' .OR. IFORM(1:3).EQ.'BIB' .or.
+     2		iform(1:3).eq.'LDX')) THEN
+		CALL FIXTIM (ITMIN,ITMAX,IT1b,IT2b,ITYPETb) 
+		TLOb = 1. - DIFF(IT1,ITSTRT)/DT
+	    ELSE
+		CALL FIXTIM (IT1b,IT2b,IT1TMP,IT2TMP,ITYPETb)
+		IT1b=IT1TMP
+		IT2b=IT2TMP
+		TLOb = 1. - DIFF(IT1b,ITSTRTb)/DT
+	    ENDIF
+C
+C	    CHANGE FROM 3-CHAR MON TO 1-CHAR MON IF INSUFFICIENT SPACE
+C
+	    RXAX=DIFF(IT1b,IT2b)/1440.
+	    RXMON=30.*XLEN/RXAX
+	    RXCHR=TCSIZE*6.
+	    IF (RXCHR .GT. RXMON) then
+		itxtpeb=3
+		labeltb=itxtpeb*itxlbpb
+	    endif
+	    THIb=TLOb+DIFF(IT1b,IT2b)/DT
+	ENDIF
+
 	call trans(0,xmin,ymin,xtm,ytm)
 	call trans(0,xmax,ymax,xtx,ytx)
+	
+	IF(ITFLG.EQ.2)THEN
+	    XTI=XHI
+	    XTL=XLO
+	    XHI=THI
+	    XLO=TLO
+	    DXF=XLEN/(XHI-XLO)
+	    IF(CONTR)THEN
+		DXL=(xtm-XLO)*DXF
+		DXH=XLEN+(xtx-XHI)*DXF
+	    ENDIF
+	ENDIF
 	IF(ITFLG.EQ.1)THEN
 	    XTI=XHI
 	    XTL=XLO
@@ -220,6 +259,18 @@ C	CONTOUR PLOT
 	    NMX=NMTCX
 	ENDIF
 C	YAXIS
+	IF(ITFLG.EQ.2)THEN
+	    XTI=YHI
+	    XTL=YLO
+	    YHI=THIb
+	    YLO=TLOb
+	    DYF=YLEN/(YHI-YLO)
+	    IF(CONTR)THEN
+		DYL=(ytm-YLO)*DYF
+		DYH=YLEN+(ytx-YHI)*DYF
+	    ENDIF
+        ENDIF
+
 	IF(ITFLG.EQ.-1)THEN
 	    XTI=YHI
 	    XTL=YLO
@@ -290,6 +341,84 @@ C CONTOUR DATA
 		NMY=NMTCY
 	    ENDIF
 	ENDIF
+
+c--------------------
+
+
+C	YAXIS and XAXIS are time/forecast axes
+	IF(ITFLG.EQ.2)THEN
+	    XTI=YHI
+	    XTL=YLO
+	    YHI=THIb
+	    YLO=TLOb
+	    DYF=YLEN/(YHI-YLO)
+	    IF(CONTR)THEN
+		DYL=(ytm-YLO)*DYF
+		DYH=YLEN+(ytx-YHI)*DYF
+	    ENDIF
+	ELSE
+	    IF(CONTR)THEN
+C CONTOUR DATA
+		IF(IAUTOY.EQ.1)THEN
+		    IF(ITYPEY.GT.1)THEN
+			CALL RANGEL(ytm,ytx,YHI,YLO)
+			YHI=ALOG10(ABS(YHI))
+			YLO=ALOG10(ABS(YLO))
+		    ELSE
+			CALL RANGE(ytm,ytx,NTICY,YLO,YHI,YTIC)
+		    ENDIF
+		    IF(ytm.gt.ytx)THEN
+			DYF=YLO
+			YLO=YHI
+			YHI=DYF
+			YTIC=-YTIC
+		    ENDIF
+		ENDIF
+		DYF=YLEN/(YHI-YLO)
+		DYL=(ytm-YLO)*DYF
+		DYH=YLEN+(ytx-YHI)*DYF
+		NMY=NMTCY
+	    ELSE
+		IF(IAUTOY.EQ.0)GOTO 201
+		XMN=1.E38
+		XMX=-XMN
+		IBASEY=IY
+		IBASEX=0
+		DO 31 I=1,LNUM
+		    DO 41 J=1,LLENG(I)
+			IF((XLE.AND.X(IBASEX+J).LE.CMXLE).OR.
+     *			(XEQ.AND.X(IBASEX+J).EQ.CMXEQ).OR.
+     *			(XGE.AND.X(IBASEX+J).GE.CMXGE).OR.
+     *			(YLE.AND.X(IBASEY+J).LE.CMYLE).OR.
+     *			(YEQ.AND.X(IBASEY+J).EQ.CMYEQ).OR.
+     *			(YGE.AND.X(IBASEY+J).GE.CMYGE))GOTO 41
+			YT=X(IBASEY+J)*YFCT(I)+YOFF(I)
+			IF(YT.LT.XMN)XMN=YT
+			IF(YT.GT.XMX)XMX=YT
+41		    CONTINUE
+		    IBASEX=IBASEX+LLENG(I)
+31		IBASEY=IBASEY+LLENG(I)
+		IF(VECTR)THEN
+		    IF(ABS(XMX).GT.ABS(XMN))THEN
+			XMN=-ABS(XMX)
+		    ELSE
+			XMX=ABS(XMN)
+		    ENDIF
+		ENDIF
+		IF(ITYPEY.GT.1)THEN
+		    CALL RANGEL(XMN,XMX,YLO,YHI)
+		    YLO=ALOG10(ABS(YLO))
+		    YHI=ALOG10(ABS(YHI))
+		ELSE
+		    CALL RANGE(XMN,XMX,NTICY,YLO,YHI,YTIC)
+		ENDIF
+201		DYF=YLEN/(YHI-YLO)
+		NMY=NMTCY
+	    ENDIF
+	ENDIF
+ 
+c--------------------
+
 
         IF (IAUTOX .NE. 0) CALL setax_syms('X', xlo, xhi)
         IF (IAUTOY .NE. 0) CALL setax_syms('Y', ylo, yhi)

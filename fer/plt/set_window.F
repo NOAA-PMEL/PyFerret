@@ -96,6 +96,7 @@
 * PyFr  *kms*  7/13 Call SET_PPL_VALUES to set scaled lengths and label sizes;
 *                   set physical_chg to .TRUE. if START_PPLUS called or 
 *                   if the engine changes
+* V69x *sh* 21/1/15 clarify data type of arguments sent to QUERY_DISPLAY_SIZE
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -117,23 +118,22 @@
         include 'fgrdel.cmn'            ! with windowdpix and windowdpiy
 
 * calling argument declarations:
-	INTEGER	status
+       INTEGER status
 
 * internal variable declarations:
-	LOGICAL TM_DIGIT, MATCH4, FGD_ENGINE_MATCH, 
-     .		physical_chg, relocate, chg_window, axis_ref
-	INTEGER TM_LENSTR1, ier, id, itype, imeter, irx, iry, 
-     .          wn, n, qp, ivp, colon_pos, slen, tlen, i, s1, 
-     .          idone, bkgcolor, xpixels, ypixels
-	REAL	dmaxx, dmaxy, xln, yln, xmn, xmx, ymn, ymx,
-     .		scale, xstretch, ystretch, aspect, ref_len,
-     .          xsc, ysc
-	REAL*4  rzero, rone, fcty, fctx, 
-     .          xwlo, ywlo, xwhi, ywhi, dfltthick,
-     .          redfrac, grnfrac, bluefrac, opaqfrac,
-     .          xinches, yinches, sc
-	CHARACTER	UPPER_CASE*1, GKS_X_CONID*16, warnmsg*80,
-     .			arg1*1, buffer*24, xwind_id*80, short_buff*24
+	   LOGICAL TM_DIGIT, MATCH4, FGD_ENGINE_MATCH, 
+     .         physical_chg, relocate, chg_window, axis_ref
+       INTEGER TM_LENSTR1, ier, id, itype, imeter, irx, iry, 
+     .         wn, n, qp, ivp, colon_pos, slen, tlen, i, s1, 
+     .         bkgcolor, xpixels, ypixels
+	   REAL    xln, yln, xmn, xmx, ymn, ymx, scl, 
+     .         xstretch, ystretch, aspect, ref_len, xsc, ysc
+	   REAL*4  rzero, rone, fcty, fctx, 
+     .         xwlo, ywlo, xwhi, ywhi, dfltthick,
+     .         redfrac, grnfrac, bluefrac, opaqfrac,
+     .         xinches, yinches, sc
+       CHARACTER UPPER_CASE*1, GKS_X_CONID*16, warnmsg*80,
+     .         arg1*1, buffer*24, xwind_id*80, short_buff*24
 
 * local parameter declarations:
 	INTEGER slash_new,
@@ -440,10 +440,10 @@ c 75        CONTINUE
         qp = qual_given(slash_thicken)
         IF ( qp .GT. 0 ) THEN
             CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)), 
-     .                     scale, status)
+     .                     scl, status)
             IF ( status .NE. ferr_ok ) RETURN
-            IF ( scale .LE. 0.0 ) GOTO 5070
-            dfltthick = scale
+            IF ( scl .LE. 0.0 ) GOTO 5070
+            dfltthick = scl
             CALL FGD_SET_THICK_FACTOR(n, dfltthick)
         ENDIF
 
@@ -451,11 +451,11 @@ c 75        CONTINUE
         qp = qual_given(slash_textprom)
         IF ( qp .GT. 0 ) THEN
             CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)), 
-     .                     scale, status)
+     .                     scl, status)
             IF ( status .NE. ferr_ok ) RETURN
-            IF ( scale .LE. 0.0 ) GOTO 5090
+            IF ( scl .LE. 0.0 ) GOTO 5090
 *           Note: scale text by this factor as well as by pplscale
-            CALL SET_TEXT_SIZES(n, scale)
+            CALL SET_TEXT_SIZES(n, scl)
         ENDIF
 
 * background color is always color zero
@@ -473,10 +473,10 @@ c 75        CONTINUE
         qp = qual_given(slash_opacity)
         IF ( qp .GT. 0 ) THEN
             CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)), 
-     .                     scale, status)
+     .                     scl, status)
             IF ( status .NE. ferr_ok ) RETURN
-            IF ( (scale .LT. 0.0) .OR. (scale .GT. 100.0) ) GOTO 5080
-            opaqfrac = scale / 100.0
+            IF ( (scl .LT. 0.0) .OR. (scl .GT. 100.0) ) GOTO 5080
+            opaqfrac = scl / 100.0
 *           create a temporary color with the new opacity for the active window
             CALL DUP_COLOR_SET_OPACITY(n, bkgcolor, opaqfrac)
         ENDIF

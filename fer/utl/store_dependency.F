@@ -48,10 +48,12 @@
 * V685  *sh* 10/13 
 * V690  *sh* 11/13 - fixed problem in aux regridding variable dependencies
 *                    by adding a new calling arg
+* V693+ *sh* 1/21/15 - store regridding dependency lines
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
+	include 'gfdl_vms.parm'  ! for vms_str_success
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 	include 'xdependency_tree.cmn'
@@ -81,21 +83,29 @@
 
 
 * internal variable declarations:
-	LOGICAL	known_var, dup, in_target_defn, direct_parentage, aux_broken_chain
+	LOGICAL	known_var, dup, in_target_defn, direct_parentage,
+     .		aux_broken_chain
 	INTEGER	var, cat, dset, df_flag, row, current_lev, i,
-     .		this_flag
+     .		this_flag, nrg
+	INTEGER STR_CASE_BLIND_COMPARE, vax_code
 
 * initialize
 	cat    = cx_category(cx)
 	var    = cx_variable(cx)
 	dset   = cx_data_set(cx)
-	IF (dset .EQ. unspecified_int4) dset = pdset_irrelevant
 	desist = .FALSE.
 	known_var = cx_status .EQ. ferr_ok
+     .         .OR. cx_status .EQ. pcx_vtree_regrid_report
 !     .	      .OR.  cx_status .EQ. ferr_unknown_auxvar  ! ???
 
+* set up regrid target reports
+	IF ( cx_status .EQ. pcx_vtree_regrid_report ) THEN
+	  IF (cx_vtree_regrid_ntarget .EQ. 0 ) RETURN  ! ?for SST[G=SST] case?
+	  nrg = 1
+	ENDIF
+
 * increment pointer to the next item to be stored
-	row = dependency_nrows + 1
+ 10	row = dependency_nrows + 1
 	dependency_nrows = row
 
 * determine flag to save
@@ -108,13 +118,11 @@
 *     or  unspecified_int4 if the regrid points to a named grid or axis
 *     we do not report named grid or axis regridding.  Not a dependency.
 *     Multiple target regrid variables get recorded in cx_vtree_regrid_ntarget
-	   IF ( cx_vtree_unknown_grid      ) THEN
+	   dset = cx_vtree_regrid_dset(nrg)
+	   IF ( cx_vtree_unknown_grid(nrg)      ) THEN
 	      this_flag = df_unknown_grid
-	   ELSEIF (cx_vtree_regrid_ntarget .EQ. 0 ) THEN
-	      RETURN                   ! no report
 	   ELSE
 	      this_flag = df_valid_var
-	      dset = cx_vtree_regrid_dset
 	   ENDIF
 	ELSEIF ( cx_status .EQ. ferr_unknown_variable ) THEN
 	   this_flag = df_unknown_var
@@ -133,6 +141,7 @@
 	ENDIF
 	 
 * store the things that are always valid
+	IF (dset .EQ. unspecified_int4) dset = pdset_irrelevant
 	next (row) = 0		! for clean housekeeping, not used
 	level(row) = tree_lev
 	dataset (row) = dset
@@ -147,8 +156,8 @@
 	   parent_uv   (row) = uvar
 	   uv_item     (row) = item
 	ELSEIF ( cx_status .EQ. pcx_vtree_regrid_report ) THEN
-	   var_or_start(row) = cx_vtree_var_or_start
-	   cat_or_end  (row) = cx_vtree_cat_or_end
+	   var_or_start(row) = cx_vtree_var_or_start(nrg)
+	   cat_or_end  (row) = cx_vtree_cat_or_end(nrg)
 	   parent_uv   (row) = uvar
 	   uv_item     (row) = pcx_vtree_regrid_report
 	ELSEIF ( cx_status .NE. ferr_ok ) THEN
@@ -200,10 +209,23 @@
 * ...  flag cannot be used in the dup test because it gets reset for df_defined_earlier
 *      since parent_uv is set to unspecified_int4 only for df_valid_var it serves
 *      as a signal that the flag had been valid before it was reset to defined_earlier
-	      dup =   parent_uv(i)    .EQ. parent_uv(row)
-     .          .AND. dataset(i)      .EQ. dataset(row)
-     .		.AND. var_or_start(i) .EQ. var_or_start(row)
-     .		.AND. cat_or_end  (i) .EQ. cat_or_end  (row)
+	      IF ( cx_status .EQ. pcx_vtree_regrid_report 
+     .	     .AND. flag(row) .EQ. df_unknown_grid         ) THEN
+* ... ugly case of duplicate unknown grid target: "myvar[gx=mybad,gy=mybad]"
+	        dup =   parent_uv(i)    .EQ. parent_uv(row)
+     .		  .AND. flag(i)         .EQ. flag(row) 
+	        IF (dup) THEN
+	           vax_code = STR_CASE_BLIND_COMPARE(
+     .			uvar_text(uvar)(var_or_start( i ):cat_or_end( i )),
+     .			uvar_text(uvar)(var_or_start(row):cat_or_end(row)) )
+	           dup = vax_code .EQ. vms_str_success
+	        ENDIF
+	      ELSE
+	        dup =   parent_uv(i)    .EQ. parent_uv(row)
+     .            .AND. dataset(i)      .EQ. dataset(row)
+     .		  .AND. var_or_start(i) .EQ. var_or_start(row)
+     .		  .AND. cat_or_end  (i) .EQ. cat_or_end  (row)
+	      ENDIF
 	      IF (dup) THEN
 * ... found a twin -- do not report it
 	         desist = .TRUE.
@@ -270,6 +292,13 @@
 	IF (flag(row) .GT. dependency_status) THEN
 	   dependency_status     = flag(row)
 	   dependency_status_rec = row
+	ENDIF
+
+* if more regridding dependencies to report, loop back
+	IF  ( cx_status .EQ. pcx_vtree_regrid_report 
+     .	.AND. nrg .LT. cx_vtree_regrid_ntarget        ) THEN
+	   nrg = nrg + 1
+	   GOTO 10
 	ENDIF
 
 	RETURN

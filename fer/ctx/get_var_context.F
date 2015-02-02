@@ -80,7 +80,9 @@
 	include	'xprog_state.cmn'
         include 'xdset_info.cmn_text'
         include 'xdependency_tree.cmn'
+	include 'xtm_grid.cmn_text' 
         external xdset_info_data
+#        include "tmap_dset.parm"
 
 * calling argument declarations:
 	INTEGER		default_cx, var_cx, status
@@ -111,13 +113,19 @@
 	      cx_variable(var_cx) = unspecified_int4
 	      cx_category(var_cx) = unspecified_int4
 	      unreported_error = .TRUE.
-	      IF (cx_has_impl_grid(var_cx)) THEN
-	         IF (cx_impl_grid(var_cx).NE.grd_stk_ptr )
-     .					CALL WARN('crptn_get_var_ctxt')
-	         CALL DEALLO_GRID(i) ! 12/13 bug fix
-	      ENDIF
 	   ELSE
 	      GOTO 5000
+	   ENDIF
+	ENDIF
+
+* in dependency tree mode bail out of implicit grid created by GET_CONTEXT_MODS
+	IF ( dependency_tree_mode ) THEN
+	   IF (cx_has_impl_grid(var_cx)) THEN
+	      IF (cx_impl_grid(var_cx).NE.grd_stk_ptr )
+     .				CALL WARN('crptn_get_var_ctxt')
+	      grid_name(grd_stk_ptr) = char_init16
+	      grd_stk_ptr = grd_stk_ptr + 1
+	      cx_has_impl_grid(var_cx) = .FALSE.
 	   ENDIF
 	ENDIF
 
@@ -161,6 +169,9 @@
 	   CALL STACK_PTR_DN(cx_stack_ptr,cx_stack_ptr_base,ignore) ! mods_cx
 	   GOTO 5000
 	ENDIF
+
+* below here is work that is needed for evaluations;  not for dependency tree
+	IF ( dependency_tree_mode ) GOTO 100  ! 12/31
 
 * 8/99 If G=unknown_user_var was given then exit now.
 * It is recognizable because the text position is encoded in the grid number.

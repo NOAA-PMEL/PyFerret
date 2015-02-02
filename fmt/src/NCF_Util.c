@@ -36,55 +36,59 @@
 */
 
 /* NCF_Util.c
- *
- * Ansley Manke
- * Ferret V600 April 26, 2005
- * V5600 *acm* fix declarations of fillc and my_len as required by solaris compiler
- *
- * This file contains all the utility functions which Ferret
- * needs in order to do attribute handling. Based on code for EF's.
- * calls are made to nc_ routines from netcdf library.
- *
- *
- * *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build
- * *acm  10/06 v601 - Fix by Remik for bug 1455, altix. For string attributes,
- *                    allocate one more than the att.len, presumably for the null
- *                    terminator for the string. Also double check the string length
- *                    that is returned from the call to nc_inq_att, and make sure
- *                    we allocate the correct amount of memory for the string.
- *
- * *acm  11/06 v601 - ncf_delete_var_att didnt reset the attribute id's.  Fix this.
- *
- * *acm  11/06 v601 - new routine ncf_add_var_num_att_dp
- * *acm  11/06 v601 - new routine ncf_repl_var_att_dp
- * *acm  11/06 v601 - in ncf_init_other_dset, set the name of the global attribute
- *                    to history, and define its attribute type and outflag.
- * *acm  11/06 v601 - new routine ncf_rename_var, for fix of bug 1471
- * *acm  11/06 v601 - in ncf_delete_var_att, renumber the attid for the remaining attributes.
- * *acm* 12/06 v602 - new attribute assigned to coordinate vars on input, orig_file_axname
- * *acm*  2/07 V602 - Fix bug 1492, changing attributes of coordinate variables; use pseudo-dataset
- *                       of user-defined axes to keep track of attributes.
- * *acm* 10 07      - Patches for memory-leak fixes from Remiz Ziemlinski
- * *acm* 10/07      - Further fixes by Remik, initializing att.vals, att.string to NULL,
- *                      set var.ndims = 0 in ncf_init_other_dset
- * *acm*  3/08      - Fix bug 1534; needed to initialize attribute output flag for
- *                    the bounds attribute on coordinate axes.
- * *acm*  1/09      - If adding a new global attribute, also increment ngatts.
- * *acm*  1/09      - Fix bug 1620; In ncf_add_var, which is used when defining user
- *                    variables, and also for reading in EZ datasets, I had the default
- *                    attribute type for missing_value attribute set to NC_DOUBLE. There's no
- *                    reason for this as these variables are always single precision.
- * *acm*  5/09      - Fix bug 1664. For user variables, varid matches the uvar from Ferret.
- *                    therefore it may be larger than nc_ptr->nvars
- * *acm*  3/11      - Fix bug 1825. Routine ncf_get_var_seq no longer called
- * *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
- *                    definition of macro DFTYPE in ferretmacros.h.
- * *acm*  5/12 V6.8 - Additions for creating aggregate datasets
- * *acm*  8/13	      Fix bug 2089. Mark the scale_factor and add_offset attributes  
- *                    to-be-output when writing variables.
- * *acm*  8/13        Fix bug 2091. If a string variable has the same name as a dimension,
- *                    DO NOT mark it as an axis.
- */
+*
+* Ansley Manke
+* Ferret V600 April 26, 2005
+* V5600 *acm* fix declarations of fillc and my_len as required by solaris compiler
+*
+* This file contains all the utility functions which Ferret
+* needs in order to do attribute handling. Based on code for EF's.
+* calls are made to nc_ routines from netcdf library.
+*
+*
+* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build
+* *acm  10/06 v601 - Fix by Remik for bug 1455, altix. For string attributes,
+*                    allocate one more than the att.len, presumably for the null
+*                    terminator for the string. Also double check the string length
+*                    that is returned from the call to nc_inq_att, and make sure
+*                    we allocate the correct amount of memory for the string.
+*
+* *acm  11/06 v601 - ncf_delete_var_att didnt reset the attribute id's.  Fix this.
+*
+* *acm  11/06 v601 - new routine ncf_add_var_num_att_dp
+* *acm  11/06 v601 - new routine ncf_repl_var_att_dp
+* *acm  11/06 v601 - in ncf_init_other_dset, set the name of the global attribute
+*                    to history, and define its attribute type and outflag.
+* *acm  11/06 v601 - new routine ncf_rename_var, for fix of bug 1471
+* *acm  11/06 v601 - in ncf_delete_var_att, renumber the attid for the remaining attributes.
+* *acm* 12/06 v602 - new attribute assigned to coordinate vars on input, orig_file_axname
+* *acm*  2/07 V602 - Fix bug 1492, changing attributes of coordinate variables; use pseudo-dataset
+*                       of user-defined axes to keep track of attributes.
+* *acm* 10 07      - Patches for memory-leak fixes from Remiz Ziemlinski
+* *acm* 10/07      - Further fixes by Remik, initializing att.vals, att.string to NULL,
+*                      set var.ndims = 0 in ncf_init_other_dset
+* *acm*  3/08      - Fix bug 1534; needed to initialize attribute output flag for
+*                    the bounds attribute on coordinate axes.
+* *acm*  1/09      - If adding a new global attribute, also increment ngatts.
+* *acm*  1/09      - Fix bug 1620; In ncf_add_var, which is used when defining user
+*                    variables, and also for reading in EZ datasets, I had the default
+*                    attribute type for missing_value attribute set to NC_DOUBLE. There's no
+*                    reason for this as these variables are always single precision.
+* *acm*  5/09      - Fix bug 1664. For user variables, varid matches the uvar from Ferret.
+*                    therefore it may be larger than nc_ptr->nvars
+* *acm*  3/11      - Fix bug 1825. Routine ncf_get_var_seq no longer called
+* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+*                    definition of macro DFTYPE in ferretmacros.h.
+* *acm*  5/12 V6.8 - Additions for creating aggregate datasets
+* *acm*  8/13	      Fix bug 2089. Mark the scale_factor and add_offset attributes  
+*                    to-be-output when writing variables.
+* *acm*  8/13        Fix bug 2091. If a string variable has the same name as a dimension,
+*                    DO NOT mark it as an axis.
+* *acm*  v694 1/15   For ticket 2227: if a dimension from a nc file is not also a 
+*                    1-D coordinate var, don't write the axis Ferret creates. Do report
+*                    in dimnames outputs the dimension names as used by Ferret e.g. a
+*                    renamed axis TIME -> TIME1
+*/
 
 #include <Python.h> /* make sure Python.h is first */
 #include "ferretmacros.h"
@@ -162,6 +166,8 @@ int  FORTRAN(ncf_add_var_num_att_dp)( int *, int *, char *, int *, int *, int *,
 int  FORTRAN(ncf_add_var_str_att)( int *, int *, char *, int *, int *, int *, char *);
 
 int  FORTRAN(ncf_rename_var)( int *, int *, char *);
+int  FORTRAN(ncf_rename_dim)( int *, int *, char *);
+
 int  FORTRAN(ncf_repl_var_att)( int *, int *, char *, int *, int *, DFTYPE *, char *);
 int  FORTRAN(ncf_repl_var_att_dp)( int *, int *, char *, int *, int *, double *, char *);
 int  FORTRAN(ncf_set_att_flag)( int *, int *, char *, int *);
@@ -1150,6 +1156,8 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 			if (nc_status != NC_NOERR) return nc_status;
 			strcpy (nc.dims[i].name, fdims.name);
 			nc.dims[i].size = fdims.size;
+/*			strcpy (nc.dimname[i], fdims.name);
+			nc.dimsize = fdims.size; */
 		}
 	}
 	
@@ -1273,7 +1281,8 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 				if (var.type == NC_CHAR) var.outtype = NC_CHAR;
 				var.outtype = var.type;  /* ?? */
 				
-				/* is this a coordinate variable? If not a string, set the flag.
+				/* Is this a coordinate variable? If not a string, set the flag.
+				/* A multi-dimensional variable that shares a dimension name is not a coord. var.
 				 */
 				if (nc.ndims > 0) {
 					var.is_axis = FALSE;
@@ -1282,6 +1291,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 					while (i < nc.ndims && var.is_axis == FALSE) {
 						if  (strcasecmp(var.name, nc.dims[i].name) == 0) var.is_axis = TRUE;
 						if  (var.type == NC_CHAR) var.is_axis = FALSE;
+						if  (var.ndims > 1) var.is_axis = FALSE;
 						i = i + 1;
 					}
 				}
@@ -2402,6 +2412,36 @@ int  FORTRAN(ncf_rename_var)( int *dset, int *varid, char newvarname[])
   return_val = FERR_OK;
   return return_val;
 }
+
+
+/* ----
+ * Find a dimension in the datset using dataset ID
+ * Replace the dimension name with the new one passed in.
+ */
+
+int  FORTRAN(ncf_rename_dim)( int *dset, int *dimid, char newdimname[])
+
+{
+  ncdset *nc_ptr=NULL;
+  int status=LIST_OK;
+  int return_val;
+	
+   /*
+   * Get the dataset pointer.  
+   */
+  return_val = ATOM_NOT_FOUND;  
+  if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL ) return return_val;
+
+  /* Insert the new name. */
+  
+  strcpy (nc_ptr->dims[*dimid-1].name, newdimname);
+
+/* just return for now. */
+  return_val = FERR_OK;
+  return return_val;
+}
+
+
 
 /* ----
  * Find an attribute based on its variable ID and dataset ID

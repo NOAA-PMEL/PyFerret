@@ -30,6 +30,9 @@
 *                  for use on output of user-defined variables when MODE UPCASE_OUTPUT is cancelled.
 * V64  10/09 *acm* longer string length for grid_name
 * v685  3/13 *acm* new line_write for writing axes to xml
+* v694 1/15 *acm* for ticket 2227: if a dimension from a nc file is not also a 
+*                 1-D coordinate var, don't write the axis Ferret creates. New flag 
+*                 line_dim_only marking axes that are defined from a dimension only
 
 	CHARACTER*128	grid_filename
 	CHARACTER*20	line_t0
@@ -44,8 +47,8 @@
      .			line_class, line_free_ptr, max_line_used,
      .                  pline_mem_init, line_offset, line_dattype
 	LOGICAL		grid_out_prod, line_regular, line_modulo, line_reversed,
-!     .			line_has_edges, line_keep_flag,
-     .			line_keep_flag, line_shift_origin, line_fixname, line_write
+     .			line_keep_flag, line_shift_origin, line_fixname, line_write,
+     .			line_dim_only
 	REAL		line_tunit, grid_rotation
 	REAL*8		line_start, line_delta, line_mem, line_modulo_len
 
@@ -78,6 +81,7 @@
      .			line_fixname    ( 0:line_ceiling ),
      .			line_shift_origin( 0:line_ceiling ),
      .			line_write      ( 0:line_ceiling ),
+     .			line_dim_only   ( 0:line_ceiling ),
      .			line_free_ptr,
      .			max_line_used,
      .			line_cal_name  ( 0:line_ceiling ),

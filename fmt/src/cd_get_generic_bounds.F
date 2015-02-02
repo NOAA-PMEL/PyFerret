@@ -58,6 +58,8 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V686 4/13 *acm* Fix ticket 2064: use single-precision comparisons
+* v694 1/15 *acm* for ticket 2227: if a dimension from a nc file is not also a 
+*                 1-D coordinate var, don't write the axis Ferret creates
 
 * argument definitions:
 *	cdfid   - id of currently open CDF file
@@ -143,6 +145,14 @@
 	      cdfstat = NF_INQ_DIM ( cdfid, vdims(ndims), axnam, npts )
 #endif
 	      alen = TM_LENSTR1( axnam )
+
+* If the dimension is not also a 1-D coord var, we are not writing coords, 
+* so dont check them.
+	      IF (line_dim_only(grid_line(idim,grid)) ) THEN
+	          cdflo(idim) = 1
+	          cdfhi(idim) = npts
+	          GOTO 100
+	      ENDIF
 
 * ... time axis as a record axis will be synchronized in another routine
 	      IF ( idim .EQ. tmrecdim ) THEN

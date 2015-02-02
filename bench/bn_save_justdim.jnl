@@ -1,0 +1,24 @@
+! bn_save_justdim.jnl
+! When a dataset has axes that are dimensions but not 1-D coordinate variables,
+! no longer save the coordinate axis that Ferret creates from the dimension.
+!
+! Allows for a dimension and a 2-D variable to have the same name.
+!  see ticket 2227
+! 1/21/2015 ACM
+
+use twodtime.nc
+sh dat
+
+! previously this gave a name-in-use error
+save/file=a.nc/clobber time
+
+!  The file has 2D TIME variable, and TIME as a dimension.
+sp ncdump a.nc >> all_ncdump.out
+
+! Now, keep case and axis name as on input
+CANCEL MODE upcase
+
+save/clobber/keep/file=a.nc time
+sp ncdump a.nc >> all_ncdump.out
+
+SET MODE/LAST upcase_output

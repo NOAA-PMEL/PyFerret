@@ -152,10 +152,10 @@
         CHARACTER*1     crecdim
 
 * internal variable declarations:
-        LOGICAL         TM_LEGAL_NAME, MATCH_NAME,
+        LOGICAL         TM_LEGAL_NAME, MATCH_NAME, TM_HAS_STRING,
      .			itsa_uvar, need_doc, new, formatted, flushed,
      .			itsa_string, output_units, output_title,
-     .                  output_history, get_ds
+     .                  output_history, get_ds, its_nc
 	INTEGER		TM_LENSTR1, ISUBSCR_CX, GET_MAX_C_STRING_LEN,
      .			MGRID_SIZE, STR_SAME, 
      .			cx, mr, dset, grid, cdfid, ivar, nready,
@@ -538,9 +538,12 @@
            IF (dset.EQ.-1 .AND. cx_data_set( cx ).GT.0)
      .        dset_num = cx_data_set( cx )  
 
-           IF (type .EQ. NF_CHAR) THEN
+* When its a netCDF/OPeNDAP file variable use the max string length from the originating dataset.
+           buff2 = " "
+           IF (type .EQ. NF_CHAR .AND. dset .GE. 1) THEN
 	     buff2 = ""
-             IF (dset_num .GE. 1 .AND.(.NOT.itsa_uvar)) THEN
+	     its_nc = ( .NOT. TM_HAS_STRING(ds_type(dset),'EZ') )
+             IF (dset_num.GE.1 .AND.(.NOT.itsa_uvar) .AND.its_nc) THEN
                 CALL CD_GET_DS_DIMS (dset_num, vdims(1), buff2, len, status)
                 IF (maxstrlen .LE. len) maxstrlen = len
              ENDIF

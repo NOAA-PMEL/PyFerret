@@ -95,6 +95,9 @@
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid. 
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V694  1/15 *acm* as part of changes for ticket 2227 (handling of dimensions
+*                  that are not also 1-D coordinate variables), when returning 
+*                  ..dimnames, now list of all dimensions in the dataset.
 
 	include 'tmap_dims.parm'
 #include "netcdf.inc"
@@ -130,6 +133,7 @@
      .          nvdims, vdims(8), nvatts, nv, iatt, all_outflag, dot,
      .          attid, slen
         REAL    counter_const, val
+*                  
 
 	CHARACTER TM_FMT*150, name*150, attname*128, aname*128, buff*10
 
@@ -678,16 +682,7 @@
                  ELSE IF (STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
                     cx_type(hi_cx) = ptype_string
 
-
-* Count number of coordinate variables. (file may list more dimensions than
-* coordinates, e.g. a dimension for the grid definition, which is not a coord.)
-                    nv = 0
-                    DO 770 ivar = 1, nvars
-                       CALL CD_GET_VAR_INFO (dset, ivar, name, vartype,
-     .                     nvdims, vdims, nvatts, coordvar, all_outflag, 
-     .                     status)
-                       IF (coordvar) nv = nv + 1
- 770                CONTINUE
+		    nv = ndims
 
                     IF (reset_ss) THEN
                        cx_lo_ss(hi_cx, x_dim) = 1

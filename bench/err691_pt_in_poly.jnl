@@ -1,0 +1,29 @@
+! err691_pt_in_poly
+! ticket 1961: modulo longitude for pt_in_poly
+! and sending subset of the xy field
+
+use coads_climatology
+
+let xpts = {64,81,81,82,88,88,79,79,76,73,68,64}
+let ypts = {31,30,29,29,27,24,20,19,20,25,27,31}
+
+let pts = pt_in_poly(sst[L=5,x=60:90,y=15:35], xpts, ypts)
+shade/lev=(-2,2,1)/pal=ten_by_levels pts
+plot/vs/over/line/nolab xpts, ypts
+list minmax(pts)
+
+! Put the xpts on different modulo branches
+! Previously  the list commands would have listed -1,-1
+
+let xpts0 = {64,81,81,82,88,88,79,79,76,73,68,64}
+let/title=lon/units=degrees_east xpts = xpts0 + 360
+
+shade/title="Plus 360"/lev=(-2,2,1)/pal=ten_by_levels pts
+plot/vs/over/line/nolab xpts, ypts
+list minmax(pts)
+
+let/title=lon/units=degrees_east xpts = xpts0 - 360
+
+shade/title="Minus 360"/lev=(-2,2,1)/pal=ten_by_levels pts
+plot/vs/over/line/nolab xpts, ypts
+list minmax(pts)

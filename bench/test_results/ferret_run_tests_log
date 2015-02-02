@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 13 Jan 23 16:42 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.932
+lrwxrwxrwx 1 ksmith tmap 13 Feb  2 11:45 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.933
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug Ferret on RHEL5-64
@@ -229,6 +229,8 @@ Benchmark scripts that will be run:
    bn694_bug_fixes.jnl
    bn_permute_ascii.jnl
    bn_lon_lat_time_string.jnl
+   bn_save_justdim.jnl
+   bn_time2d.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -245,7 +247,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Jan 23 16:44:15 PST 2015
+Beginning at Mon Feb  2 11:46:42 PST 2015
 *** Running test: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10515,18 +10517,18 @@ show symbols/all
 PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.932"
+FERRET_VERSION = "6.933"
 FERRET_PLATFORM = "Linux 2.6.18-400.1.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 15:13:45 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "23-Jan-15"
-SESSION_TIME = "16:44"
-SESSION_PID = "18289"
-DELTA_CPU = "0.010997"
-CLOCK_SECS = "0.017"
-CURRENT_DATE = "23-Jan-15"
-CURRENT_TIME = "16:44:27"
+SESSION_DATE = " 2-Feb-15"
+SESSION_TIME = "11:46"
+SESSION_PID = "15617"
+DELTA_CPU = "0.006998"
+CLOCK_SECS = "0.011"
+CURRENT_DATE = " 2-Feb-15"
+CURRENT_TIME = "11:46:52"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10544,18 +10546,18 @@ show symbol/all
 PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.932"
+FERRET_VERSION = "6.933"
 FERRET_PLATFORM = "Linux 2.6.18-400.1.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 15:13:45 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "23-Jan-15"
-SESSION_TIME = "16:44"
-SESSION_PID = "18289"
-DELTA_CPU = "0.001"
-CLOCK_SECS = "0.018"
-CURRENT_DATE = "23-Jan-15"
-CURRENT_TIME = "16:44:27"
+SESSION_DATE = " 2-Feb-15"
+SESSION_TIME = "11:46"
+SESSION_PID = "15617"
+DELTA_CPU = "9.99E-04"
+CLOCK_SECS = "0.012"
+CURRENT_DATE = " 2-Feb-15"
+CURRENT_TIME = "11:46:52"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10565,9 +10567,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "23-Jan-15"
-SESSION_TIME = "16:44"
-SESSION_PID = "18289"
+SESSION_DATE = " 2-Feb-15"
+SESSION_TIME = "11:46"
+SESSION_PID = "15617"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10577,15 +10579,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "23-Jan-15"
-SESSION_TIME = "16:44"
-SESSION_PID = "18289"
+SESSION_DATE = " 2-Feb-15"
+SESSION_TIME = "11:46"
+SESSION_PID = "15617"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "23-Jan-15"
-SESSION_TIME = "16:44"
-SESSION_PID = "18289"
+SESSION_DATE = " 2-Feb-15"
+SESSION_TIME = "11:46"
+SESSION_PID = "15617"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10713,18 +10715,18 @@ show symbols/all
 PPL$XPIXEL = "656"
 PPL$YPIXEL = "492"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.932"
+FERRET_VERSION = "6.933"
 FERRET_PLATFORM = "Linux 2.6.18-400.1.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 15:13:45 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "23-Jan-15"
-SESSION_TIME = "16:44"
-SESSION_PID = "18289"
-DELTA_CPU = "0.029995"
-CLOCK_SECS = "0.101"
-CURRENT_DATE = "23-Jan-15"
-CURRENT_TIME = "16:44:27"
+SESSION_DATE = " 2-Feb-15"
+SESSION_TIME = "11:46"
+SESSION_PID = "15617"
+DELTA_CPU = "0.020998"
+CLOCK_SECS = "0.066"
+CURRENT_DATE = " 2-Feb-15"
+CURRENT_TIME = "11:46:52"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -25286,7 +25288,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Fri Jan 23 16:44:36 PST 2015
+Mon Feb  2 11:47:00 PST 2015
  
 GO bn_reset
 cancel mode verify
@@ -48346,7 +48348,7 @@ list element_index_str_n (axy[k=1:2,j=1:2], {"a10", "a2", "d4", "c5"})
  
 ! ferret version
 sh sym FERRET_VERSION
-FERRET_VERSION = "6.932"
+FERRET_VERSION = "6.933"
  
 ! history attribute
 let a = 12
@@ -48364,7 +48366,7 @@ LAB1 = "X : 0.5 to 314.5"
  
 ! show commands without an argument, lists version number at the top
 sho command
- Commands in Program FERRET  version6.932:
+ Commands in Program FERRET  version6.933:
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE
  SET REGION/I/J/K/L/M/N/X/Y/Z/T/E/F/DX/DY/DZ/DT/DE/DF/DI/DJ/DK/DL/DM/DN
@@ -48497,7 +48499,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "23-Jan-15:16:45"
+WIN_TITLE = "2-Feb-15:11:47"
  
 set win/title="set the title"
 sho sym win_title
@@ -48515,7 +48517,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="23-Jan-15:16:45"
+ !-> set win/title=" 2-Feb-15:11:47"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48524,16 +48526,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 23-Jan-15
+ !-> DEFINE SYMBOL the_date =  2-Feb-15
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 16:45
+ !-> DEFINE SYMBOL the_time = 11:47
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="23-Jan-15:16:45"
+ !-> SET WIN/TITLE="2-Feb-15:11:47"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "23-Jan-15:16:45"
+WIN_TITLE = "2-Feb-15:11:47"
 *** Running test: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -49440,27 +49442,28 @@ list vnames
  3   / 3:"TIME"  
 list lnames
              VARIABLE : ..DIMNAMES[D=gt4d011]
-             SUBSET   : 20 points (X)
- 1    /  1:"PSXT"      
- 2    /  2:"PSYT"      
- 3    /  3:"PSYTedges" 
- 4    /  4:"PSZT"      
- 5    /  5:"PSZTedges" 
- 6    /  6:"TIME1"     
- 7    /  7:"PSXT91_108"
- 8    /  8:"PSYT35_56" 
- 9    /  9:"PSZT1_10"  
- 10   / 10:"PSYT35_55" 
- 11   / 11:"PSXU"      
- 12   / 12:"PSYU"      
- 13   / 13:"PSYUedges" 
- 14   / 14:"PSXU91_108"
- 15   / 15:"PSYU35_55" 
- 16   / 16:"PSZW"      
- 17   / 17:"PSZWedges" 
- 18   / 18:"PSYT36_55" 
- 19   / 19:"PSZW1_10"  
- 20   / 20:"PSYU35_56" 
+             SUBSET   : 21 points (X)
+ 1    /  1:"grid_definition"
+ 2    /  2:"PSXT"           
+ 3    /  3:"PSYT"           
+ 4    /  4:"PSYTedges"      
+ 5    /  5:"PSZT"           
+ 6    /  6:"PSZTedges"      
+ 7    /  7:"TIME1"          
+ 8    /  8:"PSXT91_108"     
+ 9    /  9:"PSYT35_56"      
+ 10   / 10:"PSZT1_10"       
+ 11   / 11:"PSYT35_55"      
+ 12   / 12:"PSXU"           
+ 13   / 13:"PSYU"           
+ 14   / 14:"PSYUedges"      
+ 15   / 15:"PSXU91_108"     
+ 16   / 16:"PSYU35_55"      
+ 17   / 17:"PSZW"           
+ 18   / 18:"PSZWedges"      
+ 19   / 19:"PSYT36_55"      
+ 20   / 20:"PSZW1_10"       
+ 21   / 21:"PSYU35_56"      
  
 can var/all
 can data/all
@@ -49756,27 +49759,28 @@ list/d=2 ..dimnames
 list/d=1 ..dimnames
              VARIABLE : ..DIMNAMES
              FILENAME : gt4d011.cdf
-             SUBSET   : 20 points (X)
- 1    /  1:"PSXT"      
- 2    /  2:"PSYT"      
- 3    /  3:"PSYTedges" 
- 4    /  4:"PSZT"      
- 5    /  5:"PSZTedges" 
- 6    /  6:"TIME1"     
- 7    /  7:"PSXT91_108"
- 8    /  8:"PSYT35_56" 
- 9    /  9:"PSZT1_10"  
- 10   / 10:"PSYT35_55" 
- 11   / 11:"PSXU"      
- 12   / 12:"PSYU"      
- 13   / 13:"PSYUedges" 
- 14   / 14:"PSXU91_108"
- 15   / 15:"PSYU35_55" 
- 16   / 16:"PSZW"      
- 17   / 17:"PSZWedges" 
- 18   / 18:"PSYT36_55" 
- 19   / 19:"PSZW1_10"  
- 20   / 20:"PSYU35_56" 
+             SUBSET   : 21 points (X)
+ 1    /  1:"grid_definition"
+ 2    /  2:"PSXT"           
+ 3    /  3:"PSYT"           
+ 4    /  4:"PSYTedges"      
+ 5    /  5:"PSZT"           
+ 6    /  6:"PSZTedges"      
+ 7    /  7:"TIME1"          
+ 8    /  8:"PSXT91_108"     
+ 9    /  9:"PSYT35_56"      
+ 10   / 10:"PSZT1_10"       
+ 11   / 11:"PSYT35_55"      
+ 12   / 12:"PSXU"           
+ 13   / 13:"PSYU"           
+ 14   / 14:"PSYUedges"      
+ 15   / 15:"PSXU91_108"     
+ 16   / 16:"PSYU35_55"      
+ 17   / 17:"PSZW"           
+ 18   / 18:"PSZWedges"      
+ 19   / 19:"PSYT36_55"      
+ 20   / 20:"PSZW1_10"       
+ 21   / 21:"PSYU35_56"      
  
 list/d=1 ..nattrs
              VARIABLE : ..NATTRS
@@ -52779,7 +52783,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -52824,7 +52828,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -55048,27 +55052,28 @@ list vnames
  4   / 4:"TIME"           
 list lnames
              VARIABLE : ..DIMNAMES[D=gt4d011]
-             SUBSET   : 20 points (X)
- 1    /  1:"PSXT"      
- 2    /  2:"PSYT"      
- 3    /  3:"PSYTedges" 
- 4    /  4:"PSZT"      
- 5    /  5:"PSZTedges" 
- 6    /  6:"TIME1"     
- 7    /  7:"PSXT91_108"
- 8    /  8:"PSYT35_56" 
- 9    /  9:"PSZT1_10"  
- 10   / 10:"PSYT35_55" 
- 11   / 11:"PSXU"      
- 12   / 12:"PSYU"      
- 13   / 13:"PSYUedges" 
- 14   / 14:"PSXU91_108"
- 15   / 15:"PSYU35_55" 
- 16   / 16:"PSZW"      
- 17   / 17:"PSZWedges" 
- 18   / 18:"PSYT36_55" 
- 19   / 19:"PSZW1_10"  
- 20   / 20:"PSYU35_56" 
+             SUBSET   : 21 points (X)
+ 1    /  1:"grid_definition"
+ 2    /  2:"PSXT"           
+ 3    /  3:"PSYT"           
+ 4    /  4:"PSYTedges"      
+ 5    /  5:"PSZT"           
+ 6    /  6:"PSZTedges"      
+ 7    /  7:"TIME1"          
+ 8    /  8:"PSXT91_108"     
+ 9    /  9:"PSYT35_56"      
+ 10   / 10:"PSZT1_10"       
+ 11   / 11:"PSYT35_55"      
+ 12   / 12:"PSXU"           
+ 13   / 13:"PSYU"           
+ 14   / 14:"PSYUedges"      
+ 15   / 15:"PSXU91_108"     
+ 16   / 16:"PSYU35_55"      
+ 17   / 17:"PSZW"           
+ 18   / 18:"PSZWedges"      
+ 19   / 19:"PSYT36_55"      
+ 20   / 20:"PSZW1_10"       
+ 21   / 21:"PSYU35_56"      
  
 go bn_reset
 cancel mode verify
@@ -58539,10 +58544,10 @@ SH GRID am
  normal    F
 *** Running test: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.009997"
-CLOCK_SECS = "0.006"
-CURRENT_DATE = "23-Jan-15"
-CURRENT_TIME = "16:45:43"
+DELTA_CPU = "0.010997"
+CLOCK_SECS = "0.007"
+CURRENT_DATE = " 2-Feb-15"
+CURRENT_TIME = "11:48:08"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -58551,8 +58556,8 @@ CURRENT_TIME = "16:45:43"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.06899"
-CLOCK_SECS = "0.14"
+DELTA_CPU = "0.073989"
+CLOCK_SECS = "0.121"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -58566,60 +58571,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.270958
+ !-> DEFINE VARIABLE ten_plots = 0.270959
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.001"
-CLOCK_SECS = "0.598"
+DELTA_CPU = "9.99E-04"
+CLOCK_SECS = "0.586"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.599"
+CLOCK_SECS = "0.587"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.030995
- !-> DEFINE VARIABLE sumcpu =0.030995
+ !-> DEFINE VARIABLE dt = 0.029996
+ !-> DEFINE VARIABLE sumcpu =0.029996
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.031996
- !-> DEFINE VARIABLE sumcpu =0.062991
-!-> REPEAT: K=3
  !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.061991
+!-> REPEAT: K=3
+ !-> DEFINE VARIABLE dt = 0.032995
  !-> DEFINE VARIABLE sumcpu =0.094986
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.028995
- !-> DEFINE VARIABLE sumcpu =0.123981
-!-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.030996
- !-> DEFINE VARIABLE sumcpu =0.154977
-!-> REPEAT: K=6
  !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.186972
+ !-> DEFINE VARIABLE sumcpu =0.126981
+!-> REPEAT: K=5
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.159976
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.028996
+ !-> DEFINE VARIABLE sumcpu =0.188972
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.027996
- !-> DEFINE VARIABLE sumcpu =0.214968
+ !-> DEFINE VARIABLE dt = 0.029995
+ !-> DEFINE VARIABLE sumcpu =0.218967
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.030995
- !-> DEFINE VARIABLE sumcpu =0.245963
+ !-> DEFINE VARIABLE dt = 0.028996
+ !-> DEFINE VARIABLE sumcpu =0.247963
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.027995
- !-> DEFINE VARIABLE sumcpu =0.273958
+ !-> DEFINE VARIABLE dt = 0.030995
+ !-> DEFINE VARIABLE sumcpu =0.278958
 !-> REPEAT: K=10
  !-> DEFINE VARIABLE dt = 0.029996
- !-> DEFINE VARIABLE sumcpu =0.303954
+ !-> DEFINE VARIABLE sumcpu =0.308954
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.303954
-0.303954
+ !-> MESSAGE/CONTINUE 0.308954
+0.308954
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.199"
+CLOCK_SECS = "1.189"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "23-Jan-15"
-SESSION_TIME = "16:45"
-CURRENT_DATE = "23-Jan-15"
-CURRENT_TIME = "16:45:45"
+SESSION_DATE = " 2-Feb-15"
+SESSION_TIME = "11:48"
+CURRENT_DATE = " 2-Feb-15"
+CURRENT_TIME = "11:48:09"
 *** Running test: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -62530,9 +62535,9 @@ list contents
              VARIABLE : { SPAWN:"cat redirect_journal.txt" }
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
- 2    /  2:" ! FERRET v6.932 (beta)"                                                    
- 3    /  3:" ! Linux 2.6.18-400.1.1.el5 64-bit - 01/23/15"                              
- 4    /  4:" ! 23-Jan-15 16:46     "                                                    
+ 2    /  2:" ! FERRET v6.933 (beta)"                                                    
+ 3    /  3:" ! Linux 2.6.18-400.1.1.el5 64-bit - 02/02/15"                              
+ 4    /  4:" !  2-Feb-15 11:48     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -64965,98 +64970,98 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.815
-randu2_randn2       0.907
-randu2_randn2       0.226
-randu2_randn2       0.792
-randu2_randn2       0.857
+randu2_randn2       0.303
+randu2_randn2       0.504
+randu2_randn2       0.650
+randu2_randn2       0.436
+randu2_randn2       0.388
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.014
-randu2_randn2       0.859
-randu2_randn2       0.734
-randu2_randn2       0.804
-randu2_randn2       0.345
+randu2_randn2       0.225
+randu2_randn2       0.465
+randu2_randn2       0.401
+randu2_randn2       0.743
+randu2_randn2       0.809
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.347
-randu2_randn2       0.087
-randu2_randn2       0.083
-randu2_randn2       0.237
-randu2_randn2       0.537
-randu2_randn2       0.282
+randu2_randn2       0.346
+randu2_randn2       0.571
+randu2_randn2       0.433
+randu2_randn2       0.489
+randu2_randn2       0.837
+randu2_randn2       0.756
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.843
-randu2_randn2       0.565
-randu2_randn2       0.114
-randu2_randn2       0.214
-randu2_randn2       0.858
-randu2_randn2       0.524
-             VARIABLE : RANDU2(XX,12436)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.343
-randu2_randn2       0.598
-randu2_randn2       0.888
-randu2_randn2       0.608
-randu2_randn2       0.446
-randu2_randn2       0.900
-             VARIABLE : RANDU2(XX,12436)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.343
-randu2_randn2       0.598
-randu2_randn2       0.888
-randu2_randn2       0.608
-randu2_randn2       0.446
-randu2_randn2       0.900
-             VARIABLE : RANDN2(XBIG,-1)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 5 points (X)
-             X        : 0.5 to 5.5
-randu2_randn2       1.640
-randu2_randn2      -0.744
-randu2_randn2      -0.586
-randu2_randn2       1.879
-randu2_randn2      -0.636
-             VARIABLE : RANDN2(XBIG,-1)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 5 points (X)
-             X        : 0.5 to 5.5
-randu2_randn2      -0.482
-randu2_randn2      -0.868
-randu2_randn2       0.018
-randu2_randn2      -0.873
-randu2_randn2      -0.584
-             VARIABLE : RANDN2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2      -0.409
-randu2_randn2      -0.316
-randu2_randn2       0.272
-randu2_randn2       0.983
-randu2_randn2      -1.763
+randu2_randn2       0.753
+randu2_randn2       0.469
+randu2_randn2       0.211
 randu2_randn2       0.978
+randu2_randn2       0.607
+randu2_randn2       0.305
+             VARIABLE : RANDU2(XX,12436)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.343
+randu2_randn2       0.598
+randu2_randn2       0.888
+randu2_randn2       0.608
+randu2_randn2       0.446
+randu2_randn2       0.900
+             VARIABLE : RANDU2(XX,12436)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.343
+randu2_randn2       0.598
+randu2_randn2       0.888
+randu2_randn2       0.608
+randu2_randn2       0.446
+randu2_randn2       0.900
+             VARIABLE : RANDN2(XBIG,-1)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 5 points (X)
+             X        : 0.5 to 5.5
+randu2_randn2      -1.182
+randu2_randn2       0.887
+randu2_randn2       1.847
+randu2_randn2      -1.883
+randu2_randn2       0.106
+             VARIABLE : RANDN2(XBIG,-1)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 5 points (X)
+             X        : 0.5 to 5.5
+randu2_randn2       1.267
+randu2_randn2       0.661
+randu2_randn2      -0.399
+randu2_randn2      -0.577
+randu2_randn2       0.706
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -0.082
-randu2_randn2      -0.550
-randu2_randn2      -0.590
-randu2_randn2      -0.275
-randu2_randn2       2.083
-randu2_randn2      -0.016
+randu2_randn2      -0.284
+randu2_randn2      -0.503
+randu2_randn2      -0.227
+randu2_randn2       1.371
+randu2_randn2       0.526
+randu2_randn2      -0.736
+             VARIABLE : RANDN2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2      -1.002
+randu2_randn2      -0.581
+randu2_randn2       0.994
+randu2_randn2      -0.145
+randu2_randn2       0.740
+randu2_randn2      -0.502
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65081,14 +65086,14 @@ randu2_randn2      -0.124
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.168       1.753       0.590
-randu2_randn2       1.753       1.168       0.590
-randu2_randn2       0.590       0.590       0.284
-randu2_randn2      -0.157      -0.157       0.590
-randu2_randn2      -0.484      -0.204       0.590
-randu2_randn2      -0.204      -0.204       0.590
-randu2_randn2       0.284       0.284       0.590
-randu2_randn2       0.801       0.801       0.801
+randu2_randn2       1.752       1.752       0.683
+randu2_randn2       0.957       0.957       0.683
+randu2_randn2       0.683       0.683       0.005
+randu2_randn2      -0.116      -0.116       0.248
+randu2_randn2      -0.855      -0.502       0.248
+randu2_randn2      -0.502      -0.502       0.248
+randu2_randn2       0.005       0.005       0.248
+randu2_randn2       0.248       0.248       0.248
 *** Running test: bn_axis_cf.jnl
 ! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
@@ -70756,7 +70761,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70811,7 +70816,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70855,7 +70860,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70899,7 +70904,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70936,7 +70941,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70974,7 +70979,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71041,7 +71046,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71090,7 +71095,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71151,7 +71156,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71192,7 +71197,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71233,7 +71238,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71274,7 +71279,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71312,7 +71317,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71540,7 +71545,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71578,7 +71583,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71625,7 +71630,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71669,7 +71674,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71694,7 +71699,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71719,7 +71724,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72148,7 +72153,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.932  23-Jan-15" ;
+		:history = "FERRET V6.933   2-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72177,7 +72182,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.932  23-Jan-15" ;
+		:history = "FERRET V6.933   2-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72228,7 +72233,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.932  23-Jan-15" ;
+		:history = "FERRET V6.933   2-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72792,7 +72797,7 @@ variables:
 		CYCLE_ORIG:history = "From z2" ;
 
 // global attributes:
-		:history = "FERRET V6.932  23-Jan-15" ;
+		:history = "FERRET V6.933   2-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running test: bn_nobounds.jnl
@@ -72822,7 +72827,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.932  23-Jan-15" ;
+		:history = "FERRET V6.933   2-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72853,7 +72858,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.932  23-Jan-15" ;
+		:history = "FERRET V6.933   2-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72915,7 +72920,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.932  23-Jan-15" ;
+		:history = "FERRET V6.933   2-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -72943,7 +72948,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.932  23-Jan-15" ;
+		:history = "FERRET V6.933   2-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73624,12 +73629,12 @@ the problem is UNKNOWN VARIABLE: F
    in default dataset MY_UVAR_AGG
    B = A[G=NOEXIST]
      A = I[I=1:5]
-       grid from NOEXIST ??		<== UNKNOWN GRID ******
+       regrid to NOEXIST ??		<== UNKNOWN GRID ******
 /TREE=USER
    in default dataset MY_UVAR_AGG
    B = A[G=NOEXIST]
      A = I[I=1:5]
-       grid from NOEXIST ??		<== UNKNOWN GRID ******
+       regrid to NOEXIST ??		<== UNKNOWN GRID ******
 /TREE=FILE
    *unknown grid: NOEXIST
 the problem is UNKNOWN GRID: NOEXIST
@@ -73720,6 +73725,7 @@ show var/tree a
 go bn_vtree_regrid
 ! bn_vtree_regrid.jnl
 ! exercise 12/14 enhancements to display regrid target on a separate line
+! updates 1/26/15 to exercise multiple regrid target outputs
  
 ! case 1: target grid known,   regridded variable known
 let myvar = 1           ! var to be regridded is known
@@ -73731,7 +73737,7 @@ sho var/tree a
    in default dataset MY_UVAR_AGG
    A = MYVAR[G=GVAR] + UNVAR + KVAR
      MYVAR = 1
-       grid from GVAR = X[X=1:5]
+       regrid to GVAR = X[X=1:5]
      UNVAR ??			<== UNKNOWN VARIABLE ******
      KVAR = 1
  
@@ -73746,7 +73752,7 @@ sho var/tree a
    in default dataset MY_UVAR_AGG
    A = MYVAR[G=GVAR] + UNVAR + KVAR
      MYVAR[G=GVAR] ??			<== UNKNOWN VARIABLE ******
-       grid from GVAR = X[X=1:5]
+       regrid to GVAR = X[X=1:5]
      UNVAR ??			<== UNKNOWN VARIABLE ******
      KVAR = 1
  
@@ -73761,7 +73767,7 @@ sho var/tree a
    in default dataset MY_UVAR_AGG
    A = MYVAR[G=GVAR] + UNVAR + KVAR
      MYVAR = 1
-       grid from GVAR ??		<== UNKNOWN GRID ******
+       regrid to GVAR ??		<== UNKNOWN GRID ******
      UNVAR ??			<== UNKNOWN VARIABLE ******
      KVAR = 1
  
@@ -73776,7 +73782,7 @@ sho var/tree a
    in default dataset MY_UVAR_AGG
    A = MYVAR[G=GVAR] + UNVAR + KVAR
      MYVAR[G=GVAR] ??			<== UNKNOWN VARIABLE ******
-       grid from GVAR ??		<== UNKNOWN GRID ******
+       regrid to GVAR ??		<== UNKNOWN GRID ******
      UNVAR ??			<== UNKNOWN VARIABLE ******
      KVAR = 1
  
@@ -73795,7 +73801,7 @@ sho var/tree=all a
    in default dataset levitus_climatology
    A = MYVAR[G=SST[D=1]] + UNVAR + KVAR
      MYVAR = 1
-       grid from SST[D=1] ??		<== UNKNOWN GRID ******
+       regrid to SST[D=1] ??		<== UNKNOWN GRID ******
      UNVAR ??			<== UNKNOWN VARIABLE ******
      KVAR = 1
  
@@ -73809,11 +73815,11 @@ sho var/tree=all a
    in default dataset levitus_climatology
    A = MYVAR[G=SST[D=1]] + UNVAR + KVAR
      MYVAR[G=SST[D=1]] ??			<== UNKNOWN VARIABLE ******
-       grid from SST[D=1] ??		<== UNKNOWN GRID ******
+       regrid to SST[D=1] ??		<== UNKNOWN GRID ******
      UNVAR ??			<== UNKNOWN VARIABLE ******
      KVAR = 1
  
-! case 3: target grid unknown, regridded variable known
+! case 3a: target grid unknown, regridded variable known
 canc var/all
 let myvar = 1           ! var to be regridded is known
 ! gvar unknown
@@ -73824,7 +73830,21 @@ sho var/tree=all a
    in default dataset levitus_climatology
    A = MYVAR[G=GVAR[D=1]] + UNVAR + KVAR
      MYVAR = 1
-       grid from GVAR[D=1] ??		<== UNKNOWN GRID ******
+       regrid to GVAR[D=1] ??		<== UNKNOWN GRID ******
+     UNVAR ??			<== UNKNOWN VARIABLE ******
+     KVAR = 1
+ 
+! case 3b: target grid unknown cuz of dataset, regridded variable known
+canc var/all
+let myvar = 1           ! var to be regridded is known
+! gvar unknown
+let a = myvar[g=sst[d=bad_dset]] + unvar + kvar
+let kvar = 1  ! known var
+! unvar is always unknown
+sho var/tree=all a
+   in default dataset levitus_climatology
+   A = MYVAR[G=SST[D=BAD_DSET]] + UNVAR + KVAR
+     MYVAR[G=SST[D=BAD_DSET]] ??			<== UNKNOWN DATASET ******
      UNVAR ??			<== UNKNOWN VARIABLE ******
      KVAR = 1
  
@@ -73839,7 +73859,7 @@ sho var/tree=all a
    in default dataset levitus_climatology
    A = MYVAR[G=GVAR[D=1]] + UNVAR + KVAR
      MYVAR[G=GVAR[D=1]] ??			<== UNKNOWN VARIABLE ******
-       grid from GVAR[D=1] ??		<== UNKNOWN GRID ******
+       regrid to GVAR[D=1] ??		<== UNKNOWN GRID ******
      UNVAR ??			<== UNKNOWN VARIABLE ******
      KVAR = 1
  
@@ -73874,12 +73894,12 @@ go bn_vtree.sub myvar[g=temp]
 /TREE=ALL
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from TEMP
+     regrid to TEMP
 /TREE=USER
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
 /TREE=FILE
-   grid from TEMP[d=levitus_climatology]
+   regrid to TEMP[d=levitus_climatology]
 myvar[g=temp] is ready and AVAILABLE
 ************************
  
@@ -73888,12 +73908,14 @@ go bn_vtree.sub myvar[g=temp,gy=sst[d=1]]
 /TREE=ALL
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from multi targets including SST[D=1] ??		<== UNKNOWN GRID ******
+     regrid to TEMP
+     regrid to SST[D=1] ??		<== UNKNOWN GRID ******
 /TREE=USER
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from multi targets including SST[D=1] ??		<== UNKNOWN GRID ******
+     regrid to SST[D=1] ??		<== UNKNOWN GRID ******
 /TREE=FILE
+   regrid to TEMP[d=levitus_climatology]
    *unknown grid: SST[D=1]
 the problem is UNKNOWN GRID: SST[D=1]
 ************************
@@ -73901,12 +73923,14 @@ go bn_vtree.sub myvar[gx=temp,gy=sst[d=1]]
 /TREE=ALL
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from multi targets including SST[D=1] ??		<== UNKNOWN GRID ******
+     regrid to TEMP
+     regrid to SST[D=1] ??		<== UNKNOWN GRID ******
 /TREE=USER
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from multi targets including SST[D=1] ??		<== UNKNOWN GRID ******
+     regrid to SST[D=1] ??		<== UNKNOWN GRID ******
 /TREE=FILE
+   regrid to TEMP[d=levitus_climatology]
    *unknown grid: SST[D=1]
 the problem is UNKNOWN GRID: SST[D=1]
 ************************
@@ -73914,13 +73938,15 @@ go bn_vtree.sub myvar[gy=sst[d=1],gx=temp]  ! reverse order, only
 /TREE=ALL
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from multi targets including SST[D=1] ??		<== UNKNOWN GRID ******
+     regrid to SST[D=1] ??		<== UNKNOWN GRID ******
+     regrid to TEMP
 /TREE=USER
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from multi targets including SST[D=1] ??		<== UNKNOWN GRID ******
+     regrid to SST[D=1] ??		<== UNKNOWN GRID ******
 /TREE=FILE
    *unknown grid: SST[D=1]
+   regrid to TEMP[d=levitus_climatology]
 the problem is UNKNOWN GRID: SST[D=1]
 ************************
  
@@ -73929,88 +73955,193 @@ go bn_vtree.sub myvar[g=temp,gy=yp5]
 /TREE=ALL
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from TEMP
+     regrid to TEMP
 /TREE=USER
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
 /TREE=FILE
-   grid from TEMP[d=levitus_climatology]
+   regrid to TEMP[d=levitus_climatology]
 myvar[g=temp,gy=yp5] is ready and AVAILABLE
 ************************
 go bn_vtree.sub myvar[gx=temp,gy=yp5]
 /TREE=ALL
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from TEMP
+     regrid to TEMP
 /TREE=USER
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
 /TREE=FILE
-   grid from TEMP[d=levitus_climatology]
+   regrid to TEMP[d=levitus_climatology]
 myvar[gx=temp,gy=yp5] is ready and AVAILABLE
 ************************
 go bn_vtree.sub myvar[g=temp,y=5s:5n:.5]
 /TREE=ALL
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from TEMP
+     regrid to TEMP
 /TREE=USER
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
 /TREE=FILE
-   grid from TEMP[d=levitus_climatology]
+   regrid to TEMP[d=levitus_climatology]
 myvar[g=temp,y=5s:5n:.5] is ready and AVAILABLE
 ************************
 go bn_vtree.sub myvar[g=sst[d=1],y=5s:5n:.5]
 /TREE=ALL
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from SST[D=1] ??		<== UNKNOWN GRID ******
+     regrid to SST[D=1] ??		<== UNKNOWN GRID ******
 /TREE=USER
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from SST[D=1] ??		<== UNKNOWN GRID ******
+     regrid to SST[D=1] ??		<== UNKNOWN GRID ******
 /TREE=FILE
    *unknown grid: SST[D=1]
 the problem is UNKNOWN GRID: SST[D=1]
 ************************
  
-! second target is an unknown variable
+! multiple targets, including unknown variables
 go bn_vtree.sub myvar[g=temp,gy=mybad]
 /TREE=ALL
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from multi targets including MYBAD ??		<== UNKNOWN GRID ******
+     regrid to TEMP
+     regrid to MYBAD ??		<== UNKNOWN GRID ******
 /TREE=USER
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from multi targets including MYBAD ??		<== UNKNOWN GRID ******
+     regrid to MYBAD ??		<== UNKNOWN GRID ******
+/TREE=FILE
+   regrid to TEMP[d=levitus_climatology]
+   *unknown grid: MYBAD
+the problem is UNKNOWN GRID: MYBAD
+************************
+go bn_vtree.sub myvar[g=mybad,gy=temp]
+/TREE=ALL
+   in default dataset levitus_climatology
+   MYVAR = X[GX=X1] + Y[GY=Y1]
+     regrid to MYBAD ??		<== UNKNOWN GRID ******
+     regrid to TEMP
+/TREE=USER
+   in default dataset levitus_climatology
+   MYVAR = X[GX=X1] + Y[GY=Y1]
+     regrid to MYBAD ??		<== UNKNOWN GRID ******
 /TREE=FILE
    *unknown grid: MYBAD
+   regrid to TEMP[d=levitus_climatology]
 the problem is UNKNOWN GRID: MYBAD
 ************************
 go bn_vtree.sub myvar[gy=temp,g=mybad[d=1]]
 /TREE=ALL
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from multi targets including MYBAD[D=1] ??		<== UNKNOWN GRID ******
+     regrid to TEMP
+     regrid to MYBAD[D=1] ??		<== UNKNOWN GRID ******
 /TREE=USER
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from multi targets including MYBAD[D=1] ??		<== UNKNOWN GRID ******
+     regrid to MYBAD[D=1] ??		<== UNKNOWN GRID ******
 /TREE=FILE
+   regrid to TEMP[d=levitus_climatology]
    *unknown grid: MYBAD[D=1]
 the problem is UNKNOWN GRID: MYBAD[D=1]
+************************
+go bn_vtree.sub myvar[g=temp,gx=mybad[d=1],gy=mybad2]! distinct unknown targets
+/TREE=ALL
+   in default dataset levitus_climatology
+   MYVAR = X[GX=X1] + Y[GY=Y1]
+     regrid to TEMP
+     regrid to MYBAD[D=1] ??		<== UNKNOWN GRID ******
+     regrid to MYBAD2 ??		<== UNKNOWN GRID ******
+/TREE=USER
+   in default dataset levitus_climatology
+   MYVAR = X[GX=X1] + Y[GY=Y1]
+     regrid to MYBAD[D=1] ??		<== UNKNOWN GRID ******
+     regrid to MYBAD2 ??		<== UNKNOWN GRID ******
+/TREE=FILE
+   regrid to TEMP[d=levitus_climatology]
+   *unknown grid: MYBAD[D=1]
+   *unknown grid: MYBAD2
+the problem is UNKNOWN GRID: MYBAD[D=1]
+************************
+go bn_vtree.sub myvar[gx=temp,gy=temp,g=mybad[d=1]]  ! dup known targets
+/TREE=ALL
+   in default dataset levitus_climatology
+   MYVAR = X[GX=X1] + Y[GY=Y1]
+     regrid to TEMP
+     regrid to MYBAD[D=1] ??		<== UNKNOWN GRID ******
+/TREE=USER
+   in default dataset levitus_climatology
+   MYVAR = X[GX=X1] + Y[GY=Y1]
+     regrid to MYBAD[D=1] ??		<== UNKNOWN GRID ******
+/TREE=FILE
+   regrid to TEMP[d=levitus_climatology]
+   *unknown grid: MYBAD[D=1]
+the problem is UNKNOWN GRID: MYBAD[D=1]
+************************
+go bn_vtree.sub myvar[g=temp,gx=mybad,gy=mybad]      ! dup unknown suppressed
+/TREE=ALL
+   in default dataset levitus_climatology
+   MYVAR = X[GX=X1] + Y[GY=Y1]
+     regrid to TEMP
+     regrid to MYBAD ??		<== UNKNOWN GRID ******
+/TREE=USER
+   in default dataset levitus_climatology
+   MYVAR = X[GX=X1] + Y[GY=Y1]
+     regrid to MYBAD ??		<== UNKNOWN GRID ******
+/TREE=FILE
+   regrid to TEMP[d=levitus_climatology]
+   *unknown grid: MYBAD
+the problem is UNKNOWN GRID: MYBAD
+************************
+go bn_vtree.sub myvar[g=temp,gx=mybad[d=2],gy=mybad] ! dup unknown missed
+/TREE=ALL
+   in default dataset levitus_climatology
+   MYVAR = X[GX=X1] + Y[GY=Y1]
+     regrid to TEMP
+     regrid to MYBAD[D=2] ??		<== UNKNOWN GRID ******
+     regrid to MYBAD ??		<== UNKNOWN GRID ******
+/TREE=USER
+   in default dataset levitus_climatology
+   MYVAR = X[GX=X1] + Y[GY=Y1]
+     regrid to MYBAD[D=2] ??		<== UNKNOWN GRID ******
+     regrid to MYBAD ??		<== UNKNOWN GRID ******
+/TREE=FILE
+   regrid to TEMP[d=levitus_climatology]
+   *unknown grid: MYBAD[D=2]
+   *unknown grid: MYBAD
+the problem is UNKNOWN GRID: MYBAD[D=2]
+************************
+go bn_vtree.sub myvar[g=temp,gx=mybad,gy='MYBAD']    ! dup unknown missed
+/TREE=ALL
+   in default dataset levitus_climatology
+   MYVAR = X[GX=X1] + Y[GY=Y1]
+     regrid to TEMP
+     regrid to MYBAD ??		<== UNKNOWN GRID ******
+     regrid to 'MYBAD' ??		<== UNKNOWN GRID ******
+/TREE=USER
+   in default dataset levitus_climatology
+   MYVAR = X[GX=X1] + Y[GY=Y1]
+     regrid to MYBAD ??		<== UNKNOWN GRID ******
+     regrid to 'MYBAD' ??		<== UNKNOWN GRID ******
+/TREE=FILE
+   regrid to TEMP[d=levitus_climatology]
+   *unknown grid: MYBAD
+   *unknown grid: 'MYBAD'
+the problem is UNKNOWN GRID: MYBAD
 ************************
 go bn_vtree.sub myvar[g=myvar,gy=mybad]
 /TREE=ALL
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from multi targets including MYBAD ??		<== UNKNOWN GRID ******
+     regrid to MYVAR = X[GX=X1] + Y[GY=Y1]
+     regrid to MYBAD ??		<== UNKNOWN GRID ******
 /TREE=USER
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from multi targets including MYBAD ??		<== UNKNOWN GRID ******
+     regrid to MYVAR = X[GX=X1] + Y[GY=Y1]
+     regrid to MYBAD ??		<== UNKNOWN GRID ******
 /TREE=FILE
    *unknown grid: MYBAD
 the problem is UNKNOWN GRID: MYBAD
@@ -74019,11 +74150,11 @@ go bn_vtree.sub myvar[gy=yp5,g=mybad]
 /TREE=ALL
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from MYBAD ??		<== UNKNOWN GRID ******
+     regrid to MYBAD ??		<== UNKNOWN GRID ******
 /TREE=USER
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from MYBAD ??		<== UNKNOWN GRID ******
+     regrid to MYBAD ??		<== UNKNOWN GRID ******
 /TREE=FILE
    *unknown grid: MYBAD
 the problem is UNKNOWN GRID: MYBAD
@@ -74032,15 +74163,16 @@ go bn_vtree.sub myvar[g=mybad,y=5s:5n:.5]
 /TREE=ALL
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from MYBAD ??		<== UNKNOWN GRID ******
+     regrid to MYBAD ??		<== UNKNOWN GRID ******
 /TREE=USER
    in default dataset levitus_climatology
    MYVAR = X[GX=X1] + Y[GY=Y1]
-     grid from MYBAD ??		<== UNKNOWN GRID ******
+     regrid to MYBAD ??		<== UNKNOWN GRID ******
 /TREE=FILE
    *unknown grid: MYBAD
 the problem is UNKNOWN GRID: MYBAD
 ************************
+ 
 *** Running test: bn686_bug_fixes.jnl
 ! bn686_bug_fixes
 ! test various fixes that went into version 6.86
@@ -74434,7 +74566,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "FERRET V6.932  23-Jan-15" ;
+		:history = "FERRET V6.933   2-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74457,7 +74589,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "FERRET V6.932  23-Jan-15" ;
+		:history = "FERRET V6.933   2-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74677,7 +74809,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.932  23-Jan-15" ;
+		:history = "FERRET V6.933   2-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74707,7 +74839,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.932  23-Jan-15" ;
+		:history = "FERRET V6.933   2-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74728,7 +74860,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.932  23-Jan-15" ;
+		:history = "FERRET V6.933   2-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74749,7 +74881,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.932  23-Jan-15" ;
+		:history = "FERRET V6.933   2-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74771,7 +74903,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.932  23-Jan-15" ;
+		:history = "FERRET V6.933   2-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75180,7 +75312,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75196,7 +75328,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75212,7 +75344,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.932  23-Jan-15
+ .                               history         CHAR        24   T       FERRET V6.933   2-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -76042,12 +76174,12 @@ GO bn_vtree.sub c
 /TREE=ALL
    C = B2[GT=A]
      B2 = A
-       grid from A = T[GT=1:2:1]
+       regrid to A = T[GT=1:2:1]
        A = T[GT=1:2:1]
 /TREE=USER
    C = B2[GT=A]
      B2 = A
-       grid from A = T[GT=1:2:1]
+       regrid to A = T[GT=1:2:1]
        A = T[GT=1:2:1]
 /TREE=FILE
 c is ready and AVAILABLE
@@ -76218,7 +76350,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "FERRET V6.932  23-Jan-15" ;
+		:history = "FERRET V6.933   2-Feb-15" ;
 }
 *** Running test: bn_global_atts.jnl
  ! NOAA/PMEL TMAP
@@ -76308,7 +76440,7 @@ variables:
 		LON360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0FERRET V6.932  23-Jan-15" ;
+		:history = "CruiseDsgNcFile 1.0FERRET V6.933   2-Feb-15" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -76335,7 +76467,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- FERRET V6.932  23-Jan-15 
+ FERRET V6.933   2-Feb-15 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -76364,7 +76496,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the fileFERRET V6.932  23-Jan-15 
+ ..history = The history of the fileFERRET V6.933   2-Feb-15 
  ..Conventions = Conventions for variables named V2CF-1.6 
 *** Running test: bn_center_key_labels.jnl
 ! bn_center_key_labels
@@ -77112,11 +77244,11 @@ the problem is UNKNOWN GRID: NOEXIST
    in default dataset MY_UVAR_AGG
    B = A[G=NOEXIST]
      A = I[I=1:5]
-       grid from NOEXIST ??		<== UNKNOWN GRID ******
+       regrid to NOEXIST ??		<== UNKNOWN GRID ******
    in default dataset MY_UVAR_AGG
    B = A[G=NOEXIST]
      A = I[I=1:5]
-       grid from NOEXIST ??		<== UNKNOWN GRID ******
+       regrid to NOEXIST ??		<== UNKNOWN GRID ******
    *unknown grid: NOEXIST
 /TREE=ALL
 /TREE=USER
@@ -77265,8 +77397,8 @@ list {spawn:"ls xml*.jnl"}
  
 LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
 say `filesets, return=isize`
- !-> MESSAGE/CONTINUE 852
-852
+ !-> MESSAGE/CONTINUE 856
+856
  
 let files = {spawn:"ls *cdf*.jnl"}
 let name_len = strindex(files, ".sub")
@@ -77312,6 +77444,7 @@ set mode/last ignore
 ! test various fixes that went into version 6.94
 ! 11/2014 ACM
 ! 12/2014 *sh* added IF-THEN flow fixes, including review of past tickets
+! 1/2015 *sh* added test for undetected bad dataset name in regrid target
  
 GO bn_reset
 cancel mode verify
@@ -77376,7 +77509,7 @@ VTREE b2
    B2 = B+0*C[GX=B]
      B = X[GX=1:5:1]
      C = X[GX=1:5:2]
-       grid from B = X[GX=1:5:1]
+       regrid to B = X[GX=1:5:1]
  
 GO bn_reset
 cancel mode verify
@@ -77661,6 +77794,26 @@ list minmax(pts)
              SUBSET   : 2 points (X)
  1   / 1: -1.000
  2   / 2:  1.000
+ 
+GO bn_reset
+cancel mode verify
+GO err693_undetected_regrid_dset
+! err693_undetected_regrid_dset.jnl    - Jan 2015
+ 
+! in GET_CONTEXT_MODS no check is made whether dataset name/number is
+! valid following   "gdset = FIND_DSET_NUMBER( name(dstart:dend) )"
+ 
+use coads_climatology
+use levitus_climatology   ! default to d=2
+ 
+canc var/all
+let myvar = temp
+let a = myvar[g=temp[d=bad_d]]    ! THIS SHOULD BE DETECTED AS AN ERROR
+ 
+set mode ignore
+stat/l=1/x=180/y=0 a    ! this *SHOULD* trigger an error.  Yes.  Detect it.
+set mode/last ignore
+ 
 *** Running test: bn_permute_ascii.jnl
 ! bn_permute_ascii.jnl
 ! test permutations when reading ascii data, in E and F directions
@@ -78006,6 +78159,67 @@ list lon_lat_time_string(lon, lat, time, tt, "my_string")
  2   / 2:"my_string_210E_4.9N_03-JAN-2001"    
  3   / 3:"my_string_340.5E_15.03S_04-JAN-2001"
  
+*** Running test: bn_save_justdim.jnl
+! bn_save_justdim.jnl
+! When a dataset has axes that are dimensions but not 1-D coordinate variables,
+! no longer save the coordinate axis that Ferret creates from the dimension.
+!
+! Allows for a dimension and a 2-D variable to have the same name.
+!  see ticket 2227
+! 1/21/2015 ACM
+ 
+use twodtime.nc
+sh dat
+     currently SET data sets:
+    1> ./twodtime.nc  (default)
+ name     title                             I         J         K         L         M         N
+ TIME     GRIB forecast or observation ti  ...       ...       ...       1:8       ...       1:3
+ 
+ 
+! previously this gave a name-in-use error
+save/file=a.nc/clobber time
+ 
+!  The file has 2D TIME variable, and TIME as a dimension.
+sp ncdump a.nc >> all_ncdump.out
+ 
+! Now, keep case and axis name as on input
+CANCEL MODE upcase
+ 
+save/clobber/keep/file=a.nc time
+sp ncdump a.nc >> all_ncdump.out
+ 
+SET MODE/LAST upcase_output
+*** Running test: bn_time2d.jnl
+! bn_time2d.jnl
+! 1/30/2015 ACM
+ 
+! initial changes to handle 2d time variable: forecast and time
+! plot both axes as formatted time axes.
+ 
+use twodtime.nc
+sh dat
+     currently SET data sets:
+    1> ./twodtime.nc  (default)
+ name     title                             I         J         K         L         M         N
+ TIME     GRIB forecast or observation ti  ...       ...       ...       1:8       ...       1:3
+ 
+sh att time
+     attributes for dataset: ./twodtime.nc
+ time.units = calendar Month since 2014-11-01T00:00:00Z 
+ time.long_name = GRIB forecast or observation time 
+ time.calendar = proleptic_gregorian 
+ time.bounds = time_bounds 
+ time.history = From http://tds.climatedatacloud.com/thredds/dodsC/ensembles/nmme_gfdl/TwoD 
+ 
+!  The file has the t axis as just a dimension. Define another
+!  axis with time units
+ 
+def axis/t=1:8:1/units=month/t0=1-nov-2014 taxis
+let time2d = time[gt=taxis@asn]
+set att/like=time time2d
+ 
+shade time2d
+shade/trans time2d
 *** Running test: bn_all_ef.jnl
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -78843,18 +79057,18 @@ exit/command
 PPL$XPIXEL = "656"
 PPL$YPIXEL = "492"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.932"
+FERRET_VERSION = "6.933"
 FERRET_PLATFORM = "Linux 2.6.18-400.1.1.el5 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 15:13:45 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "23-Jan-15"
-SESSION_TIME = "16:46"
-SESSION_PID = "19647"
-DELTA_CPU = "0.028994"
-CLOCK_SECS = "0.071"
-CURRENT_DATE = "23-Jan-15"
-CURRENT_TIME = "16:46:25"
+SESSION_DATE = " 2-Feb-15"
+SESSION_TIME = "11:48"
+SESSION_PID = "16940"
+DELTA_CPU = "0.029994"
+CLOCK_SECS = "0.068"
+CURRENT_DATE = " 2-Feb-15"
+CURRENT_TIME = "11:48:49"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -78876,7 +79090,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "23-Jan-15:16:46"
+WIN_TITLE = "2-Feb-15:11:48"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -78929,4 +79143,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Fri Jan 23 16:46:25 PST 2015
+Ended at Mon Feb  2 11:48:49 PST 2015

@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 13 Jan 23 16:42 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.932
+lrwxrwxrwx 1 ksmith tmap 13 Feb  2 11:45 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.933
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug Ferret on RHEL5-64
@@ -229,6 +229,8 @@ Benchmark scripts that will be run:
    bn694_bug_fixes.jnl
    bn_permute_ascii.jnl
    bn_lon_lat_time_string.jnl
+   bn_save_justdim.jnl
+   bn_time2d.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -245,7 +247,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Jan 23 16:44:15 PST 2015
+Beginning at Mon Feb  2 11:46:42 PST 2015
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3661,11 +3663,23 @@ poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: unknown data set: BAD_D
+stat/l=1/x=180/y=0 a
 *** Running test: bn_permute_ascii.jnl
  Cached data cleared from memory
 Replacing definition of grid GRID3D
 *** Running test: bn_lon_lat_time_string.jnl
  Cached data cleared from memory
+*** Running test: bn_save_justdim.jnl
+ Cached data cleared from memory
+ LISTing to file a.nc
+           *** NOTE: Saving E or F axis with time axis uses /RIGID in time
+ LISTing to file a.nc
+*** Running test: bn_time2d.jnl
+ Cached data cleared from memory
+           *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3685,4 +3699,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Fri Jan 23 16:46:25 PST 2015
+Ended at Mon Feb  2 11:48:49 PST 2015

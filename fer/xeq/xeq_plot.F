@@ -103,6 +103,7 @@
 * http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2013/msg00536.html
 
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
+* V6.94 *acm* 2/15 Ticket 2231: New /key option for multiple plot lines: /key=titles
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -329,6 +330,21 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
      .							symbol = qual_off
 	ENDIF
 
+
+
+* ... /KEY[=title]  for control over labeling the multi-line legend
+
+	loc = qual_given( slash_plot_key )
+
+	IF ( loc .GT. 0) THEN
+	   CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        buff, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF (TM_LENSTR(buff) .GT. 0) THEN
+	      IF ( TM_HAS_STRING(buff, 'TIT') ) use_keys = .FALSE.
+	   ENDIF
+	ENDIF
+	
 * ... PLOT/RIBBON  for multi-colored "ribbon" line 
 *     3-agument plot/vs/lev xpts, ypts, var
 
@@ -445,7 +461,8 @@ c	   IF (.NOT.versus)  GOTO 5470
               CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
 
 
-* ... /KEY[=continuous,horizontal,centerlabel ?
+* ... /KEY[=continuous,horizontal,centerlabel] ?
+*     /KEY=title is a legal option, but ignored for ribbon plot.
 
               loc = qual_given( slash_plot_key )
 
@@ -467,8 +484,13 @@ c	   IF (.NOT.versus)  GOTO 5470
                     changed_key = .TRUE.
                     CALL PPLCMD (from, line, 0, 'S_KEY 3', 1, 1 )
                  ENDIF
+	         IF ( TM_HAS_STRING(buff, 'TIT') ) THEN  
+                    changed_key = .TRUE.
+                    use_keys = .FALSE.
+                 ENDIF
                  IF (.NOT. changed_key) GOTO 5520
                  ENDIF
+		 
               ENDIF
 
            ELSE

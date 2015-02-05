@@ -950,6 +950,9 @@ GO bn_save_justdim
 GO bn_reset
 GO bn_time2d
 
+GO bn_reset
+GO bn_legend_labels
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

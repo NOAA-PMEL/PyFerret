@@ -1,0 +1,20 @@
+! bn_legend_labels.jnl
+! The legend labels on a multi-line plot describe the
+!  variable and context but are not controlable by the user.
+!
+! /KEY=title tells Ferret to label the legend with the variable
+! title.
+! *acm* 2/4/2015 Ticket 2231
+
+use coads_climatology
+let/title=January sst1 = sst[l=1]
+let/title=February sst2 = sst[l=2]
+let/title=March sst3 = sst[l=3]
+
+! Draw a plot and show the labels on the legend.
+plot/x=300/y=20:65 sst1,sst2,sst3
+sh sym lab7,lab8,lab9
+
+! Draw a plot with legend labeled with the variable titles.
+plot/x=300/y=20:65/key=title  sst1,sst2,sst3
+sh sym lab7,lab8,lab9

@@ -193,6 +193,7 @@ def init(arglist=None, enterferret=True):
                     my_unmapped = True
                 elif opt == "-gif":
                     my_unmapped = True
+                    my_metaname = "ferret.png"
                 elif opt == "-unmapped":
                     my_unmapped = True
                 elif opt == "-nojnl":

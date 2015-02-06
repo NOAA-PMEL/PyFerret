@@ -1,4 +1,4 @@
-GKSMansley@dunkel.pmel.nXPPLP Profile F 1.0 14/12/02 1 0 3 6 611 1 1                      
+GKSMansley@dunkel.pmel.nXPPLP Profile F 1.0 15/02/06 1 0 3 6 611 1 1                      
   4      12       3       0
  51      29      19       1    1.00000       0
  56      39       2    1.00000    0.00000    0.00000

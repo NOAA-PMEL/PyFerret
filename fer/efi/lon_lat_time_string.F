@@ -48,7 +48,7 @@
 *
 *  axis_inheritance   Type of axis for the result
 *                        ( CUSTOM, IMPLIED_BY_ARGS, NORMAL, ABSTRACT )
-*                        CUSTOM          - user defined axis
+*                        CUSTO   - user defined axis
 *                        IMPLIED_BY_ARGS - same axis as the incoming argument
 *                        NORMAL          - the result is normal to this axis
 *                        ABSTRACT        - an axis which only has index values
@@ -88,8 +88,9 @@
 *                                                                      V
 
       CALL ef_set_desc(id,
-     .        'Generate names based on longitude,latitude,time,and a string')
+     .        'Generate strings from longitude,latitude,time')
       CALL ef_set_num_args(id, 5)
+
       CALL ef_set_axis_inheritance_6d(id,
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
@@ -105,10 +106,8 @@
       arg = 2
       CALL ef_set_arg_name(id, arg, 'latitude')
       CALL ef_set_arg_desc(id, arg, 'Station latitude')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
       CALL ef_set_axis_influence_6d(id, arg,
      .                              YES, YES, YES, YES, YES, YES)
-
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'time')
@@ -125,7 +124,7 @@
       arg = 5
       CALL ef_set_arg_name(id, arg, 'string to prepend')
       CALL ef_set_arg_type (id, arg, STRING_ARG)
-      CALL ef_set_arg_desc(id, arg, 'A label to start the names with')
+      CALL ef_set_arg_desc(id, arg, 'A label to start the strings')
       CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
 
 *                                                                      ^

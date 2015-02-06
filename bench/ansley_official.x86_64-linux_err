@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 86942880 Jan 30 12:24 /home/users/ansley/build/x86/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
-Running the tests of external functions y
-Benchmark run by ansley
-Note: 2D time variable: plot T-F as time axes. For ticket 2227, a dim that is not a coord var not written to netcdf output.
+-rwxr-xr-x 1 ansley tmap 86951387 Feb  6 12:40 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+Using external functions from n
+Running the tests of external functions t
+Benchmark run by /home/users/ansley/build/x86/FERRET/external_functions/ext_func
+Note: ansley
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,14 +13,15 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/x86/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=n
 FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Fri Jan 30 14:22:11 PST 2015
+Beginning at Fri Feb 6 13:26:05 PST 2015
+ls: n/: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3852,20 +3853,9 @@ Replacing definition of axis TAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: command syntax: unknown region name: @w
-set region/@w
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **ERROR: command syntax: writev5d(tr, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
-          unknown function "writev5d"
-DEFINE VARIABLE/QUIET vflag = writev5d(tr, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
- **ERROR: variable unknown or not in data set: VFLAG
-LOAD/TEMPORARY vflag
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
+ls: n/: No such file or directory
  Cached data cleared from memory
+ls: n/: No such file or directory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -3908,6 +3898,7 @@ Re-defining viewport UM6
  Using every   2th vector in the Y direction
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ls: n/: No such file or directory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -3938,5 +3929,6 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
+ls: n/: No such file or directory
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Jan 30 14:24:43 PST 2015
+Ended at Fri Feb 6 13:28:38 PST 2015

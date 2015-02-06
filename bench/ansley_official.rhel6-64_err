@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 79536377 Jan 30 11:22 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 79619135 Feb  5 17:24 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: 2D time variable: plot T-F as time axes. For ticket 2227, a dim that is not a coord var not written to netcdf output.
+Note:  v6.94 release candidate
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -21,8 +21,8 @@ FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
-PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Fri Jan 30 11:30:19 PST 2015
+PWD=/home/users/ansley/build/current_trunk/FERRET/bench
+Beginning at Fri Feb 6 14:39:07 PST 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -107,13 +107,13 @@ MESSAGE/CONTINUE `1*/3`
  **ERROR: command syntax: sst*/3
           * before / is illegal
 MESSAGE/CONTINUE `sst*/3,return=lunits`
- **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
+ **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
             calendar,dtype,xmod,tmod,status,isDepth,isReady
           sst,return=Xsize
 MESSAGE/CONTINUE `sst,return=Xsize`
- **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
+ **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
             calendar,dtype,xmod,tmod,status,isDepth,isReady
@@ -1429,7 +1429,7 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
+ **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
             calendar,dtype,xmod,tmod,status,isDepth,isReady
@@ -3232,6 +3232,7 @@ Bailing out of external function "eofsvd_space":
 
 Bailing out of external function "eofsvd_tfunc":
 	There are no spatial locations having complete time series.
+STOP Illegal calendar in tm_secs_to_date()
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis YAXIS
@@ -3352,510 +3353,83 @@ SET DAT/FORM=CDF ./z1.nc
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file a.nc
- LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file mytype.nc
- LISTing to file mytype.nc
-           *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
- LISTing to file mytype.nc
- LISTing to file mytype.nc
- LISTing to file mytype.nc
- LISTing to file mytype.nc
- LISTing to file mytype.nc
- LISTing to file mytype.nc
- LISTing to file mytype.nc
- LISTing to file mytype.nc
- LISTing to file mytype.nc
- LISTing to file mytype.nc
- LISTing to file mytype.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file mytype.nc
- LISTing to file mytype.nc
-           *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
- LISTing to file mytype.nc
- LISTing to file mytype.nc
- LISTing to file mytype.nc
- LISTing to file mytype.nc
- LISTing to file mytype.nc
-NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
- failure writing to CDF output file
-LIST/FORMAT=CDF/L=32875000:32875201/clobber/file=mytype.nc tt
- LISTing to file mytype.nc
-NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
- failure writing to CDF output file
-LIST/FORMAT=CDF/clobber/file=mytype.nc my_data
- LISTing to file mytype.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **ERROR: improper grid or axis definition: data for DEFINE AXIS/FROM_VARIABLE is not monotonic at index 12
-define axis/t/units=days tax = tvar
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- Using every   9th vector in the X direction
- Using every   9th vector in the X direction
- Using every   9th vector in the X direction
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-Replacing definition of axis TDAY
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file aa.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file aa.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file a.nc
- LISTing to file aa.nc
- LISTing to file aa.nc
- LISTing to file aa.nc
- LISTing to file aa.nc
- LISTing to file aa.nc
-NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
- data in attribute missing_value not representable in output type NC_INT
-NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
- data in attribute _FillValue not representable in output type NC_INT
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file a.nc
- LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **ERROR: command syntax: .HELLO
-list .hello
- **ERROR: variable unknown or not in data set: A.UNITS
- 
-list a.units
- **ERROR: variable unknown or not in data set: A.UNITS
-list a.units
- **ERROR: attribute undefined or invalid attribute name: ..HISTORY
-          attribute HISTORY not found for dataset
-list ..history
- **ERROR: variable unknown or not in data set: ..HISTORY
-list ..history
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-Replacing definition of axis AXI
-Replacing definition of axis AXI_COARSE
-Replacing definition of axis AXI
-Replacing definition of axis AXI_COARSE
-Replacing definition of axis AXI
-Replacing definition of axis AXI_COARSE
-Replacing definition of axis AXI
-Replacing definition of axis AXI_COARSE
-Replacing definition of axis AXI
-Replacing definition of axis AXI_COARSE
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-           *** NOTE: unrepairable repeated axis coords on axis trdim at subscript 2
-           *** NOTE: A dummy axis of subscripts will be used
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file sst_new.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-Replacing definition of axis ZAX
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file append_to_this.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-Replacing definition of axis XIRREG
- LISTing to file a.nc
- LISTing to file a.nc
-           *** NOTE: Axis definition error on axis: TGAP
-           *** NOTE: Bounds given describe non-contiguous axis cells
-           *** NOTE: Using the LOWER bound specified for each axis cell
- LISTing to file a.nc
- LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-           *** NOTE: New # of line colors will take effect on next new window: SET WIN/NEW then define pen colors
-           *** NOTE: New number of line colors will take effect on next new window: SET WIN/NEW or SET WIN/CLEAR
- **ERROR: command syntax: COLOR
-          /COLOR must have an argument for PLOT/OVERLAY
-plot/i=1:100/over/COLOR 0.6*sin(i/7)
- **ERROR: command syntax: COLOR
-          /COLOR not valid for PLOT/LEVELS ribbon plot
-plot/i=1:100/ribbon/COLOR sin(i/6),0.6*sin(i/7)
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-Replacing definition of axis ZAX
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
- **ERROR: unknown defining grid: G=NOEXIST
-list b
- **ERROR: command syntax: 45S
-list c
- **ERROR: command syntax: ,
-list d
- **ERROR: command syntax: P=1
-list e
- **ERROR: illegal limits: X axis limits don't match variable def'n: A
-          Are you giving explicit limits when SET REGION would suffice ?
-list f
-Replacing definition of axis X1
-Replacing definition of axis Y1
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-           *** NOTE: Changing the value of attribute a.ival
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **TMAP ERR: non-existent or not on line
-             nosuchfile.nc
-SET DAT/FORM=CDF nosuchfile.nc
- **TMAP ERR: non-existent or not on line
-             Searched $FER_DESCR and $FER_DATA for nosuchfile(.nc ,.cdf,.des)
-SET DAT/FORM=CDF nosuchfile
- **TMAP ERR: non-existent or not on line
-             Searched $FER_DESCR and $FER_DATA for snoopy(.nc ,.cdf,.des)
-SET DAT/FORM=CDF snoopy
- **netCDF error
-             NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
-             Data set: ./snoopy.dat
-SET DAT/FORM=CDF snoopy.dat
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-           *** NOTE: regarding ./climatological_axes.cdf ...
-           *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file a.nc
- LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file a.nc
-Replacing definition of axis XAXIS_TEST
- LISTing to file b.nc
- LISTing to file c.nc
- LISTing to file c.nc
- LISTing to file c.nc
- LISTing to file c.nc
- LISTing to file c.nc
- LISTing to file nc
- **TMAP ERR: error in line definition
-             file coords dont match variable coords on axis XAXIS_TEST
-LIST/FORMAT=CDF/clobber/keep/file=nc b,a[d=1]
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **ERROR: dimensions improperly specified: must be a 2D region
-          shade b
-shade b
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-           *** NOTE: Changing the value of attribute v1.long_name
-           *** NOTE: Changing the value of attribute v1.units
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **ERROR: attribute undefined or invalid attribute name: temp.noexist[d=levitus_climatology]
-          attribute noexist not found for variable TEMP
-show att temp.noexist[d=levitus_climatology]
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **ERROR: invalid command: illegal new name.  Variable b already defined
-set var/name=b a
- **ERROR: invalid command: illegal new name.  Variable b already defined
-set var/name=b a
- **ERROR: invalid command: illegal new name.  Variable temp exists in dataset
-set var/name=temp salt
- **ERROR: invalid command: illegal new name.  Variable psi exists in dataset
-set var/name=psi myvar
- **ERROR: invalid command: illegal new name.  Variable diff already defined
-set var/name=diff w
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-           *** NOTE: Axis definition error on axis: MONTH_IRREG. Bounds describe cells that overlap one another
-           *** NOTE: Error in bounds "MONTH_IRREG_bnds" or bounds do not enclose point on axis MONTH_IRREG
-           *** NOTE: Substituting coordinate midpoints
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-Replacing definition of axis TAX
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file a.nc
- LISTing to file a.nc
- LISTing to file b.nc
- LISTing to file c.nc
- **ERROR: invalid command: illegal new name. Axis days2000 is already defined
-set axis/name=days2000 x_in_meters
- **ERROR: invalid command: illegal new name given for axis
-set axis/name x_in_meters
- **ERROR: invalid command: illegal new name given for axis 45
-set axis/name=45 x_in_meters
- **ERROR: invalid command: illegal new name given for axis .fr
-set axis/name=.fr x_in_meters
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **ERROR: invalid command: string/numeric data type mix-up. Argument 3 : TAX_DATESTRING
-list tax_datestring (tt[L=3], tt, 5)
- **ERROR: invalid command: string/numeric data type mix-up. Argument 2 : TAX_DATESTRING
-list tax_datestring (tt[L=3], "my_tax", "minutes")
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-           *** NOTE: Error in bounds "TAX_BB_PTSPAC_bnds" or bounds do not enclose point on axis TAX_BB_PTSPAC
-           *** NOTE: Substituting coordinate midpoints
-           *** NOTE: Error in bounds "TAX_BB_EVEN_NOENC_bnds" or bounds do not enclose point on axis TAX_BB_EVEN_NOENC
-           *** NOTE: Substituting coordinate midpoints
-           *** NOTE: Error in bounds "TAX_BB_IRR_bnds" or bounds do not enclose point on axis TAX_BB_IRR
-           *** NOTE: Substituting coordinate midpoints
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **ERROR: command syntax: must be a constant COS(1)
-list {cos(1), sin(0)}
- **ERROR: command syntax: must be a constant 0-180
-list {0-180, 180}
- **ERROR: command syntax: must be a constant  1./5.
-list {0.1, 0.2, 1./5.}
- **ERROR: command syntax: must be a constant 5*3+1
-list {5*3+1, 2+3}
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-Replacing definition of axis TAX
- LISTing to file tval.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file out.xml
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-Replacing definition of axis XAXIS
- **ERROR: request exceeds memory setting: 2369 Mwords were requested.
-load bigvar
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
-Replacing definition of axis LONGTIME
- **ERROR: request exceeds memory setting: 4735 Mwords were requested.
-load bigvar
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-           *** NOTE: Ambiguous coordinates on X axis: TEMP[X=@AVE,Y=@AVE,L=1,D=1] + SST[X=@AVE,Y=@AVE,T=@AVE,D=2]
-           *** NOTE: Ambiguous coordinates on Y axis: TEMP[X=@AVE,Y=@AVE,L=1,D=1] + SST[X=@AVE,Y=@AVE,T=@AVE,D=2]
- LISTing to file aa.nc
- LISTing to file bb.nc
- LISTing to file a.nc
- LISTing to file a.nc
- LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
+ **ERROR: command syntax: add_9(a1,a2,a3,a1,a2,a3,a1,a2,a3)
+          unknown function "add_9"
+DEFINE VARIABLE a = add_9(a1,a2,a3,a1,a2,a3,a1,a2,a3)
  **ERROR: variable unknown or not in data set: A
 list a
  **ERROR: variable unknown or not in data set: A
-list a
- **ERROR: variable unknown or not in data set: B
-list b
- **ERROR: variable unknown or not in data set: A
-shade a
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
+list  a - 3 * sst[d=1,l=1:3@sum]
+ **ERROR: command syntax: avet(sst)
+          unknown function "avet"
+DEFINE VARIABLE a = avet(sst)
  **ERROR: variable unknown or not in data set: A
 list a
  **ERROR: variable unknown or not in data set: A
-list a
- **ERROR: variable unknown or not in data set: B
-list b
+list a - sst[l=@ave]
+ **ERROR: command syntax: avet(a)
+          unknown function "avet"
+DEFINE VARIABLE c = avet(a)
+ **ERROR: variable unknown or not in data set: C
+list b, c
+ **ERROR: command syntax: pass_thru(x)
+          unknown function "pass_thru"
+DEFINE VARIABLE a = pass_thru(x)
+ **ERROR: variable unknown or not in data set: A[I=1:20]
+list a[i=1:20]
  **ERROR: variable unknown or not in data set: A
-shade a
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **ERROR: value out of legal range: Negative argument to function. Argument 3 : SUBSTRING
-list substring("hello",1,-2)
- **ERROR: value out of legal range: Negative argument to function. Argument 3 : SUBSTRING
-list substring("hello",1,-3)
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file anew_global.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file conventions_history.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-Replacing definition of axis X2
-Replacing definition of axis Y2
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
- **ERROR: unknown defining grid: G=NOEXIST
-list b
- **ERROR: command syntax: 45S
-list c
- **ERROR: command syntax: ,
-list d
- **ERROR: command syntax: P=1
-list e
- **ERROR: illegal limits: X axis limits don't match variable def'n: A
-          Are you giving explicit limits when SET REGION would suffice ?
-list f
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.850
-poly/i=1:100/vlog xbad+xsqr,ybad+ysqr,x*x/10
- **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.689E-02
-poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file aa.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-Replacing definition of axis TIME
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **ERROR: unknown data set: BAD_D
-stat/l=1/x=180/y=0 a
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-Replacing definition of grid GRID3D
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-Replacing definition of axis TAXIS
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file a.nc
-           *** NOTE: Saving E or F axis with time axis uses /RIGID in time
- LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-           *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
-Replacing definition of axis TAXIS
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
+list sin(a)
+ **ERROR: command syntax: pass_thru(sst[l=@ave,y=@sbx:11])
+          unknown function "pass_thru"
+DEFINE VARIABLE a = pass_thru(sst[l=@ave,y=@sbx:11])
+ **ERROR: variable unknown or not in data set: A
+list/x=50 a
+ **ERROR: command syntax: pass_thru(sst)
+          unknown function "pass_thru"
+DEFINE VARIABLE a = pass_thru(sst)
  **ERROR: command syntax: unknown region name: @w
 set region/@w
+ **ERROR: variable unknown or not in data set: A[L=1]
+list/x=50 a[l=1]
+ **ERROR: variable unknown or not in data set: A[L=@AVE,Y=@SBX:11]
+list/x=50 a[l=@ave,y=@sbx:11]
+ **ERROR: command syntax: storage(temp)
+          unknown function "storage"
+DEFINE VARIABLE a = storage(temp)
+ **ERROR: variable unknown or not in data set: A
+list  a
+ **ERROR: variable unknown or not in data set: A
+list a
+ **ERROR: command syntax: storage(b)
+          unknown function "storage"
+DEFINE VARIABLE c = storage(b)
+ **ERROR: variable unknown or not in data set: C[K=1,L=5,J=44:50@AVE]
+list/i=11:20 c[k=1,l=5,j=44:50@ave]
+ **ERROR: command syntax: subtract(oatemp,sst)
+          unknown function "subtract"
+DEFINE VARIABLE a = subtract(oatemp,sst)
+ **ERROR: variable unknown or not in data set: A
+list/x=150:160/y=0  a
+ **ERROR: variable unknown or not in data set: A
+list/x=150:160/y=0  a - b
+ **ERROR: command syntax: subtract(a,b)
+          unknown function "subtract"
+list/x=150:160/y=0  subtract(a,b)
+ **ERROR: command syntax: subtract(a,b)
+          unknown function "subtract"
+list/y=0 subtract(a,b)
+ **ERROR: command syntax: subtract(a,b)
+          unknown function "subtract"
+list/y=15 subtract(a,b)
+ **ERROR: command syntax: subtract(a,b)
+          unknown function "subtract"
+list/x=150:160/y=0 subtract(a,b)
+ **ERROR: command syntax: subtract(a,26)
+          unknown function "subtract"
+list/x=150:160/y=0 subtract(a,26)
+ **ERROR: command syntax: subtract(a,b)
+          unknown function "subtract"
+list/x=150:160/y=0  subtract(a,b)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: writev5d(tr, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
@@ -3941,4 +3515,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Jan 30 11:31:56 PST 2015
+Ended at Fri Feb 6 14:40:22 PST 2015

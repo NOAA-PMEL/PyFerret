@@ -92,6 +92,7 @@
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
+* V694  *acm*  2/15 Fix ticket 2232; redraw plot axes on line plots
 *
 *****************************************************
 

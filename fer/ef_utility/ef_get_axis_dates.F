@@ -46,8 +46,9 @@ c*
 *                   the year 0000 or 0001 returns as blank.  If not modulo
 *		    then we want to return the year correctly.
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* v695 *acm* 2/15  Get axis dates from an F or T axis
 
-      SUBROUTINE EF_GET_AXIS_DATES(id, iarg, tax, numtimes, datebuf )
+      SUBROUTINE EF_GET_AXIS_DATES(id, iarg, tax, dim, numtimes, datebuf )
 
       IMPLICIT NONE
       INCLUDE 'tmap_dims.parm'
@@ -56,7 +57,7 @@ c*
       INCLUDE 'EF_Util.parm'
       INCLUDE 'xtm_grid.cmn_text'
 
-      INTEGER id, iarg, numtimes
+      INTEGER id, iarg, dim, numtimes
       REAL*8 tax(*)
       CHARACTER*(*) datebuf(*)
 
@@ -73,112 +74,9 @@ c* to be accessible to the external function.
 
       DO 100 L = 1, numtimes
          tstep_r8 = tax(L)
-         CALL TSTEP_TO_DATE_OLD ( grid, tstep_r8, seconds, datebuf(l) )
+         CALL EF_GET_DATE_TSTEP ( grid, dim, tstep_r8, seconds, datebuf(l) )
 100   CONTINUE
 
 
       RETURN 
       END
-
-	SUBROUTINE TSTEP_TO_DATE_OLD ( grid, tstep, precision, date )
-*
-* Return a string giving the date for a particular timestep
-* This is done by figuring the offset from
-* 01-JAN-0000 00:00:00 in seconds, and then calculating the date.
-*
-* This is an older version of TSTEP_TO_DATE which was revised for better
-* output formatting in Ferret v6.0.  This version gives a fixed unchanging
-* format.
-*
-* Arguments:
-*	grid	 - grid containing a time axis
-*	tstep    - time step
-*	precision- precision (1 to 6 for day,mon,yr,hr,min,sec, respectively )
-*			(use ABS(precision) - neg. indicates truncate left 0s)
-*	date	 - returned string containing date in ASCII form
-*
-
-        IMPLICIT NONE
-	include 'tmap_dims.parm'
-	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-	include 'ferret.parm'
-	include 'xtext_info.cmn'
-
-* calling argument declarations
-	CHARACTER*(*)	date
-	INTEGER		grid, precision
-	REAL*8		tstep
-*
-* Local definitions
-	LOGICAL		modulo
-	CHARACTER*20	SECS_TO_DATE, SECS_TO_DATE_OUT, buff
-	INTEGER		axis, status, prec,
-     .                  TM_GET_CALENDAR_ID, cal_id
-	REAL*8		start_secs, offset_secs, this_secs
-	REAL*8		SECS_FROM_BC
-
-!	REAL*8		start_secs, offset_secs, this_secs, prec_fact(6)
-!	DATA	prec_fact	/  31536000.,  2628000.,  86400.,  3600.,
-!     .				   60., 1./
-
-* initialize
-	prec = ABS(precision)
-
-* get the axis number
-	axis = grid_line( t_dim, grid )
-	modulo = line_modulo(axis)
-#ifdef double_p	
-	IF ( axis .EQ. mnormal .OR. axis .EQ. munknown ) THEN
-	   WRITE ( date, * ) (tstep)
-	   RETURN
-	ELSEIF ( line_direction(axis) .NE. 'TI' ) THEN
-	   WRITE ( date, * ) (tstep)
-	   RETURN
-	ENDIF
-#else
-	IF ( axis .EQ. mnormal .OR. axis .EQ. munknown ) THEN
-	   WRITE ( date, * ) SNGL(tstep)
-	   RETURN
-	ELSEIF ( line_direction(axis) .NE. 'TI' ) THEN
-	   WRITE ( date, * ) SNGL(tstep)
-	   RETURN
-	ENDIF
-#endif
-
-* get the calendar type
-
-        cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
-
-* First find the offset from 01-JAN-0000 00:00:00 from the descriptor file
-	start_secs = SECS_FROM_BC( line_t0(axis), cal_id, status )
-
-* Find the number of seconds since start of data set for this time step
-	offset_secs = tstep*line_tunit( axis )
-
-* Total seconds to this time step since 01-JAN-0000 00:00:00
-	this_secs = start_secs + offset_secs
-
-* round off date instead of truncating 
-* ( people do not normally view dates this way )
-!	this_secs = ( DNINT(this_secs/prec_fact(prec)) + 0.5 ) * prec_fact(prec)
-
-* Convert to date
-
-	buff = SECS_TO_DATE_OUT(this_secs, cal_id, modulo, prec)
-
-* Select the requested precision
-	IF ( prec .GT. 6 ) THEN		! full precision
-	   date = buff
-	ELSEIF ( prec .GE. 3 ) THEN	! dd-mmm-$_...
-	   date = buff( :date_str_len(prec) )
-	ELSEIF ( prec .EQ. 2 ) THEN	! mmm-$_
-	   date = buff( 4:11 )	
-	ELSE				! $_
-	   date = buff( 8:11 )	
-	ENDIF
-
-* Finished
-	RETURN
-	END
-

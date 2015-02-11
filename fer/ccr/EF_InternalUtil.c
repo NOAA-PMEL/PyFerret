@@ -89,6 +89,8 @@
 *      *kms*  3/12 Add E and F dimensions 
 *      *acm*  6/14 New separate function for DSG files 
 *      *acm*  9/14 Make DATE1900 accept an array of date strings, returning an array of coordinates
+*      *acm*  2/15 TAX_DATESTRING works on an F or a T axis
+*      *acm*  2/15 new Functions TIME_REFORMAT, FT_TO_ORTHOGONAL
 */
 
 
@@ -960,23 +962,18 @@ void FORTRAN(nco_result_limits)(int *);
 void FORTRAN(nco_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tax_datestring_init)(int *);
-void FORTRAN(tax_datestring_work_size)(int *);
 void FORTRAN(tax_datestring_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tax_day_init)(int *);
-void FORTRAN(tax_day_work_size)(int *);
 void FORTRAN(tax_day_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tax_dayfrac_init)(int *);
-void FORTRAN(tax_dayfrac_work_size)(int *);
 void FORTRAN(tax_dayfrac_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tax_jday1900_init)(int *);
-void FORTRAN(tax_jday1900_work_size)(int *);
 void FORTRAN(tax_jday1900_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tax_jday_init)(int *);
-void FORTRAN(tax_jday_work_size)(int *);
 void FORTRAN(tax_jday_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tax_month_init)(int *);
@@ -994,11 +991,9 @@ void FORTRAN(tax_units_init)(int *);
 void FORTRAN(tax_units_compute)(int *, DFTYPE *, DFTYPE*);
 
 void FORTRAN(tax_year_init)(int *);
-void FORTRAN(tax_year_work_size)(int *);
 void FORTRAN(tax_year_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tax_yearfrac_init)(int *);
-void FORTRAN(tax_yearfrac_work_size)(int *);
 void FORTRAN(tax_yearfrac_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(fill_xy_init)(int *);
@@ -1075,6 +1070,13 @@ void FORTRAN(separate_init)(int *);
 void FORTRAN(separate_result_limits)(int *);
 void FORTRAN(separate_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
+void FORTRAN(time_reformat_init)(int *);
+void FORTRAN(time_reformat_compute)(int *, char *);
+
+void FORTRAN(ft_to_orthogonal_init)(int *);
+void FORTRAN(ft_to_orthogonal_work_size)(int *);
+void FORTRAN(ft_to_orthogonal_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+
 /*
  *  End of declarations for internally linked external functions
  *  ------------------------------------ */
@@ -1117,7 +1119,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 165
+#define N_INTEF 167
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1288,6 +1290,8 @@ struct {
    strcpy(I_EFnames[162].funcname, "str_mask");
    strcpy(I_EFnames[163].funcname, "samplexyt_nrst");
    strcpy(I_EFnames[164].funcname, "separate");
+   strcpy(I_EFnames[165].funcname, "time_reformat");
+   strcpy(I_EFnames[166].funcname, "ft_to_orthogonal");
 
 /*    
  *  ------------------------------------ 
@@ -4196,25 +4200,19 @@ else if ( !strcmp(name,"nco_attr_init_") ) return (void *)FORTRAN(nco_attr_init)
 else if ( !strcmp(name,"nco_attr_result_limits_") ) return (void *)FORTRAN(nco_attr_result_limits);
 else if ( !strcmp(name,"nco_attr_compute_") ) return (void *)FORTRAN(nco_attr_compute);
 
-
 else if ( !strcmp(name,"tax_datestring_init_") ) return (void *)FORTRAN(tax_datestring_init);
-else if ( !strcmp(name,"tax_datestring_work_size_") ) return (void *)FORTRAN(tax_datestring_work_size);
 else if ( !strcmp(name,"tax_datestring_compute_") ) return (void *)FORTRAN(tax_datestring_compute);
 
 else if ( !strcmp(name,"tax_day_init_") ) return (void *)FORTRAN(tax_day_init);
-else if ( !strcmp(name,"tax_day_work_size_") ) return (void *)FORTRAN(tax_day_work_size);
 else if ( !strcmp(name,"tax_day_compute_") ) return (void *)FORTRAN(tax_day_compute);
 
 else if ( !strcmp(name,"tax_dayfrac_init_") ) return (void *)FORTRAN(tax_dayfrac_init);
-else if ( !strcmp(name,"tax_dayfrac_work_size_") ) return (void *)FORTRAN(tax_dayfrac_work_size);
 else if ( !strcmp(name,"tax_dayfrac_compute_") ) return (void *)FORTRAN(tax_dayfrac_compute);
 
 else if ( !strcmp(name,"tax_jday1900_init_") ) return (void *)FORTRAN(tax_jday1900_init);
-else if ( !strcmp(name,"tax_jday1900_work_size_") ) return (void *)FORTRAN(tax_jday1900_work_size);
 else if ( !strcmp(name,"tax_jday1900_compute_") ) return (void *)FORTRAN(tax_jday1900_compute);
 
 else if ( !strcmp(name,"tax_jday_init_") ) return (void *)FORTRAN(tax_jday_init);
-else if ( !strcmp(name,"tax_jday_work_size_") ) return (void *)FORTRAN(tax_jday_work_size);
 else if ( !strcmp(name,"tax_jday_compute_") ) return (void *)FORTRAN(tax_jday_compute);
 
 else if ( !strcmp(name,"tax_month_init_") ) return (void *)FORTRAN(tax_month_init);
@@ -4232,11 +4230,9 @@ else if ( !strcmp(name,"tax_units_init_") ) return (void *)FORTRAN(tax_units_ini
 else if ( !strcmp(name,"tax_units_compute_") ) return (void *)FORTRAN(tax_units_compute);
 
 else if ( !strcmp(name,"tax_year_init_") ) return (void *)FORTRAN(tax_year_init);
-else if ( !strcmp(name,"tax_year_work_size_") ) return (void *)FORTRAN(tax_year_work_size);
 else if ( !strcmp(name,"tax_year_compute_") ) return (void *)FORTRAN(tax_year_compute);
 
 else if ( !strcmp(name,"tax_yearfrac_init_") ) return (void *)FORTRAN(tax_yearfrac_init);
-else if ( !strcmp(name,"tax_yearfrac_work_size_") ) return (void *)FORTRAN(tax_yearfrac_work_size);
 else if ( !strcmp(name,"tax_yearfrac_compute_") ) return (void *)FORTRAN(tax_yearfrac_compute);
 
 else if ( !strcmp(name,"fill_xy_init_") ) return (void *)FORTRAN(fill_xy_init);
@@ -4282,7 +4278,12 @@ else if ( !strcmp(name,"separate_init_") ) return (void *)FORTRAN(separate_init)
 else if ( !strcmp(name,"separate_result_limits_") ) return (void *)FORTRAN(separate_result_limits);
 else if ( !strcmp(name,"separate_compute_") ) return (void *)FORTRAN(separate_compute);
 
+else if ( !strcmp(name,"time_reformat_init_") ) return (void *)FORTRAN(time_reformat_init);
+else if ( !strcmp(name,"time_reformat_compute_") ) return (void *)FORTRAN(time_reformat_compute);
 
+else if ( !strcmp(name,"ft_to_orthogonal_init_") ) return (void *)FORTRAN(ft_to_orthogonal_init);
+else if ( !strcmp(name,"ft_to_orthogonal_work_size_") ) return (void *)FORTRAN(ft_to_orthogonal_work_size);
+else if ( !strcmp(name,"ft_to_orthogonal_compute_") ) return (void *)FORTRAN(ft_to_orthogonal_compute);
 
 return NULL;
  }

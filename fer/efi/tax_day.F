@@ -1,10 +1,45 @@
 *
 * tax_day.F
 *
+*  This software was developed by the Thermal Modeling and Analysis
+*  Project(TMAP) of the National Oceanographic and Atmospheric
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  hereafter referred to as NOAA/PMEL/TMAP.
+*
+*  Access and use of this software shall impose the following
+*  obligations and understandings on the user. The user is granted the
+*  right, without any fee or cost, to use, copy, modify, alter, enhance
+*  and distribute this software, and any derivative works thereof, and
+*  its supporting documentation for any purpose whatsoever, provided
+*  that this entire notice appears in all copies of the software,
+*  derivative works and supporting documentation.  Further, the user
+*  agrees to credit NOAA/PMEL/TMAP in any publications that result from
+*  the use of this software or in any product that includes this
+*  software. The names TMAP, NOAA and/or PMEL, however, may not be used
+*  in any advertising or publicity to endorse or promote any products
+*  or commercial entity unless specific written permission is obtained
+*  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
+*  is not obligated to provide the user with any support, consulting,
+*  training or assistance of any kind with regard to the use, operation
+*  and performance of this software nor to provide the user with any
+*  updates, revisions, new versions or "bug fixes".
+*
+*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
+*  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
+*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+*  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+*  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*
+*
 * Jing Y. Li 
 * May 4th 2006
 * 27-Feb-2013 ACM  Fix ticket 2043: remove old code for handling single-
-*                  precision values coming in from argument 1
+*                  precision values coming in from argument 
+* v695  *acm 2/15  Time axis may be an F axis or a T axis.
+
 *
 * This function returns day specified by the first argument (variable 
 * containing time values) from the second argument (variable from which time 
@@ -67,7 +102,6 @@
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
       CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
-      CALL ef_set_num_work_arrays(id, 1)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
@@ -91,60 +125,10 @@
       RETURN 
       END
 
-
-*
-* In this subroutine we request an amount of storage to be supplied
-* by Ferret and passed as an additional argument.
-*
-      SUBROUTINE tax_day_work_size(id)
-
-      IMPLICIT NONE
-      INCLUDE 'EF_Util.cmn'
-
-      INTEGER id
-
-* **********************************************************************
-*                                            USER CONFIGURABLE PORTION |
-*                                                                      |
-*                                                                      V
-
-*
-* Set the work array X/Y/Z/T/E/F dimensions
-*
-* ef_set_work_array_dims_6d(id, array #,
-*                           xlo, ylo, zlo, tlo, elo, flo,
-*                           xhi, yhi, zhi, thi, ehi, fhi)
-*
-      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
-     .        arg_hi_ss(6,EF_MAX_ARGS),
-     .        arg_incr (6,EF_MAX_ARGS)
-      INTEGER array_num, nt1, nt2
-
-      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
-
-*  Allocate double the length of the T axis of ARG2 for REAL*8 work array.
-      nt1 = arg_lo_ss(T_AXIS,ARG2)
-      nt2 = nt1 + 
-     .        2 * (arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1)
-
-      array_num = 1
-      CALL ef_set_work_array_dims_6d(id, array_num,
-     .                              nt1, 1, 1, 1, 1, 1,
-     .                              nt2, 1, 1, 1, 1, 1)
-
-*                                                                      ^
-*                                                                      |
-*                                            USER CONFIGURABLE PORTION |
-* **********************************************************************
-
-      RETURN 
-      END
-
-
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE tax_day_compute(id, arg_1, arg_2, result, taxdat)
+      SUBROUTINE tax_day_compute(id, arg_1, arg_2, result)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
@@ -160,10 +144,6 @@
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .            memresloz:memreshiz, memreslot:memreshit,
      .            memresloe:memreshie, memreslof:memreshif)
-
-* Ignore the Y/Z/T/E/F dimensions in the work arrays since
-* they are not used and Fortran is column major
-      REAL*8 taxdat(wrk1lox:wrk1lox+(wrk1hix-wrk1lox)/2)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -186,10 +166,9 @@
       CHARACTER*20 datebuf
       INTEGER iyear, day_of_mon
       CHARACTER*3 cmon
-      INTEGER L2, LL
-      LOGICAL TM_FPEQ, first
+      INTEGER L2, LL, dir
       CHARACTER*255 err_msg
-      REAL*8 ddate, d1, d2
+      REAL*8 ddate
       INTEGER i,j,k,l, m, n
       INTEGER i1, j1, k1, l1, m1, n1
 
@@ -197,17 +176,24 @@
       CHARACTER ax_name(6)*16, ax_units(6)*16
       LOGICAL backward(6), modulo(6), regular(6), tmodulo
 
-*  Check to see if time axis of arg 2 is modulo
-      CALL ef_get_axis_info_6d(id, ARG2, ax_name, ax_units,
-     .                         backward, modulo, regular)
-      tmodulo = modulo(T_AXIS)
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-      CALL ef_get_coordinates(id, ARG2, T_AXIS,
-     .        arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS,ARG2), taxdat)
+*  Check to see if time axis of arg 2 is modulo
+      CALL ef_get_axis_info_6d(id, ARG2, ax_name, ax_units,
+     .                         backward, modulo, regular)
+      
+* Get the direction of arg 2
+      IF (arg_lo_ss(T_AXIS, ARG2) .NE. ef_unspecified_int4) THEN
+         dir = T_AXIS
+         tmodulo = modulo(T_AXIS)
+      ENDIF
+      IF (arg_lo_ss(F_AXIS, ARG2) .NE. ef_unspecified_int4) THEN
+         dir = F_AXIS
+         tmodulo = modulo(F_AXIS)
+      ENDIF
 
       n1 = arg_lo_ss(F_AXIS,ARG1)
       DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
@@ -215,55 +201,53 @@
       m1 = arg_lo_ss(E_AXIS,ARG1)
       DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
 
+      l1 = arg_lo_ss(T_AXIS,ARG1)
+      DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+
       k1 = arg_lo_ss(Z_AXIS,ARG1)
       DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-         j1 = arg_lo_ss(Y_AXIS,ARG1)
-         DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      j1 = arg_lo_ss(Y_AXIS,ARG1)
+      DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-            i1 = arg_lo_ss(X_AXIS,ARG1)
-            DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      i1 = arg_lo_ss(X_AXIS,ARG1)
+      DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-               first = .TRUE.
+         ddate = arg_1(i1,j1,k1,l1,m1,n1)
 
-               l1 = arg_lo_ss(T_AXIS,ARG1)
-               DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-
-                  ddate = arg_1(i1,j1,k1,l1,m1,n1)
-
-                  IF ( ddate .NE. bad_flag(ARG1) ) THEN
+         IF ( ddate .NE. bad_flag(ARG1) ) THEN
 
 *     Get the date string corresponding to time ddate for the variable ARG2
-                     CALL EF_GET_AXIS_DATES(id, ARG2, ddate, 1, datebuf)
-                  
-                     IF ( .NOT. tmodulo ) THEN
-*                       datebuf is in form "DD-MON-YEAR HH:MM:SS". Read date.
-                        READ (datebuf,420,err=900) day_of_mon, cmon, iyear
-  420                   FORMAT (i2, 1x, a3, 1x, i4) 
-                     ELSE
-*                       modulo: datebuf is in form "DD-MON HH:MM:SS". Read date.
-                        READ (datebuf,430,err=900) day_of_mon, cmon
-  430                   FORMAT (i2, 1x, a3) 
-                     ENDIF
-                     result(i,j,k,l,m,n) = day_of_mon 
+            CALL EF_GET_AXIS_DATES(id, ARG2, ddate, dir, 1, datebuf)
 
-                  ELSE
+            IF ( .NOT. tmodulo ) THEN
+*               datebuf is in form "DD-MON-YEAR HH:MM:SS". Read day.
+               READ (datebuf,120,err=900) day_of_mon, cmon, iyear
+  120                   FORMAT (i2, 1x, a3, 1x, i4) 
+            ELSE
+*               modulo: datebuf is in form "DD-MON HH:MM:SS". Read day.
+               READ (datebuf,130,err=900) day_of_mon, cmon
+  130          FORMAT (i2, 1x, a3) 
+            ENDIF
+            result(i,j,k,l,m,n) = day_of_mon 
 
-                     result(i,j,k,l,m,n) = bad_flag_result
+         ELSE
 
-                  ENDIF
+            result(i,j,k,l,m,n) = bad_flag_result
 
-                  l1 = l1 + arg_incr(T_AXIS,ARG1)
- 400           CONTINUE
+         ENDIF
 
-               i1 = i1 + arg_incr(X_AXIS,ARG1)
- 100        CONTINUE
+         i1 = i1 + arg_incr(X_AXIS,ARG1)
+ 100  CONTINUE
 
-            j1 = j1 + arg_incr(Y_AXIS,ARG1)
- 200     CONTINUE
+         j1 = j1 + arg_incr(Y_AXIS,ARG1)
+ 200  CONTINUE
 
          k1 = k1 + arg_incr(Z_AXIS,ARG1)
  300  CONTINUE
+
+         l1 = l1 + arg_incr(T_AXIS,ARG1)
+ 400  CONTINUE
 
          m1 = m1 + arg_incr(E_AXIS,ARG1)
  500  CONTINUE

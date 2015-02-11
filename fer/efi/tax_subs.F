@@ -262,3 +262,54 @@ C   Create a message saying arg1 values at index are duplicate
 
       RETURN
       END
+
+      
+
+      SUBROUTINE TAX_REFORMAT_DATE (indate, outdate, dlen)
+
+* From tm_date_reformat, just the portion that calls TM_BREAK_FMT_DATE_C
+
+*     If there is a T between the date and time (as in GRIB files) replace with a space.
+
+#include "gt_lib.parm"
+
+	CHARACTER*(*)   indate, outdate
+	INTEGER		dlen
+
+	CHARACTER*32 buff
+
+	INTEGER TM_BREAK_FMT_DATE_C, slen, year, month, day,
+     .          hour, minute, second, status, outform
+	PARAMETER ( slen = 32)
+
+	REAL fsecond
+#ifdef sun
+	BYTE       dhol(slen)     !c-type Hollerith string buffers
+#else
+	INTEGER*1  dhol(slen)     !c-type Hollerith string buffers
+#endif
+
+*     If there is a T between the date and time (as in GRIB files) replace with a space.
+        buff = indate
+	IF (buff(11:11) .EQ. 'T') buff(11:11) = ' '
+	IF (buff(11:11) .EQ. 'Z') buff(11:11) = ' '
+ 
+* Break up into year, month, day, ...
+	CALL TM_FTOC_STRNG( buff(:slen), dhol, slen)
+	status = TM_BREAK_FMT_DATE_C(dhol, year, month,
+     .                              day, hour, minute, fsecond)
+	IF ( status .NE. 0 ) GOTO 5100
+
+	second = NINT(fsecond)       ! information loss ...
+
+* and reassemble it into the desired output format
+	outform = pdate_vax 
+
+	CALL TM_MAKE_FMT_DATE ( outform, outdate, year, month, day,
+     .                         hour, minute, second, dlen )
+
+ 5000	RETURN
+ 5100	outdate = 'xxx'
+        dlen = 3
+	GOTO 5000
+	END

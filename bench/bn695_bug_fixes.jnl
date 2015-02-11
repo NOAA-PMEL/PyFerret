@@ -1,0 +1,4 @@
+! bn695_bug_fixes
+! test various fixes that went into version 6.95
+
+GO bn_reset

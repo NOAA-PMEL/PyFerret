@@ -953,6 +953,15 @@ GO bn_time2d
 GO bn_reset
 GO bn_legend_labels
 
+
+! *********** v6.95Additions ***********
+
+GO bn_reset
+GO bn695_bug_fixes
+
+GO bn_reset
+GO bn_f_tax_fcns
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

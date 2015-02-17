@@ -91,6 +91,8 @@
 * V600 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
 * V690 *sh* 12/13  manage auto-curvilinear mode
 *	           aux vars returned on the ISP stack in frame above is_aux_ptr
+* V693+ *sh* 2/15  eliminate inconsistent treatment of surrounding quotes
+*                  as seen in err694_inconsistent_quotes.jnl
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -129,7 +131,7 @@
 
 * consolidate arguments broken up by command parser back into a single arg
 * ... correct mis-handling of surrounding quotation marks
-	CALL ALL_1_ARG
+	CALL ALL_1_ARG_EXPR
 
 * * * * BREAK FULL EXPRESSION INTO SUB_EXPRESSIONS * * *
 * ... and store them in the uvar list names as "EX#n"

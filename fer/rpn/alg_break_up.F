@@ -57,6 +57,9 @@
 *                    change next_stat(10,4) to 4 -- 
 * V685:  7/13  *acm* Bug 2084. If a string starts with . and is not numeric, make an atom.
 *                    It'll generally be an error.
+* V693+ 12/14 *sh* allow _QD_ and _SQ_ for quotation alternatives 
+*                 Filled in state=13 (interpreting exponent) DATA inits 
+*	          Hoping I did so correctly ...
 
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -71,7 +74,7 @@
      .			requires_closure(num_state),
      .                      have_exp_digits
 	INTEGER		ALG_CLASS, TM_LENSTR1,
-     .			tlen, p, state, last_state, class,
+     .			tlen, p, state, last_state, last_last_state, class,
      .			i, next_state(num_class,num_state),
      .			brkt_nest_level, pn
 
@@ -89,6 +92,10 @@
 *	S11- ignoring characters inside {}
 *	S12- inside of double quote pair
 *	S13- interpreting exponent, found exponential value
+*	S14- interpreting "_" as a possible quote signal
+*	S15- inside of _DQ_ (alt double quote) pair
+*	S16- inside of _SQ_ (alt single quote) pair
+
 
 *	-1 ==> Syntax Error
 *	-2 ==> Illegal Character
@@ -97,7 +104,7 @@
 * classes of characters
 *	C1 - + -
 *	C2 - digits
-*	C3 - letters _ _
+*	C3 - letters
 *	C4 - [
 *	C5 - ]
 *	C6 - * / ^ , (
@@ -109,34 +116,43 @@
 *	C12- {
 *	C13- }
 *	C14- "
-*	C15- all others
+*	C15- _
+*	C16- all others
 
 *	... CHARACTER CLASS: next_state(class, last_state) ...
-*             C1 C2 C3 C4 C5 C6 C7 C8 C9 C10C11C12C13C14C15
+*              C1 C2 C3 C4 C5 C6 C7 C8 C9 C10C11C12C13C14C15C16
 	DATA (next_state(i,1),i=1,num_class)
-     .        / 2, 3, 4,-1,-1, 5, 5, 1, 4,  3,10,11,-1,12,-2/
+     .        / 2, 3, 4,-1,-1, 5, 5, 1, 4,  3,10,11,-1,12,14,-2/
 	DATA (next_state(i,2),i=1,num_class)
-     .        / 7, 3, 7, 7, 7, 7, 7, 7, 7,  3, 7, 7, 7, 7,-2/
+     .        / 7, 3, 7, 7, 7, 7, 7, 7, 7,  3, 7, 7, 7, 7,14,-2/
 	DATA (next_state(i,3),i=1,num_class)
-     .        / 7, 3,3,-1,-1, 7, 7, 7, 8,  3, 7,-1,-1, 7,-2/
+     .        / 7, 3, 3,-1,-1, 7, 7, 7, 8,  3, 7,-1,-1, 7,14,-2/
 	DATA (next_state(i,4),i=1,num_class)
-     .        / 7, 4, 4, 6,-1, 7, 7, 7, 4, 4, 7,-1,-1, 7,-2/
+     .        / 7, 4, 4, 6,-1, 7, 7, 7, 4,  4, 7,-1,-1, 7,14,-2/
 	DATA (next_state(i,5),i=1,num_class)
-     .        /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9,-9,-9,-9,-2/
+     .        /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9,-9,-9,-9,14,-2/
 	DATA (next_state(i,6),i=1,num_class)
-     .        / 6, 6, 6, 9, 5, 6, 6, 6, 6,  6, 6, 6, 6, 6, 6/
+     .        / 6, 6, 6, 9, 5, 6, 6, 6, 6,  6, 6, 6, 6, 6,14, 6/
 	DATA (next_state(i,7),i=1,num_class)
-     .        /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9,-9,-9,-9,-2/
+     .        /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9,-9,-9,-9,14,-2/
 	DATA (next_state(i,8),i=1,num_class)
-     .        / 8, 13, 7, 7, 7, 7, 7, 7, 7,  7, 7, 7, 7, 7,-2/
+     .        / 8,13, 7, 7, 7, 7, 7, 7, 7,  7, 7, 7, 7, 7,14,-2/
 	DATA (next_state(i,9),i=1,num_class)
-     .        / 9, 9, 9, 9, 9, 9, 9, 9, 9,  9, 9, 9, 9, 9, 9/
+     .        / 9, 9, 9, 9, 9, 9, 9, 9, 9,  9, 9, 9, 9, 9, 9, 9/
 	DATA (next_state(i,10),i=1,num_class)
-     .        / 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10/
+     .        /10,10,10,10,10,10,10,10,10, 10,10,10,10,10,10,10/
 	DATA (next_state(i,11),i=1,num_class)
-     .        /11,11,11,11,11,11,11,11,11, 11,11,11, 5,11,11/
+     .        /11,11,11,11,11,11,11,11,11, 11,11,11, 5,11,11,11/
 	DATA (next_state(i,12),i=1,num_class)
-     .        / 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12/
+     .        /12,12,12,12,12,12,12,12,12, 12,12,12,12,12,12,12/
+	DATA (next_state(i,13),i=1,num_class)
+     .        /-1,-1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1/
+	DATA (next_state(i,14),i=1,num_class)
+     .        /14,14,14,14,14,14,14,14,14, 14,14,14,14,14,14,14/
+	DATA (next_state(i,15),i=1,num_class)
+     .        /15,15,15,15,15,15,15,15,15, 15,15,15,15,15,14,15/
+	DATA (next_state(i,16),i=1,num_class)
+     .        /16,16,16,16,16,16,16,16,16, 16,16,16,16,16,14,16/
 
 
 * which states are not valid on exit (e.g. unclosed braces)
@@ -152,6 +168,9 @@
 	DATA requires_closure(10)/.TRUE. / !S10- inside of single quote pair
 	DATA requires_closure(11)/.TRUE. / !S11- ignoring characters inside {}
 	DATA requires_closure(12)/.TRUE. / !S12- inside of double quote pair
+	DATA requires_closure(13)/.FALSE./ !S13- interpreting exponent
+	DATA requires_closure(14)/.TRUE. / !S14- inside of _QD_ quote pair
+	DATA requires_closure(15)/.TRUE. / !S15- inside of _SQ_ quote pair
 
 * initialize
 *    "was_operand" flags the character of the previous atom to distinguish the
@@ -160,6 +179,7 @@
 	natom = 0
 	p = 0
 	state = 1
+	last_state = 1
 	was_operand = .FALSE.
 	atom_open = .FALSE.
         have_exp_digits = .FALSE.
@@ -177,7 +197,8 @@
 	ENDIF
 	   
 * check next character
- 10	last_state = state
+ 10	last_last_state = last_state  ! so "_" can morph to a letter
+	last_state = state
 	class = ALG_CLASS( text(p:p) )
 
 * determine lexical analysis state to determine next action
@@ -229,8 +250,8 @@
 	ENDIF
 
 * take appropriate action
-*		S1  S2  S3  S4  S5  S6  S7  S8   S9  S10 S11 S12 S13
-	GOTO (9999,100,100,100,500,100,700,100, 900,1000,100,1100,1300)
+*		S1  S2  S3  S4  S5  S6  S7  S8   S9  S10 S11  S12  S13  S14 S15  S16
+	GOTO (9999,100,100,100,500,100,700,100, 900,1000,100,1100,1300,1400,100,100)
      .								state
 
 * continue to next character
@@ -298,6 +319,45 @@
 * digit part of exponent
  1300	state = 3
 	GOTO 5
+
+* "_" underscore -- possible indicator of _DQ_ or _SQ_ 
+ 1400	IF ( p .GT. tlen-3 ) THEN
+	   GOTO 1410                ! cant be _DQ_ or _SQ_
+	ELSEIF (text(p:p+3) .EQ. p_DQ_quote) THEN
+	   IF (atom_open. AND. p.EQ.at_start(natom)) THEN
+* ... start of _DQ_ enclosed string
+	      p = p+3
+	      state = 15
+	      GOTO 5
+	   ELSEIF (last_state .EQ. 15) THEN
+* ... this is a closing quote.  We have been inside of _DQ_ enclosed string
+	      p = p+3
+	      GOTO 500
+	   ELSE
+* ... the characters "_DQ_", but not start or end of string
+	      GOTO 1410
+	   ENDIF
+	ELSEIF (text(p:p+3) .EQ. p_SQ_quote) THEN
+	   IF (atom_open. AND. at_start(natom) .EQ. p) THEN
+* ... start of _SQ_ enclosed string
+	      p = p+3
+	      state = 16
+	      GOTO 5
+	   ELSEIF (last_state .EQ. 16) THEN
+* ... this is a closing quote.  We have been inside of _SQ_ enclosed string
+	      p = p+3
+	      state = 4 ! we may have _SQ_X_SQ_[stuff]
+	      GOTO 5
+	   ELSE
+* ... the characters "_SQ_", but not start or end of string
+	      GOTO 1410
+	   ENDIF
+	ENDIF
+
+* ...  go back and try again, treating this underscore like any other letter
+ 1410	   last_state = last_last_state  ! needed?  playing it safe ...
+	   class = 3  ! a letter
+	   GOTO 50
 
 
 * error exits

@@ -65,6 +65,7 @@
 *		   zero as valid. 
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V685+ 12/13 *acm*  bounds checking: tm_digit needs more care in the argument sent in.
+* V693+ 12/14 *sh* allow _QD_ and _SQ_ for quotation alternatives 
 
         include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -80,7 +81,7 @@
 	CHARACTER*(*)	text
 
 * internal variable declarations:
-	LOGICAL		TM_DIGIT, TM_LEGAL_NAME, is_digit
+	LOGICAL		TM_DIGIT, TM_LEGAL_NAME, is_digit, single_quoted
 	INTEGER		STR_MATCH, GCF_FIND_FCN, TM_LENSTR1,
      .			imatch, i, i2, j, brac_pos, aend,
      .			num_indices, dot, new_nat, first, second, slen
@@ -202,6 +203,19 @@
 	      GOTO 100
 	   ENDIF
 
+* string in _DQ_ style double quotes? 
+	  IF (at_end(i)-at_start(i)+1 .GE. 8) THEN
+	     IF ( text(at_start(i):at_start(i)+3).EQ.p_DQ_quote
+     .	    .AND. text(at_end(i)-3:at_end  (i)  ).EQ.p_DQ_quote ) THEN
+	         at_type(i) = alg_string
+!*   ... trim string to have only a simple enclosing "_"
+!	         at_start(i) = at_start(i) + 3  
+!	         at_end  (i) = at_end  (i) - 3
+	         at_id(i)   = unspecified_int4
+	         GOTO 100
+	      ENDIF
+	   ENDIF
+
 * attribute value variable.attname (will check later whether the
 * variable is in a netCDF dataset and whether the attribute exists)
 
@@ -243,6 +257,14 @@ c     .          at_end(i) - at_start(i)+1 ) THEN
               IF (first .GT. 0 .AND. second .GT. 0 .AND. 
      .            dot .GT. first .AND. dot .LT. second) GOTO 99
 
+* identical logic to the previous check, but now looking for _SQ_-enclosed name
+              first = INDEX(varname, p_SQ_quote)
+              second = 0
+              IF (slen .GT. 4) second = INDEX(varname(5:at_end(i)), p_SQ_quote )
+              
+              IF (first .GT. 0 .AND. second .GT. 0 .AND. 
+     .            dot .GT. first .AND. dot .LT. second) GOTO 99
+
 * Otherwise this is a varname.attname  
               at_type(i) = alg_attrib_val
 	      at_id(i)   = unspecified_int4
@@ -277,8 +299,11 @@ c     .          at_end(i) - at_start(i)+1 ) THEN
 	   ENDIF
 
 * cant identify it - we will call it an variable for now
-  99	   IF (text(at_start(i):at_start(i)) .NE. "'" ) THEN
-* (7/98) only check name if it is not in quotation marks
+* check for legal name not enclosed in quotation marks or _SQ_
+ 99	   single_quoted = text(at_start(i):at_start(i)) .EQ. "'"
+	   IF (.NOT.single_quoted .AND. at_end(i)-at_start(i).GE.7)
+     .         single_quoted = text(at_start(i):at_start(i)+3) .EQ. p_SQ_quote
+	   IF (.NOT.single_quoted) THEN
 	     IF ( .NOT.TM_LEGAL_NAME(text(at_start(i):aend)) ) GOTO 5100
 	   ENDIF
 	   at_type(i) = alg_variable

@@ -8,6 +8,7 @@
 * V500:  1/99 - based on IS_CONST_VAR
 * V530:  8/00 *sh* - support for string arrays -- use dynamic memory alloc
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V693+ *sh* 12/14 support for _DQ_ and _SQ_ string delimiters
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -52,8 +53,20 @@
 * determine the string to be stored
 	uvar = cx_variable(cx)/1000
 	item = cx_variable(cx) - 1000*uvar
-	start = uvar_item_start( item, uvar ) + 1  ! +1 skip quote
-	end   = uvar_item_end  ( item, uvar ) - 1  ! -1 skip quote
+	start = uvar_item_start( item, uvar )
+	end   = uvar_item_end  ( item, uvar )
+
+* trim off surrounding quotation marks
+	IF (uvar_text(uvar)(start:start) .EQ. '"'
+     . .OR. uvar_text(uvar)(start:start) .EQ. "'" ) THEN
+! trim off single or double quotes
+	  start = start + 1
+	  end = end - 1
+	ELSEIF (end-start .GT. 7) THEN  ! should always be true if here
+! trim off "_DQ_" or "_SQ_"
+	  start = start + 4
+	  end = end - 4
+	ENDIF
 
 * save the string in dynamic memory
 	CALL STORE_STRING(uvar_text(uvar)(start:end),

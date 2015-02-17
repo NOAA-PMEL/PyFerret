@@ -16,6 +16,7 @@
 * V530:  8/00 *sh* - allow constant arrays of strings
 * V533:  7/01 *sh* - allow single quoted strings
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V693+ *sh* 2/15 - added support for quotation with _DQ_ and _SQ_
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -41,8 +42,10 @@
 	cx_grid    ( const_cx ) = mgrid_xabstract
 
 * identify a constant array of strings by the presence of a quotation mark
-	IF ( INDEX(text,'"') .GT. 0
-     .	.OR. INDEX(text,"'") .GT. 0 ) THEN
+	IF ( INDEX(text,'"')    .GT. 0
+     .	.OR. INDEX(text,"'")    .GT. 0 
+     .	.OR. INDEX(text,"_DQ_") .GT. 0 
+     .	.OR. INDEX(text,"_SQ_") .GT. 0 ) THEN
 	   cx_type(const_cx) = ptype_string
 	ELSE
 	   cx_type(const_cx) = ptype_float

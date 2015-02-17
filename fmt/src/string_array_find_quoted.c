@@ -40,6 +40,7 @@
                 if the test name is not quoted, then the test name can
                 be case blind, but the model name should be upper-case.
     4/06 *kob*  change type of 1st argument to double, for 64-bit build
+   12/14 *sh*   added support for "_SD_" as a single quote indicator
  */
 #include <stdio.h>
 #include "string_array.h"
@@ -58,7 +59,8 @@ void string_array_find_quoted_(  double *string_array_header,
    SA_Head * head;
    List_Node *bucket, *p;
    char * model_string;
-   int match=0, is_quoted=0;
+   int match=0, quote_offset=0;
+   const char *_SQ_ = "_SQ_";
 
 FILE *fp;
    
@@ -69,19 +71,32 @@ FILE *fp;
  
       tm_get_strlen_(&true_test_len, test_len, test_string);
  
+/* "'" encloses the string? */
       if(test_string[0]=='\''
           &&test_string[true_test_len-1]=='\''
-	  &&true_test_len>=2){
-	 is_quoted = 1;
+	  &&true_test_len>=2) {
+	 quote_offset = 1;
          true_test_len -= 2; 
       }
+/* "_SQ_" encloses the string? */
+      else if(test_string[0]=='_'
+          &&test_string[true_test_len-1]=='_'
+	  &&true_test_len>=8) {
+	match = 1;
+	for( i=0; i<3; i++){
+	  if(   test_string[                i]!=_SQ_[i]
+	     || test_string[true_test_len-4+i]!=_SQ_[i]){
+	    match = 0;
+	    break;
+	  }
+	}
+	if (match ==1) {
+	  quote_offset = 4;
+	  true_test_len -= 8;
+	}
+      }
 
-      if(is_quoted == 1){
-         hash_value = string_array_hash(test_string+1, true_test_len, 0, array_size);
-      }
-      else {
-         hash_value = string_array_hash(test_string, true_test_len, 0, array_size);
-      }
+      hash_value = string_array_hash(test_string+quote_offset, true_test_len, 0, array_size);
 
       if(true_test_len ==0){
 	 result_array_size1 = 5;
@@ -97,11 +112,11 @@ FILE *fp;
           match = 0;
 	  model_string=&(head->string_array[(p->index-1)*string_size]);
           string_array_get_strlen_(string_array_header, &(p->index), &true_model_len);
-          if(is_quoted == 1) {
+          if(quote_offset >= 1) {
 	      if(true_model_len == true_test_len){
 		  match = 1;
 	          for( i=0; i<true_model_len; i++){
-		      if(test_string[i+1]!=model_string[i]){
+		      if(test_string[i+quote_offset]!=model_string[i]){
 		         match = 0;
                          break;
 		      }

@@ -790,9 +790,8 @@
 	   IF ( pos .GT. 0 ) THEN
 
 * consolidate arguments broken up by command parser back into a single arg
-
               IF (cmnd_buff(pos:pos) .EQ. '{') THEN
-                 CALL all_1_arg
+                 CALL ALL_1_ARG
 	         num_args = 1	 ! used by GET_CMND_DATA
               ENDIF
 	      arg_start(1) = pos ! skip over "name ="

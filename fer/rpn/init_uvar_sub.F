@@ -74,6 +74,7 @@
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid. 
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V693+ *sh* 12/14 add support for _DQ_ and _SQ_ as qutation delimiters
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'	
@@ -99,9 +100,11 @@
 	CHARACTER	err_string*255, c*1, attname*128
 
 * internal parameter declarations
-	INTEGER		p_single_quote, p_double_quote
+	INTEGER		p_single_quote, p_double_quote, p__DQ_, p__SQ_
 	PARAMETER     ( p_single_quote = 1,
-     .			p_double_quote = 2 )
+     .			p_double_quote = 2,
+     .			p__DQ_         = 3,
+     .			p__SQ_         = 4 )
 
 * kob 9/30/98 This needed for 7/7/98 code addition
 #ifdef FORTRAN_90
@@ -136,7 +139,9 @@
 	uvar_text(uvar) = ' '
 	i2 = 0
 	inquote = .FALSE.
-	DO 100 i = txstart, txend
+	i = txstart - 1
+	DO WHILE (i .LT. txend)
+	   i = i + 1
 	   i2 = i2 + 1
 	   c = text(i:i)
 	   IF ( c .EQ. "'" ) THEN
@@ -154,6 +159,30 @@
 	      ELSE
 		inquote = .TRUE.
 	        quote_type = p_double_quote
+	      ENDIF
+	   ELSEIF ( txend-txstart .GT. 7 ) THEN
+	      IF (text(i:i+3) .EQ. p_DQ_quote) THEN 
+* ... found "_DQ_" -- start or end of string?
+	        IF (inquote) THEN
+	          IF (quote_type.EQ.p__DQ_) inquote = .FALSE.
+	        ELSE
+		  inquote = .TRUE.
+	          quote_type = p__DQ_
+	        ENDIF
+	        uvar_text(uvar)(i2:i2+2) = text(i:i+2)
+	        i  = i  + 3
+	        i2 = i2 + 3
+	      ELSEIF (text(i:i+3) .EQ. p_SQ_quote) THEN 
+* ... found "_SQ_" -- start or end of string?
+	        IF (inquote) THEN
+	          IF (quote_type.EQ.p__SQ_) inquote = .FALSE.
+	        ELSE
+		  inquote = .TRUE.
+	          quote_type = p__SQ_
+	        ENDIF
+	        uvar_text(uvar)(i2:i2+2) = text(i:i+2)
+	        i  = i  + 3
+	        i2 = i2 + 3
 	      ENDIF
 	   ENDIF
 	   IF ( inquote .OR. (c .LT. 'a' .OR. c .GT. 'z' ) ) THEN
@@ -174,7 +203,7 @@
 # endif
 #endif
 	   ENDIF
- 100	CONTINUE
+	ENDDO
 * (7/98) end of quote-sensitive case changing loop
 
 c* copy title, units, dset, and missing flag into buffers

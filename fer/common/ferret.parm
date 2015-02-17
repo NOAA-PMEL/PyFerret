@@ -38,7 +38,7 @@
 * 		  turned max_context into a variable to allow aux frames above it
 * V692 7/14 *acm* new transform @WGT, ticket 2180
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
-
+*       12/14 *sh* _DQ_ and _SQ_ alternatives to double and single quote marks
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -700,3 +700,7 @@
 	PARAMETER     ( patnam_layerz = '__LayerzRef_',
      .		        patnam_curvx  = '__CurvxRef_',
      .		        patnam_curvy  = '__CurvyRef_'  )
+* alternative quotation atoms
+	CHARACTER*4	p_DQ_quote, p_SQ_quote
+	PARAMETER     ( p_DQ_quote = '_DQ_',
+     .		        p_SQ_quote = '_SQ_'  )

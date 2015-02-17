@@ -52,6 +52,8 @@
 * V530 *acm* - send cal_id to TRANSLATE_LIMIT
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
+* V693+ *sh* 2/15 - added support for _DQ_ quotations
+*		    mixing double quote marks and _DQ_ may lead to a bad place
 
 * calling argument declarations
 	LOGICAL		formatted, range_rqd
@@ -60,7 +62,7 @@
 	CHARACTER*(*)	string
 
 * internal variable declarations
-	LOGICAL		has_delta, ldummy, not_by_ss, in_quote
+	LOGICAL		has_delta, ldummy, not_by_ss, in_quote, in_DQ
 	PARAMETER 	(not_by_ss =  .FALSE.)
 	INTEGER 	equal_pos, colon1, colon2, end2, slen, i
 	REAL*8		tmp
@@ -91,30 +93,45 @@
 * lo:hi:delta parsing and syntax checking
 	colon1 = 0
 	in_quote = .FALSE.
-	DO 100 i = equal_pos+1, SLEN
+	in_DQ    = .FALSE.
+	i = equal_pos
+	DO WHILE (i .LT. slen)
+	   i = i + 1
 	   IF (string(i:i) .EQ. '"') THEN
 	      in_quote = .NOT.in_quote
-	   ELSEIF (in_quote) THEN
+	   ELSEIF (string(i:i) .EQ. '_' .AND. i+3 .LE. slen ) THEN
+	      IF (string(i:i+3) .EQ. "_DQ_" ) THEN
+	         in_DQ = .NOT.in_DQ
+	         i = i + 3
+	      ENDIF
+	   ELSEIF (in_quote .OR. in_DQ) THEN
 	      CONTINUE	! skip text inside of quotation
 	   ELSEIF (string(i:i) .EQ. ':') THEN
 	      colon1 = i
 	      GOTO 110
 	   ENDIF
- 100	CONTINUE
-	IF ( in_quote ) GOTO 5000
+	ENDDO
+	IF ( in_quote .OR. in_DQ) GOTO 5000
 	IF (colon1 .EQ. 0 ) GOTO 5000
 
  110	colon2 = colon1
-	DO 200 i = colon1+1, slen
+	i = colon1
+	DO WHILE (i .LT. slen)
+	   i = i + 1
 	   IF (string(i:i) .EQ. '"') THEN
 	      in_quote = .NOT.in_quote
-	   ELSEIF (in_quote) THEN
+	   ELSEIF (string(i:i) .EQ. '_' .AND. i+3 .LE. slen ) THEN
+	      IF (string(i:i+3) .EQ. "_DQ_" ) THEN
+	         in_DQ = .NOT.in_DQ
+	         i = i + 3
+	      ENDIF
+	   ELSEIF (in_quote .OR. in_DQ) THEN
 	      CONTINUE	! skip text inside of quotation
 	   ELSEIF (string(i:i) .EQ. ':') THEN
 	      colon2 = i
 	      GOTO 210
 	   ENDIF
- 200	CONTINUE
+	ENDDO
 	IF ( in_quote ) GOTO 5000
  210	has_delta = colon2 .GT. colon1
 	IF ( has_delta ) THEN

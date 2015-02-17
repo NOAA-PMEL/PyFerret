@@ -46,16 +46,16 @@
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead
 * 11/04*acm* - fix bug 485: $0 should return the name of the script -
-*                           IF (karg.LE.0 .OR. karg.GE.100) should be IF(karg.LT.0 ...
-
+*              IF (karg.LE.0 .OR. karg.GE.100) should be IF(karg.LT.0 ...
+* V693+ *sh 2/15 - added support for _DQ_-enclosedquotations
 
 * calling argument declarations:
 	INTEGER	  lenarg, status
 	CHARACTER carg*2, goline*(*), arg*(*)
 
 * internal variable declarations:
-	LOGICAL quote, found_comma, bslash
-	INTEGER	TM_LENSTR1,lengo, iarg, goptr, start, end, karg,
+	LOGICAL quote, DQ_quote, found_comma, bslash, its_quote, its_DQ
+	INTEGER	TM_LENSTR1,lengo, iarg, goptr, start, iend, karg,
      .		open_paren, open_brkt
 	CHARACTER c1*1
 
@@ -94,7 +94,7 @@
 	      c1 = goline(start:start)
 	      IF ( c1 .EQ. ',' ) THEN
 	         IF ( found_comma ) THEN
-	            end = start-1
+	            iend = start-1
 	            goptr = start    ! (start-1 hangs on double comma)
 	            GOTO 500
 	         ENDIF
@@ -111,24 +111,33 @@
 * locate the end of the argument
 * ignore commas inside of parentheses to protect "/LEV=(lo,hi,delta)"
 * 10/95 ignore commas inside of sqr brackets to protect "VAR[x=1,y=2]"
- 110	   quote = .FALSE.
-	   bslash = .FALSE.
+ 110	   quote    = .FALSE.
+	   DQ_quote = .FALSE.
+	   bslash   = .FALSE.
 	   open_paren = 0
 	   open_brkt  = 0
 	   DO 200 goptr = start, lengo
 	      c1 = goline(goptr:goptr)
+	      its_quote = c1 .EQ. '"'
+	      IF (c1 .EQ. '_' .AND. goptr+3.LE.lengo) THEN
+	         its_DQ = goline(goptr:goptr+3) .EQ. "_DQ_"
+	      ELSE
+	         its_DQ = .FALSE.
+	      ENDIF
 	      IF (bslash) THEN
 	         GOTO 190	! bypass looking at this character
 #ifdef NO_DOUBLE_ESCAPE_SLASH
-              ELSEIF (c1 .EQ. '\' ) THEN
+              ELSEIF (c1 .EQ. '\' ) THEN  ! ' char for emacs
 #else
               ELSEIF (c1 .EQ. '\\') THEN
 #endif
 	         bslash=.TRUE.  ! bypass looking at next character
 	         GOTO 200
-	      ELSEIF ( c1 .EQ. '"' ) THEN
+	      ELSEIF ( its_quote .AND. .NOT.DQ_quote ) THEN
 	         quote = .NOT.quote
-	      ELSEIF ( quote ) THEN
+	      ELSEIF ( its_DQ    .AND. .NOT.quote ) THEN
+	         DQ_quote = .NOT.DQ_quote
+	      ELSEIF ( quote .OR. DQ_quote ) THEN
 	         CONTINUE           ! skip over quoted text
 	      ELSEIF ( c1 .EQ. '(' ) THEN
 	         open_paren = open_paren + 1
@@ -141,34 +150,43 @@
 	      ELSEIF ( c1 .EQ. ',' ) THEN
 	         IF ( open_paren.EQ.0 .AND. open_brkt.EQ.0 ) THEN
 	            found_comma = .TRUE.
-	            end = goptr - 1
+	            iend = goptr - 1
 	            GOTO 500	     
 	         ENDIF
 	      ELSEIF (c1.EQ.' ' .OR. c1.EQ.tab ) THEN
-	         end = goptr - 1
+	         iend = goptr - 1
 	         GOTO 500
 	      ENDIF
  190	      bslash = .FALSE.
  200	   CONTINUE
-	   end = lengo     ! end of buffer is end of arg
+	   iend = lengo     ! end of buffer is end of arg
 
  500	CONTINUE
 
 * return the requested argument string
-	IF ( carg .EQ. ' *' .AND. end .NE. lengo ) THEN
-	   end = lengo
+	IF ( carg .EQ. ' *' .AND. iend .NE. lengo ) THEN
+	   iend = lengo
 	ELSEIF ( goline(start:start) .EQ. '"'
-     .     .AND. goline(end:end)     .EQ. '"' ) THEN
+     .     .AND. goline(iend:iend)     .EQ. '"' ) THEN
 * ... do not pass enclosing quotation marks
-	   start = start+1
-	   end = end - 1
+	   start = start + 1
+	   iend  = iend  - 1
+	ELSEIF ( goline(start:start) .EQ. '_'
+     .     .AND. goline(iend :iend ) .EQ. '_'
+     .     .AND. iend-start .GE. 7             ) THEN
+* ... do not pass enclosing _DQ_ marks
+	   IF (goline(start : start+3) .EQ. "_DQ_"
+     .   .AND. goline(iend-3: iend   ) .EQ. "_DQ_" ) THEN
+	      start = start + 4
+	      iend  = iend  - 4
+	   ENDIF
 	ENDIF
-	IF ( start .GT. end ) THEN   ! beware empty quotes
+	IF ( start .GT. iend ) THEN   ! beware empty quotes
               arg = ' '
               lenarg = 0
 	ELSE
-	   arg = goline(start:end)
-!	   lenarg = end - start + 1
+	   arg = goline(start:iend)
+!	   lenarg = iend - start + 1
 * ... remove one level of backslash escapes from the arg
 	   CALL DE_ESCAPE_STRING(arg, lenarg)
 	ENDIF

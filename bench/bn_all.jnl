@@ -932,7 +932,6 @@ GO bn_spawn_size
 GO bn_reset
 GO bn_polygon_log
 
-
 ! *********** v6.94Additions ***********
 
 GO bn_reset
@@ -953,6 +952,8 @@ GO bn_time2d
 GO bn_reset
 GO bn_legend_labels
 
+GO bn_reset
+GO bn_DQ
 
 ! *********** v6.95Additions ***********
 

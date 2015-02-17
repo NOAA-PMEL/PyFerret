@@ -187,6 +187,7 @@
 * V691+ 8/14 *acm* Fix ticket 2194: SHOW with /OUTFILE and not /XML. 
 * V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+*        2/15 *sh* attempted but rejected hack to deal with left-over dset=-1
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -316,6 +317,7 @@
 * initialize
 	show_lun = ttout_lun
 	sxml = .FALSE.
+!        IF (dset .EQ. -1) dset = unspecified_int4   ! 2/15: avoid left over -1
 
 * command given with /ALL ?
 	risc_buff = ' '

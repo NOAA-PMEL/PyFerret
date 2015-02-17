@@ -53,6 +53,7 @@
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead 
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* 12/14 *sh* "_" is a separate character class needed for _DQ_ and _SQ_
 
 	include	'ferret.parm'
 
@@ -70,7 +71,7 @@
 * classes of characters
 *	C1 - + -
 *	C2 - digits
-*	C3 - letters _ _
+*	C3 - letters
 *	C4 - [
 *	C5 - ]
 *	C6 - * / ^ , (
@@ -82,6 +83,7 @@
 *	C12- {
 *	C13- }
 *	C14- "
+*	C15- _
 *	C15- all others
 
 	IF     ( ctr.EQ.'+' .OR.  ctr.EQ.'-' ) THEN
@@ -91,8 +93,7 @@
 	ELSEIF ( ctr.EQ.'E' .OR.  ctr.EQ.'e' ) THEN
 	   ALG_CLASS = 9
 	ELSEIF ( ( ctr.GE.'A' .AND. ctr.LE.'Z' )
-     .	    .OR. ( ctr.GE.'a' .AND. ctr.LE.'z' )
-     .	    .OR. ( ctr.EQ.'_'  .OR. ctr.EQ.'_' )	) THEN
+     .	    .OR. ( ctr.GE.'a' .AND. ctr.LE.'z' ) ) THEN
 	   ALG_CLASS = 3
 	ELSEIF ( ctr.EQ.'[' ) THEN
 	   ALG_CLASS = 4
@@ -115,8 +116,10 @@
 	   ALG_CLASS = 13
 	ELSEIF ( ctr.EQ.'"' ) THEN
 	   ALG_CLASS = 14
-	ELSE
+	ELSEIF ( ctr.EQ.'_' ) THEN
 	   ALG_CLASS = 15
+	ELSE
+	   ALG_CLASS = 16
 	ENDIF
 
 	RETURN

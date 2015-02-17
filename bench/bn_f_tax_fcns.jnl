@@ -5,7 +5,12 @@
 ! 2/2015 ACM
 
 define axis/f=1-jan-2011:31-jan-2011:1/units=hours fax
+
+
+
 let ff = _f[gf=fax]
+! Test RETURN=F0
+say `ff,return=F0`
 
 list/N=20:30 tax_datestring(_F[g=ff],ff,"minute")
 list/N=20:30 tax_datestring(_F[g=ff],ff,"hour")

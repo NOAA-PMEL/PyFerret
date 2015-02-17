@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 79619135 Feb  5 17:24 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
+Running FERRET version ../fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 79682236 Feb 17 10:24 ../fer/ferret_c
+Using external functions from ../external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  v6.94 release candidate
+Note: ticket 2235; and make dset=-1 a parameter
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,7 +13,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
@@ -21,8 +21,8 @@ FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
-PWD=/home/users/ansley/build/current_trunk/FERRET/bench
-Beginning at Fri Feb 6 14:39:07 PST 2015
+PWD=/home/users/ansley/build/flat_64/FERRET/bench
+Beginning at Tue Feb 17 10:27:07 PST 2015
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10198,39 +10198,11 @@ set wind/asp=.75/clear
 set view ul
 plot/i=1:10/ylimits=1:40/nolabel i      ! note that /nolabel supresses XLAB
 plot/i=1:10/over/sym=2 i^1.1
-  line_key -0.78829491      0.23591036      -5.6255827      -5.6255827    
-  call trans -0.78829491      -5.6255827     -0.78829491      -5.6255827    
-  call trans -0.78829491     -0.78829491     -0.78829491      -5.6255827    
-  call trans -0.27619228     -0.27619228     -0.27619228      -5.6255827    
-  call trans  0.23591036      0.23591036      0.23591036      -5.6255827    
 plot/i=1:10/over/sym=2/size=.12 i^1.2
-  line_key -0.78829491      0.23591036      -7.9640236      -7.9640236    
-  call trans -0.78829491      -7.9640236     -0.78829491      -7.9640236    
-  call trans -0.78829491     -0.78829491     -0.78829491      -7.9640236    
-  call trans -0.27619228     -0.27619228     -0.27619228      -7.9640236    
-  call trans  0.23591036      0.23591036      0.23591036      -7.9640236    
 plot/i=1:10/over/sym=2/color=red i^1.3
-  line_key -0.78829491      0.23591036      -10.302464      -10.302464    
-  call trans -0.78829491      -10.302464     -0.78829491      -10.302464    
-  call trans -0.78829491     -0.78829491     -0.78829491      -10.302464    
-  call trans -0.27619228     -0.27619228     -0.27619228      -10.302464    
-  call trans  0.23591036      0.23591036      0.23591036      -10.302464    
 plot/i=1:10/over/thick/step/color=light_blue i^1.4
-  line_key -0.78829491      0.23591036      -12.640905      -12.640905    
-  call trans -0.78829491      -12.640905     -0.78829491      -12.640905    
-  call trans -0.78829491     -0.78829491     -0.78829491      -12.640905    
-  call trans  0.23591036      0.23591036      0.23591036      -12.640905    
 plot/i=1:10/over/thick/color=blue/step=connected i^1.5
-  line_key -0.78829491      0.23591036      -14.979347      -14.979347    
-  call trans -0.78829491      -14.979347     -0.78829491      -14.979347    
-  call trans -0.78829491     -0.78829491     -0.78829491      -14.979347    
-  call trans  0.23591036      0.23591036      0.23591036      -14.979347    
 plot/i=1:10/over/thick=3/color=purple/size=.14 i^1.6
-  line_key   1.1625723       1.9819365       3.2345104       3.2345104    
-  call trans   1.1625723       3.2345104       1.1625723       3.2345104    
-  call trans   1.1625723       1.1625723       1.1625723       3.2345104    
-  call trans   1.5722544       1.5722544       1.5722544       3.2345104    
-  call trans   1.9819365       1.9819365       1.9819365       3.2345104    
  
 ! deliberate error
 set mode ignore
@@ -10243,40 +10215,11 @@ can mode logo
 set view ur
 let eps = .1; plot/vs RANDU(I[i=1:10]+eps), RANDU(I[i=1:10]+10+eps)
 let eps = .2; plot/vs/over/sym=2  RANDU(I[i=1:10]+eps), RANDU(I[i=1:10]+10+eps)
-  line_key -8.76424760E-02  1.19583160E-02 -0.15289806     -0.15289806    
-  call trans -8.76424760E-02 -0.15289806     -8.76424760E-02 -0.15289806    
-  call trans -8.76424760E-02 -8.76424760E-02 -8.76424760E-02 -0.15289806    
-  call trans -3.78420800E-02 -3.78420800E-02 -3.78420800E-02 -0.15289806    
-  call trans  1.19583160E-02  1.19583160E-02  1.19583160E-02 -0.15289806    
 let eps = .3; plot/vs/over/line/size=.12 RANDU(I[i=1:10]+eps), RANDU(I[i=1:10]+10+eps)
-  line_key -8.76424760E-02  1.19583160E-02 -0.20686209     -0.20686209    
-  call trans -8.76424760E-02 -0.20686209     -8.76424760E-02 -0.20686209    
-  call trans -8.76424760E-02 -8.76424760E-02 -8.76424760E-02 -0.20686209    
-  call trans  1.19583160E-02  1.19583160E-02  1.19583160E-02 -0.20686209    
 let eps = .4; plot/vs/over/line/sym=2/color=red RANDU(I[i=1:10]+eps), RANDU(I[i=1:10]+10+eps)
-  line_key -8.76424760E-02  1.19583160E-02 -0.26082611     -0.26082611    
-  call trans -8.76424760E-02 -0.26082611     -8.76424760E-02 -0.26082611    
-  call trans -8.76424760E-02 -8.76424760E-02 -8.76424760E-02 -0.26082611    
-  call trans -3.78420800E-02 -3.78420800E-02 -3.78420800E-02 -0.26082611    
-  call trans  1.19583160E-02  1.19583160E-02  1.19583160E-02 -0.26082611    
 let eps = .5; plot/vs/over/thick RANDU(I[i=1:10]+eps), RANDU(I[i=1:10]+10+eps)
-  line_key -8.76424760E-02  1.19583160E-02 -0.31479013     -0.31479013    
-  call trans -8.76424760E-02 -0.31479013     -8.76424760E-02 -0.31479013    
-  call trans -8.76424760E-02 -8.76424760E-02 -8.76424760E-02 -0.31479013    
-  call trans -3.78420800E-02 -3.78420800E-02 -3.78420800E-02 -0.31479013    
-  call trans  1.19583160E-02  1.19583160E-02  1.19583160E-02 -0.31479013    
 let eps = .6; plot/vs/over/thick/color=blue RANDU(I[i=1:10]+eps), RANDU(I[i=1:10]+10+eps)
-  line_key -8.76424760E-02  1.19583160E-02 -0.36875415     -0.36875415    
-  call trans -8.76424760E-02 -0.36875415     -8.76424760E-02 -0.36875415    
-  call trans -8.76424760E-02 -8.76424760E-02 -8.76424760E-02 -0.36875415    
-  call trans -3.78420800E-02 -3.78420800E-02 -3.78420800E-02 -0.36875415    
-  call trans  1.19583160E-02  1.19583160E-02  1.19583160E-02 -0.36875415    
 let eps = .7; plot/vs/over/thick=3/color=purple/size=.14 RANDU(I[i=1:10]+eps), RANDU(I[i=1:10]+10+eps)
-  line_key  0.10207330      0.18175393      5.15656248E-02  5.15656248E-02
-  call trans  0.10207330      5.15656248E-02  0.10207330      5.15656248E-02
-  call trans  0.10207330      0.10207330      0.10207330      5.15656248E-02
-  call trans  0.14191362      0.14191362      0.14191362      5.15656248E-02
-  call trans  0.18175393      0.18175393      0.18175393      5.15656248E-02
  
 set view ll
 contour/color=lightBlue/sig=1/size=.12 x[x=0:1:.1]*SIN(Y[y=0:6.3:.2])
@@ -10521,13 +10464,13 @@ FERRET_PLATFORM = "Linux 2.6.32-504.8.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 10:53:28 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 6-Feb-15"
-SESSION_TIME = "14:39"
-SESSION_PID = "6633"
-DELTA_CPU = "5.29919"
-CLOCK_SECS = "7.183"
-CURRENT_DATE = " 6-Feb-15"
-CURRENT_TIME = "14:39:14"
+SESSION_DATE = "17-Feb-15"
+SESSION_TIME = "10:27"
+SESSION_PID = "16634"
+DELTA_CPU = "5.17121"
+CLOCK_SECS = "9.288"
+CURRENT_DATE = "17-Feb-15"
+CURRENT_TIME = "10:27:17"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10550,13 +10493,13 @@ FERRET_PLATFORM = "Linux 2.6.32-504.8.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 10:53:28 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 6-Feb-15"
-SESSION_TIME = "14:39"
-SESSION_PID = "6633"
+SESSION_DATE = "17-Feb-15"
+SESSION_TIME = "10:27"
+SESSION_PID = "16634"
 DELTA_CPU = "0"
-CLOCK_SECS = "7.184"
-CURRENT_DATE = " 6-Feb-15"
-CURRENT_TIME = "14:39:14"
+CLOCK_SECS = "9.289"
+CURRENT_DATE = "17-Feb-15"
+CURRENT_TIME = "10:27:17"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10566,9 +10509,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 6-Feb-15"
-SESSION_TIME = "14:39"
-SESSION_PID = "6633"
+SESSION_DATE = "17-Feb-15"
+SESSION_TIME = "10:27"
+SESSION_PID = "16634"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10578,15 +10521,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 6-Feb-15"
-SESSION_TIME = "14:39"
-SESSION_PID = "6633"
+SESSION_DATE = "17-Feb-15"
+SESSION_TIME = "10:27"
+SESSION_PID = "16634"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 6-Feb-15"
-SESSION_TIME = "14:39"
-SESSION_PID = "6633"
+SESSION_DATE = "17-Feb-15"
+SESSION_TIME = "10:27"
+SESSION_PID = "16634"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10622,7 +10565,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET (beta) Ver.6.94"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "06-FEB-2015 14:39:14"
+LAB3 = "17-FEB-2015 10:27:17"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10722,13 +10665,13 @@ FERRET_PLATFORM = "Linux 2.6.32-504.8.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 10:53:28 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 6-Feb-15"
-SESSION_TIME = "14:39"
-SESSION_PID = "6633"
+SESSION_DATE = "17-Feb-15"
+SESSION_TIME = "10:27"
+SESSION_PID = "16634"
 DELTA_CPU = "0.006999"
-CLOCK_SECS = "7.19"
-CURRENT_DATE = " 6-Feb-15"
-CURRENT_TIME = "14:39:14"
+CLOCK_SECS = "9.295"
+CURRENT_DATE = "17-Feb-15"
+CURRENT_TIME = "10:27:17"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -16830,10 +16773,6 @@ plot/over temp[g=u]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key   118.53600       125.38811       21.881578       21.881578    
-  call trans   118.53600       21.881578       118.53600       21.881578    
-  call trans   118.53600       118.53600       118.53600       21.881578    
-  call trans   125.38811       125.38811       125.38811       21.881578    
 PPL plot 77   complete
 plot/over temp[g=g5day]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
@@ -16853,10 +16792,6 @@ plot/over temp[g=g5day]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key   118.53600       125.38811       21.486843       21.486843    
-  call trans   118.53600       21.486843       118.53600       21.486843    
-  call trans   118.53600       118.53600       118.53600       21.486843    
-  call trans   125.38811       125.38811       125.38811       21.486843    
 PPL plot 78   complete
 plot/over temp[g=g5_10]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
@@ -16881,10 +16816,6 @@ plot/over temp[g=g5_10]
  doing --> TEMP[Z=5@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key   118.53600       125.38811       21.092106       21.092106    
-  call trans   118.53600       21.092106       118.53600       21.092106    
-  call trans   118.53600       118.53600       118.53600       21.092106    
-  call trans   125.38811       125.38811       125.38811       21.092106    
 PPL plot 79   complete
 plot/over temp[g=u@ave]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
@@ -16902,10 +16833,6 @@ plot/over temp[g=u@ave]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key   118.53600       125.38811       20.697369       20.697369    
-  call trans   118.53600       20.697369       118.53600       20.697369    
-  call trans   118.53600       118.53600       118.53600       20.697369    
-  call trans   125.38811       125.38811       125.38811       20.697369    
 PPL plot 80   complete
 plot/over temp[g=g5day@ave]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
@@ -16925,10 +16852,6 @@ plot/over temp[g=g5day@ave]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key   118.53600       125.38811       20.302631       20.302631    
-  call trans   118.53600       20.302631       118.53600       20.302631    
-  call trans   118.53600       118.53600       118.53600       20.302631    
-  call trans   125.38811       125.38811       125.38811       20.302631    
 PPL plot 81   complete
 plot/over temp[g=g5_10@ave]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
@@ -16953,11 +16876,6 @@ plot/over temp[g=g5_10@ave]
  doing --> TEMP[Z=5@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key   131.58763       137.06932       23.377193       23.377193    
-  call trans   131.58763       23.377193       131.58763       23.377193    
-  call trans   131.58763       131.58763       131.58763       23.377193    
-  call trans   134.32848       134.32848       134.32848       23.377193    
-  call trans   137.06932       137.06932       137.06932       23.377193    
 PPL plot 82   complete
 plot/over temp[g=u@asn]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
@@ -16977,11 +16895,6 @@ plot/over temp[g=u@asn]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key   131.58763       137.06932       23.692982       23.692982    
-  call trans   131.58763       23.692982       131.58763       23.692982    
-  call trans   131.58763       131.58763       131.58763       23.692982    
-  call trans   134.32848       134.32848       134.32848       23.692982    
-  call trans   137.06932       137.06932       137.06932       23.692982    
 PPL plot 83   complete
 plot/over temp[g=g5day@asn]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
@@ -17003,11 +16916,6 @@ plot/over temp[g=g5day@asn]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key   131.58763       137.06932       24.008772       24.008772    
-  call trans   131.58763       24.008772       131.58763       24.008772    
-  call trans   131.58763       131.58763       131.58763       24.008772    
-  call trans   134.32848       134.32848       134.32848       24.008772    
-  call trans   137.06932       137.06932       137.06932       24.008772    
 PPL plot 84   complete
 plot/over temp[g=u,gx=u@ave]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
@@ -17031,11 +16939,6 @@ plot/over temp[g=u,gx=u@ave]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key   131.58763       137.06932       24.324562       24.324562    
-  call trans   131.58763       24.324562       131.58763       24.324562    
-  call trans   131.58763       131.58763       131.58763       24.324562    
-  call trans   134.32848       134.32848       134.32848       24.324562    
-  call trans   137.06932       137.06932       137.06932       24.324562    
 PPL plot 85   complete
 plot/over temp[g=g5day,gx=g5day@ave]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
@@ -17057,11 +16960,6 @@ plot/over temp[g=g5day,gx=g5day@ave]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key   131.58763       137.06932       24.640350       24.640350    
-  call trans   131.58763       24.640350       131.58763       24.640350    
-  call trans   131.58763       131.58763       131.58763       24.640350    
-  call trans   134.32848       134.32848       134.32848       24.640350    
-  call trans   137.06932       137.06932       137.06932       24.640350    
 PPL plot 86   complete
 plot/over temp[g=g5_10,gx=g5_10@ave]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
@@ -17088,11 +16986,6 @@ plot/over temp[g=g5_10,gx=g5_10@ave]
  doing --> TEMP[Z=5@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key   131.58763       137.06932       24.956141       24.956141    
-  call trans   131.58763       24.956141       131.58763       24.956141    
-  call trans   131.58763       131.58763       131.58763       24.956141    
-  call trans   134.32848       134.32848       134.32848       24.956141    
-  call trans   137.06932       137.06932       137.06932       24.956141    
 PPL plot 87   complete
 plot/over temp[g=g5_10@asn]   ! invalid interpretation of data
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
@@ -17117,11 +17010,6 @@ plot/over temp[g=g5_10@asn]   ! invalid interpretation of data
  doing --> TEMP[Z=5@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key   131.58763       137.06932       25.271931       25.271931    
-  call trans   131.58763       25.271931       131.58763       25.271931    
-  call trans   131.58763       131.58763       131.58763       25.271931    
-  call trans   134.32848       134.32848       134.32848       25.271931    
-  call trans   137.06932       137.06932       137.06932       25.271931    
 PPL plot 88   complete
  
 ! Y axis
@@ -17150,10 +17038,6 @@ plot/over temp[g=u]
  regrid  TEMP     M:192 dset:   1 I:   50   50  J:    5   88  K:    1    1  L:    2    3  M: -999 -999  N: -999 -999
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  -23.601543      -21.625528       25.281015       25.281015    
-  call trans  -23.601543       25.281015      -23.601543       25.281015    
-  call trans  -23.601543      -23.601543      -23.601543       25.281015    
-  call trans  -21.625528      -21.625528      -21.625528       25.281015    
 PPL plot 90   complete
 plot/over temp[g=g5day]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
@@ -17169,10 +17053,6 @@ plot/over temp[g=g5day]
  -DELETE TEMP     M:195 dset:   1 I:   50   51  J:    5   89  K:    1    1  L:    2    3  M: -999 -999  N: -999 -999
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  -23.601543      -21.625528       25.027256       25.027256    
-  call trans  -23.601543       25.027256      -23.601543       25.027256    
-  call trans  -23.601543      -23.601543      -23.601543       25.027256    
-  call trans  -21.625528      -21.625528      -21.625528       25.027256    
 PPL plot 91   complete
 plot/over temp[g=g5_10]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
@@ -17193,10 +17073,6 @@ plot/over temp[g=g5_10]
  doing --> TEMP[Z=5@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  -23.601543      -21.625528       24.773497       24.773497    
-  call trans  -23.601543       24.773497      -23.601543       24.773497    
-  call trans  -23.601543      -23.601543      -23.601543       24.773497    
-  call trans  -21.625528      -21.625528      -21.625528       24.773497    
 PPL plot 92   complete
 plot/over temp[g=u@ave]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
@@ -17210,10 +17086,6 @@ plot/over temp[g=u@ave]
  regrid  TEMP     M:202 dset:   1 I:   50   50  J:    5   88  K:    1    1  L:    2    3  M: -999 -999  N: -999 -999
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  -23.601543      -21.625528       24.519737       24.519737    
-  call trans  -23.601543       24.519737      -23.601543       24.519737    
-  call trans  -23.601543      -23.601543      -23.601543       24.519737    
-  call trans  -21.625528      -21.625528      -21.625528       24.519737    
 PPL plot 93   complete
 plot/over temp[g=g5day@ave]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
@@ -17229,10 +17101,6 @@ plot/over temp[g=g5day@ave]
  -DELETE TEMP     M:205 dset:   1 I:   50   51  J:    5   89  K:    1    1  L:    2    3  M: -999 -999  N: -999 -999
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  -23.601543      -21.625528       24.265978       24.265978    
-  call trans  -23.601543       24.265978      -23.601543       24.265978    
-  call trans  -23.601543      -23.601543      -23.601543       24.265978    
-  call trans  -21.625528      -21.625528      -21.625528       24.265978    
 PPL plot 94   complete
 plot/over temp[g=g5_10@ave]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
@@ -17253,11 +17121,6 @@ plot/over temp[g=g5_10@ave]
  doing --> TEMP[Z=5@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  -19.837708      -18.256895       26.242481       26.242481    
-  call trans  -19.837708       26.242481      -19.837708       26.242481    
-  call trans  -19.837708      -19.837708      -19.837708       26.242481    
-  call trans  -19.047302      -19.047302      -19.047302       26.242481    
-  call trans  -18.256895      -18.256895      -18.256895       26.242481    
 PPL plot 95   complete
 plot/over temp[g=u@asn]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
@@ -17273,11 +17136,6 @@ plot/over temp[g=u@asn]
  -DELETE TEMP     M:212 dset:   1 I:   50   50  J:    5   88  K:    1    1  L:    2    3  M: -999 -999  N: -999 -999
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  -19.837708      -18.256895       26.445488       26.445488    
-  call trans  -19.837708       26.445488      -19.837708       26.445488    
-  call trans  -19.837708      -19.837708      -19.837708       26.445488    
-  call trans  -19.047302      -19.047302      -19.047302       26.445488    
-  call trans  -18.256895      -18.256895      -18.256895       26.445488    
 PPL plot 96   complete
 plot/over temp[g=g5day@asn]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
@@ -17295,11 +17153,6 @@ plot/over temp[g=g5day@asn]
  -DELETE TEMP     M:216 dset:   1 I:   50   50  J:    5   88  K:    1    1  L:    2    3  M: -999 -999  N: -999 -999
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  -19.837708      -18.256895       26.648497       26.648497    
-  call trans  -19.837708       26.648497      -19.837708       26.648497    
-  call trans  -19.837708      -19.837708      -19.837708       26.648497    
-  call trans  -19.047302      -19.047302      -19.047302       26.648497    
-  call trans  -18.256895      -18.256895      -18.256895       26.648497    
 PPL plot 97   complete
 plot/over temp[g=u,gy=u@ave]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
@@ -17319,11 +17172,6 @@ plot/over temp[g=u,gy=u@ave]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  -19.837708      -18.256895       26.851503       26.851503    
-  call trans  -19.837708       26.851503      -19.837708       26.851503    
-  call trans  -19.837708      -19.837708      -19.837708       26.851503    
-  call trans  -19.047302      -19.047302      -19.047302       26.851503    
-  call trans  -18.256895      -18.256895      -18.256895       26.851503    
 PPL plot 98   complete
 plot/over temp[g=g5day,gy=g5day@ave]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2     NORMAL    NORMAL
@@ -17341,11 +17189,6 @@ plot/over temp[g=g5day,gy=g5day@ave]
  -DELETE TEMP     M:222 dset:   1 I:   50   51  J:    5   88  K:    1    1  L:    2    3  M: -999 -999  N: -999 -999
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  -19.837708      -18.256895       27.054512       27.054512    
-  call trans  -19.837708       27.054512      -19.837708       27.054512    
-  call trans  -19.837708      -19.837708      -19.837708       27.054512    
-  call trans  -19.047302      -19.047302      -19.047302       27.054512    
-  call trans  -18.256895      -18.256895      -18.256895       27.054512    
 PPL plot 99   complete
 plot/over temp[g=g5_10,gy=g5_10@ave]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
@@ -17368,11 +17211,6 @@ plot/over temp[g=g5_10,gy=g5_10@ave]
  doing --> TEMP[Z=5@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  -19.837708      -18.256895       27.257519       27.257519    
-  call trans  -19.837708       27.257519      -19.837708       27.257519    
-  call trans  -19.837708      -19.837708      -19.837708       27.257519    
-  call trans  -19.047302      -19.047302      -19.047302       27.257519    
-  call trans  -18.256895      -18.256895      -18.256895       27.257519    
 PPL plot 100  complete
 plot/over temp[g=g5_10@asn]  ! invalid interpretation of data
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
@@ -17395,11 +17233,6 @@ plot/over temp[g=g5_10@asn]  ! invalid interpretation of data
  doing --> TEMP[Z=5@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  -19.837708      -18.256895       27.460526       27.460526    
-  call trans  -19.837708       27.460526      -19.837708       27.460526    
-  call trans  -19.837708      -19.837708      -19.837708       27.460526    
-  call trans  -19.047302      -19.047302      -19.047302       27.460526    
-  call trans  -18.256895      -18.256895      -18.256895       27.460526    
 PPL plot 101  complete
  
 ! T axis
@@ -17448,10 +17281,6 @@ plot/over temp[g=u]
  doing moduloing TEMP on T axis:     1     2 dset:   2
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-  line_key   7153.1123       7799.0845       26.976316       26.976316    
-  call trans   7153.1123       26.976316       7153.1123       26.976316    
-  call trans   7153.1123       7153.1123       7153.1123       26.976316    
-  call trans   7799.0845       7799.0845       7799.0845       26.976316    
 PPL plot 103  complete
 plot/over temp[g=g5day]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1     NORMAL    NORMAL
@@ -17469,10 +17298,6 @@ plot/over temp[g=g5day]
  -DELETE TEMP     M:246 dset:   2 I:   50   51  J:   44   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-  line_key   7153.1123       7799.0845       26.897369       26.897369    
-  call trans   7153.1123       26.897369       7153.1123       26.897369    
-  call trans   7153.1123       7153.1123       7153.1123       26.897369    
-  call trans   7799.0845       7799.0845       7799.0845       26.897369    
 PPL plot 104  complete
 plot/over temp[g=g5_10]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
@@ -17495,10 +17320,6 @@ plot/over temp[g=g5_10]
  doing --> TEMP[Y=0@ITP,D=2]
  doing --> TEMP[Z=5@ITP,D=2]
 setting up plot
-  line_key   7153.1123       7799.0845       26.818422       26.818422    
-  call trans   7153.1123       26.818422       7153.1123       26.818422    
-  call trans   7153.1123       7153.1123       7153.1123       26.818422    
-  call trans   7799.0845       7799.0845       7799.0845       26.818422    
 PPL plot 105  complete
 plot/over temp[g=u@ave]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
@@ -17519,10 +17340,6 @@ plot/over temp[g=u@ave]
  doing moduloing TEMP on T axis:     1     2 dset:   2
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-  line_key   7153.1123       7799.0845       26.739475       26.739475    
-  call trans   7153.1123       26.739475       7153.1123       26.739475    
-  call trans   7153.1123       7153.1123       7153.1123       26.739475    
-  call trans   7799.0845       7799.0845       7799.0845       26.739475    
 PPL plot 106  complete
 plot/over temp[g=g5day@ave]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1     NORMAL    NORMAL
@@ -17540,10 +17357,6 @@ plot/over temp[g=g5day@ave]
  -DELETE TEMP     M:261 dset:   2 I:   50   51  J:   44   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-  line_key   7153.1123       7799.0845       26.660526       26.660526    
-  call trans   7153.1123       26.660526       7153.1123       26.660526    
-  call trans   7153.1123       7153.1123       7153.1123       26.660526    
-  call trans   7799.0845       7799.0845       7799.0845       26.660526    
 PPL plot 107  complete
 plot/over temp[g=g5_10@ave]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
@@ -17566,11 +17379,6 @@ plot/over temp[g=g5_10@ave]
  doing --> TEMP[Y=0@ITP,D=2]
  doing --> TEMP[Z=5@ITP,D=2]
 setting up plot
-  line_key   8383.5352       8900.3125       27.275440       27.275440    
-  call trans   8383.5352       27.275440       8383.5352       27.275440    
-  call trans   8383.5352       8383.5352       8383.5352       27.275440    
-  call trans   8641.9238       8641.9238       8641.9238       27.275440    
-  call trans   8900.3125       8900.3125       8900.3125       27.275440    
 PPL plot 108  complete
 plot/over temp[g=u@asn]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
@@ -17595,11 +17403,6 @@ plot/over temp[g=u@asn]
  doing moduloing TEMP on T axis:     1     2 dset:   2
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-  line_key   8383.5352       8900.3125       27.338596       27.338596    
-  call trans   8383.5352       27.338596       8383.5352       27.338596    
-  call trans   8383.5352       8383.5352       8383.5352       27.338596    
-  call trans   8641.9238       8641.9238       8641.9238       27.338596    
-  call trans   8900.3125       8900.3125       8900.3125       27.338596    
 PPL plot 109  complete
 plot/over temp[g=g5_10@asn]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1     NORMAL    NORMAL
@@ -17622,11 +17425,6 @@ plot/over temp[g=g5_10@asn]
  doing --> TEMP[Y=0@ITP,D=2]
  doing --> TEMP[Z=5@ITP,D=2]
 setting up plot
-  line_key   8383.5352       8900.3125       27.401754       27.401754    
-  call trans   8383.5352       27.401754       8383.5352       27.401754    
-  call trans   8383.5352       8383.5352       8383.5352       27.401754    
-  call trans   8641.9238       8641.9238       8641.9238       27.401754    
-  call trans   8900.3125       8900.3125       8900.3125       27.401754    
 PPL plot 110  complete
 plot/over temp[g=u,gt=u@ave]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
@@ -17651,11 +17449,6 @@ plot/over temp[g=u,gt=u@ave]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1     NORMAL    NORMAL
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-  line_key   8383.5352       8900.3125       27.464912       27.464912    
-  call trans   8383.5352       27.464912       8383.5352       27.464912    
-  call trans   8383.5352       8383.5352       8383.5352       27.464912    
-  call trans   8641.9238       8641.9238       8641.9238       27.464912    
-  call trans   8900.3125       8900.3125       8900.3125       27.464912    
 PPL plot 111  complete
 plot/over temp[g=g5day,gt=g5day@ave]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1     NORMAL    NORMAL
@@ -17673,11 +17466,6 @@ plot/over temp[g=g5day,gt=g5day@ave]
  -DELETE TEMP     M:286 dset:   2 I:   50   51  J:   44   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-  line_key   8383.5352       8900.3125       27.528070       27.528070    
-  call trans   8383.5352       27.528070       8383.5352       27.528070    
-  call trans   8383.5352       8383.5352       8383.5352       27.528070    
-  call trans   8641.9238       8641.9238       8641.9238       27.528070    
-  call trans   8900.3125       8900.3125       8900.3125       27.528070    
 PPL plot 112  complete
 plot/over temp[g=g5_10,gt=g5_10@ave]
  dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY   NORMAL    NORMAL
@@ -17700,11 +17488,6 @@ plot/over temp[g=g5_10,gt=g5_10@ave]
  doing --> TEMP[Y=0@ITP,D=2]
  doing --> TEMP[Z=5@ITP,D=2]
 setting up plot
-  line_key   8383.5352       8900.3125       27.591228       27.591228    
-  call trans   8383.5352       27.591228       8383.5352       27.591228    
-  call trans   8383.5352       8383.5352       8383.5352       27.591228    
-  call trans   8641.9238       8641.9238       8641.9238       27.591228    
-  call trans   8900.3125       8900.3125       8900.3125       27.591228    
 PPL plot 113  complete
 plot/over temp[g=g5day,gt=g5day@asn]  ! invalid interpretation of data
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
@@ -17720,11 +17503,6 @@ plot/over temp[g=g5day,gt=g5day@asn]  ! invalid interpretation of data
  -DELETE TEMP     M:294 dset:   2 I:   50   51  J:   44   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
-  line_key   8383.5352       8900.3125       27.654387       27.654387    
-  call trans   8383.5352       27.654387       8383.5352       27.654387    
-  call trans   8383.5352       8383.5352       8383.5352       27.654387    
-  call trans   8641.9238       8641.9238       8641.9238       27.654387    
-  call trans   8900.3125       8900.3125       8900.3125       27.654387    
 PPL plot 114  complete
  
 set mode/last interp
@@ -25788,10 +25566,6 @@ let ts = RANDU(T[T=1-jan-1990:15-jan-1990:1])
 plot ts
 define axis/t="1-jan-1990:12:00":"15-jan-1990:12:00":24/unit=hours t24
 plot/over ts[gt=t24@ave]
-  line_key   8706.5137       8724.2607     -0.15977444     -0.15977444    
-  call trans   8706.5137     -0.15977444       8706.5137     -0.15977444    
-  call trans   8706.5137       8706.5137       8706.5137     -0.15977444    
-  call trans   8724.2607       8724.2607       8724.2607     -0.15977444    
  
 ! crash when attempting an @MAX regridding
 load ts[gt=t24@max]
@@ -25893,7 +25667,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Fri Feb  6 14:39:21 PST 2015
+Tue Feb 17 10:27:26 PST 2015
  
 GO bn_reset
 cancel mode verify
@@ -25919,45 +25693,15 @@ set region/x=125w/y=0n/l=13:48
  
 plot     good[x=@sbx:3]
 plot/over     good[y=@sbx:3]
-  line_key   6520.3848       7817.0615       22.940790       22.940790    
-  call trans   6520.3848       22.940790       6520.3848       22.940790    
-  call trans   6520.3848       6520.3848       6520.3848       22.940790    
-  call trans   7817.0615       7817.0615       7817.0615       22.940790    
 plot/over     good[z=@sbx:3]
-  line_key   6520.3848       7817.0615       22.743422       22.743422    
-  call trans   6520.3848       22.743422       6520.3848       22.743422    
-  call trans   6520.3848       6520.3848       6520.3848       22.743422    
-  call trans   7817.0615       7817.0615       7817.0615       22.743422    
 plot/over     good[t=@sbx:3]
-  line_key   6520.3848       7817.0615       22.546053       22.546053    
-  call trans   6520.3848       22.546053       6520.3848       22.546053    
-  call trans   6520.3848       6520.3848       6520.3848       22.546053    
-  call trans   7817.0615       7817.0615       7817.0615       22.546053    
  
  
 cancel memory/all
 plot/over bad[x=@sbx:3]
-  line_key   6520.3848       7817.0615       22.348684       22.348684    
-  call trans   6520.3848       22.348684       6520.3848       22.348684    
-  call trans   6520.3848       6520.3848       6520.3848       22.348684    
-  call trans   7817.0615       7817.0615       7817.0615       22.348684    
 plot/over bad[y=@sbx:3]
-  line_key   6520.3848       7817.0615       22.151316       22.151316    
-  call trans   6520.3848       22.151316       6520.3848       22.151316    
-  call trans   6520.3848       6520.3848       6520.3848       22.151316    
-  call trans   7817.0615       7817.0615       7817.0615       22.151316    
 plot/over bad[z=@sbx:3]
-  line_key   8990.2441       10027.585       23.688597       23.688597    
-  call trans   8990.2441       23.688597       8990.2441       23.688597    
-  call trans   8990.2441       8990.2441       8990.2441       23.688597    
-  call trans   9508.9141       9508.9141       9508.9141       23.688597    
-  call trans   10027.585       10027.585       10027.585       23.688597    
 plot/over bad[t=@sbx:3]
-  line_key   8990.2441       10027.585       23.846491       23.846491    
-  call trans   8990.2441       23.846491       8990.2441       23.846491    
-  call trans   8990.2441       8990.2441       8990.2441       23.846491    
-  call trans   9508.9141       9508.9141       9508.9141       23.846491    
-  call trans   10027.585       10027.585       10027.585       23.846491    
  
 ! 3/01 *kob* uncomment the below - seems to run on all systems
 GO bn_reset
@@ -32241,15 +31985,7 @@ GO bn_dash_dot
  
 plot/dash/i=1:1000 sin(62.8*i)
 plot/over/dash=(0.4,0.1,0.4,0.1)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
-  line_key  -84.985916      -35.739437      -1.3195488      -1.3195488    
-  call trans  -84.985916      -1.3195488      -84.985916      -1.3195488    
-  call trans  -84.985916      -84.985916      -84.985916      -1.3195488    
-  call trans  -35.739437      -35.739437      -35.739437      -1.3195488    
 plot/over/dash=(0.1,0.1,0.04,0.05)/color=blue/thick=1/i=1:1000 sin(62.8*(i+20) )
-  line_key  -84.985916      -35.739437      -1.4323308      -1.4323308    
-  call trans  -84.985916      -1.4323308      -84.985916      -1.4323308    
-  call trans  -84.985916      -84.985916      -84.985916      -1.4323308    
-  call trans  -35.739437      -35.739437      -35.739437      -1.4323308    
  
 !plot/symbol=dot/i=1:1000 sin(62.8*i)
 !plot/symbol=dot/color=red/over/i=1:1000 sin(62.8*(i+20))
@@ -34417,8 +34153,17 @@ SAMPLEL_MULTI(L_INDICES,DAT_TO_SAMPLE)
     Returns data sampled according to L indices which may vary in IJK
     L_INDICES: ordered indices
     DAT_TO_SAMPLE: data to sample using L indices
+SAMPLEF_DATE(DAT_TO_SAMPLE,YR,MO,DAY,HR,MIN,SEC)
+    Returns data sampled by interpolating to a set of times in F direction
+    DAT_TO_SAMPLE: data to sample at set of times in F
+    YR: Year(s) yyyy
+    MO: Month(s), integer mm
+    DAY: Day(s) of month dd
+    HR: Hour(s) hh
+    MIN: Minute(s) mm
+    SEC: Second(s) ss
 SAMPLET_DATE(DAT_TO_SAMPLE,YR,MO,DAY,HR,MIN,SEC)
-    Returns data sampled by interpolating to a set of times
+    Returns data sampled by interpolating to a set of times in T direction
     DAT_TO_SAMPLE: data to sample at set of times
     YR: Year(s) yyyy
     MO: Month(s), integer mm
@@ -34479,6 +34224,10 @@ SAMPLEXYT_NRST(DAT_TO_SAMPLE,XPTS,YPTS,TPTS)
     XPTS: X values of sample points
     YPTS: Y values of sample points
     TPTS: T values of sample points
+SAMPLE_FAST_I(V,Indices)
+    Fast 1D sample variable using set of indices
+    V: Variable to sample
+    Indices: List of indices at which to sample
  
 go bench_sorti.jnl
  
@@ -35682,12 +35431,12 @@ list/L=15:20 tax_month(t[gt=temp],temp), tax_yearfrac(t[gt=temp],temp)
  Column  1: TAX_MONTH(T[GT=TEMP],TEMP)
  Column  2: TAX_YEARFRAC(T[GT=TEMP],TEMP)
                  (C001,V001)  (C001,V009)
-10-NOV-1982 16 / 15:  11.0000  0.860274
-16-NOV-1982 18 / 16:  11.0000  0.876712
-22-NOV-1982 20 / 17:  11.0000  0.893151
-28-NOV-1982 22 / 18:  11.0000  0.909589
+10-NOV-1982 16 / 15:  11.0000  0.862100
+16-NOV-1982 18 / 16:  11.0000  0.878767
+22-NOV-1982 20 / 17:  11.0000  0.895434
+28-NOV-1982 22 / 18:  11.0000  0.912100
 05-DEC-1982 00 / 19:  12.0000  0.928767
-11-DEC-1982 02 / 20:  12.0000  0.945205
+11-DEC-1982 02 / 20:  12.0000  0.945434
 list/L=15:20 tax_year(t[gt=temp],temp)
              VARIABLE : TAX_YEAR(T[GT=TEMP],TEMP)
              FILENAME : gt4d011.cdf
@@ -38362,29 +38111,9 @@ GO err540_ax_ave
 use coads_climatology
 def axis/edges/t=1:7306:1461/t0="01-jan-0000"/unit=hour t2
 plot/x=140w/y=0/sym/line sst,sst[gt=t2@ave]
-  line_key   1357.0626       2841.4990       25.156834       25.156834    
-  call trans   1357.0626       25.156834       1357.0626       25.156834    
-  call trans   1357.0626       1357.0626       1357.0626       25.156834    
-  call trans   2099.2808       2099.2808       2099.2808       25.156834    
-  call trans   2841.4990       2841.4990       2841.4990       25.156834    
-  line_key   1357.0626       2841.4990       25.108137       25.108137    
-  call trans   1357.0626       25.108137       1357.0626       25.108137    
-  call trans   1357.0626       1357.0626       1357.0626       25.108137    
-  call trans   2099.2808       2099.2808       2099.2808       25.108137    
-  call trans   2841.4990       2841.4990       2841.4990       25.108137    
  
 def axis/edges/t=1:1600:731/t0="01-jan-0000"/unit=hour t2
 plot/x=140w/y=0/sym/line sst,sst[gt=t2@ave]
-  line_key   667.84631       1003.7407       25.156834       25.156834    
-  call trans   667.84631       25.156834       667.84631       25.156834    
-  call trans   667.84631       667.84631       667.84631       25.156834    
-  call trans   835.79346       835.79346       835.79346       25.156834    
-  call trans   1003.7407       1003.7407       1003.7407       25.156834    
-  line_key   667.84631       1003.7407       25.108137       25.108137    
-  call trans   667.84631       25.108137       667.84631       25.108137    
-  call trans   667.84631       667.84631       667.84631       25.108137    
-  call trans   835.79346       835.79346       835.79346       25.108137    
-  call trans   1003.7407       1003.7407       1003.7407       25.108137    
  
 !Make PPL AXSET settings persist, but not settings made w/ qualifiers /AXES= or /NOAXES
 GO bn_reset
@@ -38440,15 +38169,7 @@ let ypts = {-60,-50,-40,-30,-20,-10,  0,  8, 15, 30, 35, 40, 60}
 let zpts = {700,667,669,801,732,755,765,789,808,788,822,699,700}
  
 plot/vs/over/thick/line/dash ypts,zpts
-  line_key  -78.146820      -67.753639       1076.4159       1076.4159    
-  call trans  -78.146820       1076.4159      -78.146820       1076.4159    
-  call trans  -78.146820      -78.146820      -78.146820       1076.4159    
-  call trans  -67.753639      -67.753639      -67.753639       1076.4159    
 plot/vs/over/thick=3/line/dash=0.05,0.05,0.15,0.15 ypts,zpts+100
-  line_key  -78.146820      -67.753639       1103.3862       1103.3862    
-  call trans  -78.146820       1103.3862      -78.146820       1103.3862    
-  call trans  -78.146820      -78.146820      -78.146820       1103.3862    
-  call trans  -67.753639      -67.753639      -67.753639       1103.3862    
  
 *  XY shade with VS/DASH/OVER
 set grid abstract
@@ -38458,15 +38179,7 @@ let xpts = {  0,  8, 12, 15, 23, 28, 30, 35, 40, 44, 54, 60, 75}
 let ypts = {142,147,149,141,142,155,145,149,148,148,152,146,143}
  
 plot/vs/over/thick/color=red/dash xpts,ypts
-  line_key  -13.971130      -5.3967552       93.434822       93.434822    
-  call trans  -13.971130       93.434822      -13.971130       93.434822    
-  call trans  -13.971130      -13.971130      -13.971130       93.434822    
-  call trans  -5.3967552      -5.3967552      -5.3967552       93.434822    
 plot/vs/over/thick=3/color=red/dash=0.05,0.05,0.15,0.15 xpts+10,ypts+30
-  line_key  -13.971130      -5.3967552       90.764755       90.764755    
-  call trans  -13.971130       90.764755      -13.971130       90.764755    
-  call trans  -13.971130      -13.971130      -13.971130       90.764755    
-  call trans  -5.3967552      -5.3967552      -5.3967552       90.764755    
  
 !  Here, test that settings made with PPL LINE command persist,
 ! whereas PLOT/DASH settings do not.
@@ -38475,40 +38188,8 @@ let ypts=y[gy=1:80:1]
 ppl line, 2, 0, 4, 0, 0, 0.04, 0.04, 0.15,0.15
 ppl line, 3, 0, 4, 0, 0, 0.2, 0.2, 0.2,0.2
 plot/thick/dash/vlimits=0:1000 50*sin(ypts/3)+100, 30*cos(ypts/3)+200
-  line_key   17.290899       35.124004      -110.12887      -110.12887    
-  call trans   17.290899      -110.12887       17.290899      -110.12887    
-  call trans   17.290899       17.290899       17.290899      -110.12887    
-  call trans   35.124004       35.124004       35.124004      -110.12887    
-  line_key   17.290899       35.124004      -147.58766      -147.58766    
-  call trans   17.290899      -147.58766       17.290899      -147.58766    
-  call trans   17.290899       17.290899       17.290899      -147.58766    
-  call trans   35.124004       35.124004       35.124004      -147.58766    
 plot/over/color=red/thick/dash=0.04,0.04,0.04,0.04 50*sin(ypts/3)+400, 30*cos(ypts/3)+500
-  line_key  -10.946660      -4.1044817      -76.415947      -76.415947    
-  call trans  -10.946660      -76.415947      -10.946660      -76.415947    
-  call trans  -10.946660      -10.946660      -10.946660      -76.415947    
-  call trans  -4.1044817      -4.1044817      -4.1044817      -76.415947    
-  line_key  -10.946660      -4.1044817      -103.38628      -103.38628    
-  call trans  -10.946660      -103.38628      -10.946660      -103.38628    
-  call trans  -10.946660      -10.946660      -10.946660      -103.38628    
-  call trans  -4.1044817      -4.1044817      -4.1044817      -103.38628    
 plot/over/thick/dash/color=blue 50*sin(ypts/3)+700, 30*cos(ypts/3)+800, 20*cos(ypts/5)+900, 20*sin(ypts)+950
-  line_key  -10.946660      -4.1044817      -130.35661      -130.35661    
-  call trans  -10.946660      -130.35661      -10.946660      -130.35661    
-  call trans  -10.946660      -10.946660      -10.946660      -130.35661    
-  call trans  -4.1044817      -4.1044817      -4.1044817      -130.35661    
-  line_key  -10.946660      -4.1044817      -157.32693      -157.32693    
-  call trans  -10.946660      -157.32693      -10.946660      -157.32693    
-  call trans  -10.946660      -10.946660      -10.946660      -157.32693    
-  call trans  -4.1044817      -4.1044817      -4.1044817      -157.32693    
-  line_key  -10.946660      -4.1044817      -184.29729      -184.29729    
-  call trans  -10.946660      -184.29729      -10.946660      -184.29729    
-  call trans  -10.946660      -10.946660      -10.946660      -184.29729    
-  call trans  -4.1044817      -4.1044817      -4.1044817      -184.29729    
-  line_key   2.0860600       7.5598016       25.771654       25.771654    
-  call trans   2.0860600       25.771654       2.0860600       25.771654    
-  call trans   2.0860600       2.0860600       2.0860600       25.771654    
-  call trans   7.5598016       7.5598016       7.5598016       25.771654    
  
  
 !overlay on polygon plots
@@ -39156,11 +38837,6 @@ let b = if sst[l=1,gx=mygrid,gy=mygrid] then a
  
 shade b
 plot/vs/over xpts[i=1:1000]+360, ypts[i=1:1000]
-  line_key   124.90830       156.17445      -96.377434      -96.377434    
-  call trans   124.90830      -96.377434       124.90830      -96.377434    
-  call trans   124.90830       124.90830       124.90830      -96.377434    
-  call trans   140.54138       140.54138       140.54138      -96.377434    
-  call trans   156.17445       156.17445       156.17445      -96.377434    
  
 ! make sure the USE bug reported 5/01 by A Wittenberg is fixed
 GO bn_reset
@@ -40980,21 +40656,11 @@ set mode meta dots.plt
 can mode logo
 plot/symbol=dot/i=1:1000 sin(62.8*i)
 plot/symbol=dot/color=red/over/i=1:1000 sin(62.8*(i+20))
-  line_key  -150.07231      -63.549072      -1.1528319      -1.1528319    
-  call trans  -150.07231      -1.1528319      -150.07231      -1.1528319    
-  call trans  -150.07231      -150.07231      -150.07231      -1.1528319    
-  call trans  -106.81069      -106.81069      -106.81069      -1.1528319    
-  call trans  -63.549072      -63.549072      -63.549072      -1.1528319    
 can mode meta
  
 ! test warnings
 plot/symbol=dot/thick/i=1:1000 sin(62.8*(i+10) )
 plot/symbol=dot/size=0.5/over/i=1:1000 -0.5*sin(62.8*(i+10) )
-  line_key  -150.07231      -63.549072      -1.1528319      -1.1528319    
-  call trans  -150.07231      -1.1528319      -150.07231      -1.1528319    
-  call trans  -150.07231      -150.07231      -150.07231      -1.1528319    
-  call trans  -106.81069      -106.81069      -106.81069      -1.1528319    
-  call trans  -63.549072      -63.549072      -63.549072      -1.1528319    
  
 ! Vector plots with null-size vectors
  
@@ -41163,10 +40829,6 @@ set mode labels
 shade/i=1:10/j=1:10 i*j
 set mode logo
 plot/vs/over/line/color=white {1,4}, {1,9}
-  line_key  -3.5665436      -1.2375231     -0.60103631     -0.60103631    
-  call trans  -3.5665436     -0.60103631      -3.5665436     -0.60103631    
-  call trans  -3.5665436      -3.5665436      -3.5665436     -0.60103631    
-  call trans  -1.2375231      -1.2375231      -1.2375231     -0.60103631    
  
 ! but the logo is restored on the next plot command.
 set view lm3
@@ -41523,10 +41185,6 @@ so Ferret will resize the entire title. Titles are sized according to the\
 <nl>longest line <nl>and centered individually" i*cos(i/8)
 ppl plot
 plot/over/i=1:100 i*sin(i/8)
-  line_key  -11.459955      -4.3237987      -96.984276      -96.984276    
-  call trans  -11.459955      -96.984276      -11.459955      -96.984276    
-  call trans  -11.459955      -11.459955      -11.459955      -96.984276    
-  call trans  -4.3237987      -4.3237987      -4.3237987      -96.984276    
  
 set mode meta multi_line_labels.plt
 cancel mode logo
@@ -41536,15 +41194,7 @@ ppl xlab "a two-line X label. <nl>Not good together with a multi-line title"
 ppl plot
  
 plot/over/i=1:100/title="short two-line<nl>title for the overlay line" i*sin(i/8)
-  line_key  -11.459955      -4.3237987      -96.984276      -96.984276    
-  call trans  -11.459955      -96.984276      -11.459955      -96.984276    
-  call trans  -11.459955      -11.459955      -11.459955      -96.984276    
-  call trans  -4.3237987      -4.3237987      -4.3237987      -96.984276    
 plot/over/i=1:100/title="here is the key for the<nl>second overlay line" i*sin(i/4)
-  line_key  -11.459955      -4.3237987      -108.97318      -108.97318    
-  call trans  -11.459955      -108.97318      -11.459955      -108.97318    
-  call trans  -11.459955      -11.459955      -11.459955      -108.97318    
-  call trans  -4.3237987      -4.3237987      -4.3237987      -108.97318    
  
 label 10,80,-1,-20,0.2,"@CSfonts and @p2colors<nl>a@p1nd at an angle<NL>\
 no@p3w green and @CRCR font<NL>back@CS to script"
@@ -41558,42 +41208,12 @@ set mode/last logo
  
 plot/title="multi-line key labels"/i=1:100 i*sin(i/12)
 plot/over/i=1:100/title="Three-lines<nl>second line<nl>overlay 1" i*sin(i/6)
-  line_key  -11.459955      -4.3237987      -75.097130      -75.097130    
-  call trans  -11.459955      -75.097130      -11.459955      -75.097130    
-  call trans  -11.459955      -11.459955      -11.459955      -75.097130    
-  call trans  -4.3237987      -4.3237987      -4.3237987      -75.097130    
 plot/over/i=1:100/title="Two-lines<nl>overlay 2" i*cos(i/6)
-  line_key  -11.459955      -4.3237987      -91.082329      -91.082329    
-  call trans  -11.459955      -91.082329      -11.459955      -91.082329    
-  call trans  -11.459955      -11.459955      -11.459955      -91.082329    
-  call trans  -4.3237987      -4.3237987      -4.3237987      -91.082329    
 plot/over/i=1:100/title="Three-lines<nl>second line<nl>overlay 3" -1*cos(i/10)
-  line_key   2.1327233       7.8416476      -46.382980      -46.382980    
-  call trans   2.1327233      -46.382980       2.1327233      -46.382980    
-  call trans   2.1327233       2.1327233       2.1327233      -46.382980    
-  call trans   7.8416476       7.8416476       7.8416476      -46.382980    
 plot/over/i=1:100/title="One-line" i*cos(i/8)
-  line_key   2.1327233       7.8416476      -42.120262      -42.120262    
-  call trans   2.1327233      -42.120262       2.1327233      -42.120262    
-  call trans   2.1327233       2.1327233       2.1327233      -42.120262    
-  call trans   7.8416476       7.8416476       7.8416476      -42.120262    
 plot/over/i=1:100/title="Three-line<nl>second<nl>overlay5" i*cos(i/14)
-  line_key   2.1327233       7.8416476      -29.332102      -29.332102    
-  call trans   2.1327233      -29.332102       2.1327233      -29.332102    
-  call trans   2.1327233       2.1327233       2.1327233      -29.332102    
-  call trans   7.8416476       7.8416476       7.8416476      -29.332102    
 plot/over/i=1:100/title="Two-line<nl>overlay6" i*cos(i/20)
-  line_key   2.1327233       7.8416476      -20.806664      -20.806664    
-  call trans   2.1327233      -20.806664       2.1327233      -20.806664    
-  call trans   2.1327233       2.1327233       2.1327233      -20.806664    
-  call trans   4.9871855       4.9871855       4.9871855      -20.806664    
-  call trans   7.8416476       7.8416476       7.8416476      -20.806664    
 plot/over/i=1:100/title="Three-line<nl>second<nl>overlay7" i*sin(i/12)
-  line_key   2.1327233       7.8416476      -8.0185013      -8.0185013    
-  call trans   2.1327233      -8.0185013       2.1327233      -8.0185013    
-  call trans   2.1327233       2.1327233       2.1327233      -8.0185013    
-  call trans   4.9871855       4.9871855       4.9871855      -8.0185013    
-  call trans   7.8416476       7.8416476       7.8416476      -8.0185013    
  
  
  
@@ -42544,18 +42164,6 @@ use eofti
  
 set view ul
 plot eofti[i=1,k=1], eofti[i=2,k=1], eofti[i=3,k=1]
-  line_key   27154.531       28048.740      -4.2906213      -4.2906213    
-  call trans   27154.531      -4.2906213       27154.531      -4.2906213    
-  call trans   27154.531       27154.531       27154.531      -4.2906213    
-  call trans   28048.740       28048.740       28048.740      -4.2906213    
-  line_key   27154.531       28048.740      -4.6522694      -4.6522694    
-  call trans   27154.531      -4.6522694       27154.531      -4.6522694    
-  call trans   27154.531       27154.531       27154.531      -4.6522694    
-  call trans   28048.740       28048.740       28048.740      -4.6522694    
-  line_key   27154.531       28048.740      -5.0156317      -5.0156317    
-  call trans   27154.531      -5.0156317       27154.531      -5.0156317    
-  call trans   27154.531       27154.531       27154.531      -5.0156317    
-  call trans   28048.740       28048.740       28048.740      -5.0156317    
 list eofti[l=1:5,i=1,k=1]
              VARIABLE : EOFSVD_TFUNC (TEMP[I=91:95,J=36:40,K=1:10])
                         T=AUG-1982:JAN-1983
@@ -42572,18 +42180,6 @@ list eofti[l=1:5,i=1,k=1]
  10-SEP-1982 20 / 5: -1.42678
 set view ur
 plot eofti[i=1,k=5], eofti[i=2,k=5], eofti[i=3,k=5]
-  line_key   27154.531       28048.740      -3.9196832      -3.9196832    
-  call trans   27154.531      -3.9196832       27154.531      -3.9196832    
-  call trans   27154.531       27154.531       27154.531      -3.9196832    
-  call trans   28048.740       28048.740       28048.740      -3.9196832    
-  line_key   27154.531       28048.740      -4.3174963      -4.3174963    
-  call trans   27154.531      -4.3174963       27154.531      -4.3174963    
-  call trans   27154.531       27154.531       27154.531      -4.3174963    
-  call trans   28048.740       28048.740       28048.740      -4.3174963    
-  line_key   27154.531       28048.740      -4.7171946      -4.7171946    
-  call trans   27154.531      -4.7171946       27154.531      -4.7171946    
-  call trans   27154.531       27154.531       27154.531      -4.7171946    
-  call trans   28048.740       28048.740       28048.740      -4.7171946    
 list eofti[l=1:5,i=1,k=5]
              VARIABLE : EOFSVD_TFUNC (TEMP[I=91:95,J=36:40,K=1:10])
                         T=AUG-1982:JAN-1983
@@ -42601,18 +42197,6 @@ list eofti[l=1:5,i=1,k=5]
  
 set view ll
 plot eofti[i=1,k=8], eofti[i=2,k=8], eofti[i=3,k=8]
-  line_key   27154.531       28048.740      -3.9196832      -3.9196832    
-  call trans   27154.531      -3.9196832       27154.531      -3.9196832    
-  call trans   27154.531       27154.531       27154.531      -3.9196832    
-  call trans   28048.740       28048.740       28048.740      -3.9196832    
-  line_key   27154.531       28048.740      -4.3174963      -4.3174963    
-  call trans   27154.531      -4.3174963       27154.531      -4.3174963    
-  call trans   27154.531       27154.531       27154.531      -4.3174963    
-  call trans   28048.740       28048.740       28048.740      -4.3174963    
-  line_key   27154.531       28048.740      -4.7171946      -4.7171946    
-  call trans   27154.531      -4.7171946       27154.531      -4.7171946    
-  call trans   27154.531       27154.531       27154.531      -4.7171946    
-  call trans   28048.740       28048.740       28048.740      -4.7171946    
 list eofti[l=1:5,i=1,k=8]
              VARIABLE : EOFSVD_TFUNC (TEMP[I=91:95,J=36:40,K=1:10])
                         T=AUG-1982:JAN-1983
@@ -42629,18 +42213,6 @@ list eofti[l=1:5,i=1,k=8]
  10-SEP-1982 20 / 5: -0.84706
 set view lr
 plot eofti[i=1,k=4], eofti[i=2,k=10], eofti[i=3,k=10]
-  line_key   27154.531       28048.740      -3.9196832      -3.9196832    
-  call trans   27154.531      -3.9196832       27154.531      -3.9196832    
-  call trans   27154.531       27154.531       27154.531      -3.9196832    
-  call trans   28048.740       28048.740       28048.740      -3.9196832    
-  line_key   27154.531       28048.740      -4.3174963      -4.3174963    
-  call trans   27154.531      -4.3174963       27154.531      -4.3174963    
-  call trans   27154.531       27154.531       27154.531      -4.3174963    
-  call trans   28048.740       28048.740       28048.740      -4.3174963    
-  line_key   27154.531       28048.740      -4.7171946      -4.7171946    
-  call trans   27154.531      -4.7171946       27154.531      -4.7171946    
-  call trans   27154.531       27154.531       27154.531      -4.7171946    
-  call trans   28048.740       28048.740       28048.740      -4.7171946    
 list eofti[l=1:5,i=1,k=10]
              VARIABLE : EOFSVD_TFUNC (TEMP[I=91:95,J=36:40,K=1:10])
                         T=AUG-1982:JAN-1983
@@ -45081,11 +44653,6 @@ GO err553_symsize.jnl
 !
 plot/i=1:10/sym=20/siz=.4 i
 plot/over/i=1:10/sym=20/siz=0.2 i
-  line_key -0.23750007      0.47125000      0.15000004      0.15000004    
-  call trans -0.23750007      0.15000004     -0.23750007      0.15000004    
-  call trans -0.23750007     -0.23750007     -0.23750007      0.15000004    
-  call trans  0.11687496      0.11687496      0.11687496      0.15000004    
-  call trans  0.47125000      0.47125000      0.47125000      0.15000004    
  
 ! test labels on shade keys; consistent number of digits set by 5th shakey arg
 GO bn_reset
@@ -47414,10 +46981,6 @@ def axis/t="07-FEB-1899:12:00":"07-FEB-1900:12:00":365.2425/units=days/t0="1-jan
 let v = tsequence({55,65})
 plot/step=connected  v[gt=tax@asn]
 plot/over v[gt=tax@asn]
-  line_key   6060.6104       7498.9004       54.064999       54.064999    
-  call trans   6060.6104       54.064999       6060.6104       54.064999    
-  call trans   6060.6104       6060.6104       6060.6104       54.064999    
-  call trans   7498.9004       7498.9004       7498.9004       54.064999    
  
 plot v[gt=tax@asn]
  
@@ -48564,10 +48127,6 @@ use coads_climatology
 set axis/CAL=JULIAN time
 plot/x=140w/y=0 sst
 plot/ov/vs/line=3 {400,900,900,400}, {25.5,25.5,26.5,25.5}
-  line_key   156.39999       273.58002       25.189501       25.189501    
-  call trans   156.39999       25.189501       156.39999       25.189501    
-  call trans   156.39999       156.39999       156.39999       25.189501    
-  call trans   273.58002       273.58002       273.58002       25.189501    
 poly/ov/pal=green {400,900,900,400}, {25.5,25.5,26.5,25.5}
  
  
@@ -48653,64 +48212,20 @@ GO err570_thick_colors.jnl
 ! /THICK without color specifier causes all lines to revert to black
  
 PLOT/THICK/I=1:100 cos(i/20), sin(i/30)
-  line_key   19.562500       30.514376      -1.2450000      -1.2450000    
-  call trans   19.562500      -1.2450000       19.562500      -1.2450000    
-  call trans   19.562500       19.562500       19.562500      -1.2450000    
-  call trans   30.514376       30.514376       30.514376      -1.2450000    
-  line_key   59.781250       70.733131      -1.2450000      -1.2450000    
-  call trans   59.781250      -1.2450000       59.781250      -1.2450000    
-  call trans   59.781250       59.781250       59.781250      -1.2450000    
-  call trans   70.733131       70.733131       70.733131      -1.2450000    
 PLOT/OVER/THICK=3/I=1:100 cos(i/30)*sin(i/20)
-  line_key  -12.612500      -4.8162498      -1.1700000      -1.1700000    
-  call trans  -12.612500      -1.1700000      -12.612500      -1.1700000    
-  call trans  -12.612500      -12.612500      -12.612500      -1.1700000    
-  call trans  -4.8162498      -4.8162498      -4.8162498      -1.1700000    
 PLOT/OVER/THICK=1/I=1:100 cos(i/10), sin(i/50), cos(i/40)*sin(i/10)
-  line_key  -12.612500      -4.8162498      -1.2300000      -1.2300000    
-  call trans  -12.612500      -1.2300000      -12.612500      -1.2300000    
-  call trans  -12.612500      -12.612500      -12.612500      -1.2300000    
-  call trans  -4.8162498      -4.8162498      -4.8162498      -1.2300000    
-  line_key  -12.612500      -4.8162498      -1.2900000      -1.2900000    
-  call trans  -12.612500      -1.2900000      -12.612500      -1.2900000    
-  call trans  -12.612500      -12.612500      -12.612500      -1.2900000    
-  call trans  -4.8162498      -4.8162498      -4.8162498      -1.2900000    
-  line_key  -12.612500      -4.8162498      -1.3500000      -1.3500000    
-  call trans  -12.612500      -1.3500000      -12.612500      -1.3500000    
-  call trans  -12.612500      -12.612500      -12.612500      -1.3500000    
-  call trans  -4.8162498      -4.8162498      -4.8162498      -1.3500000    
  
 ! time series
 USE gtsa056_2
 PLOT/THICK/X=180/Y=0/K=1 temp
 PLOT/OVER/THICK/X=180/Y=-1/K=1 temp
-  line_key   6645.7002       7677.6401       27.064001       27.064001    
-  call trans   6645.7002       27.064001       6645.7002       27.064001    
-  call trans   6645.7002       6645.7002       6645.7002       27.064001    
-  call trans   7677.6401       7677.6401       7677.6401       27.064001    
 PLOT/OVER/THICK/X=180/Y=1/K=1 temp
-  line_key   6645.7002       7677.6401       27.016001       27.016001    
-  call trans   6645.7002       27.016001       6645.7002       27.016001    
-  call trans   6645.7002       6645.7002       6645.7002       27.016001    
-  call trans   7677.6401       7677.6401       7677.6401       27.016001    
  
 ! plot/vs
 PLOT/VS/LINE/THICK/I=1:314 i*cos(i/20), i*sin(i/20)
 PLOT/OVER/VS/LINE/THICK/I=1:314 i*cos(i/18), i*sin(i/18)
-  line_key  -391.82968      -347.24884      -296.75000      -296.75000    
-  call trans  -391.82968      -296.75000      -391.82968      -296.75000    
-  call trans  -391.82968      -391.82968      -391.82968      -296.75000    
-  call trans  -347.24884      -347.24884      -347.24884      -296.75000    
 PLOT/OVER/VS/LINE/THICK=3/I=1:314 i*cos(i/16), i*sin(i/16)
-  line_key  -391.82968      -347.24884      -313.25000      -313.25000    
-  call trans  -391.82968      -313.25000      -391.82968      -313.25000    
-  call trans  -391.82968      -391.82968      -391.82968      -313.25000    
-  call trans  -347.24884      -347.24884      -347.24884      -313.25000    
 PLOT/OVER/VS/LINE/THICK=1/I=1:314 i*cos(i/14), i*sin(i/14)
-  line_key  -391.82968      -347.24884      -329.75000      -329.75000    
-  call trans  -391.82968      -329.75000      -391.82968      -329.75000    
-  call trans  -391.82968      -391.82968      -391.82968      -329.75000    
-  call trans  -347.24884      -347.24884      -347.24884      -329.75000    
  
  
 ! Fix for bug 1102: under linux, var[d=filename] fails if filename
@@ -48843,7 +48358,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS06-FEB-2015 14:39:45
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS17-FEB-2015 10:27:56
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -50274,7 +49789,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "6-Feb-15:14:39"
+WIN_TITLE = "17-Feb-15:10:27"
  
 set win/title="set the title"
 sho sym win_title
@@ -50292,7 +49807,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 6-Feb-15:14:39"
+ !-> set win/title="17-Feb-15:10:27"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -50301,16 +49816,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date =  6-Feb-15
+ !-> DEFINE SYMBOL the_date = 17-Feb-15
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 14:39
+ !-> DEFINE SYMBOL the_time = 10:27
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="6-Feb-15:14:39"
+ !-> SET WIN/TITLE="17-Feb-15:10:27"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "6-Feb-15:14:39"
+WIN_TITLE = "17-Feb-15:10:27"
  
 GO bn_reset
 cancel mode verify
@@ -53174,54 +52689,6 @@ plot/thick/line/i=1:100 \
  cos(i/20), cos(i/24), cos(i/28), cos(i/32), \
  cos(i/36), cos(i/40), cos(i/44), cos(i/48), \
  cos(i/52), cos(i/56), cos(i/60), cos(i/64)
-  line_key   19.562500       30.514376      -1.2816590      -1.2816590    
-  call trans   19.562500      -1.2816590       19.562500      -1.2816590    
-  call trans   19.562500       19.562500       19.562500      -1.2816590    
-  call trans   30.514376       30.514376       30.514376      -1.2816590    
-  line_key   59.781250       70.733131      -1.2816590      -1.2816590    
-  call trans   59.781250      -1.2816590       59.781250      -1.2816590    
-  call trans   59.781250       59.781250       59.781250      -1.2816590    
-  call trans   70.733131       70.733131       70.733131      -1.2816590    
-  line_key   19.562500       30.514376      -1.3505991      -1.3505991    
-  call trans   19.562500      -1.3505991       19.562500      -1.3505991    
-  call trans   19.562500       19.562500       19.562500      -1.3505991    
-  call trans   30.514376       30.514376       30.514376      -1.3505991    
-  line_key   59.781250       70.733131      -1.3505991      -1.3505991    
-  call trans   59.781250      -1.3505991       59.781250      -1.3505991    
-  call trans   59.781250       59.781250       59.781250      -1.3505991    
-  call trans   70.733131       70.733131       70.733131      -1.3505991    
-  line_key   19.562500       30.514376      -1.4199078      -1.4199078    
-  call trans   19.562500      -1.4199078       19.562500      -1.4199078    
-  call trans   19.562500       19.562500       19.562500      -1.4199078    
-  call trans   30.514376       30.514376       30.514376      -1.4199078    
-  line_key   59.781250       70.733131      -1.4199078      -1.4199078    
-  call trans   59.781250      -1.4199078       59.781250      -1.4199078    
-  call trans   59.781250       59.781250       59.781250      -1.4199078    
-  call trans   70.733131       70.733131       70.733131      -1.4199078    
-  line_key   19.562500       30.514376      -1.4888480      -1.4888480    
-  call trans   19.562500      -1.4888480       19.562500      -1.4888480    
-  call trans   19.562500       19.562500       19.562500      -1.4888480    
-  call trans   30.514376       30.514376       30.514376      -1.4888480    
-  line_key   59.781250       70.733131      -1.4888480      -1.4888480    
-  call trans   59.781250      -1.4888480       59.781250      -1.4888480    
-  call trans   59.781250       59.781250       59.781250      -1.4888480    
-  call trans   70.733131       70.733131       70.733131      -1.4888480    
-  line_key   19.562500       30.514376      -1.5581567      -1.5581567    
-  call trans   19.562500      -1.5581567       19.562500      -1.5581567    
-  call trans   19.562500       19.562500       19.562500      -1.5581567    
-  call trans   30.514376       30.514376       30.514376      -1.5581567    
-  line_key   59.781250       70.733131      -1.5581567      -1.5581567    
-  call trans   59.781250      -1.5581567       59.781250      -1.5581567    
-  call trans   59.781250       59.781250       59.781250      -1.5581567    
-  call trans   70.733131       70.733131       70.733131      -1.5581567    
-  line_key   19.562500       30.514376      -1.6270967      -1.6270967    
-  call trans   19.562500      -1.6270967       19.562500      -1.6270967    
-  call trans   19.562500       19.562500       19.562500      -1.6270967    
-  call trans   30.514376       30.514376       30.514376      -1.6270967    
-  line_key   59.781250       70.733131      -1.6270967      -1.6270967    
-  call trans   59.781250      -1.6270967       59.781250      -1.6270967    
-  call trans   59.781250       59.781250       59.781250      -1.6270967    
-  call trans   70.733131       70.733131       70.733131      -1.6270967    
  
 set mode/last meta
  
@@ -53230,15 +52697,7 @@ set mode/last meta
  
 plot/color=7/thick=3/i=1:100 cos(i/10)
 plot/over/color=8/thick=2/i=1:100 cos(i/12)
-  line_key  -12.612500      -4.8162498      -1.1700000      -1.1700000    
-  call trans  -12.612500      -1.1700000      -12.612500      -1.1700000    
-  call trans  -12.612500      -12.612500      -12.612500      -1.1700000    
-  call trans  -4.8162498      -4.8162498      -4.8162498      -1.1700000    
 plot/over/color=12/thick=1/i=1:100 cos(i/8)
-  line_key  -12.612500      -4.8162498      -1.2300000      -1.2300000    
-  call trans  -12.612500      -1.2300000      -12.612500      -1.2300000    
-  call trans  -12.612500      -12.612500      -12.612500      -1.2300000    
-  call trans  -4.8162498      -4.8162498      -4.8162498      -1.2300000    
  
 vector/color=11/thick=2/i=1:100/j=1:100 cos(i/10)+sin(j/14), cos(i/20)-sin(j/30)
  
@@ -53259,108 +52718,12 @@ plot/line/i=1:100 \
  cos(i/20), cos(i/24), cos(i/28), cos(i/32), \
  cos(i/36), cos(i/40), cos(i/44), cos(i/48), \
  cos(i/52), cos(i/56), cos(i/60), cos(i/64)
-  line_key   19.562500       30.514376      -1.2816590      -1.2816590    
-  call trans   19.562500      -1.2816590       19.562500      -1.2816590    
-  call trans   19.562500       19.562500       19.562500      -1.2816590    
-  call trans   30.514376       30.514376       30.514376      -1.2816590    
-  line_key   59.781250       70.733131      -1.2816590      -1.2816590    
-  call trans   59.781250      -1.2816590       59.781250      -1.2816590    
-  call trans   59.781250       59.781250       59.781250      -1.2816590    
-  call trans   70.733131       70.733131       70.733131      -1.2816590    
-  line_key   19.562500       30.514376      -1.3505991      -1.3505991    
-  call trans   19.562500      -1.3505991       19.562500      -1.3505991    
-  call trans   19.562500       19.562500       19.562500      -1.3505991    
-  call trans   30.514376       30.514376       30.514376      -1.3505991    
-  line_key   59.781250       70.733131      -1.3505991      -1.3505991    
-  call trans   59.781250      -1.3505991       59.781250      -1.3505991    
-  call trans   59.781250       59.781250       59.781250      -1.3505991    
-  call trans   70.733131       70.733131       70.733131      -1.3505991    
-  line_key   19.562500       30.514376      -1.4199078      -1.4199078    
-  call trans   19.562500      -1.4199078       19.562500      -1.4199078    
-  call trans   19.562500       19.562500       19.562500      -1.4199078    
-  call trans   30.514376       30.514376       30.514376      -1.4199078    
-  line_key   59.781250       70.733131      -1.4199078      -1.4199078    
-  call trans   59.781250      -1.4199078       59.781250      -1.4199078    
-  call trans   59.781250       59.781250       59.781250      -1.4199078    
-  call trans   70.733131       70.733131       70.733131      -1.4199078    
-  line_key   19.562500       30.514376      -1.4888480      -1.4888480    
-  call trans   19.562500      -1.4888480       19.562500      -1.4888480    
-  call trans   19.562500       19.562500       19.562500      -1.4888480    
-  call trans   30.514376       30.514376       30.514376      -1.4888480    
-  line_key   59.781250       70.733131      -1.4888480      -1.4888480    
-  call trans   59.781250      -1.4888480       59.781250      -1.4888480    
-  call trans   59.781250       59.781250       59.781250      -1.4888480    
-  call trans   70.733131       70.733131       70.733131      -1.4888480    
-  line_key   19.562500       30.514376      -1.5581567      -1.5581567    
-  call trans   19.562500      -1.5581567       19.562500      -1.5581567    
-  call trans   19.562500       19.562500       19.562500      -1.5581567    
-  call trans   30.514376       30.514376       30.514376      -1.5581567    
-  line_key   59.781250       70.733131      -1.5581567      -1.5581567    
-  call trans   59.781250      -1.5581567       59.781250      -1.5581567    
-  call trans   59.781250       59.781250       59.781250      -1.5581567    
-  call trans   70.733131       70.733131       70.733131      -1.5581567    
-  line_key   19.562500       30.514376      -1.6270967      -1.6270967    
-  call trans   19.562500      -1.6270967       19.562500      -1.6270967    
-  call trans   19.562500       19.562500       19.562500      -1.6270967    
-  call trans   30.514376       30.514376       30.514376      -1.6270967    
-  line_key   59.781250       70.733131      -1.6270967      -1.6270967    
-  call trans   59.781250      -1.6270967       59.781250      -1.6270967    
-  call trans   59.781250       59.781250       59.781250      -1.6270967    
-  call trans   70.733131       70.733131       70.733131      -1.6270967    
  
 set win/new
 plot/line/i=1:100\
  cos(i/20), cos(i/24), cos(i/28), cos(i/32), \
  cos(i/36), cos(i/40), cos(i/44), cos(i/48), \
  cos(i/52), cos(i/56), cos(i/60), cos(i/64)
-  line_key   19.562500       30.514376      -1.2816590      -1.2816590    
-  call trans   19.562500      -1.2816590       19.562500      -1.2816590    
-  call trans   19.562500       19.562500       19.562500      -1.2816590    
-  call trans   30.514376       30.514376       30.514376      -1.2816590    
-  line_key   59.781250       70.733131      -1.2816590      -1.2816590    
-  call trans   59.781250      -1.2816590       59.781250      -1.2816590    
-  call trans   59.781250       59.781250       59.781250      -1.2816590    
-  call trans   70.733131       70.733131       70.733131      -1.2816590    
-  line_key   19.562500       30.514376      -1.3505991      -1.3505991    
-  call trans   19.562500      -1.3505991       19.562500      -1.3505991    
-  call trans   19.562500       19.562500       19.562500      -1.3505991    
-  call trans   30.514376       30.514376       30.514376      -1.3505991    
-  line_key   59.781250       70.733131      -1.3505991      -1.3505991    
-  call trans   59.781250      -1.3505991       59.781250      -1.3505991    
-  call trans   59.781250       59.781250       59.781250      -1.3505991    
-  call trans   70.733131       70.733131       70.733131      -1.3505991    
-  line_key   19.562500       30.514376      -1.4199078      -1.4199078    
-  call trans   19.562500      -1.4199078       19.562500      -1.4199078    
-  call trans   19.562500       19.562500       19.562500      -1.4199078    
-  call trans   30.514376       30.514376       30.514376      -1.4199078    
-  line_key   59.781250       70.733131      -1.4199078      -1.4199078    
-  call trans   59.781250      -1.4199078       59.781250      -1.4199078    
-  call trans   59.781250       59.781250       59.781250      -1.4199078    
-  call trans   70.733131       70.733131       70.733131      -1.4199078    
-  line_key   19.562500       30.514376      -1.4888480      -1.4888480    
-  call trans   19.562500      -1.4888480       19.562500      -1.4888480    
-  call trans   19.562500       19.562500       19.562500      -1.4888480    
-  call trans   30.514376       30.514376       30.514376      -1.4888480    
-  line_key   59.781250       70.733131      -1.4888480      -1.4888480    
-  call trans   59.781250      -1.4888480       59.781250      -1.4888480    
-  call trans   59.781250       59.781250       59.781250      -1.4888480    
-  call trans   70.733131       70.733131       70.733131      -1.4888480    
-  line_key   19.562500       30.514376      -1.5581567      -1.5581567    
-  call trans   19.562500      -1.5581567       19.562500      -1.5581567    
-  call trans   19.562500       19.562500       19.562500      -1.5581567    
-  call trans   30.514376       30.514376       30.514376      -1.5581567    
-  line_key   59.781250       70.733131      -1.5581567      -1.5581567    
-  call trans   59.781250      -1.5581567       59.781250      -1.5581567    
-  call trans   59.781250       59.781250       59.781250      -1.5581567    
-  call trans   70.733131       70.733131       70.733131      -1.5581567    
-  line_key   19.562500       30.514376      -1.6270967      -1.6270967    
-  call trans   19.562500      -1.6270967       19.562500      -1.6270967    
-  call trans   19.562500       19.562500       19.562500      -1.6270967    
-  call trans   30.514376       30.514376       30.514376      -1.6270967    
-  line_key   59.781250       70.733131      -1.6270967      -1.6270967    
-  call trans   59.781250      -1.6270967       59.781250      -1.6270967    
-  call trans   59.781250       59.781250       59.781250      -1.6270967    
-  call trans   70.733131       70.733131       70.733131      -1.6270967    
  
 can win/all
 set win/new
@@ -54753,7 +54116,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.94 (beta)  6-Feb-15
+ .                               history         CHAR        29   T       FERRET V6.94 (beta) 17-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT191_108)          DOUBLE    units           CHAR        12   T       degrees_east
@@ -54798,7 +54161,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.94 (beta)  6-Feb-15
+ .                               history         CHAR        29   T       FERRET V6.94 (beta) 17-Feb-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT191_108)          DOUBLE    units           CHAR        12   T       degrees_east
@@ -56331,6 +55694,7 @@ SAMPLEI_MULTI(I_INDICES,DAT_TO_SAMPLE)
 SAMPLEJ_MULTI(J_INDICES,DAT_TO_SAMPLE)
 SAMPLEK_MULTI(K_INDICES,DAT_TO_SAMPLE)
 SAMPLEL_MULTI(L_INDICES,DAT_TO_SAMPLE)
+SAMPLEF_DATE(DAT_TO_SAMPLE,YR,MO,DAY,HR,MIN,SEC)
 SAMPLET_DATE(DAT_TO_SAMPLE,YR,MO,DAY,HR,MIN,SEC)
 SAMPLEXY(DAT_TO_SAMPLE,XPTS,YPTS)
 SAMPLEXY_CLOSEST(DAT_TO_SAMPLE,XPTS,YPTS)
@@ -56430,6 +55794,35 @@ SAMPLEXYT_NRST(DAT_TO_SAMPLE,XPTS,YPTS,TPTS)
 SEPARATE(A,Rowsize,FixLongitudes)
 TIME_REFORMAT(A)
 FT_TO_ORTHOGONAL(VAR,TIME2D,ALLTIME)
+ADD_9(A,B,C,D,E,F,G,H,I)
+APPENDE(ENS,VAR)
+AVET(A)
+DATES(Offsets)
+EFSTRINGS(--)
+FACTORIAL(A)
+FFT_AMP(A)
+FFTA_SAMPLE(A)
+FFT_PHAS(A)
+LENGTH_OF_STRINGS(--)
+LON_LAT_TIME_STRING(longitude,latitude,time,time_axis,string to prepend)
+MAXSTRLEN(A)
+PASS_THRU(A)
+PASS_THRU_STRING(A)
+PERCENT_GOOD_T(A)
+PICK_A_STRING(A,N)
+PIECEWISE3(V1,V2,V3,Control parameter,Tol1,Tol2,Tol3)
+SAMPLE_FAST_I(V,Indices)
+SEPARATE(A,Rowsize,FixLongitudes)
+SEPARATE_STR(A,Rowsize,FixLongitudes)
+STORAGE(A)
+STRING_ARG(Flags,NString)
+STRING_CAT3(A,B,C)
+STRING_LEN_SUM(S1,S2)
+STRINGS_AS_ARGS(S1,S2,NCHAR)
+STR_MISSING(MASK,STR,REPL)
+STUDENT_T_CUTOFF(P,nf)
+SUBTRACT(A,B)
+WRITE_WEBROW_GWT(id,name,Cruise_Mask,filename)
  
  
 GO bn_reset
@@ -56809,15 +56202,7 @@ GO err61_poly_shade_over_noaxes
 set v ul; plot/ax=0,0,0,0 {0,1}; poly/ov {0,1},{0,1}
 set v ur; plot/set/ax=0,0,0,0 {0,1}; ppl plot; poly/ov {0,1},{0,1}
 set v ll; plot/ax=0,0,0,0 {0,1}; plot/ov {0,1}
-  line_key  0.78052676      0.90622509     -0.16389130     -0.16389130    
-  call trans  0.78052676     -0.16389130      0.78052676     -0.16389130    
-  call trans  0.78052676      0.78052676      0.78052676     -0.16389130    
-  call trans  0.90622509      0.90622509      0.90622509     -0.16389130    
 set v lr; plot/set/ax=0,0,0,0 {0,1}; ppl plot; plot/ov {0,1}
-  line_key  0.78052676      0.90622509     -0.16389130     -0.16389130    
-  call trans  0.78052676     -0.16389130      0.78052676     -0.16389130    
-  call trans  0.78052676      0.78052676      0.78052676     -0.16389130    
-  call trans  0.90622509      0.90622509      0.90622509     -0.16389130    
 can view
  
 ! shade over polygon
@@ -57510,10 +56895,6 @@ ppl list labels
  
 plot/x=56e:100e/y=10 sst[L=1]
 plot/over/x=56e:100e/y=40 sst[L=1]
-  line_key   51.224998       54.532501       26.447001       26.447001    
-  call trans   51.224998       26.447001       51.224998       26.447001    
-  call trans   51.224998       51.224998       51.224998       26.447001    
-  call trans   54.532501       54.532501       54.532501       26.447001    
 ppl list labels
  @ACSEA SURFACE TEMPERATURE (Deg C)                                             
  @ASLONGITUDE                                                                   
@@ -57533,18 +56914,6 @@ ppl list labels
  
 ! For plots with multi lines in one plot command, mark each if no data
 plot/x=56e:100e sst[L=1,y=10], sst[L=1,y=50], sst[L=1,y=20]
-  line_key   64.875000       69.521248       23.448750       23.448750    
-  call trans   64.875000       23.448750       64.875000       23.448750    
-  call trans   64.875000       64.875000       64.875000       23.448750    
-  call trans   69.521248       69.521248       69.521248       23.448750    
-  line_key   81.937500       86.583755       23.448750       23.448750    
-  call trans   81.937500       23.448750       81.937500       23.448750    
-  call trans   81.937500       81.937500       81.937500       23.448750    
-  call trans   86.583755       86.583755       86.583755       23.448750    
-  line_key   64.875000       69.521248       23.261250       23.261250    
-  call trans   64.875000       23.261250       64.875000       23.261250    
-  call trans   64.875000       64.875000       64.875000       23.261250    
-  call trans   69.521248       69.521248       69.521248       23.261250    
 ppl list labels
                                                                                 
  @ASLONGITUDE                                                                   
@@ -57586,22 +56955,6 @@ GO bn_median
 use gtsa056_2.cdf
 let var = u[x=180,y=0,k=1,t=1-jan-1982:1-jan-1983]
 plot var, var[t=@med],  var[t=@med:3], var[t=@med:7]
-  line_key   36130.500       37181.879      -103.47500      -103.47500    
-  call trans   36130.500      -103.47500       36130.500      -103.47500    
-  call trans   36130.500       36130.500       36130.500      -103.47500    
-  call trans   37181.879       37181.879       37181.879      -103.47500    
-  line_key   39991.500       41042.879      -103.47500      -103.47500    
-  call trans   39991.500      -103.47500       39991.500      -103.47500    
-  call trans   39991.500       39991.500       39991.500      -103.47500    
-  call trans   41042.879       41042.879       41042.879      -103.47500    
-  line_key   36130.500       37181.879      -108.05833      -108.05833    
-  call trans   36130.500      -108.05833       36130.500      -108.05833    
-  call trans   36130.500       36130.500       36130.500      -108.05833    
-  call trans   37181.879       37181.879       37181.879      -108.05833    
-  line_key   39991.500       41042.879      -108.05833      -108.05833    
-  call trans   39991.500      -108.05833       39991.500      -108.05833    
-  call trans   39991.500       39991.500       39991.500      -108.05833    
-  call trans   41042.879       41042.879       41042.879      -108.05833    
 list/t=1-dec-1982:1-jan-1983 var, var[t=@med],  var[t=@med:3], var[t=@med:7]
              DATA SET: ./gtsa056_2.cdf
              TIME: NOV-1982 to JAN-1983
@@ -57628,18 +56981,6 @@ list/t=1-dec-1982:1-jan-1983 var, var[t=@med],  var[t=@med:3], var[t=@med:7]
 use coads_climatology
 let var= sst[y=0,L=10]
 plot var,var[x=@med:3], var[x=@med:7]
-  line_key   88.125000       127.72875       23.826250       23.826250    
-  call trans   88.125000       23.826250       88.125000       23.826250    
-  call trans   88.125000       88.125000       88.125000       23.826250    
-  call trans   127.72875       127.72875       127.72875       23.826250    
-  line_key   233.56250       273.16626       23.826250       23.826250    
-  call trans   233.56250       23.826250       233.56250       23.826250    
-  call trans   233.56250       233.56250       233.56250       23.826250    
-  call trans   273.16626       273.16626       273.16626       23.826250    
-  line_key   88.125000       127.72875       23.597084       23.597084    
-  call trans   88.125000       23.597084       88.125000       23.597084    
-  call trans   88.125000       88.125000       88.125000       23.597084    
-  call trans   127.72875       127.72875       127.72875       23.597084    
 list/x=80w:50w var,var[x=@med:3], var[x=@med:7]
              DATA SET: ./coads_climatology.cdf
              LONGITUDE: 80W to 50W
@@ -57667,18 +57008,6 @@ list/x=80w:50w var,var[x=@med:3], var[x=@med:7]
  
 let var= sst[x=180,L=10]
 plot var,var[y=@med:3], var[y=@med:7]
-  line_key  -55.625000      -35.933750      -5.9200001      -5.9200001    
-  call trans  -55.625000      -5.9200001      -55.625000      -5.9200001    
-  call trans  -55.625000      -55.625000      -55.625000      -5.9200001    
-  call trans  -35.933750      -35.933750      -35.933750      -5.9200001    
-  line_key   16.687500       36.378754      -5.9200001      -5.9200001    
-  call trans   16.687500      -5.9200001       16.687500      -5.9200001    
-  call trans   16.687500       16.687500       16.687500      -5.9200001    
-  call trans   36.378754       36.378754       36.378754      -5.9200001    
-  line_key  -55.625000      -35.933750      -7.2533336      -7.2533336    
-  call trans  -55.625000      -7.2533336      -55.625000      -7.2533336    
-  call trans  -55.625000      -55.625000      -55.625000      -7.2533336    
-  call trans  -35.933750      -35.933750      -35.933750      -7.2533336    
 list/y=-20:0 var,var[y=@med:3], var[y=@med:7]
              DATA SET: ./coads_climatology.cdf
              LATITUDE: 20S to 0
@@ -57702,18 +57031,6 @@ list/y=-20:0 var,var[y=@med:3], var[y=@med:7]
 define axis/z=0:1000:20/depth zax
 let var = cos(z[gz=zax]/30) + randu(1+k[gz=zax])
 plot/trans var, var[z=@med:3], var[z=@med:9]
-  line_key   187.50000       298.12500      -1.3675001      -1.3675001    
-  call trans   187.50000      -1.3675001       187.50000      -1.3675001    
-  call trans   187.50000       187.50000       187.50000      -1.3675001    
-  call trans   298.12500       298.12500       298.12500      -1.3675001    
-  line_key   593.75000       704.37500      -1.3675001      -1.3675001    
-  call trans   593.75000      -1.3675001       593.75000      -1.3675001    
-  call trans   593.75000       593.75000       593.75000      -1.3675001    
-  call trans   704.37500       704.37500       704.37500      -1.3675001    
-  line_key   187.50000       298.12500      -1.4925001      -1.4925001    
-  call trans   187.50000      -1.4925001       187.50000      -1.4925001    
-  call trans   187.50000       187.50000       187.50000      -1.4925001    
-  call trans   298.12500       298.12500       298.12500      -1.4925001    
 list/z=1:140 var, var[z=@med:3], var[z=@med:9]
              Z: 1 to 140
  Column  1: VAR is COS(Z[GZ=ZAX]/30) + RANDU(1+K[GZ=ZAX])
@@ -59288,11 +58605,6 @@ shade/hlim=20:1100 my_data[x=180]
 set view lower
 plot/vs/xlim=20:1100/ylim=0:1000 tpts, 0*MISSING(sampl_pts,0) + 500
 plot/vs/color=red/over tpts, sampl_pts
-  line_key  -128.50000      -43.450001      -318.75000      -318.75000    
-  call trans  -128.50000      -318.75000      -128.50000      -318.75000    
-  call trans  -128.50000      -128.50000      -128.50000      -318.75000    
-  call trans  -85.974998      -85.974998      -85.974998      -318.75000    
-  call trans  -43.450001      -43.450001      -43.450001      -318.75000    
  
  
 set mode calendar
@@ -60721,10 +60033,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "34.7937"
-CLOCK_SECS = "55.473"
-CURRENT_DATE = " 6-Feb-15"
-CURRENT_TIME = "14:40:03"
+DELTA_CPU = "35.4996"
+CLOCK_SECS = "69.476"
+CURRENT_DATE = "17-Feb-15"
+CURRENT_TIME = "10:28:17"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -60733,8 +60045,8 @@ CURRENT_TIME = "14:40:03"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.039994"
-CLOCK_SECS = "55.547"
+DELTA_CPU = "0.042994"
+CLOCK_SECS = "69.552"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -60748,60 +60060,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.256961
+ !-> DEFINE VARIABLE ten_plots = 0.227965
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "56.136"
+CLOCK_SECS = "70.168"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "56.137"
+CLOCK_SECS = "70.169"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.037993
- !-> DEFINE VARIABLE sumcpu =0.037993
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.033995
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.041994
- !-> DEFINE VARIABLE sumcpu =0.079987
+ !-> DEFINE VARIABLE dt = 0.033994
+ !-> DEFINE VARIABLE sumcpu =0.067989
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.043993
- !-> DEFINE VARIABLE sumcpu =0.12398
-!-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.037995
- !-> DEFINE VARIABLE sumcpu =0.161975
-!-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.034995
- !-> DEFINE VARIABLE sumcpu =0.19697
-!-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.035994
- !-> DEFINE VARIABLE sumcpu =0.232964
-!-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.271958
-!-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.042994
- !-> DEFINE VARIABLE sumcpu =0.314952
-!-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.042993
- !-> DEFINE VARIABLE sumcpu =0.357945
-!-> REPEAT: K=10
  !-> DEFINE VARIABLE dt = 0.036995
- !-> DEFINE VARIABLE sumcpu =0.39494
+ !-> DEFINE VARIABLE sumcpu =0.104984
+!-> REPEAT: K=4
+ !-> DEFINE VARIABLE dt = 0.038994
+ !-> DEFINE VARIABLE sumcpu =0.143978
+!-> REPEAT: K=5
+ !-> DEFINE VARIABLE dt = 0.035994
+ !-> DEFINE VARIABLE sumcpu =0.179972
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.039994
+ !-> DEFINE VARIABLE sumcpu =0.219966
+!-> REPEAT: K=7
+ !-> DEFINE VARIABLE dt = 0.038995
+ !-> DEFINE VARIABLE sumcpu =0.258961
+!-> REPEAT: K=8
+ !-> DEFINE VARIABLE dt = 0.038993
+ !-> DEFINE VARIABLE sumcpu =0.297954
+!-> REPEAT: K=9
+ !-> DEFINE VARIABLE dt = 0.034995
+ !-> DEFINE VARIABLE sumcpu =0.332949
+!-> REPEAT: K=10
+ !-> DEFINE VARIABLE dt = 0.035994
+ !-> DEFINE VARIABLE sumcpu =0.368943
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.39494
-0.39494
+ !-> MESSAGE/CONTINUE 0.368943
+0.368943
 sh sym CLOCK_SECS
-CLOCK_SECS = "57.244"
+CLOCK_SECS = "71.38"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = " 6-Feb-15"
-SESSION_TIME = "14:39"
-CURRENT_DATE = " 6-Feb-15"
-CURRENT_TIME = "14:40:04"
+SESSION_DATE = "17-Feb-15"
+SESSION_TIME = "10:27"
+CURRENT_DATE = "17-Feb-15"
+CURRENT_TIME = "10:28:19"
  
  
 ! ******** V6.3 Additions below ***********
@@ -60949,54 +60261,6 @@ plot/thick/line \
  cos(tt/20), cos(tt/24), cos(tt/28), cos(tt/32), \
  cos(tt/36), cos(tt/40), cos(tt/44), cos(tt/48), \
  cos(tt/52), cos(tt/56), cos(tt/60), cos(tt/64)
-  line_key   138498.25       157975.31      -1.2816590      -1.2816590    
-  call trans   138498.25      -1.2816590       138498.25      -1.2816590    
-  call trans   138498.25       138498.25       138498.25      -1.2816590    
-  call trans   157975.31       157975.31       157975.31      -1.2816590    
-  line_key   210024.25       229501.33      -1.2816590      -1.2816590    
-  call trans   210024.25      -1.2816590       210024.25      -1.2816590    
-  call trans   210024.25       210024.25       210024.25      -1.2816590    
-  call trans   229501.33       229501.33       229501.33      -1.2816590    
-  line_key   138498.25       157975.31      -1.3505991      -1.3505991    
-  call trans   138498.25      -1.3505991       138498.25      -1.3505991    
-  call trans   138498.25       138498.25       138498.25      -1.3505991    
-  call trans   157975.31       157975.31       157975.31      -1.3505991    
-  line_key   210024.25       229501.33      -1.3505991      -1.3505991    
-  call trans   210024.25      -1.3505991       210024.25      -1.3505991    
-  call trans   210024.25       210024.25       210024.25      -1.3505991    
-  call trans   229501.33       229501.33       229501.33      -1.3505991    
-  line_key   138498.25       157975.31      -1.4199078      -1.4199078    
-  call trans   138498.25      -1.4199078       138498.25      -1.4199078    
-  call trans   138498.25       138498.25       138498.25      -1.4199078    
-  call trans   157975.31       157975.31       157975.31      -1.4199078    
-  line_key   210024.25       229501.33      -1.4199078      -1.4199078    
-  call trans   210024.25      -1.4199078       210024.25      -1.4199078    
-  call trans   210024.25       210024.25       210024.25      -1.4199078    
-  call trans   229501.33       229501.33       229501.33      -1.4199078    
-  line_key   138498.25       157975.31      -1.4888480      -1.4888480    
-  call trans   138498.25      -1.4888480       138498.25      -1.4888480    
-  call trans   138498.25       138498.25       138498.25      -1.4888480    
-  call trans   157975.31       157975.31       157975.31      -1.4888480    
-  line_key   210024.25       229501.33      -1.4888480      -1.4888480    
-  call trans   210024.25      -1.4888480       210024.25      -1.4888480    
-  call trans   210024.25       210024.25       210024.25      -1.4888480    
-  call trans   229501.33       229501.33       229501.33      -1.4888480    
-  line_key   138498.25       157975.31      -1.5581567      -1.5581567    
-  call trans   138498.25      -1.5581567       138498.25      -1.5581567    
-  call trans   138498.25       138498.25       138498.25      -1.5581567    
-  call trans   157975.31       157975.31       157975.31      -1.5581567    
-  line_key   210024.25       229501.33      -1.5581567      -1.5581567    
-  call trans   210024.25      -1.5581567       210024.25      -1.5581567    
-  call trans   210024.25       210024.25       210024.25      -1.5581567    
-  call trans   229501.33       229501.33       229501.33      -1.5581567    
-  line_key   138498.25       157975.31      -1.6270967      -1.6270967    
-  call trans   138498.25      -1.6270967       138498.25      -1.6270967    
-  call trans   138498.25       138498.25       138498.25      -1.6270967    
-  call trans   157975.31       157975.31       157975.31      -1.6270967    
-  line_key   210024.25       229501.33      -1.6270967      -1.6270967    
-  call trans   210024.25      -1.6270967       210024.25      -1.6270967    
-  call trans   210024.25       210024.25       210024.25      -1.6270967    
-  call trans   229501.33       229501.33       229501.33      -1.6270967    
  
 can mode linecolors
 can win/all
@@ -62184,10 +61448,6 @@ plot/over temp[g=u]
  regrid  TEMP     M: 27 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    1    2  M: -999 -999  N: -999 -999
  doing moduloing TEMP on T axis:     1     2 dset:   2
 setting up plot
-  line_key   6479.2002       7511.1401       27.064001       27.064001    
-  call trans   6479.2002       27.064001       6479.2002       27.064001    
-  call trans   6479.2002       6479.2002       6479.2002       27.064001    
-  call trans   7511.1401       7511.1401       7511.1401       27.064001    
 PPL plot 754  complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT2     TIME14    NORMAL    NORMAL
@@ -62201,10 +61461,6 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day]
  regrid  TEMP     M: 23 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  -DELETE TEMP     M: 26 dset:   2 I:   50   51  J:   45   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
 setting up plot
-  line_key   6479.2002       7511.1401       27.016001       27.016001    
-  call trans   6479.2002       27.016001       6479.2002       27.016001    
-  call trans   6479.2002       6479.2002       6479.2002       27.016001    
-  call trans   7511.1401       7511.1401       7511.1401       27.016001    
 PPL plot 755  complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890]
  dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT2     TAX5DAY   NORMAL    NORMAL
@@ -62222,10 +61478,6 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890]
  regrid  TEMP     M: 23 dset:   2 I:    7    7  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  -DELETE TEMP     M: 26 dset:   2 I:   50   51  J:   45   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
 setting up plot
-  line_key   6479.2002       7511.1401       26.968000       26.968000    
-  call trans   6479.2002       26.968000       6479.2002       26.968000    
-  call trans   6479.2002       6479.2002       6479.2002       26.968000    
-  call trans   7511.1401       7511.1401       7511.1401       26.968000    
 PPL plot 756  complete
 plot/over temp[g=u@ave]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
@@ -62244,10 +61496,6 @@ plot/over temp[g=u@ave]
  regrid  TEMP     M: 19 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    1    2  M: -999 -999  N: -999 -999
  doing moduloing TEMP on T axis:     1     2 dset:   2
 setting up plot
-  line_key   6479.2002       7511.1401       26.920000       26.920000    
-  call trans   6479.2002       26.920000       6479.2002       26.920000    
-  call trans   6479.2002       6479.2002       6479.2002       26.920000    
-  call trans   7511.1401       7511.1401       7511.1401       26.920000    
 PPL plot 757  complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@ave]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT2     TIME14    NORMAL    NORMAL
@@ -62261,10 +61509,6 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@ave]
  regrid  TEMP     M: 17 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  -DELETE TEMP     M: 18 dset:   2 I:   50   51  J:   45   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
 setting up plot
-  line_key   6479.2002       7511.1401       26.872000       26.872000    
-  call trans   6479.2002       26.872000       6479.2002       26.872000    
-  call trans   6479.2002       6479.2002       6479.2002       26.872000    
-  call trans   7511.1401       7511.1401       7511.1401       26.872000    
 PPL plot 758  complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
  dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT2     TAX5DAY   NORMAL    NORMAL
@@ -62284,11 +61528,6 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
  regrid  TEMP     M: 16 dset:   2 I:    7    7  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  -DELETE TEMP     M: 13 dset:   2 I:   45   56  J:   45   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
 setting up plot
-  line_key   8444.7998       9270.3516       27.245867       27.245867    
-  call trans   8444.7998       27.245867       8444.7998       27.245867    
-  call trans   8444.7998       8444.7998       8444.7998       27.245867    
-  call trans   8857.5762       8857.5762       8857.5762       27.245867    
-  call trans   9270.3516       9270.3516       9270.3516       27.245867    
 PPL plot 759  complete
 plot/over temp[g=u@asn]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
@@ -62311,11 +61550,6 @@ plot/over temp[g=u@asn]
  -DELETE TEMP     M: 15 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    1    2  M: -999 -999  N: -999 -999
  doing moduloing TEMP on T axis:     1     2 dset:   2
 setting up plot
-  line_key   8444.7998       9270.3516       27.284267       27.284267    
-  call trans   8444.7998       27.284267       8444.7998       27.284267    
-  call trans   8444.7998       8444.7998       8444.7998       27.284267    
-  call trans   8857.5762       8857.5762       8857.5762       27.284267    
-  call trans   9270.3516       9270.3516       9270.3516       27.284267    
 PPL plot 760  complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@asn]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT2     TIME14    NORMAL    NORMAL
@@ -62334,11 +61568,6 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@asn]
  regrid  TEMP     M: 10 dset:   2 I:    7    7  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  -DELETE TEMP     M: 11 dset:   2 I:    7    7  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
 setting up plot
-  line_key   8444.7998       9270.3516       27.322668       27.322668    
-  call trans   8444.7998       27.322668       8444.7998       27.322668    
-  call trans   8444.7998       8444.7998       8444.7998       27.322668    
-  call trans   8857.5762       8857.5762       8857.5762       27.322668    
-  call trans   9270.3516       9270.3516       9270.3516       27.322668    
 PPL plot 761  complete
 plot/over temp[g=u,gt=u@ave]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
@@ -62351,11 +61580,6 @@ plot/over temp[g=u,gt=u@ave]
  found   TEMP     M: 24 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    3  170  M: -999 -999  N: -999 -999
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT2     TIME14    NORMAL    NORMAL
 setting up plot
-  line_key   8444.7998       9270.3516       27.361067       27.361067    
-  call trans   8444.7998       27.361067       8444.7998       27.361067    
-  call trans   8444.7998       8444.7998       8444.7998       27.361067    
-  call trans   8857.5762       8857.5762       8857.5762       27.361067    
-  call trans   9270.3516       9270.3516       9270.3516       27.361067    
 PPL plot 762  complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@ave]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT2     TIME14    NORMAL    NORMAL
@@ -62369,11 +61593,6 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5da
  regrid  TEMP     M: 25 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  -DELETE TEMP     M: 11 dset:   2 I:   50   51  J:   45   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
 setting up plot
-  line_key   8444.7998       9270.3516       27.399467       27.399467    
-  call trans   8444.7998       27.399467       8444.7998       27.399467    
-  call trans   8444.7998       8444.7998       8444.7998       27.399467    
-  call trans   8857.5762       8857.5762       8857.5762       27.399467    
-  call trans   9270.3516       9270.3516       9270.3516       27.399467    
 PPL plot 763  complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gt=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
  dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT2     TAX5DAY   NORMAL    NORMAL
@@ -62390,11 +61609,6 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gt=g5_10g00abcdefg
  regrid  TEMP     M: 11 dset:   2 I:    7    7  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  -DELETE TEMP     M: 21 dset:   2 I:   50   51  J:   45   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
 setting up plot
-  line_key   8444.7998       9270.3516       27.437868       27.437868    
-  call trans   8444.7998       27.437868       8444.7998       27.437868    
-  call trans   8444.7998       8444.7998       8444.7998       27.437868    
-  call trans   8857.5762       8857.5762       8857.5762       27.437868    
-  call trans   9270.3516       9270.3516       9270.3516       27.437868    
 PPL plot 764  complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@asn]  ! invalid interpretation of data
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY   NORMAL    NORMAL
@@ -62408,11 +61622,6 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5da
  regrid  TEMP     M:  9 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
  -DELETE TEMP     M: 21 dset:   2 I:   50   51  J:   45   46  K:    1    1  L:    2  104  M: -999 -999  N: -999 -999
 setting up plot
-  line_key   8444.7998       9270.3516       27.476267       27.476267    
-  call trans   8444.7998       27.476267       8444.7998       27.476267    
-  call trans   8444.7998       8444.7998       8444.7998       27.476267    
-  call trans   8857.5762       8857.5762       8857.5762       27.476267    
-  call trans   9270.3516       9270.3516       9270.3516       27.476267    
 PPL plot 765  complete
  
  
@@ -63784,11 +62993,6 @@ SHADE/title="A field with 200 sample points marked" sample_function
 let xpts = 10*randu(i); let ypts = 10*randu(i+2)
 set region/i=1:200
 plot/vs/over/symbols xpts,ypts
-  line_key  -2.4822125      -1.0748998      -1.3395677      -1.3395677    
-  call trans  -2.4822125      -1.3395677      -2.4822125      -1.3395677    
-  call trans  -2.4822125      -2.4822125      -2.4822125      -1.3395677    
-  call trans  -1.7785561      -1.7785561      -1.7785561      -1.3395677    
-  call trans  -1.0748998      -1.0748998      -1.0748998      -1.3395677    
 define axis/x=1:10:.5 xax5
 define axis/y=1:10:.5 yax5
 define axis/x=1:10:.2 xax2
@@ -64886,8 +64090,8 @@ list contents
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.94 (beta)"                                                     
- 3    /  3:" ! Linux 2.6.32-504.8.1.el6.x86_64 64-bit - 02/05/15"                       
- 4    /  4:" !  6-Feb-15 14:39     "                                                    
+ 3    /  3:" ! Linux 2.6.32-504.8.1.el6.x86_64 64-bit - 02/17/15"                       
+ 4    /  4:" ! 17-Feb-15 10:27     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -64987,126 +64191,14 @@ auxiliary varible regridding transforms e.g.TEMP[GZ(depth)=zax@AVE]
    @LIN        lin. interp.                 @PLAVE      pc-wise linear ave
 use gt4d011
 plot/x=123.5w/y=2.5/k=1 temp, temp[L=@med], temp[L=@smx], temp[L=@smn]
-  line_key   35628.641       36625.488       26.292509       26.292509    
-  call trans   35628.641       26.292509       35628.641       26.292509    
-  call trans   35628.641       35628.641       35628.641       26.292509    
-  call trans   36625.488       36625.488       36625.488       26.292509    
-  line_key   35628.641       36625.488       26.110981       26.110981    
-  call trans   35628.641       26.110981       35628.641       26.110981    
-  call trans   35628.641       35628.641       35628.641       26.110981    
-  call trans   36625.488       36625.488       36625.488       26.110981    
-  line_key   35628.641       36625.488       25.929455       25.929455    
-  call trans   35628.641       25.929455       35628.641       25.929455    
-  call trans   35628.641       35628.641       35628.641       25.929455    
-  call trans   36625.488       36625.488       36625.488       25.929455    
-  line_key   35628.641       36625.488       25.748857       25.748857    
-  call trans   35628.641       25.748857       35628.641       25.748857    
-  call trans   35628.641       35628.641       35628.641       25.748857    
-  call trans   36625.488       36625.488       36625.488       25.748857    
  
 plot/x=123.5w/y=2.5/k=1 temp, temp[L=@med:3], temp[L=@smx:3], temp[L=@smn:3]
-  line_key   35628.641       36625.488       26.292509       26.292509    
-  call trans   35628.641       26.292509       35628.641       26.292509    
-  call trans   35628.641       35628.641       35628.641       26.292509    
-  call trans   36625.488       36625.488       36625.488       26.292509    
-  line_key   35628.641       36625.488       26.110981       26.110981    
-  call trans   35628.641       26.110981       35628.641       26.110981    
-  call trans   35628.641       35628.641       35628.641       26.110981    
-  call trans   36625.488       36625.488       36625.488       26.110981    
-  line_key   35628.641       36625.488       25.929455       25.929455    
-  call trans   35628.641       25.929455       35628.641       25.929455    
-  call trans   35628.641       35628.641       35628.641       25.929455    
-  call trans   36625.488       36625.488       36625.488       25.929455    
-  line_key   35628.641       36625.488       25.748857       25.748857    
-  call trans   35628.641       25.748857       35628.641       25.748857    
-  call trans   35628.641       35628.641       35628.641       25.748857    
-  call trans   36625.488       36625.488       36625.488       25.748857    
 plot/x=123.5w/y=2.5/k=1 temp, temp[L=@med:5], temp[L=@smx:5], temp[L=@smn:5]
-  line_key   35628.641       36625.488       26.292509       26.292509    
-  call trans   35628.641       26.292509       35628.641       26.292509    
-  call trans   35628.641       35628.641       35628.641       26.292509    
-  call trans   36625.488       36625.488       36625.488       26.292509    
-  line_key   35628.641       36625.488       26.110981       26.110981    
-  call trans   35628.641       26.110981       35628.641       26.110981    
-  call trans   35628.641       35628.641       35628.641       26.110981    
-  call trans   36625.488       36625.488       36625.488       26.110981    
-  line_key   35628.641       36625.488       25.929455       25.929455    
-  call trans   35628.641       25.929455       35628.641       25.929455    
-  call trans   35628.641       35628.641       35628.641       25.929455    
-  call trans   36625.488       36625.488       36625.488       25.929455    
-  line_key   35628.641       36625.488       25.748857       25.748857    
-  call trans   35628.641       25.748857       35628.641       25.748857    
-  call trans   35628.641       35628.641       35628.641       25.748857    
-  call trans   36625.488       36625.488       36625.488       25.748857    
 plot/x=123.5w/y=2.5/k=1 temp, temp[L=@med:5], temp[L=@smx:6], temp[L=@smn:6]
-  line_key   35628.641       36625.488       26.292509       26.292509    
-  call trans   35628.641       26.292509       35628.641       26.292509    
-  call trans   35628.641       35628.641       35628.641       26.292509    
-  call trans   36625.488       36625.488       36625.488       26.292509    
-  line_key   35628.641       36625.488       26.110981       26.110981    
-  call trans   35628.641       26.110981       35628.641       26.110981    
-  call trans   35628.641       35628.641       35628.641       26.110981    
-  call trans   36625.488       36625.488       36625.488       26.110981    
-  line_key   35628.641       36625.488       25.929455       25.929455    
-  call trans   35628.641       25.929455       35628.641       25.929455    
-  call trans   35628.641       35628.641       35628.641       25.929455    
-  call trans   36625.488       36625.488       36625.488       25.929455    
-  line_key   35628.641       36625.488       25.748857       25.748857    
-  call trans   35628.641       25.748857       35628.641       25.748857    
-  call trans   35628.641       35628.641       35628.641       25.748857    
-  call trans   36625.488       36625.488       36625.488       25.748857    
  
 plot/y=2.5/k=1/l=1/x=139.5W:122.5W temp, temp[i=@med], temp[i=@smx], temp[i=@smn]
-  line_key   224.00563       227.84314       26.467459       26.467459    
-  call trans   224.00563       26.467459       224.00563       26.467459    
-  call trans   224.00563       224.00563       224.00563       26.467459    
-  call trans   227.84314       227.84314       227.84314       26.467459    
-  line_key   224.00563       227.84314       26.446281       26.446281    
-  call trans   224.00563       26.446281       224.00563       26.446281    
-  call trans   224.00563       224.00563       224.00563       26.446281    
-  call trans   227.84314       227.84314       227.84314       26.446281    
-  line_key   224.00563       227.84314       26.425102       26.425102    
-  call trans   224.00563       26.425102       224.00563       26.425102    
-  call trans   224.00563       224.00563       224.00563       26.425102    
-  call trans   227.84314       227.84314       227.84314       26.425102    
-  line_key   224.00563       227.84314       26.404034       26.404034    
-  call trans   224.00563       26.404034       224.00563       26.404034    
-  call trans   224.00563       224.00563       224.00563       26.404034    
-  call trans   227.84314       227.84314       227.84314       26.404034    
 plot/k=1/l=1/x=123.5w temp, temp[j=@med], temp[j=@smx], temp[j=@smn]
-  line_key  -12.874281       4.5985584       25.069838       25.069838    
-  call trans  -12.874281       25.069838      -12.874281       25.069838    
-  call trans  -12.874281      -12.874281      -12.874281       25.069838    
-  call trans   4.5985584       4.5985584       4.5985584       25.069838    
-  line_key  -12.874281       4.5985584       24.985125       24.985125    
-  call trans  -12.874281       24.985125      -12.874281       24.985125    
-  call trans  -12.874281      -12.874281      -12.874281       24.985125    
-  call trans   4.5985584       4.5985584       4.5985584       24.985125    
-  line_key  -12.874281       4.5985584       24.900412       24.900412    
-  call trans  -12.874281       24.900412      -12.874281       24.900412    
-  call trans  -12.874281      -12.874281      -12.874281       24.900412    
-  call trans   4.5985584       4.5985584       4.5985584       24.900412    
-  line_key  -12.874281       4.5985584       24.816133       24.816133    
-  call trans  -12.874281       24.816133      -12.874281       24.816133    
-  call trans  -12.874281      -12.874281      -12.874281       24.816133    
-  call trans   4.5985584       4.5985584       4.5985584       24.816133    
 plot/l=1/x=123.5w/y=2.5/z=0:100 temp, temp[k=@med], temp[k=@smx], temp[k=@smn]
-  line_key   24.324856       25.227798       105.61237       105.61237    
-  call trans   24.324856       105.61237       24.324856       105.61237    
-  call trans   24.324856       24.324856       24.324856       105.61237    
-  call trans   25.227798       25.227798       25.227798       105.61237    
-  line_key   24.324856       25.227798       108.33527       108.33527    
-  call trans   24.324856       108.33527       24.324856       108.33527    
-  call trans   24.324856       24.324856       24.324856       108.33527    
-  call trans   25.227798       25.227798       25.227798       108.33527    
-  line_key   24.324856       25.227798       111.05818       111.05818    
-  call trans   24.324856       111.05818       24.324856       111.05818    
-  call trans   24.324856       24.324856       24.324856       111.05818    
-  call trans   25.227798       25.227798       25.227798       111.05818    
-  line_key   24.324856       25.227798       113.76713       113.76713    
-  call trans   24.324856       113.76713       24.324856       113.76713    
-  call trans   24.324856       24.324856       24.324856       113.76713    
-  call trans   25.227798       25.227798       25.227798       113.76713    
  
 ! Numeric results
 list/x=123.5w/y=2.5/k=1 temp, temp[L=@med], temp[L=@smx], temp[L=@smn]
@@ -66375,12 +65467,12 @@ list/L=15:20 tax_month(t[gt=tvar],tvar), tax_yearfrac(t[gt=tvar],tvar)
  Column  1: TAX_MONTH(T[GT=TVAR],TVAR)
  Column  2: TAX_YEARFRAC(T[GT=TVAR],TVAR)
              (C001,V002)  (C001,V005)
-17-MAR      / 15:   3.000  0.2082
-16-APR      / 16:   4.000  0.2904
-17-MAY      / 17:   5.000  0.3753
-16-JUN      / 18:   6.000  0.4575
-17-JUL      / 19:   7.000  0.5425
-16-AUG      / 20:   8.000  0.6247
+17-MAR      / 15:   3.000  0.2092
+16-APR      / 16:   4.000  0.2926
+17-MAY      / 17:   5.000  0.3760
+16-JUN      / 18:   6.000  0.4594
+17-JUL      / 19:   7.000  0.5428
+16-AUG      / 20:   8.000  0.6262
 ! the following is an error for a modulo time axis
 list/L=15:20 tax_year(t[gt=tvar],tvar)
 list tax_units(tvar)
@@ -66821,8 +65913,8 @@ list/l=1:7 TAX_yearfrac(t[gt=var], var)
  01-JAN-2010 00:00:10 / 3:  0.002740
  01-JAN-2010 00:00:15 / 4:  0.002740
  01-JAN-2010 00:00:20 / 5:  0.002740
- 01-JAN-2010 00:00:25 / 6:  0.002740
- 01-JAN-2010 00:00:30 / 7:  0.002740
+ 01-JAN-2010 00:00:25 / 6:  0.002741
+ 01-JAN-2010 00:00:30 / 7:  0.002741
  
 ! This example from Patrick B. Output of TAX_dayfrac repeats.
 ! We need to just return an error mesage. Cant represent 2.5 years
@@ -67467,40 +66559,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.681
-randu2_randn2       0.038
-randu2_randn2       0.868
-randu2_randn2       0.478
-randu2_randn2       0.883
+randu2_randn2       0.057
+randu2_randn2       0.245
+randu2_randn2       0.170
+randu2_randn2       0.528
+randu2_randn2       0.232
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.585
-randu2_randn2       0.086
-randu2_randn2       0.169
-randu2_randn2       0.768
-randu2_randn2       0.234
+randu2_randn2       0.674
+randu2_randn2       0.399
+randu2_randn2       0.835
+randu2_randn2       0.458
+randu2_randn2       0.218
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.517
-randu2_randn2       0.195
-randu2_randn2       0.736
-randu2_randn2       0.836
-randu2_randn2       0.115
-randu2_randn2       0.697
+randu2_randn2       0.392
+randu2_randn2       0.337
+randu2_randn2       0.437
+randu2_randn2       0.293
+randu2_randn2       0.182
+randu2_randn2       0.179
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.648
-randu2_randn2       0.952
+randu2_randn2       0.123
+randu2_randn2       0.484
+randu2_randn2       0.645
 randu2_randn2       0.266
-randu2_randn2       0.364
-randu2_randn2       0.441
-randu2_randn2       0.517
+randu2_randn2       0.659
+randu2_randn2       0.712
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -67525,40 +66617,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.443
-randu2_randn2      -1.993
-randu2_randn2      -2.885
-randu2_randn2      -1.083
-randu2_randn2      -1.030
-             VARIABLE : RANDN2(XBIG,-1)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 5 points (X)
-             X        : 0.5 to 5.5
-randu2_randn2       0.913
-randu2_randn2       1.592
-randu2_randn2      -1.096
-randu2_randn2       0.347
-randu2_randn2      -0.922
-             VARIABLE : RANDN2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2      -2.134
-randu2_randn2      -0.021
-randu2_randn2       1.311
-randu2_randn2       1.087
-randu2_randn2      -1.223
-randu2_randn2      -0.967
-             VARIABLE : RANDN2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2      -0.859
-randu2_randn2       0.794
-randu2_randn2      -0.982
 randu2_randn2       0.161
-randu2_randn2       0.321
-randu2_randn2       0.674
+randu2_randn2       0.314
+randu2_randn2      -0.123
+randu2_randn2      -0.185
+randu2_randn2       0.435
+             VARIABLE : RANDN2(XBIG,-1)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 5 points (X)
+             X        : 0.5 to 5.5
+randu2_randn2      -0.276
+randu2_randn2       0.734
+randu2_randn2       0.218
+randu2_randn2       0.536
+randu2_randn2      -1.271
+             VARIABLE : RANDN2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.636
+randu2_randn2      -0.843
+randu2_randn2      -1.596
+randu2_randn2       1.394
+randu2_randn2       0.941
+randu2_randn2       1.022
+             VARIABLE : RANDN2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2      -0.032
+randu2_randn2      -1.012
+randu2_randn2       0.148
+randu2_randn2      -0.571
+randu2_randn2       0.526
+randu2_randn2       1.728
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -67579,30 +66671,18 @@ randu2_randn2       0.217
 randu2_randn2       0.537
 randu2_randn2       0.674
 randu2_randn2      -1.279
-  line_key   206.21390       431.94940      -1.3428338      -1.3428338    
-  call trans   206.21390      -1.3428338       206.21390      -1.3428338    
-  call trans   206.21390       206.21390       206.21390      -1.3428338    
-  call trans   431.94940       431.94940       431.94940      -1.3428338    
-  line_key   206.21390       431.94940      -1.4389000      -1.4389000    
-  call trans   206.21390      -1.4389000       206.21390      -1.4389000    
-  call trans   206.21390       206.21390       206.21390      -1.4389000    
-  call trans   431.94940       431.94940       431.94940      -1.4389000    
-  line_key   206.21390       431.94940      -1.5354216      -1.5354216    
-  call trans   206.21390      -1.5354216       206.21390      -1.5354216    
-  call trans   206.21390       206.21390       206.21390      -1.5354216    
-  call trans   431.94940       431.94940       431.94940      -1.5354216    
              Z: 1 to 140
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.507       1.507       1.163
-randu2_randn2       1.282       1.282       1.163
-randu2_randn2       1.163       1.163       0.196
-randu2_randn2       0.196       0.196       0.798
-randu2_randn2       0.070       0.070       0.798
-randu2_randn2      -0.300      -0.063       0.798
-randu2_randn2      -0.063      -0.063       0.798
-randu2_randn2       0.798       0.798       0.798
+randu2_randn2       1.713       1.713       0.822
+randu2_randn2       0.829       0.829       0.822
+randu2_randn2       0.822       0.822       0.285
+randu2_randn2       0.285       0.285       0.560
+randu2_randn2      -0.620      -0.620       0.560
+randu2_randn2      -0.975      -0.620       0.560
+randu2_randn2       0.018       0.018       0.560
+randu2_randn2       0.560       0.560       0.560
  
 GO bn_reset
 cancel mode verify
@@ -71767,10 +70847,6 @@ plot/over temp[g=g5day]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  0.91392803      0.96322381       36.461468       36.461468    
-  call trans  0.91392803       36.461468      0.91392803       36.461468    
-  call trans  0.91392803      0.91392803      0.91392803       36.461468    
-  call trans  0.96322381      0.96322381      0.96322381       36.461468    
 PPL plot 864  complete
 plot/over temp[g=g5day@ave]
  dealloc  dynamic grid G5DAY           PSXT1     PSYT5_89  PSZT1_2   TIME21    EAXIS     FAX20
@@ -71790,10 +70866,6 @@ plot/over temp[g=g5day@ave]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  0.91392803      0.96322381       36.094925       36.094925    
-  call trans  0.91392803       36.094925      0.91392803       36.094925    
-  call trans  0.91392803      0.91392803      0.91392803       36.094925    
-  call trans  0.96322381      0.96322381      0.96322381       36.094925    
 PPL plot 865  complete
 plot/over temp[g=g5day@asn]
  dealloc  dynamic grid G5DAY           PSXT1     PSYT5_89  PSZT1_2   TIME21    EAXIS     FAX20
@@ -71813,10 +70885,6 @@ plot/over temp[g=g5day@asn]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  0.91392803      0.96322381       35.728382       35.728382    
-  call trans  0.91392803       35.728382      0.91392803       35.728382    
-  call trans  0.91392803      0.91392803      0.91392803       35.728382    
-  call trans  0.96322381      0.96322381      0.96322381       35.728382    
 PPL plot 866  complete
  
 ! F axis
@@ -71851,10 +70919,6 @@ plot/over temp[g=g5day]
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  -23.601543      -21.625528       41.281013       41.281013    
-  call trans  -23.601543       41.281013      -23.601543       41.281013    
-  call trans  -23.601543      -23.601543      -23.601543       41.281013    
-  call trans  -21.625528      -21.625528      -21.625528       41.281013    
 PPL plot 868  complete
 plot/over temp[g=g5day@ave]
  dealloc  dynamic grid G5DAY           PSXT1     PSYT5_89  PSZT1_2   TIME21    EAXIS     FAX20
@@ -71871,10 +70935,6 @@ plot/over temp[g=g5day@ave]
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  -23.601543      -21.625528       41.027256       41.027256    
-  call trans  -23.601543       41.027256      -23.601543       41.027256    
-  call trans  -23.601543      -23.601543      -23.601543       41.027256    
-  call trans  -21.625528      -21.625528      -21.625528       41.027256    
 PPL plot 869  complete
 plot/over temp[g=g5day@asn]
  dealloc  dynamic grid G5DAY           PSXT1     PSYT5_89  PSZT1_2   TIME21    EAXIS     FAX20
@@ -71891,10 +70951,6 @@ plot/over temp[g=g5day@asn]
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
-  line_key  -23.601543      -21.625528       40.773495       40.773495    
-  call trans  -23.601543       40.773495      -23.601543       40.773495    
-  call trans  -23.601543      -23.601543      -23.601543       40.773495    
-  call trans  -21.625528      -21.625528      -21.625528       40.773495    
 PPL plot 870  complete
  
 set mode/last interp
@@ -73286,8 +72342,8 @@ yes?
 yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.94 (beta)
- 	Linux 2.6.32-504.8.1.el6.x86_64 64-bit - 02/05/15
- 	 6-Feb-15 14:40     
+ 	Linux 2.6.32-504.8.1.el6.x86_64 64-bit - 02/17/15
+ 	17-Feb-15 10:28     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -73303,14 +72359,25 @@ GO bn_ef_external_functions.jnl
 go bench_examples
 set mode ignore_error
 show func/ext add_9
+ADD_9(A,B,C,D,E,F,G,H,I)
+    (demonstration function) adds 9 arguments
 show func/ext ave*
 AVE_SCAT2GRID_T(TPTS,VPTS,TAXIS)
     Compute average of a variable in each cell of output time axis
     TPTS: T coordinates of scattered input time coordinates
     VPTS: Variable at times in TPTS
     TAXIS: Output time axis
+AVET(A)
+    (demonstration function) returns the time average
+    A: data to be averaged over the time axis
 show func pass_thru
+PASS_THRU(A)
+    (demonstration function) sets result equal to input
+    A: this arg is passed through
 show func sto*
+STORAGE(A)
+    sets result equal to input/10
+    A: input
  
 go bench_add_9
 ! Bench_add_9.jnl
@@ -73332,7 +72399,49 @@ let a3 = sst[d=1,l=3]
 let a = add_9(a1,a2,a3,a1,a2,a3,a1,a2,a3)
  
 list a
+             VARIABLE : ADD_9(A1,A2,A3,A1,A2,A3,A1,A2,A3)
+             SUBSET   : 15 points (LONGITUDE)
+             LATITUDE : 1S
+             TIME     : 16-JAN 06:00
+                1S    
+                45
+ 151E   / 66:  263.6
+ 153E   / 67:  264.5
+ 155E   / 68:  264.2
+ 157E   / 69:  261.3
+ 159E   / 70:  260.9
+ 161E   / 71:  262.4
+ 163E   / 72:  264.0
+ 165E   / 73:  261.1
+ 167E   / 74:  260.9
+ 169E   / 75:  261.0
+ 171E   / 76:  259.3
+ 173E   / 77:  257.9
+ 175E   / 78:  257.0
+ 177E   / 79:  259.1
+ 179E   / 80:  254.8
 list  a - 3 * sst[d=1,l=1:3@sum]
+             VARIABLE : A - 3 * SST[D=coads_climatology,L=1:3@SUM]
+             SUBSET   : 15 points (LONGITUDE)
+             LATITUDE : 1S
+             TIME     : 16-JAN 06:00
+                 1S    
+                 45
+ 151E   / 66:  0.0000
+ 153E   / 67:  0.0000
+ 155E   / 68:  0.0000
+ 157E   / 69:  0.0000
+ 159E   / 70:  0.0000
+ 161E   / 71:  0.0000
+ 163E   / 72:  0.0000
+ 165E   / 73:  0.0000
+ 167E   / 74:  0.0000
+ 169E   / 75:  0.0000
+ 171E   / 76:  0.0000
+ 173E   / 77:  0.0000
+ 175E   / 78:  0.0000
+ 177E   / 79:  0.0000
+ 179E   / 80:  0.0000
 set mode/last ignore_errors
 go bench_avet
 ! Bench_avet.jnl
@@ -73348,13 +72457,69 @@ set region/x=151E:179E/y=0
  
 let a = avet(sst)
 list a
+             VARIABLE : AVET(SST)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 15 points (LONGITUDE)
+             LATITUDE : 1S
+                1S    
+                45
+ 151E   / 66:  29.28
+ 153E   / 67:  29.39
+ 155E   / 68:  29.35
+ 157E   / 69:  29.03
+ 159E   / 70:  28.99
+ 161E   / 71:  29.15
+ 163E   / 72:  29.33
+ 165E   / 73:  29.01
+ 167E   / 74:  28.99
+ 169E   / 75:  29.00
+ 171E   / 76:  28.81
+ 173E   / 77:  28.66
+ 175E   / 78:  28.56
+ 177E   / 79:  28.79
+ 179E   / 80:  28.31
 list a - sst[l=@ave]
+             VARIABLE : A - SST[L=@AVE]
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 15 points (LONGITUDE)
+             LATITUDE : 1S
+             TIME     : 01-JAN 00:45 to 01-APR 08:12
+                  1S      
+                  45
+ 151E   / 66:  0.000E+00
+ 153E   / 67: -3.553E-15
+ 155E   / 68:  0.000E+00
+ 157E   / 69:  0.000E+00
+ 159E   / 70:  3.553E-15
+ 161E   / 71:  7.105E-15
+ 163E   / 72:  3.553E-15
+ 165E   / 73:  0.000E+00
+ 167E   / 74:  0.000E+00
+ 169E   / 75:  3.553E-15
+ 171E   / 76:  0.000E+00
+ 173E   / 77:  3.553E-15
+ 175E   / 78:  0.000E+00
+ 177E   / 79:  3.553E-15
+ 179E   / 80:  3.553E-15
  
 can region
 let a = x[i=1:9,k=1:5] + t[l=1:5]
 let b = x[i=1:9,k=1:5]
 let c = avet(a)
 list b, c
+             X: 0.5 to 9.5
+ Column  1: B is X[I=1:9,K=1:5]
+ Column  2: C is AVET(A)
+             B     C
+1   / 1:  1.000   4.00
+2   / 2:  2.000   5.00
+3   / 3:  3.000   6.00
+4   / 4:  4.000   7.00
+5   / 5:  5.000   8.00
+6   / 6:  6.000   9.00
+7   / 7:  7.000  10.00
+8   / 8:  8.000  11.00
+9   / 9:  9.000  12.00
  
 set mode/last ignore_errors
 go bench_pass_thru
@@ -73368,18 +72533,354 @@ set mode ignore_errors
 can region
 let a = pass_thru(x)
 list a[i=1:20]
+             VARIABLE : PASS_THRU(X)
+             SUBSET   : 20 points (X)
+ 1    /  1:   1.00
+ 2    /  2:   2.00
+ 3    /  3:   3.00
+ 4    /  4:   4.00
+ 5    /  5:   5.00
+ 6    /  6:   6.00
+ 7    /  7:   7.00
+ 8    /  8:   8.00
+ 9    /  9:   9.00
+ 10   / 10:  10.00
+ 11   / 11:  11.00
+ 12   / 12:  12.00
+ 13   / 13:  13.00
+ 14   / 14:  14.00
+ 15   / 15:  15.00
+ 16   / 16:  16.00
+ 17   / 17:  17.00
+ 18   / 18:  18.00
+ 19   / 19:  19.00
+ 20   / 20:  20.00
 set region/i=1:20
 list sin(a)
+             VARIABLE : SIN(A)
+             SUBSET   : 20 points (X)
+ 1    /  1:  0.8415
+ 2    /  2:  0.9093
+ 3    /  3:  0.1411
+ 4    /  4: -0.7568
+ 5    /  5: -0.9589
+ 6    /  6: -0.2794
+ 7    /  7:  0.6570
+ 8    /  8:  0.9894
+ 9    /  9:  0.4121
+ 10   / 10: -0.5440
+ 11   / 11: -1.0000
+ 12   / 12: -0.5366
+ 13   / 13:  0.4202
+ 14   / 14:  0.9906
+ 15   / 15:  0.6503
+ 16   / 16: -0.2879
+ 17   / 17: -0.9614
+ 18   / 18: -0.7510
+ 19   / 19:  0.1499
+ 20   / 20:  0.9129
 can var/all
 can region
  
 use coads_climatology
 let a = pass_thru(sst[l=@ave,y=@sbx:11])
 list/x=50 a
+             VARIABLE : PASS_THRU(SST[L=@AVE,Y=@SBX:11])
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 90 points (LATITUDE)
+             LONGITUDE: 49E
+             TIME     : 01-JAN 00:45 to 01-APR 08:12
+               49E   
+               15
+ 89N   / 90:   ....
+ 87N   / 89:   ....
+ 85N   / 88:   ....
+ 83N   / 87:   ....
+ 81N   / 86:   ....
+ 79N   / 85:   ....
+ 77N   / 84:   ....
+ 75N   / 83:   ....
+ 73N   / 82:   ....
+ 71N   / 81:   ....
+ 69N   / 80:   ....
+ 67N   / 79:   ....
+ 65N   / 78:   ....
+ 63N   / 77:   ....
+ 61N   / 76:   ....
+ 59N   / 75:   ....
+ 57N   / 74:   ....
+ 55N   / 73:   ....
+ 53N   / 72:   ....
+ 51N   / 71:   ....
+ 49N   / 70:   ....
+ 47N   / 69:   ....
+ 45N   / 68:   ....
+ 43N   / 67:   ....
+ 41N   / 66:   ....
+ 39N   / 65:   ....
+ 37N   / 64:   ....
+ 35N   / 63:   ....
+ 33N   / 62:   ....
+ 31N   / 61:   ....
+ 29N   / 60:   ....
+ 27N   / 59:   ....
+ 25N   / 58:   ....
+ 23N   / 57:   ....
+ 21N   / 56:   ....
+ 19N   / 55:   ....
+ 17N   / 54:   ....
+ 15N   / 53:   ....
+ 13N   / 52:   ....
+ 11N   / 51:   ....
+ 9N    / 50:   ....
+ 7N    / 49:   ....
+ 5N    / 48:  26.94
+ 3N    / 47:  27.22
+ 1N    / 46:  27.48
+ 1S    / 45:  27.67
+ 3S    / 44:  27.78
+ 5S    / 43:  27.92
+ 7S    / 42:  28.04
+ 9S    / 41:  28.12
+ 11S   / 40:  28.18
+ 13S   / 39:  28.14
+ 15S   / 38:  28.03
+ 17S   / 37:  27.82
+ 19S   / 36:  27.45
+ 21S   / 35:  27.04
+ 23S   / 34:  26.52
+ 25S   / 33:  25.86
+ 27S   / 32:  25.09
+ 29S   / 31:  24.17
+ 31S   / 30:  23.04
+ 33S   / 29:  21.37
+ 35S   / 28:  19.60
+ 37S   / 27:  17.68
+ 39S   / 26:  15.76
+ 41S   / 25:  13.87
+ 43S   / 24:  11.98
+ 45S   / 23:  10.18
+ 47S   / 22:   8.45
+ 49S   / 21:   6.82
+ 51S   / 20:   5.33
+ 53S   / 19:   4.03
+ 55S   / 18:   3.19
+ 57S   / 17:   2.42
+ 59S   / 16:   ....
+ 61S   / 15:   ....
+ 63S   / 14:   ....
+ 65S   / 13:   ....
+ 67S   / 12:   ....
+ 69S   / 11:   ....
+ 71S   / 10:   ....
+ 73S   /  9:   ....
+ 75S   /  8:   ....
+ 77S   /  7:   ....
+ 79S   /  6:   ....
+ 81S   /  5:   ....
+ 83S   /  4:   ....
+ 85S   /  3:   ....
+ 87S   /  2:   ....
+ 89S   /  1:   ....
 let a = pass_thru(sst)
 set region/@w
 list/x=50 a[l=1]
+             VARIABLE : PASS_THRU(SST)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 90 points (LATITUDE)
+             LONGITUDE: 49E
+             TIME     : 16-JAN 06:00
+               49E   
+               15
+ 89N   / 90:   ....
+ 87N   / 89:   ....
+ 85N   / 88:   ....
+ 83N   / 87:   ....
+ 81N   / 86:   ....
+ 79N   / 85:   ....
+ 77N   / 84:   ....
+ 75N   / 83:   ....
+ 73N   / 82:   0.59
+ 71N   / 81:   0.62
+ 69N   / 80:   0.45
+ 67N   / 79:   ....
+ 65N   / 78:   ....
+ 63N   / 77:   ....
+ 61N   / 76:   ....
+ 59N   / 75:   ....
+ 57N   / 74:   ....
+ 55N   / 73:   ....
+ 53N   / 72:   ....
+ 51N   / 71:   ....
+ 49N   / 70:   ....
+ 47N   / 69:   ....
+ 45N   / 68:   3.32
+ 43N   / 67:   4.72
+ 41N   / 66:   4.84
+ 39N   / 65:   8.63
+ 37N   / 64:   8.07
+ 35N   / 63:   ....
+ 33N   / 62:   ....
+ 31N   / 61:   ....
+ 29N   / 60:  18.91
+ 27N   / 59:  20.83
+ 25N   / 58:   ....
+ 23N   / 57:   ....
+ 21N   / 56:   ....
+ 19N   / 55:   ....
+ 17N   / 54:   ....
+ 15N   / 53:  25.41
+ 13N   / 52:  25.37
+ 11N   / 51:  25.82
+ 9N    / 50:  27.20
+ 7N    / 49:  26.11
+ 5N    / 48:  26.10
+ 3N    / 47:  26.25
+ 1N    / 46:  26.44
+ 1S    / 45:  27.01
+ 3S    / 44:  27.61
+ 5S    / 43:  28.24
+ 7S    / 42:  28.71
+ 9S    / 41:  28.46
+ 11S   / 40:  28.07
+ 13S   / 39:  28.15
+ 15S   / 38:  28.08
+ 17S   / 37:  28.29
+ 19S   / 36:  27.61
+ 21S   / 35:  27.59
+ 23S   / 34:  27.06
+ 25S   / 33:  26.70
+ 27S   / 32:  25.89
+ 29S   / 31:  24.65
+ 31S   / 30:  23.86
+ 33S   / 29:  22.16
+ 35S   / 28:  20.58
+ 37S   / 27:  19.20
+ 39S   / 26:  17.51
+ 41S   / 25:  14.44
+ 43S   / 24:   8.55
+ 45S   / 23:   7.51
+ 47S   / 22:   5.77
+ 49S   / 21:   4.21
+ 51S   / 20:   3.64
+ 53S   / 19:   2.87
+ 55S   / 18:   2.67
+ 57S   / 17:   2.05
+ 59S   / 16:   1.37
+ 61S   / 15:   1.33
+ 63S   / 14:   0.77
+ 65S   / 13:  -0.04
+ 67S   / 12:  -0.93
+ 69S   / 11:   ....
+ 71S   / 10:   ....
+ 73S   /  9:   ....
+ 75S   /  8:   ....
+ 77S   /  7:   ....
+ 79S   /  6:   ....
+ 81S   /  5:   ....
+ 83S   /  4:   ....
+ 85S   /  3:   ....
+ 87S   /  2:   ....
+ 89S   /  1:   ....
 list/x=50 a[l=@ave,y=@sbx:11]
+             VARIABLE : PASS_THRU(SST)
+                        box smoothed by 11 pts on Y
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 90 points (LATITUDE)
+             LONGITUDE: 49E
+             TIME     : 01-JAN 00:45 to 01-APR 08:12 (averaged)
+               49E   
+               15
+ 89N   / 90:   ....
+ 87N   / 89:   ....
+ 85N   / 88:   ....
+ 83N   / 87:   ....
+ 81N   / 86:   ....
+ 79N   / 85:   ....
+ 77N   / 84:   ....
+ 75N   / 83:   ....
+ 73N   / 82:   ....
+ 71N   / 81:   ....
+ 69N   / 80:   ....
+ 67N   / 79:   ....
+ 65N   / 78:   ....
+ 63N   / 77:   ....
+ 61N   / 76:   ....
+ 59N   / 75:   ....
+ 57N   / 74:   ....
+ 55N   / 73:   ....
+ 53N   / 72:   ....
+ 51N   / 71:   ....
+ 49N   / 70:   ....
+ 47N   / 69:   ....
+ 45N   / 68:   ....
+ 43N   / 67:   ....
+ 41N   / 66:   ....
+ 39N   / 65:   ....
+ 37N   / 64:   ....
+ 35N   / 63:   ....
+ 33N   / 62:   ....
+ 31N   / 61:   ....
+ 29N   / 60:   ....
+ 27N   / 59:   ....
+ 25N   / 58:   ....
+ 23N   / 57:   ....
+ 21N   / 56:   ....
+ 19N   / 55:   ....
+ 17N   / 54:   ....
+ 15N   / 53:   ....
+ 13N   / 52:   ....
+ 11N   / 51:   ....
+ 9N    / 50:   ....
+ 7N    / 49:   ....
+ 5N    / 48:  26.94
+ 3N    / 47:  27.22
+ 1N    / 46:  27.48
+ 1S    / 45:  27.67
+ 3S    / 44:  27.78
+ 5S    / 43:  27.92
+ 7S    / 42:  28.04
+ 9S    / 41:  28.12
+ 11S   / 40:  28.18
+ 13S   / 39:  28.14
+ 15S   / 38:  28.03
+ 17S   / 37:  27.82
+ 19S   / 36:  27.45
+ 21S   / 35:  27.04
+ 23S   / 34:  26.52
+ 25S   / 33:  25.86
+ 27S   / 32:  25.09
+ 29S   / 31:  24.17
+ 31S   / 30:  23.04
+ 33S   / 29:  21.37
+ 35S   / 28:  19.60
+ 37S   / 27:  17.68
+ 39S   / 26:  15.76
+ 41S   / 25:  13.87
+ 43S   / 24:  11.98
+ 45S   / 23:  10.18
+ 47S   / 22:   8.45
+ 49S   / 21:   6.82
+ 51S   / 20:   5.33
+ 53S   / 19:   4.03
+ 55S   / 18:   3.19
+ 57S   / 17:   2.42
+ 59S   / 16:   ....
+ 61S   / 15:   ....
+ 63S   / 14:   ....
+ 65S   / 13:   ....
+ 67S   / 12:   ....
+ 69S   / 11:   ....
+ 71S   / 10:   ....
+ 73S   /  9:   ....
+ 75S   /  8:   ....
+ 77S   /  7:   ....
+ 79S   /  6:   ....
+ 81S   /  5:   ....
+ 83S   /  4:   ....
+ 85S   /  3:   ....
+ 87S   /  2:   ....
+ 89S   /  1:   ....
  
 set mode/last ignore_errors
 go bench_storage
@@ -73394,16 +72895,59 @@ use gtsa056_1
 let a = storage(temp)
 set region/k=1/l=5/i=1:2/j=44:50
 list  a
+             VARIABLE : STORAGE(TEMP)
+             FILENAME : gtsa056_1.cdf
+             SUBSET   : 2 by 7 points (LONGITUDE-LATITUDE)
+             DEPTH (m): 5
+             TIME     : 27-JAN-1982 18:00
+              130.5E 131.5E 
+                1      2
+ 1.5N  / 50:   ....  2.955
+ 1.17N / 49:   ....  2.962
+ 0.83N / 48:   ....  2.966
+ 0.5N  / 47:   ....  2.973
+ 0.17N / 46:   ....  2.985
+ 0.17S / 45:   ....  2.990
+ 0.5S  / 44:   ....   ....
  
 can region
 set region/x=140w/y=10n/k=1
 list a
+             VARIABLE : STORAGE(TEMP)
+             FILENAME : gtsa056_1.cdf
+             SUBSET   : 5 points (TIME)
+             LONGITUDE: 140.5W
+             LATITUDE : 9.8N
+             DEPTH (m): 5
+                      140.5W 
+                       90
+ 15-JAN-1982 14 / 1:  2.656
+ 18-JAN-1982 15 / 2:  2.654
+ 21-JAN-1982 16 / 3:  2.652
+ 24-JAN-1982 17 / 4:  2.649
+ 27-JAN-1982 18 / 5:  2.646
  
 can region
  
 let b = temp[x=140e:60w]
 let c = storage(b)
 list/i=11:20 c[k=1,l=5,j=44:50@ave]
+             VARIABLE : STORAGE(B)
+             FILENAME : gtsa056_1.cdf
+             SUBSET   : 10 points (LONGITUDE)
+             LATITUDE : 0.7S to 1.7N (averaged)
+             DEPTH (m): 5
+             TIME     : 27-JAN-1982 18:00
+ 140.5E / 11:  2.953
+ 141.5E / 12:  2.956
+ 142.5E / 13:  2.961
+ 143.5E / 14:  2.966
+ 144.5E / 15:  2.968
+ 145.5E / 16:  2.968
+ 146.5E / 17:  2.967
+ 147.5E / 18:  2.970
+ 148.5E / 19:  2.974
+ 149.5E / 20:  2.979
  
 set mode/last ignore_errors
  
@@ -73423,31 +72967,152 @@ let oatemp = temp[d=ocean_atlas_temp,g=sst[d=coads_climatology]]
 set region/l=1
 let a = subtract(oatemp,sst)
 list/x=150:160/y=0  a
+             VARIABLE : SUBTRACT(OATEMP,SST)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 5 points (LONGITUDE)
+             LATITUDE : 1S
+             DEPTH (m): 0
+             TIME     : 16-JAN 06:00
+                 1S    
+                 45
+ 151E   / 66:  0.0233
+ 153E   / 67:  0.0346
+ 155E   / 68:  0.1315
+ 157E   / 69:  0.2809
+ 159E   / 70:  0.2610
 let b = oatemp- sst
 list/x=150:160/y=0  a - b
+             VARIABLE : A - B
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 5 points (LONGITUDE)
+             LATITUDE : 1S
+             DEPTH (m): 0
+             TIME     : 16-JAN 06:00
+                 1S    
+                 45
+ 151E   / 66:  0.0000
+ 153E   / 67:  0.0000
+ 155E   / 68:  0.0000
+ 157E   / 69:  0.0000
+ 159E   / 70:  0.0000
  
 can region
 let a = oatemp[l=1]
 let b = sst[l=1]
 list/x=150:160/y=0  subtract(a,b)
+             VARIABLE : SUBTRACT(A,B)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 5 points (LONGITUDE)
+             LATITUDE : 1S
+             DEPTH (m): 0
+             TIME     : 16-JAN 06:00
+                 1S    
+                 45
+ 151E   / 66:  0.0233
+ 153E   / 67:  0.0346
+ 155E   / 68:  0.1315
+ 157E   / 69:  0.2809
+ 159E   / 70:  0.2610
  
 let a = oatemp[x=180]
 let b = sst[x=180]
 list/y=0 subtract(a,b)
+             VARIABLE : SUBTRACT(A,B)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 3 points (TIME)
+             LONGITUDE: 179E
+             LATITUDE : 1S
+             DEPTH (m): 0
+                    179E   
+                     80
+ 16-JAN      / 1:  0.1934
+ 15-FEB      / 2:  0.1304
+ 17-MAR      / 3:    ....
  
 can region
 let a = x[i=1:30]
 let b = y[j=1:30]
 list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg in V550
+             VARIABLE : SUBTRACT(A,B)
+             SUBSET   : 30 points (X)
+             Y        : 15
+              15    
+              15
+ 1    /  1: -14.00
+ 2    /  2: -13.00
+ 3    /  3: -12.00
+ 4    /  4: -11.00
+ 5    /  5: -10.00
+ 6    /  6:  -9.00
+ 7    /  7:  -8.00
+ 8    /  8:  -7.00
+ 9    /  9:  -6.00
+ 10   / 10:  -5.00
+ 11   / 11:  -4.00
+ 12   / 12:  -3.00
+ 13   / 13:  -2.00
+ 14   / 14:  -1.00
+ 15   / 15:   0.00
+ 16   / 16:   1.00
+ 17   / 17:   2.00
+ 18   / 18:   3.00
+ 19   / 19:   4.00
+ 20   / 20:   5.00
+ 21   / 21:   6.00
+ 22   / 22:   7.00
+ 23   / 23:   8.00
+ 24   / 24:   9.00
+ 25   / 25:  10.00
+ 26   / 26:  11.00
+ 27   / 27:  12.00
+ 28   / 28:  13.00
+ 29   / 29:  14.00
+ 30   / 30:  15.00
  
 can region
 let a = sst[l=1]
 let b = 26
 list/x=150:160/y=0 subtract(a,b)
+             VARIABLE : SUBTRACT(A,B)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 5 points (LONGITUDE)
+             LATITUDE : 1S
+             TIME     : 16-JAN 06:00
+                1S    
+                45
+ 151E   / 66:  3.416
+ 153E   / 67:  3.431
+ 155E   / 68:  3.334
+ 157E   / 69:  3.190
+ 159E   / 70:  3.219
 list/x=150:160/y=0 subtract(a,26)
+             VARIABLE : SUBTRACT(A,26)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 5 points (LONGITUDE)
+             LATITUDE : 1S
+             TIME     : 16-JAN 06:00
+                1S    
+                45
+ 151E   / 66:  3.416
+ 153E   / 67:  3.431
+ 155E   / 68:  3.334
+ 157E   / 69:  3.190
+ 159E   / 70:  3.219
  
 let b = sst[x=180,y=0,l=@ave]
 list/x=150:160/y=0  subtract(a,b)
+             VARIABLE : SUBTRACT(A,B)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 5 points (LONGITUDE)
+             LATITUDE : 1S
+             TIME     : 01-JAN 00:45 to 01-APR 08:12
+                1S    
+                45
+ 151E   / 66:  1.109
+ 153E   / 67:  1.124
+ 155E   / 68:  1.027
+ 157E   / 69:  0.883
+ 159E   / 70:  0.912
  
 set mode/last ignore_errors
  
@@ -73532,7 +73197,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73557,7 +73222,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73581,7 +73246,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73620,7 +73285,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73655,7 +73320,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73696,7 +73361,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73753,7 +73418,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73810,7 +73475,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73865,7 +73530,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73913,7 +73578,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74007,7 +73672,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74077,7 +73742,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74128,7 +73793,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74203,7 +73868,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74230,7 +73895,7 @@ variables:
 		X_:long_name_mod = "axis ABSTRACT" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -74254,7 +73919,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -74281,11 +73946,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -74316,7 +73981,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74388,7 +74053,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74432,7 +74097,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74474,7 +74139,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74582,7 +74247,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -74623,7 +74288,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -74646,7 +74311,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74672,7 +74337,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74692,7 +74357,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74713,7 +74378,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74756,7 +74421,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -74796,7 +74461,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -74834,7 +74499,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -74863,7 +74528,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74896,7 +74561,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74922,7 +74587,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74968,7 +74633,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -75075,7 +74740,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 		:dt_internal = 15. ;
 }
@@ -75117,7 +74782,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -75200,7 +74865,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -75237,7 +74902,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -75277,7 +74942,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -75328,7 +74993,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -75387,7 +75052,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -75432,7 +75097,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -75475,7 +75140,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -75510,7 +75175,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -75544,7 +75209,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -75574,7 +75239,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -75603,7 +75268,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -75664,7 +75329,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -75709,7 +75374,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -75728,37 +75393,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
-		:Conventions = "CF-1.6" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	double A(XAX) ;
-		A:missing_value = -1.e+34 ;
-		A:_FillValue = -1.e+34 ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -75788,7 +75423,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
+		:Conventions = "CF-1.6" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	double A(XAX) ;
+		A:missing_value = -1.e+34 ;
+		A:_FillValue = -1.e+34 ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -75841,7 +75506,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -75883,7 +75548,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -75901,7 +75566,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 err611_set_var_ez.jnl --- 
@@ -75920,7 +75585,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -75938,7 +75603,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -75955,7 +75620,7 @@ variables:
 		A:long_name = "{1.1,2.2,3.3}" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -75976,7 +75641,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -76039,7 +75704,7 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_keep_axisnames.jnl --- test SAVE/KEEP_AXISNAMES
@@ -76066,7 +75731,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -76093,7 +75758,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, degrees_east, degrees_north, std names on axes:
@@ -76159,7 +75824,7 @@ variables:
 		ZUP:long_name = "Z[GZ=ZAXUP]" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Convert forms of DEG, degrees to degrees_east:
@@ -76191,7 +75856,7 @@ variables:
 		Y_:long_name_mod = "axis YFIFTEEN" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Downcase units, e.g. in time axis DAYS since
@@ -76224,7 +75889,7 @@ variables:
 		XYTVAR:history = "From bn_strides" ;
 
 // global attributes:
-		:history = "FERRET V6.94 (beta)  6-Feb-15" ;
+		:history = "FERRET V6.94 (beta) 17-Feb-15" ;
 		:Conventions = "CF-1.6" ;
 }
 -----
@@ -76239,8 +75904,8 @@ yes?
 yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.94 (beta)
- 	Linux 2.6.32-504.8.1.el6.x86_64 64-bit - 02/05/15
- 	 6-Feb-15 14:40     
+ 	Linux 2.6.32-504.8.1.el6.x86_64 64-bit - 02/17/15
+ 	17-Feb-15 10:28     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 8 bytes)
@@ -76252,13 +75917,13 @@ FERRET_PLATFORM = "Linux 2.6.32-504.8.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 10:53:28 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = " 6-Feb-15"
-SESSION_TIME = "14:40"
-SESSION_PID = "7253"
-DELTA_CPU = "0.05899"
-CLOCK_SECS = "0.211"
-CURRENT_DATE = " 6-Feb-15"
-CURRENT_TIME = "14:40:21"
+SESSION_DATE = "17-Feb-15"
+SESSION_TIME = "10:28"
+SESSION_PID = "17038"
+DELTA_CPU = "0.05799"
+CLOCK_SECS = "0.303"
+CURRENT_DATE = "17-Feb-15"
+CURRENT_TIME = "10:28:36"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -76280,7 +75945,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "6-Feb-15:14:40"
+WIN_TITLE = "17-Feb-15:10:28"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -76343,8 +76008,8 @@ yes?
 yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v6.94 (beta)
- 	Linux 2.6.32-504.8.1.el6.x86_64 64-bit - 02/05/15
- 	 6-Feb-15 14:40     
+ 	Linux 2.6.32-504.8.1.el6.x86_64 64-bit - 02/17/15
+ 	17-Feb-15 10:28     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -76562,8 +76227,8 @@ yes?
 yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.94 (beta)
- 	Linux 2.6.32-504.8.1.el6.x86_64 64-bit - 02/05/15
- 	 6-Feb-15 14:40     
+ 	Linux 2.6.32-504.8.1.el6.x86_64 64-bit - 02/17/15
+ 	17-Feb-15 10:28     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -76676,8 +76341,8 @@ yes?
 yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.94 (beta)
- 	Linux 2.6.32-504.8.1.el6.x86_64 64-bit - 02/05/15
- 	 6-Feb-15 14:40     
+ 	Linux 2.6.32-504.8.1.el6.x86_64 64-bit - 02/17/15
+ 	17-Feb-15 10:28     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -76722,10 +76387,6 @@ pplus/reset
  
 plot/vs/line/i=1:314 i*cos(i/20),i*sin(i/20)
 plot/vs/line/over/i=1:314 i*cos(i/30),i*sin(i/20)
-  line_key  -391.82968      -347.24884      -296.75000      -296.75000    
-  call trans  -391.82968      -296.75000      -391.82968      -296.75000    
-  call trans  -391.82968      -391.82968      -391.82968      -296.75000    
-  call trans  -347.24884      -347.24884      -347.24884      -296.75000    
  
 cancel viewports
 set window/clear
@@ -76765,4 +76426,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Fri Feb 6 14:40:22 PST 2015
+Ended at Tue Feb 17 10:28:38 PST 2015

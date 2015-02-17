@@ -1,0 +1,196 @@
+! bn_DQ.jnl  *sh* 2/2015
+! test the use of _DQ_ and _SQ_ in lieu of " and '
+
+let foobar = 1
+let foobar_ = 1
+
+LIST foobar, foobar_
+
+LIST    "foobar"    ! bug fix: pre-V694 used to list the value of foobar
+let a = "foobar"
+list a
+
+list    _DQ_foobar_DQ_
+let a = _DQ_foobar_DQ_
+list a
+
+! ======
+list    "_DQ_foobar_DQ_"
+let a = "_DQ_foobar_DQ_"
+list a
+
+list    _DQ_"foobar"_DQ_
+let a = _DQ_"foobar"_DQ_
+list a
+
+! ======
+list    'FOOBAR'
+let a = 'FOOBAR'
+list a
+
+list    _SQ_FOOBAR_SQ_ 
+let a = _SQ_FOOBAR_SQ_ 
+list a
+
+! ======
+list       "'foobar'"
+let a =    "'foobar'"
+list a
+
+list    _DQ_'foobar'_DQ_
+let a = _DQ_'foobar'_DQ_
+list a
+
+! ======
+list       "_SQ_foobar_SQ_"
+let a =    "_SQ_foobar_SQ_"
+list a
+
+list    _DQ__SQ_foobar_SQ__DQ_
+let a = _DQ__SQ_foobar_SQ__DQ_ 
+list a
+
+! ======
+list    'FOOBAR'    +    'FOOBAR' 
+let a = 'FOOBAR'    +    'FOOBAR' 
+list a
+
+list    _SQ_FOOBAR_SQ_ + _SQ_FOOBAR_SQ_  ! should behave like the preceding
+let a = _SQ_FOOBAR_SQ_ + _SQ_FOOBAR_SQ_
+list a
+
+! ====== demonstrate hiding all sorts of characters
+let a = _DQ_'"+-/;_SQ_foobar"'_DQ_
+list a
+
+! ======
+say     "hello"
+say  _DQ_hello_DQ_
+
+! ======
+list    {"foobar","foobar"}
+let a = {"foobar","foobar"}
+list a
+
+list    {_DQ_foobar_DQ_,_DQ_foobar_DQ_}
+let a = {_DQ_foobar_DQ_,_DQ_foobar_DQ_}
+list a
+
+! ======
+list    {SPAWN:"ls weird_name1.cdf","foobar"}
+let a = {SPAWN:"ls weird_name1.cdf","foobar"}
+list a
+
+list    {SPAWN:_DQ_ls weird_name1.cdf_DQ_,_DQ_foobar_DQ_}
+let a = {SPAWN:_DQ_ls weird_name1.cdf_DQ_,_DQ_foobar_DQ_}
+list a
+
+
+! ======
+DEFINE SYMBOL a    "foobar"
+say ($a)
+DEFINE SYMBOL a _DQ_foobar_DQ_
+say ($a)
+
+! ======
+DEFINE SYMBOL a    "(`foobar,return=xaxis`)"
+say ($a)
+DEFINE SYMBOL a _DQ_(`foobar,return=xaxis`)_DQ_
+say ($a)
+
+! ======
+GO bn_DQ.sub _DQ_+-/_SQ_\!foo"bar;_SQ_"_DQ_    "_DQ_+-/_SQ_\!foobar;_SQ_"
+
+! ======  string arguments to functions
+list STRCAT(   "HELL"   ,   "O"   )
+list STRCAT(_DQ_HELL_DQ_,_DQ_O_DQ_)
+
+! ======
+let/title=   "title of A"    a = 1
+list a
+let/title=_DQ_title of A_DQ_ a = 1
+list a
+let/title=  _DQ_title of A_DQ_ a = 1
+list a
+
+! ======
+use weird_name1.cdf
+list    'v2-and-minus'[i=4:6]
+list _SQ_v2-and-minus_SQ_[i=4:6]
+list    'v2-and-minus'[i=4:6]
+list _SQ_v2-and-minus_SQ_[i=4:6]
+list    'v2-and-minus'[i=4:6]    / 'X'[i=4:6]  
+list _SQ_v2-and-minus_SQ_[i=4:6] / _SQ_X_SQ_[i=4:6]
+
+! ======
+SET REGION/T=   "1-jan-2001":"15-jan-2001"
+SHOW REGION
+SET REGION/T=_DQ_1-jan-2001_DQ_:_DQ_15-jan-2001_DQ_
+SHOW REGION
+
+! ======
+DEFINE ATTRIBUTE foobar.some_text =    "some text about foobar"
+SHOW ATTRIBUTE/ALL foobar
+DEFINE ATTRIBUTE foobar.some_text = _DQ_some text about foobar_DQ_
+SHOW ATTRIBUTE/ALL foobar
+
+! ======
+SPAWN    "ls weird_name1.*"
+SPAWN _DQ_ls weird_name1.*_DQ_
+
+! ======
+LET a = {"first.nc", SPAWN:   "ls weird_name1.*"   ,"last.nc"}
+LIST a
+LET a = {"first.nc", SPAWN:_DQ_ls weird_name1.*_DQ_,"last.nc"}
+LIST a
+
+! =========================
+! !!!!!!  TEMPORARY LINE
+! !!!!!!  see bug report err693_xeq_show.jnl
+show data   ! to side step dset=-1 left behind by SHOW ATTRIBUTE previously
+! !!!!!!
+! =========================
+                                                                                ! ======
+define grid/x=_DQ_v1_DQ_ gg
+show grid gg
+
+! ======
+LET/TITLE= _DQ_'A title w/ "sq"'. Ship_Ka'imimoana_DQ_ A = 1 ! ' char for emacs
+LIST A
+
+! ======
+contour/LEVELS=    "(-10,10,2)DARK(-10,10,8)"    \
+               10*SIN(X[x=1:5:.1])*COS(Y[Y=1:5:.1])
+contour/LEVELS= _DQ_(-10,10,2)DARK(-10,10,8)_DQ_ \
+               10*SIN(X[x=1:5:.1])*COS(Y[Y=1:5:.1])
+
+! ====== parse, parsex routines
+!plot/set x[i=1:3]^2
+!ppl title    "'A title w/ single quotes'. Ship Ka'imimoana"
+!ppl plot
+!label 2,5,0 "'A title w/ single quotes'. Ship Ka'imimoana"
+
+plot/set x[i=1:3]^2
+ppl title _DQ_'A title w/ "single quotes"'. Ship_Ka'imimoana_DQ_ ! ' for emacs
+ppl plot 
+label 2,5,0 _DQ_'A title w/ "single quotes"'. Ship_Ka'imimoana_DQ_ ! ' emacs
+ppl %label 2,4,0 _DQ_'A title w/ "single quotes"'. Ship_Ka'imimoana_DQ_ ! ' emacs
+
+! ======  EQUAL_PEMUTE
+list/order=_DQ_yx_DQ_ 10*i[i=1:3] + j[j=1:2]
+
+! ======  EQUAL_COLOR
+plot/color=_DQ_red_DQ_ i[i=1:100]^2
+
+! ======  EQUAL_RANGE
+plot/vlim=-2:2/hlim="1-jan-1980":"15-feb-1980" \
+    SIN(t[t=1-jan-1980:1-feb-1980:1]/5)
+plot/vlim=-2:2/hlim=_DQ_1-jan-1980_DQ_:_DQ_15-feb-1980_DQ_ \
+    SIN(t[t=1-jan-1980:1-feb-1980:1]/5)
+
+! the following usages for _DQ_ and _SQ_ are NOT supported:
+! 1. internal PLOT+ syntax
+!    e.g. PPL XFOR (i5, ''LONW'')
+
+! 2. quote used as a delimiter for symbol substitution
+!    e.g. ($mysymbol"0|red>1|green>2")     ! several single char als.  e.g. "%"

@@ -1,0 +1,10 @@
+! inconsistent interpretation of surrounding double quotes
+! the original source of the problem is in PARSE_COMMAND
+! arg_start and arg_end are set to skip surrounding quotation marks.
+! But since this behavior permeates so many routines it is best to repair
+! the problem in ALL_1_ARG
+
+
+let foobar = 1
+LIST "foobar", "foobar" ! this is correct - list as strings
+LIST "foobar"           ! error: lists the value instead

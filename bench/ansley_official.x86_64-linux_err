@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 86951387 Feb  6 14:38 /home/users/ansley/build/x86/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 87156477 Feb 18 14:51 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: v6.94 release
+Note: changes for _DQ_ and _SQ_ quotes handling. fix ticket 2235. F and T calendar axes
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,15 +13,14 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/x86/FERRET/fer/ferret_c
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/x86/FERRET/external_functions/ext_func
 FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Fri Feb 6 14:42:27 PST 2015
-ls: /home/users/ansley/build/x86/FERRET/fer/ferret_c/: Not a directory
+Beginning at Wed Feb 18 14:52:57 PST 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -106,13 +105,13 @@ MESSAGE/CONTINUE `1*/3`
  **ERROR: command syntax: sst*/3
           * before / is illegal
 MESSAGE/CONTINUE `sst*/3,return=lunits`
- **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
+ **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
             calendar,dtype,xmod,tmod,status,isDepth,isReady
           sst,return=Xsize
 MESSAGE/CONTINUE `sst,return=Xsize`
- **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
+ **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
             calendar,dtype,xmod,tmod,status,isDepth,isReady
@@ -1428,7 +1427,7 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
+ **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
             calendar,dtype,xmod,tmod,status,isDepth,isReady
@@ -3832,6 +3831,8 @@ Replacing definition of axis TIME
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: unknown data set: BAD_D
 stat/l=1/x=180/y=0 a
  PERMANENT data cleared from memory
@@ -3855,86 +3856,24 @@ Replacing definition of axis TAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-ls: /home/users/ansley/build/x86/FERRET/fer/ferret_c/: Not a directory
+           *** NOTE: Changing the value of attribute foobar.some_text
+Replacing definition of grid GG
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: command syntax: add_9(a1,a2,a3,a1,a2,a3,a1,a2,a3)
-          unknown function "add_9"
-DEFINE VARIABLE a = add_9(a1,a2,a3,a1,a2,a3,a1,a2,a3)
- **ERROR: variable unknown or not in data set: A
-list a
- **ERROR: variable unknown or not in data set: A
-list  a - 3 * sst[d=1,l=1:3@sum]
- **ERROR: command syntax: avet(sst)
-          unknown function "avet"
-DEFINE VARIABLE a = avet(sst)
- **ERROR: variable unknown or not in data set: A
-list a
- **ERROR: variable unknown or not in data set: A
-list a - sst[l=@ave]
- **ERROR: command syntax: avet(a)
-          unknown function "avet"
-DEFINE VARIABLE c = avet(a)
- **ERROR: variable unknown or not in data set: C
-list b, c
- **ERROR: command syntax: pass_thru(x)
-          unknown function "pass_thru"
-DEFINE VARIABLE a = pass_thru(x)
- **ERROR: variable unknown or not in data set: A[I=1:20]
-list a[i=1:20]
- **ERROR: variable unknown or not in data set: A
-list sin(a)
- **ERROR: command syntax: pass_thru(sst[l=@ave,y=@sbx:11])
-          unknown function "pass_thru"
-DEFINE VARIABLE a = pass_thru(sst[l=@ave,y=@sbx:11])
- **ERROR: variable unknown or not in data set: A
-list/x=50 a
- **ERROR: command syntax: pass_thru(sst)
-          unknown function "pass_thru"
-DEFINE VARIABLE a = pass_thru(sst)
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+Replacing definition of axis FSEC
+           *** NOTE: grid  used by data set a
+           *** NOTE: Redefinition may alter apparent contents of data set
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
- **ERROR: variable unknown or not in data set: A[L=1]
-list/x=50 a[l=1]
- **ERROR: variable unknown or not in data set: A[L=@AVE,Y=@SBX:11]
-list/x=50 a[l=@ave,y=@sbx:11]
- **ERROR: command syntax: storage(temp)
-          unknown function "storage"
-DEFINE VARIABLE a = storage(temp)
- **ERROR: variable unknown or not in data set: A
-list  a
- **ERROR: variable unknown or not in data set: A
-list a
- **ERROR: command syntax: storage(b)
-          unknown function "storage"
-DEFINE VARIABLE c = storage(b)
- **ERROR: variable unknown or not in data set: C[K=1,L=5,J=44:50@AVE]
-list/i=11:20 c[k=1,l=5,j=44:50@ave]
- **ERROR: command syntax: subtract(oatemp,sst)
-          unknown function "subtract"
-DEFINE VARIABLE a = subtract(oatemp,sst)
- **ERROR: variable unknown or not in data set: A
-list/x=150:160/y=0  a
- **ERROR: variable unknown or not in data set: A
-list/x=150:160/y=0  a - b
- **ERROR: command syntax: subtract(a,b)
-          unknown function "subtract"
-list/x=150:160/y=0  subtract(a,b)
- **ERROR: command syntax: subtract(a,b)
-          unknown function "subtract"
-list/y=0 subtract(a,b)
- **ERROR: command syntax: subtract(a,b)
-          unknown function "subtract"
-list/y=15 subtract(a,b)
- **ERROR: command syntax: subtract(a,b)
-          unknown function "subtract"
-list/x=150:160/y=0 subtract(a,b)
- **ERROR: command syntax: subtract(a,26)
-          unknown function "subtract"
-list/x=150:160/y=0 subtract(a,26)
- **ERROR: command syntax: subtract(a,b)
-          unknown function "subtract"
-list/x=150:160/y=0  subtract(a,b)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: writev5d(tr, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
@@ -3946,9 +3885,7 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-ls: /home/users/ansley/build/x86/FERRET/fer/ferret_c/: Not a directory
  Cached data cleared from memory
-ls: /home/users/ansley/build/x86/FERRET/fer/ferret_c/: Not a directory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -3991,7 +3928,6 @@ Re-defining viewport UM6
  Using every   2th vector in the Y direction
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-ls: /home/users/ansley/build/x86/FERRET/fer/ferret_c/: Not a directory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -4022,6 +3958,5 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
-ls: /home/users/ansley/build/x86/FERRET/fer/ferret_c/: Not a directory
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Feb 6 14:44:51 PST 2015
+Ended at Wed Feb 18 14:55:30 PST 2015

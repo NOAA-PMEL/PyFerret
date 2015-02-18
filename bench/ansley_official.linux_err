@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 84550579 Feb  6 14:37 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 84744415 Feb 18 14:47 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  v6.94 release candidate
+Note: changes for _DQ_ and _SQ_ quotes handling. fix ticket 2235. F and T calendar axes
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Fri Feb 6 14:41:41 PST 2015
+Beginning at Wed Feb 18 14:48:08 PST 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -105,13 +105,13 @@ MESSAGE/CONTINUE `1*/3`
  **ERROR: command syntax: sst*/3
           * before / is illegal
 MESSAGE/CONTINUE `sst*/3,return=lunits`
- **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
+ **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
             calendar,dtype,xmod,tmod,status,isDepth,isReady
           sst,return=Xsize
 MESSAGE/CONTINUE `sst,return=Xsize`
- **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
+ **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
             calendar,dtype,xmod,tmod,status,isDepth,isReady
@@ -1427,7 +1427,7 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
+ **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
             calendar,dtype,xmod,tmod,status,isDepth,isReady
@@ -3831,6 +3831,8 @@ Replacing definition of axis TIME
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: unknown data set: BAD_D
 stat/l=1/x=180/y=0 a
  PERMANENT data cleared from memory
@@ -3852,6 +3854,20 @@ Replacing definition of axis TAXIS
 Replacing definition of axis TAXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: Changing the value of attribute foobar.some_text
+Replacing definition of grid GG
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+Replacing definition of axis FSEC
+           *** NOTE: grid  used by data set a
+           *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3943,4 +3959,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Feb 6 14:43:59 PST 2015
+Ended at Wed Feb 18 14:50:37 PST 2015

@@ -70,6 +70,7 @@
 * V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -209,7 +210,8 @@
 	   ELSE
 * ... special processing for calendar pseudo-variables and lat/long formatting
 * *kob* 8/97 check cx_calendar rather then cx_lo_ww
-	      calendar = pvdim.EQ.t_dim .AND. cx_calendar(pvar_cx)
+	      calendar = (pvdim.EQ.t_dim .OR. pvdim.EQ.f_dim) .AND. 
+     .		 cx_calendar(pvdim,pvar_cx)
 	      alloed_tmp = .FALSE.	! assume no dyn axis allocated
 	      IF ( calendar ) THEN
 * ... note: a minor misbehavior:  for the pseudo-variable
@@ -220,7 +222,7 @@
 	         cx_hi_ww(pvdim,pvar_cx) = cx_hi_ww(pvdim,pvar_cx)
      .					/(-1 * daysinsecs)	! days since BC
 * *kob* 9/997 - reset cx_calendar after conversion
-		 cx_calendar(pvar_cx) = .FALSE.
+		 cx_calendar(pvdim,pvar_cx) = .FALSE.
 	         cx_delta(pvdim,pvar_cx) = cx_delta(pvdim,pvar_cx)/24.
 	         CALL TM_ALLO_DYN_LINE( tmp, status )
 	         IF ( status .NE. ferr_ok ) GOTO 5000

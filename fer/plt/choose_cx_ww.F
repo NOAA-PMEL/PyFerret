@@ -55,6 +55,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
 *                  dimension is now an arg to SECS_TO_TSTEP.
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -118,7 +119,7 @@
 	      ww_low = cx_lo_ww( idim, exp_cx )
 	      ww_hiw = cx_hi_ww( idim, exp_cx )
 	      IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. 
-     .             cx_calendar(exp_cx) ) THEN
+     .             cx_calendar(idim,exp_cx) ) THEN
 	         ww_low = SECS_TO_TSTEP( grid, idim, -ww_low )  
 	         ww_hiw = SECS_TO_TSTEP( grid, idim, -ww_hiw )  
 	      ENDIF                                     

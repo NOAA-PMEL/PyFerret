@@ -93,6 +93,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 * V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
         include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -180,8 +181,8 @@
 	      cx_lo_ww(idim,cx) = unspecified_val8
 	      cx_hi_ww(idim,cx) = unspecified_val8
 * 9/97 *kob* cx_calendar must reflect these changes as well	  
-	      IF (idim .EQ. t_dim) 
-     .                cx_calendar(cx) = .FALSE.
+	      IF (idim .EQ. t_dim .OR. idim .EQ. f_dim) 
+     .                cx_calendar(idim,cx) = .FALSE.
 
 * context limits unspecified but untransformed data limits available anyway
 	   ELSEIF ( cx_lo_ss(cx,idim) .EQ. unspecified_int4 ) THEN

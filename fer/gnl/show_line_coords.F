@@ -56,6 +56,7 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
 *                  dimension is now an arg to SECS_TO_TSTEP.
 * V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -129,7 +130,7 @@
 * cx_lo_ww was set without knowledge of the axis, so if this is a non-std calendar
 * need to reset according to the actual calendar type
 
-	   IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. cx_calendar(cx) ) THEN
+	   IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. cx_calendar(idim,cx) ) THEN
 
               axis = grid_line(idim, grid)
 	      IF (line_t0(axis) .EQ. char_init20) GOTO 110  ! Not a calendar ax (e.g. f axis)
@@ -168,7 +169,7 @@
  
 
 * reset cx_calendar now that cx_lo/hi_ww have been converted
-              cx_calendar(cx) = .FALSE.
+              cx_calendar(idim,cx) = .FALSE.
 	   ENDIF
  110	   CONTINUE
 	   lo = ISUBSCR_CX( cx_lo_ww(idim,cx),

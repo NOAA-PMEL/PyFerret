@@ -52,6 +52,7 @@
 * V510 *sh* - added cx_formatted
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V685 3/2013 *sh* initialize auxiliary regrid variable info
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -71,7 +72,6 @@
 	cx_grid( cx )     = unspecified_int4
 	cx_unstand_grid( cx )  = .FALSE.
 	cx_has_impl_grid( cx ) = .FALSE.
-	cx_calendar(cx)        = .FALSE.
 	cx_grid_needs_dset     = .FALSE.
 	
 * initialize region
@@ -79,6 +79,7 @@
 	DO 100 idim = 1, nferdims
 	   cx_lo_ss ( cx, idim )  = unspecified_int4
 	   cx_hi_ss ( cx, idim )  = unspecified_int4
+	   cx_calendar(idim,cx)   = .FALSE.
 	   cx_lo_ww ( idim, cx )  = unspecified_val8
 	   cx_hi_ww ( idim, cx )  = unspecified_val8
 	   cx_delta ( idim, cx )  = unspecified_val8

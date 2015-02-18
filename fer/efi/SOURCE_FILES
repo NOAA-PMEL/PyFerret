@@ -87,6 +87,7 @@ nobad.F\
 pickindex.F\
 pt_in_poly.F\
 rect_to_curv.F\
+samplef_date.F\
 sampleij.F\
 samplei_multi.F\
 samplej_multi.F\

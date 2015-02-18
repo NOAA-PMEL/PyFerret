@@ -47,6 +47,7 @@
 * V510: *sh* 4/00 - initialize the grid that is allocated to 
 * V600  4/06 *acm* - misspelled variable found by Solaris compiler
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 * calling argument declarations:
 	INTEGER	status
@@ -75,8 +76,8 @@
 	  cx_lo_ww(idim,cx) = unspecified_val8
 	  cx_hi_ww(idim,cx) = unspecified_val8
 	  cx_delta(idim,cx) = unspecified_val8
+          cx_calendar(idim,cx) = .FALSE.
  100	CONTINUE
-        cx_calendar(cx) = .FALSE.
         cx_cal_id(cx) = unspecified_int4
 
 * diagnostic alert

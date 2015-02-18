@@ -124,8 +124,8 @@
 	      cx_cal_id(cx_out)          = unspecified_int4
 !	      cx_trans (idim,cx_out)     = trans_no_transform
 !	      cx_trans_arg(idim,cx_out)  = bad_val4  
-	      IF (idim .EQ. t_dim) 
-     .                cx_calendar(cx_out) = .FALSE.
+	      IF (idim .EQ. t_dim .OR. idim .EQ. f_dim) 
+     .                cx_calendar(idim,cx_out) = .FALSE.
 
 	   ELSEIF (lo_off(idim).NE.0 .OR. hi_off(idim).NE.0) THEN
 * pass along the axis limits 

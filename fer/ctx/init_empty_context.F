@@ -42,6 +42,7 @@
 * V530:  8/00 *sh* - initialize data type to unspecified
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V690 *sh* 2/14 init auxiliary var-related context variables
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -85,8 +86,8 @@
 	cx_impl_grid    ( cx ) = unspecified_int4
 
 * kob 9/97 - need to initialize cx_calendar as well
-		 IF (idim .eq. t_dim) 
-     .                cx_calendar(cx) = .FALSE.
+		 IF (idim .eq. t_dim .OR. idim .eq. f_dim) 
+     .                cx_calendar(idim,cx) = .FALSE.
 
 * (*) initialized to TRUE so that ANDing with another context will yield
 *	TRUE only if "given" in that context

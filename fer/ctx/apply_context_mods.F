@@ -68,6 +68,7 @@
 *                  world coordinates
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685 3/13 *sh* support for aux var regridding: var[gz(depth)=zax]
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 	IMPLICIT NONE
 
@@ -127,7 +128,7 @@
 	         cx_hi_ww( idim,dest_cx ) = unspecified_val8
 * kob 9/97 - need to reset cx_calendar as well
 		 IF (idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
-                    cx_calendar(dest_cx) = .FALSE.
+                    cx_calendar(idim,dest_cx) = .FALSE.
                     cx_cal_id(dest_cx) = unspecified_int4
                  ENDIF
 	      ELSE
@@ -137,7 +138,7 @@
 	         cx_hi_ss( dest_cx ,idim) = unspecified_int4
 * kob 9/97 - need to transfer cx_calendar as well
 		 IF (idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
-                    cx_calendar(dest_cx) = cx_calendar(mods_cx)
+                    cx_calendar(idim,dest_cx) = cx_calendar(idim,mods_cx)
                     cx_cal_id(dest_cx) = cx_cal_id(mods_cx)
                  ENDIF
 

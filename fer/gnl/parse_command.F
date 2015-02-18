@@ -122,6 +122,7 @@
 *                   2) nor "yes? " or "...? "
 *                   3) continuation lines are assembled before getting here
 *                 Also added support for _DQ_ style of quotation marks
+*      *acm*  2/15 Prevent run-time errors in string length for _DQ_ handling
 
 
 * command, subcommand and qualifiers will be identified by number in
@@ -174,7 +175,7 @@
      .          doub_quote, DQ_quote,
      .		surround_quote, surround_DQ_, end_DQ_, subst, first_paren,
      .          itsa_qualifier(local_max_arg_list), 
-     .          MATCH4, escape, apply_cx, ptrslash
+     .          MATCH4, escape, apply_cx, ptrslash, i3_ok
 	INTEGER TM_LENSTR
 	INTEGER	buff_len, bang_position, ptr, quote_end,
      .		word_num, look_ahead, look_back, isub_word, csgo,
@@ -356,6 +357,7 @@
            surround_quote = .FALSE.
 	   surround_DQ_   = .FALSE.
            DO 60 i = 1, cmnd_len
+	      i3_ok = i+3 .LT. cmnd_len
 	      c1 = cmnd_buff(i:i)
               IF ( c1 .EQ. '(' ) THEN
                  nparen = nparen + 1
@@ -364,7 +366,7 @@
               ELSEIF ( c1 .EQ. '"' ) THEN
                  IF (.NOT.surround_DQ_)
      .			surround_quote = .NOT.surround_quote
-              ELSEIF ( i+3 .LT. cmnd_len
+              ELSEIF ( i3_ok
      .          .AND. cmnd_buff(i:i+3) .EQ. p_DQ_quote ) THEN
                  IF (.NOT.surround_quote)
      .			surround_DQ_   = .NOT.surround_DQ_

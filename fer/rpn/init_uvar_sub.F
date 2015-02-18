@@ -75,6 +75,7 @@
 *		   zero as valid. 
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V693+ *sh* 12/14 add support for _DQ_ and _SQ_ as qutation delimiters
+*      *acm*  2/15 Prevent run-time errors in string length for _DQ_ handling
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'	
@@ -160,7 +161,8 @@
 		inquote = .TRUE.
 	        quote_type = p_double_quote
 	      ENDIF
-	   ELSEIF ( txend-txstart .GT. 7 ) THEN
+	   ELSEIF ( txend-txstart .GT. 7 .AND. i.LE.txend-3 ) THEN 
+	      iat = 1
 	      IF (text(i:i+3) .EQ. p_DQ_quote) THEN 
 * ... found "_DQ_" -- start or end of string?
 	        IF (inquote) THEN

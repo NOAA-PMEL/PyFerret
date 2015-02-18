@@ -227,6 +227,7 @@
 * V690 *sh*   1/14 Formatting improvement to DEFINE ATTRIB error message
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 *                  prevent IF, ELIF, ELSE, and ENDIF from being aliased
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -904,14 +905,14 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 	ELSEIF ( orient_t
 * 8/97 *kob* use cx_calender to check if time is date rather than time step
      .  .AND.  (     qual_given(slash_T0) .GT. 0
-     .		.OR. cx_calendar(mods_cx))) THEN
+     .		.OR. cx_calendar(orient,mods_cx))) THEN
 	   buff1 = 'HOURS'
 	ELSE
 	   buff1 = 'NONE'
 	ENDIF
 
 * is it a calendar axis definition?
-	its_calendar =  orient_t .AND. cx_calendar(mods_cx)
+	its_calendar =  orient_t .AND. cx_calendar(orient,mods_cx)
 
 * *acm* other calendar names* /CALENDAR = GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP
 *       Gregorian is the default, also may be called STANDARD.
@@ -927,9 +928,9 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
      .			      cal_name, status )
 	   IF ( status .NE. ferr_ok ) RETURN
            new_att_calendar = cal_name
-	ELSEIF ( orient .EQ. t_dim  .AND.  
+	ELSEIF ( orient_t  .AND.  
      .         ( qual_given(slash_T0) .GT. 0  .OR. 
-     .           cx_calendar(mods_cx)) ) THEN
+     .           cx_calendar(orient,mods_cx)) ) THEN
 	   cal_name = 'GREGORIAN'
 	ENDIF
 

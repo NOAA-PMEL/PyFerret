@@ -87,7 +87,7 @@
               IF (slen .GT. 0 .AND. uvar_name_code(ii)(1:3) .NE. 'EX#') THEN
                  CALL TM_FTOC_STRNG( uvar_name_code(ii)(1:slen), fhol, flen )
 
-                 dset_uvars = -1
+                 dset_uvars = pdset_uvars
                  CALL NCF_DELETE_VAR (dset_uvars, fhol )
               ENDIF
 

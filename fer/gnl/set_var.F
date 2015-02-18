@@ -336,7 +336,7 @@
            IF (dset .EQ. unspecified_int4) THEN
 
 	      IF (cat .EQ. cat_user_var) THEN 
-	         dset = -1
+	         dset = pdset_uvars
 	      ELSE
 
                  CALL GET_NEW_CX( cx_last, cx_cmnd, .TRUE., status )
@@ -361,7 +361,7 @@
            CALL CD_GET_VAR_ID (dset, vname, varid, status)
 	   
            IF  (cat .EQ. cat_user_var) THEN 
-	      dset = -1
+	      dset = pdset_uvars
   	      CALL CD_GET_VAR_ID (dset, vname, varid, status)
            ENDIF
 
@@ -380,7 +380,7 @@
 
 * Apply the changes in Ferret structures, and in the linked-list structure.
 
-        IF (dset .EQ. unspecified_int4) dset = -1 ! user variable
+        IF (dset .EQ. unspecified_int4) dset = pdset_uvars ! user variable
         CALL CD_GET_VAR_ID (dset, vname, varid, status)
 
 
@@ -539,7 +539,7 @@
      .                                  newname,
      .                                  LEN(newname))
 
-           dset = -1 ! user variables
+           dset = pdset_uvars ! user variables
            CALL CD_GET_VAR_ID (dset, vname, varid, status)
 
 	   IF ( units .NE. char_init16 ) THEN

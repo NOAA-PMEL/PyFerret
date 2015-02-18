@@ -83,7 +83,7 @@
 * Break text at dot: varname.attname
 
         dset = dset_in
-        IF (dset .EQ. unspecified_int4) dset = -1   ! try user variables.
+        IF (dset .EQ. unspecified_int4) dset = pdset_uvars   ! try user variables.
 
         tlen = TM_LENSTR(text)
 
@@ -225,9 +225,9 @@
 * which just depends on that data set
 
         IF (status  .NE. ferr_ok) THEN
-           dset = -1
+           dset = pdset_uvars
            CALL CD_GET_VAR_ID (dset, varname, varid, status)
-           IF (status .EQ. ferr_ok) dset = -1
+           IF (status .EQ. ferr_ok) dset = pdset_uvars
         ENDIF
 
         IF (status .NE. ferr_ok .AND. 

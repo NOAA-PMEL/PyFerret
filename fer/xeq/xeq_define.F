@@ -1560,7 +1560,7 @@ C /units=months  is 1/12 of the length of the year
 
 * add newly defined axis to the user-variable dset of the linked-list strucure
            
-           dset_to_add = -2  ! user-defined coordinate variable dataset.
+           dset_to_add = pdset_coordvars  ! user-defined coordinate variable dataset.
 
            err_string = buff3
            type = NCDOUBLE
@@ -2015,7 +2015,7 @@ C /units=months  is 1/12 of the length of the year
            dset = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
            CALL ISIT_COORD_VAR ( buff, dset, varname, coordvar, status )
            IF ( status .NE. ferr_ok ) THEN 
-              dset = -2  ! a user-defined axis (coordinate variable)
+              dset = pdset_coordvars  ! a user-defined axis (coordinate variable)
               CALL ISIT_COORD_VAR ( buff, dset, varname, 
      .              coordvar, status )
               IF ( status .NE. ferr_ok ) THEN
@@ -2047,7 +2047,7 @@ C /units=months  is 1/12 of the length of the year
            CALL FIND_VAR_NAME(pdset_irrelevant, varname, cat, var)
            IF (  var .NE. munknown_var_name .AND.
      .           cat .EQ. cat_user_var) THEN
-              dset = -1
+              dset = pdset_uvars
            ELSE
               dset = cx_data_set(cx_cmnd) 
            ENDIF

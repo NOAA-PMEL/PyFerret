@@ -117,7 +117,8 @@
          status = NCF_GET_VAR_ATTR_ID(dset_num, varid, fhol, attid)
       ENDIF
       
-      dset = dset_num  ! if changed above, then dset=-1 is correct
+      dset = dset_num  ! if changed above, then dset=-1 (which is
+                       ! pdset_uvars in ferret.parm) is correct
 
  5000 RETURN
       END

@@ -1036,7 +1036,7 @@ c *kob* 4/97
 
 * Replace the name in the linked-list structure.
 
-          iset = -2  ! stored info on user-defined axes
+          iset = pdset_coordvars  ! stored info on user-defined axes
           CALL CD_GET_VAR_ID (iset, line_name(axis), varid, status )
 	  IF (varid .GT. 0) CALL CD_RENAME_VAR(iset, varid, buff1, status)
 
@@ -1516,7 +1516,7 @@ c *kob* 4/97
      .            varname, coordvar, status )
      
            IF ( status .NE. ferr_ok ) THEN 
-              dset_num = -2  ! a user-defined axis (coordinate variable)
+              dset_num = pdset_coordvars  ! a user-defined axis (coordinate variable)
               CALL ISIT_COORD_VAR ( buff1, dset_num, varname, 
      .              coordvar, status )
               IF ( status .NE. ferr_ok ) THEN
@@ -1537,7 +1537,7 @@ c *kob* 4/97
            CALL FIND_VAR_NAME(pdset_irrelevant, varname, cat, ivar)
            IF (  ivar .NE. munknown_var_name .AND.
      .           cat .EQ. cat_user_var) THEN
-              dset_num = -1
+              dset_num = pdset_uvars
            ENDIF
     
            IF (dset_num .EQ. pdset_irrelevant .OR. 
@@ -1557,7 +1557,7 @@ c *kob* 4/97
            cx = cx_last
         ENDIF
 
-        IF (dset_num .EQ. unspecified_int4) dset_num = -1 ! user variables
+        IF (dset_num .EQ. unspecified_int4) dset_num = pdset_uvars ! user variables
 
 * change an existing attribute output flag and/or value of the attr
 

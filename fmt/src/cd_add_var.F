@@ -34,8 +34,9 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Add a variable to the linked list structure.  dset = -1 will be the 
-* pseudo-dset containing attribute info for user variables.
+* Add a variable to the linked list structure.  dset = -1 (pdset_uvars
+* in ferret.parm) will be the pseudo-dset containing attribute info for 
+* user variables.
 
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP

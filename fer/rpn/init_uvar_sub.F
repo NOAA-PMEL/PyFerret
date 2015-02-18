@@ -63,7 +63,7 @@
 * 1/03 *kob* g77 port - requires use of risc_buff for concats
 *            bug fix - reference to uvar_text was missing uvar reference 
 * V600  4/06 *acm* - additional declarations found by Solaris compiler     
-* V601 11/06 *acm* - add user variables always to dataset -1. Previously
+* V601 11/06 *acm* - add user variables always to dataset pdset_uvars. Previously
 *                    variables defined with LET/D= were added to that dataset.
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 * V62   2/09 *acm* Pass the original upper/lowercase spelling of user-defined variable
@@ -222,7 +222,7 @@ c* copy title, units, dset, and missing flag into buffers
        type = 0
        coordvar = 0
        IF (name(1:3) .NE. 'EX#' .AND. .NOT.child) THEN
-          dset_to_add = -1  ! user-variable dataset.
+          dset_to_add = pdset_uvars  ! user-variable dataset.
 
           err_string = title  ! save the value and restore below
           IF (TM_LENSTR(title) .LT. 1) title = uvar_text(uvar)

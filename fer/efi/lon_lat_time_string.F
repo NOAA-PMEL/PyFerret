@@ -247,7 +247,7 @@ C     Get the string value of dates and put them in the result.
 	       latstr = TM_FMT(alat, 4, 5, len2)
 	          
                ddate = arg_3(i1,j1,k1,l1,m1,n1)
-               CALL EF_GET_AXIS_DATES (id, ARG4, ddate, 1, datestring)
+               CALL EF_GET_AXIS_DATES (id, ARG4, ddate, T_AXIS, 1, datestring)
                outstring = lab(:slen)//'_'//lonstr(:len1)//
      .           'E_'//latstr(:len2) //ns//datestring(1:11)
 

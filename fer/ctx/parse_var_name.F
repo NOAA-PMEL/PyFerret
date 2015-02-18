@@ -255,7 +255,7 @@
 
            do_err = .TRUE.
            dset = cx_data_set(var_cx)
-           IF (dset .EQ. unspecified_int4) dset = -1  
+           IF (dset .EQ. unspecified_int4) dset = pdset_uvars  
            CALL  BREAK_VARATTNAME ( newname(1:name_len),
      .                              dset, varname, 
      .                              attname, varid, do_err, status )

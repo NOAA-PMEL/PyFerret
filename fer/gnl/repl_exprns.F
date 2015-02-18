@@ -544,7 +544,7 @@
      .              INDEX(cmnd(istart:iend),'.') .EQ. 0) THEN
               dset = cx_data_set(cx)
               IF (dset .EQ. pdset_irrelevant .OR. 
-     .            dset .EQ. unspecified_int4) dset = -1  ! try user vars
+     .            dset .EQ. unspecified_int4) dset = pdset_uvars  ! try user vars
 
               varid = 0
               vartype = 0
@@ -592,7 +592,7 @@
      .              INDEX(cmnd(istart:iend),'.') .GT. 0) THEN
               attype = 0
               dset = cx_data_set(cx)
-              IF (cx_data_set(cx) .EQ. pdset_irrelevant) dset = -1  ! user vars
+              IF (cx_data_set(cx) .EQ. pdset_irrelevant) dset = pdset_uvars  ! user vars
               CALL BREAK_VARATTNAME( cmnd(istart:iend), dset, 
      .                    varname, attname, varid, do_err, status )
               CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 

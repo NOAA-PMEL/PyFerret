@@ -790,13 +790,13 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
                     arg = varname
                     GOTO 5100    ! unknown variable
                  ENDIF
-* get the variable ID in the linked list  (user vars stored under dset=-1?)
+* get the variable ID in the linked list  (user vars stored under dset=pdset_uvars?)
 	         IF (cat .EQ. cat_user_var) THEN
-                    rqst_dset = -1  ! signals a uvar in linked list calls?
+                    rqst_dset = pdset_uvars  
                  ELSE
                     rqst_dset = dset
                  ENDIF
-* NOTE: if dset=-1 signals uvar, it would seem that we'll see a bug if
+* NOTE: if dset=pdset_uvars signals uvar, it would seem that we'll see a bug if
 *       the same varname is used for LET/D definitions in two datasets
 	         CALL CD_GET_VAR_ID (rqst_dset, varname, varid, status)!status?
                  arr_buff(i1) = varid
@@ -1366,7 +1366,8 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
                     CALL SHOW_GRID_XML(show_lun, grid, unspecified_int4 )
                  ELSE
 	            WRITE ( risc_buff, 4210 ) grid_name( grid )
-		    IF (dset.NE.unspecified_int4 .AND. dset.NE.pdset_irrelevant) THEN
+		    IF (dset.NE.unspecified_int4 .AND. dset.NE.pdset_irrelevant
+     .		       .AND. dset.NE.pdset_uvars .AND. dset.NE.pdset_coordvars) THEN
 	            IF ( TM_HAS_STRING(ds_type(dset), 'ENS') ) THEN
 		       dlen = TM_LENSTR1(grid_name(grid) )
 		       WRITE ( risc_buff, 4211) grid_name(grid)(:dlen)
@@ -1653,7 +1654,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
      .              varname, coordvar, status )
 
               IF ( status .NE. ferr_ok ) THEN 
-                 dset = -2  ! a user-defined axis (coordinate variable)
+                 dset = pdset_coordvars  ! a user-defined axis (coordinate variable)
                  CALL ISIT_COORD_VAR ( show_str, dset, 
      .              varname, coordvar, status )
                     IF ( status .NE. ferr_ok ) THEN
@@ -1687,7 +1688,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
            IF (dot .GT. 0) varname = show_str(1:dot-1)
            CALL FIND_VAR_NAME(dset, varname, cat, var)
            IF (  var .NE. munknown_var_name .AND.
-     .           cat .EQ. cat_user_var) dset = -1
+     .           cat .EQ. cat_user_var) dset = pdset_uvars
 
 * Or use command context to get data set
 
@@ -1739,10 +1740,10 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 
               IF (.NOT. sxml) THEN
                  IF (dset .NE. dset_last ) THEN
-                    IF (dset .EQ. -1) THEN
+                    IF (dset .EQ. pdset_uvars) THEN
                        risc_buff = 
      .                   '     attributes for user-defined variables'
-                    ELSE IF (dset .EQ. -2) THEN
+                    ELSE IF (dset .EQ. pdset_coordvars) THEN
                        risc_buff = 
      .                   '     attributes for coordinate axis'
                     ELSE

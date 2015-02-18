@@ -92,8 +92,8 @@
 	   ENDDO
 	ENDIF
 
-* get the variable ID in the linked list  (user vars stored under dset=-1?)
-	IF (cat .EQ. cat_user_var) dset = -1  ! signals a uvar ??
+* get the variable ID in the linked list  (user vars stored under dset=pdset_uvars)
+	IF (cat .EQ. cat_user_var) dset = pdset_uvars  ! signals a uvar
 * NOTE: if dset=-1 signals uvar, it would seem that we'll see a bug if
 *       the same varname is used for LET/D definitions in two datasets
 	CALL CD_GET_VAR_ID (dset, varname, varid, status)  ! status check??

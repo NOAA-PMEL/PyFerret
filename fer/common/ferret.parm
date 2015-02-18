@@ -516,6 +516,14 @@
 	INTEGER		pdset_irrelevant
 	PARAMETER     (	pdset_irrelevant = 0 )
 
+* virtual dataset containing user-defined variables, used in attribute handling
+	INTEGER		pdset_uvars
+	PARAMETER     (	pdset_uvars = -1 )
+
+* virtual dataset containing user-defined axes (coord vars), used in attribute handling
+	INTEGER		pdset_coordvars
+	PARAMETER     (	pdset_coordvars = -2 )
+
 * pointers to the 7 fundamental axes of the Cox/Phil./Sieg. model
 * eg mxt points to the X axis used by TEMP (and SALT, TAU, etc.)
 	INTEGER		mtime, mxt, mxu, myt, myu, mzt, mzw

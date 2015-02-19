@@ -226,5 +226,9 @@ bn_permute_ascii.jnl
 bn_lon_lat_time_string.jnl
 bn_save_justdim.jnl
 bn_time2d.jnl
+bn_legend_labels.jnl
+bn_DQ.jnl
+bn695_bug_fixes.jnl
+bn_f_tax_fcns.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

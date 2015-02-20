@@ -182,7 +182,7 @@
 * V686 *acm*  1/14 Fix ticket 2126: set axis was messing up line_name storage
 * V687 *acm*  3/14 New SET AXIS/NAME=
 * V694 11/14 *acm* Ticket 2217: permuted ASCII reading in 6D (fix to an error message)
-
+* V694 *acm*  2/15 ticket 2050: preserve case on var names for SET ATT/LIKE=var1 var2
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -1415,7 +1415,7 @@ c *kob* 4/97
 * ... SET ATT/LIKE=var1 var2
       loc = qual_given( slash_set_attr_like ) 
       IF ( loc .GT. 0 ) THEN
-	 CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+	 CALL EQUAL_STR_LC ( cmnd_buff(qual_start(loc):qual_end(loc)),
      .			      buff2, status )
          CALL INHERIT_ATTRS (buff2, buff1, status)
 

@@ -1,9 +1,8 @@
 #! /bin/csh
 
 # mycp needs to recursively copy subdirectories for the lib/python* directories
-# verbose flag used to create info messages when running this script
-set mycp = "/bin/cp -v -r --preserve=timestamp"
-set mylns = "/bin/ln -v -s"
+set mycp = "/bin/cp -r --preserve=timestamp"
+set mylns = "/bin/ln -s"
 
 echo ""
 if ( $#argv == 3 ) then
@@ -159,6 +158,7 @@ echo ""
 echo -n "Create gzipped tar file ${ctar_file} (y/n)? "
 if ( $?auto_ans ) then
     set ans = "${auto_ans}"
+    echo $ans
 else
     set ans = $<
 endif
@@ -170,7 +170,7 @@ if ( "${ans}" == "y" ) then
    echo ""
    cd ${temp_dir}
    rm -f "${ctar_file}"
-   tar cvzf "${ctar_file}" *
+   tar czf "${ctar_file}" *
    echo ""
    ls -l "${ctar_file}"
 else

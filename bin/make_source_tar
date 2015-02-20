@@ -1,4 +1,4 @@
-#! /bin/csh -x
+#! /bin/csh 
 # make_source_tar
 # ver 1.0 6/10 *acm*
 # ver 2.0 11/10 *acm* change CVS to svn
@@ -11,13 +11,15 @@ if ( $#argv == 2 ) then
    set source_dir = $targ_dist_parent
 else
    echo ""
-   echo usage:
-   echo make_source_tar target_area tag
-   echo   OR make_source_tar target_area trunk
-   echo e.g. "'make_source_tar /home/users/tmap/ferret v6_6_2_release'" will make a 
-   echo gzipped tar file of the corresponding Ferret source in the directory
-   echo "'/home/users/tmap/ferret/v6_6_2_release'"
-   echo "use HEAD if no tag or branch to be used"
+   echo "Usage:"
+   echo "   make_source_tar  target_area  tag"
+   echo "OR"
+   echo "   make_source_tar  target_area  trunk"
+   echo "e.g.,"
+   echo "   make_source_tar  /home/users/tmap/ferret  v6_6_2_release"
+   echo "will make a gzipped tar file of the corresponding Ferret source in the directory"
+   echo "   /home/users/tmap/ferret/v6_6_2_release"
+   echo "Use 'trunk' if no tag or branch is to be used"
    echo ""
  exit 0
 endif
@@ -30,15 +32,15 @@ cd $tag
 echo "Extracting FERRET source code......."
 
 if ( $tag == trunk ) then
-   svn checkout file:///home/users/tmap/svn/repos/ferret/trunk FERRET >&! .install_log
+   svn checkout file:///home/users/tmap/svn/repos/ferret/trunk FERRET >&! install_log
 else
-   svn checkout file:///home/users/tmap/svn/repos/ferret/tags/$tag FERRET >&! .install_log
+   svn checkout file:///home/users/tmap/svn/repos/ferret/tags/$tag FERRET >&! install_log
 endif
-cp ./FERRET/fer/README ./FERRET
-rm -rf html_docs
+cp FERRET/fer/README FERRET/
+rm -rf FERRET/html_docs
 
 # get tar file location
-set ctar_file = fer_source.tar
+set ctar_file = fer_source.tar.gz
 echo "Ready to create gzipped tar file $ctar_file"
 ready:
 echo "OK to continue ?"
@@ -55,13 +57,8 @@ endsw
 
 # make the gzipped tar file
 cd $source_dir/$tag
-rm -f .tar_create_log
-tar vcf $ctar_file  --exclude .svn .  >& ./tar_create_log
-gzip $ctar_file
+tar cvzf $ctar_file  --exclude .svn FERRET >&! tar_create_log
 ls -l $ctar_file*
-echo "If there are any problems w/ the tar file, see "$source_dir/".tar_create_log for"
-echo "more information"
-
-
-
+echo "If there are any problems with the tar file, see $source_dir/$tag/tar_create_log"
+echo "for more information"
 

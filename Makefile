@@ -73,7 +73,7 @@ install_env :
 	bin/make_environment_tar . . -y
 	mkdir -p $(INSTALL_FER_DIR)
 	mv -f fer_environment.tar.gz $(INSTALL_FER_DIR)
-	( cd $(INSTALL_FER_DIR) ; tar xvzf fer_environment.tar.gz )
+	( cd $(INSTALL_FER_DIR) ; tar xzf fer_environment.tar.gz )
 
 ## Create the fer_executables.tar.gz files and then extract it into $(INSTALL_FER_DIR)
 .PHONY : install_exes
@@ -82,6 +82,6 @@ install_exes :
 	bin/make_executable_tar . . -y
 	mkdir -p $(INSTALL_FER_DIR)
 	mv -f fer_executables.tar.gz $(INSTALL_FER_DIR)
-	( cd $(INSTALL_FER_DIR) ; tar xvzf fer_executables.tar.gz )
+	( cd $(INSTALL_FER_DIR) ; tar xzf fer_executables.tar.gz )
 
 ##

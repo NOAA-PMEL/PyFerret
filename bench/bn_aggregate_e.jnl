@@ -1,5 +1,5 @@
 ! bn_aggregate_e.jnl
-! using the DEFINE ATTRIBUTE/E command
+! using the DEFINE DATA/AGGREGATE/E command
 ! Datasets share sst, but only ens1 has airt. 
 
 set mode diag

@@ -14,6 +14,7 @@
 *                  for repeat command.
 * V6.31 10/09 *acm*  Fixing bug 1706, by properly fixing # 1681. ENDIF inside a REPEAT 
 *              loop with semicolon-separated commands. New flag: bumped.
+* V694   2/15 *acm* cs_is_calendar for each of T and F dimensions.
 
 	INTEGER		cs_max
 	PARAMETER     (	cs_max = 200 )
@@ -21,7 +22,8 @@
 	LOGICAL	cs_in_control,
      .		cs_by_ss( cs_max ),
      .		cs_save_by_ss( cs_max ),
-     .          cs_is_calendar(cs_max),
+     .          cs_is_calendar_f(cs_max),
+     .          cs_is_calendar_t(cs_max),
      .		has_continuation_cmnd,
      .          bumped
 	INTEGER	csp,			! control stack pointer
@@ -65,12 +67,10 @@
      .		cs_lun     ,
      .		cs_text ,
      .		cmnd_copy ,
-     .          cs_is_calendar,
+     .          cs_is_calendar_t,
+     .          cs_is_calendar_f,
      .          cs_repeatname,
      .		has_continuation_cmnd,
      .		bumped,
      .		len_cmnd_copy,
      .          my_cbuff
-
-
-

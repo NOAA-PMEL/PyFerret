@@ -49,6 +49,7 @@
 * *acm* v580 11/04 Introducing cx_cal_id, saves the calendar ID used 
 *                  when computing world coordinates
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 * internal variable declarations:
 	INTEGER	idim
@@ -70,8 +71,8 @@
 	   cx_lo_ww( idim, cx_last ) = unspecified_val8
 	   cx_hi_ww( idim, cx_last ) = unspecified_val8
 * kob 9/97 - need to reset cx_calendar as well
-	   IF (idim .eq. t_dim) THEN
-              cx_calendar(cx_last) = .FALSE.
+	   IF (idim .eq. t_dim .OR. idim .eq. f_dim) THEN
+              cx_calendar(idim,cx_last) = .FALSE.
               cx_cal_id(cx_last) = unspecified_int4
            ENDIF
 	ELSE
@@ -81,7 +82,11 @@
 	   cx_lo_ww( idim, cx_last ) = cs_phase( csp )
 	   cx_hi_ww( idim, cx_last ) = cs_phase( csp )
 	   IF (idim .eq. t_dim) THEN
-              cx_calendar(cx_last) = cs_is_calendar(csp)
+              cx_calendar(idim,cx_last) = cs_is_calendar_t(csp)
+              cx_cal_id ( cx_last) = cs_cal_id(csp)
+           ENDIF
+	   IF (idim .eq. f_dim) THEN
+              cx_calendar(idim,cx_last) = cs_is_calendar_f(csp)
               cx_cal_id ( cx_last) = cs_cal_id(csp)
            ENDIF
 	ENDIF

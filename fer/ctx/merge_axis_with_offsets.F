@@ -46,6 +46,7 @@
 * V500:  4/9/98   - extracted from merge_context
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V685  *acm* 12/13 Fix bug in 6D Ferret decclarations, lo_off and hi_off
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -114,8 +115,8 @@
 *	cx_given ( idim, dest )   = cx_given ( idim, source )
 *	cx_trans_arg(idim, dest)  = cx_trans_arg(idim, source)
 ** 8/97 *kob* 	
-*	IF (idim .EQ. t_dim) 
-*     .        cx_calendar(dest) = cx_calendar(source)
+*	IF (idim .EQ. t_dim .OR. idim .eq. f_dim) 
+*     .        cx_calendar(idim,dest) = cx_calendar(idim,source)
 
 
 * successful completion

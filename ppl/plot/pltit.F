@@ -93,6 +93,7 @@
 *              within a grid cell
 * PyFr  11/11 *kms* added call to consider updating the drawing when done
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
+* V694  *acm*  2/15 Fix ticket 2232; redraw plot axes on line plots
 *
 *****************************************************
 
@@ -316,6 +317,7 @@ C  so any tics inside the box show up.
 	   IPV = 0
 	   CALL PLOTXY(X,NXS,XF,YF,IPV)
 	   if (interrupted) go to 3333
+
 ****    JD * ALINE CALL 
 	   CALL WINDOW(0.,0.,0.,0.)
 C
@@ -343,8 +345,17 @@ C		call aline_sub (x,nxs,a_line,minx,miny,maxx,maxy)
 100	    continue
 ****
 
+C Plot axis again; lines may have covered axis lines. 
+	   mainlab = 0
+	   CALL DAXIS_BOX
+
 	ELSE IF(MAKEP.EQ.'RIBPLOT') THEN
 	   CALL PLOTXY_RIBBON(X,NXS,XF,YF)
+	   IF ( interrupted ) GOTO 3333
+
+C Plot axes again; lines may have covered axis lines. 
+	   mainlab = 0
+	   CALL DAXIS_BOX
 
 	ELSE IF(MAKEP.EQ.'VECTOR')THEN
 	    IF(JTYPE.EQ.-1)THEN

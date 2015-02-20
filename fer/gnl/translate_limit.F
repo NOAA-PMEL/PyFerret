@@ -66,6 +66,7 @@
 *                         statements.  use an octal constant instead 
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
+* V693+ *sh* 2/15 - added support for _DQ_ quotations
 
 * possible formats:
 * for subscript values ( subscript .EQ. .TRUE. ) :
@@ -125,6 +126,12 @@
 	   IF (string(i:i) .EQ. '"') THEN
 	      start_pos = i + 1
 	      GOTO 6
+	   ELSEIF ( string(i:i) .EQ. '_'
+     .	      .AND. i+3 .LT. len_rbuff ) THEN
+	      IF (string(i:i+3) .EQ. "_DQ_") THEN
+	         start_pos = i + 4
+	         GOTO 6
+	      ENDIF
 	   ENDIF
  4	CONTINUE
 	start_pos = 1
@@ -133,6 +140,12 @@
 	      IF (string(i:i) .EQ. '"') THEN
 	         end_pos = i - 1
 	         GOTO 9
+	      ELSEIF ( string(i:i) .EQ. '_'
+     .	      .AND. i+3 .LE. len_rbuff ) THEN
+	         IF (string(i:i+3) .EQ. "_DQ_") THEN
+	            end_pos = i - 1
+	            GOTO 9
+	         ENDIF
 	      ENDIF
  8	   CONTINUE
 	ENDIF

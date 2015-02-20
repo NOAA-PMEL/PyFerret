@@ -98,7 +98,7 @@
       WRITE (fcn_desc, 10)
    10 FORMAT 
      .  ('Returns data sampled by interpolating ',
-     .   'to a set of times')
+     .   'to a set of times in T direction')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 7)
@@ -368,7 +368,7 @@
      .       arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), taxdat)
 
       numtimes = arg_hi_ss(T_AXIS, ARG1) - arg_lo_ss(T_AXIS, ARG1) + 1
-      CALL ef_get_axis_dates (id, ARG1, taxdat, numtimes, datebuf)
+      CALL ef_get_axis_dates (id, ARG1, taxdat, T_AXIS, numtimes, datebuf)
 
       l1 = arg_lo_ss(T_AXIS,ARG1)
       DO 60 l = 1, numtimes
@@ -551,7 +551,6 @@
 
 * End of loop over all space; go on to next specified time
 
-         l2 = l2 + arg_incr(T_AXIS,ARG2)
          l2 = l2 + arg_incr(T_AXIS,ARG2)
          l3 = l3 + arg_incr(T_AXIS,ARG3)
          l4 = l4 + arg_incr(T_AXIS,ARG4)

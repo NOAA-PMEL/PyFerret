@@ -72,7 +72,7 @@
 	IF (istat .NE. ferr_ok) GO TO 4000
 
 	prev_cal_id = cx_cal_id(cx)
-	IF (prev_cal_id .NE. cal_id) THEN
+	IF (prev_cal_id.NE.cal_id .AND. prev_cal_id.NE.unspecified_int4) THEN
 	   CALL reset_secs_from_bc (-cx_lo_ww(idim,cx), 
      .		     new_lo_ww, prev_cal_id, cal_id, istat)
 

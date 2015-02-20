@@ -1,0 +1,5 @@
+! bn_DQ.sub   arg_with_DQ    arg_with_quotes
+
+SAY _DQ_ "-quotations   ok as in $1%any_arg_with_quotes%_DQ_
+SAY    "_DQ_ delimiters ok as in $2%any_arg_with_DQ%"
+

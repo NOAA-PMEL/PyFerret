@@ -46,13 +46,16 @@
 *                         statements.  use an octal constant instead 
 * 2/07 *acm* - fix bug 1488; if the last item is a missing string, save that.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* 2/15 *sh* added support for _DQ_ and _SQ_
 
 * calling argument declarations
 	INTEGER		cx, mr, status
 	CHARACTER*(*)	string
 
 * internal variable declarations
-	LOGICAL		stored, in_quote, doub_quote, do_system_cmnd
+	LOGICAL		stored, in_quote, do_system_cmnd,
+     .			doub_atom,  sing_atom,  DQ_atom,  SQ_atom,
+     .			doub_quote, sing_quote, DQ_quote, SQ_quote
 	INTEGER 	TM_LENSTR1, STR_CASE_BLIND_COMPARE,
      .			i, n, nnew, spos, slen, str_start, vax_code, istat
 	CHARACTER	c*1
@@ -93,21 +96,35 @@
 	IF ( spos .GE. slen ) GOTO 5000
 
 * loop through the text counting commas
-* (poor man's FORTRAN DO-WHILE loop)
 	i = spos - 1
- 100	i = i + 1
+	DO WHILE ( i .LT. slen )
+	   i = i + 1 
 	   c = string(i:i)
+
+* ... identify quotation atoms
+	   doub_atom = c.EQ.'"'
+	   sing_atom = c.EQ."'"
+	   IF (i+3 .LE. slen) THEN
+	      DQ_atom = string(i:i+3) .EQ. "_DQ_"
+	      SQ_atom = string(i:i+3) .EQ. "_SQ_"
+	   ELSE
+	      DQ_atom = .FALSE.
+	      SQ_atom = .FALSE.
+	   ENDIF
+
 	   IF (in_quote) THEN
+* ... possibly escape the next character
 #ifdef NO_DOUBLE_ESCAPE_SLASH
-              IF (c .EQ. '\') THEN
+              IF (c .EQ. '\') THEN  ! ' sing quote char for emacs sanity
 #else
               IF (c .EQ. '\\') THEN
 #endif
 	         i = i + 1   ! skip processing of next character 
-	      ELSEIF  (c .EQ. '"' .AND. doub_quote
-     .		 .OR.  c .EQ. "'" .AND. .NOT.doub_quote ) THEN
-* ... end of quotated string -- save the string
-	         in_quote = .FALSE.
+	      ELSEIF  (doub_atom .AND. doub_quote
+     .	         .OR.  sing_atom .AND. sing_quote 
+     .	         .OR.  DQ_atom   .AND. DQ_quote 
+     .	         .OR.  SQ_atom   .AND. SQ_quote ) THEN
+* ... close of paired-quote string -- save the string
 	         IF (str_start .LT. i) THEN
 	            IF ( do_system_cmnd ) THEN
 	               CALL STORE_SYS_STRINGS(string(str_start:i-1),
@@ -123,14 +140,23 @@
 	         IF (status .NE. ferr_ok) GOTO 5000
 	         stored = .TRUE.
 	         do_system_cmnd = .FALSE.
-	      ELSE
-	         CONTINUE   ! skip over anything inside of quotations
+	         in_quote = .FALSE.
+	         IF (DQ_atom .OR. SQ_atom) i = i + 3
 	      ENDIF
-	   ELSEIF (c.EQ.'"' .OR. c.EQ."'") THEN
+
+	   ELSEIF (doub_atom.OR.sing_atom.OR.DQ_atom.OR.SQ_atom) THEN
+*  ... opening a paired-quote string
+	      doub_quote = doub_atom
+	      sing_quote = sing_atom
+	      DQ_quote   = DQ_atom
+	      SQ_quote   = SQ_atom
 	      IF (stored) GOTO 5000
 	      in_quote = .TRUE.
-	      doub_quote = c.EQ.'"'
-	      str_start = i + 1
+	      IF (DQ_quote .OR. SQ_quote ) THEN
+	         str_start = i + 4
+	      ELSE
+	         str_start = i + 1
+	      ENDIF
 	   ELSEIF (c .EQ. ',') THEN
 	      IF (.NOT.stored) THEN
 	        CALL SAVE_C_STRING(0,0,mr_c_pointer(mr),n-1,istat) ! NULL
@@ -151,7 +177,7 @@
 	      IF (c .NE. ' '
      .	    .AND. c .NE. tab ) GOTO 5000
 	   ENDIF
-	IF ( i .LT. slen ) GOTO 100
+	ENDDO
 	IF (in_quote) GOTO 5000
 
 * success

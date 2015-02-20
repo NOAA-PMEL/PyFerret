@@ -72,6 +72,7 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
 *                  dimension is now an arg to SECS_TO_TSTEP. Note the input 
 *                  argument "axis" in this routine is a dimension, 1, 2, ... 
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -334,7 +335,7 @@
 	cx_given( axis, src_cx )	= .FALSE.
 * 9/97 *kob* - cx_calendar needs to also reflect these changes
 	IF (axis .eq. t_dim .OR. axis .eq. f_dim) THEN
-           cx_calendar(src_cx) = .FALSE.
+           cx_calendar(axis,src_cx) = .FALSE.
            cx_cal_id(src_cx) = unspecified_int4
         ENDIF
 

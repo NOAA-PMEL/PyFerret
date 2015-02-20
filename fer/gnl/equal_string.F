@@ -47,6 +47,7 @@
 * V200:   7/7/89 -  remove leading blanks, process quotation marks
 *	  9/22/89 - fixed bug for NAME="" (close quotes)
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V693+ *sh* 2/15 - added support for _DQ_ quotations
 
 * calling argument declarations
 	INTEGER		status
@@ -76,8 +77,19 @@
 	   STOP '=_str'		! cannot occur
 
 * remove quotation marks
- 110	   IF ( string(strt:strt) .EQ. '"' ) strt = strt + 1
-	   IF ( string(slen:slen) .EQ. '"' ) slen = slen - 1
+ 110	   IF ( string(strt:strt) .EQ. '"'
+     .	  .AND. string(slen:slen) .EQ. '"' ) THEN
+	      strt = strt + 1
+	      slen = slen - 1
+	   ELSEIF (string(strt:strt) .EQ. '_'
+     .	     .AND. string(slen:slen) .EQ. '_' 
+     .	     .AND. slen-strt.GE.8            ) THEN
+	      IF (string(strt:strt+3) .EQ. '_DQ_'
+     .	    .AND. string(slen-3:slen) .EQ. '_DQ_' ) THEN
+	         strt = strt + 4
+	         slen = slen - 4
+	      ENDIF
+	   ENDIF
 
 	   IF ( strt .GT. slen ) THEN
 	      val = ' '

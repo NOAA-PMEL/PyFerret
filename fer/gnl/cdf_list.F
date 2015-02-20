@@ -333,7 +333,7 @@
 * unless the user has requested otherwise.
 
            itsa_uvar = cat .EQ. cat_user_var
-           IF (itsa_uvar .OR. dset .EQ. pdset_irrelevant) dset = -1
+           IF (itsa_uvar .OR. dset .EQ. pdset_irrelevant) dset = pdset_uvars
            CALL CD_GET_VAR_ID (dset, varcode, varid, status)
 
            vartype = 0
@@ -344,7 +344,7 @@
      .            vdims, nvatts, coordvar, all_outflag, status)
               varcode = varname
               IF (mode_upcase_output) CALL STR_UPCASE( varcode, varname)
-              IF (dset .EQ. -1) THEN  !for user vars type not known in attrib structure
+              IF (dset .EQ. pdset_uvars) THEN  !for user vars type not known in attrib structure
                  vartype = 6  ! netcdf nf_double
                  IF (itsa_string) vartype = 2
               ENDIF
@@ -528,14 +528,14 @@
 	      type = nf_float
 	   ENDIF
            IF (type .NE. 0 .AND. varid .GT. 0) type = outtype
-           IF (dset .EQ. -1) type = outtype
+           IF (dset .EQ. pdset_uvars) type = outtype
            IF (type .EQ. 0) outtype = vartype
 
 * create the variable and its grid (coordinate output gets deferred)
 
 * If this is a user var the axes are based on the defining dset (if any).
            dset_num = dset
-           IF (dset.EQ.-1 .AND. cx_data_set( cx ).GT.0)
+           IF (dset.EQ.pdset_uvars .AND. cx_data_set( cx ).GT.0)
      .        dset_num = cx_data_set( cx )  
 
 * When its a netCDF/OPeNDAP file variable use the max string length from the originating dataset.
@@ -650,7 +650,7 @@
      .                (dset, varid, attname, do_warn, varcode, attlen, 
      .                attoutflag, miss_in)
      
-		    IF (dset .EQ. -1) THEN
+		    IF (dset .EQ. pdset_uvars) THEN
 		       r_scale = 1./scalefac
 		       r_off = -1.*addoff* r_scale
 		       miss_in = miss_in* r_scale + r_off
@@ -708,7 +708,7 @@
                           IF (status .NE. ferr_ok) GOTO 5400
 			  got_missing = .TRUE.
 
-			  IF (dset .EQ. -1) THEN 
+			  IF (dset .EQ. pdset_uvars) THEN 
 		             CALL CD_WRITE_ATTVAL_DP(
      .                       cdfid, varcode, '_FillValue', dvals, attlen, 
      .                       attype, status )
@@ -953,7 +953,7 @@
               ENDIF
 
 * data set of origin
-              IF ( dset .NE. pdset_irrelevant .AND. dset.NE.-1) THEN
+              IF ( dset .NE. pdset_irrelevant .AND. dset.NE.pdset_uvars) THEN
        
 * ..... unless the user has created a history attribute, or asked that writing
 *       it be turned off. See if there is a history attribute.
@@ -1022,7 +1022,7 @@
                  IF ( status .NE. merr_ok ) GOTO 5800
 
               ELSEIF ( cx_data_set(cx) .NE. pdset_irrelevant .AND.
-     .                 cx_data_set(cx) .NE. -1) THEN
+     .                 cx_data_set(cx) .NE. pdset_uvars) THEN
 
 * Write history attribute containing the data set of origin for user variable, 
 * if the user has not created a history attribute for the variable.
@@ -1137,7 +1137,7 @@
            itsa_uvar = cat .EQ. cat_user_var
            CALL CD_GET_VAR_ID (dset, varcode, varid, status)  ! is it in the linked-list for dset
            IF (status .NE. ferr_ok .AND. itsa_uvar ) THEN
-              dset = -1    ! is it a user var based on a var in dset
+              dset = pdset_uvars    ! is it a user var based on a var in dset
               CALL CD_GET_VAR_ID (dset, varcode, varid, status) 
            ENDIF
 

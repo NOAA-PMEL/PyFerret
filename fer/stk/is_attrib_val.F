@@ -91,7 +91,7 @@
 
         IF (i2 .LT. i1) GOTO 5100
         
-        IF (dset .LT. -1 .OR. (.NOT.cx_dset_gvn(cx) )) 
+        IF (dset .LT. pdset_uvars .OR. (.NOT.cx_dset_gvn(cx) )) 
      .      dset = cx_data_set( is_cx(isp-1) )
 
         CALL CD_GET_DS_INFO (dset, nddims, nvars, ngatts, 
@@ -119,7 +119,7 @@
         IF (dot .GT. 0) varname = uvar_text(uvar)(1:dot-1)
         CALL FIND_VAR_NAME(pdset_irrelevant, varname, cat, ivar)
         IF (  ivar .NE. munknown_var_name .AND.
-     .         cat .EQ. cat_user_var) dset = -1
+     .         cat .EQ. cat_user_var) dset = pdset_uvars
 
 * do_err: issue error message if attrib does not exist on varname.attname
         do_err = .TRUE. 

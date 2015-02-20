@@ -47,6 +47,8 @@
 
 * V300: 4/22/93
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V694 2/2015 *sh* - handle _DQ_ like double quote
+*      *acm*  2/15 Prevent run-time errors in string length for _DQ_ handling
 
 * calling argument declarations:
 
@@ -71,6 +73,19 @@
 	   i = arg_end(1) + 1
 	   IF ( i .LE. len_cmnd ) THEN
 	      IF ( cmnd_buff(i:i) .EQ. '"' ) arg_end(1) = i
+	   ENDIF
+
+* (2/15) kind of pathological cases, but what the heck ...
+* protect against lost _DQ_ from start of:  message _DQ_hello_DQ_ _DQ_world_DQ_
+	   i = arg_start(1) - 4
+	   IF (i .GE. 4) THEN
+	      IF ( cmnd_buff(i:i+3) .EQ. '_DQ_' ) arg_start(1) = i
+	   ENDIF
+
+* protect against lost _DQ_ from end
+	   i = arg_end(1) + 4
+	   IF ( i .LE. len_cmnd ) THEN
+	      IF ( cmnd_buff(i-3:i) .EQ. '_DQ_' ) arg_end(1) = i
 	   ENDIF
 
 	   num_args = 1

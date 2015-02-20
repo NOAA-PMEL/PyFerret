@@ -97,7 +97,7 @@
 	      IF (found_one) THEN
 	         nfound = nfound + 1
 	         id_list  (nfound) = varid
-	         dset_list(nfound) = -1 ! needs to be uvar_dset(ivar) for LET/D
+	         dset_list(nfound) = pdset_uvars  ! needs to be uvar_dset(ivar) for LET/D
 	         IF (nfound .EQ. maxlist) RETURN  ! hacky but good enuf
 	      ENDIF
 	   ENDIF

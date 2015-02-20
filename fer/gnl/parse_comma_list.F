@@ -60,6 +60,8 @@
 * V533: *sh* 7/01 - allow both single and double quoted strings
 * 1/03 *kob* g77 port -  Need to use risc_buff for arbitrary concatenations
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V693 *sh* 12/14 added support for _DQ_ and _SQ_ style of quotation marks
+*                 changed unpaired [], {}, "", '', etc from error to acceptable
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -130,6 +132,7 @@
  40	   CONTINUE
 	   GOTO 5020	! unpaired
 
+
 * ... ignore commas sandwiched between ( )
 	ELSEIF ( buffer(ip:ip) .EQ. '(' ) THEN
 	   nest_level = -1  ! will be immediately incremented
@@ -166,6 +169,28 @@
 	      ENDIF
 	   ENDDO
 	   GOTO 5020	! unpaired
+
+* ... ignore commas sandwiched between _DQ_ or _SQ_ ! 12/14
+	ELSEIF ( buffer(ip:ip) .EQ. "_" 
+     .     .AND. ip+3 .LE. iend         ) THEN
+           IF ( buffer(ip:ip+3) .EQ. p_DQ_quote ) THEN
+	      DO i = ip+4, iend-3
+	         IF ( buffer(i:i+3) .EQ. p_DQ_quote ) THEN
+	            ip = i+3
+	            GOTO 30
+	         ENDIF
+	      ENDDO
+	      GOTO 5020	! unpaired
+           ELSEIF ( buffer(ip:ip+3) .EQ. p_SQ_quote ) THEN
+	      DO i = ip+4, iend-3
+	         IF ( buffer(i:i+3) .EQ. p_SQ_quote ) THEN
+	            ip = i+3
+	            GOTO 30
+	         ENDIF
+	      ENDDO
+	      GOTO 5020	! unpaired
+           ENDIF
+           GOTO 30      ! just a harmless "_"
 
 * ... comma as terminator
 	ELSEIF ( buffer(ip:ip) .EQ. ',' ) THEN

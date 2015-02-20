@@ -117,9 +117,11 @@
 * V685+ *acm* 12/13  bounds checking: dont refer to parts of the string outside its bounds.
 * V693 *sh* 12/14 moved arg_start/end inits into PARSE_COMMAND (housekeeping)
 *	          Changes in GET_FERRET_CMND simplify this routine:
-*                 1) comments are never passed into this routine
-*                 2) nor "yes? " or "...? "
-*                 3) continuation lines are assembled before getting here
+*                   1) comments are never passed into this routine
+*                   2) nor "yes? " or "...? "
+*                   3) continuation lines are assembled before getting here
+*                 Also added support for _DQ_ style of quotation marks
+*      *acm*  2/15 Prevent run-time errors in string length for _DQ_ handling
 
 
 * command, subcommand and qualifiers will be identified by number in
@@ -169,9 +171,10 @@
 
 * modified def of MATCH4 from INTEGER to LOGICAL *kob* IBM port 8/94
 	LOGICAL	TM_LEGAL_NAME, known_qualifier, atsin_qualifier,
-     .          surround_quote, doub_quote, subst, first_paren,
+     .          doub_quote, DQ_quote,
+     .		surround_quote, surround_DQ_, end_DQ_, subst, first_paren,
      .          itsa_qualifier(local_max_arg_list), 
-     .          MATCH4, escape, apply_cx, ptrslash
+     .          MATCH4, escape, apply_cx, ptrslash, i3_ok
 	INTEGER TM_LENSTR
 	INTEGER	buff_len, bang_position, ptr, quote_end,
      .		word_num, look_ahead, look_back, isub_word, csgo,
@@ -351,14 +354,21 @@
 * ... it is a command group if there is a ";" NOT enclosed in parens
            nparen = 0
            surround_quote = .FALSE.
+	   surround_DQ_   = .FALSE.
            DO 60 i = 1, cmnd_len
+	      i3_ok = i+3 .LT. cmnd_len
 	      c1 = cmnd_buff(i:i)
               IF ( c1 .EQ. '(' ) THEN
                  nparen = nparen + 1
               ELSEIF ( c1 .EQ. ')' ) THEN
                  nparen = nparen - 1
               ELSEIF ( c1 .EQ. '"' ) THEN
-                 surround_quote = .NOT.surround_quote
+                 IF (.NOT.surround_DQ_)
+     .			surround_quote = .NOT.surround_quote
+              ELSEIF ( i3_ok
+     .          .AND. cmnd_buff(i:i+3) .EQ. p_DQ_quote ) THEN
+                 IF (.NOT.surround_quote)
+     .			surround_DQ_   = .NOT.surround_DQ_
               ELSEIF ( c1 .EQ. ';' ) THEN
 	         escape = i.GT.1
 #ifdef NO_DOUBLE_ESCAPE_SLASH
@@ -368,6 +378,7 @@
 #endif
                  IF ( nparen.EQ.0
      .		.AND. .NOT.escape
+     .		.AND. .NOT.surround_DQ_
      .		.AND. .NOT.surround_quote ) THEN
                     cmnd_num = cmnd_semicolon
                     GOTO 1000   ! successful exit
@@ -454,46 +465,87 @@
 * we have found the start of a word - initialize variables
  300    arg_start (word_num) = ptr
         surround_quote = .FALSE.
+	surround_DQ_   = .FALSE.
 
-* start searching for the end of the word: blank,tab,"/" or ", if its a quote
- 400	CONTINUE
+* start searching for the end of the word: blank or tab
+* include as a block (i.e. skip over) quoted text 
+ 400	CONTINUE  ! ============= TOP OF LOOP
 
 * Define a logical to stay away from cmnd_buff(ptr-1:ptr-1) when ptr = 1
-        ptrslash = .FALSE.
-	IF (ptr .GT. 1) THEN
+           ptrslash = .FALSE.
+	   IF (ptr .GT. 1) THEN
 #ifdef NO_DOUBLE_ESCAPE_SLASH
-	   IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\' ) ptrslash = .TRUE.
+	      IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\' ) ptrslash = .TRUE.
+!                            '  closing single quote to make emacs happy
 #else
-	   IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) ptrslash = .TRUE.
+	      IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) ptrslash = .TRUE.
 #endif
-        ENDIF
+           ENDIF
 	   IF (ptrslash) THEN
 	      GOTO 410
-  
-	   ELSEIF ( cmnd_buff(ptr:ptr) .EQ. '"' 
-     .	   .OR.     cmnd_buff(ptr:ptr) .EQ. "'"  ) THEN
-* ... quotation marks - skip past entire quotated string
-	      doub_quote = cmnd_buff(ptr:ptr) .EQ. '"' 
-              surround_quote = doub_quote
-     .	                 .AND. ptr .EQ. arg_start(word_num)
-	      DO 401 ptr = ptr+1, cmnd_len
+           ELSEIF ( cmnd_buff(ptr:ptr) .EQ. '"'  ) THEN
+* ... double quote - skip past entire quotated string
+              surround_quote = ptr .EQ. arg_start(word_num)
+              DO i = ptr+1, cmnd_len
 #ifdef NO_DOUBLE_ESCAPE_SLASH
-	        IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) GOTO 401
+                IF ( cmnd_buff(i-1:i-1) .EQ. '\'  ) CYCLE  ! ' for emacs
 #else
-	        IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) GOTO 401
+                IF ( cmnd_buff(i-1:i-1) .EQ. '\\' ) CYCLE
 #endif
-	        IF (cmnd_buff(ptr:ptr).EQ.'"' .AND. doub_quote
-     .	       .OR. cmnd_buff(ptr:ptr).EQ."'" .AND. .NOT.doub_quote) THEN
+                IF (cmnd_buff(i:i).EQ.'"' ) THEN
+	          ptr = i
                   quote_end = ptr
                   GOTO 410
                 ENDIF
- 401	      CONTINUE
-	      GOTO 5010
+	      ENDDO
+              GOTO 5010
+           ELSEIF ( cmnd_buff(ptr:ptr) .EQ. "'"  ) THEN
+* ... single quote - skip past entire quotated string
+              DO ptr = ptr+1, cmnd_len
+#ifdef NO_DOUBLE_ESCAPE_SLASH
+                IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) CYCLE  ! ' for emacs
+#else
+                IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) CYCLE
+#endif
+                IF (cmnd_buff(ptr:ptr).EQ."'" ) GOTO 410
+	      ENDDO
+              GOTO 5010
+           ELSEIF ( cmnd_buff(ptr:ptr) .EQ. '_'  
+     .	      .AND. ptr+3 .LE. cmnd_len           ) THEN
+	      IF (cmnd_buff(ptr:ptr+3) .EQ. p_DQ_quote) THEN
+* ... _DQ_ quote - skip past entire quotated string
+                 surround_DQ_ = ptr .EQ. arg_start(word_num)
+                 DO i = ptr+4, cmnd_len
+                    IF (cmnd_buff(ptr:ptr).EQ.'_' 
+     .            .AND. i+3 .LE. cmnd_len           ) THEN
+	               IF (cmnd_buff(i:i+3) .EQ. p_DQ_quote) THEN
+	                  ptr = i + 3
+                          quote_end = ptr
+                          GOTO 410
+	               ENDIF
+                    ENDIF
+	         ENDDO
+                 GOTO 5010
+	      ELSEIF (cmnd_buff(ptr:ptr+3) .EQ. p_SQ_quote) THEN
+* ... _SQ_ quote - skip past entire quotated string
+                 DO i = ptr+4, cmnd_len
+                    IF (cmnd_buff(ptr:ptr).EQ.'_' 
+     .            .AND. i+3 .LE. cmnd_len           ) THEN
+	               IF (cmnd_buff(i:i+3) .EQ. p_SQ_quote) THEN
+	                  ptr = i + 3
+                          GOTO 410
+	               ENDIF
+                    ENDIF
+	         ENDDO
+                 GOTO 5010
+	      ENDIF
+	      GOTO 410   ! this underscore was not part of _DQ_ or _SQ_
 	   ELSEIF ( cmnd_buff(ptr:ptr) .EQ. '`' ) THEN
 * ... grave accent - skip past entire immediate mode expression
 	      DO 402 ptr = ptr+1, cmnd_len
 #ifdef NO_DOUBLE_ESCAPE_SLASH
 	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) GOTO 402
+!                            '  closing single quote to make emacs happy
 #else
 	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) GOTO 402
 #endif
@@ -506,6 +558,7 @@
 	      DO 403 ptr = ptr+1, cmnd_len
 #ifdef NO_DOUBLE_ESCAPE_SLASH
 	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) GOTO 403
+!                            '  closing single quote to make emacs happy
 #else
 	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) GOTO 403
 #endif
@@ -523,6 +576,7 @@
 	      DO 404 ptr = ptr+1, cmnd_len
 #ifdef NO_DOUBLE_ESCAPE_SLASH
 	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) GOTO 404
+!                            '  closing single quote to make emacs happy
 #else
 	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) GOTO 404
 #endif
@@ -597,8 +651,12 @@
  420    IF ( surround_quote ) THEN
 	   arg_start(word_num) = arg_start(word_num) + 1
            arg_end  (word_num) = quote_end - 1
-cc           IF ( arg_start(word_num) .GT. arg_end(word_num) ) GOTO 5015
-cc  Allow it to be zero-length
+cc  Allow zero-length null string in quotes
+           IF ( arg_start(word_num) .GT. arg_end(word_num)+1 ) GOTO 5015
+	ELSEIF ( surround_DQ_ ) THEN
+	   arg_start(word_num) = arg_start(word_num) + 4
+           arg_end  (word_num) = quote_end - 4
+cc  Allow zero-length null string in quotes
            IF ( arg_start(word_num) .GT. arg_end(word_num)+1 ) GOTO 5015
 	ELSE
 	   arg_end (word_num) = ptr - 1
@@ -748,10 +806,24 @@ cc  Allow it to be zero-length
 * the nature of arg_start,end allows safe (??) decrement/increment
 	IF (num_args .GE. 1) THEN
 	   arg1_quoted =
-     .	   (     cmnd_buff(arg_start(1)-1:arg_start(1)-1) .EQ. '"'
-     .     .AND. cmnd_buff(arg_end(1)  +1:arg_end(1)  +1) .EQ. '"' )
-     . .OR.(     cmnd_buff(arg_start(1)-1:arg_start(1)-1) .EQ. "'"
-     .     .AND. cmnd_buff(arg_end(1)  +1:arg_end(1)  +1) .EQ. "'" )
+     .	        (cmnd_buff(arg_start(1)-1:arg_start(1)-1) .EQ. '"'
+     .     .AND. cmnd_buff(arg_end  (1)+1:arg_end  (1)+1) .EQ. '"' )
+     .   .OR.
+     .	        (cmnd_buff(arg_start(1)-1:arg_start(1)-1) .EQ. "'"
+     .     .AND. cmnd_buff(arg_end  (1)+1:arg_end  (1)+1) .EQ. "'" )
+
+	   IF (.NOT.arg1_quoted
+     .    .AND. (cmnd_buff(arg_start(1)-1:arg_start(1)-1) .EQ. "_")
+     .    .AND. (cmnd_buff(arg_end  (1)+1:arg_end  (1)+1) .EQ. "_")
+     .    .AND. (arg_start(1)-4.GE.1)
+     .    .AND. (arg_end  (1)+4.LE.cmnd_len)                     )THEN
+	      arg1_quoted = 
+     .          (cmnd_buff(arg_start(1)-4:arg_start(1)-1) .EQ. "_DQ_"
+     .      .AND.cmnd_buff(arg_end  (1)+1:arg_end  (1)+4) .EQ. "_DQ_" )
+     .    .OR.
+     .          (cmnd_buff(arg_start(1)-4:arg_start(1)-1) .EQ. "_SQ_"
+     .      .AND.cmnd_buff(arg_end  (1)+1:arg_end  (1)+4) .EQ. "_SQ_" )
+	   ENDIF
 	ENDIF
 
 * REPEAT loops postpone symbol substitutions in arguments -- all 1 arg for now

@@ -227,6 +227,7 @@
 * V690 *sh*   1/14 Formatting improvement to DEFINE ATTRIB error message
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 *                  prevent IF, ELIF, ELSE, and ENDIF from being aliased
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -793,9 +794,8 @@
 	   IF ( pos .GT. 0 ) THEN
 
 * consolidate arguments broken up by command parser back into a single arg
-
               IF (cmnd_buff(pos:pos) .EQ. '{') THEN
-                 CALL all_1_arg
+                 CALL ALL_1_ARG
 	         num_args = 1	 ! used by GET_CMND_DATA
               ENDIF
 	      arg_start(1) = pos ! skip over "name ="
@@ -908,14 +908,14 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 	ELSEIF ( orient_t
 * 8/97 *kob* use cx_calender to check if time is date rather than time step
      .  .AND.  (     qual_given(slash_T0) .GT. 0
-     .		.OR. cx_calendar(mods_cx))) THEN
+     .		.OR. cx_calendar(orient,mods_cx))) THEN
 	   buff1 = 'HOURS'
 	ELSE
 	   buff1 = 'NONE'
 	ENDIF
 
 * is it a calendar axis definition?
-	its_calendar =  orient_t .AND. cx_calendar(mods_cx)
+	its_calendar =  orient_t .AND. cx_calendar(orient,mods_cx)
 
 * *acm* other calendar names* /CALENDAR = GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP
 *       Gregorian is the default, also may be called STANDARD.
@@ -931,9 +931,9 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
      .			      cal_name, status )
 	   IF ( status .NE. ferr_ok ) RETURN
            new_att_calendar = cal_name
-	ELSEIF ( orient .EQ. t_dim  .AND.  
+	ELSEIF ( orient_t  .AND.  
      .         ( qual_given(slash_T0) .GT. 0  .OR. 
-     .           cx_calendar(mods_cx)) ) THEN
+     .           cx_calendar(orient,mods_cx)) ) THEN
 	   cal_name = 'GREGORIAN'
 	ENDIF
 
@@ -1563,7 +1563,7 @@ C /units=months  is 1/12 of the length of the year
 
 * add newly defined axis to the user-variable dset of the linked-list strucure
            
-           dset_to_add = -2  ! user-defined coordinate variable dataset.
+           dset_to_add = pdset_coordvars  ! user-defined coordinate variable dataset.
 
            err_string = buff3
            type = NCDOUBLE
@@ -2024,7 +2024,7 @@ C /units=months  is 1/12 of the length of the year
            dset = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
            CALL ISIT_COORD_VAR ( buff, dset, varname, coordvar, status )
            IF ( status .NE. ferr_ok ) THEN 
-              dset = -2  ! a user-defined axis (coordinate variable)
+              dset = pdset_coordvars  ! a user-defined axis (coordinate variable)
               CALL ISIT_COORD_VAR ( buff, dset, varname, 
      .              coordvar, status )
               IF ( status .NE. ferr_ok ) THEN
@@ -2056,7 +2056,7 @@ C /units=months  is 1/12 of the length of the year
            CALL FIND_VAR_NAME(pdset_irrelevant, varname, cat, var)
            IF (  var .NE. munknown_var_name .AND.
      .           cat .EQ. cat_user_var) THEN
-              dset = -1
+              dset = pdset_uvars
            ELSE
               dset = cx_data_set(cx_cmnd) 
            ENDIF

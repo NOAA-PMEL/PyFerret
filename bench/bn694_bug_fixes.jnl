@@ -16,6 +16,9 @@ GO err693_isready_dyn_grid_crash   ! 12/23/2014
 GO bn_reset
 GO err693_attr_in_gcfcn
 
+GO bn_reset
+GO err693_inconsistent_quote
+
 ! IF-THEN flow tests
 GO bn_reset
 GO err693_if_then_flow_2214
@@ -46,4 +49,7 @@ GO err691_pt_in_poly
 
 GO bn_reset
 GO err693_undetected_regrid_dset
+
+GO bn_reset
+GO err693_line_over_axis
 

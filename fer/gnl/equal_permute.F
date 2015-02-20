@@ -1,5 +1,3 @@
-
-
 	SUBROUTINE EQUAL_PERMUTE(string,fill,v_ok,neg_ok,perm,status )
 
 *
@@ -54,6 +52,7 @@
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V693+ *sh* 2/15 - added support for _DQ_ quotations
 
       IMPLICIT NONE
 
@@ -100,8 +99,19 @@
 	GOTO 5100
 
 * remove quotation marks
- 100       IF ( string(pos:pos)   .EQ. '"' ) pos  = pos + 1
-           IF ( string(slen:slen) .EQ. '"' ) slen = slen - 1
+ 100	   IF ( string(pos :pos  ) .EQ. '"'
+     .	  .AND. string(slen:slen ) .EQ. '"' ) THEN
+	      pos  = pos  + 1
+	      slen = slen - 1
+	   ELSEIF (string(pos :pos ) .EQ. '_'
+     .	     .AND. string(slen:slen) .EQ. '_' 
+     .	     .AND. slen-pos.GE.8            ) THEN
+	      IF (string(pos:pos+3)   .EQ. '_DQ_'
+     .	    .AND. string(slen-3:slen) .EQ. '_DQ_' ) THEN
+	         pos  = pos  + 4
+	         slen = slen - 4
+	      ENDIF
+	   ENDIF
 
 * decode permutation string
 	ndim = 0

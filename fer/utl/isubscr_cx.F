@@ -59,6 +59,7 @@
 *                   of the grid cell, precicision could cause the wrong index 
 *                   to be returned.
 * V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 	include 'tmap_dims.parm'
 #      include "tmap_dset.parm"
@@ -99,7 +100,7 @@
 	ENDIF
 
 * time expressed as seconds since BC ?
-	calendar = (idim .EQ. t_dim .OR. idim .EQ. f_dim) .AND. cx_calendar(cx) 
+	calendar = (idim .EQ. t_dim .OR. idim .EQ. f_dim) .AND. cx_calendar(idim,cx) 
 	IF (idim.EQ.f_dim .AND. (line_t0(axis) .EQ. char_init20)) calendar = .FALSE.
 
 	IF ( calendar ) THEN

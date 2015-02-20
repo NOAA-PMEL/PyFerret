@@ -1,0 +1,52 @@
+! bn_f_from_tax_fcns.jnl
+! test tax_* functions returning results from a 
+! time-formatted axis in the F direction
+!
+! 2/2015 ACM
+
+define axis/f=1-jan-2011:31-jan-2011:1/units=hours fax
+
+
+
+let ff = _f[gf=fax]
+! Test RETURN=F0
+say `ff,return=F0`
+
+list/N=20:30 tax_datestring(_F[g=ff],ff,"minute")
+list/N=20:30 tax_datestring(_F[g=ff],ff,"hour")
+list/N=20:30 tax_datestring(_F[g=ff],ff,"day")
+list/N=20:30 tax_dayfrac(_F[g=ff],ff)
+list/N=20:30 tax_day(_F[g=ff],ff)
+list/N=20:30 tax_jday(_F[g=ff],ff) 
+list/N=20:30 tax_month(_F[g=ff],ff)
+list/N=20:30 tax_yearfrac(_F[g=ff],ff)
+list/N=20:30 tax_year(_F[g=ff],ff)
+list/N=20:30 tax_jday1900(_F[g=ff],ff)
+list tax_units(ff)
+
+! commands from tax_tstep, changing time origin
+
+DEFINE AXIS/F="1-JAN-2000:00:00:01":"1-JAN-2000:00:15:00":2/UNITS=seconds fsec
+LIST/N=440:451 _F[GF=fsec]  
+LET bsin = SIN(_F[GF=fsec]/40000)
+SAVE/FILE=a.nc/clobber bsin
+CAN VAR/all
+USE a.nc
+
+SET LIST/PREC=7
+! Reset the date to dec 1999
+! Function lets us leave off the leading 0.
+LIST/N=1:15  TAX_TSTEP(bsin, "1-dec-1999:00:00:00" )
+
+! argument can be upper or lowercase
+! Should list values 1, 3, 5...
+LIST/N=1:15  TAX_TSTEP(bsin, "1-JAN-2000:00:00:00" )
+
+! Test  with TAX_DATESTRING 
+
+DEFINE AXIS/F="1-JAN-1902:00:00:00":"1-JAN-1902:00:30:00":5/UNITS=seconds fsec
+LIST/N=200:205 _F[GF=fsec]  
+
+LET ff = _F[GF=fsec]
+LET reset_date = TAX_DATESTRING(`_F[GF=fsec,n=1]`, ff, "sec")
+LIST/N=1:15 TAX_TSTEP(ff, "`reset_date`")

@@ -72,7 +72,9 @@
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V685+ *acm* 3/13 For Ensemble ds_type, check datset number before testing its type
 * v694 *acm* 12/14 Fix ticket 2050: case of variables in quotes
-
+*      *sh*  12/14 Allow _SQ_ as an acceptable equivalent to single quotes
+*      *acm*  2/15 Prevent run-time errors in string length for _SQ_ handling
+*   
         IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -327,9 +329,13 @@
      .                                string_array_result(1),
      .                                max_uvar,
      .                                num_indices)
+* NOTE: (*sh* 12/2014):  The routine string_array_find_quoted includes a case-blind
+*     array scan if the test_name string has no enclosing qquotation marks.
+*     So are these next lines of code redundant/unnecessary?
 	IF (len_test.GT.0) THEN
+* ... case-blind search for name enclosed in "'"
 	   IF (num_indices.EQ.0 .AND. test_name(1:1).EQ."'") THEN
-	      len_test = TM_LENSTR(test_name)
+!	      len_test = TM_LENSTR(test_name)    ! 12/14 *sh* is this needed?
 	      varname = test_name(2:len_test-1)
 	      CALL string_array_find_caseblind(ds_var_code_head,
      .                                   varname,
@@ -337,6 +343,17 @@
      .                                   string_array_result(1),
      .                                   max_uvar,
      .                                   num_indices)
+* ... case-blind search for name enclosed in _SQ_
+	   ELSEIF (len_test.GT.8) THEN
+	      IF (num_indices.EQ.0 .AND. test_name(1:4).EQ.p_SQ_quote) THEN
+	         varname = test_name(5:len_test-4)
+	         CALL string_array_find_caseblind(ds_var_code_head,
+     .                                   varname,
+     .                                   len_test-8,
+     .                                   string_array_result(1),
+     .                                   max_uvar,
+     .                                   num_indices)
+	      ENDIF
 	   ENDIF
 	ENDIF
 

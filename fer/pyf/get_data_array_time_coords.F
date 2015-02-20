@@ -100,7 +100,7 @@
       ENDIF
       DO 100 k = ss_low,ss_high
           worldsecs = TM_WORLD(k, grid, axnum, box_middle)
-          CALL TSTEP_TO_DATE_OLD(grid, worldsecs, 6, timestr)
+          CALL TSTEP_TO_DATE(grid, axnum, worldsecs, 6, timestr)
 *         Try to read as DD-MTH-YYYY HH:MM:SS
 *         If fails, try another format
           READ(timestr, FMT=110, ERR=20) day, monthstr, year,

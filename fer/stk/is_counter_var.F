@@ -42,6 +42,7 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 * V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
 * V69+  *acm*10/14 Bug 2200: assign mr subscripts correctly
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -90,8 +91,8 @@
 
 	cx_trans    ( idim, cx ) = trans_no_transform
 	cx_trans_arg( idim, cx ) = bad_val4
-	if (idim .EQ. t_dim ) 
-     .      cx_calendar(cx) = .FALSE.
+	if (idim .EQ. t_dim .OR. idim .EQ. f_dim) 
+     .      cx_calendar(idim,cx) = .FALSE.
 
 
 * diagnostic output

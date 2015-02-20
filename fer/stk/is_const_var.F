@@ -9,6 +9,7 @@
 * V530:  8/00 *sh* - allow lists of strings
 * V533:  7/01 *sh* - allow single quoted strings
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V693+ *sh* 2/15 - support for _DQ_ and _SQ_ as quotation indicators
  
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -50,8 +51,10 @@
 	start = uvar_item_start( item, uvar )
 	end   = uvar_item_end  ( item, uvar )
 
-	IF ( INDEX(uvar_text(uvar)(start:end), '"') .GT. 0
-     .	.OR. INDEX(uvar_text(uvar)(start:end), "'") .GT. 0 ) THEN
+	IF ( INDEX(uvar_text(uvar)(start:end), '"')    .GT. 0
+     .	.OR. INDEX(uvar_text(uvar)(start:end), "'")    .GT. 0
+     .	.OR. INDEX(uvar_text(uvar)(start:end), "_DQ_") .GT. 0
+     .	.OR. INDEX(uvar_text(uvar)(start:end), "_SQ_") .GT. 0 ) THEN
 * ... set up FORTRAN-independent pointer
 	   CALL INIT_C_STRING_ARRAY( size,
      .				     memory(1,mr_blk1(mr)),

@@ -120,13 +120,15 @@
 * v6.931   to gfdl
 * v6.932   to John Maurer, bug 2223 and tag v_6_9_32_GFDL23Dec
 * v6.933   to GFDL tag v_6_9_33_GFDL27Jan15
+* v6.94    Ferret release to go with LAS 8.4
+* v6.941   Version number for post-v6.94 development
 
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.933   /
+	DATA revision_level	/  6.941    /
 
 ! Note we can put a debug title in the Ferret startup header lines
 ! by putting a title into the Makefile: $(MAKE) "DEBUG_TITLE=beta" update

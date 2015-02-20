@@ -141,6 +141,7 @@
 * V690 12/13 *sh* set default regrid transforms for aux var regridding transform
 *	          set up dynamic axis if cx_delta=pauto_1pt_ax
 *      4/14  *sh* return the standard grid if this is "false regridding" - 1 pt curvi
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 	include 'errmsg.parm'
 	include 'ferret.parm'
@@ -281,7 +282,7 @@
 	            ENDIF
 	            IF (idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
 * 8/97 *kob* use cx_calender to check if time is date rather than time step
-	               IF ( cx_calendar(cx) ) THEN
+	               IF ( cx_calendar(idim,cx) ) THEN
 	                  IF (.NOT.GEOG_LABEL(idim,std_grid)) GOTO 5400
 	                  dlo = SECS_TO_TSTEP(std_grid,idim,-1.*cx_lo_ww(idim,cx))
 	                  dhi = SECS_TO_TSTEP(std_grid,idim,-1.*cx_hi_ww(idim,cx))

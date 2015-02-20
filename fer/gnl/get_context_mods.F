@@ -154,6 +154,7 @@
 * V6.91+ *acm* 8/14 Fix ticket 2189
 * V693+ *sh* 12/14 keep track of regridding using cx_vtree* for ticket #2195
 *                  also fix err693_undetected_regrid_dset.jnl
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -283,7 +284,7 @@
 	            cx_hi_ww ( idim, mods_cx ) = cx_hi_ww ( idim, ict )
 * kob 9/97 - set cx_calendar as well
 		    IF (idim .EQ. t_dim .OR. idim .EQ. f_dim) 
-     .                 cx_calendar(mods_cx) = cx_calendar(ict)
+     .                 cx_calendar(idim,mods_cx) = cx_calendar(idim,ict)
 	            cx_trans ( idim, mods_cx ) = cx_trans   ( idim, ict )
 	            cx_trans_arg(idim, mods_cx ) = cx_trans_arg(idim, ict )
 	            cx_by_ss ( idim, mods_cx ) = cx_by_ss( idim, ict )
@@ -973,7 +974,8 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 
 * kob 8/97 - set cx_calender to true/false depending on whether date is
 *            a formated string or not
-	   IF (idim .EQ. t_dim .OR. idim .EQ. f_dim) cx_calendar(mods_cx) = fmat_lo
+	   IF (idim .EQ. t_dim .OR. idim .EQ. f_dim) 
+     .			cx_calendar(idim,mods_cx) = fmat_lo
 	ENDIF
 
 * is there a second value given ?
@@ -1088,7 +1090,7 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 *             repeat/i=3:1:1 executes the same as repeat/i=1:3:1 and
 *             list var[i=180:10:10] the same as list var[i=10:180:10]
 
-	IF (  (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. cx_calendar(mods_cx) ) THEN
+	IF (  (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. cx_calendar(idim,mods_cx) ) THEN
 	   IF ( cx_hi_ww(idim,mods_cx) .GT. 
      .				cx_lo_ww(idim,mods_cx) ) THEN
 	      temp = cx_lo_ww( idim, mods_cx )
@@ -1116,7 +1118,7 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 	   cx_hi_ww( idim, mods_cx ) = unspecified_val8
 * 9/97 *kob* cx_calendar must reflect these changes as well	  
 	   IF (idim .EQ. t_dim .OR. idim .EQ. f_dim) 
-     .                cx_calendar(mods_cx) = .FALSE.
+     .                cx_calendar(idim,mods_cx) = .FALSE.
 	ENDIF
 
 * SPECIAL CASES for individual axes

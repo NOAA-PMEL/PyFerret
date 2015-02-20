@@ -87,7 +87,7 @@ done
 if [ "${ans}" = "y" ]; then
    echo ""
    rm -f "${ctar_file}"
-   tar cvzf "${ctar_file}" --exclude .svn "${fer_name}"
+   tar czf "${ctar_file}" --exclude .svn "${fer_name}"
    echo ""
    ls -l "${ctar_file}"
 else

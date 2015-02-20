@@ -48,13 +48,13 @@ pymod_optimized :
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
-	  $(PYTHON_EXE) setup.py build )
+	  $(PYTHON_EXE) setup.py --quiet build )
 	( cd $(DIR_PREFIX) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
-	  $(PYTHON_EXE) setup.py install -O2 --prefix=$(DIR_PREFIX)/pyferret_install )
+	  $(PYTHON_EXE) setup.py --quiet install -O2 --prefix=$(DIR_PREFIX)/pyferret_install )
 
 .PHONY : pymod_debug
 pymod_debug :
@@ -64,13 +64,13 @@ pymod_debug :
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
-	  $(PYTHON_EXE) setup.py build -g )
+	  $(PYTHON_EXE) setup.py --quiet build -g )
 	( cd $(DIR_PREFIX) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
-	  $(PYTHON_EXE) setup.py install -O0 --prefix=$(DIR_PREFIX)/pyferret_install )
+	  $(PYTHON_EXE) setup.py --quiet install -O0 --prefix=$(DIR_PREFIX)/pyferret_install )
 
 ## Remove everything that was built
 .PHONY : clean
@@ -96,7 +96,7 @@ install_env :
 	bin/make_environment_tar . . -y
 	mkdir -p $(INSTALL_FER_DIR)
 	mv -f fer_environment.tar.gz $(INSTALL_FER_DIR)
-	( cd $(INSTALL_FER_DIR) ; tar xvzf fer_environment.tar.gz )
+	( cd $(INSTALL_FER_DIR) ; tar xzf fer_environment.tar.gz )
 
 ## Create the fer_executables.tar.gz files and then extract it into $(INSTALL_FER_DIR)
 .PHONY : install_exes
@@ -105,7 +105,7 @@ install_exes :
 	bin/make_executable_tar . . -y
 	mkdir -p $(INSTALL_FER_DIR)
 	mv -f fer_executables.tar.gz $(INSTALL_FER_DIR)
-	( cd $(INSTALL_FER_DIR) ; tar xvzf fer_executables.tar.gz )
+	( cd $(INSTALL_FER_DIR) ; tar xzf fer_executables.tar.gz )
 	cp -f threddsBrowser/toolsUI/toolsUI-4.1.jar $(INSTALL_FER_DIR)/lib/
 
 ## The following is for installing the updated threddsBrowser.jar, libpyferret.so,
@@ -121,7 +121,7 @@ update :
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
-	  $(PYTHON_EXE) setup.py install -O2 --prefix=$(INSTALL_FER_DIR) )
+	  $(PYTHON_EXE) setup.py --quiet install -O2 --prefix=$(INSTALL_FER_DIR) )
 #	$(MAKE) "FER_LOCAL_EXTFCNS = $(INSTALL_FER_DIR)/ext_func/libs" -C $(DIR_PREFIX)/external_functions install
 
 ##

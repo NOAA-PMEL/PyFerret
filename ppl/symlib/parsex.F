@@ -75,6 +75,7 @@ C                with "*(*)" for the linux port
 C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 * v580 *acm* 8/04 Change use of 256 to buflen+1, 
 *                 where buflen is defined in cmndlen.inc
+* V693+ *sh* 2/15 Allow _DQ_ to function like a double quote char
 
         INCLUDE 'cmndlen.inc'
 
@@ -184,12 +185,27 @@ C
 	ENDIF
 	M=M-1
 	I=IOLD
-	IF(LINE(I:I).EQ.'"')I=I+1
+
+	IF(LINE(I:I).EQ.'"')THEN
+	   I=I+1
+	ELSEIF (LINE(I:I).EQ.'_'
+     .   .AND. I+3 .LE. ILEN    ) THEN
+	   IF (LINE(I:I+3).EQ.'_DQ_') I=I+4
+	ENDIF
+C
+C get the label (argument)
+C
 	LABEL=LINE(I:)
 	N=ILEN-I+1
 	IF(LABEL(N:N).EQ.'"')THEN
 	    LABEL(N:N)=' '
 	    N=N-1
+	ELSEIF (LABEL(N:N).EQ.'_'
+     .	  .AND. N-3 .GE.1      ) THEN
+	    IF (LABEL(N-3:N).EQ.'_DQ_') THEN
+	      LABEL(N-3:N) = ' '
+	      N=N-4
+	    ENDIF
 	ENDIF
 	RETURN
 	END

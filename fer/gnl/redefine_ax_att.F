@@ -85,12 +85,12 @@
       maxlen = 128
 
 c... loop over datasets
-c    Dataset -2 is the pseudo-dataset containing user-defined axes.
-c    see if name exists as an axis name.
+c    Dataset pdset_coordvars (value -2) is the pseudo-dataset containing 
+c    user-defined axes. See if name exists as an axis name.
 
-      DO 100 dset = -2, maxdsets
-         IF (dset .EQ. -1) GOTO 100
-         IF (dset .EQ.  0) GOTO 100
+      DO 100 dset = pdset_coordvars, maxdsets
+         IF (dset .EQ. pdset_uvars) GOTO 100
+         IF (dset .EQ. pdset_irrelevant) GOTO 100
 
          IF (dset .GT. 0) THEN
             IF ( ds_name(dset) .EQ. char_init1024) GOTO 100

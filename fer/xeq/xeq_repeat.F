@@ -62,6 +62,8 @@
 * V57  6/04 *acm* - clean up declarations
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
+*                  Likewise cs_calendar_f for the F information in the command stack
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -352,11 +354,12 @@
 * 12/97 *kob* set new logical cs_is_calendar now as well
 	   by_date = ( idim .EQ. t_dim .OR. idim .EQ. f_dim )
      .	   .AND. ( .NOT.cx_by_ss(idim,limits_cx) )
-     .	   .AND. ( cx_calendar(limits_cx) )
+     .	   .AND. ( cx_calendar(idim,limits_cx) )
 * ... delta value in hours: hours-->seconds (to add to secs from BC)
 	   IF ( by_date ) THEN
                cs_delta(csp1) =  -3600. * cs_delta(csp1)
-	       cs_is_calendar(csp1) = .TRUE.
+	       IF ( idim .EQ. t_dim) cs_is_calendar_t(csp1) = .TRUE.
+	       IF ( idim .EQ. f_dim) cs_is_calendar_f(csp1) = .TRUE.
                cs_cal_id(csp1) = 1
 	   ENDIF
 

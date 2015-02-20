@@ -525,7 +525,7 @@
         IF (dot .GT. 0) name = uvar_text(uvar)(1:dot-1)
         CALL FIND_VAR_NAME(pdset_irrelevant, name, cat, ivar)
         IF (  ivar .NE. munknown_var_name .AND.
-     .        cat .EQ. cat_user_var) dset = -1
+     .        cat .EQ. cat_user_var) dset = pdset_uvars
 
         IF (dset .NE. unspecified_int4 .AND. 
      .      dset .NE. pdset_irrelevant) THEN

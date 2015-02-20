@@ -135,6 +135,7 @@ echo ""
 echo -n "Create gzipped tar file ${ctar_file} (y/n)? "
 if [ -n "$auto_ans" ]; then
     ans="${auto_ans}"
+    echo $ans
 else
     read ans
 fi
@@ -145,7 +146,7 @@ done
 if [ "${ans}" = "y" ]; then
    echo ""
    rm -f "${ctar_file}"
-   tar cvzf "${ctar_file}" --exclude .svn *
+   tar czf "${ctar_file}" --exclude .svn *
    echo ""
    ls -l "${ctar_file}"
 else

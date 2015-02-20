@@ -1,0 +1,12 @@
+! Ticket 2232: line plots overlaid the plot axes
+show mode meta
+! line plot with /VS draw on top of the axes
+let xval = {0.0, 0.2, 1.0, 0.8, 0}
+let yval = {0.0, 1.1, 1.1, 0.0, 0}
+plot/vs/line/thick=3/color=lightblue xval, yval
+
+! any line overlay may draw on the axes
+let xval = {0.0, 0.0, 0.8, 0.2, 0}
+let yval = {0.1, 1.2, 1.2, 0.1, 0.1}
+plot/ribbon/vs/line/thick=3/over/nolab/pal=green_light xval, yval, yval
+

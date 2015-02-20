@@ -1,10 +1,43 @@
 *
 * tax_tsetp.F
 *
+*  This software was developed by the Thermal Modeling and Analysis
+*  Project(TMAP) of the National Oceanographic and Atmospheric
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  hereafter referred to as NOAA/PMEL/TMAP.
+*
+*  Access and use of this software shall impose the following
+*  obligations and understandings on the user. The user is granted the
+*  right, without any fee or cost, to use, copy, modify, alter, enhance
+*  and distribute this software, and any derivative works thereof, and
+*  its supporting documentation for any purpose whatsoever, provided
+*  that this entire notice appears in all copies of the software,
+*  derivative works and supporting documentation.  Further, the user
+*  agrees to credit NOAA/PMEL/TMAP in any publications that result from
+*  the use of this software or in any product that includes this
+*  software. The names TMAP, NOAA and/or PMEL, however, may not be used
+*  in any advertising or publicity to endorse or promote any products
+*  or commercial entity unless specific written permission is obtained
+*  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
+*  is not obligated to provide the user with any support, consulting,
+*  training or assistance of any kind with regard to the use, operation
+*  and performance of this software nor to provide the user with any
+*  updates, revisions, new versions or "bug fixes".
+*
+*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
+*  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
+*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+*  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+*  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*
 * Jing Y. Li 
 * May 31 2006
 * Finished March 24, 2009, ACM
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* v695  *acm 2/15  Time axis may be an F axis or a T axis.
 *
 * This function returns time step values
 *
@@ -69,7 +102,8 @@
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
-      CALL ef_set_arg_desc(id, arg, 'variable with reference time axis')
+      CALL ef_set_arg_desc(id, arg, 
+     .           'variable with reference time or forecast axis')
       CALL ef_set_axis_influence_6d(id, arg,
      .                              YES, YES, YES, YES, YES, YES)
 
@@ -121,10 +155,19 @@
 
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-*  Allocate double the length of the axes for REAL*8 work array.
-      mtl = arg_lo_ss(T_AXIS,ARG1)
-      mth = mtl + 
-     .        2 * (arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1) + 1)
+     
+* Get the direction of arg 1: F or T
+      IF (arg_lo_ss(T_AXIS, ARG1) .NE. ef_unspecified_int4) THEN
+         mtl = arg_lo_ss(T_AXIS,ARG1)
+         mth = mtl + 
+     .         (arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1))
+      ENDIF
+      IF (arg_lo_ss(F_AXIS, ARG1) .NE. ef_unspecified_int4) THEN
+         mtl = arg_lo_ss(F_AXIS,ARG1)
+         mth = mtl + 
+     .         (arg_hi_ss(F_AXIS,ARG1) - arg_lo_ss(F_AXIS,ARG1))
+      ENDIF
+
 
 *  taxdat
       CALL ef_set_work_array_dims_6d(id, 1,
@@ -170,7 +213,7 @@
 
 * Ignore the Y/Z/T/E/F dimensions in the work arrays since
 * they are not used and Fortran is column major
-      REAL*8 taxdat(wrk1lox:wrk1lox+(wrk1hix-wrk1lox)/2)
+      REAL*8 taxdat(wrk1lox:wrk1hix)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -193,21 +236,19 @@
       INTEGER STR_SAME
       CHARACTER*20 datebuf
       CHARACTER*20 instring, t0string
-      INTEGER slen
+      INTEGER slen, dir
       REAL*8 ddate
       CHARACTER*16 axname(6), axunits(6)
       LOGICAL bkw1(6), mod1(6), reg1(6)
       CHARACTER*16 tunit
       REAL timesincet0
       INTEGER i, j, k, l, m, n
-      INTEGER l1
+      INTEGER l1, n1
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
-
-      CALL ef_get_coordinates(id, ARG1, T_AXIS,
-     .        arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), taxdat)
+      
 
 *     Get the new time origin (t0) string
       i = arg_lo_ss(X_AXIS, ARG2)
@@ -229,39 +270,83 @@
          t0string = instring
       ENDIF
 
+
+* Get the direction of arg 1: F or T
+      IF (arg_lo_ss(T_AXIS, ARG1) .NE. ef_unspecified_int4) THEN
+         CALL ef_get_coordinates(id, ARG1, T_AXIS,
+     .        arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), taxdat)
+         dir = T_AXIS
+      ENDIF
+        
+      IF (arg_lo_ss(F_AXIS, ARG1) .NE. ef_unspecified_int4) THEN
+         CALL ef_get_coordinates(id, ARG1, F_AXIS,
+     .        arg_lo_ss(F_AXIS, ARG1), arg_hi_ss(F_AXIS, ARG1), taxdat)
+         dir = F_AXIS
+      ENDIF
+
 *     Get time axis unit
       CALL ef_get_axis_info_6d(id, ARG1, axname, axunits,
      .                         bkw1, mod1, reg1)
-      tunit = axunits(T_AXIS)
+      tunit = axunits(dir)
 
-      l1 = arg_lo_ss(T_AXIS,ARG1)
-      DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+      IF (dir .EQ. T_AXIS) THEN
+         l1 = arg_lo_ss(T_AXIS,ARG1)
+         DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
-*        Get the time axis value for this step
-         ddate = taxdat(l1)
-*        Get the date string corresponding to time ddate
-         CALL ef_get_axis_dates(id, ARG1, ddate, 1, datebuf)
-*        Convert to time from the new origin
-         CALL time_since_t0(t0string, datebuf, tunit, timesincet0)
+*      Get the time axis value for this step
+            ddate = taxdat(l1)
+*      Get the date string corresponding to time ddate
+            CALL ef_get_axis_dates(id, ARG1, ddate, dir, 1, datebuf)
+*      Convert to time from the new origin
+            CALL time_since_t0(t0string, datebuf, tunit, timesincet0)
 
-*        Assign this time from the new origin to the results
-         DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-         DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-         DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-         DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-         DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+*      Assign this time from the new origin to the results
+            DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+            DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+            DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+            DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+            DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
             result(i,j,k,l,m,n) = timesincet0
 
- 100     CONTINUE
- 200     CONTINUE
- 300     CONTINUE
- 500     CONTINUE
- 600     CONTINUE
+ 100        CONTINUE
+ 200        CONTINUE
+ 300        CONTINUE
+ 500        CONTINUE
+ 600        CONTINUE
 
-         l1 = l1 + arg_incr(T_AXIS,ARG1)
- 400  CONTINUE
+            l1 = l1 + arg_incr(T_AXIS,ARG1)
+ 400     CONTINUE
 
+      ELSE IF (dir .EQ. F_AXIS) THEN
+         n1 = arg_lo_ss(F_AXIS,ARG1)
+         DO 650 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+
+*      Get the F axis value for this step
+            ddate = taxdat(n1)
+*      Get the date string corresponding to time ddate
+            CALL ef_get_axis_dates(id, ARG1, ddate, dir, 1, datebuf)
+*      Convert to time from the new origin
+            CALL time_since_t0(t0string, datebuf, tunit, timesincet0)
+
+*      Assign this time from the new origin to the results
+            DO 550 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+            DO 450 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            DO 350 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+            DO 250 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+            DO 150 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+
+               result(i,j,k,l,m,n) = timesincet0
+
+ 150        CONTINUE
+ 250        CONTINUE
+ 350        CONTINUE
+ 450        CONTINUE
+ 550        CONTINUE
+
+            n1 = n1 + arg_incr(F_AXIS,ARG1)
+ 650     CONTINUE
+      ENDIF
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |

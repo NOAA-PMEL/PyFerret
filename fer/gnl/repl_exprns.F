@@ -109,6 +109,7 @@
 *                  flag dependency_tree_mode to turn regular error reporting back on.
 * V69+ *acm*  9/14 Ticket 981. If the variable is a constant-array, evaluate it to get
 *                  the grid size rather than returning the nominal length.
+* V695 *acm*  2/15 RETURN=F0 for calendar formatted F axis 
 
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
@@ -415,7 +416,7 @@
 *     Add to this error string when adding new arguments:
 
            WRITE (return_errmsg,*)  
-     .       'use RETURN= shape,size,grid,title,bad,t0,units,dset, '//pCR//
+     .       'use RETURN= shape,size,grid,title,bad,t0,f0,units,dset, '//pCR//
      .	     '  dsetnum,dsetpath,dsettitle,*size,*start,*end,'//pCR//
      .       '  *units,*axis,nc_scale,nc_offset,user_scale,user_offset,'//pCR//
      .       '  calendar,dtype,xmod,tmod,status,isDepth,isReady'
@@ -440,9 +441,23 @@
 * ... RETURN=T0
 	   ELSEIF ( repl .EQ. "T0" ) THEN
 	      repl = ' '	! default
-	      axis = CGRID_AXIS ( T_dim, cx )
+	      idim = T_DIM
+	      axis = CGRID_AXIS ( idim, cx )
 	      IF ( axis.NE.mnormal) THEN
 	          IF (line_direction(axis) .EQ. 'TI') THEN
+    		      repl = line_T0(axis)
+                      IF (line_shift_origin(axis)) 
+     .                  repl =  '01-JAN-0001 00:00:00'
+                  ENDIF
+	      ENDIF
+
+* ... RETURN=F0
+	   ELSEIF ( repl .EQ. "F0" ) THEN
+	      repl = ' '	! default
+	      idim = F_DIM
+	      axis = CGRID_AXIS ( idim, cx )
+	      IF ( axis.NE.mnormal) THEN
+	          IF (line_direction(axis) .EQ. 'FI') THEN
     		      repl = line_T0(axis)
                       IF (line_shift_origin(axis)) 
      .                  repl =  '01-JAN-0001 00:00:00'
@@ -529,7 +544,7 @@
      .              INDEX(cmnd(istart:iend),'.') .EQ. 0) THEN
               dset = cx_data_set(cx)
               IF (dset .EQ. pdset_irrelevant .OR. 
-     .            dset .EQ. unspecified_int4) dset = -1  ! try user vars
+     .            dset .EQ. unspecified_int4) dset = pdset_uvars  ! try user vars
 
               varid = 0
               vartype = 0
@@ -577,7 +592,7 @@
      .              INDEX(cmnd(istart:iend),'.') .GT. 0) THEN
               attype = 0
               dset = cx_data_set(cx)
-              IF (cx_data_set(cx) .EQ. pdset_irrelevant) dset = -1  ! user vars
+              IF (cx_data_set(cx) .EQ. pdset_irrelevant) dset = pdset_uvars  ! user vars
               CALL BREAK_VARATTNAME( cmnd(istart:iend), dset, 
      .                    varname, attname, varid, do_err, status )
               CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 

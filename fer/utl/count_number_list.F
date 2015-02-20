@@ -44,13 +44,16 @@
 * V530:  7/01 *sh* - allow single quoted strings
 * V540:  9/01 *sh* - change "SYSTEM:" to "SPAWN:"
 *       *acm* 3/12   add disclaimer
+* V693+ *sh* 2/15 - add support for _DQ_ and _SQ_ quotations
 
 * calling argument declarations
 	INTEGER		n
 	CHARACTER*(*)	string
 
 * internal variable declarations
-	LOGICAL		in_quote, doub_quote, no_chars_yet
+	LOGICAL		in_quote, no_chars_yet,
+     .			doub_quote, sing_quote, DQ_quote, SQ_quote,
+     .			doub_atom,  sing_atom,  DQ_atom,  SQ_atom
 	INTEGER 	TM_LENSTR1, STR_CASE_BLIND_COMPARE,
      .			i, start, slen, vax_code
 	CHARACTER*1	c
@@ -68,6 +71,10 @@
 	slen = TM_LENSTR1( string )
 	start = 1
 	no_chars_yet = .TRUE.
+	doub_quote = .FALSE.
+	sing_quote = .FALSE.
+	DQ_quote   = .FALSE.
+	SQ_quote   = .FALSE.
 
 * trim around the enclosing "{}" brackets
 	IF ( string(slen:slen) .EQ. '}' ) slen = slen - 1
@@ -80,26 +87,50 @@
 	i = start - 1
  100	i = i + 1
 	   c = string(i:i)
+
+* ... identify quotation atoms
+	   doub_atom = c.EQ.'"'
+	   sing_atom = c.EQ."'"
+	   IF (i+3 .LE. slen) THEN
+	      DQ_atom = string(i:i+3) .EQ. "_DQ_"
+	      SQ_atom = string(i:i+3) .EQ. "_SQ_"
+	   ELSE
+	      DQ_atom = .FALSE.
+	      SQ_atom = .FALSE.
+	   ENDIF
+
 	   IF (in_quote) THEN
 
 #ifdef NO_DOUBLE_ESCAPE_SLASH
-              IF (c .EQ. '\') THEN
+              IF (c .EQ. '\') THEN  ! ' char for emacs
 #else
               IF (c .EQ. '\\') THEN
 #endif
 	         i = i + 1   ! skip processing of next character 
-	      ELSEIF  (     doub_quote .AND. c.EQ.'"'
-     .	          .OR. .NOT.doub_quote .AND. c.EQ."'" ) THEN
-	         in_quote = .FALSE.
+	      ELSEIF  (     doub_quote .AND. doub_atom
+     .	               .OR. sing_quote .AND. sing_atom 
+     .	               .OR. DQ_quote   .AND. DQ_atom 
+     .	               .OR. SQ_quote   .AND. SQ_atom ) THEN
+	         in_quote   = .FALSE.
+	         doub_quote = .FALSE.
+	         sing_quote = .FALSE.
+	         DQ_quote   = .FALSE.
+	         SQ_quote   = .FALSE.
 	      ELSE
 	         CONTINUE   ! skip over anything inside of quotations
 	      ENDIF
-	   ELSEIF (c .EQ. '"') THEN
-	      in_quote = .TRUE.
+	   ELSEIF (doub_atom) THEN
+	      in_quote   = .TRUE.
 	      doub_quote = .TRUE.
-	   ELSEIF (c .EQ. "'") THEN
-	      in_quote = .TRUE.
-	      doub_quote = .FALSE.
+	   ELSEIF (sing_atom) THEN
+	      in_quote   = .TRUE.
+	      sing_quote = .TRUE.
+	   ELSEIF (DQ_atom  ) THEN
+	      in_quote   = .TRUE.
+	      DQ_quote   = .TRUE.
+	   ELSEIF (SQ_atom  ) THEN
+	      in_quote   = .TRUE.
+	      SQ_quote   = .TRUE.
 	   ELSEIF (c .EQ. ',') THEN
 	      n = n+1
 	   ELSEIF (c.EQ.'s' .OR. c.EQ.'S' ) THEN

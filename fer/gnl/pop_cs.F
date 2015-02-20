@@ -65,6 +65,7 @@
 * V693+ 12/14 *sh* rolling back 4/99 change: an unclosed IF needs a warning
 *                  and handle nested unclosed IFs 
 * v6932 12/14 *sh* unclosed IF warning moved to GET_FER_COMMAND
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 * internal variable declarations:
 	INTEGER	LIB_FREE_LUN,TM_LENSTR1,stat,axis,ivar,cvar,csp_to,ll,
@@ -121,8 +122,8 @@
            axis = cs_axis( csp )
            cx_by_ss(axis,cx_last) = cs_save_by_ss( csp )
 
-           IF (axis .eq. t_dim) THEN
-              cx_calendar(cx_last) = .FALSE.
+           IF (axis .eq. t_dim .OR. axis .eq. f_dim) THEN
+              cx_calendar(axis,cx_last) = .FALSE.
               cx_cal_id(cx_last) = unspecified_int4
            ENDIF
 

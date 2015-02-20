@@ -98,7 +98,7 @@
       IF (dset1 .EQ. pdset_irrelevant) dset1 = cx_data_set(cx_last) 
 
       cat = cx_category(cx)
-      IF (cat .EQ. cat_user_var) dset1 = -1
+      IF (cat .EQ. cat_user_var) dset1 = pdset_uvars
 
       CALL GET_NEW_CX( cx_last, cx_cmnd, .TRUE., status )
       IF ( status .NE. ferr_ok ) GOTO 5000
@@ -113,7 +113,7 @@
       IF (dset2 .EQ. pdset_irrelevant) dset2 = cx_data_set(cx_last) 
 
       cat = cx_category(cx)
-      IF (cat .EQ. cat_user_var) dset2 = -1
+      IF (cat .EQ. cat_user_var) dset2 = pdset_uvars
 
 * Get varid for each variable.
       CALL CD_GET_VAR_ID (dset1, varname1, varid1, status)

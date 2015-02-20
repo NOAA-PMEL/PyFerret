@@ -41,7 +41,8 @@ ef_set_arg_unit.F\
 ef_set_custom_axis.F\
 ef_set_freq_axis.F\
 ef_set_desc.F\
-ef_set_real_to_string.F
+ef_set_real_to_string.F\
+ef_get_date_tstep.F
 
 SRCS_C = \
 ef_get_arg_type.c\

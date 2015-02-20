@@ -83,6 +83,7 @@
 *                   if it's the T dimension not the T or F dimension.
 * V690  *sh* 4/14  For curvilinear axes keep ww limits as-is (may exceed axis limits)  
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -115,10 +116,9 @@
 	cat  = cx_category( cx )
 	grid = cx_grid    ( cx )
 	
-* For setting the calendar information just think about the time axis
-* (What if it's the F axis?)
+* For setting the calendar information
 
-	is_time = idim .EQ. t_dim
+	is_time = idim.EQ.t_dim .OR. idim.EQ.f_dim
 
 * check for special actions needed on user-defined variables
 * ( e.g. how to handle U[K=5] - U[K=1:10] )
@@ -149,7 +149,7 @@
 	   cx_trans( idim, cx ) = trans_no_transform
 * kob 9/97 - need to reset cx_calendar as well
 
-	   IF (is_time) cx_calendar(cx) = .FALSE.
+	   IF (is_time) cx_calendar(idim,cx) = .FALSE.
 
 * axes with fully "given" regions will have their regions determined via
 * MERGE_CONTEXT (when computed) or PASS_AMBIG_LIMS (when found in memory)
@@ -188,7 +188,7 @@
 	   cx_trans( idim, cx ) = trans_no_transform
 * kob 9/97 - need to reset cx_calendar as well
 	   IF (is_time) THEN
-              cx_calendar(cx) = .FALSE.
+              cx_calendar(idim,cx) = .FALSE.
               cx_cal_id(cx) = unspecified_int4
            ENDIF
 
@@ -219,7 +219,7 @@
 	   cx_hi_ww(idim, cx) = TM_WORLD( cx_hi_ss( cx,idim),
      .					  grid, idim, box_hi_lim )
 
-	   IF ( is_time .AND. cx_calendar(cx) ) THEN
+	   IF ( is_time .AND. cx_calendar(idim,cx) ) THEN
              cal_id = TM_GET_CALENDAR_ID (line_cal_name(axis))
              cx_cal_id(cx) = cal_id
            ENDIF
@@ -253,14 +253,14 @@
 * convert times given as seconds from BC to time step values
 * *kob* 8/97 - use cx_calender instead of cx_lo_ww
 
-	   IF ( is_time .AND. cx_calendar(cx) ) THEN
+	   IF ( is_time .AND. cx_calendar(idim,cx) ) THEN
              cal_id = TM_GET_CALENDAR_ID (line_cal_name(axis))
              IF ( TM_DATE_OK( line_t0(axis), cal_id ) ) THEN
 	         cx_lo_ww(idim,cx) =
      .                SECS_TO_TSTEP( grid, idim, -cx_lo_ww(idim,cx) )
 	         cx_hi_ww(idim,cx) =
      .                SECS_TO_TSTEP( grid, idim, -cx_hi_ww(idim,cx) )
-		 cx_calendar(cx) = .FALSE.
+		 cx_calendar(idim,cx) = .FALSE.
                  cx_cal_id(cx) = cal_id
               ENDIF
 	   ENDIF

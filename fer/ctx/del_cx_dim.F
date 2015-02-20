@@ -45,6 +45,7 @@
 * V200:  5/19/89 - reordered _ss dims
 * 9/97 *kob* - eliminate newly create cx_calendar
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -59,8 +60,8 @@
 	cx_hi_ww    ( idim, cx ) = unspecified_val8
 	cx_trans    ( idim, cx ) = trans_no_transform
 	cx_trans_arg( idim, cx ) = bad_val4
-	if (idim .EQ. t_dim) 
-     .      cx_calendar(cx) = .FALSE.
+	if (idim .EQ. t_dim .OR. idim .EQ. f_dim) 
+     .      cx_calendar(idim,cx) = .FALSE.
 
 	RETURN
 	END

@@ -63,6 +63,7 @@ findlo.F\
 floatstr.F\
 flag2ddups.F\
 freverse.F\
+ft_to_orthogonal.F\
 gausswt.F\
 gausswt_v0.F\
 heap2_str.F\
@@ -86,6 +87,7 @@ nobad.F\
 pickindex.F\
 pt_in_poly.F\
 rect_to_curv.F\
+samplef_date.F\
 sampleij.F\
 samplei_multi.F\
 samplej_multi.F\
@@ -160,6 +162,7 @@ tax_yearfrac.F\
 tcat.F\
 tcat_str.F\
 test_opendap.F\
+time_reformat.F\
 transpose_xt.F\
 transpose_xy.F\
 transpose_xz.F\

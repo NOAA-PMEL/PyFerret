@@ -70,7 +70,7 @@
       CHARACTER*128 vname, buff
 
       varid = cd_varid(uvar)
-      IF (dset .EQ. -1) varid = uvar
+      IF (dset .EQ. pdset_uvars) varid = uvar
 
 * get the vital statistics for this variable
 
@@ -106,7 +106,7 @@
 
 * For user variable update these in uvar_title, etc.
 
-       ELSE IF (dset .EQ. -1) THEN
+       ELSE IF (dset .EQ. pdset_uvars) THEN
          maxlen = 128
          got_it = NC_GET_ATTRIB( dset, varid, 'long_name',
      .                     .NOT.do_warn, vname(:vlen), maxlen, attlen, 

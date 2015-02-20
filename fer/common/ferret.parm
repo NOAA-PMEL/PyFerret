@@ -39,7 +39,7 @@
 * 		  turned max_context into a variable to allow aux frames above it
 * V692 7/14 *acm* new transform @WGT, ticket 2180
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
-
+*       12/14 *sh* _DQ_ and _SQ_ alternatives to double and single quote marks
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -518,6 +518,14 @@
 	INTEGER		pdset_irrelevant
 	PARAMETER     (	pdset_irrelevant = 0 )
 
+* virtual dataset containing user-defined variables, used in attribute handling
+	INTEGER		pdset_uvars
+	PARAMETER     (	pdset_uvars = -1 )
+
+* virtual dataset containing user-defined axes (coord vars), used in attribute handling
+	INTEGER		pdset_coordvars
+	PARAMETER     (	pdset_coordvars = -2 )
+
 * pointers to the 7 fundamental axes of the Cox/Phil./Sieg. model
 * eg mxt points to the X axis used by TEMP (and SALT, TAU, etc.)
 	INTEGER		mtime, mxt, mxu, myt, myu, mzt, mzw
@@ -702,4 +710,9 @@
 	PARAMETER     ( patnam_layerz = '__LayerzRef_',
      .		        patnam_curvx  = '__CurvxRef_',
      .		        patnam_curvy  = '__CurvyRef_'  )
+
+* alternative quotation atoms
+	CHARACTER*4	p_DQ_quote, p_SQ_quote
+	PARAMETER     ( p_DQ_quote = '_DQ_',
+     .		        p_SQ_quote = '_SQ_'  )
 

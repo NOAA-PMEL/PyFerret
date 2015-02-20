@@ -11,6 +11,7 @@
 * 12/98 - *sh*  increased num_state and num_class to add {1,3,5} notation
 *  1/99 - *sh*  increased num_state and num_class to add string variables
 * V530  10/00 - *sh*  increased maxatoms and max_exp
+* V693+ 12/14 *sh* allow _QD_ and _SQ_ for quotation alternatives 
 
 	integer		maxatoms,
      .			max_fcn,
@@ -41,5 +42,5 @@
      .			right_paren		= 3,
      .			inf_flg 		= 1,
      .			stk_flg 		= 2,
-     .			num_state		= 12,
-     .			num_class		= 15 )
+     .			num_state		= 16,
+     .			num_class		= 16 )

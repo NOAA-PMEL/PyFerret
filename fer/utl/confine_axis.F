@@ -76,7 +76,7 @@
 *      *acm*  4/12 6D Ferret: time axis may be in t or f direction.
 * V680 *acm*  612  6D Ferret: Pull the calendar correction into a separate routine.
 * V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
-
+* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -124,17 +124,6 @@
 * axis for this dimension
 	axis = grid_line( idim, grid )
 
-! 11/95: increased restrictions that limits must be within valid bounds
-!        even redundant limits must be fleshed out since they may be used at
-!	 higher levels to "reconcile" results
-!* check for special actions needed on user-defined variables
-!* ( e.g. how to handle U[K=5] - U[K=1:10] or PI=3.1415)
-!	IF ( cat .EQ. cat_user_var ) THEN
-!	   lim_redundant = uvar_given( idim, var ) .LE. uvlim_gvn_xact
-!	ELSE
-!	   lim_redundant = .FALSE.
-!	ENDIF
-
 * check for internal error left over from old TMAP library
 	IF ( axis .EQ. munknown ) THEN
 	   status = ferr_grid_definition
@@ -179,18 +168,15 @@
 *11/04 *acm* reset time step only if axis is a different calendar than 
 *            the calendar originally used to compute world coordinates
 
-	   IF ( (idim .EQ. t_dim .OR. idim .EQ. f_dim) .AND.cx_calendar(cx) ) THEN
+	   IF ( (idim .EQ. t_dim .OR. idim .EQ. f_dim) .AND.cx_calendar(idim,cx) ) THEN
 
 	      CALL CALENDAR_AXIS (idim, grid, cx, istat)
 	      IF (istat .NE. 2) THEN
 	         IF (istat .EQ. -1) GOTO 5000
-	         IF (idim .EQ. t_dim .AND. grid_line(f_dim,grid) .NE. mnormal)THEN
-	            CALL CALENDAR_AXIS(f_dim, grid, cx, istat)
-     	            IF (istat .EQ. -1) GOTO 5000
-	         ENDIF
+
 	      ENDIF
 
-	      cx_calendar(cx) = .FALSE. 
+	      cx_calendar(idim,cx) = .FALSE. 
 
            ENDIF
 * ... confine values to the limits of the defining grid
@@ -200,12 +186,6 @@
 * ... check for error in limits and possibly remove transformation
 	   IF ( lo_ww .GT. hi_ww ) THEN
 	      GOTO 5010
-! commented out 11/95 -- allow user's "@ITP" to pass through
-!	   ELSEIF ( lo_ww .EQ. hi_ww
-!     .	      .AND. cx_trans(idim,cx) .EQ. trans_interpolate ) THEN
-!! ... B4 8/92 was: .AND. cx_trans(idim,cx) .GT. trans_compress_code ) THEN
-!* ... remove transformation if irrevelent
-!	      cx_trans( idim, cx ) = trans_no_transform
 	   ENDIF
 * ... success
 	   cx_lo_ww( idim, cx ) = lo_ww

@@ -51,6 +51,7 @@
 *              before calling this function, make sure
 *              len_test = TM_LENSTR(test_string)
 *              len_model_chars = TM_LENSTR(model_string)
+* 2/15 *sh* added support for _SQ_
 
 * calling argument declarations:
 	CHARACTER*(*)	model_string
@@ -59,7 +60,7 @@
         INTEGER         len_model_chars
 
 * internal variable declarations:
-	LOGICAL         is_quoted
+	LOGICAL         is_quoted, is_SQ
 	INTEGER		len_model, i, len_test1
         LOGICAL         result
 
@@ -75,15 +76,30 @@
            len_test1 = len_test
         ENDIF
 
+* _SQ_ as a possible substitute for "'"
+	is_SQ = .FALSE.
+	IF  ( test_string(1:1) .EQ. "_"
+     .  .AND. len_test .GE. 8           ) THEN
+	   is_SQ = test_string(1:4) .EQ. "_SQ_" 
+	   IF (is_SQ) is_quoted = test_string(len_test-3:len_test)
+     .				      .EQ. "_SQ_"
+	   IF (is_SQ) len_test1 = len_test - 8
+	ENDIF
+
 * test string cannot be shorter than model or longer than fully terminated model
-	IF (   len_test1        .LT. len_model_chars
+	IF (   len_test1       .LT. len_model_chars
      .	 .OR.( len_model_chars .LT. len_model		! fully terminated ?
      .	 .AND. len_test1       .GT. len_model_chars )	) GOTO 200
 
 
 	IF (is_quoted) THEN
-	   IF (model_string(1:len_model_chars) .NE. test_string(2:len_model_chars+1)) GOTO 200
+	   IF (model_string(1:len_model_chars)
+     .	  .NE. test_string (2:len_model_chars+1)) GOTO 200
+	ELSEIF (is_SQ) THEN
+	   IF (model_string(1:len_model_chars)
+     .	  .NE. test_string (5:len_model_chars+4)) GOTO 200
 	ELSE
+! sic - "tm_match_captial_name" is found in file tm_match_capital_name.c
            CALL tm_match_captial_name(test_string, model_string, 
      .          len_model_chars, result)
            IF(.NOT.result) GOTO 200	   

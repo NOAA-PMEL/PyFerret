@@ -110,6 +110,7 @@
 * V69+ *acm*  9/14 Ticket 981. If the variable is a constant-array, evaluate it to get
 *                  the grid size rather than returning the nominal length.
 * V695 *acm*  2/15 RETURN=F0 for calendar formatted F axis 
+* V695+ *sh* 2/15 add support for _DQ_ style of quotations
 
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
@@ -139,14 +140,15 @@
 
 * internal variable declarations:
 	LOGICAL   need_formatting, zero_fill, coordvar,
-     .            do_err, do_eval, get_ready, was_dep, const_arr_var
+     .            do_err, do_eval, get_ready, was_dep, const_arr_var,
+     .		  dqote, DQ
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
      .		  FIND_DSET_NUMBER, str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i2, use_digits, true_end,
      .		  qual_end, brkt, idim, use_width, dset, varid, 
      .            vartype, nvdims, vdims(8), nvatts, ist, ind,
      .            attype, attlen, inxt, attoutflag,outflag, fertype, 
-     .            attid, ieq, dqote, base_isp, base_cx, cat, var
+     .            attid, ieq, base_isp, base_cx, cat, var
 	REAL	  result, val
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
 	CHARACTER TM_FMT*18, LEFINT*16, VAR_TITLE*(max_len),
@@ -192,7 +194,7 @@
 	istart = istart + itmp
 #ifdef NO_DOUBLE_ESCAPE_SLASH
 	IF ( istart .GT. 2 ) THEN
-	   IF (cmnd(istart-2:istart-2) .EQ. '\') GOTO 10  
+	   IF (cmnd(istart-2:istart-2) .EQ. '\') GOTO 10  ! ' for emacs
 	ENDIF
 #else
 	IF ( istart .GT. 2 ) THEN
@@ -248,14 +250,24 @@
 
 * ... see if the equals sign is just part of some string within the grave accents
 *     This fixes bug 1469 (and its duplicate 1690)
-	dqote = 0
-	DO 198 i = istart, iend
-	   IF (cmnd(i:i).EQ.'"') THEN
-	      dqote = dqote + 1
-	   ELSEIF (cmnd(i:i).EQ.'=' .AND. dqote.GT.0) THEN
-	      IF (INDEX(cmnd(i:iend), '"') .GT. 0) GOTO 149 ! = inside a string
+* *sh* add support for _DQ_ style of quotations
+	dqote = .FALSE. 
+	DQ = .FALSE.
+	DO i = istart, iend
+	   IF (cmnd(i:i).EQ.'"' .AND. .NOT.DQ)  THEN
+	      dqote = .NOT.dqote
+	   ELSEIF (cmnd(i:i).EQ.'_'
+     .       .AND. i+3 .LE. iend ) THEN
+	      IF ( cmnd(i:i+3).EQ.'_DQ_' ) DQ = .NOT.DQ
+	   ELSEIF (cmnd(i:i).EQ.'=' ) THEN
+* ... does the "=" lie between quotation marks?
+	      IF (dqote)  THEN
+	         IF (INDEX(cmnd(i:iend), '"'   ) .GT. 0) GOTO 149
+	      ELSEIF (DQ) THEN
+	         IF (INDEX(cmnd(i:iend), '_DQ_') .GT. 0) GOTO 149
+	      ENDIF
 	   ENDIF
-198	CONTINUE
+	ENDDO
 
 * ... hunt for the next equal sign 
 	DO 93 i = ieq, iend

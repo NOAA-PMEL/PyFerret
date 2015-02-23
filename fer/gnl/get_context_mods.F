@@ -155,6 +155,7 @@
 * V693+ *sh* 12/14 keep track of regridding using cx_vtree* for ticket #2195
 *                  also fix err693_undetected_regrid_dset.jnl
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
+* V695+ *sh* 2/15 add support for _DQ_ 
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -556,7 +557,10 @@ c	      next_char = istart + naxes - 1
 *	      to confuse these two
 *       3/98: for T axis with GT="1-JAN-1990" first character may be a quote
 	      i = 1		                                     ! 3/98
-	      IF ((idim.EQ.t_dim .OR. idim.EQ.f_dim)  .AND. name(1:1) .EQ. '"') i = 2    ! 3/98
+	      IF ((idim.EQ.t_dim .OR. idim.EQ.f_dim) ) THEN
+	         IF (name(1:1) .EQ. '"'   ) i = 2 ! 3/98
+	         IF (name(1:4) .EQ. '_DQ_') i = 5 ! 2/15 
+	      ENDIF
 	      IF ( TM_DIGIT(name(i:i)) .AND. .NOT.single_char ) THEN
 	         IF (.NOT.first_time(idim) ) GOTO 5200
 	         IF (naxes .GT. 1) GOTO 5205	! cannot say GXY=lo:hi:delta
@@ -925,16 +929,55 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 
 * make allowances for quotation marks here and there (kludge!)
 * watch for empty strings! (10/95)
-	IF ( text_buff(lo_start:lo_start) .EQ. '"' ) lo_start = lo_start + 1
-	IF ( text_buff(lo_end  :lo_end  ) .EQ. '"' ) lo_end   = lo_end   - 1
+* add _DQ_ support 2/15
+	IF (     text_buff(lo_start:lo_start) .EQ. '"' ) THEN
+	   lo_start = lo_start + 1
+	ELSEIF ( text_buff(lo_start:lo_start) .EQ. '_'
+     .      .AND.lo_start+3 .LE. iend                  ) THEN
+	   IF (  text_buff(lo_start:lo_start+3) .EQ. '_DQ_' )
+     .	   lo_start = lo_start + 4
+	ENDIF
+ 	IF (     text_buff(lo_end  :lo_end  ) .EQ. '"' ) THEN
+	   lo_end   = lo_end   - 1
+	ELSEIF ( text_buff(lo_end  :lo_end  ) .EQ. '_'
+     .     .AND. lo_end-3 .GE. istart                  ) THEN
+	   IF (  text_buff(lo_end-3:lo_end  ) .EQ. '_DQ_' )
+     .	   lo_end   = lo_end   - 4
+	ENDIF
+ 
 	IF ( colon ) THEN
-	   IF ( text_buff(hi_start:hi_start) .EQ. '"' ) hi_start = hi_start + 1
-	   IF ( text_buff(hi_end  :hi_end  ) .EQ. '"' ) hi_end   = hi_end   - 1
+	   IF (     text_buff(hi_start:hi_start) .EQ. '"' ) THEN
+	      hi_start = hi_start + 1
+	   ELSEIF ( text_buff(hi_start:hi_start) .EQ. '_' 
+     .        .AND. hi_start+3 .LE. iend                  ) THEN
+	      IF (  text_buff(hi_start:hi_start+3) .EQ. '_DQ_' ) 
+     .	      hi_start = hi_start + 4
+	   ENDIF
+	   IF (     text_buff(hi_end  :hi_end  ) .EQ. '"' ) THEN
+	      hi_end   = hi_end   - 1
+	   ELSEIF ( text_buff(hi_end  :hi_end  ) .EQ. '_' 
+     .         .AND. hi_end-3 .GE. istart                 ) THEN
+	      IF (  text_buff(hi_end-3:hi_end  ) .EQ. '_DQ_' ) 
+     .	      hi_end   = hi_end   - 4
+	   ENDIF
 	   IF ( hi_start .GT. hi_end ) GOTO 5165
 	ENDIF
+
 	IF ( colon2 ) THEN
-	   IF (text_buff(del_start:del_start) .EQ. '"') del_start = del_start+1
-	   IF (text_buff(del_end  :del_end  ) .EQ. '"') del_end   = del_end  -1
+	   IF (    text_buff(del_start:del_start  ) .EQ. '"') THEN
+	      del_start = del_start+1
+	   ELSEIF (text_buff(del_start:del_start  ) .EQ. '_'
+     .       .AND. del_start+3 .LE. iend                    ) THEN
+	      IF  (text_buff(del_start:del_start+3) .EQ. '_DQ_') 
+     .	      del_start = del_start+4
+	   ENDIF
+	   IF (    text_buff(del_end :del_end    ) .EQ. '"' ) THEN
+	      del_end   = del_end - 1
+	   ELSEIF (text_buff(del_end :del_end    ) .EQ. '_'
+     .     .AND. del_end-3 .GE. istart                      ) THEN
+	      IF  (text_buff(del_end-3:del_end   ) .EQ. '_DQ_')
+     .	      del_end   = del_end - 4
+	   ENDIF
 	   IF ( del_start .GT. del_end ) GOTO 5165
 	ENDIF
 

@@ -45,6 +45,8 @@
 * revision 0.0 - 10/23/86
 * revision 0.1 - 3/23/88  - bypass embedded quotated strings during search
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* 2/15 *sh* add support for _DQ_
+*	    now ATOM_POS cannot be used to search for "_" unless modified
 
 	include 'ferret.parm'
 
@@ -53,7 +55,7 @@
 	CHARACTER*1	atom
 
 * internal variable declarations:
-	INTEGER		pos, slen
+	INTEGER		pos, slen, i
 
 * initialize
 	slen = LEN( string )
@@ -67,6 +69,23 @@
 	   DO 110 pos = pos+1, slen
 	      IF ( string(pos:pos) .EQ. '"' ) GOTO 200
  110	   CONTINUE
+* ... unclosed quotation mark - flag it as a syntax error
+	   ATOM_POS = atom_illegal_pos
+	   RETURN
+
+* _DQ_ -quotated string ?
+	ELSEIF ( string(pos:pos) .EQ. '_' 
+     .	  .AND. pos+3 .LE. slen      ) THEN
+	   IF ( string(pos:pos+3) .EQ. '_DQ_' ) THEN
+	      DO i = pos+4, slen-3
+	         IF ( string(i:i+3) .EQ. '_DQ_' ) THEN
+	            pos = i + 3
+	            GOTO 200
+	         ENDIF
+	      ENDDO
+	   ELSE
+	      GOTO 200  ! as-is this routine cannot be used to search for "_"
+	   ENDIF
 * ... unclosed quotation mark - flag it as a syntax error
 	   ATOM_POS = atom_illegal_pos
 	   RETURN

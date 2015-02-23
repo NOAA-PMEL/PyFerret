@@ -59,6 +59,7 @@
 *                  2- screen for ELIF used in a single line syntax
 *	           3- on error csp drop must occur before call to ERRMSG
 *	           4- improved error message for "IF some expression THEN ..."
+* V695+ *sh* 2/15 - added support for _DQ_
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -75,7 +76,7 @@
 	INTEGER	STR_CASE_BLIND_COMPARE, STR_UPCASE,
      .		vax_code, if_type, iarg,
      .		true_clause_start, true_clause_end, false_clause_start,
-     .		false_clause_end, status, csp1, tmp_stat, end
+     .		false_clause_end, status, csp1, tmp_stat, iend
 
 * 6/96: Are we really going to process this IF or merely register that
 * a (skipped) IF clause has been opened?
@@ -191,22 +192,28 @@
 * ... 6/99 bug fix (hack) -- final quotation mark missed in
 *	IF 1 THEN SAY "I is too big" ENDIF
 *     because arg_start/arg_end are pre-trimmed wrt enclosing quotes
-	      end =  arg_end(true_clause_end)
-	      IF (end .LT. len_cmnd) THEN
-	         IF (cmnd_buff(end+1:end+1).EQ.'"') end = end + 1
+	      iend =  arg_end(true_clause_end)
+	      IF     (iend+1 .LE. len_cmnd) THEN
+	         IF (cmnd_buff(iend+1:iend+1).EQ.'"') iend = iend + 1
+	         IF (iend+4 .LE. len_cmnd) THEN
+	            IF (cmnd_buff(iend+1:iend+4).EQ.'_DQ_') iend = iend + 4
+	         ENDIF
 	      ENDIF
 	      cs_text(csp) = cmnd_buff(arg_start(true_clause_start):
-     .				       end)
+     .				       iend)
 	   ELSEIF ( has_false_clause ) THEN
 * ... 6/99 bug fix (hack) -- final quotation mark missed in
 *	IF 1 THEN SAY "I is too big" ENDIF
 *     because arg_start/arg_end are pre-trimmed wrt enclosing quotes
-	      end =  arg_end(false_clause_end)
-	      IF (end .LT. len_cmnd) THEN
-	         IF (cmnd_buff(end+1:end+1).EQ.'"') end = end + 1
+	      iend =  arg_end(false_clause_end)
+	      IF    (iend+1 .LE. len_cmnd) THEN
+	         IF (cmnd_buff(iend+1:iend+1).EQ.'"'   ) iend = iend + 1
+	         IF (iend+4 .LE. len_cmnd) THEN
+	            IF (cmnd_buff(iend+1:iend+4).EQ.'_DQ_') iend = iend + 4
+	         ENDIF
 	      ENDIF
 	      cs_text(csp) = cmnd_buff(arg_start(false_clause_start):
-     .				       end)
+     .				       iend)
 	   ELSE
 * ... false condition and no ELSE clause
 	      CALL STACK_PTR_DN( csp, 0, tmp_stat )

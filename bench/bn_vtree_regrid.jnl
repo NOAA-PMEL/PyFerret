@@ -1,6 +1,7 @@
 ! bn_vtree_regrid.jnl
 ! exercise 12/14 enhancements to display regrid target on a separate line 
-! updates 1/26/15 to exercise multiple regrid target outputs
+! updated 1/26/15 to exercise multiple regrid target outputs
+! updated 2/23/15 to report target of regrid even when aux regridding occurs
 
 ! case 1: target grid known,   regridded variable known
 let myvar = 1           ! var to be regridded is known
@@ -133,4 +134,45 @@ go bn_vtree.sub myvar[g=temp,gx=mybad,gy='MYBAD']    ! dup unknown missed
 go bn_vtree.sub myvar[g=myvar,gy=mybad]
 go bn_vtree.sub myvar[gy=yp5,g=mybad]
 go bn_vtree.sub myvar[g=mybad,y=5s:5n:.5]
+
+! 2/15 additions -- auxiliary variable regridding
+USE levitus_climatology
+LET myzvar = Z[Z=100:500:100]
+DEFINE AXIS/z/units=meters zax = myzvar
+SET REGION/i=101:102/j=41:42
+
+LET/D=levitus_climatology depth = z[g=temp]+ 0*temp[k=1]
+
+! valid aux var and target variable
+LET tempz = temp[gz(depth)=myzvar]
+vtree=all tempz
+
+! valid aux var.  Target is axis name
+LET tempz1 = temp[gz(depth)=zax]
+vtree=all tempz1
+
+! valid aux var.  Target is unknown
+LET tempz2 = temp[gz(depth)=unknown_target]
+vtree=all tempz2
+
+! --- unknown aux var, valid target ---
+! When an unknown auxiliary variable error occurs it suppresses 
+! the reporting of both the variable being regridded and the regrid target
+! The underlying issue is that GET_VAR_CONTEXT (called from is_dependencies.F) 
+! can return only a single error status
+! If it contains ferr_unknown_auxvar, then the success or failure of other
+! parts of the context processing are unknown.
+! One could kludge the code to find a way around this, but the violence
+! required is not justified in order to fix this small loss in error reporting.
+LET tempz3 = temp[gz(unknown_aux)=myzvar]
+vtree=all tempz3
+
+! a syntax error leads to a similar behavior
+LET tempz3a = temp[gz(unknown_aux)=myzvar,SYNTAX_ERROR]
+vtree=all tempz3a
+
+! similar behavior here:  the unknown_target does not get reported
+LET tempz4 = temp[gz(unknown_aux)=unknown_target]
+vtree=all tempz4
+
 

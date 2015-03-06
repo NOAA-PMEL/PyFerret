@@ -1,0 +1,7 @@
+! err693_save_packed.jnl
+! ticket 2240: bug writing multiple vars with one SAVE when scaled
+!
+! Previously saw a netcdf error because first variable was mis-scaled on writing.
+
+use err693_save_packed.nc
+save/clobber/file=a.nc QA_OF_SEAICE_CONC_CDR, GODDARD_MERGED_SEAICE_CONC

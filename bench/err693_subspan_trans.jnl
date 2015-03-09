@@ -1,0 +1,34 @@
+! err693_subspan_trans
+! bug 2241  3/9/2015
+
+use coads_climatology
+let a = sst[x=120:284,y=-2:2@ave,t=@ave]
+save/clob/file=a.nc a
+can var a
+use a
+set reg/x=25:385
+let b = a[x=@min]
+
+set mode diag
+say `a[x=@min]`
+
+! This previously resulted in an error.
+say `b`
+
+can mode diag
+
+! What if the region for @MIN is in the saved portion?
+say `a[x=150:200@min]`
+let b = a[x=150:200@min]
+say `b`
+
+! What if the region for @MIN extends beyond the saved portion?
+say `a[x=200:300@min]`
+let b = a[x=200:300@min]
+say `b`
+
+! What if the region for @MIN is outside the saved portion?
+say `a[x=300:385@min]`
+let b = a[x=300:385@min]
+say `b`
+

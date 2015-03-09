@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 79755222 Feb 18 14:11 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 79763391 Mar  9 11:22 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: changes for _DQ_ and _SQ_ quotes handling. fix ticket 2235. F and T calendar axes
+Note: fix for ticket 2241
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
-Beginning at Wed Feb 18 14:38:56 PST 2015
+Beginning at Mon Mar 9 11:54:41 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3535,6 +3535,7 @@ list e
 list f
 Replacing definition of axis X1
 Replacing definition of axis Y1
+Replacing definition of axis ZAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3777,6 +3778,7 @@ Replacing definition of axis X2
 Replacing definition of axis Y2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis ZAX
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
@@ -3841,6 +3843,12 @@ stat/l=1/x=180/y=0 a
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of grid GRID3D
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3858,6 +3866,7 @@ Replacing definition of axis TAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Changing the value of attribute foobar.some_text
            *** NOTE: Changing the value of attribute foobar.some_text
 Replacing definition of grid GG
  PERMANENT data cleared from memory
@@ -3961,4 +3970,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Feb 18 14:40:19 PST 2015
+Ended at Mon Mar 9 11:56:20 PDT 2015

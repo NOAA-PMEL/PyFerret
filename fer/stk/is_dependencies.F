@@ -48,6 +48,7 @@
 * V693+ 12/14 *sh* - repair improper handling of dynamic grids
 *       later same month: tweak the repair to fix bug #2225
 *	and always report TWO (or more) dependency lines when regridding occurs
+* V695+ 2/15 *sh* - report target of regrid even if auxvar is involved 
 
 * calling argument declarations:
 	INTEGER	status
@@ -269,8 +270,7 @@
 	   CALL REPORT_DEPENDENCY( hi_cx, isp, uvar, item,
      .				   work, var_status, desist )
 * ... a special lines to report regridding dependency
-	   IF (cx_unstand_grid(hi_cx)
-     .	 .AND. cx_naux(hi_cx) .EQ. 0  )
+	   IF (cx_unstand_grid(hi_cx) )
      .	   CALL REPORT_DEPENDENCY( hi_cx, isp+1, uvar, item,
      .				   work, pcx_vtree_regrid_report, desist )
 	ENDIF

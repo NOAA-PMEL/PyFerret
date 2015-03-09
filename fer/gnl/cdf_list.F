@@ -124,6 +124,8 @@
 *                 user-defined variable.	
 * V687 3/14 *acm* Fix ticket 1750. Write Ferret-internal axis names to cdf files, unless
 *                 the user has said /KEEP_AXISNAMES
+* V694 *acm* 3/15 Ticket 2240. Dont send scale, attribute, and bad-val to CD_WRITE_VAR. That
+*                 routine gets those attributes per variable from the dataset being written.
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -1170,8 +1172,8 @@
 
            CALL CD_WRITE_VAR ( memory, cdfid, dset_num, varcode, grid, 
      .                        write_lo, write_hi, memory(1,mr_blk1(mr)), 
-     .                        edges_flag, do_bounds, scalefac, addoff, 
-     .                        bad, mode_upcase_output, keepax_flag, status )
+     .                        edges_flag, do_bounds, mode_upcase_output, 
+     .                        keepax_flag, status )
            IF ( status .NE. merr_ok ) GOTO 5800
  500	CONTINUE
 

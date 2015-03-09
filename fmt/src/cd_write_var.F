@@ -1,6 +1,6 @@
 	SUBROUTINE CD_WRITE_VAR ( memory, cdfid, dset, vname, grid, lo,
      .                            hi, dat, edges_flag, do_bounds, 
-     .                            scalefac, addoff, bad, mode_upcase_output, 
+     .                            mode_upcase_output, 
      .                            keepax_flag, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -77,6 +77,8 @@
 * V69+ 7/14 *acm* Further fix to 1750. Ticket 2182: Keep case of axis name consistent when
 *                 creating and writing axis bounds.
 * V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
+* V694 *acm*  3/15 Ticket 2240. Get scale, offset, and bad per variable from the dataset 
+*                  being written.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -111,8 +113,7 @@
       INTEGER cdfid, dset, grid, lo(nferdims), hi(nferdims), 
      .        edges_flag, do_bounds, keepax_flag, status
       CHARACTER*(*) vname
-      REAL dat(*), bad
-      REAL*8 scalefac, addoff
+      REAL dat(*)
       REAL memory( mem_blk_size, max_mem_blks )
 
 * local variable declarations:
@@ -124,17 +125,20 @@
      .        hilim, i100, i, j, k, l, m, n, recaxvar, lorec, hirec, rectyp,
      .	      vartyp, nvdim, vdims(8), nvatts, bndstart(2), bndcount(2),
      .        mblk1, nblks, npts, savecount, llen, grid_blocks
-      LOGICAL CD_GET_BOUNDS, TM_ABSTRACT_AXIS, TM_DFPEQ, 
-     .        got_it, scaled, writebounds
+      LOGICAL CD_GET_BOUNDS, TM_ABSTRACT_AXIS, TM_DFPEQ, CD_GET_ATTVAL,
+     .        got_it, scaled, writebounds, do_warn
       CHARACTER*13 TM_STRING
       CHARACTER*1  dimnam(nferdims)
       DATA  	   dimnam/'I','J','K','L','M','N'/
       CHARACTER*128 vbuff     ! needed because of fussy f772.1 DEC compiler
       REAL   r_scale, r_offset, scaled_bad
+      
+      REAL   bad
+      REAL*8 scalefac, addoff
       REAL*8 r100_8(200)
       REAL*8 TM_WORLD
       
-      INTEGER bndid, nlen, elen, reset
+      INTEGER bndid, nlen, elen, reset, numvals, nv 
       CHARACTER name*128, buff*128, CD_AXIS_OUTNAME*128, CD_AXIS_NAME*128
 
       REAL*4 r100_4(200)
@@ -166,6 +170,22 @@ c      EQUIVALENCE (r100_8, r100_4)
       cdfstat = NF_INQ_VAR (cdfid, varid, vbuff, vartyp, nvdim,
      .             vdims, nvatts)
 #endif
+
+* Get values for scalefac, addoff and bad-flag set in cdf_list for this variable
+
+      scalefac = 1.
+      addoff = 0.
+      numvals = 1
+      do_warn = .FALSE.
+      got_it = CD_GET_ATTVAL ( cdfid, varid, "scale_factor",
+     .                        do_warn, vname,
+     .                        scalefac, numvals, nv )
+      got_it = CD_GET_ATTVAL ( cdfid, varid, "add_offset",
+     .                        do_warn, vname,
+     .                        addoff, numvals, nv )
+      got_it = CD_GET_ATTVAL ( cdfid, varid, "_FillValue",
+     .                        do_warn, vname,
+     .                        bad, numvals, nv )
 
 * enter data mode so data can be read and written
 * (CD_GET_GENERIC_BOUNDS needs to read coordinate values)
@@ -479,6 +499,9 @@ c      EQUIVALENCE (r100_8, r100_4)
 * To write scaled data, scale all of it by ferretdat(1./inscale) - (inoff/inscale)
 * the scaling to be used is sent into this routine.
 
+      scaled = .FALSE.
+      r_offset = 0.
+      r_scale = 1.
 
       IF ( .NOT. TM_DFPEQ(scalefac, 1.D0) .OR. 
      .     .NOT. TM_DFPEQ(addoff, 0.D0) ) THEN
@@ -496,6 +519,7 @@ c      EQUIVALENCE (r100_8, r100_4)
       ENDIF
 
 * write the slab
+
       CALL CD_WRITE_VAR_SUB( cdfid, varid, vartyp, dims, start, count, 
      .	vdims(1), dat, cdfstat )
 

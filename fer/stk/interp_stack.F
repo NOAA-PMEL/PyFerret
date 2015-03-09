@@ -97,6 +97,9 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V690 9/13-2/14 *sh* add support for aux var regridding: temp[gz(depth)=zax]
+* V694 3/15 *acm* Fix ticket 2241: as for modulo replications, don't do the
+*                 creation of virtual "void" point on subspan modulo axes for 
+*                 user-variables that have compressed result.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -377,6 +380,13 @@
 	DO 255 idim = 1, nferdims
 	   IF ( modulo_axes(idim)
      .	  .AND. cx_lo_ss(cx,idim) .NE. unspecified_int4 ) THEN
+
+	      IF ( cat .EQ. cat_user_var ) THEN
+*    ... cannot modulo an average (or other compressed result)
+	         IF ( uvar_given(idim,var) .EQ. uvlim_gvn_xact
+     .		 .OR. uvar_given(idim,var) .EQ. uvlim_need_xact ) GOTO 255
+	      ENDIF
+
 	     IF (TM_ITS_SUBSPAN_MODULO(CGRID_AXIS(idim, cx))) THEN
 	      IF (cx_hi_ss(cx,idim) .EQ. CAXIS_MODLEN(idim, cx)) THEN
 	        CALL IS_STRIP(isact_class_subspan_fill,idim,*10,status)

@@ -56,3 +56,5 @@ GO err693_line_over_axis
 GO bn_reset
 GO err693_save_packed
 
+GO bn_reset
+GO err693_subspan_trans

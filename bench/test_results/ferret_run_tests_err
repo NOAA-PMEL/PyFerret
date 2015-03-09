@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 13 Feb 18 16:20 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.941
+lrwxrwxrwx 1 ksmith tmap 13 Mar  9 12:58 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.941
 Using external functions from /home/users/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug Ferret on RHEL5-64
@@ -251,7 +251,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/Ferret/lib
 FER_PALETTE=. /home/users/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Wed Feb 18 16:25:42 PST 2015
+Beginning at Mon Mar  9 12:59:24 PDT 2015
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3375,6 +3375,7 @@ list e
  **ERROR: illegal limits: X axis limits don't match variable def'n: A
           Are you giving explicit limits when SET REGION would suffice ?
 list f
+Replacing definition of axis ZAX
 *** Running test: bn686_bug_fixes.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3675,6 +3676,12 @@ poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
 stat/l=1/x=180/y=0 a
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
 *** Running test: bn_permute_ascii.jnl
  Cached data cleared from memory
 Replacing definition of grid GRID3D
@@ -3692,6 +3699,7 @@ Replacing definition of grid GRID3D
  Cached data cleared from memory
 *** Running test: bn_DQ.jnl
  Cached data cleared from memory
+           *** NOTE: Changing the value of attribute foobar.some_text
            *** NOTE: Changing the value of attribute foobar.some_text
 *** Running test: bn695_bug_fixes.jnl
  Cached data cleared from memory
@@ -3722,4 +3730,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Wed Feb 18 16:27:51 PST 2015
+Ended at Mon Mar  9 13:01:42 PDT 2015

@@ -5,6 +5,8 @@
 ! 	 10/93 - updated for Ferret V3.01
 ! 	 2/94  - added [basemap]
 ! 	 11/94 - added transparent overlays and "detail" control
+! 	  3/15 - add region improvements as in fland. Make the default
+!                dataset etopo20.
 
 ! Description: Plot or overlay an area-filled map of the oceans
 
@@ -44,11 +46,15 @@ query/ignore $4%not_required|detailed|solid|all> <4th argument of GO basemap may
 
 set data/save
 
-set data etopo$1"60"
+def sym xlo_hack ($xaxis_min%0%)
+def sym xhi_hack ($xaxis_max%360%)
+def sym map_reg = [$5%x=($xlo_hack):($xhi_hack)%]
 
-shade/nolab/nokey/lev=$4"(-10000,0,10000)|detailed>(-200,0,50)(-1000,-200,100)(-10000,0,1000)|solid>(-10000,0,10000)|all>(-200,200,50)(-1000,1000,200)(-8000,8000,1000)"/pal=$2"gray"$3"/overlay|basemap> |*>/overlay" $3"rose|transparent>if mod(i+j,2) eq 0 then rose|*>rose"
 
+set data etopo$1"20"
 
-cancel data etopo$1"60"
+shade/nolab/nokey/lev=$4"(-10000,0,10000)|detailed>(-200,0,50)(-1000,-200,100)(-10000,0,1000)|solid>(-10000,0,10000)|all>(-200,200,50)(-1000,1000,200)(-8000,8000,1000)"/pal=$2"gray"$3"/overlay|basemap> |*>/overlay" $3"rose($map_reg)|transparent>if mod(i+j,2) eq 0 then rose($map_reg)|*>rose($map_reg)"
+
+cancel data etopo$1"20"
 set data/restore
 set mode/last verify

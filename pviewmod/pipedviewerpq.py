@@ -22,10 +22,10 @@ except AttributeError:
 from PyQt4.QtCore import Qt, QPointF, QRect, QRectF, QSize, QSizeF, \
                          QString, QTimer
 from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, QDialog, \
-                         QFileDialog, QImage, QLabel, QMainWindow, \
-                         QMessageBox, QPainter, QPalette, QPen, QPicture, \
-                         QPixmap, QPolygonF, QPrinter, QPushButton, \
-                         QScrollArea, QTextDocument
+                         QFileDialog, QFontMetricsF, QImage, QLabel, \
+                         QMainWindow, QMessageBox, QPainter, QPalette, \
+                         QPen, QPicture, QPixmap, QPolygonF, QPrinter, \
+                         QPushButton, QScrollArea, QTextDocument
 
 try:
     from PyQt4.QtSvg  import QSvgGenerator
@@ -1030,6 +1030,9 @@ class PipedViewerPQ(QMainWindow):
             self.drawPolygon(cmnd)
         elif cmndact == "drawRectangle":
             self.drawRectangle(cmnd)
+        elif cmndact == "textSize":
+            info = self.getSimpleTextSize(cmnd)
+            self.__rspdpipe.send(info)
         elif cmndact == "drawText":
             self.drawSimpleText(cmnd)
         else:
@@ -1388,6 +1391,34 @@ class PipedViewerPQ(QMainWindow):
         if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
+    def getSimpleTextSize(self, cmnd):
+        '''
+        Returns the pair (width, height) for given text when drawn.
+        Raises a KeyError if the "text" key is not given.
+
+        The width value is the width for the text that can be used 
+        for positioning the next text item to draw.  The height 
+        value is the ascent plus decent for the font and does not
+        depend of the text.  The bounding rectangle for the actual
+        drawn text may exceed this (width, height) if, 
+        e.g., italic or unusual characters.
+
+        Recognized keys from cmnd:
+            "text": string to displayed
+            "font": dictionary describing the font to use;  see
+                    CmndHelperPQ.getFontFromCmnd.  If not given
+                    the default font for this viewer is used.
+        '''
+        try:
+            myfont = self.__helper.getFontFromCmnd(cmnd["font"])
+        except KeyError:
+            myfont = self.__activepainter.font()
+        myfontmetrics = QFontMetricsF(myfont)
+        mytext = cmnd["text"]
+        width = myfontmetrics.width(mytext)
+        height = myfontmetrics.height()
+        return (width, height)
+
     def drawSimpleText(self, cmnd):
         '''
         Draws a "simple" text item in the current view.
@@ -1583,6 +1614,9 @@ if __name__ == "__main__":
                         "font":{"family":"Times", "size":16},
                         "fill":{"color":"red"},
                         "location":(50,330) } )
+    drawcmnds.append( { "action":"textSize",
+                        "text":"This is a some line of text",
+                        "font":{"family":"Times", "size":16} } )
     drawcmnds.append( { "action":"endSegment" } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )

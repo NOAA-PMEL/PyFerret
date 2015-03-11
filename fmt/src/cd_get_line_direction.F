@@ -38,6 +38,8 @@
 *  V683 ACM 9/2012
 *
 *  V692 ACM 7/2014 A cf_role attribute indicates the E direction.
+*  V694 ACM 2/2015 Ensemble axis may have a standard-name attribute "realization"
+
 *
 *      include files: 
       
@@ -397,6 +399,7 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
 * Basic standard names
 * Look for time, longitude, latitude, depth and height names.
 * Forecast time axes have a standard-name attribute "forecast_reference_time"
+* Ensemble axis may have a standard-name attribute "realization"
 
       maxlen = bufflen
       got_it = NC_GET_ATTRIB( dset, ivar, 'standard_name', do_warn, 
@@ -436,6 +439,11 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
      .      'forecast_reference_time',buff(:24))
      .                                     .EQ.str_eq) THEN
             line_direction(iaxis) = 'FI'
+         ENDIF 
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'realization',buff(:24))
+     .                                     .EQ.str_eq) THEN
+            line_direction(iaxis) = 'EE'
          ENDIF 
       ENDIF
 

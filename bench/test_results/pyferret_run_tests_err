@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x 1 ksmith tmap 1188 Mar  9 13:13 /home/users/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x 1 ksmith tmap 1188 Mar 11 15:07 /home/users/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug PyFerret on RHEL5-64
@@ -251,7 +251,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Mar  9 13:14:10 PDT 2015
+Beginning at Wed Mar 11 15:08:50 PDT 2015
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -1425,8 +1425,8 @@ SHADE/L=1/LEV=0.01d sst
 POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, PLMpolydata
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
            *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
+           *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
            *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2279,8 +2279,8 @@ set axis/stride=2 NORMAL
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
            *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
            *** NOTE: Substituting coordinate midpoints
-           *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
            *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
+           *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis definition error on axis: TGAP
            *** NOTE: Bounds given describe non-contiguous axis cells
@@ -3806,4 +3806,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Mon Mar  9 13:18:55 PDT 2015
+Ended at Wed Mar 11 15:13:27 PDT 2015

@@ -1,4 +1,5 @@
 SRCS_F = \
+cd_1d_line_from_2d.F\
 cd_abort_grids.F\
 cd_add_coord_var.F\
 cd_add_agg_var_info.F\
@@ -27,6 +28,7 @@ cd_get_attval.F\
 cd_get_attvalc.F\
 cd_get_attval_l.F\
 cd_get_bounds.F\
+cd_get_calendar_name.F\
 cd_get_chunk_cache.F\
 cd_get_dim_id.F\
 cd_get_ds_dims.F\

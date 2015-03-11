@@ -240,9 +240,9 @@
      .        ipt1, ipte, vartype, vback, npts, vlen, cdfstat, istat,
      .        nvdims, vdims(8), nvatts, i, units, npts_cdf, elen, 
      .        edgid, spacing_atlen, epic_t2var, since_T0,
-     .        cal_id, year, month, day, hour, minute, second, slen, nc,
+     .        cal_id, year, month, day, hour, minute, second, slen,
      .        blen, bndid, startpts(2), numpts(2), next_line_storage,
-     .        d1s, d1e, d2s, d2e, len_cal, attoutflag, maxlen,
+     .        d1s, d1e, d2s, d2e, attoutflag, maxlen,
      .        all_outflag, dir, attlen, itop, irev, attype, iatt, ibx1,
      .        i1, i2, i3, i0
 
@@ -256,7 +256,6 @@
      .        spacing_attr*14, bname*128
       CHARACTER*13 TM_STRING
       CHARACTER*1 axis_dir
-      CHARACTER*50 allcals
       CHARACTER*3 dbuf
       CHARACTER*2 dcode
 
@@ -442,35 +441,14 @@
      .                        vname(:vlen), maxlen, attlen, attoutflag, 
      .                        buff, val)
       IF (got_it) then
-         istat = STR_UPCASE (buff, buff)
+         CALL CD_GET_CALENDAR_NAME(buff, ok_cal)
 
-         IF (buff(1:3) .EQ. '360') buff = '360_DAY' 
-         IF (buff .EQ. 'STANDARD') buff = 'GREGORIAN' 
-         IF (buff .EQ. 'PROLEPTIC_GREGORIAN') buff = 'GREGORIAN' 
-         IF (buff(1:6) .EQ. 'COMMON') buff = 'NOLEAP' 
-         IF (buff(1:3) .EQ. '365') buff = 'NOLEAP' 
-         IF (buff(1:3) .EQ. '366') buff = 'ALL_LEAP' 
-
-         ok_cal = .FALSE.
-         nc = 1
-         allcals = ' '
-
-         DO 100 i = 1, mxcals
-  111       FORMAT (a9,' ')
-            slen = TM_LENSTR1( allowed_calendars(i)(1:9) )
-            write (allcals(nc:nc+9), 111) allowed_calendars(i)
-            nc = nc + 10
-
-            IF (buff(1:3) .EQ. allowed_calendars(i)(1:3) ) THEN
-               ok_cal = .TRUE.
-               line_cal_name(iaxis) = allowed_calendars(i)
-            ENDIF
-  100    CONTINUE
-         IF (.NOT. ok_cal) THEN
+         IF (ok_cal) THEN
+	    line_cal_name(iaxis) = buff
+	 ELSE
             slen = TM_LENSTR1(buff)
             CALL TM_NOTE('calendar attribute on axis "'//vupcase(:vlen)//
      .                '" is not recognized: '//buff(1:slen), tt)
-            CALL TM_NOTE('Valid calendars are '//allcals, tt)
             CALL TM_NOTE(
      .             'A dummy axis of subscripts will be used', tt)
             GOTO 1000

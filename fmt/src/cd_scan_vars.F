@@ -145,10 +145,10 @@
      .        istat, npts, epic_t2,
      .        nbvar, ivar, len_test, len_mchars, 
      .        attype, attlen, attoutflag, maxlen, iatt, 
-     .        varid, all_outflag, dset_num, attid, bad_bndsid
+     .        varid, all_outflag, dset_num, attid, bad_bndsid, ax1d
 
       REAL vals  ! potential numerical attributes
-      CHARACTER*128 aname
+      CHARACTER*128 aname, line1d
 
 * ?? how many bounds variables (bname) might there be ??
 
@@ -303,7 +303,7 @@
 *   * * * loop through all variables in the net CDF file * * *
 
 * classify each as a coordinate variable (axis) or as a dependent
-* variable. If a coordinate variable then TRY to interpret it,
+* variable. If a 1-D coordinate variable then TRY to interpret it,
 * (in cd_get_1_axis) but if it proves to be invalid, then process
 * it, instead, as a dependent variable
 	las_pos  = 1    ! reduces redundant search for space
@@ -424,6 +424,26 @@
 	      ds_var_titl_mod(ivtm) = 'invalid axis bounds'
 	      bad_bndsid = 0
 	   ENDIF
+
+* Is it a 2D time coordinate variable?  Make this into a subroutine call to define a 1-D
+* axis with the coordinate data it represents. Put an attribute onto the appropriate
+* variables.
+*    In the thredds and grib aggregation the 2d Time var has this attrib:
+*    time2d._CoordinateAxisType = Time 
+
+           maxlen = 16  
+           got_it = NC_GET_ATTRIB( dset, ivcd, '_CoordinateAxisType',
+     .                            do_warn, vname(:vlen), maxlen, attlen,
+     .                            attoutflag, name, vals ) 
+           IF ( got_it .AND. STR_CASE_BLIND_COMPARE(name, 'Time').EQ.str_eq ) THEN
+	      CALL CD_1D_LINE_FROM_2D (dset, cdfid, ivcd, vname, ax1d, status)
+
+	   ENDIF
+* Now set an attribute on file varaibles with the new axis name.
+
+
+
+
 
 * EPIC KLUDGE: if an EPIC file has an invalid "TIME" axis we want, not only
 * "TIME" as a dependent variable, but also "TIME2"

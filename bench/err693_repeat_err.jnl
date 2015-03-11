@@ -1,0 +1,11 @@
+!   err693_repeat_err.jnl
+! test fix for ticket 2244: Error handling in REPEAT
+
+! The second of these should result in an error - in debug mode
+! it instead was hitting an out-of-range subscript error.
+
+repeat/range=1:2/name=column repeat/range=1:2/name=row say `column`,`row`
+
+set mode ignore
+repeat/range=1:2/name=column repeat/range=1:2/name=row
+set mode/last ignore

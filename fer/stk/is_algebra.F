@@ -922,10 +922,6 @@
 
 * pop off context for the last component received and "big" (merged) context
 
-* This diag condition not true when constructing the data with DEFINE DATA/AGG
-c	IF ( big_cx .NE. cx_stack_ptr-1
-c     .	.OR. big_cx .NE. lo_cx+1 ) WRITE (6, *) 'is_alg_2' ! temp diag
-
 	cx_stack_ptr = cx_stack_ptr - 2
 	RETURN 2
 

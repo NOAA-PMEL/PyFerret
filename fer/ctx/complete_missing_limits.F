@@ -147,7 +147,8 @@
 	      IF ( needs_limits ) THEN
 
 	         cx_by_ss(idim, cx) = .TRUE.
-	         IF ( cat.EQ.cat_file_var .OR. cat.EQ.cat_aggregate_var ) THEN
+	         IF ( cat.EQ.cat_file_var .OR. cat.EQ.cat_agg_e_var .OR. 
+     .                cat.EQ.cat_agg_f_var ) THEN
 	            CALL VAR_SS_LIMS( idim, cx,
      .				      cx_lo_ss(cx,idim),
      .				      cx_hi_ss(cx,idim)  )

@@ -40,6 +40,7 @@
 *                 various SHOW commnands will not list info for E,F dimensions.
 * V685 4/13 *acm* Ability to define ensemble with /HIDDEN
 * V691+ 8/14 *acm* Fix ticket 2194: SHOW with /OUTFILE
+* V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -66,7 +67,7 @@
      .		    slash_file,
      .		    slash_attr,
      .		    slash_xml
-	CHARACTER name*32, default*50, outstring*2048
+	CHARACTER name*32, default*60, outstring*2048
 
 	PARAMETER ( slash_brief    = 1 + 1,
      .		    slash_full     = 1 + 2,
@@ -143,6 +144,10 @@
 	   IF (dset.NE.unspecified_int4 .AND. dset.NE.pdset_irrelevant) THEN
 	   IF ( TM_HAS_STRING(ds_type(iset), 'ENS') ) THEN
 	      default = default(:len0)//'  Ferret-defined Ensemble dataset'
+	      len0 = TM_LENSTR1( default )
+	   ENDIF
+	   IF ( TM_HAS_STRING(ds_type(iset), 'FCT') ) THEN
+	      default = default(:len0)//'  Ferret-defined Forecast aggregation dataset'
 	      len0 = TM_LENSTR1( default )
 	   ENDIF
 	   ENDIF

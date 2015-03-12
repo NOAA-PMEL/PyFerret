@@ -290,8 +290,8 @@
 	cx  = cx_list(1)
         dset = cx_data_set( cx )
         IF (dset .GE. 1) THEN
-          IF (ds_type(dset) .EQ. 'CDF' .OR. ds_type(dset) .EQ. ' MC' 
-     .        .OR. ds_type(dset) .EQ. 'ENS')
+          IF (ds_type(dset).EQ.'CDF' .OR. ds_type(dset).EQ.' MC' 
+     .        .OR. ds_type(dset).EQ.'ENS' .OR. ds_type(dset).EQ.'FCT')
      .       CALL CDF_LIST_GLOBAL_ATTS (dset, cdfid, status)
         ENDIF
         dset_last = dset
@@ -310,7 +310,8 @@
               IF (dset .GE. 1) THEN
                  IF (ds_type(dset) .EQ. 'CDF' .OR. 
      .               ds_type(dset) .EQ. ' MC' .OR. 
-     .               ds_type(dset) .EQ. 'ENS')
+     .               ds_type(dset) .EQ. 'ENS' .OR. 
+     .               ds_type(dset) .EQ. 'FCT')
      .          CALL CDF_LIST_GLOBAL_ATTS (dset, cdfid, status)
               ENDIF
               dset_last = dset

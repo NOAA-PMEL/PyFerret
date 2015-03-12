@@ -245,7 +245,9 @@
 * set the data type of the variable
 	IF ( cx_category(var_cx) .EQ. cat_file_var ) THEN
 	   cx_type(var_cx) = ptype_float   ! TO BE GENERALIZED LATER (8/00)
-	ELSEIF ( cx_category(var_cx) .EQ. cat_aggregate_var ) THEN
+	ELSEIF ( cx_category(var_cx) .EQ. cat_agg_e_var ) THEN
+	   cx_type(var_cx) = ptype_float   
+	ELSEIF ( cx_category(var_cx) .EQ. cat_agg_f_var ) THEN
 	   cx_type(var_cx) = ptype_float   
 	ELSEIF (cx_category(var_cx) .EQ. cat_calc_var ) THEN
 	   cx_type(var_cx) = ptype_float

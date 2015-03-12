@@ -1,5 +1,5 @@
 	SUBROUTINE INIT_AGGREGATE_DSET (dname, dtitle, agg_dset, 
-     .     agg_quiet, agg_hide, status )
+     .     agg_quiet, agg_hide, agg_dim, status )
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -40,6 +40,7 @@
 * V685 4/13 *acm* Ability to define ensemble with /HIDDEN
 *                 Get grid of user-vars, allow more combinations with user vars
 *                 better error handling.
+* V695 2/15 *acm* Aggregation in either E or F direction, as defined by agg_dim
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -58,7 +59,7 @@
 
 * calling argument declarations:
 	CHARACTER*(*)	dname, dtitle
-	INTEGER		agg_dset, status
+	INTEGER		agg_dset, agg_dim, status
 	LOGICAL		agg_quiet, agg_hide
 
 * local variable declarations:
@@ -70,7 +71,8 @@
      .		perm(nferdims), nsets, member_sets(maxdsets), 
      .		imatch, nv, grid, igrid, idim, ivar, nvars, iline, 
      .		slen, memb_var, memb_dset, memb_grid, ugrid, 
-     .		type, fvar
+     .		type, fvar, ndims, ngatts, recdim, varid, attoutflag,
+     .          tax_match, test_tax, memb_tax, prev_line_start
 	CHARACTER vname*128
 	CHARACTER TM_STRING*13
 
@@ -109,7 +111,7 @@
 * Create datset. Will delete it later if there are no aggregate variables found.
 
 	CALL CREATE_AGG_DSET (agg_dset, dname, dtitle, nsets, 
-     .			 e_dim, iline, status)  
+     .			 agg_dim, iline, status)  
 	IF (status .NE. ferr_ok) GOTO 5300
 
 * See what variables are shared by all the datsets
@@ -149,7 +151,7 @@
 	   ENDIF
 
            grid = ds_grid_number(ivar)
-	   IF (grid_line(e_dim, grid) .NE. 0) GOTO 5400
+	   IF (grid_line(agg_dim, grid) .NE. 0) GOTO 5400
 
 * Check that grids match for file variables. 
 * NOTE if the variables in the member datasets share the same grid, and
@@ -157,20 +159,32 @@
 *      grid_line and ds_grid_start, ds_grid_end will have the same contents.
 *      How to find that case? (check line_mem) Or just allow it?
 
+* For a FMRC aggregation, the time axes must be the same units and origin 
+* and length but will in general NOT share time steps.  The first time step 
+* should increase from one set to the other. Not checking for this at the 
+* moment.
+
            imatch = 1
+	   prev_line_start = 0
+	   IF (grid_line(t_dim, grid) .NE. 0) prev_line_start = 
+     .          line_start(grid_line(t_dim, grid))
 	   has_uvars = .FALSE.
+
            DO 600 ii = 2, nsets
 	      iset = member_sets(ii)
+	      tax_match = 0
               DO 500 nv = 1, maxvars
 	         IF ( (ds_var_setnum(nv) .EQ. iset) .AND. 
      .                (STR_SAME(ds_var_code(nv), vname) .EQ. 0) ) THEN
                     igrid = ds_grid_number(nv)
 		    DO 550 idim = 1, nferdims
+		       IF (agg_dim.EQ.f_dim .AND. idim.EQ.t_dim) GOTO 550
 		       IF ( grid_line(idim, grid) .NE.  
      .                      grid_line(idim, igrid) ) GOTO 500
   550	            CONTINUE
                     imatch = imatch + 1
 		 ENDIF
+
 	         IF ( (uvar_dset(nv) .EQ. iset)   .AND. 
      .                (STR_SAME(uvar_name_code(nv), vname) .EQ. 0) ) THEN
 
@@ -180,16 +194,38 @@
 
 	            IF (igrid .NE. grid) THEN
 		    DO 555 idim = 1, nferdims
+		       IF (agg_dim.EQ.f_dim .AND. idim.EQ.t_dim) GOTO 555
 		       IF ( grid_line(idim, grid) .NE.  
      .                      grid_line(idim, igrid) ) GOTO 500
   555	            CONTINUE
                     ENDIF
+
 		    imatch = imatch + 1 
 
 		    has_uvars = .TRUE.
 	         ENDIF
+		 
+* For forecast-direction aggregations, the time axes don't match.
+* They must have the same units and origin and be the same length. Their
+* start times must be increasing.
+
+		 IF (agg_dim .EQ. f_dim) THEN
+	            test_tax = grid_line(t_dim, grid)
+	            memb_tax = grid_line(t_dim, igrid) 
+	            IF (line_tunit(test_tax) .NE. line_tunit(memb_tax) )
+     .                   tax_match = tax_match+1
+	            IF (STR_SAME(line_t0(test_tax), line_t0(memb_tax)) .NE. 0 )
+     .                   tax_match = tax_match+1
+	            IF (line_dim(test_tax) .NE. line_dim(memb_tax) )
+     .                   tax_match = tax_match+1
+	            IF (line_start(memb_tax) .GT. prev_line_start) 
+     .                   tax_match = tax_match+1
+	            IF (tax_match .NE. 0) GOTO 500
+		 ENDIF
+		       
   500	      CONTINUE
   600	   CONTINUE
+  
 
 *  variable in all datsets but they dont have the same grid.
 	   IF (imatch .NE. nsets) THEN
@@ -197,15 +233,21 @@
      .	         CALL WARN('Exclude variable from aggregate. '//
      .	         'Grid differs in member datasets: '//
      .	         vname)
+              IF (agg_dim.EQ.f_dim .AND. tax_match.NE.0) THEN
+	      IF ( .NOT.agg_quiet ) 
+     .	         CALL WARN('For FMRC: Time axes do not share units or size;'//
+     .	         ' or starting times not increasing '//
+     .	         vname)
+              ENDIF
 	      GOTO 800 
 	   ENDIF
 	      
 * same grid for this variable in all datasets 
 	   
            nvars = nvars + 1
-c	   IF (has_uvars) grid = unspecified_int4
+
 	   CALL DEFINE_AGGREGATE_GRID (agg_dset, nvars, vname,
-     .           ivar, iline, grid, e_dim, member_sets, nsets)
+     .           ivar, iline, grid, agg_dim, member_sets, nsets)
 	   IF (status .NE. ferr_ok) GOTO 5000
 
   800   CONTINUE
@@ -258,9 +300,8 @@ c	   IF (has_uvars) grid = unspecified_int4
 
               nvars = nvars + 1
 
-c	      grid = unspecified_int4
 	      CALL DEFINE_AGGREGATE_GRID (agg_dset, nvars, vname,
-     .           fvar, iline, grid, e_dim, member_sets, nsets)
+     .           fvar, iline, grid, agg_dim, member_sets, nsets)
 	      IF (status .NE. ferr_ok) GOTO 5000
 
 * Do not include variables that are entirely user-defined.

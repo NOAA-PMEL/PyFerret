@@ -53,6 +53,7 @@
 *           *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
+* V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -90,6 +91,7 @@
 * nothing to show for netCDF files (4/94)
         ELSEIF (ds_type(dset) .EQ. 'CDF'
      .    .OR.  ds_type(dset) .EQ. 'ENS'
+     .    .OR.  ds_type(dset) .EQ. 'FCT'
      .    .OR.  ds_type(dset) .EQ. 'ECDF') THEN
 	   RETURN
 	ENDIF

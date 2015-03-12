@@ -1,0 +1,18 @@
+! bn_fmrc.jnl
+! initial test of DEFINE DATA/F 
+
+use "run1.nc"
+use "run2.nc"
+use "run3.nc"
+use "run4.nc"
+
+define data/hide/F/agg/title fourfiles = 1,2,3,4
+
+sh grid sst
+list/i=1/j=1/L=1:6/n=1:4 sst
+
+show att sst
+
+! Attribute _ftime2dRef pointe to the 2D time variable 
+list/L=1:6/n=1:4 `sst._ftime2dRef`
+

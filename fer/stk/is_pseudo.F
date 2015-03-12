@@ -86,7 +86,7 @@
 
 * Get the direction of the pseudo-variable.
 
-	idim = MOD( cx_variable(cx)-1, 6 ) + 1
+	idim = MOD( cx_variable(cx)-1, nferdims ) + 1
 
 	CALL MAKE_PSEUDO_VAR( cx, idim, memory(1, mr_blk1(mr)), mr,
      .			      mr_lo_ss(mr,idim), mr_hi_ss(mr,idim) )

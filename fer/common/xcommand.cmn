@@ -43,6 +43,7 @@
 * V684 *acm* 12/12 Changes for VECTOR/MODULO on curvilinear plots.
 * V685 *acm*  4/13 Add /HIDDEN on DEF DATA/AGG
 * V685+ *sh*  9/13 Add SHOW VARIABLE/TREE and alias VTREE
+* V695 *acm*  2/15 Add DEFINE AGGREGATE/F alias, FMRC
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -410,7 +411,7 @@
      .			total_num_commands	= 30,
      .			total_num_subcommands	= nsub_at31 - 1,
      .			total_num_qualifiers	= nqual_at31a - 1,
-     .	                num_predefined_alias    = 23,
+     .	                num_predefined_alias    = 24,
      .			max_queries		= 50 )
 
 * declarations

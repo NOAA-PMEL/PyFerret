@@ -100,9 +100,22 @@
 	      ENDIF
    10	   CONTINUE
    15	   CONTINUE
-   
 	ENDIF
 
+* Will want to cancel the Forecast axis
+
+	IF (ds_type(cset) .EQ. 'FCT') THEN
+	   agg_dim = 6
+	   DO 11 nv = 1, maxvars
+ 	      IF (ds_var_setnum(nv) .EQ. cset) THEN
+	          igrid = ds_grid_number(nv)
+		  ens_line = grid_line(agg_dim, igrid)
+		  GOTO 16  ! only 1 ensemble axis per ens. dataset
+	      ENDIF
+   11	   CONTINUE
+   16	   CONTINUE
+   
+	ENDIF
 * delete any memory variables from this data set
 * ( necessary because their pointers will lead to incorrect data set 
 *   information and possibly misleading output )
@@ -116,7 +129,8 @@
 * default for member datasets.  Check on ens_line finds cases where
 * an ensemeble datset was created but has no variables.
 
-	IF (ds_type(cset).EQ.'ENS' .AND. ens_line.GT.0) THEN
+	IF ((ds_type(cset).EQ.'ENS' .OR. ds_type(cset).EQ.'FCT')
+     .      .AND. ens_line.GT.0) THEN
 
 * Get number of aggregation members
 	   CALL CD_GET_AGG_DSET_INFO (cset, nmemb, status)
@@ -146,15 +160,16 @@
 * Cancel the ensemble axis
 	IF ( ens_line .NE. 0) CALL DELETE_ONE_LINE (ens_line, status)
 
-* Was the original dataset to close a member of an aggregation?  If so cancel 
+* Was the original dataset to be closed a member of an aggregation?  If so cancel 
 * the aggregation set. If we implement other aggregations, set agg_msg depending 
 * on the ds_type direction.
 
 	cset = iset
 	close_it = 0
 	DO 50 i = iens, maxdsets
-	   IF (ds_type(i) .EQ. 'ENS') THEN
+	   IF ((ds_type(i).EQ.'ENS' .OR. ds_type(i).EQ.'FCT')) THEN
 	      agg_msg = 'ensemble'
+	      IF (ds_type(cset).EQ.'FCT') agg_msg = 'forecast aggregation'
 	      mlen = TM_LENSTR1(agg_msg)
 
 * Get number of aggregation members

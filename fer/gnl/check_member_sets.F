@@ -37,6 +37,7 @@
 *
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
+* V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 
         include 'tmap_errors.parm'
 #include "tmap_dset.parm"
@@ -104,7 +105,7 @@
 	      IF   ( dset .LT. 1
      .	      .OR.   dset .GT. maxdsets )		GOTO 5200
 	      IF ( ds_name( dset ) .EQ. char_init1024) GOTO 5200
-	      IF ( ds_type( dset ) .EQ. 'ENS')	GOTO 5200
+	      IF (ds_type(dset).EQ.'ENS' .OR. ds_type(dset).EQ.'FCT') GOTO 5200
 	      GOTO 750
 	   ENDIF
 

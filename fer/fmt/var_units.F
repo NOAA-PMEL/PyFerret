@@ -81,7 +81,8 @@
 
 * select units by category of variable
 	IF     ( category .EQ. cat_file_var .OR. 
-     .		 category .EQ. cat_aggregate_var) THEN
+     .		 category .EQ. cat_agg_e_var .OR. 
+     .		 category .EQ. cat_agg_f_var) THEN
 
 	   VAR_UNITS = ds_var_units( variable )
 

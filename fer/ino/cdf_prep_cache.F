@@ -48,6 +48,7 @@
 *       *acm* 3/12 cleanup old VMS ifdef
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
+* V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 
         include 'tmap_errors.parm'
         include 'tmap_dims.parm'
@@ -67,7 +68,7 @@
 	CHARACTER TM_INQ_PATH*2048, filename*(*)
 
 * local variable declarations
-	LOGICAL		TM_HAS_STRING, fexist
+	LOGICAL		TM_HAS_STRING, fexist, ok_cache
 	INTEGER		TM_LENSTR1,
      .			qfile, dset, cx0, cx, ivar, idim, flen, dlen,
      .			iin, iout
@@ -82,10 +83,11 @@
         IF ( status .NE. ferr_ok ) GOTO 5000
 	dset = cx_data_set(cx_cmnd)
 	IF ( dset .EQ. unspecified_int4 ) GOTO 5100
-	IF ( ds_type(dset) .NE. 'CDF' )   GOTO 5200
-	IF ( ds_type(dset) .NE. 'ENS' )   GOTO 5200
-	IF ( .NOT.TM_HAS_STRING(ds_des_name(dset)(:8), 'http://') )
-     .					  GOTO 5200
+	ok_cache = ( TM_HAS_STRING(ds_type(dset),'CDF') .OR. 
+     .		     TM_HAS_STRING(ds_type(dset),'ENS') .OR. 
+     .		     TM_HAS_STRING(ds_type(dset),'FCT') .OR.
+     .               TM_HAS_STRING(ds_des_name(dset)(:8), 'http://') )
+        IF (.NOT. ok_cache) GOTO 5200
 
 * determine the directory to receive the cached file
         qfile = qual_given( slash_file )

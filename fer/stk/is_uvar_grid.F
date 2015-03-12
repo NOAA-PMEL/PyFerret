@@ -309,13 +309,16 @@
 
 C What other cx info do we have here? Is the dataset the agg_dataset? Should be able to get the
 C lo and hi of the ensemble axis if so, and get all the grids.
-	ELSEIF ( cx_category(hi_cx).EQ. cat_aggregate_var  ) THEN
+
+	ELSEIF ( cx_category(hi_cx).EQ.cat_agg_e_var .OR. 
+     .           cx_category(hi_cx).EQ.cat_agg_e_var ) THEN
 
 	   agg_dset = dset
 	   status = NCF_GET_AGG_COUNT (agg_dset, agg_len)
 
 	   var = cx_variable(hi_cx)
-	   uv_grd = KNOWN_GRID( agg_dset, cat_aggregate_var, var )
+
+	   uv_grd = KNOWN_GRID( agg_dset, cx_category(hi_cx), var )
 	   IF ( uv_grd .NE. unspecified_int4 ) THEN
 	      uvar_dset(uvar) = 0  ! now its a datset variable not user var
 	      GOTO 500	! uvar grid known --> merge it

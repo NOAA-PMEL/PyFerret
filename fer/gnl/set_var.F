@@ -84,6 +84,7 @@
 * V690 *sh* 1/14   Added SET VARIABLE/SIGMA=varname
 * V690 *acm*  3/14 Fix ticket 2152, error messages on illegal SET VAR/NAME
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+* V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -201,6 +202,7 @@
 	   ncfile = (TM_HAS_STRING(ds_type(dset), 'CDF') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'MC') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'ENS') .OR.
+     .               TM_HAS_STRING(ds_type(dset), 'FCT') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'GT')  )
 	   IF ( .NOT. ncfile ) GOTO 5700
 

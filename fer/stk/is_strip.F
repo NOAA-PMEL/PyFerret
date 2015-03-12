@@ -90,10 +90,13 @@
 
 * internal variable declarations:
 	LOGICAL	ITSA_MODULO_REGRID, TM_ITS_SUBSPAN_MODULO, NC_GET_ATTRIB,
-     .		itsa_uvar, modulo_dest_regrid, allatonce, attoutflag, got_it
+     .		NC_GET_ATTRIB_STRING,
+     .		itsa_uvar, modulo_dest_regrid, allatonce, attoutflag, 
+     .		got_it
 	INTEGER	CGRID_SIZE_MAX, CAXIS_LEN, CAXIS_MODLEN, CX_DIM_LEN, 
-     .		AUX_AXIS_FROM_ARG, CGRID_AXIS, POTENT_SIZE,
+     .		AUX_AXIS_FROM_ARG, CGRID_AXIS, POTENT_SIZE, 
      .		ISUBSCR_CX, TM_AXES_REVERSED, CGRID_SIZE, MODULO_PARITY,
+     .		STR_SAME, TM_LENSTR1,
      .		nrev, reversed(nferdims), idel,
      .		trans, grid, dset, lo_off, hi_off, aclass,
      .		lo_cx, hi_cx, big_cx, lo_isp, i, axis,
@@ -104,7 +107,8 @@
 	REAL	ax_frac, vbad
 	REAL*8	TM_WORLD, ww_given, ww_nrst
 	CHARACTER*128 VAR_CODE, vname
-	CHARACTER*10 buff
+	CHARACTER*128 buff
+
 
 * --- end of introductory code ---
 * initiailize - ! temp:always called at bottom of stack frame for transform
@@ -139,18 +143,12 @@
 * cancel result pointer to indicate no result yet
 	   is_mr( lo_isp ) = unspecified_int4
 
-* Set up context (hi_cx) to get the first requested aggregate member of M
+* Set up context (hi_cx) to get the first requested aggregate member
 
 	   is_sum( lo_isp ) = cx_hi_ss(lo_cx, idim)
 	   is_phase( lo_isp ) = cx_lo_ss(lo_cx, idim)
 
 	   CALL TRANSFER_CONTEXT( big_cx, hi_cx )
-
-* Set limits on e-direction to be unspecified
- 
-	   cx_lo_ss( hi_cx,e_dim ) = unspecified_int4
-	   cx_hi_ss( hi_cx,e_dim ) = unspecified_int4
-	   cx_by_ss( e_dim,hi_cx) = .TRUE.
 
 * Set the grid to the grid of the first aggregate component...
 	   imemb = is_phase( lo_isp )
@@ -159,34 +157,75 @@
 	   CALL CD_GET_AGG_VAR_INFO (dset, vname, imemb, fer_uvar, 
      .                memb_dset, igrid, iline, nv, status)
 
+	   IF (status .NE. ferr_ok) THEN
+	      CALL CD_GET_VAR_ID (dset, vname, varid, status)
+	      IF (status .NE. ferr_ok) 
+     .		CALL ERRMSG(ferr_aggregate_error, status, 'variable '//
+     .		  vname(:TM_LENSTR1(vname))//' not found in aggregate dataset', *5000)
+	   ENDIF
+
+* Is it the 2D Time variable for a Forecast-aggregation?  If so then
+* the information is contained only in the grids not variables of member sets.
+
+	   IF (memb_dset .EQ. 0) THEN
+	      CALL CD_GET_VAR_ID (dset, vname, varid, status)
+
+	      maxlen = 128
+	      got_it = NC_GET_ATTRIB_STRING ( dset, varid, '_CoordinateAxisType',
+     .                                   .FALSE., vname, maxlen,
+     .                                   attlen, attoutflag, buff)
+	      IF (got_it .AND. STR_SAME(buff, 'Time') .EQ. 0) THEN
+
+	         cx_category(hi_cx) = cat_pseudo_var 
+		 cx_variable(hi_cx) = 10  ! (hack) will load t[gt=var] coordinates
+
+	         cx_grid( hi_cx ) = igrid
+	         cx_data_set(hi_cx) = dset
+
+	         maxlen = 1
+	         got_it = NC_GET_ATTRIB( dset, varid, 'missing_value',
+     .                .FALSE., vname, maxlen, attlen,
+     .                attoutflag, buff, vbad )
+
+	         cx_bad_data(hi_cx) = vbad
+	      ENDIF
+	   ELSE
+
+* Set limits on agg-direction to be unspecified
+ 
+	      cx_lo_ss( hi_cx,idim ) = unspecified_int4
+	      cx_hi_ss( hi_cx,idim ) = unspecified_int4
+	      cx_by_ss( idim,hi_cx) = .TRUE.
+
 * Grid wasnt stored for this variable if its a LET/D variable in member dset
 * Let it be the agg grid ?? (or could set the grid to a number less than 
 * unspecified_int4 to call get_uvar_grid for this LET/D member var)
 
-	   IF (igrid .EQ. unspecified_int4) THEN 
-	      cx_data_set(hi_cx) = memb_dset
-	      cx_category(hi_cx) = cat_user_var
-	      cx_variable(hi_cx) = nv
-	   ELSE
+	      IF (igrid .EQ. unspecified_int4) THEN 
+	         cx_data_set(hi_cx) = memb_dset
+	         cx_category(hi_cx) = cat_user_var
+	         cx_variable(hi_cx) = nv
+	     ELSE
 
-	      CALL CD_GET_VAR_ID (memb_dset, vname, varid, status)
-	      maxlen = 1
-	      got_it = NC_GET_ATTRIB( memb_dset, varid, 'missing_value',
+	         CALL CD_GET_VAR_ID (memb_dset, vname, varid, status)
+	         maxlen = 1
+	         got_it = NC_GET_ATTRIB( memb_dset, varid, 'missing_value',
      .                .FALSE., vname, maxlen, attlen,
      .                attoutflag, buff, vbad )
      
+	         cx_grid( hi_cx ) = igrid
+	         cx_data_set(hi_cx) = memb_dset
 
-	      cx_grid( hi_cx ) = igrid
-	      cx_data_set(hi_cx) = memb_dset
-
-	      IF (fer_uvar .EQ. 3) THEN
-	         cx_category(hi_cx) = cat_user_var 
-	      ELSE
-	         cx_category(hi_cx) = cat_file_var 
-	         cx_bad_data(hi_cx) = vbad
+	         IF (fer_uvar .EQ. 3) THEN
+	            cx_category(hi_cx) = cat_user_var 
+	         ELSE
+	            cx_category(hi_cx) = cat_file_var 
+	            cx_bad_data(hi_cx) = vbad
+	         ENDIF
 	      ENDIF
-	   ENDIF
-	   is_uvar(lo_isp) = cx_variable(hi_cx)
+	      is_uvar(lo_isp) = cx_variable(hi_cx)
+
+	   ENDIF  ! member datset
 
 	ELSEIF ( aclass .EQ. isact_class_trans) THEN
 

@@ -238,7 +238,7 @@
 	            llen = llen + dnamlen
 	         ENDIF
 	         line_buff(llen+1:) = ' = ' //uvar_text(var)
-	      ELSEIF (cat .EQ. cat_aggregate_var ) THEN
+	      ELSEIF (cat .EQ. cat_agg_e_var .OR. cat .EQ. cat_agg_f_var) THEN
 	         IF (.NOT. dependency_tree_show_uvars) GOTO 500
 	         line_buff(blanks+1:) = VAR_CODE(cat, var)
 	         llen = TM_LENSTR1(line_buff)

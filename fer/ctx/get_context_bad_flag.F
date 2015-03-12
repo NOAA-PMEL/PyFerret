@@ -58,7 +58,8 @@
 
 
 	IF     ( cx_category( cx ) .EQ. cat_file_var .OR.
-     .           cx_category( cx ) .EQ. cat_aggregate_var ) THEN
+     .           cx_category( cx ) .EQ. cat_agg_e_var .OR.
+     .           cx_category( cx ) .EQ. cat_agg_f_var ) THEN
 
 	   cx_bad_data( cx ) = ds_bad_flag( cx_variable( cx ) )
 

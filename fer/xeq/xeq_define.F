@@ -346,7 +346,7 @@
      .            ITSA_1LINEIF, MATCH4,
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
-     .            new_att, new_att_modulo, got_it, orient_t, agg_quiet, agg_e,
+     .            new_att, new_att_modulo, got_it, orient_t, agg_quiet,
      .            letdset, its_remote, agg_hide, def_att_quiet, purge_all
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID,
@@ -2211,10 +2211,12 @@ C /units=months  is 1/12 of the length of the year
 	   IF ( status .NE. ferr_ok ) RETURN
 	ENDIF
 
-* Is there a /E ? (later other directions)
-* This is NOT YET passed around to routines that need it.
-        agg_e = qual_given( slash_def_agg_e ) .GT. 0
-	IF (agg_e) agg_dim = 5
+* Is there a /E ?
+	agg_dim = e_dim
+	IF (qual_given( slash_def_agg_e ) .GT. 0) agg_dim = e_dim
+
+* Is there a /F 
+	IF (qual_given( slash_def_agg_f ) .GT. 0) agg_dim = f_dim
 
 * define data/hide
 
@@ -2229,7 +2231,8 @@ C /units=months  is 1/12 of the length of the year
 	IF ( .NOT.TM_LEGAL_NAME_OP(buff1) ) GOTO 5430
         IF ( TM_LENSTR1(buff1) .GT. 128 ) GOTO 5410
 
-	CALL INIT_AGGREGATE_DSET (buff1, buff2, dset, agg_quiet, agg_hide, status)
+	CALL INIT_AGGREGATE_DSET (buff1, buff2, dset, agg_quiet, agg_hide, 
+     .    agg_dim, status)
 
 	IF (status .NE. ferr_ok) GOTO 6110
 

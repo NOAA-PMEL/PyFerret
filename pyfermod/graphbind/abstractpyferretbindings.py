@@ -471,6 +471,22 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError('not implemented')
 
+    def textSize(self, text, font):
+        '''
+        Returns the width and height of the text if drawn in the given font.  
+        The width is such that continuing text should be positioned at the 
+        start of this text plus this width.  The height will always be the 
+        ascent plus descent for the font and is independent of the text.
+
+        Arguments:
+            text: the text string to draw
+            font: the font to use
+
+        Returns: (width, height) of the text in "device units" 
+              (pixels at the current window DPI) 
+        '''
+        raise AttributeError('not implemented')
+
     def drawText(self, text, startx, starty, font, color, rotate):
         '''
         Draws text.

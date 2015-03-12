@@ -623,6 +623,99 @@ grdelBool grdelDrawRectangle(grdelType window, float left, float bottom,
     return 1;
 }
 
+
+/*
+ * Returns the size of given text if drawn with a given font.
+ * The width is such that continuing text should be positioned 
+ * at the start of this text plus this width.  The height will 
+ * always be the ascent plus descent for the font and is 
+ * independent of the text.
+ *
+ * Input Arguments:
+ *     window: Window to use
+ *     text: text string to use
+ *     textlen: actual length of the text string
+ *     font: font to use
+ * Output Arguments:
+ *     fltwidthptr: assigned the width of the text, in user 
+ *               coordinates, if drawn in the given font
+ *     fltheightptr: assigned the height of the text, in user 
+ *                coordinates, if drawn in the given font
+ *
+ * Returns success or failure.  If failure, grdelerrmsg contains
+ * an explanatory message.
+ */
+grdelBool grdelTextSize(grdelType window, const char *text, int textlen, 
+                        grdelType font, float *fltwidthptr, float *fltheightptr)
+{
+    const BindObj *bindings;
+    grdelType fontobj;
+    grdelBool success;
+    double width, height;
+    PyObject *result;
+    double my, sx, sy, dx, dy;
+
+#ifdef VERBOSEDEBUG
+    fprintf(debuglogfile, "grdelDrawText called: "
+            "window = %p, font = %p\n", window, font);
+    fflush(debuglogfile);
+#endif
+
+    bindings = grdelWindowVerify(window);
+    if ( bindings == NULL  ) {
+        strcpy(grdelerrmsg, "grdelTextSize: window argument is not "
+                            "a grdel Window");
+        return 0;
+    }
+    fontobj = grdelFontVerify(font, window);
+    if ( fontobj == NULL ) {
+        strcpy(grdelerrmsg, "grdelTextSize: font argument is not "
+                            "a valid grdel Font for the window");
+        return 0;
+    }
+
+    if ( bindings->cferbind != NULL ) {
+         success = bindings->cferbind->textSize(bindings->cferbind,
+                             text, textlen, fontobj, &width, &height);
+        if ( success == 0 ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+    }
+    else if ( bindings->pyobject != NULL ) {
+        /* Call the textSize method of the bindings instance. */
+        result = PyObject_CallMethod(bindings->pyobject, "textSize",
+                          "s#O", text, textlen, (PyObject *) fontobj);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelTextSize: Error when calling the Python "
+                    "binding's textSize method: %s", pyefcn_get_error());
+            return 0;
+        }
+        if ( ! PyArg_ParseTuple(result, "dd", &width, &height) ) {
+            Py_DECREF(result);
+            sprintf(grdelerrmsg, "grdelTextSize: Error when parsing the Python "
+                                 "binding's textSize return value: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelTextSize: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
+
+    /* Get the transform values for converting user to device coordinates */
+    getTransformValues(&my, &sx, &sy, &dx, &dy);
+
+    /* Convert the width and height back to user coordinates - just scaling, no offset */
+    *fltwidthptr = (float) (width / sx);
+    *fltheightptr = (float) (height / sy);
+
+    return 1;
+}
+
+
 /*
  * Draws text.
  *
@@ -630,10 +723,8 @@ grdelBool grdelDrawRectangle(grdelType window, float left, float bottom,
  *     window: Window with an active View to draw in
  *     text: text string to draw
  *     textlen: actual length of the text string
- *     startx: user X-coordinate of the beginning
- *              of the text baseline
- *     starty: user Y-coordinate of the beginning 
- *              of the text baseline
+ *     startx: user X-coordinate of the beginning of the text baseline 
+ *     starty: user Y-coordinate of the beginning of the text baseline
  *     font: font to use
  *     color: color to use (as a solid brush or pen)
  *     rotate: angle of the text baseline in degrees
@@ -707,7 +798,7 @@ grdelBool grdelDrawText(grdelType window, const char *text, int textlen,
         Py_DECREF(result);
     }
     else {
-        strcpy(grdelerrmsg, "grdeldrawText: unexpected error, "
+        strcpy(grdelerrmsg, "grdelDrawText: unexpected error, "
                             "no bindings associated with this Window");
         return 0;
     }
@@ -812,6 +903,36 @@ void fgddrawrect_(int *success, void **window, float *left, float *bottom,
 
     result = grdelDrawRectangle(*window, *left, *bottom, *right, *top,
                                 *brush, *pen);
+    *success = result;
+}
+
+/*
+ * Returns the size of given text if drawn with a given font.
+ * The width is such that continuing text should be positioned 
+ * at the text start plus this width.  The height will always 
+ * be the ascent plus descent for the font and is independent 
+ * of the text.
+ *
+ * Input Arguments:
+ *     window: Window to use
+ *     text: text string to use
+ *     textlen: actual length of the text string
+ *     font: font to use
+ *
+ * Output Arguments:
+ *     width: width of the text, in user coordinates, 
+ *            if drawn in the given font
+ *     height: height of the text, in user coordinates, 
+ *             if drawn in the given font
+ *     success: non-zero if successful; zero if an error occurred.
+ *              Use fgderrmsg_ to retrieve the error message.
+ */
+void fgdtextsize_(int *success, void **window, char *text, int *textlen,
+                     void **font, float *width, float *height)
+{
+    grdelBool result;
+
+    result = grdelTextSize(*window, text, *textlen, *font, width, height);
     *success = result;
 }
 

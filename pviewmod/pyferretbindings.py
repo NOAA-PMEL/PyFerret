@@ -720,6 +720,48 @@ class PyFerretBindings(AbstractPyFerretBindings):
         self.__window.submitCommand(cmnd)
         self.checkForErrorResponse()
 
+    def textSize(self, text, font):
+        '''
+        Returns the width and height of the text if drawn in the given font.  
+        The width is such that continuing text should be positioned at the 
+        start of this text plus this width.  The height will always be the 
+        ascent plus descent for the font and is independent of the text.
+
+        Arguments:
+            text: the text string to draw
+            font: the font to use
+
+        Returns: (width, height) of the text in "device units" 
+              (pixels at the current window DPI) 
+        '''
+        cmnd = { "action":"textSize", "text":text }
+        if font:
+            cmnd["font"] = font
+        self.__window.submitCommand(cmnd)
+        response = None
+        try:
+            # Wait indefinitely for a response
+            # Make sure it is a valid response
+            response = self.__window.checkForResponse(None)
+            if (type(response) != tuple) or (len(response) != 2):
+                raise ValueError
+            width = float(response[0])
+            height = float(response[1])
+            if (width <= 0.0) or (height <= 0.0):
+                raise ValueError
+        except Exception:
+            if not response:
+                # error raised before a response obtained
+                raise
+            fullresponse = str(response)
+            response = self.__window.checkForResponse()
+            while response:
+                fullresponse += '\n'
+                fullresponse += response
+                response = self.__window.checkForResponse()
+            raise RuntimeError(fullresponse)
+        return (width, height)
+
     def drawText(self, text, startx, starty, font, color, rotate):
         '''
         Draws text.

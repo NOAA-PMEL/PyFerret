@@ -66,6 +66,7 @@ CFerBind *cairoCFerBind_createWindow(void)
     bindings->drawPoints = cairoCFerBind_drawPoints;
     bindings->drawPolygon = cairoCFerBind_drawPolygon;
     bindings->drawRectangle = cairoCFerBind_drawRectangle;
+    bindings->textSize = cairoCFerBind_textSize;
     bindings->drawText = cairoCFerBind_drawText;
 
     /* Create the instance-specific data structure */

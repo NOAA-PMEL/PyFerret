@@ -70,6 +70,7 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
     bindings->drawPoints = cairoCFerBind_drawPoints;
     bindings->drawPolygon = cairoCFerBind_drawPolygon;
     bindings->drawRectangle = cairoCFerBind_drawRectangle;
+    bindings->textSize = cairoCFerBind_textSize;
     bindings->drawText = cairoCFerBind_drawText;
 
     /* Create the instance-specific data structure */

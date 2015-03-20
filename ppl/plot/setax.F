@@ -342,9 +342,6 @@ C CONTOUR DATA
 	    ENDIF
 	ENDIF
 
-c--------------------
-
-
 C	YAXIS and XAXIS are time/forecast axes
 	IF(ITFLG.EQ.2)THEN
 	    XTI=YHI
@@ -356,70 +353,8 @@ C	YAXIS and XAXIS are time/forecast axes
 		DYL=(ytm-YLO)*DYF
 		DYH=YLEN+(ytx-YHI)*DYF
 	    ENDIF
-	ELSE
-	    IF(CONTR)THEN
-C CONTOUR DATA
-		IF(IAUTOY.EQ.1)THEN
-		    IF(ITYPEY.GT.1)THEN
-			CALL RANGEL(ytm,ytx,YHI,YLO)
-			YHI=ALOG10(ABS(YHI))
-			YLO=ALOG10(ABS(YLO))
-		    ELSE
-			CALL RANGE(ytm,ytx,NTICY,YLO,YHI,YTIC)
-		    ENDIF
-		    IF(ytm.gt.ytx)THEN
-			DYF=YLO
-			YLO=YHI
-			YHI=DYF
-			YTIC=-YTIC
-		    ENDIF
-		ENDIF
-		DYF=YLEN/(YHI-YLO)
-		DYL=(ytm-YLO)*DYF
-		DYH=YLEN+(ytx-YHI)*DYF
-		NMY=NMTCY
-	    ELSE
-		IF(IAUTOY.EQ.0)GOTO 201
-		XMN=1.E38
-		XMX=-XMN
-		IBASEY=IY
-		IBASEX=0
-		DO 31 I=1,LNUM
-		    DO 41 J=1,LLENG(I)
-			IF((XLE.AND.X(IBASEX+J).LE.CMXLE).OR.
-     *			(XEQ.AND.X(IBASEX+J).EQ.CMXEQ).OR.
-     *			(XGE.AND.X(IBASEX+J).GE.CMXGE).OR.
-     *			(YLE.AND.X(IBASEY+J).LE.CMYLE).OR.
-     *			(YEQ.AND.X(IBASEY+J).EQ.CMYEQ).OR.
-     *			(YGE.AND.X(IBASEY+J).GE.CMYGE))GOTO 41
-			YT=X(IBASEY+J)*YFCT(I)+YOFF(I)
-			IF(YT.LT.XMN)XMN=YT
-			IF(YT.GT.XMX)XMX=YT
-41		    CONTINUE
-		    IBASEX=IBASEX+LLENG(I)
-31		IBASEY=IBASEY+LLENG(I)
-		IF(VECTR)THEN
-		    IF(ABS(XMX).GT.ABS(XMN))THEN
-			XMN=-ABS(XMX)
-		    ELSE
-			XMX=ABS(XMN)
-		    ENDIF
-		ENDIF
-		IF(ITYPEY.GT.1)THEN
-		    CALL RANGEL(XMN,XMX,YLO,YHI)
-		    YLO=ALOG10(ABS(YLO))
-		    YHI=ALOG10(ABS(YHI))
-		ELSE
-		    CALL RANGE(XMN,XMX,NTICY,YLO,YHI,YTIC)
-		ENDIF
-201		DYF=YLEN/(YHI-YLO)
-		NMY=NMTCY
-	    ENDIF
 	ENDIF
  
-c--------------------
-
-
         IF (IAUTOX .NE. 0) CALL setax_syms('X', xlo, xhi)
         IF (IAUTOY .NE. 0) CALL setax_syms('Y', ylo, yhi)
 

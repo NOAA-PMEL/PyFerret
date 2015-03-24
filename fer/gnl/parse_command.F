@@ -122,6 +122,7 @@
 *                   3) continuation lines are assembled before getting here
 *                 Also added support for _DQ_ style of quotation marks
 *      *acm*  2/15 Prevent run-time errors in string length for _DQ_ handling
+* V695 *acm*  3/15 Ticket 2245: if no arguments on a REPEAT command, exit gracefully.
 
 
 * command, subcommand and qualifiers will be identified by number in
@@ -828,6 +829,7 @@ cc  Allow zero-length null string in quotes
 
 * REPEAT loops postpone symbol substitutions in arguments -- all 1 arg for now
 	IF ( cmnd_num .EQ. cmnd_repeat ) THEN
+	   IF (num_args .EQ. 0) GOTO 5070
 	   IF ( cmnd_buff(arg_end(num_args):arg_end(num_args)) .EQ. ')' 
      .    .AND. cmnd_buff(arg_start(1):arg_start(1)) .EQ. '(' ) THEN
 *   ... search backwards for left paren
@@ -994,5 +996,8 @@ cc  Allow zero-length null string in quotes
 
  5060	CALL ERRMSG( ferr_syntax, status,
      .		'Recursive aliases or GO argument definitions', *5000 )
+
+ 5070	CALL ERRMSG
+     .			( ferr_invalid_command, status, 'REPEAT what ?', *5000 )
 	END
 

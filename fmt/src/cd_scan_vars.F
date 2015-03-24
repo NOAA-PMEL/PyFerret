@@ -431,14 +431,14 @@
 *    In the thredds and grib aggregation the 2d Time var has this attrib:
 *    time2d._CoordinateAxisType = Time 
 
-           maxlen = 16  
-           got_it = NC_GET_ATTRIB( dset, ivcd, '_CoordinateAxisType',
-     .                            do_warn, vname(:vlen), maxlen, attlen,
-     .                            attoutflag, name, vals ) 
-           IF ( got_it .AND. STR_CASE_BLIND_COMPARE(name, 'Time').EQ.str_eq ) THEN
-	      CALL CD_1D_LINE_FROM_2D (dset, cdfid, ivcd, vname, ax1d, status)
-
-	   ENDIF
+c           maxlen = 16  
+c           got_it = NC_GET_ATTRIB( dset, ivcd, '_CoordinateAxisType',
+c     .                            do_warn, vname(:vlen), maxlen, attlen,
+c     .                            attoutflag, name, vals ) 
+c           IF ( got_it .AND. STR_CASE_BLIND_COMPARE(name, 'Time').EQ.str_eq ) THEN
+c	      CALL CD_1D_LINE_FROM_2D (dset, cdfid, ivcd, vname, ax1d, status)
+c
+c	   ENDIF
 * Now set an attribute on file varaibles with the new axis name.
 
 

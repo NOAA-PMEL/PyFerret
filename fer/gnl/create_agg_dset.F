@@ -38,6 +38,7 @@
 *
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
+* V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -68,6 +69,7 @@
 
 * Set the dataset type and title (can add other directions)
 	IF (agg_dim .EQ. e_dim ) ds_type(agg_dset) = 'ENS'
+	IF (agg_dim .EQ. f_dim ) ds_type(agg_dset) = 'FCT'
 
 	ds_name(agg_dset) = dname
 	ds_des_name(agg_dset) = dname

@@ -167,7 +167,7 @@
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   memb_cx = cx_stack_ptr
 	   CALL TRANSFER_CONTEXT(lo_cx, memb_cx)
-	   varcode = VAR_CODE(cat_aggregate_var, var)
+	   varcode = VAR_CODE(cx_category(hi_cx), var)
 	   CALL CD_GET_AGG_VAR_INFO (agg_dset, varcode, imemb, 
      .            fer_uvar, memb_dset, memb_grid, iline, nv, status)
 	   cx_category(memb_cx) = fer_uvar
@@ -308,7 +308,8 @@
 * if the variable is an aggregation from multiple datasets set up new isp
 * level and report the ensemble members 
 	ELSEIF  ( .NOT.desist
-     .	    .AND. cx_category(hi_cx) .EQ. cat_aggregate_var ) THEN
+     .	    .AND. (cx_category(hi_cx) .EQ. cat_agg_e_var .OR. 
+     .	           cx_category(hi_cx) .EQ. cat_agg_f_var) ) THEN
 	   CALL PUSH_INTERP_STACK( isp, status )
 	   IF ( status .NE. ferr_ok ) RETURN
 	   is_phase( isp ) = 0

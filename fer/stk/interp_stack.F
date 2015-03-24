@@ -397,8 +397,12 @@
  255	CONTINUE
 
 * ... strip off need to gather aggregate components together ?
- 	IF ( cat .EQ. cat_aggregate_var ) THEN
+ 	IF ( cat .EQ. cat_agg_e_var ) THEN
 	   CALL IS_STRIP( isact_class_aggregate_gather, e_dim, *10, status )
+	   GOTO 5000
+	ENDIF
+ 	IF ( cat .EQ. cat_agg_f_var ) THEN
+	   CALL IS_STRIP( isact_class_aggregate_gather, f_dim, *10, status )
 	   GOTO 5000
 	ENDIF
 

@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x 1 ksmith tmap 1188 Mar 11 15:07 /home/users/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x 1 ksmith tmap 1188 Mar 24 11:53 /home/users/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug PyFerret on RHEL5-64
@@ -235,6 +235,7 @@ Benchmark scripts that will be run:
    bn_DQ.jnl
    bn695_bug_fixes.jnl
    bn_f_tax_fcns.jnl
+   bn_fmrc.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -251,7 +252,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Wed Mar 11 15:08:50 PDT 2015
+Beginning at Tue Mar 24 11:54:03 PDT 2015
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -3756,6 +3757,12 @@ stat/l=1/x=180/y=0 a
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: REPEAT what ?
+repeat/range=1:2/name=row
+ **ERROR: invalid command: REPEAT what ?
+repeat/range=1:2/name=row
 *** Running test: bn_permute_ascii.jnl
  Cached data cleared from memory
 Replacing definition of grid GRID3D
@@ -3785,6 +3792,8 @@ Replacing definition of grid GRID3D
 Replacing definition of axis FSEC
            *** NOTE: grid  used by data set a
            *** NOTE: Redefinition may alter apparent contents of data set
+*** Running test: bn_fmrc.jnl
+ Cached data cleared from memory
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3806,4 +3815,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Wed Mar 11 15:13:27 PDT 2015
+Ended at Tue Mar 24 11:58:55 PDT 2015

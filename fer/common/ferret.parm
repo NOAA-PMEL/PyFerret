@@ -141,8 +141,9 @@
      .			cat_temp_var, cat_pseudo_var,
      .			cat_constant, cat_file_rev,
      .			cat_const_var,   cat_string,
-     .                  cat_counter_var, cat_attrib_val,
-     .                  cat_aggregate_var, cat_pystat_var
+     .			cat_counter_var, cat_attrib_val,
+     .			cat_agg_e_var, cat_agg_f_var,
+     .			cat_pystat_var
 	PARAMETER     ( cat_work_mr  = -9,
      .			cat_file_var = 1,
      .			cat_calc_var = 2,
@@ -158,8 +159,9 @@
      .			cat_string     = 12,
      .			cat_counter_var= 13,
      .			cat_attrib_val = 14,
-     .			cat_aggregate_var= 15,
-     .                  cat_pystat_var = 16 )
+     .			cat_agg_e_var  = 15,
+     .			cat_agg_f_var  = 16,
+     .			cat_pystat_var = 17 )
 
 * codes referring to the user-defined variables
 	INTEGER		uvar_deleted,

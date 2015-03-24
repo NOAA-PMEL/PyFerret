@@ -59,13 +59,14 @@
 
 
 	IF     ( cx_category( cx ) .EQ. cat_file_var .OR.
-     .           cx_category( cx ) .EQ. cat_aggregate_var ) THEN
+     .           cx_category( cx ) .EQ. cat_agg_e_var .OR.
+     .           cx_category( cx ) .EQ. cat_agg_f_var ) THEN
 
 	   cx_bad_data( cx ) = ds_bad_flag( cx_variable( cx ) )
 
-        ELSEIF ( cx_category(cx) .EQ. cat_pystat_var ) THEN
+	ELSEIF ( cx_category(cx) .EQ. cat_pystat_var ) THEN
 
-           cx_bad_data( cx ) = pyvar_missing_flag( cx_variable( cx ) )
+	   cx_bad_data( cx ) = pyvar_missing_flag( cx_variable( cx ) )
 
 	ELSEIF     ( cx_category( cx ) .EQ. cat_user_var ) THEN
 

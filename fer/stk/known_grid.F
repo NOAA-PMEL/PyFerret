@@ -68,7 +68,7 @@
 
 	   KNOWN_GRID = ds_grid_number( variable )
 
-	ELSEIF ( category .EQ. cat_aggregate_var ) THEN
+	ELSEIF ( category.EQ.cat_agg_e_var .OR. category.EQ.cat_agg_f_var ) THEN
 
 	   KNOWN_GRID = ds_grid_number( variable )
 	   IF (ds_grid_number( variable ) .EQ. int4_init) 

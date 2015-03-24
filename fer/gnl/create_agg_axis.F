@@ -32,8 +32,8 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* Define an axis for the aggregation direction (Ensemble, for now). If more
-* than one ensemble axis is defined, make the names unique.
+* Define an axis for the aggregation direction (Ensemble or Forecast). If more
+* than one aggregation axis is defined, TM_NEW_LINE_NAME makes a unique name.
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -52,18 +52,25 @@
 
 * local variable declarations:
 	INTEGER ALLO_MANAGED_AXIS
-	CHARACTER*64 ename
+	CHARACTER*64 newname
 
-* create the ensemble axis
+* create the ensemble or forecast axis
 
 	status = ALLO_MANAGED_AXIS (iline )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * save the line in memory - but don't catalog its name
-	CALL TM_NEW_LINE_NAME ( 'ENSEMBLE', ename )
+	IF (line_dir .EQ. e_dim) THEN
+	   CALL TM_NEW_LINE_NAME ( 'ENSEMBLE', newname )
+	   line_direction( iline ) = 'EE'
+	ENDIF
+	IF (line_dir .EQ. f_dim) THEN
+	   CALL TM_NEW_LINE_NAME ( 'RUN', newname )
+	   line_direction( iline ) = 'FI'
+	ENDIF
 
-	line_name     ( iline ) = ename
-	line_name_orig( iline ) = ename
+	line_name     ( iline ) = newname
+	line_name_orig( iline ) = newname
 	line_start    ( iline ) = 1.0D0
 	line_delta    ( iline ) = 1.0D0
 	line_dim      ( iline ) = len

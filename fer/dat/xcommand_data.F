@@ -217,6 +217,7 @@
 *		  Add SET,CANCEL,SHOW VARIABLE/LAYERZ/CURVI  	  (formerly /SIGMA)
 * V687  3/14 *acm* add SET AXIS/NAME
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+* V695 *acm*  2/15 Add DEFINE AGGREGATE/F alias, FMRC
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -1228,14 +1229,14 @@
 	   DATA subcommands      (nsub_at10 + 10)/ 'DATA'	/
 	   DATA num_qualifs      (nsub_at10 + 10)/ nqual10k	/
 	   DATA qualifier_pointer(nsub_at10 + 10)/ nqual_at10k	/
-* DEFINE DATA / AGGREGATE / TITLE /HIDE /E 
+* DEFINE DATA / AGGREGATE / TITLE /HIDE /E /F 
 		DATA qualifiers  (nqual_at10k+ 0)/ 'AGGREGATE' /
 		DATA qualifiers  (nqual_at10k+ 1)/ '****' / ! reserved for x
 		DATA qualifiers  (nqual_at10k+ 2)/ '****' / ! y
 		DATA qualifiers  (nqual_at10k+ 3)/ '****' / ! z
 		DATA qualifiers  (nqual_at10k+ 4)/ '****' / ! t
-		DATA qualifiers  (nqual_at10k+ 5)/ 'E'    /
-		DATA qualifiers  (nqual_at10k+ 6)/ '****' / ! f
+		DATA qualifiers  (nqual_at10k+ 5)/ 'E'    / ! e
+		DATA qualifiers  (nqual_at10k+ 6)/ 'F'    / ! f
 		DATA qualifiers  (nqual_at10k+ 7)/ 'TITLE' /
 		DATA qualifiers  (nqual_at10k+ 8)/ 'QUIET' /
 		DATA qualifiers  (nqual_at10k+ 9)/ 'HIDE' /
@@ -1771,16 +1772,19 @@
      .		alias_name(22)	/ 'ENSEMBLE' /,
      .		alias_len(22)	/ 22 /,
      .		alias(22)	/ 'DEFINE DATA/AGGREGAT/E' /
-     .		alias_name(23)	/ 'VTREE' /,
-     .		alias_len(23)	/ 13 /,
-     .		alias(23)	/ 'SHOW VAR/TREE' /
+     .		alias_name(23)	/ 'FMRC' /,
+     .		alias_len(23)	/ 22 /,
+     .		alias(23)	/ 'DEFINE DATA/AGGREGAT/F' /
+     .		alias_name(24)	/ 'VTREE' /,
+     .		alias_len(24)	/ 13 /,
+     .		alias(24)	/ 'SHOW VAR/TREE' /
 
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
-     .                   / 127*unspecified_name4 /,
-     .		(alias_len(i),i=num_predefined_alias+1,150) / 127*4 /,
+     .                   / 126*unspecified_name4 /,
+     .		(alias_len(i),i=num_predefined_alias+1,150) / 126*4 /,
      .		(alias(i),i=num_predefined_alias+1,150)
-     .                   / 127*unspecified_name4 /
+     .                   / 126*unspecified_name4 /
 
 
 	DATA queries(1) / 'STATUS' /,

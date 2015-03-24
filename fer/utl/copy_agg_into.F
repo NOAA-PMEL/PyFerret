@@ -1,4 +1,4 @@
-	SUBROUTINE COPY_AGG_INTO ( src, msrc, cxs, dst, mdst, mloc )
+	SUBROUTINE COPY_AGG_INTO ( src, msrc, cxs, agg_dim, dst, mdst, aloc )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -35,14 +35,15 @@
 *
 * copy data from source grid into dstination grid using limits of source
 * context (i.e. destination grid is ASSUMED) big enough to hold data.
-* The source grid does not have an ensemble axis (dimension 5) but the
-* destination axis does.  Copy the ensemble member into e-axis location 
-* pointed to by index mloc.
+* The source grid does not have an ensemble/forecast axis (dimension 5 or 6) 
+* but the destination axis does. Copy the aggregation member into the e- or 
+* f-axis location pointed to by index aloc.
 *
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
 *
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V695 2/15 *acm* 6D add aggregation in forecast direction
 *
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -50,7 +51,7 @@
 	include	'xvariables.cmn'
 
 * calling argument declarations:
-	INTEGER msrc, cxs, mdst, dcx, mloc
+	INTEGER msrc, cxs, mdst, dcx, aloc, agg_dim
 	REAL    src( * ), dst( * )
 
 * internal variable declarations
@@ -96,7 +97,7 @@
 	ENDDO
 
 	IF (mr_type(msrc) .EQ. ptype_string ) THEN
-	   CALL COPY_AGG_PTR_INTO_SUB( mloc, cxlo, cxhi,
+	   CALL COPY_AGG_PTR_INTO_SUB( aloc, cxlo, cxhi, agg_dim,
      .			    src, smlo(1), smhi(1),
      .				 smlo(2), smhi(2),
      .				 smlo(3), smhi(3),
@@ -110,7 +111,7 @@
      .				 dmlo(5), dmhi(5),
      .				 dmlo(6), dmhi(6) )
 	ELSE
-	   CALL COPY_AGG_INTO_SUB( mloc, cxlo, cxhi,
+	   CALL COPY_AGG_INTO_SUB( aloc, cxlo, cxhi, agg_dim,
      .			    src, smlo(1), smhi(1),
      .				 smlo(2), smhi(2),
      .				 smlo(3), smhi(3),

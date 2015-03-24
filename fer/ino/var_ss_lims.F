@@ -88,9 +88,10 @@
 * ... end of 10/93 additions
 
 * cannot return answer under several conditions
-	is_file_var = cat .EQ. cat_file_var .OR. 
-     .                cat .EQ. cat_aggregate_var .OR.
-     .                cat .EQ. cat_pystat_var
+	is_file_var = cat .EQ. cat_file_var  .OR. 
+     .            cat .EQ. cat_agg_e_var .OR.
+     .            cat .EQ. cat_agg_f_var .OR.
+     .            cat .EQ. cat_pystat_var
 	IF ( (.NOT.is_file_var)
      .  .OR. dset .EQ. unspecified_int4
      .  .OR. line .EQ. mnormal

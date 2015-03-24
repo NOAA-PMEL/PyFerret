@@ -73,7 +73,8 @@
 
 	IF     ( category .EQ. cat_file_var 
      . .OR.	 category .EQ. cat_file_rev 
-     . .OR.	 category .EQ. cat_aggregate_var ) THEN
+     . .OR.	 category .EQ. cat_agg_e_var
+     . .OR.	 category .EQ. cat_agg_f_var ) THEN
 
 	   VAR_CODE = ds_var_code( variable )
 

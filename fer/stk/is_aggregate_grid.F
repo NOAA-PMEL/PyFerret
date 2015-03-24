@@ -91,7 +91,9 @@
 
 * initialize
 
-	agg_dim = e_dim
+	IF (ds_type(dset) .EQ. 'ENS') agg_dim = e_dim
+	IF (ds_type(dset) .EQ. 'FCT') agg_dim = f_dim
+
 	test_grid = unspecified_int4
 
 	agg_dset = dset
@@ -124,7 +126,7 @@
 
 	DO 90 imemb = 1, agg_len
 
-* See if the previous two members have matching grids (except for ensemble direction)
+* See if the previous two members have matching grids (except for aggretage direction)
 	   IF (test_grid.NE.unspecified_int4 .AND. test_grid.NE.this_grid) THEN
 	      DO 80 idim = 1, nferdims
 	         IF ( (idim .NE. agg_dim) .AND. 
@@ -225,7 +227,8 @@
 
 	cx_grid(agg_cx) = gnum
 	cx_data_set(agg_cx) = agg_dset
-	cx_category(agg_cx) = cat_aggregate_var
+	IF (agg_dim .EQ. e_dim) cx_category(agg_cx) = cat_agg_e_var
+	IF (agg_dim .EQ. f_dim) cx_category(agg_cx) = cat_agg_f_var
 
 	uvar_grid( uvar, dset ) = gnum 
 	uvar_dset( uvar ) = dset

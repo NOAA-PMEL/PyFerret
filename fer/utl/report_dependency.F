@@ -140,7 +140,8 @@
 	   ENDIF
 	   line_buff(llen+1:) = ' = ' //uvar_text(var)
 	ELSEIF (cat .EQ. cat_file_var
-     .	   .OR. cat .EQ. cat_aggregate_var ) THEN
+     .	   .OR. cat .EQ. cat_agg_e_var 
+     .	   .OR. cat .EQ. cat_agg_f_var ) THEN
 	   line_buff(blanks+1:) = VAR_CODE(cat, var)
 	   llen = TM_LENSTR1(line_buff)
 	   IF (tell_dset) THEN

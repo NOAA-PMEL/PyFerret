@@ -1,4 +1,4 @@
-	SUBROUTINE COPY_AGG_INTO_SUB( mloc, cxlo, cxhi,
+	SUBROUTINE COPY_AGG_INTO_SUB( aloc, cxlo, cxhi, agg_dim,
      .          src, slox, shix, sloy, shiy, sloz, shiz, 
      .          slot, shit, sloe, shie, slof, shif,
      .          dst, dlox, dhix, dloy, dhiy, dloz, dhiz, 
@@ -43,15 +43,18 @@
 * copy data from source grid into dstination grid using limits of source
 * context (i.e. dstination grid is ASSUMED) big enough to hold data.
 * Copy the ensemble member into e-axis location pointed to
-* by index mloc.
+* by index aloc.
 *
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
 *
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V695 2/15 *acm* 6D add aggregation in forecast direction
 *
+	include 'ferret.parm'
+
 * calling argument declarations:
-	INTEGER mloc, cxlo(*), cxhi(*),
+	INTEGER aloc, cxlo(*), cxhi(*),  agg_dim,
      .		slox, shix, sloy, shiy, sloz, shiz, 
      .          slot, shit, sloe, shie, slof, shif, 
      .          dlox, dhix, dloy, dhiy, dloz, dhiz, 
@@ -67,20 +70,39 @@
 
 * --- end of introductory code ---
 
-	m = cxlo(5)
-        DO 100 n = cxlo(6), cxhi(6)
-	DO 100 l = cxlo(4), cxhi(4)
-	DO 100 k = cxlo(3), cxhi(3)
-	DO 100 j = cxlo(2), cxhi(2)
-	DO 100 i = cxlo(1), cxhi(1)
+	IF (agg_dim .EQ. e_dim) THEN
+	   m = cxlo(e_dim)
+           DO 100 n = cxlo(6), cxhi(6)
+	   DO 100 l = cxlo(4), cxhi(4)
+	   DO 100 k = cxlo(3), cxhi(3)
+	   DO 100 j = cxlo(2), cxhi(2)
+	   DO 100 i = cxlo(1), cxhi(1)
 
-	   IF (src(i,j,k,l,m,n) .NE. bad_src) THEN
-	      dst(i,j,k,l,mloc,n) = src(i,j,k,l,m,n)
-	   ELSE
-	      dst(i,j,k,l,mloc,n) = bad_dst
-	   ENDIF
+	      IF (src(i,j,k,l,m,n) .NE. bad_src) THEN
+	         dst(i,j,k,l,aloc,n) = src(i,j,k,l,m,n)
+	      ELSE
+	         dst(i,j,k,l,aloc,n) = bad_dst
+	      ENDIF
 
- 100	CONTINUE
+ 100	   CONTINUE
+	ENDIF
+	
+	IF (agg_dim .EQ. f_dim) THEN
+	   n = cxlo(f_dim)
+           DO 200 m = cxlo(5), cxhi(5)
+	   DO 200 l = cxlo(4), cxhi(4)
+	   DO 200 k = cxlo(3), cxhi(3)
+	   DO 200 j = cxlo(2), cxhi(2)
+	   DO 200 i = cxlo(1), cxhi(1)
+
+	      IF (src(i,j,k,l,m,n) .NE. bad_src) THEN
+	         dst(i,j,k,l,m,aloc) = src(i,j,k,l,m,n)
+	      ELSE
+	         dst(i,j,k,l,m,aloc) = bad_dst
+	      ENDIF
+
+ 200	   CONTINUE
+	ENDIF
 
 	RETURN
 	END 

@@ -182,7 +182,8 @@
 * by this point the variable and data set must be known
 	IF ( var .EQ. unspecified_int4 )	CALL ERRMSG
      .			( ferr_syntax,status,'no variable specified',*5000 )
-	IF ( ( cat.EQ.cat_file_var .OR. cat.EQ.cat_aggregate_var .OR. cat.EQ.cat_calc_var )
+	IF ( ( cat.EQ.cat_file_var .OR. cat.EQ.cat_agg_e_var .OR. 
+     .         cat.EQ.cat_agg_f_var .OR. cat.EQ.cat_calc_var )
      .	.AND. dset.EQ.unspecified_int4 )	CALL ERRMSG
      .			( ferr_state_not_set,status,'SET DATA_SET',*5000 )
 

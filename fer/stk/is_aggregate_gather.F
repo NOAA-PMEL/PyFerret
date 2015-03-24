@@ -43,6 +43,7 @@
 *
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V69+ 5/14 *acm* Fixes for ticket 2177: datasets with _FillValue, no missing_value
+* V695 2/15 *acm* 6D add aggregation in forecast direction
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -65,14 +66,14 @@
 *	 isp	<--	current stack level (for gathering )
 
 * internal variable declarations:
-	LOGICAL	NC_GET_ATTRIB, attoutflag, got_it
-	INTEGER NCF_GET_ATTR_FROM_ID,
+	LOGICAL	NC_GET_ATTRIB, NC_GET_ATTRIB_STRING, attoutflag, got_it
+	INTEGER NCF_GET_ATTR_FROM_ID, TM_LENSTR1, STR_SAME,
      .		com_mr, res_mr, com_cx, res_cx,	dflt_cx, com_isp, res_isp,
-     .		frag, idim, top, imemb, memb_dset, len, igrid, iline,
-     .		varid, attlen, maxlen, fer_uvar, nv, is_phas_keep
+     .		frag, agg_dim, top, imemb, memb_dset, len, igrid, iline,
+     .		varid, attlen, maxlen, fer_uvar, nv, is_phas_keep, agg_dset
+
 	REAL	vbad, cx_bad_pre
-	CHARACTER*128 VAR_CODE, vname
-	CHARACTER*10 buff
+	CHARACTER*128 VAR_CODE, vname, buff
 
 * --- end of introductory code ---
 
@@ -84,20 +85,20 @@
 	res_cx     = is_cx( res_isp )
 	com_cx     = is_cx( com_isp )
 	dflt_cx	   = is_big_cx( res_isp )
-	idim       = is_axis( res_isp )
+	agg_dim    = is_axis( res_isp )
 	frag	   = is_sum ( res_isp )
 	cx_bad_pre = cx_bad_data(com_cx)
 
 * diagnostic mode output: " doing aggregate gather VAR_NAME[x=lo:hi@TRN:n,D=#]"
-* Put in the M index value just for this output
+* Put in the agg- index value just for this output
 
 	IF ( mode_diagnostic ) THEN
-	   cx_lo_ss( com_cx,idim ) = is_phase(isp)
-	   cx_hi_ss( com_cx,idim ) = is_phase(isp)
+	   cx_lo_ss( com_cx,agg_dim ) = is_phase(isp)
+	   cx_hi_ss( com_cx,agg_dim ) = is_phase(isp)
 	   CALL DIAG_OP
-     .				( 'doing',isact_class_aggregate_gather, com_cx, idim )
-	   cx_lo_ss( com_cx,idim ) = unspecified_int4
-	   cx_hi_ss( com_cx,idim ) = unspecified_int4
+     .				( 'doing',isact_class_aggregate_gather, com_cx, agg_dim )
+	   cx_lo_ss( com_cx,agg_dim ) = unspecified_int4
+	   cx_hi_ss( com_cx,agg_dim ) = unspecified_int4
 	ENDIF
 
 * create context and mem. res. space if this is the first component recieved
@@ -107,7 +108,7 @@
 * ... (since all else may be altered during evaluation if its a user var)
 	   CALL TRANSFER_CONTEXT( com_cx, res_cx )
 
-	   CALL TRANSFER_AXIS( idim, dflt_cx, res_cx )
+	   CALL TRANSFER_AXIS( agg_dim, dflt_cx, res_cx )
 	   cx_grid(res_cx) = cx_grid(dflt_cx)
 	   cx_data_set(res_cx) = cx_data_set(dflt_cx)
 	   cx_bad_data(res_cx) = cx_bad_data(dflt_cx)
@@ -120,7 +121,7 @@
 
 * copy data just received into the result
 	is_phas_keep = is_phase(isp)
-	CALL COPY_AGG_INTO( memory(1,mr_blk1(com_mr)), com_mr, com_cx,
+	CALL COPY_AGG_INTO( memory(1,mr_blk1(com_mr)), com_mr, com_cx, agg_dim,
      .			memory(1,mr_blk1(res_mr)), res_mr, is_phase(isp) )
 
 * ... remove the component protection that signaled we needed it here
@@ -139,19 +140,51 @@
 * no - set up com_cx to get the next aggregate member
 	is_phase(res_isp) = is_phase(res_isp) + 1
 	CALL TRANSFER_CONTEXT( dflt_cx, com_cx )
-* Set limits on e-direction to be unspecified
+* Set limits on agg-direction to be unspecified
  
-	cx_lo_ss( com_cx,idim ) = unspecified_int4
-	cx_hi_ss( com_cx,idim ) = unspecified_int4
-	cx_by_ss( idim,com_cx) = .TRUE.
+	cx_lo_ss( com_cx,agg_dim ) = unspecified_int4
+	cx_hi_ss( com_cx,agg_dim ) = unspecified_int4
+	cx_by_ss( agg_dim,com_cx) = .TRUE.
 
 * Set the grid to the grid of the next aggregate component...
 
 	imemb = is_phase(res_isp)
 
 	vname = VAR_CODE (cat_file_var, cx_variable(com_cx))
-	CALL CD_GET_AGG_VAR_INFO (cx_data_set(com_cx), vname, imemb, 
+        agg_dset = cx_data_set(com_cx)
+	CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, imemb, 
      .      fer_uvar, memb_dset, igrid, iline, nv, status)
+     
+* Is it the 2D Time variable for a Forecast-aggregation?  If so then
+* the information is contained only in the grids not variables of member sets.
+
+	IF (memb_dset .EQ. 0) THEN   ! pseudo-variable, not in member datasets.
+	   CALL CD_GET_VAR_ID (agg_dset, vname, varid, status)
+
+	   maxlen = 128
+	   got_it = NC_GET_ATTRIB_STRING ( agg_dset, varid, '_CoordinateAxisType',
+     .                                   .FALSE., vname, maxlen,
+     .                                   attlen, attoutflag, buff)
+	   IF (got_it .AND. STR_SAME(buff, 'Time') .EQ. 0) THEN
+
+	      cx_category(com_cx) = cat_pseudo_var 
+	      cx_variable(com_cx) = 10  ! (hack) will load t[gt=var] coordinates
+	      cx_variable(res_cx) = nv  ! (un-hack)
+
+	      cx_grid( com_cx ) = igrid
+
+	      CALL CD_GET_AGG_DSET_MEMBER (agg_dset, imemb, memb_dset, status)
+	      cx_data_set(com_cx) = memb_dset
+	      cx_data_set(res_cx) = agg_dset
+
+	      maxlen = 1
+	      got_it = NC_GET_ATTRIB( agg_dset, varid, 'missing_value',
+     .                .FALSE., vname, maxlen, attlen,
+     .                attoutflag, buff, vbad )
+
+	      cx_bad_data(com_cx) = vbad
+	   ENDIF
+	ELSE
 
 * Grid wasnt stored for this variable if its a LET/D variable in member dset
 * Let it be the agg grid ?? (or could set the grid to a number less than 
@@ -188,7 +221,7 @@
 	   ENDIF
 
 
-	   CALL FLESH_OUT_AXIS( idim, com_cx, status )
+	   CALL FLESH_OUT_AXIS( agg_dim, com_cx, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 
 * updated value for bad? If so update the data in the result
@@ -197,14 +230,14 @@
            IF (vbad .NE. cx_bad_pre) THEN
 	      cx_bad_data(res_cx) = cx_bad_data(dflt_cx)
      	      CALL COPY_AGG_INTO( memory(1,mr_blk1(com_mr)), com_mr, com_cx,
-     .          memory(1,mr_blk1(res_mr)), res_mr, is_phas_keep )
+     .          agg_dim, memory(1,mr_blk1(res_mr)), res_mr, is_phas_keep )
      
            ENDIF
 
-
 	ENDIF  ! or end this above flesh_out??
-	
 	is_uvar(com_isp) = cx_variable(com_cx)
+	
+	ENDIF  ! pseudo-variable, not in member datasets.
 
 * push the interpretation stack and go get it
 	isp = com_isp

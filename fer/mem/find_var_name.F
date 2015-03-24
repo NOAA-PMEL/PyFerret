@@ -74,6 +74,7 @@
 * v694 *acm* 12/14 Fix ticket 2050: case of variables in quotes
 *      *sh*  12/14 Allow _SQ_ as an acceptable equivalent to single quotes
 *      *acm*  2/15 Prevent run-time errors in string length for _SQ_ handling
+* V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 *   
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -362,7 +363,8 @@
 	   IF ( single_dset .AND. ds_var_setnum( ivar ) .NE. dset ) GOTO 200
  	   category = cat_file_var
  	   IF (dset.NE.unspecified_int4) THEN
-	      IF (ds_type(dset) .EQ. 'ENS') category = cat_aggregate_var
+	      IF (ds_type(dset).EQ.'ENS') category = cat_agg_e_var
+	      IF (ds_type(dset).EQ.'FCT') category = cat_agg_f_var
  	   ENDIF
 	   variable = ivar
            test_name = buff

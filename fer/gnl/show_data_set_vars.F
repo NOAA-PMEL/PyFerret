@@ -76,6 +76,7 @@
 *                 various SHOW commnands will not list info for E,F dimensions.
 * v6.85  *acm* 4/13 Can show grid for variables in an ensemble aggregated dataset.
 * v6.85  *acm* 10/13 See ticket 1098, extraneous lines when error getting grid.
+* V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -164,7 +165,8 @@
 * GRID_FROM_NAME increments the use count for the grid, so call
 * DEALLO_DYN_GRID to restore the count where it should be.
 
-           IF (is_undetermined .AND. ds_type(dset).EQ.'ENS') THEN
+           IF (is_undetermined .AND. 
+     .         (ds_type(dset).EQ.'ENS' .OR. ds_type(dset).EQ.'FCT')) THEN
 	      igrid = GRID_FROM_NAME(ds_var_code(ivar), cx_last, status)
 	      IF (status .NE. ferr_ok) GOTO 5000
 	      CALL TM_DEALLO_DYN_GRID (igrid)  

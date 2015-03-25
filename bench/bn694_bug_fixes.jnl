@@ -61,3 +61,7 @@ GO err693_subspan_trans
 
 GO bn_reset
 GO err693_repeat_err
+
+GO bn_reset
+GO err693_edit_useratt
+

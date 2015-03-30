@@ -37,24 +37,22 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* given a full variable specification of the form:
-*			(eg.) TEMP[X=170E:170W,K=+1D,T=188979]
-* return in var_cx context information describing the exact variable instance
-* including variable, data set, grid, region and plane
-
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* V685 - new based upon GET_VAR_CONTEXT
-
-* this routine gets the context of the auxiliary variable arguments (e.g."depth")
+* this routine gets the context of the auxiliary variable (e.g."depth")
 * within parenthese in the format   VAR[gz(depth)=zax@ave]
 *  
 
 * it is performed in two steps: first get the context of the main variable
 * VAR.  Then use the context of the parent variable as the default for the
 * auxiliary variable ("depth")
+
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* V685 - new based upon GET_VAR_CONTEXT
+* V695+ *sh* 3/15 - support joint TF -- var[gt(time2d)calt,gf(time2d)=lagf]
+
 
 	IMPLICIT NONE
 
@@ -92,6 +90,7 @@
 
 * which auxiliary var is the subject of interest?
 * e.g. for "temp[gz(depth)=zax]" the argument "depth" is found in the z dim
+* note that for joint TF regridding, this will return T_dim
 	the_axis = AUX_AXIS_FROM_ARG(var_cx, aux_arg_num)
 
 * pull the auxiliary variable identity from the parent context
@@ -126,7 +125,9 @@
 	DO 500 idim = 1, nferdims
 	   aux_var_axis = grid_line(idim,cx_grid(aux_var_cx))
 	   var_axis     = grid_line(idim,cx_grid(    var_cx))
-	   IF (idim .EQ. the_axis) THEN
+!3/15 	   IF (idim .EQ. the_axis) THEN  ! logic not adequate for joint TF
+ 	   IF (cx_aux_stat(idim,var_cx) .NE. paux_stat_na) THEN !ok logic? 3/15
+
 	      IF (aux_var_axis .EQ. mnormal) GOTO 5300 
 * ... set up to get the full index range on the regrid axes of the aux var
               cx_lo_ss ( aux_var_cx, idim )  = unspecified_int4

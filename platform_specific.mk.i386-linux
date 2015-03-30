@@ -23,6 +23,14 @@ else
 	CAIRO_INCLUDE	= -I$(CAIRO_DIR)/include -I$(CAIRO_DIR)/include/cairo
 endif
 
+ifeq ($(strip $(PIXMAN_DIR)),)
+	PIXMAN_LIBDIR	=
+	PIXMAN_INCLUDE	= 
+else
+	PIXMAN_LIBDIR	= $(PIXMAN_DIR)/lib
+	PIXMAN_INCLUDE	= -I$(PIXMAN_DIR)/include
+endif
+
 ifeq ($(strip $(HDF5_DIR)),)
 	HDF5_LIBDIR	=
 else
@@ -44,6 +52,7 @@ endif
 			  -I$(DIR_PREFIX)/pyfermod \
 			  -I$(DIR_PREFIX)/external_functions/ef_utility \
 			  $(CAIRO_INCLUDE) \
+			  $(PIXMAN_INCLUDE) \
 			  -I/usr/include/pango-1.0 \
 			  -I/usr/include/glib-2.0 \
 			  -I/usr/lib/glib-2.0/include \

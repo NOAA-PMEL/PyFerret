@@ -46,6 +46,7 @@
 *                 an endless loop (isit_coord_var calls cd_get_var_id).
 * V611  5/08 *acm* Fix bug 1578, dataset specifier on the variable var[d=1].attr
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V6.94 3/15 *acm* Fix ticket 2249: attribute handling for user-defined variables
 
 * include files
 #include "gt_lib.parm"
@@ -137,8 +138,9 @@
          status = NCF_GET_VAR_ID_CASE(dset_num, varid, fhol)
       ELSE
          CALL TM_FTOC_STRNG( buff(1:slen), fhol, flen )
-         status = NCF_GET_VAR_ID(dset_num, varid, fhol)
+         status = NCF_GET_VAR_ID(dset_num, varid, fhol) 
       ENDIF
+      IF (status .NE. merr_ok) GOTO 5000
       dset = dset_num
 
 * If the name is just a dot, it is the fake global-attributes variable

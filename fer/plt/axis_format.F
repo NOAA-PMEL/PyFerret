@@ -1,7 +1,7 @@
 	SUBROUTINE AXIS_FORMAT( x_or_y, idim, grid, lo_val, hi_val,
      .				del_val, curvilinear, cx_curv,
      .				its_calendar, calendar_both, 
-     .				tstyle, no_labels )
+     .				tstyle, no_labels, imposed_lab )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -81,7 +81,8 @@
 *                  A time axis may be a T axis or F axis, so idim is 
 *                  now an arg to TSTEP_TO_SECS, TSTEP_TO_DATE
 * PyFr  *kms* 7/13 Use hxlab and hylab from PPL with PUT_LABEL for axis titles
-* V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
+* V694  *acm* 1/15 Changes to allow two time axes on plot (F-T)
+* V695+ *sh*  3/15 Added argument "imposed_lab" to disambiguate F and T axes
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -94,6 +95,9 @@
 	include 'xplot_state.cmn'
         INCLUDE 'labcom_inc.decl'
         INCLUDE 'LABCOM.INC'    ! hxlab, hylab
+* needed to position the imposed labels
+	include 'axis_inc.decl'		! axis lengths
+        include 'AXIS.INC'              ! axis lengths
 * special equivalence needed only with risc compiler: bug fix
 	include 'xrisc.cmn'     ! for f77 bug
         CHARACTER rbuff(4)*14
@@ -103,6 +107,7 @@
 	LOGICAL		its_calendar, calendar_both, curvilinear, no_labels
 	INTEGER		idim, grid, cx_curv
 	CHARACTER	x_or_y*1, tstyle*3
+	CHARACTER*(*)	imposed_lab
 	REAL*8		lo_val, hi_val, del_val
 
 * parameter definitions:
@@ -201,7 +206,8 @@
 	      saved_t1_date =  INTERNAL_WHOI_DATE(grid, idim, 1.0D0 )
 * ... TXTYPE and TXLINT commands (time axis style)
 	      CALL TAXIS_STYLE(	x_or_y, TSTEP_TO_SECS( grid, idim, lo_val ),
-     .				TSTEP_TO_SECS( grid, idim, hi_val ), tstyle )
+     .				TSTEP_TO_SECS( grid, idim, hi_val ),
+     .				tstyle, imposed_lab )
 
 	   ELSEIF ( idim .EQ. x_dim .AND. use_nice) THEN
 * longitude format for axis tic labling
@@ -218,7 +224,7 @@
 
 * lat/long or x/y axis label
 	IF ( no_labels ) RETURN
-	IF ( curvilinear ) THEN
+        IF (curvilinear ) THEN
 	   buff = VAR_TITLE( cx_curv)
 	   dlen = TM_LENSTR1(buff)
 	ELSE
@@ -233,5 +239,6 @@
 	   CALL PUT_LABEL( ppl_ylab, dummy, dummy, dummy,
      .                     labelht, buff(:dlen), dummy, dummy )
 	ENDIF
+
 	RETURN
       END

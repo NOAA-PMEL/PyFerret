@@ -10,7 +10,8 @@
 # which should have been included prior to this include.
 #
 
-	CAIRO_LIBDIR	=
+	CAIRO_LIBDIR =
+	PIXMAN_LIBDIR =
 	HDF5_LIBDIR	=
 	NETCDF4_LIBDIR	= $(NETCDF4_DIR)/lib
 

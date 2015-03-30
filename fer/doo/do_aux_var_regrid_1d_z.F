@@ -1,9 +1,9 @@
-	SUBROUTINE DO_AUX_VAR_REGRID_1D( axis, aux_has_cell_pts,
-     .				         src,  msrc, src_cx,
-     .				         dst,  mdst, dst_cx,
-     .				         pos,  mpos, pos_cx,
-     .					 kmin_src, kmax_src, 
-     .					 kmin_dst, kmax_dst ) 
+	SUBROUTINE DO_AUX_VAR_REGRID_1D_Z( axis, aux_has_cell_pts,
+     .				           src,  msrc, src_cx,
+     .				           dst,  mdst, dst_cx,
+     .				           pos,  mpos, pos_cx,
+     .					   kmin_src, kmax_src, 
+     .					   kmin_dst, kmax_dst ) 
 
 *
 *
@@ -40,7 +40,8 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* perform a 1D regrid guided by an auxiliary variable containing coord positions
+* perform a 1D Z axis regrid guided by an auxiliary variable
+* containing coord positions
 * allow for the usual Ferret promotion of point axes to match span axes
 * where either the source data or the position field may have degenerate axes
 * (typically the position array will be degenerate in T, E and F) 
@@ -53,6 +54,7 @@
 
 * v690 11/13-4/14 *sh*
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+* v695+ 3/15 *sh*  change to call name to accommodate T axis regridding
 
         IMPLICIT NONE
         include 'tmap_dims.parm'

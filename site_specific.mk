@@ -30,13 +30,19 @@ PYTHONINCDIR := $(shell $(PYTHON_EXE) -c "import distutils.sysconfig; print dist
 ## files just for creating a Ferret installation.
 INSTALL_FER_DIR = $(FER_DIR)
 
-## Installation directory for Cairo-1.8.8 static libraries
-## (contains include and lib or lib64 subdirectories) for RHEL5.
-## Do not give a location on other systems.  For these systems
-## the system-wide shared-object Cairo libraries which are also
-## used by Qt4 must be used.
+## Installation directory for cairo-1.12 static library 
+#  (contains include and lib or lib64 subdirectories)
 # CAIRO_DIR =
 CAIRO_DIR = /usr/local/cairo_188
+
+## Installation directory for pixman-1 static library 
+## (contains include and lib or lib64 subdirectories) 
+## used by the above Cairo library.  
+## Leave blank to use the system pixman-1 shared library.
+## If CAIRO_DIR is not given, the system pixman-1 shared 
+## library will always be used.
+PIXMAN_DIR =
+# PIXMAN_DIR = /usr/local/pixman-1
 
 ## Installation directory for HDF5 static libraries
 ## (contains include and lib or lib64 subdirectories)

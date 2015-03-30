@@ -1,4 +1,4 @@
-	SUBROUTINE TAXIS_STYLE( x_or_y, lo_bc, hi_bc, tstyle )
+	SUBROUTINE TAXIS_STYLE( x_or_y, lo_bc, hi_bc, tstyle, imposed_lab )
 
 *
 *
@@ -55,16 +55,19 @@
 * V66    7/10 *kms* - undiscovered bug fixed: 'TXTYPE_SETTING' was used 
 *                     directly instead of buff30 in call to GETSYM
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
-
+* V695+ *sh*  3/15 Added argument "imposed_lab" to disambiguate F and T axes
 
 	include 'ferret.parm'
 	include 'plot_setup.parm'
+	include 'tmap_dims.parm'
+	include 'xplot_setup.cmn'
         include 'axis_inc.decl'	! with axis lengths
         include 'AXIS.INC'      ! with axis lengths	
 
 
 * calling argument declarations:
 	CHARACTER	x_or_y*1, tstyle*3
+	CHARACTER*(*)	imposed_lab
 	REAL*8		lo_bc, hi_bc
 
 * parameter definitions:
@@ -77,7 +80,7 @@
 	LOGICAL		climatology, its_x
 	INTEGER		TM_LENSTR1, itax, hi_int, slen, i1, i2
 	CHARACTER	ppl_cmnd*128, tstyle_long*10, buff30*30, buff*10
-	REAL		hrs, hrsper8, axlen
+	REAL		hrs, hrsper8, axlen, labsize
 
 * time axis style table
 	INTEGER		tax_loint( pmax_tax ),	! PPL TXLINT lo,...
@@ -213,6 +216,32 @@
 !	      CALL PPLCMD ( from, line, 0, 'TICS,,,0', 1, 1 )	! 11/95
 !	   ENDIF
 !	ENDIF
+
+* special "imposed" labels (used to disambiguate T and F axes)
+	IF (imposed_lab .NE. ' ') THEN
+	   slen = TM_LENSTR1(imposed_lab)
+       labsize = dflt_letsize_label * textscale
+	   IF ( its_x ) THEN
+* ... lower left corner along the horizontal page edge
+              CALL PUT_LABEL( ppl_movlab, 
+     .                        0.5-xorg, labsize-yorg,
+     .                        ppl_left_just, labsize,
+     .                        '@AS'//imposed_lab(:slen),
+     .                        lab_loc_absolute, lab_loc_absolute )
+	   ELSE
+* ... lower left corner, rotated along the vertical page edge
+              CALL PUT_LABEL( ppl_movlab,
+     .                        2*labsize-xorg, 0.5-yorg,
+     .                        ppl_left_just, labsize,
+     .                        '@AS'//imposed_lab(:slen),
+     .                        lab_loc_absolute, lab_loc_absolute )
+
+* ... rotate it
+	      WRITE ( buff30, 3100 )	nlabs_on
+ 3100	      FORMAT ('RLABS ',I4, ',90')
+	      CALL PPLCMD ( from, line, 0, buff30, 1, 1 )
+	   ENDIF
+	ENDIF
 
 	RETURN
 	END

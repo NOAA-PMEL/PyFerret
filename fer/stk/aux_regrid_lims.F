@@ -49,9 +49,11 @@
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
-*V685 4/13 *sh*
+*V685  4/13 *sh*
+*V689+ 3/15 *sh* added T-axis F-T orthoganalization
 
 	IMPLICIT NONE
+	include	'ferret.parm'
 	include	'errmsg.parm'
 
 * calling argument declarations:
@@ -64,12 +66,27 @@
 * based upon the number of dimensions in the regridding
 
 	IF ( naxis .EQ. 1 ) THEN
-	   CALL AUX_REGRID_LIMS_1D( dst_cx, src_cx, axis_list, naxis,
-     .			            aux1, mr1, cx1, status )
+	   IF ( axis_list(1) .EQ. z_dim ) THEN
+	      CALL AUX_REGRID_LIMS_1D_Z( dst_cx, src_cx, axis_list, naxis,
+     .			                 aux1, mr1, cx1, status )
+	   ELSEIF ( axis_list(1) .EQ. t_dim ) THEN
+	      CALL AUX_REGRID_LIMS_1D_T( dst_cx, src_cx, axis_list, naxis,
+     .			                 aux1, mr1, cx1, status )
+	   ELSE
+	      GOTO 5100
+	   ENDIF
 	   IF (status .NE. ferr_ok) GOTO 5000
+
+	ELSEIF (naxis .EQ. 2) THEN
+	   IF ( axis_list(1).EQ.t_dim .AND. axis_list(2).EQ.f_dim) THEN
+	      CALL AUX_REGRID_LIMS_2D_TF( dst_cx, src_cx, axis_list, naxis,
+     .			                 aux1, mr1, cx1, status )
+	   ELSE
+	      CALL ERRMSG(ferr_internal, status, 'aux_regrid_lims_2d', *5000 )
+	   ENDIF
+
 	ELSE
-* TEMPORARY: insert routine to get 2D curvilinear index bounds here 
-	   CALL ERRMSG(ferr_internal, status, 'aux_regrid_lims', *5000 )
+	   CALL ERRMSG(ferr_internal, status, 'aux_regrid_lims_Nd', *5000 )
 	ENDIF
 
 * success
@@ -78,4 +95,7 @@
 
 * error exit
  5000	RETURN
+ 5100	CALL ERRMSG( ferr_invalid_command, status,
+     .     '1-dim auxiliary variable regrid allowed'//
+     .	   ' on Z and T axes only', *5000)
 	END

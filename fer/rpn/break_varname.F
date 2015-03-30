@@ -48,6 +48,7 @@
 *                 it may  be a user var(as in break_varattname, where the bug
 *                 occurred, but make the same change here.)
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V6.94 3/15 *acm* Fix ticket 2249: attribute handling for user-defined variables
 
         include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -139,6 +140,7 @@
            dset_try = -1
            CALL CD_GET_VAR_ID (dset_try, varname, varid, status)
            IF (status .EQ. ferr_ok) dset_in = -1
+           IF (status .EQ. ferr_ok) dset = -1
         ENDIF
 
 

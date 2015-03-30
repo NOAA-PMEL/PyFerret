@@ -1,0 +1,26 @@
+! err693_edit_useratt.jnl
+! ticket 2249: set attribute properties for user-defined variable
+
+use err491_attval.cdf
+list/x=135.402W:135.321W/y=58.609 elev
+
+
+! Rename the file variable, define a variable using its name
+set var/name=elev_in elev
+let  elev = missing(elev_in, -1.e34)
+
+! Inherit attributes from the file variable.
+! cancel writing the scale attributes
+set att/like=elev_in elev
+can att/output elev.scale_factor
+can att/output elev.add_offset
+
+! set the bad-flag (can't do this before the SET ATT/LIKE
+set var/bad=-1.e34 elev
+
+! save 
+save/clobber/file=a.nc elev
+can var/all
+use a.nc
+list/x=135.402W:135.321W/y=58.609 elev
+

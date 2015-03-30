@@ -45,12 +45,14 @@ pymod_optimized :
 	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/pyferret_install
 	( cd $(DIR_PREFIX) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
+	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
 	  $(PYTHON_EXE) setup.py --quiet build )
 	( cd $(DIR_PREFIX) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
+	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
@@ -61,12 +63,14 @@ pymod_debug :
 	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/pyferret_install
 	( cd $(DIR_PREFIX) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
+	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
 	  $(PYTHON_EXE) setup.py --quiet build -g )
 	( cd $(DIR_PREFIX) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
+	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
@@ -118,6 +122,7 @@ update :
 	cp -f $(DIR_PREFIX)/threddsBrowser/threddsBrowser.jar $(INSTALL_FER_DIR)/lib
 	( cd $(DIR_PREFIX) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
+	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \

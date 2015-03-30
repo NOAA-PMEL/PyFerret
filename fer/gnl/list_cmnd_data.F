@@ -68,7 +68,7 @@
 * V530:  3/01 *acm*- Put the calendar name in the heading if TIME not
 *		     otherwise listed, and if non-gregorian calendar.
 * V540: 11/01 *sh* - added LIST/WIDTH=
-*	           - expanded and reorganized the LIST heading
+*	           - expanded and reorganized the LIST headng
 * V552   2/03 *acm*- Increase line_buff to 10000
 * v553   9/03 *kob*- Increase GET_STRING_ELEMENT to 512 
 * V554   3/04 *acm*-For REPEAT/RANGE vars, add check for dset = unspecified_int4
@@ -254,7 +254,7 @@
 * ... DODS URL BASE or ABSOLUTE PATH
 * *kob* v553 - CYGWIN paths are always preceded by '.'
 #ifdef __CYGWIN__
-	   IF (i.GT.0 .AND.  ds_des_name(dset)(2:2).EQ.'\')
+	   IF (i.GT.0 .AND.  ds_des_name(dset)(2:2).EQ.'\')   ! ' for emacs
 #else
 	   IF (i.GT.0 .AND.  ds_des_name(dset)(1:1).NE.'.')
 #endif
@@ -342,6 +342,42 @@
 	   ENDIF
  60	CONTINUE
 
+* ... T-F plane coaching
+*    If this variable is FMRC, then add annotations to disambiguate the 2 time axes
+*      "Initialization time increases across row. Verification time increases down page."
+        IF ( grid_line(t_dim, grid) .NE. mnormal
+     . .AND. grid_line(f_dim, grid) .NE. mnormal 
+     . .AND. (row_ax.EQ.t_dim .OR. row_ax .EQ. f_dim
+     .   .OR. col_ax.EQ.t_dim .OR. col_ax .EQ. f_dim) ) THEN
+           line_buff = ' '
+           alen = 0
+           IF (row_ax.EQ.t_dim .OR. row_ax .EQ. f_dim) THEN
+              IF (row_ax.EQ.t_dim) THEN
+                 line_buff = 'Verification'
+                 alen = 14
+              ELSE
+                 line_buff = 'Initialization'
+                 alen = 16
+              ENDIF
+              line_buff(alen:) = "time increases across row."
+              alen = alen + 26
+           ENDIF
+           IF (col_ax.EQ.t_dim .OR. col_ax .EQ. f_dim) THEN
+              IF (alen .GT. 0) alen = alen + 1
+              IF (col_ax.EQ.t_dim) THEN
+                 line_buff(alen+1:) = 'Verification'
+                 alen = alen + 14
+              ELSE
+                 line_buff(alen+1:) = 'Initialization'
+                 alen = alen + 16
+              ENDIF
+              line_buff(alen:) = "time increases down page."
+              alen = alen + 25
+           ENDIF
+           CALL SPLIT_LIST(pttmode_explct,list_lun,
+     .      '             '//line_buff,alen+13)
+        ENDIF
+
 * * * * * DETERMINE LIST LIMITS * * *
  200	DO 210 i = 1, nferdims
 	   idim = perm(i)
@@ -425,6 +461,8 @@
 	         WRITE ( list_lun, list_format ) (ax_buff(j),j=1,npts)
 	      ENDIF
  250	   CONTINUE
+
+
 * ... DATA:
 	     CALL SPLIT_LIST(pttmode_explct, list_lun, 'DATA:', 5 )
 	ENDIF

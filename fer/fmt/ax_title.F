@@ -45,6 +45,7 @@
 *		(kludge: use "m" for meters instead of exact unit string.
 *			This because of "METERS" in the old grid files around.)
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V695+ *sh* 3/15 - generate axis titles for TIME LAG axes in FMRC variables
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -58,7 +59,8 @@
 	LOGICAL	GEOG_LABEL
 
 * internal variable declarations:
-	INTEGER	TM_LENSTR1, i, line, ulen
+        LOGICAL tf_ambiguous
+	INTEGER	TM_LENSTR1, i, line, ulen, tline, fline
 	CHARACTER*16 unit_name
 
 * check for program bug	! temp
@@ -66,10 +68,23 @@
 
 	line = grid_line( idim, grid )
 
+* 3/15 may need to disambiguate T and F time axes
+        tline = grid_line( t_dim, grid )
+        fline = grid_line( f_dim, grid )
+        tf_ambiguous = tline .NE. mnormal
+     .           .AND. fline .NE. mnormal
+        IF (tf_ambiguous) THEN
+           tf_ambiguous = line_direction(tline)(1:1) .EQ. 'T'
+     .              .AND. line_direction(fline)(1:1) .EQ. 'F'
+     .              .AND. line_unit_code(tline) .LT. 0
+     .              .AND. line_unit_code(fline) .LT. 0
+
+        ENDIF 
+
 	IF ( GEOG_LABEL( idim, grid ) ) THEN
 	   AX_TITLE = axis_title( idim )
 	   len = axis_title_len( idim )
-! special options for vertical axes - 12/19/94
+* special formatting for vertical axes - 12/19/94
 	   IF ( idim .EQ. z_dim ) THEN
 	      IF ( line_unit_code(line) .EQ. pun_millibars 
      .        .OR. line_direction( line ) .EQ. 'DU'     ) THEN
@@ -85,6 +100,21 @@
 	      AX_TITLE = AX_TITLE(1:len)//' ('//unit_name(:ulen)//')'
 	      len = len + 3 + ulen
 	   ENDIF	      
+
+        ELSEIF ( tf_ambiguous
+     .   .AND. (idim.EQ.t_dim .OR. idim.EQ.f_dim)) THEN 
+* HACK: special formatting for FMRC T-F plane data 3/15
+           IF (idim .EQ. t_dim ) THEN
+              AX_TITLE = 'MODEL ELAPSED TIME'
+              len = 18
+           ELSE
+              AX_TITLE = 'FORECAST LEAD TIME'
+              len = 18
+           ENDIF
+!           unit_name = line_units(line)
+!           ulen = TM_LENSTR1( unit_name )
+!           AX_TITLE = AX_TITLE(:len)//' ('//unit_name(:ulen)//')'
+!           len = len + 3 + ulen
 
 	ELSE
 	   AX_TITLE = ww_dim_name( idim )

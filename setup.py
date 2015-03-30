@@ -25,6 +25,10 @@ if hdf5_libdir:
 cairo_libdir = os.getenv("CAIRO_LIBDIR")
 if cairo_libdir:
     cairo_libdir = cairo_libdir.strip()
+# PIXMAN_LIBDIR is only given if the pixman-1 library is to be statically linked in
+pixman_libdir = os.getenv("PIXMAN_LIBDIR")
+if pixman_libdir:
+    pixman_libdir = pixman_libdir.strip()
 # The location of libpython2.x.so, in case it is not in a standard location
 python_libdir = os.path.split(
                    distutils.sysconfig.get_python_lib(standard_lib=True))[0]
@@ -34,6 +38,8 @@ if hdf5_libdir:
     libdir_list.append(hdf5_libdir)
 if cairo_libdir:
     libdir_list.append(cairo_libdir)
+if pixman_libdir:
+    libdir_list.append(pixman_libdir)
 libdir_list.append(python_libdir)
 
 # Get the list of ferret static libraries
@@ -74,22 +80,31 @@ else:
 # The Pango text-rendering libraries
 addn_link_args.extend([ "-lpangocairo-1.0", "-lpango-1.0", "-lgobject-2.0" ])
 
-# Link to the appropriate cairo library.
-# The pixman-1, freetype, fontconfig, png12, Xrender, and X11 libraries
-# are only used to resolve cairo library function calls when statically
-# linking in the cairo-1.8.8 library.
+# Link to the cairo library and the libraries it requires.
 if cairo_libdir:
     cairo_lib = "-Wl," + os.path.join(cairo_libdir, "libcairo.a")
-    addn_link_args.extend([ cairo_lib, "-lpixman-1", "-lfreetype",
-                            "-lfontconfig", "-lpng12", "-lXrender", 
-                            "-lX11", ])
+    addn_link_args.append(cairo_lib);
+    if pixman_libdir:
+        pixman_lib = "-Wl," + os.path.join(pixman_libdir, "libpixman-1.a")
+    else:
+        pixman_lib = "-lpixman-1"
+    addn_link_args.append(pixman_lib);
+    addn_link_args.extend([ "-lfreetype", "-lfontconfig", "-lpng12", "-lXrender", "-lX11"])
 else:
    addn_link_args.append("-lcairo")
 
 # Link in the appropriate system libraries 
 if hdf5_libdir:
-   addn_link_args.append("-lcurl -lz")
+   addn_link_args.extend(["-lcurl", "-lz"])
 addn_link_args.extend([ "-lgfortran", "-ldl", "-lm", "-fPIC", ])
+
+# Bind symbols and function symbols to any internal definitions 
+# and do not make any of the symbols or function symbols defined
+# in any libraries externally visible (mainly for cairo and pixman).
+# Those in the object files (including those from pyfermod and 
+# fer/ef_utility) will still be visible.
+# addn_link_args.append("-Wl,-Bsymbolic-functions")
+addn_link_args.extend(["-Wl,-Bsymbolic", "-Wl,--exclude-libs -Wl,ALL"])
 
 # Get the list of C source files in pyfermod
 src_list = [ ]
@@ -110,6 +125,10 @@ for srcname in ( "fakes3.o", "ferret_dispatch.o", "ferret_query_f.o",
 for srcname in os.listdir(dirname):
     if (srcname[0] == 'x') and (srcname[-7:] == "_data.o"):
         addnobjs_list.append(os.path.join(dirname, srcname))
+# Duplicate objects in libraries to make them externally visible (for las external functions)
+dirname = os.path.join("fmt", "src")
+addnobjs_list.append(os.path.join(dirname, "tm_lenstr.o"));
+addnobjs_list.append(os.path.join(dirname, "tm_fmt.o"));
 
 # Create the pyferret.libpyferret Extension
 ext_mods = [ Extension("pyferret.libpyferret", include_dirs = incdir_list,

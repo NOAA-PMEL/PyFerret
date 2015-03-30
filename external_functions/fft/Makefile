@@ -30,7 +30,7 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 
 .SUFFIXES: .so
 
-SUB_OBJS = fftinv_subs.o
+SUB_OBJS = fftinv_subs.o fftsubs.o
 
 #
 # Rules

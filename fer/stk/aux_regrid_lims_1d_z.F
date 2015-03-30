@@ -1,5 +1,5 @@
-	SUBROUTINE AUX_REGRID_LIMS_1D( dst_cx, src_cx, axis_list, naxis,
-     .			               aux1, mr1, cx1, status )
+	SUBROUTINE AUX_REGRID_LIMS_1D_Z( dst_cx, src_cx, axis_list, naxis,
+     .			                 aux1, mr1, cx1, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -47,6 +47,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 *V690 3/13-4/14 *sh*
+*v695+ 3/15 *sh* renamed from AUX_REGRID_LIMS_1D to differentiate Z and T
 
 	IMPLICIT NONE
 

@@ -399,10 +399,15 @@
  100	   IF ( letter.EQ.'D' ) GOTO 500 ! already done
 	   IF ( letter.NE.'G' ) GOTO 190
 
-* only a single regridding specifier is allowed if auxvar regridding is used
+* only T and F axes may be simultaneously used in auxvar regridding
 	   IF (cx_unstand_grid(mods_cx) .AND. cx_naux(mods_cx).NE. 0) THEN
-	      name = 'only a single regrid allowed when using'
-	      GOTO 5300
+	     name = 'only T and F regrids may be combined when using'
+	     IF (idim.NE.t_dim .AND. idim.NE.f_dim) GOTO 5300
+	     DO rgdim = 1, nferdims
+	        IF (cx_g_eq_regrid(rgdim)) THEN
+	          IF (rgdim.NE.t_dim .AND. rgdim.NE.f_dim) GOTO 5300
+	        ENDIF
+	     ENDDO
 	   ENDIF  
 
 * G= or G*= non-standard grid specifier ...
@@ -472,9 +477,11 @@ c	      next_char = istart + naxes - 1
      .		'this Ferret version doesnt support multi aux regrid args' 
 	        GOTO 5300
 	     ENDIF
-	     IF (idim .NE. z_dim) THEN
+	     IF (idim .NE. z_dim
+     .	   .AND. idim .NE. t_dim
+     .	   .AND. idim .NE. f_dim  ) THEN
 		name =
-     .		'only the Z axis can be used in' 
+     .		'only the Z, T, and F axes can be used in' 
 	        GOTO 5300
 	     ENDIF
 
@@ -491,11 +498,14 @@ c	      next_char = istart + naxes - 1
 * ... infer the aux argument count in the parens from the number of commas
 	     aux_arg_count = 1
 	     aux_arg_namlen = 0
-*    ... argument order must match collating order of axes as in gyx(argx,argy)=
-	     DO rgdim = 1, nferdims
-	         IF (cx_g_eq_regrid(rgdim)) GOTO 704   ! too lazy to renumber
-	     ENDDO
-	     GOTO 5400   ! can never get here
+	     IF (idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
+	        rgdim = idim
+	     ELSE
+*    ... x,y arguments must be in collating order as in gxy(argx,argy)=
+	        DO rgdim = 1, nferdims
+	           IF (cx_g_eq_regrid(rgdim)) GOTO 704   ! too lazy to renumber
+	        ENDDO
+	     ENDIF
  704	     cx_aux_arg_start(rgdim, mods_cx) = i+1
 	     cx_aux_arg_end  (rgdim, mods_cx) = i
 	     cx_aux_stat     (rgdim, mods_cx) = paux_stat_used

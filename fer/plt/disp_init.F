@@ -85,7 +85,8 @@
 * V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
-* V686 *acm* 12 13 set up the label symbols LABNUM_E and LABNUM_F
+* V686 *acm* 12/13 set up the label symbols LABNUM_E and LABNUM_F
+* V695+ *sh*  3/15 remove movable label rotations (left behind by FMRC annotations)
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -102,8 +103,8 @@
 	INTEGER ncx, cx_list(ncx)
 
 * internal variable declarations:
-	CHARACTER	TM_FMT*12, buffer*40, buffsym*30, show_str*12
-        INTEGER         idim, ier, nc, slen
+	CHARACTER	TM_FMT*12, LEFINT*4, buffer*40, buffsym*30, show_str*12
+        INTEGER         i, idim, ier, nc, slen
 
 * open metafile for this new plot
 	CALL SEND_PLTYPE( mode_metafile )        ! added 1/94
@@ -133,6 +134,10 @@
            iaxset = 0
         ENDIF
 
+* clear rotations from first 10 moveable labels
+	DO i = 1, 10
+	   CALL PPLCMD ( from, line, 0, 'RLABS '//LEFINT(i,slen) , 1, 1)
+	ENDDO
 
 * if the axis min and max symbols already exist then delete them
 

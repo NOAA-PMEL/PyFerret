@@ -156,6 +156,7 @@
 * V686 *acm* 12/13 Symbokls AX_HORIZ and AX_VERT may be x,y,z,t,e,f  
 * V691  *acm*  5/14 Clean up temp memory used for computing histogram levels
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
+* V695+ *sh*  3/15 if an FMRC dataset disambiguate T and F axes with labels
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -204,10 +205,11 @@ C plus those starting w/ xbox_bounds:
      .                  xstyle*3, ystyle*3, cmnd_name*8, year*4, buff*8,
      .			letter*1, buff1*16, buff2*16, buff30*30,
      .                  TM_GET_CALENDAR_NAME*32, cal_name_1*32, 
-     .                  cal_name_2*32, err_string*128
+     .                  cal_name_2*32, err_string*128,
+     .			xtra_xlab*24, xtra_ylab*24
         CHARACTER*1     axdir(6)
 
-	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, TM_FPEQ, 
+	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, TM_FPEQ,
      .			user_title, time_axis, time_axis_dim1, timeax_both, 
      .			regrid_1, regrid_2, no_y_rng, edges_ok,
      .			ITS_GIF_GRAPHICS, its_gif, REGULARLY_SPACED,
@@ -275,6 +277,7 @@ C plus those starting w/ xbox_bounds:
 	size2 = CX_DIM_LEN( dim2, ctx )
 	size  = size1 * size2
 
+
 * determine PLOT+ memory required 
 
         plot_mem_used = CGRID_SIZE( cx_list(1) ) + size1 + size2
@@ -305,7 +308,7 @@ C   set up memory for the flag grid
 * save axis pointers so PLOT+ can get box boundaries
 	bb_grid = grid
 
-* On a plot/set, the intervening commads may change the default grid.
+* On a plot/set, the intervening commands may change the default grid.
 * Increment the grid. It will be decremented at the end of xeq_pplus
 
 	bb_grid_inccount = 0
@@ -423,6 +426,27 @@ C   set up memory for the flag grid
 	hi2  = cx_hi_ss( ctx, dim2 )
 	size1 = hi1 - lo1 + 1
 	size2 = hi2 - lo2 + 1
+
+* define special axis labels to disambiguate T and F axes
+	xtra_xlab = ' '
+	xtra_ylab = ' '
+	IF ( grid_line(t_dim, grid) .NE. mnormal
+     . .AND. grid_line(f_dim, grid) .NE. mnormal ) THEN
+	   IF (GEOG_LABEL(dim1,grid)) THEN          ! calendar axes only need annotation
+	      IF (dim1 .EQ. t_dim) THEN
+	         xtra_xlab = 'Verification Time ==>'
+	      ELSEIF (dim1 .EQ. f_dim) THEN
+	         xtra_xlab = 'Initialization Time ==>'
+	      ENDIF
+	   ENDIF
+	   IF (GEOG_LABEL(dim2,grid)) THEN
+	      IF (dim2 .EQ. t_dim) THEN
+	         xtra_ylab = 'Verification Time ==>'
+	      ELSEIF (dim2 .EQ. f_dim) THEN
+	         xtra_ylab = 'Initialization Time ==>'
+	      ENDIF	
+	   ENDIF
+	ENDIF
 
 * Define symbols AX_HORIZ and AX_VERT with the x,y,z,t direction 
 * of the axes as they will appear on the plot.
@@ -596,7 +620,8 @@ C   set up memory for the flag grid
 	   timeax_both = .FALSE.
 	   CALL AXIS_FORMAT( 'X', dim1, grid, xaxlo, xaxhi, delta,
      .                       curvilinear, cx_xpos,
-     .                       time_axis,timeax_both,xstyle,no_labels)
+     .                       time_axis,timeax_both,xstyle,
+     .			     no_labels, xtra_xlab)
 
            time_axis_dim1 = time_axis
 
@@ -664,7 +689,8 @@ C ACM added 8/2001 save cal id if vertical time axis
 	   timeax_both = (time_axis .AND. time_axis_dim1) 
 	   CALL AXIS_FORMAT( 'Y', dim2, grid, yaxlo, yaxhi, delta,
      .                       curvilinear, cx_ypos,
-     .                       time_axis,timeax_both,ystyle,no_labels)
+     .                       time_axis,timeax_both,ystyle,
+     .			     no_labels, xtra_ylab)
 
 *   When not an overlay, set the axis type to log or reverse log
 	   IF (is_logx .OR. is_logy) THEN

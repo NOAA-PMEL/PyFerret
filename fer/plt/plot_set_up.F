@@ -154,6 +154,7 @@
 * V693  *acm* 10/14 Fix 2122: Check for a valid axis if they've asked for a 
 *                   log axis before proceeding with vlimits or hlimits
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
+* V695+ *sh*  3/15 if an FMRC dataset disambiguate T and F axes with labels
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -194,7 +195,7 @@
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
      .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14, 
      .			LEFT_REAL*16, TM_GET_CALENDAR_NAME*32, 
-     .			indep_ax*1, dep_ax*1, tstyle*3,
+     .			indep_ax*1, dep_ax*1, tstyle*3, xtra_lab*24,
      .			buff1*16, buff2*16, buff3*8, t1_date*14, tref*14,
      .                  cal_name*32, cal_name_new*32, val_buff*32, fmt*4
 
@@ -251,6 +252,7 @@
 	mod_vs_x = .FALSE.
 	mod_vs_y = .FALSE.
         cx_x = cx_list(1)
+	xtra_lab = ' '
 
 * determine PLOT+ memory required
         plot_mem_used = 0
@@ -476,6 +478,19 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   ENDIF
 
 	ELSE	! (not VERSUS)
+
+* define special axis labels to disambiguate T and F calendar axes
+	   IF ( grid_line(t_dim, grid1) .NE. mnormal
+     .    .AND. grid_line(f_dim, grid1) .NE. mnormal ) THEN
+	      IF (GEOG_LABEL(indep_dim,grid1)) THEN
+	         IF     (indep_dim .EQ. t_dim) THEN
+	            xtra_lab = 'Verification Time ==>'
+	         ELSEIF (indep_dim .EQ. f_dim) THEN
+	            xtra_lab = 'Initialization Time ==>'
+	         ENDIF
+	      ENDIF
+	   ENDIF
+
 	   var1 = 1
 	   ndv  = nmv
 	   ito  = 0
@@ -817,7 +832,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      IF ( time_axis ) THEN
 	         IF ( pindeplim .GT. 0 ) CALL PPL_TIME( ind_min,ind_max,
      .                                    cal_id_1)
-	         CALL TAXIS_STYLE( indep_ax, ind_min, ind_max, tstyle )
+	         CALL TAXIS_STYLE( indep_ax, ind_min, ind_max, tstyle, xtra_lab )
 * (6/99) Note: The time axis extrema symbols are only approximately correct
 *		since PLOT+ rounds out the time ranges ...
 	         CALL AXIS_END_SYMS( indep_ax,
@@ -837,7 +852,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	         CALL AXIS_FORMAT( indep_ax, indep_dim, grid1,
      .				   ind_min, ind_max, delta,
      .				   pnot_curv, 0,
-     .				   time_axis, timeax_both, tstyle, no_labels )
+     .				   time_axis, timeax_both, tstyle,
+     .                             no_labels, xtra_lab )
 	      ENDIF
 	   ENDIF
 * ... dependent axis scaling

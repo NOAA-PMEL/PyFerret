@@ -52,6 +52,7 @@
 * v540 *acm* 10/01  remove VMS include statements
 * v604 *acm* 7/07 increase length of ds_name
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V695+ *sh 3/15 - bug fix.  Grid name was not displayed with warnings
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -71,7 +72,8 @@
 	INTEGER	grid, status
 
 * internal variable declarations:
-	INTEGER	mr, ivar, dset, glen, done_dset
+	INTEGER	TM_LENSTR1,
+     .		mr, ivar, dset, glen, done_dset
 !	INTEGER	TM_LENSTR1, mr, ivar, cvar, dset, glen, done_dset
 
 * the lowest grids are protected
@@ -86,6 +88,7 @@
 	   IF ( dset .EQ. set_not_open ) GOTO 10
 	   IF ( ds_grid_number(ivar) .EQ. grid
      .	  .AND. dset .NE. done_dset ) THEN
+	      glen = TM_LENSTR1(grid_name(grid))
 	      CALL WARN('grid '//grid_name(grid)(:glen)//
      .		' used by data set '//ds_name(dset))
 	      CALL WARN

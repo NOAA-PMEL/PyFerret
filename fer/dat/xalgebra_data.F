@@ -92,6 +92,7 @@
 *                  pseudo-variables
 *       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 * V690 12/13 *sh* added auxiliary regridding transforms
+* v695+ 3/15 *sh* added pauxrgrd_fmrc for T-F orthoganalization
 
         IMPLICIT NONE
 	include	'ferret.parm'
@@ -778,15 +779,20 @@
      .						/ 'box ave from thkness'/,
      .		alg_regrid_code (pauxrgrd_thick_ave)/ unspecified_name4 /,
      .		alg_regrid_vizb (pauxrgrd_thick_ave)	/ .FALSE.	/,
+     .		alg_regrid_title(pauxrgrd_fmrc)
+     .						     / 'reorg T-F array'/,
+     .		alg_regrid_code (pauxrgrd_fmrc)		/ 'REORG'/,
+     .		alg_regrid_vizb (pauxrgrd_fmrc)		/ .FALSE.	/,
+
      .		(alg_regrid_title(i),
-     .				i=pauxrgrd_thick_ave+1,max_auxregrid_trans)
-     .				/2*unspecified_name4/,
+     .				i=pauxrgrd_fmrc+1,max_auxregrid_trans)
+     .				/1*unspecified_name4/,
      .		(alg_regrid_code (i),
-     .				i=pauxrgrd_thick_ave+1,max_auxregrid_trans)
-     .				/2*unspecified_name4/,
+     .				i=pauxrgrd_fmrc+1,max_auxregrid_trans)
+     .				/1*unspecified_name4/,
      .		(alg_regrid_vizb (i),
-     .				i=pauxrgrd_thick_ave+1,max_auxregrid_trans)
-     .				/2*.FALSE./
+     .				i=pauxrgrd_fmrc+1,max_auxregrid_trans)
+     .				/1*.FALSE./
 
 * translation table for substituting 1D transformations with 4D transforms
 	DATA	num_4d_trans/ 7 /

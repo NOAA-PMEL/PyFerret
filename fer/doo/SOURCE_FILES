@@ -21,7 +21,9 @@ do_4d_var.F\
 do_4d_wgt.F\
 do_asn_regrid.F\
 do_aux_var_regrid.F\
-do_aux_var_regrid_1d.F\
+do_aux_var_regrid_1d_z.F\
+do_aux_var_regrid_1d_t.F\
+do_aux_var_regrid_2d_tf.F\
 do_aux_var_regrid_line_ave.F\
 do_aux_var_regrid_line_lin.F\
 do_ave_int.F\

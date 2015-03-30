@@ -33,7 +33,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *  setup auto-curvilinear loading of aux vars and regridding
-*      z = pt               ==> an interpolation computed as a hidden curvi regrid
+*      z = pt               ==> interpolation computed as a hidden curvi regrid
 *      z = lo:hi@ave        ==> a compressing xform computed as a hidden curvi
 *				regridding operation using pcwz averaging
 * 
@@ -42,6 +42,7 @@
 
 * V690 12/13 *sh* - hidden curvi regrids added 4/14
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+* V695+  3/15 *sh* added pauxrgrd_fmrc for GT(time2d)+1d and GF(time2d)=1d
 
 	IMPLICIT NONE
 
@@ -80,10 +81,11 @@
 * a regrid implies that the aux axis status is "used"
 	  cx_aux_stat(idim,cx) = paux_stat_used 
 
-* single point result?
-	   single_pt = cx_lo_ww(idim,cx) .EQ. cx_hi_ww(idim,cx)
+* single point Z-axis regrid?
+	   single_pt = idim .EQ. z_dim  .AND.
+     .	   (        cx_lo_ww(idim,cx) .EQ. cx_hi_ww(idim,cx)
      .	  .OR.    ( cx_trans(idim,cx) .EQ. trans_average
-     .        .AND. cx_delta(idim,cx) .EQ. unspecified_val8 )
+     .        .AND. cx_delta(idim,cx) .EQ. unspecified_val8 )     )
 
 * modify the xform or regridding xform to be an aux var regrid xform
 	   IF     ( single_pt ) THEN   ! Z=pt or Z=lo:hi@ave

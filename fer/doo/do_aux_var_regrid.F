@@ -45,6 +45,7 @@
 ! for the dimensionailty
 
 * v685 4/13-4/14 *sh*
+* v689+ 3/15 *sh* added support for T axis T-F orthoganalization
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -63,44 +64,66 @@
         REAL    src(*), dst(*), aux1(*), aux2(*), aux3(*)
 
 * internal variable declarations
-	INTEGER	axis, kmin_dst, kmax_dst
+	INTEGER	axis, indmin_dst, indmax_dst
 
 	IF ( naxis .EQ. 1) THEN
-* Ansley:  note that this needs to be generalized for other axes than Z
-* allocate a work arrays for a single profile of Z depths
-* nwk_dst enuf to hold a line of the destination grid
-	   IF (axis_list(1) .NE. z_dim)
-     .			CALL ERRMSG( ferr_internal, status, 'non-z aux', *5000)
+
+* initialize
 	   axis = axis_list(1)
 
+	   IF (axis .EQ. z_dim) THEN
 * if this is a "1pt false regridding", in which there is no new target axis
 * such as results from Z=0 or Z=100:200@ave, then the cx_ss values are
 * -999:-999.  To avoid accidental "bad value" interpretations we replace those
-	   IF (cx_aux_stat(axis,dst_cx) .EQ. paux_stat_false_1pt_regrid) THEN
-	      kmin_dst = 1   ! replacing -999
-	      kmax_dst = 1   ! replacing -999
-	   ELSE
-	      kmin_dst = cx_lo_ss(dst_cx,axis)
-	      kmax_dst = cx_hi_ss(dst_cx,axis)
-	   ENDIF
+	      IF (cx_aux_stat(axis,dst_cx)
+     .	     .EQ. paux_stat_false_1pt_regrid) THEN
+	         indmin_dst = 1   ! replacing -999
+	         indmax_dst = 1   ! replacing -999
+	      ELSE
+	         indmin_dst = cx_lo_ss(dst_cx,axis)
+	         indmax_dst = cx_hi_ss(dst_cx,axis)
+	      ENDIF
 
-* do the 1D regridding
-	   CALL DO_AUX_VAR_REGRID_1D(
-     .			axis_list(1), aux_has_cell_pts,
+* do the 1D Z axis regridding
+	      CALL DO_AUX_VAR_REGRID_1D_Z(
+     .			axis, aux_has_cell_pts,
      .			src,  msrc,  src_cx,
      .			dst,  mdst,  dst_cx,
      .			aux1, maux1, aux1_cx,
      .			cx_lo_ss(src_cx,axis),cx_hi_ss(src_cx,axis),
-     .			kmin_dst,             kmax_dst              )
+     .			indmin_dst,           indmax_dst              )
+
+	
+	   ELSEIF (axis .EQ. t_dim) THEN
+
+* do the 1D T axis T-F orthoganalization
+	      CALL DO_AUX_VAR_REGRID_1D_T(
+     .			axis,
+     .			src,  msrc,  src_cx,
+     .			dst,  mdst,  dst_cx,
+     .			aux1, maux1, aux1_cx,
+     .			cx_lo_ss(dst_cx,t_dim),cx_hi_ss(dst_cx,t_dim) )
+
+	   ELSE
+	       STOP 'mystery 1D regrid should not be happening'
+	   ENDIF
+
+	ELSEIF (naxis .EQ. 2) THEN
+	   IF (axis_list(1).EQ.t_dim .AND. axis_list(2).EQ.f_dim) THEN
+
+* do the 1D T axis T-F orthoganalization
+	      CALL DO_AUX_VAR_REGRID_2D_TF(
+     .			src,  msrc,  src_cx,
+     .			dst,  mdst,  dst_cx,
+     .			aux1, maux1, aux1_cx,
+     .			cx_lo_ss(dst_cx,t_dim),cx_hi_ss(dst_cx,t_dim) )
+	   ELSE
+	       STOP 'mystery 2D regrid should not be happening'
+	   ENDIF
 	ELSE
-*  ==> insert horizontal curvilinear regridding (naxis.EQ.2) here
-	   STOP 'do_aux_var_regrid >1d'
+	       STOP 'mystery N-D regrid should not be happening'
 	ENDIF
 
-* success
+* success always -- all possible error conditions were anticipated
 	RETURN
-
-* error
- 5000	RETURN
-
 	END

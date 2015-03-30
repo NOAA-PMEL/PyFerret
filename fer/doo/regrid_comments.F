@@ -49,6 +49,7 @@
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V690 *sh* 1/14 document sigma and curvilinear aux var regridding
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+* V695+  3/15 *sh* special formatting of T-F plane FMRC regridding comments
 
         IMPLICIT NONE
 	include	'tmap_dims.parm'
@@ -143,50 +144,62 @@
 	      ELSE
 	         add_on = .TRUE.
 	      ENDIF
-	      IF ( line_regular(axis) .AND. .NOT.stat_grid 
-     .	    .AND.  line_dim    (axis) .GT.  1               ) THEN
+
+	      IF (cx_regrid_trans(idim,cx) .EQ. pauxrgrd_fmrc ) THEN
+* ... comment about T-F axis reorganization for FMRC data sets:
+*          "reorganized on T using 2d TIME2D field"
+     	         REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
+     .               'reorganized on '//ww_dim_name(idim)
+	         mlen = mlen + 16
+	      ELSE
+
+	         IF ( line_regular(axis) .AND. .NOT.stat_grid 
+     .	    .   AND.  line_dim    (axis) .GT.  1               ) THEN
 * ... delta
 #ifdef double_p
-	         REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
+	            REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
      .				 TM_FMT(line_delta(axis),2,8,slen)
-	         mybuff = mybuff(:mlen) //
+	            mybuff = mybuff(:mlen) //
      .				 TM_FMT(line_delta(axis),2,8,slen)
 #else
-     	         REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
+     	            REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
      .				 TM_FMT(SNGL(line_delta(axis)),2,8,slen)
-	         mybuff = mybuff(:mlen) //
+	            mybuff = mybuff(:mlen) //
      .				 TM_FMT(SNGL(line_delta(axis)),2,8,slen)
 #endif
-	         mlen = MIN( maxlen, mlen+slen )
+	            mlen = MIN( maxlen, mlen+slen )
 * ... units
-	         IF ( line_units(axis) .EQ. ' ' ) THEN
-	            units = 'delta'
-	         ELSE
-	            IF ( line_unit_code(axis) .EQ. 0 ) THEN
-	                units = line_units(axis)
+	            IF ( line_units(axis) .EQ. ' ' ) THEN
+	               units = 'delta'
 	            ELSE
-	                units = un_name(line_unit_code(axis))
+	               IF ( line_unit_code(axis) .EQ. 0 ) THEN
+	                  units = line_units(axis)
+	               ELSE
+	                  units = un_name(line_unit_code(axis))
+	               ENDIF
+	            ENDIF
+	            slen = TM_LENSTR1(units)
+	            REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
+     .				   ' '// units(:slen)//' '
+	            mybuff = mybuff(:mlen) //
+     .				   ' '// units(:slen)//' '
+	            mlen = MIN( maxlen, mlen+slen+2 )
+	         ENDIF
+* ... axis
+	         REGRID_COMMENTS = REGRID_COMMENTS(:mlen) // 'on '
+     .					//ww_dim_name(idim)
+	         mybuff = mybuff(:mlen) // 'on '
+     .					//ww_dim_name(idim)
+	         mlen = MIN( maxlen, mlen+4 )
+* ... @transform
+	         IF (non_atlin) THEN
+	            trans = alg_regrid_code(cx_regrid_trans(idim,cx))
+	            IF ( trans(:4) .NE. unspecified_name4 ) THEN
+	              REGRID_COMMENTS = REGRID_COMMENTS(:mlen)//'@'//trans
+	              mybuff = mybuff(:mlen)//'@'//trans
+	              mlen = MIN(maxlen,mlen+1+TM_LENSTR1(trans) )
 	            ENDIF
 	         ENDIF
-	         slen = TM_LENSTR1(units)
-	         REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
-     .				   ' '// units(:slen)//' '
-	         mybuff = mybuff(:mlen) //
-     .				   ' '// units(:slen)//' '
-	         mlen = MIN( maxlen, mlen+slen+2 )
-	      ENDIF
-* ... axis
-	      REGRID_COMMENTS = REGRID_COMMENTS(:mlen) // 'on '
-     .					//ww_dim_name(idim)
-	      mybuff = mybuff(:mlen) // 'on '
-     .					//ww_dim_name(idim)
-	      mlen = MIN( maxlen, mlen+4 )
-* ... @transform
-	      IF (non_atlin) THEN
-	         trans = alg_regrid_code(cx_regrid_trans(idim,cx))
-	         REGRID_COMMENTS = REGRID_COMMENTS(:mlen)//'@'//trans
-	         mybuff = mybuff(:mlen)//'@'//trans
-	         mlen = MIN(maxlen,mlen+1+TM_LENSTR1(trans) )
 	      ENDIF
 	   ENDIF
  120	CONTINUE
@@ -198,6 +211,10 @@
 	   slen = 6
 	   sep = ' '
 	   DO idim = 1, nferdims
+	      IF (cx_regrid_trans(idim,cx) .EQ. pauxrgrd_fmrc ) THEN
+	         mybuff = mybuff(:slen) // ' 2d'
+	         slen = slen + 3
+	      ENDIF
 	      IF (cx_aux_cat(idim,cx) .NE. unspecified_int4) THEN
 	         mybuff = mybuff(:slen) // sep //
      .			  VAR_CODE(cx_aux_cat(idim,cx),
@@ -208,6 +225,12 @@
 	   ENDDO
 	   REGRID_COMMENTS = REGRID_COMMENTS(:mlen)//mybuff
 	   mlen = MIN(maxlen,mlen+slen)
+	   REGRID_COMMENTS = REGRID_COMMENTS(:mlen)//' field'
+	   mlen = MIN(maxlen,mlen+6)
+	   IF (cx_naux(cx) .GT. 1) THEN
+	      REGRID_COMMENTS = REGRID_COMMENTS(:mlen)//'s'
+	      mlen = MIN(maxlen,mlen+1)
+	   ENDIF
 	ENDIF
 
 * signal if the string has been truncated for being too long

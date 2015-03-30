@@ -39,6 +39,7 @@
 * V692 7/14 *acm* new transform @WGT, ticket 2180
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 *       12/14 *sh* _DQ_ and _SQ_ alternatives to double and single quote marks
+*        3/15 *sh* pauxrgrd_fmrc for forecast-time index orthoganalizing
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -400,12 +401,14 @@
      .			pauxrgrd_linear,
      .			pauxrgrd_average,
      .			pauxrgrd_pwlave,
-     .			pauxrgrd_thick_ave
+     .			pauxrgrd_thick_ave,
+     .			pauxrgrd_fmrc
 	PARAMETER     (	max_auxregrid_trans= max_regrid_trans+6,
      .			pauxrgrd_linear    = max_regrid_trans+1,
      .			pauxrgrd_average   = max_regrid_trans+2,
      .			pauxrgrd_pwlave    = max_regrid_trans+3,
-     .			pauxrgrd_thick_ave = max_regrid_trans+4 )
+     .			pauxrgrd_thick_ave = max_regrid_trans+4,
+     .			pauxrgrd_fmrc      = max_regrid_trans+5 )
 
 * auxiliary variable pointer merging
 *	paux_stat_na	   - no inherited aux coord

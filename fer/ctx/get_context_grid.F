@@ -140,8 +140,9 @@
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V690 12/13 *sh* set default regrid transforms for aux var regridding transform
 *	          set up dynamic axis if cx_delta=pauto_1pt_ax
-*      4/14  *sh* return the standard grid if this is "false regridding" - 1 pt curvi
-* V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
+*      4/14  *sh* return standard grid if "false regridding" - 1 pt curvi
+* V695  *acm* 2/15 cx_calendar stores info about formatting of T and F axes
+* V695+  *sh* 3/15 assign regrid transform for T-F plane FMRC regridding
 
 	include 'errmsg.parm'
 	include 'ferret.parm'
@@ -410,6 +411,8 @@
 	   ELSEIF ( cx_regrid_trans(idim,cx) .EQ. unspecified_int4 ) THEN
 	      IF (cx_naux(cx) .EQ. 0) THEN
 	         cx_regrid_trans( idim, cx ) = prgrd_linear_interp
+	      ELSEIF (idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
+	         cx_regrid_trans( idim, cx ) = pauxrgrd_fmrc ! T-F plane 
 	      ELSE
 	         cx_regrid_trans( idim, cx ) = pauxrgrd_linear
 	      ENDIF

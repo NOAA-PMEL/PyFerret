@@ -50,6 +50,7 @@
 *
 * revision 0.0 - 9/2013 based upon IS_REGRID
 * for Ferret v685+
+* v695+ *sh* 3/15 - support for TF (FMRC) regridding added
 
 	IMPLICIT NONE
 
@@ -76,9 +77,12 @@
      .		aux_mr_list(nferdims), mr1, mr2, mr3,
      .		aux_cx_list(nferdims), cx1, cx2, cx3,
      .		isp_ptr, axis_list(nferdims),
-     .		dst_cx, src_cx, com_cx, dst_mr, src_mr, frame_bottom, impl_grid,
-     .		slen, s1, sn, naux, ptr
+     .		dst_cx, src_cx, com_cx, dst_mr, src_mr, frame_bottom, 
+     .		impl_grid, slen, s1, sn, naux, ptr
 	CHARACTER*128 VAR_CODE, src_name, com_name
+
+* temporary cuz totalview doesn't see equiv vars
+	INTEGER im1, im2, im3, ic1, ic2, ic3 
 
         EQUIVALENCE
      .          ( aux_mr_list(1), mr1 ),
@@ -124,7 +128,7 @@
 	   lo_isp   = is_obj(isp)    ! the isp level of the regrid operation
 	ENDIF
 	lo_cx    = is_cx(lo_isp)
-	naxis    = cx_naux( lo_cx )
+	naux    = cx_naux( lo_cx )
 	IF (cx_type(lo_cx) .EQ. ptype_string) GOTO 5010
 
 * set pointers to the auxiliary variables
@@ -134,20 +138,48 @@
 	   aux_mr_list(i) = dummy_mr
 	   aux_cx_list(i) = unspecified_int4 
  5	CONTINUE
+**************
+* remove these lines
+	im1 = mr1
+	im2 = mr2
+	im3 = mr3
+	ic1 = cx1
+	ic2 = cx2
+	ic3 = cx3
+**************
         i = 0
-        DO 10 idim = 1, nferdims
+        DO idim = 1, nferdims
            IF (cx_aux_var(idim,lo_cx) .NE. unspecified_int4) THEN
               i = i + 1
               isp_ptr = lo_isp + i 
               axis_list(i) = idim
-              aux_mr_list(i) = is_mr(isp_ptr)  ! see equivs
-              aux_cx_list(i) = is_cx(isp_ptr)  ! see equivs
+	      IF (idim .EQ. f_dim
+     .	    .AND. cx_aux_var(t_dim,lo_cx) .NE. unspecified_int4) THEN
+* ... note that with TF regridding there are 2 dimensions with cx_aux_var but
+*     only one auxiliary variable, TIME2D, so both axes point to same aux var
+                 aux_mr_list(i) = aux_mr_list(1)
+                 aux_cx_list(i) = aux_cx_list(1)	         
+	      ELSE
+                 aux_mr_list(i) = is_mr(isp_ptr)  ! see equivs
+                 aux_cx_list(i) = is_cx(isp_ptr)  ! see equivs
+	      ENDIF
           ENDIF
- 10    CONTINUE
-* naxis should equal i at this point, but no need to confirm
+	ENDDO
+**************
+* remove these lines
+	im1 = mr1
+	im2 = mr2
+	im3 = mr3
+	ic1 = cx1
+	ic2 = cx2
+	ic3 = cx3
+**************
+* ... TF-regridding (FMRC) introduces the idea that the number of axes being
+*     regridded (T&F) may differ from the number of aux variables (time2d)
+	naxis = i
 
-* sanity check
-        IF (naxis.GT.1) CALL ERRMSG(ferr_prog_limit, status,
+* sanity checks
+        IF (naux.GT.1) CALL ERRMSG(ferr_prog_limit, status,
      .                       'for now only 1 aux var supported', *5000)
 *!        IF (naxis.GT.3) CALL ERRMSG(ferr_prog_limit, status,
 *!     .                       'more than 3 auxiliary regrid vars', *5000)
@@ -160,7 +192,7 @@
 * put isp up one so that the component just received stays on the stack
 	   isp = isp + 1
 
-	   IF (is_sum(lo_isp) .LT. naxis ) THEN
+	   IF (is_sum(lo_isp) .LT. naux ) THEN
 *  *** SET UP TO GET THE NEXT AUXILIARY VARIABLE ***
 	      is_sum(lo_isp) = is_sum(lo_isp) + 1  ! the next auxvar
 	      CALL GET_AUX_VAR_CONTEXT( lo_cx, hi_cx, is_sum(lo_isp),
@@ -173,7 +205,17 @@
 	      is_phase(lo_isp) = isphase_get_source_var
 
 * set up 4D array limits as unsubscripted variables in COMMON
-              CALL NON_ARRAY_SUBSC( aux_mr_list, naxis )
+              CALL NON_ARRAY_SUBSC( aux_mr_list, naux )
+
+**************
+* remove these lines
+	im1 = mr1
+	im2 = mr2
+	im3 = mr3
+	ic1 = cx1
+	ic2 = cx2
+	ic3 = cx3
+**************
 
 * create the context for the source data needed to perform the regrid
               CALL AUX_REGRID_LIMS( lo_cx, hi_cx, axis_list, naxis,

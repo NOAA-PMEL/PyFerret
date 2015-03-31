@@ -58,6 +58,14 @@ typedef struct CCFBBrush_Struct {
     cairo_pattern_t *pattern;
 } CCFBBrush;
 
+extern const char *CCFBFontId;
+typedef struct CCFBFont_Struct {
+    const char *id;
+    cairo_font_face_t *fontface;
+    double fontsize;
+    int underline;
+} CCFBFont;
+    
 /* Structure for creating a linked list of image or recording surfaces */
 typedef struct CCFBPicture_Struct {
     struct CCFBPicture_Struct *next;

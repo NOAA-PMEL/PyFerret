@@ -16,6 +16,8 @@
  */
 grdelBool cairoCFerBind_deleteFont(CFerBind *self, grdelType font)
 {
+    CCFBFont *fontobj;
+
     /* Sanity check */
     if ( (self->enginename != CairoCFerBindName) &&
          (self->enginename != PyQtCairoCFerBindName) ) {
@@ -24,9 +26,22 @@ grdelBool cairoCFerBind_deleteFont(CFerBind *self, grdelType font)
         return 0;
     }
 
-    /* TODO: implement */
-    strcpy(grdelerrmsg, "cairoCFerBind_deleteFont: unexpected error, "
-                        "stubbed function");
-    return 0;
+    fontobj = (CCFBFont *) font;
+    if ( fontobj->id != CCFBFontId ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_deleteFont: unexpected error, "
+                            "font is not CCFBFont struct");
+        return 0;
+    }
+
+    if ( fontobj->fontface != NULL )
+        cairo_font_face_destroy(fontobj->fontface);
+
+    /* Wipe the id to detect errors */
+    fontobj->id = NULL;
+
+    /* Free the memory */
+    PyMem_Free(font);
+
+    return 1;
 }
 

@@ -7,7 +7,7 @@
 #include "cferbind.h"
 #include "cairoCFerBind.h"
 
-/* Instatiate the global value */
+/* Instantiate the global value */
 const char *CCFBPenId = "CCFBPenId";
 
 /*

@@ -70,6 +70,6 @@ grdelBool cairoCFerBind_textSize(CFerBind *self, const char *text, int textlen,
     *widthptr = extents.x_advance;
     *heightptr = extents.height;
 
-    return 0;
+    return 1;
 }
 

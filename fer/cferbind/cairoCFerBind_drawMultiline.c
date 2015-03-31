@@ -59,7 +59,7 @@ grdelBool cairoCFerBind_drawMultiline(CFerBind *self, double ptsx[],
         return 0;
     }
 
-    /* Convertions factor for those surfaces that expect points instead of pixels */
+    /* Conversion factor for those surfaces that expect points instead of pixels */
     if ( instdata->imageformat == CCFBIF_PNG ) {
         unitfactor = 1.0;
     }

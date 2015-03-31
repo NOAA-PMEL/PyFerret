@@ -56,7 +56,7 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
         cairo_set_source_rgb(instdata->context, colorobj->redfrac,
                              colorobj->greenfrac, colorobj->bluefrac);
 
-    /* Convertions factor for those surfaces that expect points instead of pixels */
+    /* Conversion factor for those surfaces that expect points instead of pixels */
     if ( instdata->imageformat == CCFBIF_PNG ) {
         unitfactor = 1.0;
     }

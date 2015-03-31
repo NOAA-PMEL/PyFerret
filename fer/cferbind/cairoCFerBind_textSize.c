@@ -7,9 +7,10 @@
 
 /*
  * Return the text size if drawn to this "Window" using the given font.
- *
- * Currently stubbed since it is currently not used by Ferret;
- * thus always fails.
+ * The value returned at widthptr is amount to advance in X direction 
+ * to draw any subsequent text after this text (not the width of the
+ * text glyphs as drawn).  The value returned at heightptr is the height 
+ * of the text glyphs as drawn.
  *
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
@@ -18,6 +19,9 @@ grdelBool cairoCFerBind_textSize(CFerBind *self, const char *text, int textlen,
                                  grdelType font, double *widthptr, double *heightptr)
 {
     CairoCFerBindData *instdata;
+    CCFBFont  *fontobj;
+    char      *textString;
+    cairo_text_extents_t extents;
 
     /* Sanity check */
     if ( (self->enginename != CairoCFerBindName) &&
@@ -34,10 +38,38 @@ grdelBool cairoCFerBind_textSize(CFerBind *self, const char *text, int textlen,
             return 0;
         }
     }
+    fontobj = (CCFBFont *) font;
+    if ( fontobj->id != CCFBFontId ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_textSize: unexpected error, "
+                            "font is not CCFBFont struct");
+        return 0;
+    }
+    if ( textlen < 1 ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_textSize: textlen is not positive");
+        return 0;
+    }
 
-    /* TODO: implement */
-    strcpy(grdelerrmsg, "cairoCFerBind_textSize: unexpected error, "
-                        "stubbed function");
+    /* Get the text as a null-terminated string */
+    textString = (char *) PyMem_Malloc((textlen + 1) * sizeof(char));
+    if ( textString == NULL ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_textSize: "
+                            "out of memory for a copy of the text");
+        return 0;
+    }
+    strncpy(textString, text, textlen);
+    textString[textlen] = '\0';
+
+    /* Get the extents and advance values of this text if drawn using the current font */
+    cairo_save(instdata->context);
+    cairo_set_font_face(instdata->context, fontobj->fontface);
+    cairo_set_font_size(instdata->context, fontobj->fontsize);
+    cairo_text_extents(instdata->context, textString, &extents);
+    cairo_restore(instdata->context);
+
+    /* Assign the X advance value (and not the width) to *widthptr */
+    *widthptr = extents.x_advance;
+    *heightptr = extents.height;
+
     return 0;
 }
 

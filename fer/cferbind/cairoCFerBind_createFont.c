@@ -11,9 +11,6 @@ const char *CCFBFontId = "CCFBFontId";
 /*
  * Create a font object for this "Window".
  *
- * Currently stubbed since it is currently not used by Ferret;
- * thus always fails.
- *
  * Returns a font object if successful.   If an error occurs,
  * grdelerrmsg is assigned an appropriate error message and NULL
  * is returned.
@@ -33,8 +30,12 @@ grdelType cairoCFerBind_createFont(CFerBind *self, const char *familyname, int n
                             "self is not a valid CFerBind struct");
         return NULL;
     }
-    if ( (familyname == NULL) || (namelen < 0) ) {
+    if ( familyname == NULL ) {
         strcpy(grdelerrmsg, "cairoCFerBind_createFont: familyname is not given");
+        return NULL;
+    }
+    if ( namelen < 0 ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_createFont: invalid familyname length given");
         return NULL;
     }
     if ( fontsize <= 0.0 ) {
@@ -48,7 +49,6 @@ grdelType cairoCFerBind_createFont(CFerBind *self, const char *familyname, int n
                             "out of memory for a CCFBFont structure");
         return NULL;
     }
-    fontobj->id = CCFBFontId;
 
     family = (char *) PyMem_Malloc(namelen+1);
     if ( family == NULL ) {
@@ -70,11 +70,21 @@ grdelType cairoCFerBind_createFont(CFerBind *self, const char *familyname, int n
         weight = CAIRO_FONT_WEIGHT_BOLD;
 
     fontobj->fontface = cairo_toy_font_face_create(family, slant, weight);
+    if ( cairo_font_face_status(fontobj->fontface) != CAIRO_STATUS_SUCCESS ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_createFont: unable to create "
+                            "a font face with the given family name, slant, and weight");
+        /* Should the "nil" font face object be destroyed? */
+        cairo_font_face_destroy(fontobj->fontface);
+        PyMem_Free(family);
+        PyMem_Free(fontobj);
+        return NULL;
+    }
 
     PyMem_Free(family);
 
     fontobj->fontsize = fontsize;
     fontobj->underline = underlined;
+    fontobj->id = CCFBFontId;
 
     return fontobj;
 }

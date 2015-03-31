@@ -8,9 +8,6 @@
 /*
  * Delete a font object for this "Window".
  *
- * Currently stubbed since it is currently not used by Ferret;
- * thus always fails.
- *
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
  */
@@ -33,8 +30,10 @@ grdelBool cairoCFerBind_deleteFont(CFerBind *self, grdelType font)
         return 0;
     }
 
-    if ( fontobj->fontface != NULL )
+    if ( fontobj->fontface != NULL ) {
         cairo_font_face_destroy(fontobj->fontface);
+        fontobj->fontface = NULL;
+    }
 
     /* Wipe the id to detect errors */
     fontobj->id = NULL;

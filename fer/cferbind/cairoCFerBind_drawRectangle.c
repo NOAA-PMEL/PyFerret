@@ -85,7 +85,7 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
         return 0;
     }
 
-    /* Convertions factor for those surfaces that expect points instead of pixels */
+    /* Conversion factor for those surfaces that expect points instead of pixels */
     if ( instdata->imageformat == CCFBIF_PNG ) {
         unitfactor = 1.0;
     }

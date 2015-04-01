@@ -32,6 +32,8 @@
 !  2) use  GO line_samples    to view the first 6 pen numbers
 !       Higher pen numbers cycle with thicker lines (max 18)
 !  3) For more control over basemaps use "GO basemap"
+! 
+! ACM 4/15 Fix ticket 2256: modulo replications for continents if argument 1 is not given
 
 ! test argument before performing any actions
 query/ignore $1%1|black|red|green|blue|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|N|<GO mp_land [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
@@ -103,7 +105,6 @@ $1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
 
 
 ! Draw any lines outside 0 to 360
-IF ($1"0|*>1") THEN
 
 IF `landi_addx NE 0` THEN 
   set grid continent_lon
@@ -129,8 +130,6 @@ IF `landi_subx NE 0` THEN
   ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
   $1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
 ENDIF
-
-ENDIF  ! lines outside 0 to 360
 
 ! **** now the optional country borders
 set grid COUNTRY_LON

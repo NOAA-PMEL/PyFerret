@@ -5,17 +5,24 @@ C at the text start plus this width.  The height will always
 C be the ascent plus descent for the font and is independent 
 C of the text.
 C
-C At this time, a completely canned routine to be generalized as needed.
 C
-        SUBROUTINE FERTEXTSIZE(success)
+        SUBROUTINE FERTEXTSIZE(in_text, infont_name, fontsize, 
+     .          italic, bold, under, retwidth, retheight, success)
 
         IMPLICIT NONE
         INCLUDE 'ferret.parm'
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'xprog_state.cmn'
-        INCLUDE 'fgrdel.cmn'
+        INCLUDE 'fgrdel.cmn'	
 
-        INTEGER success
+        REAL*4 fontsize
+	REAL*4 retwidth, retheight
+	INTEGER italic, bold, under
+
+	INTEGER success
+
+	CHARACTER*(*) in_text, infont_name
+
         INTEGER TM_LENSTR
 
         CHARACTER*256 errmsg
@@ -26,13 +33,10 @@ C
 
         CHARACTER*64 fontname
         INTEGER fontnamelen
-        REAL*4 fontsize
-        INTEGER italicint, boldint, underlineint
         REAL*8 myfont
 
         CHARACTER*64 mytext
         INTEGER mytextlen
-        REAL*4 retwidth, retheight
 
 C       Use the currently active window -
 C       probably just leave this as-is
@@ -49,18 +53,13 @@ C       Some sanity checks on the window ID and window
 
 C       Create a font (Courier 24pt bold italic) to use for the string -
 C       probably store at least one standard font for reuse for each window
-        fontname = 'Courier'
+        fontname = infont_name
         fontnamelen = TM_LENSTR(fontname)
-        fontsize = 24.0
-C       Italic? - zero = no, non-zero = yes
-        italicint = 1
-C       Bold? - zero = no, non-zero = yes
-        boldint = 1
-C       Underlined? - zero = no, non-zero = yes
+
 C       Not sure if underline support is provided by Cairo
-        underlineint = 0
+        under = 0
         CALL FGDFONT(myfont, mywindow, fontname, fontnamelen, 
-     .               fontsize, italicint, boldint, underlineint)
+     .               fontsize, italic, bold, under)
         IF ( myfont .EQ. NULLOBJ ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)
@@ -70,7 +69,7 @@ C       Not sure if underline support is provided by Cairo
         ENDIF
 
 C       Text to use
-        mytext = "PyFerret!"
+        mytext = in_text
         mytextlen = TM_LENSTR(mytext)
 C       Measure the text
         CALL FGDTEXTSIZE(success, mywindow, mytext, mytextlen, 
@@ -85,10 +84,10 @@ C       Measure the text
         ENDIF
  
 C       Reporting the text size to err_lun to validate
-        WRITE(errmsg, 100) retwidth, retheight
-  100   FORMAT('Text width = ',F8.1,', height = ',F8.1)
-        errmsglen = TM_LENSTR(errmsg)
-        CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+c        WRITE(errmsg, 100) retwidth, retheight
+c  100   FORMAT('Text width = ',F8.1,', height = ',F8.1)
+c        errmsglen = TM_LENSTR(errmsg)
+c        CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
 
 C       When done with the font, if not a standard font, delete it; 
 C       should always succeed if given a valid font

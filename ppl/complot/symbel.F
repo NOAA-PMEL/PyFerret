@@ -72,6 +72,7 @@ C *acm* 7/02   Take out the MARKER calls that made dots. This caused trouble
 C              when making encapsulated postscript from postscript.  
 C *acm* 10/14  Ticket 2203: on the 64-bit machines, the \\ for backspace
 C              should be \ .
+* V6.95 *acm* 3/15 Changes for PyFerret fonts. 
 C
 C	CALL SYMBEL(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
 C
@@ -98,6 +99,15 @@ c	CHARACTER PLTFIL*80
 	CHARACTER ICOM*2,ICHR*1,STRING*(*),DNME(35)*2,DNUM(35)*2
 	CHARACTER DNAME(35)*80,KIF(4)*2,IFN(4)*2
 	CHARACTER*1 KSUB,KSUPER,KBKSP,KCALL,PENS(16)
+	
+* for Cairo fonts. Other font arguments are stored in common pyfonts.cmn:
+
+	LOGICAL		TM_HAS_STRING
+	INTEGER		STR_SAME, TM_LENSTR
+	REAL		fontsiz, stx, sty, swid, shgt, xu, yu
+	INTEGER		ia, ifnt, slen, upstr
+	CHARACTER	buff1*512
+
 
         REAL XBASE, YBASE
         INTEGER IPT
@@ -117,19 +127,17 @@ c	CHARACTER PLTFIL*80
 	INTEGER COLOLD
 	LOGICAL ASCFNT
 	CHARACTER*265 err_msg
+	CHARACTER*512 buff
 	INTEGER status
 
-C
-C
 	INCLUDE 'PLTCOM.DAT'
+	INCLUDE 'pyfonts.cmn'
         INCLUDE 'errmsg.parm'
-
-C
-	DATA DNUM,DNME/35*'@@',35*'@@'/
+        DATA DNUM,DNME/35*'@@',35*'@@'/
 #ifdef unix
-	DATA KSUB,KSUPER,KBKSP,KCALL/'_','^','\\','@'/
+       DATA KSUB,KSUPER,KBKSP,KCALL/'_','^','\\','@'/
 #else
-	DATA KSUB,KSUPER,KBKSP,KCALL/'_','^','\','@'/
+       DATA KSUB,KSUPER,KBKSP,KCALL/'_','^','\','@'/
 #endif
 	DATA KIF,IFN/'SR','SG','@@','@@','01','12','@@','@@'/
 	DATA PENS/'1','2','3','4','5','6','7','8','9','A',
@@ -141,14 +149,113 @@ C
 * Mod to specify external references for SCALE and RANGE * Linux *kob* 1.97
         external scale, size
 
+* If font is "Hershey", continue with old-school PPLUS Hershey fonts.
+* Otherwise go do the Cairo Font  
+*   ? Fonts as installed under linux system?
+
+        IF (pyfont) THEN
+
+	   pyfnt_rot = degres
+	   IF (degres .NE. 0) pyfnt_rot = -1.* degres
+
+c Set font size according to height
+
+           fontsiz = 20.
+
+           swid = 0.
+           shgt = 0.
+           buff = 'M'
+           CALL FERTEXTSIZE (buff, pyfnt_fontname, fontsiz, 
+     .          pyfnt_italic, pyfnt_bold, pyfnt_under, swid, shgt, status)
+           IF (status .EQ. 0) GOTO 3100
+           swid = swid/1000
+           shgt = shgt/1000
+
+           fontsiz = 2.* fontsiz* (height/shgt)
+	   IF (INT(fontsiz) .LT. 1) fontsiz = 1.
+
+C Ignore any codes for Ferret-Hershey style Pen and Font changes 
+	   buff = string
+	   slen = TM_LENSTR(string)
+	   ia = INDEX (buff,'@')
+
+	   DO WHILE (ia .GT. 0)
+	      IF (ia .EQ. 1) THEN
+	         buff = buff(ia+3:slen)
+	      ELSE
+	         buff1 = buff(1:ia-1)
+	         buff = buff1(1:ia-1)//buff(ia+3:slen)
+	      ENDIF
+	      
+	      slen = TM_LENSTR(buff)
+	      ia = INDEX (buff,'@')
+	   ENDDO
+
+C Change any ^2 to a super-2 and ^3 to super-3.
+
+	   slen = TM_LENSTR(buff)
+	   ia = INDEX (buff,'^')
+
+	   DO WHILE (ia .GT. 0)
+	      IF (buff(ia+1:ia+1) .EQ. '2') THEN
+	         upstr = 178
+              ELSE IF (buff(ia+1:ia+1) .EQ. '3') THEN
+	         upstr = 179
+              ELSE
+	         GOTO 600
+	      ENDIF
+	      IF (ia .EQ. 1) THEN
+	         buff = CHAR(upstr)//buff(ia+2:slen)
+	      ELSE
+	         buff1 = buff(1:ia-1)
+	         buff = buff1(1:ia-1)//CHAR(upstr)//buff(ia+2:slen)
+	      ENDIF
+	      
+	      slen = TM_LENSTR(buff)
+	      ia = INDEX (buff,'^')
+	   ENDDO
+  6000	   CONTINUE
+
+C This section returns the string length from swid
+
+	   IF (NCHAR .LE. 0) THEN
+
+	      swid = 0.
+	      shgt = 0.
+	      IF (TM_LENSTR(buff) .GT. 0)
+     .	        CALL FERTEXTSIZE (buff, pyfnt_fontname, fontsiz, 
+     .          pyfnt_italic, pyfnt_bold, pyfnt_under, swid, shgt, status)
+	      IF (status .EQ. 0) GOTO 3100
+
+	      swid = swid/1000
+	      shgt = shgt/1000
+	      
+	      x = swid
+	   ELSE
+
+C Draw the text
+
+              CALL USER_TO_INCH (x, y, stx, sty)
+              stx = 1000.* stx
+              sty = 1000.* sty
+              CALL FERDRAWTEXT(buff, pyfnt_fontname, fontsiz, 
+     .          pyfnt_red, pyfnt_grn, pyfnt_blu, pyfnt_opq, stx, sty, 
+     .          pyfnt_rot, pyfnt_italic, pyfnt_bold, pyfnt_under, status)
+              IF (status .EQ. 0) GOTO 3200
+	   
+	   ENDIF
+	   ifirst = 1
+	   GOTO 3000
+
+	ENDIF
+
 * Initialize 
 
-        ICHR = ' '
-
+        ICHR = ' ' 
 C
-C	DEFINE THE SCALE FACTOR TO BE THE AMOUNT OF MAGNIFICATION
-C	REQUIRED TO CONVERT THE CHARACTERS IN THE CHARACTER DEFI-
-C	NITION TABLE TO THE SIZE SPECIFIED BY THE USER.
+C      DEFINE THE SCALE FACTOR TO BE THE AMOUNT OF MAGNIFICATION
+C      REQUIRED TO CONVERT THE CHARACTERS IN THE CHARACTER DEFI-
+C      NITION TABLE TO THE SIZE SPECIFIED BY THE USER.
 C
         CALL INQSCL(XSCL,YSCL,ABIAS,BBIAS,XLO,YLO) ! Bug fix? 11.95
         CALL SCALE(XSCL,YSCL,ABIAS,BBIAS,0.,0.)
@@ -160,7 +267,7 @@ C	IF(.NOT.READIR)GOTO 2020
 	IF(.NOT.READIR) THEN
 #ifdef unix
 C *JD* Mod below fix for unix  -- use environment variable 3.19.91	
-	   call getenv ('PLOTFONTS',fontdir)
+		   call getenv ('PLOTFONTS',fontdir)
        	   dirlen = lnblk (fontdir,255)
 
 C *kob* 1/02 - cygwin 1.3.x requires "\" for unix directory accesses
@@ -351,22 +458,6 @@ C
 	YTEMP = (XSYM * SYMSIN + YSYM * SYMCOS) * SYMSC + YORG
 50	CONTINUE
 
-* for decimal points, find the average x and Y location; will
-* plot a point at this location.
-C  xxx  
-C  xxx  Dont do this: it causes trouble with encapsulated postscript.
-C  xxx  and anyway, it was to correct trouble with the postscript translation
-C  xxx  for one printer...
-C  xxx
-C  xxx        IF (ICHR .EQ. '.') THEN
-C  xxx           IF (IPT .EQ. 1) THEN
-C  xxx             XBASE = 0.
-C  xxx             YBASE = 0.
-C  xxx           ENDIF
-C  xxx           XBASE = XBASE + XTEMP
-C  xxx           YBASE = YBASE + YTEMP
-C  xxx        ENDIF
-
 C
 C	MOVE THE PEN TO THE NEW COORDINATES.
 C
@@ -385,18 +476,6 @@ C
 70	CONTINUE
 
 C  End of character
-C xxx If it was a decimal point, draw a tiny dot at its center.  
-C  xxx
-C  xxx        IF (ICHR .EQ. '.' .AND. IPT .GT. 1) THEN
-C  xxx           XBASE = XBASE/ FLOAT(IPT-1)
-C  xxx           YBASE = YBASE/ FLOAT(IPT-1)
-C  xxx           XBASE = XBASE/ XSCALE
-C  xxx           YBASE = YBASE/ YSCALE
-C  xxx           call marker (1)              ! could call with 7 for bigger dot.
-C  xxx           CALL PLOT(XBASE, YBASE, 0, 0)
-C  xxx           CALL MARK(99)
-C  xxx           call marker (1)
-C  xxx        ENDIF
 C
 C	ADJUST THE REFERENCE POSITION TO TAKE INTO ACCOUNT THE
 C	CHARACTER THAT WAS JUST DRAWN.
@@ -581,7 +660,16 @@ C
 	IF(COLRF.AND.(COLOLD.NE.COLOUR))CALL COLOR(COLOLD)
 300     CALL SCALE(XSCL,YSCL,ABIAS,BBIAS,XLO,YLO) ! bug fix(?) 11.95
 
+ 3000	CONTINUE
 	RETURN
+ 3100	err_msg = 'Error getting text size from PyFerret font call '
+     .   //buff(:tm_lenstr(buff))
+	CALL errmsg (ferr_nomessge, status, err_msg, *5002)
+ 3200	err_msg = 'Error drawing text with PyFerret Font call '
+     .   //buff(:tm_lenstr(buff))
+
+	CALL errmsg (ferr_nomessge, status, err_msg, *5002)
+
 C
  5000   IF (dirlen .GT. 1) THEN
 	   CALL WARN ('Could not open font file. Check the Ferret environment.')
@@ -609,4 +697,3 @@ C
 	SYMWID=SS
 	RETURN
 	END
-

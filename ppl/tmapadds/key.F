@@ -114,6 +114,7 @@
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 *                  For centered labels add a level to corresp to the upper bound of 
 *                  the top color on thecolorbar, excluding any upper inf triangle.
+* V6.95 *acm* 3/15 Changes for PyFerret fonts. Scoot the vertical color key over to the left.
 
         IMPLICIT NONE
 
@@ -139,7 +140,8 @@
         include         'gkscm2.cmn'
 
 	include        'gkspar.inc'
-
+	include        'pyfonts.cmn'
+	
 	integer ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
      .          lab_add, nlab, i, kount, lev1, levn, nspace, shd_lev_hi
 
@@ -361,6 +363,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	   ENDIF
 
 	   ksiz_test = 0.06 * xcsize
+	   IF (pyfont) ksiz_test = 0.06
            IF (klab_size .NE. 0) THEN
 	      IF (ABS(klab_size) .LT. ksiz_test) ksiz_test = ABS(klab_size)
 	   ENDIF
@@ -372,6 +375,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	   ENDIF
 
 	   ksiz_test = 0.075 * xcsize
+	   IF (pyfont) ksiz_test = 0.075
            IF (klab_size .NE. 0) ksiz_test = ABS(klab_size)
 	   kount = 0
 	   DO WHILE (karht .LT. ksiz_test .AND. karht.GT.0. .AND. kount.LT.10)
@@ -479,12 +483,12 @@ C	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
            ENDIF
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
-	   if (makep .eq. 'SHADE' .or. makep .eq. 'FILLPOL' .OR.
-     .         makep .EQ. 'POLYGON' .or. makep .eq. 'RIBPLOT') then
-	      call point_convert (xx,yy,xxx,yyy)
-	   else if (makep .eq. 'FILL') then
+
+	   if (makep .eq. 'FILL' .AND. .NOT.pyfont) THEN	   
 	      xxx = xx
 	      yyy = yy
+	   else
+              call point_convert (xx,yy,xxx,yyy)
 	   endif
 
 	   call symbel (xxx,yyy,0.0,karht,str_len,text(1:str_len))
@@ -513,15 +517,16 @@ C	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 	   rem = vwidth - (xlen + xorg)
 	   xmaxx = 0.25*xlen
 
-           kx_lo_def = 1000.0 * (xorg + xlen + 0.2*min (rem,xmaxx))
-           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,vwidth-0.08*rem)
+           kx_lo_def = 1000.0 * (xorg + xlen + 0.05*min (rem,xmaxx))
+           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,vwidth-0.25*rem)
+
            ky_lo_def = 1000.0 *  yorg
            ky_hi_def = 1000.0 * (yorg + ylen)
         else
 	   rem = width - (xlen + xorg)
 	   xmaxx = 0.25*xlen
-           kx_lo_def = 1000.0 * (xorg + xlen + 0.2*min (rem,xmaxx))
-           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,width-0.08*rem)
+           kx_lo_def = 1000.0 * (xorg + xlen + 0.1*min (rem,xmaxx))
+           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,width-0.1*rem)
            ky_lo_def = 1000.0 *  yorg
            ky_hi_def = 1000.0 * (yorg + ylen)
         end if
@@ -719,13 +724,13 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
 
-	   if (makep .eq. 'SHADE' .or. makep .eq. 'FILLPOL' .OR.
-     .         makep .EQ. 'POLYGON' .or. makep .eq. 'RIBPLOT') then
-              call point_convert (xx,yy,xxx,yyy)
-	   else if (makep .eq. 'FILL') then
+	   if (makep .eq. 'FILL' .AND. .NOT.pyfont) THEN	   
 	      xxx = xx
 	      yyy = yy
+	   else
+              call point_convert (xx,yy,xxx,yyy)
 	   endif
+
 	   call symbel (xxx,yyy,0.0,karht,str_len,txt_out(1:str_len))
 
 1020	continue

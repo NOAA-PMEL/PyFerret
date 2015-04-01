@@ -65,6 +65,8 @@
 * V687  3/14 *acm* add SET AXIS/NAME
 * V691+ 8/14 *acm* Fix ticket 2194: SHOW with /OUTFILE and not /XML. 
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+* V6.95 *acm* 3/15 Changes for PyFerret fonts. Add SET TEXT, SHOW TEXT
+
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -120,6 +122,12 @@
      .			slash_show_axis_file,
      .			slash_show_axis_append,
      .			slash_show_axis_clobber,
+     .
+     .			slash_show_text_font,
+     .			slash_show_text_color,
+     .			slash_show_text_italic,
+     .			slash_show_text_bold,
+     .			slash_show_text_opaque,
      .
      .			slash_show_var_diag,
      .			slash_show_var_user,
@@ -228,6 +236,13 @@
      .                  slash_set_redirect_file,
      .                  slash_set_redirect_append,
      .                  slash_set_redirect_clobber
+
+	INTEGER		
+     .			slash_set_text_font,
+     .			slash_set_text_color,
+     .			slash_set_text_italic,
+     .			slash_set_text_bold,
+     .			slash_set_text_opaque
 
 	INTEGER		slash_cont_over_plot,
      .			slash_cont_set_up,
@@ -441,6 +456,12 @@
      .			slash_show_axis_append = 1+15,
      .			slash_show_axis_clobber = 1+16,
      .
+     .			slash_show_text_font   = 1,
+     .			slash_show_text_color  = 2,
+     .			slash_show_text_italic = 3,
+     .			slash_show_text_bold   = 4,
+     .			slash_show_text_opaque = 5,
+     .
      .			slash_list_head   = 1+13,
      .			slash_list_nohead = 1+14,
      .			slash_list_title  = 1+20,
@@ -524,7 +545,14 @@
      .                  slash_set_redirect_journal = 2,
      .                  slash_set_redirect_file    = 3,
      .                  slash_set_redirect_append  = 4,
-     .                  slash_set_redirect_clobber = 5 )
+     .                  slash_set_redirect_clobber = 5)
+
+	PARAMETER     (
+     .                  slash_set_text_font     = 1,
+     .                  slash_set_text_color    = 2,
+     .                  slash_set_text_italic   = 3,
+     .                  slash_set_text_bold     = 4,
+     .                  slash_set_text_opaque   = 5 )
 
 	PARAMETER     ( slash_cont_over_plot	= 1+12,
      .			slash_cont_set_up	= 1+13,

@@ -48,12 +48,19 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port
 C *acm* 11/05    Changes for deg-min-sec labelling. for these long
 C                labels make the character size a bit smaller.
+* V6.95 *acm* 3/15 Changes for PyFerret fonts. 
+
+	INCLUDE 'pyfonts.cmn'
+
         REAL charsize
 	CHARACTER STR*(*),ITMP*20,ITMP2*10,SUB*20,IC*1
 	character ESTR*1,MESTR*2,lestr*1,lmestr*2
 	data lestr,lmestr/'e','-e'/
 	DATA ESTR,MESTR/'E','-E'/
-c
+
+	CHARACTER*1	degstr
+	INTEGER		ndeg, nc
+
         charsize = CSZE
 	IF(NCHR.GT.20)RETURN
 	ITMP=' '
@@ -62,7 +69,23 @@ c
 	NS=0
 	L=0
 	J=1
-	NE=0
+	NEAST=0
+
+c If we are drawing with PyFerret fonts, convert the # to a degree symbol,
+c and just go on to SYMBEL. 
+
+        IF (pyfont) THEN
+	   degstr = CHAR(176)
+	   ITMP = STR
+	   ndeg = INDEX(str, '#')
+	   IF (ndeg .GT. 0 ) THEN
+	      ITMP = str(1:ndeg-1)//degstr//str(ndeg+1:nchr)
+           ENDIF
+	   ndeg = 0
+	   NC = NCHR
+	   GOTO 250
+	ENDIF
+
 	DO 10 NM=1,20
 	IF(NM.GT.NCHR)GOTO 100
 	IC=STR(NM:NM)
@@ -85,7 +108,7 @@ c
 	J=J+1
 10	CONTINUE
 100	IF(IC.EQ.' '.OR.NM.GT.NCHR)GOTO 200
-	NE=2
+	NEAST=2
 	IF(STR(1:1).NE.estr.AND.STR(1:2).NE.mestr
      *	.and.str(1:1).ne.lestr.and.str(1:2).ne.lmestr)THEN
 	ITMP(J:J+1)=' x'
@@ -114,12 +137,16 @@ c
 	L=1
 	ITMP2='0'
 1000  IF (ns .GT. 6) charsize = 0.9* charsize
-      C=COS(DEG*1.7453292E-2) 
+ 250  C=COS(DEG*1.7453292E-2) 
       S=SIN(DEG*1.7453292E-2) 
-      WID2=SYMWID(charsize,NE,'10') 
-      WID1=SYMWID(charsize,NC,ITMP)+WID2 
-      WID3=WID1+SYMWID(charsize*.75,L,ITMP2) 
-      WID=WID3+SYMWID(charsize,NS,SUB)
+      IF (pyfont) THEN
+         WID = SYMWID(charsize,NC,ITMP)
+      ELSE
+         WID2=SYMWID(charsize,NEAST,'10') 
+         WID1=SYMWID(charsize,NC,ITMP)+WID2 
+         WID3=WID1+SYMWID(charsize*.75,L,ITMP2) 
+         WID=WID3+SYMWID(charsize,NS,SUB)
+      ENDIF
       IF(ITYPE.EQ.3)RETURN 
       GO TO (1,2,3)ITYPE+1 
 1     XL=X-WID*C*.5/XF+charsize*.5*S/XF 
@@ -131,9 +158,9 @@ c
 3     XL=X+charsize*.5*S/XF 
       YL=Y-charsize*.5*C/YF 
 400   CALL SYMBEL(XL,YL,DEG,charsize,NC,ITMP) 
-	IF(NE.NE.0)THEN
+	IF(NEAST.NE.0)THEN
       CALL SYMBEL(XL+(WID1-WID2)*C/XF,YL+(WID1-WID2)*S/YF, 
-     *DEG,charsize,NE,'10') 
+     *DEG,charsize,NEAST,'10') 
       XLT=XL+WID1*C/XF-charsize*.625*S/XF 
       YLT=YL+WID1*S/YF+charsize*.625*C/YF 
       CALL SYMBEL(XLT,YLT,DEG,charsize*.75,L,ITMP2) 
@@ -141,5 +168,6 @@ c
 	XL=XL+WID3*C/XF
 	YL=YL+WID3*S/YF
 	CALL SYMBEL(XL,YL,DEG,charsize,NS,SUB)
+
       RETURN 
       END 

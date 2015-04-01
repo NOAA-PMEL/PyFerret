@@ -218,6 +218,8 @@
 * V687  3/14 *acm* add SET AXIS/NAME
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * V695 *acm*  2/15 Add DEFINE AGGREGATE/F alias, FMRC
+* V695 *acm*  3/15 Changes for PyFerret fonts. Add SHOW TEXT, 
+*                  Add SET TEXT/FONT/COLOR/ITALIC/BOLD/OPAQUE
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -450,15 +452,18 @@
 	   DATA subcommands      (nsub_at1 +16)	/ 'GIFFILE'	/
 	   DATA num_qualifs      (nsub_at1 +16)	/ nqual1q	/
 	   DATA qualifier_pointer(nsub_at1 +16)	/ nqual_at1q	/
-* SET ****							  ! unused (r)
-           DATA subcommands      (nsub_at1 +17)	/ '****'	/
+* SET TEXT							  ! set text properties for PyFerret fonts
+           DATA subcommands      (nsub_at1 +17)	/ 'TEXT'	/
            DATA num_qualifs      (nsub_at1 +17)	/ nqual1r	/
            DATA qualifier_pointer(nsub_at1 +17)	/ nqual_at1r	/
-* SET **** / ****
-                DATA qualifiers  (nqual_at1r+0)	/ '****'	/
-                DATA qualifiers  (nqual_at1r+1)	/ '****'	/
-                DATA qualifiers  (nqual_at1r+2)	/ '****'	/
-                DATA qualifiers  (nqual_at1r+3)	/ '****'	/
+* SET TEXT /FONT /COLOR /ITALIC /BOLD /OPAQ
+                DATA qualifiers  (nqual_at1r+0)	/ 'FONT'	/
+                DATA qualifiers  (nqual_at1r+1)	/ 'COLOR'	/
+                DATA qualifiers  (nqual_at1r+2)	/ 'ITALIC'	/
+                DATA qualifiers  (nqual_at1r+3)	/ 'BOLD'	/
+                DATA qualifiers  (nqual_at1r+4)	/ 'OPAQUE'	/
+                DATA qualifiers  (nqual_at1r+6)	/ '****'	/
+                DATA qualifiers  (nqual_at1r+5)	/ '****'	/
 * SET ****							  ! unused (s)
 	   DATA subcommands      (nsub_at1 +18)	/ '****'	/
 	   DATA num_qualifs      (nsub_at1 +18)	/ nqual1s	/
@@ -689,14 +694,28 @@
 		DATA qualifiers  (nqual_at2u+4)	/ 'DETAILS'	/
 		DATA qualifiers  (nqual_at2u+5)	/ '****'	/
 		DATA qualifiers  (nqual_at2u+6)	/ '****'	/
+
+* SHOW TEXT         ! view text properties for PyFerret fonts
+           DATA subcommands      (nsub_at2 +21)/ 'TEXT'	/
+           DATA num_qualifs      (nsub_at2 +21)	/ nqual2v	/
+           DATA qualifier_pointer(nsub_at2 +21)	/ nqual_at2v	/
+* SET TEXT /FONT /COLOR /ITALIC /BOLD /OPAQ
+                DATA qualifiers  (nqual_at2v+0)	/ 'FONT'	/
+                DATA qualifiers  (nqual_at2v+1)	/ 'COLOR'	/
+                DATA qualifiers  (nqual_at2v+2)	/ 'ITALIC'	/
+                DATA qualifiers  (nqual_at2v+3)	/ 'BOLD'	/
+                DATA qualifiers  (nqual_at2v+4)	/ 'OPAQUE'	/
+                DATA qualifiers  (nqual_at2v+6)	/ '****'	/
+                DATA qualifiers  (nqual_at2v+5)	/ '****'	/
+
 * SHOW QUERIES							 
-	   DATA subcommands      (nsub_at2 +21)	/ 'QUERIES'	/
-	   DATA num_qualifs      (nsub_at2 +21)	/ nqual2v	/
-	   DATA qualifier_pointer(nsub_at2 +21)	/ nqual_at2v	/
+	   DATA subcommands      (nsub_at2 +22)	/ 'QUERIES'	/
+	   DATA num_qualifs      (nsub_at2 +22)	/ nqual2w	/
+	   DATA qualifier_pointer(nsub_at2 +22)	/ nqual_at2w	/
 * SHOW QUERIES / ****
-		DATA qualifiers  (nqual_at2v+0)	/ 'ALL'		/
-		DATA qualifiers  (nqual_at2v+1)	/ '****'	/
-		DATA qualifiers  (nqual_at2v+2)	/ '****'	/
+		DATA qualifiers  (nqual_at2w+0)	/ 'ALL'		/
+		DATA qualifiers  (nqual_at2w+1)	/ '****'	/
+		DATA qualifiers  (nqual_at2w+2)	/ '****'	/
 
 * CANCEL	 - command # 3
 	DATA commands(3)			/ 'CANCEL'	/

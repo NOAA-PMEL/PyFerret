@@ -73,6 +73,7 @@
 *                  ul_xorigin, and ul_yorigin to plot_setup.parm,
 *                  since they are used as parameters, and prefixed with 
 *                  dflt_ those that need to be scaled by pplscale or textscale.
+* V6.95 *acm* 3/15 Changes for PyFerret fonts. 
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -192,7 +193,8 @@
 
 * ... title of data set
 	   CALL GET_DSET_TITLE( dset_num, line_buff, lablen )
-	   CALL BOX_LABEL( ppl_movlab-ppl_datitl, line_buff(:lablen),
+	   IF (TM_LENSTR(line_buff) .GT. 0) 
+     .	   CALL BOX_LABEL( ppl_movlab-ppl_datitl, line_buff(:lablen),
      .			   0.5, 0.3*pplscale, 
      .			   0.8*xlen, 1.5*dflt_letsize_label*textscale,
      .			   dflt_letsize_label*textscale, ppl_centered,

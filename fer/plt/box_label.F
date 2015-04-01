@@ -56,12 +56,14 @@
 *                    instead of creating multiple moveable labels. 
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V6.95 *acm* 3/15 Changes for PyFerret fonts. 
 
         include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'plot_setup.parm'
 	include 'xprog_state.cmn'
 	include 'xrisc.cmn'
+        include 'pyfonts.cmn'
 
 * calling argument declarations
 	INTEGER lab_type, justify, xaxrel, yaxrel, k, numlines
@@ -111,7 +113,7 @@
 
         nfont = 0
 
-	IF ( .NOT.mode_font_ascii ) THEN
+	IF ( .NOT.mode_font_ascii .OR. .NOT.pyfont) THEN
 	   font = ' '
 	ELSEIF ( lab_type .EQ. ppl_title ) THEN
 	   font = '@AC'
@@ -167,7 +169,7 @@
 * it's too big - we will try to write it as 2 lines
 * ... break into pieces as close to halves as possible
 	las_frac = 999.0
- 100	IF ( .NOT.mode_font_ascii ) THEN
+ 100	IF ( .NOT.mode_font_ascii .OR. .NOT.pyfont) THEN
 	   rht = ht
 	   frac_width = DBLE(SYMWID(rht,brk_pt,string(:brk_pt) ))
 	ELSEIF ( lab_type .EQ. ppl_title ) THEN

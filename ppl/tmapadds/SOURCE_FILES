@@ -40,6 +40,7 @@ point_convert.F\
 pplld_pts.F\
 ppllocator.F\
 pplp_ver_data.F\
+pyfont_block_data.F\
 restore_saved_line_colors.F\
 ribbon_missing.F\
 save_line_color.F\
@@ -74,6 +75,7 @@ shade_sub.F\
 strmar.F\
 upnsquish.F\
 use_linear_levels.F\
+user_to_inch.F\
 vec_arrows.F\
 whoi2bc.F\
 ws_fill_rep.F\

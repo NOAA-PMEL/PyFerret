@@ -77,6 +77,7 @@
 *                 (SNGL must have a double-precision or complex argument)
 * V68  *acm* 5/12  Dont write the font to xlab, ylab if they are blank strings.
 * V686 *acm* 12 13 set up the label symbols LABNUM_E and LABNUM_F
+* V6.95 *acm* 3/15 Changes for PyFerret fonts. 
 
 	include 'tmap_dims.parm'
 	include 'plot_setup.parm'
@@ -86,6 +87,7 @@
 	include 'axis_inc.decl'	! axis lengths
 	include 'AXIS.INC'		! axis lengths
 	include 'xrisc.cmn'		! to fix RISC FORTRAN bug
+        include 'pyfonts.cmn'
 
 * PLOT+ parameter fom PPLV11INC:PARAMPL5.DAT
 	INTEGER		nlabs
@@ -120,7 +122,6 @@
      .	     labname(ppl_offset)/'OFFSET'/,
      .	     labname(ppl_dodsurl)/'DODS'/,
      .	     labname(ppl_calendar)/'CALEND'/
-
 
 * if label has single tic marks double them so PLOT+ doesnt interpret symbols
 	IF ( INDEX(string,"'date'") .GT. 0 ) THEN
@@ -168,6 +169,8 @@
 	ELSE
 	   font = '@AS'
 	ENDIF
+
+	IF (pyfont) font = ' '
 
 * Let user select the font if they want
 

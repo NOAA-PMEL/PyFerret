@@ -189,6 +189,8 @@
 * V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 *        2/15 *sh* attempted but rejected hack to deal with left-over dset=-1
+* V6.95 *acm* 3/15 Changes for PyFerret fonts. New SHOW TEXT
+
 
         IMPLICIT NONE
 
@@ -221,6 +223,7 @@
         include 'EF_Util.cmn'
         include 'netcdf.inc'
         INCLUDE 'fgrdel.cmn'
+        include 'pyfonts.cmn'
 
 * local parameter declarations:
 	LOGICAL	    brief
@@ -293,7 +296,8 @@
      .          base_cx, base_isp, grid_blocks
         INTEGER saved_num_indices, saved_index_list(max_uvar),
      .                             arr_buff(max_uvar)
-	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p, rsize
+	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p, rsize,
+     .		v1, v2, v3
 	CHARACTER EXPR_NAME*8, TM_FMT*12, VAR_CODE*128,
      .		default*10, show_str*2048, arg*128, name*128, argsym*120
 	CHARACTER	varatt*641, varname*512, attname*128,
@@ -339,7 +343,7 @@
 * select subcommand
 	GOTO ( 100, 200, 300, 400, 500, 600, 700, 800, 900,1000,
      .        1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,
-     .	      2100,2200 )
+     .	      2100,2200,2300 )
      .								subcmnd_num
 
 * SHOW '    ' - (no action)
@@ -2035,12 +2039,65 @@ c     .                               sbrief, sdetail, i2)
 	ENDIF
 	IF ( limited_show ) RETURN
 
-* SHOW QUERIES
+* SHOW TEXT 
  2200   CONTINUE
-	DO 2210 i = 1, max_queries
+
+	CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			'PyFerret Text Settings: ', 0)
+
+c* ... Font
+	CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			'     Font:           '//pyfnt_fontname, 0)
+* ... Color
+	
+* Convert rgb back to % values
+	v1 = pyfnt_red*100.
+	v2 = pyfnt_grn*100.
+	v3 = pyfnt_blu*100.
+	WRITE (risc_buff, 2201) v1, v2, v3
+ 2201	FORMAT ('     Color (%RGB)    ', 2(f5.1,','), f5.1 )
+
+	len = TM_LENSTR1(risc_buff)
+	CALL GET_COLOR_NAME (v1, v2, v3, name, len0)
+	IF (len0 .GT. 0) risc_buff = risc_buff(:len)//' ('//name(:len0)//')'
+	CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			risc_buff, 0)
+
+* ... Italic, Bold
+	IF (pyfnt_italic .EQ. 1) THEN
+	   CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			'     Italic setting   ON', 0)
+
+	ELSE
+	   CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			'     Italic setting   OFF', 0)
+
+	ENDIF
+
+	IF (pyfnt_bold .EQ. 1) THEN
+	   CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			'     Bold setting     ON', 0)
+
+	ELSE
+	   CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			'     Bold setting     OFF', 0)
+
+        ENDIF
+
+* ... Opacity
+	WRITE (risc_buff, 2203) pyfnt_opq* 100.
+ 2203	FORMAT ('     Opacity setting, ', (f5.1,' %') )
+	CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			risc_buff, 0)
+
+	IF ( limited_show ) RETURN
+
+* SHOW QUERIES
+ 2300   CONTINUE
+	DO 2310 i = 1, max_queries
 	   IF ( queries(i) .NE. unspecified_name4 )CALL SPLIT_LIST
      .			(pttmode_explct, show_lun, queries(i), 0)
- 2210	CONTINUE
+ 2310	CONTINUE
 	IF ( limited_show ) RETURN
 
 

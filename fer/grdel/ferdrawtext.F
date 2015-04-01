@@ -1,9 +1,23 @@
 C
 C Draws text in a window.
 C
-C At this time, a completely canned routine to be generalized as needed.
-C
-        SUBROUTINE FERDRAWTEXT(success)
+C  fontsize	In points
+C  redfrac
+C  greenfrac	RGB in percent
+C  bluefrac
+C  opaqfrac	opacity in percent
+C  startx	position in thousandths of an inch from bottom left
+C  starty
+C  rotate	rotation in degrees clockwise from horizontal
+C  italic 
+C  bold	lettering linestyle flags: 0=false, 1=true
+C  under
+
+
+        SUBROUTINE FERDRAWTEXT(in_text, infont_name, fontsize, 
+     .    redfrac, greenfrac, bluefrac, opaqfrac,
+     .    startx, starty, rotate, 
+     .    italic, bold, under, success)
 
         IMPLICIT NONE
         INCLUDE 'ferret.parm'
@@ -11,7 +25,14 @@ C
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
-        INTEGER success
+
+        REAL*4 fontsize
+        REAL*4 redfrac, greenfrac, bluefrac, opaqfrac
+        REAL*4 startx, starty, rotate
+	INTEGER italic, bold, under
+	INTEGER success
+
+	CHARACTER*(*) in_text, infont_name
         INTEGER TM_LENSTR
 
         CHARACTER*256 errmsg
@@ -22,16 +43,11 @@ C
 
         CHARACTER*64 fontname
         INTEGER fontnamelen
-        REAL*4 fontsize
-        INTEGER italicint, boldint, underlineint
         REAL*8 myfont
-
-        REAL*4 redfrac, greenfrac, bluefrac, opaqfrac
         REAL*8 mycolor
 
         CHARACTER*64 mytext
         INTEGER mytextlen
-        REAL*4 startx, starty, rotate
 
 C       Draw to the currently active window -
 C       probably just leave this as-is
@@ -48,18 +64,11 @@ C       Some sanity checks on the window ID and window
 
 C       Create a font (Courier 24pt bold italic) to use for the string -
 C       probably store at least one standard font for reuse for each window
-        fontname = 'Courier'
+        fontname = infont_name
         fontnamelen = TM_LENSTR(fontname)
-        fontsize = 24.0
-C       Italic? - zero = no, non-zero = yes
-        italicint = 1
-C       Bold? - zero = no, non-zero = yes
-        boldint = 1
-C       Underlined? - zero = no, non-zero = yes
-C       Not sure if underline support is provided by Cairo
-        underlineint = 0
+
         CALL FGDFONT(myfont, mywindow, fontname, fontnamelen, 
-     .               fontsize, italicint, boldint, underlineint)
+     .               fontsize, italic, bold, under)
         IF ( myfont .EQ. NULLOBJ ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)
@@ -68,13 +77,10 @@ C       Not sure if underline support is provided by Cairo
             RETURN
         ENDIF
 
-C       Create a color (opaque red) for the text - 
+C       Create a color for the text with red, green, blue fractions - 
 C       or could use one of the standard colors for the window; 
 C       e.g., colorobjs(2,activewindow)
-        redfrac = 1.0
-        greenfrac = 0.0
-        bluefrac = 0.0
-        opaqfrac = 1.0
+
         CALL FGDCOLOR(mycolor, mywindow, 
      .                redfrac, greenfrac, bluefrac, opaqfrac)
         IF ( mycolor .EQ. NULLOBJ ) THEN
@@ -87,13 +93,9 @@ C       e.g., colorobjs(2,activewindow)
         ENDIF
  
 C       Text to draw
-        mytext = "PyFerret!"
+        mytext = in_text
         mytextlen = TM_LENSTR(mytext)
-C       Position in thousand's of an inch from bottom left
-        startx = 4500.0
-        starty = 7500.0
-C       Rotate in degrees clockwise from horizontal
-        rotate = 0.0
+
 C       Draw the text
         CALL FGDDRAWTEXT(success, mywindow, mytext, mytextlen, 
      .                   startx, starty, myfont, mycolor, rotate)

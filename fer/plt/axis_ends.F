@@ -54,7 +54,8 @@
 *                     character too short.  this only showed up under Linux
 *        *acm* 6/01 - add logical IS_LOG  for log axis
 * V580 *acm* 12/04 Fix bug 1129; send back correct value of delta if computed here
-* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
+* V68  *acm* 1/12 changes for double-precision ferret, single-precision pplus.
+* V695+ *sh* 4/15 format long longitude axes using a delta based upon 15 deg
 
 	include 'ferret.parm'
 	include 'plot_setup.parm'
@@ -70,12 +71,12 @@
 	REAL*8		first, last, delta
 
 * internal variable declarations:
-	LOGICAL		BKWD_AXIS
+	LOGICAL		BKWD_AXIS, GEOG_LABEL
 	CHARACTER	val_buff*45
 	INTEGER		axtp, status
 	REAL*4		x1, x2, uminr, umaxr, dint
-	REAL*8		firstl, lastl, epsilon, eps2
-	PARAMETER	(epsilon=1.e-35)
+	REAL*8		firstl, lastl, epsilon, eps2, span
+	PARAMETER	(epsilon=1.e-45)
 
 	STATUS = ferr_ok 
 
@@ -107,6 +108,7 @@
              IF (ABS(firstl - first) .GT. eps2) first = first + 1.
 	   ENDIF
        ENDIF
+       span = ABS(last-first)
 
 * Convert to single precision and reverse order if a depth plot on Y axis
 
@@ -130,8 +132,20 @@
 
 * use Denbo's PPLUS routine to calculate the tic interval, dint
 	IF ( delta .EQ. unspecified_val8 ) THEN
-	   CALL RANGE( x1, x2, 10, uminr, umaxr, dint )
-           delta = dint
+	   IF (dat_ax .EQ. x_dim
+     .   .AND. GEOG_LABEL(x_dim,grid)
+     .	 .AND. span .GT. 75.  ) THEN
+* ... use 15-degree delta for long longitude axes
+	      IF (span .GT. 180.) THEN
+	         delta = 30.
+	      ELSE
+	         delta = 15.
+	      ENDIF
+	      dint = delta
+	   ELSE
+	      CALL RANGE( x1, x2, 10, uminr, umaxr, dint )
+              delta = dint
+	   ENDIF
 	ELSE
 	   dint = delta
 	ENDIF

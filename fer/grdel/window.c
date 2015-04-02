@@ -87,16 +87,19 @@ void fgderrmsg_(char *errmsg, int *errmsglen)
  *     title: display title for the Window
  *     titlelen: actual length of the title
  *     visible: display Window on start-up?
+ *     noalpha: do not use the alpha channel (opacity) in colors
  *
  * Returns a pointer to the window object created.
  * If an error occurs, NULL is returned and
  * grdelerrmsg contains an explanatory message.
  */
 grdelType grdelWindowCreate(const char *engine, int enginelen,
-               const char *title, int titlelen, grdelBool visible)
+                            const char *title, int titlelen, 
+                            grdelBool visible, grdelBool noalpha)
 {
     GDWindow *window;
     PyObject *visiblebool;
+    PyObject *noalphabool;
 
     /* Allocate memory for this GDWindow */
     window = (GDWindow *) PyMem_Malloc(sizeof(GDWindow));
@@ -115,7 +118,7 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
      * This will fail if it is a Python-based engine.
      */
     window->bindings.cferbind = cferbind_createWindow(engine, enginelen,
-                                                      title, titlelen, visible);
+                                         title, titlelen, visible, noalpha);
     if ( window->bindings.cferbind != NULL ) {
         /* Success - engine found; done */
 #ifdef VERBOSEDEBUG
@@ -144,10 +147,14 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
         visiblebool = Py_True;
     else
         visiblebool = Py_False;
+    if ( noalpha )
+        noalphabool = Py_True;
+    else
+        noalphabool = Py_False;
     window->bindings.pyobject = 
             PyObject_CallMethod(pyferret_graphbind_module_pyobject, 
-                                "createWindow", "s#s#O", engine, enginelen,
-                                title, titlelen, visiblebool);
+                                "createWindow", "s#s#OO", engine, enginelen,
+                                title, titlelen, visiblebool, noalphabool);
     if ( window->bindings.pyobject == NULL ) {
         sprintf(grdelerrmsg, "grdelWindowCreate: error when calling createWindow "
                              "in pyferret.graphbind: %s", pyefcn_get_error());
@@ -1016,17 +1023,18 @@ grdelBool grdelWindowSetWidthFactor(grdelType window, float widthfactor)
  *     title: display title for the Window
  *     titlelen: actual length of the title
  *     visible: display Window on start-up? If zero, no; if non-zero, yes.
+ *     noalpha: do not use the alpha channel (opacity) in colors ?
  * Output Arguments:
  *     window: the window object created, or zero if failure.
  *             Use fgderrmsg_ to retreive the error message.
  */
 void fgdwincreate_(void **window, char *engine, int *enginelen,
-                   char *title, int *titlelen, int *visible)
+                   char *title, int *titlelen, int *visible, int *noalpha)
 {
     grdelType mywindow;
 
-    mywindow = grdelWindowCreate(engine, *enginelen,
-                                 title, *titlelen, *visible);
+    mywindow = grdelWindowCreate(engine, *enginelen, title, 
+                                 *titlelen, *visible, *noalpha);
     *window = mywindow;
 }
 

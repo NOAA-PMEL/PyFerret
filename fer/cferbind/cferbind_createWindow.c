@@ -27,7 +27,8 @@ const int lenPyQtCairoCFerBindName = 11;
  * error message and NULL is returned.
  */
 CFerBind *cferbind_createWindow(const char *enginename, int engnamelen,
-                                const char *windowname, int winnamelen, int visible)
+                                const char *windowname, int winnamelen, 
+                                int visible, int noalpha)
 {
     CFerBind *bindings;
     int k;
@@ -36,7 +37,7 @@ CFerBind *cferbind_createWindow(const char *enginename, int engnamelen,
     if ( (engnamelen == lenCairoCFerBindName) &&
          (strncmp(enginename, CairoCFerBindName, lenCairoCFerBindName) == 0) ) {
         /* Create a bindings instance for a Cairo engine */
-        bindings = cairoCFerBind_createWindow();
+        bindings = cairoCFerBind_createWindow(noalpha);
         return bindings;
     }
 
@@ -44,7 +45,7 @@ CFerBind *cferbind_createWindow(const char *enginename, int engnamelen,
     if ( (engnamelen == lenPyQtCairoCFerBindName) &&
          (strncmp(enginename, PyQtCairoCFerBindName, lenPyQtCairoCFerBindName) == 0) ) {
         /* Create a bindings instance for a PipedImager engine */
-        bindings = pyqtcairoCFerBind_createWindow(windowname, winnamelen, visible);
+        bindings = pyqtcairoCFerBind_createWindow(windowname, winnamelen, visible, noalpha);
         return bindings;
     }
 

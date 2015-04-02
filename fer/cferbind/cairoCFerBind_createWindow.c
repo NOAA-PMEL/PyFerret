@@ -13,7 +13,7 @@
  * successful.  If an error occurs, grdelerrmsg is assigned
  * an appropriate error message and NULL is returned.
  */
-CFerBind *cairoCFerBind_createWindow(void)
+CFerBind *cairoCFerBind_createWindow(int noalpha)
 {
     CFerBind *bindings;
     CairoCFerBindData *instdata;
@@ -85,8 +85,8 @@ CFerBind *cairoCFerBind_createWindow(void)
     /* Default Cairo surface type */
     instdata->imageformat = CCFBIF_REC;
     /* default image size and minimum allowed value */
-    instdata->imagewidth = (int) (10.5 * CCFB_WINDOW_DPI);
-    instdata->imageheight = (int) (8.5 * CCFB_WINDOW_DPI);
+    instdata->imagewidth = (int) (10.8 * CCFB_WINDOW_DPI);
+    instdata->imageheight = (int) (8.8 * CCFB_WINDOW_DPI);
     instdata->minsize = 128;
     /* default clear color of opaque white */
     instdata->lastclearcolor.id = CCFBColorId;
@@ -95,7 +95,10 @@ CFerBind *cairoCFerBind_createWindow(void)
     instdata->lastclearcolor.bluefrac = 1.0;
     instdata->lastclearcolor.opaquefrac = 1.0;
     /* default line width scaling factor */
-    instdata->widthfactor = CCFB_WINDOW_DPI * 0.75 / 72.0;
+    instdata->widthfactor = CCFB_WINDOW_DPI * 0.72 / 72.0;
+
+    /* save the decision about the alpha channel */
+    instdata->noalpha = noalpha;
 
     return bindings;
 }

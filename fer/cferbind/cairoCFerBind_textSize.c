@@ -19,9 +19,10 @@ grdelBool cairoCFerBind_textSize(CFerBind *self, const char *text, int textlen,
                                  grdelType font, double *widthptr, double *heightptr)
 {
     CairoCFerBindData *instdata;
-    CCFBFont  *fontobj;
-    char      *textString;
-    cairo_text_extents_t extents;
+    CCFBFont    *fontobj;
+    PangoLayout *layout;
+    int pangowidth;
+    int pangoheight;
 
     /* Sanity check */
     if ( (self->enginename != CairoCFerBindName) &&
@@ -49,27 +50,15 @@ grdelBool cairoCFerBind_textSize(CFerBind *self, const char *text, int textlen,
         return 0;
     }
 
-    /* Get the text as a null-terminated string */
-    textString = (char *) PyMem_Malloc((textlen + 1) * sizeof(char));
-    if ( textString == NULL ) {
-        strcpy(grdelerrmsg, "cairoCFerBind_textSize: "
-                            "out of memory for a copy of the text");
-        return 0;
-    }
-    strncpy(textString, text, textlen);
-    textString[textlen] = '\0';
-
     /* Get the extents and advance values of this text if drawn using the current font */
-    cairo_save(instdata->context);
-    cairo_set_font_face(instdata->context, fontobj->fontface);
-    cairo_set_font_size(instdata->context, fontobj->fontsize);
-    cairo_text_extents(instdata->context, textString, &extents);
-    cairo_restore(instdata->context);
+    layout = pango_cairo_create_layout(instdata->context);
+    pango_layout_set_font_description(layout, fontobj->fontdesc);
+    pango_layout_set_text(layout, text, textlen);
+    pango_layout_get_size(layout, &pangowidth, &pangoheight);
+    g_object_unref(layout);
 
-    /* Assign the X advance value (and not the width) to *widthptr */
-    *widthptr = extents.x_advance;
-    *heightptr = extents.height;
-
+    *widthptr = (double) pangowidth / PANGO_SCALE;
+    *heightptr = (double) pangoheight / PANGO_SCALE;
     return 1;
 }
 

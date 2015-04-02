@@ -95,12 +95,13 @@ typedef struct CFerBind_struct {
  * instance and any other appropriate initialization for this "Window". 
  */
 CFerBind *cferbind_createWindow(const char *enginename, int engnamelen,
-                                const char *windowname, int winnamelen, int visible);
+                                const char *windowname, int winnamelen, 
+                                int visible, int noalpha);
 
 /* The createWindow function for the Cairo engine */
-CFerBind *cairoCFerBind_createWindow(void);
+CFerBind *cairoCFerBind_createWindow(int noalpha);
 /* The createWindow function for the PyQtCairo engine */
 CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen,
-                                         int visible);
+                                         int visible, int noalpha);
 
 #endif

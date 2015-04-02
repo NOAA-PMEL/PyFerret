@@ -35,7 +35,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         super(PyFerretBindings, self).__init__()
         self.__window = None
 
-    def createPipedViewerWindow(self, viewertype, title, visible):
+    def createPipedViewerWindow(self, viewertype, title, visible, noalpha):
         '''
         Creates a PipedViewer of viewertype as the window of this
         instance of the bindings.
@@ -44,6 +44,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
             viewertype: type of PipedViewer to use 
             title: display title for the Window
             visible: display Window on start-up?
+            noalpha: do not use the alpha channel in colors?
 
         Raises a RuntimeError if an active window is already associated
         with these bindings, or if there were problems with creating
@@ -59,6 +60,8 @@ class PyFerretBindings(AbstractPyFerretBindings):
                                       "title":str(title) } )
         if visible:
             self.__window.submitCommand( {"action":"show"} )
+        if noalpha:
+            self.__window.submitCommand( {"action":"noalpha"} )
         self.checkForErrorResponse()
         return True
 
@@ -797,13 +800,14 @@ class PViewerPQPyFerretBindings(PyFerretBindings):
     PyFerretBindings using a PipedViewerPQ as the viewer.
     '''
 
-    def createWindow(self, title, visible):
+    def createWindow(self, title, visible, noalpha):
         '''
         Creates PyFerret bindings using a PipedViewerPQ.
 
         Arguments:
             title: display title for the Window
             visible: display Window on start-up?
+            noalpha: do not use the alpha channel in colors?
 
         Raises a RuntimeError if an active window is already associated
         with these bindings, or if there were problems with creating
@@ -812,33 +816,8 @@ class PViewerPQPyFerretBindings(PyFerretBindings):
         Returns True.
         '''
         result = self.createPipedViewerWindow("PipedViewerPQ",
-                                              title, visible)
+                                       title, visible, noalpha)
         return result
-
-
-class PNoDisplayPQPyFerretBindings(PyFerretBindings):
-    '''
-    PyFerretBindings using a PipedNoDisplayPQ as the viewer.
-    '''
-
-    def createWindow(self, title, visible):
-        '''
-        Creates PyFerret bindings using a PipedNoDisplayPQ.
-
-        Arguments:
-            title: display title for the Window
-            visible: display Window on start-up?
-
-        Raises a RuntimeError if an active window is already associated
-        with these bindings, or if there were problems with creating
-        the window.
-
-        Returns True.
-        '''
-        result = self.createPipedViewerWindow("NoDisplayPQ",
-                                              title, visible)
-        return result
-
 
 
 class PImagerPQPyFerretBindings(PyFerretBindings):
@@ -856,13 +835,14 @@ class PImagerPQPyFerretBindings(PyFerretBindings):
     for the new scene to be displayed.
     '''
 
-    def createWindow(self, title, visible):
+    def createWindow(self, title, visible, noalpha):
         '''
         Creates PyFerret bindings using a PipedImagerPQ.
 
         Arguments:
             title: display title for the Window
             visible: display Window on start-up?
+            noalpha: do not use the alpha channel in colors?
 
         Raises a RuntimeError if an active window is already associated
         with these bindings, or if there were problems with creating
@@ -871,7 +851,7 @@ class PImagerPQPyFerretBindings(PyFerretBindings):
         Returns True.
         '''
         result = self.createPipedViewerWindow("PipedImagerPQ",
-                                              title, visible)
+                                       title, visible, noalpha)
         return result
 
 
@@ -954,7 +934,7 @@ if __name__ == "__main__":
         print "Testing bindings for %s" % viewertype
         # Create a viewer window
         title = viewertype + "Tester"
-        bindinst = pyferret.graphbind.createWindow(viewertype, title, True)
+        bindinst = pyferret.graphbind.createWindow(viewertype, title, True, False)
         # Resize the window to 500 x 500 pixels
         bindinst.resizeWindow(500, 500)
         # Turn on anti-aliasing

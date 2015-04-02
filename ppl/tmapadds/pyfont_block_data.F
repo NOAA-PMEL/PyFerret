@@ -17,7 +17,7 @@ C  pyfnt_rot		Real: rotation angle
 	INCLUDE 'pyfonts.cmn'
 
 	DATA pyfont/.TRUE./
-	DATA pyfnt_fontname/'Courier'/
+	DATA pyfnt_fontname/'Serif'/
 	DATA pyfnt_italic/0/
 	DATA pyfnt_bold/1/
 	DATA pyfnt_under/0/

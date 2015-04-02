@@ -15,7 +15,7 @@
  * an appropriate error message and NULL is returned.
  */
 CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen,
-                                         int visible)
+                                         int visible, int noalpha)
 {
     CFerBind *bindings;
     CairoCFerBindData *instdata;
@@ -90,8 +90,8 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
     /* Cairo surface type - must be an image surface */
     instdata->imageformat = CCFBIF_PNG;
     /* default image size and minimum allowed value */
-    instdata->imagewidth = (int) 10.5 * CCFB_WINDOW_DPI;
-    instdata->imageheight = (int) 8.5 * CCFB_WINDOW_DPI;
+    instdata->imagewidth = (int) 10.8 * CCFB_WINDOW_DPI;
+    instdata->imageheight = (int) 8.8 * CCFB_WINDOW_DPI;
     instdata->minsize = 128;
     /* default clear color of opaque white */
     instdata->lastclearcolor.id = CCFBColorId;
@@ -100,7 +100,10 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
     instdata->lastclearcolor.bluefrac = 1.0;
     instdata->lastclearcolor.opaquefrac = 1.0;
     /* default line width scaling factor */
-    instdata->widthfactor = CCFB_WINDOW_DPI * 0.75 / 72.0;
+    instdata->widthfactor = CCFB_WINDOW_DPI * 0.72 / 72.0;
+
+    /* save the decision about the alpha channel */
+    instdata->noalpha = noalpha;
 
     /*
      * Get bindings to PipedImagerPQ for displaying the image.
@@ -108,7 +111,7 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
      * PipedImager methods interacting with the viewer.
      */
     instdata->viewer = grdelWindowCreate("PipedImagerPQ", 13, windowname,
-                                         windnamelen, visible);
+                                         windnamelen, visible, noalpha);
     if ( instdata->viewer == NULL ) {
         /* grdelerrmsg already assigned */
         PyMem_Free(bindings->instancedata);

@@ -48,16 +48,17 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
     }
 
     /* Assign the (solid) color to use for the symbols */
-    if ( instdata->usealpha )
+    if ( instdata->noalpha )
+        cairo_set_source_rgb(instdata->context, colorobj->redfrac,
+                             colorobj->greenfrac, colorobj->bluefrac);
+    else
         cairo_set_source_rgba(instdata->context, colorobj->redfrac,
                               colorobj->greenfrac, colorobj->bluefrac,
                               colorobj->opaquefrac);
-    else
-        cairo_set_source_rgb(instdata->context, colorobj->redfrac,
-                             colorobj->greenfrac, colorobj->bluefrac);
 
     /* Conversion factor for those surfaces that expect points instead of pixels */
-    if ( instdata->imageformat == CCFBIF_PNG ) {
+    if ( (instdata->imageformat == CCFBIF_PNG) ||
+         (instdata->imageformat == CCFBIF_REC) ) {
         unitfactor = 1.0;
     }
     else {

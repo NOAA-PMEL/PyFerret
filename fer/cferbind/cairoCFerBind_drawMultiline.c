@@ -60,7 +60,8 @@ grdelBool cairoCFerBind_drawMultiline(CFerBind *self, double ptsx[],
     }
 
     /* Conversion factor for those surfaces that expect points instead of pixels */
-    if ( instdata->imageformat == CCFBIF_PNG ) {
+    if ( (instdata->imageformat == CCFBIF_PNG) ||
+         (instdata->imageformat == CCFBIF_REC) ) {
         unitfactor = 1.0;
     }
     else {
@@ -79,13 +80,13 @@ grdelBool cairoCFerBind_drawMultiline(CFerBind *self, double ptsx[],
     }
 
     /* Assign the line color */
-    if ( instdata->usealpha )
+    if ( instdata->noalpha )
+        cairo_set_source_rgb(instdata->context, penobj->color.redfrac,
+                             penobj->color.greenfrac, penobj->color.bluefrac);
+    else
         cairo_set_source_rgba(instdata->context, penobj->color.redfrac,
                               penobj->color.greenfrac, penobj->color.bluefrac,
                               penobj->color.opaquefrac);
-    else
-        cairo_set_source_rgb(instdata->context, penobj->color.redfrac,
-                             penobj->color.greenfrac, penobj->color.bluefrac);
     /* Assign the adjusted line width, which is in points */
     adjwidth  = penobj->width * instdata->widthfactor;
     /* width of zero is a cosmetic pen - make it 1 pixel wide */

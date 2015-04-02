@@ -69,8 +69,10 @@ class PipedImagerPQ(QMainWindow):
         # when the image is defined
         # initialize the width and height to values that will create
         # a viewer (mainWindow) of the right size
-        self.__scenewidth = int(10.5 * self.physicalDpiX())
-        self.__sceneheight = int(8.5 * self.physicalDpiY())
+        self.__scenewidth = int(10.8 * self.physicalDpiX())
+        self.__sceneheight = int(8.8 * self.physicalDpiY())
+        # by default pay attention to any alpha channel values in colors
+        self.__noalpha = False
         # initial default color for the background (opaque white)
         self.__lastclearcolor = QColor(0xFFFFFF)
         self.__lastclearcolor.setAlpha(0xFF)
@@ -210,6 +212,12 @@ class PipedImagerPQ(QMainWindow):
 
     def aboutQtMsg(self):
         QMessageBox.aboutQt(self, self.tr("About Qt"))
+
+    def ignoreAlpha(self):
+        '''
+        Return whether the alpha channel in colors should always be ignored.
+        '''
+        return self.__noalpha
 
     def updateScene(self):
         '''
@@ -712,6 +720,9 @@ class PipedImagerPQ(QMainWindow):
         elif cmndact == "show":
             if self.isHidden():
                 self.showNormal()
+        elif cmndact == "noalpha":
+             # ignore any alpha channel values in colors
+             self.__noalpha = True
         else:
             raise ValueError("Unknown command action %s" % str(cmndact))
 

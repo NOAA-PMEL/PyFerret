@@ -30,19 +30,19 @@ PYTHONINCDIR := $(shell $(PYTHON_EXE) -c "import distutils.sysconfig; print dist
 ## files just for creating a Ferret installation.
 INSTALL_FER_DIR = $(FER_DIR)
 
-## Installation directory for cairo-1.12 static library 
+## Installation directory for cairo v1.12 or later static library 
 #  (contains include and lib or lib64 subdirectories)
-# CAIRO_DIR =
-CAIRO_DIR = /usr/local/cairo_188
+CAIRO_DIR =
+# CAIRO_DIR = /usr/local/cairo-1.14.2_64
 
 ## Installation directory for pixman-1 static library 
 ## (contains include and lib or lib64 subdirectories) 
 ## used by the above Cairo library.  
 ## Leave blank to use the system pixman-1 shared library.
-## If CAIRO_DIR is not given, the system pixman-1 shared 
-## library will always be used.
+## If CAIRO_DIR is not given a value, the system pixman-1 
+## shared library will always be used.
 PIXMAN_DIR =
-# PIXMAN_DIR = /usr/local/pixman-1
+# PIXMAN_DIR = /usr/local/pixman-1_64
 
 ## Installation directory for HDF5 static libraries
 ## (contains include and lib or lib64 subdirectories)
@@ -50,8 +50,8 @@ PIXMAN_DIR =
 # HDF5_DIR = /usr
 # HDF5_DIR = /usr/local
 # HDF5_DIR = /usr/local/hdf5-1.8.9
-HDF5_DIR = /usr/local/hdf5_189
-# HDF5_DIR = /usr/local/hdf5_189_64
+# HDF5_DIR = /usr/local/hdf5_189
+HDF5_DIR = /usr/local/hdf5_189_64
 # HDF5_DIR = 
 
 ## Installation directory for NetCDF static or shared object libraries
@@ -60,8 +60,8 @@ HDF5_DIR = /usr/local/hdf5_189
 # NETCDF4_DIR = /usr
 # NETCDF4_DIR = /usr/local
 # NETCDF4_DIR = /usr/local/netcdf-4.3.2
-NETCDF4_DIR = /usr/local/netcdf_432
-# NETCDF4_DIR = /usr/local/netcdf_432_64
+# NETCDF4_DIR = /usr/local/netcdf_432
+NETCDF4_DIR = /usr/local/netcdf_432_64
 
 ## Java home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,
@@ -77,6 +77,6 @@ JAVA_HOME = /usr/lib/jvm/java
 # JAVA_HOME = /Library/Java/JavaVirtualMachines/jdk1.7.jdk/Contents/Home
 
 # PyFerret version number - do not change this
-PYFERRET_VERSION = 1.1.1
+PYFERRET_VERSION = 1.2
 
 ##

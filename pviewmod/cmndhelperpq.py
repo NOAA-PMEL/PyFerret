@@ -412,15 +412,17 @@ class CmndHelperPQ(object):
             "color": color name or 24-bit RGB integer value
                          (eg, 0xFF0088)
             "alpha": alpha value from 0 (transparent) to 255 (opaque)
+                     if viewer.ignoreAlpha True, this value is ignored
         '''
         colordata = colorinfo["color"]
         mycolor = QColor(colordata)
         if not mycolor.isValid():
             raise ValueError("Invalid color '%s'" % str(colordata))
-        try:
-            mycolor.setAlpha(int(colorinfo["alpha"]))
-        except KeyError:
-            pass
+        if not self.__viewer.ignoreAlpha():
+            try:
+                mycolor.setAlpha(int(colorinfo["alpha"]))
+            except KeyError:
+                pass
         return mycolor
 
     def computeARGB32PreMultInt(self, color):
@@ -429,17 +431,20 @@ class CmndHelperPQ(object):
         of the given QColor.
         '''
         (redint, greenint, blueint, alphaint) = color.getRgb()
-        # Multiply the RGB values by the alpha factor
-        alphafactor = alphaint / 255.0
-        redint = int( redint * alphafactor + 0.5 )
-        if redint > alphaint:
-            redint = alphaint
-        greenint = int( greenint * alphafactor + 0.5 )
-        if greenint > alphaint:
-            greenint = alphaint
-        blueint = int( blueint * alphafactor + 0.5 )
-        if blueint > alphaint:
-            blueint = alphaint
+        if self.__viewer.ignoreAlpha():
+            alphaint = 255
+        elif (alphaint < 255):
+            # Scale the RGB values by the alpha value
+            alphafactor = alphaint / 255.0
+            redint = int( redint * alphafactor + 0.5 )
+            if redint > alphaint:
+                redint = alphaint
+            greenint = int( greenint * alphafactor + 0.5 )
+            if greenint > alphaint:
+                greenint = alphaint
+            blueint = int( blueint * alphafactor + 0.5 )
+            if blueint > alphaint:
+                blueint = alphaint
         fillint = ((alphaint * 256 + redint) * 256 + \
                    greenint) * 256 + blueint
         return fillint

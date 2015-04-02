@@ -19,12 +19,8 @@ grdelBool cairoCFerBind_drawText(CFerBind *self, const char *text, int textlen,
     CairoCFerBindData *instdata;
     CCFBFont *fontobj;
     CCFBColor *colorobj;
-    char *textString;
     double unitfactor;
-    cairo_matrix_t fontsizematrix;
-    cairo_matrix_t rotatematrix;
-    cairo_font_options_t *fontoptions;
-    cairo_scaled_font_t *scaledfont;
+    PangoLayout *layout;
 
     /* Sanity check */
     if ( (self->enginename != CairoCFerBindName) &&
@@ -53,69 +49,45 @@ grdelBool cairoCFerBind_drawText(CFerBind *self, const char *text, int textlen,
                             "color is not CCFBColor struct");
         return 0;
     }
-    if ( textlen < 1 ) {
+    if ( textlen < 0 ) {
         strcpy(grdelerrmsg, "cairoCFerBind_drawText: textlen is not positive");
         return 0;
     }
 
-    /* Get the text as a null-terminated string */
-    textString = (char *) PyMem_Malloc((textlen + 1) * sizeof(char));
-    if ( textString == NULL ) {
-        strcpy(grdelerrmsg, "cairoCFerBind_drawText: "
-                            "out of memory for a copy of the text");
-        return 0;
-    }
-    strncpy(textString, text, textlen);
-    textString[textlen] = '\0';
-
     /* Conversion factor for those surfaces that expect points instead of pixels */
-    if ( instdata->imageformat == CCFBIF_PNG ) {
+    if ( (instdata->imageformat == CCFBIF_PNG) ||
+         (instdata->imageformat == CCFBIF_REC) ) {
         unitfactor = 1.0;
     }
     else {
         unitfactor = CCFB_POINTS_PER_PIXEL;
     }
 
-    /* Create the scaled font to use */
-    cairo_matrix_init_scale(&fontsizematrix, fontobj->fontsize, fontobj->fontsize);
-    cairo_matrix_init_rotate(&rotatematrix, rotation * M_PI / 180.0);
-    fontoptions = cairo_font_options_create();
-    if ( cairo_font_options_status(fontoptions) != CAIRO_STATUS_SUCCESS ) {
-        strcpy(grdelerrmsg, "cairoCFerBind_drawText: "
-                            "out of memory for a font options structure");
-        PyMem_Free(textString);
-        return 0;
-    }
-    scaledfont = cairo_scaled_font_create(fontobj->fontface, &fontsizematrix, &rotatematrix, fontoptions);
-    if ( cairo_scaled_font_status(scaledfont) != CAIRO_STATUS_SUCCESS ) {
-        strcpy(grdelerrmsg, "cairoCFerBind_drawText: "
-                            "out of memory for a font options structure");
-        cairo_font_options_destroy(fontoptions);
-        PyMem_Free(textString);
-        return 0;
-    }
-
     /* Assign the color for this text */
-    if ( instdata->usealpha )
-        cairo_set_source_rgba(instdata->context, colorobj->redfrac, 
-                              colorobj->greenfrac, colorobj->bluefrac, colorobj->opaquefrac);
-    else
+    if ( instdata->noalpha )
         cairo_set_source_rgb(instdata->context, colorobj->redfrac, 
                              colorobj->greenfrac, colorobj->bluefrac);
+    else
+        cairo_set_source_rgba(instdata->context, colorobj->redfrac, 
+                              colorobj->greenfrac, colorobj->bluefrac, 
+                              colorobj->opaquefrac);
 
     /* Move to the place to start drawing this text */
-    cairo_new_path(instdata->context);
     cairo_move_to(instdata->context, startx * unitfactor, starty * unitfactor);
 
-    /* Draw the text using this scaled font */
-    cairo_save(instdata->context);
-    cairo_set_scaled_font(instdata->context, scaledfont);
-    cairo_show_text(instdata->context, textString);
-    cairo_restore(instdata->context);
+    /* If no text to draw, just return at this point */
+    if ( textlen == 0 )
+        return 1;
 
-    cairo_scaled_font_destroy(scaledfont);
-    cairo_font_options_destroy(fontoptions);
-    PyMem_Free(textString);
+    /* Apply the rotation matrix and draw the text */
+    cairo_save(instdata->context);
+    cairo_rotate(instdata->context, rotation * M_PI / 180.0);
+    layout = pango_cairo_create_layout(instdata->context);
+    pango_layout_set_font_description(layout, fontobj->fontdesc);
+    pango_layout_set_text(layout, text, textlen);
+    pango_cairo_show_layout(instdata->context, layout);
+    g_object_unref(layout);
+    cairo_restore(instdata->context);
 
     instdata->somethingdrawn = 1;
     instdata->imagechanged = 1;

@@ -74,11 +74,13 @@ class PipedViewerPQ(QMainWindow):
         # ignore Ctrl-C
         signal.signal(signal.SIGINT, signal.SIG_IGN)
         # default scene size
-        self.__scenewidth = int(10.5 * self.physicalDpiX())
-        self.__sceneheight = int(8.5 * self.physicalDpiY())
+        self.__scenewidth = int(10.8 * self.physicalDpiX())
+        self.__sceneheight = int(8.8 * self.physicalDpiY())
         # scaling factor for line widths and symbol sizes
         self.__widthfactor = None
-        self.setWidthScalingFactor(0.75)
+        self.setWidthScalingFactor(0.72)
+        # by default pay attention to any alpha channel values in colors
+        self.__noalpha = False
         # initial default color for the background (opaque white)
         self.__lastclearcolor = QColor(0xFFFFFF)
         self.__lastclearcolor.setAlpha(0xFF)
@@ -251,6 +253,12 @@ class PipedViewerPQ(QMainWindow):
 
     def aboutQtMsg(self):
         QMessageBox.aboutQt(self, self.tr("About Qt"))
+
+    def ignoreAlpha(self):
+        '''
+        Return whether the alpha channel in colors should always be ignored.
+        '''
+        return self.__noalpha
 
     def paintScene(self, painter, first, leftx, uppery, scalefactor,
                    statusmsg, returnregion):
@@ -1010,6 +1018,8 @@ class PipedViewerPQ(QMainWindow):
         elif cmndact == "show":
             if self.isHidden():
                 self.showNormal()
+        elif cmndact == "noalpha":
+             self.__noalpha = True
         elif cmndact == "beginView":
             self.beginView(cmnd)
         elif cmndact == "clipView":

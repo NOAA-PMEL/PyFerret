@@ -29,7 +29,7 @@ class AbstractPyFerretBindings(object):
         '''
         super(AbstractPyFerretBindings, self).__init__()
 
-    def createWindow(self, title, visible):
+    def createWindow(self, title, visible, noalpha):
         '''
         Creates a "Window object" for this graphics engine.  Here,
         a Window is the complete drawing area.  However, no drawing
@@ -39,6 +39,7 @@ class AbstractPyFerretBindings(object):
         Arguments:
             title: display title for the Window
             visible: display Window on start-up?
+            noalpha: do not use the alpha channel in colors?
 
         Returns True if a Window was successfully created.
         '''

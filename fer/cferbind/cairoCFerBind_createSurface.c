@@ -22,6 +22,7 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
     char  *fmtname;
     double width;
     double height;
+    cairo_rectangle_t extents;
 
     /* Sanity check */
     if ( (self->enginename != CairoCFerBindName) &&
@@ -49,9 +50,12 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
         switch( instdata->imageformat ) {
         case CCFBIF_PNG:
             /* Surface size is given in integer pixels */
-            instdata->surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+            if ( instdata->noalpha )
+                instdata->surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
                                       instdata->imagewidth, instdata->imageheight);
-            instdata->usealpha = 1;
+            else
+                instdata->surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+                                      instdata->imagewidth, instdata->imageheight);
             /* Note that all surface values are initialized to zero (transparent) */
             fmtname = "PNG";
             break;
@@ -59,9 +63,9 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
             /* Surface size is given in (floating-point) points */
             width = (double) instdata->imagewidth * CCFB_POINTS_PER_PIXEL;
             height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
-            instdata->surface = cairo_pdf_surface_create(instdata->imagename,
-                                                         width, height);
-            instdata->usealpha = 0;
+            instdata->surface = cairo_pdf_surface_create(instdata->imagename, width, height);
+            /* Never use the alpha channel to avoid embedded image */
+            instdata->noalpha = 1;
             fmtname = "PDF";
             break;
         case CCFBIF_PS:
@@ -74,35 +78,35 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
                  * Swap width and height and then translate and rotate (see
                  * below) per Cairo requirements.
                  */
-                instdata->surface = cairo_ps_surface_create(instdata->imagename,
-                                                            height, width);
+                instdata->surface = cairo_ps_surface_create(instdata->imagename, height, width);
             }
             else {
                 /* Portrait orientation */
-                instdata->surface = cairo_ps_surface_create(instdata->imagename,
-                                                            width, height);
+                instdata->surface = cairo_ps_surface_create(instdata->imagename, width, height);
             }
-            /* Do not use alpha channel to avoid embedded image */
-            instdata->usealpha = 0;
+            /* Never use the alpha channel to avoid embedded image */
+            instdata->noalpha = 1;
             fmtname = "PS";
             break;
         case CCFBIF_SVG:
             /* Surface size is given in (floating-point) points */
             width = (double) instdata->imagewidth * CCFB_POINTS_PER_PIXEL;
             height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
-            instdata->surface = cairo_svg_surface_create(instdata->imagename,
-                                                         width, height);
-            instdata->usealpha = 1;
+            instdata->surface = cairo_svg_surface_create(instdata->imagename, width, height);
             fmtname = "SVG";
             break;
         case CCFBIF_REC:
-            /* Surface size is given in (floating-point) points */
-            width = (double) instdata->imagewidth * CCFB_POINTS_PER_PIXEL;
-            height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
-            instdata->surface = 
-                cairo_svg_surface_create_for_stream(NULL, NULL, width, height);
-            instdata->usealpha = 1;
-            fmtname = "SVG REC";
+            /* Values will be given in pixels */
+            extents.x = 0.0;
+            extents.y = 0.0;
+            extents.width = (double) instdata->imagewidth;
+            extents.height = (double) instdata->imageheight;
+#ifdef CAIRO_HAS_RECORDING_SURFACE
+            instdata->surface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, &extents);
+#else
+            instdata->surface = cairo_svg_surface_create_for_stream(NULL, NULL, extents.width, extents.height);
+#endif
+            fmtname = "recording";
             break;
         default:
             sprintf(grdelerrmsg, "cairoCFerBind_createSurface: unexpected error, "

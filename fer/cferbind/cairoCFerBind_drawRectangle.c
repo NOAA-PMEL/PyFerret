@@ -86,7 +86,8 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
     }
 
     /* Conversion factor for those surfaces that expect points instead of pixels */
-    if ( instdata->imageformat == CCFBIF_PNG ) {
+    if ( (instdata->imageformat == CCFBIF_PNG) ||
+         (instdata->imageformat == CCFBIF_REC) ) {
         unitfactor = 1.0;
     }
     else {
@@ -121,13 +122,13 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
 
         if ( brushobj->pattern != NULL )
             cairo_set_source(instdata->context, brushobj->pattern);
-        else if ( instdata->usealpha )
+        else if ( instdata->noalpha )
+            cairo_set_source_rgb(instdata->context, brushobj->color.redfrac,
+                  brushobj->color.greenfrac, brushobj->color.bluefrac);
+        else
             cairo_set_source_rgba(instdata->context, brushobj->color.redfrac,
                   brushobj->color.greenfrac, brushobj->color.bluefrac,
                   brushobj->color.opaquefrac);
-        else
-            cairo_set_source_rgb(instdata->context, brushobj->color.redfrac,
-                  brushobj->color.greenfrac, brushobj->color.bluefrac);
 
         /* Fill the rectangle, but preserve the path for stroking */
         cairo_fill_preserve(instdata->context);
@@ -147,10 +148,10 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
         /* Draw this group using the brush alpha value (if appropriate) */
         /*
          * cairo_pop_group_to_source(instdata->context);
-         * if ( instdata->usealpha )
-         *     cairo_paint_with_alpha(instdata->context, brushobj->color.opaquefrac);
-         * else
+         * if ( instdata->noalpha )
          *     cairo_paint(instdata->context);
+         * else
+         *     cairo_paint_with_alpha(instdata->context, brushobj->color.opaquefrac);
          */
     }
     else {
@@ -159,25 +160,25 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
             /* Fill pattern or solid color */
             if ( brushobj->pattern != NULL )
                 cairo_set_source(instdata->context, brushobj->pattern);
-            else if ( instdata->usealpha )
+            else if ( instdata->noalpha )
+                cairo_set_source_rgb(instdata->context, brushobj->color.redfrac,
+                      brushobj->color.greenfrac, brushobj->color.bluefrac);
+            else
                 cairo_set_source_rgba(instdata->context, brushobj->color.redfrac,
                       brushobj->color.greenfrac, brushobj->color.bluefrac,
                       brushobj->color.opaquefrac);
-            else
-                cairo_set_source_rgb(instdata->context, brushobj->color.redfrac,
-                      brushobj->color.greenfrac, brushobj->color.bluefrac);
             /* Fill the rectangle, but preserve the path for stroking */
             cairo_fill_preserve(instdata->context);
         }
 
         /* Assign the line color to the context */
-        if ( instdata->usealpha )
+        if ( instdata->noalpha )
+            cairo_set_source_rgb(instdata->context, penobj->color.redfrac,
+                  penobj->color.greenfrac, penobj->color.bluefrac);
+        else
             cairo_set_source_rgba(instdata->context, penobj->color.redfrac,
                   penobj->color.greenfrac, penobj->color.bluefrac,
                   penobj->color.opaquefrac);
-        else
-            cairo_set_source_rgb(instdata->context, penobj->color.redfrac,
-                  penobj->color.greenfrac, penobj->color.bluefrac);
         /* Assign the adjusted line width */
         adjwidth = penobj->width * instdata->widthfactor;
         /* width of zero is a cosmetic pen - make it one pixel wide */

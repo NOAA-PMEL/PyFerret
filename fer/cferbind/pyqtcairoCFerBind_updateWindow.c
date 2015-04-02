@@ -73,8 +73,12 @@ grdelBool pyqtcairoCFerBind_updateWindow(CFerBind *self)
 
     if ( instdata->firstpic != NULL ) {
         /* create a temporary surface to combine all the pictures */
-        savesurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
-                            instdata->imagewidth, instdata->imageheight);
+        if ( instdata->noalpha )
+            savesurface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
+                                instdata->imagewidth, instdata->imageheight);
+        else
+            savesurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+                                instdata->imagewidth, instdata->imageheight);
         if ( cairo_surface_status(savesurface) != CAIRO_STATUS_SUCCESS ) {
             strcpy(grdelerrmsg, "pyqtCairoCFerBind_updateWindow: problems "
                                 "creating a combined pictures image surface");

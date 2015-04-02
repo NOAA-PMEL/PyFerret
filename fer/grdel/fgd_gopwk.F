@@ -27,7 +27,7 @@
         INTEGER TM_LENSTR
 
         INTEGER engnamelen, wintitlelen, showit, 
-     .          success, errmsglen, aaint
+     .          noalpha, success, errmsglen, aaint
         CHARACTER*2048 errmsg
         REAL*4 redf, greenf, bluef, opaquef
 
@@ -44,9 +44,11 @@
         engnamelen = TM_LENSTR(enginename(windowid))
         wintitlelen = TM_LENSTR(windowtitle)
         showit = 1
+*       ignoring alpha in colors ?
+        noalpha = 0
         CALL FGDWINCREATE(windowobjs(windowid),
      .                    enginename(windowid), engnamelen,
-     .                    windowtitle, wintitlelen, showit)
+     .                    windowtitle, wintitlelen, showit, noalpha)
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)

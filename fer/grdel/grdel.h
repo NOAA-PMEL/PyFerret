@@ -86,7 +86,8 @@ void fgd_getanimate_(int *inanimation);
  */
 
 grdelType grdelWindowCreate(const char *engine, int enginelen,
-                     const char *title, int titlelen, grdelBool visible);
+                            const char *title, int titlelen, 
+                            grdelBool visible, grdelBool noalpha);
 const BindObj *grdelWindowVerify(grdelType window);
 grdelBool grdelWindowDelete(grdelType window);
 grdelBool grdelWindowClear(grdelType window, grdelType fillcolor);
@@ -112,7 +113,7 @@ grdelBool grdelWindowSetWidthFactor(grdelType window, float widthfactor);
  * Fortran interfaces for the Window functions.
  */
 void fgdwincreate_(void **window, char *engine, int *enginelen,
-                   char *title, int *titlelen, int *visible);
+                   char *title, int *titlelen, int *visible, int *noalpha);
 void fgdwindelete_(int *success, void **window);
 void fgdwinclear_(int *success, void **window, void **fillcolor);
 void fgdwinredraw_(int *success, void **window, void **fillcolor);

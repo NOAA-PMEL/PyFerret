@@ -4,6 +4,7 @@
 /* Make sure Python.h is always included first */
 #include <Python.h>
 #include <cairo/cairo.h>
+#include <pango/pangocairo.h>
 /* Use of grdelBool (int) and grdelType (void *) is just to clarify intent */
 #include "grdel.h"
 
@@ -61,8 +62,7 @@ typedef struct CCFBBrush_Struct {
 extern const char *CCFBFontId;
 typedef struct CCFBFont_Struct {
     const char *id;
-    cairo_font_face_t *fontface;
-    double fontsize;
+    PangoFontDescription *fontdesc;
     int underline;
 } CCFBFont;
     
@@ -85,8 +85,11 @@ typedef struct CairoCFerBindData_struct {
     CCFBImageFormat imageformat;
     /* Anti-alias non-text elements? */
     int antialias;
-    /* Use colors with an alpha channel (ARGB32)? */
-    int usealpha;
+    /* 
+     * Never use colors with an alpha channel (ARGB32) ? 
+     * If false (zero), it will depend on the output format.
+     */
+    int noalpha;
     /* data for recreating the current view */
     CCFBSides fracsides;
     int clipit;

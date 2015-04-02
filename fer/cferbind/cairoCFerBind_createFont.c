@@ -19,8 +19,6 @@ grdelType cairoCFerBind_createFont(CFerBind *self, const char *familyname, int n
                         double fontsize, int italic, int bold, int underlined)
 {
     char *family;
-    cairo_font_slant_t slant;
-    cairo_font_weight_t weight;
     CCFBFont *fontobj;
 
     /* Sanity check */
@@ -49,6 +47,7 @@ grdelType cairoCFerBind_createFont(CFerBind *self, const char *familyname, int n
                             "out of memory for a CCFBFont structure");
         return NULL;
     }
+    fontobj->fontdesc = pango_font_description_new();
 
     family = (char *) PyMem_Malloc(namelen+1);
     if ( family == NULL ) {
@@ -59,33 +58,29 @@ grdelType cairoCFerBind_createFont(CFerBind *self, const char *familyname, int n
     }
     strncpy(family, familyname, namelen);
     family[namelen] = '\0';
-
-    if ( italic == 0 )
-        slant = CAIRO_FONT_SLANT_NORMAL;
-    else
-        slant = CAIRO_FONT_SLANT_ITALIC;
-    if ( bold == 0 )
-        weight = CAIRO_FONT_WEIGHT_NORMAL;
-    else
-        weight = CAIRO_FONT_WEIGHT_BOLD;
-
-    fontobj->fontface = cairo_toy_font_face_create(family, slant, weight);
-    if ( cairo_font_face_status(fontobj->fontface) != CAIRO_STATUS_SUCCESS ) {
-        strcpy(grdelerrmsg, "cairoCFerBind_createFont: unable to create "
-                            "a font face with the given family name, slant, and weight");
-        /* Should the "nil" font face object be destroyed? */
-        cairo_font_face_destroy(fontobj->fontface);
-        PyMem_Free(family);
-        PyMem_Free(fontobj);
-        return NULL;
-    }
-
+    pango_font_description_set_family(fontobj->fontdesc, family);
     PyMem_Free(family);
 
-    fontobj->fontsize = fontsize;
-    fontobj->underline = underlined;
-    fontobj->id = CCFBFontId;
+    /* If italic not supported, will switch to oblique */
+    if ( italic == 0 )
+        pango_font_description_set_style(fontobj->fontdesc, PANGO_STYLE_NORMAL);
+    else
+        pango_font_description_set_style(fontobj->fontdesc, PANGO_STYLE_ITALIC);
+    /* Many weight options */
+    if ( bold == 0 )
+        pango_font_description_set_weight(fontobj->fontdesc, PANGO_WEIGHT_NORMAL);
+    else
+        pango_font_description_set_weight(fontobj->fontdesc, PANGO_WEIGHT_BOLD);
+    /* Other variant option is PANGO_VARIANT_SMALL_CAPS */
+    pango_font_description_set_variant(fontobj->fontdesc, PANGO_VARIANT_NORMAL);
+    /* Many stretch options */
+    pango_font_description_set_stretch(fontobj->fontdesc, PANGO_STRETCH_NORMAL);
+    /* Set the size in points scaled by PANGO_SCALE (1024) */
+    pango_font_description_set_size(fontobj->fontdesc, (int) (fontsize * PANGO_SCALE + 0.5));
 
+    fontobj->underline = underlined;
+
+    fontobj->id = CCFBFontId;
     return fontobj;
 }
 

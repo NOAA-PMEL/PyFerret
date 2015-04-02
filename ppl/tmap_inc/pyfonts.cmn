@@ -3,7 +3,7 @@
 * Common block used to declare information for pyFerret fonts
 *	Ansley Manke PMEL/TMAP
 
-	lOGIcAL		pyfont
+	LOGICAL		pyfont
 	INTEGER		pyfnt_italic, pyfnt_bold, pyfnt_under
 	REAL*4		pyfnt_red, pyfnt_grn, pyfnt_blu, 
      .			pyfnt_opq, pyfnt_rot

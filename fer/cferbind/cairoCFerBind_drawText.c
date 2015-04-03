@@ -4,6 +4,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "utf8str.h"
 
 /*
  * Draw text to this "Window".
@@ -20,7 +21,12 @@ grdelBool cairoCFerBind_drawText(CFerBind *self, const char *text, int textlen,
     CCFBFont *fontobj;
     CCFBColor *colorobj;
     double unitfactor;
+    char *utf8str;
+    int utf8strlen;
+#ifdef USEPANGOCAIRO
     PangoLayout *layout;
+#endif
+    cairo_status_t result;
 
     /* Sanity check */
     if ( (self->enginename != CairoCFerBindName) &&
@@ -54,15 +60,6 @@ grdelBool cairoCFerBind_drawText(CFerBind *self, const char *text, int textlen,
         return 0;
     }
 
-    /* Conversion factor for those surfaces that expect points instead of pixels */
-    if ( (instdata->imageformat == CCFBIF_PNG) ||
-         (instdata->imageformat == CCFBIF_REC) ) {
-        unitfactor = 1.0;
-    }
-    else {
-        unitfactor = CCFB_POINTS_PER_PIXEL;
-    }
-
     /* Assign the color for this text */
     if ( instdata->noalpha )
         cairo_set_source_rgb(instdata->context, colorobj->redfrac, 
@@ -72,6 +69,15 @@ grdelBool cairoCFerBind_drawText(CFerBind *self, const char *text, int textlen,
                               colorobj->greenfrac, colorobj->bluefrac, 
                               colorobj->opaquefrac);
 
+    /* Conversion factor for those surfaces that expect points instead of pixels */
+    if ( (instdata->imageformat == CCFBIF_PNG) ||
+         (instdata->imageformat == CCFBIF_REC) ) {
+        unitfactor = 1.0;
+    }
+    else {
+        unitfactor = CCFB_POINTS_PER_PIXEL;
+    }
+
     /* Move to the place to start drawing this text */
     cairo_move_to(instdata->context, startx * unitfactor, starty * unitfactor);
 
@@ -79,18 +85,41 @@ grdelBool cairoCFerBind_drawText(CFerBind *self, const char *text, int textlen,
     if ( textlen == 0 )
         return 1;
 
-    /* Apply the rotation matrix and draw the text */
+    /* Convert to a null-terminated UTF-8 string (convert characters > 0x7F) */
+    utf8str = (char *) PyMem_Malloc((2*textlen + 1) * sizeof(char));
+    if ( utf8str == NULL ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_drawText: "
+                            "out of memory for a UTF-8 copy of the text string");
+        return 0;
+    }
+    text_to_utf8_(text, &textlen, utf8str, &utf8strlen);
+
+    /* draw the text */
     cairo_save(instdata->context);
     cairo_rotate(instdata->context, rotation * M_PI / 180.0);
+#ifdef USEPANGOCAIRO
     layout = pango_cairo_create_layout(instdata->context);
     pango_layout_set_font_description(layout, fontobj->fontdesc);
     pango_layout_set_text(layout, text, textlen);
     pango_cairo_show_layout(instdata->context, layout);
     g_object_unref(layout);
+#else
+    cairo_set_font_face(instdata->context, fontobj->fontface);
+    cairo_set_font_size(instdata->context, fontobj->fontsize);
+    cairo_show_text(instdata->context, utf8str);
+#endif
+    result = cairo_status(instdata->context);
     cairo_restore(instdata->context);
 
+    PyMem_Free(utf8str);
     instdata->somethingdrawn = 1;
     instdata->imagechanged = 1;
+
+    if ( result != CAIRO_STATUS_SUCCESS ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_drawText: "
+                            "drawing the text was not successful");
+        return 0;
+    }
 
     return 1;
 }

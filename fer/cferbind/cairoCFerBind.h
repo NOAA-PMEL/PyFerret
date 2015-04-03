@@ -4,7 +4,9 @@
 /* Make sure Python.h is always included first */
 #include <Python.h>
 #include <cairo/cairo.h>
+#ifdef USEPANGOCAIRO
 #include <pango/pangocairo.h>
+#endif
 /* Use of grdelBool (int) and grdelType (void *) is just to clarify intent */
 #include "grdel.h"
 
@@ -62,7 +64,12 @@ typedef struct CCFBBrush_Struct {
 extern const char *CCFBFontId;
 typedef struct CCFBFont_Struct {
     const char *id;
+#ifdef USEPANGOCAIRO
     PangoFontDescription *fontdesc;
+#else
+    cairo_font_face_t *fontface;
+    double fontsize;
+#endif
     int underline;
 } CCFBFont;
     

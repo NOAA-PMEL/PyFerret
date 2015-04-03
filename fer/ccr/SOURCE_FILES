@@ -14,6 +14,7 @@ c_strfloat.c\
 check_nan_data_sub.c\
 compare_c_strings.c\
 copy_c_string.c\
+create_utf8_string.c\
 perl_read.c\
 EF_InternalUtil.c\
 ferret_dispatch_c.c\
@@ -38,5 +39,6 @@ set_nan.c\
 set_null_c_string.c\
 set_null_c_string_array.c\
 sizeof_pointer.c\
+text_to_utf8.c\
 write_dods.c\
 xfer_c_ptrs.c

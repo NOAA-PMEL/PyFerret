@@ -32,8 +32,8 @@ INSTALL_FER_DIR = $(FER_DIR)
 
 ## Installation directory for cairo v1.12 or later static library 
 #  (contains include and lib or lib64 subdirectories)
-CAIRO_DIR =
-# CAIRO_DIR = /usr/local/cairo-1.14.2_64
+# CAIRO_DIR =
+CAIRO_DIR = /usr/local/cairo-1.14.2_64
 
 ## Installation directory for pixman-1 static library 
 ## (contains include and lib or lib64 subdirectories) 
@@ -41,8 +41,8 @@ CAIRO_DIR =
 ## Leave blank to use the system pixman-1 shared library.
 ## If CAIRO_DIR is not given a value, the system pixman-1 
 ## shared library will always be used.
-PIXMAN_DIR =
-# PIXMAN_DIR = /usr/local/pixman-1_64
+# PIXMAN_DIR =
+PIXMAN_DIR = /usr/local/pixman-1_64
 
 ## Installation directory for HDF5 static libraries
 ## (contains include and lib or lib64 subdirectories)

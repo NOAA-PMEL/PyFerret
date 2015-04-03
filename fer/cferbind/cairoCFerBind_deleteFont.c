@@ -30,10 +30,17 @@ grdelBool cairoCFerBind_deleteFont(CFerBind *self, grdelType font)
         return 0;
     }
 
+#ifdef USEPANGOCAIRO
     if ( fontobj->fontdesc != NULL ) {
         pango_font_description_free(fontobj->fontdesc);
         fontobj->fontdesc = NULL;
     }
+#else
+    if ( fontobj->fontface != NULL ) {
+        cairo_font_face_destroy(fontobj->fontface);
+        fontobj->fontface = NULL;
+    }
+#endif
 
     /* Wipe the id to detect errors */
     fontobj->id = NULL;

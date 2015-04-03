@@ -82,7 +82,7 @@
      .            xinches_gvn, yinches_gvn
         INTEGER   qp, colon_pos, dspunit, imaxx, imaxy
         REAL      val, aspect, xtmp, ytmp
-        REAL*4    dmaxx, dmaxy
+        REAL*4    dmaxx, dmaxy, newdpi
         CHARACTER buffer*80, numbuff*24, asp_ref*1
 
 *       No size changes during animation
@@ -123,10 +123,6 @@
         aspect  = dflt_yinches / dflt_xinches
         xpixels = -1
         ypixels = -1
-
-*       make sure we have the correct dpi's for this window
-        CALL FGD_GQDSP(windid, istat, dspunit,
-     .                 dmaxx, dmaxy, imaxx, imaxy)
 
 *       Default to edges for the aspect
         asp_ref = 'E'
@@ -277,12 +273,27 @@
            val = dflt_imgscale
         ENDIF
 
+*       make sure we have the correct dpi's for this window
+        CALL FGD_GQDSP(windid, istat, dspunit,
+     .                 dmaxx, dmaxy, imaxx, imaxy)
+
         IF ( .NOT. (xpixels_gvn .OR. ypixels_gvn) ) THEN
 *          Pixel size not specified; use the (possibly default) 
 *          page size at the window DPI, and scale by any /size value
            xpixels = NINT(windowdpix(windid) * xinches * SQRT(val))
            ypixels = NINT(windowdpiy(windid) * yinches * SQRT(val))
            IF ( (xpixels .LT. 128) .OR. (ypixels .LT. 128) ) GOTO 5090
+        ELSE
+*          If there is no display (cairo) associated with this window, 
+*          set the window DPI from these values.  If there is a display
+*          associated with this window, this call does nothing and 
+*          negative one is returned in istat.
+           newdpi = DBLE(xpixels) / DBLE(xinches)
+           CALL FGD_SET_WINDOW_DPI(istat, windid, newdpi)
+           IF ( istat .GT. 0 ) THEN
+               windowdpix(windid) = newdpi
+               windowdpiy(windid) = newdpi
+           ENDIF
         ENDIF
 
 * successful completion

@@ -75,7 +75,7 @@ grdelBool cairoCFerBind_drawText(CFerBind *self, const char *text, int textlen,
         unitfactor = 1.0;
     }
     else {
-        unitfactor = CCFB_POINTS_PER_PIXEL;
+        unitfactor = 72.0 / instdata->pixelsperinch;
     }
 
     /* Move to the place to start drawing this text */

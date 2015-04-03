@@ -13,12 +13,6 @@
 /* Size of filename string arrays */
 #define CCFB_NAME_SIZE 512
 
-/* DPI to use for the Cairo "Window" */
-#define CCFB_WINDOW_DPI 96
-
-/* Factor for converting pixels to points */
-#define CCFB_POINTS_PER_PIXEL (72.0 / (double) CCFB_WINDOW_DPI)
-
 typedef enum CCFBImageFormat_enum {
     CCFBIF_PNG = 0,
     CCFBIF_PDF,
@@ -81,10 +75,13 @@ typedef struct CCFBPicture_Struct {
 } CCFBPicture;
 
 typedef struct CairoCFerBindData_struct {
+    double pixelsperinch;
     /* image size in pixels */
     int imagewidth;
     int imageheight;
     int minsize;
+    /* Scaling factor for line widths and symbol sizes */
+    double widthfactor;
     /* clearing color */
     CCFBColor lastclearcolor;
     /* image filename and format */
@@ -100,8 +97,6 @@ typedef struct CairoCFerBindData_struct {
     /* data for recreating the current view */
     CCFBSides fracsides;
     int clipit;
-    /* Scaling factor for line widths, symbol sizes, and font sizes */
-    double widthfactor;
     /* Linked list of image or recording surfaces, with segment IDs */
     CCFBPicture *firstpic;
     CCFBPicture *lastpic;
@@ -145,6 +140,7 @@ grdelBool cairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor);
 grdelBool cairoCFerBind_redrawWindow(CFerBind *self, grdelType fillcolor);
 grdelBool cairoCFerBind_windowScreenInfo(CFerBind *self, float *dpix, float *dpiy,
                                          int *screenwidth, int *screenheight);
+grdelBool cairoCFerBind_setWindowDpi(CFerBind *self, double newdpi);
 grdelBool cairoCFerBind_resizeWindow(CFerBind *self, double width, double height);
 grdelBool cairoCFerBind_scaleWindow(CFerBind *self, double scale);
 grdelBool cairoCFerBind_showWindow(CFerBind *self, int visible);

@@ -957,6 +957,52 @@ grdelBool grdelWindowScreenInfo(grdelType window, float *dpix, float *dpiy,
     return 1;
 }
 
+
+/*
+ * Assign the window DPI.  
+ * Will only be successful if the window is not associated with a display.
+ *
+ * Input Arguments:
+ *     window: Window to use
+ *     newdpi: the number of dots per inch to assign
+ *
+ * Output Arguments:
+ *     success: one if successful, 
+ *              zero if an error occurred,
+ *              negative one if the window is associated with a display
+ */
+int  grdelWindowSetDpi(grdelType window, float newdpi)
+{
+    GDWindow *mywindow;
+
+#ifdef VERBOSEDEBUG
+    fprintf(debuglogfile, "grdelWindowSetDpi called: "
+            "window = %p, newdpi = %f\n", window, newdpi);
+    fflush(debuglogfile);
+#endif
+
+    if ( grdelWindowVerify(window) == NULL ) {
+        strcpy(grdelerrmsg, "grdelWindowSetDpi: "
+                            "window argument is not a grdel Window");
+        return 0;
+    }
+    mywindow = (GDWindow *) window;
+
+    if ( mywindow->bindings.pyobject != NULL ) {
+       /* anything with Python bindings has a display associated with it */
+       return -1;
+    }
+    if ( mywindow->bindings.cferbind == NULL ) {
+        strcpy(grdelerrmsg, "grdelWindowSetDpi: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
+    /* (at this time) anything with only C bindings has no display associated with it */
+    mywindow->bindings.cferbind->setWindowDpi(mywindow->bindings.cferbind, (double) newdpi);
+    return 1;
+}
+
+
 /*
  * Set the scaling factor for pen widths, symbol sizes, and font sizes.
  *
@@ -1279,6 +1325,28 @@ void fgdwinscreeninfo_(int *success, void **window, float *dpix, float *dpiy,
 
     result = grdelWindowScreenInfo(*window, dpix, dpiy, 
                                    screenwidth, screenheight);
+    *success = result;
+}
+
+
+/*
+ * Assign the window DPI.  
+ * Will only be successful if the window is not associated with a display.
+ *
+ * Input Arguments:
+ *     window: Window to use
+ *     newdpi: the number of dots per inch to assign
+ *
+ * Output Arguments:
+ *     success: one if successful, 
+ *              zero if an error occurred (use fgderrmsg_ to retrieve the error message),
+ *              negative one if the window is associated with a display
+ */
+void fgdwinsetdpi_(int *success, void **window, float *newdpi)
+{
+    int result;
+
+    result = grdelWindowSetDpi(*window, *newdpi);
     *success = result;
 }
 

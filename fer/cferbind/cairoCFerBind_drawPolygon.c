@@ -94,7 +94,7 @@ grdelBool cairoCFerBind_drawPolygon(CFerBind *self, double ptsx[], double ptsy[]
         unitfactor = 1.0;
     }
     else {
-        unitfactor = CCFB_POINTS_PER_PIXEL;
+        unitfactor = 72.0 / instdata->pixelsperinch;
     }
 
     /* Turn off antialiasing for this operation */

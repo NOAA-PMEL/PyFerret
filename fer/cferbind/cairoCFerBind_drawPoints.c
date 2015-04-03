@@ -62,7 +62,7 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
         unitfactor = 1.0;
     }
     else {
-        unitfactor = CCFB_POINTS_PER_PIXEL;
+        unitfactor = 72.0 / instdata->pixelsperinch;
     }
 
     /* Scaling factor to use for these symbols "drawn" as 100x100 pixel paths */

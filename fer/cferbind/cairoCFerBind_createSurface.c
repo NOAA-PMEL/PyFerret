@@ -61,8 +61,8 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
             break;
         case CCFBIF_PDF:
             /* Surface size is given in (floating-point) points */
-            width = (double) instdata->imagewidth * CCFB_POINTS_PER_PIXEL;
-            height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
+            width = instdata->imagewidth * 72.0 / instdata->pixelsperinch;
+            height = instdata->imageheight * 72.0 / instdata->pixelsperinch; 
             instdata->surface = cairo_pdf_surface_create(instdata->imagename, width, height);
             /* Never use the alpha channel to avoid embedded image */
             instdata->noalpha = 1;
@@ -70,8 +70,8 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
             break;
         case CCFBIF_PS:
             /* Surface size is given in (floating-point) points */
-            width = (double) instdata->imagewidth * CCFB_POINTS_PER_PIXEL;
-            height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
+            width = instdata->imagewidth * 72.0 / instdata->pixelsperinch;
+            height = instdata->imageheight * 72.0 / instdata->pixelsperinch; 
             if ( width > height ) {
                 /*
                  * Landscape orientation
@@ -90,8 +90,8 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
             break;
         case CCFBIF_SVG:
             /* Surface size is given in (floating-point) points */
-            width = (double) instdata->imagewidth * CCFB_POINTS_PER_PIXEL;
-            height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
+            width = instdata->imagewidth * 72.0 / instdata->pixelsperinch;
+            height = instdata->imageheight * 72.0 / instdata->pixelsperinch; 
             instdata->surface = cairo_svg_surface_create(instdata->imagename, width, height);
             fmtname = "SVG";
             break;
@@ -143,8 +143,8 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
          * to correct for swapped width and height (per Cairo requirements).
          */
         if ( instdata->imageformat == CCFBIF_PS ) {
-            width = (double) instdata->imagewidth * CCFB_POINTS_PER_PIXEL;
-            height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
+            width = instdata->imagewidth * 72.0 / instdata->pixelsperinch;
+            height = instdata->imageheight * 72.0 / instdata->pixelsperinch; 
             if ( width > height ) {
                 /* surface was created with coordinates (0,0) to (height, width) */
                 cairo_matrix_t transmat;

@@ -40,6 +40,7 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
     bindings->clearWindow = pyqtcairoCFerBind_clearWindow;
     bindings->redrawWindow = pyqtcairoCFerBind_redrawWindow;
     bindings->windowScreenInfo = pyqtcairoCFerBind_windowScreenInfo;
+    bindings->setWindowDpi = NULL;
     bindings->resizeWindow = pyqtcairoCFerBind_resizeWindow;
     bindings->scaleWindow = pyqtcairoCFerBind_scaleWindow;
     bindings->showWindow = pyqtcairoCFerBind_showWindow;
@@ -89,9 +90,11 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
     instdata = (CairoCFerBindData *) bindings->instancedata;
     /* Cairo surface type - must be an image surface */
     instdata->imageformat = CCFBIF_PNG;
-    /* default image size and minimum allowed value */
-    instdata->imagewidth = (int) 10.8 * CCFB_WINDOW_DPI;
-    instdata->imageheight = (int) 8.8 * CCFB_WINDOW_DPI;
+    /* default DPI, image size, line width scaling factor, and minimum allowed value */
+    instdata->pixelsperinch = 96;
+    instdata->imagewidth = (int) (10.2 * instdata->pixelsperinch);
+    instdata->imageheight = (int) (8.8 * instdata->pixelsperinch);
+    instdata->widthfactor = 0.72 * instdata->pixelsperinch / 72.0;
     instdata->minsize = 128;
     /* default clear color of opaque white */
     instdata->lastclearcolor.id = CCFBColorId;
@@ -100,7 +103,6 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
     instdata->lastclearcolor.bluefrac = 1.0;
     instdata->lastclearcolor.opaquefrac = 1.0;
     /* default line width scaling factor */
-    instdata->widthfactor = CCFB_WINDOW_DPI * 0.72 / 72.0;
 
     /* save the decision about the alpha channel */
     instdata->noalpha = noalpha;

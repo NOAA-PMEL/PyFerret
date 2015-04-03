@@ -42,7 +42,7 @@ grdelType cairoCFerBind_createFont(CFerBind *self, const char *familyname, int n
     /* adjust the font size for whether the surface is in pixels or points */
     if ( (instdata->imageformat == CCFBIF_PNG) ||
          (instdata->imageformat == CCFBIF_REC) ) {
-        adjfontsize = fontsize / CCFB_POINTS_PER_PIXEL;
+        adjfontsize = fontsize * instdata->pixelsperinch / 72.0;
     }
     else {
         adjfontsize = fontsize;

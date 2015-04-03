@@ -65,7 +65,7 @@ grdelBool cairoCFerBind_drawMultiline(CFerBind *self, double ptsx[],
         unitfactor = 1.0;
     }
     else {
-        unitfactor = CCFB_POINTS_PER_PIXEL;
+        unitfactor = 72.0 / instdata->pixelsperinch;
     }
 
     /* Create the path that will be stroked */

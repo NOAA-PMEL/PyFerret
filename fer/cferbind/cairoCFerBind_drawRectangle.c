@@ -91,7 +91,7 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
         unitfactor = 1.0;
     }
     else {
-        unitfactor = CCFB_POINTS_PER_PIXEL;
+        unitfactor = 72.0 / instdata->pixelsperinch;
     }
 
     /* Turn off antialiasing for this operation */

@@ -40,6 +40,7 @@ typedef struct CFerBind_struct {
      grdelBool (*redrawWindow)(struct CFerBind_struct *self, grdelType fillcolor);
      grdelBool (*windowScreenInfo)(struct CFerBind_struct *self, float *dpix, float *dpiy,
                              int *screenwidth, int *screenheight);
+     grdelBool (*setWindowDpi)(struct CFerBind_struct *self, double newdpi);
      grdelBool (*resizeWindow)(struct CFerBind_struct *self,
                                double width, double height);
      grdelBool (*scaleWindow)(struct CFerBind_struct *self, double scale);

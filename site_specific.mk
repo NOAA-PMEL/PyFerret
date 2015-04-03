@@ -31,22 +31,23 @@ PYTHONINCDIR := $(shell $(PYTHON_EXE) -c "import distutils.sysconfig; print dist
 INSTALL_FER_DIR = $(FER_DIR)
 
 ## Installation directory for cairo v1.12 or later static library 
-#  (contains include and lib or lib64 subdirectories)
+## (contains include and lib or lib64 subdirectories).  If blank,
+## the system's cairo shared library will be used.  Older versions 
+## of cairo (v1.8 or later) can be used, but raster images from 
+## -nodisplay may look a little fuzzy unless -gif is specified.
 # CAIRO_DIR =
 CAIRO_DIR = /usr/local/cairo-1.14.2_64
 
-## Installation directory for pixman-1 static library 
-## (contains include and lib or lib64 subdirectories) 
-## used by the above Cairo library.  
-## Leave blank to use the system pixman-1 shared library.
-## If CAIRO_DIR is not given a value, the system pixman-1 
-## shared library will always be used.
+## Installation directory for pixman-1 static library (contains 
+## include and lib or lib64 subdirectories) used by the above cairo 
+## library.  If blank, or if CAIRO_DIR is blank, the system's 
+## pixman-1 shared library will be used.
 # PIXMAN_DIR =
 PIXMAN_DIR = /usr/local/pixman-1_64
 
-## Installation directory for HDF5 static libraries
-## (contains include and lib or lib64 subdirectories)
-## Do not give a location if linking to netcdf shared-object libraries
+## Installation directory for HDF5 static libraries (contains 
+## include and lib or lib64 subdirectories).  Do not give a location 
+## to link to NetCDF shared-object libraries.
 # HDF5_DIR = /usr
 # HDF5_DIR = /usr/local
 # HDF5_DIR = /usr/local/hdf5-1.8.9
@@ -55,8 +56,9 @@ HDF5_DIR = /usr/local/hdf5_189_64
 # HDF5_DIR = 
 
 ## Installation directory for NetCDF static or shared object libraries
-## (contains include and lib or lib64 subdirectories)
-## If HDF5_DIR (above) is empty, the shared-object netcdf libraries will be used.
+## (contains include and lib or lib64 subdirectories).  If HDF5_DIR 
+## (above) is blank, the netcdf shared-object (.so) libraries will be 
+## used;  otherwise the netcdf static (.a) libraries will be used.
 # NETCDF4_DIR = /usr
 # NETCDF4_DIR = /usr/local
 # NETCDF4_DIR = /usr/local/netcdf-4.3.2

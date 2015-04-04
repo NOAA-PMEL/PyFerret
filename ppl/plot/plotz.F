@@ -94,6 +94,7 @@ C
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V6.95 *acm* 3/15 Changes for PyFerret fonts. 
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -109,6 +110,8 @@ C
 	INCLUDE 'PLTL.INC'
 	include 'xcurvilinear.cmn'
         INCLUDE 'errmsg.parm'
+	INCLUDE 'pyfonts.cmn'
+
 
 * Argument declarations
 **	DIMENSION Z(NX,NY)
@@ -124,6 +127,10 @@ C
         LOGICAL   TM_FPEQ_SNGL
 
 	logical		valid
+	
+	CHARACTER*64 save_name
+	REAL*4 save_red, save_grn, save_blu, opaqfrac
+	INTEGER ier, save_bold
 
 C*       *jd* Linux port 12.96 add EXTERNAL calls below
         external scale, range
@@ -263,7 +270,25 @@ C
 	IF (IWIND.NE.0) CALL WINDOW(0.0,0.0,XLEN,YLEN)
 	CALL COLOR(IPEN(1))
 
+	IF (pyfont) THEN 
+	   
+*  Get the color fractions for the given pen. Store them in the 
+*  pyFfont common so contour line labels match the line color
 
+	   save_red = pyfnt_red
+	   save_grn = pyfnt_grn
+	   save_blu = pyfnt_blu
+	   save_bold = pyfnt_bold
+
+           CALL FGD_GQCR(IWIND, IPEN(1), ier, 
+     .                pyfnt_red, pyfnt_grn, pyfnt_blu, opaqfrac)
+	   
+	   save_name = pyfnt_fontname 
+	   pyfnt_fontname = 'Sans'
+	   pyfnt_bold = 0
+	ENDIF
+
+	
 C       Calculate the following quantities:
 C       ~FF - multiplication factors to go from axis to page coords?
 C       ~OF - page offset to the beginning of an axis?
@@ -358,6 +383,17 @@ C
 C	END VAX/VMS
 C
 	CALL COLOR(IPEN(0))
+	
+	IF (pyfont) THEN 
+	   
+*  Restore settings in pyFfont common
+	   pyfnt_red = save_red
+	   pyfnt_grn = save_grn
+	   pyfnt_blu = save_blu
+	   pyfnt_fontname = save_name
+	   pyfnt_bold = save_bold
+	ENDIF
+
 	CALL SCALE(XF,YF,XORG,YORG,XLO,YLO)
 
 	RETURN

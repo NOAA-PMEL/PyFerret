@@ -60,7 +60,12 @@ grdelType grdelFont(grdelType window, const char *familyname,
     }
 
     grdelGetTransformValues(&my, &sx, &sy, &dx, &dy);
-    fs = 72.0 * 20.0 * sqrt(sx * sy) * (double) fontsize;
+    /* 
+     * The first value is just some unknown magic factor.
+     * 72.0 converts inches to points.
+     * sqrt(sx * sy) scales by the viewport size.
+     */
+    fs = 17.5 * 72.0 * sqrt(sx * sy) * (double) fontsize;
 
     font->id = grdelfontid;
     font->window = window;

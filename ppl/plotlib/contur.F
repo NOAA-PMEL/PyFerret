@@ -68,6 +68,7 @@ C  v67  2/2011 *acm* Fix ticket 1799; do contouring in larger sections.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
 *                 and 4-arg plot commands. 
+* V6.95 *acm* 3/15 Changes for PyFerret fonts. 
 
 ****************************************************************************
 C**
@@ -131,6 +132,7 @@ c     oceanography emr   dec/69
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
         include 'xcurvilinear.cmn'
+	INCLUDE 'pyfonts.cmn'
 
 * TMAP interrupt flag
 
@@ -832,6 +834,14 @@ c
 ! draw the label and reset stest to 0. which indicates that the label has
 ! been drawn.  the next label should be dslab distance over.
 !860	call symbel(xlab,ylab,angle,hgt,nchar,str)	! original code (860)
+
+* PyFerret Fonts locate the label by user units
+
+        IF (pyfont) THEN
+          xlab = (xlab - xoff)/ xf
+	  ylab = (ylab - yoff)/ yf
+	ENDIF
+
 	call symbel(xlab,ylab,angle,hgt,nchar,str)
 	stest=0.
 ! TMAP mod, horz contour labels:

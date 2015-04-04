@@ -158,21 +158,8 @@ c	CHARACTER PLTFIL*80
 	   pyfnt_rot = degres
 	   IF (degres .NE. 0) pyfnt_rot = -1.* degres
 
-c Set font size according to height
-
-           fontsiz = 20.
-
-           swid = 0.
-           shgt = 0.
-           buff = 'M'
-           CALL FERTEXTSIZE (buff, pyfnt_fontname, fontsiz, 
-     .          pyfnt_italic, pyfnt_bold, pyfnt_under, swid, shgt, status)
-           IF (status .EQ. 0) GOTO 3100
-           swid = swid/1000
-           shgt = shgt/1000
-
-           fontsiz = 2.* fontsiz* (height/shgt)
-	   IF (INT(fontsiz) .LT. 1) fontsiz = 1.
+C Set font size in from the height 
+           fontsiz = height
 
 C Ignore any codes for Ferret-Hershey style Pen and Font changes 
 	   buff = string
@@ -214,7 +201,7 @@ C Change any ^2 to a super-2 and ^3 to super-3.
 	      slen = TM_LENSTR(buff)
 	      ia = INDEX (buff,'^')
 	   ENDDO
-  6000	   CONTINUE
+  600      CONTINUE
 
 C This section returns the string length from swid
 

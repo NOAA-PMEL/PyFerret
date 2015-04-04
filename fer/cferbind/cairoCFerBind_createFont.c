@@ -10,6 +10,7 @@ const char *CCFBFontId = "CCFBFontId";
 
 /*
  * Create a font object for this "Window".
+ * The fontsize is in points (1/72")
  *
  * Returns a font object if successful.   If an error occurs,
  * grdelerrmsg is assigned an appropriate error message and NULL

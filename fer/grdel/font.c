@@ -5,6 +5,7 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <string.h>
+#include <math.h>
 #include "grdel.h"
 #include "cferbind.h"
 #include "pyferret.h"
@@ -43,6 +44,7 @@ grdelType grdelFont(grdelType window, const char *familyname,
     PyObject *boldbool;
     PyObject *underlinedbool;
     GDFont *font;
+    double my, sx, sy, dx, dy, fs;
 
     bindings = grdelWindowVerify(window);
     if ( bindings == NULL ) {
@@ -57,11 +59,14 @@ grdelType grdelFont(grdelType window, const char *familyname,
         return NULL;
     }
 
+    grdelGetTransformValues(&my, &sx, &sy, &dx, &dy);
+    fs = 72.0 * 20.0 * sqrt(sx * sy) * (double) fontsize;
+
     font->id = grdelfontid;
     font->window = window;
     if ( bindings->cferbind != NULL ) {
         font->object = bindings->cferbind->createFont(bindings->cferbind,
-                                 familyname, familynamelen, (double) fontsize, 
+                                 familyname, familynamelen, fs, 
                                  italic, bold, underlined);
         if ( font->object == NULL ) {
             /* grdelerrmsg already assigned */
@@ -83,9 +88,8 @@ grdelType grdelFont(grdelType window, const char *familyname,
         else
             underlinedbool = Py_False;
         font->object = PyObject_CallMethod(bindings->pyobject, "createFont", 
-                                "s#dOOO", familyname, familynamelen,
-                                (double) fontsize, italicbool, boldbool,
-                                underlinedbool);
+                                "s#dOOO", familyname, familynamelen, fs,
+                                italicbool, boldbool, underlinedbool);
         if ( font->object == NULL ) {
             sprintf(grdelerrmsg, "grdelFont: error when calling the Python "
                     "binding's createFont method: %s", pyefcn_get_error());
@@ -202,7 +206,7 @@ grdelBool grdelFontDelete(grdelType font)
  *     familyname: name of the font family (e.g., "Helvetica", "Times");
  *                 an empty string uses the default font
  *     namelen: actual length of the font family name
- *     fontsize: desired size of the font View units
+ *     fontsize: desired size of the font in View units
  *     italic: use the italic version of the font? non-zero yes, zero no.
  *     bold: use the bold version of the font? non-zero yes, zero no.
  *     underlined: use the underlined version of the font? non-zero yes, zero no.

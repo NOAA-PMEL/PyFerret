@@ -1,7 +1,7 @@
 C
 C Draws text in a window.
 C
-C  fontsize	In points
+C  fontsize	In user coordinates
 C  redfrac
 C  greenfrac	RGB in percent
 C  bluefrac
@@ -14,7 +14,7 @@ C  bold	lettering linestyle flags: 0=false, 1=true
 C  under
 
 
-        SUBROUTINE FERDRAWTEXT(in_text, infont_name, fontsize, 
+        SUBROUTINE FERDRAWTEXT(text, fontname, fontsize, 
      .    redfrac, greenfrac, bluefrac, opaqfrac,
      .    startx, starty, rotate, 
      .    italic, bold, under, success)
@@ -25,32 +25,25 @@ C  under
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
-
+        CHARACTER*(*) text, fontname
         REAL*4 fontsize
         REAL*4 redfrac, greenfrac, bluefrac, opaqfrac
         REAL*4 startx, starty, rotate
-	INTEGER italic, bold, under
-	INTEGER success
+        INTEGER italic, bold, under
+        INTEGER success
 
-	CHARACTER*(*) in_text, infont_name
         INTEGER TM_LENSTR
 
         CHARACTER*256 errmsg
         INTEGER errmsglen
-
         INTEGER mywindowid
         REAL*8 mywindow
-
-        CHARACTER*64 fontname
         INTEGER fontnamelen
         REAL*8 myfont
         REAL*8 mycolor
-
-        CHARACTER*64 mytext
-        INTEGER mytextlen
+        INTEGER textlen
 
 C       Draw to the currently active window -
-C       probably just leave this as-is
         mywindowid = ACTIVEWINDOW
 C       Some sanity checks on the window ID and window
         IF ( (mywindowid .LT. 1) .OR. 
@@ -62,11 +55,8 @@ C       Some sanity checks on the window ID and window
             STOP 'FERDRAWTEXT: not a valid window'
         ENDIF
 
-C       Create a font (Courier 24pt bold italic) to use for the string -
-C       probably store at least one standard font for reuse for each window
-        fontname = infont_name
+C       Create the font to use for the string -
         fontnamelen = TM_LENSTR(fontname)
-
         CALL FGDFONT(myfont, mywindow, fontname, fontnamelen, 
      .               fontsize, italic, bold, under)
         IF ( myfont .EQ. NULLOBJ ) THEN
@@ -92,12 +82,9 @@ C       e.g., colorobjs(2,activewindow)
             RETURN
         ENDIF
  
-C       Text to draw
-        mytext = in_text
-        mytextlen = TM_LENSTR(mytext)
-
 C       Draw the text
-        CALL FGDDRAWTEXT(success, mywindow, mytext, mytextlen, 
+        textlen = TM_LENSTR(text)
+        CALL FGDDRAWTEXT(success, mywindow, text, textlen, 
      .                   startx, starty, myfont, mycolor, rotate)
         IF ( success .EQ. 0 ) THEN
             errmsg = ' '
@@ -109,17 +96,11 @@ C       Draw the text
             RETURN
         ENDIF
  
-C       When done with the color, if not a standard color, delete it; 
-C       should always succeed if given a valid color
+C       Delete the color created above
         CALL FGDCOLORDEL(success, mycolor)
 
-C       When done with the font, if not a standard font, delete it; 
-C       should always succeed if given a valid font
+C       Delete the font created above
         CALL FGDFONTDEL(success, myfont)
-
-C       When all plotting is done, update the window (using the window ID) -
-C       this should be eliminated as updates should already be done elsewhere
-        CALL FGD_GUWK(mywindowid)
 
         success = 1
         RETURN

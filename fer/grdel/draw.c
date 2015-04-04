@@ -9,45 +9,6 @@
 #include "pyferret.h"
 
 /*
- * Assigns the transformation values my, sx, sy, dx, and dy used
- * to convert user coordinate (userx, usery) to device coordinate
- * (devx, devy) using the formulae:
- *    devx = userx * sx + dx
- *    devy = (my - usery) * sy + dy
- */
-static void getTransformValues(double *my, double *sx, double *sy,
-                               double *dx, double *dy)
-{
-   float lftfrc, rgtfrc, btmfrc, topfrc;
-   float lftcrd, rgtcrd, btmcrd, topcrd;
-   float winwidth, winheight;
-   double devlft, devtop, devwidth, devheight;
-   double usrlft, usrtop, usrwidth, usrheight;
-
-   fgd_get_view_limits_(&lftfrc, &rgtfrc, &btmfrc, &topfrc,
-                        &lftcrd, &rgtcrd, &btmcrd, &topcrd);
-   fgd_get_window_size_(&winwidth, &winheight);
-
-   devlft     = (double) lftfrc * (double) winwidth;
-   devwidth   = (double) rgtfrc * (double) winwidth;
-   devwidth  -= devlft;
-   devtop     = (1.0 - (double) topfrc) * (double) winheight;
-   devheight  = (1.0 - (double) btmfrc) * (double) winheight;
-   devheight -= devtop;
-
-   usrlft = (double) lftcrd;
-   usrwidth = (double) rgtcrd - usrlft;
-   usrtop = 0.0;
-   usrheight = (double) topcrd - (double) btmcrd;
-
-   *my = (double) topcrd;
-   *sx = devwidth / usrwidth;
-   *sy = devheight / usrheight;
-   *dx = devlft - (*sx) * usrlft;
-   *dy = devtop - (*sy) * usrtop;
-}
-
-/*
  * Draws connected line segments.
  *
  * Arguments:
@@ -100,7 +61,7 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
     }
 
     /* Get the transform values for converting user to device coordinates */
-    getTransformValues(&my, &sx, &sy, &dx, &dy);
+    grdelGetTransformValues(&my, &sx, &sy, &dx, &dy);
 
     if ( bindings->cferbind != NULL ) {
         xvals = (double *) PyMem_Malloc(2 * numpts * sizeof(double));
@@ -252,7 +213,7 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
     }
 
     /* Get the transform values for converting user to device coordinates */
-    getTransformValues(&my, &sx, &sy, &dx, &dy);
+    grdelGetTransformValues(&my, &sx, &sy, &dx, &dy);
 
     if ( bindings->cferbind != NULL ) {
         xvals = (double *) PyMem_Malloc(2 * numpts * sizeof(double));
@@ -420,7 +381,7 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
     }
 
     /* Get the transform values for converting user to device coordinates */
-    getTransformValues(&my, &sx, &sy, &dx, &dy);
+    grdelGetTransformValues(&my, &sx, &sy, &dx, &dy);
 
     if ( bindings->cferbind != NULL ) {
         xvals = (double *) PyMem_Malloc(2 * numpts * sizeof(double));
@@ -581,7 +542,7 @@ grdelBool grdelDrawRectangle(grdelType window, float left, float bottom,
         penobj = NULL;
 
     /* Get the transform values for converting user to device coordinates */
-    getTransformValues(&my, &sx, &sy, &dx, &dy);
+    grdelGetTransformValues(&my, &sx, &sy, &dx, &dy);
     trlft = (double) left * sx + dx;
     trrgt = (double) right * sx + dx;
     trtop = (my - (double) top) * sy + dy;
@@ -706,7 +667,7 @@ grdelBool grdelTextSize(grdelType window, const char *text, int textlen,
     }
 
     /* Get the transform values for converting user to device coordinates */
-    getTransformValues(&my, &sx, &sy, &dx, &dy);
+    grdelGetTransformValues(&my, &sx, &sy, &dx, &dy);
 
     /* Convert the width and height back to user coordinates - just scaling, no offset */
     *fltwidthptr = (float) (width / sx);
@@ -771,7 +732,7 @@ grdelBool grdelDrawText(grdelType window, const char *text, int textlen,
     }
 
     /* Get the transform values for converting user to device coordinates */
-    getTransformValues(&my, &sx, &sy, &dx, &dy);
+    grdelGetTransformValues(&my, &sx, &sy, &dx, &dy);
     trstx = (double) startx * sx + dx;
     trsty = (my - (double) starty) * sy + dy;
 

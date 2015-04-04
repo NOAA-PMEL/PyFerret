@@ -174,6 +174,9 @@ void fgdsegbegin_(int *success, void **window, int *segid);
 void fgdsegend_(int *success, void **window);
 void fgdsegdelete_(int *success, void **window, int *segid);
 
+void grdelGetTransformValues(double *my, double *sx, double *sy,
+                                         double *dx, double *dy);
+
 /*
  * All Color, Font, Pens, Brush, or Symbol objects can only be used
  * in the Window from which they were created.

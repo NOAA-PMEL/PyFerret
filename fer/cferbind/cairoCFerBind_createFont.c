@@ -40,13 +40,12 @@ grdelType cairoCFerBind_createFont(CFerBind *self, const char *familyname, int n
         return NULL;
     }
     instdata = (CairoCFerBindData *) self->instancedata;
-    /* adjust the font size for whether the surface is in pixels or points */
-    if ( (instdata->imageformat == CCFBIF_PNG) ||
-         (instdata->imageformat == CCFBIF_REC) ) {
-        adjfontsize = fontsize * instdata->pixelsperinch / 72.0;
+    /* adjust the font size for Cairo text drawing */
+    if ( instdata->imageformat == CCFBIF_PNG ) {
+        adjfontsize = fontsize * 96.0 / 72.0;
     }
     else {
-        adjfontsize = fontsize;
+        adjfontsize = fontsize * 96.0 / instdata->pixelsperinch;
     }
 
     if ( familyname == NULL ) {

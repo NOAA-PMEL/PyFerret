@@ -70,8 +70,7 @@ grdelBool cairoCFerBind_drawText(CFerBind *self, const char *text, int textlen,
                               colorobj->opaquefrac);
 
     /* Conversion factor for those surfaces that expect points instead of pixels */
-    if ( (instdata->imageformat == CCFBIF_PNG) ||
-         (instdata->imageformat == CCFBIF_REC) ) {
+    if ( instdata->imageformat == CCFBIF_PNG ) {
         unitfactor = 1.0;
     }
     else {
@@ -105,6 +104,7 @@ grdelBool cairoCFerBind_drawText(CFerBind *self, const char *text, int textlen,
     g_object_unref(layout);
 #else
     cairo_set_font_face(instdata->context, fontobj->fontface);
+    /* fontsize has already been adjusted appropriately for this surface */
     cairo_set_font_size(instdata->context, fontobj->fontsize);
     cairo_show_text(instdata->context, utf8str);
 #endif

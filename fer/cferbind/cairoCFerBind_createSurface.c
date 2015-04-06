@@ -96,11 +96,11 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
             fmtname = "SVG";
             break;
         case CCFBIF_REC:
-            /* Values will be given in pixels */
+            /* Values will be given in (floating-point) points */
             extents.x = 0.0;
             extents.y = 0.0;
-            extents.width = (double) instdata->imagewidth;
-            extents.height = (double) instdata->imageheight;
+            extents.width = instdata->imagewidth * 72.0 / instdata->pixelsperinch;
+            extents.height = height = instdata->imageheight * 72.0 / instdata->pixelsperinch; 
 #ifdef CAIRO_HAS_RECORDING_SURFACE
             instdata->surface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, &extents);
 #else

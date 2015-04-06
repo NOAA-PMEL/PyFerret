@@ -52,8 +52,7 @@ grdelBool cairoCFerBind_clipView(CFerBind *self, int clipit)
     right = instdata->fracsides.right * instdata->imagewidth;
     top = instdata->fracsides.top * instdata->imageheight;
     bottom = instdata->fracsides.bottom * instdata->imageheight;
-    if ( (instdata->imageformat != CCFBIF_PNG) &&
-         (instdata->imageformat != CCFBIF_REC) ) {
+    if ( instdata->imageformat != CCFBIF_PNG ) {
         left   *= (72.0 / instdata->pixelsperinch);
         right  *= (72.0 / instdata->pixelsperinch);
         top    *= (72.0 / instdata->pixelsperinch);

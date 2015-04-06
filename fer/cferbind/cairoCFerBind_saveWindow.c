@@ -65,6 +65,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
     cairo_surface_t   *savesurface;
     cairo_t           *savecontext;
     PangoLayout       *annolayout;
+    double             layoutwidth;
     double             layoutheight;
     cairo_status_t     result;
     char               savename[CCFB_NAME_SIZE];
@@ -221,7 +222,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         }
         /* Remove the last newline */
         allannos[j-1] = '\0';
-        /* padding and pen width in pixels */
+        /* padding and pen width in points */
         padding = 9.0;
         penwidth = 2.0;
         /*
@@ -231,11 +232,16 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
          */
         extents.x = 0.0;
         extents.y = 0.0;
-        extents.width = (double) (instdata->imagewidth - 2 * padding);
-        extents.height = (double) (instdata->imageheight - 2 * padding);
+        extents.width = instdata->imagewidth * 72.0 / instdata->pixelsperinch - 2.0 * padding;
+        extents.height = instdata->imageheight * 72.0 / instdata->pixelsperinch - 2.0 * padding;
+#if 0
 #ifdef CAIRO_HAS_RECORDING_SURFACE
         annosurface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, &extents);
 #else
+        annosurface = cairo_svg_surface_create_for_stream(NULL, NULL, extents.width, extents.height);
+#endif
+#else
+        /* Always use the SVG surface for the old Pango library */
         annosurface = cairo_svg_surface_create_for_stream(NULL, NULL, extents.width, extents.height);
 #endif
         if ( cairo_surface_status(annosurface) != CAIRO_STATUS_SUCCESS ) {
@@ -262,9 +268,19 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         pango_layout_set_markup(annolayout, allannos, j-1);
         /* Apply the annotations to this cairo surface */
         pango_cairo_show_layout(annocontext, annolayout);
-        /* Get the actual size of the annotations in "device units" (pixels) */
-        pango_layout_get_pixel_size(annolayout, &j, &k);
-        layoutheight = (double) k;
+        /* Get the actual size of the annotations in Pango scaled surface units */
+        pango_layout_get_size(annolayout, NULL, &k);
+        if ( k > 0 ) {
+           layoutheight = (double) k / PANGO_SCALE + 2.0 * padding;
+           layoutwidth = extents.width + 2.0 * padding;
+        }
+        else {
+           /* No content in the annotations so ignore them */
+           padding = 0.0;
+           penwidth = 0.0;
+           layoutheight = 0.0;
+           layoutwidth = 0.0;
+        }
         /* Done with the Pango layout */
         g_object_unref(annolayout);
         /* Make sure the context is not in an error state */
@@ -297,9 +313,10 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
     }
     else {
         annosurface = NULL;
-        padding = 0;
-        penwidth = 0;
-        layoutheight = 0;
+        padding = 0.0;
+        penwidth = 0.0;
+        layoutheight = 0.0;
+        layoutwidth = 0.0;
     }
 
     /* Create a temporary surface for the desired format */
@@ -309,8 +326,15 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         saveheight = (double) ypixels;
         scalefactor  = savewidth / instdata->imagewidth;
         scalefactor += saveheight / instdata->imageheight;
-        scalefactor *= 0.5;
-        saveheight += scalefactor * (layoutheight + 2.0 * padding);
+        if ( instdata->imageformat == CCFBIF_PNG ) {
+            /* memory image is in pixels value given in imagewidth, imageheight */
+            scalefactor *= 0.5;
+        }
+        else {
+            /* recording surface is actually in points value of imagewidth, imageheight */
+            scalefactor *= instdata->pixelsperinch / 144.0;
+        }
+        saveheight += scalefactor * layoutheight;
         if ( instdata->noalpha ) {
             savesurface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
                                       (int) savewidth, (int) saveheight);
@@ -328,8 +352,9 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         saveheight = yinches * 72.0;
         scalefactor  = savewidth / instdata->imagewidth;
         scalefactor += saveheight / instdata->imageheight;
-        scalefactor *= 0.5;
-        saveheight += scalefactor * (layoutheight + 2.0 * padding);
+        /* recording surface is actually in points value of imagewidth, imageheight */
+        scalefactor *= instdata->pixelsperinch / 144.0;
+        saveheight += scalefactor * layoutheight;
         savesurface = cairo_pdf_surface_create(savename, savewidth, saveheight);
         /* Never use the alpha channel */
         noalpha = 1;
@@ -340,8 +365,9 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         saveheight = yinches * 72.0;
         scalefactor  = savewidth / instdata->imagewidth;
         scalefactor += saveheight / instdata->imageheight;
-        scalefactor *= 0.5;
-        saveheight += scalefactor * (layoutheight + 2.0 * padding);
+        /* recording surface is actually in points value of imagewidth, imageheight */
+        scalefactor *= instdata->pixelsperinch / 144.0;
+        saveheight += scalefactor * layoutheight;
         if ( savewidth > saveheight ) {
             /*
              * Landscape orientation
@@ -363,8 +389,9 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         saveheight = yinches * 72.0;
         scalefactor  = savewidth / instdata->imagewidth;
         scalefactor += saveheight / instdata->imageheight;
-        scalefactor *= 0.5;
-        saveheight += scalefactor * (layoutheight + 2.0 * padding);
+        /* recording surface is actually in points value of imagewidth, imageheight */
+        scalefactor *= instdata->pixelsperinch / 144.0;
+        saveheight += scalefactor * layoutheight;
         savesurface = cairo_svg_surface_create(savename, savewidth, saveheight);
         noalpha = instdata->noalpha;
     }
@@ -421,9 +448,6 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         }
     }
 
-    /* Set the scale on the destination so the source will just fit. */
-    cairo_scale(savecontext, scalefactor, scalefactor);
-
     /* 
      * If not a transparent background, or if the alpha channel 
      * is not supported, fill in the background (with an opaque 
@@ -444,7 +468,10 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         cairo_paint(savecontext);
     }
 
-    /* Check using layoutheight just in case there was no text */
+    /* Set the scale on the destination so the source will just fit. */
+    cairo_scale(savecontext, scalefactor, scalefactor);
+
+    /* Check if there are annotations (with content) to be drawn */
     if ( layoutheight > 0.0 ) {
         /* 
          * Draw the annotations in a white-filled, black-outlined 
@@ -452,8 +479,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
          */
         cairo_new_path(savecontext);
         cairo_rectangle(savecontext, 0.5 * penwidth, 0.5 * penwidth,
-                        (instdata->imagewidth - penwidth),
-                        layoutheight + 2.0 * padding - penwidth);
+                        layoutwidth - penwidth, layoutheight - penwidth);
         /* white fill */
         if ( noalpha )
             cairo_set_source_rgb(savecontext, 1.0, 1.0, 1.0);
@@ -472,12 +498,12 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         cairo_stroke(savecontext);
         /* 
          * Draw the transparent-background annotations image
-         * onto this temporary surface within the rectangle.
+         * onto the save surface within the rectangle.
          */
         cairo_set_source_surface(savecontext, annosurface, padding, padding);
         cairo_paint(savecontext);
         cairo_surface_flush(savesurface);
-        offset = layoutheight + 2.0 * padding;
+        offset = layoutheight;
     }
     else {
         offset = 0.0;

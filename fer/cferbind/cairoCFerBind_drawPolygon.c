@@ -89,8 +89,7 @@ grdelBool cairoCFerBind_drawPolygon(CFerBind *self, double ptsx[], double ptsy[]
     }
 
     /* Conversion factor for those surfaces that expect points instead of pixels */
-    if ( (instdata->imageformat == CCFBIF_PNG) ||
-         (instdata->imageformat == CCFBIF_REC) ) {
+    if ( instdata->imageformat == CCFBIF_PNG ) {
         unitfactor = 1.0;
     }
     else {

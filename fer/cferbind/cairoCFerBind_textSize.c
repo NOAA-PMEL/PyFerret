@@ -91,6 +91,12 @@ grdelBool cairoCFerBind_textSize(CFerBind *self, const char *text, int textlen,
 
     PyMem_Free(utf8str);
 
+    /* Convert returned sizes to pixels */
+    if ( instdata->imageformat != CCFBIF_PNG ) {
+        *widthptr *= (instdata->pixelsperinch / 72.0);
+        *heightptr *= (instdata->pixelsperinch / 72.0);
+    }
+
     if ( result != CAIRO_STATUS_SUCCESS ) {
         strcpy(grdelerrmsg, "cairoCFerBind_textSize: "
                             "getting the text size was not successful");

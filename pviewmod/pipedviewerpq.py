@@ -356,7 +356,10 @@ class PipedViewerPQ(QMainWindow):
             wascleared = True
         elif len(self.__viewpics) > self.__lastpicdrawn:
             # New pictures to add to an existing scene
-            wascleared = False
+            # wascleared = False
+            # Rectangles of modified regins incorrect for drawText
+            # so always update the entire scene
+            wascleared = True
         else:
             # Nothing changed so just return
             return

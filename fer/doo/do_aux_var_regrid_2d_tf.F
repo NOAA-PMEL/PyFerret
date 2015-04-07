@@ -135,9 +135,11 @@
      .								RETURN
 * number of time steps before the start of the next forecast
 	IF (m1hit .GT. m1lot ) THEN
-	   t_delta = tsrc(ip,jp,kp,lsrc_min+1,mp,nsrc_min)
-     .	           - tsrc(ip,jp,kp,lsrc_min  ,mp,nsrc_min)
-	   l_per_n = f_delta / t_delta
+* ... for irregular monthly time steps, t_delta is approximate
+	   t_delta = (tsrc(ip,jp,kp,lsrc_max,mp,nsrc_min)
+     .	            - tsrc(ip,jp,kp,lsrc_min,mp,nsrc_min))
+     .		                   / (lsrc_max-lsrc_min+1)
+	   l_per_n = INT(f_delta/t_delta + 0.5)
 	ELSE
 	   t_delta = 1.0   ! irrelevant
 	   l_per_n = 1
@@ -200,9 +202,16 @@
 	   t_target = tdst(ldst0)
 	   DO nsrc0 = cx_hi_ss(tsrc_cx,f_dim),cx_lo_ss(tsrc_cx,f_dim), -1
 	      IF (t_target .GE. tsrc(ip,jp,kp,lsrc_min,mp,nsrc0)) THEN
-	         lsrc0 = lsrc_min +
-     .			(t_target-tsrc(ip,jp,kp,lsrc_min,mp,nsrc0))/t_delta
-	         GOTO 50
+	         DO lsrc0 = lsrc_min,lsrc_max
+	            IF  (tsrc(ip,jp,kp,lsrc0,mp,nsrc0) .EQ. t_target) THEN
+	               GOTO 50
+	            ELSEIF  (tsrc(ip,jp,kp,lsrc0,mp,nsrc0) .GT. t_target) THEN
+	               CALL WARN('1D time axis of FMRC contains time'//
+     .			         ' not in forecast collection'//pCR//
+     .				 'Results may not be correct.')
+	               GOTO 50
+	            ENDIF
+	         ENDDO
 	      ENDIF
 	   ENDDO
 * ... the time t_target does not exist in this forcast
@@ -211,8 +220,8 @@
 	STOP 'do_aux_ver_regrid_2d_tf'
 
 * determine where we are starting on the l_per_n cycle
- 50	n = AMOD(t_target, f_delta) / t_delta + 1
-	lsrc0 = lsrc0 - 1
+! 50	n = AMOD(t_target, f_delta) / t_delta + 1
+ 50	lsrc0 = lsrc0 - 1
 
 ******************************************************************
 	DO l = ldst0, ldst_max         ! ***** T-cal loop  ******

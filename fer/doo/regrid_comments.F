@@ -148,9 +148,14 @@
 	      IF (cx_regrid_trans(idim,cx) .EQ. pauxrgrd_fmrc ) THEN
 * ... comment about T-F axis reorganization for FMRC data sets:
 *          "reorganized on T using 2d TIME2D field"
-     	         REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
-     .               'reorganized on '//ww_dim_name(idim)
-	         mlen = mlen + 16
+	         IF (idim .EQ. t_dim) THEN
+     	            REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
+     .                  'reorganized on T'
+	            mlen = mlen + 16
+	         ELSEIF (idim.EQ. f_dim) THEN
+     	            REGRID_COMMENTS = REGRID_COMMENTS(:mlen-1) //
+     .                  'F'
+	         ENDIF
 	      ELSE
 
 	         IF ( line_regular(axis) .AND. .NOT.stat_grid 
@@ -212,6 +217,7 @@
 	   sep = ' '
 	   DO idim = 1, nferdims
 	      IF (cx_regrid_trans(idim,cx) .EQ. pauxrgrd_fmrc ) THEN
+	         IF (idim .EQ. f_dim ) CYCLE
 	         mybuff = mybuff(:slen) // ' 2d'
 	         slen = slen + 3
 	      ENDIF

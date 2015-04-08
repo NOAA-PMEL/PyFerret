@@ -111,10 +111,10 @@
               AX_TITLE = 'FORECAST LEAD TIME'
               len = 18
            ENDIF
-!           unit_name = line_units(line)
-!           ulen = TM_LENSTR1( unit_name )
-!           AX_TITLE = AX_TITLE(:len)//' ('//unit_name(:ulen)//')'
-!           len = len + 3 + ulen
+           unit_name = line_units(line)
+           ulen = TM_LENSTR1( unit_name )
+           AX_TITLE = AX_TITLE(:len)//' ('//unit_name(:ulen)//')'
+           len = len + 3 + ulen
 
 	ELSE
 	   AX_TITLE = ww_dim_name( idim )

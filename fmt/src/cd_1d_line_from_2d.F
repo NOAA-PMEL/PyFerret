@@ -1,4 +1,5 @@
-	SUBROUTINE CD_1D_LINE_FROM_2D (dset, cdfid, varid, vname, ax1d, status)
+	SUBROUTINE CD_1D_LINE_FROM_2D (dset, cdfid, varid, vname,
+     .			axcalt, axlagf, status)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -32,6 +33,12 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+
+* this routine synthesizes the T axis calendar time and F axis lead time
+* axes that are needed to support FMRC visualization and analysis
+
+* V695+ *acm* and *sh*
+
 * include files
         include 'netcdf.inc'
 	include 'tmap_errors.parm'
@@ -52,38 +59,39 @@
         include 'calendar.decl'
         include 'calendar.cmn'
 
-	INTEGER dset, cdfid, varid, ax1d, status
+	INTEGER dset, cdfid, varid, axcalt, axlagf, status
 	CHARACTER*(*) vname
 
 
 	INTEGER bufflen
 	PARAMETER (bufflen = 256)
-	CHARACTER buff*256, dbuf*3, vupcase*128
+	CHARACTER TM_STRING*13, buff*256, dbuf*3, vupcase*128, pCR*1
 
 	LOGICAL TM_DFPEQ_TOL, TM_FPEQ_EPS, NC_GET_ATTRIB, 
      .		coordvar, got_it, do_warn, ok_cal, yyyymmdd_time, got_torg
 	INTEGER STR_UPCASE, TM_LENSTR1, TM_GET_CALENDAR_ID, TM_UNIT_ID,
-     .          i, vartype, nvdim, vdims(8), nvatts, 
-     .		npts, npts_cdf, ipt1, ipte, ipt, outflag, next_line_storage, 
+     .		TM_FIND_LIKE_DYN_LINE,
+     .          i, l, n, vartype, nvdim, vdims(8), nvatts, 
+     .		npts, npts_cdf, ipt1, ipte, iptn, iptnp1,
+     .		outflag, next_line_storage, pre_exist,
      .		start(nferdims),count(nferdims), zero(nferdims),
      .          maxlen, attlen, attoutflag, cal_id, since_T0, slen, vlen, 
-     .          units, istat
-	REAL val, epsilon_23
+     .          units, istat, noverlap, nleadtimes, nlag, nT, nF
+	REAL val, epsilon_23, t0NextForecast
 	REAL*8 depsilon_46, depsilon, dlast_coord, dfirs_coord,
-     .       dfirst_delta, ddelta
+     .       dfirst_delta, ddelta, avg_lag
 
-      INTEGER tt  ! nice short name
-      EQUIVALENCE (tt,lunit_errors)
+        INTEGER tt  ! nice short name
+        EQUIVALENCE (tt,lunit_errors)
 
 * initialize things
 	do_warn = .FALSE.
+	pCR = CHAR(15)
 
+*********  FIRST THE 1D CALENDAR TIME AXIS OF THE FMRC  *************
 * Define new axis
 
-	CALL TM_ALLO_TMP_LINE (ax1d, status)
-	CALL TM_NEW_LINE_NAME ( 'ftime1d', buff )
-	line_dattype(ax1d) = nf_double
-	line_name(ax1d) = buff
+	CALL TM_ALLO_TMP_LINE (axcalt, status)
 
 	CALL CD_GET_VAR_INFO (dset, varid, vname, vartype, 
      .            nvdim, vdims, nvatts, coordvar, outflag, status)
@@ -92,7 +100,7 @@
 
 * Get the calendar name.
 
-      line_cal_name(ax1d) = 'GREGORIAN'   ! default
+      line_cal_name(axcalt) = 'GREGORIAN'   ! default
       maxlen = bufflen
       got_it = NC_GET_ATTRIB( dset, varid, 'calendar', do_warn,
      .                        vname(:vlen), maxlen, attlen, attoutflag, 
@@ -100,7 +108,7 @@
       IF (got_it) then
          CALL CD_GET_CALENDAR_NAME(buff, ok_cal)
          IF (ok_cal) THEN
-	    line_cal_name(ax1d) = buff
+	    line_cal_name(axcalt) = buff
 	 ELSe
             slen = TM_LENSTR1(buff)
             CALL TM_NOTE('calendar attribute for 2D Time variable "'//
@@ -108,10 +116,10 @@
             CALL TM_NOTE('Assuming Gregorian calendar', tt)
          ENDIF
       ENDIF
-      cal_id = TM_GET_CALENDAR_ID (line_cal_name(ax1d))
+      cal_id = TM_GET_CALENDAR_ID (line_cal_name(axcalt))
 
 * optional units for axis (may contain "tunits since T0_date" 2/95)
-      line_units(ax1d) = ' '   ! default
+      line_units(axcalt) = ' '   ! default
       maxlen = bufflen
       got_it = NC_GET_ATTRIB( dset, varid, 'units', do_warn,
      .                        vname(:vlen), maxlen, attlen, attoutflag, 
@@ -120,7 +128,7 @@
       yyyymmdd_time = buff(1:15) .EQ. 'yyyymmddhhmmss'
 
       IF ( since_T0 .GT. 2 ) THEN
-         line_units(ax1d) = buff(:since_T0-1)  ! just the "tunits" part 
+         line_units(axcalt) = buff(:since_T0-1)  ! just the "tunits" part 
 
          istat = STR_UPCASE( dbuf, buff(1:3) )
 
@@ -129,7 +137,7 @@
 
             got_torg = .TRUE.
             CALL TM_DATE_REFORMAT(buff(since_T0+6:),pdate_numslashnum,
-     .                            cal_id, line_t0(ax1d), 
+     .                            cal_id, line_t0(axcalt), 
      .                            pdate_vax, .FALSE., status )
 
 c fix for bug 1394
@@ -139,7 +147,7 @@ c string as the units.  i.e., "days_since_event".
 c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error 
 
             IF ( status .NE. merr_ok ) THEN   
-               line_units(ax1d) = buff(1:slen)
+               line_units(axcalt) = buff(1:slen)
                got_torg = .FALSE.
                since_t0 = 0
                status = merr_ok
@@ -148,17 +156,17 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
             since_t0 = 0        ! flag that no T0 was present
          ENDIF
       ELSEIF ( yyyymmdd_time ) THEN
-         line_units(ax1d) = 'days'
-         line_t0(ax1d) = ' ' ! to be determined when coords are read
+         line_units(axcalt) = 'days'
+         line_t0(axcalt) = ' ' ! to be determined when coords are read
          got_torg = .TRUE.
       ELSE
-         IF (got_it) line_units(ax1d) = buff
+         IF (got_it) line_units(axcalt) = buff
          got_torg = .FALSE.
       ENDIF
 
 * ... decode the units
 
-      units = TM_UNIT_ID( line_units(ax1d) )
+      units = TM_UNIT_ID( line_units(axcalt) )
 
 * Named calendar with unit=year gets length of year in that calendar.
 
@@ -177,30 +185,29 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 	 IF (cal_id .EQ. noleap) units = -13
       ENDIF
 
-      line_unit_code(ax1d) = units
-      IF  ( units.EQ.0 .AND. line_units(ax1d) .NE. ' ' ) THEN
+      line_unit_code(axcalt) = units
+      IF  ( units.EQ.0 .AND. line_units(axcalt) .NE. ' ' ) THEN
          CALL TM_NOTE('Units on axis "'//vname(:vlen)//
-     .                '" are not recognized: '//line_units(ax1d), tt)
+     .                '" are not recognized: '//line_units(axcalt), tt)
          CALL TM_NOTE('They will not be convertible:', tt)
       ENDIF
       IF ( units .GE. 0 ) THEN
-         line_tunit(ax1d) = real4_init
+         line_tunit(axcalt) = real4_init
       ELSE
-         line_tunit(ax1d) = un_convert(line_unit_code(ax1d))
+         line_tunit(axcalt) = un_convert(line_unit_code(axcalt))
       ENDIF
 
 * The units must describe calendar time 
 
-      ! check on line_tunit... else GOTO 5400 
-      IF (line_tunit(ax1d) .NE. real4_init) THEN
-         line_direction(ax1d) = 'TI'
+      ! check that this has mapped to the right TF orientation
+      IF (line_tunit(axcalt) .NE. real4_init) THEN
+         line_direction(axcalt) = 'TI'
       ELSE
          GOTO 5400
       ENDIF
 
-* Get the coordinate values and stretch them out onto a single time axis.
-
-*  first read the data from temp2d into line storage. Use it to compute the 1d line coords
+* Get the 2d coordinate array from the netCDF dataset
+* Read the data from temp2d into line storage.
 
 	npts = 1
 	DO 100 i = 1, nvdim
@@ -210,6 +217,8 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 	   zero(i) = 0
 	   npts = npts* npts_cdf
  100	CONTINUE
+	nT = count(1)   ! number of time steps per forecast
+	nF = count(2)   ! number of forecasts in collection
 
 	next_line_storage = next_line_mem_pos
 c	IF ((next_line_mem_pos+ npts+1).GT.maxlinestore) GOTO 5300
@@ -220,24 +229,48 @@ c	IF ((next_line_mem_pos+ npts+1).GT.maxlinestore) GOTO 5300
      .		   zero, zero, line_mem(ipt1), 0, 0, status)
 
 
-	ipt = ipt1
-	npts = 0
-	DO 200 i = ipt1, ipte-1
-	   line_mem(i) = line_mem(ipt)
-	   npts = npts + 1
-	   IF ( line_mem(ipt+1) .GT. line_mem(ipt) ) THEN
-	      ipt = ipt + 1
+* save some values needed for the forecast lead time axis
+* average lag time (lag is constant except in case of monthly forecasts)
+* and how many lag time steps before the subsequent forecast begins?
+	avg_lag = (line_mem(ipt1+nT*(nF-1))-line_mem(ipt1))
+     .	        / (nF-1)
+	t0NextForecast = line_mem(ipt1+nT)
+	DO nlag = 1, nT-1
+	   IF (line_mem(ipt1+nlag) .EQ. t0NextForecast) GOTO 200
+	ENDDO
+	CALL TM_NOTE('Corrupted FMRC time array'//pCR//
+     .		     'Time values dont match between forecasts', lunit_errors)
+
+* Extract the unique values from the 2d array into a 1d "best time series" line
+* the length of the forecasts is nT
+* the number of forecasts is nF
+* create the 1D array by traveling along each forecast and pulling out points
+* until we reach the value of the first time step in the next forecast
+ 200	npts  = 0
+	iptn = ipt1                ! start of forecast n
+	DO n = 1, nF         ! n index loops over forecasts
+	   iptnp1 = iptn + nT
+	   l = 0                   ! zero-based l index over input time axis
+	   IF (iptnp1 .LT. ipte) THEN
+*   .. copy early time step values from this forecast into 1D axis
+ 	      DO WHILE (line_mem(iptn+l) .LT. line_mem(iptnp1))
+	         line_mem(ipt1+npts) = line_mem(iptn+l)
+	         npts  = npts + 1
+	         l = l + 1
+	      ENDDO
 	   ELSE
-	      DO WHILE (line_mem(ipt+1) .LE. line_mem(i) )
-	         ipt = ipt + 1
-              ENDDO
-	      ipt = ipt + 1
+*   .. copy all time step values from the final forecast into the 1D axis
+	      DO l = 0, nT-1
+	         line_mem(ipt1+npts) = line_mem(iptn+l)
+	         npts  = npts + 1
+	      ENDDO
 	   ENDIF
-	   IF (ipt .GT. ipte) GOTO 300
-  200	CONTINUE
-  300	CONTINUE
+	   iptn = iptnp1
+	ENDDO
         
-	line_dim(ax1d) = npts
+* ... until proven otherwise, this will look like an irregular axis
+        line_subsc1(axcalt) = next_line_mem_pos
+	line_dim(axcalt) = npts
 	ipte = ipt1 + npts-1
 	
 * from cd_get_1_axis.
@@ -268,16 +301,16 @@ c	IF ((next_line_mem_pos+ npts+1).GT.maxlinestore) GOTO 5300
 	ENDIF
 
 * It's regular - save it as such
-	line_regular(ax1d) = .TRUE.
-	line_start  (ax1d) = line_mem(ipt1)
-	line_delta  (ax1d) = 
+	line_regular(axcalt) = .TRUE.
+	line_start  (axcalt) = line_mem(ipt1)
+	line_delta  (axcalt) = 
      .              (line_mem(ipte)-line_mem(ipt1))/DBLE(npts-1)
-	line_subsc1 (ax1d) = unspecified_int4
+	line_subsc1 (axcalt) = unspecified_int4
 
 	GOTO 390
 
 *  Irregular
-  380	line_regular(ax1d) = .FALSE.
+  380	line_regular(axcalt) = .FALSE.
 	IF ((next_line_mem_pos+2*npts+1).GT.maxlinestore) GOTO 5300
  
 	CALL TM_IRREGAX_MID( ipt1, npts )
@@ -287,24 +320,59 @@ c	IF ((next_line_mem_pos+ npts+1).GT.maxlinestore) GOTO 5300
  
 * Save the axis name (upper case) and memory storage.  For all irregular axes, 
 * we have saved N+1 edges for the axis cells. Increment the pointer.   
-
-	i = STR_UPCASE( vupcase, line_name(ax1d) )
-        line_name(ax1d) = vupcase
-        line_name_orig(ax1d) = vname
-        IF ( .NOT.line_regular(ax1d) ) THEN
-           line_subsc1(ax1d) = next_line_mem_pos
+	CALL TM_NEW_LINE_NAME ( 'tf_cal_t', buff )
+	line_dattype(axcalt) = nf_double
+	line_name(axcalt) = buff
+	i = STR_UPCASE( vupcase, line_name(axcalt) )
+        line_name(axcalt) = vupcase
+        line_name_orig(axcalt) = vname
+        IF ( .NOT.line_regular(axcalt) ) THEN
            next_line_mem_pos =  next_line_storage + 2*npts+1 
         ENDIF
 
-	
+*********  NOW FINALLY THE FORECAST LEAD TIME AXIS OF THE FMRC  *************
+* each forecast run contains nT time steps
+* each forecast run lags the preceding by nlag time steps
+* so the overlap in time steps is noverlap=nT-nlag
+* and the maximum possible lags is ROUNDUP(noverlap/nlag) 
+
+	noverlap = nT-nlag
+	nleadtimes = INT(noverlap/nlag + .999)
+
+* Define new axis
+	CALL TM_ALLO_TMP_LINE (axlagf, status)
+
+* inherit units from the calendar time axis just created
+	line_unit_code(axlagf) = line_unit_code(axcalt)
+	line_units(axlagf)     = un_name(line_unit_code(axlagf))
+	line_direction(axlagf) = 'FI'
+
+* lead time values regular from 0 to lag of last forecast
+	line_dim(axlagf)   = nleadtimes
+	line_delta(axlagf) = avg_lag
+	line_start(axlagf) = 0.0
+	line_dattype(axcalt) = nf_double
+
+* catalog a new axis
+	CALL TM_NEW_LINE_NAME ( 'tf_lag_f', buff )
+	i = STR_UPCASE( line_name(axlagf), buff )
+        line_name_orig(axlagf) = buff
+
 * successful completion
         status = merr_ok
 
-	RETURN
+ 5000	RETURN
 
- 5300	CONTINUE
-c	error 'no more line storage'
- 5400   CONTINUE
-c   error 'variable does not have valid calendar time attributes'
+
+ 5300	CALL TM_ERRMSG (merr_linstorlim, status, 'CD_1D_LINE_FROM_2D',
+     .                  no_descfile, no_stepfile,
+     .                  'MAX='//TM_STRING(DBLE(maxlinestore)),
+     .                  no_errstring, *5000)
+
+ 5400	CALL TM_ERRMSG (merr_notimeinfo, status, 'CD_1D_LINE_FROM_2D',
+     .                  no_descfile, no_stepfile,
+     .                  'unrecognizable time encoding',
+     .                  no_errstring, *5000)
+
 	RETURN
 	END

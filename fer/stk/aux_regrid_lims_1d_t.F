@@ -121,13 +121,14 @@
            cx_aux_stat (idim, src_cx) = paux_stat_na
  100    CONTINUE
 
-* sanity check the target T axis
-	t_axis = CGRID_AXIS(t_dim,dst_cx)
-	IF (.NOT. line_regular(t_axis)) GOTO 5050
-	IF (lhi .GT. llo) THEN
-	   IF ( line_delta(t_axis)
-     .	   .NE.(aux1(i,j,k,llo+1,m,nlo)-aux1(i,j,k,llo,m,nlo))) GOTO 5060
-	ENDIF
+* to support monthly times, the target axis may be irregular
+!* sanity check the target T axis
+!	t_axis = CGRID_AXIS(t_dim,dst_cx)
+!	IF (.NOT. line_regular(t_axis)) GOTO 5050
+!	IF (lhi .GT. llo) THEN
+!	   IF ( line_delta(t_axis)
+!     .	   .NE.(aux1(i,j,k,llo+1,m,nlo)-aux1(i,j,k,llo,m,nlo))) GOTO 5060
+!	ENDIF
 
 * ideally we should check that the units of the 2D time field are the same as the units of the
 * 1D time axis, but since typically Ferret code is creating the 1d time, we'll allow laziness
@@ -137,7 +138,7 @@
 	IF (trans .NE. pauxrgrd_fmrc) 
      .	  CALL ERRMSG( ferr_internal, status, 'unkwn rgrd trans', *5000)
 
-* make sure that the auxiliary variable is monotonic and regularly spaced
+* make sure that the auxiliary variable is monotonic spaced
 *	The 2D time array can never theoretically be non-monotonic
 *       but FT aggregations are new and unreliable
 	DO n = nlo, nhi
@@ -151,11 +152,12 @@
 	         looking_for_first = 1
 	      ELSE
 	         IF (looking_for_first.EQ.1) THEN
-	            delta = t-t1
-	            IF (delta .LT. 0.0) GOTO 5100
+!	            delta = t-t1
+!	            IF (delta .LT. 0.0) GOTO 5100
+	            IF (t .LE. t1) GOTO 5100
 	            looking_for_first = 2
                  ENDIF
-	         IF (delta .NE. (t-t1)) GOTO 5100
+!	         IF (delta .NE. (t-t1)) GOTO 5100
 	         t1 = t
 	      ENDIF
 	   ENDDO
@@ -320,12 +322,12 @@
 
 * error exit
  5000	RETURN
- 5050   CALL ERRMSG( ferr_invalid_command, status,
-     .		'target 1D time axis is not regular', *5000)
- 5060   CALL ERRMSG( ferr_invalid_command, status,
-     .		'delta T of target 1D time axis doesnt match the data', *5000)
+! 5050   CALL ERRMSG( ferr_invalid_command, status,
+!     .		'target 1D time axis is not regular', *5000)
+! 5060   CALL ERRMSG( ferr_invalid_command, status,
+!     .		'delta T of target 1D time axis doesnt match the data', *5000)
  5100   CALL ERRMSG( ferr_invalid_command, status,
-     .		'2D T-F times are not increasing and regular', *5000)
+     .		'2D T-F times are not strictly increasing on T', *5000)
  5150   CALL ERRMSG( ferr_invalid_command, status,
      .		'2D T-F times include missing value', *5000)
 	END

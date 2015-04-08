@@ -84,7 +84,8 @@
      .		ldstmin, ldstmax, llmin, llmax, llo, lhi, ldel,
      .		nlo, nhi, nmin, nmax, axis
 	REAL*8  TM_WORLD, axmax, axmin, bad_aux, t, t1, steps,
-     .		tdstrt, tdend, tstepmin, tstepmax, f_delta, t_delta
+     .		tdstrt, tdend, tstepmin, tstepmax
+!, f_delta, t_delta
 
 * initialize
 	bad_aux = mr_bad_data( mr1 )
@@ -123,22 +124,23 @@
            cx_aux_stat (idim, src_cx) = paux_stat_na
  100    CONTINUE
 
-* sanity check the target T axis
-	axis = CGRID_AXIS(t_dim,dst_cx)
-	IF (.NOT. line_regular(axis)) GOTO 5050
-	IF (lhi .GT. llo) THEN
-	   IF (line_delta(axis)
-     .	   .NE.(aux1(i,j,k,llo+1,m,nlo)-aux1(i,j,k,llo,m,nlo))) GOTO 5055
-	ENDIF
-
+* commented out these checks for regular time steps, because of monthly axes
+!* sanity check the target T axis
+!	axis = CGRID_AXIS(t_dim,dst_cx)
+!	IF (.NOT. line_regular(axis)) GOTO 5050
+!	IF (lhi .GT. llo) THEN
+!	   IF (line_delta(axis)
+!     .	   .NE.(aux1(i,j,k,llo+1,m,nlo)-aux1(i,j,k,llo,m,nlo))) GOTO 5055
+!	ENDIF
+!
 * sanity check the target F axis
 	axis = CGRID_AXIS(f_dim,dst_cx)
 	IF (.NOT. line_regular(axis)) GOTO 5060
-	IF (nhi .GT. nlo) THEN
-	   f_delta = line_delta(axis)
-	   IF ( f_delta
-     .	   .NE.(aux1(i,j,k,llo,m,nlo+1)-aux1(i,j,k,llo,m,nlo))) GOTO 5065
-	ENDIF
+!	IF (nhi .GT. nlo) THEN
+!	   f_delta = line_delta(axis)
+!	   IF ( f_delta
+!     .	   .NE.(aux1(i,j,k,llo,m,nlo+1)-aux1(i,j,k,llo,m,nlo))) GOTO 5065
+!	ENDIF
 
 
 * ideally we should check that the units of the 2D time field are the same as the units of the
@@ -149,7 +151,8 @@
 	IF (trans .NE. pauxrgrd_fmrc) 
      .	  CALL ERRMSG( ferr_internal, status, 'unkwn rgrd trans', *5000)
 
-* make sure that the auxiliary variable is monotonic and regularly spaced
+* make sure that the auxiliary variable is monotonic
+* (not regularly spaced cuz we havvvvvvvvvve to support monthly data)
 *	The 2D time array can never theoretically be non-monotonic
 *       FT aggregations are new and unreliable
 	DO n = nlo, nhi
@@ -163,18 +166,19 @@
 	         looking_for_first = 1
 	      ELSE
 	         IF (looking_for_first .EQ. 1) THEN
-	            t_delta = t-t1
-	            IF (t_delta .LE.0.0) GOTO 5100
+!	            t_delta = t-t1
+!	            IF (t_delta .LE.0.0) GOTO 5100
+	            IF (t .LE. t1) GOTO 5100
 	         ENDIF
-	         IF ((t-t1) .NE. t_delta) GOTO 5100
+!	         IF ((t-t1) .NE. t_delta) GOTO 5100  ! need not be regular
 	         t1 = t
 	      ENDIF
 	   ENDDO
 	ENDDO
 
-* the delta in F must be an integer multiple of the delta in T
-	steps = f_delta / t_delta
-	IF (steps .NE. INT(steps)) GOTO 5200
+!* the delta in F must be an integer multiple of the delta in T
+!	steps = f_delta / t_delta
+!	IF (steps .NE. INT(steps)) GOTO 5200
 
 * the relationship between the time steps in the 2D aux time field (cx1)
 * and the same times in the destination field looks something
@@ -225,11 +229,6 @@
 	   nmax  = nmin
 	   GOTO 500
 	ENDIF
-
-* NOTE:  thislogic is copy-paste from aux_regrid_lims_1d_t and was developed
-* under the earlier assumptions of irregular time steps in the FMRC matrix
-* This search could presumably be replaced with a simple calculation based
-* upon F_delta and T_delta
 
 * determine the minimal forecast index range (i.e. with relevant timesteps)
 	DO n = nlo, nhi
@@ -301,19 +300,19 @@
 
 * error exit
  5000	RETURN
- 5050   CALL ERRMSG( ferr_invalid_command, status,
-     .		'target 1D time axis is not regular', *5000)
- 5055	CALL ERRMSG( ferr_invalid_command, status,
-     .		'delta T of target 1D time axis doesnt match the data', *5000)
+! 5050   CALL ERRMSG( ferr_invalid_command, status,
+!     .		'target 1D time axis is not regular', *5000)
+! 5055	CALL ERRMSG( ferr_invalid_command, status,
+!     .		'delta T of target 1D time axis doesnt match the data', *5000)
  5060   CALL ERRMSG( ferr_invalid_command, status,
      .		'target forecast lag time axis is not regular', *5000)
- 5065	CALL ERRMSG( ferr_invalid_command, status,
-     .		'delta T of forecast lag axis doesnt match the data', *5000)
+! 5065	CALL ERRMSG( ferr_invalid_command, status,
+!     .		'delta T of forecast lag axis doesnt match the data', *5000)
  5100   CALL ERRMSG( ferr_invalid_command, status,
-     .		'2D T-F times are not regular and increasing', *5000)
+     .		'2D T-F times are not strictly increasing on T and F', *5000)
  5150   CALL ERRMSG( ferr_invalid_command, status,
      .		'2D T-F times include missing value', *5000)
- 5200   CALL ERRMSG( ferr_invalid_command, status,
-     .		'Lag axis of F axis is not an integer number of time steps',
-     .		*5000)
+! 5200   CALL ERRMSG( ferr_invalid_command, status,
+!     .		'Lag axis of F axis is not an integer number of time steps',
+!     .		*5000)
 	END

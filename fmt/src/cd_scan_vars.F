@@ -145,7 +145,8 @@
      .        istat, npts, epic_t2,
      .        nbvar, ivar, len_test, len_mchars, 
      .        attype, attlen, attoutflag, maxlen, iatt, 
-     .        varid, all_outflag, dset_num, attid, bad_bndsid, ax1d
+     .        varid, all_outflag, dset_num, attid, bad_bndsid,
+     .	      axcalt, axlagf
 
       REAL vals  ! potential numerical attributes
       CHARACTER*128 aname, line1d
@@ -425,25 +426,39 @@
 	      bad_bndsid = 0
 	   ENDIF
 
-* Is it a 2D time coordinate variable?  Make this into a subroutine call to define a 1-D
-* axis with the coordinate data it represents. Put an attribute onto the appropriate
-* variables.
+* 2D time coordinate variable for FMRC dataset?  If so, synthesize a 1D
+* time axis for the colection
+* **TBD**   TEMPORARY CODE
 *    In the thredds and grib aggregation the 2d Time var has this attrib:
 *    time2d._CoordinateAxisType = Time 
+* Finding this _CoordinateAxisType attributewill do as a temporary
+* place-holder, though it is inconsistent with the CF standard.
+* The correct clue that we need to
+* create a 1D time axis is the presence of a 'coordinates' attribute on a data
+* variable pointing to this 2d time array.  That logic may best be located
+* whever the coordinates attributes and auxiliary variable relationships
+* are being analyzed (CD_GET_PARENT_GRIDS, CD_ASSOC_GRIDS or something TBD)
+* We should also check that it is indeed 2d **TBD**
+	   IF ( STR_CASE_BLIND_COMPARE(vname(:vlen), 'time').EQ.str_eq 
+     .	  .AND. nvdim .EQ. 2 ) THEN  
+              maxlen = 16  
+              got_it = NC_GET_ATTRIB( dset, ivcd, '_CoordinateAxisType',
+     .                            do_warn, vname(:vlen), maxlen, attlen,
+     .                            attoutflag, name, vals ) 
+              IF ( got_it
+     .       .AND. STR_CASE_BLIND_COMPARE(name, 'Time').EQ.str_eq ) THEN
+	         CALL CD_1D_LINE_FROM_2D (dset, cdfid,
+     .					  ivcd, vname, axcalt, axlagf, status)
+	      ENDIF
+	   ENDIF
 
-c           maxlen = 16  
-c           got_it = NC_GET_ATTRIB( dset, ivcd, '_CoordinateAxisType',
-c     .                            do_warn, vname(:vlen), maxlen, attlen,
-c     .                            attoutflag, name, vals ) 
-c           IF ( got_it .AND. STR_CASE_BLIND_COMPARE(name, 'Time').EQ.str_eq ) THEN
-c	      CALL CD_1D_LINE_FROM_2D (dset, cdfid, ivcd, vname, ax1d, status)
-c
-c	   ENDIF
-* Now set an attribute on file varaibles with the new axis name.
-
-
-
-
+* Now set a global attribute for this dataset with the new axis name
+* TBD
+*************
+*************
+*************
+*************
+*************
 
 * EPIC KLUDGE: if an EPIC file has an invalid "TIME" axis we want, not only
 * "TIME" as a dependent variable, but also "TIME2"

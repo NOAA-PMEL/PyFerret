@@ -174,7 +174,11 @@
      .
      .       offset_lo  	( trans_4d_avg_wgt )	/  0  /,
      .	     offset_hi  	( trans_4d_avg_wgt )	/  0  /,
-     .	     offset_supplied	( trans_4d_avg_wgt )	/ .FALSE. /
+     .	     offset_supplied	( trans_4d_avg_wgt )	/ .FALSE. /,
+     .
+     .	     offset_lo   	( trans_smth_box_p )	/ -1  /,
+     .	     offset_hi   	( trans_smth_box_p )	/ +1  /,
+     .	     offset_supplied	( trans_smth_box_p )	/ .TRUE. /
 
 * --- end of introductory code ---
 * initiailize
@@ -186,6 +190,7 @@
 * offset given explicitly by user (eg @SHF:-1)
 	   ioff = INT( arg )
 	   IF ( trans .EQ. trans_smth_box
+     .	  . OR. trans .EQ. trans_smth_box_p
      .	  . OR. trans .EQ. trans_smth_binml
      .	  . OR. trans .EQ. trans_smth_hanng
      .	  . OR. trans .EQ. trans_smth_max

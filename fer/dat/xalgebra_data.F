@@ -690,10 +690,16 @@
      .		alg_trans_num  ( 43 )	/ trans_avg_wgt  	/,
      .		alg_trans_text ( 44 )	/ 'WG4'  		/, 
      .		alg_trans_title( 44 )	/ '4D weights, avg,int'  /,
-     .		alg_trans_num  ( 44 )	/ trans_4d_avg_wgt  	/
+     .		alg_trans_num  ( 44 )	/ trans_4d_avg_wgt  	/,
+     .		alg_trans_text ( 45 )	/ 'SPX' 		/, 
+     .		alg_trans_title( 45 )	/ 'box smooth w/missing'/,
+     .		alg_trans_num  ( 45 )	/ trans_smth_box_p	/,
+     .		alg_trans_its_int ( 45)	/ .TRUE.		/,
+     .		alg_trans_has_arg ( 45)	/ .TRUE.		/,
+     .		alg_trans_dflt_arg( 45)	/ 3.			/
 
-        DATA    (alg_trans_num(i),i = 45, num_transforms)
-     .            /16*unspecified_int4 /
+        DATA    (alg_trans_num(i),i = 46, num_transforms)
+     .            /15*unspecified_int4 /
 
 	DATA
      .		alg_regrid_title( prgrd_exact )		/ ' '	/,

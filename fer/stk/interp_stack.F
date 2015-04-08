@@ -138,7 +138,7 @@
      .			DO_NEAREST_DIST_ABOVE, DO_NEAREST_DIST_BELOW,
      .			DO_NEAREST_INDEX_ABOVE,DO_NEAREST_INDEX_BELOW,
      .			DO_EVENT, DO_SMTH_MEDIAN, DO_SMTH_MIN, DO_SMTH_MAX,
-     .			DO_STDDEV, DO_AVG_WGT, DO_4D_AVE_WGT  
+     .			DO_STDDEV, DO_AVG_WGT, DO_4D_AVE_WGT, DO_SMTH_BOX_P
 
 * calling arguments:
 * in	isp_base	- stack level at which to begin calculations
@@ -589,6 +589,8 @@ c	   GOTO 5000
 	      CALL IS_TRANS( memory, DO_SHIFT, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_box		) THEN
 	      CALL IS_TRANS( memory, DO_SMTH_BOX, *2500, status )
+	   ELSEIF ( act .EQ. isact_smth_box_p		) THEN
+	      CALL IS_TRANS( memory, DO_SMTH_BOX_P, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_binml		) THEN
 	      CALL IS_TRANS( memory, DO_SMTH_BINML, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_hanng		) THEN

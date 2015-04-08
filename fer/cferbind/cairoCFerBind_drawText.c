@@ -7,8 +7,9 @@
 #include "utf8str.h"
 
 /*
- * Draw text to this "Window".
- * rotation is in degrees clockwise from horizontal.
+ * Draw text to this "Window".  Text is a UTF-8 encoding of the desired text, 
+ * and textlen is length of the text array (which may be more than the number 
+ * of "characters" in the text).  Rotation is in degrees clockwise from horizontal.
  *
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
@@ -22,7 +23,6 @@ grdelBool cairoCFerBind_drawText(CFerBind *self, const char *text, int textlen,
     CCFBColor *colorobj;
     double unitfactor;
     char *utf8str;
-    int utf8strlen;
 #ifdef USEPANGOCAIRO
     PangoLayout *layout;
 #endif
@@ -84,14 +84,15 @@ grdelBool cairoCFerBind_drawText(CFerBind *self, const char *text, int textlen,
     if ( textlen == 0 )
         return 1;
 
-    /* Convert to a null-terminated UTF-8 string (convert characters > 0x7F) */
-    utf8str = (char *) PyMem_Malloc((2*textlen + 1) * sizeof(char));
+    /* Null-terminated the UTF-8 string */
+    utf8str = (char *) PyMem_Malloc((textlen + 1) * sizeof(char));
     if ( utf8str == NULL ) {
         strcpy(grdelerrmsg, "cairoCFerBind_drawText: "
-                            "out of memory for a UTF-8 copy of the text string");
+                            "out of memory for a copy of the text string");
         return 0;
     }
-    text_to_utf8_(text, &textlen, utf8str, &utf8strlen);
+    strncpy(utf8str, text, textlen);
+    utf8str[textlen] = '\0';
 
     /* draw the text */
     cairo_save(instdata->context);

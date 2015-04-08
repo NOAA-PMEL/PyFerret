@@ -105,9 +105,8 @@ c	CHARACTER PLTFIL*80
 	LOGICAL		TM_HAS_STRING
 	INTEGER		STR_SAME, TM_LENSTR
 	REAL		fontsiz, stx, sty, swid, shgt, xu, yu
-	INTEGER		ia, ifnt, slen, upstr
+	INTEGER		ia, slen
 	CHARACTER	buff1*512
-
 
         REAL XBASE, YBASE
         INTEGER IPT
@@ -179,26 +178,28 @@ C Ignore any codes for Ferret-Hershey style Pen and Font changes
 	   ENDDO
 
 C Change any ^2 to a super-2 and ^3 to super-3.
+C UTF-8 for superscript-2 and superscript-3 are just hard-coded below, but in general:
+C          INTEGER codepoint, utf8strlen
+C          CHARACTER*4 utf8str
+C          codepoint = 178
+C          CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
+C          super2 = utf8str(1:utf8strlen)
+C
 
 	   slen = TM_LENSTR(buff)
 	   ia = INDEX (buff,'^')
-
 	   DO WHILE (ia .GT. 0)
 	      IF (buff(ia+1:ia+1) .EQ. '2') THEN
-	         upstr = 178
+C                Codepoint 0xB2 (178) is UTF-8 0xC2 0xB2 (194 178)
+                 buff(ia:ia) = CHAR(194)
+                 buff(ia+1:ia+1) = CHAR(178)
               ELSE IF (buff(ia+1:ia+1) .EQ. '3') THEN
-	         upstr = 179
+C                Codepoint 0xB3 (179) is UTF-8 0xC2 0xB3 (194 179)
+                 buff(ia:ia) = CHAR(194)
+                 buff(ia+1:ia+1) = CHAR(179)
               ELSE
 	         GOTO 600
 	      ENDIF
-	      IF (ia .EQ. 1) THEN
-	         buff = CHAR(upstr)//buff(ia+2:slen)
-	      ELSE
-	         buff1 = buff(1:ia-1)
-	         buff = buff1(1:ia-1)//CHAR(upstr)//buff(ia+2:slen)
-	      ENDIF
-	      
-	      slen = TM_LENSTR(buff)
 	      ia = INDEX (buff,'^')
 	   ENDDO
   600      CONTINUE

@@ -7,11 +7,13 @@
 #include "utf8str.h"
 
 /*
- * Return the text size if drawn to this "Window" using the given font.
- * The value returned at widthptr is amount to advance in X direction 
- * to draw any subsequent text after this text (not the width of the
- * text glyphs as drawn).  The value returned at heightptr is the height 
- * of the text glyphs as drawn.
+ * Return the size of the text if drawn to this "Window" using the given font.
+ * Text is a UTF-8 encoding of the desired text, and textlen is length of the 
+ * text array (which may be more than the number of "characters" in the text).  
+ * The value returned at widthptr is amount to advance in X direction to draw 
+ * any subsequent text after this text (not the width of the text glyphs as 
+ * drawn).  The value returned at heightptr is the height for the font 
+ * (recommended line spacing).
  *
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
@@ -22,7 +24,6 @@ grdelBool cairoCFerBind_textSize(CFerBind *self, const char *text, int textlen,
     CairoCFerBindData *instdata;
     CCFBFont *fontobj;
     char *utf8str;
-    int utf8strlen;
 #ifdef USEPANGOCAIRO
     PangoLayout *layout;
     int pangowidth;
@@ -59,14 +60,15 @@ grdelBool cairoCFerBind_textSize(CFerBind *self, const char *text, int textlen,
         return 0;
     }
 
-    /* Convert to a null-terminated UTF-8 string (convert characters > 0x7F) */
-    utf8str = (char *) PyMem_Malloc((2*textlen + 1) * sizeof(char));
+    /* Convert to a null-terminated string */
+    utf8str = (char *) PyMem_Malloc((textlen + 1) * sizeof(char));
     if ( utf8str == NULL ) {
         strcpy(grdelerrmsg, "cairoCFerBind_textSize: "
-                            "out of memory for a UTF-8 copy of the text string");
+                            "out of memory for a copy of the text string");
         return 0;
     }
-    text_to_utf8_(text, &textlen, utf8str, &utf8strlen);
+    strncpy(utf8str, text, textlen);
+    utf8str[textlen] = '\0';
 
     /* Get the extents of this text if drawn using the given font */
     cairo_save(instdata->context);

@@ -1438,7 +1438,7 @@ class PipedViewerPQ(QMainWindow):
         Raises a KeyError if the "text" or "location" key is not given.
 
         Recognized keys from cmnd:
-            "text": string to displayed
+            "text": null-terminated UTF-8 encoded string to be displayed
             "font": dictionary describing the font to use;  see
                     CmndHelperPQ.getFontFromCmnd.  If not given
                     the default font for this viewer is used.
@@ -1477,7 +1477,7 @@ class PipedViewerPQ(QMainWindow):
                 self.__activepainter.rotate(rotdeg)
             except KeyError:
                 pass
-            self.__activepainter.drawText(0, 0, self.tr(mytext))
+            self.__activepainter.drawText(0, 0, QString.fromUtf8(mytext))
             self.__drawcount += 1
         finally:
             # return the painter to the default state

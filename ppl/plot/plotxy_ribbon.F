@@ -66,6 +66,7 @@ C
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 * V6.94 *acm* 1/15 fix ticket 2216: when using (-inf), a color-by variable
 *                  starting with missing was colored incorrectly.
+* V6.94+ *acm* 3/15 Ticket 2247: singleton points in line plots marked with a dot
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -112,6 +113,9 @@ C
 
         real            xadd, xaddlast, datx, daty, datxlast,datylast
         integer         ndx,type
+	
+	INTEGER		klast, mdot
+	REAL		xtlast, ytlast
 
 
 * GKS initialization vars
@@ -128,6 +132,7 @@ C
 	xadd = 0.
 	xadlast = 0.
 	new_branch = .FALSE.
+	MDOT = 99
 C
 C  JTYPE IS DATA TYPE (0 FOR 2D, 1 FOR 1D)
 C
@@ -266,6 +271,12 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
      *		 (YLE.AND.X(IY+K).LE.CMYLE).OR.
      *		 (YEQ.AND.X(IY+K).EQ.CMYEQ).OR.
      *		 (YGE.AND.X(IY+K).GE.CMYGE))THEN
+
+		  IF (IDN .EQ. 1 .AND. klast.EQ.k-1) THEN ! prev pt was a singleton
+                      CALL PLOT(XTLAST,YTLAST,0,0)
+                      CALL MARK(MDOT)
+		  ENDIF
+
 	          IDN=0
 	        ELSE
 		
@@ -405,7 +416,12 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	          ENDIF
 		  CALL PLOT(XT,YT,IDN,0) 
 
-	          IF(IDN.EQ.0)IDN=1
+	          IF(IDN.EQ.0)THEN
+		    xtlast = xt
+		    ytlast = yt
+		    klast = k
+	            IDN=1
+	          ENDIF
 		  new_branch = .FALSE.
 	        END IF
 72	      CONTINUE

@@ -1,4 +1,4 @@
-	LOGICAL FUNCTION TM_CHECK_BNDS_CENTERED (nline)
+	LOGICAL FUNCTION TM_CHECK_BNDS_CENTERED (nline, doubletype)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -41,23 +41,31 @@
 *                  whether the coordinates are centered in the bound boxes, and 
 *                  whether the boxes are equal sized.
 * V601 *acm* 9/19  Fix bug 1434; check bounds for regularly-spaced axes 
+* V694  5/15 *acm* Match precision for bounds checks (as is done for coords).
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 
 * Argument declaration
+	LOGICAL doubletype
 	INTEGER nline
 
 * Local variable declarations
-        LOGICAL TM_FPEQ
+        LOGICAL TM_FPEQ_EPS, TM_DFPEQ_TOL, equal
 	INTEGER ipt1, npts, ibx1, i
         REAL diff_hi, diff_lo, diff_last
         REAL pt, del
+	REAL epsilon_23, epsilon
+	REAL*8 depsilon_46, depsilon, first_delta
 
 	ipt1 = line_subsc1(nline)
 	npts = line_dim(nline)
 	ibx1 = ipt1 + npts
+
+	first_delta = line_mem(ipt1+1) - line_mem(ipt1)
+	depsilon = depsilon_46 * 2.*(ABS(line_mem(ipt1)) / first_delta )
+	epsilon = epsilon_23 * 2.*(ABS(line_mem(ipt1)) / first_delta )
 
         IF (line_regular(nline)) THEN
            pt = line_start(nline)
@@ -67,7 +75,13 @@
              diff_hi = line_mem(ibx1+i+1) - pt
              diff_lo = pt - line_mem(ibx1+i)
 
-	     IF ( .NOT. TM_FPEQ(diff_lo, diff_hi) ) THEN
+	     IF (doubletype) THEN
+	       equal = TM_DFPEQ_TOL(diff_lo, diff_hi, depsilon)
+	     ELSE
+	       equal = TM_FPEQ_EPS(epsilon, diff_lo, diff_hi) 
+	     ENDIF
+
+	     IF ( .NOT. equal ) THEN
 	        TM_CHECK_BNDS_CENTERED = .FALSE.
 	        RETURN
 	     ENDIF
@@ -89,7 +103,12 @@
              diff_hi = line_mem(ibx1+i+1) - line_mem(ipt1+i)
              diff_lo = line_mem(ipt1+i)- line_mem(ibx1+i)
 
-	     IF ( .NOT. TM_FPEQ(diff_lo, diff_hi) ) THEN
+	     IF (doubletype) THEN
+	       equal = TM_DFPEQ_TOL(diff_lo, diff_hi, depsilon)
+	     ELSE
+	       equal = TM_FPEQ_EPS(epsilon, diff_lo, diff_hi) 
+	     ENDIF
+	     IF ( .NOT. equal ) THEN
 	        TM_CHECK_BNDS_CENTERED = .FALSE.
 	        RETURN
 	     ENDIF

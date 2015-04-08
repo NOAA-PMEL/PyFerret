@@ -49,12 +49,14 @@
 
 * local variable declarations
 	INTEGER	STR_UPCASE, TM_LENSTR1,
-     .		vms_stat, sublen, strlen, i, loc
-	CHARACTER*512	up_string, up_sub, newstring
+     .		vms_stat, sublen, strlen, i, loc, maxstr
+	
+	PARAMETER (maxstr = 2048)
+	CHARACTER*(maxstr)	up_string, up_sub, newstring
 
 * length of substring
-	sublen = TM_LENSTR1( substring )
-	strlen = TM_LENSTR1( string )
+	sublen = MIN(maxstr, TM_LENSTR1( substring ))
+	strlen = MIN(maxstr, TM_LENSTR1( string ))
 
         IF (ioc .LT. 1) ioc = 1
 

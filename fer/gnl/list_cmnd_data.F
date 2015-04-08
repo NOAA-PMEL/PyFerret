@@ -807,8 +807,8 @@
      .				' '//line_buff(:w0), w0+1 )
 
 * . . .  then subscript values ...
-	   WRITE ( col_head_format, 3020 ) cleft+1-(width-3)/2,
-     .					      num_fields,  width
+           llen = MAX(1, cleft+1-(width-3)/2)
+	   WRITE ( col_head_format, 3020 ) llen, num_fields,  width
 	   WRITE ( line_buff, col_head_format ) ( i,i = lo1,hi1,del1 ) 
  3020	   FORMAT ( '(',I2,'X,',I5,'I',I2,')' )	! eg. "( 8X, 10I 6)"
 	   CALL SPLIT_LIST(pttmode_explct, list_lun, line_buff, 0 )

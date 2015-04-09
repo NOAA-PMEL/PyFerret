@@ -72,7 +72,7 @@
 
 * internal variable declarations
         INTEGER lnbeg(250), lnend(250)
-	INTEGER	TM_LENSTR1, slen, nfont, brk_pt, nex_brk_pt, 
+	INTEGER	TM_LENSTR1, TM_LENSTR, slen, nfont, brk_pt, nex_brk_pt, 
      .          las_brk_pt, nlines
 	REAL	ymid, width, ht, frac, frac_width, las_frac, xend,
      .          htsave
@@ -83,6 +83,12 @@
 	ymid = ypos + ysize*0.5
 	ht = MIN( lab_ht, ysize )
 	slen = TM_LENSTR1( string )
+
+* blank string
+	IF (TM_LENSTR(string) .EQ. 0) THEN
+           slen = 1
+           GOTO 500
+	ENDIF
 
 * Choose the break character. If there are commas use them. If there
 * are any slashes, use that.  Else use underscore or dash.

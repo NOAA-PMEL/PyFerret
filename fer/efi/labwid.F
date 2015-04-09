@@ -135,9 +135,9 @@
      .        arg_hi_ss(6,EF_MAX_ARGS),
      .        arg_incr (6,EF_MAX_ARGS)
 
-      INTEGER arg, i, j, k, l, m, n
+      INTEGER arg, i, j, k, l, m, n, status
       REAL    LABEL_WIDTH, height
-      CHARACTER*1024 strng
+      CHARACTER strng*1024, errtxt*250
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
 
@@ -154,23 +154,31 @@
       m = res_lo_ss(E_AXIS)
       n = res_lo_ss(F_AXIS)
 
-      result(i,j,k,l,m,n) = LABEL_WIDTH(height, strng)
+      result(i,j,k,l,m,n) = LABEL_WIDTH(height, strng, errtxt, status)
+
+      IF (status .NE. 1) CALL EF_BAIL_OUT(id, errtxt)
 
       RETURN 
       END
 
 
-      REAL FUNCTION LABEL_WIDTH(height,strng)
+      REAL FUNCTION LABEL_WIDTH(height,strng, errtxt, status)
 
       IMPLICIT NONE
-      CHARACTER*(*) strng
-      REAL height
+      INTEGER	status
+      REAL	height
+      CHARACTER*(*) strng, errtxt
+
 
       INCLUDE 'xrisc.cmn'
+      include 'pyfonts.cmn'
+      INCLUDE 'fgrdel.cmn'
 
-      INTEGER n, lnbeg(500), lnend(500), numlines,
-     .        npen, nfont, npnew, nfnew, nchr
-      REAL*4 SYMWID, ht, ss, xmn
+
+      INTEGER	n, lnbeg(500), lnend(500), numlines,
+     .		npen, nfont, npnew, nfnew, nchr, mywindowid
+      REAL*4	SYMWID, ht, ss, xmn
+      REAL*8	mywindow
       CHARACTER*3 fontprefix, penprefix, newfont, newpen
 
       CALL TM_BREAK_LINES (strng, lnbeg, lnend, numlines)
@@ -182,11 +190,34 @@
       ss = 0.
       ht = height
 
+      status = 1
+
+c PyFerret fonts need an active window to return font size info
+      IF (pyfont) THEN
+         
+        mywindowid = ACTIVEWINDOW
+C       Some sanity checks on the window ID and window
+        IF ( (mywindowid .LT. 1) .OR. 
+     .       (mywindowid .GT. MAXWINDOWOBJS) ) THEN
+            errtxt = 'LABWID: PyFerret font queries need an active plot window'
+	    status = 0
+	    RETURN
+        ENDIF
+        mywindow = WINDOWOBJS(mywindowid)
+        IF ( mywindow .EQ. NULLOBJ ) THEN
+            errtxt = 'LABWID: PyFerret font queries need an active plot window'
+	    status = 0
+	    RETURN
+        ENDIF
+      ENDIF
+
       DO 40 n = 1, numlines
          CALL getlabfonts (strng, lnbeg, lnend, n, fontprefix, 
      .           npnew, nfnew, newfont, newpen, nchr)
 
          risc_buff = strng(lnbeg(n):lnend(n))
+
+
          xmn = SYMWID(ht,nchr+npen+nfont,
      .           penprefix(1:npen)//fontprefix(1:nfont)//
      .           risc_buff)

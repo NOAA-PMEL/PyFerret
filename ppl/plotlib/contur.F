@@ -132,13 +132,16 @@ c     oceanography emr   dec/69
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
         include 'xcurvilinear.cmn'
-	INCLUDE 'pyfonts.cmn'
+        INCLUDE 'pyfonts.cmn'
+	include 'axis_inc.decl'
+	include 'AXIS.INC'
+
 
 * TMAP interrupt flag
 
 	include 'xinterrupt.cmn'
 
-	integer*4 ixpon,ind10,jbit,ind1,indl
+	integer*4 ixpon,ind10,jbit,ind1,indl, skiplab
 	character frmt*20,str*40
 	integer colold
 ! TMAP mod, horz contour labels:
@@ -840,9 +843,12 @@ c
         IF (pyfont) THEN
           xlab = (xlab - xoff)/ xf
 	  ylab = (ylab - yoff)/ yf
+	  skiplab = 0
+	  if (ylab.LT.ylo .OR. ylab.GT.yhi) skiplab = 1
+	  if (xlab.LT.xlo .OR. xlab.GT.xhi) skiplab = 1
 	ENDIF
 
-	call symbel(xlab,ylab,angle,hgt,nchar,str)
+	iF (skiplab.EQ.0) call symbel(xlab,ylab,angle,hgt,nchar,str)
 	stest=0.
 ! TMAP mod, horz contour labels:
 ! this section of code stores the contour label locations for the current

@@ -210,10 +210,11 @@ C This section returns the string length from swid
 
 	      swid = 0.
 	      shgt = 0.
-	      IF (TM_LENSTR(buff) .GT. 0)
-     .	        CALL FERTEXTSIZE (buff, pyfnt_fontname, fontsiz, 
-     .          pyfnt_italic, pyfnt_bold, pyfnt_under, swid, shgt, status)
-	      IF (status .EQ. 0) GOTO 3100
+	      IF (TM_LENSTR(buff) .GT. 0) THEN
+	         CALL FERTEXTSIZE (buff, pyfnt_fontname, fontsiz, 
+     .           pyfnt_italic, pyfnt_bold, pyfnt_under, swid, shgt, status)
+	         IF (status .EQ. 0) GOTO 3100
+	      ENDIF
 
 	      swid = swid/1000
 	      shgt = shgt/1000

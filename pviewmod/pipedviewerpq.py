@@ -1428,7 +1428,7 @@ class PipedViewerPQ(QMainWindow):
             myfont = self.__activepainter.font()
         myfontmetrics = QFontMetricsF(myfont)
         mytext = cmnd["text"]
-        width = myfontmetrics.width(mytext)
+        width = myfontmetrics.width(QString.fromUtf8(mytext))
         height = myfontmetrics.height()
         return (width, height)
 

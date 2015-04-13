@@ -182,6 +182,16 @@
 	         cx_grid( hi_cx ) = igrid
 	         cx_data_set(hi_cx) = dset
 
+* since it is a pseudo-variable, all dimensions are normal except its axis
+	         DO i = 1, nferdims
+	            IF (i .EQ. t_dim) CYCLE
+	            cx_lo_ss( hi_cx,i ) = unspecified_int4
+	            cx_hi_ss( hi_cx,i ) = unspecified_int4
+	            cx_by_ss( i,hi_cx ) = .TRUE.
+	            cx_lo_ww( i,hi_cx ) = unspecified_val8
+	            cx_hi_ww( i,hi_cx ) = unspecified_val8
+	         ENDDO
+
 	         maxlen = 1
 	         got_it = NC_GET_ATTRIB( dset, varid, 'missing_value',
      .                .FALSE., vname, maxlen, attlen,

@@ -187,7 +187,7 @@
  
 * V500 *kob* 3/99- up VAR_CODE and VAR_UNITS to 64 chars
 * internal variable declarations:
-	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, TM_HAS_STRING,
+	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, TM_HAS_STRING, ITS_FMRC,
      .                  flip, time_axis,
      .			all_1_ind, formatted,
      .			indep_is_log, dep_is_log, use_nice,
@@ -483,8 +483,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	ELSE	! (not VERSUS)
 
 * define special axis labels to disambiguate T and F calendar axes
-	   IF ( grid_line(t_dim, grid1) .NE. mnormal
-     .    .AND. grid_line(f_dim, grid1) .NE. mnormal ) THEN
+           IF ( ITS_FMRC(grid1) ) THEN
 	      IF (GEOG_LABEL(indep_dim,grid1)) THEN
 	         IF     (indep_dim .EQ. t_dim) THEN
 	            xtra_lab = 'Verification Time ==>'

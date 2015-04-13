@@ -64,8 +64,9 @@
 * v67   2/11 *acm* Do the notes about no missing/fillvalue for each variable,
 *             when in diagnostic mode. So move that back to cd_get_1_dep_var.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
-* V6931 12/14 *acm* Fix ticket 2223: switch_nan needs to use the Ferret missing-
-*                   value flag.
+* V6931 12/14 *acm* Fix ticket 2223: switch_nan needs to use the Ferret
+*		    missing-value flag.
+* V695 4/15 *sh* added support for CF auxiliary coordinate variables
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -157,6 +158,7 @@
           cd_scale_factor(ivtm) = 1.0
           cd_add_offset(ivtm)   = 0.0
           cd_scaled(ivtm)       = .FALSE.
+	  ds_its_aux_coord(ivtm) = .FALSE.
 	  DO 160 idim = 1, nferdims
              ds_grid_start(idim,ivtm)= unspecified_int4
              ds_grid_end  (idim,ivtm)= unspecified_int4

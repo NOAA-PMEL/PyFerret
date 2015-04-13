@@ -99,6 +99,7 @@ invalid_r8_to_i4.F\
 is_template.F\
 isubscr_cx.F\
 isubscript.F\
+its_fmrc.F\
 itsa_1lineif.F\
 itsa_fill_trans.F\
 itsa_gcvar.F\

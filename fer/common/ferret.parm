@@ -287,7 +287,8 @@
      .                  trans_4d_good_pt,
      .                  trans_4d_bad_pt,
      .                  trans_reduced,
-     .                  trans_4d_sum
+     .                  trans_4d_sum,
+     .			trans_smth_box_p
 	INTEGER		trans_nrst_dist_abv,
      .			trans_nrst_dist_blw,
      .			trans_nrst_indx_abv,
@@ -324,7 +325,8 @@
      .			trans_event_mask    = 26,
      .			trans_avg_wgt       = 27,
      .			trans_4d_avg_wgt    = 28,
-     .			max_plane_transform = trans_4d_avg_wgt )
+     .			trans_smth_box_p    = 29,
+     .			max_plane_transform = trans_smth_box_p )
 
 	PARAMETER     ( trans_average      = trans_compress_code + 1,
      .			trans_interpolate  = trans_compress_code + 2,

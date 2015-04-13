@@ -1,4 +1,4 @@
-	LOGICAL FUNCTION TM_CHECK_BNDS (nline, nb, vname)
+	LOGICAL FUNCTION TM_CHECK_BNDS (nline, nb, doubletype, vname)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -46,6 +46,8 @@
 * V65  *acm*  2/10 Test for overlapping bounds
 * V66  *kms*  7/10 Initialize return value to .TRUE. (uninitialized bug for
 *                  N+1 bounds) and no need to check for gaps for N+1 bounds
+* V694  5/15 *acm* Match precision for bounds checks (as is done for coords).
+
 
         INCLUDE 'xio.cmn_text'
 	INCLUDE 'tmap_dims.parm'
@@ -54,16 +56,23 @@
 	EXTERNAL xgt_grid_data
 
 * Arguments
+	LOGICAL doubletype
 	INTEGER nline, nb
         CHARACTER*(*) vname
 
 * Internal definitions
-        LOGICAL TM_FPEQ, TM_DFPEQ, equal_ends, overlapping
+        LOGICAL TM_FPEQ_EPS, TM_DFPEQ_TOL, equal, equal_ends, overlapping
 	INTEGER TM_LENSTR1, npts, ipt1, ibx1, i, ngap, vlen, status,
      .          nothing
         REAL*8 pt, del, bhi, blo
+	
+	REAL epsilon_23, epsilon
+	REAL*8 depsilon_46, depsilon, first_delta
         REAL blast
         CHARACTER TM_STRING*13, vbuff*128
+	
+        epsilon_23 =  2.**(-23) 
+        depsilon_46 =  2.**(-46) 
 
 	ipt1 = line_subsc1(nline)
 	npts = line_dim(nline)
@@ -76,7 +85,11 @@
         overlapping = .FALSE.
 
         IF (nb .EQ. 2*npts) THEN
-
+	
+	   first_delta = line_mem(ipt1+1) - line_mem(ipt1)
+           depsilon = depsilon_46 * 2.*(ABS(line_mem(ipt1)) / first_delta )
+           epsilon = epsilon_23 * 2.*(ABS(line_mem(ipt1)) / first_delta )
+	   
            IF (line_regular(nline)) THEN
 
               pt = line_start(nline)
@@ -85,12 +98,12 @@
                  blo = line_mem(ibx1+2*i)
                  bhi = line_mem(ibx1+2*i+1)
 	        IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
-		
-                   IF (TM_DFPEQ(pt,blo) .OR. TM_DFPEQ(pt,bhi) ) THEN
-                      nothing = 0
-                   ELSE
-                      TM_CHECK_BNDS = .FALSE.
+		   IF (doubletype) THEN
+                      equal = TM_DFPEQ_TOL(pt,blo,depsilon) .OR. TM_DFPEQ_TOL(pt,bhi,depsilon) 
+		   ELSE
+                      equal = TM_FPEQ_EPS(epsilon,pt,blo) .OR. TM_FPEQ_EPS(epsilon,pt,bhi)
 		   ENDIF
+		   IF (.NOT. equal) TM_CHECK_BNDS = .FALSE.
                    RETURN
                 ENDIF
 	        pt = line_start(nline) + FLOAT(i+1)* del
@@ -106,16 +119,21 @@
                 bhi = line_mem(ibx1+2*i+1)
 	        IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
 		
-                   IF (TM_DFPEQ(pt,blo) .OR. TM_DFPEQ(pt,bhi) ) THEN
-                      nothing = 0
-                   ELSE
-                      TM_CHECK_BNDS = .FALSE.
+		   IF (doubletype) THEN
+                      equal = TM_DFPEQ_TOL(pt,blo,depsilon) .OR. TM_DFPEQ_TOL(pt,bhi,depsilon)
+		   ELSE
+                      equal = TM_FPEQ_EPS(epsilon,pt,blo) .OR. TM_FPEQ_EPS(epsilon,pt,bhi)
 		   ENDIF
+		   IF (.NOT. equal) TM_CHECK_BNDS = .FALSE.
 
                    RETURN
 	        ENDIF
                 IF (i .GE. 1) THEN
-		   equal_ends = TM_FPEQ(blast, REAL(blo))
+		   IF (doubletype) THEN
+  		      equal_ends = TM_DFPEQ_TOL(blast, REAL(blo), depsilon)
+		   ELSE
+  		      equal_ends = TM_FPEQ_EPS(epsilon, blast, REAL(blo))
+	           ENDIF
 		   IF (.NOT.equal_ends .AND. blo.LT.blast) THEN 
 		      overlapping = .TRUE.
 		      GOTO 330
@@ -171,11 +189,20 @@
              DO 400 i = 0, npts-1
                 blo = line_mem(ibx1+i)
                 bhi = line_mem(ibx1+i+1)
+
 	        IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
-                   IF (TM_DFPEQ(pt,blo) .OR. TM_DFPEQ(pt,bhi) ) THEN
-                      nothing = 0
-                   ELSE
-                      TM_CHECK_BNDS = .FALSE.
+		   IF (doubletype) THEN
+                      IF (TM_DFPEQ_TOL(pt,blo,depsilon) .OR. TM_DFPEQ_TOL(pt,bhi,depsilon) ) THEN
+                         nothing = 0
+                      ELSE
+                         TM_CHECK_BNDS = .FALSE.
+		      ENDIF
+		   ELSE
+                      IF (TM_FPEQ_EPS(epsilon,pt,blo) .OR. TM_FPEQ_EPS(epsilon,pt,bhi) ) THEN
+                         nothing = 0
+                      ELSE
+                         TM_CHECK_BNDS = .FALSE.
+		      ENDIF
 		   ENDIF
                    RETURN
 	        ENDIF
@@ -190,10 +217,18 @@
                 blo = line_mem(ibx1+i)
                 bhi = line_mem(ibx1+i+1)
 	        IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
-                   IF (TM_DFPEQ(pt,blo) .OR. TM_DFPEQ(pt,bhi) ) THEN
-                      nothing = 0
-                   ELSE
-                      TM_CHECK_BNDS = .FALSE.
+		   IF (doubletype) THEN
+                      IF (TM_DFPEQ_TOL(pt,blo,depsilon) .OR. TM_DFPEQ_TOL(pt,bhi,depsilon) ) THEN
+                         nothing = 0
+                      ELSE
+                         TM_CHECK_BNDS = .FALSE.
+		      ENDIF
+		   ELSE
+                      IF (TM_FPEQ_EPS(epsilon,pt,blo) .OR. TM_FPEQ_EPS(epsilon,pt,bhi) ) THEN
+                         nothing = 0
+                      ELSE
+                         TM_CHECK_BNDS = .FALSE.
+		      ENDIF
 		   ENDIF
                    RETURN
 	        ENDIF

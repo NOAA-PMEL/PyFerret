@@ -39,7 +39,7 @@
 *
 *  V692 ACM 7/2014 A cf_role attribute indicates the E direction.
 *  V694 ACM 2/2015 Ensemble axis may have a standard-name attribute "realization"
-
+*  V694 ACM 4/2015 Fix ticket 2260: set X axis when standard_name is "longitude"
 *
 *      include files: 
       
@@ -412,7 +412,7 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
             line_direction(iaxis) = 'TI'
          ENDIF 
          IF (STR_CASE_BLIND_COMPARE(
-     .      'longitude',buff(:0))          .EQ.str_eq .OR. 
+     .      'longitude',buff(:9))          .EQ.str_eq .OR. 
      .      STR_CASE_BLIND_COMPARE(
      .      'grid_longitude',buff(:19))    .EQ.str_eq) THEN
             line_direction(iaxis) = 'WE'

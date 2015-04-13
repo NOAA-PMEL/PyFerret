@@ -178,9 +178,10 @@
 * V685 *acm* 11/13 REALLY make the check for axis length in single precision when the
 *                  coordinate variable came in as a single-precision variable.
 * V6.87 4/14 *acm* ticket 2146: if invalid bounds, make the bounds a dependent variale.
-* V691  4/41 *acm* Ticket 2170: bub with invalid bounds when point-spacing=true attribute.
+* V691  4/15 *acm* Ticket 2170: bub with invalid bounds when point-spacing=true attribute.
 * Ticket 2172: If the axis is actually too long, reset the modulo flags
 * so it is treated as not modulo.
+* V694  5/15 *acm* Match precision for bounds checks (as is done for coords).
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -232,7 +233,7 @@
      .        got_mod, mod_tf, setmodfalse, ok_cal, ok,
      .        got_edges, got_bnds, coordvar, its_irregular, 
      .        do_scale, do_offset, scale_is_dp, 
-     .        has_repeated, misordered
+     .        has_repeated, misordered, is_double
 
       INTEGER TM_UNIT_ID, TM_LENSTR1,TM_GET_CALENDAR_ID,      
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, 
@@ -905,7 +906,10 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * See if double-precision coordinates are regularly-spaced
 	epsilon = 0.
 	depsilon = 0.
-        IF (vartype .EQ. ncdouble) THEN
+	
+	is_double = vartype .EQ. ncdouble
+
+        IF (is_double) THEN
            dlast_coord = line_mem(ipte)
            dfirs_coord = line_mem(ipt1)
            dfirst_delta = line_mem(ipt1+1) - line_mem(ipt1)
@@ -1137,7 +1141,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * and if the bounds are contiguous, warning user if not. Change
 * the storage from N*2 bounds to N+1 edges.    
 
-        IF (.NOT. TM_CHECK_BNDS(iaxis, 2*npts, vname) ) THEN  
+        IF (.NOT. TM_CHECK_BNDS(iaxis, 2*npts, is_double, vname) ) THEN  
 
            CALL TM_NOTE('Error in bounds "'//bname(:blen)//
      .         '" or bounds do not enclose point on axis '//
@@ -1154,7 +1158,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * If there is one point, use upper and lower bound as given in the file 
 * to determine line_delta.
 
-           IF (TM_CHECK_BNDS_CENTERED(iaxis)) THEN
+           IF (TM_CHECK_BNDS_CENTERED(iaxis, is_double)) THEN
 * It's actually regular - save it as such
               IF (.NOT. line_regular(iaxis)) THEN
                  line_regular(iaxis) = .TRUE.
@@ -1257,7 +1261,7 @@ c           secsperyear = cals_yeardays(cal_id)* 24*60*60
         IF (line_modulo(iaxis).AND.line_modulo_len(iaxis).NE.0.D0) THEN
            IF (line_modulo_len(iaxis) .LT. axwwlen) THEN
 c             line_modulo_len(iaxis) = 0.0D0
-             IF (vartype .EQ. ncdouble) THEN
+             IF (is_double) THEN
                 ok = TM_DFPEQ(axwwlen, line_modulo_len(iaxis)) 
              ELSE
 	        lm_len = line_modulo_len(iaxis)

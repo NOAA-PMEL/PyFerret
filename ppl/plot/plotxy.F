@@ -61,6 +61,7 @@ C
 *  ACM 10/2012    Modulo-ing for PLOT/VS longitudes overlaid on a map.
 *  ACM  2/2013    ticket 2141. Fix the modulo operation when the longitude
 *                 range is over 360.
+* V6.94+ *acm* 3/15 Ticket 2247: singleton points in line plots marked with a dot
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -99,6 +100,9 @@ C
 	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
      .		nvertex, fill_ndx
 
+	INTEGER klast, mdot
+	REAL	xtlast, ytlast
+
 	INTEGER GET_NDX
 
 * GKS initialization vars
@@ -116,6 +120,7 @@ C
 
 	xadd = 0.
 	xadlast = 0.	
+	MDOT = 99
 C
 C  JTYPE IS DATA TYPE (0 FOR 2D, 1 FOR 1D)
 C
@@ -129,6 +134,7 @@ C
 	ZT=YF/XF
 	ICNT=1
 	IF(M.GE.2.AND.IFLG(2).NE.0)ICNT=P(2)
+
 
 	IF(MAKEP.EQ.'PLOTUV')THEN
 	  IBASE=IY
@@ -270,6 +276,12 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
      *		 (YLE.AND.X(IY+K).LE.CMYLE).OR.
      *		 (YEQ.AND.X(IY+K).EQ.CMYEQ).OR.
      *		 (YGE.AND.X(IY+K).GE.CMYGE))THEN
+
+		  IF (IDN .EQ. 1 .AND. klast.EQ.k-1) THEN ! prev pt was a singleton
+                      CALL PLOT(XTLAST,YTLAST,0,0)
+                      CALL MARK(MDOT)
+		  ENDIF
+
 	          IDN=0
 	        ELSE
 
@@ -313,6 +325,9 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		  if (interrupted) goto 51 ! *jd* 8.3.92
 	          CALL MARK(IM)
 	          IF(IDN.EQ.0)THEN
+		    xtlast = xt
+		    ytlast = yt
+		    klast = k
 	            IDN=1
 	          END IF
 	        END IF

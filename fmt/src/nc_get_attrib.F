@@ -61,6 +61,7 @@
 *      *kms*  7/13 Increased the size of errmsg to match the increased size 
 *                  of maxlen (from show_data_set_attrs); added check for
 *                  this in the future.
+* V694 4/15  *acm* Increase length of error buffer; use length definition when assigning.
 
 * argument definitions:
 *	dset	 - dataset number
@@ -94,7 +95,7 @@
      .        lena, lenb, attype, status, i, dset_num, attid
       CHARACTER*128 aname
       INTEGER errmsglen
-      PARAMETER (errmsglen = 500)
+      PARAMETER (errmsglen = 1024)
       CHARACTER*(errmsglen) errmsg
 
       INTEGER tt  ! nice short name
@@ -189,7 +190,7 @@
          WRITE (errmsg, 1010) maxlen
 1010     FORMAT ('--TRUNCATED TO LENGTH ',I4, '--')
          lenb = TM_LENSTR1( errmsg )
-	 CALL TM_CTOF_STRNG( fhol, errmsg(lenb+2:maxlen), (maxlen-lenb))
+	 CALL TM_CTOF_STRNG( fhol, errmsg(lenb+2:errmsglen), (errmsglen-lenb))
 	 attlen = maxlen
       ENDIF
       RETURN

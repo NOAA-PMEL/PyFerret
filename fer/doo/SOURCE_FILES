@@ -4,6 +4,7 @@ asn_ptr_regrid_1_axis.F\
 ave_regrid_1_axis.F\
 binom_wt.F\
 convolve.F\
+convolve_p.F\
 days_from_day0.F\
 dd1step.F\
 dd2step.F\
@@ -62,6 +63,7 @@ do_run_sum_sub.F\
 do_shift.F\
 do_smth_binml.F\
 do_smth_box.F\
+do_smth_box_p.F\
 do_smth_hanng.F\
 do_smth_max.F\
 do_smth_median.F\

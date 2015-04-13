@@ -1264,7 +1264,7 @@ C /units=months  is 1/12 of the length of the year
 * Check that bounds enclose points, and that they are contiguous
 	         line_subsc1 ( iline ) = frst_pt
                  line_dim    ( iline ) = npoints
-                 IF (.NOT. TM_CHECK_BNDS (iline, n2, buff3) ) GO TO 5750
+                 IF (.NOT. TM_CHECK_BNDS (iline, n2, .TRUE., buff3) ) GO TO 5750
 
               ELSE
 

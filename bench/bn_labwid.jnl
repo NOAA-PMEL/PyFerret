@@ -7,7 +7,7 @@
 
 set mode ignore
 LIST LABWID("aaaaabbbbb", .15)
-cancel mode igrnore
+cancel mode ignore
 
 go ptest
 

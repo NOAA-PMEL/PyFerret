@@ -1,10 +1,13 @@
-	INTEGER FUNCTION TM_LOC_STRING( string, substring, ioc )
+	INTEGER FUNCTION DO_SMTH_BOX_P( idim, arg,
+     .					com, com_mr, com_cx,
+     .					res, res_mr, res_cx,
+     .					wt	)
 
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -35,59 +38,53 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Case-independent search to find the "ioc"th occurrence of * "substring" 
-* in "string".  If there are fewer than "ioc" occurrences, return 0.
+* smooth along axis idim by a running mean filter, summing all data 
+* present in the box. This will return a result based on partial data.
 
-* programmer - Ansley Manke, based on tm_has_string.F
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-*
-* revision 0.00 - 03/17/03
+* programmer - Ansley Manke
+* From do_smth_box
 
-* calling argument declarations
-        INTEGER ioc
-	CHARACTER*(*)	string, substring
+        IMPLICIT NONE
+        include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'interp_stack.parm'
+	include	'xprog_state.cmn'
 
-* local variable declarations
-	INTEGER	STR_UPCASE, TM_LENSTR1,
-     .		vms_stat, sublen, strlen, i, loc, maxstr
-	
-	PARAMETER (maxstr = 2048)
-	CHARACTER*(maxstr)	up_string, up_sub, newstring
+* calling argument declarations:
+	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
+	REAL	arg, wt(*), com(*), res(*)
 
-* length of substring
-	sublen = MIN(maxstr, TM_LENSTR1( substring ))
-	strlen = MIN(maxstr, TM_LENSTR1( string ))
+* internal variable declarations
+	LOGICAL	even
+	INTEGER	i, wlen
+	REAL	weight
 
-        IF (ioc .LT. 1) ioc = 1
+* diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
+	IF ( mode_diagnostic ) 	CALL DIAG_OP
+     .				( 'doing', isact_class_trans, res_cx, idim )
 
-        IF (ioc .GT. strlen) THEN
-	   TM_LOC_STRING = 0
-	   RETURN
+* initialize
+	wlen = arg	! length of smoother
+
+* create weights array to be convolved with data
+* (with half weights on ends for even argument given)
+	weight = 1. / FLOAT(wlen)
+	even = MOD(wlen,2) .EQ. 0
+	IF (even) wlen = wlen + 1
+	DO 100 i = 1, wlen
+ 100	wt(i) = weight
+	IF ( even) THEN
+	   wt(1)    = weight * 0.5
+	   wt(wlen) = weight * 0.5
 	ENDIF
 
-	IF (sublen .GT. 512) THEN
-	   TM_LOC_STRING = 0
-	   RETURN
-	ENDIF
+* now convolve this along the desired axis of the grid
+	CALL CONVOLVE_P(idim, wlen/2, wt,
+     .			com, com_mr, com_cx,
+     .			res, res_mr, res_cx )
 
-* convert to upper case
-	vms_stat = STR_UPCASE( up_string, string )
-	vms_stat = STR_UPCASE( up_sub, substring(:sublen) )
-
-* find the substring
-	TM_LOC_STRING = INDEX( up_string, up_sub(:sublen) ) 
-        IF (TM_LOC_STRING .GE. 1 .AND. ioc .GT. 1) THEN
-           DO 100 i = 2, ioc
-              loc = TM_LOC_STRING
-              IF (loc+1 .LT. strlen) THEN
-                 newstring = up_string(loc+1:strlen)
-                 TM_LOC_STRING = INDEX( newstring, 
-     .                               up_sub(:sublen) )
-                 IF (TM_LOC_STRING .NE. 0) TM_LOC_STRING = 
-     .                    TM_LOC_STRING + loc
-              ENDIF
-  100      CONTINUE
-        ENDIF
-
+* success
+	DO_SMTH_BOX_P = ferr_ok
 	RETURN
 	END

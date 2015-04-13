@@ -58,16 +58,16 @@
 * V510 *sh* 3/00 - added tregular argument
 *	    3/00 - convert to using dynamic grids and axes
 * 4/03 *acm* - Use STR_SAME to compare strings
-* V600 *acm* 6/05 - Attribute control. Get information from linked-list structure.
+* V600 *acm* 6/05 - Attribute control-get information from linked-list struct
 * V601 *acm* 6/06 - Fix bug 1459: when closing a stepfile that may be open,
-*                   reset the sf_lunit flag for cd_stepfile(dset), not for dset.
+*                   reset sf_lunit flag for cd_stepfile(dset), not for dset.
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
-* V68  *acm* 1/12- added use_strict argument for ticket 1910: micro-adjusting on 
-*                  repeated coordinates in netCDF/OPeDNAP datasets
-
+* V68  *acm* 1/12  added use_strict argument for ticket 1910: micro-adjusting
+*                  on repeated coordinates in netCDF/OPeDNAP datasets
+* V695+ *sh* 4/15  scan the dataset for auxiliary coordinate connections
 
 * include files
 #include "gt_lib.parm"
@@ -139,6 +139,10 @@
       IF ( status .NE. merr_ok ) GOTO 5900
 
       CALL CD_CONSISTENT_AXIS_ORIENT (dset, reversed, perm, status)
+      IF ( status .NE. merr_ok ) GOTO 5900
+
+* identify and set up auxiliary coordinate linkages
+      CALL CD_SCAN_AUX_COORDS( dset, cdfid, status )
       IF ( status .NE. merr_ok ) GOTO 5900
 
 * set use counts and clean up temporary grids and axes

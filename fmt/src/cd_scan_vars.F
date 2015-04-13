@@ -95,7 +95,9 @@
 * V68  *acm* 1/12- added use_strict argument for ticket 1910: micro-adjusting on 
 *                  repeated coordinates in netCDF/OPeDNAP datasets
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
-* V6.87 4/14 *acm* ticket 2146: if invalid bounds, make the bounds a dependent variale.
+* V6.87 4/14 *acm* ticket 2146: if invalid bounds, make bounds a depend. var
+* V695+ 4/15 *sh* support for auxiliary vars (coordinates attributes)
+
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -426,39 +428,40 @@
 	      bad_bndsid = 0
 	   ENDIF
 
-* 2D time coordinate variable for FMRC dataset?  If so, synthesize a 1D
-* time axis for the colection
-* **TBD**   TEMPORARY CODE
-*    In the thredds and grib aggregation the 2d Time var has this attrib:
-*    time2d._CoordinateAxisType = Time 
-* Finding this _CoordinateAxisType attributewill do as a temporary
-* place-holder, though it is inconsistent with the CF standard.
-* The correct clue that we need to
-* create a 1D time axis is the presence of a 'coordinates' attribute on a data
-* variable pointing to this 2d time array.  That logic may best be located
-* whever the coordinates attributes and auxiliary variable relationships
-* are being analyzed (CD_GET_PARENT_GRIDS, CD_ASSOC_GRIDS or something TBD)
-* We should also check that it is indeed 2d **TBD**
-	   IF ( STR_CASE_BLIND_COMPARE(vname(:vlen), 'time').EQ.str_eq 
-     .	  .AND. nvdim .EQ. 2 ) THEN  
-              maxlen = 16  
-              got_it = NC_GET_ATTRIB( dset, ivcd, '_CoordinateAxisType',
-     .                            do_warn, vname(:vlen), maxlen, attlen,
-     .                            attoutflag, name, vals ) 
-              IF ( got_it
-     .       .AND. STR_CASE_BLIND_COMPARE(name, 'Time').EQ.str_eq ) THEN
-	         CALL CD_1D_LINE_FROM_2D (dset, cdfid,
-     .					  ivcd, vname, axcalt, axlagf, status)
-	      ENDIF
-	   ENDIF
-
-* Now set a global attribute for this dataset with the new axis name
-* TBD
-*************
-*************
-*************
-*************
-*************
+! DELETE THIS BLOCK OF CODE
+!* 2D time coordinate variable for FMRC dataset?  If so, synthesize a 1D
+!* time axis for the colection
+!* **TBD**   TEMPORARY CODE
+!*    In the thredds and grib aggregation the 2d Time var has this attrib:
+!*    time2d._CoordinateAxisType = Time 
+!* Finding this _CoordinateAxisType attributewill do as a temporary
+!* place-holder, though it is inconsistent with the CF standard.
+!* The correct clue that we need to
+!* create a 1D time axis is the presence of a 'coordinates' attribute on a data
+!* variable pointing to this 2d time array.  That logic may best be located
+!* whever the coordinates attributes and auxiliary variable relationships
+!* are being analyzed (CD_GET_PARENT_GRIDS, CD_ASSOC_GRIDS or something TBD)
+!* We should also check that it is indeed 2d **TBD**
+!	   IF ( STR_CASE_BLIND_COMPARE(vname(:vlen), 'time').EQ.str_eq 
+!     .	  .AND. nvdim .EQ. 2 ) THEN  
+!              maxlen = 16  
+!              got_it = NC_GET_ATTRIB( dset, ivcd, '_CoordinateAxisType',
+!     .                            do_warn, vname(:vlen), maxlen, attlen,
+!     .                            attoutflag, name, vals ) 
+!              IF ( got_it
+!     .       .AND. STR_CASE_BLIND_COMPARE(name, 'Time').EQ.str_eq ) THEN
+!	         CALL CD_1D_LINE_FROM_2D (dset, cdfid,
+!     .					  ivcd, vname, axcalt, axlagf, status)
+!	      ENDIF
+!	   ENDIF
+!
+!* Now set a global attribute for this dataset with the new axis name
+!* TBD
+!*************
+!*************
+!*************
+!*************
+!*************
 
 * EPIC KLUDGE: if an EPIC file has an invalid "TIME" axis we want, not only
 * "TIME" as a dependent variable, but also "TIME2"

@@ -202,9 +202,14 @@
 	      saved_dt_min = dt_min
 	      saved_t1_date =  INTERNAL_WHOI_DATE(grid, idim, 1.0D0 )
 * ... TXTYPE and TXLINT commands (time axis style)
+	      IF (no_labels) THEN
+	         buff = ' '
+	      ELSE
+	         buff = imposed_lab
+	      ENDIF	
 	      CALL TAXIS_STYLE(	x_or_y, TSTEP_TO_SECS( grid, idim, lo_val ),
      .				TSTEP_TO_SECS( grid, idim, hi_val ),
-     .				tstyle, imposed_lab )
+     .				tstyle, buff )
 
 	   ELSEIF ( idim .EQ. x_dim .AND. use_nice) THEN
 * longitude format for axis tic labling

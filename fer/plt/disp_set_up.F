@@ -209,7 +209,7 @@ C plus those starting w/ xbox_bounds:
      .			xtra_xlab*24, xtra_ylab*24
         CHARACTER*1     axdir(6)
 
-	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, TM_FPEQ,
+	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, TM_FPEQ, ITS_FMRC,
      .			user_title, time_axis, time_axis_dim1, timeax_both, 
      .			regrid_1, regrid_2, no_y_rng, edges_ok,
      .			ITS_GIF_GRAPHICS, its_gif, REGULARLY_SPACED,
@@ -430,21 +430,19 @@ C   set up memory for the flag grid
 * define special axis labels to disambiguate T and F axes
 	xtra_xlab = ' '
 	xtra_ylab = ' '
-	IF ( grid_line(t_dim, grid) .NE. mnormal
-     . .AND. grid_line(f_dim, grid) .NE. mnormal ) THEN
-	   IF (GEOG_LABEL(dim1,grid)) THEN          ! calendar axes only need annotation
+        IF ( ITS_FMRC(grid) ) THEN
+* ... add these labels only if the plot has two calendar axes
+	   IF ( GEOG_LABEL(t_dim,grid)
+     .	 .AND.  GEOG_LABEL(f_dim,grid)
+     .	 .AND.  (dim1.EQ.t_dim .OR. dim1.EQ.f_dim)
+     .	 .AND.  (dim2.EQ.t_dim .OR. dim2.EQ.f_dim) ) THEN
 	      IF (dim1 .EQ. t_dim) THEN
 	         xtra_xlab = 'Verification Time ==>'
-	      ELSEIF (dim1 .EQ. f_dim) THEN
-	         xtra_xlab = 'Initialization Time ==>'
-	      ENDIF
-	   ENDIF
-	   IF (GEOG_LABEL(dim2,grid)) THEN
-	      IF (dim2 .EQ. t_dim) THEN
-	         xtra_ylab = 'Verification Time ==>'
-	      ELSEIF (dim2 .EQ. f_dim) THEN
 	         xtra_ylab = 'Initialization Time ==>'
-	      ENDIF	
+	      ELSE
+	         xtra_xlab = 'Initialization Time ==>'
+	         xtra_ylab = 'Verification Time ==>'
+	      ENDIF
 	   ENDIF
 	ENDIF
 

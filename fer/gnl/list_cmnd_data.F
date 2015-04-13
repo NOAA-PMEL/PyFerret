@@ -120,7 +120,7 @@
         CHARACTER*(*) dods_file
 	
 * local variable declarations:
-	LOGICAL		GEOG_LABEL, TM_DFPEQ, 
+	LOGICAL		GEOG_LABEL, TM_DFPEQ, ITS_FMRC,
      .			line_too_long, del_col_changed, all_bad,
      .			valid(nferdims), need_doc(nferdims), span(nferdims), do_unform,
      .			do_stream, do_comma_del, do_tab_del, itsa_string,
@@ -345,8 +345,7 @@
 * ... T-F plane coaching
 *    If this variable is FMRC, then add annotations to disambiguate the 2 time axes
 *      "Initialization time increases across row. Verification time increases down page."
-        IF ( grid_line(t_dim, grid) .NE. mnormal
-     . .AND. grid_line(f_dim, grid) .NE. mnormal 
+        IF ( ITS_FMRC(grid)
      . .AND. (row_ax.EQ.t_dim .OR. row_ax .EQ. f_dim
      .   .OR. col_ax.EQ.t_dim .OR. col_ax .EQ. f_dim) ) THEN
            line_buff = ' '

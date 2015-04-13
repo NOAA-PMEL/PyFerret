@@ -24,6 +24,7 @@
 * V68  *acm* 1/12 Real variables should be declared REAL (conversion to double prec.)
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 *                 need tmap_dims.param with the definition of nferdims.
+* V695+ 4/15 *sh* added ds_its_aux_coord for auxiliary coordinate support
 
 	COMMON/XDSET_INFO/
      .		ds_1step(maxdsets),ds_lastep(maxdsets),
@@ -57,11 +58,11 @@
      .          ds_var_scale(maxvars), ds_var_off(maxvars),
      .		ds_bad_flag(maxvars),ds_ordering(nferdims,maxvars),
      .		ds_grid_start(nferdims,maxvars),ds_grid_end(nferdims,maxvars),
-     .	 	ds_var_type(maxvars),
+     .	 	ds_var_type(maxvars), 
      .		ds_precision(maxvars),
 **************************************************************************
      .		ds_aux_set_num(maxvars), ds_var_scaleit(maxvars),
-     .          is_mc,
+     .          ds_its_aux_coord(maxvars), is_mc,
 **************************************************************************
      .		min_ds_tstart,max_ds_tend,ds_tdelta,
 **************************************************************************
@@ -118,7 +119,7 @@
 	CHARACTER*2048	ds_name
 	CHARACTER*2048	ds_des_name
 	INTEGER*4	ds_open,ds_basic_axes,ds_time_axis
-	LOGICAL		ds_regsteps, ds_var_scaleit, is_mc, 
+	LOGICAL		ds_regsteps, ds_var_scaleit, ds_its_aux_coord, is_mc, 
      .			ds_accepts_remote, ds_hide
 	REAL*8		ds_1step,ds_lastep,ds_delstep,
      .			ds_file_info_ptr

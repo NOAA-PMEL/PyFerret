@@ -59,27 +59,14 @@
 	LOGICAL	GEOG_LABEL
 
 * internal variable declarations:
-        LOGICAL tf_ambiguous
-	INTEGER	TM_LENSTR1, i, line, ulen, tline, fline
+        LOGICAL ITS_FMRC
+	INTEGER	TM_LENSTR1, i, line, ulen
 	CHARACTER*16 unit_name
 
 * check for program bug	! temp
 	IF ( grid .EQ. unspecified_int4 ) STOP 'no_grd_orient'
 
 	line = grid_line( idim, grid )
-
-* 3/15 may need to disambiguate T and F time axes
-        tline = grid_line( t_dim, grid )
-        fline = grid_line( f_dim, grid )
-        tf_ambiguous = tline .NE. mnormal
-     .           .AND. fline .NE. mnormal
-        IF (tf_ambiguous) THEN
-           tf_ambiguous = line_direction(tline)(1:1) .EQ. 'T'
-     .              .AND. line_direction(fline)(1:1) .EQ. 'F'
-     .              .AND. line_unit_code(tline) .LT. 0
-     .              .AND. line_unit_code(fline) .LT. 0
-
-        ENDIF 
 
 	IF ( GEOG_LABEL( idim, grid ) ) THEN
 	   AX_TITLE = axis_title( idim )
@@ -101,7 +88,7 @@
 	      len = len + 3 + ulen
 	   ENDIF	      
 
-        ELSEIF ( tf_ambiguous
+        ELSEIF ( ITS_FMRC(grid)
      .   .AND. (idim.EQ.t_dim .OR. idim.EQ.f_dim)) THEN 
 * HACK: special formatting for FMRC T-F plane data 3/15
            IF (idim .EQ. t_dim ) THEN

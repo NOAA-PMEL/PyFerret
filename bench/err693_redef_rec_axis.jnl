@@ -1,20 +1,20 @@
-! err693_rename_rec_axis.jnl
+! err693_redef_rec_axis.jnl
 ! ticket 2271. Redefining the record axis meant
 ! that SHOW AXIS/FULL couldnt get the time axis info
 
 define axis/x=1:5:1 xax
 define axis/y=2:10:2 yax
-define axis/t=1:7:1 tax
-let var = x[gx=xax] + y[gy=yax] + t[gt=tax]
+define axis/t=1:7:1 tredef
+let var = x[gx=xax] + y[gy=yax] + t[gt=tredef]
 save/clobber/file=a.nc var
 
 can var/all
 can axis xax
 can axis yax
-can axis tax
+can axis tredef
 
 use a.nc
-define axis/t=1:7:1/units=days/t0=1-jan-2000 tax
+define axis/t=1:7:1/units=days/t0=1-jan-2000 tredef
 
 ! Previously the output had  time range: ???
 show data/full

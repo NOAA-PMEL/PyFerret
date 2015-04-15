@@ -144,6 +144,8 @@
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V690 *sh* 1/14 add CAN VAR/LAYERZ
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+* V695 *acm* 4/15 Changes for PyFerret fonts. Add CANCEL TEXT
+
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -173,6 +175,7 @@
 	include	'SWITCH.INC'	! with deflts
         include 'LUNITS.INC'          ! with lttout
         include 'lunits_inc.decl'
+        include 'pyfonts.cmn'
 
 * calling argument declarations:
 	REAL	memory( mem_blk_size, max_mem_blks )
@@ -217,7 +220,7 @@
 
 * select subcommand
 	GOTO ( 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
-     .        1100,1200,1300,1400,1500,1600,1700, 1800, 1900 ) 
+     .        1100,1200,1300,1400,1500,1600,1700, 1800, 1900, 2000 ) 
      .       subcmnd_num
 
 * CANCEL '    '
@@ -472,8 +475,8 @@
 		    mode_arg( mode,1 ) = num_linecolors
 		    mode_state( mode,1 ) = .TRUE.
 
-                    WRITE (show_str, 2000) mode_arg(pmode_linecolors, 1)
- 2000               FORMAT (I3)
+                    WRITE (show_str, 880) mode_arg(pmode_linecolors, 1)
+ 880               FORMAT (I3)
                     IF (no_plot_yet) THEN
                        CALL START_PPLUS(.FALSE.)
                        CALL PPLCMD (from, line, 0, 
@@ -1192,6 +1195,51 @@ c	ENDIF
  1920      CONTINUE
         ENDIF
         RETURN
+	
+* CANCEL TEXT
+*      /FONT /BOLD /ITALIC /COLOR 
+ 2000   CONTINUE
+
+c* ... CANCEL TEXT/FONT
+	IF ( qual_given( slash_canc_text_font ) .GT. 0 ) THEN
+           pyfnt_fontname = pyfnt_dflt
+	ENDIF
+
+* ... CANCEL TEXT/COLOR
+*     Restore to black
+
+	IF ( qual_given( slash_canc_text_color ) .GT. 0 ) THEN
+           pyfnt_red = 0.
+	   pyfnt_grn = 0.
+	   pyfnt_blu = 0.
+	ENDIF
+
+* ... CANCEL TEXT/ITALIC
+
+	IF ( qual_given( slash_canc_text_italic ) .GT. 0 ) THEN
+           pyfnt_italic = 0
+	ENDIF
+
+* ... CANCEL TEXT/BOLD
+
+	IF ( qual_given( slash_canc_text_bold) .GT. 0 ) THEN
+           pyfnt_bold = 0
+	ENDIF
+
+*  Just CANCEL TEXT with no qualifiers restores defaults
+	IF (num_qualifiers .EQ. 0) THEN
+	   pyfnt_fontname = pyfnt_dflt
+	   pyfnt_italic = 0
+	   pyfnt_bold = 0
+	   pyfnt_under = 0
+	   pyfnt_red = 0.
+	   pyfnt_grn = 0.
+	   pyfnt_blu = 0.
+	   pyfnt_opq = 1.
+	   pyfnt_rot = 0.
+	ENDIF
+
+	RETURN
 
 
 * error exits

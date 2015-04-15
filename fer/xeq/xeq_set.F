@@ -1940,7 +1940,7 @@ c *kob* 4/97
         RETURN
 
 	
-* SET TEXT /FONT /COLOR /ITALIC /BOLD /OPAQ
+* SET TEXT /FONT /COLOR /ITALIC /BOLD 
 
  1800   CONTINUE
 
@@ -1951,7 +1951,7 @@ c* ... SET TEXT/FONT
               CALL EQUAL_STR_LC( cmnd_buff(qual_start(lp):qual_end(lp)),
      .			      buff1, status )
               IF ( status .NE. ferr_ok ) RETURN
-	      IF ( buff1 .EQ. ' ' ) buff1 = 'Courier'
+	      IF ( buff1 .EQ. ' ' ) GOTO 5440
 	      pyfnt_fontname = buff1
 	   ENDIF
 	ENDIF
@@ -1969,131 +1969,87 @@ c* ... SET TEXT/FONT
 	   v2 = 0.
 	   v3 = 0.
 
-	   IF ( buff1 .NE. ' ' ) THEN
+	   IF ( buff1 .EQ. ' ' ) GOTO 5450
 
 * Check for optional parentheses. 
-              slen = TM_LENSTR1(buff1)
-              s1 = 1
-              s2 = slen
-              IF (buff1(1:1) .EQ. '(' )THEN
-                  s1 = 2
-                  s2 = slen-1
-                  IF ( buff1(slen:slen) .NE. ')' ) GOTO 5420
-              ENDIF
+	   slen = TM_LENSTR1(buff1)
+	   s1 = 1
+	   s2 = slen
+	   IF (buff1(1:1) .EQ. '(' )THEN
+              s1 = 2
+              s2 = slen-1
+              IF ( buff1(slen:slen) .NE. ')' ) GOTO 5420
+	   ENDIF
 
-	      icolor = -1
-	      IF ( TM_DIGIT(buff1(s1:s1) ) ) THEN 
+	   icolor = -1
+	   IF ( TM_DIGIT(buff1(s1:s1) ) ) THEN 
 
 * Read % values, convert to pen number or fraction.
-                 nparm = 3
-                 CALL parse_comma_list ( buff1, s1, s2, nparm, num_it,
+              nparm = 3
+              CALL parse_comma_list ( buff1, s1, s2, nparm, num_it,
      .                it_start, it_end, status)
-                 IF (status .EQ. ferr_ok .AND. it_start(1) .GT. it_end(1)) THEN
-                    nparm = 3 ! do nothing
-                 ELSE IF (status .NE. ferr_ok .OR. num_it .LT. nparm) THEN
+              IF (status .EQ. ferr_ok .AND. it_start(1) .GT. it_end(1)) THEN
+                 nparm = 3 ! do nothing
+              ELSE IF (status .NE. ferr_ok .OR. num_it .LT. nparm) THEN
 
 * Single color number? convert to pen # (needs to go get this from pplus iline bundle)
-	            IF (num_it .EQ. 1) THEN    ! single color-number?
-		       READ (buff1(it_start(1):it_end(1)), *) v1
-		       icolor = v1
-		    ELSE
-                       GOTO 5420
-		    ENDIF
+                 IF (num_it .EQ. 1) THEN    ! single color-number?
+		    READ (buff1(it_start(1):it_end(1)), *) v1
+		    icolor = v1
                  ELSE
+                    GOTO 5420
+                 ENDIF
+              ELSE
 
 * 3 values, % rgb
-                    READ (buff1(it_start(1):it_end(1)), *) v1
-		    IF (v1 .LT. 0. .OR. v1 .GT. 100) GOTO 5430
-		    pyfnt_red = v1/100.
-                    READ (buff1(it_start(2):it_end(2)), *) v2
-		    IF (v2 .LT. 0. .OR. v2 .GT. 100) GOTO 5430
-		    pyfnt_grn = v2/100.
-                    READ (buff1(it_start(3):it_end(3)), *) v3
-		    IF (v3 .LT. 0. .OR. v3 .GT. 100) GOTO 5430
-		    pyfnt_blu = v3/100.
-                 ENDIF
-              ELSE  ! not a digit. Is it a color name?
+                 READ (buff1(it_start(1):it_end(1)), *) v1
+                 IF (v1 .LT. 0. .OR. v1 .GT. 100) GOTO 5430
+                 pyfnt_red = v1/100.
+                 READ (buff1(it_start(2):it_end(2)), *) v2
+                 IF (v2 .LT. 0. .OR. v2 .GT. 100) GOTO 5430
+                 pyfnt_grn = v2/100.
+                 READ (buff1(it_start(3):it_end(3)), *) v3
+                 IF (v3 .LT. 0. .OR. v3 .GT. 100) GOTO 5430
+                 pyfnt_blu = v3/100.
+              ENDIF
+
+           ELSE  ! not a digit. Is it a color name?
 
 * name, compare with set list of colors
-                 len_test = TM_LENSTR(buff1(s1:s2))
-                 DO 1810 icolor = 1, ncolor_string
-                    len_mchars = TM_LENSTR(colornames(icolor)(:4))
-                    IF ( MATCH4(buff1(s1:s2), len_test,
+              len_test = TM_LENSTR(buff1(s1:s2))
+              DO 1810 icolor = 1, ncolor_string
+                 len_mchars = TM_LENSTR(colornames(icolor)(:4))
+                 IF ( MATCH4(buff1(s1:s2), len_test,
      .                colornames(icolor),len_mchars ) ) GOTO 1820
- 1810	         CONTINUE
-	         GOTO 5420   ! unknown color
- 1820	         CONTINUE
-              ENDIF
+ 1810	      CONTINUE
+              GOTO 5420   ! unknown color
+ 1820	      CONTINUE
+           ENDIF
 
 * A color number. Get the current definition of color number icolor
-	      IF (icolor .GT. 0) THEN
-                 CALL GET_COLOR_RGB (icolor, v1,v2,v3, status)
-		 IF (status .NE. ferr_ok) GOTO 5420
-		 pyfnt_red = v1/100.
-		 pyfnt_grn = v2/100.
-		 pyfnt_blu = v3/100.
-              ENDIF
-           ENDIF  !  buff1 .NE. ' '
-	   
+           IF (icolor .GT. 0) THEN
+              CALL GET_COLOR_RGB (icolor, v1,v2,v3, status)
+              IF (status .NE. ferr_ok) GOTO 5420
+              pyfnt_red = v1/100.
+              pyfnt_grn = v2/100.
+              pyfnt_blu = v3/100.
+           ENDIF	   
 	ENDIF 
 
 
-* ... SET TEXT/ITALIC[=0 or 1]
+* ... SET TEXT/ITALIC
 	IF ( qual_given( slash_set_text_italic ) .GT. 0 ) THEN	
-
-	   lp = qual_given( slash_set_text_italic )
-	   equal_pos = INDEX( cmnd_buff( qual_start(lp):qual_end(lp) ), '=' )
-	   IF ( equal_pos .EQ. 0 ) THEN
-	      pyfnt_italic = 1
-	   ELSE
-	      buff1 = cmnd_buff( equal_pos+qual_start(lp):qual_end(lp) )
-	      READ ( buff1,*,ERR=5440 ) iv
-	      IF (iv.NE.0 .AND. iv.NE.1) GOTO 5440
-	      pyfnt_italic = iv
-	   ENDIF
+	   pyfnt_italic = 1
 	ENDIF
 
-* ... SET TEXT/BOLD[=0 or 1]
+* ... SET TEXT/BOLD
 	IF ( qual_given( slash_set_text_bold ) .GT. 0 ) THEN	
-
-	   lp = qual_given( slash_set_text_bold )
-	   equal_pos = INDEX( cmnd_buff( qual_start(lp):qual_end(lp) ), '=' )
-	   IF ( equal_pos .EQ. 0 ) THEN
-	      pyfnt_bold = 1
-	   ELSE
-	      buff1 = cmnd_buff( equal_pos+qual_start(lp):qual_end(lp) )
-	      READ ( buff1,*,ERR=5450 ) iv
-	      IF (iv.NE.0 .AND. iv.NE.1) GOTO 5450
-	      pyfnt_bold = iv
-	   ENDIF
-	ENDIF
-
-* ... SET TEXT/OPAQUE=
-	IF ( qual_given( slash_set_text_opaque ) .GT. 0 ) THEN	
-
-	   lp = qual_given( slash_set_text_opaque )
-	   equal_pos = INDEX( cmnd_buff( qual_start(lp):qual_end(lp) ), '=' )
-	   IF ( equal_pos .EQ. 0 ) THEN
-	      pyfnt_opq = 1.
-	   ELSE
-	      buff1 = cmnd_buff( equal_pos+qual_start(lp):qual_end(lp) )
-	      READ ( buff1,*,ERR=5460 ) v1
-	      IF (v1.LT.0. .OR. v1.GT.100.) GOTO 5460
-	      pyfnt_opq = v1/100.
-	   ENDIF
-	ENDIF
-
-*  Just SET TEXT with no qualifiers restores defaults
-	IF (num_qualifiers .EQ. 0) THEN
-	   pyfnt_fontname = 'Courier'
-	   pyfnt_italic = 0
 	   pyfnt_bold = 1
-	   pyfnt_under = 0
-	   pyfnt_red = 0.
-	   pyfnt_grn = 0.
-	   pyfnt_blu = 0.
-	   pyfnt_opq = 1.
-	   pyfnt_rot = 0.
+	ENDIF
+
+*  SET TEXT with no qualifiers is an error
+	IF (num_qualifiers .EQ. 0) THEN
+	   GOTO 5460
 	ENDIF
 
 * Set logical flag
@@ -2139,20 +2095,19 @@ c* ... SET TEXT/FONT
      .			'delta value not permitted on SET REGION'//
      .			pCR//'check '//ww_dim_name(idim)//' axis', *5000 )
  5420   CALL ERRMSG( ferr_syntax, status, 
-     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
-     .  'TEXT/COLOR=(dn1,up1,dn2,up2) takes 3 arguments or no argument', *1000 )
+     .			cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .			'SET TEXT/COLOR=(R,G,B) takes 3 arguments, '//
+     .			'or valid color name or number', *1000 )
  5430   CALL ERRMSG( ferr_out_of_range, status, 
-     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
-     .          'TEXT/COLOR arguments must be between 0 and 100', *1000 )
- 5440   CALL ERRMSG( ferr_out_of_range, status, 
-     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
-     .          'TEXT/ITALIC argument must be 0 or 1', *1000 )
- 5450   CALL ERRMSG( ferr_out_of_range, status, 
-     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
-     .          'TEXT/BOLD argument must be 0 or 1', *1000 )
- 5460   CALL ERRMSG( ferr_out_of_range, status, 
-     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
-     .          'TEXT/OPAQUE argument must be must be between 0 and 100', *1000 )
+     .			cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .			'SET TEXT/COLOR=(R,G,B) arguments must be between 0 and 100', 
+     .			*1000 )
+ 5440   CALL ERRMSG( ferr_invalid_command, status,
+     .			'SET TEXT/FONT=what? ', *5000 )
+ 5450   CALL ERRMSG( ferr_invalid_command, status,
+     .			'SET TEXT/COLOR=what? ', *5000 )
+ 5460   CALL ERRMSG( ferr_invalid_command, status,
+     .			'SET TEXT what? ', *5000 )
  5700	CALL ERRMSG( ferr_invalid_command, status,
      .			'qualifier(s) valid only with SET DATA/EZ command',
      .			*5000 )

@@ -50,6 +50,7 @@
 * PyFr *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW and FRAME
 * V685+ *sh*  9/13 Add SHOW VARIABLE/TREE and alias VTREE
 * V695 *acm*  2/15 Add DEFINE AGGREGATE/F alias, FMRC
+* V695 *acm* 3/15 Changes for PyFerret fonts. Add SET TEXT, SHOW TEXT, CANCEL TEXT
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -124,7 +125,7 @@
      .			nqual1o = 3, nqual_at1p = nqual_at1o + nqual1o,	!'NCCACHE'
      .			nqual1p = 8, nqual_at1q = nqual_at1p + nqual1p,	!'REDIRECT'
      .			nqual1q = 0, nqual_at1r = nqual_at1q + nqual1q,	!'GIFFILE'
-     .			nqual1r = 5, nqual_at1s = nqual_at1r + nqual1r,	!'TEXT'
+     .			nqual1r = 4, nqual_at1s = nqual_at1r + nqual1r,	!'TEXT'
      .			nqual1s = 4, nqual_at1t = nqual_at1s + nqual1s,	!'****'
      .			nqual1t = 4, nqual_at2a = nqual_at1t + nqual1t	!'****'
      .		      )
@@ -224,7 +225,7 @@
      .			nqual3q = 1, nqual_at3r = nqual_at3q + nqual3q,	!'SYMBOL'
      .			nqual3r = 1, nqual_at3s = nqual_at3r + nqual3r,	!'NCCACHE'
      .			nqual3s = 3, nqual_at3t = nqual_at3s + nqual3s,	!'PYVAR'
-     .			nqual3t = 3, nqual_at4a = nqual_at3t + nqual3t	!'****'
+     .			nqual3t = 4, nqual_at4a = nqual_at3t + nqual3t	!'TEXT'
      .		      )
 
 * CONTOUR	 - commmand # 4

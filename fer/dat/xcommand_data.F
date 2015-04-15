@@ -219,7 +219,8 @@
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * V695 *acm*  2/15 Add DEFINE AGGREGATE/F alias, FMRC
 * V695 *acm*  3/15 Changes for PyFerret fonts. Add SHOW TEXT, 
-*                  Add SET TEXT/FONT/COLOR/ITALIC/BOLD/OPAQUE
+*                  Add SET TEXT/FONT/COLOR/ITALIC/BOLD, 
+*                  Add CANCEL TEXT/FONT/COLOR/ITALIC/BOLD
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -858,13 +859,15 @@
 		DATA qualifiers  (nqual_at3s+0)	/ 'ALL'		/
 		DATA qualifiers  (nqual_at3s+1)	/ 'DATASET'	/
 		DATA qualifiers  (nqual_at3s+2)	/ '****'	/
-* CANCEL ****							  ! unused(t)
-	   DATA subcommands      (nsub_at3 +19)	/ '****'	/
+* CANCEL TEXT				                          ! unset text properties for PyFerret fonts
+	   DATA subcommands      (nsub_at3 +19)	/ 'TEXT'	/
 	   DATA num_qualifs      (nsub_at3 +19)	/ nqual3t	/
 	   DATA qualifier_pointer(nsub_at3 +19)	/ nqual_at3t	/
-		DATA qualifiers  (nqual_at3t+0)	/ '****'	/
-		DATA qualifiers  (nqual_at3t+1)	/ '****'	/
-		DATA qualifiers  (nqual_at3t+2)	/ '****'	/
+		DATA qualifiers  (nqual_at3t+0)	/ 'FONT'	/
+		DATA qualifiers  (nqual_at3t+1)	/ 'COLOR'	/
+		DATA qualifiers  (nqual_at3t+2)	/ 'ITALIC'	/
+		DATA qualifiers  (nqual_at3t+3)	/ 'BOLD'	/
+
 
 * CONTOUR - command # 4
 	DATA commands(4)			/ 'CONTOUR'	/

@@ -7,9 +7,9 @@
 	INTEGER		pyfnt_italic, pyfnt_bold, pyfnt_under
 	REAL*4		pyfnt_red, pyfnt_grn, pyfnt_blu, 
      .			pyfnt_opq, pyfnt_rot
-	CHARACTER*64	pyfnt_fontname
+	CHARACTER*64	pyfnt_fontname, pyfnt_dflt
 	
 	COMMON/pyfont_args/ pyfont, pyfnt_italic, pyfnt_bold, pyfnt_under,
      .                  pyfnt_red, pyfnt_grn, pyfnt_blu, 
      .			pyfnt_opq, pyfnt_rot,
-     .                  pyfnt_fontname
+     .                  pyfnt_fontname, pyfnt_dflt

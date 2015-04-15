@@ -65,7 +65,8 @@
 * V687  3/14 *acm* add SET AXIS/NAME
 * V691+ 8/14 *acm* Fix ticket 2194: SHOW with /OUTFILE and not /XML. 
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
-* V6.95 *acm* 3/15 Changes for PyFerret fonts. Add SET TEXT, SHOW TEXT
+* V6.95 *acm* 3/15 Changes for PyFerret fonts. Add SET TEXT, SHOW TEXT,
+*                  CANCEL TEXT
 
 
 * command qualifier states
@@ -111,7 +112,13 @@
      .			slash_canc_var_curvi,
      .
      .			slash_canc_attr_output,
-     .			slash_canc_attr_data
+     .			slash_canc_attr_data,
+     .
+     .			slash_canc_text_font,
+     .			slash_canc_text_color,
+     .			slash_canc_text_italic,
+     .			slash_canc_text_bold
+
 
 	INTEGER	
      .			slash_set_movie_out,
@@ -241,8 +248,7 @@
      .			slash_set_text_font,
      .			slash_set_text_color,
      .			slash_set_text_italic,
-     .			slash_set_text_bold,
-     .			slash_set_text_opaque
+     .			slash_set_text_bold
 
 	INTEGER		slash_cont_over_plot,
      .			slash_cont_set_up,
@@ -424,6 +430,11 @@
      .			slash_canc_attr_output	= 1,
      .			slash_canc_attr_data	= 2,
      .
+     .			slash_canc_text_font     = 1,
+     .                  slash_canc_text_color    = 2,
+     .                  slash_canc_text_italic   = 3,
+     .                  slash_canc_text_bold     = 4,
+     .
      .			slash_set_movie_out    = 1,
      .			slash_set_movie_compress = 2,
      .			slash_set_movie_laser  = 3,
@@ -551,8 +562,7 @@
      .                  slash_set_text_font     = 1,
      .                  slash_set_text_color    = 2,
      .                  slash_set_text_italic   = 3,
-     .                  slash_set_text_bold     = 4,
-     .                  slash_set_text_opaque   = 5 )
+     .                  slash_set_text_bold     = 4 )
 
 	PARAMETER     ( slash_cont_over_plot	= 1+12,
      .			slash_cont_set_up	= 1+13,

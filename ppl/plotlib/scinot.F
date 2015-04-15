@@ -58,8 +58,8 @@ C                labels make the character size a bit smaller.
 	data lestr,lmestr/'e','-e'/
 	DATA ESTR,MESTR/'E','-E'/
 
-	CHARACTER*2	degstr
-	INTEGER		ndeg, nc
+	INTEGER		ndeg, nc, codepoint, utf8strlen
+	CHARACTER*4	utf8str
 
         charsize = CSZE
 	IF(NCHR.GT.20)RETURN
@@ -76,24 +76,21 @@ c and just go on to SYMBEL.
 
         IF (pyfont) THEN
 
-C UTF-8 for the degree symbol is just hard-coded below, but in general:
-C          INTEGER codepoint, utf8strlen
-C          CHARACTER*4 utf8str
-C          codepoint = 176
-C          CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
-C          degstr = utf8str(1:utf8strlen)
-C
-C          degree symbol is codepoint 0xB0 (176), which is UTF-8 0xC2 0xB0 (194 176)
-           degstr(1:1) = CHAR(194)
-           degstr(2:2) = CHAR(176)
+C UTF-8 for the degree symbol
 
-	   ITMP = STR
+C          degree symbol is codepoint 0xB0 (176), which is UTF-8 0xC2 0xB0 (194 176)
+
 	   ndeg = INDEX(str, '#')
 	   IF (ndeg .GT. 0 ) THEN
-	      ITMP = str(1:ndeg-1)//degstr//str(ndeg+1:nchr)
+	      codepoint = 176
+	      CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
+	      ITMP = str(1:ndeg-1)//utf8str(1:utf8strlen)
+	      IF (ndeg.LT.nchr) ITMP = 
+     .               str(1:ndeg-1)//utf8str(1:utf8strlen)//str(ndeg+1:nchr)
            ENDIF
-	   ndeg = 0
 	   NC = NCHR
+	   IF (ndeg.EQ.nchr) NC = NCHR+1
+	   ndeg = 0
 	   GOTO 250
 	ENDIF
 

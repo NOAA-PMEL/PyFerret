@@ -107,6 +107,8 @@ c	CHARACTER PLTFIL*80
 	REAL		fontsiz, stx, sty, swid, shgt, xu, yu
 	INTEGER		ia, slen
 	CHARACTER	buff1*512
+	INTEGER		codepoint, utf8strlen
+	CHARACTER*4	utf8str
 
         REAL XBASE, YBASE
         INTEGER IPT
@@ -145,6 +147,9 @@ c	CHARACTER PLTFIL*80
 
         LOGICAL TM_NUMBER                ! ** TMAP mod 11/94 **
 
+	integer hhex
+	data hhex /z'03B1'/
+
 * Mod to specify external references for SCALE and RANGE * Linux *kob* 1.97
         external scale, size
 
@@ -161,8 +166,8 @@ C Set font size in from the height
            fontsiz = height
 
 C Ignore any codes for Ferret-Hershey style Pen and Font changes 
-	   buff = string
-	   slen = TM_LENSTR(string)
+	   buff = string(:ABS(nchar))
+	   slen = TM_LENSTR(buff)
 	   ia = INDEX (buff,'@')
 
 	   DO WHILE (ia .GT. 0)
@@ -177,32 +182,69 @@ C Ignore any codes for Ferret-Hershey style Pen and Font changes
 	      ia = INDEX (buff,'@')
 	   ENDDO
 
-C Change any ^2 to a super-2 and ^3 to super-3.
+C Change all ^2 to a super-2 and ^3 to super-3.
 C UTF-8 for superscript-2 and superscript-3 are just hard-coded below, but in general:
-C          INTEGER codepoint, utf8strlen
-C          CHARACTER*4 utf8str
-C          codepoint = 178
-C          CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
-C          super2 = utf8str(1:utf8strlen)
-C
 
 	   slen = TM_LENSTR(buff)
-	   ia = INDEX (buff,'^')
-	   DO WHILE (ia .GT. 0)
-	      IF (buff(ia+1:ia+1) .EQ. '2') THEN
-C                Codepoint 0xB2 (178) is UTF-8 0xC2 0xB2 (194 178)
-                 buff(ia:ia) = CHAR(194)
-                 buff(ia+1:ia+1) = CHAR(178)
-              ELSE IF (buff(ia+1:ia+1) .EQ. '3') THEN
-C                Codepoint 0xB3 (179) is UTF-8 0xC2 0xB3 (194 179)
-                 buff(ia:ia) = CHAR(194)
-                 buff(ia+1:ia+1) = CHAR(179)
-              ELSE
-	         GOTO 600
-	      ENDIF
-	      ia = INDEX (buff,'^')
-	   ENDDO
-  600      CONTINUE
+
+	   ia = INDEX (buff,'^2')
+	   IF (ia .GT. 0) THEN
+	      buff1 = buff
+	      codepoint = 178
+	      CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
+	      DO WHILE (ia .GT. 0)
+	         IF (ia+2.LE.slen) THEN
+      	 	    buff1 = buff1(:ia-1)//utf8str(1:utf8strlen)//buff1(ia+2:slen)
+		 ELSE
+	            buff1 = buff1(:ia-1)//utf8str(1:utf8strlen)
+		 ENDIF
+		 slen = TM_LENSTR(buff1)
+		 ia = INDEX (buff1,'^2')
+	      ENDDO
+	      buff = buff1
+	      slen = TM_LENSTR(buff)
+	   ENDIF
+
+C       super-3 is codepoint 0xB0 (179), which is UTF-8 0xC2 0xB0 (194 179)
+
+	   ia = INDEX (buff,'^3')
+	   IF (ia .GT. 0) THEN
+	      buff1 = buff
+	      codepoint = 179
+	      CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
+	      DO WHILE (ia .GT. 0)
+	         IF (ia+2.LE.slen) THEN
+      	 	    buff1 = buff1(:ia-1)//utf8str(1:utf8strlen)//buff1(ia+2:slen)
+		 ELSE
+	            buff1 = buff1(:ia-1)//utf8str(1:utf8strlen)
+		 ENDIF
+		 slen = TM_LENSTR(buff1)
+		 ia = INDEX (buff1,'^3')
+	      ENDDO
+	      buff = buff1
+	      slen = TM_LENSTR(buff)
+	   ENDIF
+
+C Change # to degree sign (for axis labels scinot has done this)
+C          degree symbol is codepoint 0xB0 (176), which is UTF-8 0xC2 0xB0 (194 176)
+
+	   ia = INDEX (buff,'#')
+	   IF (ia .GT. 0) THEN
+	      buff1 = buff
+	      codepoint = hhex  ! lower-case alpha, just for testing. 
+	      codepoint = 176
+	      CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
+	      DO WHILE (ia .GT. 0)
+	         IF (ia+1.LE.slen) THEN
+       		   buff1 = buff(:ia-1)//utf8str(1:utf8strlen)//buff(ia+1:slen)
+		 ELSE
+	            buff1 = buff(:ia-1)//utf8str(1:utf8strlen)
+		 ENDIF
+		 ia = INDEX (buff1,'#')
+	      ENDDO
+	      buff = buff1
+	      slen = TM_LENSTR(buff)
+	   ENDIF
 
 C This section returns the string length from swid
 

@@ -80,6 +80,7 @@ C UTF-8 for the degree symbol
 
 C          degree symbol is codepoint 0xB0 (176), which is UTF-8 0xC2 0xB0 (194 176)
 
+	   ITMP = str
 	   ndeg = INDEX(str, '#')
 	   IF (ndeg .GT. 0 ) THEN
 	      codepoint = 176

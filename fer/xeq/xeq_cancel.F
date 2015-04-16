@@ -1237,7 +1237,8 @@ c* ... CANCEL TEXT/FONT
 	   pyfnt_blu = 0.
 	   pyfnt_opq = 1.
 	   pyfnt_rot = 0.
-	ENDIF
+	ENDIF		
+        pyfont = (STR_SAME(pyfnt_fontname, 'Hershey') .NE. 0 )
 
 	RETURN
 

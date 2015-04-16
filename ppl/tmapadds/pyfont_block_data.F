@@ -17,8 +17,8 @@ C  pyfnt_rot		Real: rotation angle
 	INCLUDE 'pyfonts.cmn'
 
 	DATA pyfont/.FALSE./
-	DATA pyfnt_fontname/'Times New Roman'/
-	DATA pyfnt_dflt/'Times New Roman'/
+	DATA pyfnt_fontname/'Hershey'/
+	DATA pyfnt_dflt/'Hershey'/
 	DATA pyfnt_italic/0/
 	DATA pyfnt_bold/0/
 	DATA pyfnt_under/0/

@@ -75,9 +75,6 @@
       IF (dset .EQ. unspecified_int4) RETURN
       IF (ivar .LT. 0) RETURN
 
-      slen = TM_LENSTR1( vname )
-      CALL TM_FTOC_STRNG( vname(1:slen), fhol, flen )
-
       dset_num = dset
       cdfstat = NCF_INQ_VAR(dset_num, ivar, fhol, slen, vartype, 
      .            nvdims, nvatts, coordvar, outflag, rev)

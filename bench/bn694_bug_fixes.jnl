@@ -65,3 +65,6 @@ GO err693_repeat_err
 GO bn_reset
 GO err693_edit_useratt
 
+GO bn_reset
+GO err693_redef_rec_axis
+

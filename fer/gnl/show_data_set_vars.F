@@ -77,6 +77,7 @@
 * v6.85  *acm* 4/13 Can show grid for variables in an ensemble aggregated dataset.
 * v6.85  *acm* 10/13 See ticket 1098, extraneous lines when error getting grid.
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
+* v695 *acm*  4/15 Bug fix: output written in loop 300 was cut off
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -359,7 +360,7 @@
 #endif
      .			 LOHI_STRING( lo,hi,i,grid,':',ax_dec_pt(i),dlen )
      .			 // '  '
-	               len = MIN( 64, len+4+dlen )  ! ??
+	               len = MIN( 128, len+4+dlen )
 	            ENDIF ! Skip time dim
 
 	         ENDIF

@@ -51,6 +51,8 @@
 * V541 6/02 *acm*  call PACK_LINE_STORAGE to recover line_mem storage when irregular
 *                  axis is cancelled.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* v695 4/15 *acm*  Fix ticket 2271: If the record axis was redefined, we need
+*                  to store that info in the record-axis storage
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -60,12 +62,14 @@
 	include	'tmap_errors.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+	include 'xdset_info.cmn_text'
+
 
 * calling argument declaration:
 	INTEGER	old_axis, new_axis, status
 
 * internal variable declarations:
-	INTEGER	TM_GET_LINENUM, grid, idim, num_protected_axes
+	INTEGER	TM_GET_LINENUM, grid, idim, num_protected_axes, iset
 	CHARACTER	I6*6
 
 * the lowest axes are protected
@@ -104,6 +108,11 @@
 
  250	CONTINUE
 	line_use_cnt(new_axis) = line_use_cnt(old_axis)
+
+* check for the axis in the list of record axes; replace the old with the new
+	DO 300 iset = 1, maxdsets
+	   IF (ds_time_axis(iset) .EQ. old_axis) ds_time_axis(iset) = new_axis
+ 300	CONTINUE
 
 * delete the old axis
 	IF ( .NOT.line_regular(old_axis) ) THEN

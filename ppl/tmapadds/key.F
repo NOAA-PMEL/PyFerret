@@ -150,7 +150,7 @@
 	real		xx,yy,xxx,yyy, xx1, xxn, xxlen
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
      .                  val, del, x_inc_inf, y_inc_inf, frac, fixx, inc_min, 
-     .                  center_add
+     .                  center_add, ht_ann
         real*8          val_n, val_last
 	character*12	text, TM_FMT_SNGL, TM_FMT_SNGL_DIGITS, 
      .			txt_out, blanks
@@ -413,22 +413,23 @@ C	text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
               kpy(1) = ky_hi
               kpy(4) = ky_hi
            ENDIF
+	   ht_ann = 0.9*karht
 
            IF ( (ndx.EQ.2) .AND. (annotate_key.EQ.1) .AND. 
      .          (.NOT.neginf) ) CALL key_annotate 
-     .          (kpx, kpy, lab_digits, karht, 1, 2)
+     .          (kpx, kpy, lab_digits, ht_ann, 1, 2)
 
            IF ( (ndx.EQ.nhi) .AND. (annotate_key.EQ.1) .AND.
      .          (.NOT.posinf) ) CALL key_annotate 
-     .          (kpx, kpy, lab_digits, karht, 2, 2)
+     .          (kpx, kpy, lab_digits, ht_ann, 2, 2)
 
            IF (neginf .AND. (ndx .EQ. 2) ) THEN
               CALL key_lo_inf_horz (kpx, kpy, ndx, x_inc_inf, 
-     .          annotate_key, lab_digits, karht)
+     .          annotate_key, lab_digits, ht_ann)
 
            ELSE IF (posinf .AND. (ndx .EQ. nhi) ) THEN
               CALL key_hi_inf_horz (kpx, kpy, ndx, x_inc_inf, 
-     .          annotate_key, lab_digits, karht)
+     .          annotate_key, lab_digits, ht_ann)
 
            ELSE
 
@@ -517,15 +518,15 @@ C	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 	   rem = vwidth - (xlen + xorg)
 	   xmaxx = 0.25*xlen
 
-           kx_lo_def = 1000.0 * (xorg + xlen + 0.05*min (rem,xmaxx))
-           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,vwidth-0.25*rem)
+           kx_lo_def = 1000.0 * (xorg + xlen + 0.1*min (rem,xmaxx))
+           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,vwidth-0.1*rem)
 
            ky_lo_def = 1000.0 *  yorg
            ky_hi_def = 1000.0 * (yorg + ylen)
         else
 	   rem = width - (xlen + xorg)
 	   xmaxx = 0.25*xlen
-           kx_lo_def = 1000.0 * (xorg + xlen + 0.1*min (rem,xmaxx))
+           kx_lo_def = 1000.0 * (xorg + xlen + 0.15*min (rem,xmaxx))
            kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,width-0.1*rem)
            ky_lo_def = 1000.0 *  yorg
            ky_hi_def = 1000.0 * (yorg + ylen)
@@ -643,21 +644,22 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	   kpy(3) = ky_lo + real (ndx - 1) * y_inc
 	   kpy(4) = ky_lo + real (ndx - 1) * y_inc
 
+	   ht_ann = 0.9*karht
            IF ( (ndx.EQ.2) .AND. (annotate_key.EQ.1) .AND.
      .          (.NOT. neginf) ) CALL key_annotate 
-     .          (kpx, kpy, lab_digits, karht, 1, 1)
+     .          (kpx, kpy, lab_digits, ht_ann, 1, 1)
 
            IF ( (ndx.EQ.nhi) .AND. (annotate_key.EQ.1) .AND.
      .          (.NOT. posinf) ) CALL key_annotate 
-     .          (kpx, kpy, lab_digits, karht, 2, 1)
+     .          (kpx, kpy, lab_digits, ht_ann, 2, 1)
 
            IF (neginf .AND. (ndx .EQ. 2) ) THEN
               CALL key_lo_inf_vert (kpx, kpy, ndx, y_inc_inf, 
-     .          annotate_key, lab_digits, karht)
+     .          annotate_key, lab_digits, ht_ann)
      
            ELSE IF (posinf .AND. (ndx .EQ. nhi) ) THEN
               CALL key_hi_inf_vert (kpx, kpy, ndx, y_inc_inf, 
-     .          annotate_key, lab_digits, karht)
+     .          annotate_key, lab_digits, ht_ann)
 
            ELSE
 

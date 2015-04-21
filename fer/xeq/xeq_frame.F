@@ -59,6 +59,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
+* V6.95 *acm* 4/15 Haven't used HDF images for a long time: require GIF only.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -77,6 +78,7 @@
 * initialize
 	is_format = qual_given( slash_frame_format ).GT.0
 	is_file   = qual_given( slash_frame_file   ).GT.0
+	format    = ' '
 
 * Ignore FRAME in batch mode, except when in batch GIF mode.
 
@@ -102,15 +104,15 @@
         ENDIF
 
 * FRAME/FORMAT="HDF" or "GIF"
+* HDF not currently supported
+
 	IF ( is_format ) THEN
 	   loc = qual_given( slash_frame_format )
 	   CALL EQUAL_STRING(
      .          cmnd_buff(qual_start(loc):qual_end(loc)),
      .                    format, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   IF ( format .NE. 'GIF' .AND. format .NE. 'HDF' ) GOTO 5100
-	ELSE
-	   format = 'HDF'
+	   IF ( format .NE. 'GIF') GOTO 5100
 	ENDIF
 
 * FRAME/FILE=filename
@@ -130,14 +132,16 @@
 	flen = TM_LENSTR1(filename)
 
 * a format of "GIF" can be implied by a filename ending in .gif or .GIF
-* any other name will implicitly be an HDF file (unless explicit w/ /FORM=)
+
 	IF ( .NOT.is_format .AND. flen .GT. 4) THEN
 	   IF ( filename(flen-3:flen) .EQ. '.gif'
      .     .OR. filename(flen-3:flen) .EQ. '.GIF' )  format = 'GIF'
+	   IF ( format .NE. 'GIF') GOTO 5100
 	ENDIF
 
 * rename previous versions of this file using a version number scheme
-	IF ( format .EQ. 'GIF' )  CALL TM_PARK_LAST_VERSION
+        
+	CALL TM_PARK_LAST_VERSION
      .			( filename(:flen), status )
 
 * save that baby
@@ -148,7 +152,7 @@
 * error exits
  5000	RETURN
  5100	CALL ERRMSG( ferr_invalid_command, status,
-     .               'illegal format type - must be "HDF" or "GIF"'
+     .               'illegal format type - must be "GIF"'
      .		     //pCR//cmnd_buff(:len_cmnd), *5000 )
 	END
 

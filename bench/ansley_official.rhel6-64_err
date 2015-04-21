@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 80223813 Apr 14 10:08 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 80222618 Apr 20 16:27 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Fixing ticket 2271: redefine record axis
+Note: ticket 2275
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Tue Apr 14 10:24:20 PDT 2015
+Beginning at Mon Apr 20 16:28:47 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3860,15 +3860,22 @@ repeat/range=1:2/name=row
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
 Replacing definition of axis YAX
-Replacing definition of axis TAX
  LISTing to file a.nc
            *** NOTE: Not deleted: XAX
            *** NOTE: Axis is in use by grid GFORMAT
            *** NOTE: Not deleted: YAX
            *** NOTE: Axis is in use by grid GFORMAT
-           *** NOTE: Not deleted: TAX
-           *** NOTE: Axis is in use by grid TGRID
-Replacing definition of axis TAX
+Replacing definition of axis TREDEF
+           *** NOTE: grid GSI1 used by data set a
+           *** NOTE: Redefinition may alter apparent contents of data set
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: illegal format type - must be "GIF"
+          frame/format=hdf/file=a.hdf
+frame/format=hdf/file=a.hdf
+ **ERROR: invalid command: illegal format type - must be "GIF"
+          frame/file=a.png
+frame/file=a.png
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of grid GRID3D
@@ -3995,4 +4002,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Apr 14 10:26:12 PDT 2015
+Ended at Mon Apr 20 16:30:23 PDT 2015

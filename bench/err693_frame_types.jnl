@@ -1,0 +1,20 @@
+! bn_frame_types.jnl
+! Ticket 2275
+! The default file type for FRAME was still HDF
+
+set mode ignore
+
+use coads_climatology
+shade/l=1 sst
+
+! This issued an error and quit
+frame/format=hdf/file=a.hdf
+
+! so did this
+frame/file=a.png
+
+! this is (always) ok
+frame/file=a.gif
+frame/format=gif file=a.plot
+
+set mode/last ignore

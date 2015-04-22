@@ -63,6 +63,8 @@
 * PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to FRAME
 * PyFr  *kms*  8/13 Add /ANNOTATE to FRAME; declare memory argument 
 *                   now needed for SAVE_FRAME
+* The following changes were not applied to PyFerret:
+* V6.95 *acm* 4/15 Haven't used HDF images for a long time: require GIF only.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'

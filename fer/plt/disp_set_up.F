@@ -771,7 +771,10 @@ C ACM added 8/2001 save cal id if vertical time axis
 	   CALL DELETE_VARIABLE( mvy_temp )
 	ENDIF
 	
-	IF ( no_labels ) RETURN
+	IF ( no_labels ) THEN
+	   CALL PPLCMD ( from, line, 0, 'LABS ', 1, 1 )
+	   RETURN
+	ENDIF
 
 ! ====================== LABELS ========================
 

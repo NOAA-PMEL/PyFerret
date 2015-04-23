@@ -64,6 +64,7 @@ C *acm* v552 3/03 Longer strings and changes for multi-line labels.
 	INCLUDE 'TICS2.INC'
 	INCLUDE 'AXISL.INC'
 	INCLUDE 'AXLWID.INC'
+	INCLUDE 'pyfonts.cmn'
 
 	CHARACTER IFX*(*),IFY*(*)
         INTEGER j, lablen, numlines, slen
@@ -83,6 +84,7 @@ C	DRAW LABELS
 
 C  Y label. center each line 
 
+	IF (pyfont .AND. pyf_set(ivlab)) igroup = ivlab
         CALL tm_break_lines (ylab, lnbeg, lnend, numlines)
 
         IF(LABELY.LT.0.)THEN 
@@ -91,6 +93,7 @@ C  Y label. center each line
         ELSE
            XL=XHI+(YWID+2.*HYLAB)/XF
         ENDIF
+
 
         nfont = 0
         npen = 0
@@ -123,8 +126,11 @@ C  Set up to use any font settings from this line on subsequent lines.
 
 10      CONTINUE
 
+	IF (pyfont) igroup = fnt_all
 
 C  X label
+
+	IF (pyfont .AND. pyf_set(ihlab)) igroup = ihlab
 
 20	IF(LABELX.EQ.0.OR.(ITFLG.EQ.1.OR.ITFLG.EQ.2))GOTO 40
         CALL tm_break_lines (xlab, lnbeg, lnend, numlines)
@@ -136,6 +142,7 @@ C  X label
             IF (numlines .GT. 1) yl = yl + 
      .           line_spacing*(numlines-1)* hxlab/yf
 	ENDIF
+
 
         nfont = 0
         npen = 0
@@ -174,7 +181,11 @@ C  Set up to use any font settings from this line on subsequent lines.
 cc        ENDIF
 30      CONTINUE
 
+	IF (pyfont) igroup = fnt_all
+
 C  Main label
+	
+	IF (pyfont .AND. pyf_set(ititl)) igroup = ititl
 
 40      CALL tm_break_lines (lab1, lnbeg, lnend, numlines)
 
@@ -234,5 +245,8 @@ C  Set up to use any font settings from this line on subsequent lines.
            ENDIF
 50      CONTINUE
 
-70	RETURN
+70      CONTINUE
+	IF (pyfont) igroup = fnt_all
+
+	RETURN
 	END

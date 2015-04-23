@@ -219,8 +219,10 @@
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * V695 *acm*  2/15 Add DEFINE AGGREGATE/F alias, FMRC
 * V695 *acm*  3/15 Changes for PyFerret fonts. Add SHOW TEXT, 
-*                  Add SET TEXT/FONT/COLOR/ITALIC/BOLD, 
-*                  Add CANCEL TEXT/FONT/COLOR/ITALIC/BOLD
+*                  Add SET TEXT/FONT/COLOR/ITALIC/BOLD
+*             4/15 Add SET TEXT/FONT/COLOR/ITALIC/BOLD/TICS/TITLE/LOGO/HLAB/VLAB/CONTOUR/CBAR
+*                  Add CANCEL TEXT/FONT/COLOR/ITALIC/BOLD/TICS/TITLE/LOGO/HLAB/VLAB/CONTOUR/CBAR/all
+*                  Ho args on SHOW TEXT
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -457,14 +459,19 @@
            DATA subcommands      (nsub_at1 +17)	/ 'TEXT'	/
            DATA num_qualifs      (nsub_at1 +17)	/ nqual1r	/
            DATA qualifier_pointer(nsub_at1 +17)	/ nqual_at1r	/
-* SET TEXT /FONT /COLOR /ITALIC /BOLD /OPAQ
+* SET TEXT /FONT /COLOR /ITALIC /BOLD /TICS /TITLE /LOGO /HLAB /VLAB /CONTOUR /CBAR /ISIZ
                 DATA qualifiers  (nqual_at1r+0)	/ 'FONT'	/
                 DATA qualifiers  (nqual_at1r+1)	/ 'COLOR'	/
                 DATA qualifiers  (nqual_at1r+2)	/ 'ITALIC'	/
                 DATA qualifiers  (nqual_at1r+3)	/ 'BOLD'	/
-                DATA qualifiers  (nqual_at1r+4)	/ 'OPAQUE'	/
-                DATA qualifiers  (nqual_at1r+6)	/ '****'	/
-                DATA qualifiers  (nqual_at1r+5)	/ '****'	/
+                DATA qualifiers  (nqual_at1r+4)	/ 'ISIZ'	/
+                DATA qualifiers  (nqual_at1r+5)	/ 'TICS'	/
+                DATA qualifiers  (nqual_at1r+6)	/ 'TITLE'	/
+                DATA qualifiers  (nqual_at1r+7)	/ 'LOGO'	/
+                DATA qualifiers  (nqual_at1r+8)	/ 'HLAB'	/
+                DATA qualifiers  (nqual_at1r+9)	/ 'VLAB'	/
+                DATA qualifiers  (nqual_at1r+10)/ 'CONTOUR'	/
+                DATA qualifiers  (nqual_at1r+11)/ 'CBAR'	/
 * SET ****							  ! unused (s)
 	   DATA subcommands      (nsub_at1 +18)	/ '****'	/
 	   DATA num_qualifs      (nsub_at1 +18)	/ nqual1s	/
@@ -700,14 +707,9 @@
            DATA subcommands      (nsub_at2 +21)/ 'TEXT'	/
            DATA num_qualifs      (nsub_at2 +21)	/ nqual2v	/
            DATA qualifier_pointer(nsub_at2 +21)	/ nqual_at2v	/
-* SET TEXT /FONT /COLOR /ITALIC /BOLD /OPAQ
-                DATA qualifiers  (nqual_at2v+0)	/ 'FONT'	/
-                DATA qualifiers  (nqual_at2v+1)	/ 'COLOR'	/
-                DATA qualifiers  (nqual_at2v+2)	/ 'ITALIC'	/
-                DATA qualifiers  (nqual_at2v+3)	/ 'BOLD'	/
-                DATA qualifiers  (nqual_at2v+4)	/ 'OPAQUE'	/
-                DATA qualifiers  (nqual_at2v+6)	/ '****'	/
-                DATA qualifiers  (nqual_at2v+5)	/ '****'	/
+* SHOW TEXT  / ****
+                DATA qualifiers  (nqual_at2v+0)	/ '****'	/
+                DATA qualifiers  (nqual_at2v+1)	/ '****'	/
 
 * SHOW QUERIES							 
 	   DATA subcommands      (nsub_at2 +22)	/ 'QUERIES'	/
@@ -867,7 +869,15 @@
 		DATA qualifiers  (nqual_at3t+1)	/ 'COLOR'	/
 		DATA qualifiers  (nqual_at3t+2)	/ 'ITALIC'	/
 		DATA qualifiers  (nqual_at3t+3)	/ 'BOLD'	/
-
+		DATA qualifiers  (nqual_at3t+4)	/ 'ISIZ'	/
+		DATA qualifiers  (nqual_at3t+5)	/ 'TICS'	/
+		DATA qualifiers  (nqual_at3t+6)	/ 'TITLE'	/
+		DATA qualifiers  (nqual_at3t+7)	/ 'LOGO'	/
+		DATA qualifiers  (nqual_at3t+8)	/ 'HLAB'	/
+		DATA qualifiers  (nqual_at3t+9)	/ 'VLAB'	/
+		DATA qualifiers  (nqual_at3t+10)/ 'CONTOUR'	/
+		DATA qualifiers  (nqual_at3t+11)/ 'CBAR'	/
+		DATA qualifiers  (nqual_at3t+12)/ 'ALL'		/
 
 * CONTOUR - command # 4
 	DATA commands(4)			/ 'CONTOUR'	/

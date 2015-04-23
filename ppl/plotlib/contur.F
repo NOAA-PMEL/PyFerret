@@ -175,6 +175,9 @@ c
 	if(nlev)1200,1200,12
 12	pi=3.1415926
 
+
+        IF (pyfont .AND. pyf_set(icont)) igroup = icont
+
 c
 c	apply the rotation and scaling
 c
@@ -919,6 +922,9 @@ c check for lines crossing the branch cut in curvilinear grids. Pick up the pen.
 c
 1100	continue
 1200	if(colour.ne.colold)call color(colold)
+
+        IF (pyfont .AND. pyf_set(icont)) igroup = fnt_all
+
 	return
 	end
 

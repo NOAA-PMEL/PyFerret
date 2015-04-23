@@ -104,11 +104,13 @@ c	CHARACTER PLTFIL*80
 
 	LOGICAL		TM_HAS_STRING
 	INTEGER		STR_SAME, TM_LENSTR
-	REAL		fontsiz, stx, sty, swid, shgt, xu, yu
-	INTEGER		ia, slen
+	REAL		fontsiz, rotate, stx, sty, swid, shgt, xu, yu
+	INTEGER		ia, slen, isemi
 	CHARACTER	buff1*512
 	INTEGER		codepoint, utf8strlen
-	CHARACTER*4	utf8str
+	CHARACTER	utf8str*4, nstring*8, fontname*64
+	REAL*4		red, grn, blu, fac
+	INTEGER		igr, bold, italic, isiz
 
         REAL XBASE, YBASE
         INTEGER IPT
@@ -159,11 +161,26 @@ c	CHARACTER PLTFIL*80
 
         IF (pyfont) THEN
 
-	   pyfnt_rot = degres
-	   IF (degres .NE. 0) pyfnt_rot = -1.* degres
+	   rotate = degres
+	   IF (degres .NE. 0) rotate = -1.* degres
+
+* Specific font settings for the text group (if we're doing the logo, tic-marks, etc.)
+
+	   igr = igroup
+	   CALL GET_PYFONT_SETTINGS(igr, fontname, red, grn, blu, 
+     .			italic, bold, isiz)
 
 C Set font size in from the height 
            fontsiz = height
+
+	   IF (isiz .NE. 0) THEN
+	      fac = FLOAT(ABS(isiz))
+	      fac = MIN(4., fac)
+	      if (isiz .LT. 0) fontsiz = fontsiz* (1.-fac*0.1)
+	      if (isiz .GT. 0) fontsiz = fontsiz* (1.+fac*0.1)
+	      fac = (1.-fac*0.2)
+	      fac = (1.+fac*0.2)
+	   ENDIF
 
 C Ignore any codes for Ferret-Hershey style Pen and Font changes 
 	   buff = string(:ABS(nchar))
@@ -225,6 +242,23 @@ C       super-3 is codepoint 0xB0 (179), which is UTF-8 0xC2 0xB0 (194 179)
 	      slen = TM_LENSTR(buff)
 	   ENDIF
 
+C Look for &#nnn;  an HTML decimal code. e.g. &#916; is uppercase Delta
+
+	   ia = INDEX (buff,'&#')
+	   isemi = INDEX (buff,';')
+	   
+	   IF (ia.GT.0 .AND. isemi.GT.ia+2) THEN
+	      isemi = isemi - 1
+	      nstring = buff(ia+2:isemi)
+	      READ (nstring, *), codepoint
+
+	      CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
+	      isemi = isemi+2
+	      buff1 = buff(:ia-1)//utf8str(1:utf8strlen)//buff(isemi:slen)
+	      buff = buff1
+	      slen = TM_LENSTR(buff)
+	   ENDIF
+
 C Change # to degree sign (for axis labels scinot has done this)
 C          degree symbol is codepoint 0xB0 (176), which is UTF-8 0xC2 0xB0 (194 176)
 
@@ -253,8 +287,8 @@ C This section returns the string length from swid
 	      swid = 0.
 	      shgt = 0.
 	      IF (TM_LENSTR(buff) .GT. 0) THEN
-	         CALL FERTEXTSIZE (buff, pyfnt_fontname, fontsiz, 
-     .           pyfnt_italic, pyfnt_bold, pyfnt_under, swid, shgt, status)
+	         CALL FERTEXTSIZE (buff, fontname, fontsiz, 
+     .           italic, bold, pyfnt_under, swid, shgt, status)
 	         IF (status .EQ. 0) GOTO 3100
 	      ENDIF
 
@@ -269,9 +303,9 @@ C Draw the text
               CALL USER_TO_INCH (x, y, stx, sty)
               stx = 1000.* stx
               sty = 1000.* sty
-              CALL FERDRAWTEXT(buff, pyfnt_fontname, fontsiz, 
-     .          pyfnt_red, pyfnt_grn, pyfnt_blu, pyfnt_opq, stx, sty, 
-     .          pyfnt_rot, pyfnt_italic, pyfnt_bold, pyfnt_under, status)
+              CALL FERDRAWTEXT(buff, fontname, fontsiz, 
+     .          red, grn, blu, pyfnt_opq, stx, sty, 
+     .          rotate, italic, bold, pyfnt_under, status)
               IF (status .EQ. 0) GOTO 3200
 	   
 	   ENDIF

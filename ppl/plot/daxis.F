@@ -63,6 +63,9 @@ C *acm* 10/14  bug 2205. Polygon plots have extra calls because polygons can get
 C              drawn on topof axes. This(?) causes the main label to not get 
 C              finished. For polygon plots only, draw the main label twice.
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
+* F695 *acm*   4/15 (PyFerret) labels along axes will be drawn with the 
+*              tic-mark text style
+
 C**
 C**    @(#)daxis.F	1.1    3/10/88
 C**
@@ -100,6 +103,7 @@ C**
 	include 'TICS2.INC'
 	include 'axisl_inc.decl'
 	include 'AXISL.INC'
+	INCLUDE 'pyfonts.cmn'
 
 	CHARACTER IFX*20,IFY*20
         integer ii, MAINLAB
@@ -107,6 +111,10 @@ C**
 
 * TMAP interrupt flag
 	include 'xinterrupt.cmn'
+
+* (PyFerret) labels along axes will be drawn with the tic-mark text style
+
+        IF (pyfont .AND. pyf_set(itics)) igroup = itics  
 
 C If graticule lines are to be drawn across the plot at the tics
 C then only do them for one horizontal and one vertical axis.  
@@ -224,7 +232,7 @@ C
 
 * TMAP interrupt re-entry
  3333	CONTINUE
-
+	
 	IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
 	CALL CROSS
 	CALL WINDOW(0.,0.,0.,0.)
@@ -232,6 +240,10 @@ C
 C	DRAW AXIS LABELS
 C
 1000	CONTINUE
+
+* (PyFerret) cancel tic-mark text style
+	IF (pyfont) igroup = fnt_all
+
         IF (mainlab .GE. 1) CALL LABDRW(XF,YF,IFX,IFY)
 	CALL PPLGFLUSH
 	RETURN

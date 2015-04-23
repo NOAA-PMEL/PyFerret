@@ -50,6 +50,8 @@ C**
 * v552 *acm* 3/03 Changes for multi-line labels.
 * V69+  5/14 *acm* Fix for ascii font in multi-line labels, ticket 2176
 
+* V695  4/15 (PyFerret) Logo labels drawn with the logo text style
+
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'AXIS.INC'
 	INCLUDE 'LABELS.INC'
@@ -71,6 +73,7 @@ C**
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
+        include 'pyfonts.cmn'
 
 ******************************************************************************
 
@@ -85,6 +88,12 @@ c        line_spacing = 1.4
 
 	CALL VECTRS
 	DO 80 I=1,NLAB
+
+	IF (pyfont .AND. pyf_set(ilogo)) THEN
+	   IF (logolab(1).EQ.i .OR. logolab(2).EQ.i .OR. 
+     .      logolab(3).EQ.i) igroup = ilogo
+        ENDIF
+
 	IF(RHLABS(I).LT.0.0)THEN
 		HLB=HLABS
 	ELSE
@@ -199,7 +208,10 @@ C  Set up to use any font settings from this line on subsequent lines.
 
 20      CONTINUE
 
+	IF (pyfont) igroup = fnt_all
 80	CONTINUE
+
+
 	IF(PLTOPN)RETURN
 	IF(IMULT.EQ.0.OR.IMCNT.EQ.MNX*MNY)THEN
 	    IF(SWAIT)THEN

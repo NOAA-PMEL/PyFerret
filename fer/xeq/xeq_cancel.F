@@ -1197,12 +1197,12 @@ c	ENDIF
         RETURN
 	
 * CANCEL TEXT
-*      /FONT /BOLD /ITALIC /COLOR 
+*      /FONT /BOLD /ITALIC /COLOR  
  2000   CONTINUE
 
 c* ... CANCEL TEXT/FONT
 	IF ( qual_given( slash_canc_text_font ) .GT. 0 ) THEN
-           pyfnt_fontname = pyfnt_dflt
+           pyfnt_fontname = pyfnt_font_dflt
 	ENDIF
 
 * ... CANCEL TEXT/COLOR
@@ -1226,19 +1226,44 @@ c* ... CANCEL TEXT/FONT
            pyfnt_bold = 0
 	ENDIF
 
+* Text group settings. Cannot cancel individual settings within group.
+*  CANCEL TEXT /TICS /TITLE /LOGO /HLAB /VLAB /CONT /CBAR
+
+	IF ( qual_given( slash_canc_text_tics ) .GT. 0 ) THEN
+	   CALL CANCEL_PYTEXT_GROUP(itics)
+	ENDIF
+	IF ( qual_given( slash_canc_text_titl ) .GT. 0 ) THEN
+	   CALL CANCEL_PYTEXT_GROUP(ititl)
+	ENDIF
+	IF ( qual_given( slash_canc_text_logo ) .GT. 0 ) THEN
+	   CALL CANCEL_PYTEXT_GROUP(ilogo)
+	ENDIF
+	IF ( qual_given( slash_canc_text_hlab ) .GT. 0 ) THEN
+	   CALL CANCEL_PYTEXT_GROUP(ihlab)
+	ENDIF
+	IF ( qual_given( slash_canc_text_vlab ) .GT. 0 ) THEN
+	   CALL CANCEL_PYTEXT_GROUP(ivlab)
+	ENDIF
+	IF ( qual_given( slash_canc_text_cont ) .GT. 0 ) THEN
+	   CALL CANCEL_PYTEXT_GROUP(icont)
+	ENDIF
+	IF ( qual_given( slash_canc_text_cbar ) .GT. 0 ) THEN
+	   CALL CANCEL_PYTEXT_GROUP(icbar)
+	ENDIF
+
 *  Just CANCEL TEXT with no qualifiers restores defaults
-	IF (num_qualifiers .EQ. 0) THEN
-	   pyfnt_fontname = pyfnt_dflt
+	IF (num_qualifiers.EQ.0 .OR. qual_given( slash_canc_text_all ).GT.0) THEN
+	   pyfnt_fontname = pyfnt_font_dflt
 	   pyfnt_italic = 0
 	   pyfnt_bold = 0
-	   pyfnt_under = 0
 	   pyfnt_red = 0.
 	   pyfnt_grn = 0.
 	   pyfnt_blu = 0.
-	   pyfnt_opq = 1.
-	   pyfnt_rot = 0.
-	ENDIF		
-        pyfont = (STR_SAME(pyfnt_fontname, 'Hershey') .NE. 0 )
+	   DO 2100 i1 = itics, icbar
+	      CALL CANCEL_PYTEXT_GROUP(i1)
+ 2100	   CONTINUE
+	ENDIF
+	pyfont = (STR_SAME(pyfnt_fontname, 'Hershey') .NE. 0 )
 
 	RETURN
 

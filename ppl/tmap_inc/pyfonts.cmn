@@ -2,14 +2,40 @@
 
 * Common block used to declare information for pyFerret fonts
 *	Ansley Manke PMEL/TMAP
+* Settings for general fonts, for groups of fonts:
+*  Tic marks
+*  Title
+*  Logo
+*  Horizontal axis label
+*  Vertical axis label
+*  Contour-line labels
+*  Colorbar
+*   pyfnt_ settings are for all text
+*   pyf_   settings are for the groups. If the group has settings, pyf_set is .TRUE.
+*
 
-	LOGICAL		pyfont
-	INTEGER		pyfnt_italic, pyfnt_bold, pyfnt_under
-	REAL*4		pyfnt_red, pyfnt_grn, pyfnt_blu, 
-     .			pyfnt_opq, pyfnt_rot
-	CHARACTER*64	pyfnt_fontname, pyfnt_dflt
+	INTEGER		ngp
+	PARAMETER	(ngp=7)
+
+	LOGICAL		pyfont, pyf_set(ngp)
+	INTEGER		pyfnt_under, pyfnt_italic, pyfnt_bold, pyfnt_isiz, 
+     .                  pyf_italic(ngp), pyf_bold(ngp), pyf_isiz(ngp)
+	INTEGER		itics, ititl, ilogo, ihlab, ivlab, icont, icbar
+	INTEGER		igroup, fnt_all, logolab(3)
+
+	REAL*4		pyfnt_opq, pyfnt_rot,
+     .			pyfnt_red, pyfnt_grn, pyfnt_blu,
+     .			pyf_red(ngp), pyf_grn(ngp), pyf_blu(ngp)
+	CHARACTER*64	pyfnt_fontname, pyfnt_font_dflt
+	CHARACTER*64	pyf_fontname(ngp), pyf_font_dflt(ngp)
+	CHARACTER*8	pyf_group_names(ngp)
 	
-	COMMON/pyfont_args/ pyfont, pyfnt_italic, pyfnt_bold, pyfnt_under,
-     .                  pyfnt_red, pyfnt_grn, pyfnt_blu, 
-     .			pyfnt_opq, pyfnt_rot,
-     .                  pyfnt_fontname, pyfnt_dflt
+	COMMON/pyfont_args/ pyfont, pyf_set, pyfnt_opq, pyfnt_rot, pyfnt_under, 
+     .			igroup, fnt_all, logolab,
+     .			itics, ititl, ilogo, ihlab, ivlab, icont, icbar,
+     .			pyfnt_italic, pyfnt_bold, pyfnt_isiz, 
+     .			pyf_italic, pyf_bold, pyf_isiz,
+     .			pyfnt_red, pyfnt_grn, pyfnt_blu,
+     .			pyf_red, pyf_grn, pyf_blu,
+     .                  pyfnt_fontname, pyfnt_font_dflt, 
+     .                  pyf_fontname, pyf_font_dflt, pyf_group_names

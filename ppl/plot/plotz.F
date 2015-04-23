@@ -128,9 +128,7 @@ C
 
 	logical		valid
 	
-	CHARACTER*64 save_name
-	REAL*4 save_red, save_grn, save_blu, opaqfrac
-	INTEGER ier, save_bold
+	INTEGER ier
 
 C*       *jd* Linux port 12.96 add EXTERNAL calls below
         external scale, range
@@ -270,22 +268,16 @@ C
 	IF (IWIND.NE.0) CALL WINDOW(0.0,0.0,XLEN,YLEN)
 	CALL COLOR(IPEN(1))
 
-	IF (pyfont) THEN 
+	IF (pyfont .AND. pyf_set(icont)) THEN
+	   igroup = icont
 	   
-*  Get the color fractions for the given pen. Store them in the 
-*  pyFfont common so contour line labels match the line color
+*  If the user has set text style with SET TEXT/CONTOUR, use those settings.
+*  Otherwise get the color fractions for the pen being used for the contours. 
 
-	   save_red = pyfnt_red
-	   save_grn = pyfnt_grn
-	   save_blu = pyfnt_blu
-	   save_bold = pyfnt_bold
-
-           CALL FGD_GQCR(IWIND, IPEN(1), ier, 
-     .                pyfnt_red, pyfnt_grn, pyfnt_blu, opaqfrac)
+	   IF (.NOT. pyf_set(icont)) 
+     .      CALL FGD_GQCR(IWIND, IPEN(1), ier, pyf_red(igroup), 
+     .        pyf_grn(igroup), pyf_blu(igroup), opaqfrac)
 	   
-	   save_name = pyfnt_fontname 
-	   pyfnt_fontname = 'Sans'
-	   pyfnt_bold = 0
 	ENDIF
 
 	
@@ -386,12 +378,9 @@ C
 	
 	IF (pyfont) THEN 
 	   
-*  Restore settings in pyFfont common
-	   pyfnt_red = save_red
-	   pyfnt_grn = save_grn
-	   pyfnt_blu = save_blu
-	   pyfnt_fontname = save_name
-	   pyfnt_bold = save_bold
+*  Restore settings in pyfont common
+
+	IF (pyfont) igroup = 0
 	ENDIF
 
 	CALL SCALE(XF,YF,XORG,YORG,XLO,YLO)

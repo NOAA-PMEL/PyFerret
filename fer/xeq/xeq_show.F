@@ -2081,14 +2081,24 @@ c* ... Font
 	ELSE
 	   CALL SPLIT_LIST(pttmode_explct, show_lun,
      .			'     Bold setting     OFF', 0)
-
         ENDIF
 
-* ... Opacity
-	WRITE (risc_buff, 2203) pyfnt_opq* 100.
- 2203	FORMAT ('     Opacity setting, ', (f5.1,' %') )
-	CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			risc_buff, 0)
+* Text groups: TICS, LOGO, etc. List settings for any that are
+* different from the overall defaults.
+
+        i2 = 0
+        DO 2210 i1 = itics, icbar
+	    IF (pyf_set(i1)) THEN
+	       IF (i2 .EQ. 0) THEN
+	          CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			' * * *', 0)
+	          CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			' * Custom Text settings in effect for:', 0)
+		  i2 = 1
+	       ENDIF
+	       CALL SHOW_PYTEXT_GROUP(i1)
+	    ENDIF
+ 2210	CONTINUE
 
 	IF ( limited_show ) RETURN
 

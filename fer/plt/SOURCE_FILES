@@ -6,6 +6,7 @@ axis_end_syms.F\
 axis_format.F\
 ax_on_off.F\
 box_label.F\
+cancel_pytext_group.F\
 cancel_window.F\
 check_graphics.F\
 choose_cx_ww.F\
@@ -48,6 +49,7 @@ line_style.F\
 load_curvilinear.F\
 merged_whoi_date.F\
 parse_color_tuple.F\
+parse_pyfont_color.F\
 plot_set_up.F\
 polygon_set_up.F\
 pos_lab.F\
@@ -71,11 +73,13 @@ set_ax_sizes.F\
 set_graticules.F\
 set_plot_size.F\
 set_ppl_values.F\
+set_pytext_group.F\
 set_text_sizes.F\
 set_viewport.F\
 set_vp_symbols.F\
 set_window.F\
 setup_keys.F\
+show_pytext_group.F\
 start_pplus.F\
 taxis_style.F\
 trim_axis_ends.F\

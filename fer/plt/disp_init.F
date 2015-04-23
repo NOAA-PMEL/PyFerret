@@ -99,6 +99,7 @@
 	include 'xrevision.cmn'
         include 'axis_inc.decl'    ! with iaxset
         include 'AXIS.INC'
+        include 'pyfonts.cmn'
 
 * calling argument declarations:
 	LOGICAL no_labels
@@ -136,6 +137,12 @@
 	   CALL PPLCMD ( from, line, 0, 'AXLABP -1,-1', 1, 1)
            iaxset = 0
         ENDIF
+
+* Label numbers for the Ferret logo (if drawn) for pyFerret text settings
+	
+	DO i = 1, 3
+	   logolab(i) = 0
+	ENDDO
 
 * clear rotations from first 10 moveable labels
 	DO i = 1, 10
@@ -259,18 +266,21 @@
      .                     ppl_centered, logoht,
      .                     buffer(:len_program_name+len_progname_mod+11),
      .                     lab_loc_axlen_plus, lab_loc_axlen_plus )
+	   logolab(1) = nlabs_on
 * ... "NOAA/PMEL TMAP"
 	   CALL PUT_LABEL( ppl_movlab, 
      .                     0.0, 1.0*pplscale + 1.8*logoht,
      .                     ppl_centered, logoht,
      .                     'NOAA/PMEL TMAP',
      .                     lab_loc_axlen_plus, lab_loc_axlen_plus )
+	   logolab(2) = nlabs_on
 * ... "8-SEP-1988 11:05"
 	   CALL PUT_LABEL( ppl_movlab, 
      .                     0.0, 1.0*pplscale,
      .                     ppl_centered, logoht,
      .                     '''date'' ''time''',
      .                     lab_loc_axlen_plus, lab_loc_axlen_plus )
+	   logolab(3) = nlabs_on
         ENDIF ! mode_logo
 
 	RETURN

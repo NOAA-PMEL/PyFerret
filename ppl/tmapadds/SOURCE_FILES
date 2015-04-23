@@ -20,6 +20,7 @@ flush_buffered_fillpoly.F\
 getlabfonts.F\
 get_ndx.F\
 get_pix.F\
+get_pyfont_settings.F\
 get_user_coords.F\
 get_world_coords.F\
 hatch_fill_rep.F\

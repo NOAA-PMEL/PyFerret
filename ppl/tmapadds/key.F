@@ -170,6 +170,9 @@
 	windof_hold = windof
 	windof = .false.
 
+* pyferret font settings
+	IF (pyfont .AND. pyf_set(icbar)) igroup = icbar
+
 	cont_key_keep = cont_key
 
 	center_add = 0.
@@ -744,6 +747,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 2000	windof = windof_hold
 	cont_key = cont_key_keep
+
+        IF (pyfont .AND. pyf_set(icbar)) igroup = fnt_all
 
 	return
 	end

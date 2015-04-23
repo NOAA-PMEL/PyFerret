@@ -248,10 +248,10 @@
      .                  dset, istat, cache_size, cache_nelems, 
      .                  cache_preemption, numpts, redir_file_lun, 
      .                  iline, iset, s1, s2, nparm, num_it,
-     .                  it_start(3), it_end(3), ncolor_string, icolor
+     .                  it_start(3), it_end(3), iit
         REAL*8          TM_WW_AXLEN, axwwlen, new_att_modulo_len
         REAL*8          delta, dlo, dhi, firstval, lastval
-	REAL		val_buf, cache_size_mb, v1, v2, v3
+	REAL		val_buf, cache_size_mb, v1
 	CHARACTER	TM_FMT*12, title*1024, subtitle*64, arg*24,
      .			buff1*512, buff2*512, data_form*3, show_str*12,
      .                  varname*512, attname*128, new_att_calendar*10, 
@@ -268,13 +268,7 @@
      .                  got_it, redir_stdout, redir_stderr, redir_tee,
      .                  redir_journal, redir_append, redir_clobber, 
      .                  fexist, use_strict, is_nc, have_outtype, set_att_quiet
-     
-	PARAMETER (ncolor_string = 7)
-	CHARACTER*12    colornames(ncolor_string)
 
-* internal data declarations
-	DATA colornames/'BLACK','RED','GREEN',
-     .		    'BLUE','LIGHTBLUE','PURPLE','WHITE'/
 
 * local parameter declarations:
 	INTEGER		slash_set_last
@@ -1940,7 +1934,7 @@ c *kob* 4/97
         RETURN
 
 	
-* SET TEXT /FONT /COLOR /ITALIC /BOLD 
+* SET TEXT /FONT /COLOR /ITALIC /BOLD /ISIZ
 
  1800   CONTINUE
 
@@ -1957,7 +1951,7 @@ c* ... SET TEXT/FONT
 	ENDIF
 
 * ... SET TEXT/COLOR
-*     % rgb or color names black,red,green,blue,lightblue,purple,white
+*     % rgb or color names black,red,green,blue,lightblue,purple,white or color #
 
 	IF ( qual_given( slash_set_text_color ) .GT. 0 ) THEN
 	   lp = qual_given( slash_set_text_color )
@@ -1965,75 +1959,9 @@ c* ... SET TEXT/FONT
 	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(lp):qual_end(lp)),
      .                        buff1, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
-	   v1 = 0.
-	   v2 = 0.
-	   v3 = 0.
-
-	   IF ( buff1 .EQ. ' ' ) GOTO 5450
-
-* Check for optional parentheses. 
-	   slen = TM_LENSTR1(buff1)
-	   s1 = 1
-	   s2 = slen
-	   IF (buff1(1:1) .EQ. '(' )THEN
-              s1 = 2
-              s2 = slen-1
-              IF ( buff1(slen:slen) .NE. ')' ) GOTO 5420
-	   ENDIF
-
-	   icolor = -1
-	   IF ( TM_DIGIT(buff1(s1:s1) ) ) THEN 
-
-* Read % values, convert to pen number or fraction.
-              nparm = 3
-              CALL parse_comma_list ( buff1, s1, s2, nparm, num_it,
-     .                it_start, it_end, status)
-              IF (status .EQ. ferr_ok .AND. it_start(1) .GT. it_end(1)) THEN
-                 nparm = 3 ! do nothing
-              ELSE IF (status .NE. ferr_ok .OR. num_it .LT. nparm) THEN
-
-* Single color number? convert to pen # (needs to go get this from pplus iline bundle)
-                 IF (num_it .EQ. 1) THEN    ! single color-number?
-		    READ (buff1(it_start(1):it_end(1)), *) v1
-		    icolor = v1
-                 ELSE
-                    GOTO 5420
-                 ENDIF
-              ELSE
-
-* 3 values, % rgb
-                 READ (buff1(it_start(1):it_end(1)), *) v1
-                 IF (v1 .LT. 0. .OR. v1 .GT. 100) GOTO 5430
-                 pyfnt_red = v1/100.
-                 READ (buff1(it_start(2):it_end(2)), *) v2
-                 IF (v2 .LT. 0. .OR. v2 .GT. 100) GOTO 5430
-                 pyfnt_grn = v2/100.
-                 READ (buff1(it_start(3):it_end(3)), *) v3
-                 IF (v3 .LT. 0. .OR. v3 .GT. 100) GOTO 5430
-                 pyfnt_blu = v3/100.
-              ENDIF
-
-           ELSE  ! not a digit. Is it a color name?
-
-* name, compare with set list of colors
-              len_test = TM_LENSTR(buff1(s1:s2))
-              DO 1810 icolor = 1, ncolor_string
-                 len_mchars = TM_LENSTR(colornames(icolor)(:4))
-                 IF ( MATCH4(buff1(s1:s2), len_test,
-     .                colornames(icolor),len_mchars ) ) GOTO 1820
- 1810	      CONTINUE
-              GOTO 5420   ! unknown color
- 1820	      CONTINUE
-           ENDIF
-
-* A color number. Get the current definition of color number icolor
-           IF (icolor .GT. 0) THEN
-              CALL GET_COLOR_RGB (icolor, v1,v2,v3, status)
-              IF (status .NE. ferr_ok) GOTO 5420
-              pyfnt_red = v1/100.
-              pyfnt_grn = v2/100.
-              pyfnt_blu = v3/100.
-           ENDIF	   
+	   CALL PARSE_PYFONT_COLOR (buff1, fnt_all, pyfnt_red, 
+     .         pyfnt_grn, pyfnt_blu, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
 	ENDIF 
 
 
@@ -2047,9 +1975,108 @@ c* ... SET TEXT/FONT
 	   pyfnt_bold = 1
 	ENDIF
 
+* ... SET TEXT/ISIZ
+	IF ( qual_given( slash_set_text_isiz ) .GT. 0 ) THEN	
+           loc = qual_given(slash_set_text_isiz)
+
+*       Get the isize value
+           CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                     val_buf, status )
+           IF ( status .NE. ferr_ok ) GOTO 5450
+	   
+           i1 = INT(val_buf)
+           IF (i1.LT.-4 .OR. i1.GT.4) GOTO 5460
+           pyfnt_isiz = i1
+	ENDIF
+
+* SET TEXT for label groupings: TICS, TITLE, 
+* ?? first reset to defaults?  Or make changes on top of any previous settings?
+
+*  SET TEXT/TICS
+	IF ( qual_given( slash_set_text_tics ) .GT. 0 ) THEN	
+	   lp = qual_given( slash_set_text_tics )
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .                        buff1, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+
+	   CALL SET_PYTEXT_GROUP (itics, buff1, buff2, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+
+	ENDIF
+
+*  SET TEXT/TITLE
+	IF ( qual_given( slash_set_text_titl ) .GT. 0 ) THEN
+	
+	   lp = qual_given( slash_set_text_titl )
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .                        buff1, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+
+	   CALL SET_PYTEXT_GROUP (ititl, buff1, buff2, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+
+	ENDIF
+
+*  SET TEXT/LOGO
+	IF ( qual_given( slash_set_text_logo ) .GT. 0 ) THEN	
+	   lp = qual_given( slash_set_text_logo )
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .                        buff1, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+
+	   CALL SET_PYTEXT_GROUP (ilogo, buff1, buff2, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+	ENDIF
+
+*  SET TEXT/HLAB
+	IF ( qual_given( slash_set_text_hlab ) .GT. 0 ) THEN	
+	   lp = qual_given( slash_set_text_hlab )
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .                        buff1, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+
+	   CALL SET_PYTEXT_GROUP (ihlab, buff1, buff2, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+	ENDIF
+
+*  SET TEXT/VLAB
+	IF ( qual_given( slash_set_text_vlab ) .GT. 0 ) THEN	
+	   lp = qual_given( slash_set_text_vlab )
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .                        buff1, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+
+	   CALL SET_PYTEXT_GROUP (ivlab, buff1, buff2, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+	ENDIF
+
+*  SET TEXT/CONT
+	IF ( qual_given( slash_set_text_cont ) .GT. 0 ) THEN	
+	   lp = qual_given( slash_set_text_cont )
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .                        buff1, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+
+	   CALL SET_PYTEXT_GROUP (icont, buff1, buff2, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+
+	ENDIF
+
+*  SET TEXT/CBAR
+	IF ( qual_given( slash_set_text_cbar ) .GT. 0 ) THEN		
+	   lp = qual_given( slash_set_text_cbar )
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .                        buff1, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+
+	   CALL SET_PYTEXT_GROUP (icbar, buff1, buff2, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+
+	ENDIF
+
 *  SET TEXT with no qualifiers is an error
 	IF (num_qualifiers .EQ. 0) THEN
-	   GOTO 5460
+	   GOTO 5470
 	ENDIF
 
 * Set logical flag
@@ -2097,17 +2124,25 @@ c* ... SET TEXT/FONT
  5420   CALL ERRMSG( ferr_syntax, status, 
      .			cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .			'SET TEXT/COLOR=(R,G,B) takes 3 arguments, '//
-     .			'or valid color name or number', *1000 )
+     .			'or valid color name or number', *5000 )
+ 5425   CALL ERRMSG( ferr_syntax, status, 
+     .			cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .			'SET TEXT/ parentheses mismatch, '//
+     .			'or valid color name or number', *5000 )
  5430   CALL ERRMSG( ferr_out_of_range, status, 
      .			cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .			'SET TEXT/COLOR=(R,G,B) arguments must be between 0 and 100', 
-     .			*1000 )
+     .			*5000 )
  5440   CALL ERRMSG( ferr_invalid_command, status,
-     .			'SET TEXT/FONT=what? ', *5000 )
+     .			'SET TEXT/FONT=what? See Unix system fonts ', *5000 )
  5450   CALL ERRMSG( ferr_invalid_command, status,
-     .			'SET TEXT/COLOR=what? ', *5000 )
- 5460   CALL ERRMSG( ferr_invalid_command, status,
-     .			'SET TEXT what? ', *5000 )
+     .			'SET TEXT/ISIZ=what? (integer -4 to 4, default=0)', *5000 )
+ 5460   CALL ERRMSG( ferr_out_of_range, status, 
+     .			cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .			'SET TEXT/ISIZ must be integer  -4 to 4, default=0', 
+     .			*5000 )
+ 5470   CALL ERRMSG( ferr_invalid_command, status,
+     .			'SET TEXT what? /FONT/COLOR/BOLD/ITALIC/ISIZ', *5000 )
  5700	CALL ERRMSG( ferr_invalid_command, status,
      .			'qualifier(s) valid only with SET DATA/EZ command',
      .			*5000 )
@@ -2234,7 +2269,7 @@ c* ... SET TEXT/FONT
  6810	CALL ERRMSG( ferr_invalid_command, status,
      .		'Unrecognized option/'//
      .          cmnd_buff(qual_start(i):qual_end(i)) //pCR//
-     .		' Valid options are /OUTTYPE=DOUBLE,FLOAT,INT,SHORT,or BYTE', *1000 )
+     .		' Valid options are /OUTTYPE=DOUBLE,FLOAT,INT,SHORT,or BYTE', *5000 )
      
  6900	CALL ERRMSG( ferr_unknown_arg, status,
      .'Can SET AXIS/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE, or NONE',

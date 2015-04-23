@@ -183,8 +183,10 @@ C Set font size in from the height
 	   ENDIF
 
 C Ignore any codes for Ferret-Hershey style Pen and Font changes 
-	   buff = string(:ABS(nchar))
-	   slen = TM_LENSTR(buff)
+
+	   slen = TM_LENSTR(string)
+	   buff = string(:ABS(slen))
+
 	   ia = INDEX (buff,'@')
 
 	   DO WHILE (ia .GT. 0)

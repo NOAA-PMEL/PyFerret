@@ -1,4 +1,4 @@
-	SUBROUTINE PARSE_PYFONT_COLOR (buff, igrp, red, grn, blu, status)
+	SUBROUTINE PARSE_PYFONT_COLOR (buff, red, grn, blu, status)
 
 
 	include 'tmap_dims.parm'
@@ -9,7 +9,7 @@
 * Argument declarations 
 	CHARACTER*(*) buff
 	REAL*4	red, grn, blu
-	INTEGER	igrp, status
+	INTEGER status
 
 * Internal declarations 
 
@@ -101,7 +101,6 @@
  5000	RETURN
 
 5420	errstrng = 'SET TEXT'
-	IF (igrp .GT. 0) errstrng = 'SET TEXT'//pyf_group_names(igrp)
 	slen = TM_LENSTR1(errstrng)
 	llen = TM_LENSTR1(buff)
 	CALL ERRMSG( ferr_syntax, status, 
@@ -110,7 +109,6 @@
      .			'or valid color name or number', *5000 )
      
 5430	errstrng = 'SET TEXT'
-	IF (igrp .GT. 0) errstrng = 'SET TEXT'//pyf_group_names(igrp)
 	slen = TM_LENSTR1(errstrng)
 	llen = TM_LENSTR1(buff)
 	CALL ERRMSG( ferr_out_of_range, status, 

@@ -49,46 +49,58 @@
 	IF (igrp.LT.itics .OR. igrp.GT.icbar) RETURN
 	len = TM_LENSTR1(pyf_group_names(igrp))
 	CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			'     '//pyf_group_names(igrp)(:len), 0)
+     .			' '//pyf_group_names(igrp)(:len), 0)
 
 c* ... Font
-	CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			'        Font:           '//pyf_fontname(igrp), 0)
+	IF (pyf_fontname(igrp) .NE. pyfnt_fontname) THEN
+	   CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			'     /FONT='//pyf_fontname(igrp), 0)
+        ENDIF
 * ... Color
 	
 * Convert rgb back to % values
-	v1 = pyf_red(igrp)*100.
-	v2 = pyf_grn(igrp)*100.
-	v3 = pyf_blu(igrp)*100.
-	WRITE (risc_buff, 2201) v1, v2, v3
- 2201	FORMAT ('        Color (%RGB)    ', 2(f5.1,','), f5.1 )
 
-	len = TM_LENSTR1(risc_buff)
-	CALL GET_COLOR_NAME (v1, v2, v3, name, len0)
-	IF (len0 .GT. 0) risc_buff = risc_buff(:len)//' ('//name(:len0)//')'
-	CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			risc_buff, 0)
-
-* ... Italic, Bold
-	IF (pyf_italic(igrp) .EQ. 1) THEN
-	   CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			'        Italic setting   ON', 0)
-
-	ELSE
-	   CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			'        Italic setting   OFF', 0)
-
+	IF ( pyf_red(igrp).NE.pyfnt_red .OR. pyf_grn(igrp).NE.pyfnt_grn
+     .       .OR. pyf_blu(igrp).NE.pyfnt_blu ) THEN
+	   v1 = pyf_red(igrp)*100.
+	   v2 = pyf_grn(igrp)*100.
+	   v3 = pyf_blu(igrp)*100.
+	   WRITE (risc_buff, 2201) v1, v2, v3
+ 2201	   FORMAT ('     /COLOR= (', 2(f4.1,','), f4.1,') (%RGB)')
+	   len = TM_LENSTR1(risc_buff)
+	   CALL GET_COLOR_NAME (v1, v2, v3, name, len0)
+	   IF (len0 .GT. 0) risc_buff = '     /COLOR="'//name(:len0)//'"'
+	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	ENDIF
 
-	IF (pyf_bold(igrp) .EQ. 1) THEN
-	   CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			'        Bold setting     ON', 0)
+* ... Italic, Bold
 
-	ELSE
-	   CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			'        Bold setting     OFF', 0)
+	IF (pyf_italic(igrp) .NE. pyfnt_italic) THEN
+	   IF (pyf_italic(igrp) .EQ. 1) THEN
+	      CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			'     /ITALIC=ON', 0)
+	   ELSE
+	      CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			'     /ITALIC=OFF', 0)
+	   ENDIF
+	ENDIF
 
-        ENDIF
+	IF (pyf_bold(igrp) .NE. pyfnt_bold) THEN
+	   IF (pyf_bold(igrp) .EQ. 1) THEN
+	      CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			'     /BOLD=ON', 0)
+	   ELSE
+	      CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			'     /BOLD=OFF', 0)
+	   ENDIF
+	ENDIF
+	
+	IF (pyf_isiz(igrp) .NE. pyfnt_isiz) THEN
+	   WRITE (risc_buff, 2202) pyf_isiz(igrp)
+ 2202	   FORMAT ('     /ISIZ=',i2)
+	   CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			risc_buff, 0)
+	ENDIF
 
 	RETURN
 	END

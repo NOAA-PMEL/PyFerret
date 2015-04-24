@@ -2043,11 +2043,11 @@ c     .                               sbrief, sdetail, i2)
  2200   CONTINUE
 
 	CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			'PyFerret Text Settings: ', 0)
+     .			'default ', 0)
 
 c* ... Font
 	CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			'     Font:           '//pyfnt_fontname, 0)
+     .			'     /FONT='//pyfnt_fontname, 0)
 * ... Color
 	
 * Convert rgb back to % values
@@ -2055,47 +2055,43 @@ c* ... Font
 	v2 = pyfnt_grn*100.
 	v3 = pyfnt_blu*100.
 	WRITE (risc_buff, 2201) v1, v2, v3
- 2201	FORMAT ('     Color (%RGB)    ', 2(f5.1,','), f5.1 )
+ 2201	FORMAT ('     /COLOR= (', 2(f4.1,','), f4.1,') (%RGB)')
 
 	len = TM_LENSTR1(risc_buff)
 	CALL GET_COLOR_NAME (v1, v2, v3, name, len0)
-	IF (len0 .GT. 0) risc_buff = risc_buff(:len)//' ('//name(:len0)//')'
-	CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			risc_buff, 0)
+	IF (len0 .GT. 0) risc_buff = '     /COLOR="'//name(:len0)//'"'
+	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 
 * ... Italic, Bold
 	IF (pyfnt_italic .EQ. 1) THEN
 	   CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			'     Italic setting   ON', 0)
+     .			'     /ITALIC=ON', 0)
 
 	ELSE
 	   CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			'     Italic setting   OFF', 0)
+     .			'     /ITALIC=OFF', 0)
 
 	ENDIF
 
 	IF (pyfnt_bold .EQ. 1) THEN
 	   CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			'     Bold setting     ON', 0)
+     .			'     /BOLD=ON', 0)
 
 	ELSE
 	   CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			'     Bold setting     OFF', 0)
+     .			'     /BOLD=OFF', 0)
         ENDIF
+
+	WRITE (risc_buff, 2202) pyfnt_isiz
+ 2202	FORMAT ('     /ISIZ=',i2)
+	CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			risc_buff, 0)
 
 * Text groups: TICS, LOGO, etc. List settings for any that are
 * different from the overall defaults.
 
-        i2 = 0
         DO 2210 i1 = itics, icbar
 	    IF (pyf_set(i1)) THEN
-	       IF (i2 .EQ. 0) THEN
-	          CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			' * * *', 0)
-	          CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .			' * Custom Text settings in effect for:', 0)
-		  i2 = 1
-	       ENDIF
 	       CALL SHOW_PYTEXT_GROUP(i1)
 	    ENDIF
  2210	CONTINUE

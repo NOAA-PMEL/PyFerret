@@ -79,7 +79,6 @@ set_viewport.F\
 set_vp_symbols.F\
 set_window.F\
 setup_keys.F\
-show_pytext_group.F\
 start_pplus.F\
 taxis_style.F\
 trim_axis_ends.F\

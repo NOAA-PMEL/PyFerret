@@ -119,13 +119,6 @@
      .			slash_canc_text_italic,
      .			slash_canc_text_bold,
      .			slash_canc_text_isiz,
-     .			slash_canc_text_tics,
-     .			slash_canc_text_titl,
-     .			slash_canc_text_logo,
-     .			slash_canc_text_hlab,
-     .			slash_canc_text_vlab,
-     .			slash_canc_text_cont,
-     .			slash_canc_text_cbar,
      .			slash_canc_text_all
 
 
@@ -252,14 +245,7 @@
      .			slash_set_text_color,
      .			slash_set_text_italic,
      .			slash_set_text_bold,
-     .			slash_set_text_isiz,
-     .			slash_set_text_tics,
-     .			slash_set_text_titl,
-     .			slash_set_text_logo,
-     .			slash_set_text_hlab,
-     .			slash_set_text_vlab,
-     .			slash_set_text_cont,
-     .			slash_set_text_cbar
+     .			slash_set_text_isiz
 
 	INTEGER		slash_cont_over_plot,
      .			slash_cont_set_up,
@@ -446,14 +432,7 @@
      .                  slash_canc_text_italic   = 3,
      .                  slash_canc_text_bold     = 4,
      .                  slash_canc_text_isiz     = 5,
-     .                  slash_canc_text_tics     = 6,
-     .                  slash_canc_text_titl     = 7,
-     .                  slash_canc_text_logo     = 8,
-     .                  slash_canc_text_hlab     = 9,
-     .                  slash_canc_text_vlab     = 10,
-     .                  slash_canc_text_cont     = 11,
-     .                  slash_canc_text_cbar     = 12,
-     .                  slash_canc_text_all      = 13,
+     .                  slash_canc_text_all      = 6,
      .
      .			slash_set_movie_out    = 1,
      .			slash_set_movie_compress = 2,
@@ -577,14 +556,7 @@
      .                  slash_set_text_color    = 2,
      .                  slash_set_text_italic   = 3,
      .                  slash_set_text_bold     = 4,
-     .                  slash_set_text_isiz     = 5,
-     .                  slash_set_text_tics     = 6,
-     .                  slash_set_text_titl     = 7,
-     .                  slash_set_text_logo     = 8,
-     .                  slash_set_text_hlab     = 9,
-     .                  slash_set_text_vlab     = 10,
-     .                  slash_set_text_cont	= 11,
-     .                  slash_set_text_cbar     = 12)
+     .                  slash_set_text_isiz     = 5)
 
 	PARAMETER     ( slash_cont_over_plot	= 1+12,
      .			slash_cont_set_up	= 1+13,

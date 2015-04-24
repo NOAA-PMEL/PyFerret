@@ -103,6 +103,7 @@ show_line.F\
 show_line_xml.F\
 show_line_coords.F\
 show_mem_vars.F\
+show_pytext_group.F\
 show_region.F\
 show_regrid_transforms.F\
 show_transforms.F\

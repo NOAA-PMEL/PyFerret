@@ -33,25 +33,137 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
         include 'tmap_dims.parm'
+	include	'slash.parm'
+	include 'xprog_state.cmn'
         include 'pyfonts.cmn'
 
 	INTEGER	igrp
 
+	INTEGER i
+	LOGICAL iall, is_set
+
 * Restore default settings
-* Should the logo pyf_set be set to .TRUE. ? Should it be set to the overall text font, 
+
+* Should the logo pyf_set be set to .TRUE.? Should it be set to the overall text font, 
 * or its own text font?
 
+      IF (igrp .EQ. fnt_all) THEN
+        IF ( qual_given( slash_canc_text_all ) .GT. 0) iall = .TRUE.
+
+	IF (num_qualifiers .EQ. 0) iall = .TRUE.
+
+c* ... CANCEL TEXT/FONT
+	IF (iall .OR. qual_given( slash_canc_text_font ) .GT. 0) THEN
+           pyfnt_fontname = pyfnt_font_dflt
 	   
-	pyf_italic(igrp) = 0
-	pyf_bold(igrp)   = 0
-	pyf_red(igrp)    = 0.
-	pyf_grn(igrp)    = 0.
-	pyf_blu(igrp)    = 0.
-	pyf_isiz(igrp)   = 0
+           DO 1010 i = 1, ngp
+	      pyf_fontname(i) = pyf_font_dflt(i)
+ 1010      CONTINUE
+	ENDIF
 
-	pyf_fontname(igrp) = pyf_font_dflt(igrp)
+* ... CANCEL TEXT/COLOR
+*     Restore to black
 
-	pyf_set(igrp)    = .FALSE.
+	IF (iall .OR. qual_given( slash_canc_text_color ) .GT. 0) THEN
+           pyfnt_red = 0.
+	   pyfnt_grn = 0.
+	   pyfnt_blu = 0.
+           DO 1020 i = 1, ngp
+	      pyf_red(i) = pyfnt_red
+	      pyf_grn(i) = pyfnt_grn
+	      pyf_blu(i) = pyfnt_blu
+ 1020      CONTINUE
+	ENDIF
 
-	RETURN
-	END
+* ... CANCEL TEXT/ITALIC
+
+	IF (iall .OR. qual_given( slash_canc_text_italic ) .GT. 0) THEN
+           pyfnt_italic = 0
+           DO 1030 i = 1, ngp
+	      pyf_italic(i) = pyfnt_italic
+ 1030      CONTINUE
+	ENDIF
+
+* ... CANCEL TEXT/BOLD
+
+	IF (iall .OR. qual_given( slash_canc_text_bold) .GT. 0) THEN
+           pyfnt_bold = 0
+           DO 1040 i = 1, ngp
+	      pyf_bold(i) = pyfnt_bold
+ 1040      CONTINUE
+	ENDIF
+
+* ... CANCEL TEXT/ISIZ
+
+	IF (iall .OR. qual_given( slash_canc_text_isiz) .GT. 0) THEN
+           pyfnt_isiz = 0
+           DO 1050 i = 1, ngp
+	      pyf_isiz(i) = pyfnt_isiz
+ 1050      CONTINUE
+	ENDIF
+
+* ...   Mark all groups as unset
+
+	DO 1060 i = 1, ngp
+           pyf_set(i) = .FALSE.
+ 1060	CONTINUE
+
+
+* PyFont text groupings.  Restore group to the defaults.
+* Compare with global settings. If they match the global settings, 
+* unset pyfer_set
+
+      ELSE
+      
+c* ... CANCEL TEXT/FONT
+	IF (qual_given( slash_canc_text_font ) .GT. 0) THEN
+           pyf_fontname(igrp) = pyf_font_dflt(igrp)
+	ENDIF
+
+* ... CANCEL TEXT/COLOR
+*     Restore to black
+
+	IF (qual_given( slash_canc_text_color ) .GT. 0) THEN
+           pyf_red(igrp) = 0.
+           pyf_grn(igrp) = 0.
+           pyf_blu(igrp) = 0.
+	ENDIF
+
+* ... CANCEL TEXT/ITALIC
+
+	IF (qual_given( slash_canc_text_italic ) .GT. 0) THEN
+           pyf_italic(igrp) = 0
+	ENDIF
+
+* ... CANCEL TEXT/BOLD
+
+	IF (qual_given( slash_canc_text_bold) .GT. 0) THEN
+           pyf_bold(igrp) = 0
+	ENDIF
+
+* ... CANCEL TEXT/ISIZ
+
+	IF (qual_given( slash_canc_text_isiz) .GT. 0) THEN
+           pyf_isiz(igrp) = 0
+	ENDIF
+
+* Does the group settings match the current gloabl ones?  If so set pyf_set 
+* accordingly
+
+	is_set = pyf_set(igrp)
+
+	IF (pyf_fontname(igrp) .NE. pyfnt_fontname) is_set = .TRUE.
+	IF (pyf_red(igrp) .NE. pyfnt_red)  is_set = .TRUE.
+	IF (pyf_grn(igrp) .NE. pyfnt_grn)  is_set = .TRUE.
+	IF (pyf_blu(igrp) .NE. pyfnt_blu)  is_set = .TRUE.
+	IF (pyf_italic(igrp) .NE. pyfnt_italic)  is_set = .TRUE.
+	IF (pyf_bold(igrp) .NE. pyfnt_bold)  is_set = .TRUE.
+	IF (pyf_isiz(igrp) .NE. pyfnt_isiz)  is_set = .TRUE.
+
+	pyf_set(igrp) = is_set
+
+      ENDIF
+
+      RETURN
+      END
+      

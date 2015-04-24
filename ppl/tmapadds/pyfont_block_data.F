@@ -117,7 +117,7 @@
 	DATA 
      .		pyf_set(1)      /.FALSE./,		! tics
      .		pyf_set(2)      /.FALSE./,		! title
-     .		pyf_set(3)      /.TRUE./,		! logo
+     .		pyf_set(3)      /.FALSE./,		! logo
      .		pyf_set(4)      /.FALSE./,		! hlab
      .		pyf_set(5)      /.FALSE./,		! vlab
      .		pyf_set(6)      /.FALSE./,		! contour

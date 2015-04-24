@@ -1,4 +1,4 @@
-	SUBROUTINE SET_PYTEXT_GROUP (igrp, buff1, buff2, status)
+	SUBROUTINE SET_PYTEXT_GROUP (igrp, buff1, status)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -35,16 +35,86 @@
         include 'tmap_dims.parm'
         include 'ferret.parm'
         include 'errmsg.parm'
+	include	'slash.parm'
+	include 'xprog_state.cmn'
         include 'pyfonts.cmn'
 
 	INTEGER	igrp, status
-	CHARACTER*(*) buff1, buff2 
+	CHARACTER*(*) buff1 
 
-	INTEGER TM_LENSTR1, STR_SAME, llen, slen, s1, s2, nparm, 
-     .		num_it,it_start(8), it_end(8), iit, i1
-	REAL	v1
+	INTEGER TM_LENSTR1, STR_SAME, llen, slen, ii, loc
+	REAL	val_buf
 	CHARACTER arg*24, errstrng*20
 
+* Settings for all text
+
+      IF (igrp .EQ. fnt_all) THEN
+
+c* ... SET TEXT/FONT
+	IF ( qual_given( slash_set_text_font ) .GT. 0 ) THEN
+           loc = qual_given( slash_set_text_font )
+	   IF ( loc.GT. 0 ) THEN
+              CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      buff1, status )
+              IF ( status .NE. ferr_ok ) RETURN
+	      IF ( buff1 .EQ. ' ' ) GOTO 5440
+	      pyfnt_fontname = buff1
+	   ENDIF
+	ENDIF
+
+* ... SET TEXT/COLOR
+*     % rgb or color names black,red,green,blue,lightblue,purple,white or color #
+
+	IF ( qual_given( slash_set_text_color ) .GT. 0 ) THEN
+	   loc= qual_given( slash_set_text_color )
+	
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        buff1, status )
+           IF ( status .NE. ferr_ok ) GOTO 5100
+	   CALL PARSE_PYFONT_COLOR (buff1, pyfnt_red, 
+     .         pyfnt_grn, pyfnt_blu, status)
+           IF ( status .NE. ferr_ok ) GOTO 5100
+	ENDIF 
+
+* ... SET TEXT/ITALIC
+	IF ( qual_given( slash_set_text_italic ) .GT. 0 ) THEN	
+	   pyfnt_italic = 1
+	ENDIF
+
+* ... SET TEXT/BOLD
+	IF ( qual_given( slash_set_text_bold ) .GT. 0 ) THEN	
+	   pyfnt_bold = 1
+	ENDIF
+
+* ... SET TEXT/ISIZ
+	IF ( qual_given( slash_set_text_isiz ) .GT. 0 ) THEN	
+           loc = qual_given(slash_set_text_isiz)
+
+*       Get the isize value
+           CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                     val_buf, status )
+           IF ( status .NE. ferr_ok ) GOTO 5450
+	   
+           ii = INT(val_buf)
+           IF (ii.LT.-4 .OR. ii.GT.4) GOTO 5460
+           pyfnt_isiz = ii
+	ENDIF
+
+* Set the group settings to the default values and unset pyf_set
+* Then the groups will follow the global setting.
+
+	DO 1000 ii = 1, ngp
+	   pyf_italic(ii) = 0
+	   pyf_bold(ii) = 0
+	   pyf_isiz(ii) = 0
+	   pyf_red(ii) = 0
+	   pyf_grn(ii) = 0
+	   pyf_blu(ii) = 0
+	   pyf_fontname(ii) = pyf_font_dflt(ii)
+	   pyf_set(ii) = .FALSE.
+ 1000	CONTINUE
+
+      ELSE  ! group settings
 
 * If there were not previous settings on this group, first apply the
 * current global settings to this group
@@ -58,86 +128,81 @@
 	   pyf_blu(igrp) = pyfnt_blu
 	   pyf_fontname(igrp) = pyfnt_fontname
 	ENDIF
-
-* Check for and remove optional parentheses. 
-
-	slen = TM_LENSTR1(buff1)
-	s1 = 1
-	s2 = slen
-	IF (buff1(1:1) .EQ. '(' )THEN
-	   s1 = 2
-	   s2 = slen-1
-	   IF ( buff1(slen:slen) .NE. ')' ) GOTO 5430
-	   buff2 = buff1(s1:s2)
-	   buff1 = buff2
-	ENDIF
 	
 * Read arguments for /COLOR=, /FONT=, and /ISIZE=
 
-	slen = TM_LENSTR1(buff1)
-	nparm = 8
-	CALL parse_comma_list ( buff1, 1, slen, nparm, num_it,
-     .	     it_start, it_end, status)
-
-* Loop over arguments to SET TEXT/[group]
-	DO iit = 1, num_it
-	   arg = buff1(it_start(iit):it_end(iit))
-
-	   IF (STR_SAME(arg(1:3), "BOL") .EQ. 0) pyf_bold(igrp) = 1
-
-	   IF (STR_SAME(arg(1:3), "ITA") .EQ. 0) pyf_italic(igrp)  = 1
-
-	   IF (STR_SAME(arg(1:3), "COL") .EQ. 0) THEN  
-	      CALL EQUAL_STR_LC( arg, buff2, status )
-	      CALL PARSE_PYFONT_COLOR (buff2, igrp, pyf_red(igrp), 
-     .	        pyf_grn(igrp), pyf_blu(igrp), status)
-	      IF (status .NE. ferr_ok) GOTO 5000 ! error already issued
+c* ... SET TEXT/FONT
+	IF ( qual_given( slash_set_text_font ) .GT. 0 ) THEN
+           loc= qual_given( slash_set_text_font )
+	   IF ( loc.GT. 0 ) THEN
+              CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      buff1, status )
+              IF ( status .NE. ferr_ok ) RETURN
+	      IF ( buff1 .EQ. ' ' ) GOTO 5440
+	      pyf_fontname(igrp) = buff1
 	   ENDIF
+	ENDIF
 
-	   IF (STR_SAME(arg(1:3), "FON") .EQ. 0) THEN
-	      CALL EQUAL_STR_LC( arg, buff2, status )
-	      IF ( status .NE. ferr_ok ) GOTO 5440
-	      IF ( buff2 .EQ. ' ' ) GOTO 5440
-	      pyf_fontname(igrp) = buff2
-	   ENDIF
-	      
-	   IF (STR_SAME(arg(1:3), "ISI") .EQ. 0) THEN
-	      CALL EQUAL_VAL( arg, v1, status )
-	      IF ( status .NE. ferr_ok ) GOTO 5450
-	      i1 = INT(v1)
-	      IF (i1.LT.-4 .OR. i1.GT.4) GOTO 5460
-	      pyf_isiz(igrp) = i1
-	   ENDIF
+* ... SET TEXT/COLOR
+*     % rgb or color names black,red,green,blue,lightblue,purple,white or color #
 
-	ENDDO
+	IF ( qual_given( slash_set_text_color ) .GT. 0 ) THEN
+	   loc= qual_given( slash_set_text_color )
 	
-	pyf_set(igrp) = .TRUE.
- 5000	CONTINUE
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        buff1, status )
+           IF ( status .NE. ferr_ok ) GOTO 5100
+	   CALL PARSE_PYFONT_COLOR (buff1, pyf_red(igrp), 
+     .         pyf_grn(igrp), pyf_blu(igrp), status)
+           IF ( status .NE. ferr_ok ) GOTO 5100
+	ENDIF 
+
+
+* ... SET TEXT/ITALIC
+	IF ( qual_given( slash_set_text_italic ) .GT. 0 ) THEN	
+	   pyf_italic(igrp) = 1
+	ENDIF
+
+* ... SET TEXT/BOLD
+	IF ( qual_given( slash_set_text_bold ) .GT. 0 ) THEN	
+	   pyf_bold(igrp) = 1
+	ENDIF
+
+* ... SET TEXT/ISIZ
+	IF ( qual_given( slash_set_text_isiz ) .GT. 0 ) THEN	
+           loc = qual_given(slash_set_text_isiz)
+
+*       Get the isize value
+           CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                     val_buf, status )
+           IF ( status .NE. ferr_ok ) GOTO 5450
+	   
+           ii = INT(val_buf)
+           IF (ii.LT.-4 .OR. ii.GT.4) GOTO 5460
+           pyf_bold(igrp) = ii
+	ENDIF
+
+         pyf_set(igrp) = .TRUE.
+
+      ENDIF  ! group vs global settings
+	
+ 5000 CONTINUE
  
-	RETURN
+      RETURN
 
 * If there were errors, cancel any settings made above
  5100	CALL CANCEL_PYTEXT_GROUP (igrp)
 	pyf_set(igrp) = .FALSE.
 	RETURN
-	
- 5430	errstrng = 'SET TEXT'//pyf_group_names(igrp)
-	slen = TM_LENSTR1(errstrng)
-        llen = TM_LENSTR1(buff1)
-	CALL ERRMSG( ferr_syntax, status, 
-     .			buff1(:llen)//pCR//errstrng//
-     .			' parentheses mismatch', *5100 )
- 5440   errstrng = 'SET TEXT'//pyf_group_names(igrp)
+
+ 5440   CALL ERRMSG( ferr_invalid_command, status,
+     .			'SET TEXT/FONT=what? See Unix system fonts ', *5000 )
+ 5450   errstrng = 'SET TEXT'
 	slen = TM_LENSTR1(errstrng)
         llen = TM_LENSTR1(buff1)
 	CALL ERRMSG( ferr_invalid_command, status,
      .			errstrng(:slen)//'=what? ', *5100 )
- 5450   errstrng = 'SET TEXT'//pyf_group_names(igrp)
-	slen = TM_LENSTR1(errstrng)
-        llen = TM_LENSTR1(buff1)
-	CALL ERRMSG( ferr_invalid_command, status,
-     .			errstrng(:slen)//'=what? ', *5100 )
- 5460   errstrng = 'SET TEXT'//pyf_group_names(igrp)
+ 5460   errstrng = 'SET TEXT'
 	slen = TM_LENSTR1(errstrng)
         llen = TM_LENSTR1(buff1)
 	CALL ERRMSG( ferr_out_of_range, status, 

@@ -52,7 +52,7 @@
 	INCLUDE 'pyfonts.cmn'
 	INTEGER i
 
-	DATA pyfont/.TRUE./
+	DATA pyfont/.FALSE./
 	DATA igroup/0/
 	DATA fnt_all/0/
 
@@ -66,24 +66,24 @@
 	DATA icbar/7/	! cbar
 
         DATA    
-     .		pyfnt_fontname        /'Times New Roman'/,	! overall
-     .		pyf_fontname(1)       /'Times New Roman'/,	! tics
-     .		pyf_fontname(2)       /'Times New Roman'/,	! title
-     .		pyf_fontname(3)       /'Ariel'/,		! logo
-     .		pyf_fontname(4)       /'Times New Roman'/,	! hlab
-     .		pyf_fontname(5)       /'Times New Roman'/,	! vlab
-     .		pyf_fontname(6)       /'Times New Roman'/,	! contour
-     .		pyf_fontname(7)       /'Times New Roman'/	! cbar
+     .		pyfnt_fontname        /'Hershey'/,	! overall
+     .		pyf_fontname(1)       /'Hershey'/,	! tics
+     .		pyf_fontname(2)       /'Hershey'/,	! title
+     .		pyf_fontname(3)       /'Hershey'/,	! logo
+     .		pyf_fontname(4)       /'Hershey'/,	! hlab
+     .		pyf_fontname(5)       /'Hershey'/,	! vlab
+     .		pyf_fontname(6)       /'Hershey'/,	! contour
+     .		pyf_fontname(7)       /'Hershey'/	! cbar
 
 	DATA 
-     .		pyfnt_font_dflt        /'Times New Roman'/,	! overall
-     .		pyf_font_dflt(1)       /'Times New Roman'/,	! tics
-     .		pyf_font_dflt(2)       /'Times New Roman'/,	! title
-     .		pyf_font_dflt(3)       /'Ariel'/,		! logo
-     .		pyf_font_dflt(4)       /'Times New Roman'/,	! hlab
-     .		pyf_font_dflt(5)       /'Times New Roman'/,	! vlab
-     .		pyf_font_dflt(6)       /'Times New Roman'/,	! contour
-     .		pyf_font_dflt(7)       /'Times New Roman'/	! cbar
+     .		pyfnt_font_dflt        /'Hershey'/,	! overall
+     .		pyf_font_dflt(1)       /'Hershey'/,	! tics
+     .		pyf_font_dflt(2)       /'Hershey'/,	! title
+     .		pyf_font_dflt(3)       /'Hershey'/,	! logo
+     .		pyf_font_dflt(4)       /'Hershey'/,	! hlab
+     .		pyf_font_dflt(5)       /'Hershey'/,	! vlab
+     .		pyf_font_dflt(6)       /'Hershey'/,	! contour
+     .		pyf_font_dflt(7)       /'Hershey'/	! cbar
 
 	DATA 
      .		pyf_group_names(1)      /'TICS'/,		! tics

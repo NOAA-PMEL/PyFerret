@@ -519,17 +519,17 @@ C	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
            if (vwidth .le. xlen + xorg) goto 2000
 
 	   rem = vwidth - (xlen + xorg)
-	   xmaxx = 0.25*xlen
+	   xmaxx = 0.22*xlen
 
-           kx_lo_def = 1000.0 * (xorg + xlen + 0.1*min (rem,xmaxx))
+           kx_lo_def = 1000.0 * (xorg + xlen + 0.17*min (rem,xmaxx))
            kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,vwidth-0.1*rem)
 
            ky_lo_def = 1000.0 *  yorg
            ky_hi_def = 1000.0 * (yorg + ylen)
         else
 	   rem = width - (xlen + xorg)
-	   xmaxx = 0.25*xlen
-           kx_lo_def = 1000.0 * (xorg + xlen + 0.15*min (rem,xmaxx))
+	   xmaxx = 0.22*xlen
+           kx_lo_def = 1000.0 * (xorg + xlen + 0.17*min (rem,xmaxx))
            kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,width-0.1*rem)
            ky_lo_def = 1000.0 *  yorg
            ky_hi_def = 1000.0 * (yorg + ylen)

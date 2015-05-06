@@ -32,6 +32,9 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+
+* V695  *acm*  5/15 on canceling group settings, restore to the current global setting
+
         include 'tmap_dims.parm'
 	include	'slash.parm'
 	include 'xprog_state.cmn'
@@ -109,58 +112,62 @@ c* ... CANCEL TEXT/FONT
  1060	CONTINUE
 
 
-* PyFont text groupings.  Restore group to the defaults.
+* PyFont text groupings.  Restore group to the current global settings.
 * Compare with global settings. If they match the global settings, 
 * unset pyfer_set
 
       ELSE
+
+	IF (num_qualifiers .EQ. 0) iall = .TRUE.
       
 c* ... CANCEL TEXT/FONT
-	IF (qual_given( slash_canc_text_font ) .GT. 0) THEN
-           pyf_fontname(igrp) = pyf_font_dflt(igrp)
+	IF (qual_given( slash_canc_text_font ).GT.0 .OR. iall) THEN
+           pyf_fontname(igrp) = pyfnt_fontname
 	ENDIF
 
 * ... CANCEL TEXT/COLOR
 *     Restore to black
 
-	IF (qual_given( slash_canc_text_color ) .GT. 0) THEN
-           pyf_red(igrp) = 0.
-           pyf_grn(igrp) = 0.
-           pyf_blu(igrp) = 0.
+	IF (qual_given( slash_canc_text_color ).GT.0 .OR. iall) THEN
+           pyf_red(igrp) = pyfnt_red
+           pyf_grn(igrp) = pyfnt_grn
+           pyf_blu(igrp) = pyfnt_blu
 	ENDIF
 
 * ... CANCEL TEXT/ITALIC
 
-	IF (qual_given( slash_canc_text_italic ) .GT. 0) THEN
-           pyf_italic(igrp) = 0
+	IF (qual_given( slash_canc_text_italic ).GT.0 .OR. iall) THEN
+           pyf_italic(igrp) = pyfnt_italic
 	ENDIF
 
 * ... CANCEL TEXT/BOLD
 
-	IF (qual_given( slash_canc_text_bold) .GT. 0) THEN
-           pyf_bold(igrp) = 0
+	IF (qual_given( slash_canc_text_bold).GT.0 .OR. iall) THEN
+           pyf_bold(igrp) = pyfnt_bold
 	ENDIF
 
 * ... CANCEL TEXT/ISIZ
 
-	IF (qual_given( slash_canc_text_isiz) .GT. 0) THEN
-           pyf_isiz(igrp) = 0
+	IF (qual_given( slash_canc_text_isiz).GT.0 .OR. iall) THEN
+           pyf_isiz(igrp) = pyfnt_isiz
 	ENDIF
 
-* Does the group settings match the current gloabl ones?  If so set pyf_set 
-* accordingly
+* Do all the group settings match the current gloabl ones?  If so 
+* set pyf_set accordingly
 
-	is_set = pyf_set(igrp)
-
-	IF (pyf_fontname(igrp) .NE. pyfnt_fontname) is_set = .TRUE.
-	IF (pyf_red(igrp) .NE. pyfnt_red)  is_set = .TRUE.
-	IF (pyf_grn(igrp) .NE. pyfnt_grn)  is_set = .TRUE.
-	IF (pyf_blu(igrp) .NE. pyfnt_blu)  is_set = .TRUE.
-	IF (pyf_italic(igrp) .NE. pyfnt_italic)  is_set = .TRUE.
-	IF (pyf_bold(igrp) .NE. pyfnt_bold)  is_set = .TRUE.
-	IF (pyf_isiz(igrp) .NE. pyfnt_isiz)  is_set = .TRUE.
-
-	pyf_set(igrp) = is_set
+	IF (iall) THEN
+	   pyf_set(igrp) = .FALSE.
+	ELSE
+	   is_set = .FALSE.
+	   IF (pyf_fontname(igrp) .NE. pyfnt_fontname) is_set = .TRUE.
+	   IF (pyf_red(igrp) .NE. pyfnt_red)  is_set = .TRUE.
+	   IF (pyf_grn(igrp) .NE. pyfnt_grn)  is_set = .TRUE.
+	   IF (pyf_blu(igrp) .NE. pyfnt_blu)  is_set = .TRUE.
+	   IF (pyf_italic(igrp) .NE. pyfnt_italic)  is_set = .TRUE.
+	   IF (pyf_bold(igrp) .NE. pyfnt_bold)  is_set = .TRUE.
+	   IF (pyf_isiz(igrp) .NE. pyfnt_isiz)  is_set = .TRUE.
+	   pyf_set(igrp) = is_set
+	ENDIF
 
       ENDIF
 

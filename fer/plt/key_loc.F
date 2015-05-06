@@ -53,6 +53,7 @@
 *                  ul_xorigin, and ul_yorigin to plot_setup.parm,
 *                  since they are used as parameters, and prefixed with 
 *                  dflt_ those that need to be scaled by pplscale or textscale.
+* V695  *acm*  5/15 PyFerret, label for overlay was too close to the plot edge.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -112,7 +113,7 @@ c	   ypos  = ovkey_yorigin - novkeys_on*ovkey_yspace
 	   ELSE
 * ... yes - it will fit at the lower left
 	      xsize  = dflt_ovkey_xspace*pplscale
-	      xpos   = dflt_ovkey_xorigin*pplscale
+	      xpos   = 0.95*dflt_ovkey_xorigin*pplscale
 	      lab_ht = dflt_ovkey_labht*textscale
 	   ENDIF
 	   novkeys_on = novkeys_on + numlines

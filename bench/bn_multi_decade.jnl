@@ -2,7 +2,7 @@
 ! New default no-small tics for multi-decade plots
 ! See bug 670
 
-def axis/t="01-JAN-1860":"30-DEC-2300":5/edges/units="Days"/cal="360d" simutaxis1
+def axis/t="01-JAN-1860":"30-DEC-2300":1/edges/units="years"/cal="360d" simutaxis1
 let tvar = t[gt=simutaxis1]*-1E+34
 
 define view/x=0:1/y=0.000:0.125 v1

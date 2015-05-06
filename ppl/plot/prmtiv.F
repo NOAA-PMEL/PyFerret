@@ -55,7 +55,7 @@ C              after applying an offset.)
 * V683 12/12 *acm* Fix for applying a font setting in multiple line labels
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V69+  5/14 *acm* Fix for ascii font in multi-line labels, ticket 2176
-
+C V695 *acm*  5/15 Change in arguments to YAXIS1 and XAXIS1
 C**
 C**
 C***********************************************************************
@@ -298,7 +298,7 @@ C
 	    call color(ipen(0))
 	    CALL XAXIS1(XLOW,XHIGH,XTICC,NSMTCS,LINTT,XUNIT,
      *		IPOS,FRMTX,XFF,Y,YFF,CHSIZE,across,dms,vgrat,
-     *		vcolor,vline,xvaloff)
+     *		vcolor,vline,xvaloff,IPEN(0))
 
             CALL tm_break_lines (xlab, lnbeg, lnend, numlines)
             nfont = 0
@@ -430,7 +430,7 @@ c	    ENDIF
 	    call color(ipen(0))
 	    CALL YAXIS1(XX,XFF,YLOW,YHIGH,YTICC,NSMTCS,LINTT,YUNIT,
      *		IPOS,FRMTX,YFF,CHSIZE,across,dms,hgrat,hcolor,hline,
-     *          yvaloff,.FALSE.,SHRINKY)
+     *          yvaloff,.FALSE.,SHRINKY,IPEN(0))
 
             CALL tm_break_lines (ylab, lnbeg, lnend, numlines)
             nfont = 0

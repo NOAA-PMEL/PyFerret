@@ -1,5 +1,5 @@
 	SUBROUTINE TAYIS0(TLO,ITIME1,ITIME2,DT,NSMTIC,LABEL,IHDB,IDDB,
-     *	TFACT,X,XFACT,CSIZE,xacross,hgrat,hcolor,hline)
+     *	TFACT,X,XFACT,CSIZE,xacross,hgrat,hcolor,hline,color0)
 
 *
 *
@@ -56,6 +56,7 @@ C                 ITIME to ITIME2 at loop 10
 C *acm* 03/04  new arguments and code for plotting graticule lines across plot. 
 C V65  *acm*  1/10 New time-axis style for DAY and MONTH, DMY: adds the
 C                  year to DAY,MONTH or to MONTH.
+C V695 *acm*  5/15 Restore color after a graticule using defined color 0
 
 C**
 C**    @(#)tayis0.f	1.1    3/10/88
@@ -114,6 +115,7 @@ C
         REAL dash2_1, dash2_2, dash2_3, dash2_4
         REAL hgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         INTEGER hcolor(*)      ! pen number 
+        INTEGER color0	       ! pen number for axis
         LOGICAL hline          ! If true, do the lines across.
         LOGICAL solid1, solid2   ! solid lines across at tics
         LOGICAL dashed1, dashed2 ! dashed lines across at tics
@@ -268,7 +270,7 @@ C      LOOP:
                     CALL PLOT(x,T+FLOAT(I)*TDIST,0,0) 
                     CALL PLOT(xacross,T+FLOAT(I)*TDIST,1,0)
                     CALL PLOT(x,T+FLOAT(I)*TDIST,0,0) 
-                    CALL COLOR(1)
+                    CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
 
@@ -286,7 +288,7 @@ C      LOOP:
                  CALL PLOT(x,t+tic,0,0) 
                  CALL PLOT(xacross,t+tic,1,0)
                  CALL PLOT(x,t+tic,0,0) 
-                 CALL COLOR(1)
+                 CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
 
@@ -302,7 +304,7 @@ C      LOOP:
                     CALL PLOT(x,t+tic,0,0) 
                     CALL PLOT(xacross,t+tic,1,0)
                     CALL PLOT(x,t+tic,0,0) 
-                    CALL COLOR(1)
+                    CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
 

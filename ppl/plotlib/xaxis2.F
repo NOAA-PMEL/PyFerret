@@ -1,5 +1,5 @@
       SUBROUTINE XAXIS2(XLO,XHI,XUNIT,LABEL,IFORMT,IAXIS,
-     * XFACT,Y,YFACT,CSIZE,yacross,vgrat,vcolor,vline)
+     * XFACT,Y,YFACT,CSIZE,yacross,vgrat,vcolor,vline,color0)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -50,12 +50,11 @@ C                with "*(*)" for the linux port
 
 * *acm* - 6/01   changes to allow plot qualifiers to set log axes,
 *                inverse log axes and log depth axes.
-C**
-
+C V695 *acm*  5/15 Restore color after a graticule using defined color 0
+*
 	CHARACTER XLAB*20,IFORMT*(*),XFRMT*12
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
-
 
 * Parameters for drawing tics across plot
 
@@ -65,6 +64,7 @@ C**
         REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         REAL xt
         INTEGER vcolor(*)      ! pen number 
+        INTEGER color0	       ! pen number for axis
         LOGICAL vline          ! If true, do the lines across.
         LOGICAL solid1, solid2 ! solid lines across at tics
         LOGICAL dashed1, dashed2 ! dashed lines across at tics
@@ -104,6 +104,7 @@ C
          TXHI = TXLO
          TXLO = SGN
       ENDIF
+
 C
 C	DRAW AXIS
 C
@@ -156,7 +157,7 @@ C
                     CALL PLOT(xt,Y,0,0) 
                     CALL PLOT(xt,yacross,1,0)
                     CALL PLOT(xt,Y,0,0) 
-                    CALL COLOR(1)
+                    CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
 
@@ -173,7 +174,7 @@ C
                  CALL PLOT(xt,Y,0,0) 
                  CALL PLOT(xt,yacross,1,0)
                  CALL PLOT(xt,Y,0,0) 
-                 CALL COLOR(1)
+                 CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
 
@@ -199,7 +200,7 @@ C  for DEPTH axes, X plot coordinates are reversed on page.
                     CALL PLOT(xt,Y,0,0) 
                     CALL PLOT(xt,yacross,1,0)
                     CALL PLOT(xt,Y,0,0) 
-                    CALL COLOR(1)
+                    CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
 
@@ -216,7 +217,7 @@ C  for DEPTH axes, X plot coordinates are reversed on page.
                  CALL PLOT(xt,Y,0,0) 
                  CALL PLOT(xt,yacross,1,0)
                  CALL PLOT(xt,Y,0,0) 
-                 CALL COLOR(1)
+                 CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
 

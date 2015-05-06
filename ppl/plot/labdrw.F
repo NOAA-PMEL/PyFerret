@@ -49,6 +49,7 @@ C                with "*(*)" for the linux port
 C *acm* v552 3/03 Longer strings and changes for multi-line labels.
 * V69+  5/14 *acm* Fix for ascii font in multi-line labels, ticket 2176
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
+C V695  *acm*  5/15 Simplify: do not go through the motions of plotting blank labels
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'AXIS.INC'
@@ -67,7 +68,7 @@ C *acm* v552 3/03 Longer strings and changes for multi-line labels.
 	INCLUDE 'pyfonts.cmn'
 
 	CHARACTER IFX*(*),IFY*(*)
-        INTEGER j, lablen, numlines, slen
+        INTEGER TM_LENSTR, j, lablen, numlines, slen
         REAL htnew, wid
 
 c        INTEGER lnbeg(500), lnend(500)
@@ -84,6 +85,7 @@ C	DRAW LABELS
 
 C  Y label. center each line 
 
+	IF (TM_LENSTR(ylab) .GT. 0) THEN
 	IF (pyfont .AND. pyf_set(ivlab)) igroup = ivlab
         CALL tm_break_lines (ylab, lnbeg, lnend, numlines)
 
@@ -127,9 +129,11 @@ C  Set up to use any font settings from this line on subsequent lines.
 10      CONTINUE
 
 	IF (pyfont) igroup = fnt_all
+	ENDIF ! TM_LENSTR(ylab)
 
 C  X label
 
+	IF (TM_LENSTR(xlab) .GT. 0) THEN
 	IF (pyfont .AND. pyf_set(ihlab)) igroup = ihlab
 
 20	IF(LABELX.EQ.0.OR.(ITFLG.EQ.1.OR.ITFLG.EQ.2))GOTO 40
@@ -182,9 +186,11 @@ cc        ENDIF
 30      CONTINUE
 
 	IF (pyfont) igroup = fnt_all
+	ENDIF ! TM_LENSTR(xlab)
 
 C  Main label
 	
+	IF (TM_LENSTR(lab1) .GT. 0) THEN
 	IF (pyfont .AND. pyf_set(ititl)) igroup = ititl
 
 40      CALL tm_break_lines (lab1, lnbeg, lnend, numlines)
@@ -247,6 +253,7 @@ C  Set up to use any font settings from this line on subsequent lines.
 
 70      CONTINUE
 	IF (pyfont) igroup = fnt_all
+	ENDIF ! TM_LENSTR(lab1)
 
 	RETURN
 	END

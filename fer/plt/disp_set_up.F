@@ -159,6 +159,7 @@
 * V691  *acm*  5/14 Clean up temp memory used for computing histogram levels
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V695+ *sh*  3/15 if an FMRC dataset disambiguate T and F axes with labels
+* V695  *acm*  5/15 Ticket 2279: PyFerret don't redraw labels on an overlay
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -191,6 +192,7 @@ C plus those starting w/ xbox_bounds:
 	include 'command.parm'
 	include 'xcommand.cmn'
 	include 'xpplus.cmn'
+        include 'pyfonts.cmn'
 
 
 *kob 1/97
@@ -232,7 +234,7 @@ C plus those starting w/ xbox_bounds:
      .			phlim, pvlim, slen2, cal_id, tax,
      .			x_axtyp, y_axtyp, iscl, siz, nsiz, 
      .			TM_GET_CALENDAR_ID, mode_num, axis1, axis2,
-     .                  hblk1, mvh_temp
+     .                  hblk1, mvh_temp, i
 	REAL		s, w1_lo, w1_hi, w2_lo, w2_hi, valy1,
      .			d1_regrid, d2_regrid, bad_x, bad_y, rlo, rhi,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -790,6 +792,14 @@ C ACM added 8/2001 save cal id if vertical time axis
 	IF ( overlay ) THEN
 * ... cook up a key label for this variable only (or pair for VECTOR)
 *     If no valid data (no_x_rng) add this info to the label.
+
+* do not re-draw the main label, logo, other labels from the underlay plot
+	   nlabs_on = 0  
+	   CALL PPLCMD ( from, line, 0, 'LABS ', 1, 1 )	
+	   DO i = 1, 3
+	      logolab(i) = 0
+	   ENDDO
+
 	   use_keys = .TRUE.
 	   IF ( .NOT.user_title ) THEN
 	      CALL OV_GRP_CX_DOC( cx_list, nmv, cx_xtra_doc )

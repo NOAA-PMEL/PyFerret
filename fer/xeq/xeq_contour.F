@@ -121,6 +121,8 @@
 *                   use scaled label heights and spacings instead of 
 *                   hard-coded values.
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
+* v695  *acm* 5/16 When running PyFerret do not draw axes on an overlay unless they
+*                  ask for it with /AXES or a ppl axis command
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -184,10 +186,17 @@
 	fill      = qual_given( slash_cont_fill      ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
 	axes      = qual_given( slash_cont_axes      ).GT.0
+
+* In PyFerret, on overlays the axes are turned off, but the user can turn back on.
         IF (overlay) THEN
 	   noaxes = .FALSE.
 	   axes = .FALSE.
+	   IF (its_pyferret) THEN 
+	      noaxes = .TRUE.
+	      axes = qual_given( slash_cont_axes ).GT.0
+	   ENDIF
 	ENDIF
+
 	is_logh   = .FALSE.
 	is_logv   = .FALSE.
         sp        = qual_given( slash_cont_spectrum  )

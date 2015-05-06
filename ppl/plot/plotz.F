@@ -94,7 +94,7 @@ C
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
-* V6.95 *acm* 3/15 Changes for PyFerret fonts. 
+* V6.95 *acm* 3/15 Changes for PyFerret fonts - text group settings for labels along contour lines
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -268,19 +268,16 @@ C
 	IF (IWIND.NE.0) CALL WINDOW(0.0,0.0,XLEN,YLEN)
 	CALL COLOR(IPEN(1))
 
-	IF (pyfont .AND. pyf_set(icont)) THEN
-	   igroup = icont
-	   
 *  If the user has set text style with SET TEXT/CONTOUR, use those settings.
 *  Otherwise get the color fractions for the pen being used for the contours. 
 
-	   IF (.NOT. pyf_set(icont)) 
-     .      CALL FGD_GQCR(IWIND, IPEN(1), ier, pyf_red(igroup), 
+       IF (pyfont) THEN
+          igroup = icont
+          IF (.NOT. pyf_set(icont)) 
+     .        CALL FGD_GQCR(IWIND, IPEN(1), ier, pyf_red(igroup), 
      .        pyf_grn(igroup), pyf_blu(igroup), opaqfrac)
-	   
 	ENDIF
 
-	
 C       Calculate the following quantities:
 C       ~FF - multiplication factors to go from axis to page coords?
 C       ~OF - page offset to the beginning of an axis?

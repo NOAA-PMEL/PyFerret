@@ -108,7 +108,9 @@
 *                   returns a pen ID from a color ID and a thickness.
 * PyFr  *kms*  6/13 Added /OPACITY
 * PyFr  *kms*  7/13 Scale default lettering sizes by textscale
-
+* V695  *acm*  5/15 Ticket 2279: PyFerret don't redraw lines
+*                   Do not draw axes on an overlay unless they
+*                   ask for it with /AXES or a ppl axis command
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -126,7 +128,7 @@
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
         include 'gkscm1_inc.decl'
         include 'GKSCM1.INC'    ! wsid
-
+        include 'xrevision.cmn'
 
 * calling argument declarations:
 	REAL	memory( mem_blk_size, max_mem_blks )
@@ -175,10 +177,17 @@
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
 	axes      = qual_given( slash_vect_axes      ).GT.0
+
+* In PyFerret, on overlays the axes are turned off, but the user can turn back on.
         IF (overlay) THEN
 	   noaxes = .FALSE.
 	   axes = .FALSE.
+	   IF (its_pyferret) THEN 
+	      noaxes = .TRUE.
+	      axes = qual_given( slash_vect_axes ).GT.0
+	   ENDIF
 	ENDIF
+
 	flows     = qual_given( slash_vect_flowline  ).GT.0
 	is_logh   = .FALSE.  ! Not valid quals
 	is_logv   = .FALSE.  ! for vector

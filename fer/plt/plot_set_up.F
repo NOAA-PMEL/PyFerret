@@ -156,6 +156,7 @@
 *                   log axis before proceeding with vlimits or hlimits
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V695+ *sh*  3/15 if an FMRC dataset disambiguate T and F axes with labels
+* V695  *acm*  5/15 Ticket 2279: PyFerret don't redraw labels on an overlay
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -175,6 +176,7 @@
 	include 'PPLDAT.INC'
         include 'switch_inc.decl'
         include 'SWITCH.INC'
+        include 'pyfonts.cmn'
 
 * calling argument declarations:
 	LOGICAL		overlay, transpz, versus, no_labels, use_line,
@@ -337,6 +339,18 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      pdeplim = pvlim
 	   ENDIF 
 	ENDIF
+
+	   
+* do not re-draw the main label, logo, other labels from the underlay plot
+	IF (overlay) THEN
+	   nlabs_on = 0  
+	   CALL PPLCMD ( from, line, 0, 'LABS ', 1, 1 )	
+	   DO i = 1, 3
+	      logolab(i) = 0
+	   ENDDO
+	ENDIF
+
+	IF ( no_labels ) CALL PPLCMD ( from, line, 0, 'LABS ', 1, 1 )
 
 * * * * * * *    - - - INDEPENDENT AXIS DATA - - - * * * * * * * * *
 	IF ( versus ) THEN

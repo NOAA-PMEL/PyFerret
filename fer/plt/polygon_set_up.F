@@ -132,6 +132,7 @@
 *                  argument for all-color line plot
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V691  *acm*  5/14 Clean up temp memory used for computing histogram levels
+* V695  *acm*  5/15 Ticket 2279: PyFerret don't redraw labels on an overlay
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -158,6 +159,7 @@
         include 'PLTL.INC'
 	include 'vector_inc.decl' ! with TRANSPZ
         include 'VECTOR.INC'
+        include 'pyfonts.cmn'
 
 
 * calling argument declarations:
@@ -1108,7 +1110,10 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	ELSE
 	ENDIF
 
-	IF ( no_labels ) RETURN
+	IF ( no_labels ) THEN
+	   CALL PPLCMD ( from, line, 0, 'LABS ', 1, 1 )
+	   RETURN
+	ENDIF
 
 * * * * * * *    - - - LABELS - - -   * * * * * * * * *
 * if we are starting from a blank screen each axis is labelled with the units
@@ -1117,6 +1122,14 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 * by the /TITLE qualifier) and it is placed in a key for overlays or as a
 * title for a fresh plot.
 	IF ( overlay ) THEN
+
+* do not re-draw the main label, logo, other labels from the underlay plot
+	   nlabs_on = 0  
+	   CALL PPLCMD ( from, line, 0, 'LABS ', 1, 1 )	
+	   DO i = 1, 3
+	      logolab(i) = 0
+	   ENDDO
+
 	   CALL OV_GRP_CX_DOC( cx_color, 1, cx_xtra_doc )
 	   IF ( user_title ) THEN
 	      CALL EQUAL_STR_LC(

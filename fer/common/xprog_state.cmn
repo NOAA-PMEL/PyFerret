@@ -50,6 +50,7 @@
 * V690 *sh* 12/13 - added mode_auto_*, for automated curvilinear and sigma vars
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 *                  added ifstk_skipping
+* V695  *acm* 5/15 logical flag its_pyferret 
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -188,7 +189,8 @@
      .          allowed_err,
      .          one_cmnd_mode,
      .		mode_auto_curvi, mode_auto_curvi_last,
-     .		mode_auto_layerz, mode_auto_layerz_last
+     .		mode_auto_layerz, mode_auto_layerz_last,
+     .		its_pyferret
 
 
 ! Note: available_char_var is unused
@@ -250,7 +252,7 @@
      .		frame_compress, available_char_var,
      .		journal_file, ppllist_file,
      .		xwind_node, xwind_node_len,
-     .		genl_storage, its_script, grat_on,
+     .		genl_storage, its_script, its_pyferret, grat_on,
      .          shade_trim, silent_err, allowed_err, one_cmnd_mode,
      .		ppl_wait, mode_name, 
      .          scriptfile_name, show_file, list_outtype

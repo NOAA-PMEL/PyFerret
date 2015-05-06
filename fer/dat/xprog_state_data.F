@@ -116,6 +116,7 @@
 * V685  *sh* 11/13 - added allowed_err for SH VAR/TREE
 * V690  *sh* 12/13 - added mode_curvilinear, mode_sigma
 * V694 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+* V695  *acm* 5/15 logical flag its_pyferret 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -376,5 +377,6 @@
         DATA    allowed_err             / .FALSE. /  ! briefly set true in SHOW VAR/TREE
         DATA    grat_on                 / .FALSE. /
         DATA    num_linecolors          / 6 /
+        DATA    its_pyferret            / .TRUE. /
 
 	END

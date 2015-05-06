@@ -72,6 +72,9 @@
 *                  returns a pen ID from a color ID and a thickness.
 * PyFr  *kms* 7/13 Added /OPACITY
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
+* V695  *acm*  5/15 Ticket 2279: PyFerret don't redraw lines
+*                   Do not draw axes on an overlay unless they
+*                   ask for it with /AXES or a ppl axis command
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -151,10 +154,17 @@ CC       => Set values here instead.
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
 	axes      = qual_given( slash_polygon_axes   ).GT.0
+
+* In PyFerret, on overlays the axes are turned off, but the user can turn back on.
         IF (overlay) THEN
 	   noaxes = .FALSE.
 	   axes = .FALSE.
+	   IF (its_pyferret) THEN 
+	      noaxes = .TRUE.
+	      axes = qual_given( slash_polygon_axes ).GT.0
+	   ENDIF
 	ENDIF
+
 	coord_ax  = qual_given( slash_polygon_coord  )		! integer
 	is_logh   = qual_given( slash_is_logh        ).GT.0
 	is_logv   = qual_given( slash_is_logv        ).GT.0 

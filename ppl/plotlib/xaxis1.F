@@ -1,6 +1,6 @@
       SUBROUTINE XAXIS1(XLO,XHI,XTIC,NSMTCX,LINTX,XUNIT,LABEL,
      *    IFORMT,XFACT,Y,YFACT,CSIZE,yacross,xdms,vgrat,vcolor,
-     *    vline, xvaloff)
+     *    vline, xvaloff, color0)
 
 *
 *
@@ -52,6 +52,8 @@ C *acm* 11/05  new argument to scinot deg/min/sec labels
 C        1/06  xvaloff,yvaloff add this amount to each x or y axis label. 
 C              (axis data was read as double precision and converted to single 
 C              after applying an offset.)
+C V695 *acm*  5/15 Restore color after a graticule using defined color 0
+C V695 *acm*  5/15 for PyFerret draw lines and tics only once, avoiding overdrawing.
 
 C**
 C**    @(#)xaxis1.f	1.1    3/10/88
@@ -71,6 +73,7 @@ C**
         REAL yacross, dash1, dash2,dash3,dash4, xvaloff
         REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         INTEGER vcolor(*)      ! pen number 
+        INTEGER color0	       ! pen number for axis
         LOGICAL vline          ! If true, do the lines across.
         LOGICAL solid          ! solid lines across at tics
         LOGICAL dashed         ! dashed lines across at tics
@@ -82,11 +85,9 @@ C**
 
 
 * TMAP interrupt flag
-#ifdef unix
+
 	include 'xinterrupt.cmn'
-#else
-	INCLUDE 'tmap_pplv11inc:tmap_xinterrupt.cmn'
-#endif
+
 
 C     THIS ROUTINE DRAWS AN X AXIS.  IT LABELS THE AXIS BELOW
 C     IF LABEL=-1, ABOVE IF LABEL=1, AND NOT AT ALL
@@ -109,7 +110,7 @@ CCC     THE FOLLOWING SECTION OF CODE MAKES THIS ROUTINE UPWARD COMPATIABLE.
         ABSSZ=ABS(CSIZE)
         SIGSZ=SIGN(1.,CSIZE)
 C
-C	DRAW AXIS
+C	DRAW AXIS- here do not draw axis, just move the pen. Draw it at the end
 C
 	DIR=SIGN(1.,XTIC)
 	XT=INT(XLO/XTIC+SIGN(0.000001,DIR*XLO))*XTIC
@@ -117,8 +118,8 @@ C
 	ISTOP=IFIX((XHI-XT)/XTIC+0.000001)
 	CALL PLOT(XT,Y,0,0)
 	CALL SMX1(XT,XLO,-XTIC,NSMTCX,XFACT,YFACT,Y,
-     *    yacross,vgrat,vcolor,vline)
-	CALL PLOT(XLO,Y,1,0)
+     .    yacross,vgrat,vcolor,vline)
+	CALL PLOT(XT,Y,1,0)
 	CALL PLOTT7(XT,Y,XFACT,YFACT,1,-8)
 	X=XT
         
@@ -146,13 +147,14 @@ C
            CALL PLOT(X,Y,0,0) 
            CALL PLOT(X,yacross,1,0)
            CALL PLOT(X,Y,0,0) 
-           CALL COLOR(1)
+           CALL COLOR(color0)
            CALL VECTRS
         ENDIF
 
 	X=X+XTIC
 	CALL PLOTT7(X,Y,XFACT,YFACT,1,-8)
 100	CONTINUE
+
 	CALL SMX1(X,XHI,XTIC,NSMTCX,XFACT,YFACT,Y,
      *    yacross,vgrat,vcolor,vline)
         
@@ -165,16 +167,17 @@ C
            CALL PLOT(X,Y,0,0) 
            CALL PLOT(X,yacross,1,0)
            CALL PLOT(X,Y,0,0) 
-           CALL COLOR(1)
+           CALL COLOR(color0)
            CALL VECTRS
         ENDIF
 
+	CALL PLOT(XLO,Y,0,0)
 	CALL PLOT(XHI,Y,1,0)
            
 C
 C	DRAW LABELS
 C
-	IF(LABEL.EQ.0)RETURN
+	IF(LABEL.EQ.0) RETURN
 	IF(LABEL+IX.EQ.0)THEN
 		YTEMP=0.0
 	ELSE
@@ -207,5 +210,6 @@ CC	X=X+XTIC*LINTX
 	if (abs(x) .lt. epsilon*abs(x0)) x = 0.0
 
 200	CONTINUE
+
 	RETURN
 	END

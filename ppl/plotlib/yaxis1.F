@@ -1,6 +1,6 @@
       SUBROUTINE YAXIS1(X,XFACT,YLO,YHI,YTIC,NSMTCY,LINTY,YUNIT,LABEL,
      *    IFORMT,YFACT,CSIZE,xacross,ydms,hgrat,hcolor,hline,
-     *    yvaloff, noylab, SHRINKY)
+     *    yvaloff, noylab, SHRINKY, color0)
 
 *
 *
@@ -54,8 +54,9 @@ C              (axis data was read as double precision and converted to single
 C              after applying an offset.)
 
 * 11/2011 ACM Fixing ticket 1896: When needed, reset the size of numerical axis
-*             labes, so the labels dont run off the edge of the plot.
-
+*             labels, so the labels dont run off the edge of the plot.
+C V695 *acm*  5/15 Restore color after a graticule using defined color 0
+C V695 *acm*  5/15 for PyFerret draw lines and tics only once, avoiding overdrawing.
 C**
 C**    @(#)yaxis1.f	1.1    3/10/88
 C**
@@ -73,6 +74,7 @@ C**
         REAL xacross, dash1, dash2, dash3, dash4
         REAL hgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         INTEGER hcolor(*)      ! pen number 
+        INTEGER color0	       ! pen number for axis
         LOGICAL hline          ! If true, do the lines across.
         LOGICAL solid          ! solid lines across at tics
         LOGICAL dashed         ! dashed lines across at tics
@@ -86,12 +88,7 @@ C**
 	parameter (epsilon = 1.e-6)
 
 * TMAP interrupt flag
-#ifdef unix
 	include 'xinterrupt.cmn'
-#else
-	INCLUDE 'tmap_pplv11inc:tmap_xinterrupt.cmn'
-#endif
-C
 C
 C     THIS ROUTINE DRAWS A Y AXIS.  IT LABELS THE AXIS ON THE LEFT
 C     IF LABEL=-1, ON THE RIGHT IF LABEL=1, AND NOT AT ALL
@@ -125,7 +122,7 @@ C
 	CALL PLOT(X,YT,0,0)
 	CALL SMY1(X,XFACT,YFACT,YT,YLO,-YTIC,NSMTCY,
      .     xacross,hgrat,hcolor,hline)
-	CALL PLOT(X,YLO,1,0)
+        CALL PLOT(X,YT,1,0)
 	CALL PLOTT7(X,YT,XFACT,YFACT,1,-6)
 
 	Y=YT
@@ -143,9 +140,9 @@ C
 
 	DO 100 I=1,ISTOP
 	IF ( interrupted ) RETURN		! TMAP interrupt
-	CALL SMY1(X,XFACT,YFACT,Y,YHI,YTIC,NSMTCY,
-     .     xacross,hgrat,hcolor,hline)
         IF ((solid.OR.dashed) .AND. hline) THEN ! make line across
+	   CALL SMY1(X,XFACT,YFACT,Y,YHI,YTIC,NSMTCY,
+     .        xacross,hgrat,hcolor,hline)
            CALL COLOR(hcolor(1))
            IF (dashed) THEN
               CALL DASHSZ(dash1,dash2,dash3,dash4)
@@ -154,11 +151,12 @@ C
            CALL PLOT(X,Y,0,0) 
            CALL PLOT(xacross,Y,1,0)
            CALL PLOT(X,Y,0,0) 
-           CALL COLOR(1)
+           CALL COLOR(color0)
            CALL VECTRS
         ENDIF
 
 	Y=Y+YTIC
+	CALL PLOT(X,Y,0,0)
 	CALL PLOTT7(X,Y,XFACT,YFACT,1,-6)
 100	CONTINUE
 	CALL SMY1(X,XFACT,YFACT,Y,YHI,YTIC,NSMTCY,
@@ -173,10 +171,12 @@ C
            CALL PLOT(X,Y,0,0) 
            CALL PLOT(xacross,Y,1,0)
            CALL PLOT(X,Y,0,0) 
-           CALL COLOR(1)
+           CALL COLOR(color0)
            CALL VECTRS
         ENDIF
 
+* Draw the axis line
+	CALL PLOT(X,YLO,0,0)
 	CALL PLOT(X,YHI,1,0)
 
 C
@@ -289,6 +289,7 @@ CC	Y=Y+YTIC*LINTY
            IF (YDMS .GE. 2) ywidt = ywidt - symwid(abssz,1,'''')
            YWID=YWID+YWIDT
         ENDIF
+
 	RETURN
 	END
 

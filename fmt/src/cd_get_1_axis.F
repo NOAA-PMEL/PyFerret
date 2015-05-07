@@ -411,6 +411,14 @@
      .                       do_warn, vname(:vlen), maxlen,
      .                       attlen, attoutflag, ename, val)
 
+* Cannot have both "edges" and "bounds" atrtributes
+      IF ( got_bnds .AND. got_edges )THEN
+         CALL TM_NOTE(
+     .     'Axis has both edges and bounds attributes: '//
+     .      vname(:vlen)//' - edges definition ignored', tt )
+         GOTO 500
+      ENDIF
+
 * We will be checking bounds or edges. Read the coords too
 * in case we are going to mark the axis as irregular.
 
@@ -653,6 +661,8 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
         IF (line_direction(iaxis).EQ."TI" .OR.
      .      line_direction(iaxis).EQ."TT" ) line_regular(iaxis) = .TRUE.
         got_bnds = .FALSE.
+	got_edges = .FALSE.
+	its_irregular = .FALSE.
       ENDIF
 
 * get the axis coordinates - none, regular, or irregular
@@ -1021,20 +1031,6 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 
 * the attribute "edges=name" may point to a list of box boundaries
       IF ( .NOT.got_edges ) GOTO 500
-      IF ( line_regular(iaxis) ) THEN
-         CALL TM_NOTE(
-     .           'Evenly spaced axis has edges definition: '//
-     .           vname(:vlen)//' - ignored', tt )
-         GOTO 500
-      ENDIF
-
-* Cannot have both "edges" and "bounds" atrtributes
-      IF ( got_bnds )THEN
-         CALL TM_NOTE(
-     .     'Axis has both edges and bounds attributes: '//
-     .      vname(:vlen)//' - edges definition ignored', tt )
-         GOTO 500
-      ENDIF
 
       CALL TM_CHECK_EDGES_ATTRIB (cdfid, iaxis, vname, vlen, ename, 
      .        edgid, status)
@@ -1055,7 +1051,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
         IF ( status .NE. merr_ok ) GOTO 1000    ! 3/99 soft error
 
 * if the coordinates were reversed then the box edges must be, too
-         IF ( reversed(iaxis) .AND.  npts .GT. 1) THEN
+        IF ( reversed(iaxis) .AND.  npts .GT. 1) THEN
 	    itop = (ipt1+npts)+npts/2-1
 	    irev = ipt1 + 2*npts
             DO 450 i=ipt1+npts,itop
@@ -1065,17 +1061,42 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 	       irev = irev - 1
  450        CONTINUE
 
-         ENDIF
-
-* check to see that each data point is contained inside its box
+        ENDIF
+	 
         IF (.NOT.TM_CHECK_BOX_LOC(iaxis)) THEN
-           CALL TM_NOTE('Error in Edges "'//ename(:elen)//
+              CALL TM_NOTE('Error in Edges "'//ename(:elen)//
      .         '"or edges do not enclose point on axis '//
      .         vname(:vlen), tt)
-           CALL TM_NOTE('Substituting coordinate midpoints', tt)
-           CALL TM_IRREGAX_MID( next_line_mem_pos,
+              CALL TM_NOTE('Substituting coordinate midpoints', tt)
+              CALL TM_IRREGAX_MID( next_line_mem_pos,
      .                          line_dim   (iaxis) )
-           bad_bndsid = edgid
+              bad_bndsid = edgid
+        ELSE 
+
+* check to see that each data point is contained inside its box.
+* See if they're centered after all.
+
+           IF (TM_CHECK_BNDS_CENTERED(iaxis, is_double)) THEN
+* It's actually regular - save it as such
+              IF (.NOT. line_regular(iaxis)) THEN
+                 line_regular(iaxis) = .TRUE.
+                 line_start  (iaxis) = line_mem(ipt1)
+                 IF (npts .GT. 1) THEN
+                    line_delta  (iaxis) = 
+     .                (line_mem(ipte)-line_mem(ipt1))/DBLE(npts-1)
+                 ELSE
+   	         ibx1 = ipt1 + npts
+                    line_delta(iaxis) = line_mem(ibx1+1)-line_mem(ibx1)
+                 ENDIF
+                 line_subsc1 (iaxis) = unspecified_int4
+                 last_coord = line_start(iaxis) + 
+     .                DBLE(npts-1)*line_delta(iaxis)
+                 firs_coord = line_start(iaxis)
+              ENDIF
+           ELSE
+              line_regular(iaxis) = .FALSE.
+           ENDIF
+
         ENDIF
 
 ****************************************************************************

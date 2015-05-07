@@ -71,3 +71,5 @@ GO err693_redef_rec_axis
 GO bn_reset
 GO err693_frame_types
 
+GO bn_reset
+GO err693_check_edges

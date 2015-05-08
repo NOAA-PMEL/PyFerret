@@ -114,6 +114,8 @@
 *                   user-variable has multiple sub-expressions
 * v690 *sh* 2/14  Determine the curvilinear (aux var) dependencies of the merged
 *		  expression
+* V694+*acm*5/15  Fix for ticket 2273: return= shape, *size for expressions built 
+*                 of other exprns.
 
 	include 'tmap_dims.parm'
 	include 'grid_chg_fcns.parm'
@@ -530,9 +532,13 @@
 * for the entire expression. This was the cause of ticket 2051. Use 
 * uvlim_need_lohi instead for the tests below.
 
+*  For 2273, we do not want to change the value of uvar_test here. The 
+*  examples in ticket 2051 still give correct resu;ts, but the RETURN= examples 
+*  in the report for 2273 did not.  Perhaps changes for the `RETURN=isready` 
+*  have allowed cause  this to work better?
+
 cc	   IF ( uvar_given(idim,uvar) .EQ. uvlim_need_xact ) GOTO 500
 	   uvar_test =  uvar_given(idim,uvar)
-	   IF ( uvar_given(idim,uvar) .EQ. uvlim_need_xact ) uvar_test = uvlim_need_lohi
 
 * get limits-region class of new component
 	   IF ( nest ) THEN

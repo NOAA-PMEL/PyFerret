@@ -555,6 +555,9 @@ C  variables for checking axis characteristics (modulo axes)
          ELSE
             l1 = lbot+1
          ENDIF
+         IF (l1.LT.arg_lo_ss(T_AXIS,ARG1) .OR. l1.GT.arg_hi_ss(T_AXIS,ARG1)) THEN
+	    l1 = ef_unspecified_int4
+	 ENDIF
  
 * Try to get xpt in range if the X-axis is modulo
          IF ( modulo(1) ) THEN
@@ -618,7 +621,9 @@ C  variables for checking axis characteristics (modulo axes)
          ELSE
             i1 = ibot+1
          ENDIF
-
+         IF (i1.LT.arg_lo_ss(X_AXIS,ARG1) .OR. i1.GT.arg_hi_ss(X_AXIS,ARG1)) THEN
+	    i1 = ef_unspecified_int4
+	 ENDIF
 
 * Check if ypt is in the Y-axis range.
          jbot = ef_unspecified_int4
@@ -663,6 +668,9 @@ C  variables for checking axis characteristics (modulo axes)
          ELSE
             j1 = jbot+1
          ENDIF
+         IF (j1.LT.arg_lo_ss(Y_AXIS,ARG1) .OR. j1.GT.arg_hi_ss(Y_AXIS,ARG1)) THEN
+	    j1 = ef_unspecified_int4
+	 ENDIF
 
 * Loop through the Z/E/F axes, assigning results for this coordinate pair
          n1 = arg_lo_ss(F_AXIS,ARG1)

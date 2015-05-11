@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 85290878 Apr 14 11:03 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 85295042 May 11 09:45 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix ticket 2271: redefining the record axis
+Note: after fix for ticket 2273
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Tue Apr 14 11:21:31 PDT 2015
+Beginning at Mon May 11 09:55:22 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1832,7 +1832,6 @@ Replacing definition of axis XQ
 Replacing definition of axis YQ
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Evenly spaced axis has edges definition: TCOADS - ignored
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2352,10 +2351,10 @@ set axis/stride=2 NORMAL
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ Cached data cleared from memory
+ Cached data cleared from memory
+ Cached data cleared from memory
 curl error details: 
- Cached data cleared from memory
- Cached data cleared from memory
- Cached data cleared from memory
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2933,11 +2932,11 @@ Re-defining viewport V8
  LISTing to file nc4_deflate4_xyt.nc
  LISTing to file nc4_deflate4_defaultchunk.nc
  PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file nc4_inttemp_classic.nc
 
 Bailing out of external function "tax_year":
 	 Function not valid for modulo time axis
- TEMPORARY data cleared from memory
- LISTing to file nc4_inttemp_classic.nc
            *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
  LISTing to file nc4_inttemp_set_list_deflate_chunk.nc
            *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
@@ -3868,6 +3867,16 @@ Replacing definition of axis TREDEF
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ **ERROR: invalid command: illegal format type - must be "GIF"
+          frame/format=hdf/file=a.hdf
+frame/format=hdf/file=a.hdf
+ **ERROR: invalid command: illegal format type - must be "GIF"
+          frame/file=a.png
+frame/file=a.png
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of grid GRID3D
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3992,4 +4001,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Apr 14 11:23:54 PDT 2015
+Ended at Mon May 11 09:57:42 PDT 2015

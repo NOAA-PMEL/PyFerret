@@ -215,6 +215,8 @@ def init(arglist=None, enterferret=True):
                     print_help = True
                     break
                 elif opt == "-script":
+                    my_verify = False
+                    my_quiet = True
                     k += 1
                     try:
                         script = arglist[k:]

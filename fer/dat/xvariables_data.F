@@ -60,6 +60,7 @@
 *			  because it needed a preprocessor.
 *       2/12 *kms* Add E and F dimensions (set to nferdims in tmap_dims.parm)
 * V685+: 3/14 *sh* - initialize max_usable_intrp
+* V695+: 5/15 *sh* - initialize uvar_c_cache_ptr
 
         IMPLICIT NONE
 #include "tmap_dset.parm"
@@ -120,6 +121,7 @@
         DATA uvar_num_items_head / 0 /
         DATA uvar_num_items_padding / 0 /
 	DATA uvar_num_items	/ max_uvar*uvar_deleted /
+	DATA uvar_c_cache_ptr	/ max_uvar*0.0 /
 	DATA num_uvars_in_cmnd	/ cmnd_uvars_not_given	/
 
 	

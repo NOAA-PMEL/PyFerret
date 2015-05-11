@@ -100,6 +100,8 @@
 * V694 3/15 *acm* Fix ticket 2241: as for modulo replications, don't do the
 *                 creation of virtual "void" point on subspan modulo axes for 
 *                 user-variables that have compressed result.
+* V695+ 5/15 *sh* FIND_MEM_VAR ==> FIND_MEM_VAR_INCL_C_CACHE
+*	          delay stripping gather until after stripping regrids
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -309,7 +311,7 @@
         CALL COMPLETE_MISSING_LIMITS( cx )
 
 * check in memory to see if we already have the data 
-	CALL FIND_MEM_VAR( cx, mr, search_by_value )
+	CALL FIND_MEM_VAR_INCL_C_CACHE( cx, mr, search_by_value, memory )
 	IF ( mr .GT. mr_nonexist ) THEN
 * ... yes - already in memory
 	   is_mr( isp ) = mr
@@ -396,16 +398,6 @@
 	  ENDIF
  255	CONTINUE
 
-* ... strip off need to gather aggregate components together ?
- 	IF ( cat .EQ. cat_agg_e_var ) THEN
-	   CALL IS_STRIP( isact_class_aggregate_gather, e_dim, *10, status )
-	   GOTO 5000
-	ENDIF
- 	IF ( cat .EQ. cat_agg_f_var ) THEN
-	   CALL IS_STRIP( isact_class_aggregate_gather, f_dim, *10, status )
-	   GOTO 5000
-	ENDIF
-
 * ... strip off need for regridding data ?
  260	IF ( cx_unstand_grid( cx ) ) THEN
 	   CALL IS_STRIP( isact_class_regrid, no_dim, *10, status )
@@ -417,6 +409,18 @@
 *     note that regridding already stripped, so this is always for 3-arg plots
 	IF ( cx_naux(cx) .GT. 0 ) THEN
 	   CALL IS_STRIP( isact_class_aux_plot_vars, no_dim, *10, status )
+	   GOTO 5000
+	ENDIF
+
+* ... strip off need to gather aggregate components together ?
+* do this *after* all xforms and regridding, so those operations are performed
+* on the aggregated result
+ 	IF ( cat .EQ. cat_agg_e_var ) THEN
+	   CALL IS_STRIP( isact_class_aggregate_gather, e_dim, *10, status )
+	   GOTO 5000
+	ENDIF
+ 	IF ( cat .EQ. cat_agg_f_var ) THEN
+	   CALL IS_STRIP( isact_class_aggregate_gather, f_dim, *10, status )
 	   GOTO 5000
 	ENDIF
 
@@ -459,7 +463,8 @@
  300	      CONTINUE
 	      IF ( look_again ) THEN
 * ...         check again in memory - maybe we already have it after all
-	         CALL FIND_MEM_VAR( cx, mr, search_by_value )
+	         CALL FIND_MEM_VAR_INCL_C_CACHE( cx, mr,
+     .						search_by_value, memory )
 	         IF ( mr .GT. mr_nonexist ) THEN
 * ...            yes - already in memory ... worth the trouble
 	            is_mr( isp ) = mr

@@ -35,6 +35,9 @@
 * Define an axis for the aggregation direction (Ensemble or Forecast). If more
 * than one aggregation axis is defined, TM_NEW_LINE_NAME makes a unique name.
 
+* original: *acm*
+* V695+ *sh* 5/15 - set up calendar axis attributes from 1st member dset
+
       IMPLICIT NONE
         include 'tmap_errors.parm'
 #include "tmap_dset.parm"
@@ -101,7 +104,7 @@
 	   line_name     ( iline ) = 'FORECAST'
 	ENDIF
 	line_name_orig( iline ) = line_name ( iline )
-	
+
  5000   RETURN	
  5300   status = ferr_TMAP_error
 	RETURN

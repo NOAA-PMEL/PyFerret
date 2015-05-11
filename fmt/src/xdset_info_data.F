@@ -65,6 +65,7 @@
 * v552 *acm*  4/03 Initialize ds_var_off, ds_var_scale, ds_var_scaleit
 * v552 *acm*  5/03 change ds_var_code length to 128
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
+* v695+ *sh* 5/15 initialize new ds_var_c_cache_ptr
 
 #include "tmap_dset.parm"		
 	include 'tmap_dims.parm'		! parameter definitions
@@ -144,5 +145,6 @@
 	DATA	ds_var_off		/maxvars*0.0/
 	DATA	ds_var_scale		/maxvars*1.0/
 	DATA	ds_var_scaleit		/maxvars*.FALSE./
+	DATA	ds_var_c_cache_ptr	/maxvars*0.0/
 
 	END

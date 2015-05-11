@@ -47,8 +47,9 @@
 * V530: *acm* 12/00 alternative calendar types; cal_id
 *             return source and dest cal_ids for get_linear_coef
 * V673: *acm*  2/12 see ticket 1915. All computations of these factors need 
-*             to be done in DOUBLE prcision.
+*             to be done in DOUBLE precision.
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
+* V695+ *sh* 5/15 calendar factor adjustments only if src/dst calendars differ
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -108,16 +109,20 @@
 	at0dst = SECS_FROM_BC( line_t0(dst_line), dst_cal_id, status )
 	IF ( status .NE. ferr_ok ) RETURN
 
-        IF (dst_cal_id .NE. 1) THEN
-           factor = CAL_FACTR (dst_cal_id)
-	   udst = udst* factor
-	   at0dst = at0dst* factor
-	ENDIF
+	IF (dst_cal_id .NE. src_cal_id) THEN
+* ... make non-Gregorian calendar adjustments only if calendars differ
+*     to avoid small roundoff issues
+           IF (dst_cal_id .NE. 1) THEN
+              factor = CAL_FACTR (dst_cal_id)
+	      udst = udst* factor
+	      at0dst = at0dst* factor
+	   ENDIF
 
-        IF (src_cal_id .NE. 1) THEN
-	   factor = CAL_FACTR (src_cal_id)
-	   usrc = usrc* factor
-	   at0src = at0src* factor
+           IF (src_cal_id .NE. 1) THEN
+	      factor = CAL_FACTR (src_cal_id)
+	      usrc = usrc* factor
+	      at0src = at0src* factor
+	   ENDIF
 	ENDIF
 
 * determine the slope and intercept to be used in TDST_WORLD regridding

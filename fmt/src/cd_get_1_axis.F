@@ -182,6 +182,7 @@
 * Ticket 2172: If the axis is actually too long, reset the modulo flags
 * so it is treated as not modulo.
 * V694  5/15 *acm* Match precision for bounds checks (as is done for coords).
+* V695+  5/15 *sh* allow "units='none'" as ignorable units string (for Andrew)
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -236,7 +237,7 @@
      .        has_repeated, misordered, is_double
 
       INTEGER TM_UNIT_ID, TM_LENSTR1,TM_GET_CALENDAR_ID,      
-     .        STR_CASE_BLIND_COMPARE, STR_UPCASE, 
+     .        STR_CASE_BLIND_COMPARE, STR_UPCASE, STR_SAME,
      .        soft_err, 
      .        ipt1, ipte, vartype, vback, npts, vlen, cdfstat, istat,
      .        nvdims, vdims(8), nvatts, i, units, npts_cdf, elen, 
@@ -471,6 +472,7 @@
       got_it = NC_GET_ATTRIB( dset, ivar, 'units', do_warn,
      .                        vname(:vlen), maxlen, attlen, attoutflag, 
      .                        buff, val)
+      IF (STR_SAME (buff(1:4), 'none') .EQ. 0) buff = ' ' ! units = 'none'
       since_T0 = MAX( INDEX(buff,'since'), INDEX(buff,'SINCE') )
       yyyymmdd_time = buff(1:15) .EQ. 'yyyymmddhhmmss'
 

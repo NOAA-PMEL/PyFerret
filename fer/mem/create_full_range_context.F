@@ -1,11 +1,12 @@
-	SUBROUTINE CD_1D_LINE_FROM_2D (dset, cdfid, varid, vname,
-     .			axcalt, axlagf, status)
+	SUBROUTINE CREATE_FULL_RANGE_CONTEXT ( source, dest, status )
 
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
-*.
+*
 *  Access and use of this software shall impose the following
 *  obligations and understandings on the user. The user is granted the
 *  right, without any fee or cost, to use, copy, modify, alter, enhance
@@ -33,74 +34,49 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+*
+* transfer space/time/data_set/variable context from one context buffer to
+* another and then expand it to be the full grid range of that variable
 
-* this routine gets the 2D FMRC time array into memory and calls
-* CD_MAKE_FMRC_AXES to synthesize the T calendar time and F lead time
-* axes that are needed to support FMRC visualization and analysis
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* V695+ 5/15 *sh* 
 
-* V695+ *acm* and *sh*
+	IMPLICIT NONE
 
-* include files
-        include 'netcdf.inc'
-	include 'tmap_errors.parm'
-#include "gt_lib.parm"
 	include 'tmap_dims.parm'
-#include "tmap_dset.parm"
-
-	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xcontext.cmn'
 
 * calling argument declarations
-	INTEGER dset, cdfid, varid, axcalt, axlagf, status
-	CHARACTER*(*) vname
+	INTEGER	source, dest, status
 
 * internal variable declarations
-	LOGICAL coordvar, has_edges
-	INTEGER cdfstat, i, outflag, nvatts, vartype,
-     .		start(nferdims),count(nferdims), zero(nferdims),
-     .		npts, nT, nF, npts_cdf, vdims(8), nvdim
-	CHARACTER  TM_STRING*13, buff*256
+	INTEGER CX_DIM_LEN_ZERO, idim, n
 
+* initialize
+	status = ferr_ok
 
-* start out by getting an overview of the 2D time variable
-	CALL CD_GET_VAR_INFO (dset, varid, vname, vartype, 
-     .            nvdim, vdims, nvatts, coordvar, outflag, status)
+	CALL TRANSFER_CONTEXT(source, dest)
 
-* Read the 2d time coordinate array from the netCDF dataset
-* Save it at the start of available line storage memory
-
-	npts = 1
-	DO i = 1, nvdim
-	   CALL CD_GET_DS_DIMS (dset, vdims(i), buff, npts_cdf, status)
-	   start(i) = 1
-	   count(i) = npts_cdf
-	   zero(i) = 0
-	   npts = npts* npts_cdf
+* expand context to full grid range
+	DO idim = 1, nferdims
+	   cx_trans(idim,dest) = trans_no_transform
+	   n = CX_DIM_LEN_ZERO(idim, dest)
+	   IF ( n .GT. 0 ) THEN
+	      cx_lo_ss(dest, idim) = 1
+	      cx_hi_ss(dest, idim) = n
+	      cx_by_ss(idim, dest) = .TRUE.
+	      CALL FLESH_OUT_AXIS(idim, dest, status )
+	      IF (status .NE. ferr_ok) GOTO 5000
+	   ENDIF
 	ENDDO
-	nT = count(1)   ! number of time steps per forecast
-	nF = count(2)   ! number of forecasts in collection
 
-	IF ((next_line_mem_pos+ npts+1).GT.maxlinestore) GOTO 5300
-	CALL CD_READ_SUB(cdfid, varid, nvdim, start, count, zero, zero, 
-     .			 line_mem(next_line_mem_pos), 0, 0, cdfstat)
-	IF ( cdfstat .NE. NF_NOERR ) GOTO 5000
-
-* make the axes needed by the FMRC dataset
-	has_edges = .FALSE.
-	CALL CD_MAKE_FMRC_AXES (dset, has_edges, varid, vname, vartype,
-     .			    npts, nT, nF, axcalt, axlagf, status)
-	IF (status .NE. merr_ok) GOTO 5000
-
-* successful completion
-        status = merr_ok
 	RETURN
 
 * error exit
  5000	RETURN
- 5300	CALL TM_ERRMSG (merr_linstorlim, status, 'CD_1D_LINE_FROM_2D',
-     .                  no_descfile, no_stepfile,
-     .                  'MAX='//TM_STRING(DBLE(maxlinestore)),
-     .                  no_errstring, *5000)
-
 	END

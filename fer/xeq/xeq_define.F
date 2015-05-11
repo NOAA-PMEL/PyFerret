@@ -228,6 +228,7 @@
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 *                  prevent IF, ELIF, ELSE, and ENDIF from being aliased
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
+* V695+  *sh* 4/15 error msgs from INIT_AGGREGATE_SET already given.  Remove.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -2234,7 +2235,7 @@ C /units=months  is 1/12 of the length of the year
 	CALL INIT_AGGREGATE_DSET (buff1, buff2, dset, agg_quiet, agg_hide, 
      .    agg_dim, status)
 
-	IF (status .NE. ferr_ok) GOTO 6110
+	IF (status .NE. ferr_ok) GOTO 5000
 
 * Make this the current dataset
 	cx_data_set( cx_last ) =  dset
@@ -2396,7 +2397,7 @@ C /units=months  is 1/12 of the length of the year
  6100 CALL ERRMSG(ferr_syntax, status, 
      .    'DEFINE DATA valid only with /AGGREGATE: ', *5000)
 
- 6110 CALL ERRMSG(ferr_aggregate_error, status, 
-     .    'Aggregate dataset not defined', *5000)
+! 6110 CALL ERRMSG(ferr_aggregate_error, status, 
+!     .    'Aggregate dataset not defined', *5000)
 
 	END

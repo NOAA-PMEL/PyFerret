@@ -119,7 +119,7 @@ def init(arglist=None, enterferret=True):
        -secure:      restrict Ferret's capabilities (e.g., SPAWN and
                      EXIT /TOPYTHON are not permitted)
 
-       -server:      run Ferret in server mode
+       -server:      run Ferret in server mode (don't stop on message commands)
 
        -python:      start at the Python prompt instead of the Ferret prompt.
                      The ferret prompt can be obtained using 'pyferret.run()'
@@ -143,8 +143,10 @@ def init(arglist=None, enterferret=True):
        -transparent: use a transparent background instead of opaque white
                      when saving to the file given by -batch
 
-       -script:      execute the script <scriptname> with any arguments specified,
-                     and exit (THIS MUST BE SPECIFIED LAST)
+       -script:      execute the script <scriptname> with any arguments 
+                     specified and exit (THIS MUST BE SPECIFIED LAST).  
+                     The -script option also implies the -nojnl, -noverify, 
+                     -server, and -quiet options.
 
     """
 
@@ -215,7 +217,9 @@ def init(arglist=None, enterferret=True):
                     print_help = True
                     break
                 elif opt == "-script":
+                    my_journal = False
                     my_verify = False
+                    my_server = True
                     my_quiet = True
                     k += 1
                     try:

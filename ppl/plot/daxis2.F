@@ -79,7 +79,7 @@ C**
 
 
 	CHARACTER OUT*255
-        INTEGER numlines, i, j
+        INTEGER TM_LENSTR, numlines, i, j
 
 c        CHARACTER fontprefix*3, penprefix*3, newfont*3, newpen*3
 c        INTEGER lnbeg(500), lnend(500), 
@@ -88,6 +88,9 @@ c        line_spacing = 1.4
 
 	CALL VECTRS
 	DO 80 I=1,NLAB
+
+* Don't go through the motions of plotting blank labels
+	IF (TM_LENSTR(labs(i)) .EQ. 0) GOTO 80
 
 	IF (pyfont .AND. pyf_set(ilogo)) THEN
 	   IF (logolab(1).EQ.i .OR. logolab(2).EQ.i .OR. 

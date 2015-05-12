@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 85295042 May 11 09:45 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 85491282 May 12 09:08 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: after fix for ticket 2273
+Note: fix for 2281 and recent Steve's checkins
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Mon May 11 09:55:22 PDT 2015
+Beginning at Tue May 12 09:10:03 PDT 2015
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -422,7 +422,8 @@ SHOW MODES
       LATIT_LABEL      SET               1
       DEPTH_LABEL      SET              -4
       CALENDAR         SET         minutes
-      6D_LAB           SET
+      E_LABEL          SET               1
+      F_LABEL          SET               1
       ASCII_FONT       SET
       SEGMENT          SET
       WAIT          CANCELLED
@@ -442,6 +443,7 @@ SHOW MODES
       SHRINK_YLAB   CANCELLED
       CURVILINEAR   CANCELLED
       LAYERZ        CANCELLED
+      6D_LAB           SET
 SET MODE IGNORE_ERROR
 SHOW MODES
       MODE            STATE        ARGUMENT
@@ -455,7 +457,8 @@ SHOW MODES
       LATIT_LABEL      SET               1
       DEPTH_LABEL      SET              -4
       CALENDAR         SET         minutes
-      6D_LAB           SET
+      E_LABEL          SET               1
+      F_LABEL          SET               1
       ASCII_FONT       SET
       SEGMENT          SET
       WAIT          CANCELLED
@@ -475,6 +478,7 @@ SHOW MODES
       SHRINK_YLAB   CANCELLED
       CURVILINEAR   CANCELLED
       LAYERZ        CANCELLED
+      6D_LAB           SET
 CANCEL MODE IGNORE_ERROR
 SHOW MODES
       MODE            STATE        ARGUMENT
@@ -488,7 +492,8 @@ SHOW MODES
       LATIT_LABEL      SET               1
       DEPTH_LABEL      SET              -4
       CALENDAR         SET         minutes
-      6D_LAB           SET
+      E_LABEL          SET               1
+      F_LABEL          SET               1
       ASCII_FONT       SET
       SEGMENT          SET
       WAIT          CANCELLED
@@ -508,6 +513,7 @@ SHOW MODES
       SHRINK_YLAB   CANCELLED
       CURVILINEAR   CANCELLED
       LAYERZ        CANCELLED
+      6D_LAB           SET
 SHOW MODE STUPID
       MODE            STATE        ARGUMENT
       STUPID        CANCELLED
@@ -10462,13 +10468,13 @@ FERRET_PLATFORM = "Linux 2.6.18-404.el5PAE 32-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 12:21:13 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "11-May-15"
-SESSION_TIME = "09:55"
-SESSION_PID = "997"
-DELTA_CPU = "7.73482"
-CLOCK_SECS = "10.442"
-CURRENT_DATE = "11-May-15"
-CURRENT_TIME = "09:55:33"
+SESSION_DATE = "12-May-15"
+SESSION_TIME = "09:10"
+SESSION_PID = "12392"
+DELTA_CPU = "7.76482"
+CLOCK_SECS = "10.8"
+CURRENT_DATE = "12-May-15"
+CURRENT_TIME = "09:10:14"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10491,13 +10497,13 @@ FERRET_PLATFORM = "Linux 2.6.18-404.el5PAE 32-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 12:21:13 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "11-May-15"
-SESSION_TIME = "09:55"
-SESSION_PID = "997"
+SESSION_DATE = "12-May-15"
+SESSION_TIME = "09:10"
+SESSION_PID = "12392"
 DELTA_CPU = "0.001"
-CLOCK_SECS = "10.443"
-CURRENT_DATE = "11-May-15"
-CURRENT_TIME = "09:55:33"
+CLOCK_SECS = "10.801"
+CURRENT_DATE = "12-May-15"
+CURRENT_TIME = "09:10:14"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10507,9 +10513,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "11-May-15"
-SESSION_TIME = "09:55"
-SESSION_PID = "997"
+SESSION_DATE = "12-May-15"
+SESSION_TIME = "09:10"
+SESSION_PID = "12392"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10519,15 +10525,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "11-May-15"
-SESSION_TIME = "09:55"
-SESSION_PID = "997"
+SESSION_DATE = "12-May-15"
+SESSION_TIME = "09:10"
+SESSION_PID = "12392"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "11-May-15"
-SESSION_TIME = "09:55"
-SESSION_PID = "997"
+SESSION_DATE = "12-May-15"
+SESSION_TIME = "09:10"
+SESSION_PID = "12392"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10563,7 +10569,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET (beta) Ver.6.942"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "11-MAY-2015 09:55:33"
+LAB3 = "12-MAY-2015 09:10:14"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10663,13 +10669,13 @@ FERRET_PLATFORM = "Linux 2.6.18-404.el5PAE 32-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 12:21:13 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "11-May-15"
-SESSION_TIME = "09:55"
-SESSION_PID = "997"
-DELTA_CPU = "0.014997"
-CLOCK_SECS = "10.458"
-CURRENT_DATE = "11-May-15"
-CURRENT_TIME = "09:55:33"
+SESSION_DATE = "12-May-15"
+SESSION_TIME = "09:10"
+SESSION_PID = "12392"
+DELTA_CPU = "0.014998"
+CLOCK_SECS = "10.815"
+CURRENT_DATE = "12-May-15"
+CURRENT_TIME = "09:10:14"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -25665,7 +25671,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Mon May 11 09:55:43 PDT 2015
+Tue May 12 09:10:25 PDT 2015
  
 GO bn_reset
 cancel mode verify
@@ -40781,7 +40787,8 @@ show modes
       LATIT_LABEL      SET              -4
       DEPTH_LABEL      SET              -4
       CALENDAR         SET         months
-      6D_LAB           SET
+      E_LABEL          SET               1
+      F_LABEL          SET               1
       ASCII_FONT       SET
       SEGMENT          SET
       WAIT          CANCELLED
@@ -40801,6 +40808,7 @@ show modes
       SHRINK_YLAB   CANCELLED
       CURVILINEAR   CANCELLED
       LAYERZ        CANCELLED
+      6D_LAB           SET
 contour/i=1:10/j=1:10 i/j
  
 ! restore the labels, logo still gone
@@ -48356,7 +48364,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS11-MAY-2015 09:56:23
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS12-MAY-2015 09:11:08
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -49787,7 +49795,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "11-May-15:09:55"
+WIN_TITLE = "12-May-15:09:10"
  
 set win/title="set the title"
 sho sym win_title
@@ -49805,7 +49813,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="11-May-15:09:55"
+ !-> set win/title="12-May-15:09:10"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -49814,16 +49822,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 11-May-15
+ !-> DEFINE SYMBOL the_date = 12-May-15
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 09:55
+ !-> DEFINE SYMBOL the_time = 09:10
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="11-May-15:09:55"
+ !-> SET WIN/TITLE="12-May-15:09:10"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "11-May-15:09:55"
+WIN_TITLE = "12-May-15:09:10"
  
 GO bn_reset
 cancel mode verify
@@ -54114,7 +54122,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT191_108)          DOUBLE    units           CHAR        12   T       degrees_east
@@ -54159,7 +54167,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT191_108)          DOUBLE    units           CHAR        12   T       degrees_east
@@ -60032,10 +60040,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "61.0007"
-CLOCK_SECS = "91.05"
-CURRENT_DATE = "11-May-15"
-CURRENT_TIME = "09:56:53"
+DELTA_CPU = "61.3637"
+CLOCK_SECS = "95.726"
+CURRENT_DATE = "12-May-15"
+CURRENT_TIME = "09:11:39"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -60044,8 +60052,8 @@ CURRENT_TIME = "09:56:53"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.061991"
-CLOCK_SECS = "91.163"
+DELTA_CPU = "0.052992"
+CLOCK_SECS = "95.824"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -60059,60 +60067,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.32695
+ !-> DEFINE VARIABLE ten_plots = 0.312953
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.001"
-CLOCK_SECS = "91.982"
+DELTA_CPU = "0"
+CLOCK_SECS = "96.548"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "91.983"
+CLOCK_SECS = "96.55"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.034995
- !-> DEFINE VARIABLE sumcpu =0.034995
+ !-> DEFINE VARIABLE dt = 0.035994
+ !-> DEFINE VARIABLE sumcpu =0.035994
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.037995
- !-> DEFINE VARIABLE sumcpu =0.07299
+ !-> DEFINE VARIABLE dt = 0.034994
+ !-> DEFINE VARIABLE sumcpu =0.070988
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.111984
+ !-> DEFINE VARIABLE dt = 0.035995
+ !-> DEFINE VARIABLE sumcpu =0.106983
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.039993
- !-> DEFINE VARIABLE sumcpu =0.151977
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.143978
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.039994
- !-> DEFINE VARIABLE sumcpu =0.191971
+ !-> DEFINE VARIABLE dt = 0.034994
+ !-> DEFINE VARIABLE sumcpu =0.178972
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.225966
+ !-> DEFINE VARIABLE dt = 0.035995
+ !-> DEFINE VARIABLE sumcpu =0.214967
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.037994
- !-> DEFINE VARIABLE sumcpu =0.26396
+ !-> DEFINE VARIABLE dt = 0.039994
+ !-> DEFINE VARIABLE sumcpu =0.254961
 !-> REPEAT: K=8
  !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.302954
+ !-> DEFINE VARIABLE sumcpu =0.293955
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.037995
- !-> DEFINE VARIABLE sumcpu =0.340949
+ !-> DEFINE VARIABLE dt = 0.034995
+ !-> DEFINE VARIABLE sumcpu =0.32895
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.373944
+ !-> DEFINE VARIABLE dt = 0.034994
+ !-> DEFINE VARIABLE sumcpu =0.363944
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.373944
-0.373944
+ !-> MESSAGE/CONTINUE 0.363944
+0.363944
 sh sym CLOCK_SECS
-CLOCK_SECS = "93.246"
+CLOCK_SECS = "97.719"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "11-May-15"
-SESSION_TIME = "09:55"
-CURRENT_DATE = "11-May-15"
-CURRENT_TIME = "09:56:55"
+SESSION_DATE = "12-May-15"
+SESSION_TIME = "09:10"
+CURRENT_DATE = "12-May-15"
+CURRENT_TIME = "09:11:41"
  
  
 ! ******** V6.3 Additions below ***********
@@ -64089,8 +64097,8 @@ list contents
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.942 (beta)"                                                    
- 3    /  3:" ! Linux 2.6.18-404.el5PAE 32-bit - 05/11/15"                               
- 4    /  4:" ! 11-May-15 09:55     "                                                    
+ 3    /  3:" ! Linux 2.6.18-404.el5PAE 32-bit - 05/12/15"                               
+ 4    /  4:" ! 12-May-15 09:10     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -66556,40 +66564,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.714
-randu2_randn2       0.595
-randu2_randn2       0.693
-randu2_randn2       0.540
-randu2_randn2       0.143
+randu2_randn2       0.929
+randu2_randn2       0.845
+randu2_randn2       0.496
+randu2_randn2       0.814
+randu2_randn2       0.266
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.089
-randu2_randn2       0.694
-randu2_randn2       0.747
-randu2_randn2       0.675
-randu2_randn2       0.370
+randu2_randn2       0.302
+randu2_randn2       0.759
+randu2_randn2       0.732
+randu2_randn2       0.628
+randu2_randn2       0.641
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.947
-randu2_randn2       0.834
-randu2_randn2       0.729
-randu2_randn2       0.757
-randu2_randn2       0.880
-randu2_randn2       0.656
+randu2_randn2       0.388
+randu2_randn2       0.135
+randu2_randn2       0.153
+randu2_randn2       0.295
+randu2_randn2       0.363
+randu2_randn2       0.354
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.125
-randu2_randn2       0.028
-randu2_randn2       0.055
-randu2_randn2       0.051
-randu2_randn2       0.690
-randu2_randn2       0.417
+randu2_randn2       0.790
+randu2_randn2       0.974
+randu2_randn2       0.210
+randu2_randn2       0.685
+randu2_randn2       0.211
+randu2_randn2       0.894
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -66614,40 +66622,40 @@ randu2_randn2       0.900
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -1.299
-randu2_randn2      -0.546
-randu2_randn2      -1.187
-randu2_randn2       1.224
-randu2_randn2      -1.706
+randu2_randn2       0.783
+randu2_randn2       0.189
+randu2_randn2      -0.823
+randu2_randn2       0.782
+randu2_randn2      -1.033
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.692
-randu2_randn2      -0.352
-randu2_randn2       0.955
-randu2_randn2      -0.315
-randu2_randn2       0.338
+randu2_randn2       1.076
+randu2_randn2       0.064
+randu2_randn2      -0.809
+randu2_randn2      -0.777
+randu2_randn2      -0.052
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       1.073
-randu2_randn2       1.744
-randu2_randn2       1.390
-randu2_randn2      -2.099
-randu2_randn2      -0.252
-randu2_randn2      -0.693
+randu2_randn2       0.523
+randu2_randn2       0.482
+randu2_randn2       1.279
+randu2_randn2       0.892
+randu2_randn2      -0.340
+randu2_randn2       0.314
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.231
-randu2_randn2       0.756
-randu2_randn2      -0.549
-randu2_randn2       1.144
-randu2_randn2      -0.796
-randu2_randn2       0.639
+randu2_randn2      -1.321
+randu2_randn2      -1.716
+randu2_randn2      -0.777
+randu2_randn2      -1.028
+randu2_randn2      -0.266
+randu2_randn2       1.713
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -66672,14 +66680,14 @@ randu2_randn2      -0.124
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.502       1.587       0.344
-randu2_randn2       1.587       1.502       0.344
-randu2_randn2       0.344       0.344       0.334
-randu2_randn2       0.334       0.334       0.344
-randu2_randn2      -0.167      -0.167       0.344
-randu2_randn2      -0.947      -0.468       0.344
-randu2_randn2      -0.468      -0.468       0.344
-randu2_randn2       0.687       0.687       0.687
+randu2_randn2       1.717       1.717       0.755
+randu2_randn2       0.846       0.846       0.755
+randu2_randn2       0.755       0.755       0.105
+randu2_randn2       0.105       0.105       0.670
+randu2_randn2      -0.044      -0.044       0.670
+randu2_randn2      -0.934      -0.277       0.670
+randu2_randn2      -0.277      -0.277       0.670
+randu2_randn2       0.670       0.670       0.670
  
 GO bn_reset
 cancel mode verify
@@ -68289,7 +68297,7 @@ LIST v[@ypt]
 LIST v[@ept]
              VARIABLE : X + 10*Y + 100*_E + 1000*_F
              SUBSET   : 3 by 3 by 3 points (X-Y-F)
-             E        : 1.00499999999999989 (interpolated)
+             E        : 1 (interpolated)
               1        2        3     
               1        2        3
  ---- N:1 F:   1
@@ -68307,7 +68315,7 @@ LIST v[@ept]
 LIST v[@fpt]
              VARIABLE : X + 10*Y + 100*_E + 1000*_F
              SUBSET   : 3 by 3 by 3 points (X-Y-E)
-             F        : 1.000499999999999945 (interpolated)
+             F        : 1 (interpolated)
               1        2        3     
               1        2        3
  ---- M:1 E:   1
@@ -68327,8 +68335,8 @@ LIST v[@fpt]
 LIST v[@ept,@fpt]	!XY
              VARIABLE : X + 10*Y + 100*_E + 1000*_F
              SUBSET   : 3 by 3 points (X-Y)
-             E        : 1.00499999999999989 (interpolated)
-             F        : 1.000499999999999945 (interpolated)
+             E        : 1 (interpolated)
+             F        : 1 (interpolated)
               1        2        3     
               1        2        3
  1   / 1:  1112.00  1113.00  1114.00
@@ -68338,7 +68346,7 @@ LIST v[@ypt,@fpt]	!XE
              VARIABLE : X + 10*Y + 100*_E + 1000*_F
              SUBSET   : 3 by 3 points (X-E)
              Y        : 1.05 (interpolated)
-             F        : 1.000499999999999945 (interpolated)
+             F        : 1 (interpolated)
               1        2        3     
               1        2        3
  1   / 1:  1112.00  1113.00  1114.00
@@ -68348,7 +68356,7 @@ LIST v[@ypt,@ept]	!XF
              VARIABLE : X + 10*Y + 100*_E + 1000*_F
              SUBSET   : 3 by 3 points (X-F)
              Y        : 1.05 (interpolated)
-             E        : 1.00499999999999989 (interpolated)
+             E        : 1 (interpolated)
               1        2        3     
               1        2        3
  1   / 1:  1112.00  1113.00  1114.00
@@ -68358,7 +68366,7 @@ LIST v[@xpt,@fpt]	!YE
              VARIABLE : X + 10*Y + 100*_E + 1000*_F
              SUBSET   : 3 by 3 points (Y-E)
              X        : 1.5 (interpolated)
-             F        : 1.000499999999999945 (interpolated)
+             F        : 1 (interpolated)
               1        2        3     
               1        2        3
  1   / 1:  1112.00  1122.00  1132.00
@@ -68368,7 +68376,7 @@ LIST v[@xpt,@ept]	!YF
              VARIABLE : X + 10*Y + 100*_E + 1000*_F
              SUBSET   : 3 by 3 points (Y-F)
              X        : 1.5 (interpolated)
-             E        : 1.00499999999999989 (interpolated)
+             E        : 1 (interpolated)
               1        2        3     
               1        2        3
  1   / 1:  1112.00  1122.00  1132.00
@@ -68391,7 +68399,7 @@ LIST/ORDER=F v[@xpt,@ypt,@ept]	! F
              SUBSET   : 3 points (F)
              X        : 1.5 (interpolated)
              Y        : 1.05 (interpolated)
-             E        : 1.00499999999999989 (interpolated)
+             E        : 1 (interpolated)
              1        2        3     
              1        2        3
           1112.50  2112.50  3112.50
@@ -68400,7 +68408,7 @@ LIST/ORDER=E v[@xpt,@ypt,@fpt]	! E
              SUBSET   : 3 points (E)
              X        : 1.5 (interpolated)
              Y        : 1.05 (interpolated)
-             F        : 1.000499999999999945 (interpolated)
+             F        : 1 (interpolated)
              1        2        3     
              1        2        3
           1112.50  1212.50  1312.50
@@ -68408,8 +68416,8 @@ LIST/ORDER=Y v[@xpt,@ept,@fpt]	! Y
              VARIABLE : X + 10*Y + 100*_E + 1000*_F
              SUBSET   : 3 points (Y)
              X        : 1.5 (interpolated)
-             E        : 1.00499999999999989 (interpolated)
-             F        : 1.000499999999999945 (interpolated)
+             E        : 1 (interpolated)
+             F        : 1 (interpolated)
              1        2        3     
              1        2        3
           1112.50  1122.50  1132.50
@@ -68417,8 +68425,8 @@ LIST/ORDER=X v[@ypt,@ept,@fpt]	! X
              VARIABLE : X + 10*Y + 100*_E + 1000*_F
              SUBSET   : 3 points (X)
              Y        : 1.05 (interpolated)
-             E        : 1.00499999999999989 (interpolated)
-             F        : 1.000499999999999945 (interpolated)
+             E        : 1 (interpolated)
+             F        : 1 (interpolated)
              1        2        3     
              1        2        3
           1112.50  1113.50  1114.50
@@ -68428,8 +68436,8 @@ LIST v[@xpt,@ypt,@ept,@fpt]
              VARIABLE : X + 10*Y + 100*_E + 1000*_F
              X        : 1.5 (interpolated)
              Y        : 1.05 (interpolated)
-             E        : 1.00499999999999989 (interpolated)
-             F        : 1.000499999999999945 (interpolated)
+             E        : 1 (interpolated)
+             F        : 1 (interpolated)
           1113.00
  
 GO bn_reset
@@ -68502,7 +68510,7 @@ list veven
              SUBSET   : 3 by 3 by 3 by 3 points (X-Y-E-FORECAST)
               4        6        8     
               2        3        4
- ---- N:2 F:   05-JAN-1980 00:00:00
+ ---- N:2 F:   1980
  ---- M:2 E:   4
  4   / 2:  2222.00  3222.00  4222.00
  6   / 3:  2322.00  3322.00  4322.00
@@ -68515,7 +68523,7 @@ list veven
  4   / 2:  2242.00  3242.00  4242.00
  6   / 3:  2342.00  3342.00  4342.00
  8   / 4:  2442.00  3442.00  4442.00
- ---- N:3 F:   07-JAN-1980 00:00:00
+ ---- N:3 F:   1980
  ---- M:2 E:   4
  4   / 2:  2223.00  3223.00  4223.00
  6   / 3:  2323.00  3323.00  4323.00
@@ -68528,7 +68536,7 @@ list veven
  4   / 2:  2243.00  3243.00  4243.00
  6   / 3:  2343.00  3343.00  4343.00
  8   / 4:  2443.00  3443.00  4443.00
- ---- N:4 F:   09-JAN-1980 00:00:00
+ ---- N:4 F:   1980
  ---- M:2 E:   4
  4   / 2:  2224.00  3224.00  4224.00
  6   / 3:  2324.00  3324.00  4324.00
@@ -68546,7 +68554,7 @@ list v1234
              SUBSET   : 3 by 3 by 3 by 3 points (X-Y-E-FORECAST)
               5        7        9     
               3        4        5
- ---- N:3 F:   06-JAN-1980 00:00:00
+ ---- N:3 F:   1980
  ---- M:3 E:   5
  5   / 3:  2777.50  3777.50  4777.50
  7   / 4:  2877.50  3877.50  4877.50
@@ -68559,7 +68567,7 @@ list v1234
  5   / 3:  2797.50  3797.50  4797.50
  7   / 4:  2897.50  3897.50  4897.50
  9   / 5:  2997.50  3997.50  4997.50
- ---- N:4 F:   08-JAN-1980 00:00:00
+ ---- N:4 F:   1980
  ---- M:3 E:   5
  5   / 3:  2778.50  3778.50  4778.50
  7   / 4:  2878.50  3878.50  4878.50
@@ -68572,7 +68580,7 @@ list v1234
  5   / 3:  2798.50  3798.50  4798.50
  7   / 4:  2898.50  3898.50  4898.50
  9   / 5:  2998.50  3998.50  4998.50
- ---- N:5 F:   10-JAN-1980 00:00:00
+ ---- N:5 F:   1980
  ---- M:3 E:   5
  5   / 3:  2779.50  3779.50  4779.50
  7   / 4:  2879.50  3879.50  4879.50
@@ -68592,8 +68600,8 @@ stat veven
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68616,8 +68624,8 @@ stat v1[g=even]-veven, v1
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68632,8 +68640,8 @@ stat v1[g=even]-veven, v1
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68649,8 +68657,8 @@ stat v2[g=even]-veven, v2
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68665,8 +68673,8 @@ stat v2[g=even]-veven, v2
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68682,8 +68690,8 @@ stat v3[g=even]-veven, v3
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68698,8 +68706,8 @@ stat v3[g=even]-veven, v3
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68715,8 +68723,8 @@ stat v4[g=even]-veven, v4
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68731,8 +68739,8 @@ stat v4[g=even]-veven, v4
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68748,8 +68756,8 @@ stat v12[g=even]-veven, v12
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68764,8 +68772,8 @@ stat v12[g=even]-veven, v12
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68781,8 +68789,8 @@ stat v13[g=even]-veven, v13
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68797,8 +68805,8 @@ stat v13[g=even]-veven, v13
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68814,8 +68822,8 @@ stat v14[g=even]-veven, v14
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68830,8 +68838,8 @@ stat v14[g=even]-veven, v14
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68847,8 +68855,8 @@ stat v23[g=even]-veven, v23
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68863,8 +68871,8 @@ stat v23[g=even]-veven, v23
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68880,8 +68888,8 @@ stat v24[g=even]-veven, v24
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68896,8 +68904,8 @@ stat v24[g=even]-veven, v24
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68913,8 +68921,8 @@ stat v33[g=even]-veven, v33
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68929,8 +68937,8 @@ stat v33[g=even]-veven, v33
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68946,8 +68954,8 @@ stat v234[g=even]-veven, v234
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68962,8 +68970,8 @@ stat v234[g=even]-veven, v234
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68979,8 +68987,8 @@ stat v134[g=even]-veven, v134
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -68995,8 +69003,8 @@ stat v134[g=even]-veven, v134
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69012,8 +69020,8 @@ stat v124[g=even]-veven, v124
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69028,8 +69036,8 @@ stat v124[g=even]-veven, v124
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69045,8 +69053,8 @@ stat v123[g=even]-veven, v123
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69061,8 +69069,8 @@ stat v123[g=even]-veven, v123
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69078,8 +69086,8 @@ stat v1234[g=even]-veven, v1234
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69094,8 +69102,8 @@ stat v1234[g=even]-veven, v1234
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69119,8 +69127,8 @@ stat v1[g=even]-veven, v1
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69135,8 +69143,8 @@ stat v1[g=even]-veven, v1
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69152,8 +69160,8 @@ stat v2[g=even]-veven, v2
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69168,8 +69176,8 @@ stat v2[g=even]-veven, v2
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69185,8 +69193,8 @@ stat v3[g=even]-veven, v3
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69201,8 +69209,8 @@ stat v3[g=even]-veven, v3
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69218,8 +69226,8 @@ stat v4[g=even]-veven, v4
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69234,8 +69242,8 @@ stat v4[g=even]-veven, v4
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69251,8 +69259,8 @@ stat v12[g=even]-veven, v12
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69267,8 +69275,8 @@ stat v12[g=even]-veven, v12
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69284,8 +69292,8 @@ stat v13[g=even]-veven, v13
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69300,8 +69308,8 @@ stat v13[g=even]-veven, v13
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69317,8 +69325,8 @@ stat v14[g=even]-veven, v14
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69333,8 +69341,8 @@ stat v14[g=even]-veven, v14
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69350,8 +69358,8 @@ stat v23[g=even]-veven, v23
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69366,8 +69374,8 @@ stat v23[g=even]-veven, v23
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69383,8 +69391,8 @@ stat v24[g=even]-veven, v24
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69399,8 +69407,8 @@ stat v24[g=even]-veven, v24
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69416,8 +69424,8 @@ stat v33[g=even]-veven, v33
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69432,8 +69440,8 @@ stat v33[g=even]-veven, v33
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69449,8 +69457,8 @@ stat v234[g=even]-veven, v234
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69465,8 +69473,8 @@ stat v234[g=even]-veven, v234
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69482,8 +69490,8 @@ stat v134[g=even]-veven, v134
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69498,8 +69506,8 @@ stat v134[g=even]-veven, v134
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69515,8 +69523,8 @@ stat v124[g=even]-veven, v124
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69531,8 +69539,8 @@ stat v124[g=even]-veven, v124
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69548,8 +69556,8 @@ stat v123[g=even]-veven, v123
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69564,8 +69572,8 @@ stat v123[g=even]-veven, v123
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69581,8 +69589,8 @@ stat v1234[g=even]-veven, v1234
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -69597,8 +69605,8 @@ stat v1234[g=even]-veven, v1234
              Y: 4.01 to 8.99
              Z:  N/A
              T:  N/A
-             E: 4.0099999999999998 to 8.9900000000000002
-             FORECAST: 05-JAN-1980 00:14:24 to 09-JAN-1980 23:4
+             E: 4 to 9
+             FORECAST: 1980 to 1980
              DATA SET: N/A
  
  Total # of data points: 81 (3*3*1*1*3*3)
@@ -70682,7 +70690,7 @@ stat temp[g=g5day] - temp[g=g5day@ave]
              DEPTH (m): 5
              TIME: 21-JAN-1982 00:00 (interpolated)
              E: 1 to 2
-             FORECAST: 23-JAN-1982 00:00:00 to 24-JAN-1982 00:0
+             FORECAST: 1982 to 1982
              DATA SET: ./gtsa056_1_ef.nc
  
  Total # of data points: 120 (5*6*1*1*2*2)
@@ -70714,7 +70722,7 @@ LIST temp[g=g5day@ave]
              TIME     : 21-JAN-1982 00:00 (interpolated)
                129.5W   128.5W   127.5W   126.5W   125.5W  
                101      102      103      104      105
- ---- N:1 F:   23-JAN-1982 00:00:00
+ ---- N:1 F:   1982
  ---- M:1 E:   1
  1.5N  / 46:  32.3553  32.3552  32.5032  32.8652  33.3285
  1.17N / 45:  32.1766  32.1710  32.2834  32.5970  33.0244
@@ -70729,7 +70737,7 @@ LIST temp[g=g5day@ave]
  0.5N  / 43:  37.9306  37.8902  37.8887  38.0374  38.3408
  0.17N / 42:  37.8944  37.8343  37.7825  37.8263  38.0336
  0.17S / 41:  37.9538  37.8657  37.7716  37.7285  37.8282
- ---- N:2 F:   23-JAN-1982 20:00:00
+ ---- N:2 F:   1982
  ---- M:1 E:   1
  1.5N  / 46:  37.7553  37.7552  37.9032  38.2652  38.7285
  1.17N / 45:  37.5766  37.5710  37.6834  37.9970  38.4244
@@ -70763,7 +70771,7 @@ LIST temp[g=g5day]
              TIME     : 21-JAN-1982 00:00 (interpolated)
                129.5W   128.5W   127.5W   126.5W   125.5W  
                101      102      103      104      105
- ---- N:1 F:   23-JAN-1982 00:00:00
+ ---- N:1 F:   1982
  ---- M:1 E:   1
  1.5N  / 46:  34.3553  34.3552  34.5032  34.8652  35.3285
  1.17N / 45:  34.1766  34.1710  34.2834  34.5970  35.0244
@@ -70778,7 +70786,7 @@ LIST temp[g=g5day]
  0.5N  / 43:  39.9306  39.8902  39.8887  40.0374  40.3408
  0.17N / 42:  39.8944  39.8343  39.7825  39.8263  40.0336
  0.17S / 41:  39.9538  39.8657  39.7716  39.7285  39.8282
- ---- N:2 F:   23-JAN-1982 20:00:00
+ ---- N:2 F:   1982
  ---- M:1 E:   1
  1.5N  / 46:  36.0220  36.0219  36.1698  36.5318  36.9952
  1.17N / 45:  35.8433  35.8377  35.9501  36.2637  36.6910
@@ -70818,7 +70826,7 @@ plot temp
  -DELETE TEMP     M:104 dset:   1 I:  101  105  J:   41   46  K:    1    1  L:    2    3  M:    1    2  N:    1    2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GGR1            PSXT1     PSYT5_89  PSZT1_2   TIME21    EAXIS     FAXIS
- strip --> EX#1[F=23-JAN-198200:00:00@ITP,D=1]
+ strip --> EX#1[F=1982@ITP,D=1]
  strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
  strip --> EX#1[Y=0@ITP,D=1]
  strip --> EX#1[X=180E@ITP,D=1]
@@ -70827,7 +70835,7 @@ plot temp
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[Y=0@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
- doing --> TEMP[F=23-JAN-198200:00:00@ITP,D=1]
+ doing --> TEMP[F=1982@ITP,D=1]
 setting up plot
 PPL plot 863  complete
 plot/over temp[g=g5day]
@@ -70894,14 +70902,14 @@ plot temp
  -DELETE TEMP     M: 80 dset:   1 I:   50   51  J:   41   42  K:    1    1  L:    2    3  M:    1    2  N:    1    1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GGR1            PSXT1     PSYT5_89  PSZT1_2   TIME21    EAXIS     FAXIS
- strip --> EX#1[F=23-JAN-198200:00:00@ITP,D=1]
+ strip --> EX#1[F=1982@ITP,D=1]
  strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
  strip --> EX#1[X=180E@ITP,D=1]
  eval    EX#1     C:  7 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    2
  reading TEMP     M: 80 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    2
  doing --> TEMP[X=180E@ITP,D=1]
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
- doing --> TEMP[F=23-JAN-198200:00:00@ITP,D=1]
+ doing --> TEMP[F=1982@ITP,D=1]
 setting up plot
 PPL plot 867  complete
 plot/over temp[g=g5day]
@@ -72461,7 +72469,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72512,7 +72520,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72551,7 +72559,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72590,7 +72598,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72621,7 +72629,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72653,7 +72661,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72714,7 +72722,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72759,7 +72767,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72814,7 +72822,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72850,7 +72858,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72886,7 +72894,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72922,7 +72930,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72954,7 +72962,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73184,7 +73192,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          FLOAT     units           CHAR        13   T       degrees_north
@@ -73216,7 +73224,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          FLOAT     units           CHAR        13   T       degrees_north
@@ -73257,7 +73265,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73295,7 +73303,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -73320,7 +73328,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -73345,7 +73353,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -73785,7 +73793,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73814,7 +73822,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73865,7 +73873,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74033,7 +74041,8 @@ let/title="tic labels on dependent axis" var = {\
 1.6897,1.687,1.6843,1.6817,1.679,1.6765,1.676,1.676}
  
 plot/line/sym/title="Vert axis labels should be 1.675 thru 1.715" var
-can mode meta
+cancel view
+cancel mode meta
  
  
 GO bn_reset
@@ -74430,8 +74439,8 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Mon May 11 09:57:22 2015: ncks -h -A -h z1.nc append_to_this.nc\n",
-			"FERRET V6.942 (beta) 11-May-15" ;
+		:history = "Tue May 12 09:12:14 2015: ncks -h -A -h z1.nc append_to_this.nc\n",
+			"FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
 }
@@ -74465,7 +74474,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74496,7 +74505,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74558,7 +74567,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74586,7 +74595,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76301,7 +76310,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76324,7 +76333,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76476,7 +76485,7 @@ shade/n=3/L=6 bath_tf
 ! If so its label will show Julian too.
 sh sym lab($labnum_f)
  !-> sh sym lab5
-LAB5 = "FORECAST : 03-JAN-2000 00:00:00 JULIAN"
+LAB5 = "FORECAST : 2000 JULIAN"
  
 GO bn_reset
 cancel mode verify
@@ -76552,7 +76561,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76582,7 +76591,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76603,7 +76612,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76624,7 +76633,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76646,7 +76655,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -77067,7 +77076,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -77083,7 +77092,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -77099,7 +77108,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V6.942 (beta) 11-May-15
+ .                               history         CHAR        30   T       FERRET V6.942 (beta) 12-May-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -78115,7 +78124,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 }
  
 GO bn_reset
@@ -78208,7 +78217,7 @@ variables:
 		LON360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0FERRET V6.942 (beta) 11-May-15" ;
+		:history = "CruiseDsgNcFile 1.0FERRET V6.942 (beta) 12-May-15" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -78235,7 +78244,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- FERRET V6.942 (beta) 11-May-15 
+ FERRET V6.942 (beta) 12-May-15 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -78267,7 +78276,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the fileFERRET V6.942 (beta) 11-May-15 
+ ..history = The history of the fileFERRET V6.942 (beta) 12-May-15 
  ..Conventions = Conventions for variables named V2CF-1.6 
  
 GO bn_reset
@@ -79200,8 +79209,8 @@ list {spawn:"ls xml*.jnl"}
  
 LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
 say `filesets, return=isize`
- !-> MESSAGE/CONTINUE 882
-882
+ !-> MESSAGE/CONTINUE 883
+883
  
 let files = {spawn:"ls *cdf*.jnl"}
 let name_len = strindex(files, ".sub")
@@ -79917,6 +79926,37 @@ say `sst,r=isize`  `a,r=isize` `a_anom,r=isize`
  !-> MESSAGE/CONTINUE 180  1 1
 180  1 1
  
+ 
+GO bn_reset
+cancel mode verify
+GO err693_ef_axis_precision.jnl
+ ! NOAA/PMEL TMAP
+ ! FERRET v6.94
+ ! Linux 2.6.32-504.12.2.el6.x86_64 64-bit - 03/20/15
+ ! 11-May-15 16:51
+ 
+define axis/f faxis = {0.001, 0.123, 0.234, 0.498}
+define axis/e eaxis = {1001.1009, 1234.005, 2112.321, 2520.45}
+let efvar = _M[ge=eaxis] + _n[gf=faxis]
+set view upper; plot/n=3 efvar
+set view lower; plot/m=2 efvar
+list/n=3 efvar
+             VARIABLE : _M[GE=EAXIS] + _N[GF=FAXIS]
+             SUBSET   : 4 points (E)
+             F        : 0.2
+ 1001.1 / 1:  4.000
+ 1234   / 2:  5.000
+ 2112.3 / 3:  6.000
+ 2520.4 / 4:  7.000
+list/m=2 efvar
+             VARIABLE : _M[GE=EAXIS] + _N[GF=FAXIS]
+             SUBSET   : 4 points (F)
+             E        : 1234
+ 0    / 1:  3.000
+ 0.12 / 2:  4.000
+ 0.23 / 3:  5.000
+ 0.5  / 4:  6.000
+q
  
  
 GO bn_reset
@@ -81168,42 +81208,44 @@ sh grid sst
  LON1      LONGITUDE           10mr   109W                 91W
  LAT       LATITUDE             9 r   13N                  29N
  normal    Z
- TIME16    TIME                12 r   02-JAN-2010 00:00    13-JAN-2010 00:00
+ TF_LAG_T  MODEL ELAPSED TIME (12 r   0                    11
  normal    E
- FORECAST  FORECAST             4 r   15-JAN-1901 00:00    15-JAN-1901 00:00
+ TF_CAL_F  FORECAST             4 r   02-JAN-2010 00:00    08-JAN-2010 00:00
 list/i=1/j=1/L=1:6/n=1:4 sst
              VARIABLE : SST_IN (Deg C)
              FILENAME : FOURFILES
-             SUBSET   : 6 by 4 points (TIME-FORECAST)
+             SUBSET   : 6 by 4 points (MODEL ELAPSED TIME (day)-FORECAST)
              LONGITUDE: 109W
              LATITUDE : 13N
-                               2010      2010      2010      2010      2010      2010   
-                                1         2         3         4         5         6
- 15-JAN-1901 00:00:01 / 1:   27.3789   27.4378   27.5751   28.1351   28.8653   28.7771
- 15-JAN-1901 00:00:02 / 2:   54.7577   54.8756   55.1503   56.2703   57.7306   57.5541
- 15-JAN-1901 00:00:03 / 3:   82.1366   82.3133   82.7254   84.4054   86.5959   86.3312
- 15-JAN-1901 00:00:04 / 4:  109.5154  109.7511  110.3006  112.5405  115.4613  115.1082
+             Verification time increases across row.  Initialization time increases down page. 
+                         0         1         2         3         4         5      
+                          1         2         3         4         5         6
+ 02-JAN-2010 00 / 1:   27.3789   27.4378   27.5751   28.1351   28.8653   28.7771
+ 04-JAN-2010 00 / 2:   54.7577   54.8756   55.1503   56.2703   57.7306   57.5541
+ 06-JAN-2010 00 / 3:   82.1366   82.3133   82.7254   84.4054   86.5959   86.3312
+ 08-JAN-2010 00 / 4:  109.5154  109.7511  110.3006  112.5405  115.4613  115.1082
  
 show att sst
      attributes for dataset: FOURFILES
  SST.long_name = SST_IN 
  SST.units = Deg C 
  SST.missing_value = -1.E+34
- SST.coordinates = FORECAST TIME15 T__TIME16 TIME15 LAT LON1 
- SST._ftime2dRef = T__TIME16 
+ SST.coordinates = FORECAST TIME15 TF_TIMES TIME15 LAT LON1 
+ SST._ftime2dRef = TF_TIMES 
  
 ! Attribute _ftime2dRef pointe to the 2D time variable
 list/L=1:6/n=1:4 `sst._ftime2dRef`
- !-> list/L=1:6/n=1:4 T__TIME16
-             VARIABLE : Time coordinates for ForecastModelRunCollection (day)
+ !-> list/L=1:6/n=1:4 TF_TIMES
+             VARIABLE : Forecast time step matrix (day since 01-JAN-2010 00:00:00)
              FILENAME : FOURFILES
-             SUBSET   : 6 by 4 points (TIME-FORECAST)
-                               2010      2010      2010      2010      2010      2010   
-                                1         2         3         4         5         6
- 15-JAN-1901 00:00:01 / 1:   1.00000   2.00000   3.00000   4.00000   5.00000   6.00000
- 15-JAN-1901 00:00:02 / 2:   3.00000   4.00000   5.00000   6.00000   7.00000   8.00000
- 15-JAN-1901 00:00:03 / 3:   5.00000   6.00000   7.00000   8.00000   9.00000  10.00000
- 15-JAN-1901 00:00:04 / 4:   7.00000   8.00000   9.00000  10.00000  11.00000  12.00000
+             SUBSET   : 6 by 4 points (MODEL ELAPSED TIME (day)-FORECAST)
+             Verification time increases across row.  Initialization time increases down page. 
+                         0         1         2         3         4         5      
+                          1         2         3         4         5         6
+ 02-JAN-2010 00 / 1:   1.00000   2.00000   3.00000   4.00000   5.00000   6.00000
+ 04-JAN-2010 00 / 2:   3.00000   4.00000   5.00000   6.00000   7.00000   8.00000
+ 06-JAN-2010 00 / 3:   5.00000   6.00000   7.00000   8.00000   9.00000  10.00000
+ 08-JAN-2010 00 / 4:   7.00000   8.00000   9.00000  10.00000  11.00000  12.00000
  
  
 !  *********** Always do a bn_reset  ***********
@@ -81220,8 +81262,8 @@ yes?
 yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.942 (beta)
- 	Linux 2.6.18-404.el5PAE 32-bit - 05/11/15
- 	11-May-15 09:57     
+ 	Linux 2.6.18-404.el5PAE 32-bit - 05/12/15
+ 	12-May-15 09:12     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -82075,7 +82117,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82100,7 +82142,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82124,7 +82166,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82163,7 +82205,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82198,7 +82240,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82239,7 +82281,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82296,7 +82338,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82353,7 +82395,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82408,7 +82450,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82456,7 +82498,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82550,7 +82592,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82620,7 +82662,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82671,7 +82713,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82746,7 +82788,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82773,7 +82815,7 @@ variables:
 		X_:long_name_mod = "axis ABSTRACT" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -82797,7 +82839,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -82824,11 +82866,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -82859,7 +82901,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82931,7 +82973,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -82975,7 +83017,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -83017,7 +83059,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -83125,7 +83167,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -83166,7 +83208,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -83189,7 +83231,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -83215,7 +83257,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -83235,7 +83277,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -83256,7 +83298,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -83299,7 +83341,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -83339,7 +83381,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -83377,7 +83419,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -83406,7 +83448,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -83439,7 +83481,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -83465,7 +83507,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -83511,7 +83553,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -83618,7 +83660,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 		:dt_internal = 15. ;
 }
@@ -83660,7 +83702,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -83743,7 +83785,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -83780,7 +83822,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -83820,7 +83862,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -83871,7 +83913,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -83930,7 +83972,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -83975,7 +84017,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -84018,7 +84060,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -84053,7 +84095,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -84087,7 +84129,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -84117,7 +84159,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -84146,7 +84188,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -84207,7 +84249,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -84252,7 +84294,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -84271,37 +84313,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
-		:Conventions = "CF-1.6" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	double A(XAX) ;
-		A:missing_value = -1.e+34 ;
-		A:_FillValue = -1.e+34 ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -84331,7 +84343,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
+		:Conventions = "CF-1.6" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	double A(XAX) ;
+		A:missing_value = -1.e+34 ;
+		A:_FillValue = -1.e+34 ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -84384,7 +84426,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -84426,7 +84468,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -84444,7 +84486,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 err611_set_var_ez.jnl --- 
@@ -84463,7 +84505,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -84481,7 +84523,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -84498,7 +84540,7 @@ variables:
 		A:long_name = "{1.1,2.2,3.3}" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -84519,7 +84561,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -84582,7 +84624,7 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_keep_axisnames.jnl --- test SAVE/KEEP_AXISNAMES
@@ -84609,7 +84651,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -84636,7 +84678,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, degrees_east, degrees_north, std names on axes:
@@ -84702,7 +84744,7 @@ variables:
 		ZUP:long_name = "Z[GZ=ZAXUP]" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Convert forms of DEG, degrees to degrees_east:
@@ -84734,7 +84776,7 @@ variables:
 		Y_:long_name_mod = "axis YFIFTEEN" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Downcase units, e.g. in time axis DAYS since
@@ -84767,7 +84809,7 @@ variables:
 		XYTVAR:history = "From bn_strides" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -84792,7 +84834,7 @@ variables:
 		time:history = "From http://tds.climatedatacloud.com/thredds/dodsC/ensembles/nmme_gfdl/TwoD" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -84830,7 +84872,7 @@ variables:
 		time:history = "From http://tds.climatedatacloud.com/thredds/dodsC/ensembles/nmme_gfdl/TwoD" ;
 
 // global attributes:
-		:history = "FERRET V6.942 (beta) 11-May-15" ;
+		:history = "FERRET V6.942 (beta) 12-May-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -84858,8 +84900,8 @@ yes?
 yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.942 (beta)
- 	Linux 2.6.18-404.el5PAE 32-bit - 05/11/15
- 	11-May-15 09:57     
+ 	Linux 2.6.18-404.el5PAE 32-bit - 05/12/15
+ 	12-May-15 09:12     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 8 bytes)
@@ -84871,13 +84913,13 @@ FERRET_PLATFORM = "Linux 2.6.18-404.el5PAE 32-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 12:21:13 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "11-May-15"
-SESSION_TIME = "09:57"
-SESSION_PID = "1515"
-DELTA_CPU = "0.034993"
-CLOCK_SECS = "0.281"
-CURRENT_DATE = "11-May-15"
-CURRENT_TIME = "09:57:40"
+SESSION_DATE = "12-May-15"
+SESSION_TIME = "09:12"
+SESSION_PID = "12916"
+DELTA_CPU = "0.039993"
+CLOCK_SECS = "0.288"
+CURRENT_DATE = "12-May-15"
+CURRENT_TIME = "09:12:33"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -84899,7 +84941,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "11-May-15:09:57"
+WIN_TITLE = "12-May-15:09:12"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -84921,7 +84963,8 @@ GO_FILE = "./bn_startupfile.jnl"
       LATIT_LABEL   CANCELLED            1
       DEPTH_LABEL      SET              -4
       CALENDAR         SET         minutes
-      6D_LAB           SET
+      E_LABEL          SET               1
+      F_LABEL          SET               1
       ASCII_FONT       SET
       SEGMENT          SET
       WAIT          CANCELLED
@@ -84941,6 +84984,7 @@ GO_FILE = "./bn_startupfile.jnl"
       SHRINK_YLAB   CANCELLED
       CURVILINEAR   CANCELLED
       LAYERZ        CANCELLED
+      6D_LAB           SET
      currently SET data sets:
     1> ./gtbc011.cdf  (default)
  name     title                             I         J         K         L         M         N
@@ -84962,8 +85006,8 @@ yes?
 yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v6.942 (beta)
- 	Linux 2.6.18-404.el5PAE 32-bit - 05/11/15
- 	11-May-15 09:57     
+ 	Linux 2.6.18-404.el5PAE 32-bit - 05/12/15
+ 	12-May-15 09:12     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -85181,8 +85225,8 @@ yes?
 yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.942 (beta)
- 	Linux 2.6.18-404.el5PAE 32-bit - 05/11/15
- 	11-May-15 09:57     
+ 	Linux 2.6.18-404.el5PAE 32-bit - 05/12/15
+ 	12-May-15 09:12     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -85295,8 +85339,8 @@ yes?
 yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.942 (beta)
- 	Linux 2.6.18-404.el5PAE 32-bit - 05/11/15
- 	11-May-15 09:57     
+ 	Linux 2.6.18-404.el5PAE 32-bit - 05/12/15
+ 	12-May-15 09:12     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -85380,4 +85424,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Mon May 11 09:57:42 PDT 2015
+Ended at Tue May 12 09:12:35 PDT 2015

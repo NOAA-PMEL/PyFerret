@@ -61,6 +61,7 @@
 * V690 9/13-1/14 *sh*  added aux var regridding,
 *	           including is_aux_ptr, and uvar_curvi_var/cat
 *		   added space at the top of the isp stack for nferdims auxvars
+* V695+ *sh* 5/15  added uvar_c_cache_ptr for c-malloc caching of aux vars
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -159,6 +160,7 @@
 *	uvar_lo/hi_ss	- when uvlims are given in expression this tells what
 *	uvar_lo/hi_ww	- when uvlims are given in expression this tells what
 *	uvar_bad_data	- missing value flag to be used for this variable
+*	uvar_c_cache_ptr- pointer to c-cahce of full range variable
 *	has_uvar_gc	- variable is a grid-changing variable
 
 *	isp	 	- interpretation stack pointer
@@ -308,6 +310,7 @@
      .		uvar_ifv	 ( max_uvar ),
      .		uvar_title_w_text( max_uvar ),
      .		uvar_need_dset	 ( max_uvar ),
+     .		uvar_c_cache_ptr ( max_uvar ),
      .		has_uvar_gc,
      .
      .		uvar_text	 ( max_uvar ),
@@ -379,7 +382,9 @@
 	REAL*8          uvar_name_code_head,
      .                  uvar_name_code_padding,       
      .                  uvar_num_items_head,
-     .                  uvar_num_items_padding
+     .                  uvar_num_items_padding,
+     .			uvar_c_cache_ptr
+
         INTEGER		uvar_num_items  ,
      .			uvar_grid	,
      .			uvar_data_type	,

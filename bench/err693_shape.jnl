@@ -1,0 +1,16 @@
+! err693_shape.jnl
+! bug 2273 shape of variable with various subexpressions
+
+use coads_climatology
+let a = sst[x=@ave]
+let a_clim = a[gt=MONTH_IRREG@mod]
+let a_anom = a - a_clim[gt=a@nrst]
+
+! Should all be YT
+say `a,r=shape`  `a_clim[gt=a@nrst],r=shape` `a_anom,r=shape`
+
+! Also works for size returns
+
+! Should be 180, 1, 1
+say `sst,r=isize`  `a,r=isize` `a_anom,r=isize`
+

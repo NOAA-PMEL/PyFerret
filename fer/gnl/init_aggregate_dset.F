@@ -41,8 +41,10 @@
 *                 Get grid of user-vars, allow more combinations with user vars
 *                 better error handling.
 * V695 2/15 *acm* Aggregation in either E or F direction, as defined by agg_dim
+* V695+ 5/15 *sh* Call GET_AXIS_SPEEDS (pulled out of CHECK_MEMBER_DSETS)
 
       IMPLICIT NONE
+	include 'netcdf.inc'
         include 'tmap_errors.parm'
 #include "tmap_dset.parm"
         include 'tmap_dims.parm'
@@ -50,6 +52,7 @@
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xdset_info.cd_equiv'
+	include 'xunits.cmn_text'
         include 'xprog_state.cmn'
 	include 'xtm_grid.cmn_text'  
 	include 'errmsg.parm'
@@ -63,18 +66,23 @@
 	LOGICAL		agg_quiet, agg_hide
 
 * local variable declarations:
-	LOGICAL	match, has_uvars
+	LOGICAL	match, has_uvars, need_tf_lag_t
 	INTEGER	TM_LENSTR, TM_LENSTR1, STR_SAME, NCF_DELETE_DSET,
      .		NCF_ADD_AGG_MEMBER, NCF_GET_AGG_MEMBER_INFO, 
      .          KNOWN_GRID,
-     .		iset, dset, item, ii,
+     .		iset, dset, item, ii, nT,
      .		perm(nferdims), nsets, member_sets(maxdsets), 
      .		imatch, nv, grid, igrid, idim, ivar, nvars, iline, 
      .		slen, memb_var, memb_dset, memb_grid, ugrid, 
      .		type, fvar, ndims, ngatts, recdim, varid, attoutflag,
-     .          tax_match, test_tax, memb_tax, prev_line_start
-	CHARACTER vname*128
+     .          tax_match, tf_lag_t, memb_tax, prev_line_start
+	CHARACTER vname*128, buff*64, tcoordname*16
 	CHARACTER TM_STRING*13
+	REAL*8  TM_WORLD, avg_lag
+
+* initialize
+	need_tf_lag_t = .TRUE.
+	tf_lag_t = unspecified_int4  ! lag time axis if FMRC
 
 * check to see if this name matches an already-open dataset name.
 * if so, thats an error
@@ -109,16 +117,47 @@
  220	CONTINUE
 
 * Create datset. Will delete it later if there are no aggregate variables found.
-
-	CALL CREATE_AGG_DSET (agg_dset, dname, dtitle, nsets, 
-     .			 agg_dim, iline, status)  
+	CALL CREATE_AGG_DSET (agg_dset, dname, dtitle,
+     .			 nsets, agg_dim, iline, status)  
 	IF (status .NE. ferr_ok) GOTO 5300
 
-* See what variables are shared by all the datsets
+* perform initializations needed on a new dataset
+!* interpret special parameters in the descriptor
+!	CALL GET_DSET_PARMS( agg_dset, status )
+!	IF ( status .NE. ferr_ok ) GOTO 5300XX
 
+* determine relative access speeds along each axis
+	CALL GET_AXIS_SPEED( agg_dset )
+
+!* build completed ( with time axis ) grids for computable variables
+!	CALL MAKE_CVAR_GRIDS( dset, status )
+!	IF ( status .NE. ferr_ok ) GOTO 5300XX
+
+* 1st member dset sets pattern for all to follow
 	dset = member_sets(1)
+
+* If this is a Forecast aggregation create name for the 2D time array
+* Make it unique as necessary by adding "_" chars
+	IF (agg_dim.EQ.f_dim) THEN
+	   tcoordname = 'TF_TIMES'
+	   slen = 8
+ 250	   CONTINUE
+	   DO ivar = 1, maxvars
+	      IF (ds_var_setnum(ivar) .EQ. dset) THEN
+	         IF ( STR_SAME(tcoordname,ds_var_code(ivar)) .EQ. 0 ) THEN
+	            tcoordname = tcoordname(:slen)//'_'
+	            slen = slen + 1
+	            GOTO 250
+	         ENDIF
+	      ENDIF
+	   ENDDO
+	ELSE
+	   tcoordname = ' '
+	ENDIF
+
+*********  top of variable loop ***************
+* See what variables are shared by all the datsets
 	nvars = 0
-	
 	DO 800 ivar = 1, maxvars
            IF ( ds_var_setnum(ivar) .NE. dset ) GOTO 800
 	   vname = ds_var_code(ivar)
@@ -205,22 +244,27 @@
 		    has_uvars = .TRUE.
 	         ENDIF
 		 
-* For forecast-direction aggregations, the time axes don't match.
-* They must have the same units and origin and be the same length. Their
-* start times must be increasing.
-
-		 IF (agg_dim .EQ. f_dim) THEN
-	            test_tax = grid_line(t_dim, grid)
-	            memb_tax = grid_line(t_dim, igrid) 
-	            IF (line_tunit(test_tax) .NE. line_tunit(memb_tax) )
-     .                   tax_match = tax_match+1
-	            IF (STR_SAME(line_t0(test_tax), line_t0(memb_tax)) .NE. 0 )
-     .                   tax_match = tax_match+1
-	            IF (line_dim(test_tax) .NE. line_dim(memb_tax) )
-     .                   tax_match = tax_match+1
-	            IF (line_start(memb_tax) .GT. prev_line_start) 
-     .                   tax_match = tax_match+1
-	            IF (tax_match .NE. 0) GOTO 500
+* For forecast-direction aggregations, the time axis of the aggregation 
+* is not taken directly from the ensemble members.  Instead it
+* is merely a lag axis -- number of time steps and lag per step
+		 IF (agg_dim .EQ. f_dim .AND. need_tf_lag_t) THEN
+	            memb_tax = grid_line(t_dim, grid)
+	            nT = line_dim(memb_tax)
+	            avg_lag = ( TM_WORLD(nT, grid, t_dim, box_middle )
+     .	                      - TM_WORLD(1,  grid, t_dim, box_middle ) )
+     .			      /(nT-1)
+	            CALL TM_NEW_LINE_NAME ( 'TF_LAG_T', buff )
+	            CALL TM_MAKE_BASIC_AXIS( buff, 0.0D0, avg_lag, nT,
+     .					     tf_lag_t, status )
+	            line_unit_code(tf_lag_t) = line_unit_code(memb_tax)
+	            line_units(tf_lag_t) =
+     .					un_name(line_unit_code(tf_lag_t))
+!	            line_tunit(tf_lag_t) =
+!     .					un_convert(line_unit_code(tf_lag_t))
+	            line_direction(tf_lag_t) = 'TT'
+	            line_dattype  (tf_lag_t) = nf_double
+	            line_dim_only (tf_lag_t) = .FALSE.  ! ?? why?
+	            need_tf_lag_t = .FALSE.
 		 ENDIF
 		       
   500	      CONTINUE
@@ -235,7 +279,7 @@
      .	         vname)
               IF (agg_dim.EQ.f_dim .AND. tax_match.NE.0) THEN
 	      IF ( .NOT.agg_quiet ) 
-     .	         CALL WARN('For FMRC: Time axes do not share units or size;'//
+     .	         CALL WARN('FMRC Time axes do not share units or size;'//
      .	         ' or starting times not increasing '//
      .	         vname)
               ENDIF
@@ -246,8 +290,8 @@
 	   
            nvars = nvars + 1
 
-	   CALL DEFINE_AGGREGATE_GRID (agg_dset, nvars, vname,
-     .           ivar, iline, grid, agg_dim, member_sets, nsets)
+	   CALL DEFINE_AGGREGATE_GRID (agg_dset, tcoordname, nvars, vname,
+     .           ivar, iline, tf_lag_t, grid, agg_dim, member_sets, nsets)
 	   IF (status .NE. ferr_ok) GOTO 5000
 
   800   CONTINUE
@@ -300,16 +344,16 @@
 
               nvars = nvars + 1
 
-	      CALL DEFINE_AGGREGATE_GRID (agg_dset, nvars, vname,
-     .           fvar, iline, grid, agg_dim, member_sets, nsets)
+	      CALL DEFINE_AGGREGATE_GRID (agg_dset, tcoordname, nvars, vname,
+     .           fvar, iline, tf_lag_t, grid, agg_dim, member_sets, nsets)
 	      IF (status .NE. ferr_ok) GOTO 5000
 
 * Do not include variables that are entirely user-defined.
 	   ELSE
 	      IF ( .NOT.agg_quiet ) 
      .	         CALL WARN('Exclude variable from aggregate. '//
-     .	         'Must be a file variable in at least one member dataset: '//
-     .	         vname)
+     .	         'Must be a file variable in at least '//
+     .		 'one member dataset: '// vname)
 
 	   ENDIF
 
@@ -360,7 +404,8 @@
 	agg_dset = unspecified_int4
 	GOTO 5000
 
- 5100   CALL ERRMSG( ferr_syntax,status,'dataset name already in use:'
+ 5100   CALL ERRMSG( ferr_invalid_command,status,
+     .		'dataset name already in use: '
      .		//dname(:TM_LENSTR1(dname)), *5000 )
      
  5300	CALL ERRMSG( ferr_aggregate_error, status, ' ', *9950 )

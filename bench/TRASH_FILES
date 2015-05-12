@@ -10,8 +10,10 @@ a1.nc
 a2.nc
 aa.nc
 abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
+a.gif
 a.jnl
 a.nc
+a.png
 a.txt
 anew_global.nc
 another_file_vars.nc
@@ -117,6 +119,7 @@ longtitle.nc
 longvname.nc
 lonlat.dat
 lonlat.nc
+metafile.plt
 multi_line_labels.plt
 my_file_vars.nc
 mypack.nc

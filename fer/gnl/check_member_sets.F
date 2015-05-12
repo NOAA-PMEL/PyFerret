@@ -38,6 +38,8 @@
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
+* V695+ *sh*  5/15 removed block of code from here to INIT_AGGREGATE_DSET
+*                  notably, the call to GET_AXIS_SPEED
 
         include 'tmap_errors.parm'
 #include "tmap_dset.parm"
@@ -118,17 +120,6 @@
 	   
            IF ( status .NE. merr_no_action ) THEN  ! merr_no_action = already init'ed
 	      IF ( status .NE. ferr_ok ) GOTO 5300 ! error in file or url
-
-* interpret special parameters in the descriptor
-	      CALL GET_DSET_PARMS( dset, status )
-	      IF ( status .NE. ferr_ok ) GOTO 5300
-
-* determine relative access speeds along each axis
-	      CALL GET_AXIS_SPEED( dset )
-
-* build completed ( with time axis ) grids for computable variables
-	      CALL MAKE_CVAR_GRIDS( dset, status )
-	      IF ( status .NE. ferr_ok ) GOTO 5300
 
 	   ENDIF
 

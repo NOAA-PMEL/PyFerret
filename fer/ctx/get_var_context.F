@@ -65,9 +65,10 @@
 * V685 4/13 *sh* parse the auxiliary regridding context terms ("*aux*"), too
 *	         and don't report errors in dependency_tree_mode
 * V690 12/13 *sh* bug fix when variable name unrecognized in VTREE mode
-* V693 10/14 *acm fix ticket 2206: If the grid number is a placeholder, don't 
+* V693 10/14 *acm* fix ticket 2206: If the grid number is a placeholder, don't 
 *                 go call flesh_out_axis etc (See the comment in get_context_mods, where
 *                 the grid is an encoding of the start/end limits of the regrid spec)
+* V695+ 5/15 *sh* report unrecognized aux var unless in dependency_tree_mode
 
 	IMPLICIT NONE
 
@@ -155,12 +156,14 @@
 	            cx_aux_cat (idim,var_cx) = cat
 	            cx_aux_var (idim,var_cx) = var
 	            cx_aux_stat(idim,var_cx) = paux_stat_used
-	         ELSE
+	         ELSEIF ( dependency_tree_mode ) THEN
 	            cx_valid_aux(iarg,var_cx) = .FALSE. ! a name not found
 	            IF (.NOT. unreported_error) THEN
 	               status = ferr_unknown_auxvar
 		       unreported_error = .TRUE.
 	            ENDIF
+	         ELSE
+	            GOTO 5200
 	         ENDIF	
 	      ENDIF
 	   ENDDO

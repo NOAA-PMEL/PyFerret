@@ -1,0 +1,13 @@
+ ! NOAA/PMEL TMAP
+ ! FERRET v6.94  
+ ! Linux 2.6.32-504.12.2.el6.x86_64 64-bit - 03/20/15
+ ! 11-May-15 16:51     
+
+define axis/f faxis = {0.001, 0.123, 0.234, 0.498}
+define axis/e eaxis = {1001.1009, 1234.005, 2112.321, 2520.45}
+let efvar = _M[ge=eaxis] + _n[gf=faxis]
+set view upper; plot/n=3 efvar
+set view lower; plot/m=2 efvar
+list/n=3 efvar
+list/m=2 efvar
+q

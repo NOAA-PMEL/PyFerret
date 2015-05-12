@@ -1,4 +1,4 @@
-	SUBROUTINE FIND_MEM_VAR( cx, mr, by_value )
+	SUBROUTINE FIND_MEM_VAR( cx, mr, by_value, valid_search )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -75,6 +75,7 @@
 * 2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685 4/13-3/14 *sh* support for auxiliary variables used in regridding
 * V692 7/14 *acm* ticket 2183: handle @WGT transform as for integrals
+* V695+ 5/15 *sh* added valid_search argument, to support c cache hits
 
 * (V510) How on cache hits on external functions (EFs) work:
 * uvar_given is used to encapsulate information about cache reuse for EF
@@ -112,14 +113,18 @@
 
 * calling argument declarations:
 	INTEGER cx, mr
-	LOGICAL by_value
+	LOGICAL by_value, valid_search
 
 * internal variable declarations:
 	LOGICAL has_trans, itsa_uvar,
      .          normal(nferdims), non_modulo(nferdims)
 	INTEGER HASH_CX, line,
      .		mv, defining_grid, idim, var
-        REAL*8  TM_WORLD, ww_hi_bound
+        REAL*8  TM_WORLD, ww_hi_bound, c_cache_ptr
+
+
+* initialize
+	valid_search = .TRUE.
 
 * in "STUPID" mode the program cannot find anything in memory
 *  (4/99) if mode_arg is 1 we are are using "weak_cache", so do not skip out
@@ -172,7 +177,7 @@
  100	mv = mv_flink( mv )
 	IF ( mv .LT. 0 ) THEN
 	   mr = mr_nonexist
-	   RETURN
+	   RETURN     ! not found in normal Ferret cache
 	ENDIF
 
 * right variable ?
@@ -359,5 +364,6 @@
 
 * failure exit
  5000	mr = mr_nonexist
+	valid_search = .FALSE.
 	RETURN
 	END

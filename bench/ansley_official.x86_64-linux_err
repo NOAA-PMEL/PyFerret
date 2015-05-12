@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 87156477 Feb 18 14:51 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 87937337 May 12 09:14 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: changes for _DQ_ and _SQ_ quotes handling. fix ticket 2235. F and T calendar axes
+Note: fix for ticket 2281 plus Steve's recent checkins
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Wed Feb 18 14:52:57 PST 2015
+Beginning at Tue May 12 09:22:18 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1415,8 +1415,8 @@ SHADE/L=1/LEV=0.01d sst
 POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, PLMpolydata
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
            *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
+           *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
            *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1832,28 +1832,27 @@ Replacing definition of axis XQ
 Replacing definition of axis YQ
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Evenly spaced axis has edges definition: TCOADS - ignored
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TIME1
-           *** NOTE: grid  used by data set coads_clim
+           *** NOTE: grid GHB2 used by data set coads_clim
            *** NOTE: Redefinition may alter apparent contents of data set
 Replacing definition of axis TIME1
-           *** NOTE: grid  used by data set coads_clim
+           *** NOTE: grid GHB2 used by data set coads_clim
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis COADSX.ILLEGAL
-           *** NOTE: grid  used by data set illeg_axname
+           *** NOTE: grid GEX2 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
-           *** NOTE: grid  used by data set illeg_axname
+           *** NOTE: grid GEX1 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
 Replacing definition of axis COADSY.ILLEGAL
-           *** NOTE: grid  used by data set illeg_axname
+           *** NOTE: grid GEX3 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
-           *** NOTE: grid  used by data set illeg_axname
+           *** NOTE: grid GEX1 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2255,7 +2254,7 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
 Replacing definition of axis TIME9
-           *** NOTE: grid  used by data set coads_climatology
+           *** NOTE: grid GSQ1 used by data set coads_climatology
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2317,8 +2316,8 @@ set axis/stride=2 NORMAL
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
            *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
            *** NOTE: Substituting coordinate midpoints
-           *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
            *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
+           *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis definition error on axis: TGAP
            *** NOTE: Bounds given describe non-contiguous axis cells
@@ -2352,10 +2351,10 @@ set axis/stride=2 NORMAL
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ Cached data cleared from memory
+ Cached data cleared from memory
+ Cached data cleared from memory
 curl error details: 
- Cached data cleared from memory
- Cached data cleared from memory
- Cached data cleared from memory
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2778,7 +2777,7 @@ Replacing definition of axis TSEC
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis CAXIS
-           *** NOTE: grid  used by data set grads_bug_file
+           *** NOTE: grid GMY1 used by data set grads_bug_file
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2933,11 +2932,11 @@ Re-defining viewport V8
  LISTing to file nc4_deflate4_xyt.nc
  LISTing to file nc4_deflate4_defaultchunk.nc
  PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file nc4_inttemp_classic.nc
 
 Bailing out of external function "tax_year":
 	 Function not valid for modulo time axis
- TEMPORARY data cleared from memory
- LISTing to file nc4_inttemp_classic.nc
            *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
  LISTing to file nc4_inttemp_set_list_deflate_chunk.nc
            *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
@@ -3297,8 +3296,6 @@ Replacing definition of axis FAX4DAY
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
 define data/agg windy = 1,2,3
- **ERROR: error defining aggregate dataset: Aggregate dataset not defined
-define data/agg windy = 1,2,3
            *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: UWND
            *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: VWND
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
@@ -3533,6 +3530,7 @@ list e
 list f
 Replacing definition of axis X1
 Replacing definition of axis Y1
+Replacing definition of axis ZAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3775,6 +3773,7 @@ Replacing definition of axis X2
 Replacing definition of axis Y2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis ZAX
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
@@ -3839,6 +3838,47 @@ stat/l=1/x=180/y=0 a
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: REPEAT what ?
+repeat/range=1:2/name=row
+ **ERROR: invalid command: REPEAT what ?
+repeat/range=1:2/name=row
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+ LISTing to file a.nc
+           *** NOTE: Not deleted: XAX
+           *** NOTE: Axis is in use by grid GFORMAT
+           *** NOTE: Not deleted: YAX
+           *** NOTE: Axis is in use by grid GFORMAT
+Replacing definition of axis TREDEF
+           *** NOTE: grid GSI1 used by data set a
+           *** NOTE: Redefinition may alter apparent contents of data set
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: illegal format type - must be "GIF"
+          frame/format=hdf/file=a.hdf
+frame/format=hdf/file=a.hdf
+ **ERROR: invalid command: illegal format type - must be "GIF"
+          frame/file=a.png
+frame/file=a.png
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis FAXIS
+Replacing definition of axis EAXIS
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of grid GRID3D
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3857,6 +3897,7 @@ Replacing definition of axis TAXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
            *** NOTE: Changing the value of attribute foobar.some_text
+           *** NOTE: Changing the value of attribute foobar.some_text
 Replacing definition of grid GG
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3866,8 +3907,11 @@ Replacing definition of grid GG
  TEMPORARY data cleared from memory
  LISTing to file a.nc
 Replacing definition of axis FSEC
-           *** NOTE: grid  used by data set a
+           *** NOTE: grid GSI1 used by data set a
            *** NOTE: Redefinition may alter apparent contents of data set
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3959,4 +4003,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Feb 18 14:55:30 PST 2015
+Ended at Tue May 12 09:24:37 PDT 2015

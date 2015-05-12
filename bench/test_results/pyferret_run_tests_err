@@ -1,8 +1,8 @@
-Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x 1 ksmith tmap 1188 Mar 30 13:24 /home/users/ksmith/PyFerret/bin/pyferret
-Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
+Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1188 May 12 11:50 /home/flat/ksmith/PyFerret/bin/pyferret
+Using external functions from /home/flat/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug PyFerret on RHEL5-64
+Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -241,18 +241,18 @@ Benchmark scripts that will be run:
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
-FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/ksmith/Datasets
+FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/flat/ksmith/Datasets
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ksmith/PyFerret/ext_func/libs
-FER_FONTS=/home/users/ksmith/PyFerret/ppl/fonts
-FER_GO=. /home/users/ksmith/PyFerret/go /home/users/ksmith/PyFerret/examples /home/users/ksmith/PyFerret/contrib
+FER_EXTERNAL_FUNCTIONS=/home/flat/ksmith/PyFerret/ext_func/libs
+FER_FONTS=/home/flat/ksmith/PyFerret/ppl/fonts
+FER_GO=. /home/flat/ksmith/PyFerret/go /home/flat/ksmith/PyFerret/examples /home/flat/ksmith/PyFerret/contrib
 FER_GRIDS=.
-FER_LIBS=/home/users/ksmith/PyFerret/lib
-FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
+FER_LIBS=/home/flat/ksmith/PyFerret/lib
+FER_PALETTE=. /home/flat/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Mar 30 13:26:02 PDT 2015
+Beginning at Tue May 12 11:59:28 PDT 2015
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -1432,7 +1432,7 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 rm: cannot remove `input.txt': No such file or directory
-ls: input.txt: No such file or directory
+ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1803,7 +1803,6 @@ list/l=1/j=40/i=0:300:0 sst
  Cached data cleared from memory
 *** Running test: bn_regulart.jnl
  Cached data cleared from memory
-           *** NOTE: Evenly spaced axis has edges definition: TCOADS - ignored
 *** Running test: bn_labwid.jnl
  Cached data cleared from memory
 *** Running test: bn_redefine_taxis_mc.jnl
@@ -3081,9 +3080,9 @@ Replacing definition of axis TAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
+           *** NOTE: Adjusting Y-axis label size from 0.100 to 0.099, to avoid running off page.
            *** NOTE: ./err672_vert_axislabel.jnl
-           *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
+           *** NOTE: Adjusting Y-axis label size from 0.100 to 0.099, to avoid running off page.
            *** NOTE: Adjusting Y-axis label size from 0.100 to 0.030, to avoid running off page.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3095,7 +3094,7 @@ Replacing definition of axis TAXIS
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis RLATU79_961_9
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
+           *** NOTE: Adjusting Y-axis label size from 0.100 to 0.099, to avoid running off page.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3213,8 +3212,6 @@ Replacing definition of axis FAX4DAY
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
 define data/agg windy = 1,2,3
- **ERROR: error defining aggregate dataset: Aggregate dataset not defined
-define data/agg windy = 1,2,3
            *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: UWND
            *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: VWND
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
@@ -3249,7 +3246,7 @@ define data/agg windy = 1,2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
            *** NOTE: Adjusting Y-axis label size from 0.100 to 0.001, to avoid running off page.
-           *** NOTE: /home/users/ksmith/PyFerret/go/magnify.jnl
+           *** NOTE: /home/flat/ksmith/PyFerret/go/magnify.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3407,9 +3404,9 @@ Replacing definition of axis AXI_COARSE
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
 *** Running test: bn_nco_append.jnl
-sh: ncks: command not found
  Cached data cleared from memory
  LISTing to file append_to_this.nc
+sh: ncks: command not found
 *** Running test: bn_nobounds.jnl
  Cached data cleared from memory
  LISTing to file a.nc
@@ -3766,6 +3763,20 @@ repeat/range=1:2/name=row
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+Replacing definition of axis TREDEF
+           *** NOTE: grid GSI1 used by data set a
+           *** NOTE: Redefinition may alter apparent contents of data set
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: cairoCFerBind_saveWindow: unrecognized format 'HDF'
+frame/format=hdf/file=a.hdf
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_permute_ascii.jnl
  Cached data cleared from memory
 Replacing definition of grid GRID3D
@@ -3818,4 +3829,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Mon Mar 30 13:30:48 PDT 2015
+Ended at Tue May 12 12:00:57 PDT 2015

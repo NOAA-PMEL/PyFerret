@@ -53,6 +53,7 @@
 #
 # for now you must also manually check the benchmark bn311_ez_order
 
+# *sh* 4/2015 automatically run clean_draconian at the end
 
 umask 002     #  make all files group deletable  3/16
 
@@ -348,3 +349,6 @@ echo "Checking PLT, GIF and PS files......."
 echo "open test_trans.html in a browser to test transparency option in gif mode. The continents should be gray"
 # save size of log file as part of the history record
 ls -l $log_file >>&  $bench_hist
+
+# make a clean version of the log file that can easily be compared
+clean_draconian $log_file

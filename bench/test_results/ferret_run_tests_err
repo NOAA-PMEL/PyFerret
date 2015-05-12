@@ -1,8 +1,8 @@
-Using FERRET /home/users/ksmith/Ferret/bin/ferret
-lrwxrwxrwx 1 ksmith tmap 13 Mar 30 11:05 /home/users/ksmith/Ferret/bin/ferret -> ferret_v6.941
-Using external functions from /home/users/ksmith/Ferret/ext_func/libs
+Using FERRET /home/flat/ksmith/Ferret/bin/ferret
+lrwxrwxrwx. 1 ksmith oerdnewp 13 May 12 11:36 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.942
+Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug Ferret on RHEL5-64
+Note: RUN_TESTS.sh test results for debug Ferret on RHEL6-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -241,18 +241,18 @@ Benchmark scripts that will be run:
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
-FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/ksmith/Datasets
+FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/flat/ksmith/Datasets
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ksmith/Ferret/ext_func/libs
-FER_FONTS=/home/users/ksmith/Ferret/ppl/fonts
-FER_GO=. /home/users/ksmith/Ferret/go /home/users/ksmith/Ferret/examples /home/users/ksmith/Ferret/contrib
+FER_EXTERNAL_FUNCTIONS=/home/flat/ksmith/Ferret/ext_func/libs
+FER_FONTS=/home/flat/ksmith/Ferret/ppl/fonts
+FER_GO=. /home/flat/ksmith/Ferret/go /home/flat/ksmith/Ferret/examples /home/flat/ksmith/Ferret/contrib
 FER_GRIDS=.
-FER_LIBS=/home/users/ksmith/Ferret/lib
-FER_PALETTE=. /home/users/ksmith/Ferret/ppl
+FER_LIBS=/home/flat/ksmith/Ferret/lib
+FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Mar 30 11:18:19 PDT 2015
+Beginning at Tue May 12 11:37:44 PDT 2015
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1382,7 +1382,7 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 rm: cannot remove `input.txt': No such file or directory
-ls: input.txt: No such file or directory
+ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1751,7 +1751,6 @@ list/l=1/j=40/i=0:300:0 sst
  Cached data cleared from memory
 *** Running test: bn_regulart.jnl
  Cached data cleared from memory
-           *** NOTE: Evenly spaced axis has edges definition: TCOADS - ignored
 *** Running test: bn_labwid.jnl
  Cached data cleared from memory
 *** Running test: bn_redefine_taxis_mc.jnl
@@ -3145,8 +3144,6 @@ Replacing definition of axis FAX4DAY
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
 define data/agg windy = 1,2,3
- **ERROR: error defining aggregate dataset: Aggregate dataset not defined
-define data/agg windy = 1,2,3
            *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: UWND
            *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: VWND
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
@@ -3181,7 +3178,7 @@ define data/agg windy = 1,2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
            *** NOTE: Adjusting Y-axis label size from 0.100 to 0.001, to avoid running off page.
-           *** NOTE: /home/users/ksmith/Ferret/go/magnify.jnl
+           *** NOTE: /home/flat/ksmith/Ferret/go/magnify.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3333,9 +3330,9 @@ Replacing definition of axis AXI_COARSE
 *** Running test: bn_dsg_e_x.jnl
  Cached data cleared from memory
 *** Running test: bn_nco_append.jnl
-sh: ncks: command not found
  Cached data cleared from memory
  LISTing to file append_to_this.nc
+sh: ncks: command not found
 *** Running test: bn_nobounds.jnl
  Cached data cleared from memory
  LISTing to file a.nc
@@ -3692,6 +3689,24 @@ repeat/range=1:2/name=row
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+Replacing definition of axis TREDEF
+           *** NOTE: grid GSI1 used by data set a
+           *** NOTE: Redefinition may alter apparent contents of data set
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: illegal format type - must be "GIF"
+          frame/format=hdf/file=a.hdf
+frame/format=hdf/file=a.hdf
+ **ERROR: invalid command: illegal format type - must be "GIF"
+          frame/file=a.png
+frame/file=a.png
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_permute_ascii.jnl
  Cached data cleared from memory
 Replacing definition of grid GRID3D
@@ -3742,4 +3757,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Mon Mar 30 11:20:30 PDT 2015
+Ended at Tue May 12 11:38:38 PDT 2015

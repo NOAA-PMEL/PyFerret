@@ -1,7 +1,5 @@
-	SUBROUTINE ERASE_DSET ( dset )
+	SUBROUTINE FIND_MEM_VAR_INCL_C_CACHE( cx, mr, by_value, memory )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -35,84 +33,71 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* delete all memory variables with data from a particular data set
-* eliminate all context references to it, too
+* try a traditional Ferret memory cache search.
+*  If it fails, as a last ditch, look to see if the full range variable
+* is available in c cache (normally used for CF auxiliary variables)
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
 *
-* revision 0.0 - 4/3/86
-* V200:   6/9/89 - deleted variables flagged in mr_protected
-*	10/25/89 - moved memory-resident purging to PURGE_DSET
-* V411:  7/95 - Delete variables created with  LET/D=this_dset
-* V601  11/06 - Also need to delete LET/D= variables from the linked-
-*               list attribute structure.
-*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
-* V695+ *sh* 5/15 - free any c-cached arrays owned by the dataset
+* V695+ 5/15 *sh*
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
+	include 'xprog_state.cmn'
 	include 'xdset_info.cmn_text'
 
 * calling argument declarations:
-	INTEGER dset
+	INTEGER cx, mr
+	LOGICAL by_value
+	REAL    memory( mem_blk_size, max_mem_blks )
 
-* local variable declarations:
-	INTEGER TM_LENSTR, mr, ii, slen, flen, dset_uvars
+* internal variable declarations:
+	LOGICAL valid_search
+	INTEGER CGRID_SIZE, var, cat, npts, status
+        REAL*8  c_cache_ptr
 
-      PARAMETER (flen=128)      ! size of variable name string
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
-      INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
+* first try a normal cache search
+	CALL FIND_MEM_VAR( cx, mr, search_by_value, valid_search )
+	IF (.NOT.valid_search .OR. mr.NE.mr_nonexist) RETURN
 
-* eliminate memory resident data
-	CALL PURGE_DSET( dset )
+* initialize
+	var = cx_variable(cx)
+	cat = cx_category(cx)
+* ... aggegated vars always map to file var of same cx_variable number
+	IF (cat .EQ. cat_agg_f_var) cat = cat_file_var
 
-* free any c-cached variables owned by this dataset
-	DO ii = 1, maxvars
-	   IF (ds_var_setnum(ii) .EQ. dset) THEN
-	      IF (ds_var_c_cache_ptr(ii).NE.0.0) CALL FREE_CACHED_FULL_ARRAY
-     .						(ds_var_c_cache_ptr(ii))
-	   ENDIF
-	ENDDO
+* last ditch attempt -- is this variable available in c memory cache
+* (used to speed recall of CF auxiliary variables)
+* NOTE: error conditions are not properly trapped
+	IF ( cat .EQ. cat_file_var ) THEN
+	   c_cache_ptr = ds_var_c_cache_ptr(var)
+	ELSEIF ( cat .EQ. cat_user_var ) THEN
+	   c_cache_ptr =  uvar_c_cache_ptr(var) 
+	ELSE
+	   c_cache_ptr =  0.0
+	ENDIF
 
-* delete LET-defined variables that belong to this data set
-	DO 100 ii = 1, max_uvar
-*	   IF (uvar_dset(ii) .EQ. dset) uvar_num_items(ii) =
-*     .					uvar_deleted
-	   IF (uvar_dset(ii) .EQ. dset) THEN
-	      CALL DELETE_USER_VAR(ii)
-              CALL deleted_list_modify(uvar_num_items_head, ii,
-     .	            uvar_deleted)
-
-* Remove variable from linked-list structure, the user-variables dataset
-
-              slen = TM_LENSTR( uvar_name_code(ii)  )
-              IF (slen .GT. 0 .AND. uvar_name_code(ii)(1:3) .NE. 'EX#') THEN
-                 CALL TM_FTOC_STRNG( uvar_name_code(ii)(1:slen), fhol, flen )
-
-                 dset_uvars = pdset_uvars
-                 CALL NCF_DELETE_VAR (dset_uvars, fhol )
-              ENDIF
-
-           ENDIF
-
- 100	CONTINUE
-
-
-* eliminate context information depending on this data set
-	DO 200 ii = 1, max_context
-	   IF ( cx_data_set( ii ) .EQ. dset ) THEN
-	      cx_data_set( ii ) = unspecified_int4
-	      cx_grid( ii ) = unspecified_int4
-	   ENDIF
- 200	CONTINUE
-
+	IF (c_cache_ptr .NE. 0.0) THEN
+	   CALL CREATE_FULL_RANGE_CONTEXT ( cx, cx_buff, status )
+	   IF (status .NE. ferr_ok) GOTO 5000
+	   CALL CREATE_MEM_VAR( cx_buff, mr, status )
+	   IF (status .NE. ferr_ok) GOTO 5000
+	   npts = CGRID_SIZE(cx_buff)
+	   CALL RECOVER_CACHED_FULL_ARRAY(memory(1,mr_blk1(mr)),
+     .				npts, c_cache_ptr)
+	   IF (mode_diagnostic) CALL DIAGNOSTIC_OUT('c-found',mr,point_to_mr)
+	   RETURN  ! YAHOO!  Made a last didch cache hit.
+	ENDIF
+	
+* failure exit
+ 5000	mr = mr_nonexist
 	RETURN
 	END
-

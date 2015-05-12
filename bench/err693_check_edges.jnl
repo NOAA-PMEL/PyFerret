@@ -1,0 +1,23 @@
+! err693_check_edges
+! Bug 2280. Regularly-spaced coordinates with edges did
+! not check the location of the edges but just ignored them
+
+
+use edge
+
+! Should be a regular axis
+
+say `x1,return=title`
+sh axis `x1,return=xaxis`
+
+! Should be an irregular axis
+say `x2,return=title`
+sh axis `x2,return=xaxis`
+
+! Should be an irregular axis
+say `x3,return=title`
+sh axis `x3,return=xaxis`
+
+! Should be an irregular axis -  previously would have been marked as regular
+say `x4,return=title`
+sh axis `x4,return=xaxis`

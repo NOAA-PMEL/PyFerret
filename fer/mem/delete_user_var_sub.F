@@ -65,6 +65,7 @@
 * V602 12/06 *acm* - When removeing var from the user-variables dataset in
 *                    linked-list structure, no need to check for  EX# expressions
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V695+ 5/15 *sh* - free cached c array, if any
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -146,6 +147,11 @@
 
 * if this user variable is associated with any dynamic grids release them
 	CALL DEALLO_UVAR_GRIDS(uvar)
+
+* if there is a c cache of the full range variable, free it
+* note: this addition remained untested at the time it was entered
+	IF (uvar_c_cache_ptr(uvar) .NE. 0.0) CALL FREE_CACHED_FULL_ARRAY
+     .						(uvar_c_cache_ptr(uvar))
 
 * eliminate the named variable from the list of uvars
 *	uvar_num_items( uvar ) = uvar_deleted

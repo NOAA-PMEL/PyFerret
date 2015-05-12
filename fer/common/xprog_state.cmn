@@ -40,7 +40,7 @@
 *                   mode_ensemble_lab, and mode_forecast_lab;
 *                   add E and F dimensions to ax_fmt and ax_dec_pt (set to nferdims)
 *       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
-* V6.8  *acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
+* V6.8  *acm  6/12 Implement mode_F_LAB, set by default. If canceled, the 
 *                 various SHOW commnands will not list info for E,F dimensions.
 *                 Remove mode_ensemble_lab, and mode_forecast_lab.
 *acm* 4/12 Remove MODE FOURDEE, using _E, _F, _M, _N instead, throughout.
@@ -71,14 +71,14 @@
 	INTEGER		pmode_diagnostic, pmode_verify, pmode_interpolate,
      .			pmode_ignore_err, pmode_stupid, pmode_journal,
      .			pmode_long_lab, pmode_lat_lab, pmode_depth_lab,
-     .			pmode_time_lab, pmode_6d_lab,
+     .			pmode_time_lab, pmode_E_LAB, pmode_F_LAB,
      .			pmode_segment, pmode_font_ascii, pmode_wait,
      .			pmode_reject, pmode_desperate, pmode_rpn,
      .			pmode_gks, pmode_xwindows, pmode_metafile,
      .			pmode_ppllist, pmode_gui, pmode_logo, pmode_labels,
      .                  pmode_grat, pmode_linecolors, pmode_upcase_output,
      .                  pmode_nlevels, pmode_nodata_lab, pmode_shrink_ylab,
-     .                  pmode_curvilinear, pmode_layerz
+     .                  pmode_curvilinear, pmode_layerz, pmode_6d_lab
 
 	PARAMETER     ( pmode_diagnostic	= 1,
      .			pmode_verify		= 2,
@@ -90,29 +90,31 @@
      .			pmode_lat_lab		= 8,
      .			pmode_depth_lab		= 9,
      .			pmode_time_lab		= 10,
-     .			pmode_6d_lab		= 11,
-     .			pmode_font_ascii	= 12,
-     .			pmode_segment		= 13,
-     .			pmode_wait		= 14,
-     .			pmode_reject		= 15,
-     .			pmode_desperate		= 16 )
+     .			pmode_e_lab		= 11,
+     .			pmode_f_lab		= 12,
+     .			pmode_font_ascii	= 13,
+     .			pmode_segment		= 14,
+     .			pmode_wait		= 15,
+     .			pmode_reject		= 16,
+     .			pmode_desperate		= 17 )
 	PARAMETER     ( 
-     .			pmode_rpn		= 17,
-     .			pmode_gks		= 18,
-     .			pmode_xwindows		= 19,
-     .			pmode_metafile		= 20,
-     .			pmode_ppllist		= 21,
-     .			pmode_gui		= 22,
-     .			pmode_logo		= 23,
-     .			pmode_labels		= 24,
-     .			pmode_grat		= 25,
-     .                  pmode_linecolors        = 26,
-     .                  pmode_upcase_output     = 27,
-     .                  pmode_nlevels           = 28,
-     .                  pmode_nodata_lab        = 29,
-     .                  pmode_shrink_ylab       = 30,
-     .			pmode_curvilinear	= 31,
-     .			pmode_layerz		= 32 )
+     .			pmode_rpn		= 18,
+     .			pmode_gks		= 19,
+     .			pmode_xwindows		= 20,
+     .			pmode_metafile		= 21,
+     .			pmode_ppllist		= 22,
+     .			pmode_gui		= 23,
+     .			pmode_logo		= 24,
+     .			pmode_labels		= 25,
+     .			pmode_grat		= 26,
+     .                  pmode_linecolors        = 27,
+     .                  pmode_upcase_output     = 28,
+     .                  pmode_nlevels           = 29,
+     .                  pmode_nodata_lab        = 30,
+     .                  pmode_shrink_ylab       = 31,
+     .			pmode_curvilinear	= 32,
+     .			pmode_layerz		= 33,
+     .			pmode_6d_lab		= 34 )
 
 	CHARACTER	pmode_unused*10
 	PARAMETER     ( pmode_unused = '%% unused %%' )
@@ -261,13 +263,14 @@
 	LOGICAL		mode_diagnostic, mode_verify, mode_interpolate,
      .			mode_ignore_err, mode_stupid, mode_journal, 
      .			mode_long_lab, mode_lat_lab, mode_depth_lab, 
-     .			mode_time_lab, mode_6d_lab,
+     .			mode_time_lab, mode_e_lab, mode_f_lab,
      .			mode_segment, mode_font_ascii, mode_wait,
      .			mode_reject, mode_desperate, mode_rpn,
      .			mode_gks, mode_xwindows, mode_metafile,
      .			mode_ppllist, mode_gui, mode_logo, mode_labels,
      .                  mode_grat, mode_linecolors, mode_upcase_output, 
-     .                  mode_nlevels, mode_nodata_lab, mode_shrink_ylab
+     .                  mode_nlevels, mode_nodata_lab, mode_shrink_ylab, 
+     .                  mode_6d_lab
 	EQUIVALENCE
      .		( mode_state( pmode_diagnostic  ,1), mode_diagnostic  ),
      .		( mode_state( pmode_verify      ,1), mode_verify      ),
@@ -279,7 +282,8 @@
      .		( mode_state( pmode_lat_lab     ,1), mode_lat_lab     ),
      .		( mode_state( pmode_depth_lab   ,1), mode_depth_lab   ),
      .		( mode_state( pmode_time_lab    ,1), mode_time_lab    ),
-     .		( mode_state( pmode_6d_lab      ,1), mode_6d_lab      ),
+     .		( mode_state( pmode_e_lab       ,1), mode_e_lab      ),
+     .		( mode_state( pmode_f_lab       ,1), mode_f_lab      ),
      .		( mode_state( pmode_font_ascii  ,1), mode_font_ascii  ),
      .		( mode_state( pmode_segment     ,1), mode_segment     ),
      .		( mode_state( pmode_wait        ,1), mode_wait        ),
@@ -298,7 +302,8 @@
      .		( mode_state( pmode_upcase_output,1),mode_upcase_output),
      .		( mode_state( pmode_nlevels     ,1), mode_nlevels     ),
      .		( mode_state( pmode_nodata_lab  ,1), mode_nodata_lab  ),
-     .		( mode_state( pmode_shrink_ylab ,1), mode_shrink_ylab  )
+     .		( mode_state( pmode_shrink_ylab ,1), mode_shrink_ylab  ),
+     .		( mode_state( pmode_6d_lab      ,1), mode_6d_lab  )
 
 * axis label modes
 *     assumes sequential long, lat, depth, time, ensemble, forecast pmode values

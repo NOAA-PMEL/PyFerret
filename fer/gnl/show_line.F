@@ -50,6 +50,7 @@
 * V650  Write to show_lun which may be set to a file unit number rather than std out
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V695+  *sh* 5/15 show T0 for forecast calendar axes, too
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -119,7 +120,8 @@
 	IF ( brief ) RETURN
 
 * report /T0= for formatted time axis
-	IF ( line_direction(line) .EQ. 'TI' ) THEN
+	IF  ( line_direction(line) .EQ. 'TI' 
+     .	.OR.  line_direction(line) .EQ. 'FI' ) THEN
             IF (line_shift_origin(line)) THEN
                buff20 = '01-JAN-0001 00:00:00'
             ELSE

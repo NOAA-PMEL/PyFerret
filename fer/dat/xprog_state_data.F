@@ -107,7 +107,7 @@
 *                   include tmap_dims.parm for nferdims needed by xprog_state.cmn
 *       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 *       *acm* 4/12 Remove MODE FOURDEE, using _E, _F, _M, _N instead, throughout.
-* V6.8  acm  6/12 Instead of mode_ensemble_lab, mode_forecast_lab, use mode_6d_lab, 
+* V6.8  acm  6/12 Instead of mode_ensemble_lab, mode_forecast_lab, use mode_F_LAB, 
 *                 which will be on by default. If canceled, the various SHOW and 
 *                 LIST commands, etc, will not list info for E,F dimensions.
 * V683  *acm* 8/12 - add new MODE SHRINK_YLAB
@@ -115,6 +115,11 @@
 * V685  *sh* 11/13 - added allowed_err for SH VAR/TREE
 * V690  *sh* 12/13 - added mode_curvilinear, mode_sigma
 * V694 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+* V695  *acm* 5/13 - Ticket 2281: mode_e_lab and mode_f_lab to act as mode_lon_lab, etc, 
+*                    precision of E and F labeling. The values are equivalenced to 
+*                    ax_dec_pt(MODE_6D_LAB still turns on and off the listing of all 
+*                    6 dimensions on SHOW commands.)
+
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -173,7 +178,9 @@
      .					/ mode_stack_size*.TRUE.    /,
      .		(mode_state( pmode_time_lab    ,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.TRUE.    /,
-     .		(mode_state( pmode_6d_lab      ,i), i=1,mode_stack_size)
+     .		(mode_state( pmode_E_LAB      ,i), i=1,mode_stack_size)
+     .					/ mode_stack_size*.TRUE.    /,
+     .		(mode_state( pmode_F_LAB      ,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.TRUE.    /
 	DATA	(mode_state( pmode_font_ascii  ,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.TRUE.    /,
@@ -217,6 +224,8 @@
      .					/ mode_stack_size*.FALSE.   /
      .		(mode_state( pmode_layerz,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.FALSE.   /
+     .		(mode_state( pmode_6d_lab,i), i=1,mode_stack_size)
+     .					/ mode_stack_size*.TRUE.   /
 
 	DATA	mode_name ( pmode_diagnostic  )	/ 'DIAGNOSTIC  ' /,
      .		mode_name ( pmode_verify      )	/ 'VERIFY      ' /,
@@ -228,7 +237,8 @@
      .		mode_name ( pmode_lat_lab     )	/ 'LATIT_LABEL'  /,
      .		mode_name ( pmode_depth_lab   )	/ 'DEPTH_LABEL'  /,
      .		mode_name ( pmode_time_lab    )	/ 'CALENDAR'     /,
-     .		mode_name ( pmode_6d_lab)	/ '6D_LAB'       /,
+     .		mode_name ( pmode_E_LAB)	/ 'E_LABEL'      /,
+     .		mode_name ( pmode_F_LAB)	/ 'F_LABEL'      /,
      .		mode_name ( pmode_font_ascii  )	/ 'ASCII_FONT'   /,
      .		mode_name ( pmode_segment     )	/ 'SEGMENT'      /,
      .		mode_name ( pmode_wait        )	/ 'WAIT'         /,
@@ -250,8 +260,7 @@
      .		mode_name ( pmode_shrink_ylab ) / 'SHRINK_YLAB'  /,
      .		mode_name ( pmode_curvilinear ) / 'CURVILINEAR'  /,
      .		mode_name ( pmode_layerz      ) / 'LAYERZ'       /,
-     .		mode_name ( 33     ) / pmode_unused /,
-     .		mode_name ( 34     ) / pmode_unused /,
+     .		mode_name ( pmode_6d_lab      ) / '6D_LAB'       /,
      .		mode_name ( 35     ) / pmode_unused /,
      .		mode_name ( 36     ) / pmode_unused /,
      .		mode_name ( 37     ) / pmode_unused /,
@@ -279,8 +288,10 @@
      .				/ mode_stack_size*-4 /, ! 4 sig. digs. less 0's
      .		(mode_arg  ( pmode_time_lab    ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*-5 /, ! dd-mmm-yyyy:hh:mm
-     .		(mode_arg  ( pmode_6d_lab     ,i), i=1,mode_stack_size)
-     .				/ mode_stack_size*unspecified_int4 / 
+     .		(mode_arg  ( pmode_e_lab     ,i), i=1,mode_stack_size)
+     .				/ mode_stack_size*1 / 
+     .		(mode_arg  ( pmode_f_lab     ,i), i=1,mode_stack_size)
+     .				/ mode_stack_size*1 / 
 	DATA	(mode_arg  ( pmode_font_ascii  ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_segment     ,i), i=1,mode_stack_size)
@@ -322,6 +333,8 @@
      .		(mode_arg  ( pmode_curvilinear,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /
      .		(mode_arg  ( pmode_layerz,i), i=1,mode_stack_size)
+     .				/ mode_stack_size*unspecified_int4 /
+     .		(mode_arg  ( pmode_6d_lab,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /
 
 * If the value of nlevels is changed, also change NLEV in plot/ppldata.F

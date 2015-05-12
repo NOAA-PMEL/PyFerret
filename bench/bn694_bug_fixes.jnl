@@ -74,3 +74,6 @@ GO err693_frame_types
 GO bn_reset
 GO err693_shape
 
+GO bn_reset
+GO err693_ef_axis_precision.jnl
+

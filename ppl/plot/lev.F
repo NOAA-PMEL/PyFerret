@@ -268,10 +268,5 @@ C
 	GOTO 200
 10	CONTINUE
 
-	IF (center_key_labels) THEN
-	   dz = zlev(nlev) - zlev(nlev-1)
-	   nlev = nlev + 1
-	   zlev(nlev) = zlev(nlev-1) + dz
-	ENDIF
 	RETURN
 	END

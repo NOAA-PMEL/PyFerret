@@ -166,9 +166,10 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	windof = .false.
 
 	cont_key_keep = cont_key
-
 	center_add = 0.
 	if (center_key_labels) center_add = 0.5
+
+	incr = 0
 
 * Decide whether to check for small numeric values in the key labels.
 * If delta is large, we dont want 0.000005 to be labelled in an exponential
@@ -599,7 +600,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 	if (klab_incr .eq. 0) then
 	   incr = (shd_levels/25) + 1
-           IF (height/vheight .GT. 1.5) incr = 2*incr   ! short plot, fewer labels
+           IF (height/vheight.GT.1.5 .AND. shd_levels.GT.4) incr = 2*incr   ! short plot, fewer labels
 	else
 	   incr = klab_incr
 	end if

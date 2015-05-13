@@ -1,5 +1,5 @@
 	SUBROUTINE SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,
-     *	XTI,XTL)
+     *	XTI,XTL,its_ribbon)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -49,12 +49,18 @@
 * V554  9/03 *acm* Fix precision bug double precision, for fine grids in 
 *                  curvlinear coordinates. See also pltit.F, plotz.F
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
+* V694  *acm*  5/15 Handling axis scaling for ribbon plots. Do auto-scale 
+*                   using just the first line. The second is the color-by variable
+
 
         real            x,diff,rxax,rxmon,rxchr,thi,xti,xtl
         real            xmn,xmx,xt,yt
         real*8		dxl, dxh, dxf, dyl, dyh, dyf
+	logical		its_ribbon
                                                                       
-        integer         nxs,iy,nmx,i,ibasex,ibasey,len,j,nmy          
+        integer         nxs,iy,nmx,i,ibasex,ibasey,len,j,nmy    
+	
+	integer		lnum_lines
                                                                       
         external        diff                                          
 *       End declarations 9.6.88
@@ -230,7 +236,9 @@ C	CONTOUR PLOT
 		    XMX=-XMN
 		    IBASEX=0
 		    IBASEY=IY
-		    DO 10 I=1,LNUM
+		    lnum_lines = lnum
+		    IF (its_ribbon) lnum_lines = 1  
+		    DO 10 I=1,lnum_lines
 			LEN=LLENG(I)
 			DO 20 J=1,LEN
 			    IF((XLE.AND.X(IBASEX+J).LE.CMXLE).OR.
@@ -309,7 +317,9 @@ C CONTOUR DATA
 		XMX=-XMN
 		IBASEY=IY
 		IBASEX=0
-		DO 30 I=1,LNUM
+		lnum_lines = lnum
+		IF (its_ribbon) lnum_lines = 1  
+		DO 30 I=1,lnum_lines
 		    DO 40 J=1,LLENG(I)
 			IF((XLE.AND.X(IBASEX+J).LE.CMXLE).OR.
      *			(XEQ.AND.X(IBASEX+J).EQ.CMXEQ).OR.

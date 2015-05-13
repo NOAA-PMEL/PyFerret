@@ -189,7 +189,7 @@
 	include 'shade_vars.cmn' 
 
 
-	LOGICAL CLEAR,CONTR,no_vpt_flag
+	LOGICAL CLEAR,CONTR,no_vpt_flag, is_ribbon
 
 	INTEGER ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS
         LOGICAL its_meta, batch, meta_batch
@@ -281,7 +281,8 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 ***********************************************
 	CALL COLOR(IPEN(0))
 	IF(.NOT.SOVER)THEN
-	    CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL)
+	    IF(MAKEP.EQ.'RIBPLOT') is_ribbon = .TRUE.
+	    CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL,is_ribbon)
 
 	    IF (ABS(XF) .GT. CMZGE .OR. ABS(YF) .GT. CMZGE) GOTO 3333  ! fill/contour but 1 grid point
 	    CALL DAXIS(XF,YF,NMX,NMY,MAINLAB)

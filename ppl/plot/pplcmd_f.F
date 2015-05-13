@@ -825,7 +825,7 @@ C     ORIGIN
 	CALL PUTVAL(SYM,YORG,4,IER)
 	if(pltopn)then
 	    call setax(pplmem,pplmem_nsize,xft,yft,xlt,ylt,xht,yht,
-     .                 nmxt,nmyt,xtit,xtlt)
+     .                 nmxt,nmyt,xtit,xtlt,.FALSE.)
      	    call scale(xft,yft,xorg,yorg,xlo,ylo)
 	endif
 	GOTO 10
@@ -956,7 +956,7 @@ C	AXLEN
 	CALL PUTVAL(SYM,YLEN,4,IER)
 	if(pltopn)then
 	    call setax(pplmem,pplmem_nsize,xft,yft,xlt,ylt,xht,yht,nmxt,
-     *	    nmyt,xtit,xtlt)
+     *	    nmyt,xtit,xtlt,.FALSE.)
 	    call scale(xft,yft,xorg,yorg,xlo,ylo)
 	endif
 	GOTO 10

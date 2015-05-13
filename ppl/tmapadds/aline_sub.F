@@ -94,7 +94,6 @@ C	KTYPE = 1 -XY  0 -Z  2-VECTOR
         INCLUDE 'makedot.cmn'    ! 10/01 *acm*
 
 	CALL COLOR(IPEN(0))
-!	CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL)
 
 	oldx(1) 	= x(1)
 	x(1) 		= axmin

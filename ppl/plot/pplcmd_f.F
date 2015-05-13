@@ -131,8 +131,8 @@ C              do not make small tics by default.
 * v691 5/14 *acm* Change name MOD to TEKMOD
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
+* V694  *acm*  5/15 Ticket 2283. Change to call for subroutine setax. 
 
-c
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
 c	isi	length of line in characters

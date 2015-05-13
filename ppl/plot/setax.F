@@ -49,7 +49,7 @@
 * V554  9/03 *acm* Fix precision bug double precision, for fine grids in 
 *                  curvlinear coordinates. See also pltit.F, plotz.F
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
-* V694  *acm*  5/15 Handling axis scaling for ribbon plots. Do auto-scale 
+* V694  *acm*  5/15 Ticket 2283. Handling axis scaling for ribbon plots. Do auto-scale 
 *                   using just the first line. The second is the color-by variable
 
 

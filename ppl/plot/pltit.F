@@ -153,6 +153,7 @@
 *                   subroutines apparently make some settings for scaling on the page.
 *                   Call daxis with a flag "DRAW" set to false, which executes the 
 *                   routine but does not make drawing calls.
+* V694  *acm*  5/15 Ticket 2283. Handling axis scaling for ribbon plots. 
 
 	include 'lines_inc.decl'
 	include 'LINES.INC'
@@ -197,7 +198,7 @@
 	include 'shade_vars.cmn' 
 
 
-	LOGICAL CLEAR,CONTR,no_vpt_flag
+	LOGICAL CLEAR,CONTR,no_vpt_flag, is_ribbon
 
 *	*jd* linux port 12.96 Add external stmt below
 	external size, scale
@@ -246,7 +247,8 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 ***********************************************
 	CALL COLOR(IPEN(0))
 	IF(.NOT.SOVER)THEN
-	    CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL)
+	    IF(MAKEP.EQ.'RIBPLOT') is_ribbon = .TRUE.
+	    CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL,is_ribbon)
 
 	    IF (ABS(XF) .GT. CMZGE .OR. ABS(YF) .GT. CMZGE) GOTO 3333  ! fill/contour but 1 grid point
 	    DRAW = .FALSE.

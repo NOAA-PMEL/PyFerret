@@ -862,7 +862,11 @@
      .			                  memory(1,mr_blk1(hi_mr)), size,
      .                                    cx_bad_data(big_cx)  )
 	   ENDIF
+
+c Tentative fix for ticket 2234
+cc	   CALL TRANSFER_CONTEXT( hi_cx, big_cx )  ! results in get_cmnd_prot_err
 	   CALL RE_ASSIGN_VARIABLE( hi_mr, big_cx )
+
 	   CALL PASS_AMBIG_LIMS( lo_cx, hi_mr, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 !	ELSEIF (mr_category(hi_mr) .EQ. cat_string) THEN

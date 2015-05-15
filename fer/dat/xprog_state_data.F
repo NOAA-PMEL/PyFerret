@@ -116,12 +116,11 @@
 * V685  *sh* 11/13 - added allowed_err for SH VAR/TREE
 * V690  *sh* 12/13 - added mode_curvilinear, mode_sigma
 * V694 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+* V695  *acm* 5/15 logical flag its_pyferret 
 * V695  *acm* 5/13 - Ticket 2281: mode_e_lab and mode_f_lab to act as mode_lon_lab, etc, 
 *                    precision of E and F labeling. The values are equivalenced to 
 *                    ax_dec_pt(MODE_6D_LAB still turns on and off the listing of all 
 *                    6 dimensions on SHOW commands.)
-* V695  *acm* 5/15 logical flag its_pyferret 
-
 
         IMPLICIT NONE
         include 'tmap_dims.parm'

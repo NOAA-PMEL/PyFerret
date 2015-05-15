@@ -157,6 +157,7 @@
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V695+ *sh*  3/15 if an FMRC dataset disambiguate T and F axes with labels
 * V695  *acm*  5/15 Ticket 2279: PyFerret don't redraw labels on an overlay
+* V694  *acm*  5/15 Fix ticket 2282: setting up axis for ribbon plots
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -593,15 +594,6 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      .				npts2,
      .				status	)
            iaxis = CGRID_AXIS(dep_dim,cx)
-	   
-	   IF (.NOT.overlay .AND. (ipl.EQ.var1 .AND. ribbon_plot)) THEN
-	      CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
-	      dep_min = DBLE( lo )
-	      dep_max = DBLE( hi )
-	      delta = unspecified_val8
-	      CALL AXIS_ENDS(dep_ax,dep_dim,grid1,dep_min,dep_max,
-     .                      delta, dep_is_log, dep_axtyp, status)
-           ENDIF
  
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 * ... replicate points to create a "step" plot if requested  (1/01)

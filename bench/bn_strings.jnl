@@ -171,6 +171,7 @@ list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "g
 list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + 99
 
 ! numerical operators applied to strings
+IF `0` THEN
 list/nohead "b" - {"a","b"}
 list/nohead "b" * {"a","b"}
 list/nohead "b" / {"a","b"}
@@ -181,6 +182,7 @@ list/nohead 1 - {"a","b"}
 list/nohead SIN({"a","b","c"})
 list/nohead MAX("a",{"a","b","c"})
 list/nohead MAX(1,{"a","b","c"})
+ENDIF
 
 ! transformations applied to strings
 let a = {"a","b","c","d"}

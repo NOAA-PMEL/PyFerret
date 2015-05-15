@@ -156,8 +156,12 @@
 *                   log axis before proceeding with vlimits or hlimits
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V695+ *sh*  3/15 if an FMRC dataset disambiguate T and F axes with labels
+<<<<<<< .working
 * V695  *acm*  5/15 Ticket 2279: PyFerret don't redraw labels on an overlay
 * V694  *acm*  5/15 Fix ticket 2282: setting up axis for ribbon plots
+=======
+* V694  *acm*  5/15 Fix ticket 2282: setting up axis for ribbon plots
+>>>>>>> .merge-right.r19602
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'

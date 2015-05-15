@@ -75,5 +75,7 @@ GO bn_reset
 GO err693_shape
 
 GO bn_reset
-GO err693_ef_axis_precision.jnl
+GO err693_ef_axis_precision
 
+GO bn_reset
+GO err693_string_results

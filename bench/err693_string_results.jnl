@@ -1,0 +1,13 @@
+! err693_string_results.jnl
+! Ticket 2234, the LIST B returned the numeric pointer to the string.
+! *acm* 5/14/2015
+
+let b = IF a then "yes" else "no"
+let a = 1/0
+list b
+
+! The LOAD C makes the data type of D correct
+let d = if c then "ok" else "not ok"
+let c = 1/0
+load C
+list d

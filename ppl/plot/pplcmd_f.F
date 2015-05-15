@@ -129,8 +129,8 @@ C              do not make small tics by default.
 * v691 5/14 *acm* Change name MOD to TEKMOD
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
+* V694  *acm*  5/15 Ticket 2283. Change to call for subroutine setax. 
 
-c
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
 c	isi	length of line in characters
@@ -817,7 +817,7 @@ C     ORIGIN
 	CALL PUTVAL(SYM,YORG,4,IER)
 	if(pltopn)then
 	    call setax(pplmem,pplmem_nsize,xft,yft,xlt,ylt,xht,yht,
-     .                 nmxt,nmyt,xtit,xtlt)
+     .                 nmxt,nmyt,xtit,xtlt,.FALSE.)
      	    call scale(xft,yft,xorg,yorg,xlo,ylo)
 	endif
 	GOTO 10
@@ -949,7 +949,7 @@ C	AXLEN
 	CALL PUTVAL(SYM,YLEN,4,IER)
 	if(pltopn)then
 	    call setax(pplmem,pplmem_nsize,xft,yft,xlt,ylt,xht,yht,nmxt,
-     *	    nmyt,xtit,xtlt)
+     *	    nmyt,xtit,xtlt,.FALSE.)
 	    call scale(xft,yft,xorg,yorg,xlo,ylo)
 	endif
 	GOTO 10

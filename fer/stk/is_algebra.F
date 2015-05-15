@@ -864,7 +864,8 @@
 	   ENDIF
 
 c Tentative fix for ticket 2234
-cc	   CALL TRANSFER_CONTEXT( hi_cx, big_cx )  ! results in get_cmnd_prot_err
+	   cx_type(big_cx) = cx_type(hi_cx)
+	   CALL TRANSFER_CONTEXT( big_cx, lo_cx )
 	   CALL RE_ASSIGN_VARIABLE( hi_mr, big_cx )
 
 	   CALL PASS_AMBIG_LIMS( lo_cx, hi_mr, status )

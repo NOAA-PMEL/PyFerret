@@ -68,6 +68,7 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V685+ 12/13    - *acm*  bounds checking; dont refer to parts of the string outside its bounds.
+* V694   5/15    - *acm*  Ticket 2285: need to initialize iautoc to = 1 so overlay with /LEV=20V works.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'

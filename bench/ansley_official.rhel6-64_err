@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 80532067 May 14 12:18 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 80532655 May 18 14:31 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: test fix for ticket 2234
+Note: final resolution of 2234, with new error messages, and fix for 2285 including a new test
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Thu May 14 14:59:47 PDT 2015
+Beginning at Mon May 18 15:20:09 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -975,6 +975,34 @@ list a[gx=xnrst@sum]
  **ERROR: invalid command: cant use this regrid transform on strings: @MOD
 list a[gx=xnrst@mod]
  LISTing to file foo.cdf
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead ysequence({98, 99})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+99 ELSE "goodbye"+", my ") + "friend"
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+99) + "friend"
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + 99
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead "b" - {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead "b" * {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead "b" / {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead "b" ^ {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead {"a","b"} + 1
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead 1 + {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead 1 - {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead SIN({"a","b","c"})
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead MAX("a",{"a","b","c"})
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead MAX(1,{"a","b","c"})
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3485,6 +3513,7 @@ Replacing definition of axis AXI_COARSE
 Replacing definition of axis ZAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Initializing DSG file: sample_dimension attribute not found
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file append_to_this.nc
@@ -3881,6 +3910,10 @@ Replacing definition of axis FAXIS
 Replacing definition of axis EAXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of grid GRID3D
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4005,4 +4038,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu May 14 15:01:28 PDT 2015
+Ended at Mon May 18 15:21:46 PDT 2015

@@ -165,13 +165,17 @@ list/nohead if {0,1} THEN "hello"
 list/nohead if {0,1} THEN "hello" ELSE "goodbye"
 list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", ") + "friend"
 list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
+
+! V694+ For ticket 2234: expressions with numeric operators, and mixed numeric/string expressions 
+!       with logical operators now return errors not missing-data results
+SET MODE IGNORE
 list/nohead ysequence({98, 99})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
 list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+99 ELSE "goodbye"+", my ") + "friend"
 list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+99) + "friend"
 list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + 99
 
 ! numerical operators applied to strings
-IF `0` THEN
+
 list/nohead "b" - {"a","b"}
 list/nohead "b" * {"a","b"}
 list/nohead "b" / {"a","b"}
@@ -182,7 +186,8 @@ list/nohead 1 - {"a","b"}
 list/nohead SIN({"a","b","c"})
 list/nohead MAX("a",{"a","b","c"})
 list/nohead MAX(1,{"a","b","c"})
-ENDIF
+
+CANCEL MODE IGNORE
 
 ! transformations applied to strings
 let a = {"a","b","c","d"}

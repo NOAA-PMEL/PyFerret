@@ -196,6 +196,8 @@
 	         is_delta = .FALSE.
 	         is_cv = .FALSE.
 
+		 iautoc = 1
+
 	         val = bad_val4
 
 	         is_centered =  str_buff(str_len:str_len) .EQ. 'C'
@@ -353,8 +355,8 @@
 	            ELSEIF ( is_cv) THEN
 		       IF (val .NE. bad_val4) THEN
 		          nlev = val
+			  iautoc = 1
 		          IF (val.LE.0. .OR. val.GT.250.) GOTO 5150
-			  IF (.NOT. openlev) iautoc = 1
 		       ENDIF
 		    ELSE
 

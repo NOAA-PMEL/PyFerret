@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 85491282 May 12 09:08 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 85491417 May 19 09:24 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix for 2281 and recent Steve's checkins
+Note: tickets 2234, 2285
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Tue May 12 09:10:03 PDT 2015
+Beginning at Tue May 19 10:10:56 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -973,6 +973,34 @@ list a[gx=xnrst@sum]
  **ERROR: invalid command: cant use this regrid transform on strings: @MOD
 list a[gx=xnrst@mod]
  LISTing to file foo.cdf
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead ysequence({98, 99})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+99 ELSE "goodbye"+", my ") + "friend"
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+99) + "friend"
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + 99
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead "b" - {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead "b" * {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead "b" / {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead "b" ^ {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead {"a","b"} + 1
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead 1 + {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead 1 - {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead SIN({"a","b","c"})
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead MAX("a",{"a","b","c"})
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead MAX(1,{"a","b","c"})
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1922,9 +1950,6 @@ Replacing definition of axis TGREG
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file revision.nc
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1937,6 +1962,9 @@ LIST/ORDER=X  IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
           negative constants need to be enclosed in parentheses
 DEFINE VARIABLE A = IF I LT 5 THEN I ELSE -9
  **ERROR: variable unknown or not in data set: A1
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
 load a1,a2,a3
  **TMAP ERR: non-existent or not on line
              nofile.nc
@@ -2119,15 +2147,15 @@ Replacing definition of axis TIME
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
 curl error details: 
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
            *** NOTE: New # of line colors will take effect on next new window: SET WIN/NEW then define pen colors
  Using every   3th vector in the X direction
  Using every   4th vector in the Y direction
@@ -2322,6 +2350,7 @@ set axis/stride=2 NORMAL
            *** NOTE: Axis definition error on axis: TGAP
            *** NOTE: Bounds given describe non-contiguous axis cells
            *** NOTE: Using the LOWER bound specified for each axis cell
+curl error details: 
            *** NOTE: Undecipherable value of netCDF attribute modulo on variable lon_moderr
            *** NOTE: modulo = "j"
            *** NOTE: Undecipherable value of netCDF attribute modulo on variable time_moderr
@@ -2354,7 +2383,6 @@ set axis/stride=2 NORMAL
  Cached data cleared from memory
  Cached data cleared from memory
  Cached data cleared from memory
-curl error details: 
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2934,9 +2962,6 @@ Re-defining viewport V8
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file nc4_inttemp_classic.nc
-
-Bailing out of external function "tax_year":
-	 Function not valid for modulo time axis
            *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
  LISTing to file nc4_inttemp_set_list_deflate_chunk.nc
            *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
@@ -3086,6 +3111,9 @@ Replacing definition of axis YAX_DUP_AXNAMES
  LISTing to file gh.nc
  LISTing to file justh.nc
  LISTing to file justg.nc
+
+Bailing out of external function "tax_year":
+	 Function not valid for modulo time axis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3879,6 +3907,10 @@ Replacing definition of axis FAXIS
 Replacing definition of axis EAXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of grid GRID3D
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4003,4 +4035,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue May 12 09:12:35 PDT 2015
+Ended at Tue May 19 10:13:26 PDT 2015

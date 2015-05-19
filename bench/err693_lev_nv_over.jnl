@@ -3,7 +3,7 @@
 
 ! draw any underlay to set up for polymark script
 use coads_climatology
-shade/x=120:250/Y=25s:65n/L=1/pal=white sst
+shade/x=120:250/Y=25s:65n/L=1/pal=white/nokey sst
 
 LET xpts = 180 + 50*COS(2*3.14*I[I=1:50]/60)
 LET ypts = 15  + 20*SIN(2*3.14*I[I=1:50]/60)

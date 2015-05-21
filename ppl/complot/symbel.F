@@ -161,6 +161,7 @@ c	CHARACTER PLTFIL*80
 
         IF (pyfont) THEN
 
+	   IF (NCHAR .EQ. 0) RETURN
 	   rotate = degres
 	   IF (degres .NE. 0) rotate = -1.* degres
 
@@ -182,69 +183,12 @@ C Set font size in from the height
 	      fac = (1.+fac*0.2)
 	   ENDIF
 
-C Ignore any codes for Ferret-Hershey style Pen and Font changes 
-
-	   slen = TM_LENSTR(string)
-	   buff = string(:ABS(slen))
-
-	   ia = INDEX (buff,'@')
-
-	   DO WHILE (ia .GT. 0)
-	      IF (ia .EQ. 1) THEN
-	         buff = buff(ia+3:slen)
-	      ELSE
-	         buff1 = buff(1:ia-1)
-	         buff = buff1(1:ia-1)//buff(ia+3:slen)
-	      ENDIF
-	      
-	      slen = TM_LENSTR(buff)
-	      ia = INDEX (buff,'@')
-	   ENDDO
-
-C Change all ^2 to a super-2 and ^3 to super-3.
-C UTF-8 for superscript-2 and superscript-3 are just hard-coded below, but in general:
-
-	   slen = TM_LENSTR(buff)
-
-	   ia = INDEX (buff,'^2')
-	   IF (ia .GT. 0) THEN
-	      buff1 = buff
-	      codepoint = 178
-	      CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
-	      DO WHILE (ia .GT. 0)
-	         IF (ia+2.LE.slen) THEN
-      	 	    buff1 = buff1(:ia-1)//utf8str(1:utf8strlen)//buff1(ia+2:slen)
-		 ELSE
-	            buff1 = buff1(:ia-1)//utf8str(1:utf8strlen)
-		 ENDIF
-		 slen = TM_LENSTR(buff1)
-		 ia = INDEX (buff1,'^2')
-	      ENDDO
-	      buff = buff1
-	      slen = TM_LENSTR(buff)
-	   ENDIF
-
-C       super-3 is codepoint 0xB0 (179), which is UTF-8 0xC2 0xB0 (194 179)
-
-	   ia = INDEX (buff,'^3')
-	   IF (ia .GT. 0) THEN
-	      buff1 = buff
-	      codepoint = 179
-	      CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
-	      DO WHILE (ia .GT. 0)
-	         IF (ia+2.LE.slen) THEN
-      	 	    buff1 = buff1(:ia-1)//utf8str(1:utf8strlen)//buff1(ia+2:slen)
-		 ELSE
-	            buff1 = buff1(:ia-1)//utf8str(1:utf8strlen)
-		 ENDIF
-		 slen = TM_LENSTR(buff1)
-		 ia = INDEX (buff1,'^3')
-	      ENDDO
-	      buff = buff1
-	      slen = TM_LENSTR(buff)
-	   ENDIF
-
+	   
 C Look for &#nnn;  an HTML decimal code. e.g. &#916; is uppercase Delta
+C TODO: recognize a large set of text-based html codes for Greek and other
+C special characters, e.g. &#tau;
+C TODO: subscripts and superscripts, <sub>text</sub>, <sup>text</sup>. 
+C  ?? warn that we don't interpret ^ and _ ??
 
 	   ia = INDEX (buff,'&#')
 	   isemi = INDEX (buff,';')
@@ -261,26 +205,13 @@ C Look for &#nnn;  an HTML decimal code. e.g. &#916; is uppercase Delta
 	      slen = TM_LENSTR(buff)
 	   ENDIF
 
-C Change # to degree sign (for axis labels scinot has done this)
-C          degree symbol is codepoint 0xB0 (176), which is UTF-8 0xC2 0xB0 (194 176)
+C Note any codes for Ferret-Hershey style Pen and Font changes 
 
-	   ia = INDEX (buff,'#')
-	   IF (ia .GT. 0) THEN
-	      buff1 = buff
-	      codepoint = hhex  ! lower-case alpha, just for testing. 
-	      codepoint = 176
-	      CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
-	      DO WHILE (ia .GT. 0)
-	         IF (ia+1.LE.slen) THEN
-       		   buff1 = buff(:ia-1)//utf8str(1:utf8strlen)//buff(ia+1:slen)
-		 ELSE
-	            buff1 = buff(:ia-1)//utf8str(1:utf8strlen)
-		 ENDIF
-		 ia = INDEX (buff1,'#')
-	      ENDDO
-	      buff = buff1
-	      slen = TM_LENSTR(buff)
-	   ENDIF
+	   slen = TM_LENSTR(string)
+	   buff = string(:ABS(slen))
+
+	   ia = INDEX (buff,'@')
+	   IF (ia .GT. 0) CALL WARN ('Non-Hershey fonts: not interpreting @pen and @font codes')
 
 C This section returns the string length from swid
 
@@ -760,7 +691,7 @@ C
 C	THIS FUNCTION RETURNS THE WIDTH OF THE STRING WITHOUT DRAWING IT
 C
 	SS=0.
-	CALL SYMBEL(SS,0.,0.,HEIGHT,NC,STRING)
+	IF (NC .NE. 0) CALL SYMBEL(SS,0.,0.,HEIGHT,NC,STRING)
 	SYMWID=SS
 	RETURN
 	END

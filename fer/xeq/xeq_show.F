@@ -2041,7 +2041,11 @@ c     .                               sbrief, sdetail, i2)
 
 * SHOW TEXT 
  2200   CONTINUE
+	IF (.NOT.pyfont) THEN
+	   CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .			'Hershey fonts as in classic Ferret ', 0)
 
+	ELSE
 	CALL SPLIT_LIST(pttmode_explct, show_lun,
      .			'default ', 0)
 
@@ -2087,14 +2091,16 @@ c* ... Font
 	CALL SPLIT_LIST(pttmode_explct, show_lun,
      .			risc_buff, 0)
 
-* Text groups: TICS, LOGO, etc. List settings for any that are
+* Text groups: TITLE LOGO, etc. List settings for any that are
 * different from the overall defaults.
 
-        DO 2210 i1 = itics, icbar
+        DO 2210 i1 = ititl, icbar
 	    IF (pyf_set(i1)) THEN
 	       CALL SHOW_PYTEXT_GROUP(i1)
 	    ENDIF
  2210	CONTINUE
+
+	ENDIF  ! classic-Hershey or not
 
 	IF ( limited_show ) RETURN
 

@@ -118,23 +118,27 @@
 * select PLOT+ font
 
         nfont = 0
+	font = ' '
 
-	IF ( .NOT.mode_font_ascii .OR. .NOT.pyfont) THEN
-	   font = ' '
-	ELSEIF ( lab_type .EQ. ppl_title ) THEN
-	   font = '@AC'
-           nfont = 3
-	ELSE
-	   font = '@AS'
-           nfont = 3
-	ENDIF
+	IF (.NOT.pyfont) THEN
+	   IF ( .NOT.mode_font_ascii) THEN
+	      font = ' '
+	   ELSEIF ( lab_type .EQ. ppl_title ) THEN
+	      font = '@AC'
+              nfont = 3
+	   ELSE
+	      font = '@AS'
+              nfont = 3
+	   ENDIF
 
 * Let user select the font if they want
 
-        IF (string(1:1) .EQ. "@") THEN
-           font = ' '
-           nfont = 0
-        ENDIF
+           IF (string(1:1) .EQ. "@") THEN
+              font = ' '
+              nfont = 0
+           ENDIF
+
+	ENDIF  ! pyfont or Classic Hershey
 
         width = 0.
         rht = ht

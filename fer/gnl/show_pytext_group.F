@@ -46,7 +46,7 @@
 
 * List the PyFerret text settings for a text group: TICS, TITLE, LOGO, HLAB, VLAB, CONTOUR, CBAR
 
-	IF (igrp.LT.itics .OR. igrp.GT.icbar) RETURN
+	IF (ititl.LT.ititl .OR. igrp.GT.icbar) RETURN
 	len = TM_LENSTR1(pyf_group_names(igrp))
 	CALL SPLIT_LIST(pttmode_explct, show_lun,
      .			' '//pyf_group_names(igrp)(:len), 0)

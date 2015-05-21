@@ -114,10 +114,6 @@ C**
 * TMAP interrupt flag
 	include 'xinterrupt.cmn'
 
-* (PyFerret) labels along axes will be drawn with the tic-mark text style
-
-        IF (pyfont .AND. pyf_set(itics)) igroup = itics  
-
 C If graticule lines are to be drawn across the plot at the tics
 C then only do them for one horizontal and one vertical axis.  
 C The dash lines interfere with each other if drawn from both 
@@ -144,10 +140,14 @@ C
 C     DRAW AXIS, LEFT, RIGHT Y AXIS THEN TOP, BOTTOM XAXIS
 C
 	IF(MAKEP.EQ.'VIEW') GOTO 1000
+      
+* (PyFerret) labels along vertical axes will be drawn with the ivtics text style
+      IF (pyfont .AND. pyf_set(ivtics)) igroup = ivtics
+
       IF(MYLEF.EQ.0.AND.IAXON(3).EQ.1)THEN
 	  IY=ITY
 C	  YAXIS1 = LINEAR ,  YAXIS2 = LOG
-C
+C  
           IF((ITFLG.EQ.-1 .OR. ITFLG.EQ.2) .AND. DRAW)THEN
               IF(ITFLG.EQ.-1) CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
      *        YF,XLO,XF,TCSIZE,XHI,HGRAT, HCOLOR, HLINE, IPEN(0))
@@ -186,6 +186,10 @@ C
 	ENDIF
       ENDIF
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
+
+* (PyFerret) labels along horizontal axes will be drawn with the ihtics text style
+      IF (pyfont .AND. pyf_set(ihtics)) igroup = ihtics  
+
       IF(IAXON(1).EQ.1)THEN
           IX=-ITX
 C

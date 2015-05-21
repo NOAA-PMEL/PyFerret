@@ -153,7 +153,7 @@ C
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'gkscm1_inc.decl'  ! with wsid for igrnpt
 	INCLUDE 'GKSCM1.INC'
-
+	INCLUDE 'pyfonts.cmn'
 
 C
 C
@@ -555,6 +555,9 @@ C
 	ELSE IF(ICOM.EQ.'%LABEL')THEN
 	    IF(N.EQ.0)RETURN
 
+* (PyFerret) moveable labels style 
+	    IF (pyfont .AND. pyf_set(imove)) igroup = imove
+
 * get missing inputs interactively -- through mouse input (6/99)
 * ... if the user **explicitly** omits the justification (iflg(3)) then
 *	put up menu (including arrow options)
@@ -668,6 +671,10 @@ C  Set up to use any font settings from this line on subsequent lines.
                ENDIF
 
   40        CONTINUE
+  	    
+* (PyFerret) cancel tic-mark text style
+	   IF (pyfont) igroup = fnt_all
+
 C
 C
 C***	%WHERE

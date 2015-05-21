@@ -57,42 +57,33 @@
 	DATA fnt_all/0/
 
 * index in these structures for each grouping
-	DATA itics/1/	! tics
-	DATA ititl/2/	! title
-	DATA ilogo/3/	! logo
-	DATA ihlab/4/	! hlab
-	DATA ivlab/5/	! vlab
-	DATA icont/6/	! contour
-	DATA icbar/7/	! cbar
+	DATA ititl/1/	! title
+	DATA ilogo/2/	! logo
+	DATA ihtics/3/	! htics
+	DATA ivtics/4/	! vtics
+	DATA ihlab/5/	! hlab
+	DATA ivlab/6/	! vlab
+	DATA imove/7/	! moveable
+	DATA icont/8/	! contour
+	DATA icbar/9/	! cbar
 
-        DATA    
-     .		pyfnt_fontname        /'Hershey'/,	! overall
-     .		pyf_fontname(1)       /'Hershey'/,	! tics
-     .		pyf_fontname(2)       /'Hershey'/,	! title
-     .		pyf_fontname(3)       /'Hershey'/,	! logo
-     .		pyf_fontname(4)       /'Hershey'/,	! hlab
-     .		pyf_fontname(5)       /'Hershey'/,	! vlab
-     .		pyf_fontname(6)       /'Hershey'/,	! contour
-     .		pyf_fontname(7)       /'Hershey'/	! cbar
+        DATA pyfnt_fontname           / 'Hershey' /	! overall
+        DATA (pyf_fontname(i),i=1,ngp)/ ngp*'Hershey' /
 
-	DATA 
-     .		pyfnt_font_dflt        /'Hershey'/,	! overall
-     .		pyf_font_dflt(1)       /'Hershey'/,	! tics
-     .		pyf_font_dflt(2)       /'Hershey'/,	! title
-     .		pyf_font_dflt(3)       /'Hershey'/,	! logo
-     .		pyf_font_dflt(4)       /'Hershey'/,	! hlab
-     .		pyf_font_dflt(5)       /'Hershey'/,	! vlab
-     .		pyf_font_dflt(6)       /'Hershey'/,	! contour
-     .		pyf_font_dflt(7)       /'Hershey'/	! cbar
+
+	DATA  pyfnt_font_dflt           / 'Hershey' /	! overall
+	DATA  (pyf_font_dflt(i),i=1,ngp)/ ngp*'Hershey' /
 
 	DATA 
-     .		pyf_group_names(1)      /'TICS'/,		! tics
-     .		pyf_group_names(2)      /'TITLE'/,		! title
-     .		pyf_group_names(3)      /'LOGO'/,		! logo
-     .		pyf_group_names(4)      /'HLAB'/,		! hlab
-     .		pyf_group_names(5)      /'VLAB'/,		! vlab
-     .		pyf_group_names(6)      /'CONTOUR'/,		! contour
-     .		pyf_group_names(7)      /'CBAR'/		! cbar
+     .		pyf_group_names(1)      /'TITLE'/,		! title
+     .		pyf_group_names(2)      /'LOGO'/,		! logo
+     .		pyf_group_names(3)      /'HTICS'/,		! tics
+     .		pyf_group_names(4)      /'VTICS'/,		! tics
+     .		pyf_group_names(5)      /'HLAB'/,		! hlab
+     .		pyf_group_names(6)      /'VLAB'/,		! vlab
+     .		pyf_group_names(7)      /'MOVEAB'/,		! moveable labels
+     .		pyf_group_names(8)      /'CONTOUR'/,		! contour
+     .		pyf_group_names(9)      /'CBAR'/		! cbar
 
 	DATA pyfnt_under/0/
 	DATA pyfnt_opq/1./
@@ -114,13 +105,6 @@
 
 * Flag for groups that are set other than the main defaults
 
-	DATA 
-     .		pyf_set(1)      /.FALSE./,		! tics
-     .		pyf_set(2)      /.FALSE./,		! title
-     .		pyf_set(3)      /.FALSE./,		! logo
-     .		pyf_set(4)      /.FALSE./,		! hlab
-     .		pyf_set(5)      /.FALSE./,		! vlab
-     .		pyf_set(6)      /.FALSE./,		! contour
-     .		pyf_set(7)      /.FALSE./		! cbar
+	DATA (pyf_set(i), i=1,ngp)/ngp*.FALSE./
 
 	END

@@ -15,12 +15,12 @@
 *
 
 	INTEGER		ngp
-	PARAMETER	(ngp=7)
+	PARAMETER	(ngp=9)
 
 	LOGICAL		pyfont, pyf_set(ngp)
 	INTEGER		pyfnt_under, pyfnt_italic, pyfnt_bold, pyfnt_isiz, 
      .                  pyf_italic(ngp), pyf_bold(ngp), pyf_isiz(ngp)
-	INTEGER		itics, ititl, ilogo, ihlab, ivlab, icont, icbar
+	INTEGER		ititl, ilogo, ihtics, ivtics, ihlab, ivlab, imove, icont, icbar
 	INTEGER		igroup, fnt_all, logolab(3)
 
 	REAL*4		pyfnt_opq, pyfnt_rot,
@@ -31,8 +31,8 @@
 	CHARACTER*8	pyf_group_names(ngp)
 	
 	COMMON/pyfont_args/ pyfont, pyf_set, pyfnt_opq, pyfnt_rot, pyfnt_under, 
-     .			igroup, fnt_all, logolab,
-     .			itics, ititl, ilogo, ihlab, ivlab, icont, icbar,
+     .			igroup, fnt_all, logolab, ititl, ilogo, 
+     .			ihtics, ivtics, ihlab, ivlab, imove, icont, icbar,
      .			pyfnt_italic, pyfnt_bold, pyfnt_isiz, 
      .			pyf_italic, pyf_bold, pyf_isiz,
      .			pyfnt_red, pyfnt_grn, pyfnt_blu,

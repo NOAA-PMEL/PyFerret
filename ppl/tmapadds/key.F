@@ -143,7 +143,8 @@
 	include        'pyfonts.cmn'
 	
 	integer ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
-     .          lab_add, nlab, i, kount, lev1, levn, nspace, shd_lev_hi
+     .          lab_add, nlab, i, kount, lev1, levn, nspace, shd_lev_hi,
+     .		ITYPEX_save, ITYPEY_save
 
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht, ksiz_test
@@ -169,6 +170,15 @@
 *	CANCEL WINDOW ON IF SET
 	windof_hold = windof
 	windof = .false.
+
+* Save the axis ITYPE settings (log axes or not) so they aren'tn used for color key
+* label locations, which are linear. Will restore them at the end.  See the
+* examples in bn_polygon_log.jnl
+
+	ITYPEX_save = ITYPEX
+	ITYPEY_save = ITYPEY
+	ITYPEX = 1
+	ITYPEY = 1	
 
 * pyferret font settings
 	IF (pyfont .AND. pyf_set(icbar)) igroup = icbar
@@ -750,6 +760,9 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	cont_key = cont_key_keep
 
         IF (pyfont .AND. pyf_set(icbar)) igroup = fnt_all
+
+	ITYPEX = ITYPEX_save
+	ITYPEY = ITYPEY_save
 
 	return
 	end

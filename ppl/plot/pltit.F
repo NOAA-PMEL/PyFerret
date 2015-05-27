@@ -93,7 +93,7 @@
 *              within a grid cell
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V694  *acm*  2/15 Fix ticket 2232; redraw plot axes on line plots
-*
+* V694  *acm*  5/15 correct the setting of is_ribbon
 *****************************************************
 
 * local variable declarations for PLTIT (for TMAP)
@@ -282,7 +282,7 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 ***********************************************
 	CALL COLOR(IPEN(0))
 	IF(.NOT.SOVER)THEN
-	    IF(MAKEP.EQ.'RIBPLOT') is_ribbon = .TRUE.
+	    is_ribbon = MAKEP.EQ.'RIBPLOT'
 	    CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL,is_ribbon)
 
 	    IF (ABS(XF) .GT. CMZGE .OR. ABS(YF) .GT. CMZGE) GOTO 3333  ! fill/contour but 1 grid point

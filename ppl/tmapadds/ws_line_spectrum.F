@@ -37,6 +37,7 @@
 *
 *	Routine to set up the line bundles for color-line plots
 * V691 *acm* 5/14 Fix when defining line bundles for a by-levels palette
+* V694 *acm* 5/15 Fix ticket 2292 line plot thickness and ribbon plots
 
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
@@ -137,9 +138,10 @@
 
 
 * Set line bundles
+* The low-index preserves line and thickness defintions for the standard line-plot colors.
 
 	nthick = 3
-	low_index = lo_color_ndx(zwsid)
+	low_index = MAX(num_line_colors* nthick + 2, lo_color_ndx(zwsid)) 
 
 * GKS has a hard-wired MAX_BUNDL_TBL set at 250. This means we are
 * limited on number of colors drawn with thick lines.

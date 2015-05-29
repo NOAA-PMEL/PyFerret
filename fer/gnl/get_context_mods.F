@@ -156,6 +156,7 @@
 *                  also fix err693_undetected_regrid_dset.jnl
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 * V695+ *sh* 2/15 add support for _DQ_ 
+* V698+ *sh* 5/15 bug fix: allow blanks before aux varname e.g. "gz( depth)"
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -503,11 +504,15 @@ c	      next_char = istart + naxes - 1
 	     ELSE
 *    ... x,y arguments must be in collating order as in gxy(argx,argy)=
 	        DO rgdim = 1, nferdims
-	           IF (cx_g_eq_regrid(rgdim)) GOTO 704   ! too lazy to renumber
+	           IF (cx_g_eq_regrid(rgdim)) GOTO 704   ! should use "EXIT"
 	        ENDDO
 	     ENDIF
- 704	     cx_aux_arg_start(rgdim, mods_cx) = i+1
-	     cx_aux_arg_end  (rgdim, mods_cx) = i
+* (5/15) ... skip leading white space
+ 704	     DO i = aux_lparen_pos+1, aux_rparen_pos
+	        IF (text_buff(i:i) .NE. ' ') EXIT
+	     ENDDO
+	     cx_aux_arg_start(rgdim, mods_cx) = i
+	     cx_aux_arg_end  (rgdim, mods_cx) = i-1
 	     cx_aux_stat     (rgdim, mods_cx) = paux_stat_used
 	     DO 104 i = aux_lparen_pos+1, aux_rparen_pos-1
 	        IF (text_buff(i:i) .EQ. ' ') GOTO 104

@@ -1,17 +1,8 @@
-	SUBROUTINE DO_AUX_REGRID_LINE_LIN ( axis,
-     .					 src_line,
-     .					 kmin_src, kmax_src,
-     .					 indices, coef,
-     .					 kmin_dst, kmax_dst,
-     .					 kdlo_ok,  kdhi_ok,
-     .					 bad_src,  bad_dst, ascending,
-     .				         dst_line             )
+	SUBROUTINE SYS_LS( cmnd_text, sysout_ptr, nlines, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -40,62 +31,48 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
-*
-* regrid a single line using linear interpolation
-* using the index pointers and coefficients provided
 
-* v690 11/13 *sh*
 
-        IMPLICIT NONE
-        include 'tmap_dims.parm'
-        include 'errmsg.parm'
-	include	'ferret.parm'
-	include	'xcontext.cmn'
-	include	'xvariables.cmn'
-	include	'xmem_subsc.cmn'
+* Execute an "ls -1" shell command and return the resulting strings
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+
+* V695+:  5/15 *sh*  - based upon store_sys_strings.F
+
+	include	'tmap_dims.parm'
+	include	'xrisc.cmn'
 
 * calling argument declarations:
-	LOGICAL	ascending
-	INTEGER	axis, kmin_src,kmax_src, kmin_dst, kmax_dst, kdlo_ok, kdhi_ok,
-     .		indices (kmin_dst:kmax_dst)
-        REAL    src_line(kmin_src:kmax_src),
-     .		dst_line(kmin_dst:kmax_dst),
-     .		coef    (kmin_dst:kmax_dst),
-     .		bad_src, bad_dst
+	INTEGER	nlines, status
+	REAL*8	 sysout_ptr
+	CHARACTER*(*) cmnd_text, ls_out
 
 * internal variable declarations:
-        INTEGER ndx_lo, k, kinc1
-        REAL    frac
+	INTEGER	istat
 
-* initialize
-	IF (ascending) THEN
-	   kinc1 = 1
+	CALL WARN('Unix ls NEEDS SECURITY CHECKS')
+
+* create the ls command as a null-terminated C string
+	CALL TM_FTOC_STRNG ('ls -1 '//cmnd_text,
+     .			    risc_buff, size_rbuff )
+
+* execute the shell command
+	CALL GET_SYS_CMND(sysout_ptr, nlines, risc_buff, istat)
+	IF (istat .NE. 0) THEN
+	   CALL ERRMSG(ferr_insuff_memory, status,
+     .			'dynamic memory for string', *5000)
 	ELSE
-	   kinc1 = -1
+	   status = ferr_ok
 	ENDIF
 
-* loop performing linear interpolations
-	DO 1000 k = kdlo_ok, kdhi_ok   ! dest Z axis
 
-	   ndx_lo = indices(k)
-	   frac   = coef(k)
+* transfer the strings into this mr (and free the pointer)
+XXX	CALL XFER_C_PTRS(sysout_ptr,0,0,mr_c_pointer(mr),1,pos-1,nlines)
+	
 
-           IF ( frac .LT. 0.0 ) THEN
-              dst_line(k) = bad_dst
-           ELSEIF ( src_line(ndx_lo) .EQ. bad_src ) THEN
-              dst_line(k) = bad_dst
-           ELSEIF ( frac .EQ. 1.0 ) THEN
-              dst_line(k) = src_line(ndx_lo)
-           ELSEIF ( src_line(ndx_lo+1) .EQ. bad_src ) THEN
-              dst_line(k) = bad_dst
-           ELSE
-* ... interpolate data from com1 field to get result
-              dst_line(k) = 
-     .                 frac  * src_line(ndx_lo)
-     .            + (1-frac) * src_line(ndx_lo+kinc1)
-           ENDIF
- 1000   CONTINUE
+* success
+	status = ferr_ok
 
-	RETURN
-	END
+ 5000	RETURN
+	END	

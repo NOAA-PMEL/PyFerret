@@ -66,10 +66,11 @@
      .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif )
 
 * internal variable declarations:
-	LOGICAL increasing, increasing_here, looking_for_first
+	LOGICAL increasing, looking_for_first
 	INTEGER	KNOWN_GRID, 
      .		idim, src_grid, i, j, k, l, m, n, trans,
-     .		kdstmin, kdstmax, kkmin, kkmax, klo, khi, kdel
+     .		kdstmin, kdstmax, kkmin, kkmax, klo, khi, kdel,
+     .		n_incr, n_decr
 	REAL*8  TM_WORLD, axmax, axmin, v, v1, bad_aux
 
 * initialize
@@ -90,24 +91,12 @@
            cx_aux_stat (idim, src_cx) = paux_stat_na
  100    CONTINUE
 
-! XXXXX TEMPORARY -- z_dim hard-coded
+* z_dim hard-coded
 	trans = cx_regrid_trans(z_dim,src_cx)
 
-! trash - delete me
-!* determine the regridding transformation
-!* if a single point result, z=pt or z=lo:hi@ave, get regrid trans from axis trans  
-!	IF ( cx_regrid_trans(z_dim,src_cx) .NE. unspecified_int4 ) THEN
-!	   trans = cx_regrid_trans(z_dim,src_cx)
-!	ELSEIF ( cx_trans(z_dim,src_cx) .EQ. trans_interpolate ) THEN
-!	   trans = pauxrgrd_linear
-!	ELSEIF ( cx_trans(z_dim,src_cx) .EQ. trans_average ) THEN
-!	   trans = pauxrgrd_pwlave
-!	ELSE
-!	   CALL ERRMSG( ferr_internal, status, '??lims_curv_rgrd_trans??', *5000)
-!	ENDIF
-
-* increasing or decreasing? determine by finding and examining
-* the first two valid values encountered in any column of the indicated axis
+* increasing or decreasing? Some non-monotonic sequences are allowed, but few
+	n_incr = 0
+	n_decr = 0
         DO 110 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
         DO 110 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
         DO 110 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
@@ -122,38 +111,16 @@
 	         v1 = v
 	         looking_for_first = .FALSE.
 	      ELSE
-	         increasing = v .GT. v1
-	         GOTO 112
+	         IF (v .GT. v1) THEN
+	            n_incr = n_incr + 1
+	         ELSE
+	            n_decr = n_decr + 1
+	         ENDIF
+	         v1 = v
 	      ENDIF
  105	   CONTINUE
  110	CONTINUE
-* ... no line of this data had 2 valid values!  But continue anyway
-
-* make sure that the auxiliary variable is monotonic
-* note:  missing values in the array are allowed, but only at the edges
-*        If a missing value is encountered in the body of the auxiliary var
-*        regridding will not proceed beyong that subscript in the regrid line
- 112	DO 120 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
-        DO 120 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
-        DO 120 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-        DO 120 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-        DO 120 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
-	   looking_for_first = .TRUE.
-           DO 115 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	      v = aux1(i,j,k,l,m,n)
-	      IF (v .EQ. bad_aux) THEN
-	         IF (looking_for_first) GOTO 115
-	      ELSEIF (looking_for_first) THEN
-	         v1 = v
-	         looking_for_first = .FALSE.
-	      ELSE
-	         increasing_here = v .GT. v1
-	         IF (increasing .NEQV. increasing_here) GOTO 5100  ! not monot.
-	         v1 = v
-	      ENDIF
- 115	   CONTINUE
- 120	CONTINUE
-
+	increasing = n_incr .GE. n_decr   ! very weak test of well-ordered
 
 ***** determine the minimal index limits needed to do the regrid *****
 * SINGLE AXIS CODE ONLY (GET_CONTEXT_MODS setup to dis-allow multiple args for now)
@@ -195,8 +162,6 @@
 
 * find the smallest index range in the aux array that contains all of the aux
 * values lying within the axmin to axmax value range on the destination axis 
-* ==> CODE ONLY WORKS FOR Z AXIS               AT THIS STAGE !!!
-
         DO 290 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
         DO 290 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
         DO 290 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
@@ -271,9 +236,7 @@
 
 * error exit
  5000	RETURN
- 5100   CALL ERRMSG( ferr_invalid_command, status,
-     .		'auxiliary regridding coordinates are not monotonic', *5000)
- 5200   CALL ERRMSG( ferr_invalid_command, status,
-     .		'auxiliary regridding coordinate field includes '//
-     .		'missing value(s)', *5000)
+! 5100   CALL ERRMSG( ferr_invalid_command, status,
+!     .		'auxiliary regridding coordinates are too disordered'
+!     .          //pCR//'Need 2:1 ratio ordered:disordered', *5000)
 	END

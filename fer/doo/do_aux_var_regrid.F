@@ -46,6 +46,7 @@
 
 * v685 4/13-4/14 *sh*
 * v689+ 3/15 *sh* added support for T axis T-F orthoganalization
+*       5/15 *sh* allow non-monotonic aux points 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -64,7 +65,8 @@
         REAL    src(*), dst(*), aux1(*), aux2(*), aux3(*)
 
 * internal variable declarations
-	INTEGER	axis, indmin_dst, indmax_dst
+	INTEGER	axis, indmin_dst, indmax_dst, slen
+	CHARACTER  LEFINT*8, cn*8
 
 	IF ( naxis .EQ. 1) THEN
 
@@ -91,8 +93,7 @@
      .			dst,  mdst,  dst_cx,
      .			aux1, maux1, aux1_cx,
      .			cx_lo_ss(src_cx,axis),cx_hi_ss(src_cx,axis),
-     .			indmin_dst,           indmax_dst              )
-
+     .			indmin_dst,           indmax_dst             )
 	
 	   ELSEIF (axis .EQ. t_dim) THEN
 

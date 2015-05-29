@@ -143,6 +143,8 @@
 *      4/14  *sh* return standard grid if "false regridding" - 1 pt curvi
 * V695  *acm* 2/15 cx_calendar stores info about formatting of T and F axes
 * V695+  *sh* 3/15 assign regrid transform for T-F plane FMRC regridding
+* V698+  *sh* 5/15 ax units for gz(density)=lo:hi:del should come from aux var
+*		   only partially fixed here: setting no units at all
 
 	include 'errmsg.parm'
 	include 'ferret.parm'
@@ -169,7 +171,7 @@
 	INTEGER	  KNOWN_GRID, 
      .		  use_grid, ilo, ihi,
      .		  cat, var, dset, std_grid, std_axis, use_axis, idim,
-     .		  base_grid, impl_grid
+     .		  base_grid, impl_grid, src_line
 	REAL*8	  SECS_TO_TSTEP, dlo, dhi, delta
 	CHARACTER VAR_CODE*128
 
@@ -292,11 +294,20 @@
      .				/ line_tunit(grid_line(idim,std_grid)) !was hrs
 	               ENDIF
 	            ENDIF
+* 5/15 ax units for gz(density)=lo:hi:del come from aux var
+	            IF ( cx_naux(cx) .GT.0
+     .		   .AND. cx_aux_var(idim,cx) .NE. unspecified_int4 ) THEN
+* ... partial fix only: no longer taking units from native axis of this var
+*                       but still need to grab them from the aux var
+	               src_line = unspecified_int4
+	            ELSE
+	               src_line = grid_line(idim,std_grid)
+	            ENDIF
 	            CALL TM_GET_LIKE_DYN_LINE(	idim,
      .						dlo,
      .						dhi,
      .						delta,
-     .						grid_line(idim,std_grid),
+     .						src_line,
      .						pline_class_basic,
      .						grid_line(idim,impl_grid),
      .						status)

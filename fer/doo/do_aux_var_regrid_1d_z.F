@@ -3,7 +3,7 @@
      .				           dst,  mdst, dst_cx,
      .				           pos,  mpos, pos_cx,
      .					   kmin_src, kmax_src, 
-     .					   kmin_dst, kmax_dst ) 
+     .					   kmin_dst, kmax_dst    )
 
 *
 *
@@ -55,6 +55,7 @@
 * v690 11/13-4/14 *sh*
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * v695+ 3/15 *sh*  change to call name to accommodate T axis regridding
+* v698+ 5/15 *sh* linear regrid allows monotonic, but averaging doesnt
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -78,7 +79,8 @@
 
 
 * internal variable declarations:
-	LOGICAL	new_aux_line, has_valid, ascending, false_1pt_regrid
+	LOGICAL	new_aux_line, has_valid, ascending, false_1pt_regrid,
+     .		monotonic_block
         INTEGER CX_DIM_LEN,
      .          idim,
      .          i,   j,   k,   l,   m,   n,
@@ -89,8 +91,8 @@
      .          dsi, dsj, dsk, dsl, dsm, dsn,
      .          dpi, dpj, dpk, dpl, dpm, dpn
         INTEGER ndx_lo, wkblk, kdmax, ii, trans, klook, khiok,
-     .		koffset_false
-        REAL    bad_src, bad_dst, bad_pos, zval, frac
+     .		koffset_false, kstart, kend, n_ascnd, n_desnd
+        REAL    bad_src, bad_dst, bad_pos, zval, v0, v1
         REAL*8  TM_WORLD
 * internally declared work arrays
 	INTEGER	indices(kmin_dst:kmax_dst+1)
@@ -239,16 +241,65 @@
 	        DO 500 k = kmin_src, kmax_src
  500		posline(k) = pos(ip, jp, k, lp, mp, np)
 
-* for each destination point, find the source index just below this value
-* and the weight coefficient to attach to that index 
-* ... note that the indices are referenced to a starting index of 1
-	        CALL HUNT_INDICES(posline, kmin_src, kmax_src,
+* 5/15 - allow for non-monotonic position array.
+* PROGRAMMER NOTE: The 5/15 changes make this code seriously sub-optimal
+* The code immediately following could be blended with the routines
+* HUNT_INDICES and FULL_SCAN_INDICES to make something both smaller and faster
+
+* check for a single contiguous block of monotonic points
+	        monotonic_block = .FALSE.
+	        n_ascnd = 0
+	        n_desnd = 0
+	        kstart = kmax_src
+	        kend   = kmin_src
+
+* ... find start of non-bad block
+	        DO k = kmin_src, kmax_src
+	           IF (posline(k) .NE. bad_pos) THEN
+	              kstart = k
+	              GOTO 510
+	           ENDIF
+	        ENDDO
+* ... find end of non-bad block
+ 510	        DO k = kmax_src, kstart, -1
+	           IF (posline(k) .NE. bad_pos) THEN
+	              kend = k
+	              GOTO 520
+	           ENDIF
+	        ENDDO
+* ... is there a contiguous block at all?
+ 520		IF (kstart .GE. kend-1) THEN
+	           monotonic_block = .TRUE.
+	           GOTO 590                 ! at most 2 values in block
+	        ENDIF
+
+* ... count ascending and descending pairs
+		v0 = posline(kstart)
+	        DO k = kstart+1, kend
+		   v1 = posline(k)
+	           IF (v1 .NE. bad_pos) THEN
+	              IF (v1 .GT. v0) THEN
+	                 n_ascnd = n_ascnd + 1
+	              ELSEIF (v1 .LT. v0) THEN
+	                 n_desnd = n_desnd + 1
+	              ENDIF
+	              v0 = v1
+	           ENDIF
+	        ENDDO
+
+* ... assess the monotonicity
+* Note: through this approach columns may differ in direction!!
+	        ascending = n_ascnd .GE. n_desnd
+
+ 590		CALL FULL_SCAN_INDICES(posline, kmin_src, kmax_src,
+     .				  kstart, kend,
      .				  bad_pos, dstcoords,
      .				  indices, coef, kmin_dst, kdmax,
-     .				  klook, khiok, ascending )
-	        has_valid = klook .NE. unspecified_int4
-		IF (trans .EQ. pauxrgrd_pwlave ) khiok = khiok-1
-		new_aux_line = .FALSE.
+     .				  ascending, has_valid )
+	        klook = kmin_dst
+	        khiok = kdmax
+	        IF (trans .EQ. pauxrgrd_pwlave ) khiok = khiok-1
+	        new_aux_line = .FALSE.
 	     ENDIF
 
 	     IF (has_valid) THEN
@@ -268,14 +319,15 @@
      .				  bad_src,  bad_dst, ascending,
      .				  dstline             )
 	        ELSEIF (trans .EQ. pauxrgrd_pwlave ) THEN
-* ... by within-target-cell averaging
+* ... by within-target-cell averaging   (count non-monotonic positions)
 	           CALL DO_AUX_REGRID_LINE_AVE (axis,
      .				  srcline,  posline,
      .				  kmin_src, kmax_src,
      .				  indices,  coef,
      .				  kmin_dst, kmax_dst,
      .				  klook,    khiok,
-     .				  bad_src,  bad_dst, ascending,
+     .				  bad_src,  bad_dst, bad_pos,
+     .				  ascending,
      .				  dstline             )
 	        ENDIF
 

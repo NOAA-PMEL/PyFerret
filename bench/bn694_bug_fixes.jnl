@@ -82,3 +82,6 @@ GO err693_string_results
 
 GO bn_reset
 GO err693_lev_nv_over
+
+GO bn_reset
+GO err693_fcn_of_attvar

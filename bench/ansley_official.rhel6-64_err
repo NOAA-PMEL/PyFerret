@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 80532655 May 18 14:31 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 80594023 May 29 12:17 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: final resolution of 2234, with new error messages, and fix for 2285 including a new test
+Note: testing the fix for ticket 2291
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,15 +14,15 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
+FER_FONTS=/home/users/ansley/ferret_distributions/pyferret_flat/ppl/fonts
+FER_GO=. /home/users/ansley/ferret_distributions/pyferret_flat/go /home/users/ansley/ferret_distributions/pyferret_flat/examples /home/users/ansley/ferret_distributions/pyferret_flat/contrib
 FER_GRIDS=.
-FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
+FER_LIBS=/home/users/ansley/ferret_distributions/pyferret_flat/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
-FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
+FER_PALETTE=. /home/users/ansley/ferret_distributions/pyferret_flat/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Mon May 18 15:20:09 PDT 2015
+Beginning at Fri May 29 12:36:12 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2151,6 +2151,7 @@ Replacing definition of axis TIME
  LISTing to file a.nc
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
+CURL Error: Couldn't resolve host name
 curl error details: 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2336,6 +2337,7 @@ set axis/stride=2 NORMAL
  LISTing to file tripolar_missing_lon.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+CURL Error: Couldn't resolve host name
 curl error details: 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3914,6 +3916,8 @@ Replacing definition of axis EAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of grid GRID3D
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4038,4 +4042,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon May 18 15:21:46 PDT 2015
+Ended at Fri May 29 12:37:48 PDT 2015

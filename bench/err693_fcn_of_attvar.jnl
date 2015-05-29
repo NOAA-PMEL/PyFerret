@@ -1,0 +1,11 @@
+! err693_fcn_of_attvar.jnl
+! Ticket 2291 Function of attribute-expression 
+! returned just the first result
+
+use coads_climatology
+list sst.dimnames
+list dncase(sst.dimnames)
+list strlen( sst.dimnames)
+list substring(sst.dimnames,2,3)
+list dncase(substring(sst.dimnames,2,3))
+list ysequence(dncase(sst.dimnames))

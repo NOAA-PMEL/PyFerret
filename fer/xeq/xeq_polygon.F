@@ -155,14 +155,9 @@ CC       => Set values here instead.
 	noaxes    = qual_given( slash_noaxes         ).GT.0
 	axes      = qual_given( slash_polygon_axes   ).GT.0
 
-* In PyFerret, on overlays the axes are turned off, but the user can turn back on.
         IF (overlay) THEN
 	   noaxes = .FALSE.
 	   axes = .FALSE.
-	   IF (its_pyferret) THEN 
-	      noaxes = .TRUE.
-	      axes = qual_given( slash_polygon_axes ).GT.0
-	   ENDIF
 	ENDIF
 
 	coord_ax  = qual_given( slash_polygon_coord  )		! integer

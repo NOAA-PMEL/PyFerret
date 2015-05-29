@@ -192,14 +192,9 @@ CC       => Set values here instead.
 	noaxes    = qual_given( slash_noaxes         ).GT.0
 	axes      = qual_given( slash_plot_axes      ).GT.0
 
-* In PyFerret, on overlays the axes are turned off, but the user can turn back on.
         IF (overlay) THEN
 	   noaxes = .FALSE.
 	   axes = .FALSE.
-	   IF (its_pyferret) THEN 
-	      noaxes = .TRUE.
-	      axes = qual_given( slash_plot_axes ).GT.0
-	   ENDIF
 	ENDIF
 
 	is_logh   = qual_given( slash_is_logh        ).GT.0

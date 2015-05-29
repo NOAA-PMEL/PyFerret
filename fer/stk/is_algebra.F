@@ -98,6 +98,8 @@
 * V694  1/15 *acm* as part of changes for ticket 2227 (handling of dimensions
 *                  that are not also 1-D coordinate variables), when returning 
 *                  ..dimnames, now list of all dimensions in the dataset.
+* V694  5/15 *acm* Fix ticket 2291. When merging, handle variables from attribute
+*                  as temp variables.
 
 	include 'tmap_dims.parm'
 #include "netcdf.inc"
@@ -758,7 +760,7 @@
 	IF ( status .NE. ferr_ok ) RETURN
 	is_cx ( isp ) = hi_cx
 	is_obj( isp ) = lo_isp	! claimed by this level
-	IF ( cx_category(hi_cx) .EQ. cat_user_var ) THEN
+	IF ( cx_category(hi_cx) .EQ. cat_attrib_val ) THEN
 * ... special action if this component variable is user-defined (uvar)
 	   is_uvar( isp ) = cx_variable( hi_cx )
 	ENDIF
@@ -853,7 +855,10 @@
 * ... to be deleted as soon as used (e.g. "LIST X")
 * implicit uvars that are single variables (e.g. "LIST U") need their "in-use"
 * flags removed (otherwise done when they're used as operands)
-	IF ( mr_category( hi_mr ) .EQ. cat_temp_var ) THEN
+* (ticket 2291) Handle variables from attribute information the same way.
+
+	IF ( mr_category( hi_mr ) .EQ. cat_temp_var .OR.
+     .	     mr_category(hi_mr) .EQ. cat_attrib_val) THEN
 * ... result of algebraic computation
 * ... if user set the missing value flag make sure it is used
 	   IF ( cx_bad_data(big_cx) .NE. mr_bad_data(hi_mr) ) THEN
@@ -872,9 +877,6 @@ c Tentative fix for ticket 2234
 !	ELSEIF (mr_category(hi_mr) .EQ. cat_string) THEN
 !! ... string variables not yet implemented 1/99 *sh*
 !	   GOTO 5100
-        ELSEIF  (mr_category(hi_mr) .EQ. cat_attrib_val) THEN  ! like the final ELSE below
-           CALL MR_NOT_IN_USE(hi_mr)
-	   CALL TRANSFER_CONTEXT( big_cx, lo_cx )
 	ELSEIF ( EXPLICIT_UVAR(uvar) ) THEN
 * ... result of a simple definition like DEFINE VARIABLE UAVE=U[K=@AVE]
 *	or DEFINE VARIABLE NEW=X
@@ -916,6 +918,7 @@ c Tentative fix for ticket 2234
      .			               memory(1,mr_blk1(new_mr)), size,
      .                                  cx_bad_data(lo_cx)  )
 	      mr_bad_data(new_mr) = cx_bad_data(lo_cx)
+
 	   ELSE
 	      new_mr = is_mr(lo_isp)
 	      size = MGRID_SIZE( new_mr )

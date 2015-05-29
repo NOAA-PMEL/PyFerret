@@ -682,28 +682,25 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   ENDIF
 
 * ... check that there is a range of dependent data for PLOT+ auto-scaling
-* ... when all the variables are considered together
-        
-	this_no_range(ipl) = .FALSE.
-        IF (set_axis) this_no_range(ipl) = NO_LINE_RANGE( 
-     .       dep_dat, nload, mr_bad_data(mv), val1 )
-	all_1_dep = all_1_dep .AND. this_no_range(ipl)
-        IF (this_no_range(ipl) .AND. val1.NE.mr_bad_data(mv) )
+* ... when all the variables are considered together (but not the ribbon var)
+   
+	   IF (ribbon_plot .AND. ipl.NE.ribbon_var) THEN
+	      this_no_range(ipl) = .FALSE.
+              IF (set_axis) this_no_range(ipl) = NO_LINE_RANGE( 
+     .          dep_dat, nload, mr_bad_data(mv), val1 )
+	      all_1_dep = all_1_dep .AND. this_no_range(ipl)
+              IF (this_no_range(ipl) .AND. val1.NE.mr_bad_data(mv) )
      .           this_no_range(ipl) = .FALSE. ! Keep the value for putting NO VALID on labels
-! 10/99	IF ( val1 .EQ. mr_bad_data(mv) ) CALL ERRMSG( ferr_no_range, status,
-!     .		'all data points are bad: '//VAR_CODE(mr_category(mv),
-!     .						      mr_variable(mv) ),*5000)
-	IF ( all_1_dep ) THEN
-	   IF ( only_val .EQ. bad_val4 ) THEN
-	      IF ( val1 .NE. mr_bad_data(mv) ) only_val = val1
-	   ELSE
-	      all_1_dep = all_1_dep .AND. only_val .EQ. val1
-	   ENDIF
-!	ELSE  ! commented out 10/93 - PLOT+ auto scaling used
-!	   CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
-!	   IF ( lo .LT. dep_min ) dep_min = lo
-!	   IF ( hi .GT. dep_max ) dep_max = hi
-	ENDIF
+
+	      IF ( all_1_dep ) THEN
+	         IF ( only_val .EQ. bad_val4 ) THEN
+	            IF ( val1 .NE. mr_bad_data(mv) ) only_val = val1
+	         ELSE
+	           all_1_dep = all_1_dep .AND. only_val .EQ. val1
+	         ENDIF
+
+	      ENDIF
+	   ENDIF  ! checking range when not ribbon variable
 
 * pass the data to PLOT+
 

@@ -684,7 +684,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * ... check that there is a range of dependent data for PLOT+ auto-scaling
 * ... when all the variables are considered together (but not the ribbon var)
    
-	   IF (ribbon_plot .AND. ipl.NE.ribbon_var) THEN
+	   IF (.NOT.ribbon_plot .OR. (ribbon_plot .AND. ipl.NE.ribbon_var)) THEN
 	      this_no_range(ipl) = .FALSE.
               IF (set_axis) this_no_range(ipl) = NO_LINE_RANGE( 
      .          dep_dat, nload, mr_bad_data(mv), val1 )

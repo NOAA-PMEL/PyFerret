@@ -4,6 +4,7 @@
 ! ticket 1990: axis tic labels for higher precison data
 ! had just 2 digits, and didnt capture the data range.
 
+can mode meta
 set mode meta axticlabel.plt
 
 let/title="tic labels on dependent axis" var = {\
@@ -11,6 +12,5 @@ let/title="tic labels on dependent axis" var = {\
 1.6897,1.687,1.6843,1.6817,1.679,1.6765,1.676,1.676}
 
 plot/line/sym/title="Vert axis labels should be 1.675 thru 1.715" var
-cancel view
 cancel mode meta
 

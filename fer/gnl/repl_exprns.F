@@ -111,6 +111,7 @@
 *                  the grid size rather than returning the nominal length.
 * V695 *acm*  2/15 RETURN=F0 for calendar formatted F axis 
 * V695+ *sh* 2/15 add support for _DQ_ style of quotations
+* V694 *acm* 5/15 fix bug 2213
 
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
@@ -132,7 +133,7 @@
 	REAL	  memory( mem_blk_size, max_mem_blks )
 	CHARACTER cmnd*(*)
 
-* local parameter declarations
+* local parameter declarations 
 	INTEGER	   max_len
 	PARAMETER (max_len = 2048)
 !	INTEGER	   fmt_lenH
@@ -143,7 +144,8 @@
      .            do_err, do_eval, get_ready, was_dep, const_arr_var,
      .		  dqote, DQ
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
-     .		  FIND_DSET_NUMBER, str_len, lenbuff, iend, itmp, axis,
+     .		  FIND_DSET_NUMBER, GET_ABSTRACT_LINE, 
+     .		  str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i2, use_digits, true_end,
      .		  qual_end, brkt, idim, use_width, dset, varid, 
      .            vartype, nvdims, vdims(8), nvatts, ist, ind,
@@ -377,6 +379,7 @@
 * ... evaluate the context without computing the expression
 *	this is a major performance consideration, but not 100% reliable
 	   has_uvar_gc = .FALSE.
+	   is_uvar_const = .FALSE.
 	   CALL GET_NEW_CX( cx_last, cx_cmnd, apply_cx, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
            ist = istart
@@ -402,11 +405,14 @@
 *	return ABSTRACT axes, on which limits may depend on data values
 * NOTE THE POTENTIAL FOR WRONG RESULTS WITH OPERATIONS SUCH AS MATRIX
 * TRANSPOSE - ALL "IMPOSED" AXES PRESENT THE RISK OF WRONG RESULTS
+* Just checking for the abstract axis to fix bug 2213. 
 
                  DO 190 idim = 1, nferdims
 		    do_eval = ( cx_hi_ww(idim, cx) .EQ. unspecified_val8
      .	                        .AND. CGRID_AXIS(idim, cx) .NE. mnormal )
-	            IF ( do_eval .OR. has_uvar_gc) THEN
+		    do_eval = (do_eval .OR. 
+     .	                 CGRID_AXIS(idim, cx) .EQ. GET_ABSTRACT_LINE(idim) )
+	            IF ( do_eval .OR. has_uvar_gc .OR. is_uvar_const) THEN
 	               CALL EVAL_EXPR ( memory, cx_last,
      .		                     cmnd(istart:iend), apply_cx, status )
 	               IF ( status .NE. ferr_ok ) GOTO 5000

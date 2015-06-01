@@ -162,6 +162,7 @@
 *	uvar_bad_data	- missing value flag to be used for this variable
 *	uvar_c_cache_ptr- pointer to c-cahce of full range variable
 *	has_uvar_gc	- variable is a grid-changing variable
+*	is_uvar_const	- variable is a constant-array variable
 
 *	isp	 	- interpretation stack pointer
 *	is_act   	- activity currently in progress
@@ -312,6 +313,7 @@
      .		uvar_need_dset	 ( max_uvar ),
      .		uvar_c_cache_ptr ( max_uvar ),
      .		has_uvar_gc,
+     .		is_uvar_const,
      .
      .		uvar_text	 ( max_uvar ),
      .		uvar_title	 ( max_uvar ),
@@ -376,6 +378,7 @@
      .			uvar_mod_pseudo,
      .			uvar_by_ss,
      .			has_uvar_gc,
+     .			is_uvar_const,
      .			uvar_ifv,
      .			uvar_remote,
      .			rvar_on_server

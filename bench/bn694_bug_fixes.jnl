@@ -85,3 +85,9 @@ GO err693_lev_nv_over
 
 GO bn_reset
 GO err693_fcn_of_attvar
+
+GO bn_reset
+GO err693_isize_and_gcfcn
+
+GO bn_reset
+GO err693_ribbon_scale

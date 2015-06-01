@@ -1,0 +1,26 @@
+! err693_isize_and_gcfcn.jnl
+! ticket 2213
+! SET REGION interacting with ABSTRACT AXES
+! When the variable using XSEQUENCE was defined, suddenly the
+! region was being applied (inconsistently).
+
+can mode verify
+cancel region 
+set reg/x=25:27
+
+! constant-array variable
+let strs = {"a","b","c","d","e","f","g","h"}
+say `strs,r=isize`
+sh grid strs
+rep/name=n/range=1:`strs,r=isize` (say `strs,r=isize`; let str=strs[i=`n`]; say `strs,r=isize` `str`)
+
+! Now with an xsequenced variable. The result should be the same (bug behavior did 
+! the repeatloop just 3 times.)
+
+let xstrs = xsequence(strs)
+say `xstrs,r=isize`
+sh grid xstrs
+rep/name=n/range=1:`xstrs,r=isize` (say `xstrs,r=isize`; let xstr=xstrs[i=`n`]; say `xstrs,r=isize` `xstr`)
+
+cancel region
+set mode/last verify

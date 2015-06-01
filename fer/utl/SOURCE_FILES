@@ -75,6 +75,7 @@ gcf_parent_char.F\
 gcf_parent_uvar.F\
 gcf_rtn_type.F\
 geog_var.F\
+get_abstract_line.F\
 get_ave_lims.F\
 get_dependency_status.F\
 get_max_string_len.F\

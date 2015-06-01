@@ -128,7 +128,7 @@ let a = XSEQUENCE(J[j=1:5])
 set mode diagnostic
 say `a,return=isize`          ! full evaluation occurs
 say `a[i=2:3],return=isize`   ! full evaluation is bypassed
-say `a[i=100:200],return=isize`    ! WRONG! because full evaluation is bypassed
+say `a[i=100:200],return=isize`    ! correct starting with Ferret v694 (tkt 2213)
 set mode/last diagnostic
 
 ! deliberate errors

@@ -316,8 +316,7 @@ void FORTRAN(fft_re_init)(int *);
 void FORTRAN(fft_re_custom_axes)(int *);
 void FORTRAN(fft_re_result_limits)(int *);
 void FORTRAN(fft_re_work_size)(int *);
-void FORTRAN(fft_re_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
-                           DFTYPE *, DFTYPE *, DFTYPE *);
+void FORTRAN(fft_re_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(sampleij_init)(int *);
 void FORTRAN(sampleij_result_limits)(int *);
@@ -697,6 +696,9 @@ void FORTRAN(curv_to_rect_map_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTY
                                        DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 void FORTRAN(curv_to_rect_init)(int *);
 void FORTRAN(curv_to_rect_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(curv_to_rect_fsu_init)(int *);
+void FORTRAN(curv_to_rect_fsu_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(rect_to_curv_init)(int *);
 void FORTRAN(rect_to_curv_work_size)(int *);
@@ -1085,6 +1087,28 @@ void FORTRAN(ft_to_orthogonal_init)(int *);
 void FORTRAN(ft_to_orthogonal_work_size)(int *);
 void FORTRAN(ft_to_orthogonal_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
+void FORTRAN(separate_str_init)(int *);
+void FORTRAN(separate_str_result_limits)(int *);
+void FORTRAN(separate_str_compute)(int *, char *, DFTYPE *, DFTYPE *, char *);
+
+void FORTRAN(sample_fast_i_init)(int *);
+void FORTRAN(sample_fast_i_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(sample_fast_i_str_init)(int *);
+void FORTRAN(sample_fast_i_str_compute)(int *, char *, DFTYPE *, char *);
+
+void FORTRAN(piecewise3_init)(int *);
+void FORTRAN(piecewise3_result_limits)(int *);
+void FORTRAN(piecewise3_work_size)(int *);
+void FORTRAN(piecewise3_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+  DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+  DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *); 
+
+void FORTRAN(write_webrow_gwt_init)(int *);
+void FORTRAN(write_webrow_gwt_result_limits)(int *);
+void FORTRAN(write_webrow_gwt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+
 /*
  *  End of declarations for internally linked external functions
  *  ------------------------------------ */
@@ -1127,7 +1151,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 168
+#define N_INTEF 174
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1301,6 +1325,12 @@ struct {
    strcpy(I_EFnames[165].funcname, "separate");
    strcpy(I_EFnames[166].funcname, "time_reformat");
    strcpy(I_EFnames[167].funcname, "ft_to_orthogonal");
+   strcpy(I_EFnames[168].funcname, "curv_to_rect_fsu");
+   strcpy(I_EFnames[169].funcname, "piecewise3");
+   strcpy(I_EFnames[170].funcname, "sample_fast_i");
+   strcpy(I_EFnames[171].funcname, "sample_fast_i_str");
+   strcpy(I_EFnames[172].funcname, "separate_str");
+   strcpy(I_EFnames[173].funcname, "write_webrow_gwt");
 
 /*    
  *  ------------------------------------ 
@@ -3936,6 +3966,10 @@ else if ( !strcmp(name,"curv_to_rect_map_compute_") ) return (void *)FORTRAN(cur
 else if ( !strcmp(name,"curv_to_rect_init_") ) return (void *)FORTRAN(curv_to_rect_init);
 else if ( !strcmp(name,"curv_to_rect_compute_") ) return (void *)FORTRAN(curv_to_rect_compute);
 
+/* curv_to_rect_fsu.F */
+else if ( !strcmp(name,"curv_to_rect_fsu_init_") ) return (void *)FORTRAN(curv_to_rect_fsu_init);
+else if ( !strcmp(name,"curv_to_rect_fsu_compute_") ) return (void *)FORTRAN(curv_to_rect_fsu_compute);
+
 /* rect_to_curv.F */
 else if ( !strcmp(name,"rect_to_curv_init_") ) return (void *)FORTRAN(rect_to_curv_init);
 else if ( !strcmp(name,"rect_to_curv_work_size_") ) return (void *)FORTRAN(rect_to_curv_work_size);
@@ -4293,12 +4327,31 @@ else if ( !strcmp(name,"separate_init_") ) return (void *)FORTRAN(separate_init)
 else if ( !strcmp(name,"separate_result_limits_") ) return (void *)FORTRAN(separate_result_limits);
 else if ( !strcmp(name,"separate_compute_") ) return (void *)FORTRAN(separate_compute);
 
+else if ( !strcmp(name,"separate_str_init_") ) return (void *)FORTRAN(separate_str_init);
+else if ( !strcmp(name,"separate_str_result_limits_") ) return (void *)FORTRAN(separate_str_result_limits);
+else if ( !strcmp(name,"separate_str_compute_") ) return (void *)FORTRAN(separate_str_compute);
+
 else if ( !strcmp(name,"time_reformat_init_") ) return (void *)FORTRAN(time_reformat_init);
 else if ( !strcmp(name,"time_reformat_compute_") ) return (void *)FORTRAN(time_reformat_compute);
 
 else if ( !strcmp(name,"ft_to_orthogonal_init_") ) return (void *)FORTRAN(ft_to_orthogonal_init);
 else if ( !strcmp(name,"ft_to_orthogonal_work_size_") ) return (void *)FORTRAN(ft_to_orthogonal_work_size);
 else if ( !strcmp(name,"ft_to_orthogonal_compute_") ) return (void *)FORTRAN(ft_to_orthogonal_compute);
+
+else if ( !strcmp(name,"piecewise3_init_") ) return (void *)FORTRAN(piecewise3_init);
+else if ( !strcmp(name,"piecewise3_result_limits_") ) return (void *)FORTRAN(piecewise3_result_limits);
+else if ( !strcmp(name,"piecewise3_work_size_") ) return (void *)FORTRAN(piecewise3_work_size);
+else if ( !strcmp(name,"piecewise3_compute_") ) return (void *)FORTRAN(piecewise3_compute);
+
+else if ( !strcmp(name,"sample_fast_i_init_") ) return (void *)FORTRAN(sample_fast_i_init);
+else if ( !strcmp(name,"sample_fast_i_compute_") ) return (void *)FORTRAN(sample_fast_i_compute);
+
+else if ( !strcmp(name,"sample_fast_i_str_init_") ) return (void *)FORTRAN(sample_fast_i_str_init);
+else if ( !strcmp(name,"sample_fast_i_str_compute_") ) return (void *)FORTRAN(sample_fast_i_str_compute);
+
+else if ( !strcmp(name,"write_webrow_gwt_init_") ) return (void *)FORTRAN(write_webrow_gwt_init);
+else if ( !strcmp(name,"write_webrow_gwt_result_limits_") ) return (void *)FORTRAN(write_webrow_gwt_result_limits);
+else if ( !strcmp(name,"write_webrow_gwt_compute_") ) return (void *)FORTRAN(write_webrow_gwt_compute);
 
 return NULL;
  }

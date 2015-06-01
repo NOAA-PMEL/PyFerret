@@ -23,6 +23,7 @@ define symbol mp_grid_variable = $1
 
 let mp_x = x[g=($mp_grid_variable)]
 let mp_y = y[g=($mp_grid_variable)]
+set grid ($mp_grid_variable)
 
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
 set mode/last verify

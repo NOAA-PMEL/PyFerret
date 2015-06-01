@@ -34,7 +34,7 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 #
 
 # all:	zaxreplace_avg.so zaxreplace_bin.so zaxreplace_lin.so zaxreplace_zlev.so zaxreplace_rev.so
-all:	zaxreplace_xyt.so zaxreplace_lin.so 
+all:	zaxreplace_xyt.so zaxreplace_lin.so  eaxreplace_lin.so  taxreplace_lin.so 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

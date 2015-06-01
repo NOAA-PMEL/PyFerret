@@ -50,7 +50,7 @@
 
 
 * in reverse Polish order the final item of a constant variable will
-*  be a constant variable ?
+*  be a constant variable
 
 	ITSA_CONST_VAR = uvar_item_type( uvar_num_items(uvar), uvar )
      .		.EQ. alg_const_var

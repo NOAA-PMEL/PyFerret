@@ -79,6 +79,9 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V68  3/12  *acm* The string operations EQ, NE, LT, etc return a float-type result.
 *                  Reset mr_type; it has already been set to string elsewhere.
+* V694 5/14  *acm* Ticket 2234: Issue an error instead of returning missing results on 
+*                  inappropriate use of string arguments in numeric expressions or mixed
+*                  string/numeric expressions with logic operators. See bn_strings.jnl
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -242,12 +245,12 @@
      .     .OR. (op_num.GT.offset_logic_struc)   )
 
 * perform the operation
+* Issue an error instead of returning missing results on 
+* inappropriate use of string arguments
 	IF (.NOT.arg_types_matched
      .	  .OR. (arg_type.EQ.ptype_string .AND. numerical_op) ) THEN 
 * ... inappropriate use of string arguments
-          CALL FILL_MEMORY ( memory, mr_blk1 (res_mr),
-     .                       mr_nblks(res_mr),
-     .                       mr_bad_data(res_mr) )
+          GOTO 5200
 
 	ELSEIF (arg_type.EQ.ptype_string) THEN
 	  IF (op_num .EQ. 1 ) THEN  ! "+"
@@ -340,6 +343,8 @@
 
 * error exit
  5000	RETURN
-! 5100	CALL ERRMSG( ferr_invalid_command, status,
-!     .		'cannot use a string as an argument to: '//alg_text, *5000 )
+ 5100	CALL ERRMSG( ferr_invalid_command, status,
+     .		'cannot use a string as an argument to: '//alg_text, *5000 )
+ 5200	CALL ERRMSG( ferr_invalid_command, status,
+     .		'cannot use strings in numerical expression', *5000 )
 	END

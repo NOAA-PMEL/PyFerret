@@ -143,11 +143,11 @@
 	   ENDIF
 	   IF (dset.NE.unspecified_int4 .AND. dset.NE.pdset_irrelevant) THEN
 	   IF ( TM_HAS_STRING(ds_type(iset), 'ENS') ) THEN
-	      default = default(:len0)//'  Ferret-defined Ensemble dataset'
+	      default = default(:len0)//'  Ferret-defined Ensemble aggregation'
 	      len0 = TM_LENSTR1( default )
 	   ENDIF
 	   IF ( TM_HAS_STRING(ds_type(iset), 'FCT') ) THEN
-	      default = default(:len0)//'  Ferret-defined Forecast aggregation dataset'
+	      default = default(:len0)//'  Ferret-defined Forecast aggregation'
 	      len0 = TM_LENSTR1( default )
 	   ENDIF
 	   ENDIF

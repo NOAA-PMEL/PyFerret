@@ -1,0 +1,10 @@
+! err693_ribbon_scale.jnl
+! ticket 2295: the vertical scale is mis-computed
+! 5/29/2015
+
+let var = {-81,-81,-81}
+let color = {2,2,2}
+plot/ribbon/key var,color
+
+! should be -82 to -80
+sh sym yaxis*

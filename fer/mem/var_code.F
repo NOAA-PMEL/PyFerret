@@ -54,6 +54,7 @@
 *	 1/99 *sh8 ... and cat_string
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V694 5/15 *acm* when evaluating attributes, show the code attr
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -117,6 +118,10 @@
 	ELSEIF ( category .EQ. cat_string ) THEN
 
 	   VAR_CODE = 'str'
+
+	ELSEIF ( category .EQ. cat_attrib_val ) THEN
+
+	   VAR_CODE = 'attr'
 
 	ELSE
 

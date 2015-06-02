@@ -23,6 +23,8 @@ copyscat.F\
 curv_range.F\
 curv_to_rect.F\
 curv_to_rect_map.F\
+curv_to_rect_fsu.F\
+curv_to_rect_subs.F\
 day_of_year.F\
 date1900.F\
 days1900toymdhms.F\
@@ -85,8 +87,12 @@ nco_attr.F\
 nco.F\
 nobad.F\
 pickindex.F\
+piecewise3.F\
+piecewise_subs.F\
 pt_in_poly.F\
 rect_to_curv.F\
+sample_fast_i.F\
+sample_fast_i_str.F\
 samplef_date.F\
 sampleij.F\
 samplei_multi.F\
@@ -132,6 +138,7 @@ scat2grid_nobs_xyt.F\
 scat2grid_subs.F\
 secs_to_ymdhms.F\
 separate.F\
+separate_str.F\
 sorti.F\
 sorti_str.F\
 sortj.F\
@@ -179,6 +186,7 @@ xreverse.F\
 ycat.F\
 ycat_str.F\
 yreverse.F\
+write_webrow_gwt.F\
 zaxreplace_avg.F\
 zaxreplace_bin.F\
 zaxreplace_rev.F\

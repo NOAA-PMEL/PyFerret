@@ -107,6 +107,7 @@
 *       *acm* 3/12  Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V690 9/13-2/14 *sh*   support for auxiliary var regridding: temp[gz(depth)=zax]
 * V694  *acm* 1214 Fixing ticket 2220
+* V694 *acm*  5/15 Fix ticket 2213 
 
 * calling argument declarations:
 	INTEGER	status
@@ -115,9 +116,9 @@
 * exit #2 is to signal that the grid has been obtained and stored in uvar_grid
 
 * internal variable declarations:
-	LOGICAL	ITSA_GCVAR, its_dynamic, its_gc, need_another_pass,
+	LOGICAL	ITSA_GCVAR, ITSA_CONST_VAR, its_dynamic, its_gc, need_another_pass,
      .		saved_ifthen_type, do_err, agg_has_uvar, ok_remote,
-     .		getting_aux_var
+     .		getting_aux_var, its_const_var
 	INTEGER KNOWN_GRID, STR_SAME,
      .		TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR, 
      .		NCF_GET_AGG_COUNT, iaux,
@@ -161,8 +162,8 @@
 	dset   = cx_data_set( lo_cx )
 	nitem  = uvar_num_items( uvar )
 	its_gc = ITSA_GCVAR(uvar)
-	its_gc = ITSA_GCVAR(uvar)
 	has_uvar_gc = has_uvar_gc .OR. its_gc  ! for repl_exprns fixing bug 1523
+	is_uvar_const = ITSA_CONST_VAR(uvar)   ! for repl_exprns fixing bug 2213
 * ... initialization to support 2/99 pass-2 changes
 	pass_number = 1
 ! 4/99

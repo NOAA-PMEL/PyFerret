@@ -1,0 +1,15 @@
+! err693_lev_nv_over.jnl
+! The polygon command with /LEV=20V caused a crash; levels settings incorrect.
+
+! draw any underlay to set up for polymark script
+use coads_climatology
+shade/x=120:250/Y=25s:65n/L=1/pal=white/nokey sst
+
+LET xpts = 180 + 50*COS(2*3.14*I[I=1:50]/60)
+LET ypts = 15  + 20*SIN(2*3.14*I[I=1:50]/60)
+
+! Variable is a constant w/ negative value
+LET sst = -5 + 0*ypts
+
+! The poly/over command caused a Fortran runtime error in tm_fmt_sngl
+GO polymark polygon/over/lev=20v/key/title="SST"  xpts,ypts,sst,square, 0.5

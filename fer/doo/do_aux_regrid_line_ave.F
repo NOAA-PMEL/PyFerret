@@ -4,7 +4,8 @@
      .					 ndx_dst, coef_dst,
      .					 kmin_dst, kmax_dst,
      .					 kdlo_ok,  kdhi_ok,
-     .					 bad_src,  bad_dst, ascending,
+     .					 bad_src,  bad_dst, bad_pos,
+     .					 ascending,
      .					 dst_line    )
 
 *
@@ -76,6 +77,7 @@
 *                  interp_val = coef*src(k) + (1-coef)*src(k+1)
 * 
 * v690 11/13 *sh* - based upon DO_AUX_VAR_REGRID_LIN
+* v698+ 5/15 *sh* - support non-monotonic and missing aux vars (e.g. density)
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -93,27 +95,31 @@
      .		pos_line(kmin_src:kmax_src),
      .		coef_dst(kmin_dst:kmax_dst+1),
      .		dst_line(kmin_dst:kmax_dst),
-     .		bad_src, bad_dst
+     .		bad_src, bad_dst, bad_pos
 
 * internal variable declarations:
-	LOGICAL	trunc
+	LOGICAL	trunc, bad_ave, bad_next_ave
         INTEGER ndx_lo, ksrc, kdst, kend, kstart, kinc1
         REAL    area, span, width, frac, pos_lo, pos_hi, src_lo, src_hi
+* ... 5/15 bad_ave and bad_next_ave look after non-monotonic and missing values
 
 * initialize
-	IF (ascending) THEN
+	IF (ascending) THEN 
 	   kinc1 = 1
 	ELSE
 	   kinc1 = -1
 	ENDIF
 
 * set up the lower bound of the first trapezoid (possibly truncated)
- 110	ksrc   = ndx_dst (kdlo_ok)
+	frac   = coef_dst(kdlo_ok)
+	ksrc   = ndx_dst (kdlo_ok)
 	pos_hi = pos_line(ksrc)
 	src_hi = src_line(ksrc)
-	frac   = coef_dst(kdlo_ok)
-	trunc  = frac .NE. 1.0
-	IF (trunc) THEN
+	bad_ave = frac   .EQ. bad_val4
+     .       .OR. pos_hi .EQ. bad_pos
+     .       .OR. src_hi .EQ. bad_src
+	trunc  = frac.NE.1.0
+	IF (trunc .AND. .NOT.bad_ave) THEN
 * make the initial truncated trapezoid behave like a full trapezoid by  
 * replacing its lower limit with the proper linear interpolation
 	   src_hi = frac*src_hi + (1-frac)*src_line(ksrc+kinc1)
@@ -143,8 +149,16 @@
 	      pos_hi  = pos_line(ksrc)
 	      src_hi  = src_line(ksrc)
 
-* add a full trapezoid 
 	      width = pos_hi - pos_lo
+
+* bail on this output cell if there is non-monotonic or missing data
+	      bad_ave = bad_ave
+     .	           .OR. pos_hi .EQ. bad_pos
+     .             .OR. src_hi .EQ. bad_src
+     .             .OR. width  .LE. 0.0
+	      IF (bad_ave) EXIT
+
+* add a full trapezoid 
 	      span  = span + width
 	      area  = area + width * 0.5*(src_hi+src_lo)
 
@@ -155,22 +169,34 @@
 
 * handle partial trapezoid at upper bound of destination cell
 	   frac = coef_dst(kdst+1)
-	   trunc = frac .NE. 1.0
+	   bad_next_ave = frac .EQ. bad_val4
+	   trunc = frac .NE. 1.0 .AND. .NOT.bad_next_ave
 	   IF (trunc) THEN
+	      bad_next_ave = pos_line(kend) .EQ. bad_pos
+     .                  .OR. src_line(kend) .EQ. bad_src
+     .                  .OR. pos_line(kend+kinc1) .EQ. bad_pos
+     .                  .OR. src_line(kend+kinc1) .EQ. bad_src
+	      IF (.NOT. bad_next_ave) THEN
 * add the lower part of the truncated trapezoid.
 * the upper part is handled as part of the next destination cell
-	      pos_hi = frac*pos_line(kend) + (1-frac)*pos_line(kend+kinc1)
-	      src_hi = frac*src_line(kend) + (1-frac)*src_line(kend+kinc1)
-	      width = pos_hi - pos_lo
-	      span  = span + width
-	      area  = area + width * 0.5*(src_hi+src_lo)
+	         pos_hi = frac*pos_line(kend) + (1-frac)*pos_line(kend+kinc1)
+	         src_hi = frac*src_line(kend) + (1-frac)*src_line(kend+kinc1)
+	         width = pos_hi - pos_lo
+	         span  = span + width
+	         area  = area + width * 0.5*(src_hi+src_lo)
+	      ENDIF
 	   ENDIF
 
 * store the weighted average of trapezoids contributing to dst cell
-	   dst_line(kdst) = area/span
+	   IF (bad_ave .OR. bad_next_ave) THEN
+	      dst_line(kdst) = bad_dst
+	   ELSE
+	      dst_line(kdst) = area/span
+	   ENDIF
 
-* prepare for next src trapezoid contributing to this dst
+* prepare for next dst
 	   kstart = kend + kinc1
+	   bad_ave = bad_next_ave   ! happens when bad partial trap at end
 
  1000	CONTINUE
 

@@ -60,6 +60,7 @@
 * V693+ 12/14 *sh* allow _QD_ and _SQ_ for quotation alternatives 
 *                 Filled in state=13 (interpreting exponent) DATA inits 
 *	          Hoping I did so correctly ...
+* v694  6/15  *acm* fixes for 2296 -- quotes and curly braces {"{a}"}
 
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -76,7 +77,9 @@
 	INTEGER		ALG_CLASS, TM_LENSTR1,
      .			tlen, p, state, last_state, last_last_state, class,
      .			i, next_state(num_class,num_state),
-     .			brkt_nest_level, pn
+     .			brkt_nest_level, pn, 
+     .			curly_brace_nest, q_in_curly_brace
+
 
 * possible states of lexical analysis
 *	S1 - looking for start of atom
@@ -184,6 +187,8 @@
 	atom_open = .FALSE.
         have_exp_digits = .FALSE.
 	brkt_nest_level = 0
+	curly_brace_nest = 0
+	q_in_curly_brace = 0
 
 * advance to next character
  5	p = p + 1
@@ -203,6 +208,7 @@
 
 * determine lexical analysis state to determine next action
  50	state = next_state( class, last_state )
+
 	IF ( state .EQ. -2 ) GOTO 5100
 	IF ( state .EQ. -1 ) GOTO 5200
 	IF ( state .EQ. -9 ) GOTO 5900
@@ -249,9 +255,14 @@
            ENDIF
 	ENDIF
 
+* Curly braces inside quotes inside curly braces
+* Hack to work around the case in ticket 2296
+
+	IF (class.EQ.13 .AND. state.EQ.5 .AND. curly_brace_nest.GT.0) state = 11
+
 * take appropriate action
 *		S1  S2  S3  S4  S5  S6  S7  S8   S9  S10 S11  S12  S13  S14 S15  S16
-	GOTO (9999,100,100,100,500,100,700,100, 900,1000,100,1100,1300,1400,100,100)
+	GOTO (9999,100,100,100,500,100,700,100, 900,1000,1100,1200,1300,1400,100,100)
      .								state
 
 * continue to next character
@@ -260,6 +271,11 @@
 * flag the last character of an atom - begin search for next atom
  500	at_end(natom) = p
 	state = 1
+	
+* reset - previous atoms may have had a quote not a pair of quotes inside curly braces
+	curly_brace_nest = 0
+	q_in_curly_brace = 0
+
 	atom_open = .FALSE.
 	GOTO 5
 	
@@ -299,12 +315,30 @@
 	ENDIF
 	GOTO 5
 
+* Curly braces inside quotes inside curly braces
+* Hack to work around the case in ticket 2296
+ 1100	IF (class .EQ. 14 .AND. q_in_curly_brace.EQ.0) ! quote inside curly braces
+     .    q_in_curly_brace = q_in_curly_brace + 1
+
+	IF (class.EQ.12 .AND. q_in_curly_brace.GT.0)   ! further curly brace start found
+     .    curly_brace_nest = curly_brace_nest + 1
+
+	IF (class.EQ.13 .AND. curly_brace_nest.GT.0) THEN  !  curly brace end found
+	   curly_brace_nest = curly_brace_nest - 1
+	   state = 11
+	ENDIF
+	GOTO 5
+
 * double-quoted strings (mod 1/99)
 * this probably violates the theoretical underpinnings of the finite state
 * engine but ... what the heck, it's an easy hack
 * stay in this state until the matching \" is found
 * Note: this crude code cannot deal with nested quotations or escaped quotes
- 1100	IF (class .EQ. 14) THEN		! quote found
+ 1200	IF (class .EQ. 14) THEN		! quote found
+           IF (last_state .EQ. 11 .AND. q_in_curly_brace.GT.0) THEN
+	      state = 11
+	      q_in_curly_brace = q_in_curly_brace - 1
+	   ENDIF
 	   IF (last_state .EQ. 12) THEN      
 	      GOTO 500                 ! closing quote found
 *       ... note that we may still be interpreting names like 'X'[stuff]

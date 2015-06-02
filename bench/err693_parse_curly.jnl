@@ -1,0 +1,14 @@
+! err693_parse_curly.jnl
+! the sub-routine defines a string variable containing commands for overlays in 
+! different directions. the bug was that the parser doesn't handle quoted strings 
+! inside { } if those strings include curly braces.
+! The argument chooses one of the strings with commands and plots the overlay
+
+use gt4d011
+
+shade/i=100/l=1/pal=grayscale temp
+go err693_parse_curly.sub yz
+
+ shade/j=40/l=1/pal=grayscale temp
+go err693_parse_curly.sub xz
+

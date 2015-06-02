@@ -1,0 +1,39 @@
+! err693_parse_curly.sub
+! Define a variable with commands for overlays in different directions
+! the bug was that the parser doesn't handle quoted strings inside { } if those
+! strings include curly braces.
+! Choose one of the strings and plot the overlay
+
+! list of valid shapes
+
+let prd_shapes = {"xy", "xz", "yz"}
+
+! List of associated overlays
+! This is the part that's not working; due to bug #2296 we can't write {"...{}..."}.
+
+let prd_overlays = {\
+   "go land 6; go draw_line 180 -90 180 90 1; go draw_box 210 270 -5 5 6/dash=(.04,.06,.04,.06)",\
+   "plot/vs/ov/nolab/line=6/dash=(.02,.12,.02,.12) {-1e3,1e3,,-1e3,1e3,,-1e3,1e3,,-136,-136,,-126,-126}, {85,85,,50,50,,20,20,,-1e4,1e4,,-1e4,1e4}",\
+   "plot/vs/ov/nolab/line=6/dash=(.02,.12,.02,.12) 1e3*{-1,1,,-1,1,,-1,1},{85,85,,50,50,,20,20}"}
+
+! Then later when we're generating figures, we'll be
+! passing one of these shapes into a script like this:
+
+let p1s_shape = "$1%xy%"
+
+! For the specified shape, find the associated overlay command
+! (default is no overlay).
+let p1s_ov = ""
+IF `prd_shapes,r=isready` THEN
+   rep/name=s/range=1:`prd_shapes,r=isize` (let p1s_this_shape = prd_shapes[i=`s`];\
+      IF `p1s_this_shape EQ p1s_shape` THEN;\
+         let p1s_ov = prd_overlays[i=`s`];\
+         exit/loop;\
+      ENDIF;\
+      )
+   can var p1s_this_shape
+ENDIF
+
+! generate a figure, with the appropriate overlay
+define symbol overcommands = `p1s_ov`
+($overcommands)

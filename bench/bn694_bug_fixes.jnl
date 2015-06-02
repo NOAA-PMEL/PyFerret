@@ -91,3 +91,6 @@ GO err693_isize_and_gcfcn
 
 GO bn_reset
 GO err693_ribbon_scale
+
+GO bn_reset
+GO err693_parse_curly

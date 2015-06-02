@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 80590317 Jun  1 10:06 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 80591344 Jun  2 12:06 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Tickets 2213, 2295. Also link more efs internally.
+Note: ticket 2296
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -15,14 +15,14 @@ FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/ansley/ferret_distributions/pyferret_flat/ppl/fonts
-FER_GO=. /home/users/ansley/ferret_distributions/pyferret_flat/go /home/users/ansley/ferret_distributions/pyferret_flat/examples /home/users/ansley/ferret_distributions/pyferret_flat/contrib
+FER_GO=. /home/users/ansley/ferret_distributions/pyferret_flat/go /home/users/ansley/ferret_distributions/pyferret_flat/examples /home/users/ansley/ferret_distributions/pyferret_flat/contrib /home/users/ansley/ans_ferret/users/wittenberg/atw_tools/atw_tools/ov
 FER_GRIDS=.
 FER_LIBS=/home/users/ansley/ferret_distributions/pyferret_flat/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/ansley/ferret_distributions/pyferret_flat/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Mon Jun 1 10:48:43 PDT 2015
+Beginning at Tue Jun 2 12:26:39 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3922,6 +3922,8 @@ Replacing definition of axis EAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of grid GRID3D
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4046,4 +4048,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Jun 1 10:50:19 PDT 2015
+Ended at Tue Jun 2 12:28:23 PDT 2015

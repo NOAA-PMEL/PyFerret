@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 80591954 Jun  3 11:04 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 80595658 Jun  3 11:54 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2293: RETURN=isdefined
+Note: RETURN=DEFINED, and CANCEL VAR/NOERROR
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/ansley/ferret_distributions/pyferret_flat/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Wed Jun 3 11:05:58 PDT 2015
+Beginning at Wed Jun 3 15:10:22 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -110,13 +110,13 @@ MESSAGE/CONTINUE `sst*/3,return=lunits`
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype,xmod,tmod,status,isDepth,isReady,IsDefined
+            calendar,dtype,xmod,tmod,status,isDepth,isReady,defined
           sst,return=Xsize
 MESSAGE/CONTINUE `sst,return=Xsize`
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype,xmod,tmod,status,isDepth,isReady,IsDefined
+            calendar,dtype,xmod,tmod,status,isDepth,isReady,defined
           sst,return=trash
 MESSAGE/CONTINUE `sst,return=trash`
  PERMANENT data cleared from memory
@@ -1460,7 +1460,7 @@ Replacing definition of axis YAX
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype,xmod,tmod,status,isDepth,isReady,IsDefined
+            calendar,dtype,xmod,tmod,status,isDepth,isReady,defined
           axy, return=xx
 MESSAGE/CONTINUE `axy, return=xx`
  PERMANENT data cleared from memory
@@ -3962,6 +3962,10 @@ Replacing definition of axis FSEC
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ **ERROR: variable unknown or not in data set: B
+cancel var b,a
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -4051,4 +4055,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jun 3 11:07:35 PDT 2015
+Ended at Wed Jun 3 15:11:59 PDT 2015

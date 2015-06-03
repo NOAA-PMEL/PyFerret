@@ -102,6 +102,7 @@
      .			slash_canc_var_data,
      .			slash_canc_var_layerz,
      .			slash_canc_var_curvi,
+     .			slash_canc_var_noerr,
      .
      .			slash_canc_attr_output,
      .			slash_canc_attr_data
@@ -390,6 +391,7 @@
      .			slash_canc_var_data	= 2,
      .			slash_canc_var_layerz	= 3,
      .			slash_canc_var_curvi	= 4,
+     .			slash_canc_var_noerr	= 5,
      .
      .			slash_canc_attr_output	= 1,
      .			slash_canc_attr_data	= 2,

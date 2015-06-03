@@ -763,7 +763,7 @@
 		DATA qualifiers  (nqual_at3k+1)	/ 'DATASET'	/
 		DATA qualifiers  (nqual_at3k+2)	/ 'LAYERZ'	/
 		DATA qualifiers  (nqual_at3k+3)	/ 'CURVILINEAR'	/
-		DATA qualifiers  (nqual_at3k+4)	/ '****'	/
+		DATA qualifiers  (nqual_at3k+4)	/ 'NOERROR'	/
 		DATA qualifiers  (nqual_at3k+5)	/ '****'	/
 * CANCEL AXIS
 	   DATA subcommands      (nsub_at3 +11)	/ 'AXIS'	/

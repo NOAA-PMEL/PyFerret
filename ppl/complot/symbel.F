@@ -1,17 +1,4 @@
  	SUBROUTINE SYMBEL(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
-C** 
-C**    @(#)symbel.tplate.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-C       Mod *JD* 3.19.91 for unix -- use environment variable PLOTFONTS
-C       *jd* 7.92 variable IF renamed to KIF for MAC
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -46,33 +33,8 @@ C       *jd* 7.92 variable IF renamed to KIF for MAC
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-*       *jd* 11.94 
-*       Modification uses TM_NUMBER to determine if "value" is a number rather
-*       than the ERR= branch of a READ which fails on AIX/xlf
-
-*	Mod *jd* 11.30.95 to fix ragged symbols to to precision loss
-*
-*       Mod *kob* 1.28.97 - Reorganization of the original code to remove
-*			    an illegal (f90) fortran forward reference into
-*			    the middle of a do loop.  This change was 
-*		            necessary to get this routine to compile on linux
-*			    and also to fix a plotting bug with the new 
-*			    solaris version (v4.0) of f77.  This change has 
-*			    occurred in the middle of releasing v4.45 of 
-*		  	    Ferret to the world.  Aix, Sgi, HP, OSF and SunOs
-*			    have already been released, and this change is
-*		            not a part of them.  This change is needed
-*			    to release linux and more importantly solaris.
-C *kob* 04/07/96 passed in character strings had to be declared 
-C                with "*(*)" for the linux port 
-C *ACM* 6/02   When there is a period or decimal point in the text, make
-C              a GKS dot there too, so it'll show up in small labels.
-C *acm* 7/02   Take out the MARKER calls that made dots. This caused trouble 
-C              when making encapsulated postscript from postscript.  
-C *acm* 10/14  Ticket 2203: on the 64-bit machines, the \\ for backspace
-C              should be \ .
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. 
+*                  SYMBEL_HERSHEY does Hershey fonts.
 C
 C	CALL SYMBEL(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
 C
@@ -89,46 +51,26 @@ C        NCHAR  - NUMBER OF CHARACTERS TO BE DRAWN.
 C        STRING - ARRAY CONTAINING THE DISPLAY CODES OF THE
 C                 CHARACTERS TO BE DRAWN.
 C
-	DIMENSION SX(12000),SY(12000),ASCII(127,4),BASE(4),RAST(4)
-	INTEGER	  nsxsy
-        PARAMETER ( nsxsy = 12000 )
-	DIMENSION DTYPE(35),DLEN(35),IOFF(4),IFLEN(4),ITYPE(4)
-C
-	LOGICAL SYMROT,READIR,DOPLOT,COLRF
-c	CHARACTER PLTFIL*80
-	CHARACTER ICOM*2,ICHR*1,STRING*(*),DNME(35)*2,DNUM(35)*2
-	CHARACTER DNAME(35)*80,KIF(4)*2,IFN(4)*2
-	CHARACTER*1 KSUB,KSUPER,KBKSP,KCALL,PENS(16)
-	
+
 * for Cairo fonts. Other font arguments are stored in common pyfonts.cmn:
 
+* Calling arguments
+	CHARACTER	STRING*(*)
+	REAL		X,Y,DEGRES,HEIGHT
+	INTEGER		NCHAR
+
+* Local declarations
 	LOGICAL		TM_HAS_STRING
-	INTEGER		STR_SAME, TM_LENSTR
+	INTEGER		STR_SAME, TM_LENSTR, STR_UPCASE
 	REAL		fontsiz, rotate, stx, sty, swid, shgt, xu, yu
-	INTEGER		ia, slen, isemi
-	CHARACTER	buff1*512
+     .			stx_pos, sty_pos
+	INTEGER		ia, slen, ic, sub, sup, seb, sep, ss, se, flen, glen
+	CHARACTER	buff1*512, buff2*512, buffs*512, upbuff*512
 	INTEGER		codepoint, utf8strlen
-	CHARACTER	utf8str*4, nstring*8, fontname*64
+	CHARACTER	utf8str*4, nstring*8, fontname*64, codeword*10
 	REAL*4		red, grn, blu, fac
 	INTEGER		igr, bold, italic, isiz
 
-        REAL XBASE, YBASE
-        INTEGER IPT
-#ifdef unix
-	INTEGER*2 SX,SY
-
-        integer       dirlen
-        character*255 fontdir
-#else
-	byte sx,sy
-#endif
-	INTEGER*2 ICNT,IBASE,IRAST
-*added for linux port
-	INTEGER*4 IBASE4,IRAST4
-	INTEGER*2 ASCII
-	INTEGER*2 DTYPE,DLEN,IOFF,IFLEN,ITYPE
-	INTEGER COLOLD
-	LOGICAL ASCFNT
 	CHARACTER*265 err_msg
 	CHARACTER*512 buff
 	INTEGER status
@@ -136,631 +78,281 @@ c	CHARACTER PLTFIL*80
 	INCLUDE 'PLTCOM.DAT'
 	INCLUDE 'pyfonts.cmn'
         INCLUDE 'errmsg.parm'
-        DATA DNUM,DNME/35*'@@',35*'@@'/
-#ifdef unix
-       DATA KSUB,KSUPER,KBKSP,KCALL/'_','^','\\','@'/
-#else
-       DATA KSUB,KSUPER,KBKSP,KCALL/'_','^','\','@'/
-#endif
-	DATA KIF,IFN/'SR','SG','@@','@@','01','12','@@','@@'/
-	DATA PENS/'1','2','3','4','5','6','7','8','9','A',
-     *	'B','C','D','E','F','G'/
-	DATA READIR/.FALSE./
-
-        LOGICAL TM_NUMBER                ! ** TMAP mod 11/94 **
-
-	integer hhex
-	data hhex /z'03B1'/
-
-* Mod to specify external references for SCALE and RANGE * Linux *kob* 1.97
-        external scale, size
 
 * If font is "Hershey", continue with old-school PPLUS Hershey fonts.
-* Otherwise go do the Cairo Font  
-*   ? Fonts as installed under linux system?
 
-        IF (pyfont) THEN
+	If (.NOT.pyfont) THEN
+	   CALL SYMBEL_HERSHEY(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
+	   GOTO 3000
+	ENDIF
 
-	   rotate = degres
-	   IF (degres .NE. 0) rotate = -1.* degres
+	IF (NCHAR .EQ. 0) RETURN
+	rotate = degres
+	IF (degres .NE. 0) rotate = -1.* degres
+
+	slen = TM_LENSTR(string)
+	buff = string(:slen)
 
 * Specific font settings for the text group (if we're doing the logo, tic-marks, etc.)
 
-	   igr = igroup
-	   CALL GET_PYFONT_SETTINGS(igr, fontname, red, grn, blu, 
+	igr = igroup
+	CALL GET_PYFONT_SETTINGS(igr, fontname, red, grn, blu, 
      .			italic, bold, isiz)
 
 C Set font size in from the height 
-           fontsiz = height
+        fontsiz = height
 
-	   IF (isiz .NE. 0) THEN
-	      fac = FLOAT(ABS(isiz))
-	      fac = MIN(4., fac)
-	      if (isiz .LT. 0) fontsiz = fontsiz* (1.-fac*0.1)
-	      if (isiz .GT. 0) fontsiz = fontsiz* (1.+fac*0.1)
-	      fac = (1.-fac*0.2)
-	      fac = (1.+fac*0.2)
-	   ENDIF
+	IF (isiz .NE. 0) THEN
+	   fac = FLOAT(ABS(isiz))
+	   fac = MIN(4., fac)
+	   if (isiz .LT. 0) fontsiz = fontsiz* (1.-fac*0.1)
+	   if (isiz .GT. 0) fontsiz = fontsiz* (1.+fac*0.1)
+	   fac = (1.-fac*0.2)
+	   fac = (1.+fac*0.2)
+	ENDIF
 
-C Ignore any codes for Ferret-Hershey style Pen and Font changes 
+C The HTML would be &#nnn;  or &word; Because semicolon is used in Ferret, 
+C look for <#nnn>  an HTML decimal code. e.g. <#916> is uppercase Delta
+C or <& to start a word,  e.g. <&deg> for the degree sign.
 
-	   slen = TM_LENSTR(string)
-	   buff = string(:ABS(slen))
-
-	   ia = INDEX (buff,'@')
-
-	   DO WHILE (ia .GT. 0)
-	      IF (ia .EQ. 1) THEN
-	         buff = buff(ia+3:slen)
-	      ELSE
-	         buff1 = buff(1:ia-1)
-	         buff = buff1(1:ia-1)//buff(ia+3:slen)
-	      ENDIF
-	      
-	      slen = TM_LENSTR(buff)
-	      ia = INDEX (buff,'@')
-	   ENDDO
-
-C Change all ^2 to a super-2 and ^3 to super-3.
-C UTF-8 for superscript-2 and superscript-3 are just hard-coded below, but in general:
-
-	   slen = TM_LENSTR(buff)
-
-	   ia = INDEX (buff,'^2')
-	   IF (ia .GT. 0) THEN
-	      buff1 = buff
-	      codepoint = 178
-	      CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
-	      DO WHILE (ia .GT. 0)
-	         IF (ia+2.LE.slen) THEN
-      	 	    buff1 = buff1(:ia-1)//utf8str(1:utf8strlen)//buff1(ia+2:slen)
-		 ELSE
-	            buff1 = buff1(:ia-1)//utf8str(1:utf8strlen)
-		 ENDIF
-		 slen = TM_LENSTR(buff1)
-		 ia = INDEX (buff1,'^2')
-	      ENDDO
-	      buff = buff1
-	      slen = TM_LENSTR(buff)
-	   ENDIF
-
-C       super-3 is codepoint 0xB0 (179), which is UTF-8 0xC2 0xB0 (194 179)
-
-	   ia = INDEX (buff,'^3')
-	   IF (ia .GT. 0) THEN
-	      buff1 = buff
-	      codepoint = 179
-	      CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
-	      DO WHILE (ia .GT. 0)
-	         IF (ia+2.LE.slen) THEN
-      	 	    buff1 = buff1(:ia-1)//utf8str(1:utf8strlen)//buff1(ia+2:slen)
-		 ELSE
-	            buff1 = buff1(:ia-1)//utf8str(1:utf8strlen)
-		 ENDIF
-		 slen = TM_LENSTR(buff1)
-		 ia = INDEX (buff1,'^3')
-	      ENDDO
-	      buff = buff1
-	      slen = TM_LENSTR(buff)
-	   ENDIF
-
-C Look for &#nnn;  an HTML decimal code. e.g. &#916; is uppercase Delta
-
-	   ia = INDEX (buff,'&#')
-	   isemi = INDEX (buff,';')
-	   
-	   IF (ia.GT.0 .AND. isemi.GT.ia+2) THEN
-	      isemi = isemi - 1
-	      nstring = buff(ia+2:isemi)
+	ss = INDEX (buff,'<#') + INDEX (buff,'<&')
+	DO WHILE  (ss .GT. 0)
+	   ia = INDEX (buff,'<#')
+	   ic = INDEX (buff,'>')
+	
+	   IF (ia.GT.0 .AND. ic.GT.ia+2) THEN
+	      ic = ic - 1
+	      nstring = buff(ia+2:ic)
 	      READ (nstring, *), codepoint
 
 	      CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
-	      isemi = isemi+2
-	      buff1 = buff(:ia-1)//utf8str(1:utf8strlen)//buff(isemi:slen)
+	      ic = ic+2
+	      buff1 = buff(:ia-1)//utf8str(1:utf8strlen)//buff(ic:slen)
 	      buff = buff1
 	      slen = TM_LENSTR(buff)
 	   ENDIF
 
-C Change # to degree sign (for axis labels scinot has done this)
-C          degree symbol is codepoint 0xB0 (176), which is UTF-8 0xC2 0xB0 (194 176)
+C Is it a word, such as <&deg> ? If so, look up its decimal code
 
-	   ia = INDEX (buff,'#')
-	   IF (ia .GT. 0) THEN
-	      buff1 = buff
-	      codepoint = hhex  ! lower-case alpha, just for testing. 
-	      codepoint = 176
-	      CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
-	      DO WHILE (ia .GT. 0)
-	         IF (ia+1.LE.slen) THEN
-       		   buff1 = buff(:ia-1)//utf8str(1:utf8strlen)//buff(ia+1:slen)
-		 ELSE
-	            buff1 = buff(:ia-1)//utf8str(1:utf8strlen)
-		 ENDIF
-		 ia = INDEX (buff1,'#')
-	      ENDDO
-	      buff = buff1
-	      slen = TM_LENSTR(buff)
+	   ia = INDEX (buff,'<&')
+	   ic = INDEX (buff,'>')
+	
+	   IF (ia.GT.0 .AND. ic.GT.ia+2) THEN
+	      ic = ic - 1
+	      nstring = buff(ia+2:ic)
+	      READ (nstring, *), codeword
+	      CALL SPECIAL_SYM_CODE (codeword, codepoint)
+	      IF (codepoint .GT. 0) THEN  ! -1 means not found. For now, just leave that bad spec in.
+	         CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
+	         ic = ic+2
+	         buff1 = buff(:ia-1)//utf8str(1:utf8strlen)//buff(ic:slen)
+	         buff = buff1
+	         slen = TM_LENSTR(buff)
+	      ENDIF
 	   ENDIF
+	   ss = INDEX (buff,'<#') + INDEX (buff,'<&')
+
+	ENDDO
+
+C Note any codes for Ferret-Hershey style Pen and Font changes 
+
+	ia = INDEX(buff,'@')
+	IF (ia .GT. 0) CALL WARN ('Non-Hershey fonts: not interpreting @pen and @font codes')
+
+C Look for subscripts and superscript tags. 
+
+	ia =  STR_UPCASE (upbuff, buff)
+	sub = INDEX(upbuff, '<SUB>')
+	sup = INDEX(upbuff, '<SUP>')
+	seb = INDEX(upbuff,'</SUB>')
+	sep = INDEX(upbuff,'</SUP>')
+	IF (sub.GT.1 .AND. seb.EQ.0) GOTO 3300
+	IF (sub.GT.1 .AND. seb.LT.sub) GOTO 3300
+	IF (sup.GT.1 .AND. sep.EQ.0) GOTO 3300
+	IF (sup.GT.1 .AND. sep.LT.sup) GOTO 3300
+
+	IF  (sub.GT.0 .AND. sup.GT.0) THEN
+	   ss = MIN(sub,sup)
+	   IF (sub.LT.sup .AND. seb.GT.sup) GOTO 3300
+	   IF (sub.LT.sup .AND. seb.GT.sep) GOTO 3300
+	   IF (sup.LT.sub .AND. sep.GT.sub) GOTO 3300
+	   IF (sup.LT.sub .AND. sep.GT.seb) GOTO 3300
+	ELSE
+	   ss = MAX(sub,sup)
+           ENDIF
+
+	buff1 = ''  ! Full-size portion of string
+	buffs = ''  ! smaller sub- or super-script portion of string
+	flen = 0
+	glen = 0
+	buff2 = buff
 
 C This section returns the string length from swid
 
-	   IF (NCHAR .LE. 0) THEN
+	IF (NCHAR .LE. 0) THEN
 
+	   DO WHILE (ss.GT.0)
+	      buff1 = buff1(:flen)//buff2(1:ss-1)
+		 flen = ss-1
+		 buff2 = buff2(ss+5:)
+		 ia =  STR_UPCASE (upbuff, buff2)
+		 se = INDEX(upbuff, '</SU')
+	      buffs = buffs(:glen)//buff2(:se-1)
+	      glen = se-1
+	      buff2 = buff2(se+6:)
+
+	      ia =  STR_UPCASE (upbuff, buff2)		 
+	      sub = INDEX(upbuff, '<SUB>')
+	      sup = INDEX(upbuff, '<SUP>')
+	      seb = INDEX(upbuff,'</SUB>')
+	      sep = INDEX(upbuff,'</SUP>')
+	      IF (sub.GT.1 .AND. seb.EQ.0) GOTO 3300
+	      IF (sup.GT.1 .AND. sep.EQ.0) GOTO 3300
+
+	      IF  (sub.GT.0 .AND. sup.GT.0) THEN
+	         ss = MIN(sub,sup)
+		 IF (sub.LT.sup .AND. seb.GT.sup) GOTO 3300
+		 IF (sub.LT.sup .AND. seb.GT.sep) GOTO 3300
+		 IF (sup.LT.sub .AND. sep.GT.sub) GOTO 3300
+		 IF (sup.LT.sub .AND. sep.GT.seb) GOTO 3300
+	      ELSE
+		 ss = MAX(sub,sup)
+	      ENDIF
+	   ENDDO
+
+* Find the length of the total non-subscripted or superscripted string
+	   glen = TM_LENSTR(buffs)
+	   IF (glen .GT. 0) buff = buff1(:TM_LENSTR(buff1))//buff2(:glen)
+
+	   swid = 0.
+	   shgt = 0.
+	   IF (TM_LENSTR(buff) .GT. 0) THEN
+	      CALL FERTEXTSIZE (buff, fontname, fontsiz, 
+     .           italic, bold, pyfnt_under, swid, shgt, status)
+	      IF (status .EQ. 0) GOTO 3100
+	   ENDIF
+
+	   swid = swid/1000
+	   shgt = shgt/1000
+	   
+	   x = swid
+
+*  If there were subscripts and superscripts, those parts of the string are drawn at .75 size
+	   IF (glen .GT. 0) THEN
 	      swid = 0.
 	      shgt = 0.
-	      IF (TM_LENSTR(buff) .GT. 0) THEN
-	         CALL FERTEXTSIZE (buff, fontname, fontsiz, 
-     .           italic, bold, pyfnt_under, swid, shgt, status)
+	      IF (glen .GT. 0) THEN
+	         CALL FERTEXTSIZE (buffs(:glen), fontname, fontsiz*0.75, 
+     .              italic, bold, pyfnt_under, swid, shgt, status)
 	         IF (status .EQ. 0) GOTO 3100
+	         ENDIF
+
+	         swid = swid/1000
+	         x = x + swid
 	      ENDIF
 
-	      swid = swid/1000
-	      shgt = shgt/1000
-	      
-	      x = swid
-	   ELSE
+	ELSE  ! Done with computing string width
 
 C Draw the text
 
-              CALL USER_TO_INCH (x, y, stx, sty)
-              stx = 1000.* stx
-              sty = 1000.* sty
+C If subscripts and/or superscripts do each part as it comes
+
+	   CALL USER_TO_INCH (x, y, stx_pos, sty_pos)
+	   glen = 0
+
+	   DO WHILE (ss.GT.0)
+	      buff1 = buff2(1:ss-1)
+	      flen = ss-1
+	      buff2 = buff2(ss+5:)
+	      ia =  STR_UPCASE (upbuff, buff2)
+	      se = INDEX(upbuff, '</SU')
+	      buffs = buff2(:se-1)
+	      glen = se-1
+	      buff2 = buff2(se+6:)
+
+* Draw next section of full-sized text
+	      stx = 1000.* stx_pos
+	      sty = 1000.* sty_pos
+	      CALL FERDRAWTEXT(buff1, fontname, fontsiz, 
+     .             red, grn, blu, pyfnt_opq, stx, sty, 
+     .             rotate, italic, bold, pyfnt_under, status)
+	      IF (status .EQ. 0) GOTO 3200
+
+* and mark the start of the next text to follow
+	      swid = 0.
+	      shgt = 0.
+	      CALL FERTEXTSIZE (buff1, fontname, fontsiz, 
+     .           italic, bold, pyfnt_under, swid, shgt, status)
+
+	      stx_pos = stx_pos + swid/1000  ! what about rotations?
+		 
+* Draw next superscript or subscript
+
+	      stx = 1000.* stx_pos
+	      IF (ss .EQ. sub) sty = 1000.* (sty_pos - 0.5*fontsiz)
+	      IF (ss .EQ. sup) sty = 1000.* (sty_pos + 0.5*fontsiz)
+
+	      CALL FERDRAWTEXT(buffs, fontname, 0.75*fontsiz, 
+     .             red, grn, blu, pyfnt_opq, stx, sty, 
+     .             rotate, italic, bold, pyfnt_under, status)
+	      IF (status .EQ. 0) GOTO 3200
+
+* and mark the start of the next text to follow
+	      swid = 0.
+	      shgt = 0.
+	      CALL FERTEXTSIZE (buffs, fontname, 0.75*fontsiz, 
+     .           italic, bold, pyfnt_under, swid, shgt, status)
+
+	      stx_pos = stx_pos + swid/1000  ! what about rotations?
+
+	      ia =  STR_UPCASE (upbuff, buff2)
+	      sub = INDEX(upbuff, '<SUB>')
+	      sup = INDEX(upbuff, '<SUP>')
+	      seb = INDEX(upbuff,'</SUB>')
+	      sep = INDEX(upbuff,'</SUP>')
+	      IF (sub.GT.1 .AND. seb.EQ.0) GOTO 3300
+	      IF (sup.GT.1 .AND. sep.EQ.0) GOTO 3300
+
+	      IF  (sub.GT.0 .AND. sup.GT.0) THEN
+	         ss = MIN(sub,sup)
+		 IF (sub.LT.sup .AND. seb.GT.sup) GOTO 3300
+		 IF (sub.LT.sup .AND. seb.GT.sep) GOTO 3300
+		 IF (sup.LT.sub .AND. sep.GT.sub) GOTO 3300
+		 IF (sup.LT.sub .AND. sep.GT.seb) GOTO 3300
+	      ELSE
+		 ss = MAX(sub,sup)
+                 ENDIF
+	   ENDDO
+
+* If there were subscripts or supserscripts, draw the last text
+* or just draw the label string.
+
+	   IF (glen .GT. 0) buff = buff2(:TM_LENSTR(buff2))
+
+              stx = 1000.* stx_pos
+              sty = 1000.* sty_pos
               CALL FERDRAWTEXT(buff, fontname, fontsiz, 
      .          red, grn, blu, pyfnt_opq, stx, sty, 
      .          rotate, italic, bold, pyfnt_under, status)
-              IF (status .EQ. 0) GOTO 3200
-	   
+	   IF (status .EQ. 0) GOTO 3200
+	
 	   ENDIF
-	   ifirst = 1
-	   GOTO 3000
-
-	ENDIF
-
-* Initialize 
-
-        ICHR = ' ' 
-C
-C      DEFINE THE SCALE FACTOR TO BE THE AMOUNT OF MAGNIFICATION
-C      REQUIRED TO CONVERT THE CHARACTERS IN THE CHARACTER DEFI-
-C      NITION TABLE TO THE SIZE SPECIFIED BY THE USER.
-C
-        CALL INQSCL(XSCL,YSCL,ABIAS,BBIAS,XLO,YLO) ! Bug fix? 11.95
-        CALL SCALE(XSCL,YSCL,ABIAS,BBIAS,0.,0.)
-
-	COLRF=.FALSE.
-C	IF(.NOT.READIR)GOTO 2020
-
-* kob 1/97 - old 2020 code region now contained w/in if-then below.
-	IF(.NOT.READIR) THEN
-#ifdef unix
-C *JD* Mod below fix for unix  -- use environment variable 3.19.91	
-		   call getenv ('PLOTFONTS',fontdir)
-       	   dirlen = lnblk (fontdir,255)
-
-C *kob* 1/02 - cygwin 1.3.x requires "\" for unix directory accesses
-#ifdef __CYGWIN__
-	   OPEN(LUSY,FILE=fontdir(:dirlen)//'\fondat.dat',
-     *	        STATUS='OLD')
-#else
-	   OPEN(LUSY,FILE=fontdir(:dirlen)//'/fondat.dat',
-     *	        STATUS='OLD',ERR=5000)
-#endif
-
-#else
-	   open(lusy,file='plotfonts:fondat.dat',readonly,
-     *	       status='old',err=5000)
-#endif
-C
-C	FILE EXISTS
-C
-	   READ(LUSY,983,END=1009)(DNUM(IJ),DNME(IJ),DTYPE(IJ),
-     *	   DLEN(IJ),DNAME(IJ),IJ=1,35)
-#ifdef unix
-C Mod here from A to A9 for read of DNAME *JD* 3.8.91
-C983	   FORMAT(1X,2A2,I2,I5,A)
-983	   FORMAT(1X,2A2,I2,I5,A9)
-#else
-983	   format(1x,2a2,i2,i5,a30)
-#endif
-1009	   NFNT=IJ-1
-    	   CLOSE(LUSY)
-C
-C	READ DEFAULT FONT
-C
-	   IOFF(1)=0
-	   II=1
-	   ID=1
-	   READIR = .TRUE.			
-	   call SETFONT(fontdir,dirlen,dname,ifont,ii,kif,dnme,
-     .               ifn,dnum,itype,dtype,iflen, dlen,ioff,
-     .               icnt,ascii,base,rast,iadd,
-     .		     sx,sy,id)
-	ENDIF
-
-2000	SYMSC = HEIGHT * FACTOR / 21.0
-C
-C	ROTATE THE CHARACTER STRING.
-C
-	IF(DEGRES .NE. 0.0)GO TO 10
-C
-C	RESET THE CHARACTER ROTATION FLAG.
-C
-	SYMROT = .FALSE.
-	GO TO 20
-C
-C	SET THE CHARACTER ROTATION FLAG.
-C
-10	SYMROT = .TRUE.
-C
-C	CONVERT THE ROTATION TO RADIANS.
-C
-	TEMP = 0.01745329251994 * DEGRES
-C
-C	COMPUTE THE SINE AND COSINE.
-C
-	SYMSIN = SIN(TEMP)
-	SYMCOS = COS(TEMP)
-C
-C	SET VECTORS MODE.
-C
-20	PMODE = VECTOR
-C
-C	START AT THE LOWER LEFT-HAND CORNER OF THE FIRST CHARACTER.
-C
-	IF(NCHAR .EQ. 0) GOTO 300 	! Mod 11.30, was RETURN
-	XTEMP = (X - XLO) * XSCALE	! was X * XSCALE
-	YTEMP = (Y - YLO) * YSCALE	! was Y * YSCALE
-	PENF = .FALSE.
-	DOPLOT=NCHAR.GT.0
-	IF(DOPLOT)CALL XYZPLT
-C
-C	INITIALIZE CONTROL VARIABLES.
-C
-	XORG = XTEMP
-	YORG = YTEMP
-	XREF = 0.0
-	YREF = 0.0
-	CHARSC = 1.0
-	WIDTH = 0.0
-	SLANT = 0.0
-	IFONT = 1
-	ASCFNT=ITYPE(1).EQ.-1
-	SYMWID=0.0
-	NCH=IABS(NCHAR)
-C
-C	DRAW THE CHARACTERS IN THE STRING ONE BY ONE.
-C
-	JJ=0
-	DO 170 I=1,NCH
-	JJ=JJ+1
-	IF(JJ.GT.NCH)GOTO 180
-	ICHR = STRING(JJ:JJ)
-C
-C	CHECK FOR A CONTROL CHARACTER.
-C
-	IF(ICHAR(ICHR) .EQ.27)THEN
-	    ASCFNT=.FALSE.
-	    GOTO 170
-	ENDIF
-	IF(ICHAR(ICHR) .EQ. 0)GOTO 180
-#ifdef unix
-	IF(.NOT.ASCFNT.AND.(ICHR.EQ.'@'.OR.
-     *		(ICHR.GE.'\\'.AND.ICHR.LE.'_')))GOTO 80
-#else
-	IF(.NOT.ASCFNT.AND.(ICHR.EQ.'@'.OR.
-     *		(ICHR.GE.'\'.AND.ICHR.LE.'_')))GOTO 80
-#endif
-
-* Some compliers store '\\' as a single character, others see it
-* as '\'.  
-
-	IF (KBKSP.NE.'\\') THEN
-	   IF(.NOT.ASCFNT.AND.(ICHR.EQ.'@'.OR.
-     *		(ICHR.GE.'\'.AND.ICHR.LE.'_')))GOTO 80
-	ENDIF 
-C
-C	CALCULATE POINTER
-C
-	IF(ITYPE(IFONT).LE.0)THEN
-C	    CHARACTER FONT
-	    ICODE = ASCII(ICHAR(ICHR),IFONT)
-	ELSE
-C	    SYMBOL FONT
-	    ICOM = STRING(JJ:JJ+1)
-	    JJ=JJ+1
-	    READ(ICOM,999,IOSTAT=ISTAT)II
-999	    FORMAT(I2)
-	    IF(ISTAT.EQ.0)THEN
-	    	ICODE = ASCII(II,IFONT)
-	    ELSE
-	        ICODE = 1
-	    ENDIF
-	ENDIF
-	IPOINT = ICODE+IOFF(IFONT)
-	IPT = 0
-
-	XMN=SX(IPOINT)
-	XMX=SY(IPOINT)
-	IF(XMN.GT.50.)XMN=XMN-100.
-	IF(XMX.GT.50.)XMX=XMX-100.
-	WIDTH=(XMX-XMN)*CHARSC*RAST(IFONT)
-	SYMWID=SYMWID+WIDTH
-	IF(.NOT.DOPLOT)GOTO 70
-	IPOINT=IPOINT+1
-	IF (IPOINT .GT. NSXSY) GOTO 70
-	PENF = .FALSE.
-C
-C	DRAW THE CHARACTER
-C
- 30	CONTINUE
-	IX=SX(IPOINT)
-	IY=SY(IPOINT)
-	IF(IX.GT.50)IX=IX-100
-	IF(IY.GT.50)IY=IY-100
-	IY=-IY
-	IPOINT=IPOINT+1
-	IF (IPOINT .GT. NSXSY) GOTO 70
-        IPT = IPT + 1
-C
-C	CHECK FOR A CONTROL BYTE.
-C
-	IF(IX .EQ. 50)GO TO 60
-C
-C	CALCULATE THE NEW PEN COORDINATES RELATIVE TO THE LOWER
-C	LEFT-HAND CORNER OF THE FIRST CHARACTER.
-C
-	XY=FLOAT(IY)-BASE(IFONT)
-	XX=FLOAT(IX)-XMN+XY*SLANT
-	XSYM =XREF+XX*CHARSC*RAST(IFONT)
-	YSYM =YREF+XY*CHARSC*RAST(IFONT)
-C
-C	SCALE AND ROTATE THE NEW COORDINATES.
-C
-	IF(SYMROT)GO TO 40
-
-	XTEMP = XSYM * SYMSC + XORG
-	YTEMP = YSYM * SYMSC + YORG
-	GO TO 50
-40	XTEMP = (XSYM * SYMCOS - YSYM * SYMSIN) * SYMSC + XORG
-	YTEMP = (XSYM * SYMSIN + YSYM * SYMCOS) * SYMSC + YORG
-50	CONTINUE
-
-C
-C	MOVE THE PEN TO THE NEW COORDINATES.
-C
-
-        CALL XYZPLT
-
-	PENF = .TRUE.
-	GO TO 30
-C
-C	CHECK FOR THE END OF THE CHARACTER.
-C
-60	IF(IY .EQ. -50)GO TO 70
-	PENF = .FALSE.
-	GO TO 30
-
-70	CONTINUE
-
-C  End of character
-C
-C	ADJUST THE REFERENCE POSITION TO TAKE INTO ACCOUNT THE
-C	CHARACTER THAT WAS JUST DRAWN.
-C
-
-        XREF = XREF + WIDTH
-	IF(CHARSC .EQ. 1.0)GO TO 169
-C	XREF = XREF - 16.*(1.-CHARSC)*RAST(IFONT)
-	YREF = 0.0
-	CHARSC = 1.0
-	GO TO 169
-C
-C	PROCESS CONTROL CHARACTERS.
-C
-80	IF(ICHR .NE. KSUB)GO TO 150
-	CHARSC = 0.75
-C	XREF = XREF + 16.*(1.-CHARSC)*RAST(IFONT)
-	YREF=-11.*CHARSC*RAST(IFONT)
-	GO TO 169
-150	IF(ICHR .NE. KSUPER)GO TO 160
-	CHARSC = 0.75
-C	XREF = XREF + 16.*(1.-CHARSC)*RAST(IFONT)
-	YREF=21.-11.*CHARSC*RAST(IFONT)
-	GO TO 169
-160	IF(ICHR .NE. KBKSP)GO TO 310
-	SYMWID=SYMWID-WIDTH
-	XREF = XREF - WIDTH
-	WIDTH = 0.0
-	GOTO 169
-310	IF(ICHR.NE.KCALL)GOTO 169
-C
-C	UNPACK COMMAND
-C
-	ICOM = STRING(JJ+1:JJ+2)
-	JJ=JJ+2
-C
-C	PROCESS COMMAND
-C
-	CALL UPPER(ICOM,2)
-	IF(ICOM.EQ.'CL')THEN
-C
-C	    CLEAR ALL FONTS FROM THE BUFFERS
-C
-	    DO 1002 II=1,4
-	    IOFF(II)=12000
-	    IFLEN(II)=0
-	    KIF(II)='@@'
-	    IFN(II)='@@'
-	    ITYPE(II)=0
-	    BASE(II)=-9.
-1002	    RAST(II)=1.
-	    IOFF(1)=0
-	    GOTO 169
-        ELSE IF(ICOM(1:1).EQ.'C')THEN
-C
-C           LOOK FOR EXTENDED COLOR COMMAND OF THE FORM
-C           @Cnnn WHERE nnn IS A 3 DIGIT NUMBER
-C
-            IF(.NOT.COLRF)COLOLD=COLOUR
-            COLRF=.TRUE.
-C
-C           SEE IF THE FIRST CHARACTER IS A NUMBER
-C
-            DO 2050 K=1,9
-                IF(ICOM(2:2).EQ.PENS(K))GOTO 2051
-2050        CONTINUE
-C
-C           NO NUMBER FOUND - MUST BE A FONT CHANGE COMMAND
-C
-            IF(ICOM(2:2).NE.'0')GOTO 2010
-2051        JJ=JJ+2
-C
-C           GET THE 3 DIGIT NUMBER
-C
-#ifdef AIX_XLF
-            IF ( .NOT.TM_NUMBER(STRING(JJ-2:JJ)) ) GOTO 169  
-!** TMAP mod 11/94 **
-#endif
-            READ(STRING(JJ-2:JJ),'(I3)',ERR=169)K
-            IF(.NOT.DOPLOT)GOTO 169
-            CALL COLOR(K)
-	ELSE IF(ICOM(1:1).EQ.'P')THEN
-C
-C	    CHANGE PEN/COLOR
-C
-	    IF(.NOT.DOPLOT)GOTO 169
-	    IF(.NOT.COLRF)COLOLD=COLOUR
-	    COLRF=.TRUE.
-	    DO 2030 K=1,16
-	    IF(ICOM(2:2).EQ.PENS(K))GOTO 2031
-2030	    CONTINUE
-	    IF(ICOM(2:2).NE.'0')GOTO 2010
-	    K=1
-2031	    CALL COLOR(K)
-	    GOTO 169
-	ELSE IF(ICOM(1:1).EQ.'Z')THEN
-	    DO 2040 K=1,16
-	    IF(ICOM(2:2).EQ.PENS(K))GOTO 2041
-2040	    CONTINUE
-	    IF(ICOM(2:2).NE.'0')GOTO 2010
-	    K=0
-2041	    SLANT=SIN(K*0.08726646)
-	    GOTO 169
-	ENDIF
-C	SEARCH FOR FONT BY NAME THEN BY NUMBER
-2010	DO 1003 K=1,4
-	IF(ICOM.EQ.KIF(K).OR.ICOM.EQ.IFN(K))GOTO 302
-1003	CONTINUE
-C	NOT FOUND SEARCH MAIN DIRECTORY
-	DO 1004 ID=1,NFNT
-	IF(ICOM.EQ.DNME(ID).OR.ICOM.EQ.DNUM(ID))GOTO 1001
-1004	CONTINUE
-C	FONT NOT FOUND USE LAST FONT
-	GOTO 169
-1001	ILEN=DLEN(ID)
-C
-C	FIND WHERE FONT WILL FIT
-C
-	DO 1005 II=4,1,-1
-	IF(ILEN+IOFF(II).LE.12000) THEN
-* *kob* 1/97 setfont call takes place of branch to old 1010
-	    call SETFONT(fontdir,dirlen,dname,ifont,ii,kif,dnme,
-     .               ifn,dnum,itype,dtype,iflen, dlen,ioff,
-     .               icnt,ascii,base,rast,iadd,
-     .		     sx,sy,id)
-	    goto 169
-	ENDIF
-1005	CONTINUE
-C
-C	ERROR IF NO ROOM ANYWHERE!
-C
-	GOTO 169
-c1006	IF(.NOT.NEWFIL)THEN
-c	    INQUIRE(UNIT=LUHP,NAME=PLTFIL)
-c	    CLOSE(LUHP)
-c	ENDIF
-
-
-
-c	IF(.NOT.NEWFIL)THEN
-c	    IF(PTYPE.EQ.0 .OR. PTYPE.EQ.2 .OR. PTYPE.EQ.4)THEN
-c		OPEN(LUHP,FILE=PLTFIL,FORM='UNFORMATTED',STATUS='OLD',
-c     *		ACCESS='APPEND')
-c	    ELSE
-c		OPEN(LUHP,FILE=PLTFIL,STATUS='OLD',ACCESS='APPEND')
-c	    ENDIF
-c	ENDIF
-C
-C	DONE
-C
-C	IF(READIR)GOTO 169
-C	READIR=.TRUE.
-C	GOTO 2000
-C
-C	READ DIRECTORY
-C
-
-302	IFONT=K
-169	ASCFNT=ITYPE(IFONT).EQ.-1
-170	CONTINUE
-180	IF(.NOT.DOPLOT)THEN
-	    X=SYMWID*HEIGHT/21.
-	    GOTO 300 ! Mod 11.30, was RETURN
-	END IF
-C
-C	SCALE AND ROTATE THE FINAL COORDINATES.
-C
-	IF(SYMROT)GO TO 190
-	XTEMP = XREF * SYMSC + XORG
-	YTEMP = YORG
-	GO TO 200
-190	XTEMP = XREF * SYMCOS * SYMSC + XORG
-	YTEMP = XREF * SYMSIN * SYMSC + YORG
-C
-C	PLOT TO THE END OF THE CHARACTER STRING.
-C
-200	PENF = .FALSE.
-	CALL XYZPLT
-C
-C	RESET COLOR
-C
-	IF(COLRF.AND.(COLOLD.NE.COLOUR))CALL COLOR(COLOLD)
-300     CALL SCALE(XSCL,YSCL,ABIAS,BBIAS,XLO,YLO) ! bug fix(?) 11.95
 
  3000	CONTINUE
+
 	RETURN
+
  3100	err_msg = 'Error getting text size from PyFerret font call '
      .   //buff(:tm_lenstr(buff))
 	CALL errmsg (ferr_nomessge, status, err_msg, *5002)
  3200	err_msg = 'Error drawing text with PyFerret Font call '
      .   //buff(:tm_lenstr(buff))
 
-	CALL errmsg (ferr_nomessge, status, err_msg, *5002)
+ 3300	err_msg = 'Error in string: mismatch of <sub> or <sup> tags '
+     .   //buff(:tm_lenstr(buff))
 
-C
- 5000   IF (dirlen .GT. 1) THEN
-	   CALL WARN ('Could not open font file. Check the Ferret environment.')
-	   err_msg = fontdir(:dirlen)//'/fondat.dat'
-	ELSE
-	   CALL WARN ('Fonts directory is undefined. Check the Ferret environment.')
-	   err_msg = 'fondat.dat'
-	ENDIF
-
-        CALL errmsg (ferr_file_not_found, status, err_msg, *5002)
+	CALL errmsg (ferr_nomessge, status, err_msg, *3000)
 
  5002	STOP
 
-	END
-	FUNCTION SYMWID(HEIGHT,NCHAR,STRING)
-C *kob* 04/07/96 passed in character strings had to be declared 
-C                with "*(*)" for the linux port 
-	CHARACTER STRING*(*)
-	NC=-IABS(NCHAR)
-C
-C	THIS FUNCTION RETURNS THE WIDTH OF THE STRING WITHOUT DRAWING IT
-C
-	SS=0.
-	CALL SYMBEL(SS,0.,0.,HEIGHT,NC,STRING)
-	SYMWID=SS
-	RETURN
 	END

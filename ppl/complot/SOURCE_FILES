@@ -50,6 +50,7 @@ range_dm.F\
 rangel.F\
 rotate.F\
 scale3.F\
+special_sym_code.F\
 symbel.F\
 symbel_hershey.F\
 symbol.F\

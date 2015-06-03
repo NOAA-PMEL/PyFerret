@@ -69,12 +69,12 @@ C                labels make the character size a bit smaller.
 	NS=0
 	L=0
 	J=1
-	NEAST=0
+	NEE=0
 
 c If we are drawing with PyFerret fonts, convert the # to a degree symbol,
 c and just go on to SYMBEL. 
 
-        IF (pyfont) THEN
+        IF (pyfont .AND. INDEX(str, '#').GT.0) THEN
 
 C UTF-8 for the degree symbol
 
@@ -92,7 +92,7 @@ C          degree symbol is codepoint 0xB0 (176), which is UTF-8 0xC2 0xB0 (194 
 	   NC = NCHR
 	   IF (ndeg.EQ.nchr) NC = NCHR+1
 	   ndeg = 0
-	   GOTO 250
+	   GOTO 2000
 	ENDIF
 
 	DO 10 NM=1,20
@@ -117,14 +117,14 @@ C          degree symbol is codepoint 0xB0 (176), which is UTF-8 0xC2 0xB0 (194 
 	J=J+1
 10	CONTINUE
 100	IF(IC.EQ.' '.OR.NM.GT.NCHR)GOTO 200
-	NEAST=2
+	NEE=2
 	IF(STR(1:1).NE.estr.AND.STR(1:2).NE.mestr
      *	.and.str(1:1).ne.lestr.and.str(1:2).ne.lmestr)THEN
 	ITMP(J:J+1)=' x'
 	J=J+2
 	ENDIF
 200	NC=J-1
-	IF(NE.EQ.0)GOTO 1000
+	IF(NEE.EQ.0)GOTO 1000
 	IF(IC.EQ.estr.or.ic.eq.lestr)NM=NM+1
 	IS=0
 	DO 60 K=NM,20
@@ -145,13 +145,15 @@ C          degree symbol is codepoint 0xB0 (176), which is UTF-8 0xC2 0xB0 (194 
 300	IF(L.NE.0)GOTO 1000
 	L=1
 	ITMP2='0'
-1000  IF (ns .GT. 6) charsize = 0.9* charsize
- 250  C=COS(DEG*1.7453292E-2) 
+1000  CONTINUE
+      IF (ns .GT. 6) charsize = 0.9* charsize
+2000  CONTINUE
+      C=COS(DEG*1.7453292E-2) 
       S=SIN(DEG*1.7453292E-2) 
-      IF (pyfont) THEN
+      IF (pyfont .AND. NEE.EQ.0) THEN
          WID = SYMWID(charsize,NC,ITMP)
       ELSE
-         WID2=SYMWID(charsize,NEAST,'10') 
+         WID2=SYMWID(charsize,NEE,'10') 
          WID1=SYMWID(charsize,NC,ITMP)+WID2 
          WID3=WID1+SYMWID(charsize*.75,L,ITMP2) 
          WID=WID3+SYMWID(charsize,NS,SUB)
@@ -167,16 +169,16 @@ C          degree symbol is codepoint 0xB0 (176), which is UTF-8 0xC2 0xB0 (194 
 3     XL=X+charsize*.5*S/XF 
       YL=Y-charsize*.5*C/YF 
 400   CALL SYMBEL(XL,YL,DEG,charsize,NC,ITMP) 
-	IF(NEAST.NE.0)THEN
-      CALL SYMBEL(XL+(WID1-WID2)*C/XF,YL+(WID1-WID2)*S/YF, 
-     *DEG,charsize,NEAST,'10') 
-      XLT=XL+WID1*C/XF-charsize*.625*S/XF 
-      YLT=YL+WID1*S/YF+charsize*.625*C/YF 
-      CALL SYMBEL(XLT,YLT,DEG,charsize*.75,L,ITMP2) 
-	ENDIF
-	XL=XL+WID3*C/XF
-	YL=YL+WID3*S/YF
-	CALL SYMBEL(XL,YL,DEG,charsize,NS,SUB)
+      IF(NEE.NE.0)THEN
+         CALL SYMBEL(XL+(WID1-WID2)*C/XF,YL+(WID1-WID2)*S/YF, 
+     *   DEG,charsize,NEE,'10') 
+         XLT=XL+WID1*C/XF-charsize*.625*S/XF 
+         YLT=YL+WID1*S/YF+charsize*.625*C/YF 
+         CALL SYMBEL(XLT,YLT,DEG,charsize*.75,L,ITMP2) 
+      ENDIF
+      XL=XL+WID3*C/XF
+      YL=YL+WID3*S/YF
+      CALL SYMBEL(XL,YL,DEG,charsize,NS,SUB)
 
       RETURN 
       END 

@@ -1,8 +1,8 @@
-Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1188 May 14 18:30 /home/flat/ksmith/PyFerret/bin/pyferret
-Using external functions from /home/flat/ksmith/PyFerret/ext_func/libs
-Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
+Using FERRET /home/users/ansley/ferret_distributions/pyferret_flat/bin/pyferret
+-rwxr-xr-x. 1 ansley oerdnewp 1188 Jun  2 16:04 /home/users/ansley/ferret_distributions/pyferret_flat/bin/pyferret
+Using external functions from /home/users/ansley/build/pyferret_dev/external_functions/ext_func
+Benchmark run by ansley
+Note: 
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -241,18 +241,19 @@ Benchmark scripts that will be run:
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
-FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/flat/ksmith/Datasets
+FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/tmap/ferret/linux/fer_dsets
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/flat/ksmith/PyFerret/ext_func/libs
-FER_FONTS=/home/flat/ksmith/PyFerret/ppl/fonts
-FER_GO=. /home/flat/ksmith/PyFerret/go /home/flat/ksmith/PyFerret/examples /home/flat/ksmith/PyFerret/contrib
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/pyferret_dev/external_functions/ext_func
+FER_FONTS=/home/users/ansley/ferret_distributions/pyferret_flat/ppl/fonts
+FER_GO=. /home/users/ansley/ferret_distributions/pyferret_flat/go /home/users/ansley/ferret_distributions/pyferret_flat/examples /home/users/ansley/ferret_distributions/pyferret_flat/contrib
 FER_GRIDS=.
-FER_LIBS=/home/flat/ksmith/PyFerret/lib
-FER_PALETTE=. /home/flat/ksmith/PyFerret/ppl
+FER_LIBS=/home/users/ansley/ferret_distributions/pyferret_flat/lib
+FER_LINK_DIR=/home/users/tmap/ferret_link/linux
+FER_PALETTE=. /home/users/ansley/ferret_distributions/pyferret_flat/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Thu May 14 18:31:15 PDT 2015
+Beginning at Tue Jun  2 16:19:24 PDT 2015
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -1227,6 +1228,34 @@ list a[gx=xnrst@sum]
  **ERROR: invalid command: cant use this regrid transform on strings: @MOD
 list a[gx=xnrst@mod]
  LISTing to file foo.cdf
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead ysequence({98, 99})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+99 ELSE "goodbye"+", my ") + "friend"
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+99) + "friend"
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + 99
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead "b" - {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead "b" * {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead "b" / {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead "b" ^ {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead {"a","b"} + 1
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead 1 + {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead 1 - {"a","b"}
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead SIN({"a","b","c"})
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead MAX("a",{"a","b","c"})
+ **ERROR: invalid command: cannot use strings in numerical expression
+list/nohead MAX(1,{"a","b","c"})
 *** Running test: bn_axcontrol.jnl
  Cached data cleared from memory
 *** Running test: bn_vec_curv.jnl
@@ -1295,9 +1324,6 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-sh: ncrename: command not found
-sh: ncrename: command not found
-sh: ncrename: command not found
 *** Running test: bn_cancel_axes.jnl
  Cached data cleared from memory
  LISTing to file longax.dat
@@ -3080,9 +3106,9 @@ Replacing definition of axis TAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Adjusting Y-axis label size from 0.100 to 0.099, to avoid running off page.
+           *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
            *** NOTE: ./err672_vert_axislabel.jnl
-           *** NOTE: Adjusting Y-axis label size from 0.100 to 0.099, to avoid running off page.
+           *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
            *** NOTE: Adjusting Y-axis label size from 0.100 to 0.030, to avoid running off page.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3094,7 +3120,7 @@ Replacing definition of axis TAXIS
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis RLATU79_961_9
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Adjusting Y-axis label size from 0.100 to 0.099, to avoid running off page.
+           *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3246,7 +3272,7 @@ define data/agg windy = 1,2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
            *** NOTE: Adjusting Y-axis label size from 0.100 to 0.001, to avoid running off page.
-           *** NOTE: /home/flat/ksmith/PyFerret/go/magnify.jnl
+           *** NOTE: /home/users/ansley/ferret_distributions/pyferret_flat/go/magnify.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3406,7 +3432,6 @@ Replacing definition of axis AXI_COARSE
 *** Running test: bn_nco_append.jnl
  Cached data cleared from memory
  LISTing to file append_to_this.nc
-sh: ncks: command not found
 *** Running test: bn_nobounds.jnl
  Cached data cleared from memory
  LISTing to file a.nc
@@ -3779,6 +3804,16 @@ frame/format=hdf/file=a.hdf
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_permute_ascii.jnl
  Cached data cleared from memory
 Replacing definition of grid GRID3D
@@ -3831,4 +3866,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Thu May 14 18:32:45 PDT 2015
+Ended at Tue Jun  2 16:22:00 PDT 2015

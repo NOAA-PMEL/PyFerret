@@ -69,7 +69,7 @@ C
 	INTEGER		codepoint, utf8strlen
 	CHARACTER	utf8str*4, nstring*8, fontname*64, codeword*10
 	REAL*4		red, grn, blu, fac
-	INTEGER		igr, bold, italic, isiz
+	INTEGER		igr, bold, italic, isiz, inote
 
 	CHARACTER*265 err_msg
 	CHARACTER*512 buff
@@ -110,6 +110,29 @@ C Set font size in from the height
 	   fac = (1.-fac*0.2)
 	   fac = (1.+fac*0.2)
 	ENDIF
+
+C Ignore any codes for Ferret-Hershey style Pen and Font changes 
+
+	   slen = TM_LENSTR(string)
+	   buff = string(:ABS(slen))
+
+	   ia = INDEX (buff,'@')
+	   inote = 0
+
+	   DO WHILE (ia .GT. 0)
+	      IF (NCHAR.GT.0) inote = 1
+	      IF (ia .EQ. 1) THEN
+	         buff = buff(ia+3:slen)
+	      ELSE
+	         buff1 = buff(1:ia-1)
+	         buff = buff1(1:ia-1)//buff(ia+3:slen)
+	      ENDIF
+	      
+	      slen = TM_LENSTR(buff)
+	      ia = INDEX (buff,'@')
+	   ENDDO
+	   IF (inote .GT. 0) CALL WARN 
+     .		('Non-Hershey fonts: ignoring Hershey pen or font codes') 
 
 C The HTML would be &#nnn;  or &word; Because semicolon is used in Ferret, 
 C look for <#nnn>  an HTML decimal code. e.g. <#916> is uppercase Delta

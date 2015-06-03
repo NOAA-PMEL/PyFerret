@@ -578,6 +578,9 @@
 	   RETURN
 	ENDIF
 
+* /NOERROR
+	report_error = qual_given(slash_canc_var_noerr) .LE. 0
+
 * /ALL
 	IF ( slash_all
      .	.OR. (num_items.EQ.0 .AND. iset.NE.unspecified_int4) ) THEN
@@ -615,8 +618,13 @@
 	         CALL PARSE_NAM_DSET( buff, cx_last, iset,
      .			     category, variable, mod_cx, status )
 	         IF ( status .NE. ferr_ok ) RETURN
-	         IF ( variable .EQ. munknown_var_name ) GOTO 5110
-	         IF ( category .NE. cat_user_var ) GOTO 5120
+		 IF (report_error) THEN
+	            IF ( variable .EQ. munknown_var_name ) GOTO 5110
+	            IF ( category .NE. cat_user_var ) GOTO 5120
+		 ELSE
+	            IF ( variable .EQ. munknown_var_name .OR. 
+     .			 category .NE. cat_user_var ) GOTO 1120
+		 ENDIF
 	         CALL PURGE_ALL_UVARS
 		 CALL DELETE_USER_VAR(variable)         ! 7/97
 	      ENDIF

@@ -1,0 +1,32 @@
+! bn_can_var_noerr.jnl
+! CANCEL VARIABLE/NOERROR
+
+
+let a = 1
+
+! intentional error
+set mode ignore
+cancel var b,a
+show var
+
+cancel mode ignore
+
+! specify /noerr and we can issue the command
+
+cancel var/noerror a,b
+show var
+
+! no effect on CAN VAR/ALL or CAN VAR template_name
+
+let a1 = 1
+let a7 = 7
+let c = 12
+
+cancel var/noerror name*
+show var
+
+cancel var/noerror a*
+show var
+
+cancel var/noerror/all
+show var

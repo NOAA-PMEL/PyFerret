@@ -1,0 +1,14 @@
+! bn_isdefined.jnl
+! 5/3/2015 *acm*
+! `return=isdefined` returns 1 if the user variable is defined
+! see ticket 2293
+
+let a = b
+say `a,r=isdefined` `b,r=isdefined`
+
+use levitus_climatology
+let temp2 = 2*temp
+say `temp2,return=isdefined`
+
+! returns false for file variables
+say `temp,return=isdefined`

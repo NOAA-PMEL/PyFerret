@@ -112,7 +112,7 @@
 * V695 *acm*  2/15 RETURN=F0 for calendar formatted F axis 
 * V695+ *sh* 2/15 add support for _DQ_ style of quotations
 * V694 *acm* 5/15 fix bug 2213
-* V695 *acm* 6/15 Add return=isdefined (ticket 2293)
+* V695 *acm* 6/15 Add return=defined (ticket 2293)
 
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
@@ -380,10 +380,10 @@
 	   
 
 * 11/2013
-* return=ISDEFINED needs only to check whether the user-variable is defined
+* return=DEFINED needs only to check whether the user-variable is defined
 
-* ... RETURN=ISDEFINED
-	   IF ( repl(1:5) .EQ. "ISDEF" ) THEN
+* ... RETURN=DEFINED
+	   IF ( repl(1:3) .EQ. "DEF" ) THEN
 	      str_len = 1
 	      repl = '0'	! default, pos=up, or not-depth.
 	      CALL FIND_VAR_NAME ( pdset_irrelevant, cmnd(istart:iend), cat, var )
@@ -452,7 +452,7 @@
      .       'use RETURN= shape,size,grid,title,bad,t0,f0,units,dset, '//pCR//
      .	     '  dsetnum,dsetpath,dsettitle,*size,*start,*end,'//pCR//
      .       '  *units,*axis,nc_scale,nc_offset,user_scale,user_offset,'//pCR//
-     .       '  calendar,dtype,xmod,tmod,status,isDepth,isReady,IsDefined'
+     .       '  calendar,dtype,xmod,tmod,status,isDepth,isReady,defined'
 !     .       '  calendar,dtype,xmod,tmod,status,isDepth,isReady,isLoaded' ! w isLoaded
 
 * ... RETURN=SHAPE

@@ -113,9 +113,9 @@ set efdir = n
 if ( $do_shared_obj == "y" ) then
   echo "Enter the directory containing the external function libraries"
   set efdir = $<
-  echo "Contents of "$efdir" :"
+  echo "Contents of "$efdir "fcns a* :"
   echo " "
-  ls -1 $efdir
+  ls -1 $efdir/a*
   echo " "
 endif
 

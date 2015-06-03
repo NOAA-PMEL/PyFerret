@@ -64,14 +64,17 @@
 	CALL TM_DEALLO_DYN_GRID_SUB(grid)
 
 * if the grid was actually removed, then also deallocate the axes that it used
-	IF ( grid .GT. max_grids
-     . .AND. grid_use_cnt(grid) .EQ. 0 ) THEN
+* Check first that the grid number is in range
+
+	IF ( grid .GT. max_grids) THEN
+        IF ( grid_use_cnt(grid) .EQ. 0 ) THEN
 
 *release claim to any dynamic lines this may use
 	   DO 100 idim = 1, nferdims
 	      CALL TM_DEALLO_DYN_LINE( grid_line(idim,grid))
  100	   CONTINUE
 
+	ENDIF
 	ENDIF
 
 * successful completion

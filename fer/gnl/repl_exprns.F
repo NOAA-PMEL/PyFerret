@@ -112,6 +112,7 @@
 * V695 *acm*  2/15 RETURN=F0 for calendar formatted F axis 
 * V695+ *sh* 2/15 add support for _DQ_ style of quotations
 * V694 *acm* 5/15 fix bug 2213
+* V695 *acm* 6/15 Add return=isdefined (ticket 2293)
 
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
@@ -182,6 +183,7 @@
 	info_query = .FALSE.
         coordvar = .FALSE.
         apply_cx = .FALSE.
+	str_len = 0
 
 * do_err: issue error message if attrib does not exist on varname.attname
         do_err = .TRUE.
@@ -375,6 +377,19 @@
 	      ENDIF
 	      GOTO 500
 	   ENDIF
+	   
+
+* 11/2013
+* return=ISDEFINED needs only to check whether the user-variable is defined
+
+* ... RETURN=ISDEFINED
+	   IF ( repl(1:5) .EQ. "ISDEF" ) THEN
+	      str_len = 1
+	      repl = '0'	! default, pos=up, or not-depth.
+	      CALL FIND_VAR_NAME ( pdset_irrelevant, cmnd(istart:iend), cat, var )
+	      IF ( var .NE. munknown_var_name) repl = '1'
+	      GOTO 500
+	   ENDIF
 
 * ... evaluate the context without computing the expression
 *	this is a major performance consideration, but not 100% reliable
@@ -437,7 +452,7 @@
      .       'use RETURN= shape,size,grid,title,bad,t0,f0,units,dset, '//pCR//
      .	     '  dsetnum,dsetpath,dsettitle,*size,*start,*end,'//pCR//
      .       '  *units,*axis,nc_scale,nc_offset,user_scale,user_offset,'//pCR//
-     .       '  calendar,dtype,xmod,tmod,status,isDepth,isReady'
+     .       '  calendar,dtype,xmod,tmod,status,isDepth,isReady,IsDefined'
 !     .       '  calendar,dtype,xmod,tmod,status,isDepth,isReady,isLoaded' ! w isLoaded
 
 * ... RETURN=SHAPE

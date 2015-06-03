@@ -3,7 +3,7 @@
 
 ## Full path name of the directory containing this file (the ferret root directory).
 ## Do not use $(shell pwd) since this is included in Makefiles in other directories.
-DIR_PREFIX = $(HOME)/build/pyferret_dev
+DIR_PREFIX = $(HOME)/pyferret_dev
 
 ## Machine type for which to build Ferret/PyFerret
 ##   x86_64-linux      for 64-bit RHEL

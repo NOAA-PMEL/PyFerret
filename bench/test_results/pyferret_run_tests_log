@@ -1,8 +1,8 @@
-Using FERRET /home/users/ansley/ferret_distributions/pyferret_flat/bin/pyferret
--rwxr-xr-x. 1 ansley oerdnewp 1188 Jun  2 16:04 /home/users/ansley/ferret_distributions/pyferret_flat/bin/pyferret
-Using external functions from /home/users/ansley/build/pyferret_dev/external_functions/ext_func
-Benchmark run by ansley
-Note: 
+Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1188 Jun  3 22:39 /home/flat/ksmith/PyFerret/bin/pyferret
+Using external functions from /home/flat/ksmith/PyFerret/ext_func/libs
+Benchmark run by ksmith
+Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -236,26 +236,27 @@ Benchmark scripts that will be run:
    bn695_bug_fixes.jnl
    bn_f_tax_fcns.jnl
    bn_fmrc.jnl
+   bn_return_defined.jnl
+   bn_can_var_noerr.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
-FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/tmap/ferret/linux/fer_dsets
+FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/flat/ksmith/Datasets
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/pyferret_dev/external_functions/ext_func
-FER_FONTS=/home/users/ansley/ferret_distributions/pyferret_flat/ppl/fonts
-FER_GO=. /home/users/ansley/ferret_distributions/pyferret_flat/go /home/users/ansley/ferret_distributions/pyferret_flat/examples /home/users/ansley/ferret_distributions/pyferret_flat/contrib
+FER_EXTERNAL_FUNCTIONS=/home/flat/ksmith/PyFerret/ext_func/libs
+FER_FONTS=/home/flat/ksmith/PyFerret/ppl/fonts
+FER_GO=. /home/flat/ksmith/PyFerret/go /home/flat/ksmith/PyFerret/examples /home/flat/ksmith/PyFerret/contrib
 FER_GRIDS=.
-FER_LIBS=/home/users/ansley/ferret_distributions/pyferret_flat/lib
-FER_LINK_DIR=/home/users/tmap/ferret_link/linux
-FER_PALETTE=. /home/users/ansley/ferret_distributions/pyferret_flat/ppl
+FER_LIBS=/home/flat/ksmith/PyFerret/lib
+FER_PALETTE=. /home/flat/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Tue Jun  2 16:19:24 PDT 2015
+Beginning at Thu Jun  4 09:05:42 PDT 2015
 *** Running test: bn_syntax.jnl
-! bn401_syntax.JNL
+[?1034h! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
 ! - major changes for FERRET ver 2.00 5/90
 ! - changed mode REMOTE to mode STUPID - REMOTE removed in V2.30
@@ -1267,7 +1268,7 @@ J1111111112222222222333333333344444444445555555555666666666677777777778888888888
 *** A111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000B111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000C111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000D111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000E111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000F111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000G111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000H111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000I111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000J111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000
  
 *** Running test: bn_dollar.jnl
-! test this with GO journal hello
+[?1034h! test this with GO journal hello
  
 ! V510: 3/00 *sh* added tests of backslash escapes and surrounding quotations
 ! V532: 5/01 *sh* added tests of 2-digit arguments; made mode ignore stricter
@@ -1436,7 +1437,7 @@ set mode ignore
   say ($10)0      ! argument 10 not defined
 set mode/last ignore
 *** Running test: bn_grave.jnl
-! bn420_grave
+[?1034h! bn420_grave
 ! benchmark to test evaluation of grave accent-enclosed expressions
 ! requires FERRET version 4.00 or later
  
@@ -1759,7 +1760,7 @@ say `sst,return=trash`
 set mode/last ignore_errors
  
 *** Running test: bn_letd.jnl
-! bn420_letd.jnl
+[?1034h! bn420_letd.jnl
 ! 9/1/95
  
 ! test LET definitions with the /D qualifier:  LET, SHOW, SET VAR, CANCEL
@@ -2033,7 +2034,7 @@ list q[d=v12file]
  3   / 3:   4.00   5.00   6.00   7.00   8.00   9.00  10.00  11.00
  
 *** Running test: bn_if.jnl
-! bn430_if
+[?1034h! bn430_if
 ! 5/6/96
 ! 5/22/96 - added nested multi-line IF with nesting in REJECTED clause
  
@@ -2125,7 +2126,7 @@ IF yes THEN
   say ---->... now inside of IF clause
 ---->... now inside of IF clause
 *** Running test: bn_expressions.jnl
-! bn450_expressions.JNL
+[?1034h! bn450_expressions.JNL
 ! test all manner of expressions
 ! V450 - commented out MODE POLISH test -- mode was eliminated
 ! V530 - new pseudo-variables XBOXLO, YBOXHI, etc.
@@ -2653,7 +2654,7 @@ LIST/L=5:7 TBOXLO, TBOXHI
 6   / 6:  5.500  6.500
 7   / 7:  6.500  7.500
 *** Running test: bn_geometry.jnl
-! bn200_geometry.JNL
+[?1034h! bn200_geometry.JNL
 ! benchmark various geometries for accessing FERRET data
 ! similar tests are performed on:
 !	abstract variable
@@ -3946,7 +3947,7 @@ SET MODE/LAST IGNORE_ERRORS
  
  
 *** Running test: bn_output.jnl
-! bn200_output.JNL
+[?1034h! bn200_output.JNL
 ! - test various output methods in FERRET
 ! rev 0.0  4/27/90 *sh*
  
@@ -6931,7 +6932,7 @@ LIST/FILE=test.gt/FORMAT=TMAP/L=1:3 v,v^0.5
 SET MODE/LAST IGNORE
 CANCEL LIST
 *** Running test: bn_in_plane.jnl
-! bn200_in_plane.JNL
+[?1034h! bn200_in_plane.JNL
 ! benchmark various geometries with in-plane transformation applied (@SBX)
 ! this benchmark is layered on the compress benchmark to obtain the geometries
 ! similar tests are performed on:
@@ -7445,7 +7446,7 @@ LIST/ORDER=T v[t=@sbx,i=@ave,j=@ave,k=@ave]
             2      3      4
          -2.855 -1.567 -0.836
 *** Running test: bn_compress.jnl
-! bn200_compress.JNL
+[?1034h! bn200_compress.JNL
 ! benchmark various geometries obtained by compressing FERRET data with @AVE
 ! similar tests are performed on:
 !	abstract variable
@@ -7951,7 +7952,7 @@ LIST/ORDER=X v[i=@ave,j=@ave,k=@ave,l=@ave]
 ! remove call to bn200_compress.sub_qady for portable benchmarks *kob* 5/99
 ! ****
 *** Running test: bn_interpolate.jnl
-! bn200_interpolate.JNL
+[?1034h! bn200_interpolate.JNL
 ! benchmark interpolation along various axes
  
 SET LIST/PRECISION=6
@@ -8346,7 +8347,7 @@ LIST v[@xpt,@ypt,@zpt,@tpt]
              T        : 1.0005 (interpolated)
           1113.00
 *** Running test: bn_regrid.jnl
-! bn200_regrid.JNL
+[?1034h! bn200_regrid.JNL
 ! test regridding
 ! first test consists of regridding and re-regridding back and comparing
 ! when the variable, v is linear along all axes results should be exact
@@ -9727,7 +9728,7 @@ list a24[g=g48]-a48
  05-JAN-1980 00 / 3: -438312.
  07-JAN-1980 00 / 4: -438312.
 *** Running test: bn_ez.jnl
-! bn401_ez.JNL
+[?1034h! bn401_ez.JNL
 ! test all manner of accessing non-TMAP data files
 ! V401 modified from bn200_ez.jnl by the addition of a test of UNF reading
  
@@ -10136,7 +10137,7 @@ list my_var
  9    /  9:   9.00
  10   / 10:  10.00
 *** Running test: bn_plot.jnl
-! bn450_plot.JNL - updated 9/97 from bn320_plot.jnl
+[?1034h! bn450_plot.JNL - updated 9/97 from bn320_plot.jnl
 ! upgraded from bn320 to provide method for testing batch mode.  Also remove
 ! all labels to create "master" gif and ps files to compare against
 ! *kob*
@@ -10334,7 +10335,7 @@ polygon/thick/color=red/palette=blue {1,2,1}, {2,1,0.5}
  
 set mode/last logo
 *** Running test: bn_curv.jnl
-cancel mode ignore
+[?1034hcancel mode ignore
 !
 ! Your basic map projection
 !
@@ -10511,7 +10512,7 @@ can mode ignore
  
 set mode meta bnplot.plt
 *** Running test: bn_symbols.jnl
-! bn420_symbols
+[?1034h! bn420_symbols
 ! benchmark to test machinery of symbol definition and use
 ! requires FERRET version 4.00 or later
  
@@ -10537,13 +10538,13 @@ FERRET_PLATFORM = "Linux 2.6.32-504.16.2.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 10:53:28 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 2-Jun-15"
-SESSION_TIME = "16:19"
-SESSION_PID = "6809"
-DELTA_CPU = "0.361944"
-CLOCK_SECS = "0.255"
-CURRENT_DATE = " 2-Jun-15"
-CURRENT_TIME = "16:19:37"
+SESSION_DATE = " 4-Jun-15"
+SESSION_TIME = "09:05"
+SESSION_PID = "17529"
+DELTA_CPU = "0.245961"
+CLOCK_SECS = "0.121"
+CURRENT_DATE = " 4-Jun-15"
+CURRENT_TIME = "09:05:53"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -10566,13 +10567,13 @@ FERRET_PLATFORM = "Linux 2.6.32-504.16.2.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 10:53:28 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 2-Jun-15"
-SESSION_TIME = "16:19"
-SESSION_PID = "6809"
-DELTA_CPU = "0.002"
-CLOCK_SECS = "0.256"
-CURRENT_DATE = " 2-Jun-15"
-CURRENT_TIME = "16:19:37"
+SESSION_DATE = " 4-Jun-15"
+SESSION_TIME = "09:05"
+SESSION_PID = "17529"
+DELTA_CPU = "0"
+CLOCK_SECS = "0.122"
+CURRENT_DATE = " 4-Jun-15"
+CURRENT_TIME = "09:05:53"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 S1 = "hello"
@@ -10582,9 +10583,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 2-Jun-15"
-SESSION_TIME = "16:19"
-SESSION_PID = "6809"
+SESSION_DATE = " 4-Jun-15"
+SESSION_TIME = "09:05"
+SESSION_PID = "17529"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10594,15 +10595,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 2-Jun-15"
-SESSION_TIME = "16:19"
-SESSION_PID = "6809"
+SESSION_DATE = " 4-Jun-15"
+SESSION_TIME = "09:05"
+SESSION_PID = "17529"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 2-Jun-15"
-SESSION_TIME = "16:19"
-SESSION_PID = "6809"
+SESSION_DATE = " 4-Jun-15"
+SESSION_TIME = "09:05"
+SESSION_PID = "17529"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10735,18 +10736,18 @@ FERRET_PLATFORM = "Linux 2.6.32-504.16.2.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 10:53:28 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 2-Jun-15"
-SESSION_TIME = "16:19"
-SESSION_PID = "6809"
-DELTA_CPU = "0.031995"
-CLOCK_SECS = "0.291"
-CURRENT_DATE = " 2-Jun-15"
-CURRENT_TIME = "16:19:37"
+SESSION_DATE = " 4-Jun-15"
+SESSION_TIME = "09:05"
+SESSION_PID = "17529"
+DELTA_CPU = "0.010999"
+CLOCK_SECS = "0.133"
+CURRENT_DATE = " 4-Jun-15"
+CURRENT_TIME = "09:05:53"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
 *** Running test: bn_comma_delimited.jnl
-! bn420_comma_delimited
+[?1034h! bn420_comma_delimited
  
 ! 10/2/95 - test comma and tab-delimited outputs
  
@@ -12404,7 +12405,7 @@ LIST/FORMAT=comma/precision=5 10*j+i
 2,21,22,23,24,25
 3,31,32,33,34,35
 *** Running test: bn_dynamic_grids.jnl
-! bn420_dynamic_grids
+[?1034h! bn420_dynamic_grids
 ! 9/95-9/11/95 - test the creation, destruction, and use of dynamic grids
 ! 2/96 - added GX=lo:hi:delta notation
 ! 4/98 *sh* changes once again to confine_axis -- earlier trapped error is once
@@ -14238,7 +14239,7 @@ set axis/modulo psxt
  
 set mode/last diag
 *** Running test: bn_cdf.jnl
-! bn320_cdf
+[?1034h! bn320_cdf
 ! benchmark to test netCDF input and output
 ! requires version 3.20 or later
 ! updated from version 2.3 1/26/95
@@ -15142,7 +15143,7 @@ list/x=180 fcn_rev_sub
  0    / 11:  0.0000
  1S   / 10:  0.3166
 *** Running test: bn_regrid_transforms.jnl
-! bn500_regrid_transforms
+[?1034h! bn500_regrid_transforms
 ! benchmark to test regridding transformations and syntax
 ! requires version 2.30 or later
 ! 8/92
@@ -18167,7 +18168,7 @@ set mode/last diag
  
  
 *** Running test: bn_axis_limits.jnl
-!bn301_axis_limits.jnl
+[?1034h!bn301_axis_limits.jnl
 ! exercise the new-V301 /XLIMITS and /YLIMITS qualifiers
  
 define axis/x=20e:10w:10/unit=degree xax
@@ -18319,7 +18320,7 @@ set view v44
 contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=28000:29000:-400/trans sin(x/3)*sin(t/100)
  
 *** Running test: bn_movie.jnl
-! bn301_movie.JNL
+[?1034h! bn301_movie.JNL
 ! - test on-HDF movie creation by Program FERRET
 ! - FERRET ver 3.10 10/93
  
@@ -18328,7 +18329,7 @@ contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/
 ! Dont run this script - fails with hdf5 libraries
 exit/script
 *** Running test: bn_ez_order.jnl
-! bn420_ez_order
+[?1034h! bn420_ez_order
 ! updated from bn311_ez_order 9/95 - improved testing of /FORMAT=STREAM
  
 ! create test files
@@ -19361,7 +19362,7 @@ sp rm -f test_perm48.dat
 sp rm -f test_perm48_10.dat
  
 *** Running test: bn_user.jnl
-! bn312_user.jnl
+[?1034h! bn312_user.jnl
  
 ! test the USER command options
  
@@ -19375,7 +19376,7 @@ set window/size=.5/aspect=.75 2
  
 exit/script
 *** Running test: bn_stream.jnl
-! bn420_stream.jnl
+[?1034h! bn420_stream.jnl
  
 ! jan 96
 ! note that although this benchmark was added only in 1/96 the STREAM
@@ -19436,7 +19437,7 @@ list myv1,myv2
 cancel data stream_data_link.unf
  
 *** Running test: bn_mc.jnl
-!bn430_mc.jnl
+[?1034h!bn430_mc.jnl
 ! kob - 9/5/96
 !     - simple test of mc data access for both irregular and regular time
 !       axis
@@ -19885,7 +19886,7 @@ CAN MODE VERIFY
  
  
 *** Running test: bn_negative_t.jnl
-! bn450_negative_t - 10/97
+[?1034h! bn450_negative_t - 10/97
  
 ! test behavior of negative time step values (unsupported except as absolute
 ! dates prior to Ferret version 4.5)
@@ -20874,7 +20875,7 @@ LIST a[gt=tcal]		! deliberate error
 CANCEL MODE ignore_error
  
 *** Running test: bn_xact_regrid.jnl
-! BN450_xact_regrid.jnl
+[?1034h! BN450_xact_regrid.jnl
  
 ! 10/97 - test "exact match" regridding
 ! wherein destination points are filled only if they exactly match
@@ -22270,7 +22271,7 @@ LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
  
  
 *** Running test: bn_gc_functions.jnl
-! bn500_gc_functions.jnl
+[?1034h! bn500_gc_functions.jnl
  
 ! 10/97 - first version - test GC functions released in V4.9
 ! 3/98 - added single test of a dynamic axis passed to GC fcn
@@ -22856,7 +22857,7 @@ LIST/x=0/l=1 Z10_flow - bottom_flow
 set view lr
 shade/x=0/l=1/ylim=0:200:-20/lev ZAXREPLACE(flow[z=0:200],depth[z=0:200],z[z=0:200:.5])
 *** Running test: bn491_bug_fixes.jnl
-! bn491_bug_fixes.jnl
+[?1034h! bn491_bug_fixes.jnl
 ! test various fixes that went into version 4.91
 ! 2/98 *kob*
 !
@@ -23574,7 +23575,7 @@ list elev
  58.5947N /   1:   ....   ....   ....   ....  2.940  2.940  2.940  2.940  2.940   ....   ....   ....
  
 *** Running test: bn_odd_variable_name.jnl
-! make sure memory is limited; otherwise the abstract axis will list
+[?1034h! make sure memory is limited; otherwise the abstract axis will list
 let save_mem = ($ferret_memory)
  !-> DEFINE VARIABLE save_mem = 25.6
 set mem /size=10
@@ -23864,7 +23865,7 @@ list 'v2-and-minus'[i=5:15@ddc] ! Now the proper syntax
 set mem /size=`save_mem`
  !-> set mem /size=25.6
 *** Running test: bn_test_stream.jnl
- 
+[?1034h 
 canc data/all
  
 sp rm -f permutedBinaryTest.dat
@@ -24525,7 +24526,7 @@ list num1
  2   / 2:  20.00  21.00
  3   / 3:  22.00  23.00
 *** Running test: bn_define_axes.jnl
-! bn_define_axes.jnl
+[?1034h! bn_define_axes.jnl
 ! *sh* 5/99
 ! *sh* 12/99 - with streamlined syntax
  
@@ -24992,7 +24993,7 @@ show axis xax2
 ! cleanup
 set mode/last ignore
 *** Running test: bn_polygon.jnl
-! Demo of new POLYGON command
+[?1034h! Demo of new POLYGON command
 ! *jd * 3.99
  
 let xsqr = YSEQUENCE({0,.1,.1,0})
@@ -25014,7 +25015,7 @@ polygon/trans/line=4/over/i=1:100/nolabel xpts+xsqr-.25, ypts+ysqr, x*x/10
  
 can mode meta
 *** Running test: bn500_bug_fixes.jnl
-! bn500_bug_fixes.jnl
+[?1034h! bn500_bug_fixes.jnl
 ! test various fixes that went into version 5.00
 ! 5/99 *kob*
  
@@ -25305,7 +25306,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Tue Jun  2 16:19:50 PDT 2015
+Thu Jun  4 09:06:00 PDT 2015
  
 GO bn_reset
 cancel mode verify
@@ -25372,7 +25373,7 @@ GO err500_IF_THEN_ELSE_quote.jnl
 IF 1 THEN SAY "I is too big" ENDIF
 I is too big
 *** Running test: bn_sample.jnl
-! bn_sample.jnl
+[?1034h! bn_sample.jnl
 ! 10/99 *sh*
 ! V550 *sh* 11/02 - documentation change only, reflecting subspan modulo
  
@@ -26445,7 +26446,7 @@ list SAMPLEL(X[x=110:200:10],{3,4,7})	! normal axis
  3   / 3:........................................
  
 *** Running test: bn_strides_revs_perms.jnl
-! bn_strides_revs_perms.jnl
+[?1034h! bn_strides_revs_perms.jnl
 ! *sh* 6/99
  
 ! exercise special netCDF performance and robustness enhancements to allow
@@ -28476,7 +28477,7 @@ canc data/all
  -DELETE MIDVAR   M:  6 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  dealloc  dynamic grid (G006)          (AX022)   (AX024)   (AX020)   ZAX1_7    NORMAL    NORMAL
 *** Running test: bn_non_COARDS_netCDF.jnl
-! bn_non_COARDS_netCDF.jnl
+[?1034h! bn_non_COARDS_netCDF.jnl
 ! *sh* 3/99
 ! *sh* 6/00 -- added true scalar variable, TRUE_SCALAR
  
@@ -28702,7 +28703,7 @@ list HAS_BACKWARDS_AXIS
  
 ! list/i=1:5 BIG_IRREG
 *** Running test: bn_cache_hits.jnl
-! bn_cache_hits.jnl
+[?1034h! bn_cache_hits.jnl
  
 ! 3/99 *sh*
 ! Test the success of Ferret in recalling past results
@@ -30503,7 +30504,7 @@ set mode/last diag
 ! v5.4 *kob* 10/01 - need to add exit/script - new exit command qualifiers
 EXIT/SCRIPT
 *** Running test: bn_regrid_to_user.jnl
-! bn_regrid_to_user
+[?1034h! bn_regrid_to_user
 ! 8/99 *sh*
 ! 5/01 *sh* - changes to accomodate truncated levitus_climatology.cdf
 !           - additions to test use of expressions in SET/SHOW/DEFINE grid
@@ -30985,7 +30986,7 @@ Dynamic axes:
     AXIS (AX008)                         use count:   1
  
 *** Running test: bn_calendar.jnl
-! bn_calendar.jnl
+[?1034h! bn_calendar.jnl
 ! Version 5.3
 ! Add definitions of calendar axes as a NetCDF attribute of the time axis
 ! DEFINE AXIS/CALENDAR
@@ -31268,7 +31269,7 @@ T0 = 1-JAN-1980
 ! also see bn_all_leap.jnl, 6/2004
 ! Added ALL_LEAP, or 366_DAY calendar (which is in the CF conventions).
 *** Running test: bn_dash_dot.jnl
-! new PLOT/DASH and PLOT/SYMBOL=DOT  qualifiers
+[?1034h! new PLOT/DASH and PLOT/SYMBOL=DOT  qualifiers
 ! *acm* 5/01
 ! *acm* 8/02 Remove calls to SYMBOL=DOT until postscript issues are resolved.
  
@@ -31288,7 +31289,7 @@ set mode ignore
 plot/dash=(1., 2.)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
 plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
 *** Running test: bn_flowlines.jnl
-! bn_flowlines.jnl
+[?1034h! bn_flowlines.jnl
 ! VECTOR/FLOW
 ! 6/2001
 ! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
@@ -31334,7 +31335,7 @@ vec/over/flow/noax/xskip=16/yskip=8/len=5/title="Sinusoidal Projection" fsst*0,f
  
 set mode logo
 *** Running test: bn_logaxes.jnl
-!  Test the qualifiers /HLOG and /VLOG for setting
+[?1034h!  Test the qualifiers /HLOG and /VLOG for setting
 !  log axes.  On a depth axis, inverse log plot.
  
 ! use /VLOG
@@ -31376,7 +31377,7 @@ def axis/x dlog = -1*(10-i[i=1:10])
 let fcn = (i[gx=dlog])^2
 plot/hlog fcn
 *** Running test: bn_internal_external_functions.jnl
-! test internal external functions.  These moved from bn_external_functions
+[?1034h! test internal external functions.  These moved from bn_external_functions
 !  6/01 because on systems w/out external functions support, the internal
 !  functions were not being tested - most notably win32   *kob*
  
@@ -34748,7 +34749,7 @@ shade fill_xy(sst[l=1], mask[l=1], 1)
 shade fill_xy(sst[l=1], mask[l=1], 4)
  
 *** Running test: bn_modulo_strides.jnl
-! bn_modulo_strides.jnl
+[?1034h! bn_modulo_strides.jnl
 ! 6/01 *sh*
 ! exercise the combination of modulo and netCDF strides IO
  
@@ -35127,7 +35128,7 @@ list/nohead str[i=105:145:5]
  140   / 8:"t"
  145   / 9:"e"
 *** Running test: bn_axis_viewports.jnl
-! bn_axis_viewports
+[?1034h! bn_axis_viewports
 ! *sh* 9/01
  
 ! demonstrate vieport layout using the /AXES qualifier
@@ -35470,7 +35471,7 @@ ppl list yaxis
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          YORG= 1.40E+00  AUTO LABELLING
 *** Running test: bn_strings.jnl
-! bn_strings.jnl
+[?1034h! bn_strings.jnl
  
 ! 7/01 - test string syntax and behaviors
  
@@ -36023,7 +36024,7 @@ list a[i=@rsum]
  
 set mode/last stupid
 *** Running test: bn_axcontrol.jnl
- ! NOAA/PMEL TMAP
+[?1034h ! NOAA/PMEL TMAP
  ! Program FERRET (alpha)
  ! Version 5.33 - 07/12/01
  ! 12-Jul-01 14:47
@@ -36062,7 +36063,7 @@ fill/l=1/axes sst
 can view
 polygon/thick/color=red/palette=blue/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
 *** Running test: bn_vec_curv.jnl
-! bn_vec_curv.jnl
+[?1034h! bn_vec_curv.jnl
 !
 ! vector plots with curvilinear coordinates
 !
@@ -36133,7 +36134,7 @@ vec/title="Stretched grid" a,b,mxpage,mypage
 can mode meta
 set mode logo
 *** Running test: bn_delimited_read.jnl
-! bn_delimited_read.jnl
+[?1034h! bn_delimited_read.jnl
 ! 10/01 *sh*
  
 ! test delimiited (spreadsheet) reads in Ferret
@@ -37193,7 +37194,7 @@ file/form=delim/delim="/,,,:" bn_delimited_read_date_time.dat
 cancel mode ignore
  
 *** Running test: bn541_bug_fixes.jnl
-! bn541_bug_fixes.jnl
+[?1034h! bn541_bug_fixes.jnl
 ! test various fixes that went into version 5.41
 ! 3/02 *acm*
 !
@@ -38095,11 +38096,8 @@ save/q/clob/file=g.nc b
 can var a b
  
 sp ncrename -h -v A,a f.nc
-ncrename: In total renamed 0 attributes, 0 dimensions, 0 groups, and 1 variable
 sp ncrename -h -v A,a -v B,b f2.nc
-ncrename: In total renamed 0 attributes, 0 dimensions, 0 groups, and 2 variables
 sp ncrename -h -v B,b g.nc
-ncrename: In total renamed 0 attributes, 0 dimensions, 0 groups, and 1 variable
 use f.nc
 use f2.nc
 use g.nc
@@ -38165,7 +38163,7 @@ list b[d=1]
  
  
 *** Running test: bn_cancel_axes.jnl
-! bn_cancel_axes.jnl
+[?1034h! bn_cancel_axes.jnl
  
 let ind1 = 1*i
 let tim1 = 20500*randu(ind1[i=1:20500])
@@ -38412,7 +38410,7 @@ T0 = 01-JAN-0000 00:00:00
        4>  15-NOV 14:05:33       2191.455   30-SEP 22:21:54        7670.092
  
 *** Running test: bn542_bug_fixes.jnl
-! bn542_bug_fixes.jnl
+[?1034h! bn542_bug_fixes.jnl
 ! test various fixes that went into version 5.42
 ! 10/02 *acm*
 !
@@ -38620,7 +38618,7 @@ cancel mode verify
 ! GO err541_date_delim
  
 *** Running test: bn_subspan_modulo.jnl
-! bn_subspan_modulo.jnl
+[?1034h! bn_subspan_modulo.jnl
 ! *sh* 11/02
  
 ! a subspan modulo axis is one which is modulo, but the wrapping length
@@ -39863,7 +39861,7 @@ list $1_strings[i=1013:1024] 	! via IS_MODULO
  
  
 *** Running test: bn_dots.jnl
-! PLOT/SYMBOL=DOT  qualifiers
+[?1034h! PLOT/SYMBOL=DOT  qualifiers
 ! *acm* 12/02
 ! ACM 4/2005 set mode meta to save this plot for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
@@ -39883,7 +39881,7 @@ plot/symbol=dot/size=0.5/over/i=1:1000 -0.5*sin(62.8*(i+10) )
 vector/i=1:5/j=1:5 0.*(i+j),0*(i+j)
 set mode logo
 *** Running test: bn_lev_symbols.jnl
-! Test symbols which capture the latest LEVELS settings
+[?1034h! Test symbols which capture the latest LEVELS settings
 ! LEV_TEXT  The argument, if any, to the LEV qualifier
 ! LEV_MIN  Minimum level
 ! LEV_MAX  Maximum level
@@ -39958,7 +39956,7 @@ LEV_MAX = "33"
 LEV_NUM = "1"
 LEV_DEL = "none"
 *** Running test: bn_mode_logo_lab.jnl
- 
+[?1034h 
 ! bn_mode_logo_lab.jnl
 ! cancel both logo and labels
 ! NOTE this script redefined the pre-defined viewports ul, ur, ll, lr...
@@ -40054,7 +40052,7 @@ cancel view
 set mode logo
 set mode labels
 *** Running test: bn_modulo_attribute.jnl
-! Ferret V5.50 m
+[?1034h! Ferret V5.50 m
  
 ! Modulo attribute can take numerical values to indicate
 ! the modulo length of axis (subspan modulo changes)
@@ -40093,7 +40091,7 @@ T0 = %%
    Axis span (to cell edges) = 40 (modulo length = axis span)
  
 *** Running test: bn550_bug_fixes.jnl
-! bn550_bug_fixes.jnl
+[?1034h! bn550_bug_fixes.jnl
 ! test various fixes that went into version 5.5
 ! 10/02 *acm*
 !
@@ -40110,7 +40108,7 @@ shade pc
 poly/over/color=red/line=2/title="polygon" {220,240,280,250},{-20,70,40,-30}
  
 *** Running test: bn551_bug_fixes.jnl
-! bn551_bug_fixes.jnl
+[?1034h! bn551_bug_fixes.jnl
 ! test various fixes that went into version 5.51
 ! 2/03 *acm*
 !
@@ -40340,7 +40338,7 @@ GO err550_dots_thickpens.jnl
  
 plot/sym=dot/color=8/i=1:10 i
 *** Running test: bn_multi_line_labels.jnl
-     ! bn_multi_line_labels.jnl
+[?1034h     ! bn_multi_line_labels.jnl
 ! March 31, 2003
 !
 ! ACM 4/2005 ! set mode meta to save this plot for the metafile checks.
@@ -40468,7 +40466,7 @@ ppl plot
  
 ppl rlabs,4,0
 *** Running test: bn552_bug_fixes.jnl
-! bn552_bug_fixes.jnl
+[?1034h! bn552_bug_fixes.jnl
 ! test various fixes that went into version 5.52
 ! 3/03 *acm*
 !
@@ -40952,7 +40950,7 @@ list/t=1-jan-1990 dummy
  
 SET MODE/LAST IGNORE_ERROR
 *** Running test: bn_set_var_scale_off.jnl
-! Qualifiers /SCALEFACTOR=  and /OFFSET  for SET VARIABLE.
+[?1034h! Qualifiers /SCALEFACTOR=  and /OFFSET  for SET VARIABLE.
 ! Only for NetCDF datasets
 ! Applied after NetCDF Scale_factor and add_offset attributes
 ! New RETURN= arguments NC_SCALE, NC_OFF for values of NetCDF attributes
@@ -40997,7 +40995,7 @@ SET VAR/SCALE=10 x2
  
 SET MODE/LAST IGNORE_ERROR
 *** Running test: bn_longvarnames.jnl
-! variable names up to 128 characters long
+[?1034h! variable names up to 128 characters long
 ! 3/2006 make them 127 to be able to add the null terminator for C strings
 !        else not used correctly in linked-list attribute structure.
  
@@ -41098,7 +41096,7 @@ LIST/K=2/L=3 a234567890b234567890c234567890d234567890e234567890f234567890g234567
  3   / 3:   9.00  15.00  21.00  27.00  33.00
  4   / 4:  11.00  19.00  27.00  35.00  43.00
 *** Running test: bn_shakey.jnl
-! Changes to shade key:
+[?1034h! Changes to shade key:
 ! - Default size is a little bigger
 ! - To put key labels on the left or bottom of the key, multiply the size by -1
 ! - Previously ALL OF kx_lo, kx_hi,ky_lo, ky_hi had to be set, or none of them
@@ -41223,7 +41221,7 @@ ppl list shakey
          X LO     X HI     Y LO     Y HI
          1.20     9.20    -1.40    -1.31
 *** Running test: bn_eof_4d.jnl
-! bn_eof_4d.jnl
+[?1034h! bn_eof_4d.jnl
 ! test EOFs on XYZT grids
  
 ! In version 6.8 (double precision), the old eof functions are not available
@@ -41434,7 +41432,7 @@ list/nohead/i=1:5/j=3/k=9 eofst
  
 exit/script
 *** Running test: bn_abstract_axis_names.jnl
-! bn_abstract_axis_names.jnl
+[?1034h! bn_abstract_axis_names.jnl
 ! acm 6/12/03
 !
 ! Write and read datafiles with no clues about axis orientation from
@@ -41633,7 +41631,7 @@ sh grid v
  normal    F
 can data 1
 *** Running test: bn_many_polygons.jnl
-! testing large number of polygons in a plot.  Map plot has
+[?1034h! testing large number of polygons in a plot.  Map plot has
 ! 130501 polygons; previously we had an upper limit of 100K polygons
  
 use coads_climatology
@@ -41661,7 +41659,7 @@ let xpts = 180 + 30*randu(i[i=1:10])
 let ypts = 30*randu(1+i[i=1:10])
 polygon xtriangle+xpts, ytriangle+ypts, i[i=1:10]
 *** Running test: bn_fill_irregular.jnl
-! FILL on vars with irregular axes
+[?1034h! FILL on vars with irregular axes
  
 use gtbc011
 fill/i=70/l=1 temp
@@ -41682,7 +41680,7 @@ fill v2d_irr[t=1-jan-1990:1-jan-1995]
 use coads_clim_irreg.des
 fill/x=180 sst
 *** Running test: bn_xml_output.jnl
-!bn_xml_output.jnl
+[?1034h!bn_xml_output.jnl
 ! new-V553 output in XML-style format
 ! Illustrate the SHOW commands with /XML xml-style output
 ! V5.80 11/04 new tests for SHOW VAR/XML; global variables.
@@ -42926,7 +42924,7 @@ SHOW VAR/XML
 </global>
  
 *** Running test: bn_test_nan.jnl
-!bn_test_nan.jnl
+[?1034h!bn_test_nan.jnl
 ! test to make sure that NaN is able to be set by user
 !  as bad value.  If this fails, Ferret will crash
 !  Test on a file which is nothing but NaN's, and use
@@ -43002,7 +43000,7 @@ can var/all
  
  
 *** Running test: bn553_bug_fixes.jnl
-! bn553_bug_fixes.jnl
+[?1034h! bn553_bug_fixes.jnl
 ! test various fixes that went into version 5.52
 ! 9/03 *kob*
 !
@@ -43087,7 +43085,7 @@ ppl shakey 1,1,.12
 ppl shade
  
 *** Running test: bn_graticules.jnl
-! /GRAT, /HGRAT and /VGRAT to set graticule lines
+[?1034h! /GRAT, /HGRAT and /VGRAT to set graticule lines
 ! ACM March 12, 2004
 ! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
@@ -43196,7 +43194,7 @@ can mode graticule
 pplus/reset   ! restore tics etc
  
 *** Running test: bn_repeat_range.jnl
-! REPEAT/RANGE=[/NAME=]  for looping without depending
+[?1034h! REPEAT/RANGE=[/NAME=]  for looping without depending
 ! on the grid\
 ! ACM March 12, 2004
  
@@ -43693,7 +43691,7 @@ repeat/range=1:4/name=a (repeat/range=3:1:-1/name=a list a)
 !-> REPEAT: A:4
 cancel mode ignore
 *** Running test: bn554_bug_fixes.jnl
-! bn554_bug_fixes.jnl
+[?1034h! bn554_bug_fixes.jnl
 ! test various fixes that went into version 5.54
 ! 11/03 *acm*
 !
@@ -45142,7 +45140,7 @@ list/wid=1024/y=1:2 sin(x[gx=xax]) + y[gy=yax]
  
 can mode ignore
 *** Running test: bn_bounds.jnl
- 
+[?1034h 
 ! bn_bounds.jnl
 ! testing CDF read and write of file with irregular axes and bounds
 ! and DEFINE AXIS/BOUNDS
@@ -45504,7 +45502,7 @@ sh axis/t tax
        4>  10                    1          9.5
        5>  11                    1          10.5
 *** Running test: bn_all_leap.jnl
-! bn_all_leap.jnl
+[?1034h! bn_all_leap.jnl
 ! ACM 6/2004
 ! Added ALL_LEAP, or 366_DAY calendar (which is in the CF conventions).
 ! leap year every year
@@ -45554,7 +45552,7 @@ def axis/t/cal=nogood/t=1-jan-2000:1-jan-2010:1/units=months tax
  
 can mode ignore
 *** Running test: bn570_bug_fixes.jnl
-! bn554_bug_fixes.jnl
+[?1034h! bn554_bug_fixes.jnl
 ! test various fixes that went into version 5.70
 ! 11/03 *acm*
 !
@@ -45791,7 +45789,7 @@ plot v[gt=tax@asn]
 def axis/t=07-feb-0599:07-feb-0600:1/units=years tt
 plot t[gt=tt]
 *** Running test: bn_modstats.jnl
-! bn_modstats.jnl
+[?1034h! bn_modstats.jnl
 ! acm 8/25/04
 ! There was never a benchmark test of modulo statistics.
 ! (and a bug had crept into @MODVAR when there was missing data)
@@ -45938,7 +45936,7 @@ list var[gt=month_reg@modngd]
  15-NOV      / 11:  10.00
  16-DEC      / 12:  10.00
 *** Running test: bn_mc_vary_scale.jnl
-! bn_mc_vary_scale.jnl
+[?1034h! bn_mc_vary_scale.jnl
 !   Allow stepfiles to have different internal scale and offset.
 !   read and apply when opening each stepfile. Previously, the
 !   scale and offset from the first stepfile were applied.
@@ -46016,7 +46014,7 @@ list/quiet/nohead `tt,return=nc_scale`, `tt,return=nc_offset`
 I / *:     2.000 -0.02000
  
 *** Running test: bn_plot_nokey.jnl
-! bn_plot_nokey.jnl (bug 1089)
+[?1034h! bn_plot_nokey.jnl (bug 1089)
 ! 22-nov-2004
  
 ! Test new PLOT/NOKEY qualifier
@@ -46035,7 +46033,7 @@ PLOT/X=180/Y=0/K=1 temp
 PLOT/OVER/NOKEY/X=180/Y=-1/K=1 temp
 PLOT/OVER/NOKEY/X=180/Y=1/K=1 temp
 *** Running test: bn580_bug_fixes.jnl
-! bn580_bug_fixes.jnl
+[?1034h! bn580_bug_fixes.jnl
 ! test various fixes that went into version 5.80
 ! 7/04 *acm*
 !
@@ -47192,7 +47190,7 @@ POLYGON XT, YT, I[I=1:10]
  
 PLOT/VS XT, YT
 *** Running test: bn_inf_levels.jnl
-! Run FERRET/fer/ferretdods_gui
+[?1034h! Run FERRET/fer/ferretdods_gui
 ! test open upper and lower levels (-INF) (INF)
  
 can mode logo
@@ -47283,7 +47281,7 @@ go polymark poly/key/title="polygons"/lev=(-inf)(4,26,1)(inf), lon, lat, xsequen
  
  
 *** Running test: bn_regulart.jnl
-! bn_regulart.jnl
+[?1034h! bn_regulart.jnl
 ! 5/12/2005 ACM
  
 ! Test of the USE/REGULART qualifier
@@ -47327,7 +47325,7 @@ list/l=1:6 t[gt=tcoads], tbox[gt=tcoads]
 17-JUN-1946 / 6:  90017.  30.44
  
 *** Running test: bn_labwid.jnl
-! LABWID returns the length in Denbo inches of the
+[?1034h! LABWID returns the length in Denbo inches of the
 ! string.  For multi-line strings, returns length of
 ! the longest line.
  
@@ -47384,7 +47382,7 @@ LIST LABWID("@IISTRING<NL>@SSSTRING", .15)
              X        : 1
           0.9808
 *** Running test: bn_redefine_taxis_mc.jnl
-! bn_redefine_taxis_mc.jnl
+[?1034h! bn_redefine_taxis_mc.jnl
 ! ACM 15-Apr-2005
  
 ! Redefine the time axis of a multi-file data set.
@@ -47447,7 +47445,7 @@ list/x=180/y=0 sst
  5   / 5:  28.49
  6   / 6:  28.32
 *** Running test: bn_illegal_axisname.jnl
-! Some OPenDAP HDF files have illegal axis names, e.g. with a dot in the name.
+[?1034h! Some OPenDAP HDF files have illegal axis names, e.g. with a dot in the name.
 ! This is a test of using such names, in a redefinition of the axes of the data.
 ! The file has a variable with axis names COADSX.ILLEGAL, COADSY.ILLEGAL. The axes contain
 ! just indices.  The file also has variables NEW.LONGITUDES and NEW.LATITUDES which contain
@@ -47500,7 +47498,7 @@ sh grid sst
  normal    E
  normal    F
 *** Running test: bn_exit_script.jnl
-! bn_exit_script.jnl
+[?1034h! bn_exit_script.jnl
 ! 5/2005 ACM
 ! tests of EXIT/SCRIPT command, in combination with IF and REPEAT
 ! 3/2007 add a check for exit/script within a loop (fixes for bug 1304)
@@ -47586,7 +47584,7 @@ loop
 3
 loop
 *** Running test: bn_exit_cycle.jnl
-! bn_exit_cycle.jnl
+[?1034h! bn_exit_cycle.jnl
 ! 5/2005 ACM
 ! EXIT/CYCLE skips remaining commands in this repetition of a loop
  
@@ -47614,7 +47612,7 @@ say 16384 if bigger than 500
  
 loop finished 16384 gt 10000
 *** Running test: bn_curv_mod.jnl
-! bn_curv_mod
+[?1034h! bn_curv_mod
 ! Test of fill/mod and contour/mod
 ! 5/24/2005 Ferret v5.81
  
@@ -47632,7 +47630,7 @@ fill/mod/hlim=-180:180 ht, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[i=1:180,
 contour/over/mod/hlim=-180:180 ht, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[i=1:180,j=1:24]
  
 *** Running test: bn_shade_keycont.jnl
-! Continuous shade key
+[?1034h! Continuous shade key
 ! test setting it and whether default is restored on next command.
 ! also whether behavior consistent when we call shakey
  
@@ -47725,7 +47723,7 @@ ppl shakey ,0,-.12,3,,,`x1`,`x2`,`y1`
  !-> ppl shakey ,0,-.12,3,,,2.2,5.212,1.4
 ppl fill
 *** Running test: bn581_bug_fixes.jnl
-! bn581_bug_fixes.jnl
+[?1034h! bn581_bug_fixes.jnl
 ! test various fixes that went into version 5.81
 ! 2/05 *acm*
 !
@@ -48205,7 +48203,7 @@ POLYGON/LINE/fill xp, yp, ypts
 ! GO err580_regrid_prec.jnl
  
 *** Running test: bn_tab_comma_multivar.jnl
-! bn_tab_comma_multivar.jnl
+[?1034h! bn_tab_comma_multivar.jnl
 !
 ! Fixes for bug 1273
 ! v5.90 8/9/2005
@@ -48247,7 +48245,7 @@ COUNTRY	ID	AA	BB	NEWCOUNTRY	THE_DATA_VAR
 "JP"	2	8000	2000500	"c"	5  
 "US"	3	12000	3000500	"e"	4  
 *** Running test: bn_element_functions.jnl
- ! NOAA/PMEL TMAP
+[?1034h ! NOAA/PMEL TMAP
  ! FERRET v5.81
  ! Solaris 5.6 - 08/08/05
  !  9-Aug-05 14:36
@@ -48371,7 +48369,7 @@ list element_index_str_n (axy[k=1:2,j=1:2], {"a10", "a2", "d4", "c5"})
  2   / 2:   ....  3.000
  
 *** Running test: bn_long_revision_num.jnl
-! bn_long_revision_num.jnl
+[?1034h! bn_long_revision_num.jnl
 ! ACM 8/30/05
 ! revision numbers were previously limited to 2 decimal places: v5.81
 ! Now they can be longer, for minor revisions between releases: v5.8101
@@ -48453,7 +48451,7 @@ sho command
  CANCEL MODE
  CANCEL MOVIE/ALL
  CANCEL VIEWPORT
- CANCEL VARIABLE/ALL/DATASET/LAYERZ/CURVILIN
+ CANCEL VARIABLE/ALL/DATASET/LAYERZ/CURVILIN/NOERROR
  CANCEL AXIS/MODULO/ALL/DEPTH/STRIDE
  CANCEL GRID
  CANCEL ATTRIBUT/OUTPUT/DATA
@@ -48522,7 +48520,7 @@ sho command
  
  Use SHOW ALIAS to see alternative command names
 *** Running test: bn_window_title.jnl
-! bn_window_title.jnl
+[?1034h! bn_window_title.jnl
 ! Define a title for windows rather than just FERRET_1, FERRET_2, ...
 ! If no title is set, use SESSION_DATE:SESSION_TIME
  
@@ -48533,7 +48531,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "2-Jun-15_16:20"
+WIN_TITLE = "4-Jun-15_09:06"
  
 set win/title="set the title"
 sho sym win_title
@@ -48551,7 +48549,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 2-Jun-15:16:20"
+ !-> set win/title=" 4-Jun-15:09:06"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48560,18 +48558,18 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date =  2-Jun-15
+ !-> DEFINE SYMBOL the_date =  4-Jun-15
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 16:20
+ !-> DEFINE SYMBOL the_time = 09:06
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="2-Jun-15:16:20"
+ !-> SET WIN/TITLE="4-Jun-15:09:06"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "2-Jun-15:16:20"
+WIN_TITLE = "4-Jun-15:09:06"
 *** Running test: bn_last_error.jnl
-! bn_last_error.jnl
+[?1034h! bn_last_error.jnl
 ! acm Nov 2005
 !
 ! - test the symbol FER_LAST_ERROR (Commands from various bn scripts)
@@ -48624,7 +48622,7 @@ FER_LAST_ERROR = "**ERROR: error in external function. Bailing out of external f
  
 SET MODE/LAST IGNORE_ERROR
 *** Running test: bn_deg_min.jnl
-! bn_deg_min.jnl
+[?1034h! bn_deg_min.jnl
 ! label axes with degrees and minutes rather than degrees and decimal degrees.
 ! 19-May-06 add seconds as well...
  
@@ -48658,7 +48656,7 @@ ppl plot
 ! Restore the default settings
 ppl axlint,2,2
 *** Running test: bn_dp_readscale.jnl
-! bn_dp_readscale.jnl
+[?1034h! bn_dp_readscale.jnl
 ! 9-Feb-2006 ACM
  
 ! When there is a double precision variable,
@@ -48734,7 +48732,7 @@ list xax
  
 cancel list/precision
 *** Running test: bn_bounds_defineax.jnl
-! bn_bounds_defineax.jnl
+[?1034h! bn_bounds_defineax.jnl
 ! 3/22/2006
 ! Previously only allowed 2*N definition of bounds in DEFINE AXIS/BOUNDS
 ! Now allow N+1 definition of bounds, or three equal-lenght lists of
@@ -48936,7 +48934,7 @@ list zboxlo[gz=zax2], z[gz=zax2], zboxhi[gz=zax2]
 1678.5 / 12:  1158.  1679.  2199.
 2849   / 13:  2199.  2849.  3499.
 *** Running test: bn_attributes.jnl
-! bn_attributes
+[?1034h! bn_attributes
 ! test attribute handling on netcdf intput/output and
 ! programatic access to attribute information
 ! needs new cdf files modfalse.nc, test0.nc
@@ -51165,7 +51163,7 @@ sho att .
      attributes for dataset: ./levitus_climatology.cdf
  ..history = FERRET V5.22    5-Apr-01 
 *** Running test: bn_transforms.jnl
-! Test the transforms
+[?1034h! Test the transforms
  
 use coads_climatology
  
@@ -51369,7 +51367,7 @@ list/L=1/y=11:23/x=93w sst, sst[y=@shn] , sst[y=@spz], sst[y=@sum], sst[y=@swl],
 21N   / 56:  23.95  24.06  24.06  181.6  24.08    ....
 23N   / 57:  23.84  23.69  23.69  181.6  23.66    ....
 *** Running test: bn_variance.jnl
- ! bn_variance.jnl
+[?1034h ! bn_variance.jnl
  ! the @VAR transform is not tested in bn_transforms.jnl script.
  
 use coads_climatology
@@ -51405,7 +51403,7 @@ list/y=3/l=1/x=233 u[z=@var]
              TIME     : 17-AUG-1982 12:00
           11.33
 *** Running test: bn_linecolors.jnl
-! bn_linecolors.jnl
+[?1034h! bn_linecolors.jnl
 ! 5/2006 ACM
 ! test setting more line colors
  
@@ -51470,7 +51468,7 @@ can win/all
 set win/new
  
 *** Running test: bn_cdf_errmsg.jnl
-! bn_cdf_errmsg.jnl
+[?1034h! bn_cdf_errmsg.jnl
 ! ACM 7/13/2006
 ! test reporting of cdf error messages from OPeNDAP library v3.6.2
  
@@ -51512,7 +51510,7 @@ use asc.nc
 set mode/last ignore
  
 *** Running test: bn600_bug_fixes.jnl
-! bn600_bug_fixes.jnl
+[?1034h! bn600_bug_fixes.jnl
 ! test various fixes that went into version 6.00
 ! 8/05 *acm*
 !
@@ -52311,7 +52309,7 @@ set mem /size=25.6
  
  
 *** Running test: bn601_bug_fixes.jnl
-! bn601_bug_fixes.jnl
+[?1034h! bn601_bug_fixes.jnl
 ! test various fixes that went into version 6.01
 ! 20-Sep-2006 ACM
 !
@@ -52848,7 +52846,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -52893,7 +52891,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -53108,7 +53106,7 @@ stat rose[j=12,d=1]
  Mean    value: 62.717 (unweighted average)
  Standard deviation: 156.25
 *** Running test: bn_set_strides.jnl
-! bn_set_strides.jnl
+[?1034h! bn_set_strides.jnl
 ! Jing Li, 11/2006
 ! tests for SET AXIS/STRIDES
  
@@ -53545,7 +53543,7 @@ show axis `sst,return=taxis`
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 2191.455 (modulo length = 8765.82)
 *** Running test: bn_lsl_lowpass.jnl
-! bn_lsl_lowpass.jnl
+[?1034h! bn_lsl_lowpass.jnl
 ! Test lsl_lowpass, now included as a statically-linked external function
  
 use gtsa056_2
@@ -53578,7 +53576,7 @@ LIST/L=10:20 MY_TEMP[L=1:110], F_FILTERED[L=1:110]
 14-MAR-1982 09 / 20:   27.42   27.43
  
 *** Running test: bn_return_xmod_tmod.jnl
-! New `var,return=xmod` `var,return=tmod`
+[?1034h! New `var,return=xmod` `var,return=tmod`
 ! Return modulo lengths, or blank if not modulo
  
 use ocean_atlas_temp
@@ -53651,7 +53649,7 @@ say `axy,return=xmod`
  !-> MESSAGE/CONTINUE 2
 2
 *** Running test: bn602_bug_fixes.jnl
-! bn602_bug_fixes.jnl
+[?1034h! bn602_bug_fixes.jnl
 ! test various fixes that went into version 6.02
 ! 09-Nov-2006 ACM
  
@@ -53910,7 +53908,7 @@ list a
  3   / 3:"" 
  
 *** Running test: bn_modnbd.jnl
-! Test MODNBD regridding statistic.
+[?1034h! Test MODNBD regridding statistic.
  
 use gtsa056_2.cdf
 !use climatological_axes
@@ -53972,7 +53970,7 @@ list var[gt=month_reg@MODNGD], var[gt=month_reg@MODNBD], var[gt=month_reg@MODNGD
 15-NOV      / 11:  10.00   0.00  10.00  10.00
 16-DEC      / 12:  10.00   0.00  10.00  10.00
 *** Running test: bn_fifty_files.jnl
-! bn_fifty_files.jnl
+[?1034h! bn_fifty_files.jnl
 ! We build OPeNDAP so that 100 files can be opened at a time.
 ! Test with fifty.
  
@@ -54032,7 +54030,7 @@ use weird_name1.cdf
 cancel mode ignore_error
  
 *** Running test: bn603_bug_fixes.jnl
-! bn603_bug_fixes.jnl
+[?1034h! bn603_bug_fixes.jnl
 ! test various fixes that went into version 6.03
 ! 11-May-2006 ACM
  
@@ -54145,7 +54143,7 @@ LIST/NOHEAD/I=91:94/J=37/K=1/L=1 TEMP,SALT
 136.5W / 94:  27.17807  2.380348E-04
  
 *** Running test: bn_set_var_name.jnl
-! bn_set_var_name.jnl
+[?1034h! bn_set_var_name.jnl
 ! This has been in Ferret since v5.3 but never a benchmark test of it!
 ! ACM 8/2007
  
@@ -54190,7 +54188,7 @@ LIST/X=179:183/Y=40/L=3 sst
  177W   / 82:  36.24
  
 *** Running test: bn_memory_symbol.jnl
-Unable to resize Ferret's memory cache to 500000.000000 Mdoubles
+[?1034hUnable to resize Ferret's memory cache to 500000.000000 Mdoubles
 Ferret's memory cache remains at 0.200000 Mdoubles
 ! bn_memory_symbol.jnl
 ! Ferret v6.06 15-Aug-07
@@ -54217,7 +54215,7 @@ set mem/siz=25.6  ! return to the default setting
 show memory
  Current size of FERRET memory cache: 25.6 MegaWords  (1 word = 8 bytes)
 *** Running test: bn605_bug_fixes.jnl
-! bn604_bug_fixes.jnl
+[?1034h! bn604_bug_fixes.jnl
 ! test various fixes that went into version 6.05
 ! 27-July-2007 ACM
  
@@ -54673,9 +54671,16 @@ STATS_TTEST2IND(SAMPLEA,SAMPLEB)
 STATS_TTEST2REL(SAMPLEA,SAMPLEB)
 STATS_ZSCORE(VALUES)
 STATS_HELPER(PDNAME)
+SHAPEFILE_READXY(SHAPEFILE,MAXPTS)
+SHAPEFILE_READXYVAL(SHAPEFILE,VALNAME,MAXPTS)
+SHAPEFILE_READXYZ(SHAPEFILE,MAXPTS)
+SHAPEFILE_READXYZVAL(SHAPEFILE,VALNAME,MAXPTS)
+SHAPEFILE_WRITEVAL(SHAPEFILE,VALUE,VALNAME,MAPPRJ)
+SHAPEFILE_WRITEXYVAL(SHAPEFILE,GRIDX,GRIDY,VALUE,VALNAME,MAPPRJ)
+SHAPEFILE_WRITEXYZVAL(SHAPEFILE,GRIDX,GRIDY,GRIDZ,VALUE,VALNAME,MAPPRJ)
  
 *** Running test: bn608_bug_fixes.jnl
-! bn608_bug_fixes
+[?1034h! bn608_bug_fixes
 ! test various fixes that went into version 6.08
 ! 24-Sep ACM
  
@@ -54823,7 +54828,7 @@ SHADE/LEV=300/I=1:100/J=1:100 i+j
  
 SET MODE/LAST ignore
 *** Running test: bn_shade_trim.jnl
-! bn_shade_trim.jnl
+[?1034h! bn_shade_trim.jnl
 ! Test new qualifier SHADE/TRIM which trims the region of
 ! shade plot as is done by FILL. For LAS scripts which do
 ! shade underlay for FILL plots.
@@ -54857,7 +54862,7 @@ YAXIS_MIN = "30.500000"
 YAXIS_MAX = "43.50000"
  
 *** Running test: bn_mode_nlevels.jnl
-! bn_mode_nlevels.jnl
+[?1034h! bn_mode_nlevels.jnl
 ! 3-mar-2008
 ! v6.1 MODE NLEVELS (default is 40)
  
@@ -54895,7 +54900,7 @@ LEV_DEL = "0.5"
 set mode nlevels 40
  
 *** Running test: bn61_bug_fixes.jnl
-! bn608_bug_fixes
+[?1034h! bn608_bug_fixes
 ! test various fixes that went into version 6.1
 ! 2-Jan-2008 ACM
  
@@ -54949,7 +54954,7 @@ SAY `1.23456789e-15,prec=10`
  !-> MESSAGE/CONTINUE 1.23456789E-15
 1.23456789E-15
 *** Running test: bn_test_opendap.jnl
-! Test the test_opendap function: returns 0 if successful, or error code if not.
+[?1034h! Test the test_opendap function: returns 0 if successful, or error code if not.
 SET MODE IGNORE
  
 !! Change to another server, this one not working 3/2012
@@ -54969,7 +54974,7 @@ list test_opendap ("http://ferret.pmel.NOT.noaa.gov/thredds/dodsC/data/PMEL/WOA0
  
 CANCEL MODE IGNORE
 *** Running test: bn611_bug_fixes.jnl
-! bn611_bug_fixes.jnl
+[?1034h! bn611_bug_fixes.jnl
 ! Fixes that go into v6.11 release
  
 GO bn_reset
@@ -55689,7 +55694,7 @@ list b
 save/clob/file=b.nc b
  
 *** Running test: bn_no_valid_on_plot.jnl
-! bn_no_valid_on_plot.jnl
+[?1034h! bn_no_valid_on_plot.jnl
 ! Bug 1038 points out that the No Valid Data label that is
 ! put onto 2D plot if there is no good data, is not put onto
 ! 1D plots.  Add it to the variable title so it shows up in the key
@@ -55755,7 +55760,7 @@ VECTOR/Y=80:90 sst[L=1], sst[L=1]
  
 SET MODE/last nodata_lab
 *** Running test: bn_median.jnl
-! Test median smoothing tranform
+[?1034h! Test median smoothing tranform
 ! Default length is 3
  
 use gtsa056_2.cdf
@@ -55860,7 +55865,7 @@ plot/trans var, var[z=@med:4]
 set mode/last ignore
  
 *** Running test: bn614_bug_fixes.jnl
-! bn614_bug_fixes.jnl
+[?1034h! bn614_bug_fixes.jnl
 ! Fixes that go into v6.14 release
  
 GO bn_reset
@@ -56712,7 +56717,7 @@ fill/ov/pal=greyscale/x=-360:360 b
 cont/ov/x=-360:360 b
  
 *** Running test: bn_mode_nodata_lab.jnl
-! bn_mode_nodata_lab
+[?1034h! bn_mode_nodata_lab
 ! turns off the No Valid Data label on plots
 ! (for line plots this is added to the plot label,
 !  if the mode is SET).
@@ -56741,7 +56746,7 @@ contour/fill/y=40:50/x=70e:110e/L=1 vwnd
 set mode/last nodata_lab
  
 *** Running test: bn_proleptic_gregorian_calendar.jnl
-! proleptic_gregorian_calendar.jnl
+[?1034h! proleptic_gregorian_calendar.jnl
 ! Allow PROLEPTIC_GREGORIAN as a calendar attribute
 ! for the default Ferret calendar.
  
@@ -56758,7 +56763,7 @@ show axis tdays
 T0 = 15-JAN-1901 00:00:00
    Axis span (to cell edges) = 32
 *** Running test: bn_string_ngd_nbd.jnl
-! @NGD and @NBD for strings
+[?1034h! @NGD and @NBD for strings
 ! Bad data is taken to be the null string
 ! Compare with results for numeric data
 ! *ACM 11/2008
@@ -57074,7 +57079,7 @@ list av[i=@ngd,j=@ngd,k=@ngd,L=@ngd]
              T        : 0.5 to 2.5 (XYZT # valid)
           16.00
 *** Running test: bn_cat_string.jnl
-! bn_cat_string.jnl
+[?1034h! bn_cat_string.jnl
 ! Test concatenation functions for string variables
 ! ACM nov 08  See bug 1577
  
@@ -57140,7 +57145,7 @@ list tcat(a,b)
  5   / 5:"V"
  6   / 6:"W"
 *** Running test: bn_sort_strings.jnl
-! bn_sort_strings.jnl
+[?1034h! bn_sort_strings.jnl
 ! 11/08 acm
  
 ! show func/detail now shows the alternative function for
@@ -57316,7 +57321,7 @@ list indx_bl, samplel(bl,indx_bl)
 7   / 7:    .... ""   
  
 *** Running test: bn_samplexyt.jnl
-! bn_samplexyt.jnl
+[?1034h! bn_samplexyt.jnl
 ! 1/2009
  
 ! Check the SAMPLEXYT function, should give missing results for T sample points
@@ -57386,14 +57391,14 @@ plot/vs/color=red/over tpts, sampl_pts
  
 set mode calendar
 *** Running test: bn_last_go_file.jnl
-! bn_last_go_file.jnl
+[?1034h! bn_last_go_file.jnl
 ! test the automatically-defined symbol LAST_GO_FILE
  
 show sym last_go_file
 LAST_GO_FILE = "./bn_last_go_file.jnl"
  
 *** Running test: bn_cancel_upcase_uservar.jnl
-! bn_cancel_upcase_uservar.jnl
+[?1034h! bn_cancel_upcase_uservar.jnl
 !
 ! Ferret v6.2
 ! MODE upcase_only cancelled, now writes lowercase
@@ -57425,7 +57430,7 @@ SP ncdump -h a.nc >> all_ncdump.out
  
 SET MODE/LAST upcase_output
 *** Running test: bn_cdf_keepax.jnl
-! bn320_cdf
+[?1034h! bn320_cdf
 ! benchmark to test netCDF input and output
 ! This is the same as bn_cdf with /KEEP_AXNAMES added to SAVE commands.
  
@@ -58289,7 +58294,7 @@ list/x=180 fcn_rev_sub
  0    / 11:  0.0000
  1S   / 10:  0.3166
 *** Running test: bn_keep_axisnames.jnl
-! bn_keep_axisnames.jnl
+[?1034h! bn_keep_axisnames.jnl
 ! 2/2009 ACM
  
 ! save/KEEP_AXISNAMES prevents changes to
@@ -58316,7 +58321,7 @@ sp echo "bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES" >> all_ncdump.out
 sp ncdump -h a.nc >> all_ncdump.out
  
 *** Running test: bn_key_label_minmax.jnl
-! bn_key_label_minmax.jnl
+[?1034h! bn_key_label_minmax.jnl
  
 ! Label data min and max on vertical and horizontal keys
  
@@ -58396,7 +58401,7 @@ set mode/last logo
 shade/lev=35 sst[L=1]
  
 *** Running test: bn62_bug_fixes.jnl
-! bn62_bug_fixes.jnl
+[?1034h! bn62_bug_fixes.jnl
 ! Fixes that go into v6.2 release
  
 GO bn_reset
@@ -58467,7 +58472,7 @@ plot/title="vertical profile" yp4
 GO error_bars polygon/color=red/thickness=2/title="variability" yp4 errors
  
 *** Running test: bn_convolve.jnl
-! bn_convolve.jnl
+[?1034h! bn_convolve.jnl
 ! test convolutions, including with missing-data.
 ! compare behavior with smoothing transform spz.
  
@@ -58595,7 +58600,7 @@ list a, a[i=@spz], convolvei(a,{.25,.5,.25})
  
  
 *** Running test: bn_tax_tstep.jnl
-! bn_tax_tstep.jnl
+[?1034h! bn_tax_tstep.jnl
 !
 ! Working with the coordinates of this axis loses accuracy because its
 ! time origin is so far back from the time it represents
@@ -58707,7 +58712,7 @@ LIST/L=1:15 TAX_TSTEP(tt, "`reset_date`")
  01-JAN-1902 00:01:05 / 14:  65.00000
  01-JAN-1902 00:01:10 / 15:  70.00000
 *** Running test: bn_grads_z.jnl
-! bn_grads_z.jnl
+[?1034h! bn_grads_z.jnl
 ! acm 3/31/09
 ! Fixing bug 1651.
 ! The file has no axis attributes other than units and long_name,
@@ -58776,11 +58781,11 @@ SH GRID am
  normal    E
  normal    F
 *** Running test: bn_clock_syms.jnl
-SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.327949"
-CLOCK_SECS = "0.267"
-CURRENT_DATE = " 2-Jun-15"
-CURRENT_TIME = "16:21:02"
+[?1034hSH SYM delta_cpu, clock_secs, current_date, current_time
+DELTA_CPU = "0.210967"
+CLOCK_SECS = "0.105"
+CURRENT_DATE = " 4-Jun-15"
+CURRENT_TIME = "09:06:44"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -58789,8 +58794,8 @@ CURRENT_TIME = "16:21:02"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.024997"
-CLOCK_SECS = "0.295"
+DELTA_CPU = "0.016998"
+CLOCK_SECS = "0.123"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -58804,15 +58809,15 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.06099
+ !-> DEFINE VARIABLE ten_plots = 0.06199
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0"
-CLOCK_SECS = "0.356"
+DELTA_CPU = "9.99E-04"
+CLOCK_SECS = "0.186"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.357"
+CLOCK_SECS = "0.186"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
@@ -58820,46 +58825,46 @@ let sumcpu =`sumcpu + dt`)
  !-> DEFINE VARIABLE dt = 0.006999
  !-> DEFINE VARIABLE sumcpu =0.006999
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.007998
- !-> DEFINE VARIABLE sumcpu =0.014997
+ !-> DEFINE VARIABLE dt = 0.007999
+ !-> DEFINE VARIABLE sumcpu =0.014998
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.009999
- !-> DEFINE VARIABLE sumcpu =0.024996
+ !-> DEFINE VARIABLE dt = 0.007999
+ !-> DEFINE VARIABLE sumcpu =0.022997
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.009998
- !-> DEFINE VARIABLE sumcpu =0.034994
+ !-> DEFINE VARIABLE dt = 0.006999
+ !-> DEFINE VARIABLE sumcpu =0.029996
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.041993
+ !-> DEFINE VARIABLE dt = 0.007999
+ !-> DEFINE VARIABLE sumcpu =0.037995
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.007999
- !-> DEFINE VARIABLE sumcpu =0.049992
+ !-> DEFINE VARIABLE dt = 0.007998
+ !-> DEFINE VARIABLE sumcpu =0.045993
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.056991
-!-> REPEAT: K=8
  !-> DEFINE VARIABLE dt = 0.007999
- !-> DEFINE VARIABLE sumcpu =0.06499
+ !-> DEFINE VARIABLE sumcpu =0.053992
+!-> REPEAT: K=8
+ !-> DEFINE VARIABLE dt = 0.006999
+ !-> DEFINE VARIABLE sumcpu =0.060991
 !-> REPEAT: K=9
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.071989
+ !-> DEFINE VARIABLE sumcpu =0.06799
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.078988
+ !-> DEFINE VARIABLE dt = 0.007999
+ !-> DEFINE VARIABLE sumcpu =0.075989
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.078988
-0.078988
+ !-> MESSAGE/CONTINUE 0.075989
+0.075989
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.44"
+CLOCK_SECS = "0.263"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = " 2-Jun-15"
-SESSION_TIME = "16:21"
-CURRENT_DATE = " 2-Jun-15"
-CURRENT_TIME = "16:21:02"
+SESSION_DATE = " 4-Jun-15"
+SESSION_TIME = "09:06"
+CURRENT_DATE = " 4-Jun-15"
+CURRENT_TIME = "09:06:44"
 *** Running test: bn63_bug_fixes.jnl
-! bn63_bug_fixes.jnl
+[?1034h! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
  
 GO bn_reset
@@ -59562,7 +59567,7 @@ LIST 1 EQ 2 OR "A" EQ "B"    ! should be 0
           0.0000
  
 *** Running test: bn_axis_reversed_syms.jnl
-! bn_axis_reversed_syms.jnl
+[?1034h! bn_axis_reversed_syms.jnl
 ! XAXIS_REVERSED and YAXIS_REVERSED are
 ! set to 0 or if the reversed-axis is
 ! plotted upside-down, set to 1
@@ -59646,7 +59651,7 @@ XAXIS_REVERSED = "0"
 YAXIS_REVERSED = "1"
  
 *** Running test: bn_isdepth.jnl
-! Tests of `var,RETURN=ISDEPTH`
+[?1034h! Tests of `var,RETURN=ISDEPTH`
  
 define axis/units=meters/z=0:100:2 zup
 let zz = z[gz=zup]
@@ -59679,7 +59684,7 @@ say `temp,return=isdepth`
 0
  
 *** Running test: bn_var_hist_levels.jnl
-! bn_var_hist_levels.jnl
+[?1034h! bn_var_hist_levels.jnl
 ! Syntax for variance-based or histogram-based levels
 !
  
@@ -59736,7 +59741,7 @@ shade/line/key/lev=20c,1d/title="/LEV=20c,1d" cvar[K=1]
 shade/line/key/lev=50h/title="/LEV=50h" cvar[K=1]
  
 *** Running test: bn64_bug_fixes.jnl
-! bn64_bug_fixes.jnl
+[?1034h! bn64_bug_fixes.jnl
 ! Fixes that go into v6.4 release
  
 ! (changes were made to err62_if_inside_repeat.jnl
@@ -59823,7 +59828,7 @@ list v1
              X        : 1
         "ZAIRA"
 *** Running test: bn_long_grid_names.jnl
-! bn_long_grid_names.jnl
+[?1034h! bn_long_grid_names.jnl
 ! test longer grid names (16 --> 64 chars)
 ! tests taken from other bn scripts but with longer grid names
  
@@ -60607,7 +60612,7 @@ SHOW GRID mygrid_123456789012345678901234567890
  normal    E
  normal    F
 *** Running test: bn_xml_repl.jnl
-! bn_xml_repl.jnl
+[?1034h! bn_xml_repl.jnl
 ! replace > and < and & with their html equivalents.
  
 use coads_climatology
@@ -60747,7 +60752,7 @@ sh dat/xml/var
 </axes>
 shade/l=1 sst
 *** Running test: bn65_bug_fixes.jnl
-! bn65_bug_fixes.jnl
+[?1034h! bn65_bug_fixes.jnl
 ! Fixes that go into v6.5 release
  
 GO bn_reset
@@ -61008,7 +61013,7 @@ go polymark "poly/ov/nolab/pal=red/line=1" pos pos " " circle .5
  
  
 *** Running test: bn_txtype_dmy.jnl
-! bn_txtype_dmy.jnl
+[?1034h! bn_txtype_dmy.jnl
 ! 2/2010 ACM
 !
 ! Testing Time Axis plot style "DMY" labels the year
@@ -61131,7 +61136,7 @@ ppl plot
 plot/y=-1/k=1/t=5-mar-1982:28-mar-1982/x=144w temp
 plot/y=-1/k=1/t=5-mar-1982:28-apr-1982/x=144w temp
 *** Running test: bn_n_open_dsets_sym.jnl
- !  bn_n_open_dsets_sym.jnl
+[?1034h !  bn_n_open_dsets_sym.jnl
 ! Ferret v6.5
 ! New special symbol N_OPEN_DSETS, evaulated when requested.
 ! Gives a count of the number of open datasets.
@@ -61172,7 +61177,7 @@ sh sym N_OPEN_DSETS
 N_OPEN_DSETS = "0"
  
 *** Running test: bn_multi_decade.jnl
-! bn_multi_decade.jnl
+[?1034h! bn_multi_decade.jnl
 ! New default no-small tics for multi-decade plots
 ! See bug 670
  
@@ -61233,7 +61238,7 @@ set view v8; plot/trans/nolab/ax=0,0,1,0/hlim=0:1/set tvar
   ppl tics,0.1,0.25
   ppl plot
 *** Running test: bn_show_xml_file.jnl
-! bn_show_xml_file.jnl
+[?1034h! bn_show_xml_file.jnl
 ! Testing SHOW DATA/OUTFILE
 !         SHOW AXIS/OUTFILE
 !         SHOW VAR/OUTFILE
@@ -61438,7 +61443,7 @@ sp cat the_xml_file.xml
 </data>
  
 *** Running test: bn66_bug_fixes.jnl
-! bn66_bug_fixes.jnl
+[?1034h! bn66_bug_fixes.jnl
 ! Fixes that go into v6.6 release
  
  
@@ -61534,7 +61539,7 @@ stat temp[z=@ave,t=@ave,y=-2:2]
  
 cancel region
 *** Running test: bn_netcdf4.jnl
-! bn_netcdf4.jnl
+[?1034h! bn_netcdf4.jnl
 ! test syntax for controling NetCDF-4 intput and output.
  
  
@@ -61649,7 +61654,7 @@ save/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk=6/ychunk=1
 can mode ignore
  
 *** Running test: bn_scat2grid_bin.jnl
-! bn_scat2grid_bin.jnl
+[?1034h! bn_scat2grid_bin.jnl
 ! Tests of scat2grid_bin and scat2grid_nbin functions.
  
 ! define some variables (as in bench_gridding)
@@ -61986,7 +61991,7 @@ can axis tout
 can axis tin
  
 *** Running test: bn_axis_dir_symbols.jnl
-! bn_axis_dir_symbols.jnl
+[?1034h! bn_axis_dir_symbols.jnl
 ! 5/2010
 !
 ! For LAS:
@@ -62012,7 +62017,7 @@ shade/x=180 sst; show sym ax*; can sym ax*
 AX_HORIZ = "T"
 AX_VERT = "Y"
 *** Running test: bn663_bug_fixes.jnl
-! bn663_bug_fixes.jnl
+[?1034h! bn663_bug_fixes.jnl
 ! Fixes that go into v6.63 release
  
  
@@ -62047,7 +62052,7 @@ SHADE/L=1/X=60:70/Y=40:50/LEV=v sst
  
 FILL/L=2/X=60:70/Y=40:50/LEV=v sst
 *** Running test: bn_set_axis_regular.jnl
-! bn_set_axis_regular.jnl
+[?1034h! bn_set_axis_regular.jnl
 ! Karl Smith, 5/2010
 ! tests for SET AXIS /REGULAR
  
@@ -62320,7 +62325,7 @@ show grid
  normal    F
  
 *** Running test: bn_set_cancel_redirect.jnl
-! bn_set_cancel_redirect.jnl
+[?1034h! bn_set_cancel_redirect.jnl
 ! Karl Smith, 5/2010
 ! test for SET REDIRECT and CANCEL REDIRECT
  
@@ -62769,8 +62774,8 @@ list contents
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.943 (PyFerret 1.2)"                                            
- 3    /  3:" ! Linux 2.6.32-504.16.2.el6.x86_64 - 06/02/15"                             
- 4    /  4:" !  2-Jun-15 16:21     "                                                    
+ 3    /  3:" ! Linux 2.6.32-504.16.2.el6.x86_64 - 06/03/15"                             
+ 4    /  4:" !  4-Jun-15 09:06     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -62822,7 +62827,7 @@ cancel grid mygrid
  
 !!! NOTE: journal mode is now turned off !!!
 *** Running test: bn_min_max_smoothers.jnl
-! bn_min_max_smoothers.jnl
+[?1034h! bn_min_max_smoothers.jnl
 ! New transforms @SMN and @SMX, smoothers based on the
 ! min and max of the data in the window.
 sh trans
@@ -63109,7 +63114,7 @@ list/l=1/x=123.5w/y=2.5/z=0:100 temp, temp[k=@med], temp[k=@smx], temp[k=@smn]
 95    / 10:  23.54  24.51  24.51  23.54
  
 *** Running test: bn_vector_symbols.jnl
-! bn_vector_symbols.jnl
+[?1034h! bn_vector_symbols.jnl
 ! ACM 7/16/21010 Ferret V6.6.3
 !
 ! On any vector plot command, define symbols
@@ -63154,7 +63159,7 @@ VECTOR/NOLAB/KEY/I=1:300/J=1:200/LEN=12.2/XSKIP=10/YSKIP=6 i/j,j/i
  
 VECTOR/OVER/KEY/NOLAB/I=1:300/J=1:200/LEN=12.2/XSKIP=10/YSKIP=4 i/j,j/i
 *** Running test: bn_variance_large.jnl
-! bn_variance_large.jnl
+[?1034h! bn_variance_large.jnl
 ! Previous to v6.6.4, these returned messages **too big**
  
 USE coads_climatology
@@ -63200,7 +63205,7 @@ SHADE/L=1/LEV=v huge
  
 CANCEL SYMBOL lev*
 *** Running test: bn_labnum_calendar.jnl
-! bn_labnum_calendar.jn.
+[?1034h! bn_labnum_calendar.jn.
 ! Define new symbol, when a Calendar label is on
 ! the plot, pointing to its ppl label number.
  
@@ -63218,7 +63223,7 @@ sh sym lab($labnum_calend)
 LAB4 = "CALENDAR: NOLEAP"
  
 *** Running test: bn665_bug_fixes.jnl
-! bn65_bug_fixes.jnl
+[?1034h! bn65_bug_fixes.jnl
 ! test various fixes that went into version 6.6.5
 ! 11/2010 ACM
 !
@@ -63572,7 +63577,7 @@ list tax_year(a,a)
  JUL-0005 / 6:"01-JUL-0005"
  
 *** Running test: bn_floatstr.jnl
-! bn_floatstr.jnl
+[?1034h! bn_floatstr.jnl
 ! testing new function to convert floating-point
 ! variables to strings.
  
@@ -63693,7 +63698,7 @@ LIST/X=165W:135W/Y=-50/L=1 STRLEN(var)
  137W   / 102:  0.000
  135W   / 103:  0.000
 *** Running test: bn67_bug_fixes.jnl
-! bn67_bug_fixes.jnl
+[?1034h! bn67_bug_fixes.jnl
 ! test various fixes that went into version 6.7
 ! 2/2011 ACM
  
@@ -64041,7 +64046,7 @@ sh dat
  
  
 *** Running test: bn_NaN_note.jnl
-! bn_NaN_note.jnl
+[?1034h! bn_NaN_note.jnl
 ! Ferret v6.7  2/2011
 ! The message about no missing flags, and assuming NaN,
 ! is issued only when MODE DIAGNOSTIC is turned on.
@@ -64058,7 +64063,7 @@ SET MODE diag
 USE test0
 CANCEL MODE diag
 *** Running test: bn671_bug_fixes.jnl
-! bn671_bug_fixes.jnl
+[?1034h! bn671_bug_fixes.jnl
 ! test various fixes that went into version 6.71
 ! 4/2011 ACM
  
@@ -64348,7 +64353,7 @@ list var
  390   / 10:   ....
  400   / 11:   ....
 *** Running test: bn68_bug_fixes.jnl
-! bn68_bug_fixes.jnl
+[?1034h! bn68_bug_fixes.jnl
 ! test various fixes that went into version 6.8
 !
 GO bn_reset
@@ -65050,7 +65055,7 @@ list x[gx=a[d=1],i=1:3]
  1   / 2:  1.000
  2   / 3:  2.000
 *** Running test: bn_ifv.jnl
-! bn_ifv.jnl
+[?1034h! bn_ifv.jnl
 ! test IFV IfValid masking for a variety of combos
  
  
@@ -65185,7 +65190,7 @@ list IFV strings EQ "a" THEN "" ELSE strings
  2   / 2:"b"
  3   / 3:"" 
 *** Running test: bn_randu2_randn2.jnl
-! Test randu2 and randn2 with newer random-number algorithm.
+[?1034h! Test randu2 and randn2 with newer random-number algorithm.
 ! 9/2011 acm
 ! Note that most of these results will differe from one
 ! run of the benchmarks to the next.
@@ -65201,40 +65206,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.430
-randu2_randn2       0.390
-randu2_randn2       0.753
-randu2_randn2       0.724
-randu2_randn2       0.498
+randu2_randn2       0.717
+randu2_randn2       0.297
+randu2_randn2       0.501
+randu2_randn2       0.361
+randu2_randn2       0.734
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.834
-randu2_randn2       0.838
-randu2_randn2       0.790
-randu2_randn2       0.839
-randu2_randn2       0.809
+randu2_randn2       0.120
+randu2_randn2       0.802
+randu2_randn2       0.535
+randu2_randn2       0.210
+randu2_randn2       0.617
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.036
-randu2_randn2       0.166
-randu2_randn2       0.563
-randu2_randn2       0.394
-randu2_randn2       0.226
-randu2_randn2       0.319
+randu2_randn2       0.351
+randu2_randn2       0.275
+randu2_randn2       0.584
+randu2_randn2       0.844
+randu2_randn2       0.328
+randu2_randn2       0.138
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.871
-randu2_randn2       0.683
-randu2_randn2       0.142
-randu2_randn2       0.245
-randu2_randn2       0.787
-randu2_randn2       0.135
+randu2_randn2       0.398
+randu2_randn2       0.901
+randu2_randn2       0.211
+randu2_randn2       0.167
+randu2_randn2       0.375
+randu2_randn2       0.234
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65259,40 +65264,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.667
-randu2_randn2       1.448
-randu2_randn2      -1.312
-randu2_randn2      -0.345
-randu2_randn2       0.444
+randu2_randn2      -2.160
+randu2_randn2       0.916
+randu2_randn2       0.521
+randu2_randn2       0.606
+randu2_randn2      -1.303
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.200
-randu2_randn2       0.337
-randu2_randn2       1.828
-randu2_randn2       0.824
-randu2_randn2       0.720
+randu2_randn2      -0.452
+randu2_randn2      -0.968
+randu2_randn2       0.493
+randu2_randn2       1.362
+randu2_randn2       0.387
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.368
-randu2_randn2       1.698
-randu2_randn2       0.295
-randu2_randn2      -2.413
-randu2_randn2      -0.950
-randu2_randn2       0.322
+randu2_randn2       1.669
+randu2_randn2       1.575
+randu2_randn2      -0.615
+randu2_randn2      -1.227
+randu2_randn2      -0.385
+randu2_randn2      -0.192
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -0.230
+randu2_randn2       0.905
+randu2_randn2      -0.763
+randu2_randn2       0.033
 randu2_randn2      -0.166
-randu2_randn2       0.473
-randu2_randn2       2.011
-randu2_randn2      -0.850
-randu2_randn2       0.691
+randu2_randn2       0.583
+randu2_randn2       0.276
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65317,16 +65322,16 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.491       1.491       0.350
-randu2_randn2       0.887       0.887       0.350
-randu2_randn2       0.350       0.350       0.348
-randu2_randn2       0.348       0.348       0.348
-randu2_randn2      -0.290      -0.290       0.348
-randu2_randn2      -0.524      -0.524       0.348
-randu2_randn2      -0.650      -0.524       0.348
-randu2_randn2       0.249       0.249       0.348
+randu2_randn2       1.578       1.578       0.474
+randu2_randn2       0.827       0.827       0.474
+randu2_randn2       0.474       0.474      -0.069
+randu2_randn2      -0.069      -0.069       0.096
+randu2_randn2      -0.834      -0.834       0.096
+randu2_randn2      -0.849      -0.834       0.096
+randu2_randn2      -0.636      -0.636       0.096
+randu2_randn2       0.096       0.096       0.096
 *** Running test: bn_axis_cf.jnl
-! Ticket 1792: Write axes with CF-compliant units
+[?1034h! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
  
  
@@ -65392,7 +65397,7 @@ sp ncdump -h a.nc >> all_ncdump.out
  
  
 *** Running test: bn_repeated_coords.jnl
-! Test the use of micro-adjusting on NetCDF read
+[?1034h! Test the use of micro-adjusting on NetCDF read
 ! when coordinates are repeated.
 ! See ticket 1910
  
@@ -65464,7 +65469,7 @@ list aa[L=1:71:10]
  01-JAN-2001 01:10:00 / 8:  0.6997
  
 *** Running test: bn_xml_header.jnl
-! bn_xml_header.jnl
+[?1034h! bn_xml_header.jnl
 ! run the exact script that LAS uses to make XML header files
  
 go xml_header_script.jnl xml_use_coads.jnl xml_out.xml
@@ -65685,7 +65690,7 @@ sp grep -A5 dimension xml_out_string.xml
 </dimensions>
 </data>
 *** Running test: bn_eof_simple.jnl
-! bn_eof_simple
+[?1034h! bn_eof_simple
 ! Define a simple function with two known functions.
 ! decompose with EOFs.
 ! 7/2012
@@ -66307,7 +66312,7 @@ can axis xaxis
  
 exit/script
 *** Running test: bn_eof_simple2.jnl
-! bn_eof_simple2
+[?1034h! bn_eof_simple2
 ! Define a simple function with four known functions, two of which are degenerate.
 ! decompose with EOFs.
 ! 7/2012
@@ -66667,7 +66672,7 @@ can axis xaxis
  
 exit/script
 *** Running test: bn_interpolate_6d.jnl
-! bn_interpolate_6d.JNL
+[?1034h! bn_interpolate_6d.JNL
 ! benchmark interpolation along various axes
 ! including the E and F axis
  
@@ -67063,7 +67068,7 @@ LIST v[@xpt,@ypt,@ept,@fpt]
              F        : 1 (interpolated)
           1113.00
 *** Running test: bn_regrid_6d.jnl
-! bn_regrid_6d.jnl
+[?1034h! bn_regrid_6d.jnl
 ! version of bn_regrid, using E and F directions.
  
 set mode latit_label -4
@@ -68438,7 +68443,7 @@ list a24[g=g48]-a48
  07-JAN-1980 00 / 4: -438312.
  
 *** Running test: bn_syntax_6d.jnl
-! bn_syntax_6d.JNL
+[?1034h! bn_syntax_6d.JNL
 ! - test syntax interpretation of Program FERRET 6D
  
 ! SET - SHOW - CANCEL DATA
@@ -68556,7 +68561,7 @@ cancel variables/all;\
      currently SET data sets:
           3.000
 *** Running test: bn_expressions_6d.jnl
-! bn_expressions_6d.jnl
+[?1034h! bn_expressions_6d.jnl
 ! testing expressions syntax in E and F directions.
 ! Note pseudo-variables are _E,
  
@@ -69036,7 +69041,7 @@ LIST/n=5:7 FBOXLO, FBOXHI
 6   / 6:  5.500  6.500
 7   / 7:  6.500  7.500
 *** Running test: bn_direction_fcns_6d.jnl
-! bn_direction_functions_6d
+[?1034h! bn_direction_functions_6d
 ! Tests of sort, sample, reverse, convolve, compress, and compess_by
 ! functions in the E and F directions.
  
@@ -69253,7 +69258,7 @@ list compressn_by(fsequence({10,20,30,40,50}),mask)
  4   / 4:   ....   ....
  5   / 5:   ....   ....
 *** Running test: bn_regrid_transforms_6d.jnl
-! bn_regrid_transforms_6d.jnl
+[?1034h! bn_regrid_transforms_6d.jnl
 ! benchmark to test regridding transformations and syntax
 ! version of bn_regrid_transforms, using E and F directions.
  
@@ -70016,7 +70021,7 @@ show grid
  
 set mode/last diag
 *** Running test: bn_aggregate_e.jnl
-! bn_aggregate_e.jnl
+[?1034h! bn_aggregate_e.jnl
 ! using the DEFINE DATA/AGGREGATE/E command
 ! Datasets share sst, but only ens1 has airt.
  
@@ -70477,7 +70482,7 @@ sh dat
  
  
 *** Running test: bn_6d_lab_mode.jnl
-! bn_6d_lab_mode.jnl
+[?1034h! bn_6d_lab_mode.jnl
 !
 ! Tests of CANCEL MODE 6d_lab, writes SHOW and STAT output in classic 4D form.
 !
@@ -70626,7 +70631,7 @@ can mode diag
 ! restore default setting
 set mode 6d_lab
 *** Running test: bn682_bug_fixes.jnl
-! bn682_bug_fixes.jnl
+[?1034h! bn682_bug_fixes.jnl
 ! test various fixes that went into version 6.82
 ! 8/2012 ACM
  
@@ -70675,7 +70680,7 @@ sho grid lon_c
  normal    F
  
 *** Running test: bn683_bug_fixes.jnl
-! bn683_bug_fixes.jnl
+[?1034h! bn683_bug_fixes.jnl
 ! test various fixes that went into version 6.83
 ! 8/2012 ACM
  
@@ -70960,7 +70965,7 @@ list temp  ! values should match those above.
  
 set mode/last upcase_output
 *** Running test: bn_outtype.jnl
-! bn_outtype
+[?1034h! bn_outtype
 ! Tests of output-type control:
 !  SET VAR/OUTTYPE
 !  SET LIST/OUTTYPE
@@ -70992,7 +70997,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71047,7 +71052,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71091,7 +71096,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71135,7 +71140,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71172,7 +71177,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71210,7 +71215,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71277,7 +71282,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71326,7 +71331,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71387,7 +71392,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71428,7 +71433,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71469,7 +71474,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71510,7 +71515,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71548,7 +71553,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71585,7 +71590,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
 ! Go back to default setting.
 can list/outtype
 *** Running test: bn_ribbon_plot.jnl
-! bn_ribbon_plot.jnl
+[?1034h! bn_ribbon_plot.jnl
 ! Test color-line-by variable style of plots
  
 show alias ribbon
@@ -71728,7 +71733,7 @@ RIBBON/vs/over/nolab/thick=3/sym=20/key/set xpts, ypts, var
 ppl shakey,1,0
 ppl ribbon/over
 *** Running test: bn_descr_4digit.jnl
- ! bn_descr_4digit.jnl
+[?1034h ! bn_descr_4digit.jnl
  ! See ticket 1969: step files have 3- or 4-digit extensions
  ! coads_clim.999, coads_clim.1000, coads_clim.1001
  
@@ -71755,7 +71760,7 @@ list/x=180/y=0 sst
  17-MAY-1900 / 5:  28.49
  17-JUN-1900 / 6:  28.32
 *** Running test: bn_axis_outtype.jnl
-! bn_axis_outtype.jnl
+[?1034h! bn_axis_outtype.jnl
 !  SET AXIS/OUTTYPE
 ! 23-Oct-2012
  
@@ -71776,7 +71781,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71814,7 +71819,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71861,7 +71866,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71905,7 +71910,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71930,7 +71935,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71955,7 +71960,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71995,7 +72000,7 @@ save/clobber/file=mytype.nc my_data
 cancel mode ignore
  
 *** Running test: bn_axis_nonmonotonic.jnl
-! bn_axis_nonmonotonic.jnl
+[?1034h! bn_axis_nonmonotonic.jnl
 ! bn_define_axis doesnt test the case where the varible is not monotonic
 ! ACM 11/2012  With Ferret v6.83+ the message tells us the index value
  
@@ -72007,7 +72012,7 @@ define axis/t/units=days tax = tvar
  
 cancel mode ignore
 *** Running test: bn_vec_mod.jnl
-! bn_vec_mod.jnl
+[?1034h! bn_vec_mod.jnl
 ! /MODULO qualifier for the vector command.
 ! 12/12/2012 ACM
 !
@@ -72028,7 +72033,7 @@ vec/MOD/HLIM=-180:180 u,fakev,geolon_c,geolat_c
  
 can view
 *** Running test: bn685_bug_fixes.jnl
-! bn685_bug_fixes.jnl
+[?1034h! bn685_bug_fixes.jnl
 ! test various fixes that went into version 6.85
 ! 1/2013 ACM
  
@@ -72384,7 +72389,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72413,7 +72418,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72464,7 +72469,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72888,7 +72893,7 @@ define axis/y=54:66:0.5/units=degrees_north lat_ax
 define grid/x=lon_ax/y=lat_ax/z=zax three_d_grd
  
 *** Running test: bn_dsg_e_x.jnl
-! bn_dsg_e.jnl
+[?1034h! bn_dsg_e.jnl
 !
 !  Discrete Sampling Geometries files
 !  Create grids such that the instance dimension
@@ -72985,7 +72990,7 @@ sh grid pco2
  normal    E
  normal    F
 *** Running test: bn_nco_append.jnl
-! bn_nco_append.jnl
+[?1034h! bn_nco_append.jnl
 ! 5/2013 add a test appending files with ncks
  
  ! These functions use Unix NCO utilities, found at http://nco.sourceforge.net/
@@ -73027,19 +73032,13 @@ variables:
 		CYCLE_ORIG:_FillValue = -1.e+34 ;
 		CYCLE_ORIG:long_name = "CYCLE[GZ=ZAXIS_ORIG@ASN]" ;
 		CYCLE_ORIG:history = "From z2" ;
-	double DDAT_ORIG(ZAXIS_ORIG) ;
-		DDAT_ORIG:missing_value = -1.e+34 ;
-		DDAT_ORIG:_FillValue = -1.e+34 ;
-		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Tue Jun  2 16:21:37 2015: ncks -h -A -h z1.nc append_to_this.nc\n",
-			"FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 		:Conventions = "CF-1.6" ;
-		:NCO = "4.4.6" ;
 }
 *** Running test: bn_nobounds.jnl
-! bn_nobounds.jnl
+[?1034h! bn_nobounds.jnl
 ! The SAVE/NOBOUNDS qualifier causes bounds never to be written
 ! even if the data is irregular, and even if the axis came into
 ! Ferret with bounds.
@@ -73065,7 +73064,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73096,7 +73095,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73158,7 +73157,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73186,12 +73185,12 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
 *** Running test: bn_write_integer_att.jnl
-! bn_write_integer_att.jnl
+[?1034h! bn_write_integer_att.jnl
 !  ACM 6/2013
 !
 ! This file has an integer attribute
@@ -73222,7 +73221,7 @@ sp ncdump a.nc | grep numberOfObservations
  
  
 *** Running test: bn_descriptor_mc.jnl
-! bn_descriptor_mc.jnl
+[?1034h! bn_descriptor_mc.jnl
 ! 7/2013 ACM
 ! See ticket 2087
 !
@@ -73261,7 +73260,7 @@ list /x=300/y=10 sst
  16-MAY-0000 / 3:  27.22
  16-JUN-0000 / 4:  27.66
 *** Running test: bn_plot_color_only.jnl
-! bn_plot_color_only.jnl
+[?1034h! bn_plot_color_only.jnl
 ! 9/20/2013 ACM
 ! ticket 2094
 !  PLOT/COLOR with no argument skips the black pen and starts with the next one.
@@ -73336,7 +73335,7 @@ set mode/last ignore
  
  
 *** Running test: bn_vtree.jnl
-! bn_tree.jnl
+[?1034h! bn_tree.jnl
  
 ! 11/2013 -- demonstrate SHOW VARIABLE/TREE and RETRUN=STATUS
 ! 12/14 update to test regridding output using bn_vtree_regrid.jnl
@@ -74490,7 +74489,7 @@ vtree=all tempz4
  
  
 *** Running test: bn686_bug_fixes.jnl
-! bn686_bug_fixes
+[?1034h! bn686_bug_fixes
 ! test various fixes that went into version 6.86
 ! 11/2013 ACM
  
@@ -74824,7 +74823,7 @@ LEV_NUM = "4"
 LEV_DEL = "5"
  
 *** Running test: bn_long_symnames.jnl
-! bn_long_symnames.jnl
+[?1034h! bn_long_symnames.jnl
 ! *ACM* 11/22/2013
 ! Allow longer names for Ferret symbols
  
@@ -74861,7 +74860,7 @@ show symbol q*
 Q23456789012345678901234567890Q23456789012345678901234567890Q23456789012345678901234567890Q23456789012345678901234567890 = "5"
 Q23456789012345678901234567890Q23456789012345678901234567890Q23456789012345678901234567890Q23456789012345678901234567XXX = "6"
 *** Running test: bn_strdim.jnl
-! bn_strdim.jnl
+[?1034h! bn_strdim.jnl
 ! Keep the string dimension name and size from the intput file
 ! on writing the string variable.
  
@@ -74886,7 +74885,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74909,12 +74908,12 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
 *** Running test: bn_single_colorlev.jnl
-! bn_single_colorlev.jnl
+[?1034h! bn_single_colorlev.jnl
 ! Ticket 2123, mis-labeled color bars when
 ! single level is specified with a range of values
  
@@ -74931,7 +74930,7 @@ shade/lev=(25)/L=1 INT(sst)
 fill/lev=(20,30,10)/L=1 sst
  
 *** Running test: bn69_bug_fixes.jnl
-! bn69_bug_fixes
+[?1034h! bn69_bug_fixes
 ! test various fixes that went into version 6.9
 ! 02/2014 ACM
  
@@ -75129,7 +75128,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75159,7 +75158,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75180,7 +75179,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75201,7 +75200,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75223,7 +75222,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75398,7 +75397,7 @@ set var/name=diff w
  
 SET MODE/LAST ignore
 *** Running test: bn_bad_axis_bounds.jnl
-! bn_bad_axis_bounds
+[?1034h! bn_bad_axis_bounds
 ! Ticket 2146 If there are invalid axis bounds
 ! make them into a dependent variable.
  
@@ -75413,7 +75412,7 @@ show data
  TEMP2    TEMP[GT=MONTH_IRREG@ASN]         1:1       1:1       1:1       1:12      ...       ...
  
 *** Running test: bn_enter_exit_GO.jnl
-! GO bn_enter_exit_GO
+[?1034h! GO bn_enter_exit_GO
 ! Lines to allow trace of GO scripts:
 !
 ! ! Enter_GO and ! Exit_GO lines written to the journal file
@@ -75480,7 +75479,7 @@ plot/i=1:15/color=red/thick i
  
 cancel redirect
 *** Running test: bn_stddev.jnl
-! bn_std.jnl
+[?1034h! bn_std.jnl
 ! New StdDev transform
  
 use coads_climatology
@@ -75541,7 +75540,7 @@ list/y=3/l=1 temp[z=@std,x=@std]
              TIME     : 17-AUG-1982 12:00
           0.1895
 *** Running test: bn_set_axis_name.jnl
-! bn_set_axis_name.jnl
+[?1034h! bn_set_axis_name.jnl
 ! ticket 2160 Implementing new qualifier SET AXIS/NAME
 ! 3/2014
 !
@@ -75632,7 +75631,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75648,7 +75647,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75664,7 +75663,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  2-Jun-15
+ .                               history         CHAR        38   T       FERRET V6.943 (PyFerret 1.2)  4-Jun-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75690,7 +75689,7 @@ set axis/name=.fr x_in_meters
  
 set mode/last ignore
 *** Running test: bn691_bug_fixes.jnl
-! bn691_bug_fixes
+[?1034h! bn691_bug_fixes
 ! test various fixes that went into version 6.91
 ! 04/2014 ACM
  
@@ -76596,7 +76595,7 @@ list substring("hello",1,-3)
  
 set mode/last ignore
 *** Running test: bn_append_dsg.jnl
-! bn_append_dsg.jnl
+[?1034h! bn_append_dsg.jnl
 !From SOCAT 3: appending to a dsg file where the new variable is on the obs
 ! dimension. THe file has no coordinate variable, and we want to keep it that way.
 ! Ferret needs to detect the dimension-only axis and keep it as-is. Do not upcase,
@@ -76670,10 +76669,10 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 }
 *** Running test: bn_global_atts.jnl
- ! NOAA/PMEL TMAP
+[?1034h ! NOAA/PMEL TMAP
  ! FERRET v6.91 (beta)
  ! Linux 2.6.32-431.5.1.el6.x86_64 64-bit - 04/07/14
  !  7-Apr-14 16:41
@@ -76760,7 +76759,7 @@ variables:
 		LON360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0FERRET V6.943 (PyFerret 1.2)  2-Jun-15" ;
+		:history = "CruiseDsgNcFile 1.0FERRET V6.943 (PyFerret 1.2)  4-Jun-15" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -76787,13 +76786,13 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- FERRET V6.943 (PyFerret 1.2)  2-Jun-15 
+ FERRET V6.943 (PyFerret 1.2)  4-Jun-15 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
  
 *** Running test: bn_conventions_history.jnl
-! bn_conventions_history.jnl
+[?1034h! bn_conventions_history.jnl
 ! ticket 2169:
 ! Write conventions CF-1.6
 ! When appending to the Conventions and history
@@ -76816,10 +76815,10 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the fileFERRET V6.943 (PyFerret 1.2)  2-Jun-15 
+ ..history = The history of the fileFERRET V6.943 (PyFerret 1.2)  4-Jun-15 
  ..Conventions = Conventions for variables named V2CF-1.6 
 *** Running test: bn_center_key_labels.jnl
-! bn_center_key_labels
+[?1034h! bn_center_key_labels
 !  6/2014
 !
 ! Arguments to /KEY qualifier on color plots
@@ -76864,7 +76863,7 @@ can data coads_climatology
 shade temp
  
 *** Running test: bn_wgt_transform.jnl
-! bn_wgt_transform.jnl  test new @WGT transform,
+[?1034h! bn_wgt_transform.jnl  test new @WGT transform,
 ! returns weights used in the equiv. average or integral transform
 ! ACM 7/2014
  
@@ -76974,7 +76973,7 @@ list/y=1.5/x=130w/z=8:43.5/t=1-sep-1982 temp[z=@wgt]
  35    / 4:  10.00
  45    / 5:   3.50
 *** Running test: bn_show_outfile.jnl
-! bn_show_outfile
+[?1034h! bn_show_outfile
 ! Adding tests for SHOW/OUTFILE=
 ! Previously only tests when SHOW/XML/OUTFILE=
 !  Bugs in SHOW/OUTFILE reported in ticket 2194
@@ -77634,7 +77633,7 @@ f is ready and AVAILABLE
  
  
 *** Running test: bn_date1900_array.jnl
-! bn_date1900_array.jnl
+[?1034h! bn_date1900_array.jnl
 ! Let date1900 accept an array of date strings, returning a list
 ! of coordinate values, days since 1-jan-1900.
  
@@ -77683,7 +77682,7 @@ list t[gt=taxis]
  30-JUL-2002 00 / 3:  37465.
  
 *** Running test: bn_spawn_size.jnl
-! bn_spawn_size.jnl
+[?1034h! bn_spawn_size.jnl
 ! Return the size of the result of a spawn, not
 ! the nominalabstract axis length.
  
@@ -77727,8 +77726,8 @@ list {spawn:"ls xml*.jnl"}
  
 LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
 say `filesets, return=isize`
- !-> MESSAGE/CONTINUE 877
-877
+ !-> MESSAGE/CONTINUE 879
+879
  
 let files = {spawn:"ls *cdf*.jnl"}
 let name_len = strindex(files, ".sub")
@@ -77736,7 +77735,7 @@ say `name_len, return=isize`
  !-> MESSAGE/CONTINUE 8
 8
 *** Running test: bn_polygon_log.jnl
-! bn_polygon_log.jnl
+[?1034h! bn_polygon_log.jnl
 ! polygon plots on a log axis need tests
  
 let xsqr = YSEQUENCE({0,.1,.1,0})
@@ -77770,7 +77769,7 @@ poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
  
 set mode/last ignore
 *** Running test: bn694_bug_fixes.jnl
-! bn694_bug_fixes
+[?1034h! bn694_bug_fixes
 ! test various fixes that went into version 6.94
 ! 11/2014 ACM
 ! 12/2014 *sh* added IF-THEN flow fixes, including review of past tickets
@@ -78751,7 +78750,7 @@ define symbol overcommands = `p1s_ov`
  !-> plot/vs/ov/nolab/line=6/dash=(.02,.12,.02,.12) {-1e3,1e3,,-1e3,1e3,,-1e3,1e3,,-136,-136,,-126,-126}, {85,85,,50,50,,20,20,,-1e4,1e4,,-1e4,1e4}
  
 *** Running test: bn_permute_ascii.jnl
-! bn_permute_ascii.jnl
+[?1034h! bn_permute_ascii.jnl
 ! test permutations when reading ascii data, in E and F directions
 ! 11/18/2014
 ! see ticket 2217: was not working for grids in E and F
@@ -79057,7 +79056,7 @@ list tm
  4   / 4: -28.54  -8.39
  
 *** Running test: bn_lon_lat_time_string.jnl
-! bn_lon_lat_time_string.jnl
+[?1034h! bn_lon_lat_time_string.jnl
 ! Test function written for LAS, to create profile labels from
 ! a list of lnogitudes, latitudes, times, and a prefix string.
  
@@ -79096,7 +79095,7 @@ list lon_lat_time_string(lon, lat, time, tt, "my_string")
  3   / 3:"my_string_340.5E_15.03S_04-JAN-2001"
  
 *** Running test: bn_save_justdim.jnl
-! bn_save_justdim.jnl
+[?1034h! bn_save_justdim.jnl
 ! When a dataset has axes that are dimensions but not 1-D coordinate variables,
 ! no longer save the coordinate axis that Ferret creates from the dimension.
 !
@@ -79126,7 +79125,7 @@ sp ncdump a.nc >> all_ncdump.out
  
 SET MODE/LAST upcase_output
 *** Running test: bn_time2d.jnl
-! bn_time2d.jnl
+[?1034h! bn_time2d.jnl
 ! 1/30/2015 ACM
  
 ! initial changes to handle 2d time variable: forecast and time
@@ -79157,7 +79156,7 @@ set att/like=time time2d
 shade time2d
 shade/trans time2d
 *** Running test: bn_legend_labels.jnl
-! bn_legend_labels.jnl
+[?1034h! bn_legend_labels.jnl
 ! The legend labels on a multi-line plot describe the
 !  variable and context but are not controlable by the user.
 !
@@ -79178,7 +79177,7 @@ sh sym lab7,lab8,lab9
 plot/x=300/y=20:65/key=title  sst1,sst2,sst3
 sh sym lab7,lab8,lab9
 *** Running test: bn_DQ.jnl
-! bn_DQ.jnl  *sh* 2/2015
+[?1034h! bn_DQ.jnl  *sh* 2/2015
 ! test the use of _DQ_ and _SQ_ in lieu of " and '
  
 let foobar = 1
@@ -79676,13 +79675,13 @@ plot/vlim=-2:2/hlim=_DQ_1-jan-1980_DQ_:_DQ_15-feb-1980:12:00_DQ_ \
  
 ! in xeq_define.F:  DEFINE AXIS/NAME='my-name' is of unclear purpose
 *** Running test: bn695_bug_fixes.jnl
-! bn695_bug_fixes
+[?1034h! bn695_bug_fixes
 ! test various fixes that went into version 6.95
  
 GO bn_reset
 cancel mode verify
 *** Running test: bn_f_tax_fcns.jnl
-! bn_f_from_tax_fcns.jnl
+[?1034h! bn_f_from_tax_fcns.jnl
 ! test tax_* functions returning results from a
 ! time-formatted axis in the F direction
 !
@@ -79948,7 +79947,7 @@ LIST/N=1:15 TAX_TSTEP(ff, "`reset_date`")
  01-JAN-1902 00:01:05 / 14:  65.00000
  01-JAN-1902 00:01:10 / 15:  70.00000
 *** Running test: bn_fmrc.jnl
-! bn_fmrc.jnl
+[?1034h! bn_fmrc.jnl
 ! initial test of DEFINE DATA/F
  
 use "run1.nc"
@@ -80003,8 +80002,76 @@ list/L=1:6/n=1:4 `sst._ftime2dRef`
  06-JAN-2010 00 / 3:   3.00   4.00   5.00   6.00   7.00   8.00
  08-JAN-2010 00 / 4:   9.00  10.00  11.00  12.00  13.00  14.00
  
+*** Running test: bn_return_defined.jnl
+[?1034h! bn_return_defined.jnl
+! 5/3/2015 *acm*
+! `return=defined` returns 1 if the user variable is defined
+! see ticket 2293
+ 
+let a = b
+say `a,r=defined` `b,r=defined`
+ !-> MESSAGE/CONTINUE 1 0
+1 0
+ 
+! abbreviate to 3 letters
+use levitus_climatology
+let temp2 = 2*temp
+say `temp2,return=def`
+ !-> MESSAGE/CONTINUE 1
+1
+ 
+! returns false for file variables
+say `temp,return=defined`
+ !-> MESSAGE/CONTINUE 0
+0
+*** Running test: bn_can_var_noerr.jnl
+[?1034h! bn_can_var_noerr.jnl
+! CANCEL VARIABLE/NOERROR
+ 
+ 
+let a = 1
+ 
+! intentional error
+set mode ignore
+cancel var b,a
+show var
+ Created by DEFINE VARIABLE:
+ >>> Definitions that replace any file variable of same name:
+     A = 1
+ 
+cancel mode ignore
+ 
+! specify /noerr and we can issue the command
+ 
+cancel var/noerror a,b
+show var
+ Created by DEFINE VARIABLE:
+ 
+! no effect on CAN VAR/ALL or CAN VAR template_name
+ 
+let a1 = 1
+let a7 = 7
+let c = 12
+ 
+cancel var/noerror name*
+show var
+ Created by DEFINE VARIABLE:
+ >>> Definitions that replace any file variable of same name:
+     C = 12
+     A7 = 7
+     A1 = 1
+ 
+cancel var/noerror a*
+show var
+ Created by DEFINE VARIABLE:
+ >>> Definitions that replace any file variable of same name:
+     C = 12
+ 
+cancel var/noerror/all
+show var
+ Created by DEFINE VARIABLE:
 *** Running test: bn_all_ef.jnl
-SET MODE VERIFY
+[?1034hSET MODE VERIFY
 ! bn_all_ef.jnl
 ! - run all the benchmark tests for externally-linked external functions.
  
@@ -80836,7 +80903,7 @@ exit
  
 exit/command
 *** Running test: bn_startupfile.jnl
- Current size of FERRET memory cache: 31 MegaWords  (1 word = 8 bytes)
+[?1034h Current size of FERRET memory cache: 31 MegaWords  (1 word = 8 bytes)
 PPL$XPIXEL = "979"
 PPL$YPIXEL = "844"
 BYTEORDER = "LITTLE"
@@ -80845,13 +80912,13 @@ FERRET_PLATFORM = "Linux 2.6.32-504.16.2.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 10:53:28 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = " 2-Jun-15"
-SESSION_TIME = "16:22"
-SESSION_PID = "8436"
-DELTA_CPU = "0.296954"
-CLOCK_SECS = "0.238"
-CURRENT_DATE = " 2-Jun-15"
-CURRENT_TIME = "16:22:00"
+SESSION_DATE = " 4-Jun-15"
+SESSION_TIME = "09:07"
+SESSION_PID = "23263"
+DELTA_CPU = "0.218966"
+CLOCK_SECS = "0.111"
+CURRENT_DATE = " 4-Jun-15"
+CURRENT_TIME = "09:07:18"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -80876,7 +80943,7 @@ PPL$COMMAND_FILE = "$$MEMBUF$$"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 PPL$SCALE = "1.0000"
-WIN_TITLE = "2-Jun-15_16:22"
+WIN_TITLE = "4-Jun-15_09:07"
 VP_SCALE = "1"
 VP_RT_MARGIN = "1"
 VP_TOP_MARGIN = "1.4"
@@ -80929,4 +80996,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Tue Jun  2 16:22:00 PDT 2015
+Ended at Thu Jun  4 09:07:18 PDT 2015

@@ -158,7 +158,7 @@ C or <& to start a word,  e.g. <&deg> for the degree sign.
 C Is it a word, such as <&deg> ? If so, look up its decimal code
 
 	   ia = INDEX (buff,'<&')
-	   ic = INDEX (buff,'>')
+	   ic = INDEX (buff(ia:),'>') + ia-1
 	
 	   IF (ia.GT.0 .AND. ic.GT.ia+2) THEN
 	      ic = ic - 1

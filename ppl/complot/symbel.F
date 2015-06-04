@@ -63,7 +63,7 @@ C
 	LOGICAL		TM_HAS_STRING
 	INTEGER		STR_SAME, TM_LENSTR, STR_UPCASE
 	REAL		fontsiz, rotate, stx, sty, swid, shgt, xu, yu
-     .			stx_pos, sty_pos
+     .			stx_pos, sty_pos, symcos, symsin
 	INTEGER		ia, slen, ic, sub, sup, seb, sep, ss, se, flen, glen
 	CHARACTER	buff1*512, buff2*512, buffs*512, upbuff*512
 	INTEGER		codepoint, utf8strlen
@@ -268,17 +268,22 @@ C This section returns the string length from swid
 	         CALL FERTEXTSIZE (buffs(:glen), fontname, fontsiz*0.75, 
      .              italic, bold, pyfnt_under, swid, shgt, status)
 	         IF (status .EQ. 0) GOTO 3100
-	         ENDIF
+	      ENDIF
 
 	         swid = swid/1000
 	         x = x + swid
-	      ENDIF
+
+	   ENDIF
 
 	ELSE  ! Done with computing string width
 
 C Draw the text
 
 C If subscripts and/or superscripts do each part as it comes
+
+
+	   symcos = COS(degres*1.7453292E-2) 
+	   symsin = SIN(degres*1.7453292E-2) 
 
 	   CALL USER_TO_INCH (x, y, stx_pos, sty_pos)
 	   glen = 0
@@ -307,13 +312,29 @@ C If subscripts and/or superscripts do each part as it comes
 	      CALL FERTEXTSIZE (buff1, fontname, fontsiz, 
      .           italic, bold, pyfnt_under, swid, shgt, status)
 
-	      stx_pos = stx_pos + swid/1000  ! what about rotations?
-		 
+	      IF (rotate.EQ.0) THEN
+	         stx_pos = stx_pos + swid/1000  ! what about rotations?
+	      ELSE
+	         stx_pos = stx_pos + symcos*swid/1000 
+	         sty_pos = sty_pos + symsin*swid/1000 
+	      ENDIF
+
 * Draw next superscript or subscript
 
-	      stx = 1000.* stx_pos
-	      IF (ss .EQ. sub) sty = 1000.* (sty_pos - 0.5*fontsiz)
-	      IF (ss .EQ. sup) sty = 1000.* (sty_pos + 0.5*fontsiz)
+	      IF (rotate.EQ.0) THEN
+	         stx = 1000.* stx_pos
+	         IF (ss .EQ. sub) sty = 1000.* (sty_pos - 0.5*fontsiz)
+	         IF (ss .EQ. sup) sty = 1000.* (sty_pos + 0.5*fontsiz)
+	      ELSE
+	         IF (ss .EQ. sub) THEN
+		    stx = 1000.* (stx_pos + symsin*0.5*fontsiz)
+		    sty = 1000.* (sty_pos - symcos*0.5*fontsiz)
+	         ENDIF
+	         IF (ss .EQ. sup) THEN
+		    stx = 1000.* (stx_pos - symsin*0.5*fontsiz)
+		    sty = 1000.* (sty_pos + symcos*0.5*fontsiz)
+		 ENDIF
+	      ENDIF
 
 	      CALL FERDRAWTEXT(buffs, fontname, 0.75*fontsiz, 
      .             red, grn, blu, pyfnt_opq, stx, sty, 
@@ -326,7 +347,12 @@ C If subscripts and/or superscripts do each part as it comes
 	      CALL FERTEXTSIZE (buffs, fontname, 0.75*fontsiz, 
      .           italic, bold, pyfnt_under, swid, shgt, status)
 
-	      stx_pos = stx_pos + swid/1000  ! what about rotations?
+	      IF (rotate.EQ.0) THEN
+	         stx_pos = stx_pos + swid/1000
+	      ELSE
+	         stx_pos = stx_pos + symcos*swid/1000 
+	         sty_pos = sty_pos + symsin*swid/1000 
+	      ENDIF
 
 	      ia =  STR_UPCASE (upbuff, buff2)
 	      sub = INDEX(upbuff, '<SUB>')
@@ -360,6 +386,7 @@ C If subscripts and/or superscripts do each part as it comes
 	   IF (status .EQ. 0) GOTO 3200
 	
 	   ENDIF
+
 
  3000	CONTINUE
 

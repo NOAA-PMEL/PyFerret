@@ -2,6 +2,6 @@ RGB_Mapping By_value
  
 ! Level  Red  Green  Blue
       2    0   80   85  ! blue
-      3  100   85   10  ! gold
+      3  100   75   10  ! orange/gold   100   85   10  ! gold
       4    0    0    0  ! black
 

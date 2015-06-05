@@ -73,7 +73,17 @@
 * initialize
 	   axis = axis_list(1)
 
-	   IF (axis .EQ. z_dim) THEN
+	   IF ( axis .EQ. t_dim
+     .    .AND. cx_regrid_trans(axis,dst_cx) .EQ. pauxrgrd_fmrc) THEN
+* do the 1D T axis T-F orthoganalization
+	      CALL DO_AUX_VAR_REGRID_1D_T(
+     .			axis,
+     .			src,  msrc,  src_cx,
+     .			dst,  mdst,  dst_cx,
+     .			aux1, maux1, aux1_cx,
+     .			cx_lo_ss(dst_cx,t_dim),cx_hi_ss(dst_cx,t_dim) )
+
+	   ELSE
 * if this is a "1pt false regridding", in which there is no new target axis
 * such as results from Z=0 or Z=100:200@ave, then the cx_ss values are
 * -999:-999.  To avoid accidental "bad value" interpretations we replace those
@@ -86,8 +96,8 @@
 	         indmax_dst = cx_hi_ss(dst_cx,axis)
 	      ENDIF
 
-* do the 1D Z axis regridding
-	      CALL DO_AUX_VAR_REGRID_1D_Z(
+* do the 1D regridding
+	      CALL DO_AUX_VAR_REGRID_1D(
      .			axis, aux_has_cell_pts,
      .			src,  msrc,  src_cx,
      .			dst,  mdst,  dst_cx,
@@ -95,18 +105,6 @@
      .			cx_lo_ss(src_cx,axis),cx_hi_ss(src_cx,axis),
      .			indmin_dst,           indmax_dst             )
 	
-	   ELSEIF (axis .EQ. t_dim) THEN
-
-* do the 1D T axis T-F orthoganalization
-	      CALL DO_AUX_VAR_REGRID_1D_T(
-     .			axis,
-     .			src,  msrc,  src_cx,
-     .			dst,  mdst,  dst_cx,
-     .			aux1, maux1, aux1_cx,
-     .			cx_lo_ss(dst_cx,t_dim),cx_hi_ss(dst_cx,t_dim) )
-
-	   ELSE
-	       STOP 'mystery 1D regrid should not be happening'
 	   ENDIF
 
 	ELSEIF (naxis .EQ. 2) THEN

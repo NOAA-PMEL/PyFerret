@@ -54,6 +54,8 @@ display_dependency_sub.F\
 extract_dp_line.F\
 extract_dp_line2.F\
 extract_line.F\
+extract_arg1_line.F\
+extract_arg4_line.F\
 extract_line_sub.F\
 extract_z_line.F\
 field_minmax.F\
@@ -130,6 +132,7 @@ parse_string_list.F\
 permute.F\
 permute_ptr_sub.F\
 permute_sub.F\
+put_arg5_line.F\
 region_number.F\
 regularly_spaced.F\
 report_aux_dependency.F\

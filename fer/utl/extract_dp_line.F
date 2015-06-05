@@ -45,6 +45,9 @@
 * V200:  9/20/89 - 4D symmetrical
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+* 5/15 NOTE: the newer routine EXTRACT_ARG1_LINE can probably replace this
+*      and is more appropriately sensitive to argument idim
+
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

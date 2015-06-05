@@ -2,6 +2,7 @@ SRCS_F = \
 alg_regrid_trans_titl.F\
 alg_trans_titl.F\
 ascii_limits.F\
+aux_var_units.F\
 ax_title.F\
 clean_coord_string.F\
 compound_title.F\

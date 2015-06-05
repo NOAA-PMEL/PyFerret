@@ -1,4 +1,4 @@
-	SUBROUTINE DO_AUX_VAR_REGRID_1D_Z( axis, aux_has_cell_pts,
+	SUBROUTINE DO_AUX_VAR_REGRID_1D  ( axis, aux_has_cell_pts,
      .				           src,  msrc, src_cx,
      .				           dst,  mdst, dst_cx,
      .				           pos,  mpos, pos_cx,
@@ -90,12 +90,13 @@
      .          pi0, pj0, pk0, pl0, pm0, pn0,
      .          dsi, dsj, dsk, dsl, dsm, dsn,
      .          dpi, dpj, dpk, dpl, dpm, dpn
-        INTEGER ndx_lo, wkblk, kdmax, ii, trans, klook, khiok,
+        INTEGER ndx_lo, wkblk, kdmax, ss, trans, klook, khiok,
      .		koffset_false, kstart, kend, n_ascnd, n_desnd
         REAL    bad_src, bad_dst, bad_pos, zval, v0, v1
         REAL*8  TM_WORLD
 * internally declared work arrays
-	INTEGER	indices(kmin_dst:kmax_dst+1)
+	INTEGER	indices(kmin_dst:kmax_dst+1),
+     .		dstlo(nferdims), dsthi(nferdims)
 	REAL	  posline(kmin_src:kmax_src),srcline(kmin_src:kmax_src),
      .		  dstline(kmin_dst:kmax_dst),
      .		dstcoords(kmin_dst:kmax_dst+1),coef(kmin_dst:kmax_dst+1)
@@ -128,7 +129,7 @@
      .		      .EQ. paux_stat_false_1pt_regrid
 *   koofset_false fixes ss of -999 used as a valid position in the dest axis.
 	koffset_false = kmin_dst - m5loz
-	trans = cx_regrid_trans(axis,dst_cx) !  TEMPORARY: 1 dim HARD CODED!!!
+	trans = cx_regrid_trans(axis,dst_cx)
 
 * flag(s) for bad or missing values
         bad_src = mr_bad_data( msrc )
@@ -138,6 +139,8 @@
 * compute the delta increment for each axis
 * this allows "promotion" of degenerate axes
         DO 10 idim = 1, nferdims
+	   dstlo(idim) = mr_lo_ss(mdst,idim)
+	   dsthi(idim) = mr_hi_ss(mdst,idim)
            IF ( CX_DIM_LEN(idim,src_cx) .EQ. 1 ) THEN
               srcinc(idim) = 0
            ELSE
@@ -149,6 +152,11 @@
               posinc(idim) = 1
            ENDIF
  10     CONTINUE
+* ... a dummy loop on the designated axis 
+	dstlo(axis)  = 1
+	dsthi(axis)  = 1
+	srcinc(axis) = 0
+	posinc(axis) = 0
 
 * compute the starting subscript for each axis of each component
 * (pre-decrement by 1 delta for looping ahead)
@@ -194,7 +202,7 @@
 	new_aux_line = .TRUE.
 	is = si0
 	ip = pi0
-	DO 1000 i = mr_lo_s1(mdst), mr_hi_s1(mdst)
+	DO 1000 i = dstlo(x_dim), dsthi(x_dim)
 	 is = is + dsi
 	 IF (dpi .NE. 0) THEN
 	   ip = ip + dpi
@@ -202,44 +210,52 @@
 	 ENDIF
 	 js = sj0
 	 jp = pj0
-	 DO 1000 j = mr_lo_s2(mdst), mr_hi_s2(mdst)
+	 DO 1000 j = dstlo(y_dim), dsthi(y_dim)
 	  js = js + dsj
 	  IF (dpj .NE. 0) THEN
 	    jp = jp + dpj
 	    new_aux_line = .TRUE.
 	  ENDIF
-	  ls = sl0
-	  lp = pl0
-!   ... k is the axis of the EXTRACT ...
-	  DO 1000 l = mr_lo_s4(mdst), mr_hi_s4(mdst)
-	   ls = ls + dsl
-	   IF (dpl .NE. 0) THEN
-	     lp = lp + dpl
-	     new_aux_line = .TRUE.
-	   ENDIF
-	   ms = sm0
-	   mp = pm0
-	   DO 1000 m = mr_lo_s5(mdst), mr_hi_s5(mdst)
-	    ms = ms + dsm
-	    IF (dpm .NE. 0) THEN
-	      mp = mp + dpm
+	   ks = sk0
+	   kp = pk0
+	   DO 1000 k = dstlo(z_dim), dsthi(z_dim)
+	    ks = ks + dsk
+	    IF (dpk .NE. 0) THEN
+	      kp = kp + dpk
 	      new_aux_line = .TRUE.
 	    ENDIF
-	    ns = sn0
-	    np = pn0
-	    DO 1000 n = mr_lo_s6(mdst), mr_hi_s6(mdst)
-	     ns = ns + dsn
-	     IF (dpn .NE. 0) THEN
-	       np = np + dpn
+	    ls = sl0
+	    lp = pl0
+	    DO 1000 l = dstlo(t_dim), dsthi(t_dim)
+	     ls = ls + dsl
+	     IF (dpl .NE. 0) THEN
+	       lp = lp + dpl
 	       new_aux_line = .TRUE.
 	     ENDIF
+	     ms = sm0
+	     mp = pm0
+	     DO 1000 m = dstlo(e_dim), dsthi(e_dim)
+	      ms = ms + dsm
+	      IF (dpm .NE. 0) THEN
+	        mp = mp + dpm
+	        new_aux_line = .TRUE.
+	      ENDIF
+	      ns = sn0
+	      np = pn0
+	      DO 1000 n = dstlo(f_dim), dsthi(f_dim)
+	       ns = ns + dsn
+	       IF (dpn .NE. 0) THEN
+	         np = np + dpn
+	         new_aux_line = .TRUE.
+	       ENDIF
 
 
 * compute on the source and destination coords only if they differ from last
 	     IF (new_aux_line) THEN
 * extract the line of source coord vals from the aux variable at this location
-	        DO 500 k = kmin_src, kmax_src
- 500		posline(k) = pos(ip, jp, k, lp, mp, np)
+	        CALL EXTRACT_ARG1_LINE( pos, axis, kmin_src, kmax_src,
+     .				        ip, jp, kp, lp, mp, np, posline )
+
 
 * 5/15 - allow for non-monotonic position array.
 * PROGRAMMER NOTE: The 5/15 changes make this code seriously sub-optimal
@@ -254,16 +270,16 @@
 	        kend   = kmin_src
 
 * ... find start of non-bad block
-	        DO k = kmin_src, kmax_src
-	           IF (posline(k) .NE. bad_pos) THEN
-	              kstart = k
+	        DO ss = kmin_src, kmax_src
+	           IF (posline(ss) .NE. bad_pos) THEN
+	              kstart = ss
 	              GOTO 510
 	           ENDIF
 	        ENDDO
 * ... find end of non-bad block
- 510	        DO k = kmax_src, kstart, -1
-	           IF (posline(k) .NE. bad_pos) THEN
-	              kend = k
+ 510	        DO ss = kmax_src, kstart, -1
+	           IF (posline(ss) .NE. bad_pos) THEN
+	              kend = ss
 	              GOTO 520
 	           ENDIF
 	        ENDDO
@@ -275,8 +291,8 @@
 
 * ... count ascending and descending pairs
 		v0 = posline(kstart)
-	        DO k = kstart+1, kend
-		   v1 = posline(k)
+	        DO ss = kstart+1, kend
+		   v1 = posline(ss)
 	           IF (v1 .NE. bad_pos) THEN
 	              IF (v1 .GT. v0) THEN
 	                 n_ascnd = n_ascnd + 1
@@ -304,8 +320,8 @@
 
 	     IF (has_valid) THEN
 * extract the line of source vals 
-	        DO 600 k = kmin_src, kmax_src
- 600	        srcline(k) = src(is, js, k, ls, ms, ns)
+	        CALL EXTRACT_ARG4_LINE( src, axis, kmin_src, kmax_src,
+     .					is, js, ks, ls, ms, ns, srcline )
 
 * perform the regridding
 	        IF (trans .EQ. pauxrgrd_linear ) THEN
@@ -332,9 +348,10 @@
 	        ENDIF
 
 * put the line of results into the destination array
-	        DO k = klook, khiok
-	          dst(i, j, k-koffset_false, l, m, n) = dstline(k)
-	        ENDDO
+	        CALL PUT_ARG5_LINE(
+     .			dst, axis, klook, khiok, koffset_false,
+     .			i, j, k, l, m, n, dstline )
+
 	     ENDIF
 
  1000	CONTINUE

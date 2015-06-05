@@ -179,10 +179,9 @@
 	naxis = i
 
 * sanity checks
-        IF (naux.GT.1) CALL ERRMSG(ferr_prog_limit, status,
-     .                       'for now only 1 aux var supported', *5000)
-*!        IF (naxis.GT.3) CALL ERRMSG(ferr_prog_limit, status,
-*!     .                       'more than 3 auxiliary regrid vars', *5000)
+        IF ( naux.GT.1 )
+     .		CALL ERRMSG(ferr_prog_limit, status,
+     .		'for now TF is the only 2 aux var regrid supported', *5000)
 
 	IF ( is_phase(lo_isp) .EQ. isphase_get_aux_var ) THEN 
 

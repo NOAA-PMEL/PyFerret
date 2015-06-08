@@ -67,4 +67,4 @@ let mypage = my + 0*mx
 vec/title="Stretched grid" a,b,mxpage,mypage
 
 can mode meta
-set mode logo
+

@@ -48,7 +48,6 @@ let fcn = k[gz=dlog]
 plot/vlog/vlimits=1:100000/hg="large(color=red),small(color=lightblue)" fcn
 
 can mode meta
-set mode logo
 
 can view
 

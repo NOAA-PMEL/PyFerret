@@ -39,5 +39,3 @@ let yy =  if abs(y[gt=sst]) le 20 then 10 else  (100-abs(y[gt=sst]+1))/ 10.
 set reg/l=1
 vec/noax/xskip=16/yskip=8/len=15/title="Sinusoidal Projection" fsst*0,fsst*0+yy*mp_mask, x_page,y_page
 vec/over/flow/noax/xskip=16/yskip=8/len=5/title="Sinusoidal Projection" fsst*0,fsst*0+yy*mp_mask, x_page,y_page
-
-set mode logo

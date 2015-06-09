@@ -1,7 +1,6 @@
-	SUBROUTINE EXTRACT_DP_LINE2( cx, grid_data, dp_line, idim, nout )
+	SUBROUTINE PUT_ARG5_LINE( src, axis, axmin, axmax, offset,
+     .				  i, j, k, l, m, n, line )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -35,48 +34,57 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* extract a single line of data from memory variable #2, grid along axis idim
-* no error checking is done
+* put a single line of data along designateded axis into a memory variable
+* Note that whatever the axis orientation, the corresponging index position
+* from the i,j,k,l,m,n arguments is irrelevant
+* The offset arg is a hack to allow the index limits on thesrc and line to
+* be offset from one another by a constant 
 
-* programmer - Ansley Manke
+* programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* from extract_dp_line.F
+* written for VAX computer under VMS operating system
 *
-* V570 - reading 2nd line for bounds on a DEFINE AXIS/BOUNDS
-*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
-
-* 5/15 NOTE: the newer routine EXTRACT_ARG2_LINE can probably replace this
-*      and is more appropriately sensitive to argument idim
-
+* V698+ *sh* 5/15 -- derived from EXTRACT_ARG1_LINE
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
-	include 'errmsg.parm'
-	include 'xvariables.cmn'
-	include 'xcontext.cmn'
-	include 'xmem_subsc.cmn'
+	include	'xmem_subsc.cmn'
 
 * calling argument declarations:
-	INTEGER	cx, mv, idim, nout
-	REAL    grid_data( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit,m1loe:m1hie,m1lof:m1hif )
-	REAL*8	dp_line(nout)
+	INTEGER	axis, axmin, axmax, offset, i, j, k, l, m, n
+        REAL    src(m5lox:m5hix,m5loy:m5hiy,m5loz:m5hiz,
+     .              m5lot:m5hit,m5loe:m5hie,m5lof:m5hif )
+	REAL    line(axmin:axmax)
 
 * internal variable declarations:
-	INTEGER	iout, i, j, k, l, m, n
+	INTEGER	ss
 
 * extract the line
-	iout = 0
-	DO 200 n = cx_lo_s6(cx), cx_hi_s6(cx)
-	DO 200 m = cx_lo_s5(cx), cx_hi_s5(cx)
-	DO 200 l = cx_lo_s4(cx), cx_hi_s4(cx)
-	DO 200 k = cx_lo_s3(cx), cx_hi_s3(cx)
-	DO 200 j = cx_lo_s2(cx), cx_hi_s2(cx)
-	DO 200 i = cx_lo_s1(cx), cx_hi_s1(cx)
-
-	   iout = iout + 1
-	   dp_line( iout ) = grid_data( i,j,k,l,m,n )
-
- 200	CONTINUE
+	IF (axis .EQ. x_dim) THEN
+	   DO ss = axmin, axmax
+	      src(ss-offset, j, k, l, m, n) = line(ss)
+	   ENDDO
+	ELSEIF (axis .EQ. y_dim) THEN
+	   DO ss = axmin, axmax
+	      src(i, ss-offset, k, l, m, n) = line(ss)
+	   ENDDO
+	ELSEIF (axis .EQ. z_dim) THEN
+	   DO ss = axmin, axmax
+	      src(i, j, ss-offset, l, m, n) = line(ss)
+	   ENDDO
+	ELSEIF (axis .EQ. t_dim) THEN
+	   DO ss = axmin, axmax
+	      src(i, j, k, ss-offset, m, n) = line(ss)
+	   ENDDO
+	ELSEIF (axis .EQ. e_dim) THEN
+	   DO ss = axmin, axmax
+	      src(i, j, k, l, ss-offset, n) = line(ss)
+	   ENDDO
+	ELSE    ! f_dim
+	   DO ss = axmin, axmax
+	      src(i, j, k, l, m, ss-offset) = line(ss)
+	   ENDDO
+	ENDIF
 
 	RETURN
 	END

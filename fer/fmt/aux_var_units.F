@@ -1,9 +1,7 @@
-	SUBROUTINE AUX_REGRID_LIMS( dst_cx, src_cx, axis_list, naxis,
-     .			aux1, mr1, cx1,
-     .			aux2, mr2, cx2,
-     .			aux3, mr3, cx3,
-     .			status )
+	CHARACTER*(*) FUNCTION AUX_VAR_UNITS( cx, idim )
 
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -37,73 +35,71 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Given a context describing data to be regridded to a destination grid
-* create the description of the needed source data in the source context
-* Use the auxiliary variables to determine the index range of data needed
-* For example, if the regrid has requested depth from 0 to 100 and in the 
-* auxiliary variable containing depths all of the values LE 100
-* are in K=1:6 then we need only request source data over the range K=1:7 
-
-* When called the source context should be a copy of the destination context 
+* return units text string for an auxiliary variable
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* V698+ *sh* 5/15 - derived from var_units.F
 
-*V685  4/13 *sh*
-*V689+ 3/15 *sh* added T-axis F-T orthoganalization
-*      5/15 *sh* generalize to allow 1D aux vars on all axes
-
-	include 'tmap_dims.parm'
-	include 'implicit.parm'
+	include	'tmap_dims.parm'
+	include	'xdset_info.cmn_text'
+	external xdset_info_data
+	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
 	include	'ferret.parm'
 	include	'errmsg.parm'
+	include	'xtext_info.cmn'
 	include	'xcontext.cmn'
+	include	'xcalc_vars.cmn'
 	include	'xvariables.cmn'
 
-* calling argument declarations:
-	INTEGER	src_cx, axis, dst_cx, naxis, axis_list(*), status,
-     .		mr1, cx1, mr2, cx2, mr3, cx3 
-        REAL*8  aux1(*), aux2(*), aux3(*)
+* calling argument declarations
+	INTEGER	cx, idim
 
 * internal variable declarations
-	INTEGER	axis1, axis2
+	LOGICAL UNIT_CHG_AX
+	INTEGER	category, variable, status
 
+* initialize
+	category = cx_aux_cat( idim, cx )
+	variable = cx_aux_var( idim, cx )
 
-* this is just a dispatch routine that fans out to routines
-* based upon the number of dimensions in the regridding
-	axis1 = axis_list(1)
-	axis2 = axis_list(2)
-	IF ( naxis .EQ. 1 ) THEN
-	   IF ( axis1 .EQ. t_dim
-     .    .AND. cx_regrid_trans(axis1,dst_cx) .EQ. pauxrgrd_fmrc) THEN
-	      CALL AUX_REGRID_LIMS_1D_T( dst_cx, src_cx, axis1, naxis,
-     .			                 aux1, mr1, cx1, status )
-	   ELSE
-	      CALL AUX_REGRID_LIMS_1D( dst_cx, src_cx, axis1,
-     .				 mr_lo_ss(mr1,axis1), mr_hi_ss(mr1,axis1),
-     .			         aux1, mr1, cx1, status )
-	   ENDIF
-	   IF (status .NE. ferr_ok) GOTO 5000
-
-	ELSEIF (naxis .EQ. 2) THEN
-	   IF ( axis1.EQ.t_dim .AND. axis2.EQ.f_dim) THEN
-	      CALL AUX_REGRID_LIMS_2D_TF( dst_cx, src_cx, axis_list, naxis,
-     .			                 aux1, mr1, cx1, status )
-	   ELSE
-	      CALL ERRMSG(ferr_internal, status, 'aux_regrid_lims_2d', *5000 )
-	   ENDIF
-
-	ELSE
-	   CALL ERRMSG(ferr_internal, status, 'aux_regrid_lims_Nd', *5000 )
+	IF (variable .EQ. unspecified_int4) THEN
+	   AUX_VAR_UNITS = 'bad units'
+	   CALL ERRMSG( ferr_internal, status, 'aux var cx err', *5000 )
 	ENDIF
 
-* success
-        status = ferr_ok
-	RETURN
+* select units by category of variable
+	IF     ( category .EQ. cat_file_var .OR. 
+     .		 category .EQ. cat_agg_e_var .OR. 
+     .		 category .EQ. cat_agg_f_var) THEN
 
-* error exit
+	   AUX_VAR_UNITS = ds_var_units( variable )
+
+	ELSEIF ( category .EQ. cat_calc_var ) THEN
+
+	   AUX_VAR_UNITS = unit_text( cvar_unit_code(variable) )
+
+	ELSEIF ( category .EQ. cat_user_var ) THEN
+
+	   AUX_VAR_UNITS = uvar_units( variable )
+
+	ELSEIF ( category .EQ. cat_pseudo_var 
+     .	   .OR.  category .EQ. cat_constant
+     .	   .OR.  category .EQ. cat_string
+     .	   .OR.  category .EQ. cat_const_var
+     .	   .OR.  category .EQ. cat_counter_var
+     .	   .OR.  category .EQ. cat_attrib_val ) THEN
+
+	   AUX_VAR_UNITS = ' '
+
+	ELSE
+
+	   AUX_VAR_UNITS = 'unit_err'
+
+	ENDIF
+
  5000	RETURN
-! 5100	CALL ERRMSG( ferr_invalid_command, status,
-!     .     '1-dim auxiliary variable regrid allowed'//
-!     .	   ' on Z and T axes only', *5000)
 	END

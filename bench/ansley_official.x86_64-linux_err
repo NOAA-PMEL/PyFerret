@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 53589568 May 19 09:10 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 88169972 Jun  4 09:11 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: tickets 2234 and 2285
+Note: v6.95
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Tue May 19 10:25:40 PDT 2015
+Beginning at Thu Jun 4 09:12:20 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -108,13 +108,13 @@ MESSAGE/CONTINUE `sst*/3,return=lunits`
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype,xmod,tmod,status,isDepth,isReady
+            calendar,dtype,xmod,tmod,status,isDepth,isReady,defined
           sst,return=Xsize
 MESSAGE/CONTINUE `sst,return=Xsize`
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype,xmod,tmod,status,isDepth,isReady
+            calendar,dtype,xmod,tmod,status,isDepth,isReady,defined
           sst,return=trash
 MESSAGE/CONTINUE `sst,return=trash`
  PERMANENT data cleared from memory
@@ -1458,7 +1458,7 @@ Replacing definition of axis YAX
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype,xmod,tmod,status,isDepth,isReady
+            calendar,dtype,xmod,tmod,status,isDepth,isReady,defined
           axy, return=xx
 MESSAGE/CONTINUE `axy, return=xx`
  PERMANENT data cleared from memory
@@ -1961,10 +1961,10 @@ LIST/ORDER=X  IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
           ELSE before - is illegal
           negative constants need to be enclosed in parentheses
 DEFINE VARIABLE A = IF I LT 5 THEN I ELSE -9
- **ERROR: variable unknown or not in data set: A1
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
+ **ERROR: variable unknown or not in data set: A1
 load a1,a2,a3
  **TMAP ERR: non-existent or not on line
              nofile.nc
@@ -3911,6 +3911,14 @@ Replacing definition of axis EAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of grid GRID3D
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3944,6 +3952,12 @@ Replacing definition of axis FSEC
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
            *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: variable unknown or not in data set: B
+cancel var b,a
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4035,4 +4049,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue May 19 10:27:36 PDT 2015
+Ended at Thu Jun 4 09:15:10 PDT 2015

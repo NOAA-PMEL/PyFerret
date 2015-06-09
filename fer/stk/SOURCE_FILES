@@ -1,7 +1,7 @@
 SRCS_F = \
 aux_regrid_lims.F\
+aux_regrid_lims_1d.F\
 aux_regrid_lims_1d_t.F\
-aux_regrid_lims_1d_z.F\
 aux_regrid_lims_2d_tf.F\
 bad_edges.F\
 bad_edges_sub.F\

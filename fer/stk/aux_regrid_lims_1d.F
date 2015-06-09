@@ -1,5 +1,6 @@
-	SUBROUTINE AUX_REGRID_LIMS_1D_Z( dst_cx, src_cx, axis_list, naxis,
-     .			                 aux1, mr1, cx1, status )
+	SUBROUTINE AUX_REGRID_LIMS_1D( dst_cx, src_cx,
+     .				       the_axis, axloss, axhiss,
+     .			               aux, aux_mr, aux_cx, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -46,8 +47,7 @@
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
-*V690 3/13-4/14 *sh*
-*v695+ 3/15 *sh* renamed from AUX_REGRID_LIMS_1D to differentiate Z and T
+*v695+ 3/15 *sh* from AUX_REGRID_LIMS_1D_Z
 
 	IMPLICIT NONE
 
@@ -60,21 +60,34 @@
 	include	'xmem_subsc.cmn'
 
 * calling argument declarations:
-	INTEGER	src_cx, axis, dst_cx, naxis, axis_list(naxis), status,
-     .		mr1, cx1, mr2, cx2, mr3, cx3 
-        REAL*8  aux1(m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
-     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif )
+	INTEGER	src_cx, axis, dst_cx, the_axis, axloss, axhiss, status,
+     .		aux_mr, aux_cx
+        REAL*8  aux(m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .              m1lot:m1hit,m1loe:m1hie,m1lof:m1hif )
+	REAL*8 line(axloss:axhiss)
 
 * internal variable declarations:
 	LOGICAL increasing, looking_for_first
 	INTEGER	KNOWN_GRID, 
      .		idim, src_grid, i, j, k, l, m, n, trans,
-     .		kdstmin, kdstmax, kkmin, kkmax, klo, khi, kdel,
-     .		n_incr, n_decr
+     .		kdstmin, kdstmax, ss, ssmin, ssmax, klo, khi, kdel,
+     .		ss_lo(nferdims), ss_hi(nferdims), n_incr, n_decr
 	REAL*8  TM_WORLD, axmax, axmin, v, v1, bad_aux
 
 * initialize
-	bad_aux = mr_bad_data( mr1 )
+	bad_aux = mr_bad_data( aux_mr )
+	trans = cx_regrid_trans(the_axis,src_cx)
+
+* capture the data range and modify the target axis to a single point
+	DO idim = 1, nferdims
+	  ss_lo(idim) = cx_lo_ss(aux_cx, idim)
+	  ss_hi(idim) = cx_hi_ss(aux_cx, idim)
+	ENDDO
+	axloss = ss_lo(the_axis)
+	axhiss = ss_hi(the_axis)
+* ... a dummy loop on the designated axis
+	ss_lo(the_axis) = 1
+	ss_hi(the_axis) = 1
 
 * insert source grid (the defining grid for this variable)
 * XXXX TEMPORARY -- ?move this block of code to AUX_VAR_REGRID when 2D curv is added?
@@ -85,28 +98,34 @@
 	cx_unstand_grid( src_cx ) = .FALSE.
 	is_phase( isp )   = prgrd_from_source
 	cx_naux( src_cx ) = 0
-        DO 100 idim = 1, nferdims
+        DO idim = 1, nferdims
            cx_aux_var  (idim, src_cx) = unspecified_int4
            cx_aux_cat  (idim, src_cx) = unspecified_int4
            cx_aux_stat (idim, src_cx) = paux_stat_na
- 100    CONTINUE
+	ENDDO
 
-* z_dim hard-coded
-	trans = cx_regrid_trans(z_dim,src_cx)
+* Weak test to determine increasing or decreasing by finding the first column
+* that has a clear order.   NOTE:  This test can give wrong answers on
+* pathological fields with differing order columns
+	
+	DO 110 n = ss_lo(6),ss_hi(6)
+	DO 110 m = ss_lo(5),ss_hi(5)
+	DO 110 l = ss_lo(4),ss_hi(4)
+	DO 110 k = ss_lo(3),ss_hi(3)
+	DO 110 j = ss_lo(2),ss_hi(2)
+	DO 110 i = ss_lo(1),ss_hi(1)
 
-* increasing or decreasing? Some non-monotonic sequences are allowed, but few
-	n_incr = 0
-	n_decr = 0
-        DO 110 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
-        DO 110 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
-        DO 110 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-        DO 110 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-        DO 110 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+* ... get a column of data
+	   CALL EXTRACT_ARG1_LINE( aux, the_axis, axloss, axhiss,
+     .				   i, j, k, l, m, n, line )
+
+	   n_incr = 0
+	   n_decr = 0
 	   looking_for_first = .TRUE.
-           DO 105 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	      v = aux1(i,j,k,l,m,n)
+           DO ss = axloss, axhiss
+	      v = line(ss)
 	      IF (v .EQ. bad_aux) THEN
-	         GO TO 105
+	         GO TO 110
 	      ELSEIF (looking_for_first) THEN
 	         v1 = v
 	         looking_for_first = .FALSE.
@@ -118,30 +137,36 @@
 	         ENDIF
 	         v1 = v
 	      ENDIF
- 105	   CONTINUE
+	   ENDDO
+
+* ... is there a clear ordering to this column of auxilinary coordinates?
+	   IF ((n_incr.GE.1 .OR. n_decr.GE.1)
+     .   .AND. (n_incr .NE. n_decr          )  ) THEN
+	    increasing = n_incr .GE. n_decr  
+	    GOTO 130
+	   ENDIF
+
  110	CONTINUE
-	increasing = n_incr .GE. n_decr   ! very weak test of well-ordered
 
 ***** determine the minimal index limits needed to do the regrid *****
 * SINGLE AXIS CODE ONLY (GET_CONTEXT_MODS setup to dis-allow multiple args for now)
 * ... what are the desired world coordinate limts?
- 130	idim    = axis_list(1)	! since this is 1D regridding
-	kdstmin = cx_lo_ss ( dst_cx, idim )
-	kdstmax = cx_hi_ss ( dst_cx, idim )
-	IF (cx_aux_stat(idim,dst_cx) .EQ. paux_stat_false_1pt_regrid) THEN
+ 130	kdstmin = cx_lo_ss ( dst_cx, the_axis )
+	kdstmax = cx_hi_ss ( dst_cx, the_axis )
+	IF (cx_aux_stat(the_axis,dst_cx) .EQ. paux_stat_false_1pt_regrid) THEN
 * ... false 1pt regridding (no target axis ... just a single point value)
-	   axmin = cx_lo_ww(idim, dst_cx)
-	   axmax = cx_hi_ww(idim, dst_cx)
+	   axmin = cx_lo_ww(the_axis, dst_cx)
+	   axmax = cx_hi_ww(the_axis, dst_cx)
 	ELSEIF (trans .EQ. pauxrgrd_linear 
      .     .OR. trans .EQ. unspecified_int4  ) THEN
-* ... linear interp requires source data below/above target grid point coordinate
+* ... linear interp requires source data below/above target grid point coord
 * ... trans.EQ.unspec is for 3-argument plotting
-	   axmin   = TM_WORLD(kdstmin, cx_grid(dst_cx), idim, box_middle)
-	   axmax   = TM_WORLD(kdstmax, cx_grid(dst_cx), idim, box_middle)
+	   axmin   = TM_WORLD(kdstmin, cx_grid(dst_cx), the_axis, box_middle)
+	   axmax   = TM_WORLD(kdstmax, cx_grid(dst_cx), the_axis, box_middle)
 	ELSEIF (trans .EQ. pauxrgrd_pwlave ) THEN
 * ... averaging over cell requires source data over entire cell (larger region)
-	   axmin   = TM_WORLD(kdstmin, cx_grid(dst_cx), idim, box_lo_lim)
-	   axmax   = TM_WORLD(kdstmax, cx_grid(dst_cx), idim, box_hi_lim)
+	   axmin   = TM_WORLD(kdstmin, cx_grid(dst_cx), the_axis, box_lo_lim)
+	   axmax   = TM_WORLD(kdstmax, cx_grid(dst_cx), the_axis, box_hi_lim)
 	ELSE
 	   CALL ERRMSG( ferr_internal, status, 'unkwn rgrd trans', *5000)
 	ENDIF
@@ -149,85 +174,90 @@
 * reverse the direction of traversing the array for decreasing-ordered data
 * for a decreasing aux array min>max, lo>hi at this stage
 	IF (increasing) THEN
-	   klo   = cx_lo_s3(cx1)
-	   khi   = cx_hi_s3(cx1)
+	   klo   = cx_lo_ss(aux_cx,the_axis)
+	   khi   = cx_hi_ss(aux_cx,the_axis)
 	   kdel  = 1
 	ELSE
-	   khi  = cx_lo_s3(cx1)
-	   klo  = cx_hi_s3(cx1)
+	   khi  = cx_lo_ss(aux_cx,the_axis)
+	   klo  = cx_hi_ss(aux_cx,the_axis)
 	   kdel = -1
 	ENDIF
-	kkmin = khi
-	kkmax = klo 
+	ssmin = khi
+	ssmax = klo 
 
 * find the smallest index range in the aux array that contains all of the aux
 * values lying within the axmin to axmax value range on the destination axis 
-        DO 290 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
-        DO 290 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
-        DO 290 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-        DO 290 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-        DO 290 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+	DO 290 n = ss_lo(6),ss_hi(6)
+	DO 290 m = ss_lo(5),ss_hi(5)
+	DO 290 l = ss_lo(4),ss_hi(4)
+	DO 290 k = ss_lo(3),ss_hi(3)
+	DO 290 j = ss_lo(2),ss_hi(2)
+	DO 290 i = ss_lo(1),ss_hi(1)
+
+* get a column of data
+	   CALL EXTRACT_ARG1_LINE( aux, the_axis, axloss, axhiss,
+     .				   i, j, k, l, m, n, line )
 
 * ... search from low values to high for the upper index limit 
-           DO 210 k = klo, khi, kdel
-	      v = aux1(i,j,k,l,m,n)
+           DO ss = klo, khi, kdel
+	      v = line(ss)
 	      IF ( v .EQ. bad_aux ) THEN
-	         GOTO 210
+	         CYCLE
 	      ELSEIF (v .LT. axmax) THEN
 	         IF ( increasing ) THEN
-	            IF (kkmax .LT. k) kkmax = k
+	            IF (ssmax .LT. ss) ssmax = ss
 	         ELSE
-	            IF (kkmax .GT. k) kkmax = k
+	            IF (ssmax .GT. ss) ssmax = ss
 	         ENDIF
 	      ELSE
-	         GOTO 220
+	         EXIT
 	      ENDIF
- 210       CONTINUE
+	   ENDDO
 
 * ... search from high values to low for the lower index limit 
- 220	   DO 230 k = khi, klo, -1*kdel
-	      v = aux1(i,j,k,l,m,n)
+	   DO ss = khi, klo, -1*kdel
+	      v = line(ss)
 	      IF ( v .EQ. bad_aux ) THEN
-	         GOTO 230
+	         CYCLE
 	      ELSEIF (v .GT. axmin) THEN
 	         IF (increasing) THEN
-	            IF (kkmin .GT. k) kkmin = k
+	            IF (ssmin .GT. ss) ssmin = ss
 	         ELSE
-	            IF (kkmin .LT. k) kkmin = k
+	            IF (ssmin .LT. ss) ssmin = ss
 	         ENDIF
 	      ELSE
 	         GOTO 290
 	      ENDIF
- 230	   CONTINUE
+	   ENDDO
 
  290    CONTINUE
 
 * for decreasing-ordered aux array swap the lo/hi limits just found
 	IF (.NOT.increasing) THEN
-	   k     = kkmin
-	   kkmin = kkmax
-	   kkmax = k
+	   ss    = ssmin
+	   ssmin = ssmax
+	   ssmax = ss
 	ENDIF
 
 * round out, so that regridding interpolations will be possible at the edges
 * (the value tests above were based on strict inequality so we always do this) 
-	IF (kkmin .GT. cx_lo_ss(cx1,idim) ) kkmin = kkmin - 1
-	IF (kkmax .LT. cx_hi_ss(cx1,idim) ) kkmax = kkmax + 1
+	IF (ssmin .GT. cx_lo_ss(aux_cx,the_axis) ) ssmin = ssmin - 1
+	IF (ssmax .LT. cx_hi_ss(aux_cx,the_axis) ) ssmax = ssmax + 1
 
-        cx_lo_ss ( src_cx, idim )  = kkmin
-        cx_hi_ss ( src_cx, idim )  = kkmax
-        cx_by_ss ( idim, src_cx )  = .TRUE.
+        cx_lo_ss ( src_cx, the_axis )  = ssmin
+        cx_hi_ss ( src_cx, the_axis )  = ssmax
+        cx_by_ss ( the_axis, src_cx )  = .TRUE.
 
-        cx_lo_ww ( idim, src_cx )  = unspecified_val8
-        cx_hi_ww ( idim, src_cx )  = unspecified_val8
-        cx_delta ( idim, src_cx )  = unspecified_val8
-        cx_trans ( idim, src_cx )  = trans_no_transform
-        cx_trans_arg(idim,src_cx)  = bad_val4
-        cx_given( idim, src_cx )  = .FALSE.
-        cx_regrid_trans(idim,src_cx) = unspecified_int4 
-        cx_formatted( idim )   = .FALSE.
+        cx_lo_ww ( the_axis, src_cx )  = unspecified_val8
+        cx_hi_ww ( the_axis, src_cx )  = unspecified_val8
+        cx_delta ( the_axis, src_cx )  = unspecified_val8
+        cx_trans ( the_axis, src_cx )  = trans_no_transform
+        cx_trans_arg(the_axis,src_cx)  = bad_val4
+        cx_given( the_axis, src_cx )  = .FALSE.
+        cx_regrid_trans(the_axis,src_cx) = unspecified_int4 
+        cx_formatted( the_axis )   = .FALSE.
 
-	CALL FLESH_OUT_AXIS( idim, src_cx, status )
+	CALL FLESH_OUT_AXIS( the_axis, src_cx, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * success

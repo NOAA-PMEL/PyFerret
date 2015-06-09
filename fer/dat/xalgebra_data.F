@@ -787,7 +787,7 @@
      .		alg_regrid_vizb (pauxrgrd_thick_ave)	/ .FALSE.	/,
      .		alg_regrid_title(pauxrgrd_fmrc)
      .						     / 'reorg T-F array'/,
-     .		alg_regrid_code (pauxrgrd_fmrc)		/ 'REORG'/,
+     .		alg_regrid_code (pauxrgrd_fmrc)		/ 'FMRC'/,
      .		alg_regrid_vizb (pauxrgrd_fmrc)		/ .FALSE.	/,
 
      .		(alg_regrid_title(i),

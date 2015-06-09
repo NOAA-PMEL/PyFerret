@@ -478,13 +478,13 @@ c	      next_char = istart + naxes - 1
      .		'this Ferret version doesnt support multi aux regrid args' 
 	        GOTO 5300
 	     ENDIF
-	     IF (idim .NE. z_dim
-     .	   .AND. idim .NE. t_dim
-     .	   .AND. idim .NE. f_dim  ) THEN
-		name =
-     .		'only the Z, T, and F axes can be used in' 
-	        GOTO 5300
-	     ENDIF
+!	     IF (idim .NE. z_dim
+!     .	   .AND. idim .NE. t_dim
+!     .	   .AND. idim .NE. f_dim  ) THEN
+!		name =
+!     .		'only the Z, T, and F axes can be used in' 
+!	        GOTO 5300
+!	     ENDIF
 
 	     aux_lparen_pos = i
 	     aux_rparen_pos = INDEX(text_buff(i:equal_pos), ')' )

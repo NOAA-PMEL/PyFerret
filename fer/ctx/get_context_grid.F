@@ -48,6 +48,8 @@
 * Also, if delta specifications were used (e.g. var[i=1:100:10]) then an
 * implicit axis AND grid must be created.
 
+*! EXTENSIVE FERRET DOCUMENTATION FOUND HERE
+
 *************************************
 * *** MANAGING DYNAMIC GRIDS AND AXES:  OVERVIEW  ***
 
@@ -144,7 +146,7 @@
 * V695  *acm* 2/15 cx_calendar stores info about formatting of T and F axes
 * V695+  *sh* 3/15 assign regrid transform for T-F plane FMRC regridding
 * V698+  *sh* 5/15 ax units for gz(density)=lo:hi:del should come from aux var
-*		   only partially fixed here: setting no units at all
+*		   only partially fixed here: T0 not parsed from auxvar units
 
 	include 'errmsg.parm'
 	include 'ferret.parm'
@@ -161,21 +163,24 @@
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'xfr_grid.cmn'   ! stack ptr should be in TMAP lib
+	include 'xunits.cmn_text'
 
 * calling argument declarations:
 	INTEGER	cx, status
 
 * internal variable declarations:
         LOGICAL   GEOG_COS_FACTOR, GEOG_LABEL,
-     .		  its_dyn, has_impl_axis, explicit_unstd, use_std_grid
-	INTEGER	  KNOWN_GRID, 
+     .		  its_dyn, has_impl_axis, explicit_unstd, use_std_grid,
+     .		  made_aux_line_dummy
+	INTEGER	  KNOWN_GRID, TM_UNIT_ID,
      .		  use_grid, ilo, ihi,
      .		  cat, var, dset, std_grid, std_axis, use_axis, idim,
      .		  base_grid, impl_grid, src_line
 	REAL*8	  SECS_TO_TSTEP, dlo, dhi, delta
-	CHARACTER VAR_CODE*128
+	CHARACTER VAR_CODE*128, AUX_VAR_UNITS*64
 
 * initialize
+	made_aux_line_dummy = .FALSE.
 	cat  = cx_category( cx )
 	var  = cx_variable( cx )
 	dset = cx_data_set( cx )
@@ -297,9 +302,14 @@
 * 5/15 ax units for gz(density)=lo:hi:del come from aux var
 	            IF ( cx_naux(cx) .GT.0
      .		   .AND. cx_aux_var(idim,cx) .NE. unspecified_int4 ) THEN
-* ... partial fix only: no longer taking units from native axis of this var
-*                       but still need to grab them from the aux var
-	               src_line = unspecified_int4
+* ... set up specimen line using units information from the auxiliary variable
+	               CALL TM_MAKE_BASIC_AXIS('tmp_aux_line_dummy',0.,1.,1,
+     .		       src_line, status)
+	               made_aux_line_dummy = .TRUE.
+	               line_units(src_line) = AUX_VAR_UNITS(cx,idim)
+	               line_unit_code(src_line) = TM_UNIT_ID(line_units(src_line))
+	               line_tunit(src_line) = un_convert(line_unit_code(src_line))
+* ** MORE TO BE DONE:  line_t0 and calendar need to be set as in cd_get_1_axis.F
 	            ELSE
 	               src_line = grid_line(idim,std_grid)
 	            ENDIF
@@ -422,7 +432,9 @@
 	   ELSEIF ( cx_regrid_trans(idim,cx) .EQ. unspecified_int4 ) THEN
 	      IF (cx_naux(cx) .EQ. 0) THEN
 	         cx_regrid_trans( idim, cx ) = prgrd_linear_interp
-	      ELSEIF (idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
+	      ELSEIF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim)
+     .	        .AND. cx_aux_var( idim,cx) .NE. unspecified_int4
+     .		.AND. cx_aux_var(t_dim,cx) .EQ. cx_aux_var(f_dim,cx) ) THEN
 	         cx_regrid_trans( idim, cx ) = pauxrgrd_fmrc ! T-F plane 
 	      ELSE
 	         cx_regrid_trans( idim, cx ) = pauxrgrd_linear
@@ -450,7 +462,8 @@
            ENDIF
         ENDIF
 
- 5000	RETURN
+ 5000	IF (made_aux_line_dummy) CALL TM_DEALLO_DYN_LINE(src_line) ! is this needed?
+	RETURN
 
 * error exits
 ! 5100	CALL ERRMSG( ferr_invalid_command, status,

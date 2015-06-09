@@ -66,6 +66,7 @@ C              finished. For polygon plots only, draw the main label twice.
 * V695 *acm*   4/15 (PyFerret) labels along axes will be drawn with the 
 *              tic-mark text style
 * V695 *acm*   5/15 Ticket 2279: Draw axis lines, tics and labels only once.
+* V695 *acm*   6/15 simplify the above change
 
 
 C**
@@ -126,7 +127,10 @@ C graticule lines, so the axes themselves are always solid, black.
 C	SETUP AXIS
 	CALL SETLAB(XF,YF,LTT,LTB,LYL,LYR,LXT,LXB,IFX,IFY,LTBb)
 
-	IF (ii .EQ. 2 .OR. .NOT.DRAW ) THEN
+C ---------- Skip this section if not drawing the axes ----------
+	IF (DRAW) THEN
+
+	IF (ii .EQ. 2) THEN
 	   LTT = 0
 	   LTB = 0
 	   LYL = 0
@@ -140,6 +144,7 @@ C
 C     DRAW AXIS, LEFT, RIGHT Y AXIS THEN TOP, BOTTOM XAXIS
 C
 	IF(MAKEP.EQ.'VIEW') GOTO 1000
+
       
 * (PyFerret) labels along vertical axes will be drawn with the ivtics text style
       IF (pyfont .AND. pyf_set(ivtics)) igroup = ivtics
@@ -148,19 +153,19 @@ C
 	  IY=ITY
 C	  YAXIS1 = LINEAR ,  YAXIS2 = LOG
 C  
-          IF((ITFLG.EQ.-1 .OR. ITFLG.EQ.2) .AND. DRAW)THEN
+          IF((ITFLG.EQ.-1 .OR. ITFLG.EQ.2))THEN
               IF(ITFLG.EQ.-1) CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
      *        YF,XLO,XF,TCSIZE,XHI,HGRAT, HCOLOR, HLINE, IPEN(0))
               IF(ITFLG.EQ.2) CALL TAYIS(ITYPETb,TLOb,IT1b,IT2b,DT,NMTCTb,LTBb,IFDBb,ISDBb,
      *        YF,XLO,XF,TCSIZEb,XHI,HGRAT, HCOLOR, HLINE, IPEN(0))
             hline = .FALSE.
 	  ELSE IF(ITYPEY.EQ.1)THEN
-	   IF (DRAW) CALL YAXIS1(XLO,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYL,IFY,YF,
+	   CALL YAXIS1(XLO,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYL,IFY,YF,
      *	    YCSIZE,XHI,YDMS,HGRAT, HCOLOR, HLINE, YVALOFF, NOYLAB, 
      *	    SHRINKY, IPEN(0))
             hline = .FALSE.
 	  ELSE
-            IF (DRAW) CALL YAXIS2(XLO,XF,YLO,YHI,0.,LYL,IFY,1,YF,YCSIZE,
+            CALL YAXIS2(XLO,XF,YLO,YHI,0.,LYL,IFY,1,YF,YCSIZE,
      .                    XHI,HGRAT, HCOLOR, HLINE, IPEN(0))
             hline = .FALSE.
           END IF
@@ -168,23 +173,25 @@ C
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
       IF(IAXON(4).EQ.1)THEN
 	IY=-ITY
-        IF((ITFLG.EQ.-1 .OR. ITFLG.EQ.2) .AND. DRAW) THEN
+        IF((ITFLG.EQ.-1 .OR. ITFLG.EQ.2)) THEN
             IF(ITFLG.EQ.-1) CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
      *      YF,XHI,XF,TCSIZE,XLO,HGRAT, HCOLOR, HLINE, IPEN(0))
             IF(ITFLG.EQ.2) CALL TAYIS(ITYPETb,TLOb,IT1b,IT2b,DT,NMTCTb,LTTb,IFDBb,ISDBb,
      *      YF,XHI,XF,TCSIZEb,XLO,HGRAT, HCOLOR, HLINE, IPEN(0))
            hline = .FALSE.
 	ELSE IF(ITYPEY.EQ.1)THEN
-	    IF (DRAW) CALL YAXIS1(XHI,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYR,IFY,YF,
+	    CALL YAXIS1(XHI,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYR,IFY,YF,
      *     YCSIZE,XLO,YDMS,HGRAT, HCOLOR, HLINE, YVALOFF, NOYLAB,
      *	    SHRINKY, IPEN(0))
            hline = .FALSE.
 	ELSE
-	   IF (DRAW) CALL YAXIS2(XHI,XF,YLO,YHI,0.,LYR,IFY,1,YF,YCSIZE,
+	   CALL YAXIS2(XHI,XF,YLO,YHI,0.,LYR,IFY,1,YF,YCSIZE,
      .                    XLO,HGRAT, HCOLOR, HLINE, IPEN(0))
            hline = .FALSE.
 	ENDIF
       ENDIF
+
+
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
 
 * (PyFerret) labels along horizontal axes will be drawn with the ihtics text style
@@ -196,16 +203,16 @@ C
 C	  XAXIS1 = LINEAR, XAXIS2 = LOG, TAXIS CALLS EITHER TAXIS0,
 C					 TAXIS1 OR TAXIS3
 C
-          IF((ITFLG.EQ.1 .OR. ITFLG.EQ.2) .AND.DRAW)THEN
+          IF((ITFLG.EQ.1 .OR. ITFLG.EQ.2)) THEN
               CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
      *        XF,YHI,YF,TCSIZE,YLO,VGRAT, VCOLOR, VLINE, IPEN(0))
               vline = .FALSE.
           ELSE IF (ITYPEX.EQ.1)THEN
-	      IF (DRAW) CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXT,IFX,XF,YHI,YF,
+	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXT,IFX,XF,YHI,YF,
      *	       XCSIZE,YLO,XDMS,VGRAT, VCOLOR, VLINE, XVALOFF, IPEN(0))
               vline = .FALSE.
           ELSE
-	      IF (DRAW) CALL XAXIS2(XLO,XHI,0.,LXT,IFX,1,XF,YHI,YF,XCSIZE,
+	      CALL XAXIS2(XLO,XHI,0.,LXT,IFX,1,XF,YHI,YF,XCSIZE,
      *                    YLO,VGRAT, VCOLOR, VLINE, IPEN(0))
               vline = .FALSE.
           END IF
@@ -213,20 +220,23 @@ C
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
       IF(MXBOT.EQ.0.AND.IAXON(2).EQ.1)THEN
           IX=ITX
-          IF((ITFLG.EQ.1 .OR. ITFLG.EQ.2) .AND.DRAW) THEN
+          IF((ITFLG.EQ.1 .OR. ITFLG.EQ.2)) THEN
               CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
      *        XF,YLO,YF,TCSIZE,YHI,VGRAT, VCOLOR, VLINE, IPEN(0))
               vline = .FALSE.
           ELSE IF (ITYPEX.EQ.1) THEN
-	      IF (DRAW) CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXB,IFX,XF,YLO,YF,
+	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXB,IFX,XF,YLO,YF,
      *	      XCSIZE,YHI,XDMS,VGRAT, VCOLOR, VLINE, XVALOFF, IPEN(0))
               vline = .FALSE.
           ELSE
-	      IF (DRAW) CALL XAXIS2(XLO,XHI,0.,LXB,IFX,1,XF,YLO,YF,XCSIZE,
+	      CALL XAXIS2(XLO,XHI,0.,LXB,IFX,1,XF,YLO,YF,XCSIZE,
      *                    YHI,VGRAT, VCOLOR, VLINE, IPEN(0))
               vline = .FALSE.
           END IF
       END IF
+
+      ENDIF  ! draw
+C ---------- End of skip section if not drawing the axes ----------
 
 * TMAP interrupt re-entry
  3333	CONTINUE

@@ -153,7 +153,8 @@
 *                   subroutines apparently make some settings for scaling on the page.
 *                   Call daxis with a flag "DRAW" set to false, which executes the 
 *                   routine but does not make drawing calls.
-* V694  *acm*  5/15 Ticket 2283. Handling axis scaling for ribbon plots. 
+* V694  *acm*  5/15 Ticket 2283. Handling axis scaling for ribbon plots.
+* V695  *acm*  6/15 Ticket 2297, scaling on overlay plots
 
 	include 'lines_inc.decl'
 	include 'LINES.INC'
@@ -471,7 +472,7 @@ c	    CALL PLOTPOL(X,NXS,XF,YF)
 	
 	DRAW = .FALSE.
 	CALL DAXIS(XF,YF,NMX,NMY,DRAW)
-	CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL,is_ribbon)
+ccc	CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL,is_ribbon)
 	IF (.NOT.SOVER) DRAW = .TRUE. 
 	IF (SOVER) lab1 = ' '
 	CALL DAXIS(XF,YF,NMX,NMY,DRAW)

@@ -1,0 +1,52 @@
+#!/bin/csh -f
+# script to check image files created after a run of the 
+# benchmark scripts against master image files. 
+#
+# ALSO NOTE THE compare utility
+# Here is a way to compare two images by subtracting them using ImageMagick's
+# "composite" utility.
+# 
+#   composite -compose subtract input1.png input2.png output.png
+# 
+# Pixels which are the same in both input images will be black in the output
+# image.
+
+# Clean up anything left from a previous check_metafiles_ImageMagick
+
+rm -f *.pdf.diff.pdf
+
+cd test_results
+set pdf_files = `ls *.pdf`
+set num_pdf_files = `ls -l *.pdf | wc -l `
+cd ../
+   
+set err_pdf = 0
+@ count = 0
+
+foreach pdf_file ($pdf_files)
+    set size = `ls -l $pdf_file | awk '{print $5}'`
+    set size2 = `ls -l test_results/$pdf_file | awk '{print $5}'`
+    if ("$size" != "$size2") then
+       echo "pdf files differ $pdf_file size $size test_results/$pdf_file size $size2" 
+       
+       cp test_results/$pdf_file test_results_$pdf_file
+       compare $pdf_file test_results/$pdf_file $pdf_file.diff.pdf
+       display $pdf_file &
+       display test_results_$pdf_file &  
+       display $pdf_file.diff.pdf
+
+       set err_pdf = 1
+    endif
+    @ count += 1
+
+end
+
+if ($err_pdf) then
+	echo "CHECK pdf FILES - THERE HAS BEEN AN ERROR"
+else
+	echo "    pdf files look good....."
+endif 
+
+# clean up
+rm -f *.pdf.diff.pdf
+rm -f test_results_*.pdf

@@ -90,7 +90,7 @@
 
 * internal variable declarations:
 	LOGICAL	ITSA_MODULO_REGRID, TM_ITS_SUBSPAN_MODULO, NC_GET_ATTRIB,
-     .		NC_GET_ATTRIB_STRING,
+     .		NC_GET_ATTRIB_STRING, ITSA_MODULO_AXIS,
      .		itsa_uvar, modulo_dest_regrid, allatonce, attoutflag, 
      .		got_it
 	INTEGER	CGRID_SIZE_MAX, CAXIS_LEN, CAXIS_MODLEN, CX_DIM_LEN, 
@@ -250,12 +250,25 @@
      .	 .AND.  trans .NE. trans_interpolate ) GOTO 200   ! 2/90
 
 * possibly need different limits for component than for result
+
 	   IF ( grid .NE. unspecified_int4 ) THEN
 	      IF ( trans .LT. trans_compress_code ) THEN
 	         CALL OFFSET_SS( axis, lo_cx, lo_off, hi_off, status )
 		 IF ( status .NE. ferr_ok ) GOTO 5000
 	         cx_lo_ss(hi_cx,axis) = cx_lo_ss(hi_cx,axis) + lo_off
 	         cx_hi_ss(hi_cx,axis) = cx_hi_ss(hi_cx,axis) + hi_off
+
+* Ticket 2301: If the requested region is at the end of an axis, so the offset
+* takes the high subscript below the axis start or the low subscript above the
+* axis end, definition, move the index limit(s) to the axis end. 
+* (similar change in is_trans)
+		 
+		 IF  ( .NOT. ITSA_MODULO_AXIS(hi_cx, idim) ) THEN
+		    IF (cx_hi_ss(hi_cx,axis) .LT.1) cx_hi_ss(hi_cx,axis) = 1
+		    IF (cx_lo_ss(hi_cx,axis) .GT. CAXIS_LEN(axis,hi_cx)) 
+     .                cx_lo_ss(hi_cx,axis) = CAXIS_LEN(axis,hi_cx)
+		 ENDIF
+
 	         cx_by_ss(axis,hi_cx) = .TRUE.
 	         CALL CONFINE_AXIS( axis, hi_cx, status )
 	         IF ( status .NE. ferr_ok ) GOTO 5000

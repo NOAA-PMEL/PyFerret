@@ -1,0 +1,28 @@
+! err693_shf_subscr.jnl
+! ticket 2231  Subscripts used to compute @SHF-1 at the low end of the axis
+
+
+def ax/edge/z=0:40:10 zax_t
+def ax/edge/z=5:45:10 zax_w
+let zw = z[gz=zax_w]
+let zdiff = zw - missing(zw[z=@shf:-1],0)
+let zdiff_t = zdiff[gz=zax_t@asn]
+
+! a range of K shows the values correctly
+list zdiff_t
+
+! but just K=1 returned a K=0 error
+can mem
+list/k=1 zdiff_t
+
+! Shift of -2
+can mem
+let zdiff = zw - missing(zw[z=@shf:-2],0)
+list/k=1 zdiff_t
+list/k=1:2 zdiff_t
+
+! Shift of +1
+can mem 
+let zdiff = zw - missing(zw[z=@shf:1],0)
+list/k=4 zdiff_t
+list/k=3:4 zdiff_t

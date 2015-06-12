@@ -1,0 +1,12 @@
+! err693_shift_w_region
+! Ticket 2300.  In fact with bounds checking on, the list a[i=@shf] would have 
+! caused a Fortran runtime error with out-of-bounds subscripts. The fix for 
+! ticket 2301 fixes this as well.
+
+set region/x=10:20
+let a = {1,2,3}
+list a
+list a[i=@shf]
+cancel region
+list a[i=@shf]
+

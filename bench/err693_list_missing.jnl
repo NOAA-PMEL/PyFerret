@@ -1,0 +1,10 @@
+! err693_list_missing.jnl
+
+let a= {1,2,3}
+let b = 1./0
+
+! Ths listing of b is .... was squashed onto the ends of values of a.  
+! 1   / 1:  1.000..
+! 2   / 2:  2.000..
+
+list a,b

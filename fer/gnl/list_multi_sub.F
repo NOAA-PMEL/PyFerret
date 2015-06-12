@@ -461,8 +461,8 @@
 	   IF ( mr_type(mr_list(ivar)) .EQ. ptype_string ) THEN
               width(ivar) = MIN(nleft+3, 1020)  ! arbitrary 1020 char max   
 	   ELSEIF ( all_bad ) THEN
-	      width(ivar) = min_width
-	      WRITE ( bad_fmt(ivar), 3002 ) min_width
+	      width(ivar) = MAX(min_width, 5)
+	      WRITE ( bad_fmt(ivar), 3002 ) 5
  3002	FORMAT ( '(A',I2,')' )	
 	   ELSE
 	      CALL VAR_DATA_FMT( nleft, nright, prec_digits, min_width,

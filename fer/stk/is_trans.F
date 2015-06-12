@@ -296,7 +296,7 @@
 
 * Ticket 2301: If the requested region is at the end of an axis, so the offset
 * takes the high subscript below the axis start or the low subscript above the
-* axis end, definition, move the index limit(s) to the axis end. 
+* axis end, move the index limit(s) to the axis end. 
 * (similar change in is_strip)
 
 	   IF  ( .NOT. ITSA_MODULO_AXIS(com_cx, idim) ) THEN

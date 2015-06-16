@@ -116,6 +116,8 @@
 *		  expression
 * V694+*acm*5/15  Fix for ticket 2273: return= shape, *size for expressions built 
 *                 of other exprns.
+* V695 *acm* 6/16 Fix ticket 1602. Do not substitute abstract axes for normal axes
+*                 when merging a constant.
 
 	include 'tmap_dims.parm'
 	include 'grid_chg_fcns.parm'
@@ -137,14 +139,14 @@
 
 * local variable declarations
 	LOGICAL		INHERITED_LIMITS, ITSA_PURE_SUM_VAR,
-     .			same, nest, expl_com_lim
+     .			same, nest, expl_com_lim, abstgrid, normabst, var_is_const
 	INTEGER		CX_DIM_LEN, TM_LENSTR1, REGION_CLASS,
      .			NEST_REGION_CLASS,  WHICH_GCFCN, GCF_RTN_TYPE,
      .			mrg_grd, mrg_ax, mrg_len, com_grd, com_ax, com_len,
      .			idim, i, icom, imrg, com_uvar, com_class, mrg_class,
      .			uv_class, ax_choice(6,5), joint_match(0:3,0:3),
      .			lims_gvn, gcfcn, axis_source(nferdims), uvar_test,
-     .			naux, blen
+     .			naux, blen, mabstract, iline
 	CHARACTER	VAR_CODE*128, buff*128
 
 * local parameter declarations
@@ -153,6 +155,8 @@
 	INTEGER		gnl,   lo,   lohi,   xact
 	PARAMETER     ( gnl=0, lo=1, lohi=2, xact=3 )
 
+* FERRET DOCUMENTATION: merging grids for an expression
+*
 * procedure:
 * the important considerations are
 *	o whether merged/component axes are same axis
@@ -263,7 +267,19 @@
 
 * do we have nested user-defined variables ?
 	nest = cx_category( com_cx ) .EQ. cat_user_var
-	IF ( nest ) com_uvar = cx_variable( com_cx )
+	IF ( nest ) THEN
+	   com_uvar = cx_variable( com_cx )
+	   var_is_const = uvar_item_type( uvar_num_items(com_uvar), com_uvar )
+     .          .EQ. alg_constant
+	ENDIF
+
+* Is the mrg_grd all normal or abstract ?
+	mabstract = grid_line( 1, mgrid_abstract )
+	normabst = .TRUE.
+	DO idim = 1, nferdims
+	   iline = grid_line(idim,mrg_grd)
+	   IF (iline.NE.mnormal .AND. iline.NE.mabstract) normabst = .FALSE.
+	ENDDO
 
 * for merged context to be data set independent all components must be so
 	IF ( cx_category(com_cx) .EQ. cat_pseudo_var ) THEN
@@ -469,6 +485,13 @@
 * update the merged cx_given value (added 1/97)
 	cx_given(idim,mrg_cx) = cx_given(idim,mrg_cx)
      .			  .AND. expl_com_lim
+
+* Do not substitute an abstract axis for normal axes in the grid 
+* when merging a constant
+
+	IF (com_ax.EQ.mabstract .AND. mrg_ax.EQ.mnormal) THEN
+	   IF (.NOT. (normabst) .AND. var_is_const) GOTO 400
+	ENDIF
 
 * take appropriate merging action
 *		  EXP  IMP WRN1   ***   NA  WRN2

@@ -1,0 +1,35 @@
+! err693_scalar_grids.jnl
+! See ticket 1602
+
+!  multiplication by scalar variable "let one = 1" added 
+!  abstract axes to the expression in all directions not 
+!  already reperesented in the grid.
+
+
+! The T averaging is ignored; no T direction in the grid.
+use levitus_climatology
+let a = temp[x=140,y=0,z=0]
+list a[t=1-jan-0001:1-jan-0020@ave]  
+
+! Multiply by a variable which is a constant (prev. this
+! resulted in an illegal use of transform error.)
+let one = 1
+let b = one*a
+list b[t=1-jan-0001:1-jan-0020@ave]
+
+! Test with a constant-array variable.
+let two = {2}
+let c = two*a
+list c[t=1-jan-0001:1-jan-0020@ave]
+
+
+! check interactions with GC functions (prev. this
+! resulted in an illegal use of transform error.)
+LET v = X[x=1:4:1] + Y[Y=.1:.4:.1]
+LET a = XSEQUENCE( v[I=2:3,J=2:3] ) + Z[Z=.01:.02:.01]
+LIST a[t=1-jan-0001:1-jan-0020@ave]  
+list b
+
+list b[x=@ave,k=@ave]
+
+

@@ -87,6 +87,7 @@
 	include	'xvariables.cmn'
 	include	'xtext_info.cmn'
 	include	'xalgebra.cmn'
+	include	'xfr_grid.cmn'
 
 * calling argument declarations:
 	INTEGER	status
@@ -98,8 +99,8 @@
 
 * internal variable declarations:
 * ... "res"="result" , "com"="component"
-	LOGICAL	ITSA_FILL_TRANS, its_4d, string_bad_good, string_com
-	INTEGER CX_DIM_LEN, MGRID_SIZE_DELTA, DO_4D_STRING_TRANS,
+	LOGICAL	ITSA_FILL_TRANS, ITSA_MODULO_AXIS, its_4d, string_bad_good, string_com
+	INTEGER CX_DIM_LEN, MGRID_SIZE_DELTA, DO_4D_STRING_TRANS, CAXIS_LEN,
      .		slen, cx_valid,
      .		res_isp, com_isp, res_cx, com_cx, com_mr, res_mr, idim,
      .		trans, grid, lo_off, hi_off, ss_lo, ss_hi, wksiz, wkblk,
@@ -182,6 +183,17 @@
 		DO 300 i = 1, ndim
 	   idim = axes(i)
 * ... if the requested region was unknown use the component region
+
+* ... abstract grid ignore a set region that may be in the res_cx.
+
+	   IF ( cx_lo_ss(res_cx,idim).EQ.unspecified_int4
+     .	   .AND.cx_lo_ww(idim,res_cx).NE.unspecified_val8 ) THEN
+	      IF (cx_grid(com_cx) .GE. mgrid_abstract .AND. cx_grid(com_cx) .LE. mgrid_fabstract ) THEN  
+	         cx_lo_ss( res_cx, idim ) = cx_lo_ss(com_cx,idim)
+	         cx_hi_ss( res_cx, idim ) = cx_hi_ss(com_cx,idim)
+              ENDIF
+	   ENDIF
+
 	   IF ( cx_lo_ss(res_cx,idim).EQ.unspecified_int4
      .	   .AND.cx_lo_ww(idim,res_cx).EQ.unspecified_val8 ) THEN
 * 11/95 - FLESH_OUT_AXIS cannot be trusted to flesh this out.
@@ -278,8 +290,21 @@
 * Note (8/92): when the requested limites are unknown the com_cx will be
 *              full-width along idim so subtracting the offset limits leaves
 *              cx_valid as beyond the possible range but no known crash results
+
 	   cx_lo_ss( cx_valid, idim ) = cx_lo_ss( com_cx, idim ) - lo_off
 	   cx_hi_ss( cx_valid, idim ) = cx_hi_ss( com_cx, idim ) - hi_off
+
+* Ticket 2301: If the requested region is at the end of an axis, so the offset
+* takes the high subscript below the axis start or the low subscript above the
+* axis end, move the index limit(s) to the axis end. 
+* (similar change in is_strip)
+
+	   IF  ( .NOT. ITSA_MODULO_AXIS(com_cx, idim) ) THEN
+	      IF (cx_hi_ss( com_cx, idim ) + hi_off .LT. 1) cx_hi_ss( cx_valid, idim ) = 1
+	      IF (cx_lo_ss( com_cx, idim ) + lo_off .GT. CAXIS_LEN(idim,com_cx)) 
+     .                   cx_lo_ss( cx_valid, idim ) = CAXIS_LEN(idim,com_cx)
+	   ENDIF 
+
 	   IF ( cx_lo_ss(cx_valid,idim) .GT. cx_hi_ss(cx_valid,idim) ) THEN
 * ... insufficient component data to compute anything
 	      IF ( mr_type(res_mr) .EQ. ptype_string ) THEN

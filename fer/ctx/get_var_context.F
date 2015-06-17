@@ -213,6 +213,9 @@ c Fix for bug 1475
 c FLESH_OUT_AXIS has a check for whether there is a transformation that
 c reduces the range to a point and if so sets cx_by_ss(idim,cx)=.FALSE.
 
+** NOTE: This change causes bug 1748 because then the index range for the
+** transform doesn't get checked in confine_context.
+
 * flesh out the context on each axis with grid-related positions
 * seeing if cx_by_ss(idim,cx) should really be in effect
 	DO 11 idim = 1, nferdims

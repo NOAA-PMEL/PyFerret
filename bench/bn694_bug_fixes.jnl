@@ -94,3 +94,15 @@ GO err693_ribbon_scale
 
 GO bn_reset
 GO err693_parse_curly
+
+GO bn_reset
+GO err693_list_missing
+
+GO bn_reset
+GO err693_shf_subscr
+
+GO bn_reset
+GO err693_shift_w_region
+
+GO bn_reset
+GO err693_scalar_grids

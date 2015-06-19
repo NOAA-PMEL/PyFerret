@@ -137,14 +137,19 @@ grdelBool cairoCFerBind_drawPolygon(CFerBind *self, double ptsx[], double ptsy[]
                   brushobj->color.opaquefrac);
 
         /* Fill the rectangle, but preserve the path for stroking */
-        cairo_fill_preserve(instdata->context);
+        /* 
+         * cairo_fill_preserve(instdata->context); 
+         */
+        cairo_fill(instdata->context);
 
         /* Stroke the path with a solid cosmetic (one pixel width) line */
-        cairo_set_line_width(instdata->context, 1.0 * unitfactor);
-        cairo_set_dash(instdata->context, NULL, 0, 0.0);
-        cairo_set_line_cap(instdata->context, CAIRO_LINE_CAP_SQUARE);
-        cairo_set_line_join(instdata->context, CAIRO_LINE_JOIN_BEVEL);
-        cairo_stroke(instdata->context);
+        /*
+         * cairo_set_line_width(instdata->context, 1.0 * unitfactor);
+         * cairo_set_dash(instdata->context, NULL, 0, 0.0);
+         * cairo_set_line_cap(instdata->context, CAIRO_LINE_CAP_SQUARE);
+         * cairo_set_line_join(instdata->context, CAIRO_LINE_JOIN_BEVEL);
+         * cairo_stroke(instdata->context);
+         */
 
         /* Reset the original transformation */
         /*

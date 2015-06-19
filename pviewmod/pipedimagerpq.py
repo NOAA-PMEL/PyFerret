@@ -721,8 +721,8 @@ class PipedImagerPQ(QMainWindow):
             if self.isHidden():
                 self.showNormal()
         elif cmndact == "noalpha":
-             # ignore any alpha channel values in colors
-             self.__noalpha = True
+            # ignore any alpha channel values in colors
+            self.__noalpha = True
         else:
             raise ValueError("Unknown command action %s" % str(cmndact))
 

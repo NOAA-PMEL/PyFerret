@@ -1022,7 +1022,7 @@ class PipedViewerPQ(QMainWindow):
             if self.isHidden():
                 self.showNormal()
         elif cmndact == "noalpha":
-             self.__noalpha = True
+            self.__noalpha = True
         elif cmndact == "beginView":
             self.beginView(cmnd)
         elif cmndact == "clipView":
@@ -1340,7 +1340,8 @@ class PipedViewerPQ(QMainWindow):
             if ( mybrush == Qt.NoBrush ):
                 raise ValueError('drawPolygon called without a Brush or Pen')
             # Use a "cosmetic" Pen matching the brush
-            mypen = QPen(mybrush, 1.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
+            # mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
+            mypen = Qt.NoPen
         self.__activepainter.setBrush(mybrush)
         self.__activepainter.setPen(mypen)
         self.__activepainter.drawPolygon(mypolygon)
@@ -1395,7 +1396,8 @@ class PipedViewerPQ(QMainWindow):
             if ( mybrush == Qt.NoBrush ):
                 raise ValueError('drawPolygon called without a Brush or Pen')
             # Use a "cosmetic" Pen matching the brush
-            mypen = QPen(mybrush, 1.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
+            # mypen = QPen(mybrush, 1.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
+            mypen = Qt.NoPen
         self.__activepainter.setBrush(mybrush)
         self.__activepainter.setPen(mypen)
         self.__activepainter.drawRect(myrect)

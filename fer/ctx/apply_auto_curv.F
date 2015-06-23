@@ -43,6 +43,7 @@
 * V690 12/13 *sh* - hidden curvi regrids added 4/14
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * V695+  3/15 *sh* added pauxrgrd_fmrc for GT(time2d)+1d and GF(time2d)=1d
+* V698+  6/15 *sh* generalize single_pt applicable to all axes
 
 	IMPLICIT NONE
 
@@ -82,10 +83,9 @@
 	  cx_aux_stat(idim,cx) = paux_stat_used 
 
 * single point Z-axis regrid?
-	   single_pt = idim .EQ. z_dim  .AND.
-     .	   (        cx_lo_ww(idim,cx) .EQ. cx_hi_ww(idim,cx)
-     .	  .OR.    ( cx_trans(idim,cx) .EQ. trans_average
-     .        .AND. cx_delta(idim,cx) .EQ. unspecified_val8 )     )
+	   single_pt = cx_lo_ww(idim,cx) .EQ. cx_hi_ww(idim,cx)
+     .	     .OR.    ( cx_trans(idim,cx) .EQ. trans_average
+     .           .AND. cx_delta(idim,cx) .EQ. unspecified_val8 )
 
 * modify the xform or regridding xform to be an aux var regrid xform
 	   IF     ( single_pt ) THEN   ! Z=pt or Z=lo:hi@ave
@@ -99,11 +99,11 @@
 	      cx_trans(idim,cx) = trans_no_transform
 	   ELSEIF ( cx_regrid_trans(idim,cx) .EQ. prgrd_average 
      .	       .OR. cx_trans(idim,cx)        .EQ. trans_average ) THEN
-	      CALL WARN_OCCASIONALLY(
-     .		   'Box-averaging not available for layerz axis '//
-     .		   'regridding.'//pCR//
-     .		   '           Using piecewise linear averaging instead, '//
-     .		   'equivalent to gz(depth)=0:100@plave', 10, 101)
+!	      CALL WARN_OCCASIONALLY(
+!     .		   'Box-averaging not available for layerz axis '//
+!     .		   'regridding.'//pCR//
+!     .		   '           Using piecewise linear averaging instead, '//
+!     .		   'equivalent to gz(depth)=0:100@plave', 10, 101)
 	       cx_regrid_trans(idim,cx) = pauxrgrd_pwlave
 	       cx_trans       (idim,cx) = trans_no_transform
 	   ELSEIF (cx_regrid_trans(idim,cx) .EQ. prgrd_linear_interp) THEN
@@ -163,15 +163,9 @@
  5000	RETURN
 
 * error exits
- 5200	IF (idim .EQ. z_dim) THEN
-	   CALL ERRMSG( ferr_invalid_command, status,
-     .	     'xform not (yet) supported on layerz var: '
+ 5200	CALL ERRMSG( ferr_invalid_command, status,
+     .	     'xform not (yet) supported on auxiliary variable regridding: '
      .		//full_var_name, *5000)
-	ELSE
-	   CALL ERRMSG( ferr_invalid_command, status,
-     .	     'xform not (yet) supported on curvilinear var: '
-     .		//full_var_name, *5000)
-	ENDIF
 
 	END
 

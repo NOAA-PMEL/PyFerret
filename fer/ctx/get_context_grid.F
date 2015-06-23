@@ -48,7 +48,8 @@
 * Also, if delta specifications were used (e.g. var[i=1:100:10]) then an
 * implicit axis AND grid must be created.
 
-*! EXTENSIVE FERRET DOCUMENTATION FOUND HERE
+
+* FERRET DOCUMENTATION: MANAGING DYNAMIC GRIDS AND AXES:  OVERVIEW
 
 *************************************
 * *** MANAGING DYNAMIC GRIDS AND AXES:  OVERVIEW  ***

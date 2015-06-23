@@ -2,6 +2,7 @@
      .				           src,  msrc, src_cx,
      .				           dst,  mdst, dst_cx,
      .				           pos,  mpos, pos_cx,
+     .					   kmin_pos, kmax_pos, 
      .					   kmin_src, kmax_src, 
      .					   kmin_dst, kmax_dst    )
 
@@ -56,6 +57,7 @@
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * v695+ 3/15 *sh*  change to call name to accommodate T axis regridding
 * v698+ 5/15 *sh* linear regrid allows monotonic, but averaging doesnt
+*       6/15 *sh* bug fix in determination of ascending affects false_1pt_regrid [gz(aux)=pt]
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -69,7 +71,7 @@
 	LOGICAL	aux_has_cell_pts
 	INTEGER	axis,
      .		msrc, mdst, mpos, src_cx, dst_cx, pos_cx,
-     .		kmin_src, kmax_src, kmin_dst, kmax_dst
+     .		kmin_src, kmax_src, kmin_dst, kmax_dst, kmin_pos, kmax_pos
         REAL    src( m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,
      .               m4lot:m4hit,m4loe:m4hie,m4lof:m4hif ),
      .          dst( m5lox:m5hix,m5loy:m5hiy,m5loz:m5hiz,
@@ -97,7 +99,7 @@
 * internally declared work arrays
 	INTEGER	indices(kmin_dst:kmax_dst+1),
      .		dstlo(nferdims), dsthi(nferdims)
-	REAL	  posline(kmin_src:kmax_src),srcline(kmin_src:kmax_src),
+	REAL	  posline(kmin_pos:kmax_pos),srcline(kmin_src:kmax_src),
      .		  dstline(kmin_dst:kmax_dst),
      .		dstcoords(kmin_dst:kmax_dst+1),coef(kmin_dst:kmax_dst+1)
 
@@ -252,8 +254,9 @@
 
 * compute on the source and destination coords only if they differ from last
 	     IF (new_aux_line) THEN
-* extract the line of source coord vals from the aux variable at this location
-	        CALL EXTRACT_ARG1_LINE( pos, axis, kmin_src, kmax_src,
+* extract the line of coord vals from the aux variable at this location
+* 6/2015-- do full region so that we get a reliable determination of ascending vs descending
+	        CALL EXTRACT_ARG1_LINE( pos, axis, kmin_pos, kmax_pos,
      .				        ip, jp, kp, lp, mp, np, posline )
 
 
@@ -269,29 +272,9 @@
 	        kstart = kmax_src
 	        kend   = kmin_src
 
-* ... find start of non-bad block
-	        DO ss = kmin_src, kmax_src
-	           IF (posline(ss) .NE. bad_pos) THEN
-	              kstart = ss
-	              GOTO 510
-	           ENDIF
-	        ENDDO
-* ... find end of non-bad block
- 510	        DO ss = kmax_src, kstart, -1
-	           IF (posline(ss) .NE. bad_pos) THEN
-	              kend = ss
-	              GOTO 520
-	           ENDIF
-	        ENDDO
-* ... is there a contiguous block at all?
- 520		IF (kstart .GE. kend-1) THEN
-	           monotonic_block = .TRUE.
-	           GOTO 590                 ! at most 2 values in block
-	        ENDIF
-
 * ... count ascending and descending pairs
-		v0 = posline(kstart)
-	        DO ss = kstart+1, kend
+		v0 = posline(kmin_pos)
+	        DO ss = kmin_pos+1, kmax_pos
 		   v1 = posline(ss)
 	           IF (v1 .NE. bad_pos) THEN
 	              IF (v1 .GT. v0) THEN
@@ -304,10 +287,28 @@
 	        ENDDO
 
 * ... assess the monotonicity
-* Note: through this approach columns may differ in direction!!
+*     Note: through this approach columns may differ in direction in pathological data!!
 	        ascending = n_ascnd .GE. n_desnd
 
- 590		CALL FULL_SCAN_INDICES(posline, kmin_src, kmax_src,
+* ... find start of non-bad block
+	        DO ss = kmin_src, kmax_src
+	           IF (posline(ss) .NE. bad_pos) THEN
+	              kstart = ss
+	              GOTO 510
+	           ENDIF
+	        ENDDO
+* ... find end of non-bad block
+ 510	        DO ss = kmax_src, kstart, -1
+	           IF (posline(ss) .NE. bad_pos) THEN
+	              kend = ss
+	              GOTO 590
+	           ENDIF
+	        ENDDO
+
+* ... no non-bad-block exists
+	        CONTINUE
+
+ 590		CALL FULL_SCAN_INDICES(posline(kmin_src), kmin_src, kmax_src,
      .				  kstart, kend,
      .				  bad_pos, dstcoords,
      .				  indices, coef, kmin_dst, kdmax,
@@ -337,7 +338,7 @@
 	        ELSEIF (trans .EQ. pauxrgrd_pwlave ) THEN
 * ... by within-target-cell averaging   (count non-monotonic positions)
 	           CALL DO_AUX_REGRID_LINE_AVE (axis,
-     .				  srcline,  posline,
+     .				  srcline,  posline(kmin_src),
      .				  kmin_src, kmax_src,
      .				  indices,  coef,
      .				  kmin_dst, kmax_dst,

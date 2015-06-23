@@ -90,11 +90,15 @@
 	      CALL AUX_REGRID_LIMS_2D_TF( dst_cx, src_cx, axis_list, naxis,
      .			                 aux1, mr1, cx1, status )
 	   ELSE
-	      CALL ERRMSG(ferr_internal, status, 'aux_regrid_lims_2d', *5000 )
+	      CALL ERRMSG(ferr_too_many_args, status,
+     .		'only 1D auxiliary variable regridding available at this time',
+     .		 *5000 )
 	   ENDIF
 
 	ELSE
-	   CALL ERRMSG(ferr_internal, status, 'aux_regrid_lims_Nd', *5000 )
+	      CALL ERRMSG(ferr_too_many_args, status,
+     .		'only 1D auxiliary variable regridding available at this time',
+     .		 *5000 )
 	ENDIF
 
 * success

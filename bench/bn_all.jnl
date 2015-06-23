@@ -103,6 +103,7 @@ SET MODE VERIFY
 ! 11/06 *acm* New bn602_bug_fixes for version 6.02
 * V610  *acm* 3/08 - add new MODE NLEVELS
 * V685  *sh* 11/13 - added bn_vtree to test SHOW VAR/TREE
+* V698+ *sh* 06/15 - added bn_auxiliary
 
 ! Include this statement to compare the outupt of 6D Ferret with 
 ! previous 4D benchmark logs.
@@ -974,6 +975,9 @@ GO bn_can_var_noerr
 
 GO bn_reset
 GO bn_annotate
+
+GO bn_reset
+GO bn_auxiliary
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

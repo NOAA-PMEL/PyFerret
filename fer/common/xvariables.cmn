@@ -62,6 +62,7 @@
 *	           including is_aux_ptr, and uvar_curvi_var/cat
 *		   added space at the top of the isp stack for nferdims auxvars
 * V695+ *sh* 5/15  added uvar_c_cache_ptr for c-malloc caching of aux vars
+* V698+ *sh* 6/15  changed is_sum from REAL to INTEGER
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -418,8 +419,8 @@
      .			is_axis ,
      .			is_uvar ,
      .			is_mr,
-     .			is_aux_ptr
-	REAL		is_sum
+     .			is_aux_ptr,
+     .			is_sum
 
 * equivalences to assist with declaration statements
 	INTEGER mr_lo_s1( max_mrs ),

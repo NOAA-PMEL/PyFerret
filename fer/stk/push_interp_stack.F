@@ -44,7 +44,8 @@
 *
 * revision 0.0 - 2/19/87
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-* v690 2/2014 *sh* stack max limited to max_usable_intrp to fit aux frames at top
+* v690  2/2014 *sh* stack max limited to max_usable_intrp to fit aux frames at top
+* v698+ 6/2015 *sh* is_sum changed from REAL to INTEGER
  
         include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -76,7 +77,7 @@
 	is_phase    ( isp ) = unspecified_int4
 	is_axis     ( isp ) = unspecified_int4
 	is_mr       ( isp ) = unspecified_int4
-	is_sum      ( isp ) = -777.
+	is_sum      ( isp ) = -777
 
 	RETURN
 	END

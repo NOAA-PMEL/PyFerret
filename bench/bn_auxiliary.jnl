@@ -1,0 +1,403 @@
+! bn_auxiliary.jnl:  exercise auxiliary coordinate regridding
+
+! notes about the 6/2015 version:
+! -- tests 1D regridding, only, as of 6/2015
+! -- includestests the deprecated "LAYERZ" and "__LayerzRef_" automation syntax
+!    ... to be replaced by a different automation syntax in the future
+
+! *sh* 6/2015
+
+! initialize the test environment
+USE levitus_3d_subset
+SPAWN rm layerz_test_data.txt
+LET Zpts = Z[Z=100:500:100]
+DEFINE AXIS/z/units=meters zax = zpts
+
+! conjure a 4D auxiliary variable that contains the same values
+! as the native Z coordinates
+! regridding using this auxiliary variable should give the same results as
+! conventional regridding -- usefuly to validate the results
+LET/D=levitus_3d_subset depth = z[g=temp]+ 0*temp[k=1]
+
+!************
+! exercise the syntax of setting layerz associations
+! do same tests on EZ, uvar, and netCDF variable
+
+! EZ file variable
+LIST/NOHEAD/FILE=layerz_test_data.txt 1
+FILE/VAR=v layerz_test_data.txt
+! set the layerz link to point to a variable named "depth"
+SET VAR/layerz=depth v
+SHOW VAR/LAYERZ v
+SHOW ATT v
+! modify the layerz link
+SET VAR/layerz=newdepth v
+SHOW VAR/LAYERZ v
+SHOW ATT v
+cancel var/layerz v
+SHOW VAR/LAYERZ v
+SHOW ATT v
+CANCEL DATA layerz_test_data.txt
+
+! user variable
+! set the layerz link
+LET a = temp
+SET VAR/layerz=depth a
+SHOW VAR/LAYERZ a
+SHOW ATT a
+! modify the layerz link
+SET VAR/layerz=newdepth a
+SHOW VAR/LAYERZ a
+SHOW ATT a
+cancel var/layerz a
+SHOW VAR/LAYERZ a
+SHOW ATT a
+
+! netCDF file variable
+! set the layerz link
+SET VAR/layerz=depth temp[d=levitus_3d_subset]
+SHOW VAR/LAYERZ/d=levitus_3d_subset temp
+SHOW ATT temp.__LayerzRef_[d=levitus_3d_subset]
+! modify the layerz link
+SET VAR/layerz=newdepth temp[d=levitus_3d_subset]
+SHOW VAR/LAYERZ/d=levitus_3d_subset temp
+SHOW ATT temp.__LayerzRef_[d=levitus_3d_subset]
+cancel var/layerz temp[d=levitus_3d_subset]
+SHOW VAR/LAYERZ/d=levitus_3d_subset temp
+SHOW ATT temp[d=levitus_3d_subset]   ! __LayerzRef_ has been deleted
+
+! deliberate error
+SET MODE ignore; SET VAR/layerz=depth noexist; SET MODE/last ignore
+
+!************
+! exercise the layerz calculations in various situations
+! compare the manually specified syntax with the automated results
+
+! make "depth" the layerz coordinate variable for "temp"
+SET VAR/layerz=depth temp[d=levitus_3d_subset]
+
+! values of the unadulterated variable
+list/PREC=7 temp[z=0:500]
+SHOW GRID
+
+! use aux var regridding.  Target coordinate points match the source points 
+! identically at 0, 100, 200, ... 500
+! values should match the unadulterated variable at these points
+! this command will be issued in diagnostic mode to highlight that the
+! K range over which temp is read is the minimum needed to compute the result 
+SET MODE diagnostic 
+LET tempz = temp[gz(depth)=zpts]
+LIST/PREC=7 tempz
+SHOW GRID tempz
+!LET tempz = temp[gz=zpts,layerz]  ! same regrid using semi-automated notation
+!LIST/PREC=7 tempz
+!SHOW GRID tempz
+SET MODE/last diagnostic 
+
+! list a little with no imtermediate variable, so Z labeling is visible
+LIST/PREC=7 temp[gz(depth)=zpts,k=1]
+!LIST/PREC=7 temp[gz=zpts,k=1,layerz] ! same using semi-automated notation
+
+! same calculation, but with a named Z axis
+LET tempzax = temp[gz(depth)=zax]
+LIST tempzax
+SHOW GRID tempzax
+!LET tempzax = temp[gz=zax,layerz]  ! same regrid using semi-automated notation
+!LIST tempzax
+!SHOW GRID tempzax
+
+! regrid to a different set of Z points
+LET tempz_alt = temp[gz(depth)=2:10:2]
+LIST/PREC=7 tempz_alt
+SHOW GRID tempz_alt
+
+!! do same regrid using the shorhand semi-automated notation
+!LIST/PREC=7 temp[z=2:10:2,layerz]   ! lo:hi:delta notation
+!SHOW GRID
+
+! test the shorthand notation var[gz(depth)=100] as an implicit aux var
+! regrid via linear interpolation
+! the value should match the preceding output at Z=6
+LET tempz_1pt = temp[gz(depth)=6]
+LIST/PREC=7 tempz_1pt
+SHOW GRID/z tempz_1pt
+
+! do same regrid using the shorhand semi-automated notation
+LIST/PREC=7 temp[z=6,layerz]     ! =1pt notation   WILL BE CHANGED!
+SHOW GRID
+
+! auxiliary points in reverse order
+! to get results that we can check for correctness, we will reverse the Z-order
+! of the temperature field as well as the depth field.
+LET rvtemp0 = ZREVERSE(temp)
+LET rvtemp  = rvtemp0[gz=temp@asn]
+LET rvdepth0 = ZREVERSE(depth)
+LET/D=levitus_3d_subset rvdepth  = rvdepth0[gz=temp@asn]
+! **** NOTE: THERE'S A SUBTLE MISBEHAVIOR IN AUX REGRID SHOWN IN THIS COMMENTED
+! OUT LINE BUT WILL RARELY OCCUR AND EASILY WORKED AROUND
+!LET rvtempzax = rvtemp[gz(rvdepth)=zax]  ! zlims aren't filled in if not given
+LET rvtempzax = rvtemp[gz(rvdepth)=zax,z=100:500]
+LIST/PREC=7 rvtempzax - tempz
+SHOW GRID rvtempzax
+
+! deliberate execution errors:
+LET disordered_depth1 = IF K EQ 3 THEN DEPTH[K=1] ELSE DEPTH
+LET disordered_tempz1 = temp[gz(disordered_depth1)=zax]
+LET disordered_depth2 = IF K EQ 3 THEN DEPTH[K=5] ELSE DEPTH
+LET disordered_tempz2 = temp[gz(disordered_depth2)=zax]
+SET MODE ignore
+LIST disordered_tempz1
+LIST disordered_tempz2
+SET MODE/last ignore
+
+! test VTREE with a complex auxiliary variable definitions
+VTREE 
+
+! 6-dimensional regridding
+
+! 6d temperature and 3d depth field (depth unchanging in time, ensemble and forecast) 
+LET temp6d = temp/100 + 1*L[L=1:2] + 10*_M[M=1:2] + 100*_N[N=1:2] 
+!list/k=7:12/PREC=7 temp6d
+LET tempz6d = temp6d[gz(depth)=zpts]
+!LIST/PREC=7 tempz6d
+! compare pre- and post- regrid at a fixed depth
+stat/z=100 temp6d-tempz6d
+stat/z=400 temp6d-tempz6d
+
+! 6d temperature and 6d depth field
+! hold temperature constant over time, have depths change
+! note that for N=2 depths of less than 100 are no longer in the data hence missing values at Z=100
+LET temp6d_const = temp + 0*L[L=1:2] + 0*_M[M=1:2] + 0*_N[N=1:2]     ! constant in T,E,F
+LET depth6d = depth + 10*(L[L=1:2]-1) + 50*(_M[M=1:2]-1) + 100*(_N[N=1:2]-1) 
+LET tempz6d_tDep = temp6d_const[gz(depth6d)=zpts]
+LIST/PREC=7 tempz6d_tDep
+LIST/PREC=7/k=7:8 temp6d_const, depth6d  ! reference values at Z=100, 200, 300 for visual comparison
+! ... some spot checks
+LIST/PREC=7/l=1/m=1/n=1 tempz6d_tDep[Z=100] - temp6d_const[k=7]
+LIST/PREC=7/l=1/m=2/n=1 tempz6d_tDep[Z=200] - temp6d_const[k=8]
+LIST/PREC=7/l=1/m=2/n=2 tempz6d_tDep[Z=300] - temp6d_const[k=8]
+
+! ** deliberate error **
+! 6d temperature and 3d depth field (depth unchanging in time, ensemble and forecast) 
+! Ferret does not permit auxiliary variable to have an axis not found on the source variable
+! (to avoid having to consider auxiliary variables during grid-getting ... possible to do)
+SET MODE IGNORE
+LET tempz6d_unmatch = temp[gz(depth6d)=zpts]
+LIST/PREC=7 tempz6d_unmatch
+SET MODE/LAST IGNORE
+
+! ********************************
+! test the @plave regridding -- ave defined from area under piecewise curve
+
+! first compare to our simplest of linear interpolation regrids, tempz
+! note that results will differ due to non-linearity
+! at Z=500 on the output they become identical because the Z=500 grid box
+! extends 450:550 with source points at Z=400 and Z=600 -- pure linear
+! LET tempz = temp[gz(depth)=zpts]
+LET tempzave = temp[gz(depth)=zpts@plave]
+LIST tempzave - tempz
+
+! list a little.  Note the regridding transform label
+LIST/PREC=7 temp[gz(depth)=zpts@plave,k=1]
+
+! Levitus has points at 50, 75, 100, 150, 200
+! define target axis with edges at 50:75 (k=1),  75:100 (k=2)
+!                                 100:125(k=3), 125:150 (k=4), 150:175(k=5) 
+define axis/edges/z=50:175:25/units=m zpt2     ! point at 125 is mid-way
+
+! raw source data -- artifically designed for easy mental calcs
+LET myvals = temp*0+100*(i-100)+10*(j-40)+k 
+list/PREC=7 myvals[z=50:300]
+
+! linear interpolation regridding
+LET mzlin2 = myvals[gz(depth)=zpt2]
+LIST/PREC=7 mzlin2
+
+! average-regridding
+LET mzave2 = myvals[gz(depth)=zpt2@plave]
+
+! cases:
+! 1) both edges lie on source points
+LIST/PREC=7 mzave2[k=2]   ! vals at 75, 100 ==> 75:100
+
+! 2) lower edge only lies on source point
+LIST/PREC=7 mzave2[k=3]   ! vals at 100, 150 ==> 100:125
+
+! 3) upper edge only lies on source point
+LIST/PREC=7 mzave2[k=4]   ! vals at 100, 150 ==> 125:150
+
+! 4) full range
+! myvals2 is linear in k, so @plave and @lin get identical results
+LIST/PREC=7 mzave2
+LIST/PREC=7 mzave2 - mzlin2
+
+! 5) divide a single source range into multiple destination cells
+! a range of 50 divided into 5 cells will have means of x.1,x.3,x.5, x.7, x.9
+define axis/edges/z=150:200:10/units=m zpt3 
+LET mzave3 = myvals[gz(depth)=zpt3@plave]
+LIST/PREC=7 mzave3
+
+! 6) derive a single destination cell from many source points
+! by manual calculation the correct answers will be n.333333
+define axis/edges/z=50:200:150/units=m zpt4
+LET mzave4 = myvals[gz(depth)=zpt4@plave]
+LIST/PREC=7 mzave4
+
+! 7) derive a single destination cell from many source points
+! by manual calculation the correct answers will be n.8125
+define axis/edges/z=50:250:200/units=m zpt5
+LET mzave5 = myvals[gz(depth)=zpt5@plave]
+LIST/PREC=7 mzave5
+
+! 8) test the short-hand notation var[gz(depth)=0:100@ave] as an implicit
+! aux var regrid via piecewice linear averaging
+! To confirm correct results we create a piecewize linear function that
+! has constant slope.  Averaging such a function over a symmetric region
+! around a point on the source data should return the value at the point
+LET myvals_z = TEMP*0+100*(I-100)+10*(J-40)+Z
+list/PREC=7 myvals_z[z=200]
+list/PREC=7 myvals_z[gz(depth)=190:210@ave]
+list/PREC=7 myvals_z[gz(depth)=150:250@ave]
+
+! 8a) do same regrid using the shorhand semi-automated notation
+SET VAR/LAYERZ=depth myvals_z
+list/PREC=7 myvals_z[z=190:210@ave,layerz]  ! lo:hi@ave notation WILL BE CHANGED
+list/PREC=7 myvals_z[z=150:250@ave,layerz]  ! WILL BE CHANGED
+
+! test missing values in the depth array
+! cases:
+! 1) missing values at start of aux array
+define axis/z=25:200:25/units=m zpt6
+LET depmis = IF (I NE 102 OR k GT 6) THEN depth
+LET mzmis = myvals[gz(depmis)=zpt6]
+LIST/PREC=7 mzmis
+LET mzavemis = myvals[gz(depmis)=zpt6@plave]
+LIST/PREC=7 mzavemis
+
+! 2) missing values at end of aux array
+LET depmis = IF (I NE 102 OR k LT 9) THEN depth
+LET mzmis = myvals[gz(depmis)=zpt6]
+LIST/PREC=7 mzmis
+LET mzavemis = myvals[gz(depmis)=zpt6@plave]
+LIST/PREC=7 mzavemis
+
+! 3) missing values in midst of aux array -- stops processing beyond
+LET depmis = IF (I NE 102 OR k EQ 7 OR K EQ 8) THEN depth
+LET mzmis = myvals[gz(depmis)=zpt6]
+LIST/PREC=7 mzmis
+LET mzavemis = myvals[gz(depmis)=zpt6@plave]
+LIST/PREC=7 mzavemis
+
+! 4) singleton non-missing values in a line of the aux array
+LET depmis = IF (I NE 102 OR K EQ 8) THEN depth
+LET mzmis = myvals[gz(depmis)=zpt6]
+LIST/PREC=7 mzmis
+LET mzavemis = myvals[gz(depmis)=zpt6@plave]
+LIST/PREC=7 mzavemis
+
+! 5) there are only missing values in a line of the aux array
+LET depmis = IF (I NE 102) THEN depth
+LET mzmis = myvals[gz(depmis)=zpt6]
+LIST/PREC=7 mzmis
+LET mzavemis = myvals[gz(depmis)=zpt6@plave]
+LIST/PREC=7 mzavemis
+
+! 6) two separated singletons -- only the first should be found
+LET depmis = IF (I NE 102 OR K EQ 6 OR K EQ 8) THEN depth
+LET mzmis = myvals[gz(depmis)=zpt6]
+LIST/PREC=7 mzmis
+LET mzavemis = myvals[gz(depmis)=zpt6@plave]
+LIST/PREC=7 mzavemis
+list depmis[z=25:200]      ! to illustrate why the result is as it is
+
+! ********
+! reversed-auxiliary variable used in regridding
+! (see definitions made earlier)
+! Note that the regridded result only matches the original data in regions 
+! where the underlying piecewise function remains strictly linear with
+! unchanging slope/intercept.  Since the Z=500 point has cell limits 450:550
+! and the underlying Levitus Z points (used in the definition of "depth") are
+! at 400 and 600, we get the identical result from @PLAVE and @LIN
+LET rvtempzaxave = rvtemp[gz(rvdepth)=zax@plave,z=100:500]
+LIST/PREC=7 rvtempzaxave - tempz
+SHOW GRID/z rvtempzaxave
+
+! 5/15 -- added tests for non-monotonic auxiliary variable
+!test_non_monotonic_aux_z.jnl
+
+cancel region
+define axis/x=161e:165e:1 xax
+define axis/z=100:600:100 zax
+
+let temp = 0.0001*Z[gz=zax]^2 + 0*x[gx=xax]
+list temp
+
+! disordered points at beginning, middle and end, missing at beginning
+let density0 = 0*i[gx=xax]*k[gz=zax] + z/10
+let density1 = if i eq 2 and k eq 4 then 20  else density0
+let density2 = if i eq 3 and k eq 1 then 20  else density1
+let density3 = if i eq 3 and k eq 2 then 10  else density2
+let density4 = if i eq 4 and k eq 6 then 30  else density3
+let density  = if i eq 5 and k le 2 then 1/0 else density4  ! missing at k=1:3
+list density
+
+! Z=200-300 on the density axis are double valued at I=2
+list temp[gz(density)=5:65:2.5]
+
+
+!************************************
+! reverse-ordering of same field
+let btemp = 0.0001*(700-Z[gz=zax])^2  + 0*x[gx=xax]
+list btemp
+
+let bdensity0 = 0*i[gx=xax]*k[gz=zax] + (700-z)/10
+let bdensity1 = if i eq 2 and (7-k) eq 4 then 20  else bdensity0
+let bdensity2 = if i eq 3 and (7-k) eq 1 then 20  else bdensity1
+let bdensity3 = if i eq 3 and (7-k) eq 2 then 10  else bdensity2
+let bdensity4 = if i eq 4 and (7-k) eq 6 then 30  else bdensity3
+let bdensity  = if i eq 5 and (7-k) le 2 then 1/0 else bdensity4 !missing k=1:3
+
+SAY "************ TBD: STILL NEED TO MAKE SURE UNITS ARE WORKING ********"
+SET VAR/units="kg/m^3" density
+
+list bdensity
+
+list btemp[gz(bdensity)=5:65:2.5]
+
+!************************************
+! similar analysis using @plave over wider cells
+! compare to reverse-ordered data
+list  temp[gz(density)=5:65:15@plave]
+list btemp[gz(bdensity)=5:65:15@plave]
+
+! 6/15
+! test 1D auxiliary axis regirdding on all axes
+
+! p for passive axis
+! a for active axis
+
+define axis/x=161:165:1 xp
+define axis/y=161:165:1 yp
+define axis/z=161:165:1 zp
+define axis/t=161:165:1 tp
+define axis/e=161:165:1 ep
+define axis/f=161:165:1 fp
+
+define axis/x=100:700:100 xa
+define axis/y=100:700:100 ya
+define axis/z=100:700:100 za
+define axis/t=100:700:100 ta
+define axis/e=100:700:100 ea
+define axis/f=100:700:100 fa
+
+
+GO bn_auxiliary.sub Z,X,F
+GO bn_auxiliary.sub Z,Y,E
+CANC MODE VERIFY
+GO bn_auxiliary.sub X,Z,F
+GO bn_auxiliary.sub Y,X,E
+GO bn_auxiliary.sub T,Y,F
+GO bn_auxiliary.sub E,Z,F
+GO bn_auxiliary.sub F,X,T
+
+SET MODE/LAST VERIFY

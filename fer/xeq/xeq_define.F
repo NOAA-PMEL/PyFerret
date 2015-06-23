@@ -229,6 +229,7 @@
 *                  prevent IF, ELIF, ELSE, and ENDIF from being aliased
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 * V695+  *sh* 4/15 error msgs from INIT_AGGREGATE_SET already given.  Remove.
+* V695  *acm* 6/15 Change the error message when coordinates are decreasing.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -2291,7 +2292,7 @@ C /units=months  is 1/12 of the length of the year
      .		'unrepairable repeated axis coords', *5000 )
  5570	buff1 = TM_FMT(FLOAT(i1-frst_pt+1), 14, 16, slen)
 	CALL ERRMSG( ferr_grid_definition, status,
-     .		'data for DEFINE AXIS/FROM_VARIABLE is not monotonic at index '
+     .		'data for DEFINE AXIS/FROM_VARIABLE is not monotonically increasing at index '
      .		//buff1(:slen), *5000 )
  5580	CALL ERRMSG( ferr_grid_definition, status,
      .		'data for DEFINE AXIS/FROM_VARIABLE is ambiguous', *5000 )

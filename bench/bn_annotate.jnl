@@ -1,0 +1,124 @@
+! bn_annotate.jnl
+! The command ANNOTATE /USER/NORM/NOUSER/XPOS/YPOS/HALIGN/VALIGN/ANGLE/SIZE
+! locates user-defined labels on a plot.
+!   /USER and /NOUSER behave as the LABEL command does
+!   /NORM locates labels relative to the plot axis, treating them as a unit "square".
+!   /VALIGN moves the label up or down relative to the direction of the label
+!   /HALIGN is -1, 1, or 0 as always, or larger values to move the label horizontally
+!         relative to the direction of the label. Allows us to move, say, one character in
+!         or out from the axis corner.
+
+can mode logo
+
+! ANNOTATE /USER
+set v ul
+plot/vs/sym=28/hl=-5:5/vl=-10:10 {-1,1},{-1,1}
+
+annotate/nouser/xpos=`($ppl$xlen)/2`/ypos=($ppl$ylen)/halign=0/valign=-8/siz=.25 "ANNOTATE/USER labels"
+annotate/user/xpos=-1/ypos=-1/halign=0/valign=0/angle=-90/siz=0.2 "X"
+annotate/user/xpos=0/ypos=0/halign=0/valign=0/angle=0/siz=0.2 "X"
+annotate/user/xpos=1/ypos=1/halign=0/valign=0/angle=45/siz=0.2 "X"
+
+plot/ov/vs/line=1/nolab {-1,1,1,-1,-1},{4,4,6,6,4}
+annotate/user/xpos=0/ypos=5/halign=0/valign=0/angle=0/siz=0.2 "BOX"
+
+plot/ov/vs/line=1/nolab .5*{-1,1,1,-1,-1},{-2,-2,-8,-8,-2}
+annotate/user/xpos=0/ypos=-5/halign=0/valign=0/angle=90/siz=0.2 "BOX"
+
+plot/ov/vs/sym=2/size=2/nolab 3,0
+annotate/user/xpos=3/ypos=0/halign=0/valign=1/angle=45/siz=0.2 "TOP"
+annotate/user/xpos=3/ypos=0/halign=0/valign=-1/angle=45/siz=0.2 "BOTTOM"
+
+plot/ov/vs/sym=2/size=2/nolab -3,0
+annotate/user/xpos=-3/ypos=0/halign=-1/valign=-1/angle=45/siz=0.2 "M"
+annotate/user/xpos=-3/ypos=0/halign=-1/valign=1/angle=45/siz=0.2 "M"
+annotate/user/xpos=-3/ypos=0/halign=1/valign=-1/angle=45/siz=0.2 "M"
+annotate/user/xpos=-3/ypos=0/halign=1/valign=1/angle=45/siz=0.2 "M"
+annotate/user/xpos=-3/ypos=0/halign=-3/valign=-3/angle=45/siz=0.2 "M"
+annotate/user/xpos=-3/ypos=0/halign=-3/valign=3/angle=45/siz=0.2 "M"
+annotate/user/xpos=-3/ypos=0/halign=3/valign=-3/angle=45/siz=0.2 "M"
+annotate/user/xpos=-3/ypos=0/halign=3/valign=3/angle=45/siz=0.2 "M"
+annotate/user/xpos=-3/ypos=0/halign=-.99/valign=5/angle=45/siz=0.2 "M"
+annotate/user/xpos=-3/ypos=0/halign=.99/valign=5/angle=45/siz=0.2 "M"
+annotate/user/xpos=-3/ypos=0/halign=-.99/valign=-5/angle=45/siz=0.2 "M"
+annotate/user/xpos=-3/ypos=0/halign=.99/valign=-5/angle=45/siz=0.2 "M"
+
+
+
+! ANNOTATE/NORM
+set v ur
+plot/i=1:5/vlim=1:5/hlim=1:5/color=white/nolab i
+annotate/nouser/xpos=`($ppl$xlen)/2`/ypos=($ppl$ylen)/halign=0/valign=-8/siz=.25 "ANNOTATE/NORM labels"
+
+annotate/norm/xpos=.5/ypos=1.1/halign=0/angle=0/size=0.14 "FLOATING TITLE"
+annotate/norm/xpos=.5/ypos=-.2/halign=0/angle=0/size=0.14 "SUBMERGED TITLE"
+annotate/norm/xpos=0/ypos=1/halign=-1/angle=0/size=0.14 "LEFT/TOP"
+annotate/norm/xpos=.5/ypos=1/halign=0/angle=0/size=0.14 "CTR/TOP"
+annotate/norm/xpos=1/ypos=1/halign=1/angle=0/size=0.14 "RIGHT/TOP"
+annotate/norm/xpos=1/ypos=.5/halign=0/angle=-90/size=0.14 "RIGHT EDGE"
+annotate/norm/xpos=0/ypos=.5/halign=0/angle=90/size=0.14 "LEFT EDGE"
+annotate/norm/xpos=.5/ypos=.5/halign=0/valign=0/angle=0/size=0.14 "DEAD CENTER"
+annotate/norm/xpos=.5/ypos=0/halign=0/valign=1/angle=0/size=0.14 "HANGING FROM BOTTOM"
+annotate/norm/xpos=0/ypos=0/halign=-2/valign=-2/angle=0/siz=0.1 "BOTTOM LEFT INSET"
+annotate/norm/xpos=0/ypos=1/halign=-2/valign=2/angle=0/siz=0.1 "TOP LEFT INSET"
+annotate/norm/xpos=1/ypos=0/halign=2/valign=-2/angle=0/siz=0.1 "BOTTOM RIGHT INSET"
+annotate/norm/xpos=1/ypos=1/halign=2/valign=2/angle=0/siz=0.1 "TOP RIGHT INSET"
+
+! ANNOTATE/NOUSER
+set v ll
+plot/i=1:5/vlim=1:5/hlim=1:5/color=white/nolab i
+
+annotate/nouser/xpos=`($ppl$xlen)/2`/ypos=($ppl$ylen)/halign=0/valign=-8/siz=.25 "ANNOTATE/NOUSER labels"
+
+! nouser
+annotate/nouser/xpos=0/ypos=0/halign=-1/angle=0/size=0.15 "At Origin"
+annotate/nouser/xpos=0/ypos=0/halign=-3/valign=-3/angle=0/size=0.15 "With/HALIGN=-3/VALIGN=-3"
+
+annotate/nouser/xpos=($ppl$xlen)/ypos=($ppl$ylen)/halign=1/valign=-1/angle=0/siz=0.15 "Right-align at upper right corner"
+annotate/nouser/xpos=($ppl$xlen)/ypos=($ppl$ylen)/halign=4/valign=3/angle=0/siz=0.15 "With/HALIGN=3/VALIGN=4"
+
+plot/vs/line/over/color=lightblue/nolab {3,3},{1,6}
+plot/vs/line/over/color=lightblue/nolab {1,5}, {3,3}
+
+annotate/nouser/xpos=`($ppl$xlen)/2`/ypos=`($ppl$ylen)/2`/halign=0/valign=0/angle=0/siz=0.15 \
+"Arguments locate the first<nl>line of multi-line labels "
+
+! angles
+set v lr
+
+plot/i=1:5/vlim=1:5/hlim=1:5/color=white/nolab i
+! nouser
+annotate/nouser/xpos=`($ppl$xlen)/2`/ypos=($ppl$ylen)/halign=0/valign=-8/siz=.25 "ANNOTATE/NOUSER labels<nl>Use VALIGN=0"
+annotate/nouser/xpos=0/ypos=0/halign=0/valign=0/angle=45/size=0.15 "Center At Origin"
+annotate/nouser/xpos=0/ypos=($ppl$ylen)/halign=-1/valign=0/angle=-45/siz=0.15 "left-align"
+annotate/nouser/xpos=($ppl$xlen)/ypos=0/halign=1/valign=0/angle=-45/siz=0.15 "right-align"
+
+! Test defaults
+! Default is like PPL user-labels
+! /USER/SIZ=0.12/ANGLE=0/HALIGN=0/VALIGN=-1
+
+shade/x=1:2/y=1:2/pal=grayscale i+j
+annotate/xpos=1.5/ypos=1.8 "Anno Label"
+label 1.5,1.6,,,, PPL label
+
+
+! intentional errors
+set mode ignore
+can v
+shade/i=1:2/j=1:2 i+j
+
+
+! errors in arguments
+annotate/nouser/xpos=a2/ypos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+annotate/nouser/xpos=0,3/ypos=b/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+annotate/nouser/xpos=0/ypos=0/halign=c/valign=0/angle=-45/siz=0.15 "My Lab"
+annotate/nouser/xpos=0/ypos=0/halign=1/valign=d/angle=ee/siz=0.15 "My Lab"
+annotate/nouser/xpos=0/ypos=0/halign=1/valign=0/angle=-45/siz=f "My Lab"
+annotate/nouser/xpos=0/ypos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+
+! missing a location
+annotate/nouser/ypos=0 "My Lab"
+annotate/nouser/xpos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+
+     
+annotate/nouser/user/xpos=0/ypos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"

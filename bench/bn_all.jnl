@@ -972,6 +972,9 @@ GO bn_return_defined
 GO bn_reset
 GO bn_can_var_noerr
 
+GO bn_reset
+GO bn_annotate
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

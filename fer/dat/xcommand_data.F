@@ -208,6 +208,7 @@
 * V687  3/14 *acm* add SET AXIS/NAME
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * V695 *acm*  2/15 Add DEFINE AGGREGATE/F alias, FMRC
+* V695 *acm*  6/16 New ANNOTATE command.
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -1635,18 +1636,28 @@
 		DATA qualifiers  (nqual_at27a+42)/ '****'/
 		DATA qualifiers  (nqual_at27a+43)/ '****'/
 
-* **** - command # 28
-	DATA commands(28)			/ '****'	/
+* ANNOTATE - command # 28
+	DATA commands(28)			/ 'ANNOTATE'	/
         DATA its_action_command(28)             / .FALSE.       /
 	DATA num_subcommands(28)		/ nsub28	/
 	DATA subcommand_pointer(28)		/ nsub_at28	/
-* **** '    '
+* ANNOTATE '    '
 	   DATA subcommands      (nsub_at28 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at28 + 0)	/ nqual28a	/
 	   DATA qualifier_pointer(nsub_at28 + 0)	/ nqual_at28a	/
-* **** / ****
-		DATA qualifiers  (nqual_at28a+0)/ '****'	/
-		DATA qualifiers  (nqual_at28a+1)/ '****'	/
+* ANNOTATE /USER/NORM/NOUSER/XPOS/YPOS/HALIGN/VALIGN/ANGLE/SIZE
+		DATA qualifiers  (nqual_at28a+0)/ 'USER'	/
+		DATA qualifiers  (nqual_at28a+1)/ 'NORM'	/
+		DATA qualifiers  (nqual_at28a+2)/ 'NOUSER'	/
+		DATA qualifiers  (nqual_at28a+3)/ 'XPOS'	/
+		DATA qualifiers  (nqual_at28a+4)/ 'YPOS'	/
+		DATA qualifiers  (nqual_at28a+5)/ 'HALIGN'	/
+		DATA qualifiers  (nqual_at28a+6)/ 'VALIGN'	/
+		DATA qualifiers  (nqual_at28a+7)/ 'ANGLE'	/
+		DATA qualifiers  (nqual_at28a+8)/ 'SIZE'	/
+		DATA qualifiers  (nqual_at28a+9)/ '****'	/
+		DATA qualifiers  (nqual_at28a+10)/ '****'	/
+		DATA qualifiers  (nqual_at28a+11)/ '****'	/
 
 * **** - command # 29
 	DATA commands(29)			/ '****'	/

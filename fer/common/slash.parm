@@ -60,6 +60,7 @@
 * V687  3/14 *acm* add SET AXIS/NAME
 * V691+ 8/14 *acm* Fix ticket 2194: SHOW with /OUTFILE and not /XML. 
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+* v695  5/15 *acm* New command ANNOTATE
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -677,3 +678,24 @@
      .			slash_polygon_grat   = 1 + 40,
      .			slash_polygon_mod    = 1 + 41 )
 
+
+
+        INTEGER		slash_annotate_user,
+     .			slash_annotate_norm,
+     .			slash_annotate_nouser,
+     .			slash_annotate_xpos,
+     .			slash_annotate_ypos,
+     .			slash_annotate_valign,
+     .			slash_annotate_halign,
+     .			slash_annotate_angle,
+     .			slash_annotate_size
+     
+	PARAMETER     ( slash_annotate_user   = 0 + 1,
+     .			slash_annotate_norm   = 1 + 1,
+     .			slash_annotate_nouser = 2  + 1,
+     .			slash_annotate_xpos   = 3 + 1,
+     .			slash_annotate_ypos   = 4 + 1,
+     .			slash_annotate_halign = 5 + 1,
+     .			slash_annotate_valign = 6 + 1,
+     .			slash_annotate_angle  = 7 + 1,
+     .			slash_annotate_size   = 8 + 1)

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 80638139 Jun 16 11:36 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 80725123 Jun 22 15:22 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: 
+Note: New ANNOTATE command
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,7 +13,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
@@ -21,8 +21,8 @@ FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
-PWD=/home/users/ansley/build/current_trunk/FERRET/bench
-Beginning at Tue Jun 16 11:37:48 PDT 2015
+PWD=/home/users/ansley/build/flat_64/FERRET/bench
+Beginning at Mon Jun 22 16:47:21 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1226,10 +1226,10 @@ Replacing definition of axis TAX2
            *** NOTE: Axis is in use by grid GFORMAT
            *** NOTE: Not deleted: XAXLEVITR1_160
            *** NOTE: Axis is in use by grid GG1
-           *** NOTE: Not deleted: TIME5
-           *** NOTE: Axis is in use by grid GLB1
            *** NOTE: Not deleted: TIME4
            *** NOTE: Axis is in use by grid GXYT
+           *** NOTE: Not deleted: TIME5
+           *** NOTE: Axis is in use by grid GLB1
            *** NOTE: Not deleted: COADSX
            *** NOTE: Axis is in use by grid GG
            *** NOTE: Not deleted: COADSY
@@ -1346,10 +1346,10 @@ Replacing definition of axis TAX2
            *** NOTE: Axis is in use by grid GFORMAT
            *** NOTE: Not deleted: XAXLEVITR1_160
            *** NOTE: Axis is in use by grid GG1
-           *** NOTE: Not deleted: TIME5
-           *** NOTE: Axis is in use by grid GLB1
            *** NOTE: Not deleted: TIME4
            *** NOTE: Axis is in use by grid GXYT
+           *** NOTE: Not deleted: TIME5
+           *** NOTE: Axis is in use by grid GLB1
            *** NOTE: Not deleted: COADSX
            *** NOTE: Axis is in use by grid GG
            *** NOTE: Not deleted: COADSY
@@ -1875,14 +1875,14 @@ Replacing definition of axis TIME1
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis COADSX.ILLEGAL
+           *** NOTE: grid GEX1 used by data set illeg_axname
+           *** NOTE: Redefinition may alter apparent contents of data set
            *** NOTE: grid GEX2 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
-           *** NOTE: grid GEX1 used by data set illeg_axname
-           *** NOTE: Redefinition may alter apparent contents of data set
 Replacing definition of axis COADSY.ILLEGAL
-           *** NOTE: grid GEX3 used by data set illeg_axname
-           *** NOTE: Redefinition may alter apparent contents of data set
            *** NOTE: grid GEX1 used by data set illeg_axname
+           *** NOTE: Redefinition may alter apparent contents of data set
+           *** NOTE: grid GEX3 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2151,6 +2151,7 @@ Replacing definition of axis TIME
  LISTing to file a.nc
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
+CURL Error: Couldn't resolve host name
 curl error details: 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2336,6 +2337,8 @@ set axis/stride=2 NORMAL
  LISTing to file tripolar_missing_lon.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+**ERROR in external function: Segmentation Violation
+CURL Error: Couldn't resolve host name
 curl error details: 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3975,6 +3978,8 @@ cancel var b,a
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -4062,4 +4067,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Jun 16 11:39:25 PDT 2015
+Ended at Mon Jun 22 16:48:59 PDT 2015

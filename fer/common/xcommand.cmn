@@ -44,6 +44,7 @@
 * V685 *acm*  4/13 Add /HIDDEN on DEF DATA/AGG
 * V685+ *sh*  9/13 Add SHOW VARIABLE/TREE and alias VTREE
 * V695 *acm*  2/15 Add DEFINE AGGREGATE/F alias, FMRC
+* V695 *acm*  6/16 New command ANNOTATE
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -382,11 +383,11 @@
 	PARAMETER    (	nsub27   = 1, nsub_at28    = nsub_at27   + nsub27,
      .			nqual27a = 44,nqual_at28a  = nqual_at27a + nqual27a  )
 
-* ****/****/**** - command number 28
+* ANNOTATE - command number 28
 	INTEGER		nsub28       , nsub_at29 ,
      .			nqual28a     ,nqual_at29a
 	PARAMETER    (	nsub28   = 1, nsub_at29    = nsub_at28   + nsub28,
-     .			nqual28a = 2,nqual_at29a  = nqual_at28a + nqual28a  )
+     .			nqual28a = 12,nqual_at29a  = nqual_at28a + nqual28a  )
 
 * ****/****/**** - command number 29
 	INTEGER		nsub29       , nsub_at30 ,

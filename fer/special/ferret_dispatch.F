@@ -117,7 +117,8 @@
 * V664 *kms* 8/10 Add second alternate return from XEQ_EXIT to exit the dispatch
 *                 loop but just re-enter the loop if not under pfyrret
 *       *acm* 3/12 removing use USER command
-*V685 *acm* 11/13 Issue an ERROR not a NOTE if USER command is tried.
+* V685 *acm* 11/13 Issue an ERROR not a NOTE if USER command is tried.
+* V695 *acm*  6/16 New ANNOTATE command.
 
 	include 'tmap_dims.parm'
 	include 'xalt_messages.cmn_text'
@@ -196,7 +197,7 @@ c	DO 2 i = 1, 200
 
 	GOTO (	 10, 20, 30, 40, 50, 60, 70, 80, 90,100,
      .		110,120,130,140,150,160,170,180,190,200,
-     .          210,220,230,240,250,260,270 ) cmnd_num
+     .          210,220,230,240,250,260,270,280 ) cmnd_num
 
  10	CALL XEQ_SET( memory, reconfig )
 	IF ( reconfig .NE. 0 ) GOTO 400
@@ -253,6 +254,8 @@ c	DO 2 i = 1, 200
  260	CALL XEQ_ENDIF
 	GOTO 300
  270	CALL XEQ_POLYGON( memory )
+	GOTO 300
+ 280	CALL XEQ_ANNOTATE
 	GOTO 300
 
 * finished a single command

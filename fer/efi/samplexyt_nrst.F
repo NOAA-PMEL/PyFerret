@@ -40,7 +40,9 @@
 * args 2, 3,4
 * 1/18/08  Ansley Manke 
 *         Result is abstract on the x axis, normal on the y and t axes,
-*         and keeps the z axes of the input 4-d data.
+*         and keeps the z axes of the input 4-d data
+* 5/15/08 Deal with sample indices outside the axis range of the grid
+* 6/15/08 When the x axis is modulo the above threw out data unnecessarily
 *
 *
 * In this subroutine we provide information about
@@ -622,7 +624,12 @@ C  variables for checking axis characteristics (modulo axes)
             i1 = ibot+1
          ENDIF
          IF (i1.LT.arg_lo_ss(X_AXIS,ARG1) .OR. i1.GT.arg_hi_ss(X_AXIS,ARG1)) THEN
-	    i1 = ef_unspecified_int4
+	    IF (modulo(1)) THEN 
+	       IF (i1.LT.arg_lo_ss(X_AXIS,ARG1)) i1 = arg_hi_ss(X_AXIS,ARG1)
+	       IF (i1.GT.arg_hi_ss(X_AXIS,ARG1)) i1 = arg_lo_ss(X_AXIS,ARG1)
+	    ELSE
+	       i1 = ef_unspecified_int4
+	    ENDIF
 	 ENDIF
 
 * Check if ypt is in the Y-axis range.

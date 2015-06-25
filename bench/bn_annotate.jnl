@@ -176,7 +176,6 @@ define annotation/user/xpos=-3/ypos=0/halign=-.99/valign=5/angle=45/siz=.5 "M"
 define annotation/user/xpos=-3/ypos=0/halign=.99/valign=5/angle=45/siz=.5 "M"
 define annotation/user/xpos=-3/ypos=0/halign=-.99/valign=-5/angle=45/siz=.5 "M"
 define annotation/user/xpos=-3/ypos=0/halign=.99/valign=-5/angle=45/siz=.5 "M"
-pause
 ppl list labels
 ppl plot
 plot/ov/vs/line=1/nolab {-1,1,1,-1,-1},{4,4,6,6,4}

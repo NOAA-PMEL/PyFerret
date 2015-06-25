@@ -1,7 +1,7 @@
-	SUBROUTINE XEQ_ANNOTATE
-
-*
-*
+	SUBROUTINE PUT_ANNOTATION (user, nouser, norm, xloc, yloc,
+     .          halign, angle, size, nlab, labtxt, status)
+	
+	
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -34,60 +34,46 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* Put an annotation (moveable label) onto an existing plot
-
-* programmer - Ansley Manke
-* NOAA/PMEL, Seattle, WA - TMAP/SDIG 
-*
-* revision 0.0 - 4/6/2015
+* Make calls to PPLUS to set up the size angle and label for the DEFINE ANNOTATION 
+* command. If the user has not set a label number, increment the count that is in 
+* place for other moveable labels added by Ferret.
 
 	include 'tmap_dims.parm'
-	include	'ferret.parm'
-	include 'errmsg.parm'
-	include 'slash.parm'
-	include 'xplot_state.cmn'
-	include 'xcontext.cmn'
-	include 'xvariables.cmn'
-	include 'xprog_state.cmn'
 	include 'plot_setup.parm'
 	include 'xplot_setup.cmn'
-	
-* local variable declarations:
+
 	LOGICAL user, norm, nouser
-	INTEGER	TM_LENSTR1,
-     .		rlen, item, nchar, status
+	INTEGER	nlab, status
 	REAL	xloc, yloc, halign, angle, size
+	CHARACTER*(*) labtxt
 
-	CHARACTER TM_FMT*14, buff*20, labtxt*2048
-
-* initialize 
-
-	size = 0.2
-
-* Get the text
-	IF (num_items .NE. 1) GOTO 5500
-	item = 1
-	labtxt = cmnd_buff(item_start(item):item_end(item))
-
-* Get settings
-
-	CALL SET_ANNOTATION (user, nouser, norm, xloc, yloc, halign, 
-     .         angle, size, status)
-	IF (status .NE. ferr_ok) GOTO 5000
-
-	IF (nouser .OR. norm) THEN
-	   buff = 'NOUSER'
-	ELSE
-	   buff = 'USER'
+* local variable declarations:
+	INTEGER TM_LENSTR1, rlen, nchar
+	CHARACTER TM_FMT*14, buff*20
+	
+* Count of (PLOT+ movable labels) or use the nlab given by the user
+	IF (nlab .EQ. 0) THEN
+ 	   nlabs_on = nlabs_on + 1
+	   nlab = nlabs_on
 	ENDIF
 
-* Create the %LABEL command
+* Send label size to pplus
+	WRITE ( ppl_buff, 3000 ) nlab, size
+	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 
-	ppl_buff = '%LABEL/'//buff
+* Send rotation angle to pplus
+	IF (angle .NE. 0.) THEN
+	   WRITE ( ppl_buff, 3100 ) nlab, angle
+	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+	ENDIF
+
+* Send LABS command with qualifier, position, justify setting, and label
+
+	WRITE ( ppl_buff, 3200 ) nlab
+	IF (user) WRITE ( ppl_buff, 3300 ) nlab
 	rlen = TM_LENSTR1(ppl_buff)
 
-	ppl_buff = ppl_buff(:rlen)//' '//TM_FMT(xloc, 14, 16, nchar)
+	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(xloc, 14, 16, nchar)
 	rlen = TM_LENSTR1(ppl_buff)
 
 	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(yloc, 14, 16, nchar)
@@ -96,22 +82,16 @@
 	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(halign, 14, 16, nchar)
 	rlen = TM_LENSTR1(ppl_buff)
 
-	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(angle, 14, 16, nchar)
-	rlen = TM_LENSTR1(ppl_buff)
-
-	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(size, 14, 16, nchar)
-	rlen = TM_LENSTR1(ppl_buff)
-
 	ppl_buff = ppl_buff(:rlen)//', '//labtxt
 	rlen = TM_LENSTR1(ppl_buff)
 
-* ... pass a the command to PPLUS
+	CALL PPLCMD ( from, line, 0, ppl_buff(:rlen), 1, 1 )
 
-c	print *, ppl_buff(:rlen)
-	CALL PPLCMD (' ',' ',0,ppl_buff(:rlen),1,1)
-
- 5000	RETURN
- 5500	CALL ERRMSG( ferr_invalid_command, status,
-     .		'ANNOTATE command missing text for the annotation', *5000 )
+	RETURN
+	
+ 3000	FORMAT('HLABS ',I3,1X,F6.3 )
+ 3100	FORMAT ('RLABS ',I4, ',', F8.3)
+ 3200	FORMAT('LABS/NOUSER ', I3)
+ 3300	FORMAT('LABS/USER ', I3)
 
 	END

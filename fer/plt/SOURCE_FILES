@@ -53,6 +53,7 @@ ppl_dash_restore.F\
 ppl_patset.F\
 ppl_shaset.F\
 ppl_time.F\
+put_annotation.F\
 put_cmnd_key.F\
 put_key.F\
 put_label.F\
@@ -62,6 +63,7 @@ save_frame_name.F\
 seg_off.F\
 seg_on.F\
 send_pltype.F\
+set_annotation.F\
 set_ax_sizes.F\
 set_graticules.F\
 set_plot_size.F\

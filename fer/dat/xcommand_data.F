@@ -209,6 +209,7 @@
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * V695 *acm*  2/15 Add DEFINE AGGREGATE/F alias, FMRC
 * V695 *acm*  6/16 New ANNOTATE command.
+* V695 *acm*  6/16 New subcommand DEFINE ANNOTATION
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -1214,8 +1215,22 @@
 		DATA qualifiers  (nqual_at10k+ 6)/ 'F'    / ! f
 		DATA qualifiers  (nqual_at10k+ 7)/ 'TITLE' /
 		DATA qualifiers  (nqual_at10k+ 8)/ 'QUIET' /
-		DATA qualifiers  (nqual_at10k+ 9)/ 'HIDE' /
-
+		DATA qualifiers  (nqual_at10k+ 9)/ 'HIDE' /	
+* DEFINE ANNOTATION
+	   DATA subcommands      (nsub_at10 + 11)/ 'ANNOTATION'	/
+	   DATA num_qualifs      (nsub_at10 + 11)/ nqual10l	/
+	   DATA qualifier_pointer(nsub_at10 + 11)/ nqual_at10l	/
+* DEFINE ANNOTATION /USER/NORM/NOUSER/XPOS/YPOS/HALIGN/VALIGN/ANGLE/SIZE/NLAB
+		DATA qualifiers  (nqual_at10l+ 0)/ 'USER' /
+		DATA qualifiers  (nqual_at10l+ 1)/ 'NORM' /
+		DATA qualifiers  (nqual_at10l+ 2)/ 'NOUSER' /
+		DATA qualifiers  (nqual_at10l+ 3)/ 'XPOS' /
+		DATA qualifiers  (nqual_at10l+ 4)/ 'YPOS' /
+		DATA qualifiers  (nqual_at10l+ 5)/ 'HALIGN' /
+		DATA qualifiers  (nqual_at10l+ 6)/ 'VALIGN' /
+		DATA qualifiers  (nqual_at10l+ 7)/ 'ANGLE' /
+		DATA qualifiers  (nqual_at10l+ 8)/ 'SIZE' /
+		DATA qualifiers  (nqual_at10l+ 9)/ 'NLAB' /
 * EXIT	 - command # 11
 	DATA commands(11)			/ 'EXIT'	/
         DATA its_action_command(11)             / .FALSE.       /

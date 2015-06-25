@@ -45,6 +45,7 @@
 * V685+ *sh*  9/13 Add SHOW VARIABLE/TREE and alias VTREE
 * V695 *acm*  2/15 Add DEFINE AGGREGATE/F alias, FMRC
 * V695 *acm*  6/16 New command ANNOTATE
+* V695 *acm*  6/16 New subcommand DEFINE ANNOTATION
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -267,8 +268,9 @@
      .			nqual10h    , nqual_at10i,
      .			nqual10i    , nqual_at10j,
      .			nqual10j    , nqual_at10k,
-     .			nqual10k    , nqual_at11a
-	PARAMETER    (	nsub10   =11, nsub_at11   = nsub_at10   + nsub10,
+     .			nqual10k    , nqual_at10l,
+     .			nqual10l    , nqual_at11a
+	PARAMETER    (	nsub10   =12, nsub_at11   = nsub_at10   + nsub10,
      .			nqual10a = 0, nqual_at10b = nqual_at10a + nqual10a,!'  '
      .			nqual10b =26, nqual_at10c = nqual_at10b + nqual10b,!REGI
      .			nqual10c =11, nqual_at10d = nqual_at10c + nqual10c,!GRID
@@ -279,7 +281,8 @@
      .			nqual10h = 2, nqual_at10i = nqual_at10h + nqual10h,!SYMB
      .			nqual10i = 4, nqual_at10j = nqual_at10i + nqual10i,!ATTR
      .			nqual10j = 2, nqual_at10k = nqual_at10j + nqual10j,!PYFUNC
-     .			nqual10k =10, nqual_at11a = nqual_at10k + nqual10k !DATA
+     .			nqual10k =10, nqual_at10l = nqual_at10k + nqual10k, !DATA
+     .			nqual10l =10, nqual_at11a = nqual_at10l + nqual10l !ANNOTATION
      .		      )
 * EXIT		 - commmand # 11
 	INTEGER		nsub11      , nsub_at12  ,

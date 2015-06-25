@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 80725123 Jun 22 15:22 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 80763726 Jun 25 15:23 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: New ANNOTATE command
+Note: New ANNOTATE command and DEFINE ANNOTATION for PLOT/SET
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -15,14 +15,14 @@ FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
+FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go /home/users/ansley/ans_ferret/users/wittenberg/label_scripts/
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Mon Jun 22 16:47:21 PDT 2015
+Beginning at Thu Jun 25 15:27:15 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1226,10 +1226,10 @@ Replacing definition of axis TAX2
            *** NOTE: Axis is in use by grid GFORMAT
            *** NOTE: Not deleted: XAXLEVITR1_160
            *** NOTE: Axis is in use by grid GG1
-           *** NOTE: Not deleted: TIME4
-           *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: TIME5
            *** NOTE: Axis is in use by grid GLB1
+           *** NOTE: Not deleted: TIME4
+           *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: COADSX
            *** NOTE: Axis is in use by grid GG
            *** NOTE: Not deleted: COADSY
@@ -1346,10 +1346,10 @@ Replacing definition of axis TAX2
            *** NOTE: Axis is in use by grid GFORMAT
            *** NOTE: Not deleted: XAXLEVITR1_160
            *** NOTE: Axis is in use by grid GG1
-           *** NOTE: Not deleted: TIME4
-           *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: TIME5
            *** NOTE: Axis is in use by grid GLB1
+           *** NOTE: Not deleted: TIME4
+           *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: COADSX
            *** NOTE: Axis is in use by grid GG
            *** NOTE: Not deleted: COADSY
@@ -1875,14 +1875,14 @@ Replacing definition of axis TIME1
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis COADSX.ILLEGAL
-           *** NOTE: grid GEX1 used by data set illeg_axname
-           *** NOTE: Redefinition may alter apparent contents of data set
            *** NOTE: grid GEX2 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
-Replacing definition of axis COADSY.ILLEGAL
            *** NOTE: grid GEX1 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
+Replacing definition of axis COADSY.ILLEGAL
            *** NOTE: grid GEX3 used by data set illeg_axname
+           *** NOTE: Redefinition may alter apparent contents of data set
+           *** NOTE: grid GEX1 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2337,7 +2337,6 @@ set axis/stride=2 NORMAL
  LISTing to file tripolar_missing_lon.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-**ERROR in external function: Segmentation Violation
 CURL Error: Couldn't resolve host name
 curl error details: 
  PERMANENT data cleared from memory
@@ -3424,7 +3423,7 @@ LIST/FORMAT=CDF/clobber/file=mytype.nc my_data
  LISTing to file mytype.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: improper grid or axis definition: data for DEFINE AXIS/FROM_VARIABLE is not monotonic at index 12
+ **ERROR: improper grid or axis definition: data for DEFINE AXIS/FROM_VARIABLE is not monotonically increasing at index 12
 define axis/t/units=days tax = tvar
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3976,6 +3975,38 @@ Replacing definition of axis FSEC
 cancel var b,a
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ **ERROR: command syntax: xpos=a2
+annotate/nouser/xpos=a2/ypos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: ypos=b
+annotate/nouser/xpos=0/ypos=b/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: halign=c
+annotate/nouser/xpos=0/ypos=0/halign=c/valign=0/angle=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: valign=d
+annotate/nouser/xpos=0/ypos=0/halign=1/valign=d/angle=ee/siz=0.15 "My Lab"
+ **ERROR: command syntax: siz=f
+annotate/nouser/xpos=0/ypos=0/halign=1/valign=0/angle=-45/siz=f "My Lab"
+ **ERROR: invalid command: /XPOS and /YPOS are required for ANNOTATE
+annotate/nouser/ypos=0 "My Lab"
+ **ERROR: invalid command: /XPOS and /YPOS are required for ANNOTATE
+annotate/nouser/xpos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+ **ERROR: invalid command: Specify only one of /USER /NOUSER /NORM
+annotate/nouser/user/ypos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: xpos=a2
+def anno/nou/xpos=a2/ypos=0/hal=1/val=0/ang=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: ypos=b
+def anno/nou/xpos=0,3/ypos=b/hal=1/val=0/ang=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: hal=c
+def anno/nou/xpos=0/ypos=0/hal=c/val=0/ang=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: val=d
+def anno/nou/xpos=0/ypos=0/hal=1/val=d/ang=ee/siz=0.15 "My Lab"
+ **ERROR: command syntax: siz=f
+def anno/nou/xpos=0/ypos=0/hal=1/val=0/ang=-45/siz=f "My Lab"
+ **ERROR: invalid command: /XPOS and /YPOS are required for ANNOTATE
+def anno/nou/ypos=0 "My Lab"
+ **ERROR: invalid command: /XPOS and /YPOS are required for ANNOTATE
+def anno/nou/xpos=0/hal=1/val=0 "My Lab"
+ **ERROR: invalid command: Specify only one of /USER /NOUSER /NORM
+def anno/nou/user/xpos=0/ypos=0 "My Lab"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4067,4 +4098,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Jun 22 16:48:59 PDT 2015
+Ended at Thu Jun 25 15:29:01 PDT 2015

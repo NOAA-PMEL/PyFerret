@@ -230,6 +230,7 @@
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 * V695+  *sh* 4/15 error msgs from INIT_AGGREGATE_SET already given.  Remove.
 * V695  *acm* 6/15 Change the error message when coordinates are decreasing.
+* V695  *acm* 6/16 New subcommand DEFINE ANNOTATION
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -294,7 +295,8 @@
      .              slash_def_agg_quiet,
      .              slash_def_agg_e,
      .              slash_def_agg_f,
-     .              slash_def_agg_hide
+     .              slash_def_agg_hide,
+     .              slash_def_annot_nlab
 
 	LOGICAL	    explct_defn
 	PARAMETER ( slash_dflt   = 1 + 12,
@@ -336,6 +338,7 @@
      .              slash_def_agg_title = 1 + 7,
      .              slash_def_agg_quiet = 1 + 8,
      .              slash_def_agg_hide  = 1 + 9,
+     .              slash_def_annot_nlab = 10,		! must be slash_annotate_siz+1
      .		    explct_defn  = .FALSE. )
 
 * calling argument declarations:
@@ -349,7 +352,8 @@
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet,
-     .            letdset, its_remote, agg_hide, def_att_quiet, purge_all
+     .            letdset, its_remote, agg_hide, def_att_quiet, purge_all,
+     .            user, norm, nouser
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1,
@@ -368,10 +372,10 @@
      .            prev_cal_id, j, num_indices, varid, attype_spec,
      .            attoutflag, attlen, coordvar, 
      .            dset_to_add, dir, type, attype, attid, ibuff, i0,  
-     .            agg_dim, ivar
+     .            agg_dim, ivar, item,nlab
 
 	REAL	  rbuff, bad_flag, yeardays, 
-     .            val, dummy, val_buf
+     .            val, dummy, val_buf, xloc, yloc, halign, angle, size
 
 	REAL*4	  r4_unspec, scale, xlovp, ylovp,  xhivp, yhivp,
      .            xoei,  yoei,   xcei,  ycei
@@ -405,7 +409,7 @@
 	OUTSIDE_0_1( x ) = x.LT.0.0 .OR. x.GT.1.0
 
 * select subcommand
-	GOTO ( 100,200,300,400,500,600,700,800,900,1000,1100 ) subcmnd_num
+	GOTO ( 100,200,300,400,500,600,700,800,900,1000,1100,1200 ) subcmnd_num
 
 * DEFINE  '    ' - (no action)
 * arrival at this point usually means an illegal subcommand was given
@@ -2008,7 +2012,8 @@ C /units=months  is 1/12 of the length of the year
 !! ?? get dataset from varname.attname
 * ... evaluate the context without computing the expression to get the dataset
 
-        buff = cmnd_buff(item_start(1):item_end(1)) ! same as buff1?
+	item = 1
+        buff = cmnd_buff(item_start(item):item_end(item)) ! same as buff1?
 
 	CALL GET_NEW_CX( cx_last, cx_cmnd, .TRUE., status )
         IF ( status .NE. ferr_ok ) GOTO 5000
@@ -2242,6 +2247,48 @@ C /units=months  is 1/12 of the length of the year
 	cx_data_set( cx_last ) =  dset
 
 	RETURN
+
+
+**************************************************************************
+* DEFINE ANNOTATION /USER/NORM/NOUSER/XPOS/YPOS/HALIGN/VALIGN/ANGLE/SIZE/NLAB label_text
+* qualifiers in the same order as ANNOTATE/USER/...
+*
+* Find label text
+
+1200	IF ( num_args .LT. 1 ) GOTO 6200
+
+	item = 1
+	buff1 = cmnd_buff(item_start(item):item_end(item))
+
+* ...DEFINE ANNOTATION/NLAB 
+c ?? if nlab=0, use next avail slot?
+	iqual = qual_given( slash_def_annot_nlab )
+	IF ( iqual .GT. 0  ) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .			      val, status )
+	   buff2 = 'NLAB'
+	   IF ( status .NE. ferr_ok ) GOTO 6300
+	   IF ( val.EQ.unspecified_val4 .OR. val.LT.0) GOTO 6300
+	   nlab = INT(val)
+	ELSE
+	   nlab = 0
+	ENDIF
+
+* initialize 
+
+	size = 0.12
+
+* Get settings
+
+	CALL SET_ANNOTATION (user, nouser, norm, xloc, yloc, halign, 
+     .         angle, size, status)
+        IF (status .NE. ferr_ok) GOTO 5000 
+
+	CALL PUT_ANNOTATION (user, nouser, norm, xloc, yloc, halign, 
+     .         angle, size, nlab, buff1, status)
+        IF (status .NE. ferr_ok) GOTO 5000 
+
+	RETURN
 **************************************************************************
 
 * error exit
@@ -2400,5 +2447,11 @@ C /units=months  is 1/12 of the length of the year
 
 ! 6110 CALL ERRMSG(ferr_aggregate_error, status, 
 !     .    'Aggregate dataset not defined', *5000)
+
+ 6200	CALL ERRMSG( ferr_invalid_command, status,
+     .		'No text given for DEFINE ANNOTATION', *5000 )
+
+ 6300	CALL ERRMSG( ferr_invalid_command, status,
+     .		'/NLAB missing or invalid value', *5000 )
 
 	END

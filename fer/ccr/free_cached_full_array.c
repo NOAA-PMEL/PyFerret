@@ -45,10 +45,13 @@
  * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
  *
  * revision 0.0 - 5/5/15
+ * 6/25/2015 *acm* set the pointer value to 0, fixing ticket 2305
  */
 
 #include <stdlib.h>
+#include <assert.h>
 #include "ferret.h"
+
  
 void FORTRAN(free_cached_full_array)( double **pointer_val )
 
@@ -61,7 +64,10 @@ void FORTRAN(free_cached_full_array)( double **pointer_val )
 
   ptr = *pointer_val;
 
-  if (ptr) free(ptr);  // could do assert on ptr==0
+  if (ptr) {
+	  free(ptr);  // could do assert on ptr==0
+	  *pointer_val=0;
+  }
 
   return;
 }

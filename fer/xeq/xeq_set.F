@@ -1283,7 +1283,8 @@ c *kob* 4/97
                  DO 6010 i = 1, maxvars
                     IF (ds_grid_number(i) .EQ. igrd) THEN 
 		       is_nc = (ds_type(ds_var_setnum(i)).EQ.'CDF') .OR.
-     .                         (ds_type(ds_var_setnum(i)).EQ.'ENS')
+     .                         (ds_type(ds_var_setnum(i)).EQ.'ENS') .OR.
+     .                         (ds_type(ds_var_setnum(i)).EQ.'FCT')
                        IF (.NOT. is_nc)  
      .                   GOTO 6088
                     ENDIF

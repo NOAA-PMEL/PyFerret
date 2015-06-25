@@ -223,6 +223,7 @@
 	   ncfile = (TM_HAS_STRING(ds_type(dset), 'CDF') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'MC') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'ENS') .OR.
+     .               TM_HAS_STRING(ds_type(dset), 'FCT') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'GT')  )
 	   IF ( .NOT. ncfile ) GOTO 5800
 

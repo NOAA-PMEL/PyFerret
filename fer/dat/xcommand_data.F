@@ -222,6 +222,8 @@
 *             4/15 Add SET TEXT/FONT/COLOR/ITALIC/BOLD/ISIZ
 *                  Add CANCEL TEXT/FONT/COLOR/ITALIC/BOLD/ISIZ
 *                  No args on SHOW TEXT
+* V695 *acm*  6/16 New ANNOTATE command.
+* V695 *acm*  6/16 New subcommand DEFINE ANNOTATION
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -1258,8 +1260,22 @@
 		DATA qualifiers  (nqual_at10k+ 6)/ 'F'    / ! f
 		DATA qualifiers  (nqual_at10k+ 7)/ 'TITLE' /
 		DATA qualifiers  (nqual_at10k+ 8)/ 'QUIET' /
-		DATA qualifiers  (nqual_at10k+ 9)/ 'HIDE' /
-
+		DATA qualifiers  (nqual_at10k+ 9)/ 'HIDE' /	
+* DEFINE ANNOTATION
+	   DATA subcommands      (nsub_at10 + 11)/ 'ANNOTATION'	/
+	   DATA num_qualifs      (nsub_at10 + 11)/ nqual10l	/
+	   DATA qualifier_pointer(nsub_at10 + 11)/ nqual_at10l	/
+* DEFINE ANNOTATION /USER/NORM/NOUSER/XPOS/YPOS/HALIGN/VALIGN/ANGLE/SIZE/NLAB
+		DATA qualifiers  (nqual_at10l+ 0)/ 'USER' /
+		DATA qualifiers  (nqual_at10l+ 1)/ 'NORM' /
+		DATA qualifiers  (nqual_at10l+ 2)/ 'NOUSER' /
+		DATA qualifiers  (nqual_at10l+ 3)/ 'XPOS' /
+		DATA qualifiers  (nqual_at10l+ 4)/ 'YPOS' /
+		DATA qualifiers  (nqual_at10l+ 5)/ 'HALIGN' /
+		DATA qualifiers  (nqual_at10l+ 6)/ 'VALIGN' /
+		DATA qualifiers  (nqual_at10l+ 7)/ 'ANGLE' /
+		DATA qualifiers  (nqual_at10l+ 8)/ 'SIZE' /
+		DATA qualifiers  (nqual_at10l+ 9)/ 'NLAB' /
 * EXIT	 - command # 11
 	DATA commands(11)			/ 'EXIT'	/
         DATA its_action_command(11)             / .FALSE.       /
@@ -1685,18 +1701,28 @@
 		DATA qualifiers  (nqual_at27a+42)/ 'OPACITY'/	! overriding opacity
 		DATA qualifiers  (nqual_at27a+43)/ '****'/
 
-* **** - command # 28
-	DATA commands(28)			/ '****'	/
+* ANNOTATE - command # 28
+	DATA commands(28)			/ 'ANNOTATE'	/
         DATA its_action_command(28)             / .FALSE.       /
 	DATA num_subcommands(28)		/ nsub28	/
 	DATA subcommand_pointer(28)		/ nsub_at28	/
-* **** '    '
+* ANNOTATE '    '
 	   DATA subcommands      (nsub_at28 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at28 + 0)	/ nqual28a	/
 	   DATA qualifier_pointer(nsub_at28 + 0)	/ nqual_at28a	/
-* **** / ****
-		DATA qualifiers  (nqual_at28a+0)/ '****'	/
-		DATA qualifiers  (nqual_at28a+1)/ '****'	/
+* ANNOTATE /USER/NORM/NOUSER/XPOS/YPOS/HALIGN/VALIGN/ANGLE/SIZE
+		DATA qualifiers  (nqual_at28a+0)/ 'USER'	/
+		DATA qualifiers  (nqual_at28a+1)/ 'NORM'	/
+		DATA qualifiers  (nqual_at28a+2)/ 'NOUSER'	/
+		DATA qualifiers  (nqual_at28a+3)/ 'XPOS'	/
+		DATA qualifiers  (nqual_at28a+4)/ 'YPOS'	/
+		DATA qualifiers  (nqual_at28a+5)/ 'HALIGN'	/
+		DATA qualifiers  (nqual_at28a+6)/ 'VALIGN'	/
+		DATA qualifiers  (nqual_at28a+7)/ 'ANGLE'	/
+		DATA qualifiers  (nqual_at28a+8)/ 'SIZE'	/
+		DATA qualifiers  (nqual_at28a+9)/ '****'	/
+		DATA qualifiers  (nqual_at28a+10)/ '****'	/
+		DATA qualifiers  (nqual_at28a+11)/ '****'	/
 
 * **** - command # 29
 	DATA commands(29)			/ '****'	/

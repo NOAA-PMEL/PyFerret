@@ -1,5 +1,7 @@
-/*
-*
+	SUBROUTINE PUT_ANNOTATION (user, nouser, norm, xloc, yloc,
+     .          halign, angle, size, nlab, labtxt, status)
+	
+	
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -30,44 +32,66 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*/
+* Make calls to PPLUS to set up the size angle and label for the DEFINE ANNOTATION 
+* command. If the user has not set a label number, increment the count that is in 
+* place for other moveable labels added by Ferret.
 
+	include 'tmap_dims.parm'
+	include 'plot_setup.parm'
+	include 'xplot_setup.cmn'
 
+	LOGICAL user, norm, nouser
+	INTEGER	nlab, status
+	REAL	xloc, yloc, halign, angle, size
+	CHARACTER*(*) labtxt
 
-/*
- * free_cached_full_array.c
- *
- * Free a cached full array from c heap storage
- *
- * programmer - steve hankin
- * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
- *
- * revision 0.0 - 5/5/15
- * 6/25/2015 *acm* set the pointer value to 0, fixing ticket 2305
- */
+* local variable declarations:
+	INTEGER TM_LENSTR1, rlen, nchar
+	CHARACTER TM_FMT*14, buff*20
+	
+* Count of (PLOT+ movable labels) or use the nlab given by the user
+	IF (nlab .EQ. 0) THEN
+ 	   nlabs_on = nlabs_on + 1
+	   nlab = nlabs_on
+	ENDIF
 
-#include <stdlib.h>
-#include <assert.h>
-#include "ferret.h"
+* Send label size to pplus
+	WRITE ( ppl_buff, 3000 ) nlab, size
+	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 
- 
-void FORTRAN(free_cached_full_array)( double **pointer_val )
+* Send rotation angle to pplus
+	IF (angle .NE. 0.) THEN
+	   WRITE ( ppl_buff, 3100 ) nlab, angle
+	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+	ENDIF
 
-/*
-  see complementary routines recover_cached_full_array and cache_full_array.c
-*/
+* Send LABS command with qualifier, position, justify setting, and label
 
-{
-  double *ptr;
+	WRITE ( ppl_buff, 3200 ) nlab
+	IF (user) WRITE ( ppl_buff, 3300 ) nlab
+	rlen = TM_LENSTR1(ppl_buff)
 
-  ptr = *pointer_val;
+	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(xloc, 14, 16, nchar)
+	rlen = TM_LENSTR1(ppl_buff)
 
-  if (ptr) {
-	  free(ptr);  // could do assert on ptr==0
-	  *pointer_val=0;
-  }
+	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(yloc, 14, 16, nchar)
+	rlen = TM_LENSTR1(ppl_buff)
 
-  return;
-}
+	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(halign, 14, 16, nchar)
+	rlen = TM_LENSTR1(ppl_buff)
+
+	ppl_buff = ppl_buff(:rlen)//', '//labtxt
+	rlen = TM_LENSTR1(ppl_buff)
+
+	CALL PPLCMD ( from, line, 0, ppl_buff(:rlen), 1, 1 )
+
+	RETURN
+	
+ 3000	FORMAT('HLABS ',I3,1X,F6.3 )
+ 3100	FORMAT ('RLABS ',I4, ',', F8.3)
+ 3200	FORMAT('LABS/NOUSER ', I3)
+ 3300	FORMAT('LABS/USER ', I3)
+
+	END

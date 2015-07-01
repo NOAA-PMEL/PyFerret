@@ -102,7 +102,8 @@
      .			src,  msrc,  src_cx,
      .			dst,  mdst,  dst_cx,
      .			aux1, maux1, aux1_cx,
-     .			cx_lo_ss(src_cx,axis),cx_hi_ss(src_cx,axis),
+     .			cx_lo_ss(aux1_cx,axis),cx_hi_ss(aux1_cx,axis),
+     .			cx_lo_ss(src_cx, axis),cx_hi_ss(src_cx, axis),
      .			indmin_dst,           indmax_dst             )
 	
 	   ENDIF

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 88289923 Jun 17 13:41 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 88356344 Jun 25 15:51 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Ferret release candidate 6.95 (rc2)
+Note: New ANNOTATE command and DEFINE ANNOTATION. Latest bn_auxillary tests
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Wed Jun 17 13:44:41 PDT 2015
+Beginning at Fri Jun 26 09:33:21 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3419,7 +3419,7 @@ LIST/FORMAT=CDF/clobber/file=mytype.nc my_data
  LISTing to file mytype.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: improper grid or axis definition: data for DEFINE AXIS/FROM_VARIABLE is not monotonic at index 12
+ **ERROR: improper grid or axis definition: data for DEFINE AXIS/FROM_VARIABLE is not monotonically increasing at index 12
 define axis/t/units=days tax = tvar
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3971,6 +3971,51 @@ Replacing definition of axis FSEC
 cancel var b,a
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ **ERROR: command syntax: xpos=a2
+annotate/nouser/xpos=a2/ypos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: ypos=b
+annotate/nouser/xpos=0/ypos=b/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: halign=c
+annotate/nouser/xpos=0/ypos=0/halign=c/valign=0/angle=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: valign=d
+annotate/nouser/xpos=0/ypos=0/halign=1/valign=d/angle=ee/siz=0.15 "My Lab"
+ **ERROR: command syntax: siz=f
+annotate/nouser/xpos=0/ypos=0/halign=1/valign=0/angle=-45/siz=f "My Lab"
+ **ERROR: invalid command: /XPOS and /YPOS are required for ANNOTATE
+annotate/nouser/ypos=0 "My Lab"
+ **ERROR: invalid command: /XPOS and /YPOS are required for ANNOTATE
+annotate/nouser/xpos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+ **ERROR: invalid command: Specify only one of /USER /NOUSER /NORM
+annotate/nouser/user/ypos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: xpos=a2
+def anno/nou/xpos=a2/ypos=0/hal=1/val=0/ang=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: ypos=b
+def anno/nou/xpos=0,3/ypos=b/hal=1/val=0/ang=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: hal=c
+def anno/nou/xpos=0/ypos=0/hal=c/val=0/ang=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: val=d
+def anno/nou/xpos=0/ypos=0/hal=1/val=d/ang=ee/siz=0.15 "My Lab"
+ **ERROR: command syntax: siz=f
+def anno/nou/xpos=0/ypos=0/hal=1/val=0/ang=-45/siz=f "My Lab"
+ **ERROR: invalid command: /XPOS and /YPOS are required for ANNOTATE
+def anno/nou/ypos=0 "My Lab"
+ **ERROR: invalid command: /XPOS and /YPOS are required for ANNOTATE
+def anno/nou/xpos=0/hal=1/val=0 "My Lab"
+ **ERROR: invalid command: Specify only one of /USER /NOUSER /NORM
+def anno/nou/user/xpos=0/ypos=0 "My Lab"
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis ZAX
+ LISTing to file layerz_test_data.txt
+ **ERROR: variable unknown or not in data set: (data set ok ?): noexist
+SET VAR/layerz=depth noexist
+           *** NOTE: Ambiguous coordinates on Z axis: TEMP6D-TEMPZ6D
+ **ERROR: invalid command: auxiliary variable DEPTH6D has a T axis not found on variable TEMP
+LIST/PREC=7 tempz6d_unmatch
+Replacing definition of axis XAX
+Replacing definition of axis ZAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -4060,4 +4105,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jun 17 13:47:29 PDT 2015
+Ended at Fri Jun 26 09:36:05 PDT 2015

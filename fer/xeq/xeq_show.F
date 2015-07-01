@@ -1406,6 +1406,10 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 		       dlen = TM_LENSTR1(grid_name(grid) )
 		       WRITE ( risc_buff, 4211) grid_name(grid)(:dlen)
 		    ENDIF
+	            IF ( TM_HAS_STRING(ds_type(dset), 'FCT') ) THEN
+		       dlen = TM_LENSTR1(grid_name(grid) )
+		       WRITE ( risc_buff, 4212) grid_name(grid)(:dlen)
+		    ENDIF
 		    ENDIF
 	            CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 
@@ -1417,6 +1421,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
  1350	   CONTINUE
  4210	   FORMAT ( 4X,'GRID ',A)
  4211	   FORMAT ( 4X,'GRID ',A, '  Ferret-defined Ensemble Grid')
+ 4212	   FORMAT ( 4X,'GRID ',A, '  Ferret-defined FMRC Grid')
 
 	ELSEIF( qual_given(slash_grid_dyn) .GT. 0 ) THEN
 	   CALL SHOW_DYN_GRIDS(mods_cx)

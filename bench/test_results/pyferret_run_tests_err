@@ -1,8 +1,8 @@
-Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1188 Jun 19 15:43 /home/flat/ksmith/PyFerret/bin/pyferret
-Using external functions from /home/flat/ksmith/PyFerret/ext_func/libs
+Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith tmap 1188 Jun 30 18:15 /home/users/ksmith/PyFerret/bin/pyferret
+Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
+Note: RUN_TESTS.sh test results for debug Pyferret on RHEL6-64 (new dunkel)
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -243,18 +243,18 @@ Benchmark scripts that will be run:
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
-FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/flat/ksmith/Datasets
+FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/ksmith/Datasets
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/flat/ksmith/PyFerret/ext_func/libs
-FER_FONTS=/home/flat/ksmith/PyFerret/ppl/fonts
-FER_GO=. /home/flat/ksmith/PyFerret/go /home/flat/ksmith/PyFerret/examples /home/flat/ksmith/PyFerret/contrib
+FER_EXTERNAL_FUNCTIONS=/home/users/ksmith/PyFerret/ext_func/libs
+FER_FONTS=/home/users/ksmith/PyFerret/ppl/fonts
+FER_GO=. /home/users/ksmith/PyFerret/go /home/users/ksmith/PyFerret/examples /home/users/ksmith/PyFerret/contrib
 FER_GRIDS=.
-FER_LIBS=/home/flat/ksmith/PyFerret/lib
-FER_PALETTE=. /home/flat/ksmith/PyFerret/ppl
+FER_LIBS=/home/users/ksmith/PyFerret/lib
+FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Jun 19 15:45:01 PDT 2015
+Beginning at Tue Jun 30 18:17:27 PDT 2015
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -1325,9 +1325,6 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-sh: ncrename: command not found
-sh: ncrename: command not found
-sh: ncrename: command not found
 *** Running test: bn_cancel_axes.jnl
  Cached data cleared from memory
  LISTing to file longax.dat
@@ -2131,6 +2128,7 @@ Replacing definition of axis TIME
 *** Running test: bn_cdf_errmsg.jnl
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
+CURL Error: Couldn't resolve host name
 curl error details: 
  Cached data cleared from memory
  **TMAP ERR: non-existent or not on line
@@ -2377,6 +2375,7 @@ SHADE/LEV=300/I=1:100/J=1:100 i+j
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_test_opendap.jnl
+CURL Error: Couldn't resolve host name
 curl error details: 
  Cached data cleared from memory
 *** Running test: bn611_bug_fixes.jnl
@@ -3276,7 +3275,7 @@ define data/agg windy = 1,2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
            *** NOTE: Adjusting Y-axis label size from 0.100 to 0.001, to avoid running off page.
-           *** NOTE: /home/flat/ksmith/PyFerret/go/magnify.jnl
+           *** NOTE: /home/users/ksmith/PyFerret/go/magnify.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3337,7 +3336,7 @@ LIST/FORMAT=CDF/clobber/file=mytype.nc my_data
  LISTing to file mytype.nc
 *** Running test: bn_axis_nonmonotonic.jnl
  Cached data cleared from memory
- **ERROR: improper grid or axis definition: data for DEFINE AXIS/FROM_VARIABLE is not monotonic at index 12
+ **ERROR: improper grid or axis definition: data for DEFINE AXIS/FROM_VARIABLE is not monotonically increasing at index 12
 define axis/t/units=days tax = tvar
 *** Running test: bn_vec_mod.jnl
  Cached data cleared from memory
@@ -3436,7 +3435,6 @@ Replacing definition of axis AXI_COARSE
 *** Running test: bn_nco_append.jnl
  Cached data cleared from memory
  LISTing to file append_to_this.nc
-sh: ncks: command not found
 *** Running test: bn_nobounds.jnl
  Cached data cleared from memory
  LISTing to file a.nc
@@ -3888,4 +3886,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Fri Jun 19 15:46:31 PDT 2015
+Ended at Tue Jun 30 18:21:33 PDT 2015

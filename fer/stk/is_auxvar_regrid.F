@@ -81,8 +81,8 @@
      .		impl_grid, slen, s1, sn, naux, ptr
 	CHARACTER*128 VAR_CODE, src_name, com_name
 
-* temporary cuz totalview doesn't see equiv vars
-	INTEGER im1, im2, im3, ic1, ic2, ic3 
+!* temporary cuz totalview doesn't see equiv vars
+!	INTEGER im1, im2, im3, ic1, ic2, ic3 
 
         EQUIVALENCE
      .          ( aux_mr_list(1), mr1 ),
@@ -138,15 +138,15 @@
 	   aux_mr_list(i) = dummy_mr
 	   aux_cx_list(i) = unspecified_int4 
  5	CONTINUE
-**************
-* remove these lines
-	im1 = mr1
-	im2 = mr2
-	im3 = mr3
-	ic1 = cx1
-	ic2 = cx2
-	ic3 = cx3
-**************
+!**************
+!* remove these lines
+!	im1 = mr1
+!	im2 = mr2
+!	im3 = mr3
+!	ic1 = cx1
+!	ic2 = cx2
+!	ic3 = cx3
+!**************
         i = 0
         DO idim = 1, nferdims
            IF (cx_aux_var(idim,lo_cx) .NE. unspecified_int4) THEN
@@ -165,23 +165,23 @@
 	      ENDIF
           ENDIF
 	ENDDO
-**************
-* remove these lines
-	im1 = mr1
-	im2 = mr2
-	im3 = mr3
-	ic1 = cx1
-	ic2 = cx2
-	ic3 = cx3
-**************
+!**************
+!* remove these lines
+!	im1 = mr1
+!	im2 = mr2
+!	im3 = mr3
+!	ic1 = cx1
+!	ic2 = cx2
+!	ic3 = cx3
+!**************
 * ... TF-regridding (FMRC) introduces the idea that the number of axes being
 *     regridded (T&F) may differ from the number of aux variables (time2d)
 	naxis = i
 
 * sanity checks
-        IF ( naux.GT.1 )
-     .		CALL ERRMSG(ferr_prog_limit, status,
-     .		'for now TF is the only 2 aux var regrid supported', *5000)
+!        IF ( naux.GT.1 )
+!     .		CALL ERRMSG(ferr_prog_limit, status,
+!     .		'for now TF is the only 2 aux var regrid supported', *5000)
 
 	IF ( is_phase(lo_isp) .EQ. isphase_get_aux_var ) THEN 
 
@@ -197,7 +197,7 @@
 	      CALL GET_AUX_VAR_CONTEXT( lo_cx, hi_cx, is_sum(lo_isp),
      .					status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
-	      is_axis(lo_isp) = AUX_AXIS_FROM_ARG(lo_cx, is_sum(lo_isp))
+	      is_axis(lo_isp) = AUX_AXIS_FROM_ARG(lo_cx, is_sum(lo_isp) )
 
 	   ELSE
 * *** SET UP TO GET THE SOURCE DATA ***
@@ -206,15 +206,15 @@
 * set up 4D array limits as unsubscripted variables in COMMON
               CALL NON_ARRAY_SUBSC( aux_mr_list, naux )
 
-**************
-* remove these lines
-	im1 = mr1
-	im2 = mr2
-	im3 = mr3
-	ic1 = cx1
-	ic2 = cx2
-	ic3 = cx3
-**************
+!**************
+!* remove these lines
+!	im1 = mr1
+!	im2 = mr2
+!	im3 = mr3
+!	ic1 = cx1
+!	ic2 = cx2
+!	ic3 = cx3
+!**************
 
 * create the context for the source data needed to perform the regrid
               CALL AUX_REGRID_LIMS( lo_cx, hi_cx, axis_list, naxis,

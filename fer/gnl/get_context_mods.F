@@ -157,6 +157,7 @@
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 * V695+ *sh* 2/15 add support for _DQ_ 
 * V698+ *sh* 5/15 bug fix: allow blanks before aux varname e.g. "gz( depth)"
+* V698+ *sh* 6/15 bug fix: all axes to allow [g*(aux)=pt], not just z_dim
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -258,7 +259,7 @@
         DO 10 idim = 1, nferdims
 	   morph_gx_to_x(idim)  = .FALSE.
 	   set_implicitly(idim) = .FALSE.
-	   cx_g_eq_regrid(idim) = .FALSE.
+!	   cx_g_eq_regrid(idim) = .FALSE.   ! initialize *inside* of 500 loop 6/2015
 	   first_time(idim)     = .TRUE.
  10	CONTINUE
 	has_g_eq_unkn_uvar = .FALSE.
@@ -354,6 +355,11 @@
 	   letter = UPPER_CASE(text_buff(istart:istart))! 8/92
 	   has_auxvar = .FALSE.				! 12/13
 
+* ... 6/2015 initialize this inside of 500 loop to allow [gx(xaux)=xax,gy(yaux)=yax]
+           DO idim = 1, nferdims
+	      cx_g_eq_regrid(idim) = .FALSE.
+	   ENDDO
+
 * ignore any region information that contains grave accents
 	   IF ( INDEX(risc_buff,'`') .GT. 0 ) GOTO 500
 
@@ -400,16 +406,16 @@
  100	   IF ( letter.EQ.'D' ) GOTO 500 ! already done
 	   IF ( letter.NE.'G' ) GOTO 190
 
-* only T and F axes may be simultaneously used in auxvar regridding
-	   IF (cx_unstand_grid(mods_cx) .AND. cx_naux(mods_cx).NE. 0) THEN
-	     name = 'only T and F regrids may be combined when using'
-	     IF (idim.NE.t_dim .AND. idim.NE.f_dim) GOTO 5300
-	     DO rgdim = 1, nferdims
-	        IF (cx_g_eq_regrid(rgdim)) THEN
-	          IF (rgdim.NE.t_dim .AND. rgdim.NE.f_dim) GOTO 5300
-	        ENDIF
-	     ENDDO
-	   ENDIF  
+!* only T and F axes may be simultaneously used in auxvar regridding
+!	   IF (cx_unstand_grid(mods_cx) .AND. cx_naux(mods_cx).NE. 0) THEN
+!	     name = 'only T and F regrids may be combined when using'
+!	     IF (idim.NE.t_dim .AND. idim.NE.f_dim) GOTO 5300
+!	     DO rgdim = 1, nferdims
+!	        IF (cx_g_eq_regrid(rgdim)) THEN
+!	          IF (rgdim.NE.t_dim .AND. rgdim.NE.f_dim) GOTO 5300
+!	        ENDIF
+!	     ENDDO
+!	   ENDIF  
 
 * G= or G*= non-standard grid specifier ...
 * full format is (e.g.) GX=SALT@AVE (atsin and beyond optional)
@@ -473,11 +479,11 @@ c	      next_char = istart + naxes - 1
 * if auxiliary regridding variables have been given, parse em here
 	   IF (has_auxvar) THEN
 * ... first check for valid usage
-	     IF (naxes .GT. 1) THEN
-		name =
-     .		'this Ferret version doesnt support multi aux regrid args' 
-	        GOTO 5300
-	     ENDIF
+!	     IF (naxes .GT. 1) THEN
+!		name =
+!     .		'this Ferret version doesnt support multi aux regrid args' 
+!	        GOTO 5300
+!	     ENDIF
 !	     IF (idim .NE. z_dim
 !     .	   .AND. idim .NE. t_dim
 !     .	   .AND. idim .NE. f_dim  ) THEN
@@ -531,7 +537,8 @@ c	      next_char = istart + naxes - 1
 *    ... match this arg to its axis from the "gxy" syntax
 	          DO rgdim = rgdim+1, nferdims
 	             IF (cx_g_eq_regrid(rgdim)) THEN
-	                cx_aux_arg_start(rgdim, mods_cx) = i
+	                cx_aux_arg_start(rgdim, mods_cx) = i+1
+	                cx_aux_arg_end  (rgdim, mods_cx) = i
 	                GOTO 104
 	             ENDIF
 	          ENDDO
@@ -547,7 +554,7 @@ c	      next_char = istart + naxes - 1
 	        name = 'no. of auxliary variables must match no. of axes in'
 	        GOTO 5300
 	     ENDIF
-	     cx_naux(mods_cx) = naxes
+	     cx_naux(mods_cx) = cx_naux(mods_cx) + naxes
 	   ENDIF
 
 * initialize for next axis as in "GXY="
@@ -824,11 +831,11 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 	      GOTO 5020			! unknown regrid transform
 * ... trap (temporary?) for use of "@AVE" on auxiliary regridding
  182	      IF (itrans .EQ. pauxrgrd_average) THEN
-	         CALL WARN_OCCASIONALLY(
-     .		   'Box-averaging not available for auxiliary variable '//
-     .		   'regridding.'//pCR//
-     .		   '           Using @PLAVE instead, '//
-     .		   'e.g. gz(depth)=0:100@plave', 10, 101)
+!	         CALL WARN_OCCASIONALLY(
+!     .		   'Box-averaging not available for auxiliary variable '//
+!     .		   'regridding.'//pCR//
+!     .		   '           Using @PLAVE instead, '//
+!     .		   'e.g. gz(depth)=0:100@plave', 10, 101)
 	         itrans = pauxrgrd_pwlave
 	      ENDIF
               IF ( single_char ) THEN   ! apply transform to all axes
@@ -1128,13 +1135,12 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 * ... identify the axis being regridding in this qualifier
 	  DO rgdim = 1, nferdims
 	     IF (cx_g_eq_regrid(rgdim)) THEN
-	        IF (rgdim .NE. z_dim) CYCLE  ! ignore all axes but Z
 * set up for dynamic axis by inserting a special cx_delta signal
-	        IF (cx_lo_ww(z_dim,mods_cx) .EQ. unspecified_val8) CYCLE
-	        IF (cx_delta(z_dim,mods_cx) .NE. unspecified_val8) CYCLE
-	        IF (cx_lo_ww(z_dim,mods_cx) .EQ. cx_hi_ww(z_dim,mods_cx)
-     .	       .OR. cx_regrid_trans(z_dim,mods_cx) .EQ. pauxrgrd_pwlave)
-     .					cx_delta(z_dim,mods_cx) = pauto_1pt_ax
+	        IF (cx_lo_ww(rgdim,mods_cx) .EQ. unspecified_val8) CYCLE
+	        IF (cx_delta(rgdim,mods_cx) .NE. unspecified_val8) CYCLE
+	        IF (cx_lo_ww(rgdim,mods_cx) .EQ. cx_hi_ww(rgdim,mods_cx)
+     .	       .OR. cx_regrid_trans(rgdim,mods_cx) .EQ. pauxrgrd_pwlave)
+     .					cx_delta(rgdim,mods_cx) = pauto_1pt_ax
 	     ENDIF
 	   ENDDO
 	ENDIF
@@ -1218,6 +1224,14 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 	      ENDIF
  600	   CONTINUE
  610	CONTINUE
+
+* TF regridding syntax may be gt(tf_times)=TF_CAL_T,gf(tf_times)=TF_LAG_F in which case
+* what appears as two distinct auxiliary variables is really only one
+	IF (cx_naux(mods_cx) .GT. 1) THEN
+	   IF ( cx_aux_arg_start(t_dim,mods_cx) .NE. unspecified_int4
+     .    .AND. cx_aux_arg_start(f_dim,mods_cx) .NE. unspecified_int4 ) 
+     .					cx_naux(mods_cx) = cx_naux(mods_cx) - 1
+	ENDIF
 
 * same is true for indefinite integrals but never been used yet ...
 	IF (  cx_trans(x_dim,mods_cx) .EQ. trans_integ_indef

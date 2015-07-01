@@ -1,4 +1,5 @@
 SRCS_F = \
+xeq_annotate.F\
 xeq_cancel.F\
 xeq_contour.F\
 xeq_define.F\

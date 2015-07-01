@@ -1,0 +1,152 @@
+\CANC MODE VERIFY
+! bn_auxiliary.sub
+
+! define test variables and do a 1D auxiliary regridding test on the active axis 
+
+
+! 2 arguments:  active axis and 2 passive axes
+
+! e.g. GO test_all_axis_aux.sub   Z, X, F    ! test Z redrid in XZ and ZF planes
+! see example at end
+
+
+DEFINE SYMBOL aax  = $1
+DEFINE SYMBOL pax1 = $2
+DEFINE SYMBOL pax2 = $3
+DEFINE SYMBOL iaax  = ($aax%|X>I|Y>J|Z>K|T>L|E>M|F>N|%)
+DEFINE SYMBOL ipax1 = ($pax1%|X>I|Y>J|Z>K|T>L|E>M|F>N|%)
+DEFINE SYMBOL ipax2 = ($pax2%|X>I|Y>J|Z>K|T>L|E>M|F>N|%)
+DEFINE SYMBOL gax = g($aax)
+
+SAY
+SAY *****************************
+SAY **********  ($AAX),($PAX1),($PAX2) ***********
+SAY *****************************
+SAY
+
+! default all 6 axes to passive
+DEFINE SYMBOL  contrib_xax = 0*_x[gx=xp]
+DEFINE SYMBOL  contrib_yax = 0*_y[gy=yp]
+DEFINE SYMBOL  contrib_zax = 0*_z[gz=zp]
+DEFINE SYMBOL  contrib_tax = 0*_t[gt=tp]
+DEFINE SYMBOL  contrib_eax = 0*_e[ge=ep]
+DEFINE SYMBOL  contrib_fax = 0*_f[gf=fp]
+DEFINE SYMBOL bcontrib_xax = 0*_x[gx=xp]
+DEFINE SYMBOL bcontrib_yax = 0*_y[gy=yp]
+DEFINE SYMBOL bcontrib_zax = 0*_z[gz=zp]
+DEFINE SYMBOL bcontrib_tax = 0*_t[gt=tp]
+DEFINE SYMBOL bcontrib_eax = 0*_e[ge=ep]
+DEFINE SYMBOL bcontrib_fax = 0*_f[gf=fp]
+
+! non-default for active axis only
+DEFINE SYMBOL  contrib_($aax)ax = 0.0001*     _($aax)[g($aax)=($aax)a] ^2
+DEFINE SYMBOL bcontrib_($aax)ax = 0.0001*(800-_($aax)[g($aax)=($aax)a])^2
+
+! default all 6 region qualifiers to index 1
+DEFINE SYMBOL  sx = /i=1
+DEFINE SYMBOL  sy = /j=1
+DEFINE SYMBOL  sz = /k=1
+DEFINE SYMBOL  st = /l=1
+DEFINE SYMBOL  se = /m=1
+DEFINE SYMBOL  sf = /n=1
+
+! define regions to be used for listings
+CANCEL SYMBOL s($aax)
+DEFINE SYMBOL SAVE_PAX1 = ($s($pax1))
+CANCEL SYMBOL s($pax1)
+DEFINE SYMBOL REG1 = ($sx" ")($sy" ")($sz" ")($st" ")($se" ")($sf" ")
+DEFINE SYMBOL s($pax1) = ($SAVE_PAX1)
+CANCEL SYMBOL s($pax2)
+DEFINE SYMBOL REG2 = ($sx" ")($sy" ")($sz" ")($st" ")($se" ")($sf" ")
+
+! mock temperature field
+let temp =  ($contrib_xax) +  ($contrib_yax) +  ($contrib_zax) +  ($contrib_tax) +  ($contrib_eax) +  ($contrib_fax)
+
+! same but backwards ordered fields
+let btemp = ($bcontrib_xax) + ($bcontrib_yax) + ($bcontrib_zax) + ($bcontrib_tax) + ($bcontrib_eax) + ($bcontrib_fax)
+
+! mock density fields - 10, 20, 30, ... with inversions and missing
+let density0 = 0*temp + _($aax)/10
+let density1 = if (_($ipax1) eq 2 OR _($ipax2) eq 2) and _($iaax) eq 4 then 20  else density0
+let density2 = if (_($ipax1) eq 3 OR _($ipax2) eq 3) and _($iaax) eq 1 then 20  else density1
+let density3 = if (_($ipax1) eq 3 OR _($ipax2) eq 3) and _($iaax) eq 2 then 10  else density2
+let density4 = if (_($ipax1) eq 4 OR _($ipax2) eq 4) and _($iaax) eq 6 then 30  else density3
+let density  = if (_($ipax1) eq 5 OR _($ipax2) eq 5) and _($iaax) le 2 then 1/0 else density4
+
+! same but backwards ordered
+let bdensity0 = 0*temp + (800-_($aax))/10
+let bdensity1 = if (_($ipax1) eq 2 OR _($ipax2) eq 2) and (8-_($iaax)) eq 4 then 20  else bdensity0
+let bdensity2 = if (_($ipax1) eq 3 OR _($ipax2) eq 3) and (8-_($iaax)) eq 1 then 20  else bdensity1
+let bdensity3 = if (_($ipax1) eq 3 OR _($ipax2) eq 3) and (8-_($iaax)) eq 2 then 10  else bdensity2
+let bdensity4 = if (_($ipax1) eq 4 OR _($ipax2) eq 4) and (8-_($iaax)) eq 6 then 30  else bdensity3
+let bdensity  = if (_($ipax1) eq 5 OR _($ipax2) eq 5) and (8-_($iaax)) le 2 then 1/0 else bdensity4
+
+SET MODE/LAST VERIFY
+! show the underlying fields
+list/order=($pax1)($aax)($REG1) temp
+list/order=($pax1)($aax)($REG1) btemp
+list/order=($pax1)($aax)($REG1) density
+list/order=($pax1)($aax)($REG1) bdensity
+
+! show the regridded fields
+! using interpolation
+list/order=($pax1)($aax)($REG1) temp[($gax)(density)=5:80:5]  ! passive ax 1
+list/order=($pax2)($aax)($REG2) temp[($gax)(density)=5:80:5]  ! passive ax 2
+list/order=($pax1)($aax)($REG1) btemp[($gax)(bdensity)=5:80:5]  ! backwards pasv ax 1
+list/order=($pax2)($aax)($REG2) btemp[($gax)(bdensity)=5:80:5]  ! backwards pasv ax 2
+! 6/2015 - test degenerate single point target axis
+list/order=($pax1)($aax)($REG1) temp[($gax)(density)=35]
+list/order=($pax1)($aax)($REG1) btemp[($gax)(bdensity)=35]
+
+
+! using piecewise linear averaging
+list/order=($pax1)($aax)($REG1) temp[($gax)(density)=5:80:15@plave]
+list/order=($pax2)($aax)($REG2) temp[($gax)(density)=5:80:15@plave] 
+list/order=($pax1)($aax)($REG1) btemp[($gax)(bdensity)=5:80:15@plave]
+list/order=($pax2)($aax)($REG2) btemp[($gax)(bdensity)=5:80:15@plave] 
+! 6/2015 - test degenerate single point target axis
+list/order=($pax1)($aax)($REG1) temp[($gax)(density)=35:55@plave]
+list/order=($pax1)($aax)($REG1) btemp[($gax)(bdensity)=35:55@plave]
+
+!*********************************************************************************
+!*********************************************************************************
+EXIT/SCRIPT
+! below here is an example of the lines that are executed given args Z,X,F
+! mock temperature field
+let temp = 0*_x[gx=xp] + 0*_y[gy=yp] + 0.0001*_z[gz=za]^2 + 0*_t[gt=tp] + 0*_e[ge=ep] + 0*_f[gf=fp]
+! same but backwards ordered fields
+let btemp = 0*x[gx=xp] + 0*y[gy=yp] + 0.0001*(800-Z[gz=za])^2 + 0*t[gt=tp] + 0*_e[ge=ep] + 0*_f[gf=fp]
+
+! mock density fields - 10, 20, 30, ... with inversions and missing
+let density0 = 0*temp + _z/10
+let density1 = if (_i eq 2 OR _n eq 2) and _k eq 4 then 20  else density0
+let density2 = if (_i eq 3 OR _n eq 3) and _k eq 1 then 20  else density1
+let density3 = if (_i eq 3 OR _n eq 3) and _k eq 2 then 10  else density2
+let density4 = if (_i eq 4 OR _n eq 4) and _k eq 6 then 30  else density3
+let density  = if (_i eq 5 OR _n eq 5) and _k le 2 then 1/0 else density4
+
+! same but backwards ordered
+let bdensity0 = 0*temp + (800-_z)/10
+let bdensity1 = if (_i eq 2 OR _n eq 2) and (8-_k) eq 4 then 20  else bdensity0
+let bdensity2 = if (_i eq 3 OR _n eq 3) and (8-_k) eq 1 then 20  else bdensity1
+let bdensity3 = if (_i eq 3 OR _n eq 3) and (8-_k) eq 2 then 10  else bdensity2
+let bdensity4 = if (_i eq 4 OR _n eq 4) and (8-_k) eq 6 then 30  else bdensity3
+let bdensity  = if (_i eq 5 OR _n eq 5) and (8-_k) le 2 then 1/0 else bdensity4
+
+! show the underlying fields
+list/j=1/l=1/m=1/n=1 temp
+list/j=1/l=1/m=1/n=1 btemp
+list/j=1/l=1/m=1/n=1 density
+list/j=1/l=1/m=1/n=1 bdensity
+
+! show the regridded fields
+list/order=xz/j=1/l=1/m=1/n=1 temp[gz(density)=5:80:5]  ! X passive
+list/order=fz/i=1/j=1/l=1/m=1 temp[gz(density)=5:80:5]  ! F passive
+list/order=xz/j=1/l=1/m=1/n=1 btemp[gz(bdensity)=5:80:5]  ! backwards X passive
+list/order=fz/i=1/j=1/l=1/m=1 btemp[gz(bdensity)=5:80:5]  ! backwards F passive
+
+list/order=xz/j=1/l=1/m=1/n=1 temp[gz(density)=5:80:15@plave]  ! X passive
+list/order=fz/i=1/j=1/l=1/m=1 temp[gz(density)=5:80:15@plave]  ! F passive
+list/order=xz/j=1/l=1/m=1/n=1 btemp[gz(bdensity)=5:80:15@plave] ! backw X passive
+list/order=fz/i=1/j=1/l=1/m=1 btemp[gz(bdensity)=5:80:15@plave] ! backw F passive
+

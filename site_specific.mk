@@ -35,16 +35,14 @@ INSTALL_FER_DIR = $(FER_DIR)
 ## the system's cairo shared library will be used.  Older versions 
 ## of cairo (v1.8 or later) can be used, but raster images from 
 ## -nodisplay may look a little fuzzy unless -gif is specified.
-# CAIRO_DIR = /usr/local/cairo-1.14.2
-CAIRO_DIR = /usr/local/cairo-1.14.2_64
+CAIRO_DIR = /usr/local/cairo-1.14.2
 # CAIRO_DIR =
 
 ## Installation directory for pixman-1 static library (contains 
 ## include and lib or lib64 subdirectories) used by the above cairo 
 ## library.  If blank, or if CAIRO_DIR is blank, the system's 
 ## pixman-1 shared library will be used.
-# PIXMAN_DIR = /usr/local/pixman-1
-PIXMAN_DIR = /usr/local/pixman-1_64
+PIXMAN_DIR = /usr/local/cairo-1.14.2
 # PIXMAN_DIR =
 
 ## Installation directory for HDF5 static libraries (contains 
@@ -52,9 +50,7 @@ PIXMAN_DIR = /usr/local/pixman-1_64
 ## to link to NetCDF shared-object libraries.
 # HDF5_DIR = /usr
 # HDF5_DIR = /usr/local
-# HDF5_DIR = /usr/local/hdf5-1.8.9
-# HDF5_DIR = /usr/local/hdf5_189
-HDF5_DIR = /usr/local/hdf5_189_64
+HDF5_DIR = /usr/local/hdf5-1.8.15.1
 # HDF5_DIR = 
 
 ## Installation directory for NetCDF static or shared object libraries
@@ -63,9 +59,7 @@ HDF5_DIR = /usr/local/hdf5_189_64
 ## used;  otherwise the netcdf static (.a) libraries will be used.
 # NETCDF4_DIR = /usr
 # NETCDF4_DIR = /usr/local
-# NETCDF4_DIR = /usr/local/netcdf-4.3.2
-# NETCDF4_DIR = /usr/local/netcdf_432
-NETCDF4_DIR = /usr/local/netcdf_432_64
+NETCDF4_DIR = /usr/local/netcdf-4.3.3.1
 
 ## Java home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,

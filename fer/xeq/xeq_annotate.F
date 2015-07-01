@@ -1,4 +1,4 @@
-	SUBROUTINE PUSH_INTERP_STACK( level, status )
+	SUBROUTINE XEQ_ANNOTATE
 
 *
 *
@@ -35,49 +35,83 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* push the interpretation stack pointer to the next higher level and copy
-* the most common objects to the new level
+* Put an annotation (moveable label) onto an existing plot
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
+* programmer - Ansley Manke
+* NOAA/PMEL, Seattle, WA - TMAP/SDIG 
 *
-* revision 0.0 - 2/19/87
-*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-* v690  2/2014 *sh* stack max limited to max_usable_intrp to fit aux frames at top
-* v698+ 6/2015 *sh* is_sum changed from REAL to INTEGER
- 
-        include 'tmap_dims.parm'
-	include 'ferret.parm'
+* revision 0.0 - 4/6/2015
+
+	include 'tmap_dims.parm'
+	include	'ferret.parm'
 	include 'errmsg.parm'
+	include 'slash.parm'
+	include 'xplot_state.cmn'
+	include 'xcontext.cmn'
 	include 'xvariables.cmn'
+	include 'xprog_state.cmn'
+	include 'plot_setup.parm'
+	include 'xplot_setup.cmn'
+	
+* local variable declarations:
+	LOGICAL user, norm, nouser
+	INTEGER	TM_LENSTR1,
+     .		rlen, item, nchar, status
+	REAL	xloc, yloc, halign, angle, size
 
-* calling argument declarations:
-	INTEGER		level, status
+	CHARACTER TM_FMT*14, buff*20, labtxt*2048
 
-* internal variable declarations:
-	INTEGER	source_level
+* initialize 
 
-* save level from which to copy stack info.
-	source_level = level
+	size = 0.2
 
-* push the stack pointer
-	CALL STACK_PTR_UP( isp, max_usable_intrp, status )
-	IF ( status .NE. ferr_ok ) RETURN
+* Get the text
+	IF (num_items .NE. 1) GOTO 5500
+	item = 1
+	labtxt = cmnd_buff(item_start(item):item_end(item))
 
-* copy some stack info
-	is_obj    ( isp ) = is_obj      ( source_level )
-	is_uvar   ( isp ) = is_uvar     ( source_level )
-	is_cx     ( isp ) = is_cx       ( source_level )
-	is_aux_ptr( isp ) = is_aux_ptr  ( source_level )
+* Get settings
 
-* ! temp - blank out rest of stack to avoid undetected bugs
-	is_act      ( isp ) = unspecified_int4
-	is_big_cx   ( isp ) = unspecified_int4
-	is_phase    ( isp ) = unspecified_int4
-	is_axis     ( isp ) = unspecified_int4
-	is_mr       ( isp ) = unspecified_int4
-	is_sum      ( isp ) = -777
+	CALL SET_ANNOTATION (user, nouser, norm, xloc, yloc, halign, 
+     .         angle, size, status)
+	IF (status .NE. ferr_ok) GOTO 5000
 
-	RETURN
+	IF (nouser .OR. norm) THEN
+	   buff = 'NOUSER'
+	ELSE
+	   buff = 'USER'
+	ENDIF
+
+* Create the %LABEL command
+
+	ppl_buff = '%LABEL/'//buff
+	rlen = TM_LENSTR1(ppl_buff)
+
+	ppl_buff = ppl_buff(:rlen)//' '//TM_FMT(xloc, 14, 16, nchar)
+	rlen = TM_LENSTR1(ppl_buff)
+
+	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(yloc, 14, 16, nchar)
+	rlen = TM_LENSTR1(ppl_buff)
+
+	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(halign, 14, 16, nchar)
+	rlen = TM_LENSTR1(ppl_buff)
+
+	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(angle, 14, 16, nchar)
+	rlen = TM_LENSTR1(ppl_buff)
+
+	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(size, 14, 16, nchar)
+	rlen = TM_LENSTR1(ppl_buff)
+
+	ppl_buff = ppl_buff(:rlen)//', '//labtxt
+	rlen = TM_LENSTR1(ppl_buff)
+
+* ... pass a the command to PPLUS
+
+c	print *, ppl_buff(:rlen)
+	CALL PPLCMD (' ',' ',0,ppl_buff(:rlen),1,1)
+
+ 5000	RETURN
+ 5500	CALL ERRMSG( ferr_invalid_command, status,
+     .		'ANNOTATE command missing text for the annotation', *5000 )
+
 	END

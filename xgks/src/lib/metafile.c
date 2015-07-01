@@ -1214,7 +1214,7 @@ XgksMiCloseWs(WS_STATE_PTR ws)
  * Close an output Metafile.  ?batmode
  */
     int
-XgksMoCloseWs(WS_STATE_PTR ws, int *batmode)
+XgksMoCloseWs(WS_STATE_PTR ws, int batmode)
 {
   return MO_CLOSE(&ws->mf);
 }

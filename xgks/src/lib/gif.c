@@ -94,9 +94,6 @@
  */
 
 /*LINTLIBRARY*/
-#ifdef __CYGWIN__
-#include <stdlib.h>
-#endif
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>		/* for time(), localtime(), and strftime() */

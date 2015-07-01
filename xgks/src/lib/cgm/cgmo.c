@@ -1061,7 +1061,6 @@ mo_asf(cgmo, num)
     mo_flush(cgmo, num, 0);
 }
 
-#define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
 
 /*
  * Write the current attribute elements.

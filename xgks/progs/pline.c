@@ -39,6 +39,7 @@
 #endif
 
 #include "xgks.h"
+#include <stdlib.h>
 
 
     static

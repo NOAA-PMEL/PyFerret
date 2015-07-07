@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 88356344 Jun 25 15:51 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 80777266 Jul  1 09:51 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: New ANNOTATE command and DEFINE ANNOTATION. Latest bn_auxillary tests
+Note: 64-bit build, new dunkel
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -17,10 +17,9 @@ FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/x86/FERRET/external_functions/ex
 FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
-FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Fri Jun 26 09:33:21 PDT 2015
+Beginning at Wed Jul 1 09:56:30 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -802,6 +801,18 @@ Replacing definition of axis TWEEKS
 Replacing definition of axis TWEEKS
 Replacing definition of axis TWEEKS
  LISTing to file calsst.cdf
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+
+Bailing out of external function "eof_stat":
+	 Function EOF_STAT not available in this version of Ferret. Use EOFSVD_STAT
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
            *** NOTE: /UNIT=MONTHS  ... using 1/12 of 360.00 days
 Replacing definition of grid TGRID
 Replacing definition of axis TDAYS
@@ -822,18 +833,6 @@ plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  Using every   2th vector in the X direction
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
-
-Bailing out of external function "eof_space":
-	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
-
-Bailing out of external function "eof_stat":
-	 Function EOF_STAT not available in this version of Ferret. Use EOFSVD_STAT
-
-Bailing out of external function "eof_tfunc":
-	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
  Using every   2th vector in the Y direction
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1448,7 +1447,7 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
            *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-ls: input.txt: No such file or directory
+ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
@@ -1794,6 +1793,7 @@ Replacing definition of axis XAX
 Replacing definition of axis XFINE
 Replacing definition of axis YFINE
  LISTing to file fine.dat
+Cannot create cookie file
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification
@@ -1950,6 +1950,9 @@ Replacing definition of axis TGREG
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file revision.nc
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1961,9 +1964,6 @@ LIST/ORDER=X  IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
           ELSE before - is illegal
           negative constants need to be enclosed in parentheses
 DEFINE VARIABLE A = IF I LT 5 THEN I ELSE -9
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
  **ERROR: variable unknown or not in data set: A1
 load a1,a2,a3
  **TMAP ERR: non-existent or not on line
@@ -2147,15 +2147,19 @@ Replacing definition of axis TIME
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
+Cannot create cookie file
+Cannot create cookie file
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
+Cannot create cookie file
+CURL Error: Couldn't resolve host name
 curl error details: 
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
            *** NOTE: New # of line colors will take effect on next new window: SET WIN/NEW then define pen colors
  Using every   3th vector in the X direction
  Using every   4th vector in the Y direction
@@ -2334,6 +2338,10 @@ set axis/stride=2 NORMAL
  LISTing to file tripolar_missing_lon.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Cannot create cookie file
+Cannot create cookie file
+CURL Error: Couldn't resolve host name
+curl error details: 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2350,7 +2358,6 @@ set axis/stride=2 NORMAL
            *** NOTE: Axis definition error on axis: TGAP
            *** NOTE: Bounds given describe non-contiguous axis cells
            *** NOTE: Using the LOWER bound specified for each axis cell
-curl error details: 
            *** NOTE: Undecipherable value of netCDF attribute modulo on variable lon_moderr
            *** NOTE: modulo = "j"
            *** NOTE: Undecipherable value of netCDF attribute modulo on variable time_moderr
@@ -3111,9 +3118,6 @@ Replacing definition of axis YAX_DUP_AXNAMES
  LISTing to file gh.nc
  LISTing to file justh.nc
  LISTing to file justg.nc
-
-Bailing out of external function "tax_year":
-	 Function not valid for modulo time axis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3132,6 +3136,9 @@ Bailing out of external function "tax_year":
            *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: broiled
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
+
+Bailing out of external function "tax_year":
+	 Function not valid for modulo time axis
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4105,4 +4112,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Jun 26 09:36:05 PDT 2015
+Ended at Wed Jul 1 09:59:01 PDT 2015

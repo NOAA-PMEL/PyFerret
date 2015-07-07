@@ -413,20 +413,23 @@
      .			pauxrgrd_fmrc      = max_regrid_trans+5 )
 
 * auxiliary variable pointer merging
+* 	paux_stat_init     - initialize to 0
 *	paux_stat_na	   - no inherited aux coord
 *	paux_stat_passed   - aux coords inherited passively
 *	paux_stat_needed   - aux coords inherited and desired in graphics
 *	paux_stat_used	   - aux coords inherited but already regridded
 *	paux_stat_conflict - vars w differing aux coordinates in one expression
 *	paux_stat_notfound - named aux var not found in this dataset
-	INTEGER		paux_stat_na     ,
+	INTEGER		paux_stat_init ,
+     .                  paux_stat_na     ,
      .			paux_stat_passed ,
      .			paux_stat_needed ,
      .			paux_stat_used   ,
      .			paux_stat_conflict,
      .			paux_stat_notfound,
      .			paux_stat_false_1pt_regrid
-	PARAMETER     ( paux_stat_na       = 1,
+	PARAMETER     ( paux_stat_init     = 0,
+     .                  paux_stat_na       = 1,
      .			paux_stat_passed   = 2,
      .			paux_stat_needed   = 3,
      .			paux_stat_used     = 4,

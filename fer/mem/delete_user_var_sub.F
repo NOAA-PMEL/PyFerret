@@ -66,6 +66,7 @@
 *                    linked-list structure, no need to check for  EX# expressions
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V695+ 5/15 *sh* - free cached c array, if any
+* V695  7/15 *acm - reinitialize value of uvar_aux_stat to zero
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -181,6 +182,11 @@
 	   rvar_uvar (uvar) = 0
 	   uvar_remote (uvar) = .FALSE.
 	ENDIF
-	      
+	
+* Reinitialize any aux_uvar settings 
+        DO 400 i = 1, nferdims
+ 400        uvar_aux_stat(uvar,i) = paux_stat_init
+
+      
 	RETURN
 	END

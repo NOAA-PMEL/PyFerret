@@ -47,7 +47,7 @@
 	REAL*8 lo, hi
 
 * internal variable declarations
-	INTEGER	isub1, llen
+	INTEGER	isub1, llen, iiaxis
 
 	IF ( axis .LT. 0 .OR. axis .GT. line_ceiling ) THEN
 	  lo = unspecified_val8
@@ -56,8 +56,10 @@
 	  lo = line_start(axis)
 	  hi = line_start(axis) + (line_dim(axis)-1)*line_delta(axis)
 	ELSE
-	  isub1 = line_subsc1(axis)
-	  llen = line_dim(axis)
+	  iiaxis = axis
+	  IF (line_parent(axis) .NE. 0) iiaxis = line_parent(axis)
+	  isub1 = line_subsc1(iiaxis)
+	  llen = line_dim(iiaxis)
 	  lo = line_mem(isub1)
 	  hi = line_mem(isub1 + llen - 1)
 	ENDIF

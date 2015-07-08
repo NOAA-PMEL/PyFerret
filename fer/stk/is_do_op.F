@@ -245,12 +245,18 @@
      .     .OR. (op_num.GT.offset_logic_struc)   )
 
 * perform the operation
+
+	IF (.NOT.arg_types_matched ) THEN 
+* ... allow mix of float and string arguments (lets us use symbols as numbers)
+	    CALL FILL_MEMORY ( memory, mr_blk1 (res_mr),
+     .                       mr_nblks(res_mr),
+     .                       mr_bad_data(res_mr) )
+
+	ELSEIF ( arg_type.EQ.ptype_string .AND. numerical_op ) THEN 
+* ... inappropriate use of string arguments
 * Issue an error instead of returning missing results on 
 * inappropriate use of string arguments
-	IF (.NOT.arg_types_matched
-     .	  .OR. (arg_type.EQ.ptype_string .AND. numerical_op) ) THEN 
-* ... inappropriate use of string arguments
-          GOTO 5200
+	    GOTO 5200
 
 	ELSEIF (arg_type.EQ.ptype_string) THEN
 	  IF (op_num .EQ. 1 ) THEN  ! "+"

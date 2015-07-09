@@ -653,8 +653,13 @@ c	IF ( no_lines ) cont_key = .TRUE.
               kpx(3) = kx_hi
            ENDIF
 
-	   kpy(1) = ky_lo + real (ndx - 2) * y_inc
-	   kpy(2) = ky_lo + real (ndx - 2) * y_inc
+	   IF (ndx .GT. 2) THEN 
+ 	      kpy(1) = kpy(3)
+	      kpy(2) = kpy(4)
+	   ELSE
+	      kpy(1) = ky_lo + real (ndx - 2) * y_inc
+	      kpy(2) = ky_lo + real (ndx - 2) * y_inc
+	   ENDIF
 	   kpy(3) = ky_lo + real (ndx - 1) * y_inc
 	   kpy(4) = ky_lo + real (ndx - 1) * y_inc
 

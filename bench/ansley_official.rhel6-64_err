@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 80763726 Jun 25 15:23 /home/users/ansley/build/flat_64/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 80793286 Jul  8 11:54 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: New ANNOTATE command and DEFINE ANNOTATION for PLOT/SET
+Note: last updates for v6.95
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,16 +13,13 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/flat_64/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib /home/users/tmap/ferret/tmap_go /home/users/ansley/ans_ferret/users/wittenberg/label_scripts/
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
+FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
-FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
-FER_LINK_DIR=/home/users/tmap/ferret_link/linux
-FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
-FER_WEB_BROWSER=firefox
-PWD=/home/users/ansley/build/flat_64/FERRET/bench
-Beginning at Thu Jun 25 15:27:15 PDT 2015
+FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
+FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
+PWD=/home/users/ansley/build/current_trunk/FERRET/bench
+Beginning at Wed Jul 8 12:00:31 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -976,14 +973,6 @@ list a[gx=xnrst@sum]
 list a[gx=xnrst@mod]
  LISTing to file foo.cdf
  **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead ysequence({98, 99})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+99 ELSE "goodbye"+", my ") + "friend"
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+99) + "friend"
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + 99
- **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead "b" - {"a","b"}
  **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead "b" * {"a","b"}
@@ -992,17 +981,9 @@ list/nohead "b" / {"a","b"}
  **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead "b" ^ {"a","b"}
  **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead {"a","b"} + 1
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead 1 + {"a","b"}
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead 1 - {"a","b"}
- **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead SIN({"a","b","c"})
  **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead MAX("a",{"a","b","c"})
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead MAX(1,{"a","b","c"})
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1226,10 +1207,10 @@ Replacing definition of axis TAX2
            *** NOTE: Axis is in use by grid GFORMAT
            *** NOTE: Not deleted: XAXLEVITR1_160
            *** NOTE: Axis is in use by grid GG1
-           *** NOTE: Not deleted: TIME5
-           *** NOTE: Axis is in use by grid GLB1
            *** NOTE: Not deleted: TIME4
            *** NOTE: Axis is in use by grid GXYT
+           *** NOTE: Not deleted: TIME5
+           *** NOTE: Axis is in use by grid GLB1
            *** NOTE: Not deleted: COADSX
            *** NOTE: Axis is in use by grid GG
            *** NOTE: Not deleted: COADSY
@@ -1346,10 +1327,10 @@ Replacing definition of axis TAX2
            *** NOTE: Axis is in use by grid GFORMAT
            *** NOTE: Not deleted: XAXLEVITR1_160
            *** NOTE: Axis is in use by grid GG1
-           *** NOTE: Not deleted: TIME5
-           *** NOTE: Axis is in use by grid GLB1
            *** NOTE: Not deleted: TIME4
            *** NOTE: Axis is in use by grid GXYT
+           *** NOTE: Not deleted: TIME5
+           *** NOTE: Axis is in use by grid GLB1
            *** NOTE: Not deleted: COADSX
            *** NOTE: Axis is in use by grid GG
            *** NOTE: Not deleted: COADSY
@@ -1875,14 +1856,14 @@ Replacing definition of axis TIME1
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis COADSX.ILLEGAL
+           *** NOTE: grid GEX1 used by data set illeg_axname
+           *** NOTE: Redefinition may alter apparent contents of data set
            *** NOTE: grid GEX2 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
-           *** NOTE: grid GEX1 used by data set illeg_axname
-           *** NOTE: Redefinition may alter apparent contents of data set
 Replacing definition of axis COADSY.ILLEGAL
-           *** NOTE: grid GEX3 used by data set illeg_axname
-           *** NOTE: Redefinition may alter apparent contents of data set
            *** NOTE: grid GEX1 used by data set illeg_axname
+           *** NOTE: Redefinition may alter apparent contents of data set
+           *** NOTE: grid GEX3 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4009,6 +3990,17 @@ def anno/nou/xpos=0/hal=1/val=0 "My Lab"
 def anno/nou/user/xpos=0/ypos=0 "My Lab"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis ZAX
+ LISTing to file layerz_test_data.txt
+ **ERROR: variable unknown or not in data set: (data set ok ?): noexist
+SET VAR/layerz=depth noexist
+           *** NOTE: Ambiguous coordinates on Z axis: TEMP6D-TEMPZ6D
+ **ERROR: invalid command: auxiliary variable DEPTH6D has a T axis not found on variable TEMP
+LIST/PREC=7 tempz6d_unmatch
+Replacing definition of axis XAX
+Replacing definition of axis ZAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -4098,4 +4090,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Jun 25 15:29:01 PDT 2015
+Ended at Wed Jul 8 12:02:11 PDT 2015

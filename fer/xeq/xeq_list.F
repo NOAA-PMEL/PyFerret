@@ -659,7 +659,7 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
      .                    list_at_eof, cdf_recax, nvars2list,
      .			  mr_perm, my_cx, buff, head_enh,
      .			  pcdf_mode_normal, clobber, edges_flag, do_bounds,
-     .                    keepax_flag, out_type, status )
+     .                    keepax_flag, out_type, quiet, status )
 
 	ELSEIF( all_at_once ) THEN
 	   CALL LIST_MULTI( memory, mr_perm, my_cx, heading, perm,

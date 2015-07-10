@@ -62,6 +62,8 @@ C     for compatibility with Ferret use of symbols.
 *                If this is changed, also change it in fer/dat/xprog_state_data.F
 * v691 5/14 *acm* Change name MOD to TEKMOD
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
+* v696 *acm*	gap_var to define seperate line segments on PLOT/VS plots
+*                  (LAS ticket 1597 and others)
 
 	INCLUDE 'PARAMPL5.DAT'
 	include 'axis_inc.decl'
@@ -170,6 +172,7 @@ C
 	DATA UP2/3*.1,.05,.15,.05,.05,.1,.05,.1,190*.1/
 	DATA LLENG,LNUM,IWIND/100000*0,1,0/   ! lleng(NPOLYGON)
 	DATA IPEN,IP/201*1,0,1,2*0/
+	DATA gap_var/0/
 
 C
 C       Mod *JD* 3.91 to set default tty output to unit 6, not 5

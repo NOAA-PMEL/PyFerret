@@ -52,6 +52,8 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * PyFr *kms*  7/13 reset to scaled lengths and sizes using SET_PPL_VALUES
+* v696  *acm* 6/15 PLOT/VS/GAPLOC to define seperate line segments on
+*                  PLOT/VS plots (LAS ticket 1597 and others)
 
         IMPLICIT NONE
 
@@ -110,6 +112,7 @@ c	CALL PPLCMD ( from, line, 0, 'TXNMTC 0', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'AXLINT 2,2', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'CONPRE ', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'CONPST ', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'GAPLOC 0', 1, 1 )
 
 * remove viewports and clear window, restore axis sizes, update window
         CALL SET_VIEWPORT( mvp_dflt ) 

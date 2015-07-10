@@ -2,7 +2,7 @@
      .				overlay, transpz, versus, no_labels,
      .				symbol, sym_size, color, color1, use_line,
      .				step_inc, do_dash, dashstyle,
-     .                          is_logx, is_logy, nokey,
+     .                          is_logx, is_logy, nokey, addgaps,
      .				all_1_dep, only_val, mv_list, cx_list, 
      .				nmv, indep_dat, dep_dat, status )
 
@@ -158,6 +158,9 @@
 * V695+ *sh*  3/15 if an FMRC dataset disambiguate T and F axes with labels
 * V695  *acm*  5/15 Ticket 2279: PyFerret don't redraw labels on an overlay
 * V694  *acm*  5/15 Fix ticket 2282: setting up axis for ribbon plots
+* v696  *acm*  6/15 PLOT/VS/GAPLOC to define seperate line segments on
+*                   PLOT/VS plots (LAS ticket 1597 and others)
+
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -181,7 +184,7 @@
 
 * calling argument declarations:
 	LOGICAL		overlay, transpz, versus, no_labels, use_line,
-     .			is_logx, is_logy, nokey, all_1_dep
+     .			is_logx, is_logy, nokey, all_1_dep, addgaps
 	INTEGER		symbol, color, color1, step_inc, do_dash,
      .			nmv, mv_list( nmv ), cx_list( nmv ), status
 	REAL		memory( mem_blk_size, max_mem_blks ), sym_size,
@@ -210,7 +213,7 @@
      .			slen2, slen3, tax, plot_mem_used, nload, i,
      .			pxlim, pylim, phlim, pvlim,pindeplim, pdeplim,
      .			dep_axtyp, indep_axtyp, the_taxis, ribbon_var, 
-     .			junits, iaxis, hblk1, mvh_temp
+     .			gap_var, junits, iaxis, hblk1, mvh_temp
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new
@@ -283,6 +286,16 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   npts = CGRID_SIZE( cx )	! (redundantly calc'd below) 5/90
 	ELSE
 	   npts = CX_DIM_LEN ( indep_dim, cx )
+	ENDIF
+
+* Mark the gap-variable, for PLOT/VS only
+	IF (versus .AND. addgaps) THEN
+	   IF (ribbon_plot) THEN
+	      gap_var = 4
+	   ELSE
+	      IF (num_uvars_in_cmnd .GT. 3) GOTO 5190
+	      gap_var = 3
+	   ENDIF
 	ENDIF
 
 * set flag indicating a 1D plot is on the screen
@@ -365,7 +378,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      .			    npts,
      .			    status	)
 	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   var1 = 2	! since first var is independent axis
+	   var1 = 2		! since first var is independent axis
 	   ndv  = nmv - 1	! # of dependent variables
 	   use_keys = .FALSE.
 	   plot_title = FULL_VAR_TITLE( cx_list(1), slen )
@@ -567,6 +580,16 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	ENDIF
  3005	FORMAT ( 'LIMITS ',G15.8,1X,A1,'EQ' )
 
+* Send info about gap var for PLOT/VS/GAPLOC
+
+	CALL PPLCMD ( from, line, 0, 'GAPLOC 0', 1, 1)
+	IF (addgaps) THEN
+	   ppl_buff = ' '
+	   WRITE ( ppl_buff, 3007 ) gap_var
+	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1)
+	ENDIF
+ 3007	FORMAT ( 'GAPLOC ',I5 )
+
 * * * * * * *    - - - LOAD DATA - - - * * * * * * * * *
 * 11/95: determine T0 reference time for time axis
 	IF ( time_axis .AND. .NOT.overlay ) THEN
@@ -620,7 +643,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * Set up the dependent axis.
 
 	      set_axis = .TRUE.
-	      IF (ribbon_plot) set_axis = (ipl .EQ. var1)
+	      IF (ribbon_plot .OR. addgaps) set_axis = (ipl .EQ. var1)
               IF (versus .AND. set_axis .AND. .NOT.overlay) THEN
  	         CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
 	         dep_min = DBLE( lo )
@@ -700,8 +723,10 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 
 * ... check that there is a range of dependent data for PLOT+ auto-scaling
 * ... when all the variables are considered together (but not the ribbon var)
-   
-	   IF (.NOT.ribbon_plot .OR. (ribbon_plot .AND. ipl.NE.ribbon_var)) THEN
+
+	   IF (addgaps .AND. ipl.EQ.gap_var) GOTO 199
+
+	   IF (.NOT.ribbon_plot .OR. (ribbon_plot .AND. ipl.LT.ribbon_var)) THEN
 	      this_no_range(ipl) = .FALSE.
               IF (set_axis) this_no_range(ipl) = NO_LINE_RANGE( 
      .          dep_dat, nload, mr_bad_data(mv), val1 )
@@ -718,6 +743,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 
 	      ENDIF
 	   ENDIF  ! checking range when not ribbon variable
+
+  199	   CONTINUE  ! checking range when not gap variable
 
 * pass the data to PLOT+
 
@@ -761,8 +788,17 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      ENDIF
 	   ENDIF
 
- ! put colorvar in the right place
+! put colorvar in the right place
 	   IF (ribbon_plot .AND. ipl.EQ.ribbon_var) THEN
+	      flip = .FALSE.
+	      IF (indep_dim .EQ. z_dim) THEN
+	         WRITE ( ppl_buff, 3005 ) mr_bad_data( mv ), indep_ax
+	         CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+	      ENDIF
+	   ENDIF
+
+! put gap-var in the right place
+	   IF (ipl .EQ. gap_var) THEN
 	      flip = .FALSE.
 	      IF (indep_dim .EQ. z_dim) THEN
 	         WRITE ( ppl_buff, 3005 ) mr_bad_data( mv ), indep_ax
@@ -1016,5 +1052,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
  5180	CALL ERRMSG( ferr_limits, status,
      . 'One-point independent axis: Requires a '//
      .  '/HLIMIT or /VLIMIT specification', *5000 )
+
+ 5190	CALL ERRMSG( ferr_syntax, status,
+     . 'PLOT/VS/GAPLOC only for a single dependent variable', *5000 )
 
 	END

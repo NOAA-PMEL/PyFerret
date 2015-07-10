@@ -67,6 +67,9 @@ C
 * V6.94 *acm* 1/15 fix ticket 2216: when using (-inf), a color-by variable
 *                  starting with missing was colored incorrectly.
 * V6.94+ *acm* 3/15 Ticket 2247: singleton points in line plots marked with a dot
+* v696 *acm*   6/15 PLOT/VS/RIBBON/GAPVAR to define seperate line segments on
+*                   color PLOT/VS plots (LAS ticket 1597 and others)
+
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -107,7 +110,7 @@ C
 	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
      .		nvertex, low_index, colr_ndx, last_colr_ndx, ncolors, 
      .		line_ndx, thick_offset, nseg, iseg, indx, inc
-	INTEGER GET_NDX, ibase, iline2
+	INTEGER GET_NDX, ibase, iline2, ilineg
 
 	logical	isbad, last_bad, bad_blank, new_branch
 
@@ -169,8 +172,10 @@ C  Set the contour/color levels
 	ENDIF
 
         ILINE2=IBASE+LLENG(I)
+        ILINEG=IBASE+2*LLENG(I)
+        igap = 0
 
-	  CALL MARKH(HMARK(I))
+        CALL MARKH(HMARK(I))
 
 * IPEN contains the thickness setting.
 
@@ -279,11 +284,11 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		
 	          CALL PLOT(XT,YT,IDN,0)
 
-		
 	          datx = X(K)
 	          daty = X(IY+K)
 
-
+* if 1, then this is the end of a segment. Draw to it, and pick up the pen.
+		  IF (gap_var.GT.0) igap = INT(X(IY+K+ILINEG)) 
 
 		  IF (MOD_VS_X .AND. datx .LT. xlo) THEN 
 		     xadd = 360.
@@ -421,6 +426,13 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	          ENDIF
 		  new_branch = .FALSE.
 	        END IF
+
+* if gap_var = 1, then this is the end of a segment. Draw to it, and pick up the pen.
+		IF (igap.GT.0) THEN
+		   IDN = 0
+		   CALL PLOT(XT,YT,IDN,0) 
+		ENDIF
+
 72	      CONTINUE
 	    END IF
 	    IF(ITYPE(I).EQ.2.OR.ITYPE(I).EQ.5)CALL MARK(IMARK(I))

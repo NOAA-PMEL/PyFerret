@@ -1,7 +1,7 @@
 	SUBROUTINE CDF_LIST ( memory, fname, append, crecdim, nvars,
      .			      mr_list, cx_list, title, enhead, mode,
      .			      clobber, edges_flag, do_bounds, 
-     .			      keepax_flag, out_type, status )
+     .			      keepax_flag, out_type, quiet, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -126,6 +126,7 @@
 *                 the user has said /KEEP_AXISNAMES
 * V694 *acm* 3/15 Ticket 2240. Dont send scale, attribute, and bad-val to CD_WRITE_VAR. That
 *                 routine gets those attributes per variable from the dataset being written.
+* V695 *acm* 7/16 If they said LIST/QUIET, don't do all the warnings and NOTEs
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -146,7 +147,7 @@
         include 'netcdf4_settings.cmn'
 
 * calling argument declarations:
-        LOGICAL         append, enhead, clobber
+        LOGICAL         append, enhead, clobber, quiet
 	INTEGER		nvars, mr_list(nvars), cx_list(nvars), mode,
      .			edges_flag, keepax_flag, do_bounds, status
 	REAL		memory( mem_blk_size, max_mem_blks )
@@ -241,7 +242,7 @@
 	 flushed = .FALSE. ! on error, whether OK variables were written
 	 final_status = ferr_ok  ! innocent unless proven guilty
 	 DODS_cache = mode .EQ. pcdf_mode_cache
-         do_warn = .TRUE.
+         do_warn = .NOT.quiet
 	 got_missing = .FALSE.
 	 got_fill = .FALSE.
 
@@ -493,7 +494,7 @@
      .	          make_lo(t_dim) .NE. unspecified_int4 .AND.
      .	          make_lo(idim) .NE. unspecified_int4) THEN
                  crecdim = 'N'
-		 IF (.NOT.already_warned) CALL WARN (
+		 IF (.NOT.already_warned .AND. do_warn) CALL WARN (
      .	          'Saving E or F axis with time axis uses /RIGID in time')
                  already_warned = .TRUE.
 	      ENDIF
@@ -527,7 +528,7 @@
 	   ELSEIF  (cx_type(cx) .EQ. ptype_int1) THEN
 	      type = nf_byte
 	   ELSE
-	      CALL WARN('Internal err: unknown data type')
+	      CALL WARN('Internal err: unknown data type, using FLOAT')
 	      type = nf_float
 	   ENDIF
            IF (type .NE. 0 .AND. varid .GT. 0) type = outtype
@@ -694,7 +695,7 @@
                        IF (attype .NE. outtype .AND. istat .EQ. ferr_ok)  THEN
                           alen = TM_LENSTR1(typnam(attype))
                           slen = TM_LENSTR1(typnam(outtype))
-                          IF (dset .GT. 0) CALL WARN (
+                          IF (dset .GT. 0 .AND. do_warn) CALL WARN (
      .                      'Converting data type of missing_value '//
      .                       typnam(attype)(1:alen)//
      .                      ' to match output type of variable '//
@@ -790,7 +791,7 @@
      .                     attlen .GT. 100) THEN
                           attlen = 100
                           alen = TM_LENSTR1(aname)
-                          CALL WARN 
+                          IF (do_warn) CALL WARN 
      .                ('writing only first 100 elements of attribute'//
      .                  aname(1:alen))
                        ENDIF

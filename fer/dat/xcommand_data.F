@@ -210,6 +210,9 @@
 * V695 *acm*  2/15 Add DEFINE AGGREGATE/F alias, FMRC
 * V695 *acm*  6/16 New ANNOTATE command.
 * V695 *acm*  6/16 New subcommand DEFINE ANNOTATION
+* v696 *acm*  6/15 PLOT/VS/GAPLOC to define seperate line segments on
+*                  PLOT/VS plots (LAS ticket 1597 and others)
+
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -1007,7 +1010,7 @@
 		DATA qualifiers  (nqual_at6a+44)/ 'PALETTE'/	! 
 		DATA qualifiers  (nqual_at6a+45)/ 'FAST'/	! style for Ribbon plot
 		DATA qualifiers  (nqual_at6a+46)/ 'MISSING'/	! For missing-dat in ribbon plot
-		DATA qualifiers  (nqual_at6a+47)/ '****'/	! 
+		DATA qualifiers  (nqual_at6a+47)/ 'GAPLOC'/	! A variable marking gaps to insert in PLOT/VS
 
 * GO	 - command # 7
 	DATA commands(7)			/ 'GO  '	/

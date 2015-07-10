@@ -51,6 +51,9 @@
 *                   Default number of colors. (Should reset the line colors??)
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* v696  *acm* 6/15 PLOT/VS/GAPLOC to define seperate line segments on
+*                  PLOT/VS plots (LAS ticket 1597 and others)
+
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -113,6 +116,7 @@ c	CALL PPLCMD ( from, line, 0, 'TXNMTC 0', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'CONPST ', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'SIZE 10.2  8.8 ', 1, 1 )
         CALL SET_VIEWPORT( mvp_dflt )   ! remove viewports, restore axis sizes
+	CALL PPLCMD ( from, line, 0, 'GAPLOC 0', 1, 1 )
 
 c        CALL COLOR (1)  ! ppl is not always in the right state to call this...
 

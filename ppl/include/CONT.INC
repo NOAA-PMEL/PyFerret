@@ -16,7 +16,7 @@ C**
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 * V65 *acm   2/10 If Open-ended levels were used, symbol LEV_OPNLEVS saves 
 * the /LEV command needed to duplicate the levels
-* v683 *acm*	9/12 ribbon plots: RIBBON_FAST flag 
+* V696 *acm*  6/15 Move ribbon-plot setting to LINES.INC
 
 
 	COMMON/CONT/ZLEV(ICNLEV),LDIG(ICNLEV),LWGT(ICNLEV),LCLR(ICNLEV),
@@ -24,7 +24,7 @@ C**
      *  NARC,IAUTOC,NLEV2,NSIGC,CANGLE,IVCOMP,
      *  CONTOUR_FEWER,CENTERED,SET_DELTA,DELTA,NEGINF,POSINF,CONT_KEY,
      *  OPENLEV,SET_STD,SET_MEAN,SET_MIN,SET_MAX,NEED_DATA_SCAN,USE_HIST,
-     *  LEV_STR,RIBBON_FAST
+     *  LEV_STR
 
 c
 c	zlev()	array of levels to be contoured (user units)
@@ -64,8 +64,7 @@ c	delta		The specified DZ value
 *	set_max            open only on top
 *	lev_min		the values of min and/or max.
 *	lev_max
-*	ribbon_fast	FAST for one color per point, default is interpolate
-*                       colors between points
+
 
 c*******************************************************************
 

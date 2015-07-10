@@ -61,6 +61,8 @@
 * V691+ 8/14 *acm* Fix ticket 2194: SHOW with /OUTFILE and not /XML. 
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * v695  5/15 *acm* New command ANNOTATE
+* v696  6/15 *acm* PLOT/VS/RIBBON/GAPLOC to define seperate line segments on
+*                   color PLOT/VS plots (LAS ticket 1597 and others)
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -316,7 +318,8 @@
      .			slash_plot_levels,
      .			slash_plot_spectrum,
      .			slash_plot_fast,
-     .			slash_plot_missing
+     .			slash_plot_missing,
+     .			slash_plot_gap
 
 	INTEGER		slash_wire_over,
      .			slash_wire_set_up,
@@ -604,7 +607,8 @@
      .			slash_plot_levels 	= 1+43,
      .			slash_plot_spectrum 	= 1+44,
      .			slash_plot_fast 	= 1+45,
-     .			slash_plot_missing 	= 1+46)
+     .			slash_plot_missing 	= 1+46,
+     .			slash_plot_gap	 	= 1+47)
 
 	PARAMETER     ( slash_wire_over		= 1+12,
      .			slash_wire_set_up	= 1+13,

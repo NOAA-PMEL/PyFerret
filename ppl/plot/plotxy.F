@@ -62,8 +62,9 @@ C
 *  ACM  2/2013    ticket 2141. Fix the modulo operation when the longitude
 *                 range is over 360.
 * V6.94+ *acm* 3/15 Ticket 2247: singleton points in line plots marked with a dot
-* v696 *acm*   6/15 PLOT/VS/GAPVAR to define seperate line segments on
+* v696 *acm*   6/15 PLOT/VS/GAPLOC to define seperate line segments on	
 *                   PLOT/VS plots (LAS ticket 1597 and others)
+* v696 *acm*   6/15 Reverting. Implement /GAPLOC only for ribbon plots.	
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -102,7 +103,7 @@ C
 	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
      .		nvertex, fill_ndx
 
-	INTEGER klast, mdot, ilineg, igap
+	INTEGER klast, mdot
 	REAL	xtlast, ytlast
 
 	INTEGER GET_NDX
@@ -137,8 +138,6 @@ C
 	ICNT=1
 	IF(M.GE.2.AND.IFLG(2).NE.0)ICNT=P(2)
 
-	ILINEG = IBASE+LLENG(I)
-	igap = 0
 
 	IF(MAKEP.EQ.'PLOTUV')THEN
 	  IBASE=IY
@@ -293,9 +292,6 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	          datx = X(K)
 	          daty = X(IY+K)
 
-* if gap_var = 1, then this is the end of a segment. Draw to it, and pick up the pen.
-		  IF (gap_var.GT.0) igap = INT(X(IY+K+ILINEG)) 
-
 		  IF (MOD_VS_X .AND. datx .LT. xlo) THEN 
 		     xadd = 360.
 		     datx = datx + xadd
@@ -338,16 +334,6 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	            IDN=1
 	          END IF
 	        END IF
-
-* if gap_var = 1, then this is the end of a segment. Draw to it, and pick up the pen.
-
-		IF (gap_var .GT. 0) igap = INT(X(IY+K+ILINEG))
-                IF (igap.GT.0) THEN
-		   IDN = 0
-		   CALL PLOT(XT,YT,IDN,0) 
-		   last_bad = .TRUE.
-		ENDIF
-
 72	      CONTINUE
 	    END IF
 	    IF(ITYPE(I).EQ.2.OR.ITYPE(I).EQ.5)CALL MARK(IMARK(I))

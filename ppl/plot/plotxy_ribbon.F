@@ -67,7 +67,7 @@ C
 * V6.94 *acm* 1/15 fix ticket 2216: when using (-inf), a color-by variable
 *                  starting with missing was colored incorrectly.
 * V6.94+ *acm* 3/15 Ticket 2247: singleton points in line plots marked with a dot
-* v696 *acm*   6/15 PLOT/VS/RIBBON/GAPVAR to define seperate line segments on
+* v696 *acm*   6/15 PLOT/VS/RIBBON/GAPLOC to define seperate line segments on
 *                   color PLOT/VS plots (LAS ticket 1597 and others)
 
 

@@ -166,8 +166,6 @@ list/nohead if {0,1} THEN "hello" ELSE "goodbye"
 list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", ") + "friend"
 list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
 
-! V694+ For ticket 2234: expressions with numeric operators, and mixed numeric/string expressions 
-!       with logical operators now return errors not missing-data results
 SET MODE IGNORE
 list/nohead ysequence({98, 99})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
 list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+99 ELSE "goodbye"+", my ") + "friend"

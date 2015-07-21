@@ -76,7 +76,6 @@
 	integer		fktr, marktype, index, line_color_reserve,
      .			icolr, ndx, n1, n2, n3, slen,
      .			nthick, status, usable_colors
-
 	real		thickness, dotsize, frac, r_val, g_val, b_val, a_val
 
 	CHARACTER*100   err_msg
@@ -109,7 +108,7 @@
            lo_color_ndx(zwsid) = MAX(hi_color_ndx(zwsid) + 1, line_color_reserve + 1)
            protect_used_colors = .false.
         else
-           lo_color_ndx(zwsid) = MAX(line_color_reserve + 1, lo_color_ndx(zwsid))
+           lo_color_ndx(zwsid) = line_color_reserve + 1
         endif
 
         usable_colors = max_color - line_color_reserve - lo_color_ndx(zwsid)

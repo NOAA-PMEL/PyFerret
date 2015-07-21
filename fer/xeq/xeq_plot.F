@@ -791,7 +791,7 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
      .	   'PLOT/VS/RIBBON/GAPLOC plot needs 4 arguments', *1000 )
         ELSEIF (versus .AND. addgaps) THEN
            CALL ERRMSG( ferr_syntax, status,
-     .     'PLOT/VS/GAPLOC impplemented only for RIBBON plots', *1000)
+     .     'PLOT/VS/GAPLOC implemented only for RIBBON plots', *1000)
         ELSEIF (versus) THEN
            CALL ERRMSG(ferr_syntax, status,
      .     'PLOT/VS/RIBBON plot needs 3 arguments', *1000 )

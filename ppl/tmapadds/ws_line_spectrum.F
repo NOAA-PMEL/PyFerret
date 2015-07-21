@@ -74,7 +74,7 @@
 	integer		fktr, marktype, index, line_color_reserve,
      .			icolr, ndx, n1, n2, n3, slen
                                        
-	real		thickness, dotsize, frac, r_val,g_val,b_val, aa,bb
+	real		thickness, dotsize, frac, r_val, g_val, b_val
 	CHARACTER*100   err_msg
 	CHARACTER*12	TM_FMT_SNGL, note
 
@@ -106,7 +106,7 @@
            lo_color_ndx(zwsid) = MAX(hi_color_ndx(zwsid) + 1, line_color_reserve + 1)
            protect_used_colors = .false.
         else
-           lo_color_ndx(zwsid) = line_color_reserve + 1
+           lo_color_ndx(zwsid) = MAX(line_color_reserve + 1, lo_color_ndx(zwsid))
         endif
 
         usable_colors = max_color - line_color_reserve - lo_color_ndx(zwsid)
@@ -147,8 +147,6 @@
 * limited on number of colors drawn with thick lines.
 
         ncolors = shd_levels
-	aa = (low_index+(nthick-1)*(ncolors+1)+ncolors)
-	bb = max_bundles
 	IF ((low_index+(nthick-1)*(ncolors+1)+ncolors) .GT. max_bundles) THEN
 
 	    n3 = (low_index+(nthick-1)*(ncolors+1)+ncolors)

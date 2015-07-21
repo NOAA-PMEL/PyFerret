@@ -105,7 +105,8 @@
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 * V6.94 *acm* 2/15 Ticket 2231: New /key option for multiple plot lines: /key=titles
 * v696 *acm*  6/15 PLOT/VS/GAPLOC to define seperate line segments on
-*                  PLOT/VS plots (LAS ticket 1597 and others)
+*                  PLOT/VS/RIBBON plots (LAS ticket 1597 and others). Could implement
+*                  this later for other PLOT/VS plots.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -350,7 +351,9 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 	ribbon_plot = qual_given(slash_plot_ribbon) .GT. 0
 
 * A "gaps" variable specifies the end of line segments to draw.
+* Implemented only for PLOT/VS/RIBBON
 	addgaps   = qual_given( slash_plot_gap       ).GT.0
+	IF (addgaps .AND. .NOT.ribbon_plot) GOTO 5600
 
 *     3-argument plot/vs/lev xpts, ypts, var
 *     or 4-argument plot/vs/lev xpts, ypts, var, gap
@@ -397,17 +400,10 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 	   ribbon_plot = .TRUE.
 	ENDIF
 
-* A "gaps" variable specifies the end of line segments to draw for PLOT/VS.
+* A "gaps" variable specifies the end of line segments to draw for PLOT/VS/RIBBON.
 * Issue notes for cases not already handled.
 
-	IF (addgaps .AND. .NOT.versus ) GOTO 5500
-        IF (addgaps .AND. .NOT.ribbon_plot) THEN
-           IF (num_uvars_in_cmnd .LT. 3) GOTO 5480
-           IF (num_uvars_in_cmnd .GT. 3) THEN
-               buff = 'PLOT/VS/GAPLOC uses 3 variables. Ingoring extra variables'
-               CALL WARN(buff)
-           ENDIF
-        ENDIF 
+	IF (addgaps .AND. .NOT.versus ) GOTO 5600
 
 * Style: fast for one-color per point, default is to interpolate
 * colors between points
@@ -795,7 +791,7 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
      .	   'PLOT/VS/RIBBON/GAPLOC plot needs 4 arguments', *1000 )
         ELSEIF (versus .AND. addgaps) THEN
            CALL ERRMSG( ferr_syntax, status,
-     .     'PLOT/VS/GAPLOC plot needs 3 arguments', *1000)
+     .     'PLOT/VS/GAPLOC impplemented only for RIBBON plots', *1000)
         ELSEIF (versus) THEN
            CALL ERRMSG(ferr_syntax, status,
      .     'PLOT/VS/RIBBON plot needs 3 arguments', *1000 )
@@ -806,8 +802,8 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
  5490	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .	'/COLOR not valid for PLOT/LEVELS ribbon plot', *1000 )
- 5500	CALL ERRMSG( ferr_syntax, status, 
-     .	'PLOT/GAPLOC applies only to PLOT/VS', *1000 )
+ 5600	CALL ERRMSG( ferr_syntax, status, 
+     .	'PLOT/GAPLOC applies only to PLOT/VS/RIBBON', *1000 )
 
  5510	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//

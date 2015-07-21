@@ -1,0 +1,38 @@
+! bn_plot_ribbon_gaploc.jnl
+! 7/20/2015 *acm*  new PLOT/VS/RIBBON/GAPLOC
+!
+! If a trajectory leaves the selected region and then travels 
+! back into the region we want to pick up the pen along that 
+! edge, not connect the points.
+
+! Note Ribbon plots define a lot of color/line combos, so 
+! lots of ribbon overlays on a page need either SHASET RESET or
+! use of fewer than the default number of levels.
+
+let xpts = {1,2,3,4,5}
+let ypts = {1,1,1,1,1}
+let color = {1,2,3,4,5}
+let gvar = {0,0,1,0,0}
+plot/vs/ribbon/thick/line/lev=10/sym=21/siz=.3 xpts, 10*ypts, color
+plot/ov/ribbon/nolab/vs/thick/line/lev=10/sym=21/siz=.3/gapl xpts, 10.2*ypts, color, gvar
+plot/ov/ribbon/nolab/fast/vs/thick/line/lev=10/sym=21/siz=.3 xpts, 9.9*ypts, color
+plot/ov/ribbon/nolab/fast/vs/thick/line/lev=10/sym=21/siz=.3/gap xpts, 9.7*ypts, color, gvar
+
+use 39839D6273F1749BABAD6C1441B2BBDD_netcdf.nc
+
+! The line is connected across what should be a gap
+set view left
+plot/vs/hlim=63.5:68/ribbon/line/thick=3/key longitude, latitude, fco2_recommended
+
+! The gaploc variable is 1 at the location marking the start of gaps.
+let gaploc = if sample_number[I=@DDF] NE 1 THEN 1 ELSE 0
+set view right
+plot/vs/hlim=63.5:68/ribbon/line/thick=3/key/gap longitude, latitude, fco2_recommended, gaploc
+
+! Intentional errors. Qualifier needs 4 arguments. It does not (currently) apply to 
+! other styles of line plots.
+set mode ignore
+plot/vs/thick/line/sym=21/siz=.3/ribbon/gap xpts, 10*ypts, color
+plot/vs/thick/line/sym=21/siz=0.3/gap xpts, 10*ypts, 10.1*ypts, 9.93*ypts, gvar
+plot/ov/nolab/vs/thick/line/sym=21/siz=.3/gapl xpts, color, gvar
+set mode/last ignore

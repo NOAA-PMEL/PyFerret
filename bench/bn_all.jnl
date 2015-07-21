@@ -979,6 +979,10 @@ GO bn_annotate
 GO bn_reset
 GO bn_auxiliary
 
+GO bn_reset
+GO bn_plot_ribbon_gaploc
+
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

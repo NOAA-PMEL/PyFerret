@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 80793286 Jul  8 11:54 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 81625195 Jul 20 16:41 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: last updates for v6.95
+Note: tests for new /GAPLOC qualifier for PLOT/VS/RIBBON
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -19,7 +19,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
-Beginning at Wed Jul 8 12:00:31 PDT 2015
+Beginning at Mon Jul 20 17:11:01 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -4001,6 +4001,14 @@ Replacing definition of axis XAX
 Replacing definition of axis ZAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ **ERROR: command syntax: PLOT/VS/RIBBON/GAPLOC plot needs 4 arguments
+plot/vs/thick/line/sym=21/siz=.3/ribbon/gap xpts, 10*ypts, color
+ **ERROR: command syntax: PLOT/GAPLOC applies only to PLOT/VS/RIBBON
+plot/vs/thick/line/sym=21/siz=0.3/gap xpts, 10*ypts, 10.1*ypts, 9.93*ypts, gvar
+ **ERROR: command syntax: PLOT/GAPLOC applies only to PLOT/VS/RIBBON
+plot/ov/nolab/vs/thick/line/sym=21/siz=.3/gapl xpts, color, gvar
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -4090,4 +4098,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jul 8 12:02:11 PDT 2015
+Ended at Mon Jul 20 17:12:45 PDT 2015

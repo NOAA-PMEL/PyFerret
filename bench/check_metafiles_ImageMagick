@@ -36,6 +36,9 @@ set mb_files = (bat.plt_*)
 set num_plt_files = `ls -l *.plt | wc -l `
    
 set err_plt = 0
+set total_plt_files = 23
+if ($num_plt_files < $total_plt_files ) set err_plt = 1
+
 foreach plt_file ($plt_files)
     set size = `ls -l $plt_file | awk '{print $5}'`
     set size2 = `ls -l metafile_masters_64bit/$plt_file | awk '{print $5}'`
@@ -50,8 +53,7 @@ foreach plt_file ($plt_files)
        display $plt_file.diff.ps
 
        set err_plt = 1
-    endif
-    if ($num_plt_files != 23 ) set err_plt = 1
+    endif    
 end
    
 set err_gif = 0

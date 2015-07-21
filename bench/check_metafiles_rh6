@@ -2,8 +2,10 @@
 # script to check metafiles (.plt*, .gif* and .ps) created after a run of the 
 # benchmark routine against master metafiles. 
 
-set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt linecolors.plt multi_line_labels.plt \
-pattern*.plt polygon*.plt vec_curv*.plt)
+set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt \
+linecolors.plt multi_line_labels.plt pattern*.plt polygon*.plt \
+vec_curv*.plt timetics*.plt degC_axlab.plt axticlabel.plt)
+
 set gif_files = ( bn*.gif )
 set ps_files = (bn*.ps)
 set mb_files = (bat.plt_*)
@@ -11,14 +13,15 @@ set num_plt_files = `ls -l *.plt | wc -l `
 
 set err_plt = 0
 set total_plt_files = 23
+if ($num_plt_files < $total_plt_files ) set err_plt = 1
+
 foreach plt_file ($plt_files)
    set size = `ls -l $plt_file | awk '{print $5}'`
    set size2 = `ls -l metafile_masters_64bit_rh6/$plt_file | awk '{print $5}'`
    if ($size != $size2) then
       set err_plt = 1
       echo "plt files differ $plt_file size $size metafile_masters_64bit_rh6/ size $size2" 
-   endif
-   if ($num_plt_files != $total_plt_files ) set err_plt = 1
+   endif 
 end
 
 set err_gif = 0
@@ -58,7 +61,7 @@ end
 set any_error = 0
 if ($err_plt) then
 	echo "CHECK PLT FILES - THERE HAS BEEN AN ERROR"
-	if ($num_plt_files != $total_plt_files ) then 
+	if ($num_plt_files < $total_plt_files ) then 
 	  echo "num_plt_files $num_plt_files There should be $total_plt_files"
 	endif
         set any_error = 1

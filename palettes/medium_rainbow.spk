@@ -1,0 +1,10 @@
+! Another rainbow palette
+     0.0    80.0     0.0   100.0  ! violet
+     9.1    10.0    40.0   100.0  ! royal blue
+    27.3    40.0    80.0  100.0   ! darker sky blue
+    36.4    20.0    93.3   100.0  ! light sky blue
+    50.0     0.0    70.0   20.0   ! spring green
+    63.6   100.0    93.3   20.0   ! yellow
+    75.0   100.0    80.0    40.0  ! light orange-yellow
+    90.9   100.0     0.0     0.0  ! red
+   100.0    60.0     0.0     0.0  ! dark red

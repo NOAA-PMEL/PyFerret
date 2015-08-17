@@ -233,5 +233,8 @@ bn_f_tax_fcns.jnl
 bn_fmrc.jnl
 bn_return_defined.jnl
 bn_can_var_noerr.jnl
+bn_annotate.jnl
+bn_auxiliary.jnl
+bn_plot_ribbon_gaploc.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

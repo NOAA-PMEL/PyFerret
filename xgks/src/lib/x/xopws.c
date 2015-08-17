@@ -156,7 +156,8 @@ xXgksOpenWs(wk)
 /* *sh* 16-sep-94: bypass this code for invisible, unmapped windows */
 		if ( map_that_window ) {
 		  XMapWindow(wk->dpy, wk->win);
-		  XWindowEvent(wk->dpy, wk->win, ExposureMask, &xev);
+		  /* Exposure event not always caught or created? */
+		  /* XWindowEvent(wk->dpy, wk->win, ExposureMask, &xev); */
 		  XSync(wk->dpy, 0);
 		}
 
@@ -164,6 +165,9 @@ xXgksOpenWs(wk)
 		XGetWindowAttributes(wk->dpy, wk->win, &WinAtt);
 		wk->wbound.x = WinAtt.width;
 		wk->wbound.y = WinAtt.height;
+
+		/* Clear the window; use XClearArea since we know the width, height */
+		XClearArea(wk->dpy, wk->win, 0, 0, WinAtt.width, WinAtt.height, 0);
 
 		/* Update open-workstation table. */
 		(void) UpdateOpenWSTable(wk);

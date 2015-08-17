@@ -155,11 +155,11 @@
 *                Pen is thin with the color ID same as pen ID
                  CONTINUE
               ELSE IF ( icolor .LE. 2 * ncolors ) THEN
-*                Pen is medium thickness with color ID  1 - ncolors
+*                Pen is medium thickness with color ID - ncolors
                  icolor = icolor - ncolors
                  dfltthick = 2.0
               ELSE IF ( icolor .LE. 3 * ncolors ) THEN
-*                Pen is thick with color ID  1 - ncolors
+*                Pen is thick with color ID - 2 * ncolors
                  icolor = icolor - 2 * ncolors
                  dfltthick = 3.0
               ENDIF

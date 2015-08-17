@@ -1,8 +1,8 @@
-Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith tmap 1188 Jun 30 18:15 /home/users/ksmith/PyFerret/bin/pyferret
-Using external functions from /home/users/ksmith/PyFerret/ext_func/libs
+Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1188 Aug 17 15:27 /home/flat/ksmith/PyFerret/bin/pyferret
+Using external functions from /home/flat/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug Pyferret on RHEL6-64 (new dunkel)
+Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -238,23 +238,26 @@ Benchmark scripts that will be run:
    bn_fmrc.jnl
    bn_return_defined.jnl
    bn_can_var_noerr.jnl
+   bn_annotate.jnl
+   bn_auxiliary.jnl
+   bn_plot_ribbon_gaploc.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
-FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/ksmith/Datasets
+FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/flat/ksmith/Datasets
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ksmith/PyFerret/ext_func/libs
-FER_FONTS=/home/users/ksmith/PyFerret/ppl/fonts
-FER_GO=. /home/users/ksmith/PyFerret/go /home/users/ksmith/PyFerret/examples /home/users/ksmith/PyFerret/contrib
+FER_EXTERNAL_FUNCTIONS=/home/flat/ksmith/PyFerret/ext_func/libs
+FER_FONTS=/home/flat/ksmith/PyFerret/ppl/fonts
+FER_GO=. /home/flat/ksmith/PyFerret/go /home/flat/ksmith/PyFerret/examples /home/flat/ksmith/PyFerret/contrib
 FER_GRIDS=.
-FER_LIBS=/home/users/ksmith/PyFerret/lib
-FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
+FER_LIBS=/home/flat/ksmith/PyFerret/lib
+FER_PALETTE=. /home/flat/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Tue Jun 30 18:17:27 PDT 2015
+Beginning at Mon Aug 17 15:34:25 PDT 2015
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -1230,14 +1233,6 @@ list a[gx=xnrst@sum]
 list a[gx=xnrst@mod]
  LISTing to file foo.cdf
  **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead ysequence({98, 99})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+99 ELSE "goodbye"+", my ") + "friend"
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+99) + "friend"
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + 99
- **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead "b" - {"a","b"}
  **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead "b" * {"a","b"}
@@ -1246,17 +1241,9 @@ list/nohead "b" / {"a","b"}
  **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead "b" ^ {"a","b"}
  **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead {"a","b"} + 1
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead 1 + {"a","b"}
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead 1 - {"a","b"}
- **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead SIN({"a","b","c"})
  **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead MAX("a",{"a","b","c"})
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead MAX(1,{"a","b","c"})
 *** Running test: bn_axcontrol.jnl
  Cached data cleared from memory
 *** Running test: bn_vec_curv.jnl
@@ -3275,7 +3262,7 @@ define data/agg windy = 1,2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
            *** NOTE: Adjusting Y-axis label size from 0.100 to 0.001, to avoid running off page.
-           *** NOTE: /home/users/ksmith/PyFerret/go/magnify.jnl
+           *** NOTE: /home/flat/ksmith/PyFerret/go/magnify.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3391,6 +3378,8 @@ NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+           *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
  PERMANENT data cleared from memory
@@ -3865,6 +3854,58 @@ Replacing definition of axis FSEC
  Cached data cleared from memory
  **ERROR: variable unknown or not in data set: B
 cancel var b,a
+*** Running test: bn_annotate.jnl
+ Cached data cleared from memory
+ **ERROR: command syntax: xpos=a2
+annotate/nouser/xpos=a2/ypos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: ypos=b
+annotate/nouser/xpos=0/ypos=b/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: halign=c
+annotate/nouser/xpos=0/ypos=0/halign=c/valign=0/angle=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: valign=d
+annotate/nouser/xpos=0/ypos=0/halign=1/valign=d/angle=ee/siz=0.15 "My Lab"
+ **ERROR: command syntax: siz=f
+annotate/nouser/xpos=0/ypos=0/halign=1/valign=0/angle=-45/siz=f "My Lab"
+ **ERROR: invalid command: /XPOS and /YPOS are required for ANNOTATE
+annotate/nouser/ypos=0 "My Lab"
+ **ERROR: invalid command: /XPOS and /YPOS are required for ANNOTATE
+annotate/nouser/xpos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+ **ERROR: invalid command: Specify only one of /USER /NOUSER /NORM
+annotate/nouser/user/ypos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: xpos=a2
+def anno/nou/xpos=a2/ypos=0/hal=1/val=0/ang=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: ypos=b
+def anno/nou/xpos=0,3/ypos=b/hal=1/val=0/ang=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: hal=c
+def anno/nou/xpos=0/ypos=0/hal=c/val=0/ang=-45/siz=0.15 "My Lab"
+ **ERROR: command syntax: val=d
+def anno/nou/xpos=0/ypos=0/hal=1/val=d/ang=ee/siz=0.15 "My Lab"
+ **ERROR: command syntax: siz=f
+def anno/nou/xpos=0/ypos=0/hal=1/val=0/ang=-45/siz=f "My Lab"
+ **ERROR: invalid command: /XPOS and /YPOS are required for ANNOTATE
+def anno/nou/ypos=0 "My Lab"
+ **ERROR: invalid command: /XPOS and /YPOS are required for ANNOTATE
+def anno/nou/xpos=0/hal=1/val=0 "My Lab"
+ **ERROR: invalid command: Specify only one of /USER /NOUSER /NORM
+def anno/nou/user/xpos=0/ypos=0 "My Lab"
+*** Running test: bn_auxiliary.jnl
+ Cached data cleared from memory
+rm: cannot remove `layerz_test_data.txt': No such file or directory
+ LISTing to file layerz_test_data.txt
+ **ERROR: variable unknown or not in data set: (data set ok ?): noexist
+SET VAR/layerz=depth noexist
+           *** NOTE: Ambiguous coordinates on Z axis: TEMP6D-TEMPZ6D
+ **ERROR: invalid command: auxiliary variable DEPTH6D has a T axis not found on variable TEMP
+LIST/PREC=7 tempz6d_unmatch
+Replacing definition of axis ZAX
+*** Running test: bn_plot_ribbon_gaploc.jnl
+ Cached data cleared from memory
+ **ERROR: command syntax: PLOT/VS/RIBBON/GAPLOC plot needs 4 arguments
+plot/vs/thick/line/sym=21/siz=.3/ribbon/gap xpts, 10*ypts, color
+ **ERROR: command syntax: PLOT/GAPLOC applies only to PLOT/VS/RIBBON
+plot/vs/thick/line/sym=21/siz=0.3/gap xpts, 10*ypts, 10.1*ypts, 9.93*ypts, gvar
+ **ERROR: command syntax: PLOT/GAPLOC applies only to PLOT/VS/RIBBON
+plot/ov/nolab/vs/thick/line/sym=21/siz=.3/gapl xpts, color, gvar
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3886,4 +3927,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Tue Jun 30 18:21:33 PDT 2015
+Ended at Mon Aug 17 15:35:56 PDT 2015

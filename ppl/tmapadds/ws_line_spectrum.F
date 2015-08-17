@@ -108,7 +108,7 @@
            lo_color_ndx(zwsid) = MAX(hi_color_ndx(zwsid) + 1, line_color_reserve + 1)
            protect_used_colors = .false.
         else
-           lo_color_ndx(zwsid) = line_color_reserve + 1
+           lo_color_ndx(zwsid) = MAX(line_color_reserve + 1, lo_color_ndx(zwsid))
         endif
 
         usable_colors = max_color - line_color_reserve - lo_color_ndx(zwsid)

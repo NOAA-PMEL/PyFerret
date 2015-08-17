@@ -99,6 +99,9 @@
 * V6.2  *acm& 2/09 Fix choice of color settings with /PEN and /THICK when we have 
 *                  increased the num of colors with MODE linecolors
 * V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
+* PyFr  *kms* 7/13 EQUAL_COLOR now returns a color ID, and EQUAL_THICK 
+*                  returns a pen ID from a color ID and a thickness.
+* PyFr  *kms* 7/13 Added /OPACITY
 * V6.85 *acm* 9/13 New qualifier PLOT/%%%%%%% for first color in multi-line plot
 * http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2013/msg00536.html
 
@@ -109,7 +112,7 @@
 *                  this later for other PLOT/VS plots.
 
 	include 'tmap_dims.parm'
-	include	'ferret.parm'
+	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'plot_setup.parm'
 	include 'slash.parm'
@@ -127,10 +130,11 @@
         include 'PARAMPL5.DAT'
         include 'lines_inc.decl'
         include 'LINES.INC'
-	include 'cont_inc.decl' ! with iautoc and nlev
+        include 'gkscm1_inc.decl'
+        include 'GKSCM1.INC'    ! wsid
+        include 'cont_inc.decl' ! with iautoc and nlev
         include 'CONT.INC'
 
-	
 * calling argument declarations:
 	REAL	memory( mem_blk_size, max_mem_blks )
 
@@ -141,7 +145,7 @@
      .			is_logh, is_logv, nokey, no_data, no_range,
      .			changed_key, do_key, spectrum, addgaps
 	INTEGER		TM_LENSTR1, TM_LENSTR, STR_UPCASE, STR_SAME,
-     .                  symbol, color, color1, status,
+     .                  symbol, icolor, ipen, icolor1, ipen1, status,
      .			loc, limit, slen, thick, step_inc,
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start,
@@ -149,6 +153,7 @@
      .			nparm, dot_sym, num_it, i, iax(4), i1,
      .                  loch, locv, nvs
 	REAL		val, sym_size, dashstyle(4), only_val
+        REAL*4          thickness, opacity
 	CHARACTER	LEFINT*4, buff*128
 	
 	CHARACTER	TM_FMT*12, TM_INQ_PATH*2048, sfile*2048
@@ -158,7 +163,7 @@
 	PARAMETER (dot_sym=99)
 
 * set up the graphics environment and get the data
-	CALL START_PPLUS
+	CALL START_PPLUS(.FALSE.)
 	CALL DISP_DATA_SET_UP( memory,
      .		ax1_start, ax1_blks, ax2_start, ax2_blks, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
@@ -192,13 +197,14 @@ CC       => Set values here instead.
 	   noaxes = .FALSE.
 	   axes = .FALSE.
 	ENDIF
+
 	is_logh   = qual_given( slash_is_logh        ).GT.0
 	is_logv   = qual_given( slash_is_logv        ).GT.0
 
 	symbol	  = unspecified_int4
 	sym_size  = 0.08	! default plot mark size
 	thick	  = 1		! default thickness
-	color     = qual_on	! automatic selection as default
+	icolor    = qual_on	! automatic selection as default
 	step_inc  = 1
         do_dash   = 0		! default no dashes
 
@@ -240,7 +246,6 @@ CC       => Set values here instead.
 	      ENDIF
            ENDIF
 	   use_line = .FALSE.		! default to no line w/ symbol
-! 6/00	   color = 1			! default symbol color	      
 	ENDIF
 * ... PLOT/SYM_SIZE=float
 	loc = qual_given( slash_plot_symsize )
@@ -248,7 +253,7 @@ CC       => Set values here instead.
 	   IF ( symbol .EQ. unspecified_int4 ) THEN
 	       symbol = qual_on		! turn on symbols if needed
 	       use_line = .FALSE.
-	       color = 1	
+	       icolor = 1
 	   ENDIF
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
      .			      val, status )	! syntax check
@@ -263,57 +268,57 @@ CC       => Set values here instead.
 	   ENDIF
 	ENDIF
 * ... PLOT/COLOR[=n]
-        color1 = 1
+        icolor1 = 1
+        thickness = 1.0
 	loc = qual_given( slash_plot_color )
 	IF ( loc .GT. 0  ) THEN
-	   color1 = color
+	   icolor1 = icolor
 	   CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                           color, status )
+     .                       icolor, thickness, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
-           s1 = INDEX( cmnd_buff(qual_start(loc):qual_end(loc)), '=' )	   
+           s1 = INDEX( cmnd_buff(qual_start(loc):qual_end(loc)), '=' )
            IF ( s1 .EQ. 0 ) THEN
-	      color = color1
-	      color1 = 2
+	      icolor = icolor1
+	      icolor1 = 2
 	      IF ( overlay ) GOTO 5510  ! /COLOR w/o argument not allowed for overlay
 	   ENDIF
 	ENDIF
-
+* ... PLOT/OPACITY=n
+        loc = qual_given( slash_plot_opacity )
+        IF ( loc .GT. 0 ) THEN
+           CALL EQUAL_VAL(cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                    val, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+           IF ( (val .LT. 0.0) .OR. (val .GT. 100.0) ) GOTO 5500
+           opacity = val / 100.0
+           IF ( icolor .GE. 0 )
+     .        CALL DUP_COLOR_SET_OPACITY(wsid, icolor, opacity)
+           CALL SET_OVERRIDE_OPACITY(opacity)
+        ELSE
+*          overriding opacity not specififed
+           opacity = -1.0
+           CALL SET_OVERRIDE_OPACITY(opacity)
+        ENDIF
 * ... PLOT/THICKNESS=n
  	loc = qual_given( slash_plot_thick )
 	IF ( loc .GT. 0  ) THEN
-
-	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			   val, status )	! syntax check
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-
-           IF ((ncolors .EQ. 6) .AND. 
-     .               (val .NE. 1  .AND. color .EQ. 19) ) GOTO 5460  ! Only have thin white line
-
-	   IF ( val .NE. unspecified_val4 ) THEN
-	      IF ( val.LE.0.0 .OR. val.GT.3 ) GOTO 5400
-	      thick = NINT( val )	! user-specified line style
-	   ELSE
-	      thick = 2  ! default if no value is specified
-	   ENDIF
-
-	   IF ( color .EQ. qual_on ) THEN
-	   
-              IF ( symbol .EQ. dot_sym) THEN
-                 CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
-	         IF (color .GT. ncolors) color = MOD(color-1,ncolors)+1  ! eliminate thickness
-              ELSE
-                 color = color-10*(thick-1)
-              ENDIF
+           IF ( symbol .EQ. dot_sym) THEN
+              CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
+*             convert the color ID into a (thin) pen ID
+*             note that thickness is explicitly REAL*4 (not REAL)
+              thickness = 1.0
+              CALL EQUAL_THICK(' ', thickness, icolor, ipen, status)
+              IF ( status .NE. ferr_ok ) GOTO 5000
            ELSE
-	      IF (color .GT. ncolors) color = MOD(color-1,ncolors)+1  ! eliminate thickness
-	      color = ncolors*(thick-1) + color
-              IF ( symbol .EQ. dot_sym) THEN
-                 CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
-	         color = MOD(color-1,ncolors)+1  ! eliminate thickness
-              ENDIF
+              CALL EQUAL_THICK(cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                         thickness, icolor, ipen, status)
+              IF ( status .NE. ferr_ok ) GOTO 5000
            ENDIF
-
-	ENDIF
+        ELSE
+*          /THICK not given; convert color ID to pen ID using default thickness
+           CALL EQUAL_THICK(' ', thickness, icolor, ipen, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+        ENDIF
 * ... PLOT/LINE_STYLE=n
 	loc = qual_given( slash_plot_line )
 	IF ( loc .GT. 0  ) THEN
@@ -322,10 +327,11 @@ CC       => Set values here instead.
      .			      val, status )	! syntax check
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   IF ( val .NE. unspecified_val4 ) THEN
-c	      limit = num_fancy_lines 			!was num_plain 1/94
-              limit = 3*mode_arg(pmode_linecolors,1)
-	      IF ( val.LE. 0.0 .OR. val.GT.limit ) GOTO 5200
-	      color = NINT( val )	! user-specified line style
+          limit = 3*mode_arg(pmode_linecolors,1)
+	      ipen = NINT( val )	! user-specified line style
+	      IF ( ipen .LT. 1 .OR. ipen .GT. limit ) GOTO 5200
+              IF ( opacity .GE. 0.0 )
+     .           CALL DUP_STD_PEN_SET_OPACITY(wsid, ipen, opacity)
 	   ENDIF
 * ... default to no symbols when /LINE_STYLE, alone, is given
 * 	or for PLOT/VS/LINE  (1/27/95)
@@ -373,7 +379,7 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 	      IF (num_uvars_in_cmnd .LT. 2) GOTO 5480
 	      IF (num_uvars_in_cmnd .GT. 2)
      .         CALL WARN (
-     .         'PLOT/RIBBON/LEVELS uses just 2 variables. Ignoring extra varibles.')
+     .         'PLOT/RIBBON/LEVELS uses just 2 variables. Ignoring extra variables.')
            ENDIF
 
 * If a color was given, that's not valid for Ribbon plots.
@@ -382,7 +388,7 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 
 * If a thickness is given, set pen number to the thickness, pen=1,2,or 3
 
-	   color = 1
+	   ipen = 1
  	   loc = qual_given( slash_plot_thick )
 	   IF ( loc .GT. 0  ) THEN
 
@@ -394,7 +400,7 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 	      ELSE
 	         thick = 2  ! default if no value is specified
 	      ENDIF
-	      color = thick 
+	      ipen = thick 
 	   ENDIF
 	   
 	   ribbon_plot = .TRUE.
@@ -475,40 +481,34 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 	   IF (qual_given(slash_plot_nokey) .gt. 0) do_key = .FALSE.
            IF ( do_key ) THEN
               CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
-
-
 * ... /KEY[=continuous,horizontal,centerlabel] ?
 *     /KEY=title is a legal option, but ignored for ribbon plot.
-
               loc = qual_given( slash_plot_key )
-
               IF ( loc .GT. 0) THEN
-		 CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+                 CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        buff, status )
                  IF ( status .NE. ferr_ok ) GOTO 5000
-		 IF (TM_LENSTR(buff) .GT. 0) THEN
-	         changed_key = .FALSE.
-	         IF ( TM_HAS_STRING(buff, 'CON') ) THEN
-                    changed_key = .TRUE.
-                    CALL PPLCMD (from, line, 0, 'S_KEY 1', 1, 1 )
+                 IF (TM_LENSTR(buff) .GT. 0) THEN
+                    changed_key = .FALSE.
+                    IF ( TM_HAS_STRING(buff, 'CON') ) THEN
+                       changed_key = .TRUE.
+                       CALL PPLCMD (from, line, 0, 'S_KEY 1', 1, 1 )
+                    ENDIF
+                    IF ( TM_HAS_STRING(buff, 'CEN') ) THEN
+                       changed_key = .TRUE.
+                       CALL PPLCMD (from, line, 0, 'S_KEY 2', 1, 1 )
+                    ENDIF
+                    IF ( TM_HAS_STRING(buff, 'HOR') ) THEN
+                       changed_key = .TRUE.
+                       CALL PPLCMD (from, line, 0, 'S_KEY 3', 1, 1 )
+                    ENDIF
+                    IF ( TM_HAS_STRING(buff, 'TIT') ) THEN  
+                       changed_key = .TRUE.
+                       use_keys = .FALSE.
+                    ENDIF
+                    IF (.NOT. changed_key) GOTO 5520
                  ENDIF
-	         IF ( TM_HAS_STRING(buff, 'CEN') ) THEN
-                    changed_key = .TRUE.
-                    CALL PPLCMD (from, line, 0, 'S_KEY 2', 1, 1 )
-                 ENDIF
-	         IF ( TM_HAS_STRING(buff, 'HOR') ) THEN
-                    changed_key = .TRUE.
-                    CALL PPLCMD (from, line, 0, 'S_KEY 3', 1, 1 )
-                 ENDIF
-	         IF ( TM_HAS_STRING(buff, 'TIT') ) THEN  
-                    changed_key = .TRUE.
-                    use_keys = .FALSE.
-                 ENDIF
-                 IF (.NOT. changed_key) GOTO 5520
-                 ENDIF
-		 
               ENDIF
-
            ELSE
               CALL PPLCMD ( from, line, 0, 'SHAKEY 0,1', 1, 1 )
            ENDIF
@@ -524,13 +524,13 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
      .                        buff, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
 	   IF ( buff(1:3) .EQ. 'CON' ) THEN
-	      step_inc = 2	    
+	      step_inc = 2
 	   ELSEIF ( buff(1:3) .EQ. ' ' ) THEN
 	      step_inc = 3
 	   ELSE
 	      GOTO 5220
 	   ENDIF
-	ENDIF	   
+	ENDIF
 
 * ... PLOT/DASH=(dn1,up1,dn2,up2)
 *     3/02 No reason we can't do PLOT/VS/DASH 
@@ -575,7 +575,7 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
               ENDIF
            ENDIF
               
-	ENDIF	   
+	ENDIF
 
 
 * ... PLOT/hgrat[=dash or line, color=, JF[=] ] default is line
@@ -608,8 +608,8 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
      .				no_labels,
      .				symbol,
      .				sym_size,
-     .				color,
-     .				color1,
+     .				ipen,
+     .				icolor1,
      .				use_line,
      .				step_inc,
      .				do_dash,
@@ -710,6 +710,10 @@ c done in plot_set_up.
 	   ENDIF
 	ENDIF
 
+* clear the overriding opacity
+        opacity = -1.0
+        CALL SET_OVERRIDE_OPACITY(opacity)
+
 * restore axes? (5/29/97  revised 3/2002
 c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
@@ -740,7 +744,8 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 	
 * Ribbon plot? protect the new colors and restore the original color spectrum
            IF ( spectrum ) THEN
-              CALL PPL_SHASET( 'PROTECT' )
+*              PyFerret does not need to protect colors after using them
+*              CALL PPL_SHASET( 'PROTECT' )
               CALL PPL_SHASET( 'SPECTRUM' )
            ENDIF
 
@@ -802,6 +807,9 @@ c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
  5490	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .	'/COLOR not valid for PLOT/LEVELS ribbon plot', *1000 )
+ 5500   CALL ERRMSG( ferr_out_of_range, status,
+     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .          'Value from 0 to 100 must be given', *1000 )
  5600	CALL ERRMSG( ferr_syntax, status, 
      .	'PLOT/GAPLOC applies only to PLOT/VS/RIBBON', *1000 )
 

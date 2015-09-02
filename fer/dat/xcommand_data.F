@@ -267,7 +267,7 @@
 		DATA qualifiers  (nqual_at1b+15)/ 'XINCHES'	/
 		DATA qualifiers  (nqual_at1b+16)/ 'YINCHES'	/
 		DATA qualifiers  (nqual_at1b+17)/ 'TEXTPROM'	/
-		DATA qualifiers  (nqual_at1b+18)/ '****'	/
+		DATA qualifiers  (nqual_at1b+18)/ 'OUTLINE'	/
 		DATA qualifiers  (nqual_at1b+19)/ '****'	/
 * SET REGION
 	   DATA subcommands      (nsub_at1 + 2)	/ 'REGION'	/

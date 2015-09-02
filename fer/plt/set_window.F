@@ -131,7 +131,7 @@
 	   REAL*4  rzero, rone, fcty, fctx, 
      .         xwlo, ywlo, xwhi, ywhi, dfltthick,
      .         redfrac, grnfrac, bluefrac, opaqfrac,
-     .         xinches, yinches, sc
+     .         xinches, yinches, sc, owd
        CHARACTER UPPER_CASE*1, GKS_X_CONID*16, warnmsg*80,
      .         arg1*1, buffer*24, xwind_id*80, short_buff*24
 
@@ -146,7 +146,8 @@
      .          slash_color,
      .          slash_opacity,
      .          slash_thicken,
-     .          slash_textprom
+     .          slash_textprom,
+     .          slash_outline
 	PARAMETER ( slash_new      =  1+1,
      .              slash_clear    =  4+1,
      .              slash_title    =  5+1,
@@ -157,7 +158,8 @@
      .              slash_color    = 10+1,
      .              slash_opacity  = 11+1,
      .              slash_thicken  = 12+1,
-     .              slash_textprom = 17+1 )
+     .              slash_textprom = 17+1,
+     .              slash_outline  = 18+1 )
 
 	rzero = 0.0
 	rone = 1.0
@@ -458,7 +460,18 @@ c 75        CONTINUE
             CALL SET_TEXT_SIZES(n, scl)
         ENDIF
 
-* background color is always color zero
+* set polygon/rectangle outline width?
+        qp = qual_given(slash_outline)
+        IF ( qp .GT. 0 ) THEN
+            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)), 
+     .                     scl, status)
+            IF ( status .NE. ferr_ok ) RETURN
+            IF ( scl .LT. 0.0 ) GOTO 5100
+            owd = scl
+            CALL FGD_SET_OUTLINE_WIDTH(n, owd)
+        ENDIF
+
+* background color will always use color number zero
         bkgcolor = 0
 * background color specified?
         qp = qual_given(slash_color)
@@ -511,5 +524,8 @@ c 75        CONTINUE
  5090   CALL ERRMSG( ferr_out_of_range, status, 
      .          'Invalid text prominence specification; '//
      .          'a positive number must be given', *5000)
+ 5100   CALL ERRMSG( ferr_out_of_range, status, 
+     .          'Invalid outline width specification; '//
+     .          'a non-negative number must be given', *5000)
 	END
 

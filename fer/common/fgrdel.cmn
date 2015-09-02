@@ -53,6 +53,9 @@
 * Scaling factor for line widths and symbol sizes
         REAL*4 thickfactor(maxwindowobjs)
 
+* Width of outlines for rectangles and other polygons
+        REAL*4 outlinewidth(maxwindowobjs)
+
 * Coordinate transformation information (independent of window)
 * View limits defined in [0,1] normalized device coordinates
         REAL*4 viewleftfrac(maxtransforms),
@@ -147,7 +150,7 @@
      .         penobjs, symbolobjs, 
      .
      .         colorrgba, symbolsize, windowdpix, windowdpiy, 
-     .         thickfactor, windowwidth, windowheight, 
+     .         thickfactor, outlinewidth, windowwidth, windowheight, 
      .         ndcxmax, ndcymax, viewleftfrac, viewbottomfrac, 
      .         viewrightfrac, viewtopfrac, viewleftcoord, 
      .         viewbottomcoord, viewrightcoord, viewtopcoord, 

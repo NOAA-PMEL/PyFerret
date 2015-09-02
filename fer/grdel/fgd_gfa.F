@@ -15,10 +15,11 @@
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
-        INTEGER k, success, errmsglen
+        INTEGER k, success, errmsglen, stylen, cstylen, jstylen
+        CHARACTER*64 style, capstyle, joinstyle
         CHARACTER*2048 errmsg
-        REAL*8 tempbrush, fillbrush
-        REAL*4 left, bottom, right, top
+        REAL*8 brushcolorobj, tempbrush, fillbrush, outlinepen
+        REAL*4 left, bottom, right, top, linewidth
         LOGICAL rectdrawn;
 
 *       Sanity checks
@@ -37,6 +38,15 @@
             IF ( fillbrush .EQ. nullobj ) THEN
                 STOP 'FGD_GFA: null activebrush'
             ENDIF
+*           Get the color object used by this brush in case we need it
+            k = brushcolor(activebrush, activewindow)
+            IF ( (k .LT. 1) .OR. (k .GT. maxcolorobjs) ) THEN
+                STOP 'FGD_GFA: invalid brushcolor for active brush'
+            ENDIF
+            brushcolorobj = colorobjs(k,activewindow)
+            IF ( brushcolorobj .EQ. nullobj ) THEN
+                STOP 'FGD_GFA: null brushcolor for active brush'
+            ENDIF
             tempbrush = nullobj
         ELSE
 *           Create a temporary brush to use
@@ -44,13 +54,12 @@
      .           (lastbrushcolor .GT. maxcolorobjs) ) THEN
                 STOP 'FGD_GFA: invalid lastbrushcolor'
             ENDIF
-            IF ( colorobjs(lastbrushcolor, activewindow)
-     .           .EQ. nullobj ) THEN
+            brushcolorobj = colorobjs(lastbrushcolor, activewindow)
+            IF ( brushcolorobj .EQ. nullobj ) THEN
                 STOP 'FGD_GFA: null lastbrushcolor'
             ENDIF
             CALL FGDBRUSH(tempbrush, windowobjs(activewindow),
-     .                    colorobjs(lastbrushcolor, activewindow),
-     .                    lastbrushstyle, lastbstylen)
+     .                    brushcolorobj, lastbrushstyle, lastbstylen)
             IF ( tempbrush .EQ. nullobj ) THEN
                 errmsg = ' '
                 CALL FGDERRMSG(errmsg, errmsglen)
@@ -59,6 +68,22 @@
                 STOP 'FGD_GFA: null tempbrush'
             ENDIF
             fillbrush = tempbrush
+        ENDIF
+
+        IF ( outlinewidth(activewindow) .GT. 0.0 ) THEN
+            linewidth = outlinewidth(activewindow) *
+     .                  thickfactor(activewindow)
+            style = "solid"
+            stylen = 5
+            capstyle = 'square'
+            cstylen = 6
+            joinstyle = 'bevel'
+            jstylen = 5
+            CALL FGDPEN(outlinepen, windowobjs(activewindow),
+     .                  brushcolorobj, linewidth, style, stylen,
+     .                  capstyle, cstylen, joinstyle, jstylen)
+        ELSE
+            outlinepen = nullobj
         ENDIF
 
 *       Quick check for a rectangle as specified by Ferret
@@ -85,14 +110,14 @@
                 ENDIF
 *               Fill rectangle area (no outline)
                 CALL FGDDRAWRECT(success, windowobjs(activewindow),
-     .                  left, bottom, right, top, fillbrush, nullobj)
+     .                  left, bottom, right, top, fillbrush, outlinepen)
                 rectdrawn = .TRUE.
             ENDIF
         ENDIF
         IF ( .NOT. rectdrawn ) THEN
 *           Fill generic polygon area (no outline)
             CALL FGDDRAWPOLYGON(success, windowobjs(activewindow),
-     .                          ptsx, ptsy, npts, fillbrush, nullobj)
+     .                          ptsx, ptsy, npts, fillbrush, outlinepen)
         ENDIF
         IF ( success .EQ. 0 ) THEN
             errmsg = ' '
@@ -100,6 +125,17 @@
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
         somethingdrawn = .TRUE.
+
+*       If an outline pen was created, delete it
+        IF ( outlinepen .NE. nullobj ) THEN
+            CALL FGDPENDEL(success, outlinepen)
+            IF ( success .EQ. 0 ) THEN
+                errmsg = ' '
+                CALL FGDERRMSG(errmsg, errmsglen)
+                CALL SPLIT_LIST(pttmode_help, err_lun,
+     .                          errmsg, errmsglen)
+            ENDIF
+        ENDIF
 
 *       If a temporary brush was created, delete it
         IF ( tempbrush .NE. nullobj ) THEN

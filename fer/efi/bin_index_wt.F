@@ -199,19 +199,13 @@
 
       ndx = res_lo_ss(X_AXIS)
       DO 200 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
-          IF (INT(arg_1(i1,j1,k1,l1,m1,n1)) .EQ. ndx) THEN
-              result(ndx,j,k,l,m,n) = result(ndx,j, k, l, m, n) +
-     .                                 arg_2(i1, j1,k1,l1,m1,n1)
-          ELSEIF (  INT(arg_1(i1,j1,k1,l1,m1,n1)) .GT. 0) THEN
-              ndx = INT(arg_1(i1,j1,k1,l1,m1,n1))
-              result(ndx,j,k,l,m,n) = arg_2(i1,j1,k1,l1,m1,n1)
+          ndx = INT(arg_1(i1,j1,k1,l1,m1,n1))
+	  IF (  ndx .GT. 0 .AND. ndx .LE. res_hi_ss(X_AXIS) ) THEN
+             result(ndx,j,k,l,m,n) = result(ndx,j, k, l, m, n) +
+     .                               arg_2(i1, j1,k1,l1,m1,n1)
           ENDIF
   200 CONTINUE
 
-      DO 300 i = ndx+1, res_hi_ss(X_AXIS)
-         result(i,j,k,l,m,n) = bad_flag_result
-  300 CONTINUE
-      
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |

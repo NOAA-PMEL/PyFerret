@@ -599,7 +599,7 @@ C  Get coordinates of output axes.
             DO j = indx(2,1), indx(2,2)
             DO i = indx(1,1), indx(1,2)
 
-	       IF (obs_cruise(i,j,2,L) .GT. 0.) THEN
+	       IF (obs_cruise(i,j,2,L).GT.0. .AND. obs_cruise(i,j,3,L).GT.0.) THEN
 
                   wt_cruise_mean = obs_cruise(i,j,1,L)/obs_cruise(i,j,3,L)
 
@@ -665,7 +665,7 @@ C  Get coordinates of output axes.
          DO j = indx(2,1), indx(2,2)
             DO i = indx(1,1), indx(1,2)
 
-	       IF (obs_cruise(i,j,2,L) .GT. 0.) THEN
+	       IF (obs_cruise(i,j,2,L).GT.0. .AND. obs_cruise(i,j,3,L).GT.0.) THEN
 
                   wt_cruise_mean = obs_cruise(i,j,1,L)/obs_cruise(i,j,3,L)
 
@@ -709,10 +709,10 @@ C  Get coordinates of output axes.
 
                IF (nc_cell .EQ. 0) THEN
                    result(i,j,k,l) = bad_flag_result
-                   result(i,j,2,l) = bad_flag_result
                ELSE IF (nc_cell .EQ. 1) THEN
                    result(i,j,k,l) = 0.
-                   result(i,j,2,l) = wi_sums(i,j,1,L)
+               ELSE IF (wi_sums(i,j,1,l).LE.1.e-6) THEN
+                   result(i,j,k,l) = bad_flag_result
 
 * Compute sum of (cruise-cell-averages - weighted cell mean) squared\
 

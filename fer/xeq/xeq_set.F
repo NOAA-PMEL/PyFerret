@@ -1261,7 +1261,8 @@ c *kob* 4/97
 
 * jli: is there a function to get the line orientation idim ?
 
-            igrd=0
+           igrd=0
+	   idim = 0
  6300      CALL TM_NEXT_DYN_GRID( igrd, *6399)
               DO 6301 i=1, nferdims
                  IF ( grid_line(i, igrd) .EQ. axis ) THEN
@@ -1270,6 +1271,12 @@ c *kob* 4/97
  6301         CONTINUE
            GOTO 6300
  6399      CONTINUE
+
+           IF (idim .EQ. 0) THEN
+	      CALL WARN(
+     .       'Axis not found in defined grids. Stride not applied')
+              RETURN
+           ENDIF
 
 * ...   Check that this native axis is used only for variables from 
 *       netCDF datasets                                                (II.3)  

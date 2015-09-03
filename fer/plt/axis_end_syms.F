@@ -55,11 +55,11 @@
 	CHARACTER*16  val_buff
 
 * Define symbols identifying axis limits
-	WRITE ( val_buff, '(1PG15.8)' ) first
+	WRITE ( val_buff, '(1PG16.9)' ) first
 	CALL PPLCMD ( from, line, 0, 
      .		'SET '//plot_ax//'AXIS_MIN '//val_buff , 1, 1 )
 
-	WRITE ( val_buff, '(1PG15.7)' ) last
+	WRITE ( val_buff, '(1PG16.9)' ) last
 	CALL PPLCMD ( from, line, 0, 
      .		'SET '//plot_ax//'AXIS_MAX '//val_buff , 1, 1 )
 

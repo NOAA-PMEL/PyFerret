@@ -204,18 +204,14 @@
       nyout = 1 + arg_hi_ss(Y_AXIS,ARG7) - arg_lo_ss(Y_AXIS,ARG7)
       ntout = 1 + arg_hi_ss(T_AXIS,ARG8) - arg_lo_ss(T_AXIS,ARG8)
 
-      nx2 = nxout* 2
-      ny2 = nyout* 2
-      nt2 = ntout* 2
+* xax  output x axis cell edges
+      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, nxout, 2, 1, 1)
 
-* xax  output x axis
-      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, nx2, 1, 1, 1)
+* yax  output y axis cell edges
+      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, nyout, 2, 1, 1)
 
-* yax  output y axis
-      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, ny2, 1, 1, 1)
-
-* Tax  output t axis
-      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, nt2, 1, 1, 1)
+* Tax  output t axis cell edges
+      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, ntout, 2, 1, 1)
 
 * obs_cruise  work array - sum and counts of observations per cruise
 * x,y,t direction: output grid
@@ -332,11 +328,11 @@
 
 *  Dimension the work arrays
 
-      REAL*8 xax(wrk1lox:wrk1hix/2, wrk1loy:wrk1hiy,
+      REAL*8 xax(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-      REAL*8 yax(wrk2lox:wrk2hix/2, wrk2loy:wrk2hiy,
+      REAL*8 yax(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
      .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
-      REAL*8 tax(wrk3lox:wrk3hix/2, wrk3loy:wrk3hiy,
+      REAL*8 tax(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
      .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
       REAL obs_cruise(wrk4lox:wrk4hix, wrk4loy:wrk4hiy,
      .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
@@ -351,25 +347,11 @@
 
       CHARACTER*250 errtxt
 
-C  variables for checking axis characteristics (modulo axes)
-
-      CHARACTER ax_name(4)*16, ax_units(4)*16
-      LOGICAL backward(4), modulox(4), moduloy(4), modulot(4), regular(4)
-
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
       obs_only = 0	! Compute the std for average of variable (e.g. fco2)
-
-*  Check to see if output axes are modulo
-
-      CALL ef_get_axis_info (id, 6, ax_name, ax_units, backward, 
-     .                       modulox, regular)
-      CALL ef_get_axis_info (id, 7, ax_name, ax_units, backward, 
-     .                       moduloy, regular)
-      CALL ef_get_axis_info (id, 8, ax_name, ax_units, backward, 
-     .                       modulot, regular)
 
 *  Find number of points in scattered input points.  1-D arrays defining the 
 *  scattered data points may lie on the X, Y, Z, or T axis of the input arguments.
@@ -460,48 +442,23 @@ C  variables for checking axis characteristics (modulo axes)
 
 C  Get coordinates of output axes.
 
+      CALL EF_GET_BOX_LIMITS(id, ARG6, X_AXIS,
+     .   arg_lo_ss(X_AXIS, ARG6), arg_hi_ss(X_AXIS, ARG6), xax(1,1,1,1), xax(1,2,1,1))
+
+      CALL EF_GET_BOX_LIMITS(id, ARG7, Y_AXIS,
+     .   arg_lo_ss(Y_AXIS, ARG7), arg_hi_ss(Y_AXIS, ARG7), yax(1,1,1,1), yax(1,2,1,1))
+
+      CALL EF_GET_BOX_LIMITS(id, ARG8, T_AXIS,
+     .   arg_lo_ss(T_AXIS, ARG8), arg_hi_ss(T_AXIS, ARG8), tax(1,1,1,1), tax(1,2,1,1))
+
+*  Get first coordinates of output axes.
+
       call ef_get_coordinates(id, ARG6, X_AXIS, 
-     .   arg_lo_ss(X_AXIS, ARG6), arg_hi_ss(X_AXIS, ARG6), xax)
-
-      call ef_get_coordinates(id, ARG7, Y_AXIS, 
-     .   arg_lo_ss(Y_AXIS, ARG7), arg_hi_ss(Y_AXIS, ARG7), yax)
-
-      call ef_get_coordinates(id, ARG8, T_AXIS, 
-     .   arg_lo_ss(T_AXIS, ARG8), arg_hi_ss(T_AXIS, ARG8), tax)
-
-*  Set start, end, and delta for output axes. 
-
-      x1 = xax(1,1,1,1)
-      y1 = yax(1,1,1,1)
-      t1 = tax(1,1,1,1)
-
-      xf = xax(nx,1,1,1)
-      yf = yax(ny,1,1,1)
-      tf = tax(nt,1,1,1)
-
-*  Gridbox sizes in data units
-      dx = xf - x1
-      IF (nx .GT. 1) dx = (xf-x1)/ REAL(nx-1)
-      dy = yf - y1
-      IF (ny .GT. 1) dy = (yf-y1)/ REAL(ny-1) 
-      dt = tf - t1
-      IF (nt .GT. 1) dt = (tf-t1)/ REAL(nt-1) 
-
-      IF (nx .EQ. 1) THEN 
-         CALL ef_get_box_limits(id, ARG6, X_AXIS, 
-     .   arg_lo_ss(X_AXIS, ARG6), arg_hi_ss(X_AXIS, ARG6), xax1,xaxf)
-         dx = xaxf - xax1
-      ENDIF
-      IF (ny .EQ. 1) THEN 
-         CALL ef_get_box_limits(id, ARG7, Y_AXIS, 
-     .   arg_lo_ss(Y_AXIS, ARG7), arg_hi_ss(Y_AXIS, ARG7), yax1,yaxf)
-         dy = yaxf - yax1
-      ENDIF
-         IF (nt .EQ. 1) THEN 
-         CALL ef_get_box_limits(id, ARG8, T_AXIS, 
-     .   arg_lo_ss(T_AXIS, ARG8), arg_hi_ss(T_AXIS, ARG8), tax1,taxf)
-         tx = taxf - tax1
-      ENDIF
+     .   arg_lo_ss(X_AXIS, ARG6), arg_lo_ss(X_AXIS, ARG6), xax1)
+      call ef_get_coordinates(id, ARG7, X_AXIS, 
+     .   arg_lo_ss(Y_AXIS, ARG7), arg_lo_ss(Y_AXIS, ARG7), yax1)
+      x1 = xax1
+      y1 = yax1
 
 *  Compute result
 
@@ -653,7 +610,8 @@ C  Get coordinates of output axes.
 *  Count and add up observations in each cell, in this cruise. 
      
          CALL nobsxytv_var (obs_only, xx, yy, tt, vv, nx, ny, nt, 
-     .           x1, y1, t1, dx, dy, dt, xf, yf, tf, indx, obs_cruise)
+     .        xax(1,1,1,1), xax(1,2,1,1), yax(1,1,1,1), yax(1,2,1,1), 
+     .        tax(1,1,1,1), tax(1,2,1,1), indx, obs_cruise)
 
  300  CONTINUE
 
@@ -815,61 +773,69 @@ c this version returns the cell variance in obs(ig,jg,3,Lg)
 
 c  i	xx,yy,tt=x/y/t location of data pt (data units)
 c  i	nx,ny,nt=size of grids
-c  i	x1,y1,L1=west/south/earliest edge of grid (center of 1st box in data units)
+c  i	xaxlo,xaxyi, etc bounds of destination grid cells
 c  o 	obs(nx,ny,nt) number of obs in each (x,y,t) gridbox
 c--------------------------------------------------------------------------
 
 	SUBROUTINE nobsxytv_var (obs_only, xx, yy, tt, vv, nx, ny, nt, 
-     .             x1, y1, t1, dx, dy, dt, xf, yf, tf, indx, obs)
+     .             xaxlo,xaxhi, yaxlo,yaxhi, taxlo,taxhi, indx, obs)
 
 
 * Argument declarations
 
         INTEGER nx, ny, nt, obs_only, indx(4,2)
-	REAL xx, yy, tt, vv, x1, y1, t1, dx, dy, dt, xf, 
-     .       yf, tf, obs(nx,ny,3,nt)
+	REAL xx, yy, tt, vv,xaxlo(*), xaxhi(*), yaxlo(*), yaxhi(*), 
+     .       taxlo(*), taxhi(*), obs(nx,ny,3,nt)
 
 * Local variable declarations
 
         REAL xxg, yyg, ttg
-        INTEGER ig, jg, Lg ! !!!!!!!!!!!!!!!!!!!!!!!! adding t dimension throughtout
+        INTEGER ig, jg, Lg 
 
-	xxg = (xx-x1)/ dx + 1.		  ! grid values of data location
-	yyg = (yy-y1)/ dy + 1.
-	ttg = (tt-t1)/ dt + 1.
 
-c.................sum the value and count in each (x,y,t) gridbox
-	ig = NINT(xxg)
-	jg = NINT(yyg)
-	Lg = NINT(ttg)
-	IF (ig.LT.1 .OR. ig.GT.nx) RETURN
-	IF (ig.LT.1 .OR. ig.GT.nx) RETURN
-	IF (lg.LT.1 .OR. lg.GT.nt) RETURN
+	lg = 1
+	DO l = 1, nt
+	   IF (tt.GE.taxlo(lg) .AND.
+     .         tt.LT.taxhi(lg)) THEN
+              jg = 1
+	      DO j = 1, ny
+		 IF (yy.GE.yaxlo(jg) .AND.
+     .	             yy.LT.yaxhi(jg)) THEN
+                    ig = 1
+		    DO i = 1, nx
+		       IF ( xx.GE.xaxlo(ig) .AND.
+     .                      xx.LT.xaxhi(ig)) THEN
 
-* See below for def of algorithm, mean, delta, M2
-
-	IF (obs_only .EQ. 0) THEN
-           IF (ig.GE.1 .AND. ig.LE.nx .AND. jg.GE.1 .AND. jg.LE.ny .AND.
-     .       Lg.GE.1 .AND. Lg.LE.nt   ) THEN
-     		obs(ig,jg,2,Lg) = obs(ig,jg,2,Lg) + 1.	! count
-		delta = vv - obs(ig,jg,1,Lg)
-		obs(ig,jg,1,Lg) = obs(ig,jg,1,Lg) + delta/obs(ig,jg,2,Lg) ! current est of mean
-		obs(ig,jg,3,Lg) = obs(ig,jg,3,Lg) - delta*(vv - obs(ig,jg,1,Lg)) !M2
-	   ENDIF
-	ELSE
-	   IF (ig.GE.1 .AND. ig.LE.nx .AND. jg.GE.1 .AND. jg.LE.ny .AND.
-     .      Lg.GE.1 .AND. Lg.LE.nt   ) THEN
-     		obs(ig,jg,1,Lg) = obs(ig,jg,1,Lg) + 1.
-	   ENDIF
-	ENDIF
+		          IF (obs_only .EQ. 0) THEN
+		             obs(ig,jg,2,Lg) = obs(ig,jg,2,Lg) + 1.	! count
+		             delta = vv - obs(ig,jg,1,Lg)
+		             obs(ig,jg,1,Lg) = obs(ig,jg,1,Lg) + 
+     .                          delta/obs(ig,jg,2,Lg) ! current est of mean
+		             obs(ig,jg,3,Lg) = obs(ig,jg,3,Lg) - 
+     .                          delta*(vv - obs(ig,jg,1,Lg)) !M2
+		          ELSE
+		             obs(ig,jg,1,Lg) = obs(ig,jg,1,Lg) + 1.
+		          ENDIF
 
 * Store the min and max index used in this cruise
-	indx(1,1) = MIN(indx(1,1), ig)
-	indx(1,2) = MAX(indx(1,2), ig)
-	indx(2,1) = MIN(indx(2,1), jg)
-	indx(2,2) = MAX(indx(2,2), jg)
-	indx(4,1) = MIN(indx(4,1), Lg)
-	indx(4,2) = MAX(indx(4,2), Lg)
+		             indx(1,1) = MIN(indx(1,1), ig)
+		             indx(1,2) = MAX(indx(1,2), ig)
+		             indx(2,1) = MIN(indx(2,1), jg)
+		             indx(2,2) = MAX(indx(2,2), jg)
+		             indx(4,1) = MIN(indx(4,1), Lg)
+		             indx(4,2) = MAX(indx(4,2), Lg)
+		       ENDIF !xx in grid box
+		       ig = ig + 1
+		    ENDDO  ! nx
+
+		 ENDIF !yy in grid box
+		 jg = jg + 1
+	      ENDDO  ! ny
+
+	   ENDIF !tt in grid box
+	   lg = lg + 1
+	ENDDO  ! nt
+
 
 	RETURN
 	END

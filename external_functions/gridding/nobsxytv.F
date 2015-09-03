@@ -8,7 +8,7 @@ c............yy/y1/yf all in same units
 
 c  i	xx,yy,tt=x/y/t location of data pt (data units)
 c  i	nx,ny,nt=size of grids
-c  i	x1,y1,L1=west/south/earliest edge of grid (center of 1st box in data units)
+c  i	xaxlo,xaxyi, etc bounds of destination grid cells
 c  o 	obs(nx,ny,nt) number of obs in each (x,y,t) gridbox
 c--------------------------------------------------------------------------
 

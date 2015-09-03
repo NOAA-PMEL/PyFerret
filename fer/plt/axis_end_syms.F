@@ -55,6 +55,7 @@
 	CHARACTER*16  val_buff
 
 * Define symbols identifying axis limits
+* This is enough precision to list seconds since 1900 (at least)
 	WRITE ( val_buff, '(1PG16.9)' ) first
 	CALL PPLCMD ( from, line, 0, 
      .		'SET '//plot_ax//'AXIS_MIN '//val_buff , 1, 1 )

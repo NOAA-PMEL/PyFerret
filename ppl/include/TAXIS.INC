@@ -12,12 +12,13 @@ C***********************************************************************
 C**
 C**
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
+* V695  *acm*  9/15 Changes for hour:min labeling on time axes
 c
 	COMMON/TXSCOM/ TLO,DT,TCSIZE,ITYPET, 
      *	NMTCT,LABELT,IFDB,ISDB,ITFLG,VANG,IVFLG,IAUTOT,
      *	ITXTPE,ITXLBP,TLOb,DTb,TCSIZEb,ITYPETb, 
      *	NMTCTb,LABELTb,IFDBb,ISDBb,ITFLGb,VANGb,IVFLGb,IAUTOTb,
-     *	ITXTPEb,ITXLBPb
+     *	ITXTPEb,ITXLBPb,is_hours_axis
 c
 c	tlo	x value corresponding to the start time (index number)
 c	dt	sampling rate in minutes (minutes)

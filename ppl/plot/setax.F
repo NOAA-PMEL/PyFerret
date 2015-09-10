@@ -51,9 +51,10 @@
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V694  *acm*  5/15 Ticket 2283. Handling axis scaling for ribbon plots. Do auto-scale 
 *                   using just the first line. The second is the color-by variable
+* V695  *acm*  9/15 Changes for hour:min labeling on time axes
 
-
-        real            x,diff,rxax,rxmon,rxchr,thi,xti,xtl
+	REAL*8		DIFF, dtd
+        real            x,rxax,rxmon,rxchr,thi,xti,xtl
         real            xmn,xmx,xt,yt
         real*8		dxl, dxh, dxf, dyl, dyh, dyf
 	logical		its_ribbon
@@ -109,6 +110,9 @@ C	KTYPE = 0 -XY  1 -Z  2-VECTOR
 	LOGICAL CONTR,VECTR
 	CHARACTER IT1TMP*14,IT2TMP*14
 
+
+	dtd = dt
+
 C	SETUP AXIS FOR ALL PLOT TYPES.
 c	CONTR=MAKEP.EQ.'CONTOUR'.OR.MAKEP.EQ.'VIEW'.or.makep.eq.'SHADE'
 c     *	.OR.MAKEP.EQ.'VECTOR'
@@ -126,12 +130,18 @@ c     *	.OR.MAKEP.EQ.'VECTOR'
      1	        (IFORM(1:3).EQ.'EPI' .OR. IFORM(1:3).EQ.'BIB' .or.
      2		iform(1:3).eq.'LDX')) THEN
 		CALL FIXTIM (ITMIN,ITMAX,IT1,IT2,ITYPET)
-		TLO = 1. - DIFF(IT1,ITSTRT)/DT
+
+		IF (is_hours_axis .GT. 0) THEN ! Do not round off to nearest hour
+		   IT1 = ITMIN
+		   IT2 = ITMAX
+		ENDIF
+
+		TLO = 1. - DIFF(IT1,ITSTRT)/dtd
 	    ELSE
 		CALL FIXTIM (IT1,IT2,IT1TMP,IT2TMP,ITYPET)
 		IT1=IT1TMP
 		IT2=IT2TMP
-		TLO = 1. - DIFF(IT1,ITSTRT)/DT
+		TLO = 1. - DIFF(IT1,ITSTRT)/dtd
 	    ENDIF
 C
 C	    CHANGE FROM 3-CHAR MON TO 1-CHAR MON IF INSUFFICIENT SPACE
@@ -147,7 +157,7 @@ C
 		itxtpe=3
 		labelt=itxtpe*itxlbp
 	    endif
-	    THI=TLO+DIFF(IT1,IT2)/DT
+	    THI=TLO+DIFF(IT1,IT2)/dtd
 	ENDIF
 
 
@@ -156,12 +166,12 @@ C
      1	        (IFORM(1:3).EQ.'EPI' .OR. IFORM(1:3).EQ.'BIB' .or.
      2		iform(1:3).eq.'LDX')) THEN
 		CALL FIXTIM (ITMIN,ITMAX,IT1b,IT2b,ITYPETb) 
-		TLOb = 1. - DIFF(IT1,ITSTRT)/DT
+		TLOb = 1. - DIFF(IT1,ITSTRT)/dtd
 	    ELSE
 		CALL FIXTIM (IT1b,IT2b,IT1TMP,IT2TMP,ITYPETb)
 		IT1b=IT1TMP
 		IT2b=IT2TMP
-		TLOb = 1. - DIFF(IT1b,ITSTRTb)/DT
+		TLOb = 1. - DIFF(IT1b,ITSTRTb)/dtd
 	    ENDIF
 C
 C	    CHANGE FROM 3-CHAR MON TO 1-CHAR MON IF INSUFFICIENT SPACE
@@ -173,7 +183,7 @@ C
 		itxtpeb=3
 		labeltb=itxtpeb*itxlbpb
 	    endif
-	    THIb=TLOb+DIFF(IT1b,IT2b)/DT
+	    THIb=TLOb+DIFF(IT1b,IT2b)/dtd
 	ENDIF
 
 	call trans(0,xmin,ymin,xtm,ytm)

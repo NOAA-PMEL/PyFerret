@@ -27,6 +27,7 @@ plotny.F\
 plott7.F\
 reset_labsiz.F\
 scinot.F\
+scinot_d.F\
 smooth.F\
 smx1.F\
 smy1.F\

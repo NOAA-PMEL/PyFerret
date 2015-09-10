@@ -1,4 +1,4 @@
-	FUNCTION DIFF(IT1,IT2)
+	DOUBLE PRECISION FUNCTION DIFF(IT1,IT2)
 C** 
 C**    @(#)diff.F	1.1    3/10/88
 C**
@@ -54,6 +54,8 @@ C**
 *  *kob* 1/10/02 - for some reason, also need to explicitely only use first 14
 *                  chars of IT1, IT2.  This only showed up as a problem with Linux
 *                  linked statically, for some odd reason
+* V695  *acm*  9/15 Changes for hour:min labeling on time axes
+
 	CHARACTER*14 IT1_14, IT2_14
 	INTEGER*4 JDAY
 	REAL*8 DATE2, DATE1, WHOI2BC, RDATE
@@ -67,7 +69,7 @@ C**
 *	CALL TIME3(IT1,IY1,IM1,ID1,IH1,IMN1,ISC1,ICN1)
 *	CALL TIME3(IT2,IY2,IM2,ID2,IH2,IMN2,ISC2,ICN2)
 *#ifdef unix
-*	DIFF=FLOAT(JDAY(IY2,IM2,ID2,IH2,IMN2,ISC2,ICN2)-
+*	DIFF=DOUBLE(JDAY(IY2,IM2,ID2,IH2,IMN2,ISC2,ICN2)-
 *     * JDAY(IY1,IM1,ID1,IH1,IMN1,ISC1,ICN1))
 *#else
 *	DIFF=FLOATJ(JDAY(IY2,IM2,ID2,IH2,IMN2,ISC2,ICN2)-

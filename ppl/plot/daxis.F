@@ -63,6 +63,8 @@ C *acm* 10/14  bug 2205. Polygon plots have extra calls because polygons can get
 C              drawn on topof axes. This(?) causes the main label to not get 
 C              finished. For polygon plots only, draw the main label twice.
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
+* V695  *acm*  9/15 Changes for hour:min labeling on time axes
+
 C**
 C**    @(#)daxis.F	1.1    3/10/88
 C**
@@ -191,7 +193,7 @@ C					 TAXIS1 OR TAXIS3
 C
           IF(ITFLG.EQ.1 .OR. ITFLG.EQ.2)THEN
               CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
-     *        XF,YHI,YF,TCSIZE,YLO,VGRAT, VCOLOR, VLINE)
+     *        XF,YHI,YF,TCSIZE,YLO,VGRAT, VCOLOR, VLINE, is_hours_axis)
               vline = .FALSE.
           ELSE IF (ITYPEX.EQ.1)THEN
 	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXT,IFX,XF,YHI,YF,
@@ -208,7 +210,7 @@ C
           IX=ITX
           IF(ITFLG.EQ.1 .OR. ITFLG.EQ.2)THEN
               CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
-     *        XF,YLO,YF,TCSIZE,YHI,VGRAT, VCOLOR, VLINE)
+     *        XF,YLO,YF,TCSIZE,YHI,VGRAT, VCOLOR, VLINE, is_hours_axis)
               vline = .FALSE.
           ELSE IF (ITYPEX.EQ.1) THEN
 	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXB,IFX,XF,YLO,YF,

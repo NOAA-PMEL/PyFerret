@@ -48,6 +48,7 @@ C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* V695  *acm*  9/15 Changes for hour:min labeling on time axes
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'HD.INC'
@@ -67,6 +68,7 @@ C                with "*(*)" for the linux port
 	INCLUDE 'COMEPV.INC'
 	INCLUDE 'COMEPS.INC'
 
+	REAL*8	DIFF
 	LOGICAL LEOF,LFIRST,LSTICK
 	CHARACTER*10 CEPIC1,CEPIC2,FILE*(*)
 	CHARACTER YES*3,NO*2,SYM*120,CSYM*6

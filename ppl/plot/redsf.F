@@ -48,6 +48,7 @@ C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* V695  *acm*  9/15 Changes for hour:min labeling on time axes
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'LINES.INC'
@@ -62,6 +63,7 @@ C                with "*(*)" for the linux port
 	INCLUDE 'TAXIS.INC'
 	INCLUDE 'SWITCH.INC'
 
+	REAL*8	DIFF
 	character sym*120,str*120,file*(*)
 C     NREC=NUMBER OF RECORDS TO BE READ 
 C     NGRP=NUMBER OF GROUPS TO BE READ PER RECORD 

@@ -41,6 +41,7 @@ C**
 *                 where buflen is defined in cmndlen.inc
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
+* V695  *acm*  9/15 Changes for hour:min labeling on time axes
 C**
 C***********************************************************************
 C**
@@ -263,6 +264,7 @@ C
 	INCLUDE 'AXISL.INC'
 	INCLUDE 'TAXIS.INC'
 
+	REAL*8 DIFF
 	CHARACTER DATE*10
 	IF((ITFLG.EQ.1.OR.ITFLG.EQ.2).AND.N.NE.0)THEN
 C

@@ -113,6 +113,9 @@
 * V695+ *sh* 2/15 add support for _DQ_ style of quotations
 * V694 *acm* 5/15 fix bug 2213
 * V695 *acm* 6/15 Add return=defined (ticket 2293)
+* v695 *acm* 9/15 Ticket 2313: For `return=`, if the return request is for an attribute 
+*                 not related to the grid or other characteristics that need evaluation, 
+*                 do not evaluate the expression.
 
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
@@ -393,6 +396,7 @@
 
 * ... evaluate the context without computing the expression
 *	this is a major performance consideration, but not 100% reliable
+
 	   has_uvar_gc = .FALSE.
 	   is_uvar_const = .FALSE.
 	   CALL GET_NEW_CX( cx_last, cx_cmnd, apply_cx, status )
@@ -414,6 +418,289 @@
 
                  cx = is_cx(1)	! always comes back as the first context
 
+* ... Returns that can be made without evaluating the expression. If success
+*     is not verified, will continue and try again after evaluation.
+
+	      IF (cx.EQ.unspecified_int4 .OR. cx.EQ.0) GOTO 4000 ! context not set
+
+* ... RETURN=UNITS
+              IF ( repl(1:4) .EQ. "UNIT" ) THEN	! or "=UNITS"
+	         repl = VAR_UNITS( cx )
+	         str_len = TM_LENSTR1(repl)
+	         GOTO 500
+
+* ... RETURN=TITLE
+	      ELSEIF ( repl .EQ. "TITLE" ) THEN
+	         repl = VAR_TITLE( cx )
+	         str_len = TM_LENSTR1(repl)
+	         GOTO 500
+		 
+* ... RETURN=BAD
+	      ELSEIF ( repl .EQ. "BAD" ) THEN
+	         result = cx_bad_data ( cx )
+	         repl = TM_FMT( result, use_digits, max_len, str_len )
+	         str_len = TM_LENSTR1(repl)
+	         GOTO 500
+		 
+* ... RETURN=T0
+	      ELSEIF ( repl .EQ. "T0" ) THEN
+	         repl = ' '	! default
+	         idim = T_DIM
+	         axis = CGRID_AXIS ( idim, cx )
+	         IF ( axis.NE.mnormal) THEN
+	            IF (line_direction(axis) .EQ. 'TI') THEN
+    		       repl = line_T0(axis)
+                       IF (line_shift_origin(axis)) 
+     .                   repl =  '01-JAN-0001 00:00:00'
+                    ELSE
+		      GOTO 4000
+		    ENDIF
+	         ENDIF
+	         str_len = TM_LENSTR1(repl)
+	         GOTO 500
+
+* ... RETURN=F0
+	      ELSEIF ( repl .EQ. "F0" ) THEN
+	         repl = ' '	! default
+	         idim = F_DIM
+	         axis = CGRID_AXIS ( idim, cx )
+	         IF ( axis.NE.mnormal) THEN
+	            IF (line_direction(axis) .EQ. 'FI') THEN
+    		       repl = line_T0(axis)
+                       IF (line_shift_origin(axis)) 
+     .                  repl =  '01-JAN-0001 00:00:00'
+                    ELSE
+		      GOTO 4000
+                    ENDIF
+	         ENDIF
+	         str_len = TM_LENSTR1(repl)
+	         GOTO 500
+              
+* ... RETURN=CALENDAR
+	      ELSEIF ( repl(1:3) .EQ. "CAL" ) THEN
+	         repl = ' '	! default
+	         axis = CGRID_AXIS ( T_dim, cx )
+	         IF ( axis.NE.mnormal) THEN
+	               IF (line_direction(axis) .EQ. 'TI' .OR.
+     .                  line_direction(axis) .EQ. 'TT')
+     .		        repl = line_cal_name(axis)
+	         ELSE
+		      GOTO 4000
+	         ENDIF
+	         str_len = TM_LENSTR1(repl)
+	         GOTO 500
+
+
+* ... RETURN=DSET, DSETNUM, DSETPATH, DSETTITLE
+	      ELSEIF ( repl(1:4) .EQ. "DSET" ) THEN
+	         i2 = cx_data_set(cx)
+	         IF ( i2 .EQ. pdset_irrelevant
+     .	        .OR.  i2 .EQ. unspecified_int4 ) THEN
+	            GOTO 4000
+	         ELSE
+                    IF ( repl .EQ. "DSETNUM") THEN
+	               repl = LEFINT(i2, str_len)
+	            ELSEIF ( repl .EQ. "DSETPATH" ) THEN
+	               CALL GET_DSET_NAME(i2, repl, str_len)
+                    ELSEIF ( repl .EQ. "DSET" ) THEN
+	               CALL GET_SHORT_DSET_NAME(i2, repl, str_len)
+                    ELSEIF ( repl .EQ. "DSETTITLE" ) THEN
+	               CALL GET_DSET_TITLE(i2, repl, str_len)
+                    ELSE 
+	               GOTO 4000
+                    ENDIF
+	         ENDIF
+	         str_len = TM_LENSTR1(repl)
+	         GOTO 500
+
+* ... RETURN=nc_scale, nc_offset
+	         ELSEIF ( repl(1:3) .EQ. "NC_" ) THEN
+	            IF ( repl .EQ. "NC_SCALE" ) THEN
+	               CALL GET_NC_SCALE (cx, result)
+	            ELSEIF ( repl(1:6) .EQ. "NC_OFF" ) THEN
+	               CALL GET_NC_OFFSET (cx, result)
+                    ELSE 
+	               GOTO 4000
+	            ENDIF
+	            repl = TM_FMT( result, use_digits, max_len, str_len )
+	            str_len = TM_LENSTR1(repl)
+	            GOTO 500
+
+* ... RETURN=user_scale, user_offset
+	         ELSEIF ( repl(1:5) .EQ. "USER_" ) THEN
+	            IF ( repl .EQ. "USER_SCALE" ) THEN
+	               CALL GET_USER_SCALE (cx, result)
+	            ELSEIF ( repl(1:8) .EQ. "USER_OFF" ) THEN
+	               CALL GET_USER_OFFSET (cx, result)
+	            ELSE 
+	               GOTO 4000
+	            ENDIF
+	            repl = TM_FMT( result, use_digits, max_len, str_len )
+	            str_len = TM_LENSTR1(repl)
+	            GOTO 500
+
+* ... RETURN=dtype if it is available in the context at this point. For user-
+*     defined variables the type is not yet determined.
+
+	         ELSEIF ( repl .EQ. "DTYPE" .AND. 
+     .              INDEX(cmnd(istart:iend),'.') .EQ. 0) THEN
+	            dset = cx_data_set(cx)
+	            IF (dset .EQ. pdset_irrelevant .OR. 
+     .               dset .EQ. unspecified_int4) dset = pdset_uvars  ! try user vars
+
+	            varid = 0
+	            vartype = 0
+
+	            CALL CD_GET_VAR_ID(dset, cmnd(istart:iend), varid, status)
+
+	            IF (status .EQ. ferr_ok)  
+     .                CALL CD_GET_VAR_INFO (dset, varid, cmnd(istart:iend), 
+     .                              vartype, nvdims, vdims, nvatts,
+     .                              coordvar, outflag, status )
+
+                    IF (vartype.EQ.0 ) GOTO 4000
+		    
+	            IF (status .EQ. ferr_ok) THEN
+                       repl = typstring(vartype)
+	            ELSE 
+	               GOTO 4000
+	            ENDIF
+	            str_len = TM_LENSTR1(repl)
+	            GOTO 500
+		    
+
+* ... varname.atttnum,RETURN=dtype  or varname.attname, RETURN=dtype
+
+	         ELSEIF ( repl .EQ. "DTYPE" .AND. 
+     .              INDEX(cmnd(istart:iend),'.') .GT. 0) THEN
+	            attype = 0
+	            dset = cx_data_set(cx)
+	            IF (cx_data_set(cx) .EQ. pdset_irrelevant) dset = pdset_uvars  ! user vars
+	               CALL BREAK_VARATTNAME( cmnd(istart:iend), dset, 
+     .                    varname, attname, varid, do_err, status )
+	               CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .                    status)
+	               IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .                    attid, aname, attype, attlen, attoutflag, status )
+
+	            IF (status .EQ. ferr_ok) THEN
+                       repl = typstring(attype)
+	            ELSE 
+	               GOTO 4000
+	            ENDIF
+	            str_len = TM_LENSTR1(repl)
+	            GOTO 500
+
+* ... varname.atttnum,RETURN=size  or varname.attname, RETURN=size
+
+	         ELSEIF ( repl .EQ. "SIZE" .AND. 
+     .              INDEX(cmnd(istart:iend),'.') .GT. 0) THEN
+	            IF (.NOT. coordvar) dset = cx_data_set(cx)
+	            IF (dset .GE. 1) THEN
+	               IF (coordvar) THEN
+
+                          IF (INDEX(buff,'.') .GT. 0)
+     .                    CALL BREAK_VARATTNAME( cmnd(istart:iend), dset, varname, 
+     .                              attname,  varid, do_err, status )
+
+	               ELSE
+                          CALL CD_GET_VAR_ID (dset, cmnd(istart:iend), varid,
+     .                        status)
+                    
+                          IF (status .NE. ferr_ok .AND. 
+     .                     INDEX(cmnd(istart:iend),'.') .GT. 0) THEN
+                             CALL BREAK_VARATTNAME( cmnd(istart:iend), dset,
+     .                         varname, attname, varid, do_err, status )
+                          ELSE
+                             i2 = CGRID_SIZE ( cx )
+                             repl = LEFINT(i2, str_len)
+			     str_len = TM_LENSTR1(repl)
+                             GOTO 500
+                          ENDIF
+
+	               ENDIF
+                 
+	               CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .                   status)
+	               IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid,
+     .                  attid, aname,  attype, attlen, attoutflag, status )
+
+	               IF (status .EQ. ferr_ok) THEN
+                          IF (attlen .GT. 0) THEN
+                             result = attlen
+                             repl = TM_FMT( result, use_digits, max_len, str_len )
+                          ENDIF
+	               ELSE 
+	                  GOTO 4000
+                       ENDIF
+                    ENDIF
+	            str_len = TM_LENSTR1(repl)
+	            GOTO 500
+
+* ... RETURN=XMOD
+
+	         ELSEIF ( repl .EQ. "XMOD" ) THEN
+	            repl = ' '	! default
+	            axis = CGRID_AXIS ( X_dim, cx )
+	            IF ( axis.NE.mnormal) THEN
+	               IF (line_modulo(axis)) THEN
+                          result = line_modulo_len(axis)
+
+! If axis has modulo=" ", and units are not degrees, mod len = axis len.
+#ifdef double_p
+                          IF (result .EQ. 0) result = (TM_WW_AXLEN(axis))
+#else
+                          IF (result .EQ. 0) result = SNGL(TM_WW_AXLEN(axis))
+#endif
+                          repl = TM_FMT( result, use_digits, max_len, str_len)
+
+                       ELSE
+		          GOTO 4000
+		       ENDIF
+	            ENDIF
+	            str_len = TM_LENSTR1(repl)
+	            GOTO 500
+
+* ... RETURN=TMOD
+
+	         ELSEIF ( repl .EQ. "TMOD" ) THEN
+	            repl = ' '	! default
+	            axis = CGRID_AXIS ( T_dim, cx )
+	            IF ( axis.NE.mnormal) THEN
+	               IF (line_modulo(axis)) THEN
+                          result = line_modulo_len(axis)
+
+! If axis has modulo=" ", mod len = axis len.
+#ifdef double_p
+                          IF (result .EQ. 0) result = (TM_WW_AXLEN(axis))
+#else
+                          IF (result .EQ. 0) result = SNGL(TM_WW_AXLEN(axis))
+#endif
+                          repl = TM_FMT( result, use_digits, max_len, str_len)
+
+                       ELSE
+		          GOTO 4000
+                       ENDIF
+	           ENDIF
+	           str_len = TM_LENSTR1(repl)
+	           GOTO 500
+
+* ... RETURN=ISDEPTH
+
+	         ELSEIF ( repl(1:3) .EQ. "ISD" ) THEN
+	            axis = CGRID_AXIS ( Z_dim, cx )
+	            IF ( axis.NE.mnormal) THEN
+		       repl = '0'
+	               IF (line_direction(axis) .EQ. "UD") repl = '1'
+	            ELSE 
+		       GOTO 4000
+	            ENDIF
+	            str_len = TM_LENSTR1(repl)
+	            GOTO 500
+
+	         ENDIF  ! trying to return results based on context only
+
+ 4000        	CONTINUE
 
 * ... if the result has any axes with unknown limits then we have to do a
 *	full evaluation. This happens (only?) from grid-changing fcns that
@@ -421,6 +708,7 @@
 * NOTE THE POTENTIAL FOR WRONG RESULTS WITH OPERATIONS SUCH AS MATRIX
 * TRANSPOSE - ALL "IMPOSED" AXES PRESENT THE RISK OF WRONG RESULTS
 * Just checking for the abstract axis to fix bug 2213. 
+
 
                  DO 190 idim = 1, nferdims
 		    do_eval = ( cx_hi_ww(idim, cx) .EQ. unspecified_val8

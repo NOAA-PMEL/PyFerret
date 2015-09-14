@@ -418,6 +418,8 @@
 
                  cx = is_cx(1)	! always comes back as the first context
 
+		 cat = cx_category(cx)
+
 * ... Returns that can be made without evaluating the expression. If success
 *     is not verified, will continue and try again after evaluation.
 
@@ -443,7 +445,7 @@
 	         GOTO 500
 		 
 * ... RETURN=T0
-	      ELSEIF ( repl .EQ. "T0" ) THEN
+	      ELSEIF ( repl .EQ. "T0" .AND. cat.EQ.cat_file_var) THEN
 	         repl = ' '	! default
 	         idim = T_DIM
 	         axis = CGRID_AXIS ( idim, cx )
@@ -460,7 +462,7 @@
 	         GOTO 500
 
 * ... RETURN=F0
-	      ELSEIF ( repl .EQ. "F0" ) THEN
+	      ELSEIF ( repl .EQ. "F0" .AND. cat.EQ.cat_file_var) THEN
 	         repl = ' '	! default
 	         idim = F_DIM
 	         axis = CGRID_AXIS ( idim, cx )
@@ -477,7 +479,7 @@
 	         GOTO 500
               
 * ... RETURN=CALENDAR
-	      ELSEIF ( repl(1:3) .EQ. "CAL" ) THEN
+	      ELSEIF ( repl(1:3) .EQ. "CAL" .AND. cat.EQ.cat_file_var) THEN
 	         repl = ' '	! default
 	         axis = CGRID_AXIS ( T_dim, cx )
 	         IF ( axis.NE.mnormal) THEN
@@ -492,7 +494,7 @@
 
 
 * ... RETURN=DSET, DSETNUM, DSETPATH, DSETTITLE
-	      ELSEIF ( repl(1:4) .EQ. "DSET" ) THEN
+	      ELSEIF ( repl(1:4) .EQ. "DSET" .AND. cat.EQ.cat_file_var) THEN
 	         i2 = cx_data_set(cx)
 	         IF ( i2 .EQ. pdset_irrelevant
      .	        .OR.  i2 .EQ. unspecified_int4 ) THEN
@@ -514,7 +516,7 @@
 	         GOTO 500
 
 * ... RETURN=nc_scale, nc_offset
-	         ELSEIF ( repl(1:3) .EQ. "NC_" ) THEN
+	         ELSEIF ( repl(1:3) .EQ. "NC_" .AND. cat.EQ.cat_file_var) THEN
 	            IF ( repl .EQ. "NC_SCALE" ) THEN
 	               CALL GET_NC_SCALE (cx, result)
 	            ELSEIF ( repl(1:6) .EQ. "NC_OFF" ) THEN
@@ -542,8 +544,8 @@
 * ... RETURN=dtype if it is available in the context at this point. For user-
 *     defined variables the type is not yet determined.
 
-	         ELSEIF ( repl .EQ. "DTYPE" .AND. 
-     .              INDEX(cmnd(istart:iend),'.') .EQ. 0) THEN
+	         ELSEIF ( repl .EQ. "DTYPE" .AND. cat.EQ.cat_file_var 
+     .              .AND. INDEX(cmnd(istart:iend),'.') .EQ. 0) THEN
 	            dset = cx_data_set(cx)
 	            IF (dset .EQ. pdset_irrelevant .OR. 
      .               dset .EQ. unspecified_int4) dset = pdset_uvars  ! try user vars
@@ -571,8 +573,8 @@
 
 * ... varname.atttnum,RETURN=dtype  or varname.attname, RETURN=dtype
 
-	         ELSEIF ( repl .EQ. "DTYPE" .AND. 
-     .              INDEX(cmnd(istart:iend),'.') .GT. 0) THEN
+	         ELSEIF ( repl .EQ. "DTYPE" .AND. cat.EQ.cat_file_var
+     .              .AND. INDEX(cmnd(istart:iend),'.') .GT. 0) THEN
 	            attype = 0
 	            dset = cx_data_set(cx)
 	            IF (cx_data_set(cx) .EQ. pdset_irrelevant) dset = pdset_uvars  ! user vars
@@ -593,8 +595,8 @@
 
 * ... varname.atttnum,RETURN=size  or varname.attname, RETURN=size
 
-	         ELSEIF ( repl .EQ. "SIZE" .AND. 
-     .              INDEX(cmnd(istart:iend),'.') .GT. 0) THEN
+	         ELSEIF ( repl .EQ. "SIZE" .AND. cat.EQ.cat_file_var
+     .              .AND. INDEX(cmnd(istart:iend),'.') .GT. 0) THEN
 	            IF (.NOT. coordvar) dset = cx_data_set(cx)
 	            IF (dset .GE. 1) THEN
 	               IF (coordvar) THEN
@@ -639,7 +641,7 @@
 
 * ... RETURN=XMOD
 
-	         ELSEIF ( repl .EQ. "XMOD" ) THEN
+	         ELSEIF ( repl .EQ. "XMOD" .AND. cat.EQ.cat_file_var) THEN
 	            repl = ' '	! default
 	            axis = CGRID_AXIS ( X_dim, cx )
 	            IF ( axis.NE.mnormal) THEN
@@ -663,7 +665,7 @@
 
 * ... RETURN=TMOD
 
-	         ELSEIF ( repl .EQ. "TMOD" ) THEN
+	         ELSEIF ( repl .EQ. "TMOD" .AND. cat.EQ.cat_file_var) THEN
 	            repl = ' '	! default
 	            axis = CGRID_AXIS ( T_dim, cx )
 	            IF ( axis.NE.mnormal) THEN
@@ -687,7 +689,7 @@
 
 * ... RETURN=ISDEPTH
 
-	         ELSEIF ( repl(1:3) .EQ. "ISD" ) THEN
+	         ELSEIF ( repl(1:3) .EQ. "ISD" .AND. cat.EQ.cat_file_var) THEN
 	            axis = CGRID_AXIS ( Z_dim, cx )
 	            IF ( axis.NE.mnormal) THEN
 		       repl = '0'

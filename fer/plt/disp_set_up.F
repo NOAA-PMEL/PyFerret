@@ -157,6 +157,7 @@
 * V691  *acm*  5/14 Clean up temp memory used for computing histogram levels
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V695+ *sh*  3/15 if an FMRC dataset disambiguate T and F axes with labels
+* V695  *acm* 9/15 send REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -232,7 +233,7 @@ C plus those starting w/ xbox_bounds:
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
      .                  first, last
 	REAL*8		xaxlo, xaxhi, yaxlo, yaxhi, delta
-	REAL*4		rw1lo, rw2lo
+	REAL*4		rw1lo, rw2lo, rbad
 
         DATA axdir / 'X', 'Y', 'Z', 'T', 'E', 'F' /
 
@@ -738,16 +739,16 @@ C ACM added 8/2001 save cal id if vertical time axis
 
 * Compute data mean and if needed for the levels setting the std, store
 * in common.  If the user set a std to use, store that.
+* send 	REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
 
        nsiz = size1* size2
+       rbad = bad_val4
        CALL compute_mnstd (memory(1, xblk1), bad_x, need_std, 
-     .    nsiz, status)
+     .    nsiz, rbad, status)
        IF (status .NE. ferr_ok) THEN
 * ... set up for automatic levels
 	   CALL PPLCMD ( from, line, 0, 'LEV,()', 1, 1 )
           CALL USE_LINEAR_LEVELS
-	  CALL WARN(
-     . 'Data too large to compute Std Dev. Using linear levels instead.')
        ENDIF
 
 * If histogram-based levels are requested, compute the 

@@ -158,6 +158,7 @@
 * V694  *acm*  5/15 Fix ticket 2282: setting up axis for ribbon plots
 * v696  *acm*  6/15 PLOT/VS/GAPLOC to define seperate line segments on
 *                   PLOT/VS plots (LAS ticket 1597 and others)
+* V695  *acm* 9/15 send REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
 
 
 	include 'tmap_dims.parm'
@@ -221,6 +222,7 @@
      .			ind_len, first, last, hlen
 	REAL*8		TSTEP_TO_SECS, SECS_TO_TSTEP,
      .			ind_min, ind_max, dep_min, dep_max, delta, tmp
+	REAL*4 rbad
 
 * local parameter declarations:
 	LOGICAL		main, norm_labs, pnot_curv, range_rqd
@@ -683,6 +685,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * needed for computing color levels. Results stored in PPLUS common.
 * If histogram-based levels are requested, compute the 
 * histogram bins.
+* send REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
+
 
 	   IF (ribbon_plot .AND. ipl.EQ.ribbon_var) THEN
 
@@ -699,7 +703,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * ... clean up temporary variable
                  CALL DELETE_VARIABLE( mvh_temp )
               ELSE
-                 CALL COMPUTE_MNSTD (dep_dat, mr_bad_data(mv), need_std, npts, status)
+	         rbad = bad_val4
+                 CALL COMPUTE_MNSTD (dep_dat, mr_bad_data(mv), need_std, npts, rbad, status)
               ENDIF
 
 	   ENDIF

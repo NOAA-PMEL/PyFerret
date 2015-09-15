@@ -42,6 +42,7 @@ C**
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
+* v695 9/15 *acm* write values to PPL* symbols using 6 digits not 4
 C**
 C***********************************************************************
 C**
@@ -76,18 +77,18 @@ C
 	WRITE(OUT,'(F10.4)')R*R
 	CALL PUTSYM(SYM,OUT,10,IER)
 	SYM='*PPL$LF_A'
-	CALL PUTVAL(SYM,A,4,IER)
+	CALL PUTVAL(SYM,A,6,IER)
 	SYM='*PPL$LF_A_STDEV'
-	CALL PUTVAL(SYM,AS,4,IER)
+	CALL PUTVAL(SYM,AS,6,IER)
 	SYM='*PPL$LF_B'
-	CALL PUTVAL(SYM,B,4,IER)
+	CALL PUTVAL(SYM,B,6,IER)
 	SYM='*PPL$LF_B_STDEV'
-	CALL PUTVAL(SYM,BS,4,IER)
+	CALL PUTVAL(SYM,BS,6,IER)
 	SYM='*PPL$LF_VAR'
-	CALL PUTVAL(SYM,VAR,4,IER)
+	CALL PUTVAL(SYM,VAR,6,IER)
 	SYM='*PPL$LF_RES_VAR'
 	ST2=STD*STD
-	CALL PUTVAL(SYM,ST2,4,IER)
+	CALL PUTVAL(SYM,ST2,6,IER)
 C
 C	WRITE STATS INTO ECHO FILE AND ON SCREEN
 C

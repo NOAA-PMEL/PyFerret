@@ -45,6 +45,7 @@
 * *jd* - 4.20.99 Don't delete symbols {X,Y}{MIN,MAX} in overlay plots
 * V580 *acm* 8/04  Allow for PPL POLYGON as well as PPL FILLPOL after a POLY/SET command.
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* v695 9/15 *acm* write values to PPL* symbols using 6 digits not 4
 
 	DIMENSION X(NSIZE)
 C**
@@ -86,16 +87,16 @@ C
 *jd*begin
 	    IF (.NOT.SOVER) THEN
 	       SYM='*PPL$XMIN'
-	       CALL PUTVAL(SYM,XMIN1,4,IER)
+	       CALL PUTVAL(SYM,XMIN1,6,IER)
 C       
 	       SYM='*PPL$XMAX'
-	       CALL PUTVAL(SYM,XMAX1,4,IER)
+	       CALL PUTVAL(SYM,XMAX1,6,IER)
 C       
 	       SYM='*PPL$YMIN'
-	       CALL PUTVAL(SYM,YMIN1,4,IER)
+	       CALL PUTVAL(SYM,YMIN1,6,IER)
 C       
 	       SYM='*PPL$YMAX'
-	       CALL PUTVAL(SYM,YMAX1,4,IER)
+	       CALL PUTVAL(SYM,YMAX1,6,IER)
 	    ENDIF
 *jd*end
 
@@ -169,22 +170,22 @@ c
 	    endif
 c
 	    SYM='*PPL$ZMIN'
-	    CALL PUTVAL(SYM,ZMIN,4,IER)
+	    CALL PUTVAL(SYM,ZMIN,6,IER)
 C
 	    SYM='*PPL$ZMAX'
-	    CALL PUTVAL(SYM,ZMAX,4,IER)
+	    CALL PUTVAL(SYM,ZMAX,6,IER)
 c
 	    sym='*PPL$XHIGH'
-	    call putval(sym,xhigh,4,ier)
+	    call putval(sym,xhigh,6,IER)
 c
 	    sym='*PPL$YHIGH'
-	    call putval(sym,yhigh,4,ier)
+	    call putval(sym,yhigh,6,IER)
 c
 	    sym='*PPL$XLOW'
-	    call putval(sym,xlow,4,ier)
+	    call putval(sym,xlow,6,IER)
 c
 	    sym='*PPL$YLOW'
-	    call putval(sym,ylow,4,ier)
+	    call putval(sym,ylow,6,IER)
 
 C       Don't define line symbols for FILLPOL/POLYGON
 	ELSE if (makep .ne. 'FILLPOL' .AND. makep .ne. 'POLYGON') then
@@ -193,16 +194,16 @@ C	LINE DATA
 
 	    WRITE(SYM,998)'XMIN',LINEN
 998	    FORMAT('*PPL$',A,'(',I2,')')
-	    CALL PUTVAL(SYM,XMIN1,4,IER)
+	    CALL PUTVAL(SYM,XMIN1,6,IER)
 C
 	    WRITE(SYM,998)'XMAX',LINEN
-	    CALL PUTVAL(SYM,XMAX1,4,IER)
+	    CALL PUTVAL(SYM,XMAX1,6,IER)
 C
 	    WRITE(SYM,998)'YMIN',LINEN
-	    CALL PUTVAL(SYM,YMIN1,4,IER)
+	    CALL PUTVAL(SYM,YMIN1,6,IER)
 C
 	    WRITE(SYM,998)'YMAX',LINEN
-	    CALL PUTVAL(SYM,YMAX1,4,IER)
+	    CALL PUTVAL(SYM,YMAX1,6,IER)
 
 * If its a ribbon plot, we need the min and max of the color-by variable.
 	    IF (linen .EQ. 2) THEN
@@ -231,9 +232,9 @@ C
 	    XT=X(IBASEX+J)*XFCT(I)+XOFF(I)
 	    YT=X(IBASEY+J)*YFCT(I)+YOFF(I)
 	    WRITE(SYM,998)'XFIRST',LINEN
-	    CALL PUTVAL(SYM,XT,4,IER)
+	    CALL PUTVAL(SYM,XT,6,IER)
 	    WRITE(SYM,998)'YFIRST',LINEN
-	    CALL PUTVAL(SYM,YT,4,IER)
+	    CALL PUTVAL(SYM,YT,6,IER)
 	    GOTO 30	
 20	    CONTINUE
 30	    DO 40 J=LEN,1,-1
@@ -246,9 +247,9 @@ C
 	    XT=X(IBASEX+J)*XFCT(I)+XOFF(I)
 	    YT=X(IBASEY+J)*YFCT(I)+YOFF(I)
 	    WRITE(SYM,998)'XLAST',LINEN
-	    CALL PUTVAL(SYM,XT,4,IER)
+	    CALL PUTVAL(SYM,XT,6,IER)
 	    WRITE(SYM,998)'YLAST',LINEN
-	    CALL PUTVAL(SYM,YT,4,IER)
+	    CALL PUTVAL(SYM,YT,6,IER)
 	    GOTO 50
 40	    CONTINUE
 	ENDIF

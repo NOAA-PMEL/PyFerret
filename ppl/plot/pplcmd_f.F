@@ -135,6 +135,7 @@ C              do not make small tics by default.
 * v696 *acm*	gap_var to define seperate line segments on PLOT/VS plots
 *                  (LAS ticket 1597 and others)
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
+* v695 9/15 *acm* write values to PPL* symbols using 6 digits not 4
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -508,9 +509,9 @@ C     SIZE
 700	WIDTH=P(1)
 	HEIGHT=P(2)
 	SYM='*PPL$WIDTH'
-	CALL PUTVAL(SYM,WIDTH,4,IER)
+	CALL PUTVAL(SYM,WIDTH,6,IER)
 	SYM='*PPL$HEIGHT'
-	CALL PUTVAL(SYM,HEIGHT,4,IER)
+	CALL PUTVAL(SYM,HEIGHT,6,IER)
 	GOTO 10
 C     SMOOTH
 900	IF(M.EQ.0)GOTO 10
@@ -824,9 +825,9 @@ C     ORIGIN
 4600	IF(IFLG1)XORG=P(1)
 	IF(IFLG2)YORG=P(2)
 	SYM='*PPL$XORG'
-	CALL PUTVAL(SYM,XORG,4,IER)
+	CALL PUTVAL(SYM,XORG,6,IER)
 	SYM='*PPL$YORG'
-	CALL PUTVAL(SYM,YORG,4,IER)
+	CALL PUTVAL(SYM,YORG,6,IER)
 	if(pltopn)then
 	    call setax(pplmem,pplmem_nsize,xft,yft,xlt,ylt,xht,yht,
      .                 nmxt,nmyt,xtit,xtlt,.FALSE.)
@@ -955,9 +956,9 @@ C	AXLEN
 6300	IF(IFLG1)XLEN=P(1)
 	IF(IFLG2)YLEN=P(2)
 	SYM='*PPL$XLEN'
-	CALL PUTVAL(SYM,XLEN,4,IER)
+	CALL PUTVAL(SYM,XLEN,6,IER)
 	SYM='*PPL$YLEN'
-	CALL PUTVAL(SYM,YLEN,4,IER)
+	CALL PUTVAL(SYM,YLEN,6,IER)
 	if(pltopn)then
 	    call setax(pplmem,pplmem_nsize,xft,yft,xlt,ylt,xht,yht,nmxt,
      *	    nmyt,xtit,xtlt,.FALSE.)
@@ -1096,13 +1097,13 @@ C	TRANSXY
 	    ENDIF
 	    WRITE(SYM,997)'XFACT',I
 997	    FORMAT('*PPL$',A,'(',I3,')')
-	    CALL PUTVAL(SYM,XFCT(I),4,IER)
+	    CALL PUTVAL(SYM,XFCT(I),6,IER)
 	    WRITE(SYM,997)'XOFF',I
-	    CALL PUTVAL(SYM,XOFF(I),4,IER)
+	    CALL PUTVAL(SYM,XOFF(I),6,IER)
 	    WRITE(SYM,997)'YFACT',I
-	    CALL PUTVAL(SYM,YFCT(I),4,IER)
+	    CALL PUTVAL(SYM,YFCT(I),6,IER)
 	    WRITE(SYM,997)'YOFF',I
-	    CALL PUTVAL(SYM,YOFF(I),4,IER)
+	    CALL PUTVAL(SYM,YOFF(I),6,IER)
 	    GOTO 10
 C	MARKH
 8500	    I=IFIX(P(1))
@@ -1546,11 +1547,11 @@ C	VPOINT
 	    IF(M.GE.3.AND.IFLG(3).NE.0)VIEWZ=P(3)
 	    WRITE(SYM,999)'X'
 999	    FORMAT('*PPL$VIEW_',A1)
-	    CALL PUTVAL(SYM,VIEWX,4,IER)
+	    CALL PUTVAL(SYM,VIEWX,6,IER)
 	    WRITE(SYM,999)'Y'
-	    CALL PUTVAL(SYM,VIEWY,4,IER)
+	    CALL PUTVAL(SYM,VIEWY,6,IER)
 	    WRITE(SYM,999)'Z'
-	    CALL PUTVAL(SYM,VIEWZ,4,IER)
+	    CALL PUTVAL(SYM,VIEWZ,6,IER)
 	    GOTO 10
 C	CLSPLT
 9950	    CALL PLTYPE(ICODE)

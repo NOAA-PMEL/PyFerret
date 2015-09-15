@@ -17,7 +17,7 @@ c
      *	NMTCT,LABELT,IFDB,ISDB,ITFLG,VANG,IVFLG,IAUTOT,
      *	ITXTPE,ITXLBP,TLOb,DTb,TCSIZEb,ITYPETb, 
      *	NMTCTb,LABELTb,IFDBb,ISDBb,ITFLGb,VANGb,IVFLGb,IAUTOTb,
-     *	ITXTPEb,ITXLBPb
+     *	ITXTPEb,ITXLBPb,is_hours_axis
 c
 c	tlo	x value corresponding to the start time (index number)
 c	dt	sampling rate in minutes (minutes)

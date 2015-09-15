@@ -33,4 +33,5 @@
 	INTEGER	IAUTOTb
 	INTEGER	ITXTPEb
 	INTEGER	ITXLBPb
+	INTEGER is_hours_axis
 * requires: INCLUDE 'PPLV11INC:TAXIS.INC'                                   

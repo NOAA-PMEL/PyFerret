@@ -1,5 +1,5 @@
 	SUBROUTINE TAXIS(IT,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
-     *	XF,YHI,YF,TCSIZE,yacross,vgrat,vcolor,vline,color0)
+     *	XF,YHI,YF,TCSIZE,yacross,vgrat,vcolor,vline,is_hours_axis)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -48,7 +48,6 @@ C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 C *acm* 03/04  new arguments for plotting graticule lines across plot. 
-C V695 *acm*  5/15 Restore color after a graticule using defined color 0
 
 C If graticule lines are to be drawn across the plot at the tics
 C then only do them for one horizontal and one vertical axis.  
@@ -57,6 +56,7 @@ C sides. HLINE and VLINE control this.
 
 	CHARACTER*(*) IT1,IT2
         
+	INTEGER is_hours_axis
         REAL yacross
         REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         INTEGER vcolor(*)      ! pen number 
@@ -64,12 +64,12 @@ C sides. HLINE and VLINE control this.
 
 	GOTO (10,20,20,30)IT+1
 10	CALL TAXIS0(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
-     .              yacross,vgrat,vcolor,vline,color0)
+     .              yacross,vgrat,vcolor,vline,is_hours_axis)
 	RETURN
 20	CALL TAXIS1(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
-     .              yacross,vgrat,vcolor,vline,color0)
+     .              yacross,vgrat,vcolor,vline)
 	RETURN
 30	CALL TAXIS3(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
-     .              yacross,vgrat,vcolor,vline,color0)
+     .              yacross,vgrat,vcolor,vline)
 	RETURN
 	END

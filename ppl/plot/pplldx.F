@@ -171,9 +171,10 @@ c
 	REAL xt(*),yt(*), xdt
 #endif
 	CHARACTER BC2WHOI*14, tstrt*(*), tref*(*)
-	REAL*8 	  WHOI2BC, tstart,tstop,time,tmin
+	REAL*8	WHOI2BC, DIFF, tstart, tstop, time, tmin, off, rate, 
+     .		dxmin, dxmax, dymin, dymax, xymin, xymax dtd
 	INTEGER	icode, npts, i, ix, iy
-	REAL	DIFF, off, rate, xs, ys
+	REAL	xs, ys
 	LOGICAL  TM_FPEQ_SNGL
 	LOGICAL  flip			!  FERRET mod 10/93
 
@@ -188,14 +189,14 @@ c
         SAVE        tstart,tmin,tstop
 
 c
+	dtd = dt
+
 	if(linen.eq.0)call rsmnmx
 	linen=linen+1
 	jtype=1
 	nx=npts
 	ny=1
 	flip = itflg .EQ. -1		!  FERRET mod 10/93
-
-
 
 **	if(ABS(itflg).eq.1)then		!  FERRET mod 10/93  "ABS"
 
@@ -213,8 +214,8 @@ c **               passing thru c routine, a blank tref is somehow different??
 c
 c	calculate offset and rate for time data
 c
-	    off=diff(itstrt,tstrt)/dt+1.0
-	    rate=xdt/dt
+	    off=diff(itstrt,tstrt)/dtd+1.0
+	    rate=xdt/dtd
 **	else
 **	    off=1.0
 **	    rate=1.0
@@ -222,14 +223,21 @@ c
 c
 c	load data
 c
+
+C 8/2015 compute min and max in double precision, then translate
+
+	dxmin=1.0e36
+	dxmax=-dxmin
+	dymin=dxmin
+	dymax=dxmax
+
 	ix=ibase-1
 	iy=ix+pplmem_nsize/2
 	if(icode.eq.0 .OR. icode.EQ.3) THEN
 	    do 100 i=1,npts
+
 	        xs = REAL(xt(i))
 	        ys = REAL(yt(i))
-* FERRET mod 10/93 - apply transformation to Y data
-* FERRET mod  3/00 - screen X and Y separately for missing values
 	        IF ( flip ) THEN
 
 	          IF ( yeq .AND. TM_FPEQ_SNGL(ys,cmyeq) ) THEN
@@ -258,25 +266,43 @@ c
 	             pplmem(ix+i) = bad_flag
 	          ELSEIF (translate) then
 		     pplmem(ix+i)=(xt(i)-1.0)*rate+off
-	          else
+	          ELSE
 		     pplmem(ix+i)=xt(i)
-		  endif
+		  ENDIF
+
+		  IF ( .NOT.(xeq .AND. TM_FPEQ_SNGL(xs,cmxeq)) ) THEN
+		     dxmin = MIN(dxmin, xt(i))
+		     dxmax = MAX(dxmax, xt(i))
+		  ENDIF
+		  IF ( .NOT.(yeq .AND. TM_FPEQ_SNGL(ys,cmyeq)) ) THEN
+		     dymin = MIN(dymin, yt(i))
+		     dymax = MAX(dymax, yt(i))
+		  ENDIF
 
 		ENDIF
-* end of 10/93 FERRET mod
-* end of  3/00 FERRET mod
 
 100	    continue
+
+            if (flip) THEN
+	       IF (translate) then
+		   dymin = (dymin-1.0)*rate+off
+		   dymax = (dymax-1.0)*rate+off
+	       ENDIF
+	    ELSE
+	       IF (translate) then
+		   dxmin = (dxmin-1.0)*rate+off
+		   dxmax = (dxmax-1.0)*rate+off
+	       ENDIF
+	    ENDIF
+
 	else if(icode.eq.1)then
 	    do 200 i=1,npts
 	        xs = REAL(xt(i))
-* FERRET mod 2/89 - screen bad data
 	        IF ( ( xeq .AND. TM_FPEQ_SNGL(xs,cmxeq) ) ) THEN
 	           pplmem(ix+i) = bad_flag
 	           pplmem(iy+i) = i     ! 3/00 mod
 	           GOTO 200
 	        ENDIF
-* end of 2/89 FERRET mod
 		pplmem(iy+i)=i
 	        if (translate) then
 		   pplmem(ix+i)=(xt(i)-1.0)*rate+off
@@ -287,13 +313,11 @@ c
 	else
 	    do 300 i=1,npts
 	        ys = REAL(yt(i))
-* FERRET mod 2/89 - screen bad data
 	        IF ( ( yeq .AND. TM_FPEQ_SNGL(ys,cmyeq) ) ) THEN
 	           pplmem(ix+i) = bad_flag
 	           pplmem(iy+i) = bad_flag
 	           GOTO 300
 	        ENDIF
-* end of 2/89 FERRET mod
 		if (translate) then
 		   pplmem(ix+i)=(float(i)-1.0)*rate+off
 	        else
@@ -305,23 +329,6 @@ c
 * FERRET mod 2/89 - replace bad data LIMITS flags
 	cmxeq = bad_flag
 	cmyeq = bad_flag
-* end of 2/89 FERRET mod
-
-	xmin=1.0e36
-	xmax=-xmin
-	ymin=xmin
-	ymax=xmax
-	do 400 i=1,npts
-* FERRET mod 2/89 -*re-mod 3/00*  eliminate bad data from min/max calculation 
-	IF ( pplmem(ix+i).NE.bad_flag ) THEN
- 	  if(xmin.gt.pplmem(ix+i)) xmin=pplmem(ix+i)
-	  if(xmax.lt.pplmem(ix+i)) xmax=pplmem(ix+i)
-	ENDIF
-	IF ( pplmem(iy+i).NE.bad_flag ) THEN
-	  if(ymin.gt.pplmem(iy+i)) ymin=pplmem(iy+i)
-	  if(ymax.lt.pplmem(iy+i)) ymax=pplmem(iy+i)
-	ENDIF
-400	continue
 c
 c	some variable definitions
 c
@@ -331,76 +338,29 @@ c	itmin   earliest tmin for all lines (in WHOI format)
 c	itmax   latest  tstop for all lines (in WHOI format)
 c	itstart reference start time (if iautot the first lines tstrt) (???)
 c
-* FERRET 9-21-88: replaced code dependent on 1970 reference
-! original:
-!	if(itflg.eq.1)then
-!	    if(linen.eq.1)then
-!		read(itstrt,999)iy,im,id,ihr
-!999		format(3i2.2,i4.4)
-!		call mdymt(temp,im,id,iy)
-!		temp(3)=ihr
-!		tstart=mtmin(temp)
-!c
-!c	calc itmin
-!c
-!		tmin=tstart+(xmin-off)*dt
-!		call minmt(tmin,start)
-!		call mtmdy(start,im,id,iy)
-!		write(itmin,999)iy,im,id,ifix(start(3))
-!c
-!c	calc itmax
-!c
-!		tstop=tstart+(xmax-off)*dt
-!		call minmt(tstop,stop)
-!		call mtmdy(stop,im,id,iy)
-!		write(itmax,999)iy,im,id,ifix(stop(3))
-!	    else
-!		tmin=tstart+(xmin-off)*dt
-!		tstop=tstart+(xmax-off)*dt
-!		read(itmin,999)iy,im,id,ihr
-!		call mdymt(temp,im,id,iy)
-!		temp(3)=ihr
-!		time=mtmin(temp)
-!		if(tmin.lt.time)then
-!		    call minmt(tmin,start)
-!		    call mtmdy(start,im,id,iy)
-!		    write(itmin,999)iy,im,id,ifix(start(3))
-!		endif
-!c
-!		read(itmax,999)iy,im,id,ihr
-!		call mdymt(temp,im,id,iy)
-!		temp(3)=ihr
-!		time=mtmin(temp)
-!		if(tstop.gt.time)then
-!		    call minmt(tstop,stop)
-!		    call mtmdy(stop,im,id,iy)
-!		    write(itmax,999)iy,im,id,ifix(stop(3))
-!		endif
-!	    endif
-!	endif
 
 	if(translate)then  		! 11.30.95 WAS:	if(itflg.eq.1)then
 		if(itflg.eq.1) then 	! 11.30.95 for both x and y
-		   xymin  = xmin
-		   xymax  = xmax
+		   xymin  = dxmin
+		   xymax  = dxmax
 	        else 			! gotta be -1
-		   xymin  = ymin
-		   xymax  = ymax
+		   xymin  = dymin
+		   xymax  = dymax
 		endif
 
 	    if(linen.eq.1)then
 		tstart = WHOI2BC( itstrt )		! t=1 of time axis
 
-		tmin=tstart+(xymin-1.0)*dt		! start of plot axis
+		tmin=tstart+(xymin-1.0)*dtd		! start of plot axis
 		itmin = BC2WHOI( tmin )
 
-		tstop=tstart+(xymax-1.0)*dt		! end of plot axis
+		tstop=tstart+(xymax-1.0)*dtd		! end of plot axis
 		itmax = BC2WHOI( tstop )
 
 	    else
 
-		tmin=tstart+(xymin-1.0)*dt
-		tstop=tstart+(xymax-1.0)*dt
+		tmin=tstart+(xymin-1.0)*dtd
+		tstop=tstart+(xymax-1.0)*dtd
 
 		time = WHOI2BC( itmin )
 		if(tmin.lt.time)  itmin = BC2WHOI( tmin )   ! chg. plot start
@@ -412,7 +372,11 @@ c
 * end of FERRET 9-21 changes
         
 	pbuf=1
-* ORIG	call stmnmx(pplmem,pplmem_nsize,xmin,xmax,ymin,ymax,0.,0.)
+c 8/2015 Should stmnmx use double precisison xmin,xmax, ...?  Seems ok as single.
+	xmin = dxmin
+	xmax = dxmax
+	ymin = dymin
+	ymax = dymax
 	call stmnmx(pplmem,pplmem_nsize,xmin,xmax,ymin,ymax)
 
 	lnum = linen

@@ -1,4 +1,4 @@
-      SUBROUTINE DAXIS(XF,YF,NMX,NMY,DRAW)
+      SUBROUTINE DAXIS(XF,YF,NMX,NMY,MAINLAB)
 
 *
 *
@@ -63,12 +63,6 @@ C *acm* 10/14  bug 2205. Polygon plots have extra calls because polygons can get
 C              drawn on topof axes. This(?) causes the main label to not get 
 C              finished. For polygon plots only, draw the main label twice.
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
-* V695 *acm*   4/15 (PyFerret) labels along axes will be drawn with the 
-*              tic-mark text style
-* V695 *acm*   5/15 Ticket 2279: Draw axis lines, tics and labels only once.
-* V695 *acm*   6/15 simplify the above change
-
-
 C**
 C**    @(#)daxis.F	1.1    3/10/88
 C**
@@ -106,11 +100,10 @@ C**
 	include 'TICS2.INC'
 	include 'axisl_inc.decl'
 	include 'AXISL.INC'
-	INCLUDE 'pyfonts.cmn'
 
 	CHARACTER IFX*20,IFY*20
-        integer ii
-	LOGICAL noylab, DRAW
+        integer ii, MAINLAB
+	LOGICAL noylab
 
 * TMAP interrupt flag
 	include 'xinterrupt.cmn'
@@ -118,19 +111,23 @@ C**
 C If graticule lines are to be drawn across the plot at the tics
 C then only do them for one horizontal and one vertical axis.  
 C The dash lines interfere with each other if drawn from both 
-C sides. HLINE and VLINE control this. Draw the axis after the 
-C graticule lines, so the axes themselves are always solid, black.
+C sides. HLINE and VLINE control this. Draw a second axis after each 
+C axis that may have the graticule lines, so the axes themselves are 
+C always solid, black.
 
         HLINE = .TRUE.
         VLINE = .TRUE.
-
+           
+        do ii = 1, 2   ! first time thru do graticules, 
+                      ! second time dont, get black axes
+        
+        IF(IMCNT.LE.1)THEN
+	    CALL BOX
+	END IF
 C	SETUP AXIS
 	CALL SETLAB(XF,YF,LTT,LTB,LYL,LYR,LXT,LXB,IFX,IFY,LTBb)
 
-C ---------- Skip this section if not drawing the axes ----------
-	IF (DRAW) THEN
-
-	IF (ii .EQ. 2) THEN
+	IF (ii .EQ. 2 .OR. mainlab .EQ. 0) THEN
 	   LTT = 0
 	   LTB = 0
 	   LYL = 0
@@ -143,104 +140,91 @@ C ---------- Skip this section if not drawing the axes ----------
 C
 C     DRAW AXIS, LEFT, RIGHT Y AXIS THEN TOP, BOTTOM XAXIS
 C
-	IF(MAKEP.EQ.'VIEW') GOTO 1000
-
-      
-* (PyFerret) labels along vertical axes will be drawn with the ivtics text style
-      IF (pyfont .AND. pyf_set(ivtics)) igroup = ivtics
-
+	IF(MAKEP.EQ.'VIEW')GOTO 1000
       IF(MYLEF.EQ.0.AND.IAXON(3).EQ.1)THEN
 	  IY=ITY
 C	  YAXIS1 = LINEAR ,  YAXIS2 = LOG
-C  
-          IF((ITFLG.EQ.-1 .OR. ITFLG.EQ.2))THEN
+C
+          IF(ITFLG.EQ.-1 .OR. ITFLG.EQ.2)THEN
               IF(ITFLG.EQ.-1) CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
-     *        YF,XLO,XF,TCSIZE,XHI,HGRAT, HCOLOR, HLINE, IPEN(0))
+     *        YF,XLO,XF,TCSIZE,XHI,HGRAT, HCOLOR, HLINE)
               IF(ITFLG.EQ.2) CALL TAYIS(ITYPETb,TLOb,IT1b,IT2b,DT,NMTCTb,LTBb,IFDBb,ISDBb,
-     *        YF,XLO,XF,TCSIZEb,XHI,HGRAT, HCOLOR, HLINE, IPEN(0))
+     *        YF,XLO,XF,TCSIZEb,XHI,HGRAT, HCOLOR, HLINE)
             hline = .FALSE.
 	  ELSE IF(ITYPEY.EQ.1)THEN
 	   CALL YAXIS1(XLO,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYL,IFY,YF,
      *	    YCSIZE,XHI,YDMS,HGRAT, HCOLOR, HLINE, YVALOFF, NOYLAB, 
-     *	    SHRINKY, IPEN(0))
+     *	    SHRINKY)
             hline = .FALSE.
 	  ELSE
             CALL YAXIS2(XLO,XF,YLO,YHI,0.,LYL,IFY,1,YF,YCSIZE,
-     .                    XHI,HGRAT, HCOLOR, HLINE, IPEN(0))
+     .                    XHI,HGRAT, HCOLOR, HLINE)
             hline = .FALSE.
           END IF
       END IF
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
       IF(IAXON(4).EQ.1)THEN
 	IY=-ITY
-        IF((ITFLG.EQ.-1 .OR. ITFLG.EQ.2)) THEN
+        IF(ITFLG.EQ.-1 .OR. ITFLG.EQ.2)THEN
             IF(ITFLG.EQ.-1) CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
-     *      YF,XHI,XF,TCSIZE,XLO,HGRAT, HCOLOR, HLINE, IPEN(0))
+     *      YF,XHI,XF,TCSIZE,XLO,HGRAT, HCOLOR, HLINE)
             IF(ITFLG.EQ.2) CALL TAYIS(ITYPETb,TLOb,IT1b,IT2b,DT,NMTCTb,LTTb,IFDBb,ISDBb,
-     *      YF,XHI,XF,TCSIZEb,XLO,HGRAT, HCOLOR, HLINE, IPEN(0))
+     *      YF,XHI,XF,TCSIZEb,XLO,HGRAT, HCOLOR, HLINE)
            hline = .FALSE.
 	ELSE IF(ITYPEY.EQ.1)THEN
 	    CALL YAXIS1(XHI,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYR,IFY,YF,
      *     YCSIZE,XLO,YDMS,HGRAT, HCOLOR, HLINE, YVALOFF, NOYLAB,
-     *	    SHRINKY, IPEN(0))
+     *	    SHRINKY)
            hline = .FALSE.
 	ELSE
 	   CALL YAXIS2(XHI,XF,YLO,YHI,0.,LYR,IFY,1,YF,YCSIZE,
-     .                    XLO,HGRAT, HCOLOR, HLINE, IPEN(0))
+     .                    XLO,HGRAT, HCOLOR, HLINE)
            hline = .FALSE.
 	ENDIF
       ENDIF
-
-
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
-
-* (PyFerret) labels along horizontal axes will be drawn with the ihtics text style
-      IF (pyfont .AND. pyf_set(ihtics)) igroup = ihtics  
-
       IF(IAXON(1).EQ.1)THEN
           IX=-ITX
 C
 C	  XAXIS1 = LINEAR, XAXIS2 = LOG, TAXIS CALLS EITHER TAXIS0,
 C					 TAXIS1 OR TAXIS3
 C
-          IF((ITFLG.EQ.1 .OR. ITFLG.EQ.2)) THEN
+          IF(ITFLG.EQ.1 .OR. ITFLG.EQ.2)THEN
               CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
-     *        XF,YHI,YF,TCSIZE,YLO,VGRAT, VCOLOR, VLINE, IPEN(0))
+     *        XF,YHI,YF,TCSIZE,YLO,VGRAT, VCOLOR, VLINE, is_hours_axis)
               vline = .FALSE.
           ELSE IF (ITYPEX.EQ.1)THEN
 	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXT,IFX,XF,YHI,YF,
-     *	       XCSIZE,YLO,XDMS,VGRAT, VCOLOR, VLINE, XVALOFF, IPEN(0))
+     *	       XCSIZE,YLO,XDMS,VGRAT, VCOLOR, VLINE, XVALOFF)
               vline = .FALSE.
           ELSE
 	      CALL XAXIS2(XLO,XHI,0.,LXT,IFX,1,XF,YHI,YF,XCSIZE,
-     *                    YLO,VGRAT, VCOLOR, VLINE, IPEN(0))
+     *                    YLO,VGRAT, VCOLOR, VLINE)
               vline = .FALSE.
           END IF
       END IF
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
       IF(MXBOT.EQ.0.AND.IAXON(2).EQ.1)THEN
           IX=ITX
-          IF((ITFLG.EQ.1 .OR. ITFLG.EQ.2)) THEN
+          IF(ITFLG.EQ.1 .OR. ITFLG.EQ.2)THEN
               CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
-     *        XF,YLO,YF,TCSIZE,YHI,VGRAT, VCOLOR, VLINE, IPEN(0))
+     *        XF,YLO,YF,TCSIZE,YHI,VGRAT, VCOLOR, VLINE, is_hours_axis)
               vline = .FALSE.
           ELSE IF (ITYPEX.EQ.1) THEN
 	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXB,IFX,XF,YLO,YF,
-     *	      XCSIZE,YHI,XDMS,VGRAT, VCOLOR, VLINE, XVALOFF, IPEN(0))
+     *	      XCSIZE,YHI,XDMS,VGRAT, VCOLOR, VLINE, XVALOFF)
               vline = .FALSE.
           ELSE
 	      CALL XAXIS2(XLO,XHI,0.,LXB,IFX,1,XF,YLO,YF,XCSIZE,
-     *                    YHI,VGRAT, VCOLOR, VLINE, IPEN(0))
+     *                    YHI,VGRAT, VCOLOR, VLINE)
               vline = .FALSE.
           END IF
       END IF
-
-      ENDIF  ! draw
-C ---------- End of skip section if not drawing the axes ----------
+      enddo  ! ii loop
 
 * TMAP interrupt re-entry
  3333	CONTINUE
-	
+
 	IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
 	CALL CROSS
 	CALL WINDOW(0.,0.,0.,0.)
@@ -248,11 +232,7 @@ C
 C	DRAW AXIS LABELS
 C
 1000	CONTINUE
-
-* (PyFerret) cancel tic-mark text style
-	IF (pyfont) igroup = fnt_all
-
-        IF (DRAW) CALL LABDRW(XF,YF,IFX,IFY)
+        IF (mainlab .GE. 1) CALL LABDRW(XF,YF,IFX,IFY)
 	CALL PPLGFLUSH
 	RETURN
 	END

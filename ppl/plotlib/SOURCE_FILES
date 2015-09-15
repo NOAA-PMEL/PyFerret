@@ -8,6 +8,7 @@ conseg_section.F\
 contur.F\
 datpt.F\
 daywk1.F\
+delay.F\
 diff.F\
 frmt.F\
 getlev.F\
@@ -26,6 +27,7 @@ plotny.F\
 plott7.F\
 reset_labsiz.F\
 scinot.F\
+scinot_d.F\
 smooth.F\
 smx1.F\
 smy1.F\

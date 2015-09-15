@@ -239,7 +239,8 @@ CCCCCCC data	        tmapdebug/.false./
                                                                
         real            xm,ym,xt,xdum1,xdum2,xdum3,xdum4       
         real            xdum5,zmn,zmx,p1,x1,y1,y2,x3,x4     
-        real            diff,symwid,xmx,xmn,ymx,ymn,dd
+        real            symwid,xmx,xmn,ymx,ymn,dd 
+        real*8          diff
                                                                
         external        lnblk,diff,symwid                      
                                                                
@@ -1337,8 +1338,16 @@ C
 C	IF NO FIRST PARAMETER SKIP PROCESSING
 C
 	    IF(M.GE.1.AND.IFLG(1).EQ.0)GOTO 9301
-	    IF(LABEL(1:1).EQ.'D')THEN
+	    is_hours_axis = 0
+	    IF(LABEL.EQ.'PDAY')THEN
 		ITYPET=0
+		is_hours_axis = 2
+	    ELSE IF(LABEL(1:1).EQ.'H')THEN
+		ITYPET=0
+		is_hours_axis = 1
+	    ELSE IF(LABEL(1:1).EQ.'D')THEN
+		ITYPET=0
+		is_hours_axis = 0
 	    ELSE IF(LABEL(1:1).EQ.'M')THEN
 		ITYPET=1
 	    ELSE
@@ -1383,6 +1392,7 @@ C
 	    ENDIF
 	    MONYRLAB = .FALSE.  ! Option for MON and DAY types. 
 	    IF (INDEX(LABEL,'DMY').NE.0) MONYRLAB = .TRUE.
+            IF (LABEL.EQ.'HR' .OR. LABEL.EQ.'PDAY') MONYRLAB = .TRUE.
 	    LABELT=ITXTPE*ITXLBP
 	    GOTO 10
 
@@ -1393,8 +1403,16 @@ C
 C	IF NO FIRST PARAMETER SKIP PROCESSING
 C
 	    IF(M.GE.1.AND.IFLG(1).EQ.0)GOTO 9331
-	    IF(LABEL(1:1).EQ.'D')THEN
+	    is_hours_axis = 0
+	    IF(LABEL.EQ.'PDAY')THEN
 		ITYPETb=0
+		is_hours_axis = 2
+	    ELSE IF(LABEL(1:1).EQ.'H')THEN
+		ITYPETb=0
+		is_hours_axis = 1
+	    ELSE IF(LABEL(1:1).EQ.'D')THEN
+		ITYPETb=0
+		is_hours_axis = 0
 	    ELSE IF(LABEL(1:1).EQ.'M')THEN
 		ITYPETb=1
 	    ELSE
@@ -1439,6 +1457,7 @@ C
 	    ENDIF
 	    MONYRLABb = .FALSE.  ! Option for MON and DAY types. 
 	    IF (INDEX(LABEL,'DMY').NE.0) MONYRLABb = .TRUE.
+	    IF (LABEL.EQ.'HR' .OR. LABEL.EQ.'PDAY') MONYRLABb = .TRUE.
 	    LABELTb=ITXTPEb*ITXLBPb
 	    
 	    GOTO 10

@@ -88,9 +88,9 @@
 	REAL		tax_hours( pmax_tax )	! bounds: range-->style
 	CHARACTER*10	tax_style( pmax_tax )	! PPL TXTYPE value
 
-	DATA	tax_hours(1)	/   24.	/,	! 0-24 hour long axis
-     .		tax_style(1)	/ 'DAY'	/,
-     .		tax_loint(1)	/    1	/,
+	DATA	tax_hours(1)	/   12.	/,	! 12-24 hour long axis with partial days, see @ 512 for HR type
+     .		tax_style(1)	/ 'PDAY'/,
+     .		tax_loint(1)	/    5	/,
      .		tax_hiint(1)	/    1	/
 	DATA	tax_hours(2)	/  144.	/,	! 24 hour to 6 day long axis
      .		tax_style(2)	/ 'DAY'	/,
@@ -183,6 +183,7 @@
 
 * TXTYPE and TXLINT commands (time axis style)
  510	tstyle_long = tax_style( itax )
+	IF (hrsper8 .LE. 12) tstyle_long = 'HR'
 	tstyle = tstyle_long	! 3 character, only
 	CALL PPLCMD ( from, line, 0, 'TXTYPE '//tstyle_long, 1, 1 )
 

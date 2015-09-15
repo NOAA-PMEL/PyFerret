@@ -95,12 +95,13 @@
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V694  *acm*  2/15 Fix ticket 2232; redraw plot axes on line plots
 * V695  *acm*  5/15 Ticket 2279: PyFerret don't redraw lines
+* V695  *acm*  9/15 Changes for hour:min labeling on time axes
 
 *****************************************************
 
 * local variable declarations for PLTIT (for TMAP)
-	REAL	DIFF, x, xf, yf, xl, yl, xh, yh, xti, xtl, thi
-	REAL*8	XLPLOT,YLPLOT,XHPLOT,YHPLOT
+	REAL	x, xf, yf, xl, yl, xh, yh, xti, xtl, thi
+	REAL*8	DIFF, XLPLOT,YLPLOT,XHPLOT,YHPLOT
 	REAL	xtm,ytm,xtx,ytx,minx,maxx,miny,maxy
 	INTEGER nxs, nmx, nmy, ivloc, ip1, ip2, ip3, ip4, a_line,
      .          LABELX_save, LABELY_save, LABELT_save

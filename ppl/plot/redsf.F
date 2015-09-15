@@ -62,6 +62,7 @@ C                with "*(*)" for the linux port
 	INCLUDE 'TAXIS.INC'
 	INCLUDE 'SWITCH.INC'
 
+	REAL*8	DIFF
 	character sym*120,str*120,file*(*)
 C     NREC=NUMBER OF RECORDS TO BE READ 
 C     NGRP=NUMBER OF GROUPS TO BE READ PER RECORD 

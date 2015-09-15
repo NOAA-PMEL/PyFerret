@@ -10,6 +10,7 @@ c  v581 *acm* 3/05 add flags for use of open levels (-INF) (INF)
 * *acm* 1/13/12 For DP Ferret/ SP Pplus: explicitly declare REALs 
 *               as single-precision
 * V696 *acm*  6/15 Move ribbon_fast setting to lines_inc
+* V695 *acm*  8/15 integer-based levels
 
 	REAL*4	ZLEV,CANGLE
 	INTEGER	LDIG,IVCOMP
@@ -23,6 +24,7 @@ c  v581 *acm* 3/05 add flags for use of open levels (-INF) (INF)
 	INTEGER	NLEV2
 	INTEGER	NSIGC
 	INTEGER CONTOUR_FEWER
+	INTEGER intlev
 	
 *	Following added 8.3.95 *jd*
 	LOGICAL*4 CENTERED,SET_DELTA,NEGINF,POSINF,CONT_KEY

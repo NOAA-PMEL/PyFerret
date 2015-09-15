@@ -24,7 +24,7 @@ C**
      *  NARC,IAUTOC,NLEV2,NSIGC,CANGLE,IVCOMP,
      *  CONTOUR_FEWER,CENTERED,SET_DELTA,DELTA,NEGINF,POSINF,CONT_KEY,
      *  OPENLEV,SET_STD,SET_MEAN,SET_MIN,SET_MAX,NEED_DATA_SCAN,USE_HIST,
-     *  LEV_STR
+     *  LEV_STR,INTLEV
 
 c
 c	zlev()	array of levels to be contoured (user units)
@@ -64,6 +64,7 @@ c	delta		The specified DZ value
 *	set_max            open only on top
 *	lev_min		the values of min and/or max.
 *	lev_max
+*	lev_int		insist that levels values are integer
 
 
 c*******************************************************************

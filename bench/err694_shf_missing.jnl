@@ -1,0 +1,11 @@
+! err694_shf_missing.jnl
+! Test the fix for ticket 2314
+
+! This had been getting a missing-result; now is correct
+use gt4d011.cdf 
+list/i=100/j=50/k=1/l=24 temp[l=@shf]
+
+! Check shift that takes us beyond the end of a modulo axis (at x=20)
+can dat/all; use coads_climatology
+list/x=10:30/y=-60/l=1  sst
+list/x=10:30/y=-60/l=1  sst[i=@shf:3]

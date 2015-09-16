@@ -269,6 +269,7 @@ c Set itime1, itime3 as above
       ITIME = ITIME3
 
 C      LOOP:
+       labint = 120
        ltic = 0
   110  CONTINUE
 

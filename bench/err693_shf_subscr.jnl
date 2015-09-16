@@ -15,12 +15,6 @@ list zdiff_t
 can mem
 list/k=1 zdiff_t
 
-! Shift of -2
-can mem
-let zdiff = zw - missing(zw[z=@shf:-2],0)
-list/k=1 zdiff_t
-list/k=1:2 zdiff_t
-
 ! Shift of +1
 can mem 
 let zdiff = zw - missing(zw[z=@shf:1],0)

@@ -1,5 +1,5 @@
 	SUBROUTINE TAYIS0(TLO,ITIME1,ITIME2,DT,NSMTIC,LABEL,IHDB,IDDB,
-     *	TFACT,X,XFACT,CSIZE,xacross,hgrat,hcolor,hline,color0)
+     *	TFACT,X,XFACT,CSIZE,xacross,hgrat,hcolor,hline,color0,is_hours_axis)
 
 *
 *
@@ -57,6 +57,7 @@ C *acm* 03/04  new arguments and code for plotting graticule lines across plot.
 C V65  *acm*  1/10 New time-axis style for DAY and MONTH, DMY: adds the
 C                  year to DAY,MONTH or to MONTH.
 C V695 *acm*  5/15 Restore color after a graticule using defined color 0
+C V695 *acm*  9/15 Changes for hour:min labeling on time axes
 
 C**
 C**    @(#)tayis0.f	1.1    3/10/88
@@ -95,8 +96,8 @@ C         IDDB = PRINT LABELS OF DAYS DIVISIBLE BY THIS NUMBER ONLY.
 C                IF(IDDB = 0) PRINT NO MONTH LABELS.
 C                THIS VARIBLE ONLY APPLYS WHEN IABS(LABEL) = 1
 C         TFACT = (LENGTH OF T AXIS IN INCHES)/(LENGTH OF T AXIS IN USER
-C         Y = Y COORDINATE OF TIME AXIS.
-C         YFACT = (LENGTH OF Y AXIS IN INCHES)/(LENGTH OF Y AXIS IN USER
+C         X = X COORDINATE OF TIME AXIS.
+C         XFACT = (LENGTH OF X AXIS IN INCHES)/(LENGTH OF X AXIS IN USER
 C         CSIZE = SIZE TO DRAW HOUR LABELS.
 C                 DAY LABELS WILL BE 1.5 TIMES AS LARGE.
 C
@@ -104,9 +105,14 @@ C
 C     THIS ROUTINE WAS FIRST WRITTEN BY DAVID MANDEL IN JULY 1980.
 C
 	CHARACTER ITIME3*14,DATE*6,BUFF*14,YEAR*4
-	CHARACTER ITIME*14,ITIME1*(*),ITIME2*(*),SYM*21
+	CHARACTER ITIME*14,ITIME1*14,ITIME2*14,SYM*21
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
+
+	REAL*8  DIFF, difft
+	REAL*8  td, xtemp1, tfact_d, xfact_d
+	REAL    delt, rem
+	INTEGER is_hours_axis, start_hr
 
 * Parameters for drawing tics across plot
 
@@ -125,10 +131,20 @@ C
 
 	include 'xinterrupt.cmn'
         include 'century.cmn'  ! with MONYRLAB flag
+	
+  80	FORMAT(I2.2)
+  82	FORMAT(I2.2,':00')
+  84	FORMAT(I2.2,':',I2.2)
+
+	difft = DIFF(ITIME1,ITIME2)
 
 C     CHECK THE PARAMETERS PASSED TO THE SUBROUTINE.
-	IF(ITIME1(9:10).NE.'00')STOP ',1'
-	IF(ITIME2(9:10).NE.'00')STOP ',2'
+
+	IF (is_hours_axis .EQ. 0) THEN
+	   IF(ITIME1(9:10).NE.'00')STOP ',1'  ! MINUTE,SECOND ARE 0
+	   IF(ITIME2(9:10).NE.'00')STOP ',2'
+	ENDIF
+
         IF(ITIME1(13:14)//ITIME1(1:12).GE.
      .	   ITIME2(13:14)//ITIME2(1:12)) STOP',3'
         
@@ -158,8 +174,21 @@ C     CHECK THE PARAMETERS PASSED TO THE SUBROUTINE.
         ENDIF
 C
 C     SET PARAMETERS.
-	TIC = 60./DT
-	NTIC = NSMTIC + 1
+C     SET PARAMETERS.
+        TIC = 60./DT  
+        TICd = 60./DT  
+        NTIC = NSMTIC + 1
+        delt = 60.
+
+	IF (is_hours_axis.EQ.1) THEN
+	   delt = 10.
+	   IF (difft .LT. 50) delt = 5.
+	   IF (difft .LT. 30) delt = 2.
+	   IF (difft .LT. 12) delt = 1.
+	   tic = delt/dt
+	   ticd = delt/dt
+	ENDIF
+
 	IF(NSMTIC.LT.0)THEN
 	    IHVY=-6
 	    INML=-5
@@ -178,31 +207,58 @@ C     SET PARAMETERS.
 	ELSE
 	    FIHDB=-1.4
 	ENDIF
-	XTEMP1=X+LABEL*(0.9*CSIZE+XTEMP)/XFACT
+	XTEMP1=X+DBLE(LABEL*(0.9*CSIZE+XTEMP)/XFACT)
+	IF (is_hours_axis .EQ. 1) XTEMP1=X+DBLE(LABEL*(1.6*CSIZE+XTEMP)/XFACT)
 	IF(LABEL.LT.0) THEN
 	    XTEMP2=X-((4.0+FIHDB)*CSIZE+XTEMP)/XFACT
+	    IF (is_hours_axis.EQ.1) XTEMP2=X-((4.5+FIHDB)*CSIZE+XTEMP)/XFACT
 	ELSE
 	    XTEMP2=X+((2.5+FIHDB)*CSIZE+XTEMP)/XFACT
+	   IF (is_hours_axis.EQ.1)  XTEMP2=X+((3.+FIHDB)*CSIZE+XTEMP)/XFACT
 	ENDIF
 	IF(LABEL.NE.0)YWID=(4.0+FIHDB)*CSIZE+XTEMP
-	T=TLO
+        T=TLO  ! Time in hours, plot units
+	td = tlo
 	ITIME=ITIME1
 	CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
 	TDAY=T
+
+	tfact_d = tfact
+	xfact_d = xfact
+
 	CALL PLOT(X,TLO,0,0)
 	IF(IHR.EQ.0)THEN
 	    CALL PLOTT7(X,TLO,XFACT,TFACT,1,IHVY)
 	ELSE
 	    CALL PLOTT7(X,TLO,XFACT,TFACT,1,INML)
 	ENDIF
-	CALL TIME1(1,ITIME,2,' ',I3,ITIME3,60.)
+	CALL TIME1(1,ITIME,2,' ',I3,ITIME3,delt)  ! next time stepping from 1 (arg 1) to 2 (arg 2) -- return ITIME3
 	ITIME = ITIME3
-	IF(IABS(LABEL).NE.1.OR.IHR.NE.IHDB*(IHR/IHDB)) GO TO 11
-C      ELSE:
-	WRITE(SYM,80) IHR
-80	FORMAT(I2.2)
-	CALL SCINOT(XTEMP1,T,90.,CSIZE,2,SYM,0,WID,XFACT,TFACT)    
- 11     CONTINUE
+
+c Check whether to make an hour label at the start of the axis
+c ihdb is hour-label frequency
+      IF(IABS(LABEL).EQ.1) THEN
+         IF (IHR.EQ.IHDB*(IHR/IHDB)) THEN 
+            WRITE(SYM,80) IHR
+	    CALL scinot_d(XTEMP1,td,0.,CSIZE,2,SYM,0,wid,xfact_d, tfact_d)
+	 ENDIF
+         IF (is_hours_axis .EQ. 1) THEN
+	    IF (IMIN .EQ. 0) THEN
+	       start_hr = -1  ! marks whether hour is labeled at the start of the axis
+               WRITE(SYM,82) IHR
+	       CALL scinot_d(YTEMP1,td,0.,CSIZE,5,SYM,0,wid,xfact_d, tfact_d)
+	    ELSE ! get the loop on-track to hit a tic mark at the start of hours
+	       rem = delt*INT(imin/delt) - imin
+	       ITIME=ITIME1
+	       CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
+	       CALL TIME1(1,ITIME,2,' ',I3,ITIME3,rem) 
+	       ITIME1 = ITIME3
+	    ENDIF
+
+	 ENDIF
+         IF (is_hours_axis.EQ.1 .AND. IMIN.NE.0) start_hr = IHR  ! need to label hour on 1st Tic
+      ENDIF
+
 
 c ----  count number of large tics. If no large tics will be drawn
 c ----  then will want to draw graticule lines at the small ones.
@@ -211,10 +267,11 @@ c Set itime1, itime3 as above
 
       ITIME=ITIME1
       CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
-      CALL TIME1(1,ITIME,2,' ',I3,ITIME3,60.)
+      CALL TIME1(1,ITIME,2,' ',I3,ITIME3,delt)
       ITIME = ITIME3
 
 C      LOOP:
+       labint = 120
        ltic = 0
   110  CONTINUE
 
@@ -225,6 +282,7 @@ C      LOOP:
 	IF(ITIME(13:14)//ITIME(1:12) .LE.
      .       ITIME2(13:14)//ITIME2(1:12)) THEN
            IF(IHR.EQ.0) ltic = ltic + 1
+	   IF (is_hours_axis.EQ.1 .AND. imin.EQ.0. AND. ihr.NE.0) ltic = ltic+1
            GO TO 110
         ENDIF
      
@@ -246,11 +304,15 @@ C      LOOP:
            ENDIF
         ENDIF
 
+! On short-time interval axes, label interval
+
+	IF (ltic.LT.2 .AND. is_hours_axis.GT.0) labint = 2*delt
+
 ! Restore the state of ITIME, ITIME3
       ITIME=ITIME1
       CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
 
-      CALL TIME1(1,ITIME,2,' ',I3,ITIME3,60.)
+      CALL TIME1(1,ITIME,2,' ',I3,ITIME3,delt)
       ITIME = ITIME3
 c ----
 
@@ -310,12 +372,34 @@ C      LOOP:
 
 	ENDIF
 C         THE LABELS
-	IF(IHDB.EQ.0.OR.IABS(LABEL).NE.1) GO TO 50
-	IF(IHR.NE.IHDB*(IHR/IHDB)) GO TO 50
-	WRITE(SYM,80) IHR
-	CALL SCINOT(XTEMP1,T+TIC,90.,CSIZE,2,SYM,0,WID,XFACT,TFACT)
-50	CONTINUE
-	CALL TIME1(1,ITIME,2,' ',I3,ITIME3,60.)
+
+	  IF (IABS(LABEL).EQ.1) THEN
+             IF (is_hours_axis.EQ.1) THEN
+	        IF (imin .EQ. 0) THEN
+	           WRITE(SYM,82) IHR
+	           CALL scinot_d(XTEMP1,Td+TICd,0.,CSIZE,5,SYM,0,wid,xfact_d, tfact_d)
+		ELSE
+                   IF (MOD(imin,labint) .EQ. 0) THEN
+		      IF (start_hr .GT. 0) THEN
+	                 WRITE(SYM,84) start_hr, imin
+		         start_hr = -1
+		      ELSE
+	                 WRITE(SYM,84) ihr, imin
+		      ENDIF
+	              CALL scinot_d(XTEMP1,Td+TICd,0.,CSIZE,5,SYM,0,wid,xfact_d, tfact_d)
+		   ENDIF
+		ENDIF
+             ELSE
+	        IF(IHR.EQ.IHDB*(IHR/IHDB)) THEN
+	           WRITE(SYM,80) IHR
+	           CALL scinot_d(XTEMP1,Td+TICd,0.,CSIZE,2,SYM,0,wid,xfact_d, tfact_d)
+	        ENDIF
+             ENDIF
+
+	  ENDIF
+
+          CALL TIME1(1,ITIME,2,' ',I3,ITIME3,delt)
+
 	IF(IDDB.EQ.0.OR.IABS(LABEL).NE.1) GO TO 70
 	CALL TIME3(ITIME3,IYR3,IMON3,IDAY3,IHR3,IMIN3,ISEC3,ICEN3)
 	IF(IDAY.EQ.IDAY3) GO TO 70
@@ -341,27 +425,28 @@ C             ELSE:
 70	CONTINUE
 	ITIME=ITIME3
 	T=T+TIC
+	td = td + ticd
 c	IF(ITIME.LE.ITIME2) GO TO 10
         IF(ITIME(13:14)//ITIME(1:12) .LE.
      .       ITIME2(13:14)//ITIME2(1:12)) GO TO 10
-	IF(IDDB.EQ.0) RETURN
-	IF(IABS(LABEL).EQ.1.AND.IDAY.EQ.IDDB*(IDAY/IDDB)
-     .	.AND.IHR3.GE.4)THEN
-	    CALL TIME2(ITIME,SYM)
-	    READ(SYM,55) DATE, YEAR
-* TMAP mod 8/11/89 *sh*                                 
-! original:  ("mon" --> "date")                           
-!	    TSYM=TDAY+(T-TDAY-SYMWID(1.5*CSIZE,6,MON)/TFACT)*.5
-!	    CALL SYMBEL(XTEMP2,TSYM,90.,1.5*CSIZE,6,MON)
 
-           IF (MONYRLAB) THEN
+	IF(IDDB.EQ.0) RETURN
+
+      IF(IABS(LABEL).EQ.1 .AND. IDAY.EQ.IDDB*(IDAY/IDDB) ) THEN
+         IF (is_hours_axis.EQ.1 .OR. IHR3.GE.4) THEN
+           CALL TIME2(ITIME,SYM)
+	   READ(SYM,55) DATE, YEAR
+	   IF (MONYRLAB) THEN
 	      WRITE (BUFF, 65) DATE, YEAR
               TSYM=TDAY+(T-TDAY-SYMWID(CSIZE,14,BUFF)/TFACT)*.5
-	      CALL SYMBEL(XTEMP2,TSYM,90.,CSIZE,14,BUFF)
-	   ELSE
-	      TSYM=TDAY+(T-TDAY-SYMWID(1.5*CSIZE,6,DATE)/TFACT)*.5
-	      CALL SYMBEL(XTEMP2,TSYM,90.,1.5*CSIZE,6,DATE)
-	   ENDIF
-	ENDIF
-	RETURN
-	END
+              CALL SYMBEL(XTEMP2,TSYM,90.,CSIZE,14,BUFF)
+           ELSE
+              TSYM=TDAY+(T-TDAY-SYMWID(1.5*CSIZE,6,DATE)/TFACT)*.5
+	      CALL SYMBEL(XTEMP2,TSYM,90.,90.,CSIZE,14,BUFF)
+           ENDIF
+
+         ENDIF
+      ENDIF
+
+      RETURN
+      END

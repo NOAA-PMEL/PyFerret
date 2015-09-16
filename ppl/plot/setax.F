@@ -51,6 +51,7 @@
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V694  *acm*  5/15 Ticket 2283. Handling axis scaling for ribbon plots. Do auto-scale 
 *                   using just the first line. The second is the color-by variable
+* V695  *acm*  9/15 Changes for hour:min labeling on time axes
 
 	REAL*8		DIFF, dtd
         real            x,rxax,rxmon,rxchr,thi,xti,xtl

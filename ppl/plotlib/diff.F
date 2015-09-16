@@ -54,6 +54,8 @@ C**
 *  *kob* 1/10/02 - for some reason, also need to explicitely only use first 14
 *                  chars of IT1, IT2.  This only showed up as a problem with Linux
 *                  linked statically, for some odd reason
+* V695  *acm*  9/15 Changes for hour:min labeling on time axes
+
 	CHARACTER*14 IT1_14, IT2_14
 	INTEGER*4 JDAY
 	REAL*8 DATE2, DATE1, WHOI2BC, RDATE

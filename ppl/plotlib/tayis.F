@@ -1,5 +1,6 @@
 	SUBROUTINE TAYIS(IT,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
-     *	YF,XHI,XF,TCSIZE,xacross,hgrat,hcolor,hline,color0)
+     *	YF,XHI,XF,TCSIZE,xacross,hgrat,hcolor,hline,color0,is_hours_axis)
+
 C** 
 C**    @(#)tayis.f	1.1    3/10/88
 C**
@@ -57,6 +58,7 @@ C The dash lines interfere with each other if drawn from both
 C sides. HLINE and VLINE control this.
 C V695 *acm*  5/15 Restore color after a graticule using defined color 0
 
+	INTEGER is_hours_axis
         REAL xacross           ! to draw tic line across plot
         REAL hgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         INTEGER hcolor(*)      ! pen number 
@@ -67,7 +69,7 @@ C V695 *acm*  5/15 Restore color after a graticule using defined color 0
 
 	GOTO (10,20,20,30)IT+1
 10	CALL TAYIS0(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
-     .              xacross,hgrat,hcolor,hline,color0)
+     .              xacross,hgrat,hcolor,hline,color0,is_hours_axis)
 	RETURN
 20	CALL TAYIS1(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
      .              xacross,hgrat,hcolor,hline,color0)

@@ -97,6 +97,8 @@
 * V695  *acm*  5/15 Ticket 2279: PyFerret don't redraw lines
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
 
+* V695  *acm*  9/15 Changes for hour:min labeling on time axes
+
 *****************************************************
 
 * local variable declarations for PLTIT (for TMAP)

@@ -106,7 +106,7 @@
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS,
      .        IMPLIED_BY_ARGS, NORMAL, IMPLIED_BY_ARGS)
 
-      CALL ef_set_num_work_arrays(id, 5)
+      CALL ef_set_num_work_arrays(id, 8)
 
 * Output grid is determined by arguments 4, 5, 6, the result's x, y, t axes. 
 
@@ -144,19 +144,19 @@
       arg = 6
       CALL ef_set_arg_name(id, arg, 'XAXPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .                   'X axis coordinates of a regular output grid')
+     . 'X axis coordinates of the output grid, with same units as xpts')
       CALL ef_set_axis_influence(id, arg, YES, NO, NO, NO)
 
       arg = 7
       CALL ef_set_arg_name(id, arg, 'YAXPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .                   'Y axis coordinates of a regular output grid')
+     . 'Y axis coordinates of the output grid, with same units as ypts')
       CALL ef_set_axis_influence(id, arg, NO, YES, NO, NO)
 
       arg = 8
       CALL ef_set_arg_name(id, arg, 'TAXPTS')
       WRITE (buff, 20)
-   20 FORMAT ('T axis coordinates, of a regular output grid, with same ',
+   20 FORMAT ('T axis coordinates, of the output grid, with same ',
      .       'units and origin as tpts')
       CALL ef_set_arg_desc(id, arg, buff)
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
@@ -203,29 +203,31 @@
       nyout = 1 + arg_hi_ss(Y_AXIS,ARG7) - arg_lo_ss(Y_AXIS,ARG7)
       ntout = 1 + arg_hi_ss(T_AXIS,ARG8) - arg_lo_ss(T_AXIS,ARG8)
 
-      nx2 = nxout* 2
-      ny2 = nyout* 2
-      nt2 = ntout* 2
+* xaxlo  output x axis
+      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, nxout, 1, 1, 1)
+* xaxhi  output x axis
+      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, nxout, 1, 1, 1)
 
-* xax  output x axis
-      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, nx2, 1, 1, 1)
+* yaxlo  output y axis
+      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, nyout, 1, 1, 1)
+* yaxhi  output y axis
+      CALL ef_set_work_array_dims (id, 4, 1, 1, 1, 1, nyout, 1, 1, 1)
 
-* yax  output y axis
-      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, ny2, 1, 1, 1)
-
-* Tax  output t axis
-      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, nt2, 1, 1, 1)
+* taxlo  output t axis
+      CALL ef_set_work_array_dims (id, 5, 1, 1, 1, 1, ntout, 1, 1, 1)
+* taxhi  output t axis
+      CALL ef_set_work_array_dims (id, 6, 1, 1, 1, 1, ntout, 1, 1, 1)
 
 * obs_cruise  work array - sum and counts of observations per cruise
 * x,y,t direction: output grid
 * z direction: 1..2
-      CALL ef_set_work_array_dims (id, 4, 1, 1, 1, 1, 
+      CALL ef_set_work_array_dims (id, 7, 1, 1, 1, 1, 
      .                             nxout, nyout, 2, ntout)
 
 * obs  work array - work array - sum and counts of observations
 * x,y,t direction: output grid
 * z direction: 1..2
-      CALL ef_set_work_array_dims (id, 5, 1, 1, 1, 1, 
+      CALL ef_set_work_array_dims (id, 8, 1, 1, 1, 1, 
      .                             nxout, nyout, 2, ntout)
 
       RETURN
@@ -238,7 +240,7 @@
 
       SUBROUTINE tracks2grid_mask_ave_xyt_compute(id, arg_1, arg_2, arg_3, 
      .     arg_4, arg_5, arg_6, arg_7, arg_8, arg_9, result, 
-     .      xax, yax, tax, obs_cruise, obs)
+     .     xaxlo, xaxhi, yaxlo, yaxhi, taxlo, taxhi, obs_cruise, obs)
 
 *  arg_1  var
 *  arg_2  xpts  \
@@ -295,7 +297,6 @@
       INTEGER i, j, k, l, m, n
       INTEGER i1, i2, j1, k1, l1, k2
       INTEGER i6,j7,L8,i6n,j7n,L8n
-      INTEGER imask, jmask, k9, l9
 
       INTEGER nxpts, npts
       INTEGER nx, ny, nt
@@ -307,25 +308,27 @@
 
 *  Dimension the work arrays
 
-      REAL*8 xax(wrk1lox:wrk1hix/2, wrk1loy:wrk1hiy,
+      REAL*8 xaxlo(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-      REAL*8 yax(wrk2lox:wrk2hix/2, wrk2loy:wrk2hiy,
+      REAL*8 xaxhi(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
      .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
-      REAL*8 tax(wrk3lox:wrk3hix/2, wrk3loy:wrk3hiy,
+      REAL*8 yaxlo(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
      .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
-      REAL obs_cruise(wrk4lox:wrk4hix, wrk4loy:wrk4hiy,
+      REAL*8 yaxhi(wrk4lox:wrk4hix, wrk4loy:wrk4hiy, 
      .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
-      REAL obs(wrk5lox:wrk5hix, wrk5loy:wrk5hiy,
+      REAL*8 taxlo(wrk5lox:wrk5hix, wrk5loy:wrk5hiy,
      .               wrk5loz:wrk5hiz, wrk5lot:wrk5hit)
+      REAL*8 taxhi(wrk6lox:wrk6hix, wrk6loy:wrk6hiy,
+     .               wrk6loz:wrk6hiz, wrk6lot:wrk6hit)
+
+      REAL obs_cruise(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
+     .               wrk7loz:wrk7hiz, wrk7lot:wrk7hit)
+      REAL obs(wrk8lox:wrk8hix, wrk8loy:wrk8hiy,
+     .               wrk8loz:wrk8hiz, wrk8lot:wrk8hit)
 
       CHARACTER*250 errtxt
 
-C  variables for checking axis characteristics (modulo axes)
-
-      CHARACTER ax_name(4)*16, ax_units(4)*16
-      LOGICAL backward(4), modulox(4), moduloy(4), modulot(4), regular(4)
-
-      REAL dx, dy, xxbeg, xxend, yybeg, yyend
+      REAL*8 dx, dy, dt, xxbeg, xxend, yybeg, yyend
       REAL*8 xax1,xaxf, yax1,yaxf, tax1,taxf
       INTEGER indx(4,2)
 
@@ -335,15 +338,6 @@ C  variables for checking axis characteristics (modulo axes)
 
       obs_only = 0	! 0 = var 1 is a variable to average.
                         ! 1 = Compute a count of cruises with an obs in the grid cells
-
-*  Check to see if output axes are modulo
-
-      CALL ef_get_axis_info (id, 6, ax_name, ax_units, backward, 
-     .                       modulox, regular)
-      CALL ef_get_axis_info (id, 7, ax_name, ax_units, backward, 
-     .                       moduloy, regular)
-      CALL ef_get_axis_info (id, 8, ax_name, ax_units, backward, 
-     .                       modulot, regular)
 
 *  Find number of points in scattered input points.  1-D arrays defining the 
 *  scattered data points may lie on the X, Y, Z, or T axis of the input arguments.
@@ -435,54 +429,23 @@ C  variables for checking axis characteristics (modulo axes)
 
 C  Get coordinates of output axes.
 
+      CALL EF_GET_BOX_LIMITS(id, ARG6, X_AXIS,
+     .   arg_lo_ss(X_AXIS, ARG6), arg_hi_ss(X_AXIS, ARG6), xaxlo, xaxhi)
+
+      CALL EF_GET_BOX_LIMITS(id, ARG7, Y_AXIS,
+     .   arg_lo_ss(Y_AXIS, ARG7), arg_hi_ss(Y_AXIS, ARG7), yaxlo, yaxhi)
+
+      CALL EF_GET_BOX_LIMITS(id, ARG8, T_AXIS,
+     .   arg_lo_ss(T_AXIS, ARG8), arg_hi_ss(T_AXIS, ARG8), taxlo, taxhi)
+
+*  Get first coordinates of output axes.
+
       call ef_get_coordinates(id, ARG6, X_AXIS, 
-     .   arg_lo_ss(X_AXIS, ARG6), arg_hi_ss(X_AXIS, ARG6), xax)
-
-      call ef_get_coordinates(id, ARG7, Y_AXIS, 
-     .   arg_lo_ss(Y_AXIS, ARG7), arg_hi_ss(Y_AXIS, ARG7), yax)
-
-      call ef_get_coordinates(id, ARG8, T_AXIS, 
-     .   arg_lo_ss(T_AXIS, ARG8), arg_hi_ss(T_AXIS, ARG8), tax)
-
-*  Set start, end, and delta for output axes. 
-
-      x1 = xax(1,1,1,1)
-      y1 = yax(1,1,1,1)
-      t1 = tax(1,1,1,1)
-
-      xf = xax(nx,1,1,1)
-      yf = yax(ny,1,1,1)
-      tf = tax(nt,1,1,1)
-
-*  Gridbox sizes in data units
-      dx = xf - x1
-      IF (nx .GT. 1) dx = (xf-x1)/ REAL(nx-1)
-      dy = yf - y1
-      IF (ny .GT. 1) dy = (yf-y1)/ REAL(ny-1) 
-      dt = tf - t1
-      IF (nt .GT. 1) dt = (tf-t1)/ REAL(nt-1) 
-
-      IF (nx .EQ. 1) THEN 
-         CALL ef_get_box_limits(id, ARG6, X_AXIS, 
-     .   arg_lo_ss(X_AXIS, ARG6), arg_hi_ss(X_AXIS, ARG6), xax1,xaxf)
-         dx = xaxf - xax1
-      ENDIF
-      IF (ny .EQ. 1) THEN 
-         CALL ef_get_box_limits(id, ARG7, Y_AXIS, 
-     .   arg_lo_ss(Y_AXIS, ARG7), arg_hi_ss(Y_AXIS, ARG7), yax1,yaxf)
-         dy = yaxf - yax1
-      ENDIF
-         IF (nt .EQ. 1) THEN 
-         CALL ef_get_box_limits(id, ARG8, T_AXIS, 
-     .   arg_lo_ss(T_AXIS, ARG8), arg_hi_ss(T_AXIS, ARG8), tax1,taxf)
-         tx = taxf - tax1
-      ENDIF
-
-
-      CALL ef_get_box_limits(id, ARG6, X_AXIS, 
-     .   arg_lo_ss(X_AXIS, ARG6), arg_lo_ss(X_AXIS, ARG6), xax1,xax1)
-      CALL ef_get_box_limits(id, ARG6, X_AXIS, 
-     .   arg_hi_ss(X_AXIS, ARG6), arg_hi_ss(X_AXIS, ARG6), xaxf,xaxf)
+     .   arg_lo_ss(X_AXIS, ARG6), arg_lo_ss(X_AXIS, ARG6), xax1)
+      call ef_get_coordinates(id, ARG7, X_AXIS, 
+     .   arg_lo_ss(Y_AXIS, ARG7), arg_lo_ss(Y_AXIS, ARG7), yax1)
+      x1 = xax1
+      y1 = yax1
 
 *  Compute result
 
@@ -529,9 +492,7 @@ C  Get coordinates of output axes.
       indx(2,2) = 1
       indx(4,1) = nt
       indx(4,2) = 1
-
-      k9 = arg_lo_ss(Z_AXIS,ARG9)
-      l9 = arg_lo_ss(T_AXIS,ARG9)
+      
       DO 300 n = 1, nscat
 
          CALL pickoutxytcv (obs_only, arg_1, arg_2, arg_3, arg_4, arg_5,
@@ -539,15 +500,9 @@ C  Get coordinates of output axes.
          IF (vv .EQ. bad_flag(ARG1) .OR. xx .EQ. bad_flag(ARG2) .OR. 
      .          yy .EQ. bad_flag(ARG3) .OR. tt .EQ. bad_flag(ARG4) ) GOTO 300
      
-         imask = INT(1+(xx-x1)/dx)
-         if (xx .LT. xax(imask,1,1,1) - dx/2) imask = imask - 1
-         if (xx .GT. xax(imask,1,1,1) + dx/2) imask = imask + 1
-         jmask = INT(1+(yy-y1)/dy)
-         if (yy .LT. yax(jmask,1,1,1) - dy/2) jmask = jmask - 1
-         if (yy .GT. yax(jmask,1,1,1) + dy/2) jmask = jmask + 1
-
-         IF (arg_9(imask,jmask,k9,l9) .NE. 1.) GOTO 300
-
+	 if (xx.LT.xaxlo(1,1,1,1) .OR. xx.GT.xaxhi(nx,1,1,1)) GOTO 300
+	 if (yy.LT.yaxlo(1,1,1,1) .OR. yy.GT.yaxhi(ny,1,1,1)) GOTO 300
+	 if (tt.LT.taxlo(1,1,1,1) .OR. tt.GT.taxhi(nt,1,1,1)) GOTO 300
 
          IF (ncc .NE. icruise) THEN
 	    
@@ -584,31 +539,8 @@ C  Get coordinates of output axes.
 	    
 	 ENDIF
 
-*  If an output axis is modulo, apply modulo adjustment to that coordinate
-*  of the scattered point.
-
-c         IF  (modulox(1) .AND. xx.NE.bad_flag(ARG1))
-c     .         CALL modscatminmax (xax1, xaxf, 1, xx)
-
          CALL nobsxytv (obs_only, xx, yy, tt, vv, nx, ny, nt, 
-     .           x1, y1, t1, dx, dy, dt, xf, yf, tf, indx, obs_cruise)
-
-*  Put points within dx or dy  or dt of the end just beyond the
-*  other end, and use in the gridding computation.
-
-c         IF (modulox(1)) THEN
-c            IF ((xx-x1 .GE. 0.) .AND. (xx-x1 .LT. dx) ) THEN
-c               xxend = xf + (xx-x1)
-c               CALL nobsxytv (obs_only, xxend, yy, tt, vv, nx, ny, nt, 
-c     .              x1, y1, t1, dx, dy, dt, xf, yf, tf, indx, obs_cruise)
-c            ENDIF
-                     
-c            IF ((xf-xx .GE. 0.)  .AND. (xf-xx .LT. dx) ) THEN
-c               xxbeg = x1 - (xf-xx)
-c               CALL nobsxytv (obs_only, xxbeg, yy, tt, vv, nx, ny, nt, 
-c     .              x1, y1, t1, dx, dy, dt, xf, yf, tf, indx, obs_cruise)
-c            ENDIF
-c         ENDIF
+     .           xaxlo,xaxhi, yaxlo,yaxhi, taxlo,taxhi, indx, obs_cruise)
 
  300     CONTINUE
 

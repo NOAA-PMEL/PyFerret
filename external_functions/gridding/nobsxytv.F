@@ -8,57 +8,62 @@ c............yy/y1/yf all in same units
 
 c  i	xx,yy,tt=x/y/t location of data pt (data units)
 c  i	nx,ny,nt=size of grids
-c  i	x1,y1,L1=west/south/earliest edge of grid (center of 1st box in data units)
+c  i	xaxlo,xaxyi, etc bounds of destination grid cells
 c  o 	obs(nx,ny,nt) number of obs in each (x,y,t) gridbox
 c--------------------------------------------------------------------------
 
 	SUBROUTINE nobsxytv (obs_only, xx, yy, tt, vv, nx, ny, nt, 
-     .             x1, y1, t1, dx, dy, dt, xf, yf, tf, indx, obs)
+     .             xaxlo,xaxhi, yaxlo,yaxhi, taxlo,taxhi, indx, obs)
 
 
 * Argument declarations
 
         INTEGER nx, ny, nt, obs_only, indx(4,2)
-	REAL xx, yy, tt, vv, x1, y1, t1, dx, dy, dt, xf, 
-     .       yf, tf, obs(nx,ny,2,nt)
+	REAL xx, yy, tt, vv, xaxlo(*), xaxhi(*), 
+     .       yaxlo(*), yaxhi(*), taxlo(*), taxhi(*), obs(nx,ny,2,nt)
 
 * Local variable declarations
 
-        REAL xxg, yyg, ttg
-        INTEGER ig, jg, Lg ! !!!!!!!!!!!!!!!!!!!!!!!! adding t dimension throughtout
+        INTEGER ig, jg, Lg
 
-	xxg = (xx-x1)/ dx + 1.		  ! grid values of data location
-	yyg = (yy-y1)/ dy + 1.
-	ttg = (tt-t1)/ dt + 1.
+	lg = 1
+	DO l = 1, nt
+	   IF (tt.GE.taxlo(lg) .AND.
+     .         tt.LT.taxhi(lg)) THEN
+              jg = 1
+	      DO j = 1, ny
+		 IF (yy.GE.yaxlo(jg) .AND.
+     .	             yy.LT.yaxhi(jg)) THEN
+                    ig = 1
+		    DO i = 1, nx
+		       IF ( xx.GE.xaxlo(ig) .AND.
+     .                      xx.LT.xaxhi(ig)) THEN
 
-c.................sum the value and count in each (x,y,t) gridbox
-	ig = NINT(xxg)
-	jg = NINT(yyg)
-	Lg = NINT(ttg)
-	IF (ig.LT.1 .OR. ig.GT.nx) RETURN
-	IF (ig.LT.1 .OR. ig.GT.nx) RETURN
-	IF (lg.LT.1 .OR. lg.GT.nt) RETURN
-
-	IF (obs_only .EQ. 0) THEN
-           IF (ig.GE.1 .AND. ig.LE.nx .AND. jg.GE.1 .AND. jg.LE.ny .AND.
-     .       Lg.GE.1 .AND. Lg.LE.nt   ) THEN
-     		obs(ig,jg,1,Lg) = obs(ig,jg,1,Lg) + vv
-     		obs(ig,jg,2,Lg) = obs(ig,jg,2,Lg) + 1.
-	   ENDIF
-	ELSE
-	   IF (ig.GE.1 .AND. ig.LE.nx .AND. jg.GE.1 .AND. jg.LE.ny .AND.
-     .      Lg.GE.1 .AND. Lg.LE.nt   ) THEN
-     		obs(ig,jg,1,Lg) = obs(ig,jg,1,Lg) + 1.
-	   ENDIF
-	ENDIF
+		          IF (obs_only .EQ. 0) THEN
+		             obs(ig,jg,1,Lg) = obs(ig,jg,1,Lg) + vv
+		             obs(ig,jg,2,Lg) = obs(ig,jg,2,Lg) + 1.
+		          ELSE
+		             obs(ig,jg,1,Lg) = obs(ig,jg,1,Lg) + 1.
+		             ENDIF
 
 * Store the min and max index used in this cruise
-	indx(1,1) = MIN(indx(1,1), ig)
-	indx(1,2) = MAX(indx(1,2), ig)
-	indx(2,1) = MIN(indx(2,1), jg)
-	indx(2,2) = MAX(indx(2,2), jg)
-	indx(4,1) = MIN(indx(4,1), Lg)
-	indx(4,2) = MAX(indx(4,2), Lg)
+		             indx(1,1) = MIN(indx(1,1), ig)
+		             indx(1,2) = MAX(indx(1,2), ig)
+		             indx(2,1) = MIN(indx(2,1), jg)
+		             indx(2,2) = MAX(indx(2,2), jg)
+		             indx(4,1) = MIN(indx(4,1), Lg)
+		             indx(4,2) = MAX(indx(4,2), Lg)
+		       ENDIF !xx in grid box
+		       ig = ig + 1
+		    ENDDO  ! nx
+
+		 ENDIF !yy in grid box
+		 jg = jg + 1
+	      ENDDO  ! ny
+
+	   ENDIF !tt in grid box
+	   lg = lg + 1
+	ENDDO  ! nt
 
 	RETURN
 	END

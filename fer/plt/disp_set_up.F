@@ -240,7 +240,7 @@ C plus those starting w/ xbox_bounds:
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
      .                  first, last, labelht
 	REAL*8		xaxlo, xaxhi, yaxlo, yaxhi, delta
-	REAL*4		rw1lo, rw2lo
+	REAL*4		rw1lo, rw2lo, rbad
 
         DATA axdir / 'X', 'Y', 'Z', 'T', 'E', 'F' /
 
@@ -729,14 +729,13 @@ C ACM added 8/2001 save cal id if vertical time axis
 * in common.  If the user set a std to use, store that.
 
        nsiz = size1* size2
+       rbad = bad_val4
        CALL compute_mnstd (memory(1, xblk1), bad_x, need_std, 
-     .    nsiz, status)
+     .    nsiz, rbad, status)
        IF (status .NE. ferr_ok) THEN
 * ... set up for automatic levels
 	   CALL PPLCMD ( from, line, 0, 'LEV,()', 1, 1 )
           CALL USE_LINEAR_LEVELS
-	  CALL WARN(
-     . 'Data too large to compute Std Dev. Using linear levels instead.')
        ENDIF
 
 * If histogram-based levels are requested, compute the 

@@ -132,6 +132,7 @@ C              do not make small tics by default.
 * V694  *acm*  5/15 Ticket 2283. Change to call for subroutine setax. 
 * v696 *acm*	gap_var to define seperate line segments on PLOT/VS plots
 *                  (LAS ticket 1597 and others)
+* V695  *acm*  9/15 Changes for hour:min labeling on time axes
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -236,11 +237,11 @@ CCCCCCC data	        tmapdebug/.false./
         integer         j,k,ic,ierr,lun1,lun11                 
         integer         idum1,iy1,ix1,ix3                   
         integer         lnblk,ws_state
-                                                               
+
+	REAL*8		DIFF
         real            xm,ym,xt,xdum1,xdum2,xdum3,xdum4       
         real            xdum5,zmn,zmx,p1,x1,y1,y2,x3,x4     
         real            symwid,xmx,xmn,ymx,ymn,dd 
-        real*8          diff
                                                                
         external        lnblk,diff,symwid                      
                                                                

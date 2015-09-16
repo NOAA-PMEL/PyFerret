@@ -1,4 +1,4 @@
-	SUBROUTINE compute_mnstd(z, badz, need_std, nsize, status)
+	SUBROUTINE compute_mnstd(z, badz, need_std, nsize, rbad, status)
 
 *
 *
@@ -44,6 +44,10 @@ C**
 *               so variance result is the same as other Ferret variance calculations
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V69+ *acm* 7/14 ticket 2186: more-robust mean and std deviation if big outliers
+* v695 *acm* 9/15 ticket 2311: variance-based levels for constant variable. Also
+*                 improve accuracy of computation using real*4 bad-value sent in from
+*                 the Ferret side.
+
         IMPLICIT NONE
 	include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
@@ -70,7 +74,9 @@ C**
 	REAL sum, dev, sumsq_dev, variance, tol_lo, tol_hi, zmean2
 #endif
 
-	REAL*8 x, xmean, sum2, sumc, variance_c, xdelta
+	LOGICAL TM_FPEQ_SNGL, zmax_test, zmin_test, ok
+	REAL  zero, rbad
+	REAL*8 x, xmean, sum2, sumc, variance_c, xdelta, z_max_tol, z_min_tol
 	INTEGER i, n, n2
 
 c  Already have zmin, zmax
@@ -81,6 +87,31 @@ c  Already have zmin, zmax
 	   GOTO 5000
 	ENDIF
 
+c if min and max are equal, will use linear levels. No need to issue the warning.
+
+	if (zmin .EQ. zmax) THEN
+	   zmean = zmin
+	   zstd = 0
+	   status = 0
+	   GOTO 5000
+	ENDIF
+
+
+c Has the user set min or max levels to be used?
+c If so take those into account
+
+	zmax_test = .FALSE.
+	zmin_test = .FALSE.
+
+	IF (lev_max .NE. rbad) THEN
+	   zmax_test = .TRUE.
+	   z_max_tol = DBLE(lev_max)
+	ENDIF
+	IF (lev_min .NE. rbad) THEN
+	   zmin_test = .TRUE.
+	   z_min_tol = DBLE(lev_min)
+	ENDIF
+
 c Compute data mean.
 
         sum = 0.0
@@ -88,8 +119,13 @@ c Compute data mean.
         DO 100 i = 1, nsize
 	   x = z(i)
 	   IF ( x .NE. badz) THEN
-  	      sum = sum + Z(i)
-              n = n + 1
+	      ok = .TRUE.
+	      IF (zmax_test .AND. x.GE.z_max_tol) ok = .FALSE.
+	      IF (zmin_test .AND. x.LE.z_min_tol) ok = .FALSE.
+	      IF (ok) THEN
+  	         sum = sum + z(i)
+                 n = n + 1
+	      ENDIF
 	   ENDIF
  100    CONTINUE
         IF (n .EQ. 0) GOTO 5000
@@ -111,13 +147,18 @@ c Compute data mean.
 	   sum2 = 0.D0
  
 	   DO i = 1, nsize
-	      x = Z(i)
+	   x = z(i)
 	      IF ( x .NE. badz) THEN
-                 n = n + 1
-		 x = x - zmean
-                 xdelta = x - xmean
-                 xmean = xmean + xdelta/FLOAT(n)
-                 sum2 = sum2 + xdelta*(x - xmean)  ! This expression uses the new value of mean
+	         ok = .TRUE.
+	         IF (zmax_test .AND. x.GE.z_max_tol) ok = .FALSE.
+	         IF (zmin_test .AND. x.LE.z_min_tol) ok = .FALSE.
+	         IF (ok) THEN
+                    n = n + 1
+		    x = x - zmean
+                    xdelta = x - xmean
+                    xmean = xmean + xdelta/FLOAT(n)
+                    sum2 = sum2 + xdelta*(x - xmean)  ! This expression uses the new value of mean
+ 	         ENDIF
  	      ENDIF
 	   ENDDO
            variance_c = sum2/FLOAT(n - 1)
@@ -134,9 +175,14 @@ c Recompute data mean.
 	   n2 = 0
 	   DO 200 i = 1, nsize
               x = z(i)
-              IF ( x.NE.badz .AND. x.GT.tol_lo .AND. x.LT.tol_hi) THEN
-                 sum = sum + Z(i)
-                 n2 = n2 + 1
+	      IF ( x .NE. badz) THEN
+	         ok = .TRUE.
+	         IF (zmax_test .AND. x.GE.z_max_tol) ok = .FALSE.
+	         IF (zmin_test .AND. x.LE.z_min_tol) ok = .FALSE.
+	         IF (ok) THEN
+                    sum = sum + z(i)
+                    n2 = n2 + 1
+                 ENDIF
               ENDIF
   200      CONTINUE
 
@@ -153,14 +199,19 @@ c Recompute data mean.
 	   sum2 = 0.D0
  
 	   DO i = 1, nsize
-	      x = Z(i)
-	      IF ( x.NE.badz .AND. x.GT.tol_lo .AND. x.LT.tol_hi) THEN
-                 n2 = n2 + 1
-		 x = x - zmean2
-                 xdelta = x - xmean
-                 xmean = xmean + xdelta/FLOAT(n2)
-                 sum2 = sum2 + xdelta*(x - xmean)  ! This expression uses the new value of mean
- 	      ENDIF
+	      x = z(i)
+	      IF ( x .NE. badz) THEN
+	         ok = .TRUE.
+	         IF (zmax_test .AND. x.GE.z_max_tol) ok = .FALSE.
+	         IF (zmin_test .AND. x.LE.z_min_tol) ok = .FALSE.
+	         IF (ok) THEN
+                    n2 = n2 + 1
+		    x = x - zmean2
+                    xdelta = x - xmean
+                    xmean = xmean + xdelta/FLOAT(n2)
+                    sum2 = sum2 + xdelta*(x - xmean)  ! This expression uses the new value of mean
+ 	         ENDIF
+	      ENDIF
 	   ENDDO
 
 	   IF (FLOAT(n2)/FLOAT(n) .GT. 0.9) THEN
@@ -177,10 +228,15 @@ c Once more.
            n2 = 0
            DO 300 i = 1, nsize
               x = z(i)
-              IF ( x.NE.badz .AND. x.GT.tol_lo .AND. x.LT.tol_hi) THEN
-                 sum = sum + Z(i)
-                 n2 = n2 + 1
-              ENDIF
+	      IF ( x .NE. badz) THEN
+	         ok = .TRUE.
+	         IF (zmax_test .AND. x.GE.z_max_tol) ok = .FALSE.
+	         IF (zmin_test .AND. x.LE.z_min_tol) ok = .FALSE.
+	         IF (ok) THEN
+                    sum = sum + z(i)
+                    n2 = n2 + 1
+                 ENDIF
+	      ENDIF
   300      CONTINUE
            IF (n2 .EQ. 0) GOTO 5000
 #ifdef double_p
@@ -193,14 +249,19 @@ c Once more.
 	   sum2 = 0.D0
  
 	   DO i = 1, nsize
-	      x = Z(i)
-	      IF ( x.NE.badz .AND. x.GT.tol_lo .AND. x.LT.tol_hi) THEN
-                 n2 = n2 + 1
-		 x = x - zmean2
-                 xdelta = x - xmean
-                 xmean = xmean + xdelta/FLOAT(n2)
-                 sum2 = sum2 + xdelta*(x - xmean)  ! This expression uses the new value of mean
- 	      ENDIF
+	      x = z(i)
+	      IF ( x .NE. badz) THEN
+	         ok = .TRUE.
+	         IF (zmax_test .AND. x.GE.z_max_tol) ok = .FALSE.
+	         IF (zmin_test .AND. x.LE.z_min_tol) ok = .FALSE.
+	         IF (ok) THEN
+		    n2 = n2 + 1
+		    x = x - zmean2
+                    xdelta = x - xmean
+                    xmean = xmean + xdelta/FLOAT(n2)
+                    sum2 = sum2 + xdelta*(x - xmean)  ! This expression uses the new value of mean
+ 	         ENDIF
+	      ENDIF
 	   ENDDO
 
 	   IF (FLOAT(n2)/FLOAT(n) .GT. 0.9) THEN
@@ -216,8 +277,17 @@ c Once more.
 * If user is resetting the mean, do that here
 	IF (centered) zmean = 0.
 
+* If the std came out as zero, use linear color levels
+	zero = 0.
+	IF (need_std .AND. TM_FPEQ_SNGL(zstd, zero)) GOTO 5010
+
  5000	RETURN
 	
  5010   status = 0
+ 
+	  CALL WARN(
+     . 'Could not compute Std Dev. Data too large or or not within 3 std of computed mean.')
+	  CALL WARN('Using linear levels instead.')
+
 	RETURN
 	END

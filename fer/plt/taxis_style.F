@@ -56,6 +56,7 @@
 *                     directly instead of buff30 in call to GETSYM
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V695+ *sh*  3/15 Added argument "imposed_lab" to disambiguate F and T axes
+* V695  *acm*  9/15 Changes for hour:min labeling on time axes
 
 	include 'ferret.parm'
 	include 'plot_setup.parm'
@@ -180,6 +181,7 @@
 	   IF ( hrsper8 .LE. tax_hours( itax ) ) GOTO 510
  500	CONTINUE	         
 	itax = pmax_tax
+
 
 * TXTYPE and TXLINT commands (time axis style)
  510	tstyle_long = tax_style( itax )

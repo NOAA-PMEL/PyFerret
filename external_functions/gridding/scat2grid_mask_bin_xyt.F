@@ -438,11 +438,14 @@ C  Get first coordinates of output axes.
 
             imask = INT(1+(xx-x1)/dx)
             if (xx .LT. xaxlo(imask,1,1,1)) imask = imask - 1
-            if (xx .GT. xaxhi(imask,1,1,1)) imask = imask + 1
+            if (xx .GE. xaxhi(imask,1,1,1)) imask = imask + 1
             jmask = INT(1+(yy-y1)/dy)
             if (yy .LT. yaxlo(jmask,1,1,1)) jmask = jmask - 1
-            if (yy .GT. yaxhi(jmask,1,1,1)) jmask = jmask + 1
+            if (yy .GE. yaxhi(jmask,1,1,1)) jmask = jmask + 1
 
+
+            IF (imask.LT.mem8lox .OR. imask.GT.mem8hix) GOTO 300
+            IF (jmask.LT.mem8loy .OR. jmask.GT.mem8hiy) GOTO 300
             IF (arg_8(imask,jmask,k8,l8) .NE. 1.) GOTO 300
 
 *  If output X axis is modulo, apply modulo adjustment to that coordinate

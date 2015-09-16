@@ -60,8 +60,8 @@
 	INTEGER		status
 
 * local declarations
-	REAL		dmin, dmax, dz, fm, znp, zmp, dzmax, del
-	INTEGER		i, m, jj
+	REAL		dmin, dmax, dz, fm, znp, zmp, dzmax, del, zz
+	INTEGER		i, m, jj, il
         LOGICAL		TM_FPEQ_SNGL
 
         EXTERNAL range
@@ -120,6 +120,50 @@ C
 		       znp = -zmp
 		    endif
 	         endif
+
+C INTEGER based levels
+	      else if (intlev.EQ.1) then 
+
+		 znp = FLOOR(zmin)
+		 zmp = CEILING(zmax)
+C
+C       Set levels centered about zero if centered is .true.
+C
+	         if (centered) then
+		    if (abs(znp) .gt. abs(zmp)) then
+		       zmp = -znp
+		    else
+		       znp = -zmp
+		    endif
+	         endif
+
+	         dz = (zmp - znp)/nlev
+
+		 if (dz.lt.1) then
+		     dz = 1
+		     i = 1
+		     do il = znp,zmp+1
+		        zlev(i) = FLOAT(il)
+			i = i+1
+		     enddo
+		     nlev2 = zmp-znp+2
+
+		  else
+		     dz = INT(dz)
+		     zz = znp
+		     i = 1
+		     do while (zz.le. zmp)
+		        zlev(i) = zz
+			zz = zz + dz
+			i = i+1
+		     enddo
+		     zlev(i) = zz
+		     nlev2 = i
+		  endif
+
+c       Set THE MINIMUM AND MAXIMUM VALUE OF THE RANGE
+		  znp = zlev(1)
+		  zmp = zlev(nlev2)
 
               else if (openlev) then
 	         CALL set_open_levels

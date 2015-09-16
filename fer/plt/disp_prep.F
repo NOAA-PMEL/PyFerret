@@ -69,6 +69,9 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V685+ 12/13    - *acm*  bounds checking; dont refer to parts of the string outside its bounds.
 * V694   5/15    - *acm*  Ticket 2285: need to initialize iautoc to = 1 so overlay with /LEV=20V works.
+* V695  *acm* 9/15 ticket 2311: variance-based levels on constant variables
+* V695  *acm* 9/15 (not fully implemented) INT option for levels
+
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -91,8 +94,8 @@
 * internal variable declarations:
 	LOGICAL TM_DIGIT, lev_given, len_given,
      .		is_delta, is_std, is_mean, is_min, is_max, is_hist,
-     .          is_centered, is_openlev, is_cv, get_more,
-     .		has_std , has_mean, has_min, has_max
+     .          is_centered, is_openlev, is_int, is_cv, get_more,
+     .		has_std , has_mean, has_min, has_max, has_int
 	INTEGER	TM_LENSTR1,TM_LENSTR, lev_loc, len_loc, str_1, str_len, 
      .          ii, ilen, ier, ist, nc, set_default_levs
 	REAL	val
@@ -153,6 +156,9 @@
         contour_fewer = 1
         need_std = .FALSE.
 
+	
+        intlev = 0
+
 	IF ( lev_given    ) THEN
            contour_fewer = 0
            CALL EQUAL_STRING(  
@@ -193,6 +199,7 @@
 	         is_mean = .FALSE.
 	         is_min = .FALSE.
 	         is_max = .FALSE.
+	         is_int = .FALSE.
 	         is_hist = .FALSE.
 	         is_delta = .FALSE.
 	         is_cv = .FALSE.
@@ -240,6 +247,10 @@
 		    has_max = str_buff(str_len-2:str_len) .EQ. 'MAX'
 		 ENDIF
 
+		 has_int = .FALSE.
+		 IF (str_len .GE. 3) THEN
+		    has_int = str_buff(str_len-2:str_len) .EQ. 'INT'
+		 ENDIF
 
 	         IF ( str_len .GT. 0 ) THEN
 	            set_delta = str_buff(str_len:str_len) .EQ. 'D'
@@ -286,6 +297,13 @@
                        str_len = str_len - 3
                        qual_end(lev_loc) = qual_end(lev_loc) - 3
                     ENDIF 
+
+                    IF (has_int) THEN
+                       is_int = .TRUE.
+		       intlev = 1
+                       str_len = str_len - 3
+                       qual_end(lev_loc) = qual_end(lev_loc) - 3
+		    ENDIF
 
                     IF (str_buff(str_len:str_len) .EQ. 'H') THEN  ! histogram
                        is_hist = .TRUE.
@@ -346,6 +364,9 @@
 		       lev_min = val
 	            ELSEIF ( is_max) THEN
 		       lev_max = val
+	            ELSEIF ( is_int) THEN
+		       val = 0
+		       intlev = 1
 	            ELSEIF ( is_hist) THEN
 		       lev_hist = val
 		       need_histo = .TRUE.
@@ -392,11 +413,18 @@
 	            set_mean = .TRUE.
 	         ENDIF
 
+		 IF (is_int) THEN
+		    openlev = .FALSE.
+		    need_histo = .FALSE.
+		    IF (set_min) lev_min = FLOOR(lev_min)
+		    IF (set_max) lev_max = CEILING(lev_max)
+		 ENDIF
+
 * The processing always gets the data max/min.
 * Flag to indicate whether we need to get mean/std from the data.
 	         need_std = .FALSE.
 
-		 IF (OPENLEV .AND. 
+		 IF (openlev .AND. 
      .               ( LEV_STD.EQ.rbad_val4 .OR. LEV_MEAN.EQ.rbad_val4) )
      .              need_std = .TRUE.
 

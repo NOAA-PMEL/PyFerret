@@ -133,6 +133,7 @@
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V691  *acm*  5/14 Clean up temp memory used for computing histogram levels
 * V695  *acm*  5/15 Ticket 2279: PyFerret don't redraw labels on an overlay
+* V695  *acm* 9/15 send REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -205,12 +206,12 @@
 
 	REAL*8		vmin, vmax, delta, ind_min, ind_max, dep_min,
      .			dep_max
+	REAL*4		rbad
 
 * local parameter declarations:
 	LOGICAL		range_rqd
 	PARAMETER     ( range_rqd = .TRUE. )
 	PARAMETER     ( epsilon = 1.E-35 )
-
 
 * signal that plot set-up has begun
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
@@ -760,9 +761,16 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 * If needed for the levels setting, compute data mean and std, store
 * in common.  If the user set a std to use, store that.
+* send  REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
 
+       rbad = bad_val4
        CALL compute_mnstd (x_dat, mr_bad_data(mr_color), need_std, 
-     .    ncolor, status)
+     .    ncolor, rbad, status)
+       IF (status .NE. ferr_ok) THEN
+* ... set up for automatic levels
+	   CALL PPLCMD ( from, line, 0, 'LEV,()', 1, 1 )
+          CALL USE_LINEAR_LEVELS
+       ENDIF
 
 * If histogram-based levels are requested, compute the 
 * histogram bins.

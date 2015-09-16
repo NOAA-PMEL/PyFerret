@@ -119,6 +119,7 @@ c
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 *      *kms* 5/12 Always use generic REAL instead of specific SNGL 
 *                 (SNGL must have a double-precision or complex argument)
+* V695  *acm*  9/15 Changes for hour:min labeling on time axes
 
 * FERRET 9-21-88: replaced include files to make all declarations explicit
 ! original:
@@ -280,6 +281,15 @@ C 8/2015 compute min and max in double precision, then translate
 		  ENDIF
 
 		ENDIF
+
+		  IF ( .NOT.(xeq .AND. TM_FPEQ_SNGL(xs,cmxeq)) ) THEN
+		     dxmin = MIN(dxmin, xt(i))
+		     dxmax = MAX(dxmax, xt(i))
+		  ENDIF
+		  IF ( .NOT.(yeq .AND. TM_FPEQ_SNGL(ys,cmyeq)) ) THEN
+		     dymin = MIN(dymin, yt(i))
+		     dymax = MAX(dymax, yt(i))
+		  ENDIF
 
 100	    continue
 

@@ -48,6 +48,7 @@ C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* V695  *acm*  9/15 Changes for hour:min labeling on time axes
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'LINES.INC'

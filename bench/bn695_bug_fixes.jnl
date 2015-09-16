@@ -2,3 +2,5 @@
 ! test various fixes that went into version 6.95
 
 GO bn_reset
+
+GO err694_shf_missing

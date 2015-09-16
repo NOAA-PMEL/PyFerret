@@ -298,11 +298,13 @@
 * takes the high subscript below the axis start or the low subscript above the
 * axis end, move the index limit(s) to the axis end. 
 * (similar change in is_strip)
+* Ticket 2314, tweak this logic
 
 	   IF  ( .NOT. ITSA_MODULO_AXIS(com_cx, idim) ) THEN
-	      IF (cx_hi_ss( com_cx, idim ) + hi_off .LT. 1) cx_hi_ss( cx_valid, idim ) = 1
-	      IF (cx_lo_ss( com_cx, idim ) + lo_off .GT. CAXIS_LEN(idim,com_cx)) 
-     .                   cx_lo_ss( cx_valid, idim ) = CAXIS_LEN(idim,com_cx)
+	      cx_lo_ss( cx_valid, idim ) = MAX(1,cx_lo_ss( cx_valid, idim ))
+	      cx_hi_ss( cx_valid, idim ) = MAX(1,cx_hi_ss( cx_valid, idim ))
+	      cx_lo_ss( cx_valid, idim ) = MIN(CAXIS_LEN(idim,com_cx), cx_lo_ss( cx_valid, idim ))
+	      cx_hi_ss( cx_valid, idim ) = MIN(CAXIS_LEN(idim,com_cx), cx_hi_ss( cx_valid, idim ))
 	   ENDIF 
 
 	   IF ( cx_lo_ss(cx_valid,idim) .GT. cx_hi_ss(cx_valid,idim) ) THEN

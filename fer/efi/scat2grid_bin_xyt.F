@@ -522,15 +522,15 @@ C  Get coordinates of output axes.
 
          l1 = 1
          DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-            IF ( tt .GE. taxlo(l1) .AND. tt .LE. taxhi(l1) ) THEN
+            IF ( tt .GE. taxlo(l1) .AND. tt .LT. taxhi(l1) ) THEN
 
          j1 = 1
          DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-            IF ( yy .GE. yaxlo(j1) .AND. yy .LE. yaxhi(j1) ) THEN
+            IF ( yy .GE. yaxlo(j1) .AND. yy .LT. yaxhi(j1) ) THEN
 
          i1 = 1
          DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-            IF ( xx .GE. xaxlo(i1) .AND. xx .LE. xaxhi(i1) ) THEN
+            IF ( xx .GE. xaxlo(i1) .AND. xx .LT. xaxhi(i1) ) THEN
 
                result(i,j,k,l,m,n) = result(i,j,k,l,m,n) + ff
                counts(i1,j1,l1) = counts(i1,j1,l1) + 1.0

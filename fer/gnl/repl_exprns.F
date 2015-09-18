@@ -569,7 +569,6 @@
 	            ENDIF
 	            str_len = TM_LENSTR1(repl)
 	            GOTO 500
-		    
 
 * ... varname.atttnum,RETURN=dtype  or varname.attname, RETURN=dtype
 
@@ -655,9 +654,6 @@
                           IF (result .EQ. 0) result = SNGL(TM_WW_AXLEN(axis))
 #endif
                           repl = TM_FMT( result, use_digits, max_len, str_len)
-
-                       ELSE
-		          GOTO 4000
 		       ENDIF
 	            ENDIF
 	            str_len = TM_LENSTR1(repl)
@@ -680,8 +676,6 @@
 #endif
                           repl = TM_FMT( result, use_digits, max_len, str_len)
 
-                       ELSE
-		          GOTO 4000
                        ENDIF
 	           ENDIF
 	           str_len = TM_LENSTR1(repl)
@@ -695,7 +689,7 @@
 		       repl = '0'
 	               IF (line_direction(axis) .EQ. "UD") repl = '1'
 	            ELSE 
-		       GOTO 4000
+		       repl = '0'
 	            ENDIF
 	            str_len = TM_LENSTR1(repl)
 	            GOTO 500

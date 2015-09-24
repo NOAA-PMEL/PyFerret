@@ -95,8 +95,8 @@ C         IDDB = PRINT LABELS OF DAYS DIVISIBLE BY THIS NUMBER ONLY.
 C                IF(IDDB = 0) PRINT NO MONTH LABELS.
 C                THIS VARIBLE ONLY APPLYS WHEN IABS(LABEL) = 1
 C         TFACT = (LENGTH OF T AXIS IN INCHES)/(LENGTH OF T AXIS IN USER
-C         Y = Y COORDINATE OF TIME AXIS.
-C         YFACT = (LENGTH OF Y AXIS IN INCHES)/(LENGTH OF Y AXIS IN USER
+C         Y = Y COORDINATE OF TIME AXIS. 
+C         YFACT = (LENGTH OF Y AXIS IN INCHES)/(LENGTH OF Y AXIS IN USER 
 C         CSIZE = SIZE TO DRAW HOUR LABELS.
 C                 DAY LABELS WILL BE 1.5 TIMES AS LARGE.
 C
@@ -111,7 +111,8 @@ C
 	REAL*8  DIFF, difft
 	REAL*8  td, ytemp1, tfact_d, yfact_d
 	REAL    delt, rem
-	INTEGER is_hours_axis, start_hr
+	INTEGER is_hours_axis
+	LOGICAL hvytic
 
 * Parameters for drawing tics across plot
 
@@ -180,10 +181,11 @@ C     SET PARAMETERS.
         delt = 60.
 
 	IF (is_hours_axis.EQ.1) THEN
-	   delt = 10.
+	   delt = 10. !  15.
 	   IF (difft .LT. 50) delt = 5.
 	   IF (difft .LT. 30) delt = 2.
 	   IF (difft .LT. 12) delt = 1.
+	   IF (difft .GT.150) delt = 30.
 	   tic = delt/dt
 	   ticd = delt/dt
 	ENDIF
@@ -235,13 +237,12 @@ C     SET PARAMETERS.
 c Check whether to make an hour label at the start of the axis
 c ihdb is hour-label frequency
       IF(IABS(LABEL).EQ.1) THEN
-         IF (IHR.EQ.IHDB*(IHR/IHDB)) THEN 
+         IF (IHR.EQ.IHDB*(IHR/IHDB) .AND. is_hours_axis.NE.1) THEN 
             WRITE(SYM,80) IHR
 	    CALL scinot_d(Td,YTEMP1,0.,CSIZE,2,SYM,0,wid,tfact_d, yfact_d)
 	 ENDIF
          IF (is_hours_axis .EQ. 1) THEN
 	    IF (IMIN .EQ. 0) THEN
-	       start_hr = -1  ! marks whether hour is labeled at the start of the axis
                WRITE(SYM,82) IHR
 	       CALL scinot_d(Td,YTEMP1,0.,CSIZE,5,SYM,0,wid,tfact_d, yfact_d)
 	    ELSE ! get the loop on-track to hit a tic mark at the start of hours
@@ -253,7 +254,6 @@ c ihdb is hour-label frequency
 	    ENDIF
 
 	 ENDIF
-         IF (is_hours_axis.EQ.1 .AND. IMIN.NE.0) start_hr = IHR  ! need to label hour on 1st Tic
       ENDIF
 
 c ----  count number of large tics. If no large tics will be drawn
@@ -302,7 +302,12 @@ C      LOOP:
         ENDIF
 	
 ! On short-time interval axes, label interval
-	IF (ltic.LT.2 .AND. is_hours_axis.GT.0) labint = 2*delt
+	
+      IF (ltic.LT.2 .AND. is_hours_axis.GT.0) labint = 2*delt
+      IF (is_hours_axis.GT.0) THEN
+         labint = 2*delt
+	 IF (ihdb.GT.0) labint = ihdb*delt
+      ENDIF
 
 ! Restore the state of ITIME, ITIME3
       ITIME=ITIME1
@@ -334,7 +339,10 @@ C      LOOP:
 
    20         CONTINUE
           CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
-	IF(IHR.EQ.0)THEN
+	  
+	hvytic = (is_hours_axis.EQ.0 .AND. IHR.EQ.0 .OR. 
+     .            is_hours_axis.EQ.1 .AND. IMIN.EQ.0)
+	IF(hvytic)THEN
 	CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
               IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
                  CALL COLOR(color1)
@@ -375,12 +383,7 @@ C         THE LABELS
 	           CALL scinot_d(Td+TICd,YTEMP1,0.,CSIZE,5,SYM,0,wid,tfact_d, yfact_d)
 		ELSE
                    IF (MOD(imin,labint) .EQ. 0) THEN
-		      IF (start_hr .GT. 0) THEN
-	                 WRITE(SYM,84) start_hr, imin
-		         start_hr = -1
-		      ELSE
-	                 WRITE(SYM,84) ihr, imin
-		      ENDIF
+		      WRITE(SYM,84) ihr, imin
 	              CALL scinot_d(Td+TICd,YTEMP1,0.,CSIZE,5,SYM,0,wid,tfact_d, yfact_d)
 		   ENDIF
 		ENDIF
@@ -418,6 +421,7 @@ C             ELSE:
           ITIME=ITIME3
           T=T+TIC
 	  td = td + ticd
+	  t=td
 c          IF(ITIME.LE.ITIME2) GO TO 10
 
           IF(ITIME(13:14)//ITIME(1:12) .LE.

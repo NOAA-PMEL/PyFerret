@@ -82,6 +82,8 @@
 *                  now an arg to TSTEP_TO_SECS, TSTEP_TO_DATE
 * V694  *acm* 1/15 Changes to allow two time axes on plot (F-T)
 * V695+ *sh*  3/15 Added argument "imposed_lab" to disambiguate F and T axes
+* V695  *acm* 9/15 Do not plot the labell TIME - on vertical axes with HH:MM
+*		   labeling; it interferes with the time/date labels
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -113,7 +115,7 @@
 
 * internal variable declarations:
 	LOGICAL		GEOG_LABEL, GEOG_VAR, use_nice, special
-	INTEGER		TM_LENSTR1, dlen, places, ndec, dummy
+	INTEGER		TM_LENSTR1, TM_LENSTR, dlen, places, ndec, dummy
 	CHARACTER	AX_TITLE*32, WHOI_DATE*14, VAR_TITLE*128,
      .			INTERNAL_WHOI_DATE*14,
      .			fmt*4, buff*200, tsetting*2
@@ -230,7 +232,12 @@
 	   buff = VAR_TITLE( cx_curv)
 	   dlen = TM_LENSTR1(buff)
 	ELSE
-	   buff = AX_TITLE( idim, grid, dlen )	! risc_buff as of 6/95
+	   IF (its_calendar.AND. TM_LENSTR(imposed_lab) .EQ.0) THEN ! skip label of TIME
+	      buff = ' '
+	      dlen = 1
+	   ELSE
+ 	      buff = AX_TITLE( idim, grid, dlen )	! risc_buff as of 6/95
+	   ENDIF
 	ENDIF
 	IF ( x_or_y .EQ. 'X' ) THEN
 	   CALL PUT_LABEL( ppl_xlab, dummy, dummy, dummy,

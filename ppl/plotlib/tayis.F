@@ -56,6 +56,7 @@ C then only do them for one horizontal and one vertical axis.
 C The dash lines interfere with each other if drawn from both 
 C sides. HLINE and VLINE control this.
 
+	INTEGER is_hours_axis
         REAL xacross           ! to draw tic line across plot
         REAL hgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         INTEGER hcolor(*)      ! pen number 

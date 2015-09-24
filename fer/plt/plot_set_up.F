@@ -159,6 +159,8 @@
 * v696  *acm*  6/15 PLOT/VS/GAPLOC to define seperate line segments on
 *                   PLOT/VS plots (LAS ticket 1597 and others)
 * V695  *acm* 9/15 send REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
+* V695  *acm* 9/15 Changes for HH:MM labeling when plotting short time range.
+*                  For these axes reset the start time by only a day.
 
 
 	include 'tmap_dims.parm'
@@ -219,7 +221,7 @@
 	CHARACTER*1     axdir(6), ax1
 
 	REAL		val1, dt_min, lo, hi, dep_len, 
-     .			ind_len, first, last, hlen
+     .			ind_len, first, last, hlen, hrs
 	REAL*8		TSTEP_TO_SECS, SECS_TO_TSTEP,
      .			ind_min, ind_max, dep_min, dep_max, delta, tmp
 	REAL*4 rbad
@@ -578,7 +580,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * * * * * * *    - - - LOAD DATA - - - * * * * * * * * *
 * 11/95: determine T0 reference time for time axis
 	IF ( time_axis .AND. .NOT.overlay ) THEN
-	   tref = MERGED_WHOI_DATE( cx_list(var1), the_taxis, nmv )
+	   tref = MERGED_WHOI_DATE( cx_list(var1), the_taxis, nmv, .FALSE. )
 	ELSE
 	   tref = ' '		! overlays reuse previous tref
 	ENDIF
@@ -670,6 +672,13 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      .                     TSTEP_TO_SECS(grid, the_taxis, DBLE(indep_dat(1)) ))
 	         ind_max = MAX( ind_max,
      .                     TSTEP_TO_SECS(grid, the_taxis, DBLE(indep_dat(nload)) ))
+
+* Plotting short time range? If so recompute tref     
+* axis length in hours from time since BC in seconds
+	         hrs = ( ind_max - ind_min ) / 3600.
+		 IF (hrs.LT.24)
+     . 	         tref = MERGED_WHOI_DATE( cx_list(var1), the_taxis, nmv, .TRUE. )
+
 	      ELSE
 	         ind_min = MIN( ind_min, DBLE(indep_dat(1)) )
 	         ind_max = MAX( ind_max, DBLE(indep_dat(nload)) )

@@ -1,0 +1,26 @@
+! bn_floatstr_i.jnl
+! test use of Integer formats in FLOATSTR function (Ferret v6.95) 
+
+LET string = FLOATSTR({3.14159,2.71828},"(i3)")
+LIST string
+
+! Missing data returned as the null string
+LET string = FLOATSTR({3.14159,2.71828,},"(i3)")
+LIST string
+
+! Test some large and small values
+LET var = {3.14159,2.71828,}
+LIST FLOATSTR(36*var,"(i5)")
+LIST FLOATSTR(36*var,"(i4.3)")
+LIST FLOATSTR(1.e14*var,"(i12)")
+LIST FLOATSTR(1.e-14*var,"(i5)")
+
+! Result shape is inherited from the input variable
+USE gt4d011.cdf 
+LIST/I=100/J=36:38/T=1-dec-1982:1-jan-1983 FLOATSTR(10000*tauy, "(i4)")
+
+USE coads_climatology
+LET var =  FLOATSTR(sst,"(i4.4)")
+
+LIST/X=165W:135W/Y=-50/L=1 var
+LIST/X=165W:135W/Y=-50/L=1 STRLEN(var)

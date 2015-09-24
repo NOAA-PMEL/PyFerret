@@ -4,7 +4,7 @@ Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: final changes for v6.95, plotting short time axes with HH:MM labeling
+Note: Allow integer formats in FLOATSTR
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -19,7 +19,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
-Beginning at Thu Sep 24 11:29:09 PDT 2015
+Beginning at Thu Sep 24 12:02:05 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -4014,6 +4014,8 @@ plot/ov/nolab/vs/thick/line/sym=21/siz=.3/gapl xpts, color, gvar
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -4101,4 +4103,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Sep 24 11:30:58 PDT 2015
+Ended at Thu Sep 24 12:03:57 PDT 2015

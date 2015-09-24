@@ -3,6 +3,8 @@
 *
 * Ansley Manke 11/10
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V695 *acm* 9/15  Allow integer formats. Truncate Floating point data, write as integer
+*
 * Returns float converted to strings according to format given. 
 *
 * In this subroutine we provide information about
@@ -61,7 +63,7 @@
       CALL ef_set_arg_name(id, arg, 'FMT')
       CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_desc(id, arg,  
-     .     'Fortran format, in parentheses, e.g. "(F5.1)"')
+     . 'Fortran format, in parentheses, e.g. "(F5.1)", ("I4"), or ("I3.3")')
       CALL ef_set_axis_influence_6d(id, arg,
      .                              NO, NO, NO, NO, NO, NO)
 
@@ -122,8 +124,10 @@
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, k1, l1, m1, n1
       REAL    fval
-      INTEGER TM_LENSTR1, slen
+      INTEGER TM_LENSTR1, slen, ival
       CHARACTER*32 fstring, fformat
+
+      LOGICAL do_integer
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -138,6 +142,18 @@
       n = arg_lo_ss (F_AXIS, ARG2)
       CALL ef_get_string_arg_element_6d(id, ARG2, arg_2,
      .                   i, j, k, l, m, n, slen, fformat)
+
+      do_integer = .FALSE.
+      slen = TM_LENSTR1( fformat )
+      i = 1
+      DO 30, i =1, slen
+	 IF (fformat(i:i).EQ.'F'  .OR. fformat(i:i).EQ.'f') GOTO 40
+	 IF (fformat(i:i).EQ.'I'  .OR. fformat(i:i).EQ.'i') THEN
+	    do_integer = .TRUE.
+            GOTO 40
+	 ENDIF
+  30  CONTINUE
+  40  CONTINUE
 
       n1 = arg_lo_ss(F_AXIS,ARG1)
       DO 600 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
@@ -158,10 +174,17 @@
       DO 100 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
          fval = arg_1(i1,j1,k1,l1,m1,n1)
-         IF ( fval .NE. bad_flag(ARG1) ) THEN
-
 C     Write the string using the format, and put it in the result.
-            WRITE (fstring, fformat) fval
+C     If they have sent in an integer format, truncate the data first.
+
+         IF ( fval .NE. bad_flag(ARG1) ) THEN
+	    IF (do_integer) THEN 
+	       ival = INT(fval)
+               WRITE (fstring, fformat) ival
+            ELSE
+               WRITE (fstring, fformat) fval
+	    ENDIF
+
             slen = TM_LENSTR1(fstring)
             CALL EF_PUT_STRING(fstring, slen, result(1,i,j,k,l,m,n))
 

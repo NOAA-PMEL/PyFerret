@@ -1,4 +1,4 @@
-      SUBROUTINE DAXIS(XF,YF,NMX,NMY,MAINLAB)
+      SUBROUTINE DAXIS(XF,YF,NMX,NMY,DRAW)
 
 *
 *
@@ -64,6 +64,8 @@ C              drawn on topof axes. This(?) causes the main label to not get
 C              finished. For polygon plots only, draw the main label twice.
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
+* V695 *acm*   5/15 Ticket 2279: Draw axis lines, tics and labels only once
+*	       as for pyFerret
 
 C**
 C**    @(#)daxis.F	1.1    3/10/88
@@ -104,8 +106,8 @@ C**
 	include 'AXISL.INC'
 
 	CHARACTER IFX*20,IFY*20
-        integer ii, MAINLAB
-	LOGICAL noylab
+        integer ii
+	LOGICAL noylab, DRAW
 
 * TMAP interrupt flag
 	include 'xinterrupt.cmn'
@@ -113,31 +115,17 @@ C**
 C If graticule lines are to be drawn across the plot at the tics
 C then only do them for one horizontal and one vertical axis.  
 C The dash lines interfere with each other if drawn from both 
-C sides. HLINE and VLINE control this. Draw a second axis after each 
-C axis that may have the graticule lines, so the axes themselves are 
-C always solid, black.
+C sides. HLINE and VLINE control this. Draw the axis after the 
+C graticule lines, so the axes themselves are always solid, black.
 
         HLINE = .TRUE.
         VLINE = .TRUE.
-           
-        do ii = 1, 2   ! first time thru do graticules, 
-                      ! second time dont, get black axes
-        
-        IF(IMCNT.LE.1)THEN
-	    CALL BOX
-	END IF
+
 C	SETUP AXIS
 	CALL SETLAB(XF,YF,LTT,LTB,LYL,LYR,LXT,LXB,IFX,IFY,LTBb)
+C ---------- Skip this section if not drawing the axes ----------
+	IF (DRAW) THEN
 
-	IF (ii .EQ. 2 .OR. mainlab .EQ. 0) THEN
-	   LTT = 0
-	   LTB = 0
-	   LYL = 0
-	   LYR = 0
-	   LXT = 0
-	   LXB = 0
-	   LTBb= 0
-	ENDIF
 	noylab =  (ylab .EQ. ' ') 
 C
 C     DRAW AXIS, LEFT, RIGHT Y AXIS THEN TOP, BOTTOM XAXIS
@@ -222,7 +210,9 @@ C
               vline = .FALSE.
           END IF
       END IF
-      enddo  ! ii loop
+
+C ---------- End of skip section if not drawing the axes ----------
+      ENDIF  ! draw
 
 * TMAP interrupt re-entry
  3333	CONTINUE
@@ -234,7 +224,7 @@ C
 C	DRAW AXIS LABELS
 C
 1000	CONTINUE
-        IF (mainlab .GE. 1) CALL LABDRW(XF,YF,IFX,IFY)
+        IF (DRAW) CALL LABDRW(XF,YF,IFX,IFY)
 	CALL PPLGFLUSH
 	RETURN
 	END

@@ -91,10 +91,16 @@
 * V6.5  3/10 *acm* When re-plotting axes, do not redraw the main label.
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
+** V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
+* V694  *acm*  5/15 Ticket 2283. Handling axis scaling for ribbon plots.
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V694  *acm*  2/15 Fix ticket 2232; redraw plot axes on line plots
 * V694  *acm*  5/15 correct the setting of is_ribbon
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
+* V695 *acm*   5/15 Ticket 2279: Draw axis lines, tics and labels only once
+*	       as for pyFerret
 
 *****************************************************
 
@@ -103,52 +109,14 @@
 	REAL*8	DIFF, XLPLOT,YLPLOT,XHPLOT,YHPLOT
 	REAL	xtm,ytm,xtx,ytx,minx,maxx,miny,maxy
 	INTEGER nxs, nmx, nmy, ivloc, ip1, ip2, ip3, ip4, a_line,
-     .          LABELX_save, LABELY_save, LABELT_save, MAINLAB
+     .          LABELX_save, LABELY_save, LABELT_save
+	LOGICAL DRAW
 
 * TMAP include files with explicit type declarations:
 	include 'parampl5_dat.decl'
 	include 'PARAMPL5.DAT'
 
 	DIMENSION X(NXS) ! Was VIRTUAL, changed for linux *jd*
-*
-*
-*  This software was developed by the Thermal Modeling and Analysis
-*  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
-*  hereafter referred to as NOAA/PMEL/TMAP.
-*
-*  Access and use of this software shall impose the following
-*  obligations and understandings on the user. The user is granted the
-*  right, without any fee or cost, to use, copy, modify, alter, enhance
-*  and distribute this software, and any derivative works thereof, and
-*  its supporting documentation for any purpose whatsoever, provided
-*  that this entire notice appears in all copies of the software,
-*  derivative works and supporting documentation.  Further, the user
-*  agrees to credit NOAA/PMEL/TMAP in any publications that result from
-*  the use of this software or in any product that includes this
-*  software. The names TMAP, NOAA and/or PMEL, however, may not be used
-*  in any advertising or publicity to endorse or promote any products
-*  or commercial entity unless specific written per/x=178.5:179.5 uwndion is obtained
-*  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
-*  is not obligated to provide the user with any support, consulting,
-*  training or assistance of any kind with regard to the use, operation
-*  and performance of this software nor to provide the user with any
-*  updates, revisions, new versions or "bug fixes".
-*
-*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
-*  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
-*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
-*  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
-*  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
-** V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
-* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
-*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
-* V694  *acm*  5/15 Ticket 2283. Handling axis scaling for ribbon plots.
-
 	include 'lines_inc.decl'
 	include 'LINES.INC'
 	include 'pen_inc.decl'
@@ -209,8 +177,6 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 	IF (batch) THEN
 	   IF (its_meta) meta_batch = .TRUE.
 	ENDIF
-
-	mainlab = 1  ! Flag: Draw the main label in calls to DAXIS
 
 	IF(((MAKEP.EQ.'CONTOUR'.OR.MAKEP.EQ.'VIEW'.or.
      *     makep.eq.'FILL'.or.makep.eq.'PIXEL'.or.
@@ -288,7 +254,8 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	    CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL,is_ribbon)
 
 	    IF (ABS(XF) .GT. CMZGE .OR. ABS(YF) .GT. CMZGE) GOTO 3333  ! fill/contour but 1 grid point
-	    CALL DAXIS(XF,YF,NMX,NMY,MAINLAB)
+	    DRAW = .FALSE.
+	    CALL DAXIS(XF,YF,NMX,NMY,DRAW)
 
 		XLPLOT=DBLE(XL) 
 		XHPLOT=DBLE(XH)
@@ -348,14 +315,10 @@ C
 	    ENDIF
 	    CALL PLOTZ(X(IVLOC),XF,YF,XLPLOT,YLPLOT,XHPLOT,YHPLOT)
 
-C  Call WINDOW to restore values of XMIN, XMAX, YMIN, YMAX. Plot axis again
-C  so any tics inside the box show up.
+C  Call WINDOW to restore values of XMIN, XMAX, YMIN, YMAX. 
 
 	    IF(MAKEP.EQ.'FILL') THEN
                IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
-	       mainlab = 0
-               CALL DAXIS(XF,YF,NMX,NMY,MAINLAB)
-	       CALL DAXIS_BOX
             ENDIF
 
 	ELSE IF(MAKEP.EQ.'PLOT') THEN
@@ -390,17 +353,9 @@ C		call aline_sub (x,nxs,a_line,minx,miny,maxx,maxy)
 100	    continue
 ****
 
-C Plot axis again; lines may have covered axis lines. 
-	   mainlab = 0
-	   CALL DAXIS_BOX
-
 	ELSE IF(MAKEP.EQ.'RIBPLOT') THEN
 	   CALL PLOTXY_RIBBON(X,NXS,XF,YF)
 	   IF ( interrupted ) GOTO 3333
-
-C Plot axes again; lines may have covered axis lines. 
-	   mainlab = 0
-	   CALL DAXIS_BOX
 
 	ELSE IF(MAKEP.EQ.'VECTOR')THEN
 	    IF(JTYPE.EQ.-1)THEN
@@ -468,9 +423,7 @@ c	    CALL PLOTV(X,NXS,XF,YF)
             ENDIF
             call shade(x(ivloc), x(IP4) )
 	    IF ( interrupted ) GOTO 3333		! 1/89 - *sh*
-	    mainlab = 0
-	    CALL DAXIS(XF,YF,NMX,NMY,MAINLAB)
-	    CALL DAXIS_BOX
+
 ***************************************************
 * TMAP addition for PLOTPOL call
 	ELSE IF(MAKEP.EQ.'PLOTPOL')THEN
@@ -512,38 +465,24 @@ c	    CALL PLOTPOL(X,NXS,XF,YF)
  200	       continue
 	    end if
 
-* Redraw the axes after the plot is drawn as polygons may
-* obscure axes and/or tics.
-            IF (.NOT. SOVER) THEN
-	       mainlab = 0
-               CALL DAXIS(XF,YF,NMX,NMY,mainlab) ! was MAINLAB
-	       CALL DAXIS_BOX
-	    ELSE
-* If it was an overlay, we still want to draw the axes but dont
-* redo labels (See bug 1663)
-               LABELX_save = LABELX
-               LABELY_save = LABELY
-               LABELT_save = LABELT
-               LABELX = 0
-               LABELY = 0
-               LABELT = 0
-	       mainlab = 0
-               CALL DAXIS(XF,YF,NMX,NMY,MAINLAB)
-	       CALL DAXIS_BOX
-               LABELX = LABELX_save
-               LABELY = LABELY_save
-               LABELT = LABELT_save
-	       mainlab = 1
-	    ENDIF
+
 ***************************************************
 	ENDIF
 
  3333	CONTINUE					! 1/89 - *sh*
 * post-interrupt re-entry				! 1/89 - *sh*
+	
+	DRAW = .FALSE.
+	CALL DAXIS(XF,YF,NMX,NMY,DRAW)
+	IF (.NOT.SOVER) DRAW = .TRUE. 
+	IF (SOVER) lab1 = ' '
+	CALL DAXIS(XF,YF,NMX,NMY,DRAW)
+
 	CALL SCALE(XF,YF,XORG,YORG,XLO,YLO)
 C
 	CALL WINDOW(0.,0.,0.,0.)
 C
+C Put movable labels on
 	IF ( .NOT.interrupted ) CALL DAXIS2(XF,YF,NMX,NMY) ! 1/89 - *sh*
 	IF(ITFLG.EQ.1 .OR. ITFLG.EQ.2)THEN
 	    XHI=XTI

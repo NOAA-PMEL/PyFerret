@@ -982,6 +982,9 @@ GO bn_auxiliary
 GO bn_reset
 GO bn_plot_ribbon_gaploc
 
+GO bn_reset
+GO bn_time_short_axes
+
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

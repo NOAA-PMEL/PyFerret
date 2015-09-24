@@ -84,7 +84,7 @@ foreach mb_file ($mb_files)
    set size2 = `ls -l metafile_masters_64bit_rh6/$mb_file | awk '{print $5}'`
    if ($size != $size2) then
       set err_mb = 1
-      ehcho "metafile batch files differ $mb_file size $size metafile_masters_64bit_rh6/ size $size2" 
+      echo "metafile batch files differ $mb_file size $size metafile_masters_64bit_rh6/ size $size2" 
        rm -f $mb_file.ps master_$mb_file.ps diff_$mb_file.ps 
        Fprint -R -p portrait -o $mb_file.ps $mb_file
        Fprint -R -p portrait -o master_$mb_file.ps metafile_masters_64bit_rh6/$mb_file

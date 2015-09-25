@@ -1,4 +1,4 @@
-	CHARACTER*14 FUNCTION MERGED_WHOI_DATE( cx_list, idim, ncx )
+	CHARACTER*14 FUNCTION MERGED_WHOI_DATE( cx_list, idim, ncx, dayflag )
 
 *
 *
@@ -45,7 +45,9 @@
 * V530:  1/01 *acm* cal_id for alternative calendar axis types
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
-*                  A time axis may be a T axis or F axis.
+*                  A time axis may be a T axis or F axis
+* V695  *acm* 9/15 Changes for HH:MM labeling when plotting short time range.
+*                  For these axes reset the start time by only a day.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -55,6 +57,7 @@
 
 * calling argument declarations
 	INTEGER	ncx, cx_list(ncx), idim
+	LOGICAL dayflag
 
 * internal variable declarations
 	INTEGER 	yr100, yr, mon, day, hr, mn, sec,
@@ -66,6 +69,8 @@
 * internal parameter declarations
 	REAL*8		yrofsecs
 	PARAMETER     ( yrofsecs = 60.*60.*24.*365. )
+	REAL*8		dayofsecs
+	PARAMETER     ( dayofsecs = 60.*60.*24. )
 
 * determne the earliest date to be plotted
 	DO 100 i = 1, ncx
@@ -83,7 +88,14 @@
           cal_id = TM_GET_CALENDAR_ID(line_cal_name(axis) )
 
 * arbitrarily subtract a year -- needed cuz PLOT* rounds down the "tmin" value
- 	  bcsecs = MAX( 0.0D0, bcsecs - yrofsecs )
+* OR, subtract a day when plotting short time ranges. This gives us
+* more precision to work with in time data (origin, scaling on the page).
+
+	  IF (dayflag) THEN
+	     bcsecs = MAX( 0.0D0, bcsecs - dayofsecs )
+	  ELSE
+	     bcsecs = MAX( 0.0D0, bcsecs - yrofsecs )
+	  ENDIF
 	  date = TM_SECS_TO_DATE(bcsecs, cal_id)
 
  100	CONTINUE

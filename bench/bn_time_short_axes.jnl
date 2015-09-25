@@ -1,0 +1,27 @@
+! bn_time_short_axes.jnl
+! testing time axis style with HH:MM on the time axis labels.
+
+use timesec
+
+plot/t="21-aug-2015:00:00":"21-aug-2015:04:30" airt
+plot/axes=0,1,1,0/t="21-aug-2015:01:15":"21-aug-2015:03:30" airt
+plot/t="21-aug-2015:01:15":"21-aug-2015:12:00" airt
+
+
+plot/trans/t="21-aug-2015:00:00":"21-aug-2015:04:30" airt
+plot/trans/t="21-aug-2015:01:15":"21-aug-2015:03:30" airt
+plot/trans/t="21-aug-2015:01:15":"21-aug-2015:12:00" airt
+
+! 2D plots
+
+define axis/x=0:360:1/units=degrees_east lonax
+let var2d = airt + 0.1*x[gx=lonax]
+
+shade/t="21-aug-2015:00:00":"21-aug-2015:04:30" var2d
+fill/t="21-aug-2015:01:15":"21-aug-2015:03:30" var2d
+shade/t="21-aug-2015:01:15":"21-aug-2015:12:00" var2d
+
+
+shade/trans/t="21-aug-2015:00:00":"21-aug-2015:04:30" var2d
+fill/trans/t="21-aug-2015:01:15":"21-aug-2015:03:30" var2d
+shade/trans/t="21-aug-2015:01:15":"21-aug-2015:12:00" var2d

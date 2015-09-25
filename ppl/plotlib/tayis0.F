@@ -112,7 +112,8 @@ C
 	REAL*8  DIFF, difft
 	REAL*8  td, xtemp1, tfact_d, xfact_d
 	REAL    delt, rem
-	INTEGER is_hours_axis, start_hr
+	INTEGER is_hours_axis
+	LOGICAL hvytic
 
 * Parameters for drawing tics across plot
 
@@ -181,10 +182,11 @@ C     SET PARAMETERS.
         delt = 60.
 
 	IF (is_hours_axis.EQ.1) THEN
-	   delt = 10.
+	   delt = 10. !  15.
 	   IF (difft .LT. 50) delt = 5.
 	   IF (difft .LT. 30) delt = 2.
 	   IF (difft .LT. 12) delt = 1.
+	   IF (difft .GT.150) delt = 30.
 	   tic = delt/dt
 	   ticd = delt/dt
 	ENDIF
@@ -208,17 +210,17 @@ C     SET PARAMETERS.
 	    FIHDB=-1.4
 	ENDIF
 	XTEMP1=X+DBLE(LABEL*(0.9*CSIZE+XTEMP)/XFACT)
-	IF (is_hours_axis .EQ. 1) XTEMP1=X+DBLE(LABEL*(1.6*CSIZE+XTEMP)/XFACT)
+	IF (is_hours_axis.EQ.1 .AND. LABEL.LT.0) XTEMP1=XTEMP1-1.5*CSIZE/XFACT
 	IF(LABEL.LT.0) THEN
 	    XTEMP2=X-((4.0+FIHDB)*CSIZE+XTEMP)/XFACT
-	    IF (is_hours_axis.EQ.1) XTEMP2=X-((4.5+FIHDB)*CSIZE+XTEMP)/XFACT
+	    IF (is_hours_axis.EQ.1) XTEMP2=XTEMP2-1.5*CSIZE/XFACT
 	ELSE
 	    XTEMP2=X+((2.5+FIHDB)*CSIZE+XTEMP)/XFACT
-	   IF (is_hours_axis.EQ.1)  XTEMP2=X+((3.+FIHDB)*CSIZE+XTEMP)/XFACT
+	   IF (is_hours_axis.EQ.1) XTEMP2=X+3*CSIZE/XFACT
 	ENDIF
 	IF(LABEL.NE.0)YWID=(4.0+FIHDB)*CSIZE+XTEMP
         T=TLO  ! Time in hours, plot units
-	td = tlo
+	td=tlo
 	ITIME=ITIME1
 	CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
 	TDAY=T
@@ -238,15 +240,14 @@ C     SET PARAMETERS.
 c Check whether to make an hour label at the start of the axis
 c ihdb is hour-label frequency
       IF(IABS(LABEL).EQ.1) THEN
-         IF (IHR.EQ.IHDB*(IHR/IHDB)) THEN 
+         IF (IHR.EQ.IHDB*(IHR/IHDB) .AND. is_hours_axis.NE.1) THEN 
             WRITE(SYM,80) IHR
 	    CALL scinot_d(XTEMP1,td,0.,CSIZE,2,SYM,0,wid,xfact_d, tfact_d)
 	 ENDIF
          IF (is_hours_axis .EQ. 1) THEN
 	    IF (IMIN .EQ. 0) THEN
-	       start_hr = -1  ! marks whether hour is labeled at the start of the axis
                WRITE(SYM,82) IHR
-	       CALL scinot_d(YTEMP1,td,0.,CSIZE,5,SYM,0,wid,xfact_d, tfact_d)
+	       CALL scinot_d(XTEMP1,td,0.,CSIZE,5,SYM,0,wid,xfact_d, tfact_d)
 	    ELSE ! get the loop on-track to hit a tic mark at the start of hours
 	       rem = delt*INT(imin/delt) - imin
 	       ITIME=ITIME1
@@ -256,7 +257,6 @@ c ihdb is hour-label frequency
 	    ENDIF
 
 	 ENDIF
-         IF (is_hours_axis.EQ.1 .AND. IMIN.NE.0) start_hr = IHR  ! need to label hour on 1st Tic
       ENDIF
 
 
@@ -307,6 +307,10 @@ C      LOOP:
 ! On short-time interval axes, label interval
 
 	IF (ltic.LT.2 .AND. is_hours_axis.GT.0) labint = 2*delt
+	IF (is_hours_axis.GT.0) THEN
+            labint = 2*delt
+	    IF (ihdb.GT.0) labint = ihdb*delt
+	ENDIF
 
 ! Restore the state of ITIME, ITIME3
       ITIME=ITIME1
@@ -338,7 +342,9 @@ C      LOOP:
 
 20	CONTINUE
 	CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
-	IF(IHR.EQ.0)THEN
+	hvytic = (is_hours_axis.EQ.0 .AND. IHR.EQ.0 .OR. 
+     .            is_hours_axis.EQ.1 .AND. IMIN.EQ.0)
+	IF(hvytic)THEN
 	    CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,IHVY)
             
               IF ((solid1.OR.dashed1) .AND. hline) THEN ! make line across
@@ -380,12 +386,7 @@ C         THE LABELS
 	           CALL scinot_d(XTEMP1,Td+TICd,0.,CSIZE,5,SYM,0,wid,xfact_d, tfact_d)
 		ELSE
                    IF (MOD(imin,labint) .EQ. 0) THEN
-		      IF (start_hr .GT. 0) THEN
-	                 WRITE(SYM,84) start_hr, imin
-		         start_hr = -1
-		      ELSE
-	                 WRITE(SYM,84) ihr, imin
-		      ENDIF
+		      WRITE(SYM,84) ihr, imin
 	              CALL scinot_d(XTEMP1,Td+TICd,0.,CSIZE,5,SYM,0,wid,xfact_d, tfact_d)
 		   ENDIF
 		ENDIF
@@ -426,6 +427,7 @@ C             ELSE:
 	ITIME=ITIME3
 	T=T+TIC
 	td = td + ticd
+	t=td
 c	IF(ITIME.LE.ITIME2) GO TO 10
         IF(ITIME(13:14)//ITIME(1:12) .LE.
      .       ITIME2(13:14)//ITIME2(1:12)) GO TO 10

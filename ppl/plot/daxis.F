@@ -108,7 +108,6 @@ C**
 	INCLUDE 'pyfonts.cmn'
 
 	CHARACTER IFX*20,IFY*20
-        integer ii
 	LOGICAL noylab, DRAW
 
 * TMAP interrupt flag
@@ -129,15 +128,6 @@ C	SETUP AXIS
 C ---------- Skip this section if not drawing the axes ----------
 	IF (DRAW) THEN
 
-	IF (ii .EQ. 2) THEN
-	   LTT = 0
-	   LTB = 0
-	   LYL = 0
-	   LYR = 0
-	   LXT = 0
-	   LXB = 0
-	   LTBb= 0
-	ENDIF
 	noylab =  (ylab .EQ. ' ') 
 C
 C     DRAW AXIS, LEFT, RIGHT Y AXIS THEN TOP, BOTTOM XAXIS

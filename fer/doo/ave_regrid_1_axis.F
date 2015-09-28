@@ -177,7 +177,7 @@
 	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
 
 	        src_encloses = 
-     .               (xdst_lo.GE.xsrc_min .AND. xdst_hi.LE.xsrc_max) 
+     .               (xdst_lo.GT.xsrc_min .AND. xdst_hi.LT.xsrc_max) 
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi )
@@ -256,7 +256,7 @@
 	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
 
 	        src_encloses = 
-     .               (xdst_lo.GE.xsrc_min .AND. xdst_hi.LE.xsrc_max) 
+     .               (xdst_lo.GT.xsrc_min .AND. xdst_hi.LT.xsrc_max) 
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi)
@@ -334,7 +334,7 @@
 	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
 
 	        src_encloses = 
-     .               (xdst_lo.GE.xsrc_min .AND. xdst_hi.LE.xsrc_max) 
+     .               (xdst_lo.GT.xsrc_min .AND. xdst_hi.LT.xsrc_max) 
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi )
@@ -415,7 +415,7 @@
 	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
 
 	        src_encloses = 
-     .               (xdst_lo.GE.xsrc_min .AND. xdst_hi.LE.xsrc_max) 
+     .               (xdst_lo.GT.xsrc_min .AND. xdst_hi.LT.xsrc_max) 
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi)
@@ -433,7 +433,8 @@
 	            ELSE	! average or variance
 	               sum   = sum  + ddist * src(i, j, k, srcss, m, n)
 	            ENDIF
-	         ENDIF
+	         ENDIF 
+
  410	      CONTINUE
 
 	      IF ( trans.EQ.prgrd_good_pt ) THEN
@@ -495,7 +496,7 @@
 	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
 
 	        src_encloses = 
-     .               (xdst_lo.GE.xsrc_min .AND. xdst_hi.LE.xsrc_max) 
+     .               (xdst_lo.GT.xsrc_min .AND. xdst_hi.LT.xsrc_max) 
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi)
@@ -575,7 +576,7 @@
 	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
 
 	        src_encloses = 
-     .               (xdst_lo.GE.xsrc_min .AND. xdst_hi.LE.xsrc_max) 
+     .               (xdst_lo.GT.xsrc_min .AND. xdst_hi.LT.xsrc_max) 
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi)

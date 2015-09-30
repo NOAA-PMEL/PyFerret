@@ -163,6 +163,7 @@
 * V695  *acm* 9/15 send REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
 * V695  *acm* 9/15 Changes for HH:MM labeling when plotting short time range.
 *                  For these axes reset the start time by only a day.
+* V695  *acm* 9/15 Tweak to above - dont reset tref for overlay plots.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -691,10 +692,11 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 
 * Plotting short time range? If so recompute tref     
 * axis length in hours from time since BC in seconds
-	         hrs = ( ind_max - ind_min ) / 3600.
-		 IF (hrs.LT.24)
-     . 	         tref = MERGED_WHOI_DATE( cx_list(var1), the_taxis, nmv, .TRUE. )
-
+	         IF (.NOT.overlay) THEN
+	            hrs = ( ind_max - ind_min ) / 3600.
+		    IF (hrs.LT.24)
+     . 	            tref = MERGED_WHOI_DATE( cx_list(var1), the_taxis, nmv, .TRUE. )
+		 ENDIF
 	      ELSE
 	         ind_min = MIN( ind_min, DBLE(indep_dat(1)) )
 	         ind_max = MAX( ind_max, DBLE(indep_dat(nload)) )

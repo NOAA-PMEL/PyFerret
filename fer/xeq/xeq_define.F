@@ -231,6 +231,7 @@
 * V695+  *sh* 4/15 error msgs from INIT_AGGREGATE_SET already given.  Remove.
 * V695  *acm* 6/15 Change the error message when coordinates are decreasing.
 * V695  *acm* 6/16 New subcommand DEFINE ANNOTATION
+* V695 *acm*  9/15 Fix #2317: length of name sent to FIND_DSET_NUMBER
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -384,7 +385,7 @@
      .            micro_adj, axwwlen, rmod_len, secsperyear, small, 
      .            new_att_modulo_len, madj
 	CHARACTER TM_FMT*16, 
-     .            reg_name*24, buff1*128, buff2*128, buff3*128, 
+     .            reg_name*24, buff1*128, buff2*512, buff3*512, 
      .            buffsym*120, cal_name*32, buff*512,
      .            basic_orients(nferdims)*2, err_string*2048, replmsg*24,
      .		  mon_names(12)*3, varname*512, attname*128, t2*2,

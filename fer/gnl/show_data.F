@@ -41,6 +41,7 @@
 * V685 4/13 *acm* Ability to define ensemble with /HIDDEN
 * V691+ 8/14 *acm* Fix ticket 2194: SHOW with /OUTFILE
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
+* V695 *acm*  9/15 Fix #2317: length of name sent to FIND_DSET_NUMBER
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -67,7 +68,7 @@
      .		    slash_file,
      .		    slash_attr,
      .		    slash_xml
-	CHARACTER name*32, default*60, outstring*2048
+	CHARACTER default*60, outstring*2048
 
 	PARAMETER ( slash_brief    = 1 + 1,
      .		    slash_full     = 1 + 2,
@@ -107,8 +108,7 @@
 
 	only_1 = num_args .GT. 0
 	IF ( only_1 ) THEN
-	   name = cmnd_buff(arg_start(1):arg_end(1))
-	   dset = FIND_DSET_NUMBER( name )
+	   dset = FIND_DSET_NUMBER( cmnd_buff(arg_start(1):arg_end(1)) )
 	   IF ( dset .EQ. unspecified_int4 ) GOTO 5000
 	   un_hide = .TRUE.
 	ENDIF

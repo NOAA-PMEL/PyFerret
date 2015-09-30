@@ -143,6 +143,7 @@
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V690 *sh* 1/14 add CAN VAR/LAYERZ
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+* V695 *acm*  9/15 Fix #2317: length of name sent to FIND_DSET_NUMBER
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -197,7 +198,7 @@
      .                  redir_cancel_stdout, redir_cancel_stderr
 
 	CHARACTER	arg*4, buff*512, argsym*120, varname*512,
-     .                  attname*128, show_str*12, buff2*3, DUMMY*512
+     .                  attname*128, show_str*512, buff2*3, DUMMY*512
 
 * local parameter declarations:
 	INTEGER		slash_del_temp, slash_del_perm

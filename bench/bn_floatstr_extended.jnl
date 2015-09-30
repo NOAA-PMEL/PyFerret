@@ -1,0 +1,60 @@
+! bn_floatstr_extended.jnl
+! test use of Integer and zero-filled formats in FLOATSTR function (Ferret v6.95) 
+! 9/28/2015
+
+
+LET string = FLOATSTR({3.14159,2.71828},"(i3)")
+LIST string
+
+LET string = FLOATSTR({3.14159,2.71828},"(i3.3)")
+LIST string
+
+LET string = FLOATSTR({3.14159,2.71828},"(i03)")
+LIST string
+
+! Missing data returned as the null string
+LET string = FLOATSTR({3.14159,2.71828,},"(i3)")
+LIST string
+
+! Test some large and small values
+LET var = {3.14159,2.71828,}
+LIST FLOATSTR(36*var,"(i5)")
+LIST FLOATSTR(36*var,"(i4.3)")
+LIST FLOATSTR(1.e14*var,"(i12)")
+LIST FLOATSTR(1.e-14*var,"(i5)")
+
+! Result shape is inherited from the input variable
+USE gt4d011.cdf 
+LIST/I=100/J=36:38/T=1-dec-1982:1-jan-1983 FLOATSTR(10000*tauy, "(i4)")
+
+USE coads_climatology
+
+! i4.4 is the same as i04
+
+LET var =  FLOATSTR(sst,"(i4.4)")
+LET var =  FLOATSTR(sst,"(i04)")
+
+LIST/X=165W:135W/Y=-50/L=1 var
+
+! Negative numbers cannot be listed with (i5.5) but can with (I05)
+LET var1 =  FLOATSTR(sst-10,"(i5.5)")
+LET var2 =  FLOATSTR(sst-10,"(i05)")
+
+LIST/X=165W/L=1 var1[j=1:40:2], var2[j=1:40:2]
+
+
+! F0 format for zero-filled F format
+
+let a = {1.1, 3.7}
+list  floatstr(a, "(f04.1)")
+
+let a = {1.1, 13.7}
+list floatstr(a, "(f06.1)")
+
+let a = {-1.1, 13.7}
+list  floatstr(a, "(f04.1)")
+
+! testing negative numbers and null/missing results
+LET var1 =  FLOATSTR(sst-20,"(f5.1)")
+LET var2 =  FLOATSTR(sst-20,"(f05.1)")
+LIST/X=165W/L=1 var1[j=1:40:2], var2[j=1:40:2]

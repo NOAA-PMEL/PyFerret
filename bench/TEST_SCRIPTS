@@ -238,5 +238,5 @@ bn_auxiliary.jnl
 bn_plot_ribbon_gaploc.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl
-bn_floatstr_i.jnl
+bn_floatstr_extended.jnl
 bn_time_short_axes.jnl

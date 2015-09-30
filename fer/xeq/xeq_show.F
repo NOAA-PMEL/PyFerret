@@ -191,7 +191,6 @@
 *        2/15 *sh* attempted but rejected hack to deal with left-over dset=-1
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. New SHOW TEXT
 
-
         IMPLICIT NONE
 
 	include 'tmap_dims.parm'

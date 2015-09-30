@@ -1,0 +1,20 @@
+! err694_longname_showdat.jnl
+! ticket 2317
+!
+! Make a file whose name starts the same as file with long name.
+sp rm WestCoastCarbon_9d9c_f562_77b5_5.nc
+sp ln -s WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc WestCoastCarbon_9d9c_f562_77b5_5.nc
+
+use WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc
+
+! Long name was not matched by SHOW DAT filename
+! this previously returned an unknown dataset error
+sh dat WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d
+
+! If a file matched to 1st 32 characters, the shorter-named
+! datset was mistakenly returned.
+
+use WestCoastCarbon_9d9c_f562_77b5_5
+sh dat WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d
+
+sp rm WestCoastCarbon_9d9c_f562_77b5_5.nc

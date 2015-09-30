@@ -105,7 +105,7 @@
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable''s axes. 
+* information for each variable's axes. 
 
       INTEGER res_lo_ss(6),
      .        res_hi_ss(6),
@@ -122,12 +122,20 @@
 *                                                                      V
 
       INTEGER i, j, k, l, m, n
-      INTEGER i1, j1, k1, l1, m1, n1
+      INTEGER i1, j1, k1, l1, m1, n1, p, p2
       REAL    fval
-      INTEGER TM_LENSTR1, slen, ival
+      INTEGER TM_LENSTR1, STR_UPCASE, slen, ival, isok, status
       CHARACTER*32 fstring, fformat
+      CHARACTER*128 err_msg
+      CHARACTER*1 nullstr
 
-      LOGICAL do_integer
+
+      LOGICAL do_integer, zero_fill
+
+      nullstr = ''
+      isok = 3
+      zero_fill = .FALSE.
+      do_integer = .FALSE.
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -141,19 +149,33 @@
       m = arg_lo_ss (E_AXIS, ARG2)
       n = arg_lo_ss (F_AXIS, ARG2)
       CALL ef_get_string_arg_element_6d(id, ARG2, arg_2,
-     .                   i, j, k, l, m, n, slen, fformat)
+     .                   i, j, k, l, m, n, slen, fstring)
+
+      i = STR_UPCASE(fformat, fstring)
 
       do_integer = .FALSE.
       slen = TM_LENSTR1( fformat )
-      i = 1
-      DO 30, i =1, slen
-	 IF (fformat(i:i).EQ.'F'  .OR. fformat(i:i).EQ.'f') GOTO 40
-	 IF (fformat(i:i).EQ.'I'  .OR. fformat(i:i).EQ.'i') THEN
+      DO 30, p =1, slen-1
+	 IF (fformat(p:p+1) .EQ. 'F0')  THEN
+	    zero_fill = .TRUE.
+	    fformat = fformat(1:p)//fformat(p+2:slen)
+	    GOTO 40
+	 ENDIF
+	 IF (fformat(p:p) .EQ. 'F') GOTO 40
+	 
+	 IF (fformat(p:p+1) .EQ. 'I0')  THEN
+	    zero_fill = .TRUE.
+	    do_integer = .TRUE.
+	    fformat = fformat(1:p)//fformat(p+2:slen)
+	    GOTO 40
+	 ENDIF
+	 IF (fformat(p:p) .EQ. 'I') THEN
 	    do_integer = .TRUE.
             GOTO 40
 	 ENDIF
   30  CONTINUE
   40  CONTINUE
+      
 
       n1 = arg_lo_ss(F_AXIS,ARG1)
       DO 600 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
@@ -186,11 +208,19 @@ C     If they have sent in an integer format, truncate the data first.
 	    ENDIF
 
             slen = TM_LENSTR1(fstring)
+
+C adjust the field width if requested by the user (from repl_exprns.F)
+           IF (zero_fill) THEN
+	      DO p = 1, slen
+	         IF (fstring(p:p) .EQ. ' ') fstring(p:p) = '0'
+	      END DO
+	   ENDIF
+
             CALL EF_PUT_STRING(fstring, slen, result(1,i,j,k,l,m,n))
 
          ELSE
 
-            fstring = ''
+            fstring = nullstr
             slen = 0
             CALL EF_PUT_STRING (fstring, slen, result(1,i,j,k,l,m,n))
          ENDIF
@@ -219,4 +249,8 @@ C     If they have sent in an integer format, truncate the data first.
 * **********************************************************************
 
       RETURN 
+ 5000 err_msg = 'Could not translate W or ZW width value '// fformat
+      CALL ef_bail_out (id, err_msg)
+      RETURN
+
       END

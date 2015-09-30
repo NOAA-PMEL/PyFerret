@@ -236,5 +236,7 @@ bn_can_var_noerr.jnl
 bn_annotate.jnl
 bn_auxiliary.jnl
 bn_plot_ribbon_gaploc.jnl
+bn_time_short_axes.jnl
+bn_floatstr_extended.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

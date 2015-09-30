@@ -985,6 +985,9 @@ GO bn_plot_ribbon_gaploc
 GO bn_reset
 GO bn_time_short_axes
 
+GO bn_reset
+GO bn_floatstr_extended
+
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 80777266 Jul  1 09:51 /home/users/ansley/build/x86/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 80824297 Sep 23 09:48 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: 64-bit build, new dunkel
+Note: more work on hh:mm labeled short time axis plots
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,13 +13,13 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/x86/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
-PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Wed Jul 1 09:56:30 PDT 2015
+PWD=/home/users/ansley/build/current_trunk/FERRET/bench
+Beginning at Wed Sep 23 09:52:17 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -973,14 +973,6 @@ list a[gx=xnrst@sum]
 list a[gx=xnrst@mod]
  LISTing to file foo.cdf
  **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead ysequence({98, 99})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+99 ELSE "goodbye"+", my ") + "friend"
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+99) + "friend"
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + 99
- **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead "b" - {"a","b"}
  **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead "b" * {"a","b"}
@@ -989,17 +981,9 @@ list/nohead "b" / {"a","b"}
  **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead "b" ^ {"a","b"}
  **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead {"a","b"} + 1
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead 1 + {"a","b"}
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead 1 - {"a","b"}
- **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead SIN({"a","b","c"})
  **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead MAX("a",{"a","b","c"})
- **ERROR: invalid command: cannot use strings in numerical expression
-list/nohead MAX(1,{"a","b","c"})
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1793,7 +1777,6 @@ Replacing definition of axis XAX
 Replacing definition of axis XFINE
 Replacing definition of axis YFINE
  LISTing to file fine.dat
-Cannot create cookie file
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification
@@ -2147,11 +2130,8 @@ Replacing definition of axis TIME
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
-Cannot create cookie file
-Cannot create cookie file
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
-Cannot create cookie file
 CURL Error: Couldn't resolve host name
 curl error details: 
  PERMANENT data cleared from memory
@@ -2338,8 +2318,6 @@ set axis/stride=2 NORMAL
  LISTing to file tripolar_missing_lon.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Cannot create cookie file
-Cannot create cookie file
 CURL Error: Couldn't resolve host name
 curl error details: 
  PERMANENT data cleared from memory
@@ -3916,6 +3894,8 @@ Replacing definition of axis EAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Could not compute Std Dev. Data too large or or not within 3 std of computed mean.
+           *** NOTE: Using linear levels instead.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3927,7 +3907,6 @@ Replacing definition of axis EAXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
@@ -4023,6 +4002,14 @@ Replacing definition of axis XAX
 Replacing definition of axis ZAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ **ERROR: command syntax: PLOT/VS/RIBBON/GAPLOC plot needs 4 arguments
+plot/vs/thick/line/sym=21/siz=.3/ribbon/gap xpts, 10*ypts, color
+ **ERROR: command syntax: PLOT/GAPLOC applies only to PLOT/VS/RIBBON
+plot/vs/thick/line/sym=21/siz=0.3/gap xpts, 10*ypts, 10.1*ypts, 9.93*ypts, gvar
+ **ERROR: command syntax: PLOT/GAPLOC applies only to PLOT/VS/RIBBON
+plot/ov/nolab/vs/thick/line/sym=21/siz=.3/gapl xpts, color, gvar
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -4112,4 +4099,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jul 1 09:59:01 PDT 2015
+Ended at Wed Sep 23 09:54:19 PDT 2015

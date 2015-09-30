@@ -76,6 +76,7 @@ C                with "*(*)" for the linux port
 
 C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* v695 9/15 *acm* write values to PPL* symbols using 6 digits not 4
 
 
 	CHARACTER LINE*(*),VALUE*2048,SYM*120,OPR*1,ARG(4)*120
@@ -282,7 +283,7 @@ C
 	    ELSE
 		GOTO 120
 	    ENDIF
-	    CALL PUTVAL(SYM,X,4,IER)
+	    CALL PUTVAL(SYM,X,6,IER)
 	    RETURN
 	ENDIF
 120	CALL PUTSYM(SYM,VALUE,N,IER)

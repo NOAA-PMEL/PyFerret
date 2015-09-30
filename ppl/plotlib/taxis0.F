@@ -95,8 +95,8 @@ C         IDDB = PRINT LABELS OF DAYS DIVISIBLE BY THIS NUMBER ONLY.
 C                IF(IDDB = 0) PRINT NO MONTH LABELS.
 C                THIS VARIBLE ONLY APPLYS WHEN IABS(LABEL) = 1
 C         TFACT = (LENGTH OF T AXIS IN INCHES)/(LENGTH OF T AXIS IN USER
-C         Y = Y COORDINATE OF TIME AXIS.
-C         YFACT = (LENGTH OF Y AXIS IN INCHES)/(LENGTH OF Y AXIS IN USER
+C         Y = Y COORDINATE OF TIME AXIS. 
+C         YFACT = (LENGTH OF Y AXIS IN INCHES)/(LENGTH OF Y AXIS IN USER 
 C         CSIZE = SIZE TO DRAW HOUR LABELS.
 C                 DAY LABELS WILL BE 1.5 TIMES AS LARGE.
 C
@@ -303,7 +303,12 @@ C      LOOP:
         ENDIF
 	
 ! On short-time interval axes, label interval
-	IF (ltic.LT.2 .AND. is_hours_axis.GT.0) labint = 2*delt
+	
+      IF (ltic.LT.2 .AND. is_hours_axis.GT.0) labint = 2*delt
+      IF (is_hours_axis.GT.0) THEN
+         labint = 2*delt
+	 IF (ihdb.GT.0) labint = ihdb*delt
+      ENDIF
       IF (is_hours_axis.GT.0) THEN
          labint = 2*delt
 	 IF (ihdb.GT.0) labint = ihdb*delt

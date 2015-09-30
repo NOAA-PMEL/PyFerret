@@ -92,11 +92,20 @@
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
 * PyFr  11/11 *kms* added call to consider updating the drawing when done
+** V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
+* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
+*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
+* V694  *acm*  5/15 Ticket 2283. Handling axis scaling for ribbon plots.
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V694  *acm*  2/15 Fix ticket 2232; redraw plot axes on line plots
+* V694  *acm*  5/15 correct the setting of is_ribbon
 * V695  *acm*  5/15 Ticket 2279: PyFerret don't redraw lines
-* V695  *acm*  9/15 Changes for hour:min labeling on time axes
-
+* V695 *acm*   5/15 Ticket 2279: Draw axis lines, tics and labels only once.  It does not
+*                   work to call DAXIS only at the end of this routine; the calls to axis
+*                   subroutines apparently make some settings for scaling on the page.
+*                   Call daxis with a flag "DRAW" set to false, which executes the 
+*                   routine but does not make drawing calls.
+* V695  *acm*  6/15 Ticket 2297, scaling on overlay plots
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
 
 *****************************************************
@@ -114,51 +123,6 @@
 	include 'PARAMPL5.DAT'
 
 	DIMENSION X(NXS) ! Was VIRTUAL, changed for linux *jd*
-*
-*
-*  This software was developed by the Thermal Modeling and Analysis
-*  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
-*  hereafter referred to as NOAA/PMEL/TMAP.
-*
-*  Access and use of this software shall impose the following
-*  obligations and understandings on the user. The user is granted the
-*  right, without any fee or cost, to use, copy, modify, alter, enhance
-*  and distribute this software, and any derivative works thereof, and
-*  its supporting documentation for any purpose whatsoever, provided
-*  that this entire notice appears in all copies of the software,
-*  derivative works and supporting documentation.  Further, the user
-*  agrees to credit NOAA/PMEL/TMAP in any publications that result from
-*  the use of this software or in any product that includes this
-*  software. The names TMAP, NOAA and/or PMEL, however, may not be used
-*  in any advertising or publicity to endorse or promote any products
-*  or commercial entity unless specific written per/x=178.5:179.5 uwndion is obtained
-*  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
-*  is not obligated to provide the user with any support, consulting,
-*  training or assistance of any kind with regard to the use, operation
-*  and performance of this software nor to provide the user with any
-*  updates, revisions, new versions or "bug fixes".
-*
-*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
-*  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
-*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
-*  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
-*  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
-** V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
-* V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
-*                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
-* V695 *acm*   5/15 Ticket 2279: Draw axis lines, tics and labels only once.  It does not
-*                   work to call DAXIS only at the end of this routine; the calls to axis
-*                   subroutines apparently make some settings for scaling on the page.
-*                   Call daxis with a flag "DRAW" set to false, which executes the 
-*                   routine but does not make drawing calls.
-* V694  *acm*  5/15 Ticket 2283. Handling axis scaling for ribbon plots.
-* V695  *acm*  6/15 Ticket 2297, scaling on overlay plots
-
 	include 'lines_inc.decl'
 	include 'LINES.INC'
 	include 'pen_inc.decl'
@@ -369,7 +333,6 @@ C		call aline_sub (x,nxs,a_line,minx,miny,maxx,maxy)
   		CALL VECFLD(X(1),X(IP3),NX,NY,X(IP1),X(IP2),XF,YF)
 		IF ( interrupted ) GOTO 3333 !*jd* 8.3.92
 	    ENDIF
-
 ****
 C ACM Add FLOWLINE call based on VECFLD
 
@@ -472,10 +435,9 @@ c	    CALL PLOTPOL(X,NXS,XF,YF)
 
  3333	CONTINUE					! 1/89 - *sh*
 * post-interrupt re-entry				! 1/89 - *sh*
-	
+
 	DRAW = .FALSE.
 	CALL DAXIS(XF,YF,NMX,NMY,DRAW)
-ccc	CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL,is_ribbon)
 	IF (.NOT.SOVER) DRAW = .TRUE. 
 	IF (SOVER) lab1 = ' '
 	CALL DAXIS(XF,YF,NMX,NMY,DRAW)
@@ -485,7 +447,6 @@ C
 	CALL WINDOW(0.,0.,0.,0.)
 C
 C Put movable labels on
-
 	IF ( .NOT.interrupted ) CALL DAXIS2(XF,YF,NMX,NMY) ! 1/89 - *sh*
 	IF(ITFLG.EQ.1 .OR. ITFLG.EQ.2)THEN
 	    XHI=XTI

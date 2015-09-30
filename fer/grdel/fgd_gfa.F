@@ -77,7 +77,8 @@
             stylen = 5
             capstyle = 'square'
             cstylen = 6
-            joinstyle = 'bevel'
+*           Use a miter join instead of a bevel join for this outline
+            joinstyle = 'miter'
             jstylen = 5
             CALL FGDPEN(outlinepen, windowobjs(activewindow),
      .                  brushcolorobj, linewidth, style, stylen,

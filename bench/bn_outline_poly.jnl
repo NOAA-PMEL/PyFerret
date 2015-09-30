@@ -1,0 +1,4 @@
+set win /xinch=8 /thick=1 /asp=1 /outline=5 1
+let v = 2*3.14159*x[gx=0:1:.01]
+poly/hl=-1:1/vl=-1:1/key/pal=red/thick=1/opac=50 sin(v), cos(v)
+frame /file=outline_poly.pdf

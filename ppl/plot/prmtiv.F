@@ -56,6 +56,7 @@ C              after applying an offset.)
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V69+  5/14 *acm* Fix for ascii font in multi-line labels, ticket 2176
 C V695 *acm*  5/15 Change in arguments to YAXIS1 and XAXIS1
+* v695 9/15 *acm* write values to PPL* symbols using 6 digits not 4
 C**
 C**
 C***********************************************************************
@@ -208,13 +209,13 @@ C
 	        CALL RANGE(RMIN,RMAX,NTIC,RLOW,RHIGH,RINC)
 	    endif
 	    SYM='*PPL$RANGE_LOW'
-	    CALL PUTVAL(SYM,RLOW,4,IER)
+	    CALL PUTVAL(SYM,RLOW,6,IER)
 C
 	    SYM='*PPL$RANGE_HIGH'
-	    CALL PUTVAL(SYM,RHIGH,4,IER)
+	    CALL PUTVAL(SYM,RHIGH,6,IER)
 C
 	    SYM='*PPL$RANGE_INC'
-	    CALL PUTVAL(SYM,RINC,4,IER)
+	    CALL PUTVAL(SYM,RINC,6,IER)
 C
 C***	XAXIS
 C

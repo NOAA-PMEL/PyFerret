@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1188 Aug 17 15:27 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1188 Sep 30 15:02 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
@@ -241,8 +241,11 @@ Benchmark scripts that will be run:
    bn_annotate.jnl
    bn_auxiliary.jnl
    bn_plot_ribbon_gaploc.jnl
+   bn_time_short_axes.jnl
+   bn_floatstr_extended.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
+   bn_outline_poly.jnl
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
@@ -257,7 +260,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/PyFerret/lib
 FER_PALETTE=. /home/flat/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Aug 17 15:34:25 PDT 2015
+Beginning at Wed Sep 30 15:03:14 PDT 2015
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -1754,6 +1757,7 @@ Replacing definition of axis XAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file fine.dat
+Cannot create cookie file
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification
@@ -2113,8 +2117,11 @@ Replacing definition of axis TIME
  Using every   4th vector in the Y direction
            *** NOTE: New number of line colors will take effect on next new window: SET WIN/NEW or SET WIN/CLEAR
 *** Running test: bn_cdf_errmsg.jnl
+Cannot create cookie file
+Cannot create cookie file
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
+Cannot create cookie file
 CURL Error: Couldn't resolve host name
 curl error details: 
  Cached data cleared from memory
@@ -2362,6 +2369,8 @@ SHADE/LEV=300/I=1:100/J=1:100 i+j
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_test_opendap.jnl
+Cannot create cookie file
+Cannot create cookie file
 CURL Error: Couldn't resolve host name
 curl error details: 
  Cached data cleared from memory
@@ -3798,6 +3807,8 @@ frame/format=hdf/file=a.hdf
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Could not compute Std Dev. Data too large or or not within 3 std of computed mean.
+           *** NOTE: Using linear levels instead.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3809,7 +3820,6 @@ frame/format=hdf/file=a.hdf
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
@@ -3840,6 +3850,9 @@ Replacing definition of grid GRID3D
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+rm: cannot remove `WestCoastCarbon_9d9c_f562_77b5_5.nc': No such file or directory
 *** Running test: bn_f_tax_fcns.jnl
  Cached data cleared from memory
  LISTing to file a.nc
@@ -3906,6 +3919,10 @@ plot/vs/thick/line/sym=21/siz=.3/ribbon/gap xpts, 10*ypts, color
 plot/vs/thick/line/sym=21/siz=0.3/gap xpts, 10*ypts, 10.1*ypts, 9.93*ypts, gvar
  **ERROR: command syntax: PLOT/GAPLOC applies only to PLOT/VS/RIBBON
 plot/ov/nolab/vs/thick/line/sym=21/siz=.3/gapl xpts, color, gvar
+*** Running test: bn_time_short_axes.jnl
+ Cached data cleared from memory
+*** Running test: bn_floatstr_extended.jnl
+ Cached data cleared from memory
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3927,4 +3944,6 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Mon Aug 17 15:35:56 PDT 2015
+*** Running test: bn_outline_poly.jnl
+ Cached data cleared from memory
+Ended at Wed Sep 30 15:04:43 PDT 2015

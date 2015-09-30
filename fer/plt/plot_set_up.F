@@ -688,7 +688,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      .                     TSTEP_TO_SECS(grid, the_taxis, DBLE(indep_dat(1)) ))
 	         ind_max = MAX( ind_max,
      .                     TSTEP_TO_SECS(grid, the_taxis, DBLE(indep_dat(nload)) ))
-     
+
 * Plotting short time range? If so recompute tref     
 * axis length in hours from time since BC in seconds
 	         hrs = ( ind_max - ind_min ) / 3600.

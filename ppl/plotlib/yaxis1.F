@@ -57,6 +57,7 @@ C              after applying an offset.)
 *             labels, so the labels dont run off the edge of the plot.
 C V695 *acm*  5/15 Restore color after a graticule using defined color 0
 C V695 *acm*  5/15 for PyFerret draw lines and tics only once, avoiding overdrawing.
+C V695 *acm* 10/15 Fix ticket 2320 - missing minor tic marks
 C**
 C**    @(#)yaxis1.f	1.1    3/10/88
 C**
@@ -140,9 +141,9 @@ C
 
 	DO 100 I=1,ISTOP
 	IF ( interrupted ) RETURN		! TMAP interrupt
-        IF ((solid.OR.dashed) .AND. hline) THEN ! make line across
-	   CALL SMY1(X,XFACT,YFACT,Y,YHI,YTIC,NSMTCY,
+	CALL SMY1(X,XFACT,YFACT,Y,YHI,YTIC,NSMTCY,
      .        xacross,hgrat,hcolor,hline)
+        IF ((solid.OR.dashed) .AND. hline) THEN ! make line across
            CALL COLOR(hcolor(1))
            IF (dashed) THEN
               CALL DASHSZ(dash1,dash2,dash3,dash4)

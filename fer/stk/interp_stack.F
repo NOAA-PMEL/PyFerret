@@ -102,6 +102,7 @@
 *                 user-variables that have compressed result.
 * V695+ 5/15 *sh* FIND_MEM_VAR ==> FIND_MEM_VAR_INCL_C_CACHE
 *	          delay stripping gather until after stripping regrids
+* V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -140,7 +141,8 @@
      .			DO_NEAREST_DIST_ABOVE, DO_NEAREST_DIST_BELOW,
      .			DO_NEAREST_INDEX_ABOVE,DO_NEAREST_INDEX_BELOW,
      .			DO_EVENT, DO_SMTH_MEDIAN, DO_SMTH_MIN, DO_SMTH_MAX,
-     .			DO_STDDEV, DO_AVG_WGT, DO_4D_AVE_WGT, DO_SMTH_BOX_P
+     .			DO_STDDEV, DO_AVG_WGT, DO_4D_AVE_WGT, DO_SMTH_BOX_P,
+     .			DO_4D_STD
 
 * calling arguments:
 * in	isp_base	- stack level at which to begin calculations
@@ -659,6 +661,8 @@ c	   GOTO 5000
 	      CALL IS_TRANS( memory, DO_4D_NBD, *2500, status )
 	   ELSEIF ( act .EQ. isact_4d_sum		) THEN	! 11/10
 	      CALL IS_TRANS( memory, DO_4D_SUM, *2500, status )
+	   ELSEIF ( act .EQ. isact_std_4d		) THEN
+	      CALL IS_TRANS( memory, DO_4D_STD, *2500, status )
 	   ELSEIF ( act .EQ. isact_nrst_dist_abv	) THEN	! 9/97
 	      CALL IS_TRANS( memory, DO_NEAREST_DIST_ABOVE, *2500, status )
 	   ELSEIF ( act .EQ. isact_nrst_dist_blw	) THEN	! 9/97

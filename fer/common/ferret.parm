@@ -40,6 +40,7 @@
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 *       12/14 *sh* _DQ_ and _SQ_ alternatives to double and single quote marks
 *        3/15 *sh* pauxrgrd_fmrc for forecast-time index orthoganalizing
+* V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -285,7 +286,8 @@
      .                  trans_4d_bad_pt,
      .                  trans_reduced,
      .                  trans_4d_sum,
-     .			trans_smth_box_p
+     .			trans_smth_box_p,
+     .                  trans_4d_std
 	INTEGER		trans_nrst_dist_abv,
      .			trans_nrst_dist_blw,
      .			trans_nrst_indx_abv,
@@ -343,7 +345,8 @@
      .                  trans_4d_bad_pt	   = trans_compress_code + 16,
      .                  trans_reduced 	   = trans_compress_code + 17,
      .                  trans_4d_sum 	   = trans_compress_code + 18,
-     .                  trans_std_dev      = trans_compress_code + 19)
+     .                  trans_std_dev      = trans_compress_code + 19,
+     .                  trans_4d_std       = trans_compress_code + 20)
 
 * codes to designate regridding transformations
 ! unused but required to compile V4.11 code:

@@ -16,6 +16,7 @@ do_4d_nbd.F\
 do_4d_ngd.F\
 do_4d_string_goodbad.F\
 do_4d_string_trans.F\
+do_4d_std.F\
 do_4d_sum.F\
 do_4d_trans.F\
 do_4d_var.F\

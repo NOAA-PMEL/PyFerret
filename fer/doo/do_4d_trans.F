@@ -72,6 +72,7 @@
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685 *acm* 7/13  Fix ticket 2083: single-y and multi-D transform
 * V685+*acm* 12/13 Bug in y boxes; only when y axis in the transf.
+* V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
 
 	IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -87,8 +88,8 @@
 
 * internal variable declarations:
 	LOGICAL GEOG_COS_FACTOR, point, yes_ax(nferdims), no_ax(nferdims),
-     .		at_ave, at_var, at_din, at_nbd, at_ngd, at_sum, short_comp,
-     .		need_cos, one_y
+     .		at_ave, at_var, at_din, at_nbd, at_ngd, at_sum, at_std, 
+     .		short_comp,need_cos, one_y
 	INTEGER idim, i, j, ir, jr, kr, lr, mr, nr, ic, jc, kc, lc, mc, nc,
      .		grid, nbd, ngd, com_lo(nferdims), com_hi(nferdims),
      .		box_offset(nferdims), offset, ind_lo, ind_hi, cos_offset
@@ -162,6 +163,7 @@
 	at_nbd = action .EQ. trans_4d_bad_pt
 	at_ngd = action .EQ. trans_4d_good_pt
 	at_sum = action .EQ. trans_4d_sum
+	at_std = action .EQ. trans_4d_std
 	short_comp = at_ngd .OR. at_nbd	.OR. at_sum	! for speed, only
 
 * determine the axes to be transformed
@@ -424,8 +426,8 @@ C (Unless there is just one grid cell in the y direction.)
 
  220	    CONTINUE
 
-! for variance calculation, only: a 2nd pass ...
-	    IF ( at_var ) THEN
+! for variance or std calculation, only: a 2nd pass ...
+	    IF ( at_var .OR. at_std) THEN
 	      IF (bsum .NE. 0.0D0) THEN
 	        mean = dsum / bsum
 	        dsum = 0.0D0
@@ -467,7 +469,13 @@ C (Unless there is just one grid cell in the y direction.)
 	  ELSEIF (at_din) THEN
 	     res(ir,jr,kr,lr,mr,nr) = dsum
 	  ELSE
-	     res(ir,jr,kr,lr,mr,nr) = dsum/bsum	! average or variance
+	  
+	     IF (at_std) THEN
+	        res(ir,jr,kr,lr,mr,nr) = SQRT( dsum/bsum )
+	     ELSE
+	        res(ir,jr,kr,lr,mr,nr) = dsum/bsum	! average or variance
+	     ENDIF
+
 	  ENDIF
 
  300	CONTINUE

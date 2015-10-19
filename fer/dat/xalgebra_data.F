@@ -93,6 +93,7 @@
 *       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 * V690 12/13 *sh* added auxiliary regridding transforms
 * v695+ 3/15 *sh* added pauxrgrd_fmrc for T-F orthoganalization
+* V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
 
         IMPLICIT NONE
 	include	'ferret.parm'
@@ -696,7 +697,10 @@
      .		alg_trans_num  ( 45 )	/ trans_smth_box_p	/,
      .		alg_trans_its_int ( 45)	/ .TRUE.		/,
      .		alg_trans_has_arg ( 45)	/ .TRUE.		/,
-     .		alg_trans_dflt_arg( 45)	/ 3.			/
+     .		alg_trans_dflt_arg( 45)	/ 3.			/,
+     .		alg_trans_text ( 46 )	/ 'SD4'  		/, 
+     .		alg_trans_title( 46 )	/ '4D stddev'           /,
+     .		alg_trans_num  ( 46 )	/ trans_4d_std  	/
 
         DATA    (alg_trans_num(i),i = 46, num_transforms)
      .            /15*unspecified_int4 /
@@ -801,7 +805,7 @@
      .				/1*.FALSE./
 
 * translation table for substituting 1D transformations with 4D transforms
-	DATA	num_4d_trans/ 7 /
+	DATA	num_4d_trans/ 8 /
 	DATA	alg_1d_to_4d(1) /trans_average/,
      .		alg_4d_trans(1) /trans_4d_ave/,
      .		alg_1d_to_4d(2) /trans_integ_def/,
@@ -816,6 +820,8 @@
      .		alg_4d_trans(6) /trans_4d_sum/,
      .		alg_1d_to_4d(7) /trans_avg_wgt/,
      .		alg_4d_trans(7) /trans_4d_avg_wgt/
+     .		alg_1d_to_4d(8) /trans_std_dev/,
+     .		alg_4d_trans(8) /trans_4d_std/
 
 	END
 

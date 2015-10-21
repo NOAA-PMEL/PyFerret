@@ -6,3 +6,6 @@ GO err694_shf_missing
 
 GO bn_reset
 GO err694_longname_showdat
+
+GO bn_reset
+GO err693_std4d

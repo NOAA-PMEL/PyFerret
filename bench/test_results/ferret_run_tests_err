@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Sep 30 12:07 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.95
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Oct 21 11:18 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.95
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug Ferret on RHEL6-64
@@ -259,7 +259,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Wed Sep 30 12:09:27 PDT 2015
+Beginning at Wed Oct 21 11:20:10 PDT 2015
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3780,6 +3780,8 @@ Replacing definition of grid GRID3D
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 rm: cannot remove `WestCoastCarbon_9d9c_f562_77b5_5.nc': No such file or directory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_f_tax_fcns.jnl
  Cached data cleared from memory
  LISTing to file a.nc
@@ -3869,4 +3871,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Wed Sep 30 12:11:08 PDT 2015
+Ended at Wed Oct 21 11:21:53 PDT 2015

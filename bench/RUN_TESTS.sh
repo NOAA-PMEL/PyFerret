@@ -20,6 +20,9 @@ shift
 bmarker="$USER"
 bcomment="$*"
 
+PS1='$ '
+export PS1
+
 # allow tests to be commented out by beginning with the line with a '!'
 # remove bn_all_ef.jnl from the list if $efdir is "."
 if [ "$efdir" = "." ]; then

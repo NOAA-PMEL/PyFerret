@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 85886950 Jul 21 09:05 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 85917903 Oct 16 11:47 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: new /GAPLOC qualifier for PLOT/VS/RIBBON
+Note: v6.95 release
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -19,7 +19,7 @@ FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Tue Jul 21 09:12:07 PDT 2015
+Beginning at Fri Oct 16 12:10:30 PDT 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3892,6 +3892,8 @@ Replacing definition of axis EAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Could not compute Std Dev. Data too large or or not within 3 std of computed mean.
+           *** NOTE: Using linear levels instead.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3903,7 +3905,6 @@ Replacing definition of axis EAXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
@@ -3937,6 +3938,9 @@ Replacing definition of grid GG
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+rm: cannot remove `WestCoastCarbon_9d9c_f562_77b5_5.nc': No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
@@ -4005,6 +4009,10 @@ plot/vs/thick/line/sym=21/siz=.3/ribbon/gap xpts, 10*ypts, color
 plot/vs/thick/line/sym=21/siz=0.3/gap xpts, 10*ypts, 10.1*ypts, 9.93*ypts, gvar
  **ERROR: command syntax: PLOT/GAPLOC applies only to PLOT/VS/RIBBON
 plot/ov/nolab/vs/thick/line/sym=21/siz=.3/gapl xpts, color, gvar
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4096,4 +4104,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Jul 21 09:14:32 PDT 2015
+Ended at Fri Oct 16 12:13:09 PDT 2015

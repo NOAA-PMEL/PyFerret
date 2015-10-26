@@ -702,8 +702,8 @@
      .		alg_trans_title( 46 )	/ '4D stddev'           /,
      .		alg_trans_num  ( 46 )	/ trans_4d_std  	/
 
-        DATA    (alg_trans_num(i),i = 46, num_transforms)
-     .            /15*unspecified_int4 /
+        DATA    (alg_trans_num(i),i = 47, num_transforms)
+     .            /14*unspecified_int4 /
 
 	DATA
      .		alg_regrid_title( prgrd_exact )		/ ' '	/,

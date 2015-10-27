@@ -274,8 +274,8 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	ELSE
 	    IF(ITFLG.NE.0)THEN
 c comment out to fix bug with overlay plots on short time axes less than a day.
-c		TLO = 1. - DIFF(IT1,ITSTRT)/DT
-c	        THI=TLO+DIFF(IT1,IT2)/DT
+		TLO = 1. - DIFF(IT1,ITSTRT)/DT
+	        THI=TLO+DIFF(IT1,IT2)/DT
 	    ENDIF
 	    IF(ITFLG.EQ.1 .OR. ITFLG.EQ.2)THEN
 		XTI=XHI

@@ -351,4 +351,5 @@ echo "open test_trans.html in a browser to test transparency option in gif mode.
 ls -l $log_file >>&  $bench_hist
 
 # make a clean version of the log file that can easily be compared
-clean_draconian $log_file
+./clean_draconian $log_file
+

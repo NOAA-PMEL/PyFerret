@@ -273,7 +273,6 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	    IF ( interrupted ) GOTO 3333		! 1/89 - *sh*
 	ELSE
 	    IF(ITFLG.NE.0)THEN
-c comment out to fix bug with overlay plots on short time axes less than a day.
 		TLO = 1. - DIFF(IT1,ITSTRT)/DT
 	        THI=TLO+DIFF(IT1,IT2)/DT
 	    ENDIF

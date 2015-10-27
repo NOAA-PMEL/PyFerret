@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1188 Oct 21 11:32 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1188 Oct 27 11:43 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
@@ -260,7 +260,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/PyFerret/lib
 FER_PALETTE=. /home/flat/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Wed Oct 21 11:33:27 PDT 2015
+Beginning at Tue Oct 27 11:44:55 PDT 2015
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -3948,4 +3948,4 @@ LOAD/TEMPORARY vflag
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
 *** Running test: bn_outline_poly.jnl
  Cached data cleared from memory
-Ended at Wed Oct 21 11:35:00 PDT 2015
+Ended at Tue Oct 27 11:46:23 PDT 2015

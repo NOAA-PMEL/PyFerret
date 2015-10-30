@@ -47,6 +47,7 @@
 * V66  *kms*  7/10 Initialize return value to .TRUE. (uninitialized bug for
 *                  N+1 bounds) and no need to check for gaps for N+1 bounds
 * V694  5/15 *acm* Match precision for bounds checks (as is done for coords).
+* V696 10/15 *acm* Ticket 2321: Fix logic when detecting coords that match grid bounds
 
 
         INCLUDE 'xio.cmn_text'
@@ -73,6 +74,8 @@
 	
         epsilon_23 =  2.**(-23) 
         depsilon_46 =  2.**(-46) 
+        epsilon_23 =  2.**(-22) 
+        depsilon_46 =  2.**(-45) 
 
 	ipt1 = line_subsc1(nline)
 	npts = line_dim(nline)
@@ -103,10 +106,12 @@
 		   ELSE
                       equal = TM_FPEQ_EPS(epsilon,pt,blo) .OR. TM_FPEQ_EPS(epsilon,pt,bhi)
 		   ENDIF
-		   IF (.NOT. equal) TM_CHECK_BNDS = .FALSE.
-                   RETURN
+		   IF (.NOT. equal) THEN
+		      TM_CHECK_BNDS = .FALSE.
+                     RETURN
+		   ENDIF
                 ENDIF
-	        pt = line_start(nline) + FLOAT(i+1)* del
+	        pt = line_start(nline) + DBLE(i+1)* del
 
   100           CONTINUE
 
@@ -124,7 +129,10 @@
 		   ELSE
                       equal = TM_FPEQ_EPS(epsilon,pt,blo) .OR. TM_FPEQ_EPS(epsilon,pt,bhi)
 		   ENDIF
-		   IF (.NOT. equal) TM_CHECK_BNDS = .FALSE.
+		   IF (.NOT. equal) THEN
+		      TM_CHECK_BNDS = .FALSE.
+                     RETURN
+		   ENDIF
 
                    RETURN
 	        ENDIF

@@ -1,0 +1,5 @@
+! bn696_bug_fixes
+! test various fixes that went into version 6.96
+
+GO bn_reset
+GO err695_bounds_match_axis

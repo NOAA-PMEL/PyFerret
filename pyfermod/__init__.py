@@ -71,9 +71,9 @@ import filenamecompleter
 import graphbind
 import regrid
 
-from fervar import FerVar
-from ferdatavar import FerDataVar
-from ferdataset import FerDataSet
+from ferrvar import FerrVar
+from ferrdatavar import FerrDataVar
+from ferrdataset import FerrDataSet
 
 
 def init(arglist=None, enterferret=True):

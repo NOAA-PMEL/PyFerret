@@ -95,12 +95,13 @@
 * internal variable declarations:
 	INTEGER	TM_LENSTR1, CGRID_SIZE, GET_MAX_STRING_LEN,
      .		i, j, k, l, m, n, nbad, ngood, ntot, idim,
-     .		len_line, len_set_name, grid, slen, i1, i2, nok, listdims
+     .		len_line, len_set_name, grid, slen, i1, i2, nok, 
+     .		listdims, nfig
 	REAL	datum, bad, std_dev, large, small, mean, sumsq_dev, dev
-	REAL*8	sum, sum2, xmean, zmean, x, xdelta, variance_c
+	REAL*8	sum, sum2, xmean, zmean, x, xdelta, variance_c, diff
 
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, vname_buff
-	CHARACTER	TM_FMT*12, LEFINT*16, AX_TITLE*32, CX_SIZE_STR*24,
+	CHARACTER	TM_FMT*20, LEFINT*20, AX_TITLE*32, CX_SIZE_STR*24,
      .			line_buff*130, title*32, bl13*13, symbuff*30
 	PARAMETER (bl13 = '             ' )
 
@@ -287,13 +288,27 @@
 	CALL SPLIT_LIST(pttmode_explct, lun,
      .			' # flagged as bad  data: '//rbuff(1),0)
 	IF ( ngood .GT. 0 ) THEN
+	   nfig = 0
            rbuff(1) = TM_FMT(small, sig_fig, 12, slen)
            rbuff(2) = TM_FMT(large, sig_fig, 12, slen)
+	   diff = (large-small)/MAX( ABS(large), ABS(small) )
+	   IF (diff.LT.0.01 .AND. ngood.GT.1) THEN
+	      nfig = 4
+              rbuff(1) = TM_FMT(small, sig_fig+nfig, 20, slen)
+              rbuff(2) = TM_FMT(large, sig_fig+nfig, 20, slen)
+	      diff = (large-small)/MAX( ABS(large), ABS(small) )
+	      IF (diff .LT. 1.e-7) THEN
+	        nfig = 16-sig_fig
+	        rbuff(1) = TM_FMT(small, sig_fig+nfig, 20, slen)
+	        rbuff(2) = TM_FMT(large, sig_fig+nfig, 20, slen)
+	      ENDIF
+	   ENDIF
+
            IF ( ABS(sum) .GE. 3.D35 ) THEN
               rbuff(3) = '**too big**'
 	      slen = 11
            ELSE
-              rbuff(3) = TM_FMT(mean , sig_fig, 12, slen)
+              rbuff(3) = TM_FMT(mean , sig_fig+nfig, 20, slen)
            ENDIF
 	   CALL SPLIT_LIST(pttmode_explct, lun,
      .			' Minimum value: '//rbuff(1), 0)
@@ -379,16 +394,13 @@
 
 ! Define Ferret symbols with ngood and nbad
 	IF ( full .AND. mr_type(mv) .NE. ptype_string ) THEN
-
            symbuff = 'STAT_NGOOD'
-           datum = ngood
-           rbuff(1) = TM_FMT(datum , sig_fig, 12, slen)
+           rbuff(1) = LEFINT(ngood, slen)
            slen = TM_LENSTR1(rbuff(1))
            CALL PUTSYM( symbuff, rbuff(1), slen, i2)
 
            symbuff = 'STAT_NBAD'
-           datum = nbad
-           rbuff(1) = TM_FMT(datum , sig_fig, 12, slen)
+           rbuff(1) = LEFINT(nbad, slen)
            slen = TM_LENSTR1(rbuff(1))
            CALL PUTSYM( symbuff, rbuff(1), slen, i2)
         ENDIF

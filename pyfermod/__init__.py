@@ -71,6 +71,10 @@ import filenamecompleter
 import graphbind
 import regrid
 
+from fervar import FerVar
+from ferdatavar import FerDataVar
+from ferdataset import FerDataSet
+
 
 def init(arglist=None, enterferret=True):
     """
@@ -1547,7 +1551,7 @@ def stop():
     # If it had been started, shut down ESMP and delete the log file
     try:
         regrid.ESMPControl().stopESMP(True)
-    except ImportError:
+    except Exception:
         pass
     # Continue with Ferret shutdown
     return libpyferret._stop()

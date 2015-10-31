@@ -83,7 +83,7 @@ void FORTRAN(pplldc_envelope)(int *k, float *z, int *mx, int *my,int *imn, int *
 
   FORTRAN(get_ppl_memory_size)(&pmemsize);
 
-  if (*plot_mem_used > pmemsize) reallo_ppl_memory(plot_mem_used); 
+  if (*plot_mem_used > pmemsize) reallo_ppl_memory(*plot_mem_used); 
 
   FORTRAN(pplldc) (k, z, mx, my, imn, imx, jmn, jmx, pi, pj, nx1, ny1, 
                    xmin1, ymin1, dx1, dy1, ppl_memory);

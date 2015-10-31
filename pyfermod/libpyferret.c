@@ -47,6 +47,7 @@
 #include "EF_Util.h"
 #include "grdel.h"
 #include "pyferret.h"
+#include "pplmem.h"
 
 /* global pyferret Python module object used for readline */
 PyObject *pyferret_module_pyobject = NULL;
@@ -339,6 +340,22 @@ static int resizeFerretMemory(int blksiz)
     ferMemSize = newFerMemSize;
     set_fer_memory(ferMemory, ferMemSize);
     return 1;
+}
+
+
+/*
+ * Called by the Ferret core to reallocate for more PPL memory
+ */
+void reallo_ppl_memory(int new_size)
+{
+    if ( pplMemory != NULL )
+        PyMem_Free(pplMemory);
+    pplMemory = (float *) PyMem_Malloc((size_t)new_size * sizeof(float));
+    if ( pplMemory == NULL ) {
+        printf("Unable to allocate the requested %d words of PLOT memory.\n", new_size);
+        exit(1);
+    }
+    set_ppl_memory(pplMemory, new_size);
 }
 
 

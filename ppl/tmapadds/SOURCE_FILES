@@ -92,5 +92,4 @@ pplldc_envelope.c\
 pplldv_envelope.c\
 pplldx_envelope.c\
 pplld_pts_envelope.c\
-reallo_envelope.c\
-reallo_ppl_memory.c
+reallo_envelope.c

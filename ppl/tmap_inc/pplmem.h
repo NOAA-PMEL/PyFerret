@@ -2,7 +2,7 @@
    Declarations for routines that allow dynamic PPLUS memory buffer 
    9/18/01 *acm*
 
-/*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+*/
 
 /* Easier way of handling FORTRAN calls with underscore/no underscore */
 #ifndef FORTRAN
@@ -97,5 +98,5 @@ void FORTRAN(pplldv)( int *, float *, int *, int *, int *, int *,
 void FORTRAN(save_ppl_memory_size)(int *);
 void FORTRAN(get_ppl_memory_size)(int *);
 
-void reallo_ppl_memory( int * );
+void reallo_ppl_memory( int );
 

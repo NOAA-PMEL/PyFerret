@@ -74,7 +74,7 @@ void FORTRAN(pplld_pts_envelope)(int *npts,int *plot_mem_used)
 
   FORTRAN(get_ppl_memory_size)(&pmemsize);
 
-  if (*plot_mem_used > pmemsize) reallo_ppl_memory(plot_mem_used); 
+  if (*plot_mem_used > pmemsize) reallo_ppl_memory(*plot_mem_used); 
 
   FORTRAN(pplld_pts) (npts, ppl_memory);
 

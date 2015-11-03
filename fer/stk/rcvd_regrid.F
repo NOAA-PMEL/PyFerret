@@ -76,6 +76,7 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
 *                  dimension is now an arg to SECS_TO_TSTEP. Note the input 
 *                  argument "axis" in this routine is a dimension, 1, 2, ... 
+* V696 *acm* 11/15 Added @BIN and @NBIN regridding transforms
 
 * calling argument declarations:
 	INTEGER	src_cx, dst_cx, axis, work, ok_min, ok_max, status
@@ -135,6 +136,7 @@
 * for "window"ing   we need source area   containing  the destination area
 * for exact match   we need source points aligning w/ the destination points
 * for nrst match    do as for averaging
+* for binning       do as for averaging
 	IF ( rgrd_trans .EQ. prgrd_linear_interp
      .      .OR. rgrd_trans .EQ. prgrd_xy_lin ) THEN
 	   dst_where_loest = box_middle
@@ -154,7 +156,9 @@
      .      .OR. rgrd_trans .EQ. prgrd_sum
      .      .OR. rgrd_trans .EQ. prgrd_good_pt
      .	    .OR. rgrd_trans .EQ. prgrd_average
-     .	    .OR. rgrd_trans .EQ. prgrd_nearest ) THEN
+     .	    .OR. rgrd_trans .EQ. prgrd_nearest
+     .	    .OR. rgrd_trans .EQ. prgrd_bin
+     .	    .OR. rgrd_trans .EQ. prgrd_nbin ) THEN
 	   dst_where_loest = box_lo_lim
 	   dst_where_hiest = box_hi_lim
 	   src_where_loest = box_lo_lim

@@ -85,6 +85,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V68+ 4/12  *acm*   Fix ticket 1931: the work space for XY linear regridding
 *                    was computed incorrectly.
+* V696 *acm* 11/15 Added @BIN and @NBIN regridding transforms
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -315,6 +316,13 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
      .			memory(1,mr_blk1(src_mr)), src_mr,
      .			memory(1,mr_blk1(dst_mr)), dst_mr,
      .			memory(1, blk1), wk_size+1, 2*wk_size )
+	ELSEIF ( rgrd_trans .EQ. prgrd_bin
+     .	 .OR.    rgrd_trans .EQ. prgrd_nbin ) THEN
+	   CALL DO_BIN_REGRID( cx_valid, axis, rgrd_trans,
+     .			memory(1,mr_blk1(src_mr)), src_mr,
+     .			memory(1,mr_blk1(dst_mr)), dst_mr,
+     .			memory(1, blk1), src_cx, dst_cx,
+     .                  wk_size+1 )
 * modulo regridding
 	ELSE
 	   IF ( itsa_string ) GOTO 5010

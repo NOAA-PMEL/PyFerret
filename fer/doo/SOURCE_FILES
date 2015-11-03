@@ -3,6 +3,7 @@ asn_regrid_1_axis.F\
 asn_ptr_regrid_1_axis.F\
 ave_regrid_1_axis.F\
 binom_wt.F\
+bin_regrid_1_axis.F\
 convolve.F\
 convolve_p.F\
 days_from_day0.F\
@@ -32,6 +33,7 @@ do_ave_int.F\
 do_ave_regrid.F\
 do_average.F\
 do_avg_wgt.F\
+do_bin_regrid.F\
 do_deriv_bkwd.F\
 do_deriv_cntr.F\
 do_deriv_frwd.F\

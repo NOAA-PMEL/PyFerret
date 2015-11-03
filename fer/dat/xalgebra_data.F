@@ -94,6 +94,7 @@
 * V690 12/13 *sh* added auxiliary regridding transforms
 * v695+ 3/15 *sh* added pauxrgrd_fmrc for T-F orthoganalization
 * V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
+* V696 *acm* 11/15 Added @BIN and @NBIN regridding transforms
 
         IMPLICIT NONE
 	include	'ferret.parm'
@@ -766,12 +767,19 @@
      .		alg_regrid_title( prgrd_nearest )	/ 'nearst coord'/,
      .		alg_regrid_code ( prgrd_nearest )	/ 'NRST'	/
      .		alg_regrid_vizb ( prgrd_nearest )	/ .TRUE.	/,
-     .		(alg_regrid_title(i),i=prgrd_nearest+1,max_regrid_trans)
-     .				/11*unspecified_name4/,
-     .		(alg_regrid_code (i),i=prgrd_nearest+1,max_regrid_trans)
-     .				/11*unspecified_name4/,
-     .		(alg_regrid_vizb (i),i=prgrd_nearest+1,max_regrid_trans)
-     .				/11*.FALSE./
+     .		alg_regrid_title( prgrd_bin )		/ 'binning'	/,
+     .		alg_regrid_code ( prgrd_bin )		/ 'BIN'		/
+     .		alg_regrid_vizb ( prgrd_bin )		/ .TRUE.	/,
+     .		alg_regrid_title( prgrd_nbin )		/ '#good in bin'/,
+     .		alg_regrid_code ( prgrd_nbin )		/ 'NBIN'	/
+     .		alg_regrid_vizb ( prgrd_nbin )		/ .TRUE.	/,
+
+     .		(alg_regrid_title(i),i=prgrd_nbin+1,max_regrid_trans)
+     .				/8*unspecified_name4/,
+     .		(alg_regrid_code (i),i=prgrd_nbin+1,max_regrid_trans)
+     .				/8*unspecified_name4/,
+     .		(alg_regrid_vizb (i),i=prgrd_nbin+1,max_regrid_trans)
+     .				/8*.FALSE./
 
 
 	DATA

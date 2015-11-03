@@ -1,0 +1,8 @@
+! bin regridding tests
+
+go bn_bin_regrid.sub X
+go bn_bin_regrid.sub Y
+go bn_bin_regrid.sub Z
+go bn_bin_regrid.sub T
+go bn_bin_regrid.sub E
+go bn_bin_regrid.sub F

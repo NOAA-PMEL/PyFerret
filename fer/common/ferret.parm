@@ -41,6 +41,7 @@
 *       12/14 *sh* _DQ_ and _SQ_ alternatives to double and single quote marks
 *        3/15 *sh* pauxrgrd_fmrc for forecast-time index orthoganalizing
 * V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
+* V696 *acm* 11/15 Added @BIN and @NBIN regridding transforms
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -373,6 +374,8 @@
      .			prgrd_modmin,
      .			prgrd_modmax,
      .			prgrd_nearest,
+     .			prgrd_bin,
+     .			prgrd_nbin,
      .			prgrd_from_source,
      .			prgrd_from_ntrmed,
      .			pinterpolate
@@ -397,6 +400,8 @@
      .			prgrd_modmin		= 17,
      .			prgrd_modmax		= 18,
      .			prgrd_nearest		= 19,
+     .			prgrd_bin		= 21,
+     .			prgrd_nbin		= 22,
      .			prgrd_from_source	= -6,
      .			prgrd_from_ntrmed	= -7,
      .			pinterpolate		= 0 )

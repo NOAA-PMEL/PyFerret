@@ -993,6 +993,9 @@ GO bn_floatstr_extended
 GO bn_reset
 GO bn696_bug_fixes
 
+GO bn_reset
+GO bn_bin_regrid
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

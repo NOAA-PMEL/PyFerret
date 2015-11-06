@@ -14,7 +14,7 @@ LIST dest, var[G$1=dcoarse@ave], var[G$1=dcoarse@BIN], var[G$1=dcoarse@NBIN]
 
 ! Data on an irregular grid with missing values
 LET sbin = {1.1, 2.2, , , 5}
-LET var = RESHAPE(sbin, _$1[gx=irr])
+LET var = RESHAPE(sbin, _$1[g$1=irr])
 LET dest =  _$1[G$1=dcoarse]
 LIST dest, var[G$1=dcoarse@ave], var[G$1=dcoarse@BIN], var[G$1=dcoarse@NBIN]
 

@@ -238,7 +238,11 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	    IF ( interrupted ) GOTO 3333		! 1/89 - *sh*
 	ELSE
 	    IF(ITFLG.NE.0)THEN
-c comment out to fix bug with overlay plots on short time axes less than a day.
+	        ! Handle time as in setax for short-time axes
+	        IF (is_hours_axis .GT. 0) THEN  
+		   IT1 = ITMIN
+		   IT2 = ITMAX
+	        ENDIF
 		TLO = 1. - DIFF(IT1,ITSTRT)/DT
 	        THI=TLO+DIFF(IT1,IT2)/DT
 	    ENDIF

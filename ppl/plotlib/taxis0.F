@@ -279,7 +279,13 @@ C      LOOP:
 	IF(ITIME(13:14)//ITIME(1:12) .LE.
      .       ITIME2(13:14)//ITIME2(1:12)) THEN
            IF(IHR.EQ.0) ltic = ltic + 1
-	   IF (is_hours_axis.EQ.1 .AND. imin.EQ.0. AND. ihr.NE.0) ltic = ltic+1
+	   IF (is_hours_axis.EQ.1) THEN
+	      IF (difft.LE.12 .AND. sec.EQ.0.) THEN 
+	         ltic = ltic+1
+              ELSE
+	         IF (imin.EQ.0. .AND. ihr.NE.0) ltic = ltic+1
+              ENDIF
+	   ENDIF
            GO TO 110
         ENDIF
      
@@ -304,10 +310,10 @@ C      LOOP:
 	
 ! On short-time interval axes, label interval
 	
-      IF (ltic.LT.2 .AND. is_hours_axis.GT.0) labint = 2*delt
       IF (is_hours_axis.GT.0) THEN
          labint = 2*delt
 	 IF (ihdb.GT.0) labint = ihdb*delt
+	 IF (difft.LE.12) labint = delt
       ENDIF
       IF (is_hours_axis.GT.0) THEN
          labint = 2*delt
@@ -346,7 +352,8 @@ C      LOOP:
           CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
 	  
 	hvytic = (is_hours_axis.EQ.0 .AND. IHR.EQ.0 .OR. 
-     .            is_hours_axis.EQ.1 .AND. IMIN.EQ.0)
+     .            is_hours_axis.EQ.1 .AND. IMIN.EQ.0 .OR. 
+     .            is_hours_axis.EQ.1 .AND. difft.LE.12 .AND.SEC.EQ.0)
 	IF(hvytic)THEN
 	CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
               IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
@@ -449,6 +456,12 @@ c          IF(ITIME.LE.ITIME2) GO TO 10
 
          ENDIF
       ENDIF
+
+
+c Finish out the line
+      CALL PLOT (t,y,0,0)
+      t = TLO + DIFF(ITIME1, ITIME2)/dt
+      CALL PLOT (t,y,1,0)
 
       RETURN
       END

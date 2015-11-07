@@ -1,8 +1,8 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1188 Oct 27 11:43 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1188 Nov  6 16:02 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
+Note: RUN_TEST.sh test results for debug PyFerret on RHEL6-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -243,6 +243,8 @@ Benchmark scripts that will be run:
    bn_plot_ribbon_gaploc.jnl
    bn_time_short_axes.jnl
    bn_floatstr_extended.jnl
+   bn696_bug_fixes
+   bn_bin_regrid
    bn_all_ef.jnl
    bn_startupfile.jnl
    bn_outline_poly.jnl
@@ -260,7 +262,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/PyFerret/lib
 FER_PALETTE=. /home/flat/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Tue Oct 27 11:44:55 PDT 2015
+Beginning at Fri Nov  6 16:04:11 PST 2015
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -3925,6 +3927,24 @@ plot/ov/nolab/vs/thick/line/sym=21/siz=.3/gapl xpts, color, gvar
  Cached data cleared from memory
 *** Running test: bn_floatstr_extended.jnl
  Cached data cleared from memory
+*** Running test: bn696_bug_fixes
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: Units on axis "pfull1_1" are not recognized: hpa
+           *** NOTE: They will not be convertible:
+*** Running test: bn_bin_regrid
+ Cached data cleared from memory
+Replacing definition of axis DCOARSE
+Replacing definition of axis IRR
+Replacing definition of axis DCOARSE
+Replacing definition of axis IRR
+Replacing definition of axis DCOARSE
+Replacing definition of axis IRR
+Replacing definition of axis DCOARSE
+Replacing definition of axis IRR
+Replacing definition of axis DCOARSE
+Replacing definition of axis IRR
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3948,4 +3968,4 @@ LOAD/TEMPORARY vflag
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
 *** Running test: bn_outline_poly.jnl
  Cached data cleared from memory
-Ended at Tue Oct 27 11:46:23 PDT 2015
+Ended at Fri Nov  6 16:05:45 PST 2015

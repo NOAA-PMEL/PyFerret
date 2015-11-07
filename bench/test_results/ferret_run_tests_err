@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Oct 27 11:27 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.95
+lrwxrwxrwx. 1 ksmith oerdnewp 13 Nov  6 15:35 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.951
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug Ferret on RHEL6-64
@@ -243,6 +243,8 @@ Benchmark scripts that will be run:
    bn_plot_ribbon_gaploc.jnl
    bn_time_short_axes.jnl
    bn_floatstr_extended.jnl
+   bn696_bug_fixes
+   bn_bin_regrid
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -259,7 +261,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Tue Oct 27 11:30:53 PDT 2015
+Beginning at Fri Nov  6 15:53:35 PST 2015
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3852,6 +3854,24 @@ plot/ov/nolab/vs/thick/line/sym=21/siz=.3/gapl xpts, color, gvar
  Cached data cleared from memory
 *** Running test: bn_floatstr_extended.jnl
  Cached data cleared from memory
+*** Running test: bn696_bug_fixes
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: Units on axis "pfull1_1" are not recognized: hpa
+           *** NOTE: They will not be convertible:
+*** Running test: bn_bin_regrid
+ Cached data cleared from memory
+Replacing definition of axis DCOARSE
+Replacing definition of axis IRR
+Replacing definition of axis DCOARSE
+Replacing definition of axis IRR
+Replacing definition of axis DCOARSE
+Replacing definition of axis IRR
+Replacing definition of axis DCOARSE
+Replacing definition of axis IRR
+Replacing definition of axis DCOARSE
+Replacing definition of axis IRR
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3871,4 +3891,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Tue Oct 27 11:32:33 PDT 2015
+Ended at Fri Nov  6 15:55:16 PST 2015

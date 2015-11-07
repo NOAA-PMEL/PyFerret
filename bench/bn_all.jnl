@@ -988,6 +988,13 @@ GO bn_time_short_axes
 GO bn_reset
 GO bn_floatstr_extended
 
+! *********** v6.96 Additions ***********
+
+GO bn_reset
+GO bn696_bug_fixes
+
+GO bn_reset
+GO bn_bin_regrid
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

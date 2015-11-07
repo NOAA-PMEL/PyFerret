@@ -1,0 +1,12 @@
+! err695_bounds_match_axis.jnl
+! ticket 2321. 
+!
+! The coordinates match the upper bound of each cell
+! to machine accuracy. The internal rep of the value
+! has pt > bound_hi however.  The logic in tm_check_bnds
+! handes this.
+
+use shorttemp.nc
+
+! Previously showed tbox=0 for every second pt.
+sh grid/l=1:4444 temp

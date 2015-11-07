@@ -1,8 +1,8 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1188 Oct 27 11:43 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1188 Nov  6 16:02 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
+Note: RUN_TEST.sh test results for debug PyFerret on RHEL6-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -243,6 +243,8 @@ Benchmark scripts that will be run:
    bn_plot_ribbon_gaploc.jnl
    bn_time_short_axes.jnl
    bn_floatstr_extended.jnl
+   bn696_bug_fixes
+   bn_bin_regrid
    bn_all_ef.jnl
    bn_startupfile.jnl
    bn_outline_poly.jnl
@@ -260,7 +262,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/PyFerret/lib
 FER_PALETTE=. /home/flat/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Tue Oct 27 11:44:55 PDT 2015
+Beginning at Fri Nov  6 16:04:11 PST 2015
 *** Running test: bn_syntax.jnl
 [?1034h! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10539,18 +10541,18 @@ show symbols/all
 PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.95"
+FERRET_VERSION = "6.951"
 FERRET_PLATFORM = "Linux 2.6.32-573.7.1.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.3.1 of Jul  1 2015 15:02:01 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "27-Oct-15"
-SESSION_TIME = "11:45"
-SESSION_PID = "28355"
+SESSION_DATE = " 6-Nov-15"
+SESSION_TIME = "16:04"
+SESSION_PID = "4140"
 DELTA_CPU = "0.206967"
-CLOCK_SECS = "0.103"
-CURRENT_DATE = "27-Oct-15"
-CURRENT_TIME = "11:45:02"
+CLOCK_SECS = "0.114"
+CURRENT_DATE = " 6-Nov-15"
+CURRENT_TIME = "16:04:19"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -10568,18 +10570,18 @@ show symbol/all
 PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.95"
+FERRET_VERSION = "6.951"
 FERRET_PLATFORM = "Linux 2.6.32-573.7.1.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.3.1 of Jul  1 2015 15:02:01 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "27-Oct-15"
-SESSION_TIME = "11:45"
-SESSION_PID = "28355"
-DELTA_CPU = "0"
-CLOCK_SECS = "0.103"
-CURRENT_DATE = "27-Oct-15"
-CURRENT_TIME = "11:45:02"
+SESSION_DATE = " 6-Nov-15"
+SESSION_TIME = "16:04"
+SESSION_PID = "4140"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "0.116"
+CURRENT_DATE = " 6-Nov-15"
+CURRENT_TIME = "16:04:19"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 S1 = "hello"
@@ -10589,9 +10591,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "27-Oct-15"
-SESSION_TIME = "11:45"
-SESSION_PID = "28355"
+SESSION_DATE = " 6-Nov-15"
+SESSION_TIME = "16:04"
+SESSION_PID = "4140"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10601,15 +10603,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "27-Oct-15"
-SESSION_TIME = "11:45"
-SESSION_PID = "28355"
+SESSION_DATE = " 6-Nov-15"
+SESSION_TIME = "16:04"
+SESSION_PID = "4140"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "27-Oct-15"
-SESSION_TIME = "11:45"
-SESSION_PID = "28355"
+SESSION_DATE = " 6-Nov-15"
+SESSION_TIME = "16:04"
+SESSION_PID = "4140"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10737,18 +10739,18 @@ show symbols/all
 PPL$XPIXEL = "979"
 PPL$YPIXEL = "844"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.95"
+FERRET_VERSION = "6.951"
 FERRET_PLATFORM = "Linux 2.6.32-573.7.1.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.3.1 of Jul  1 2015 15:02:01 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "27-Oct-15"
-SESSION_TIME = "11:45"
-SESSION_PID = "28355"
+SESSION_DATE = " 6-Nov-15"
+SESSION_TIME = "16:04"
+SESSION_PID = "4140"
 DELTA_CPU = "0.016998"
-CLOCK_SECS = "0.121"
-CURRENT_DATE = "27-Oct-15"
-CURRENT_TIME = "11:45:02"
+CLOCK_SECS = "0.132"
+CURRENT_DATE = " 6-Nov-15"
+CURRENT_TIME = "16:04:19"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -25312,7 +25314,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Tue Oct 27 11:45:09 PDT 2015
+Fri Nov  6 16:04:26 PST 2015
  
 GO bn_reset
 cancel mode verify
@@ -48396,7 +48398,7 @@ list element_index_str_n (axy[k=1:2,j=1:2], {"a10", "a2", "d4", "c5"})
  
 ! ferret version
 sh sym FERRET_VERSION
-FERRET_VERSION = "6.95"
+FERRET_VERSION = "6.951"
  
 ! history attribute
 let a = 12
@@ -48414,7 +48416,7 @@ LAB1 = "X : 0.5 to 314.5"
  
 ! show commands without an argument, lists version number at the top
 sho command
- Commands in Program FERRET (PyFerret 1.2) version6.95:
+ Commands in Program FERRET (PyFerret 1.2) version6.951:
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE/QUALITY/ANTIALIA/NOANTIAL
       /ENGINE/COLOR/OPACITY/THICKEN/XPIXELS/YPIXELS/XINCHES/YINCHES/TEXTPROM
@@ -48554,7 +48556,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "27-Oct-15_11:45"
+WIN_TITLE = "6-Nov-15_16:04"
  
 set win/title="set the title"
 sho sym win_title
@@ -48572,7 +48574,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="27-Oct-15:11:45"
+ !-> set win/title=" 6-Nov-15:16:04"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48581,16 +48583,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 27-Oct-15
+ !-> DEFINE SYMBOL the_date =  6-Nov-15
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 11:45
+ !-> DEFINE SYMBOL the_time = 16:04
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="27-Oct-15:11:45"
+ !-> SET WIN/TITLE="6-Nov-15:16:04"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "27-Oct-15:11:45"
+WIN_TITLE = "6-Nov-15:16:04"
 *** Running test: bn_last_error.jnl
 [?1034h! bn_last_error.jnl
 ! acm Nov 2005
@@ -51669,11 +51671,11 @@ set view left; shade/x=120e:80w sst  ! works correctly
 set view right; fill/x=120e:80w sst
  
 sh sym ppl$xmin, ppl$xmax    ! should be 131, 279
-PPL$XMIN = "131.000"
-PPL$XMAX = "281.000"
+PPL$XMIN = "131.0000"
+PPL$XMAX = "281.0000"
 sh sym ppl$xlow, ppl$xhigh   ! should be 165, 259
-PPL$XHIGH = "165.000"
-PPL$XLOW = "259.000"
+PPL$XHIGH = "165.0000"
+PPL$XLOW = "259.0000"
  
 sp rm -f err581_subspanx_fill_bug.nc
  
@@ -52869,7 +52871,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -52914,7 +52916,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -58805,10 +58807,10 @@ SH GRID am
  normal    F
 *** Running test: bn_clock_syms.jnl
 [?1034hSH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.209967"
-CLOCK_SECS = "0.105"
-CURRENT_DATE = "27-Oct-15"
-CURRENT_TIME = "11:45:50"
+DELTA_CPU = "0.220965"
+CLOCK_SECS = "0.106"
+CURRENT_DATE = " 6-Nov-15"
+CURRENT_TIME = "16:05:09"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -58817,8 +58819,8 @@ CURRENT_TIME = "11:45:50"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.016998"
-CLOCK_SECS = "0.122"
+DELTA_CPU = "0.030995"
+CLOCK_SECS = "0.138"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -58832,60 +58834,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.056991
+ !-> DEFINE VARIABLE ten_plots = 0.056992
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "0.179"
+CLOCK_SECS = "0.195"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.179"
+CLOCK_SECS = "0.196"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.006999
+ !-> DEFINE VARIABLE dt = 0.005999
+ !-> DEFINE VARIABLE sumcpu =0.005999
 !-> REPEAT: K=2
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.013998
+ !-> DEFINE VARIABLE sumcpu =0.012998
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.020997
+ !-> DEFINE VARIABLE dt = 0.006998
+ !-> DEFINE VARIABLE sumcpu =0.019996
 !-> REPEAT: K=4
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.027996
+ !-> DEFINE VARIABLE sumcpu =0.026995
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.034995
+ !-> DEFINE VARIABLE dt = 0.007999
+ !-> DEFINE VARIABLE sumcpu =0.034994
 !-> REPEAT: K=6
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.041994
+ !-> DEFINE VARIABLE sumcpu =0.041993
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.048993
+ !-> DEFINE VARIABLE dt = 0.005999
+ !-> DEFINE VARIABLE sumcpu =0.047992
 !-> REPEAT: K=8
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.055992
+ !-> DEFINE VARIABLE sumcpu =0.054991
 !-> REPEAT: K=9
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.062991
+ !-> DEFINE VARIABLE sumcpu =0.06199
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.005999
- !-> DEFINE VARIABLE sumcpu =0.06899
+ !-> DEFINE VARIABLE dt = 0.006999
+ !-> DEFINE VARIABLE sumcpu =0.068989
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.06899
-0.06899
+ !-> MESSAGE/CONTINUE 0.068989
+0.068989
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.25"
+CLOCK_SECS = "0.267"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "27-Oct-15"
-SESSION_TIME = "11:45"
-CURRENT_DATE = "27-Oct-15"
-CURRENT_TIME = "11:45:50"
+SESSION_DATE = " 6-Nov-15"
+SESSION_TIME = "16:05"
+CURRENT_DATE = " 6-Nov-15"
+CURRENT_TIME = "16:05:09"
 *** Running test: bn63_bug_fixes.jnl
 [?1034h! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -62796,9 +62798,9 @@ list contents
              VARIABLE : { SPAWN:"cat redirect_journal.txt" }
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
- 2    /  2:" ! FERRET v6.95 (PyFerret 1.2)"                                             
- 3    /  3:" ! Linux 2.6.32-573.7.1.el6.x86_64 - 10/27/15"                              
- 4    /  4:" ! 27-Oct-15 11:45     "                                                    
+ 2    /  2:" ! FERRET v6.951 (PyFerret 1.2)"                                            
+ 3    /  3:" ! Linux 2.6.32-573.7.1.el6.x86_64 - 11/06/15"                              
+ 4    /  4:" !  6-Nov-15 16:05     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -62879,15 +62881,16 @@ variable transforms e.g.SST[T=1-jan:15-mar@DDC]
 regridding transforms e.g.SST[GX=x5deg@AVE]
    code        description                  code        description
    ----        -----------                  ----        -----------
-   @LIN        lin. interp.                 @MOD        modulo ave
-   @AVE        box avgd                     @MODVAR     modulo var
-   @XACT       exact match                  @MODNGD     # gd mod pts
-   @ASN        index assn                   @MODNBD     #bad mod pts
-   @VAR        variance                     @MODSUM     modulo sum
-   @MIN        minimum                      @MODMIN     modulo min
-   @MAX        maximum                      @MODMAX     modulo max
-   @SUM        sum                          @NRST       nearst coord
-   @NGD        # gd pts
+   @LIN        lin. interp.                 @MODVAR     modulo var
+   @AVE        box avgd                     @MODNGD     # gd mod pts
+   @XACT       exact match                  @MODNBD     #bad mod pts
+   @ASN        index assn                   @MODSUM     modulo sum
+   @VAR        variance                     @MODMIN     modulo min
+   @MIN        minimum                      @MODMAX     modulo max
+   @MAX        maximum                      @NRST       nearst coord
+   @SUM        sum                          @BIN        binning
+   @NGD        # gd pts                     @NBIN       #good in bin
+   @MOD        modulo ave
  
 auxiliary varible regridding transforms e.g.TEMP[GZ(depth)=zax@AVE]
    code        description                  code        description
@@ -65229,40 +65232,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.571
-randu2_randn2       0.144
-randu2_randn2       0.336
-randu2_randn2       0.334
-randu2_randn2       0.490
+randu2_randn2       0.002
+randu2_randn2       0.588
+randu2_randn2       0.976
+randu2_randn2       0.053
+randu2_randn2       0.787
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.481
-randu2_randn2       0.553
-randu2_randn2       0.640
-randu2_randn2       0.378
-randu2_randn2       0.106
+randu2_randn2       0.657
+randu2_randn2       0.633
+randu2_randn2       0.766
+randu2_randn2       0.320
+randu2_randn2       0.197
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.454
-randu2_randn2       0.417
-randu2_randn2       0.565
-randu2_randn2       0.351
-randu2_randn2       0.933
-randu2_randn2       0.693
+randu2_randn2       0.206
+randu2_randn2       0.084
+randu2_randn2       0.860
+randu2_randn2       0.337
+randu2_randn2       0.865
+randu2_randn2       0.571
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.279
-randu2_randn2       0.033
-randu2_randn2       0.750
-randu2_randn2       0.230
-randu2_randn2       0.830
-randu2_randn2       0.901
+randu2_randn2       0.047
+randu2_randn2       0.785
+randu2_randn2       0.667
+randu2_randn2       0.367
+randu2_randn2       0.044
+randu2_randn2       0.475
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65287,40 +65290,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.341
-randu2_randn2      -0.257
-randu2_randn2      -1.059
-randu2_randn2      -0.374
-randu2_randn2       1.385
+randu2_randn2      -0.851
+randu2_randn2       0.422
+randu2_randn2       1.892
+randu2_randn2      -1.166
+randu2_randn2       1.020
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.929
-randu2_randn2       0.178
-randu2_randn2       1.725
+randu2_randn2       0.368
+randu2_randn2      -1.756
+randu2_randn2       1.761
+randu2_randn2      -1.131
+randu2_randn2      -1.428
+             VARIABLE : RANDN2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       2.254
+randu2_randn2       0.372
+randu2_randn2       0.501
 randu2_randn2       0.181
-randu2_randn2       2.362
+randu2_randn2      -1.412
+randu2_randn2      -1.319
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.909
-randu2_randn2      -0.647
-randu2_randn2       2.042
-randu2_randn2      -1.099
-randu2_randn2      -0.804
-randu2_randn2      -1.761
-             VARIABLE : RANDN2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.445
-randu2_randn2       0.043
-randu2_randn2       0.093
-randu2_randn2       0.652
-randu2_randn2      -0.365
-randu2_randn2      -1.088
+randu2_randn2      -0.306
+randu2_randn2       0.217
+randu2_randn2       1.301
+randu2_randn2       0.422
+randu2_randn2      -1.497
+randu2_randn2      -2.091
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65345,14 +65348,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.743       1.743       0.848
-randu2_randn2       0.848       0.930       0.848
-randu2_randn2       0.930       0.848       0.063
-randu2_randn2      -0.273       0.063       0.617
-randu2_randn2       0.063      -0.273       0.617
-randu2_randn2      -0.840      -0.630       0.617
-randu2_randn2      -0.630      -0.630       0.617
-randu2_randn2       0.617       0.617       0.617
+randu2_randn2       1.120       1.120       0.543
+randu2_randn2       0.833       0.833       0.543
+randu2_randn2       0.352       0.543       0.352
+randu2_randn2       0.543       0.352       0.352
+randu2_randn2      -0.732      -0.666       0.352
+randu2_randn2      -0.666      -0.666       0.352
+randu2_randn2       0.342       0.259       0.352
+randu2_randn2       0.259       0.342       0.543
 *** Running test: bn_axis_cf.jnl
 [?1034h! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
@@ -71021,7 +71024,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71076,7 +71079,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71120,7 +71123,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71164,7 +71167,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71201,7 +71204,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71239,7 +71242,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71306,7 +71309,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71355,7 +71358,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71416,7 +71419,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71457,7 +71460,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71498,7 +71501,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71539,7 +71542,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71577,7 +71580,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71805,7 +71808,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71843,7 +71846,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71890,7 +71893,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71934,7 +71937,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71959,7 +71962,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71984,7 +71987,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72413,7 +72416,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72442,7 +72445,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72493,7 +72496,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73065,8 +73068,8 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Tue Oct 27 11:46:09 2015: ncks -h -A -h z1.nc append_to_this.nc\n",
-			"FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "Fri Nov  6 16:05:29 2015: ncks -h -A -h z1.nc append_to_this.nc\n",
+			"FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
 }
@@ -73097,7 +73100,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73128,7 +73131,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73190,7 +73193,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73218,7 +73221,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74918,7 +74921,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74941,7 +74944,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75161,7 +75164,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75191,7 +75194,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75212,7 +75215,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75233,7 +75236,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75255,7 +75258,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75664,7 +75667,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75680,7 +75683,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75696,7 +75699,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       FERRET V6.95 (PyFerret 1.2) 27-Oct-15
+ .                               history         CHAR        38   T       FERRET V6.951 (PyFerret 1.2)  6-Nov-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -76702,7 +76705,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 }
 *** Running test: bn_global_atts.jnl
 [?1034h ! NOAA/PMEL TMAP
@@ -76792,7 +76795,7 @@ variables:
 		LON360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0FERRET V6.95 (PyFerret 1.2) 27-Oct-15" ;
+		:history = "CruiseDsgNcFile 1.0FERRET V6.951 (PyFerret 1.2)  6-Nov-15" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -76819,7 +76822,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- FERRET V6.95 (PyFerret 1.2) 27-Oct-15 
+ FERRET V6.951 (PyFerret 1.2)  6-Nov-15 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -76848,7 +76851,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the fileFERRET V6.95 (PyFerret 1.2) 27-Oct-15 
+ ..history = The history of the fileFERRET V6.951 (PyFerret 1.2)  6-Nov-15 
  ..Conventions = Conventions for variables named V2CF-1.6 
 *** Running test: bn_center_key_labels.jnl
 [?1034h! bn_center_key_labels
@@ -77759,8 +77762,8 @@ list {spawn:"ls xml*.jnl"}
  
 LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
 say `filesets, return=isize`
- !-> MESSAGE/CONTINUE 895
-895
+ !-> MESSAGE/CONTINUE 899
+899
  
 let files = {spawn:"ls *cdf*.jnl"}
 let name_len = strindex(files, ".sub")
@@ -84748,6 +84751,420 @@ LIST/X=165W/L=1 var1[j=1:40:2], var2[j=1:40:2]
 21S   / 18: "  7.5" "007.5"
 17S   / 19: "  8.1" "008.1"
 13S   / 20: "  9.7" "009.7"
+*** Running test: bn696_bug_fixes
+[?1034h! bn696_bug_fixes
+! test various fixes that went into version 6.96
+ 
+GO bn_reset
+cancel mode verify
+GO err695_bounds_match_axis
+! err695_bounds_match_axis.jnl
+! ticket 2321.
+!
+! The coordinates match the upper bound of each cell
+! to machine accuracy. The internal rep of the value
+! has pt > bound_hi however.  The logic in tm_check_bnds
+! handes this.
+ 
+use shorttemp.nc
+ 
+! Previously showed tbox=0 for every second pt.
+sh grid/l=1:4444 temp
+    GRID GSL1
+ name       axis              # pts   start                end
+ LON       LONGITUDE            1 r   97.45W               97.45W
+ LAT       LATITUDE             1 r   36.65N               36.65N
+ PFULL1_1  Z (hpa)              1 r-  3.3236               3.3236
+ TIME      TIME                 4 i   19-JUN-1997 00:00    19-JUN-1997 01:30
+ normal    E
+ normal    F
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  19-JUN-1997 00:00:00  0.0208333  18-JUN-1997 23:30:00    0.02083333
+       2>  19-JUN-1997 00:30:00  0.0208333  19-JUN-1997 00:00:00    0.04166667
+       3>  19-JUN-1997 01:00:00  0.0208333  19-JUN-1997 00:30:00    0.0625
+       4>  19-JUN-1997 01:30:00  0.0208333  19-JUN-1997 01:00:00    0.08333333
+*** Running test: bn_bin_regrid
+[?1034h! bin regridding tests
+ 
+go bn_bin_regrid.sub X
+! Tests of @BIN and @NBIN regridding transforms
+ 
+DEFINE AXIS/$1=1:5:1 dcoarse
+ !-> DEFINE AXIS/X=1:5:1 dcoarse
+ 
+! Data on an irregular grid
+LET sbin = {1.1, 1.2, 3.5, 4.7, 5}
+DEFINE AXIS/$1 irr = sbin
+ !-> DEFINE AXIS/X irr = sbin
+LET var = _$1[G$1=irr]
+ !-> DEFINE VARIABLE var = _X[GX=irr]
+ 
+LET dest =  _$1[G$1=dcoarse]
+ !-> DEFINE VARIABLE dest =  _X[GX=dcoarse]
+! Compare @AVE and @BIN regridding
+LIST dest, var[G$1=dcoarse@ave], var[G$1=dcoarse@BIN], var[G$1=dcoarse@NBIN]
+ !-> LIST dest, var[GX=dcoarse@ave], var[GX=dcoarse@BIN], var[GX=dcoarse@NBIN]
+             X: 0.5 to 5.5
+ Column  1: DEST is _X[GX=DCOARSE]
+ Column  2: VAR[G=1 delta on X@AVE] is _X[GX=IRR] (regrid: 1 delta on X@AVE)
+ Column  3: VAR[G=1 delta on X@BIN] is _X[GX=IRR] (regrid: 1 delta on X@BIN)
+ Column  4: VAR[G=1 delta on X@NBIN] is _X[GX=IRR] (regrid: 1 delta on X@NBIN)
+          DEST    VAR    VAR    VAR
+1   / 1:  1.000  1.178  1.150  2.000
+2   / 2:  2.000  1.545   ....  0.000
+3   / 3:  3.000  3.500   ....  0.000
+4   / 4:  4.000  3.980  3.500  1.000
+5   / 5:  5.000  4.838  4.850  2.000
+ 
+ 
+! Data on an irregular grid with missing values
+LET sbin = {1.1, 2.2, , , 5}
+LET var = RESHAPE(sbin, _$1[g$1=irr])
+ !-> DEFINE VARIABLE var = RESHAPE(sbin, _X[gX=irr])
+LET dest =  _$1[G$1=dcoarse]
+ !-> DEFINE VARIABLE dest =  _X[GX=dcoarse]
+LIST dest, var[G$1=dcoarse@ave], var[G$1=dcoarse@BIN], var[G$1=dcoarse@NBIN]
+ !-> LIST dest, var[GX=dcoarse@ave], var[GX=dcoarse@BIN], var[GX=dcoarse@NBIN]
+             X: 0.5 to 5.5
+ Column  1: DEST is _X[GX=DCOARSE]
+ Column  2: VAR[G=1 delta on X@AVE] is RESHAPE(SBIN, _X[GX=IRR]) (regrid: 1 delta on X@AVE)
+ Column  3: VAR[G=1 delta on X@BIN] is RESHAPE(SBIN, _X[GX=IRR]) (regrid: 1 delta on X@BIN)
+ Column  4: VAR[G=1 delta on X@NBIN] is RESHAPE(SBIN, _X[GX=IRR]) (regrid: 1 delta on X@NBIN)
+          DEST    VAR    VAR    VAR
+1   / 1:  1.000  1.956  1.650  2.000
+2   / 2:  2.000  2.200   ....  0.000
+3   / 3:  3.000   ....   ....  0.000
+4   / 4:  4.000   ....   ....  0.000
+5   / 5:  5.000  5.000  5.000  1.000
+ 
+LIST dest, var[G$1=dcoarse]
+ !-> LIST dest, var[GX=dcoarse]
+             X: 0.5 to 5.5
+ Column  1: DEST is _X[GX=DCOARSE]
+ Column  2: VAR[G=1 delta on X] is RESHAPE(SBIN, _X[GX=IRR]) (regrid: 1 delta on X)
+          DEST    VAR
+1   / 1:  1.000   ....
+2   / 2:  2.000   ....
+3   / 3:  3.000   ....
+4   / 4:  4.000   ....
+5   / 5:  5.000  5.000
+ 
+go bn_bin_regrid.sub Y
+! Tests of @BIN and @NBIN regridding transforms
+ 
+DEFINE AXIS/$1=1:5:1 dcoarse
+ !-> DEFINE AXIS/Y=1:5:1 dcoarse
+ 
+! Data on an irregular grid
+LET sbin = {1.1, 1.2, 3.5, 4.7, 5}
+DEFINE AXIS/$1 irr = sbin
+ !-> DEFINE AXIS/Y irr = sbin
+LET var = _$1[G$1=irr]
+ !-> DEFINE VARIABLE var = _Y[GY=irr]
+ 
+LET dest =  _$1[G$1=dcoarse]
+ !-> DEFINE VARIABLE dest =  _Y[GY=dcoarse]
+! Compare @AVE and @BIN regridding
+LIST dest, var[G$1=dcoarse@ave], var[G$1=dcoarse@BIN], var[G$1=dcoarse@NBIN]
+ !-> LIST dest, var[GY=dcoarse@ave], var[GY=dcoarse@BIN], var[GY=dcoarse@NBIN]
+             Y: 0.5 to 5.5
+ Column  1: DEST is _Y[GY=DCOARSE]
+ Column  2: VAR[G=1 delta on Y@AVE] is _Y[GY=IRR] (regrid: 1 delta on Y@AVE)
+ Column  3: VAR[G=1 delta on Y@BIN] is _Y[GY=IRR] (regrid: 1 delta on Y@BIN)
+ Column  4: VAR[G=1 delta on Y@NBIN] is _Y[GY=IRR] (regrid: 1 delta on Y@NBIN)
+          DEST    VAR    VAR    VAR
+1   / 1:  1.000  1.178  1.150  2.000
+2   / 2:  2.000  1.545   ....  0.000
+3   / 3:  3.000  3.500   ....  0.000
+4   / 4:  4.000  3.980  3.500  1.000
+5   / 5:  5.000  4.838  4.850  2.000
+ 
+ 
+! Data on an irregular grid with missing values
+LET sbin = {1.1, 2.2, , , 5}
+LET var = RESHAPE(sbin, _$1[g$1=irr])
+ !-> DEFINE VARIABLE var = RESHAPE(sbin, _Y[gY=irr])
+LET dest =  _$1[G$1=dcoarse]
+ !-> DEFINE VARIABLE dest =  _Y[GY=dcoarse]
+LIST dest, var[G$1=dcoarse@ave], var[G$1=dcoarse@BIN], var[G$1=dcoarse@NBIN]
+ !-> LIST dest, var[GY=dcoarse@ave], var[GY=dcoarse@BIN], var[GY=dcoarse@NBIN]
+             Y: 0.5 to 5.5
+ Column  1: DEST is _Y[GY=DCOARSE]
+ Column  2: VAR[G=1 delta on Y@AVE] is RESHAPE(SBIN, _Y[GY=IRR]) (regrid: 1 delta on Y@AVE)
+ Column  3: VAR[G=1 delta on Y@BIN] is RESHAPE(SBIN, _Y[GY=IRR]) (regrid: 1 delta on Y@BIN)
+ Column  4: VAR[G=1 delta on Y@NBIN] is RESHAPE(SBIN, _Y[GY=IRR]) (regrid: 1 delta on Y@NBIN)
+          DEST    VAR    VAR    VAR
+1   / 1:  1.000  1.956  1.650  2.000
+2   / 2:  2.000  2.200   ....  0.000
+3   / 3:  3.000   ....   ....  0.000
+4   / 4:  4.000   ....   ....  0.000
+5   / 5:  5.000  5.000  5.000  1.000
+ 
+LIST dest, var[G$1=dcoarse]
+ !-> LIST dest, var[GY=dcoarse]
+             Y: 0.5 to 5.5
+ Column  1: DEST is _Y[GY=DCOARSE]
+ Column  2: VAR[G=1 delta on Y] is RESHAPE(SBIN, _Y[GY=IRR]) (regrid: 1 delta on Y)
+          DEST    VAR
+1   / 1:  1.000   ....
+2   / 2:  2.000   ....
+3   / 3:  3.000   ....
+4   / 4:  4.000   ....
+5   / 5:  5.000  5.000
+ 
+go bn_bin_regrid.sub Z
+! Tests of @BIN and @NBIN regridding transforms
+ 
+DEFINE AXIS/$1=1:5:1 dcoarse
+ !-> DEFINE AXIS/Z=1:5:1 dcoarse
+ 
+! Data on an irregular grid
+LET sbin = {1.1, 1.2, 3.5, 4.7, 5}
+DEFINE AXIS/$1 irr = sbin
+ !-> DEFINE AXIS/Z irr = sbin
+LET var = _$1[G$1=irr]
+ !-> DEFINE VARIABLE var = _Z[GZ=irr]
+ 
+LET dest =  _$1[G$1=dcoarse]
+ !-> DEFINE VARIABLE dest =  _Z[GZ=dcoarse]
+! Compare @AVE and @BIN regridding
+LIST dest, var[G$1=dcoarse@ave], var[G$1=dcoarse@BIN], var[G$1=dcoarse@NBIN]
+ !-> LIST dest, var[GZ=dcoarse@ave], var[GZ=dcoarse@BIN], var[GZ=dcoarse@NBIN]
+             Z: 0.5 to 5.5
+ Column  1: DEST is _Z[GZ=DCOARSE]
+ Column  2: VAR[G=1 delta on Z@AVE] is _Z[GZ=IRR] (regrid: 1 delta on Z@AVE)
+ Column  3: VAR[G=1 delta on Z@BIN] is _Z[GZ=IRR] (regrid: 1 delta on Z@BIN)
+ Column  4: VAR[G=1 delta on Z@NBIN] is _Z[GZ=IRR] (regrid: 1 delta on Z@NBIN)
+          DEST    VAR    VAR    VAR
+1   / 1:  1.000  1.178  1.150  2.000
+2   / 2:  2.000  1.545   ....  0.000
+3   / 3:  3.000  3.500   ....  0.000
+4   / 4:  4.000  3.980  3.500  1.000
+5   / 5:  5.000  4.838  4.850  2.000
+ 
+ 
+! Data on an irregular grid with missing values
+LET sbin = {1.1, 2.2, , , 5}
+LET var = RESHAPE(sbin, _$1[g$1=irr])
+ !-> DEFINE VARIABLE var = RESHAPE(sbin, _Z[gZ=irr])
+LET dest =  _$1[G$1=dcoarse]
+ !-> DEFINE VARIABLE dest =  _Z[GZ=dcoarse]
+LIST dest, var[G$1=dcoarse@ave], var[G$1=dcoarse@BIN], var[G$1=dcoarse@NBIN]
+ !-> LIST dest, var[GZ=dcoarse@ave], var[GZ=dcoarse@BIN], var[GZ=dcoarse@NBIN]
+             Z: 0.5 to 5.5
+ Column  1: DEST is _Z[GZ=DCOARSE]
+ Column  2: VAR[G=1 delta on Z@AVE] is RESHAPE(SBIN, _Z[GZ=IRR]) (regrid: 1 delta on Z@AVE)
+ Column  3: VAR[G=1 delta on Z@BIN] is RESHAPE(SBIN, _Z[GZ=IRR]) (regrid: 1 delta on Z@BIN)
+ Column  4: VAR[G=1 delta on Z@NBIN] is RESHAPE(SBIN, _Z[GZ=IRR]) (regrid: 1 delta on Z@NBIN)
+          DEST    VAR    VAR    VAR
+1   / 1:  1.000  1.956  1.650  2.000
+2   / 2:  2.000  2.200   ....  0.000
+3   / 3:  3.000   ....   ....  0.000
+4   / 4:  4.000   ....   ....  0.000
+5   / 5:  5.000  5.000  5.000  1.000
+ 
+LIST dest, var[G$1=dcoarse]
+ !-> LIST dest, var[GZ=dcoarse]
+             Z: 0.5 to 5.5
+ Column  1: DEST is _Z[GZ=DCOARSE]
+ Column  2: VAR[G=1 delta on Z] is RESHAPE(SBIN, _Z[GZ=IRR]) (regrid: 1 delta on Z)
+          DEST    VAR
+1   / 1:  1.000   ....
+2   / 2:  2.000   ....
+3   / 3:  3.000   ....
+4   / 4:  4.000   ....
+5   / 5:  5.000  5.000
+ 
+go bn_bin_regrid.sub T
+! Tests of @BIN and @NBIN regridding transforms
+ 
+DEFINE AXIS/$1=1:5:1 dcoarse
+ !-> DEFINE AXIS/T=1:5:1 dcoarse
+ 
+! Data on an irregular grid
+LET sbin = {1.1, 1.2, 3.5, 4.7, 5}
+DEFINE AXIS/$1 irr = sbin
+ !-> DEFINE AXIS/T irr = sbin
+LET var = _$1[G$1=irr]
+ !-> DEFINE VARIABLE var = _T[GT=irr]
+ 
+LET dest =  _$1[G$1=dcoarse]
+ !-> DEFINE VARIABLE dest =  _T[GT=dcoarse]
+! Compare @AVE and @BIN regridding
+LIST dest, var[G$1=dcoarse@ave], var[G$1=dcoarse@BIN], var[G$1=dcoarse@NBIN]
+ !-> LIST dest, var[GT=dcoarse@ave], var[GT=dcoarse@BIN], var[GT=dcoarse@NBIN]
+             T: 0.5 to 5.5
+ Column  1: DEST is _T[GT=DCOARSE]
+ Column  2: VAR[G=1 delta on T@AVE] is _T[GT=IRR] (regrid: 1 delta on T@AVE)
+ Column  3: VAR[G=1 delta on T@BIN] is _T[GT=IRR] (regrid: 1 delta on T@BIN)
+ Column  4: VAR[G=1 delta on T@NBIN] is _T[GT=IRR] (regrid: 1 delta on T@NBIN)
+          DEST    VAR    VAR    VAR
+1   / 1:  1.000  1.178  1.150  2.000
+2   / 2:  2.000  1.545   ....  0.000
+3   / 3:  3.000  3.500   ....  0.000
+4   / 4:  4.000  3.980  3.500  1.000
+5   / 5:  5.000  4.838  4.850  2.000
+ 
+ 
+! Data on an irregular grid with missing values
+LET sbin = {1.1, 2.2, , , 5}
+LET var = RESHAPE(sbin, _$1[g$1=irr])
+ !-> DEFINE VARIABLE var = RESHAPE(sbin, _T[gT=irr])
+LET dest =  _$1[G$1=dcoarse]
+ !-> DEFINE VARIABLE dest =  _T[GT=dcoarse]
+LIST dest, var[G$1=dcoarse@ave], var[G$1=dcoarse@BIN], var[G$1=dcoarse@NBIN]
+ !-> LIST dest, var[GT=dcoarse@ave], var[GT=dcoarse@BIN], var[GT=dcoarse@NBIN]
+             T: 0.5 to 5.5
+ Column  1: DEST is _T[GT=DCOARSE]
+ Column  2: VAR[G=1 delta on T@AVE] is RESHAPE(SBIN, _T[GT=IRR]) (regrid: 1 delta on T@AVE)
+ Column  3: VAR[G=1 delta on T@BIN] is RESHAPE(SBIN, _T[GT=IRR]) (regrid: 1 delta on T@BIN)
+ Column  4: VAR[G=1 delta on T@NBIN] is RESHAPE(SBIN, _T[GT=IRR]) (regrid: 1 delta on T@NBIN)
+          DEST    VAR    VAR    VAR
+1   / 1:  1.000  1.956  1.650  2.000
+2   / 2:  2.000  2.200   ....  0.000
+3   / 3:  3.000   ....   ....  0.000
+4   / 4:  4.000   ....   ....  0.000
+5   / 5:  5.000  5.000  5.000  1.000
+ 
+LIST dest, var[G$1=dcoarse]
+ !-> LIST dest, var[GT=dcoarse]
+             T: 0.5 to 5.5
+ Column  1: DEST is _T[GT=DCOARSE]
+ Column  2: VAR[G=1 delta on T] is RESHAPE(SBIN, _T[GT=IRR]) (regrid: 1 delta on T)
+          DEST    VAR
+1   / 1:  1.000   ....
+2   / 2:  2.000   ....
+3   / 3:  3.000   ....
+4   / 4:  4.000   ....
+5   / 5:  5.000  5.000
+ 
+go bn_bin_regrid.sub E
+! Tests of @BIN and @NBIN regridding transforms
+ 
+DEFINE AXIS/$1=1:5:1 dcoarse
+ !-> DEFINE AXIS/E=1:5:1 dcoarse
+ 
+! Data on an irregular grid
+LET sbin = {1.1, 1.2, 3.5, 4.7, 5}
+DEFINE AXIS/$1 irr = sbin
+ !-> DEFINE AXIS/E irr = sbin
+LET var = _$1[G$1=irr]
+ !-> DEFINE VARIABLE var = _E[GE=irr]
+ 
+LET dest =  _$1[G$1=dcoarse]
+ !-> DEFINE VARIABLE dest =  _E[GE=dcoarse]
+! Compare @AVE and @BIN regridding
+LIST dest, var[G$1=dcoarse@ave], var[G$1=dcoarse@BIN], var[G$1=dcoarse@NBIN]
+ !-> LIST dest, var[GE=dcoarse@ave], var[GE=dcoarse@BIN], var[GE=dcoarse@NBIN]
+             E: 0.5 to 5.5
+ Column  1: DEST is _E[GE=DCOARSE]
+ Column  2: VAR[G=1 delta on E@AVE] is _E[GE=IRR] (regrid: 1 delta on E@AVE)
+ Column  3: VAR[G=1 delta on E@BIN] is _E[GE=IRR] (regrid: 1 delta on E@BIN)
+ Column  4: VAR[G=1 delta on E@NBIN] is _E[GE=IRR] (regrid: 1 delta on E@NBIN)
+          DEST    VAR    VAR    VAR
+1   / 1:  1.000  1.178  1.150  2.000
+2   / 2:  2.000  1.545   ....  0.000
+3   / 3:  3.000  3.500   ....  0.000
+4   / 4:  4.000  3.980  3.500  1.000
+5   / 5:  5.000  4.838  4.850  2.000
+ 
+ 
+! Data on an irregular grid with missing values
+LET sbin = {1.1, 2.2, , , 5}
+LET var = RESHAPE(sbin, _$1[g$1=irr])
+ !-> DEFINE VARIABLE var = RESHAPE(sbin, _E[gE=irr])
+LET dest =  _$1[G$1=dcoarse]
+ !-> DEFINE VARIABLE dest =  _E[GE=dcoarse]
+LIST dest, var[G$1=dcoarse@ave], var[G$1=dcoarse@BIN], var[G$1=dcoarse@NBIN]
+ !-> LIST dest, var[GE=dcoarse@ave], var[GE=dcoarse@BIN], var[GE=dcoarse@NBIN]
+             E: 0.5 to 5.5
+ Column  1: DEST is _E[GE=DCOARSE]
+ Column  2: VAR[G=1 delta on E@AVE] is RESHAPE(SBIN, _E[GE=IRR]) (regrid: 1 delta on E@AVE)
+ Column  3: VAR[G=1 delta on E@BIN] is RESHAPE(SBIN, _E[GE=IRR]) (regrid: 1 delta on E@BIN)
+ Column  4: VAR[G=1 delta on E@NBIN] is RESHAPE(SBIN, _E[GE=IRR]) (regrid: 1 delta on E@NBIN)
+          DEST    VAR    VAR    VAR
+1   / 1:  1.000  1.956  1.650  2.000
+2   / 2:  2.000  2.200   ....  0.000
+3   / 3:  3.000   ....   ....  0.000
+4   / 4:  4.000   ....   ....  0.000
+5   / 5:  5.000  5.000  5.000  1.000
+ 
+LIST dest, var[G$1=dcoarse]
+ !-> LIST dest, var[GE=dcoarse]
+             E: 0.5 to 5.5
+ Column  1: DEST is _E[GE=DCOARSE]
+ Column  2: VAR[G=1 delta on E] is RESHAPE(SBIN, _E[GE=IRR]) (regrid: 1 delta on E)
+          DEST    VAR
+1   / 1:  1.000   ....
+2   / 2:  2.000   ....
+3   / 3:  3.000   ....
+4   / 4:  4.000   ....
+5   / 5:  5.000  5.000
+ 
+go bn_bin_regrid.sub F
+! Tests of @BIN and @NBIN regridding transforms
+ 
+DEFINE AXIS/$1=1:5:1 dcoarse
+ !-> DEFINE AXIS/F=1:5:1 dcoarse
+ 
+! Data on an irregular grid
+LET sbin = {1.1, 1.2, 3.5, 4.7, 5}
+DEFINE AXIS/$1 irr = sbin
+ !-> DEFINE AXIS/F irr = sbin
+LET var = _$1[G$1=irr]
+ !-> DEFINE VARIABLE var = _F[GF=irr]
+ 
+LET dest =  _$1[G$1=dcoarse]
+ !-> DEFINE VARIABLE dest =  _F[GF=dcoarse]
+! Compare @AVE and @BIN regridding
+LIST dest, var[G$1=dcoarse@ave], var[G$1=dcoarse@BIN], var[G$1=dcoarse@NBIN]
+ !-> LIST dest, var[GF=dcoarse@ave], var[GF=dcoarse@BIN], var[GF=dcoarse@NBIN]
+             F: 0.5 to 5.5
+ Column  1: DEST is _F[GF=DCOARSE]
+ Column  2: VAR[G=1 delta on F@AVE] is _F[GF=IRR] (regrid: 1 delta on F@AVE)
+ Column  3: VAR[G=1 delta on F@BIN] is _F[GF=IRR] (regrid: 1 delta on F@BIN)
+ Column  4: VAR[G=1 delta on F@NBIN] is _F[GF=IRR] (regrid: 1 delta on F@NBIN)
+          DEST    VAR    VAR    VAR
+1   / 1:  1.000  1.178  1.150  2.000
+2   / 2:  2.000  1.545   ....  0.000
+3   / 3:  3.000  3.500   ....  0.000
+4   / 4:  4.000  3.980  3.500  1.000
+5   / 5:  5.000  4.838  4.850  2.000
+ 
+ 
+! Data on an irregular grid with missing values
+LET sbin = {1.1, 2.2, , , 5}
+LET var = RESHAPE(sbin, _$1[g$1=irr])
+ !-> DEFINE VARIABLE var = RESHAPE(sbin, _F[gF=irr])
+LET dest =  _$1[G$1=dcoarse]
+ !-> DEFINE VARIABLE dest =  _F[GF=dcoarse]
+LIST dest, var[G$1=dcoarse@ave], var[G$1=dcoarse@BIN], var[G$1=dcoarse@NBIN]
+ !-> LIST dest, var[GF=dcoarse@ave], var[GF=dcoarse@BIN], var[GF=dcoarse@NBIN]
+             F: 0.5 to 5.5
+ Column  1: DEST is _F[GF=DCOARSE]
+ Column  2: VAR[G=1 delta on F@AVE] is RESHAPE(SBIN, _F[GF=IRR]) (regrid: 1 delta on F@AVE)
+ Column  3: VAR[G=1 delta on F@BIN] is RESHAPE(SBIN, _F[GF=IRR]) (regrid: 1 delta on F@BIN)
+ Column  4: VAR[G=1 delta on F@NBIN] is RESHAPE(SBIN, _F[GF=IRR]) (regrid: 1 delta on F@NBIN)
+          DEST    VAR    VAR    VAR
+1   / 1:  1.000  1.956  1.650  2.000
+2   / 2:  2.000  2.200   ....  0.000
+3   / 3:  3.000   ....   ....  0.000
+4   / 4:  4.000   ....   ....  0.000
+5   / 5:  5.000  5.000  5.000  1.000
+ 
+LIST dest, var[G$1=dcoarse]
+ !-> LIST dest, var[GF=dcoarse]
+             F: 0.5 to 5.5
+ Column  1: DEST is _F[GF=DCOARSE]
+ Column  2: VAR[G=1 delta on F] is RESHAPE(SBIN, _F[GF=IRR]) (regrid: 1 delta on F)
+          DEST    VAR
+1   / 1:  1.000   ....
+2   / 2:  2.000   ....
+3   / 3:  3.000   ....
+4   / 4:  4.000   ....
+5   / 5:  5.000  5.000
+ 
 *** Running test: bn_all_ef.jnl
 [?1034hSET MODE VERIFY
 ! bn_all_ef.jnl
@@ -85585,24 +86002,24 @@ exit/command
 PPL$XPIXEL = "979"
 PPL$YPIXEL = "844"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.95"
+FERRET_VERSION = "6.951"
 FERRET_PLATFORM = "Linux 2.6.32-573.7.1.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.3.1 of Jul  1 2015 15:02:01 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "27-Oct-15"
-SESSION_TIME = "11:46"
-SESSION_PID = "29988"
-DELTA_CPU = "0.224964"
-CLOCK_SECS = "0.111"
-CURRENT_DATE = "27-Oct-15"
-CURRENT_TIME = "11:46:23"
+SESSION_DATE = " 6-Nov-15"
+SESSION_TIME = "16:05"
+SESSION_PID = "5841"
+DELTA_CPU = "0.226965"
+CLOCK_SECS = "0.112"
+CURRENT_DATE = " 6-Nov-15"
+CURRENT_TIME = "16:05:45"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
 PPL$PLTNME = "ferret.png"
-PPL$TEKNME = "/dev/tty"
+PPL$TEKNME = "/dev/tt"
 PPL$XLEN = "8.00000"
 PPL$YLEN = "6.00000"
 PPL$XORG = "1.20000"
@@ -85610,10 +86027,10 @@ PPL$YORG = "1.40000"
 PPL$WIDTH = "10.2000"
 PPL$HEIGHT = "8.80000"
 PPL$LINE_COUNT = "0"
-PPL$XFACT1 = "1.00000"
-PPL$XOFF1 = "0.00000"
-PPL$YFACT1 = "1.00000"
-PPL$YOFF1 = "0.00000"
+PPL$XFACT1 = "1.000000"
+PPL$XOFF1 = "0.000000"
+PPL$YFACT1 = "1.000000"
+PPL$YOFF1 = "0.000000"
 PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
@@ -85621,7 +86038,7 @@ PPL$COMMAND_FILE = "$$MEMBUF$$"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 PPL$SCALE = "1.0000"
-WIN_TITLE = "27-Oct-15_11:46"
+WIN_TITLE = "6-Nov-15_16:05"
 VP_SCALE = "1"
 VP_RT_MARGIN = "1"
 VP_TOP_MARGIN = "1.4"
@@ -85679,4 +86096,4 @@ VP_YHI = "1"
 let v = 2*3.14159*x[gx=0:1:.01]
 poly/hl=-1:1/vl=-1:1/key/pal=red/thick=1/opac=50 sin(v), cos(v)
 frame /file=outline_poly.pdf
-Ended at Tue Oct 27 11:46:23 PDT 2015
+Ended at Fri Nov  6 16:05:45 PST 2015

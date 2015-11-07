@@ -87,16 +87,16 @@ C
 *jd*begin
 	    IF (.NOT.SOVER) THEN
 	       SYM='*PPL$XMIN'
-	       CALL PUTVAL(SYM,XMIN1,6,IER)
+	       CALL PUTVAL(SYM,XMIN1,7,IER)
 C       
 	       SYM='*PPL$XMAX'
-	       CALL PUTVAL(SYM,XMAX1,6,IER)
+	       CALL PUTVAL(SYM,XMAX1,7,IER)
 C       
 	       SYM='*PPL$YMIN'
-	       CALL PUTVAL(SYM,YMIN1,6,IER)
+	       CALL PUTVAL(SYM,YMIN1,7,IER)
 C       
 	       SYM='*PPL$YMAX'
-	       CALL PUTVAL(SYM,YMAX1,6,IER)
+	       CALL PUTVAL(SYM,YMAX1,7,IER)
 	    ENDIF
 *jd*end
 
@@ -170,22 +170,22 @@ c
 	    endif
 c
 	    SYM='*PPL$ZMIN'
-	    CALL PUTVAL(SYM,ZMIN,6,IER)
+	    CALL PUTVAL(SYM,ZMIN,7,IER)
 C
 	    SYM='*PPL$ZMAX'
-	    CALL PUTVAL(SYM,ZMAX,6,IER)
+	    CALL PUTVAL(SYM,ZMAX,7,IER)
 c
 	    sym='*PPL$XHIGH'
-	    call putval(sym,xhigh,6,IER)
+	    call putval(sym,xhigh,7,IER)
 c
 	    sym='*PPL$YHIGH'
-	    call putval(sym,yhigh,6,IER)
+	    call putval(sym,yhigh,7,IER)
 c
 	    sym='*PPL$XLOW'
-	    call putval(sym,xlow,6,IER)
+	    call putval(sym,xlow,7,IER)
 c
 	    sym='*PPL$YLOW'
-	    call putval(sym,ylow,6,IER)
+	    call putval(sym,ylow,7,IER)
 
 C       Don't define line symbols for FILLPOL/POLYGON
 	ELSE if (makep .ne. 'FILLPOL' .AND. makep .ne. 'POLYGON') then
@@ -194,16 +194,16 @@ C	LINE DATA
 
 	    WRITE(SYM,998)'XMIN',LINEN
 998	    FORMAT('*PPL$',A,'(',I2,')')
-	    CALL PUTVAL(SYM,XMIN1,6,IER)
+	    CALL PUTVAL(SYM,XMIN1,7,IER)
 C
 	    WRITE(SYM,998)'XMAX',LINEN
-	    CALL PUTVAL(SYM,XMAX1,6,IER)
+	    CALL PUTVAL(SYM,XMAX1,7,IER)
 C
 	    WRITE(SYM,998)'YMIN',LINEN
-	    CALL PUTVAL(SYM,YMIN1,6,IER)
+	    CALL PUTVAL(SYM,YMIN1,7,IER)
 C
 	    WRITE(SYM,998)'YMAX',LINEN
-	    CALL PUTVAL(SYM,YMAX1,6,IER)
+	    CALL PUTVAL(SYM,YMAX1,7,IER)
 
 * If its a ribbon plot, we need the min and max of the color-by variable.
 	    IF (linen .EQ. 2) THEN
@@ -232,9 +232,9 @@ C
 	    XT=X(IBASEX+J)*XFCT(I)+XOFF(I)
 	    YT=X(IBASEY+J)*YFCT(I)+YOFF(I)
 	    WRITE(SYM,998)'XFIRST',LINEN
-	    CALL PUTVAL(SYM,XT,6,IER)
+	    CALL PUTVAL(SYM,XT,7,IER)
 	    WRITE(SYM,998)'YFIRST',LINEN
-	    CALL PUTVAL(SYM,YT,6,IER)
+	    CALL PUTVAL(SYM,YT,7,IER)
 	    GOTO 30	
 20	    CONTINUE
 30	    DO 40 J=LEN,1,-1
@@ -247,9 +247,9 @@ C
 	    XT=X(IBASEX+J)*XFCT(I)+XOFF(I)
 	    YT=X(IBASEY+J)*YFCT(I)+YOFF(I)
 	    WRITE(SYM,998)'XLAST',LINEN
-	    CALL PUTVAL(SYM,XT,6,IER)
+	    CALL PUTVAL(SYM,XT,7,IER)
 	    WRITE(SYM,998)'YLAST',LINEN
-	    CALL PUTVAL(SYM,YT,6,IER)
+	    CALL PUTVAL(SYM,YT,7,IER)
 	    GOTO 50
 40	    CONTINUE
 	ENDIF

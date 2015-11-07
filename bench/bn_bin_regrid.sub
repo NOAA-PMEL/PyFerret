@@ -1,0 +1,22 @@
+! Tests of @BIN and @NBIN regridding transforms  
+
+DEFINE AXIS/$1=1:5:1 dcoarse
+
+! Data on an irregular grid
+LET sbin = {1.1, 1.2, 3.5, 4.7, 5}
+DEFINE AXIS/$1 irr = sbin
+LET var = _$1[G$1=irr]
+
+LET dest =  _$1[G$1=dcoarse]
+! Compare @AVE and @BIN regridding
+LIST dest, var[G$1=dcoarse@ave], var[G$1=dcoarse@BIN], var[G$1=dcoarse@NBIN]
+
+
+! Data on an irregular grid with missing values
+LET sbin = {1.1, 2.2, , , 5}
+LET var = RESHAPE(sbin, _$1[g$1=irr])
+LET dest =  _$1[G$1=dcoarse]
+LIST dest, var[G$1=dcoarse@ave], var[G$1=dcoarse@BIN], var[G$1=dcoarse@NBIN]
+
+LIST dest, var[G$1=dcoarse]
+

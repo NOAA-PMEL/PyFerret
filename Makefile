@@ -112,14 +112,16 @@ install_exes :
 	( cd $(INSTALL_FER_DIR) ; tar xzf fer_executables.tar.gz )
 	cp -f threddsBrowser/toolsUI/toolsUI-4.1.jar $(INSTALL_FER_DIR)/lib/
 
-## The following is for installing the updated threddsBrowser.jar, libpyferret.so,
-## and python scripts into $(INSTALL_FER_DIR)/lib without having to go
-## through the make_executables_tar script.
+## The following is for installing the updated threddsBrowser.jar, ferret_ef_meme_subsc.so,
+## libpyferret.so, and PyFerret python scripts into $(INSTALL_FER_DIR)/lib without having 
+## to go through the make_executables_tar script.  Also copies all the PyFerret Fortran 
+## external function to the $(INSTALL_FER_DIR)/ext_func/pylibs directory.
 .PHONY : update
 update :
 	mkdir -p $(INSTALL_FER_DIR)/lib
-	cp -f $(DIR_PREFIX)/efmem/ferret_ef_mem_subsc.so $(INSTALL_FER_DIR)/lib
 	cp -f $(DIR_PREFIX)/threddsBrowser/threddsBrowser.jar $(INSTALL_FER_DIR)/lib
+	cp -f $(DIR_PREFIX)/efmem/ferret_ef_mem_subsc.so $(INSTALL_FER_DIR)/lib
+	find $(DIR_PREFIX)/external_functions -type f -perm -100 -name \*.so -exec cp {} $(INSTALL_FER_DIR)/ext_func/pylibs \;
 	( cd $(DIR_PREFIX) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \

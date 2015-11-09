@@ -89,10 +89,6 @@ for jnl in $test_scripts; do
    echo "   $jnl" >> $log_file
 done
 
-#set up external functions search path
-FER_EXTERNAL_FUNCTIONS="$efdir"
-export FER_EXTERNAL_FUNCTIONS
-
 #set up a generic data environment
 echo "****** Restricting Ferret paths to bench directory ******" >> $log_file
 FER_DATA="."
@@ -130,9 +126,15 @@ cp ./default.ferret $HOME/.ferret
 if ! echo "$fver" | grep -q "pyferret"; then
 #  command-line options for ferret
    feropts="-noverify"
+#  external functions search path
+   FER_EXTERNAL_FUNCTIONS="$efdir"
+   export FER_EXTERNAL_FUNCTIONS
 else
 #  command-line options for pyferret
    feropts="-quiet -nodisplay -noverify"
+#  external functions search path
+   PYFER_EXTERNAL_FUNCTIONS="$efdir"
+   export PYFER_EXTERNAL_FUNCTIONS
 fi
 
 # run each of the scripts in the list

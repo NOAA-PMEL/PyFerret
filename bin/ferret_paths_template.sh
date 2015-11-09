@@ -75,6 +75,8 @@ export FER_GO=". ${FER_DIR}/go ${FER_DIR}/examples ${FER_DIR}/contrib"
 ## Space-separated list of directories containing traditional
 ## Ferret external function files (shared-object libraries)
 export FER_EXTERNAL_FUNCTIONS="${FER_DIR}/ext_func/libs"
+## PyFerret external function files (shared-object libraries)
+export PYFER_EXTERNAL_FUNCTIONS="${FER_DIR}/ext_func/pylibs"
 
 ## Space-separated list of directories for Ferret color palettes
 export FER_PALETTE=". ${FER_DIR}/ppl"

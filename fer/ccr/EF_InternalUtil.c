@@ -1080,7 +1080,7 @@ void FORTRAN(write_webrow_gwt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTY
 
 /*
  * Find all of the ~.so files in directories listed in the
- * FER_EXTERNAL_FUNCTIONS environment variable and add all 
+ * PYFER_EXTERNAL_FUNCTIONS environment variable and add all 
  * the names and associated directory information to the 
  * STATIC_ExternalFunctionList.
  */
@@ -1357,7 +1357,7 @@ struct {
       }
 
   /*
-   * - Get all the paths from the "FER_EXTERNAL_FUNCTIONS" environment variable.
+   * - Get all the paths from the "PYFER_EXTERNAL_FUNCTIONS" environment variable.
    *
    * - While there is another path:
    *    - get the path;
@@ -1366,15 +1366,15 @@ struct {
    *
    */
 
-  if ( !getenv("FER_EXTERNAL_FUNCTIONS") ) {
+  if ( !getenv("PYFER_EXTERNAL_FUNCTIONS") ) {
     if ( !I_have_warned_already ) {
       fprintf(stderr, "\n"
-                      "WARNING: environment variable FER_EXTERNAL_FUNCTIONS not defined.\n\n");
+                      "WARNING: environment variable PYFER_EXTERNAL_FUNCTIONS not defined.\n\n");
       I_have_warned_already = TRUE;
     }
     /* *kob* v5.32 - the return val was set to 0 below but that was wrong. 
        That didn't take into account that on any system, the 
-       FER_EXTERNAL_FUNCTIONS env variable might not be set.  If that were the
+       PYFER_EXTERNAL_FUNCTIONS env variable might not be set.  If that were the
        case, a core dump occurred on all systems.  Set return_val to count, 
        which was generated above - also have to  note that the ef's 
        have been scanned*/
@@ -1383,16 +1383,16 @@ struct {
     return return_val;
   }
 
-  sprintf(paths, "%s", getenv("FER_EXTERNAL_FUNCTIONS"));
-    
+  strncpy(paths, getenv("PYFER_EXTERNAL_FUNCTIONS"), 8192);
   path_ptr = strtok(paths, " \t");
-
   if ( path_ptr == NULL ) {
- 
-    fprintf(stderr, "\n"
-                    "WARNING:No paths were found in the environment variable FER_EXTERNAL_FUNCTIONS.\n\n");
-
-    return_val = 0;
+    if ( !I_have_warned_already ) {
+      fprintf(stderr, "\n"
+                      "WARNING:No paths were found in the environment variable PYFER_EXTERNAL_FUNCTIONS.\n\n");
+      I_have_warned_already = TRUE;
+    }
+    return_val = count;
+    I_have_scanned_already = TRUE;
     return return_val;
  
   } else {

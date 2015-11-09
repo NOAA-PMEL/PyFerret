@@ -73,6 +73,9 @@ if [ -x ${ferret_dir}/fer/ferret_c ]; then
    ${mycp} ${ferret_dir}/fer/ferret_c ${temp_dir}/bin/ferret_v${version}
    cd ${temp_dir}/bin
    ${mylns} ferret_v${version} ferret
+# Copy the Ferret external function shared-object library files
+   mkdir -p ${temp_dir}/ext_func/libs
+   find ${ferret_dir}/external_functions -type f -perm -100 -name \*.so -exec ${mycp} {} ${temp_dir}/ext_func/libs \;
 else
    echo "No ferret_c executable found in ${ferret_dir}/fer"
 #  An error only if pyferret_dir was not given
@@ -83,11 +86,10 @@ else
       echo "   ferret_v<n> and ferret symbolic link not created"
       echo ""
    fi
+# Copy the PyFerret external function shared-object library files
+   mkdir -p ${temp_dir}/ext_func/pylibs
+   find ${ferret_dir}/external_functions -type f -perm -100 -name \*.so -exec ${mycp} {} ${temp_dir}/ext_func/pylibs \;
 fi
-
-# Copy the external function shared-object library files
-mkdir -p ${temp_dir}/ext_func/libs
-find ${ferret_dir}/external_functions -type f -perm -100 -name \*.so -exec ${mycp} {} ${temp_dir}/ext_func/libs \;
 
 # Copy font files from bin/build_fonts/unix/
 fer_files=${ferret_dir}/bin/build_fonts/unix/f*

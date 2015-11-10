@@ -188,6 +188,8 @@
 * V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 *        2/15 *sh* attempted but rejected hack to deal with left-over dset=-1
+* V6796 11/15 *acm* Ticket 2322: report dataset name or number in error msg, 
+*                   on SHOW DATA when datset not open
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -652,6 +654,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 
 * SHOW DATA_SET
  700 	CALL SHOW_DATA(dset, status) 
+  
         IF (status .NE. ferr_ok) GOTO 5000
 	IF ( dset .EQ. unspecified_int4 ) GOTO 5071
 
@@ -2030,7 +2033,8 @@ c     .                               sbrief, sdetail, i2)
 * error exit
  5050   CALL RELEASE_WORK_SPC
  5000	RETURN
- 5071	CALL ERRMSG( ferr_unknown_data_set, status,
+ 5071	name = cmnd_buff(arg_start(1):arg_end(1))
+	CALL ERRMSG( ferr_unknown_data_set, status,
      .			name(:TM_LENSTR1(name)), *5000 )
  5072	CALL ERRMSG( ferr_invalid_command, status,
      .         'dataset not found for varname.attname '//

@@ -1,0 +1,18 @@
+! err695_show_dat_nodata.jnl
+! ticket 2322
+!
+! SHOW DATA noexist should include the dataset name or number
+! in the error message.
+
+USE coads_climatology
+
+SHOW DATA 1
+SHOW DATA coads_climatology
+
+! intentional errors
+SET MODE ignore
+SHOW DATA noexist
+SHOW DATA 2
+SHOW DATA/ATT noexist
+
+SET MODE/LAST ignore

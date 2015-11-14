@@ -166,13 +166,12 @@ C     SET PARAMETERS.
            labint = 10
            delt = 1
 	   ticint = 1
-           IF (delt .LT. 30) labint = 5
-           IF (delt .LT. 20) labint = 4
-           IF (delt .LT. 10) labint = 1
-           IF (delt .GT. 60) THEN
-	      labint = 20
-	      ticint = 2
-           ENDIF
+           IF (difft .LE. 30) labint = 5
+           IF (difft .LE. 20) labint = 4
+           IF (difft .LE. 10) labint = 1
+           IF (difft .GE. 60) ticint = 2
+           IF (difft .GE. 120) ticint = 4
+           IF (difft .GE. 240) ticint = 4
         ENDIF
 
         tic = delt/dt
@@ -226,6 +225,7 @@ C
 	FIHDB=-1.4
 	ENDIF
 	YTEMP1=Y+DBLE(LABEL*(0.9*CSIZE+YTEMP)/YFACT)
+	print *, y, ytemp1, yfact, y/yfact, ABS(y-ytemp1) ,ABS(csize/yfact)
 
       IF(LABEL.LT.0) THEN
       YTEMP2=Y-((4.0+FIHDB)*CSIZE+YTEMP)/YFACT
@@ -244,9 +244,13 @@ C
 	
       CALL PLOT(TLO,Y,0,0)
       IF(IHR.EQ.0 .AND.is_hours_axis.EQ.0 )THEN
-	CALL PLOTT7(TLO,Y,TFACT,YFACT,1,IHVY)  ! draw to the location and make a mark
+	 CALL PLOTT7(TLO,Y,TFACT,YFACT,1,IHVY)  ! draw to the location and make a mark
       ELSE
-	CALL PLOTT7(TLO,Y,TFACT,YFACT,1,INML)
+         IF (MOD(imin,labint) .EQ. 0) THEN
+            CALL PLOTT7(TLO,Y,TFACT,YFACT,1,IHVY)
+         ELSE
+	    CALL PLOTT7(TLO,Y,TFACT,YFACT,1,INML)
+	 ENDIF
       ENDIF
 	
       CALL TIME1(1,ITIME,2,' ',I3,ITIME3,delt)  ! next time stepping from 1 (arg 1) to 2 (arg 2) -- return ITIME3
@@ -357,7 +361,7 @@ C      LOOP:
           CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
 	  
 	hvytic = ((is_hours_axis.EQ.0 .AND. IHR.EQ.0) .OR. 
-     .            (is_hours_axis.GT.0 .AND. MOD(imin,ticint).EQ.0))
+     .            (is_hours_axis.GT.0 .AND. MOD(imin,labint).EQ.0))
 	IF(hvytic)THEN
 	CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
               IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across

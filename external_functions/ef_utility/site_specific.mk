@@ -32,7 +32,7 @@ PYTHON_EXE = python2.6
 ## FER_LOCAL_EXTFCNS is the directory in which to install
 ## the Ferret Fortran external functions.  The example
 ## functions that come with the PyFerret installation are
-## installed in $(INSTALL_FER_DIR)/ext_func/libs
-FER_LOCAL_EXTFCNS = $(INSTALL_FER_DIR)/ext_func/libs
+## installed in $(INSTALL_FER_DIR)/ext_func/pylibs
+FER_LOCAL_EXTFCNS = $(INSTALL_FER_DIR)/ext_func/pylibs
 
 ##

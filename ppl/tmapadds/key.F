@@ -387,7 +387,6 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	val = zlev(lev1)
 	IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)  
-	text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)  
         if (max_len .lt. str_len) max_len = str_len
         
         nhi = MAX(2,shd_levels+1)
@@ -446,7 +445,6 @@ c	IF ( no_lines ) cont_key = .TRUE.
               val = zlev(ndx)
               IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	      text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
-	      text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
 	      if (max_len .lt. str_len) max_len = str_len
            ENDIF
 10	continue
@@ -464,7 +462,6 @@ c	IF ( no_lines ) cont_key = .TRUE.
              val = zlev(ndx)
              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
-	     text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
 
              IF (ndx .EQ. 1 .AND. neginf) text = " "
              IF (ndx .EQ. shd_levels+1 .AND. posinf) text = " "

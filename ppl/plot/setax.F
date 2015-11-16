@@ -128,11 +128,10 @@ c     *	.OR.MAKEP.EQ.'VECTOR'
 	    IF (IAUTOT .EQ. 1 .AND.
      1	        (IFORM(1:3).EQ.'EPI' .OR. IFORM(1:3).EQ.'BIB' .or.
      2		iform(1:3).eq.'LDX')) THEN
-		CALL FIXTIM (ITMIN,ITMAX,IT1,IT2,ITYPET)
-
-		IF (is_hours_axis .GT. 0) THEN ! Do not round off to nearest hour
-		   IT1 = ITMIN
-		   IT2 = ITMAX
+		IF (is_hours_axis .GT. 0) THEN ! Round off to the nearest minute
+		   CALL FIXTIM (ITMIN,ITMAX,IT1,IT2,4)
+		ELSE
+		   CALL FIXTIM (ITMIN,ITMAX,IT1,IT2,ITYPET) ! to the hour
 		ENDIF
 	    ELSE
 		CALL FIXTIM (IT1,IT2,IT1TMP,IT2TMP,ITYPET)

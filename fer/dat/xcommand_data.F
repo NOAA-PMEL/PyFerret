@@ -226,7 +226,7 @@
 * V695 *acm*  6/16 New subcommand DEFINE ANNOTATION
 * v696 *acm*  6/15 PLOT/VS/GAPLOC to define seperate line segments on
 *                  PLOT/VS plots (LAS ticket 1597 and others)
-
+* v696 *acm* 11/15 SET VAR/UNITS instead of /UNIT, just for consistency
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -378,9 +378,9 @@
 	   DATA subcommands      (nsub_at1 + 9)	/ 'VARIABLE'	/
 	   DATA num_qualifs      (nsub_at1 + 9)	/ nqual1j	/
 	   DATA qualifier_pointer(nsub_at1 + 9)	/ nqual_at1j	/
-* SET VARIABLE/TITLE/UNIT/GRID/BAD/DATASET/NAME/SCALEFAC/OFFSET/OUTTYPE
+* SET VARIABLE/TITLE/UNITS/GRID/BAD/DATASET/NAME/SCALEFAC/OFFSET/OUTTYPE
 		DATA qualifiers  (nqual_at1j+0)	/ 'TITLE'	/
-		DATA qualifiers  (nqual_at1j+1)	/ 'UNIT'	/
+		DATA qualifiers  (nqual_at1j+1)	/ 'UNITS'	/
 		DATA qualifiers  (nqual_at1j+2)	/ 'GRID'	/
 		DATA qualifiers  (nqual_at1j+3)	/ 'BAD'	/
 		DATA qualifiers  (nqual_at1j+4)	/ 'DATASET'	/

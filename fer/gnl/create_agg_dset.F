@@ -39,6 +39,7 @@
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
+* V695+ *sh*  11/15 Correct bugs in setting of aggregate dset title
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -53,6 +54,7 @@
 	include 'errmsg.parm'
 	include 'netcdf.inc'
 	include 'xvariables.cmn'
+	include 'xtext_info.cmn'
 
 * calling argument declarations:
 	CHARACTER*(*)	dname, dtitle
@@ -77,9 +79,10 @@
 	IF (dtitle(1:2).EQ.char_init .OR. TM_LENSTR(dtitle).EQ.0) THEN
 	   ds_title(agg_dset) = cmnd_buff(item_start(1):item_end(num_items))
 	ELSE
-	   ds_title(agg_dset) = dtitle(:TM_LENSTR1(dname))
+	   ds_title(agg_dset) = dtitle
 	ENDIF
-
+	ds_mod_title(agg_dset) = ww_dim_name(agg_dim)//'-aggregation'
+ 
 * create the aggregate axis
 
 	CALL CREATE_AGG_AXIS (nsets, agg_dim, iline, status)

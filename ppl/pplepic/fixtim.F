@@ -14,6 +14,7 @@ c	it1,it2 = input range of times in PLOT5's WHOI format (yyddmmhhmm)
 c	itype   = PLOT5 axis type 0 even hours		ending     00
 c                                 1 even days		ending   0000
 c                                 3 even months		ending 010000
+c                                 4 even minutes
 c  Output:
 c	itnew1,itnew2 = range of times which suit the input axis type and
 c                       include the input range of times (yymmddhhmm)
@@ -100,6 +101,7 @@ cc     1		                cdum, idum, itnew2, dt)
 		call time1 (1, it2(1:6)//'000000'//it2(13:14), iseq,
      1		                cdum, idum, itnew2, dt)
 	    endif
+
 	else if (itype .eq. 0) then
 cc	    itnew1=it1(1:8)//'00'//it1(11:14)
 	    itnew1=it1(1:8)//'0000'//it1(13:14)
@@ -124,6 +126,7 @@ cc     1		                cdum, idum, itnew2, dt)
 		call time1 (1, it2(1:10)//'00'//it2(13:14), iseq,
      1		                cdum, idum, itnew2, dt)
 	    endif
+
 	endif
 	return
 	end

@@ -37,14 +37,14 @@ INSTALL_FER_DIR = $(HOME)/ferret_distributions/rhel6_64
 ## the system's cairo shared library will be used.  Older versions 
 ## of cairo (v1.8 or later) can be used, but raster images from 
 ## -nodisplay may look a little fuzzy unless -gif is specified.
-CAIRO_DIR = /usr/local/cairo-1.14.2
+CAIRO_DIR = /usr/local/cairo-1.14.4
 # CAIRO_DIR =
 
 ## Installation directory for pixman-1 static library (contains 
 ## include and lib or lib64 subdirectories) used by the above cairo 
 ## library.  If blank, or if CAIRO_DIR is blank, the system's 
 ## pixman-1 shared library will be used.
-PIXMAN_DIR = /usr/local/cairo-1.14.2
+PIXMAN_DIR = /usr/local/cairo-1.14.4
 # PIXMAN_DIR =
 
 ## Installation directory for HDF5 static libraries (contains 
@@ -52,7 +52,7 @@ PIXMAN_DIR = /usr/local/cairo-1.14.2
 ## to link to NetCDF shared-object libraries.
 # HDF5_DIR = /usr
 # HDF5_DIR = /usr/local
-HDF5_DIR = /usr/local/hdf5-1.8.15.1
+HDF5_DIR = /usr/local/hdf5-1.8.16
 # HDF5_DIR = 
 
 ## Installation directory for NetCDF static or shared object libraries

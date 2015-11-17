@@ -2,10 +2,12 @@
 ! using the DEFINE DATA/AGGREGATE/E command
 ! Datasets share sst, but only ens1 has airt. 
 
+! v6.95+ 11/15 *sh* -- /T is now the default orientation
+
 set mode diag
 
 use ens1, ens2, ens3, ens4
-define data/agg/title fourfiles = ens1, ens3, ens2, ens4
+define data/agg/E fourfiles = ens1, ens3, ens2, ens4
 
 ! The grid of SST is known.
 show data fourfiles
@@ -18,7 +20,7 @@ let/d=ens2 airt = sst + 1
 let/d=ens3 airt = sst + 1
 let/d=ens4 airt = sst + 1
 
-define data/agg fourfiles = ens1, ens3, ens2, ens4
+ENSEMBLE fourfiles = ens1, ens3, ens2, ens4
 show data fourfiles
 
 list/i=3 airt[T=@ave]
@@ -39,10 +41,10 @@ use navy_uw
 set mode ignore
 
 ! Use dataset thats not open.
-define data/agg windy = 1,2,3
+ensemble windy = 1,2,3
 
 ! No variables on comparable grids.
-define data/agg windy = 1,2
+ensemble windy = 1,2
 
 set mode/last ignore
 
@@ -63,7 +65,7 @@ let/d=2/units="`vin,return=units`"/title="`vin,return=title`" \
 show data
 
 ! Define the ensemble dataset
-define data/agg windy = 1,2
+ensemble windy = 1,2
 
 ! The grid of the aggregate variables with LET/D is known.
 show data windy
@@ -76,7 +78,7 @@ list/l=3/y=30/x=-59:-51 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd
 cancel data 3
 
 ! Define the ensemble dataset
-define data/agg windy = 2,1
+ensemble windy = 2,1
 
 ! The grid of the aggregate variables with LET/D is known.
 show data windy

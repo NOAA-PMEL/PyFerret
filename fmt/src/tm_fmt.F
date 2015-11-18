@@ -79,9 +79,9 @@
 	INTEGER		slen, sig_left, sig_full, nleft, nright, full,
      .			sig_max, full10, xtra, sig_needed, pow10,
      .			chk10, chk10_save, waste, i, need_adjust, ind,
-     .			iloop
+     .			iloop, width, prec_digits
 	REAL		aval, l10
-	CHARACTER*10	fmt, outstring*25, strend*25
+	CHARACTER*10	fmt, dummy_fmt, outstring*25, strend*25
 
 * local parameters:
 	INTEGER		TM_CHECK_NAN, TM_CHECK_INF, TM_LENSTR1, 
@@ -103,9 +103,11 @@
 	outstring   = ' '
 	exp_fmt  = .FALSE.
 	added_pow10 = 0
+	need_adjust = 0
 
 * maximum length of output string (at least 1 character long)
 	slen = MIN( LEN(TM_FMT), max_len )
+	slen = MIN( 18, max_len )
 	slen = MAX( 1, slen )
 
 * If the value is NaN, set the string here
@@ -170,7 +172,7 @@
 * the extra length and add it back later.
 
         sig_full = MAX( sig_min, MIN( sig_max, slen-waste ) )
-	need_adjust = 0
+
         IF (sig_full .GT. max_int_len) THEN
 	  need_adjust = sig_full - max_int_len
 	ENDIF
@@ -314,6 +316,34 @@
  3300      CONTINUE
  3400      CONTINUE
 
+	ENDIF
+
+* Ticket 2323
+* the adjustment for handling large values does not always produce 
+* accurate results. Compare the result to the original value and if
+* needed use the formatting method used in ascii data listings.
+
+	READ (outstring,*) aval
+	IF (need_adjust.GT.0 .AND. ABS(val-aval).GT.0.01) THEN
+	   width = 4
+	   prec_digits = ABS(digits)
+	   IF (digits .GT. 0) prec_digits = digits
+	   CALL GET_SIG_DIGITS( val, prec_digits, nleft, nright )
+	   nleft = MAX( 1, nleft )  
+	   width = 4
+	   CALL VAR_DATA_FMT( nleft, nright, prec_digits, width,
+     .                         width, fmt, dummy_fmt )
+	   WRITE ( outstring, fmt ) val
+	ENDIF
+
+	str_len = TM_LENSTR1( outstring )
+	IF (INDEX(outstring, '0E') .GT. 0) THEN
+	   ind = INDEX(outstring, '0E')
+	   DO WHILE (ind .GT. 0)
+	      strend = outstring(ind+1:str_len)
+	      outstring = outstring(1:ind-1)//strend
+	      ind = INDEX(outstring, '0E')
+	   ENDDO
 	ENDIF
 
 	str_len = TM_LENSTR1( outstring )

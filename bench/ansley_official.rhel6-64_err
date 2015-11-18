@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 80974676 Nov  9 15:00 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 80979429 Nov 16 17:06 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2322: err msgs with SHOW DATA nofile to show the file name
+Note: ticket 2323
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,12 +14,15 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
+FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
+FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
-Beginning at Mon Nov 9 15:02:29 PST 2015
+PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
+Beginning at Mon Nov 16 17:09:05 PST 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3085,7 +3088,7 @@ Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
-set mode desperate 1.E+10
+set mode desperate   9999999999.000000
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
 set mode desperate 1234567890123456789
  PERMANENT data cleared from memory
@@ -4134,4 +4137,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Nov 9 15:04:17 PST 2015
+Ended at Mon Nov 16 17:10:54 PST 2015

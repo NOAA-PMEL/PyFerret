@@ -157,11 +157,11 @@
      .            attid, ieq, base_isp, base_cx, cat, var
 	REAL	  result, val
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
-	CHARACTER TM_FMT*18, LEFINT*16, VAR_TITLE*(max_len),
+	CHARACTER TM_FMT*28, LEFINT*16, VAR_TITLE*(max_len),
+c	CHARACTER TM_FMT*18, LEFINT*16, VAR_TITLE*(max_len),
      .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len),
      .		  repl*(max_len), bad_str*(max_len), return_errmsg*256,
      .            buff*128, varname*512, attname*128, aname*128
-!	CHARACTER fmt*(max_len)
         CHARACTER*6 typstring(0:6)
 
 * local parameter declarations

@@ -59,7 +59,7 @@
      .		rlen, item, nchar, status
 	REAL	xloc, yloc, halign, angle, size
 
-	CHARACTER TM_FMT*14, buff*20, labtxt*2048
+	CHARACTER TM_FMT*16, buff*20, labtxt*2048
 
 * initialize 
 
@@ -87,19 +87,19 @@
 	ppl_buff = '%LABEL/'//buff
 	rlen = TM_LENSTR1(ppl_buff)
 
-	ppl_buff = ppl_buff(:rlen)//' '//TM_FMT(xloc, 14, 16, nchar)
+	ppl_buff = ppl_buff(:rlen)//' '//TM_FMT(xloc, 12, 16, nchar)
 	rlen = TM_LENSTR1(ppl_buff)
 
-	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(yloc, 14, 16, nchar)
+	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(yloc, 12, 16, nchar)
 	rlen = TM_LENSTR1(ppl_buff)
 
-	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(halign, 14, 16, nchar)
+	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(halign, 12, 16, nchar)
 	rlen = TM_LENSTR1(ppl_buff)
 
-	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(angle, 14, 16, nchar)
+	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(angle, 12, 16, nchar)
 	rlen = TM_LENSTR1(ppl_buff)
 
-	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(size, 14, 16, nchar)
+	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(size, 12, 16, nchar)
 	rlen = TM_LENSTR1(ppl_buff)
 
 	ppl_buff = ppl_buff(:rlen)//', '//labtxt

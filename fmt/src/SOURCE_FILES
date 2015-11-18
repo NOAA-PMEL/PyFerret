@@ -67,6 +67,7 @@ cd_open_out.F\
 cd_put_agg_memb_grid.F\
 cd_put_new_attr.F\
 cd_put_new_attr_dp.F\
+cd_quik_ncopen.F\
 cd_rd_ep_1.F\
 cd_rd_ep_arr.F\
 cd_rd_r8_1.F\

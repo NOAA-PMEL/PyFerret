@@ -50,6 +50,7 @@
 
 
 	include 'tmap_dims.parm'
+#  include "tmap_dset.parm"
 	include 'xstep_files.cmn_text'
 	include 'xdset_info.cmn_text'
 	external xstep_files_data
@@ -68,6 +69,9 @@
 
 	istep = ds_open(dset)
 	CALL CD_CLOSE_SET( sf_lunit(istep), status )
+
+* set flag indicating the file is no longer open
+	sf_lunit(istep) = file_not_open
 	
 	RETURN
 	END

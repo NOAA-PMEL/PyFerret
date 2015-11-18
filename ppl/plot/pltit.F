@@ -274,10 +274,13 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	ELSE
 	    IF(ITFLG.NE.0)THEN
 	        ! Handle time as in setax for short-time axes
-	        IF (is_hours_axis .GT. 0) THEN  
-		   IT1 = ITMIN
-		   IT2 = ITMAX
-	        ENDIF
+
+	        IF (is_hours_axis .GT. 0) THEN ! Round off to the nearest minute
+		   CALL FIXTIM (ITMIN,ITMAX,IT1,IT2,4)
+		ELSE
+		   CALL FIXTIM (ITMIN,ITMAX,IT1,IT2,ITYPET) ! to the hour
+		ENDIF
+
 		TLO = 1. - DIFF(IT1,ITSTRT)/DT
 	        THI=TLO+DIFF(IT1,IT2)/DT
 	    ENDIF

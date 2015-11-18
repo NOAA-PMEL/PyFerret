@@ -95,6 +95,7 @@
 * v695+ 3/15 *sh* added pauxrgrd_fmrc for T-F orthoganalization
 * V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
 * V696 *acm* 11/15 Added @BIN and @NBIN regridding transforms
+* V696 *acm8 11/15 Clarify descriptions for @BIN, @NBIN, @AVE, @NGD, @SUM regridding
 
         IMPLICIT NONE
 	include	'ferret.parm'

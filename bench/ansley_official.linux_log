@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 86078089 Nov 17 09:24 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 86224376 Nov 17 16:55 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: testing declaration of model str in match4.F as *(*)
+Note: fix for 2323, and DEF DAT/AGG/T additions as of 11/17/15
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/linux/ext_func/pylibs
-Beginning at Tue Nov 17 09:25:34 PST 2015
+Beginning at Tue Nov 17 16:56:41 PST 2015
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10481,12 +10481,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 12:21:13 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "17-Nov-15"
-SESSION_TIME = "09:25"
-SESSION_PID = "6311"
-DELTA_CPU = "7.78282"
-CLOCK_SECS = "11.89"
+SESSION_TIME = "16:56"
+SESSION_PID = "12433"
+DELTA_CPU = "7.68783"
+CLOCK_SECS = "10.772"
 CURRENT_DATE = "17-Nov-15"
-CURRENT_TIME = "09:25:46"
+CURRENT_TIME = "16:56:51"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10510,12 +10510,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 12:21:13 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "17-Nov-15"
-SESSION_TIME = "09:25"
-SESSION_PID = "6311"
+SESSION_TIME = "16:56"
+SESSION_PID = "12433"
 DELTA_CPU = "0.001"
-CLOCK_SECS = "11.891"
+CLOCK_SECS = "10.773"
 CURRENT_DATE = "17-Nov-15"
-CURRENT_TIME = "09:25:46"
+CURRENT_TIME = "16:56:51"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10526,8 +10526,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "17-Nov-15"
-SESSION_TIME = "09:25"
-SESSION_PID = "6311"
+SESSION_TIME = "16:56"
+SESSION_PID = "12433"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10538,14 +10538,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "17-Nov-15"
-SESSION_TIME = "09:25"
-SESSION_PID = "6311"
+SESSION_TIME = "16:56"
+SESSION_PID = "12433"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "17-Nov-15"
-SESSION_TIME = "09:25"
-SESSION_PID = "6311"
+SESSION_TIME = "16:56"
+SESSION_PID = "12433"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10581,7 +10581,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET (beta) Ver.6.951"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "17-NOV-2015 09:25:46"
+LAB3 = "17-NOV-2015 16:56:51"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10682,12 +10682,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 12:21:13 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "17-Nov-15"
-SESSION_TIME = "09:25"
-SESSION_PID = "6311"
+SESSION_TIME = "16:56"
+SESSION_PID = "12433"
 DELTA_CPU = "0.014998"
-CLOCK_SECS = "11.905"
+CLOCK_SECS = "10.788"
 CURRENT_DATE = "17-Nov-15"
-CURRENT_TIME = "09:25:46"
+CURRENT_TIME = "16:56:51"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -12298,8 +12298,8 @@ LIST/FORMAT=comma/precision=9 randu(i)*temp*1e7
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    135.5W   ,134.5W   
-1.5S,1.6675084E+08,2.0208841E+08
-1.167S,1.6616283E+08,2.0136658E+08
+1.5S,  166750845.,  202088412.
+1.167S,  166162833.,  201366579.
  
 ! small number formatting test
 set region/i=95:96/j=41:42/k=2/l=5
@@ -25683,7 +25683,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Tue Nov 17 09:25:57 PST 2015
+Tue Nov 17 16:57:02 PST 2015
  
 GO bn_reset
 cancel mode verify
@@ -48386,7 +48386,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS17-NOV-2015 09:26:42
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS17-NOV-2015 16:57:42
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -49693,8 +49693,8 @@ sho command
       /TYPE/SWAP/REGULART/DELIMITE/BROWSE/STRICT
  SET MODE/LAST
  SET MOVI/FILE/COMPRESS/LASER/START
- SET VARIABLE/TITLE/UNIT/GRID/BAD/DATASET/NAME/SCALEFAC/OFFSET/OUTTYPE/LAYERZ
-      /CURVILIN
+ SET VARIABLE/TITLE/UNITS/GRID/BAD/DATASET/NAME/SCALEFAC/OFFSET/OUTTYPE
+      /LAYERZ/CURVILIN
  SET GRID/SAVE/RESTORE
  SET AXIS/MODULO/DEPTH/CALENDAR/T0/UNITS/STRIDE/OFFSET/REGULAR/OUTTYPE/NAME
  SET MEMORY/SIZE
@@ -49773,7 +49773,7 @@ sho command
  DEFINE SYMBOL
  DEFINE ATTRIBUT/D/TYPE/OUTPUT/QUIET
  DEFINE PYFUNC/NAME
- DEFINE DATA/AGGREGAT/E/F/TITLE/QUIET/HIDE
+ DEFINE DATA/AGGREGAT/T/E/F/TITLE/QUIET/HIDE
  DEFINE ANNOTATI/USER/NORM/NOUSER/XPOS/YPOS/HALIGN/VALIGN/ANGLE/SIZE/NLAB
  EXIT/COMMAND/LOOP/SCRIPT/PROMPT/PROGRAM/CYCLE/TOPYTHON
  MESSAGE/CONTINUE/QUIET/JOURNAL/ERROR/OUTFILE/APPEND/CLOBBER
@@ -49819,7 +49819,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "17-Nov-15:09:25"
+WIN_TITLE = "17-Nov-15:16:56"
  
 set win/title="set the title"
 sho sym win_title
@@ -49837,7 +49837,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="17-Nov-15:09:25"
+ !-> set win/title="17-Nov-15:16:56"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -49848,14 +49848,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 17-Nov-15
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 09:25
+ !-> DEFINE SYMBOL the_time = 16:56
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="17-Nov-15:09:25"
+ !-> SET WIN/TITLE="17-Nov-15:16:56"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "17-Nov-15:09:25"
+WIN_TITLE = "17-Nov-15:16:56"
  
 GO bn_reset
 cancel mode verify
@@ -51479,7 +51479,7 @@ sh att/all temp3
  
 can var temp2
 let/units="degrees C"/title="my new TEMP"/bad=`temp,return=bad` temp2 = temp*2
- !-> DEFINE VARIABLE/units="degrees C"/title="my new TEMP"/bad=-9.9999998E+33 temp2 = temp*2
+ !-> DEFINE VARIABLE/units="degrees C"/title="my new TEMP"/bad= -9.999999790214768E+33 temp2 = temp*2
 sh att/all temp2
      attributes for user-defined variables
  temp2.long_name = my new TEMP 
@@ -55133,11 +55133,11 @@ SHOW GRID/Z atmos
  normal    F
  
        K     Z                   ZBOX      ZBOXLO
-       1>  6.7915956192266E-10   6.885E-10  3.3490923923019E-10
-       2>  0.00000000136766      1.037E-09  0.00000000102341
-       3>  0.000000002754131     2.089E-09  0.000000002060896
-       4>  0.000000005546143     4.207E-09  0.000000004150137
-       5>  0.00000001116856      8.472E-09  0.000000008357353
+       1>  6.791595619227E-10    6.885E-10  3.349092392302E-10
+       2>  1.367660207308E-09    1.037E-09  1.023409884615E-09
+       3>  2.754131145366E-09    2.089E-09  2.060895676337E-09
+       4>  5.546143100332E-09    4.207E-09  4.150137122849E-09
+       5>  0.00000001116856      8.472E-09  8.357352587751E-09
        6>  0.00000002249072      1.706E-08  0.00000001682964
        7>  0.00000004529075      3.436E-08  0.00000003389074
        8>  0.00000009120437      6.919E-08  0.00000006824756
@@ -55559,6 +55559,9 @@ LIST/X=179:183/Y=40/L=3 my_sst
              SUBSET   : 3 points (LONGITUDE)
              LATITUDE : 39N
              TIME     : MAR
+Internal overflow expressing 500000.0 Mwords as words (1783793664) 
+Unable to allocate the requested 500000.0 Mwords of memory.
+Memory remaining at 0.2 Mwords.
                  39N     
                   65
  179E   / 80:  11.89756
@@ -55574,9 +55577,6 @@ LIST/X=179:183/Y=40/L=3 sst
              VARIABLE : 3*MY_SST
              FILENAME : coads_climatology.cdf
              SUBSET   : 3 points (LONGITUDE)
-Internal overflow expressing 500000.0 Mwords as words (1783793664) 
-Unable to allocate the requested 500000.0 Mwords of memory.
-Memory remaining at 0.2 Mwords.
              LATITUDE : 39N
              TIME     : MAR
                  39N     
@@ -60144,10 +60144,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "59.8629"
-CLOCK_SECS = "102.35"
+DELTA_CPU = "60.1459"
+CLOCK_SECS = "92.927"
 CURRENT_DATE = "17-Nov-15"
-CURRENT_TIME = "09:27:16"
+CURRENT_TIME = "16:58:13"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -60156,8 +60156,8 @@ CURRENT_TIME = "09:27:16"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.057991"
-CLOCK_SECS = "102.547"
+DELTA_CPU = "0.056992"
+CLOCK_SECS = "93.097"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -60171,60 +60171,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.308953
+ !-> DEFINE VARIABLE ten_plots = 0.306953
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "103.891"
+CLOCK_SECS = "94.423"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "103.892"
+CLOCK_SECS = "94.425"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.029995
- !-> DEFINE VARIABLE sumcpu =0.029995
+ !-> DEFINE VARIABLE dt = 0.034995
+ !-> DEFINE VARIABLE sumcpu =0.034995
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.06199
+ !-> DEFINE VARIABLE dt = 0.034995
+ !-> DEFINE VARIABLE sumcpu =0.06999
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.094985
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.103985
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.034995
- !-> DEFINE VARIABLE sumcpu =0.12998
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.13698
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.034994
- !-> DEFINE VARIABLE sumcpu =0.164974
+ !-> DEFINE VARIABLE dt = 0.035994
+ !-> DEFINE VARIABLE sumcpu =0.172974
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.197969
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.206969
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.034995
- !-> DEFINE VARIABLE sumcpu =0.232964
-!-> REPEAT: K=8
  !-> DEFINE VARIABLE dt = 0.035995
- !-> DEFINE VARIABLE sumcpu =0.268959
+ !-> DEFINE VARIABLE sumcpu =0.242964
+!-> REPEAT: K=8
+ !-> DEFINE VARIABLE dt = 0.034995
+ !-> DEFINE VARIABLE sumcpu =0.277959
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.036994
- !-> DEFINE VARIABLE sumcpu =0.305953
+ !-> DEFINE VARIABLE dt = 0.035993
+ !-> DEFINE VARIABLE sumcpu =0.313952
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.338948
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.347947
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.338948
-0.338948
+ !-> MESSAGE/CONTINUE 0.347947
+0.347947
 sh sym CLOCK_SECS
-CLOCK_SECS = "106.205"
+CLOCK_SECS = "96.878"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "17-Nov-15"
-SESSION_TIME = "09:25"
+SESSION_TIME = "16:56"
 CURRENT_DATE = "17-Nov-15"
-CURRENT_TIME = "09:27:20"
+CURRENT_TIME = "16:58:17"
  
  
 ! ******** V6.3 Additions below ***********
@@ -64202,7 +64202,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.951 (beta)"                                                    
  3    /  3:" ! Linux 2.6.18-407.el5PAE 32-bit - 11/17/15"                               
- 4    /  4:" ! 17-Nov-15 09:25     "                                                    
+ 4    /  4:" ! 17-Nov-15 16:56     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -64287,14 +64287,14 @@ regridding transforms e.g.SST[GX=x5deg@AVE]
    code        description                  code        description
    ----        -----------                  ----        -----------
    @LIN        lin. interp.                 @MODVAR     modulo var
-   @AVE        box avgd                     @MODNGD     # gd mod pts
+   @AVE        area-wgtd avgd               @MODNGD     # gd mod pts
    @XACT       exact match                  @MODNBD     #bad mod pts
    @ASN        index assn                   @MODSUM     modulo sum
    @VAR        variance                     @MODMIN     modulo min
    @MIN        minimum                      @MODMAX     modulo max
    @MAX        maximum                      @NRST       nearst coord
-   @SUM        sum                          @BIN        binning
-   @NGD        # gd pts                     @NBIN       #good in bin
+   @SUM        area-wgtd sum                @BIN        unwgtd avg
+   @NGD        #gd pts, area wgtd           @NBIN       #good in bin
    @MOD        modulo ave
  
 auxiliary varible regridding transforms e.g.TEMP[GZ(depth)=zax@AVE]
@@ -65349,7 +65349,7 @@ set mode ignore
  
 ! setting too large
 set mode desperate `9999999999`
- !-> set mode desperate 1.E+10
+ !-> set mode desperate   9999999999.000000
 show mode desperate
       MODE            STATE        ARGUMENT
       DESPERATE     CANCELLED      2560000
@@ -65364,10 +65364,10 @@ show mode desperate
 ! Previously couldnt handle a floating point
 ! input. Now we can.
 set mode desperate `96 * 1024 * 1024`
- !-> set mode desperate 1.006633E+08
+ !-> set mode desperate   100663296.0000000
 show mode desperate
       MODE            STATE        ARGUMENT
-      DESPERATE        SET           100663300
+      DESPERATE        SET           100663296
 can mode ignore
  
 GO bn_reset
@@ -66669,40 +66669,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.657
-randu2_randn2       0.258
-randu2_randn2       0.241
-randu2_randn2       0.151
-randu2_randn2       0.091
+randu2_randn2       0.482
+randu2_randn2       0.134
+randu2_randn2       0.722
+randu2_randn2       0.824
+randu2_randn2       0.899
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.029
+randu2_randn2       0.854
+randu2_randn2       0.922
+randu2_randn2       0.975
+randu2_randn2       0.566
+randu2_randn2       0.519
+             VARIABLE : RANDU2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.080
+randu2_randn2       0.159
+randu2_randn2       0.888
+randu2_randn2       0.966
+randu2_randn2       0.448
+randu2_randn2       0.508
+             VARIABLE : RANDU2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.472
+randu2_randn2       0.110
+randu2_randn2       0.199
+randu2_randn2       0.402
+randu2_randn2       0.481
 randu2_randn2       0.111
-randu2_randn2       0.779
-randu2_randn2       0.535
-randu2_randn2       0.321
-             VARIABLE : RANDU2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.931
-randu2_randn2       0.491
-randu2_randn2       0.178
-randu2_randn2       0.721
-randu2_randn2       0.379
-randu2_randn2       0.967
-             VARIABLE : RANDU2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.317
-randu2_randn2       0.024
-randu2_randn2       0.269
-randu2_randn2       0.754
-randu2_randn2       0.162
-randu2_randn2       0.916
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -66727,40 +66727,40 @@ randu2_randn2       0.900
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.126
-randu2_randn2      -0.560
-randu2_randn2       1.056
-randu2_randn2       0.714
-randu2_randn2      -0.473
+randu2_randn2       0.015
+randu2_randn2       1.068
+randu2_randn2      -0.374
+randu2_randn2       1.684
+randu2_randn2      -0.542
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.507
-randu2_randn2      -1.944
-randu2_randn2      -1.216
-randu2_randn2       1.740
-randu2_randn2      -0.925
+randu2_randn2       0.616
+randu2_randn2       1.000
+randu2_randn2      -1.143
+randu2_randn2      -0.843
+randu2_randn2       1.893
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.633
-randu2_randn2      -1.911
-randu2_randn2      -0.524
-randu2_randn2      -0.330
-randu2_randn2      -0.074
-randu2_randn2       0.092
+randu2_randn2      -0.919
+randu2_randn2      -0.056
+randu2_randn2       0.143
+randu2_randn2       0.000
+randu2_randn2      -0.450
+randu2_randn2       1.769
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.763
-randu2_randn2      -1.013
-randu2_randn2       0.357
-randu2_randn2       0.689
-randu2_randn2      -0.471
-randu2_randn2       0.817
+randu2_randn2       1.215
+randu2_randn2      -0.964
+randu2_randn2       1.855
+randu2_randn2       0.124
+randu2_randn2       0.119
+randu2_randn2      -2.428
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -66785,14 +66785,14 @@ randu2_randn2      -0.124
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.186       1.557       0.541
-randu2_randn2       1.557       1.186       0.541
-randu2_randn2       0.541       0.541       0.015
-randu2_randn2      -0.093      -0.027       0.541
-randu2_randn2      -0.027      -0.031       0.541
-randu2_randn2      -0.031      -0.027       0.541
-randu2_randn2       0.015       0.015       0.541
-randu2_randn2       0.859       0.859       0.859
+randu2_randn2       1.274       1.274       0.984
+randu2_randn2       1.134       1.134       0.984
+randu2_randn2       0.984       0.984       0.396
+randu2_randn2       0.396       0.396       0.396
+randu2_randn2      -0.470      -0.470       0.396
+randu2_randn2      -0.723      -0.470       0.396
+randu2_randn2      -0.143      -0.143       0.396
+randu2_randn2      -0.011      -0.011       0.396
  
 GO bn_reset
 cancel mode verify
@@ -71585,10 +71585,12 @@ GO bn_aggregate_e
 ! using the DEFINE DATA/AGGREGATE/E command
 ! Datasets share sst, but only ens1 has airt.
  
+! v6.95+ 11/15 *sh* -- /T is now the default orientation
+ 
 set mode diag
  
 use ens1, ens2, ens3, ens4
-define data/agg/title fourfiles = ens1, ens3, ens2, ens4
+define data/agg/E fourfiles = ens1, ens3, ens2, ens4
  
 ! The grid of SST is known.
 show data fourfiles
@@ -71615,6 +71617,7 @@ list/i=3 sst[T=@ave]
  doing aggregate gathering SST on E axis:     4     4 dset:   4
  doing --> SST[T=01-JAN00:45:31-DEC06:34@AVE,D=5]
              VARIABLE : SST_IN (Deg C)
+             DATA SET : ens1, ens3, ens2, ens4
              FILENAME : FOURFILES
              SUBSET   : 9 by 4 points (LATITUDE-E)
              LONGITUDE: 105W
@@ -71635,7 +71638,7 @@ let/d=ens2 airt = sst + 1
 let/d=ens3 airt = sst + 1
 let/d=ens4 airt = sst + 1
  
-define data/agg fourfiles = ens1, ens3, ens2, ens4
+ENSEMBLE fourfiles = ens1, ens3, ens2, ens4
  getgrid AIRT     C:  5 dset:   3 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME13    NORMAL    NORMAL
  getgrid AIRT     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -71676,7 +71679,7 @@ list/i=3 airt[T=@ave]
  doing aggregate gathering AIRT on E axis:     4     4 dset:   4
  doing --> AIRT[T=01-JAN00:45:31-DEC06:34@AVE,D=5]
              VARIABLE : AIR TEMPERATURE (DEG C)
-             DATA SET : Ensemble
+             DATA SET : ens1, ens3, ens2, ens4
              FILENAME : FOURFILES
              SUBSET   : 9 by 4 points (LATITUDE-E)
              LONGITUDE: 105W
@@ -71704,10 +71707,10 @@ use navy_uw
 set mode ignore
  
 ! Use dataset thats not open.
-define data/agg windy = 1,2,3
+ensemble windy = 1,2,3
  
 ! No variables on comparable grids.
-define data/agg windy = 1,2
+ensemble windy = 1,2
  
 set mode/last ignore
  
@@ -71745,7 +71748,7 @@ show data
  
  
 ! Define the ensemble dataset
-define data/agg windy = 1,2
+ensemble windy = 1,2
  
 ! The grid of the aggregate variables with LET/D is known.
 show data windy
@@ -71778,7 +71781,7 @@ list/l=3/y=30/x=-59:-51 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd
 cancel data 3
  
 ! Define the ensemble dataset
-define data/agg windy = 2,1
+ensemble windy = 2,1
  
 ! The grid of the aggregate variables with LET/D is known.
 show data windy
@@ -71830,7 +71833,7 @@ sh command define
  DEFINE SYMBOL
  DEFINE ATTRIBUT/D/TYPE/OUTPUT/QUIET
  DEFINE PYFUNC/NAME
- DEFINE DATA/AGGREGAT/E/F/TITLE/QUIET/HIDE
+ DEFINE DATA/AGGREGAT/T/E/F/TITLE/QUIET/HIDE
  DEFINE ANNOTATI/USER/NORM/NOUSER/XPOS/YPOS/HALIGN/VALIGN/ANGLE/SIZE/NLAB
 sh command show
  SHOW/ALL
@@ -74080,7 +74083,7 @@ sh dat/var/xml
    <value><![CDATA[Number of O2 Utilization Observations]]></value>
 </attribute>
 <attribute name="_FillValue" type="float">
-   <value>     -2147483647</value>
+   <value> -2147483647.</value>
 </attribute>
 <attribute name="ferret_datatype" type="char">
    <value><![CDATA[FLOAT]]></value>
@@ -74548,7 +74551,7 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Tue Nov 17 09:27:47 2015: ncks -h -A -h z1.nc append_to_this.nc\n",
+		:history = "Tue Nov 17 16:58:43 2015: ncks -h -A -h z1.nc append_to_this.nc\n",
 			"FERRET V6.951 (beta) 17-Nov-15" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
@@ -74866,6 +74869,7 @@ GO bn_vtree
  
 ! 11/2013 -- demonstrate SHOW VARIABLE/TREE and RETRUN=STATUS
 ! 12/14 update to test regridding output using bn_vtree_regrid.jnl
+! 11/15 - DEFINE DATA/AGG has become /T instead of /E
  
 CANCEL DATA/ALL
 ! pure abstract variable -- no dataset
@@ -75160,7 +75164,7 @@ the problem is UNKNOWN VARIABLE: NOEXIST[GZ(UNKNOWN_AUX)=ZPTS]
 ************************
  
 ! aggregate (ensemble) dataset of file variables
-define data/agg my_agg = my_file_vars, other_file_vars, another_file_vars
+ENSEMBLE my_agg = my_file_vars, other_file_vars, another_file_vars
 go bn_vtree.sub fv1
 /TREE=ALL
    in default dataset MY_AGG
@@ -75182,7 +75186,7 @@ fv1 is ready and AVAILABLE
 ! aggregation in which some members are uvars
 let/d=other_file_vars   fvx = fv1 + x[gx=fvx[d=1],i=1:3]
 let/d=another_file_vars fvx = 2*fv1 + x[gx=fvx[d=1],i=1:3]
-define data/agg my_uvar_agg = my_file_vars, other_file_vars, another_file_vars
+ENSEMBLE my_uvar_agg = my_file_vars, other_file_vars, another_file_vars
 go bn_vtree.sub fvx
 /TREE=ALL
    in default dataset MY_UVAR_AGG
@@ -78724,6 +78728,7 @@ GO bn_vtree_outfile
 ! bn_tree_outfile.jnl
  
 ! 8/2014 -- demonstrate SHOW VARIABLE/TREE/OUTFILE
+! 11/15 -- default for DEFINE DATA/AGG has become /T instead of /E
  
 CANCEL DATA/ALL
 ! pure abstract variable -- no dataset
@@ -79318,8 +79323,8 @@ list {spawn:"ls xml*.jnl"}
  
 LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
 say `filesets, return=isize`
- !-> MESSAGE/CONTINUE 908
-908
+ !-> MESSAGE/CONTINUE 909
+909
  
 let files = {spawn:"ls *cdf*.jnl"}
 let name_len = strindex(files, ".sub")
@@ -81898,12 +81903,14 @@ GO bn_fmrc
 ! bn_fmrc.jnl
 ! initial test of DEFINE DATA/F
  
+! *sh* 11/15 MUCH MORE DETAILED BENCHMARK NEEDED!
+ 
 use "run1.nc"
 use "run2.nc"
 use "run3.nc"
 use "run4.nc"
  
-define data/hide/F/agg/title fourfiles = 1,2,3,4
+define data/hide/F/agg fourfiles = 1,2,3,4
  
 sh grid sst
     GRID (G087)
@@ -81916,6 +81923,7 @@ sh grid sst
  TF_CAL_F  FORECAST             4 r   02-JAN-2010 00:00    08-JAN-2010 00:00
 list/i=1/j=1/L=1:6/n=1:4 sst
              VARIABLE : SST_IN (Deg C)
+             DATA SET : 1,2,3,4
              FILENAME : FOURFILES
              SUBSET   : 6 by 4 points (MODEL ELAPSED TIME (day)-FORECAST)
              LONGITUDE: 109W
@@ -81940,6 +81948,7 @@ show att sst
 list/L=1:6/n=1:4 `sst._ftime2dRef`
  !-> list/L=1:6/n=1:4 TF_TIMES
              VARIABLE : Forecast time step matrix (day since 01-JAN-2010 00:00:00)
+             DATA SET : 1,2,3,4
              FILENAME : FOURFILES
              SUBSET   : 6 by 4 points (MODEL ELAPSED TIME (day)-FORECAST)
              Verification time increases across row.  Initialization time increases down page. 
@@ -82253,8 +82262,8 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
  LAB14 -1.542E+00 -1.059E+00 0.500   45  USER    M
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB15 -3.972E+00  4.958E-08 0.500   45  USER    M
- LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
+ LAB15 -3.972E+00 -1.059E+00 0.500   45  USER    4.9578946316E-,1, M
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
  LAB16 -2.514E+00 -3.178E+00 0.500   45  USER    M
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
  LAB17 -1.301E+00 -2.654E+00 0.500   45  USER    M
@@ -86436,6 +86445,42 @@ SET MODE/LAST ignore
  
 GO bn_reset
 cancel mode verify
+GO err695_grave_prec
+! err695_grave_prec
+! Bug 2323. Large numbers had incorrect results on grave-accent
+! evaluations, returning only 8 digits of precision
+ 
+list/nohead/p=16 1234567890123456, `1234567890123456`
+ !-> list/nohead/p=16 1234567890123456,   1234567890123456.
+I / *:     1234567890123456.  1234567890123456.
+list/nohead/p=16 -1234567890123.456, `-1234567890123.456`
+ !-> list/nohead/p=16 -1234567890123.456,  -1234567890123.456
+I / *:    -1234567890123.456 -1234567890123.456
+ 
+! this was ok
+list/nohead/p=16 1.234567890123456, `1.1234567890123456`
+ !-> list/nohead/p=16 1.234567890123456, 1.123456789012346
+I / *:     1.234567890123456  1.123456789012346
+ 
+! check output when asking for lower precision
+list/nohead/p=9 1234567890123456, `1234567890123456`
+ !-> list/nohead/p=9 1234567890123456,   1234567890123456.
+I / *:     1.23456789E+15  1.23456789E+15
+list/nohead/p=6 1234567890123456, `1234567890123456`
+ !-> list/nohead/p=6 1234567890123456,   1234567890123456.
+I / *:     1.23457E+15  1.23457E+15
+ 
+let var = 1.23456e+34
+say `var`
+ !-> MESSAGE/CONTINUE 1.23456E+34
+1.23456E+34
+ 
+say `var,prec=4`
+ !-> MESSAGE/CONTINUE 1.235E+34
+1.235E+34
+ 
+GO bn_reset
+cancel mode verify
 GO bn_bin_regrid
 ! bin regridding tests
  
@@ -86833,7 +86878,7 @@ yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.951 (beta)
  	Linux 2.6.18-407.el5PAE 32-bit - 11/17/15
- 	17-Nov-15 09:28     
+ 	17-Nov-15 16:59     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -90471,7 +90516,7 @@ yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.951 (beta)
  	Linux 2.6.18-407.el5PAE 32-bit - 11/17/15
- 	17-Nov-15 09:28     
+ 	17-Nov-15 16:59     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 8 bytes)
@@ -90484,12 +90529,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.2 of Dec 16 2014 12:21:13 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "17-Nov-15"
-SESSION_TIME = "09:28"
-SESSION_PID = "6820"
-DELTA_CPU = "0.035993"
-CLOCK_SECS = "0.355"
+SESSION_TIME = "16:59"
+SESSION_PID = "13446"
+DELTA_CPU = "0.033994"
+CLOCK_SECS = "0.337"
 CURRENT_DATE = "17-Nov-15"
-CURRENT_TIME = "09:28:10"
+CURRENT_TIME = "16:59:05"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -90511,7 +90556,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "17-Nov-15:09:28"
+WIN_TITLE = "17-Nov-15:16:59"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -90577,7 +90622,7 @@ yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v6.951 (beta)
  	Linux 2.6.18-407.el5PAE 32-bit - 11/17/15
- 	17-Nov-15 09:28     
+ 	17-Nov-15 16:59     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -90796,7 +90841,7 @@ yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.951 (beta)
  	Linux 2.6.18-407.el5PAE 32-bit - 11/17/15
- 	17-Nov-15 09:28     
+ 	17-Nov-15 16:59     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -90910,7 +90955,7 @@ yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.951 (beta)
  	Linux 2.6.18-407.el5PAE 32-bit - 11/17/15
- 	17-Nov-15 09:28     
+ 	17-Nov-15 16:59     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -90994,4 +91039,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Tue Nov 17 09:28:13 PST 2015
+Ended at Tue Nov 17 16:59:08 PST 2015

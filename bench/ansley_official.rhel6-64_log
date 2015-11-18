@@ -64288,13 +64288,13 @@ regridding transforms e.g.SST[GX=x5deg@AVE]
    code        description                  code        description
    ----        -----------                  ----        -----------
    @LIN        lin. interp.                 @MODVAR     modulo var
-   @AVE        area-wgt avgd                @MODNGD     # gd mod pts
+   @AVE        area-wgtd avgd               @MODNGD     # gd mod pts
    @XACT       exact match                  @MODNBD     #bad mod pts
    @ASN        index assn                   @MODSUM     modulo sum
    @VAR        variance                     @MODMIN     modulo min
    @MIN        minimum                      @MODMAX     modulo max
    @MAX        maximum                      @NRST       nearst coord
-   @SUM        sum                          @BIN        unweighted avg
+   @SUM        area-wgtd sum                @BIN        unwgtd avg
    @NGD        #gd pts, area wgtd           @NBIN       #good in bin
    @MOD        modulo ave
  

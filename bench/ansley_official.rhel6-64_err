@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 80979429 Nov 16 17:06 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 81142123 Nov 17 16:06 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2323
+Note: fix ticket 2323: precision of grave-accent valuation
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -15,14 +15,14 @@ FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
-FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
+FER_GO=. /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
 FER_GRIDS=.
-FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
-FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
+FER_LIBS=/home/users/ansley/ferret_distributions/rhel6_64/lib
+FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Mon Nov 16 17:09:05 PST 2015
+Beginning at Tue Nov 17 16:29:50 PST 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3311,12 +3311,12 @@ Replacing definition of axis FAX4DAY
  TEMPORARY data cleared from memory
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
-define data/agg windy = 1,2,3
+DEFINE DATA/AGGREGAT/E windy = 1,2,3
            *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: UWND
            *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: VWND
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
-define data/agg windy = 1,2
+DEFINE DATA/AGGREGAT/E windy = 1,2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: UIN
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: VIN
@@ -4036,6 +4036,8 @@ SHOW DATA 2
 SHOW DATA/ATT noexist
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis DCOARSE
 Replacing definition of axis IRR
 Replacing definition of axis DCOARSE
@@ -4137,4 +4139,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Nov 16 17:10:54 PST 2015
+Ended at Tue Nov 17 16:31:55 PST 2015

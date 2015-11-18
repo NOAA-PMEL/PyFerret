@@ -111,7 +111,7 @@ C
 	REAL*8  DIFF, difft
 	REAL*8  td, xtemp1, tfact_d, xfact_d
 	REAL    delt, rem
-	INTEGER is_hours_axis
+	INTEGER is_hours_axis, labint, ticint
 	LOGICAL hvytic
 
 * Parameters for drawing tics across plot
@@ -146,7 +146,36 @@ C     CHECK THE PARAMETERS PASSED TO THE SUBROUTINE.
 
         IF(ITIME1(13:14)//ITIME1(1:12).GE.
      .	   ITIME2(13:14)//ITIME2(1:12)) STOP',3'
-        
+
+C     SET PARAMETERS.
+        TIC = 60./DT  
+        TICd = 60./DT  
+        NTIC = NSMTIC + 1
+        delt = 60.
+        labint = 120
+	ticint = labint
+      
+! On short-time interval axes, tic and label interval
+	IF (is_hours_axis.EQ.1) THEN
+           labint = 30
+           delt = 1.
+	   ticint = 5
+        ENDIF
+        IF (is_hours_axis.EQ.2) THEN
+           labint = 10
+           delt = 1
+	   ticint = 1
+           IF (difft .LE. 30) labint = 5
+           IF (difft .LE. 20) labint = 4
+           IF (difft .LE. 10) labint = 1
+           IF (difft .GE. 60) ticint = 2
+           IF (difft .GE. 120) ticint = 4
+           IF (difft .GE. 240) ticint = 4
+        ENDIF
+
+        tic = delt/dt
+        ticd = delt/dt
+
         solid1 = (hgrat(1,1).LT.0 .AND. hgrat(2,1).LT.0 .AND.  
      .            hgrat(3,1).LT.0 .AND.  hgrat(4,1).LT.0 )
         solid2 = (hgrat(1,2).LT.0 .AND. hgrat(2,2).LT.0 .AND.  
@@ -172,23 +201,6 @@ C     CHECK THE PARAMETERS PASSED TO THE SUBROUTINE.
            dash2_4 = hgrat(4,2)
         ENDIF
 C
-C     SET PARAMETERS.
-C     SET PARAMETERS.
-        TIC = 60./DT  
-        TICd = 60./DT  
-        NTIC = NSMTIC + 1
-        delt = 60.
-
-	IF (is_hours_axis.EQ.1) THEN
-	   delt = 10. !  15.
-	   IF (difft .LT. 50) delt = 5.
-	   IF (difft .LT. 30) delt = 2.
-	   IF (difft .LT. 12) delt = 1.
-	   IF (difft .GT.150) delt = 30.
-	   tic = delt/dt
-	   ticd = delt/dt
-	ENDIF
-
 	IF(NSMTIC.LT.0)THEN
 	    IHVY=-6
 	    INML=-5
@@ -208,13 +220,13 @@ C     SET PARAMETERS.
 	    FIHDB=-1.4
 	ENDIF
 	XTEMP1=X+DBLE(LABEL*(0.9*CSIZE+XTEMP)/XFACT)
-	IF (is_hours_axis.EQ.1 .AND. LABEL.LT.0) XTEMP1=XTEMP1-1.5*CSIZE/XFACT
+	IF (is_hours_axis.GT.0 .AND. LABEL.LT.0) XTEMP1=XTEMP1-1.5*CSIZE/XFACT
 	IF(LABEL.LT.0) THEN
 	    XTEMP2=X-((4.0+FIHDB)*CSIZE+XTEMP)/XFACT
-	    IF (is_hours_axis.EQ.1) XTEMP2=XTEMP2-1.5*CSIZE/XFACT
+	    IF (is_hours_axis.GT.0) XTEMP2=XTEMP2-1.5*CSIZE/XFACT
 	ELSE
 	    XTEMP2=X+((2.5+FIHDB)*CSIZE+XTEMP)/XFACT
-	   IF (is_hours_axis.EQ.1) XTEMP2=X+3*CSIZE/XFACT
+	   IF (is_hours_axis.GT.0) XTEMP2=X+3*CSIZE/XFACT
 	ENDIF
 	IF(LABEL.NE.0)YWID=(4.0+FIHDB)*CSIZE+XTEMP
         T=TLO  ! Time in hours, plot units
@@ -226,37 +238,34 @@ C     SET PARAMETERS.
 	tfact_d = tfact
 	xfact_d = xfact
 
-	CALL PLOT(X,TLO,0,0)
-	IF(IHR.EQ.0)THEN
-	    CALL PLOTT7(X,TLO,XFACT,TFACT,1,IHVY)
+        CALL PLOT(X,TLO,0,0)
+	IF(IHR.EQ.0 .AND.is_hours_axis.EQ.0 )THEN
+           CALL PLOTT7(X,TLO,XFACT,TFACT,1,IHVY)
 	ELSE
-	    CALL PLOTT7(X,TLO,XFACT,TFACT,1,INML)
+           IF (MOD(imin,labint) .EQ. 0) THEN
+              CALL PLOTT7(X,TLO,XFACT,TFACT,1,IHVY)
+           ELSE
+	      CALL PLOTT7(X,TLO,XFACT,TFACT,1,IHVY)
+           ENDIF
 	ENDIF
+
 	CALL TIME1(1,ITIME,2,' ',I3,ITIME3,delt)  ! next time stepping from 1 (arg 1) to 2 (arg 2) -- return ITIME3
 	ITIME = ITIME3
 
 c Check whether to make an hour label at the start of the axis
 c ihdb is hour-label frequency
       IF(IABS(LABEL).EQ.1) THEN
-         IF (IHR.EQ.IHDB*(IHR/IHDB) .AND. is_hours_axis.NE.1) THEN 
+         IF (IHR.EQ.IHDB*(IHR/IHDB) .AND. is_hours_axis.EQ.0) THEN 
             WRITE(SYM,80) IHR
 	    CALL scinot_d(XTEMP1,td,0.,CSIZE,2,SYM,0,wid,xfact_d, tfact_d)
 	 ENDIF
-         IF (is_hours_axis .EQ. 1) THEN
+         IF (is_hours_axis .GT. 0) THEN
 	    IF (IMIN .EQ. 0) THEN
                WRITE(SYM,82) IHR
 	       CALL scinot_d(XTEMP1,td,0.,CSIZE,5,SYM,0,wid,xfact_d, tfact_d)
-	    ELSE ! get the loop on-track to hit a tic mark at the start of hours
-	       rem = delt*INT(imin/delt) - imin
-	       ITIME=ITIME1
-	       CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
-	       CALL TIME1(1,ITIME,2,' ',I3,ITIME3,rem) 
-	       ITIME1 = ITIME3
 	    ENDIF
-
 	 ENDIF
       ENDIF
-
 
 c ----  count number of large tics. If no large tics will be drawn
 c ----  then will want to draw graticule lines at the small ones.
@@ -269,7 +278,6 @@ c Set itime1, itime3 as above
       ITIME = ITIME3
 
 C      LOOP:
-       labint = 120
        ltic = 0
   110  CONTINUE
 
@@ -280,8 +288,15 @@ C      LOOP:
 	IF(ITIME(13:14)//ITIME(1:12) .LE.
      .       ITIME2(13:14)//ITIME2(1:12)) THEN
            IF(IHR.EQ.0) ltic = ltic + 1
-	   IF (is_hours_axis.EQ.1 .AND. imin.EQ.0. AND. ihr.NE.0) ltic = ltic+1
-           GO TO 110
+	   IF (is_hours_axis .GT. 0) THEN
+	      IF (difft.LE.12 .AND. sec.EQ.0.) THEN
+	         ltic = ltic+1
+	      ELSE
+ 	         IF (imin.EQ.0. .AND. ihr.NE.0) ltic = ltic+1
+	      ENDIF
+	   ENDIF
+
+	   GO TO 110
         ENDIF
      
 ! IF no large tics, and if graticules at just the large tics were
@@ -301,13 +316,6 @@ C      LOOP:
               color2 = color1
            ENDIF
         ENDIF
-
-! On short-time interval axes, label interval
-	IF (ltic.LT.2 .AND. is_hours_axis.GT.0) labint = 2*delt
-	IF (is_hours_axis.GT.0) THEN
-            labint = 2*delt
-	    IF (ihdb.GT.0) labint = ihdb*delt
-	ENDIF
 
 ! Restore the state of ITIME, ITIME3
       ITIME=ITIME1
@@ -339,8 +347,9 @@ C      LOOP:
 
 20	CONTINUE
 	CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
-	hvytic = (is_hours_axis.EQ.0 .AND. IHR.EQ.0 .OR. 
-     .            is_hours_axis.EQ.1 .AND. IMIN.EQ.0)
+
+	hvytic = ((is_hours_axis.EQ.0 .AND. IHR.EQ.0) .OR.
+     .            (is_hours_axis.GT.0 .AND. MOD(imin,labint).EQ.0))
 	IF(hvytic)THEN
 	    CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,IHVY)
             
@@ -358,8 +367,17 @@ C      LOOP:
               ENDIF
 
 	ELSE
-	    CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
             
+              IF (is_hours_axis.GT.0) THEN
+                 IF (MOD(imin,ticint).EQ.0) THEN
+                    CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
+                 ELSE
+                    CALL PLOT(X,T+TIC,1,0)
+                 ENDIF
+              ELSE
+                 CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
+              ENDIF
+
                  IF ((solid1.OR.dashed1) .AND. hline) THEN ! make line across
                     CALL COLOR(color1)
                     IF (dashed1) THEN
@@ -377,7 +395,7 @@ C      LOOP:
 C         THE LABELS
 
 	  IF (IABS(LABEL).EQ.1) THEN
-             IF (is_hours_axis.EQ.1) THEN
+             IF (is_hours_axis .GT. 0) THEN
 	        IF (imin .EQ. 0) THEN
 	           WRITE(SYM,82) IHR
 	           CALL scinot_d(XTEMP1,Td+TICd,0.,CSIZE,5,SYM,0,wid,xfact_d, tfact_d)
@@ -432,7 +450,7 @@ c	IF(ITIME.LE.ITIME2) GO TO 10
 	IF(IDDB.EQ.0) RETURN
 
       IF(IABS(LABEL).EQ.1 .AND. IDAY.EQ.IDDB*(IDAY/IDDB) ) THEN
-         IF (is_hours_axis.EQ.1 .OR. IHR3.GE.4) THEN
+         IF (is_hours_axis.GT.0 .OR. IHR3.GE.4) THEN
            CALL TIME2(ITIME,SYM)
 	   READ(SYM,55) DATE, YEAR
 	   IF (MONYRLAB) THEN

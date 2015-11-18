@@ -713,7 +713,7 @@
      .		alg_regrid_title( prgrd_linear_interp )	/ 'lin. interp.'/,
      .		alg_regrid_code ( prgrd_linear_interp )	/ 'LIN'	/,
      .		alg_regrid_vizb ( prgrd_linear_interp )	/ .TRUE.	/,
-     .		alg_regrid_title( prgrd_average )	/ 'area-wgt avgd'/,
+     .		alg_regrid_title( prgrd_average )	/ 'area-wgtd avgd'/,
      .		alg_regrid_code ( prgrd_average )	/ 'AVE'	/,
      .		alg_regrid_vizb ( prgrd_average )	/ .TRUE. 	/,
      .		alg_regrid_title( prgrd_xy_ave )	/ 'area avgd'	/,
@@ -737,7 +737,7 @@
      .		alg_regrid_title( prgrd_max )		/ 'maximum'	/,
      .		alg_regrid_code ( prgrd_max )		/ 'MAX'	/,
      .		alg_regrid_vizb(  prgrd_max )		/ .TRUE.	/,
-     .		alg_regrid_title( prgrd_sum )		/ 'area-wgt sum'/,
+     .		alg_regrid_title( prgrd_sum )		/ 'area-wgtd sum'/,
      .		alg_regrid_code ( prgrd_sum )		/ 'SUM'	/,
      .		alg_regrid_vizb(  prgrd_sum )		/ .TRUE.	/,
      .		alg_regrid_title( prgrd_good_pt )	/ '#gd pts, area wgtd' /,
@@ -767,7 +767,7 @@
      .		alg_regrid_title( prgrd_nearest )	/ 'nearst coord'/,
      .		alg_regrid_code ( prgrd_nearest )	/ 'NRST'	/
      .		alg_regrid_vizb ( prgrd_nearest )	/ .TRUE.	/,
-     .		alg_regrid_title( prgrd_bin )		/ 'unweighted avg'/,
+     .		alg_regrid_title( prgrd_bin )		/ 'unwgtd avg'  /,
      .		alg_regrid_code ( prgrd_bin )		/ 'BIN'		/
      .		alg_regrid_vizb ( prgrd_bin )		/ .TRUE.	/,
      .		alg_regrid_title( prgrd_nbin )		/ '#good in bin'/,

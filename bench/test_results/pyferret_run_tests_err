@@ -1,5 +1,5 @@
 Using FERRET /home/users/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith tmap 1188 Nov 17 15:28 /home/users/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith tmap 1188 Nov 19 12:01 /home/users/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/users/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
@@ -263,7 +263,7 @@ FER_LIBS=/home/users/ksmith/PyFerret/lib
 FER_PALETTE=. /home/users/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
 PYFER_EXTERNAL_FUNCTIONS=/home/users/ksmith/PyFerret/ext_func/pylibs
-Beginning at Tue Nov 17 15:29:35 PST 2015
+Beginning at Thu Nov 19 12:03:16 PST 2015
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -3044,7 +3044,7 @@ Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
-set mode desperate 1.E+10
+set mode desperate   9999999999.000000
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
 set mode desperate 1234567890123456789
  PERMANENT data cleared from memory
@@ -3977,4 +3977,4 @@ LOAD/TEMPORARY vflag
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
 *** Running test: bn_outline_poly.jnl
  Cached data cleared from memory
-Ended at Tue Nov 17 15:34:06 PST 2015
+Ended at Thu Nov 19 12:07:03 PST 2015

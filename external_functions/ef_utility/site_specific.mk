@@ -1,6 +1,5 @@
 ## Site-dependent definitions included in external function 
-## Makefiles in an installed PyFerret directory.  (This file
-## is not used when building PyFerret from source.)
+## Makefiles in an installed PyFerret directory.
 
 ## Machine type for which to build Ferret/PyFerret
 ##   x86_64-linux      for 64-bit RHEL

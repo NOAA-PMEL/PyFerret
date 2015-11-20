@@ -179,7 +179,7 @@ c* ... SET TEXT/FONT
 	   
            ii = INT(val_buf)
            IF (ii.LT.-4 .OR. ii.GT.4) GOTO 5460
-           pyf_bold(igrp) = ii
+           pyf_isiz(igrp) = ii
 	ENDIF
 
          pyf_set(igrp) = .TRUE.

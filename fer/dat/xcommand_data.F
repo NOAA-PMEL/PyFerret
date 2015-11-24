@@ -1259,7 +1259,7 @@
 		DATA qualifiers  (nqual_at10k+ 1)/ '****' / ! reserved for x
 		DATA qualifiers  (nqual_at10k+ 2)/ '****' / ! y
 		DATA qualifiers  (nqual_at10k+ 3)/ '****' / ! z
-		DATA qualifiers  (nqual_at10k+ 4)/ '****' / ! t
+		DATA qualifiers  (nqual_at10k+ 4)/ 'T'    / ! t
 		DATA qualifiers  (nqual_at10k+ 5)/ 'E'    / ! e
 		DATA qualifiers  (nqual_at10k+ 6)/ 'F'    / ! f
 		DATA qualifiers  (nqual_at10k+ 7)/ 'TITLE' /
@@ -1826,14 +1826,17 @@
      .		alias(23)	/ 'DEFINE DATA/AGGREGAT/F' /
      .		alias_name(24)	/ 'VTREE' /,
      .		alias_len(24)	/ 13 /,
-     .		alias(24)	/ 'SHOW VAR/TREE' /
+     .		alias(24)	/ 'SHOW VAR/TREE' /,
+     .		alias_name(25)	/ 'TSERIES' /,
+     .		alias_len(25)	/ 22 /,
+     .		alias(25)	/ 'DEFINE DATA/AGGREGAT/T' /
 
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
-     .                   / 126*unspecified_name4 /,
-     .		(alias_len(i),i=num_predefined_alias+1,150) / 126*4 /,
+     .                   / 125*unspecified_name4 /,
+     .		(alias_len(i),i=num_predefined_alias+1,150) / 125*4 /,
      .		(alias(i),i=num_predefined_alias+1,150)
-     .                   / 126*unspecified_name4 /
+     .                   / 125*unspecified_name4 /
 
 
 	DATA queries(1) / 'STATUS' /,

@@ -41,19 +41,37 @@
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
 * 2/2013  Ferret v6.85
+
+* v695+ *sh* 11/15 - bug fix: sf_lunit(dset) does not necessarily contain
+*	                      the currently open netcdf file ID
 *
 * arguments:
 *	dset	- data set number 
 
 
 	include 'tmap_dims.parm'
+#  include "tmap_dset.parm"
 	include 'xstep_files.cmn_text'
+	include 'xdset_info.cmn_text'
 	external xstep_files_data
 
 * Argument variable declarations
 	INTEGER   dset, status
 
-	CALL CD_CLOSE_SET( sf_lunit(dset), status )
+* Internal variable declarations
+	INTEGER	istep
+
+* 11/15
+* sf_lunit(dset) does not reliably point to the currently open netCDF ID for
+* this daatset beacuse a single dset can own many stepfiles -- for example
+* in an MC aggregation.  Consult the variable ds_open(dset) to find the
+* currently open stepfile number
+
+	istep = ds_open(dset)
+	CALL CD_CLOSE_SET( sf_lunit(istep), status )
+
+* set flag indicating the file is no longer open
+	sf_lunit(istep) = file_not_open
 	
 	RETURN
 	END

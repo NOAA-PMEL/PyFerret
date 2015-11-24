@@ -1,5 +1,6 @@
-	SUBROUTINE DEFINE_AGGREGATE_GRID (agg_dset, tcoordname, nvars, vname,
-     .      fvar, iline, tf_lag_t, grid, agg_dim, member_sets, nsets)
+	SUBROUTINE DEFINE_EF_AGGREGATE_GRID (agg_dset,
+     .		tcoordname, nvars, vname, fvar, iline,
+     .		tf_lag_t, grid, agg_dim, member_sets, nsets)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -33,7 +34,8 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* Define ensemble axis and grid using that axis. For uvars, grid is set to
+* Define ensemble or forecast axis and grid using that axis.
+* For uvars, grid is set to
 * unspecified_int4 when calling this. Will defer the grid check for later.
 
 * Programmer Ansley Manke
@@ -417,5 +419,6 @@
  5000	RETURN
  5100	CALL ERRMSG(ferr_insuff_memory,status,
      .	        'unable to define forecast aggregation', *5000)
- 5200	CALL ERRMSG(ferr_internal, status, 'define_aggregate_grid!', *5000)
+ 5200	CALL ERRMSG(ferr_internal, status, 'define_ef_aggregate_grid!',
+     .		 *5000)
 	END

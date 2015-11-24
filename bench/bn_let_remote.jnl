@@ -1,0 +1,84 @@
+! bn_let_remote.jnl
+! Tests of the F-TDS LET/REMOTE
+
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc"
+let/D=1/remote myvar = t0112mn1[k=1:5@sum]
+let/D=1/remote ave_z = t0112mn1[z=0:1000@ave]
+sh var
+set view ul; shade/l=7 myvar
+set view ur; shade/l=3 ave_z
+
+list/l=7/x=300:310/y=15 myvar, ave_z
+
+let/D=1/remote ave_t = t0112mn1[L=1:12@ave]
+set view ll; shade/z=0 ave_t
+
+let/D=1/remote/units="`t0112mn1,ret=units`"/title="Summer average Temperature" ave_summer = t0112mn1[t=15-jun:15-sep@ave]
+set view lr; shade/z=0 ave_summer
+
+can view
+can data/all; can var/all
+
+! open another dataset, define more remote variables
+
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc"
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
+let/D=2/remote sstsum = sst[L=1:5@sum]
+let/D=2/remote airtsum = airt[L=1:5@sum]
+sh dat
+
+set view ul; plot/y=-10/x=50:150 sstsum
+set view ur; plot/y=-10/x=50:150 airtsum
+list/y=-10/x=50:59 sstsum,airtsum
+
+let both = sstsum + airtsum
+set view lower; plot/y=-10/x=50:150 both
+list/y=-10/x=50:59 sstsum, airtsum, both
+
+can dat/all; can var/all
+
+! make several remote definitions. They can be used together in an expression. 
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
+let/D=1/remote sstsum = sst[L=1:5@sum]
+let/D=1/remote airtsum = airt[L=1:5@sum]
+let/D=1/remote factor = 12
+let/D=1/remote combo = factor*(airtsum - sstsum)
+list/y=-5/x=130w:110w combo
+
+
+can dat/all; can var/all
+
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc"
+
+! This is ok let/remote/D=
+let/D=1/remote myvar = t0112mn1[z=1:100@ave]
+
+! Intentional errors:
+
+! But cannot put d= within the expression: the expr is evaluated on
+! the remote server so the same datsets are not open there.
+
+set mode ignore
+let/D=1/remote rvar = t0112mn1[d=1,z=1:100@ave]
+
+
+! But, require LET/D= with /REMOTE
+let/remote rvar = t0112mn1[d=1,z=1:100@ave]
+
+! If expressions involve local variables not defined in the remote dset,
+! then the variable can be computed but not as a remote-var.
+
+let a = 12
+let/D=1/remote avar = a*t0112mn1[L=@ave]
+list/x=300/y=15 avar
+
+SET MODE/LAST ignore
+
+! The dataset remains open, we can fix the definition.
+let/D=1/remote a = 12
+sho dat
+list/x=300/y=15/z=0:100 avar
+
+set mode/last ignore
+can dat/all; can var/all
+

@@ -239,7 +239,7 @@ C
 
 	tfact_d = tfact
 	xfact_d = xfact
-	
+
         CALL PLOT(X,TLO,0,0)
 	IF(IHR.EQ.0 .AND.is_hours_axis.EQ.0 )THEN
            CALL PLOTT7(X,TLO,XFACT,TFACT,1,IHVY)

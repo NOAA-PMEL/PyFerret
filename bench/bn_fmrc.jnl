@@ -1,12 +1,14 @@
 ! bn_fmrc.jnl
 ! initial test of DEFINE DATA/F 
 
+! *sh* 11/15 MUCH MORE DETAILED BENCHMARK NEEDED!
+
 use "run1.nc"
 use "run2.nc"
 use "run3.nc"
 use "run4.nc"
 
-define data/hide/F/agg/title fourfiles = 1,2,3,4
+define data/hide/F/agg fourfiles = 1,2,3,4
 
 sh grid sst
 list/i=1/j=1/L=1:6/n=1:4 sst

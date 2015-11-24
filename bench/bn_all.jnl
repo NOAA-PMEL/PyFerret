@@ -902,6 +902,9 @@ GO bn_stddev
 GO bn_reset
 GO bn_set_axis_name
 
+GO bn_reset
+GO bn_let_remote
+
 ! *********** v6.93 Additions ***********
 GO bn_reset
 GO bn691_bug_fixes
@@ -995,6 +998,7 @@ GO bn696_bug_fixes
 
 GO bn_reset
 GO bn_bin_regrid
+
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

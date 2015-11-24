@@ -6,6 +6,7 @@ all_1_arg.F\
 arg_string.F\
 atom_pos.F\
 auto_filename.F\
+build_t_agg_axis.F\
 cancel_data_set.F\
 cdf_list.F\
 cdf_list_global_atts.F\
@@ -19,8 +20,9 @@ create_agg_dset.F\
 cs_command.F\
 cs_semicolon.F\
 ctrl_c.F\
-define_aggregate_grid.F\
+define_ef_aggregate_grid.F\
 define_special_grids.F\
+define_t_agg_mc_dset.F\
 delete_one_line.F\
 do_query.F\
 dollar_arg.F\
@@ -46,9 +48,11 @@ get_mode_arg.F\
 get_ppl_memory_size.F\
 get_scriptfile_name.F\
 get_uvars_list_by_attname_and_val.F\
-init_aggregate_dset.F\
+init_ef_aggregate_dset.F\
 init_journal.F\
 init_memory.F\
+init_t_aggregate_dset.F\
+init_t_agg_mc_dset.F\
 initialize.F\
 isit_const_arr_var.F\
 isit_coord_var.F\

@@ -232,6 +232,8 @@
 * V695  *acm* 6/15 Change the error message when coordinates are decreasing.
 * V695  *acm* 6/16 New subcommand DEFINE ANNOTATION
 * V695 *acm*  9/15 Fix #2317: length of name sent to FIND_DSET_NUMBER
+* V695 *sh*  10/15 add DEFINE DATA/AGG/T
+*                  rename routine INIT_AGGREGATE_DSET to INIT_EF_AGGREGATE_DSET
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -296,6 +298,7 @@
      .              slash_def_aggregate,
      .              slash_def_agg_title,
      .              slash_def_agg_quiet,
+     .              slash_def_agg_t,
      .              slash_def_agg_e,
      .              slash_def_agg_f,
      .              slash_def_agg_hide,
@@ -336,6 +339,7 @@
      .              slash_def_att_quiet   = 1 + 3,
      .              slash_pyfunc_name = 1,
      .              slash_def_aggregate = 1 + 0,
+     .              slash_def_agg_t     = 1 + 4,
      .              slash_def_agg_e     = 1 + 5,
      .              slash_def_agg_f     = 1 + 6,
      .              slash_def_agg_title = 1 + 7,
@@ -356,7 +360,7 @@
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet,
      .            letdset, its_remote, agg_hide, def_att_quiet, purge_all,
-     .            user, norm, nouser
+     .            user, norm, nouser, t_regular, use_strict
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID, EFCN_SCAN,
      .		  TM_GET_LINENUM, TM_LENSTR1,
@@ -1000,7 +1004,8 @@ C /units=months  is 1/12 of the length of the year
  3540         FORMAT 
      .        ('/UNIT=MONTHS  ... using 1/12 of ',F6.2,' days')
  3544         FORMAT 
-     .        ('/UNIT=MONTHS is ambiguous ... using 1/12 of ',F8.4,' days')
+     .        ('/UNIT=MONTHS is ambiguous ... using 1/12 of '
+     .                                                  ,F8.4,' days')
 	         CALL WARN (err_string) 
 	   ELSE
 * ... Issue warning for inappropriate units like HOURS on X ax
@@ -2230,15 +2235,32 @@ C /units=months  is 1/12 of the length of the year
 	   IF ( status .NE. ferr_ok ) RETURN
 	ENDIF
 
+* Is there a /T ?
+	agg_dim = unspecified_int4
+	IF (qual_given( slash_def_agg_t ) .GT. 0) agg_dim = t_dim
+
 * Is there a /E ?
-	agg_dim = e_dim
-	IF (qual_given( slash_def_agg_e ) .GT. 0) agg_dim = e_dim
+	IF (qual_given( slash_def_agg_e ) .GT. 0) THEN
+           IF (agg_dim .EQ. unspecified_int4) THEN
+              agg_dim = e_dim
+           ELSE
+              GOTO 5510
+           ENDIF
+        ENDIF
 
 * Is there a /F 
-	IF (qual_given( slash_def_agg_f ) .GT. 0) agg_dim = f_dim
+	IF (qual_given( slash_def_agg_f ) .GT. 0) THEN
+           IF (agg_dim .EQ. unspecified_int4) THEN
+              agg_dim = f_dim
+           ELSE
+              GOTO 5510
+           ENDIF
+        ENDIF
+
+* default aggregation orientation
+	IF (agg_dim .EQ. unspecified_int4) agg_dim = t_dim
 
 * define data/hide
-
 	agg_hide = qual_given( slash_def_agg_hide ) .GT. 0
 
 * Get the name of the dataset we are creating
@@ -2250,9 +2272,27 @@ C /units=months  is 1/12 of the length of the year
 	IF ( .NOT.TM_LEGAL_NAME_OP(buff1) ) GOTO 5430
         IF ( TM_LENSTR1(buff1) .GT. 128 ) GOTO 5410
 
-	CALL INIT_AGGREGATE_DSET (buff1, buff2, dset, agg_quiet, agg_hide, 
-     .    agg_dim, status)
+! *sh* 11/15 - As-is the parsing of the "name=item1, item2, ..."
+* syntax has no routine to support it.  Instead it is a process of trial and
+* error -- checking parsing failures to see if alternative parsing is needed
+* (see CHECK_MEMBER_LIST).  The routine NAME_EQUAL_STRING does all of the
+* work needed, but it merely returns the start position of the item list,
+* rather than modifying item_start(1).  I am reluctant to fix this cuz
+* there is so much code (?true?) that is built around the current logic
+* Note that this line alters the internal behavior of CHECK_MEMBER_LIST, but 
+* does not alter the outcome 
+        item_start(1) = pos   ! first item starts *after* the equal sign
 
+        IF (agg_dim .EQ. t_dim) THEN
+           t_regular  = .FALSE.   ! ToDo /REGULART -- not yet implemented
+           use_strict = .FALSE.   ! ToDo ?? T coordinate micro-adjustment ??
+           CALL INIT_T_AGGREGATE_DSET(num_items, buff1, buff2, 
+     .                          t_regular, use_strict, dset, status)
+        ELSE
+	   CALL INIT_EF_AGGREGATE_DSET (buff1, buff2, dset,
+     .                          agg_quiet, agg_hide, agg_dim, status)
+
+        ENDIF
 	IF (status .NE. ferr_ok) GOTO 5000
 
 * Make this the current dataset

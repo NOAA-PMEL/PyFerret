@@ -1,4 +1,4 @@
-	SUBROUTINE INIT_AGGREGATE_DSET (dname, dtitle, agg_dset, 
+	SUBROUTINE INIT_EF_AGGREGATE_DSET (dname, dtitle, agg_dset, 
      .     agg_quiet, agg_hide, agg_dim, status )
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -32,7 +32,9 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
+
+* initialize a new ensemble (E) or forecast (F) aggregated dataset
+
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP 
 *
@@ -42,6 +44,7 @@
 *                 better error handling.
 * V695 2/15 *acm* Aggregation in either E or F direction, as defined by agg_dim
 * V695+ 5/15 *sh* Call GET_AXIS_SPEEDS (pulled out of CHECK_MEMBER_DSETS)
+* V695+ 10/15 *sh* rename this routine to INIT_EF_AGGREGATE_DSET
 
       IMPLICIT NONE
 	include 'netcdf.inc'
@@ -110,7 +113,7 @@
   200	CONTINUE
 
 * Too many data sets are open
-	CALL TM_ERRMSG ( merr_dsetlim, status, 'INIT_AGGREGATE_DSET',
+	CALL TM_ERRMSG ( merr_dsetlim, status, 'INIT_EF_AGGREGATE_DSET',
      .			 no_descfile, no_stepfile,
      .			 'MAX='//TM_STRING(DBLE(maxdsets)),
      .			 no_errstring, *9950)
@@ -290,7 +293,7 @@
 	   
            nvars = nvars + 1
 
-	   CALL DEFINE_AGGREGATE_GRID (agg_dset, tcoordname, nvars, vname,
+	   CALL DEFINE_EF_AGGREGATE_GRID (agg_dset, tcoordname, nvars, vname,
      .           ivar, iline, tf_lag_t, grid, agg_dim, member_sets, nsets)
 	   IF (status .NE. ferr_ok) GOTO 5000
 
@@ -344,7 +347,8 @@
 
               nvars = nvars + 1
 
-	      CALL DEFINE_AGGREGATE_GRID (agg_dset, tcoordname, nvars, vname,
+	      CALL DEFINE_EF_AGGREGATE_GRID
+     .		(agg_dset, tcoordname, nvars, vname,
      .           fvar, iline, tf_lag_t, grid, agg_dim, member_sets, nsets)
 	      IF (status .NE. ferr_ok) GOTO 5000
 
@@ -369,12 +373,13 @@
 	   status = NCF_ADD_AGG_MEMBER (agg_dset, member_sets(iset)) 
  2000	CONTINUE
 
-	IF (dtitle(1:2) .NE. char_init) THEN
-	   ds_title(agg_dset) = dtitle
-	ELSE
-	   ds_title(agg_dset) = 'Ensemble'
-	ENDIF
-	ds_mod_title(agg_dset) = ' '
+! removed 11/15 *sh* -- title is reduntantly set in CREATE_AGG_DSET
+!	IF (dtitle(1:2) .NE. char_init) THEN
+!	   ds_title(agg_dset) = dtitle
+!	ELSE
+!	   ds_title(agg_dset) = 'Ensemble'
+!	ENDIF
+!	ds_mod_title(agg_dset) = ' '
 	ds_time_axis(agg_dset) = ds_time_axis(member_sets(1))
 	ds_format(agg_dset) = ds_format(member_sets(1))
  

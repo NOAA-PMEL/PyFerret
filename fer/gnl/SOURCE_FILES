@@ -23,7 +23,6 @@ ctrl_c.F\
 define_ef_aggregate_grid.F\
 define_special_grids.F\
 define_t_agg_mc_dset.F\
-distrib_msg.F\
 delete_one_line.F\
 do_query.F\
 dollar_arg.F\

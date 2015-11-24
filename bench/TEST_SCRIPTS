@@ -211,6 +211,7 @@ bn_bad_axis_bounds.jnl
 bn_enter_exit_GO.jnl
 bn_stddev.jnl
 bn_set_axis_name.jnl
+bn_let_remote.jnl
 bn691_bug_fixes.jnl
 bn_append_dsg.jnl
 bn_global_atts.jnl
@@ -238,7 +239,7 @@ bn_auxiliary.jnl
 bn_plot_ribbon_gaploc.jnl
 bn_time_short_axes.jnl
 bn_floatstr_extended.jnl
-bn696_bug_fixes
-bn_bin_regrid
+bn696_bug_fixes.jnl
+bn_bin_regrid.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

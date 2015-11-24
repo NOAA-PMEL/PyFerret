@@ -1777,8 +1777,8 @@
      .		alias_len(24)	/ 13 /,
      .		alias(24)	/ 'SHOW VAR/TREE' /,
      .		alias_name(25)	/ 'TSERIES' /,
+     .		alias_len(25)	/ 22 /,
      .		alias(25)	/ 'DEFINE DATA/AGGREGAT/T' /
-     .		alias_name(25)	/ 'TSERIES' /
 
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)

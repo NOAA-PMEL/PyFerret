@@ -1,0 +1,218 @@
+#! /bin/sh
+
+# mycp needs to recursively copy subdirectories for the lib/python* directories
+mycp="/bin/cp -R -p"
+
+print_usage_and_exit() {
+   echo "" 
+   echo "Usage:  $0  <pyferret_dir>  <version>  <platform>  <target_dir>  [ -y ] " 
+   echo "" 
+   echo "    Creates the PyFerret distribution file pyferret-<version>-<platform>.tar.gz " 
+   echo "    from the pyferret source directory <pyferret_dir>, in which pyferret and " 
+   echo "    the font files have been built.  All the files required will be copied to a " 
+   echo "    temporary directory which this script will create.  Any missing executables " 
+   echo "    will be noted.  The gzipped tar file pyferret-<version>-<platform>.tar.gz " 
+   echo "    will be written in <target_dir>, which must already exist.  If the optional " 
+   echo "    fifth argument '-y' is given, any questions normally asked by the script " 
+   echo "    will be automatically answered with 'y'. " 
+   echo "" 
+   exit 1 
+}
+
+if [ $# -lt 4 ]; then
+   echo ""
+   echo "not enough arguments"
+   print_usage_and_exit
+fi
+
+if [ $# -gt 5 ]; then
+   echo ""
+   echo "too many arguments"
+   print_usage_and_exit
+fi
+
+if [ ! -d "$1" ]; then
+   echo ""
+   echo "$1 does not exist or is not a directory"
+   print_usage_and_exit
+fi
+ferret_dir=`cd "$1" ; pwd`
+pyferret_dir="${ferret_dir}/pyferret_install"
+if [ ! -d "${pyferret_dir}" ]; then
+   echo ""
+   echo "${pyferret_dir} does not exist or is not a directory"
+   echo "Has PyFerret been built?"
+   print_usage_and_exit
+fi
+
+version="$2"
+platform="$3"
+
+if [ ! -d "$4" ]; then
+   echo ""
+   echo "$4 does not exist or is not a directory"
+   print_usage_and_exit
+fi
+target_dir=`cd "$4" ; pwd`
+
+if [ $# -eq 5 ]; then
+   if [ "$5" -ne "-y" ]; then
+      echo ""
+      echo "fifth optional argument can only be -y"
+      print_usage_and_exit
+   fi
+   auto_ans="y"
+fi
+
+# Name of the directory and tar file to be created
+ctar_name="pyferret-${version}-${platform}"
+ctar_file="${target_dir}/${ctar_name}.tar.gz"
+
+# Make a clean temporary directory for the tar file contents
+parent_temp_dir="/var/tmp/pyferret_$$"
+echo "Creating temporary directory ${parent_temp_dir}"
+rm -fr ${parent_temp_dir}
+temp_dir="${parent_temp_dir}/${ctar_name}"
+mkdir -p ${temp_dir}
+
+echo "Copying the shell scripts"
+${mycp} ${ferret_dir}/bin ${temp_dir}/
+
+echo "Copying journal files"
+${mycp} ${ferret_dir}/jnls/* ${temp_dir}/
+
+echo "Copying external function source files"
+mkdir ${temp_dir}/ext_func
+${mycp} ${ferret_dir}/external_functions ${temp_dir}/ext_func/src
+# Remove any compiled code from the source copy
+find ${temp_dir}/ext_func/src -name \*.so -delete
+find ${temp_dir}/ext_func/src -name \*.a -delete
+find ${temp_dir}/ext_func/src -name \*.o -delete
+
+echo "Copying palettes"
+${mycp} ${ferret_dir}/palettes ${temp_dir}/ppl
+
+# Remove files that should not be distributed
+echo "Removing clutter"
+rm -f ${temp_dir}/bin/Fapropos* 1>>/dev/null 2>&1 
+rm -f ${temp_dir}/bin/Fhelp* 1>>/dev/null 2>&1 
+rm -f ${temp_dir}/bin/Findex* 1>>/dev/null 2>&1 
+rm -f ${temp_dir}/bin/Finstall.[^c]* 1>>/dev/null 2>&1 
+rm -f ${temp_dir}/bin/Ftoc* 1>>/dev/null 2>&1 
+rm -f ${temp_dir}/bin/ferret_paths*_template 1>>/dev/null 2>&1 
+rm -f ${temp_dir}/bin/make_*_tar 1>>/dev/null 2>&1 
+rm -fr ${temp_dir}/bin/fonts_* 1>>/dev/null 2>&1 
+rm -fr ${temp_dir}/bin/build_fonts/original 1>>/dev/null 2>&1 
+rm -f ${temp_dir}/bin/build_fonts/unix/fnt* 1>>/dev/null 2>&1 
+rm -f ${temp_dir}/bin/build_fonts/unix/binary 1>>/dev/null 2>&1 
+
+# Now set up the proper symbolic links
+echo "Setting up symbolic links"
+pushd ${temp_dir}/bin 1>>/dev/null 2>&1
+ln -s Fdescr Fdesc
+ln -s Fgrids Fgrid
+ln -s Fprint_template Fprint
+popd 1>>/dev/null 2>&1
+
+echo "Copying external function shared-object libraries"
+mkdir -p ${temp_dir}/ext_func/pylibs
+find ${ferret_dir}/external_functions -type f -perm -100 -name \*.so -exec ${mycp} {} ${temp_dir}/ext_func/pylibs \;
+
+echo "Copying font files"
+fnt_files=${ferret_dir}/bin/build_fonts/unix/f*
+if [ $? -ne 0 -o "${fnt_files}" = "" ]; then
+   echo "No font files found in ${ferret_dir}/bin/build_fonts/unix"
+   echo "Cleaning up - removing ${parent_temp_dir}"
+   rm -fr "${parent_temp_dir}"
+   echo ""
+   exit 1
+fi
+mkdir ${temp_dir}/ppl/fonts
+${mycp} ${fnt_files} ${temp_dir}/ppl/fonts/
+
+echo "Copying threddsBrowser"
+tb_jar=${ferret_dir}/threddsBrowser/threddsBrowser.jar
+if [ ! -r ${tb_jar} ]; then
+   echo "No threddsBrowser.jar file found ${ferret_dir}/threddsBrowser"
+   echo "Cleaning up - removing ${parent_temp_dir}"
+   rm -fr "${parent_temp_dir}"
+   echo ""
+   exit 1
+fi
+mkdir ${temp_dir}/lib
+${mycp} ${tb_jar} ${temp_dir}/lib/
+
+toolsui_jar=${ferret_dir}/threddsBrowser/toolsUI/toolsUI-4.1.jar
+if [ ! -r ${toolsui_jar} ]; then
+   echo "No toolsUI-4.1.jar file found ${ferret_dir}/threddsBrowser/toolsUI"
+   echo "Cleaning up - removing ${parent_temp_dir}"
+   rm -fr "${parent_temp_dir}"
+   echo ""
+   exit 1
+fi
+${mycp} ${toolsui_jar} ${temp_dir}/lib/
+
+# Create a symbolic link to the toolsUI-4.1.jar file
+pushd ${temp_dir}/lib 1>>/dev/null 2>&1
+ln -s toolsUI-4.1.jar toolsUI.jar
+popd 1>>/dev/null 2>&1
+
+echo "Copying ferret_ef_mem_subsc.so"
+if [ ! -r ${ferret_dir}/efmem/ferret_ef_mem_subsc.so ]; then
+   echo "No ferret_ef_mem_subsc.so file found ${ferret_dir}/efmem"
+   echo "Cleaning up - removing ${parent_temp_dir}"
+   rm -fr "${parent_temp_dir}"
+   echo ""
+   exit 1
+fi
+${mycp} ${ferret_dir}/efmem/ferret_ef_mem_subsc.so ${temp_dir}/lib/
+
+echo "Copying pyferret python modules"
+python_dirs=${pyferret_dir}/lib/python*
+if [ $? -ne 0 -o "${python_dirs}" = "" ]; then
+   echo "No python* directories found in ${pyferret_dir}/lib"
+   echo "Cleaning up - removing ${parent_temp_dir}"
+   rm -fr "${parent_temp_dir}"
+   echo ""
+   exit 1
+fi
+${mycp} ${python_dirs} ${temp_dir}/lib/
+
+# Create the tar file
+echo ""
+echo "The tar file will be created from "
+echo "${temp_dir}"
+echo "(which can now be examined or tweaked from another shell/window)"
+echo ""
+echo -n "Create gzipped tar file ${ctar_file} (y/n)? "
+if [ -n "$auto_ans" ]; then
+   ans="${auto_ans}"
+   echo $ans
+else
+   read ans
+fi
+while [ "${ans}" != "y" -a "${ans}" != "n" ]; do
+   echo -n "Answer either y or n: "
+   read ans
+done
+if [ "${ans}" = "y" ]; then
+   rm -f "${ctar_file}"
+   pushd ${parent_temp_dir} 1>>/dev/null 2>&1
+   tar czf "${ctar_file}" "${ctar_name}"
+   popd 1>>/dev/null 2>&1
+   echo ""
+   ls -l "${ctar_file}"
+else
+   echo ""
+   echo "${ctar_file} NOT created"
+   echo "${parent_temp_dir} NOT removed"
+   echo ""
+   exit 1
+fi
+
+# Clean up
+echo ""
+echo "Cleaning up - removing ${parent_temp_dir}"
+rm -fr "${parent_temp_dir}"
+echo ""
+

@@ -1,0 +1,23 @@
+! Bug 2326: levels with only a value and (inf) or (-inf)
+! should show values less-equal or greater-equal to that level.
+
+use coads_climatology; set reg/l=1
+
+! The plots should be the same left to right; just a triangle key
+! on the right
+set view ul; shade/lev=(20)(50) sst
+set view ur; shade/lev=(20)(inf) sst
+set view ll; shade/lev=(-50)(20) sst
+set view lr; shade/lev=(-inf)(20) sst
+
+! Horizontal keys
+can view
+set view ul; fill/lev=(20)(50) sst
+set view ur; fill/lev=(20)(inf) sst
+set view ll; fill/lev=(-50)(20) sst
+set view lr; fill/lev=(-inf)(20) sst
+
+! silly degenerate case, two-sided inf's
+can view
+set view ul; shade/lev=(-inf)(22)(inf) sst
+set view ur; shade/key=horiz/lev=(-inf)(22)(inf) sst

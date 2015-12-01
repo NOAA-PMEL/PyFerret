@@ -56,6 +56,7 @@
 *  V62+ *acm* 6/09 fix bug 1671: data level exactly matching top of upper level 
 *                  wasnt plotted on SHADE and POLY plots
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V697 *acm* 12/15 Fix ticket 2326: single level plus (inf) and/or (-inf)
 
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
@@ -83,7 +84,7 @@
               lev1 = 1
               levn = nlev2
               IF (neginf) lev1 = 2
-              IF (posinf) levn = nlev2 - 1
+              IF (posinf) levn = MAX(2,nlev2-1)
 
 	      if(
      .		 (zle.and.datum.le.cmzle) 	.or.

@@ -1,0 +1,5 @@
+! bn697_bug_fixes
+! test various fixes that went into version 6.97
+
+GO bn_reset
+GO err696_only_inf_lev

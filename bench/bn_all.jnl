@@ -1000,6 +1000,11 @@ GO bn_reset
 GO bn_bin_regrid
 
 
+! *********** v6.97 Additions ***********
+
+GO bn_reset
+GO bn697_bug_fixes
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

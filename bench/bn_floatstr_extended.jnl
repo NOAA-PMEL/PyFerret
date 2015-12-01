@@ -58,3 +58,12 @@ list  floatstr(a, "(f04.1)")
 LET var1 =  FLOATSTR(sst-20,"(f5.1)")
 LET var2 =  FLOATSTR(sst-20,"(f05.1)")
 LIST/X=165W/L=1 var1[j=1:40:2], var2[j=1:40:2]
+
+! Now test (F0.0) and (I0) formats which return the
+! shortest possible value without the fractional part.
+! Per marco.van-hulten@lsce.ipsl.fr - this is legal in 
+! gfortran, so allow it.
+
+LET var1 =  FLOATSTR(sst-20,"(f0.0)")
+LET var2 =  FLOATSTR(sst-20,"(I0)")
+LIST/X=165W/L=1 var1[j=1:40:2], var2[j=1:40:2]

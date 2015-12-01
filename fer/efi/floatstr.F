@@ -4,6 +4,7 @@
 * Ansley Manke 11/10
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V695 *acm* 9/15  Allow integer formats. Truncate Floating point data, write as integer
+* V697 *acm* 11/15 Fix for the zero-filled versions of these formats, so that I0 and F0.0 work
 *
 * Returns float converted to strings according to format given. 
 *
@@ -124,7 +125,7 @@
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, k1, l1, m1, n1, p, p2
       REAL    fval
-      INTEGER TM_LENSTR1, STR_UPCASE, slen, ival, isok, status
+      INTEGER TM_LENSTR1, STR_UPCASE, slen, ival, isok, dot, status
       CHARACTER*32 fstring, fformat
       CHARACTER*128 err_msg
       CHARACTER*1 nullstr
@@ -155,15 +156,16 @@
 
       do_integer = .FALSE.
       slen = TM_LENSTR1( fformat )
+      dot = INDEX(fformat,'.')
       DO 30, p =1, slen-1
-	 IF (fformat(p:p+1) .EQ. 'F0')  THEN
+	 IF (fformat(p:p+1) .EQ. 'F0' .AND. p+2.LT.dot)  THEN
 	    zero_fill = .TRUE.
 	    fformat = fformat(1:p)//fformat(p+2:slen)
 	    GOTO 40
 	 ENDIF
 	 IF (fformat(p:p) .EQ. 'F') GOTO 40
 	 
-	 IF (fformat(p:p+1) .EQ. 'I0')  THEN
+	 IF (fformat(p:p+1).EQ.'I0' .AND. fformat(p+2:p+2).NE.')')  THEN
 	    zero_fill = .TRUE.
 	    do_integer = .TRUE.
 	    fformat = fformat(1:p)//fformat(p+2:slen)

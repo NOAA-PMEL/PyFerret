@@ -104,6 +104,7 @@
 * V6.63 *acm* 7/10 Add VECTOR/KEY to force key even if /NOLAB
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *                  A time axis may be a T axis or F axis
+* V697 *acm* 12/15 Fixes for bug 1237 move call of PPL_AXES_RESTORE back to end of plot routines
 
 
 	include 'tmap_dims.parm'
@@ -513,7 +514,7 @@ C   Save the skip values in a symbol PPL_VEC_XSKIP, PPL_VEC_YSKIP
         ENDIF
 
 * restore axes? (5/29/97  revised 3/2002
-c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
+        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
 * interrupt occurred during plot ?
 	IF ( ppl_interrupted ) GOTO 1000

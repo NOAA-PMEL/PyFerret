@@ -71,6 +71,7 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V682 *acm* 9/12  Fix ticket 1969: stepfiles may have 3- or 4-digit extensions 
 *                  when listed under S_NUM_OF_FILES
+* V698+ *sh* 11/15 new arg in call to CD_INIT_DSET ... not relevant here
 
 * arguments:
 *	dset_num	- number assigned to this data set (output)
@@ -127,6 +128,14 @@
 	REAL*8		last_delta, file_trange, steps_in_file
 	LOGICAL		TM_FPEQ
 
+* local parameter definitions
+* NOTE (11/15) - this parameter exists to avoid the chance that DEF DATA/AGG/T 
+* may inadvertently modify the time axis of a previously inited dataset.
+* It is remotely possible that the same risk (never detected) exists with
+* MC datasets.  If so, then just set this to .FALSE. to fix it.
+* in the MC dataset code -- that like
+	LOGICAL ok_share_taxis
+	PARAMETER (ok_share_taxis = .TRUE.)
 
 * record 3 - required message 
 *
@@ -358,7 +367,8 @@ c	     sf_ndxe(stp_cnt) = steps_in_file + sf_ndxs(stp_cnt) - 1
 	status = merr_ok
 	
 
-	CALL CD_INIT_DSET( dset_num, perm, tregular, use_strict, status)
+	CALL CD_INIT_DSET( dset_num, perm, tregular, use_strict,
+     .			   ok_share_taxis, status)
 
 	GOTO 9990
 

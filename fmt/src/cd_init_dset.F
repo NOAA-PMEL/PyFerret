@@ -1,4 +1,5 @@
-	SUBROUTINE CD_INIT_DSET ( dset, perm, tregular, use_strict, status )
+	SUBROUTINE CD_INIT_DSET ( dset, perm, tregular, use_strict,
+     .				  ok_share_taxis, status )
 
 *
 *
@@ -44,9 +45,14 @@
 * 2/95 - added support for reverse-ordered coordinate axes
 * *sh* 11/12/96 - changes to accomodate caching of DODS data 
 * Linux Port - 6/97 *kob*  - use a cpp include for tmap_dset.parm
+
 * argument definitions:
-*    dset   - pointer to TMAP data set
-*    status - return status
+*    dset(input)   - pointer to TMAP data set
+*    perm(input)   - array describing the permutation of axes in the dataset
+*    tregular(input) - if true dont read full time axis - just 1st and last pts
+*    use_strict(input) - if true do not allow micro-adjustment for monotonicity
+*    status (output) - return status
+
 * 11/97 *kob* - added a close on the cdfid for the netcdf file for
 *               mc datasets only.  
 * 4/98 *kob* - need to explicitely declare istat
@@ -68,6 +74,8 @@
 * V68  *acm* 1/12  added use_strict argument for ticket 1910: micro-adjusting
 *                  on repeated coordinates in netCDF/OPeDNAP datasets
 * V695+ *sh* 4/15  scan the dataset for auxiliary coordinate connections
+* V698+ *sh* 11/15 add arg ok_share_taxis so DEFINE DATA/AGG/T can safely 
+*		   modify T axis gleaned from first file in time series
 
 * include files
 #include "gt_lib.parm"
@@ -82,7 +90,7 @@
         include 'xdset_info.cd_equiv'
 
 * argument declarations:
-	LOGICAL tregular, use_strict
+	LOGICAL tregular, use_strict, ok_share_taxis
 	INTEGER	dset, perm(*), status
 
 ! Declare netcdf function names. 
@@ -92,7 +100,7 @@
 
 
 * local variable declarations:
-      INTEGER STR_SAME, cdfid, remote_dods_id,istat
+      INTEGER STR_SAME, cdfid, remote_dods_id,istat, native_tax
 * 4/99 *kob* increase temp_axnams
       CHARACTER*128 temp_axnams(nferdims,max_temp_grid)
       LOGICAL reversed(max_lines:line_ceiling), shifted
@@ -122,7 +130,7 @@
 
 * build grids for variables w/out parent grids and associate with variables
       CALL CD_GET_GENERIC_GRIDS (dset,cdfid,temp_axnams,reversed,
-     .				 perm, status)
+     .				 perm, native_tax, status)
       IF ( status .NE. merr_ok ) GOTO 5900
 
 * build grids for variables with parent grids
@@ -134,8 +142,8 @@
       IF ( status .NE. merr_ok ) GOTO 5900
 
 * replace name linkages between axes and grids with pointers.  Delete dups
-
-      CALL CD_CLEAN_GRIDS ( dset, cdfid, temp_axnams, status )
+      CALL CD_CLEAN_GRIDS ( dset, cdfid, temp_axnams,
+     .			    ok_share_taxis, native_tax, status )
       IF ( status .NE. merr_ok ) GOTO 5900
 
       CALL CD_CONSISTENT_AXIS_ORIENT (dset, reversed, perm, status)

@@ -39,6 +39,7 @@ cd_get_generic_grids.F\
 cd_get_line_direction.F\
 cd_get_missing_flag.F\
 cd_get_parent_grids.F\
+cd_get_t0.F\
 cd_get_time_axis.F\
 cd_get_tmap_parms.F\
 cd_get_var_att_id.F\

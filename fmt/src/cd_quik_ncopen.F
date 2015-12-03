@@ -1,5 +1,5 @@
 	SUBROUTINE CD_QUIK_NCOPEN (dset, filename, vname,
-     .				   cdfid, vid, bounds_id, n, status)
+     .	    cdfid, vid, bounds_id, units_str, cal_str, n, status)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -52,6 +52,8 @@
 *	cdfid		- (output) netCDF id of the open dataset
 *	vid		- (output) netCDF id of the requested variable
 *	bounds_id	- (output) netCDF id of the bounds variable
+*	units_str	- (output) string value of the units attribute
+*	cal_str		- (output) string value of the calendar attribute
 *	n		- (output) length of the named variable
 *	status		- (output) TMAP status code
 
@@ -63,14 +65,14 @@
 	include 'xstep_files.cmn_text'
 
 * Argument variable declarations
-	CHARACTER*(*) filename, vname
+	CHARACTER*(*) filename, vname, units_str, cal_str
 	INTEGER   dset, cdfid, vid, bounds_id, n, status
 
 * Local variable declarations
 	LOGICAL	coordvar, got_it
-	INTEGER	TM_LENSTR1, NC_GET_ATTRIB,
+	INTEGER	TM_LENSTR1, CD_GET_ATTRIB,
      .		vlen, vartyp, nvdim, vdims(8), nvatts, all_outflag,
-     .		maxlen, attlen, attoutflag, tmap_status, cdfstat, blen
+     .		maxlen, attlen, tmap_status, cdfstat, blen, dlen, elen
 	CHARACTER*2048   TM_INQ_PATH
 	CHARACTER	varname*128, buff*128, errmsg*80
 	REAL vals  ! potential numerical attributes
@@ -88,9 +90,10 @@
 	ds_des_name(dset) =
      .		TM_INQ_PATH(filename, 'FER_DATA', ' ',.FALSE., status)
         IF (status .NE. merr_ok)  THEN
-	   errmsg = 'file not found'
-	   RETURN
+	   tmap_status = merr_notmounted
+	   GOTO 5050
 	ENDIF
+	dlen = TM_LENSTR1(ds_des_name(dset))
 
 * open the file
 #ifdef usingDODSf2cUnderscore 
@@ -99,9 +102,9 @@
 	cdfstat = NF_OPEN(ds_des_name(dset), NF_NOWRITE, cdfid) 
 #endif
 	IF ( cdfstat .NE. NF_NOERR ) THEN
+	   tmap_status = merr_nc_open
 	   errmsg = 'unable to open file'
-	   status = merr_nc_open
-	   RETURN
+	   GOTO 5100
 	ENDIF
 
 * get the netCDF id of the named time axis variable
@@ -111,7 +114,8 @@
         cdfstat = NF_INQ_VARID(cdfid, vname(:vlen), vid)
 #endif
 	IF (cdfstat.NE.NF_NOERR) THEN
-	   errmsg = 'file lacks the time axis variable '//vname
+	   tmap_status = merr_unkvar
+	   errmsg = 'time axis variable is missing: '//vname
 	   GOTO 5100
 	ENDIF
 
@@ -124,14 +128,15 @@
      .              vdims, nvatts)
 #endif
 	IF (cdfstat.NE.NF_NOERR) THEN
-	   errmsg = 'unable to read time axis attributes '//vname
+	   tmap_status = merr_badfileatt
+	   errmsg = 'unable to read attributes of '//vname
 	   GOTO 5100
 	ENDIF
 
 * sanity check the 1d axis variable
 	IF (nvdim .NE. 1) THEN
-	   errmsg = 'file lacks the time axis variable '//vname
-	   status = merr_badtimedef
+	   tmap_status = merr_badtimedef
+	   errmsg = 'time axis variable not 1D: '//vname
 	   GOTO 5100
 	ENDIF
 
@@ -142,39 +147,56 @@
 	cdfstat = NF_INQ_DIM( cdfid, vdims(1), varname, n )
 #endif
 	IF ( cdfstat .NE. NF_NOERR ) THEN
+	   tmap_status = merr_badtimedef
 	   errmsg = 'unable to read time ax dim length '//vname
 	   GOTO 5100
 	ENDIF
 
 * does this 1d var have a bounds attribute?
-        got_it = NC_GET_ATTRIB( dset, vid, 'bounds', do_warn, 
-     .                          vname(:vlen), maxlen, attlen,
-     .                          attoutflag, buff, vals)
-* nope - no bounds
+	blen = LEN(buff)  ! character array length
+	got_it = CD_GET_ATTRIB( cdfid, vid, 'bounds',
+     .                     do_warn, vname(:vlen), buff, attlen, blen )
 	IF (.NOT.got_it) THEN
 	   bounds_id = unspecified_int4
-	   GOTO 1000
 	ELSE
-	   blen = TM_LENSTR1(buff)
+!	   blen = TM_LENSTR1(buff)
+* ... check the bounds variable, issue any warnings.
+!           CALL TM_CHECK_BNDS_ATTRIB (dset, n, vname, vlen, buff(:blen),
+          CALL TM_CHECK_BNDS_ATTRIB (dset, n, vname, vlen, buff(:attlen),
+     .                             bounds_id, tmap_status)
+           IF (tmap_status .EQ. pcdferr) GO TO 5200
+           IF (tmap_status .NE. merr_ok) THEN
+	      bounds_id = unspecified_int4    ! invalidate the bounds variable
+	   ENDIF
 	ENDIF
 
-* Check the bounds variable, issue any warnings.
-        CALL TM_CHECK_BNDS_ATTRIB (dset, n, vname, vlen, buff(:blen),
-     .                             bounds_id, tmap_status)
-        IF (status .EQ. pcdferr) GO TO 5200
-        IF (status .NE. merr_ok) THEN
-	   bounds_id = unspecified_int4    ! invalidate the bounds variable
-	ENDIF
+* get the units attribute if it exists
+	blen = LEN(units_str)  ! character array length
+	got_it = CD_GET_ATTRIB( cdfid, vid, 'units',
+     .                  do_warn, vname(:vlen), units_str, attlen, blen )
+	IF (.NOT.got_it) units_str = ' '
+
+* get the calendar attribute if it exists
+	blen = LEN(cal_str)  ! character array length
+	got_it = CD_GET_ATTRIB( cdfid, vid, 'calendar',
+     .                  do_warn, vname(:vlen), cal_str, attlen, blen )
+	IF (.NOT.got_it) cal_str = ' '
 
 * successful completion
  1000	status = merr_ok
  5000	RETURN
 
 * error exits
- 5100   CALL TM_ERRMSG
-     .     ( status, status, 'CD_QUIK_NCOPEN',
+ 5050	CALL TM_ERRMSG
+     .     ( tmap_status, status, 'CD_QUIK_NCOPEN',
      .       no_descfile, no_stepfile,
-     .       errmsg, no_errstring, *5000 )
+     .       filename, no_errstring,  *5000 )
+ 5100	elen = TM_LENSTR1(errmsg)
+	CALL TM_ERRMSG
+     .     ( tmap_status, status, 'CD_QUIK_NCOPEN',
+     .       no_descfile, no_stepfile,
+     .	    'in file '//ds_des_name(dset)(:dlen)//' '//errmsg,
+     .	     no_errstring,  *5000 )
  5200   CALL TM_ERRMSG
      .     ( tmap_status+pcdferr, status, 'CD_QUIK_NCOPEN', cdfid, vid,
      .       no_errstring, no_errstring, *5000 )

@@ -46,6 +46,11 @@
 
 * V510 *sh* 4/00
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V6.95+ 11/15 *sh*  when dup_guts is found do not return immediately -- 
+*                    instead continue through the axes to see if there may
+*                    also be a dup_name. This for special needs of creating
+*		     an aggregated T axis by modifying the axis of the 1st file
+*                   
 
 * Include files
 #include "tmap_dset.parm"	
@@ -62,31 +67,25 @@
 
 * initialize
 	dup_name = .FALSE.
+	TM_GET_LINEMATCH = unspecified_int4
+
+* Note: the code logic appears to return the *last* dup_guts found, but
+*       logic in Ferret ensures that there can be at most one such match 
 
 * check the static axes
 	DO 100 i=1,max_lines
 	  CALL TM_GET_LINEMATCH_SUB(gvn_line, i, xact_name, dup_guts)
-	  IF (dup_guts) THEN
-	     TM_GET_LINEMATCH = i
-	     RETURN
-	  ELSEIF (xact_name) THEN
-	     dup_name = .TRUE.
-	  ENDIF
+	  IF (dup_guts) TM_GET_LINEMATCH = i
+	  IF (xact_name) dup_name = .TRUE.
  100	CONTINUE
  
 * check the dynamic grids
 	i = 0
  200	CALL TM_NEXT_DYN_LINE( i, *299)
 	  CALL TM_GET_LINEMATCH_SUB(gvn_line, i, xact_name, dup_guts)
-	  IF (dup_guts) THEN
-	     TM_GET_LINEMATCH = i
-	     RETURN
-	  ELSEIF (xact_name) THEN
-	     dup_name = .TRUE.
-	  ENDIF
+	  IF (dup_guts) TM_GET_LINEMATCH = i
+	  IF (xact_name) dup_name = .TRUE.
 	GOTO 200
 
-* not found
- 299	TM_GET_LINEMATCH = unspecified_int4
-	RETURN
+ 299	RETURN
 	END

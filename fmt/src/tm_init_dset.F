@@ -1,4 +1,5 @@
-	SUBROUTINE TM_INIT_DSET(dset_name,perm,dset_num,tregular, use_strict,status)
+	SUBROUTINE TM_INIT_DSET(dset_name,ok_re_use_existing,
+     .				perm,dset_num,tregular, use_strict,status)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -109,9 +110,12 @@
 * V686 1/27/14 *acm* further fix for 2129: make sure a search for a .nc or .cdf file is
 *                 done in path FER_DATA.
 * V693+ *sh* 12/14 added blank separator into error message 5600
+* V695+ *sh* 11/15 for DEF DATA/AGG/T added argument ok_re_use_existing
+*	           and check for existence of dataset from the get-go
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
+*	ok_re_use_existing - if dataset already open, return it? (input)
 *	dset_num	- number assigned to this data set (output)
 *			  ( 1 <= dset_num <= maxdsets - see COMMON XDSET_INFO)
 *	dset_type	- coaching for data set type (GT,TS, or CDF)
@@ -120,8 +124,7 @@
 *
 
 * Argument definitions
-*	CHARACTER*(*)	dset_name, dset_type  removed 4/92 kob
-	LOGICAL		tregular, use_strict
+	LOGICAL		ok_re_use_existing, tregular, use_strict
 	INTEGER		perm(*), dset_num, status
 	CHARACTER*(*)	dset_name
 
@@ -161,7 +164,7 @@
 	INTEGER*4	set_cnt, lunit, cnt, aux_cnt, tcnt, dlen, dlen2,
      .			rcnt, parm_cnt, grd_cnt, equal_pos, istat
 	INTEGER*4	TM_LENSTR, TM_LENSTR1, STR_SAME, STR_UPCASE, ic
-	LOGICAL		TM_HAS_STRING, match,
+	LOGICAL		TM_HAS_STRING, match, ok_share_taxis,
      .			opened, got_lun, dods_url, nocache,
      .                  explicit_ext                 ! 7/97
 	DATA		known_type/'  GT','  TS','  MC','  MG','  MT'/
@@ -192,6 +195,29 @@
         got_lun = .FALSE.    ! controls error clean-up
         opened = .FALSE.     ! controls error clean-up
 	explicit_ext = .FALSE.  !controls missing file error reporting 7/97
+
+* (11/15) ok_re-use_existing as (as of today) used only for DEFINE DATA/AGG/T
+* ok_re_use_existing==FALSE indicates that we are initializing a T agg by
+* opening the first file in the list.  The time axis of this file will be
+* modified to become the time axis of the full aggregation.  So it is not ok
+* to share (and then modify) the time axis of some previously opened dataset
+	ok_share_taxis = ok_re_use_existing
+
+* (11/15) pre-check to see if the dset name that has been provided is an exact 
+* match to ds_des_name.  This allows user-defined names to be found (as in
+* DEFINE DATA/AG/T myname = file1, file, file3) and as a side benefit it
+* bypasses directory inquiries when the user gives the full, exact path on the
+* SET DATA command
+	IF (ok_re_use_existing) THEN
+	   DO set_cnt = 1, maxdsets
+	      IF ( ds_des_name(set_cnt) .EQ. dset_name ) THEN
+	         dset_num = set_cnt
+	         status = merr_no_action
+	         GOTO 9999
+	      ENDIF
+	   ENDDO
+	ENDIF
+
 * is this a network data request based on a DODS URL?
 	dods_url = INDEX(dset_name,'://') .GT. 0
 	IF ( dods_url ) THEN
@@ -308,21 +334,23 @@
 	IF (ds_dset_type .EQ. '  ') ds_dset_type = 'CDF'
 
 * check to see if this descriptor has already been initialized
-	DO 100 set_cnt = 1, maxdsets
-	   IF (nocache) THEN
+	IF (ok_re_use_existing) THEN
+	   DO 100 set_cnt = 1, maxdsets
+	      IF (nocache) THEN
 * ... imperfect logic: "abcd(no cache)" will match "abc"
-	      dlen2 = TM_LENSTR1(ds_des_name(set_cnt))
-	      match = dlen2 .EQ. dlen
-     .	        .AND. ds_des_name(set_cnt) .EQ. des_name(:dlen)
-	   ELSE
-	      match = ds_des_name(set_cnt) .EQ. des_name
-	   ENDIF
-	   IF ( match ) THEN
-	      dset_num = set_cnt
-	      status = merr_no_action
-	      GOTO 9999
-	    ENDIF
-  100	CONTINUE
+	         dlen2 = TM_LENSTR1(ds_des_name(set_cnt))
+	         match = dlen2 .EQ. dlen
+     .	           .AND. ds_des_name(set_cnt) .EQ. des_name(:dlen)
+	      ELSE
+	         match = ds_des_name(set_cnt) .EQ. des_name
+	      ENDIF
+	      IF ( match ) THEN
+	         dset_num = set_cnt
+	         status = merr_no_action
+	         GOTO 9999
+	       ENDIF
+  100	   CONTINUE
+	ENDIF
 
 * Assign data set number, exiting if maximum number of data sets are open
 	DO 110 set_cnt = 1,maxdsets
@@ -342,7 +370,8 @@
 * netCDF file ?
  120    IF ( ds_dset_type .EQ. 'CDF' ) THEN
            ds_dset_type = ' '     ! reset the coaching shared by outside world
-           CALL CD_INIT_DSET( dset_num, perm, tregular, use_strict, status )
+           CALL CD_INIT_DSET( dset_num, perm, tregular, use_strict,
+     .				ok_share_taxis, status )
            IF ( status .NE. merr_ok ) GOTO 9900
            RETURN
         ENDIF

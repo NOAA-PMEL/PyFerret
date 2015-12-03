@@ -1,4 +1,5 @@
-	SUBROUTINE CD_CLEAN_GRIDS ( dset, cdfid, temp_axnams, status )
+	SUBROUTINE CD_CLEAN_GRIDS ( dset, cdfid, temp_axnams,
+     .				    ok_share_taxis, native_tax, status )
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -67,12 +68,14 @@
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * v694 1/15 *acm* for ticket 2227: if a dimension from a nc file is not also a 
 *                 1-D coordinate var, don't write the axis Ferret creates
+* V698 11/15 *sh* new args control whether sharing of T axis is allowed
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
 *	cdfid	- netCDF id number for already opened CDF file
 *       temp_axnams - temporary storage of axis names to construct grids
-*       temp_grid_ptr - points from temporary name storage to actual grid
+*       ok_share_taxis - (input) is it ok to reuse T axis of another dataset
+*       native_tax - (input) the native time axis of this dataset
 *	status	- return status
 
 * include files
@@ -87,7 +90,8 @@
 
 
 * argument declarations
-	INTEGER	 dset, cdfid, status
+	LOGICAL ok_share_taxis
+	INTEGER	 dset, cdfid, native_tax, status
 *4/99 *kob*
         CHARACTER*128 temp_axnams(nferdims,max_temp_grid)
 
@@ -117,8 +121,16 @@
 	iaxis = 0	! to get start of linked list
  100	CALL TM_NEXT_TMP_LINE( iaxis, *110)
 	  reused(iaxis) = TM_GET_LINEMATCH( iaxis, dup_name, dup_guts )
+* ... hack: multi-file T-aggregated dset must not share any existing taxis at
+*     this stage, because more time steps will be appended to it
+	  IF (   .NOT.ok_share_taxis
+     .	   .AND. iaxis.EQ.native_tax
+     .     .AND. reused(iaxis).NE.unspecified_int4 ) THEN
+	      reused(iaxis) = unspecified_int4
+	      dup_guts = .FALSE.
+	  ENDIF 
 	  IF ( dup_name .AND. .NOT.dup_guts ) THEN
-	     line_fixname(iaxis) = .TRUE.	  ! new definition reuses old name
+	     line_fixname(iaxis) = .TRUE.  ! new definition reuses old name
 	  ELSE
 	     line_fixname(iaxis) = .FALSE.
 	  ENDIF

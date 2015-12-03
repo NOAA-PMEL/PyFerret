@@ -1,5 +1,5 @@
 	SUBROUTINE CD_GET_GENERIC_GRIDS (dset,cdfid,temp_axnams,reversed,
-     .					 perm, status)
+     .					 perm, native_tax, status)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -70,6 +70,7 @@
 *                 a cf_role attribute, assign its axis to the E direction. (If the
 *                 file has coordinate variables with assigned axes, keep the 
 *                 direction assigned in the file.)
+* V695+ 11/15 *sh* return the line number of the native time axis of this dset
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -77,6 +78,7 @@
 *       temp_axnams - nferdims axis names per grid: temp until grids are assembled
 *       reversed    - logical array to record which axes have reversed coords
 *       perm        - user-specified permutation (e.g. "YXZT"=2,1,3,4)
+*	native_tax  - (output) line no of time axis of this dataset
 *	status	    - return status
 
 * include files
@@ -96,7 +98,7 @@
 
 * argument declarations
 	LOGICAL  reversed(max_lines:line_ceiling)
-	INTEGER	 dset, cdfid, perm(nferdims), status
+	INTEGER	 dset, cdfid, perm(nferdims), native_tax, status
 	CHARACTER*128 temp_axnams(nferdims,max_temp_grid)
 
 * local parameter definitions:
@@ -122,6 +124,9 @@
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
+
+* initialize
+	native_tax = mpsnorm
 
 * initialize temporary grid name pointer
 	num_tmp_grids = 0
@@ -306,6 +311,9 @@
 	      idim2 = grid_dims(idim)
               temp_axnams(idim2,tmpgrid) = line_name(iaxis)
               ds_grid_end(idim2,tmvar)   = line_dim(iaxis)
+* ... arbitrarily, the native taxis taken from the first grid with a time axis
+	      IF (idim2.EQ.t_dim .AND. native_tax.EQ.mpsnorm)
+     .						native_tax = iaxis
 * ... flag reverse-ordered coordinate axis of variable (2/95)
 	      IF ( reversed(iaxis) ) ds_ordering(idim,tmvar)
      .			      = -1 * ds_ordering(idim,tmvar)

@@ -2253,7 +2253,8 @@ C /units=months  is 1/12 of the length of the year
 	agg_hide = qual_given( slash_def_agg_hide ) .GT. 0
 
 * Get the name of the dataset we are creating
-	CALL NAME_EQUAL_STRING( buff1, pos, status )
+* get it case-sensitive, cuz other dataset names are (they are filenames)
+	CALL NAME_EQUAL_STRING_LC( buff1, pos, status )
 
 	IF ( status .NE. ferr_ok )  GOTO 5000
 	IF ( pos .EQ. 0 ) GOTO 5400

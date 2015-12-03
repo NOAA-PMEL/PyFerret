@@ -50,24 +50,20 @@
 * V695+ *sh* 11/15 new routine 
 
 * arguments:
-*   NOTE: the 3 args that begin with "gvn" are the "given" metadata for the
-*   files to be aggregated.  If the gvn_ag_nstep array length is 1, then the
-*   calling program has elected NOT to provide this information 
-
 *	dset_name	- dataset name to assign to the aggregation (input)
 *	dset_title	- dataset title (input)
 *	nagfiles	- number of files in the aggregation (input)
-*	t_regular	- flag to signal promise of regular timesteps (input)
+*  t_regular (not implemented)	- flag to promise regular timesteps (input)
 *	use_strict	- flag to allow micro-adjustments of T axis (input)
 *	dset_num	- number assigned to this data set (output)
 *	status		- return status (output)
 *
 
 * these are the arrays that need to be created
-*	ag_filename	- array of filenames (input)
-*	ag_tstep_start - array of first timestep in each file (input)
-*	ag_tstep_end   - array of last  timestep in each file (input)
-*	ag_nstep	- array of N timesteps in each file (input)
+*	memb_filename	 - array of member filenames (input)
+*	memb_tstep_start - array of first timestep in each file (input)
+*	memb_tstep_end   - array of last  timestep in each file (input)
+*	memb_nstep	 - array of N timesteps in each file (input)
 
 
         include 'tmap_dims.parm'
@@ -82,30 +78,30 @@
 
 * Internal declarations
 	INTEGER	iset
-	INTEGER	ag_nstep(nagfiles)
-	REAL*8	ag_tstep_start(nagfiles), ag_tstep_end(nagfiles)
-	CHARACTER*128	ag_filename(nagfiles)
+	INTEGER	memb_nstep(nagfiles)
+	REAL*8	memb_tstep_start(nagfiles), memb_tstep_end(nagfiles)
+	CHARACTER*128	memb_filename(nagfiles)
 
 * initialize
 	status = ferr_ok
 
 * set up array of filenames given by use on command line
 	DO iset = 1, nagfiles
-	  ag_filename(iset) = cmnd_buff(item_start(iset):item_end(iset))
+	  memb_filename(iset) = cmnd_buff(item_start(iset):item_end(iset))
 	ENDDO
 
 * set up dummy (empty) timestep metadata arrays
 	DO iset = 1, nagfiles
-	   ag_nstep      (iset) = unspecified_int4
-	   ag_tstep_start(iset) = unspecified_val8
-	   ag_tstep_end  (iset) = unspecified_val8
+	   memb_nstep      (iset) = unspecified_int4
+	   memb_tstep_start(iset) = unspecified_val8
+	   memb_tstep_end  (iset) = unspecified_val8
 	ENDDO
 
 * now call the "real" routine
 	CALL DEFINE_T_AGG_MC_DSET
      .		(dset_name, dset_title, nagfiles,
-     .		 ag_filename,
-     .		 ag_tstep_start, ag_tstep_end, ag_nstep,
+     .		 memb_filename,
+     .		 memb_tstep_start, memb_tstep_end, memb_nstep,
      .		 t_regular, use_strict, dset_num, status)
 
 

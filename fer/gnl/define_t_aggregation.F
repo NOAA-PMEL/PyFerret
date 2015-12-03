@@ -1,7 +1,7 @@
 	SUBROUTINE DEFINE_T_AGGREGATION
      .		(dset_name, dset_title, nagfiles,
-     .		 ag_filename,
-     .		 gvn_ag_tstep_start, gvn_ag_tstep_end, gvn_ag_nstep,
+     .		 memb_filename,
+     .		 gvn_memb_tstep_start, gvn_memb_tstep_end, gvn_memb_nstep,
      .		 t_regular, use_strict, dset_num, status)
 
 *
@@ -47,16 +47,16 @@
 
 * arguments:
 *   NOTE: the 3 args that begin with "gvn" are the "given" metadata for the
-*   files to be aggregated.  If the gvn_ag_nstep array length is 1, then the
+*   files to be aggregated.  If the gvn_memb_nstep array length is 1, then the
 *   calling program has elected NOT to provide this information 
 
 *	dset_name	- dataset name to assign to the aggregation (input)
 *	dset_title	- dataset title (input)
 *	nagfiles	- number of files in the aggregation (input)
-*	ag_filename	- array of filenames (input)
-*	gvn_ag_tstep_start - array of first timestep in each file (input)
-*	gvn_ag_tstep_end   - array of last  timestep in each file (input)
-*	gvn_ag_nstep	- array of N timesteps in each file (input)
+*	memb_filename	- array of filenames (input)
+*	gvn_memb_tstep_start - array of first timestep in each file (input)
+*	gvn_memb_tstep_end   - array of last  timestep in each file (input)
+*	gvn_memb_nstep	- array of N timesteps in each file (input)
 *	t_regular	- flag to signal promise of regular timesteps (input)
 *	use_strict	- flag to allow micro-adjustments of T axis (input)
 *	dset_num	- number assigned to this data set (output)
@@ -67,17 +67,17 @@
         include 'errmsg.parm'
 
 * Argument definitions
-	INTEGER		gvn_ag_nstep(*)
-	REAL*8		gvn_ag_tstep_start(*), gvn_ag_tstep_end(*)
+	INTEGER		gvn_memb_nstep(*)
+	REAL*8		gvn_memb_tstep_start(*), gvn_memb_tstep_end(*)
 	LOGICAL		t_regular, use_strict
 	INTEGER		nagfiles, dset_num, status
 	CHARACTER*(*)	dset_name, dset_title
-	CHARACTER*128	ag_filename(nagfiles)
+	CHARACTER*128	memb_filename(nagfiles)
 
 * Internal declarations
 	INTEGER	iset
-	INTEGER	ag_nstep(nagfiles)
-	REAL*8	ag_tstep_start(nagfiles), ag_tstep_end(nagfiles)
+	INTEGER	memb_nstep(nagfiles)
+	REAL*8	memb_tstep_start(nagfiles), memb_tstep_end(nagfiles)
 
 * ***!!! TEMPORARY  !!!*** -- need to expand error message list
 	INTEGER ferr_invalid_pyFerret_call
@@ -90,22 +90,22 @@
 
 
 * has the caller of this routine provided the time step metadata?
-	IF ( SIZE(gvn_ag_nstep).NE.SIZE(gvn_ag_tstep_start)
-     .  .OR. SIZE(gvn_ag_nstep).NE.SIZE(gvn_ag_tstep_end)  ) GOTO 5100
+	IF ( SIZE(gvn_memb_nstep).NE.SIZE(gvn_memb_tstep_start)
+     .  .OR. SIZE(gvn_memb_nstep).NE.SIZE(gvn_memb_tstep_end)  ) GOTO 5100
 
-	IF (SIZE(gvn_ag_nstep) .EQ. nagfiles) THEN
+	IF (SIZE(gvn_memb_nstep) .EQ. nagfiles) THEN
 * yes -- copy the given metadata into working arrays
 	   DO iset = 1, nagfiles
-	      ag_nstep      (iset) = gvn_ag_nstep      (iset)
-	      ag_tstep_start(iset) = gvn_ag_tstep_start(iset)
-	      ag_tstep_end  (iset) = gvn_ag_tstep_end  (iset)
+	      memb_nstep      (iset) = gvn_memb_nstep      (iset)
+	      memb_tstep_start(iset) = gvn_memb_tstep_start(iset)
+	      memb_tstep_end  (iset) = gvn_memb_tstep_end  (iset)
 	   ENDDO
-	ELSEIF (SIZE(gvn_ag_nstep) .EQ. 1) THEN
+	ELSEIF (SIZE(gvn_memb_nstep) .EQ. 1) THEN
 * no -- set up empty arrays
 	   DO iset = 1, nagfiles
-	      ag_nstep      (iset) = unspecified_int4
-	      ag_tstep_start(iset) = unspecified_val8
-	      ag_tstep_end  (iset) = unspecified_val8
+	      memb_nstep      (iset) = unspecified_int4
+	      memb_tstep_start(iset) = unspecified_val8
+	      memb_tstep_end  (iset) = unspecified_val8
 	   ENDDO
 	ELSE
 * oops -- lengths of arrays are not conformable
@@ -115,8 +115,8 @@
 * now call the "real" routine
 	CALL DEFINE_T_AGG_MC_DSET
      .		(dset_name, dset_title, nagfiles,
-     .		 ag_filename,
-     .		 ag_tstep_start, ag_tstep_end, ag_nstep,
+     .		 memb_filename,
+     .		 memb_tstep_start, memb_tstep_end, memb_nstep,
      .		 use_strict, dset_num, status)
 
 

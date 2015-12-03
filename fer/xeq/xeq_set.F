@@ -183,6 +183,7 @@
 * V687 *acm*  3/14 New SET AXIS/NAME=
 * V694 11/14 *acm* Ticket 2217: permuted ASCII reading in 6D (fix to an error message)
 * V694 *acm*  2/15 ticket 2050: preserve case on var names for SET ATT/LIKE=var1 var2
+* V698+ *sh*  11/15 add ok_re_use_existing into TM_INIT_DSET call
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -266,6 +267,8 @@
 * local parameter declarations:
 	INTEGER		slash_set_last
 	PARAMETER     ( slash_set_last = 1 )
+	LOGICAL		ok_re_use_existing
+	PARAMETER     ( ok_re_use_existing = .TRUE.)
 
 * functions
 	LOGICAL is_secure
@@ -539,6 +542,7 @@ c *kob* 4/97
 
 * initialize a TMAP-supported data set
  	   CALL TM_INIT_DSET( cmnd_buff( item_start(item):item_end(item) ),
+     .			      ok_re_use_existing,
      .			      perm, dset_num, tregular, use_strict, tmap_status )
 	   IF ( tmap_status .EQ. merr_no_action ) THEN
 	      GOTO 745					! already init'ed

@@ -40,6 +40,7 @@
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * V695+ *sh*  5/15 removed block of code from here to INIT_AGGREGATE_DSET
 *                  notably, the call to GET_AXIS_SPEED
+* V698+ *sh* 11/15 add ok_re_use_existing to TM_INIT_DSET call
 
         include 'tmap_errors.parm'
 #include "tmap_dset.parm"
@@ -63,6 +64,10 @@
 	LOGICAL TM_DIGIT, tregular, use_strict
 	INTEGER TM_LENSTR, item, ich, buff_len, dset, iset, perm(nferdims)
 	CHARACTER buff1*512
+
+* local parameter definitions
+	LOGICAL ok_re_use_existing
+	PARAMETER ( ok_re_use_existing = .TRUE.)
 
 	DO 100 iset = 1, maxdsets
 	   member_sets(iset) = unspecified_int4
@@ -115,7 +120,7 @@
  740       ds_dset_type = 'CDF'   ! used and cleared in tm_init_dset
 
 * initialize a TMAP-supported data set
- 	   CALL TM_INIT_DSET( buff1,
+ 	   CALL TM_INIT_DSET( buff1, ok_re_use_existing,
      .			      perm, dset, tregular, use_strict, status )
 	   
            IF ( status .NE. merr_no_action ) THEN  ! merr_no_action = already init'ed

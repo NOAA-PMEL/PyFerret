@@ -104,7 +104,7 @@
 * V6.63 *acm* 7/10 Add VECTOR/KEY to force key even if /NOLAB
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *                  A time axis may be a T axis or F axis
-* V697 *acm* 12/15 Fixes for bug 1237 move call of PPL_AXES_RESTORE back to end of plot routines
+* V697 *acm* 12/15 Fixes for bug 2327 move call of PPL_AXES_RESTORE back to end of plot routines
 
 
 	include 'tmap_dims.parm'

@@ -87,7 +87,7 @@
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V686 *acm* 12/13 set up the label symbols LABNUM_E and LABNUM_F
 * V695+ *sh*  3/15 remove movable label rotations (left behind by FMRC annotations)
-* V697 *acm* 12/15 Fixes for bug 1237 move call of PPL_AXES_RESTORE back to end of plot routines
+* V697 *acm* 12/15 Fixes for bug 2327 move call of PPL_AXES_RESTORE back to end of plot routines
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'

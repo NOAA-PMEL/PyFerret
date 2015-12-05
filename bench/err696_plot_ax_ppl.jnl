@@ -1,0 +1,79 @@
+! err696_plot_ax_ppl.jnl
+! ticket 2327
+!
+! restore settings properly after a PLOT/axes= 
+! if there is a ppl axis-setting command before next plot
+
+plot/vs/noax 0,0
+ set view upper
+ppl axlabp 0 -1
+plot/nolab/vs 0,0
+
+ set view lower
+ppl axlabp 0 -1
+plot/nolab/vs 0,0
+
+can view
+vector/i=1:40/j=1:30/nolab/noax  j-20+(i-i),i-20+(j-j)
+
+set view upper
+ppl axlabp 0 -1
+vector/i=1:40/j=1:30/nolab j-20+(i-i),i-20+(j-j)
+
+ set view lower
+ppl axlabp 0 -1
+vector/i=1:40/j=1:30/nolab j-20+(i-i),i-20+(j-j)
+
+can view
+let var2d = i+j
+
+shade/i=1:40/j=1:30/nolab/noax var2d
+ set view upper
+ppl axlabp 0 -1
+shade/i=1:40/j=1:30/nolab var2d
+
+ set view lower
+ppl axlabp 0 -1
+shade/i=1:40/j=1:30/nolab var2d
+
+can view
+
+contour/i=1:40/j=1:30/nolab/noax var2d
+ set view upper
+ppl axlabp 0 -1
+contour/i=1:40/j=1:30/nolab var2d
+
+ set view lower
+ppl axlabp 0 -1
+contour/i=1:40/j=1:30/nolab var2d
+
+can view
+
+let xsqr = YSEQUENCE({0,.1,.1,0})
+let ysqr = YSEQUENCE({0,0,.1,.1})
+let ypts = x/10
+let xpts = cos(x/10)
+
+polygon/trans/i=1:100/nolab/noax xpts+xsqr, ypts+ysqr, x*x/10
+
+ set view upper
+ppl axlabp 0 -1
+polygon/trans/i=1:100/nolab  xpts+xsqr, ypts+ysqr, x*x/10
+
+ set view lower
+ppl axlabp 0 -1
+polygon/trans/i=1:100/nolab  xpts+xsqr, ypts+ysqr, x*x/10
+can view
+
+! restore axis settings after a plot/set with/axes=
+
+set view upper
+plot/i=1:100/axes=1,0,0,1/set/title="labels" i*cos(i/8)
+ppl xlab "a label"
+ppl labset, , , 0.08
+ppl ylab "a multi line y label<NL>here"
+ppl plot
+
+set view lower
+plot/i=1:199 i*cos(i/10)
+

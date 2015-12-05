@@ -115,7 +115,7 @@
 *                  A time axis may be a T axis or F axis
 * V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
-* V697 *acm* 12/15 Fixes for bug 1237 move call of PPL_AXES_RESTORE back to end of plot routines
+* V697 *acm* 12/15 Fixes for bug 2327 move call of PPL_AXES_RESTORE back to end of plot routines
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'

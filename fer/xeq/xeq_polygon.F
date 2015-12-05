@@ -69,7 +69,7 @@
 * V6.83 *acm*12/12 Add POLYGON/MODULO qualifier, for curvilienar coordinate plots, 
 *                  as is done for SHADE and CONTOUR plots
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
-* V697 *acm* 12/15 Fixes for bug 1237 move call of PPL_AXES_RESTORE back to end of plot routines
+* V697 *acm* 12/15 Fixes for bug 2327 move call of PPL_AXES_RESTORE back to end of plot routines
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'

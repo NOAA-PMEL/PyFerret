@@ -77,6 +77,6 @@ JAVA_HOME = /usr/lib/jvm/java
 # JAVA_HOME = /Library/Java/JavaVirtualMachines/jdk1.7.jdk/Contents/Home
 
 # PyFerret version number - do not change this
-PYFERRET_VERSION = 1.2
+PYFERRET_VERSION = 1.3
 
 ##

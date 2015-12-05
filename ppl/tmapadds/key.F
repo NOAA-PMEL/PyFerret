@@ -115,6 +115,7 @@
 *                  For centered labels add a level to corresp to the upper bound of 
 *                  the top color on thecolorbar, excluding any upper inf triangle.
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. Scoot the vertical color key over to the left.
+* V697 *acm* 12/15 Fix ticket 2326: single level plus (inf) and/or (-inf)
 
         IMPLICIT NONE
 
@@ -202,6 +203,7 @@
 	IF (levn.EQ.1) ZLEV(2) = zlev(1)
         IF (neginf) lev1 = 2
         IF (posinf) levn = nlev2 - 1
+        IF (neginf.AND.posinf .AND.shd_levels.EQ.1) levn = nlev2
 
 	nofill = (levn .EQ. 1 .AND. zlev(1) .GE. 1.e33)
 	IF (nofill) GOTO 2000
@@ -329,6 +331,10 @@
               x_inc = (1.-2.*frac)*(kx_hi - kx_lo)/ REAL(shd_levels-2)
               kx_lo = kx_lo + (x_inc_inf-x_inc)
            ENDIF
+           IF (shd_levels .EQ. 1) THEN
+              x_inc = x_inc/2.
+              x_inc_inf = x_inc
+           ENDIF
         ELSEIF (neginf .OR. posinf) THEN
            IF (shd_levels .GT. ncount) THEN 
               x_inc_inf = frac* (kx_hi - kx_lo)
@@ -439,6 +445,13 @@ c	IF ( no_lines ) cont_key = .TRUE.
            IF (neginf .AND. (ndx .EQ. 2) ) THEN
               CALL key_lo_inf_horz (kpx, kpy, ndx, x_inc_inf, 
      .          annotate_key, lab_digits, ht_ann)
+              IF (posinf .AND. shd_levels.EQ.1) THEN
+                 DO i = 1,4
+                 px(i) = px(i) + x_inc
+                 ENDDO
+                 CALL key_hi_inf_horz (kpx, kpy, ndx, x_inc_inf, 
+     .             annotate_key, lab_digits, karht)
+              ENDIF
 
            ELSE IF (posinf .AND. (ndx .EQ. nhi) ) THEN
               CALL key_hi_inf_horz (kpx, kpy, ndx, x_inc_inf, 
@@ -479,7 +492,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 
              IF (ndx .EQ. 1 .AND. neginf) text = " "
-             IF (ndx .EQ. shd_levels+1 .AND. posinf) text = " "
+             IF (ndx .EQ. levn+1 .AND. posinf) text = " "
 
 	   xx = (kx_lo + x_inc*(center_add+real(ndx-1)))/1000.0
      .		 - karht*real(str_len)/2.0 - xorg
@@ -588,6 +601,10 @@ c	IF ( no_lines ) cont_key = .TRUE.
               y_inc = (1.-2.*frac)*(ky_hi - ky_lo)/ REAL(shd_levels-2)
               ky_lo = ky_lo + (y_inc_inf-y_inc)
            ENDIF
+           IF (shd_levels .EQ. 1) THEN
+              y_inc = y_inc/2.
+              y_inc_inf = y_inc
+           ENDIF
         ELSE IF (neginf .OR. posinf) THEN
            IF (shd_levels .GT. ncount) THEN 
               y_inc_inf = frac* (ky_hi - ky_lo)
@@ -672,6 +689,13 @@ c	IF ( no_lines ) cont_key = .TRUE.
            IF (neginf .AND. (ndx .EQ. 2) ) THEN
               CALL key_lo_inf_vert (kpx, kpy, ndx, y_inc_inf, 
      .          annotate_key, lab_digits, ht_ann)
+              IF (posinf .AND. shd_levels.EQ.1) THEN
+                 DO i = 1, 4
+                 py(i) = py(i) + y_inc
+                 ENDDO
+                 CALL key_hi_inf_vert (kpx, kpy, ndx, y_inc_inf, 
+     .             annotate_key, lab_digits, karht)
+              ENDIF
      
            ELSE IF (posinf .AND. (ndx .EQ. nhi) ) THEN
               CALL key_hi_inf_vert (kpx, kpy, ndx, y_inc_inf, 

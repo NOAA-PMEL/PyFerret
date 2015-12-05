@@ -6,6 +6,8 @@
 ! disappeared due to pixel aliasing. Fixed by setting
 ! the thick-line for these tics.
 
+! restore default setting
+ppl axlabp,-1,-1
 
 define axis/t=1-jan-1990:1-jan-2010:1/units=months tax
 

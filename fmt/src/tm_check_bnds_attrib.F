@@ -1,4 +1,4 @@
-        SUBROUTINE TM_CHECK_BNDS_ATTRIB (dset, iaxis, vname, vlen, 
+        SUBROUTINE TM_CHECK_BNDS_ATTRIB (dset, axis_len, vname, vlen, 
      .                                   bname, bndid, status)
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -41,7 +41,8 @@
 *             Replace NCVID with CD_GET_VAR_ID
 *             Replace NCVINQ for variables, with CD_GET_VAR_INFO
 *             Replace NCDINQ with CD_GET_DS_DIMS
-
+* V695+ *sh* 10/15 - pass axis_len instead of iaxis so this routine can be
+*             reused for processing bounds attributes of T-aggregated files 
 
 	INCLUDE 'tmap_dims.parm'
         INCLUDE 'xtm_grid.cmn_text'
@@ -51,7 +52,7 @@
 
 * argument declarations
 
-      INTEGER dset, iaxis, vlen, bndid, status
+      INTEGER dset, axis_len, vlen, bndid, status
       CHARACTER*(*) bname, vname
 
 * Local variable declarations
@@ -94,7 +95,7 @@
         IF (status.NE.ferr_ok) GOTO 5100   ! should never happen
 
 * check for error conditions: 2nd dimension of bounds is N
-        IF ( npts .NE. line_dim(iaxis) ) THEN
+        IF ( npts .NE. axis_len ) THEN
            soft_err = 23
            GOTO 6000
         ENDIF

@@ -183,9 +183,23 @@
 	i = STR_UPCASE( vbuff, cmnd_buff(arg_start(1):arg_end(1)))
 	IF (( INDEX(vbuff,'SHADE')   .GT. 0 ) .OR.
      .      ( INDEX(vbuff,'CONTOUR') .GT. 0 ) .OR.
-     .      ( INDEX(vbuff,'FILL')    .GT. 0 ).OR.
-     .      ( INDEX(vbuff,'WIRE')    .GT. 0 )    ) THEN
+     .      ( INDEX(vbuff,'FILL')    .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'WIRE')    .GT. 0 )    ) THEN 
 	   CALL DECREMENT_PLOT_GRID  ! see ticket 883
+	ENDIF
+
+	IF (( INDEX(vbuff,'SHADE')   .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'CONTOUR') .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'FILL')    .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'PLOT')    .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'POLY')    .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'WIRE')    .GT. 0 )    ) THEN 
+	   IF (iaxset .EQ. 1) THEN   ! If /AXES was used on prev. plot call, reset defaults
+	      CALL PPL_AXES_RESTORE
+	      CALL PPLCMD ( from, line, 0, 'AXSET,1,1,1,1', 1, 1 )
+	      CALL PPLCMD ( from, line, 0, 'AXLABP -1,-1', 1, 1)
+	      iaxset = 0
+	   ENDIF
 	ENDIF
 
 * check to see if ylen or yorg has been changed

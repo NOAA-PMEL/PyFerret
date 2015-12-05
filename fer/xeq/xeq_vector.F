@@ -111,6 +111,7 @@
 * V695  *acm*  5/15 Ticket 2279: PyFerret don't redraw lines
 *                   Do not draw axes on an overlay unless they
 *                   ask for it with /AXES or a ppl axis command
+* V697 *acm* 12/15 Fixes for bug 1237 move call of PPL_AXES_RESTORE back to end of plot routines
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -545,7 +546,7 @@ C   Save the skip values in a symbol PPL_VEC_XSKIP, PPL_VEC_YSKIP
         ENDIF
 
 * restore axes? (5/29/97  revised 3/2002
-c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
+        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
 * clear the overriding opacity
         opacity = -1.0

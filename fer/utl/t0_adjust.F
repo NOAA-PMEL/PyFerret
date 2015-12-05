@@ -1,5 +1,7 @@
-	INTEGER FUNCTION TM_GET_LINEMATCH (gvn_line, dup_name, dup_guts)
+	DOUBLE PRECISION FUNCTION T0_ADJUST ( T_orig )
 
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -33,59 +35,47 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Searches the list of pre-defined line_name's and returns the number
-* associated with a "match" on lname. A match means that the the characters
-* of lname are all found plus, optionally, digits. If no match is found
-* the value unspecified_int4 is returned.
+* convert a time word from its native units to destination units
+* based upon source/destination initialization that has been previously
+* specified with a call to T0_ADJUST_INIT.
 
-* dup_name - returned TRUE if there is an identical name match OR (there
-*	     is a pattern name match AND the guts are identical)
-* dup_guts - returned TRUE if there is a pattern name match AND the guts
-*	     are identica
+* based upon code from TDEST_WORLD
 
+* The conversion process is simply based on the fact that each time axis is
+* a slope (units) and an intercept (T0)
+* Let
+*	A - absolute time (seconds since BC)
+*	U - units (slope)
+*	T - axis-relative time
+* so that
+*	AT0src - is the absolute time of T0 on the source axis
+*	AT0dst - equivalently on the destination axis
+* Then
+*	Tsrc = (A-AT0src) / Usrc
+*	Tdst = (A-AT0dst) / Udst
+* from which
+*	Tdst = Tsrc*(Usrc/Udst) + (AT0src-AT0dst)/Udst 
+* or in terms of the COMMON variables
+*	Tdst = Tscr*tcnvrt_slope + tcnvrt_intercept
 
-* V510 *sh* 4/00
-* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
-* V6.95+ 11/15 *sh*  when dup_guts is found do not return immediately -- 
-*                    instead continue through the axes to see if there may
-*                    also be a dup_name. This for special needs of creating
-*		     an aggregated T axis by modifying the axis of the 1st file
-*                   
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
-* Include files
-#include "tmap_dset.parm"	
-	include 'tmap_dims.parm'	! 
-#include "gt_lib.parm"
+* V695+ *sh* 11/2015
 
-* argument variables
-	LOGICAL		dup_name, dup_guts
-	INTEGER		gvn_line
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xregrid.cmn'
 
-* local variable declarations
-	LOGICAL		xact_name
-	INTEGER*4	i
+* calling argument declarations:
+	REAL T_orig
 
-* initialize
-	dup_name = .FALSE.
-	TM_GET_LINEMATCH = unspecified_int4
+* slope/intercept transformatio of calendar time
+        IF ( tcnvrt_ok  ) THEN
+	   T0_ADJUST = T_orig * tcnvrt_slope + tcnvrt_intercept
+	ELSE
+	   T0_ADJUST = T_orig
+	ENDIF
 
-* Note: the code logic appears to return the *last* dup_guts found, but
-*       logic in Ferret ensures that there can be at most one such match 
-
-* check the static axes
-	DO 100 i=1,max_lines
-	  CALL TM_GET_LINEMATCH_SUB(gvn_line, i, xact_name, dup_guts)
-	  IF (dup_guts) TM_GET_LINEMATCH = i
-	  IF (xact_name) dup_name = .TRUE.
- 100	CONTINUE
- 
-* check the dynamic grids
-	i = 0
- 200	CALL TM_NEXT_DYN_LINE( i, *299)
-	  CALL TM_GET_LINEMATCH_SUB(gvn_line, i, xact_name, dup_guts)
-	  IF (dup_guts) TM_GET_LINEMATCH = i
-	  IF (xact_name) dup_name = .TRUE.
-	GOTO 200
-
- 299	RETURN
+	RETURN
 	END

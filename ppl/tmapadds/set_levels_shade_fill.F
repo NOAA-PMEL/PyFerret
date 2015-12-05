@@ -39,6 +39,7 @@
 * V631  *acm*10/09 Fix bug 1704: LEVELS=xD was incorrect.
 * V663  *acm* 5/10 Fix bug 1744: hang if /LEVELS=v and all missing data.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V697 *acm* 12/15 Fix ticket 2326: single level plus (inf) and/or (-inf)
 
         IMPLICIT NONE
 	include		'parampl5_dat.decl'
@@ -62,7 +63,7 @@
 * local declarations
 	REAL		dmin, dmax, dz, fm, znp, zmp, dzmax, del, zz
 	INTEGER		i, m, jj, il
-        LOGICAL		TM_FPEQ_SNGL
+        LOGICAL		TM_FPEQ_SNGL, isinf
 
         EXTERNAL range
 
@@ -142,7 +143,7 @@ C
 		 if (dz.lt.1) then
 		     dz = 1
 		     i = 1
-		     do il = znp,zmp+1
+		     do il = FLOOR(znp),FLOOR(zmp)+1
 		        zlev(i) = FLOAT(il)
 			i = i+1
 		     enddo
@@ -259,7 +260,8 @@ C	FIND MIN AND MAX as in lev.F from the Z levels.
               IF (DZ .GT. DZMAX) DZMAX = DZ
 110        CONTINUE
 
-	   IF (DMIN.EQ.DMAX) THEN
+	   isinf = (neginf .OR. posinf)
+	   IF (.NOT.isinf .AND. (DMIN.EQ.DMAX)) THEN
 c	      NLEV2=0
 	      NLEV2=1
 	   ELSE
@@ -287,6 +289,11 @@ c	      NLEV2=0
               ENDIF
 
               IF (posinf) zlev(nlev) = MAX (zlev(nlev), zmax+1. )
+
+	      IF (posinf .AND. neginf .AND. NLEV.EQ.3) THEN
+	         nlev = 2
+		 nlev2 = 2
+	      ENDIF
 
 C Compute the digits in the contour levels, and line characteristics
 C these will not have been set before on, say a previous SHADE plot

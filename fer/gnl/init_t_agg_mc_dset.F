@@ -1,5 +1,5 @@
-	SUBROUTINE INIT_T_AGG_MC_DSET(dset_num, nagfiles,
-     .		 ag_filename, ag_tstep_start, ag_tstep_end, ag_nstep,
+	SUBROUTINE INIT_T_AGG_MC_DSET(dset_num, nagfiles, memb_filename,
+     .		 memb_tstep_start, memb_tstep_end, memb_nstep,
      .		 use_strict, status)
 
 *
@@ -51,19 +51,19 @@
 * arguments:
 *	dset_num	- number assigned to this data set (input)
 *	nagfiles	- number of files in the aggregation (input)
-*	ag_filename	- array of filenames (input)
-*	ag_tstep_start	- array of first timestep in each file (input)
-*	ag_tstep_end	- array of last  timestep in each file (input)
-*	ag_nstep	- array of N timesteps in each file (input)
+*	memb_filename	- array of filenames (input)
+*	memb_tstep_start- array of first timestep in each file (input)
+*	memb_tstep_end	- array of last  timestep in each file (input)
+*	memb_nstep	- array of N timesteps in each file (input)
 *	use_strict	- (not impl.) flag for coord micro-adjustment (input)
 *	status		- return status (output)
 
 * Argument definitions
 	LOGICAL		use_strict
 	INTEGER		nagfiles, dset_num, status
-	INTEGER		ag_nstep(nagfiles)
-	REAL		ag_tstep_start(nagfiles), ag_tstep_end(nagfiles)
-	CHARACTER*128	ag_filename(nagfiles)
+	INTEGER		memb_nstep(nagfiles)
+	REAL		memb_tstep_start(nagfiles), memb_tstep_end(nagfiles)
+	CHARACTER*128	memb_filename(nagfiles)
 
 * Parameter and common files
 
@@ -81,6 +81,7 @@
 	external xdset_info_data
 	include 'xstep_files.cmn_text'		! step file common
 	external xstep_files_data
+	include 'xdset_info.cd_equiv'		! has mc_init_stepfile
 
 * Define variables from Set File namelist records
 
@@ -112,8 +113,8 @@
 	DO istep = 1, nagfiles
 
 * calculate time range per file and check for even number per file
-	  file_trange = ag_tstep_end(istep)-ag_tstep_start(istep)
-	  steps_in_file = ag_nstep(istep)
+	  file_trange = memb_tstep_end(istep)-memb_tstep_start(istep)
+	  steps_in_file = memb_nstep(istep)
 	  s_delta = file_trange / steps_in_file
 
 * Find the next storage position for stepfiles in common
@@ -136,9 +137,9 @@
 
 * store values in common
  100	  sf_setnum(stp_cnt) = dset_num
-	  sf_name  (stp_cnt) = ag_filename(istep)
-	  sf_1step (stp_cnt) = ag_tstep_start(istep)
-	  sf_lastep(stp_cnt) = ag_tstep_end(istep)
+	  sf_name  (stp_cnt) = memb_filename(istep)
+	  sf_1step (stp_cnt) = memb_tstep_start(istep)
+	  sf_lastep(stp_cnt) = memb_tstep_end(istep)
 * sf_ndxs and sf_ndxe contain the L limits for each file on the agg T axis
 	  sf_ndxs  (stp_cnt) = preceding_steps + 1
 	  sf_ndxe  (stp_cnt) = preceding_steps + steps_in_file
@@ -156,6 +157,9 @@
 	    sf_regtimes(stp_cnt) = .FALSE.
 	  ENDIF
 
+* time-independent fields are read from the first file in the aggregation
+	  IF (istep .EQ. 1) mc_init_stepfile(dset_num) = stp_cnt
+
 * prepare for next file
 	  stp_pos = stp_cnt+1
 
@@ -164,8 +168,8 @@
 
 
 * summarize certain stepfile info at the dataset level
-	ds_1step(dset_num)  = ag_tstep_start(1)
-	ds_lastep(dset_num) = ag_tstep_end(nagfiles)
+	ds_1step(dset_num)  = memb_tstep_start(1)
+	ds_lastep(dset_num) = memb_tstep_end(nagfiles)
 	IF (ds_regsteps(dset_num)) THEN
 	  ds_delstep(dset_num)  = line_delta(ds_time_axis(dset_num))
 	ELSE

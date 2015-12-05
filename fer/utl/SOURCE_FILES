@@ -157,6 +157,8 @@ store_sys_strings.F\
 str_match.F\
 sub_2_grids.F\
 sub_2_grids_sub.F\
+t0_adjust.F\
+t0_adjust_init.F\
 t_deriv.F\
 tdest_world.F\
 tdest_world_init.F\

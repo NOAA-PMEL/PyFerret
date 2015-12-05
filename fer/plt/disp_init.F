@@ -89,6 +89,7 @@
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V686 *acm* 12/13 set up the label symbols LABNUM_E and LABNUM_F
 * V695+ *sh*  3/15 remove movable label rotations (left behind by FMRC annotations)
+* V697 *acm* 12/15 Fixes for bug 1237 move call of PPL_AXES_RESTORE back to end of plot routines
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -130,13 +131,6 @@
 	CALL PPLCMD ( from, line, 0, 'AXTYPE 1,1', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'XVALOFF 0', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'YVALOFF 0', 1, 1 )
-
-        IF (iaxset .EQ. 1) THEN   ! If /AXES was used on prev. plot call, reset defaults
-           CALL PPL_AXES_RESTORE
- 	   CALL PPLCMD ( from, line, 0, 'AXSET,1,1,1,1', 1, 1 )
-	   CALL PPLCMD ( from, line, 0, 'AXLABP -1,-1', 1, 1)
-           iaxset = 0
-        ENDIF
 
 * Label numbers for the Ferret logo (if drawn) for pyFerret text settings
 	

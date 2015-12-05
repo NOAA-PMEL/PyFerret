@@ -183,6 +183,7 @@
 * so it is treated as not modulo.
 * V694  5/15 *acm* Match precision for bounds checks (as is done for coords).
 * V695+  5/15 *sh* allow "units='none'" as ignorable units string (for Andrew)
+* V695+  10/15 *sh* pass axis length instead of iaxis to TM_CHECK_BNDS_ATTRIB
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -1111,8 +1112,8 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
         IF ( .NOT.got_bnds ) GOTO 600
 
 * Check the bounds variable, issue any warnings.
-        CALL TM_CHECK_BNDS_ATTRIB (dset, iaxis, vname, vlen, bname,
-     .                             bndid, status)
+        CALL TM_CHECK_BNDS_ATTRIB (dset, line_dim(iaxis), vname, vlen,
+     .                             bname, bndid, status)
         IF (status .EQ. pcdferr) GO TO 5100
         IF (status .NE. merr_ok) THEN
            IF (npts .EQ. 1) THEN  ! save as a regular axis, no bounds.

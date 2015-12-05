@@ -101,9 +101,10 @@ SET MODE VERIFY
 !             on a system in order for it to pass the benchmarks.
 !
 ! 11/06 *acm* New bn602_bug_fixes for version 6.02
-* V610  *acm* 3/08 - add new MODE NLEVELS
-* V685  *sh* 11/13 - added bn_vtree to test SHOW VAR/TREE
-* V698+ *sh* 06/15 - added bn_auxiliary
+! V610  *acm* 3/08 - add new MODE NLEVELS
+! V685  *sh* 11/13 - added bn_vtree to test SHOW VAR/TREE
+! V698+ *sh* 06/15 - added bn_auxiliary
+! V698+ *sh* 11/15 - added bn_aggregate_t
 
 ! Include this statement to compare the outupt of 6D Ferret with 
 ! previous 4D benchmark logs.
@@ -999,6 +1000,13 @@ GO bn696_bug_fixes
 GO bn_reset
 GO bn_bin_regrid
 
+GO bn_reset
+GO bn_aggregate_t
+
+! *********** v6.97 Additions ***********
+
+GO bn_reset
+GO bn697_bug_fixes
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

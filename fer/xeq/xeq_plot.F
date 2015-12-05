@@ -715,7 +715,7 @@ c done in plot_set_up.
         CALL SET_OVERRIDE_OPACITY(opacity)
 
 * restore axes? (5/29/97  revised 3/2002
-c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
+        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
 * restore default color key style?
         IF (changed_key ) CALL PPLCMD (from, line, 0, 'S_KEY 0', 1, 1 )

@@ -54,6 +54,8 @@
 * 11/99 *sh* - change "grid lines" to "axes" in error message
 * V600 6/05 *acm* new error merr_attalready; attribute already defined
 * V604 6/07 *acm* New merr_remote_open for errors opening remote datasets
+* V697 12/15*acm* New merr_axis_att reporting errors in axis attributes, 
+*                 e.g. calendars (For ticket 2332)
 
 	include 'tmap_errors.parm'		! parameter definitions
 	include 'xerror_text.cmn_text'	! common declaration
@@ -159,4 +161,6 @@
      .		/'error specifying chunk sizes                      '/
      .	msg_regular(merr_time_string-pregular)
      .		/'error creating time string                        '/
+     .	msg_regular(merr_axis_att-pregular)
+     .		/'error in axis attributes                        '/
 	END

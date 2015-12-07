@@ -44,7 +44,7 @@
 
 * revision 0.0 - 2/92
 * 2/95 - added support for reverse-ordered coordinate axes
-* 7/96 - increase "name" from 16 to 24 characters for consistence
+* 7/96 - increase "name" from 24 to 24 characters for consistence
 *	(still dimension names cannot be 24 chars --> line names in COMMON)
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
@@ -70,7 +70,9 @@
 *                 a cf_role attribute, assign its axis to the E direction. (If the
 *                 file has coordinate variables with assigned axes, keep the 
 *                 direction assigned in the file.)
-* V695+ 11/15 *sh* return the line number of the native time axis of this dset
+* V697 11/15 *sh* return the line number of the native time axis of this dset
+* V697 12/15 *am* Fix the logic around checking the calendar attributes when 
+*                 grid has both T and F axes
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -108,7 +110,7 @@
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved them to parameter line 10/96
-      LOGICAL NC_GET_ATTRIB,
+      LOGICAL NC_GET_ATTRIB, CD_GET_ATTRIB,
      .        got_it, do_warn, centers, coordvar
       PARAMETER (do_warn = .TRUE. )
       PARAMETER (centers = .TRUE. )
@@ -117,10 +119,10 @@
      .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen, idim2,
      .        tmvar, tmpgrid, npts, dim, tmplines(nferdims), ndim,
      .	      grid_dims(nferdims), trans(nferdims), indices(nferdims),
-     .        i, maxlen, attlen,attoutflag, all_outflag, axid, iaxis5,
-     .        attid, eax, cfrole_dim
+     .        i, maxlen, attlen,attoutflag, all_outflag, axid, iaxis6,
+     .        attid, eax, cfrole_dim, blen
       REAL    tmp
-      CHARACTER name*128, vname*128, linunits*16
+      CHARACTER name*128, vname*128, linunits*24, cal_str*24, cal_t*24, cal_f*24
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
@@ -190,7 +192,7 @@
            ivar = cd_varid(tmvar)
 
 * does it point explicitly to a parent grid ?
-          maxlen = 16   !linenamlen
+          maxlen = 24   !linenamlen
           got_it = NC_GET_ATTRIB( dset, ivar, 'parent_grid',
      .                       .NOT.do_warn, ' ', maxlen, attlen, 
      .                       attoutflag, name, tmp )
@@ -223,6 +225,8 @@
  10        CONTINUE
 
 * find the axis names from the CDF file
+	   cal_t = ' '
+	   cal_f = ' '
            DO 200 idim = 1, nvdims
 
 * ... get name of dimension
@@ -251,7 +255,7 @@
 
 * axis ID
 	      CALL CD_GET_VAR_ID (dset, name, axid, status)
-	      linunits = char_init16
+	      linunits = char_init24
 	      IF (idim .EQ. cfrole_dim) THEN
 	         line_direction(iaxis) = 'EE'
 		 cfrole_dim = 0  ! reset. Just one axis will have this role.
@@ -263,6 +267,13 @@
 
 * save a pointer to the axis just found
  150          IF (idim.LE.nferdims) tmplines(idim) = iaxis
+
+              CALL CD_GET_VAR_ID (dset, name, axid, status)
+	      blen = 24
+              got_it = CD_GET_ATTRIB( cdfid, axid, 'calendar',
+     .                  do_warn, vname(:vlen), cal_str, attlen, blen )
+	      IF (got_it .AND. line_direction(iaxis)(1:1).EQ.'T') cal_t = cal_str
+	      IF (got_it .AND. line_direction(iaxis)(1:1).EQ.'F') cal_f = cal_str
 
  200       CONTINUE
 
@@ -320,14 +331,29 @@
  250       CONTINUE
 
 * ... If there is a T and an F axis, check for matching calendars
-           idim = 5
-	   iaxis5 = tmplines(indices(idim))
-	   IF (iaxis5 .NE. unspecified_int4) THEN
-	     IF (STR_SAME(line_cal_name(iaxis), line_cal_name(iaxis5)) .NE. 0) 
-     .        CALL TM_ERRMSG
-     .        ( istat+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
-     .        vname(:vlen), 'Calendar definitions on T and F axes must match', *5900 )
+
+	   iaxis = 0
+	   iaxis6 = 0
+           DO 260 idim = 1, ndim
+	      IF (trans(idim) .EQ. T_DIM) iaxis  = tmplines(idim)
+	      IF (trans(idim) .EQ. F_DIM) iaxis6 = tmplines(idim)
+ 260       CONTINUE
+
+*     When there is a calendar attrib on the the F or T axis but not both, 
+*     use the specified calendar for the both time dimensions
+
+	   IF (iaxis.GT.0 .AND. iaxis6.GT.0) THEN
+	      IF ( (STR_SAME(cal_f, ' ') .EQ. 0) )
+     .           line_cal_name(iaxis6) = line_cal_name(iaxis)
+	      IF ( (STR_SAME(cal_t, ' ') .EQ. 0) )
+     .           line_cal_name(iaxis) = line_cal_name(iaxis6)
+
+              IF (STR_SAME(line_cal_name(iaxis), line_cal_name(iaxis6)) .NE. 0) 		
+     .		CALL TM_ERRMSG (merr_axis_att, status, 'CD_GET_GENERIC_GRIDS',
+     .            no_descfile, 1, 'Calendar definitions on T and F axes must match',
+     .            no_errstring, *5900 )
 	   ENDIF
+
 * is the temporary grid we just created unique ?
 	   igrid = 0
  300	   CALL TM_NEXT_TMP_GRID( igrid, *320)

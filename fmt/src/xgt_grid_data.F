@@ -68,6 +68,7 @@
 *      4/12 *acm* - 6D Ferret, formatted F axis is direction FI
 * V685 *acm* 3/13 - add climatological axes to the pre-defined axes.
 * v685 *acm* 4/13 - Let Ferret compute the modulo lengths for clim. axes
+* v697 *acm* 12/115 -Missed some initializations, 4D-->6D grids
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -84,7 +85,7 @@
      .			 nlne_def	= 13,
      .			 grids_left	= grid_ceiling-ngrd_def,
      .			 lines_left	= line_ceiling-nlne_def,
-     .			 grid_lines_left= 4*grids_left,
+     .			 grid_lines_left= nferdims*grids_left,
      .                   pline_mem_next = 614,
      .                   pline_mem_left = maxlinestore-pline_mem_next+1)
 
@@ -441,13 +442,13 @@ c     .			/pline_mem_left*real8_init/
 	DATA	(grid_name(i),i=ngrd_def+1,grid_ceiling)
      .			/grids_left*char_init16/
 
-	DATA	((grid_line(i,j),i=1,4),j=ngrd_def+1,grid_ceiling)
+	DATA	((grid_line(i,j),i=1,nferdims),j=ngrd_def+1,grid_ceiling)
      .			/grid_lines_left*int4_init/
 
 	DATA	(grid_rotation(i),i=ngrd_def+1,grid_ceiling)
      .			/grids_left*real4_init/
 
-	DATA	((grid_out_prod(i,j),i=1,4),j=ngrd_def+1,grid_ceiling)
+	DATA	((grid_out_prod(i,j),i=1,nferdims),j=ngrd_def+1,grid_ceiling)
      .			/grid_lines_left*.FALSE./
 
 * DEFINE LINE AND BOX COORDS NEXT TO LAST

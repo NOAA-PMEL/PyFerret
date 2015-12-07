@@ -44,7 +44,7 @@
 
 * revision 0.0 - 2/92
 * 2/95 - added support for reverse-ordered coordinate axes
-* 7/96 - increase "name" from 24 to 24 characters for consistence
+* 7/96 - increase "name" from 16 to 24 characters for consistence
 *	(still dimension names cannot be 24 chars --> line names in COMMON)
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.

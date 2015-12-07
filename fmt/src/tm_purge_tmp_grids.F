@@ -58,8 +58,6 @@
 
 * Local variable declarations
 	INTEGER grid, line, idim
-	LOGICAL line_not_init
-
 
 * over temporary grids
  100	CONTINUE
@@ -70,13 +68,9 @@
 	   DO 200 idim = 1, nferdims
 	      IF ( grid_line(idim, grid) .GT. max_lines ) THEN
 	         CALL TM_DEALLO_DYN_LINE( grid_line(idim, grid) )
-	      ELSE
-c	         line_not_init = (grid_line(idim, grid).EQ.mpsnorm .OR.
-c     .			          grid_line(idim, grid).EQ.int4_init) 
-	         line_not_init = (grid_line(idim, grid).EQ.mpsnorm) 
-	         IF (.NOT. line_not_init) 
-     .			CALL TM_NOTE('tm intern err: netCDF grid w/ static axis',
-     .			 lunit_errors)  ! should never happen
+	      ELSEIF (grid_line(idim, grid) .NE. mpsnorm) THEN
+	         CALL TM_NOTE('tm intern err: netCDF grid w/ static axis'
+     .		     ,lunit_errors)  ! should never happen
 	      ENDIF
  200	   CONTINUE
 

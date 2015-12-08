@@ -124,6 +124,8 @@
 * v695  *acm* 5/16 When running PyFerret do not draw axes on an overlay unless they
 *                  ask for it with /AXES or a ppl axis command
 * V697 *acm* 12/15 Fixes for bug 1237 move call of PPL_AXES_RESTORE back to end of plot routines
+* v697 *acm* 12/15 Ticket 2331, add flag changed_key to common, to restore the color key
+*                  style after a color plot and also after SHADE/SET; SHADE.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -149,8 +151,7 @@
 	LOGICAL	TM_HAS_STRING, 
      .            no_range, overlay, transpz, no_labels, fill, usa_line,
      .            do_key, spectrum, set_up, noaxes, axes, pattern, 
-     .		  no_data, is_logh, is_logv, inc_grid, 
-     .		  changed_key
+     .		  no_data, is_logh, is_logv, inc_grid
 	INTEGER	  TM_LENSTR, TM_LENSTR1, status, slen, sp, ipen, icolor, 
      .		  ax1_blks, ax1_start, loc, sigdig,
      .		  ax2_blks, ax2_start, patt, i, nparm, num_it, 
@@ -397,6 +398,7 @@ c           nlev = 1
 * ... /KEY[=continuous,horizontal,centerlabel ?
 
               loc = qual_given( slash_shad_key )
+	      changed_key = .FALSE.
 
               IF ( loc .GT. 0) THEN
 		 CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),

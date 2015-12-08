@@ -19,6 +19,8 @@
 * V604 6/07 *acm* New merr_remote_open for errors opening remote datasets
 * V683 10/10*acm* New merr_read_interrupt for user-interrupt reading netCDF/OPeNDAP data
 * V692 10/14*acm* New merr_time_string for errors in tm_secs_to_date
+* V697 12/15*acm* New merr_axis_att reporting errors in axis attributes, 
+*                 e.g. calendars (For ticket 2332)
 
 * internally used PARAMETERS:
 	INTEGER		num_special,num_regular,pspecial,pregular,
@@ -26,7 +28,7 @@
      .	                pcdferr, pcdferrmax, nf_interrupt
 	CHARACTER*1	no_errstring
 	PARAMETER      (num_special	= 3,
-     .			num_regular	= 48,
+     .			num_regular	= 49,
      .			pspecial	= 2,	! avoid 0,1 as too special
      .			pregular	= 200,
      .			pcdferr		= 1000,
@@ -62,7 +64,7 @@
      .			merr_dsetnf, merr_stepnf, merr_badcolmn,
      .                  merr_attalready, merr_badfileatt, merr_nc_open,
      .                  merr_remote_open, merr_chunk_spec, merr_read_interrupt,
-     .                  merr_time_string
+     .                  merr_time_string, merr_axis_att
 	PARAMETER      (merr_notsupport	= 1 + pregular,
      .			merr_filpos	= 1 + merr_notsupport,
      .			merr_tstep	= 1 + merr_filpos,
@@ -111,4 +113,5 @@
      .                  merr_remote_open = 1 + merr_nc_open,
      .                  merr_chunk_spec  = 1 + merr_remote_open,
      .                  merr_read_interrupt = 1 + merr_chunk_spec,
-     .                  merr_time_string = 1 + merr_read_interrupt)
+     .                  merr_time_string = 1 + merr_read_interrupt,
+     .                  merr_axis_att = 1 + merr_time_string)

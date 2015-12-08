@@ -76,6 +76,8 @@
 *                   Do not draw axes on an overlay unless they
 *                   ask for it with /AXES or a ppl axis command
 * V697 *acm* 12/15 Fixes for bug 1237 move call of PPL_AXES_RESTORE back to end of plot routines
+* v697 *acm* 12/15 Ticket 2331, add flag changed_key to common, to restore the color key
+*                  style after a color plot and also after SHADE/SET; SHADE.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -109,8 +111,7 @@
 	LOGICAL     TM_HAS_STRING, no_range, do_key, spectrum, pattern,
      .			use_line, overlay, transpz, no_labels, set_up, 
      .			noaxes, axes, line_it, fill_it, is_logh, is_logv, 
-     .			no_data, is_modx, do_mod_minus, do_mod_plus, 
-     .			changed_key
+     .			no_data, is_modx, do_mod_minus, do_mod_plus
 	INTEGER     sp, patt, TM_LENSTR1, TM_LENSTR, STR_UPCASE
 	INTEGER		symbol, icolor, ipen, status,
      .			loc, limit, slen, coord_ax,
@@ -301,12 +302,13 @@ CC       => Set values here instead.
 * ... /KEY[=continuous,horizontal,centerlabel ?
 	      
 	      loc = qual_given(slash_polygon_key )
+	      changed_key = .FALSE.
+
               IF ( loc .GT. 0) THEN
 		 CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        buff, status )
                  IF ( status .NE. ferr_ok ) GOTO 5000
 		 IF (TM_LENSTR(buff) .GT. 0) THEN
-	         changed_key = .FALSE.
 	         IF ( TM_HAS_STRING(buff, 'CON') ) THEN
                     changed_key = .TRUE.
                     CALL PPLCMD (from, line, 0, 'S_KEY 1', 1, 1 )

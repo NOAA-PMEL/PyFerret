@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 81153042 Dec  1 12:00 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 81201353 Dec  7 15:20 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2326: (inf) or (-inf) with single level given
+Note: ticket 2332: checking mixed calendar defs within one grid
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,13 +14,15 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
-FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
+FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
+FER_GO=. /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
 FER_GRIDS=.
-FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
-FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
+FER_LIBS=/home/users/ansley/ferret_distributions/rhel6_64/lib
+FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
+FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Tue Dec 1 12:10:54 PST 2015
+Beginning at Mon Dec 7 15:23:45 PST 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1208,10 +1210,10 @@ Replacing definition of axis TAX2
            *** NOTE: Axis is in use by grid GFORMAT
            *** NOTE: Not deleted: XAXLEVITR1_160
            *** NOTE: Axis is in use by grid GG1
-           *** NOTE: Not deleted: TIME4
-           *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: TIME5
            *** NOTE: Axis is in use by grid GLB1
+           *** NOTE: Not deleted: TIME4
+           *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: COADSX
            *** NOTE: Axis is in use by grid GG
            *** NOTE: Not deleted: COADSY
@@ -1328,10 +1330,10 @@ Replacing definition of axis TAX2
            *** NOTE: Axis is in use by grid GFORMAT
            *** NOTE: Not deleted: XAXLEVITR1_160
            *** NOTE: Axis is in use by grid GG1
-           *** NOTE: Not deleted: TIME4
-           *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: TIME5
            *** NOTE: Axis is in use by grid GLB1
+           *** NOTE: Not deleted: TIME4
+           *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: COADSX
            *** NOTE: Axis is in use by grid GG
            *** NOTE: Not deleted: COADSY
@@ -1857,14 +1859,14 @@ Replacing definition of axis TIME1
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis COADSX.ILLEGAL
-           *** NOTE: grid GEX1 used by data set illeg_axname
-           *** NOTE: Redefinition may alter apparent contents of data set
            *** NOTE: grid GEX2 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
-Replacing definition of axis COADSY.ILLEGAL
            *** NOTE: grid GEX1 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
+Replacing definition of axis COADSY.ILLEGAL
            *** NOTE: grid GEX3 used by data set illeg_axname
+           *** NOTE: Redefinition may alter apparent contents of data set
+           *** NOTE: grid GEX1 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4069,8 +4071,109 @@ Replacing definition of axis DCOARSE
 Replacing definition of axis IRR
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis TDAY
+ LISTing to file tagg_reg_1.nc
+ LISTing to file tagg_reg_2.nc
+ LISTing to file tagg_reg_3.nc
+ LISTing to file tagg_reg_4.nc
+ LISTing to file tagg_reg_5.nc
+ LISTing to file tagg_reg_6.nc
+ LISTing to file tagg_reg_7.nc
+ LISTing to file tagg_reg_8.nc
+ LISTing to file tagg_reg_9.nc
+ LISTing to file tagg_reg_10.nc
+ LISTing to file tagg_reg_1_duplicate.nc
+ LISTing to file tagg_reg_no_T.nc
+ LISTing to file tagg_reg_2_overlarge.nc
+           *** NOTE: Not deleted: TDAY
+           *** NOTE: Axis is in use by grid (G106)
+ LISTing to file tagg_irreg_1.nc
+ LISTing to file tagg_irreg_2.nc
+ LISTing to file tagg_irreg_3.nc
+ LISTing to file tagg_irreg_4.nc
+ LISTing to file tagg_irreg_5.nc
+ LISTing to file tagg_irreg_6.nc
+ LISTing to file tagg_irreg_7.nc
+ LISTing to file tagg_irreg_8.nc
+ LISTing to file tagg_irreg_9.nc
+ LISTing to file tagg_irreg_10.nc
+Replacing definition of axis TDAY_IR
+ LISTing to file tagg_irreg_2_reg.nc
+           *** NOTE: Not deleted: TDAY_IR
+           *** NOTE: Axis is in use by grid (G106)
+ LISTing to file tagg_T0varying_1.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tagg_T0varying_2.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tagg_T0varying_3.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tagg_T0varying_4.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tagg_T0varying_5.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tagg_disjoint_T0varying_1.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tagg_disjoint_T0varying_2.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tagg_disjoint_T0varying_3.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tagg_disjoint_T0varying_4.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tagg_disjoint_T0varying_5.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tagg_disjoint_T0varying_6.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tagg_disjoint_T0varying_7.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tagg_disjoint_T0varying_8.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tagg_disjoint_T0varying_9.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tagg_disjoint_T0varying_10.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tagg_disjoint_T0varying_1.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tagg_disjoint_T0varying_3.nc
+ LISTing to file tagg_disjoint_T0varying_4_wrong.nc
+           *** NOTE: Not deleted: TDAY_WRONG
+           *** NOTE: Axis is in use by grid (G106)
+ LISTing to file tagg_single_1.nc
+ LISTing to file tagg_single_2.nc
+ LISTing to file tagg_single_3.nc
+ LISTing to file tagg_single_4.nc
+ LISTing to file tagg_single_5.nc
+ LISTing to file tagg_single_6.nc
+           *** NOTE: Not deleted: TDAY
+           *** NOTE: Axis is in use by grid (G106)
+ **ERROR: invalid command: given aggregation dataset name already in use: myagg2
+define data/agg/t myagg2 = tagg_reg_1.nc, tagg_reg_2.nc
+ **TMAP ERR: non-existent or not on line
+             tagg_no_exist.nc
+define data/agg/t myaggbad = tagg_no_exist.nc, tagg_reg_2.nc
+ **TMAP ERR: non-existent or not on line
+             tagg_no_exist.nc
+ **ERROR: improper grid or axis definition: first file of aggregation has no time axis tagg_reg_no_T.nc
+DEFINE DATA/AGGREGAT/T myTindepagg = tagg_reg_no_T.nc
+ **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tagg_reg_3.nc
+define data/agg/t myagg3 = tagg_reg_1.nc, tagg_reg_2_overlarge.nc,tagg_reg_3.nc
+ **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tagg_irreg_2.nc
+define data/agg/t myagg3 = tagg_irreg_1.nc, tagg_irreg_3.nc,tagg_irreg_2.nc
+ **ERROR: invalid command: given aggregation dataset name already in use: myagg2
+define data/agg/t myagg2 = tagg_disjoint_T0varying_1.nc, tagg_disjoint_T0varying_2.nc
+ **TMAP ERR: Unknown variable code
+             in file ./tagg_disjoint_T0varying_4_wrong.nc time axis variable is missing: tday_Tvar
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **TMAP ERR: error in axis attributes
+             Calendar definitions on T and F axes must match
+             Data file: ./ft_cal_one.nc
+SET DAT/FORM=CDF ft_cal_mixed.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4162,4 +4265,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Dec 1 12:13:03 PST 2015
+Ended at Mon Dec 7 15:25:37 PST 2015

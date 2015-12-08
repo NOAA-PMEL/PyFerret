@@ -1,0 +1,17 @@
+! err696_ft_calendars.jnl
+! see ticket 2332: check for matching calendars when
+! there are T and F axes in a file.
+
+! If the T or F calnedar is specified, use it for both axes 
+! e.g. reference time has a calendar, forecast time does not list a calendar.
+
+use ft_cal_one.nc
+sh dat
+
+! Intentional error: two time axes with different calendars
+set mode ignore
+use ft_cal_mixed.nc
+
+can mode ignore
+
+can data/all

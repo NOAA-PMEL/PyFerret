@@ -1,0 +1,56 @@
+! err696_centerlab_restore
+! Ticket 2331. 
+! When a plot is made with 
+!   shade/SET/key=centerlab; ppl shade
+! Then the nextsubsequent plot still had the centered key labeling.
+
+
+use coads_climatology
+set view left
+shade/SET/l=1/key=centerlab sst
+ppl shade
+
+set view right
+shade/l=1 sst
+
+! ...although the next one does restore the default.
+shade/l=1 sst
+
+! Horizontal plots with the same behavior.
+cancel view
+set view upper
+shade/SET/l=1/key=centerlab,horiz sst
+ppl shade
+
+set view lower
+shade/l=1/key=horiz sst
+
+! FILL plots
+cancel view
+set view left
+fill/SET/l=1/key=centerlab sst
+ppl shade
+
+! This plot still had the labels centered
+set view right
+fill/l=1 sst
+
+! Ribbon plots
+cancel view
+set view left; plot/ribbon/vs/line/thick/key=cent/SET {1,2,3,4}, {1,2,3,4}, {1,2,3,4}
+ppl ribbon
+set view right; plot/ribbon/vs/line/thick  {1,2,3,4}, {1,2,3,4}, {1,2,3,4}
+
+! Polygon plots
+cancel view
+let xsqr = YSEQUENCE({0,.1,.1,0})
+let ysqr = YSEQUENCE({0,0,.1,.1})
+
+let ypts = x/10
+let xpts = cos(x/10)
+
+set view upper
+polygon/trans/i=1:20/nolab/key=horiz,center/SET xpts+xsqr, ypts+ysqr, x*x/10
+ppl polygon
+set view lower
+polygon/trans/i=1:20/nolab/key=horiz  xpts+xsqr, ypts+ysqr, x*x/10

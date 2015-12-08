@@ -107,6 +107,8 @@
 * v696 *acm*  6/15 PLOT/VS/GAPLOC to define seperate line segments on
 *                  PLOT/VS/RIBBON plots (LAS ticket 1597 and others). Could implement
 *                  this later for other PLOT/VS plots.
+* v697 *acm* 12/15 Ticket 2331, add flag changed_key to common, to restore the color key
+*                  style after a color plot and also after SHADE/SET; SHADE.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -139,7 +141,7 @@
      .			overlay, transpz, versus,
      .			no_labels, set_up, noaxes, axes, use_line,
      .			is_logh, is_logv, nokey, no_data, no_range,
-     .			changed_key, do_key, spectrum, addgaps
+     .			do_key, spectrum, addgaps
 	INTEGER		TM_LENSTR1, TM_LENSTR, STR_UPCASE, STR_SAME,
      .                  symbol, color, color1, status,
      .			loc, limit, slen, thick, step_inc,
@@ -481,6 +483,7 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 *     /KEY=title is a legal option, but ignored for ribbon plot.
 
               loc = qual_given( slash_plot_key )
+	      changed_key = .FALSE.
 
               IF ( loc .GT. 0) THEN
 		 CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),

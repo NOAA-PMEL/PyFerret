@@ -70,6 +70,8 @@
 *                  as is done for SHADE and CONTOUR plots
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 * V697 *acm* 12/15 Fixes for bug 2327 move call of PPL_AXES_RESTORE back to end of plot routines
+* v697 *acm* 12/15 Ticket 2331, add flag changed_key to common, to restore the color key
+*                  style after a color plot and also after SHADE/SET; SHADE.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -101,8 +103,7 @@
         LOGICAL         TM_HAS_STRING, no_range, do_key, spectrum, pattern,
      .			use_line, overlay, transpz, no_labels, set_up, 
      .			noaxes, axes, line_it, fill_it, is_logh, is_logv, 
-     .			no_data, is_modx, do_mod_minus, do_mod_plus, 
-     .			changed_key
+     .			no_data, is_modx, do_mod_minus, do_mod_plus
 	INTEGER         sp, patt, TM_LENSTR1, TM_LENSTR, STR_UPCASE
 	INTEGER		symbol, color, status,
      .			loc, limit, slen, coord_ax, thick,
@@ -270,6 +271,8 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 * ... /KEY[=continuous,horizontal,centerlabel ?
 	      
 	      loc = qual_given(slash_polygon_key )
+	      changed_key = .FALSE.
+
               IF ( loc .GT. 0) THEN
 		 CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        buff, status )

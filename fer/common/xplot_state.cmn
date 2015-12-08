@@ -12,6 +12,8 @@
 * V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT
 * V68  *acm* 1/12  explicit REAL*4 declarations for double-precision ferret with
 *		    single-precision pplus
+* v697 *acm* 12/15 Ticket 2331, add flag changed_key to common, to restore the color key
+*                  style after a color plot and also after SHADE/SET; SHADE.
 
 	INTEGER		max_windows,
      .			max_viewport,
@@ -33,7 +35,8 @@
      .			has_time_axis,
      .			h_logaxis, 
      .			v_logaxis,
-     .                  no_plot_yet
+     .                  no_plot_yet,
+     .                  changed_key
 
 	INTEGER		vp_num,
      .			vp_seg0,
@@ -83,6 +86,7 @@
      .			h_logaxis, 
      .			v_logaxis,
      .                  no_plot_yet,
+     .                  changed_key,
      .			saved_dt_min,
      .			saved_t1_date,
      .			transparent_color

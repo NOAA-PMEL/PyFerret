@@ -71,7 +71,9 @@
 * V694   5/15    - *acm*  Ticket 2285: need to initialize iautoc to = 1 so overlay with /LEV=20V works.
 * V695  *acm* 9/15 ticket 2311: variance-based levels on constant variables
 * V695  *acm* 9/15 (not fully implemented) INT option for levels
-
+* V6.86 *acm* 1/14 In above fix, let there be spaces before the file spec.
+* v697 *acm* 12/15 Ticket 2331, add flag changed_key to common, and restore the color key
+*                  style after a SHADE/SET; SHADE.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -80,6 +82,7 @@
 	include 'slash.parm'
 	include 'plot_setup.parm'
 	include 'xplot_setup.cmn'
+	include 'xplot_state.cmn'
 	include 'xprog_state.cmn'
 	include 'parampl5_dat.decl'	! with inclen
 	include 'PARAMPL5.DAT'	! with inclen
@@ -140,6 +143,11 @@
 * forget line specimen definitions that were used in previous plots
         CALL PPLCMD ( from, line, 0, 'ALINE ', 1, 1 )
 
+* if the colorkey was changed by a previous key=center, etc reset it.
+        IF (changed_key ) THEN
+           CALL PPLCMD (from, line, 0, 'S_KEY 0', 1, 1 )
+           changed_key = .FALSE.
+        ENDIF
 
 * what qualifiers will effect the initialization of PLOT+
 

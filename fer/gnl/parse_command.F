@@ -124,6 +124,11 @@
 *                 Also added support for _DQ_ style of quotation marks
 *      *acm*  2/15 Prevent run-time errors in string length for _DQ_ handling
 * V695 *acm*  3/15 Ticket 2245: if no arguments on a REPEAT command, exit gracefully.
+* V698 *sh*  12/15 avoid the need to quote filenames with slashes
+*		   the first non-qualifier following a qualifier terminates
+*                  parsing of qualifiers, supporting
+*		       DEFINE DATA/AGG name = /path/filename, 
+*                  and a specific hack for SET DATA
 
 
 * command, subcommand and qualifiers will be identified by number in
@@ -173,17 +178,19 @@
 
 * modified def of MATCH4 from INTEGER to LOGICAL *kob* IBM port 8/94
 	LOGICAL	TM_LEGAL_NAME, known_qualifier, atsin_qualifier,
-     .          doub_quote, DQ_quote,
+     .          doub_quote, DQ_quote, a_qual_found, look_for_quals,
      .		surround_quote, surround_DQ_, end_DQ_, subst, first_paren,
      .          itsa_qualifier(local_max_arg_list), 
-     .          MATCH4, escape, apply_cx, ptrslash, i3_ok
+     .          MATCH4, escape, apply_cx, ptrslash, i3_ok,
+     .		its_set_data, has_lead_white_space, found_white_space
 	INTEGER TM_LENSTR
 	INTEGER	buff_len, bang_position, ptr, quote_end,
      .		word_num, look_ahead, look_back, isub_word, csgo,
      .		isubcmnd_ptr, iword, last_qual, iqual_word, iterm,
      .		iqual, iqual_ptr, iarg, i, nparen, nsubst_passes,
      .		grave_start, grave_end, in, out, nest,
-     .		paren_level,len_test,len_mchars, m
+     .		paren_level,len_test,len_mchars, m,
+     .		last_recognized_word, first_white_space
 	CHARACTER c1*1
 	CHARACTER url_buff*2048
 
@@ -210,6 +217,9 @@
 	num_args	= 0
 	cmnd_num 	= 0		! in case of comment line
 	cmnd_buff (buff_len:buff_len) = ' '	! always end with blank
+	a_qual_found	= .FALSE.
+	look_for_quals	= .TRUE. 
+	first_white_space = buff_len
 
 * inits moved into this code from get_ferret_command (housekeeping)
         DO i = 1, local_max_arg_list
@@ -439,18 +449,24 @@
  100	CONTINUE
 
 * skip blanks preceeding word
+	has_lead_white_space = .FALSE.
 	DO 110 ptr = ptr, cmnd_len
-		IF (      cmnd_buff(ptr:ptr) .NE. ' '
-     .		    .AND. cmnd_buff(ptr:ptr) .NE. tab ) GOTO 200
+	   IF (      cmnd_buff(ptr:ptr) .NE. ' '
+     .	       .AND. cmnd_buff(ptr:ptr) .NE. tab ) GOTO 200
+	   has_lead_white_space = .TRUE.
  110	CONTINUE
 	GOTO 500		! end of command buffer - no more words
 
 * we have another word in the buffer.  Is this word a qualifier ?
-
+* 12/15 - cease hunt for qualifiers when a non-qual follows qualifiers
  200	IF ( word_num .EQ. max_words ) GOTO 500
 	word_num 	= word_num + 1
-	IF ( cmnd_buff(ptr:ptr) .EQ. '/' ) THEN
+	IF  ( has_lead_white_space
+     .  .AND. ptr .LT. first_white_space 
+     .  .AND. word_num .GT. 2  ) first_white_space = ptr-1 ! hack for SET DATA
+	IF ( look_for_quals .AND. cmnd_buff(ptr:ptr).EQ.'/' ) THEN
 	   itsa_qualifier(word_num) = .TRUE.
+	   a_qual_found = .TRUE.
 	   ptr = ptr + 1		! jump over "/"
 *	skip blanks between "/" and text of word
 	   DO 210 ptr = ptr, cmnd_len
@@ -462,6 +478,7 @@
 	   GOTO 500			! ignore "/" at end of buffer
 	ELSE
 	   itsa_qualifier(word_num) = .FALSE.
+	   IF (a_qual_found) look_for_quals = .FALSE.
 	ENDIF
 
 * we have found the start of a word - initialize variables
@@ -607,6 +624,13 @@
 	      IF (cmnd_buff(ptr-1:ptr) .EQ. '\\/') GOTO 410
 #endif
 	   ENDIF
+
+* "/" is not a terminator if we are not looking for more qualifiers
+	   IF (.NOT.look_for_quals
+     .    .AND. cmnd_buff(ptr:ptr) .EQ. '/' ) THEN
+	      surround_quote = .FALSE.  ! text outside of quotation
+	      GOTO 410
+	   ENDIF
 	
 * probable terminator found - make sure it's not hiding a comma or =
 * first check ahead that the next non-blank/tab is not comma or =
@@ -734,10 +758,15 @@ cc  Allow zero-length null string in quotes
 	subcmnd_num	 = 1		! use "    " as  subcommand
 	isubcmnd_ptr = subcommand_pointer(cmnd_num)
 
+* special hack to allow SET DATA path/filename.nc without quotated filename
+ 700	its_set_data = cmnd_num    .EQ. cmnd_set
+     .           .AND. subcmnd_num .EQ. 7
+	last_recognized_word = 2    ! only used by SET DATA
+
 * +++++++ QUALIFIERS +++++++
 * since "/" may be used for syntax purposes other that qualifiers determine the
 * last "/" that is intended as a qualifier
- 700    DO 702 iword = MAX( isub_word+1, 2 ), word_num
+	DO 702 iword = MAX( isub_word+1, 2 ), word_num
 	   IF ( .NOT.itsa_qualifier(iword) )	  THEN
 	      last_qual = iword - 1
 	      GOTO 704
@@ -773,6 +802,7 @@ cc  Allow zero-length null string in quotes
 	   atsin_qualifier  = 
      .		cmnd_buff(arg_start(iqual_word):arg_start(iqual_word)) .EQ. '@'
 	   IF ( known_qualifier .OR. atsin_qualifier ) THEN
+	        last_recognized_word = iqual_word
 		num_quals = num_quals + 1
 		qual_start(num_quals) = arg_start(iqual_word)
 		qual_end  (num_quals) = arg_end  (iqual_word)
@@ -786,7 +816,37 @@ cc  Allow zero-length null string in quotes
  730	   CONTINUE
 
 * checked all possible qualifiers and did't find a match
-	   GOTO 5030							! error
+	   IF (its_set_data) THEN
+* *sh* 2015 special hack for SET DATA:  since filenames may contain slashes, 
+*      we treat the first unrecognized qualifier as potentially part of the
+*      filename. 
+*      It is *not* part of the filename if
+*      - no white space gap has been seen to the left;  or
+*      - there is a white space gap without a comma found to the right
+	      IF (first_white_space .GT. arg_start(iqual_word)) GOTO 5030 
+* ... look to right for white space with no comma
+	      found_white_space = .FALSE.
+	      DO iterm = arg_end(iqual_word), cmnd_len
+	         IF (   cmnd_buff(iterm:iterm) .EQ. ' '
+     .		   .OR. cmnd_buff(iterm:iterm) .EQ. '	' ) THEN
+	            found_white_space = .TRUE.
+		 ELSEIF (found_white_space) THEN
+	            IF (cmnd_buff(iterm:iterm) .NE. ',') THEN
+	               GOTO 5030
+	            ELSE
+	               EXIT
+	            ENDIF
+	         ENDIF
+	      ENDDO
+	      word_num = last_recognized_word + 1
+	      arg_end(word_num) = cmnd_len
+	      IF (itsa_qualifier(word_num)) arg_start(word_num)
+     .			= arg_start(word_num)-1	    ! keep "/" in /home/file
+	      itsa_qualifier(word_num) = .FALSE.
+	      EXIT
+	   ELSE
+	      GOTO 5030				! unknown qual error
+	   ENDIF
 
  740	CONTINUE
 

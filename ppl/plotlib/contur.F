@@ -69,6 +69,7 @@ C  v67  2/2011 *acm* Fix ticket 1799; do contouring in larger sections.
 * V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
 *                 and 4-arg plot commands. 
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. 
+* V6.96 *acm*12/15 Fix ticket 2328 - contour labels spilling outside plot axes 
 
 ****************************************************************************
 C**
@@ -842,13 +843,27 @@ c
 !860	call symbel(xlab,ylab,angle,hgt,nchar,str)	! original code (860)
 
 * PyFerret Fonts locate the label by user units
+* check if the start and end of the label will be inside the 
+* plot box.
 
         IF (pyfont) THEN
+
+          symcos = COS(angle *1.7453292E-2) 
+          symsin = SIN(angle *1.7453292E-2) 
+	  widx = symcos*width
+	  widy = symsin*width
+
+          xlabend = (xlab+widx - xoff)/ xf
+          ylabend = (ylab+widy - yoff)/ yf
+
           xlab = (xlab - xoff)/ xf
 	  ylab = (ylab - yoff)/ yf
+
 	  skiplab = 0
 	  if (ylab.LT.ylo .OR. ylab.GT.yhi) skiplab = 1
 	  if (xlab.LT.xlo .OR. xlab.GT.xhi) skiplab = 1
+	  if (ylabend.LT.ylo .OR. ylabend.GT.yhi) skiplab = 1
+	  if (xlabend.LT.xlo .OR. xlabend.GT.xhi) skiplab = 1
 	ENDIF
 
 	iF (skiplab.EQ.0) call symbel(xlab,ylab,angle,hgt,nchar,str)

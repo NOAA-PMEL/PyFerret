@@ -127,6 +127,7 @@
 * v6.95    release for LAS8.4
 * v6.951   New development
 * v6.96    little release with @BIN @NBIN regrid; high-res time plots
+* v6.961   To GFDL for fix to #2334
 * v6.97 (working version)
 
         IMPLICIT NONE
@@ -134,7 +135,7 @@
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.97    /
+	DATA revision_level	/  6.61    /
 
 ! Note we can put a debug title in the Ferret startup header lines
 ! by putting a title into the Makefile: $(MAKE) "DEBUG_TITLE=beta" update

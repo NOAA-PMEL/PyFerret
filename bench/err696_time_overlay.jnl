@@ -1,0 +1,16 @@
+! err696_time_overlay
+! bug 2334, first plot/over takes too long and the line is incorrect.
+
+def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
+def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
+sp date
+set view upper
+plot t[gt=tax_nlp]
+plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
+sp date
+
+sp date
+set view lower
+plot t[gt=tax_jul]
+plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
+sp date

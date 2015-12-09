@@ -517,8 +517,7 @@
 	ENDDO
 
  5000	RETURN
- 5010	status = ferr_TMAP_error
-	GOTO 5000
+ 5010	CALL ERRMSG( ferr_TMAP_error, status, ' ', *5000 )
  5050	CALL ERRMSG( ferr_grid_definition, status,
      .		'first file of aggregation has no time axis '
      .		//memb_filename(1), *5000 )

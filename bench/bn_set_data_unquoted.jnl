@@ -1,0 +1,76 @@
+! bn_set_data_unquoted.jnl
+! 12/2015 -- a hack change to PPARSE_COMMAND to allow users to omit
+! the quotation marks in the argument(s) of SET DATA
+! extra hack-y in that erroneous qualifiers are no longer reliably trapped
+
+spawn "mkdir -p tmp"
+save/clobber/file="tmp/test1.nc" i[i=1:3] + 1
+save/clobber/file="tmp/test2.nc" i[i=1:3] + 2
+save/clobber/file="tmp/test3.nc" i[i=1:3] + 3
+
+use tmp/test1.nc
+show data/brief
+canc data/all
+
+use "tmp/test1.nc"
+show data/brief
+canc data/all
+
+use "tmp/test1.nc"
+show data/brief
+canc data/all
+
+use tmp/test1.nc
+show data/brief
+canc data/all
+
+! cannot check absolute path reliably without risk of breaking the benchmark
+!use "/home/users/hankin/FERRETtmp/test1.nc"
+!show data/brief
+!canc data/all
+!
+!use /home/users/hankin/FERRETtmp/test1.nc
+!show data/brief
+!canc data/all
+
+use tmp/test1.nc,tmp/test2.nc,tmp/test3.nc
+show data/brief
+canc data/all
+
+use tmp/test1.nc,"tmp/test2.nc", tmp/test3.nc
+show data/brief
+canc data/all
+
+IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf") EQ 0` THEN
+  use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf"
+  show data/brief
+  canc data/all
+  use http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf
+  show data/brief
+  canc data/all
+
+  use tmp/test1.nc, "tmp/test2.nc", http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf
+  show data/brief
+  canc data/all
+ELSE
+   say OPenDAP data not available for testing.. Tests skipped ...
+ENDIF
+
+! deliberate errors
+! erroneous qualifier with no white space detected
+set mode ignore
+set data/erroneous tmp/test1.nc
+
+! erroneous qualifier with white space detected
+set data /erroneous tmp/test1.nc
+
+! erroneous qualifier with comma treated as an invalid filename
+set data /erroneous, tmp/test1.nc
+
+can mode ignore
+
+canc data/all
+
+
+
+

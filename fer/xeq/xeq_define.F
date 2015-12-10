@@ -234,6 +234,7 @@
 * V695 *acm*  9/15 Fix #2317: length of name sent to FIND_DSET_NUMBER
 * V695 *sh*  10/15 add DEFINE DATA/AGG/T
 *                  rename routine INIT_AGGREGATE_DSET to INIT_EF_AGGREGATE_DSET
+* V697 12/15 *acm* Fix ticket 2336: consistent application of CAN MODE UPCASE
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"

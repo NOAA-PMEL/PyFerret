@@ -47,6 +47,7 @@
 *                 axis name in the attribute structure differ because Ferret
 *                 needed to rename an axis on file initialization for uniqueness;
 *                 we use the Ferret name throughout, restoring it only on output.
+* V697 12/15 *acm* Fix ticket 2336: consistent application of CAN MODE UPCASE
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 

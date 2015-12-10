@@ -109,7 +109,7 @@
 *                 if the variable wasn't associated with the dataset where that axis lives.
 * v694 1/15 *acm* for ticket 2227: if a dimension from a nc file is not also a 
 *                 1-D coordinate var, don't write the axis Ferret creates
-
+* V697 12/15 *acm* Fix ticket 2336: consistent application of CAN MODE UPCASE
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 

@@ -107,7 +107,8 @@
 *                   routine but does not make drawing calls.
 * V695  *acm*  6/15 Ticket 2297, scaling on overlay plots
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
-
+* V697 *acm*  12/15 Ticket 2334: For time roundoff on overlays, changing 
+*                   things only for the short-time-axis case.
 *****************************************************
 
 * local variable declarations for PLTIT (for TMAP)
@@ -239,11 +240,9 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	ELSE
 	    IF(ITFLG.NE.0)THEN
 	        ! Handle time as in setax for short-time axes
-	        IF (is_hours_axis .GT. 0) THEN ! Round off to the nearest minute
-		   CALL FIXTIM (ITMIN,ITMAX,IT1,IT2,4)
-		ELSE
-		   CALL FIXTIM (ITMIN,ITMAX,IT1,IT2,ITYPET) ! to the hour
-		ENDIF
+	        ! Round off to the nearest minute
+		IF (is_hours_axis .GT. 0) CALL FIXTIM (ITMIN,ITMAX,IT1,IT2,4)
+
 		TLO = 1. - DIFF(IT1,ITSTRT)/DT
 	        THI=TLO+DIFF(IT1,IT2)/DT
 	    ENDIF

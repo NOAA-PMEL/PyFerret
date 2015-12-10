@@ -68,8 +68,13 @@ C V695 *acm*  5/15 Restore color after a graticule using defined color 0
 	CHARACTER*(*) IT1,IT2
 
 	GOTO (10,20,20,30)IT+1
-10	CALL TAYIS0(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
+10	IF (is_hours_axis .EQ. 0) THEN
+	   CALL TAYIS0(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
+     .              xacross,hgrat,hcolor,hline,color0)
+	ELSE
+	   CALL TAYIS4(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
      .              xacross,hgrat,hcolor,hline,color0,is_hours_axis)
+	ENDIF
 	RETURN
 20	CALL TAYIS1(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
      .              xacross,hgrat,hcolor,hline,color0)

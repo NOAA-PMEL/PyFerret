@@ -64,8 +64,13 @@ C sides. HLINE and VLINE control this.
         LOGICAL vline          ! If true, do the lines across.
 
 	GOTO (10,20,20,30)IT+1
-10	CALL TAXIS0(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
+10	IF (is_hours_axis .EQ. 0) THEN
+	   CALL TAXIS0(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
+     .              yacross,vgrat,vcolor,vline,color0)
+	ELSE
+	   CALL TAXIS4(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
      .              yacross,vgrat,vcolor,vline,color0,is_hours_axis)
+	ENDIF
 	RETURN
 20	CALL TAXIS1(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
      .              yacross,vgrat,vcolor,vline,color0)

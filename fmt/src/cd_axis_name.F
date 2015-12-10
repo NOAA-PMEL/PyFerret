@@ -79,24 +79,24 @@
       iaxis = grid_line(idim, grid)
 
 * basic name straight from the grid
-      CD_AXIS_NAME = line_name(iaxis)
-      nlen = TM_LENSTR1( CD_AXIS_NAME )
+      buff = line_name(iaxis)
+      nlen = TM_LENSTR1( buff )
 
 * Get information, if it exists, from linked-list structure, including
 * original upper/lowercase form of axis name. Also restore the original
 * name if the axis name was changed on inupt. (If name matched an existing 
 * line name, then Ferret appends a digit to the name.)
 
-      CALL CD_GET_VAR_ID (dset, CD_AXIS_NAME, varid, status)  ! is it in the linked-list for dset
+      CALL CD_GET_VAR_ID (dset, buff, varid, status)  ! is it in the linked-list for dset
 
       IF (status .NE. merr_ok) THEN
-         nlen = TM_LENSTR1( CD_AXIS_NAME )
+         nlen = TM_LENSTR1( buff )
 
       ELSE
 
 * Get axis name into original upper/lowercase form.
 
-         CALL CD_GET_VAR_INFO (dset, varid, CD_AXIS_NAME, vartype, 
+         CALL CD_GET_VAR_INFO (dset, varid, buff, vartype, 
      .       nvdims, vdims, nvatts, coordvar, all_outflag,status) 
 
       ENDIF
@@ -105,17 +105,18 @@
 
 * if it's an abstract axis make a special name
       IF ( TM_ABSTRACT_AXIS( iaxis ) ) THEN
-         CD_AXIS_NAME = ww_dim_name(idim)//'AX'
+         buff = ww_dim_name(idim)//'AX'
          nlen = 3
 
 * if it's a dynamic axis remove the parentheses
       ELSEIF ( line_name(iaxis)(1:1) .EQ. '(' ) THEN
 	 IF ( nlen .LE. 2) nlen = 3			! should never happen
-         CD_AXIS_NAME = line_name(iaxis)(2:nlen-1)
+         buff = line_name(iaxis)(2:nlen-1)
 	 nlen = nlen - 2
       ENDIF
 
-      nlen = TM_LENSTR1( CD_AXIS_NAME )
+      nlen = TM_LENSTR1( buff )
+      CD_AXIS_NAME = buff(:nlen)
 
       RETURN
       END

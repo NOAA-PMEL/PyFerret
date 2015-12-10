@@ -86,7 +86,8 @@
 
 * get the axis name
          name = CD_AXIS_NAME( dset, grid, idim, nlen )
-         IF (keepax_flag .EQ. 1)  name = CD_AXIS_OUTNAME( dset, grid, idim, nlen )
+         IF (keepax_flag.EQ.1 .OR. .NOT.(mode_upcase_output)) 
+     .       name = CD_AXIS_OUTNAME( dset, grid, idim, nlen )
 
 * If mode upcase_output is set, then the axis name
 * has been written to the file upcased.

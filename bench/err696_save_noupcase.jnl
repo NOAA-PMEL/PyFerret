@@ -1,0 +1,20 @@
+! err696_save_noupcase
+! Ticket 2336: When UPCASE canceled an extra upcase axis 
+!  was written to a file - only when user-defined axis.
+
+! Tell Ferret to write everything in the original case
+cancel mode upcase
+
+! Define some axes and variables
+define axis/t=1-jan-2001:31-dec-2001:1/unit=days tday
+define axis/x=10:150:10/units=degrees_east xax
+
+let tt = t[gt=tday]
+let var  = 0*tt + x[gx=xax]
+
+save/clobber/file=myfile.nc tt, var
+
+! An extra TDAY axis was written out
+sp ncdump -h myfile.nc
+
+set mode/last upcase

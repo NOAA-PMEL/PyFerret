@@ -187,6 +187,8 @@
       dset_num = dset
       dim_only = .FALSE.
 
+      IF (.NOT.mode_upcase_output) keepax_flag = 1
+
       name = CD_AXIS_NAME( dset_num, grid, idim, nlen )
       IF (keepax_flag .EQ. 1) name = CD_AXIS_OUTNAME( dset_num, grid, idim, nlen )
       name_in = name

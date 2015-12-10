@@ -1570,16 +1570,17 @@ C /units=months  is 1/12 of the length of the year
 
         ELSE
 
-* add newly defined axis to the user-variable dset of the linked-list strucure
+* Add newly defined axis to the user-variable dset of the linked-list structure.
+* Save the original upper-or lower-case spelling
            
            dset_to_add = pdset_coordvars  ! user-defined coordinate variable dataset.
 
-           err_string = buff3
+           err_string = varname
            type = NCDOUBLE
            coordvar = 1
-           varid = 0        ! Will be returned with variable ID
+           varid = 0		 ! Will be returned with variable ID
            bad_flag = bad_val4   ! coord vars dont have missing, but set to something
-           CALL CD_ADD_COORD_VAR( dset_to_add, buff3, varid,  
+           CALL CD_ADD_COORD_VAR( dset_to_add, varname, varid,  
      .         line_units(iline), type, coordvar, bad_flag, status)
            IF ( status .NE. ferr_ok ) GOTO 5600
          

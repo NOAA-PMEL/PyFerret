@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 81203418 Dec  8 10:22 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 81242775 Dec 10 14:52 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix ticket 2331: restore color-key settings after a SHADE/SET
+Note: fix ticket 2336: mode upcase off, user-defined axes
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,15 +14,13 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
-FER_GO=. /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
+FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
-FER_LIBS=/home/users/ansley/ferret_distributions/rhel6_64/lib
-FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
-FER_WEB_BROWSER=firefox
+FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
+FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Tue Dec 8 10:26:31 PST 2015
+Beginning at Thu Dec 10 14:54:27 PST 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1202,7 +1200,7 @@ Replacing definition of axis TAX2
            *** NOTE: Axis is in use by grid JGRID
            *** NOTE: Not deleted: MONTHT
            *** NOTE: Axis is in use by grid TGRID
-           *** NOTE: Not deleted: X10
+           *** NOTE: Not deleted: x10
            *** NOTE: Axis is in use by grid G10X5
            *** NOTE: Not deleted: YAX
            *** NOTE: Axis is in use by grid GFORMAT
@@ -1322,7 +1320,7 @@ Replacing definition of axis TAX2
            *** NOTE: Axis is in use by grid JGRID
            *** NOTE: Not deleted: MONTHT
            *** NOTE: Axis is in use by grid TGRID
-           *** NOTE: Not deleted: X10
+           *** NOTE: Not deleted: x10
            *** NOTE: Axis is in use by grid G10X5
            *** NOTE: Not deleted: YAX
            *** NOTE: Axis is in use by grid GFORMAT
@@ -1676,7 +1674,7 @@ def axis/t/bounds tax= {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} , {0,24, 0,
  LISTing to file a.nc
 Replacing definition of axis XAX
 Replacing definition of axis ZAX
-Replacing definition of axis TAX
+Replacing definition of axis tax
  LISTing to file irrxzt.nc
  LISTing to file a.nc
  LISTing to file a.nc
@@ -2219,7 +2217,7 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis TAX
+Replacing definition of axis tax
            *** NOTE: Invalid I axis limits ignored: TEMP
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=100/k=1 temp[x=122.5W]"
@@ -2261,6 +2259,9 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
  LISTing to file b.nc
  LISTing to file b.nc
+NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
+ TAX3_bnds not found. Attempt to append irregular coordinates to NetCDF axis which has no bounds attribute. Write data originally with the /BOUNDS qualifier.
+LIST/FORMAT=CDF/CLOBBER/FILE=b.nc v
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2971,7 +2972,7 @@ LIST/FORMAT=CDF/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Not deleted: X10
+           *** NOTE: Not deleted: x10
            *** NOTE: Axis is in use by grid G10X5
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3353,10 +3354,6 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **netCDF error
-             NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
-             Data set: ./.
-SET DAT/FORM=CDF ./z1.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4027,7 +4024,7 @@ SET VAR/layerz=depth noexist
            *** NOTE: Ambiguous coordinates on Z axis: TEMP6D-TEMPZ6D
  **ERROR: invalid command: auxiliary variable DEPTH6D has a T axis not found on variable TEMP
 LIST/PREC=7 tempz6d_unmatch
-Replacing definition of axis XAX
+Replacing definition of axis xax
 Replacing definition of axis ZAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4072,96 +4069,108 @@ Replacing definition of axis IRR
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TDAY
- LISTing to file tagg_reg_1.nc
- LISTing to file tagg_reg_2.nc
- LISTing to file tagg_reg_3.nc
- LISTing to file tagg_reg_4.nc
- LISTing to file tagg_reg_5.nc
- LISTing to file tagg_reg_6.nc
- LISTing to file tagg_reg_7.nc
- LISTing to file tagg_reg_8.nc
- LISTing to file tagg_reg_9.nc
- LISTing to file tagg_reg_10.nc
- LISTing to file tagg_reg_1_duplicate.nc
- LISTing to file tagg_reg_no_T.nc
- LISTing to file tagg_reg_2_overlarge.nc
+ LISTing to file tmp/tagg_reg_1.nc
+ LISTing to file tmp/tagg_reg_2.nc
+ LISTing to file tmp/tagg_reg_3.nc
+ LISTing to file tmp/tagg_reg_4.nc
+ LISTing to file tmp/tagg_reg_5.nc
+ LISTing to file tmp/tagg_reg_6.nc
+ LISTing to file tmp/tagg_reg_7.nc
+ LISTing to file tmp/tagg_reg_8.nc
+ LISTing to file tmp/tagg_reg_9.nc
+ LISTing to file tmp/tagg_reg_10.nc
+ LISTing to file tmp/tagg_reg_1_duplicate.nc
+ LISTing to file tmp/tagg_reg_no_T.nc
+ LISTing to file tmp/tagg_reg_2_overlarge.nc
            *** NOTE: Not deleted: TDAY
            *** NOTE: Axis is in use by grid (G106)
- LISTing to file tagg_irreg_1.nc
- LISTing to file tagg_irreg_2.nc
- LISTing to file tagg_irreg_3.nc
- LISTing to file tagg_irreg_4.nc
- LISTing to file tagg_irreg_5.nc
- LISTing to file tagg_irreg_6.nc
- LISTing to file tagg_irreg_7.nc
- LISTing to file tagg_irreg_8.nc
- LISTing to file tagg_irreg_9.nc
- LISTing to file tagg_irreg_10.nc
+ LISTing to file tmp/tagg_irreg_1.nc
+ LISTing to file tmp/tagg_irreg_2.nc
+ LISTing to file tmp/tagg_irreg_3.nc
+ LISTing to file tmp/tagg_irreg_4.nc
+ LISTing to file tmp/tagg_irreg_5.nc
+ LISTing to file tmp/tagg_irreg_6.nc
+ LISTing to file tmp/tagg_irreg_7.nc
+ LISTing to file tmp/tagg_irreg_8.nc
+ LISTing to file tmp/tagg_irreg_9.nc
+ LISTing to file tmp/tagg_irreg_10.nc
 Replacing definition of axis TDAY_IR
- LISTing to file tagg_irreg_2_reg.nc
+ LISTing to file tmp/tagg_irreg_2_reg.nc
            *** NOTE: Not deleted: TDAY_IR
            *** NOTE: Axis is in use by grid (G106)
- LISTing to file tagg_T0varying_1.nc
+ LISTing to file tmp/tagg_T0varying_1.nc
 Replacing definition of axis TDAY_TVAR
- LISTing to file tagg_T0varying_2.nc
+ LISTing to file tmp/tagg_T0varying_2.nc
 Replacing definition of axis TDAY_TVAR
- LISTing to file tagg_T0varying_3.nc
+ LISTing to file tmp/tagg_T0varying_3.nc
 Replacing definition of axis TDAY_TVAR
- LISTing to file tagg_T0varying_4.nc
+ LISTing to file tmp/tagg_T0varying_4.nc
 Replacing definition of axis TDAY_TVAR
- LISTing to file tagg_T0varying_5.nc
+ LISTing to file tmp/tagg_T0varying_5.nc
 Replacing definition of axis TDAY_TVAR
- LISTing to file tagg_disjoint_T0varying_1.nc
+ LISTing to file tmp/tagg_disjoint_T0varying_1.nc
 Replacing definition of axis TDAY_TVAR
- LISTing to file tagg_disjoint_T0varying_2.nc
+ LISTing to file tmp/tagg_disjoint_T0varying_2.nc
 Replacing definition of axis TDAY_TVAR
- LISTing to file tagg_disjoint_T0varying_3.nc
+ LISTing to file tmp/tagg_disjoint_T0varying_3.nc
 Replacing definition of axis TDAY_TVAR
- LISTing to file tagg_disjoint_T0varying_4.nc
+ LISTing to file tmp/tagg_disjoint_T0varying_4.nc
 Replacing definition of axis TDAY_TVAR
- LISTing to file tagg_disjoint_T0varying_5.nc
+ LISTing to file tmp/tagg_disjoint_T0varying_5.nc
 Replacing definition of axis TDAY_TVAR
- LISTing to file tagg_disjoint_T0varying_6.nc
+ LISTing to file tmp/tagg_disjoint_T0varying_6.nc
 Replacing definition of axis TDAY_TVAR
- LISTing to file tagg_disjoint_T0varying_7.nc
+ LISTing to file tmp/tagg_disjoint_T0varying_7.nc
 Replacing definition of axis TDAY_TVAR
- LISTing to file tagg_disjoint_T0varying_8.nc
+ LISTing to file tmp/tagg_disjoint_T0varying_8.nc
 Replacing definition of axis TDAY_TVAR
- LISTing to file tagg_disjoint_T0varying_9.nc
+ LISTing to file tmp/tagg_disjoint_T0varying_9.nc
 Replacing definition of axis TDAY_TVAR
- LISTing to file tagg_disjoint_T0varying_10.nc
+ LISTing to file tmp/tagg_disjoint_T0varying_10.nc
 Replacing definition of axis TDAY_TVAR
- LISTing to file tagg_disjoint_T0varying_1.nc
+ LISTing to file tmp/tagg_disjoint_T0varying_1.nc
 Replacing definition of axis TDAY_TVAR
- LISTing to file tagg_disjoint_T0varying_3.nc
- LISTing to file tagg_disjoint_T0varying_4_wrong.nc
+ LISTing to file tmp/tagg_disjoint_T0varying_3.nc
+ LISTing to file tmp/tagg_disjoint_T0varying_4_wrong.nc
            *** NOTE: Not deleted: TDAY_WRONG
            *** NOTE: Axis is in use by grid (G106)
- LISTing to file tagg_single_1.nc
- LISTing to file tagg_single_2.nc
- LISTing to file tagg_single_3.nc
- LISTing to file tagg_single_4.nc
- LISTing to file tagg_single_5.nc
- LISTing to file tagg_single_6.nc
-           *** NOTE: Not deleted: TDAY
+ LISTing to file tmp/tagg_single_1.nc
+ LISTing to file tmp/tagg_single_2.nc
+ LISTing to file tmp/tagg_single_3.nc
+ LISTing to file tmp/tagg_single_4.nc
+ LISTing to file tmp/tagg_single_5.nc
+ LISTing to file tmp/tagg_single_6.nc
+           *** NOTE: Not deleted: tday
            *** NOTE: Axis is in use by grid (G106)
  **ERROR: invalid command: given aggregation dataset name already in use: myagg2
-define data/agg/t myagg2 = tagg_reg_1.nc, tagg_reg_2.nc
+define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
  **TMAP ERR: non-existent or not on line
-             tagg_no_exist.nc
-define data/agg/t myaggbad = tagg_no_exist.nc, tagg_reg_2.nc
+             tmp/tagg_no_exist.nc
+define data/agg/t myaggbad = tmp/tagg_no_exist.nc, tmp/tagg_reg_2.nc
  **TMAP ERR: non-existent or not on line
-             tagg_no_exist.nc
- **ERROR: improper grid or axis definition: first file of aggregation has no time axis tagg_reg_no_T.nc
-DEFINE DATA/AGGREGAT/T myTindepagg = tagg_reg_no_T.nc
- **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tagg_reg_3.nc
-define data/agg/t myagg3 = tagg_reg_1.nc, tagg_reg_2_overlarge.nc,tagg_reg_3.nc
- **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tagg_irreg_2.nc
-define data/agg/t myagg3 = tagg_irreg_1.nc, tagg_irreg_3.nc,tagg_irreg_2.nc
- **ERROR: invalid command: given aggregation dataset name already in use: myagg2
-define data/agg/t myagg2 = tagg_disjoint_T0varying_1.nc, tagg_disjoint_T0varying_2.nc
+             tmp/tagg_no_exist.nc
+define data/agg/t myaggbad = tmp/tagg_reg_1.nc, tmp/tagg_no_exist.nc
+ **ERROR: improper grid or axis definition: first file of aggregation has no time axis tmp/tagg_reg_no_T.nc
+DEFINE DATA/AGGREGAT/T myTindepagg = tmp/tagg_reg_no_T.nc
+ **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_reg_3.nc
+define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2_overlarge.nc,tmp/tagg_reg_3.nc
+ **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_irreg_2.nc
+define data/agg/t myagg3 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_3.nc,tmp/tagg_irreg_2.nc
  **TMAP ERR: Unknown variable code
-             in file ./tagg_disjoint_T0varying_4_wrong.nc time axis variable is missing: tday_Tvar
+             in file tmp/tagg_disjoint_T0varying_4_wrong.nc time axis variable is missing: tday_Tvar
+define data/agg/t myagg5_bad = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_4_wrong.nc,tmp/tagg_disjoint_T0varying_5.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file tmp/test1.nc
+ LISTing to file tmp/test2.nc
+ LISTing to file tmp/test3.nc
+ **ERROR: unknown command qualifier: erroneous
+set data/erroneous tmp/test1.nc
+ **ERROR: unknown command qualifier: erroneous
+set data /erroneous tmp/test1.nc
+ **TMAP ERR: non-existent or not on line
+             /erroneous(.nc ,.cdf,.nc)
+set data /erroneous, tmp/test1.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4176,6 +4185,13 @@ define data/agg/t myagg2 = tagg_disjoint_T0varying_1.nc, tagg_disjoint_T0varying
 SET DAT/FORM=CDF ft_cal_mixed.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis tday
+Replacing definition of axis XAX
+ LISTing to file myfile.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4267,4 +4283,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Dec 8 10:28:55 PST 2015
+Ended at Thu Dec 10 14:56:43 PST 2015

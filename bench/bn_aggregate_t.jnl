@@ -219,6 +219,17 @@ define data/agg/t myagg8 = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T
   show grid myvar[d=2]
   plot/line/sym/vlim=0:11 myvar[d=2],myvar[d=1] 
 
+! a few tests of using Ferret string variables to get the names of files
+define data/agg/t listAgg1 = {"tmp/tagg_reg_1.nc", "tmp/tagg_reg_2.nc"}
+show data/files listAgg1
+
+! define a long aggregation
+let file_list = SPAWN("ls -1 tmp/tagg_reg_?.nc") 
+define data/agg/t listAgg2 = file_list
+show data/files listAgg2
+
+cancel data/all
+
 ! deliberate errors
 set mode ignore
 ! deliberate error - try to re-use a name already in use

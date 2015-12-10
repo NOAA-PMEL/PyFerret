@@ -1,6 +1,13 @@
 ! err696_save_noupcase
 ! Ticket 2336: When UPCASE canceled an extra upcase axis 
 !  was written to a file - only when user-defined axis.
+!
+! Note as part of this fix, if MODE UPCASE is canceled, 
+! then it also works as if SAVE/KEEP_AXISNAMES was given.
+! If keeping the original names then also don't write the
+! Ferret-added additions, e.g. TIME1 if there was already 
+! a time axis; or a subset addition.
+
 
 ! Tell Ferret to write everything in the original case
 cancel mode upcase

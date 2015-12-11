@@ -43,8 +43,9 @@
      .		cs_start   ( cs_max )
 	CHARACTER*2048
      .		cs_text    ( cs_max ),
-     .		cs_repeatname ( cs_max ),
-     .		cmnd_copy
+     .		cs_repeatname ( cs_max )
+
+	CHARACTER*20480 cmnd_copy
 
         CHARACTER*256 my_cbuff
 

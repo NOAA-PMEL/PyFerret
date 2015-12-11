@@ -94,7 +94,7 @@
 	REAL		bad
 
 * internal variable declarations:
-	LOGICAL inquote
+	LOGICAL		inquote, toolong
 	INTEGER	        TM_LENSTR1, TM_LENSTR, STR_SAME, i, idim,
      .                  natom_rpn, rpn_order(maxatoms), i2, quote_type,
      .                  dset_to_add, slen, iat, varid, type, coordvar
@@ -117,8 +117,8 @@
 * initialize
 
 * algebraic expression too long ?
-	IF ( txend-txstart .GE. uvar_text_len ) CALL ERRMSG
-     .		( ferr_line_too_long, status, text(txend-14:txend), *5000 )
+	toolong =  ( txend-txstart .GE. uvar_text_len ) 
+	IF (toolong) txend = uvar_text_len - 3
 
 * convert to Reverse Polish (stack evaluation) order
 	CALL RPN( text,
@@ -206,6 +206,8 @@
 #endif
 	   ENDIF
 	ENDDO
+	IF (toolong) uvar_text(uvar)(uvar_text_len-2:uvar_text_len) = '...'
+
 * (7/98) end of quote-sensitive case changing loop
 
 c* copy title, units, dset, and missing flag into buffers

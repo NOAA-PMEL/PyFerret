@@ -118,7 +118,7 @@
 	INTEGER	TM_LENSTR, TM_LENSTR1,
      .		iqual, ilist, cmnd_len, double_eof,
      .          has_more, i, cmnd_len_w_cmnt
-	CHARACTER prefix*5, raw_cmnd_buff*2048
+	CHARACTER prefix*5, raw_cmnd_buff*20480
 
 * local parameter declarations
         CHARACTER*1 backslash, tab
@@ -423,8 +423,8 @@ c        IF(has_more.NE.1) goto 210
 
 * error exits
  5005	CALL ERRMSG( ferr_syntax, status,
-     .			'command line too long -- exceeds 2048', *9000 )
-! 2048 must match cmnd_buff_len
+     .			'command line too long -- exceeds 20480', *9000 )
+! 20480 must match cmnd_buff_len
  9000	RETURN 1
 
 

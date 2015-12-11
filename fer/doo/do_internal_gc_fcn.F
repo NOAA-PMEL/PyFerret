@@ -98,6 +98,8 @@
 * V68   5/12 *acm* Add ESEQUENCE, FSEQUENCE, SAMPLEM, SAMPLEN
 * V693 10/14 *acm* ticket 2210: check for negative arguments to SUBSTRING
 
+* keep max_cmnd_len for SPAWN at 2048 while Ferret command buffer increases to 20480
+
         IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -681,7 +683,7 @@
      .              m1lof, m1hif,  com1, m1lox, m1loy, m1loz,
      .              m1lot, m1loe, m1lof, max_cmnd_len, slen)
         IF (slen .EQ. max_cmnd_len) CALL ERRMSG(ferr_invalid_command,
-     .       status, 'SPAWN command too long -- 500 char max', *5000)
+     .       status, 'SPAWN command too long -- 2048 char max', *5000)
 * ... execute the command and store the results
         CALL STORE_SYS_STRINGS(buff, res_cx, mres, 1, nnew, status)
         RETURN

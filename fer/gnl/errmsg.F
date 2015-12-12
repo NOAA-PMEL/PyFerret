@@ -305,9 +305,9 @@
          IF ( len_eftext .GT. 0) THEN
             symbuf(len_symbuf:) = '. Bailing out of external function '
      .         //efname(:len_efname)//'\\'
-            len_symbuf = MAX(max_len_symbuf, len_symbuf + len_efname + 36)
+            len_symbuf = MIN(max_len_symbuf, len_symbuf + len_efname + 36)
             symbuf(len_symbuf:) = ef_errtext(:len_eftext)
-            len_symbuf = MAX(max_len_symbuf, len_symbuf + len_eftext)
+            len_symbuf = MIN(max_len_symbuf, len_symbuf + len_eftext)
          ENDIF
 
 * TMAP_error was saved in FER_LAST_ERROR already. Otherwise save

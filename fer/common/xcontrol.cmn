@@ -15,6 +15,7 @@
 * V6.31 10/09 *acm*  Fixing bug 1706, by properly fixing # 1681. ENDIF inside a REPEAT 
 *              loop with semicolon-separated commands. New flag: bumped.
 * V694   2/15 *acm* cs_is_calendar for each of T and F dimensions.
+* V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480
 
 	INTEGER		cs_max
 	PARAMETER     (	cs_max = 200 )
@@ -42,9 +43,9 @@
      .		cs_save_hi ( cs_max ),
      .		cs_start   ( cs_max )
 	CHARACTER*2048
-     .		cs_text    ( cs_max ),
      .		cs_repeatname ( cs_max )
-
+	CHARACTER*20480
+     .		cs_text    ( cs_max )
 	CHARACTER*20480 cmnd_copy
 
         CHARACTER*256 my_cbuff

@@ -76,6 +76,8 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V693+ *sh* 12/14 add support for _DQ_ and _SQ_ as qutation delimiters
 *      *acm*  2/15 Prevent run-time errors in string length for _DQ_ handling
+* V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480. If long
+*                  var definition, just truncate it in uvar_text(uvar)
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'	

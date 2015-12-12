@@ -102,6 +102,7 @@
 *                   3) Do not call PARSE_COMMAND for pure comments.
 *		    4) Process continuation lines
 *                 Issue warning if GO file EOF found while in the midst of IF
+* V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480
 
 #ifdef MIXING_NAG_F90_AND_C
 	USE F90_UNIX
@@ -347,6 +348,7 @@ c        IF(has_more.NE.1) goto 210
 	   IF (appending_cmnd) THEN
 	      cmnd_copy = cmnd_copy(:len_cmnd_copy) // cmnd_buff(:cmnd_len)
 	      len_cmnd_copy = len_cmnd_copy + cmnd_len
+	      IF (len_cmnd_copy .GT. cmnd_buff_len) GOTO 5005
 	   ELSE
 	      cmnd_copy = cmnd_buff(:cmnd_len)
 	      len_cmnd_copy = cmnd_len

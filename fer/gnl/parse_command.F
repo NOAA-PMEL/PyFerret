@@ -129,7 +129,8 @@
 *                  parsing of qualifiers, supporting
 *		       DEFINE DATA/AGG name = /path/filename, 
 *                  and a specific hack for SET DATA
-
+* V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480.
+*                  change to echo back only the first part of the command on error.
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -1044,8 +1045,13 @@ cc  Allow zero-length null string in quotes
  5020	CALL ERRMSG( ferr_unknown_command, status,
      .		cmnd_buff( arg_start(1):arg_end(1) ), *5000 )
 
- 5025	CALL ERRMSG( ferr_syntax, status,
+ 5025	IF ( arg_end(word_num) - arg_start(word_num) .GT. 200) THEN 
+	   CALL ERRMSG( ferr_syntax, status,
+     .		cmnd_buff( arg_start(word_num):arg_start(word_num)+200 )//'...', *5000 )
+        ELSE
+	   CALL ERRMSG( ferr_syntax, status,
      .		cmnd_buff( arg_start(word_num):arg_end(word_num) ), *5000 )
+        ENDIF
 
  5030	CALL ERRMSG( ferr_unknown_qualifier, status,
      .		cmnd_buff( arg_start(iqual_word):arg_end(iqual_word) ), *5000 )

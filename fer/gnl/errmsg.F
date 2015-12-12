@@ -90,6 +90,8 @@
 * *acm*  5/06 V600   -- Concatenate multiple lines for FER_LAST_ERROR with backslash.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * *sh* 11/13 V685    -- if allowed_err, then quickly exit
+* V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480
+*                  Handle longer error strings when defining the buffer symbuf
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -113,6 +115,8 @@
 	LOGICAL 	help_cue, multiline
 	INTEGER		TM_LENSTR1, len_text, len_string, status,
      .			cr_pos, ier, ist, len_symbuf
+        INTEGER		max_len_symbuf
+	PARAMETER	(max_len_symbuf=1028)
         CHARACTER*1028  symbuf  ! for symbol FER_LAST_ERROR
 
 * see if "HELP CUE" was requested
@@ -143,7 +147,9 @@
 	      CALL TM_SPLIT_MESSAGE( err_lun, ' **ERROR: '//
      .				err_text(status-greport)(:len_text) )
      
-              symbuf(len_symbuf:) = ' **ERROR: '//
+              IF (len_symbuf + len_text + 10 .GT. max_len_symbuf) 
+     .			len_symbuf = len_symbuf - (len_text + 10)
+	      symbuf(len_symbuf:) = ' **ERROR: '//
      .				err_text(status-greport)(:len_text)
               len_symbuf = len_symbuf + len_text + 10
 
@@ -162,7 +168,9 @@
      .			        risc_buff(:len_string) )
 !     .				': '//err_string(:len_string) )  !11/93 SUN bug
 
-                 symbuf(len_symbuf:) = ' **ERROR: '//
+                 IF (len_symbuf + len_string + 10 .GT. max_len_symbuf) 
+     .			len_symbuf = len_symbuf - (len_string + 10)
+		 symbuf(len_symbuf:) = ' **ERROR: '//
      .			        risc_buff(:len_string) 
                  len_symbuf = len_symbuf + len_string + 10
 
@@ -176,18 +184,30 @@
      .				': '//risc_buff(:len_string) )
 !     .				': '//err_string(:len_string) )  !11/93 SUN bug
 
-                 symbuf(len_symbuf:) =' **ERROR: '//
+                 
+                 IF (len_symbuf + len_text + len_string + 13 .GT. max_len_symbuf )
+     .			len_symbuf = len_symbuf - (len_text + len_string + 13)
+                 IF (len_text + len_string + 13 .GT. max_len_symbuf) THEN
+		   len_symbuf = max_len_symbuf - len_text - 16
+		   symbuf =' **ERROR: '//
+     .				err_text(status-greport)(:len_text)//
+     .				': '//risc_buff(:len_symbuf)//'...'
+                   len_symbuf = max_len_symbuf
+		 ELSE
+		    symbuf(len_symbuf:) =' **ERROR: '//
      .				err_text(status-greport)(:len_text)//
      .				': '//risc_buff(:len_string) 
-                 len_symbuf = len_symbuf + len_text + len_string + 13
-
+                    len_symbuf = len_symbuf + len_text + len_string + 13
+		 ENDIF
               ENDIF
     
 	      IF ( multiline ) THEN
                  CALL WRITE_MULTI(err_lun, err_string(cr_pos+1:))
+                 len_string = TM_LENSTR1(err_string(cr_pos+1:))
+		 IF (len_symbuf + len_string + 2 .GT. max_len_symbuf) 
+     .			len_symbuf = len_symbuf -(len_string + 2)
                  symbuf(len_symbuf:len_symbuf) = '\\'
                  symbuf(len_symbuf+1:) = err_string(cr_pos+1:)
-                 len_string = TM_LENSTR1(err_string(cr_pos+1:))
                  len_symbuf = len_symbuf + len_string + 2
                  DO WHILE (INDEX( symbuf, pCR ) .GT. 0)
                    cr_pos = INDEX( symbuf, pCR )
@@ -202,7 +222,9 @@
 	   len_string = TM_LENSTR1( err_string )
 	   WRITE (err_lun,3100) err_string(:len_string)
 
-           symbuf(len_symbuf:) =err_string(:len_string)
+           IF (len_symbuf + len_string + 1  .GT. max_len_symbuf) 
+     .			len_symbuf = len_symbuf - (len_string + 1)
+	   symbuf(len_symbuf:) =err_string(:len_string)
            len_symbuf = len_symbuf + len_string + 1
 
  3100	   FORMAT (' **Panasonic error: ',A)
@@ -239,7 +261,7 @@
 * unrecognized error code ?
 	   CALL TM_SPLIT_MESSAGE( err_lun, 'unknown error code:')              
            symbuf(len_symbuf:) = 'unknown error code:'
-           len_symbuf = len_symbuf + 19
+           len_symbuf = MAX(max_len_symbuf, len_symbuf + 19)
 
 	END IF
 
@@ -283,9 +305,9 @@
          IF ( len_eftext .GT. 0) THEN
             symbuf(len_symbuf:) = '. Bailing out of external function '
      .         //efname(:len_efname)//'\\'
-            len_symbuf = len_symbuf + len_efname + 36
+            len_symbuf = MAX(max_len_symbuf, len_symbuf + len_efname + 36)
             symbuf(len_symbuf:) = ef_errtext(:len_eftext)
-            len_symbuf = len_symbuf + len_eftext
+            len_symbuf = MAX(max_len_symbuf, len_symbuf + len_eftext)
          ENDIF
 
 * TMAP_error was saved in FER_LAST_ERROR already. Otherwise save

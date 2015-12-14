@@ -183,7 +183,9 @@
 * V687 *acm*  3/14 New SET AXIS/NAME=
 * V694 11/14 *acm* Ticket 2217: permuted ASCII reading in 6D (fix to an error message)
 * V694 *acm*  2/15 ticket 2050: preserve case on var names for SET ATT/LIKE=var1 var2
-* V698+ *sh*  11/15 add ok_re_use_existing into TM_INIT_DSET call
+* V698+ *sh*  11/15 to support TSERIES
+*	      ok_re_use_existing into TM_INIT_DSET call
+*	      SET DATA tseries_cmnds.agg gets passed to the GO command (a hack)
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -243,7 +245,7 @@
      .                  offset, attid, attype, attoutflag, attlen, i1, 
      .                  dset, istat, cache_size, cache_nelems, 
      .                  cache_preemption, numpts, redir_file_lun, 
-     .                  iline, iset
+     .                  iline, iset, n
         REAL*8          TM_WW_AXLEN, axwwlen, new_att_modulo_len
         REAL*8          delta, dlo, dhi, firstval, lastval
 	REAL		val_buf, cache_size_mb
@@ -426,6 +428,24 @@ c *kob* 4/97
            CALL GET_DATASET_NAME_FROM_BROWSER(status)
            IF ( status .NE. ferr_ok ) RETURN
         ENDIF
+
+* (hack) if the argument has a ".agg" extension, then pass it to the GO
+* command, allowing "USE myAgg.agg" to initialize an aggregation
+	IF (num_items .GT. 0 ) THEN
+*   ... make sure that only a single .agg file is specified
+           n = 0  ! number of arguments with .agg extension
+	   DO item = 1, num_items
+	      IF ((item_end(item)-item_start(item)) .GT. 3) THEN
+	         IF (cmnd_buff(item_end(item)-3:item_end(item))
+     .			.EQ. '.agg')  n = n + 1
+	      ENDIF
+	   ENDDO
+	ENDIF
+	IF (n .GT. 0) THEN		! at least 1 ".agg" file was given
+	   IF (n.GT.1 .OR. num_items.GT.1) GOTO 5130
+	   CALL XEQ_GO
+	   RETURN
+	ENDIF
 
 * initialize an EZ data set
 * ... EZ may be implicit in /FORMAT="unformatted" or "(f77 format)"
@@ -1995,6 +2015,9 @@ c *kob* 4/97
      .			cmnd_buff( item_start(item):item_end(item) ), *5000 )
  5120	CALL ERRMSG( ferr_unknown_grid, status, 
      .			'nothing saved from past commands', *5000 )
+ 5130	CALL ERRMSG( ferr_syntax, status,
+     .		     'Only a single .agg file can be opened in a command'
+     .		     //pCR//cmnd_buff(:len_cmnd), *5000 )
  5200	CALL ERRMSG( ferr_syntax, status,
      .		     'To set CACHE CHUNK size use SET CCACHE/SIZE=megabytes'
      .		     //pCR//cmnd_buff(:len_cmnd), *5000 )

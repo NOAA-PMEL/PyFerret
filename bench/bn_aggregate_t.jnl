@@ -267,4 +267,21 @@ ELSE
    say OPenDAP data not available for testing.. Tests skipped ...
 ENDIF
 
+! "USE file.agg" test
+! test the hack to XEQ_SET which permits "SET DATA file.agg" to metamorphose
+! into "GO file.agg"
+spawn echo "define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc,tmp/tagg_reg_3.nc" > tmp/good_agg.agg
+spawn echo "garbage command syntax" > tmp/bad_agg.agg
+
+! deliberate error
+set mode ignore
+USE "tmp/bad_agg.agg"
+set/last mode ignore
+
+! valid syntax to initialize an aggregation
+USE "tmp/good_agg.agg"
+show data/br
+cancel data/all
+
+
 

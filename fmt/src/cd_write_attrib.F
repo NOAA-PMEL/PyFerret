@@ -53,6 +53,7 @@
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V697 12/15 *acm* Increased length of command-line string and risc_buff buffer
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -87,12 +88,13 @@
       INTEGER TM_LENSTR1, 
      .        vlen, alen, slen, tlen, cdfstat, varid, attype, attlen, 
      .        len_app, bufflen
-      CHARACTER buff*10240
+     
+      CHARACTER buff*25000
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
 
-      bufflen = 10240
+      bufflen = 25000
 
 * initialize
       vlen = TM_LENSTR1( vname )

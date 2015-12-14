@@ -56,6 +56,7 @@
 *                              whats in netcdf.inc from netcdf4.
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * V6.85 2/13 *acm* Fix ticket 2038: making warning message for too-long string
+* V697 12/15 *acm* Increased length of command-line string and risc_buff buffer
 
 * argument definitions:
 *	dset	 - dataset number
@@ -92,7 +93,7 @@
       EQUIVALENCE (tt,lunit_errors)
 
       INTEGER slen, flen
-      PARAMETER (flen=10240)        ! size of attribute string
+      PARAMETER (flen=25000)        ! size of attribute string, match size_rbuff
 #ifdef sun
       BYTE      fhol(flen), ghol(flen)      ! c-type Hollerith string buffer
 #else

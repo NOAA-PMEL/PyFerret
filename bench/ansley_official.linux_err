@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 86230490 Nov 18 15:14 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 86382223 Dec 14 12:49 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
-Benchmark run by ansley
-Note: new benchmark script bn_let_remote.jnl
+Benchmark run by ansleyh
+Note: increased cmnd-line buffer; make same increases in attribute reading/writing buffers
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/linux/ext_func/pylibs
-Beginning at Wed Nov 18 15:15:38 PST 2015
+Beginning at Mon Dec 14 12:50:27 PST 2015
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1200,7 +1200,7 @@ Replacing definition of axis TAX2
            *** NOTE: Axis is in use by grid JGRID
            *** NOTE: Not deleted: MONTHT
            *** NOTE: Axis is in use by grid TGRID
-           *** NOTE: Not deleted: X10
+           *** NOTE: Not deleted: x10
            *** NOTE: Axis is in use by grid G10X5
            *** NOTE: Not deleted: YAX
            *** NOTE: Axis is in use by grid GFORMAT
@@ -1320,7 +1320,7 @@ Replacing definition of axis TAX2
            *** NOTE: Axis is in use by grid JGRID
            *** NOTE: Not deleted: MONTHT
            *** NOTE: Axis is in use by grid TGRID
-           *** NOTE: Not deleted: X10
+           *** NOTE: Not deleted: x10
            *** NOTE: Axis is in use by grid G10X5
            *** NOTE: Not deleted: YAX
            *** NOTE: Axis is in use by grid GFORMAT
@@ -1674,7 +1674,7 @@ def axis/t/bounds tax= {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} , {0,24, 0,
  LISTing to file a.nc
 Replacing definition of axis XAX
 Replacing definition of axis ZAX
-Replacing definition of axis TAX
+Replacing definition of axis tax
  LISTing to file irrxzt.nc
  LISTing to file a.nc
  LISTing to file a.nc
@@ -2216,7 +2216,7 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis TAX
+Replacing definition of axis tax
            *** NOTE: Invalid I axis limits ignored: TEMP
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=100/k=1 temp[x=122.5W]"
@@ -2258,6 +2258,9 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
  LISTing to file b.nc
  LISTing to file b.nc
+NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
+ TAX3_bnds not found. Attempt to append irregular coordinates to NetCDF axis which has no bounds attribute. Write data originally with the /BOUNDS qualifier.
+LIST/FORMAT=CDF/CLOBBER/FILE=b.nc v
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2346,11 +2349,11 @@ set axis/stride=2 NORMAL
            *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
-           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: A dummy axis of subscripts will be usedcurl error details: 
+
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis BACKWARDS_AXIS
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis Y1010_REV
  PERMANENT data cleared from memory
-curl error details: 
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2928,15 +2931,15 @@ Re-defining viewport V8
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
+
+Bailing out of external function "tax_year":
+	 Function not valid for modulo time axis
  TEMPORARY data cleared from memory
  Restoring default chunk cache settings
  Restoring default chunk cache settings
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file nc4_deflate4.nc
-
-Bailing out of external function "tax_year":
-	 Function not valid for modulo time axis
            *** NOTE: NetCDF Classic style cannot set compression, ignoring /DEFLATE
            *** NOTE: NetCDF Classic style cannot set chunking, ignoring /*CHUNK
  LISTing to file nc4_nodeflate3.nc
@@ -2970,7 +2973,7 @@ LIST/FORMAT=CDF/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Not deleted: X10
+           *** NOTE: Not deleted: x10
            *** NOTE: Axis is in use by grid G10X5
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3349,10 +3352,6 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **netCDF error
-             NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
-             Data set: ./.
-SET DAT/FORM=CDF ./z1.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4020,7 +4019,7 @@ SET VAR/layerz=depth noexist
            *** NOTE: Ambiguous coordinates on Z axis: TEMP6D-TEMPZ6D
  **ERROR: invalid command: auxiliary variable DEPTH6D has a T axis not found on variable TEMP
 LIST/PREC=7 tempz6d_unmatch
-Replacing definition of axis XAX
+Replacing definition of axis xax
 Replacing definition of axis ZAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4062,6 +4061,138 @@ Replacing definition of axis DCOARSE
 Replacing definition of axis IRR
 Replacing definition of axis DCOARSE
 Replacing definition of axis IRR
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TDAY
+ LISTing to file tmp/tagg_reg_1.nc
+ LISTing to file tmp/tagg_reg_2.nc
+ LISTing to file tmp/tagg_reg_3.nc
+ LISTing to file tmp/tagg_reg_4.nc
+ LISTing to file tmp/tagg_reg_5.nc
+ LISTing to file tmp/tagg_reg_6.nc
+ LISTing to file tmp/tagg_reg_7.nc
+ LISTing to file tmp/tagg_reg_8.nc
+ LISTing to file tmp/tagg_reg_9.nc
+ LISTing to file tmp/tagg_reg_10.nc
+ LISTing to file tmp/tagg_reg_1_duplicate.nc
+ LISTing to file tmp/tagg_reg_no_T.nc
+ LISTing to file tmp/tagg_reg_2_overlarge.nc
+           *** NOTE: Not deleted: TDAY
+           *** NOTE: Axis is in use by grid (G106)
+ LISTing to file tmp/tagg_irreg_1.nc
+ LISTing to file tmp/tagg_irreg_2.nc
+ LISTing to file tmp/tagg_irreg_3.nc
+ LISTing to file tmp/tagg_irreg_4.nc
+ LISTing to file tmp/tagg_irreg_5.nc
+ LISTing to file tmp/tagg_irreg_6.nc
+ LISTing to file tmp/tagg_irreg_7.nc
+ LISTing to file tmp/tagg_irreg_8.nc
+ LISTing to file tmp/tagg_irreg_9.nc
+ LISTing to file tmp/tagg_irreg_10.nc
+Replacing definition of axis TDAY_IR
+ LISTing to file tmp/tagg_irreg_2_reg.nc
+           *** NOTE: Not deleted: TDAY_IR
+           *** NOTE: Axis is in use by grid (G106)
+ LISTing to file tmp/tagg_T0varying_1.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tmp/tagg_T0varying_2.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tmp/tagg_T0varying_3.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tmp/tagg_T0varying_4.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tmp/tagg_T0varying_5.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tmp/tagg_disjoint_T0varying_1.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tmp/tagg_disjoint_T0varying_2.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tmp/tagg_disjoint_T0varying_3.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tmp/tagg_disjoint_T0varying_4.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tmp/tagg_disjoint_T0varying_5.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tmp/tagg_disjoint_T0varying_6.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tmp/tagg_disjoint_T0varying_7.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tmp/tagg_disjoint_T0varying_8.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tmp/tagg_disjoint_T0varying_9.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tmp/tagg_disjoint_T0varying_10.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tmp/tagg_disjoint_T0varying_1.nc
+Replacing definition of axis TDAY_TVAR
+ LISTing to file tmp/tagg_disjoint_T0varying_3.nc
+ LISTing to file tmp/tagg_disjoint_T0varying_4_wrong.nc
+           *** NOTE: Not deleted: TDAY_WRONG
+           *** NOTE: Axis is in use by grid (G106)
+ LISTing to file tmp/tagg_single_1.nc
+ LISTing to file tmp/tagg_single_2.nc
+ LISTing to file tmp/tagg_single_3.nc
+ LISTing to file tmp/tagg_single_4.nc
+ LISTing to file tmp/tagg_single_5.nc
+ LISTing to file tmp/tagg_single_6.nc
+           *** NOTE: Not deleted: tday
+           *** NOTE: Axis is in use by grid (G106)
+ **ERROR: invalid command: given aggregation dataset name already in use: myagg2
+define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
+ **TMAP ERR: non-existent or not on line
+             tmp/tagg_no_exist.nc
+define data/agg/t myaggbad = tmp/tagg_no_exist.nc, tmp/tagg_reg_2.nc
+ **TMAP ERR: non-existent or not on line
+             tmp/tagg_no_exist.nc
+define data/agg/t myaggbad = tmp/tagg_reg_1.nc, tmp/tagg_no_exist.nc
+ **ERROR: improper grid or axis definition: first file of aggregation has no time axis tmp/tagg_reg_no_T.nc
+DEFINE DATA/AGGREGAT/T myTindepagg = tmp/tagg_reg_no_T.nc
+ **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_reg_3.nc
+define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2_overlarge.nc,tmp/tagg_reg_3.nc
+ **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_irreg_2.nc
+define data/agg/t myagg3 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_3.nc,tmp/tagg_irreg_2.nc
+ **TMAP ERR: Unknown variable code
+             in file tmp/tagg_disjoint_T0varying_4_wrong.nc time axis variable is missing: tday_Tvar
+define data/agg/t myagg5_bad = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_4_wrong.nc,tmp/tagg_disjoint_T0varying_5.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file tmp/test1.nc
+ LISTing to file tmp/test2.nc
+ LISTing to file tmp/test3.nc
+ **ERROR: unknown command qualifier: erroneous
+set data/erroneous tmp/test1.nc
+ **ERROR: unknown command qualifier: erroneous
+set data /erroneous tmp/test1.nc
+ **TMAP ERR: non-existent or not on line
+             /erroneous(.nc ,.cdf,.nc)
+set data /erroneous, tmp/test1.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **TMAP ERR: error in axis attributes
+             Calendar definitions on T and F axes must match
+             Data file: ./ft_cal_one.nc
+SET DAT/FORM=CDF ft_cal_mixed.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis tday
+Replacing definition of axis XAX
+ LISTing to file myfile.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: command line too long -- exceeds 20480
+"/archive/ccsp/
+ **ERROR: command syntax: "/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf...
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc"}
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4153,4 +4284,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Nov 18 15:18:14 PST 2015
+Ended at Mon Dec 14 12:53:23 PST 2015

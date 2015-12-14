@@ -124,11 +124,12 @@
 *                 Also added support for _DQ_ style of quotation marks
 *      *acm*  2/15 Prevent run-time errors in string length for _DQ_ handling
 * V695 *acm*  3/15 Ticket 2245: if no arguments on a REPEAT command, exit gracefully.
-* V698 *sh*  12/15 avoid the need to quote filenames with slashes
-*		   the first non-qualifier following a qualifier terminates
+* V698 *sh*  12/15 avoid the need to surround filenames with slashes in quotes
+*	           Applies to SET DATA, GO, SAY, DEFINE SYM and DEFINE DATA/AGG
+*		   The first non-qualifier following a qualifier terminates
 *                  parsing of qualifiers, supporting
 *		       DEFINE DATA/AGG name = /path/filename, 
-*                  and a specific hack for SET DATA
+*                  Specific hacks for SET DATA (& DEFINE SYM) and GO
 * V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480.
 *                  change to echo back only the first part of the command on error.
 
@@ -183,15 +184,17 @@
      .		surround_quote, surround_DQ_, end_DQ_, subst, first_paren,
      .          itsa_qualifier(local_max_arg_list), 
      .          MATCH4, escape, apply_cx, ptrslash, i3_ok,
-     .		its_set_data, has_lead_white_space, found_white_space
+     .		its_set_data, its_define_sym, its_go, its_say,
+     .		has_lead_white_space, found_white_space
 	INTEGER TM_LENSTR
 	INTEGER	buff_len, bang_position, ptr, quote_end,
      .		word_num, look_ahead, look_back, isub_word, csgo,
      .		isubcmnd_ptr, iword, last_qual, iqual_word, iterm,
-     .		iqual, iqual_ptr, iarg, i, nparen, nsubst_passes,
+     .		iqual, iqual_ptr, iarg, i, ii, nparen, nsubst_passes,
      .		grave_start, grave_end, in, out, nest,
      .		paren_level,len_test,len_mchars, m,
-     .		last_recognized_word, first_white_space
+     .		last_recognized_word, white_aftr_cmnd, white_aftr_subcmnd,
+     .		ngone
 	CHARACTER c1*1
 	CHARACTER url_buff*2048
 
@@ -220,7 +223,8 @@
 	cmnd_buff (buff_len:buff_len) = ' '	! always end with blank
 	a_qual_found	= .FALSE.
 	look_for_quals	= .TRUE. 
-	first_white_space = buff_len
+	white_aftr_cmnd = buff_len
+	white_aftr_subcmnd = buff_len
 
 * inits moved into this code from get_ferret_command (housekeeping)
         DO i = 1, local_max_arg_list
@@ -462,9 +466,12 @@
 * 12/15 - cease hunt for qualifiers when a non-qual follows qualifiers
  200	IF ( word_num .EQ. max_words ) GOTO 500
 	word_num 	= word_num + 1
-	IF  ( has_lead_white_space
-     .  .AND. ptr .LT. first_white_space 
-     .  .AND. word_num .GT. 2  ) first_white_space = ptr-1 ! hack for SET DATA
+	IF  ( has_lead_white_space ) THEN
+	   IF (ptr .LT. white_aftr_cmnd 
+     .   .AND. word_num .GT. 1  ) white_aftr_cmnd = ptr-1 ! GO hack
+	   IF (ptr .LT. white_aftr_subcmnd 
+     .   .AND. word_num .GT. 2  ) white_aftr_subcmnd = ptr-1 ! SET DATA hack
+	ENDIF
 	IF ( look_for_quals .AND. cmnd_buff(ptr:ptr).EQ.'/' ) THEN
 	   itsa_qualifier(word_num) = .TRUE.
 	   a_qual_found = .TRUE.
@@ -759,17 +766,46 @@ cc  Allow zero-length null string in quotes
 	subcmnd_num	 = 1		! use "    " as  subcommand
 	isubcmnd_ptr = subcommand_pointer(cmnd_num)
 
-* special hack to allow SET DATA path/filename.nc without quotated filename
+* special hacks to allow "SET DATA path/dset" and "GO path/script"
+* without quotes surrounding the argument
  700	its_set_data = cmnd_num    .EQ. cmnd_set
      .           .AND. subcmnd_num .EQ. 7
-	last_recognized_word = 2    ! only used by SET DATA
+	its_define_sym = cmnd_num    .EQ. cmnd_define
+     .           .AND. subcmnd_num .EQ. 8
+	its_go  = cmnd_num    .EQ. cmnd_go
+	its_say = cmnd_num    .EQ. cmnd_message
+	IF (its_go .OR. its_say) THEN
+	   last_recognized_word = 1    ! GO and MESSAGE have no subcommand
+	ELSE
+	   last_recognized_word = 2    ! used by SET DATA and DEF SYM
+	ENDIF
 
 * +++++++ QUALIFIERS +++++++
 * since "/" may be used for syntax purposes other that qualifiers determine the
-* last "/" that is intended as a qualifier
+* last "/" that is intended as a qualifier.  For example "GO path/script.jnl"
+* 12/2015 note: this hack is required because the code above does not identify
+* the command and subcommand at the very start and use the word count at that
+* point to guide the identification of qualifier slashes.
 	DO 702 iword = MAX( isub_word+1, 2 ), word_num
 	   IF ( .NOT.itsa_qualifier(iword) )	  THEN
 	      last_qual = iword - 1
+* ... any itsa_qualifier words beyond this need to be erased
+	      ngone = 0
+	      iarg = iword+1
+	      DO i = 0, word_num-iword-1
+	         IF (itsa_qualifier(iarg)) THEN
+	            arg_end(iarg-1) = arg_end(iarg)
+	            DO ii = iarg+1, word_num
+	               arg_start(ii-1) = arg_start(ii)
+	               arg_end  (ii-1) = arg_end  (ii)
+	               itsa_qualifier(ii-1) = itsa_qualifier(ii)
+	            ENDDO
+	            ngone = ngone + 1
+	         ELSE
+	            iarg = iarg + 1
+	         ENDIF
+	      ENDDO
+	      word_num = word_num - ngone
 	      GOTO 704
 	   ENDIF
  702	CONTINUE
@@ -817,14 +853,16 @@ cc  Allow zero-length null string in quotes
  730	   CONTINUE
 
 * checked all possible qualifiers and did't find a match
-	   IF (its_set_data) THEN
-* *sh* 2015 special hack for SET DATA:  since filenames may contain slashes, 
+	   IF (its_set_data .OR. its_define_sym) THEN
+* *sh* 2015 *HACK* for SET DATA path/filename and GO path/filename
+*      since filenames may contain slashes that are mistaken as qualifiers
 *      we treat the first unrecognized qualifier as potentially part of the
 *      filename. 
 *      It is *not* part of the filename if
-*      - no white space gap has been seen to the left;  or
+*      - no white space gap has been seen to the left
+*      For SET DATA it is also not part of the filename if
 *      - there is a white space gap without a comma found to the right
-	      IF (first_white_space .GT. arg_start(iqual_word)) GOTO 5030 
+	      IF (white_aftr_subcmnd .GT. arg_start(iqual_word)) GOTO 5030 
 * ... look to right for white space with no comma
 	      found_white_space = .FALSE.
 	      DO iterm = arg_end(iqual_word), cmnd_len
@@ -844,9 +882,33 @@ cc  Allow zero-length null string in quotes
 	      IF (itsa_qualifier(word_num)) arg_start(word_num)
      .			= arg_start(word_num)-1	    ! keep "/" in /home/file
 	      itsa_qualifier(word_num) = .FALSE.
+	      last_qual = iqual_word - 1     ! added 12/2015 -- approx true
+	      EXIT
+	   ELSEIF (its_go .OR. its_say) THEN
+* *HACK* for GO to allow unquoted "GO path/script" and "GO /hom/path/script"
+	      IF (white_aftr_cmnd .GT. arg_start(iqual_word)) GOTO 5030 
+* ... its an absolute path -- count the slashes
+	      ngone = 0
+	      i = iqual_word+1
+	      DO WHILE (itsa_qualifier(i))
+	         ngone = ngone + 1
+	         i  =i+1
+	      ENDDO
+* turn this entire absolute path into a single argument
+	      arg_start(iqual_word) = arg_start(iqual_word)-1 ! keep start "/"
+	      arg_end(iqual_word)   = arg_end(iqual_word+ngone)
+	      itsa_qualifier(iqual_word) = .FALSE.
+	      last_qual = iqual_word - 1     ! added 12/2015 -- approx true
+	      DO i = iqual_word+1, word_num-ngone
+                 arg_start(i) = arg_start(i+ngone)
+                 arg_end  (i) = arg_end  (i+ngone)
+	         IF (itsa_qualifier(i) ) arg_start(i) = arg_start(i) - 1
+	         itsa_qualifier(i) = .FALSE.
+	      ENDDO
+	      word_num = word_num - ngone
 	      EXIT
 	   ELSE
-	      GOTO 5030				! unknown qual error
+	      GOTO 5030		! all other commands: unknown qual error
 	   ENDIF
 
  740	CONTINUE

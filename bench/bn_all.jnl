@@ -104,7 +104,7 @@ SET MODE VERIFY
 ! V610  *acm* 3/08 - add new MODE NLEVELS
 ! V685  *sh* 11/13 - added bn_vtree to test SHOW VAR/TREE
 ! V698+ *sh* 06/15 - added bn_auxiliary
-! V698+ *sh* 11/15 - added bn_aggregate_t and bn_set_data_unquoted.jnl
+! V698+ *sh* 11/15 - added bn_aggregate_t and bn_unquoted_args.jnl
 
 ! Include this statement to compare the outupt of 6D Ferret with 
 ! previous 4D benchmark logs.
@@ -1004,7 +1004,7 @@ GO bn_reset
 GO bn_aggregate_t
 
 GO bn_reset
-GO bn_set_data_unquoted
+GO bn_unquoted_args
 
 ! *********** v6.97 Additions ***********
 

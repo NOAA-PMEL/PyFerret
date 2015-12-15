@@ -486,7 +486,8 @@ CC       => Set values here instead.
 * ... /KEY[=continuous,horizontal,centerlabel] ?
 *     /KEY=title is a legal option, but ignored for ribbon plot.
               loc = qual_given( slash_plot_key )
-              changed_key = .FALSE.
+	      changed_key = .FALSE.
+
               IF ( loc .GT. 0) THEN
                  CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        buff, status )

@@ -55,6 +55,7 @@
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * V687 3/14 *acm* Fix ticket 1750. Write Ferret-internal axis names to cdf files, unless
 *                 the user has said /KEEP_AXISNAMES
+* V697 12/15 *acm* Fix ticket 2336: consistent application of CAN MODE UPCASE
 
 * argument definitions:
 *       dset    - dset (if netcdf file, for getting name and attribute 
@@ -86,7 +87,8 @@
 
 * get the axis name
          name = CD_AXIS_NAME( dset, grid, idim, nlen )
-         IF (keepax_flag .EQ. 1)  name = CD_AXIS_OUTNAME( dset, grid, idim, nlen )
+         IF (keepax_flag.EQ.1 .OR. .NOT.(mode_upcase_output)) 
+     .       name = CD_AXIS_OUTNAME( dset, grid, idim, nlen )
 
 * If mode upcase_output is set, then the axis name
 * has been written to the file upcased.

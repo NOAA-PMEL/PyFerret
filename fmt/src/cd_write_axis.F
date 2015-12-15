@@ -109,7 +109,7 @@
 *                 if the variable wasn't associated with the dataset where that axis lives.
 * v694 1/15 *acm* for ticket 2227: if a dimension from a nc file is not also a 
 *                 1-D coordinate var, don't write the axis Ferret creates
-
+* V697 12/15 *acm* Fix ticket 2336: consistent application of CAN MODE UPCASE
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -186,6 +186,8 @@
       iaxis = grid_line(idim, grid)
       dset_num = dset
       dim_only = .FALSE.
+
+      IF (.NOT.mode_upcase_output) keepax_flag = 1
 
       name = CD_AXIS_NAME( dset_num, grid, idim, nlen )
       IF (keepax_flag .EQ. 1) name = CD_AXIS_OUTNAME( dset_num, grid, idim, nlen )

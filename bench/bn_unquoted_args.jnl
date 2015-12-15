@@ -1,0 +1,121 @@
+! bn_unquoted_args.jnl
+! 12/2015 -- a hack change to PPARSE_COMMAND to allow users to omit
+! the quotation marks in the argument(s) of SET DATA, GO and DEFINE SYMBOL
+
+spawn "mkdir -p tmp"
+
+! ****** SET DATA TESTS *****
+! make test files
+save/clobber/file="tmp/test1.nc" i[i=1:3] + 1
+save/clobber/file="tmp/test2.nc" i[i=1:3] + 2
+save/clobber/file="tmp/test3.nc" i[i=1:3] + 3
+! generate absolute path
+let dir = SPAWN("pwd")
+define sym use_abs_path = `DIR+"/tmp/test1.nc"`
+say ($use_abs_path)
+
+use tmp/test1.nc
+show data/brief
+canc data/all
+
+use "tmp/test1.nc"
+show data/brief
+canc data/all
+
+use "tmp/test1.nc"
+show data/brief
+canc data/all
+
+use tmp/test1.nc
+show data/brief
+canc data/all
+
+use "($use_abs_path)"
+show data/brief
+canc data/all
+
+use ($use_abs_path)
+show data/brief
+canc data/all
+
+use tmp/test1.nc,tmp/test2.nc,tmp/test3.nc
+show data/brief
+canc data/all
+
+use tmp/test1.nc,"tmp/test2.nc", tmp/test3.nc
+show data/brief
+canc data/all
+
+IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf") EQ 0` THEN
+  use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf"
+  show data/brief
+  canc data/all
+  use http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf
+  show data/brief
+  canc data/all
+
+  use tmp/test1.nc, "tmp/test2.nc", http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf
+  show data/brief
+  canc data/all
+ELSE
+   say OPenDAP data not available for testing.. Tests skipped ...
+ENDIF
+
+! deliberate errors
+! erroneous qualifier with no white space detected
+set mode ignore
+set data/erroneous tmp/test1.nc
+
+! erroneous qualifier with white space detected
+set data /erroneous tmp/test1.nc
+
+! erroneous qualifier with comma treated as an invalid filename
+set data /erroneous, tmp/test1.nc
+
+can mode ignore
+
+canc data/all
+
+
+! ****** GO script tests *****
+! make a dummy GO file for testing
+spawn rm -f tmp/dummy.jnl
+spawn echo "say hello" >tmp/dummy.jnl
+spawn echo 'say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $7"7-n/a" $8"8-n/a"' > tmp/testMe.jnl
+
+! generate absolute path
+let dir = SPAWN("pwd")
+define sym abs_path = `DIR+"/tmp/testMe.jnl"`
+say ($abs_path)
+
+go tmp/testMe.jnl
+
+go "tmp/testMe.jnl"
+
+go ($abs_path)
+
+go "($abs_path)"
+
+go tmp/testMe 5 hello "bye" "/quoted_path" /unquoted_path
+
+go "tmp/testMe" 5 hello "bye" "/quoted_path" /unquoted_path
+
+go ($abs_path) 5 hello "bye" "/quoted_path" /unquoted_path
+
+go "($abs_path)" 5 hello "bye" "/quoted_path" /unquoted_path
+
+! test GO/HELP
+go/help tmp/testMe
+go /help tmp/testMe
+go/help "tmp/testMe"
+go/help ($abs_path)
+go/help "($abs_path)"
+
+set mode ignore
+go/garbage tmp/testMe
+go/garbage "tmp/testMe"
+go/garbage ($abs_path)
+go/garbage "($abs_path)"
+set mode/last ignore
+
+

@@ -1,4 +1,7 @@
 ! bn_aggregate_t.jnl
+! Dec. 9 tweak to put all test files into "tmp" subdirectory
+
+spawn "mkdir -p tmp"     ! tmp directory t store files
 
 ! *** create test files for T aggregation ***
 
@@ -10,28 +13,28 @@ let myvar = SIN(T[gt=tday]/10) + L[gt=tday]/10
 ! but only in the first data set
 let mymap = I[x=0E:0E:5]+ 10*J[Y=80s:80n:5]
 
-save/clobber/file=tagg_reg_1.nc myvar[l=1:10], mymap
-save/clobber/file=tagg_reg_2.nc myvar[l=11:20]
-save/clobber/file=tagg_reg_3.nc myvar[l=21:30]
-save/clobber/file=tagg_reg_4.nc myvar[l=31:40]
-save/clobber/file=tagg_reg_5.nc myvar[l=41:50]
-save/clobber/file=tagg_reg_6.nc myvar[l=51:60]
-save/clobber/file=tagg_reg_7.nc myvar[l=61:70]
-save/clobber/file=tagg_reg_8.nc myvar[l=71:80]
-save/clobber/file=tagg_reg_9.nc myvar[l=81:90]
-save/clobber/file=tagg_reg_10.nc myvar[l=91:100]
+save/clobber/file="tmp/tagg_reg_1.nc" myvar[l=1:10], mymap
+save/clobber/file="tmp/tagg_reg_2.nc" myvar[l=11:20]
+save/clobber/file="tmp/tagg_reg_3.nc" myvar[l=21:30]
+save/clobber/file="tmp/tagg_reg_4.nc" myvar[l=31:40]
+save/clobber/file="tmp/tagg_reg_5.nc" myvar[l=41:50]
+save/clobber/file="tmp/tagg_reg_6.nc" myvar[l=51:60]
+save/clobber/file="tmp/tagg_reg_7.nc" myvar[l=61:70]
+save/clobber/file="tmp/tagg_reg_8.nc" myvar[l=71:80]
+save/clobber/file="tmp/tagg_reg_9.nc" myvar[l=81:90]
+save/clobber/file="tmp/tagg_reg_10.nc" myvar[l=91:100]
 
 ! save a duplicate of the first file
-save/clobber/file=tagg_reg_1_duplicate.nc myvar[l=1:10], mymap
+save/clobber/file="tmp/tagg_reg_1_duplicate.nc" myvar[l=1:10], mymap
 
 ! save a file with no time-dependent variables
-save/clobber/file=tagg_reg_no_T.nc  mymap
+save/clobber/file="tmp/tagg_reg_no_T.nc"  mymap
 
 ! make a single file that is "too long": 15 time steps instead of 10
 ! so that when used in a time series it creates reverse-ordered points
 define axis/t=1-jan-1980:1-jan-1990:1/unit=days tday
 let myvar = SIN(T[gt=tday]/10) + L[gt=tday]/10
-save/clobber/file=tagg_reg_2_overlarge.nc myvar[l=11:25]
+save/clobber/file="tmp/tagg_reg_2_overlarge.nc" myvar[l=11:25]
 cancel axis tday
 
 ! --- files with irregularly-spaced time points ---
@@ -40,20 +43,20 @@ define axis/T0=1-jan-1980/unit=days tday_ir = L[l=1:200]^1.01
 let myvar = SIN(T[gt=tday_ir]/10) + L[gt=tday_ir]/10
 !plot myvar[l=1:100]
 
-save/clobber/file=tagg_irreg_1.nc myvar[l=1:10]
-save/clobber/file=tagg_irreg_2.nc myvar[l=11:20]
-save/clobber/file=tagg_irreg_3.nc myvar[l=21:30]
-save/clobber/file=tagg_irreg_4.nc myvar[l=31:40]
-save/clobber/file=tagg_irreg_5.nc myvar[l=41:50]
-save/clobber/file=tagg_irreg_6.nc myvar[l=51:60]
-save/clobber/file=tagg_irreg_7.nc myvar[l=61:70]
-save/clobber/file=tagg_irreg_8.nc myvar[l=71:80]
-save/clobber/file=tagg_irreg_9.nc myvar[l=81:90]
-save/clobber/file=tagg_irreg_10.nc myvar[l=91:100]
+save/clobber/file="tmp/tagg_irreg_1.nc" myvar[l=1:10]
+save/clobber/file="tmp/tagg_irreg_2.nc" myvar[l=11:20]
+save/clobber/file="tmp/tagg_irreg_3.nc" myvar[l=21:30]
+save/clobber/file="tmp/tagg_irreg_4.nc" myvar[l=31:40]
+save/clobber/file="tmp/tagg_irreg_5.nc" myvar[l=41:50]
+save/clobber/file="tmp/tagg_irreg_6.nc" myvar[l=51:60]
+save/clobber/file="tmp/tagg_irreg_7.nc" myvar[l=61:70]
+save/clobber/file="tmp/tagg_irreg_8.nc" myvar[l=71:80]
+save/clobber/file="tmp/tagg_irreg_9.nc" myvar[l=81:90]
+save/clobber/file="tmp/tagg_irreg_10.nc" myvar[l=91:100]
 
 ! create a regular time axis (lacking cell bounds) in the midst of the sequence
 define axis/T0=1-jan-1980/unit=days tday_ir = L[l=11:20]
-save/clobber/file=tagg_irreg_2_reg.nc myvar
+save/clobber/file="tmp/tagg_irreg_2_reg.nc" myvar
 cancel axis tday_ir
 
 
@@ -69,7 +72,7 @@ define symbol start_day `(i-1)*4+1`;\
 define axis/T0=($start_day)-jan-1980/unit=days tday_Tvar = L[l=1:4];\
 let myvar0 = TAX_JDAY(L[l=1:4], tt);\
 let myvar = myvar0[gt=tday_Tvar@asn];\
-save/clobber/file=tagg_T0varying_($file).nc myvar[l=1:4])
+save/clobber/file="tmp/tagg_T0varying_($file).nc" myvar[l=1:4])
 
 ! --- files with T0 varying and date gaps between files ---
 let myvar = L[gt=tday_Tvar]
@@ -78,18 +81,18 @@ repeat/i=1:10 (\
 define symbol file `i`;\
 define symbol year `i+1980`;\
 define axis/T0=1-jan-($year)/unit=days tday_Tvar = L[l=1:10];\
-save/clobber/file=tagg_disjoint_T0varying_($file).nc myvar[l=1:10])
+save/clobber/file="tmp/tagg_disjoint_T0varying_($file).nc" myvar[l=1:10])
 
 ! alter first and third files to have only single time step
 define axis/T0=1-jan-1981/unit=days tday_Tvar = L[l=1:10]
-save/clobber/file=tagg_disjoint_T0varying_1.nc myvar[l=1:1]
+save/clobber/file="tmp/tagg_disjoint_T0varying_1.nc" myvar[l=1:1]
 define axis/T0=1-jan-1983/unit=days tday_Tvar = L[l=1:10]
-save/clobber/file=tagg_disjoint_T0varying_3.nc myvar[l=1:1]
+save/clobber/file="tmp/tagg_disjoint_T0varying_3.nc" myvar[l=1:1]
 
 ! make an alternative file 4 that has a different name for the time axis
 define axis/T0=1-jan-1984/unit=days tday_WRONG = L[l=1:10]
 let myvar = L[gt=tday_WRONG]
-save/clobber/file=tagg_disjoint_T0varying_4_wrong.nc myvar[l=1:1]
+save/clobber/file="tmp/tagg_disjoint_T0varying_4_wrong.nc" myvar[l=1:1]
 cancel axis tday_Tvar
 cancel axis tday_WRONG
 
@@ -104,12 +107,12 @@ let mymap = I[x=0E:0E:5]+ 10*J[Y=80s:80n:5]
 
 !save/rigid/keep_axisname/file=...
 
-save/clobber/file=tagg_single_1.nc myvar[l=1], mymap
-save/clobber/file=tagg_single_2.nc myvar[l=2]
-save/clobber/file=tagg_single_3.nc myvar[l=3]
-save/clobber/file=tagg_single_4.nc myvar[l=4]
-save/clobber/file=tagg_single_5.nc myvar[l=5]
-save/clobber/file=tagg_single_6.nc myvar[l=6]
+save/clobber/file="tmp/tagg_single_1.nc" myvar[l=1], mymap
+save/clobber/file="tmp/tagg_single_2.nc" myvar[l=2]
+save/clobber/file="tmp/tagg_single_3.nc" myvar[l=3]
+save/clobber/file="tmp/tagg_single_4.nc" myvar[l=4]
+save/clobber/file="tmp/tagg_single_5.nc" myvar[l=5]
+save/clobber/file="tmp/tagg_single_6.nc" myvar[l=6]
 
 cancel axis tday
 
@@ -121,24 +124,24 @@ cancel var/all
 ! --- regularly-spaced axes ---
 ! if the first file of the aggregation is already open
 ! it must not get disturbed by setting up the aggregation
-use tagg_reg_1.nc
+use tmp/tagg_reg_1.nc
 
 ! single dataset aggregation
-tseries myagg1 =  tagg_reg_1.nc
+tseries myagg1 =  tmp/tagg_reg_1.nc
 show data myagg1
 show grid myvar
 
 ! double file aggregation
-define data/agg/t myagg2 = tagg_reg_1.nc, tagg_reg_2.nc
+define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
 show grid myvar
 stat myvar
 
 ! show that aggregate name is case-sensitive
-define data/agg/t myAgg2 = tagg_reg_1.nc, tagg_reg_2.nc
+define data/agg/t myAgg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
 show data myAgg2
 
 ! define a long aggregation
-define data/agg/t myagg8 = tagg_reg_1.nc, tagg_reg_2.nc,tagg_reg_3.nc, tagg_reg_4.nc,tagg_reg_5.nc, tagg_reg_6.nc,tagg_reg_7.nc, tagg_reg_8.nc
+define data/agg/t myagg8 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc,tmp/tagg_reg_3.nc, tmp/tagg_reg_4.nc,tmp/tagg_reg_5.nc, tmp/tagg_reg_6.nc,tmp/tagg_reg_7.nc, tmp/tagg_reg_8.nc
 show data/full  ! all 4 datasets
 show grid myvar
 plot/line/sym myvar
@@ -149,19 +152,19 @@ stat mymap
 ! deliberate errors
 set mode ignore
 ! try to define the same aggregation again
-define data/agg/t myagg2 = tagg_reg_1.nc, tagg_reg_2.nc
+define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
 
 ! try to aggregate a missing file as first file
-define data/agg/t myaggbad = tagg_no_exist.nc, tagg_reg_2.nc
+define data/agg/t myaggbad = tmp/tagg_no_exist.nc, tmp/tagg_reg_2.nc
 
 ! try to aggregate a missing file as subsequent file
-define data/agg/t myaggbad = tagg_reg_1.nc, tagg_no_exist.nc
+define data/agg/t myaggbad = tmp/tagg_reg_1.nc, tmp/tagg_no_exist.nc
 
 ! try to define an aggregation where there is no time axis in the first file
-tseries myTindepagg = tagg_reg_no_T.nc
+tseries myTindepagg = tmp/tagg_reg_no_T.nc
 
 ! erroneous file 2 with 15 time steps, goes beyond start of file 3
-define data/agg/t myagg3 = tagg_reg_1.nc, tagg_reg_2_overlarge.nc,tagg_reg_3.nc
+define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2_overlarge.nc,tmp/tagg_reg_3.nc
 
 set mode/last ignore
 canc data/all
@@ -169,10 +172,10 @@ canc data/all
 
 ! --- irregularly-spaced axes ---
 ! aggregation of 2 irregular datasets
- define data/agg/t myagg2 = tagg_irreg_1.nc, tagg_irreg_2.nc
+ define data/agg/t myagg2 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_2.nc
 
 ! aggregate a longer collection where all are irregular
-define data/agg/t myagg8 = tagg_irreg_1.nc, tagg_irreg_2.nc,tagg_irreg_3.nc, tagg_irreg_4.nc,tagg_irreg_5.nc, tagg_irreg_6.nc,tagg_irreg_7.nc, tagg_irreg_8.nc
+define data/agg/t myagg8 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_2.nc,tmp/tagg_irreg_3.nc, tmp/tagg_irreg_4.nc,tmp/tagg_irreg_5.nc, tmp/tagg_irreg_6.nc,tmp/tagg_irreg_7.nc, tmp/tagg_irreg_8.nc
   show data/full
   show data myagg2
   show grid/t myvar[d=1]
@@ -180,21 +183,21 @@ define data/agg/t myagg8 = tagg_irreg_1.nc, tagg_irreg_2.nc,tagg_irreg_3.nc, tag
   plot/line/sym myvar[d=2],myvar[d=1] 
 
 ! aggregate collection that mixes regular (file 2) with irregular
-define data/agg/t myagg4 = tagg_irreg_1.nc, tagg_irreg_2_reg.nc,tagg_irreg_3.nc, tagg_irreg_4.nc
+define data/agg/t myagg4 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_2_reg.nc,tmp/tagg_irreg_3.nc, tmp/tagg_irreg_4.nc
   show grid/t myvar[d=myagg4]
 
 ! deliberate error -- aggregated file out of order
 set mode ignore
-define data/agg/t myagg3 = tagg_irreg_1.nc, tagg_irreg_3.nc,tagg_irreg_2.nc
+define data/agg/t myagg3 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_3.nc,tmp/tagg_irreg_2.nc
 set mode/last ignore
 canc data/all
 
 ! --- aggregation from T0-varying files ---
 ! aggregate two
-  define data/agg/t myagg2 = tagg_T0varying_1.nc, tagg_T0varying_2.nc
+  define data/agg/t myagg2 = tmp/tagg_T0varying_1.nc, tmp/tagg_T0varying_2.nc
 
 ! aggregate several
-define data/agg/t myagg8 = tagg_T0varying_1.nc, tagg_T0varying_2.nc,tagg_T0varying_3.nc, tagg_T0varying_4.nc,tagg_T0varying_5.nc
+define data/agg/t myagg8 = tmp/tagg_T0varying_1.nc, tmp/tagg_T0varying_2.nc,tmp/tagg_T0varying_3.nc, tmp/tagg_T0varying_4.nc,tmp/tagg_T0varying_5.nc
   show data/full
   show data myagg2
   show grid/t myvar[d=1]
@@ -205,31 +208,42 @@ canc data/all
 
 ! --- aggregations of disjoint, irregularly-sized, T0-varying files ---
 ! aggregate two
-  define data/agg/t myagg2 = tagg_disjoint_T0varying_1.nc, tagg_disjoint_T0varying_2.nc
+  define data/agg/t myagg2 = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc
 
 
 ! aggregate several
-define data/agg/t myagg8 = tagg_disjoint_T0varying_1.nc, tagg_disjoint_T0varying_2.nc,tagg_disjoint_T0varying_3.nc, tagg_disjoint_T0varying_4.nc,tagg_disjoint_T0varying_5.nc, tagg_disjoint_T0varying_6.nc,tagg_disjoint_T0varying_7.nc, tagg_disjoint_T0varying_8.nc
+define data/agg/t myagg8 = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_4.nc,tmp/tagg_disjoint_T0varying_5.nc, tmp/tagg_disjoint_T0varying_6.nc,tmp/tagg_disjoint_T0varying_7.nc, tmp/tagg_disjoint_T0varying_8.nc
   show data/full
   show data myagg2
   show grid/t myvar[d=1]
   show grid myvar[d=2]
   plot/line/sym/vlim=0:11 myvar[d=2],myvar[d=1] 
 
+! a few tests of using Ferret string variables to get the names of files
+define data/agg/t listAgg1 = {"tmp/tagg_reg_1.nc", "tmp/tagg_reg_2.nc"}
+show data/files listAgg1
+
+! define a long aggregation
+let file_list = SPAWN("ls -1 tmp/tagg_reg_?.nc") 
+define data/agg/t listAgg2 = file_list
+show data/files listAgg2
+
+cancel data/all
+
 ! deliberate errors
 set mode ignore
 ! deliberate error - try to re-use a name already in use
-  define data/agg/t myagg2 = tagg_disjoint_T0varying_1.nc, tagg_disjoint_T0varying_2.nc
+  define data/agg/t myagg2 = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc
 
 ! deliberate error - the fourth file (*_4_wrong.nc) changes time axis name
-define data/agg/t myagg5_bad = tagg_disjoint_T0varying_1.nc, tagg_disjoint_T0varying_2.nc,tagg_disjoint_T0varying_3.nc, tagg_disjoint_T0varying_4_wrong.nc,tagg_disjoint_T0varying_5.nc
+define data/agg/t myagg5_bad = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_4_wrong.nc,tmp/tagg_disjoint_T0varying_5.nc
 set mode/last ignore
 
 canc data/all
 
 ! --- aggregations of single timestep files ---
 ! define a regular aggregation
-define data/agg/t MYsing_reg_agg6 = tagg_single_1.nc, tagg_single_2.nc,tagg_single_3.nc, tagg_single_4.nc,tagg_single_5.nc, tagg_single_6.nc
+define data/agg/t MYsing_reg_agg6 = tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_3.nc, tmp/tagg_single_4.nc,tmp/tagg_single_5.nc, tmp/tagg_single_6.nc
 show data/full  MYsing_reg_agg6
 show grid/t myvar
 
@@ -237,9 +251,37 @@ show grid/t myvar
 stat mymap
 
 ! define an irregular aggregation
-define data/agg/t MYsing_irreg_agg4 = tagg_single_1.nc, tagg_single_2.nc,tagg_single_4.nc, tagg_single_5.nc
+define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc
 show data/full MYsing_irreg_agg4
 show grid/t myvar
 canc data/all
+
+
+! OPeNDAP test
+IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2012.nc") EQ 0` THEN
+   tseries COADS = http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2012.nc, http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2013.nc, http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2014.nc
+show data COADS
+show grid/T air
+canc data/all
+ELSE
+   say OPenDAP data not available for testing.. Tests skipped ...
+ENDIF
+
+! "USE file.agg" test
+! test the hack to XEQ_SET which permits "SET DATA file.agg" to metamorphose
+! into "GO file.agg"
+spawn echo "define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc,tmp/tagg_reg_3.nc" > tmp/good_agg.agg
+spawn echo "garbage command syntax" > tmp/bad_agg.agg
+
+! deliberate error
+set mode ignore
+USE "tmp/bad_agg.agg"
+set/last mode ignore
+
+! valid syntax to initialize an aggregation
+USE "tmp/good_agg.agg"
+show data/br
+cancel data/all
+
 
 

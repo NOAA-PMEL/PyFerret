@@ -51,14 +51,16 @@
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 *                  added ifstk_skipping
 * V695  *acm* 5/15 logical flag its_pyferret 
+* V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480
+*		  - increased max_item_list 250 -> 1000
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
      .			max_ifstk
-	PARAMETER     ( cmnd_buff_len = 2048,
+	PARAMETER     ( cmnd_buff_len = 20480,
      .			max_qual_list = 60 ,	! increased from 50 3/12
      .			max_arg_list  = 128 ,	! was 20 pre-4/96
-     .			max_item_list = 250 ,
+     .			max_item_list = 1000 ,
      .			max_modes     = 40 ,
      .			mode_stack_size = 7,
      .			max_ifstk     = 10 )
@@ -197,8 +199,8 @@
 
 ! Note: available_char_var is unused
 	CHARACTER
-     .		cmnd_buff*2048,
-     .		last_cmnd_buff*2048,
+     .		cmnd_buff*20480,
+     .		last_cmnd_buff*20480,
      .		prompt*8,
      .		list_format*2048, list_file*2048, list_outtype*6,
      .          show_file*2048,

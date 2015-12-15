@@ -123,7 +123,7 @@
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 * v695  *acm* 5/16 When running PyFerret do not draw axes on an overlay unless they
 *                  ask for it with /AXES or a ppl axis command
-* V697 *acm* 12/15 Fixes for bug 1237 move call of PPL_AXES_RESTORE back to end of plot routines
+* V697 *acm* 12/15 Fixes for bug 2327 move call of PPL_AXES_RESTORE back to end of plot routines
 * v697 *acm* 12/15 Ticket 2331, add flag changed_key to common, to restore the color key
 *                  style after a color plot and also after SHADE/SET; SHADE.
 

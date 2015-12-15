@@ -15,3 +15,6 @@ GO err696_centerlab_restore
 
 GO bn_reset
 GO err696_time_overlay
+
+GO bn_reset
+GO err696_save_noupcase

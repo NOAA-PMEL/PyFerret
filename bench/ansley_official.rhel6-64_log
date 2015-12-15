@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 81201353 Dec  7 15:20 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 81322744 Dec 11 16:38 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2332: checking mixed calendar defs within one grid
+Note: error handling with new longer command-buff length
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,15 +14,13 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
-FER_GO=. /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
+FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
-FER_LIBS=/home/users/ansley/ferret_distributions/rhel6_64/lib
-FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
-FER_WEB_BROWSER=firefox
+FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
+FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Mon Dec 7 15:23:45 PST 2015
+Beginning at Fri Dec 11 16:51:54 PST 2015
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -128,7 +126,7 @@ Beginning at Mon Dec 7 15:23:45 PST 2015
 ! V610  *acm* 3/08 - add new MODE NLEVELS
 ! V685  *sh* 11/13 - added bn_vtree to test SHOW VAR/TREE
 ! V698+ *sh* 06/15 - added bn_auxiliary
-! V698+ *sh* 11/15 - added bn_aggregate_t
+! V698+ *sh* 11/15 - added bn_aggregate_t and bn_set_data_unquoted.jnl
  
 ! Include this statement to compare the outupt of 6D Ferret with
 ! previous 4D benchmark logs.
@@ -10478,18 +10476,18 @@ show symbols/all
 PPL$XPIXEL = "406"
 PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.96"
+FERRET_VERSION = "6.61"
 FERRET_PLATFORM = "Linux 2.6.32-573.8.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.3.1 of Nov 17 2015 14:50:39 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 7-Dec-15"
-SESSION_TIME = "15:23"
-SESSION_PID = "20852"
-DELTA_CPU = "5.10922"
-CLOCK_SECS = "7.338"
-CURRENT_DATE = " 7-Dec-15"
-CURRENT_TIME = "15:23:52"
+SESSION_DATE = "11-Dec-15"
+SESSION_TIME = "16:51"
+SESSION_PID = "32180"
+DELTA_CPU = "6.69698"
+CLOCK_SECS = "8.894"
+CURRENT_DATE = "11-Dec-15"
+CURRENT_TIME = "16:52:03"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10507,18 +10505,18 @@ show symbol/all
 PPL$XPIXEL = "406"
 PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.96"
+FERRET_VERSION = "6.61"
 FERRET_PLATFORM = "Linux 2.6.32-573.8.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.3.1 of Nov 17 2015 14:50:39 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 7-Dec-15"
-SESSION_TIME = "15:23"
-SESSION_PID = "20852"
-DELTA_CPU = "0"
-CLOCK_SECS = "7.339"
-CURRENT_DATE = " 7-Dec-15"
-CURRENT_TIME = "15:23:52"
+SESSION_DATE = "11-Dec-15"
+SESSION_TIME = "16:51"
+SESSION_PID = "32180"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "8.896"
+CURRENT_DATE = "11-Dec-15"
+CURRENT_TIME = "16:52:03"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10528,9 +10526,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 7-Dec-15"
-SESSION_TIME = "15:23"
-SESSION_PID = "20852"
+SESSION_DATE = "11-Dec-15"
+SESSION_TIME = "16:51"
+SESSION_PID = "32180"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10540,15 +10538,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 7-Dec-15"
-SESSION_TIME = "15:23"
-SESSION_PID = "20852"
+SESSION_DATE = "11-Dec-15"
+SESSION_TIME = "16:51"
+SESSION_PID = "32180"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 7-Dec-15"
-SESSION_TIME = "15:23"
-SESSION_PID = "20852"
+SESSION_DATE = "11-Dec-15"
+SESSION_TIME = "16:51"
+SESSION_PID = "32180"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10582,9 +10580,9 @@ Q23456789012345678901234567XXXAAAAA = "6"
 ! show the upper left coordinate limits labels as symbols
 plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
-LAB1 = "FERRET (beta) Ver.6.96"
+LAB1 = "FERRET (beta) Ver.6.61"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "07-DEC-2015 15:23:52"
+LAB3 = "11-DEC-2015 16:52:03"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10679,18 +10677,18 @@ show symbols/all
 PPL$XPIXEL = "406"
 PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.96"
+FERRET_VERSION = "6.61"
 FERRET_PLATFORM = "Linux 2.6.32-573.8.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.3.1 of Nov 17 2015 14:50:39 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 7-Dec-15"
-SESSION_TIME = "15:23"
-SESSION_PID = "20852"
-DELTA_CPU = "0.007999"
-CLOCK_SECS = "7.347"
-CURRENT_DATE = " 7-Dec-15"
-CURRENT_TIME = "15:23:52"
+SESSION_DATE = "11-Dec-15"
+SESSION_TIME = "16:51"
+SESSION_PID = "32180"
+DELTA_CPU = "0.017997"
+CLOCK_SECS = "8.913"
+CURRENT_DATE = "11-Dec-15"
+CURRENT_TIME = "16:52:03"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -25686,7 +25684,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Mon Dec  7 15:23:59 PST 2015
+Fri Dec 11 16:52:11 PST 2015
  
 GO bn_reset
 cancel mode verify
@@ -48385,11 +48383,11 @@ ppl list labels
  @ASDeg C                                                                       
 
           XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET (beta) Ver.6.96
+ LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET (beta) Ver.6.61
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS07-DEC-2015 15:24:28
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS11-DEC-2015 16:52:43
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -49666,7 +49664,7 @@ GO bn_long_revision_num.jnl
  
 ! ferret version
 sh sym FERRET_VERSION
-FERRET_VERSION = "6.96"
+FERRET_VERSION = "6.61"
  
 ! history attribute
 let a = 12
@@ -49684,7 +49682,7 @@ LAB1 = "X : 0.5 to 314.5"
  
 ! show commands without an argument, lists version number at the top
 sho command
- Commands in Program FERRET (beta) version6.96:
+ Commands in Program FERRET (beta) version6.61:
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE
  SET REGION/I/J/K/L/M/N/X/Y/Z/T/E/F/DX/DY/DZ/DT/DE/DF/DI/DJ/DK/DL/DM/DN
@@ -49822,7 +49820,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "7-Dec-15:15:23"
+WIN_TITLE = "11-Dec-15:16:51"
  
 set win/title="set the title"
 sho sym win_title
@@ -49840,7 +49838,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 7-Dec-15:15:23"
+ !-> set win/title="11-Dec-15:16:51"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -49849,16 +49847,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date =  7-Dec-15
+ !-> DEFINE SYMBOL the_date = 11-Dec-15
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 15:23
+ !-> DEFINE SYMBOL the_time = 16:51
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="7-Dec-15:15:23"
+ !-> SET WIN/TITLE="11-Dec-15:16:51"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "7-Dec-15:15:23"
+WIN_TITLE = "11-Dec-15:16:51"
  
 GO bn_reset
 cancel mode verify
@@ -52092,24 +52090,24 @@ cancel mode verify
 def axis/x=1:200:1  x2ax
 sh att/all (x2ax)
      attributes for coordinate axis
- (X2AX).point_spacing = even 
- (X2AX).axis = X 
+ (x2ax).point_spacing = even 
+ (x2ax).axis = X 
 ! SET AXIS command changes attributes
 set axis/modulo x2ax
 sh att/all (x2ax)
      attributes for coordinate axis
- (X2AX).point_spacing = even 
- (X2AX).axis = X 
- (X2AX).modulo =   
+ (x2ax).point_spacing = even 
+ (x2ax).axis = X 
+ (x2ax).modulo =   
  
 ! DEFINE ATTRIBUTE command changes attributes
 define attribute (x2ax).units = "degrees_east"
 sh att/all (x2ax)
      attributes for coordinate axis
- (X2AX).point_spacing = even 
- (X2AX).axis = X 
- (X2AX).modulo =   
- (X2AX).units = degrees_east 
+ (x2ax).point_spacing = even 
+ (x2ax).axis = X 
+ (x2ax).modulo =   
+ (x2ax).units = degrees_east 
  
 ! Define new attribute on an axis.
 ! Save file var, and a user var defined from the file var
@@ -52178,9 +52176,9 @@ let axy = reshape (a,rvar)
  
 show att/all (z4ax)
      attributes for coordinate axis
- (Z4AX).point_spacing = even 
- (Z4AX).axis = Z 
- (Z4AX).positive = down 
+ (z4ax).point_spacing = even 
+ (z4ax).axis = Z 
+ (z4ax).positive = down 
 set att (z4ax).positive = "up"
  
 sp echo "bn_attributes.jnl --- 27 attributes of  user-defined axes" >> all_ncdump.out
@@ -54213,7 +54211,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT191_108)          DOUBLE    units           CHAR        12   T       degrees_east
@@ -54258,7 +54256,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT191_108)          DOUBLE    units           CHAR        12   T       degrees_east
@@ -60146,10 +60144,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "35.0117"
-CLOCK_SECS = "67.405"
-CURRENT_DATE = " 7-Dec-15"
-CURRENT_TIME = "15:24:52"
+DELTA_CPU = "40.3839"
+CLOCK_SECS = "72.56"
+CURRENT_DATE = "11-Dec-15"
+CURRENT_TIME = "16:53:06"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -60158,8 +60156,8 @@ CURRENT_TIME = "15:24:52"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.032994"
-CLOCK_SECS = "67.507"
+DELTA_CPU = "0.038995"
+CLOCK_SECS = "72.629"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -60173,60 +60171,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.239963
+ !-> DEFINE VARIABLE ten_plots = 0.228965
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0"
-CLOCK_SECS = "68.745"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "73.233"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "68.746"
+CLOCK_SECS = "73.234"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.034996
- !-> DEFINE VARIABLE sumcpu =0.034996
+ !-> DEFINE VARIABLE dt = 0.027997
+ !-> DEFINE VARIABLE sumcpu =0.027997
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.026996
- !-> DEFINE VARIABLE sumcpu =0.061992
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.060992
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.029995
- !-> DEFINE VARIABLE sumcpu =0.091987
+ !-> DEFINE VARIABLE dt = 0.027995
+ !-> DEFINE VARIABLE sumcpu =0.088987
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.029995
- !-> DEFINE VARIABLE sumcpu =0.121982
+ !-> DEFINE VARIABLE dt = 0.023997
+ !-> DEFINE VARIABLE sumcpu =0.112984
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.026996
- !-> DEFINE VARIABLE sumcpu =0.148978
+ !-> DEFINE VARIABLE dt = 0.029995
+ !-> DEFINE VARIABLE sumcpu =0.142979
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.028996
- !-> DEFINE VARIABLE sumcpu =0.177974
+ !-> DEFINE VARIABLE dt = 0.022997
+ !-> DEFINE VARIABLE sumcpu =0.165976
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.033994
- !-> DEFINE VARIABLE sumcpu =0.211968
+ !-> DEFINE VARIABLE dt = 0.026995
+ !-> DEFINE VARIABLE sumcpu =0.192971
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.033996
- !-> DEFINE VARIABLE sumcpu =0.245964
+ !-> DEFINE VARIABLE dt = 0.028996
+ !-> DEFINE VARIABLE sumcpu =0.221967
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.032994
- !-> DEFINE VARIABLE sumcpu =0.278958
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.254962
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.033996
- !-> DEFINE VARIABLE sumcpu =0.312954
+ !-> DEFINE VARIABLE dt = 0.028996
+ !-> DEFINE VARIABLE sumcpu =0.283958
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.312954
-0.312954
+ !-> MESSAGE/CONTINUE 0.283958
+0.283958
 sh sym CLOCK_SECS
-CLOCK_SECS = "70.997"
+CLOCK_SECS = "74.367"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = " 7-Dec-15"
-SESSION_TIME = "15:23"
-CURRENT_DATE = " 7-Dec-15"
-CURRENT_TIME = "15:24:56"
+SESSION_DATE = "11-Dec-15"
+SESSION_TIME = "16:51"
+CURRENT_DATE = "11-Dec-15"
+CURRENT_TIME = "16:53:08"
  
  
 ! ******** V6.3 Additions below ***********
@@ -63286,7 +63284,7 @@ let tpts = 39798 + 87*RANDU(I)
 show grid tt
     GRID (G089)
  name       axis              # pts   start                end
- X10       X                  201 r   0                    10
+ x10       X                  201 r   0                    10
  Y10       Y                  201 r   0                    10
  normal    Z
  TOUT      TIME                10 r   01-JAN-2010 00:00    01-APR-2010 00:00
@@ -64204,9 +64202,9 @@ list contents
              VARIABLE : { SPAWN:"cat redirect_journal.txt" }
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
- 2    /  2:" ! FERRET v6.96 (beta)"                                                     
- 3    /  3:" ! Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/07/15"                       
- 4    /  4:" !  7-Dec-15 15:23     "                                                    
+ 2    /  2:" ! FERRET v6.61 (beta)"                                                     
+ 3    /  3:" ! Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/11/15"                       
+ 4    /  4:" ! 11-Dec-15 16:51     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -66673,40 +66671,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.989
-randu2_randn2       0.485
-randu2_randn2       0.088
-randu2_randn2       0.661
-randu2_randn2       0.557
+randu2_randn2       0.632
+randu2_randn2       0.534
+randu2_randn2       0.669
+randu2_randn2       0.228
+randu2_randn2       0.061
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.896
-randu2_randn2       0.832
-randu2_randn2       0.981
-randu2_randn2       0.693
-randu2_randn2       0.309
+randu2_randn2       0.541
+randu2_randn2       0.911
+randu2_randn2       0.754
+randu2_randn2       0.737
+randu2_randn2       0.380
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.978
-randu2_randn2       0.674
-randu2_randn2       0.769
-randu2_randn2       0.149
-randu2_randn2       0.107
-randu2_randn2       0.641
+randu2_randn2       0.952
+randu2_randn2       0.878
+randu2_randn2       0.591
+randu2_randn2       0.542
+randu2_randn2       0.762
+randu2_randn2       0.233
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.652
-randu2_randn2       0.639
-randu2_randn2       0.729
-randu2_randn2       0.641
-randu2_randn2       0.565
-randu2_randn2       0.894
+randu2_randn2       0.403
+randu2_randn2       0.327
+randu2_randn2       0.596
+randu2_randn2       0.988
+randu2_randn2       0.628
+randu2_randn2       0.692
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -66731,40 +66729,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.957
-randu2_randn2       0.335
-randu2_randn2       0.605
-randu2_randn2       0.792
-randu2_randn2      -0.772
+randu2_randn2       0.029
+randu2_randn2      -1.261
+randu2_randn2       0.207
+randu2_randn2       0.940
+randu2_randn2      -0.493
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.086
-randu2_randn2      -0.014
-randu2_randn2       0.370
-randu2_randn2       1.445
-randu2_randn2      -0.909
+randu2_randn2       0.317
+randu2_randn2      -0.167
+randu2_randn2      -0.472
+randu2_randn2      -0.446
+randu2_randn2      -0.968
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.212
-randu2_randn2       0.573
-randu2_randn2      -0.702
-randu2_randn2       1.581
-randu2_randn2      -0.036
-randu2_randn2      -1.972
+randu2_randn2       0.208
+randu2_randn2       0.532
+randu2_randn2      -0.595
+randu2_randn2      -2.328
+randu2_randn2       0.905
+randu2_randn2       0.148
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.174
-randu2_randn2      -0.027
-randu2_randn2      -0.475
-randu2_randn2      -0.213
-randu2_randn2       0.981
-randu2_randn2      -0.940
+randu2_randn2       0.831
+randu2_randn2       1.536
+randu2_randn2      -0.068
+randu2_randn2      -0.715
+randu2_randn2      -1.047
+randu2_randn2      -0.727
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -66789,14 +66787,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.237       1.597       0.602
-randu2_randn2       1.597       1.237       0.602
-randu2_randn2       0.602       0.602      -0.007
-randu2_randn2      -0.017      -0.017       0.396
-randu2_randn2      -0.223      -0.017       0.396
-randu2_randn2      -0.007      -0.105       0.396
-randu2_randn2      -0.105      -0.007       0.396
-randu2_randn2       0.396       0.396       0.396
+randu2_randn2       1.695       1.695       0.607
+randu2_randn2       1.260       1.260       0.607
+randu2_randn2       0.607       0.607       0.213
+randu2_randn2      -0.024       0.068       0.607
+randu2_randn2       0.068      -0.024       0.607
+randu2_randn2      -0.394       0.068       0.607
+randu2_randn2       0.213       0.213       0.607
+randu2_randn2       0.647       0.647       0.647
  
 GO bn_reset
 cancel mode verify
@@ -72582,7 +72580,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72633,7 +72631,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72672,7 +72670,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72711,7 +72709,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72742,7 +72740,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72774,7 +72772,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72835,7 +72833,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72880,7 +72878,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72935,7 +72933,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72971,7 +72969,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73007,7 +73005,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73043,7 +73041,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73075,7 +73073,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73305,7 +73303,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          FLOAT     units           CHAR        13   T       degrees_north
@@ -73337,7 +73335,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          FLOAT     units           CHAR        13   T       degrees_north
@@ -73378,7 +73376,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73416,7 +73414,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -73441,7 +73439,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -73466,7 +73464,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -73906,7 +73904,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73935,7 +73933,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73986,7 +73984,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74555,8 +74553,8 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Mon Dec  7 15:25:14 2015: ncks -h -A -h z1.nc append_to_this.nc\n",
-			"FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "Fri Dec 11 16:53:27 2015: ncks -h -A -h z1.nc append_to_this.nc\n",
+			"FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
 }
@@ -74590,7 +74588,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74621,7 +74619,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74683,7 +74681,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74711,7 +74709,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76427,7 +76425,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76450,7 +76448,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76678,7 +76676,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76708,7 +76706,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76729,7 +76727,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76750,7 +76748,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76772,7 +76770,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -77193,7 +77191,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -77209,7 +77207,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -77225,7 +77223,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.96 (beta)  7-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.61 (beta) 11-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -78433,7 +78431,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 }
  
 GO bn_reset
@@ -78526,7 +78524,7 @@ variables:
 		LON360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "CruiseDsgNcFile 1.0FERRET V6.61 (beta) 11-Dec-15" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -78553,7 +78551,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- FERRET V6.96 (beta)  7-Dec-15 
+ FERRET V6.61 (beta) 11-Dec-15 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -78585,7 +78583,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the fileFERRET V6.96 (beta)  7-Dec-15 
+ ..history = The history of the fileFERRET V6.61 (beta) 11-Dec-15 
  ..Conventions = Conventions for variables named V2CF-1.6 
  
 GO bn_reset
@@ -79484,18 +79482,19 @@ GO bn_spawn_size
 let files = {spawn:"ls *cdf*.jnl"}
 list files
              VARIABLE : {SPAWN:"ls *cdf*.jnl"}
-             SUBSET   : 8 points (X)
+             SUBSET   : 9 points (X)
  1   / 1:"bn_cdf_errmsg.jnl"      
  2   / 2:"bn_cdf.jnl"             
  3   / 3:"bn_cdf_keepax.jnl"      
  4   / 4:"bn_netcdf4.jnl"         
- 5   / 5:"err490_cdf_childax.jnl" 
- 6   / 6:"err491_cdf_childax.jnl" 
- 7   / 7:"err65_read_epic_cdf.jnl"
- 8   / 8:"err667_5d_netcdf.jnl"   
+ 5   / 5:"cdf.jnl"                
+ 6   / 6:"err490_cdf_childax.jnl" 
+ 7   / 7:"err491_cdf_childax.jnl" 
+ 8   / 8:"err65_read_epic_cdf.jnl"
+ 9   / 9:"err667_5d_netcdf.jnl"   
 say `files,return=isize`
- !-> MESSAGE/CONTINUE 8
-8
+ !-> MESSAGE/CONTINUE 9
+9
  
 ! Evaluate size without loading the variable first
 let datfiles = {spawn:"ls *.dat"}
@@ -79519,14 +79518,14 @@ list {spawn:"ls xml*.jnl"}
  
 LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
 say `filesets, return=isize`
- !-> MESSAGE/CONTINUE 980
-980
+ !-> MESSAGE/CONTINUE 989
+989
  
 let files = {spawn:"ls *cdf*.jnl"}
 let name_len = strindex(files, ".sub")
 say `name_len, return=isize`
- !-> MESSAGE/CONTINUE 8
-8
+ !-> MESSAGE/CONTINUE 9
+9
  
 GO bn_reset
 cancel mode verify
@@ -80010,7 +80009,7 @@ let b = a[x=@min]
 set mode diag
 say `a[x=@min]`
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GSI1            COADSX51_1NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
+ allocate dynamic grid GSI1            COADSX1   NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   2 I:    0   83  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  strip --> A[X=25E:25E(385)@MIN,D=2]
  strip moduloing A on X axis:     0    83 dset:   2
@@ -80023,11 +80022,11 @@ say `a[x=@min]`
  
 ! This previously resulted in an error.
 say `b`
- dealloc  dynamic grid GSI1            COADSX51_1NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid GSI1            COADSX1   NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid B        C:  7 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GSI1            COADSX51_1NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
- allocate dynamic grid GSI1            COADSX51_1NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
+ allocate dynamic grid GSI1            COADSX1   NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
+ allocate dynamic grid GSI1            COADSX1   NORMAL    NORMAL    NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   2 I:    0   83  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  eval    B        C:  6 dset:   2 I:    0   83  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  strip --> A[X=25E:25E(385)@MIN,D=2]
@@ -87099,6 +87098,9 @@ GO bn_reset
 cancel mode verify
 GO bn_aggregate_t
 ! bn_aggregate_t.jnl
+! Dec. 9 tweak to put all test files into "tmp" subdirectory
+ 
+spawn "mkdir -p tmp"     ! tmp directory t store files
  
 ! *** create test files for T aggregation ***
  
@@ -87110,28 +87112,28 @@ let myvar = SIN(T[gt=tday]/10) + L[gt=tday]/10
 ! but only in the first data set
 let mymap = I[x=0E:0E:5]+ 10*J[Y=80s:80n:5]
  
-save/clobber/file=tagg_reg_1.nc myvar[l=1:10], mymap
-save/clobber/file=tagg_reg_2.nc myvar[l=11:20]
-save/clobber/file=tagg_reg_3.nc myvar[l=21:30]
-save/clobber/file=tagg_reg_4.nc myvar[l=31:40]
-save/clobber/file=tagg_reg_5.nc myvar[l=41:50]
-save/clobber/file=tagg_reg_6.nc myvar[l=51:60]
-save/clobber/file=tagg_reg_7.nc myvar[l=61:70]
-save/clobber/file=tagg_reg_8.nc myvar[l=71:80]
-save/clobber/file=tagg_reg_9.nc myvar[l=81:90]
-save/clobber/file=tagg_reg_10.nc myvar[l=91:100]
+save/clobber/file="tmp/tagg_reg_1.nc" myvar[l=1:10], mymap
+save/clobber/file="tmp/tagg_reg_2.nc" myvar[l=11:20]
+save/clobber/file="tmp/tagg_reg_3.nc" myvar[l=21:30]
+save/clobber/file="tmp/tagg_reg_4.nc" myvar[l=31:40]
+save/clobber/file="tmp/tagg_reg_5.nc" myvar[l=41:50]
+save/clobber/file="tmp/tagg_reg_6.nc" myvar[l=51:60]
+save/clobber/file="tmp/tagg_reg_7.nc" myvar[l=61:70]
+save/clobber/file="tmp/tagg_reg_8.nc" myvar[l=71:80]
+save/clobber/file="tmp/tagg_reg_9.nc" myvar[l=81:90]
+save/clobber/file="tmp/tagg_reg_10.nc" myvar[l=91:100]
  
 ! save a duplicate of the first file
-save/clobber/file=tagg_reg_1_duplicate.nc myvar[l=1:10], mymap
+save/clobber/file="tmp/tagg_reg_1_duplicate.nc" myvar[l=1:10], mymap
  
 ! save a file with no time-dependent variables
-save/clobber/file=tagg_reg_no_T.nc  mymap
+save/clobber/file="tmp/tagg_reg_no_T.nc"  mymap
  
 ! make a single file that is "too long": 15 time steps instead of 10
 ! so that when used in a time series it creates reverse-ordered points
 define axis/t=1-jan-1980:1-jan-1990:1/unit=days tday
 let myvar = SIN(T[gt=tday]/10) + L[gt=tday]/10
-save/clobber/file=tagg_reg_2_overlarge.nc myvar[l=11:25]
+save/clobber/file="tmp/tagg_reg_2_overlarge.nc" myvar[l=11:25]
 cancel axis tday
  
 ! --- files with irregularly-spaced time points ---
@@ -87140,20 +87142,20 @@ define axis/T0=1-jan-1980/unit=days tday_ir = L[l=1:200]^1.01
 let myvar = SIN(T[gt=tday_ir]/10) + L[gt=tday_ir]/10
 !plot myvar[l=1:100]
  
-save/clobber/file=tagg_irreg_1.nc myvar[l=1:10]
-save/clobber/file=tagg_irreg_2.nc myvar[l=11:20]
-save/clobber/file=tagg_irreg_3.nc myvar[l=21:30]
-save/clobber/file=tagg_irreg_4.nc myvar[l=31:40]
-save/clobber/file=tagg_irreg_5.nc myvar[l=41:50]
-save/clobber/file=tagg_irreg_6.nc myvar[l=51:60]
-save/clobber/file=tagg_irreg_7.nc myvar[l=61:70]
-save/clobber/file=tagg_irreg_8.nc myvar[l=71:80]
-save/clobber/file=tagg_irreg_9.nc myvar[l=81:90]
-save/clobber/file=tagg_irreg_10.nc myvar[l=91:100]
+save/clobber/file="tmp/tagg_irreg_1.nc" myvar[l=1:10]
+save/clobber/file="tmp/tagg_irreg_2.nc" myvar[l=11:20]
+save/clobber/file="tmp/tagg_irreg_3.nc" myvar[l=21:30]
+save/clobber/file="tmp/tagg_irreg_4.nc" myvar[l=31:40]
+save/clobber/file="tmp/tagg_irreg_5.nc" myvar[l=41:50]
+save/clobber/file="tmp/tagg_irreg_6.nc" myvar[l=51:60]
+save/clobber/file="tmp/tagg_irreg_7.nc" myvar[l=61:70]
+save/clobber/file="tmp/tagg_irreg_8.nc" myvar[l=71:80]
+save/clobber/file="tmp/tagg_irreg_9.nc" myvar[l=81:90]
+save/clobber/file="tmp/tagg_irreg_10.nc" myvar[l=91:100]
  
 ! create a regular time axis (lacking cell bounds) in the midst of the sequence
 define axis/T0=1-jan-1980/unit=days tday_ir = L[l=11:20]
-save/clobber/file=tagg_irreg_2_reg.nc myvar
+save/clobber/file="tmp/tagg_irreg_2_reg.nc" myvar
 cancel axis tday_ir
  
  
@@ -87169,33 +87171,33 @@ define symbol start_day `(i-1)*4+1`;\
 define axis/T0=($start_day)-jan-1980/unit=days tday_Tvar = L[l=1:4];\
 let myvar0 = TAX_JDAY(L[l=1:4], tt);\
 let myvar = myvar0[gt=tday_Tvar@asn];\
-save/clobber/file=tagg_T0varying_($file).nc myvar[l=1:4])
- !-> repeat/i=1:5 (define symbol file `i`;define symbol start_day `(i-1)*4+1`;define axis/T0=($start_day)-jan-1980/unit=days tday_Tvar = L[l=1:4];let myvar0 = TAX_JDAY(L[l=1:4], tt);let myvar = myvar0[gt=tday_Tvar@asn];save/clobber/file=tagg_T0varying_($file).nc myvar[l=1:4])
+save/clobber/file="tmp/tagg_T0varying_($file).nc" myvar[l=1:4])
+ !-> repeat/i=1:5 (define symbol file `i`;define symbol start_day `(i-1)*4+1`;define axis/T0=($start_day)-jan-1980/unit=days tday_Tvar = L[l=1:4];let myvar0 = TAX_JDAY(L[l=1:4], tt);let myvar = myvar0[gt=tday_Tvar@asn];save/clobber/file="tmp/tagg_T0varying_($file).nc" myvar[l=1:4])
 !-> REPEAT: I=1
  !-> define symbol file 1
  !-> define symbol start_day 1
  !-> define axis/T0=1-jan-1980/unit=days tday_Tvar = L[l=1:4]
- !-> LIST/FORMAT=CDF/clobber/file=tagg_T0varying_1.nc myvar[l=1:4]
+ !-> LIST/FORMAT=CDF/clobber/file="tmp/tagg_T0varying_1.nc" myvar[l=1:4]
 !-> REPEAT: I=2
  !-> define symbol file 2
  !-> define symbol start_day 5
  !-> define axis/T0=5-jan-1980/unit=days tday_Tvar = L[l=1:4]
- !-> LIST/FORMAT=CDF/clobber/file=tagg_T0varying_2.nc myvar[l=1:4]
+ !-> LIST/FORMAT=CDF/clobber/file="tmp/tagg_T0varying_2.nc" myvar[l=1:4]
 !-> REPEAT: I=3
  !-> define symbol file 3
  !-> define symbol start_day 9
  !-> define axis/T0=9-jan-1980/unit=days tday_Tvar = L[l=1:4]
- !-> LIST/FORMAT=CDF/clobber/file=tagg_T0varying_3.nc myvar[l=1:4]
+ !-> LIST/FORMAT=CDF/clobber/file="tmp/tagg_T0varying_3.nc" myvar[l=1:4]
 !-> REPEAT: I=4
  !-> define symbol file 4
  !-> define symbol start_day 13
  !-> define axis/T0=13-jan-1980/unit=days tday_Tvar = L[l=1:4]
- !-> LIST/FORMAT=CDF/clobber/file=tagg_T0varying_4.nc myvar[l=1:4]
+ !-> LIST/FORMAT=CDF/clobber/file="tmp/tagg_T0varying_4.nc" myvar[l=1:4]
 !-> REPEAT: I=5
  !-> define symbol file 5
  !-> define symbol start_day 17
  !-> define axis/T0=17-jan-1980/unit=days tday_Tvar = L[l=1:4]
- !-> LIST/FORMAT=CDF/clobber/file=tagg_T0varying_5.nc myvar[l=1:4]
+ !-> LIST/FORMAT=CDF/clobber/file="tmp/tagg_T0varying_5.nc" myvar[l=1:4]
  
 ! --- files with T0 varying and date gaps between files ---
 let myvar = L[gt=tday_Tvar]
@@ -87204,69 +87206,69 @@ repeat/i=1:10 (\
 define symbol file `i`;\
 define symbol year `i+1980`;\
 define axis/T0=1-jan-($year)/unit=days tday_Tvar = L[l=1:10];\
-save/clobber/file=tagg_disjoint_T0varying_($file).nc myvar[l=1:10])
- !-> repeat/i=1:10 (define symbol file `i`;define symbol year `i+1980`;define axis/T0=1-jan-($year)/unit=days tday_Tvar = L[l=1:10];save/clobber/file=tagg_disjoint_T0varying_($file).nc myvar[l=1:10])
+save/clobber/file="tmp/tagg_disjoint_T0varying_($file).nc" myvar[l=1:10])
+ !-> repeat/i=1:10 (define symbol file `i`;define symbol year `i+1980`;define axis/T0=1-jan-($year)/unit=days tday_Tvar = L[l=1:10];save/clobber/file="tmp/tagg_disjoint_T0varying_($file).nc" myvar[l=1:10])
 !-> REPEAT: I=1
  !-> define symbol file 1
  !-> define symbol year 1981
  !-> define axis/T0=1-jan-1981/unit=days tday_Tvar = L[l=1:10]
- !-> LIST/FORMAT=CDF/clobber/file=tagg_disjoint_T0varying_1.nc myvar[l=1:10]
+ !-> LIST/FORMAT=CDF/clobber/file="tmp/tagg_disjoint_T0varying_1.nc" myvar[l=1:10]
 !-> REPEAT: I=2
  !-> define symbol file 2
  !-> define symbol year 1982
  !-> define axis/T0=1-jan-1982/unit=days tday_Tvar = L[l=1:10]
- !-> LIST/FORMAT=CDF/clobber/file=tagg_disjoint_T0varying_2.nc myvar[l=1:10]
+ !-> LIST/FORMAT=CDF/clobber/file="tmp/tagg_disjoint_T0varying_2.nc" myvar[l=1:10]
 !-> REPEAT: I=3
  !-> define symbol file 3
  !-> define symbol year 1983
  !-> define axis/T0=1-jan-1983/unit=days tday_Tvar = L[l=1:10]
- !-> LIST/FORMAT=CDF/clobber/file=tagg_disjoint_T0varying_3.nc myvar[l=1:10]
+ !-> LIST/FORMAT=CDF/clobber/file="tmp/tagg_disjoint_T0varying_3.nc" myvar[l=1:10]
 !-> REPEAT: I=4
  !-> define symbol file 4
  !-> define symbol year 1984
  !-> define axis/T0=1-jan-1984/unit=days tday_Tvar = L[l=1:10]
- !-> LIST/FORMAT=CDF/clobber/file=tagg_disjoint_T0varying_4.nc myvar[l=1:10]
+ !-> LIST/FORMAT=CDF/clobber/file="tmp/tagg_disjoint_T0varying_4.nc" myvar[l=1:10]
 !-> REPEAT: I=5
  !-> define symbol file 5
  !-> define symbol year 1985
  !-> define axis/T0=1-jan-1985/unit=days tday_Tvar = L[l=1:10]
- !-> LIST/FORMAT=CDF/clobber/file=tagg_disjoint_T0varying_5.nc myvar[l=1:10]
+ !-> LIST/FORMAT=CDF/clobber/file="tmp/tagg_disjoint_T0varying_5.nc" myvar[l=1:10]
 !-> REPEAT: I=6
  !-> define symbol file 6
  !-> define symbol year 1986
  !-> define axis/T0=1-jan-1986/unit=days tday_Tvar = L[l=1:10]
- !-> LIST/FORMAT=CDF/clobber/file=tagg_disjoint_T0varying_6.nc myvar[l=1:10]
+ !-> LIST/FORMAT=CDF/clobber/file="tmp/tagg_disjoint_T0varying_6.nc" myvar[l=1:10]
 !-> REPEAT: I=7
  !-> define symbol file 7
  !-> define symbol year 1987
  !-> define axis/T0=1-jan-1987/unit=days tday_Tvar = L[l=1:10]
- !-> LIST/FORMAT=CDF/clobber/file=tagg_disjoint_T0varying_7.nc myvar[l=1:10]
+ !-> LIST/FORMAT=CDF/clobber/file="tmp/tagg_disjoint_T0varying_7.nc" myvar[l=1:10]
 !-> REPEAT: I=8
  !-> define symbol file 8
  !-> define symbol year 1988
  !-> define axis/T0=1-jan-1988/unit=days tday_Tvar = L[l=1:10]
- !-> LIST/FORMAT=CDF/clobber/file=tagg_disjoint_T0varying_8.nc myvar[l=1:10]
+ !-> LIST/FORMAT=CDF/clobber/file="tmp/tagg_disjoint_T0varying_8.nc" myvar[l=1:10]
 !-> REPEAT: I=9
  !-> define symbol file 9
  !-> define symbol year 1989
  !-> define axis/T0=1-jan-1989/unit=days tday_Tvar = L[l=1:10]
- !-> LIST/FORMAT=CDF/clobber/file=tagg_disjoint_T0varying_9.nc myvar[l=1:10]
+ !-> LIST/FORMAT=CDF/clobber/file="tmp/tagg_disjoint_T0varying_9.nc" myvar[l=1:10]
 !-> REPEAT: I=10
  !-> define symbol file 10
  !-> define symbol year 1990
  !-> define axis/T0=1-jan-1990/unit=days tday_Tvar = L[l=1:10]
- !-> LIST/FORMAT=CDF/clobber/file=tagg_disjoint_T0varying_10.nc myvar[l=1:10]
+ !-> LIST/FORMAT=CDF/clobber/file="tmp/tagg_disjoint_T0varying_10.nc" myvar[l=1:10]
  
 ! alter first and third files to have only single time step
 define axis/T0=1-jan-1981/unit=days tday_Tvar = L[l=1:10]
-save/clobber/file=tagg_disjoint_T0varying_1.nc myvar[l=1:1]
+save/clobber/file="tmp/tagg_disjoint_T0varying_1.nc" myvar[l=1:1]
 define axis/T0=1-jan-1983/unit=days tday_Tvar = L[l=1:10]
-save/clobber/file=tagg_disjoint_T0varying_3.nc myvar[l=1:1]
+save/clobber/file="tmp/tagg_disjoint_T0varying_3.nc" myvar[l=1:1]
  
 ! make an alternative file 4 that has a different name for the time axis
 define axis/T0=1-jan-1984/unit=days tday_WRONG = L[l=1:10]
 let myvar = L[gt=tday_WRONG]
-save/clobber/file=tagg_disjoint_T0varying_4_wrong.nc myvar[l=1:1]
+save/clobber/file="tmp/tagg_disjoint_T0varying_4_wrong.nc" myvar[l=1:1]
 cancel axis tday_Tvar
 cancel axis tday_WRONG
  
@@ -87281,12 +87283,12 @@ let mymap = I[x=0E:0E:5]+ 10*J[Y=80s:80n:5]
  
 !save/rigid/keep_axisname/file=...
  
-save/clobber/file=tagg_single_1.nc myvar[l=1], mymap
-save/clobber/file=tagg_single_2.nc myvar[l=2]
-save/clobber/file=tagg_single_3.nc myvar[l=3]
-save/clobber/file=tagg_single_4.nc myvar[l=4]
-save/clobber/file=tagg_single_5.nc myvar[l=5]
-save/clobber/file=tagg_single_6.nc myvar[l=6]
+save/clobber/file="tmp/tagg_single_1.nc" myvar[l=1], mymap
+save/clobber/file="tmp/tagg_single_2.nc" myvar[l=2]
+save/clobber/file="tmp/tagg_single_3.nc" myvar[l=3]
+save/clobber/file="tmp/tagg_single_4.nc" myvar[l=4]
+save/clobber/file="tmp/tagg_single_5.nc" myvar[l=5]
+save/clobber/file="tmp/tagg_single_6.nc" myvar[l=6]
  
 cancel axis tday
  
@@ -87298,10 +87300,10 @@ cancel var/all
 ! --- regularly-spaced axes ---
 ! if the first file of the aggregation is already open
 ! it must not get disturbed by setting up the aggregation
-use tagg_reg_1.nc
+use tmp/tagg_reg_1.nc
  
 ! single dataset aggregation
-tseries myagg1 =  tagg_reg_1.nc
+tseries myagg1 =  tmp/tagg_reg_1.nc
 show data myagg1
      currently SET data sets:
     2> myagg1  (default)
@@ -87320,7 +87322,7 @@ show grid myvar
  normal    F
  
 ! double file aggregation
-define data/agg/t myagg2 = tagg_reg_1.nc, tagg_reg_2.nc
+define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
 show grid myvar
     GRID GQC3
  name       axis              # pts   start                end
@@ -87349,7 +87351,7 @@ stat myvar
  Standard deviation: 0.90253
  
 ! show that aggregate name is case-sensitive
-define data/agg/t myAgg2 = tagg_reg_1.nc, tagg_reg_2.nc
+define data/agg/t myAgg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
 show data myAgg2
      currently SET data sets:
     3> myagg2
@@ -87359,10 +87361,10 @@ show data myAgg2
  
  
 ! define a long aggregation
-define data/agg/t myagg8 = tagg_reg_1.nc, tagg_reg_2.nc,tagg_reg_3.nc, tagg_reg_4.nc,tagg_reg_5.nc, tagg_reg_6.nc,tagg_reg_7.nc, tagg_reg_8.nc
+define data/agg/t myagg8 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc,tmp/tagg_reg_3.nc, tmp/tagg_reg_4.nc,tmp/tagg_reg_5.nc, tmp/tagg_reg_6.nc,tmp/tagg_reg_7.nc, tmp/tagg_reg_8.nc
 show data/full  ! all 4 datasets
      currently SET data sets:
-    1> ./tagg_reg_1.nc
+    1> tmp/tagg_reg_1.nc
  
  name     title                             I         J         K         L         M         N
  MYVAR    SIN(T[GT=TDAY]/10) + L[GT=TDAY]  ...       ...       ...       1:10      ...       ...
@@ -87388,7 +87390,7 @@ show data/full  ! all 4 datasets
   time range: 01-JAN-1980 00:00 to 10-JAN-1980 00:00
  
           time-dependent data files:
-01-JAN-1980 00:00 -> 10-JAN-1980 00:00    tagg_reg_1.nc
+01-JAN-1980 00:00 -> 10-JAN-1980 00:00    tmp/tagg_reg_1.nc
     3> myagg2
  
      T-aggregation of 2 netCDF files
@@ -87403,8 +87405,8 @@ show data/full  ! all 4 datasets
   time range: 01-JAN-1980 00:00 to 20-JAN-1980 00:00
  
           time-dependent data files:
-01-JAN-1980 00:00 -> 10-JAN-1980 00:00    ./tagg_reg_1.nc
-11-JAN-1980 00:00 -> 20-JAN-1980 00:00    ./tagg_reg_2.nc
+01-JAN-1980 00:00 -> 10-JAN-1980 00:00    tmp/tagg_reg_1.nc
+11-JAN-1980 00:00 -> 20-JAN-1980 00:00    tmp/tagg_reg_2.nc
     4> myAgg2
  
      T-aggregation of 2 netCDF files
@@ -87419,8 +87421,8 @@ show data/full  ! all 4 datasets
   time range: 01-JAN-1980 00:00 to 20-JAN-1980 00:00
  
           time-dependent data files:
-01-JAN-1980 00:00 -> 10-JAN-1980 00:00    tagg_reg_1.nc
-11-JAN-1980 00:00 -> 20-JAN-1980 00:00    tagg_reg_2.nc
+01-JAN-1980 00:00 -> 10-JAN-1980 00:00    tmp/tagg_reg_1.nc
+11-JAN-1980 00:00 -> 20-JAN-1980 00:00    tmp/tagg_reg_2.nc
     5> myagg8  (default)
  
      T-aggregation of 8 netCDF files
@@ -87435,14 +87437,14 @@ show data/full  ! all 4 datasets
   time range: 01-JAN-1980 00:00 to 20-MAR-1980 00:00
  
           time-dependent data files:
-01-JAN-1980 00:00 -> 10-JAN-1980 00:00    tagg_reg_1.nc
-11-JAN-1980 00:00 -> 20-JAN-1980 00:00    tagg_reg_2.nc
-21-JAN-1980 00:00 -> 30-JAN-1980 00:00    tagg_reg_3.nc
-31-JAN-1980 00:00 -> 09-FEB-1980 00:00    tagg_reg_4.nc
-10-FEB-1980 00:00 -> 19-FEB-1980 00:00    tagg_reg_5.nc
-20-FEB-1980 00:00 -> 29-FEB-1980 00:00    tagg_reg_6.nc
-01-MAR-1980 00:00 -> 10-MAR-1980 00:00    tagg_reg_7.nc
-11-MAR-1980 00:00 -> 20-MAR-1980 00:00    tagg_reg_8.nc
+01-JAN-1980 00:00 -> 10-JAN-1980 00:00    tmp/tagg_reg_1.nc
+11-JAN-1980 00:00 -> 20-JAN-1980 00:00    tmp/tagg_reg_2.nc
+21-JAN-1980 00:00 -> 30-JAN-1980 00:00    tmp/tagg_reg_3.nc
+31-JAN-1980 00:00 -> 09-FEB-1980 00:00    tmp/tagg_reg_4.nc
+10-FEB-1980 00:00 -> 19-FEB-1980 00:00    tmp/tagg_reg_5.nc
+20-FEB-1980 00:00 -> 29-FEB-1980 00:00    tmp/tagg_reg_6.nc
+01-MAR-1980 00:00 -> 10-MAR-1980 00:00    tmp/tagg_reg_7.nc
+11-MAR-1980 00:00 -> 20-MAR-1980 00:00    tmp/tagg_reg_8.nc
 show grid myvar
     GRID GQC7
  name       axis              # pts   start                end
@@ -87476,19 +87478,19 @@ stat mymap
 ! deliberate errors
 set mode ignore
 ! try to define the same aggregation again
-define data/agg/t myagg2 = tagg_reg_1.nc, tagg_reg_2.nc
+define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
  
 ! try to aggregate a missing file as first file
-define data/agg/t myaggbad = tagg_no_exist.nc, tagg_reg_2.nc
+define data/agg/t myaggbad = tmp/tagg_no_exist.nc, tmp/tagg_reg_2.nc
  
 ! try to aggregate a missing file as subsequent file
-define data/agg/t myaggbad = tagg_reg_1.nc, tagg_no_exist.nc
+define data/agg/t myaggbad = tmp/tagg_reg_1.nc, tmp/tagg_no_exist.nc
  
 ! try to define an aggregation where there is no time axis in the first file
-tseries myTindepagg = tagg_reg_no_T.nc
+tseries myTindepagg = tmp/tagg_reg_no_T.nc
  
 ! erroneous file 2 with 15 time steps, goes beyond start of file 3
-define data/agg/t myagg3 = tagg_reg_1.nc, tagg_reg_2_overlarge.nc,tagg_reg_3.nc
+define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2_overlarge.nc,tmp/tagg_reg_3.nc
  
 set mode/last ignore
 canc data/all
@@ -87496,10 +87498,10 @@ canc data/all
  
 ! --- irregularly-spaced axes ---
 ! aggregation of 2 irregular datasets
- define data/agg/t myagg2 = tagg_irreg_1.nc, tagg_irreg_2.nc
+ define data/agg/t myagg2 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_2.nc
  
 ! aggregate a longer collection where all are irregular
-define data/agg/t myagg8 = tagg_irreg_1.nc, tagg_irreg_2.nc,tagg_irreg_3.nc, tagg_irreg_4.nc,tagg_irreg_5.nc, tagg_irreg_6.nc,tagg_irreg_7.nc, tagg_irreg_8.nc
+define data/agg/t myagg8 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_2.nc,tmp/tagg_irreg_3.nc, tmp/tagg_irreg_4.nc,tmp/tagg_irreg_5.nc, tmp/tagg_irreg_6.nc,tmp/tagg_irreg_7.nc, tmp/tagg_irreg_8.nc
   show data/full
      currently SET data sets:
     1> myagg2
@@ -87513,8 +87515,8 @@ define data/agg/t myagg8 = tagg_irreg_1.nc, tagg_irreg_2.nc,tagg_irreg_3.nc, tag
   time range: 02-JAN-1980 00:00 to 21-JAN-1980 14:35
  
           time-dependent data files:
-02-JAN-1980 00:00 -> 11-JAN-1980 05:35    tagg_irreg_1.nc
-12-JAN-1980 06:24 -> 21-JAN-1980 14:35    tagg_irreg_2.nc
+02-JAN-1980 00:00 -> 11-JAN-1980 05:35    tmp/tagg_irreg_1.nc
+12-JAN-1980 06:24 -> 21-JAN-1980 14:35    tmp/tagg_irreg_2.nc
     2> myagg8  (default)
  
      T-aggregation of 8 netCDF files
@@ -87526,14 +87528,14 @@ define data/agg/t myagg8 = tagg_irreg_1.nc, tagg_irreg_2.nc,tagg_irreg_3.nc, tag
   time range: 02-JAN-1980 00:00 to 24-MAR-1980 14:00
  
           time-dependent data files:
-02-JAN-1980 00:00 -> 11-JAN-1980 05:35    tagg_irreg_1.nc
-12-JAN-1980 06:24 -> 21-JAN-1980 14:35    tagg_irreg_2.nc
-22-JAN-1980 15:34 -> 01-FEB-1980 00:54    tagg_irreg_3.nc
-02-FEB-1980 01:59 -> 11-FEB-1980 12:04    tagg_irreg_4.nc
-12-FEB-1980 13:13 -> 21-FEB-1980 23:52    tagg_irreg_5.nc
-23-FEB-1980 01:05 -> 03-MAR-1980 12:10    tagg_irreg_6.nc
-04-MAR-1980 13:26 -> 14-MAR-1980 00:54    tagg_irreg_7.nc
-15-MAR-1980 02:12 -> 24-MAR-1980 14:00    tagg_irreg_8.nc
+02-JAN-1980 00:00 -> 11-JAN-1980 05:35    tmp/tagg_irreg_1.nc
+12-JAN-1980 06:24 -> 21-JAN-1980 14:35    tmp/tagg_irreg_2.nc
+22-JAN-1980 15:34 -> 01-FEB-1980 00:54    tmp/tagg_irreg_3.nc
+02-FEB-1980 01:59 -> 11-FEB-1980 12:04    tmp/tagg_irreg_4.nc
+12-FEB-1980 13:13 -> 21-FEB-1980 23:52    tmp/tagg_irreg_5.nc
+23-FEB-1980 01:05 -> 03-MAR-1980 12:10    tmp/tagg_irreg_6.nc
+04-MAR-1980 13:26 -> 14-MAR-1980 00:54    tmp/tagg_irreg_7.nc
+15-MAR-1980 02:12 -> 24-MAR-1980 14:00    tmp/tagg_irreg_8.nc
   show data myagg2
      currently SET data sets:
     1> myagg2
@@ -87583,7 +87585,7 @@ define data/agg/t myagg8 = tagg_irreg_1.nc, tagg_irreg_2.nc,tagg_irreg_3.nc, tag
   plot/line/sym myvar[d=2],myvar[d=1]
  
 ! aggregate collection that mixes regular (file 2) with irregular
-define data/agg/t myagg4 = tagg_irreg_1.nc, tagg_irreg_2_reg.nc,tagg_irreg_3.nc, tagg_irreg_4.nc
+define data/agg/t myagg4 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_2_reg.nc,tmp/tagg_irreg_3.nc, tmp/tagg_irreg_4.nc
   show grid/t myvar[d=myagg4]
     GRID GCV3
  name       axis              # pts   start                end
@@ -87638,16 +87640,16 @@ define data/agg/t myagg4 = tagg_irreg_1.nc, tagg_irreg_2_reg.nc,tagg_irreg_3.nc,
  
 ! deliberate error -- aggregated file out of order
 set mode ignore
-define data/agg/t myagg3 = tagg_irreg_1.nc, tagg_irreg_3.nc,tagg_irreg_2.nc
+define data/agg/t myagg3 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_3.nc,tmp/tagg_irreg_2.nc
 set mode/last ignore
 canc data/all
  
 ! --- aggregation from T0-varying files ---
 ! aggregate two
-  define data/agg/t myagg2 = tagg_T0varying_1.nc, tagg_T0varying_2.nc
+  define data/agg/t myagg2 = tmp/tagg_T0varying_1.nc, tmp/tagg_T0varying_2.nc
  
 ! aggregate several
-define data/agg/t myagg8 = tagg_T0varying_1.nc, tagg_T0varying_2.nc,tagg_T0varying_3.nc, tagg_T0varying_4.nc,tagg_T0varying_5.nc
+define data/agg/t myagg8 = tmp/tagg_T0varying_1.nc, tmp/tagg_T0varying_2.nc,tmp/tagg_T0varying_3.nc, tmp/tagg_T0varying_4.nc,tmp/tagg_T0varying_5.nc
   show data/full
      currently SET data sets:
     1> myagg2
@@ -87661,8 +87663,8 @@ define data/agg/t myagg8 = tagg_T0varying_1.nc, tagg_T0varying_2.nc,tagg_T0varyi
   time range: 02-JAN-1980 00:00 to 09-JAN-1980 00:00
  
           time-dependent data files:
-02-JAN-1980 00:00 -> 05-JAN-1980 00:00    tagg_T0varying_1.nc
-06-JAN-1980 00:00 -> 09-JAN-1980 00:00    tagg_T0varying_2.nc
+02-JAN-1980 00:00 -> 05-JAN-1980 00:00    tmp/tagg_T0varying_1.nc
+06-JAN-1980 00:00 -> 09-JAN-1980 00:00    tmp/tagg_T0varying_2.nc
     2> myagg8  (default)
  
      T-aggregation of 5 netCDF files
@@ -87674,11 +87676,11 @@ define data/agg/t myagg8 = tagg_T0varying_1.nc, tagg_T0varying_2.nc,tagg_T0varyi
   time range: 02-JAN-1980 00:00 to 21-JAN-1980 00:00
  
           time-dependent data files:
-02-JAN-1980 00:00 -> 05-JAN-1980 00:00    tagg_T0varying_1.nc
-06-JAN-1980 00:00 -> 09-JAN-1980 00:00    tagg_T0varying_2.nc
-10-JAN-1980 00:00 -> 13-JAN-1980 00:00    tagg_T0varying_3.nc
-14-JAN-1980 00:00 -> 17-JAN-1980 00:00    tagg_T0varying_4.nc
-18-JAN-1980 00:00 -> 21-JAN-1980 00:00    tagg_T0varying_5.nc
+02-JAN-1980 00:00 -> 05-JAN-1980 00:00    tmp/tagg_T0varying_1.nc
+06-JAN-1980 00:00 -> 09-JAN-1980 00:00    tmp/tagg_T0varying_2.nc
+10-JAN-1980 00:00 -> 13-JAN-1980 00:00    tmp/tagg_T0varying_3.nc
+14-JAN-1980 00:00 -> 17-JAN-1980 00:00    tmp/tagg_T0varying_4.nc
+18-JAN-1980 00:00 -> 21-JAN-1980 00:00    tmp/tagg_T0varying_5.nc
   show data myagg2
      currently SET data sets:
     1> myagg2
@@ -87719,11 +87721,11 @@ canc data/all
  
 ! --- aggregations of disjoint, irregularly-sized, T0-varying files ---
 ! aggregate two
-  define data/agg/t myagg2 = tagg_disjoint_T0varying_1.nc, tagg_disjoint_T0varying_2.nc
+  define data/agg/t myagg2 = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc
  
  
 ! aggregate several
-define data/agg/t myagg8 = tagg_disjoint_T0varying_1.nc, tagg_disjoint_T0varying_2.nc,tagg_disjoint_T0varying_3.nc, tagg_disjoint_T0varying_4.nc,tagg_disjoint_T0varying_5.nc, tagg_disjoint_T0varying_6.nc,tagg_disjoint_T0varying_7.nc, tagg_disjoint_T0varying_8.nc
+define data/agg/t myagg8 = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_4.nc,tmp/tagg_disjoint_T0varying_5.nc, tmp/tagg_disjoint_T0varying_6.nc,tmp/tagg_disjoint_T0varying_7.nc, tmp/tagg_disjoint_T0varying_8.nc
   show data/full
      currently SET data sets:
     1> myagg2
@@ -87737,8 +87739,8 @@ define data/agg/t myagg8 = tagg_disjoint_T0varying_1.nc, tagg_disjoint_T0varying
   time range: 02-JAN-1981 00:00 to 11-JAN-1982 00:00
  
           time-dependent data files:
-02-JAN-1981 00:00 -> 02-JAN-1981 00:00    tagg_disjoint_T0varying_1.nc
-02-JAN-1982 00:00 -> 11-JAN-1982 00:00    tagg_disjoint_T0varying_2.nc
+02-JAN-1981 00:00 -> 02-JAN-1981 00:00    tmp/tagg_disjoint_T0varying_1.nc
+02-JAN-1982 00:00 -> 11-JAN-1982 00:00    tmp/tagg_disjoint_T0varying_2.nc
     2> myagg8  (default)
  
      T-aggregation of 8 netCDF files
@@ -87750,14 +87752,14 @@ define data/agg/t myagg8 = tagg_disjoint_T0varying_1.nc, tagg_disjoint_T0varying
   time range: 02-JAN-1981 00:00 to 11-JAN-1988 00:00
  
           time-dependent data files:
-02-JAN-1981 00:00 -> 02-JAN-1981 00:00    tagg_disjoint_T0varying_1.nc
-02-JAN-1982 00:00 -> 11-JAN-1982 00:00    tagg_disjoint_T0varying_2.nc
-02-JAN-1983 00:00 -> 02-JAN-1983 00:00    tagg_disjoint_T0varying_3.nc
-02-JAN-1984 00:00 -> 11-JAN-1984 00:00    tagg_disjoint_T0varying_4.nc
-02-JAN-1985 00:00 -> 11-JAN-1985 00:00    tagg_disjoint_T0varying_5.nc
-02-JAN-1986 00:00 -> 11-JAN-1986 00:00    tagg_disjoint_T0varying_6.nc
-02-JAN-1987 00:00 -> 11-JAN-1987 00:00    tagg_disjoint_T0varying_7.nc
-02-JAN-1988 00:00 -> 11-JAN-1988 00:00    tagg_disjoint_T0varying_8.nc
+02-JAN-1981 00:00 -> 02-JAN-1981 00:00    tmp/tagg_disjoint_T0varying_1.nc
+02-JAN-1982 00:00 -> 11-JAN-1982 00:00    tmp/tagg_disjoint_T0varying_2.nc
+02-JAN-1983 00:00 -> 02-JAN-1983 00:00    tmp/tagg_disjoint_T0varying_3.nc
+02-JAN-1984 00:00 -> 11-JAN-1984 00:00    tmp/tagg_disjoint_T0varying_4.nc
+02-JAN-1985 00:00 -> 11-JAN-1985 00:00    tmp/tagg_disjoint_T0varying_5.nc
+02-JAN-1986 00:00 -> 11-JAN-1986 00:00    tmp/tagg_disjoint_T0varying_6.nc
+02-JAN-1987 00:00 -> 11-JAN-1987 00:00    tmp/tagg_disjoint_T0varying_7.nc
+02-JAN-1988 00:00 -> 11-JAN-1988 00:00    tmp/tagg_disjoint_T0varying_8.nc
   show data myagg2
      currently SET data sets:
     1> myagg2
@@ -87797,20 +87799,56 @@ define data/agg/t myagg8 = tagg_disjoint_T0varying_1.nc, tagg_disjoint_T0varying
  normal    F
   plot/line/sym/vlim=0:11 myvar[d=2],myvar[d=1]
  
+! a few tests of using Ferret string variables to get the names of files
+define data/agg/t listAgg1 = {"tmp/tagg_reg_1.nc", "tmp/tagg_reg_2.nc"}
+show data/files listAgg1
+     currently SET data sets:
+    3> listAgg1  (default)
+ name     title                             I         J         K         L         M         N
+ MYVAR    SIN(T[GT=TDAY]/10) + L[GT=TDAY]  ...       ...       ...       1:20      ...       ...
+ MYMAP    I[X=0E:0E:5]+ 10*J[Y=80S:80N:5]  1:73      1:33      ...       ...       ...       ...
+ 
+          time-dependent data files:
+01-JAN-1980 00:00 -> 10-JAN-1980 00:00    tmp/tagg_reg_1.nc
+11-JAN-1980 00:00 -> 20-JAN-1980 00:00    tmp/tagg_reg_2.nc
+ 
+! define a long aggregation
+let file_list = SPAWN("ls -1 tmp/tagg_reg_?.nc")
+define data/agg/t listAgg2 = file_list
+show data/files listAgg2
+     currently SET data sets:
+    4> listAgg2  (default)
+ name     title                             I         J         K         L         M         N
+ MYVAR    SIN(T[GT=TDAY]/10) + L[GT=TDAY]  ...       ...       ...       1:90      ...       ...
+ MYMAP    I[X=0E:0E:5]+ 10*J[Y=80S:80N:5]  1:73      1:33      ...       ...       ...       ...
+ 
+          time-dependent data files:
+01-JAN-1980 00:00 -> 10-JAN-1980 00:00    tmp/tagg_reg_1.nc
+11-JAN-1980 00:00 -> 20-JAN-1980 00:00    tmp/tagg_reg_2.nc
+21-JAN-1980 00:00 -> 30-JAN-1980 00:00    tmp/tagg_reg_3.nc
+31-JAN-1980 00:00 -> 09-FEB-1980 00:00    tmp/tagg_reg_4.nc
+10-FEB-1980 00:00 -> 19-FEB-1980 00:00    tmp/tagg_reg_5.nc
+20-FEB-1980 00:00 -> 29-FEB-1980 00:00    tmp/tagg_reg_6.nc
+01-MAR-1980 00:00 -> 10-MAR-1980 00:00    tmp/tagg_reg_7.nc
+11-MAR-1980 00:00 -> 20-MAR-1980 00:00    tmp/tagg_reg_8.nc
+21-MAR-1980 00:00 -> 30-MAR-1980 00:00    tmp/tagg_reg_9.nc
+ 
+cancel data/all
+ 
 ! deliberate errors
 set mode ignore
 ! deliberate error - try to re-use a name already in use
-  define data/agg/t myagg2 = tagg_disjoint_T0varying_1.nc, tagg_disjoint_T0varying_2.nc
+  define data/agg/t myagg2 = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc
  
 ! deliberate error - the fourth file (*_4_wrong.nc) changes time axis name
-define data/agg/t myagg5_bad = tagg_disjoint_T0varying_1.nc, tagg_disjoint_T0varying_2.nc,tagg_disjoint_T0varying_3.nc, tagg_disjoint_T0varying_4_wrong.nc,tagg_disjoint_T0varying_5.nc
+define data/agg/t myagg5_bad = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_4_wrong.nc,tmp/tagg_disjoint_T0varying_5.nc
 set mode/last ignore
  
 canc data/all
  
 ! --- aggregations of single timestep files ---
 ! define a regular aggregation
-define data/agg/t MYsing_reg_agg6 = tagg_single_1.nc, tagg_single_2.nc,tagg_single_3.nc, tagg_single_4.nc,tagg_single_5.nc, tagg_single_6.nc
+define data/agg/t MYsing_reg_agg6 = tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_3.nc, tmp/tagg_single_4.nc,tmp/tagg_single_5.nc, tmp/tagg_single_6.nc
 show data/full  MYsing_reg_agg6
      currently SET data sets:
     1> MYsing_reg_agg6  (default)
@@ -87827,12 +87865,12 @@ show data/full  MYsing_reg_agg6
   time range: 01-JAN-1980 00:00 to 06-JAN-1980 00:00
  
           time-dependent data files:
-01-JAN-1980 00:00 -> 01-JAN-1980 00:00    tagg_single_1.nc
-02-JAN-1980 00:00 -> 02-JAN-1980 00:00    tagg_single_2.nc
-03-JAN-1980 00:00 -> 03-JAN-1980 00:00    tagg_single_3.nc
-04-JAN-1980 00:00 -> 04-JAN-1980 00:00    tagg_single_4.nc
-05-JAN-1980 00:00 -> 05-JAN-1980 00:00    tagg_single_5.nc
-06-JAN-1980 00:00 -> 06-JAN-1980 00:00    tagg_single_6.nc
+01-JAN-1980 00:00 -> 01-JAN-1980 00:00    tmp/tagg_single_1.nc
+02-JAN-1980 00:00 -> 02-JAN-1980 00:00    tmp/tagg_single_2.nc
+03-JAN-1980 00:00 -> 03-JAN-1980 00:00    tmp/tagg_single_3.nc
+04-JAN-1980 00:00 -> 04-JAN-1980 00:00    tmp/tagg_single_4.nc
+05-JAN-1980 00:00 -> 05-JAN-1980 00:00    tmp/tagg_single_5.nc
+06-JAN-1980 00:00 -> 06-JAN-1980 00:00    tmp/tagg_single_6.nc
 show grid/t myvar
     GRID GMI1
  name       axis              # pts   start                end
@@ -87871,7 +87909,7 @@ stat mymap
  Standard deviation: 97.543
  
 ! define an irregular aggregation
-define data/agg/t MYsing_irreg_agg4 = tagg_single_1.nc, tagg_single_2.nc,tagg_single_4.nc, tagg_single_5.nc
+define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc
 show data/full MYsing_irreg_agg4
      currently SET data sets:
     2> MYsing_irreg_agg4  (default)
@@ -87888,10 +87926,10 @@ show data/full MYsing_irreg_agg4
   time range: 01-JAN-1980 00:00 to 05-JAN-1980 00:00
  
           time-dependent data files:
-01-JAN-1980 00:00 -> 01-JAN-1980 00:00    tagg_single_1.nc
-02-JAN-1980 00:00 -> 02-JAN-1980 00:00    tagg_single_2.nc
-04-JAN-1980 00:00 -> 04-JAN-1980 00:00    tagg_single_4.nc
-05-JAN-1980 00:00 -> 05-JAN-1980 00:00    tagg_single_5.nc
+01-JAN-1980 00:00 -> 01-JAN-1980 00:00    tmp/tagg_single_1.nc
+02-JAN-1980 00:00 -> 02-JAN-1980 00:00    tmp/tagg_single_2.nc
+04-JAN-1980 00:00 -> 04-JAN-1980 00:00    tmp/tagg_single_4.nc
+05-JAN-1980 00:00 -> 05-JAN-1980 00:00    tmp/tagg_single_5.nc
 show grid/t myvar
     GRID GMI3
  name       axis              # pts   start                end
@@ -87908,6 +87946,171 @@ show grid/t myvar
        3>  04-JAN-1980 00:00:00  1.5        03-JAN-1980 00:00:00    28843
        4>  05-JAN-1980 00:00:00  1          04-JAN-1980 12:00:00    28844
 canc data/all
+ 
+ 
+! OPeNDAP test
+IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2012.nc") EQ 0` THEN
+ !-> IF 1 THEN
+   tseries COADS = http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2012.nc, http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2013.nc, http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2014.nc
+show data COADS
+     currently SET data sets:
+    1> COADS  (default)
+ name     title                             I         J         K         L         M         N
+ AIR      Air Temperature Monthly Mean_da  1:180     1:90      ...       1:36      ...       ...
+ 
+show grid/T air
+    GRID GMW1
+ name       axis              # pts   start                end
+ LON1      LONGITUDE          180mr   1E                   1W
+ LAT       LATITUDE            90 r   89S                  89N
+ normal    Z
+ TIME16    TIME                36 i   16-JAN-2012 12:00    16-DEC-2014 12:00
+ normal    E
+ normal    F
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  16-JAN-2012 12:00:00  31         01-JAN-2012 00:00:00    77446.5
+       2>  15-FEB-2012 12:00:00  29         01-FEB-2012 00:00:00    77476.5
+       3>  16-MAR-2012 12:00:00  31         01-MAR-2012 00:00:00    77506.5
+       4>  16-APR-2012 00:00:00  30         01-APR-2012 00:00:00    77537
+       5>  16-MAY-2012 12:00:00  31         01-MAY-2012 00:00:00    77567.5
+       6>  16-JUN-2012 00:00:00  30         01-JUN-2012 00:00:00    77598
+       7>  16-JUL-2012 12:00:00  31         01-JUL-2012 00:00:00    77628.5
+       8>  16-AUG-2012 12:00:00  31         01-AUG-2012 00:00:00    77659.5
+       9>  16-SEP-2012 00:00:00  30         01-SEP-2012 00:00:00    77690
+      10>  16-OCT-2012 12:00:00  31         01-OCT-2012 00:00:00    77720.5
+      11>  16-NOV-2012 00:00:00  30         01-NOV-2012 00:00:00    77751
+      12>  16-DEC-2012 12:00:00  31         01-DEC-2012 00:00:00    77781.5
+      13>  16-JAN-2013 12:00:00  31         01-JAN-2013 00:00:00    77812.5
+      14>  15-FEB-2013 00:00:00  28         01-FEB-2013 00:00:00    77842
+      15>  16-MAR-2013 12:00:00  31         01-MAR-2013 00:00:00    77871.5
+      16>  16-APR-2013 00:00:00  30         01-APR-2013 00:00:00    77902
+      17>  16-MAY-2013 12:00:00  31         01-MAY-2013 00:00:00    77932.5
+      18>  16-JUN-2013 00:00:00  30         01-JUN-2013 00:00:00    77963
+      19>  16-JUL-2013 12:00:00  31         01-JUL-2013 00:00:00    77993.5
+      20>  16-AUG-2013 12:00:00  31         01-AUG-2013 00:00:00    78024.5
+      21>  16-SEP-2013 00:00:00  30         01-SEP-2013 00:00:00    78055
+      22>  16-OCT-2013 12:00:00  31         01-OCT-2013 00:00:00    78085.5
+      23>  16-NOV-2013 00:00:00  30         01-NOV-2013 00:00:00    78116
+      24>  16-DEC-2013 12:00:00  31         01-DEC-2013 00:00:00    78146.5
+      25>  16-JAN-2014 12:00:00  31         01-JAN-2014 00:00:00    78177.5
+      26>  15-FEB-2014 00:00:00  28         01-FEB-2014 00:00:00    78207
+      27>  16-MAR-2014 12:00:00  31         01-MAR-2014 00:00:00    78236.5
+      28>  16-APR-2014 00:00:00  30         01-APR-2014 00:00:00    78267
+      29>  16-MAY-2014 12:00:00  31         01-MAY-2014 00:00:00    78297.5
+      30>  16-JUN-2014 00:00:00  30         01-JUN-2014 00:00:00    78328
+      31>  16-JUL-2014 12:00:00  31         01-JUL-2014 00:00:00    78358.5
+      32>  16-AUG-2014 12:00:00  31         01-AUG-2014 00:00:00    78389.5
+      33>  16-SEP-2014 00:00:00  30         01-SEP-2014 00:00:00    78420
+      34>  16-OCT-2014 12:00:00  31         01-OCT-2014 00:00:00    78450.5
+      35>  16-NOV-2014 00:00:00  30         01-NOV-2014 00:00:00    78481
+      36>  16-DEC-2014 12:00:00  31         01-DEC-2014 00:00:00    78511.5
+canc data/all
+ELSE
+ENDIF
+ 
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO bn_set_data_unquoted
+! bn_set_data_unquoted.jnl
+! 12/2015 -- a hack change to PPARSE_COMMAND to allow users to omit
+! the quotation marks in the argument(s) of SET DATA
+! extra hack-y in that erroneous qualifiers are no longer reliably trapped
+ 
+spawn "mkdir -p tmp"
+save/clobber/file="tmp/test1.nc" i[i=1:3] + 1
+save/clobber/file="tmp/test2.nc" i[i=1:3] + 2
+save/clobber/file="tmp/test3.nc" i[i=1:3] + 3
+ 
+use tmp/test1.nc
+show data/brief
+     currently SET data sets:
+    1> tmp/test1.nc  (default)
+canc data/all
+ 
+use "tmp/test1.nc"
+show data/brief
+     currently SET data sets:
+    1> tmp/test1.nc  (default)
+canc data/all
+ 
+use "tmp/test1.nc"
+show data/brief
+     currently SET data sets:
+    1> tmp/test1.nc  (default)
+canc data/all
+ 
+use tmp/test1.nc
+show data/brief
+     currently SET data sets:
+    1> tmp/test1.nc  (default)
+canc data/all
+ 
+! cannot check absolute path reliably without risk of breaking the benchmark
+!use "/home/users/hankin/FERRETtmp/test1.nc"
+!show data/brief
+!canc data/all
+!
+!use /home/users/hankin/FERRETtmp/test1.nc
+!show data/brief
+!canc data/all
+ 
+use tmp/test1.nc,tmp/test2.nc,tmp/test3.nc
+show data/brief
+     currently SET data sets:
+    1> tmp/test1.nc
+    2> tmp/test2.nc
+    3> tmp/test3.nc  (default)
+canc data/all
+ 
+use tmp/test1.nc,"tmp/test2.nc", tmp/test3.nc
+show data/brief
+     currently SET data sets:
+    1> tmp/test1.nc
+    2> tmp/test2.nc
+    3> tmp/test3.nc  (default)
+canc data/all
+ 
+IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf") EQ 0` THEN
+ !-> IF 1 THEN
+  use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf"
+  show data/brief
+     currently SET data sets:
+    1> http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf  (default)
+  canc data/all
+  use http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf
+  show data/brief
+     currently SET data sets:
+    1> http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf  (default)
+  canc data/all
+  use tmp/test1.nc, "tmp/test2.nc", http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf
+  show data/brief
+     currently SET data sets:
+    1> tmp/test1.nc
+    2> tmp/test2.nc
+    3> http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf  (default)
+  canc data/all
+ELSE
+ENDIF
+ 
+! deliberate errors
+! erroneous qualifier with no white space detected
+set mode ignore
+set data/erroneous tmp/test1.nc
+ 
+! erroneous qualifier with white space detected
+set data /erroneous tmp/test1.nc
+ 
+! erroneous qualifier with comma treated as an invalid filename
+set data /erroneous, tmp/test1.nc
+ 
+can mode ignore
+ 
+canc data/all
+ 
+ 
  
  
  
@@ -88055,6 +88258,526 @@ can mode ignore
  
 can data/all
  
+GO bn_reset
+cancel mode verify
+GO err696_centerlab_restore
+! err696_centerlab_restore
+! Ticket 2331.
+! When a plot is made with
+!   shade/SET/key=centerlab; ppl shade
+! Then the nextsubsequent plot still had the centered key labeling.
+ 
+ 
+use coads_climatology
+set view left
+shade/SET/l=1/key=centerlab sst
+ppl shade
+ 
+set view right
+shade/l=1 sst
+ 
+! ...although the next one does restore the default.
+shade/l=1 sst
+ 
+! Horizontal plots with the same behavior.
+cancel view
+set view upper
+shade/SET/l=1/key=centerlab,horiz sst
+ppl shade
+ 
+set view lower
+shade/l=1/key=horiz sst
+ 
+! FILL plots
+cancel view
+set view left
+fill/SET/l=1/key=centerlab sst
+ppl shade
+ 
+! This plot still had the labels centered
+set view right
+fill/l=1 sst
+ 
+! Ribbon plots
+cancel view
+set view left; plot/ribbon/vs/line/thick/key=cent/SET {1,2,3,4}, {1,2,3,4}, {1,2,3,4}
+ppl ribbon
+set view right; plot/ribbon/vs/line/thick  {1,2,3,4}, {1,2,3,4}, {1,2,3,4}
+ 
+! Polygon plots
+cancel view
+let xsqr = YSEQUENCE({0,.1,.1,0})
+let ysqr = YSEQUENCE({0,0,.1,.1})
+ 
+let ypts = x/10
+let xpts = cos(x/10)
+ 
+set view upper
+polygon/trans/i=1:20/nolab/key=horiz,center/SET xpts+xsqr, ypts+ysqr, x*x/10
+ppl polygon
+set view lower
+polygon/trans/i=1:20/nolab/key=horiz  xpts+xsqr, ypts+ysqr, x*x/10
+ 
+GO bn_reset
+cancel mode verify
+GO err696_time_overlay
+! err696_time_overlay
+! bug 2334, first plot/over takes too long and the line is incorrect.
+ 
+def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
+def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
+sp date
+Fri Dec 11 16:53:50 PST 2015
+set view upper
+plot t[gt=tax_nlp]
+plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
+sp date
+Fri Dec 11 16:53:50 PST 2015
+ 
+sp date
+Fri Dec 11 16:53:50 PST 2015
+set view lower
+plot t[gt=tax_jul]
+plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
+sp date
+Fri Dec 11 16:53:50 PST 2015
+ 
+GO bn_reset
+cancel mode verify
+GO err696_save_noupcase
+! err696_save_noupcase
+! Ticket 2336: When UPCASE canceled an extra upcase axis
+!  was written to a file - only when user-defined axis.
+!
+! Note as part of this fix, if MODE UPCASE is canceled,
+! then it also works as if SAVE/KEEP_AXISNAMES was given.
+! If keeping the original names then also don't write the
+! Ferret-added additions, e.g. TIME1 if there was already
+! a time axis; or a subset addition.
+ 
+ 
+! Tell Ferret to write everything in the original case
+cancel mode upcase
+ 
+! Define some axes and variables
+define axis/t=1-jan-2001:31-dec-2001:1/unit=days tday
+define axis/x=10:150:10/units=degrees_east xax
+ 
+let tt = t[gt=tday]
+let var  = 0*tt + x[gx=xax]
+ 
+save/clobber/file=myfile.nc tt, var
+ 
+! An extra TDAY axis was written out
+sp ncdump -h myfile.nc
+netcdf myfile {
+dimensions:
+	tday = UNLIMITED ; // (365 currently)
+	xax = 15 ;
+variables:
+	double tday(tday) ;
+		tday:units = "days since 1901-01-15 00:00:00" ;
+		tday:axis = "T" ;
+		tday:time_origin = "15-JAN-1901" ;
+		tday:standard_name = "time" ;
+	double tt(tday) ;
+		tt:missing_value = -1.e+34 ;
+		tt:_FillValue = -1.e+34 ;
+		tt:long_name = "T[GT=TDAY]" ;
+	double xax(xax) ;
+		xax:point_spacing = "even" ;
+		xax:axis = "X" ;
+		xax:modulo = 360. ;
+		xax:units = "degrees_east" ;
+		xax:standard_name = "longitude" ;
+	double var(tday, xax) ;
+		var:missing_value = -1.e+34 ;
+		var:_FillValue = -1.e+34 ;
+		var:long_name = "0*TT + X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
+		:Conventions = "CF-1.6" ;
+}
+ 
+set mode/last upcase
+ 
+GO bn_reset
+cancel mode verify
+GO bn_long_lists
+! bn_long_lists.jnl
+! See ticket 2337
+!
+! Increase command-line buffer by a factor of 10, to accomodate long lists
+! defined in the variable definition.
+! Also allow for more items in the list.
+ 
+! This one gets its Title truncated
+ 
+let file_list = {\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc"}
+ 
+let longlist = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,\
+26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,\
+53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,\
+80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,\
+105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,\
+125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,\
+145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,\
+165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,\
+185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,\
+205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,\
+225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,\
+245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,\
+165,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,\
+185,286,287,288,289,290,291,292,293,294,295,296,297,298,299,300}
+ 
+show var
+ Created by DEFINE VARIABLE:
+ >>> Definitions that replace any file variable of same name:
+     LONGLIST = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,165,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,185,286,287,288,289,290,291,292,293,294,295,296,297,298,299,300}
+     FILE_LIST = {"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos....
+ 
+! do them in repeat loop
+ 
+repeat/range=1:4:1/name=q (let file_list = {\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc"} ;\
+let longlist = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,\
+26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,\
+53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,\
+80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,\
+105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,\
+125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,\
+145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,\
+165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,\
+185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,\
+205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,\
+225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,\
+245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,\
+165,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,\
+185,286,287,288,289,290,291,292,293,294,295,296,297,298,299,300})
+!-> REPEAT: Q:1
+!-> REPEAT: Q:2
+!-> REPEAT: Q:3
+!-> REPEAT: Q:4
+ 
+! Intentional errors:
+! Make them way too long
+ 
+set mode ignore
+ 
+let file_list = {\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc",\
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc"}
+ 
+set mode/last ignore
+ 
 !  *********** Always do a bn_reset  ***********
 !  *********** make sure things clean up well **
 GO bn_reset
@@ -88068,9 +88791,9 @@ yes? ! run bn_all_ef tests
 yes? 
 yes? GO bn_all_ef
  	NOAA/PMEL TMAP
- 	FERRET v6.96 (beta)
- 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/07/15
- 	 7-Dec-15 15:25     
+ 	FERRET v6.61 (beta)
+ 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/11/15
+ 	11-Dec-15 16:53     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -88924,7 +89647,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -88949,7 +89672,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -88973,7 +89696,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89012,7 +89735,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89047,7 +89770,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89088,7 +89811,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89145,7 +89868,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89202,7 +89925,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89257,7 +89980,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89305,7 +90028,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89399,7 +90122,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89469,7 +90192,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89520,7 +90243,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89595,7 +90318,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89622,7 +90345,7 @@ variables:
 		X_:long_name_mod = "axis ABSTRACT" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -89646,7 +90369,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -89673,11 +90396,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -89708,7 +90431,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89780,7 +90503,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89824,7 +90547,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89866,7 +90589,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89974,38 +90697,38 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
 netcdf a {
 dimensions:
-	Xc3_3 = 1 ;
-	Yc2_4 = 3 ;
+	Xc = 1 ;
+	Yc = 3 ;
 	bnds = 2 ;
 	Ti = UNLIMITED ; // (1 currently)
 variables:
-	double Xc3_3(Xc3_3) ;
-		Xc3_3:long_name = "Longitude" ;
-		Xc3_3:units = "degrees_east" ;
-		Xc3_3:modulo = 360. ;
-		Xc3_3:point_spacing = "even" ;
-		Xc3_3:axis = "X" ;
-		Xc3_3:standard_name = "longitude" ;
-	double Yc2_4(Yc2_4) ;
-		Yc2_4:long_name = "Latitude" ;
-		Yc2_4:units = "degrees_north" ;
-		Yc2_4:point_spacing = "uneven" ;
-		Yc2_4:axis = "Y" ;
-		Yc2_4:standard_name = "latitude" ;
-		Yc2_4:bounds = "Yc2_4_bnds" ;
-	double Yc2_4_bnds(Yc2_4, bnds) ;
+	double Xc(Xc) ;
+		Xc:long_name = "Longitude" ;
+		Xc:units = "degrees_east" ;
+		Xc:modulo = 360. ;
+		Xc:point_spacing = "even" ;
+		Xc:axis = "X" ;
+		Xc:standard_name = "longitude" ;
+	double Yc(Yc) ;
+		Yc:long_name = "Latitude" ;
+		Yc:units = "degrees_north" ;
+		Yc:point_spacing = "uneven" ;
+		Yc:axis = "Y" ;
+		Yc:standard_name = "latitude" ;
+		Yc:bounds = "Yc_bnds" ;
+	double Yc_bnds(Yc, bnds) ;
 	double Ti(Ti) ;
 		Ti:long_name = "Time" ;
 		Ti:units = "day" ;
 		Ti:axis = "T" ;
 		Ti:standard_name = "time" ;
-	short Elev(Ti, Yc2_4, Xc3_3) ;
+	short Elev(Ti, Yc, Xc) ;
 		Elev:missing_value = -32767s ;
 		Elev:_FillValue = -32768s ;
 		Elev:long_name = "Surface elevation" ;
@@ -90015,7 +90738,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -90038,7 +90761,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90064,7 +90787,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90084,7 +90807,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90105,7 +90828,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90148,7 +90871,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -90188,7 +90911,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -90226,7 +90949,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -90255,7 +90978,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90288,7 +91011,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90314,7 +91037,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90360,7 +91083,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -90467,7 +91190,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 		:dt_internal = 15. ;
 }
@@ -90509,7 +91232,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90592,7 +91315,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90629,7 +91352,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90669,7 +91392,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90720,7 +91443,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90779,7 +91502,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -90824,7 +91547,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -90867,7 +91590,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -90902,7 +91625,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -90936,7 +91659,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -90966,7 +91689,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -90995,7 +91718,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -91056,7 +91779,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -91101,7 +91824,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -91120,37 +91843,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
-		:Conventions = "CF-1.6" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	double A(XAX) ;
-		A:missing_value = -1.e+34 ;
-		A:_FillValue = -1.e+34 ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91180,7 +91873,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
+		:Conventions = "CF-1.6" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	double A(XAX) ;
+		A:missing_value = -1.e+34 ;
+		A:_FillValue = -1.e+34 ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91233,7 +91956,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -91275,7 +91998,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -91293,7 +92016,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 err611_set_var_ez.jnl --- 
@@ -91312,7 +92035,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -91330,7 +92053,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -91347,7 +92070,7 @@ variables:
 		A:long_name = "{1.1,2.2,3.3}" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91368,7 +92091,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91378,7 +92101,7 @@ data:
 }
 netcdf a {
 dimensions:
-	XAX1_10 = 10 ;
+	XAX = 10 ;
 	tday = UNLIMITED ; // (31 currently)
 	lon1_5 = 5 ;
 	lat1_5 = 5 ;
@@ -91386,16 +92109,16 @@ dimensions:
 	zt = 10 ;
 	time1478 = 3 ;
 variables:
-	double XAX1_10(XAX1_10) ;
-		XAX1_10:point_spacing = "even" ;
-		XAX1_10:axis = "X" ;
+	double XAX(XAX) ;
+		XAX:point_spacing = "even" ;
+		XAX:axis = "X" ;
 	double tday(tday) ;
 		tday:units = "days since 1998-12-31 00:00:00" ;
 		tday:axis = "T" ;
 		tday:calendar = "GREGORIAN" ;
 		tday:time_origin = "31-DEC-1998" ;
 		tday:standard_name = "time" ;
-	double MyUpperLowerCaseVar(tday, XAX1_10) ;
+	double MyUpperLowerCaseVar(tday, XAX) ;
 		MyUpperLowerCaseVar:missing_value = -1.e+34 ;
 		MyUpperLowerCaseVar:_FillValue = -1.e+34 ;
 		MyUpperLowerCaseVar:long_name = "X[X=1:10] + T[GT=TDAY]" ;
@@ -91431,7 +92154,7 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_keep_axisnames.jnl --- test SAVE/KEEP_AXISNAMES
@@ -91458,7 +92181,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -91485,7 +92208,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, degrees_east, degrees_north, std names on axes:
@@ -91551,7 +92274,7 @@ variables:
 		ZUP:long_name = "Z[GZ=ZAXUP]" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Convert forms of DEG, degrees to degrees_east:
@@ -91583,7 +92306,7 @@ variables:
 		Y_:long_name_mod = "axis YFIFTEEN" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Downcase units, e.g. in time axis DAYS since
@@ -91616,12 +92339,12 @@ variables:
 		XYTVAR:history = "From bn_strides" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
 dimensions:
-	TIME16 = 8 ;
+	time = 8 ;
 	reftime = 3 ;
 	bnds = 2 ;
 variables:
@@ -91633,7 +92356,7 @@ variables:
 		reftime:axis = "F" ;
 		reftime:bounds = "reftime_bnds" ;
 	double reftime_bnds(reftime, bnds) ;
-	double time(reftime, TIME16) ;
+	double time(reftime, time) ;
 		time:units = "calendar Month since 2014-11-01T00:00:00Z" ;
 		time:long_name = "GRIB forecast or observation time" ;
 		time:calendar = "proleptic_gregorian" ;
@@ -91641,7 +92364,7 @@ variables:
 		time:history = "From http://tds.climatedatacloud.com/thredds/dodsC/ensembles/nmme_gfdl/TwoD" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91679,7 +92402,7 @@ variables:
 		time:history = "From http://tds.climatedatacloud.com/thredds/dodsC/ensembles/nmme_gfdl/TwoD" ;
 
 // global attributes:
-		:history = "FERRET V6.96 (beta)  7-Dec-15" ;
+		:history = "FERRET V6.61 (beta) 11-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91706,27 +92429,27 @@ yes?
 yes? 
 yes? GO bn_startupfile
  	NOAA/PMEL TMAP
- 	FERRET v6.96 (beta)
- 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/07/15
- 	 7-Dec-15 15:25     
+ 	FERRET v6.61 (beta)
+ 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/11/15
+ 	11-Dec-15 16:53     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 8 bytes)
 PPL$XPIXEL = "656"
 PPL$YPIXEL = "492"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.96"
+FERRET_VERSION = "6.61"
 FERRET_PLATFORM = "Linux 2.6.32-573.8.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.3.1 of Nov 17 2015 14:50:39 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = " 7-Dec-15"
-SESSION_TIME = "15:25"
-SESSION_PID = "21376"
-DELTA_CPU = "0.062989"
-CLOCK_SECS = "0.458"
-CURRENT_DATE = " 7-Dec-15"
-CURRENT_TIME = "15:25:35"
+SESSION_DATE = "11-Dec-15"
+SESSION_TIME = "16:53"
+SESSION_PID = "369"
+DELTA_CPU = "0.075988"
+CLOCK_SECS = "0.467"
+CURRENT_DATE = "11-Dec-15"
+CURRENT_TIME = "16:53:51"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -91748,7 +92471,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "7-Dec-15:15:25"
+WIN_TITLE = "11-Dec-15:16:53"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -91812,9 +92535,9 @@ yes?
 yes? 
 yes? GO bn_gif
  	NOAA/PMEL TMAP
- 	FERRET v6.96 (beta)
- 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/07/15
- 	 7-Dec-15 15:25     
+ 	FERRET v6.61 (beta)
+ 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/11/15
+ 	11-Dec-15 16:53     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -92031,9 +92754,9 @@ yes?
 yes? 
 yes? GO bn_ps
  	NOAA/PMEL TMAP
- 	FERRET v6.96 (beta)
- 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/07/15
- 	 7-Dec-15 15:25     
+ 	FERRET v6.61 (beta)
+ 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/11/15
+ 	11-Dec-15 16:53     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -92145,9 +92868,9 @@ yes?
 yes? 
 yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
- 	FERRET v6.96 (beta)
- 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/07/15
- 	 7-Dec-15 15:25     
+ 	FERRET v6.61 (beta)
+ 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/11/15
+ 	11-Dec-15 16:53     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -92231,4 +92954,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Mon Dec 7 15:25:37 PST 2015
+Ended at Fri Dec 11 16:53:53 PST 2015

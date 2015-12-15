@@ -68,6 +68,7 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V685+ 12/13    - *acm*  bounds checking; dont refer to parts of the string outside its bounds.
+* V6.86 *acm* 1/14 In above fix, let there be spaces before the file spec.
 * V694   5/15    - *acm*  Ticket 2285: need to initialize iautoc to = 1 so overlay with /LEV=20V works.
 * V695  *acm* 9/15 ticket 2311: variance-based levels on constant variables
 * V695  *acm* 9/15 (not fully implemented) INT option for levels

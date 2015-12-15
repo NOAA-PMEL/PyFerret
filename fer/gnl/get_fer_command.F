@@ -102,6 +102,7 @@
 *                   3) Do not call PARSE_COMMAND for pure comments.
 *		    4) Process continuation lines
 *                 Issue warning if GO file EOF found while in the midst of IF
+* V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480
 
 #ifdef MIXING_NAG_F90_AND_C
 	USE F90_UNIX
@@ -118,7 +119,7 @@
 	INTEGER	TM_LENSTR, TM_LENSTR1,
      .		iqual, ilist, cmnd_len, double_eof,
      .          has_more, i, cmnd_len_w_cmnt
-	CHARACTER prefix*5, raw_cmnd_buff*2048
+	CHARACTER prefix*5, raw_cmnd_buff*20480
 
 * local parameter declarations
         CHARACTER*1 backslash, tab
@@ -349,6 +350,7 @@ c        IF(has_more.NE.1) goto 210
 	   IF (appending_cmnd) THEN
 	      cmnd_copy = cmnd_copy(:len_cmnd_copy) // cmnd_buff(:cmnd_len)
 	      len_cmnd_copy = len_cmnd_copy + cmnd_len
+	      IF (len_cmnd_copy .GT. cmnd_buff_len) GOTO 5005
 	   ELSE
 	      cmnd_copy = cmnd_buff(:cmnd_len)
 	      len_cmnd_copy = cmnd_len
@@ -425,8 +427,8 @@ c        IF(has_more.NE.1) goto 210
 
 * error exits
  5005	CALL ERRMSG( ferr_syntax, status,
-     .			'command line too long -- exceeds 2048', *9000 )
-! 2048 must match cmnd_buff_len
+     .			'command line too long -- exceeds 20480', *9000 )
+! 20480 must match cmnd_buff_len
  9000	RETURN 1
 
 

@@ -234,6 +234,7 @@
 * V695 *acm*  9/15 Fix #2317: length of name sent to FIND_DSET_NUMBER
 * V695 *sh*  10/15 add DEFINE DATA/AGG/T
 *                  rename routine INIT_AGGREGATE_DSET to INIT_EF_AGGREGATE_DSET
+* V697 12/15 *acm* Fix ticket 2336: consistent application of CAN MODE UPCASE
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -360,7 +361,7 @@
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet,
      .            letdset, its_remote, agg_hide, def_att_quiet, purge_all,
-     .            user, norm, nouser, t_regular, use_strict
+     .            user, norm, nouser, t_regular, use_strict, have_expr
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID, EFCN_SCAN,
      .		  TM_GET_LINENUM, TM_LENSTR1,
@@ -379,7 +380,7 @@
      .            prev_cal_id, j, num_indices, varid, attype_spec,
      .            attoutflag, attlen, coordvar, 
      .            dset_to_add, dir, type, attype, attid, ibuff, i0,  
-     .            agg_dim, ivar, item,nlab
+     .            agg_dim, nagfiles, ivar, item, nlab
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            val, dummy, val_buf, xloc, yloc, halign, angle, size
@@ -1573,16 +1574,17 @@ C /units=months  is 1/12 of the length of the year
 
         ELSE
 
-* add newly defined axis to the user-variable dset of the linked-list strucure
+* Add newly defined axis to the user-variable dset of the linked-list structure.
+* Save the original upper-or lower-case spelling
            
            dset_to_add = pdset_coordvars  ! user-defined coordinate variable dataset.
 
-           err_string = buff3
+           err_string = varname
            type = NCDOUBLE
            coordvar = 1
-           varid = 0        ! Will be returned with variable ID
+           varid = 0		 ! Will be returned with variable ID
            bad_flag = bad_val4   ! coord vars dont have missing, but set to something
-           CALL CD_ADD_COORD_VAR( dset_to_add, buff3, varid,  
+           CALL CD_ADD_COORD_VAR( dset_to_add, varname, varid,  
      .         line_units(iline), type, coordvar, bad_flag, status)
            IF ( status .NE. ferr_ok ) GOTO 5600
          
@@ -2284,10 +2286,50 @@ C /units=months  is 1/12 of the length of the year
 * does not alter the outcome 
         item_start(1) = pos   ! first item starts *after* the equal sign
 
+* which syntax has been used?
+*      DEFINE DATA/AGG agname = data1, data2, data3, ...
+*  or
+*      DEFINE DATA/AGG agname = <string_array_expression>
+* we will determine this through heuristics
+        have_expr = INDEX(cmnd_buff(pos:),"{") .GT. 0
+     .         .OR. INDEX(cmnd_buff(pos:),"(") .GT. 0
+        IF (.NOT.have_expr) THEN
+           IF ( num_items .EQ. 1
+     .     .AND.INDEX(cmnd_buff(item_start(1):item_end(1)),'.').EQ.0
+     .     .AND.INDEX(cmnd_buff(item_start(1):item_end(1)),'/').EQ.0
+     .                                                            ) THEN 
+              CALL FIND_VAR_NAME(pdset_irrelevant,
+     .                           cmnd_buff(item_start(1):item_end(1)),
+     .                           cat, var)      
+              have_expr = var .NE. munknown_var_name
+           ENDIF
+        ENDIF
+
+        IF (have_expr ) THEN
+* ... get array of string names from a memory variable
+           CALL ALL_1_ARG
+	   num_args = 1	 ! used by GET_CMND_DATA
+	   arg_start(1) = pos ! skip over "name ="
+	   CALL GET_CMND_DATA ( memory, cx_last, ptype_string, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+           IF ( num_uvars_in_cmnd .NE. 1 ) GOTO 6400
+           cx = is_cx(1)
+* ... make sure it's an line (not a point,plane,etc.) of data
+	   CALL GET_CX_DIMS( cx, ndim, dim )
+	   IF ( ndim .GT. 1 ) GOTO 6400
+	   idim = dim(1)
+	   nagfiles = CX_DIM_LEN( idim, cx )
+           mr = is_mr(1)
+        ELSE
+           nagfiles = num_items
+           mr = dummy_mr
+        ENDIF
+
         IF (agg_dim .EQ. t_dim) THEN
            t_regular  = .FALSE.   ! ToDo /REGULART -- not yet implemented
            use_strict = .FALSE.   ! ToDo ?? T coordinate micro-adjustment ??
-           CALL INIT_T_AGGREGATE_DSET(num_items, buff1, buff2, 
+           CALL INIT_T_AGGREGATE_DSET(memory(1, mr_blk1(mr)),
+     .                          nagfiles, have_expr, buff1, buff2, 
      .                          t_regular, use_strict, dset, status)
         ELSE
 	   CALL INIT_EF_AGGREGATE_DSET (buff1, buff2, dset,
@@ -2508,5 +2550,8 @@ c ?? if nlab=0, use next avail slot?
 
  6300	CALL ERRMSG( ferr_invalid_command, status,
      .		'/NLAB missing or invalid value', *5000 )
+ 6400   CALL ERRMSG( ferr_grid_definition, status,
+     .	    '"DEFINE DATA/AGGREGATE agname =" requires a list of names',
+     .          *5000 )
 
 	END

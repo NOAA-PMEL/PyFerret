@@ -52,11 +52,15 @@ C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 C *acm* 03/04  new arguments for plotting graticule lines across plot. 
-C If graticule lines are to be drawn across the plot at the tics
-C then only do them for one horizontal and one vertical axis.  
-C The dash lines interfere with each other if drawn from both 
-C sides. HLINE and VLINE control this.
-C V695 *acm*  5/15 Restore color after a graticule using defined color 0
+C              If graticule lines are to be drawn across the plot at the tics
+C              then only do them for one horizontal and one vertical axis.  
+C              The dash lines interfere with each other if drawn from both 
+C              sides. HLINE and VLINE control this.
+C V695  *acm*  5/15 Restore color after a graticule using defined color 0
+C V695  *acm*  9/15 Changes for hour:min labeling on time axes
+C V697  *acm* 12/15 For short-time plots do the time axis in a separate
+C                   routine tayis4
+
 
 	INTEGER is_hours_axis
         REAL xacross           ! to draw tic line across plot

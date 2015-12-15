@@ -112,7 +112,7 @@
      .			use_line, overlay, transpz, no_labels, set_up, 
      .			noaxes, axes, line_it, fill_it, is_logh, is_logv, 
      .			no_data, is_modx, do_mod_minus, do_mod_plus
-	INTEGER     sp, patt, TM_LENSTR1, TM_LENSTR, STR_UPCASE
+	INTEGER         sp, patt, TM_LENSTR1, TM_LENSTR, STR_UPCASE
 	INTEGER		symbol, icolor, ipen, status,
      .			loc, limit, slen, coord_ax,
      .			ax1_blks, ax1_start,

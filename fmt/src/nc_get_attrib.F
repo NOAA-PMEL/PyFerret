@@ -62,6 +62,7 @@
 *                  of maxlen (from show_data_set_attrs); added check for
 *                  this in the future.
 * V694 4/15  *acm* Increase length of error buffer; use length definition when assigning.
+* V697 12/15 *acm* Increased length of command-line string and risc_buff buffer
 
 * argument definitions:
 *	dset	 - dataset number
@@ -102,7 +103,7 @@
       EQUIVALENCE (tt,lunit_errors)
 
       INTEGER slen, flen
-      PARAMETER (flen=10240)        ! size of attribute string
+      PARAMETER (flen=25000)        ! size of attribute string, match size_rbuff
 #ifdef sun
       BYTE      fhol(flen), ghol(flen)      ! c-type Hollerith string buffer
 #else

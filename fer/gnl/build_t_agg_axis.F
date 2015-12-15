@@ -113,21 +113,6 @@
 	REAL	depsilon_46
 	PARAMETER (depsilon_46 = 2.**(-46)) 
 
-* this code will be needed in a future version:
-* logic from DEFINE_EF_AGGREGATE_GRID to allow differing T0 dates
-!	      CALL TDEST_WORLD_INIT (gnum2, grid, t_dim, status)
-!	      IF (status .NE. ferr_ok) RETURN 
-!	      DO i2 = 1, nT
-!	         line_mem(ipt) = TDEST_WORLD(i2, gnum2, t_dim, box_middle)
-!	         line_mem(ipt+npts) =
-!     .				 TDEST_WORLD(i2, gnum2, t_dim, box_lo_lim)
-!	         ipt = ipt + 1
-!	      ENDDO
-!	   ENDDO
-!	   line_mem(ipt1+2*npts) =
-!     .				 TDEST_WORLD(nT, gnum2, t_dim, box_hi_lim)
-
-
 * initialize using information from the first file of the aggregation
 	taxis          = ds_time_axis(dset_num)
 	IF (taxis .EQ. mnormal) GOTO 5050   ! no time axis?
@@ -141,7 +126,7 @@
 	agg_T0_str     = line_T0(taxis)
 	agg_cal_id     = TM_GET_CALENDAR_ID (line_cal_name(taxis))
 
-* note that when this routine is called there is an implicit promise that
+* note that this routine is called under a promise that
 * dset_num is the *only* dataset that uses the time axis pointed to by
 * ds_time_axis.  Thus our procedure here will be to define the aggregated T
 * axis in as a new axis and then replace the pointers to the old axis with the
@@ -517,8 +502,7 @@
 	ENDDO
 
  5000	RETURN
- 5010	status = ferr_TMAP_error
-	GOTO 5000
+ 5010	CALL ERRMSG( ferr_TMAP_error, status, ' ', *5000 )
  5050	CALL ERRMSG( ferr_grid_definition, status,
      .		'first file of aggregation has no time axis '
      .		//memb_filename(1), *5000 )

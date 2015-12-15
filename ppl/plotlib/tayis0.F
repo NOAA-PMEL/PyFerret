@@ -36,27 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* revised for TMAP
-* from PPLUS :
-*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]TAYIS0.FOR
-
-* search for "TMAP" to find all revisions
-* *sh*  - 1/23/89 added interrupt detection
-*		  ... no explicit declarations (too much trouble !) so it must
-*		      be compiled with /WARNINGS=NODECLARATIONS
-* *sh*  - 8/11/89 FERRET 2.00 (modelled after TAXIS0 correction)
-*       - changed "mon" to "date" in calls to SYMWID and SYMBEL.
-*         "mon" is the wrong data type                          
-
-* *jd* Mod for 4 digit years 11.27.95
-C *kob* 04/07/96 passed in character strings had to be declared 
-C                with "*(*)" for the linux port 
-C *acm* 24/01/00 Y2k Bug --Put century at start when comparing 
-C                 ITIME to ITIME2 at loop 10
-C *acm* 03/04  new arguments and code for plotting graticule lines across plot. 
-C V65  *acm*  1/10 New time-axis style for DAY and MONTH, DMY: adds the
-C                  year to DAY,MONTH or to MONTH.
-C V695 *acm*  5/15 Restore color after a graticule using defined color 0
+* From taxis0: separate routine for hour:min labeling on time axes
 
 C**
 C**    @(#)tayis0.f	1.1    3/10/88

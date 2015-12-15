@@ -1,4 +1,6 @@
-	SUBROUTINE INIT_T_AGGREGATE_DSET(nagfiles, dset_name, dset_title,
+	SUBROUTINE INIT_T_AGGREGATE_DSET(mem_filename_list,
+     .			nagfiles, have_expr,
+     .			dset_name, dset_title,
      .			t_regular, use_strict, dset_num, status)
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -41,6 +43,12 @@
 * file to be aggregated, herein we will always need to glean that information
 * by opening each file
 
+* the incoming command syntax may be
+*    DEFINE DATA/AGGREGATE/<dim>  agname = file1, file2, file3, ...
+*  or
+*    DEFINE DATA/AGGREGATE/<dim>  agname = <string_expression>
+
+
 * admittedly, the hierarchy of calling names is not self-evident.  They are:
 * top level: INIT_T_AGGRETATE_DSET  and DEFINE_T_AGGREGATION (for Python)
 *   ==> DEFINE_T_AGG_MC_DSET
@@ -50,9 +58,11 @@
 * V695+ *sh* 11/15 new routine 
 
 * arguments:
+*	mem_filename_list - if have_expr, the variable of names (input)
+*	nagfiles	- number of files in the aggregation (input)
+*       have_expr	- flag if filenames were listed or in an expr (input)
 *	dset_name	- dataset name to assign to the aggregation (input)
 *	dset_title	- dataset title (input)
-*	nagfiles	- number of files in the aggregation (input)
 *  t_regular (not implemented)	- flag to promise regular timesteps (input)
 *	use_strict	- flag to allow micro-adjustments of T axis (input)
 *	dset_num	- number assigned to this data set (output)
@@ -70,25 +80,44 @@
 	include 'ferret.parm'
         include 'errmsg.parm'
 	include 'xprog_state.cmn'
+	include 'xvariables.cmn'   ! for is_mr
 
 * Argument definitions
-	LOGICAL		t_regular, use_strict
+	LOGICAL		have_expr, t_regular, use_strict
 	INTEGER		nagfiles, dset_num, status
 	CHARACTER*(*)	dset_name, dset_title
+	REAL		mem_filename_list(*)
 
 * Internal declarations
-	INTEGER	iset
+	INTEGER	iset, slen, max_str_len
 	INTEGER	memb_nstep(nagfiles)
 	REAL*8	memb_tstep_start(nagfiles), memb_tstep_end(nagfiles)
-	CHARACTER*128	memb_filename(nagfiles)
+	CHARACTER*128	GET_STRING_ELEMENT, memb_filename(nagfiles)
 
 * initialize
 	status = ferr_ok
+	max_str_len = 128
 
-* set up array of filenames given by use on command line
-	DO iset = 1, nagfiles
-	  memb_filename(iset) = cmnd_buff(item_start(iset):item_end(iset))
-	ENDDO
+* set up array of filenames
+	IF (have_expr) THEN
+*  ... filenames passed through a string variable
+	  DO iset = 1, nagfiles
+	    memb_filename(iset) = GET_STRING_ELEMENT(
+     .			1,nagfiles,
+     .                  1,1, 1,1, 1,1, 1,1, 1,1,
+     .                  mem_filename_list,iset,1,1,1,1,1,
+     .			max_str_len,slen )
+!	    memb_filename(iset) = GET_STRING_ELEMENT(
+!     .			m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,
+!     .			m1loe,m1hie,m1lof,m1hif,grid_data,i,j,k,l,m,n,
+!     .			max_str_len,slen )
+	  ENDDO
+	ELSE
+*  ... filenames given by user on command line
+	  DO iset = 1, nagfiles
+	    memb_filename(iset) = cmnd_buff(item_start(iset):item_end(iset))
+	  ENDDO
+	ENDIF
 
 * set up dummy (empty) timestep metadata arrays
 	DO iset = 1, nagfiles

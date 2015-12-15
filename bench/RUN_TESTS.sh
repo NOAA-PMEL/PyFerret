@@ -47,8 +47,14 @@ date_stamp=`date +'%d%h%yAT%H%M'|tr '[A-Z]' '[a-z]'`
 log_file="all_${date_stamp}.${machine}_log"
 err_file="all_${date_stamp}.${machine}_err"
 ncdump_file="all_${date_stamp}.${machine}_ncdump"
+
+# Make sure things are clean for this run
 rm -f $log_file $err_file $ncdump_file
+rm -f ferret.jnl* bat.plt* `cat TRASH_FILES`
+rm -fr subdir tmp
+
 touch $log_file $ncdump_file
+touch F.cdf snoopy.dat
 
 # set up the binary unformatted stream test file as a machine-specific link
 machine_stream="stream10by5_${machine}.unf"
@@ -108,12 +114,6 @@ export FER_GRIDS
 FER_DIR="."
 export FER_DIR
 Fenv >> $log_file
-
-# Make sure things are clean for this run
-rm -f ferret.jnl* bat.plt* `cat TRASH_FILES`
-rm -fr subdir
-rm -fr tmp
-touch F.cdf snoopy.dat
 
 now=`date`
 echo "Beginning at $now" >> $log_file
@@ -184,11 +184,7 @@ fi
 
 # Clean-up
 rm -f ferret.jnl* bat.plt* `cat TRASH_FILES`
-# Remove temporary subdirectory
-rm -fr subdir
-# Remove links made by this script (not in TRASH_FILES)
-rm -f bn_test_stream.jnl
-rm -f stream_data_link.unf
+rm -fr subdir tmp
 
 now=`date`
 echo  "Ended at $now" >> $err_file

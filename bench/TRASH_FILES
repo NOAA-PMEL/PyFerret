@@ -35,6 +35,7 @@ benchmark_history.log
 bench.mgm 
 b.jnl
 b.nc
+bn_test_stream.jnl
 bnplot-1.gif
 bnplot-1.plt
 bnplot-2.gif
@@ -159,6 +160,7 @@ sst_new.nc
 startup_tests2.plt
 startup_tests.jnl
 startup_tests.plt
+stream_data_link.unf
 string4d.nc
 t12.nc
 t2.nc

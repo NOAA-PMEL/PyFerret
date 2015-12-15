@@ -112,6 +112,7 @@ Fenv >> $log_file
 # Make sure things are clean for this run
 rm -f ferret.jnl* bat.plt* `cat TRASH_FILES`
 rm -fr subdir
+rm -fr tmp
 touch F.cdf snoopy.dat
 
 now=`date`

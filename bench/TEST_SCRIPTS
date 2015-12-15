@@ -242,6 +242,8 @@ bn_floatstr_extended.jnl
 bn696_bug_fixes.jnl
 bn_bin_regrid.jnl
 bn_aggregate_t.jnl
+bn_unquoted_args.jnl
 bn697_bug_fixes.jnl
+bn_long_lists.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

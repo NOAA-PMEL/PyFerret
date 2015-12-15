@@ -890,22 +890,22 @@ cc  Allow zero-length null string in quotes
 * ... its an absolute path -- count the slashes
 	      ngone = 0
 	      i = iqual_word+1
-	      DO WHILE (itsa_qualifier(i))
+	      DO WHILE (i.LE. word_num .AND. itsa_qualifier(i))
 	         ngone = ngone + 1
 	         i  =i+1
 	      ENDDO
 * turn this entire absolute path into a single argument
+	      word_num = word_num - ngone
 	      arg_start(iqual_word) = arg_start(iqual_word)-1 ! keep start "/"
 	      arg_end(iqual_word)   = arg_end(iqual_word+ngone)
 	      itsa_qualifier(iqual_word) = .FALSE.
 	      last_qual = iqual_word - 1     ! added 12/2015 -- approx true
-	      DO i = iqual_word+1, word_num-ngone
+	      DO i = iqual_word+1, word_num
                  arg_start(i) = arg_start(i+ngone)
                  arg_end  (i) = arg_end  (i+ngone)
 	         IF (itsa_qualifier(i) ) arg_start(i) = arg_start(i) - 1
 	         itsa_qualifier(i) = .FALSE.
 	      ENDDO
-	      word_num = word_num - ngone
 	      EXIT
 	   ELSE
 	      GOTO 5030		! all other commands: unknown qual error

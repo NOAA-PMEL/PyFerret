@@ -9,6 +9,7 @@
 ! for V4.20 added blanks surrounding colons
 !	and tests of "escapes" using back slashes
 ! for V531 test continuation lines and long input lines
+! for v698 interpretation of unknown qualifiers changed -- e.g. say /notaqual
 
 ! SET - SHOW - CANCEL DATA
 USE gtbc011
@@ -186,9 +187,12 @@ list/nohead/i=1 : 3 i
 ! test escapes using back slashes (bn420 - 11/95)
 ! (moved to bn420_grave)
 
-say \/help	! "/" should pass through
+say \/notaqualifier	! "/" should pass through
+! starting 12/2015 a space preceding a unrecognized qualifier turns that
+! qualifier into an argument
+say /notaqualifier
 set mode ignore
-say /help
+say/notaqualifier
 canc mode ignore
 
 say this\;that	! ";" should pass through

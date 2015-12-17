@@ -190,6 +190,8 @@
 *        2/15 *sh* attempted but rejected hack to deal with left-over dset=-1
 * V6796 11/15 *acm* Ticket 2322: report dataset name or number in error msg, 
 *                   on SHOW DATA when datset not open
+* V697  12/15 *acm* Changes to add details on SHOW GRID uvar to indicate 
+*                   compressed or subset of axes
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -272,10 +274,10 @@
      .		nothing, sdetail, only_1, done_1, sfull, svars, sfile, 
      .		sbrief, first, sxml, clobber, append, firstxml, got_it, 
      .		coordvar, sattr, do_err, sho_out, its_gif, sh_att_dset, 
-     .		lineok, sho_tree
+     .		lineok, sho_tree, uvgrid
 	INTEGER TM_LENSTR1, TM_LENSTR, UVAR_NUMBER, STR_UPCASE,
      .		REGION_NUMBER, GRID_FROM_NAME, FIND_DSET_NUMBER,
-     .		EFCN_MATCH_TEMPLATE, TM_GET_LINENUM, STR_SAME,
+     .		EFCN_MATCH_TEMPLATE, TM_GET_LINENUM, STR_SAME, TM_GET_GRIDNUM,
      .		category, mods_cx, v1_blk1, v1_nblks, grid, cx,
      .		status, iqual, mode, iset, i, icmnd, isub, n,
      .		len, len0, iuvar, ivar, dset, line, ivp, i1, i2,
@@ -1382,8 +1384,13 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 		    ENDIF
 	            CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 
+* If this was a 'show grid grid_name' do not list the grid-line context information
+		    i1 = TM_GET_GRIDNUM( arg )
+		    uvgrid = (i1 .EQ. unspecified_int4 )
+
 	            risc_buff = ' '
-	            CALL SHOW_GRID( grid, mods_cx, status )
+		    cx = is_cx (1)
+	            CALL SHOW_GRID( grid, mods_cx, cx, uvgrid, status )
 		    IF (status .NE. ferr_ok) GOTO 5000
 	         ENDIF
 	      ENDIF
@@ -1438,7 +1445,8 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	   risc_buff = ' '
  4200	   FORMAT (' Last successful data access was on grid ',A)
-	   CALL SHOW_GRID( grid, mods_cx, status )
+	   uvgrid = (grid_name(grid) .NE. char_init) ! show context for last command
+	   CALL SHOW_GRID( grid, mods_cx, uvgrid, status )
 	   IF (status .NE. ferr_ok) GOTO 5000
 	ENDIF
 

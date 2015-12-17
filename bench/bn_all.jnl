@@ -1000,19 +1000,22 @@ GO bn696_bug_fixes
 GO bn_reset
 GO bn_bin_regrid
 
-GO bn_reset
-GO bn_aggregate_t
-
-GO bn_reset
-GO bn_unquoted_args
-
 ! *********** v6.97 Additions ***********
 
 GO bn_reset
 GO bn697_bug_fixes
 
 GO bn_reset
+GO bn_aggregate_t
+
+GO bn_reset
+GO bn_unquoted_args
+
+GO bn_reset
 GO bn_long_lists
+
+GO bn_reset
+GO bn_show_uvar_grid
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

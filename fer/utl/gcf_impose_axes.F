@@ -47,6 +47,8 @@
 * V533: *sh* 7/01 - improve caching of some functions -- like SPAWN that
 *	            should have uvlim_hidden behavior equivalent to FFTA
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V697  12/15 *acm* Changes to add details on SHOW GRID uvar to indicate 
+*                   compressed or subset of axes
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -126,7 +128,13 @@
 * averaging) a cache hit requires an exact match on all relevant limits
 * (Note: this is over-kill for some functions, but has
 * impacts only on cache efficiency)
+
+c For SHOW GRID with details e.g. compressed axes or subsets these settings
+c wind up returning result of COMPRESSED for axes unaffected by the function.
+c add logic to change uvar_given only when the gcf changes the axis. 
+
            IF ( gcfcn .GT. gfcn_num_internal ) THEN
+	      IF (axis_source(idim) .EQ. pgc_impose_axis) THEN
                  uvg = uvar_given(idim,uvar)
                  IF (    uvg.GE.uvlim_gvn_gnl    .AND.
      .                uvg.LE.uvlim_gvn_xact) THEN
@@ -135,6 +143,7 @@
      .                   uvg.LE.uvlim_need_xact) THEN
                     uvar_given(idim,uvar) = uvlim_need_xact
                  ENDIF
+	      ENDIF
            ENDIF
 
  500	CONTINUE

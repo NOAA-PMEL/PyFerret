@@ -1,6 +1,6 @@
 
 
-	SUBROUTINE LINE_FACTS( lun, idim, grid, orient )
+	SUBROUTINE LINE_FACTS( lun, idim, grid, orient, uvar )
 
 *
 *
@@ -39,6 +39,10 @@
 *
 * print basic facts about an axis defined in memory
 
+* New 12/15:
+* last argument: uvar is positive if we are to describe the 
+* grid subset for the user-variable given.
+
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
@@ -56,25 +60,30 @@
 *       12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 * V510 *sh* 12/99 - show units even if line has no orientation
 * V68  *acm 12/11 - if npts > 1.e7 the format overflowed. Up the size.
+* V697  12/15 *acm* Changes to add details on SHOW GRID uvar to indicate 
+*                   compressed or subset of axes
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
+#	include "tmap_dset.parm"
 	external xgt_grid_data
 	include	'ferret.parm'
 	include 'xtext_info.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
+	include 'xvariables.cmn'
 
 * calling argument declarations
-	INTEGER	  lun, idim, grid, orient
+	INTEGER	  lun, idim, grid, orient, uvar
 
 * local variable declarations:
-	LOGICAL	BKWD_AXIS, GEOG_LABEL, calendar
-	INTEGER TM_LENSTR1, lo, hi, i, line, dlen, ndec, status,
-     .          nlen, naxlen, int1
-	CHARACTER AX_TITLE*32, 	lo_str*20, hi_str*20, direction*1,
-     .		  title*32, reg*1, modflag*1, truncated*1, frmt*50
+	LOGICAL	BKWD_AXIS, GEOG_LABEL, calendar, is_uvar_2lim,
+     .          is_uvar_1lim, is_uvar_nolim
+	INTEGER TM_LENSTR1, TM_SUBSC, lo, hi, i, line, dlen, ndec, status,
+     .          nlen, naxlen, int1, slen, i1ss, inss
+	CHARACTER AX_TITLE*32, TM_FMT*20, lo_str*20, hi_str*20, direction*1,
+     .		  title*32, reg*1, modflag*1, truncated*1, frmt*80,
+     .		  lo_uvar*20, hi_uvar*20, uvar_desc*40, cstr*3, countstr*20
 	REAL*8	TM_WORLD, lo_val8, hi_val8, pts
-
 
 * local parameter declarations:
 	INTEGER		sig_figs
@@ -90,6 +99,10 @@
 	   WRITE ( risc_buff, 3010 ) title, ww_dim_name( idim )
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 	ELSEIF ( line .EQ. mnormal ) THEN
+	   title = 'normal'
+	   WRITE ( risc_buff, 3010 ) title, ww_dim_name( idim )
+	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	ELSEIF ( line_name(line) .EQ. char_init)  THEN
 	   title = 'normal'
 	   WRITE ( risc_buff, 3010 ) title, ww_dim_name( idim )
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -153,6 +166,106 @@
 
 	   naxlen = INT(0.5+DLOG10(DFLOAT(line_dim(line))) ) 
 
+* report information about the subsetting or compressing of the grid.
+
+* From merge_grid:
+* There are subtlities associated with limits that are given in the UVAR
+* definition.  These are classified in uvar_given under these codings:
+* ("gvn" indicates lo/hi limits were given in square brackets)
+* ("gnl","lo","lohi" and "xact" encode special requirements of transformations)
+*
+*    -1   uvlim_irrelevant- limits irrelevant: NEW=10.1
+*    -2   uvlim_hidden    - limits hidden inside on another axis: NEW=FFT(v)
+*     0   uvlim_gvn_gnl   - limits given in a gen'l way: NEW=U[K=1:5]
+*     1   uvlim_gvn_lo    - limits that require exact lo match: NEW=U[K=1:5@IIN]
+*     2   uvlim_gvn_lohi  - limits require exact lohi match: NEW=U[K=1:5@WEQ]
+*     3   uvlim_gvn_xact  - limits that reduce to a pt.: NEW=U[K=1:5@AVE]
+*     4   uvlim_needed    - no limit info. given
+*     5   uvlim_need_lo   - no lims but transf. needs xact lo:NEW=U[K@IIN]
+*     6   uvlim_need_lohi - no lims but transf. needs xact lohi:NEW=U[K=@WEQ]
+*     7   uvlim_need_xact - no lims but transf. needs xact: NEW=U[K@AVE]
+*   100   uvlim_unknown
+
+* these are more elaborate than necessary - would allow for reporting the subset range
+	   is_uvar_2lim = .FALSE.
+	   is_uvar_1lim = .FALSE.
+	   is_uvar_nolim = .FALSE.
+
+	   uvar_desc = ' '
+
+	   IF (uvar .GT. 0) THEN 
+
+* Subsets on axis, compressing transform, ...
+
+
+* Subsets orange in transform or expression
+	   IF ( uvar_given(idim,uvar) .EQ. uvlim_gvn_gnl  .OR. 
+     .          uvar_given(idim,uvar) .EQ. uvlim_gvn_lo   .OR. 
+     .          uvar_given(idim,uvar) .EQ. uvlim_gvn_lohi )  THEN
+	      uvar_desc = ' (subset)'
+	      is_uvar_2lim = .TRUE.
+	      IF (uvar_lo_ss(uvar, idim) .NE. unspecified_int4) THEN
+	         i1ss = uvar_lo_ss(uvar, idim)
+	         inss = uvar_hi_ss(uvar, idim)
+	         is_uvar_1lim = ( i1ss .EQ. inss )
+	      ELSE
+	         i1ss =  TM_SUBSC ( uvar_lo_ww(idim, uvar), grid, idim, -1 )
+	         inss =  TM_SUBSC ( uvar_hi_ww(idim, uvar), grid, idim, -1 )
+	         is_uvar_1lim = ( i1ss .EQ. inss )
+	      ENDIF
+
+	      IF (is_uvar_1lim) THEN
+	         is_uvar_2lim = .FALSE.
+	         uvar_desc = ' (subset 1 pt)'
+	      ELSE
+	         countstr = TM_FMT(FLOAT(inss-i1ss), 15, 20, slen)
+	         uvar_desc = ' (subset '//countstr(:slen)//' pts)'
+	      ENDIF
+	   ENDIF
+
+* Compressing
+*   Single-point subsets are marked as gvn_xact (for conformability?)
+*   which would result in "compressed" here. 
+*   So if gvn_xact and hi=lo, call that a single-point subset.
+*   This means that var[x=5@max] is also reported as point subset. 
+
+	   IF ( uvar_given(idim,uvar) .EQ. uvlim_gvn_xact)  THEN
+	      uvar_desc = ' (compressed)'
+	      is_uvar_2lim = .TRUE.
+	      IF (uvar_lo_ss(uvar, idim) .NE. unspecified_int4) THEN
+	         is_uvar_1lim = ( uvar_lo_ss(uvar, idim) .EQ. uvar_hi_ss(uvar, idim) )
+	      ELSE
+	         is_uvar_1lim = ( uvar_lo_ww(idim, uvar) .EQ. uvar_hi_ww(idim, uvar) )
+	      ENDIF
+	      IF (is_uvar_1lim) THEN
+	         uvar_desc = ' (subset 1 pt)'
+		 is_uvar_2lim = .FALSE.
+	      ENDIF
+	   ENDIF
+
+c Compressing transfm, w/o limits
+
+	   IF ( uvar_given(idim,uvar) .EQ. uvlim_need_xact) THEN
+	      is_uvar_nolim = .TRUE.
+	      uvar_desc = ' (compressed)'
+	   ENDIF
+
+* Grid-changing function: uvar_given = uvar_hidden for idim
+
+	   IF (uvar_given(idim,uvar) .EQ. uvlim_hidden )  THEN
+	      is_uvar_2lim = .TRUE.
+	      uvar_desc = ' (axis from grid-changing function)'
+	   ENDIF
+
+c	   IF (uvar_given(idim,uvar) .EQ. uvlim_need_lo  .OR. 
+c     .         uvar_given(idim,uvar) .EQ. uvlim_need_lohi )  THEN 
+c	      is_uvar_nolim = .TRUE.
+c	      uvar_desc = ' (expression, limits not set)'
+c	   ENDIF
+
+
+	   ENDIF !  uvar, reporting subset, compression
+
 * write info
 	   int1 = 34 - (naxlen+1)
 	   naxlen = naxlen + 1
@@ -171,16 +284,29 @@
      .				lo_str,
      .				hi_str
 
+* If there is a subset or compression, add that information
+
+	   IF (is_uvar_2lim .OR. is_uvar_1lim .OR. is_uvar_nolim) THEN
+
+	      WRITE ( risc_buff, frmt )	line_name ( line )(:nlen),
+     .				title (:41-nlen),
+     .				line_dim  ( line ),
+     .				modflag,
+     .				reg,
+     .				direction,
+     .				lo_str,
+     .				hi_str,
+     .				uvar_desc
+	   ENDIF
 
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
 	ENDIF
 	RETURN
 
  3010	FORMAT ( T2,A8,T12,A1 )
-c 3020	FORMAT ( T2,A,1X,A,T27,I7,3A1,T39,A20,T60,A20 )
-c 3030	FORMAT ( T2,A,1X,A,T22,I12,3A1,T39,A20,T60,A20 )
 
- 3020   FORMAT ('(T2,A,1X,A,T',I2,',I',I1',3A1,T39,A20,T60,A20 )')
- 3030   FORMAT ('(T2,A,1X,A,T',I2,',I',I2',3A1,T39,A20,T60,A20 )')
+ 3020   FORMAT ('(T2,A,1X,A,T',I2,',I',I1',3A1,T39,A20,T60,A20,T80,A)')
+ 3030   FORMAT ('(T2,A,1X,A,T',I2,',I',I2',3A1,T39,A20,T60,A20,T80,A)')
 
 	END

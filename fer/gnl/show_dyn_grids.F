@@ -47,6 +47,8 @@
 * V532 5/01 *sh* - bug fix: ignore deleted static grids when chking axis usage
 * V650  Write to show_lun which may be set to a file unit number rather than std out
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V697  12/15 *acm* Changes to add details on SHOW GRID uvar to indicate 
+*                   compressed or subsetted axes
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -64,7 +66,7 @@
 	INTEGER mods_cx
 
 * local variable declarations:
-        LOGICAL show_all, shown
+        LOGICAL show_all, shown, uvgrid
 	INTEGER grid, line, dset, var, count, i, slash_all, status
 	CHARACTER sanity_msg*24
 
@@ -73,6 +75,7 @@
 
 * initialize
         show_all   = qual_given( slash_all ) .GT. 0
+	uvgrid = .FALSE.
 
 * first show the dynamic grids
         shown = .FALSE.
@@ -118,7 +121,7 @@
 * *kob* 4/99 shorten dynamic grid name on output statment
  3000	   FORMAT ( 4X,A,1X,A16,16X, 'use count:',I4,5x,A)
 	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
-	   CALL SHOW_GRID(grid, mods_cx, status)
+	   CALL SHOW_GRID(grid, mods_cx, uvgrid, status)
 	   IF (status .NE. ferr_ok) GOTO 5000
            shown = .TRUE.
 	   grid = grid_flink(grid)

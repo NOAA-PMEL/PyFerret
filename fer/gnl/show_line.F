@@ -51,6 +51,8 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V695+  *sh* 5/15 show T0 for forecast calendar axes, too
+* V697  12/15 *acm* Changes to add details on SHOW GRID uvar to indicate 
+*                   compressed or subsetted axes
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -69,7 +71,7 @@
 
 * local variable declarations:
 	LOGICAL		TM_ITS_SUBSPAN_MODULO
-	INTEGER		idim, orient, slen, i
+	INTEGER		idim, orient, slen, i, idum
 	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id
 	CHARACTER	TM_FMT*32, buff*80, buff20*20
 	REAL*8		TM_WW_AXLEN
@@ -116,7 +118,10 @@
 	grid_line(idim, mgrid_buff) = line
 
 * report basic facts using code from SHOW_GRID
-	CALL LINE_FACTS( show_lun, idim, mgrid_buff, orient )
+* Last argument is user-var code, not needed here, but used when calling from SHOW_GRID
+	buff20 = ' '
+	idum = -1
+	CALL LINE_FACTS( show_lun, idim, mgrid_buff, orient, idum )
 	IF ( brief ) RETURN
 
 * report /T0= for formatted time axis
